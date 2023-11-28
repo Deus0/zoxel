@@ -3,9 +3,9 @@
 	"appid" "1412400"
 	"desc" "Zoxel Build Uploader"
 	"buildoutput" "/home/deck/projects/zoxel/build/"
-	"preview" "0" // "local"	"default"
+	"preview" "0"
 	"contentroot" ""
-	"setlive" "release"
+	"setlive" "default"
 	"depots"
 	{
 		"1412401"	"/home/deck/projects/zoxel/bash/steam/zoxel_depot.vdf"
