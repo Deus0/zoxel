@@ -166,15 +166,15 @@ void print_quadrant(float4 q) {
     byte quadrant = quaternion_to_quadrant(q);
     // byte quadrant = get_quadrant(quaternion_to_euler(q));
     if (quadrant == 0) {
-        zox_log(" + quadrant 1\n");
+        zox_log(" + quadrant 1");
     } else if (quadrant == 1) {
-        zox_log(" + quadrant 2\n");
+        zox_log(" + quadrant 2");
     } else if (quadrant == 2) {
-        zox_log(" + quadrant 3\n");
+        zox_log(" + quadrant 3");
     } else if (quadrant == 3) {
-        zox_log(" + quadrant 4\n");
+        zox_log(" + quadrant 4");
     } else {
-        zox_log(" + quadrant ?\n");
+        zox_log(" + quadrant ?");
     }
 }
 

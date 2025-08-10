@@ -26,8 +26,24 @@ void spawn_text2D_zigels(
     //  - set old positions, as we are resizing
     for (int i = 0; i < reuse_count; i++) {
         const entity e = old_children[i];
-        const int data_index = calculate_zigel_data_index(textData->value, textData->length, i);
-        set_zigel_position(world, textData, e, data_index, data->element.size.y, data->zext.text_alignment, data->zext.text_padding, data->element.anchor, new_children_length, data->parent.position, data->parent.size, data->canvas.size);
+        const int data_index = calculate_zigel_data_index(
+            textData->value,
+            textData->length,
+            i);
+        set_zigel_position(
+            world,
+            textData,
+            e,
+            data_index,
+            data->element.size.y,
+            data->zext.text_alignment,
+            data->zext.text_padding,
+            data->element.anchor,
+            // new_children_length,
+            data->parent.position,
+            data->parent.size,
+            data->canvas.size
+        );
         new_children[i] = e;
     }
     // Spawn New Zigels

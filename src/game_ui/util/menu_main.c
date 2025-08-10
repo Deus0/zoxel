@@ -10,7 +10,9 @@ void button_event_menu_options(ecs_world_t *world, const ClickEventData *event) 
     spawn_menu_options(world, event->clicker, canvas, int2_zero, float2_half);
 }
 
-void engine_end_delayed(ecs_world_t* world, const ecs_entity_t null) {
+void engine_end_delayed(ecs_world_t* world, const ecs_entity_t e) {
+    (void) world;
+    (void) e;
     engine_end();
 }
 

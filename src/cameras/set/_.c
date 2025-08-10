@@ -19,7 +19,7 @@ static inline int2 scale_viewport(int2 v) {
 float3 debug_plane_rotation = { 0, 180, 0 };
 float3 debug_plane_position = { -64, 16, -64 };
 float debug_plane_distance = 128;
-float4x4 debug_camera_transform = float4x4_zero;
+float4x4 debug_camera_transform;
 
 #define max_cameras 16
 // todo: I for raycasting, create a second frustum + second matrix

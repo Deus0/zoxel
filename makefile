@@ -24,18 +24,16 @@ CC      	:= gcc
 CFLAGS      	:= -fPIC -O3 -march=native -flto=auto -DNDEBUG -Dzox_debug
 
 # 🐛 Debug build — for truth and stacktraces
-#	-g3 -g -Werror
-CFLAGS_DEV 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug
-
-cflags_seman 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug \
-			-Wextra -Wpedantic
-
-cflags_mleaks 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug \
-			-Wextra -Wpedantic -fsanitize=address
-
-cflags_diagn  	:= -Dzox_debug -O0 -fPIC -g3 -Wall -Wextra -Werror \
-			-fno-omit-frame-pointer -fdiagnostics-color=always \
-			-std=c99 -D_POSIX_C_SOURCE=200809L
+#	-g3 -g -Werror  -std=c11
+cflags_dev 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug
+# extra checks
+# cflags_dev 	+= -Wextra -Wpedantic
+# memory leak catching
+# cflags_dev 	+= -Wextra -Wpedantic -fsanitize=addresse
+# even more checks
+cflags_dev	+= -pedantic-errors -Wextra -Werror
+# omega checks
+# cflags_dev  	+= -Wextra -Werror -fno-omit-frame-pointer -fdiagnostics-color=always -std=c99 -D_POSIX_C_SOURCE=200809L
 
 LDFLAGS 	:= -lflecs -lm -lpthread -lGL -lSDL2 -lSDL2_image -lSDL2_mixer \
 			-Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images \
@@ -74,7 +72,7 @@ clean:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(CFLAGS_DEV) $(SRC) -o $@ $(LDFLAGS)
+	$(CC) $(cflags_dev) $(SRC) -o $@ $(LDFLAGS)
 
 dev: $(TARGET_DEV)
 

@@ -17,20 +17,20 @@ void generate_font_texture(
     const byte is_shapes,
     byte fill_thickness,
     byte outline_thickness,
-    float2 point_padding)
-{
+    float2 point_padding
+) {
     clear_texture(data, size);
     if (!font_data->length) {
         return;
     }
     if (is_shapes) {
-        generate_font_lines(data, size, font_data, line_color, font_point_padding);
+        generate_font_lines(data, size, font_data, line_color, point_padding);
         scanline_fill_texture(data, size, nothing_font_color, line_color, fill_color);
         if (outline_thickness) {
-            generate_splotches_lines(data, size, font_data, line_color, outline_thickness, font_point_padding);
+            generate_splotches_lines(data, size, font_data, line_color, outline_thickness, point_padding);
         }
     } else {
         fill_thickness++;
-        generate_splotches_lines(data, size, font_data, line_color, fill_thickness, font_point_padding);
+        generate_splotches_lines(data, size, font_data, line_color, fill_thickness, point_padding);
     }
 }

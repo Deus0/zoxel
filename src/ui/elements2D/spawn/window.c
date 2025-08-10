@@ -45,12 +45,13 @@ entity spawn_window2(ecs *world,
         .padding = window_data->header_padding,
     };
     // n/a
-    SpawnButtonData close_button_data = { 0 };
-    const entity header = spawn_header3(world,
+    // SpawnButtonData close_button_data = { 0 };
+    const entity header = spawn_header3(
+        world,
         canvas_data,
         e_parent_data,
         header_element_data,
-        close_button_data,
+        // close_button_data,
         header_text_data,
         header_data);
     add_to_Children(children, header);

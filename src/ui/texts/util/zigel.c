@@ -1,4 +1,7 @@
-int get_zext_max_x(const byte *data, const int length) {
+int get_zext_max_x(
+    const byte *data,
+    const int length
+) {
     int x = 0;
     int max_x = 0;
     for (int i = 0; i < length; i++) {
@@ -13,7 +16,10 @@ int get_zext_max_x(const byte *data, const int length) {
     return max_x;
 }
 
-int get_zext_max_y(const byte *data, const int length) {
+int get_zext_max_y(
+    const byte *data,
+    const int length
+) {
     int y = 1;
     for (int i = 0; i < length; i++) {
         if (data[i] == zox_char_newline && i != length - 1) y++;
@@ -21,7 +27,10 @@ int get_zext_max_y(const byte *data, const int length) {
     return y;
 }
 
-int get_zext_x(const byte *data, const int length, const int data_index) {
+int get_zext_x(
+    const byte *data,
+    const int data_index
+) {
     int x = 0;
     for (int i = 0; i < data_index; i++) {
         if (data[i] == zox_char_newline) x = 0;
@@ -30,7 +39,11 @@ int get_zext_x(const byte *data, const int length, const int data_index) {
     return x;
 }
 
-int get_zext_y(const byte *data, const int length, const int data_index) {
+int get_zext_y(
+    const byte *data,
+    const int length,
+    const int data_index
+) {
     int y = 0;
     for (int i = 0; i < data_index; i++) {
         if (data[i] == zox_char_newline && i != length - 1) y++;
@@ -38,7 +51,10 @@ int get_zext_y(const byte *data, const int length, const int data_index) {
     return y;
 }
 
-int calculate_total_zigels(const byte *data, const int length) {
+int calculate_total_zigels(
+    const byte *data,
+    const int length
+) {
     int count = 0;
     for (int i = 0; i < length; i++) {
         if (data[i] != zox_char_newline) count++;
@@ -47,7 +63,11 @@ int calculate_total_zigels(const byte *data, const int length) {
 }
 
 // from a zigel (child?) index, get the data char code
-byte calculate_zigel_index(const byte *data, const int length, const int spawn_index) {
+byte calculate_zigel_index(
+    const byte *data,
+    const int length,
+    const int spawn_index
+) {
     int j = 0;
     for (int i = 0; i < length; i++) {
         if (data[i] != zox_char_newline) {
@@ -62,8 +82,8 @@ byte calculate_zigel_index(const byte *data, const int length, const int spawn_i
 int calculate_zigel_data_index(
     const byte *data,
     const int length,
-    const int spawn_index)
-{
+    const int spawn_index
+) {
     int j = 0;
     for (int i = 0; i < length; i++) {
         if (data[i] != zox_char_newline) {
@@ -77,15 +97,29 @@ int calculate_zigel_data_index(
     return 0;
 }
 
-int2 calculate_zext_size(const byte *data, const int length, const byte font_size, const byte2 padding, const byte line_padding) {
+int2 calculate_zext_size(
+    const byte *data,
+    const int length,
+    const byte font_size,
+    const byte2 padding,
+    const byte line_padding
+) {
     int x = get_zext_max_x(data, length);
     int y = get_zext_max_y(data, length);
     // zox_log("sizey: %i\n", y)
     return (int2) { font_size * x + padding.x * 2, (font_size) * y + (y - 1) * line_padding + padding.y * 2 };
 }
 
-int2 calculate_zigel_position(const byte *data, const int length, const int data_index, const byte font_size, const byte text_alignment, const byte2 padding, const byte line_padding) {
-    const int x = get_zext_x(data, length, data_index);
+int2 calculate_zigel_position(
+    const byte *data,
+    const int length,
+    const int data_index,
+    const byte font_size,
+    const byte text_alignment,
+    const byte2 padding,
+    const byte line_padding
+) {
+    const int x = get_zext_x(data, data_index);
     const int y = get_zext_y(data, length, data_index);
     const int2 size = calculate_zext_size(data, length, font_size, padding, line_padding);
     int2 zigel_position = int2_zero;
@@ -125,7 +159,19 @@ int2 calculate_zigel_position(const byte *data, const int length, const int data
 }
 
 // For reusing a zigel, set all positions again to position entire text
-void set_zigel_position(ecs *world, const TextData *textData, const entity e, const int data_index, const int font_size, const byte text_alignment, const byte2 text_padding, float2 anchor, const byte zigels_count, const int2 parent_position, const int2 parent_size, const int2 canvas_size) {
+void set_zigel_position(
+    ecs *world,
+    const TextData *textData,
+    const entity e,
+    const int data_index,
+    const int font_size,
+    const byte text_alignment,
+    const byte2 text_padding,
+    float2 anchor,
+    const int2 parent_position,
+    const int2 parent_size,
+    const int2 canvas_size
+) {
     const int2 pixel_position = calculate_zigel_position(textData->value, textData->length, data_index, font_size, text_alignment, text_padding, default_line_padding);
     const int2 global_position = get_element_pixel_position_global(parent_position, parent_size, pixel_position, anchor);
     const float2 real_position = get_element_position(global_position, canvas_size);
@@ -135,7 +181,11 @@ void set_zigel_position(ecs *world, const TextData *textData, const entity e, co
 }
 
 // spawns a text character in a place
-entity spawn_zext_zigel(ecs *world, const TextData *textData, SpawnZigel *data) {
+entity spawn_zext_zigel(
+    ecs *world,
+    const TextData *textData,
+    SpawnZigel *data
+) {
     data->element.position = calculate_zigel_position(textData->value, textData->length, data->zigel.data_index, data->element.size.x, data->zext.text_alignment, data->zext.text_padding, default_line_padding);
     data->element.anchor = float2_half;
     return spawn_zigel(world, data);

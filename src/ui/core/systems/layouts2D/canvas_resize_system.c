@@ -8,7 +8,7 @@ void CanvasResizeSystem(iter *it) {
     zox_sys_in(AppLink)
     zox_sys_out(PixelSize)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
+        // zox_sys_e()
         zox_sys_i(CameraLink, cameraLink)
         zox_sys_i(Children, children)
         zox_sys_i(ScreenToCanvas, screenToCanvas)
@@ -30,7 +30,12 @@ void CanvasResizeSystem(iter *it) {
                 continue;
             }
             // zox_log("  - child [%s] resized", zox_get_name(child))
-            set_ui_transform(world, e, child, pixel_size, int2_half(pixel_size), pixel_size);
+            set_ui_transform(world,
+                // e,
+                child,
+                pixel_size,
+                int2_half(pixel_size),
+                pixel_size);
         }
     }
 } zoxd_system(CanvasResizeSystem)

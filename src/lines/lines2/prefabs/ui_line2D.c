@@ -1,6 +1,6 @@
 ecs_entity_t prefab_ui_line2D;
 extern ecs_entity_t prefab_temporary_ui_line2D;
-extern void set_ui_line_position(LineData2D *lineData2D, int4 linePosition2D, float2 canvas_size_f, float aspect_ratio);
+extern void set_ui_line_position(LineData2D*, int4, float2);
 
 ecs_entity_t spawn_prefab_ui_line2D(ecs_world_t *world) {
     zox_prefab()
@@ -42,7 +42,7 @@ void resize_ui_line2D(ecs_world_t *world, ecs_entity_t e, int2 canvas_size) {
     const int4 line_position2D = get_new_line_position(parent_real_position, canvas_size_f, aspect_ratio, parent_position, points);
     zox_set(e, LinePosition2D, { line_position2D })
     zox_get_muter(e, LineData2D, lineData2D)
-    set_ui_line_position(lineData2D, line_position2D, canvas_size_f, aspect_ratio);
+    set_ui_line_position(lineData2D, line_position2D, canvas_size_f);
 }
 
 ecs_entity_t spawn_ui_line2D(ecs_world_t *world,
@@ -103,7 +103,7 @@ ecs_entity_t spawn_ui_line2D(ecs_world_t *world,
     }
 
     LineData2D line_data = (LineData2D) { 0 };
-    set_ui_line_position(&line_data, line_position2D, canvas_size_f, aspect_ratio);
+    set_ui_line_position(&line_data, line_position2D, canvas_size_f);
     zox_set_ptr(e, LineData2D, line_data);
 
     // adds to canvas

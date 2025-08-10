@@ -39,7 +39,15 @@ void FrameTextureSystem(ecs_iter_t *it) {
         }
         if (zox_has(e, IconTexture)) {
             const byte radius = (byte ) (textureSize->value.y * zox_gett_value(e, IconRadius));
-            generate_texture_icon(textureData->value, textureData->length, textureSize->value, fill_color, outline_color, outlineThickness->value, radius, add_noise);
+            generate_texture_icon(
+                textureData->value,
+                textureSize->value,
+                fill_color,
+                outline_color,
+                outlineThickness->value,
+                radius,
+                add_noise
+            );
             // zox_log(" > [%s] radius [%i] size [%ix%i]\n", zox_get_name(it->entities[i]), radius, textureSize->value.x, textureSize->value.y)
         } else {
             generate_texture_frame(

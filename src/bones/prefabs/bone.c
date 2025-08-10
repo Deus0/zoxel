@@ -1,5 +1,5 @@
 extern void add_debug_cube(ecs *world, const entity e, const float3 size);
-const float3 initial_bone_size = (float3) { 0.03f, 0.03f, 0.03f };
+const float3 initial_bone_size = { 0.03f, 0.03f, 0.03f };
 
 entity spawn_prefab_bone(ecs *world) {
     zox_prefab()

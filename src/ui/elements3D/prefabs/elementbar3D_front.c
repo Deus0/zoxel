@@ -11,7 +11,14 @@ entity spawn_prefab_elementbar3D_front(ecs *world, const entity prefab) {
 }
 
 // used atm for statbar front bar
-entity spawn_elementbar3D_front(ecs *world, const entity prefab, const entity ui_holder, const entity parent, const float3 offset, const byte render_disabled) {
+entity spawn_elementbar3D_front(
+    ecs *world,
+    const entity prefab,
+    // const entity ui_holder,
+    const entity parent,
+    const float3 offset,
+    const byte render_disabled
+) {
     zox_instance(prefab)
     zox_name("elementbar3D_front")
     zox_set(e, ParentLink, { parent })

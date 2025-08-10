@@ -7,11 +7,15 @@ static const int3 int3_up       = {  0, 1, 0 };
 static const int3 int3_backward = {  0, 0, -1 };
 static const int3 int3_forward  = {  0, 0, 1 };
 
-const int3 int3_directions[] = {
-    int3_left,
-    int3_right,
-    int3_down,
-    int3_up,
-    int3_backward,
-    int3_forward
+static inline int3 get_direction_int3(byte i) {
+    if (i >= 6) return int3_zero;
+    const int3 int3_directions[] = {
+        int3_left,
+        int3_right,
+        int3_down,
+        int3_up,
+        int3_backward,
+        int3_forward
+    };
+    return int3_directions[i];
 };

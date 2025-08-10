@@ -2,7 +2,7 @@
 
 int spawn_characters3D_count = 8;
 float spawn_many_radius = 0.5f;
-float3 spawn_many_offset = float3_zero;
+float3 spawn_many_offset;
 float spawn_many_y = 0.6f;
 
 byte is_paint_skeletons = 0;

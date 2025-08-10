@@ -1,11 +1,12 @@
-entity spawn_header3(ecs *world,
+entity spawn_header3(
+    ecs *world,
     const CanvasSpawnData canvas_data,
     const ParentSpawnData parent_data,
     ElementSpawnData element_data,
-    const SpawnButtonData close_button,
+    // const SpawnButtonData close_button,
     const SpawnTextData zext,
-    const SpawnHeaderData header)
-{
+    const SpawnHeaderData header
+) {
     zox_instance(element_data.prefab)
     set_element_spawn_data(world, e, canvas_data, parent_data, &element_data);
     zox_name("header")

@@ -26,7 +26,7 @@ void zoxel_on_spawn_prefabs(ecs_world_t* world) {
     // set_prefab_debug_label(world, &debug_label_app);
 }
 
-void zoxel_set_debug(ecs_world_t* world) {
+void zoxel_set_debug() {
     // zox_profile_system_none
     // zox_profile_system_grassy_plains
     // zox_profile_system_vox_generation
@@ -171,7 +171,7 @@ zox_begin_module(ZoxGame)
     // app settings
     // headless = 0;
     // nosounds = 0;
-    zoxel_set_debug(world);
+    zoxel_set_debug();
 
     const float sub_resolution = 4;
     viewport_scale = 1 / sub_resolution;

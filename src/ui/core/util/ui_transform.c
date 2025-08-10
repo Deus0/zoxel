@@ -1,7 +1,14 @@
 // only used be lines atm
 extern void resize_ui_line2D(ecs *world, entity e, int2 canvas_size);
 
-float2 get_ui_real_position2D(ecs *world, const entity e, const entity parent, const int2 local_pixel_position, const float2 anchor, const int2 canvas_size) {
+/*float2 get_ui_real_position2D(
+    ecs *world,
+    // const entity e,
+    const entity parent,
+    const int2 local_pixel_position,
+    const float2 anchor,
+    const int2 canvas_size
+) {
     const float2 canvasSizef = { (float) canvas_size.x, (float) canvas_size.y };
     const float aspect_ratio = canvasSizef.x / canvasSizef.y;
     float2 position2D;
@@ -24,14 +31,26 @@ float2 get_ui_real_position2D(ecs *world, const entity e, const entity parent, c
 #endif
     }
     return position2D;
-}
+}*/
 
 // only used be lines atm
-float2 get_ui_real_position2D_canvas(const int2 local_pixel_position, const float2 anchor, const float2 canvas_size_f, const float aspect_ratio) {
+float2 get_ui_real_position2D_canvas(
+    const int2 local_pixel_position,
+    const float2 anchor,
+    const float2 canvas_size_f,
+    const float aspect_ratio
+) {
     return (float2) { ((local_pixel_position.x  / canvas_size_f.x) - 0.5f + anchor.x) * aspect_ratio, ((local_pixel_position.y  / canvas_size_f.y) - 0.5f + anchor.y) };
 }
 
-float2 get_ui_real_position2D_parent(const int2 local_pixel_position, const float2 anchor, const float2 parent_position2D, const int2 parent_pixel_size, const float2 canvas_size_f, const float aspect_ratio) {
+float2 get_ui_real_position2D_parent(
+    const int2 local_pixel_position,
+    const float2 anchor,
+    const float2 parent_position2D,
+    const int2 parent_pixel_size,
+    const float2 canvas_size_f,
+    const float aspect_ratio
+) {
     const float2 parent_pixel_ratio = (float2) { parent_pixel_size.x / canvas_size_f.y, parent_pixel_size.y / canvas_size_f.y };
     float2 position2D = parent_position2D;
     const float2 add_1 = (float2) { (local_pixel_position.x  / canvas_size_f.x) * aspect_ratio, (local_pixel_position.y  / canvas_size_f.y)};
@@ -44,7 +63,12 @@ float2 get_ui_real_position2D_parent(const int2 local_pixel_position, const floa
     return position2D;
 }
 
-int2 get_element_pixel_position_global(const int2 parent_pixel_position_global, const int2 parent_size, const int2 pixel_position, const float2 anchor) {
+int2 get_element_pixel_position_global(
+    const int2 parent_pixel_position_global,
+    const int2 parent_size,
+    const int2 pixel_position,
+    const float2 anchor
+) {
     int2 pixel_position_global = parent_pixel_position_global;
     // position is actually the centre point, so get the bottom left corner here
     pixel_position_global.x -= parent_size.x / 2;
@@ -58,7 +82,10 @@ int2 get_element_pixel_position_global(const int2 parent_pixel_position_global, 
     return pixel_position_global;
 }
 
-float2 get_element_position(const int2 pixel_position_global, const int2 canvas_size) {
+float2 get_element_position(
+    const int2 pixel_position_global,
+    const int2 canvas_size
+) {
     const float2 canvas_size_f = int2_to_float2(canvas_size);
     const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
     float2 position = int2_to_float2(pixel_position_global);
@@ -72,7 +99,15 @@ float2 get_element_position(const int2 pixel_position_global, const int2 canvas_
     return position;
 }
 
-void on_element_parent_updated(ecs *world, const entity e, const int2 local_pixel_position, const float2 anchor, const float2 parent_position, const int2 parent_pixel_size, const float2 canvas_size_f) {
+void on_element_parent_updated(
+    ecs *world,
+    const entity e,
+    const int2 local_pixel_position,
+    const float2 anchor,
+    const float2 parent_position,
+    const int2 parent_pixel_size,
+    const float2 canvas_size_f
+) {
     const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
     const float2 position2D = get_ui_real_position2D_parent(local_pixel_position, anchor, parent_position, parent_pixel_size, canvas_size_f, aspect_ratio);
     const int2 global_pixel_position = (int2) { ceil(((position2D.x / aspect_ratio) + 0.5f) * canvas_size_f.x), ((position2D.y + 0.5f) * canvas_size_f.y) };
@@ -80,7 +115,13 @@ void on_element_parent_updated(ecs *world, const entity e, const int2 local_pixe
     zox_set(e, CanvasPosition, { global_pixel_position })
 }
 
-void set_window_bounds_to_canvas(ecs *world, const entity e, const int2 canvas_size, const int2 window_size, const float2 anchor) {
+void set_window_bounds_to_canvas(
+    ecs *world,
+    const entity e,
+    const int2 canvas_size,
+    const int2 window_size,
+    const float2 anchor
+) {
     // note: can't actually use components in frame we spawn them
     const float2 anchor_reverse = (float2) { 1 - anchor.x, 1 - anchor.y };
     int4 drag_limits = (int4) {
@@ -92,7 +133,10 @@ void set_window_bounds_to_canvas(ecs *world, const entity e, const int2 canvas_s
     zox_set(e, DraggableLimits, { drag_limits });
 }
 
-void limited_element(PixelPosition *pixel_position, const int4 drag_bounds) {
+void limited_element(
+    PixelPosition *pixel_position,
+    const int4 drag_bounds
+) {
     if (pixel_position->value.x < drag_bounds.x) {
         pixel_position->value.x = drag_bounds.x;
     }
@@ -107,7 +151,10 @@ void limited_element(PixelPosition *pixel_position, const int4 drag_bounds) {
     }
 }
 
-void limit_element(ecs *world, const entity e) {
+void limit_element(
+    ecs *world,
+    const entity e
+) {
     if (!zox_valid(e) || !zox_has(e, PixelPosition) || !zox_has(e, DraggableLimits)) {
         return;
     }
@@ -120,13 +167,14 @@ extern void anchor_element_position2D(int2 *position, const float2 position_anch
 extern void anchor_element_size2D(int2 *size, const float2 anchor, const int2 parent_size);
 
 // called by CanvasResizeSystem
-void set_ui_transform(ecs *world,
-    const entity parent,
+void set_ui_transform(
+    ecs *world,
+    // const entity parent,
     const entity e,
     const int2 canvas_size,
     const int2 parent_position,
-    const int2 parent_size)
-{
+    const int2 parent_size
+) {
     if (!zox_valid(e)) {
         zox_log_error("invalid ui in set_ui_transform")
         return;
@@ -180,13 +228,19 @@ void set_ui_transform(ecs *world,
         if (zox_has(e, Children)) {
             const Children *children = zox_get(e, Children)
             for (int i = 0; i < children->length; i++) {
-                set_ui_transform(world, e, children->value[i], canvas_size, position_in_canvas, pixel_size);
+                set_ui_transform(world,
+                    //e,
+                    children->value[i],
+                    canvas_size,
+                    position_in_canvas,
+                    pixel_size);
             }
         }
     }
 }
 
-void initialize_element_invisible(ecs *world,
+void initialize_element_invisible(
+    ecs *world,
     const entity e,
     const entity parent,
     const entity canvas,
@@ -195,8 +249,8 @@ void initialize_element_invisible(ecs *world,
     const float2 anchor,
     const byte layer,
     const float2 position2D,
-    const int2 pixel_position_global)
-{
+    const int2 pixel_position_global
+) {
     zox_set(e, Anchor, { anchor })
     zox_set(e, Layer2D, { layer })
     zox_set(e, PixelSize, { pixel_size })
@@ -211,7 +265,8 @@ void initialize_element_invisible(ecs *world,
     }
 }
 
-void initialize_element(ecs *world,
+void initialize_element(
+    ecs *world,
     const entity e,
     const entity parent,
     const entity canvas,
@@ -221,18 +276,19 @@ void initialize_element(ecs *world,
     const float2 anchor,
     const byte layer,
     const float2 position2D,
-    const int2 pixel_position_global)
-{
+    const int2 pixel_position_global
+) {
     initialize_element_invisible(world, e, parent, canvas, pixel_position, pixel_size, anchor, layer, position2D, pixel_position_global);
     zox_set(e, TextureSize, { texture_size })
 }
 
-void set_element_spawn_data(ecs *world,
+void set_element_spawn_data(
+    ecs *world,
     const entity e,
     const CanvasSpawnData canvas_data,
     const ParentSpawnData parent_data,
-    ElementSpawnData *element_data)
-{
+    ElementSpawnData *element_data
+) {
     element_data->position_in_canvas = get_element_pixel_position_global(
         parent_data.position,
         parent_data.size,

@@ -1,8 +1,10 @@
-uint get_debug_label_app(ecs_world_t *world,
+uint get_debug_label_app(
+    ecs *world,
     const ecs_entity_t player,
     char *buffer,
-    const uint size, uint index)
-{
+    const uint size, uint index
+) {
+    (void) player;
     zox_geter_value(main_app, WindowSize, int2, window_size)
     const int2 lock_position = get_mouse_center_point(world, main_app);
     zox_geter_value(main_app, WindowFullscreen, byte, fullscreen)

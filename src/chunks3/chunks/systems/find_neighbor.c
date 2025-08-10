@@ -31,7 +31,7 @@ void ChunkFindNeighborSystem(iter *it) {
             if (zox_valid(chunkNeighbors->value[j])) {
                 continue;
             }
-            const int3 neighbor_position = int3_add(chunkPosition->value, int3_directions[j]);
+            const int3 neighbor_position = int3_add(chunkPosition->value, get_direction_int3(j));
             const entity neighbor = int3_hashmap_get(chunkLinks->value, neighbor_position);
             if (zox_valid(neighbor)) {
                 chunkNeighbors->value[j] = neighbor;

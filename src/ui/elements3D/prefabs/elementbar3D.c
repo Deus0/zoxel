@@ -38,7 +38,14 @@ entity2 spawn_elementbar3(
     zox_set(e, RenderDisabled, { data->backbar.render_disabled })
     Children *children = &((Children) { 0, NULL });
     const float3 frontbar_position = (float3) { 0, 0, element3D_depth_difference };
-    const entity frontbar = spawn_elementbar3D_front(world, data->frontbar.prefab, data->ui_holder, e, frontbar_position, data->frontbar.render_disabled);
+    const entity frontbar = spawn_elementbar3D_front(
+        world,
+        data->frontbar.prefab,
+        // data->ui_holder,
+        e,
+        frontbar_position,
+        data->frontbar.render_disabled
+    );
     add_to_Children(children, frontbar);
     if (text_data.prefab) {
         text_data.position = (float3) { 0, 0, element3D_depth_difference * 2 };

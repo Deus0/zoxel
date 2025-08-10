@@ -1,5 +1,5 @@
 void FontTextureSystem(iter *it) {
-    const color air_color = (color) { 0, 0, 0, 0 };
+    const color air_color = color_null;
     const float2 point_padding = font_point_padding;
     // const byte default_font_outline = 1; // 4
     zox_change_check()
@@ -54,7 +54,17 @@ void FontTextureSystem(iter *it) {
         }
         zox_geter(font, FontData, fontData)
         resize_memory_component(TextureData, textureData, color, length)
-        generate_font_texture(textureData->value, textureSize->value, fontData, secondaryColor->value, color_variable->value, is_use_shapes, fontThickness->value, fontOutlineThickness->value, point_padding);
+        generate_font_texture(
+            textureData->value,
+            textureSize->value,
+            fontData,
+            secondaryColor->value,
+            color_variable->value,
+            is_use_shapes,
+            fontThickness->value,
+            fontOutlineThickness->value,
+            point_padding
+        );
         generateTexture->value = 0;
         textureDirty->value = 1;
 #ifdef zoxel_debug_zigel_updates

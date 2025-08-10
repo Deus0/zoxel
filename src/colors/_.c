@@ -3,8 +3,7 @@
 
 // globals for now...
 byte grayscale_mode = 0;
-// color_rgb fog_color = (color_rgb) { 125, 125, 125 };
-color_rgb viewport_clear_color = color_rgb_black;
+color_rgb viewport_clear_color = { 0, 0, 0 };
 zoxc_color(Color);
 zoxc_color(SecondaryColor);
 zoxc_color_rgb(ColorRGB);

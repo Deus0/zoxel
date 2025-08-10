@@ -57,7 +57,7 @@ void ChunkSpawnSystem(iter *it) {
                     continue;
                 }
                 // get position of neighbor and check terrain for it
-                const int3 neighbor_position = int3_add(chunkPosition->value, int3_directions[j]);
+                const int3 neighbor_position = int3_add(chunkPosition->value, get_direction_int3(j));
                 if (!(neighbor_position.y >= -render_distance_y && neighbor_position.y <= render_distance_y)) {
                     continue;
                 }

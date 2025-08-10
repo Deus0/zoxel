@@ -1,6 +1,6 @@
 byte zox_game_type;
-color_rgb menu_sky_color = color_rgb_white;
-color_rgb menu_sky_bottom_color = color_rgb_white;
+color_rgb menu_sky_color;
+color_rgb menu_sky_bottom_color;
 color_rgb game_sky_color = { 55, 140, 235 };
 color_rgb game_sky_bottom_color = { 55, 140, 235 };
 byte is_start_game_delays = 1;

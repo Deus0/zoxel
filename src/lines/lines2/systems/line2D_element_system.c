@@ -1,4 +1,8 @@
-float2 get_ui_real_position2D_canvas_no_anchor(const int2 local_pixel_position, const float2 canvas_size_f, const float aspect_ratio) {
+float2 get_ui_real_position2D_canvas_no_anchor(
+    const int2 local_pixel_position,
+    const float2 canvas_size_f// ,
+    // const float aspect_ratio
+) {
     return (float2) { (2.0f * (local_pixel_position.x  / canvas_size_f.x) - 1.0f), // aspect_ratio,
             (2.0f * (local_pixel_position.y  / canvas_size_f.y) - 1.0f) };
 }
@@ -6,13 +10,19 @@ float2 get_ui_real_position2D_canvas_no_anchor(const int2 local_pixel_position, 
 void set_ui_line_position(
     LineData2D *pointsf,
     const int4 points,
-    const float2 canvas_size_f,
-    const float aspect_ratio)
-{
+    const float2 canvas_size_f//,
+    // const float aspect_ratio
+) {
     const float2 point_a = get_ui_real_position2D_canvas_no_anchor(
-        (int2) { points.x, points.y }, canvas_size_f, aspect_ratio);
+        (int2) { points.x, points.y },
+        canvas_size_f//,
+        //aspect_ratio
+    );
     const float2 point_b = get_ui_real_position2D_canvas_no_anchor(
-        (int2) { points.z, points.w }, canvas_size_f, aspect_ratio);
+        (int2) { points.z, points.w },
+        canvas_size_f//,
+        // aspect_ratio
+    );
     pointsf->value = (float4) { point_a.x, point_a.y, point_b.x, point_b.y };
 }
 
@@ -32,11 +42,12 @@ void Line2DElementSystem(ecs_iter_t *it) {
         }
         const int2 canvas_size = zox_get_value(canvasLink->value, PixelSize)
         const float2 canvas_size_f = int2_to_float2(canvas_size);
-        const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
+        // const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
         set_ui_line_position(
             lineData2D,
             linePosition2D->value,
-            canvas_size_f,
-            aspect_ratio);
+            canvas_size_f//,
+            //aspect_ratio
+        );
     }
 } zoxd_system(Line2DElementSystem)
