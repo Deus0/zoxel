@@ -83,8 +83,15 @@ VoxelNode* set_voxel(
         data.position.z / dividor
     };
     byte3_modulus_byte(&data.position, dividor);
+
+    const byte i = byte3_octree_array_index(node_position);
+    if (i >= 8) {
+        zox_log_error("node index out of bounds: %i", i);
+        return data.node;
+    }
+
     VoxelNode* kids = get_children_VoxelNode(data.node);
-    data.node = &kids[byte3_octree_array_index(node_position)];
+    data.node = &kids[i];
     data.depth++;
     return set_voxel(datam, data);
 }
@@ -118,7 +125,13 @@ void set_octree_voxel_final(
         position->z / dividor
     };
     byte3_modulus_byte(position, dividor);
-    byte i = byte3_octree_array_index(node_position);
+
+    const byte i = byte3_octree_array_index(node_position);
+    if (i >= 8) {
+        zox_log_error("node index OOB: %i", i);
+        return;
+    }
+
     VoxelNode* kids = get_children_VoxelNode(node);
     set_octree_voxel_final(&kids[i], position, data, depth);
 }

@@ -11,7 +11,6 @@ ECS_CTOR(T, ptr, { \
     ptr->length = 0; \
     ptr->value = NULL; \
     ptr->lock = SPINLOCK_INIT; \
-    zox_stats_arrayds_exists++; \
 }) \
 \
 ECS_DTOR(T, ptr, { \
@@ -21,8 +20,15 @@ ECS_DTOR(T, ptr, { \
         ptr->length = 0; \
         zox_stats_arrayds_mallocs--; \
     } \
-    zox_stats_arrayds_exists--; \
 })\
+\
+ECS_MOVE(T, dst, src, { \
+    dst->value = src->value; \
+    dst->length = src->length; \
+    dst->lock = SPINLOCK_INIT; \
+    src->value = NULL; \
+    src->length = 0; \
+}) \
 \
 void dispose_##T(T *ptr) { \
     if (ptr->value) { \
@@ -40,38 +46,6 @@ void dispose_##T##_const(const T *ptr) {\
         zox_stats_arrayds_mallocs--; \
     }\
 }\
-\
-ECS_MOVE(T, dst, src, { \
-    dst->value = src->value; \
-    dst->length = src->length; \
-    dst->lock = SPINLOCK_INIT; \
-    src->value = NULL; \
-    src->length = 0; \
-}) \
-\
-void clone_##T(T* dst, const T* src) {\
-    if (dst->value) { \
-        zee(dst->value); \
-        dst->value = NULL; \
-        dst->length = 0;\
-    }\
-    if (src->value) {\
-        int memory_length = src->length * sizeof(type);\
-        type *value = zalloc(memory_length);\
-        if (!value) {\
-            zox_log_error("zalloc failed clone_" #T);\
-            return;\
-        }\
-        memcpy(value, src->value, memory_length);\
-        dst->value = value;\
-        dst->length = src->length;\
-        zox_stats_arrayds_mallocs++; \
-    }\
-}\
-\
-ECS_COPY(T, dst, src, { \
-    clone_##T(dst, src); \
-}) \
 \
 void initialize_##T(T* ptr, int length) {\
     if (length > 0) {\
@@ -107,6 +81,9 @@ void resize_##T(T* ptr, int length) {\
 byte add_to_##T(T *ptr, const type data) { \
     spin_lock(&ptr->lock); \
     int new_length = ptr->length + 1; \
+    if (!ptr->value) { \
+        zox_stats_arrayds_mallocs++; \
+    } \
     type* new_value = ptr->value \
         ? rezalloc(ptr->value, new_length * sizeof(type)) \
         : zalloc(new_length * sizeof(type)); \
@@ -114,9 +91,6 @@ byte add_to_##T(T *ptr, const type data) { \
         zox_log_error("zalloc failed in add_to_" #T); \
         spin_unlock(&ptr->lock); \
         return 0; \
-    } \
-    if (!ptr->value) { \
-        zox_stats_arrayds_mallocs++; \
     } \
     ptr->value = new_value; \
     ptr->value[ptr->length] = data; \
@@ -144,8 +118,34 @@ byte remove_at_##T(T *ptr, int index) {\
     }\
     spin_unlock(&ptr->lock); \
     return 1;\
+} \
+\
+void clone_##T(T* dst, const T* src) {\
+    if (dst->value) { \
+        zee(dst->value); \
+        dst->value = NULL; \
+        dst->length = 0;\
+    }\
+    if (src->value) {\
+        int memory_length = src->length * sizeof(type);\
+        type *value = zalloc(memory_length);\
+        if (!value) {\
+            zox_log_error("zalloc failed clone_" #T);\
+            return;\
+        }\
+        memcpy(value, src->value, memory_length);\
+        dst->value = value;\
+        dst->length = src->length;\
+    }\
 }
+
 
 #define zox_define_memory_component(T)\
     zox_define_component(T)\
-    zox_define_hooks(T);
+    ecs_set_hooks_id(world, ecs_id(T), &(ecs_type_hooks_t) { \
+        .ctor = ecs_ctor(T), \
+        .dtor = ecs_dtor(T), \
+        .move = ecs_move(T), \
+        .copy = NULL, \
+    });
+

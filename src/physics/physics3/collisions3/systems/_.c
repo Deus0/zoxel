@@ -33,15 +33,15 @@ void define_systems_collisions3(ecs *world) {
         [out] collisions3.Collision,
         [out] collisions3.CollisionDistance);
     zox_system_1(CollisionDebugSystem, zoxp_physics,
-        [in] chunks3.VoxLink,
+        //[in] chunks3.VoxLink,
         [in] collisions3.CollisionDistance,
         [in] transforms3.Position3D,
-        [in] physics3.LastPosition3D,
+        // [in] physics3.LastPosition3D,
         [in] collisions3.Collision,
         [in] generic.Bounds3D,
     );
     zox_system(CollisionResponseSystem, zoxp_physics,
-        [in] chunks3.VoxLink,
+        // [in] chunks3.VoxLink,
         [in] collisions3.CollisionDistance,
         [out] transforms3.Position3D,
         [out] physics3.Velocity3D,

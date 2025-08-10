@@ -8,9 +8,6 @@
 #define zox_component_string_entity(c) \
     " e [%s]", zox_valid(c->value) ? zox_get_name(c->value) : "0"
 
-    // " e [%lu]", component->value
-
-
 zox_base_type(entity)
 
 // add to tilemap link

@@ -67,8 +67,8 @@ entity spawn_font_style_save_data(ecs *world, const entity prefab, const SaveDat
     zox_instance(prefab)
     zox_name("font_style_io")
     zox_add_tag(e, TTFFontStyle)
-    zox_get_muter(e, Children, children)
-    resize_memory_component(Children, children, entity, data->length)
+    zox_get_muter(e, Children, children);
+    resize_Children(children, data->length);
     for (int i = 0; i < data->length; i++) {
         if (data->fonts[i].length != 0) {
             children->value[i] = spawn_font(world, prefab_font, data->fonts[i].points, data->fonts[i].length);

@@ -1,7 +1,7 @@
 #include "label.c"
+#include "memory.c"
 
 extern entity get_linked_terrain(ecs*, entity);
-
 
 void test_load_chunk(ecs *world, int32_t keycode) {
     if (keycode == SDLK_l) {
@@ -29,7 +29,5 @@ void test_load_chunk(ecs *world, int32_t keycode) {
                 checks++;
             }
         }
-
-
     }
 }

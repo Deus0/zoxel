@@ -31,9 +31,9 @@
     ) {\
         zox_prefab_child(prefab)\
         zox_set_name(e, name)\
-        ZoxName *zoxName = &((ZoxName) { 0, NULL });\
-        set_zox_name(zoxName, name);\
-        zox_set(e, ZoxName, { zoxName->length, zoxName->value })\
+        ZoxName zname = (ZoxName) { 0 };\
+        set_zox_name(&zname, name); \
+        zox_set_ptr(e, ZoxName, zname); \
         return e;\
     }\
     \

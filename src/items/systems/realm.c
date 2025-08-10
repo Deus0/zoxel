@@ -64,12 +64,15 @@ void spawn_realm_items(ecs_world_t *world, const ecs_entity_t realm) {
     // i should make a BlockItemLinks perhaps? nah  that overcomplicates
     // clear previous
     zox_geter(realm, ItemLinks, old)
+    // if (old->value) return; // TODO: Temp; Remove when crashes gone
+
     if (old) {
         for (int i = 0; i < old->length; i++) {
             if (old->value[i]) {
                 zox_delete(old->value[i])
             }
         }
+        // dispose_ItemLinks_const(old);
     }
     ItemLinks items = (ItemLinks) { 0, NULL };
     initialize_ItemLinks(&items, blocks->length);

@@ -4,6 +4,7 @@
 #include "grasslands.c"
 #include "realm.c"
 #include "chunk_bounds_debug_system.c"
+#include "realm_tilemaps.c"
 zox_declare_system_state_event(RealmBlocks, GenerateRealm, zox_generate_realm_blocks, spawn_realm_blocks)
 zox_declare_system_state_event(RealmTilemaps, GenerateRealm, zox_generate_realm_tilemaps, spawn_realm_tilemaps)
 
@@ -36,7 +37,7 @@ void define_systems_terrain(ecs_world_t *world) {
                 [in] chunks3.ChunkMeshDirty,
                 [in] chunks3.VoxLink,
                 [in] chunks3.VoxelNode,
-                [in] chunks3.NodeDepth,
+                // [in] chunks3.NodeDepth,
                 [in] rendering.RenderLod,
                 [in] chunks3.ChunkNeighbors,
                 [in] blocks.VoxScale,

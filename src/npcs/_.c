@@ -8,6 +8,7 @@
 #include "prefabs/_.c"
 #include "systems/_.c"
 #include "util/_.c"
+#include "fun/_.c"
 
 zox_begin_module(Npcs)
     define_components_npcs(world);

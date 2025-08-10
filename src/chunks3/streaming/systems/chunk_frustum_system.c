@@ -87,7 +87,7 @@ void ChunkFrustumSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Bounds3D);
-    zox_sys_in(VoxScale);
+    //zox_sys_in(VoxScale);
     zox_sys_in(ChunkEntities);
     zox_sys_in(VoxelNode);
     zox_sys_out(RenderDisabled);
@@ -95,7 +95,7 @@ void ChunkFrustumSystem(iter *it) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Bounds3D, bounds3);
-        zox_sys_i(VoxScale, voxScale);
+        //zox_sys_i(VoxScale, voxScale);
         zox_sys_i(ChunkEntities, entities);
         zox_sys_i(VoxelNode, voxelNode);
         zox_sys_o(RenderDisabled, renderDisabled);

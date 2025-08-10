@@ -14,11 +14,13 @@ uint get_debug_label_app(ecs_world_t *world,
     return index;
 }
 
-uint debug_label_chunk_link(ecs_world_t *world,
-    const ecs_entity_t player,
+uint debug_label_chunk_link(
+    ecs *world,
+    const entity player,
     char *buffer,
-    const uint size, uint index)
-{
+    const uint size,
+    uint index
+) {
     index += snprintf(buffer + index, size - index, "characters [%lu]\n", zox_stats_characters);
     // index = get_debug_label_app(world, player, buffer, size, index);
     if (!player) {

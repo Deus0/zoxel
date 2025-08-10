@@ -38,6 +38,7 @@ zox_begin_module(Chunks3)
     zox_import_module(VoxelsAnimations)
     zox_import_module(Vodes3)
     zox_import_module(Vrays)
+    test_chunks3(world);
 zox_end_module(Chunks3)
 
 #endif

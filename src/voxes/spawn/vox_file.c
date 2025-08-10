@@ -159,7 +159,7 @@ entity spawn_vox_file(
     const char* filename
 ) {
     // model_lod
-    zox_neww(model)
+    zox_make_neww(model)
     char name[128];
     sprintf(name, "vox_file_%s", filename);
     zox_set_unique_name(model, name);

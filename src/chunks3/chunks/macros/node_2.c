@@ -48,10 +48,6 @@ static inline void read_unlock_##name(const name *node) {\
     }\
 }\
 \
-static inline name* get_children_##name(const name *node) {\
-    return (name*) node->ptr;\
-}\
-\
 static inline byte is_opened_##name(const name *node) {\
     return node->ptr != NULL;\
 }\
@@ -60,8 +56,13 @@ static inline byte is_closed_##name(const name *node) {\
     return node->ptr == NULL;\
 }\
 \
+static inline name* get_children_##name(const name *node) {\
+    name* children = node ? (name*) node->ptr : NULL;\
+    return children;\
+}\
+\
 static inline byte has_children_##name(const name *node) {\
-    return node->type == node_type_children;\
+    return node && node->type == node_type_children && node->ptr;\
 }\
 \
 void create_##name(name* node) {\
@@ -85,7 +86,6 @@ void close_##name(ecs *world, name *node) {\
     node->type = node_type_closed; \
     free(node->ptr); \
     node->ptr = NULL; \
-    zox_stats_nodes--; \
 }\
 \
 void destroy_##name(ecs *world, name* node) {\
@@ -96,49 +96,23 @@ void destroy_##name(ecs *world, name* node) {\
             run_hook_on_destroyed_##name(world, node);\
         }\
     }\
+    zox_stats_nodes--; \
     destroy_lock_##name(node);\
 }\
 \
+ECS_CTOR(name, ptr, { \
+    create_##name(ptr); \
+}) \
+\
 ECS_DTOR(name, ptr, {\
     destroy_##name(local_world, ptr);\
-})\
-\
-ECS_CTOR(name, ptr, {\
-    create_##name(ptr);\
-})\
-\
-void clone_##name(name*, const name*); \
-\
-ECS_COPY(name, dst, src, {\
-    clone_##name(dst, src);\
-})\
-\
-ECS_MOVE(name, dst, src, {\
-    dst->ptr = src->ptr;\
-    dst->value = src->value;\
-    dst->type = src->type;\
-    src->ptr = NULL;\
-    src->value = default_value;\
-    src->type = 0;\
-})\
-\
-void dispose_system_##name(iter *it) {\
-    zox_sys_world()\
-    zox_sys_begin()\
-    zox_sys_out(name)\
-    for (int i = 0; i < it->count; i++) {\
-        zox_sys_o(name, component)\
-        destroy_##name(world, component);\
-    }\
-}
+})
 
 #define zoxd_node(name)\
     zox_define_component(name)\
     ecs_set_hooks(world, name, {\
         .ctor = ecs_ctor(name),\
-        .move = ecs_move(name),\
-        .copy = ecs_copy(name),\
         .dtor = ecs_dtor(name),\
-    });\
-    zox_observe_expr(dispose_system_##name, EcsOnRemove, "[out] "#name)
-
+        .move = NULL,\
+        .copy = NULL,\
+    });

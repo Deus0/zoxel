@@ -19,9 +19,10 @@ zoxc_entity(PlayerPauseEvent);
 
 void add_player(ecs_world_t *world, const ecs_entity_t e, const ecs_entity_t player) {
     zox_get_muter(e, PlayerLinks, players)
-    byte new_length = players->length + 1;
-    resize_memory_component(PlayerLinks, players, ecs_entity_t, new_length)
-    players->value[new_length - 1] = player;
+    //byte length = players->length + 1;
+    //resize_PlayerLinks(players, length);
+    //players->value[length - 1] = player;
+    add_to_PlayerLinks(players, player);
     zox_set(player, GameLink, { e })
 }
 

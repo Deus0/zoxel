@@ -46,18 +46,19 @@ void spawn_realm_colors(ecs_world_t *world, const ecs_entity_t realm) {
         zox_log_error("invalid realm in [spawn_realm_colors]")
         return;
     }
-    zox_geter(realm, Seed, seed)
-    zox_geter(realm, Colors, old_data)
-    if (old_data->length) {
-        dispose_Colors_const(old_data);
-    }
+    /*zox_geter(realm, Colors, old);
+    if (old->value) {
+        // dispose_Colors_const(old);
+    }*/
+
+    zox_geter(realm, Seed, seed);
     Colors colors = (Colors) { 0, NULL };
     color_rgb sky_color;
     if (!grayscale_mode) {
         initialize_Colors(&colors, 6);
         generate_colors(seed->value, (&colors));
         // zox_set(realm, Colors, { .value = colors->value, .length = colors->length })
-        zox_set_ptr(realm, Colors, colors)
+        zox_set_ptr(realm, Colors, colors);
         sky_color = color_to_color_rgb(colors.value[0]);
     } else {
         sky_color = color_rgb_grayscale(3);

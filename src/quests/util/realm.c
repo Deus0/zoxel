@@ -13,14 +13,16 @@ void spawn_realm_quests(ecs_world_t *world, const ecs_entity_t realm) {
     // clear previous
     for (int i = 0; i < quests->length; i++) if (quests->value[i]) zox_delete(quests->value[i])*/
 
-    zox_geter(realm, QuestLinks, oldQuests)
-    if (oldQuests) {
-        for (int i = 0; i < oldQuests->length; i++) {
-            if (oldQuests->value[i]) {
-                zox_delete(oldQuests->value[i])
+    zox_geter(realm, QuestLinks, old)
+    if (old) {
+        for (int i = 0; i < old->length; i++) {
+            if (old->value[i]) {
+                zox_delete(old->value[i])
             }
         }
+        //dispose_QuestLinks_const(old);
     }
+
     QuestLinks quests = (QuestLinks) { 0, NULL };
     initialize_QuestLinks(&quests, 1);
     // slay them dirty slems

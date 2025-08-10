@@ -123,7 +123,7 @@ ecs_entity_t spawn_brain_as_texture(ecs_world_t *world, const ecs_entity_t brain
         colors[i2] = (color) { output_2, output_2, output_2, 255 };
         i2++;
     }
-    zox_new()
+    zox_make_new()
     zox_set(e, TextureData, { colors_length, colors })
     zox_set(e, TextureSize, { brain_texture_size })
     return e;

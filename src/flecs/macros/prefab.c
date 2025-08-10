@@ -2,7 +2,7 @@
     ecs_add_id(world, e, EcsPrefab);
 
 #define zox_prefab()\
-    zox_new()\
+    zox_make_new()\
     zox_make_prefab(e)
 
 #ifdef zox_flecs_4

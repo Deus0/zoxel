@@ -1,4 +1,6 @@
-#define zox_hashmap_component(name, type)\
+extern uint zox_stats_terrain_chunks;
+
+#define zoxc_hashmap(name, type)\
     \
     zoxc(name, type##_hashmap*); \
     \
@@ -8,7 +10,8 @@
             while (pair) {\
                 const ecs_entity_t e = pair->value;\
                 if (zox_valid(e)) {\
-                    zox_delete(e)\
+                    zox_delete(e); \
+                    zox_stats_terrain_chunks--; \
                 }\
                 pair = pair->next;\
             }\
@@ -22,12 +25,11 @@
         zox_sys_out(name)\
         for (int i = 0; i < it->count; i++) {\
             zox_sys_o(name, component)\
-            if (!component->value) {\
-                continue;\
+            if (component->value) {\
+                type##_hashmap* hashmap = component->value;\
+                dispose_hashmap_##type(world, hashmap);\
+                component->value = NULL;\
             }\
-            type##_hashmap* hashmap = component->value;\
-            dispose_hashmap_##type(world, hashmap);\
-            component->value = NULL;\
         }\
     }
 

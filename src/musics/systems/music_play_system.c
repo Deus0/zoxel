@@ -1,5 +1,5 @@
 void MusicPlaySystem(ecs_iter_t *it) {
-    if (nomusic) {
+    if (nomusic || nosounds) {
         return;
     }
     const float volume_music = get_volume_music();

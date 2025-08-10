@@ -205,7 +205,7 @@ void set_ui_list_hierarchy(ecs_world_t *world,
         zox_delete(children->value[j])
     }
     // set new elements size
-    resize_memory_component(Children, children, ecs_entity_t, childrens_length)
+    resize_Children(children, childrens_length);
     for (int j = 0; j < labels_count; j++) {
         const byte render_disabled = !(j >= 0 && j < elements_visible);
         int2 label_position = get_element_label_position(j, font_size, button_padding, button_inner_margins, window_size, list_margins, is_scrollbar, scrollbar_width, scrollbar_margins);

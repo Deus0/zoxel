@@ -43,7 +43,7 @@ ecs_entity_t load_music_file(
             zox_log_error("Music Error: Note [%i] Invalid Length: %f", i, note.length);
             return 0;
         }
-        int note_index = find_note_index(note.frequency);
+        // int note_index = find_note_index(note.frequency);
         music_length += note.length;
         // zox_log("   - %i - Frequency: %.2f : %.2f Hz, Start time: %.2f, Length: %.2f\n", i + 1, note.frequency, test_frequency, note.time, note.length)
     }

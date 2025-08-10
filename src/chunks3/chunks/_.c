@@ -10,5 +10,6 @@
 #include "prefabs/_.c"
 #include "systems/_.c"
 #include "debug/_.c"
+#include "tests/_.c"
 
 #endif

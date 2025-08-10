@@ -10,7 +10,7 @@ void spawn_character_items(ecs_world_t *world, spawned_character3D_data *data) {
             zox_geter(data->realm, VoxelLinks, voxels)
             // give npc random voxel
             const ecs_entity_t block = voxels->value[rand() % voxels->length];
-            if (zox_valid(block)) {
+            if (zox_valid(block) && zox_has(block, ItemLink)) {
                 zox_geter(block, ItemLink, itemLink)
                 if (zox_valid(itemLink->value)) {
                     const ecs_entity_t item = spawn_user_item(world, itemLink->value, data->e);
@@ -57,11 +57,11 @@ void spawn_character_items(ecs_world_t *world, spawned_character3D_data *data) {
                 break;
             }
             const ecs_entity_t block = voxels->value[i];
-            if (!zox_valid(block)) {
+            if (!zox_valid(block) || !zox_has(block, ItemLink)) {
                 zox_log_error("block invalid [%i]", i)
                 continue;
             }
-            zox_geter(block, ItemLink, itemLink)
+            zox_geter(block, ItemLink, itemLink);
             if (!zox_valid(itemLink->value)) {
                 zox_log_error("block item invalid [%i]", i)
                 continue;

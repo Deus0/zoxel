@@ -23,7 +23,7 @@ void spawn_terrain_grid(
     const float right_bounds = radius2;
     const float back_bounds = -radius;
     const float front_bounds = radius2;
-    terrain_grid = zox_get_new();
+    terrain_grid = zox_new();
     zox_prefab_add(terrain_grid, Children)
     Children *children = zox_get_mut(terrain_grid, Children)
     zox_modified(terrain_grid, Children)

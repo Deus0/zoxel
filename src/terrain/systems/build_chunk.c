@@ -432,7 +432,7 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
     zox_sys_in(ChunkMeshDirty)
     zox_sys_in(VoxLink)
     zox_sys_in(VoxelNode)
-    zox_sys_in(NodeDepth)
+    //zox_sys_in(NodeDepth)
     zox_sys_in(RenderLod)
     zox_sys_in(ChunkNeighbors)
     zox_sys_in(VoxScale)
@@ -538,7 +538,7 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
         zox_sys_i(VoxLink, voxLink)
         zox_sys_i(ChunkMeshDirty, chunkMeshDirty)
         zox_sys_i(ChunkNeighbors, chunkNeighbors)
-        zox_sys_i(NodeDepth, nodeDepth)
+        //zox_sys_i(NodeDepth, nodeDepth)
         zox_sys_i(RenderLod, renderLod)
         zox_sys_i(VoxScale, voxScale)
         zox_sys_i(VoxelNode, voxelNode)
@@ -565,7 +565,7 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
         const byte render_depth = terrain_lod_to_node_depth(
             renderLod->value,
             terrain_depth);
-        byte node_depth = nodeDepth->value;
+        // byte node_depth = nodeDepth->value;
         byte terrain_length = powers_of_two[terrain_depth];
         // TODO: grab voxScale from terrain instead
         const float chunk_scale = ((float) terrain_length) * voxScale->value;

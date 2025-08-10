@@ -6,7 +6,7 @@ ecs_entity_t spawn_model_grass(
     srand(seed);
     c = color_mutate(c, 40);
     int big_rubbles = 10000 + rand() % 8000;
-    zox_new();
+    zox_make_new();
     zox_name("model_grass");
     ModelLods modelLods;
     for (int i = 0; i < max_model_lods; i++) {

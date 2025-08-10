@@ -7,11 +7,16 @@ void spawn_realm_skills(ecs_world_t *world, const ecs_entity_t realm) {
         return;
     }
     // clear previous
-    zox_geter(realm, SkillLinks, oldSkills)
-    if (oldSkills) {
-        for (int i = 0; i < oldSkills->length; i++) {
-            if (oldSkills->value[i]) zox_delete(oldSkills->value[i])
+    zox_geter(realm, SkillLinks, old)
+    // if (old->value) return; // TODO: Temp; Remove when crashes gone
+
+    if (old) {
+        for (int i = 0; i < old->length; i++) {
+            if (old->value[i]) {
+                zox_delete(old->value[i]);
+            }
         }
+        // dispose_SkillLinks_const(old);
     }
 
     zox_geter(realm, StatLinks, stats)

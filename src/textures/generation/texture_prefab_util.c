@@ -3,17 +3,17 @@ void clear_texture_data(ecs_world_t *world, const ecs_entity_t e) {
     if (!zox_valid(e) || !zox_has(e, TextureData)) {
         return;
     }
-    //zox_geter(e, TextureData, old)
-    zox_muter(e, TextureData, old)
+    zox_mut_begin(e, TextureData, old);
     if (old->value) {
-        dispose_TextureData_const(old);
+        dispose_TextureData(old);
+        zox_mut_end(e, TextureData);
     }
 }
 
-void clone_texture_data(ecs_world_t *world,
-    const ecs_entity_t e,
-    const ecs_entity_t source)
-{
+void clone_texture_data(ecs *world,
+    const entity e,
+    const entity source
+) {
     if (!source || !zox_has(source, TextureSize) || !zox_has(source, TextureData)) {
         if (!source) {
             zox_log_error("[texture not found] [%s]", zox_get_name(e))
@@ -30,12 +30,12 @@ void clone_texture_data(ecs_world_t *world,
     zox_geter_value(source, TextureSize, int2, size)
     const int bytes_length = sizeof(color) * source_data->length;
     // free old one
-    if (zox_has(e, TextureData)) {
+    /*if (zox_has(e, TextureData)) {
         zox_geter(e, TextureData, oldData);
         if (oldData->value) {
             dispose_TextureData_const(oldData);
         }
-    }
+    }*/
     TextureData data = { 0, NULL };
     initialize_TextureData(&data, source_data->length);
     //data.length = source_data->length;

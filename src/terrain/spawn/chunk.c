@@ -47,5 +47,6 @@ ecs_entity_t spawn_chunk_terrain(
         spawn_gpu_uvs(world, e);
         spawn_gpu_colors(world, e);
     }
+    zox_stats_terrain_chunks++;
     return e;
 }

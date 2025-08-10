@@ -1,12 +1,9 @@
 // event called when terrain spawned
 void on_spawned_terrain(ecs *world, const entity player) {
-    zox_geter_value(player, CharacterLink, entity, character);
     const entity game = zox_get_value(player, GameLink);
     const entity realm = zox_get_value(game, RealmLink);
     play_playlist(world, realm, 1);
     // actually we need to do this on loaded player model for bounds
-    // zox_set(character, DisableGravity, { 0 });
-    // zox_set(character, DisableMovement, { 0 });
 }
 
 // this connects to terrain end stream event and triggers streaming

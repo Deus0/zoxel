@@ -9,24 +9,28 @@ SDL_Surface* load_png_as_surface(const char *filepath) {
 }
 
 // Assuming TextureData and TextureSize are defined as they are in your save function
-color* load_texture_from_png(const char *filepath, int2 *size) {
+byte load_texture_from_png(const char *filepath, TextureData* data, int2 *size) {
     SDL_Surface* surface = IMG_Load(filepath);
     if (!surface) {
         zox_log(" ! failed with [IMG_Load]: %s\n", SDL_GetError())
-        return NULL;
+        return 0;
     }
     const int pitch = surface->pitch;
     size->x = surface->w;
     size->y = surface->h;
     const int colors_length = size->x * size->y;
-    const int byte_length = colors_length * sizeof(color);
+    // const int byte_length = colors_length * sizeof(color);
     // Flip the image vertically
     // remember: sdl considers top left origin, while opengl is bottom left
     byte* pixels = (byte*) surface->pixels;
-    color* data = (color*) malloc(byte_length);
-    for (int y = 0; y < size->y; ++y) memcpy(data + (size->y - 1 - y) * size->x, pixels + y * pitch, size->x * sizeof(color));
+    // color* data = (color*) malloc(byte_length);
+    initialize_TextureData(data, colors_length);
+    for (int y = 0; y < size->y; ++y) {
+        memcpy(data->value + (size->y - 1 - y) * size->x, pixels + y * pitch, size->x * sizeof(color));
+    }
     SDL_FreeSurface(surface);
-    return data;
+    // return data;
+    return 1;
 }
 
 // resize_memory_component(TextureData, data, color, colors_length)
@@ -61,9 +65,9 @@ void save_texture_as_png(const color *data, const int2 size, const char *filepat
 
 SDL_Surface* load_png_as_surface(const char *filepath) { return NULL; }
 
-color* load_texture_from_png(const char *filepath, int2 *size) {
-    zox_log(" ! sdl_image is disabled\n")
-    return NULL;
+byte load_texture_from_png(const char *filepath, TextureData* data, int2 *size) {
+    zox_log("sdl_image disabled");
+    return 1;
 }
 
 void save_texture_as_png(const color *data, const int2 size, const char *filepath) { }

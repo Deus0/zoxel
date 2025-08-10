@@ -12,7 +12,8 @@
 // TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
 void zoxel_on_spawn_prefabs(ecs_world_t* world) {
     // get_debug_label_app
-    set_prefab_debug_label(world, &debug_label_chunk_link);
+    set_prefab_debug_label(world, &debug_ui_memory);
+    // set_prefab_debug_label(world, &debug_label_chunk_link);
     // set_prefab_debug_label(world, &get_label_realm_colors);
     // set_prefab_debug_label(world, &get_label_player_element_links);
     // set_prefab_debug_label(world, &get_label_player_stats);
@@ -127,6 +128,7 @@ void zoxel_debug_keys() {
     add_hook_key_down(toggle_inspector);
     add_hook_key_down(toggle_hierarchy);
     add_hook_key_down(toggle_flymode);
+    add_hook_key_down(toggle_autoroam);
     // add_hook_key_down(key_down_test_aura);
     // add_hook_key_down(keydown_test_cubes);
     // add_hook_key_down(keydown_test_popup3);
@@ -150,6 +152,10 @@ zox_begin_module(ZoxGame)
 
     game_name = "Zoxel";
     add_hook_spawn_prefabs(zoxel_on_spawn_prefabs);
+
+    /*disable_npcs = 1;
+    disable_block_voxes = 1;
+    nosounds = 1;*/
     // vsync = 0;
     // auto_player = 1;
 
@@ -157,7 +163,6 @@ zox_begin_module(ZoxGame)
     // disable until fixed
     // disable_frustum_culling = 1;
 
-    // disable_npcs = 1;
     // disable_bone_rendering = 1;
     // disable_block_voxes = 1;
     // is_debug_collisions = 1;

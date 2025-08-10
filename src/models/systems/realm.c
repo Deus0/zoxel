@@ -1,10 +1,25 @@
 void spawn_realm_models(ecs_world_t *world, const ecs_entity_t e) {
-    if (!zox_valid(e)) {
+    if (!zox_valid(e) || !zox_has(e, ModelLinks)) {
         return;
     }
-    if (!zox_has(e, ModelLinks)) {
-        zox_log_error("realm does not have ModelLinks [%lu]", e)
-        return;
+
+    /*zox_mut_begin(e, ModelLinks, old);
+    if (old) {
+        for (int i = 0; i < old->length; i++) {
+            zox_delete(old->value[i])
+        }
+        dispose_ModelLinks(old);
+        zox_mut_end(e, ModelLinks);
+    }*/
+
+    zox_geter(e, ModelLinks, old);
+    // if (old->value) return; // TODO: Temp - Remove when crashes gone
+
+    if (old) {
+        for (int i = 0; i < old->length; i++) {
+            zox_delete(old->value[i])
+        }
+        // dispose_ModelLinks_const(old);
     }
 
     // get realms colors
@@ -17,21 +32,13 @@ void spawn_realm_models(ecs_world_t *world, const ecs_entity_t e) {
         grass_color = realm_colors->value[2];
     }
 
-    zox_geter(e, ModelLinks, old)
-    if (old) {
-        for (int i = 0; i < old->length; i++) {
-            zox_delete(old->value[i])
-        }
-        dispose_ModelLinks_const(old);
-    }
-
     ModelLinks models = (ModelLinks) { 0, NULL };
 
     // models
     // grass - contains a bunch of variants
     // todo: set different heights
     {
-        zox_neww(e2)
+        zox_make_neww(e2)
         zox_set_unique_name(e2, "model_group_grass");
 
         ModelLinks variants = (ModelLinks) { 0, NULL };
@@ -46,7 +53,7 @@ void spawn_realm_models(ecs_world_t *world, const ecs_entity_t e) {
 
     // spawn slime like npc
     {
-        zox_neww(e2)
+        zox_make_neww(e2)
         zox_set_unique_name(e2, "model_group_slem");
         zox_add_tag(e2, ModelCharacter)
 

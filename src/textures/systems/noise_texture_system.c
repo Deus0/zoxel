@@ -30,7 +30,7 @@ void NoiseTextureSystem(ecs_iter_t *it) {
         } else if (zox_has(e, ObsidianTexture)) {
             texture_type = zox_texture_obsidian;
         }
-        resize_memory_component(TextureData, textureData, color, textureSize->value.x * textureSize->value.y)
+        initialize_TextureData(textureData, textureSize->value.x * textureSize->value.y);
         generate_texture_noise(textureData->value, textureSize->value, texture_type, terrain_texture_outline_type, fill_color->value);
         // generateTexture->value = 0;
         textureDirty->value = 1; // remember: this only gets uploaded if has GPUTextureLink!

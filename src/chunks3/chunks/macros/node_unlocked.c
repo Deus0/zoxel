@@ -6,47 +6,22 @@ struct name {\
     base value;\
     byte type;\
     void* ptr;\
-    zox_lock lock;\
 };\
 zoxc_custom(name);\
 \
 zox_hookr(on_destroyed_##name, byte, (ecs* world, name* node), (world, node))\
 \
-static inline void create_lock_##name(name *node) {\
-    if (nodes_w_safety_locks || nodes_r_safety_locks) {\
-        zox_lock_init(&node->lock);\
-    }\
-}\
+static inline void create_lock_##name(name *node) { }\
 \
-static inline void destroy_lock_##name(name *node) {\
-    if (nodes_w_safety_locks || nodes_r_safety_locks) {\
-        zox_lock_destroy(&node->lock);\
-    }\
-}\
+static inline void destroy_lock_##name(name *node) { }\
 \
-static inline void write_lock_##name(const name *node) {\
-    if (nodes_w_safety_locks) {\
-        zox_lock_write(&node->lock);\
-    }\
-}\
+static inline void write_lock_##name(const name *node) { }\
 \
-static inline void write_unlock_##name(const name *node) {\
-    if (nodes_w_safety_locks) {\
-        zox_unlock_write(&node->lock);\
-    }\
-}\
+static inline void write_unlock_##name(const name *node) { }\
 \
-static inline void read_lock_##name(const name *node) {\
-    if (nodes_r_safety_locks) {\
-        zox_lock_read(&node->lock);\
-    }\
-}\
+static inline void read_lock_##name(const name *node) { }\
 \
-static inline void read_unlock_##name(const name *node) {\
-    if (nodes_r_safety_locks) {\
-        zox_unlock_read(&node->lock);\
-    }\
-}\
+static inline void read_unlock_##name(const name *node) { }\
 \
 static inline name* get_children_##name(const name *node) {\
     return (name*) node->ptr;\

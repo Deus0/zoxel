@@ -30,7 +30,8 @@ void BoneIndexGenerateSystem(iter *it) {
             bones_bounds_lower[j] = float3_subtract(bone_positions[j], half_size);
             bones_bounds_upper[j] = float3_add(bone_positions[j], half_size);
         }
-        resize_memory_component(BoneIndexes, boneIndexes, byte, meshVertices->length)
+        // resize_memory_component(BoneIndexes, boneIndexes, byte, meshVertices->length)
+        resize_BoneIndexes(boneIndexes, meshVertices->length);
         for (int j = 0; j < meshVertices->length; j++) {
             const float3 position = meshVertices->value[j];
             boneIndexes->value[j] = 0;

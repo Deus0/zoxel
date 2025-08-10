@@ -34,6 +34,37 @@ int3 move_position(int3 position, byte dir) {
 
 #define zoxc_node_helper(name, base)\
 \
+void open_##name(name* node) { \
+    node->ptr = (void*) malloc(sizeof(name) * octree_length);\
+    if (node->ptr) { \
+        node->type = node_type_children; \
+        name* kids = get_children_##name(node); \
+        for (byte i = 0; i < octree_length; i++) { \
+            create_##name(&kids[i]); \
+        } \
+    } \
+} \
+\
+void clone_##name(\
+    name* dst,\
+    const name* src \
+) {\
+    dst->value = src->value;\
+    dst->type = src->type;\
+    if (src->type == node_type_instance) {\
+        dst->ptr = src->ptr;\
+    } else if (src->ptr) {\
+        open_##name(dst);\
+        name* kids_dst = get_children_##name(dst);\
+        name* kids_src = get_children_##name(src);\
+        for (byte i = 0; i < octree_length; i++) {\
+            clone_##name(&kids_dst[i], &kids_src[i]);\
+        }\
+    } else {\
+        dst->ptr = NULL;\
+    }\
+} \
+\
 base find_node_value_##name(\
     const name* node,\
     int3 position,\
@@ -273,3 +304,5 @@ byte get_adjacent_depth_##name(\
         } \
     } \
 }
+
+

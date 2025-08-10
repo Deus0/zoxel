@@ -211,8 +211,6 @@ void collide_with_chunk_d2(
     }
 }
 
-// #define handle_collision_axisf(d, offset, is_negative)\
-
 
 // Macros for handling 3-dimensional collisions
 #define handle_collision_axis_d3(d1, d2, d3, offset_d1, offset_d2, offset_d3, is_negative1, is_negative2, is_negative3)\

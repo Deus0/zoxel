@@ -3,16 +3,20 @@ void spawn_realm_stats(ecs_world_t *world, ecs_entity_t realm) {
         zox_log("! realm does not have StatLinks [%lu]\n", realm)
         return;
     }
+
     // zox_get_muter(realm, StatLinks, stats)
-    zox_geter(realm, StatLinks, oldStats)
-    if (oldStats) {
+    zox_geter(realm, StatLinks, old);
+    // if (old->value) return; // TODO: Temp; Remove when crashes gone
+
+    if (old) {
         // clear previous
-        for (int i = 0; i < oldStats->length; i++) {
-            const ecs_entity_t stat = oldStats->value[i];
+        for (int i = 0; i < old->length; i++) {
+            const ecs_entity_t stat = old->value[i];
             if (zox_valid(stat)) {
-                zox_delete(stat)
+                zox_delete(stat);
             }
         }
+        // dispose_StatLinks_const(old);
     }
     StatLinks stats = (StatLinks) { 0, NULL };
     initialize_StatLinks(&stats, 16);

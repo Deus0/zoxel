@@ -1,4 +1,4 @@
-#include "realm_models.c"
+#include "realm.c"
 zox_declare_system_state_event(RealmModels, GenerateRealm, zox_generate_realm_models, spawn_realm_models)
 
 void zox_define_systems_models(ecs_world_t* world) {

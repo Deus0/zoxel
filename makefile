@@ -24,11 +24,16 @@ CC      	:= gcc
 CFLAGS      	:= -fPIC -O3 -march=native -flto=auto -DNDEBUG -Dzox_debug
 
 # 🐛 Debug build — for truth and stacktraces
-#	-g3 -g
-CFLAGS_DEV 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug \
-			-Wextra -Wpedantic # -Werror
+#	-g3 -g -Werror
+CFLAGS_DEV 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug
 
-CFLAGS_DEV2  	:= -Dzox_debug -O0 -fPIC -g3 -Wall -Wextra -Werror \
+cflags_seman 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug \
+			-Wextra -Wpedantic
+
+cflags_mleaks 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug \
+			-Wextra -Wpedantic -fsanitize=address
+
+cflags_diagn  	:= -Dzox_debug -O0 -fPIC -g3 -Wall -Wextra -Werror \
 			-fno-omit-frame-pointer -fdiagnostics-color=always \
 			-std=c99 -D_POSIX_C_SOURCE=200809L
 
