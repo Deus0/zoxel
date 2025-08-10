@@ -14,7 +14,7 @@ static const CameraSpawnData camera_preset_ortho = {
 
 static const CameraSpawnData camera_preset_2D = {
     .position = { 0, 0, 0 },
-    .euler = float3_zero,
+    .euler = { 0, 0, 0 },
     .fov = 90, // 45,
     .follow_mode = zox_camera_follow_mode_follow_xy
 };
