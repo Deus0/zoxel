@@ -3,7 +3,7 @@ static inline void cycle_cubeline_debug(byte* mode) {
     if (*mode == zox_cubeline_debug_end) {
         (*mode) = 0;
     }
-    if ((*mode) == zox_cubeline_debug_render_lod) {
+    if ((*mode) == zox_cubeline_debug_render_depths) {
         zox_log("-> debugging render_lods")
     } else if (*mode == zox_cubeline_debug_render_disabled) {
         zox_log("-> debugging render_disabled")

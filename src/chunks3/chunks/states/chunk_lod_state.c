@@ -1,5 +1,5 @@
 // rename dirty to trigger
-#define chunk_lod_state_none 0
+/*#define chunk_lod_state_none 0
 #define chunk_lod_state_trigger 1
 
 #define chunk_lod_state_generate_trigger 3
@@ -18,4 +18,4 @@
 #define chunk_lod_state_mesh_trigger 10
 #define chunk_lod_state_mesh_update 11
 
-#define chunk_lod_state_end 12
+#define chunk_lod_state_end 12*/

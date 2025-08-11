@@ -12,7 +12,7 @@
 // TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
 void zoxel_on_spawn_prefabs(ecs_world_t* world) {
     // get_debug_label_app
-    set_prefab_debug_label(world, &debug_ui_memory);
+    // set_prefab_debug_label(world, &debug_ui_memory);
     // set_prefab_debug_label(world, &debug_label_chunk_link);
     // set_prefab_debug_label(world, &get_label_realm_colors);
     // set_prefab_debug_label(world, &get_label_player_element_links);
@@ -24,6 +24,7 @@ void zoxel_on_spawn_prefabs(ecs_world_t* world) {
     // set_prefab_debug_label(world, &debug_label_lods);
     // set_prefab_debug_label(world, &debug_label_collisions);
     // set_prefab_debug_label(world, &debug_label_app);
+    set_prefab_debug_label(world, &debug_ui_raycasting);
 }
 
 void zoxel_set_debug() {
@@ -153,9 +154,10 @@ zox_begin_module(ZoxGame)
     game_name = "Zoxel";
     add_hook_spawn_prefabs(zoxel_on_spawn_prefabs);
 
-    /*disable_npcs = 1;
-    disable_block_voxes = 1;
-    nosounds = 1;*/
+    // is_generate_vox_outlines = 1;
+    // disable_npcs = 1;
+    // disable_block_voxes = 1;
+    // nosounds = 1;
     // vsync = 0;
     // auto_player = 1;
 
@@ -173,7 +175,7 @@ zox_begin_module(ZoxGame)
     // nosounds = 0;
     zoxel_set_debug();
 
-    const float sub_resolution = 4;
+    const float sub_resolution = 1; // 4
     viewport_scale = 1 / sub_resolution;
     target_fps = 0;
 
@@ -183,7 +185,6 @@ zox_begin_module(ZoxGame)
     zox_set_terrain_settings();
 
     // art
-    is_generate_vox_outlines = 0;
     grayscale_mode = 0; // todo: make a grayscale biome
 
     // game

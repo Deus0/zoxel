@@ -92,7 +92,7 @@ void DungeonBlockSystem(ecs_iter_t *it) {
         //    .node = update_node,
         //    .position = position,
         //};
-        float3 positionf = voxel_position_to_real_position(voxel_position, int3_to_byte3(chunk_bounds), default_vox_scale);
+        float3 positionf = positionv_to_real_position(voxel_position, int3_to_byte3(chunk_bounds), default_vox_scale);
         place_block(world,
             chunkLink->value,
             update_node,

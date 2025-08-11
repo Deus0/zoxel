@@ -2,48 +2,64 @@ ecs_entity_t spawn_character3(
     ecs_world_t *world,
     const spawn_character3D_data data
 ) {
-    zox_geter_value(data.prefab, Character3Type, byte, type)
-    zox_instance(data.prefab)
-    zox_name("character3")
-    zox_set(e, Position3D, { data.position })
-    zox_set(e, LastPosition3D, { data.position })
+    ecs_entity_t vox = data.model;
+    if (!zox_valid(vox)) {
+        zox_log_error("[spawn_character3]: Invalid Vox Model");
+        return 0;
+    }
+    // if model, we use lodded for vox
+    if (zox_valid(vox) && zox_has(vox, ModelLods)) {
+        // zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
+        zox_geter(vox, ModelLods, modelLods);
+        const entity vox_lod = modelLods->value[data.render_depth];
+        if (zox_valid(vox_lod)) {
+            vox = vox_lod;
+        } else {
+            zox_log_error("[spawn_character3]: Invalid Vox Model Lod [%s] Depth [%i]", zox_get_name(vox), data.render_depth);
+            return 0;
+        }
+        // zox_log("+ set model [%s] vox [%s]", zox_get_name(model), zox_get_name(vox))
+    }
+
+    zox_geter_value(data.prefab, Character3Type, byte, type);
+    zox_instance(data.prefab);
+    zox_name("character3");
+    zox_set(e, Position3D, { data.position });
+    zox_set(e, LastPosition3D, { data.position });
     if (!float4_equals(data.rotation, quaternion_identity)) {
-        zox_set(e, Rotation3D, { data.rotation })
+        zox_set(e, Rotation3D, { data.rotation });
     }
     if (!float3_equals(data.euler, float3_zero)) {
-        zox_set(e, Euler, { data.euler })
+        zox_set(e, Euler, { data.euler });
     }
     // rendering
-    if (!data.lod) {
-        zox_set(e, RenderLod, { data.lod })
+    if (data.render_depth) {
+        zox_set(e, RenderDepth, { data.render_depth });
+    }
+    if (zox_valid(vox) && zox_has(vox, MaxRenderDepth)) {
+        zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
+        zox_set(e, MaxRenderDepth, { max_render_depth });
     }
     if (!data.render_disabled) {
-        zox_set(e, RenderDisabled, { data.render_disabled })
+        zox_set(e, RenderDisabled, { data.render_disabled });
     }
     /*if (data.scale) {
         zox_set(e, VoxScale, { data.scale })
     }*/
     // voxels
     if (data.terrain) {
-        zox_set(e, VoxLink, { data.terrain })
+        zox_set(e, VoxLink, { data.terrain });
     }
     if (data.terrain_chunk) {
-        zox_set(e, ChunkLink, { data.terrain_chunk })
-        zox_set(e, ChunkPosition, { data.chunk_position })
+        zox_set(e, ChunkLink, { data.terrain_chunk });
+        zox_set(e, ChunkPosition, { data.chunk_position });
     }
 
     zox_set(e, ModelLink, { data.model })
-    ecs_entity_t vox = data.model;
-    // if model, we use lodded for vox
-    if (zox_has(vox, ModelLods)) {
-        zox_geter(vox, ModelLods, modelLods)
-        vox = modelLods->value[data.lod];
-        // zox_log("+ set model [%s] vox [%s]", zox_get_name(model), zox_get_name(vox))
-    }
 
     if (type == zox_character_type_instanced) {
         // zox_has(data.prefab, InstanceLink)) {
-        zox_set(e, InstanceLink, { vox })
+        zox_set(e, InstanceLink, { vox });
         if (zox_has(vox, VoxScale)) {
             zox_geter_value(vox, VoxScale, float, meta_vox_scale);
             zox_geter_value(vox, ChunkSize, int3, meta_chunk_size);
@@ -58,18 +74,19 @@ ecs_entity_t spawn_character3(
         }
 
     } else {
-        zox_set(e, CloneVoxLink, { vox })
-        zox_set(e, CloneVox, { 1 })
+        zox_set(e, CloneVoxLink, { vox });
+        zox_set(e, CloneVox, { 1 });
         // move this to new system
         spawn_gpu_mesh(world, e);
         spawn_gpu_colors(world, e);
     }
+
     if (type == zox_character_type_skeleton) {
         spawn_gpu_bone_index(world, e);
         float head_move_y = data.player ? 0.01f : 0.1f;
         spawn_skeleton_bones(world, e, head_move_y);
         if (is_paint_skeletons) {
-            zox_add_tag(e, PaintedSkeleton)
+            zox_add_tag(e, PaintedSkeleton);
         }
     }
     // name

@@ -1,2 +1,2 @@
-#define render_lod_uninitialized 255
-#define render_lod_invisible 254
+#define render_depth_spawning 255
+#define render_depth_invisible 254

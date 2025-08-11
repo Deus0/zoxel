@@ -9,32 +9,32 @@ void Characters3SpawnSystem(iter *it) {
     zox_ts_begin(npc_spawns);
     // todo: dynamically check bounds
     const float3 bounds = (float3) { 0.22f, 0.44f, 0.22f };
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(RenderDistanceDirty)
-    zox_sys_in(VoxelNode)
-    zox_sys_in(NodeDepth)
-    zox_sys_in(ChunkPosition)
-    zox_sys_in(RenderDistance)
-    zox_sys_in(RenderDisabled)
-    zox_sys_in(VoxLink)
-    zox_sys_in(ChunkNeighbors)
-    zox_sys_out(CharactersSpawned)
-    zox_sys_out(CharactersEverSpawned)
-    zox_sys_out(ChunkEntities)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(RenderDistanceDirty);
+    zox_sys_in(VoxelNode);
+    zox_sys_in(NodeDepth);
+    zox_sys_in(ChunkPosition);
+    zox_sys_in(RenderDistance);
+    zox_sys_in(RenderDisabled);
+    zox_sys_in(VoxLink);
+    zox_sys_in(ChunkNeighbors);
+    zox_sys_out(CharactersSpawned);
+    zox_sys_out(CharactersEverSpawned);
+    zox_sys_out(ChunkEntities);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(RenderDistanceDirty, renderDistanceDirty)
-        zox_sys_i(VoxelNode, voxelNode)
-        zox_sys_i(NodeDepth, nodeDepth)
-        zox_sys_i(RenderDistance, renderDistance)
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(ChunkPosition, chunkPosition)
-        zox_sys_i(VoxLink, voxLink)
-        zox_sys_i(ChunkNeighbors, chunkNeighbors)
-        zox_sys_o(CharactersSpawned, charactersSpawned)
-        zox_sys_o(CharactersEverSpawned, charactersEverSpawned)
-        zox_sys_o(ChunkEntities, entityLinks)
+        zox_sys_e();
+        zox_sys_i(RenderDistanceDirty, renderDistanceDirty);
+        zox_sys_i(VoxelNode, voxelNode);
+        zox_sys_i(NodeDepth, nodeDepth);
+        zox_sys_i(RenderDistance, renderDistance);
+        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(ChunkPosition, chunkPosition);
+        zox_sys_i(VoxLink, voxLink);
+        zox_sys_i(ChunkNeighbors, chunkNeighbors);
+        zox_sys_o(CharactersSpawned, charactersSpawned);
+        zox_sys_o(CharactersEverSpawned, charactersEverSpawned);
+        zox_sys_o(ChunkEntities, entityLinks);
 
         const byte is_in_spawn_range = renderDistance->value <= terrain_lod_near;
         const byte is_first_spawn = is_in_spawn_range && !charactersEverSpawned->value;
@@ -66,9 +66,8 @@ void Characters3SpawnSystem(iter *it) {
         // calcs
         const byte depth = nodeDepth->value;
         const int chunk_length = powers_of_two[depth];
-        const byte lod = distance_to_lod_npc(renderDistance->value);
         const int3 chunk_dimensions = int3_single(chunk_length);
-        int3 chunk_voxel_position = get_chunk_voxel_position(chunkPosition->value, chunk_dimensions);
+        int3 chunk_voxel_position = get_chunk_positionv(chunkPosition->value, chunk_dimensions);
         byte found_position = 0;
         float3 position;
 
@@ -106,6 +105,13 @@ void Characters3SpawnSystem(iter *it) {
                     model = models->value[rand() % models->length];
                 }
             }
+            if (!zox_valid(model) || !zox_has(model, MaxRenderDepth)) {
+                zox_log_error("Model Invalid [%s]", zox_get_name(model));
+                continue;
+            }
+
+            zox_geter_value(model, MaxRenderDepth, byte, max_render_depth);
+            const byte render_depth = camera_distance_to_npc_render_depth(renderDistance->value, max_render_depth);
 
             // 2) find a place for our new npc
             // sometimes cannot find a position
@@ -135,25 +141,30 @@ void Characters3SpawnSystem(iter *it) {
             float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
 
             // 3) Finally we spawn and link
-            // entity prefab_character = is_characters_instanced ? prefab_character3_instanced_npc : prefab_character3_npc;
-            spawn_character3D_data spawn_data = {
-                .prefab = prefab_character,
-                .terrain = voxLink->value,
-                .terrain_chunk = e,
-                .chunk_position = chunkPosition->value,
-                .position = position,
-                .rotation = rotation,
-                .lod = lod,
-                .render_disabled = renderDisabled->value,
-                .model = model,
-                .scale = vox_model_scale,
-            };
-            const entity character = spawn_character3(world, spawn_data);
-            on_spawned_character3_npc(world, character);
-            add_to_ChunkEntities(entityLinks, character);
+            const entity character = spawn_character3(
+                world,
+                (spawn_character3D_data) {
+                    .prefab = prefab_character,
+                    .terrain = voxLink->value,
+                    .terrain_chunk = e,
+                    .chunk_position = chunkPosition->value,
+                    .position = position,
+                    .rotation = rotation,
+                    .render_depth = render_depth,
+                    .render_disabled = renderDisabled->value,
+                    .model = model,
+                    .scale = vox_model_scale,
+                }
+            );
+            if (character) {
+                on_spawned_character3_npc(world, character);
+                add_to_ChunkEntities(entityLinks, character);
 
-            zox_log_spawning("+ npc: %s at [%fx%fx%f] [%i of %i]",  zox_get_name(character), position.x, position.y, position.z, (j + 1), (character_spawn_rate))
-            zox_stats_characters++;
+                zox_log_spawning("+ npc: %s at [%fx%fx%f] [%i of %i]",  zox_get_name(character), position.x, position.y, position.z, (j + 1), (character_spawn_rate))
+                zox_stats_characters++;
+            } else {
+                zox_log_error("character spawn failed.");
+            }
         }
 
         if (entityLinks->length >= 1) {
@@ -163,5 +174,7 @@ void Characters3SpawnSystem(iter *it) {
         charactersSpawned->value = 1;
         charactersEverSpawned->value = 1;
     }
+
     zox_ts_end(npc_spawns, 3, zox_profile_system_npc_spawns);
-} zoxd_system(Characters3SpawnSystem)
+
+} zoxd_system2(Characters3SpawnSystem);

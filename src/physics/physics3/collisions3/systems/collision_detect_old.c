@@ -67,12 +67,12 @@ void collide_with_chunk_d3(
     position_d1 += offset_d1;
     position_d2 += offset_d2;
     position_d3 += offset_d3;
-    const int position_vox_last_d1 = positionf_to_voxel_position1(position_last_d1, scale);
-    const int position_vox_last_d2 = positionf_to_voxel_position1(position_last_d2, scale);
-    const int position_vox_last_d3 = positionf_to_voxel_position1(position_last_d3, scale);
-    const int position_vox_d1 = positionf_to_voxel_position1(position_d1, scale);
-    const int position_vox_d2 = positionf_to_voxel_position1(position_d2, scale);
-    const int position_vox_d3 = positionf_to_voxel_position1(position_d3, scale);
+    const int position_vox_last_d1 = positionf_to_positionv1(position_last_d1, scale);
+    const int position_vox_last_d2 = positionf_to_positionv1(position_last_d2, scale);
+    const int position_vox_last_d3 = positionf_to_positionv1(position_last_d3, scale);
+    const int position_vox_d1 = positionf_to_positionv1(position_d1, scale);
+    const int position_vox_d2 = positionf_to_positionv1(position_d2, scale);
+    const int position_vox_d3 = positionf_to_positionv1(position_d3, scale);
     if (position_vox_d1 == position_vox_last_d1 && position_vox_d2 == position_vox_last_d2 && position_vox_d3 == position_vox_last_d3)  {
         return;
     }
@@ -84,7 +84,7 @@ void collide_with_chunk_d3(
     int3_set_d(&voxel_position, axis_d2, position_vox_d2);
     int3_set_d(&voxel_position, axis_d3, position_vox_d3);
     // Convert real to voxel grid space and check voxel
-    const int3 chunk_position = voxel_position_to_chunk_position(voxel_position, chunk_dimensions);
+    const int3 chunk_position = positionv_to_chunk_position(voxel_position, chunk_dimensions);
     const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk))  {
         return;
@@ -93,13 +93,13 @@ void collide_with_chunk_d3(
     if (!node)  {
         return;
     }
-    byte3 voxel_position_local = get_local_position_byte3(voxel_position, chunk_dimensions_b3);
+    byte3 voxel_position_local = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
     if (!byte3_in_bounds(voxel_position_local, chunk_dimensions_b3)) {
         return;
     }
     zox_geter_value(chunk, NodeDepth, byte, node_depth)
 
-    const byte voxel = get_sub_node_voxel_locked(node, &voxel_position_local, node_depth);
+    const byte voxel = get_sub_node_voxel_locked(node, &voxel_position_local, terrain_depth); // node_depth);
     if (block_collisions[voxel]) {
         // Calculate deltas
         const int delta_vox_d1 = int_abs(position_vox_d1 - position_vox_last_d1);
@@ -161,10 +161,10 @@ void collide_with_chunk_d2(
     position_last_d2 += offset_d2;
     position_d1 += offset_d1;
     position_d2 += offset_d2;
-    const int position_vox_last_d1 = positionf_to_voxel_position1(position_last_d1, terrain_scale);
-    const int position_vox_last_d2 = positionf_to_voxel_position1(position_last_d2, terrain_scale);
-    const int position_vox_d1 = positionf_to_voxel_position1(position_d1, terrain_scale);
-    const int position_vox_d2 = positionf_to_voxel_position1(position_d2, terrain_scale);
+    const int position_vox_last_d1 = positionf_to_positionv1(position_last_d1, terrain_scale);
+    const int position_vox_last_d2 = positionf_to_positionv1(position_last_d2, terrain_scale);
+    const int position_vox_d1 = positionf_to_positionv1(position_d1, terrain_scale);
+    const int position_vox_d2 = positionf_to_positionv1(position_d2, terrain_scale);
     if (position_vox_d1 == position_vox_last_d1 && position_vox_d2 == position_vox_last_d2) {
         return;
     }
@@ -173,7 +173,7 @@ void collide_with_chunk_d2(
 
     int3_set_d(&voxel_position, axis_d1, position_vox_d1);
     int3_set_d(&voxel_position, axis_d2, position_vox_d2);
-    const int3 chunk_position = voxel_position_to_chunk_position(voxel_position, chunk_dimensions);
+    const int3 chunk_position = positionv_to_chunk_position(voxel_position, chunk_dimensions);
     const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk)) {
         return;
@@ -183,11 +183,13 @@ void collide_with_chunk_d2(
     if (!node) {
         return;
     }
-    byte3 voxel_position_local = get_local_position_byte3(voxel_position, chunk_dimensions_b3);
+    byte3 voxel_position_local = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
     if (!byte3_in_bounds(voxel_position_local, chunk_dimensions_b3))  {
         return;
     }
-    const byte voxel = get_sub_node_voxel_locked(node, &voxel_position_local, node_depth);
+
+    // use terrain depth here for now
+    const byte voxel = get_sub_node_voxel_locked(node, &voxel_position_local, terrain_depth); // node_depth);
     if (block_collisions[voxel]) {
         // float_abs
         const int delta_vox_d1 = int_abs(position_vox_d1 - position_vox_last_d1);
@@ -288,8 +290,8 @@ void collide_with_chunk(
     position_last_d += offset_d;
     position_d += offset_d;
 
-    const int position_vox_last_d = positionf_to_voxel_position1(position_last_d, terrain_scale);
-    const int position_vox_d = positionf_to_voxel_position1(position_d, terrain_scale);
+    const int position_vox_last_d = positionf_to_positionv1(position_last_d, terrain_scale);
+    const int position_vox_d = positionf_to_positionv1(position_d, terrain_scale);
 
     if (position_vox_d == position_vox_last_d) {
         return;
@@ -300,7 +302,7 @@ void collide_with_chunk(
     // set dimensional variables to newer point
     int3_set_d(&voxel_position, axis_d, position_vox_d);
     // next convert real to voxel grid space and check voxel
-    const int3 chunk_position = voxel_position_to_chunk_position(voxel_position, max_chunk_size);
+    const int3 chunk_position = positionv_to_chunk_position(voxel_position, max_chunk_size);
     const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk)) {
         return;
@@ -319,13 +321,13 @@ void collide_with_chunk(
     zox_log("   ddepth: %i", ddepth);*/
 
     int3 voxel_position2 = int3_div1(voxel_position, (int) ddepth);
-    byte3 chunk_size2 = byte3_single(powers_of_two[chunk_depth]);
-    byte3 voxel_position_local = get_local_position_byte3(voxel_position2, chunk_size2);
-    if (!byte3_in_bounds(voxel_position_local, chunk_size2)) {
+    byte3 chunk_size = byte3_single(powers_of_two[chunk_depth]);
+    byte3 voxel_position_local = get_positionl_byte3(voxel_position2, chunk_size);
+    if (!byte3_in_bounds(voxel_position_local, chunk_size)) {
         return;
     }
 
-    /*byte3 voxel_position_local = get_local_position_byte3(voxel_position, chunk_dimensions_b3);
+    /*byte3 voxel_position_local = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
     if (!byte3_in_bounds(voxel_position_local, chunk_dimensions_b3)) {
         return;
     }*/

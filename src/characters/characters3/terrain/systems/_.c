@@ -1,5 +1,5 @@
-#include "characters3_spawn.c"
-#include "characters3_despawn.c"
+#include "spawn.c"
+#include "despawn.c"
 #include "character3_spawn_zone.c"
 
 void define_systems_characters3_terrain(ecs_world_t* world) {

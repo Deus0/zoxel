@@ -33,7 +33,7 @@ ecs_entity_t spawn_prefab_cube_lines(ecs_world_t *world) {
     prefab_add_cube_lines(world, e, color_white, 1);
     zox_prefab_set(e, Position3D, { float3_zero })
     zox_prefab_set(e, Rotation3D, { quaternion_identity })
-    zox_prefab_set(e, RenderLod, { 0 })
+    zox_prefab_set(e, RenderDepth, { 0 })
     zox_prefab_set(e, Bounds3D, { float3_zero })
     zox_prefab_set(e, DestroyInTime, { 0 })
     return e;

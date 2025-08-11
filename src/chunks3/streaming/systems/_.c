@@ -1,7 +1,7 @@
 zox_increment_system_with_reset(StreamDirty, zox_general_state_end);
 #include "stream_point_system.c"
-#include "chunk_lod_dirty_system.c"
-#include "chunk_lod_system.c"
+#include "stream_updates.c"
+// #include "chunk_lod_dirty_system.c"
 #include "chunk_neighbor_updated_system.c"
 #include "chunk_frustum_system.c"
 #include "stream_end_event_system.c"
@@ -35,15 +35,15 @@ void define_systems_streaming(ecs *world) {
     zox_system_ctx(ChunkLodSystem, zoxp_update,
         streamers2,
         [in] chunks3.ChunkPosition,
-        [out] rendering.RenderLod,
-        [out] chunks3.ChunkLodDirty,
+        [out] rendering.RenderDepth,
+        [out] rendering.RenderDepthDirty,
         [out] rendering.RenderDistance,
         [out] rendering.RenderDistanceDirty,
         [none] StreamedChunk);
-    zox_system(ChunkLodDirtySystem, zoxp_update,
+    /*zox_system(ChunkLodDirtySystem, zoxp_update,
         [in] chunks3.ChunkLodDirty,
         [out] chunks3.GenerateChunk,
-        [none] StreamedChunk);
+        [none] StreamedChunk);*/
     /*zox_system(ChunkNeighborUpdatedSystem, EcsPostUpdate,
         [in] chunks3.ChunkNeighbors,
         [out] chunks3.ChunkMeshDirty,
@@ -53,8 +53,7 @@ void define_systems_streaming(ecs *world) {
         [in] chunks3.VoxLink,
         [in] chunks3.ChunkPosition,
         [in] rendering.RenderDistance,
-        [in] chunks3.ChunkLodDirty,
-        [in] rendering.RenderLod,
+        [in] rendering.RenderDepth,
         [none] StreamedChunk);
     // main thread
     zox_system_1(StreamEndEventSystem, zoxp_mainthread,

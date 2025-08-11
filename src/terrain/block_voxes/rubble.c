@@ -12,10 +12,10 @@ ecs_entity_t spawn_realm_block_rubble(
         block_vox_depth);
     zox_set_unique_name(v, "block_rubble");
     //  zox_set(v, VoxType, { vox_type_rubble })
-    zox_set(v, VoxType, { vox_type_flowers })
-    zox_set(v, Color, { block_color })
-    zox_set(v, GenerateVox, { zox_dirty_trigger })
-    zox_set(v, RenderLod, { 0 })
+    zox_set(v, VoxType, { vox_type_flowers });
+    zox_set(v, Color, { block_color });
+    zox_set(v, GenerateVox, { zox_dirty_trigger });
+    zox_set(v, RenderDepth, { block_vox_depth });
     // for instancing
     zox_prefab_child_named(prefab_block_vox_instanced, prefab_block_vox2);
     zox_set(prefab_block_vox2, InstanceLink, { v });

@@ -86,7 +86,7 @@ VoxelNode* set_voxel(
 
     const byte i = byte3_octree_array_index(node_position);
     if (i >= 8) {
-        zox_log_error("node index out of bounds: %i", i);
+        zox_log_error("[set_voxel] node index out of bounds: %i", i);
         return data.node;
     }
 
@@ -111,8 +111,8 @@ void set_octree_voxel_final(
     VoxelNode* node,
     byte3* position,
     const byte2 data,
-    byte depth)
-{
+    byte depth
+) {
     if (depth == data.y || !has_children_VoxelNode(node)) {
         node->value = data.x;
         return;
@@ -128,7 +128,7 @@ void set_octree_voxel_final(
 
     const byte i = byte3_octree_array_index(node_position);
     if (i >= 8) {
-        zox_log_error("node index OOB: %i", i);
+        zox_log_error("[set_octree_voxel_final] node index OOB: %i", i);
         return;
     }
 

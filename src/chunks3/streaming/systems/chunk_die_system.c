@@ -4,25 +4,25 @@ void ChunkDieSystem(iter *it) {
     zox_sys_in(VoxLink)
     zox_sys_in(ChunkPosition)
     zox_sys_in(RenderDistance)
-    zox_sys_in(ChunkLodDirty)
-    zox_sys_in(RenderLod)
+    // zox_sys_in(ChunkLodDirty)
+    zox_sys_in(RenderDepth)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
         zox_sys_i(VoxLink, voxLink)
-        zox_sys_i(RenderLod, renderLod)
-        zox_sys_i(ChunkLodDirty, chunkLodDirty)
+        zox_sys_i(RenderDepth, renderDepth)
+        // zox_sys_i(ChunkLodDirty, chunkLodDirty)
         zox_sys_i(RenderDistance, renderDistance)
         zox_sys_i(ChunkPosition, chunkPosition)
         if (!zox_valid(voxLink->value)) {
             zox_delete(e)
             continue;
         }
-        if (renderLod->value == render_lod_uninitialized) {
+        if (renderDepth->value == render_depth_spawning) {
             continue;
         }
-        if (chunkLodDirty->value) {
+        /*if (chunkLodDirty->value) {
             continue;
-        }
+        }*/
         // Pass if loading chunk
         if (renderDistance->value == 255) {
             continue;

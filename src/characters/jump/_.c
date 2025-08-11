@@ -1,7 +1,6 @@
 #ifndef zoxm_jump
 #define zoxm_jump
 
-
 zox_tag(SilentJumper);
 zoxc_byte(CanJump);
 zoxc_byte(JumpState);

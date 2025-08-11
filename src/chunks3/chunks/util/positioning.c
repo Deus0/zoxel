@@ -2,25 +2,25 @@ const byte max_position_checks = 255;
 
 // scale 1/16.0f
 // return (int) floor(positionf * scale);
-static inline int positionf_to_voxel_position1(
+static inline int positionf_to_positionv1(
     const float positionf,
-    const float scale
+    const float terrain_scale
 ) {
-    return (int) floor(positionf / scale);
+    return (int) floor(positionf / terrain_scale);
 }
 
 static inline int3 positionf_to_positionv(
     const float3 positionf,
-    const float scale
+    const float terrain_scale
 ) {
     return (int3) {
-        positionf_to_voxel_position1(positionf.x, scale),
-        positionf_to_voxel_position1(positionf.y, scale),
-        positionf_to_voxel_position1(positionf.z, scale)
+        positionf_to_positionv1(positionf.x, terrain_scale),
+        positionf_to_positionv1(positionf.y, terrain_scale),
+        positionf_to_positionv1(positionf.z, terrain_scale)
     };
 }
 
-/*int3 real_position_to_voxel_position(
+/*int3 real_position_to_positionv(
     float3 positionf,
     const byte depth
 ) {
@@ -33,22 +33,22 @@ static inline int3 positionf_to_positionv(
     };
 }*/
 
-int3 voxel_position_to_chunk_position(
-    const int3 voxel_position,
+int3 positionv_to_chunk_position(
+    const int3 positionv,
     const int3 chunk_size
 ) {
-    int3 voxel_position2 = voxel_position;
-    if (voxel_position.x < 0) voxel_position2.x += 1;
-    if (voxel_position.y < 0) voxel_position2.y += 1;
-    if (voxel_position.z < 0) voxel_position2.z += 1;
-    int3 chunk_position = int3_div(voxel_position2, chunk_size);
-    // (int3) { voxel_position.x / chunk_size.x, voxel_position.y / chunk_size.y, voxel_position.z / chunk_size.z };
+    int3 positionv2 = positionv;
+    if (positionv.x < 0) positionv2.x += 1;
+    if (positionv.y < 0) positionv2.y += 1;
+    if (positionv.z < 0) positionv2.z += 1;
+    int3 chunk_position = int3_div(positionv2, chunk_size);
+    // (int3) { positionv.x / chunk_size.x, positionv.y / chunk_size.y, positionv.z / chunk_size.z };
     // because for example -10 / 16 is 0 as an integer, but  coordinates we need a negative chunk position
-    if (voxel_position.x < 0) chunk_position.x -= 1;
-    if (voxel_position.y < 0) chunk_position.y -= 1;
-    if (voxel_position.z < 0) chunk_position.z -= 1;
+    if (positionv.x < 0) chunk_position.x -= 1;
+    if (positionv.y < 0) chunk_position.y -= 1;
+    if (positionv.z < 0) chunk_position.z -= 1;
     return chunk_position;
-    // return (int3) { voxel_position.x / chunk_size.x, voxel_position.y / chunk_size.y, voxel_position.z / chunk_size.z };
+    // return (int3) { positionv.x / chunk_size.x, positionv.y / chunk_size.y, positionv.z / chunk_size.z };
 }
 
 int3 chunk_position_fix2(
@@ -66,44 +66,59 @@ int3 real_position_to_chunk_position(
     byte chunk_length,
     const float scale   // vox_scale
 ) {
-    int3 voxel_position = positionf_to_positionv(positionf, scale);
-    if (positionf.x < 0) voxel_position.x += 1;
-    if (positionf.y < 0) voxel_position.y += 1;
-    if (positionf.z < 0) voxel_position.z += 1;
+    int3 positionv = positionf_to_positionv(positionf, scale);
+    if (positionf.x < 0) positionv.x += 1;
+    if (positionf.y < 0) positionv.y += 1;
+    if (positionf.z < 0) positionv.z += 1;
     int3 chunk_position = (int3) {
-        voxel_position.x / chunk_length,
-        voxel_position.y / chunk_length,
-        voxel_position.z / chunk_length
+        positionv.x / chunk_length,
+        positionv.y / chunk_length,
+        positionv.z / chunk_length
     };
     return chunk_position_fix2(positionf, chunk_position);
 }
 
-int3 get_local_position(
-    int3 voxel_position,
+int3 get_positionl(
+    int3 positionv,
     int3 chunk_position,
     int3 chunk_size
 ) {
-    voxel_position.x %= chunk_size.x;
-    voxel_position.y %= chunk_size.y;
-    voxel_position.z %= chunk_size.z;
-    if (voxel_position.x < 0) voxel_position.x = chunk_size.x - 1 + voxel_position.x;
-    if (voxel_position.y < 0) voxel_position.y = chunk_size.y - 1 + voxel_position.y;
-    if (voxel_position.z < 0) voxel_position.z = chunk_size.z - 1 + voxel_position.z;
-    return voxel_position;
+    positionv.x %= chunk_size.x;
+    positionv.y %= chunk_size.y;
+    positionv.z %= chunk_size.z;
+    if (positionv.x < 0) positionv.x = chunk_size.x - 1 + positionv.x;
+    if (positionv.y < 0) positionv.y = chunk_size.y - 1 + positionv.y;
+    if (positionv.z < 0) positionv.z = chunk_size.z - 1 + positionv.z;
+    return positionv;
 }
 
-static inline byte3 get_local_position_byte3(
-    int3 voxel_position,
+static inline byte3 get_positionl_byte3(
+    int3 positionv,
     byte3 chunk_size
 ) {
-    byte3 local_position;
-    if (voxel_position.x < 0) local_position.x = chunk_size.x - 1 + ((voxel_position.x + 1) % chunk_size.x);
-    else local_position.x = voxel_position.x % chunk_size.x;
-    if (voxel_position.y < 0) local_position.y = chunk_size.y - 1 + ((voxel_position.y + 1) % chunk_size.y);
-    else local_position.y = voxel_position.y % chunk_size.y;
-    if (voxel_position.z < 0) local_position.z = chunk_size.z - 1 + ((voxel_position.z + 1) % chunk_size.z);
-    else local_position.z = voxel_position.z % chunk_size.z;
-    return local_position;
+    byte3 positionl;
+    if (positionv.x < 0) positionl.x = chunk_size.x - 1 + ((positionv.x + 1) % chunk_size.x);
+    else positionl.x = positionv.x % chunk_size.x;
+    if (positionv.y < 0) positionl.y = chunk_size.y - 1 + ((positionv.y + 1) % chunk_size.y);
+    else positionl.y = positionv.y % chunk_size.y;
+    if (positionv.z < 0) positionl.z = chunk_size.z - 1 + ((positionv.z + 1) % chunk_size.z);
+    else positionl.z = positionv.z % chunk_size.z;
+    return positionl;
+}
+
+static inline byte3 get_positionl_byte3_2(
+    int3 positionv,
+    byte3 chunk_size,
+    byte3 terrain_chunk_size
+) {
+    byte3 positionl;
+    if (positionv.x < 0) positionl.x = chunk_size.x - 1 + ((positionv.x + 1) % terrain_chunk_size.x);
+    else positionl.x = positionv.x % terrain_chunk_size.x;
+    if (positionv.y < 0) positionl.y = chunk_size.y - 1 + ((positionv.y + 1) % terrain_chunk_size.y);
+    else positionl.y = positionv.y % terrain_chunk_size.y;
+    if (positionv.z < 0) positionl.z = chunk_size.z - 1 + ((positionv.z + 1) % terrain_chunk_size.z);
+    else positionl.z = positionv.z % terrain_chunk_size.z;
+    return positionl;
 }
 
 static inline int3 voxel_chunk_position_xz(
@@ -113,37 +128,31 @@ static inline int3 voxel_chunk_position_xz(
     return int3_multiply_int3(chunk_position, chunk_size);
 }
 
-static inline int3 get_chunk_voxel_position(
+static inline int3 get_chunk_positionv(
     int3 chunk_position,
     int3 chunk_size
 ) {
-    int3 voxel_position = int3_multiply_int3(chunk_position, chunk_size);
-    return voxel_position;
+    int3 positionv = int3_multiply_int3(chunk_position, chunk_size);
+    return positionv;
 }
 
 float3 voxel_to_real_position(
-    const byte3 local_position,
-    const int3 chunk_position,
-    const byte3 chunk_size,
-    const float voxel_scale
+    const int3 positionv,
+    const float terrain_voxel_scale,
+    const float chunk_voxel_scale
 ) {
-    const int3 chunk_position_voxel = int3_multiply_int3(chunk_position, byte3_to_int3(chunk_size));
-    const int3 global_voxel_position = int3_add(chunk_position_voxel, byte3_to_int3(local_position));
-    float3 position = int3_to_float3(global_voxel_position);
-    float3_scale_p(&position, voxel_scale);
-    // middle of voxel position
-    position.x += voxel_scale / 2;
-    position.y += voxel_scale / 2;
-    position.z += voxel_scale / 2;
-    return position;
+    float3 positionf = int3_to_float3(positionv);
+    float3_scale_p(&positionf, terrain_voxel_scale);
+    // get middle of voxel position
+    return float3_add(positionf, float3_scale(float3_halff, chunk_voxel_scale));
 }
 
-float3 voxel_position_to_real_position(
-    const int3 voxel_position,
+float3 positionv_to_real_position(
+    const int3 positionv,
     const byte3 chunk_size,
     const float voxel_scale
 ) {
-    float3 position = int3_to_float3(voxel_position);
+    float3 position = int3_to_float3(positionv);
     float3_scale_p(&position, voxel_scale);
     // middle of voxel position
     position.x += voxel_scale / 2;

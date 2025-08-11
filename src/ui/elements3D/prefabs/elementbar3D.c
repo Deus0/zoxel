@@ -17,7 +17,7 @@ entity spawn_prefab_elementbar3D(ecs *world, const entity prefab) {
     zox_prefab_set(e, Color, { back_bar3D_color });
     zox_prefab_set(e, Children, { 0, NULL });
     zox_set(e, UITrail, {{ 0, 0.23f, 0 }});
-    // prefab_set_mesh3D_vertices(world, e, square_vertices, 4, statbar_back_mesh_scale);
+    prefab_set_mesh3D_vertices(world, e, square_vertices, 4, statbar_back_mesh_scale);
     return e;
 }
 

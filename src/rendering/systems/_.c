@@ -17,13 +17,13 @@
 #include "lod_instance_system.c"
 
 zox_increment_system_with_reset(MeshDirty, mesh_state_end);
-zox_increment_system_with_reset(RenderLodDirty, zox_dirty_end);
 zox_increment_system_with_reset(RenderDistanceDirty, zox_dirty_end);
+zox_increment_system_with_reset(RenderDepthDirty, zox_dirty_end);
 
 void define_systems_rendering(ecs *world) {
     zoxd_system_increment(MeshDirty);
-    zoxd_system_increment(RenderLodDirty);
     zoxd_system_increment(RenderDistanceDirty);
+    zoxd_system_increment(RenderDepthDirty);
     // dispose
     zox_gpu_dispose_system(MeshGPUDisposeSystem, [in] MeshGPULink);
     zox_gpu_dispose_system(MeshUvsGPUDisposeSystem, [in] rendering.UvsGPULink);
@@ -42,8 +42,8 @@ void define_systems_rendering(ecs *world) {
     zox_gpu_restore_system(MeshDirtyRestoreSystem, [out] rendering.MeshDirty);
     // other
     zox_system(LodInstanceSystem, EcsPostUpdate,
-        [in] rendering.RenderLodDirty,
-        [in] rendering.RenderLod,
+        [in] rendering.RenderDepthDirty,
+        [in] rendering.RenderDepth,
         [in] rendering.ModelLink,
         [out] rendering.InstanceLink)
 }

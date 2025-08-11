@@ -25,7 +25,11 @@ ecs_entity_t prefab_character3_skeleton;
 
 void spawn_prefabs_characters3D(ecs_world_t *world) {
     prefab_character3_meta = spawn_prefab_character3_meta(world);
-    prefab_character3 = spawn_prefab_character3(world, prefab_vox, zox_character_type_unique);
+    prefab_character3 = spawn_prefab_character3(
+        world,
+        prefab_vox,
+        zox_character_type_unique
+    );
     prefab_character3_instanced = spawn_prefab_character3_instanced(world, prefab_vox_instanced);
     prefab_character3_skeleton = spawn_prefab_character3_skeleton(world, prefab_vox);
     prefabs_characters3[prefab_characters_count++] = prefab_character3;

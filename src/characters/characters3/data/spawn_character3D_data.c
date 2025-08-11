@@ -7,7 +7,7 @@ typedef struct {
     const ecs_entity_t terrain;
     const ecs_entity_t terrain_chunk;
     const int3 chunk_position;
-    const byte lod;
+    const byte render_depth;
     float scale;
     const byte render_disabled;
     const ecs_entity_t model;

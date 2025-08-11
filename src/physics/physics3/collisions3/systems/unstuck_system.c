@@ -7,7 +7,7 @@ void UnstuckSystem(iter *it) {
     zox_sys_in(Bounds3D)
     zox_sys_out(LastUnstuck3)
     zox_sys_out(Position3D)
-    // find realm first
+    // cache voxels and colliders for speed
     const VoxelLinks *voxels = get_first_terrain_voxels(world, VoxLink_, it->count);
     if (!voxels) {
         return;
@@ -42,14 +42,21 @@ void UnstuckSystem(iter *it) {
         }
         zox_geter(chunk, VoxelNode, node);
         zox_geter_value(chunk, NodeDepth, byte, node_depth);
-        const byte3 chunk_dimensions_b3 = byte3_single(powers_of_two[node_depth]);
+
+        const byte3 chunk_size = byte3_single(powers_of_two[node_depth]);
         // positions
-        const int3 voxel_position = positionf_to_positionv(point, terrain_scale);
-        byte3 voxel_position_local = get_local_position_byte3(voxel_position, chunk_dimensions_b3);
+        const int3 positionv = positionf_to_positionv(point, terrain_scale);
+        byte3 positionl = get_positionl_byte3(positionv, chunk_size);
+
+        if (!byte3_in_bounds(positionl, chunk_size))  {
+            zox_log_error("Voxel Local OOB: [%ix%ix%i] :: %i", positionl.x, positionl.y, positionl.z, powers_of_two[node_depth]);
+            continue;
+        }
+
         // voxel
         const byte voxel = get_sub_node_voxel_locked(
             node,
-            &voxel_position_local,
+            &positionl,
             node_depth);
         if (!voxel || !colliders[voxel]) {
             lastUnstuck3->value = position3->value;
@@ -57,7 +64,7 @@ void UnstuckSystem(iter *it) {
         }
         if (float3_equals(lastUnstuck3->value, float3_zero)) {
             position3->value = float3_add(position3->value, unstuck_push);
-            // zox_logw("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", voxel_position.x, voxel_position.y, voxel_position.z, voxel_position_local.x, voxel_position_local.y,  voxel_position_local.z);
+            // zox_logw("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", positionv.x, positionv.y, positionv.z, voxel_position_local.x, voxel_position_local.y,  voxel_position_local.z);
             continue; // hasn't been unstuck
         }
         // float3 reverse_point = float3_subtract(lastUnstuck3->value, (float3) { 0, bounds3->value.y / 2.0f, 0 });

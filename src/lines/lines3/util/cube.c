@@ -8,7 +8,7 @@ void add_debug_cube(
     zox_prefab_set(e, CubeLinesThickness, { 4 });
     zox_prefab_set(e, ColorRGB, {{ 0, 255, 255 }});
     zox_prefab_set(e, Bounds3D, { size });
-    zox_prefab_set(e, RenderLod, { 0 });
+    zox_prefab_set(e, RenderDepth, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, MeshIndicies, { 0, NULL });
 }

@@ -1,7 +1,7 @@
 zox_increment_system_with_reset(ChunkDirty, chunk_dirty_state_end);
 zox_increment_system_with_reset(ChunkMeshDirty, chunk_dirty_state_end);
 zox_increment_system_with_reset(GenerateChunk, chunk_generate_state_end);
-zox_increment_system_with_reset(ChunkLodDirty, chunk_lod_state_end);
+// zox_increment_system_with_reset(ChunkLodDirty, chunk_lod_state_end);
 zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 #include "chunk_linker.c"
 #include "entities_lod.c"
@@ -22,7 +22,7 @@ void define_systems_chunks(ecs *world) {
     zoxd_system_increment(ChunkDirty);
     zoxd_system_increment(ChunkMeshDirty);
     zoxd_system_increment(GenerateChunk);
-    zoxd_system_increment(ChunkLodDirty);
+    // zoxd_system_increment(ChunkLodDirty);
     zoxd_system_increment(VoxelNodeDirty);
     zox_system(ChunkLinkSystem, EcsOnUpdate,
             [in] chunks3.VoxLink,
@@ -37,7 +37,7 @@ void define_systems_chunks(ecs *world) {
     zox_system(ChunkFindNeighborSystem, EcsOnLoad,
             [in] chunks3.ChunkPosition,
             [in] chunks3.VoxLink,
-            [in] rendering.RenderLod,
+            [in] rendering.RenderDepth,
             [out] chunks3.ChunkNeighbors,
             [none] ChunkTextured)
     zox_system(Chunk3MeshTriggerSystem, EcsOnUpdate,

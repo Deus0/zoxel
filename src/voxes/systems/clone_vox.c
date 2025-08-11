@@ -1,27 +1,27 @@
 // todo: make use TargetChunkLod -> and load/unload depth based on that
-// todo: set lod here instead of just applying RenderLod only with ChunkMeshDirty -> keeps memory down
+// todo: set lod here instead of just applying RenderDepth only with ChunkMeshDirty -> keeps memory down
 void CloneVoxSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(CloneVoxLink)
-    zox_sys_out(CloneVox)
-    zox_sys_out(VoxelNode)
-    zox_sys_out(NodeDepth)
-    zox_sys_out(VoxScale)
-    zox_sys_out(ChunkSize)
-    zox_sys_out(ColorRGBs)
-    zox_sys_out(VoxelNodeDirty)
-    zox_sys_out(ChunkLod)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(CloneVoxLink);
+    zox_sys_out(CloneVox);
+    zox_sys_out(VoxelNode);
+    zox_sys_out(NodeDepth);
+    zox_sys_out(VoxScale);
+    zox_sys_out(ChunkSize);
+    zox_sys_out(ColorRGBs);
+    zox_sys_out(VoxelNodeDirty);
+    zox_sys_out(ChunkLod);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(CloneVoxLink, cloneVoxLink)
-        zox_sys_o(VoxelNode, node)
-        zox_sys_o(NodeDepth, nodeDepth)
-        zox_sys_o(VoxScale, voxScale)
-        zox_sys_o(ColorRGBs, colorRGBs)
-        zox_sys_o(ChunkSize, chunkSize)
-        zox_sys_o(VoxelNodeDirty, nodeDirty)
-        zox_sys_o(ChunkLod, chunkLod)
-        zox_sys_o(CloneVox, cloneVox)
+        zox_sys_i(CloneVoxLink, cloneVoxLink);
+        zox_sys_o(VoxelNode, node);
+        zox_sys_o(NodeDepth, nodeDepth);
+        zox_sys_o(VoxScale, voxScale);
+        zox_sys_o(ColorRGBs, colorRGBs);
+        zox_sys_o(ChunkSize, chunkSize);
+        zox_sys_o(VoxelNodeDirty, nodeDirty);
+        zox_sys_o(ChunkLod, chunkLod);
+        zox_sys_o(CloneVox, cloneVox);
         const entity src = cloneVoxLink->value;
         if (!cloneVox->value || !src) {
             continue;

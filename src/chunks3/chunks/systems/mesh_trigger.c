@@ -9,7 +9,11 @@ void Chunk3MeshTriggerSystem(iter *it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxelNodeDirty, voxelNodeDirty);
         zox_sys_o(ChunkMeshDirty, chunkMeshDirty);
-        if (chunkMeshDirty->value == zox_dirty_none && voxelNodeDirty->value == zox_dirty_active) {
+        if (chunkMeshDirty->value != zox_dirty_none) {
+            continue;
+        }
+        // if node dirty, or for now, if node depth dirty... wait we dont want to double up
+        if (voxelNodeDirty->value == zox_dirty_active) {
             chunkMeshDirty->value = chunk_dirty_state_trigger;
         }
     }

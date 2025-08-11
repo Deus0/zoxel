@@ -7,7 +7,6 @@ zox_tag(LinkChunk);
 zox_tag(DisableReverseLinkChunk);
 zoxc_byte(ChunkDirty);
 zoxc_byte(ChunkMeshDirty);
-zoxc_byte(ChunkLodDirty);
 zoxc_byte(GenerateChunk);
 zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
@@ -40,7 +39,6 @@ void define_components_chunks(ecs *world) {
     zox_define_component_int3(ChunkPosition);
     zoxd_byte(ChunkDirty);
     zoxd_byte(ChunkMeshDirty);
-    zoxd_byte(ChunkLodDirty);
     zox_define_component_int3(ChunkSize);
     zoxd_byte(GenerateChunk);
     zoxd_byte(BlocksSpawned);

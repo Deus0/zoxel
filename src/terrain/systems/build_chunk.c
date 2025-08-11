@@ -402,45 +402,42 @@ void build_chunk_terrain_mesh(
 
 void fetch_neightbor_chunk_data(
     ecs_world_t* world,
-    const ChunkNeighbors* chunkNeighbors,
+    const ChunkNeighbors* chunk_neighbors,
     byte node_depth,
     const VoxelNode** neighbors,
     byte* ndepths
 ) {
     for (int i = 0; i < 6; i++) {
-        const ecs_entity_t e = chunkNeighbors->value[i];
-        if (!zox_valid(e) || !zox_has(e, RenderLod) || !zox_has(e, VoxelNode)) {
+        const entity e = chunk_neighbors->value[i];
+        if (!zox_valid(e) || !zox_has(e, RenderDepth) || !zox_has(e, VoxelNode)) {
             ndepths[i] = 0;
             neighbors[i] = 0;
             continue;
         }
         neighbors[i] = zox_get(e, VoxelNode);
-        zox_geter_value(e, RenderLod, byte, neighbor_lod);
-        if (neighbor_lod == render_lod_invisible || neighbor_lod == render_lod_uninitialized) {
-            ndepths[i] = 0;
-        } else {
-            ndepths[i] = terrain_lod_to_node_depth(neighbor_lod, node_depth);
-        }
+        zox_geter_value(e, RenderDepth, byte, render_depth);
+        ndepths[i] = render_depth;
     }
 }
 
+// TODO: Move terrain cache into functions
 void Chunk3BuildSystem(ecs_iter_t *it) {
     zox_ts_begin(chunk3_builder);
     uint updated_count = 0;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(ChunkMeshDirty)
-    zox_sys_in(VoxLink)
-    zox_sys_in(VoxelNode)
-    //zox_sys_in(NodeDepth)
-    zox_sys_in(RenderLod)
-    zox_sys_in(ChunkNeighbors)
-    zox_sys_in(VoxScale)
-    zox_sys_out(MeshIndicies)
-    zox_sys_out(MeshVertices)
-    zox_sys_out(MeshUVs)
-    zox_sys_out(MeshColorRGBs)
-    zox_sys_out(MeshDirty)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(ChunkMeshDirty);
+    zox_sys_in(VoxLink);
+    zox_sys_in(VoxelNode);
+    zox_sys_in(RenderDepth);
+    zox_sys_in(ChunkNeighbors);
+    zox_sys_in(NodeDepth);
+    zox_sys_in(VoxScale);
+    zox_sys_out(MeshIndicies);
+    zox_sys_out(MeshVertices);
+    zox_sys_out(MeshUVs);
+    zox_sys_out(MeshColorRGBs);
+    zox_sys_out(MeshDirty);
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkMeshDirty, chunkMeshDirty)
@@ -457,9 +454,9 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
 
     // cache terrain data
     int voxels_length = 0;
-    ecs_entity_t terrain = 0;
+    entity terrain = 0;
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxLink, voxLink)
+        zox_sys_i(VoxLink, voxLink);
         if (!voxLink->value) {
             continue;
         }
@@ -470,23 +467,23 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
         zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return;
     } // if failed to find terrain parents
-    const ecs_entity_t realm = zox_get_value(terrain, RealmLink)
+    const entity realm = zox_get_value(terrain, RealmLink);
     if (!zox_valid(realm) || !zox_has(realm, VoxelLinks)) {
         zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return;
     }
-    zox_geter(realm, VoxelLinks, voxelLinks)
-    voxels_length = voxelLinks->length;
+    zox_geter(realm, VoxelLinks, blocks);
+    voxels_length = blocks->length;
     if (voxels_length == 0) {
         zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return; // if failed to find terrain parents
     }
-    const ecs_entity_t tilemap = zox_get_value(terrain, TilemapLink)
+    const entity tilemap = zox_get_value(terrain, TilemapLink);
     if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapUVs)) {
         zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return;
     }
-    zox_geter(tilemap, TilemapUVs, tilemap_uvs)
+    zox_geter(tilemap, TilemapUVs, tilemap_uvs);
     if (tilemap_uvs->value == NULL || tilemap_uvs->length == 0) {
         // zox_log(" ! tilemap troubles in chunk building: %lu %i\n", tilemap, tilemap_uvs->length)
         zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
@@ -500,7 +497,7 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
     // calculate tileuv indexes - voxel and face to index  in tilemap_uvs
     int uvs_index = 0;
     for (int j = 0; j < voxels_length; j++) {
-        const ecs_entity_t block = voxelLinks->value[j];
+        const entity block = blocks->value[j];
         if (!zox_valid(block)) {
             build_data.solidity[j] = 1;
             continue;
@@ -535,40 +532,50 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
 
 
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxLink, voxLink)
-        zox_sys_i(ChunkMeshDirty, chunkMeshDirty)
-        zox_sys_i(ChunkNeighbors, chunkNeighbors)
-        //zox_sys_i(NodeDepth, nodeDepth)
-        zox_sys_i(RenderLod, renderLod)
-        zox_sys_i(VoxScale, voxScale)
-        zox_sys_i(VoxelNode, voxelNode)
-        zox_sys_o(MeshIndicies, meshIndicies)
-        zox_sys_o(MeshVertices, meshVertices)
-        zox_sys_o(MeshColorRGBs, meshColorRGBs)
-        zox_sys_o(MeshUVs, meshUVs)
-        zox_sys_o(MeshDirty, meshDirty)
+        zox_sys_i(VoxLink, voxLink);
+        zox_sys_i(ChunkMeshDirty, chunkMeshDirty);
+        zox_sys_i(ChunkNeighbors, chunkNeighbors);
+        zox_sys_i(RenderDepth, renderDepth);
+        zox_sys_i(NodeDepth, nodeDepth);
+        zox_sys_i(VoxScale, voxScale);
+        zox_sys_i(VoxelNode, voxelNode);
+        zox_sys_o(MeshIndicies, meshIndicies);
+        zox_sys_o(MeshVertices, meshVertices);
+        zox_sys_o(MeshColorRGBs, meshColorRGBs);
+        zox_sys_o(MeshUVs, meshUVs);
+        zox_sys_o(MeshDirty, meshDirty);
         if (chunkMeshDirty->value != chunk_dirty_state_update) {
             continue;
         }
-        if (renderLod->value == render_lod_uninitialized)  {
+        if (renderDepth->value == render_depth_spawning)  {
             zox_log_error("render_depth_uninitialized")
             continue;
         }
         clear_mesh_uvs(meshIndicies, meshVertices, meshColorRGBs, meshUVs);
-        if (renderLod->value == render_lod_invisible) {
+        if (renderDepth->value == render_depth_invisible) {
             meshDirty->value = mesh_state_trigger_slow;
             continue;
         }
 
         // zox_geter_value(voxLink->value, VoxScale, float, scale);
         zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
-        const byte render_depth = terrain_lod_to_node_depth(
-            renderLod->value,
-            terrain_depth);
+
+        // we shouldnt be calculating this again here! make a new RenderDepth component - As opposed to ChunkDepth, RenderDepth used just for choosing which depth to render
+        const byte render_depth =  renderDepth->value;
+        // TODO: Get this scale directly from chunk
+        const float chunk_scale = ((float) powers_of_two[terrain_depth]) * voxScale->value;
+
+
+        /*terrain_lod_to_node_depth(
+            renderDepth->value,
+            terrain_depth);*/
+
         // byte node_depth = nodeDepth->value;
-        byte terrain_length = powers_of_two[terrain_depth];
+        // byte terrain_length = ; //terrain_depth];
         // TODO: grab voxScale from terrain instead
-        const float chunk_scale = ((float) terrain_length) * voxScale->value;
+
+        // const float chunk_scale = ((float) powers_of_two[nodeDepth->value]) * voxScale->value;
+
         // zox_log_error("At Len [%i] Start scale: %f", terrain_length, voxScale->value);
         // const float start_scale =  voxScale->value / ((float) length);
         // zox_log("building: chunk_scale [%f] voxscale [%f] terrain_length [%i]", chunk_scale, voxScale->value, terrain_length);

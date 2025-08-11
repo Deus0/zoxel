@@ -33,6 +33,10 @@ static inline int3 int3_multiply_int(const int3 a, const int b) {
     return (int3) { a.x * b, a.y * b, a.z * b };
 }
 
+static inline int3 int3_scale(const int3 v, const int m) {
+    return (int3) { v.x * m, v.y * m, v.z * m };
+}
+
 static inline void int3_multiply_int_p(int3* input, const int mul) {
     input->x *= mul;
     input->y *= mul;

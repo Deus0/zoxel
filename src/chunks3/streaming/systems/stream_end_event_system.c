@@ -22,26 +22,27 @@ void StreamEndEventSystem(iter *it) {
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 const entity chunk = pair->value;
-                if (!zox_valid(chunk) || !zox_has(chunk, GenerateChunk) || !zox_has(chunk, ChunkMeshDirty) || !zox_has(chunk, ChunkLodDirty)) {
+                if (!zox_valid(chunk) || !zox_has(chunk, GenerateChunk) || !zox_has(chunk, ChunkMeshDirty)) { //  || !zox_has(chunk, ChunkLodDirty)
                     if (!zox_valid(chunk)) {
                         zox_log_error("chunk invalid in stream end system [%lu]", chunk)
                     } else if (!zox_has(chunk, GenerateChunk)) {
                         zox_log_error("chunk has no GenerateChunk [%lu]", chunk)
                     } else if (!zox_has(chunk, ChunkMeshDirty)) {
                         zox_log_error("chunk has no ChunkMeshDirty [%lu]", chunk)
-                    }  else if (!zox_has(chunk, ChunkLodDirty)) {
+                    } /*else if (!zox_has(chunk, ChunkLodDirty)) {
                         zox_log_error("chunk has no ChunkLodDirty [%lu]", chunk)
-                    } else {
+                    } */else {
                         zox_log_error("chunk invalid not sure why[%lu]", chunk)
                     }
                     is_skip = 1;
-                } else if (zox_gett_value(chunk, RenderLod) == render_lod_uninitialized) {
+                } else if (zox_gett_value(chunk, RenderDepth) == render_depth_spawning) {
                     is_skip = 1;
                 } else if (zox_gett_value(chunk, ChunkMeshDirty)) {
                     is_skip = 1;
-                } else if (zox_gett_value(chunk, ChunkLodDirty)) {
+                }/* else if (zox_gett_value(chunk, ChunkLodDirty)) {
                     is_skip = 1;
-                } else if (zox_gett_value(chunk, GenerateChunk)) {
+                } */
+                else if (zox_gett_value(chunk, GenerateChunk)) {
                     is_skip = 1;
                 }
                 if (is_skip) {

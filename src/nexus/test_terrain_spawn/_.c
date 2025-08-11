@@ -76,16 +76,16 @@ byte test_terrain_spawn(ecs_world_t *world) {
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 ecs_entity_t chunk = pair->value;
-                zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty)
+                // zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty)
                 zox_geter_value(chunk, GenerateChunk, byte, generate_chunk)
                 zox_geter_value(chunk, MeshDirty, byte, mesh_dirty)
                 zox_geter_value(chunk, ChunkMeshDirty, byte, chunk_mesh_dirty)
                 if (log_chunks && generate_chunk == chunk_generate_state_end) {
                     zox_log("- f[%i] chunk generated [%f]", ecs_run_count - 1, time_since_start)
                 }
-                if (log_lods && lod_dirty == chunk_lod_state_end) {
+                /*if (log_lods && lod_dirty == chunk_lod_state_end) {
                     zox_log("- f[%i] chunk lod finished [%f]", ecs_run_count - 1, time_since_start)
-                }
+                }*/
                 /*if (log_meshes && mesh_dirty == mesh_dirty_state_end) {
                     zox_log("- f[%i] chunk mesh finished [%f]", ecs_run_count - 1, time_since_start)
                 }*/
@@ -136,16 +136,16 @@ byte test_terrain_spawn(ecs_world_t *world) {
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 ecs_entity_t chunk = pair->value;
-                zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty)
-                zox_geter_value(chunk, GenerateChunk, byte, generate_chunk)
-                zox_geter_value(chunk, MeshDirty, byte, mesh_dirty)
-                zox_geter_value(chunk, ChunkMeshDirty, byte, chunk_mesh_dirty)
+                // zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty);
+                zox_geter_value(chunk, GenerateChunk, byte, generate_chunk);
+                zox_geter_value(chunk, MeshDirty, byte, mesh_dirty);
+                zox_geter_value(chunk, ChunkMeshDirty, byte, chunk_mesh_dirty);
                 if (log_chunks && generate_chunk == chunk_generate_state_end) {
                     zox_log("- f[%i] chunk generated [%f]", ecs_run_count - 1, time_since_start)
                 }
-                if (log_lods && lod_dirty == chunk_lod_state_end) {
+                /*if (log_lods && lod_dirty == chunk_lod_state_end) {
                     zox_log("- f[%i] chunk lod finished [%f]", ecs_run_count - 1, time_since_start)
-                }
+                }*/
                 if (log_meshes && chunk_mesh_dirty == chunk_dirty_state_end) {
                     zox_log("- f[%i] chunk mesh finished [%f]", ecs_run_count - 1, time_since_start)
                 }

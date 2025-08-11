@@ -1,6 +1,6 @@
 
 // t for terrain
-VoxelNode* set_voxelc(
+VoxelNode* set_voxelt(
     VoxelNode* node,
     byte target,
     byte3 position,
@@ -11,12 +11,16 @@ VoxelNode* set_voxelc(
     if (!depth_reached && is_closed_VoxelNode(node)) {
         open_VoxelNode(node);
         VoxelNode* kids = get_children_VoxelNode(node);
+        if (!kids) {
+            zox_log_error("Kids didn't get borned");
+            return node;
+        }
         for (byte i = 0; i < octree_length; i++) {
-            kids[i].value = 0;
+            kids[i].value = 0; // node->value;
         }
     }
     // wait this overrides child nodes, rather than reevaluating them
-    if (depth_reached) {
+    if (depth_reached || value) {
         node->value = value;
     }
     if (depth_reached || !has_children_VoxelNode(node)) {
@@ -27,17 +31,15 @@ VoxelNode* set_voxelc(
     if (dividor == 0) {
         return node; // no need to dive then, we just set voxel anyway
     }
-
-    byte3 positionn = (byte3) {
+    byte3 node_position = (byte3) {
         position.x / dividor,
         position.y / dividor,
         position.z / dividor
     };
     byte3_modulus_byte(&position, dividor);
-
-    const byte i = byte3_octree_array_index(positionn);
+    byte i = byte3_octree_array_index(node_position);
     if (i >= 8) {
-        zox_log_error("[set_voxelc] node index out of bounds: %i", i);
+        zox_log_error("[set_voxelt] node index out of bounds: %i", i);
         return node;
     }
 
@@ -45,7 +47,7 @@ VoxelNode* set_voxelc(
     node = &kids[i];
     depth++;
 
-    return set_voxelc(
+    return set_voxelt(
         node,
         target,
         position,

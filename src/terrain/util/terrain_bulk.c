@@ -15,7 +15,7 @@ ecs_entity_t create_terrain_bulk(ecs_world_t *world, const ecs_entity_t prefab, 
     }
     ChunkPosition *chunkPositions = malloc(sizeof(ChunkPosition) * chunks_total_length);
     Position3D *position3Ds = malloc(sizeof(Position3D) * chunks_total_length);
-    RenderLod *renderLods = malloc(sizeof(RenderLod) * chunks_total_length);
+    RenderDepth *renderDepths = malloc(sizeof(RenderDepth) * chunks_total_length);
     VoxLink *voxLinks = malloc(sizeof(VoxLink) * chunks_total_length);
     MeshGPULink *meshGPULinks = malloc(sizeof(MeshGPULink) * chunks_total_length);
     UvsGPULink *uvsGPULinks = malloc(sizeof(UvsGPULink) * chunks_total_length);
@@ -24,7 +24,7 @@ ecs_entity_t create_terrain_bulk(ecs_world_t *world, const ecs_entity_t prefab, 
         const int3 chunk_position = chunk_positions[i];
         chunkPositions[i].value = chunk_position;
         position3Ds[i].value = float3_scale(float3_from_int3(chunk_position), real_chunk_scale);
-        renderLods[i].value = get_camera_chunk_distance_xz(int3_zero, chunk_position);
+        renderDepths[i].value = get_camera_chunk_distance_xz(int3_zero, chunk_position);
         voxLinks[i].value = terrain_world;
         if (!headless) {
             meshGPULinks[i].value = spawn_gpu_mesh_buffers();
@@ -39,7 +39,7 @@ ecs_entity_t create_terrain_bulk(ecs_world_t *world, const ecs_entity_t prefab, 
             ecs_pair(EcsIsA, prefab),
             ecs_id(ChunkPosition),
             ecs_id(Position3D),
-            ecs_id(RenderLod),
+            ecs_id(RenderDepth),
             ecs_id(VoxLink),
             ecs_id(MeshGPULink),
             ecs_id(UvsGPULink),
@@ -50,7 +50,7 @@ ecs_entity_t create_terrain_bulk(ecs_world_t *world, const ecs_entity_t prefab, 
             NULL,           // Prefab pair, what is it used for?
             chunkPositions,
             position3Ds,
-            renderLods,
+            renderDepths,
             voxLinks,
             meshGPULinks,
             uvsGPULinks,
@@ -60,7 +60,7 @@ ecs_entity_t create_terrain_bulk(ecs_world_t *world, const ecs_entity_t prefab, 
     for (int i = 0; i < chunks_total_length; i++) chunks[i] = entities[i];
     free(chunkPositions);
     free(position3Ds);
-    free(renderLods);
+    free(renderDepths);
     free(voxLinks);
     free(meshGPULinks);
     free(uvsGPULinks);

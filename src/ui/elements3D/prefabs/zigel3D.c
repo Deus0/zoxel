@@ -26,7 +26,7 @@ entity spawn_prefab_zigel3D(
     zox_prefab_set(e, SecondaryColor, { color_black })
     zox_prefab_set(e, FontThickness, { 1 })
     zox_prefab_set(e, FontOutlineThickness, { 1 })
-    // prefab_set_mesh3D_vertices(world, e, square_vertices, 4, zigel3D_size);
+    prefab_set_mesh3D_vertices(world, e, square_vertices, 4, zigel3D_size);
     zox_set(e, TextureSize, { int2_single(2) })
     return e;
 }

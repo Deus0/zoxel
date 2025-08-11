@@ -1,6 +1,6 @@
 void spawned_block_vox(
     ecs *world,
-    spawned_block_data *data
+    spawned_block_data* data
 ) {
     if (!zox_has(data->block, BlockPrefabLink)) {
         return;
@@ -20,7 +20,7 @@ void spawned_block_vox(
         .position_global = data->position_global,
         .position_real = data->position_real,
         .scale = data->scale,
-        .render_lod = data->render_lod,
+        .render_depth = data->render_depth,
         .render_disabled = data->render_disabled,
     };
     // offset property

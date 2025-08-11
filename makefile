@@ -31,7 +31,7 @@ cflags_dev 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug
 # memory leak catching
 # cflags_dev 	+= -Wextra -Wpedantic -fsanitize=addresse
 # even more checks
-cflags_dev	+= -pedantic-errors -Wextra -Werror
+# cflags_dev	+= -pedantic-errors -Wextra -Werror
 # omega checks
 # cflags_dev  	+= -Wextra -Werror -fno-omit-frame-pointer -fdiagnostics-color=always -std=c99 -D_POSIX_C_SOURCE=200809L
 

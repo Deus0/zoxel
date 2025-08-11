@@ -1,20 +1,22 @@
-void ChunkLodDirtySystem(iter *it) {
+/*void RenderDepthDirtySystem(iter *it) {
     zox_sys_begin()
-    zox_sys_in(ChunkLodDirty)
-    // zox_sys_in(RenderLod)
+    zox_sys_in(RenderDepthDirty)
+    // zox_sys_in(RenderDepth)
     zox_sys_out(GenerateChunk)
     // zox_sys_out(ChunkMeshDirty)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkLodDirty, chunkLodDirty)
-        //zox_sys_i(RenderLod, renderLod)
+        zox_sys_i(RenderDepthDirty, dirty)
+        //zox_sys_i(RenderDepth, renderDepth)
         zox_sys_o(GenerateChunk, generateChunk)
         // zox_sys_o(ChunkMeshDirty, chunkMeshDirty)
-        if (chunkLodDirty->value == chunk_lod_state_generate_trigger) {
+        if (dirty->value == zox_dirty_active) {
             generateChunk->value = 1;
-        } /*else if (chunkLodDirty->value == chunk_lod_state_mesh_trigger) {
-            if (renderLod->value != render_lod_invisible) {
-                chunkMeshDirty->value = chunk_dirty_state_trigger;
-            }
-        }*/
+        }
     }
-} zoxd_system(ChunkLodDirtySystem)
+} zoxd_system2(RenderDepthDirtySystem);*/
+
+/*else if (chunkLodDirty->value == chunk_lod_state_mesh_trigger) {
+    if (renderDepth->value != render_depth_invisible) {
+        chunkMeshDirty->value = chunk_dirty_state_trigger;
+    }
+}*/

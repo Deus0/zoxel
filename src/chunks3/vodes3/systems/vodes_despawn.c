@@ -18,20 +18,24 @@ void VodesDespawnSystem(iter *it) {
     zox_sys_begin()
     zox_sys_in(VoxelNodeDirty)
     zox_sys_in(RenderDistanceDirty)
-    zox_sys_in(RenderLod)
+    zox_sys_in(RenderDepth)
+    zox_sys_in(VoxLink)
     zox_sys_out(VoxelNode)
     zox_sys_out(BlocksSpawned)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxelNodeDirty, voxelNodeDirty)
         zox_sys_i(RenderDistanceDirty, renderDistanceDirty)
-        zox_sys_i(RenderLod, renderLod)
+        zox_sys_i(RenderDepth, renderDepth)
+        zox_sys_i(VoxLink, vox_link)
         zox_sys_o(VoxelNode, node)
         zox_sys_o(BlocksSpawned, blocksSpawned)
         if (voxelNodeDirty->value != zox_dirty_active && !(blocksSpawned->value && renderDistanceDirty->value == zox_dirty_active)) {
             continue;
         }
         // only destroy if outside range
-        if (renderLod->value <= block_vox_render_at_lod) {
+        zox_geter_value(vox_link->value, NodeDepth, byte, terrain_depth);
+        byte can_spawn_vodes = renderDepth->value == terrain_depth;
+        if (can_spawn_vodes) { // renderDepth->value <= block_vox_render_at_lod) {
             continue;
         }
         write_lock_VoxelNode(node);

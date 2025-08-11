@@ -142,8 +142,9 @@ void MeleeSystem(ecs_iter_t *it) {
                 if (zox_has(block, ItemLink)) {
                     zox_geter_value(block, ItemLink, ecs_entity_t, block_item)
                     if (zox_valid(block_item)) {
-                        const ecs_entity_t pickup = spawn_pickup_block(world,
-                            raycastVoxelData->position_real,
+                        const ecs_entity_t pickup = spawn_pickup_block(
+                            world,
+                            raycastVoxelData->positionf,
                             block);
                         zox_set(pickup, ItemLink, { block_item })
                     } else {

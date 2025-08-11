@@ -1,16 +1,19 @@
-void set_vode_lods(ecs *world, const VoxelNode *node, byte lod) {
+void set_vode_lods(ecs *world, const VoxelNode *node, byte render_depth) {
     if (is_closed_VoxelNode(node)) {
         return;
     } else if (is_linked_VoxelNode(node)) {
         const entity e = get_entity_VoxelNode(node);
-        if (zox_valid(e) && zox_has(e, RenderLod)) {
-            zox_set(e, RenderLod, { lod })
-            zox_set(e, RenderLodDirty, { zox_dirty_trigger })
+        if (zox_valid(e) && zox_has(e, RenderDepth)) {
+            zox_geter_value(e, RenderDepth, byte, old);
+            if (old != render_depth) {
+                zox_set(e, RenderDepth, { render_depth });
+                zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
+            }
         }
     } else if (has_children_VoxelNode(node)) {
         VoxelNode* kids = get_children_VoxelNode(node);
         for (int i = 0; i < octree_length; i++) {
-            set_vode_lods(world, &kids[i], lod);
+            set_vode_lods(world, &kids[i], render_depth);
         }
     }
 }
@@ -28,8 +31,8 @@ void VodesLodSystem(iter *it) {
         zox_sys_i(BlocksSpawned, blocksSpawned)
         zox_sys_i(VoxelNode, voxelNode)
         if (renderDistanceDirty->value == zox_dirty_active && blocksSpawned->value) {
-            const byte vox_lod = distance_to_lod_vox_block(renderDistance->value);
-            set_vode_lods(world, voxelNode, vox_lod);
+            const byte render_depth = camera_distance_to_block_vox_depth(renderDistance->value);
+            set_vode_lods(world, voxelNode, render_depth);
         }
     }
 } zoxd_system(VodesLodSystem)

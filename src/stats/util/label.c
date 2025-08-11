@@ -42,7 +42,13 @@ uint add_label_stat_value(ecs_world_t *world, const ecs_entity_t character, cons
 }
 
 // new label ui
-uint get_label_player_stats(ecs_world_t *world, const ecs_entity_t player, char *buffer, const uint size, uint index) {
+uint get_label_player_stats(
+    ecs *world,
+    const entity player,
+    char* buffer,
+    const uint size,
+    uint index
+) {
     if (!player) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
@@ -80,7 +86,13 @@ uint get_label_player_stats(ecs_world_t *world, const ecs_entity_t player, char 
 
 // todo: refactor this as a event hook
 // used for editor
-void add_to_labels_stat_links(ecs_world_t *world, ecs_entity_t e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
+void add_to_labels_stat_links(
+    ecs_world_t *world,
+    ecs_entity_t e,
+    text_group_dynamic_array_d* labels,
+    entity_array_d* entities,
+    int tree_level
+) {
     if (!(e && zox_has(e, StatLinks))) {
         return;
     }

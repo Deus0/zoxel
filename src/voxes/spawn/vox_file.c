@@ -102,7 +102,6 @@ void set_vox_file(
     zox_log("   - size(reduced) [%ix%ix%i]", rsize.x, rsize.y, rsize.z);
     zox_log("   - offset [%ix%ix%i]", offset.x, offset.y, offset.z);*/
 
-
     zox_set(e, VoxScale, { scale });
     zox_set(e, NodeDepth, { node_depth });
     zox_set(e, ChunkSize, { rsize });
@@ -152,30 +151,38 @@ void set_vox_file(
     endwatch(time_set_vox, "set_vox_data");
 }
 
+// TODO: Convert vox_file to VoxNode, and clone to depth to ModelLods
+//      atm we rebuild everytime the same
 entity spawn_vox_file(
     ecs *world,
     const entity prefab,
-    const vox_file *data,
+    const vox_file* data,
     const char* filename
 ) {
-    // model_lod
+
     zox_make_neww(model)
     char name[128];
     sprintf(name, "vox_file_%s", filename);
     zox_set_unique_name(model, name);
+    // zox_log("Generating Model Lods for [%s]", filename);
 
-    // ox_log("Generating Model Lods for [%s]", filename);
-    ModelLods modelLods;
-    for (int i = 0; i < max_vox_file_lods; i++) {
-        byte render_lod = 0; // i;
+    // const byte max_node_depth = block_vox_depth;
+    const byte max_render_depth = pick_node_depth(data->chunks[0].size.xyz);
+    zox_set(model, MaxRenderDepth, { max_render_depth });
+
+    ModelLods model_lods;
+    for (byte i = 0; i <= max_render_depth; i++) {
+        byte chunk_depth_reducer = 0;   // i - disabled for now
+        byte render_depth = i; // max_render_depth - i;
         zox_instance(prefab);
+        set_vox_file(world, e, data, chunk_depth_reducer);
         zox_set(e, ChunkMeshDirty, { chunk_dirty_state_trigger });
-        zox_set(e, RenderLod, { i });
-        set_vox_file(world, e, data, render_lod);
-        modelLods.value[i] = e;
+        zox_set(e, RenderDepth, { render_depth });
+        zox_set(e, MaxRenderDepth, { max_render_depth });
+        model_lods.value[i] = e;
     }
-    // zox_log("Generating Complete [%s]", filename);
 
-    zox_set_ptr(model, ModelLods, modelLods)
+    // zox_log("Generating Complete [%s]", filename);
+    zox_set_ptr(model, ModelLods, model_lods);
     return model;
 }

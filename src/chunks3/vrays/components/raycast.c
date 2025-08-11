@@ -2,19 +2,21 @@ typedef struct {
     byte result;
     byte voxel;
     entity hit_block;
-    byte3 position;
-    int3 position_global;
-    float3 position_real;
+    // current
+    byte3 positionl;
+    int3 positionv;
+    float3 positionf;
     float voxel_scale;
     entity chunk;
     VoxelNode *node;
     float3 hit;
     float3 normal;
     float distance;
-    byte3 position_last;
-    int3 position_global_last;
-    float3 position_real_last;
+    // last
     entity chunk_last;
     VoxelNode *node_last;
+    byte3 positionl_last;
+    int3 positionv_last;
+    float3 positionf_last;
 } RaycastVoxelData;
 zoxc_custom(RaycastVoxelData);

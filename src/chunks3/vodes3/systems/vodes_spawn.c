@@ -16,7 +16,7 @@ typedef struct {
     const float scale;
     // SpawnBlockVox *spawn_data;
     const byte render_disabled;
-    const byte render_lod;
+    const byte render_depth;
 } UpdateBlockEntities;
 
 void spawn_vodes_dive(
@@ -90,7 +90,7 @@ void spawn_vodes_dive(
         zox_geter_value(data->chunk, NodeDepth, byte, node_depth)
         const int chunk_length = powers_of_two[node_depth];
         const int3 chunk_dimensions = int3_single(chunk_length);
-        int3 chunk_voxel_position = get_chunk_voxel_position(chunkPosition->value, chunk_dimensions);
+        int3 chunk_voxel_position = get_chunk_positionv(chunkPosition->value, chunk_dimensions);
         int3 position_global = int3_add(voxel_position, chunk_voxel_position);
         // spawn node entity here!
         const byte block_index = node->value - 1;
@@ -109,19 +109,18 @@ void spawn_vodes_dive(
             .position_real = position_real,
             .scale = scale,
             .render_disabled = data->render_disabled,
-            .render_lod = data->render_lod,
+            .render_depth = data->render_depth,
         };
         run_hook_spawned_block(world, &spawned_data);
     }
 }
 
 
-// updates during ChunkLodDirty and ChunkMeshDirty events
 void spawn_vodes(
     ecs *world,
     const entity e,
     const entity terrain,
-    const byte vox_lod,
+    const byte render_depth,
     const RenderDisabled *renderDisabled,
     VoxelNode *chunk,
     const byte max_depth,
@@ -174,7 +173,7 @@ void spawn_vodes(
         .models = models,
         .block_vox_offsets = block_vox_offsets,
         .chunk_position_real = positionf,
-        .render_lod = vox_lod,
+        .render_depth = render_depth,
         .render_disabled = renderDisabled->value,
     };
     NodeDelveData delve_data = {
@@ -185,7 +184,7 @@ void spawn_vodes(
     spawn_vodes_dive(world, &data, &delve_data);
 }
 
-// Uses voxelNodeDirty to trigger
+// Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
 void VodesSpawnSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
@@ -195,7 +194,7 @@ void VodesSpawnSystem(iter *it) {
     zox_sys_in(VoxLink)
     zox_sys_in(NodeDepth)
     zox_sys_in(RenderDisabled)
-    zox_sys_in(RenderLod)
+    zox_sys_in(RenderDepth)
     zox_sys_in(RenderDistance)
     zox_sys_in(Position3D)
     zox_sys_in(VoxScale)
@@ -209,7 +208,7 @@ void VodesSpawnSystem(iter *it) {
         zox_sys_i(VoxLink, voxLink)
         zox_sys_i(NodeDepth, nodeDepth)
         zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(RenderLod, renderLod)
+        zox_sys_i(RenderDepth, renderDepth)
         zox_sys_i(RenderDistance, renderDistance)
         zox_sys_i(Position3D, position)
         zox_sys_i(VoxScale, scale)
@@ -222,16 +221,20 @@ void VodesSpawnSystem(iter *it) {
             continue;
         }
         //  base off render distance
-        if (renderLod->value > block_vox_render_at_lod) {
+        zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
+        byte can_spawn_vodes = renderDepth->value == terrain_depth;
+        if (!can_spawn_vodes) { // renderDepth->value > block_vox_render_at_lod) { // >
             continue;
         }
         // zox_log("+ spawning block voxes at [%ix%ix%i]", chunkPosition->value.x, chunkPosition->value.y, chunkPosition->value.z)
-        const byte vox_lod = distance_to_lod_vox_block(renderDistance->value);
+        const byte render_depth = camera_distance_to_block_vox_depth(renderDistance->value);
+        // zox_log("Spawning block voxes with render depth: %i", render_depth);
+
         write_lock_VoxelNode(node);
         spawn_vodes(world,
             e,
             voxLink->value,
-            vox_lod,
+            render_depth,
             renderDisabled,
             node,
             nodeDepth->value,

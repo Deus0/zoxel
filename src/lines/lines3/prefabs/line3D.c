@@ -26,16 +26,16 @@ ecs_entity_t spawn_line3D(
     return e;
 }
 
-ecs_entity_t spawn_line3D_colored(
-    ecs_world_t *world,
+entity spawn_line3D_colored(
+    ecs *world,
     const float3 a,
     const float3 b,
     const float thickness,
     const double life_time,
     const color_rgb c
 ) {
-    const ecs_entity_t e = spawn_line3D(world, a, b, thickness, life_time);
-    zox_set(e, Color, { color_rgb_to_color(c) })
+    const entity e = spawn_line3D(world, a, b, thickness, life_time);
+    zox_set(e, Color, { color_rgb_to_color(c) });
     return e;
 }
 

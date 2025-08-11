@@ -6,9 +6,14 @@ byte can_render_ui(ecs *world, const entity e) {
     if (zox_has(e, UIHolderLink)) {
         zox_geter(e, UIHolderLink, uiHolderLink)
         if (zox_valid(uiHolderLink->value)) {
-            if (zox_has(uiHolderLink->value, RenderLod)) {
-                zox_geter(uiHolderLink->value, RenderLod, renderLod)
-                if (renderLod->value == 255 || renderLod->value > 1) {
+            if (zox_has(uiHolderLink->value, RenderDepth)) {
+                zox_geter_value(uiHolderLink->value, RenderDepth, byte, render_depth);
+                zox_geter_value(uiHolderLink->value, MaxRenderDepth, byte, max_render_depth);
+                const byte render_depth_valid =
+                    render_depth != render_depth_spawning &&
+                    render_depth != render_depth_invisible &&
+                    render_depth >= max_render_depth - 2;
+                if (!render_depth_valid) {
                     return 0;
                 }
             }

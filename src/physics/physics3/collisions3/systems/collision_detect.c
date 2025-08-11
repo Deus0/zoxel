@@ -41,7 +41,7 @@ byte check_collision_point(
 
     // check local position
     const byte3 chunk_size = byte3_single(powers_of_two[terrain_depth]);
-    byte3 positionl = get_local_position_byte3(
+    byte3 positionl = get_positionl_byte3(
         positionv,
         chunk_size
     );

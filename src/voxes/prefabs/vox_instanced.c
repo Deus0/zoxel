@@ -1,12 +1,13 @@
 // TransformMatrix, RenderDisabled, InstanceLink
-entity spawn_prefab_vox_instanced(ecs *world,
-    const entity prefab)
-{
+entity spawn_prefab_vox_instanced(
+    ecs *world,
+    const entity prefab
+) {
     zox_prefab_child(prefab)
     zox_prefab_name("vox_instanced")
     zox_prefab_set(e, RenderDisabled, { 0 })
-    zox_prefab_set(e, RenderLod, { 0 })
-    zox_prefab_set(e, RenderLodDirty, { zox_dirty_none })
+    zox_prefab_set(e, RenderDepth, { 0 })
+    zox_prefab_set(e, RenderDepthDirty, { zox_dirty_none })
     zox_prefab_set(e, InstanceLink, { 0 })  // directly whats rendering
     zox_prefab_set(e, ModelLink, { 0 })     // can be a model or model group
     zox_prefab_set(e, VoxScale, { vox_model_scale })
@@ -15,19 +16,20 @@ entity spawn_prefab_vox_instanced(ecs *world,
     return e;
 }
 
-entity spawn_vox_instanced(ecs *world,
+entity spawn_vox_instanced(
+    ecs *world,
     const entity prefab,
     const float3 position,
     const byte render_disabled,
-    const byte render_lod,
-    const float vox_scale)
-{
-    zox_instance(prefab)
-    zox_name("vox_instanced")
-    zox_set(e, Position3D, { position })
-    zox_set(e, TransformMatrix, { float4x4_position(position) })
-    zox_set(e, RenderLod, { render_lod })
-    zox_set(e, RenderDisabled, { render_disabled })
-    zox_set(e, VoxScale, { vox_scale })
+    const byte render_depth,
+    const float vox_scale
+) {
+    zox_instance(prefab);
+    zox_name("vox_instanced");
+    zox_set(e, Position3D, { position });
+    zox_set(e, TransformMatrix, { float4x4_position(position) });
+    zox_set(e, RenderDepth, { render_depth });
+    zox_set(e, RenderDisabled, { render_disabled });
+    zox_set(e, VoxScale, { vox_scale });
     return e;
 }

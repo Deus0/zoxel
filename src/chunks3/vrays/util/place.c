@@ -61,16 +61,16 @@ void raycast_action(ecs *world,
     VoxelNode* node;
     if (hit_type == 2) {
         // zox_log("placing air!\n")
-        position_local = data->position;
-        position_global = data->position_global;
-        position_real = data->position_real;
+        position_local = data->positionl;
+        position_global = data->positionv;
+        position_real = data->positionf;
         chunk = data->chunk;
         node = data->node;
     } else {
         // zox_log("placing solid!\n")
-        position_local = data->position_last;
-        position_global = data->position_global_last;
-        position_real = data->position_real_last;
+        position_local = data->positionl_last;
+        position_global = data->positionv_last;
+        position_real = data->positionf_last;
         chunk = data->chunk_last;
         node = data->node_last;
     }

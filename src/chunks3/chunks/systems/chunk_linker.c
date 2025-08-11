@@ -56,12 +56,16 @@ byte set_entity_chunk(ecs *world,
     // calculate_lods
     // zox_geter_value(e, NodeDepth, byte, node_depth)
     // todo: this should be used by system itself
-    if (zox_has(e, RenderLod)) {
-        zox_geter_value(e, RenderLod, byte, old_lod)
-        const byte lod = distance_to_lod_npc(chunk_render_distance);
-        if (old_lod != lod) {
-            zox_set(e, RenderLod, { lod })
-            zox_set(e, RenderLodDirty, { zox_dirty_trigger } )
+    if (zox_has(e, RenderDepth)) {
+        zox_geter_value(e, RenderDepth, byte, old);
+        zox_geter_value(e, MaxRenderDepth, byte, max_render_depth);
+        const byte render_depth = camera_distance_to_npc_render_depth(
+            chunk_render_distance,
+            max_render_depth
+        );
+        if (old != render_depth) {
+            zox_set(e, RenderDepth, { render_depth });
+            zox_set(e, RenderDepthDirty, { zox_dirty_trigger } );
         }
     }
     return 1;

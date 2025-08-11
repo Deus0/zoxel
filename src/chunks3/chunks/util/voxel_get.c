@@ -2,9 +2,9 @@
 // i think const was the issue
 
 const byte get_sub_node_voxel(
-    const VoxelNode *node,
-    byte3 *position,
-    const byte depth
+    const VoxelNode* node,
+    byte3* positionl,
+    byte depth
 ) {
     if (!node) {
         return 0;
@@ -12,20 +12,23 @@ const byte get_sub_node_voxel(
     if (depth == 0 || !has_children_VoxelNode(node)) {
         return node->value;
     }
-    const byte new_depth = depth - 1;
-    const byte dividor = powers_of_two_byte[new_depth];
-    const byte3 node_position = (byte3) {
-        position->x / dividor,
-        position->y / dividor,
-        position->z / dividor
-    };
-    byte3_modulus_byte(position, dividor);
 
-    const byte i = byte3_octree_array_index(node_position);
+    depth--;
+    const byte dividor = powers_of_two_byte[depth];
+
+    const byte3 positionn = (byte3) {
+        positionl->x / dividor,
+        positionl->y / dividor,
+        positionl->z / dividor
+    };
+
+    const byte i = byte3_octree_array_index(positionn);
     if (i >= 8) {
-        zox_log_error("node_index OOB: %i", i);
+        zox_logw("[get_sub_node_voxel] Node Index OOB: %i - depth [%i] - positionl [%ix%ix%i] - positionn [%ix%ix%i] dividor [%i]", i, depth, positionl->x, positionl->y, positionl->z, positionn.x, positionn.y, positionn.z, dividor);
         return node->value;
     }
+
+    byte3_modulus_byte(positionl, dividor); // leftover goes here
 
     VoxelNode* kids = get_children_VoxelNode(node);
     if (!kids) {
@@ -33,7 +36,7 @@ const byte get_sub_node_voxel(
         return node->value;
     }
 
-    return get_sub_node_voxel(&kids[i], position, new_depth);
+    return get_sub_node_voxel(&kids[i], positionl, depth);
 }
 
 const byte get_sub_node_voxel_locked(
@@ -48,10 +51,11 @@ const byte get_sub_node_voxel_locked(
 }
 
 // returns node, also sets voxel
+// NOTE: Used by raycast system
 VoxelNode* get_voxel_node_at_depth(
-    byte *value,
-    const VoxelNode *node,
-    byte3 *position,
+    byte* value,
+    const VoxelNode* node,
+    byte3* positionl,
     byte depth
 ) {
     if (!node) {
@@ -64,20 +68,21 @@ VoxelNode* get_voxel_node_at_depth(
     }
     depth--;
     const byte dividor = powers_of_two_byte[depth];
-    const byte3 node_position = (byte3) {
-        position->x / dividor,
-        position->y / dividor,
-        position->z / dividor
+    const byte3 positionn = (byte3) {
+        positionl->x / dividor,
+        positionl->y / dividor,
+        positionl->z / dividor
     };
-    byte3_modulus_byte(position, dividor);
-    const byte i = byte3_octree_array_index(node_position);
+
+    const byte i = byte3_octree_array_index(positionn);
     if (i >= 8) {
-        zox_log_error("node index OOB: %i", i);
+        zox_log_error("[get_voxel_node_at_depth] node index OOB: %i - depth [%i]", i, depth);
         return (VoxelNode*) node;
     }
 
+    byte3_modulus_byte(positionl, dividor);
     VoxelNode* kids = get_children_VoxelNode(node);
-    return get_voxel_node_at_depth(value, &kids[i], position, depth);
+    return get_voxel_node_at_depth(value, &kids[i], positionl, depth);
 }
 
 VoxelNode* get_voxel_node_at_depth2(
@@ -105,7 +110,7 @@ VoxelNode* get_voxel_node_at_depth2(
     byte3_modulus_byte(position, dividor);
     const byte i = byte3_octree_array_index(node_position);
     if (i >= 8) {
-        zox_log_error("node index OOB: %i", i);
+        zox_log_error("[get_voxel_node_at_depth2] node index OOB: %i", i);
         return (VoxelNode*) node;
     }
 
@@ -294,7 +299,7 @@ VoxelNode* get_node_dig(
 
     const byte i = byte3_octree_array_index(node_position);
     if (i >= 8) {
-        zox_log_error("node index OOB: %i", i);
+        zox_log_error("[get_node_dig] node index OOB: %i", i);
         return node;
     }
 

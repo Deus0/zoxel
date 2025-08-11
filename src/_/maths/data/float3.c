@@ -13,6 +13,7 @@
 // =====================================
 static const float3 float3_zero     = { 0.0f, 0.0f, 0.0f };
 static const float3 float3_one      = { 1.0f, 1.0f, 1.0f };
+static const float3 float3_halff    = { 0.5f, 0.5f, 0.5f };
 static const float3 float3_left     = { -1.0f, 0.0f, 0.0f };
 static const float3 float3_right    = { 1.0f, 0.0f, 0.0f };
 static const float3 float3_down     = { 0.0f, -1.0f, 0.0f };
