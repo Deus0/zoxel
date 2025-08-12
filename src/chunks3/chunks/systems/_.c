@@ -10,6 +10,7 @@ zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 #include "mesh_trigger.c"
 #include "mesh_trigger_neighbor.c"
 #include "debug.c"
+#include "block_scale.c"
 
 void get_chunk_filename(char* out, const int3 position) {
         sprintf(out, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
@@ -53,7 +54,7 @@ void define_systems_chunks(ecs *world) {
             [out] chunks3.VoxelNode)
     // main thread
     zox_system_1(ChunkDebugSystem, zoxp_voxels_read,
-            [in] blocks.VoxScale,
+            [in] blocks.BlockScale,
             [in] transforms3.Position3D,
             [in] chunks3.VoxelNode,
             [in] chunks3.NodeDepth,
@@ -73,4 +74,9 @@ void define_systems_chunks(ecs *world) {
             [out] chunks3.VoxelNodeLoaded,
             [out] chunks3.VoxelNode,
             [out] chunks3.NodeDepth);
+    zox_system(BlockScaleSystem, EcsOnUpdate,
+            [in] rendering.RenderDepthDirty,
+            [in] rendering.RenderDepth,
+            [out] chunks3.VoxLink,
+            [out] blocks.BlockScale);
 }

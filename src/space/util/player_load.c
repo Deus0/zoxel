@@ -25,7 +25,7 @@ entity game_start_player_load(
     if (!terrain) {
         return 0;
     }
-    zox_geter_value(terrain, VoxScale, float, terrain_scale);
+    zox_geter_value(terrain, BlockScale, float, terrain_scale);
     TerrainPlace spawn_place;
     spawn_place.chunk = 0;
     load_character_p(

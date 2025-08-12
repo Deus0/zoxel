@@ -7,7 +7,7 @@ void CloneVoxSystem(iter *it) {
     zox_sys_out(CloneVox);
     zox_sys_out(VoxelNode);
     zox_sys_out(NodeDepth);
-    zox_sys_out(VoxScale);
+    zox_sys_out(BlockScale);
     zox_sys_out(ChunkSize);
     zox_sys_out(ColorRGBs);
     zox_sys_out(VoxelNodeDirty);
@@ -16,7 +16,7 @@ void CloneVoxSystem(iter *it) {
         zox_sys_i(CloneVoxLink, cloneVoxLink);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(NodeDepth, nodeDepth);
-        zox_sys_o(VoxScale, voxScale);
+        zox_sys_o(BlockScale, blockScale);
         zox_sys_o(ColorRGBs, colorRGBs);
         zox_sys_o(ChunkSize, chunkSize);
         zox_sys_o(VoxelNodeDirty, nodeDirty);
@@ -32,7 +32,7 @@ void CloneVoxSystem(iter *it) {
         // clone one depth at a time
         zox_geter(src, VoxelNode, source_node);
         zox_geter(src, NodeDepth, source_node_depth);
-        zox_geter_value(src, VoxScale, float, src_scale);
+        zox_geter_value(src, BlockScale, float, src_scale);
         zox_geter(src, ChunkSize, source_chunk_size);
         zox_geter(src, ColorRGBs, colors_source);
         if (chunkLod->value == 255) {
@@ -41,7 +41,7 @@ void CloneVoxSystem(iter *it) {
             chunkLod->value++;
         }
         nodeDepth->value = source_node_depth->value;
-        voxScale->value = src_scale;
+        blockScale->value = src_scale;
 
         // Write Locks node
         write_lock_VoxelNode(node);

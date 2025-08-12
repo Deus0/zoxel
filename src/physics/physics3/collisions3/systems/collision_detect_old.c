@@ -392,7 +392,7 @@ void CollisionDetectSystem(iter *it) {
         }
         zox_geter(voxLink->value, ChunkLinks, chunks);
         zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
-        zox_geter_value(voxLink->value, VoxScale, float, terrain_scale);
+        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
         if (!chunks || collision->value) {
             continue;
         }

@@ -40,7 +40,7 @@ void define_systems_terrain(ecs_world_t *world) {
                 [in] rendering.RenderDepth,
                 [in] chunks3.ChunkNeighbors,
                 [in] chunks3.NodeDepth,
-                [in] blocks.VoxScale,
+                [in] blocks.BlockScale,
                 [out] rendering.MeshIndicies,
                 [out] rendering.MeshVertices,
                 [out] rendering.MeshUVs,
@@ -61,7 +61,7 @@ void define_systems_terrain(ecs_world_t *world) {
     zox_system_1(ChunkBoundsDrawSystem, zoxp_mainthread,
             [in] transforms3.Position3D,
             [in] chunks3.ChunkSize,
-            [in] blocks.VoxScale,
+            [in] blocks.BlockScale,
             [in] rendering.RenderDisabled,
             [none] TerrainChunk)
 #endif

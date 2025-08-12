@@ -197,7 +197,7 @@ void VodesSpawnSystem(iter *it) {
     zox_sys_in(RenderDepth)
     zox_sys_in(RenderDistance)
     zox_sys_in(Position3D)
-    zox_sys_in(VoxScale)
+    zox_sys_in(BlockScale)
     zox_sys_out(VoxelNode)
     zox_sys_out(BlocksSpawned)
     for (int i = 0; i < it->count; i++) {
@@ -211,7 +211,7 @@ void VodesSpawnSystem(iter *it) {
         zox_sys_i(RenderDepth, renderDepth)
         zox_sys_i(RenderDistance, renderDistance)
         zox_sys_i(Position3D, position)
-        zox_sys_i(VoxScale, scale)
+        zox_sys_i(BlockScale, scale)
         zox_sys_o(VoxelNode, node)
         zox_sys_o(BlocksSpawned, blocksSpawned)
         // either voxel node is dirty, or we are spawning for first time based on distance changes

@@ -24,7 +24,7 @@ void link_camera_to_terrain(ecs *world, const entity player) {
     if (!terrain) {
         return;
     }
-    zox_geter_value(terrain, VoxScale, float, terrain_scale);
+    zox_geter_value(terrain, BlockScale, float, terrain_scale);
     int3 terrain_position = real_position_to_chunk_position(
         position,
         powers_of_two[depth],

@@ -102,7 +102,7 @@ void set_vox_file(
     zox_log("   - size(reduced) [%ix%ix%i]", rsize.x, rsize.y, rsize.z);
     zox_log("   - offset [%ix%ix%i]", offset.x, offset.y, offset.z);*/
 
-    zox_set(e, VoxScale, { scale });
+    zox_set(e, BlockScale, { scale });
     zox_set(e, NodeDepth, { node_depth });
     zox_set(e, ChunkSize, { rsize });
 

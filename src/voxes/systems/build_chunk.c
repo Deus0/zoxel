@@ -254,7 +254,7 @@ void ChunkColorsBuildSystem(iter *it) {
     zox_sys_in(ChunkNeighbors)
     zox_sys_in(ColorRGBs)
     zox_sys_in(ChunkSize)
-    zox_sys_in(VoxScale)
+    zox_sys_in(BlockScale)
     zox_sys_out(MeshIndicies)
     zox_sys_out(MeshVertices)
     zox_sys_out(MeshColorRGBs)
@@ -267,7 +267,7 @@ void ChunkColorsBuildSystem(iter *it) {
         zox_sys_i(ChunkNeighbors, chunkNeighbors)
         zox_sys_i(ColorRGBs, colorRGBs)
         zox_sys_i(ChunkSize, chunkSize)
-        zox_sys_i(VoxScale, voxScale)
+        zox_sys_i(BlockScale, blockScale)
         zox_sys_o(MeshDirty, meshDirty)
         zox_sys_o(MeshIndicies, meshIndicies)
         zox_sys_o(MeshVertices, meshVertices)
@@ -300,15 +300,15 @@ void ChunkColorsBuildSystem(iter *it) {
         const byte render_depth = renderDepth->value;   // this needs to be set better, per model type
         const float3 b = calculate_vox_bounds(
             chunkSize->value,
-            voxScale->value);
+            blockScale->value);
 
         const float3 offset = float3_scale(b, -1);
         byte chunk_length = powers_of_two[node_depth];    // render_depth
-        const float chunk_scale = voxScale->value * chunk_length;
+        const float chunk_scale = blockScale->value * chunk_length;
 
         /*zox_log("- building: vox voxscale:");
         zox_log("   chunk_scale [%f]", chunk_scale);
-        zox_log("   VoxScale [%f]", voxScale->value);
+        zox_log("   BlockScale [%f]", blockScale->value);
         zox_log("   chunk_length [%i]", chunk_length);
         zox_log("   offset [%fx%fx%f]", offset.x, offset.y, offset.z);*/
 

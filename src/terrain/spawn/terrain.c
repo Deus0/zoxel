@@ -31,7 +31,7 @@ ecs_entity_t spawn_terrain(
     zox_instance(prefab);
     zox_name("terrain");
     zox_set(e, Position3D, { position });
-    zox_set(e, VoxScale, { scale });
+    zox_set(e, BlockScale, { scale });
     zox_set(e, NodeDepth, { depth });
     // zox_set(e, Scale1D, { scale })
     if (tilemap) {

@@ -30,14 +30,14 @@ void ChunkDebugSystem(iter *it) {
     }
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(VoxScale)
+    zox_sys_in(BlockScale)
     zox_sys_in(Position3D)
     zox_sys_in(VoxelNode)
     zox_sys_in(NodeDepth)
     zox_sys_in(RenderDistance)
     zox_sys_in(ChunkNeighbors)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxScale, voxScale)
+        zox_sys_i(BlockScale, blockScale)
         zox_sys_i(Position3D, position)
         zox_sys_i(VoxelNode, voxelNode)
         zox_sys_i(NodeDepth, nodeDepth)
@@ -48,7 +48,7 @@ void ChunkDebugSystem(iter *it) {
         }
         // draw grid around chunk
         byte length = powers_of_two_byte[nodeDepth->value];
-        float scale = voxScale->value; // get_terrain_voxel_scale(nodeDepth->value);
+        float scale = blockScale->value; // get_terrain_voxel_scale(nodeDepth->value);
         const entity chunk_above = chunkNeighbors->value[direction_up];
         const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
 

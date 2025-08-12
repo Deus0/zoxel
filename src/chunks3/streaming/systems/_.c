@@ -24,7 +24,7 @@ void define_systems_streaming(ecs *world) {
         filter_cameras,
         [in] transforms3.Position3D,
         [in] generic.Bounds3D,
-        //[in] blocks.VoxScale,
+        //[in] blocks.BlockScale,
         [in] chunks3.ChunkEntities,
         [in] chunks3.VoxelNode,
         [out] rendering.RenderDisabled,

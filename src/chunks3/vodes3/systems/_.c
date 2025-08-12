@@ -31,7 +31,7 @@ void define_systems_vodes3(ecs* world) {
             [in] rendering.RenderDepth,
             [in] rendering.RenderDistance,
             [in] transforms3.Position3D,
-            [in] blocks.VoxScale,
+            [in] blocks.BlockScale,
             [out] chunks3.VoxelNode,
             [out] chunks3.BlocksSpawned);
 }

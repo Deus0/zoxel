@@ -3,7 +3,7 @@ TerrainPlace find_position_in_terrain(
     const entity terrain
 ) {
     const float3 bounds = (float3) { 0.5f, 1.0, 0.5f };
-    // zox_geter(terrain, VoxScale, voxScale)
+    // zox_geter(terrain, BlockScale, blockScale)
     zox_geter(terrain, ChunkLinks, chunk_links)
     entity chunk = 0;
     int3 chunk_position = int3_zero;
@@ -35,7 +35,7 @@ TerrainPlace find_position_in_terrain(
     int chunk_length = powers_of_two[node_depth];
     const int3 chunk_dimensions = (int3) { chunk_length, chunk_length, chunk_length };
     const int3 chunk_voxel_position = get_chunk_positionv(chunk_position, chunk_dimensions);
-    const float3 spawn_position = local_to_real_position_character(local_position, chunk_voxel_position, bounds, node_depth, 1); // voxScale->value);
+    const float3 spawn_position = local_to_real_position_character(local_position, chunk_voxel_position, bounds, node_depth, 1); // blockScale->value);
 
     // zox_log("Terrain Place Found [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z)
 
@@ -94,7 +94,7 @@ entity game_start_player_new(
     if (!terrain) {
         return 0;
     }
-    zox_geter_value(terrain, VoxScale, float, terrain_scale);
+    zox_geter_value(terrain, BlockScale, float, terrain_scale);
     // spawn a column of chunks for new player:
     zox_mut_begin(terrain, ChunkLinks, chunkLinks)
     byte did_add = 0;

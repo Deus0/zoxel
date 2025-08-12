@@ -432,7 +432,7 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
     zox_sys_in(RenderDepth);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(NodeDepth);
-    zox_sys_in(VoxScale);
+    zox_sys_in(BlockScale);
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
@@ -537,7 +537,7 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
         zox_sys_i(ChunkNeighbors, chunkNeighbors);
         zox_sys_i(RenderDepth, renderDepth);
         zox_sys_i(NodeDepth, nodeDepth);
-        zox_sys_i(VoxScale, voxScale);
+        zox_sys_i(BlockScale, block_scale);
         zox_sys_i(VoxelNode, voxelNode);
         zox_sys_o(MeshIndicies, meshIndicies);
         zox_sys_o(MeshVertices, meshVertices);
@@ -557,13 +557,14 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
             continue;
         }
 
-        // zox_geter_value(voxLink->value, VoxScale, float, scale);
+        // zox_geter_value(voxLink->value, BlockScale, float, scale);
         zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
 
         // we shouldnt be calculating this again here! make a new RenderDepth component - As opposed to ChunkDepth, RenderDepth used just for choosing which depth to render
         const byte render_depth =  renderDepth->value;
         // TODO: Get this scale directly from chunk
-        const float chunk_scale = ((float) powers_of_two[terrain_depth]) * voxScale->value;
+        const float chunk_scale = block_scale->value * powers_of_two[render_depth];
+        // ((float) powers_of_two[terrain_depth]) * block_scale->value;
 
 
         /*terrain_lod_to_node_depth(
@@ -572,13 +573,13 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
 
         // byte node_depth = nodeDepth->value;
         // byte terrain_length = ; //terrain_depth];
-        // TODO: grab voxScale from terrain instead
+        // TODO: grab blockScale from terrain instead
 
-        // const float chunk_scale = ((float) powers_of_two[nodeDepth->value]) * voxScale->value;
+        // const float chunk_scale = ((float) powers_of_two[nodeDepth->value]) * blockScale->value;
 
-        // zox_log_error("At Len [%i] Start scale: %f", terrain_length, voxScale->value);
-        // const float start_scale =  voxScale->value / ((float) length);
-        // zox_log("building: chunk_scale [%f] voxscale [%f] terrain_length [%i]", chunk_scale, voxScale->value, terrain_length);
+        // zox_log_error("At Len [%i] Start scale: %f", terrain_length, blockScale->value);
+        // const float start_scale =  blockScale->value / ((float) length);
+        // zox_log("building: chunk_scale [%f] voxscale [%f] terrain_length [%i]", chunk_scale, blockScale->value, terrain_length);
 
         const VoxelNode *neighbors[6];
         byte ndepths[6];

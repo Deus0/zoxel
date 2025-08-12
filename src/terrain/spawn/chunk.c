@@ -22,7 +22,7 @@ entity spawn_chunk_terrain(
     zox_set(e, ChunkPosition, { position });
 
     // scale needs to be based on chunk itself
-    zox_set(e, VoxScale, { terrain_voxel_scale });    // set from parent
+    zox_set(e, BlockScale, { terrain_voxel_scale });    // set from parent
 
     // we should just pass in positionf - local position of parent!
     byte terrain_length = powers_of_two[terrain_depth];

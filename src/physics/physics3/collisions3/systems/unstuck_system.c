@@ -20,7 +20,7 @@ void UnstuckSystem(iter *it) {
         zox_sys_o(LastUnstuck3, lastUnstuck3)
         zox_sys_o(Position3D, position3)
         zox_geter(voxLink->value, ChunkLinks, chunkLinks)
-        zox_geter_value(voxLink->value, VoxScale, float, terrain_scale);
+        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
         zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
         const float3 unstuck_push = (float3) { 0, terrain_scale, 0 };
 

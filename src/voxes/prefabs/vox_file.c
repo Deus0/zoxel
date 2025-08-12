@@ -10,7 +10,7 @@ entity spawn_prefab_vox_file(
     zox_prefab_set(e, ColorRGBs, { 0, NULL });
     zox_prefab_add(e, UboGPULink)
     // extra for rendering
-    zox_prefab_set(e, VoxScale, { vox_model_scale })
+    zox_prefab_set(e, BlockScale, { vox_model_scale })
     // Transforms
     zox_prefab_set(e, Position3D, { float3_zero })
     zox_prefab_set(e, Rotation3D, { float4_identity })

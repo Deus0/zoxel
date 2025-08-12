@@ -89,7 +89,7 @@ void ChunkLinkSystem(iter *it) {
         if (!zox_valid(voxLink->value)) {
             continue; // these shouldn't be here
         }
-        zox_geter_value(voxLink->value, VoxScale, float, terrain_scale);
+        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
         zox_geter_value(voxLink->value, NodeDepth, byte, node_depth);
         // const float3 real_position = position3D->value;
         const int3 new_chunk_position = real_position_to_chunk_position(

@@ -252,7 +252,7 @@ byte raycast_voxel_node(
                     character_raycast,
                     ray_origin,
                     ray_normal,
-                    caster));
+                    caster);
                 chunk_position = new_chunk_position;
             }
 
@@ -541,7 +541,7 @@ void Chunk3RaycastSystem(iter *it) {
         if (!zox_valid(camera) || !zox_valid(terrain) || !zox_has(terrain, RealmLink) || !zox_has(camera, RaycastOrigin)) {
             continue;
         }
-        zox_geter_value(voxLink->value, VoxScale, float, terrain_scalev);
+        zox_geter_value(voxLink->value, BlockScale, float, terrain_scalev);
         zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
         entity caster = get_linked_character(world, camera);
         const int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);

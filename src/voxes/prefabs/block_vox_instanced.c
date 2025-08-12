@@ -12,7 +12,7 @@ entity spawn_prefab_block_vox_instanced(
     prefab_add_cube_lines(world, e, color_white, 0);
     // zox_prefab_set(e, RenderDisabled, { 0 })
     // zox_prefab_set(e, InstanceLink, { 0 })
-    // zox_prefab_set(e, VoxScale, { vox_model_scale })
+    // zox_prefab_set(e, BlockScale, { vox_model_scale })
     // zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } })
     return e;
 }
@@ -27,7 +27,7 @@ entity spawn_block_vox_instanced(
 
     // Voxel
     zox_set(e, BlockIndex, { data->block_index });
-    zox_set(e, VoxScale, { data->scale });
+    zox_set(e, BlockScale, { data->scale });
 
     // Transform
     zox_set(e, Position3D, { data->position_real });

@@ -17,7 +17,7 @@ entity spawn_prefab_vox(
 
     // zox_prefab_set(e, TransformMatrix, { float4x4_identity })
     // vox
-    zox_set(e, VoxScale, { vox_model_scale });
+    zox_set(e, BlockScale, { vox_model_scale });
     zox_set(e, GenerateChunk, { 0 });
     zox_set(e, NodeDepth, { block_vox_depth });
     add_components_mesh_colored(world, e);
@@ -37,7 +37,7 @@ entity spawn_vox_basic(
 
     zox_instance(prefab);
     zox_set(e, NodeDepth, { node_depth });
-    zox_set(e, VoxScale, { voxel_scale });
+    zox_set(e, BlockScale, { voxel_scale });
     zox_set(e, ChunkSize, { chunk_size });
     spawn_gpu_mesh(world, e);
     spawn_gpu_colors(world, e);

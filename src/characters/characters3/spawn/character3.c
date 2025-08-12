@@ -44,7 +44,7 @@ ecs_entity_t spawn_character3(
         zox_set(e, RenderDisabled, { data.render_disabled });
     }
     /*if (data.scale) {
-        zox_set(e, VoxScale, { data.scale })
+        zox_set(e, BlockScale, { data.scale })
     }*/
     // voxels
     if (data.terrain) {
@@ -60,17 +60,17 @@ ecs_entity_t spawn_character3(
     if (type == zox_character_type_instanced) {
         // zox_has(data.prefab, InstanceLink)) {
         zox_set(e, InstanceLink, { vox });
-        if (zox_has(vox, VoxScale)) {
-            zox_geter_value(vox, VoxScale, float, meta_vox_scale);
+        if (zox_has(vox, BlockScale)) {
+            zox_geter_value(vox, BlockScale, float, meta_vox_scale);
             zox_geter_value(vox, ChunkSize, int3, meta_chunk_size);
             float3 meta_bounds = calculate_vox_bounds(
                 meta_chunk_size,
                 meta_vox_scale);
-            zox_set(e, VoxScale, { meta_vox_scale });
+            zox_set(e, BlockScale, { meta_vox_scale });
             zox_set(e, Bounds3D, { meta_bounds });
             // zox_log("vox_model_scale: %f - %f", vox_model_scale, meta_vox_scale)
         } else {
-            zox_log_error("vox has no VoxScale [%s]", zox_get_name(vox))
+            zox_log_error("vox has no BlockScale [%s]", zox_get_name(vox))
         }
 
     } else {

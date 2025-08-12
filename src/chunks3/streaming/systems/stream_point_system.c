@@ -20,10 +20,10 @@ void StreamPointSystem(iter *it) {
         if (streamDirty->value != zox_general_state_none) {
             continue;
         }
-        if (!zox_valid(voxLink->value) || !zox_has(voxLink->value, VoxScale) || !zox_has(voxLink->value, NodeDepth)) {
+        if (!zox_valid(voxLink->value) || !zox_has(voxLink->value, BlockScale) || !zox_has(voxLink->value, NodeDepth)) {
             continue;
         }
-        zox_geter_value(voxLink->value, VoxScale, float, terrain_scale);
+        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
         zox_geter_value(voxLink->value, NodeDepth, byte, node_depth);
 
         const int3 stream_point = real_position_to_chunk_position(

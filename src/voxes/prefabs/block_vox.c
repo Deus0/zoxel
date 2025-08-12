@@ -11,7 +11,7 @@ entity spawn_prefab_block_vox(ecs *world, const entity prefab) {
     // BlockLink to original voxel meta data
     zox_prefab_set(e, Position3D, { float3_zero });
     zox_prefab_set(e, Rotation3D, { float4_identity });
-    zox_prefab_set(e, VoxScale, { vox_model_scale });
+    zox_prefab_set(e, BlockScale, { vox_model_scale });
     // for debug
     zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
     prefab_add_cube_lines(world, e, color_white, 0);
@@ -27,7 +27,7 @@ entity spawn_block_vox(
     // transforms
     zox_set(e, Position3D, { data->position_real });
     // zox_set(e, Scale1D, { data->scale })
-    zox_set(e, VoxScale, { data->scale * 0.5f });
+    zox_set(e, BlockScale, { data->scale * 0.5f });
     // zox_set(e, TransformMatrix, { float4x4_position(data->position_real) })
     // zox_set(e, TransformMatrix, { float4x4_transform_scale(data->position_real, quaternion_identity, data->scale) })
     // rendering

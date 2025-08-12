@@ -54,7 +54,7 @@ void ChunkSpawnSystem(iter *it) {
             continue;
         }*/
 
-        zox_geter_value(voxLink->value, VoxScale, float, terrain_scale);
+        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
         const byte stream_zone = renderDistance->value < terrain_lod_far;
         if (stream_zone) {
             for (byte j = 0; j < 6; j++) {
