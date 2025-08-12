@@ -2,12 +2,7 @@
 #ifndef zoxm_vrays
 #define zoxm_vrays
 
-const uint safety_checks_raycasting = 512;
-const float raycast_thickness = 16;
-color hit_terrain_color = { 2, 145, 145, 55 };
-color hit_character_color = { 155, 45, 45, 65 };
-color hit_block_vox_color = { 55, 185, 145, 45 };
-
+#include "settings/_.c"
 #include "components/_.c"
 #include "util/_.c"
 #include "systems/_.c"

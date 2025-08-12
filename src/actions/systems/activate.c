@@ -52,7 +52,7 @@ void ActionActivateSystem(ecs_iter_t *it) {
                 zox_log(" ! cannot place with zero quantity")
             } else {
                 byte is_use_quantity = 0;
-                const byte hit_block = raycastVoxelData->result == ray_hit_type_terrain;
+                const byte hit_block = raycastVoxelData->result == rayhit_terrain;
                 const byte in_range = raycastVoxelData->distance <= raycastRange->value;
                 if (hit_block && in_range && zox_has(action, ItemBlock)) {
                     const ecs_entity_t block = zox_get_value(action, BlockLink)

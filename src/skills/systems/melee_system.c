@@ -21,6 +21,7 @@ void MeleeSystem(ecs_iter_t *it) {
         zox_sys_i(SkillResourceLink, skillResourceLink)
         zox_sys_i(SkillCost, skillCost)
         zox_sys_o(SkillActive, skillActive)
+
         const ecs_entity_t user = userLink->value;
         if (!skillActive->value) {
             continue;
@@ -35,7 +36,9 @@ void MeleeSystem(ecs_iter_t *it) {
         // does have skillResourceLink
         ecs_entity_t resource = 0;
         ecs_entity_t strength = 0;
+
         zox_geter(user, StatLinks, stats)
+
         for (int j = 0; j < stats->length; j++) {
             const ecs_entity_t stat = stats->value[j];
             zox_get_prefab(stat, stat_parent)
@@ -46,18 +49,20 @@ void MeleeSystem(ecs_iter_t *it) {
                 strength = stat;
             }
         }
-        // todo: move cost use into activation system
-        if (!resource || !zox_has(resource, StatValue)) {
-            continue;
-        }
 
+        // todo: move cost use into activation system
         // resource cost
-        float resource_left = zox_get_value(resource, StatValue)
-        if (resource_left < skillCost->value) {
-            continue;
+        if (!disable_skill_costs) {
+            if (!resource || !zox_has(resource, StatValue)) {
+                continue;
+            }
+            float resource_left = zox_get_value(resource, StatValue);
+            if (resource_left < skillCost->value) {
+                continue;
+            }
+            // this should be muter -> instant use
+            zox_set(resource, StatValue, { resource_left - skillCost->value });
         }
-        // this should be muter -> instant use
-        zox_set(resource, StatValue, { resource_left - skillCost->value })
 
 
         // skill validation
@@ -75,7 +80,7 @@ void MeleeSystem(ecs_iter_t *it) {
         }
         const float skill_range = skillRange->value;
         const ecs_entity_t hit = raycastVoxelData->chunk;
-        const byte in_range = raycastVoxelData->distance <= skill_range;
+        const byte in_range = debug_ray_big_range || raycastVoxelData->distance <= skill_range;
         if (!zox_valid(hit) || !in_range) {
             // ray too far
             spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[44], 0.3, volume);

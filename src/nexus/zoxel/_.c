@@ -154,7 +154,15 @@ zox_begin_module(ZoxGame)
     game_name = "Zoxel";
     add_hook_spawn_prefabs(zoxel_on_spawn_prefabs);
 
-    // is_generate_vox_outlines = 1;
+    const float sub_resolution = 4;
+    viewport_scale = 1 / sub_resolution;
+    target_fps = 0;
+    // is_split_screen = 1;
+
+    /*disable_skill_costs = 1;
+    debug_ray_big_range = 1;
+    is_generate_vox_outlines = 1;*/
+
     // disable_npcs = 1;
     // disable_block_voxes = 1;
     // nosounds = 1;
@@ -175,11 +183,6 @@ zox_begin_module(ZoxGame)
     // nosounds = 0;
     zoxel_set_debug();
 
-    const float sub_resolution = 1; // 4
-    viewport_scale = 1 / sub_resolution;
-    target_fps = 0;
-
-    is_split_screen = 0;
 
     // world
     zox_set_terrain_settings();

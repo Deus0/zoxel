@@ -1,6 +1,8 @@
 extern entity local_crosshair;
 extern void crosshair_set_type(ecs*, entity, byte);
 byte is_debug_mid_voxel = 0;
+byte is_slow_gizmos = 0;
+float raygizmo_line_length = 0.13f;   // 0.2f
 
 // using DDA for raycasting
 byte create_raycast_gizmo(
@@ -9,20 +11,20 @@ byte create_raycast_gizmo(
 ) {
     byte ray_hit = data->result;
 
-    if (ray_hit == ray_hit_type_terrain) {
+    if (ray_hit == rayhit_terrain) {
         // zox_log("data->voxel_scale: %f", data->voxel_scale);
 
         // add line too
         float3 b = float3_add(
             data->hit, // hit positionf
-            float3_scale(data->normal, 0.25f * data->voxel_scale));
+            float3_scale(data->normal, raygizmo_line_length * data->voxel_scale));
 
         spawn_line3D_colored_alpha(
             world,
             data->hit, // hit positionf
             b,
             raycast_thickness,
-            0.5f,
+            is_slow_gizmos ? 30 : 0.5f,
             hit_block_vox_color
         );
 
@@ -97,13 +99,13 @@ byte create_raycast_gizmo(
         // zox_log(" > r [%fx%fx%f]\n", data->position_real.x, data->position_real.y, data->position_real.z)
     }
 
-    else if (ray_hit == ray_hit_type_character) {
+    else if (ray_hit == rayhit_character) {
         // draw a cube above its head instead
         float3 b = float3_add(data->hit, float3_scale(float3_up, 0.06f));
         render_line3D_thickness_alpha(world, data->hit, b, hit_character_color, raycast_thickness);
     }
 
-    else if (ray_hit == ray_hit_type_block_vox) {
+    else if (ray_hit == rayhit_block_vox) {
         float3 b = float3_add(data->hit, float3_scale(data->normal, 0.06f));
         spawn_line3D_colored_alpha(
             world,

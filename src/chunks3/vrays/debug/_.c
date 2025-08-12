@@ -21,12 +21,25 @@ uint debug_ui_raycasting(
 
     zox_geter(character, RaycastVoxelData, data);
     index += snprintf(buffer + index, size - index, "Hit Result [%i]\n", data->result);
+    index += snprintf(buffer + index, size - index, "   + dist [%f]\n", data->distance);
+    index += snprintf(buffer + index, size - index, "   + hit [%fx%fx%f]\n",
+        data->hit.x, data->hit.y, data->hit.z);
+    index += snprintf(buffer + index, size - index, "   + normal [%fx%fx%f]\n",
+        data->normal.x, data->normal.y, data->normal.z);
+
     index += snprintf(buffer + index, size - index, "   + positionl [%ix%ix%i]\n",
         data->positionl.x, data->positionl.y, data->positionl.z);
+    index += snprintf(buffer + index, size - index, "   + positionl[L] [%ix%ix%i]\n",
+        data->positionl_last.x, data->positionl_last.y, data->positionl_last.z);
+
     index += snprintf(buffer + index, size - index, "   + positionv [%ix%ix%i]\n",
         data->positionv.x, data->positionv.y, data->positionv.z);
+    index += snprintf(buffer + index, size - index, "   + positionv[L] [%ix%ix%i]\n",
+        data->positionv_last.x, data->positionv_last.y, data->positionv_last.z);
+
     index += snprintf(buffer + index, size - index, "   + positionf [%fx%fx%f]\n",
         data->positionf.x, data->positionf.y, data->positionf.z);
+
     index += snprintf(buffer + index, size - index, "   + voxel_scale [%f]\n",
         data->voxel_scale);
 

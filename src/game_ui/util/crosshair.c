@@ -7,13 +7,13 @@ void crosshair_set_type(ecs_world_t* world, ecs_entity_t e, byte new) {
         return;
     }
     color c;
-    if (new == ray_hit_type_none) {
+    if (new == rayhit_none) {
         c = crosshair_air;
-    } else if (new == ray_hit_type_terrain) {
+    } else if (new == rayhit_terrain) {
         c = crosshair_terrain;
-    } else if (new == ray_hit_type_block_vox) {
+    } else if (new == rayhit_block_vox) {
         c = crosshair_terrain;
-    } else if (new == ray_hit_type_character) {
+    } else if (new == rayhit_character) {
         c = crosshair_target;
     } else {
         c = crosshair_air;

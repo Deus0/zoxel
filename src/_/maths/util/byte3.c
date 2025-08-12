@@ -107,3 +107,11 @@ static inline void byte3_multiply_byte(byte3* input, const byte mul) {
     input->y *= mul;
     input->z *= mul;
 }
+
+static inline byte3 byte3_scale(const byte3 v, const int m) {
+    return (byte3) { v.x * m, v.y * m, v.z * m };
+}
+
+static inline byte3 byte3_inverse_scale(const byte3 v, const int m) {
+    return (byte3) { v.x / m, v.y / m, v.z / m };
+}

@@ -67,7 +67,13 @@ void PlayerToggleCameraSystem(ecs_iter_t *it) {
         } else if (is_toggle_freeroam) {
             if (playerState->value == zox_player_state_playing || playerState->value == zox_player_state_free_roam) {
                 toggle_free_roam_camera(world, e);
-                set_children_component_byte(world, local_menu_game, zox_id(RenderDisabled), playerState->value != zox_player_state_playing);
+                if (zox_valid(local_menu_game)) {
+                    set_children_component_byte(
+                        world,
+                        local_menu_game,
+                        zox_id(RenderDisabled),
+                        playerState->value != zox_player_state_playing);
+                }
                 // zox_set(local_crosshair, RenderDisabled, { playerState->value == zox_player_state_playing })
             }
         }
