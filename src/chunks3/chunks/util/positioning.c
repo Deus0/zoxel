@@ -1,56 +1,5 @@
 const byte max_position_checks = 255;
 
-// scale 1/16.0f
-// return (int) floor(positionf * scale);
-static inline int positionf_to_positionv1(
-    const float positionf,
-    const float terrain_scale
-) {
-    return (int) floor(positionf / terrain_scale);
-}
-
-static inline int3 positionf_to_positionv(
-    const float3 positionf,
-    const float terrain_scale
-) {
-    return (int3) {
-        positionf_to_positionv1(positionf.x, terrain_scale),
-        positionf_to_positionv1(positionf.y, terrain_scale),
-        positionf_to_positionv1(positionf.z, terrain_scale)
-    };
-}
-
-/*int3 real_position_to_positionv(
-    float3 positionf,
-    const byte depth
-) {
-    const byte length = powers_of_two[depth];
-    const float multiplier = length / real_chunk_scale;
-    return (int3) {
-        (int) floor(positionf.x / scale),
-        (int) floor(positionf.y / scale),
-        (int) floor(positionf.z / scale)
-    };
-}*/
-
-int3 positionv_to_chunk_position(
-    const int3 positionv,
-    const int3 chunk_size
-) {
-    int3 positionv2 = positionv;
-    if (positionv.x < 0) positionv2.x += 1;
-    if (positionv.y < 0) positionv2.y += 1;
-    if (positionv.z < 0) positionv2.z += 1;
-    int3 chunk_position = int3_div(positionv2, chunk_size);
-    // (int3) { positionv.x / chunk_size.x, positionv.y / chunk_size.y, positionv.z / chunk_size.z };
-    // because for example -10 / 16 is 0 as an integer, but  coordinates we need a negative chunk position
-    if (positionv.x < 0) chunk_position.x -= 1;
-    if (positionv.y < 0) chunk_position.y -= 1;
-    if (positionv.z < 0) chunk_position.z -= 1;
-    return chunk_position;
-    // return (int3) { positionv.x / chunk_size.x, positionv.y / chunk_size.y, positionv.z / chunk_size.z };
-}
-
 int3 chunk_position_fix2(
     const float3 real_position,
     int3 chunk_position
@@ -76,34 +25,6 @@ int3 real_position_to_chunk_position(
         positionv.z / chunk_length
     };
     return chunk_position_fix2(positionf, chunk_position);
-}
-
-int3 get_positionl(
-    int3 positionv,
-    int3 chunk_position,
-    int3 chunk_size
-) {
-    positionv.x %= chunk_size.x;
-    positionv.y %= chunk_size.y;
-    positionv.z %= chunk_size.z;
-    if (positionv.x < 0) positionv.x = chunk_size.x - 1 + positionv.x;
-    if (positionv.y < 0) positionv.y = chunk_size.y - 1 + positionv.y;
-    if (positionv.z < 0) positionv.z = chunk_size.z - 1 + positionv.z;
-    return positionv;
-}
-
-static inline byte3 get_positionl_byte3(
-    int3 positionv,
-    byte3 chunk_size
-) {
-    byte3 positionl;
-    if (positionv.x < 0) positionl.x = chunk_size.x - 1 + ((positionv.x + 1) % chunk_size.x);
-    else positionl.x = positionv.x % chunk_size.x;
-    if (positionv.y < 0) positionl.y = chunk_size.y - 1 + ((positionv.y + 1) % chunk_size.y);
-    else positionl.y = positionv.y % chunk_size.y;
-    if (positionv.z < 0) positionl.z = chunk_size.z - 1 + ((positionv.z + 1) % chunk_size.z);
-    else positionl.z = positionv.z % chunk_size.z;
-    return positionl;
 }
 
 static inline byte3 get_positionl_byte3_2(

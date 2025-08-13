@@ -22,13 +22,14 @@ void DungeonBlockSystem(ecs_iter_t *it) {
         if (timerState->value == 0) {
             continue;
         }
-        const ecs_entity_t chunk = chunkLink->value;
-        zox_geter_value(chunk, NodeDepth, byte, node_depth)
-        zox_mut_begin(chunk, VoxelNode, node) // get node function
-        // zox_geter(chunk, ChunkNeighbors, chunkNeighbors)
-        int3 chunk_bounds = int3_single(powers_of_two[node_depth]);
-        // const int3 size = zox_get_value(chunkLink->value, ChunkSize)
-        const int3 voxel_position = zox_get_value(e, VoxelPosition)
+
+        ecs_entity_t chunk = chunkLink->value;
+        zox_geter_value(chunk, VoxLink, entity, terrain);
+        zox_geter(terrain, ChunkLinks, chunks);
+        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
+        byte3 terrain_sizec = byte3_single(powers_of_two[terrain_depth]);
+        // int3 chunk_bounds = int3_single(powers_of_two[node_depth]);
+        zox_geter_value(e, VoxelLocalPosition, byte3, positionl);
         // get closest grass block
         // byte3 position = (byte3) { rand() % size.x, rand() % size.y, rand() % size.z };
         byte place_type = 0;
@@ -38,21 +39,36 @@ void DungeonBlockSystem(ecs_iter_t *it) {
         // find next z position
         const byte radius = 3;
         const byte height = 5;
-        int3 position = voxel_position;
-        VoxelNode *update_node;
+
+        // chunk stuff
+        // zox_geter_value(chunk, NodeDepth, byte, node_depth);
+        zox_geter_value(chunk, ChunkSize, int3, chunk_size);
+        zox_geter_value(chunk, ChunkPosition, int3, chunk_position);
+
+        int3 positionv = positionl_to_positionv(
+            positionl,
+            chunk_position,
+            chunk_size,
+            terrain_sizec
+        );
+
+        entity place_chunk;
+        int3 place_positionv;
+        byte3 place_positionl;
+        int3 place_positionc;
+        // VoxelNode* place_node;
+
         // placing
         byte find = 0;
+        int3 check_positionv;
         for (int y = 0; y <= height && !find; y++) {
-            position.y = voxel_position.y + y;
+            check_positionv.y = positionv.y + y;
             for (int x = - radius; x <= radius && !find; x++) {
-                position.x = voxel_position.x + x;
+                check_positionv.x = positionv.x + x;
                 for (int z = - radius; z <= radius && !find; z++) {
-                    position.z = voxel_position.z + z;
-                    if (!int3_in_bounds(position, chunk_bounds)) {
-                        continue;
-                    }
+                    check_positionv.z = positionv.z + z;
                     // dodge dungeon core
-                    if (position.x == voxel_position.x && position.y == voxel_position.y && position.z == voxel_position.z) {
+                    if (x == 0 && y ==  0 && z == 0) {
                         continue;
                     }
                     // skip middle blocks
@@ -63,18 +79,48 @@ void DungeonBlockSystem(ecs_iter_t *it) {
                     if (x == 0 && z == radius && y != 0 && y != height) {
                         continue;
                     }
-                    update_node = get_node(node, node_depth, int3_to_byte3(position));
-                    if (!update_node) {
+
+                    // now we have positionv:
+                    //  get chunk positionc
+                    int3 check_positionc = positionv_to_positionc(
+                        check_positionv,
+                        terrain_sizec
+                    );
+                    entity check_chunk = int3_hashmap_get(chunks->value, check_positionc);
+                    if (!check_chunk) {
+                        return;
+                    }
+                    zox_geter_value(check_chunk, ChunkSize, int3, check_sizec);
+                    zox_geter_value(check_chunk, NodeDepth, byte, check_node_depth);
+
+                    byte3 check_positionl = positionv_to_positionl(
+                        check_positionv,
+                        check_positionc,
+                        check_sizec,
+                        terrain_sizec
+                    );
+                    if (!byte3_in_bounds(check_positionl, int3_to_byte3(check_sizec))) {
                         continue;
                     }
-                    if (update_node->value == place_type) {
+
+                    zox_geter(check_chunk, VoxelNode, check_node);
+                    const VoxelNode* check_subnode = get_node(
+                        (VoxelNode*) check_node,
+                        check_node_depth,
+                        check_positionl
+                    );
+                    if (!check_subnode || check_subnode->value == place_type) {
                         continue;
                     }
                     // can only place in air
-                    if (place_type && update_node->value) {
+                    if (place_type && check_subnode->value) {
                         place_type = 0;
                         // continue;
                     }
+                    place_positionv = check_positionv;
+                    place_positionl = check_positionl;
+                    place_positionc = check_positionc;
+                    place_chunk = check_chunk;
                     find = 1;
                 }
             }
@@ -82,25 +128,32 @@ void DungeonBlockSystem(ecs_iter_t *it) {
         if (!find) {
             continue;
         }
-        /*if (position.x == voxel_position.x && position.y == voxel_position.y && position.z == voxel_position.z) {
-            zox_log("Dungeon Block cannot implode.\n")
+
+        if (!place_chunk || !zox_has(place_chunk, VoxelNodeQueue)) {
+            zox_log_error("Cannot place: Invalid VoxelNodeQueue [%ix%ix%i]",
+                place_positionc.x, place_positionc.y, place_positionc.z);
             continue;
-        }*/
-        //
-        //RaycastVoxelData raycastVoxelData = {
-        //    .chunk = chunkLink->value,
-        //    .node = update_node,
-        //    .position = position,
-        //};
-        float3 positionf = positionv_to_real_position(voxel_position, int3_to_byte3(chunk_bounds), default_vox_scale);
+        }
+
+        // add to queue
+        zox_muter(place_chunk, VoxelNodeQueue, queue);
+        a_VoxelNodeQueue(queue,
+            (VoxelNodeUpdate) {
+                .value = place_type,
+                .positionl = place_positionl,
+                .positionv = place_positionv
+            });
+
+        /*zox_mut_begin(place_chunk, VoxelNode, place_node); // get node function
+        // float3 positionf = positionv_to_real_position(voxel_position, int3_to_byte3(chunk_bounds), default_vox_scale);
         place_block(world,
-            chunkLink->value,
-            update_node,
-            int3_to_byte3(position),
-            voxel_position,
-            place_type,
-            positionf);
-        zox_mut_end(chunk, VoxelNode)
+            place_chunk,
+            place_node,
+            place_positionl,
+            place_positionv,
+            place_type
+        );
+        zox_mut_end(place_chunk, VoxelNode);*/
         // zox_log("+ Dungeon Block Placing: %s [%ix%ix%i]: %i", zox_get_name(e), position.x, position.y, position.z, place_type)
     }
 } zoxd_system(DungeonBlockSystem)

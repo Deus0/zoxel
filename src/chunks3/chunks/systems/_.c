@@ -17,6 +17,7 @@ void get_chunk_filename(char* out, const int3 position) {
 
 #include "chunk3_save.c"
 #include "chunk3_load.c"
+#include "voxel_node_queue.c"
 
 void define_systems_chunks(ecs *world) {
     zoxd_system_increment(ChunkDirty);
@@ -72,4 +73,10 @@ void define_systems_chunks(ecs *world) {
             [in] rendering.RenderDepth,
             [out] chunks3.VoxLink,
             [out] blocks.BlockScale);
+    zox_system(VoxelNodeQueueSystem, zoxp_voxels_write,
+            [in] chunks3.NodeDepth,
+            [out] chunks3.VoxelNodeQueue,
+            [out] chunks3.VoxelNode,
+            [out] chunks3.VoxelNodeDirty,
+            [out] chunks3.VoxelNodeEdited);
 }

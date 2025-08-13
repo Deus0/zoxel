@@ -4,10 +4,11 @@ entity spawn_prefab_chunk_terrain(
     const int3 size
 ) {
     zox_prefab_child(prefab);
-    add_components_mesh_textured(world, e);
-    // Terrain / Generation
     zox_add_tag(e, TerrainChunk);
     zox_add_tag(e, ChunkTextured);
+    zox_prefab_set(e, VoxelNodeQueue, { 0 });
+    add_components_mesh_textured(world, e);
+    // Terrain / Generation
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateChunk, { 0 });
     zox_prefab_set(e, ChunkEntities, { 0, NULL });

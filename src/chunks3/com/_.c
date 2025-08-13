@@ -12,21 +12,19 @@ zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
 zoxc_byte(BlocksSpawned);
 zoxc_byte(NodeDepth);
-zoxc_byte(VoxelNodeDirty);
-zoxc_byte(VoxelNodeEdited);
-zoxc_byte(VoxelNodeLoaded);
 zoxc_float(RaycastRange);
-#include "neighbors.c"
-#include "chunk_links.c"
 
 zoxc_link(ChunkLink, entity, ChunkEntities)
+#include "neighbors.c"
+#include "chunk_links.c"
 
 zoxc_node(VoxelNode, byte, 0)
 zox_node_add_link(VoxelNode)
 zoxc_node_helper(VoxelNode, byte)
-
-zoxc_node(LightNode, byte, 0)
-zoxc_node_helper(LightNode, byte)
+zoxc_byte(VoxelNodeDirty);
+zoxc_byte(VoxelNodeEdited);
+zoxc_byte(VoxelNodeLoaded);
+zoxc_queue(VoxelNodeQueue, VoxelNodeUpdate, 1)
 
 void define_components_chunks(ecs *world) {
     zox_define_tag(Chunk);
@@ -45,10 +43,11 @@ void define_components_chunks(ecs *world) {
     zox_define_component(ChunkNeighbors);
     zox_define_links_component(ChunkLink);
     zoxd_byte(NodeDepth);
+    // Voxels
     zoxd_node(VoxelNode);
-    zoxd_node(LightNode);
     zoxd_byte(VoxelNodeDirty);
     zoxd_byte(VoxelNodeEdited);
     zoxd_byte(VoxelNodeLoaded);
     zox_define_hashmap_component(ChunkLinks);
+    zoxd_queue(VoxelNodeQueue);
 }
