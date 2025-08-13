@@ -7,7 +7,7 @@ entity spawn_chunk_terrain(
     const int3 camera_position,
     const int3 position,
     const byte terrain_depth,
-    const float terrain_voxel_scale
+    const float terrain_scalev
 ) {
 
     zox_instance(prefab);
@@ -22,14 +22,20 @@ entity spawn_chunk_terrain(
     zox_set(e, ChunkPosition, { position });
 
     // scale needs to be based on chunk itself
-    zox_set(e, BlockScale, { terrain_voxel_scale });    // set from parent
+    const byte camera_distance = get_camera_chunk_distance_xz(camera_position, position);
+    const byte render_depth = camera_distance_to_terrain_render_depth(camera_distance);
+    const float chunk_scalev = get_chunk_scale(
+        render_depth,
+        terrain_depth,
+        terrain_scalev
+    );
+    zox_set(e, BlockScale, { chunk_scalev });    // set from parent
 
     // we should just pass in positionf - local position of parent!
     byte terrain_length = powers_of_two[terrain_depth];
-    const float chunk_scale = ((float) terrain_length) * terrain_voxel_scale;
     const float3 positionf = float3_scale(
         float3_from_int3(position),
-        chunk_scale
+        terrain_length * terrain_scalev
     );
     zox_set(e, ChunkSize, { int3_single(terrain_length) });
 
@@ -40,12 +46,10 @@ entity spawn_chunk_terrain(
 
     // lod update here
     // todo: just start this as invisible and update with streaming systems
-    const byte camera_distance = get_camera_chunk_distance_xz(camera_position, position);
     zox_set(e, RenderDistance, { camera_distance });
     zox_set(e, RenderDistanceDirty, { zox_dirty_trigger });
 
     // zox_set(e, RenderDepthMax, { terrain_depth });
-    const byte render_depth = camera_distance_to_terrain_render_depth(camera_distance);
     zox_set(e, RenderDepth, { render_depth });
     if (render_depth != render_depth_invisible) {
         zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
