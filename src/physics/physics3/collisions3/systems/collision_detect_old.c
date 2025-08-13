@@ -93,13 +93,13 @@ void collide_with_chunk_d3(
     if (!node)  {
         return;
     }
-    byte3 voxel_position_local = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
-    if (!byte3_in_bounds(voxel_position_local, chunk_dimensions_b3)) {
+    byte3 voxel_positionl = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
+    if (!byte3_in_bounds(voxel_positionl, chunk_dimensions_b3)) {
         return;
     }
     zox_geter_value(chunk, NodeDepth, byte, node_depth)
 
-    const byte voxel = get_sub_node_voxel_locked(node, &voxel_position_local, terrain_depth); // node_depth);
+    const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
     if (block_collisions[voxel]) {
         // Calculate deltas
         const int delta_vox_d1 = int_abs(position_vox_d1 - position_vox_last_d1);
@@ -183,13 +183,13 @@ void collide_with_chunk_d2(
     if (!node) {
         return;
     }
-    byte3 voxel_position_local = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
-    if (!byte3_in_bounds(voxel_position_local, chunk_dimensions_b3))  {
+    byte3 voxel_positionl = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
+    if (!byte3_in_bounds(voxel_positionl, chunk_dimensions_b3))  {
         return;
     }
 
     // use terrain depth here for now
-    const byte voxel = get_sub_node_voxel_locked(node, &voxel_position_local, terrain_depth); // node_depth);
+    const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
     if (block_collisions[voxel]) {
         // float_abs
         const int delta_vox_d1 = int_abs(position_vox_d1 - position_vox_last_d1);
@@ -322,17 +322,17 @@ void collide_with_chunk(
 
     int3 voxel_position2 = int3_div1(voxel_position, (int) ddepth);
     byte3 chunk_size = byte3_single(powers_of_two[chunk_depth]);
-    byte3 voxel_position_local = get_positionl_byte3(voxel_position2, chunk_size);
-    if (!byte3_in_bounds(voxel_position_local, chunk_size)) {
+    byte3 voxel_positionl = get_positionl_byte3(voxel_position2, chunk_size);
+    if (!byte3_in_bounds(voxel_positionl, chunk_size)) {
         return;
     }
 
-    /*byte3 voxel_position_local = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
-    if (!byte3_in_bounds(voxel_position_local, chunk_dimensions_b3)) {
+    /*byte3 voxel_positionl = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
+    if (!byte3_in_bounds(voxel_positionl, chunk_dimensions_b3)) {
         return;
     }*/
 
-    const byte voxel = get_sub_node_voxel_locked(node, &voxel_position_local, chunk_depth);
+    const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, chunk_depth);
     if (block_collisions[voxel]) {
         *collided_d = 1 + is_negative;
 
@@ -365,14 +365,14 @@ void collide_with_chunk(
 void CollisionDetectSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxLink);
+    zox_sys_in(TerrainLink);
     zox_sys_in(Bounds3D);
     zox_sys_in(Position3D);
     zox_sys_in(LastPosition3D);
     zox_sys_out(Collision);
     zox_sys_out(CollisionDistance);
     // find realm first
-    const VoxelLinks *voxels = get_first_terrain_voxels(world, VoxLink_, it->count);
+    const VoxelLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
     if (!voxels) {
         return;
     }
@@ -381,18 +381,18 @@ void CollisionDetectSystem(iter *it) {
 
     // now do collisions
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxLink, voxLink);
+        zox_sys_i(TerrainLink, link);
         zox_sys_i(Bounds3D, bounds3D);
         zox_sys_i(Position3D, position3D);
         zox_sys_i(LastPosition3D, lastPosition3D);
         zox_sys_o(Collision, collision);
         zox_sys_o(CollisionDistance, collisionDistance);
-        if (!zox_valid(voxLink->value)) {
+        if (!zox_valid(link->value)) {
             continue; // these shouldn't be here
         }
-        zox_geter(voxLink->value, ChunkLinks, chunks);
-        zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
-        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
+        zox_geter(link->value, ChunkLinks, chunks);
+        zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
+        zox_geter_value(link->value, BlockScale, float, terrain_scale);
         if (!chunks || collision->value) {
             continue;
         }

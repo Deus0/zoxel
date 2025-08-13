@@ -20,7 +20,7 @@ void test_spawn_chunk_terrain(ecs_world_t *world, int32_t keycode) {
             zox_geter_value(terrain, BlockScale, float, terrain_scale);
             test_chunk_terrain = spawn_chunk_terrain(
                 world,
-                prefab_chunk_height,
+                prefab_chunk_terrain,
                 terrain,
                 chunk_position,
                 int3_zero,

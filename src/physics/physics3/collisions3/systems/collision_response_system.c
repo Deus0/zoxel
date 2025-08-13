@@ -27,30 +27,25 @@ const float penetration_amplifier = 1.0f; // 1.01f
 
 void CollisionResponseSystem(iter *it) {
     zox_sys_begin();
-    // zox_sys_in(VoxLink)
-    zox_sys_in(CollisionDistance)
-    zox_sys_out(Position3D)
-    zox_sys_out(Velocity3D)
-    zox_sys_out(LastPosition3D)
-    zox_sys_out(Collision)
-    zox_sys_out(Grounded)
+    zox_sys_in(CollisionDistance);
+    zox_sys_out(Position3D);
+    zox_sys_out(Velocity3D);
+    zox_sys_out(LastPosition3D);
+    zox_sys_out(Collision);
+    zox_sys_out(Grounded);
     // now do collisions
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_i(VoxLink, voxLink)
-        zox_sys_i(CollisionDistance, collisionDistance)
-        zox_sys_o(Position3D, position3D)
-        zox_sys_o(Velocity3D, velocity3D)
-        zox_sys_o(LastPosition3D, lastPosition3D)
-        zox_sys_o(Collision, collision)
-        zox_sys_o(Grounded, grounded)
+        zox_sys_i(CollisionDistance, collisionDistance);
+        zox_sys_o(Position3D, position3D);
+        zox_sys_o(Velocity3D, velocity3D);
+        zox_sys_o(LastPosition3D, lastPosition3D);
+        zox_sys_o(Collision, collision);
+        zox_sys_o(Grounded, grounded);
         if (!collision->value) {
             grounded->value = 0;
             lastPosition3D->value = position3D->value;
             continue;
         }
-        // zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
-        // const float3 position_last = lastPosition3D->value;
-        // const float3 position_new = position3D->value;
         const float3 collision_distance = collisionDistance->value;
         // Unpacking:
         byte did_collide_x = (collision->value >> 0) & 0x3;

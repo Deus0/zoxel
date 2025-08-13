@@ -63,34 +63,34 @@ float2 get_ui_real_position2D_parent(
     return position2D;
 }
 
-int2 get_element_pixel_position_global(
-    const int2 parent_pixel_position_global,
+int2 get_element_pixel_positionv(
+    const int2 parent_pixel_positionv,
     const int2 parent_size,
     const int2 pixel_position,
     const float2 anchor
 ) {
-    int2 pixel_position_global = parent_pixel_position_global;
+    int2 pixel_positionv = parent_pixel_positionv;
     // position is actually the centre point, so get the bottom left corner here
-    pixel_position_global.x -= parent_size.x / 2;
-    pixel_position_global.y -= parent_size.y / 2;
+    pixel_positionv.x -= parent_size.x / 2;
+    pixel_positionv.y -= parent_size.y / 2;
     // now centre it within the parent element / canvas
-    pixel_position_global.x += (int) (parent_size.x * anchor.x);
-    pixel_position_global.y += (int) (parent_size.y * anchor.y);
+    pixel_positionv.x += (int) (parent_size.x * anchor.x);
+    pixel_positionv.y += (int) (parent_size.y * anchor.y);
     // add local position offset
-    pixel_position_global.x += pixel_position.x;
-    pixel_position_global.y += pixel_position.y;
-    return pixel_position_global;
+    pixel_positionv.x += pixel_position.x;
+    pixel_positionv.y += pixel_position.y;
+    return pixel_positionv;
 }
 
 float2 get_element_position(
-    const int2 pixel_position_global,
+    const int2 pixel_positionv,
     const int2 canvas_size
 ) {
     const float2 canvas_size_f = int2_to_float2(canvas_size);
     const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
-    float2 position = int2_to_float2(pixel_position_global);
+    float2 position = int2_to_float2(pixel_positionv);
     float2_divide_float2(&position, canvas_size_f);
-    // (float2) { pixel_position_global.x * (aspect_ratio / canvas_size_f.x), pixel_position_global.y / canvas_size_f.y };
+    // (float2) { pixel_positionv.x * (aspect_ratio / canvas_size_f.x), pixel_positionv.y / canvas_size_f.y };
     // we get our 0 to 1, make -0.5 to 0.5, then stretch x along canvas
     position.x -= 0.5f;
     position.y -= 0.5f;
@@ -217,10 +217,10 @@ void set_ui_transform(
         const float2 anchor = zox_get_value(e, Anchor)
         int2 pixel_position = zox_get_value(e, PixelPosition)
         // todo: make this more widespread, used atm just for game_ui
-        const int2 position_in_canvas = get_element_pixel_position_global(parent_position, parent_size, pixel_position, anchor);
-        const float2 position_real = get_element_position(position_in_canvas, canvas_size);
+        const int2 position_in_canvas = get_element_pixel_positionv(parent_position, parent_size, pixel_position, anchor);
+        const float2 positionf = get_element_position(position_in_canvas, canvas_size);
         anchor_element_position2D(&pixel_position, anchor, pixel_size);
-        zox_set(e, Position2D, { position_real })
+        zox_set(e, Position2D, { positionf })
         zox_set(e, CanvasPosition, { position_in_canvas })
 #ifdef debug_ui_scaling
         zox_log("        -> to [%ix%i]\n", position_in_canvas.x, position_in_canvas.y)
@@ -249,14 +249,14 @@ void initialize_element_invisible(
     const float2 anchor,
     const byte layer,
     const float2 position2D,
-    const int2 pixel_position_global
+    const int2 pixel_positionv
 ) {
     zox_set(e, Anchor, { anchor })
     zox_set(e, Layer2D, { layer })
     zox_set(e, PixelSize, { pixel_size })
     zox_set(e, PixelPosition, { pixel_position })
     zox_set(e, Position2D, { position2D }) // set this inside pixel position system
-    zox_set(e, CanvasPosition, { pixel_position_global }) // set this inside system too
+    zox_set(e, CanvasPosition, { pixel_positionv }) // set this inside system too
     zox_set(e, CanvasLink, { canvas })
     zox_set(e, ParentLink, { parent })
     if (canvas == parent) {
@@ -276,9 +276,9 @@ void initialize_element(
     const float2 anchor,
     const byte layer,
     const float2 position2D,
-    const int2 pixel_position_global
+    const int2 pixel_positionv
 ) {
-    initialize_element_invisible(world, e, parent, canvas, pixel_position, pixel_size, anchor, layer, position2D, pixel_position_global);
+    initialize_element_invisible(world, e, parent, canvas, pixel_position, pixel_size, anchor, layer, position2D, pixel_positionv);
     zox_set(e, TextureSize, { texture_size })
 }
 
@@ -289,7 +289,7 @@ void set_element_spawn_data(
     const ParentSpawnData parent_data,
     ElementSpawnData *element_data
 ) {
-    element_data->position_in_canvas = get_element_pixel_position_global(
+    element_data->position_in_canvas = get_element_pixel_positionv(
         parent_data.position,
         parent_data.size,
         element_data->position,

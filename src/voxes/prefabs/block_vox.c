@@ -25,11 +25,11 @@ entity spawn_block_vox(
     zox_instance(data->prefab);
     zox_name("block_vox");
     // transforms
-    zox_set(e, Position3D, { data->position_real });
+    zox_set(e, Position3D, { data->positionf });
     // zox_set(e, Scale1D, { data->scale })
     zox_set(e, BlockScale, { data->scale * 0.5f });
-    // zox_set(e, TransformMatrix, { float4x4_position(data->position_real) })
-    // zox_set(e, TransformMatrix, { float4x4_transform_scale(data->position_real, quaternion_identity, data->scale) })
+    // zox_set(e, TransformMatrix, { float4x4_position(data->positionf) })
+    // zox_set(e, TransformMatrix, { float4x4_transform_scale(data->positionf, quaternion_identity, data->scale) })
     // rendering
     zox_set(e, RenderDepth, { data->render_depth });
     zox_set(e, RenderDisabled, { data->render_disabled });

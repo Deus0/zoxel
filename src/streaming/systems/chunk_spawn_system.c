@@ -1,6 +1,8 @@
 extern entity spawn_chunk_terrain(ecs*, const entity, const entity, const int3, const int3, const byte, const float);
 
 void ChunkSpawnSystem(iter *it) {
+    const entity prefab_chunk = prefab_chunk_terrain;
+
     zox_sys_query();
     zox_sys_world();
 
@@ -91,7 +93,7 @@ void ChunkSpawnSystem(iter *it) {
 
                         neighbor = spawn_chunk_terrain(
                             world,
-                            prefab_chunk_streaming,
+                            prefab_chunk,
                             voxLink->value,
                             stream_point,
                             neighbor_position,

@@ -76,21 +76,21 @@ void ChunkLinkSystem(iter *it) {
     // const int3 chunk_dimensions = int3_single(powers_of_two[depth]);
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(VoxLink)
+    zox_sys_in(TerrainLink)
     zox_sys_out(Position3D)
     zox_sys_out(ChunkPosition)
     zox_sys_out(ChunkLink)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        zox_sys_i(VoxLink, voxLink)
+        zox_sys_i(TerrainLink, link)
         zox_sys_i(Position3D, position)
         zox_sys_o(ChunkPosition, chunkPosition)
         zox_sys_o(ChunkLink, chunkLink)
-        if (!zox_valid(voxLink->value)) {
+        if (!zox_valid(link->value)) {
             continue; // these shouldn't be here
         }
-        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
-        zox_geter_value(voxLink->value, NodeDepth, byte, node_depth);
+        zox_geter_value(link->value, BlockScale, float, terrain_scale);
+        zox_geter_value(link->value, NodeDepth, byte, node_depth);
         // const float3 real_position = position3D->value;
         const int3 new_chunk_position = real_position_to_chunk_position(
             position->value,
@@ -98,7 +98,7 @@ void ChunkLinkSystem(iter *it) {
             terrain_scale);
         byte is_set = !chunkLink->value || (!int3_equals(new_chunk_position, chunkPosition->value));
         if (is_set) {
-            zox_geter(voxLink->value, ChunkLinks, chunkLinks)
+            zox_geter(link->value, ChunkLinks, chunkLinks)
             const entity chunk = int3_hashmap_get(chunkLinks->value, new_chunk_position);
             if (set_entity_chunk(world, e, chunkLink, chunk)) {
                 chunkPosition->value = new_chunk_position;

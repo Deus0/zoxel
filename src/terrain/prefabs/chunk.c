@@ -1,12 +1,11 @@
-ecs_entity_t spawn_prefab_chunk_terrain(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_prefab_chunk_terrain(
+    ecs *world,
+    const entity prefab,
     const int3 size
 ) {
     zox_prefab_child(prefab);
     add_components_mesh_textured(world, e);
     // Terrain / Generation
-    zox_add_tag(e, StreamedChunk);
     zox_add_tag(e, TerrainChunk);
     zox_add_tag(e, ChunkTextured);
     zox_prefab_set(e, Seed, { 666 });

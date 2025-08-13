@@ -57,7 +57,7 @@ byte test_terrain_spawn(ecs_world_t *world) {
     zox_log("### ### ### ### ###")
     zox_log("! [S]:spawned terrain at frame [%i] time [%f]", ecs_run_count - 1, current_time_in_seconds())
     const ecs_entity_t streamer = spawn_streamer(world, prefab_streamer, int3_zero);
-    const ecs_entity_t terrain = spawn_terrain_streaming(world, realm, int3_zero, (int3) { terrain_spawn_distance, terrain_vertical, terrain_spawn_distance }, prefab_terrain, prefab_chunk_height);
+    const ecs_entity_t terrain = spawn_terrain_streaming(world, realm, int3_zero, (int3) { terrain_spawn_distance, terrain_vertical, terrain_spawn_distance }, prefab_terrain, prefab_chunk_terrain);
     zox_set(terrain, RealmLink, { realm })
     zox_set(realm, TerrainLink, { terrain }) // link terrain to realm too
     local_terrain = terrain;

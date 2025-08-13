@@ -4,13 +4,13 @@
 ecs_entity_t prefab_skybox;
 ecs_entity_t shader_skybox; // shaders global
 ecs_entity_t skybox; // remove this, link to realm/game
-#include "data/settings.c"
+#include "dat/settings.c"
 zox_tag(Weather);
 zox_tag(Skybox);
-#include "shaders/skybox.c"
-#include "prefabs/prefabs.c"
-#include "systems/skybox_restore_system.c"
-#include "systems/skybox_set_time_system.c"
+#include "shd/skybox.c"
+#include "pre/prefabs.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 void spawn_shaders_weather(ecs_world_t *world) {
     shader_skybox = spawn_shader_skybox(world);
@@ -36,6 +36,7 @@ zox_begin_module(Weathers)
     // hooks
     add_hook_load_shader(&spawn_shaders_weather);
     add_hook_on_boot(on_boot_weathers);
+    add_to_event_game_state((zox_game_event) { &game_state_weather });
     // prefabs
     spawn_prefabs_weather(world);
 zox_end_module(Weathers)

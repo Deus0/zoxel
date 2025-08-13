@@ -1,4 +1,5 @@
 // VoxelRays into your heart <3
+// NOTE: Moved to src/ because needs terrain link now
 #ifndef zoxm_vrays
 #define zoxm_vrays
 

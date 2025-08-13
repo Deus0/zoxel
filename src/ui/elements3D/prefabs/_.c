@@ -1,10 +1,10 @@
-void set_element_properties(ecs *world, const entity e, const entity parent, const entity canvas, const int2 pixel_position, const int2 pixel_size, const float2 anchor, const byte layer, const float2 position2D, const int2 pixel_position_global) {
+void set_element_properties(ecs *world, const entity e, const entity parent, const entity canvas, const int2 pixel_position, const int2 pixel_size, const float2 anchor, const byte layer, const float2 position2D, const int2 pixel_positionv) {
     zox_set(e, Anchor, { anchor })
     zox_set(e, Layer2D, { layer })
     zox_set(e, PixelSize, { pixel_size })
     zox_set(e, PixelPosition, { pixel_position })
     zox_set(e, Position2D, { position2D }) // set this inside pixel position system
-    zox_set(e, CanvasPosition, { pixel_position_global }) // set this inside system too
+    zox_set(e, CanvasPosition, { pixel_positionv }) // set this inside system too
     zox_set(e, CanvasLink, { canvas })
     zox_set(e, ParentLink, { parent })
     if (canvas == parent) {

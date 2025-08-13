@@ -16,16 +16,16 @@ void spawned_block_vox(
         .prefab = prefab,
         .vox = vox,
         .block_index = data->block_index,
-        .position_local = data->position_local,
-        .position_global = data->position_global,
-        .position_real = data->position_real,
+        .positionl = data->positionl,
+        .positionv = data->positionv,
+        .positionf = data->positionf,
         .scale = data->scale,
         .render_depth = data->render_depth,
         .render_disabled = data->render_disabled,
     };
     // offset property
     /*if (zox_has(data->block, BlockVoxOffset) && zox_gett_value(data->block, BlockVoxOffset)) {
-        float3_add_float3_p(&spawn_data.position_real, (float3) { 0, data->scale * -0.25f, 0 });
+        float3_add_float3_p(&spawn_data.positionf, (float3) { 0, data->scale * -0.25f, 0 });
     }*/
     entity e2;
     if (zox_has(prefab, BlockVox)) {
@@ -38,8 +38,8 @@ void spawned_block_vox(
     link_node_VoxelNode(data->node, e2);
 
     /*zox_log("+ Placing Block [%s]: linked: [%i]", zox_get_name(data->block), data->node->linked)
-    zox_log("   - local [%ix%ix%i] ", spawn_data.position_local.x, spawn_data.position_local.y, spawn_data.position_local.z)
-    zox_log("   - global [%ix%ix%i] ", spawn_data.position_global.x, spawn_data.position_global.y, spawn_data.position_global.z)
-    zox_log("   - real [%fx%fx%f] ", spawn_data.position_real.x, spawn_data.position_real.y, spawn_data.position_real.z)*/
-    // spawn_line3D(world, spawn_data.position_real, float3_add(spawn_data.position_real, (float3) { 0, 2, 0 }), 2, 3);
+    zox_log("   - local [%ix%ix%i] ", spawn_data.positionl.x, spawn_data.positionl.y, spawn_data.positionl.z)
+    zox_log("   - global [%ix%ix%i] ", spawn_data.positionv.x, spawn_data.positionv.y, spawn_data.positionv.z)
+    zox_log("   - real [%fx%fx%f] ", spawn_data.positionf.x, spawn_data.positionf.y, spawn_data.positionf.z)*/
+    // spawn_line3D(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
 }

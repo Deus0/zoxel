@@ -2,7 +2,6 @@ void game_start_terrain2D(
     ecs_world_t *world,
     const ecs_entity_t game
 ) {
-    set_skybox_colors(world, game_sky_color, game_sky_bottom_color);
     spawn_grid2D(world);
 }
 
@@ -16,7 +15,7 @@ void spawn_terrain_on_realm(
         int3_zero,
         render_size,
         prefab_terrain,
-        prefab_chunk_height);
+        prefab_chunk_terrain);
     zox_set(terrain, RealmLink, { realm })
     zox_set(realm, TerrainLink, { terrain }) // link terrain to realm too
     local_terrain = terrain;
@@ -26,7 +25,6 @@ void game_start_terrain3D(
     ecs_world_t *world,
     const ecs_entity_t game
 ) {
-    set_skybox_colors(world, game_sky_color, game_sky_bottom_color);
     zox_geter(game, RealmLink, realmLink)
     spawn_terrain_on_realm(world, realmLink->value);
 }

@@ -9,7 +9,7 @@ entity spawn_header(
     const int font_size,
     int header_margins,
     const byte layer,
-    const int2 parent_pixel_position_global,
+    const int2 parent_pixel_positionv,
     const int2 parent_pixel_size,
     const byte is_close_button,
     const int2 canvas_size)
@@ -28,7 +28,7 @@ entity spawn_header(
         (int) (font_size * 0.3f),
         (int) (font_size * 0.3f)
     };
-    const int2 global_position = get_element_pixel_position_global(parent_pixel_position_global, parent_pixel_size, pixel_position, anchor);
+    const int2 global_position = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
     const float2 position2D = get_element_position(global_position, canvas_size);
     const byte zext_layer = layer + 1;
     const byte button_layer = layer + 2;
@@ -104,7 +104,7 @@ entity spawn_header2(ecs *world, SpawnHeader *data) {
         zext_position.x = 0;
     }
     const byte2 padding = (byte2) { (int) (data->zext.font_size * 0.3f), (int) (data->zext.font_size * 0.3f) };
-    const int2 canvas_position = get_element_pixel_position_global(data->parent.position, data->parent.size, data->element.position, data->element.anchor);
+    const int2 canvas_position = get_element_pixel_positionv(data->parent.position, data->parent.size, data->element.position, data->element.anchor);
     const float2 real_position = get_element_position(canvas_position, data->canvas.size);
     const byte zext_layer = data->element.layer + 1;
     const byte button_layer = data->element.layer + 2;

@@ -48,7 +48,7 @@ entity game_start_player_load(
     if (!zox_valid(spawn_place.chunk)) {
         spawn_place.chunk = spawn_chunk_terrain(
             world,
-            prefab_chunk_height,
+            prefab_chunk_terrain,
             terrain,
             chunk_position,
             chunk_position,

@@ -103,7 +103,7 @@ entity game_start_player_new(
         entity chunk = int3_hashmap_get(chunkLinks->value, chunk_position);
         if (!zox_valid(chunk)) {
             chunk = spawn_chunk_terrain(world,
-                    prefab_chunk_height,
+                    prefab_chunk_terrain,
                     terrain,
                     chunk_position,
                     chunk_position,

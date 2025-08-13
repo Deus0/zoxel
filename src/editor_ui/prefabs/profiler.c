@@ -29,7 +29,7 @@ ecs_entity_t spawn_profiler(
     const byte is_close_button = 1;
 
     const ecs_entity_t parent = canvas;
-    const int2 canvas_position = get_element_pixel_position_global(int2_half(canvas_size), canvas_size, position, anchor);
+    const int2 canvas_position = get_element_pixel_positionv(int2_half(canvas_size), canvas_size, position, anchor);
     const float2 positionf = get_element_position(canvas_position, canvas_size);
 
     const int children_count = is_header + plots_count;

@@ -27,14 +27,14 @@ ecs_entity_t spawn_button_old(ecs_world_t *world,
     const char* text,
     const int font_size,
     const byte layer,
-    const int2 parent_pixel_position_global,
+    const int2 parent_pixel_positionv,
     const int2 parent_pixel_size,
     const int2 canvas_size,
     const byte render_disabled)
 {
     const int2 zext_size = (int2) { font_size * strlen(text), font_size };
     const int2 pixel_size = (int2) { zext_size.x + padding.x * 2, zext_size.y + padding.y * 2 };
-    const int2 global_position = get_element_pixel_position_global(parent_pixel_position_global, parent_pixel_size, pixel_position, anchor);
+    const int2 global_position = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
     const float2 position2D = get_element_position(global_position, canvas_size);
     zox_instance(prefab_button)
     zox_name("button")

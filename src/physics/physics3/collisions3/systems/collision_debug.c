@@ -82,18 +82,14 @@ void CollisionDebugSystem(iter *it) {
     }
     zox_sys_world();
     zox_sys_begin();
-    //zox_sys_in(VoxLink);
     zox_sys_in(CollisionDistance);
     zox_sys_in(Position3D);
-    // zox_sys_in(LastPosition3D);
     zox_sys_in(Collision);
     zox_sys_in(Bounds3D);
     // now do collisions
     for (int i = 0; i < it->count; i++) {
-        //zox_sys_i(VoxLink, voxLink);
         zox_sys_i(CollisionDistance, collisionDistance);
         zox_sys_i(Position3D, position);
-        // zox_sys_i(LastPosition3D, lastPosition3D);
         zox_sys_i(Collision, collision);
         zox_sys_i(Bounds3D, bounds);
         if (!collision->value) {

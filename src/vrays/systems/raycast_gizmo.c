@@ -96,7 +96,7 @@ byte create_raycast_gizmo(
                 hit_terrain_color, raycast_thickness);
         }
         // zox_log(" > h [%fx%fx%f]\n", data->hit.x, data->hit.y, data->hit.z)
-        // zox_log(" > r [%fx%fx%f]\n", data->position_real.x, data->position_real.y, data->position_real.z)
+        // zox_log(" > r [%fx%fx%f]\n", data->positionf.x, data->positionf.y, data->positionf.z)
     }
 
     else if (ray_hit == rayhit_character) {

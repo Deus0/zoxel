@@ -30,8 +30,8 @@ entity spawn_block_vox_instanced(
     zox_set(e, BlockScale, { data->scale });
 
     // Transform
-    zox_set(e, Position3D, { data->position_real });
-    zox_set(e, TransformMatrix, { float4x4_position(data->position_real) });
+    zox_set(e, Position3D, { data->positionf });
+    zox_set(e, TransformMatrix, { float4x4_position(data->positionf) });
 
     // Render
     zox_set(e, RenderDepth, { data->render_depth });
@@ -46,7 +46,7 @@ entity spawn_block_vox_instanced(
             zox_geter(data->vox, ModelLinks, models);
             if (models->length) {
                 // srand - pick the model randomly, off our position in world
-                srand(data->position_real.x * data->position_real.z * data->position_real.y);
+                srand(data->positionf.x * data->positionf.z * data->positionf.y);
                 model = models->value[rand() % (models->length)];
                 // zox_log("   + picked [%s]", zox_get_name(model))
             }
@@ -63,7 +63,7 @@ entity spawn_block_vox_instanced(
     }
 
     /*zox_log("+ new block vox instance [%fx%fx%f] s[%f] d[%i]",
-        data->position_real.x, data->position_real.y, data->position_real.z,
+        data->positionf.x, data->positionf.y, data->positionf.z,
         data->scale,
         data->render_depth);*/
 

@@ -12,7 +12,7 @@ entity spawn_elementbar2D_front(ecs *world,
     const int2 pixel_size = (int2) { parent_size.x - margin * 2, parent_size.y - margin * 2 };
     const float2 anchor = (float2) { 0, 0.5f }; //  float2_half;
     const int2 position = int2_zero; // parent_position
-    const int2 position_in_canvas = get_element_pixel_position_global(parent_position, parent_size, position, anchor);
+    const int2 position_in_canvas = get_element_pixel_positionv(parent_position, parent_size, position, anchor);
     const float2 position2D = get_element_position(position_in_canvas, canvas_size);
     zox_instance(prefab_elementbar2D_front)
     zox_name("elementbar2D_front")

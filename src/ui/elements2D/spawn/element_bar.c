@@ -7,7 +7,7 @@ entity2 spawn_elementbar2D(ecs *world,
     const byte2 zext_padding,
     const float2 anchor,
     const byte layer,
-    const int2 parent_pixel_position_global,
+    const int2 parent_pixel_positionv,
     const int2 parent_pixel_size,
     const int2 canvas_size,
     const byte render_disabled,
@@ -27,7 +27,7 @@ entity2 spawn_elementbar2D(ecs *world,
     }
     const int2 zext_size = (int2) { zext_width, font_size };
     anchor_element_position2D(&pixel_position, anchor, pixel_size);
-    const int2 position_in_canvas = get_element_pixel_position_global(parent_pixel_position_global, parent_pixel_size, pixel_position, anchor);
+    const int2 position_in_canvas = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
     const float2 position2D = get_element_position(position_in_canvas, canvas_size);
     zox_instance(prefab)
     zox_name("elementbar2D")

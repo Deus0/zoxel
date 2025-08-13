@@ -25,7 +25,7 @@ ecs_entity_t spawn_plot_graph(
     float2 anchor = float2_half;
     int2 position = int2_zero;
     const int2 canvas_size = zox_get_value(canvas, PixelSize)
-    const int2 positiong = get_element_pixel_position_global(parent_position, parent_size, position, anchor);
+    const int2 positiong = get_element_pixel_positionv(parent_position, parent_size, position, anchor);
     const float2 positionf = get_element_position(positiong, canvas_size);
 
     // zox_instance(prefab)

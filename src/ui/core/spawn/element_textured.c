@@ -1,6 +1,6 @@
 entity spawn_element(ecs *world, ElementSpawn *data) {
     int2 position = data->element.position;
-    data->element.position_in_canvas = get_element_pixel_position_global(data->parent.position, data->parent.size, position, data->element.anchor);
+    data->element.position_in_canvas = get_element_pixel_positionv(data->parent.position, data->parent.size, position, data->element.anchor);
     const float2 real_position = get_element_position(data->element.position_in_canvas, data->canvas.size);
     anchor_element_position2D(&position, data->element.anchor, data->element.size);
     zox_instance(data->element.prefab)

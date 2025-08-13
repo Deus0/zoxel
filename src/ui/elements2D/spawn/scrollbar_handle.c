@@ -12,7 +12,7 @@ entity spawn_scrollbar_front(ecs *world,
 {
     const int2 pixel_size = (int2) { width, height };
     const int bounds_y = (parent_size.y / 2) - height / 2;
-    const int2 position_in_canvas = get_element_pixel_position_global(parent_position, parent_size, pixel_position, anchor);
+    const int2 position_in_canvas = get_element_pixel_positionv(parent_position, parent_size, pixel_position, anchor);
     const float2 position2D = get_element_position(position_in_canvas, canvas_size);
     zox_instance(prefab_scrollbar_front)
     zox_name("scrollbar_front")

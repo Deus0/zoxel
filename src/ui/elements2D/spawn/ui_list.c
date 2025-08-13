@@ -86,8 +86,8 @@ entity spawn_ui_list(
         pixel_size.x += (scrollbar_width / 2) + scrollbar_margins;
         anchor_element_position2D_with_header(&pixel_position, anchor, pixel_size, header_height);
     }
-    const int2 pixel_position_global = get_element_pixel_position_global(int2_half(canvas_size), canvas_size, pixel_position, anchor);
-    const float2 position2D = get_element_position(pixel_position_global, canvas_size);
+    const int2 pixel_positionv = get_element_pixel_positionv(int2_half(canvas_size), canvas_size, pixel_position, anchor);
+    const float2 position2D = get_element_position(pixel_positionv, canvas_size);
 
 
 
@@ -105,7 +105,7 @@ entity spawn_ui_list(
         anchor,
         layer,
         position2D,
-        pixel_position_global);
+        pixel_positionv);
     Children *children = &((Children) { 0, NULL });
     initialize_Children(children, children_length);
     if (is_header) {
@@ -122,7 +122,7 @@ entity spawn_ui_list(
             scaled_header_font_size,
             header_padding_x,
             header_layer,
-            pixel_position_global,
+            pixel_positionv,
             pixel_size,
             is_close_button,
             canvas_size);
@@ -135,7 +135,7 @@ entity spawn_ui_list(
             canvas,
             (int2) { -(scrollbar_width / 2) - scrollbar_margins, 0 },
             header_layer,
-            pixel_position_global,
+            pixel_positionv,
             pixel_size,
             scrollbar_width,
             scrollbar_margins,
@@ -151,7 +151,7 @@ entity spawn_ui_list(
         },
         .parent = {
             .e = e,
-            .position = pixel_position_global,
+            .position = pixel_positionv,
             .size = pixel_size
         },
         .element = {

@@ -2,12 +2,12 @@ uint get_label_chunk_link(ecs *world, const entity character, char *buffer, cons
     index += snprintf(buffer + index, size - index, "char [%s]\n", zox_get_name(character));
 
     // terrain
-    zox_geter(character, VoxLink, voxLink)
-    if (!zox_valid(voxLink->value)) {
+    /*zox_geter_value(character, TerrainLink, entity, terrain);
+    if (!zox_valid(terrain)) {
         index += snprintf(buffer + index, size - index, " - has no terrain linked\n");
     } else {
-        index += snprintf(buffer + index, size - index, " - is exploring [%s]\n", zox_get_name(voxLink->value));
-    }
+        index += snprintf(buffer + index, size - index, " - is exploring [%s]\n", zox_get_name(terrain));
+    }*/
 
     // positions
     zox_geter_value(character, Position3D, float3, position)

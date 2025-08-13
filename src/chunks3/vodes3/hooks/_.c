@@ -3,9 +3,9 @@ typedef struct {
     const entity chunk;
     const byte block_index;
     const entity block;
-    const byte3 position_local;
-    const int3 position_global;
-    const float3 position_real;
+    const byte3 positionl;
+    const int3 positionv;
+    const float3 positionf;
     const float scale;
     const byte render_disabled;
     const byte render_depth;

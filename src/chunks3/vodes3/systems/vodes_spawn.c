@@ -12,9 +12,9 @@ typedef struct {
     const entity *block_prefabs;
     const byte *block_vox_offsets;
     const byte blocks_length;
-    const float3 chunk_position_real;
-    const float scale;
-    // SpawnBlockVox *spawn_data;
+    const float3 chunk_positionf;
+    const float chunk_scalev;
+    const float terrain_scalev;
     const byte render_disabled;
     const byte render_depth;
 } UpdateBlockEntities;
@@ -60,10 +60,6 @@ void spawn_vodes_dive(
     // Remove and return if not a World Block
     const entity block_prefab = data->block_prefabs[block_index];
     if (!block_prefab) {
-        // we use remove system now
-        /*write_lock_VoxelNode(node);
-        destroy_node_link_VoxelNode(world, node);
-        write_unlock_VoxelNode(node);*/
         return;
     }
 
@@ -74,24 +70,21 @@ void spawn_vodes_dive(
     if (is_linked_VoxelNode(node)) {
         return;
     }
-    byte3 position_local = int3_to_byte3(delve_data->octree_position);
-    int3 voxel_position = delve_data->octree_position;
 
-    const float scale = data->scale; // chunk voxel scale
-    // zox_log("scale: %f", scale);
-    float3 position_real = float3_from_int3(voxel_position);
-    float3_scale_p(&position_real, scale);
-    float3_add_float3_p(&position_real, data->chunk_position_real);
-    // offset by half
-    float3_add_float3_p(&position_real, float3_single(-scale * 0.5f));
+    byte3 positionl = int3_to_byte3(delve_data->octree_position);
+    int3 positionv = delve_data->octree_position;
+    float3 positionf = float3_from_int3(positionv);
+    float3_scale_p(&positionf, data->terrain_scalev);
+    float3_add_float3_p(&positionf, data->chunk_positionf);
+    float3_add_float3_p(&positionf, float3_single(-data->chunk_scalev * 0.5f));
 
     if (node->value && !is_linked_VoxelNode(node)) {
         zox_geter(data->chunk, ChunkPosition, chunkPosition)
         zox_geter_value(data->chunk, NodeDepth, byte, node_depth)
         const int chunk_length = powers_of_two[node_depth];
         const int3 chunk_dimensions = int3_single(chunk_length);
-        int3 chunk_voxel_position = get_chunk_positionv(chunkPosition->value, chunk_dimensions);
-        int3 position_global = int3_add(voxel_position, chunk_voxel_position);
+        int3 chunk_positionv = get_chunk_positionv(chunkPosition->value, chunk_dimensions);
+        int3 positionv = int3_add(positionv, chunk_positionv);
         // spawn node entity here!
         const byte block_index = node->value - 1;
         if (block_index >= data->blocks_length) {
@@ -104,10 +97,11 @@ void spawn_vodes_dive(
             .node = node,
             .block_index = block_index,
             .block = block,
-            .position_local = position_local,
-            .position_global = position_global,
-            .position_real = position_real,
-            .scale = scale,
+            .positionl = positionl,
+            .positionv = positionv,
+            .positionf = positionf,
+            .scale = data->chunk_scalev,
+            //.terrain_scalev = terrain_scalev,
             .render_disabled = data->render_disabled,
             .render_depth = data->render_depth,
         };
@@ -125,11 +119,9 @@ void spawn_vodes(
     VoxelNode *chunk,
     const byte max_depth,
     float3 positionf,
-    const float scale
+    const float chunk_scalev,
+    const float terrain_scalev
 ) {
-    // const float vox_scale = get_terrain_voxel_scale(max_depth);
-    // const float chunk_scale = vox_scale * powers_of_two[max_depth]; // 16.0f
-    // const float chunk_scale2 = 0.5f * vox_scale * (float) powers_of_two[max_depth];
     const entity realm = zox_get_value(terrain, RealmLink)
     zox_geter(realm, VoxelLinks, blocks)
     const byte blocks_length = blocks->length;
@@ -159,20 +151,20 @@ void spawn_vodes(
             block_prefabs[j] = zox_get_value(block, BlockPrefabLink)
         }
     }
-    positionf = float3_add(positionf, float3_single(scale));
-    // convert chunk position to real
-    /*const float3 chunk_positionf = float3_add(
-        float3_single(vox_scale),
-        float3_scale(int3_to_float3(chunkPosition->value), chunk_scale));*/
+
+    // why we do this?
+    positionf = float3_add(positionf, float3_single(terrain_scalev));
+
     UpdateBlockEntities data = {
-        .scale = scale,
+        .chunk_scalev = chunk_scalev,
+        .terrain_scalev = terrain_scalev,
         .chunk = e,
         .blocks_length = blocks_length,
         .blocks = blocksarr, // metas
         .block_prefabs = block_prefabs,
         .models = models,
         .block_vox_offsets = block_vox_offsets,
-        .chunk_position_real = positionf,
+        .chunk_positionf = positionf,
         .render_depth = render_depth,
         .render_disabled = renderDisabled->value,
     };
@@ -222,6 +214,7 @@ void VodesSpawnSystem(iter *it) {
         }
         //  base off render distance
         zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
+        zox_geter_value(voxLink->value, BlockScale, float, terrain_scalev);
         byte can_spawn_vodes = renderDepth->value == terrain_depth;
         if (!can_spawn_vodes) { // renderDepth->value > block_vox_render_at_lod) { // >
             continue;
@@ -239,7 +232,8 @@ void VodesSpawnSystem(iter *it) {
             node,
             nodeDepth->value,
             position->value,
-            scale->value);
+            scale->value,
+            terrain_scalev);
         write_unlock_VoxelNode(node);
         blocksSpawned->value = 1;
     }

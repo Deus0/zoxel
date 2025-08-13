@@ -528,21 +528,21 @@ void Chunk3RaycastSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CameraLink);
-    zox_sys_in(VoxLink);
+    zox_sys_in(TerrainLink);
     zox_sys_in(RaycastRange);
     zox_sys_out(RaycastVoxelData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(CameraLink, cameraLink);
-        zox_sys_i(VoxLink, voxLink);
+        zox_sys_i(TerrainLink, link);
         zox_sys_i(RaycastRange, raycastRange);
         zox_sys_o(RaycastVoxelData, data);
-        entity terrain = voxLink->value;
+        entity terrain = link->value;
         entity camera = cameraLink->value;
         if (!zox_valid(camera) || !zox_valid(terrain) || !zox_has(terrain, RealmLink) || !zox_has(camera, RaycastOrigin)) {
             continue;
         }
-        zox_geter_value(voxLink->value, BlockScale, float, terrain_scalev);
-        zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
+        zox_geter_value(link->value, BlockScale, float, terrain_scalev);
+        zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
         entity caster = get_linked_character(world, camera);
         const int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
 

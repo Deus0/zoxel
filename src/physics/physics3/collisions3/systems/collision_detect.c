@@ -215,14 +215,14 @@ void collide_with_chunkf(
 void CollisionDetectSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxLink);
+    zox_sys_in(TerrainLink);
     zox_sys_in(Bounds3D);
     zox_sys_in(Position3D);
     zox_sys_in(LastPosition3D);
     zox_sys_out(Collision);
     zox_sys_out(CollisionDistance);
     // find realm first
-    const VoxelLinks *voxels = get_first_terrain_voxels(world, VoxLink_, it->count);
+    const VoxelLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
     if (!voxels) {
         return;
     }
@@ -231,18 +231,18 @@ void CollisionDetectSystem(iter *it) {
 
     // now do collisions
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxLink, voxLink);
+        zox_sys_i(TerrainLink, link);
         zox_sys_i(Bounds3D, bounds3D);
         zox_sys_i(Position3D, position3D);
         zox_sys_i(LastPosition3D, lastPosition3D);
         zox_sys_o(Collision, collision);
         zox_sys_o(CollisionDistance, collisionDistance);
-        if (!zox_valid(voxLink->value)) {
+        if (!zox_valid(link->value)) {
             continue; // these shouldn't be here
         }
-        zox_geter(voxLink->value, ChunkLinks, chunks);
-        zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
-        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
+        zox_geter(link->value, ChunkLinks, chunks);
+        zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
+        zox_geter_value(link->value, BlockScale, float, terrain_scale);
         if (!chunks || collision->value) {
             continue;
         }

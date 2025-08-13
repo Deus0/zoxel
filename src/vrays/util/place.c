@@ -5,10 +5,10 @@ void place_block(
     ecs *world,
     const entity chunk,
     VoxelNode *node,
-    const byte3 position_local,
-    int3 position_global,
+    const byte3 positionl,
+    int3 positionv,
     const byte voxel,
-    const float3 position_real
+    const float3 positionf
 ) {
     if (!node || !zox_valid(chunk) || !zox_has(chunk, VoxelNode) || !zox_has(chunk, NodeDepth)) {
         return;
@@ -28,7 +28,7 @@ void place_block(
     };
     SetVoxelData data2 = {
         .node = base_node,
-        .position = position_local,
+        .position = positionl,
     };
     node = set_voxel(datam, data2);
 
@@ -38,11 +38,11 @@ void place_block(
 
     /*zox_set(chunk, ChunkLodDirty, { chunk_lod_state_vox_blocks_pre_spawn })
     zox_set(chunk, ChunkMeshDirty, { chunk_dirty_state_trigger })
-    if (zox_has(chunk, ChunkNeighbors) && byte3_on_edge(position_local, chunk_size_b3)) {
+    if (zox_has(chunk, ChunkNeighbors) && byte3_on_edge(positionl, chunk_size_b3)) {
         zox_geter(chunk, ChunkNeighbors, chunk_neighbors)
         for (byte axis = 0; axis < chunk_neighbors_length; axis++) {
             entity neighbor = chunk_neighbors->value[axis];
-            if (byte3_on_edge_axis(position_local, chunk_size_b3, axis) && zox_valid(neighbor)) {
+            if (byte3_on_edge_axis(positionl, chunk_size_b3, axis) && zox_valid(neighbor)) {
                 zox_set(neighbor, ChunkMeshDirty, { chunk_dirty_state_trigger })
             }
         }
@@ -54,25 +54,25 @@ void raycast_action(ecs *world,
     const byte voxel,
     byte hit_type)
 {
-    byte3 position_local;
-    int3 position_global;
-    float3 position_real;
+    byte3 positionl;
+    int3 positionv;
+    float3 positionf;
     entity chunk;
     VoxelNode* node;
     if (hit_type == 2) {
         // zox_log("placing air!\n")
-        position_local = data->positionl;
-        position_global = data->positionv;
-        position_real = data->positionf;
+        positionl = data->positionl;
+        positionv = data->positionv;
+        positionf = data->positionf;
         chunk = data->chunk;
         node = data->node;
     } else {
         // zox_log("placing solid!\n")
-        position_local = data->positionl_last;
-        position_global = data->positionv_last;
-        position_real = data->positionf_last;
+        positionl = data->positionl_last;
+        positionv = data->positionv_last;
+        positionf = data->positionf_last;
         chunk = data->chunk_last;
         node = data->node_last;
     }
-    place_block(world, chunk, node, position_local, position_global, voxel, position_real);
+    place_block(world, chunk, node, positionl, positionv, voxel, positionf);
 }

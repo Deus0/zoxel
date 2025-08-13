@@ -17,7 +17,7 @@ void add_to_labels_voxel_links(
     }
 }
 
-extern entity prefab_chunk_height;
+extern entity prefab_chunk_terrain;
 extern ecs_entity_t get_linked_terrain(ecs_world_t*, ecs_entity_t);
 
 void toggle_debug_bounds_terrain(ecs_world_t *world) {
@@ -27,9 +27,9 @@ void toggle_debug_bounds_terrain(ecs_world_t *world) {
     const ecs_entity_t terrain = get_linked_terrain(world, realm);
     if (!zox_valid(terrain)) return;
 
-    byte mode = zox_get_value(prefab_chunk_height, DebugCubeLines);
+    byte mode = zox_get_value(prefab_chunk_terrain, DebugCubeLines);
     cycle_cubeline_debug(&mode);
-    zox_set(prefab_chunk_height, DebugCubeLines, { mode });
+    zox_set(prefab_chunk_terrain, DebugCubeLines, { mode });
     zox_geter(terrain, ChunkLinks, chunkLinks);
     for (uint i = 0; i < chunkLinks->value->size; i++) {
         int3_hashmap_pair* pair = chunkLinks->value->data[i];

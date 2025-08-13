@@ -24,24 +24,23 @@ void define_systems_collisions3(ecs *world) {
         [in] transforms3.Position3D,
         [in] SphereRadius,
         [in] physics.CollisionDisabled,
-        [none] SphereCollider);
+        [none] SphereCollider
+    );
     zox_system(CollisionDetectSystem, zoxp_physics,
-        [in] chunks3.VoxLink,
+        [in] terrain.TerrainLink,
         [in] generic.Bounds3D,
         [in] transforms3.Position3D,
         [in] physics3.LastPosition3D,
         [out] collisions3.Collision,
-        [out] collisions3.CollisionDistance);
+        [out] collisions3.CollisionDistance
+    );
     zox_system_1(CollisionDebugSystem, zoxp_physics,
-        //[in] chunks3.VoxLink,
         [in] collisions3.CollisionDistance,
         [in] transforms3.Position3D,
-        // [in] physics3.LastPosition3D,
         [in] collisions3.Collision,
         [in] generic.Bounds3D,
     );
     zox_system(CollisionResponseSystem, zoxp_physics,
-        // [in] chunks3.VoxLink,
         [in] collisions3.CollisionDistance,
         [out] transforms3.Position3D,
         [out] physics3.Velocity3D,
@@ -49,25 +48,29 @@ void define_systems_collisions3(ecs *world) {
         [out] collisions3.Collision,
         [out] collisions3.Grounded);
     zox_system(UnstuckSystem, zoxp_physics,
-        [in] chunks3.VoxLink,
+        [in] terrain.TerrainLink,
         [in] generic.Bounds3D,
         [out] physics3.LastUnstuck3,
-        [out] transforms3.Position3D);
+        [out] transforms3.Position3D
+    );
     zox_system(Friction3DSystem, zoxp_physics,
         [in] collisions3.Grounded,
         [out] physics3.Velocity3D,
-        [none] physics.Frictioned);
+        [none] physics.Frictioned
+    );
     // TODO: split up between response and detect
     zox_system_ctx_1(SphereCollideSystem, zoxp_physics, sphere_colliders,
         [in] transforms3.Position3D,
         [in] SphereRadius,
         [in] physics.CollisionDisabled,
-        [none] SphereCollider);
+        [none] SphereCollider
+    );
 #ifdef zox_gizmos_sphere_colliders
     zox_system_1(SphereColliderDrawSystem, zoxp_mainthread,
         [in] rendering.RenderDisabled,
         [in] transforms3.Position3D,
         [in] SphereRadius,
-        [none] SphereCollider)
+        [none] SphereCollider
+    );
 #endif
 }

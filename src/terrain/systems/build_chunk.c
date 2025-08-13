@@ -612,9 +612,9 @@ void Chunk3BuildSystem(ecs_iter_t *it) {
         updated_count++;
     }
 
-    if (updated_count > 0) {
-        zox_log_streaming(" - [%i] updated [%i]", ecs_run_count, updated_count)
-    }
+    /*if (updated_count > 0) {
+        zox_log_v(" - [%i] updated [%i]", ecs_run_count, updated_count)
+    }*/
     endwatch(time_chunk3_build, "ending");
     zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
-} zoxd_system(Chunk3BuildSystem)
+} zoxd_system2(Chunk3BuildSystem);

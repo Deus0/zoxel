@@ -106,7 +106,7 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
 #endif
         const int max_characters = get_max_characters_d("hierarchy", labels);
         const float2 window_position = position2D->value;
-        const int2 window_pixel_position_global = canvasPosition->value;
+        const int2 window_pixel_positionv = canvasPosition->value;
         const int2 old_window_size = pixelSize->value;
         // const int window_width = get_max_width(header_label, scaled_header_font_size, header_margins, labels, elements_count, scaled_font_size, button_padding.x + list_margins.x);
         int2 new_window_size = { (font_size) * max_characters + button_padding.x * 2 + list_margins.x * 2, old_window_size.y };
@@ -142,7 +142,7 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
             scrollbar_width,
             scrollbar_margins,
             window_position,
-            window_pixel_position_global,
+            window_pixel_positionv,
             new_window_size,
             canvas_size);
         // dispose allocated things

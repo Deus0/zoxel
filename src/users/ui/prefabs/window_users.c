@@ -30,7 +30,7 @@ ecs_entity_t spawn_window_users(
     if (is_header) {
         header_height = data.header_zext.font_size + data.header.margins;
     }
-    const int2 canvas_position = get_element_pixel_position_global(data.parent.position, data.element.size, position, data.element.anchor);
+    const int2 canvas_position = get_element_pixel_positionv(data.parent.position, data.element.size, position, data.element.anchor);
     const float2 real_position = get_element_position(canvas_position, data.canvas.size);
     anchor_element_position2D(&position, data.element.anchor, data.element.size);
 

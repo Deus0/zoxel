@@ -10,7 +10,7 @@ entity spawn_layout2(ecs *world,
     const int2 parent_size)
 {
     const int2 canvas_size = zox_get_value(canvas, PixelSize)
-    const int2 positiong = get_element_pixel_position_global(
+    const int2 positiong = get_element_pixel_positionv(
         parent_position,
         parent_size,
         position,

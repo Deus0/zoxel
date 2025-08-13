@@ -18,7 +18,7 @@ entity spawn_zigel_prefab(ecs *world, const entity prefab) {
 }
 
 entity spawn_zigel(ecs *world, const SpawnZigel *data) {
-    const int2 global_position = get_element_pixel_position_global(data->parent.position, data->parent.size, data->element.position, data->element.anchor);
+    const int2 global_position = get_element_pixel_positionv(data->parent.position, data->parent.size, data->element.position, data->element.anchor);
     const float2 position = get_element_position(global_position, data->canvas.size);
     zox_instance(prefab_zigel)
     zox_name("zigel")

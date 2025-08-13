@@ -191,7 +191,7 @@ void set_ui_list_hierarchy(ecs_world_t *world,
     const int scrollbar_width,
     const int scrollbar_margins,
     const float2 window_position,
-    const int2 window_pixel_position_global,
+    const int2 window_pixel_positionv,
     const int2 window_size,
     const int2 canvas_size)
 {
@@ -209,7 +209,7 @@ void set_ui_list_hierarchy(ecs_world_t *world,
     for (int j = 0; j < labels_count; j++) {
         const byte render_disabled = !(j >= 0 && j < elements_visible);
         int2 label_position = get_element_label_position(j, font_size, button_padding, button_inner_margins, window_size, list_margins, is_scrollbar, scrollbar_width, scrollbar_margins);
-        const ecs_entity_t list_element = spawn_button_old(world, window_entity, canvas, label_position, button_padding, float2_half, labels->data[j].text, font_size, button_layer, window_pixel_position_global, window_size, canvas_size, render_disabled);
+        const ecs_entity_t list_element = spawn_button_old(world, window_entity, canvas, label_position, button_padding, float2_half, labels->data[j].text, font_size, button_layer, window_pixel_positionv, window_size, canvas_size, render_disabled);
         zox_set(list_element, ClickEvent, { click_event.value })
         zox_set(list_element, EntityTarget, { entities->data[j] })
         children->value[list_start + j] = list_element;

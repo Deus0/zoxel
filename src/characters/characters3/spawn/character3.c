@@ -48,7 +48,7 @@ ecs_entity_t spawn_character3(
     }*/
     // voxels
     if (data.terrain) {
-        zox_set(e, VoxLink, { data.terrain });
+        zox_set(e, TerrainLink, { data.terrain });
     }
     if (data.terrain_chunk) {
         zox_set(e, ChunkLink, { data.terrain_chunk });

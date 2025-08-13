@@ -3,25 +3,25 @@
 void UnstuckSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(VoxLink)
+    zox_sys_in(TerrainLink)
     zox_sys_in(Bounds3D)
     zox_sys_out(LastUnstuck3)
     zox_sys_out(Position3D)
     // cache voxels and colliders for speed
-    const VoxelLinks *voxels = get_first_terrain_voxels(world, VoxLink_, it->count);
+    const VoxelLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
     if (!voxels) {
         return;
     }
     byte colliders[voxels->length + 1];
     get_block_collisions(world, voxels, colliders);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxLink, voxLink)
+        zox_sys_i(TerrainLink, link)
         zox_sys_i(Bounds3D, bounds3)
         zox_sys_o(LastUnstuck3, lastUnstuck3)
         zox_sys_o(Position3D, position3)
-        zox_geter(voxLink->value, ChunkLinks, chunkLinks)
-        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
-        zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
+        zox_geter(link->value, ChunkLinks, chunkLinks)
+        zox_geter_value(link->value, BlockScale, float, terrain_scale);
+        zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
         const float3 unstuck_push = (float3) { 0, terrain_scale, 0 };
 
         float3 point = float3_add(position3->value, (float3) { 0, bounds3->value.y / 2.0f, 0 });
@@ -64,7 +64,7 @@ void UnstuckSystem(iter *it) {
         }
         if (float3_equals(lastUnstuck3->value, float3_zero)) {
             position3->value = float3_add(position3->value, unstuck_push);
-            // zox_logw("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", positionv.x, positionv.y, positionv.z, voxel_position_local.x, voxel_position_local.y,  voxel_position_local.z);
+            // zox_logw("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", positionv.x, positionv.y, positionv.z, voxel_positionl.x, voxel_positionl.y,  voxel_positionl.z);
             continue; // hasn't been unstuck
         }
         // float3 reverse_point = float3_subtract(lastUnstuck3->value, (float3) { 0, bounds3->value.y / 2.0f, 0 });
@@ -75,6 +75,6 @@ void UnstuckSystem(iter *it) {
 
 /*zox_log("unstucking to [%fx%fx%f]", reverse_point.x, reverse_point.y,  reverse_point.z)
 zox_log(" - voxel_position [%ix%ix%i]", voxel_position.x, voxel_position.y,  voxel_position.z)
-zox_log(" - voxel_position_local [%ix%ix%i]", voxel_position_local.x, voxel_position_local.y,  voxel_position_local.z)*/
+zox_log(" - voxel_positionl [%ix%ix%i]", voxel_positionl.x, voxel_positionl.y,  voxel_positionl.z)*/
 // zox_sys_e()
 // zox_log("> [%s] was stuck inside voxel [%ix%ix%i:%i]", zox_get_name(e), voxel_position.x, voxel_position.y, voxel_position.z, voxel)

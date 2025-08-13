@@ -43,7 +43,7 @@ void set_element_position(ecs *world,
         anchor = zox_get_value(e, Anchor)
     }
     // calculate pixel and real positions
-    const int2 position_in_canvas = get_element_pixel_position_global(parent_position, parent_size, position, anchor);
+    const int2 position_in_canvas = get_element_pixel_positionv(parent_position, parent_size, position, anchor);
     const float2 position2D = get_element_position(position_in_canvas, canvas_size);
     if (zox_has(e, Position2D)) {
         Position2D *position2D_component = zox_get_mut(e, Position2D)

@@ -30,7 +30,7 @@ entity spawn_zext(ecs *world, const SpawnZext *data) {
         font_resolution = data->zext.font_size;
         texture_size = int2_single(data->zext.font_size);
     }
-    const int2 element_canvas_position = get_element_pixel_position_global(data->parent.position, data->parent.size, data->element.position, data->element.anchor);
+    const int2 element_canvas_position = get_element_pixel_positionv(data->parent.position, data->parent.size, data->element.position, data->element.anchor);
     const float2 position2D = get_element_position(element_canvas_position, data->canvas.size);
     zox_instance(data->element.prefab)
     // zox_name("zext")

@@ -11,8 +11,8 @@ entity spawn_render_texture(
     const entity parent = canvas;
     const int2 position = int2_zero;
     const float2 anchor = float2_half;
-    int2 position_in_canvas = get_element_pixel_position_global(int2_half(layout_size), layout_size, position, anchor);
-    const float2 position_real = get_element_position(position_in_canvas, layout_size);
+    int2 position_in_canvas = get_element_pixel_positionv(int2_half(layout_size), layout_size, position, anchor);
+    const float2 positionf = get_element_position(position_in_canvas, layout_size);
     zox_instance(prefab)
     zox_name("render_texture")
     initialize_element(world,
@@ -24,7 +24,7 @@ entity spawn_render_texture(
         texture_size,
         anchor,
         layer,
-        position_real,
+        positionf,
         position_in_canvas);
     zox_set(e, CameraLink, { camera })
     return e;

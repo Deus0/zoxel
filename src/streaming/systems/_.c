@@ -12,7 +12,7 @@ void define_systems_streaming(ecs *world) {
     zoxd_system_increment(StreamDirty);
     zox_system(StreamPointSystem, zoxp_update,
         [in] transforms3.Position3D,
-        [in] chunks3.VoxLink,
+        [in] terrain.TerrainLink,
         [out] StreamPoint,
         [out] StreamDirty,
         [none] Streamer);
@@ -40,14 +40,6 @@ void define_systems_streaming(ecs *world) {
         [out] rendering.RenderDistance,
         [out] rendering.RenderDistanceDirty,
         [none] StreamedChunk);
-    /*zox_system(ChunkLodDirtySystem, zoxp_update,
-        [in] chunks3.ChunkLodDirty,
-        [out] chunks3.GenerateChunk,
-        [none] StreamedChunk);*/
-    /*zox_system(ChunkNeighborUpdatedSystem, EcsPostUpdate,
-        [in] chunks3.ChunkNeighbors,
-        [out] chunks3.ChunkMeshDirty,
-        [none] StreamedChunk)*/
     // streams
     zox_system(ChunkDieSystem, zoxp_destroy,
         [in] chunks3.VoxLink,
