@@ -5,9 +5,12 @@ typedef struct {
 } LightNode;
 
 zoxc_octree_fun1(LightNode, byte, 0)
-// zoxc_octree_fun2(LightNode, byte)
 create_node_setter(LightNode)
 create_node_getter(LightNode)
+create_node_reducer(LightNode)
+create_node_setreduce(LightNode)
+create_node_neighbor(LightNode)
+
 zoxc_byte(LightNodeDepth);
 zoxc_byte(LightNodeDirty);
 zoxc_queue(LightNodeQueue, LightNodeUpdate, 1)

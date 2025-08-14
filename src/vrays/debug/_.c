@@ -20,7 +20,7 @@ uint debug_ui_raycasting(
     }
 
     zox_geter(character, RaycastVoxelData, data);
-    index += snprintf(buffer + index, size - index, "Hit Result [%i]\n", data->result);
+    index += snprintf(buffer + index, size - index, "Raycast Debugger [%i]\n", data->result);
     index += snprintf(buffer + index, size - index, "   + dist [%f]\n", data->distance);
     index += snprintf(buffer + index, size - index, "   + hit [%fx%fx%f]\n",
         data->hit.x, data->hit.y, data->hit.z);
@@ -46,6 +46,7 @@ uint debug_ui_raycasting(
 
     // index += snprintf(buffer + index, size - index, "   * sides [%i]\n", data->node->sides);
 
+    // node debugger
     if (data->node) {
         index += snprintf(buffer + index, size - index, "   * sides: 0x%02X [", data->node->sides);
 
@@ -70,29 +71,24 @@ uint debug_ui_raycasting(
 
         byte light_last = get_LightNode_value_ex(light_node, depth, data->positionl_last, 0);
         index += snprintf(buffer + index, size - index, "   + light_last [%i]\n", light_last);
+
+        byte face = normal_to_direction(data->normal);
+        const LightNode* adj_node = get_LightNode_neighbor(
+            light_node,
+            NULL,
+            face,
+            data->positionl,
+            depth);
+        if (adj_node) {
+            index += snprintf(buffer + index, size - index, "   + Adj Light [%i]\n", adj_node->value);
+        } else {
+            index += snprintf(buffer + index, size - index, "   - No Adj Node [%ix%ix%i] dir [%i]\n", data->positionl.x, data->positionl.y, data->positionl.z, face);
+        }
+
+    } else {
+        index += snprintf(buffer + index, size - index, "   - No Voxel Node\n");
     }
+
 
     return index;
 }
-
-/*typedef struct {
-    byte result;
-    byte voxel;
-    entity hit_block;
-    // current
-    byte3 positionl;
-    int3 positionv;
-    float3 positionf;
-    float voxel_scale;
-    entity chunk;
-    VoxelNode *node;
-    float3 hit;
-    float3 normal;
-    float distance;
-    // last
-    entity chunk_last;
-    VoxelNode *node_last;
-    byte3 positionl_last;
-    int3 positionv_last;
-    float3 positionf_last;
-} RaycastVoxelData;*/

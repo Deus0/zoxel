@@ -1,14 +1,13 @@
 // Progress ray in a sunlight direction, stops when solid, decreases when liquid
 // TODO: Optimize LightNode System - group same values
 // WORKS: TODO: Fix Updates tho
+byte penetrate_lights = 0;
 
 void SunlightSystem(iter *it) {
-    byte sunlight = 255; // full sunlight
-    byte darklight = 64; // full sunlight
-    byte midlight = 225; // full sunlight
 
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(VoxelNodeDirty);
     zox_sys_in(RenderDepthDirty);
     zox_sys_in(RenderDepth);
     zox_sys_in(VoxelNode);
@@ -18,12 +17,17 @@ void SunlightSystem(iter *it) {
 
     for (int i = 0; i < it->count; i++) {
 
+        zox_sys_i(VoxelNodeDirty, vdirty);
         zox_sys_i(RenderDepthDirty, dirty);
         zox_sys_i(RenderDepth, depthr);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNodeDirty, updated);
+
+        if (vdirty->value) {
+            continue;
+        }
 
         // sunlight uses RenderDepthDirty
         if (dirty->value != zox_dirty_active) {
@@ -34,8 +38,8 @@ void SunlightSystem(iter *it) {
             // zox_log("Skip Updating lights");
             // continue;
         }
+
         depthl->value = depthr->value;
-        // lnode->value = sunlight;
 
         // now for all XZ places we go through
         byte length = powers_of_two[depthl->value];
@@ -51,6 +55,7 @@ void SunlightSystem(iter *it) {
                     if (last) {   // debugging atm with last_voxel
                         light = darklight; // sunlight blocked
                     }
+
                     if (light != darklight) {
 
                         const VoxelNode* check_node = get_VoxelNode_ex(
@@ -62,7 +67,7 @@ void SunlightSystem(iter *it) {
                         if (check_node) {
                             byte voxel = check_node->value;
                             if (voxel) {
-                                light = midlight;
+                                light = !penetrate_lights ?  darklight : midlight;
                                 last = voxel;
                             }
                         } else {
@@ -76,9 +81,6 @@ void SunlightSystem(iter *it) {
                 }
             }
         }
-
-        // zox_log("Updating lights to Depth [%i]:", depthl->value);
-        // print_octree_layer(lnode, depthl->value, LightNode);
 
         updated->value = zox_dirty_trigger;
     }

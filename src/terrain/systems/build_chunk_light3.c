@@ -2,6 +2,7 @@ byte debug_adjacent_solids = 0;
 
 void zox_apply_light3(
     const byte* solidity,
+    const LightNode** nnodesl,
     const VoxelNode* node,
     const LightNode* light_node,
     const MeshColorRGBs* colors,
@@ -14,20 +15,29 @@ void zox_apply_light3(
 
     if (depth >= target || is_closed_VoxelNode(node)) {
         if (node->value && solidity[node->value - 1]) {
-            byte light = light_node->value; // get_LightNode_value_ex(light_node, depth, position, 0);
+            // byte light = light_node->value; // get_LightNode_value_ex(light_node, depth, position, 0);
             // zox_log("light: %i", light);
-            float factor = light / 255.0f;
 
             // for each face that is visible according to node->sides
             for (byte face = 0; face < 6; face++) {
-                if (*color_index + 4 >= colors->length) {
-                    // zox_log_error("color index oob [%i]", *color_index);
-                    break;
-                }
+                if (*color_index + 4 >= colors->length) break;
+                if (!(node->sides & (1 << face))) continue; // skip hidden face
 
-                if (!(node->sides & (1 << face))) {
-                    continue; // skip hidden face
+                // use adjacent lights
+                const LightNode* adj_node = get_LightNode_neighbor(
+                    light_node,
+                    nnodesl,
+                    face,
+                    position,
+                    depth);
+                byte light = adj_node ? adj_node->value : 0;
+                if (!adj_node) {
+                    zox_log_error("anode not found at [%ix%ix%i] d[%i]",
+                        position.x, position.y, position.z, depth);
                 }
+                // byte light = get_LightNode_value_ex(light_node, depth, position, 0);
+
+                float factor = light / 255.0f;
 
                 // each face has 4 vertices
                 for (int v = 0; v < voxel_face_vertices_length; v++) {
@@ -48,8 +58,10 @@ void zox_apply_light3(
             byte3 positionn = byte3_add(position, octree_positions_b[i]);
             zox_apply_light3(
                 solidity,
+                nnodesl,
                 &kids[i],
-                lkids ? &lkids[i] : light_node, // stick to parent if missing
+                light_node,
+                //lkids ? &lkids[i] : light_node, // stick to parent if missing
                 colors,
                 positionn,
                 color_index,
@@ -120,18 +132,16 @@ void Light3BuildSystem(ecs_iter_t* it) {
 
     zox_sys_in(ChunkMeshDirty);
     zox_sys_in(VoxLink);
+    zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_in(LightNode);
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
 
-    // fetch solidity
-
-
-
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkMeshDirty, dirty);
         zox_sys_i(VoxLink, vox_link);
+        zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, nodev);
         zox_sys_i(LightNode, nodel);
         zox_sys_i(RenderDepth, depth);
@@ -140,6 +150,12 @@ void Light3BuildSystem(ecs_iter_t* it) {
         if (dirty->value != chunk_dirty_state_update) {
             continue;
         }
+
+        const LightNode *nnodesl[6];
+        fetch_neightbor_light_nodes(
+            world,
+            neighbors,
+            nnodesl);
 
         zox_geter_value(vox_link->value, RealmLink, entity, realm);
         zox_geter(realm, VoxelLinks, blocks);
@@ -163,6 +179,7 @@ void Light3BuildSystem(ecs_iter_t* it) {
         } else {
             zox_apply_light3(
                 solidity,
+                nnodesl,
                 nodev,
                 nodel,
                 colors,

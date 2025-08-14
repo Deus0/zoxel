@@ -7,3 +7,6 @@ uint zox_stats_terrain_chunks = 0;
 #include "node_link.c"
 #include "setter.c"
 #include "getter.c"
+#include "reducer.c"
+#include "setreduce.c"
+#include "adjacent.c"

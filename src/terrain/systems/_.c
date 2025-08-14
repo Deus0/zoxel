@@ -61,6 +61,7 @@ void define_systems_terrain(ecs_world_t *world) {
         zox_system(Light3BuildSystem, zoxp_voxels_read + 1,
                 [in] chunks3.ChunkMeshDirty,
                 [in] chunks3.VoxLink,
+                [in] chunks3.ChunkNeighbors,
                 [in] chunks3.VoxelNode,
                 [in] lighting3.LightNode,
                 [in] rendering.RenderDepth,

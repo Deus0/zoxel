@@ -4,7 +4,13 @@
 // =======================================
 
 // Core: walk toward target depth, return deepest reachable node
-static inline const void* find_octree_node(const void* node, byte target_depth, byte3 pos, byte depth, size_t stride) {
+static inline const void* find_octree_node(
+    const void* node,
+    byte target_depth,
+    byte3 pos,
+    byte depth,
+    size_t stride
+) {
     while (node && depth < target_depth) {
         void* const* kids = (void* const*)node;   // first member = child array
         if (!*kids) return node;                  // stop if children missing

@@ -25,3 +25,21 @@ byte reverse_direction(byte d) {
         default: return d; // or error
     }
 }
+
+static inline byte normal_to_direction(float3 normal) {
+    if (float3_equals(normal, float3_left)) {
+        return direction_left;
+    } else if (float3_equals(normal, float3_right)) {
+        return direction_right;
+    } else if (float3_equals(normal, float3_down)) {
+        return direction_down;
+    } else if (float3_equals(normal, float3_up)) {
+        return direction_up;
+    } else if (float3_equals(normal, float3_backward)) {
+        return direction_back;
+    } else if (float3_equals(normal, float3_forward)) {
+        return direction_front;
+    } else {
+        return 0;
+    }
+}
