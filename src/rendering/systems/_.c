@@ -19,11 +19,18 @@
 zox_increment_system_with_reset(MeshDirty, mesh_state_end);
 zox_increment_system_with_reset(RenderDistanceDirty, zox_dirty_end);
 zox_increment_system_with_reset(RenderDepthDirty, zox_dirty_end);
+zox_increment_system_with_reset(MeshGenerate, zox_dirty_end);
+zox_increment_system_with_reset(MeshColorsGenerate, zox_dirty_end);
+zox_increment_system_with_reset(MeshColorsDirty, zox_dirty_end);
+
 
 void define_systems_rendering(ecs *world) {
     zoxd_system_increment(MeshDirty);
     zoxd_system_increment(RenderDistanceDirty);
     zoxd_system_increment(RenderDepthDirty);
+    zoxd_system_increment(MeshGenerate);
+    zoxd_system_increment(MeshColorsGenerate);
+    zoxd_system_increment(MeshColorsDirty);
     // dispose
     zox_gpu_dispose_system(MeshGPUDisposeSystem, [in] MeshGPULink);
     zox_gpu_dispose_system(MeshUvsGPUDisposeSystem, [in] rendering.UvsGPULink);

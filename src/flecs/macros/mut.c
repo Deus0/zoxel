@@ -1,6 +1,9 @@
 #define zox_get_mut(e, T)\
     ecs_get_mut(world, e, T);
 
+#define zox_gett_mut(e, T)\
+    ecs_get_mut(world, e, T)
+
 #define zox_mut_begin(e, type, name)\
     type *name = zox_get_mut(e, type)
 

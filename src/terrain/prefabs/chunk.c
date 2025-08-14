@@ -6,8 +6,15 @@ entity spawn_prefab_chunk_terrain(
     zox_prefab_child(prefab);
     // Terrain / Generation
     zox_add_tag(e, TerrainChunk);
+    zox_prefab_set(e, GenerateChunk, { zox_dirty_none });
+    zox_prefab_set(e, VoxelNodeEdited, { zox_dirty_none });
+    zox_prefab_set(e, VoxelNodeLoaded, { zox_dirty_none });
+    zox_prefab_set(e, VoxelNodeGenerated, { zox_dirty_none });
+    zox_prefab_set(e, MeshColorsGenerate, { zox_dirty_none });
+    zox_prefab_set(e, MeshColorsDirty, { zox_dirty_none });
+
+
     zox_prefab_set(e, Seed, { 666 });
-    zox_prefab_set(e, GenerateChunk, { 0 });
     zox_prefab_set(e, VoxelNodeQueue, { 0 });
     // Linked
     zox_prefab_set(e, ChunkNeighbors, { { 0, 0, 0, 0, 0, 0 } });

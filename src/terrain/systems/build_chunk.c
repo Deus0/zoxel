@@ -305,10 +305,10 @@ void zox_terrain_building_dig(
             const int voxel_uvs_index = (dig.voxel - 1) * 6;
 
             for (byte i = 0; i < 6; i++) {
-                byte is_positive = (i + 1) % 2 == 0;
+                /*byte is_positive = (i + 1) % 2 == 0;
                 if (i == block_side_down || i == block_side_up) {
                     is_positive = !is_positive;
-                }
+                }*/
                 dig.direction = i;
                 int uv_index = data.voxel_uv_indexes[voxel_uvs_index + i];
                 octree_face_data face = {

@@ -36,9 +36,9 @@ static inline const void* octree_get_adjacent_leaf(
 
         // Map pos into neighbor coordinates
         byte3 neighbor_pos = pos;
-        if (axis == 0) neighbor_pos.x = is_pos ? (byte)0 : (byte)max_idx;
-        else if (axis == 1) neighbor_pos.y = is_pos ? (byte)0 : (byte)max_idx;
-        else neighbor_pos.z = is_pos ? (byte)0 : (byte)max_idx;
+        if (axis == 0) neighbor_pos.x = is_pos ? 0 : max_idx;
+        else if (axis == 1) neighbor_pos.y = is_pos ? 0 : max_idx;
+        else neighbor_pos.z = is_pos ? 0 : max_idx;
 
         // Descend safely inside neighbor
         return find_octree_node(neighbor_root, depth, neighbor_pos, 0, stride);

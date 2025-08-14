@@ -17,8 +17,9 @@ create_node_reducer(VoxelNode)
 create_node_setreduce(VoxelNode)
 create_node_neighbor(VoxelNode)
 
-
 zoxc_byte(VoxelNodeDirty);
 zoxc_byte(VoxelNodeEdited);
 zoxc_byte(VoxelNodeLoaded);
+zoxc_byte(VoxelNodeGenerated);
+
 zoxc_queue(VoxelNodeQueue, VoxelNodeUpdate, 1)

@@ -244,9 +244,12 @@ void build_node_mesh_colors(
 // Builds Colored Vox Meshes
 // When: ChunkMeshDirty is chunk_dirty_state_update
 void ChunkColorsBuildSystem(iter *it) {
+
     zox_ts_begin(build_chunk_colored);
+
     zox_sys_world()
     zox_sys_begin()
+
     zox_sys_in(ChunkMeshDirty)
     zox_sys_in(VoxelNode)
     zox_sys_in(NodeDepth)
@@ -259,7 +262,9 @@ void ChunkColorsBuildSystem(iter *it) {
     zox_sys_out(MeshVertices)
     zox_sys_out(MeshColorRGBs)
     zox_sys_out(MeshDirty)
+
     for (int i = 0; i < it->count; i++) {
+
         zox_sys_i(ChunkMeshDirty, chunkMeshDirty)
         zox_sys_i(VoxelNode, voxelNode)
         zox_sys_i(NodeDepth, nodeDepth)
@@ -272,6 +277,7 @@ void ChunkColorsBuildSystem(iter *it) {
         zox_sys_o(MeshIndicies, meshIndicies)
         zox_sys_o(MeshVertices, meshVertices)
         zox_sys_o(MeshColorRGBs, meshColorRGBs)
+
         if (chunkMeshDirty->value != chunk_dirty_state_update) {
             continue;
         }
@@ -306,13 +312,6 @@ void ChunkColorsBuildSystem(iter *it) {
         byte chunk_length = powers_of_two[node_depth];    // render_depth
         const float chunk_scale = blockScale->value * chunk_length;
 
-        /*zox_log("- building: vox voxscale:");
-        zox_log("   chunk_scale [%f]", chunk_scale);
-        zox_log("   BlockScale [%f]", blockScale->value);
-        zox_log("   chunk_length [%i]", chunk_length);
-        zox_log("   offset [%fx%fx%f]", offset.x, offset.y, offset.z);*/
-
-        // read lock our node
         read_lock_VoxelNode(voxelNode);
 
         build_node_mesh_colors(
@@ -327,7 +326,6 @@ void ChunkColorsBuildSystem(iter *it) {
             offset,
             chunk_scale);
 
-        // read unlock our node
         read_unlock_VoxelNode(voxelNode);
 
         meshDirty->value = mesh_state_trigger_slow;

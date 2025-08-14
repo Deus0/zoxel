@@ -8,6 +8,7 @@
 #ifndef zox_disable_rendering_instances
     #include "vox_instance_render_system.c"
 #endif
+#include"mesh_colors.c"
 
 void define_systems_basics3D(ecs *world) {
     // skybox
@@ -74,5 +75,12 @@ void define_systems_basics3D(ecs *world) {
         [out] rendering.MeshGPULink,
         [out] rendering.ColorsGPULink,
         [none] rendering.MeshColorRGBs,
-        [none] !rendering.MeshUVs)
+        [none] !rendering.MeshUVs);
+
+    zox_system_1(MeshColorsGpuSystem, zoxp_mainthread,
+        [in] rendering.MeshColorsDirty,
+        [in] rendering.MeshColorRGBs,
+        [in] rendering.ColorsGPULink,
+        [in] rendering.MeshVertices,
+        [none] rendering.MeshColorRGBs);
 }

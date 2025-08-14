@@ -1,45 +1,57 @@
 // Progress ray in a sunlight direction, stops when solid, decreases when liquid
 // TODO: Optimize LightNode System - group same values
-// WORKS: TODO: Fix Updates tho
-byte penetrate_lights = 0;
 
+// Triggers: VoxelNodeGenerated
 void SunlightSystem(iter *it) {
 
     zox_sys_world();
     zox_sys_begin();
+
+    zox_sys_in(VoxelNodeGenerated);
     zox_sys_in(VoxelNodeDirty);
     zox_sys_in(RenderDepthDirty);
     zox_sys_in(RenderDepth);
     zox_sys_in(VoxelNode);
+    zox_sys_in(ChunkNeighbors);
+
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
+    zox_sys_out(MeshColorsGenerate);
 
     for (int i = 0; i < it->count; i++) {
 
-        zox_sys_i(VoxelNodeDirty, vdirty);
-        zox_sys_i(RenderDepthDirty, dirty);
+        zox_sys_i(VoxelNodeGenerated, dirtyv);
+        zox_sys_i(VoxelNodeDirty, dirtyv2);
+        zox_sys_i(RenderDepthDirty, dirtyr);
         zox_sys_i(RenderDepth, depthr);
         zox_sys_i(VoxelNode, vnode);
+        zox_sys_i(ChunkNeighbors, neighbors);
+
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNodeDirty, updated);
+        zox_sys_o(MeshColorsGenerate, updated2);
 
-        if (vdirty->value) {
+        if (dirtyv->value != zox_dirty_active) {
             continue;
         }
 
         // sunlight uses RenderDepthDirty
-        if (dirty->value != zox_dirty_active) {
+        if (dirtyr->value != zox_dirty_active) {
             // continue;
         }
+
         // we skip if already at right depth
         if (depthl->value >= depthr->value) {
             // zox_log("Skip Updating lights");
             // continue;
         }
-
         depthl->value = depthr->value;
+
+        byte queued_dirty = 0;
+        entity chunkd = neighbors->value[direction_down];
+        SunlightQueue* queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, SunlightQueue) : NULL;
 
         // now for all XZ places we go through
         byte length = powers_of_two[depthl->value];
@@ -48,13 +60,8 @@ void SunlightSystem(iter *it) {
 
                 // now we progress down
                 byte light = sunlight; // full sunlight
-                byte last = 0;
                 for (byte y = 0; y < length; y++) {
                     byte3 positionl = (byte3) { x, length - 1 - y, z };
-
-                    if (last) {   // debugging atm with last_voxel
-                        light = darklight; // sunlight blocked
-                    }
 
                     if (light != darklight) {
 
@@ -67,21 +74,38 @@ void SunlightSystem(iter *it) {
                         if (check_node) {
                             byte voxel = check_node->value;
                             if (voxel) {
-                                light = !penetrate_lights ?  darklight : midlight;
-                                last = voxel;
+                                light = darklight;
                             }
                         } else {
                             light = darklight; // sunlight blocked
-                            zox_log_error("null return at [%ix%ix%i]", positionl.x, positionl.y, positionl.z);
                         }
                     }
 
                     // set light in LightNode
-                    set_LightNode_ex(lnode, depthl->value, positionl, light, 0);
+                    set_LightNode_ex(
+                        lnode,
+                        depthl->value,
+                        positionl,
+                        light,
+                        0);
+                }
+                if (light == sunlight && queued) {
+                    // add to queue of under chunk
+                    queued_dirty = 1;
+                    a_SunlightQueue(queued, (SunlightUpdate) {
+                        .positionl = { .x = x, .y = z }
+                    });
                 }
             }
         }
 
+        if (queued_dirty) {
+            zox_mut_end(chunkd, SunlightQueue);
+        }
+
+        // zox_log("Updated sunlight.");
         updated->value = zox_dirty_trigger;
+        updated2->value = zox_dirty_trigger; // for now just put here
+
     }
 } zoxd_system2(SunlightSystem);

@@ -5,6 +5,7 @@
 // byte shader_include_es = 1;
 #include "data/_.c"
 #include "util/_.c"
+#include "fun/_.c"
 
 byte zox_init_glew() {
 #ifdef zox_windows

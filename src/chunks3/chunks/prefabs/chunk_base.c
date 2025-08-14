@@ -22,7 +22,5 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_prefab_set(e, RenderDepth, { 0 });
     zox_prefab_set(e, VoxelNode, { 0 });
     zox_prefab_set(e, VoxelNodeDirty, { zox_dirty_none });
-    zox_prefab_set(e, VoxelNodeEdited, { 0 });
-    zox_prefab_set(e, VoxelNodeLoaded, { 0 });
     return e;
 }

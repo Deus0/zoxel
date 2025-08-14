@@ -1,67 +1,47 @@
-// hmmm issue seems to be about faces
-// maybe we redo our mesh builder system
-void zox_apply_light3(
+void zox_apply_debug_colors(
     const byte* solidity,
-    const LightNode** nnodesl,
     const VoxelNode* node,
-    const LightNode* root_lnode,
     const MeshColorRGBs* colors,
-    byte3 position,
     int* color_index,
     byte target,
     byte depth
 ) {
     if (!node || node->value == 0) return;
 
+    static const color_rgb debug_colors[6] = {
+        {255,   0,   0}, // +X red
+        {  0, 255,   0}, // -X green
+        {  0,   0, 255}, // +Y blue
+        {255, 255,   0}, // -Y yellow
+        {255,   0, 255}, // +Z magenta
+        {  0, 255, 255}  // -Z cyan
+    };
+
     if (depth >= target || is_closed_VoxelNode(node)) {
-
         if (node->value && solidity[node->value - 1]) {
-
-            // for each face that is visible according to node->sides
             for (byte face = 0; face < 6; face++) {
-                if (*color_index + 4 > colors->length) break;
+                if (*color_index + 4 >= colors->length) break;
 
-                // skip hidden face
-                if (!(node->sides & (1 << face))) continue;
-
-                // use adjacent lights
-                const LightNode* adj_node = get_LightNode_neighbor(
-                    root_lnode,
-                    nnodesl,
-                    face,
-                    position,
-                    depth
-                );
-                byte light = adj_node ? adj_node->value : 0;
-                if (!adj_node) {
-                    zox_log_error("Adjacent Node ??? [%ix%ix%i] d[%i]", position.x, position.y, position.z, depth);
+                // skip hidden faces
+                if (!(node->sides & (1 << face))) {
+                    continue;
                 }
 
-                float factor = light / 255.0f;
-
-                // each face has 4 vertices
+                // apply debug color to 4 vertices of this face
                 for (int v = 0; v < voxel_face_vertices_length; v++) {
                     color_rgb* c = &colors->value[*color_index];
-                    c->r *= factor;
-                    c->g *= factor;
-                    c->b *= factor;
+                    *c = debug_colors[face];
                     (*color_index)++;
                 }
             }
         }
     } else {
-        byte3_multiply_byte(&position, 2);
         VoxelNode* kids = get_children_VoxelNode(node);
-
         for (byte i = 0; i < 8; i++) {
-            byte3 positionn = byte3_add(position, octree_positions_b[i]);
-            zox_apply_light3(
+            zox_apply_debug_colors(
                 solidity,
-                nnodesl,
                 &kids[i],
-                root_lnode,
                 colors,
-                positionn,
                 color_index,
                 target,
                 depth + 1
@@ -89,8 +69,8 @@ void Light3BuildSystem(ecs_iter_t* it) {
         zox_sys_i(MeshColorsGenerate, trigger);
         zox_sys_i(VoxLink, vox_link);
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_i(VoxelNode, root_vnode);
-        zox_sys_i(LightNode, root_lnode);
+        zox_sys_i(VoxelNode, nodev);
+        zox_sys_i(LightNode, nodel);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshColorsDirty, updated);
@@ -114,19 +94,14 @@ void Light3BuildSystem(ecs_iter_t* it) {
         }
 
         int color_index = 0;
-        zox_apply_light3(
+        zox_apply_debug_colors(
             solidity,
-            nnodesl,
-            root_vnode,
-            root_lnode,
+            nodev,
             colors,
-            byte3_zero,
             &color_index,
             depth->value,
-            0);
-        if (color_index != colors->length) {
-            zox_log_error("color building not reached max [%i] / [%i]", color_index, colors->length);
-        }
+            0
+        );
 
         updated->value = zox_dirty_trigger;
     }

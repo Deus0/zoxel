@@ -21,6 +21,7 @@ void render_voxel_line(ecs* world,
     render_line3D(world, point_start, point_end, c);
 }
 
+// Renders Ground Lines
 void ChunkDebugSystem(iter *it) {
     const byte debug_distance = 1;
     const color_rgb chunk_color = { 155, 0, 0 };

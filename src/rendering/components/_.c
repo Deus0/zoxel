@@ -4,7 +4,12 @@ zox_tag(Material);
 zox_tag(SingleMaterial);
 zox_tag(RendererInstance);
 zox_tag(VoxMesh);
+
 zoxc_byte(MeshDirty);
+zoxc_byte(MeshGenerate);    // TODO: Replace ChunkMeshDirty
+zoxc_byte(MeshColorsGenerate);
+zoxc_byte(MeshColorsDirty);
+
 zoxc_entity(MeshLink);
 zoxc_byte(TextureDirty);
 zoxc_byte(MeshAlignment);
@@ -52,8 +57,13 @@ void define_components_rendering(ecs *world) {
     zox_define_tag(SingleMaterial);
     zox_define_tag(RendererInstance);
     zox_define_tag(VoxMesh);
+
     zoxd_byte(MeshDirty);
+    zoxd_byte(MeshGenerate);
+    zoxd_byte(MeshColorsGenerate);
+    zoxd_byte(MeshColorsDirty);
     zoxd_byte(MeshAlignment);
+
     zox_define_component_entity(MeshLink);
     zoxd_byte(TextureDirty);
     zoxd_byte(RenderDepth);

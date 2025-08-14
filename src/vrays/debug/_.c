@@ -20,7 +20,7 @@ uint debug_ui_raycasting(
     }
 
     zox_geter(character, RaycastVoxelData, data);
-    index += snprintf(buffer + index, size - index, "Raycast Debugger [%i]\n", data->result);
+    index += snprintf(buffer + index, size - index, "Raycaster Debugger [%i]\n", data->result);
     index += snprintf(buffer + index, size - index, "   + dist [%f]\n", data->distance);
     index += snprintf(buffer + index, size - index, "   + hit [%fx%fx%f]\n",
         data->hit.x, data->hit.y, data->hit.z);
@@ -72,10 +72,19 @@ uint debug_ui_raycasting(
         byte light_last = get_LightNode_value_ex(light_node, depth, data->positionl_last, 0);
         index += snprintf(buffer + index, size - index, "   + light_last [%i]\n", light_last);
 
+        zox_geter(data->chunk, ChunkNeighbors, neighbors);
+        const LightNode* nnodesl[6];
+        fetch_neightbor_light_nodes(
+            world,
+            neighbors,
+            nnodesl);
+        if (!nnodesl[0]) {
+            zox_log_error("Null Neighbor, weirdness: %s", zox_get_name(neighbors->value[0]));
+        }
         byte face = normal_to_direction(data->normal);
         const LightNode* adj_node = get_LightNode_neighbor(
             light_node,
-            NULL,
+            nnodesl,
             face,
             data->positionl,
             depth);

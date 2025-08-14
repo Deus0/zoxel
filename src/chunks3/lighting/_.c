@@ -1,6 +1,12 @@
 #ifndef zoxm_lighting3
 #define zoxm_lighting3
 
+// TODO: Player to place with VoxelNodeQueue
+// TODO: Clear VoxelNodeQueue end of Frame
+// TODO: use VoxelNodeQueue to add to light queues
+//      - Remove Block = check if above is sunlight - Propogate sides
+//      - Add Block - if above is sun, shadow down
+
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"

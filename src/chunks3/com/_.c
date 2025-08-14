@@ -41,6 +41,7 @@ void define_components_chunks(ecs *world) {
     zoxd_byte(VoxelNodeDirty);
     zoxd_byte(VoxelNodeEdited);
     zoxd_byte(VoxelNodeLoaded);
+    zoxd_byte(VoxelNodeGenerated);
     zox_define_hashmap_component(ChunkLinks);
     zoxd_queue(VoxelNodeQueue);
 }

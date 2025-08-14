@@ -40,7 +40,7 @@ static inline void* set_octree_value(void* node, byte target_depth, byte3 pos, b
 
     byte i = byte3_octree_array_index(node_pos);
     if (i >= 8) {
-        zox_log_error("[set_octree_value] index OOB: %u", (unsigned)i);
+        zox_log_error("[set_octree_value] index OOB: %u at [%ix%ix%i] d[%i]", (unsigned)i, node_pos.x, node_pos.y, node_pos.z, depth);
         return node;
     }
 

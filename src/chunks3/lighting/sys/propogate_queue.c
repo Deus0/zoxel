@@ -1,5 +1,5 @@
 // Queued side updates for propogation
-void LightNodeQueueSystem(ecs_iter_t *it) {
+void PropogateQueueSystem(ecs_iter_t *it) {
     // zox_sys_world();
     zox_sys_begin();
 
@@ -32,4 +32,4 @@ void LightNodeQueueSystem(ecs_iter_t *it) {
             dirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system2(LightNodeQueueSystem);
+} zoxd_system2(PropogateQueueSystem);

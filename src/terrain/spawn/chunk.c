@@ -55,6 +55,10 @@ entity spawn_chunk_terrain(
         zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
     }
 
+    if (position.y == render_distance_y) {
+        zox_add_tag(e, SunnyChunk);
+    }
+
     // can move this to init systems
     //  note: keep spawn functions only for passing through sending outside information
     if (!headless) {
