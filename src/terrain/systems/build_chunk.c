@@ -72,7 +72,7 @@ void zox_build_voxel_face(
     mesh_data->indicies->size += voxel_face_indicies_length;
     // verts
     expand_capacity_float3_array_d(mesh_data->vertices, voxel_face_vertices_length);
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < voxel_face_vertices_length; i++) {
         float3 vertex_position = voxel_face_vertices[i];
         float3_add_float3_p(&vertex_position, offset);
         float3_scale_p(&vertex_position, scale);
@@ -89,7 +89,7 @@ void zox_build_voxel_face(
     // colors
     for (byte a = 0; a < voxel_face_vertices_length; a++) {
         color_rgb vertex_color = color_rgb_white;
-#ifndef zox_disable_fake_voxel_lighting
+/*#ifndef zox_disable_fake_voxel_lighting
         if (direction == direction_down) {
             color_rgb_multiply_float(&vertex_color, 0.33f);
         } else if (direction == direction_front) {
@@ -101,7 +101,7 @@ void zox_build_voxel_face(
         } else if (direction == direction_right) {
             color_rgb_multiply_float(&vertex_color, 0.76f);
         }
-#endif
+#endif*/
         add_to_color_rgb_array_d(mesh_data->color_rgbs, vertex_color);
     }
 }
@@ -252,7 +252,6 @@ void build_voxel_mesh_final(
         // get anode at the current dig depth
         const VoxelNode* anode = get_adjacentn_VoxelNode(
             data.neighbors,
-            // data.ndepths,
             data.root,
             dig.position,
             dig.depth,
@@ -271,7 +270,11 @@ void build_voxel_mesh_final(
             ddepth + 1);
         adjacent_solid = anode ? adjacent_solid : data.edge_voxel;
 
+        // dig->node->sides = adjacent_solid | dig.direction;
+        // assuming dig->direction is a single-bit flag (1 << direction_index)
+
         if (!adjacent_solid) {
+            ((VoxelNode*) dig.node)->sides |= (1 << dig.direction);
             zox_build_voxel_face(
                 data.mesh_data,
                 dig.voxel,
@@ -289,14 +292,18 @@ void zox_terrain_building_dig(
     const terrain_build_data data,
     octree_dig_data dig
 ) {
+    ((VoxelNode*) dig.node)->sides = 0; // reset before updating
+
     if (dig.depth >= data.render_depth || is_closed_VoxelNode(dig.node)) {
+
         // we dig until depth is at render level or the node is closed
         if (dig.node->value && data.voxel_solidity[dig.node->value - 1]) {
+
             dig.voxel = dig.node->value;
             dig.offset = float3_from_int3(dig.position);
-            // dig.scale = octree_scales3[dig.depth];
             dig.local_position = octree_positions_b[dig.index];
             const int voxel_uvs_index = (dig.voxel - 1) * 6;
+
             for (byte i = 0; i < 6; i++) {
                 byte is_positive = (i + 1) % 2 == 0;
                 if (i == block_side_down || i == block_side_up) {
@@ -305,8 +312,6 @@ void zox_terrain_building_dig(
                 dig.direction = i;
                 int uv_index = data.voxel_uv_indexes[voxel_uvs_index + i];
                 octree_face_data face = {
-                    //.indicies = get_voxel_indices(is_positive),
-                    //.vertices = voxel_face_vertices_n[i],
                     .indicies = voxel_face_indicies_n + i * voxel_face_indicies_length,
                     .vertices = voxel_face_vertices_n[i],
                     .uvs = &data.tilemap_uvs->value[uv_index],
@@ -314,6 +319,7 @@ void zox_terrain_building_dig(
 
                 build_voxel_mesh_final(data, dig, face);
             }
+
         }
     } else {
         // keep digging

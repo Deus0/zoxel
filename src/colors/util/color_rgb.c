@@ -9,3 +9,7 @@ static inline color_rgb color_rgb_from_float3(const float3 input) {
 static inline color color_rgb_to_color(const color_rgb input) {
     return (color) { input.r, input.g, input.b, 255 };
 }
+
+static inline color_rgb color_rgb_flip(const color_rgb c) {
+    return (color_rgb) { 255 - c.r, 255 - c.g, 255 - c.b };
+}

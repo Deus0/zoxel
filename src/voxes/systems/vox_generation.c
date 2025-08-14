@@ -7,15 +7,15 @@ void VoxGenerationSystem(iter *it) {
     zox_ts_begin(vox_generation);
     const byte unique_colors = 16;
     const float2 color_r = (float2) { 0.8f, 1.2f };
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(GenerateVox)
-    zox_sys_in(Color)
-    zox_sys_in(VoxType)
-    zox_sys_out(VoxelNode)
-    zox_sys_out(VoxelNodeDirty)
-    zox_sys_out(NodeDepth)
-    zox_sys_out(ColorRGBs)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(GenerateVox);
+    zox_sys_in(Color);
+    zox_sys_in(VoxType);
+    zox_sys_out(VoxelNode);
+    zox_sys_out(VoxelNodeDirty);
+    zox_sys_out(NodeDepth);
+    zox_sys_out(ColorRGBs);
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(GenerateVox, generateVox);
@@ -30,14 +30,14 @@ void VoxGenerationSystem(iter *it) {
     }
     startwatch(time_vox_generation);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(Color, color2)
-        zox_sys_i(VoxType, voxType)
-        zox_sys_i(GenerateVox, generateVox)
-        zox_sys_o(VoxelNode, node)
-        zox_sys_o(VoxelNodeDirty, nodeDirty)
-        zox_sys_o(NodeDepth, nodeDepth)
-        zox_sys_o(ColorRGBs, colors)
+        zox_sys_e();
+        zox_sys_i(Color, color2);
+        zox_sys_i(VoxType, voxType);
+        zox_sys_i(GenerateVox, generateVox);
+        zox_sys_o(VoxelNode, node);
+        zox_sys_o(VoxelNodeDirty, nodeDirty);
+        zox_sys_o(NodeDepth, nodeDepth);
+        zox_sys_o(ColorRGBs, colors);
         if (generateVox->value != zox_dirty_active) {
             continue;
         }
@@ -88,7 +88,7 @@ void VoxGenerationSystem(iter *it) {
         } else if (voxType->value == vox_type_blended) {
 
             // Colors
-            zox_geter_value(e, SecondaryColor, color, under_color)
+            zox_geter_value(e, SecondaryColor, color, under_color);
             // generates random colors based on secondary color
             for (int j = colors_count; j < colors_count + unique_colors; j++) {
                 color_rgb new_color = color_to_color_rgb(under_color);
@@ -96,7 +96,11 @@ void VoxGenerationSystem(iter *it) {
                 color_rgb_multiply_float(&new_color, m);
                 add_to_ColorRGBs(colors, new_color);
             }
-            const byte2 voxel_range_2 = (byte2) { colors_count + 1, colors_count + unique_colors };
+            const byte2 voxel_range_2 = (byte2) {
+                colors_count + 1,
+                colors_count + unique_colors
+
+            };
             color_rgb dirt_dark_voxel = color_to_color_rgb(under_color);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
@@ -151,17 +155,23 @@ void VoxGenerationSystem(iter *it) {
                 black_voxel_3);
 
         } else if (voxType->value == vox_type_bricks) {
+
             color_rgb dirt_dark_voxel = color_to_color_rgb(color2->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
 
-            build_vox_bricks(node,
+            build_vox_bricks(
+                node,
                 node_depth,
                 voxel_range,
                 black_voxel_3);
 
         } else if (voxType->value == vox_type_flowers) {
+
+            for (int j = voxel_range.x; j <= voxel_range.y / 2; j++) {
+                colors->value[j] = color_rgb_flip(colors->value[j]);
+            }
             color_rgb dirt_dark_voxel = color_to_color_rgb(color2->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);

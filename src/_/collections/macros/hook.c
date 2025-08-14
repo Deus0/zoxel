@@ -18,7 +18,9 @@
     }\
     \
     void dispose_hook_##name() { \
+        if (!functions_##name) return; \
         dispose_hook_##name##_array_d(functions_##name); \
+        functions_##name = NULL; \
     } \
     \
     void add_hook_##name(return_type (*event) args_decl) {\
@@ -31,6 +33,7 @@
     }\
     \
     void run_hook_##name args_decl { \
+        if (!functions_##name) return; \
         for (size_t i = 0; i < functions_##name->size; i++) { \
             if (functions_##name->data[i].value != NULL) { \
                 (*functions_##name->data[i].value) arg_names; \

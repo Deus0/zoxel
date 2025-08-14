@@ -1,27 +1,54 @@
+#define octree_value_struct_offset sizeof(void*)
+
 #define zoxc_node(name, base, default_value)\
 \
 typedef struct name name;\
 \
 struct name {\
+    void* ptr;\
     base value;\
     byte type;\
-    void* ptr;\
+    zox_lock lock;\
 };\
 zoxc_custom(name);\
 \
 zox_hookr(on_destroyed_##name, byte, (ecs* world, name* node), (world, node))\
 \
-static inline void create_lock_##name(name *node) { (void) node; }\
+static inline void create_lock_##name(name *node) {\
+    if (nodes_w_safety_locks || nodes_r_safety_locks) {\
+        zox_lock_init(&node->lock);\
+    }\
+}\
 \
-static inline void destroy_lock_##name(name *node) { (void) node; }\
+static inline void destroy_lock_##name(name *node) {\
+    if (nodes_w_safety_locks || nodes_r_safety_locks) {\
+        zox_lock_destroy(&node->lock);\
+    }\
+}\
 \
-static inline void write_lock_##name(const name *node) { (void) node; }\
+static inline void write_lock_##name(const name *node) {\
+    if (nodes_w_safety_locks) {\
+        zox_lock_write(&node->lock);\
+    }\
+}\
 \
-static inline void write_unlock_##name(const name *node) { (void) node; }\
+static inline void write_unlock_##name(const name *node) {\
+    if (nodes_w_safety_locks) {\
+        zox_unlock_write(&node->lock);\
+    }\
+}\
 \
-static inline void read_lock_##name(const name *node) { (void) node; }\
+static inline void read_lock_##name(const name *node) {\
+    if (nodes_r_safety_locks) {\
+        zox_lock_read(&node->lock);\
+    }\
+}\
 \
-static inline void read_unlock_##name(const name *node) { (void) node; }\
+static inline void read_unlock_##name(const name *node) {\
+    if (nodes_r_safety_locks) {\
+        zox_unlock_read(&node->lock);\
+    }\
+}\
 \
 static inline name* get_children_##name(const name *node) {\
     return (name*) node->ptr;\
@@ -41,8 +68,8 @@ static inline byte has_children_##name(const name *node) {\
 \
 void create_##name(name* node) {\
     node->ptr = NULL;\
-    node->value = default_value;\
     node->type = 0;\
+    node->value = default_value;\
     create_lock_##name(node);\
     zox_stats_nodes++; \
 }\

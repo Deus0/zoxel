@@ -1,144 +1,151 @@
-#define zoxc_node(name, base, default_value)\
-\
-typedef struct name name;\
-\
-struct name {\
+/*
+struct T {\
+    void* ptr;\
     base value;\
     byte type;\
-    void* ptr;\
-    zox_lock lock;\
-};\
-zoxc_custom(name);\
+};\*/
+
+#define zoxc_octree_fun1(T, base, default_value)\
 \
-zox_hookr(on_destroyed_##name, byte, (ecs* world, name* node), (world, node))\
+zoxc_custom(T);\
 \
-static inline void create_lock_##name(name *node) {\
-    if (nodes_w_safety_locks || nodes_r_safety_locks) {\
-        zox_lock_init(&node->lock);\
-    }\
+zox_hookr(on_destroyed_##T, byte, (ecs* world, T* node), (world, node))\
+\
+static inline void create_lock_##T(T *node) { (void) node; }\
+\
+static inline void destroy_lock_##T(T *node) { (void) node; }\
+\
+static inline void write_lock_##T(const T *node) { (void) node; }\
+\
+static inline void write_unlock_##T(const T *node) { (void) node; }\
+\
+static inline void read_lock_##T(const T *node) { (void) node; }\
+\
+static inline void read_unlock_##T(const T *node) { (void) node; }\
+\
+static inline T* get_children_##T(const T *node) {\
+    return (T*) node->ptr;\
 }\
 \
-static inline void destroy_lock_##name(name *node) {\
-    if (nodes_w_safety_locks || nodes_r_safety_locks) {\
-        zox_lock_destroy(&node->lock);\
-    }\
-}\
-\
-static inline void write_lock_##name(const name *node) {\
-    if (nodes_w_safety_locks) {\
-        zox_lock_write(&node->lock);\
-    }\
-}\
-\
-static inline void write_unlock_##name(const name *node) {\
-    if (nodes_w_safety_locks) {\
-        zox_unlock_write(&node->lock);\
-    }\
-}\
-\
-static inline void read_lock_##name(const name *node) {\
-    if (nodes_r_safety_locks) {\
-        zox_lock_read(&node->lock);\
-    }\
-}\
-\
-static inline void read_unlock_##name(const name *node) {\
-    if (nodes_r_safety_locks) {\
-        zox_unlock_read(&node->lock);\
-    }\
-}\
-\
-static inline name* get_children_##name(const name *node) {\
-    return (name*) node->ptr;\
-}\
-\
-static inline byte is_opened_##name(const name *node) {\
+static inline byte is_opened_##T(const T *node) {\
     return node->ptr != NULL;\
 }\
 \
-static inline byte is_closed_##name(const name *node) {\
+static inline byte is_closed_##T(const T *node) {\
     return node->ptr == NULL;\
 }\
 \
-static inline byte has_children_##name(const name *node) {\
+static inline byte has_children_##T(const T *node) {\
     return node->type == node_type_children;\
 }\
 \
-void create_##name(name* node) {\
-    node->ptr = NULL;\
+void create_##T(T* node) {\
+    memset(node, 0, sizeof(T)); \
     node->value = default_value;\
-    node->type = 0;\
-    create_lock_##name(node);\
     zox_stats_nodes++; \
 }\
 \
-void destroy_##name(ecs *world, name* node);\
+void destroy_##T(ecs *world, T* node);\
 \
-void close_##name(ecs *world, name *node) {\
-    if (!has_children_##name(node)) { \
+void close_##T(ecs *world, T *node) {\
+    if (!has_children_##T(node)) { \
         return; \
     } \
-    name* kids = get_children_##name(node); \
+    T* kids = get_children_##T(node); \
     for (byte i = 0; i < octree_length; i++) { \
-        destroy_##name(world, &kids[i]); \
+        destroy_##T(world, &kids[i]); \
     } \
-    node->type = node_type_closed; \
     free(node->ptr); \
-    node->ptr = NULL; \
+    base prev = node->value; \
+    /* clears for any T types */ \
+    memset(node, 0, sizeof(T)); \
+    node->value = prev; \
     zox_stats_nodes--; \
 }\
 \
-void destroy_##name(ecs *world, name* node) {\
-    if (!is_closed_##name(node)) {\
-        if (has_children_##name(node)) {\
-            close_##name(world, node);\
+void destroy_##T(ecs *world, T* node) {\
+    if (!is_closed_##T(node)) {\
+        if (has_children_##T(node)) {\
+            close_##T(world, node);\
         } else {\
-            run_hook_on_destroyed_##name(world, node);\
+            run_hook_on_destroyed_##T(world, node);\
         }\
     }\
-    destroy_lock_##name(node);\
+    destroy_lock_##T(node);\
 }\
 \
-ECS_DTOR(name, ptr, {\
-    destroy_##name(local_world, ptr);\
+ECS_DTOR(T, ptr, {\
+    destroy_##T(local_world, ptr);\
 })\
 \
-ECS_CTOR(name, ptr, {\
-    create_##name(ptr);\
+ECS_CTOR(T, ptr, {\
+    create_##T(ptr);\
 })\
 \
-void clone_##name(name*, const name*); \
+void clone_##T(T*, const T*); \
 \
-ECS_COPY(name, dst, src, {\
-    clone_##name(dst, src);\
+ECS_COPY(T, dst, src, {\
+    clone_##T(dst, src);\
 })\
 \
-ECS_MOVE(name, dst, src, {\
+ECS_MOVE(T, dst, src, {\
     dst->ptr = src->ptr;\
     dst->value = src->value;\
     dst->type = src->type;\
-    src->ptr = NULL;\
+    memset(src, 0, sizeof(T)); \
     src->value = default_value;\
-    src->type = 0;\
 })\
 \
-void dispose_system_##name(iter *it) {\
+void dispose_system_##T(iter *it) {\
     zox_sys_world()\
     zox_sys_begin()\
-    zox_sys_out(name)\
+    zox_sys_out(T)\
     for (int i = 0; i < it->count; i++) {\
-        zox_sys_o(name, component)\
-        destroy_##name(world, component);\
+        zox_sys_o(T, component)\
+        destroy_##T(world, component);\
+    }\
+} \
+\
+byte open_##T(T* node) { \
+    void* ptr = (void*) malloc(sizeof(T) * octree_length);\
+    if (ptr) { \
+        node->ptr = ptr; \
+        node->type = node_type_children; \
+        T* kids = get_children_##T(node); \
+        for (byte i = 0; i < octree_length; i++) { \
+            create_##T(&kids[i]); \
+        } \
+    } \
+    return ptr != NULL; \
+} \
+\
+void clone_##T(\
+    T* dst,\
+    const T* src \
+) {\
+    dst->value = src->value;\
+    dst->type = src->type;\
+    if (src->type == node_type_instance) {\
+        dst->ptr = src->ptr;\
+    } else if (src->ptr) {\
+        open_##T(dst);\
+        T* kids_dst = get_children_##T(dst);\
+        T* kids_src = get_children_##T(src);\
+        for (byte i = 0; i < octree_length; i++) {\
+            clone_##T(&kids_dst[i], &kids_src[i]);\
+        }\
+    } else {\
+        dst->ptr = NULL;\
     }\
 }
 
-#define zoxd_node(name)\
-    zox_define_component(name)\
-    ecs_set_hooks(world, name, {\
-        .ctor = ecs_ctor(name),\
-        .move = ecs_move(name),\
-        .copy = ecs_copy(name),\
-        .dtor = ecs_dtor(name),\
+#define zoxd_node(T)\
+    zox_define_component(T)\
+    ecs_set_hooks(world, T, {\
+        .ctor = ecs_ctor(T),\
+        .move = ecs_move(T),\
+        .copy = ecs_copy(T),\
+        .dtor = ecs_dtor(T),\
     });\
-    zox_observe_expr(dispose_system_##name, EcsOnRemove, "[out] "#name)
+    zox_observe_expr(dispose_system_##T, EcsOnRemove, "[out] "#T)
 

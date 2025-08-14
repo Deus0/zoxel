@@ -32,5 +32,6 @@ void clear_raycast_data(RaycastVoxelData* data) {
     data->positionv_last = int3_zero;
     data->positionf_last = float3_zero;
     data->chunk_last = 0;
+    data->node = NULL;
     data->node_last = NULL;
 }

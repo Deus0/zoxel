@@ -6,6 +6,7 @@
 #include "chunk_bounds_debug_system.c"
 #include "realm_tilemaps.c"
 #include "linking.c"
+#include "build_chunk_light3.c"
 zox_declare_system_state_event(RealmBlocks, GenerateRealm, zox_generate_realm_blocks, spawn_realm_blocks)
 zox_declare_system_state_event(RealmTilemaps, GenerateRealm, zox_generate_realm_tilemaps, spawn_realm_tilemaps)
 
@@ -56,6 +57,15 @@ void define_systems_terrain(ecs_world_t *world) {
                 [out] rendering.MeshColorRGBs,
                 [out] rendering.MeshDirty,
                 [none] chunks3.ChunkTextured);
+
+        zox_system(Light3BuildSystem, zoxp_voxels_read + 1,
+                [in] chunks3.ChunkMeshDirty,
+                [in] chunks3.VoxLink,
+                [in] chunks3.VoxelNode,
+                [in] lighting3.LightNode,
+                [in] rendering.RenderDepth,
+                [in] rendering.MeshColorRGBs);
+
         // move this into chunk3, for chunk3_textured
         zox_render3D_system(Chunk3RenderSystem,
                 [in] transforms3.TransformMatrix,

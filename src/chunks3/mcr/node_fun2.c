@@ -32,41 +32,10 @@ int3 move_position(int3 position, byte dir) {
     return position;
 }
 
-#define zoxc_node_helper(name, base)\
+#define zoxc_octree_fun2(T, base)\
 \
-void open_##name(name* node) { \
-    node->ptr = (void*) malloc(sizeof(name) * octree_length);\
-    if (node->ptr) { \
-        node->type = node_type_children; \
-        name* kids = get_children_##name(node); \
-        for (byte i = 0; i < octree_length; i++) { \
-            create_##name(&kids[i]); \
-        } \
-    } \
-} \
-\
-void clone_##name(\
-    name* dst,\
-    const name* src \
-) {\
-    dst->value = src->value;\
-    dst->type = src->type;\
-    if (src->type == node_type_instance) {\
-        dst->ptr = src->ptr;\
-    } else if (src->ptr) {\
-        open_##name(dst);\
-        name* kids_dst = get_children_##name(dst);\
-        name* kids_src = get_children_##name(src);\
-        for (byte i = 0; i < octree_length; i++) {\
-            clone_##name(&kids_dst[i], &kids_src[i]);\
-        }\
-    } else {\
-        dst->ptr = NULL;\
-    }\
-} \
-\
-base find_node_value_##name(\
-    const name* node,\
+base find_node_value_##T(\
+    const T* node,\
     int3 position,\
     byte depth)\
 {\
@@ -86,19 +55,19 @@ base find_node_value_##name(\
         position.y % dividor,\
         position.z % dividor\
     };\
-    name* kids = get_children_##name(node);\
-    return find_node_value_##name(&kids[int3_to_node_index(local_position)], child_octree_position, depth);\
+    T* kids = get_children_##T(node);\
+    return find_node_value_##T(&kids[int3_to_node_index(local_position)], child_octree_position, depth);\
 }\
 \
-void clone_at_depth_##name(\
-    name* dst,\
-    const name* src,\
+void clone_at_depth_##T(\
+    T* dst,\
+    const T* src,\
     const byte target_depth,\
     byte depth \
 ) {\
     if (target_depth > 0 && depth == target_depth - 1) {\
         if (src->ptr) {\
-            open_##name(dst);\
+            open_##T(dst);\
         }\
     }\
     if (depth == target_depth) {\
@@ -108,18 +77,18 @@ void clone_at_depth_##name(\
     } else {\
         if (src->ptr && dst->ptr) {\
             depth++;\
-            name* kids_src = get_children_##name(src);\
-            name* kids_dst = get_children_##name(dst);\
+            T* kids_src = get_children_##T(src);\
+            T* kids_dst = get_children_##T(dst);\
             for (byte i = 0; i < octree_length; i++) {\
-                clone_at_depth_##name(&kids_dst[i], &kids_src[i], target_depth, depth);\
+                clone_at_depth_##T(&kids_dst[i], &kids_src[i], target_depth, depth);\
             }\
         }\
     }\
 }\
 \
-void clone_depth_##name(\
-    name* dst,\
-    const name* src,\
+void clone_depth_##T(\
+    T* dst,\
+    const T* src,\
     const byte max_depth,\
     byte depth \
 ) {\
@@ -127,11 +96,11 @@ void clone_depth_##name(\
     dst->type = src->type;\
     depth++;\
     if (src->ptr && depth <= max_depth) {\
-        open_##name(dst);\
-        name* kids_dst = get_children_##name(dst);\
-        name* kids_src = get_children_##name(src);\
+        open_##T(dst);\
+        T* kids_dst = get_children_##T(dst);\
+        T* kids_src = get_children_##T(src);\
         for (byte i = 0; i < octree_length; i++) {\
-            clone_depth_##name(&kids_dst[i], &kids_src[i], max_depth, depth);\
+            clone_depth_##T(&kids_dst[i], &kids_src[i], max_depth, depth);\
         }\
     } else {\
         dst->ptr = src->ptr;\
@@ -140,16 +109,16 @@ void clone_depth_##name(\
 } \
 \
 \
-const name* get_##name(\
-    const name* node,\
+const T* get_##T(\
+    const T* node,\
     int3 position,\
     byte depth \
 ) {\
     if (!node || depth >= 8) { \
-        zox_log_error("invalid node or depth: in get_# name"); \
+        zox_log_error("invalid node or depth: in get_# T"); \
         return NULL; \
     } \
-    if (!depth || !has_children_##name(node)) {\
+    if (!depth || !has_children_##T(node)) {\
         return node;\
     }\
     depth--;\
@@ -165,17 +134,17 @@ const name* get_##name(\
         position.y % dividor,\
         position.z % dividor\
     };\
-    name* kids = get_children_##name(node); \
-    return get_##name( \
+    T* kids = get_children_##T(node); \
+    return get_##T( \
         &kids[i], \
         child_position, \
         depth); \
 }\
 \
 /* maybe make below function use this if it isn't in the non root node */\
-const name* get_adjacent_##name(\
-    const name** neighbors,\
-    const name* node,\
+const T* get_adjacent_##T(\
+    const T** neighbors,\
+    const T* node,\
     int3 position,\
     byte depth,\
     byte dir,\
@@ -189,21 +158,21 @@ const name* get_adjacent_##name(\
     if (position.x >= 0 && position.x < b && \
         position.y >= 0 && position.y < b && \
         position.z >= 0 && position.z < b) { \
-        return get_##name(node, position, depth);\
+        return get_##T(node, position, depth);\
     } else {\
         /* special case for adjacent ptr, flips position and crosses to neighbor chunk */\
         *chunk_index = dir + 1;\
-        const name* n = neighbors[dir]; \
+        const T* n = neighbors[dir]; \
         position = reverse_position(position, dir, b); \
-        return get_##name(n, position, depth); \
+        return get_##T(n, position, depth); \
     }\
 }\
 \
 \
-const name* get_root_adjacent_##name(\
-    const name** neighbors,\
-    const name* root,\
-    const name* node,\
+const T* get_root_adjacent_##T(\
+    const T** neighbors,\
+    const T* root,\
+    const T* node,\
     int3 position,\
     byte node_index,\
     byte3 node_position,\
@@ -211,8 +180,8 @@ const name* get_root_adjacent_##name(\
     byte direction,\
     byte *chunk_index \
 ) {\
-    if (has_children_##name(node)) {\
-        name* kids = get_children_##name(node);\
+    if (has_children_##T(node)) {\
+        T* kids = get_children_##T(node);\
         if (direction == direction_left) {\
             if (node_position.x != 0) {\
                 return &kids[node_index_with_left[node_index]];\
@@ -240,7 +209,7 @@ const name* get_root_adjacent_##name(\
         }\
     }\
     if (root != NULL) {\
-        return get_adjacent_##name( \
+        return get_adjacent_##T( \
             neighbors, \
             root, \
             position, \
@@ -251,10 +220,10 @@ const name* get_root_adjacent_##name(\
     return NULL;\
 }\
 \
-const name* get_adjacentn_##name(\
-    const name** neighbors, \
+const T* get_adjacentn_##T(\
+    const T** neighbors, \
     /*const byte* ndepths,*/ \
-    const name* node,\
+    const T* node,\
     int3 position, \
     byte depth, \
     byte dir \
@@ -275,15 +244,15 @@ const name* get_adjacentn_##name(\
             return NULL; \
         } \
     }\
-    return get_##name( \
+    return get_##T( \
         node, \
         position, \
         depth \
     );\
 }\
 \
-byte get_adjacent_depth_##name(\
-    const name** neighbors, \
+byte get_adjacent_depth_##T(\
+    const T** neighbors, \
     const byte* ndepths, \
     int3 position,\
     byte depth,\

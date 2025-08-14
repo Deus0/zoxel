@@ -43,6 +43,35 @@ uint debug_ui_raycasting(
     index += snprintf(buffer + index, size - index, "   + voxel_scale [%f]\n",
         data->voxel_scale);
 
+
+    // index += snprintf(buffer + index, size - index, "   * sides [%i]\n", data->node->sides);
+
+    if (data->node) {
+        index += snprintf(buffer + index, size - index, "   * sides: 0x%02X [", data->node->sides);
+
+        bool first = true;
+        for (int face = 0; face < 6; face++) {
+            if (data->node->sides & (1 << face)) {
+                if (!first) {
+                    index += snprintf(buffer + index, size - index, ", ");
+                }
+                index += snprintf(buffer + index, size - index, "%s", direction_names[face]);
+                first = false;
+            }
+        }
+
+        index += snprintf(buffer + index, size - index, "]\n");
+
+        zox_geter_value(data->chunk, RenderDepth, byte, depth);
+        zox_geter(data->chunk, LightNode, light_node);
+
+        byte light = get_LightNode_value_ex(light_node, depth, data->positionl, 0);
+        index += snprintf(buffer + index, size - index, "   + light [%i]\n", light);
+
+        byte light_last = get_LightNode_value_ex(light_node, depth, data->positionl_last, 0);
+        index += snprintf(buffer + index, size - index, "   + light_last [%i]\n", light_last);
+    }
+
     return index;
 }
 
