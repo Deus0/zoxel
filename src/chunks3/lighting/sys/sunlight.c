@@ -6,15 +6,13 @@ void SunlightSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
 
+    zox_sys_in(VoxelNodeGenerated); // triggered by terrain generation / loading
     zox_sys_in(RenderDepth);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
-    zox_sys_in(VoxelNodeGenerated);
-
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
-    zox_sys_out(LightNodeDirty);
-    zox_sys_out(MeshColorsGenerate);
+    zox_sys_out(SunlightDirty);
 
     for (int i = 0; i < it->count; i++) {
 
@@ -22,11 +20,9 @@ void SunlightSystem(iter *it) {
         zox_sys_i(RenderDepth, depthr);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
-        zox_sys_o(LightNodeDirty, updated);
-        zox_sys_o(MeshColorsGenerate, updated2);
+        zox_sys_o(SunlightDirty, sunlight_dirty);
 
         if (dirtyv->value != zox_dirty_active) {
             continue;
@@ -41,6 +37,10 @@ void SunlightSystem(iter *it) {
 
         byte queued_dirty = 0;
         entity chunkd = neighbors->value[direction_down];
+
+        // For now we skip unless bottom chunk - due to loading timing
+        if (!zox_valid(chunkd)) continue;
+
         SunlightQueue* queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, SunlightQueue) : NULL;
 
         // now for all XZ places we go through
@@ -66,9 +66,7 @@ void SunlightSystem(iter *it) {
             zox_mut_end(chunkd, SunlightQueue);
         }
 
-        // zox_log("Updated sunlight.");
-        updated->value = zox_dirty_trigger;
-        updated2->value = zox_dirty_trigger; // for now just put here
+        sunlight_dirty->value = zox_dirty_trigger;
 
     }
 } zoxd_system2(SunlightSystem);

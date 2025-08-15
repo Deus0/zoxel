@@ -1,6 +1,6 @@
 void add_debug_cube(
-    ecs_world_t* world,
-    const ecs_entity_t e,
+    ecs* world,
+    const entity e,
     const float3 size
 ) {
     zox_prefab_set(e, DebugCubeLines, { 1 });
@@ -13,8 +13,8 @@ void add_debug_cube(
     zox_prefab_set(e, MeshIndicies, { 0, NULL });
 }
 
-void debug_cubec(
-    ecs_world_t* world,
+/*void debug_cubec(
+    ecs* world,
     const float3 p,
     const float3 s,
     color_rgb c
@@ -60,4 +60,39 @@ void debug_cubec(
     debug_linec(world, b, f, c);
     debug_linec(world, c_, g, c);
     debug_linec(world, d, h, c);
+}*/
+
+static inline void debug_cubec(
+    ecs* world,
+    const float3 p,
+    const float3 s,
+    color_rgb col
+) {
+    // Half size
+    const float hx = s.x * 0.5f;
+    const float hy = s.y * 0.5f;
+    const float hz = s.z * 0.5f;
+
+    // Corner positions
+    float3 v[8] = {
+        { p.x - hx, p.y - hy, p.z - hz }, // 0
+        { p.x + hx, p.y - hy, p.z - hz }, // 1
+        { p.x + hx, p.y - hy, p.z + hz }, // 2
+        { p.x - hx, p.y - hy, p.z + hz }, // 3
+        { p.x - hx, p.y + hy, p.z - hz }, // 4
+        { p.x + hx, p.y + hy, p.z - hz }, // 5
+        { p.x + hx, p.y + hy, p.z + hz }, // 6
+        { p.x - hx, p.y + hy, p.z + hz }  // 7
+    };
+
+    // Edge index pairs
+    static const byte edges[12][2] = {
+        {0,1}, {1,2}, {2,3}, {3,0}, // bottom
+        {4,5}, {5,6}, {6,7}, {7,4}, // top
+        {0,4}, {1,5}, {2,6}, {3,7}  // verticals
+    };
+
+    for (int i = 0; i < 12; i++) {
+        debug_linec(world, v[edges[i][0]], v[edges[i][1]], col);
+    }
 }

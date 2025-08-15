@@ -24,7 +24,8 @@ void zoxel_on_spawn_prefabs(ecs_world_t* world) {
     // set_prefab_debug_label(world, &debug_label_lods);
     // set_prefab_debug_label(world, &debug_label_collisions);
     // set_prefab_debug_label(world, &debug_label_app);
-    set_prefab_debug_label(world, &debug_ui_raycasting);
+    // set_prefab_debug_label(world, &debug_ui_raycasting);
+    set_prefab_debug_label(world, &debug_ui_raycasted_light);
 }
 
 void zoxel_set_debug() {
@@ -116,6 +117,7 @@ void zoxel_settings_uis() {
 }
 
 void zoxel_debug_keys() {
+    add_hook_key_down(key_down_toggle_light_debug);
     add_hook_key_down(test_load_chunk);
     add_hook_key_down(toggle_sound);
     add_hook_key_down(toggle_fps_viewer);

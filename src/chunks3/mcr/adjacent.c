@@ -54,7 +54,7 @@ static inline const void* octree_get_adjacent_leaf(
 
 // Type-safe macro for root-first neighbor fetchers
 #define create_node_neighbor(T) \
-static inline const T* get_##T##_neighbor( \
+static inline const T* get_neighbor_##T( \
     const T* root_node, \
     const T** neighbors, \
     byte dir, \

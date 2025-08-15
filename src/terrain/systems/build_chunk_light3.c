@@ -48,7 +48,7 @@ static inline const LightNode* get_max_light_on_face(
     byte depth,
     byte target_depth
 ) {
-    const LightNode* node = get_LightNode_neighbor(
+    const LightNode* node = get_neighbor_LightNode(
         root_node,
         nnodes,
         face,

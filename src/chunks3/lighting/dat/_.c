@@ -7,7 +7,7 @@ typedef struct {
 typedef struct {
     byte value;
     byte3 positionl;
-} LightNodeUpdate;
+} PropogateUpdate;
 
 // beams queued
 typedef struct {

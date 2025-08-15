@@ -12,8 +12,8 @@ static inline const void* find_octree_node(
     size_t stride
 ) {
     while (node && depth < target_depth) {
-        void* const* kids = (void* const*)node;   // first member = child array
-        if (!*kids) return node;                  // stop if children missing
+        void** kids = (void**) node;   // first member = child array
+        if (!kids || !*kids) return node;                  // stop if children missing
 
         const byte div = powers_of_two_byte[target_depth - depth - 1];
         if (div == 0) break;

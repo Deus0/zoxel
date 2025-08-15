@@ -6,6 +6,10 @@ void prefab_add_lights3(
     zox_prefab_set(e, LightNode, { .value = darklight });
     zox_prefab_set(e, LightNodeDepth, { depth });
     zox_prefab_set(e, LightNodeDirty, { zox_dirty_none });
-    zox_prefab_set(e, LightNodeQueue, { 0 });
+
     zox_prefab_set(e, SunlightQueue, { 0 });
+    zox_prefab_set(e, SunlightDirty, { zox_dirty_none });
+
+    zox_prefab_set(e, PropogateQueue, { 0 });
+
 }

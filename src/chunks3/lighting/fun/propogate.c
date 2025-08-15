@@ -1,74 +1,78 @@
 static inline void flood_light_recursive(
-    const VoxelNode* vnode,
-    LightNode* lnode,
-    const VoxelNode* voxel_neighbors[6],
-    const LightNode* light_neighbors[6],
+    const VoxelNode* vnode,                 // our chunk's voxel root (READ)
+    LightNode* lnode,                       // our chunk's light root (WRITE)
+    const VoxelNode* voxel_neighbors[6],    // neighbor voxel roots (READ-ONLY)
+    const LightNode* light_neighbors[6],    // neighbor light roots (READ-ONLY)
     byte depth,
-    byte3 pos,
-    byte light,
-    LightNodeQueue* queue,
+    byte3 pos,                              // current position (in our chunk coords)
+    byte light,                             // incoming light already applied at pos
+    PropogateQueue* queue,                  // cross-chunk queue (WRITE)
     int max_depth
 ) {
-    if (light == 0 || max_depth <= 0) return;
+    if (!vnode || !lnode || light == 0 || max_depth <= 0) return;
 
-    byte current = get_LightNode_value_ex(lnode, depth, pos, 0);
-    if (current >= light) return;
-
-    set_LightNode_ex(lnode, depth, pos, light, 0);
-
-    byte next_light = (light > 32) ? light - 32 : 0;
-    if (next_light == 0) return;
+    const byte SIZE = (byte)((1u << depth) - 1u);
+    const byte AIR_DECAY   = 32;
+    // SOLID blocks block entirely; no partial bleed.
 
     for (byte dir = 0; dir < 6; dir++) {
         byte3 npos = pos;
+        bool oob = false;
 
-        // move into neighbor voxel first
+        // move with wrap into neighbor-local coords
         switch (dir) {
-            case 0: if (npos.x>0) npos.x--; break;
-            case 1: if (npos.x<(1<<depth)-1) npos.x++; break;
-            case 2: if (npos.y>0) npos.y--; break;
-            case 3: if (npos.y<(1<<depth)-1) npos.y++; break;
-            case 4: if (npos.z>0) npos.z--; break;
-            case 5: if (npos.z<(1<<depth)-1) npos.z++; break;
+            case 0: if (npos.x > 0) npos.x--; else { npos.x = SIZE; oob = true; } break;
+            case 1: if (npos.x < SIZE) npos.x++; else { npos.x = 0;    oob = true; } break;
+            case 2: if (npos.y > 0) npos.y--; else { npos.y = SIZE; oob = true; } break;
+            case 3: if (npos.y < SIZE) npos.y++; else { npos.y = 0;    oob = true; } break;
+            case 4: if (npos.z > 0) npos.z--; else { npos.z = SIZE; oob = true; } break;
+            case 5: if (npos.z < SIZE) npos.z++; else { npos.z = 0;    oob = true; } break;
         }
 
-        const VoxelNode* neighbor_voxel = (VoxelNode*)octree_get_adjacent_leaf(
-            vnode, (const void**)voxel_neighbors, dir, npos, depth, sizeof(VoxelNode));
+        if (oob) {
+            // --- Cross-chunk: READ neighbor if present, never write it. Queue only. ---
+            const VoxelNode* nvox_root  = voxel_neighbors[dir];
+            const LightNode* nlight_root= light_neighbors[dir];
 
-        const LightNode* neighbor_light = (LightNode*)octree_get_adjacent_leaf(
-            lnode, (const void**)light_neighbors, dir, npos, depth, sizeof(LightNode));
+            // solid → no propagation
+            if (nvox_root) {
+                byte v = get_VoxelNode_value_ex(nvox_root, depth, npos, 0);
+                if (v) continue; // solid: hard stop
+            }
 
-        if (!neighbor_voxel && !queue) continue; // outside chunk → skip or queue
+            // air decay
+            byte new_light = (light > AIR_DECAY) ? (byte)(light - AIR_DECAY) : 0;
+            if (new_light == 0) continue;
 
-        // skip if neighbor light >= next_light
-        if (neighbor_light) {
-            byte nlight = get_LightNode_value_ex(neighbor_light, depth, npos, 0);
-            if (nlight >= next_light) continue;
+            // only queue if it improves neighbor
+            byte ncur = nlight_root ? get_LightNode_value_ex(nlight_root, depth, npos, 0) : 0;
+            if (new_light <= ncur) continue;
+
+            if (queue) a_PropogateQueue(queue, (PropogateUpdate){ .value = new_light, .positionl = npos });
+            continue;
         }
 
-        // decay if solid voxel
-        const VoxelNode* vn = neighbor_voxel ? get_VoxelNode_ex((VoxelNode*)neighbor_voxel, depth, npos, 0) : NULL;
-        byte nl = next_light;
-        if (vn && vn->value) nl = (next_light > 64) ? next_light - 64 : 0;
-        if (nl == 0) continue;
+        // --- In-chunk: READ voxel, WRITE light in our own chunk only. ---
+        byte v = get_VoxelNode_value_ex(vnode, depth, npos, 0);
+        if (v) continue; // solid: no light through, you said it.
 
-        // outside chunk → queue
-        if (!neighbor_voxel && queue) {
-            // spin_lock(&queue->lock);
-            a_LightNodeQueue(queue, (LightNodeUpdate){ .value = nl, .positionl = npos });
-            // spin_unlock(&queue->lock);
-        } else {
-            flood_light_recursive(
-                neighbor_voxel,
-                lnode,
-                voxel_neighbors,
-                light_neighbors,
-                depth,
-                npos,
-                nl,
-                queue,
-                max_depth - 1
-            );
-        }
+        byte new_light = (light > AIR_DECAY) ? (byte)(light - AIR_DECAY) : 0;
+        if (new_light <= darklight) continue; // << added min-light check
+
+        byte cur = get_LightNode_value_ex(lnode, depth, npos, 0);
+        if (new_light <= cur) continue;
+
+        set_LightNode_ex(lnode, depth, npos, new_light, 0); // write ONLY our chunk
+        flood_light_recursive(
+            vnode,                // still our voxel root
+            lnode,                // still our light root
+            voxel_neighbors,
+            light_neighbors,
+            depth,
+            npos,
+            new_light,
+            queue,
+            max_depth - 1
+        );
     }
 }

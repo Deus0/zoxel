@@ -12,9 +12,7 @@ byte sunbeam(
     if (pos.y > length) {
         zox_logw("position too high [%i]", pos.y);
         return 0;
-    }/* else if (!pos.y) {
-        pos.y = length; // hmm
-    }*/
+    }
     byte hit_solid = 0;
     byte light = beamlight;
     byte length2 = pos.y;

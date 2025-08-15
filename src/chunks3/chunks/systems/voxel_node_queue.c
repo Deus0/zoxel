@@ -28,7 +28,7 @@ void VoxelNodeQueueSystem(ecs_iter_t *it) {
         // spin_lock(&queue->lock);
         // while (queue->count) {
         for (size_t i = 0; i < queue->count; i++) {
-            VoxelNodeUpdate update = g_VoxelNodeQueue(queue, i);
+            VoxelNodeUpdate update = queue->ptr[i];
             datam.voxel = update.value;
             SetVoxelData data2 = {
                 .node = node,

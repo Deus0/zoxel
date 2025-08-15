@@ -9,9 +9,7 @@ void VoxelLightSystem(ecs_iter_t *it) {
     zox_sys_in(VoxelNodeQueue);
     zox_sys_in(RenderDepth);
     zox_sys_in(LightNode);
-    zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
-
     zox_sys_out(SunlightQueue);
 
     for (int i = 0; i < it->count; i++) {
@@ -19,9 +17,7 @@ void VoxelLightSystem(ecs_iter_t *it) {
         zox_sys_i(VoxelNodeQueue, input_queue);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(LightNode, root_lnode);
-        zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-
         zox_sys_o(SunlightQueue, sun_queue);
 
         if (!input_queue->count) {
@@ -35,11 +31,12 @@ void VoxelLightSystem(ecs_iter_t *it) {
             nnodesl);
 
         for (size_t i = 0; i < input_queue->count; i++) {
-            VoxelNodeUpdate update = g_VoxelNodeQueue(input_queue, i);
+
+            VoxelNodeUpdate update = input_queue->ptr[i];
 
             if (update.value == 0) {
 
-                const LightNode* above = get_LightNode_neighbor(
+                const LightNode* above = get_neighbor_LightNode(
                     root_lnode,
                     nnodesl,
                     direction_up,
@@ -63,9 +60,9 @@ void VoxelLightSystem(ecs_iter_t *it) {
             }
 
             // if filling hole
-            if (update.value) {
+            else if (update.value) {
 
-                const LightNode* above = get_LightNode_neighbor(
+                const LightNode* above = get_neighbor_LightNode(
                     root_lnode,
                     nnodesl,
                     direction_up,

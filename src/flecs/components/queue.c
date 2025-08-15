@@ -39,10 +39,6 @@ static T2 r_##T(T* q) { \
     return q->ptr[--q->count]; \
 } \
 \
-static T2 g_##T(const T* q, size_t i) { \
-    return q->ptr[i]; \
-} \
-\
 ECS_CTOR(T, ptr, { i_##T(ptr); }) \
 ECS_DTOR(T, ptr, { d_##T(ptr); }) \
 ECS_MOVE(T, dst, src, { \

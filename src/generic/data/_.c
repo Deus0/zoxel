@@ -6,5 +6,4 @@
 #include "debug_label_event.c"
 #include "direction.c"
 #include "pow.c"
-#include "octree.c"
-#include "octree_helper.c"
+int node_memory = 0;

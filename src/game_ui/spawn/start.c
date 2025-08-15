@@ -1,12 +1,12 @@
 ecs_entity_t spawn_menu_start(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const ecs_entity_t player,
-    const ecs_entity_t canvas,
+    ecs *world,
+    const entity prefab,
+    const entity player,
+    const entity canvas,
     const char *header_label
 ) {
-    const float2 anchor = (float2) { 0.5f, 0.0f };
-    const int2 position = (int2) { 0, 150 };
+    const float2 anchor = (float2) { 0.5f, 0.5f };
+    const int2 position = (int2) { 0, 0 };
     const byte header_font_size = 0;
     const byte font_size = 80;
     const byte is_close_button = 0;
@@ -14,7 +14,7 @@ ecs_entity_t spawn_menu_start(
     const int labels_count = 1;
     const text_group labels[] = { { label_start } };
     const ClickEvent events[] = { { &button_event_menu_start } };
-    const ecs_entity_t e = spawn_ui_list(world,
+    const entity e = spawn_ui_list(world,
         prefab,
         canvas,
         header_label,

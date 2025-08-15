@@ -11,8 +11,7 @@ void SunlightQueueSystem(ecs_iter_t *it) {
     zox_sys_out(SunlightQueue);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
-    zox_sys_out(LightNodeDirty);
-    zox_sys_out(MeshColorsGenerate);
+    zox_sys_out(SunlightDirty);
 
     for (int i = 0; i < it->count; i++) {
 
@@ -23,8 +22,7 @@ void SunlightQueueSystem(ecs_iter_t *it) {
         zox_sys_o(SunlightQueue, queue);
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
-        zox_sys_o(LightNodeDirty, light_dirty);
-        zox_sys_o(MeshColorsGenerate, generate_mesh_colors);
+        zox_sys_o(SunlightDirty, sunlight_dirty);
 
         if (!queue->count) {
             continue;
@@ -37,6 +35,10 @@ void SunlightQueueSystem(ecs_iter_t *it) {
 
         byte queued_dirty = 0;
         entity chunkd = neighbors->value[direction_down];
+
+        // For now we skip unless bottom chunk - due to loading timing
+        if (!zox_valid(chunkd)) continue;
+
         SunlightQueue* queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, SunlightQueue) : NULL;
 
         byte length = powers_of_two[depthl->value];
@@ -70,7 +72,7 @@ void SunlightQueueSystem(ecs_iter_t *it) {
         }
 
         // propogation: we can just add to propogation queue here,no need to run
-        light_dirty->value = zox_dirty_trigger;
-        generate_mesh_colors->value = zox_dirty_trigger;
+        sunlight_dirty->value = zox_dirty_trigger;
+
     }
 } zoxd_system2(SunlightQueueSystem);

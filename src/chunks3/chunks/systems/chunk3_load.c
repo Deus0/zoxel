@@ -67,7 +67,6 @@ void Chunk3LoadSystem(iter *it) {
     zox_sys_world();    // used when closing possible nodes
     zox_sys_begin();
 
-    zox_sys_in(RenderDistanceDirty);
     zox_sys_in(ChunkPosition);
     zox_sys_out(VoxelNodeDirty);
     zox_sys_out(VoxelNodeEdited);
@@ -78,7 +77,6 @@ void Chunk3LoadSystem(iter *it) {
 
     for (int i = 0; i < it->count; i++) {
 
-        zox_sys_i(RenderDistanceDirty, render_distance_dirty);
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(VoxelNodeEdited, edited);

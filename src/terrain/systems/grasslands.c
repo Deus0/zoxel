@@ -219,6 +219,7 @@ void GrassyPlainsSystem(iter *it) {
 
         nodeDirty->value = zox_dirty_trigger;
         generated->value = zox_dirty_trigger;
+
     }
     endwatch(time_grassy_plains, "grassy_plains");
     zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);

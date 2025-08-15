@@ -28,12 +28,12 @@ CFLAGS      	:= -fPIC -O3 -march=native -flto=auto -DNDEBUG -Dzox_debug
 cflags_dev 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug
 
 # more checks
-cflags_dever	:= $(cflags_dev)  -Wextra -Wpedantic -pedantic-errors -Werror  -fdiagnostics-color=always -std=c99
+cflags_dever	:= $(cflags_dev)  -Wextra -Wpedantic -pedantic-errors -Werror  -fdiagnostics-color=always # -std=c99
 
 # std=c99 gnu99
 # memory leak catching
-# cflags_dever 	+= -Wpedantic -fsanitize=addresse
-# cflags_dever  += -fno-omit-frame-pointer -D_POSIX_C_SOURCE=200809L
+# more checks
+cflags_devmem	:= $(cflags_dever) -Wpedantic -fsanitize=address -fno-omit-frame-pointer -D_POSIX_C_SOURCE=200809L
 
 LDFLAGS 	:= -lflecs -lm -lpthread -lGL -lSDL2 -lSDL2_image -lSDL2_mixer \
 			-Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images \
@@ -80,6 +80,12 @@ dever: $(SRCS)
 	@ mkdir -p bin
 	$(CC) $(cflags_dever) $(SRC) -o $@ $(LDFLAGS)
 
+devmem: $(SRCS)
+	@ mkdir -p bin
+	$(CC) $(cflags_devmem) $(SRC) -o $@ $(LDFLAGS)
+
+gdbmem: devmem
+	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)
 
 # Run
 

@@ -6,17 +6,22 @@ create_node_getter(LightNode)
 create_node_reducer(LightNode)
 create_node_setreduce(LightNode)
 create_node_neighbor(LightNode)
+create_octree_line_debugger(LightNode)
+create_octree_line_debugger_compare(LightNode, VoxelNode)
 
 zoxc_byte(LightNodeDepth);
 zoxc_byte(LightNodeDirty);
-zoxc_queue(LightNodeQueue, LightNodeUpdate, 1)
+zoxc_byte(SunlightDirty);
 zoxc_queue(SunlightQueue, SunlightUpdate, 1)
+
+zoxc_queue(PropogateQueue, PropogateUpdate, 1)
 
 void define_components_lighting3(ecs *world) {
     zoxd_tag(SunnyChunk);
     zoxd_node(LightNode);
     zoxd_byte(LightNodeDepth);
     zoxd_byte(LightNodeDirty);
-    zoxd_queue(LightNodeQueue);
+    zoxd_byte(SunlightDirty);
     zoxd_queue(SunlightQueue);
+    zoxd_queue(PropogateQueue);
 }

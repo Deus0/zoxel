@@ -70,7 +70,6 @@ void define_systems_chunks(ecs *world) {
 
     zox_system(Chunk3LoadSystem,
         EcsOnLoad,
-        [in] rendering.RenderDistanceDirty,
         [in] chunks3.ChunkPosition,
         [out] chunks3.VoxelNodeDirty,
         [out] chunks3.VoxelNodeEdited,

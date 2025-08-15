@@ -16,6 +16,7 @@ create_node_getter(VoxelNode)
 create_node_reducer(VoxelNode)
 create_node_setreduce(VoxelNode)
 create_node_neighbor(VoxelNode)
+create_octree_line_debugger(VoxelNode)
 
 zoxc_byte(VoxelNodeDirty);
 zoxc_byte(VoxelNodeEdited);

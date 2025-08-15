@@ -29,21 +29,21 @@ void ChunkDebugSystem(iter *it) {
     if (!is_render_chunk_edges) {
         return;
     }
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(BlockScale)
-    zox_sys_in(Position3D)
-    zox_sys_in(VoxelNode)
-    zox_sys_in(NodeDepth)
-    zox_sys_in(RenderDistance)
-    zox_sys_in(ChunkNeighbors)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(BlockScale);
+    zox_sys_in(Position3D);
+    zox_sys_in(VoxelNode);
+    zox_sys_in(NodeDepth);
+    zox_sys_in(RenderDistance);
+    zox_sys_in(ChunkNeighbors);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(BlockScale, blockScale)
-        zox_sys_i(Position3D, position)
-        zox_sys_i(VoxelNode, voxelNode)
-        zox_sys_i(NodeDepth, nodeDepth)
-        zox_sys_i(RenderDistance, renderDistance)
-        zox_sys_i(ChunkNeighbors, chunkNeighbors)
+        zox_sys_i(BlockScale, blockScale);
+        zox_sys_i(Position3D, position);
+        zox_sys_i(VoxelNode, voxelNode);
+        zox_sys_i(NodeDepth, nodeDepth);
+        zox_sys_i(RenderDistance, renderDistance);
+        zox_sys_i(ChunkNeighbors, chunkNeighbors);
         if (renderDistance->value > debug_distance) {
             continue;
         }
@@ -79,4 +79,4 @@ void ChunkDebugSystem(iter *it) {
             }
         }
     }
-} zoxd_system(ChunkDebugSystem)
+} zoxd_system2(ChunkDebugSystem);

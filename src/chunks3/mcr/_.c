@@ -10,3 +10,5 @@ uint zox_stats_terrain_chunks = 0;
 #include "reducer.c"
 #include "setreduce.c"
 #include "adjacent.c"
+#include "debug_lines.c"
+#include "debug_lines_air.c"
