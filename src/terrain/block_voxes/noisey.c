@@ -1,6 +1,6 @@
-ecs_entity_t spawn_realm_block_noisey(ecs_world_t *world, const byte index, char* name, const color block_color) {
+entity spawn_realm_block_noisey(ecs *world, const byte index, char* name, const color block_color) {
     // vox
-    const ecs_entity_t vox = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
+    const entity vox = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
     zox_set_unique_name(vox, "dirt_pile");
     zox_set(vox, VoxType, { vox_type_noisey });
     // block
@@ -26,7 +26,7 @@ ecs_entity_t spawn_realm_block_noisey(ecs_world_t *world, const byte index, char
 // make disables more systematic
 /*if (disable_block_voxes) {
     spawn_data.bake_vox = 1;
-    const ecs_entity_t vox_disabled = spawn_vox_generated_invisible(world, prefab_vox_generated, (color) { 25, 5, 5, 255 });
+    const entity vox_disabled = spawn_vox_generated_invisible(world, prefab_vox_generated, (color) { 25, 5, 5, 255 });
     spawn_data.vox = vox_disabled;
     } else {
         spawn_data.prefab = prefab_block;

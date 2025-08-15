@@ -11,22 +11,17 @@ byte disable_grass_placements = 0;
 // place grass if max depth
 
 // generates our terrain voxels
-void GrassyPlainsSystem(ecs_iter_t *it) {
+void GrassyPlainsSystem(iter *it) {
+
     zox_ts_begin(grassy_plains);
-    // for now while types are global
-    // const byte target_depth = terrain_depth;
-    const uint seed = global_seed;  // todo: use terrains seed
-    // zox_sys_world()
-    // zox_log_terrain_generation = 1;
-    // uint update_count = 0;
-    // int stage_id = get_thread_index();
-    // double time_start = get_time_ms();
+    const uint seed = global_seed;  // TODO: use terrains seed
 
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
     zox_sys_in(RenderDepth);
     zox_sys_in(RenderDepthDirty);
+    zox_sys_in(VoxelNodeEdited);
     zox_sys_in(VoxelNodeLoaded);
     zox_sys_in(VoxLink);
     zox_sys_out(VoxelNode);
@@ -51,18 +46,21 @@ void GrassyPlainsSystem(ecs_iter_t *it) {
 
 
     for (int i = 0; i < it->count; i++) {
+
         zox_sys_i(RenderDepth, renderDepth);
         zox_sys_i(ChunkPosition, chunkPosition);
         zox_sys_i(RenderDepthDirty, dirty);
+        zox_sys_i(VoxelNodeEdited, edited);
         zox_sys_i(VoxelNodeLoaded, loaded);
         zox_sys_i(VoxLink, voxLink);
         zox_sys_o(NodeDepth, nodeDepth);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(VoxelNodeDirty, nodeDirty);
         zox_sys_o(VoxelNodeGenerated, generated);
+
         // todo: remember if has generated yet, keep a generated LOD state!
         //      - better yet just increase NodeDepth - and compare with terrain's one when increasing
-        if (dirty->value != zox_dirty_active || loaded->value) {
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
 
@@ -77,6 +75,15 @@ void GrassyPlainsSystem(ecs_iter_t *it) {
         // if no depth, skip
         if (!generation_depth) {
             continue;
+        }
+
+        // kicks off lighting if loaded
+        if (loaded->value && edited->value) {
+            continue;
+        }
+
+        if (!loaded->value) {
+            zox_logw("Not attempted to load, yet generating.");
         }
 
         // if already at that level
@@ -212,13 +219,6 @@ void GrassyPlainsSystem(ecs_iter_t *it) {
 
         nodeDirty->value = zox_dirty_trigger;
         generated->value = zox_dirty_trigger;
-        /*chunkMeshDirty->value = chunk_dirty_state_trigger;
-        for (byte axis = 0; axis < chunk_neighbors_length; axis++) {
-            ecs_entity_t neighbor = neighbors->value[axis];
-            if (zox_valid(neighbor)) {
-                zox_set(neighbor, ChunkMeshDirty, { chunk_dirty_state_trigger })
-            }
-        }*/
     }
     endwatch(time_grassy_plains, "grassy_plains");
     zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);

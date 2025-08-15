@@ -3,7 +3,6 @@
 #include "lods.c"
 #include "distance.c"
 #include "bounds.c"
-#include "validation.c"
 #include "voxel_get.c"
 #include "voxel_set.c"
 #include "voxel_optimize.c"

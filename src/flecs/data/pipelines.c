@@ -30,6 +30,12 @@
 #define zoxp_voxels_read EcsOnUpdate
 #define zoxp_text EcsOnUpdate
 
+// (VoxelNode) Queue
+#define zoxp_queue_add EcsPreUpdate
+#define zoxp_queue_process1 EcsOnValidate
+#define zoxp_queue_process2 EcsPostUpdate
+#define zoxp_queue_clear EcsOnStore
+
 
 // Rendering Pipelines
 // Also breaks if transforms isnt after physics pipeline

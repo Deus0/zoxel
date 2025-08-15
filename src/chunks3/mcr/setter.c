@@ -4,7 +4,15 @@
 // =======================================
 
 // Core setter: walks toward target depth, sets value, opens children if missing
-static inline void* set_octree_value(void* node, byte target_depth, byte3 pos, byte value, byte depth, size_t stride, size_t value_offset) {
+static inline void* set_octree_value(
+    void* node,
+    byte target_depth,
+    byte3 pos,
+    byte value,
+    byte depth,
+    size_t stride,
+    size_t value_offset
+) {
     if (!node) return NULL;
 
     // Are we at target depth?
@@ -25,7 +33,14 @@ static inline void* set_octree_value(void* node, byte target_depth, byte3 pos, b
             zox_log_error("[set_octree_value] failed to allocate children");
             return node;
         }
+
         memset(*ptr, 0, stride * 8);    // zero-init
+
+        // --- New: set all children values ---
+        for (byte j = 0; j < 8; j++) {
+            void* child = (char*)(*ptr) + j * stride;
+            *(byte*)((char*)child + value_offset) = value;  // initialize with parent value
+        }
     }
 
     void* kids = *ptr;
@@ -50,7 +65,13 @@ static inline void* set_octree_value(void* node, byte target_depth, byte3 pos, b
 // Macro wrapper: type-safe setter
 #define create_node_setter(T) \
 static inline T* set_##T##_ex(T* node, byte target_depth, byte3 pos, byte value, byte depth) { \
-    return (T*)set_octree_value((void*)node, target_depth, pos, value, depth, sizeof(T), offsetof(T, value)); \
+    return (T*)set_octree_value(\
+        (void*)node,\
+        target_depth,\
+        pos, value,\
+        depth,\
+        sizeof(T),\
+        offsetof(T, value)); \
 }
 
 // Example usage:

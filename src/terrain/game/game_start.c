@@ -1,29 +1,29 @@
 void game_start_terrain2D(
-    ecs_world_t *world,
-    const ecs_entity_t game
+    ecs *world,
+    const entity game
 ) {
+    (void) game;
     spawn_grid2D(world);
 }
 
 void spawn_terrain_on_realm(
-    ecs_world_t *world,
-    const ecs_entity_t realm
+    ecs *world,
+    const entity realm
 ) {
-    const int3 render_size = (int3) { terrain_spawn_distance, terrain_vertical, terrain_spawn_distance };
-    const ecs_entity_t terrain = spawn_terrain_streaming(world,
+    // const int3 render_size = (int3) { terrain_spawn_distance, terrain_vertical, terrain_spawn_distance };
+    const entity terrain = spawn_terrain_streaming(
+        world,
         realm,
-        int3_zero,
-        render_size,
-        prefab_terrain,
-        prefab_chunk_terrain);
+        prefab_terrain
+    );
     zox_set(terrain, RealmLink, { realm })
     zox_set(realm, TerrainLink, { terrain }) // link terrain to realm too
     local_terrain = terrain;
 }
 
 void game_start_terrain3D(
-    ecs_world_t *world,
-    const ecs_entity_t game
+    ecs *world,
+    const entity game
 ) {
     zox_geter(game, RealmLink, realmLink)
     spawn_terrain_on_realm(world, realmLink->value);
@@ -32,7 +32,7 @@ void game_start_terrain3D(
 // Start Game
 void game_start_terrain(
     ecs *world,
-    const ecs_entity_t game
+    const entity game
 ) {
     if (zox_game_type == zox_game_mode_3D) {
         delay_event(world, &game_start_terrain3D, game, start_game_delay_terrain);

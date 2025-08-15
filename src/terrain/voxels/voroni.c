@@ -1,12 +1,12 @@
-ecs_entity_t spawn_block_voroni(
-    ecs_world_t *world,
+entity spawn_block_voroni(
+    ecs *world,
     const byte index,
     char* name,
     const color block_color,
     byte vregions
 ) {
     // vox
-    const ecs_entity_t v = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
+    const entity v = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
     zox_set_unique_name(v, "block_soil");
     zox_set(v, VoxType, { vox_type_soil });
     zox_set(v, VRegions, { vregions });

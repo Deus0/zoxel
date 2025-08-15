@@ -97,7 +97,7 @@ void collide_with_chunk_d3(
     if (!byte3_in_bounds(voxel_positionl, chunk_dimensions_b3)) {
         return;
     }
-    zox_geter_value(chunk, NodeDepth, byte, node_depth)
+    // zox_geter_value(chunk, NodeDepth, byte, node_depth)
 
     const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
     if (block_collisions[voxel]) {
@@ -179,7 +179,7 @@ void collide_with_chunk_d2(
         return;
     }
     zox_geter(chunk, VoxelNode, node)
-    zox_geter_value(chunk, NodeDepth, byte, node_depth)
+    // zox_geter_value(chunk, NodeDepth, byte, node_depth)
     if (!node) {
         return;
     }

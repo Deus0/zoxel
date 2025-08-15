@@ -14,7 +14,7 @@ zox_declare_system_state_event(RealmBlocks, GenerateRealm, zox_generate_realm_bl
 zox_declare_system_state_event(RealmTilemaps, GenerateRealm, zox_generate_realm_tilemaps, spawn_realm_tilemaps)
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
-void define_systems_terrain(ecs_world_t *world) {
+void define_systems_terrain(ecs *world) {
     zox_define_system_state_event_1(RealmBlocks, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm)
     zox_define_system_state_event_1(RealmTilemaps, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm)
 
@@ -37,6 +37,7 @@ void define_systems_terrain(ecs_world_t *world) {
             [in] chunks3.ChunkPosition,
             [in] rendering.RenderDepth,
             [in] rendering.RenderDepthDirty,
+            [in] chunks3.VoxelNodeEdited,
             [in] chunks3.VoxelNodeLoaded,
             [in] chunks3.VoxLink,
             [out] chunks3.VoxelNode,
@@ -49,13 +50,13 @@ void define_systems_terrain(ecs_world_t *world) {
 
     if (!headless) {
         // move this into chunk3, for chunk3_textured
-        zox_system(Chunk3BuildSystem, zoxp_voxels_read,
-                [in] chunks3.ChunkMeshDirty,
+        zox_system(Chunk3BuildSystem,
+                zoxp_voxels_read,
                 [in] chunks3.VoxLink,
+                [in] chunks3.ChunkMeshDirty,
                 [in] chunks3.VoxelNode,
                 [in] rendering.RenderDepth,
                 [in] chunks3.ChunkNeighbors,
-                [in] chunks3.NodeDepth,
                 [in] blocks.BlockScale,
                 [out] rendering.MeshIndicies,
                 [out] rendering.MeshVertices,
@@ -90,7 +91,6 @@ void define_systems_terrain(ecs_world_t *world) {
             ChunkBoundsDrawSystem,
             zoxp_mainthread,
             [in] transforms3.Position3D,
-            [in] chunks3.ChunkSize,
             [in] generic.Bounds3D,
             [in] rendering.RenderDisabled,
             [none] TerrainChunk);

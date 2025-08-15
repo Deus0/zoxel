@@ -18,4 +18,4 @@ static inline int3 get_direction_int3(byte i) {
         int3_forward
     };
     return int3_directions[i];
-};
+}

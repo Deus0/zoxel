@@ -1,5 +1,5 @@
-ecs_entity_t spawn_block_soil(
-    ecs_world_t *world,
+entity spawn_block_soil(
+    ecs *world,
     const byte index,
     char* name,
     const color block_color

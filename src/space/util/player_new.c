@@ -35,7 +35,12 @@ TerrainPlace find_position_in_terrain(
     int chunk_length = powers_of_two[node_depth];
     const int3 chunk_dimensions = (int3) { chunk_length, chunk_length, chunk_length };
     const int3 chunk_voxel_position = get_chunk_positionv(chunk_position, chunk_dimensions);
-    const float3 spawn_position = local_to_real_position_character(local_position, chunk_voxel_position, bounds, node_depth, 1); // blockScale->value);
+    const float3 spawn_position = local_to_real_position_character(
+        local_position,
+        chunk_voxel_position,
+        bounds,
+        1
+    ); // blockScale->value);
 
     // zox_log("Terrain Place Found [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z)
 

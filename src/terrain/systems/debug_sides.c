@@ -51,7 +51,7 @@ void zox_apply_debug_colors(
 }
 
 
-void Light3BuildSystem(ecs_iter_t* it) {
+void Light3BuildSystem(iter* it) {
     zox_ts_begin(light3_builder);
     zox_sys_world();
     zox_sys_begin();

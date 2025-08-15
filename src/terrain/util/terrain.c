@@ -1,4 +1,4 @@
-/*void generate_terrain(ecs_world_t *world, VoxelNode* chunk_octree, byte depth, float3 position, float scale) {
+/*void generate_terrain(ecs *world, VoxelNode* chunk_octree, byte depth, float3 position, float scale) {
     const byte max_depth = chunk_octree->linked;
     const uint seed = global_seed;
     double octree_noise = perlin_terrain(position.x + noise_positiver2, position.z + noise_positiver2, terrain_frequency, seed, terrain_octaves);
@@ -35,14 +35,16 @@
     }
 }*/
 
-void set_terrain_block(ecs_world_t *world,
+void set_terrain_block(
+    ecs *world,
     VoxelNode *voxelNode,
     const byte3 voxel_position,
     const int chunk_position_y,
     const byte chunk_voxel_length,
     const byte2 set_voxel,
-    const int global_place_y)
-{
+    const int global_place_y
+) {
+    (void) world;
     const int local_place_y = global_place_y - chunk_position_y;
     const byte place_in_bounds = local_place_y >= 0 && local_place_y < chunk_voxel_length;
     if (place_in_bounds) {

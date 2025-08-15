@@ -33,10 +33,10 @@ static inline void flood_light_recursive(
         }
 
         const VoxelNode* neighbor_voxel = (VoxelNode*)octree_get_adjacent_leaf(
-            vnode, (const void**)voxel_neighbors, dir, npos, depth, sizeof(VoxelNode), offsetof(VoxelNode, value));
+            vnode, (const void**)voxel_neighbors, dir, npos, depth, sizeof(VoxelNode));
 
         const LightNode* neighbor_light = (LightNode*)octree_get_adjacent_leaf(
-            lnode, (const void**)light_neighbors, dir, npos, depth, sizeof(LightNode), offsetof(LightNode, value));
+            lnode, (const void**)light_neighbors, dir, npos, depth, sizeof(LightNode));
 
         if (!neighbor_voxel && !queue) continue; // outside chunk → skip or queue
 

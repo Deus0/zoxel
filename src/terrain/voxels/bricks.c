@@ -1,12 +1,12 @@
-ecs_entity_t spawn_block_bricks(
-    ecs_world_t *world,
+entity spawn_block_bricks(
+    ecs *world,
     const byte index,
     char* name,
     const color block_color// ,
     // byte vregions
 ) {
     // vox
-    const ecs_entity_t v = spawn_vox_generated_invisible(
+    const entity v = spawn_vox_generated_invisible(
         world,
         prefab_vox_generated,
         block_color

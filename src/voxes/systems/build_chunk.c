@@ -54,7 +54,7 @@ void add_voxel_face(
 void build_voxel_faces_c(
     const VoxelNode* root,
     const VoxelNode** cneighbors,
-    const byte* cnrender_depths,
+    // const byte* cnrender_depths,
     int_array_d* indicies,
     float3_array_d* vertices,
     color_rgb_array_d* color_rgbs,
@@ -118,7 +118,6 @@ void build_voxel_faces_c(
 
 void build_voxel_mesh_c(
     const VoxelNode* root,
-    const VoxelNode* parent_node,
     const VoxelNode* node,
     const VoxelNode** neighbors,
     const byte* nrender_depths,
@@ -129,7 +128,6 @@ void build_voxel_mesh_c(
     const byte node_depth,
     byte depth,
     int3 position,
-    const byte node_index,
     const float3 bounds_offset,
     float scale
 ) {
@@ -154,7 +152,7 @@ void build_voxel_mesh_c(
             build_voxel_faces_c(
                 root,
                 neighbors,
-                nrender_depths,
+                // nrender_depths,
                 indicies,
                 vertices,
                 color_rgbs,
@@ -179,7 +177,6 @@ void build_voxel_mesh_c(
             int3 child_position = int3_add(position, octree_positions[i]);
             build_voxel_mesh_c(
                 root,
-                node,
                 &kids[i],
                 neighbors,
                 nrender_depths,
@@ -190,7 +187,6 @@ void build_voxel_mesh_c(
                 node_depth,
                 depth,
                 child_position,
-                i,
                 bounds_offset,
                 scale);
         }
@@ -214,7 +210,6 @@ void build_node_mesh_colors(
     color_rgb_array_d* color_rgbs = create_color_rgb_array_d(initial_dynamic_array_size);
     build_voxel_mesh_c(
         node,
-        NULL,
         node,
         neighbors,
         nrender_depths,
@@ -225,7 +220,6 @@ void build_node_mesh_colors(
         chunk_depth,
         0,
         int3_zero,
-        0,
         bounds_offset,
         scale);
     clear_mesh(

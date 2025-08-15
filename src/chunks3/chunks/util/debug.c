@@ -28,7 +28,10 @@ void toggle_debug_bounds_terrain(ecs_world_t *world) {
     if (!zox_valid(terrain)) return;
 
     byte mode = zox_get_value(prefab_chunk_terrain, DebugCubeLines);
+
     cycle_cubeline_debug(&mode);
+
+    is_render_chunk_edges = mode;
     zox_set(prefab_chunk_terrain, DebugCubeLines, { mode });
     zox_geter(terrain, ChunkLinks, chunkLinks);
     for (uint i = 0; i < chunkLinks->value->size; i++) {
@@ -47,7 +50,6 @@ void toggle_debug_bounds_terrain(ecs_world_t *world) {
 
 void key_down_toggle_debug_chunks(ecs *world, int32_t keycode) {
     if (keycode == SDLK_F4) {
-        is_render_chunk_edges = !is_render_chunk_edges;
         toggle_debug_bounds_terrain(world);
     }
 }

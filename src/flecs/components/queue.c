@@ -11,10 +11,11 @@ static void i_##T(T* q) { \
     q->ptr = malloc(sizeof(T2) * (initial_capacity)); \
     q->count = 0; \
     q->capacity = (initial_capacity); \
+    q->lock = SPINLOCK_INIT; \
 } \
 \
 static void d_##T(T* q) { \
-    free(q->ptr); \
+    if (q->ptr) free(q->ptr); \
     q->ptr = NULL; \
     q->count = 0; \
     q->capacity = 0; \
@@ -38,36 +39,22 @@ static T2 r_##T(T* q) { \
     return q->ptr[--q->count]; \
 } \
 \
-ECS_CTOR(T, ptr, { \
-    ptr->ptr = malloc(sizeof(T2) * (initial_capacity)); \
-    ptr->count = 0; \
-    ptr->capacity = (initial_capacity); \
-    ptr->lock = SPINLOCK_INIT; \
-}) \
+static T2 g_##T(const T* q, size_t i) { \
+    return q->ptr[i]; \
+} \
 \
-ECS_DTOR(T, ptr, { \
-    if (ptr->ptr) { \
-        zee(ptr->ptr); \
-        ptr->ptr = NULL; \
-    } \
-    ptr->count = 0; \
-    ptr->capacity = 0; \
-}) \
-\
+ECS_CTOR(T, ptr, { i_##T(ptr); }) \
+ECS_DTOR(T, ptr, { d_##T(ptr); }) \
 ECS_MOVE(T, dst, src, { \
-    dst->ptr = src->ptr; \
-    dst->count = src->count; \
-    dst->capacity = src->capacity; \
-    dst->lock = SPINLOCK_INIT; \
+    *dst = *src; \
     src->ptr = NULL; \
     src->count = 0; \
     src->capacity = 0; \
 }) \
-\
 ECS_COPY(T, dst, src, { \
-    if (dst->ptr) zee(dst->ptr); \
+    if (dst->ptr) free(dst->ptr); \
     if (src->ptr) { \
-        dst->ptr = zalloc(src->capacity * sizeof(T2)); \
+        dst->ptr = malloc(src->capacity * sizeof(T2)); \
         memcpy(dst->ptr, src->ptr, src->count * sizeof(T2)); \
         dst->count = src->count; \
         dst->capacity = src->capacity; \
@@ -77,6 +64,7 @@ ECS_COPY(T, dst, src, { \
         dst->capacity = 0; \
     } \
 })
+
 
 
 #define zoxd_queue(T)\

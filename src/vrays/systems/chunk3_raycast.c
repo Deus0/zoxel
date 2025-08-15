@@ -206,7 +206,7 @@ byte raycast_voxel_node(
         1.0f / float_abs(ray_normal.y),
         1.0f / float_abs(ray_normal.z)
     };
-    const float3 world_space_step = float3_scale(ray_unit_size, terrain_scalev);
+    // const float3 world_space_step = float3_scale(ray_unit_size, terrain_scalev);
 
     // Calculate initial distances to voxel boundaries along each axis
     float3 ray_add = float3_zero;

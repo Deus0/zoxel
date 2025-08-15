@@ -1,7 +1,5 @@
-
-
-
 // #### INCLUDES ####
+#define _POSIX_C_SOURCE 200809L
 
 // Platforms
 #ifdef zox_windows

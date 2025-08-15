@@ -1,4 +1,4 @@
-void toggle_life_terrain(ecs_world_t *world, int32_t keycode) {
+void toggle_life_terrain(ecs *world, int32_t keycode) {
     if (keycode == SDLK_k) {
         zox_log("> terrain death toggling")
         if (!zox_valid(local_realm) || !zox_has(local_realm, TerrainLink)) {

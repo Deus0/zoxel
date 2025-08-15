@@ -1,7 +1,6 @@
 entity spawn_prefab_chunk_terrain(
     ecs *world,
-    const entity prefab,
-    const int3 size
+    const entity prefab
 ) {
     zox_prefab_child(prefab);
     // Terrain / Generation

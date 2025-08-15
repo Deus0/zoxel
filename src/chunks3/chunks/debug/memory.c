@@ -5,6 +5,9 @@ uint debug_ui_memory(
     const uint size,
     uint index
 ) {
+    (void) world;
+    (void) player;
+
     index += snprintf(buffer + index, size - index, "Terrain Chunks [%i]\n", zox_stats_terrain_chunks);
 
     index += snprintf(buffer + index, size - index, "Nodes [%i]\n", zox_stats_nodes);

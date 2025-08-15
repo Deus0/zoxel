@@ -49,7 +49,7 @@ void ChunkDebugSystem(iter *it) {
         }
         // draw grid around chunk
         byte length = powers_of_two_byte[nodeDepth->value];
-        float scale = blockScale->value; // get_terrain_voxel_scale(nodeDepth->value);
+        float scale = blockScale->value;
         const entity chunk_above = chunkNeighbors->value[direction_up];
         const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
 

@@ -1,11 +1,11 @@
-ecs_entity_t spawn_realm_block_rubble(
-    ecs_world_t *world,
+entity spawn_realm_block_rubble(
+    ecs *world,
     const byte index,
     char* name,
     const color block_color
 ) {
     // vox
-    const ecs_entity_t v = spawn_vox_basic(
+    const entity v = spawn_vox_basic(
         world,
         prefab_vox,
         block_vox_depth,

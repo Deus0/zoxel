@@ -1,7 +1,7 @@
 // used by physics and raycasting
 // i think const was the issue
 
-const byte get_sub_node_voxel(
+byte get_sub_node_voxel(
     const VoxelNode* node,
     byte3* positionl,
     byte depth
@@ -39,7 +39,7 @@ const byte get_sub_node_voxel(
     return get_sub_node_voxel(&kids[i], positionl, depth);
 }
 
-const byte get_sub_node_voxel_locked(
+byte get_sub_node_voxel_locked(
     const VoxelNode *node,
     byte3 *position,
     const byte depth

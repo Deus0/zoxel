@@ -6,6 +6,8 @@ typedef long int lint;
 // typedef uint32_t uint;
 // typedef uint64_t ulong;
 
+typedef void (*event_pointer)(void*);
+
 // base type, watch out for name conflicts tho
 typedef struct {
     int length;

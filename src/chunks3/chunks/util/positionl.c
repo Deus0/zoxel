@@ -5,19 +5,18 @@ static inline int positionf_to_positionv1(
     return (int) floor(positionf / terrain_scale);
 }
 
-int3 get_positionl(
-    int3 positionv,
-    int3 chunk_position,
-    int3 chunk_size
+/*int3 get_positionl(
+    int3 positionv, // Terrain Global Position
+    int3 s     // Terrain Chunk Size - Max Depth
 ) {
-    positionv.x %= chunk_size.x;
-    positionv.y %= chunk_size.y;
-    positionv.z %= chunk_size.z;
-    if (positionv.x < 0) positionv.x = chunk_size.x - 1 + positionv.x;
-    if (positionv.y < 0) positionv.y = chunk_size.y - 1 + positionv.y;
-    if (positionv.z < 0) positionv.z = chunk_size.z - 1 + positionv.z;
+    positionv.x %= s.x;
+    positionv.y %= s.y;
+    positionv.z %= s.z;
+    if (positionv.x < 0) positionv.x = s.x - 1 + positionv.x;
+    if (positionv.y < 0) positionv.y = s.y - 1 + positionv.y;
+    if (positionv.z < 0) positionv.z = s.z - 1 + positionv.z;
     return positionv;
-}
+}*/
 
 // Obsolete, this doesnt handle local depth differences
 static inline byte3 get_positionl_byte3(

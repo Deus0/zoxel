@@ -1,4 +1,4 @@
-ecs_entity_t spawn_realm_voxel_texture(ecs_world_t *world,
+entity spawn_realm_voxel_texture(ecs *world,
     const byte index,
     char *name,
     char *texture_filename)

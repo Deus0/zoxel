@@ -1,23 +1,33 @@
 // #define zox_debug_chunk_link_system
 static inline byte can_have_characters(ecs*, entity);
 
-void zox_log_chunk_removed(ecs *world,
+void zox_log_chunk_removed(
+    ecs *world,
     const entity e,
-    const entity e2)
-{
+    const entity e2
+) {
 #ifdef zox_debug_chunk_link_system
-    const int3 chunk_position = zox_get_value(e, ChunkPosition)
-    zox_log("- chunk [%s] removed e [%s] [%ix%ix%i]", zox_get_name(e), zox_get_name(e2), chunk_position.x, chunk_position.y, chunk_position.z)
+    const int3 chunk_position = zox_get_value(e, ChunkPosition);
+    zox_log("- chunk [%s] removed e [%s] [%ix%ix%i]", zox_get_name(e), zox_get_name(e2), chunk_position.x, chunk_position.y, chunk_position.z);
+#else
+    (void) world;
+    (void) e;
+    (void) e2;
 #endif
 }
 
-void zox_log_chunk_added(ecs *world,
+void zox_log_chunk_added(
+    ecs *world,
     const entity e,
-    const entity e2)
-{
+    const entity e2
+) {
 #ifdef zox_debug_chunk_link_system
-    const int3 chunk_position = zox_get_value(e, ChunkPosition)
-    zox_log("+ chunk [%s] added e [%s] [%ix%ix%i]", zox_get_name(e), zox_get_name(e2), chunk_position.x, chunk_position.y, chunk_position.z)
+    const int3 chunk_position = zox_get_value(e, ChunkPosition);
+    zox_log("+ chunk [%s] added e [%s] [%ix%ix%i]", zox_get_name(e), zox_get_name(e2), chunk_position.x, chunk_position.y, chunk_position.z);
+#else
+    (void) world;
+    (void) e;
+    (void) e2;
 #endif
 }
 

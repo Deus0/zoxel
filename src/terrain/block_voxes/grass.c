@@ -8,11 +8,12 @@ entity spawn_block_grass(
     // use instanced mesh prefab
     SpawnBlock data = {
         .name = "grass",
+        .color = block_color,
         .prefab = prefab_block_vox_meta,
         .tag = zox_id(BlockVox),
         .index = index,
         .seed = generate_voxel_seed(index),
-        .color = generate_random_voxel_color(),
+        // .color = generate_random_voxel_color(),
         .model = zox_block_vox,
         .disable_collision = 1,
         .vox = model,

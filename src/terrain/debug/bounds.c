@@ -1,12 +1,12 @@
 void toggle_debug_bounds_delve(
-    ecs_world_t *world,
+    ecs *world,
     const VoxelNode *node,
     byte mode
 ) {
     if (is_closed_VoxelNode(node)) {
         return;
     } else if (is_linked_VoxelNode(node)) {
-        const ecs_entity_t e = get_entity_VoxelNode(node);
+        const entity e = get_entity_VoxelNode(node);
         if (zox_valid(e)) {
             zox_set(e, DebugCubeLines, { mode })
         }
@@ -18,7 +18,7 @@ void toggle_debug_bounds_delve(
     }
 }
 
-void toggle_debug_block_voxes_bounds(ecs_world_t *world) {
+void toggle_debug_block_voxes_bounds(ecs *world) {
     if (!zox_valid(local_terrain) || !zox_valid(prefab_block_vox) || !zox_has(prefab_block_vox, DebugCubeLines)) {
         return;
     }
@@ -31,7 +31,7 @@ void toggle_debug_block_voxes_bounds(ecs_world_t *world) {
         int3_hashmap_pair* pair = chunkLinks->value->data[i];
         uint checks = 0;
         while (pair != NULL && checks < max_safety_checks_hashmap) {
-            ecs_entity_t chunk = pair->value;
+            entity chunk = pair->value;
             if (zox_valid(chunk)) {
                 zox_geter_value(chunk, BlocksSpawned, byte, blocks_spawned)
                 if (blocks_spawned) {
@@ -45,7 +45,7 @@ void toggle_debug_block_voxes_bounds(ecs_world_t *world) {
     }
 }
 
-void key_down_toggle_debug_voxes_bounds(ecs_world_t *world, int32_t keycode) {
+void key_down_toggle_debug_voxes_bounds(ecs *world, int32_t keycode) {
     if (keycode == SDLK_F6) {
         toggle_debug_block_voxes_bounds(world);
     }

@@ -1,4 +1,4 @@
-ecs_entity_t spawn_shader_skybox(ecs_world_t *world) {
+ecs_entity_t spawn_shader_skybox(ecs *world) {
     const byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "skybox.vert");
     char* frag = get_shader_source(world, "skybox.frag");
@@ -13,7 +13,11 @@ ecs_entity_t spawn_shader_skybox(ecs_world_t *world) {
     return e;
 }
 
-void set_skybox_material_color(ecs_world_t *world, const uint material, const color_rgb top_color, const color_rgb bottom_color) {
+void set_skybox_material_color(
+    const uint material,
+    const color_rgb top_color,
+    const color_rgb bottom_color
+) {
     if (headless || !skybox) {
         return;
     }

@@ -1,6 +1,6 @@
 define_fun_stopwatch(time_realm_blocks, 0);
 
-void spawn_realm_blocks(ecs_world_t *world, const ecs_entity_t realm) {
+void spawn_realm_blocks(ecs *world, const entity realm) {
     if (!realm) {
         return;
     }
@@ -82,7 +82,7 @@ void spawn_realm_blocks(ecs_world_t *world, const ecs_entity_t realm) {
     tapwatch(time_realm_blocks, "built bricks");
 
     // decor
-    ecs_entity_t model_group_grass = models->length >= 1 ? models->value[0] : 0;
+    entity model_group_grass = models->length >= 1 ? models->value[0] : 0;
     blocks.value[zox_block_vox_grass - 1] = spawn_block_grass(
         world,
         zox_block_vox_grass,

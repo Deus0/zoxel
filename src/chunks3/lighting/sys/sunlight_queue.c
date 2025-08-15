@@ -23,8 +23,8 @@ void SunlightQueueSystem(ecs_iter_t *it) {
         zox_sys_o(SunlightQueue, queue);
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
-        zox_sys_o(LightNodeDirty, updated);
-        zox_sys_o(MeshColorsGenerate, updated2);
+        zox_sys_o(LightNodeDirty, light_dirty);
+        zox_sys_o(MeshColorsGenerate, generate_mesh_colors);
 
         if (!queue->count) {
             continue;
@@ -44,55 +44,23 @@ void SunlightQueueSystem(ecs_iter_t *it) {
         while (queue->count) {
 
             SunlightUpdate update = r_SunlightQueue(queue);
-            byte2 pos = update.positionl;
+            byte3 pos = update.pos;
 
-            if (pos.x >= length || pos.y >= length) {
-                zox_log_error("[r_SunlightQueue] position oob [%ix%i]", pos.x, pos.y);
+            if (pos.x >= length || pos.z >= length || pos.y > length) {
+                zox_log_error("[r_SunlightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
                 continue;
             }
 
-            // beam down with positionl
-            // now we progress down
-            byte light = sunlight; // full sunlight
-
-            for (byte y = 0; y < length; y++) {
-                byte3 positionl = (byte3) {
-                    pos.x,
-                    length - 1 - y,
-                    pos.y
-                };
-
-                if (light != darklight) {
-
-                    const VoxelNode* check_node = get_VoxelNode_ex(
-                        vnode,
-                        depthl->value,
-                        positionl,
-                        0);
-
-                    if (check_node) {
-                        byte voxel = check_node->value;
-                        if (voxel) {
-                            light = darklight;
-                        }
-                    } else {
-                        light = darklight;
-                    }
-                }
-
-                // set light in LightNode
-                set_LightNode_ex(
-                    lnode,
-                    depthl->value,
-                    positionl,
-                    light,
-                    0);
-            }
-            if (light == sunlight && queued) {
-                // add to queue of under chunk
-                a_SunlightQueue(queued, (SunlightUpdate) {
-                    .positionl = { .x = pos.x, .y = pos.y }
-                });
+            // TODO: we should probably make this byte3, with y, since we are gonna be used that now
+            // zox_log("Processed SunBeam [%ix%i]", pos.x, pos.y);
+            if (sunbeam(
+                queued,
+                lnode,
+                vnode,
+                depthl->value,
+                update.pos,
+                update.light
+            )) {
                 queued_dirty = 1;
             }
         }
@@ -101,7 +69,8 @@ void SunlightQueueSystem(ecs_iter_t *it) {
             zox_mut_end(chunkd, SunlightQueue);
         }
 
-        updated->value = zox_dirty_trigger;
-        updated2->value = zox_dirty_trigger;
+        // propogation: we can just add to propogation queue here,no need to run
+        light_dirty->value = zox_dirty_trigger;
+        generate_mesh_colors->value = zox_dirty_trigger;
     }
 } zoxd_system2(SunlightQueueSystem);

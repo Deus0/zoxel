@@ -61,9 +61,12 @@ byte load_chunk(
     return success;
 }
 
+// TODO: Should we Load at a LOD Level?
 void Chunk3LoadSystem(iter *it) {
+
     zox_sys_world();    // used when closing possible nodes
     zox_sys_begin();
+
     zox_sys_in(RenderDistanceDirty);
     zox_sys_in(ChunkPosition);
     zox_sys_out(VoxelNodeDirty);
@@ -71,7 +74,10 @@ void Chunk3LoadSystem(iter *it) {
     zox_sys_out(VoxelNodeLoaded);
     zox_sys_out(VoxelNode);
     zox_sys_out(NodeDepth);
+    zox_sys_out(VoxelNodeGenerated);
+
     for (int i = 0; i < it->count; i++) {
+
         zox_sys_i(RenderDistanceDirty, render_distance_dirty);
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNodeDirty, dirty);
@@ -79,15 +85,22 @@ void Chunk3LoadSystem(iter *it) {
         zox_sys_o(VoxelNodeLoaded, loaded);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(NodeDepth, depth);
-        if (render_distance_dirty->value != zox_dirty_active || loaded->value) {
-            continue; // these shouldn't be here
+        zox_sys_o(VoxelNodeGenerated, generated);
+
+        if (loaded->value) {
+            continue;
         }
+        /*if (render_distance_dirty->value != zox_dirty_active || loaded->value) {
+            continue; // these shouldn't be here
+        }*/
+
         if (load_chunk(world, position->value, node)) {
-            loaded->value = 1;
             edited->value = 1;
             dirty->value = 1;
             depth->value = terrain_depth;
+            generated->value = zox_dirty_trigger;
         }
 
+        loaded->value = 1;
     }
 } zoxd_system(Chunk3LoadSystem)

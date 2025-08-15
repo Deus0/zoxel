@@ -136,7 +136,12 @@ void Characters3SpawnSystem(iter *it) {
                     zox_log_spawning("! failed to spawn npc")
                     continue;
                 }
-                position = local_to_real_position_character(local_position, chunk_voxel_position, bounds, depth, 1);
+                position = local_to_real_position_character(
+                    local_position,
+                    chunk_voxel_position,
+                    bounds,
+                    1
+                );
             }
             float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
 

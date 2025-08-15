@@ -7,7 +7,7 @@ void test_nodes(ecs* world, int n, int d) {
     for (int i = 0; i < n; i++) {
         // create a node
         entity e = zox_new();
-        VoxelNode node = (VoxelNode) { };
+        VoxelNode node = (VoxelNode) { 0 };
         random_fill_octree(&node, 1, d);
         zox_set_ptr(e, VoxelNode, node);
         entities[i] = e;

@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_terrain(ecs_world_t *world) {
+entity spawn_prefab_terrain(ecs *world) {
     zox_prefab();
     zox_prefab_name("terrain");
     zox_add_tag(e, TerrainWorld);

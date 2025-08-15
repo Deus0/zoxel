@@ -10,7 +10,7 @@ void MeshColorsTriggerSystem(iter *it) {
         zox_sys_i(ChunkMeshDirty, mesh_dirty);
         zox_sys_o(MeshColorsGenerate, update);
 
-        if (mesh_dirty->value == chunk_dirty_state_update) {
+        if (mesh_dirty->value == chunk_dirty_state_end) {
             update->value = zox_dirty_trigger; // for now just put here
         }
 

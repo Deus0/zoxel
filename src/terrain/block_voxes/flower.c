@@ -1,4 +1,7 @@
-ecs_entity_t spawn_block_flower(ecs_world_t *world, const byte index) {
+entity spawn_block_flower(
+    ecs *world,
+    const byte index
+) {
     SpawnBlock spawn_data = {
         .name = "flower",
         .prefab = prefab_block_vox_meta,
@@ -23,16 +26,16 @@ ecs_entity_t spawn_block_flower(ecs_world_t *world, const byte index) {
     // our block!
     process_disabled_block_vox(world, &spawn_data, 0);
 
-    ecs_entity_t e = spawn_block_vox_meta(world, &spawn_data);
+    entity e = spawn_block_vox_meta(world, &spawn_data);
 
 
     // quick fix
     if (!disable_block_voxes) {
         // zox_set(spawn_data.vox, NodeDepth, { 4 });
         zox_geter(spawn_data.vox, ModelLods, modelLods);
-        ecs_entity_t v = modelLods->value[0];
+        entity v = modelLods->value[0];
         // link a texture to it
-        const ecs_entity_t t = spawn_texture(
+        const entity t = spawn_texture(
             world,
             prefab_vox_texture,
             voxel_texture_size

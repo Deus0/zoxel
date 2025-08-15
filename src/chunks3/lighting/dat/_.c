@@ -11,5 +11,6 @@ typedef struct {
 
 // beams queued
 typedef struct {
-    byte2 positionl;
+    byte3 pos;
+    byte light;
 } SunlightUpdate;

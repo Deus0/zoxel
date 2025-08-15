@@ -1,7 +1,7 @@
 // time function
 
 #define define_fun_stopwatch(name, d)\
-    byte zox_##name = d;
+    byte zox_##name = d
 
 #define startwatch(name) \
     double section_time = 0; \

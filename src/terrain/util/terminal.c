@@ -9,7 +9,8 @@ void print_terrain_settings() {
     zox_log("     + lowest low is [%i]", lowest_voxel_height)
 }
 
-void process_arguments_terrain(ecs_world_t *world, char* args[], int count) {
+void process_arguments_terrain(ecs *world, char* args[], int count) {
+    (void) world;
     for (int i = 1; i < count; i++) {
         if (strcmp(args[i], "--tiny") == 0) {
             terrain_lod_far = 3;

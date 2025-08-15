@@ -68,9 +68,8 @@ float3 voxel_to_real_position(
     return float3_add(positionf, float3_scale(float3_halff, chunk_voxel_scale));
 }
 
-float3 positionv_to_real_position(
+/*float3 positionv_to_real_position(
     const int3 positionv,
-    const byte3 chunk_size,
     const float voxel_scale
 ) {
     float3 position = int3_to_float3(positionv);
@@ -80,13 +79,12 @@ float3 positionv_to_real_position(
     position.y += voxel_scale / 2;
     position.z += voxel_scale / 2;
     return position;
-}
+}*/
 
 float3 local_to_real_position_character(
     const byte3 in_chunk_position,
     const int3 chunk_grid_position,
     const float3 bounds,
-    const byte depth,
     const float scale
 ) {
     // const float scale = get_terrain_voxel_scale(depth) * vox_scale;

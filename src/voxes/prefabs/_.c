@@ -18,11 +18,6 @@ entity prefab_block_vox_instanced;
 
 void zox_define_prefabs_voxes(ecs *world) {
     prefab_vox_texture = spawn_prefab_vox_texture(world, prefab_texture);
-    prefab_block_vox_meta = spawn_prefab_block_vox_meta(
-        world,
-        prefab_block,
-        prefab_block_vox
-    );
     prefab_vox = spawn_prefab_vox(world, prefab_chunk);
     prefab_vox_instanced = spawn_prefab_vox_instanced(world, prefab_renderer_instance);
     prefab_vox_file = spawn_prefab_vox_file(world, prefab_chunk_base);
@@ -31,6 +26,8 @@ void zox_define_prefabs_voxes(ecs *world) {
     zox_add_tag(prefab_vox_generated, VoxMesh)
     // block voxes
     prefab_block_vox = spawn_prefab_block_vox(world, prefab_vox);
-    zox_add_tag(prefab_block_vox, VoxMesh)
+    zox_add_tag(prefab_block_vox, VoxMesh);
     prefab_block_vox_instanced = spawn_prefab_block_vox_instanced(world, prefab_vox_instanced);
+    // meta
+    prefab_block_vox_meta = spawn_prefab_block_vox_meta(world, prefab_block );
 }

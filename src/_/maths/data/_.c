@@ -21,5 +21,3 @@
 #include "byte3_hashmap.c"
 #include "string_hashmap.c"
 #include "octree.c"
-
-typedef void (*event_pointer)(void*);

@@ -1,4 +1,7 @@
 // log implementation
+
+#include "prefix.c"
+
 #ifndef zox_disable_logs
     #ifdef zox_android
 
@@ -35,53 +38,45 @@
 
 #endif
 
-#define zox_logv(msg, ...) \
-    if (zox_verbose) zox_log_("⚡️ "msg"\n", ##__VA_ARGS__);
+#define zox_log(...) zox_log_prefix(">", __VA_ARGS__);
 
-#define zox_log(msg, ...) \
-    zox_log_("> "msg"\n", ##__VA_ARGS__);
+#define zox_logv(...) if (zox_verbose) zox_log_prefix("⚡️", __VA_ARGS__);
 
-#define zox_log_error(msg, ...) \
-    zox_log_("❌ "msg"\n", ##__VA_ARGS__);
+// #define zox_log(msg, ...) zox_log_("> "msg"\n", ##__VA_ARGS__);
 
-#define zox_logw(msg, ...) \
-    zox_log_("⚠️ "msg"\n", ##__VA_ARGS__);
+#define zox_log_error(...) zox_log_prefix("❌", __VA_ARGS__);
 
-#define zox_logi(msg, ...) \
-    zox_log_("ℹ️  "msg"\n", ##__VA_ARGS__)
+#define zox_logw(...) zox_log_prefix("⚠️", __VA_ARGS__);
 
-#define zox_log_debug(msg, ...) \
-    if (zox_verbose) zox_log_("🐞 DEBUG: " msg "\n", ##__VA_ARGS__)
+#define zox_logi(...) zox_log_prefix("ℹ️", __VA_ARGS__);
 
-#define zox_log_success(msg, ...) \
-    zox_log_("✅ " msg "\n", ##__VA_ARGS__)
+#define zox_log_debug(...) zox_log_prefix("🐞", __VA_ARGS__);
 
-#define zox_log_critical(msg, ...) \
-    zox_log_("🔥 CRITICAL: " msg "\n", ##__VA_ARGS__)
+#define zox_log_success( ...) zox_log_prefix("✅", __VA_ARGS__);
 
-#define zox_log_io(msg, ...) \
-    if (is_log_io) zox_log(msg, ##__VA_ARGS__);
+#define zox_log_critical(...) zox_log_prefix("🔥", __VA_ARGS__);
+
+#define zox_log_io(...) if (is_log_io) zox_log(__VA_ARGS__);
 
 // inputs
 #if defined(zox_enable_log_input) && !defined(zox_disable_logs)
-    #define zox_log_input(msg, ...) zox_log(msg, ##__VA_ARGS__)
+    #define zox_log_input(...) zox_log(__VA_ARGS__)
 #else
-    #define zox_log_input(msg, ...) { }
+    #define zox_log_input(...) { }
 #endif
 
 // shaders
 #if defined(zox_enable_log_shader) && !defined(zox_disable_logs)
-    #define zox_log_shader(msg, ...) zox_log(msg, ##__VA_ARGS__)
+    #define zox_log_shader(...) zox_log(__VA_ARGS__)
 #else
     #define zox_log_shader(msg, ...) { }
 #endif
 
 // uis
 #if defined(zox_enable_log_ui) && !defined(zox_disable_logs)
-    #define zox_log_ui(msg, ...) zox_log(msg, ##__VA_ARGS__)
+    #define zox_log_ui(...) zox_log(__VA_ARGS__)
 #else
-    #define zox_log_ui(msg, ...) { }
+    #define zox_log_ui(...) { }
 #endif
 
-#define zox_log_errno(fmt, ...) \
-    zox_log(fmt ": [%s]", ##__VA_ARGS__, strerror(errno))
+#define zox_log_errno(fmt, ...) zox_log(fmt ": [%s]", __VA_ARGS__, strerror(errno))

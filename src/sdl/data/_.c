@@ -5,5 +5,4 @@ const byte sdl_fullscreen_byte = (byte) SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 byte is_log_sdl = 0;
 
-#define zox_log_sdl(msg, ...)\
-    if (is_log_sdl) { zox_log(msg, ##__VA_ARGS__) }
+#define zox_log_sdl(...) if (is_log_sdl) { zox_log(__VA_ARGS__) }

@@ -1,9 +1,9 @@
 #ifndef zoxm_weathers
 #define zoxm_weathers
 
-ecs_entity_t prefab_skybox;
-ecs_entity_t shader_skybox; // shaders global
-ecs_entity_t skybox; // remove this, link to realm/game
+entity prefab_skybox;
+entity shader_skybox; // shaders global
+entity skybox; // remove this, link to realm/game
 #include "dat/settings.c"
 zox_tag(Weather);
 zox_tag(Skybox);
@@ -12,11 +12,12 @@ zox_tag(Skybox);
 #include "fun/_.c"
 #include "sys/_.c"
 
-void spawn_shaders_weather(ecs_world_t *world) {
+void spawn_shaders_weather(ecs *world) {
     shader_skybox = spawn_shader_skybox(world);
 }
 
-void on_boot_weathers(ecs_world_t* world, ecs_entity_t app) {
+void on_boot_weathers(ecs* world, entity app) {
+    (void) app;
     spawn_weather(world);
 }
 

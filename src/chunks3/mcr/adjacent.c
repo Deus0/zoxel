@@ -11,8 +11,7 @@ static inline const void* octree_get_adjacent_leaf(
     byte dir,                   // direction to fetch neighbor
     byte3 pos,                  // voxel pos relative to root_node: 0..(2^depth-1)
     byte depth,                 // leaf depth (levels)
-    size_t stride,              // node size (sizeof T)
-    size_t value_offset         // unused here, kept for parity
+    size_t stride              // node size (sizeof T)
 ) {
     if (!root_node) return NULL;
     if (dir > 5) return NULL;
@@ -55,6 +54,19 @@ static inline const void* octree_get_adjacent_leaf(
 
 // Type-safe macro for root-first neighbor fetchers
 #define create_node_neighbor(T) \
-static inline const T* get_##T##_neighbor(const T* root_node, const T** neighbors, byte dir, byte3 pos, byte depth) { \
-    return (const T*)octree_get_adjacent_leaf((const void*)root_node, (const void**)neighbors, dir, pos, depth, sizeof(T), offsetof(T, value)); \
+static inline const T* get_##T##_neighbor( \
+    const T* root_node, \
+    const T** neighbors, \
+    byte dir, \
+    byte3 pos, \
+    byte depth\
+) { \
+    return (const T*)octree_get_adjacent_leaf( \
+        (const void*) root_node, \
+        (const void**) neighbors, \
+        dir, \
+        pos, \
+        depth, \
+        sizeof(T)\
+    ); \
 }

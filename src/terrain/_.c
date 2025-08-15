@@ -23,7 +23,7 @@
 #include "game/_.c"
 #include "debug/_.c"
 
-void module_dispose_terrain(ecs_world_t *world, void *ctx) {
+void module_dispose_terrain(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
     dispose_hook_spawn_blocks();

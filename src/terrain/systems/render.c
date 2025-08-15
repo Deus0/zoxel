@@ -7,13 +7,13 @@ if (check_opengl_error_unlogged()) {\
         break;\
 }
 
-void Chunk3RenderSystem(ecs_iter_t *it) {
+void Chunk3RenderSystem(iter *it) {
 #ifdef zox_disable_chunks_rendering
     return;
 #endif
     // todo: optimize transform so it doesn't update every frame? StaticTransform tag
     byte has_set_material = 0;
-    ecs_entity_t vox_entity = 0;
+    entity vox_entity = 0;
     const MaterialGPULink *materialGPULink = NULL;
     const TextureGPULink *textureGPULink = NULL;
     const MaterialTextured3D *material_attributes = NULL;

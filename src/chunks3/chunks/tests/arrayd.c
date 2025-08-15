@@ -8,7 +8,7 @@ void test_arrayds(ecs* world, int n, int d) {
     for (int i = 0; i < n; i++) {
         // create a node
         entity e = zox_new();
-        Colors c = (Colors) { };
+        Colors c = (Colors) { 0 };
         initialize_Colors(&c, d);
         zox_set_ptr(e, Colors, c);
         entities[i] = e;

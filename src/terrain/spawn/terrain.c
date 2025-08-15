@@ -20,10 +20,10 @@ int get_chunk_index_3(int3 position, int rows, int vertical) {
     return position.x * (rows + rows + 1) + position.y  * (rows + rows + 1) * (rows + rows + 1) + position.z;
 }
 
-ecs_entity_t spawn_terrain(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const ecs_entity_t tilemap,
+entity spawn_terrain(
+    ecs *world,
+    const entity prefab,
+    const entity tilemap,
     const float3 position,
     const byte depth,
     const float scale
@@ -44,20 +44,19 @@ ecs_entity_t spawn_terrain(
 }
 
 // todo: pass in through struct
-ecs_entity_t spawn_terrain_streaming(
-    ecs_world_t *world,
-    const ecs_entity_t realm,
-    const int3 center_position,
-    const int3 size,
-    const ecs_entity_t prefab_terrain,
-    const ecs_entity_t prefab_chunk
+entity spawn_terrain_streaming(
+    ecs *world,
+    const entity realm,
+    // const int3 center_position,
+    // const int3 size,
+    const entity prefab
 ) {
     // const int3 chunk_position = int3_zero;
     if (!zox_has(realm, TilemapLink)) {
         zox_log_error("! realm has no TilemapLink [%lu]", realm)
         return 0;
     }
-    zox_geter_value(realm, TilemapLink, ecs_entity_t, tilemap)
+    zox_geter_value(realm, TilemapLink, entity, tilemap)
     if (zox_valid(tilemap) && zox_has(tilemap, RealmLink)) {
         zox_set(tilemap, RealmLink, { realm })
     } else {
@@ -65,14 +64,14 @@ ecs_entity_t spawn_terrain_streaming(
     }
 
     float terrain_scale = 0.5f; // 0.5f | 1
-    ecs_entity_t e = spawn_terrain(
+    entity e = spawn_terrain(
         world,
-        prefab_terrain,
+        prefab,
         tilemap,
         float3_zero,
         terrain_depth,
         terrain_scale);
-    /*const ecs_entity_t chunk = spawn_chunk_terrain(world,
+    /*const entity chunk = spawn_chunk_terrain(world,
         prefab_chunk,
         e,
         center_position,

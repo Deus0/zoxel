@@ -1,7 +1,7 @@
 // Entry Point
 // state change goes to start and end functions
-void game_state_terrain(ecs_world_t *world,
-    const ecs_entity_t game,
+void game_state_terrain(ecs *world,
+    const entity game,
     const byte old_game_state,
     const byte new_game_state)
 {

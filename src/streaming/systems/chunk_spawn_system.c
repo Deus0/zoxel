@@ -35,7 +35,8 @@ void ChunkSpawnSystem(iter *it) {
     zox_sys_out(ChunkNeighbors);
 
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+
+        // zox_sys_e();
         zox_sys_i(VoxLink, voxLink);
         zox_sys_i(RenderDistance, renderDistance);
         zox_sys_i(ChunkPosition, chunkPosition);

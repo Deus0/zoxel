@@ -1,9 +1,9 @@
 
 #ifdef zox_bulk_spawn_terrain
-ecs_entity_t create_terrain_bulk(ecs_world_t *world, const ecs_entity_t prefab, const int3 center_position) {
+entity create_terrain_bulk(ecs *world, const entity prefab, const int3 center_position) {
     int chunks_total_length = calculate_terrain_chunks_count(terrain_spawn_distance, terrain_vertical);
-    ecs_entity_t terrain_world = spawn_terrain(world, prefab_terrain, tilemap, float3_zero, 1);
-    ecs_entity_t chunks[chunks_total_length];
+    entity terrain_world = spawn_terrain(world, prefab_terrain, tilemap, float3_zero, 1);
+    entity chunks[chunks_total_length];
     int3 chunk_positions[chunks_total_length];
     for (int i = -terrain_spawn_distance; i <= terrain_spawn_distance; i++) {
         for (int k = -terrain_spawn_distance; k <= terrain_spawn_distance; k++) {
@@ -32,8 +32,8 @@ ecs_entity_t create_terrain_bulk(ecs_world_t *world, const ecs_entity_t prefab, 
             colorsGPULinks[i].value = spawn_gpu_generic_buffer();
         }
     }
-    // const ecs_entity_t *particles2DArray =
-    const ecs_entity_t *entities = ecs_bulk_init(world, &(ecs_bulk_desc_t) {
+    // const entity *particles2DArray =
+    const entity *entities = ecs_bulk_init(world, &(ecs_bulk_desc_t) {
         .count = chunks_total_length,
         .ids = {
             ecs_pair(EcsIsA, prefab),
