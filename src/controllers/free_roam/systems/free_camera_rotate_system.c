@@ -31,7 +31,7 @@ void FreeCameraRotateSystem(ecs_iter_t *it) {
                     if (int_absf(delta.x) + int_absf(delta.y) >= max_mouse_delta || (delta.x == 0 &&delta.y == 0)) {
                         continue;
                     }
-                    zox_get_muter(cameraLink->value, Euler, euler)
+                    zox_muter(cameraLink->value, Euler, euler)
                     float3 eulerAddition = { delta.y * rotate_power, -delta.x * rotate_power, 0 };
                     euler->value = float3_add(euler->value, eulerAddition);
                 }

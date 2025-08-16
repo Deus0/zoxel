@@ -91,7 +91,7 @@ void sdl_extract_keyboard(ecs_world_t *world, SDL_Event event) {
             default:
                 return;
         }
-        zox_modified(local_keyboard, Keyboard)
+        zox_modified(local_keyboard, Keyboard);
 #if defined(zox_test_game_keys)
         if (keyboard->t.pressed_this_frame) button_event_play_game(world, 0);
         if (keyboard->y.pressed_this_frame) (world, main_player);

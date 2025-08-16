@@ -8,7 +8,7 @@ void spawn_realm_playlist(ecs_world_t *world, const ecs_entity_t realm) {
         zox_log_error("realm [%lu] has no PlaylistLinks", realm);
         return;
     }
-    // zox_get_muter(realm, PlaylistLinks, playlistLinks)
+    // zox_muter(realm, PlaylistLinks, playlistLinks)
     PlaylistLinks playlistLinks2 = { 0, NULL };
     PlaylistLinks *playlistLinks = &playlistLinks2;
     const ecs_entity_t playlist_main_menu = spawn_playlist(world, prefab_playlist);

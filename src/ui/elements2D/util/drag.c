@@ -4,7 +4,7 @@ void drag_element(ecs *world, const entity e, const int2 drag_value) {
     if (!zox_valid(e)) {
         return;
     }
-    zox_get_muter(e, PixelPosition, pixel_position)
+    zox_muter(e, PixelPosition, pixel_position)
     pixel_position->value.x += drag_value.x;
     pixel_position->value.y += drag_value.y;
     if (is_log_dragging) {

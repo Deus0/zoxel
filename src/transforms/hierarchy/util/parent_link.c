@@ -10,7 +10,7 @@
         zox_field_e()
         Children *children = zox_get_mut(parentLink->value, Children)
         if (remove_from_Children(children, e)) {
-            zox_modified(parentLink->value, Children)
+            zox_modified(parentLink->value, Children);
         }
     }
 }*/

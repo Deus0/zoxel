@@ -41,7 +41,7 @@ void DotsSystem(ecs_iter_t *it) {
         }
         // const ecs_entity_t health_stat = statLinks->value[0];
         const float stat_value_max = zox_get_value(health_stat, StatValueMax)
-        zox_get_muter(health_stat, StatValue, statValue)
+        zox_muter(health_stat, StatValue, statValue)
         statValue->value += delta_time * skillDamage->value;
         if (statValue->value < 0) {
             statValue->value = 0;

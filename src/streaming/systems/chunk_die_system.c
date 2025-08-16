@@ -31,7 +31,7 @@ void ChunkDieSystem(iter *it) {
         const byte kill = renderDistance->value > terrain_lod_far;
         if (kill) {
             // remove from hash - can i do this better?
-            // zox_get_muter(voxLink->value, ChunkLinks, chunkLinks)
+            // zox_muter(voxLink->value, ChunkLinks, chunkLinks)
             zox_geter(voxLink->value, ChunkLinks, chunkLinks)
             int3_hashmap_remove(chunkLinks->value, chunkPosition->value);
             // delete (adds to queue)

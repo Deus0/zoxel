@@ -54,7 +54,7 @@ void on_child_added(ecs *world,
     // this isn't systematic enough for children linking!
     Children *children = zox_get_mut(parent, Children)
     if (add_to_Children(children, child)) {
-        zox_modified(parent, Children)
+        zox_modified(parent, Children);
     }
 }
 

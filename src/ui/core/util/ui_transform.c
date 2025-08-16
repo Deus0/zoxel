@@ -158,7 +158,7 @@ void limit_element(
     if (!zox_valid(e) || !zox_has(e, PixelPosition) || !zox_has(e, DraggableLimits)) {
         return;
     }
-    zox_get_muter(e, PixelPosition, pixel_position)
+    zox_muter(e, PixelPosition, pixel_position)
     zox_geter_value(e, DraggableLimits, int4, drag_bounds)
     limited_element(pixel_position, drag_bounds);
 }
@@ -198,7 +198,7 @@ void set_ui_transform(
     }
     // set scale of mesh again
     if (!headless && zox_has(e, MeshVertices2D)) {
-        zox_get_muter(e, MeshVertices2D, meshVertices2D)
+        zox_muter(e, MeshVertices2D, meshVertices2D)
         const byte mesh_alignment = zox_get_value(e, MeshAlignment)
         const float2 size2D = (float2) {
             pixel_size.x / canvasSizef.y,

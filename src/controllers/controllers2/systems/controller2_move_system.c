@@ -85,7 +85,7 @@ void Controller2MoveSystem(ecs_iter_t *it) {
             movement.y *= run_speed2D;
         }
         zox_geter(character, Velocity2D, velocity2D)
-        zox_get_muter(character, Acceleration2D, acceleration2D)
+        zox_muter(character, Acceleration2D, acceleration2D);
         // const float2 check_velocity = velocity2D->value;
         float2 max_speed = max_velocity2D;
         if (is_running) {

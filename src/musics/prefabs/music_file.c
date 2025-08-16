@@ -51,7 +51,7 @@ ecs_entity_t load_music_file(
     const ecs_entity_t e = spawn_music(world, prefab, music_speed);
     zox_set(e, MusicLength, { music_length });
 
-    zox_get_muter(e, NoteLinks, noteLinks);
+    zox_muter(e, NoteLinks, noteLinks);
     initialize_NoteLinks(noteLinks, loaded_note_count);
 
     const byte instrument = music_load_instrument;

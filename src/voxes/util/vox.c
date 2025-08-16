@@ -12,9 +12,9 @@ void clone_vox_data(ecs *world,
     zox_geter(source, VoxelNode, chunk_octree_source)
     zox_geter(source, NodeDepth, source_node_depth)
     zox_geter(source, ColorRGBs, colors_source)
-    zox_get_muter(e, VoxelNode, dest)
-    zox_get_muter(e, NodeDepth, nodeDepth)
-    zox_get_muter(e, ColorRGBs, colors_dest)
+    zox_muter(e, VoxelNode, dest)
+    zox_muter(e, NodeDepth, nodeDepth)
+    zox_muter(e, ColorRGBs, colors_dest)
     // clone_VoxelNode(dest, chunk_octree_source);
     nodeDepth->value = source_node_depth->value;
     clone_depth_VoxelNode(dest, chunk_octree_source, max_depth, 0);

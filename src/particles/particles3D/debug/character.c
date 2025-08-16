@@ -14,7 +14,7 @@ void toggle_character_particles(ecs_world_t *world, int32_t keycode) {
         if (!character) return;
         // our logic stuffee
         // spawn particle system
-        zox_get_muter(character, Children, children);
+        zox_muter(character, Children, children);
         const ecs_entity_t previous_particles = children->length > 0 && zox_has(children->value[children->length - 1], Particle3DEmitter) ? children->value[children->length - 1] : 0;
         if (previous_particles) {
             zox_log(" + removing particles from character")

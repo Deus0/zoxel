@@ -1,7 +1,6 @@
 // hmmm issue seems to be about faces
 // maybe we redo our mesh builder system
 
-
 static const byte face_children[6][4] = {
     {1, 3, 5, 7}, // +X
     {0, 2, 4, 6}, // -X

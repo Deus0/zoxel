@@ -115,15 +115,15 @@ void Player3RotateSystem(ecs_iter_t *it) {
         // todo: effect only rotation of axis for this
 
         // effect characters euler
-        zox_get_muter(character, Euler, player_euler)
-        zox_get_muter(character, Rotation3D, rotation3D)
+        zox_muter(character, Euler, player_euler)
+        zox_muter(character, Rotation3D, rotation3D)
         player_euler->value.y += euler.y;
         rotation3D->value = quaternion_from_euler(player_euler->value);
         const ecs_entity_t player_camera = zox_get_value(character, CameraLink)
         if (zox_valid(player_camera)) {
             // this sets camera x
-            zox_get_muter(player_camera, Euler, player_camera_euler)
-            zox_get_muter(player_camera, LocalRotation3D, player_camera_rotation3D)
+            zox_muter(player_camera, Euler, player_camera_euler)
+            zox_muter(player_camera, LocalRotation3D, player_camera_rotation3D)
             // add mouse/device input
             player_camera_euler->value.x -= euler.x;
             // makes sure to keep euler between values -180 and 180

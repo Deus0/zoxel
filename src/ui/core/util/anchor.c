@@ -48,12 +48,12 @@ void set_element_position(ecs *world,
     if (zox_has(e, Position2D)) {
         Position2D *position2D_component = zox_get_mut(e, Position2D)
         position2D_component->value = position2D;
-        zox_modified(e, Position2D)
+        zox_modified(e, Position2D);
     }
     if (zox_has(e, CanvasPosition)) {
         CanvasPosition *canvasPosition = zox_get_mut(e, CanvasPosition)
         canvasPosition->value = position_in_canvas;
-        zox_modified(e, CanvasPosition)
+        zox_modified(e, CanvasPosition);
     }
     set_line_element_real_position2D(world, e, position2D, canvas_size, position);
     if (zox_has(e, Children)) {

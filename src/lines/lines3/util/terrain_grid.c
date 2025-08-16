@@ -26,7 +26,7 @@ void spawn_terrain_grid(
     terrain_grid = zox_new();
     zox_prefab_add(terrain_grid, Children)
     Children *children = zox_get_mut(terrain_grid, Children)
-    zox_modified(terrain_grid, Children)
+    zox_modified(terrain_grid, Children);
     // front/back side
     for (float k = back_bounds; k <= front_bounds; k += (front_bounds - back_bounds)) {
         for (float i = left_bounds; i <= right_bounds; i += spacing) {

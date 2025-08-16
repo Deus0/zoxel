@@ -15,7 +15,7 @@ void on_destroyed_##name(ecs_iter_t *it) {\
         parent_name *parent_links = zox_get_mut(parent, parent_name)\
         if (remove_from_##parent_name(parent_links, e)) {\
             /*zox_log("! removed [%s] from [%s]\n", zox_get_name(e), zox_get_name(parent))*/\
-            zox_modified(parent, parent_name)\
+            zox_modified(parent, parent_name);\
         }\
     }\
 }

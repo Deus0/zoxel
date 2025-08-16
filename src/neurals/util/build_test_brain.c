@@ -61,10 +61,10 @@ void build_brain_test(ecs_world_t *world, const ecs_entity_t e, const int2 size)
         }
         neuron_start_index = neuron_index_next;
     }
-    zox_modified(e, BrainInputs)
-    zox_modified(e, BrainOutputs)
-    zox_modified(e, BrainLinks)
-    zox_modified(e, Children)
+    zox_modified(e, BrainInputs);
+    zox_modified(e, BrainOutputs);
+    zox_modified(e, BrainLinks);
+    zox_modified(e, Children);
 }
 
 void spawn_test_brain(ecs_world_t *world) {

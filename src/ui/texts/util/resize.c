@@ -6,11 +6,11 @@ void on_element_pixels_resized(ecs *world, const entity e, const int2 size, cons
     }
     const float2 canvas_size = int2_to_float2(zox_gett_value(canvas, PixelSize));
     const float2 scale2D = (float2) { size.x / canvas_size.y, size.y / canvas_size.y };
-    zox_get_muter(e, PixelSize, pixelSize)
-    zox_get_muter(e, TextureSize, textureSize)
-    zox_get_muter(e, MeshVertices2D, meshVertices2D)
-    zox_get_muter(e, GenerateTexture, generateTexture)
-    zox_get_muter(e, MeshDirty, meshDirty)
+    zox_muter(e, PixelSize, pixelSize)
+    zox_muter(e, TextureSize, textureSize)
+    zox_muter(e, MeshVertices2D, meshVertices2D)
+    zox_muter(e, GenerateTexture, generateTexture)
+    zox_muter(e, MeshDirty, meshDirty)
     pixelSize->value = size;
     textureSize->value = size;
     set_mesh_vertices_scale2D(meshVertices2D, get_aligned_mesh2D(mesh_alignment), 4, scale2D);

@@ -1,3 +1,5 @@
+// Applies sides to lighting colors to debug
+
 void zox_apply_debug_colors(
     const byte* solidity,
     const VoxelNode* node,

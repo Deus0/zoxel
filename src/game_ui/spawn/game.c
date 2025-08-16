@@ -44,7 +44,7 @@ ecs_entity_t spawn_menu_game(
 
     zox_set_ptr(e, Children, children)
     // link to character
-    zox_get_muter(character, ElementLinks, elementLinks)
+    zox_muter(character, ElementLinks, elementLinks)
     add_to_ElementLinks(elementLinks, e);
     zox_set(e, ElementHolder, { character })
 

@@ -45,7 +45,7 @@ void Elementbar2DSystem(iter *it) {
             float percecentage_2 = ((int) (percentage * 100)) / 100.0f; // only update per 100 units
             front_pixel_size.x = (int) floor(scale.x * pixel_size.x * percecentage_2);
             front_pixel_position->value.x = offset_x;
-            zox_modified(front_bar, PixelPosition)
+            zox_modified(front_bar, PixelPosition);
             on_element_pixels_resized(world, front_bar, front_pixel_size, zox_mesh_alignment_left);
             // zox_log("> elementbar updated %ix%i - position x %i percentage %f\n", front_pixel_size.x, front_pixel_size.y, offset_x, percentage)
         }

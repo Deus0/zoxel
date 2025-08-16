@@ -53,7 +53,7 @@ void ScrollbarSystem(iter *it) {
             PixelPosition *element_pixel_position = zox_get_mut(list_element, PixelPosition)
             if (!int2_equals(element_pixel_position->value, position)) {
                 element_pixel_position->value = position;
-                zox_modified(list_element, PixelPosition)
+                zox_modified(list_element, PixelPosition);
             }
             byte render_enabled = normal_j >= scrollview_index_offset && normal_j < scrollview_index_offset + elements_visible;
             disable_element_rendering(world, list_element, !render_enabled);

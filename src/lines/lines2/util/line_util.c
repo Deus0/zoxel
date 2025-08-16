@@ -23,7 +23,7 @@ void set_line_element_real_position2D(ecs_world_t *world,
             aspect_ratio,
             parent_position,
             localPoints->value);
-        zox_get_muter(e, LinePosition2D, linePosition2D);
+        zox_muter(e, LinePosition2D, linePosition2D);
         linePosition2D->value = points;
     }
 }

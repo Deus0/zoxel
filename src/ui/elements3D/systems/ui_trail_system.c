@@ -32,7 +32,7 @@ void UITrailSystem(iter *it) {
             for (int j = 0; j < children->length; j++) {
                 const entity child = children->value[j];
                 zox_geter(child, LocalPosition3D, child_local_position3D)
-                zox_get_muter(child, Position3D, child_position3D)
+                zox_muter(child, Position3D, child_position3D)
                 set_position_from_parents(world, e, &child_position3D->value, child_local_position3D->value);
             }
         }

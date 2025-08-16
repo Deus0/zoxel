@@ -75,14 +75,14 @@ void set_entity_label_with_zext(
 ) {
     const Children *name_label_children = zox_get(parent, Children)
     entity e = name_label_children->value[0];
-    zox_get_muter(e, TextData, textData)
+    zox_muter(e, TextData, textData)
     if (textData->value) {
         dispose_TextData(textData);
     }
     initialize_TextData(textData, length);
     memcpy(textData->value, value, length);
     textData->length = length;
-    zox_modified(e, TextData)
+    zox_modified(e, TextData);
     zox_set(e, ZextDirty, { zext_update_start })
 }
 

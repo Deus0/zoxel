@@ -24,7 +24,7 @@ entity spawn_font(ecs *world, const entity prefab, const byte2 *points, const by
 entity spawn_font_direct(ecs *world, const entity prefab, byte2 *points, const byte length) {
     zox_instance(prefab)
     zox_name("font")
-    zox_get_muter(e, FontData, fontData)
+    zox_muter(e, FontData, fontData)
     fontData->length = length;
     fontData->value = points;
     return e;

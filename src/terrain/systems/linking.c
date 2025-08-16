@@ -42,7 +42,7 @@ byte set_entity_chunk(ecs *world,
     }
     // remove entity from old chunk
     if (zox_valid(old_chunk)) {
-        zox_get_muter(old_chunk, ChunkEntities, entityLinks)
+        zox_muter(old_chunk, ChunkEntities, entityLinks)
         remove_from_ChunkEntities(entityLinks, e);
         zox_log_chunk_removed(world, old_chunk, e);
     }

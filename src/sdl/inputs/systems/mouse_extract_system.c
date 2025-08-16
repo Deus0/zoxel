@@ -49,8 +49,8 @@ void MouseExtractSystem(ecs_iter_t *it) {
                     SDL_Window* sdl_window = zox_get_value(appLink->value, SDLWindow)
                     SDL_WarpMouseInWindow(sdl_window, position2.x, position2.y);
                 } else {
-                    zox_get_muter(zevice, ZevicePointerPosition, position)
-                    zox_get_muter(zevice, ZevicePointerDelta, delta)
+                    zox_muter(zevice, ZevicePointerPosition, position)
+                    zox_muter(zevice, ZevicePointerDelta, delta)
                     delta->value = int2_sub(mouse_position, position->value);
                     // delta->value = int2_sub(position->value, mouse_position);
                     position->value = mouse_position;
@@ -60,16 +60,16 @@ void MouseExtractSystem(ecs_iter_t *it) {
                 continue;  // does this break it?
             }
             if (zox_has(zevice, ZevicePointer)) {
-                zox_get_muter(zevice, ZevicePointer, clicker)
+                zox_muter(zevice, ZevicePointer, clicker)
                 // convert press state, with previous state, to a proper value that holds press and release data
                 clicker->value = get_button_click_state(clicker->value, button_pressed_left);
             }
             if (zox_has(zevice, ZevicePointerRight)) {
-                zox_get_muter(zevice, ZevicePointerRight, clicker)
+                zox_muter(zevice, ZevicePointerRight, clicker)
                 clicker->value = get_button_click_state(clicker->value, button_pressed_right);
             }
             if (zox_has(zevice, ZeviceWheel)) {
-                zox_get_muter(zevice, ZeviceWheel, wheel)
+                zox_muter(zevice, ZeviceWheel, wheel)
                 wheel->value = static_mouse_wheel; // static_mouse_wheel.x != 0 && static_mouse_wheel.y != 0 &&
             }
         }

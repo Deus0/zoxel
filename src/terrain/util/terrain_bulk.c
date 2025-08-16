@@ -83,7 +83,7 @@ entity create_terrain_bulk(ecs *world, const entity prefab, const int3 center_po
     ChunkLinks *chunkLinks = zox_get_mut(terrain_world, ChunkLinks)
     chunkLinks->value = create_int3_hashmap(chunks_total_length);
     for (int i = 0; i < chunks_total_length; i++) int3_hashmap_add(chunkLinks->value, chunk_positions[i], chunks[i]);
-    zox_modified(terrain_world, ChunkLinks)
+    zox_modified(terrain_world, ChunkLinks);
     return terrain_world;
 }
 #endif

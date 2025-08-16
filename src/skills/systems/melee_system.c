@@ -94,7 +94,7 @@ void MeleeSystem(ecs_iter_t *it) {
                 continue;
             } else {
                 const float stat_value_max = zox_get_value(health_stat, StatValueMax)
-                zox_get_muter(health_stat, StatValue, statValue)
+                zox_muter(health_stat, StatValue, statValue)
                 statValue->value -= skill_damage;
                 if (statValue->value < 0) {
                     statValue->value = 0;

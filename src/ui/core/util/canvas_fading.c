@@ -1,10 +1,10 @@
 void clear_animation_sequence(ecs *world, const entity e) {
-    zox_get_muter(e, AnimationSequence, animationSequence)
+    zox_muter(e, AnimationSequence, animationSequence)
     if (animationSequence->value) {
         clear_memory_component(AnimationSequence, animationSequence)
-        zox_get_muter(e, AnimationTimes, animationTimes)
+        zox_muter(e, AnimationTimes, animationTimes)
         clear_memory_component(AnimationTimes, animationTimes)
-        zox_get_muter(e, AnimationTargets, animationTargets)
+        zox_muter(e, AnimationTargets, animationTargets)
         clear_memory_component(AnimationTargets, animationTargets)
         zox_set(e, AnimationIndex, { 255 })
     }
@@ -50,10 +50,10 @@ void trigger_canvas_fade_transition(ecs *world, const entity canvas, const doubl
     zox_set(e, AnimationDelay, { 0 })
     zox_set(e, RenderDisabled, { 0 })
     // i should add multiple animationions as children or something
-    zox_get_muter(e, AnimationSequence, animationSequence)
+    zox_muter(e, AnimationSequence, animationSequence)
     //if (animationSequence->length == 0) {
-    zox_get_muter(e, AnimationTimes, animationTimes)
-    zox_get_muter(e, AnimationTargets, animationTargets)
+    zox_muter(e, AnimationTimes, animationTimes)
+    zox_muter(e, AnimationTargets, animationTargets)
     resize_memory_component(AnimationSequence, animationSequence, byte, 3)
     resize_memory_component(AnimationTimes, animationTimes, double, 3)
     resize_memory_component(AnimationTargets, animationTargets, float, 3)

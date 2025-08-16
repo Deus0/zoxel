@@ -24,7 +24,7 @@ entity spawn_ttf_as_font_style(ecs *world, const entity prefab,  FT_Face face) {
     zox_instance(prefab)
     zox_name("font_style_ttf")
     zox_add_tag(e, TTFFontStyle)
-    zox_get_muter(e, Children, children)
+    zox_muter(e, Children, children)
     resize_memory_component(Children, children, entity, font_styles_length)
     for (int i = 0; i < font_styles_length; i++) {
         children->value[i] = 0;

@@ -1,32 +1,33 @@
-#define zox_get_mut(e, T)\
-    ecs_get_mut(world, e, T);
+#define zox_modified(e, T)\
+    ecs_modified(world, e, T)
 
 #define zox_gett_mut(e, T)\
     ecs_get_mut(world, e, T)
 
-#define zox_mut_begin(e, type, name)\
-    type *name = zox_get_mut(e, type)
+#define zox_mut(e, T)\
+    ecs_get_mut(world, e, T)
 
-#define zox_mut_end(e, type)\
-    ecs_modified(world, e, type);
 
-#define zox_get_mutt(e, type, name)\
-    type *name = zox_get_mut(e, type)
+#define zox_get_mut(e, T)\
+    ecs_get_mut(world, e, T);
 
-#define zox_muter(e, type, name)\
-    zox_get_mutt(e, type, name)\
-    zox_modified(e, type)
+#define zox_mut_begin(e, T, name)\
+    T *name = zox_get_mut(e, T)
 
-#define zox_get_muter(e, type, name)\
-    zox_muter(e, type, name)
+#define zox_mut_end(e, T)\
+    ecs_modified(world, e, T);
 
-#define zox_set_mut(e, type, valuer) {\
-    type *component = zox_get_mut(e, type)\
+#define zox_get_mutt(e, T, name)\
+    T *name = zox_get_mut(e, T)
+
+#define zox_muter(e, T, name)\
+    zox_get_mutt(e, T, name)\
+    zox_modified(e, T);
+
+#define zox_set_mut(e, T, valuer) {\
+    T *component = zox_get_mut(e, T)\
     if (component->value != valuer) {\
         component->value = valuer;\
-        zox_modified(e, type)\
+        zox_modified(e, T)\
     }\
 }
-
-#define zox_modified(e, type)\
-    ecs_modified(world, e, type);

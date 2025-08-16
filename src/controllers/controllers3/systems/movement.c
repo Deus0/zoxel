@@ -136,7 +136,7 @@ void Player3DMoveSystem(ecs_iter_t *it) {
         float4 movement_rotation = float4_identity;
         zox_geter(character, Rotation3D, rotation3D)
         zox_geter(character, Velocity3D, velocity3D)
-        zox_get_muter(character, Acceleration3D, acceleration3D)
+        zox_muter(character, Acceleration3D, acceleration3D)
         if (camera_mode == zox_camera_mode_topdown || camera_mode == zox_camera_mode_ortho) {
             if (zox_has(character, CameraLink)) {
                 if (cameraLink->value) {
@@ -150,7 +150,7 @@ void Player3DMoveSystem(ecs_iter_t *it) {
                     // test rotation
                     Rotation3D *rotation3D2 = zox_get_mut(character, Rotation3D)
                     rotation3D2->value = face_direction;
-                    zox_modified(character, Rotation3D)
+                    zox_modified(character, Rotation3D);
 #ifdef zox_debug_player_movement_direction
                     const Position3D *position3D = zox_get(character, Position3D)
                     spawn_line3D(world, position3D->value, float3_add(position3D->value, movement), debug_thickness, 34.0);

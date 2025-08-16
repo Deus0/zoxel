@@ -15,7 +15,7 @@
         return;
     }
     zox_geter_value(chunk, NodeDepth, byte, node_depth);
-    zox_get_muter(chunk, VoxelNode, base_node);
+    zox_muter(chunk, VoxelNode, base_node);
     const SetVoxelTargetData datam = {
         .depth = node_depth,
         .voxel = voxel,

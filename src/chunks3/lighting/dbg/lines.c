@@ -22,7 +22,7 @@ void LightNodeDebugSystem(iter *it) {
         zox_sys_i(LightNode, lnode);
         zox_sys_i(LightNodeDepth, depth);
 
-        if (distance->value > 1 || !(positionc->value.y >= 1 && positionc->value.y <= 3)) {
+        if (distance->value > 1 || !(positionc->value.y >= 0 && positionc->value.y <= 2)) {
             continue;
         }
 

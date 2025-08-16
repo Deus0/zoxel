@@ -7,7 +7,6 @@ void LightPropogateSystem(iter *it) {
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_out(LightNode);
-    zox_sys_out(PropogateQueue);
 
     for (int i = 0; i < it->count; i++) {
 
@@ -16,12 +15,13 @@ void LightPropogateSystem(iter *it) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_o(LightNode, root_lnode);
-        zox_sys_o(PropogateQueue, queue);
 
         // sunlight uses RenderDepthDirty
         if (dirty->value != zox_dirty_active) {
             continue;
         }
+
+        // if (depthl->value != terrain_depth) continue;   // for now
 
         const VoxelNode* nnodesv[6];
         fetch_neightbor_voxel_nodes(
@@ -33,6 +33,11 @@ void LightPropogateSystem(iter *it) {
             world,
             neighbors,
             nnodesl);
+        PropogateQueue* nqueues[6];
+        fetch_neightbor_propogation_queues(
+            world,
+            neighbors,
+            nqueues);
 
         // now for all XZ places we go through
         byte length = powers_of_two[depthl->value];
@@ -60,17 +65,19 @@ void LightPropogateSystem(iter *it) {
                             0);
                         byte check_light = lnode ? lnode->value : darklight;
                         if (check_light == sunlight) {
-                            // zox_log("propogating sunlight.");
-                            flood_light_recursive(
+                            flood_light(
                                 root_vnode,
                                 root_lnode,
                                 nnodesv,
                                 nnodesl,
+                                nqueues,
                                 depthl->value,
                                 positionl,
                                 check_light,
-                                queue,
-                                8);
+                                light_propogation_distance,
+                                darklight,
+                                light_air_decay
+                            );
                             // if side voxel, add to other chunks queue
                         }
                     }

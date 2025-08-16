@@ -27,7 +27,7 @@ void MouseConstrainSystem(ecs_iter_t *it) {
             for (int j = 0; j < children->length; j++) {
                 const ecs_entity_t zevice = children->value[j];
                 if (zox_has(zevice, ZevicePointerPosition)) {
-                    zox_get_muter(zevice, ZevicePointerPosition, position)
+                    zox_muter(zevice, ZevicePointerPosition, position)
                     position->value = lock_position;
                 }
             }

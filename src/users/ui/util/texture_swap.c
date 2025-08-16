@@ -1,8 +1,8 @@
 void swap_textures(ecs_world_t *world, const ecs_entity_t e1, const ecs_entity_t e2) {
-    zox_get_muter(e1, TextureData, texture_a)
-    zox_get_muter(e1, TextureSize, texture_size_a)
-    zox_get_muter(e2, TextureData, texture_b)
-    zox_get_muter(e2, TextureSize, texture_size_b)
+    zox_muter(e1, TextureData, texture_a)
+    zox_muter(e1, TextureSize, texture_size_a)
+    zox_muter(e2, TextureData, texture_b)
+    zox_muter(e2, TextureSize, texture_size_b)
     const TextureData temp_data = (TextureData) { texture_a->length, texture_a->value };
     texture_a->value = texture_b->value;
     texture_a->length = texture_b->length;

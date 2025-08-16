@@ -10,7 +10,7 @@ void spawn_realm_characters(ecs *world, entity e) {
         zox_log_error("realm does not have CharacterLinks [%s]", zox_get_name(e))
         return;
     }
-    // zox_get_muter(e, StatLinks, stats)
+    // zox_muter(e, StatLinks, stats)
     zox_geter(e, CharacterLinks, old)
     if (old) {
         // clear previous

@@ -131,7 +131,7 @@ void set_inspector_element(
     zox_geter_value(canvas, PixelSize, int2, canvas_size)
 
     // destroy previous ones
-    zox_get_muter(window, Children, children)
+    zox_muter(window, Children, children)
     const ecs_entity_t scrollbar = children->value[1];
     for (int j = list_start; j < children->length; j++) {
         if (children->value[j]) {
@@ -273,5 +273,5 @@ void set_inspector_element(
         children->value[child_index] = e2;
         // zox_set(list_element, ClickEvent, { click_event.value })
     }
-    zox_modified(window, Children)
+    zox_modified(window, Children);
 }

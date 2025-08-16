@@ -74,7 +74,7 @@ entity spawn_gamepad(ecs *world, const byte gamepad_type) {
     children->value[19] = spawn_device_button(world, 19, zox_device_button_dpad_right);
     // todo: spawn LT and RT as axis for steamdeck
 
-    zox_modified(e, Children)
+    zox_modified(e, Children);
     gamepad_entity = e;
     return e;
 }

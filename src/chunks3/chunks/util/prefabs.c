@@ -48,7 +48,7 @@ void set_chunk_neighbors(
     entity chunk_back,
     entity chunk_front
 ) {
-    zox_get_muter(e, ChunkNeighbors, chunkNeighbors)
+    zox_muter(e, ChunkNeighbors, chunkNeighbors);
     chunkNeighbors->value[0] = chunk_left;
     chunkNeighbors->value[1] = chunk_right;
     chunkNeighbors->value[2] = chunk_back;
@@ -65,7 +65,7 @@ void set_chunk_neighbors_six_directions(
     entity chunk_back,
     entity chunk_front
 ) {
-    zox_get_muter(e, ChunkNeighbors, chunkNeighbors)
+    zox_muter(e, ChunkNeighbors, chunkNeighbors);
     chunkNeighbors->value[0] = chunk_left;
     chunkNeighbors->value[1] = chunk_right;
     chunkNeighbors->value[2] = chunk_down;

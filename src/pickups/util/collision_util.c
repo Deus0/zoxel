@@ -10,7 +10,7 @@ void on_overlap_pickup(
         // zox_log(" > e [%lu] picked up by user [%lu]\n", e, user)
         if (zox_has(e, ItemLink)) {
             const ecs_entity_t item = zox_get_value(e, ItemLink);
-            zox_get_muter(user, ActionLinks, actions)
+            zox_muter(user, ActionLinks, actions)
             const ecs_entity_t meta_item_block = item;
             byte stack_index = 255;
             for (int i = 0; i < actions->length; i++) {

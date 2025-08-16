@@ -5,7 +5,7 @@ void spawn_realm_quests(ecs_world_t *world, const ecs_entity_t realm) {
         zox_log("! realm does not have QuestLinks [%lu]\n", realm)
         return;
     }
-    /*zox_get_muter(realm, QuestLinks, quests)
+    /*zox_muter(realm, QuestLinks, quests)
     if (!quests) {
         zox_log("! realm quests was null [%lu]\n", realm)
         return;

@@ -10,8 +10,8 @@ void update_text3D(ecs *world, const Children *children, const TextData *textDat
         const byte zigel_index = calculate_zigel_index(textData->value, textData->length, i);
         const byte old_zigel_index = zox_get_value(e, ZigelIndex)
         if (old_zigel_index != zigel_index) {
-            zox_get_muter(e, ZigelIndex, zigelIndex2)
-            zox_get_muter(e, GenerateTexture, generateTexture)
+            zox_muter(e, ZigelIndex, zigelIndex2)
+            zox_muter(e, GenerateTexture, generateTexture)
             zigelIndex2->value = zigel_index;
             generateTexture->value = zox_generate_texture_trigger;
             zox_log_text("    + zigel [%i] updated [%i:%i]", i, old_zigel_index, zigel_index)

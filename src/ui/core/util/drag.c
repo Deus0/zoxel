@@ -4,8 +4,8 @@ void set_element_dragged(ecs *world, const entity player, const entity element, 
         DraggerLink *draggerLink = zox_get_mut(element, DraggerLink)
         dragableState->value = drag_mode;
         draggerLink->value = player;
-        zox_modified(element, DraggableState)
-        zox_modified(element, DraggerLink)
+        zox_modified(element, DraggableState);
+        zox_modified(element, DraggerLink);
 #ifdef zox_log_ui_dragging
         zox_log(" > ui dragging at [%f]\n", (float) zox_current_time)
 #endif

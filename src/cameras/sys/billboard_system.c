@@ -28,7 +28,7 @@ void BillboardSystem(iter *it) {
                 const float4 child_local_rotation3D = zox_get_value(child, LocalRotation3D)
                 Rotation3D *child_rotation3D = zox_get_mut(child, Rotation3D)
                 set_rotation_from_parents(world, e, &child_rotation3D->value, child_local_rotation3D);
-                zox_modified(child, Rotation3D)
+                zox_modified(child, Rotation3D);
             }
         }
 #ifdef zox_debug_billboard_system

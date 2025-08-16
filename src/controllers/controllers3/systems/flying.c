@@ -39,7 +39,7 @@ void PlayerFlySystem(ecs_iter_t *it) {
         }
 
         if (input) {
-            zox_get_muter(character, Acceleration3D, acc);
+            zox_muter(character, Acceleration3D, acc);
             acc->value.y += input;
         }
     }

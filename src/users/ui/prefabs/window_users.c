@@ -42,7 +42,7 @@ ecs_entity_t spawn_window_users(
     const int user_datas_count = user_data->length;
     const int grid_elements_count = user_datas_count; // data.window.grid_size.x * data.window.grid_size.y
     const int children_length = 1 + is_header;
-    // zox_get_muter(e, Children, children)
+    // zox_muter(e, Children, children)
     Children children = (Children) { 0, NULL };
     initialize_Children(&children, children_length);
     if (children.length != children_length) {
@@ -102,7 +102,7 @@ ecs_entity_t spawn_window_users(
     };
     const ecs_entity_t body = spawn_element(world, &spawn_body_data);
     children.value[is_header] = body;
-    // zox_get_muter(body, Children, body_children)
+    // zox_muter(body, Children, body_children)
     Children body_children = (Children) { 0, NULL };
     initialize_Children(&body_children, grid_elements_count);
     int item_index = 0;
@@ -154,7 +154,7 @@ ecs_entity_t spawn_window_users(
     zox_set_ptr(body, Children, body_children);
     zox_set_ptr(e, Children, children);
     // add to characters element links and link to character
-    zox_get_muter(character, ElementLinks, elementLinks);
+    zox_muter(character, ElementLinks, elementLinks);
     add_to_ElementLinks(elementLinks, e);
     zox_set(e, ElementHolder, { character });
     return e;

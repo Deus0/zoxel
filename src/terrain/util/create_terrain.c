@@ -41,7 +41,7 @@
             }
         }
     }
-    zox_get_muter(terrain_world, ChunkLinks, chunkLinks)
+    zox_muter(terrain_world, ChunkLinks, chunkLinks)
     chunkLinks->value = create_int3_hashmap(chunks_total_length);
     for (int i = 0; i < chunks_total_length; i++) int3_hashmap_add(chunkLinks->value, chunk_positions[i], chunks[i]);
 #ifdef zox_time_create_terrain

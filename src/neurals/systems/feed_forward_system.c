@@ -29,7 +29,7 @@ void LinkFeedForwardSystem(ecs_iter_t *it) {
             const float weighted_signal = signal->value * weight->value;
             Signal *neuron_signal = zox_get_mut(neuron_b, Signal)
             neuron_signal->value += weighted_signal;
-            zox_modified(neuron_b, Signal)
+            zox_modified(neuron_b, Signal);
             if (zox_has(neuron_b, OutputNeuron)) reached_end = 1;
 #ifdef zox_log_neurals
             zox_log(" + s [%f] > w [%f] > ws [%f] > n [%f]\n", signal->value, weight->value, weighted_signal, neuron_signal->value)

@@ -9,7 +9,7 @@ void add_plot_data_double(
     if (!zox_valid(e) || !zox_has(e, PlotDataDouble)) {
         return;
     }
-    zox_get_muter(e, PlotDataDouble, data);
+    zox_muter(e, PlotDataDouble, data);
     if (!data || !data->length || !data->value) {
         return;
     }

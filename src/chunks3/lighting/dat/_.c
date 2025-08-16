@@ -5,8 +5,11 @@ typedef struct {
 } LightNode;
 
 typedef struct {
-    byte value;
-    byte3 positionl;
+    byte3 pos;
+    byte depth;
+    byte distance;
+    byte type;  // 0 flood - 1 reverse
+    byte light;
 } PropogateUpdate;
 
 // beams queued

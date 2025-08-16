@@ -7,6 +7,7 @@ zox_increment_system_with_reset(SunlightDirty, zox_dirty_end);
 #include "reduce.c"
 #include "trigger.c"
 #include "light_voxel_queue.c"
+#include "builder.c"
 
 // TODO: Light Depth Set System
 // TODO: Light Clear System
@@ -49,7 +50,8 @@ void define_systems_lighting3(ecs* world) {
         [in] rendering.RenderDepth,
         [in] lighting3.LightNode,
         [in] chunks3.ChunkNeighbors,
-        [out] lighting3.SunlightQueue
+        [out] lighting3.SunlightQueue,
+        [out] lighting3.PropogateQueue
     );
 
     zox_system(MeshColorsTriggerSystem,
@@ -59,15 +61,6 @@ void define_systems_lighting3(ecs* world) {
         [out] rendering.MeshColorsGenerate
     );
 
-    /*zox_system(PropogateQueueSystem,
-        zoxp_lights_write + 1,
-        [in] chunks3.VoxelNode,
-        [in] lighting3.LightNodeDepth,
-        [out] lighting3.LightNode,
-        [out] lighting3.LightNodeDirty,
-        [out] lighting3.PropogateQueue
-    );*/
-
     // this kinda has issues atm hmm
     /*zox_system(LightNodeReduceSystem,
         zoxp_lights_write,
@@ -76,14 +69,34 @@ void define_systems_lighting3(ecs* world) {
         [out] lighting3.LightNode
     );*/
 
+
     zox_system(LightPropogateSystem,
         zoxp_lights_write,
         [in] lighting3.SunlightDirty,
         [in] lighting3.LightNodeDepth,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
+        [out] lighting3.LightNode
+    );
+    zox_system(PropogateQueueSystem,
+        zoxp_lights_write + 1,
+        [in] lighting3.LightNodeDepth,
+        [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxelNode,
         [out] lighting3.LightNode,
+        [out] lighting3.SunlightDirty,
         [out] lighting3.PropogateQueue
+    );
+
+    zox_system(Light3BuildSystem, zoxp_voxels_read + 1,
+        [in] rendering.MeshColorsGenerate,
+        [in] chunks3.VoxLink,
+        [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxelNode,
+        [in] lighting3.LightNode,
+        [in] rendering.RenderDepth,
+        [in] rendering.MeshColorRGBs,
+        [out] rendering.MeshColorsDirty
     );
 
     zox_system_1(

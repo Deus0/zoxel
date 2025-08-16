@@ -33,8 +33,8 @@ void Elementbar3DSystem(iter *it) {
                 continue;
             }
             meshDirty->value = mesh_state_trigger;
-            zox_modified(front_bar, MeshDirty)
-            zox_get_muter(front_bar, MeshVertices, meshVertices2)
+            zox_modified(front_bar, MeshDirty);
+            zox_muter(front_bar, MeshVertices, meshVertices2)
             for (byte j = 0; j < 4; j++) {
                 meshVertices2->value[j] = (float3) { left_offset + square_vertices[j].x * scale.x * percentage, square_vertices[j].y * scale.y, 0 };
             }

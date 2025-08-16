@@ -21,7 +21,7 @@
 #define zox_instance_children(prefab)\
     zox_instance(prefab)\
     if (zox_has(prefab, Children)) {\
-        zox_get_muter(e, Children, children)\
+        zox_muter(e, Children, children)\
         zox_geter(prefab, Children, prefab_children)\
         for (int a = 0; a < children->length; a++) {\
             const ecs_entity_t e2 = zox_instancee(prefab_children->value[i]);\

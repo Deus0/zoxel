@@ -41,7 +41,7 @@ void resize_ui_line2D(ecs_world_t *world, ecs_entity_t e, int2 canvas_size) {
     const int2 parent_position = int2_zero;
     const int4 line_position2D = get_new_line_position(parent_real_position, canvas_size_f, aspect_ratio, parent_position, points);
     zox_set(e, LinePosition2D, { line_position2D })
-    zox_get_muter(e, LineData2D, lineData2D)
+    zox_muter(e, LineData2D, lineData2D)
     set_ui_line_position(lineData2D, line_position2D, canvas_size_f);
 }
 

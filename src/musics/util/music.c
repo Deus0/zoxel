@@ -45,6 +45,6 @@ void add_music(ecs_world_t *world, ecs_entity_t playlist, ecs_entity_t music) {
         return;
     }
     // zox_log(" + added music to playlist [%lu]\n", music)
-    zox_get_muter(playlist, MusicLinks, musicLinks)
+    zox_muter(playlist, MusicLinks, musicLinks)
     add_to_MusicLinks(musicLinks, music);
 }

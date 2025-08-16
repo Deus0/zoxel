@@ -40,7 +40,7 @@ void handle_touch_drag(ecs *world,
             return;
         }
         if (devices_get_released_this_frame(zevicePointer->value)) {
-            zox_get_muter(virtual_joystick, ZeviceStick, zeviceStick)
+            zox_muter(virtual_joystick, ZeviceStick, zeviceStick)
             zeviceStick->value = float2_zero;
             if (joystick_element) {
                 zox_delete(joystick_element)
@@ -62,8 +62,8 @@ void handle_touch_drag(ecs *world,
             int2 size_limits = int2_multiply_float(int2_sub(virtual_joystick_size->value, virtual_joystick_pointer_size->value), 0.5f);
             size_limits.x -= 10;
             size_limits.y -= 10;
-            zox_get_muter(joystick_pointer, PixelPosition, pixel_position)
-            zox_get_muter(virtual_joystick, ZeviceStick, zeviceStick)
+            zox_muter(joystick_pointer, PixelPosition, pixel_position)
+            zox_muter(virtual_joystick, ZeviceStick, zeviceStick)
             pixel_position->value.x = delta_position.x;
             pixel_position->value.y = delta_position.y;
             int2_limit(&pixel_position->value, size_limits);

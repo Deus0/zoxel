@@ -26,7 +26,7 @@ void ChunkFindNeighborSystem(iter *it) {
             continue;
         }
         // link up neighbors if they need to be
-        zox_get_muter(voxLink->value, ChunkLinks, chunkLinks);
+        zox_muter(voxLink->value, ChunkLinks, chunkLinks);
         for (int j = 0; j < chunk_neighbors_length; j++) {
             if (zox_valid(chunkNeighbors->value[j])) {
                 continue;

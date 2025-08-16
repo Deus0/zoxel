@@ -45,6 +45,6 @@ void FreeCameraMoveSystem(ecs_iter_t *it) {
         movement = float4_rotate_float3(rotation3D->value, movement);
         Position3D *position3D = zox_get_mut(cameraLink->value, Position3D)
         position3D->value = float3_add(position3D->value, movement);
-        zox_modified(cameraLink->value, Position3D)
+        zox_modified(cameraLink->value, Position3D);
     }
 } zoxd_system(FreeCameraMoveSystem)

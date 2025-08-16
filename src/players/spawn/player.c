@@ -3,7 +3,7 @@ ecs_entity_t spawn_player(ecs_world_t *world, const ecs_entity_t prefab) {
     zox_name("player")
     // zox_set(e, PlayerState, { camera_mode })
     // adds all devices created in inputs module
-    zox_get_muter(e, DeviceLinks, deviceLinks)
+    zox_muter(e, DeviceLinks, deviceLinks)
     // todo: connect to devices based on assignment on start screen
     if (local_keyboard) {
         add_to_DeviceLinks(deviceLinks, local_keyboard);

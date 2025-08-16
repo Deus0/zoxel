@@ -4,7 +4,7 @@ void spawn_realm_stats(ecs_world_t *world, ecs_entity_t realm) {
         return;
     }
 
-    // zox_get_muter(realm, StatLinks, stats)
+    // zox_muter(realm, StatLinks, stats)
     zox_geter(realm, StatLinks, old);
     // if (old->value) return; // TODO: Temp; Remove when crashes gone
 

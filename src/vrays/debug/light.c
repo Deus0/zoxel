@@ -23,6 +23,12 @@ uint debug_ui_raycasted_light(
     // node debugger
     if (data->node) {
 
+        zox_geter_value(data->chunk, RenderDepth, byte, depth);
+        zox_geter(data->chunk, LightNode, light_node);
+
+        byte light_last = get_LightNode_value_ex(light_node, depth, data->positionl_last, 0);
+        index += snprintf(buffer + index, size - index, "   + Light [%i]\n", light_last);
+
         index += snprintf(buffer + index, size - index, "   + positionl[L] [%ix%ix%i]\n",
             data->positionl_last.x, data->positionl_last.y, data->positionl_last.z);
 
@@ -44,12 +50,6 @@ uint debug_ui_raycasted_light(
 
         index += snprintf(buffer + index, size - index, "]\n");
 
-        zox_geter_value(data->chunk, RenderDepth, byte, depth);
-        zox_geter(data->chunk, LightNode, light_node);
-
-        byte light_last = get_LightNode_value_ex(light_node, depth, data->positionl_last, 0);
-        index += snprintf(buffer + index, size - index, "   + air light [%i]\n", light_last);
-
         if (zox_valid(data->chunk) && zox_has(data->chunk, ChunkNeighbors)) {
             zox_geter(data->chunk, ChunkNeighbors, neighbors);
             const LightNode* nnodesl[6];
@@ -69,7 +69,7 @@ uint debug_ui_raycasted_light(
                 data->positionl,
                 depth);
             if (adj_node) {
-                index += snprintf(buffer + index, size - index, "   + Light [%i] (adj check)\n", adj_node->value);
+                index += snprintf(buffer + index, size - index, "   + Light [%i] [adj_check]\n", adj_node->value);
             } else {
                 index += snprintf(buffer + index, size - index, "   - No Adj Node [%ix%ix%i] dir [%i]\n", data->positionl.x, data->positionl.y, data->positionl.z, face);
             }

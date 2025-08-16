@@ -19,7 +19,7 @@ void test_load_chunk(ecs *world, int32_t keycode) {
                 entity chunk = pair->value;
                 if (zox_valid(chunk)) {
                     zox_geter_value(chunk, ChunkPosition, int3, position);
-                    zox_get_muter(chunk, VoxelNode, node);
+                    zox_muter(chunk, VoxelNode, node);
                     load_chunk(world, position, node);
                     // make sure flagged
                     zox_set(chunk, VoxelNodeEdited, { 1 });
