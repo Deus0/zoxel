@@ -56,10 +56,10 @@ static inline byte reduce_octree_node(
 
 // Macro wrapper: type-safe reducer
 #define create_node_reducer(T) \
-static inline byte reduce_##T##_ex(T* node, byte target_depth, byte depth) { \
+static inline byte reduce_##T(T* node, byte target_depth, byte depth) { \
     return reduce_octree_node((void*)node, target_depth, depth, sizeof(T), offsetof(T, value)); \
 }
 
 // Example usage:
 // create_node_reducer(LightNode)
-// reduce_LightNode_ex(lroot, 5, 0);
+// reduce_LightNode(lroot, 5, 0);

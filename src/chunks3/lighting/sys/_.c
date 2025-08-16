@@ -1,12 +1,13 @@
 zox_increment_system_with_reset(LightNodeDirty, zox_dirty_end);
 zox_increment_system_with_reset(SunlightDirty, zox_dirty_end);
-#include "sunlight.c"
+#include "light_voxel_queue.c"
+#include "sunlight_batch.c"
 #include "sunlight_queue.c"
-#include "propogate.c"
-#include "propogate_queue.c"
+#include "propogate_batch.c"
+#include "light_flood.c"
+#include "dark_flood.c"
 #include "reduce.c"
 #include "trigger.c"
-#include "light_voxel_queue.c"
 #include "builder.c"
 
 // TODO: Light Depth Set System
@@ -17,9 +18,8 @@ void define_systems_lighting3(ecs* world) {
     zoxd_system_increment(SunlightDirty);
 
     zox_system(
-        SunlightSystem,
+        SunlightBatchSystem,
         zoxp_lights_write,
-
         [in] chunks3.VoxelNodeGenerated,
         [in] rendering.RenderDepth,
         [in] chunks3.VoxelNode,
@@ -27,21 +27,17 @@ void define_systems_lighting3(ecs* world) {
         [out] lighting3.LightNodeDepth,
         [out] lighting3.LightNode,
         [out] lighting3.SunlightDirty,
-
         [none] lighting3.SunnyChunk
     );
 
-    zox_system(
-        SunlightQueueSystem,
+    zox_system(LightPropogateBatchSystem,
         zoxp_lights_write,
-
-        [in] rendering.RenderDepth,
-        [in] chunks3.VoxelNode,
+        [in] lighting3.SunlightDirty,
+        [in] lighting3.LightNodeDepth,
         [in] chunks3.ChunkNeighbors,
-        [out] lighting3.SunlightQueue,
-        [out] lighting3.LightNodeDepth,
+        [in] chunks3.VoxelNode,
         [out] lighting3.LightNode,
-        [out] lighting3.SunlightDirty
+        [out] lighting3.LightNodeDirty
     );
 
     zox_system(VoxelLightSystem,
@@ -54,10 +50,46 @@ void define_systems_lighting3(ecs* world) {
         [out] lighting3.PropogateQueue
     );
 
+    zox_system(
+        SunlightQueueSystem,
+        zoxp_lights_write,
+        [in] rendering.RenderDepth,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.ChunkNeighbors,
+        [out] lighting3.SunlightQueue,
+        [out] lighting3.LightNodeDepth,
+        [out] lighting3.LightNode,
+        [out] lighting3.SunlightDirty,
+        [out] lighting3.PropogateQueue
+    );
+
+    zox_system(DarkFloodSystem,
+        zoxp_lights_write + 1,
+        [in] lighting3.LightNodeDepth,
+        [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxelNode,
+        [out] lighting3.LightNode,
+        [out] lighting3.PropogateQueue,
+        [out] lighting3.LightNodeDirty
+    );
+
+    zox_system(LightFloodSystem,
+        zoxp_lights_write + 2,
+        [in] lighting3.LightNodeDepth,
+        [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxelNode,
+        [out] lighting3.LightNode,
+        [out] lighting3.PropogateQueue,
+        [out] lighting3.LightNodeDirty
+    );
+
     zox_system(MeshColorsTriggerSystem,
-        EcsOnUpdate,
+        zoxp_lights_write + 3,
+        [in] lighting3.SunlightQueue,
+        [in] lighting3.PropogateQueue,
         [in] chunks3.ChunkMeshDirty,
         [in] lighting3.SunlightDirty,
+        [in] lighting3.LightNodeDirty,
         [out] rendering.MeshColorsGenerate
     );
 
@@ -69,26 +101,8 @@ void define_systems_lighting3(ecs* world) {
         [out] lighting3.LightNode
     );*/
 
-
-    zox_system(LightPropogateSystem,
-        zoxp_lights_write,
-        [in] lighting3.SunlightDirty,
-        [in] lighting3.LightNodeDepth,
-        [in] chunks3.ChunkNeighbors,
-        [in] chunks3.VoxelNode,
-        [out] lighting3.LightNode
-    );
-    zox_system(PropogateQueueSystem,
-        zoxp_lights_write + 1,
-        [in] lighting3.LightNodeDepth,
-        [in] chunks3.ChunkNeighbors,
-        [in] chunks3.VoxelNode,
-        [out] lighting3.LightNode,
-        [out] lighting3.SunlightDirty,
-        [out] lighting3.PropogateQueue
-    );
-
-    zox_system(Light3BuildSystem, zoxp_voxels_read + 1,
+    zox_system(Light3BuildSystem,
+        zoxp_voxels_read + 1,
         [in] rendering.MeshColorsGenerate,
         [in] chunks3.VoxLink,
         [in] chunks3.ChunkNeighbors,

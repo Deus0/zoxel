@@ -1,7 +1,7 @@
 // Progress ray in a sunlight direction, stops when solid, decreases when liquid
 // TODO: Optimize LightNode System - group same values
 // Triggers: VoxelNodeGenerated
-void SunlightSystem(iter *it) {
+void SunlightBatchSystem(iter *it) {
 
     zox_sys_world();
     zox_sys_begin();
@@ -55,7 +55,8 @@ void SunlightSystem(iter *it) {
                     vnode,
                     depthl->value,
                     pos,
-                    sunlight
+                    sunlight,
+                    0
                 )) {
                     queued_dirty = 1;
                 }
@@ -69,4 +70,4 @@ void SunlightSystem(iter *it) {
         sunlight_dirty->value = zox_dirty_trigger;
 
     }
-} zoxd_system2(SunlightSystem);
+} zoxd_system2(SunlightBatchSystem);

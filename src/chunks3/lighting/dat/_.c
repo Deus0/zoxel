@@ -5,15 +5,18 @@ typedef struct {
 } LightNode;
 
 typedef struct {
+    // 0 light - 1 dark
+    byte type;
+    byte light;
     byte3 pos;
     byte depth;
     byte distance;
-    byte type;  // 0 flood - 1 reverse
-    byte light;
 } PropogateUpdate;
 
 // beams queued
 typedef struct {
-    byte3 pos;
+    // 0 light - 1 dark
+    byte type;
     byte light;
+    byte3 pos;
 } SunlightUpdate;

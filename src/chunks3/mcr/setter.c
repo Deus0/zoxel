@@ -64,7 +64,7 @@ static inline void* set_octree_value(
 
 // Macro wrapper: type-safe setter
 #define create_node_setter(T) \
-static inline T* set_##T##_ex(T* node, byte target_depth, byte3 pos, byte value, byte depth) { \
+static inline T* set_##T(T* node, byte target_depth, byte3 pos, byte value, byte depth) { \
     return (T*)set_octree_value(\
         (void*)node,\
         target_depth,\
@@ -77,5 +77,5 @@ static inline T* set_##T##_ex(T* node, byte target_depth, byte3 pos, byte value,
 // Example usage:
 // create_node_setter(VoxelNode)
 // create_node_setter(LightNode)
-// set_VoxelNode_ex(vroot, 5, (byte3){x,y,z}, 1, 0);
-// set_LightNode_ex(lroot, 5, (byte3){x,y,z}, 255, 0);
+// set_VoxelNode(vroot, 5, (byte3){x,y,z}, 1, 0);
+// set_LightNode(lroot, 5, (byte3){x,y,z}, 255, 0);

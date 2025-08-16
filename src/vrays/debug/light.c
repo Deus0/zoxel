@@ -26,7 +26,7 @@ uint debug_ui_raycasted_light(
         zox_geter_value(data->chunk, RenderDepth, byte, depth);
         zox_geter(data->chunk, LightNode, light_node);
 
-        byte light_last = get_LightNode_value_ex(light_node, depth, data->positionl_last, 0);
+        byte light_last = get_value_LightNode(light_node, depth, data->positionl_last, 0);
         index += snprintf(buffer + index, size - index, "   + Light [%i]\n", light_last);
 
         index += snprintf(buffer + index, size - index, "   + positionl[L] [%ix%ix%i]\n",
@@ -77,7 +77,7 @@ uint debug_ui_raycasted_light(
             index += snprintf(buffer + index, size - index, "   - No Neighbors\n");
         }
 
-        byte light = get_LightNode_value_ex(light_node, depth, data->positionl, 0);
+        byte light = get_value_LightNode(light_node, depth, data->positionl, 0);
         index += snprintf(buffer + index, size - index, "   + inside light [%i]\n", light);
 
     } else {

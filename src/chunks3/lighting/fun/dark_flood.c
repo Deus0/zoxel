@@ -1,9 +1,10 @@
-static inline void flood_light_remove(
+static inline void dark_flood_light(
     const VoxelNode* root_vnode,          // (READ)
     LightNode* root_lnode,                // (WRITE)
     const VoxelNode* n_root_vnodes[6],    // (READ-ONLY)
     const LightNode* n_root_lnodes[6],    // (READ-ONLY)
     PropogateQueue* n_queues[6],          // (WRITE)
+    PropogateQueue* propogate_queue,      // (WRITE)
     byte depth,
     byte3 positionl,
     byte old_light,                       // the light we’re extinguishing
@@ -33,28 +34,44 @@ static inline void flood_light_remove(
 
         if (oob) {
             // --- neighbor chunk ---
-            const VoxelNode* nvox_root   = n_root_vnodes[dir];
-            const LightNode* nlight_root = n_root_lnodes[dir];
-            if (!nlight_root) continue;
-
-            if (nvox_root) {
-                byte v = get_VoxelNode_value_ex(nvox_root, depth, pos, 0);
-                if (v) continue; // solid wall
-            }
-
-            byte ncur = get_LightNode_value_ex(nlight_root, depth, pos, 0);
 
             PropogateQueue* nqueue = n_queues[dir];
-            if (!nqueue) continue;
+            if (!nqueue) {
+                continue;
+            }
+
+            const VoxelNode* n_root_vnode   = n_root_vnodes[dir];
+            const LightNode* n_root_lnode = n_root_lnodes[dir];
+            if (!n_root_lnode) {
+                continue;
+            }
+
+            if (n_root_vnode) {
+                byte voxel = get_value_VoxelNode(n_root_vnode, depth, pos, 0);
+                if (voxel) {
+                    continue; // solid wall
+                }
+            }
+
+            byte ncurrent_light = get_value_LightNode(n_root_lnode, depth, pos, 0);
+            if (ncurrent_light <= min_light) {
+                continue;   // omg this wasn't here
+            }
+
+            // wait we never set light for dark flood on neighbors
 
             // enqueue only
+            byte is_darkness = (ncurrent_light < old_light);
+
+            // zox_log("dark flood at border [%ix%ix%i] dist [%i] d?[%i]", pos.x, pos.y, pos.z, distance, is_darkness);
+
             spin_lock(&nqueue->lock);
             a_PropogateQueue(nqueue, (PropogateUpdate) {
+                .type  = is_darkness ? 1 : 0,
+                .light = is_darkness ? old_light : ncurrent_light,
+                .distance = is_darkness ? distance - 1 : light_propogation_distance,
                 .pos   = pos,
-                .depth = depth,
-                .type  = (ncur < old_light) ? 1 : 0,
-                .light = (ncur < old_light) ? old_light : ncur,
-                .distance = (ncur <= old_light) ? distance - 1 : light_propogation_distance
+                .depth = depth
             });
             spin_unlock(&nqueue->lock);
 
@@ -62,22 +79,30 @@ static inline void flood_light_remove(
         }
 
         // --- in-chunk ---
-        byte v = get_VoxelNode_value_ex(root_vnode, depth, pos, 0);
-        if (v) continue; // solid → stop
+        byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
+        if (voxel) {
+            continue; // solid → stop
+        }
 
-        byte cur = get_LightNode_value_ex(root_lnode, depth, pos, 0);
-        if (cur == 0) continue;
+        byte current_light = get_value_LightNode(root_lnode, depth, pos, 0);
+        if (current_light <= min_light) {
+            continue;   // omg this wasn't here
+        }
 
-        if (cur < old_light) {
+        if (current_light < old_light) {
+
+            // zox_log("   - dark flooded at [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, old_light, distance);
+
             // extinguish here and continue removing
-            set_LightNode_ex(root_lnode, depth, pos, min_light, 0);
+            set_LightNode(root_lnode, depth, pos, min_light, 0);
 
-            flood_light_remove(
+            dark_flood_light(
                 root_vnode,
                 root_lnode,
                 n_root_vnodes,
                 n_root_lnodes,
                 n_queues,
+                propogate_queue,
                 depth,
                 pos,
                 old_light,
@@ -87,8 +112,26 @@ static inline void flood_light_remove(
             );
 
         } else {
+
+            // byte new_light = (current_light > air_decay) ? (byte) (current_light - air_decay) : min_light;
+
+            if (propogate_queue) {
+
+                zox_log("[dark] -> Adding to Light Flooding [%ix%ix%i] [%i >= %i]", pos.x, pos.y, pos.z, current_light, old_light);
+
+                spin_lock(&propogate_queue->lock);
+                a_PropogateQueue(propogate_queue, (PropogateUpdate) {
+                    .type  = 0,
+                    .light = current_light,
+                    .distance = light_propogation_distance,
+                    .pos   = pos,
+                    .depth = depth
+                });
+                spin_unlock(&propogate_queue->lock);
+            }
+
             // survivor → re-flood from this brighter cell
-            flood_light(
+            /*flood_light(
                 root_vnode,
                 root_lnode,
                 n_root_vnodes,
@@ -96,11 +139,11 @@ static inline void flood_light_remove(
                 n_queues,
                 depth,
                 pos,
-                cur,
+                current_light,
                 light_propogation_distance,
                 min_light,
                 air_decay
-            );
+            );*/
         }
     }
 }

@@ -12,21 +12,39 @@ void SunlightQueueSystem(ecs_iter_t *it) {
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(SunlightDirty);
+    zox_sys_out(PropogateQueue);
 
     for (int i = 0; i < it->count; i++) {
 
         zox_sys_i(RenderDepth, depthr);
-        zox_sys_i(VoxelNode, vnode);
+        zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
 
         zox_sys_o(SunlightQueue, queue);
-        zox_sys_o(LightNode, lnode);
+        zox_sys_o(LightNode, root_lnode);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(SunlightDirty, sunlight_dirty);
+        zox_sys_o(PropogateQueue, propogation_queue);
 
         if (!queue->count) {
             continue;
         }
+
+        const VoxelNode* nnodesv[6];
+        fetch_neightbor_voxel_nodes(
+            world,
+            neighbors,
+            nnodesv);
+        const LightNode* nnodesl[6];
+        fetch_neightbor_light_nodes(
+            world,
+            neighbors,
+            nnodesl);
+        PropogateQueue* nqueues[6];
+        fetch_neightbor_propogation_queues(
+            world,
+            neighbors,
+            nqueues);
 
         // we skip if already at right depth
         if (depthl->value < depthr->value) {
@@ -39,7 +57,7 @@ void SunlightQueueSystem(ecs_iter_t *it) {
         // For now we skip unless bottom chunk - due to loading timing
         if (!zox_valid(chunkd)) continue;
 
-        SunlightQueue* queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, SunlightQueue) : NULL;
+        SunlightQueue* sun_queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, SunlightQueue) : NULL;
 
         byte length = powers_of_two[depthl->value];
 
@@ -49,21 +67,47 @@ void SunlightQueueSystem(ecs_iter_t *it) {
             byte3 pos = update.pos;
 
             if (pos.x >= length || pos.z >= length || pos.y > length) {
-                zox_log_error("[r_SunlightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
+               //  zox_log_error("[r_SunlightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
                 continue;
             }
 
+            // TODO: Add type for light/dark beams
             // TODO: we should probably make this byte3, with y, since we are gonna be used that now
             // zox_log("Processed SunBeam [%ix%i]", pos.x, pos.y);
-            if (sunbeam(
-                queued,
-                lnode,
-                vnode,
-                depthl->value,
-                update.pos,
-                update.light
-            )) {
-                queued_dirty = 1;
+            if (update.type == 0 || update.type == 2) {
+
+                if (sunbeam(
+                    sun_queued,
+                    root_lnode,
+                    root_vnode,
+                    depthl->value,
+                    update.pos,
+                    update.light,
+                    update.type
+                )) {
+                    queued_dirty = 1;
+                }
+
+            } else {
+
+                // zox_log("[%s] Dark Beam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, sunlight);
+
+                if (dark_sunbeam(
+                    sun_queued,
+                    root_vnode,
+                    root_lnode,
+                    nnodesv,
+                    nnodesl,
+                    nqueues,
+                    propogation_queue,
+                    depthl->value,
+                    update.pos,
+                    sunlight,
+                    darklight,
+                    light_air_decay
+                )) {
+                    queued_dirty = 1;
+                }
             }
         }
 

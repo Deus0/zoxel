@@ -6,7 +6,8 @@ byte sunbeam(
     const VoxelNode* vnode,
     const byte depth,
     byte3 pos,
-    byte beamlight
+    byte beamlight,
+    byte type
 ) {
     byte length = powers_of_two[depth];
     if (pos.y > length) {
@@ -22,7 +23,7 @@ byte sunbeam(
         // check if not hit
         if (!hit_solid) {
 
-            const VoxelNode* check_node = get_VoxelNode_ex(
+            const VoxelNode* check_node = get_VoxelNode(
                 vnode,
                 depth,
                 pos,
@@ -31,6 +32,9 @@ byte sunbeam(
             if (check_node) {
                 byte voxel = check_node->value;
                 if (voxel) {
+                    if (type == 2) {
+                        break;
+                    }
                     hit_solid = 1;
                     light = darklight;
                     // zox_log("+ Light Hit Block at [%ix%ix%i]",  pos.x, pos.y, pos.z);
@@ -43,16 +47,20 @@ byte sunbeam(
 
         // set light in LightNode
         // zox_log("+ Light [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
-        set_LightNode_ex(
+        set_LightNode(
             lnode,
             depth,
             pos,
             light,
             0);
     }
-    if (queued) { // !hit_solid &&
+
+    // only need check for non batch
+    //  NOTE: Batch Sunlight will set darklight for all belows
+    if (queued && ((type == 2 && !hit_solid) || type == 0)) {
         // for now we assume chunk below has same depth
         a_SunlightQueue(queued, (SunlightUpdate) {
+            .type = type,
             .pos = (byte3) {
                 pos.x,
                 length,
@@ -62,5 +70,6 @@ byte sunbeam(
         });
         return 1;
     }
+
     return 0;
 }

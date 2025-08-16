@@ -48,7 +48,7 @@ static inline void flood_light(
 
             // solid → no propagation
             if (nvox_root) {
-                byte v = get_VoxelNode_value_ex(nvox_root, depth, pos, 0);
+                byte v = get_value_VoxelNode(nvox_root, depth, pos, 0);
                 if (v) {
                     continue; // solid: hard stop
                 }
@@ -61,7 +61,7 @@ static inline void flood_light(
             }
 
             // only queue if it improves neighbor
-            byte ncur = nlight_root ? get_LightNode_value_ex(nlight_root, depth, pos, 0) : 0;
+            byte ncur = nlight_root ? get_value_LightNode(nlight_root, depth, pos, 0) : 0;
             if (new_light <= ncur) {
                 continue;
             }
@@ -85,19 +85,20 @@ static inline void flood_light(
         }
 
         // --- In-chunk: READ voxel, WRITE light in our own chunk only. ---
-        byte v = get_VoxelNode_value_ex(root_vnode, depth, pos, 0);
+        byte v = get_value_VoxelNode(root_vnode, depth, pos, 0);
         if (v) {
             continue;
         }
 
         byte new_light = (light > air_decay) ? (byte) (light - air_decay) : min_light;
 
-        byte cur = get_LightNode_value_ex(root_lnode, depth, pos, 0);
+        byte cur = get_value_LightNode(root_lnode, depth, pos, 0);
         if (new_light <= cur) {
             continue;
         }
 
-        set_LightNode_ex(root_lnode, depth, pos, new_light, 0); // write ONLY our chunk
+        set_LightNode(root_lnode, depth, pos, new_light, 0);
+
         flood_light(
             root_vnode,
             root_lnode,

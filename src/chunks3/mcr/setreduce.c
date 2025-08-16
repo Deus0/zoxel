@@ -78,4 +78,4 @@ static inline T* setreduce_##T##_ex(T* node, byte target_depth, byte3 pos, byte 
 
 // Example usage:
 // create_node_setreduce(LightNode)
-// setreduce_LightNode_ex(lroot, 5, (byte3){x,y,z}, 0, 0);
+// setreduce_LightNode(lroot, 5, (byte3){x,y,z}, 0, 0);

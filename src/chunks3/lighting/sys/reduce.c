@@ -11,7 +11,7 @@ void LightNodeReduceSystem(iter *it) {
         zox_sys_o(LightNode, lnode);
 
         if (dirty->value == zox_dirty_active) {
-            reduce_LightNode_ex(lnode, depthl->value, 0);
+            reduce_LightNode(lnode, depthl->value, 0);
         }
     }
 } zoxd_system2(LightNodeReduceSystem);

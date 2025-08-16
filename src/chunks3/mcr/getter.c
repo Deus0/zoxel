@@ -39,16 +39,16 @@ static inline byte read_octree_value(const void* node, byte target_depth, byte3 
 
 // Macro wrapper: generates type-safe getters
 #define create_node_getter(T)                                             \
-static inline const T* get_##T##_ex(const T* node, byte target_depth, byte3 pos, byte depth) { \
+static inline const T* get_##T(const T* node, byte target_depth, byte3 pos, byte depth) { \
     return (T*)find_octree_node((const void*)node, target_depth, pos, depth, sizeof(T)); \
 }                                                                         \
-static inline byte get_##T##_value_ex(const T* node, byte target_depth, byte3 pos, byte depth) { \
+static inline byte get_value_##T(const T* node, byte target_depth, byte3 pos, byte depth) { \
     return read_octree_value((void*)node, target_depth, pos, depth, sizeof(T), offsetof(T, value)); \
 }
 
 // Example usage:
 // create_node_getter(VoxelNode)
 // create_node_getter(LightNode)
-// VoxelNode* n = get_VoxelNode_ex(root, target_depth, (byte3){x,y,z}, 0);
-// byte v = get_VoxelNode_value_ex(root, target_depth, (byte3){x,y,z}, 0);
+// VoxelNode* n = get_VoxelNode(root, target_depth, (byte3){x,y,z}, 0);
+// byte v = get_VoxelNode_value(root, target_depth, (byte3){x,y,z}, 0);
 

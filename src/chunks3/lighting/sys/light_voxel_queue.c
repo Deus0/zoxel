@@ -49,9 +49,11 @@ void VoxelLightSystem(ecs_iter_t *it) {
                 const byte light_above = above ? above->value : 0;
 
                 if (light_above == sunlight) {
+
                     // zox_log("Removed block with sun above");
                     // if y, we do y + 1
                     a_SunlightQueue(sun_queue, (SunlightUpdate) {
+                        .type = 2,
                         .pos = (byte3) {
                             update.positionl.x,
                             update.positionl.y + 1,
@@ -59,6 +61,7 @@ void VoxelLightSystem(ecs_iter_t *it) {
                         },
                         .light = light_above
                     });
+
                 } else {
 
                     byte max_nlight = light_above;
@@ -106,38 +109,45 @@ void VoxelLightSystem(ecs_iter_t *it) {
                 const byte light = above ? above->value : 0;
 
                 if (light == sunlight) {
-                    // zox_log("Removed block with sun above");
+
                     // if y, we do y + 1
+                    // zox_log("[%s] Queueing a Dark Sunbeam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]),  update.positionl.x, update.positionl.y, update.positionl.z, darklight);
+
                     a_SunlightQueue(sun_queue, (SunlightUpdate) {
+                        .type = 1,
                         .pos = (byte3) {
                             update.positionl.x,
                             update.positionl.y,
                             update.positionl.z
                         },
-                        .light = darklight
+                        .light = sunlight
                     });
-                }
 
-                // Reverse Flood
-                const LightNode* removed_lnode = get_LightNode_ex(
-                    root_lnode,
-                    depth->value,
-                    update.positionl,
-                    0
-                );
-                byte removed_light = removed_lnode ? removed_lnode->value : 0;
-                if (removed_light > darklight) {
-                    // removed_light -= light_air_decay;
-                    // zox_log("Reverse Light Flood +Queue [%i]", removed_light);
-                    a_PropogateQueue(
-                        propogation_queue,
-                        (PropogateUpdate) {
-                            .type = 1,
-                            .pos = update.positionl,
-                            .depth = depth->value,
-                            .light = removed_light,
-                            .distance = darklight_propogation_distance
-                    });
+                } else {
+
+                    // Dark Flood
+                    const LightNode* removed_lnode = get_LightNode(
+                        root_lnode,
+                        depth->value,
+                        update.positionl,
+                        0
+                    );
+                    byte removed_light = removed_lnode ? removed_lnode->value : 0;
+
+                    if (removed_light > darklight) {
+
+                        zox_log("[%s] Queueing a Dark Flood [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]),  update.positionl.x, update.positionl.y, update.positionl.z, removed_light);
+
+                        a_PropogateQueue(
+                            propogation_queue,
+                            (PropogateUpdate) {
+                                .type = 1,
+                                .pos = update.positionl,
+                                .depth = depth->value,
+                                .light = removed_light,
+                                .distance = darklight_propogation_distance
+                        });
+                    }
                 }
             }
         }

@@ -109,7 +109,7 @@ void clone_depth_##T(\
 } \
 \
 \
-const T* get_##T(\
+const T* gett_##T(\
     const T* node,\
     int3 position,\
     byte depth \
@@ -135,7 +135,7 @@ const T* get_##T(\
         position.z % dividor\
     };\
     T* kids = get_children_##T(node); \
-    return get_##T( \
+    return gett_##T( \
         &kids[i], \
         child_position, \
         depth); \
@@ -158,13 +158,13 @@ const T* get_adjacent_##T(\
     if (position.x >= 0 && position.x < b && \
         position.y >= 0 && position.y < b && \
         position.z >= 0 && position.z < b) { \
-        return get_##T(node, position, depth);\
+        return gett_##T(node, position, depth);\
     } else {\
         /* special case for adjacent ptr, flips position and crosses to neighbor chunk */\
         *chunk_index = dir + 1;\
         const T* n = neighbors[dir]; \
         position = reverse_position(position, dir, b); \
-        return get_##T(n, position, depth); \
+        return gett_##T(n, position, depth); \
     }\
 }\
 \
@@ -244,7 +244,7 @@ const T* get_adjacentn_##T(\
             return NULL; \
         } \
     }\
-    return get_##T( \
+    return gett_##T( \
         node, \
         position, \
         depth \

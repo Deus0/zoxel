@@ -1,5 +1,6 @@
 #include "prefab.c"
 #include "fetch.c"
-#include "sunbeam.c"
-#include "propogate.c"
+#include "light_beam.c"
+#include "light_flood.c"
 #include "dark_flood.c"
+#include "dark_beam.c"
