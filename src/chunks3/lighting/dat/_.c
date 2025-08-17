@@ -20,3 +20,13 @@ typedef struct {
     byte light;
     byte3 pos;
 } SunlightUpdate;
+
+
+typedef struct {
+    // 0 Propogate - 1 Beam
+    byte type;
+    byte3 pos;
+    byte depth;
+    byte light;
+    byte distance;
+} DarkUpdate;

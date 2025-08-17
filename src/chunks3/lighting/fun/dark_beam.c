@@ -1,11 +1,16 @@
 byte dark_sunbeam(
-    SunlightQueue* queued,                // 👈 like sunbeam, for chunk below
+    DarkQueue* queued,                // 👈 like sunbeam, for chunk below
     const VoxelNode* root_vnode,          // READ
     LightNode* root_lnode,                // WRITE
     const VoxelNode* n_root_vnodes[6],    // READ
     const LightNode* n_root_lnodes[6],    // READ
-    PropogateQueue* n_queues[6],          // WRITE
-    PropogateQueue* propogation_queue,
+
+    PropogateQueue* n_light_queues[6],
+    PropogateQueue* light_queue,
+
+    DarkQueue* n_dark_queues[6],
+    DarkQueue* dark_queue,
+
     byte depth,
     byte3 pos,
     byte sunlight,                       // sunlight level we’re extinguishing (usually 255)
@@ -40,7 +45,11 @@ byte dark_sunbeam(
 
         // zox_log("dark beam setting at [%ix%ix%i] l [%i]", pos.x, pos.y, pos.z, min_light);
         // for sun, we extinquish and dark flood it
+
+        zox_log_lighting_dark("     - Light Banished at [%ix%ix%i] l[%i]", pos.x, pos.y, pos.z, current_light);
+
         set_LightNode(root_lnode, depth, pos, min_light, 0);
+
         if (y == 0) {
             flood_end = pos.y;
         }
@@ -52,17 +61,22 @@ byte dark_sunbeam(
     // QUESTION: Dark DarkFlood use neighbor.. Probably?!?!
     //      can we delay these until its gone? test sunlight between chunks, sunlight comes through chunk + check it dissapears
 
-    // zox_log("dark beam -> dark flooding: [%i] to [%i]", flood_start, flood_end);
+    zox_log_lighting_dark(" * dark beam y: [%i] to [%i]", flood_start, (flood_end));
 
     for (byte y = flood_start; y <= flood_end; y++) {
         pos.y = y;
+
+        zox_log_lighting_dark(" - Dark Beam Spreads [%ix%ix%i]", pos.x,  pos.y, pos.z);
+
         dark_flood_light(
             root_vnode,
             root_lnode,
             n_root_vnodes,
             n_root_lnodes,
-            n_queues,
-            propogation_queue,
+            n_light_queues,
+            light_queue,
+            n_dark_queues,
+            dark_queue,
             depth,
             pos,
             sunlight - air_decay + 1,
@@ -74,15 +88,21 @@ byte dark_sunbeam(
 
     // pass downward into chunk below since we survived until the end
     if (!beam_stopped && queued) {
+
+        zox_log_lighting_dark(" - Dark Beam Continues [%ix%ix%i]", pos.x, length, pos.z);
+
         spin_lock(&queued->lock);
-        a_SunlightQueue(queued, (SunlightUpdate) {
-            .type = 1,
-            .pos = (byte3) {
-                pos.x,
-                length,   // y = bottom edge
-                pos.z
-            },
-            .light = sunlight
+        a_DarkQueue(
+            queued,
+            (DarkUpdate) {
+                .type = 1,
+                .pos = (byte3) {
+                    pos.x,
+                    length,   // y = bottom edge
+                    pos.z
+                },
+                .depth = depth,
+                .light = sunlight
         });
         spin_unlock(&queued->lock);
         return 1;

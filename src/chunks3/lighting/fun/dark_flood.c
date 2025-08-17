@@ -3,8 +3,10 @@ static inline void dark_flood_light(
     LightNode* root_lnode,                // (WRITE)
     const VoxelNode* n_root_vnodes[6],    // (READ-ONLY)
     const LightNode* n_root_lnodes[6],    // (READ-ONLY)
-    PropogateQueue* n_queues[6],          // (WRITE)
-    PropogateQueue* propogate_queue,      // (WRITE)
+    PropogateQueue* n_light_queues[6],
+    PropogateQueue* light_queue,
+    DarkQueue* n_dark_queues[6],
+    DarkQueue* dark_queue,
     byte depth,
     byte3 positionl,
     byte old_light,                       // the light we’re extinguishing
@@ -34,12 +36,6 @@ static inline void dark_flood_light(
 
         if (oob) {
             // --- neighbor chunk ---
-
-            PropogateQueue* nqueue = n_queues[dir];
-            if (!nqueue) {
-                continue;
-            }
-
             const VoxelNode* n_root_vnode   = n_root_vnodes[dir];
             const LightNode* n_root_lnode = n_root_lnodes[dir];
             if (!n_root_lnode) {
@@ -65,15 +61,37 @@ static inline void dark_flood_light(
 
             // zox_log("dark flood at border [%ix%ix%i] dist [%i] d?[%i]", pos.x, pos.y, pos.z, distance, is_darkness);
 
-            spin_lock(&nqueue->lock);
-            a_PropogateQueue(nqueue, (PropogateUpdate) {
-                .type  = is_darkness ? 1 : 0,
-                .light = is_darkness ? old_light : ncurrent_light,
-                .distance = is_darkness ? distance - 1 : light_propogation_distance,
-                .pos   = pos,
-                .depth = depth
-            });
-            spin_unlock(&nqueue->lock);
+            if (is_darkness) {
+
+                DarkQueue* nqueue = n_dark_queues[dir];
+                if (nqueue) {
+                    spin_lock(&nqueue->lock);
+                    a_DarkQueue(nqueue, (DarkUpdate) {
+                        .type  = 0,
+                        .light = old_light,
+                        .distance = distance - 1,
+                        .pos   = pos,
+                        .depth = depth
+                    });
+                    spin_unlock(&nqueue->lock);
+                }
+
+            } else {
+
+                PropogateQueue* nqueue = n_light_queues[dir];
+                if (nqueue) {
+                    spin_lock(&nqueue->lock);
+                    a_PropogateQueue(nqueue, (PropogateUpdate) {
+                        .type  = 0,
+                        .light = ncurrent_light,
+                        .distance = light_propogation_distance,
+                        .pos   = pos,
+                        .depth = depth
+                    });
+                    spin_unlock(&nqueue->lock);
+                }
+
+            }
 
             continue;
         }
@@ -91,7 +109,7 @@ static inline void dark_flood_light(
 
         if (current_light < old_light) {
 
-            // zox_log("   - dark flooded at [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, old_light, distance);
+            zox_log_lighting_dark("     - Light Banished at [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, old_light, distance);
 
             // extinguish here and continue removing
             set_LightNode(root_lnode, depth, pos, min_light, 0);
@@ -101,8 +119,10 @@ static inline void dark_flood_light(
                 root_lnode,
                 n_root_vnodes,
                 n_root_lnodes,
-                n_queues,
-                propogate_queue,
+                n_light_queues,
+                light_queue,
+                n_dark_queues,
+                dark_queue,
                 depth,
                 pos,
                 old_light,
@@ -113,37 +133,21 @@ static inline void dark_flood_light(
 
         } else {
 
-            // byte new_light = (current_light > air_decay) ? (byte) (current_light - air_decay) : min_light;
+            if (light_queue) {
+                byte decayed_light = (current_light > light_air_decay) ? (byte) (current_light - light_air_decay) : darklight;
 
-            if (propogate_queue) {
+                zox_log_lighting_dark("     + Dark Flood Light Source [%ix%ix%i] new [%i] old [%i] decayed [%i]", pos.x, pos.y, pos.z, current_light, old_light, decayed_light);
 
-                zox_log("[dark] -> Adding to Light Flooding [%ix%ix%i] [%i >= %i]", pos.x, pos.y, pos.z, current_light, old_light);
-
-                spin_lock(&propogate_queue->lock);
-                a_PropogateQueue(propogate_queue, (PropogateUpdate) {
+                spin_lock(&light_queue->lock);
+                a_PropogateQueue(light_queue, (PropogateUpdate) {
                     .type  = 0,
-                    .light = current_light,
+                    .light = decayed_light,
                     .distance = light_propogation_distance,
                     .pos   = pos,
                     .depth = depth
                 });
-                spin_unlock(&propogate_queue->lock);
+                spin_unlock(&light_queue->lock);
             }
-
-            // survivor → re-flood from this brighter cell
-            /*flood_light(
-                root_vnode,
-                root_lnode,
-                n_root_vnodes,
-                n_root_lnodes,
-                n_queues,
-                depth,
-                pos,
-                current_light,
-                light_propogation_distance,
-                min_light,
-                air_decay
-            );*/
         }
     }
 }

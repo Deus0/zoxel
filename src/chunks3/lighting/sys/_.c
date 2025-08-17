@@ -1,11 +1,11 @@
 zox_increment_system_with_reset(LightNodeDirty, zox_dirty_end);
 zox_increment_system_with_reset(SunlightDirty, zox_dirty_end);
-#include "light_voxel_queue.c"
+#include "editing.c"
 #include "sunlight_batch.c"
 #include "sunlight_queue.c"
 #include "propogate_batch.c"
 #include "light_flood.c"
-#include "dark_flood.c"
+#include "darklight.c"
 #include "reduce.c"
 #include "trigger.c"
 #include "builder.c"
@@ -47,7 +47,8 @@ void define_systems_lighting3(ecs* world) {
         [in] lighting3.LightNode,
         [in] chunks3.ChunkNeighbors,
         [out] lighting3.SunlightQueue,
-        [out] lighting3.PropogateQueue
+        [out] lighting3.PropogateQueue,
+        [out] lighting3.DarkQueue
     );
 
     zox_system(
@@ -63,12 +64,13 @@ void define_systems_lighting3(ecs* world) {
         [out] lighting3.PropogateQueue
     );
 
-    zox_system(DarkFloodSystem,
+    zox_system(DarkLightSystem,
         zoxp_lights_write + 1,
         [in] lighting3.LightNodeDepth,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [out] lighting3.LightNode,
+        [out] lighting3.DarkQueue,
         [out] lighting3.PropogateQueue,
         [out] lighting3.LightNodeDirty
     );
@@ -78,6 +80,7 @@ void define_systems_lighting3(ecs* world) {
         [in] lighting3.LightNodeDepth,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
+        [in] lighting3.DarkQueue,
         [out] lighting3.LightNode,
         [out] lighting3.PropogateQueue,
         [out] lighting3.LightNodeDirty

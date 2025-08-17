@@ -8,20 +8,14 @@ zoxc_double(TimerRate);
 zoxc_byte(TimerState);
 #include "macros/_.c"
 #include "util/_.c"
-#include "systems/destroy_in_time_system.c"
-#include "systems/timer_system.c"
+#include "systems/_.c"
 
 zox_begin_module(Timing)
     zox_define_component_double(DestroyInTime);
     zox_define_component_double(TimerTime);
     zox_define_component_double(TimerRate);
     zoxd_byte(TimerState);
-    zox_system(TimerSystem, EcsOnUpdate,
-        [in] TimerRate,
-        [out] TimerState,
-        [out] TimerTime);
-    zox_system_1(DestroyInTimeSystem, zoxp_destroy,
-        [out] timing.DestroyInTime);
+    define_systems_timing(world);
     initialize_time();
     add_to_post_update_loop(iterate_time);
     add_to_post_update_loop(iterate_time_system);

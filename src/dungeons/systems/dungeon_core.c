@@ -9,16 +9,20 @@ typedef struct {
 } TerrainPlacePosition;
 
 void DungeonBlockSystem(ecs_iter_t *it) {
+
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(TimerState)
     zox_sys_in(ChunkLink)
     zox_sys_in(DungeonWallType)
+
     for (int i = 0; i < it->count; i++) {
+
         zox_sys_e()
         zox_sys_i(ChunkLink, chunkLink)
         zox_sys_i(TimerState, timerState)
         zox_sys_i(DungeonWallType, place)
+
         if (timerState->value == 0) {
             continue;
         }
@@ -125,6 +129,7 @@ void DungeonBlockSystem(ecs_iter_t *it) {
                 }
             }
         }
+
         if (!find) {
             continue;
         }

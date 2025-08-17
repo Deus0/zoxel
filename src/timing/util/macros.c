@@ -54,23 +54,25 @@ double get_time_seconds() {
 
 
 #define end_timing_cutoff(system_name, cuttoff)\
-if (did_do) {\
-    long double time_taken = clock_as_double - time_start;\
-    if (time_taken >= 1.0) {\
-        zox_log("%s [%Lgs] - [Seconds]\n", system_name, time_taken);\
-    } else {\
-        time_taken *= 1000.0;\
-        if (time_taken >= cuttoff) {\
-            zox_log("%s [%Lgms]\n", system_name, time_taken);\
+    if (did_do) {\
+        long double time_taken = clock_as_double - time_start;\
+        if (time_taken >= 1.0) {\
+            zox_log("%s [%Lgs] - [Seconds]\n", system_name, time_taken);\
+        } else {\
+            time_taken *= 1000.0;\
+            if (time_taken >= cuttoff) {\
+                zox_log("%s [%Lgms]\n", system_name, time_taken);\
+            }\
         }\
-    }\
-}
+    }
 
-#define time_cycle_begin() double cycle_start = clock_as_double;
+#define time_cycle_begin() \
+    double cycle_start = clock_as_double;
+
 #define time_cycle_end(system_name)\
-double cycle_delta = clock_as_double - cycle_start;\
-if (cycle_delta >= 1.0) {\
-    zox_log("%s [%fs]\n", system_name, cycle_delta);\
-} else {\
-    zox_log("%s [%fms]\n", system_name, 1000.0 * cycle_delta);\
-}
+    double cycle_delta = clock_as_double - cycle_start;\
+    if (cycle_delta >= 1.0) {\
+        zox_log("%s [%fs]\n", system_name, cycle_delta);\
+    } else {\
+        zox_log("%s [%fms]\n", system_name, 1000.0 * cycle_delta);\
+    }

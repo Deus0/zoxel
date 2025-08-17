@@ -1,9 +1,12 @@
+// NOTE: These 'distances' can be very random, since propogation happens in many ways... so theyre more like algorithm limiters... - can remove if the rules are good to not break
 
 byte sunlight = 255;        // full sunlight
 byte zox_debug_lights = 0;
-byte darklight = 16;        // min light
-byte light_air_decay = 24;
+byte darklight = 32;        // min light
+byte light_air_decay = 32;
+byte light_propogation_distance = 8;
+byte darklight_propogation_distance = 64;  // just keep going?
 
-// NOTE: These 'distances' can be very random, since propogation happens in many ways... so theyre more like algorithm limiters... - can remove if the rules are good to not break
-byte light_propogation_distance = 12;
-byte darklight_propogation_distance = 254;  // just keep going?
+byte zox_is_log_lighting = 1;
+byte zox_is_log_lighting_light = 1;
+byte zox_is_log_lighting_dark = 1;

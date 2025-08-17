@@ -25,7 +25,7 @@ static inline void flood_light(
         return;
     }
 
-    const byte SIZE = (byte)((1u << depth) - 1u);
+    const byte length = (byte)((1u << depth) - 1u);
 
     for (byte dir = 0; dir < 6; dir++) {
         byte3 pos = positionl;
@@ -33,12 +33,12 @@ static inline void flood_light(
 
         // move with wrap into neighbor-local coords
         switch (dir) {
-            case 0: if (pos.x > 0) pos.x--; else { pos.x = SIZE; oob = 1; } break;
-            case 1: if (pos.x < SIZE) pos.x++; else { pos.x = 0;    oob = 1; } break;
-            case 2: if (pos.y > 0) pos.y--; else { pos.y = SIZE; oob = 1; } break;
-            case 3: if (pos.y < SIZE) pos.y++; else { pos.y = 0;    oob = 1; } break;
-            case 4: if (pos.z > 0) pos.z--; else { pos.z = SIZE; oob = 1; } break;
-            case 5: if (pos.z < SIZE) pos.z++; else { pos.z = 0;    oob = 1; } break;
+            case 0: if (pos.x > 0) pos.x--; else { pos.x = length; oob = 1; } break;
+            case 1: if (pos.x < length) pos.x++; else { pos.x = 0;    oob = 1; } break;
+            case 2: if (pos.y > 0) pos.y--; else { pos.y = length; oob = 1; } break;
+            case 3: if (pos.y < length) pos.y++; else { pos.y = 0;    oob = 1; } break;
+            case 4: if (pos.z > 0) pos.z--; else { pos.z = length; oob = 1; } break;
+            case 5: if (pos.z < length) pos.z++; else { pos.z = 0;    oob = 1; } break;
         }
 
         if (oob) {
@@ -48,21 +48,21 @@ static inline void flood_light(
 
             // solid → no propagation
             if (nvox_root) {
-                byte v = get_value_VoxelNode(nvox_root, depth, pos, 0);
-                if (v) {
+                byte nvoxel = get_value_VoxelNode(nvox_root, depth, pos, 0);
+                if (nvoxel) {
                     continue; // solid: hard stop
                 }
             }
 
             // air decay
-            byte new_light = (light > air_decay) ? (byte)(light - air_decay) : 0;
-            if (new_light == 0) {
+            byte decayed_light = (light > air_decay) ? (byte)(light - air_decay) : 0;
+            if (decayed_light <= min_light) {
                 continue;
             }
 
             // only queue if it improves neighbor
-            byte ncur = nlight_root ? get_value_LightNode(nlight_root, depth, pos, 0) : 0;
-            if (new_light <= ncur) {
+            byte current_light = nlight_root ? get_value_LightNode(nlight_root, depth, pos, 0) : 0;
+            if (decayed_light <= current_light) {
                 continue;
             }
 
@@ -73,7 +73,7 @@ static inline void flood_light(
                 a_PropogateQueue(nqueue,
                     (PropogateUpdate) {
                         .type = 0,
-                        .light = new_light,
+                        .light = decayed_light,
                         .pos = pos,
                         .depth = depth,
                         .distance = distance - 1
@@ -85,19 +85,21 @@ static inline void flood_light(
         }
 
         // --- In-chunk: READ voxel, WRITE light in our own chunk only. ---
-        byte v = get_value_VoxelNode(root_vnode, depth, pos, 0);
-        if (v) {
+        byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
+        if (voxel) {
             continue;
         }
 
-        byte new_light = (light > air_decay) ? (byte) (light - air_decay) : min_light;
+        byte decayed_light = (light > air_decay) ? (byte) (light - air_decay) : min_light;
 
-        byte cur = get_value_LightNode(root_lnode, depth, pos, 0);
-        if (new_light <= cur) {
+        byte current_light = get_value_LightNode(root_lnode, depth, pos, 0);
+        if (decayed_light <= current_light) {
             continue;
         }
 
-        set_LightNode(root_lnode, depth, pos, new_light, 0);
+        zox_log_lighting_light("     + Light Flooded [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, decayed_light, distance);
+
+        set_LightNode(root_lnode, depth, pos, decayed_light, 0);
 
         flood_light(
             root_vnode,
@@ -107,7 +109,7 @@ static inline void flood_light(
             n_queues,
             depth,
             pos,
-            new_light,
+            decayed_light,
             distance - 1,
             min_light,
             air_decay

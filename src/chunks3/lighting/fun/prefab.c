@@ -11,5 +11,6 @@ void prefab_add_lights3(
     zox_prefab_set(e, SunlightDirty, { zox_dirty_none });
 
     zox_prefab_set(e, PropogateQueue, { 0 });
+    zox_prefab_set(e, DarkQueue, { 0 });
 
 }

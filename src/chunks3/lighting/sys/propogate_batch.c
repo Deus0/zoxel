@@ -1,5 +1,7 @@
 void LightPropogateBatchSystem(iter *it) {
 
+    // TODO: Make this do inside sunbeam instead, no need here unless voxel a light source
+
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SunlightDirty);
@@ -47,6 +49,9 @@ void LightPropogateBatchSystem(iter *it) {
 
                     byte3 positionl = (byte3) { x, y, z };
 
+                    // flood with air
+                    // TODO: this should be checked in flood light function - flood_light_start - checks voxel before spreading?
+
                     const VoxelNode* check_node = get_VoxelNode(
                         root_vnode,
                         depthl->value,
@@ -55,34 +60,34 @@ void LightPropogateBatchSystem(iter *it) {
                     );
                     byte check_voxel = check_node ? check_node->value : 0;
 
-                    // flood with air
-                    // TODO: this should be checked in flood light function
-                    if (!check_voxel) {
-
-                        const LightNode* lnode = get_LightNode(
-                            root_lnode,
-                            depthl->value,
-                            positionl,
-                            0
-                        );
-                        byte check_light = lnode ? lnode->value : darklight;
-                        if (check_light == sunlight) {
-                            flood_light(
-                                root_vnode,
-                                root_lnode,
-                                nnodesv,
-                                nnodesl,
-                                nqueues,
-                                depthl->value,
-                                positionl,
-                                check_light,
-                                light_propogation_distance,
-                                darklight,
-                                light_air_decay
-                            );
-                            // if side voxel, add to other chunks queue
-                        }
+                    if (check_voxel) {
+                        continue;
                     }
+
+                    const LightNode* lnode = get_LightNode(
+                        root_lnode,
+                        depthl->value,
+                        positionl,
+                        0
+                    );
+                    byte check_light = lnode ? lnode->value : darklight;
+                    if (check_light != sunlight) {
+                        continue;
+                    }
+                    flood_light(
+                        root_vnode,
+                        root_lnode,
+                        nnodesv,
+                        nnodesl,
+                        nqueues,
+                        depthl->value,
+                        positionl,
+                        check_light,
+                        light_propogation_distance,
+                        darklight,
+                        light_air_decay
+                    );
+
                 }
             }
         }

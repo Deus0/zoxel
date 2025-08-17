@@ -15,6 +15,7 @@ zoxc_byte(SunlightDirty);
 zoxc_queue(SunlightQueue, SunlightUpdate, 1)
 
 zoxc_queue(PropogateQueue, PropogateUpdate, 1)
+zoxc_queue(DarkQueue, DarkUpdate, 1)
 
 void define_components_lighting3(ecs *world) {
     zoxd_tag(SunnyChunk);
@@ -24,4 +25,5 @@ void define_components_lighting3(ecs *world) {
     zoxd_byte(SunlightDirty);
     zoxd_queue(SunlightQueue);
     zoxd_queue(PropogateQueue);
+    zoxd_queue(DarkQueue);
 }

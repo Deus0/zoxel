@@ -13,6 +13,7 @@ void VoxelLightSystem(ecs_iter_t *it) {
     zox_sys_in(ChunkNeighbors);
     zox_sys_out(SunlightQueue);
     zox_sys_out(PropogateQueue);
+    zox_sys_out(DarkQueue);
 
     for (int i = 0; i < it->count; i++) {
 
@@ -21,7 +22,8 @@ void VoxelLightSystem(ecs_iter_t *it) {
         zox_sys_i(LightNode, root_lnode);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(SunlightQueue, sun_queue);
-        zox_sys_o(PropogateQueue, propogation_queue);
+        zox_sys_o(PropogateQueue, light_queue);
+        zox_sys_o(DarkQueue, dark_queue);
 
         if (!input_queue->count) {
             continue;
@@ -37,6 +39,7 @@ void VoxelLightSystem(ecs_iter_t *it) {
 
             VoxelNodeUpdate update = input_queue->ptr[i];
 
+            // Removing Voxel - Spreads Light
             if (update.value == 0) {
 
                 const LightNode* above = get_neighbor_LightNode(
@@ -78,27 +81,52 @@ void VoxelLightSystem(ecs_iter_t *it) {
                         if (nlight > max_nlight) max_nlight = nlight;
                     }
 
-                    byte new_light = (max_nlight > light_air_decay) ? (byte) (max_nlight - light_air_decay) : darklight;
+                    byte decayed_light = (max_nlight > light_air_decay) ? (byte) (max_nlight - light_air_decay) : darklight;
 
                     a_PropogateQueue(
-                        propogation_queue,
+                        light_queue,
                         (PropogateUpdate) {
                             .type = 0,
                             .pos = update.positionl,
                             .depth = depth->value,
-                            .light = new_light,
+                            .light = decayed_light,
                             .distance = light_propogation_distance
                     });
                 }
             }
 
-            // if filling hole
-            else if (update.value) {
+            // Placing Voxel - Spreads Darkness!
+            else { // if (update.value) {
 
                 // TODO: We can add a dark beam here instead
                 //          - It needs to call dark floodfill on all points along
 
+                // NOTE: no matter what we need to dark flood surroundings - for example on corner parts
+                // Dark Flood
+                const LightNode* removed_lnode = get_LightNode(
+                    root_lnode,
+                    depth->value,
+                    update.positionl,
+                    0
+                );
+                byte removed_light = removed_lnode ? removed_lnode->value : 0;
 
+                if (removed_light > darklight) {
+
+                    zox_log_lighting_dark("[%s] Placed Block: + Dark Flood at [%ix%ix%i] removed light [%i]", zox_get_name(it->entities[i]),  update.positionl.x, update.positionl.y, update.positionl.z, removed_light);
+
+                    a_DarkQueue(
+                        dark_queue,
+                        (DarkUpdate) {
+                            .type = 0,
+                            .pos = update.positionl,
+                            .depth = depth->value,
+                            .light = removed_light,
+                            .distance = darklight_propogation_distance
+                    });
+                }
+
+                // NOTE: DarkBeam needs to Process first (so we add last), otherwise its stomped by nearby sun? idk but it works!
                 const LightNode* above = get_neighbor_LightNode(
                     root_lnode,
                     nnodesl,
@@ -106,48 +134,21 @@ void VoxelLightSystem(ecs_iter_t *it) {
                     update.positionl,
                     depth->value
                 );
-                const byte light = above ? above->value : 0;
+                const byte light_above = above ? above->value : 0;
 
-                if (light == sunlight) {
+                if (light_above == sunlight) {
 
                     // if y, we do y + 1
-                    // zox_log("[%s] Queueing a Dark Sunbeam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]),  update.positionl.x, update.positionl.y, update.positionl.z, darklight);
+                    zox_log_lighting_dark("[%s] Placed Block: + Darkbeam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]),  update.positionl.x, update.positionl.y, update.positionl.z, darklight);
 
-                    a_SunlightQueue(sun_queue, (SunlightUpdate) {
-                        .type = 1,
-                        .pos = (byte3) {
-                            update.positionl.x,
-                            update.positionl.y,
-                            update.positionl.z
-                        },
-                        .light = sunlight
+                    a_DarkQueue(
+                        dark_queue,
+                        (DarkUpdate) {
+                            .type = 1,
+                            .pos = update.positionl,
+                            .depth = depth->value,
+                            .light = light_above
                     });
-
-                } else {
-
-                    // Dark Flood
-                    const LightNode* removed_lnode = get_LightNode(
-                        root_lnode,
-                        depth->value,
-                        update.positionl,
-                        0
-                    );
-                    byte removed_light = removed_lnode ? removed_lnode->value : 0;
-
-                    if (removed_light > darklight) {
-
-                        zox_log("[%s] Queueing a Dark Flood [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]),  update.positionl.x, update.positionl.y, update.positionl.z, removed_light);
-
-                        a_PropogateQueue(
-                            propogation_queue,
-                            (PropogateUpdate) {
-                                .type = 1,
-                                .pos = update.positionl,
-                                .depth = depth->value,
-                                .light = removed_light,
-                                .distance = darklight_propogation_distance
-                        });
-                    }
                 }
             }
         }

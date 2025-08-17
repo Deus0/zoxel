@@ -1,25 +1,26 @@
 ecs_entity_t prefab_app_sdl;
 byte zox_log_sdl_window = 0;
 
-ecs_entity_t spawn_prefab_app_sdl(ecs_world_t *world) {
-    zox_prefab_child(prefab_app)
-    zox_prefab_name("app_sdl")
-    zox_prefab_set(e, SDLWindow, { NULL })
-    zox_prefab_set(e, Context, { NULL })
-    zox_prefab_set(e, WindowFullscreen, { 0 })
+ecs_entity_t spawn_prefab_app_sdl(ecs *world) {
+    zox_prefab_child(prefab_app);
+    zox_prefab_name("app_sdl");
+    zox_prefab_set(e, SDLWindow, { NULL });
+    zox_prefab_set(e, Context, { NULL });
+    zox_prefab_set(e, WindowFullscreen, { 0 });
     // zox_add_tag(e, ViewPort)
     return e;
 }
 
 ecs_entity_t spawn_app_sdl(
-    ecs_world_t *world,
+    ecs *world,
     const char* name,
     const byte fullscreen,
     const byte maximized,
     const byte monitor
 ) {
     int2 screen_size = get_screen_size_monitor(monitor);
-    int2 size_restore = int2_scalef(screen_size, 0.77f);
+    int2 size_restore = int2_scalef(screen_size, 0.6f);
+    size_restore = int2_single(int_min(size_restore.x, size_restore.y));
     int2 size = fullscreen ? screen_size : size_restore;
     // calculate position
     int2 position = calculate_monitor_position(monitor, 1, size_restore);

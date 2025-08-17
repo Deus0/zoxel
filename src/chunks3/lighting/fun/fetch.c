@@ -35,3 +35,19 @@ void fetch_neightbor_propogation_queues(
         }
     }
 }
+
+void fetch_neightbor_dark_queues(
+    ecs* world,
+    const ChunkNeighbors* neighbors,
+    DarkQueue** queues
+) {
+    for (int i = 0; i < 6; i++) {
+        const entity e = neighbors->value[i];
+        if (zox_valid(e)) {
+            queues[i] = zox_gett_mut(e, DarkQueue);
+            zox_modified(e, DarkQueue);
+        } else {
+            queues[i] = NULL;
+        }
+    }
+}

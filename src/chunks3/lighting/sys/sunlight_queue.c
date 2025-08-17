@@ -73,7 +73,7 @@ void SunlightQueueSystem(ecs_iter_t *it) {
 
             // TODO: Add type for light/dark beams
             // TODO: we should probably make this byte3, with y, since we are gonna be used that now
-            // zox_log("Processed SunBeam [%ix%i]", pos.x, pos.y);
+            zox_log_lighting_light("Sunbeam [%ix%ix%i]", pos.x, pos.y, pos.y);
             if (update.type == 0 || update.type == 2) {
 
                 if (sunbeam(
@@ -88,26 +88,6 @@ void SunlightQueueSystem(ecs_iter_t *it) {
                     queued_dirty = 1;
                 }
 
-            } else {
-
-                // zox_log("[%s] Dark Beam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, sunlight);
-
-                if (dark_sunbeam(
-                    sun_queued,
-                    root_vnode,
-                    root_lnode,
-                    nnodesv,
-                    nnodesl,
-                    nqueues,
-                    propogation_queue,
-                    depthl->value,
-                    update.pos,
-                    sunlight,
-                    darklight,
-                    light_air_decay
-                )) {
-                    queued_dirty = 1;
-                }
             }
         }
 
