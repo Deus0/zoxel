@@ -1,17 +1,14 @@
 zox_increment_system_with_reset(LightNodeDirty, zox_dirty_end);
 zox_increment_system_with_reset(SunlightDirty, zox_dirty_end);
 #include "editing.c"
-#include "sunlight_batch.c"
-#include "sunlight_queue.c"
-#include "propogate_batch.c"
+#include "light_start.c"
+#include "light.c"
+#include "light_propogate.c"
 #include "light_flood.c"
 #include "darklight.c"
 #include "reduce.c"
 #include "trigger.c"
 #include "builder.c"
-
-// TODO: Light Depth Set System
-// TODO: Light Clear System
 
 void define_systems_lighting3(ecs* world) {
     zoxd_system_increment(LightNodeDirty);
@@ -96,14 +93,6 @@ void define_systems_lighting3(ecs* world) {
         [out] rendering.MeshColorsGenerate
     );
 
-    // this kinda has issues atm hmm
-    /*zox_system(LightNodeReduceSystem,
-        zoxp_lights_write,
-        [in] lighting3.LightNodeDirty,
-        [in] lighting3.LightNodeDepth,
-        [out] lighting3.LightNode
-    );*/
-
     zox_system(Light3BuildSystem,
         zoxp_voxels_read + 1,
         [in] rendering.MeshColorsGenerate,
@@ -126,5 +115,13 @@ void define_systems_lighting3(ecs* world) {
         [in] chunks3.VoxelNode,
         [in] lighting3.LightNode,
         [in] lighting3.LightNodeDepth
+    );
+
+    // this kinda has issues atm hmm
+    zox_system(LightNodeReduceSystem,
+        zoxp_lights_write,
+        [in] lighting3.LightNodeDirty,
+        [in] lighting3.LightNodeDepth,
+        [out] lighting3.LightNode
     );
 }

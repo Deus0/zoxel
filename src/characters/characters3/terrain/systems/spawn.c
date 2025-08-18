@@ -1,4 +1,3 @@
-
 extern void on_spawned_character3_npc(ecs*, const entity);
 // we need to check if chunk has generated yet - is there a component for this?
 

@@ -76,6 +76,8 @@ void SunlightQueueSystem(ecs_iter_t *it) {
             zox_log_lighting_light("Sunbeam [%ix%ix%i]", pos.x, pos.y, pos.y);
             if (update.type == 0 || update.type == 2) {
 
+                zox_log_lighting_light("[%s] Begin Sunbeam [%ix%ix%i] l[%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, queue->count);
+
                 if (sunbeam(
                     sun_queued,
                     root_lnode,

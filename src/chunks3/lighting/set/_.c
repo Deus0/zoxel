@@ -7,6 +7,6 @@ byte light_air_decay = 32;
 byte light_propogation_distance = 8;
 byte darklight_propogation_distance = 64;  // just keep going?
 
-byte zox_is_log_lighting = 1;
-byte zox_is_log_lighting_light = 1;
-byte zox_is_log_lighting_dark = 1;
+byte zox_is_log_lighting = 0;
+byte zox_is_log_lighting_light = 0;
+byte zox_is_log_lighting_dark = 0;

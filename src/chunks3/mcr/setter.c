@@ -18,11 +18,6 @@ static inline void* set_octree_value(
     // Are we at target depth?
     bool depth_reached = (depth == target_depth);
 
-    // Set value if needed
-    if (depth_reached || value) {
-        *(byte*)((char*)node + value_offset) = value;
-    }
-
     // Children ptr is first member
     void** ptr = (void**)node;
 
@@ -37,10 +32,17 @@ static inline void* set_octree_value(
         memset(*ptr, 0, stride * 8);    // zero-init
 
         // --- New: set all children values ---
+        byte parent_value = *(byte*)((char*) node + value_offset);
         for (byte j = 0; j < 8; j++) {
             void* child = (char*)(*ptr) + j * stride;
-            *(byte*)((char*)child + value_offset) = value;  // initialize with parent value
+            *(byte*)((char*)child + value_offset) = parent_value;
+            // value;  // initialize with parent value
         }
+    }
+
+    // Set value if reached depth
+    if (depth_reached) { // || value) {
+        *(byte*)((char*)node + value_offset) = value;
     }
 
     void* kids = *ptr;

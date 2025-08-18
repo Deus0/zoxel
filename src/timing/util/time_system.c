@@ -6,6 +6,7 @@
 #define zox_profile_system_npc_spawns 4
 #define zox_profile_system_chunk3_builder 5
 #define zox_profile_system_light3_builder 6
+#define zox_profile_light_propogate 7
 
 byte profiler_state = zox_profile_system_none;
 byte profiler_logs = 0;

@@ -3,7 +3,7 @@
 byte sunbeam(
     SunlightQueue* queued,
     LightNode* lnode,
-    const VoxelNode* vnode,
+    const VoxelNode* root_vnode,
     const byte depth,
     byte3 pos,
     byte beamlight,
@@ -14,14 +14,26 @@ byte sunbeam(
         zox_logw("position too high [%i]", pos.y);
         return 0;
     }
+
     byte hit_solid = 0;
     byte light = beamlight;
     byte length2 = pos.y;
+    byte flood_start = 0;
+    byte flood_end = 0;
+    byte beam_stopped = 0;
+
     for (byte y = 0; y < length2; y++) {
         pos.y = length2 - 1 - y;
 
+        byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
+        if (voxel) {
+            // zox_log("sunbeam stopped v at [%ix%ix%i] v[%i]",  pos.x, pos.y, pos.z, voxel);
+            beam_stopped = 1;
+            break;
+        }
+
         // check if not hit
-        if (!hit_solid) {
+        /*if (!hit_solid) {
 
             const VoxelNode* check_node = get_VoxelNode(
                 vnode,
@@ -43,21 +55,48 @@ byte sunbeam(
                 hit_solid = 1;
                 light = darklight; // sunlight blocked
             }
-        }
+        }*/
 
         // set light in LightNode
-        // zox_log("+ Light [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
-        set_LightNode(
-            lnode,
+        zox_log_lighting_light("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
+        set_LightNode(lnode, depth, pos, light, 0);
+
+        if (y == 0) {
+            flood_end = pos.y;
+        }
+        flood_start = pos.y;
+    }
+
+
+    zox_log_lighting_light(" * light beam y: [%i] to [%i]", flood_start, (flood_end));
+
+    for (byte y = flood_start; y <= flood_end; y++) {
+        pos.y = y;
+
+        zox_log_lighting_light(" - Light Beam Spreads [%ix%ix%i]", pos.x,  pos.y, pos.z);
+
+        /*flood_light(
+            root_vnode,
+            root_lnode,
+            n_root_vnodes,
+            n_root_lnodes,
+            n_light_queues,
+            light_queue,
+            n_dark_queues,
+            dark_queue,
             depth,
             pos,
-            light,
-            0);
+            sunlight - air_decay + 1,
+            darklight_propogation_distance,
+            min_light,
+            air_decay
+        );*/
     }
 
     // only need check for non batch
     //  NOTE: Batch Sunlight will set darklight for all belows
-    if (queued && ((type == 2 && !hit_solid) || type == 0)) {
+    if (queued && !beam_stopped) {
+        // ((type == 2 && !hit_solid) || type == 0)) {
         // for now we assume chunk below has same depth
         a_SunlightQueue(queued, (SunlightUpdate) {
             .type = type,

@@ -35,7 +35,8 @@ void zoxel_set_debug() {
     // zox_profile_system_chunk_builder_c
     // zox_profile_system_npc_spawns
     // zox_profile_system_chunk3_builder
-    profiler_state = zox_profile_system_chunk3_builder;
+    // zox_profile_light_propogate
+    profiler_state = zox_profile_light_propogate;
     profiler_logs = 0;
 
     // disable_block_voxes = 1;

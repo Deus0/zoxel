@@ -6,7 +6,7 @@ void SunlightBatchSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
 
-    zox_sys_in(VoxelNodeGenerated); // triggered by terrain generation / loading
+    zox_sys_in(VoxelNodeGenerated);
     zox_sys_in(RenderDepth);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
@@ -30,10 +30,9 @@ void SunlightBatchSystem(iter *it) {
 
         // we skip if already at right depth
         if (depthl->value >= depthr->value) {
-            zox_logw("Skip Updating lights, light depth already updated");
+            // zox_logw("Skip Updating lights, light depth already updated");
             continue;
         }
-        depthl->value = depthr->value;
 
         byte queued_dirty = 0;
         entity chunkd = neighbors->value[direction_down];
@@ -43,12 +42,19 @@ void SunlightBatchSystem(iter *it) {
 
         SunlightQueue* queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, SunlightQueue) : NULL;
 
+        depthl->value = depthr->value;
+        zox_log_lighting_light("[%s] Topmost Sunbeams l[%i] d[%i]", zox_get_name(it->entities[i]), sunlight, depthl->value);
+
         // now for all XZ places we go through
         byte length = powers_of_two[depthl->value];
         byte3 pos;
+
         pos.y = length;
         for (pos.x = 0; pos.x < length; pos.x++) {
             for (pos.z = 0; pos.z < length; pos.z++) {
+
+                zox_log_lighting_light("[%s] Begin Topmost Sunbeam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]), pos.x, pos.y, pos.z, sunlight);
+
                 if (sunbeam(
                     queued,
                     lnode,

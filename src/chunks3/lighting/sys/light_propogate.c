@@ -1,4 +1,5 @@
 void LightPropogateBatchSystem(iter *it) {
+    zox_ts_begin(light_propogate);
 
     // TODO: Make this do inside sunbeam instead, no need here unless voxel a light source
 
@@ -93,4 +94,5 @@ void LightPropogateBatchSystem(iter *it) {
         }
         light_node_dirty->value = 1;
     }
+    zox_ts_end(light_propogate, 3, zox_profile_light_propogate);
 } zoxd_system2(LightPropogateBatchSystem);

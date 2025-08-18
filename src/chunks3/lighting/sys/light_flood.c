@@ -49,18 +49,6 @@ void LightFloodSystem(ecs_iter_t *it) {
             continue;
         }
 
-        /*for (int j = 0; j < 6; j++) {
-            PropogateQueue* nqueue = nqueues[j];
-            if (!nqueue) continue;
-
-            for (size_t k = nqueue->count; k-- > 0; ) {
-                if (nqueue->ptr[k].type == 1) {
-                    queued_darkness = 1;
-                    break;
-                }
-            }
-        }*/
-
         PropogateQueue* nqueues[6];
         fetch_neightbor_propogation_queues(
             world,

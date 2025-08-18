@@ -1,4 +1,6 @@
+// Groups same nodes when dirty
 void LightNodeReduceSystem(iter *it) {
+
     zox_sys_begin();
     zox_sys_in(LightNodeDirty);
     zox_sys_in(LightNodeDepth);
@@ -13,5 +15,6 @@ void LightNodeReduceSystem(iter *it) {
         if (dirty->value == zox_dirty_active) {
             reduce_LightNode(lnode, depthl->value, 0);
         }
+
     }
 } zoxd_system2(LightNodeReduceSystem);

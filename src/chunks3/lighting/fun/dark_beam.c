@@ -1,19 +1,16 @@
 byte dark_sunbeam(
-    DarkQueue* queued,                // 👈 like sunbeam, for chunk below
-    const VoxelNode* root_vnode,          // READ
-    LightNode* root_lnode,                // WRITE
-    const VoxelNode* n_root_vnodes[6],    // READ
-    const LightNode* n_root_lnodes[6],    // READ
-
+    DarkQueue* queued,
+    const VoxelNode* root_vnode,
+    LightNode* root_lnode,
+    const VoxelNode* n_root_vnodes[6],
+    const LightNode* n_root_lnodes[6],
     PropogateQueue* n_light_queues[6],
     PropogateQueue* light_queue,
-
     DarkQueue* n_dark_queues[6],
     DarkQueue* dark_queue,
-
     byte depth,
     byte3 pos,
-    byte sunlight,                       // sunlight level we’re extinguishing (usually 255)
+    byte sunlight,
     byte min_light,
     byte air_decay
 ) {
@@ -23,8 +20,8 @@ byte dark_sunbeam(
     byte y_max = pos.y;
     byte flood_start = 0;
     byte flood_end = 0;
-
     byte beam_stopped = 0;
+
     for (byte y = 0; y < y_max; y++) {
         pos.y = y_max - 1 - y;
 
@@ -42,9 +39,6 @@ byte dark_sunbeam(
             beam_stopped = 1;
             break;
         }
-
-        // zox_log("dark beam setting at [%ix%ix%i] l [%i]", pos.x, pos.y, pos.z, min_light);
-        // for sun, we extinquish and dark flood it
 
         zox_log_lighting_dark("     - Light Banished at [%ix%ix%i] l[%i]", pos.x, pos.y, pos.z, current_light);
 
