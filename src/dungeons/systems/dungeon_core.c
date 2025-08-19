@@ -145,8 +145,8 @@ void DungeonBlockSystem(ecs_iter_t *it) {
         a_VoxelNodeQueue(queue,
             (VoxelNodeUpdate) {
                 .value = place_type,
-                .positionl = place_positionl,
-                .positionv = place_positionv
+                .pos = place_positionl
+                // .positionv = place_positionv
             });
 
         /*zox_mut_begin(place_chunk, VoxelNode, place_node); // get node function

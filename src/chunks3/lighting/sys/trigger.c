@@ -4,10 +4,8 @@
 void MeshColorsTriggerSystem(iter *it) {
 
     zox_sys_begin();
-
-    zox_sys_in(SunlightQueue);
-    zox_sys_in(PropogateQueue);
-
+    zox_sys_in(LightQueue);
+    zox_sys_in(DarkQueue);
     zox_sys_in(ChunkMeshDirty);
     zox_sys_in(SunlightDirty);
     zox_sys_in(LightNodeDirty);
@@ -16,16 +14,14 @@ void MeshColorsTriggerSystem(iter *it) {
 
     for (int i = 0; i < it->count; i++) {
 
-        zox_sys_i(SunlightQueue, sunlight_queue);
-        zox_sys_i(PropogateQueue, propogate_queue);
-
+        zox_sys_i(LightQueue, light_queue);
+        zox_sys_i(DarkQueue, dark_queue);
         zox_sys_i(ChunkMeshDirty, mesh_dirty);
         zox_sys_i(SunlightDirty, sunlight_dirty);
         zox_sys_i(LightNodeDirty, light_node_dirty);
-
         zox_sys_o(MeshColorsGenerate, mesh_colors_generate);
 
-        if (propogate_queue->count || sunlight_queue->count) {
+        if (light_queue->count || dark_queue->count) {
             continue;
         }
 

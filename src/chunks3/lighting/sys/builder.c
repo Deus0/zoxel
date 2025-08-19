@@ -1,6 +1,7 @@
 // hmmm issue seems to be about faces
 // maybe we redo our mesh builder system
 
+// converts face to octree indexes
 static const byte face_children[6][4] = {
     {1, 3, 5, 7}, // +X
     {0, 2, 4, 6}, // -X
@@ -10,7 +11,7 @@ static const byte face_children[6][4] = {
     {0, 1, 2, 3}  // -Z
 };
 
-static inline const LightNode* get_max_light_on_face_recursive(
+static inline const LightNode* get_max_light_on_face(
     const LightNode* node,
     byte face,
     byte depth,
@@ -26,7 +27,7 @@ static inline const LightNode* get_max_light_on_face_recursive(
         const byte* idxs = face_children[face];
         for (byte i = 0; i < 4; i++) {
             const LightNode* kid = &kids[idxs[i]];
-            const LightNode* candidate = get_max_light_on_face_recursive(
+            const LightNode* candidate = get_max_light_on_face(
                 kid, face, depth + 1, target_depth
             );
             if (candidate && candidate->value > max_value) {
@@ -39,7 +40,7 @@ static inline const LightNode* get_max_light_on_face_recursive(
     return best_node;
 }
 
-static inline const LightNode* get_max_light_on_face(
+static inline const LightNode* get_max_light_on_face_(
     const LightNode* root_node,
     const LightNode** nnodes,
     byte face,
@@ -54,10 +55,8 @@ static inline const LightNode* get_max_light_on_face(
         position,
         depth
     );
-    return get_max_light_on_face_recursive(node, face, depth, target_depth);
+    return get_max_light_on_face(node, face, depth, target_depth);
 }
-
-
 
 void zox_apply_light3(
     const byte* solidity,
@@ -91,7 +90,7 @@ void zox_apply_light3(
                     position,
                     depth
                 );*/
-                const LightNode* adj_node = get_max_light_on_face(
+                const LightNode* adj_node = get_max_light_on_face_(
                     root_lnode,
                     nnodesl,
                     face,
@@ -101,7 +100,7 @@ void zox_apply_light3(
                 );
 
 
-                byte light = adj_node ? adj_node->value : 0;
+                byte light = adj_node ? adj_node->value : sunlight;
                 if (!adj_node) {
                     zox_log_error("Adjacent Node ??? [%ix%ix%i] d[%i]", position.x, position.y, position.z, depth);
                 }

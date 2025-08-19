@@ -32,7 +32,7 @@ void VoxelNodeQueueSystem(ecs_iter_t *it) {
             datam.voxel = update.value;
             SetVoxelData data2 = {
                 .node = node,
-                .position = update.positionl,
+                .position = update.pos,
             };
             VoxelNode* placed = set_voxel(datam, data2);
             if (placed) {

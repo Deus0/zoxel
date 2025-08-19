@@ -9,4 +9,6 @@ byte darklight_propogation_distance = 64;  // just keep going?
 
 byte zox_is_log_lighting = 0;
 byte zox_is_log_lighting_light = 0;
+byte zox_is_log_lighting_remove = 0;
 byte zox_is_log_lighting_dark = 0;
+byte zox_is_log_lighting_place = 0;

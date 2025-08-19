@@ -3,8 +3,8 @@ static inline void dark_flood_light(
     LightNode* root_lnode,                // (WRITE)
     const VoxelNode* n_root_vnodes[6],    // (READ-ONLY)
     const LightNode* n_root_lnodes[6],    // (READ-ONLY)
-    PropogateQueue* n_light_queues[6],
-    PropogateQueue* light_queue,
+    LightQueue* n_light_queues[6],
+    LightQueue* light_queue,
     DarkQueue* n_dark_queues[6],
     DarkQueue* dark_queue,
     byte depth,
@@ -78,11 +78,11 @@ static inline void dark_flood_light(
 
             } else {
 
-                PropogateQueue* nqueue = n_light_queues[dir];
+                LightQueue* nqueue = n_light_queues[dir];
                 if (nqueue) {
                     spin_lock(&nqueue->lock);
-                    a_PropogateQueue(nqueue, (PropogateUpdate) {
-                        .type  = 0,
+                    a_LightQueue(nqueue, (LightUpdate) {
+                        .type  = zox_light_type_flood,
                         .light = ncurrent_light,
                         .distance = light_propogation_distance,
                         .pos   = pos,
@@ -139,8 +139,8 @@ static inline void dark_flood_light(
                 zox_log_lighting_dark("     + Dark Flood Light Source [%ix%ix%i] new [%i] old [%i] decayed [%i]", pos.x, pos.y, pos.z, current_light, old_light, decayed_light);
 
                 spin_lock(&light_queue->lock);
-                a_PropogateQueue(light_queue, (PropogateUpdate) {
-                    .type  = 0,
+                a_LightQueue(light_queue, (LightUpdate) {
+                    .type  = zox_light_type_flood,
                     .light = decayed_light,
                     .distance = light_propogation_distance,
                     .pos   = pos,

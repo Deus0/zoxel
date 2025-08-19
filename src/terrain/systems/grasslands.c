@@ -79,6 +79,7 @@ void GrassyPlainsSystem(iter *it) {
 
         // kicks off lighting if loaded
         if (loaded->value && edited->value) {
+            generated->value = zox_dirty_trigger;   // need kick start the lighting, even if loaded!
             continue;
         }
 
@@ -93,6 +94,7 @@ void GrassyPlainsSystem(iter *it) {
             nodeDirty->value = zox_dirty_trigger;
             continue;
         }
+
         nodeDepth->value = generation_depth;
         const byte is_max_depth = nodeDepth->value == terrain_depth;
 

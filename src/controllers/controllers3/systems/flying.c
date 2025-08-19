@@ -14,13 +14,19 @@ void PlayerFlySystem(ecs_iter_t *it) {
             continue;
         }
 
-        zox_geter(character, DisableMovement, disableMovement)
-        if (disableMovement->value) {
+        zox_geter_value(character, DisableMovement, byte, disabled);
+        if (disabled) {
             continue;
         }
 
         zox_geter_value(character, FlyMode, byte, flying);
         if (!flying) {
+            continue;
+        }
+
+        zox_geter_value(character, CameraLink, entity, camera);
+        byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraMode) : zox_camera_mode_first_person;
+        if (camera_mode == zox_camera_mode_free) {
             continue;
         }
 

@@ -4,26 +4,32 @@ byte dark_sunbeam(
     LightNode* root_lnode,
     const VoxelNode* n_root_vnodes[6],
     const LightNode* n_root_lnodes[6],
-    PropogateQueue* n_light_queues[6],
-    PropogateQueue* light_queue,
+    LightQueue* n_light_queues[6],
+    LightQueue* light_queue,
     DarkQueue* n_dark_queues[6],
     DarkQueue* dark_queue,
     byte depth,
     byte3 pos,
     byte sunlight,
     byte min_light,
-    byte air_decay
+    byte air_decay,
+    byte type
 ) {
     byte length = powers_of_two[depth];
     if (pos.y > length) return 0;
 
-    byte y_max = pos.y;
+    byte max_y = pos.y;
     byte flood_start = 0;
     byte flood_end = 0;
     byte beam_stopped = 0;
 
-    for (byte y = 0; y < y_max; y++) {
-        pos.y = y_max - 1 - y;
+    for (byte y = 0; y < max_y; y++) {
+        pos.y = max_y - y;
+
+        if (type == zox_light_type_beam_start && y == 0) {
+            flood_end = pos.y;
+            continue;
+        }
 
         byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
         if (voxel) {
@@ -55,7 +61,7 @@ byte dark_sunbeam(
     // QUESTION: Dark DarkFlood use neighbor.. Probably?!?!
     //      can we delay these until its gone? test sunlight between chunks, sunlight comes through chunk + check it dissapears
 
-    zox_log_lighting_dark(" * dark beam y: [%i] to [%i]", flood_start, (flood_end));
+    zox_log_lighting_dark(" * dark beam y: [%i] to [%i]", flood_start, flood_end);
 
     for (byte y = flood_start; y <= flood_end; y++) {
         pos.y = y;
@@ -89,7 +95,7 @@ byte dark_sunbeam(
         a_DarkQueue(
             queued,
             (DarkUpdate) {
-                .type = 1,
+                .type = zox_light_type_beam,
                 .pos = (byte3) {
                     pos.x,
                     length,   // y = bottom edge

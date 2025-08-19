@@ -36,14 +36,23 @@ void Player3DMoveSystem(ecs_iter_t *it) {
         zox_sys_i(CharacterLink, characterLink)
         zox_sys_i(DeviceLinks, deviceLinks)
         zox_sys_i(DeviceMode, deviceMode)
+
         const ecs_entity_t character = characterLink->value;
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
-        zox_geter(character, DisableMovement, disableMovement)
-        if (disableMovement->value) {
+
+        zox_geter_value(character, DisableMovement, byte, disabled);
+        if (disabled) {
             continue;
         }
+
+        zox_geter_value(character, CameraLink, entity, camera);
+        byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraMode) : zox_camera_mode_first_person;
+        if (camera_mode == zox_camera_mode_free) {
+            continue;
+        }
+
         float2 left_stick = float2_zero;
         byte is_running = 0;
         for (int j = 0; j < deviceLinks->length; j++) {
@@ -125,12 +134,6 @@ void Player3DMoveSystem(ecs_iter_t *it) {
             }
         }
 
-        zox_geter(character, CameraLink, cameraLink)
-        byte camera_mode = zox_valid(cameraLink->value) ? zox_gett_value(cameraLink->value, CameraMode) : zox_camera_mode_first_person;
-        if (camera_mode == zox_camera_mode_free) {
-            continue;
-        }
-
         // float delta_time_adjustment = 1.0f / (60 * delta_time);
         // float3_scale_p(&movement, delta_time_adjustment);
         float4 movement_rotation = float4_identity;
@@ -139,8 +142,8 @@ void Player3DMoveSystem(ecs_iter_t *it) {
         zox_muter(character, Acceleration3D, acceleration3D)
         if (camera_mode == zox_camera_mode_topdown || camera_mode == zox_camera_mode_ortho) {
             if (zox_has(character, CameraLink)) {
-                if (cameraLink->value) {
-                    zox_geter(cameraLink->value, Rotation3D, camera_rotation)
+                if (camera) {
+                    zox_geter(camera, Rotation3D, camera_rotation)
                     const float4 camera_rotation2 = quaternion_from_euler((float3) { 0, -quaternion_to_euler_y(camera_rotation->value), 0 });
                     if (movement.z == -movement.x) {
                         movement.x *= 0.999f; // this hack fixes the rotation

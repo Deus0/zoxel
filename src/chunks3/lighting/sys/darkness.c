@@ -7,22 +7,22 @@ void DarkLightSystem(ecs_iter_t *it) {
 
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(LightNodeDepth);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
+    zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(DarkQueue);
-    zox_sys_out(PropogateQueue);
+    zox_sys_out(LightQueue);
     zox_sys_out(LightNodeDirty);
 
     for (int i = 0; i < it->count; i++) {
 
         zox_sys_i(VoxelNode, root_vnode);
-        zox_sys_i(LightNodeDepth, depthl);
         zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(DarkQueue, dark_queue);
-        zox_sys_o(PropogateQueue, light_queue);
+        zox_sys_o(LightQueue, light_queue);
         zox_sys_o(LightNodeDirty, dirty);
 
         if (!dark_queue->count) {
@@ -39,7 +39,7 @@ void DarkLightSystem(ecs_iter_t *it) {
             world,
             neighbors,
             nnodesl);
-        PropogateQueue* n_light_queues[6];
+        LightQueue* n_light_queues[6];
         fetch_neightbor_propogation_queues(
             world,
             neighbors,
@@ -50,23 +50,21 @@ void DarkLightSystem(ecs_iter_t *it) {
             neighbors,
             n_dark_queues);
 
-        byte updated = 0;
-
         byte queued_dirty = 0;
         entity chunkd = neighbors->value[direction_down];
         DarkQueue* dark_queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, DarkQueue) : NULL;
 
         while (dark_queue->count) {
-        //for (size_t j = propogate_queue->count; j-- > 0; ) {
-        //    if (propogate_queue->ptr[j].type != 1) continue;
 
             DarkUpdate update = r_DarkQueue(dark_queue);
 
-            if (depthl->value != update.depth) continue;   // for now
+            if (depthl->value < update.depth) { // depthr->value) {
+                depthl->value = update.depth; // depthr->value;
+            }
 
-            byte new_light = update.light;
+            // if (depthl->value != update.depth) continue;   // for now
 
-            if (update.type == 0) {
+            if (update.type == zox_light_type_flood) {
 
                 zox_log_lighting_dark("[%s] Begin Dark Flooding [%ix%ix%i] l[%i] distance [%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, update.distance, dark_queue->count)
 
@@ -97,7 +95,8 @@ void DarkLightSystem(ecs_iter_t *it) {
                     darklight,
                     light_air_decay
                 );
-            } else {
+
+            } else if (update.type == zox_light_type_beam_start || update.type == zox_light_type_beam) {
 
                 zox_log_lighting_dark("[%s] Begin Darkbeam [%ix%ix%i] l[%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, dark_queue->count);
 
@@ -115,21 +114,17 @@ void DarkLightSystem(ecs_iter_t *it) {
                     update.pos,
                     sunlight,
                     darklight,
-                    light_air_decay
+                    light_air_decay,
+                    update.type
                 )) {
                     queued_dirty = 1;
                 }
             }
-
-            updated = 1;
         }
 
         if (queued_dirty) {
-            zox_mut_end(chunkd, SunlightQueue);
+            zox_mut_end(chunkd, LightQueue);
         }
-
-        if (updated) {
-            dirty->value = zox_dirty_trigger;
-        }
+        dirty->value = zox_dirty_trigger;
     }
 } zoxd_system2(DarkLightSystem);

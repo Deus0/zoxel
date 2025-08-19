@@ -23,13 +23,13 @@ void fetch_neightbor_light_nodes(
 void fetch_neightbor_propogation_queues(
     ecs* world,
     const ChunkNeighbors* neighbors,
-    PropogateQueue** queues
+    LightQueue** queues
 ) {
     for (int i = 0; i < 6; i++) {
         const entity e = neighbors->value[i];
         if (zox_valid(e)) {
-            queues[i] = zox_gett_mut(e, PropogateQueue);
-            zox_modified(e, PropogateQueue);
+            queues[i] = zox_gett_mut(e, LightQueue);
+            zox_modified(e, LightQueue);
         } else {
             queues[i] = NULL;
         }

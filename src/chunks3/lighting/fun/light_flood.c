@@ -13,7 +13,7 @@ static inline void flood_light(
     LightNode* root_lnode,               // (WRITE)
     const VoxelNode* n_root_vnodes[6],   // (READ-ONLY)
     const LightNode* n_root_lnodes[6],   // (READ-ONLY)
-    PropogateQueue* n_queues[6],         // (WRITE)
+    LightQueue* n_queues[6],         // (WRITE)
     byte depth,
     byte3 positionl,
     byte light,
@@ -66,13 +66,13 @@ static inline void flood_light(
                 continue;
             }
 
-            PropogateQueue* nqueue = n_queues[dir];
+            LightQueue* nqueue = n_queues[dir];
             // Add to neighbor queue
             if (nqueue) {
                 spin_lock(&nqueue->lock);
-                a_PropogateQueue(nqueue,
-                    (PropogateUpdate) {
-                        .type = 0,
+                a_LightQueue(nqueue,
+                    (LightUpdate) {
+                        .type = zox_light_type_flood,
                         .light = decayed_light,
                         .pos = pos,
                         .depth = depth,

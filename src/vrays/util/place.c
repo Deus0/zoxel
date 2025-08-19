@@ -49,6 +49,6 @@ void raycast_action(
     a_VoxelNodeQueue(queue,
         (VoxelNodeUpdate) {
             .value = voxel,
-            .positionl = positionl
+            .pos = positionl
         });
 }
