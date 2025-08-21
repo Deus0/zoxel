@@ -65,7 +65,6 @@ void define_systems_lighting3(ecs* world) {
     zox_system(LightNodeReduceSystem,
         zoxp_lights_write + 1,
         [in] lighting3.LightNodeDirty,
-        [in] lighting3.LightNodeDepth,
         [out] lighting3.LightNode
     );
 

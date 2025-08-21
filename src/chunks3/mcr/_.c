@@ -8,6 +8,7 @@ uint zox_stats_terrain_chunks = 0;
 #include "setter.c"
 #include "getter.c"
 #include "reducer.c"
+#include "optimize.c"
 #include "setreduce.c"
 #include "adjacent.c"
 #include "debug_lines.c"

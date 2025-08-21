@@ -101,11 +101,9 @@ void zox_apply_light3(
 
 
                 byte light = adj_node ? adj_node->value : sunlight;
-                if (!adj_node) {
+                /*if (!adj_node) {
                     zox_log_error("Adjacent Node ??? [%ix%ix%i] d[%i]", position.x, position.y, position.z, depth);
-                }
-
-                // float factor = light / 255.0f;
+                }*/
 
                 // each face has 4 vertices
                 for (int v = 0; v < voxel_face_vertices_length; v++) {
