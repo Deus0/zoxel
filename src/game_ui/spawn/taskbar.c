@@ -14,8 +14,11 @@ ecs_entity_t spawn_taskbar(
     const int padding_y = 4 * zox_ui_scale;
     const int margins = frame_size / 4;
     const int2 canvas_size = zox_get_value(canvas, PixelSize)
-    const int2 actionbar_size = (int2) { padding_x + (frame_size + padding_x) * taskbar_count + margins * 2, frame_size + padding_y * 2 };
-    ElementSpawn spawn_actionbar = {
+    const int2 actionbar_size = (int2) {
+        padding_x + (frame_size + padding_x) * taskbar_count + margins * 2,
+        frame_size + padding_y * 2
+    };
+    ElementSpawn data = {
         .canvas = {
             .e = canvas,
             .size = canvas_size
@@ -37,11 +40,12 @@ ecs_entity_t spawn_taskbar(
             .outline_color = window_outline,
         }
     };
-    const ecs_entity_t e = spawn_element(world, &spawn_actionbar);
+    const ecs_entity_t e = spawn_element(world, &data);
+    zox_set_unique_name(e, "taskbar");
     Children children = (Children) { 0, NULL };
     initialize_Children(&children, taskbar_count);
     ElementSpawn spawn_frame_data = {
-        .canvas = spawn_actionbar.canvas,
+        .canvas = data.canvas,
         .parent = {
             .e = e,
             .position = position,
@@ -59,7 +63,7 @@ ecs_entity_t spawn_taskbar(
         }
     };
     ElementSpawn spawn_icon_data = {
-        .canvas = spawn_actionbar.canvas,
+        .canvas = data.canvas,
         .parent = {
             .size = spawn_frame_data.element.size
         },
@@ -80,22 +84,25 @@ ecs_entity_t spawn_taskbar(
             0
         };
         const ecs_entity_t frame = spawn_element(world, &spawn_frame_data);
+        zox_set_unique_name(frame, "taskbar_frame");
 
         Children frame_children = (Children) { 0 };
         initialize_Children(&frame_children, 1);
         spawn_icon_data.parent.e = frame;
         spawn_icon_data.parent.position = spawn_frame_data.element.position;
         const ecs_entity_t icon = spawn_element(world, &spawn_icon_data);
+        zox_set_unique_name(icon, "taskbar_icon");
         frame_children.value[0] = icon;
-        zox_set(icon, IconIndex, { i })
+        zox_set(icon, IconIndex, { i });
+
         // hook data
         hook_taskbar hook = hook_taskbars->data[i];
         taskbar_set_icons(world, canvas, frame, i);
-        zox_set(icon, ClickEvent, { &taskbar_button_click_event })
+        zox_set(icon, ClickEvent, { &taskbar_button_click_event });
         zox_prefab_set(icon, TooltipEvent, { &tooltip_event_taskbar_icon })
         char tooltip_text[64];
         sprintf(tooltip_text, "toggles a [%s] game ui", ecs_get_name(world, hook.component_id));
-        zox_prefab_set(icon, TooltipText, { text_to_zext(tooltip_text) })
+        zox_prefab_set(icon, TooltipText, { text_to_zext(tooltip_text) });
         // texture
         char* icon_texture_name = hook.texture_name;
         clone_texture_to_entity(world, icon, icon_texture_name);

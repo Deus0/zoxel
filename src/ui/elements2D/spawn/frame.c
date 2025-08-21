@@ -23,9 +23,9 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
         .index = data.icon.index,
         .texture_size = data.icon.texture_size
     };
-    Children *children = &((Children) { 0, NULL });
+    Children children = (Children) { 0, NULL };
     const entity icon = spawn_icon(world, &spawnIcon);
-    add_to_Children(children, icon);
+    add_to_Children(&children, icon);
     entity zext = 0;
     if (zox_has(data.element.prefab, IconLabel)) {
         const int font_size = 12;
@@ -49,9 +49,9 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
             }
         };
         zext = spawn_zext(world, &spawnZext);
-        add_to_Children(children, zext);
+        add_to_Children(&children, zext);
         zox_set_unique_name(zext, "icon_text");
     }
-    zox_set(e, Children, { children->length, children->value })
+    zox_set_ptr(e, Children, children);
     return (entity3) { e, icon, zext };
 }

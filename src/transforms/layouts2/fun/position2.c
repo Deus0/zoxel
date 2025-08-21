@@ -42,8 +42,8 @@ void on_element_parent_updated(
     const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
     const float2 position2 = get_ui_real_position2_parent(local_pixel_position, anchor, parent_position, parent_pixel_size, canvas_size_f, aspect_ratio);
     const int2 global_pixel_position = (int2) { ceil(((position2.x / aspect_ratio) + 0.5f) * canvas_size_f.x), ((position2.y + 0.5f) * canvas_size_f.y) };
-    zox_set(e, Position2, { position2 })
-    zox_set(e, CanvasPosition, { global_pixel_position })
+    // zox_set(e, Position2, { position2 })
+    // zox_set(e, CanvasPosition, { global_pixel_position })
 }
 
 // called by CanvasResizeSystem

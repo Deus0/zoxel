@@ -1,12 +1,13 @@
-ecs_entity_t spawn_player_menu_actions(
-    ecs_world_t *world,
-    const ecs_entity_t player
+entity spawn_player_menu_actions(
+    ecs *world,
+    const entity player
 ) {
-    zox_geter_value(player, CharacterLink, ecs_entity_t, character);
-    zox_geter_value(player, CanvasLink, ecs_entity_t, canvas);
+    zox_geter_value(player, CharacterLink, entity, character);
+    zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(canvas, PixelSize, int2, canvas_size);
     zox_geter_value(character, ActionIndex, byte, selected);
-    SpawnWindowUsers data = get_default_spawn_window_users_data(world,
+    SpawnWindowUsers data = get_default_spawn_window_users_data(
+        world,
         prefab_menu_actions,
         character,
         canvas,
@@ -39,5 +40,8 @@ ecs_entity_t spawn_player_menu_actions(
         .fill_color = fill_color_actionbar,
         .outline_color = outline_color_actionbar
     };
-    return spawn_window_users(world, data, texture, selected);
+    entity e = spawn_window_users(world, data, texture, selected);
+    zox_set_unique_name(e, "actionbar");
+    zox_log("+++ actionbar [%lu] +++", e);
+    return e;
 }

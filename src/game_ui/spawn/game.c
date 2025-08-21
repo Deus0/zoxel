@@ -1,16 +1,16 @@
 // TODO: Refactor these modules onto the game ui
-extern ecs_entity_t spawn_menu_game_stats(ecs_world_t *world, const ecs_entity_t menu_game, const ecs_entity_t player, Children *children);
+extern entity spawn_menu_game_stats(ecs_world_t *world, const entity menu_game, const entity player, Children *children);
 
-ecs_entity_t spawn_menu_game(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const ecs_entity_t player,
-    const ecs_entity_t character
+entity spawn_menu_game(
+    ecs *world,
+    const entity prefab,
+    const entity player,
+    const entity character
 ) {
-    const ecs_entity_t canvas = zox_get_value(player, CanvasLink)
+    const entity canvas = zox_get_value(player, CanvasLink)
     const int2 canvas_size = zox_get_value(canvas, PixelSize)
     // make layout2 instead of element_invisible
-    const ecs_entity_t e = spawn_layout2_on_canvas(world,
+    const entity e = spawn_layout2_on_canvas(world,
         prefab,
         canvas,
         int2_zero,
@@ -19,7 +19,7 @@ ecs_entity_t spawn_menu_game(
     zox_name("menu_game")
     Children children = (Children) { 0, NULL };
 
-    const ecs_entity_t crosshair = spawn_crosshair(world,
+    const entity crosshair = spawn_crosshair(world,
         (CanvasSpawnData) {
             .e = canvas,
             .size = canvas_size,
@@ -54,9 +54,9 @@ ecs_entity_t spawn_menu_game(
 
 void dispose_menu_game(
     ecs_world_t *world,
-    const ecs_entity_t player
+    const entity player
 ) {
-    const ecs_entity_t canvas = zox_get_value(player, CanvasLink)
+    const entity canvas = zox_get_value(player, CanvasLink)
     find_child_with_tag(canvas, MenuGame, game_ui)
     if (game_ui) {
         zox_delete(game_ui)

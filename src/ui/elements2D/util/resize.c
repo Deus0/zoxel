@@ -28,7 +28,7 @@ void on_resized_element(
             zox_set(header, TextureSize, { new_header_size })
             on_resized_element(world, header, new_header_size, canvas_size);
             zox_geter(header, Children, header_children)
-            if (header_children->length > 1) {
+            /*if (header_children->length > 1) {
                 zox_geter_value(header, Position2, float2, header_position)
                 const entity close_button = header_children->value[1];
                 const int2 close_button_position = zox_get_value(close_button, PixelPosition)
@@ -40,7 +40,7 @@ void on_resized_element(
                     header_position,
                     new_header_size,
                     canvas_size);
-            }
+            }*/
             // scrollbar
             const entity scrollbar = children->length > 1 ? children->value[1] : 0;
             if (scrollbar && zox_has(scrollbar, Scrollbar)) {

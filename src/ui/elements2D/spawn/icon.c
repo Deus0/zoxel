@@ -1,12 +1,18 @@
 entity spawn_icon(ecs *world, SpawnIcon *data) {
-    zox_instance(data->element.prefab)
-    zox_name("icon")
-    set_element_spawn_data(world, e, data->canvas, data->parent, &data->element);
-    zox_set(e, Color, { data->texture.fill_color })
-    zox_set(e, OutlineColor, { data->texture.outline_color })
-    zox_set(e, IconIndex, { data->index })
+    zox_instance(data->element.prefab);
+    zox_name("icon");
+    set_element_spawn_data(
+        world,
+        e,
+        data->canvas,
+        data->parent,
+        &data->element
+    );
+    zox_set(e, Color, { data->texture.fill_color });
+    zox_set(e, OutlineColor, { data->texture.outline_color });
+    zox_set(e, IconIndex, { data->index });
     // icons have overlays now
-    Children *children = &((Children) { 0, NULL });
+    Children children = (Children) { 0, NULL };
     // icon overlay
     ParentSpawnData icon_data = {
         .e = e,
@@ -24,8 +30,8 @@ entity spawn_icon(ecs *world, SpawnIcon *data) {
         data->canvas,
         icon_data,
         icon_overlay_data);
-    add_to_Children(children, overlay);
+    add_to_Children(&children, overlay);
     // set and return
-    zox_set(e, Children, { children->length, children->value })
+    zox_set_ptr(e, Children, children);
     return e;
 }

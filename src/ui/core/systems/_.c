@@ -3,7 +3,6 @@
 #include "element_selected_system.c"
 
 #include "layouts2D/canvas_resize_system.c"
-#include "layouts2D/element_position_system.c"
 #include "layouts2D/canvas_stack_system.c"
 #include "layouts2D/window_layer_system.c"
 
@@ -70,15 +69,6 @@ void define_systems_elements_core(ecs *world) {
         [out] NavigatorState,
         [out] NavigatorTimer,
         [out] raycasts.RaycasterTarget);
-    zox_system(ElementPositionSystem, EcsOnLoad,
-        [in] layouts2.PixelPosition,
-        [in] layouts2.PixelSize,
-        [in] hierarchys.ParentLink,
-        [in] layouts2.Anchor,
-        [in] layouts2.CanvasLink,
-        [out] transforms2.Position2,
-        [out] layouts2.CanvasPosition,
-        [none] Element);
     zox_system(CanvasStackSystem, EcsOnLoad,
         [in] hierarchys.Children,
         [out] layouts2.WindowToTop,

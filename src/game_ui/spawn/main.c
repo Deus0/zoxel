@@ -1,8 +1,8 @@
 // List Menus adjust to the menu size
-ecs_entity_t spawn_main_menu(
-    ecs_world_t *world,
-    const ecs_entity_t player,
-    const ecs_entity_t canvas,
+entity spawn_main_menu(
+    ecs *world,
+    const entity player,
+    const entity canvas,
     const char *header_label
 ) {
     const byte window_layer = 3;
@@ -92,7 +92,7 @@ ecs_entity_t spawn_main_menu(
 
     Children children = (Children) { 0 };
     window_data.children = &children;
-    const ecs_entity_t e = spawn_window2(
+    const entity e = spawn_window2(
         world,
         canvas_data,
         window_parent_data,
@@ -120,7 +120,7 @@ ecs_entity_t spawn_main_menu(
         .anchor = float2_half,
         .layer = window_layer + 1,
     };
-    const ecs_entity_t list = spawn_list(world,
+    const entity list = spawn_list(world,
         canvas_data,
         list_parent_data,
         list_element_data,

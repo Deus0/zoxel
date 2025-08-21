@@ -10,13 +10,20 @@ entity spawn_default_ui(
     const float4 screen_to_canvas,
     const entity app
 ) {
-    const entity canvas = spawn_canvas(world,
+    const entity canvas = spawn_canvas(
+        world,
         prefab_canvas,
         ui_camera,
         dimensions,
         screen_to_canvas,
-        app);
-    spawn_canvas_overlay(world, prefab_canvas_overlay, canvas, dimensions);
+        app
+    );
+    spawn_canvas_overlay(
+        world,
+        prefab_canvas_overlay,
+        canvas,
+        dimensions
+    );
     spawn_tooltip(world, prefab_tooltip, canvas);
     // custom cursor
     entity zevice_follow = 0;
@@ -36,6 +43,7 @@ entity spawn_default_ui(
         float2_zero,
         32,
         zevice_follow);
+    zox_set_unique_name(fake_mouse, "fake_mouse");
     zox_set(fake_mouse, RenderDisabled, { 0 })
     zox_set(fake_mouse, GenerateTexture, { zox_generate_texture_none })
     clone_texture_data(world, fake_mouse, texture_source);
@@ -51,8 +59,9 @@ entity spawn_default_ui(
         float2_half,
         icon_size,
         zevice_follow);
+    zox_set_unique_name(icon_mouse_follow, "icon_mouse");
     if (local_mouse) {
-        zox_set(local_mouse, TextureLink, { fake_mouse })
+        zox_set(local_mouse, TextureLink, { fake_mouse });
     }
     return canvas;
 }

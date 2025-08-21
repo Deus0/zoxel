@@ -33,6 +33,7 @@ ecs_entity_t spawn_device_gizmo(ecs_world_t *world, const ecs_entity_t canvas, c
         .texture_size = int2_single(size),
     };
     const ecs_entity_t e = spawn_icon(world, &spawnIcon);
+    zox_set_unique_name(e, "device_gizmo");
     if (device_type == zox_device_mode_gamepad) {
         clone_texture_to_entity(world, e, "device_gamepad");
     } else if (device_type == zox_device_mode_keyboardmouse) {

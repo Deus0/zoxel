@@ -8,13 +8,17 @@ entity spawn_header3(
     const SpawnHeaderData header
 ) {
     zox_instance(element_data.prefab)
-    set_element_spawn_data(world, e, canvas_data, parent_data, &element_data);
-    zox_name("header")
+    set_element_spawn_data(
+        world,
+        e,
+        canvas_data,
+        parent_data,
+        &element_data);
+    zox_name("header");
     zox_set(e, DraggedLink, { parent_data.e });
+    Children children = (Children) { 0 };
 
-    Children *children = &((Children) { 0, NULL });
-
-    // # Header Text #
+    // # Header Text # - Left Aligned
     const int string_length = strlen(zext.text);
     int2 zext_position = (int2) {
         ((zext.font_size * string_length) / 2) + header.margins,
@@ -41,7 +45,8 @@ entity spawn_header3(
         .zext = zext
     };
     const entity header_zext = spawn_zext(world, &zextSpawnData);
-    add_to_Children(children, header_zext);
+    zox_set_unique_name(header_zext, "header_text");
+    add_to_Children(&children, header_zext);
 
     // # Header Close Button #
     if (header.is_close_button) {
@@ -53,17 +58,21 @@ entity spawn_header3(
             - (zext.font_size / 2) - header.margins,
             0
         };
-        add_to_Children(children, spawn_close_button(world, e,
-            canvas_data.e,
-            element_data.position_in_canvas,
-            element_data.size,
-            close_button_position,
-            zext.font_size,
-            padding,
-            element_data.layer + 2,
-            canvas_data.size));
+        add_to_Children(&children,
+            spawn_close_button(
+                world,
+                e,
+                canvas_data.e,
+                element_data.position_in_canvas,
+                element_data.size,
+                close_button_position,
+                zext.font_size,
+                padding,
+                element_data.layer + 2,
+                canvas_data.size));
     }
 
-    zox_set(e, Children, { children->length, children->value })
+    zox_set_ptr(e, Children, children);
+
     return e;
 }

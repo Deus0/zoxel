@@ -2,12 +2,27 @@ entity spawn_element(ecs *world, ElementSpawn *data) {
     int2 position = data->element.position;
     data->element.position_in_canvas = get_element_pixel_positionv(data->parent.position, data->parent.size, position, data->element.anchor);
     const float2 real_position = get_element_position(data->element.position_in_canvas, data->canvas.size);
-    anchor_element_position2(&position, data->element.anchor, data->element.size);
-    zox_instance(data->element.prefab)
-    zox_name("element")
-    initialize_element(world, e, data->parent.e, data->canvas.e, position, data->element.size, data->element.size, data->element.anchor, data->element.layer, real_position, data->element.position_in_canvas);
-    zox_set(e, Color, { data->texture.fill_color })
-    zox_set(e, OutlineColor, { data->texture.outline_color })
+    /*anchor_element_position2(
+        &position,
+        data->element.anchor,
+        data->element.size
+    );*/
+    zox_instance(data->element.prefab);
+    zox_name("element");
+    initialize_element(
+        world,
+        e, data->parent.e,
+        data->canvas.e,
+        position,
+        data->element.size,
+        data->element.size,
+        data->element.anchor,
+        data->element.layer,
+        real_position,
+        data->element.position_in_canvas
+    );
+    zox_set(e, Color, { data->texture.fill_color });
+    zox_set(e, OutlineColor, { data->texture.outline_color });
     return e;
 }
 

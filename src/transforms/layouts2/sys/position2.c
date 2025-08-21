@@ -17,6 +17,31 @@ float2 get_element_position(
     return position;
 }
 
+void set_child_position2(
+    ecs* world,
+    entity e,
+    int2 canvas_size
+) {
+    zox_geter_value(e, CanvasPosition, int2, canvas_position);
+    zox_muter(e, Position2, position2);
+    position2->value = get_element_position(
+        canvas_position,
+        canvas_size
+    );
+    // also set children ones
+    if (zox_has(e, Children)) {
+        zox_geter(e, Children, children);
+        for (int i = 0; i < children->length; i++) {
+            entity e2 = children->value[i];
+            set_child_position2(
+                world,
+                e2,
+                canvas_size
+            );
+        }
+    }
+}
+
 void LayoutPosition2System(iter *it) {
     zox_sys_world();
     zox_sys_begin();
@@ -29,23 +54,30 @@ void LayoutPosition2System(iter *it) {
         zox_sys_i(CanvasPosition, canvas_position);
         zox_sys_i(CanvasLink, canvas);
         zox_sys_o(Position2, position2);
-        if (dirty->value != zox_dirty_active || !zox_valid(canvas->value)) {
+        if (dirty->value != zox_dirty_active) continue;
+        if (!zox_valid(canvas->value)) {
+            zox_log("! invalid canvas [%s::%lu]",
+                zox_get_name(it->entities[i]),
+                it->entities[i]);
             continue;
         }
         zox_geter_value(canvas->value, PixelSize, int2, canvas_size);
         position2->value = get_element_position(
             canvas_position->value,
-            canvas_size);
+            canvas_size
+        );
 
-        /*if (zox_has(e, Children)) {
-            zox_geter(e, Children, children)
-            for (int i = 0; i < children->length; i++) {
-                set_ui_transform(world,
-                    children->value[i],
-                    canvas_size,
-                    position_in_canvas,
-                    pixel_size);
-            }
-        }*/
+        /*zox_log("[%s] posf [%.1fx%.1f] canvaspos [%ix%i] - canvas size [%ix%i]",
+            zox_get_name(it->entities[i]),
+            position2->value.x,
+            position2->value.y,
+            canvas_position->value.x,
+            canvas_position->value.y,
+            canvas_size.x,
+            canvas_size.y
+        );*/
+
+        zox_sys_e();
+        set_child_position2(world, e, canvas_size);
     }
 } zoxd_system2(LayoutPosition2System);

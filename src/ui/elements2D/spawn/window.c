@@ -1,19 +1,18 @@
-entity spawn_window2(ecs *world,
+entity spawn_window2(
+    ecs *world,
     const CanvasSpawnData canvas_data,
     const ParentSpawnData parent_data,
     ElementSpawnData* element_data,
-    SpawnWindow2* window_data)
-{
+    SpawnWindow2* window_data
+) {
     const byte header_height = window_data->header_font_size + window_data->header_padding.y * 2;
-    zox_instance(element_data->prefab)
-    zox_name("window")
+    zox_instance(element_data->prefab);
+    zox_name("window");
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
     zox_set(e, HeaderHeight, { header_height })
 
     // start children
     Children* children = window_data->children;
-    // zox_muter(e, Children, children)
-    // Children children = (Children) { 0 };
 
     const ParentSpawnData e_parent_data = {
         .e = e,
@@ -26,7 +25,7 @@ entity spawn_window2(ecs *world,
     ElementSpawnData header_element_data = {
         .prefab = prefab_header,
         .anchor = (float2) { 0.5f, 1.0f },
-        .position = (int2) { 0, 0 },
+        .position = (int2) { 0, - header_height / 2 },
         .size = (int2) { element_data->size.x, header_height },
         .layer = element_data->layer + 1,
     };
@@ -45,24 +44,26 @@ entity spawn_window2(ecs *world,
         .padding = window_data->header_padding,
     };
     // n/a
-    // SpawnButtonData close_button_data = { 0 };
     const entity header = spawn_header3(
         world,
         canvas_data,
         e_parent_data,
         header_element_data,
-        // close_button_data,
         header_text_data,
         header_data);
     add_to_Children(children, header);
-    set_window_bounds_to_canvas(world, e, canvas_data.size, element_data->size, element_data->anchor);
+
+    set_window_bounds_to_canvas(
+        world,
+        e,
+        canvas_data.size,
+        element_data->size,
+        element_data->anchor
+    );
 
     // spawn body
-
     // spawn scrollbar
-
     // add_to_Children(children, scrollbar);
-
     // window_data->children = children;
 
     return e;

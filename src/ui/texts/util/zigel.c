@@ -173,11 +173,11 @@ void set_zigel_position(
     const int2 canvas_size
 ) {
     const int2 pixel_position = calculate_zigel_position(textData->value, textData->length, data_index, font_size, text_alignment, text_padding, default_line_padding);
-    const int2 global_position = get_element_pixel_positionv(parent_position, parent_size, pixel_position, anchor);
-    const float2 real_position = get_element_position(global_position, canvas_size);
-    zox_set(e, CanvasPosition, { global_position })
+    // const int2 global_position = get_element_pixel_positionv(parent_position, parent_size, pixel_position, anchor);
+    // const float2 real_position = get_element_position(global_position, canvas_size);
+    // zox_set(e, CanvasPosition, { global_position })
     zox_set(e, PixelPosition, { pixel_position })
-    zox_set(e, Position2, { real_position })
+    // zox_set(e, Position2, { real_position })
 }
 
 // spawns a text character in a place

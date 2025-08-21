@@ -1,20 +1,20 @@
 int2 get_element_pixel_positionv(
-    const int2 parent_pixel_positionv,
+    const int2 parent_position,
     const int2 parent_size,
-    const int2 pixel_position,
+    const int2 position,
     const float2 anchor
 ) {
-    int2 pixel_positionv = parent_pixel_positionv;
+    int2 output = parent_position;
     // position is actually the centre point, so get the bottom left corner here
-    pixel_positionv.x -= parent_size.x / 2;
-    pixel_positionv.y -= parent_size.y / 2;
+    output.x -= parent_size.x / 2;
+    output.y -= parent_size.y / 2;
     // now centre it within the parent element / canvas
-    pixel_positionv.x += (int) (parent_size.x * anchor.x);
-    pixel_positionv.y += (int) (parent_size.y * anchor.y);
+    output.x += (int) (parent_size.x * anchor.x);
+    output.y += (int) (parent_size.y * anchor.y);
     // add local position offset
-    pixel_positionv.x += pixel_position.x;
-    pixel_positionv.y += pixel_position.y;
-    return pixel_positionv;
+    output.x += position.x;
+    output.y += position.y;
+    return output;
 }
 
 void set_child_canvas_position(
@@ -47,8 +47,14 @@ void set_child_canvas_position(
     }
 }
 
-
-extern void anchor_element_position2(int2*, const float2, const int2);
+void anchor_element_position2(
+    int2* position,
+    const float2 anchor,
+    const int2 parent_size
+) {
+    position->x += (parent_size.x / 2.0f) - ceil(parent_size.x * anchor.x);
+    position->y += (parent_size.y / 2.0f) - ceil(parent_size.y * anchor.y);
+}
 
 void LayoutParentPositionSystem(iter *it) {
     zox_sys_world();
@@ -66,26 +72,52 @@ void LayoutParentPositionSystem(iter *it) {
         zox_sys_i(Anchor, anchor);
         zox_sys_i(ParentLink, parent);
         zox_sys_o(CanvasPosition, canvas_position);
-        if (dirty->value != zox_dirty_active ||
-            !zox_valid(parent->value) ||
-            !zox_has(parent->value, PixelPosition) ||
-            !zox_has(parent->value, PixelSize)) {
+        if (dirty->value != zox_dirty_active) continue;
+        if (!zox_valid(parent->value) || !zox_has(parent->value, PixelSize)) {
+            zox_log("! invalid parent [%s::%lu]",
+                zox_get_name(it->entities[i]),
+                it->entities[i]);
             continue;
         }
-        zox_geter_value(parent->value, CanvasPosition, int2, parent_position);
+
+        int2 parent_position;
+        if (zox_has(parent->value, CanvasPosition)) {
+            parent_position = zox_get_value(parent->value, CanvasPosition);
+        } else if (zox_has(parent->value, PixelPosition)) {
+            parent_position = zox_get_value(parent->value, PixelPosition);
+        } else {
+            parent_position = int2_zero;
+        }
         zox_geter_value(parent->value, PixelSize, int2, parent_size);
 
         int2 position = layout_position->value;
         anchor_element_position2(
             &position,
             anchor->value,
-            layout_size->value);
+            parent_size
+        ); // layout_size->value);
         canvas_position->value = get_element_pixel_positionv(
             parent_position,
             parent_size,
             position,
-            anchor->value);
-        // zox_geter_value(e, PixelSize, int2, size);
-        // set_child_canvas_position(world, e, canvas_position->value, size);
+            anchor->value
+        );
+
+        /*zox_log("[%s] anc [%.1fx%.1f] loc [%ix%i] -> [%ix%i] => pos [%ix%i] from parent size [%ix%i]",
+            zox_get_name(it->entities[i]),
+            anchor->value.x,
+            anchor->value.y,
+            layout_position->value.x,
+            layout_position->value.y,
+            position.x,
+            position.y,
+            canvas_position->value.x,
+            canvas_position->value.y,
+            parent_size.x,
+            parent_size.y
+        );*/
+
+        zox_sys_e();
+        set_child_canvas_position(world, e, canvas_position->value, layout_size->value);
     }
 } zoxd_system2(LayoutParentPositionSystem);
