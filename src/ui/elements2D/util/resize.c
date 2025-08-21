@@ -1,9 +1,10 @@
 // uses resizes the mesh
-void on_resized_element(ecs *world,
+void on_resized_element(
+    ecs *world,
     const entity e,
     const int2 pixel_size,
-    const float2 canvas_size)
-{
+    const float2 canvas_size
+) {
     if (!headless && zox_has(e, MeshVertices2D)) {
         zox_geter(e, MeshAlignment, meshAlignment)
         zox_muter(e, MeshVertices2D, meshVertices2D)
@@ -28,7 +29,7 @@ void on_resized_element(ecs *world,
             on_resized_element(world, header, new_header_size, canvas_size);
             zox_geter(header, Children, header_children)
             if (header_children->length > 1) {
-                zox_geter_value(header, Position2D, float2, header_position)
+                zox_geter_value(header, Position2, float2, header_position)
                 const entity close_button = header_children->value[1];
                 const int2 close_button_position = zox_get_value(close_button, PixelPosition)
                 zox_geter_value(close_button, Anchor, float2, close_button_anchor)

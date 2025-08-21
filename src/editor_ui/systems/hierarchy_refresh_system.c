@@ -47,7 +47,7 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
     // const ecs_entity_t realm = local_realm;
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(Position2D)
+    zox_sys_in(Position2)
     zox_sys_in(CanvasPosition)
     zox_sys_in(Layer2D)
     zox_sys_in(Anchor)
@@ -61,7 +61,7 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
     zox_sys_out(Children)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        zox_sys_i(Position2D, position2D)
+        zox_sys_i(Position2, position2)
         zox_sys_i(CanvasPosition, canvasPosition)
         zox_sys_i(Layer2D, layer2D)
         zox_sys_i(Anchor, anchor)
@@ -105,7 +105,7 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
         }
 #endif
         const int max_characters = get_max_characters_d("hierarchy", labels);
-        const float2 window_position = position2D->value;
+        const float2 window_position = position2->value;
         const int2 window_pixel_positionv = canvasPosition->value;
         const int2 old_window_size = pixelSize->value;
         // const int window_width = get_max_width(header_label, scaled_header_font_size, header_margins, labels, elements_count, scaled_font_size, button_padding.x + list_margins.x);
@@ -115,12 +115,12 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
         }
         if (new_window_size.x != old_window_size.x) {
             int header_height = zox_gett_value(header, PixelSize).y;
-            reverse_anchor_element_position2D_with_header(&pixelPosition->value, anchor->value, old_window_size, header_height);
+            reverse_anchor_element_position2_with_header(&pixelPosition->value, anchor->value, old_window_size, header_height);
             pixelSize->value = new_window_size;
             textureSize->value = new_window_size;
             // on_resized_element(world, e, new_window_size, int2_to_float2(canvas_size));
             // set position based on new size
-            anchor_element_position2D_with_header(&pixelPosition->value, anchor->value, pixelSize->value, header_height);
+            anchor_element_position2_with_header(&pixelPosition->value, anchor->value, pixelSize->value, header_height);
         }
         // refresh elements
         set_ui_list_hierarchy(world,

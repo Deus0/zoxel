@@ -3,22 +3,22 @@
 
 void define_systems_line2D(ecs_world_t *world) {
     zox_system(Line2DElementSystem, zoxp_transforms,
-        [in] LinePosition2D,
-        [in] elements.core.CanvasLink,
+        [in] LinePosition2,
+        [in] layouts2.CanvasLink,
         [out] LineData2D,
         [none] Line2D)
     zox_render3D_plus_system(Line2DRenderSystem,
         [in] LineData2D,
         [in] lines.LineThickness,
         [in] colorz.Color,
-        [in] elements.core.Layer2D,
+        [in] layouts2.Layer2D,
         [none] Line2D,
         [none] !ElementLine2D)
     zox_render2D_system(ElementLine2DRenderSystem,
         [in] LineData2D,
         [in] lines.LineThickness,
         [in] colorz.Color,
-        [in] elements.core.Layer2D,
+        [in] layouts2.Layer2D,
         [none] Line2D,
         [none] ElementLine2D)
 }

@@ -1,4 +1,4 @@
-float2 get_ui_real_position2D_canvas_no_anchor(
+float2 get_ui_real_position2_canvas_no_anchor(
     const int2 local_pixel_position,
     const float2 canvas_size_f// ,
     // const float aspect_ratio
@@ -13,12 +13,12 @@ void set_ui_line_position(
     const float2 canvas_size_f//,
     // const float aspect_ratio
 ) {
-    const float2 point_a = get_ui_real_position2D_canvas_no_anchor(
+    const float2 point_a = get_ui_real_position2_canvas_no_anchor(
         (int2) { points.x, points.y },
         canvas_size_f//,
         //aspect_ratio
     );
-    const float2 point_b = get_ui_real_position2D_canvas_no_anchor(
+    const float2 point_b = get_ui_real_position2_canvas_no_anchor(
         (int2) { points.z, points.w },
         canvas_size_f//,
         // aspect_ratio
@@ -30,12 +30,12 @@ void set_ui_line_position(
 void Line2DElementSystem(ecs_iter_t *it) {
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(LinePosition2D)
+    zox_sys_in(LinePosition2)
     zox_sys_in(CanvasLink)
     zox_sys_out(LineData2D)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(CanvasLink, canvasLink)
-        zox_sys_i(LinePosition2D, linePosition2D)
+        zox_sys_i(LinePosition2, linePosition2)
         zox_sys_o(LineData2D, lineData2D)
         if (!zox_valid(canvasLink->value)) {
             continue;
@@ -45,7 +45,7 @@ void Line2DElementSystem(ecs_iter_t *it) {
         // const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
         set_ui_line_position(
             lineData2D,
-            linePosition2D->value,
+            linePosition2->value,
             canvas_size_f//,
             //aspect_ratio
         );

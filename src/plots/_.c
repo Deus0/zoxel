@@ -25,7 +25,7 @@ zox_begin_module(Plots)
     zox_system(PlotLineSystem, EcsOnUpdate,
         [in] hierarchys.ParentLink,
         [in] hierarchys.ChildIndex,
-        [out] lines2.d.LineLocalPosition2D,
+        [out] lines2.d.LineLocalPosition2,
         [none] PlotLine);
     zox_system(PlotLabelSystem, EcsOnUpdate,
         [in] hierarchys.ParentLink,

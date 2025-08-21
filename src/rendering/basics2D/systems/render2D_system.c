@@ -9,14 +9,14 @@ void RenderMaterial2DSystem(iter *it) {
         return;
     }
     zox_sys_begin()
-    zox_sys_in(Position2D)
+    zox_sys_in(Position2)
     zox_sys_in(Rotation2D)
     zox_sys_in(Scale1D)
     zox_sys_in(Brightness)
     zox_sys_in(MaterialGPULink)
     zox_sys_in(TextureGPULink)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Position2D, position2D)
+        zox_sys_i(Position2, position2)
         zox_sys_i(Rotation2D, rotation2D)
         zox_sys_i(Scale1D, scale1D)
         zox_sys_i(Brightness, brightness)
@@ -39,7 +39,7 @@ void RenderMaterial2DSystem(iter *it) {
         glVertexAttribPointer(attributes.vertex_position, 2, GL_FLOAT, GL_FALSE, 16, (GLvoid*)(0 * sizeof(float)));
         glVertexAttribPointer(attributes.vertex_uv, 2, GL_FLOAT, GL_FALSE, 16, (GLvoid*)(2 * sizeof(float)));
         zox_gpu_float4x4(attributes.camera_matrix, render_camera_matrix);
-        zox_gpu_float3(attributes.position, (float3) { position2D->value.x, position2D->value.y, 0 });
+        zox_gpu_float3(attributes.position, (float3) { position2->value.x, position2->value.y, 0 });
         zox_gpu_float(attributes.angle, rotation2D->value);
         zox_gpu_float(attributes.scale, scale1D->value);
         zox_gpu_float(attributes.brightness, brightness->value);

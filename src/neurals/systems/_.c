@@ -19,7 +19,7 @@ void define_systems_neurals(ecs_world_t* world) {
 
 #ifdef zox_render_brain
     zox_system_1(NeuronRenderSystem, zoxp_mainthread,
-        [in] transforms2.Position2D,
+        [in] transforms2.Position2,
         [none] Neuron)
     zox_system_1(ConnectionRenderSystem, zoxp_mainthread,
         [in] ConnectionData,

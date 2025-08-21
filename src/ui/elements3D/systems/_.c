@@ -35,7 +35,7 @@ void define_systems_elements3D(ecs *world) {
     if (!headless) {
         zox_system_1(Element3DMeshSystem, zoxp_mainthread,
             //[in] layouts2.PixelSize,
-            //[in] elements.core.CanvasLink,
+            //[in] layouts2.CanvasLink,
             [out] elements.core.InitializeElement,
             [out] rendering.MeshDirty,
             // [out] textures.GenerateTexture,

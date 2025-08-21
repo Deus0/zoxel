@@ -11,13 +11,13 @@ void NeuronRenderSystem(ecs_iter_t *it) {
     // const color_rgb neuron_color_hidden = (color_rgb) { 0, 0, 255 };
     // const color_rgb neuron_color_output = (color_rgb) { 0, 255, 0 };
     zox_field_world()
-    zox_field_in(Position2D, position2Ds, 1)
+    zox_field_in(Position2, position2s, 1)
     for (int i = 0; i < it->count; i++) {
         zox_field_e()
-        zox_field_i(Position2D, position2Ds, position2D)
+        zox_field_i(Position2, position2s, position2)
         float scale = neuron_size; //  * weight->value;
         if (zox_has(it->entities[i], InputNeuron)) scale *= 2.0f;
-        float2 neuron_position = position2D->value;
+        float2 neuron_position = position2->value;
         neuron_position.y += neural_position.y; // offset for world rendering
         const float output = zox_get_value(e, Signal)
         int gray_value = (int) (255 * output);

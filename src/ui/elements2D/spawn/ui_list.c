@@ -84,10 +84,10 @@ entity spawn_ui_list(
 
     if (is_scrollbar) {
         pixel_size.x += (scrollbar_width / 2) + scrollbar_margins;
-        anchor_element_position2D_with_header(&pixel_position, anchor, pixel_size, header_height);
+        anchor_element_position2_with_header(&pixel_position, anchor, pixel_size, header_height);
     }
     const int2 pixel_positionv = get_element_pixel_positionv(int2_half(canvas_size), canvas_size, pixel_position, anchor);
-    const float2 position2D = get_element_position(pixel_positionv, canvas_size);
+    const float2 position2 = get_element_position(pixel_positionv, canvas_size);
 
 
 
@@ -104,7 +104,7 @@ entity spawn_ui_list(
         pixel_size,
         anchor,
         layer,
-        position2D,
+        position2,
         pixel_positionv);
     Children *children = &((Children) { 0, NULL });
     initialize_Children(children, children_length);

@@ -177,7 +177,7 @@ void set_zigel_position(
     const float2 real_position = get_element_position(global_position, canvas_size);
     zox_set(e, CanvasPosition, { global_position })
     zox_set(e, PixelPosition, { pixel_position })
-    zox_set(e, Position2D, { real_position })
+    zox_set(e, Position2, { real_position })
 }
 
 // spawns a text character in a place

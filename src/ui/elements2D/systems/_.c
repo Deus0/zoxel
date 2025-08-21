@@ -5,31 +5,46 @@
 #include "slide_event_system.c"
 
 void define_systems_elements2D(ecs *world) {
-    zox_system(ElementDragSystem, EcsPostLoad,
+    zox_system(
+        ElementDragSystem,
+        EcsPostLoad,
         [in] elements.core.DraggableState,
         [in] elements.core.DraggingDelta,
-        [in] elements.core.DraggedLink)
-    zox_system(ScrollbarSystem, EcsPostUpdate,
+        [in] elements.core.DraggedLink
+    );
+    zox_system(
+        ScrollbarSystem,
+        EcsPostUpdate,
         [in] elements.core.DraggableState,
         [in] layouts2.PixelPosition,
         [in] layouts2.PixelSize,
         [in] hierarchys.ParentLink,
-        [none] ScrollbarButton)
-    zox_system(Elementbar2DSystem, EcsPostUpdate,
+        [none] ScrollbarButton
+    );
+    zox_system(
+        Elementbar2DSystem,
+        EcsPostUpdate,
         [in] elements.core.ElementBar,
         [in] elements.core.ElementBarSize,
         [in] hierarchys.Children,
         [in] layouts2.PixelSize,
-        [none] Elementbar2D)
-    zox_system(TooltipSystem, EcsOnUpdate,
+        [none] Elementbar2D
+    );
+    zox_system(
+        TooltipSystem,
+        EcsOnUpdate,
         [in] elements.core.SelectState,
-        [in] elements.core.CanvasLink,
-        [in] elements.core.TooltipEvent)
-    zox_system(SlideEventSystem, EcsOnUpdate,
+        [in] layouts2.CanvasLink,
+        [in] elements.core.TooltipEvent
+    );
+    zox_system(
+        SlideEventSystem,
+        EcsOnUpdate,
         [in] elements.core.SlideEvent,
         [in] elements2.SlideBounds,
         [in] elements.core.DraggableState,
         [in] elements.core.DraggerLink,
-        [in] elements.core.DraggableLimits,
-        [in] layouts2.PixelPosition)
+        [in] layouts2.DraggableLimits,
+        [in] layouts2.PixelPosition
+    );
 }

@@ -1,8 +1,8 @@
 int get_label_player_character2D(ecs_world_t *world, const ecs_entity_t player, char buffer[], int buffer_size, int buffer_index) {
     const ecs_entity_t character = zox_get_value(player, CharacterLink)
-    if (!zox_valid(character) || !zox_has(character, Position2D)) return buffer_index;
-    const float2 position2D = zox_get_value(character, Position2D)
-    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "player [%ix%i]\n", (int) position2D.x, (int) position2D.y);
+    if (!zox_valid(character) || !zox_has(character, Position2)) return buffer_index;
+    const float2 position2 = zox_get_value(character, Position2)
+    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "player [%ix%i]\n", (int) position2.x, (int) position2.y);
     return buffer_index;
 }
 
@@ -22,7 +22,7 @@ uint get_label_character2_player(ecs_world_t *world,
         return index;
     }
     zox_geter_value(player, CameraLink, ecs_entity_t, camera)
-    zox_geter_value(characterLink->value, Position2D, float2, position2)
+    zox_geter_value(characterLink->value, Position2, float2, position2)
     zox_geter_value(camera, Position3D, float3, camera_position3)
     index += snprintf(buffer + index, size - index, "player [%s]:\n", zox_get_name(player));
     index += snprintf(buffer + index, size - index, "   - is controlling [%s]\n",  zox_get_name(characterLink->value));

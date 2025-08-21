@@ -1,18 +1,18 @@
 // todo: refactor this extern
 extern int2 get_line_element_mid_point(ecs *world, entity e);
-extern void set_line_element_real_position2D(ecs *world, entity e, float2 real_position2D, int2 canvas_size, int2 pixel_position);
+extern void set_line_element_real_position2(ecs *world, entity e, float2 real_position2, int2 canvas_size, int2 pixel_position);
 
-void anchor_element_position2D_with_header(int2 *position, const float2 position_anchor, const int2 window_size, const float header_height) {
+void anchor_element_position2_with_header(int2 *position, const float2 position_anchor, const int2 window_size, const float header_height) {
     position->x += (window_size.x / 2.0f) - window_size.x * position_anchor.x;
     position->y += (window_size.y / 2.0f) - (window_size.y + header_height) * position_anchor.y;
 }
 
-void reverse_anchor_element_position2D_with_header(int2 *position, const float2 position_anchor, const int2 window_size, const float header_height) {
+void reverse_anchor_element_position2_with_header(int2 *position, const float2 position_anchor, const int2 window_size, const float header_height) {
     position->x -= (window_size.x / 2.0f) - window_size.x * position_anchor.x;
     position->y -= (window_size.y / 2.0f) - (window_size.y + header_height) * position_anchor.y;
 }
 
-void anchor_element_position2D(int2 *position, const float2 position_anchor, const int2 window_size) {
+void anchor_element_position2(int2 *position, const float2 position_anchor, const int2 window_size) {
     position->x += (window_size.x / 2.0f) - ceil(window_size.x * position_anchor.x);
     position->y += (window_size.y / 2.0f) - ceil(window_size.y * position_anchor.y);
 }
@@ -44,18 +44,18 @@ void set_element_position(ecs *world,
     }
     // calculate pixel and real positions
     const int2 position_in_canvas = get_element_pixel_positionv(parent_position, parent_size, position, anchor);
-    const float2 position2D = get_element_position(position_in_canvas, canvas_size);
-    if (zox_has(e, Position2D)) {
-        Position2D *position2D_component = zox_get_mut(e, Position2D)
-        position2D_component->value = position2D;
-        zox_modified(e, Position2D);
+    const float2 position2 = get_element_position(position_in_canvas, canvas_size);
+    if (zox_has(e, Position2)) {
+        Position2 *position2_component = zox_get_mut(e, Position2)
+        position2_component->value = position2;
+        zox_modified(e, Position2);
     }
     if (zox_has(e, CanvasPosition)) {
         CanvasPosition *canvasPosition = zox_get_mut(e, CanvasPosition)
         canvasPosition->value = position_in_canvas;
         zox_modified(e, CanvasPosition);
     }
-    set_line_element_real_position2D(world, e, position2D, canvas_size, position);
+    set_line_element_real_position2(world, e, position2, canvas_size, position);
     if (zox_has(e, Children)) {
         int2 size = parent_size;
         if (zox_has(e, PixelSize)) {

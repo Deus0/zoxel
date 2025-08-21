@@ -23,8 +23,8 @@ entity spawn_scrollbar(ecs *world,
     zox_name("scrollbar")
     zox_set(e, ElementMargins, { margins })
     int2 pixel_positionv = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
-    float2 position2D = get_element_position(pixel_positionv, canvas_size);
-    initialize_element(world, e, parent, canvas, pixel_position, pixel_size, pixel_size, anchor, layer, position2D, pixel_positionv);
+    float2 position2 = get_element_position(pixel_positionv, canvas_size);
+    initialize_element(world, e, parent, canvas, pixel_position, pixel_size, pixel_size, anchor, layer, position2, pixel_positionv);
     zox_muter(e, Children, children)
     const entity scrollbar_handle = spawn_scrollbar_front(world,
         e,

@@ -14,7 +14,7 @@ entity spawn_element_basic(
     const int2 canvas_size = zox_get_value(canvas, PixelSize)
     const int2 position_in_canvas = get_element_pixel_positionv(parent_position, parent_size, position, anchor);
     const float2 positionf = get_element_position(position_in_canvas, canvas_size);
-    anchor_element_position2D(&position, anchor, pixel_size);
+    anchor_element_position2(&position, anchor, pixel_size);
     zox_instance(prefab)
     zox_name("element_basic")
     initialize_element(world, e, parent, canvas, position, pixel_size, texture_size, anchor, layer, positionf, position_in_canvas);

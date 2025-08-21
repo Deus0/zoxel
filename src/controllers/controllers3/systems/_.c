@@ -62,7 +62,7 @@ void define_systems_controllers3D(ecs_world_t *world) {
             [none] players.Player)
     zox_system_1(EditorInputSystem, EcsPreStore,
             [in] inputs.DeviceLinks,
-            [in] elements.core.CanvasLink,
+            [in] layouts2.CanvasLink,
             [none] players.Player)
     zox_system_1(ActionsShortcutSystem, EcsOnUpdate,
             [in] inputs.DeviceLinks,

@@ -65,29 +65,6 @@ void get_component_label(
     add_component_label(color)
     add_component_label(color_rgb)
     add_component_label(text)
-    /*else if (is_component_type_int3(id)) {
-        buffer_index = get_type_label_int3(world, e, buffer, buffer_size, buffer_index);
-    }
-    else if (is_component_type_text(id)) {
-        buffer_index = get_type_label_text(world, e, buffer, buffer_size, buffer_index);
-    }
-    // zox_dynamic_component_label(byte, EntityDirty)
-    else zox_dynamic_component_label(byte2, TextPadding)
-    else zox_dynamic_component_label(int, ID)
-    else zox_dynamic_component_label(int2, DraggingDelta)
-    // else zox_dynamic_component_label(int3, int3_stub)
-    else zox_dynamic_component_label(int4, DraggableLimits)
-    else zox_dynamic_component_label(lint, Seed)
-    else zox_dynamic_component_label(float, Brightness)
-    else zox_dynamic_component_label(float2, Position2D)
-    else zox_dynamic_component_label(float3, Position3D)
-    else zox_dynamic_component_label(float4, Rotation3D)
-    else zox_dynamic_component_label(float6, Position3DBounds)
-    else zox_dynamic_component_label(double, SoundLength)
-    else zox_dynamic_component_label(entity, CanvasLink)
-    else zox_dynamic_component_label(color, Color)
-    else zox_dynamic_component_label(color_rgb, ColorRGB)
-    // else zox_dynamic_component_label(zext, ZoxName)*/
     else {
         const EcsComponent* c = (EcsComponent*) ecs_get(world, id, EcsComponent);
         unsigned int component_size = c !=  NULL ? c->size : 0;

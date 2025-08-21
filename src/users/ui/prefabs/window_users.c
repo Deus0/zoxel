@@ -32,7 +32,7 @@ ecs_entity_t spawn_window_users(
     }
     const int2 canvas_position = get_element_pixel_positionv(data.parent.position, data.element.size, position, data.element.anchor);
     const float2 real_position = get_element_position(canvas_position, data.canvas.size);
-    anchor_element_position2D(&position, data.element.anchor, data.element.size);
+    anchor_element_position2(&position, data.element.anchor, data.element.size);
 
     zox_instance(data.element.prefab);
     zox_set_name(e, data.header_zext.text);

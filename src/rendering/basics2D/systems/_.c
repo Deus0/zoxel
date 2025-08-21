@@ -5,7 +5,7 @@
 
 void define_systems_basics2D(ecs *world) {
     zox_render3D_system(RenderMaterial2DSystem,
-        [in] transforms2.Position2D,
+        [in] transforms2.Position2,
         [in] transforms2.Rotation2D,
         [in] transforms.Scale1D,
         [in] rendering.Brightness,

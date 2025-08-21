@@ -10,8 +10,7 @@ entity spawn_header3(
     zox_instance(element_data.prefab)
     set_element_spawn_data(world, e, canvas_data, parent_data, &element_data);
     zox_name("header")
-    zox_set(e, DraggedLink, { parent_data.e })
-    // zox_log("[%s] is now dragging [%s]", zox_get_name(e), zox_get_name(parent_data.e))
+    zox_set(e, DraggedLink, { parent_data.e });
 
     Children *children = &((Children) { 0, NULL });
 

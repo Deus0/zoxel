@@ -13,8 +13,8 @@ void Camera2FollowSystem(iter *it) {
         if (canRoam->value || !zox_valid(cameraTarget->value)) {
             continue;
         }
-        if (zox_has(cameraTarget->value, Position2D)) {
-            zox_geter_value(cameraTarget->value, Position2D, float2, target_position)
+        if (zox_has(cameraTarget->value, Position2)) {
+            zox_geter_value(cameraTarget->value, Position2, float2, target_position)
             position3D->value.x = target_position.x;
             position3D->value.y = target_position.y;
         } else if (zox_has(cameraTarget->value, Position3D)) {

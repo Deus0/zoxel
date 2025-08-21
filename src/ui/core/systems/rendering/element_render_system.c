@@ -8,7 +8,7 @@ void ElementRenderSystem(iter *it) {
     zox_geter_value(material_textured2D, MaterialGPULink, uint, material_link)
     zox_geter(material_textured2D, MaterialTextured2D, material_attributes)
     zox_sys_begin()
-    zox_sys_in(Position2D)
+    zox_sys_in(Position2)
     zox_sys_in(Rotation2D)
     zox_sys_in(Scale1D)
     zox_sys_in(Layer2D)
@@ -20,7 +20,7 @@ void ElementRenderSystem(iter *it) {
     zox_sys_in(TextureGPULink)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        zox_sys_i(Position2D, position2D)
+        zox_sys_i(Position2, position2)
         zox_sys_i(Rotation2D, rotation2D)
         zox_sys_i(Scale1D, scale1D)
         zox_sys_i(RenderDisabled, renderDisabled)
@@ -49,7 +49,7 @@ void ElementRenderSystem(iter *it) {
         glBindBuffer(GL_ARRAY_BUFFER, uvsGPULink->value);
         glEnableVertexAttribArray(material_attributes->vertex_uv);
         glVertexAttribPointer(material_attributes->vertex_uv, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        zox_gpu_float3(material_attributes->position, (float3) { position2D->value.x, position2D->value.y, position_z });
+        zox_gpu_float3(material_attributes->position, (float3) { position2->value.x, position2->value.y, position_z });
         zox_gpu_float(material_attributes->angle, rotation2D->value);
         zox_gpu_float(material_attributes->scale, scale1D->value);
         zox_gpu_float(material_attributes->brightness, brightness->value);

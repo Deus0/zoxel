@@ -20,6 +20,9 @@
 #include "inputs/zevice_click_system.c"
 #include "click_sound_system.c"
 
+#include "texture_size.c"
+#include "render_texture.c"
+
 zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
 zox_increment_system_with_reset(ActiveStateDirty, zox_dirty_end);
 zox_increment_system_with_reset_extra(ClickState, zox_click_state_trigger_clicked, zox_click_state_clicked_idle, zox_click_state_trigger_released, zox_click_state_idle);
@@ -32,9 +35,9 @@ void define_systems_elements_core(ecs *world) {
     zoxd_system_increment(ClickState);
     zoxd_system_increment(SelectState);
     zox_filter(raycast_query,
-        [in] elements.core.CanvasPosition,
+        [in] layouts2.CanvasPosition,
         [in] layouts2.PixelSize,
-        [in] elements.core.Layer2D,
+        [in] layouts2.Layer2D,
         [in] rendering.RenderDisabled,
         [none] Element,
         [none] Selectable);
@@ -71,23 +74,23 @@ void define_systems_elements_core(ecs *world) {
         [in] layouts2.PixelPosition,
         [in] layouts2.PixelSize,
         [in] hierarchys.ParentLink,
-        [in] elements.core.Anchor,
-        [in] elements.core.CanvasLink,
-        [out] transforms2.Position2D,
-        [out] elements.core.CanvasPosition,
+        [in] layouts2.Anchor,
+        [in] layouts2.CanvasLink,
+        [out] transforms2.Position2,
+        [out] layouts2.CanvasPosition,
         [none] Element);
     zox_system(CanvasStackSystem, EcsOnLoad,
         [in] hierarchys.Children,
-        [out] WindowToTop,
+        [out] layouts2.WindowToTop,
         [out] WindowsLayers,
         [out] WindowsCount,
         [none] Canvas);
     zox_system(WindowLayerSystem, EcsOnLoad,
         [in] SetWindowLayer,
-        [in] elements.core.CanvasLink,
+        [in] layouts2.CanvasLink,
         [in] hierarchys.Children,
         [out] WindowLayer,
-        [out] elements.core.Layer2D,
+        [out] layouts2.Layer2D,
         [none] Window);
 
     zox_system(ElementSelectedSystem, EcsOnUpdate,
@@ -104,39 +107,51 @@ void define_systems_elements_core(ecs *world) {
         [none] Element);
         // [none] !SelectState);
 
-    zox_system(MouseElementSystem, zox_transforms_stage,
+    zox_system(
+        MouseElementSystem,
+        zox_transforms_stage,
         [in] inputs.ZeviceLink,
-        [in] elements.core.Anchor,
-        [in] elements.core.CanvasLink,
+        [in] layouts2.Anchor,
+        [in] layouts2.CanvasLink,
         [out] layouts2.PixelPosition,
-        [none] MouseElement);
-    zox_system(DraggerEndSystem, EcsPostLoad,
+        [none] MouseElement
+    );
+    zox_system(
+        DraggerEndSystem,
+        EcsPostLoad,
         [out] elements.core.DraggableState,
         [out] DraggerLink,
-        [out] elements.core.DraggingDelta);
+        [out] elements.core.DraggingDelta
+    );
     if (!headless) {
-        zox_system(CanvasResizeSystem, EcsOnUpdate,
+        zox_system(
+            CanvasResizeSystem,
+            EcsOnUpdate,
             [in] cameras.CameraLink,
             [in] hierarchys.Children,
             [in] cameras.ScreenToCanvas,
             [in] apps.AppLink,
             [out] layouts2.PixelSize,
-            [none] Canvas);
+            [none] Canvas
+        );
     }
     // all ui
-    zox_render2D_system(RenderTextureRenderSystem,
+    zox_render2D_system(
+        RenderTextureRenderSystem,
         [in] transforms3.TransformMatrix,
-        [in] elements.core.Layer2D,
+        [in] layouts2.Layer2D,
         [in] rendering.RenderDisabled,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.TextureGPULink,
-        [none] cameras.RenderTexture);
-    zox_render2D_system(ElementRenderSystem,
-        [in] transforms2.Position2D,
+        [none] cameras.RenderTexture
+    );
+    zox_render2D_system(
+        ElementRenderSystem,
+        [in] transforms2.Position2,
         [in] transforms2.Rotation2D,
         [in] transforms.Scale1D,
-        [in] elements.core.Layer2D,
+        [in] layouts2.Layer2D,
         [in] rendering.RenderDisabled,
         [in] rendering.Brightness,
         [in] rendering.Alpha,
@@ -144,34 +159,66 @@ void define_systems_elements_core(ecs *world) {
         [in] rendering.UvsGPULink,
         [in] rendering.TextureGPULink,
         [none] ElementRender,
-        [none] !cameras.RenderTexture);
+        [none] !cameras.RenderTexture
+    );
     // healthbars
-    zox_system_1(ClickSoundSystem, zoxp_mainthread,
+    zox_system_1(
+        ClickSoundSystem,
+        zoxp_mainthread,
         [in] elements.core.ClickState,
-        [none] ClickMakeSound);
-    zox_system_1(ButtonClickEventSystem, zoxp_mainthread,
+        [none] ClickMakeSound
+    );
+    zox_system_1(
+        ButtonClickEventSystem,
+        zoxp_mainthread,
         [in] ClickEvent,
         [in] elements.core.ClickState,
         [out] Clicker,
-        [none] Element);
+        [none] Element
+    );
+
     if (!headless) {
         // EcsOnLoad - zoxp_mainthread
-        zox_system_1(ElementBeginSystem, EcsPostLoad,
+        zox_system_1(
+            ElementBeginSystem,
+            EcsPostLoad,
             [in] elements.core.InitializeElement,
             [in] layouts2.PixelSize,
             [in] rendering.MeshAlignment,
-            [in] elements.core.CanvasLink,
+            [in] layouts2.CanvasLink,
             [out] rendering.MeshDirty,
             [out] rendering.MeshVertices2D,
             [out] rendering.MeshGPULink,
             [out] rendering.TextureGPULink,
             [out] rendering.UvsGPULink,
             [none] Element);
-        zox_system_1(RenderTextureBeginSystem, EcsPreUpdate,
+        zox_system_1(
+            RenderTextureBeginSystem,
+            EcsPreUpdate,
             [in] elements.core.InitializeElement,
             [in] rendering.TextureSize,
             [in] cameras.CameraLink,
             [in] rendering.TextureGPULink,
             [none] cameras.RenderTexture);
     }
+
+    zox_system(
+        TextureSizeSystem,
+        EcsOnUpdate,
+        [in] layouts2.LayoutSizeDirty,
+        [in] layouts2.PixelSize,
+        [out] rendering.TextureSize
+    );
+
+    zox_system(
+        RenderTextureSizeSystem,
+        EcsOnUpdate,
+        [in] layouts2.LayoutSizeDirty,
+        [in] layouts2.PixelSize,
+        [in] rendering.TextureGPULink,
+        [in] cameras.CameraLink,
+        [none] cameras.RenderTexture
+    );
+
+
 }

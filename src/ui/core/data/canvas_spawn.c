@@ -1,5 +1,1 @@
 // canvas data passed down, used for calculations on sizing and positions on element spawning
-typedef struct {
-    entity e;
-    int2 size;
-} CanvasSpawnData;

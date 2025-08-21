@@ -29,7 +29,7 @@ entity spawn_header(
         (int) (font_size * 0.3f)
     };
     const int2 global_position = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
-    const float2 position2D = get_element_position(global_position, canvas_size);
+    const float2 position2 = get_element_position(global_position, canvas_size);
     const byte zext_layer = layer + 1;
     const byte button_layer = layer + 2;
     zox_instance(prefab_header)
@@ -43,7 +43,7 @@ entity spawn_header(
         pixel_size,
         anchor,
         layer,
-        position2D,
+        position2,
         global_position);
     SpawnZext zext_spawn_data = {
         .canvas = {

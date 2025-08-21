@@ -1,9 +1,9 @@
 void ClickSoundSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(ClickState)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(ClickState);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ClickState, clickState)
+        zox_sys_i(ClickState, clickState);
         if (clickState->value != zox_click_state_clicked_this_frame) {
             continue;
         }
@@ -16,4 +16,4 @@ void ClickSoundSystem(iter *it) {
             spawn_sound_generated(world, prefab_sound_generated, instrument_flute, note_frequencies[frequency], length, volume);
         }
     }
-} zoxd_system(ClickSoundSystem)
+} zoxd_system2(ClickSoundSystem);

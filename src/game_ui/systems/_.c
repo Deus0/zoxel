@@ -24,5 +24,5 @@ void define_systems_game_ui(ecs_world_t *world) {
             [in] inputs.DeviceMode,
             [in] inputs.DeviceModeDirty,
             [in] games.GameLink,
-            [in] elements.core.CanvasLink) // note: must update before
+            [in] layouts2.CanvasLink) // note: must update before
 }

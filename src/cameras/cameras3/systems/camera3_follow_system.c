@@ -11,8 +11,8 @@ void Camera3FollowSystem(iter *it) {
         if (!cameraFollowLink->value) {
             continue;
         }
-        if (zox_has(cameraFollowLink->value, Position2D)) {
-            zox_geter_value(cameraFollowLink->value, Position2D, float2, target_position)
+        if (zox_has(cameraFollowLink->value, Position2)) {
+            zox_geter_value(cameraFollowLink->value, Position2, float2, target_position)
             position->value.x = target_position.x;
             position->value.y = target_position.y;
             position->value.z = 0;

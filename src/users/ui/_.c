@@ -19,7 +19,7 @@ zox_begin_module(UsersUI)
     zox_system(UserIconTooltipSystem, EcsOnUpdate,
             [in] elements.core.SelectState,
             [in] users.UserDataLink,
-            [in] elements.core.CanvasLink,
+            [in] layouts2.CanvasLink,
             [in] elements.core.TooltipEvent,
             [none] UserIcon);
     zox_system(UserIconClickSystem, EcsPreUpdate,

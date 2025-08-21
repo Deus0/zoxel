@@ -31,7 +31,7 @@ entity spawn_zext(ecs *world, const SpawnZext *data) {
         texture_size = int2_single(data->zext.font_size);
     }
     const int2 element_canvas_position = get_element_pixel_positionv(data->parent.position, data->parent.size, data->element.position, data->element.anchor);
-    const float2 position2D = get_element_position(element_canvas_position, data->canvas.size);
+    const float2 position2 = get_element_position(element_canvas_position, data->canvas.size);
     zox_instance(data->element.prefab)
     // zox_name("zext")
     zox_set(e, RenderDisabled, { data->element.render_disabled })
@@ -90,7 +90,7 @@ entity spawn_zext(ecs *world, const SpawnZext *data) {
         zox_set(children->value[i], RenderDisabled, { data->element.render_disabled })
     }
     // this has to be done under as memory shifts a round with the points, when zox_set is called
-    initialize_element(world, e, data->parent.e, data->canvas.e, data->element.position, pixel_size, texture_size, data->element.anchor, data->element.layer, position2D, element_canvas_position);
+    initialize_element(world, e, data->parent.e, data->canvas.e, data->element.position, pixel_size, texture_size, data->element.anchor, data->element.layer, position2, element_canvas_position);
     zox_set(e, TextData, { textData->length, textData->value })
     zox_set(e, Children, { children->length, children->value })
     return e;

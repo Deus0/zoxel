@@ -4,7 +4,7 @@ ecs_entity_t spawn_prefab_character2D(
     zox_prefab();
     zox_add_tag(e, Character2D);
     zox_add_tag(e, Frictioned);
-    zox_prefab_set(e, Position2D, { float2_zero })
+    zox_prefab_set(e, Position2, { float2_zero })
     zox_prefab_set(e, Rotation2D, { 0 })
     zox_prefab_set(e, Scale1D, { 1 })
     zox_prefab_set(e, Brightness, { 1 });
@@ -24,7 +24,7 @@ ecs_entity_t spawn_prefab_character2D(
 
 ecs_entity_t spawn_character2D(ecs_world_t *world, const ecs_entity_t prefab, const float2 position) {
     zox_instance(prefab)
-    zox_set(e, Position2D, { position })
+    zox_set(e, Position2, { position })
     zox_set(e, Scale1D, { 0.4f + ((rand() % 101) / 100.0f) * 0.2f  })
     zox_set(e, Brightness, { 0.8f + ((rand() % 101) / 100.0f) * 0.6f })
     // zox_set(e, AnimateTexture, { (((rand() % 100) / 100.0f) * noise_animation_speed) })

@@ -2,13 +2,13 @@
 void Bounds2DSystem(iter *it) {
     zox_sys_begin()
     zox_sys_in(Bounds2D)
-    zox_sys_out(Position2D)
+    zox_sys_out(Position2)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Bounds2D, bounds2D)
-        zox_sys_o(Position2D, position2D)
-        if (position2D->value.x > bounds2D->value.x) position2D->value.x = bounds2D->value.x;
-        else if (position2D->value.x < -bounds2D->value.x) position2D->value.x = -bounds2D->value.x;
-        if (position2D->value.y > bounds2D->value.y) position2D->value.y = bounds2D->value.y;
-        else if (position2D->value.y < -bounds2D->value.y) position2D->value.y = -bounds2D->value.y;
+        zox_sys_o(Position2, position2)
+        if (position2->value.x > bounds2D->value.x) position2->value.x = bounds2D->value.x;
+        else if (position2->value.x < -bounds2D->value.x) position2->value.x = -bounds2D->value.x;
+        if (position2->value.y > bounds2D->value.y) position2->value.y = bounds2D->value.y;
+        else if (position2->value.y < -bounds2D->value.y) position2->value.y = -bounds2D->value.y;
     }
 } zoxd_system(Bounds2DSystem)

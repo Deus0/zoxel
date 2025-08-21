@@ -5,7 +5,7 @@ ecs_entity_t spawn_prefab_neuron(ecs_world_t *world) {
     zox_prefab_set(e, Signal, { 0 })
     zox_prefab_add(e, ParentLink)
     // this is only used for rendering / debugging
-    zox_prefab_set(e, Position2D, { float2_zero })
+    zox_prefab_set(e, Position2, { float2_zero })
     return e;
 }
 
@@ -14,6 +14,6 @@ ecs_entity_t spawn_neuron(ecs_world_t *world, const ecs_entity_t prefab, const e
     zox_name("neuron")
     zox_prefab_set(e, ParentLink, { brain })
     // zox_prefab_set(e, Weight, { weight })
-    zox_prefab_set(e, Position2D, { position })
+    zox_prefab_set(e, Position2, { position })
     return e;
 }

@@ -7,7 +7,7 @@ void ElementPositionSystem(iter *it) {
     zox_sys_in(ParentLink)
     zox_sys_in(Anchor)
     zox_sys_in(CanvasLink)
-    zox_sys_out(Position2D)
+    zox_sys_out(Position2)
     zox_sys_out(CanvasPosition)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
@@ -16,7 +16,7 @@ void ElementPositionSystem(iter *it) {
         zox_sys_i(ParentLink, parentLink)
         zox_sys_i(Anchor, anchor)
         zox_sys_i(CanvasLink, canvasLink)
-        zox_sys_o(Position2D, position2D)
+        zox_sys_o(Position2, position2)
         zox_sys_o(CanvasPosition, canvasPosition)
         if (!zox_valid(canvasLink->value) || parentLink->value != canvasLink->value) {
             continue;
@@ -27,7 +27,7 @@ void ElementPositionSystem(iter *it) {
         int2 position_in_canvas = get_element_pixel_positionv(int2_half(canvas_size), canvas_size, pixel_position, anchor2);
         const float2 positionf = get_element_position(position_in_canvas, canvas_size);
         canvasPosition->value = position_in_canvas;
-        position2D->value = positionf;
+        position2->value = positionf;
         if (zox_has(e, Children)) {
             zox_geter(e, Children, children)
             for (int j = 0; j < children->length; j++) {

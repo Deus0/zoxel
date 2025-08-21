@@ -6,11 +6,11 @@ void PlotLineSystem(ecs_iter_t *it) {
     zox_sys_begin()
     zox_sys_in(ParentLink)
     zox_sys_in(ChildIndex)
-    zox_sys_out(LineLocalPosition2D)
+    zox_sys_out(LineLocalPosition2)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ParentLink, parentLink)
         zox_sys_i(ChildIndex, childIndex)
-        zox_sys_o(LineLocalPosition2D, lineLocalPosition2D)
+        zox_sys_o(LineLocalPosition2, lineLocalPosition2)
         if (!parentLink->value || !zox_has(parentLink->value, PlotDataDouble)) {
             zox_log_error("No PlotDataDouble found on parent");
             continue;
@@ -30,6 +30,6 @@ void PlotLineSystem(ecs_iter_t *it) {
         }
         double value = data->value[childIndex->value];
         value /= line_max;
-        lineLocalPosition2D->value.w = (int) (value * parent_size.y);
+        lineLocalPosition2->value.w = (int) (value * parent_size.y);
     }
 } zoxd_system(PlotLineSystem)

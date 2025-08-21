@@ -31,9 +31,9 @@ void ConnectionRenderSystem(ecs_iter_t *it) {
             line_color = connected_line_color;
             line_thickness *= 1.5f;
         }
-        float2 neuron_a_position = zox_get_value(neuron_a, Position2D)
+        float2 neuron_a_position = zox_get_value(neuron_a, Position2)
         neuron_a_position.y += neural_position.y; // offset for world rendering
-        float2 neuron_b_position = zox_get_value(neuron_b, Position2D)
+        float2 neuron_b_position = zox_get_value(neuron_b, Position2)
         neuron_b_position.y += neural_position.y; // offset for world rendering
         // draw connection line
         spawn_line2D_colored(world, neuron_a_position, neuron_b_position, line_thickness, animate_time, line_color);

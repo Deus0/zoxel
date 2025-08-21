@@ -7,7 +7,7 @@ void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCoun
     const float2 brightnessBounds = { 0.1f, 0.4f };
     const double2 lifeTime = { 0.1f, 2.0f };
     // Create a SpaceShip prefab with a Defense component.
-    Position2D *position2Ds = malloc(sizeof(Position2D) * spawnCount);
+    Position2 *position2s = malloc(sizeof(Position2) * spawnCount);
     Velocity2D *velocity2Ds = malloc(sizeof(Velocity2D) * spawnCount);
     // Rotation2D *rotation2Ds = malloc(sizeof(Rotation2D) * spawnCount);
     // Acceleration2D *acceleration2Ds = malloc(sizeof(Acceleration2D) * spawnCount);
@@ -16,12 +16,12 @@ void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCoun
     Brightness *brightnesses = malloc(sizeof(Brightness) * spawnCount);
     DestroyInTime *destroyInTimes = malloc(sizeof(DestroyInTime) * spawnCount);
     for (int i = 0; i < spawnCount; i++) {
-        position2Ds[i].value = (float2) {
+        position2s[i].value = (float2) {
             ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
             ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f)
         };
-        position2Ds[i].value.x += bobPosition.x;
-        position2Ds[i].value.y += bobPosition.y;
+        position2s[i].value.x += bobPosition.x;
+        position2s[i].value.y += bobPosition.y;
         velocity2Ds[i].value = (float2) { ((rand() % 101) / 100.0f) * 1.0f - 0.5f, ((rand() % 101) / 100.0f) * 1.0f - 0.5f };
         velocity2Ds[i].value = normalize2D(velocity2Ds[i].value);
         velocity2Ds[i].value = float2_multiply_float(velocity2Ds[i].value, (velocityBounds.y - velocityBounds.x));
@@ -39,7 +39,7 @@ void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCoun
         .count = spawnCount,
         .ids = {
             ecs_pair(EcsIsA, particle2DPrefab),
-            ecs_id(Position2D),
+            ecs_id(Position2),
             ecs_id(Velocity2D),
             ecs_id(Acceleration2D),
             ecs_id(Rotation2D),
@@ -51,7 +51,7 @@ void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCoun
         // provide data for each id
         .data = (void*[]) {       
             NULL,           // Prefab pair, what is it used for?
-            position2Ds,
+            position2s,
             velocity2Ds,
             NULL,           // Acceleration2D
             NULL,           // Rotation2D
@@ -61,7 +61,7 @@ void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCoun
             destroyInTimes
         }
     });
-    free(position2Ds);
+    free(position2s);
     free(velocity2Ds);
     free(torque2Ds);
     free(scale1Ds);
@@ -104,19 +104,19 @@ void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCoun
         {
             velocity2Ds[i].value.y = velocityBounds.x;
         }*/
-        /*if (position2Ds[i].value.x < - positionBounds.x)
+        /*if (position2s[i].value.x < - positionBounds.x)
         {
-            position2Ds[i].value.x = - positionBounds.x;
+            position2s[i].value.x = - positionBounds.x;
         }
-        else if (position2Ds[i].value.x > positionBounds.x)
+        else if (position2s[i].value.x > positionBounds.x)
         {
-            position2Ds[i].value.x = positionBounds.x;
+            position2s[i].value.x = positionBounds.x;
         }
-        if (position2Ds[i].value.y < - positionBounds.x)
+        if (position2s[i].value.y < - positionBounds.x)
         {
-            position2Ds[i].value.y = - positionBounds.x;
+            position2s[i].value.y = - positionBounds.x;
         }
-        else if (position2Ds[i].value.y > positionBounds.x)
+        else if (position2s[i].value.y > positionBounds.x)
         {
-            position2Ds[i].value.y = positionBounds.x;
+            position2s[i].value.y = positionBounds.x;
         }*/
