@@ -30,7 +30,7 @@ float2 get_ui_real_position2_parent(
     return position2;
 }
 
-void on_element_parent_updated(
+/*void on_element_parent_updated(
     ecs *world,
     const entity e,
     const int2 local_pixel_position,
@@ -44,10 +44,10 @@ void on_element_parent_updated(
     const int2 global_pixel_position = (int2) { ceil(((position2.x / aspect_ratio) + 0.5f) * canvas_size_f.x), ((position2.y + 0.5f) * canvas_size_f.y) };
     // zox_set(e, Position2, { position2 })
     // zox_set(e, CanvasPosition, { global_pixel_position })
-}
+}*/
 
 // called by CanvasResizeSystem
-void set_ui_transform(
+/*void set_ui_transform(
     ecs *world,
     const entity e,
     const int2 canvas_size,
@@ -59,7 +59,7 @@ void set_ui_transform(
         return;
     }
 
-    const float2 canvasSizef = int2_to_float2(canvas_size);
+    // const float2 canvasSizef = int2_to_float2(canvas_size);
 
     int2 pixel_size = int2_zero;
     if (zox_has(e, AnchorSize)) {
@@ -78,6 +78,9 @@ void set_ui_transform(
     }
 
     limit_element(world, e); // check limited elements - bounded
+}*/
+
+
 
 
     // set scale of mesh again
@@ -114,4 +117,3 @@ void set_ui_transform(
             }
         }
     }*/
-}

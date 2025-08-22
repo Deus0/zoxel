@@ -2,34 +2,41 @@ extern entity get_root_canvas_camera(ecs *world, const entity e);
 
 // this is more like a non blend pass!
 void RenderTextureRenderSystem(iter *it) {
-    zox_sys_world()
+    zox_sys_world();
     if (!material_render_texture) {
         return;
     }
-    const uint material_link = zox_get_value(material_render_texture, MaterialGPULink)
-    const MaterialAttributesRenderTexture *material_attributes = zox_get(material_render_texture, MaterialAttributesRenderTexture)
+    const uint material_link = zox_get_value(material_render_texture, MaterialGPULink);
+    const MaterialAttributesRenderTexture *material_attributes = zox_get(material_render_texture, MaterialAttributesRenderTexture);
     byte has_set_material = 0;
-    zox_sys_begin()
-    zox_sys_in(TransformMatrix)
-    zox_sys_in(Layer2D)
-    zox_sys_in(RenderDisabled)
-    zox_sys_in(MeshGPULink)
-    zox_sys_in(UvsGPULink)
-    zox_sys_in(TextureGPULink)
+
+    zox_sys_begin();
+    zox_sys_in(TransformMatrix);
+    zox_sys_in(Layer2D);
+    zox_sys_in(RenderDisabled);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(UvsGPULink);
+    zox_sys_in(TextureGPULink);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(TransformMatrix, transformMatrix)
-        zox_sys_i(MeshGPULink, meshGPULink)
-        zox_sys_i(UvsGPULink, uvsGPULink)
-        zox_sys_i(TextureGPULink, textureGPULink)
-        zox_sys_i(Layer2D, layer2D)
-        zox_sys_i(RenderDisabled, renderDisabled)
-        if (renderDisabled->value || layer2D->value != renderer_layer || !meshGPULink->value.x || !meshGPULink->value.y || !uvsGPULink->value || !textureGPULink->value) {
+
+        zox_sys_e();
+        zox_sys_i(TransformMatrix, transformMatrix);
+        zox_sys_i(MeshGPULink, meshGPULink);
+        zox_sys_i(UvsGPULink, uvsGPULink);
+        zox_sys_i(TextureGPULink, textureGPULink);
+        zox_sys_i(Layer2D, layer2D);
+        zox_sys_i(RenderDisabled, renderDisabled);
+
+        if (renderDisabled->value || layer2D->value != renderer_layer || get_root_canvas_camera(world, e) != renderer_camera) {
             continue;
         }
-        if (get_root_canvas_camera(world, e) != renderer_camera) {
+
+        if (!meshGPULink->value.x || !meshGPULink->value.y || !uvsGPULink->value || !textureGPULink->value) {
+            zox_logw("RenderTexture has invalid gpu link(s)");
             continue;
         }
+
         // zox_log("+ rendering - render texture\n")
         if (!has_set_material) {
             has_set_material = 1;
@@ -37,6 +44,7 @@ void RenderTextureRenderSystem(iter *it) {
             zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
             zox_gpu_blend_disable();
         }
+
         opengl_set_mesh_indicies(meshGPULink->value.x);
         glBindBuffer(GL_ARRAY_BUFFER, meshGPULink->value.y);
         glEnableVertexAttribArray(material_attributes->vertex_position);
@@ -46,15 +54,15 @@ void RenderTextureRenderSystem(iter *it) {
         glVertexAttribPointer(material_attributes->vertex_uv, 2, GL_FLOAT, GL_FALSE, 0, 0);
         opengl_bind_texture(textureGPULink->value);
         zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
-#ifndef zox_disable_render_ui
         zox_gpu_render(6);
-#endif
+
 #ifdef zoxel_catch_opengl_errors
         if (check_opengl_error_unlogged() != 0) {
             zox_log(" > failed to render render_texture [%lu]: [%i] - [%ix%i:%i]\n", it->entities[i], 6, meshGPULink->value.x, meshGPULink->value.y, uvsGPULink->value)
             break;
         }
 #endif
+
     }
     if (has_set_material) {
         zox_gpu_disable_buffer(material_attributes->vertex_uv);

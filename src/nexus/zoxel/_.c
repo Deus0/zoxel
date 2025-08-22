@@ -157,7 +157,7 @@ zox_begin_module(ZoxGame)
     game_name = "Zoxel";
     add_hook_spawn_prefabs(zoxel_on_spawn_prefabs);
 
-    const float sub_resolution = 1; // 4;
+    const float sub_resolution = 2;
     viewport_scale = 1 / sub_resolution;
     target_fps = 0;
     // is_split_screen = 1;

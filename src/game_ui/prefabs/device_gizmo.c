@@ -32,7 +32,7 @@ entity spawn_device_gizmo(
         },
         .texture_size = int2_single(size),
     };
-    const entity e = spawn_icon(world, &spawnIcon);
+    const entity e = spawn_icon(world, &spawnIcon).x;
     zox_set_unique_name(e, "device_gizmo");
     if (device_type == zox_device_mode_gamepad) {
         clone_texture_to_entity(world, e, "device_gamepad");

@@ -1,4 +1,7 @@
-entity spawn_icon(ecs *world, SpawnIcon *data) {
+entity2 spawn_icon(
+    ecs* world,
+    SpawnIcon *data
+) {
     zox_instance(data->element.prefab);
     zox_name("icon");
     set_element_spawn_data(
@@ -29,9 +32,10 @@ entity spawn_icon(ecs *world, SpawnIcon *data) {
     const entity overlay = spawn_icon_overlay(world,
         data->canvas,
         icon_data,
-        icon_overlay_data);
+        icon_overlay_data
+    );
     add_to_Children(&children, overlay);
     // set and return
     zox_set_ptr(e, Children, children);
-    return e;
+    return (entity2) { e, overlay };
 }

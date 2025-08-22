@@ -24,7 +24,7 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
         .texture_size = data.icon.texture_size
     };
     Children children = (Children) { 0, NULL };
-    const entity icon = spawn_icon(world, &spawnIcon);
+    const entity icon = spawn_icon(world, &spawnIcon).x;
     add_to_Children(&children, icon);
     entity zext = 0;
     if (zox_has(data.element.prefab, IconLabel)) {

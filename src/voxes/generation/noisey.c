@@ -1,8 +1,9 @@
-void vnoise3(VoxelNode *node,
+void vnoise3(
+    VoxelNode *node,
     const byte node_depth,
     const byte2 voxel_range,
-    const byte black_voxel)
-{
+    const byte black_voxel
+) {
     const byte length = powers_of_two_byte[node_depth];
     byte3 size = byte3_single(length);
     byte3 position;

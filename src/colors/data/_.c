@@ -76,12 +76,14 @@ BiomeData pick_biome(lint seed) {
 
     const BiomeData bcr_volcanic = {
         .name = "Volcanic",
-        .dirt     = { 0, 360, 0, 10, 5, 20 },      // ash
-        .grass    = { 0, 30, 10, 20, 10, 30 },     // scorched roots
-        .stone    = { 0, 10, 10, 20, 10, 20 },     // lava crust
-        .sand     = { 0, 10, 10, 20, 10, 30 },     // black sand
-        .obsidian = { 240, 260, 10, 20, 5, 20 },   // blue-black cooled lava
-        .sky      = { 10, 30, 80, 100, 70, 100 },   // hell glow
+
+        .dirt      = {   0,  20,  30,  50,  25,  45 },   // deep dark ash
+        .grass     = {   10, 35,  40,  70,  35,  55 },   // scorched roots with ember tones
+        .stone     = {   0,  15,  60,  80,  50,  70 },   // glowing lava crust
+        .sand      = {   0,  25,  25,  45,  45,  65 },   // warm dark sand
+        .obsidian  = { 240, 260,  40,  70,  20,  35 },   // deep blue-black cooled lava
+        .sky       = {   10, 40,  85, 100,  80, 100 },   // intense hellish glow
+
         .chance = 0.15f,
         .frequency = 0.014832f,
     };

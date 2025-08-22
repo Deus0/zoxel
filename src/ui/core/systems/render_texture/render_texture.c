@@ -9,6 +9,7 @@ void RenderTextureSizeSystem(iter *it) {
 
     for (int i = 0; i < it->count; i++) {
 
+        zox_sys_e();
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(PixelSize, size);
         zox_sys_i(TextureGPULink, texture_gpu);
@@ -18,19 +19,23 @@ void RenderTextureSizeSystem(iter *it) {
             continue;
         }
 
-        const int2 scaled_size = scale_viewport(size->value);
+        if (!texture_gpu->value) {
+            zox_log_error("[%s] Render Texture Cannot Upload", zox_get_name(e));
+            continue;
+        }
 
+        const int2 scaled_size = scale_viewport(size->value);
+        zox_geter_value(camera->value, RenderBufferLink, uint, rbo);
         set_render_texture_gpu(
             texture_gpu->value,
             scaled_size
         );
         set_render_buffer_size(
-            zox_gett_value(camera->value, RenderBufferLink),
+            rbo,
             scaled_size
         );
 
-        /*zox_sys_e();
-        zox_log("+ [%s] Render Scaled Size: %ix%i - og [%ix%i]",
+        /*zox_log("+ [%s] Render Scaled Size: %ix%i - og [%ix%i]",
             zox_get_name(e),
             scaled_size.x, scaled_size.y,
             size->value.x, size->value.y);*/

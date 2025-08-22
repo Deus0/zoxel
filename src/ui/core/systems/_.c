@@ -7,10 +7,14 @@
 #include "layouts2D/window_layer_system.c"
 
 #include "rendering/element_begin.c"
-#include "rendering/texture_begin.c"
-#include "rendering/render_texture_begin.c"
-#include "rendering/render_texture_renderer.c"
+#include "rendering/texture_dirty_begin.c"
+#include "rendering/texture_gpu_begin.c"
 #include "rendering/element_renderer.c"
+
+#include "render_texture/render_texture_begin.c"
+#include "render_texture/render_texture_renderer.c"
+#include "render_texture/render_texture.c"
+
 
 #include "inputs/button_click_event_system.c"
 #include "inputs/dragger_end_system.c"
@@ -22,7 +26,6 @@
 
 #include "texture_size.c"
 #include "texture_size_generate.c"
-#include "render_texture.c"
 #include "mesh.c"
 
 zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
@@ -133,16 +136,6 @@ void define_systems_elements_core(ecs *world) {
     }
     // all ui
     zox_render2D_system(
-        RenderTextureRenderSystem,
-        [in] transforms3.TransformMatrix,
-        [in] layouts2.Layer2D,
-        [in] rendering.RenderDisabled,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.TextureGPULink,
-        [none] cameras.RenderTexture
-    );
-    zox_render2D_system(
         ElementRenderSystem,
         [in] transforms2.Position2,
         [in] transforms2.Rotation2D,
@@ -200,15 +193,6 @@ void define_systems_elements_core(ecs *world) {
             [in] elements.core.InitializeElement,
             [out] rendering.TextureGPULink
         );
-        zox_system_1(
-            RenderTextureBeginSystem,
-            EcsPreUpdate,
-            [in] elements.core.InitializeElement,
-            [in] rendering.TextureSize,
-            [in] cameras.CameraLink,
-            [in] rendering.TextureGPULink,
-            [none] cameras.RenderTexture
-        );
     }
 
     zox_system(
@@ -226,15 +210,6 @@ void define_systems_elements_core(ecs *world) {
         [out] textures.GenerateTexture
     );
     zox_system(
-        RenderTextureSizeSystem,
-        EcsOnUpdate,
-        [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.PixelSize,
-        [in] rendering.TextureGPULink,
-        [in] cameras.CameraLink,
-        [none] cameras.RenderTexture
-    );
-    zox_system(
         LayoutMeshSystem,
         EcsPostUpdate,
         [in] layouts2.LayoutSizeDirty,
@@ -243,6 +218,38 @@ void define_systems_elements_core(ecs *world) {
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
         [out] rendering.MeshDirty
+    );
+
+    // Render Texture
+    zox_system(
+        RenderTextureSizeSystem,
+        EcsOnUpdate,
+        [in] layouts2.LayoutSizeDirty,
+        [in] layouts2.PixelSize,
+        [in] rendering.TextureGPULink,
+        [in] cameras.CameraLink,
+        [none] cameras.RenderTexture
+    );
+    if (!headless) {
+        zox_system_1(
+            RenderTextureBeginSystem,
+            EcsPreUpdate,
+            [in] elements.core.InitializeElement,
+            [in] layouts2.PixelSize,
+            [in] cameras.CameraLink,
+            [in] rendering.TextureGPULink,
+            [none] cameras.RenderTexture
+        );
+    }
+    zox_render2D_system(
+        RenderTextureRenderSystem,
+        [in] transforms3.TransformMatrix,
+        [in] layouts2.Layer2D,
+        [in] rendering.RenderDisabled,
+        [in] rendering.MeshGPULink,
+        [in] rendering.UvsGPULink,
+        [in] rendering.TextureGPULink,
+        [none] cameras.RenderTexture
     );
 
 }

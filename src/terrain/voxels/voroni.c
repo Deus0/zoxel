@@ -10,6 +10,7 @@ entity spawn_block_voroni(
     zox_set_unique_name(v, "block_soil");
     zox_set(v, VoxType, { vox_type_soil });
     zox_set(v, VRegions, { vregions });
+    zox_set(v, VoxColorRange, { 0.15f });
 
     // use instanced mesh prefab
     SpawnBlock data = {

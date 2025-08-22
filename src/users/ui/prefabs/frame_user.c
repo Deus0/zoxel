@@ -116,7 +116,7 @@ void set_icon_from_user_data(
         if (zox_valid(data)) {
             texture = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));
         } else {
-
+            texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));
         }
         /*clear_texture_data(world, e);
         zox_set(e, GenerateTexture, { zox_generate_texture_trigger })

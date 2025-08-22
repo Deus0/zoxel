@@ -11,6 +11,9 @@ entity spawn_block_soil_grass(
     zox_set(v, SecondaryColor, { bottom_color });
     zox_set_unique_name(v, "block_soil_grass");
     zox_set(v, VRegions, { 0 });
+    zox_set(v, VoxUniqueColors, { 6 });
+    zox_set(v, VoxColorRange, { 0.22f });
+
     // use instanced mesh prefab
     SpawnBlock data = {
         .index = index,

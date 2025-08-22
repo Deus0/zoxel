@@ -4,9 +4,10 @@ define_fun_stopwatch(time_vox_generation, 0);
 // todo: split processes up to nodes
 // todo: add unique colors as a property too
 void VoxGenerationSystem(iter *it) {
+    const byte default_unique_colors = 6;
+    const float default_color_range = 0.14f;
+
     zox_ts_begin(vox_generation);
-    const byte unique_colors = 16;
-    const float2 color_r = (float2) { 0.8f, 1.2f };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateVox);
@@ -16,6 +17,7 @@ void VoxGenerationSystem(iter *it) {
     zox_sys_out(VoxelNodeDirty);
     zox_sys_out(NodeDepth);
     zox_sys_out(ColorRGBs);
+
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(GenerateVox, generateVox);
@@ -28,8 +30,11 @@ void VoxGenerationSystem(iter *it) {
         zox_ts_end(vox_generation, 3, zox_profile_system_vox_generation);
         return;
     }
+
     startwatch(time_vox_generation);
+
     for (int i = 0; i < it->count; i++) {
+
         zox_sys_e();
         zox_sys_i(Color, color2);
         zox_sys_i(VoxType, voxType);
@@ -38,9 +43,16 @@ void VoxGenerationSystem(iter *it) {
         zox_sys_o(VoxelNodeDirty, nodeDirty);
         zox_sys_o(NodeDepth, nodeDepth);
         zox_sys_o(ColorRGBs, colors);
+
         if (generateVox->value != zox_dirty_active) {
             continue;
         }
+
+        const byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_gett_value(e, VoxUniqueColors) : default_unique_colors;
+        const float color_rr = zox_has(e, VoxColorRange) ? zox_gett_value(e, VoxColorRange) : default_color_range;
+        const float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
+
+
         const byte node_depth = nodeDepth->value;
         // nodeDepth->value = node_depth;
         const byte colors_count = unique_colors + is_generate_vox_outlines;
@@ -55,7 +67,6 @@ void VoxGenerationSystem(iter *it) {
         for (int j = 0; j < unique_colors; j++) {
             colors->value[j] = color_rgb_2;
             const float m = randf_range(color_r.x, color_r.y);
-            // 0.7f + 0.6f * (rand() % 100) * 0.01f;
             color_rgb_multiply_float(&colors->value[j], m);
         }
         if (is_generate_vox_outlines) {
@@ -176,11 +187,21 @@ void VoxGenerationSystem(iter *it) {
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
+
+            byte2 stem_range = (byte2) {
+                voxel_range.x,
+                voxel_range.x + (voxel_range.y - voxel_range.x) / 2
+            };
+            byte2 petal_range = (byte2) {
+                stem_range.y,
+                voxel_range.y
+            };
+
             build_vox_flower_patch(
                 node,
                 node_depth,
-                (byte2) { voxel_range.x, voxel_range.y / 2 }, // (byte2) { 2, 6 },
-                (byte2) { voxel_range.y / 2, voxel_range.y }, // (byte2) { 1, 4 },
+                stem_range,
+                petal_range,
                 black_voxel_3);
 
         } else {

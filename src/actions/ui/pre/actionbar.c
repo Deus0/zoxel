@@ -15,7 +15,6 @@ entity spawn_player_menu_actions(
     // window
     data.element.prefab = prefab_menu_actions;
     data.element.anchor = (float2) { 0.5f, 0 };
-    data.element.position = (int2) { 0, 48 };
     data.window.user_links_id = zox_id(ActionLinks);
     // header
     data.header_zext.text = "";
@@ -34,6 +33,7 @@ entity spawn_player_menu_actions(
         data.window.grid_padding.x + (data.window.icon_size + data.window.grid_padding.x) * data.window.grid_size.x + data.window.grid_margins.x * 2,
         data.window.grid_padding.y + (data.window.icon_size + data.window.grid_padding.y) * data.window.grid_size.y + data.window.grid_margins.y * 2 + header_height
     };
+    data.element.position = (int2) { 0, data.element.size.y / 2 + 16 };
     data.frame.texture.fill_color = fill_color_frame_action;
     data.frame.texture.outline_color = outline_color_frame_action;
     FrameTextureData texture = (FrameTextureData) {

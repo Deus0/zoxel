@@ -1,5 +1,5 @@
 entity spawn_icon_mouse_follow(ecs *world, SpawnIcon *data) {
-    const entity e = spawn_icon(world, data);
+    const entity e = spawn_icon(world, data).x;
     icon_mouse_follow = e;
     return e;
 }
@@ -35,7 +35,7 @@ entity spawn_icon_mouse_follow_canvas(
             .outline_color = default_outline_color_icon
         }
     };
-    const entity e = spawn_icon(world, &spawnIcon);
+    const entity e = spawn_icon(world, &spawnIcon).x;
     if (zevice) {
         zox_set(e, ZeviceLink, { zevice })
     }
