@@ -22,12 +22,14 @@ void set_child_position2(
     entity e,
     int2 canvas_size
 ) {
-    zox_geter_value(e, CanvasPosition, int2, canvas_position);
-    zox_muter(e, Position2, position2);
-    position2->value = get_element_position(
-        canvas_position,
-        canvas_size
-    );
+    if (zox_valid(e) && zox_has(e, CanvasPosition) && zox_has(e, Position2)) {
+        zox_geter_value(e, CanvasPosition, int2, canvas_position);
+        zox_muter(e, Position2, position2);
+        position2->value = get_element_position(
+            canvas_position,
+            canvas_size
+        );
+    }
     // also set children ones
     if (zox_has(e, Children)) {
         zox_geter(e, Children, children);
@@ -54,7 +56,11 @@ void LayoutPosition2System(iter *it) {
         zox_sys_i(CanvasPosition, canvas_position);
         zox_sys_i(CanvasLink, canvas);
         zox_sys_o(Position2, position2);
-        if (dirty->value != zox_dirty_active) continue;
+
+        if (dirty->value != zox_dirty_active) {
+            continue;
+        }
+
         if (!zox_valid(canvas->value)) {
             zox_log("! invalid canvas [%s::%lu]",
                 zox_get_name(it->entities[i]),
@@ -67,6 +73,9 @@ void LayoutPosition2System(iter *it) {
             canvas_size
         );
 
+        zox_sys_e();
+        set_child_position2(world, e, canvas_size);
+
         /*zox_log("[%s] posf [%.1fx%.1f] canvaspos [%ix%i] - canvas size [%ix%i]",
             zox_get_name(it->entities[i]),
             position2->value.x,
@@ -76,8 +85,5 @@ void LayoutPosition2System(iter *it) {
             canvas_size.x,
             canvas_size.y
         );*/
-
-        zox_sys_e();
-        set_child_position2(world, e, canvas_size);
     }
 } zoxd_system2(LayoutPosition2System);

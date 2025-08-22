@@ -45,10 +45,6 @@ void ElementRaycastSystem(iter *it) {
                 zox_sys_i_2(CanvasPosition, canvasPosition2)
                 zox_sys_i_2(PixelSize, pixelSize2)
                 zox_sys_i_2(Layer2D, layer2D)
-                /*const RenderDisabled *renderDisabled = &renderDisableds[j];
-                const CanvasPosition *canvasPosition2 = &canvasPositions[j];
-                const PixelSize *pixelSize2 = &pixelSizes[j];
-                const Layer2D *layer2D = &layer2Ds[j];*/
                 if (renderDisabled->value) {
                     continue;
                 }

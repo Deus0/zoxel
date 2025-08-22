@@ -26,6 +26,9 @@ void ZextParentBackgroundSystem(iter *it) {
             return;
         }
         const int2 size = calculate_zext_size(textData->value, textData->length, textSize->value, textPadding->value, default_line_padding);
-        on_element_pixels_resized(world, e2, size, meshAlignment->value);
+
+        // TODO: Set PixelSize, and LayoutSizeDirty here
+
+        // on_element_pixels_resized(world, e2, size, meshAlignment->value);
     }
 } zoxd_system(ZextParentBackgroundSystem)

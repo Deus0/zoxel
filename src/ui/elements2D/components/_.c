@@ -9,7 +9,7 @@ zox_tag(Header);
 zox_tag(Body);
 zox_tag(Scrollbar);
 zox_tag(ScrollbarButton);
-zox_tag(Elementbar2D);
+zox_tag(Elementbar2);
 zoxc_byte(IconType);
 zoxc_byte(ListUIMax);
 zoxc_byte(IconIndex);
@@ -29,7 +29,7 @@ void define_components_elements2D(ecs *world) {
     zox_define_tag(CloseButton);
     zox_define_tag(Scrollbar);
     zox_define_tag(ScrollbarButton);
-    zox_define_tag(Elementbar2D);
+    zox_define_tag(Elementbar2);
     zoxd_byte(IconType);
     zoxd_byte(ListUIMax);
     zoxd_byte(IconIndex);

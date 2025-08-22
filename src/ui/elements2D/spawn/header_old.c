@@ -28,8 +28,7 @@ entity spawn_header(
         (int) (font_size * 0.3f),
         (int) (font_size * 0.3f)
     };
-    const int2 global_position = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
-    const float2 position2 = get_element_position(global_position, canvas_size);
+
     const byte zext_layer = layer + 1;
     const byte button_layer = layer + 2;
     zox_instance(prefab_header)
@@ -43,21 +42,25 @@ entity spawn_header(
         pixel_size,
         anchor,
         layer,
-        position2,
-        global_position);
+        float2_zero,
+        int2_zero
+    );
+
     SpawnZext zext_spawn_data = {
         .canvas = {
             .e = canvas,
-            .size = canvas_size },
+            .size = canvas_size
+        },
         .parent = {
             .e = e,
-            .position = global_position,
-            .size = pixel_size },
+            .size = pixel_size
+        },
         .element = {
             .prefab = prefab_zext,
             .layer = zext_layer,
             .anchor = zext_anchor,
-            .position = zext_position },
+            .position = zext_position
+        },
         .zext = {
             .text = label,
             .font_size = font_size,
@@ -82,7 +85,7 @@ entity spawn_header(
         add_to_Children(&children, spawn_close_button(world,
             e,
             canvas,
-            global_position,
+            int2_zero,
             pixel_size,
             close_button_position,
             font_size,
@@ -104,19 +107,19 @@ entity spawn_header2(ecs *world, SpawnHeader *data) {
         zext_position.x = 0;
     }
     const byte2 padding = (byte2) { (int) (data->zext.font_size * 0.3f), (int) (data->zext.font_size * 0.3f) };
-    const int2 canvas_position = get_element_pixel_positionv(data->parent.position, data->parent.size, data->element.position, data->element.anchor);
-    const float2 real_position = get_element_position(canvas_position, data->canvas.size);
+
     const byte zext_layer = data->element.layer + 1;
     const byte button_layer = data->element.layer + 2;
     zox_instance(data->element.prefab)
     zox_name("header")
     zox_set(e, DraggedLink, { data->parent.e })
-    initialize_element(world, e, data->parent.e, data->canvas.e, data->element.position, data->element.size, data->element.size, data->element.anchor, data->element.layer, real_position, canvas_position);
+    initialize_element(
+        world, e, data->parent.e, data->canvas.e, data->element.position, data->element.size, data->element.size, data->element.anchor, data->element.layer,
+        float2_zero, int2_zero); // real_position, canvas_position);
     SpawnZext zextSpawnData = {
         .canvas = data->canvas,
         .parent = {
             .e = e,
-            .position = canvas_position,
             .size = data->element.size
         },
         .element = {
@@ -127,13 +130,23 @@ entity spawn_header2(ecs *world, SpawnHeader *data) {
         },
         .zext = data->zext
     };
-    Children *children = &((Children) { 0, NULL });
+    Children children = (Children) { 0, NULL };
     const entity header_zext = spawn_zext(world, &zextSpawnData);
-    add_to_Children(children, header_zext);
+    add_to_Children(&children, header_zext);
     if (data->header.is_close_button) {
         const int2 close_button_position = (int2) { - (data->zext.font_size / 2) - data->header.margins, 0 };
-        add_to_Children(children, spawn_close_button(world, e, data->canvas.e, canvas_position, data->element.size, close_button_position, data->zext.font_size, padding, button_layer, data->canvas.size));
+        add_to_Children(&children,
+            spawn_close_button(
+                world,
+                e,
+                data->canvas.e,
+                int2_zero,
+                data->element.size,
+                close_button_position,
+                data->zext.font_size,
+                padding, button_layer,
+                data->canvas.size));
     }
-    zox_set(e, Children, { children->length, children->value })
+    zox_set_ptr(e, Children, children);
     return e;
 }

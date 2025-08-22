@@ -1,9 +1,9 @@
 // frames
-const int default_frame_size = 96;
+const int default_frame_size = 64;
 const color default_outline_color_frame = { 0, 0, 0, 200 };
 const color default_fill_color_frame = { 6, 55, 55, 122 };
 // nothing uses these? wait taskbar?e
-const int default_icon_size = 64; // 64; // 48;
+const int default_icon_size = 48; // 64; // 48;
 const color default_outline_color_icon = { 0, 122, 66, 166 };
 const color default_fill_color_icon = { 22, 44, 66, 122 };
 const float default_icon_radius = 0.569f; // 16 outt  of 48 originally

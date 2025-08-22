@@ -8,6 +8,7 @@ entity spawn_canvas(
 ) {
     zox_instance(prefab);
     zox_name("canvas");
+    zox_set(e, PixelPosition, { int2_half(size) });
     zox_set(e, PixelSize, { size });
     zox_set(e, CameraLink, { camera });
     zox_set(e, ScreenToCanvas, { screen_to_canvas });

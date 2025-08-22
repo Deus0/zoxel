@@ -21,16 +21,23 @@ void set_child_canvas_position(
     ecs* world,
     entity e,
     int2 parent_position,
-    int2 parent_size
+    int2 parent_size,
+    byte skip
 ) {
-    zox_geter_value(e, PixelPosition, int2, position);
-    zox_geter_value(e, Anchor, float2, anchor);
-    zox_muter(e, CanvasPosition, canvas_position);
-    canvas_position->value = get_element_pixel_positionv(
-        parent_position,
-        parent_size,
-        position,
-        anchor);
+    int2 cposition = parent_position;
+    if (!skip) {
+        if (zox_valid(e) && zox_has(e, PixelPosition) && zox_has(e, CanvasPosition) && zox_has(e, Anchor)) {
+            zox_geter_value(e, PixelPosition, int2, position);
+            zox_geter_value(e, Anchor, float2, anchor);
+            zox_muter(e, CanvasPosition, canvas_position);
+            canvas_position->value = get_element_pixel_positionv(
+                parent_position,
+                parent_size,
+                position,
+                anchor);
+            cposition = canvas_position->value;
+        }
+    }
     // also set children ones
     if (zox_has(e, Children)) {
         zox_geter_value(e, PixelSize, int2, size);
@@ -40,8 +47,9 @@ void set_child_canvas_position(
             set_child_canvas_position(
                 world,
                 e2,
-                canvas_position->value,
-                size
+                cposition,
+                size,
+                0
             );
         }
     }
@@ -72,7 +80,11 @@ void LayoutParentPositionSystem(iter *it) {
         zox_sys_i(Anchor, anchor);
         zox_sys_i(ParentLink, parent);
         zox_sys_o(CanvasPosition, canvas_position);
-        if (dirty->value != zox_dirty_active) continue;
+
+        if (dirty->value != zox_dirty_active) {
+            continue;
+        }
+
         if (!zox_valid(parent->value) || !zox_has(parent->value, PixelSize)) {
             zox_log("! invalid parent [%s::%lu]",
                 zox_get_name(it->entities[i]),
@@ -80,6 +92,7 @@ void LayoutParentPositionSystem(iter *it) {
             continue;
         }
 
+        zox_geter_value(parent->value, PixelSize, int2, parent_size);
         int2 parent_position;
         if (zox_has(parent->value, CanvasPosition)) {
             parent_position = zox_get_value(parent->value, CanvasPosition);
@@ -88,22 +101,29 @@ void LayoutParentPositionSystem(iter *it) {
         } else {
             parent_position = int2_zero;
         }
-        zox_geter_value(parent->value, PixelSize, int2, parent_size);
 
         int2 position = layout_position->value;
-        anchor_element_position2(
+        /*anchor_element_position2(
             &position,
             anchor->value,
             parent_size
-        ); // layout_size->value);
+        );*/ // layout_size->value);
         canvas_position->value = get_element_pixel_positionv(
             parent_position,
             parent_size,
             position,
             anchor->value
         );
+        zox_sys_e();
+        set_child_canvas_position(
+            world,
+            e,
+            canvas_position->value,
+            layout_size->value,
+            1
+        );
 
-        /*zox_log("[%s] anc [%.1fx%.1f] loc [%ix%i] -> [%ix%i] => pos [%ix%i] from parent size [%ix%i]",
+        /*zox_log("[%s] anc [%.1fx%.1f] loc [%ix%i] -> [%ix%i] => pos [%ix%i] from parent p[%ix%i] s[%ix%i]",
             zox_get_name(it->entities[i]),
             anchor->value.x,
             anchor->value.y,
@@ -113,11 +133,10 @@ void LayoutParentPositionSystem(iter *it) {
             position.y,
             canvas_position->value.x,
             canvas_position->value.y,
+            parent_position.x,
+            parent_position.y,
             parent_size.x,
             parent_size.y
         );*/
-
-        zox_sys_e();
-        set_child_canvas_position(world, e, canvas_position->value, layout_size->value);
     }
 } zoxd_system2(LayoutParentPositionSystem);

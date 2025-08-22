@@ -1,8 +1,8 @@
-#include "element_drag_system.c"
-#include "scrollbar_system.c"
-#include "elementbar2D_system.c"
-#include "tooltip_system.c"
-#include "slide_event_system.c"
+#include "drag.c"
+#include "bar.c"
+#include "scrollbar.c"
+#include "tooltip.c"
+#include "slide_event.c"
 
 void define_systems_elements2D(ecs *world) {
     zox_system(
@@ -22,13 +22,13 @@ void define_systems_elements2D(ecs *world) {
         [none] ScrollbarButton
     );
     zox_system(
-        Elementbar2DSystem,
+        Elementbar2System,
         EcsPostUpdate,
         [in] elements.core.ElementBar,
         [in] elements.core.ElementBarSize,
         [in] hierarchys.Children,
         [in] layouts2.PixelSize,
-        [none] Elementbar2D
+        [none] Elementbar2
     );
     zox_system(
         TooltipSystem,

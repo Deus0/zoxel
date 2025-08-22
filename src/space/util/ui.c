@@ -32,23 +32,29 @@ entity spawn_default_ui(
         zevice_follow = zevices->value[0];
     }
     // SDL_ShowCursor(SDL_DISABLE);
-    const entity texture_source = string_hashmap_get(files_hashmap_textures, new_string_data("cursor_01"));
-    if (!texture_source) {
+    const entity cursor = string_hashmap_get(files_hashmap_textures, new_string_data("cursor_01"));
+    if (!cursor) {
         zox_log_error("[cursor_01] mouse texture not found")
     }
-    const entity fake_mouse = spawn_icon_mouse_follow_canvas(world,
+
+    const entity fake_mouse = spawn_icon_mouse_follow_canvas(
+        world,
         prefab_icon_mouse_follow,
         canvas, dimensions,
         max_layers2D - 2,
-        float2_zero,
+        float2_zero, // float2_zero float2_half
         32,
         zevice_follow);
     zox_set_unique_name(fake_mouse, "fake_mouse");
-    zox_set(fake_mouse, RenderDisabled, { 0 })
-    zox_set(fake_mouse, GenerateTexture, { zox_generate_texture_none })
-    clone_texture_data(world, fake_mouse, texture_source);
-    zox_set(fake_mouse, TextureDirty, { 1 })
-    zox_set(fake_mouse, MeshAlignment, { zox_mesh_alignment_top_left })
+    zox_set(fake_mouse, RenderDisabled, { 0 });
+    zox_remove(fake_mouse, GenerateTexture);
+    clone_texture_data(world, fake_mouse, cursor);
+    zox_set(fake_mouse, TextureDirty, { 1 });
+    zox_set(fake_mouse, MeshAlignment, { zox_mesh_alignment_top_left });
+    if (local_mouse) {
+        zox_set(local_mouse, TextureLink, { fake_mouse });
+    }
+
     // used for icon mouse pickup
     const int icon_size = default_icon_size * zox_ui_scale;
     icon_mouse_follow = spawn_icon_mouse_follow_canvas(world,
@@ -60,9 +66,7 @@ entity spawn_default_ui(
         icon_size,
         zevice_follow);
     zox_set_unique_name(icon_mouse_follow, "icon_mouse");
-    if (local_mouse) {
-        zox_set(local_mouse, TextureLink, { fake_mouse });
-    }
+
     return canvas;
 }
 
@@ -113,12 +117,14 @@ void spawn_players_cameras_canvases(
         zox_set(canvas, PlayerLink, { player })
         // spawns a render texture ui and links to camera
         create_camera_rbo_and_fbo(world, spawned_cameras.x, game_viewport_size);
-        spawn_render_texture(world,
+        spawn_render_texture(
+            world,
             prefab_render_texture,
             canvas,
             viewport_size,
             game_viewport_size,
-            spawned_cameras.x);
+            spawned_cameras.x
+        );
         // remove these soon
         zox_canvases[i] = canvas;
         main_cameras[i] = spawned_cameras.x;

@@ -1,4 +1,9 @@
-void on_element_pixels_resized(ecs *world, const entity e, const int2 size, const byte mesh_alignment) {
+void on_element_pixels_resized(
+    ecs *world,
+    const entity e,
+    const int2 size,
+    const byte mesh_alignment
+) {
     const entity canvas = zox_get_value(e, CanvasLink)
     if (!canvas) {
         zox_log("! canvas invalid in element [%s]\n", zox_get_name(e))

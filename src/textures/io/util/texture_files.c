@@ -11,8 +11,13 @@ void load_files_textures(ecs_world_t *world) {
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
         zox_log_io("   - [%i] [texture] [%s]", i, filepath)
-        const ecs_entity_t e = spawn_texture_filepath(world, prefab_texture, filepath);
+        const ecs_entity_t e = spawn_texture_filepath(
+            world,
+            prefab_texture,
+            filepath
+        );
         if (e) {
+            zox_set_unique_name(e, filename);
             string_hashmap_add(files_hashmap_textures, new_string_data_clone(filename), e);
         }
         files_textures[i] = e;

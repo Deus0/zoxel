@@ -86,9 +86,6 @@ entity spawn_ui_list(
         pixel_size.x += (scrollbar_width / 2) + scrollbar_margins;
         anchor_element_position2_with_header(&pixel_position, anchor, pixel_size, header_height);
     }
-    const int2 pixel_positionv = get_element_pixel_positionv(int2_half(canvas_size), canvas_size, pixel_position, anchor);
-    const float2 position2 = get_element_position(pixel_positionv, canvas_size);
-
 
 
     zox_instance(prefab);
@@ -104,8 +101,10 @@ entity spawn_ui_list(
         pixel_size,
         anchor,
         layer,
-        position2,
-        pixel_positionv);
+        float2_zero,
+        int2_zero
+    );
+
     Children *children = &((Children) { 0, NULL });
     initialize_Children(children, children_length);
     if (is_header) {
@@ -122,7 +121,7 @@ entity spawn_ui_list(
             scaled_header_font_size,
             header_padding_x,
             header_layer,
-            pixel_positionv,
+            int2_zero,
             pixel_size,
             is_close_button,
             canvas_size);
@@ -135,13 +134,14 @@ entity spawn_ui_list(
             canvas,
             (int2) { -(scrollbar_width / 2) - scrollbar_margins, 0 },
             header_layer,
-            pixel_positionv,
+            int2_zero,
             pixel_size,
             scrollbar_width,
             scrollbar_margins,
             canvas_size,
             max_elements,
-            elements_count);
+            elements_count
+        );
         children->value[is_header] = scrollbar;
     }
     SpawnButton spawnButton = {
@@ -151,7 +151,6 @@ entity spawn_ui_list(
         },
         .parent = {
             .e = e,
-            .position = pixel_positionv,
             .size = pixel_size
         },
         .element = {
@@ -200,12 +199,14 @@ entity spawn_ui_list(
             if (labels) {
                 spawnButton.zext.text = labels[i].text;
             }
-            const entity e2 = spawn_button(world,
+            const entity e2 = spawn_button(
+                world,
                 spawnButton.canvas,
                 spawnButton.parent,
                 spawnButton.element,
                 spawnButton.zext,
-                spawnButton.button);
+                spawnButton.button
+            );
             if (click_events && click_events[i].value) {
                 zox_set(e2, ClickEvent, { click_events[i].value })
             }

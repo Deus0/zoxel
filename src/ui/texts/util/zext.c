@@ -73,17 +73,16 @@ void set_entity_label_with_zext(
     byte *value,
     int length
 ) {
-    const Children *name_label_children = zox_get(parent, Children)
+    const Children* name_label_children = zox_get(parent, Children)
     entity e = name_label_children->value[0];
-    zox_muter(e, TextData, textData)
-    if (textData->value) {
-        dispose_TextData(textData);
+    zox_muter(e, TextData, text_data);
+    if (text_data->value) {
+        dispose_TextData(text_data);
     }
-    initialize_TextData(textData, length);
-    memcpy(textData->value, value, length);
-    textData->length = length;
-    zox_modified(e, TextData);
-    zox_set(e, ZextDirty, { zext_update_start })
+    initialize_TextData(text_data, length);
+    memcpy(text_data->value, value, length);
+    text_data->length = length;
+    zox_set(e, ZextDirty, { zext_update_start });
 }
 
 byte set_entity_text(ecs *world, const entity e, const char* text) {
@@ -91,11 +90,11 @@ byte set_entity_text(ecs *world, const entity e, const char* text) {
         zox_log_error("invalid zext in [set_entity_text]")
         return 0;
     }
-    zox_mut_begin(e, TextData, textData)
+    zox_mut_begin(e, TextData, textData);
     if (!is_zext(textData, text)) {
         set_zext(textData, text);
-        zox_mut_end(e, TextData)
-        zox_set(e, ZextDirty, { zext_update_start })
+        zox_mut_end(e, TextData);
+        zox_set(e, ZextDirty, { zext_update_start });
         return 1;
     } else {
         return 0;

@@ -77,9 +77,16 @@ void ElementPositionSystem(iter *it) {
         }
         const int2 canvas_size = zox_get_value(canvasLink->value, PixelSize)
         const int2 pixel_position = pixelPosition->value;
-        const float2 anchor2 = anchor->value;
-        int2 position_in_canvas = get_element_pixel_positionv(int2_half(canvas_size), canvas_size, pixel_position, anchor2);
-        const float2 positionf = get_element_position(position_in_canvas, canvas_size);
+        int2 position_in_canvas = get_element_pixel_positionv(
+            int2_half(canvas_size),
+            canvas_size,
+            pixel_position,
+            anchor->value
+        );
+        const float2 positionf = get_element_position(
+            position_in_canvas,
+            canvas_size
+        );
         canvasPosition->value = position_in_canvas;
         position2->value = positionf;
         if (zox_has(e, Children)) {

@@ -14,8 +14,8 @@ void set_element_properties(
     zox_set(e, Layer2D, { layer })
     zox_set(e, PixelSize, { pixel_size })
     zox_set(e, PixelPosition, { pixel_position })
-    zox_set(e, Position2, { position2 }) // set this inside pixel position system
-    zox_set(e, CanvasPosition, { pixel_positionv }) // set this inside system too
+    // zox_set(e, Position2, { position2 }) // set this inside pixel position system
+    // zox_set(e, CanvasPosition, { pixel_positionv }) // set this inside system too
     zox_set(e, CanvasLink, { canvas })
     zox_set(e, ParentLink, { parent })
     if (canvas == parent) {

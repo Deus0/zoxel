@@ -26,13 +26,18 @@ entity2 spawn_elementbar2D(ecs *world,
         font_size = font_size_width;
     }
     const int2 zext_size = (int2) { zext_width, font_size };
-    anchor_element_position2(&pixel_position, anchor, pixel_size);
-    const int2 position_in_canvas = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
-    const float2 position2 = get_element_position(position_in_canvas, canvas_size);
+
     zox_instance(prefab)
     zox_name("elementbar2D")
     zox_set(e, Color, { back_color })
-    initialize_element(world, e, parent, canvas, pixel_position, pixel_size, int2_one, anchor, layer, position2, position_in_canvas);
+    initialize_element(
+        world, e,
+        parent, canvas,
+        pixel_position, pixel_size,
+        int2_one, anchor, layer,
+        float2_zero,
+        int2_zero
+    );
     if (render_disabled) {
         zox_set(e, RenderDisabled, { render_disabled })
     }
@@ -44,7 +49,7 @@ entity2 spawn_elementbar2D(ecs *world,
     const entity front_bar = spawn_elementbar2D_front(world,
         canvas,
         e,
-        position_in_canvas,
+        int2_zero,
         pixel_size,
         canvas_size,
         front_bar_layer,
@@ -60,7 +65,6 @@ entity2 spawn_elementbar2D(ecs *world,
         },
         .parent = {
             .e = e,
-            .position = position_in_canvas,
             .size = pixel_size
         },
         .element = {

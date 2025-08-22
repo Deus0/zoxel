@@ -9,14 +9,6 @@ entity spawn_layout2(ecs *world,
     const int2 parent_position,
     const int2 parent_size
 ) {
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
-    const int2 positiong = get_element_pixel_positionv(
-        parent_position,
-        parent_size,
-        position,
-        anchor);
-    const float2 positionf = get_element_position(positiong, canvas_size);
-    anchor_element_position2(&position, anchor, size);
     zox_instance(prefab)
     zox_name("layout2")
     initialize_element_invisible(world,
@@ -27,8 +19,9 @@ entity spawn_layout2(ecs *world,
         size,
         anchor,
         layer,
-        positionf,
-        positiong);
+        float2_zero,
+        int2_zero
+    );
     return e;
 }
 

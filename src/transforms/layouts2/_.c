@@ -2,6 +2,8 @@
 #if !defined(zoxm_layouts2) && defined(zoxm_transforms2)
 #define zoxm_layouts2
 
+// TODO: Implement BoundToCanvas - Constraints in position systems itself, instead of functions
+
 // TODO: Rename PixelPosition -> just LayoutPosition
 // TODO: Rename PixelSize -> just LayoutSize
 // TODO: Rename CanvasPosition -> just LayoutPosition

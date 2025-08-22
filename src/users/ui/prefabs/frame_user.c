@@ -1,4 +1,7 @@
-ecs_entity_t spawn_prefab_frame_user(ecs_world_t *world, const ecs_entity_t prefab) {
+entity spawn_prefab_frame_user(
+    ecs *world,
+    const entity prefab
+) {
     zox_prefab_child(prefab)
     zox_prefab_name("frame_user")
     zox_prefab_set(e, UserDataLink, { 0 })
@@ -6,10 +9,11 @@ ecs_entity_t spawn_prefab_frame_user(ecs_world_t *world, const ecs_entity_t pref
     return e;
 }
 
-void set_icon_label_from_user_data_quantity(ecs_world_t *world,
-    const ecs_entity_t frame,
-    const byte quantity)
-{
+void set_icon_label_from_user_data_quantity(
+    ecs *world,
+    const entity frame,
+    const byte quantity
+) {
     if (!zox_has(frame, IconLabel)) {
         return;
     }
@@ -20,7 +24,7 @@ void set_icon_label_from_user_data_quantity(ecs_world_t *world,
         if (children->length < 2) {
             return;
         }
-        const ecs_entity_t zext = children->value[1];
+        const entity zext = children->value[1];
         if (quantity > 1) {
             char text[6];
             sprintf(text, "x%i", quantity);
@@ -31,10 +35,11 @@ void set_icon_label_from_user_data_quantity(ecs_world_t *world,
     }
 }
 
-void set_icon_label_from_user_data(ecs_world_t *world,
-    const ecs_entity_t frame,
-    const ecs_entity_t data)
-{
+void set_icon_label_from_user_data(
+    ecs *world,
+    const entity frame,
+    const entity data
+) {
     if (!zox_valid(frame) || !zox_has(frame, IconLabel)) {
         return;
     }
@@ -42,11 +47,11 @@ void set_icon_label_from_user_data(ecs_world_t *world,
         zox_log(" ! frame has no children :( %lu\n", frame)
         return;
     }
-    zox_geter(frame, Children, children)
+    zox_geter(frame, Children, children);
     if (children->length < 2) {
         return;
     }
-    const ecs_entity_t zext = children->value[1];
+    const entity zext = children->value[1];
     if (!zox_valid(zext)) {
         return;
     }
@@ -61,7 +66,11 @@ void set_icon_label_from_user_data(ecs_world_t *world,
     }
 }
 
-void set_icon_label_from_user_data_direct(ecs_world_t *world, const ecs_entity_t zext, const ecs_entity_t data) {
+void set_icon_label_from_user_data_direct(
+    ecs *world,
+    const entity zext,
+    const entity data
+) {
     if (!zox_valid(zext) || !zox_valid(data)) {
         return;
     }
@@ -80,30 +89,31 @@ void set_icon_label_from_user_data_direct(ecs_world_t *world, const ecs_entity_t
     }
 }
 
-void set_icon_from_user_data(ecs_world_t *world,
-    const ecs_entity_t frame,
-    const ecs_entity_t e,
-    const ecs_entity_t data)
-{
+void set_icon_from_user_data(
+    ecs *world,
+    const entity frame,
+    const entity e,
+    const entity data
+) {
     if (!zox_valid(frame) || !zox_valid(e)) {
         zox_log_error("invalid frame or e in icon setting")
         return;
     }
-    zox_set(frame, UserDataLink, { data })
-    zox_set(e, UserDataLink, { data })
-    if (!zox_valid(data)) {
-        clear_texture_data(world, e);
-        zox_set(e, GenerateTexture, { zox_generate_texture_trigger })
-        zox_set(e, TextureSize, { int2_single(default_icon_texture_size) })
+    zox_set(frame, UserDataLink, { data });
+    zox_set(e, UserDataLink, { data });
+    /*if (!zox_valid(data)) {
+        /*clear_texture_data(world, e);
+        zox_set(e, GenerateTexture, { zox_generate_texture_trigger });
+        zox_set(e, TextureSize, { int2_single(default_icon_texture_size) });
         return;
-    }
-    if (!zox_has(data, TextureLink)) {
+    }*/
+    /*if (!zox_has(data, TextureLink)) {
         zox_log_error("[%s] has no texture link component: %i", zox_get_name(data), zox_has(data, TextureLink))
         return;
-    }
-    ecs_entity_t texture = zox_get_value(data, TextureLink)
+    }*/
+    entity texture = zox_valid(data) && zox_has(data, TextureLink) ? zox_gett_value(data, TextureLink) : 0;
     if (!texture) {
-        const ecs_entity_t blank = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));
+        const entity blank = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));
         texture = blank;
         /*clear_texture_data(world, e);
         zox_set(e, GenerateTexture, { zox_generate_texture_trigger })
@@ -111,15 +121,19 @@ void set_icon_from_user_data(ecs_world_t *world,
         zox_log_error("[%s] has no texture", zox_get_name(data))
         return;*/
     }
-    zox_set(e, GenerateTexture, { zox_generate_texture_none })
+    // zox_remove(e, GenerateTexture);
+    // zox_set(e, GenerateTexture, { zox_generate_texture_none })
     clone_texture_data(world, e, texture);
-    zox_set(e, TextureDirty, { 1 })
+    zox_set(e, TextureDirty, { 1 });
+
+    zox_log("set usericon data %s %s", zox_get_name(e), zox_get_name(texture));
 }
 
-ecs_entity_t spawn_frame_user(ecs_world_t *world,
+entity spawn_frame_user(
+    ecs *world,
     SpawnFrame data,
-    const ecs_entity_t userdata)
-{
+    const entity userdata
+) {
     const entity3 e = spawn_frame(world, data);
     set_icon_from_user_data(world, e.x, e.y, userdata);
     set_icon_label_from_user_data_direct(world, e.z, userdata);

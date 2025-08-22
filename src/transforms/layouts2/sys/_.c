@@ -1,6 +1,7 @@
 #include "parent.c"
 #include "position2.c"
-#include "old.c"
+#include "anchor_size.c"
+// #include "old.c"
 zox_increment_system_with_reset(LayoutPositionDirty, zox_dirty_end);
 zox_increment_system_with_reset(LayoutSizeDirty, zox_dirty_end);
 
@@ -9,7 +10,7 @@ void define_systems_layouts2(ecs* world) {
     zoxd_system_increment(LayoutSizeDirty);
     zox_system(
         LayoutParentPositionSystem,
-        EcsOnUpdate,
+        EcsOnLoad,
         [in] LayoutPositionDirty,
         [in] PixelPosition,
         [in] PixelSize,
@@ -19,13 +20,21 @@ void define_systems_layouts2(ecs* world) {
     );
     zox_system(
         LayoutPosition2System,
-        EcsOnUpdate,
+        EcsOnLoad,
         [in] LayoutPositionDirty,
         [in] CanvasPosition,
         [in] CanvasLink,
         [out] transforms2.Position2
     );
     zox_system(
+        AnchorSizeSystem,
+        EcsOnLoad,
+        [in] layouts2.LayoutSizeDirty,
+        [in] layouts2.AnchorSize,
+        [in] hierarchys.ParentLink,
+        [out] layouts2.PixelSize
+    );
+    /*zox_system(
         ElementPositionSystem,
         EcsOnLoad,
         [in] layouts2.PixelPosition,
@@ -35,5 +44,5 @@ void define_systems_layouts2(ecs* world) {
         [in] layouts2.CanvasLink,
         [out] transforms2.Position2,
         [out] layouts2.CanvasPosition
-    );
+    );*/
 }

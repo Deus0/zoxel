@@ -1,4 +1,4 @@
-#include "zext.c"
+#include "text.c"
 entity prefab_zext;
 
 void spawn_prefabs_texts(ecs *world) {

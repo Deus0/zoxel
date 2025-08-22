@@ -35,9 +35,8 @@ entity spawn_window_users(
     if (is_header) {
         header_height = data.header_zext.font_size + data.header.margins;
     }
-    const int2 canvas_position = get_element_pixel_positionv(data.parent.position, data.element.size, position, data.element.anchor);
-    const float2 real_position = get_element_position(canvas_position, data.canvas.size);
-    anchor_element_position2(&position, data.element.anchor, data.element.size);
+
+    // anchor_element_position2(&position, data.element.anchor, data.element.size);
 
     zox_instance(data.element.prefab);
     zox_set_name(e, data.header_zext.text);
@@ -51,8 +50,8 @@ entity spawn_window_users(
         data.element.size,
         data.element.anchor,
         data.element.layer,
-        real_position,
-        canvas_position
+        float2_zero,
+        int2_zero
     );
     set_window_bounds_to_canvas(
         world,
@@ -95,7 +94,6 @@ entity spawn_window_users(
             .canvas = data.canvas,
             .parent = {
                 .e = e,
-                .position = canvas_position,
                 .size = data.element.size
             },
             .element = {
@@ -122,7 +120,6 @@ entity spawn_window_users(
         .canvas = data.canvas,
         .parent = {
             .e = e,
-            .position = canvas_position,
             .size = data.element.size
         },
         .element = {
@@ -201,16 +198,16 @@ SpawnWindowUsers get_default_spawn_window_users_data(
     const entity canvas,
     const int2 canvas_size
 ) {
-    const byte header_font_size = 26 * zox_ui_scale;
-    const byte header_margins = 6 * zox_ui_scale;
+    const byte header_font_size = 26; // * zox_ui_scale;
+    const byte header_margins = 6; // * zox_ui_scale;
     const byte header_height = header_font_size + header_margins * 2;
     const float2 anchor = float2_half;
     const int2 position = position;
     const byte2 grid_size = byte2_single(4);
-    const byte2 grid_padding = byte2_single(6 * zox_ui_scale);
-    const int grid_margins = 16 * zox_ui_scale;
-    const int frame_size = default_frame_size * zox_ui_scale;
-    const int icon_size = default_icon_size * zox_ui_scale;
+    const byte2 grid_padding = byte2_single(6); // * zox_ui_scale);
+    const int grid_margins = 16; // * zox_ui_scale;
+    const int frame_size = default_frame_size; // * zox_ui_scale;
+    const int icon_size = default_icon_size; // * zox_ui_scale;
     const int2 size = (int2) {
         grid_padding.x + (frame_size + grid_padding.x) * grid_size.x + grid_margins * 2,
         grid_padding.y + (frame_size + grid_padding.y) * grid_size.y + grid_margins * 2 + header_height

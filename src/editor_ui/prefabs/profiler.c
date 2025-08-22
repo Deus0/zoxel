@@ -29,9 +29,6 @@ ecs_entity_t spawn_profiler(
     const byte is_close_button = 1;
 
     const ecs_entity_t parent = canvas;
-    const int2 canvas_position = get_element_pixel_positionv(int2_half(canvas_size), canvas_size, position, anchor);
-    const float2 positionf = get_element_position(canvas_position, canvas_size);
-
     const int children_count = is_header + plots_count;
 
     // zox_log(" > line_spacing [%f] - size [%i]\n", line_spacing, pixel_size.x);
@@ -47,8 +44,9 @@ ecs_entity_t spawn_profiler(
         size,
         anchor,
         layer,
-        positionf,
-        canvas_position);
+        float2_zero,
+        int2_zero
+    );
     set_window_bounds_to_canvas(world, e, canvas_size, size, anchor);
 
     Children children = (Children) { 0 };
@@ -65,7 +63,7 @@ ecs_entity_t spawn_profiler(
             font_size,
             header_margins,
             header_layer,
-            canvas_position,
+            int2_zero,
             size,
             is_close_button,
             canvas_size);

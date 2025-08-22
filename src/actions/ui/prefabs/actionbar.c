@@ -42,6 +42,5 @@ entity spawn_player_menu_actions(
     };
     entity e = spawn_window_users(world, data, texture, selected);
     zox_set_unique_name(e, "actionbar");
-    zox_log("+++ actionbar [%lu] +++", e);
     return e;
 }

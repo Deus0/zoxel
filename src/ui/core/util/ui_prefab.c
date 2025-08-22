@@ -20,9 +20,9 @@ void add_ui_mesh(ecs *world, const entity e) {
 
 void add_ui_plus_components(ecs *world, const entity e) {
     // layout2D
-    zox_prefab_set(e, Position2, { float2_zero })
+    /*zox_prefab_set(e, Position2, { float2_zero })
     zox_prefab_set(e, Rotation2D, { 0 })
-    zox_prefab_set(e, Scale1D, { 1 })
+    zox_prefab_set(e, Scale1D, { 1 })*/
     // Elements
     zox_add_tag(e, Element)
     zox_prefab_set(e, InitializeElement, { 1 })

@@ -24,9 +24,9 @@ ecs_entity_t spawn_plot_graph(
     const int lines_max_height = size.y;
     float2 anchor = float2_half;
     int2 position = int2_zero;
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    /*const int2 canvas_size = zox_get_value(canvas, PixelSize)
     const int2 positiong = get_element_pixel_positionv(parent_position, parent_size, position, anchor);
-    const float2 positionf = get_element_position(positiong, canvas_size);
+    const float2 positionf = get_element_position(positiong, canvas_size);*/
 
     // zox_instance(prefab)
     Children children = (Children) { 0 };
@@ -99,7 +99,7 @@ ecs_entity_t spawn_plot_graph(
             c,
             plot_line_thickness,
             0,
-            positionf,
+            float2_zero,
             position,
             layer);
         zox_set(e2, ChildIndex, { i });

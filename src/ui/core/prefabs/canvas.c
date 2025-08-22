@@ -6,6 +6,8 @@ entity spawn_prefab_canvas(ecs *world) {
     zox_prefab_set(e, CameraLink, { 0 });
     zox_prefab_set(e, PixelPosition, { int2_zero });
     zox_prefab_set(e, PixelSize, { int2_zero });
+    zox_prefab_set(e, LayoutPositionDirty, { zox_dirty_trigger });
+    zox_prefab_set(e, LayoutSizeDirty, { zox_dirty_trigger });
     zox_prefab_set(e, ScreenToCanvas, { float4_zero });
     zox_prefab_set(e, Children, { 0 });
     zox_prefab_set(e, WindowToTop, { 0 });

@@ -21,6 +21,7 @@
 
 #include "texture_size.c"
 #include "render_texture.c"
+#include "mesh.c"
 
 zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
 zox_increment_system_with_reset(ActiveStateDirty, zox_dirty_end);
@@ -104,6 +105,7 @@ void define_systems_elements_core(ecs *world) {
         [in] layouts2.Anchor,
         [in] layouts2.CanvasLink,
         [out] layouts2.PixelPosition,
+        [out] layouts2.LayoutPositionDirty,
         [none] MouseElement
     );
     zox_system(
@@ -117,11 +119,13 @@ void define_systems_elements_core(ecs *world) {
         zox_system(
             CanvasResizeSystem,
             EcsOnUpdate,
-            [in] cameras.CameraLink,
-            [in] hierarchys.Children,
             [in] cameras.ScreenToCanvas,
             [in] apps.AppLink,
+            [in] hierarchys.Children,
+            [out] layouts2.PixelPosition,
             [out] layouts2.PixelSize,
+            [out] layouts2.LayoutPositionDirty,
+            [out] layouts2.LayoutSizeDirty,
             [none] Canvas
         );
     }
@@ -194,12 +198,17 @@ void define_systems_elements_core(ecs *world) {
 
     zox_system(
         TextureSizeSystem,
-        EcsOnUpdate,
+        EcsPreUpdate,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.PixelSize,
         [out] rendering.TextureSize
     );
-
+    zox_system(
+        TextureSizeGenerateSystem,
+        EcsPreUpdate,
+        [in] layouts2.LayoutSizeDirty,
+        [out] textures.GenerateTexture
+    );
     zox_system(
         RenderTextureSizeSystem,
         EcsOnUpdate,
@@ -209,6 +218,15 @@ void define_systems_elements_core(ecs *world) {
         [in] cameras.CameraLink,
         [none] cameras.RenderTexture
     );
-
+    zox_system(
+        LayoutMeshSystem,
+        EcsPostUpdate,
+        [in] layouts2.LayoutSizeDirty,
+        [in] layouts2.CanvasLink,
+        [in] layouts2.PixelSize,
+        [in] rendering.MeshAlignment,
+        [out] rendering.MeshVertices2D,
+        [out] rendering.MeshDirty
+    );
 
 }

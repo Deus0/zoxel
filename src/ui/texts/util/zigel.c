@@ -172,21 +172,32 @@ void set_zigel_position(
     const int2 parent_size,
     const int2 canvas_size
 ) {
-    const int2 pixel_position = calculate_zigel_position(textData->value, textData->length, data_index, font_size, text_alignment, text_padding, default_line_padding);
-    // const int2 global_position = get_element_pixel_positionv(parent_position, parent_size, pixel_position, anchor);
-    // const float2 real_position = get_element_position(global_position, canvas_size);
-    // zox_set(e, CanvasPosition, { global_position })
-    zox_set(e, PixelPosition, { pixel_position })
-    // zox_set(e, Position2, { real_position })
+    const int2 pixel_position = calculate_zigel_position(
+        textData->value,
+        textData->length,
+        data_index, font_size,
+        text_alignment,
+        text_padding,
+        default_line_padding
+    );
+    zox_set(e, PixelPosition, { pixel_position });
 }
 
-// spawns a text character in a place
+// a wrapper for spawn_zigel, also sets position for text character
 entity spawn_zext_zigel(
-    ecs *world,
-    const TextData *textData,
+    ecs* world,
+    const TextData* text_data,
     SpawnZigel *data
 ) {
-    data->element.position = calculate_zigel_position(textData->value, textData->length, data->zigel.data_index, data->element.size.x, data->zext.text_alignment, data->zext.text_padding, default_line_padding);
+    data->element.position = calculate_zigel_position(
+        text_data->value,
+        text_data->length,
+        data->zigel.data_index,
+        data->element.size.x,
+        data->zext.text_alignment,
+        data->zext.text_padding,
+        default_line_padding
+    );
     data->element.anchor = float2_half;
     return spawn_zigel(world, data);
 }

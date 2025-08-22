@@ -1,8 +1,9 @@
 entity icon_mouse_follow;
 
-entity spawn_prefab_icon_mouse_follow(ecs *world,
-    const entity prefab)
-{
+entity spawn_prefab_icon_mouse_follow(
+    ecs *world,
+    const entity prefab
+) {
     zox_prefab_child(prefab)
     zox_add_tag(e, Icon)
     zox_add_tag(e, IconTexture)  // general one

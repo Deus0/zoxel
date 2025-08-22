@@ -1,7 +1,7 @@
 // only used be lines atm
 extern void resize_ui_line2D(ecs *world, entity e, int2 canvas_size);
 extern void anchor_element_position2(int2 *position, const float2 position_anchor, const int2 window_size);
-extern void anchor_element_size2D(int2 *size, const float2 anchor, const int2 parent_size);
+
 
 // only used be lines atm
 float2 get_ui_real_position2_canvas(
@@ -71,6 +71,7 @@ void set_ui_transform(
     }
 
     resize_ui_line2D(world, e, canvas_size);
+
     if (zox_has(e, BoundToCanvas)) {
         const float2 anchor = zox_get_value(e, Anchor);
         set_window_bounds_to_canvas(world, e, canvas_size, pixel_size, anchor);

@@ -48,8 +48,8 @@ void spawn_prefabs_elements(ecs *world) {
     prefab_label_background = spawn_prefab_label_background(world, prefab_zext);
     prefab_button = spawn_prefab_button(world, prefab_element_textured);
     // statbars
-    prefab_elementbar2D = spawn_prefab_elementbar2D(world);
-    prefab_elementbar2D_front = spawn_prefab_elementbar2D_front(world);
+    prefab_elementbar2D = spawn_prefab_elementbar2D(world, prefab_element_textured);
+    prefab_elementbar2D_front = spawn_prefab_elementbar2D_front(world, prefab_element_textured);
     // icons
     prefab_icon = spawn_prefab_icon(world, prefab_element_textured);
     prefab_frame  = spawn_prefab_frame(world, prefab_element_textured);
