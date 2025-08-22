@@ -1,6 +1,6 @@
-ecs_entity_t spawn_texture_filepath(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_texture_filepath(
+    ecs *world,
+    const entity prefab,
     const char *filepath
 ) {
     zox_instance(prefab)
@@ -23,36 +23,38 @@ ecs_entity_t spawn_texture_filepath(
     return e;
 }
 
-ecs_entity_t spawn_texture_filename(ecs_world_t *world, char *filename) {
-    const ecs_entity_t source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
-    zox_instance(prefab_texture)
-    zox_name("texture_filename")
-    zox_set(e, GenerateTexture, { zox_generate_texture_none })
+entity spawn_texture_filename(
+    ecs *world,
+    char *filename
+) {
+    const entity source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
+    zox_instance(prefab_texture);
+    zox_name("texture_filename");
     clone_texture_data(world, e, source);
-    zox_set(e, TextureDirty, { 1 })
     return e;
 }
 
-void clone_texture_to_entity(ecs_world_t *world, const ecs_entity_t e, char *filename) {
-    const ecs_entity_t texture_source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
+void clone_texture_to_entity(
+    ecs *world,
+    const entity e,
+    char *filename
+) {
+    const entity texture_source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
     if (!texture_source) {
-        zox_log("! texture [%s] was not found", filename)
+        zox_log("! texture [%s] was not found", filename);
         return;
     }
     clone_texture_data(world, e, texture_source);
-    zox_set(e, GenerateTexture, { zox_generate_texture_none })
-    zox_set(e, TextureDirty, { 1 })
 }
 
-void clone_texture_entity_to_entity(ecs_world_t *world,
-    const ecs_entity_t e,
-    const ecs_entity_t texture_source)
-{
+void clone_texture_entity_to_entity(
+    ecs *world,
+    const entity e,
+    const entity texture_source
+) {
     if (!texture_source) {
         zox_log("! texture [%lu] was invalid", texture_source)
         return;
     }
     clone_texture_data(world, e, texture_source);
-    zox_set(e, GenerateTexture, { zox_generate_texture_none })
-    zox_set(e, TextureDirty, { 1 })
 }

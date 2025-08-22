@@ -1,16 +1,16 @@
-extern ecs_entity_t spawn_element_texture(
-    ecs_world_t *world,
-    const ecs_entity_t canvas,
-    const ecs_entity_t source_texture,
+extern entity spawn_element_texture(
+    ecs *world,
+    const entity canvas,
+    const entity source_texture,
     const int2 position,
     const int2 size
 );
 
-extern ecs_entity_t get_linked_canvas(ecs_world_t*, ecs_entity_t);
+extern entity get_linked_canvas(ecs*, entity);
 
-ecs_entity_t tilemap_ui = 0;
+entity tilemap_ui = 0;
 
-void spawn_tilemap_ui(ecs_world_t *world, int32_t keycode) {
+void spawn_tilemap_ui(ecs *world, int32_t keycode) {
     if (keycode == SDLK_9) {
         if (tilemap_ui) {
             zox_log("- removing tilemap ui")
@@ -18,15 +18,15 @@ void spawn_tilemap_ui(ecs_world_t *world, int32_t keycode) {
             tilemap_ui = 0;
         } else {
             // conjure the canvas
-            const ecs_entity_t realm = local_realm;
+            const entity realm = local_realm;
             zox_geter(realm, GameLink, gameLink)
             zox_geter(gameLink->value, PlayerLinks, players)
-            const ecs_entity_t player = players->value[0];
-            ecs_entity_t canvas = get_linked_canvas(world, player);
+            const entity player = players->value[0];
+            entity canvas = get_linked_canvas(world, player);
             // our logic stuff
             zox_log("+ spawning tilemap ui")
             const int2 size = (int2) { 320, 320 };
-            const ecs_entity_t tilemap = zox_get_value(realm, TilemapLink)
+            const entity tilemap = zox_get_value(realm, TilemapLink)
             const int2 position = (int2) { 8, 8 };
             tilemap_ui = spawn_element_texture(
                 world,

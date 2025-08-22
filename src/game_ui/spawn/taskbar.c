@@ -104,7 +104,7 @@ entity spawn_taskbar(
             world,
             &spawn_icon_data
         );
-        // zox_remove(icon, GenerateTexture);
+
         zox_set_unique_name(icon, "taskbar_icon");
         frame_children.value[0] = icon;
         zox_set(icon, IconIndex, { i });
@@ -114,19 +114,23 @@ entity spawn_taskbar(
         taskbar_set_icons(world, canvas, frame, i);
         zox_set(icon, ClickEvent, { &taskbar_button_click_event });
         zox_prefab_set(icon, TooltipEvent, { &tooltip_event_taskbar_icon });
+
         char tooltip_text[64];
-        sprintf(tooltip_text, "toggles a [%s] game ui", ecs_get_name(world, hook.component_id));
+        sprintf(tooltip_text, "toggles [%s]", ecs_get_name(world, hook.component_id));
         zox_prefab_set(icon, TooltipText, { text_to_zext(tooltip_text) });
+
         // texture
         char* icon_texture_name = hook.texture_name;
+        // zox_remove(icon, GenerateTexture);
         clone_texture_to_entity(world, icon, icon_texture_name);
-        zox_set_ptr(frame, Children, frame_children);
 
         // Active State
         if (i == 0) {
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
         }
+
+        zox_set_ptr(frame, Children, frame_children);
         children.value[i] = frame;
     }
     zox_set_ptr(e, Children, children);

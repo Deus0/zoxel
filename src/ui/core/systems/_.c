@@ -6,10 +6,11 @@
 #include "layouts2D/canvas_stack_system.c"
 #include "layouts2D/window_layer_system.c"
 
-#include "rendering/element_begin_system.c"
-#include "rendering/render_texture_render_system.c"
-#include "rendering/element_render_system.c"
-#include "rendering/render_texture_begin_system.c"
+#include "rendering/element_begin.c"
+#include "rendering/texture_begin.c"
+#include "rendering/render_texture_begin.c"
+#include "rendering/render_texture_renderer.c"
+#include "rendering/element_renderer.c"
 
 #include "inputs/button_click_event_system.c"
 #include "inputs/dragger_end_system.c"
@@ -20,6 +21,7 @@
 #include "click_sound_system.c"
 
 #include "texture_size.c"
+#include "texture_size_generate.c"
 #include "render_texture.c"
 #include "mesh.c"
 
@@ -183,9 +185,21 @@ void define_systems_elements_core(ecs *world) {
             [out] rendering.MeshDirty,
             [out] rendering.MeshVertices2D,
             [out] rendering.MeshGPULink,
-            [out] rendering.TextureGPULink,
             [out] rendering.UvsGPULink,
-            [none] Element);
+            [none] Element
+        );
+        zox_system_1(
+            TextureDirtyBeginSystem,
+            EcsPostLoad,
+            [in] elements.core.InitializeElement,
+            [out] rendering.TextureDirty
+        );
+        zox_system_1(
+            TextureGpuBeginSystem,
+            EcsPostLoad,
+            [in] elements.core.InitializeElement,
+            [out] rendering.TextureGPULink
+        );
         zox_system_1(
             RenderTextureBeginSystem,
             EcsPreUpdate,
@@ -193,7 +207,8 @@ void define_systems_elements_core(ecs *world) {
             [in] rendering.TextureSize,
             [in] cameras.CameraLink,
             [in] rendering.TextureGPULink,
-            [none] cameras.RenderTexture);
+            [none] cameras.RenderTexture
+        );
     }
 
     zox_system(
@@ -201,7 +216,8 @@ void define_systems_elements_core(ecs *world) {
         EcsPreUpdate,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.PixelSize,
-        [out] rendering.TextureSize
+        [out] rendering.TextureSize,
+        [none] textures.FixToLayout
     );
     zox_system(
         TextureSizeGenerateSystem,

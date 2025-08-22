@@ -11,9 +11,9 @@ entity spawn_prefab_element_shell(
     zox_prefab_set(e, InitializeElement, { zox_dirty_trigger });
 
     // texture
-    zox_add_tag(e, Texture)
-    zox_prefab_set(e, TextureData, { 0, NULL })
-    zox_prefab_set(e, TextureSize, { int2_zero })
+    zox_add_tag(e, Texture);
+    zox_prefab_set(e, TextureData, { 0 });
+    zox_prefab_set(e, TextureSize, { int2_zero });
     // zox_prefab_set(e, TextureDirty, { 0 })
     // zox_prefab_set(e, Color, { color_white })   // do i need this here? does basic lack texture info for generation?
 

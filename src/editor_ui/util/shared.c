@@ -22,7 +22,7 @@ void resize_window_scrollbar(
     const int bounds_y = (window_size.y / 2) - scrollbar_height / 2;
     zox_set(scrollbar_front, DraggableLimits, { (int4) { 0, 0, -bounds_y, bounds_y } })
     zox_set(scrollbar_front, PixelPosition, { (int2) { 0, (window_size.y - scrollbar_height) / 2 } })
-    on_resized_element(world, scrollbar_front, scrollbar_size, int2_to_float2(canvas_size));
+    // on_resized_element(world, scrollbar_front, scrollbar_size, int2_to_float2(canvas_size));
 }
 
 ecs_entity_t spawn_button_old(

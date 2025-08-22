@@ -15,6 +15,7 @@ zox_begin_module(Zigels)
         [none] FontTexture,
         [out] textures.GenerateTexture)
     zox_system_ctx(FontTextureSystem, zoxp_text, fonts,
+        [in] textures.GenerateTexture,
         [in] ZigelIndex,
         [in] colorz.Color,
         [in] colorz.SecondaryColor,
@@ -23,8 +24,8 @@ zox_begin_module(Zigels)
         [in] zigels.FontOutlineThickness,
         [out] textures.TextureData,
         [out] rendering.TextureDirty,
-        [out] textures.GenerateTexture,
-        [none] FontTexture)
+        [none] FontTexture
+    );
     add_hook_files_load(load_files_fonts);
     add_hook_spawn_prefabs(spawn_prefabs_zigels);
 zox_end_module(Zigels)

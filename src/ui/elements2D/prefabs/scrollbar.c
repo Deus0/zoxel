@@ -1,7 +1,7 @@
 entity spawn_prefab_scrollbar(ecs *world) {
     zox_prefab()
     zox_prefab_name("scrollbar")
-    add_ui_plus_components(world, e);
+    // add_ui_plus_components(world, e);
     zox_add_tag(e, Selectable)
     zox_prefab_set(e, SelectState, { zox_select_state_none })
     zox_add_tag(e, Clickable)

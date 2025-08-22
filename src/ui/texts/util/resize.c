@@ -1,4 +1,4 @@
-void on_element_pixels_resized(
+/*void on_element_pixels_resized(
     ecs *world,
     const entity e,
     const int2 size,
@@ -22,3 +22,4 @@ void on_element_pixels_resized(
     generateTexture->value = zox_generate_texture_trigger;
     meshDirty->value = mesh_state_trigger;
 }
+*/

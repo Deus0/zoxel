@@ -1,4 +1,4 @@
-extern void on_element_pixels_resized(ecs *world, entity e, const int2 size, byte mesh_alignment);
+// extern void on_element_pixels_resized(ecs *world, entity e, const int2 size, byte mesh_alignment);
 
 void Elementbar2System(iter *it) {
 

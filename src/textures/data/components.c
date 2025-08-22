@@ -1,5 +1,6 @@
 zox_tag(Texture);
 zox_tag(Tilemap);
+zox_tag(FixToLayout);   // snap texture to layout size
 // types of textures
 zox_tag(NoiseTexture);
 zox_tag(IconTexture);
@@ -24,11 +25,18 @@ zoxc_entity(TilemapLink);
 zoxc_entity(TextureLink);
 zoxc_arrayd(TextureData, color)
 zoxc_arrayd(TilemapUVs, float2)
-zoxc_arrayd(TextureLinks, ecs_entity_t)
+zoxc_arrayd(TextureLinks, entity)
 // zoxc_entities(Textures)
 
-void define_components_textures(ecs_world_t *world) {
-    zox_define_tag(Texture);
+void define_components_textures(ecs *world) {
+    // entity types
+    zox_define_tag(Texture);    // RGBA
+    zox_define_tag(TextureRGB);
+    zox_define_tag(VoxTexture);
+    zox_define_tag(Tilemap);
+    // Properties
+    zox_define_tag(FixToLayout);
+    // Generation Types (obsolete)
     zox_define_tag(NoiseTexture);
     zox_define_tag(IconTexture);
     zox_define_tag(FrameTexture);
@@ -37,11 +45,9 @@ void define_components_textures(ecs_world_t *world) {
     zox_define_tag(SandTexture);
     zox_define_tag(StoneTexture);
     zox_define_tag(ObsidianTexture);
-    zox_define_tag(Tilemap);
     zox_define_tag(FillTexture);
     zox_define_tag(TextureAddNoise);
-    zox_define_tag(VoxTexture);
-    zox_define_tag(TextureRGB);
+
     zoxd_byte(GenerateTexture);
     zoxd_byte(OutlineThickness);
     zoxd_byte(FrameCorner);

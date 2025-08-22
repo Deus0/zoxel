@@ -1,6 +1,6 @@
 // uses terrain's texture links to generate a tilemap
 // todo: support for multiple sizes, would have to place them in? or something
-void TilemapGenerationSystem(ecs_iter_t *it) {
+void TilemapGenerationSystem(iter *it) {
     const byte uvs_per_tile = 4;
     zox_sys_world()
     zox_sys_begin()
@@ -27,7 +27,7 @@ void TilemapGenerationSystem(ecs_iter_t *it) {
             continue;
         }
         // generate textureSize based on TilemapSize
-        const ecs_entity_t first_texture = textureLinks->value[0];
+        const entity first_texture = textureLinks->value[0];
         if (!zox_valid(first_texture)) {
             zox_log_error("first_texture is null in tilemap generation system\n")
             continue;
@@ -44,7 +44,7 @@ void TilemapGenerationSystem(ecs_iter_t *it) {
         }
         for (texture_position.y = 0; texture_position.y < tilemapSize->value.y && texture_index < textureLinks->length; texture_position.y++) {
             for (texture_position.x = 0; texture_position.x < tilemapSize->value.x && texture_index < textureLinks->length; texture_position.x++) {
-                const ecs_entity_t texture = textureLinks->value[texture_index];
+                const entity texture = textureLinks->value[texture_index];
                 if (!zox_valid(texture) || !zox_has(texture, TextureData)) {
                     zox_log_error("invalid texture [%s] index [%i]", zox_get_name(texture), texture_index)
                     texture_index++;

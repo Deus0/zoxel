@@ -49,14 +49,13 @@ entity spawn_default_ui(
     zox_set(fake_mouse, RenderDisabled, { 0 });
     zox_remove(fake_mouse, GenerateTexture);
     clone_texture_data(world, fake_mouse, cursor);
-    zox_set(fake_mouse, TextureDirty, { 1 });
     zox_set(fake_mouse, MeshAlignment, { zox_mesh_alignment_top_left });
     if (local_mouse) {
         zox_set(local_mouse, TextureLink, { fake_mouse });
     }
 
     // used for icon mouse pickup
-    const int icon_size = default_icon_size * zox_ui_scale;
+    const int icon_size = default_icon_size;
     icon_mouse_follow = spawn_icon_mouse_follow_canvas(world,
         prefab_icon_mouse_follow,
         canvas,

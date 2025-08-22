@@ -1,5 +1,5 @@
 // #define zox_time_frame_texture_system
-void FrameTextureSystem(ecs_iter_t *it) {
+void FrameTextureSystem(iter *it) {
     zox_change_check()
     zox_sys_world()
     zox_sys_begin()
@@ -22,8 +22,7 @@ void FrameTextureSystem(ecs_iter_t *it) {
         if (generateTexture->value != zox_generate_texture_generate) {
             continue;
         }
-        int length = textureSize->value.x * textureSize->value.y;
-        initialize_TextureData(textureData, length);
+        initialize_TextureData(textureData, textureSize->value.x * textureSize->value.y);
         const byte add_noise = zox_has(e, TextureAddNoise);
         const color fill_color = color2->value;
         color outline_color;
@@ -37,28 +36,16 @@ void FrameTextureSystem(ecs_iter_t *it) {
                 255
             };
         }
-        if (zox_has(e, IconTexture)) {
-            const byte radius = (byte ) (textureSize->value.y * zox_gett_value(e, IconRadius));
-            generate_texture_icon(
-                textureData->value,
-                textureSize->value,
-                fill_color,
-                outline_color,
-                outlineThickness->value,
-                radius,
-                add_noise
-            );
-            // zox_log(" > [%s] radius [%i] size [%ix%i]\n", zox_get_name(it->entities[i]), radius, textureSize->value.x, textureSize->value.y)
-        } else {
-            generate_texture_frame(
-                textureData->value,
-                textureSize->value,
-                fill_color,
-                outline_color,
-                outlineThickness->value,
-                frameEdge->value,
-                add_noise);
-        }
+
+        generate_texture_frame(
+            textureData->value,
+            textureSize->value,
+            fill_color,
+            outline_color,
+            outlineThickness->value,
+            frameEdge->value,
+            add_noise);
+
         // zox_log("+ texture generated [%s]", zox_get_name(e))
         textureDirty->value = 1;
         //  voronoi2D(textureData->value, textureSize->value, color_gray, color_gray_dark, 0.7f);

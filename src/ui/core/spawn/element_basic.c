@@ -12,8 +12,8 @@ entity spawn_element_basic(
     const int2 parent_size
 ) {
 
-    zox_instance(prefab)
-    zox_name("element_basic")
+    zox_instance(prefab);
+    zox_name("element_basic");
     initialize_element(
         world,
         e,
@@ -27,7 +27,7 @@ entity spawn_element_basic(
         float2_zero,
         int2_zero
     );
-                       // positionf, position_in_canvas);
+
     return e;
 }
 
@@ -40,7 +40,18 @@ entity spawn_element_basic_on_canvas(
     const float2 anchor
 ) {
     const int2 canvas_size = zox_get_value(canvas, PixelSize)
-    return spawn_element_basic(world, prefab_element_shell, canvas, canvas, position, pixel_size, texture_size, anchor, 0, int2_half(canvas_size), canvas_size);
+    return spawn_element_basic(
+        world,
+        prefab_element_shell,
+        canvas,
+        canvas,
+        position,
+        pixel_size,
+        texture_size,
+        anchor,
+        0,
+        int2_half(canvas_size),
+        canvas_size);
 }
 
 entity spawn_element_texture(
@@ -54,10 +65,24 @@ entity spawn_element_texture(
         zox_log_error("[spawn_texture_element]: source_texture is empty.")
         return 0;
     }
-    const int2 source_size = zox_get_value(source_texture, TextureSize)
-    const TextureData *source_data = zox_get(source_texture, TextureData)
-    const entity e = spawn_element_basic_on_canvas(world, canvas, position, size, source_size, float2_zero);
-    zox_set(e, TextureData, { source_data->length, source_data->value })
-    zox_set(e, TextureDirty, { 1 })
+
+    zox_geter_value(source_texture, TextureSize, int2, source_size);
+    zox_geter(source_texture, TextureData, source_data);
+
+    const entity e = spawn_element_basic_on_canvas(
+        world,
+        canvas,
+        position,
+        size,
+        source_size,
+        float2_zero
+    );
+
+    zox_set(e, TextureData, {
+        .length = source_data->length,
+        .value = source_data->value
+    });
+    zox_set(e, TextureDirty, { 1 });
+
     return e;
 }

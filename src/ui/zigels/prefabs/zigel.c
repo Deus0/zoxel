@@ -6,6 +6,7 @@ entity spawn_zigel_prefab(ecs *world, const entity prefab) {
     zox_add_tag(e, Zigel);
     zox_prefab_set(e, ZigelIndex, { 0 });
     // font texture
+    zox_add_tag(e, FixToLayout);
     zox_add_tag(e, FontTexture);
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_generate_texture_trigger });

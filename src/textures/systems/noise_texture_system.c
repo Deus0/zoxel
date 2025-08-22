@@ -1,4 +1,4 @@
-void NoiseTextureSystem(ecs_iter_t *it) {
+void NoiseTextureSystem(iter *it) {
     zox_change_check()
     zox_field_world()
     zox_field_in(TextureSize, textureSizes, 1)

@@ -4,15 +4,16 @@ entity spawn_icon_mouse_follow(ecs *world, SpawnIcon *data) {
     return e;
 }
 
-entity spawn_icon_mouse_follow_canvas(ecs *world,
+entity spawn_icon_mouse_follow_canvas(
+    ecs *world,
     const entity prefab,
     const entity canvas,
     const int2 canvas_size,
     const byte layer,
     const float2 anchor,
     const float icon_size,
-    const entity zevice)
-{
+    const entity zevice
+) {
     SpawnIcon spawnIcon = {
         .canvas = {
             .e = canvas,

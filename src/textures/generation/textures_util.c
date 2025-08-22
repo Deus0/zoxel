@@ -2,8 +2,8 @@ const color empty_color = { 0, 0, 0, 0 };
 
 // move this to prefab
 void add_frame_texture_type(
-    ecs_world_t *world,
-    const ecs_entity_t e,
+    ecs *world,
+    const entity e,
     const color primary,
     const color secondary,
     byte corner,
@@ -17,8 +17,8 @@ void add_frame_texture_type(
 }
 
 void set_frame_texture_type(
-    ecs_world_t *world,
-    const ecs_entity_t e,
+    ecs *world,
+    const entity e,
     const color primary,
     const color secondary,
     byte corner,

@@ -1,6 +1,6 @@
 const char *outputTextureName = resources_folder_name"textures/tester.png"; // testing
 
-void TextureSaveSystem(ecs_iter_t *it) {
+void TextureSaveSystem(iter *it) {
     zox_skip_if_unchanged(1)
     // if (!ecs_query_changed(NULL, it)) return;
     zox_field_in(TextureDirty, textureDirtys, 1)

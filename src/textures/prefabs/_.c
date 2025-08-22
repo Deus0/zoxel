@@ -2,11 +2,11 @@
 #include "noise_texture.c"
 #include "dirt_texture.c"
 #include "tilemap.c"
-ecs_entity_t prefab_texture;
-ecs_entity_t prefab_texture_noise;
-ecs_entity_t prefab_tilemap;
+entity prefab_texture;
+entity prefab_texture_noise;
+entity prefab_tilemap;
 
-void spawn_prefabs_textures_core(ecs_world_t *world) {
+void spawn_prefabs_textures_core(ecs *world) {
     if (prefab_realm) {
         // zox_prefab_add(prefab_realm, TilemapLink) // realms link
         zox_prefab_set(prefab_realm, TilemapLink, { 0 }) // realms link
