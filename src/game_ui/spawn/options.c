@@ -42,24 +42,20 @@ ecs_entity_t spawn_menu_options(
     SpawnWindow2 window_data = {
         .header_text = header_label,
         .header_font_size = 32,
-        .header_padding = (byte2) { 8, 4 },
+        .header_padding = (byte2) { 8, 12 },
         .is_scrollbar = 0,
     };
-    /*int2 header_size = calculate_header_size(
-        strlen(header_label),
-        window_data.header_font_size,
-        window_data.header_padding);
-    int header_height = header_size.y;*/
 
     Children children = (Children) { 0 };
     window_data.children = &children;
-    const ecs_entity_t e = spawn_window2(world,
+    const ecs_entity_t e = spawn_window2(
+        world,
         canvas_data,
         window_parent_data,
         &window_element_data,
         &window_data);
-    zox_add_tag(e, MenuOptions)
-    zox_name("menu_options")
+    zox_add_tag(e, MenuOptions);
+    zox_name("menu_options");
 
     // # List #
 
@@ -103,8 +99,10 @@ ecs_entity_t spawn_menu_options(
         .count = elements_count,
         .visible_count = visible_count,
         .font_size = font_size,
-        .fill = (color) { 0, 0, 0, 0 },
-        .outline = (color) { 0, 255, 255, 55 },
+        .fill = button_fill,
+        .outline = button_outline,
+        //.fill = (color) { 0, 0, 0, 0 },
+        //.outline = (color) { 255, 255, 255, 155 },
         .padding = byte2_single(8),
         .spacing = 24,
         .slider_height = 64,
@@ -114,7 +112,8 @@ ecs_entity_t spawn_menu_options(
         canvas_data,
         list_parent_data,
         list_element_data,
-        ui_list_data);
+        ui_list_data
+    );
     add_to_Children(window_data.children, list);
     zox_set_ptr(e, Children, children);
 

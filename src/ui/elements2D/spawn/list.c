@@ -1,25 +1,25 @@
-entity spawn_list(ecs *world,
+entity spawn_list(
+    ecs *world,
     const CanvasSpawnData canvas_data,
     const ParentSpawnData parent_data,
     ElementSpawnData element_data,
-    const SpawnList list_data)
-{
-    // byte is_scrollbar = list_data.count > list_data.visible_count;
+    const SpawnList list_data
+) {
 
-    // zox_log("+ spawning ui list with [%i] elements", list_data.count)
-    // zox_log("   - visible_count [%i]", list_data.visible_count)
-    // offset by half a height
-    // move down by header size
-    // position_y -= window_data.header_font_size + window_data.header_padding * 2;
     int element_height = list_data.font_size + list_data.padding.y * 2;
     int position_y = (int) (element_data.size.y / 2);
     position_y += (int) (0.5f * element_height);
 
     zox_instance(element_data.prefab)
-    set_element_spawn_data(world, e, canvas_data, parent_data, &element_data);
-    zox_name("list")
-    zox_set(e, Color, { list_data.fill })
-    zox_set(e, OutlineColor, { list_data.outline })
+    set_element_spawn_data(
+        world,
+        e,
+        canvas_data,
+        parent_data,
+        &element_data);
+    zox_name("list");
+    zox_set(e, Color, { list_data.fill });
+    zox_set(e, OutlineColor, { list_data.outline });
     // zox_muter(e, Children, children)
     Children children = (Children) { 0 };
 
@@ -88,11 +88,15 @@ entity spawn_list(ecs *world,
                 .bounds = child_data.value_bounds,
                 .handle_width = 32,
             };
-            const entity2 e2 = spawn_slider(world,
+            const entity2 e2 = spawn_slider(
+                world,
                 canvas_data,
                 child_parent_data,
                 child_element_data,
-                list_data);
+                list_data,
+                button_font_fill,
+                button_font_outline
+            );
             if (child_data.on_slide.value) {
                 zox_set(e2.y, SlideEvent, { child_data.on_slide.value })
             }

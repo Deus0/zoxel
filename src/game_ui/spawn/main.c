@@ -83,7 +83,8 @@ entity spawn_main_menu(
         list_data.padding,
         list_data.spacing,
         list_margins,
-        list_data.visible_count);
+        list_data.visible_count
+    );
     // we use the bigger size out of list and header widths
     window_element_data.size = (int2) {
         int_max(list_size.x, header_size.x),

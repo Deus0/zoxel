@@ -227,11 +227,15 @@ entity spawn_ui_list(
                 .value = 0.5f,
                 .bounds = (float2) { 0, 1 },    // todo: pass this in from setting
             };
-            const entity2 e2 = spawn_slider(world,
+            const entity2 e2 = spawn_slider(
+                world,
                 spawnButton.canvas,
                 spawnButton.parent,
                 spawn_slider_data,
-                slider_data);
+                slider_data,
+                button_font_fill,
+                button_font_outline
+            );
             if (slide_events && slide_events[i].value) {
                 zox_set(e2.y, SlideEvent, { slide_events[i].value })
             }
