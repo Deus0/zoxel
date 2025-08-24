@@ -4,20 +4,23 @@ void LightSystem(ecs_iter_t *it) {
 
     zox_sys_world();
     zox_sys_begin();
-
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
-
+    zox_sys_in(VoxLink);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNodeDirty);
 
+    byte solidity[255];
+    for (int j = 0; j < 255; j++) solidity[j] = 1;
+    fetch_first_solidity(world, it, VoxLink_, solidity);
+
     for (int i = 0; i < it->count; i++) {
 
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-
+        zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightQueue, light_queue);
@@ -91,7 +94,8 @@ void LightSystem(ecs_iter_t *it) {
                     n_root_lnodes,
                     n_light_queues,
                     darklight,
-                    light_air_decay
+                    light_air_decay,
+                    solidity
                 )) {
                     queued_dirty = 1;
                 }
@@ -100,7 +104,7 @@ void LightSystem(ecs_iter_t *it) {
 
                 byte voxel = get_value_VoxelNode(root_vnode, update.depth, update.pos, 0);
 
-                if (voxel) {
+                if (voxel && solidity[voxel - 1]) {
                     zox_log_lighting_light("[%s]: Light Flood Canceled at [%ix%ix%i] l[%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light,  light_queue->count);
                     continue;
                 }
@@ -135,7 +139,8 @@ void LightSystem(ecs_iter_t *it) {
                     spread_light,
                     update.distance,
                     darklight,
-                    light_air_decay
+                    light_air_decay,
+                    solidity
                 );
 
             }

@@ -19,7 +19,8 @@ static inline void flood_light(
     byte light,
     byte distance,
     byte min_light,
-    byte air_decay
+    byte air_decay,
+    byte* solidity
 ) {
     if (!root_vnode || !root_lnode || distance == 0 || light <= min_light) {
         return;
@@ -49,7 +50,7 @@ static inline void flood_light(
             // solid → no propagation
             if (nvox_root) {
                 byte nvoxel = get_value_VoxelNode(nvox_root, depth, pos, 0);
-                if (nvoxel) {
+                if (nvoxel && solidity[nvoxel - 1]) {
                     continue; // solid: hard stop
                 }
             }
@@ -86,7 +87,7 @@ static inline void flood_light(
 
         // --- In-chunk: READ voxel, WRITE light in our own chunk only. ---
         byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
-        if (voxel) {
+        if (voxel && solidity[voxel - 1]) {
             continue;
         }
 
@@ -112,7 +113,8 @@ static inline void flood_light(
             decayed_light,
             distance - 1,
             min_light,
-            air_decay
+            air_decay,
+            solidity
         );
     }
 }

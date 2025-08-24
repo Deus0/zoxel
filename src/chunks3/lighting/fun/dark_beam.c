@@ -13,7 +13,8 @@ byte dark_sunbeam(
     byte sunlight,
     byte min_light,
     byte air_decay,
-    byte type
+    byte type,
+    byte* solidity
 ) {
     byte length = powers_of_two[depth];
     if (pos.y > length) return 0;
@@ -32,7 +33,7 @@ byte dark_sunbeam(
         }
 
         byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
-        if (voxel) {
+        if (voxel && solidity[voxel - 1]) {
             // zox_log("sunbeam stopped v at [%ix%ix%i] v[%i]",  pos.x, pos.y, pos.z, voxel);
             beam_stopped = 1;
             break;
@@ -82,7 +83,8 @@ byte dark_sunbeam(
             sunlight - air_decay + 1,
             darklight_propogation_distance,
             min_light,
-            air_decay
+            air_decay,
+            solidity
         );
     }
 

@@ -9,16 +9,22 @@ void DarkLightSystem(ecs_iter_t *it) {
     zox_sys_begin();
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
+    zox_sys_in(VoxLink);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(DarkQueue);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNodeDirty);
 
+    byte solidity[255];
+    for (int j = 0; j < 255; j++) solidity[j] = 1;
+    fetch_first_solidity(world, it, VoxLink_, solidity);
+
     for (int i = 0; i < it->count; i++) {
 
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(DarkQueue, dark_queue);
@@ -81,19 +87,17 @@ void DarkLightSystem(ecs_iter_t *it) {
                     root_lnode,
                     nnodesv,
                     nnodesl,
-
                     n_light_queues,
                     light_queue,
-
                     n_dark_queues,
                     dark_queue,
-
                     depthl->value,
                     update.pos,
                     update.light,
                     update.distance,
                     darklight,
-                    light_air_decay
+                    light_air_decay,
+                    solidity
                 );
 
             } else if (update.type == zox_light_type_beam_start || update.type == zox_light_type_beam) {
@@ -115,7 +119,8 @@ void DarkLightSystem(ecs_iter_t *it) {
                     sunlight,
                     darklight,
                     light_air_decay,
-                    update.type
+                    update.type,
+                    solidity
                 )) {
                     queued_dirty = 1;
                 }

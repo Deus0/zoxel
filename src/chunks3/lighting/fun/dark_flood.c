@@ -12,7 +12,8 @@ static inline void dark_flood_light(
     byte old_light,                       // the light we’re extinguishing
     byte distance,
     byte min_light,
-    byte air_decay
+    byte air_decay,
+    byte* solidity
 ) {
     if (!root_vnode || !root_lnode || distance == 0 || old_light <= min_light) {
         return;
@@ -44,7 +45,7 @@ static inline void dark_flood_light(
 
             if (n_root_vnode) {
                 byte voxel = get_value_VoxelNode(n_root_vnode, depth, pos, 0);
-                if (voxel) {
+                if (voxel && solidity[voxel - 1]) {
                     continue; // solid wall
                 }
             }
@@ -128,7 +129,8 @@ static inline void dark_flood_light(
                 old_light,
                 distance - 1,
                 min_light,
-                air_decay
+                air_decay,
+                solidity
             );
 
         } else {

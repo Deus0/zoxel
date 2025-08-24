@@ -5,14 +5,18 @@ void SunlightSystem(iter *it) {
 
     zox_sys_world();
     zox_sys_begin();
-
     zox_sys_in(VoxelNodeGenerated);
     zox_sys_in(NodeDepth);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
+    zox_sys_in(VoxLink);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
+
+    byte solidity[255];
+    for (int j = 0; j < 255; j++) solidity[j] = 1;
+    fetch_first_solidity(world, it, VoxLink_, solidity);
 
     for (int i = 0; i < it->count; i++) {
 
@@ -20,6 +24,7 @@ void SunlightSystem(iter *it) {
         zox_sys_i(NodeDepth, depthr);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNodeDirty, dirty);
@@ -84,7 +89,8 @@ void SunlightSystem(iter *it) {
                     n_root_lnodes,
                     n_queues,
                     darklight,
-                    light_air_decay
+                    light_air_decay,
+                    solidity
                 )) {
                     queued_dirty = 1;
                 }
