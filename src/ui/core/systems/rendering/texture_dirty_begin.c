@@ -1,7 +1,6 @@
 
 void TextureDirtyBeginSystem(iter *it) {
     if (headless) return;
-    zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InitializeElement);
     zox_sys_out(TextureDirty);

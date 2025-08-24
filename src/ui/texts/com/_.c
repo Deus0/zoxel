@@ -2,7 +2,7 @@ zox_tag(Zext);
 zox_tag(ZextLabel);
 zox_tag(ZextRenderEnabler);
 zox_tag(Text2D);
-zoxc_byte(ZextDirty);
+zoxc_byte(TextDirty);
 zoxc_byte(ZextAlignment);
 zoxc_byte(TextResolution);
 zoxc_byte2(TextPadding);
@@ -15,7 +15,7 @@ void define_components_texts(ecs *world) {
     zoxd_tag(ZextLabel);
     zoxd_tag(ZextRenderEnabler);
     zoxd_tag(Text2D);
-    zoxd_byte(ZextDirty);
+    zoxd_byte(TextDirty);
     zoxd_byte(ZextAlignment);
     zoxd_byte(TextResolution);
     zoxd_byte2(TextPadding);

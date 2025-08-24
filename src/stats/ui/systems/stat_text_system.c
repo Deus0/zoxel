@@ -6,11 +6,11 @@ void StatTextSystem(ecs_iter_t *it) {
     zox_sys_begin()
     zox_sys_in(StatLink)
     zox_sys_out(TextData)
-    zox_sys_out(ZextDirty)
+    zox_sys_out(TextDirty)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(StatLink, statLink)
         zox_sys_o(TextData, textData)
-        zox_sys_o(ZextDirty, zextDirty)
+        zox_sys_o(TextDirty, zextDirty)
         const ecs_entity_t stat = statLink->value;
         if (!zox_valid(stat) || !zox_has(stat, ZoxName) || !zox_has(stat, StatValue)) {
             zox_sys_e()

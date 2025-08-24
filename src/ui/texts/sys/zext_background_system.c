@@ -2,7 +2,7 @@
 void ZextBackgroundSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(ZextDirty)
+    zox_sys_in(TextDirty)
     zox_sys_in(TextData)
     zox_sys_in(TextSize)
     zox_sys_in(TextPadding)
@@ -14,7 +14,7 @@ void ZextBackgroundSystem(iter *it) {
     zox_sys_out(MeshVertices2D)
     zox_sys_out(MeshDirty)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ZextDirty, zextDirty)
+        zox_sys_i(TextDirty, zextDirty)
         zox_sys_i(TextData, textData)
         zox_sys_i(TextSize, textSize)
         zox_sys_i(TextPadding, textPadding)

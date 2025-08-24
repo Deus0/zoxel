@@ -53,11 +53,11 @@ void GameDebugLabelSystem(ecs_iter_t *it) {
     const int buffer_size = max_debug_characters;
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_out(ZextDirty)
+    zox_sys_out(TextDirty)
     zox_sys_out(TextData)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        zox_sys_o(ZextDirty, zextDirty)
+        zox_sys_o(TextDirty, zextDirty)
         zox_sys_o(TextData, textData)
         if (zextDirty->value) {
             continue;

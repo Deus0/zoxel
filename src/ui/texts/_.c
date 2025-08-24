@@ -2,11 +2,11 @@
 #define zoxm_zexts
 
 // todo: move labels to here as prefab
-#include "data/_.c"
-#include "components/_.c"
-#include "util/_.c"
-#include "prefabs/_.c"
-#include "systems/_.c"
+#include "dat/_.c"
+#include "com/_.c"
+#include "fun/_.c"
+#include "pre/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Texts)
     define_components_texts(world);

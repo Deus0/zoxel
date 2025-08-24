@@ -2,12 +2,12 @@ void AnimateTextSystem(iter *it) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_out(AnimateZext)
-    zox_sys_out(ZextDirty)
+    zox_sys_out(TextDirty)
     zox_sys_out(TextData)
     byte changed = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(AnimateZext, animateZext)
-        zox_sys_o(ZextDirty, zextDirty)
+        zox_sys_o(TextDirty, zextDirty)
         zox_sys_o(TextData, textData)
         animateZext->value -= delta_time;
         if (animateZext->value <= 0.0) {

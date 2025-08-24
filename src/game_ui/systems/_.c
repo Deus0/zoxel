@@ -6,18 +6,18 @@
 void define_systems_game_ui(ecs *world) {
     zox_system(FpsDisplaySystem, EcsOnUpdate,
             [out] texts.TextData,
-            [out] texts.ZextDirty,
+            [out] texts.TextDirty,
             [out] FPSDisplayTicker,
             [none] FPSDisplay)
     /*zox_system(QuadsLabelSystem, EcsOnUpdate,
             [out] QuadsCount,
-            [out] texts.ZextDirty,
+            [out] texts.TextDirty,
             [out] texts.TextData,
             [none] QuadsCountLabel)*/
     zox_system(DebugLabelSystem, EcsOnStore,
             [in] players.PlayerLink,
             [in] DebugLabelData,
-            [out] texts.ZextDirty,
+            [out] texts.TextDirty,
             [out] texts.TextData,
             [none] game.u.i.GameDebugLabel)
     zox_system_1(DeviceModeUISystem, EcsOnUpdate,

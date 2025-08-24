@@ -2,7 +2,7 @@ entity prefab_zigel;
 entity zox_font_style_monocraft;
 #include "font.c"
 #include "font_style.c"
-#include "zigel.c"
+#include "character.c"
 #include "ttf_font.c"
 entity prefab_font_style;
 entity prefab_font;

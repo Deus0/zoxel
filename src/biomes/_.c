@@ -11,7 +11,7 @@
  *
  * */
 
-byte zox_biome_override = 1;    // stick to earthy for now
+byte zox_biome_override = 0;    // stick to earthy for now
 #include "dat/_.c"
 #include "fun/_.c"
 

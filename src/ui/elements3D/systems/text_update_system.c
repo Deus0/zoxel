@@ -23,11 +23,11 @@ void update_text3D(ecs *world, const Children *children, const TextData *textDat
 void TextUpdateSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(ZextDirty)
+    zox_sys_in(TextDirty)
     zox_sys_in(TextData)
     zox_sys_in(Children)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ZextDirty, zextDirty)
+        zox_sys_i(TextDirty, zextDirty)
         zox_sys_i(Children, children)
         zox_sys_i(TextData, textData)
         if (zextDirty->value != zext_update_update || !textData->length) {

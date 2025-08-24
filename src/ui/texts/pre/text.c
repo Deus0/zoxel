@@ -7,7 +7,7 @@ entity spawn_prefab_zext(ecs *world, const entity prefab) {
     // text
     zox_add_tag(e, Zext);
     zox_add_tag(e, Text2D);
-    zox_prefab_set(e, ZextDirty, { 0 });
+    zox_prefab_set(e, TextDirty, { 0 });
     zox_prefab_set(e, TextData, { 0 });
     zox_prefab_set(e, Children, { 0 });
     zox_prefab_set(e, TextPadding, { byte2_zero });
@@ -22,7 +22,10 @@ entity spawn_prefab_zext(ecs *world, const entity prefab) {
     return e;
 }
 
-entity spawn_zext(ecs *world, const SpawnZext *data) {
+entity spawn_zext(
+    ecs *world,
+    const SpawnZext *data
+) {
     int2 texture_size;
     byte font_resolution;
     if (data->zext.font_resolution) {
@@ -48,19 +51,17 @@ entity spawn_zext(ecs *world, const SpawnZext *data) {
     if (data->zext.font_outline_thickness) {
         zox_set(e, FontOutlineThickness, { data->zext.font_outline_thickness });
     }
-    Children children = (Children) { 0 };
-    TextData text_data = (TextData) { 0 };
 
     const int zext_data_length = data->zext.text != NULL ? strlen(data->zext.text) : 0;
+
+    TextData text_data = (TextData) { 0 };
     initialize_TextData(&text_data, zext_data_length);
     for (int i = 0; i < text_data.length; i++) {
         text_data.value[i] = convert_ascii(data->zext.text[i]);
     }
+    zox_set_ptr(e, TextData, text_data);
+    zox_set(e, TextDirty, { zox_dirty_trigger });
 
-    const int zigels_count = calculate_total_zigels(
-        text_data.value,
-        text_data.length);
-    initialize_Children(&children, zigels_count);
     const int2 pixel_size = calculate_zext_size(
         text_data.value,
         text_data.length,
@@ -68,7 +69,26 @@ entity spawn_zext(ecs *world, const SpawnZext *data) {
         data->zext.padding,
         default_line_padding
     );
+    initialize_element(
+        world,
+        e,
+        data->parent.e,
+        data->canvas.e,
+        data->element.position,
+        pixel_size,
+        texture_size,
+        data->element.anchor,
+        data->element.layer,
+        float2_zero, // position2,
+        int2_zero // element_canvas_position
+    );
 
+    /*
+    Children children = (Children) { 0 };
+    const int zigels_count = calculate_total_zigels(
+        text_data.value,
+        text_data.length);
+    initialize_Children(&children, zigels_count);
     SpawnZigel spawn_data = {
         .canvas = data->canvas,
         .parent = {
@@ -110,21 +130,7 @@ entity spawn_zext(ecs *world, const SpawnZext *data) {
         );
         zox_set(children.value[i], RenderDisabled, { data->element.render_disabled });
     }
-    // this has to be done under as memory shifts a round with the points, when zox_set is called
-    initialize_element(
-        world,
-        e,
-        data->parent.e,
-        data->canvas.e,
-        data->element.position,
-        pixel_size,
-        texture_size,
-        data->element.anchor,
-        data->element.layer,
-        float2_zero, // position2,
-        int2_zero // element_canvas_position
-    );
-    zox_set_ptr(e, TextData, text_data);
     zox_set_ptr(e, Children, children);
+    */
     return e;
 }

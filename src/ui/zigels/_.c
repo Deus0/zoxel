@@ -1,13 +1,14 @@
 #ifndef zoxm_zigels
 #define zoxm_zigels
 
-#include "settings/_.c"
-#include "components/_.c"
-#include "data/_.c"
-#include "util/_.c"
-#include "prefabs/_.c"
-#include "util/io.c"
-#include "systems/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "dat/_.c"
+#include "fun/_.c"
+#include "pre/_.c"
+#include "ins/_.c"
+#include "fun/io.c"
+#include "sys/_.c"
 
 zox_begin_module(Zigels)
     define_components_zigels(world);

@@ -11,16 +11,6 @@ entity spawn_menu_paused(
     const int2 position = (int2) { 200, -200 };
     const byte layer = pause_ui_overlay_layer + 3;
     const byte is_close_button = 0;
-    /*const int max_labels = 5;
-    text_group labels[max_labels];
-    ClickEvent events[max_labels];
-    int labels_count = 0;
-    labels[labels_count] = (text_group) { pause_label_confirm };
-    events[labels_count] = (ClickEvent) { button_event_return_to_game };
-    labels_count++;
-    labels[labels_count] = (text_group) { pause_label_exit };
-    events[labels_count] = (ClickEvent) { button_event_end_game };
-    labels_count++;*/
 
     int elements_count = 0;
     SpawnListElement elements[2];
@@ -33,7 +23,6 @@ entity spawn_menu_paused(
         .on_click = { &button_event_end_game },
     };
 
-
     const entity e = spawn_window_list(
         world,
         player,
@@ -44,26 +33,6 @@ entity spawn_menu_paused(
         list_font_size
     );
 
-    /*const entity e = spawn_ui_list(world,
-        prefab_ui_list,
-        canvas,
-        menu_paused_header_label,
-        labels_count,
-        labels_count,
-        labels,
-        events,
-        NULL,
-        NULL,
-        position,
-        anchor,
-        is_close_button,
-        header_font_size,
-        font_size,
-        layer,
-        0,
-        player,
-        int2_zero
-    );*/
     zox_add_tag(e, MenuPaused);
     zox_name("menu_paused");
     return e;

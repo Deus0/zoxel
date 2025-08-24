@@ -1,14 +1,14 @@
 void ZextParentBackgroundSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(ZextDirty)
+    zox_sys_in(TextDirty)
     zox_sys_in(TextData)
     zox_sys_in(TextSize)
     zox_sys_in(TextPadding)
     zox_sys_in(MeshAlignment)
     zox_sys_in(ParentLink)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ZextDirty, zextDirty)
+        zox_sys_i(TextDirty, zextDirty)
         zox_sys_i(ParentLink, parentLink)
         zox_sys_i(TextData, textData)
         zox_sys_i(TextSize, textSize)

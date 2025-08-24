@@ -16,7 +16,7 @@ void define_systems_elements3D(ecs *world) {
         [in] hierarchys.Children,
         [none] rendering.MeshVertices)
     zox_system(TextUpdateSystem, EcsOnUpdate,
-        [in] texts.ZextDirty,
+        [in] texts.TextDirty,
         [in] texts.TextData,
         [in] hierarchys.Children,
         [none] texts.Zext)
@@ -25,7 +25,7 @@ void define_systems_elements3D(ecs *world) {
         [in] zigels.FontOutlineColor,
         [in] zigels.FontFillColor,
         [in] zigels.FontThickness,
-        [in] texts.ZextDirty,
+        [in] texts.TextDirty,
         [in] rendering.RenderDisabled,
         [in] Text3DScale,
         [in] texts.TextSize,

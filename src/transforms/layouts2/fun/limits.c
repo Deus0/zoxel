@@ -14,9 +14,9 @@ void set_window_bounds_to_canvas(
         canvas_size.y * anchor_reverse.y - window_size.y / 2
     };
     zox_set(e, LayoutConstraints, { drag_limits });
-    zox_log("Limiting e [%s] [%ix%ix%ix%i]",
+    /*zox_log("Limiting Window [%s] [%ix%ix%ix%i]",
         zox_get_name(e),
-        drag_limits.x, drag_limits.y, drag_limits.z, drag_limits.w);
+        drag_limits.x, drag_limits.y, drag_limits.z, drag_limits.w);*/
 }
 
 void limited_element(

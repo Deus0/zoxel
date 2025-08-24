@@ -29,7 +29,7 @@ zox_begin_module(Plots)
         [none] PlotLine);
     zox_system(PlotLabelSystem, EcsOnUpdate,
         [in] hierarchys.ParentLink,
-        [out] texts.ZextDirty,
+        [out] texts.TextDirty,
         [out] texts.TextData,
         [none] PlotLabel);
     zox_system(PlotLimitSystem, EcsOnUpdate,

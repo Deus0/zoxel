@@ -10,7 +10,7 @@ void define_systems_stats_ui(ecs_world_t *world) {
     zox_system(StatTextSystem, EcsOnUpdate,
             [in] StatLink,
             [out] texts.TextData,
-            [out] texts.ZextDirty,
+            [out] texts.TextDirty,
             [none] StatsLabel)
     zox_system_1(HealthbarSpawnerSystem, EcsOnUpdate,
             [in] combat.CombatState,

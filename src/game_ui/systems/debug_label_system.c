@@ -14,13 +14,13 @@ void DebugLabelSystem(iter *it) {
     zox_sys_begin()
     zox_sys_in(PlayerLink)
     zox_sys_in(DebugLabelData)
-    zox_sys_out(ZextDirty)
+    zox_sys_out(TextDirty)
     zox_sys_out(TextData)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(PlayerLink, playerLink)
         zox_sys_i(DebugLabelData, debugLabelData)
         zox_sys_o(TextData, textData)
-        zox_sys_o(ZextDirty, zextDirty)
+        zox_sys_o(TextDirty, zextDirty)
         if (zextDirty->value) {
             continue;
         }

@@ -16,7 +16,7 @@ entity spawn_prefab_text3D(ecs *world, const entity prefab) {
     zox_prefab_set(e, TextSize, { 0 });
     zox_prefab_set(e, TextResolution, { 0 });
     zox_prefab_set(e, TextPadding, { byte2_zero });
-    zox_prefab_set(e, ZextDirty, { 0 });
+    zox_prefab_set(e, TextDirty, { 0 });
     zox_prefab_set(e, ParentLink, { 0 });
     zox_prefab_set(e, FontOutlineColor, { { 255, 0, 0, 255 }});
     zox_prefab_set(e, FontFillColor, { { 0, 255, 0, 255 }});
