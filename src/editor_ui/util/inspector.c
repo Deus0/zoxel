@@ -103,9 +103,9 @@ void set_inspector_element(
 
     const byte button_layer = 1 + zox_get_value(window, Layer2D)
     zox_geter_value(window, CanvasPosition, int2, layout_position)
-    zox_geter_value(window, PixelSize, int2, parent_size)
+    zox_geter_value(window, LayoutSize, int2, parent_size)
     zox_geter_value(window, CanvasLink, ecs_entity_t, canvas)
-    zox_geter_value(canvas, PixelSize, int2, canvas_size)
+    zox_geter_value(canvas, LayoutSize, int2, canvas_size)
 
     // destroy previous ones
     zox_muter(window, Children, children)
@@ -117,7 +117,7 @@ void set_inspector_element(
     }
 
     const int scrollbar_margins = zox_gett_value(scrollbar, ElementMargins).x;
-    const int scrollbar_width = zox_gett_value(scrollbar, PixelSize).x;
+    const int scrollbar_width = zox_gett_value(scrollbar, LayoutSize).x;
     const byte2 button_padding = (byte2) {
         (int) (font_size * 1.46f),
         (int) (font_size * 0.5f)

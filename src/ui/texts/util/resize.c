@@ -9,9 +9,9 @@
         zox_log("! canvas invalid in element [%s]\n", zox_get_name(e))
         return;
     }
-    const float2 canvas_size = int2_to_float2(zox_gett_value(canvas, PixelSize));
+    const float2 canvas_size = int2_to_float2(zox_gett_value(canvas, LayoutSize));
     const float2 scale2D = (float2) { size.x / canvas_size.y, size.y / canvas_size.y };
-    zox_muter(e, PixelSize, pixelSize)
+    zox_muter(e, LayoutSize, pixelSize)
     zox_muter(e, TextureSize, textureSize)
     zox_muter(e, MeshVertices2D, meshVertices2D)
     zox_muter(e, GenerateTexture, generateTexture)

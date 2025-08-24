@@ -15,9 +15,9 @@ zoxc_byte(HierarchyUIDirty);
 #include "debug/_.c"
 
 zox_begin_module(EditorUI)
-    zox_define_tag(EditorElement);
-    zox_define_tag(HierarchyUI);
-    zox_define_tag(InspectorLabel);
+    zoxd_tag(EditorElement);
+    zoxd_tag(HierarchyUI);
+    zoxd_tag(InspectorLabel);
     zox_define_component(HierarchyUIDirty);
     zox_define_systems_editor(world);
     add_hook_spawn_prefabs(spawn_prefabs_editor);

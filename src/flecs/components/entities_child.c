@@ -21,5 +21,5 @@ void on_destroyed_##name(ecs_iter_t *it) {\
 }
 
 #define zox_define_component_entities_child(name)\
-    zox_define_component_entity(name)\
+    zoxd_entity(name)\
     zox_observe_expr(on_destroyed_##name, EcsOnRemove, "[in] "#name)

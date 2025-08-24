@@ -88,20 +88,20 @@ void zoxel_settings_physics() {
 void zoxel_settings_uis() {
     // main menu
     // header
-    header_fill = color_grayscale(4);
-    header_outline = color_grayscale(44);
+    header_fill = color_grayscale_a(4, header_fill.a);
+    header_outline = color_grayscale_a(44, header_outline.a);
     // header text
     header_font_resolution = 64;
     header_font_thickness_fill = 4;
     header_font_thickness_outline = 4;
-    header_font_fill = color_grayscale(32);
-    header_font_outline = color_grayscale(122);
+    header_font_fill = color_grayscale_a(32, header_font_fill.a);
+    header_font_outline = color_grayscale_a(122, header_font_outline.a);
     // window
     window_fill = color_grayscale_a(10, window_fill.a);
     window_outline = color_grayscale_a(44, window_outline.a);
     // buttons
-    button_fill = color_grayscale(10);
-    button_outline = color_grayscale(44);
+    button_fill = color_grayscale_a(10, window_fill.a);
+    button_outline = color_grayscale_a(44, window_outline.a);
     // button text
     button_font_resolution = 16;
     button_font_thickness_fill = 1;

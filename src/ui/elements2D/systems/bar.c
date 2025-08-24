@@ -7,12 +7,12 @@ void Elementbar2System(iter *it) {
     zox_sys_in(ElementBar);
     zox_sys_in(ElementBarSize);
     zox_sys_in(Children);
-    zox_sys_in(PixelSize);
+    zox_sys_in(LayoutSize);
 
     for (int i = 0; i < it->count; i++) {
 
         zox_sys_i(Children, children);
-        zox_sys_i(PixelSize, parent_size);
+        zox_sys_i(LayoutSize, parent_size);
         zox_sys_i(ElementBar, elementBar);
         zox_sys_i(ElementBarSize, elementBarSize);
 
@@ -28,8 +28,8 @@ void Elementbar2System(iter *it) {
             zox_log_error("frontbar missing InitializeElement");
             continue;
         }
-        if (!zox_has(front_bar, PixelPosition)) {
-            zox_log_error("frontbar missing PixelPosition");
+        if (!zox_has(front_bar, LayoutPosition)) {
+            zox_log_error("frontbar missing LayoutPosition");
             continue;
         }
         if (!zox_has(front_bar, LayoutPositionDirty)) {
@@ -58,16 +58,16 @@ void Elementbar2System(iter *it) {
             continue;
         }
 
-        zox_muter(front_bar, PixelPosition, position);
+        zox_muter(front_bar, LayoutPosition, position);
         zox_muter(front_bar, LayoutPositionDirty, pdirty);
-        zox_muter(front_bar, PixelSize, size);
+        zox_muter(front_bar, LayoutSize, size);
         zox_muter(front_bar, LayoutSizeDirty, sdirty);
-        // we should also set PixelSize here and dirty for it
+        // we should also set LayoutSize here and dirty for it
 
         const float percentage = elementBar->value;
         const float2 scale = elementBarSize->value;
         // const float left_offset = - scale.x * (1.0f - percentage) * 0.5f;
-        int2 front_size = parent_size->value; // zox_get_value(e, PixelSize)
+        int2 front_size = parent_size->value; // zox_get_value(e, LayoutSize)
         // calculate margin cause im too lazy to put it here as component yet
         int offset_x = (front_size.x - (front_size.x * scale.x)) / 2;
         float percecentage_2 = ((int) (percentage * 100)) / 100.0f; // only update per 100 units
@@ -78,7 +78,7 @@ void Elementbar2System(iter *it) {
         pdirty->value = zox_dirty_trigger;
         sdirty->value = zox_dirty_trigger;
 
-        // int2 front_pixel_size = zox_get_value(front_bar, PixelSize);
+        // int2 front_pixel_size = zox_get_value(front_bar, LayoutSize);
         /*on_element_pixels_resized(
             world,
             front_bar,

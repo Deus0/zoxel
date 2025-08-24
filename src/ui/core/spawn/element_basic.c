@@ -39,7 +39,7 @@ entity spawn_element_basic_on_canvas(
     const int2 texture_size,
     const float2 anchor
 ) {
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     return spawn_element_basic(
         world,
         prefab_element_shell,

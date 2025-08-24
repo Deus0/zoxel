@@ -13,9 +13,9 @@ zox_tag(MenuStatus);
 #include "util/menu_macro.c"
 
 zox_begin_module(UsersUI)
-    zox_define_tag(UserIcon);
-    zox_define_tag(UserIconWindow);
-    zox_define_tag(MenuStatus);
+    zoxd_tag(UserIcon);
+    zoxd_tag(UserIconWindow);
+    zoxd_tag(MenuStatus);
     zox_system(UserIconTooltipSystem, EcsOnUpdate,
             [in] elements.core.SelectState,
             [in] users.UserDataLink,

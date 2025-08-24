@@ -2,7 +2,7 @@ const double time_update_debug_label_system_rate = 1.0;
 const uint max_debug_characters = 4 * 1024;
 double time_update_debug_label_system = 0;
 
-void DebugLabelSystem(ecs_iter_t *it) {
+void DebugLabelSystem(iter *it) {
     // timer function for label updates
     time_update_debug_label_system += zox_delta_time;
     if (time_update_debug_label_system >= time_update_debug_label_system_rate) {
@@ -24,7 +24,7 @@ void DebugLabelSystem(ecs_iter_t *it) {
         if (zextDirty->value) {
             continue;
         }
-        const ecs_entity_t player = playerLink->value;
+        const entity player = playerLink->value;
         if (!player) {
             continue;
         }

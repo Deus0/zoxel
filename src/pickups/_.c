@@ -13,8 +13,8 @@ zoxc_byte(PickedUp);
 zox_increment_system(PickedUp, pickup_state_end);
 
 zox_begin_module(Pickups)
-    zox_define_tag(Pickup);
-    zox_define_tag(PickUpperer);
+    zoxd_tag(Pickup);
+    zoxd_tag(PickUpperer);
     zoxd_byte(PickedUp);
     zoxd_system_increment(PickedUp, [none] Pickup);
     zox_system_1(PickupSoundSystem, zoxp_mainthread,

@@ -14,10 +14,10 @@ zox_tag(HealthStat);
 zox_tag(StatSoul);
 
 void define_components_stats(ecs_world_t *world) {
-    zox_define_tag(StatState);
-    zox_define_tag(StatRegen);
-    zox_define_tag(StatAttribute);
-    zox_define_tag(StatLevel);
+    zoxd_tag(StatState);
+    zoxd_tag(StatRegen);
+    zoxd_tag(StatAttribute);
+    zoxd_tag(StatLevel);
     zoxd_userdata(Stat);
     zox_define_component_float(StatValue);
     zox_define_component_float(StatValueMax);
@@ -25,6 +25,6 @@ void define_components_stats(ecs_world_t *world) {
     zox_define_component_float(ExperienceMax);
     zox_define_entities_component(DotLinks);
     // special stats
-    zox_define_tag(HealthStat);
-    zox_define_tag(StatSoul);
+    zoxd_tag(HealthStat);
+    zoxd_tag(StatSoul);
 }

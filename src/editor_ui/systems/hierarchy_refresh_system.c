@@ -55,8 +55,8 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
     zox_sys_in(ElementFontSize)
     zox_sys_in(CanvasLink)
     zox_sys_out(HierarchyUIDirty)
-    zox_sys_out(PixelPosition)
-    zox_sys_out(PixelSize)
+    zox_sys_out(LayoutPosition)
+    zox_sys_out(LayoutSize)
     zox_sys_out(TextureSize)
     zox_sys_out(Children)
     for (int i = 0; i < it->count; i++) {
@@ -68,8 +68,8 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
         zox_sys_i(ListUIMax, listUIMax)
         zox_sys_i(ElementFontSize, elementFontSize)
         zox_sys_i(CanvasLink, canvasLink)
-        zox_sys_o(PixelPosition, pixelPosition)
-        zox_sys_o(PixelSize, pixelSize)
+        zox_sys_o(LayoutPosition, pixelPosition)
+        zox_sys_o(LayoutSize, pixelSize)
         zox_sys_o(TextureSize, textureSize)
         zox_sys_o(HierarchyUIDirty, hierarchyUIDirty)
         zox_sys_o(Children, children)
@@ -82,12 +82,12 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
             continue; // no scrollbar
         }
         const ecs_entity_t canvas = canvasLink->value;
-        zox_geter_value(canvas, PixelSize, int2, canvas_size)
+        zox_geter_value(canvas, LayoutSize, int2, canvas_size)
         const int elements_visible = listUIMax->value;
         const int font_size = elementFontSize->value * zox_ui_scale;
         const byte button_layer = layer2D->value + 1;
         const int scrollbar_margins = zox_gett_value(scrollbar, ElementMargins).x;
-        const int scrollbar_width = zox_gett_value(scrollbar, PixelSize).x;
+        const int scrollbar_width = zox_gett_value(scrollbar, LayoutSize).x;
         const byte2 button_padding = (byte2) { (int) (font_size * 0.46f), (int) (font_size * 0.3f) };
         const int2 list_margins = (int2) { (int) (font_size * 0.8f), (int) (font_size * 0.8f) };
         const int button_inner_margins = (int) (font_size * 0.5f);
@@ -114,7 +114,7 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
             new_window_size.x += scrollbar_width + scrollbar_margins * 2;
         }
         if (new_window_size.x != old_window_size.x) {
-            int header_height = zox_gett_value(header, PixelSize).y;
+            int header_height = zox_gett_value(header, LayoutSize).y;
             reverse_anchor_element_position2_with_header(&pixelPosition->value, anchor->value, old_window_size, header_height);
             pixelSize->value = new_window_size;
             textureSize->value = new_window_size;

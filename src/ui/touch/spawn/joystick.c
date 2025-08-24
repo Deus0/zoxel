@@ -8,7 +8,7 @@ entity spawn_virtual_joystick(
 ) {
     const float2 anchor = float2_zero;
     const byte layer = 4;
-    const int2 canvas_size = zox_get_value(canvas, PixelSize);
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize);
 
     int2 pixel_size = virtual_joystick_size;
     zox_instance(prefab_virtual_joystick)

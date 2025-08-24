@@ -1,5 +1,5 @@
 // TODO: Refactor these modules onto the game ui
-extern entity spawn_menu_game_stats(ecs_world_t *world, const entity menu_game, const entity player, Children *children);
+extern entity spawn_menu_game_stats(ecs *world, const entity menu_game, const entity player, Children *children);
 
 entity spawn_menu_game(
     ecs *world,
@@ -8,7 +8,7 @@ entity spawn_menu_game(
     const entity character
 ) {
     const entity canvas = zox_get_value(player, CanvasLink)
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     // make layout2 instead of element_invisible
     const entity e = spawn_layout2_on_canvas(world,
         prefab,
@@ -20,11 +20,11 @@ entity spawn_menu_game(
     Children children = (Children) { 0, NULL };
 
     const entity crosshair = spawn_crosshair(world,
-        (CanvasSpawnData) {
+        (LayoutParentData) {
             .e = canvas,
             .size = canvas_size,
         },
-        (ParentSpawnData) {
+        (LayoutParentData) {
             .e = e,
             .position = int2_zero,
             .size = canvas_size,
@@ -53,7 +53,7 @@ entity spawn_menu_game(
 }
 
 void dispose_menu_game(
-    ecs_world_t *world,
+    ecs *world,
     const entity player
 ) {
     const entity canvas = zox_get_value(player, CanvasLink)

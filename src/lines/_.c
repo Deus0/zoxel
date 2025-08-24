@@ -9,7 +9,7 @@ zoxc(LineThickness, float);
 #include "lines3/_.c"
 
 zox_begin_module(Lines)
-    zox_define_tag(Line);
+    zoxd_tag(Line);
     zox_define_component(LineThickness);
     // zox_import_module(Lines2D)
     zox_import_module(Lines3);

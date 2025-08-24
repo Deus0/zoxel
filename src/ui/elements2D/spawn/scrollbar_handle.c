@@ -17,7 +17,7 @@ entity spawn_scrollbar_front(ecs *world,
     zox_instance(prefab_scrollbar_front)
     zox_name("scrollbar_front")
     zox_add_tag(e, ScrollbarButton)
-    zox_set(e, DraggableLimits, { (int4) { 0, 0, -bounds_y, bounds_y } })
+    zox_set(e, LayoutConstraints, { (int4) { 0, 0, -bounds_y, bounds_y } })
     initialize_element(world, e, parent, canvas, pixel_position, pixel_size, pixel_size, anchor, layer, position2, position_in_canvas);
     return e;
 }

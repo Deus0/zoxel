@@ -24,7 +24,7 @@ entity spawn_element3D(ecs *world, const entity prefab, const entity ui_holder, 
     zox_set(e, UIHolderLink, { ui_holder })
     // zox_set(e, CameraLink, { camera })
     zox_set(e, CanvasLink, { canvas })
-    zox_set(e, PixelSize, { pixel_size })
+    zox_set(e, LayoutSize, { pixel_size })
     zox_set(e, TextureSize, { pixel_size })
     return e;
 }

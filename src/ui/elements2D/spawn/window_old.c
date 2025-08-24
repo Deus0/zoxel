@@ -7,7 +7,7 @@ entity spawn_window(
     const entity canvas,
     const byte layer
 ) {
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     const byte header_layer = layer + 1;
     const int font_size = 28;
     const int header_margins = 16;

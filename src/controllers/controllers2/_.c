@@ -11,9 +11,9 @@ zoxc_float2(Movement2);
 #include "util/label.c"
 
 zox_begin_module(Controllers2)
-    zox_define_tag(Player2D);
-    zox_define_tag(PlayerCharacter2D);
-    zox_define_component_float2(Movement2);
+    zoxd_tag(Player2D);
+    zoxd_tag(PlayerCharacter2D);
+    zoxd_float2(Movement2);
     zox_system(Controller2MoveSystem, EcsOnUpdate,
         [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,

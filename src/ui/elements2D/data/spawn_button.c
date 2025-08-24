@@ -7,8 +7,8 @@ typedef struct {
 
 // just use for holding atm
 typedef struct {
-    CanvasSpawnData canvas;
-    ParentSpawnData parent;
+    LayoutParentData canvas;
+    LayoutParentData parent;
     ElementSpawnData element;
     SpawnTextData zext;
     SpawnButtonData button;

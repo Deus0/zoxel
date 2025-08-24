@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_fps_display(ecs_world_t *world) {
+entity spawn_prefab_fps_display(ecs *world) {
     zox_prefab_child(prefab_label_background)
     zox_prefab_name("fps_display")
     zox_add_tag(e, FPSDisplay)
@@ -9,18 +9,18 @@ ecs_entity_t spawn_prefab_fps_display(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_fps_display(ecs_world_t *world, const ecs_entity_t canvas) {
+entity spawn_fps_display(ecs *world, const entity canvas) {
     if (!zox_valid(canvas) || !zox_has(canvas, Canvas)) {
         zox_log_error("Invalid Canvas");
         return 0;
     }
-    const ecs_entity_t parent = canvas;
+    const entity parent = canvas;
     const byte layer = game_overlay_layer + 1; // 1;
     const byte font_size = 32;
     const byte2 padding = (byte2) { 12, 8 };
     const float2 anchor = { 1.0f, 1.0f };
     const int2 pixel_position = (int2) { -16, -16 };
-    const int2 parent_pixel_size = zox_get_value(canvas, PixelSize)
+    const int2 parent_pixel_size = zox_get_value(canvas, LayoutSize)
     return spawn_label_background(world,
         fps_display_prefab,
         parent,

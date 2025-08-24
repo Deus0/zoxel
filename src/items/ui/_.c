@@ -6,8 +6,8 @@ zox_tag(IconItem);
 #include "prefabs/_.c"
 
 zox_begin_module(ItemsUI)
-    zox_define_tag(MenuItems);
-    zox_define_tag(IconItem);
+    zoxd_tag(MenuItems);
+    zoxd_tag(IconItem);
     add_taskbar_button((hook_taskbar) {
         .spawn = &spawn_player_menu_items,
         .component_id = MenuItems,

@@ -1,11 +1,11 @@
-ecs_entity_t spawn_menu_game_touch(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const ecs_entity_t player,
-    const ecs_entity_t canvas
+entity spawn_menu_game_touch(
+    ecs *world,
+    const entity prefab,
+    const entity player,
+    const entity canvas
 ) {
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
-    const ecs_entity_t e = spawn_layout2_on_canvas(world, prefab, canvas, int2_zero, canvas_size, float2_half);
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    const entity e = spawn_layout2_on_canvas(world, prefab, canvas, int2_zero, canvas_size, float2_half);
     zox_name("menu_game_touch")
     const byte button_size = 140;
     const byte button_padding = 20;
@@ -47,9 +47,9 @@ ecs_entity_t spawn_menu_game_touch(
 
 // called from game state changes
 void spawn_in_game_ui_touch(
-    ecs_world_t *world,
-    const ecs_entity_t player,
-    const ecs_entity_t canvas
+    ecs *world,
+    const entity player,
+    const entity canvas
 ) {
     if (!zox_valid(canvas)) {
         return;
@@ -61,13 +61,13 @@ void spawn_in_game_ui_touch(
 }
 
 void dispose_menu_game_touch(
-    ecs_world_t *world,
-    const ecs_entity_t player
+    ecs *world,
+    const entity player
 ) {
     if (!zox_valid(player)) {
         return;
     }
-    const ecs_entity_t canvas = zox_get_value(player, CanvasLink)
+    const entity canvas = zox_get_value(player, CanvasLink)
     if (!zox_valid(canvas)) {
         return;
     }

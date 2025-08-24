@@ -41,7 +41,7 @@ void define_systems_elements_core(ecs *world) {
     zoxd_system_increment(SelectState);
     zox_filter(raycast_query,
         [in] layouts2.CanvasPosition,
-        [in] layouts2.PixelSize,
+        [in] layouts2.LayoutSize,
         [in] layouts2.Layer2D,
         [in] rendering.RenderDisabled,
         [none] Element,
@@ -109,7 +109,7 @@ void define_systems_elements_core(ecs *world) {
         [in] inputs.ZeviceLink,
         [in] layouts2.Anchor,
         [in] layouts2.CanvasLink,
-        [out] layouts2.PixelPosition,
+        [out] layouts2.LayoutPosition,
         [out] layouts2.LayoutPositionDirty,
         [none] MouseElement
     );
@@ -127,8 +127,8 @@ void define_systems_elements_core(ecs *world) {
             [in] cameras.ScreenToCanvas,
             [in] apps.AppLink,
             [in] hierarchys.Children,
-            [out] layouts2.PixelPosition,
-            [out] layouts2.PixelSize,
+            [out] layouts2.LayoutPosition,
+            [out] layouts2.LayoutSize,
             [out] layouts2.LayoutPositionDirty,
             [out] layouts2.LayoutSizeDirty,
             [none] Canvas
@@ -172,7 +172,7 @@ void define_systems_elements_core(ecs *world) {
             ElementBeginSystem,
             EcsPostLoad,
             [in] elements.core.InitializeElement,
-            [in] layouts2.PixelSize,
+            [in] layouts2.LayoutSize,
             [in] rendering.MeshAlignment,
             [in] layouts2.CanvasLink,
             [out] rendering.MeshDirty,
@@ -199,7 +199,7 @@ void define_systems_elements_core(ecs *world) {
         TextureSizeSystem,
         EcsPreUpdate,
         [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.PixelSize,
+        [in] layouts2.LayoutSize,
         [out] rendering.TextureSize,
         [none] textures.FixToLayout
     );
@@ -214,7 +214,7 @@ void define_systems_elements_core(ecs *world) {
         EcsPostUpdate,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.CanvasLink,
-        [in] layouts2.PixelSize,
+        [in] layouts2.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
         [out] rendering.MeshDirty
@@ -225,7 +225,7 @@ void define_systems_elements_core(ecs *world) {
         RenderTextureSizeSystem,
         EcsOnUpdate,
         [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.PixelSize,
+        [in] layouts2.LayoutSize,
         [in] rendering.TextureGPULink,
         [in] cameras.CameraLink,
         [none] cameras.RenderTexture
@@ -235,7 +235,7 @@ void define_systems_elements_core(ecs *world) {
             RenderTextureBeginSystem,
             EcsPreUpdate,
             [in] elements.core.InitializeElement,
-            [in] layouts2.PixelSize,
+            [in] layouts2.LayoutSize,
             [in] cameras.CameraLink,
             [in] rendering.TextureGPULink,
             [none] cameras.RenderTexture

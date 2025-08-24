@@ -26,8 +26,8 @@ void set_child_canvas_position(
 ) {
     int2 cposition = parent_position;
     if (!skip) {
-        if (zox_valid(e) && zox_has(e, PixelPosition) && zox_has(e, CanvasPosition) && zox_has(e, Anchor)) {
-            zox_geter_value(e, PixelPosition, int2, position);
+        if (zox_valid(e) && zox_has(e, LayoutPosition) && zox_has(e, CanvasPosition) && zox_has(e, Anchor)) {
+            zox_geter_value(e, LayoutPosition, int2, position);
             zox_geter_value(e, Anchor, float2, anchor);
             zox_muter(e, CanvasPosition, canvas_position);
             canvas_position->value = get_element_pixel_positionv(
@@ -40,7 +40,7 @@ void set_child_canvas_position(
     }
     // also set children ones
     if (zox_has(e, Children)) {
-        zox_geter_value(e, PixelSize, int2, size);
+        zox_geter_value(e, LayoutSize, int2, size);
         zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
             entity e2 = children->value[i];
@@ -68,15 +68,15 @@ void LayoutParentPositionSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutPositionDirty);
-    zox_sys_in(PixelPosition);
-    zox_sys_in(PixelSize);
+    zox_sys_in(LayoutPosition);
+    zox_sys_in(LayoutSize);
     zox_sys_in(Anchor);
     zox_sys_in(ParentLink);
     zox_sys_out(CanvasPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LayoutPositionDirty, dirty);
-        zox_sys_i(PixelPosition, layout_position);
-        zox_sys_i(PixelSize, layout_size);
+        zox_sys_i(LayoutPosition, layout_position);
+        zox_sys_i(LayoutSize, layout_size);
         zox_sys_i(Anchor, anchor);
         zox_sys_i(ParentLink, parent);
         zox_sys_o(CanvasPosition, canvas_position);
@@ -85,19 +85,19 @@ void LayoutParentPositionSystem(iter *it) {
             continue;
         }
 
-        if (!zox_valid(parent->value) || !zox_has(parent->value, PixelSize)) {
+        if (!zox_valid(parent->value) || !zox_has(parent->value, LayoutSize)) {
             zox_log("! invalid parent [%s::%lu]",
                 zox_get_name(it->entities[i]),
                 it->entities[i]);
             continue;
         }
 
-        zox_geter_value(parent->value, PixelSize, int2, parent_size);
+        zox_geter_value(parent->value, LayoutSize, int2, parent_size);
         int2 parent_position;
         if (zox_has(parent->value, CanvasPosition)) {
             parent_position = zox_get_value(parent->value, CanvasPosition);
-        } else if (zox_has(parent->value, PixelPosition)) {
-            parent_position = zox_get_value(parent->value, PixelPosition);
+        } else if (zox_has(parent->value, LayoutPosition)) {
+            parent_position = zox_get_value(parent->value, LayoutPosition);
         } else {
             parent_position = int2_zero;
         }

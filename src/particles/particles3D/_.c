@@ -17,8 +17,8 @@ void update_statistics_particles3D() {
 
 zox_begin_module(Particles3D)
     add_hook_load_shader(&spawn_shaders_particles3D);
-    zox_define_tag(Particle3D);
-    zox_define_tag(Particle3DEmitter);
+    zoxd_tag(Particle3D);
+    zoxd_tag(Particle3DEmitter);
     zox_system_1(Particle3DEmitSystem, EcsPreStore,
         [in] transforms3.Position3D,
         [in] particles.ParticleEmitRate,

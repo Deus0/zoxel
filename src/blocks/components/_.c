@@ -17,11 +17,11 @@ zoxc_entity(BlockPrefabLink);
 zoxc_entities(VoxelLinks)
 
 void define_components_blocks(ecs_world_t *world) {
-    zox_define_tag(Voxel);
-    zox_define_tag(Block);
-    zox_define_tag(BlockVox);
-    zox_define_tag(BlockDungeon);
-    zox_define_tag(BlockInvinsible);
+    zoxd_tag(Voxel);
+    zoxd_tag(Block);
+    zoxd_tag(BlockVox);
+    zoxd_tag(BlockDungeon);
+    zoxd_tag(BlockInvinsible);
     zoxd_byte(BlockModel);
     zoxd_byte(BlockCollider);
     zoxd_byte(VoxelsDirty);
@@ -31,7 +31,7 @@ void define_components_blocks(ecs_world_t *world) {
     zox_define_component_int3(VoxelPosition);
     zoxd_byte3(VoxelLocalPosition);
     zox_define_component_float(BlockScale);
-    zox_define_component_entity(BlockLink);
-    zox_define_component_entity(BlockPrefabLink);
+    zoxd_entity(BlockLink);
+    zoxd_entity(BlockPrefabLink);
     zox_define_entities_component(VoxelLinks);
 }

@@ -54,7 +54,7 @@ entity spawn_ui_list(
     const int scaled_header_font_size = (int) header_font_size; // zox_ui_scale *
     const int scrollbar_width = 36; // * zox_ui_scale;
     const int scrollbar_margins = 8; //  * zox_ui_scale;
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
 
 
     // header
@@ -105,13 +105,14 @@ entity spawn_ui_list(
         int2_zero
     );
 
-    Children *children = &((Children) { 0, NULL });
-    initialize_Children(children, children_length);
+    Children children = (Children) { 0 };
+    initialize_Children(&children, children_length);
+
     if (is_header) {
         const int2 header_size = (int2) { pixel_size.x, header_height };
         const int2 header_position = (int2) { 0, header_height / 2 };
         const float2 header_anchor = (float2) { 0.5f, 1.0f };
-        children->value[0] = spawn_header(world,
+        children.value[0] = spawn_header(world,
             e,
             canvas,
             header_position,
@@ -142,7 +143,7 @@ entity spawn_ui_list(
             max_elements,
             elements_count
         );
-        children->value[is_header] = scrollbar;
+        children.value[is_header] = scrollbar;
     }
     SpawnButton spawnButton = {
         .canvas = {
@@ -177,21 +178,21 @@ entity spawn_ui_list(
 
         spawnButton.element.render_disabled = !(i >= 0 && i < max_elements);
 
-        int2 position = (int2) {
+        /*int2 position = (int2) {
             0,
             (int) (pixel_size.y / 2) - (i + 0.5f) * (scaled_font_size + button_padding.y * 2) - list_margins.y - i * button_inner_margins
         };
 
         if (is_scrollbar) {
             position.x -= (scrollbar_width + scrollbar_margins * 2) / 2;
-        }
+        }*/
 
         byte spawn_type = 0;
         if (types) {
             spawn_type = types[i];
         }
 
-        spawnButton.element.position = position;
+        // spawnButton.element.position = position;
         if (spawn_type == 0) {
 
             // BUTTONS
@@ -210,8 +211,8 @@ entity spawn_ui_list(
             if (click_events && click_events[i].value) {
                 zox_set(e2, ClickEvent, { click_events[i].value })
             }
-            children->value[list_start + i] = e2;
-            zox_add_tag(e2, ZextLabel)
+            zox_add_tag(e2, ZextLabel);
+            children.value[list_start + i] = e2;
 
         } else {
 
@@ -239,16 +240,16 @@ entity spawn_ui_list(
             if (slide_events && slide_events[i].value) {
                 zox_set(e2.y, SlideEvent, { slide_events[i].value })
             }
-            children->value[list_start + i] = e2.x;
+            children.value[list_start + i] = e2.x;
 
         }
     }
-    zox_set(e, Children, { children->length, children->value })
-    // zox_modified(e, Children)
+    zox_set_ptr(e, Children, children);
+
     if (!headless && elements_count > 0 && player) {
         const byte device_mode = zox_get_value(player, DeviceMode)
         if (device_mode == zox_device_mode_gamepad) {
-            raycaster_select_element(world, player, children->value[list_start]);
+            raycaster_select_element(world, player, children.value[list_start]);
         }
     }
     return e;

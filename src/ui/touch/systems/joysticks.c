@@ -49,20 +49,20 @@ void handle_touch_drag(ecs *world,
             }
         } else if (devices_get_is_pressed(zevicePointer->value)) {
             zox_geter(finger, ZevicePointerPosition, zevicePointerPosition)
-            zox_geter(joystick_element, PixelPosition, virtual_joystick_position)
+            zox_geter(joystick_element, LayoutPosition, virtual_joystick_position)
             zox_geter(joystick_element, Children, ui_children)
-            zox_geter(joystick_element, PixelSize, virtual_joystick_size)
+            zox_geter(joystick_element, LayoutSize, virtual_joystick_size)
             const entity joystick_pointer = ui_children->value[0];
             if (!zox_valid(joystick_pointer)) {
                 zox_log_error("invalid joystick_pointer, parent [%s]", zox_get_name(joystick_element))
                 return;
             }
-            zox_geter(joystick_pointer, PixelSize, virtual_joystick_pointer_size)
+            zox_geter(joystick_pointer, LayoutSize, virtual_joystick_pointer_size)
             const int2 delta_position = int2_sub(zevicePointerPosition->value, virtual_joystick_position->value);
             int2 size_limits = int2_multiply_float(int2_sub(virtual_joystick_size->value, virtual_joystick_pointer_size->value), 0.5f);
             size_limits.x -= 10;
             size_limits.y -= 10;
-            zox_muter(joystick_pointer, PixelPosition, pixel_position)
+            zox_muter(joystick_pointer, LayoutPosition, pixel_position)
             zox_muter(virtual_joystick, ZeviceStick, zeviceStick)
             pixel_position->value.x = delta_position.x;
             pixel_position->value.y = delta_position.y;

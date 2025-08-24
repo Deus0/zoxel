@@ -20,7 +20,7 @@ ecs_entity_t spawn_prefab_menu_##name( \
     ) {\
         const ecs_entity_t character = zox_get_value(player, CharacterLink)\
         const ecs_entity_t canvas = zox_get_value(player, CanvasLink)\
-        const int2 canvas_size = zox_get_value(canvas, PixelSize)\
+        const int2 canvas_size = zox_get_value(canvas, LayoutSize)\
         SpawnWindowUsers data = get_default_spawn_window_users_data( \
             world, \
             prefab_menu_##name, \
@@ -46,7 +46,7 @@ zox_user_menu_functions_minimal(Name, Name2, name, name2)\
 ecs_entity_t spawn_player_menu_##name(ecs_world_t *world, const ecs_entity_t player) {\
     const ecs_entity_t character = zox_get_value(player, CharacterLink)\
     const ecs_entity_t canvas = zox_get_value(player, CanvasLink)\
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)\
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)\
     SpawnWindowUsers data = get_default_spawn_window_users_data( \
         world, \
         prefab_menu_##name, \

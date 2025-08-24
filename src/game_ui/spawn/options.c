@@ -1,14 +1,14 @@
-void on_settings_slider_slid(ecs_world_t* world, const SlideEventData* data) {
-    zox_geter_value(data->dragged, ParentLink, ecs_entity_t, slider)
+void on_settings_slider_slid(ecs* world, const SlideEventData* data) {
+    zox_geter_value(data->dragged, ParentLink, entity, slider)
     zox_geter_value(slider, SliderLabel, char*, slider_name)
     zoxs_set_float(world, slider_name, data->value);
 }
 
 // Options uses a set size that has elements adjust
-ecs_entity_t spawn_menu_options(
-    ecs_world_t *world,
-    const ecs_entity_t player,
-    const ecs_entity_t canvas,
+entity spawn_menu_options(
+    ecs *world,
+    const entity player,
+    const entity canvas,
     const int2 position,
     const float2 anchor
 ) {
@@ -18,14 +18,11 @@ ecs_entity_t spawn_menu_options(
     const byte visible_count = 12;
     const byte layer = 1;
     const byte font_size = 32;
-    // const byte is_scrollbar = 1;
-    // const byte is_close_button = 0;
-    // const byte header_font_size = 80;
 
     // # Window #
-    CanvasSpawnData canvas_data = {
+    LayoutParentData canvas_data = {
         .e = canvas,
-        .size = zox_gett_value(canvas, PixelSize),
+        .size = zox_gett_value(canvas, LayoutSize),
     };
     ElementSpawnData window_element_data = {
         .prefab = prefab_window,
@@ -34,7 +31,7 @@ ecs_entity_t spawn_menu_options(
         .anchor = anchor, // float2_half,
         .layer = layer,
     };
-    ParentSpawnData window_parent_data = {
+    LayoutParentData window_parent_data = {
         .e = canvas_data.e,
         .size = canvas_data.size,
         .position = int2_half(canvas_data.size),
@@ -48,11 +45,11 @@ ecs_entity_t spawn_menu_options(
 
     Children children = (Children) { 0 };
     window_data.children = &children;
-    const ecs_entity_t e = spawn_window2(
+    const entity e = spawn_window2(
         world,
         canvas_data,
         window_parent_data,
-        &window_element_data,
+        window_element_data,
         &window_data);
     zox_add_tag(e, MenuOptions);
     zox_name("menu_options");
@@ -82,7 +79,7 @@ ecs_entity_t spawn_menu_options(
         .on_click = { &button_event_menu_main },
     };
     elements_count++;
-    ParentSpawnData list_parent_data = {
+    LayoutParentData list_parent_data = {
         .e = e,
         .size = window_element_data.size,
         .position = window_element_data.position_in_canvas,
@@ -101,14 +98,13 @@ ecs_entity_t spawn_menu_options(
         .font_size = font_size,
         .fill = button_fill,
         .outline = button_outline,
-        //.fill = (color) { 0, 0, 0, 0 },
-        //.outline = (color) { 255, 255, 255, 155 },
-        .padding = byte2_single(8),
-        .spacing = 24,
         .slider_height = 64,
         .slider_padding = 64,
+        .button_padding = (byte2) { 18, 12 },
+        .padding = (byte2) { 18, 18 },
+        .margins = (byte2) { 18, 18 },
     };
-    const ecs_entity_t list = spawn_list(world,
+    const entity list = spawn_list(world,
         canvas_data,
         list_parent_data,
         list_element_data,

@@ -5,8 +5,8 @@ typedef struct {
 } FrameData;
 
 typedef struct {
-    CanvasSpawnData canvas;
-    ParentSpawnData parent;
+    LayoutParentData canvas;
+    LayoutParentData parent;
     FrameTextureData texture;
     ElementSpawnData element;
     IconData icon;

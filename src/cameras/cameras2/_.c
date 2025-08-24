@@ -10,7 +10,7 @@ void spawn_prefabs_cameras2(ecs* world) {
 }
 
 zox_begin_module(Cameras2)
-    zox_define_tag(CameraFollower2);
+    zoxd_tag(CameraFollower2);
     define_systems_cameras2(world);
     add_hook_spawn_prefabs(spawn_prefabs_cameras2);
 zox_end_module(Cameras2)

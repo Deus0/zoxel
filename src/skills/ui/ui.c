@@ -9,9 +9,9 @@ zox_tag(FrameSkill);
 #include "systems/skill_overlay_system.c"
 
 zox_begin_module(UISkills)
-    zox_define_tag(MenuSkills);
-    zox_define_tag(IconSkill);
-    zox_define_tag(FrameSkill);
+    zoxd_tag(MenuSkills);
+    zoxd_tag(IconSkill);
+    zoxd_tag(FrameSkill);
     // note: action uis doesn't have same things'
     zox_system(SkillOverlaySystem, EcsOnUpdate,
             [in] users.UserDataLink,

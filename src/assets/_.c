@@ -12,7 +12,7 @@
 zox_tag(Asset);
 
 zox_begin_module(Assets)
-    zox_define_tag(Asset);
+    zoxd_tag(Asset);
 zox_end_module(Assets)
 
 #endif

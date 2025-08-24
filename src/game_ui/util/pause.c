@@ -1,8 +1,8 @@
 void toggle_pause_ui(
-    ecs_world_t *world,
-    const ecs_entity_t player
+    ecs *world,
+    const entity player
 ) {
-    zox_geter_value(player, GameLink, ecs_entity_t, game);
+    zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, GameState, byte, game_state);
     if (!(game_state == zox_game_playing || game_state == zox_game_paused)) {
         return;
@@ -13,7 +13,7 @@ void toggle_pause_ui(
 
 // from touch_ui
 void button_event_pause_game(
-    ecs_world_t *world,
+    ecs *world,
     const ClickEventData *event
 ) {
     toggle_pause_ui(world, event->clicker);

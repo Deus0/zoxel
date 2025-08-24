@@ -25,7 +25,7 @@ ecs_entity_t spawn_profiler(
     const int2 header_size = (int2) { size.x, font_size + header_margins };
 
     const byte is_header = 1;
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     const byte is_close_button = 1;
 
     const ecs_entity_t parent = canvas;

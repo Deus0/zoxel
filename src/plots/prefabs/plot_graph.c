@@ -24,7 +24,7 @@ ecs_entity_t spawn_plot_graph(
     const int lines_max_height = size.y;
     float2 anchor = float2_half;
     int2 position = int2_zero;
-    /*const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    /*const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     const int2 positiong = get_element_pixel_positionv(parent_position, parent_size, position, anchor);
     const float2 positionf = get_element_position(positiong, canvas_size);*/
 
@@ -56,7 +56,7 @@ ecs_entity_t spawn_plot_graph(
         SpawnZext text_data = {
             .canvas = {
                 .e = canvas,
-                .size = zox_gett_value(canvas, PixelSize)
+                .size = zox_gett_value(canvas, LayoutSize)
             },
             .parent = {
                 .e = e,

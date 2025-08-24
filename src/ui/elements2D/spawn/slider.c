@@ -1,19 +1,21 @@
 entity2 spawn_slider(
     ecs *world,
-    const CanvasSpawnData canvas_data,
-    const ParentSpawnData parent_data,
-    ElementSpawnData element_data,
+    const LayoutParentData canvas_data,
+    const LayoutParentData parent_data,
+    const ElementSpawnData element_data,
     const SpawnSliderData slider_data,
     const color font_fill,
     const color font_outline
 ) {
     byte handle_width = 32;
-    zox_instance(element_data.prefab)
-    zox_name("slider")
-    zox_set(e, SliderLabel, { slider_data.name })
-    set_element_spawn_data(world, e, canvas_data, parent_data, &element_data);
-    Children *children = &((Children) { 0, NULL });
-    ParentSpawnData new_parent_data = {
+
+    zox_instance(element_data.prefab);
+    zox_name("slider");
+    zox_set(e, SliderLabel, { slider_data.name });
+    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+    Children children = (Children) { 0, NULL };
+
+    LayoutParentData new_parent_data = {
         .e = e,
         .size = element_data.size,
         .position = element_data.position_in_canvas,
@@ -33,10 +35,10 @@ entity2 spawn_slider(
             .anchor = float2_half,
         });
     zox_set(handle, SlideBounds, { slider_data.bounds })
-    add_to_Children(children, handle);
+    add_to_Children(&children, handle);
 
     // # Slider Text #
-    SpawnZext zextSpawnData = {
+    SpawnZext text_data = {
         .canvas = canvas_data,
         .parent = {
             .e = e,
@@ -51,21 +53,19 @@ entity2 spawn_slider(
         },
         .zext = {
             .text = slider_data.name,
-            .font_size = 24,
-            .font_resolution = 32,
-            .font_thickness = 2,
-            .font_outline_thickness = 4,
+            .font_size = 28,
+            .font_resolution = 64,
+            .font_thickness = 6,
+            .font_outline_thickness = 3,
             .font_fill_color = font_fill,
             .font_outline_color = font_outline,
-            //.font_fill_color = (color) { 0, 155, 155, 122 },
-            //.font_outline_color = (color) { 255, 0, 0, 88 },
         }
     };
-    const entity text = spawn_zext(world, &zextSpawnData);
-    add_to_Children(children, text);
+    const entity text = spawn_zext(world, &text_data);
+    add_to_Children(&children, text);
 
     // finish up
-    zox_set(e, Children, { children->length, children->value })
+    zox_set_ptr(e, Children, children);
     // todo: with text label!
     // return, include the handle
     return (entity2) { e, handle };

@@ -11,8 +11,8 @@ typedef struct {
 } SpawnWindowUsersData;
 
 typedef struct {
-    CanvasSpawnData canvas;
-    ParentSpawnData parent;
+    LayoutParentData canvas;
+    LayoutParentData parent;
     ElementSpawnData element;
     SpawnTextData header_zext;
     SpawnHeaderData header;

@@ -12,16 +12,16 @@ zoxc_entity(FontLink);
 zoxc_arrayd(FontData, byte2)
 
 void define_components_zigels(ecs *world) {
-    zox_define_tag(FontStyle);
-    zox_define_tag(TTFFontStyle);
-    zox_define_tag(Font);
-    zox_define_tag(FontTexture);
-    zox_define_tag(Zigel);
+    zoxd_tag(FontStyle);
+    zoxd_tag(TTFFontStyle);
+    zoxd_tag(Font);
+    zoxd_tag(FontTexture);
+    zoxd_tag(Zigel);
     zoxd_byte(FontThickness);
     zoxd_byte(FontOutlineThickness);
     zoxd_byte(ZigelIndex);
     zox_define_component_color(FontFillColor);
     zox_define_component_color(FontOutlineColor);
     zox_define_memory_component(FontData);
-    zox_define_component_entity(FontLink);
+    zoxd_entity(FontLink);
 }

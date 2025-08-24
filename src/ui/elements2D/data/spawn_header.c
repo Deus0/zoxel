@@ -7,8 +7,8 @@ typedef struct {
 } SpawnHeaderData;
 
 typedef struct {
-    CanvasSpawnData canvas;
-    ParentSpawnData parent;
+    LayoutParentData canvas;
+    LayoutParentData parent;
     ElementSpawnData element;
     SpawnButtonData close_button;
     SpawnTextData zext;

@@ -45,12 +45,12 @@ entity spawn_menu_game_stats(
     ElementSpawn body_data = {
         .canvas = {
             .e = canvas,
-            .size = zox_gett_value(canvas, PixelSize),
+            .size = zox_gett_value(canvas, LayoutSize),
         },
         .parent = {
             .e = parent,
-            .position = int2_half(zox_gett_value(canvas, PixelSize)),
-            .size = zox_gett_value(canvas, PixelSize)
+            .position = int2_half(zox_gett_value(canvas, LayoutSize)),
+            .size = zox_gett_value(canvas, LayoutSize)
         },
         .element = {
             .prefab = prefab_body,

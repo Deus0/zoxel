@@ -8,7 +8,7 @@ void ZextBackgroundSystem(iter *it) {
     zox_sys_in(TextPadding)
     zox_sys_in(MeshAlignment)
     zox_sys_in(CanvasLink)
-    zox_sys_out(PixelSize)
+    zox_sys_out(LayoutSize)
     zox_sys_out(TextureSize)
     zox_sys_out(GenerateTexture)
     zox_sys_out(MeshVertices2D)
@@ -21,14 +21,14 @@ void ZextBackgroundSystem(iter *it) {
         zox_sys_i(MeshAlignment, meshAlignment)
         zox_sys_i(CanvasLink, canvasLink)
         zox_sys_o(GenerateTexture, generateTexture)
-        zox_sys_o(PixelSize, pixelSize)
+        zox_sys_o(LayoutSize, pixelSize)
         zox_sys_o(TextureSize, textureSize)
         zox_sys_o(MeshVertices2D, meshVertices2D)
         zox_sys_o(MeshDirty, meshDirty)
         if (zextDirty->value != zext_update_update) {
             continue;
         }
-        const int2 canvas_size = zox_get_value(canvasLink->value, PixelSize)
+        const int2 canvas_size = zox_get_value(canvasLink->value, LayoutSize)
         const int2 size = calculate_zext_size(textData->value, textData->length, textSize->value, textPadding->value, default_line_padding);
         const float2 canvasSizef = { (float) canvas_size.x, (float) canvas_size.y };
         const float2 size2D = (float2) { size.x / canvasSizef.y, size.y / canvasSizef.y };

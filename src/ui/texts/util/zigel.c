@@ -180,7 +180,7 @@ void set_zigel_position(
         text_padding,
         default_line_padding
     );
-    zox_set(e, PixelPosition, { pixel_position });
+    zox_set(e, LayoutPosition, { pixel_position });
 }
 
 // a wrapper for spawn_zigel, also sets position for text character

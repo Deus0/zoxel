@@ -1,39 +1,47 @@
-ecs_entity_t spawn_menu_start(
-    ecs *world,
-    const entity prefab,
-    const entity player,
-    const entity canvas,
-    const char *header_label
+entity spawn_menu_start(
+    ecs* world,
+    const entity player,    // hmm
+    const entity canvas
 ) {
-    const float2 anchor = (float2) { 0.5f, 0.5f };
-    const int2 position = (int2) { 0, 0 };
-    const byte header_font_size = 0;
-    const byte font_size = 80;
-    const byte is_close_button = 0;
+    const byte font_size = 128;
     const byte layer = 3;
-    const int labels_count = 1;
-    const text_group labels[] = { { label_start } };
-    const ClickEvent events[] = { { &button_event_menu_start } };
-    const entity e = spawn_ui_list(world,
-        prefab,
-        canvas,
-        header_label,
-        labels_count,
-        labels_count,
-        labels,
-        events,
-        NULL,
-        NULL,
-        position,
-        anchor,
-        is_close_button,
-        header_font_size,
-        font_size,
-        layer,
-        0,
-        player,
-        int2_zero
+
+    SpawnButton spawnButton = {
+        .canvas = {
+            .e = canvas
+        },
+        .parent = {
+            .e = canvas
+        },
+        .element = {
+            .prefab = prefab_button,
+            .layer = layer,
+            .anchor = float2_half
+        },
+        .zext = {
+            .text = label_start,
+            .font_size = font_size,
+            .font_thickness = 4,
+            .font_fill_color = default_font_fill_color,
+            .font_outline_color = default_font_outline_color,
+            .padding = (byte2) { 32, 16 },
+        },
+        .button = {
+            .prefab_zext = prefab_zext,
+            .fill = button_fill,
+            .outline = button_outline,
+        }};
+
+    const entity e = spawn_button(
+        world,
+        spawnButton.canvas,
+        spawnButton.parent,
+        spawnButton.element,
+        spawnButton.zext,
+        spawnButton.button
     );
-    zox_name("main_start")
+    zox_add_tag(e, MenuStart);
+    zox_set(e, ClickEvent, { &button_event_menu_start });
+    zox_name("main_start");
     return e;
 }

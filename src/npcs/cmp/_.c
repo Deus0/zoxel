@@ -12,10 +12,10 @@ zoxc_float3(ThreatPosition);
 zoxc_float3(WanderDirection);
 
 void define_components_npcs(ecs* world) {
-    zox_define_tag(Npc);
-    zox_define_tag(Jumper);
-    zox_define_tag(Wanderer);
-    zox_define_tag(Coward);
+    zoxd_tag(Npc);
+    zoxd_tag(Jumper);
+    zoxd_tag(Wanderer);
+    zoxd_tag(Coward);
     zoxd_byte(Behaviour);
     zoxd_byte(DefaultBehaviour);
     zoxd_byte(MoveForwards);

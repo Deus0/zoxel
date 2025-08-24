@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_menu_game(ecs_world_t *world, const ecs_entity_t prefab) {
+entity spawn_prefab_menu_game(ecs *world, const entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("menu_game");
     zox_add_tag(e, MenuGame);

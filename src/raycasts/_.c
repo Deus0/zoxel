@@ -20,9 +20,9 @@ zoxc_float3(RaycastNormal);
 #include "systems/ray_debug_system.c"
 
 zox_begin_module(Raycasts)
-    zox_define_component_int2(Raycaster);
+    zoxd_int2(Raycaster);
     zoxd_byte(RaycasterResult);
-    zox_define_component_entity(RaycasterTarget);
+    zoxd_entity(RaycasterTarget);
     zox_define_component_float3(RaycastOrigin);
     zox_define_component_float3(RaycastNormal);
     // zox_system(MouseRaycasterSystem, zoxp_inputs_update, [in] inputs.DeviceLinks, [in] inputs.DeviceMode, [out] raycasts.Raycaster)

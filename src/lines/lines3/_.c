@@ -23,9 +23,9 @@ void spawn_shaders_lines3D(ecs_world_t *world) {
 }
 
 zox_begin_module(Lines3)
-    zox_define_tag(Line3D);
-    zox_define_tag(CubeLines);
-    zox_define_tag(DebugCubeCorner);
+    zoxd_tag(Line3D);
+    zoxd_tag(CubeLines);
+    zoxd_tag(DebugCubeCorner);
     zox_define_component(DebugCubeLines);
     zox_define_component(LineData3D);
     zox_define_component_float(CubeLinesThickness);

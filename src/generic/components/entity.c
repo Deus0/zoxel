@@ -1,7 +1,7 @@
 #define zoxc_entity(name)\
     zoxc(name, entity)
 
-#define zox_define_component_entity(name)\
+#define zoxd_entity(name)\
     zox_define_component(name)\
     add_to_entity_array_d(component_ids_entity, ecs_id(name));
 

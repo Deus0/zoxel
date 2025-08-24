@@ -7,11 +7,11 @@ zoxc_entity(Character3Link);
 zoxc_entity(Character3PrefabLink);
 
 void define_components_characters3(ecs_world_t* world) {
-    zox_define_tag(Character3);
-    zox_define_tag(SaveCharacter);
+    zoxd_tag(Character3);
+    zoxd_tag(SaveCharacter);
     zoxd_byte(CharactersChanceMax);
     zoxd_byte(Character3Type);
     zox_define_component(CharacterSaveHash);
-    zox_define_component_entity(Character3Link);
-    zox_define_component_entity(Character3PrefabLink);
+    zoxd_entity(Character3Link);
+    zoxd_entity(Character3PrefabLink);
 }

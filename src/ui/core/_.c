@@ -1,7 +1,7 @@
 #ifndef zoxm_ui_core
 #define zoxm_ui_core
 
-// todo: move PixelPosition etc to Transforms/Grid2D - idk what to call it
+// todo: move LayoutPosition etc to Transforms/Grid2D - idk what to call it
 #include "settings/_.c"
 #include "components/_.c"
 #include "data/_.c"

@@ -1,9 +1,8 @@
 entity spawn_header3(
     ecs *world,
-    const CanvasSpawnData canvas_data,
-    const ParentSpawnData parent_data,
-    ElementSpawnData element_data,
-    // const SpawnButtonData close_button,
+    const LayoutParentData canvas_data,
+    const LayoutParentData parent_data,
+    const ElementSpawnData element_data,
     const SpawnTextData zext,
     const SpawnHeaderData header
 ) {
@@ -13,7 +12,7 @@ entity spawn_header3(
         e,
         canvas_data,
         parent_data,
-        &element_data);
+        element_data);
     zox_name("header");
     zox_set(e, DraggedLink, { parent_data.e });
     Children children = (Children) { 0 };

@@ -5,16 +5,16 @@ void SlideEventSystem(iter *it) {
     zox_sys_in(SlideBounds)
     zox_sys_in(DraggableState)
     zox_sys_in(DraggerLink)
-    zox_sys_in(DraggableLimits)
-    zox_sys_in(PixelPosition)
+    zox_sys_in(LayoutConstraints)
+    zox_sys_in(LayoutPosition)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
         zox_sys_i(SlideEvent, slideEvent)
         zox_sys_i(SlideBounds, slideBounds)
         zox_sys_i(DraggableState, draggableState)
         zox_sys_i(DraggerLink, draggerLink)
-        zox_sys_i(DraggableLimits, draggableLimits)
-        zox_sys_i(PixelPosition, pixelPosition)
+        zox_sys_i(LayoutConstraints, draggableLimits)
+        zox_sys_i(LayoutPosition, pixelPosition)
         if (!draggableState->value || !slideEvent->value) {
             continue;
         }

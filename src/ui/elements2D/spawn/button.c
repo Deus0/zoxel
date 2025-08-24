@@ -1,6 +1,6 @@
 entity spawn_button(ecs *world,
-    const CanvasSpawnData canvas_data,
-    const ParentSpawnData parent_data,
+    const LayoutParentData canvas_data,
+    const LayoutParentData parent_data,
     ElementSpawnData element_data,
     const SpawnTextData zext_data,
     const SpawnButtonData button_data)
@@ -17,7 +17,7 @@ entity spawn_button(ecs *world,
 
     zox_instance(element_data.prefab)
     zox_name("button")
-    set_element_spawn_data(world, e, canvas_data, parent_data, &element_data);
+    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
 
     zox_set(e, Color, { button_data.fill })
     zox_set(e, OutlineColor, { button_data.outline })

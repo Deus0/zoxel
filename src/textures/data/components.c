@@ -30,33 +30,33 @@ zoxc_arrayd(TextureLinks, entity)
 
 void define_components_textures(ecs *world) {
     // entity types
-    zox_define_tag(Texture);    // RGBA
-    zox_define_tag(TextureRGB);
-    zox_define_tag(VoxTexture);
-    zox_define_tag(Tilemap);
+    zoxd_tag(Texture);    // RGBA
+    zoxd_tag(TextureRGB);
+    zoxd_tag(VoxTexture);
+    zoxd_tag(Tilemap);
     // Properties
-    zox_define_tag(FixToLayout);
+    zoxd_tag(FixToLayout);
     // Generation Types (obsolete)
-    zox_define_tag(NoiseTexture);
-    zox_define_tag(IconTexture);
-    zox_define_tag(FrameTexture);
-    zox_define_tag(DirtTexture);
-    zox_define_tag(GrassTexture);
-    zox_define_tag(SandTexture);
-    zox_define_tag(StoneTexture);
-    zox_define_tag(ObsidianTexture);
-    zox_define_tag(FillTexture);
-    zox_define_tag(TextureAddNoise);
+    zoxd_tag(NoiseTexture);
+    zoxd_tag(IconTexture);
+    zoxd_tag(FrameTexture);
+    zoxd_tag(DirtTexture);
+    zoxd_tag(GrassTexture);
+    zoxd_tag(SandTexture);
+    zoxd_tag(StoneTexture);
+    zoxd_tag(ObsidianTexture);
+    zoxd_tag(FillTexture);
+    zoxd_tag(TextureAddNoise);
 
     zoxd_byte(GenerateTexture);
     zoxd_byte(OutlineThickness);
     zoxd_byte(FrameCorner);
     zox_define_component_float(IconRadius);
-    zox_define_component_int2(TilemapSize);
+    zoxd_int2(TilemapSize);
     zox_define_component_double(AnimateTexture);
     zox_define_component_color(OutlineColor);
-    zox_define_component_entity(TilemapLink);
-    zox_define_component_entity(TextureLink);
+    zoxd_entity(TilemapLink);
+    zoxd_entity(TextureLink);
     zox_define_memory_component(TextureData);
     zox_define_memory_component(TilemapUVs);
     zox_define_memory_component(TextureLinks);

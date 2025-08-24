@@ -3,7 +3,7 @@
 #include "device_mode_ui_system.c"
 #include "debug_label_system.c"
 
-void define_systems_game_ui(ecs_world_t *world) {
+void define_systems_game_ui(ecs *world) {
     zox_system(FpsDisplaySystem, EcsOnUpdate,
             [out] texts.TextData,
             [out] texts.ZextDirty,

@@ -3,12 +3,6 @@
 // has to also move children and their children
 byte is_log_dragging = 0;
 
-void drag_element(ecs *world, const entity e, const int2 drag_value) {
-    if (!zox_valid(e)) {
-        return;
-    }
-}
-
 void ElementDragSystem(iter *it) {
 
     zox_sys_world();
@@ -29,33 +23,35 @@ void ElementDragSystem(iter *it) {
         }
 
         if (delta->value.x != 0 || delta->value.y != 0) {
-            entity dragged_entity = draggedLink->value;
-            if (!dragged_entity) {
-                dragged_entity = e;
+            entity dragged = draggedLink->value;
+            if (!dragged) {
+                dragged = e;
             }
-            // zox_log("[%s] is now dragging [%s] by ", zox_get_name(e), zox_get_name(dragged_entity))
-            // zox_log("> dragging [%s] [%ix%i]", zox_get_name(dragged_entity), draggingDelta->value.x, draggingDelta->value.y)
-
-            // drag_element(world, dragged_entity, delta->value);
+            // zox_log("[%s] is now dragging [%s] by ", zox_get_name(e), zox_get_name(dragged))
+            // zox_log("> dragging [%s] [%ix%i]", zox_get_name(dragged), draggingDelta->value.x, draggingDelta->value.y)
 
             // TODO: We should check new position equals before setting
-            zox_muter(dragged_entity, PixelPosition, pixel_position);
-            zox_muter(dragged_entity, LayoutPositionDirty, dirty);
-            pixel_position->value.x += delta->value.x;
-            pixel_position->value.y += delta->value.y;
-            dirty->value = zox_dirty_trigger;
-
-            if (is_log_dragging) {
-                zox_log("> dragging [%s] by %ix%i", zox_get_name(e), delta->value.x, delta->value.y)
-            }
-            if (zox_has(dragged_entity, DraggableLimits)) {
-                zox_geter_value(dragged_entity, DraggableLimits, int4, drag_bounds);
-                if (int4_equals(drag_bounds, int4_zero)) {
-                    zox_logw("drag bounds [%s] [int4_zero]", zox_get_name(dragged_entity));
+            zox_muter(dragged, LayoutPosition, position);
+            zox_muter(dragged, LayoutPositionDirty, dirty);
+            int2 new_position = position->value;
+            new_position.x += delta->value.x;
+            new_position.y += delta->value.y;
+            if (zox_has(dragged, LayoutConstraints)) {
+                zox_geter_value(dragged, LayoutConstraints, int4, b);
+                if (!int4_equals(b, int4_zero)) {
+                    limited_element(&new_position, b);
                 }
-                limited_element(pixel_position, drag_bounds);
+
                 if (is_log_dragging) {
-                    zox_log("   - bounded by [%s] by x[%i-%i] y[%i-%i]", zox_get_name(dragged_entity), drag_bounds.x, drag_bounds.y, drag_bounds.z, drag_bounds.w)
+                    zox_log("   - bounded by [%s] by x[%i-%i] y[%i-%i]", zox_get_name(dragged), b.x, b.y, b.z, b.w)
+                }
+            }
+
+            if (!int2_equals(position->value, new_position)) {
+                position->value = new_position;
+                dirty->value = zox_dirty_trigger;
+                if (is_log_dragging) {
+                    zox_log("> dragging [%s] by %ix%i", zox_get_name(e), delta->value.x, delta->value.y)
                 }
             }
         }

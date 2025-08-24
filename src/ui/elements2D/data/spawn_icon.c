@@ -8,8 +8,8 @@ typedef struct {
 } IconData;
 
 typedef struct {
-    CanvasSpawnData canvas;
-    ParentSpawnData parent;
+    LayoutParentData canvas;
+    LayoutParentData parent;
     FrameTextureData texture;
     ElementSpawnData element;
     int index;

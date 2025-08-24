@@ -89,20 +89,20 @@ void define_components_generic(ecs_world_t *world) {
     zoxd_lint(Seed);
     zoxd_text(ZoxName);
     // timed
-    zox_define_tag(DestroyInFrame);
+    zoxd_tag(DestroyInFrame);
     zox_define_component_double(EventTime);
-    zox_define_component_entity(EventInput);
+    zoxd_entity(EventInput);
     zox_define_component(TimedEvent);
     // physics
     zox_define_component_float3(Bounds3D);
     zox_define_component_float6(Position3DBounds);
     // editor
     zoxd_byte(EntityDirty);
-    zox_define_component_entity(EntityTarget);
-    zox_define_component_entity(ComponentTarget);
+    zoxd_entity(EntityTarget);
+    zoxd_entity(ComponentTarget);
     // unsorted
     zoxd_byte(GenericEvent);
     zoxd_byte(EntityInitialize);
-    zox_define_component_int2(ScreenDimensions);
+    zoxd_int2(ScreenDimensions);
     zoxd_byte(SpawnChance);
 }

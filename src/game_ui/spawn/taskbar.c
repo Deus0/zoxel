@@ -12,7 +12,7 @@ entity spawn_taskbar(
     const int padding_x = 4; // * zox_ui_scale;
     const int padding_y = 4; // * zox_ui_scale;
     const int margins = frame_size / 4;
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     const int2 actionbar_size = (int2) {
         padding_x + (frame_size + padding_x) * taskbar_count + margins * 2,
         frame_size + padding_y * 2

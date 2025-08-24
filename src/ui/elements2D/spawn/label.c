@@ -16,7 +16,7 @@ entity spawn_label_background(
     const color label_font_fill_color,
     const byte render_disabled
 ) {
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     SpawnZext zextSpawnData = {
         .canvas = {
             .e = canvas,

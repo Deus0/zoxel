@@ -12,7 +12,7 @@ zoxc_double(SoundLength);       //! The length of a sound
 #include "sound_data_ref.c"
 
 void define_components_sounds(ecs_world_t *world) {
-    zox_define_tag(Sound);;
+    zoxd_tag(Sound);;
     zoxd_byte(InstrumentType);;
     zoxd_byte(TriggerSound);;
     zoxd_byte(GenerateSound);;

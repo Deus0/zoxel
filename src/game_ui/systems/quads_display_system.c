@@ -1,4 +1,4 @@
-/*void QuadsLabelSystem(ecs_iter_t *it) {
+/*void QuadsLabelSystem(iter *it) {
     const int triangles_count = MeshIndicies_memorys_allocated * 3;
     char buffer[32];
     //byte system_updated = 0;

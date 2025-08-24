@@ -9,7 +9,7 @@ zoxc_byte(CollisionDisabled);
 #include "physics3/_.c"
 
 zox_begin_module(Physics)
-    zox_define_tag(Frictioned);
+    zoxd_tag(Frictioned);
     zoxd_byte(DisableMovement);
     zoxd_byte(DisableGravity);
     zoxd_byte(CollisionDisabled);

@@ -4,19 +4,19 @@ void ScrollbarSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(DraggableState)
-    zox_sys_in(PixelPosition)
-    zox_sys_in(PixelSize)
+    zox_sys_in(LayoutPosition)
+    zox_sys_in(LayoutSize)
     zox_sys_in(ParentLink)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(DraggableState, draggableState)
-        zox_sys_i(PixelPosition, pixelPosition)
-        zox_sys_i(PixelSize, pixelSize)
+        zox_sys_i(LayoutPosition, pixelPosition)
+        zox_sys_i(LayoutSize, pixelSize)
         zox_sys_i(ParentLink, parentLink)
         if (!draggableState->value) {
             continue;
         }
         const entity scrollbar = parentLink->value;
-        const PixelSize *scrollbar_size = zox_get(scrollbar, PixelSize)
+        const LayoutSize *scrollbar_size = zox_get(scrollbar, LayoutSize)
         if (scrollbar_size->value.y == pixelSize->value.y) continue;
         entity list_ui = zox_get_value(scrollbar, ParentLink)
         const ElementFontSize *elementFontSize = zox_get(list_ui, ElementFontSize)
@@ -29,7 +29,7 @@ void ScrollbarSystem(iter *it) {
         int list_start = 2;
 
         zox_geter_value(list_ui, ListUIMax, int, elements_visible)
-        zox_geter_value(list_ui, PixelSize, int2, window_size)
+        zox_geter_value(list_ui, LayoutSize, int2, window_size)
         int scrollview_scroll = list_elements->length - list_start - elements_visible;
         int scrollview_index_offset = round(scrollview_scroll * scroll_percentage);
         const int scrollbar_margins = zox_gett_value(scrollbar, ElementMargins).x;
@@ -50,10 +50,10 @@ void ScrollbarSystem(iter *it) {
 
             position.x -= (scrollbar_width + scrollbar_margins * 2) / 2;
 
-            PixelPosition *element_pixel_position = zox_get_mut(list_element, PixelPosition)
+            LayoutPosition *element_pixel_position = zox_get_mut(list_element, LayoutPosition)
             if (!int2_equals(element_pixel_position->value, position)) {
                 element_pixel_position->value = position;
-                zox_modified(list_element, PixelPosition);
+                zox_modified(list_element, LayoutPosition);
             }
             byte render_enabled = normal_j >= scrollview_index_offset && normal_j < scrollview_index_offset + elements_visible;
             disable_element_rendering(world, list_element, !render_enabled);

@@ -8,7 +8,7 @@
 #include "game.c"
 #include "pause.c"
 
-void dispose_gameui(ecs_world_t *world, void *ctx) {
+void dispose_gameui(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
     dispose_hook_taskbar();

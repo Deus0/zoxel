@@ -22,8 +22,8 @@ void add_ui_plus_components(ecs *world, const entity e) {
     // Elements
     zox_add_tag(e, Element)
     zox_prefab_set(e, InitializeElement, { 1 })
-    zox_prefab_set(e, PixelPosition, { int2_zero })
-    zox_prefab_set(e, PixelSize, { int2_zero })
+    zox_prefab_set(e, LayoutPosition, { int2_zero })
+    zox_prefab_set(e, LayoutSize, { int2_zero })
     zox_prefab_set(e, Anchor, { float2_zero })
     zox_prefab_set(e, CanvasPosition, { int2_zero })
     zox_prefab_set(e, Layer2D, { 0 })

@@ -4,7 +4,7 @@ entity spawn_player_menu_actions(
 ) {
     zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(player, CanvasLink, entity, canvas);
-    zox_geter_value(canvas, PixelSize, int2, canvas_size);
+    zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     zox_geter_value(character, ActionIndex, byte, selected);
     SpawnWindowUsers data = get_default_spawn_window_users_data(
         world,

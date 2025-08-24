@@ -8,7 +8,6 @@
 #include "header.c"
 #include "body.c"
 #include "window.c"
-#include "window_invisible.c"
 #include "scrollbar_front.c"
 #include "scrollbar.c"
 #include "handle.c"
@@ -68,7 +67,7 @@ void spawn_prefabs_elements(ecs *world) {
     prefab_header = spawn_prefab_header(world, prefab_element_textured);
     prefab_close_button = spawn_prefab_button_close(world, prefab_button);
     // windows
-    prefab_window_invisible = spawn_prefab_window_invisible(world, prefab_layout2);
+    prefab_window_invisible = spawn_prefab_window_invisible(world, prefab_element_invisible);
     prefab_window = spawn_prefab_window(world, prefab_element_textured);
     // lists
     prefab_ui_list = spawn_prefab_ui_list(world, prefab_window);

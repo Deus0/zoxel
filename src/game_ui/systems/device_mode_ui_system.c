@@ -1,5 +1,5 @@
 // handles changes in device mode state
-void DeviceModeUISystem(ecs_iter_t *it) {
+void DeviceModeUISystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(DeviceMode)
@@ -15,7 +15,7 @@ void DeviceModeUISystem(ecs_iter_t *it) {
         if (!deviceModeDirty->value || deviceModeDirty->value == deviceMode->value) {
             return;
         }
-        const ecs_entity_t canvas = canvasLink->value; // zox_get_value(e, CanvasLink)
+        const entity canvas = canvasLink->value; // zox_get_value(e, CanvasLink)
         byte game_state = 0;
         if (gameLink->value) {
             game_state = zox_get_value(gameLink->value, GameState)

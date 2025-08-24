@@ -1,4 +1,4 @@
-void FpsDisplaySystem(ecs_iter_t *it) {
+void FpsDisplaySystem(iter *it) {
     const double frame_rate_update_speed = 1.0;
     const byte number_0_start = 60;
     init_delta_time()

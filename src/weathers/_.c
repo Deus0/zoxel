@@ -22,8 +22,8 @@ void on_boot_weathers(ecs* world, entity app) {
 }
 
 zox_begin_module(Weathers)
-    zox_define_tag(Weather);
-    zox_define_tag(Skybox);
+    zoxd_tag(Weather);
+    zoxd_tag(Skybox);
     if (!headless) {
         zox_gpu_restore_system(SkyboxRestoreSystem,
             [in] rendering.MaterialGPULink,

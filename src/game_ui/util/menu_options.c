@@ -1,7 +1,7 @@
-ecs_entity_t spawn_main_menu(ecs*, const ecs_entity_t, const ecs_entity_t, const char*);
+entity spawn_main_menu(ecs*, const entity, const entity, const char*);
 
 void button_event_menu_main(ecs *world, const ClickEventData *event) {
-    zox_geter_value(event->clicker, CanvasLink, ecs_entity_t, canvas)
+    zox_geter_value(event->clicker, CanvasLink, entity, canvas)
     find_child_with_tag(canvas, MenuOptions, menu)
     if (menu == 0) {
         zox_log_error("options menu not found")

@@ -1,6 +1,6 @@
 void destroy_player_main_menu(
-    ecs_world_t *world,
-    const ecs_entity_t player
+    ecs *world,
+    const entity player
 ) {
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuMain, menu);
@@ -13,12 +13,12 @@ void destroy_player_main_menu(
 }
 
 void button_event_continue_game(
-    ecs_world_t *world,
+    ecs *world,
     const ClickEventData *event
 ) {
     destroy_player_main_menu(world, event->clicker);
-    const ecs_entity_t game = zox_get_value(event->clicker, GameLink)
-    const ecs_entity_t realm = zox_get_value(game, RealmLink)
+    const entity game = zox_get_value(event->clicker, GameLink)
+    const entity realm = zox_get_value(game, RealmLink)
     // todo: spawn realm data like voxels/stats/skills when starting new game
     load_realm(game_name, "seed.dat", &realm_save);
     set_noise_seed(realm_save.seed);

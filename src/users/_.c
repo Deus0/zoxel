@@ -10,9 +10,9 @@ zoxc_entities(UserLinks)
 #include "ui/_.c"
 
 zox_begin_module(Users)
-    zox_define_component_entity(UserLink);
-    zox_define_component_entity(UserDataLink);
-    zox_define_component_entity(SpawnerLink);
+    zoxd_entity(UserLink);
+    zoxd_entity(UserDataLink);
+    zoxd_entity(SpawnerLink);
     zoxd_byte(Quantity);
     zox_define_entities_component(UserLinks);
     zox_import_module(UsersUI);

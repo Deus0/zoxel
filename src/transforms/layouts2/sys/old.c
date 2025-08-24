@@ -13,8 +13,8 @@ void set_element_position(
         return;
     }
     int2 position = int2_zero;
-    if (zox_has(e, PixelPosition)) {
-        position = zox_get_value(e, PixelPosition)
+    if (zox_has(e, LayoutPosition)) {
+        position = zox_get_value(e, LayoutPosition)
     } else {
         position = get_line_element_mid_point(world, e);
     }
@@ -40,8 +40,8 @@ void set_element_position(
 
     if (zox_has(e, Children)) {
         int2 size = parent_size;
-        if (zox_has(e, PixelSize)) {
-            size = zox_get_value(e, PixelSize)
+        if (zox_has(e, LayoutSize)) {
+            size = zox_get_value(e, LayoutSize)
         }
         const Children *children = zox_get(e, Children)
         if (!children->value) return;
@@ -56,8 +56,8 @@ void set_element_position(
 void ElementPositionSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(PixelPosition)
-    zox_sys_in(PixelSize)
+    zox_sys_in(LayoutPosition)
+    zox_sys_in(LayoutSize)
     zox_sys_in(ParentLink)
     zox_sys_in(Anchor)
     zox_sys_in(CanvasLink)
@@ -65,8 +65,8 @@ void ElementPositionSystem(iter *it) {
     zox_sys_out(CanvasPosition)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        zox_sys_i(PixelPosition, pixelPosition)
-        zox_sys_i(PixelSize, pixelSize)
+        zox_sys_i(LayoutPosition, pixelPosition)
+        zox_sys_i(LayoutSize, pixelSize)
         zox_sys_i(ParentLink, parentLink)
         zox_sys_i(Anchor, anchor)
         zox_sys_i(CanvasLink, canvasLink)
@@ -75,7 +75,7 @@ void ElementPositionSystem(iter *it) {
         if (!zox_valid(canvasLink->value) || parentLink->value != canvasLink->value) {
             continue;
         }
-        const int2 canvas_size = zox_get_value(canvasLink->value, PixelSize)
+        const int2 canvas_size = zox_get_value(canvasLink->value, LayoutSize)
         const int2 pixel_position = pixelPosition->value;
         int2 position_in_canvas = get_element_pixel_positionv(
             int2_half(canvas_size),

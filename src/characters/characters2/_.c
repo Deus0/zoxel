@@ -15,8 +15,8 @@ void spawn_prefabs_characters2D(ecs_world_t *world) {
 }
 
 zox_begin_module(Characters2)
-    zox_define_tag(Character2D);
-    zox_define_component_entity(Character2DLink);
+    zoxd_tag(Character2D);
+    zoxd_entity(Character2DLink);
     add_hook_spawn_prefabs(spawn_prefabs_characters2D);
 zox_end_module(Characters2)
 

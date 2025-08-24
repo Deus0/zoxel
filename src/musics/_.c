@@ -61,9 +61,9 @@ void on_boot_musics(ecs_world_t* world, ecs_entity_t app) {
 
 zox_begin_module(Musics)
     // Notes
-    zox_define_tag(Note);
-    zox_define_tag(Music);
-    zox_define_tag(Looping);
+    zoxd_tag(Note);
+    zoxd_tag(Music);
+    zoxd_tag(Looping);
     // Music
     zoxd_byte(MusicNote);
     zoxd_byte(GenerateMusic);
@@ -73,7 +73,7 @@ zox_begin_module(Musics)
     zox_define_component_double(MusicLength);
     zox_define_entities_component(NoteLinks);
     // playlist
-    zox_define_tag(Playlist);
+    zoxd_tag(Playlist);
     zoxd_byte(PlaylistEnabled);
     zoxd_byte(MusicPlaying);
     zox_define_entities_component(MusicLinks);
@@ -81,7 +81,7 @@ zox_begin_module(Musics)
     zoxd_byte(PlaylistPlaying);
     zoxd_byte(PlaylistMode);
     zox_define_entities_component(PlaylistLinks);
-    zox_define_component_entity(PlaylistLink);
+    zoxd_entity(PlaylistLink);
 
     define_systems_music(world);
 

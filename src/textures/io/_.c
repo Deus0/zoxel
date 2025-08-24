@@ -18,7 +18,7 @@ void dispose_textures_io(ecs *world, void *ctx) {
 
 zox_begin_module(TexturesIO)
     zox_module_dispose(dispose_textures_io)
-    zox_define_tag(SaveTexture);
+    zoxd_tag(SaveTexture);
     add_hook_files_load(load_files_textures);
 zox_end_module(TexturesIO)
 

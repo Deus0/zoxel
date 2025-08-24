@@ -16,8 +16,8 @@ void define_systems_elements2D(ecs *world) {
         ScrollbarSystem,
         EcsPostUpdate,
         [in] elements.core.DraggableState,
-        [in] layouts2.PixelPosition,
-        [in] layouts2.PixelSize,
+        [in] layouts2.LayoutPosition,
+        [in] layouts2.LayoutSize,
         [in] hierarchys.ParentLink,
         [none] ScrollbarButton
     );
@@ -27,7 +27,7 @@ void define_systems_elements2D(ecs *world) {
         [in] elements.core.ElementBar,
         [in] elements.core.ElementBarSize,
         [in] hierarchys.Children,
-        [in] layouts2.PixelSize,
+        [in] layouts2.LayoutSize,
         [none] Elementbar2
     );
     zox_system(
@@ -44,7 +44,7 @@ void define_systems_elements2D(ecs *world) {
         [in] elements2.SlideBounds,
         [in] elements.core.DraggableState,
         [in] elements.core.DraggerLink,
-        [in] layouts2.DraggableLimits,
-        [in] layouts2.PixelPosition
+        [in] layouts2.LayoutConstraints,
+        [in] layouts2.LayoutPosition
     );
 }

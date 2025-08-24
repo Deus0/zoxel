@@ -5,8 +5,8 @@ entity spawn_prefab_layout2(ecs *world) {
     zox_prefab_name("layout2D");
 
     // Local
-    zox_prefab_set(e, PixelPosition, { int2_zero });
-    zox_prefab_set(e, PixelSize, { int2_zero });
+    zox_prefab_set(e, LayoutPosition, { int2_zero });
+    zox_prefab_set(e, LayoutSize, { int2_zero });
     zox_prefab_set(e, Anchor, { float2_zero });
     zox_prefab_set(e, LayoutPositionDirty, { zox_dirty_trigger });
     zox_prefab_set(e, LayoutSizeDirty, { zox_dirty_trigger });

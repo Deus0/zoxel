@@ -1,14 +1,47 @@
+byte calculate_list_max_characters(const SpawnList data) {
+    byte max_list_characters = 0; // get max text length out of all of the words
+    for (byte i = 0; i < data.count; i++) {
+        SpawnListElement child_data = data.elements[i];
+        byte txt_size = child_data.text ? strlen(child_data.text) : 0;
+        if (txt_size > max_list_characters) {
+            max_list_characters = txt_size;
+        }
+    }
+    return max_list_characters;
+}
+
+static inline int2 calculate_list_size(
+    byte max_characters,
+    const SpawnList data
+) {
+    const int list_element_height = data.font_size + data.button_padding.y * 2;
+    return (int2) {
+        max_characters * data.font_size +
+            data.button_padding.x * 2 + data.margins.x * 2,
+        data.visible_count * list_element_height +
+            ((data.visible_count - 1) * data.padding.y) +
+            data.margins.y * 2
+    };
+}
+
+static inline int2 calculate_header_size(
+    byte length,
+    byte font_size,
+    byte2 padding
+) {
+    return (int2) {
+        length * font_size + padding.x * 2,
+        font_size + padding.y * 2
+    };
+}
+
 entity spawn_list(
     ecs *world,
-    const CanvasSpawnData canvas_data,
-    const ParentSpawnData parent_data,
-    ElementSpawnData element_data,
+    const LayoutParentData canvas_data,
+    const LayoutParentData parent_data,
+    const ElementSpawnData element_data,
     const SpawnList list_data
 ) {
-
-    int element_height = list_data.font_size + list_data.padding.y * 2;
-    int position_y = (int) (element_data.size.y / 2);
-    position_y += (int) (0.5f * element_height);
 
     zox_instance(element_data.prefab)
     set_element_spawn_data(
@@ -16,19 +49,22 @@ entity spawn_list(
         e,
         canvas_data,
         parent_data,
-        &element_data);
+        element_data);
     zox_name("list");
+    zox_set(e, ListMargins, { list_data.margins });
+    zox_set(e, ListPadding, { list_data.padding });
     zox_set(e, Color, { list_data.fill });
     zox_set(e, OutlineColor, { list_data.outline });
-    // zox_muter(e, Children, children)
+
     Children children = (Children) { 0 };
 
     // now spawn elements to fit our window
-    ParentSpawnData child_parent_data = {
+    LayoutParentData child_parent_data = {
         .e = e,
         .position = element_data.position_in_canvas,
         .size = element_data.size
     };
+
     for (int i = 0; i < list_data.count; i++) {
         SpawnListElement child_data = list_data.elements[i];
         ElementSpawnData child_element_data = {
@@ -43,12 +79,12 @@ entity spawn_list(
         // BUTTONS
         entity child = 0;
         if (child_data.type == 0) {
-            position_y -= element_height + list_data.spacing;
-            child_element_data.position.y = position_y;
+            // position_y -= element_height + list_data.spacing;
+            //child_element_data.position.y = position_y;
             SpawnTextData child_text_data = {
                 .text = child_data.text,
                 .font_size = list_data.font_size,
-                .padding = list_data.padding,
+                .padding = list_data.button_padding,
                 .font_resolution = button_font_resolution,
                 .font_fill_color = button_font_fill,
                 .font_outline_color = button_font_outline,
@@ -67,13 +103,13 @@ entity spawn_list(
                 child_text_data,
                 child_button_data);
             if (child_data.on_click.value) {
-                zox_set(child, ClickEvent, { child_data.on_click.value })
+                zox_set(child, ClickEvent, { child_data.on_click.value });
             }
-            zox_add_tag(child, ZextLabel)
+            zox_add_tag(child, ZextLabel);
 
         } else {
-            position_y -= list_data.slider_height + list_data.spacing;
-            child_element_data.position.y = position_y;
+            //position_y -= list_data.slider_height + list_data.spacing;
+            //child_element_data.position.y = position_y;
             // SLIDERS
             child_element_data.prefab = prefab_slider;
             child_element_data.size = (int2) {

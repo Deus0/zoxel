@@ -14,7 +14,7 @@ void spawn_prefabs_structures(ecs *world) {
 }
 
 zox_begin_module(Structures)
-    zox_define_tag(VoxStructure);
+    zoxd_tag(VoxStructure);
     add_hook_spawn_prefabs(spawn_prefabs_structures);
 zox_end_module(Structures)
 

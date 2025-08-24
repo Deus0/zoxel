@@ -20,13 +20,13 @@ zoxc_link(ChunkLink, entity, ChunkEntities)
 #include "voxel_node.c"
 
 void define_components_chunks(ecs *world) {
-    zox_define_tag(Chunk);
-    zox_define_tag(NoiseChunk);
-    zox_define_tag(ColorChunk);
-    zox_define_tag(ChunkTextured);
-    zox_define_tag(LinkChunk);
-    zox_define_tag(DisableReverseLinkChunk);
-    zox_define_tag(ChunkDebugger);
+    zoxd_tag(Chunk);
+    zoxd_tag(NoiseChunk);
+    zoxd_tag(ColorChunk);
+    zoxd_tag(ChunkTextured);
+    zoxd_tag(LinkChunk);
+    zoxd_tag(DisableReverseLinkChunk);
+    zoxd_tag(ChunkDebugger);
     zox_define_component_int3(ChunkPosition);
     zoxd_byte(ChunkDirty);
     zoxd_byte(ChunkMeshDirty);

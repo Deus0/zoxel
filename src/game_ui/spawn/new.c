@@ -1,16 +1,16 @@
 void on_confirmed_new_realm(
-    ecs_world_t *world,
+    ecs *world,
     const ClickEventData *event
 ) {
-    ecs_entity_t player = event->clicker;
+    entity player = event->clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuNewRealm, menu);
     if (menu) {
         zox_delete(menu);
     }
 
-    zox_geter_value(player, GameLink, ecs_entity_t, game);
-    zox_geter_value(game, RealmLink, ecs_entity_t, realm);
+    zox_geter_value(player, GameLink, entity, game);
+    zox_geter_value(game, RealmLink, entity, realm);
     zox_geter_value(realm, Seed, long int, seed);
     zox_log("confirm new realm [%s] [%lu]", game_name, seed);
     realm_save.seed = seed;
@@ -22,26 +22,26 @@ void on_confirmed_new_realm(
 }
 
 void on_cancelled_new_realm(
-    ecs_world_t *world,
+    ecs *world,
     const ClickEventData *event
 ) {
-    ecs_entity_t player = event->clicker;
+    entity player = event->clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuNewRealm, menu);
     if (menu) {
         zox_delete(menu);
     }
     zox_log("canceled new realm");
-    zox_geter_value(player, CanvasLink, ecs_entity_t, canvas);
+    zox_geter_value(player, CanvasLink, entity, canvas);
     spawn_main_menu(world, player, canvas, game_name);
 }
 
-ecs_entity_t spawn_menu_new_realm(
-    ecs_world_t *world,
-    const ecs_entity_t player,
+entity spawn_menu_new_realm(
+    ecs *world,
+    const entity player,
     lint seed
 ) {
-    zox_geter_value(player, CanvasLink, ecs_entity_t, canvas);
+    zox_geter_value(player, CanvasLink, entity, canvas);
 
     // more data
     const char* header_label = "New Realm";
@@ -50,9 +50,9 @@ ecs_entity_t spawn_menu_new_realm(
     const byte font_size = 32;
 
     // # Window #
-    CanvasSpawnData canvas_data = {
+    LayoutParentData canvas_data = {
         .e = canvas,
-        .size = zox_gett_value(canvas, PixelSize),
+        .size = zox_gett_value(canvas, LayoutSize),
     };
     ElementSpawnData window_element_data = {
         .prefab = prefab_window,
@@ -61,7 +61,7 @@ ecs_entity_t spawn_menu_new_realm(
         .anchor = float2_half,
         .layer = layer,
     };
-    ParentSpawnData window_parent_data = {
+    LayoutParentData window_parent_data = {
         .e = canvas_data.e,
         .size = canvas_data.size,
         .position = int2_half(canvas_data.size),
@@ -75,10 +75,10 @@ ecs_entity_t spawn_menu_new_realm(
 
     Children children = (Children) { 0 };
     window_data.children = &children;
-    const ecs_entity_t e = spawn_window2(world,
+    const entity e = spawn_window2(world,
         canvas_data,
         window_parent_data,
-        &window_element_data,
+        window_element_data,
         &window_data);
     zox_add_tag(e, MenuNewRealm);
 
@@ -109,7 +109,7 @@ ecs_entity_t spawn_menu_new_realm(
     };
     const byte visible_count = elements_count;
 
-    ParentSpawnData list_parent_data = {
+    LayoutParentData list_parent_data = {
         .e = e,
         .size = window_element_data.size,
         .position = window_element_data.position_in_canvas,
@@ -128,12 +128,13 @@ ecs_entity_t spawn_menu_new_realm(
         .font_size = font_size,
         .fill = (color) { 0, 0, 0, 0 },
         .outline = (color) { 0, 255, 255, 55 },
-        .padding = byte2_single(8),
-        .spacing = 24,
         .slider_height = 64,
         .slider_padding = 64,
+        .button_padding = (byte2) { 18, 12 },
+        .padding = (byte2) { 18, 18 },
+        .margins = (byte2) { 18, 18 },
     };
-    const ecs_entity_t list = spawn_list(world,
+    const entity list = spawn_list(world,
         canvas_data,
         list_parent_data,
         list_element_data,
@@ -150,10 +151,10 @@ ecs_entity_t spawn_menu_new_realm(
 }
 
 void button_event_new_game(
-    ecs_world_t *world,
+    ecs *world,
     const ClickEventData *event
 ) {
-    ecs_entity_t player = event->clicker;
+    entity player = event->clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuMain, menu);
     if (menu) {
@@ -161,8 +162,8 @@ void button_event_new_game(
     } else {
         zox_log_error("Could not find main menu.");
     }
-    zox_geter_value(player, GameLink, ecs_entity_t, game);
-    zox_geter_value(game, RealmLink, ecs_entity_t, realm);
+    zox_geter_value(player, GameLink, entity, game);
+    zox_geter_value(game, RealmLink, entity, realm);
     lint seed = get_unique_time_seed();
     set_noise_seed(seed);
     zox_set(realm, Seed, { seed });

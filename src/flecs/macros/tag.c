@@ -14,5 +14,5 @@
     ecs_remove_id(world, e, ecs_id(T));
 
 // obsolete
-#define zox_define_tag(name)\
+#define zoxd_tag(name)\
     ECS_TAG_DEFINE(world, name);

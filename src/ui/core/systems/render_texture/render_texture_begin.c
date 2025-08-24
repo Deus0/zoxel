@@ -3,7 +3,7 @@ void RenderTextureBeginSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InitializeElement);
-    zox_sys_in(PixelSize);
+    zox_sys_in(LayoutSize);
     zox_sys_in(CameraLink);
     zox_sys_in(TextureGPULink);
 
@@ -11,7 +11,7 @@ void RenderTextureBeginSystem(iter *it) {
 
         zox_sys_e();
         zox_sys_i(InitializeElement, initialize);
-        zox_sys_i(PixelSize, size);
+        zox_sys_i(LayoutSize, size);
         zox_sys_i(CameraLink, camera);
         zox_sys_i(TextureGPULink, gpu_link);
 

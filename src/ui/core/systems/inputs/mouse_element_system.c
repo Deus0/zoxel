@@ -7,7 +7,7 @@ void MouseElementSystem(iter *it) {
     zox_sys_in(ZeviceLink);
     zox_sys_in(Anchor);
     zox_sys_in(CanvasLink);
-    zox_sys_out(PixelPosition);
+    zox_sys_out(LayoutPosition);
     zox_sys_out(LayoutPositionDirty);
 
     for (int i = 0; i < it->count; i++) {
@@ -15,7 +15,7 @@ void MouseElementSystem(iter *it) {
         zox_sys_i(CanvasLink, canvas);
         zox_sys_i(ZeviceLink, zevice);
         zox_sys_i(Anchor, anchor);
-        zox_sys_o(PixelPosition, position);
+        zox_sys_o(LayoutPosition, position);
         zox_sys_o(LayoutPositionDirty, dirty);
 
         if (!zox_valid(canvas->value) ||
@@ -31,7 +31,7 @@ void MouseElementSystem(iter *it) {
             zox_log(" > mouse link invalid, needs pointer position: %s\n", zox_get_name(zevice->value))
         }
 
-        zox_geter_value(canvas->value, PixelSize, int2, canvas_size);
+        zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
         zox_geter_value_non_const(zevice->value, ZevicePointerPosition, int2, output);
 
         // int2 pre = output;

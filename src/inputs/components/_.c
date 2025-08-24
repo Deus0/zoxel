@@ -29,12 +29,12 @@ zoxc_entities(DeviceLinks)
 #include "keyboard.c"
 
 void define_components_inputs(ecs *world) {
-    zox_define_tag(Device);
-    zox_define_tag(Zevice);
-    zox_define_tag(Gamepad);
-    zox_define_tag(Touchscreen);
-    zox_define_tag(Finger);
-    zox_define_tag(Mouse);
+    zoxd_tag(Device);
+    zoxd_tag(Zevice);
+    zoxd_tag(Gamepad);
+    zoxd_tag(Touchscreen);
+    zoxd_tag(Finger);
+    zoxd_tag(Mouse);
     zox_define_component(Keyboard);
     zoxd_byte(DeviceDisabled);
     zoxd_byte(ZeviceDisabled);
@@ -48,13 +48,13 @@ void define_components_inputs(ecs *world) {
     zoxd_byte(MouseLock);
     zoxd_byte(DeviceMode);
     zoxd_byte(DeviceModeDirty);
-    zox_define_component_int2(ZevicePointerPosition);
-    zox_define_component_int2(ZevicePointerDelta);
-    zox_define_component_int2(ZeviceWheel);
-    zox_define_component_float2(ZeviceStick);
-    zox_define_component_entity(DeviceLink);
-    zox_define_component_entity(MouseLink);
-    zox_define_component_entity(ZeviceLink);
-    zox_define_component_entity(VirtualZeviceLink);
+    zoxd_int2(ZevicePointerPosition);
+    zoxd_int2(ZevicePointerDelta);
+    zoxd_int2(ZeviceWheel);
+    zoxd_float2(ZeviceStick);
+    zoxd_entity(DeviceLink);
+    zoxd_entity(MouseLink);
+    zoxd_entity(ZeviceLink);
+    zoxd_entity(VirtualZeviceLink);
     zox_define_entities_component(DeviceLinks);
 }

@@ -1,4 +1,4 @@
-void crosshair_set_type(ecs_world_t* world, ecs_entity_t e, byte new) {
+void crosshair_set_type(ecs* world, entity e, byte new) {
     if (!zox_valid(e) || !zox_has(e, HitType)) {
         return;
     }

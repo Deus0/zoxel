@@ -11,9 +11,9 @@ zox_tag(SkeletonMesh);
 #include "systems/_.c"
 
 zox_begin_module(Rendering3)
-    zox_define_tag(MeshBasic3D);
-    zox_define_tag(TexturedMesh3D);
-    zox_define_tag(SkeletonMesh);
+    zoxd_tag(MeshBasic3D);
+    zoxd_tag(TexturedMesh3D);
+    zoxd_tag(SkeletonMesh);
     zox_define_component(MaterialTextured3D);
     zox_define_component(MaterialColored3D);
     zox_define_component(MaterialVoxInstance);

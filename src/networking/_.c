@@ -51,11 +51,11 @@ void on_boot_networking(ecs_world_t* world, ecs_entity_t app) {
 zox_begin_module(Networking)
     add_hook_terminal_command(process_arguments_networking);
     add_hook_on_boot(on_boot_networking);
-    zox_define_tag(Packet);
-    zox_define_tag(NetRoom);
-    zox_define_tag(NetPlayer);
-    zox_define_tag(PacketReciever);
-    zox_define_tag(PacketSender);
+    zoxd_tag(Packet);
+    zoxd_tag(NetRoom);
+    zoxd_tag(NetPlayer);
+    zoxd_tag(PacketReciever);
+    zoxd_tag(PacketSender);
     zox_define_component(NetAddress);
     zox_define_component(TargetNetAddress);
     zox_define_component_int(NetPort);

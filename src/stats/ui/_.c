@@ -13,10 +13,10 @@ zox_tag(Healthbar);
 
 zox_begin_module(StatsUI)
 
-    zox_define_tag(Statbar);
-    zox_define_tag(MenuStats);
-    zox_define_tag(StatsLabel);
-    zox_define_tag(Healthbar);
+    zoxd_tag(Statbar);
+    zoxd_tag(MenuStats);
+    zoxd_tag(StatsLabel);
+    zoxd_tag(Healthbar);
 
     define_systems_stats_ui(world);
     add_taskbar_button((hook_taskbar) {

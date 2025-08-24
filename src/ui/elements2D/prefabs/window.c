@@ -1,23 +1,45 @@
-entity spawn_prefab_window(ecs *world, const entity prefab) {
-    zox_prefab_child(prefab);
-    zox_prefab_name("window");
-    // interaction
+void set_prefab_window(
+    ecs* world,
+    const entity e
+) {
+    // Layout Constraints
     zox_add_tag(e, BoundToCanvas);
-    zox_add_tag(e, Selectable);
-    zox_prefab_set(e, DraggableLimits, { int4_zero });
+    zox_prefab_set(e, LayoutConstraints, { int4_zero });
     // Window
     zox_add_tag(e, Window);
     zox_add_tag(e, WindowRaycastTarget);
     zox_prefab_set(e, HeaderHeight, { 0 });
     zox_prefab_set(e, WindowLayer, { 0 });
     zox_prefab_set(e, SetWindowLayer, { 0 });
-    // zox_prefab_add(e, Children)
+    // Hierarchy
     zox_prefab_set(e, Children, { 0 });
-    // text properties used for spawning list  elements
+    // text properties used for spawning list elements
     zox_prefab_set(e, ElementFontSize, { default_font_size });
-    // set
+    // interaction
+    zox_add_tag(e, Selectable);
+    // zox_prefab_set(e, SelectState, { zox_select_state_none });
+}
+
+entity spawn_prefab_window(
+    ecs *world,
+    const entity prefab
+) {
+    zox_prefab_child(prefab);
+    zox_prefab_name("window");
+    set_prefab_window(world, e);
+    // textured data
     zox_set(e, FrameCorner, { default_window_corner });
     zox_set(e, Color, { window_fill });
     zox_set(e, OutlineColor, { window_outline });
+    return e;
+}
+
+entity spawn_prefab_window_invisible(
+    ecs *world,
+    const entity prefab
+) {
+    zox_prefab_child(prefab);
+    zox_prefab_name("window_invisible");
+    set_prefab_window(world, e);
     return e;
 }

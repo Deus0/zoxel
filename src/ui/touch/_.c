@@ -14,7 +14,7 @@ zox_tag(JoystickUI);
 #include "systems/_.c"
 
 zox_begin_module(Touch)
-    zox_define_tag(JoystickUI);
+    zoxd_tag(JoystickUI);
     define_systems_touch(world);
     add_hook_spawn_prefabs(spawn_prefabs_touch);
 zox_end_module(Touch)

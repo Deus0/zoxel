@@ -1,4 +1,4 @@
-ecs_entity_t local_crosshair;
+entity local_crosshair;
 // layout
 const int2 crosshair_pixel_size = { 48, 48 };
 // texture

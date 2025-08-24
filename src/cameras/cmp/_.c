@@ -30,21 +30,21 @@ zoxc_entity(RenderCameraLink);
 zoxc_entities(CameraLinks)
 
 void define_components_cameras(ecs *world) {
-    zox_define_tag(Camera);
-    zox_define_tag(Camera2D);
-    zox_define_tag(Camera3D);
-    zox_define_tag(FirstPersonCamera);
-    zox_define_tag(CameraUI);
-    zox_define_tag(ElementBillboard);
+    zoxd_tag(Camera);
+    zoxd_tag(Camera2D);
+    zoxd_tag(Camera3D);
+    zoxd_tag(FirstPersonCamera);
+    zoxd_tag(CameraUI);
+    zoxd_tag(ElementBillboard);
     zoxd_byte(CanRoam);
     zoxd_byte(CameraMode);
     zoxd_byte(CameraViewing);
     zox_define_component_float(FieldOfView);
     zox_define_component_float(CameraNearDistance);
-    zox_define_component_int2(ScreenPosition);
-    zox_define_component_entity(CameraLink);
-    zox_define_component_entity(CameraTarget);
-    zox_define_component_entity(CameraFollowLink);
+    zoxd_int2(ScreenPosition);
+    zoxd_entity(CameraLink);
+    zoxd_entity(CameraTarget);
+    zoxd_entity(CameraFollowLink);
     zox_define_component(ProjectionMatrix);
     zox_define_component(ViewMatrix);
     // zox_define_component(ViewProjectionMatrix)
@@ -52,9 +52,9 @@ void define_components_cameras(ecs *world) {
     zox_define_component_array(FrustumCorners);
     zox_define_component_array(CameraPlanes);
     // render cameras
-    zox_define_tag(RenderCamera);
-    zox_define_tag(RenderTexture);
-    zox_define_component_entity(RenderTextureLink);
-    zox_define_component_entity(RenderCameraLink);
+    zoxd_tag(RenderCamera);
+    zoxd_tag(RenderTexture);
+    zoxd_entity(RenderTextureLink);
+    zoxd_entity(RenderCameraLink);
     zox_define_entities_component(CameraLinks);
 }

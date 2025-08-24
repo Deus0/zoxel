@@ -63,13 +63,13 @@ void on_boot_players(ecs_world_t *world, ecs_entity_t app) {
 }
 
 zox_begin_module(Players)
-    zox_define_tag(Player);
-    zox_define_tag(PlayerCharacter);
+    zoxd_tag(Player);
+    zoxd_tag(PlayerCharacter);
     zoxd_byte(PlayerState);
     zox_define_component_double(PlayerRespawn);
-    zox_define_component_entity(PlayerLink);
+    zoxd_entity(PlayerLink);
     zox_define_memory_component(PlayerLinks);
-    zox_define_component_entity(PlayerPauseEvent);
+    zoxd_entity(PlayerPauseEvent);
     define_systems_players(world);
     add_hook_on_boot(on_boot_players);
     add_hook_spawn_prefabs(spawn_prefabs_players);

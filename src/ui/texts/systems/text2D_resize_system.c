@@ -86,7 +86,7 @@ void Text2DResizeSystem(iter *it) {
     zox_sys_in(TextPadding)
     zox_sys_in(Layer2D)
     zox_sys_in(CanvasPosition)
-    zox_sys_in(PixelSize)
+    zox_sys_in(LayoutSize)
     zox_sys_in(MeshAlignment)
     zox_sys_in(FontOutlineColor)
     zox_sys_in(FontFillColor)
@@ -104,7 +104,7 @@ void Text2DResizeSystem(iter *it) {
         zox_sys_i(TextPadding, textPadding)
         zox_sys_i(Layer2D, layer2D)
         zox_sys_i(CanvasPosition, canvasPosition)
-        zox_sys_i(PixelSize, pixelSize)
+        zox_sys_i(LayoutSize, pixelSize)
         zox_sys_i(MeshAlignment, meshAlignment)
         zox_sys_i(FontOutlineColor, fontOutlineColor)
         zox_sys_i(FontFillColor, fontFillColor)
@@ -121,7 +121,7 @@ void Text2DResizeSystem(iter *it) {
             zox_log_error("no canvas found on text")
             continue;
         }
-        const int2 canvas_size = zox_get_value(canvas, PixelSize)
+        const int2 canvas_size = zox_get_value(canvas, LayoutSize)
         const byte zext_length = calculate_total_zigels(textData->value, textData->length);
         if (zox_has(e, ZextRenderEnabler)) {
             renderDisabled->value = textData->length == 0;

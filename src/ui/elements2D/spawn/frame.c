@@ -1,11 +1,14 @@
-entity3 spawn_frame(ecs *world, SpawnFrame data) {
-    zox_instance(data.element.prefab)
-    zox_name("frame")
-    set_element_spawn_data(world, e, data.canvas, data.parent, &data.element);
-    zox_set(e, Color, { data.texture.fill_color })
-    zox_set(e, OutlineColor, { data.texture.outline_color })
-    CanvasSpawnData canvas_data = data.canvas;
-    ParentSpawnData parent_data = {
+entity3 spawn_frame(
+    ecs *world,
+    const SpawnFrame data
+) {
+    zox_instance(data.element.prefab);
+    zox_name("frame");
+    set_element_spawn_data(world, e, data.canvas, data.parent, data.element);
+    zox_set(e, Color, { data.texture.fill_color });
+    zox_set(e, OutlineColor, { data.texture.outline_color });
+    LayoutParentData canvas_data = data.canvas;
+    LayoutParentData parent_data = {
         .e = e,
         .position = data.element.position_in_canvas,
         .size = data.element.size

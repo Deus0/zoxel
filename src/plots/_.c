@@ -16,9 +16,9 @@ ecs_entity_t prefab_frame_debugger_ui;
 #include "util/time.c"
 
 zox_begin_module(Plots)
-    zox_define_tag(Plot);
-    zox_define_tag(PlotLine);
-    zox_define_tag(PlotLabel);
+    zoxd_tag(Plot);
+    zoxd_tag(PlotLine);
+    zoxd_tag(PlotLabel);
     zox_define_component_double(PlotMin);
     zox_define_component_double(PlotMax);
     zox_define_memory_component(PlotDataDouble);

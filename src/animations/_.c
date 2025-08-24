@@ -32,7 +32,7 @@ zoxc_arrayd(AnimationTargets, float) // a sequence of animation target values
 #include "systems/oscillate_system.c"
 
 zox_begin_module(Animations)
-    zox_define_tag(OscillatePosition3D);
+    zoxd_tag(OscillatePosition3D);
     zox_define_component_float3(OscillateStartPosition3D);
     zox_define_component_float3(OscillateDeltaPosition3D);
     // old

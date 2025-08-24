@@ -11,7 +11,7 @@ zoxf_user_prefabs(Item, item, "item")
 #include "systems/_.c"
 
 zox_begin_module(Items)
-    zox_define_tag(ItemBlock);
+    zoxd_tag(ItemBlock);
     zoxd_userdata(Item);
     define_systems_items(world);
     add_hook_spawned_character3D(&spawn_character_items);

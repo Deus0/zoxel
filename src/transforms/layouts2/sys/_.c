@@ -1,19 +1,22 @@
 #include "parent.c"
 #include "position2.c"
 #include "anchor_size.c"
-// #include "old.c"
+#include "list.c"
+
 zox_increment_system_with_reset(LayoutPositionDirty, zox_dirty_end);
 zox_increment_system_with_reset(LayoutSizeDirty, zox_dirty_end);
+zox_increment_system_with_reset(ListDirty, zox_dirty_end);
 
 void define_systems_layouts2(ecs* world) {
     zoxd_system_increment(LayoutPositionDirty);
     zoxd_system_increment(LayoutSizeDirty);
+    zoxd_system_increment(ListDirty);
     zox_system(
         LayoutParentPositionSystem,
         EcsOnLoad,
         [in] LayoutPositionDirty,
-        [in] PixelPosition,
-        [in] PixelSize,
+        [in] LayoutPosition,
+        [in] LayoutSize,
         [in] Anchor,
         [in] hierarchys.ParentLink,
         [out] CanvasPosition
@@ -32,17 +35,16 @@ void define_systems_layouts2(ecs* world) {
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.AnchorSize,
         [in] hierarchys.ParentLink,
-        [out] layouts2.PixelSize
+        [out] layouts2.LayoutSize
     );
-    /*zox_system(
-        ElementPositionSystem,
-        EcsOnLoad,
-        [in] layouts2.PixelPosition,
-        [in] layouts2.PixelSize,
-        [in] hierarchys.ParentLink,
-        [in] layouts2.Anchor,
-        [in] layouts2.CanvasLink,
-        [out] transforms2.Position2,
-        [out] layouts2.CanvasPosition
-    );*/
+
+    zox_system(
+        ListSystem,
+        EcsOnUpdate,
+        [in] layouts2.ListDirty,
+        [in] hierarchys.Children,
+        [in] layouts2.LayoutSize,
+        [in] layouts2.ListPadding,
+        [in] layouts2.ListMargins
+    );
 }

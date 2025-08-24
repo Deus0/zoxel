@@ -62,7 +62,7 @@ ecs_entity_t spawn_ui_line2D(ecs_world_t *world,
     if (canvas == 0) {
         canvas = zox_canvases[0];
     }
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     ecs_entity_t e;
     if (life_time == 0.0) {
         e = zox_instancee(prefab_ui_line2D)

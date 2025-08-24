@@ -65,9 +65,9 @@ float2 get_ui_real_position2_parent(
     if (zox_has(e, AnchorSize)) {
         const float2 anchor_size = zox_get_value(e, AnchorSize)
         anchor_element_size2D(&pixel_size, anchor_size, parent_size);
-        zox_set(e, PixelSize, { pixel_size });
-    } else if (zox_has(e, PixelSize)) {
-        pixel_size = zox_get_value(e, PixelSize);
+        zox_set(e, LayoutSize, { pixel_size });
+    } else if (zox_has(e, LayoutSize)) {
+        pixel_size = zox_get_value(e, LayoutSize);
     }
 
     resize_ui_line2D(world, e, canvas_size);
@@ -95,9 +95,9 @@ float2 get_ui_real_position2_parent(
         zox_set(e, MeshDirty, { mesh_state_trigger })
     }*/
 
-    /*if (zox_has(e, PixelPosition)) {
+    /*if (zox_has(e, LayoutPosition)) {
         const float2 anchor = zox_get_value(e, Anchor)
-        int2 pixel_position = zox_get_value(e, PixelPosition)
+        int2 pixel_position = zox_get_value(e, LayoutPosition)
         // todo: make this more widespread, used atm just for game_ui
         const int2 position_in_canvas = get_element_pixel_positionv(parent_position, parent_size, pixel_position, anchor);
         const float2 positionf = get_element_position(position_in_canvas, canvas_size);

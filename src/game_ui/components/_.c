@@ -17,20 +17,20 @@ zoxc_double(FPSDisplayTicker);
 zoxc(DebugLabelData, DebugLabelEvent);
 // #include "debug_label_data.c"
 
-void define_components_game_ui(ecs_world_t *world) {
+void define_components_game_ui(ecs *world) {
     zoxd_byte(MenuType);
-    zox_define_tag(MenuMain);
-    zox_define_tag(MenuOptions);
-    zox_define_tag(MenuPaused);
-    zox_define_tag(MenuGame);
-    zox_define_tag(MenuGameTouch);
-    zox_define_tag(MenuStart);
-    zox_define_tag(FPSDisplay);
-    zox_define_tag(QuadsCountLabel);
-    zox_define_tag(GameDebugLabel);
-    zox_define_tag(Profiler);
-    zox_define_tag(Taskbar);
-    zox_define_tag(MenuNewRealm);;
+    zoxd_tag(MenuMain);
+    zoxd_tag(MenuOptions);
+    zoxd_tag(MenuPaused);
+    zoxd_tag(MenuGame);
+    zoxd_tag(MenuGameTouch);
+    zoxd_tag(MenuStart);
+    zoxd_tag(FPSDisplay);
+    zoxd_tag(QuadsCountLabel);
+    zoxd_tag(GameDebugLabel);
+    zoxd_tag(Profiler);
+    zoxd_tag(Taskbar);
+    zoxd_tag(MenuNewRealm);;
     zoxd_byte(HitType);
     zox_define_component_int(QuadsCount);
     zox_define_component_double(FPSDisplayTicker);

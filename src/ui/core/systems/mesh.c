@@ -4,7 +4,7 @@ void LayoutMeshSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(LayoutSizeDirty);
     zox_sys_in(CanvasLink);
-    zox_sys_in(PixelSize);
+    zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshVertices2D);
     zox_sys_out(MeshDirty);
@@ -13,7 +13,7 @@ void LayoutMeshSystem(iter *it) {
 
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(CanvasLink, canvas);
-        zox_sys_i(PixelSize, size);
+        zox_sys_i(LayoutSize, size);
         zox_sys_i(MeshAlignment, alignment);
         zox_sys_o(MeshVertices2D, verts);
         zox_sys_o(MeshDirty, mesh_dirty);
@@ -21,7 +21,7 @@ void LayoutMeshSystem(iter *it) {
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        const float2 canvas_size = int2_to_float2(zox_gett_value(canvas->value, PixelSize));
+        const float2 canvas_size = int2_to_float2(zox_gett_value(canvas->value, LayoutSize));
         const float2 sizef = (float2) {
             size->value.x / canvas_size.y,
             size->value.y / canvas_size.y };

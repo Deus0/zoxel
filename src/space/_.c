@@ -15,9 +15,9 @@ void on_boot_space(ecs_world_t* world, ecs_entity_t app) {
 }
 
 zox_begin_module(Space)
-    zox_define_tag(Planet);
-    zox_define_tag(Asteroid);
-    zox_define_tag(Star);
+    zoxd_tag(Planet);
+    zoxd_tag(Asteroid);
+    zoxd_tag(Star);
 
     add_to_event_game_state((zox_game_event) { &players_game_state });
     add_hook_on_boot(on_boot_space);

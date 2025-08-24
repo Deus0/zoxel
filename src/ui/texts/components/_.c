@@ -11,10 +11,10 @@ zoxc_double(AnimateZext);
 zoxc_text(TextData)
 
 void define_components_texts(ecs *world) {
-    zox_define_tag(Zext);
-    zox_define_tag(ZextLabel);
-    zox_define_tag(ZextRenderEnabler);
-    zox_define_tag(Text2D);
+    zoxd_tag(Zext);
+    zoxd_tag(ZextLabel);
+    zoxd_tag(ZextRenderEnabler);
+    zoxd_tag(Text2D);
     zoxd_byte(ZextDirty);
     zoxd_byte(ZextAlignment);
     zoxd_byte(TextResolution);

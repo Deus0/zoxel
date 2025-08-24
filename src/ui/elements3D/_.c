@@ -14,8 +14,8 @@ zoxc_float(Text3DScale);
 #include "debug/_.c"
 
 zox_begin_module(Elements3)
-    zox_define_tag(Element3D);
-    zox_define_tag(Text3D);
+    zoxd_tag(Element3D);
+    zoxd_tag(Text3D);
     zox_define_component(UITrail);
     zox_define_component_float(Text3DScale);
     define_systems_elements3D(world);

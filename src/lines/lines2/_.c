@@ -14,8 +14,8 @@ zoxc(LineAnchor, float4);
 #include "systems/_.c"
 
 zox_begin_module(Lines2D)
-    zox_define_tag(Line2D);
-    zox_define_tag(ElementLine2D);
+    zoxd_tag(Line2D);
+    zoxd_tag(ElementLine2D);
     zox_define_component(LineData2D);
     zox_define_component(LinePosition2);
     zox_define_component(LineLocalPosition2);

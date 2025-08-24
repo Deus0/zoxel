@@ -18,7 +18,7 @@ void PlotLineSystem(ecs_iter_t *it) {
         zox_geter(parentLink->value, PlotDataDouble, data)
         zox_geter_value(parentLink->value, PlotMin, double, min)
         zox_geter_value(parentLink->value, PlotMax, double, max)
-        zox_geter_value(parentLink->value, PixelSize, int2, parent_size)
+        zox_geter_value(parentLink->value, LayoutSize, int2, parent_size)
         if (childIndex->value >= data->length) {
             zox_log_error("index [%i] out of bounds (len: %i)", childIndex->value, data->length);
             continue;

@@ -7,8 +7,8 @@ typedef struct {
 } SpawnZigelData;
 
 typedef struct {
-    CanvasSpawnData canvas;
-    ParentSpawnData parent;
+    LayoutParentData canvas;
+    LayoutParentData parent;
     ElementSpawnData element;
     ZigelZextSpawnData zext;    // just copy zext data in?
     SpawnZigelData zigel;

@@ -1,27 +1,35 @@
 zox_tag(BoundToCanvas);
-zoxc_int2(PixelPosition);
+zoxc_int2(LayoutPosition);
 zoxc_byte(LayoutPositionDirty);
-zoxc_int2(PixelSize);
+zoxc_int2(LayoutSize);
 zoxc_byte(LayoutSizeDirty);
 zoxc_int2(CanvasPosition);
-zoxc_int4(DraggableLimits);
+zoxc_int4(LayoutConstraints);
 zoxc_float2(Anchor);
 zoxc_float2(AnchorSize);
 zoxc_entity(CanvasLink);
 zoxc_byte(Layer2D);
 zoxc_entity(WindowToTop);
+zoxc_byte2(ListMargins);
+zoxc_byte2(ListPadding);
+zoxc_byte(ListDirty);
+zoxc_byte(ListUIMax);
 
 void define_components_layouts2(ecs* world) {
-    zox_define_tag(BoundToCanvas);
-    zox_define_component_int2(PixelPosition);
+    zoxd_tag(BoundToCanvas);
+    zoxd_int2(LayoutPosition);
     zoxd_byte(LayoutPositionDirty);
-    zox_define_component_int2(PixelSize);
+    zoxd_int2(LayoutSize);
     zoxd_byte(LayoutSizeDirty);
-    zox_define_component_int2(CanvasPosition);
-    zox_define_component_int4(DraggableLimits);
-    zox_define_component_float2(Anchor);
-    zox_define_component_float2(AnchorSize);
-    zox_define_component_entity(CanvasLink);
+    zoxd_int2(CanvasPosition);
+    zoxd_int4(LayoutConstraints);
+    zoxd_float2(Anchor);
+    zoxd_float2(AnchorSize);
+    zoxd_entity(CanvasLink);
     zoxd_byte(Layer2D);
-    zox_define_component_entity(WindowToTop);
+    zoxd_entity(WindowToTop);
+    zoxd_byte2(ListMargins);
+    zoxd_byte2(ListPadding);
+    zoxd_byte(ListDirty);
+    zoxd_byte(ListUIMax);
 }

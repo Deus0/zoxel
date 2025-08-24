@@ -1,17 +1,17 @@
-ecs_entity_t prefab_menu_start;
-ecs_entity_t fps_display_prefab;
-ecs_entity_t fps_display;
-ecs_entity_t prefab_game_debug_label;
-ecs_entity_t prefab_quad_count_label;
-ecs_entity_t prefab_tooltip;
-ecs_entity_t prefab_frame_taskbar;
-ecs_entity_t prefab_taskbar;
-ecs_entity_t prefab_device_gizmo;ecs_entity_t prefab_menu_game;
-ecs_entity_t prefab_menu_game_touch;
-ecs_entity_t zoxel_main_menu;
-ecs_entity_t prefab_crosshair;
+// entity prefab_menu_start;
+entity fps_display_prefab;
+entity fps_display;
+entity prefab_game_debug_label;
+entity prefab_quad_count_label;
+entity prefab_tooltip;
+entity prefab_frame_taskbar;
+entity prefab_taskbar;
+entity prefab_device_gizmo;entity prefab_menu_game;
+entity prefab_menu_game_touch;
+entity zoxel_main_menu;
+entity prefab_crosshair;
 
-#include "start.c"
+// #include "start.c"
 #include "fps_display.c"
 #include "quad_count_label.c"
 #include "game_debug_label.c"
@@ -23,8 +23,8 @@ ecs_entity_t prefab_crosshair;
 #include "menu_game_touch.c"
 #include "menu_game.c"
 
-void spawn_prefabs_game_ui(ecs_world_t *world) {
-    prefab_menu_start = spawn_prefab_main_start(world, prefab_ui_list);
+void spawn_prefabs_game_ui(ecs *world) {
+    // prefab_menu_start = spawn_prefab_main_start(world, prefab_ui_list);
     spawn_prefab_fps_display(world);
     spawn_prefab_quad_count_label(world);
     spawn_prefab_game_debug_label(world, prefab_label_background);

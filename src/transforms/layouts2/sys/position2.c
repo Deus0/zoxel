@@ -1,4 +1,4 @@
-// Convert PixelPosition to Position2
+// Convert LayoutPosition to Position2
 // Triggered by LayoutPositionDirty
 
 float2 get_element_position(
@@ -67,7 +67,7 @@ void LayoutPosition2System(iter *it) {
                 it->entities[i]);
             continue;
         }
-        zox_geter_value(canvas->value, PixelSize, int2, canvas_size);
+        zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
         position2->value = get_element_position(
             canvas_position->value,
             canvas_size

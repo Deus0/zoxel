@@ -32,6 +32,6 @@ entity spawn_layout2_on_canvas(ecs *world,
     const int2 pixel_size,
     const float2 anchor)
 {
-    const int2 canvas_size = zox_get_value(canvas, PixelSize)
+    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     return spawn_layout2(world, prefab, canvas, canvas, pixel_position, pixel_size, anchor, 0, int2_half(canvas_size), canvas_size);
 }

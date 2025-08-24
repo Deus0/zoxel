@@ -28,7 +28,7 @@ void module_dispose_chunks3(ecs *world, void *ctx) {
 }
 
 zox_begin_module(Chunks3)
-    zox_define_component_entity(VoxLink);
+    zoxd_entity(VoxLink);
     zox_define_entities_component(ChunkEntities);
     define_components_chunks(world);
     define_systems_chunks(world);

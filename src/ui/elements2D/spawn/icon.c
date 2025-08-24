@@ -9,7 +9,7 @@ entity2 spawn_icon(
         e,
         data->canvas,
         data->parent,
-        &data->element
+        data->element
     );
     zox_set(e, Color, { data->texture.fill_color });
     zox_set(e, OutlineColor, { data->texture.outline_color });
@@ -17,7 +17,7 @@ entity2 spawn_icon(
     // icons have overlays now
     Children children = (Children) { 0, NULL };
     // icon overlay
-    ParentSpawnData icon_data = {
+    LayoutParentData icon_data = {
         .e = e,
         .position = data->element.position_in_canvas,
         .size = data->element.size

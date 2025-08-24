@@ -33,7 +33,7 @@ uint debug_label_app(
     //zox_geter(local_realm, PlayerLinks, players)
     //zox_geter_value(players->value[0], CanvasLink, entity, canvas)
     entity canvas = zox_canvases[0];
-    zox_geter_value(canvas, PixelSize, int2, canvas_size)
+    zox_geter_value(canvas, LayoutSize, int2, canvas_size)
     zox_geter_value(canvas, ScreenToCanvas, float4, canvas_ratio)
     zox_geter(canvas, Children, canvas_children)
     index += snprintf(buffer + index, size - index, "Canvas [%s]\n", zox_get_name(canvas));
@@ -46,7 +46,7 @@ uint debug_label_app(
         if (!zox_has(element, RenderTexture)) {
             continue;
         }
-        zox_geter_value(element, PixelSize, int2, element_size)
+        zox_geter_value(element, LayoutSize, int2, element_size)
         // zox_geter_value(element, TextureSize, int2, texture_size)
         int2 texture_size = get_texture_size(world, element);
         index += snprintf(buffer + index, size - index, "# %s\n", zox_get_name(element));

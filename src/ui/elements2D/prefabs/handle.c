@@ -24,7 +24,7 @@ entity spawn_prefab_handle(ecs *world, const entity prefab) {
     zox_prefab_set(e, DraggingDelta, { int2_zero })
     zox_prefab_set(e, DraggerLink, { 0 })
     zox_prefab_set(e, DraggedLink, { 0 })
-    zox_prefab_set(e, DraggableLimits, { int4_zero })
+    zox_prefab_set(e, LayoutConstraints, { int4_zero })
     zox_prefab_set(e, SlideEvent, { 0 })
     zox_prefab_set(e, SlideBounds, { (float2) { 0, 1 }})
     return e;

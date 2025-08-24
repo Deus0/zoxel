@@ -4,9 +4,9 @@
 
 typedef struct {
     byte window_type;
-    ecs_entity_t component_id;
+    entity component_id;
     char *texture_name;
-    ecs_entity_t (*spawn)(ecs_world_t *, const ecs_entity_t);
+    entity (*spawn)(ecs *, const entity);
 } hook_taskbar;
 zoxel_dynamic_array(hook_taskbar)
 hook_taskbar_array_d* hook_taskbars;
@@ -25,9 +25,9 @@ void add_taskbar_button(const hook_taskbar data) {
 
 // set active stat based on ui component id
 void taskbar_set_icons(
-    ecs_world_t *world,
-    const ecs_entity_t canvas,
-    const ecs_entity_t e,
+    ecs *world,
+    const entity canvas,
+    const entity e,
     const int i
 ) {
     hook_taskbar hook = hook_taskbars->data[i];
@@ -38,7 +38,7 @@ void taskbar_set_icons(
 }
 
 void taskbar_button_click_event(
-    ecs_world_t *world,
+    ecs *world,
     const ClickEventData *event
 ) {
     const byte index = zox_get_value(event->clicked, IconIndex)
@@ -47,8 +47,8 @@ void taskbar_button_click_event(
         return;
     }
     hook_taskbar hook = hook_taskbars->data[index];
-    const ecs_entity_t window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event->clicker);
-    const ecs_entity_t frame = zox_get_value(event->clicked, ParentLink)
+    const entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event->clicker);
+    const entity frame = zox_get_value(event->clicked, ParentLink)
     if (!zox_valid(frame) || !zox_has(frame, ActiveState)) {
         zox_log(" ! invalid frame\n")
         return;
@@ -62,7 +62,7 @@ void taskbar_button_click_event(
 
 // todo: make tooltip function just return a string
 byte tooltip_event_taskbar_icon(
-    ecs_world_t *world,
+    ecs *world,
     const TooltipEventData *data
 ) {
     if (!data->triggered || !zox_has(data->triggered, TooltipText)) {

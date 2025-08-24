@@ -13,24 +13,27 @@ void set_window_bounds_to_canvas(
         - canvas_size.y * anchor.y + window_size.y / 2,
         canvas_size.y * anchor_reverse.y - window_size.y / 2
     };
-    zox_set(e, DraggableLimits, { drag_limits });
+    zox_set(e, LayoutConstraints, { drag_limits });
+    zox_log("Limiting e [%s] [%ix%ix%ix%i]",
+        zox_get_name(e),
+        drag_limits.x, drag_limits.y, drag_limits.z, drag_limits.w);
 }
 
 void limited_element(
-    PixelPosition *pixel_position,
-    const int4 drag_bounds
+    int2* position,
+    const int4 b
 ) {
-    if (pixel_position->value.x < drag_bounds.x) {
-        pixel_position->value.x = drag_bounds.x;
+    if (position->x < b.x) {
+        position->x = b.x;
     }
-    if (pixel_position->value.x > drag_bounds.y) {
-        pixel_position->value.x = drag_bounds.y;
+    if (position->x > b.y) {
+        position->x = b.y;
     }
-    if (pixel_position->value.y < drag_bounds.z) {
-        pixel_position->value.y = drag_bounds.z;
+    if (position->y < b.z) {
+        position->y = b.z;
     }
-    if (pixel_position->value.y > drag_bounds.w) {
-        pixel_position->value.y = drag_bounds.w;
+    if (position->y > b.w) {
+        position->y = b.w;
     }
 }
 
@@ -38,10 +41,10 @@ void limit_element(
     ecs *world,
     const entity e
 ) {
-    if (!zox_valid(e) || !zox_has(e, PixelPosition) || !zox_has(e, DraggableLimits)) {
+    if (!zox_valid(e) || !zox_has(e, LayoutPosition) || !zox_has(e, LayoutConstraints)) {
         return;
     }
-    zox_muter(e, PixelPosition, pixel_position);
-    zox_geter_value(e, DraggableLimits, int4, drag_bounds);
-    limited_element(pixel_position, drag_bounds);
+    zox_muter(e, LayoutPosition, pixel_position);
+    zox_geter_value(e, LayoutConstraints, int4, drag_bounds);
+    limited_element(&pixel_position->value, drag_bounds);
 }

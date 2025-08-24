@@ -15,20 +15,20 @@ void AnchorSizeSystem(iter *it) {
     zox_sys_in(LayoutSizeDirty);
     zox_sys_in(AnchorSize);
     zox_sys_in(ParentLink);
-    zox_sys_out(PixelSize);
+    zox_sys_out(LayoutSize);
 
     for (int i = 0; i < it->count; i++) {
 
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(AnchorSize, anchor);
         zox_sys_i(ParentLink, parent);
-        zox_sys_o(PixelSize, size);
+        zox_sys_o(LayoutSize, size);
 
         if (dirty->value != zox_dirty_active) {
             continue;
         }
 
-        zox_geter_value(parent->value, PixelSize, int2, parent_size);
+        zox_geter_value(parent->value, LayoutSize, int2, parent_size);
         anchor_element_size2D(&size->value, anchor->value, parent_size);
 
         /*zox_log("+ [%s] Anchor Sized: %ix%i - parent [%ix%i]",

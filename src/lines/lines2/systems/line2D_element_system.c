@@ -40,7 +40,7 @@ void Line2DElementSystem(ecs_iter_t *it) {
         if (!zox_valid(canvasLink->value)) {
             continue;
         }
-        const int2 canvas_size = zox_get_value(canvasLink->value, PixelSize)
+        const int2 canvas_size = zox_get_value(canvasLink->value, LayoutSize)
         const float2 canvas_size_f = int2_to_float2(canvas_size);
         // const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
         set_ui_line_position(

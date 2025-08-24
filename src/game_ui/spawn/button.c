@@ -1,7 +1,7 @@
-ecs_entity_t spawn_button_game(
-    ecs_world_t *world,
-    const ecs_entity_t canvas,
-    const ecs_entity_t parent,
+entity spawn_button_game(
+    ecs *world,
+    const entity canvas,
+    const entity parent,
     const int2 canvas_size,
     const int2 position,
     const float2 anchor,
@@ -35,12 +35,14 @@ ecs_entity_t spawn_button_game(
             .fill = button_fill,
             .outline = button_outline,
         }};
-    const ecs_entity_t e = spawn_button(world,
+    const entity e = spawn_button(
+        world,
         spawnButton.canvas,
         spawnButton.parent,
         spawnButton.element,
         spawnButton.zext,
-        spawnButton.button);
-    zox_set(e, ClickEvent, { event.value })
+        spawnButton.button
+    );
+    zox_set(e, ClickEvent, { event.value });
     return e;
 }

@@ -1,5 +1,5 @@
-ecs_entity_t spawn_prefab_crosshair(ecs_world_t *world,
-    const ecs_entity_t prefab)
+entity spawn_prefab_crosshair(ecs *world,
+    const entity prefab)
 {
     zox_prefab_child(prefab)
     zox_set(e, HitType, { 0 })
@@ -10,14 +10,14 @@ ecs_entity_t spawn_prefab_crosshair(ecs_world_t *world,
     return e;
 }
 
-ecs_entity_t spawn_crosshair(ecs_world_t *world,
-    const CanvasSpawnData canvas_data,
-    const ParentSpawnData parent_data,
+entity spawn_crosshair(ecs *world,
+    const LayoutParentData canvas_data,
+    const LayoutParentData parent_data,
     ElementSpawnData element_data)
 {
     zox_instance(element_data.prefab)
     zox_name("crosshair")
-    set_element_spawn_data(world, e, canvas_data, parent_data, &element_data);
+    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
     local_crosshair = e;
     return e;
 }

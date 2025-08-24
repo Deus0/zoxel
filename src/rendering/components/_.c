@@ -51,12 +51,12 @@ static inline int2 get_texture_size(ecs* world, entity e) {
 }
 
 void define_components_rendering(ecs *world) {
-    zox_define_tag(Mesh);
-    zox_define_tag(Shader);
-    zox_define_tag(Material);
-    zox_define_tag(SingleMaterial);
-    zox_define_tag(RendererInstance);
-    zox_define_tag(VoxMesh);
+    zoxd_tag(Mesh);
+    zoxd_tag(Shader);
+    zoxd_tag(Material);
+    zoxd_tag(SingleMaterial);
+    zoxd_tag(RendererInstance);
+    zoxd_tag(VoxMesh);
 
     zoxd_byte(MeshDirty);
     zoxd_byte(MeshGenerate);
@@ -64,7 +64,7 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(MeshColorsDirty);
     zoxd_byte(MeshAlignment);
 
-    zox_define_component_entity(MeshLink);
+    zoxd_entity(MeshLink);
     zoxd_byte(TextureDirty);
     zoxd_byte(RenderDepth);
     zoxd_byte(RenderDepthDirty);
@@ -74,9 +74,9 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(RenderDisabled);
     zox_define_component_float(Brightness);
     zox_define_component_float(Alpha);
-    zox_define_component_entity(MaterialLink);
-    zox_define_component_int2(TextureSize);
-    zox_define_component_entity(InstanceLink);
+    zoxd_entity(MaterialLink);
+    zoxd_int2(TextureSize);
+    zoxd_entity(InstanceLink);
     zox_define_component(MaterialInstancedGPULink);
     zox_define_component_w_dest(ShaderGPULink);
     zox_define_component_w_dest(MaterialGPULink);
@@ -87,7 +87,7 @@ void define_components_rendering(ecs *world) {
     zox_define_component_w_dest(ComputeShaderLink);
     zox_define_component_w_dest(UboGPULink);
     zoxd_byte(ShaderSourceIndex);
-    zox_define_component_entity(ShaderLink);
+    zoxd_entity(ShaderLink);
     zox_define_memory_component(MeshIndicies);
     zox_define_memory_component(MeshVertices);
     zox_define_memory_component(MeshVertices2D);
@@ -96,6 +96,6 @@ void define_components_rendering(ecs *world) {
     zox_define_memory_component(MeshColorRGBs);
     // Models
     zox_define_entities_component(ModelLinks);
-    zox_define_component_entity(ModelLink);
+    zoxd_entity(ModelLink);
     zox_define_component_array(ModelLods);
 }

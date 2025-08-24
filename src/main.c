@@ -44,6 +44,7 @@
 #include "realms/_.c"
 #include "games/_.c"
 #include "players/_.c"
+#include "biomes/_.c"
 #include "colors/_.c"
 
 // beef
@@ -172,6 +173,7 @@ zox_begin_module(Zox)
     zox_import_module(Characters);
     zox_import_module(Dungeons);
     zox_import_module(GameUI);
+    zox_import_module(Biomes);
 
     // user data
     zox_import_module(Users);

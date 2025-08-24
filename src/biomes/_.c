@@ -11,6 +11,10 @@
  *
  * */
 
+byte zox_biome_override = 1;    // stick to earthy for now
+#include "dat/_.c"
+#include "fun/_.c"
+
 zox_begin_module(Biomes)
 
 zox_end_module(Biomes)

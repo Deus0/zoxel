@@ -6,7 +6,7 @@ entity spawn_prefab_elementbar2D(ecs *world, entity prefab) {
     zox_add_tag(e, Elementbar2);
     // add_ui_plus_components(world, e);
     zox_prefab_set(e, Color, { back_bar_color });
-    zox_prefab_set(e, PixelSize, { int2_one });
+    zox_prefab_set(e, LayoutSize, { int2_one });
     zox_prefab_set(e, TextureSize, { int2_one });
     zox_prefab_set(e, ElementBar, { 1 });
     zox_prefab_set(e, ElementBarSize, { float2_zero });

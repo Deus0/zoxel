@@ -11,7 +11,7 @@ zoxc_entity(CloneVoxLink);
 zoxc_float(VoxColorRange);
 
 void define_components_voxes(ecs *world) {
-    zox_define_tag(Vox);
+    zoxd_tag(Vox);
     zoxd_byte(VoxType);
     zoxd_byte(RubbleHeight);
     zoxd_byte(GenerateVox);
@@ -20,6 +20,6 @@ void define_components_voxes(ecs *world) {
     zoxd_byte(VoxUniqueColors);
     zoxd_byte(VRegions);
     zox_define_component_int(RubbleCount);
-    zox_define_component_entity(CloneVoxLink);
+    zoxd_entity(CloneVoxLink);
     zox_define_component_float(VoxColorRange);
 }
