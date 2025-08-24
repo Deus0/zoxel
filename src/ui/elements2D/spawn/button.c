@@ -15,12 +15,21 @@ entity spawn_button(ecs *world,
         zext_size.y + zext_data.padding.y * 2
     };
 
-    zox_instance(element_data.prefab)
-    zox_name("button")
-    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+    zox_instance(element_data.prefab);
+    zox_name("button");
+    set_element_spawn_data(
+        world,
+        e,
+        canvas_data,
+        parent_data,
+        element_data
+    );
+    if (element_data.render_disabled) {
+        zox_set(e, RenderDisabled, { element_data.render_disabled });
+    }
 
-    zox_set(e, Color, { button_data.fill })
-    zox_set(e, OutlineColor, { button_data.outline })
+    zox_set(e, Color, { button_data.fill });
+    zox_set(e, OutlineColor, { button_data.outline });
 
     Children children = (Children) { 0, NULL };
 

@@ -11,6 +11,9 @@ entity2 spawn_icon(
         data->parent,
         data->element
     );
+    if (data->element.render_disabled) {
+        zox_set(e, RenderDisabled, { data->element.render_disabled });
+    }
     zox_set(e, Color, { data->texture.fill_color });
     zox_set(e, OutlineColor, { data->texture.outline_color });
     zox_set(e, IconIndex, { data->index });

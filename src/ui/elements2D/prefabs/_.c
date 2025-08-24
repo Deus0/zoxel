@@ -54,7 +54,7 @@ void spawn_prefabs_elements(ecs *world) {
     prefab_frame  = spawn_prefab_frame(world, prefab_element_textured);
     prefab_icon_overlay = spawn_prefab_icon_overlay(world, prefab_element_textured);
     // scrollbars
-    prefab_scrollbar = spawn_prefab_scrollbar(world);
+    prefab_scrollbar = spawn_prefab_scrollbar(world, prefab_element_textured);
     prefab_scrollbar_front = spawn_prefab_scrollbar_front(world, prefab_element_textured);
     // slider
     prefab_handle = spawn_prefab_handle(world, prefab_element_textured);

@@ -1,3 +1,4 @@
+zox_tag(Canvas);
 zox_tag(BoundToCanvas);
 zoxc_int2(LayoutPosition);
 zoxc_byte(LayoutPositionDirty);
@@ -13,9 +14,12 @@ zoxc_entity(WindowToTop);
 zoxc_byte2(ListMargins);
 zoxc_byte2(ListPadding);
 zoxc_byte(ListDirty);
-zoxc_byte(ListUIMax);
+zoxc_byte(ListStart);
+zoxc_byte(ListVisible);
+zoxc_byte(ListUIMax);   // TODO: remove just use children length
 
 void define_components_layouts2(ecs* world) {
+    zoxd_tag(Canvas);
     zoxd_tag(BoundToCanvas);
     zoxd_int2(LayoutPosition);
     zoxd_byte(LayoutPositionDirty);
@@ -31,5 +35,7 @@ void define_components_layouts2(ecs* world) {
     zoxd_byte2(ListMargins);
     zoxd_byte2(ListPadding);
     zoxd_byte(ListDirty);
+    zoxd_byte(ListStart);
+    zoxd_byte(ListVisible);
     zoxd_byte(ListUIMax);
 }

@@ -3,11 +3,10 @@ typedef struct {
     SpawnListElement* elements;
     int count;
     int visible_count;
+    byte is_scrollbar;
     byte font_size;
     color fill;
     color outline;
-    // from window
-    Children *children;
     // list spacing
     byte2 button_padding;
     byte2 padding;
@@ -15,4 +14,6 @@ typedef struct {
     // slider
     int slider_height; // = 64; // now we doing labels
     int slider_padding; // = 64;
+    // from window
+    Children *children;
 } SpawnList;

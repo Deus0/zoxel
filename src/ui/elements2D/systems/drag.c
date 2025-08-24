@@ -38,9 +38,9 @@ void ElementDragSystem(iter *it) {
             new_position.y += delta->value.y;
             if (zox_has(dragged, LayoutConstraints)) {
                 zox_geter_value(dragged, LayoutConstraints, int4, b);
-                if (!int4_equals(b, int4_zero)) {
-                    limited_element(&new_position, b);
-                }
+                //if (!int4_equals(b, int4_zero)) {
+                limited_element(&new_position, b);
+                //}
 
                 if (is_log_dragging) {
                     zox_log("   - bounded by [%s] by x[%i-%i] y[%i-%i]", zox_get_name(dragged), b.x, b.y, b.z, b.w)

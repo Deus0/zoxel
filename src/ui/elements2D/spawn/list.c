@@ -35,6 +35,9 @@ static inline int2 calculate_header_size(
     };
 }
 
+
+// TODO: Set scrollbar visible/invisible based on list count
+// TODO: spawn list panel, and scrollbar as children of list entity
 entity spawn_list(
     ecs *world,
     const LayoutParentData canvas_data,
@@ -43,14 +46,19 @@ entity spawn_list(
     const SpawnList list_data
 ) {
 
-    zox_instance(element_data.prefab)
+    zox_instance(element_data.prefab);
     set_element_spawn_data(
         world,
         e,
         canvas_data,
         parent_data,
-        element_data);
+        element_data
+    );
+    if (element_data.render_disabled) {
+        zox_set(e, RenderDisabled, { element_data.render_disabled });
+    }
     zox_name("list");
+    zox_set(e, ListVisible, { list_data.visible_count });
     zox_set(e, ListMargins, { list_data.margins });
     zox_set(e, ListPadding, { list_data.padding });
     zox_set(e, Color, { list_data.fill });
@@ -66,21 +74,16 @@ entity spawn_list(
     };
 
     for (int i = 0; i < list_data.count; i++) {
+        byte visible = (i >= 0 && i < list_data.visible_count);
         SpawnListElement child_data = list_data.elements[i];
         ElementSpawnData child_element_data = {
             .prefab = prefab_button,
             .layer = element_data.layer + 1,
             .anchor = float2_half,
-            .render_disabled = !(i >= 0 && i < list_data.visible_count),
+            .render_disabled = !visible,
         };
-        /*if (is_scrollbar) {
-            child_element_data.position.x -= (scrollbar_width + scrollbar_margins * 2) / 2;
-        }*/
-        // BUTTONS
         entity child = 0;
         if (child_data.type == 0) {
-            // position_y -= element_height + list_data.spacing;
-            //child_element_data.position.y = position_y;
             SpawnTextData child_text_data = {
                 .text = child_data.text,
                 .font_size = list_data.font_size,
@@ -96,21 +99,21 @@ entity spawn_list(
                 .fill = button_fill,
                 .outline = button_outline,
             };
-            child = spawn_button(world,
+            child = spawn_button(
+                world,
                 canvas_data,
                 child_parent_data,
                 child_element_data,
                 child_text_data,
-                child_button_data);
+                child_button_data
+            );
             if (child_data.on_click.value) {
                 zox_set(child, ClickEvent, { child_data.on_click.value });
             }
             zox_add_tag(child, ZextLabel);
 
-        } else {
-            //position_y -= list_data.slider_height + list_data.spacing;
-            //child_element_data.position.y = position_y;
-            // SLIDERS
+        } else if (child_data.type == 1) {
+            // zox_log("Spawning Slider %s v[%i]", child_data.text, visible);
             child_element_data.prefab = prefab_slider;
             child_element_data.size = (int2) {
                 element_data.size.x - list_data.slider_padding,
@@ -140,6 +143,6 @@ entity spawn_list(
         }
         add_to_Children(&children, child);
     }
-    zox_set_ptr(e, Children, children)
+    zox_set_ptr(e, Children, children);
     return e;
 }

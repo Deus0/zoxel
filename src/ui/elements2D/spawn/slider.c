@@ -12,7 +12,16 @@ entity2 spawn_slider(
     zox_instance(element_data.prefab);
     zox_name("slider");
     zox_set(e, SliderLabel, { slider_data.name });
-    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+    set_element_spawn_data(
+        world,
+        e,
+        canvas_data,
+        parent_data,
+        element_data
+    );
+    if (element_data.render_disabled) {
+        zox_set(e, RenderDisabled, { element_data.render_disabled });
+    }
     Children children = (Children) { 0, NULL };
 
     LayoutParentData new_parent_data = {
@@ -23,7 +32,8 @@ entity2 spawn_slider(
 
     // spawn handle
     int layout_x = -element_data.size.x / 2 + (int) (element_data.size.x * slider_data.value);
-    entity handle = spawn_handle(world,
+    entity handle = spawn_handle(
+        world,
         canvas_data,
         new_parent_data,
         (ElementSpawnData) {
@@ -31,9 +41,10 @@ entity2 spawn_slider(
             .layer = element_data.layer + 2,
             .position = (int2) { layout_x, 0 },
             .size = (int2) { handle_width, element_data.size.y },
-            .render_disabled = element_data.render_disabled,
             .anchor = float2_half,
-        });
+            .render_disabled = element_data.render_disabled,
+        }
+    );
     zox_set(handle, SlideBounds, { slider_data.bounds })
     add_to_Children(&children, handle);
 
@@ -50,6 +61,7 @@ entity2 spawn_slider(
             .layer = element_data.layer + 1,
             .anchor = (float2) { 0.5f, 0.5f },
             .position = int2_zero,
+            .render_disabled = element_data.render_disabled,
         },
         .zext = {
             .text = slider_data.name,

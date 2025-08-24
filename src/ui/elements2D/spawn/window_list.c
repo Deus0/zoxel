@@ -6,6 +6,7 @@ entity spawn_window_list(
     const byte header_font_size,
     SpawnListElement* elements,
     byte elements_count,
+    byte visible_count,
     byte list_font_size
 ) {
     const byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
@@ -37,15 +38,17 @@ entity spawn_window_list(
 
     // # List #
     SpawnList list_data = (SpawnList) {
-        .elements = elements,
+        .visible_count = visible_count,
         .count = elements_count,
-        .visible_count = elements_count,
+        .elements = elements,
         .font_size = list_font_size,
         .fill = button_fill,
         .outline = button_outline,
         .button_padding = (byte2) { 32, 16 },
         .padding = (byte2) { 18, 24 },
         .margins = (byte2) { 64, 32 },
+        .slider_height = 64,
+        .slider_padding = 64,
     };
 
     // Our window again, spawn using list size
@@ -60,9 +63,10 @@ entity spawn_window_list(
         list_size.y + header_height
     };
 
-    Children children = (Children) { 0 };
-    window_data.children = &children;
+    Children window_children = (Children) { 0 };
+    window_data.children = &window_children;
 
+    // Spawn our Window
     const entity e = spawn_window2(
         world,
         canvas_data,
@@ -71,9 +75,9 @@ entity spawn_window_list(
         &window_data
     );
 
-    // finish our list
-    ElementSpawnData list_element_data = {
-        .prefab = prefab_list,
+    // Spawn Scrollview
+    ElementSpawnData scrollview_data = {
+        .prefab = prefab_element_invisible,
         .position = (int2) {
             0,
             -header_height / 2
@@ -82,17 +86,35 @@ entity spawn_window_list(
         .anchor = float2_half,
         .layer = window_layer + 1,
     };
-    const entity list = spawn_list(
+    Children scrollview_children = { 0 };
+    entity scrollview = spawn_scrollview(
         world,
         canvas_data,
         (LayoutParentData) { .e = e },
+        scrollview_data,
+        &scrollview_children,
+        list_data.visible_count,
+        list_data.count
+    );
+    add_to_Children(&window_children, scrollview);
+    zox_set_ptr(e, Children, window_children);
+
+    // Spawn our list
+    ElementSpawnData list_element_data = {
+        .prefab = prefab_list,
+        .size = list_size,
+        .anchor = float2_half,
+        .layer = window_layer + 2,
+    };
+    const entity list = spawn_list(
+        world,
+        canvas_data,
+        (LayoutParentData) { .e = scrollview },
         list_element_data,
         list_data
     );
-    add_to_Children(window_data.children, list);
-
-    zox_set_ptr(e, Children, children);
-
+    add_to_Children(&scrollview_children, list);
+    zox_set_ptr(scrollview, Children, scrollview_children);
     zox_muter(player, ElementLinks, pelements);
     add_to_ElementLinks(pelements, e);
     zox_set(e, ElementHolder, { player });

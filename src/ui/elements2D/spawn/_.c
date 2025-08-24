@@ -11,6 +11,7 @@
 #include "slider.c"
 #include "scrollbar_handle.c"
 #include "scrollbar.c"
+#include "scrollview.c"
 #include "header_old.c"
 #include "window_old.c"
 #include "header.c"

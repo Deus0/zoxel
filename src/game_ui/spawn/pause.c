@@ -30,6 +30,7 @@ entity spawn_menu_paused(
         header_font_size,
         elements,
         elements_count,
+        elements_count,
         list_font_size
     );
 

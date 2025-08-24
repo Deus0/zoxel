@@ -40,103 +40,10 @@ entity spawn_main_menu(
         header_font_size,
         elements,
         elements_count,
+        elements_count,
         list_font_size
     );
     zox_name("main_menu");
     zox_add_tag(e, MenuMain);
     return e;
-
-
-    // # Window #
-    /*LayoutParentData canvas_data = {
-        .e = canvas,
-        .size = zox_gett_value(canvas, LayoutSize),
-    };
-    ElementSpawnData window_element_data = {
-        .prefab = prefab_window,
-        .anchor = float2_half,
-        .layer = window_layer,
-    };
-    LayoutParentData window_parent_data = {
-        .e = canvas_data.e,
-        .size = canvas_data.size,
-        .position = int2_half(canvas_data.size),
-    };
-    SpawnWindow2 window_data = {
-        .header_text = header_label,
-        .header_font_size = header_font_size,
-        .header_padding = (byte2) { 24, 8 },
-        .is_scrollbar = 0,
-    };
-    // we need to calculate header size too
-    int2 header_size = calculate_header_size(
-        strlen(header_label),
-        window_data.header_font_size,
-        window_data.header_padding);
-    int header_height = header_size.y;*/
-
-    /*SpawnList list_data = (SpawnList) {
-        .elements = elements,
-        .count = elements_count,
-        .visible_count = elements_count,
-        .font_size = list_font_size,
-        .fill = button_fill,
-        .outline = button_outline,
-        .button_padding = (byte2) { 32, 16 },
-        .padding = (byte2) { 18, 24 },
-        .margins = (byte2) { 64, 32 },
-    };
-
-    // Our window again, spawn using list size
-    // calculate size
-    int2 list_size = calculate_list_size(
-        calculate_list_max_characters(list_data),
-        list_data
-    );
-    // we use the bigger size out of list and header widths
-    window_element_data.size = (int2) {
-        int_max(list_size.x, header_size.x),
-        list_size.y + header_height
-    };
-
-    Children children = (Children) { 0 };
-    window_data.children = &children;
-    const entity e = spawn_window2(
-        world,
-        canvas_data,
-        window_parent_data,
-        &window_element_data,
-        &window_data
-    );
-
-    // finish our list
-    LayoutParentData list_parent_data = {
-        .e = e,
-        // .size = window_element_data.size,
-        // .position = window_element_data.position_in_canvas,
-    };
-    ElementSpawnData list_element_data = {
-        .prefab = prefab_list,
-        .position = (int2) {
-            0,
-            -header_height / 2
-        },
-        .size = list_size,
-        .anchor = float2_half,
-        .layer = window_layer + 1,
-    };
-    const entity list = spawn_list(
-        world,
-        canvas_data,
-        list_parent_data,
-        list_element_data,
-        list_data
-    );
-    add_to_Children(window_data.children, list);
-
-    zox_set_ptr(e, Children, children);
-
-    zox_muter(player, ElementLinks, pelements);
-    add_to_ElementLinks(pelements, e);
-    zox_set(e, ElementHolder, { player });*/
 }

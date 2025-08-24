@@ -13,14 +13,14 @@ void SlideEventSystem(iter *it) {
         zox_sys_i(SlideBounds, slideBounds)
         zox_sys_i(DraggableState, draggableState)
         zox_sys_i(DraggerLink, draggerLink)
-        zox_sys_i(LayoutConstraints, draggableLimits)
+        zox_sys_i(LayoutConstraints, limits)
         zox_sys_i(LayoutPosition, pixelPosition)
         if (!draggableState->value || !slideEvent->value) {
             continue;
         }
-        int total_width = draggableLimits->value.y - draggableLimits->value.x;
+        int total_width = limits->value.y - limits->value.x;
         // this is between 0 and 1
-        float slide_value = - (draggableLimits->value.x - pixelPosition->value.x) / (float) total_width;
+        float slide_value = - (limits->value.x - pixelPosition->value.x) / (float) total_width;
         // slideBounds is the new bounds
         slide_value = (slide_value * slideBounds->value.y) - slideBounds->value.x;
 

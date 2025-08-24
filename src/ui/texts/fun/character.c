@@ -158,31 +158,6 @@ int2 calculate_zigel_position(
     return zigel_position;
 }
 
-// For reusing a zigel, set all positions again to position entire text
-void set_zigel_position(
-    ecs *world,
-    const TextData *textData,
-    const entity e,
-    const int data_index,
-    const int font_size,
-    const byte text_alignment,
-    const byte2 text_padding,
-    float2 anchor,
-    const int2 parent_position,
-    const int2 parent_size,
-    const int2 canvas_size
-) {
-    const int2 pixel_position = calculate_zigel_position(
-        textData->value,
-        textData->length,
-        data_index, font_size,
-        text_alignment,
-        text_padding,
-        default_line_padding
-    );
-    zox_set(e, LayoutPosition, { pixel_position });
-}
-
 // a wrapper for spawn_zigel, also sets position for text character
 entity spawn_zext_zigel(
     ecs* world,

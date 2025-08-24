@@ -6,14 +6,18 @@ entity spawn_header3(
     const SpawnTextData zext,
     const SpawnHeaderData header
 ) {
-    zox_instance(element_data.prefab)
+    zox_instance(element_data.prefab);
+    zox_name("header");
     set_element_spawn_data(
         world,
         e,
         canvas_data,
         parent_data,
-        element_data);
-    zox_name("header");
+        element_data
+    );
+    if (element_data.render_disabled) {
+        zox_set(e, RenderDisabled, { element_data.render_disabled });
+    }
     zox_set(e, DraggedLink, { parent_data.e });
     Children children = (Children) { 0 };
 

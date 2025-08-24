@@ -37,7 +37,7 @@ entity spawn_zext(
     }
 
     zox_instance(data->element.prefab);
-    // zox_name("zext")
+    // zox_name("zext");
     zox_set(e, RenderDisabled, { data->element.render_disabled });
     zox_set(e, TextSize, { data->zext.font_size });
     zox_set(e, TextResolution, { font_resolution });
@@ -82,6 +82,10 @@ entity spawn_zext(
         float2_zero, // position2,
         int2_zero // element_canvas_position
     );
+    return e;
+}
+
+
 
     /*
     Children children = (Children) { 0 };
@@ -132,5 +136,3 @@ entity spawn_zext(
     }
     zox_set_ptr(e, Children, children);
     */
-    return e;
-}

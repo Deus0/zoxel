@@ -4,7 +4,16 @@ entity3 spawn_frame(
 ) {
     zox_instance(data.element.prefab);
     zox_name("frame");
-    set_element_spawn_data(world, e, data.canvas, data.parent, data.element);
+    set_element_spawn_data(
+        world,
+        e,
+        data.canvas,
+        data.parent,
+        data.element
+    );
+    if (data.element.render_disabled) {
+        zox_set(e, RenderDisabled, { data.element.render_disabled });
+    }
     zox_set(e, Color, { data.texture.fill_color });
     zox_set(e, OutlineColor, { data.texture.outline_color });
     LayoutParentData canvas_data = data.canvas;

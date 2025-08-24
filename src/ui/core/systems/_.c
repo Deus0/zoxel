@@ -80,7 +80,7 @@ void define_systems_elements_core(ecs *world) {
         [out] layouts2.WindowToTop,
         [out] WindowsLayers,
         [out] WindowsCount,
-        [none] Canvas);
+        [none] layouts2.Canvas);
     zox_system(WindowLayerSystem, EcsOnLoad,
         [in] SetWindowLayer,
         [in] layouts2.CanvasLink,
@@ -131,7 +131,7 @@ void define_systems_elements_core(ecs *world) {
             [out] layouts2.LayoutSize,
             [out] layouts2.LayoutPositionDirty,
             [out] layouts2.LayoutSizeDirty,
-            [none] Canvas
+            [none] layouts2.Canvas
         );
     }
     // all ui

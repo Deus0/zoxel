@@ -1,8 +1,9 @@
 #include "drag.c"
 #include "bar.c"
-#include "scrollbar.c"
+#include "scrolling.c"
 #include "tooltip.c"
 #include "slide_event.c"
+#include "list_render_dirty.c"
 
 void define_systems_elements2D(ecs *world) {
     zox_system(
@@ -20,6 +21,14 @@ void define_systems_elements2D(ecs *world) {
         [in] layouts2.LayoutSize,
         [in] hierarchys.ParentLink,
         [none] ScrollbarButton
+    );
+    zox_system(
+        ListRenderDirtySystem,
+        EcsPostUpdate,
+        [in] layouts2.ListDirty,
+        [in] layouts2.ListStart,
+        [in] layouts2.ListVisible,
+        [in] hierarchys.Children
     );
     zox_system(
         Elementbar2System,

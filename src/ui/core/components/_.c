@@ -1,6 +1,5 @@
 zox_tag(Element);
 zox_tag(Element2D);
-zox_tag(Canvas);
 zox_tag(ElementRaycaster);
 zox_tag(ElementBillboard);
 zox_tag(CanvasOverlay);
@@ -58,7 +57,6 @@ entity get_linked_canvas(ecs* world, entity e) {
 void define_components_elements_core(ecs *world) {
     zoxd_tag(Element);
     zoxd_tag(Element2D);
-    zoxd_tag(Canvas);
     zoxd_tag(ElementRaycaster);
     zoxd_tag(CanvasOverlay);
     zoxd_tag(Window);

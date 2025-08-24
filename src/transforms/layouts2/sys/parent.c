@@ -35,6 +35,7 @@ void set_child_canvas_position(
                 parent_size,
                 position,
                 anchor);
+            // NOTE: we pass canvas position down recursively
             cposition = canvas_position->value;
         }
     }
@@ -103,17 +104,13 @@ void LayoutParentPositionSystem(iter *it) {
         }
 
         int2 position = layout_position->value;
-        /*anchor_element_position2(
-            &position,
-            anchor->value,
-            parent_size
-        );*/ // layout_size->value);
         canvas_position->value = get_element_pixel_positionv(
             parent_position,
             parent_size,
             position,
             anchor->value
         );
+
         zox_sys_e();
         set_child_canvas_position(
             world,

@@ -135,13 +135,12 @@ entity spawn_ui_list(
             canvas,
             (int2) { -(scrollbar_width / 2) - scrollbar_margins, 0 },
             header_layer,
-            int2_zero,
             pixel_size,
             scrollbar_width,
             scrollbar_margins,
-            canvas_size,
             max_elements,
-            elements_count
+            elements_count,
+            elements_count != max_elements
         );
         children.value[is_header] = scrollbar;
     }
