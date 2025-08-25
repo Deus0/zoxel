@@ -1,4 +1,9 @@
-void resize_text3D(ecs *world, Children *children, const TextData *textData, Zigel3DData zigel_data) {
+void resize_text3D(
+    ecs *world,
+    Children *children,
+    const TextData *textData,
+    Zigel3DData zigel_data
+) {
     // no need to resize / reposition text if same size
     if (children->length == textData->length) {
         return;

@@ -12,7 +12,9 @@ void AnimateTextSystem(iter *it) {
         animateZext->value -= delta_time;
         if (animateZext->value <= 0.0) {
             animateZext->value += zext_animation_speed;
-            if (animateZext->value <= -zext_animation_speed) animateZext->value = 0;
+            if (animateZext->value <= -zext_animation_speed) {
+                animateZext->value = 0;
+            }
             if (zextDirty->value == 0) {
                 const int index = rand() % textData->length;
                 textData->value[index] = 1 + rand() % 52;

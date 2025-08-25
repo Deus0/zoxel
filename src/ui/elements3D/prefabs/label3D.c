@@ -21,22 +21,29 @@ entity spawn_label3D(
         zox_log("invalid text_data prefab in spawn_label3D\n")
         return 0;
     }
-    zox_instance(data.prefab)
-    zox_name("label3D")
-    if (data.ui_holder) {
-        zox_set(e, UIHolderLink, { data.ui_holder })
-        zox_set(e, UITrail, { { 0, data.trail_offset, 0 } })
-    }
-    zox_set(e, RenderDisabled, { data.render_disabled })
+    zox_instance(data.prefab);
+    zox_name("label3D");
+    zox_set(e, RenderDisabled, { data.render_disabled });
+
     if (!is_color_null(data.base_color)) {
-        zox_set(e, Color, { data.base_color })
+        zox_set(e, Color, { data.base_color });
     }
+
+    Children children = (Children) { 0, NULL };
+
+    // sub text
     text_data.position = (float3) { 0, 0, element3D_depth_difference };
     zigel_data.position = text_data.position;
     text_data.parent = e;
     const entity text = spawn_text3D(world, text_data, zigel_data);
-    Children *children = &((Children) { 0, NULL });
-    add_to_Children(children, text);
-    zox_set(e, Children, { children->length, children->value })
+    add_to_Children(&children, text);
+
+    zox_set_ptr(e, Children, children);
+
+    if (data.ui_holder) {
+        zox_set(e, UIHolderLink, { data.ui_holder });
+        zox_set(e, UITrail, { { 0, data.trail_offset, 0 } });
+    }
+
     return e;
 }

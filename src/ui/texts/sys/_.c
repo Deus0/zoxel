@@ -1,16 +1,58 @@
-#include "text2D_resize_system.c"
-#include "animate_text_system.c"
-#include "zext_background_system.c"
-#include "zext_parent_background_system.c"
+#include "resize.c"
+#include "text_panel.c"
+#include "update.c"
+#include "animate.c"
 zox_increment_system_with_reset(TextDirty, zext_update_end);
 
 void define_systems_texts(ecs *world) {
     zoxd_system_increment(TextDirty, [none] Zext);
-    zox_system(AnimateTextSystem, zox_pipelines_zext_textures,
+    zox_system(
+        AnimateTextSystem,
+        zox_pipelines_zext_textures,
         [out] AnimateZext,
         [out] texts.TextDirty,
-        [out] texts.TextData)
-    zox_system_1(Text2DResizeSystem, EcsPreStore,
+        [out] texts.TextData
+    );
+    zox_system(
+        TextUpdateSystem,
+        EcsOnUpdate,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [in] hierarchys.Children,
+        [none] texts.Zext
+    );
+    if (!headless) {
+        zox_system(
+            ZextParentBackgroundSystem,
+            zox_pipelines_zext_backgrounds,
+            [in] texts.TextDirty,
+            [in] texts.TextData,
+            [in] texts.TextSize,
+            [in] TextPadding,
+            [in] rendering.MeshAlignment,
+            [in] hierarchys.ParentLink,
+            [none] Zext
+        );
+        zox_system(
+            ZextBackgroundSystem,
+            zox_pipelines_zext_backgrounds,
+            [in] texts.TextDirty,
+            [in] texts.TextData,
+            [in] texts.TextSize,
+            [in] TextPadding,
+            [in] rendering.MeshAlignment,
+            [in] layouts2.CanvasLink,
+            [out] layouts2.LayoutSize,
+            [out] rendering.TextureSize,
+            [out] textures.GenerateTexture,
+            [out] rendering.MeshVertices2D,
+            [out] rendering.MeshDirty,
+            [none] Zext
+        );
+    }
+    zox_system_1(
+        TextResizeSystem,
+        EcsPreStore,
         [in] texts.TextData,
         [in] texts.TextSize,
         [in] TextPadding,
@@ -27,29 +69,6 @@ void define_systems_texts(ecs *world) {
         [out] rendering.RenderDisabled,
         [out] hierarchys.Children,
         [none] Zext,
-        [none] Text2D)
-    if (!headless) {
-        zox_system(ZextParentBackgroundSystem, zox_pipelines_zext_backgrounds,
-            [in] texts.TextDirty,
-            [in] texts.TextData,
-            [in] texts.TextSize,
-            [in] TextPadding,
-            [in] rendering.MeshAlignment,
-            // [in] layouts2.CanvasLink,
-            [in] hierarchys.ParentLink,
-            [none] Zext)
-        zox_system(ZextBackgroundSystem, zox_pipelines_zext_backgrounds,
-            [in] texts.TextDirty,
-            [in] texts.TextData,
-            [in] texts.TextSize,
-            [in] TextPadding,
-            [in] rendering.MeshAlignment,
-            [in] layouts2.CanvasLink,
-            [out] layouts2.LayoutSize,
-            [out] rendering.TextureSize,
-            [out] textures.GenerateTexture,
-            [out] rendering.MeshVertices2D,
-            [out] rendering.MeshDirty,
-            [none] Zext)
-    }
+        [none] Text2D
+    );
 }

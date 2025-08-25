@@ -105,44 +105,49 @@ void spawn_text2D_zigels(
 }
 
 //! When ui text updates, spawn/destroy font entities
-void Text2DResizeSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TextData)
-    zox_sys_in(TextSize)
-    zox_sys_in(TextPadding)
-    zox_sys_in(Layer2D)
-    zox_sys_in(CanvasPosition)
-    zox_sys_in(LayoutSize)
-    zox_sys_in(MeshAlignment)
-    zox_sys_in(FontOutlineColor)
-    zox_sys_in(FontFillColor)
-    zox_sys_in(FontThickness)
-    zox_sys_in(FontOutlineThickness)
-    zox_sys_in(TextResolution)
-    zox_sys_in(TextDirty)
-    zox_sys_out(RenderDisabled)
-    zox_sys_out(Children)
+void TextResizeSystem(iter *it) {
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TextData);
+    zox_sys_in(TextSize);
+    zox_sys_in(TextPadding);
+    zox_sys_in(Layer2D);
+    zox_sys_in(CanvasPosition);
+    zox_sys_in(LayoutSize);
+    zox_sys_in(MeshAlignment);
+    zox_sys_in(FontOutlineColor);
+    zox_sys_in(FontFillColor);
+    zox_sys_in(FontThickness);
+    zox_sys_in(FontOutlineThickness);
+    zox_sys_in(TextResolution);
+    zox_sys_in(TextDirty);
+    zox_sys_out(RenderDisabled);
+    zox_sys_out(Children);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(TextDirty, zextDirty)
-        zox_sys_i(TextData, text_data)
-        zox_sys_i(TextSize, textSize)
-        zox_sys_i(TextPadding, textPadding)
-        zox_sys_i(Layer2D, layer2D)
-        zox_sys_i(CanvasPosition, canvasPosition)
-        zox_sys_i(LayoutSize, pixelSize)
-        zox_sys_i(MeshAlignment, meshAlignment)
-        zox_sys_i(FontOutlineColor, fontOutlineColor)
-        zox_sys_i(FontFillColor, fontFillColor)
-        zox_sys_i(FontThickness, fontThickness)
-        zox_sys_i(FontOutlineThickness, fontOutlineThickness)
-        zox_sys_i(TextResolution, textResolution)
-        zox_sys_o(Children, children)
-        zox_sys_o(RenderDisabled, render_disabled)
-        if (zextDirty->value != zext_update_update) {
+
+        zox_sys_e();
+        zox_sys_i(TextDirty, dirty);
+        zox_sys_i(TextData, text_data);
+        zox_sys_i(TextSize, textSize);
+        zox_sys_i(TextPadding, textPadding);
+        zox_sys_i(Layer2D, layer2D);
+        zox_sys_i(CanvasPosition, canvasPosition);
+        zox_sys_i(LayoutSize, pixelSize);
+        zox_sys_i(MeshAlignment, meshAlignment);
+        zox_sys_i(FontOutlineColor, fontOutlineColor);
+        zox_sys_i(FontFillColor, fontFillColor);
+        zox_sys_i(FontThickness, fontThickness);
+        zox_sys_i(FontOutlineThickness, fontOutlineThickness);
+        zox_sys_i(TextResolution, textResolution);
+        zox_sys_o(Children, children);
+        zox_sys_o(RenderDisabled, render_disabled);
+
+        if (dirty->value != zext_update_update) {
             continue;
         }
+
         const entity canvas = get_root_canvas(world, e);
         if (!zox_valid(canvas)) {
             zox_log_error("no canvas found on text")
@@ -190,4 +195,4 @@ void Text2DResizeSystem(iter *it) {
             text_data
         );
     }
-} zoxd_system2(Text2DResizeSystem);
+} zoxd_system2(TextResizeSystem);

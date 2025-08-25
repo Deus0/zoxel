@@ -1,4 +1,8 @@
-void update_text3D(ecs *world, const Children *children, const TextData *textData) {
+void update_text(
+    ecs *world,
+    const Children* children,
+    const TextData* textData
+) {
     // calculate checks for spaces new lines etc and removes those
     const int new_children_length = calculate_total_zigels(textData->value, textData->length);
     const int update_count = int_min(children->length, new_children_length);
@@ -40,8 +44,8 @@ void TextUpdateSystem(iter *it) {
         } else {
             zox_log_text("+ updating [%s] text [null]",  zox_get_name(it->entities[i]))
         }
-        update_text3D(world, children, textData);
+        update_text(world, children, textData);
         // zox_sys_e()
         // zox_log("+ updating text [%s]", zox_get_name(e))
     }
-} zoxd_system(TextUpdateSystem)
+} zoxd_system2(TextUpdateSystem);

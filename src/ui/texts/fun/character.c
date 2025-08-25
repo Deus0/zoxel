@@ -12,7 +12,9 @@ int get_zext_max_x(
             if (x > max_x) max_x = x;
         }
     }
-    if (x > max_x) max_x = x;
+    if (x > max_x) {
+        max_x = x;
+    }
     return max_x;
 }
 
