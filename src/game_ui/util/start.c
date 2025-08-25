@@ -9,7 +9,7 @@ void menu_start_triggered(
         return;
     }
     zox_delete(menu)
-    spawn_main_menu(world, player, canvas, game_name);
+    spawn_main_menu(world, player, game_name);
     const double volume = (0.6 + 0.4 * (rand() % 101) / 100.0) * get_volume_sfx();
     spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[16], 2.8f, volume);
 }

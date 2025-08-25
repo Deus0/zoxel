@@ -10,17 +10,15 @@ void set_element_properties(
     const float2 position2,
     const int2 pixel_positionv
 ) {
-    zox_set(e, Anchor, { anchor })
-    zox_set(e, Layer2D, { layer })
-    zox_set(e, LayoutSize, { pixel_size })
-    zox_set(e, LayoutPosition, { pixel_position })
-    // zox_set(e, Position2, { position2 }) // set this inside pixel position system
-    // zox_set(e, CanvasPosition, { pixel_positionv }) // set this inside system too
-    zox_set(e, CanvasLink, { canvas })
-    zox_set(e, ParentLink, { parent })
+    zox_set(e, Anchor, { anchor });
+    zox_set(e, Layer2D, { layer });
+    zox_set(e, LayoutSize, { pixel_size });
+    zox_set(e, LayoutPosition, { pixel_position });
+    zox_set(e, CanvasLink, { canvas });
+    zox_set(e, ParentLink, { parent });
     if (canvas == parent) {
         on_child_added(world, canvas, e);
-        zox_set(canvas, WindowToTop, { e })
+        zox_set(canvas, WindowToTop, { e });
     }
 }
 

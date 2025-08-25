@@ -1,17 +1,17 @@
-#ifndef zox_elements3D
-#define zox_elements3D
+#ifndef zox_elements3
+#define zox_elements3
 
 zox_tag(Element3D);
 zox_tag(Text3D);
 zoxc_float3(UITrail);
 zoxc_float(Text3DScale);
-#include "data/_.c"
-#include "settings/_.c"
-#include "util/_.c"
-#include "prefabs/_.c"
-#include "util/popup.c"
-#include "systems/_.c"
-#include "debug/_.c"
+#include "dat/_.c"
+#include "set/_.c"
+#include "fun/_.c"
+#include "pre/_.c"
+#include "fun/popup.c"
+#include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Elements3)
     zoxd_tag(Element3D);

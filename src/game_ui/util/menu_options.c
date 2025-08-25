@@ -1,4 +1,4 @@
-entity spawn_main_menu(ecs*, const entity, const entity, const char*);
+entity spawn_main_menu(ecs*, const entity, const char*);
 
 void button_event_menu_main(ecs *world, const ClickEventData *event) {
     zox_geter_value(event->clicker, CanvasLink, entity, canvas)
@@ -8,7 +8,7 @@ void button_event_menu_main(ecs *world, const ClickEventData *event) {
         return;
     }
     zox_delete(menu)
-    spawn_main_menu(world, event->clicker, canvas, game_name);
+    spawn_main_menu(world, event->clicker, game_name);
 }
 
 void button_event_volume_increase(ecs *world, const ClickEventData *event) {

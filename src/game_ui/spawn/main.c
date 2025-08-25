@@ -2,9 +2,9 @@
 entity spawn_main_menu(
     ecs *world,
     const entity player,
-    const entity canvas,
     const char *header_label
 ) {
+    zox_geter_value(player, CanvasLink, entity, canvas);
     const byte window_layer = 3;
     const byte header_font_size = 80;
     byte list_font_size = 48;

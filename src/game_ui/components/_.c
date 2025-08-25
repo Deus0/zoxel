@@ -5,6 +5,7 @@ zox_tag(MenuPaused);
 zox_tag(MenuGame);
 zox_tag(MenuGameTouch);
 zox_tag(MenuStart);
+zox_tag(MenuLoad);
 zox_tag(FPSDisplay);
 zox_tag(QuadsCountLabel);
 zox_tag(GameDebugLabel);
@@ -25,6 +26,7 @@ void define_components_game_ui(ecs *world) {
     zoxd_tag(MenuGame);
     zoxd_tag(MenuGameTouch);
     zoxd_tag(MenuStart);
+    zoxd_tag(MenuLoad);
     zoxd_tag(FPSDisplay);
     zoxd_tag(QuadsCountLabel);
     zoxd_tag(GameDebugLabel);

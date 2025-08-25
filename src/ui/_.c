@@ -4,8 +4,8 @@
 #include "core/_.c"
 #include "zigels/_.c"
 #include "texts/_.c"
-#include "elements2D/_.c"
-#include "elements3D/_.c"
+#include "elements2/_.c"
+#include "elements3/_.c"
 #include "touch/_.c"
 
 zox_begin_module(Elements)

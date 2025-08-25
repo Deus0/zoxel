@@ -7,3 +7,4 @@
 #include "touch.c"
 #include "game.c"
 #include "start.c"
+#include "load_game.c"

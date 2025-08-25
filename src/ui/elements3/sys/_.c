@@ -20,7 +20,9 @@ void define_systems_elements3D(ecs *world) {
         [in] hierarchys.Children,
         [none] rendering.MeshVertices
     );
-    zox_system_1(Text3DResizeSystem, EcsOnUpdate,
+    zox_system_1(
+        Text3DResizeSystem,
+        EcsOnUpdate,
         [in] texts.TextData,
         [in] zigels.FontOutlineColor,
         [in] zigels.FontFillColor,
