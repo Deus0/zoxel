@@ -16,7 +16,7 @@
     }
 
 #define zox_define_links_component2(name, ...)\
-    zox_define_component(name);\
+    zoxd(name);\
     zox_observe(on_destroyed_##name, EcsOnRemove, __VA_ARGS__)
 
 #define zox_define_links_component(name)\

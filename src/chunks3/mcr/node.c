@@ -140,7 +140,7 @@ void clone_##T(\
 }
 
 #define zoxd_node(T)\
-    zox_define_component(T)\
+    zoxd(T)\
     ecs_set_hooks(world, T, {\
         .ctor = ecs_ctor(T),\
         .move = ecs_move(T),\

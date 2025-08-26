@@ -33,5 +33,5 @@ void define_components_elements2D(ecs *world) {
     zoxd_byte(IconIndex);
     zoxd_entity(FramePrefabLink);
     zoxd_float2(SlideBounds);
-    zox_define_component(SliderLabel);
+    zoxd(SliderLabel);
 }

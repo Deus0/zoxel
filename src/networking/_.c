@@ -56,8 +56,8 @@ zox_begin_module(Networking)
     zoxd_tag(NetPlayer);
     zoxd_tag(PacketReciever);
     zoxd_tag(PacketSender);
-    zox_define_component(NetAddress);
-    zox_define_component(TargetNetAddress);
+    zoxd(NetAddress);
+    zoxd(TargetNetAddress);
     zox_define_component_int(NetPort);
     zox_define_component_int(TargetNetPort);
     zox_define_memory_component(PacketData);

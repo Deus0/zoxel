@@ -18,7 +18,7 @@ zox_begin_module(EditorUI)
     zoxd_tag(EditorElement);
     zoxd_tag(HierarchyUI);
     zoxd_tag(InspectorLabel);
-    zox_define_component(HierarchyUIDirty);
+    zoxd(HierarchyUIDirty);
     zox_define_systems_editor(world);
     add_hook_spawn_prefabs(spawn_prefabs_editor);
 zox_end_module(EditorUI)

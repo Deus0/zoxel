@@ -9,5 +9,5 @@ void define_components_streaming(ecs *world) {
     zoxd_tag(StreamedChunk);
     zox_define_component_int3(StreamPoint);
     zoxd_byte(StreamDirty);
-    zox_define_component(StreamEndEvent);
+    zoxd(StreamEndEvent);
 }

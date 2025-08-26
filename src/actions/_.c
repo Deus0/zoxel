@@ -12,7 +12,7 @@ zoxc_byte(ActionIndex);
 
 zox_begin_module(Actions)
     zoxd_userdata(Action);
-    zox_define_component(ActionIndex);
+    zoxd(ActionIndex);
     add_hook_spawn_prefabs(spawn_prefabs_actions);
     define_systems_actions(world);
     add_hook_spawned_character3D(&spawn_character_actions);

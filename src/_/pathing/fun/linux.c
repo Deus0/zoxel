@@ -1,5 +1,3 @@
-
-
 #ifndef zox_windows
 
 char* get_base_path_native() {

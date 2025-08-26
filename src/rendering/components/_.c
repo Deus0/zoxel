@@ -77,7 +77,7 @@ void define_components_rendering(ecs *world) {
     zoxd_entity(MaterialLink);
     zoxd_int2(TextureSize);
     zoxd_entity(InstanceLink);
-    zox_define_component(MaterialInstancedGPULink);
+    zoxd(MaterialInstancedGPULink);
     zox_define_component_w_dest(ShaderGPULink);
     zox_define_component_w_dest(MaterialGPULink);
     zox_define_component_w_dest(TextureGPULink);

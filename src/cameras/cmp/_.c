@@ -45,9 +45,9 @@ void define_components_cameras(ecs *world) {
     zoxd_entity(CameraLink);
     zoxd_entity(CameraTarget);
     zoxd_entity(CameraFollowLink);
-    zox_define_component(ProjectionMatrix);
-    zox_define_component(ViewMatrix);
-    // zox_define_component(ViewProjectionMatrix)
+    zoxd(ProjectionMatrix);
+    zoxd(ViewMatrix);
+    // zoxd(ViewProjectionMatrix)
     zox_define_component_float4(ScreenToCanvas);
     zox_define_component_array(FrustumCorners);
     zox_define_component_array(CameraPlanes);

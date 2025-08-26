@@ -10,7 +10,7 @@ zoxc(LineThickness, float);
 
 zox_begin_module(Lines)
     zoxd_tag(Line);
-    zox_define_component(LineThickness);
+    zoxd(LineThickness);
     // zox_import_module(Lines2D)
     zox_import_module(Lines3);
 zox_end_module(Lines)

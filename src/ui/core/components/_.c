@@ -69,7 +69,7 @@ void define_components_elements_core(ecs *world) {
     zox_define_component_float(ElementBar);
     zoxd_int2(ElementMargins);
     zoxd_float2(ElementBarSize);
-    zox_define_component(NavigatorTimer);
+    zoxd(NavigatorTimer);
     zoxd_byte(HeaderHeight);
     zoxd_entity(WindowRaycasted);
     zoxd_entity(WindowTarget);
@@ -90,12 +90,12 @@ void define_components_elements_core(ecs *world) {
     zoxd_entity(DraggerLink);
     zoxd_entity(DraggedLink);
     zoxd_text(TooltipText);
-    zox_define_component(UIHolderLink);
+    zoxd(UIHolderLink);
     zox_define_entities_component(ElementLinks);
     zox_define_component_entities_child(ElementHolder);
-    zox_define_component(ClickEvent);
-    zox_define_component(TooltipEvent);
-    zox_define_component(SlideEvent);
+    zoxd(ClickEvent);
+    zoxd(TooltipEvent);
+    zoxd(SlideEvent);
 
     // States
     zoxd_byte(DraggableState);

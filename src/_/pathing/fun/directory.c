@@ -25,7 +25,10 @@ void free_files(FileList *fileList) {
 
 
 // without extension
-char* get_filename(const char* filepath, const byte keep_extension) {
+char* get_filename(
+    const char* filepath,
+    const byte keep_extension
+) {
     // Find the last occurrence of the directory separator
     const char *last_slash = strrchr(filepath, char_slash);
     const char *filename = (last_slash) ? last_slash + 1 : filepath;

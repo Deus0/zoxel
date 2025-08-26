@@ -14,10 +14,10 @@ zox_begin_module(Rendering3)
     zoxd_tag(MeshBasic3D);
     zoxd_tag(TexturedMesh3D);
     zoxd_tag(SkeletonMesh);
-    zox_define_component(MaterialTextured3D);
-    zox_define_component(MaterialColored3D);
-    zox_define_component(MaterialVoxInstance);
-    zox_define_component(MaterialBasic3D);
+    zoxd(MaterialTextured3D);
+    zoxd(MaterialColored3D);
+    zoxd(MaterialVoxInstance);
+    zoxd(MaterialBasic3D);
     define_systems_basics3D(world);
     add_hook_load_shader(&spawn_shaders_basics3D);
 zox_end_module(Rendering3)

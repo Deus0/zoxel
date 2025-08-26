@@ -23,5 +23,5 @@ void define_components_sounds(ecs_world_t *world) {
     zox_define_component_int(SoundFrequencyIndex);;
     // zox_define_memory_component(SoundData);
     zox_define_component_w_dest(SoundData);;
-    zox_define_component(SoundDataRef);;
+    zoxd(SoundDataRef);;
 }

@@ -82,6 +82,7 @@ zoxc_byte(GenericEvent);
 zoxc_byte(EntityInitialize);
 zoxc_int2(ScreenDimensions);
 zoxc_byte(SpawnChance);
+zoxc_fixed_string(SaveGamePath, 512);
 
 void define_components_generic(ecs_world_t *world) {
     // ids
@@ -92,7 +93,7 @@ void define_components_generic(ecs_world_t *world) {
     zoxd_tag(DestroyInFrame);
     zox_define_component_double(EventTime);
     zoxd_entity(EventInput);
-    zox_define_component(TimedEvent);
+    zoxd(TimedEvent);
     // physics
     zox_define_component_float3(Bounds3D);
     zox_define_component_float6(Position3DBounds);
@@ -105,4 +106,5 @@ void define_components_generic(ecs_world_t *world) {
     zoxd_byte(EntityInitialize);
     zoxd_int2(ScreenDimensions);
     zoxd_byte(SpawnChance);
+    zoxd_fixed_string(SaveGamePath);
 }

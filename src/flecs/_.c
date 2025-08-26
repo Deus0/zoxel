@@ -7,6 +7,7 @@ byte running = 1;
 #include "macros/_.c"
 #include "data/_.c"
 #include "components/_.c"
+#include "com/_.c"
 #include "util/_.c"
 #include "systems/_.c"
 

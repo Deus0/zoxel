@@ -33,7 +33,7 @@ void define_components_chunks(ecs *world) {
     zox_define_component_int3(ChunkSize);
     zoxd_byte(GenerateChunk);
     zoxd_byte(BlocksSpawned);
-    zox_define_component(ChunkNeighbors);
+    zoxd(ChunkNeighbors);
     zox_define_links_component(ChunkLink);
     zoxd_byte(NodeDepth);
     // Voxels

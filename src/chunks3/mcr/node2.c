@@ -109,7 +109,7 @@ ECS_DTOR(name, ptr, {\
 })
 
 #define zoxd_node(name)\
-    zox_define_component(name)\
+    zoxd(name)\
     ecs_set_hooks(world, name, {\
         .ctor = ecs_ctor(name),\
         .dtor = ecs_dtor(name),\

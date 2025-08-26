@@ -2,7 +2,7 @@
     zoxc(name, float6)
 
 #define zox_define_component_float6(name)\
-    zox_define_component(name)\
+    zoxd(name)\
     add_to_entity_array_d(component_ids_float6, ecs_id(name));
 
 #define zox_component_string_float6(component) \

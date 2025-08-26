@@ -13,5 +13,5 @@ void define_components_collisions3(ecs* world) {
     zox_define_component_float(BasicCollider);
     zox_define_component_float(SphereRadius);
     zox_define_component_float3(CollisionDistance);
-    zox_define_component(OverlapEvent);
+    zoxd(OverlapEvent);
 }

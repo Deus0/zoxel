@@ -26,8 +26,8 @@ zox_begin_module(Lines3)
     zoxd_tag(Line3D);
     zoxd_tag(CubeLines);
     zoxd_tag(DebugCubeCorner);
-    zox_define_component(DebugCubeLines);
-    zox_define_component(LineData3D);
+    zoxd(DebugCubeLines);
+    zoxd(LineData3D);
     zox_define_component_float(CubeLinesThickness);
     zox_define_component_float(DebugCubeShrink);
     define_systems_lines3(world);

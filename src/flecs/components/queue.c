@@ -64,5 +64,5 @@ ECS_COPY(T, dst, src, { \
 
 
 #define zoxd_queue(T)\
-    zox_define_component(T);\
+    zoxd(T);\
     zox_define_hooks(T);

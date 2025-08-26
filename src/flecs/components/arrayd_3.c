@@ -141,7 +141,7 @@ void clone_##T(T* dst, const T* src) {\
 
 
 #define zox_define_memory_component(T)\
-    zox_define_component(T)\
+    zoxd(T)\
     ecs_set_hooks_id(world, ecs_id(T), &(ecs_type_hooks_t) { \
         .ctor = ecs_ctor(T), \
         .dtor = ecs_dtor(T), \

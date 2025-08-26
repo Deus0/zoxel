@@ -135,7 +135,7 @@ void dispose_system_##name(iter *it) {\
 }
 
 #define zoxd_node(name)\
-    zox_define_component(name)\
+    zoxd(name)\
     ecs_set_hooks(world, name, {\
         .ctor = ecs_ctor(name),\
         .move = ecs_move(name),\

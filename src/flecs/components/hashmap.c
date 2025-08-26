@@ -34,7 +34,7 @@ extern uint zox_stats_terrain_chunks;
     }
 
 #define zox_define_hashmap_component2(name, ...)\
-    zox_define_component(name)\
+    zoxd(name)\
     zox_observe(on_destroyed_##name, EcsOnRemove, __VA_ARGS__)
 
 #define zox_define_hashmap_component(name)\

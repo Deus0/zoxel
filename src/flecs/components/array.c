@@ -7,7 +7,7 @@
 
 // placeholder for later
 #define zox_define_component_array(name)\
-    zox_define_component(name)
+    zoxd(name)
 
 #define zoxc_array_l(name, type, capacity) \
     const ulong name##_length = capacity; \
@@ -19,4 +19,4 @@
 
 // placeholder for later
 #define zox_define_component_array_l(name)\
-    zox_define_component(name)
+    zoxd(name)

@@ -36,5 +36,5 @@ void define_components_game_ui(ecs *world) {
     zoxd_byte(HitType);
     zox_define_component_int(QuadsCount);
     zox_define_component_double(FPSDisplayTicker);
-    zox_define_component(DebugLabelData);
+    zoxd(DebugLabelData);
 }

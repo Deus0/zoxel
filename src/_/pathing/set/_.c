@@ -1,5 +1,8 @@
 #define zox_log_android_io
 
+#define max_path_characters 512
+#define io_path_size 512
+
 #ifdef zox_windows
     #define character_slash "\\"
     #define char_slash '\\'

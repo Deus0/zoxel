@@ -111,6 +111,17 @@ entity spawn_list(
                 zox_set(child, ClickEvent, { child_data.on_click.value });
             }
             zox_add_tag(child, ZextLabel);
+            if (child_data.save_path) {
+                SaveGamePath path = { };
+
+                size_t len = strlen(child_data.save_path);
+                if (len >= 512) len = 512 - 1;
+                memcpy(path.value, child_data.save_path, len);
+                path.value[len] = '\0';
+
+                zox_set_ptr(child, SaveGamePath, path);
+                free(child_data.save_path);
+            }
 
         } else if (child_data.type == 1) {
             // zox_log("Spawning Slider %s v[%i]", child_data.text, visible);

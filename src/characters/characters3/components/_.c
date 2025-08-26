@@ -11,7 +11,7 @@ void define_components_characters3(ecs_world_t* world) {
     zoxd_tag(SaveCharacter);
     zoxd_byte(CharactersChanceMax);
     zoxd_byte(Character3Type);
-    zox_define_component(CharacterSaveHash);
+    zoxd(CharacterSaveHash);
     zoxd_entity(Character3Link);
     zoxd_entity(Character3PrefabLink);
 }

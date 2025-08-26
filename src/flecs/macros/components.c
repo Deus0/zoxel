@@ -7,7 +7,7 @@
     } name;\
     zoxc_custom(name)
 
-#define zox_define_component(name)\
+#define zoxd(name)\
     ECS_COMPONENT_DEFINE(world, name);\
     zox_statistics_components++;
 
@@ -23,14 +23,14 @@
     zoxc_custom(name)
 
 #define zox_define_component_w_dest(name)\
-    zox_define_component(name)\
+    zoxd(name)\
     ecs_set_hooks(world, name, { .dtor = ecs_dtor(name) });
 
 #define zox_define_destruction(name)\
     ecs_set_hooks(world, name, { .dtor = ecs_dtor(name) });
 
 #define zox_define_entity_parent_component2(name, ...)\
-    zox_define_component(name)\
+    zoxd(name)\
     zox_observe(on_destroyed##_##name, EcsOnRemove, __VA_ARGS__)
 
 #define zox_define_entity_parent_component(name) \

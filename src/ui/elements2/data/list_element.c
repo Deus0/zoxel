@@ -1,6 +1,7 @@
 typedef struct {
     byte type;
     const char* text;
+    char* save_path;
     // sliders
     float value;
     float2 value_bounds;

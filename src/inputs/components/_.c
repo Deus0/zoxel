@@ -35,7 +35,7 @@ void define_components_inputs(ecs *world) {
     zoxd_tag(Touchscreen);
     zoxd_tag(Finger);
     zoxd_tag(Mouse);
-    zox_define_component(Keyboard);
+    zoxd(Keyboard);
     zoxd_byte(DeviceDisabled);
     zoxd_byte(ZeviceDisabled);
     zoxd_byte(ZevicePointer);

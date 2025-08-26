@@ -21,6 +21,6 @@ void define_components_apps(ecs_world_t *world) {
     zoxd_int2(WindowPositionRestore);
     zoxd_entity(AppLink);
 #ifdef zox_vulkan
-    zox_define_component(VulkanSurface);
+    zoxd(VulkanSurface);
 #endif
 }

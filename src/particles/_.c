@@ -6,7 +6,7 @@ zoxc(ParticleEmitRate, int);
 #include "particles3D/_.c"
 
 zox_begin_module(Particles)
-    zox_define_component(ParticleEmitRate);
+    zoxd(ParticleEmitRate);
     zox_import_module(Particles2D)
     zox_import_module(Particles3D)
 zox_end_module(Particles)

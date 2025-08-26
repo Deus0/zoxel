@@ -2,7 +2,7 @@
     zoxc(name, lint)
 
 #define zoxd_lint(name)\
-    zox_define_component(name)\
+    zoxd(name)\
     add_to_entity_array_d(component_ids_lint, ecs_id(name));
 
 #define zox_component_string_lint(component) \
