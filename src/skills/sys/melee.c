@@ -2,25 +2,29 @@
 extern ecs_entity_t spawn_pickup_block(ecs_world_t*, const float3, const ecs_entity_t);
 
 void MeleeSystem(ecs_iter_t *it) {
+
     const float popup_spawn_y = 0.18f;
     const double volume = get_volume_sfx();
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(UserLink)
-    zox_sys_in(SkillDamage)
-    zox_sys_in(SkillDamageMax)
-    zox_sys_in(SkillRange)
-    zox_sys_in(SkillResourceLink)
-    zox_sys_in(SkillCost)
-    zox_sys_out(SkillActive)    // use state systems
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(UserLink);
+    zox_sys_in(SkillDamage);
+    zox_sys_in(SkillDamageMax);
+    zox_sys_in(SkillRange);
+    zox_sys_in(SkillResourceLink);
+    zox_sys_in(SkillCost);
+    zox_sys_out(SkillActive);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(UserLink, userLink)
-        zox_sys_i(SkillDamage, skillDamage)
-        zox_sys_i(SkillDamageMax, skillDamageMax)
-        zox_sys_i(SkillRange, skillRange)
-        zox_sys_i(SkillResourceLink, skillResourceLink)
-        zox_sys_i(SkillCost, skillCost)
-        zox_sys_o(SkillActive, skillActive)
+
+        zox_sys_i(UserLink, userLink);
+        zox_sys_i(SkillDamage, skillDamage);
+        zox_sys_i(SkillDamageMax, skillDamageMax);
+        zox_sys_i(SkillRange, skillRange);
+        zox_sys_i(SkillResourceLink, skillResourceLink);
+        zox_sys_i(SkillCost, skillCost);
+        zox_sys_o(SkillActive, skillActive);
 
         const ecs_entity_t user = userLink->value;
         if (!skillActive->value) {

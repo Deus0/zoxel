@@ -9,7 +9,7 @@ zoxc_float(SkillRange);
 zoxc_float(SkillCost);
 zoxc_entity(SkillResourceLink);
 
-void define_components_skills(ecs_world_t *world) {
+void define_components_skills(ecs* world) {
     zoxd_tag(Melee);
     zoxd_tag(Aura);
     zoxd_tag(Poison);

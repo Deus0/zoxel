@@ -4,21 +4,25 @@
 #endif
 
 void DamageAuraSystem(ecs_iter_t *it) {
-    zox_sys_query()
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(UserLink)
-    zox_sys_in(SkillActive)
-    zox_sys_in(SkillDamage)
-    zox_sys_in(SkillRange)
-    zox_sys_in(Color)
+
+    zox_sys_query();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(UserLink);
+    zox_sys_in(SkillActive);
+    zox_sys_in(SkillDamage);
+    zox_sys_in(SkillRange);
+    zox_sys_in(Color);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(UserLink, userLink)
-        zox_sys_i(SkillActive, skillActive)
-        zox_sys_i(SkillDamage, skillDamage)
-        zox_sys_i(SkillRange, skillRange)
-        zox_sys_i(Color, colorr)
+
+        zox_sys_e();
+        zox_sys_i(UserLink, userLink);
+        zox_sys_i(SkillActive, skillActive);
+        zox_sys_i(SkillDamage, skillDamage);
+        zox_sys_i(SkillRange, skillRange);
+        zox_sys_i(Color, colorr);
+
         if (!zox_alive(userLink->value) || !skillActive->value || !skillDamage->value || !skillRange->value) {
             continue;
         }
