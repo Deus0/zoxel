@@ -28,11 +28,26 @@ byte load_##name(const char *game, const char *filename, T *data) {\
     return filesize > 0;\
 }\
 \
+void save2_##name(const char *game_path, const char *filename, T *data) {\
+    char *path = join_path(game_path, filename);\
+    FILE *file = fopen(path, "wb");\
+    if (file == NULL) {\
+        zox_log_error("[save2] error saving [%s]", path)\
+        perror("Error opening file for writing");\
+        free(path); \
+        return;\
+    }\
+    fwrite(data, sizeof(T), 1, file);\
+    fclose(file);\
+    free(path); \
+    /*zox_log(" > saved to [%s]\n", path)*/\
+}\
+\
 byte load2_##name(const char *game_path, const char *filename, T *data) {\
     char *path = join_path(game_path, filename);\
     FILE *file = fopen(path, "rb");\
     if (file == NULL) {\
-        zox_log_error("Error opening file [%s] for reading", path);\
+        zox_log_error("[load2] Error opening file [%s]", path);\
         free(path); \
         return 0;\
     }\

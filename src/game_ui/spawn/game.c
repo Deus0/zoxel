@@ -7,10 +7,15 @@ entity spawn_menu_game(
     const entity player,
     const entity character
 ) {
+    if (!zox_valid(character) || !zox_valid(player)) {
+        zox_log_error("[!spawn_menu_game] Issue with character or player, invalid");
+        return 0;
+    }
     const entity canvas = zox_get_value(player, CanvasLink)
     const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     // make layout2 instead of element_invisible
-    const entity e = spawn_layout2_on_canvas(world,
+    const entity e = spawn_layout2_on_canvas(
+        world,
         prefab,
         canvas,
         int2_zero,
@@ -43,8 +48,9 @@ entity spawn_menu_game(
     spawn_menu_game_stats(world, e, player, &children);
 
     zox_set_ptr(e, Children, children)
+
     // link to character
-    zox_muter(character, ElementLinks, elementLinks)
+    zox_muter(character, ElementLinks, elementLinks);
     add_to_ElementLinks(elementLinks, e);
     zox_set(e, ElementHolder, { character })
 

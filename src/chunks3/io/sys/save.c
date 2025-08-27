@@ -1,8 +1,3 @@
-// TODO: Save VoxelNode to disk when VoxelNodeDirty - realm/terrain_<ID>/chunk_id
-// Later: cache save path, for now just make it
-// todo: make a key that loads chunk data and refreshes for now
-// TODO: Add error checks here when writing/reading
-
 byte save_voxel_node(FILE* out, const VoxelNode* node) {
     if (!node) {
         return 1;
@@ -36,16 +31,21 @@ byte save_voxel_node(FILE* out, const VoxelNode* node) {
 }
 
 void Chunk3SaveSystem(iter *it) {
+
+    zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeEdited);
     zox_sys_in(VoxelNodeDirty);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkPosition);
+
     for (int i = 0; i < it->count; i++) {
+
         zox_sys_i(VoxelNodeEdited, edited);
         zox_sys_i(VoxelNodeDirty, dirty);
         zox_sys_i(VoxelNode, node);
         zox_sys_i(ChunkPosition, position);
+
         if (dirty->value != zox_dirty_active || !edited->value) {
             continue; // these shouldn't be here
         }
@@ -53,11 +53,14 @@ void Chunk3SaveSystem(iter *it) {
         char filename[128];
         get_chunk_filename(filename, position->value);
         // sprintf(filename, "chunk_%i_%i_%i.dat", position->value.x, position->value.y, position->value.z);
-        char path[io_path_size];
-        get_save_filepath(game_name, filename, path, sizeof(path));
+        //char path[io_path_size];
+        //get_save_filepath(game_name, filename, path, sizeof(path));
         // zox_log("Saving chunk to file: %s", path);
+        zox_geter(local_realm, SaveGamePath, game_path);
+        char* path = join_path(game_path->value, filename);
 
         FILE* file = fopen(path, "wb");
+        free(path);
         if (file == NULL) {
             zox_log_error("Error saving [%s]", path);
             continue;

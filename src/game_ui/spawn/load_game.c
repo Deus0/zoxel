@@ -35,7 +35,6 @@ void button_event_load_confirm(
     zox_set_ptr(realm, SaveGamePath, path->value);
 
     // todo: spawn realm data like voxels/stats/skills when starting new game
-    // load2_realm(game_name, "seed.dat", &realm_save);
     load2_realm(path->value, "seed.dat", &realm_save);
 
     set_noise_seed(realm_save.seed);

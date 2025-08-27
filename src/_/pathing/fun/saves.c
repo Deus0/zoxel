@@ -21,11 +21,13 @@ byte get_save_filepath(
     return 1;
 }
 
-byte has_save_game_file(const char *game, const char *filename) {
-    char path[max_path_characters];
-    get_save_filepath(game, filename, path, sizeof(path));
+byte has_save_game_file(const char* game_path, const char* filename) {
+    char *path = join_path(game_path, filename);
+    // char path[max_path_characters];
+    // get_save_filepath(game, filename, path, sizeof(path));
     FILE *file = fopen(path, "rb");
-    if (file != NULL) {
+    free(path);
+    if (file) {
         fclose(file);
         return 1;
     }

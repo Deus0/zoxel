@@ -16,6 +16,7 @@ zoxc_entities(ChunkEntities)
 #include "dat/_.c"
 #include "com/_.c"
 #include "chunks/_.c"
+#include "io/_.c"
 #include "lighting/_.c"
 #include "structures/_.c"
 #include "animations/_.c"
@@ -32,6 +33,7 @@ zox_begin_module(Chunks3)
     zox_define_entities_component(ChunkEntities);
     define_components_chunks(world);
     define_systems_chunks(world);
+    define_systems_chunksio(world);
     // hooks
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
     zox_module_dispose(module_dispose_chunks3);

@@ -1,7 +1,3 @@
-bool file_exists(const char *path) {
-    struct stat buffer;
-    return stat(path, &buffer) == 0;
-}
 
 byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
     if (fread(&node->value, sizeof(byte), 1, in) != 1) {
@@ -40,13 +36,19 @@ byte load_chunk(
     char filename[128];
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
-    char path[io_path_size];
-    get_save_filepath(game_name, filename, path, sizeof(path));
+
+    zox_geter(local_realm, SaveGamePath, game_path);
+    char* path = join_path(game_path->value, filename);
+
+    // char path[io_path_size];
+    // get_save_filepath(game_name, filename, path, sizeof(path));
     if (!file_exists(path)) {
+        free(path);
         return 0;
     }
     // check if file exist
     FILE* file = fopen(path, "rb");
+    free(path);
     if (!file) {
         zox_log_error("Failed to open filepath [%s]", path);
         return 0;

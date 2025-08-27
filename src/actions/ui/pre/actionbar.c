@@ -3,6 +3,10 @@ entity spawn_player_menu_actions(
     const entity player
 ) {
     zox_geter_value(player, CharacterLink, entity, character);
+    if (!zox_valid(character)) {
+        zox_log_error("[!spawn_player_menu_actions] invalid character");
+        return 0;
+    }
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     zox_geter_value(character, ActionIndex, byte, selected);

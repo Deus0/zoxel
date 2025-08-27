@@ -32,15 +32,11 @@ void link_camera_to_terrain(ecs *world, const entity player) {
 
     // if character
     if (game_rule_attach_to_character) {
-        byte is_new_game = 1;
-#ifndef zox_disable_save_games
-        is_new_game = !has_save_game_file(game_name, "player.dat");
-#endif
-        // entity character;
+
+        zox_geter(realm, SaveGamePath, path);
+        byte is_new_game = !has_save_game_file(path->value, "player.dat");
         if (!is_new_game) {
-
             game_start_player_load(world, player);
-
         } else {
             game_start_player_new(world, player);
         }
@@ -60,16 +56,24 @@ void link_camera_to_terrain(ecs *world, const entity player) {
 
 // spawn character and set camera to streaming terrain
 void player_start_game3D(ecs *world, const entity player) {
-    const entity camera = zox_get_value(player, CameraLink)
+    zox_geter_value(player, GameLink, entity, game);
+    zox_geter_value(game, RealmLink, entity, realm);
+    zox_geter_value(player, CameraLink, entity, camera);
     float3 spawn_position = (float3) { 8, 8.5f, 8 };
     float3 spawn_euler = float3_zero;
     float4 spawn_rotation = quaternion_identity;
-#ifndef zox_disable_save_games
-    const byte is_new_game = !has_save_game_file(game_name, "player.dat");
+
+    zox_geter(realm, SaveGamePath, path);
+    byte is_new_game = !has_save_game_file(game_name, "player.dat");
     if (!is_new_game) {
-        load_character_p(&spawn_position, &spawn_euler, &spawn_rotation);
+        load_character_p(
+            world,
+            realm,
+            player,
+            &spawn_position,
+            &spawn_euler,
+            &spawn_rotation);
     }
-#endif
     zox_set(camera, Position3D, { spawn_position })
     zox_set(camera, Euler, { spawn_euler })
     zox_set(camera, Rotation3D, { spawn_rotation })

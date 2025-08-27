@@ -13,11 +13,11 @@ entity game_start_player_load(
     if (!camera) {
         return 0;
     }
-    const entity game = zox_get_value(player, GameLink)
+    zox_geter_value(player, GameLink, entity, game);
     if (!game) {
         return 0;
     }
-    const entity realm = zox_get_value(game, RealmLink)
+    zox_geter_value(game, RealmLink, entity, realm);
     if (!realm) {
         return 0;
     }
@@ -29,6 +29,9 @@ entity game_start_player_load(
     TerrainPlace spawn_place;
     spawn_place.chunk = 0;
     load_character_p(
+        world,
+        realm,
+        player,
         &spawn_place.position,
         &spawn_place.euler,
         &spawn_place.rotation);

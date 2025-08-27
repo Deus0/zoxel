@@ -1,8 +1,12 @@
-void load_camera_e(ecs_world_t *world, const ecs_entity_t camera) {
-#ifdef zox_disable_save_games
-    return;
-#endif
-    load_camera(game_name, "camera.dat", &camera_save);
+void load_camera_e(
+    ecs *world,
+    const entity realm,
+    const entity camera
+) {
+
+    zox_geter(realm, SaveGamePath, path);
+
+    load2_camera(path->value, "camera.dat", &camera_save);
     zox_set(camera, Euler, { camera_save.camera_euler })
     zox_set(camera, Rotation3D, { quaternion_from_euler(camera_save.camera_euler) })
     zox_set(camera, LocalRotation3D, { camera_save.camera_rotation_local })

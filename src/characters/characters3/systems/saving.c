@@ -7,15 +7,20 @@ void CharacterSaveSystem(iter *it) {
     return;
 #endif
     const float precision_level = 10.0f;    // 100
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(Position3D)
-    zox_sys_in(Euler)
-    zox_sys_out(CharacterSaveHash)
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Position3D);
+    zox_sys_in(Euler);
+    zox_sys_out(CharacterSaveHash);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Position3D, position)
-        zox_sys_i(Euler, euler)
-        zox_sys_o(CharacterSaveHash, characterSaveHash)
+
+        zox_sys_e();
+        zox_sys_i(Position3D, position);
+        zox_sys_i(Euler, euler);
+        zox_sys_o(CharacterSaveHash, characterSaveHash);
+
         // character
         SaveDataCharacter data = {
             .position = position->value,
@@ -32,16 +37,25 @@ void CharacterSaveSystem(iter *it) {
         if (hash == characterSaveHash->value) {
             continue;
         }
-        characterSaveHash->value = hash;
-        save_player(game_name, "player.dat", &data);
+
+        zox_geter_value(e, TerrainLink, entity, terrain);
+        if (!terrain) zox_log_error("terrain link issue");
+        if (!terrain) continue;
+        zox_geter_value(terrain, RealmLink, entity, realm);
+        if (!terrain) zox_log_error("realm link issue");
+        if (!realm) continue;
+        zox_geter(realm, SaveGamePath, path);
+
+
+        save2_player(path->value, "player.dat", &data);
         // save camera - move this to camera save system
-        zox_sys_e()
-        zox_geter_value(e, CameraLink, ecs_entity_t, camera)
+        zox_geter_value(e, CameraLink, ecs_entity_t, camera);
         SaveDataCamera data2 = {
             .camera_euler = zox_gett_value(camera, Euler),
             .camera_rotation_local = zox_gett_value(camera, LocalRotation3D),
         };
-        save_camera(game_name, "camera.dat", &data2);
+        save2_camera(path->value, "camera.dat", &data2);
         // zox_log("+ new hash detected at [%fx%fx%f] - %lu", position->value.x, position->value.y, position->value.z, hash)
+        characterSaveHash->value = hash;
     }
 } zoxd_system(CharacterSaveSystem)
