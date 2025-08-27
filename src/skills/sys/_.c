@@ -22,13 +22,21 @@ void define_systems_skills(ecs_world_t *world) {
         [out] skills.SkillActive,
         [none] Aura
     );
-    zox_system(
+    /*zox_system(
         SkillActivateSystem,
         EcsOnUpdate,
         [in] users.Activate,
         [out] skills.SkillActive,
         [none] skills.Melee
+    );*/
+    zox_system(
+        SkillWarmupSystem,
+        EcsOnUpdate,
+        [in] users.WarmupState,
+        [out] skills.SkillActive
     );
+
+
 
     zox_filter(
         characters,

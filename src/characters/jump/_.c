@@ -21,7 +21,7 @@ zox_begin_module(Jumps)
     zoxd_byte(CanJump);
     zoxd_byte(JumpState);
     zoxd_byte(LandState);
-    zox_define_component_double(Jump);
+    zoxd_double(Jump);
     zoxd_byte(FlyMode);
     define_systems_jump(world);
 zox_end_module(Jumps)

@@ -66,7 +66,7 @@ zox_begin_module(Players)
     zoxd_tag(Player);
     zoxd_tag(PlayerCharacter);
     zoxd_byte(PlayerState);
-    zox_define_component_double(PlayerRespawn);
+    zoxd_double(PlayerRespawn);
     zoxd_entity(PlayerLink);
     zox_define_memory_component(PlayerLinks);
     zoxd_entity(PlayerPauseEvent);

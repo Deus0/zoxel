@@ -1,7 +1,7 @@
 const int character_skills_count = 8; // having blank items seems to b reak it
 
 // todo: take in npc spawn meta data, like location, biome, etc
-void spawn_character_skills(ecs_world_t *world, spawned_character3D_data *data) {
+void spawn_character_skills(ecs *world, spawned_character3D_data *data) {
     if (!data->p) {
         return;
     }
@@ -9,14 +9,14 @@ void spawn_character_skills(ecs_world_t *world, spawned_character3D_data *data) 
     if (test_all_skills && data->p) {
         skills_count = 16;
     }
-    SkillLinks *skills = &((SkillLinks) { 0, NULL });
-    initialize_SkillLinks(skills, skills_count);
-    if (!skills->value) {
+    SkillLinks skills = (SkillLinks) { 0 };
+    initialize_SkillLinks(&skills, skills_count);
+    if (!skills.value) {
         zox_log(" ! failed allocating memory for skills\n")
         return;
     }
-    for (int i = 0; i < skills->length; i++) {
-        skills->value[i] = 0; // blanks are item slots
+    for (int i = 0; i < skills.length; i++) {
+        skills.value[i] = 0; // blanks are item slots
     }
 
     int place_index = 0;
@@ -26,7 +26,7 @@ void spawn_character_skills(ecs_world_t *world, spawned_character3D_data *data) 
         zox_geter(gameLink->value, RealmLink, realmLink)
         zox_geter(realmLink->value, SkillLinks, realm_skills)
         for (int i = 0; i < realm_skills->length; i++) {
-            if (i >= skills->length) {
+            if (i >= skills.length) {
                 break;
             }
             const ecs_entity_t skill = realm_skills->value[i];
@@ -34,11 +34,11 @@ void spawn_character_skills(ecs_world_t *world, spawned_character3D_data *data) 
                 zox_log_error("skill invalid [%i]", i)
                 continue;
             }
-            skills->value[place_index++] = spawn_user_skill(world, skill, data->e);
+            skills.value[place_index++] = spawn_user_skill(world, skill, data->e);
         }
     }
 
-    zox_set(data->e, SkillLinks, { skills->length, skills->value })
+    zox_set_ptr(data->e, SkillLinks, skills);
 }
 
     /*if (meta_skill_aura_life) {

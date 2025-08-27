@@ -1,6 +1,7 @@
 // [none] Melee
 extern ecs_entity_t spawn_pickup_block(ecs_world_t*, const float3, const ecs_entity_t);
 
+// TODO: Check Resource Cost before warming up!
 void MeleeSystem(ecs_iter_t *it) {
 
     const float popup_spawn_y = 0.18f;

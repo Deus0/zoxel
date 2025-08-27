@@ -1,7 +1,7 @@
 #define zoxc_double(name) \
     zoxc(name, double)
 
-#define zox_define_component_double(name)\
+#define zoxd_double(name)\
 zoxd(name)\
 add_to_entity_array_d(component_ids_double, ecs_id(name));
 

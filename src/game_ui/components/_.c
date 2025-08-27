@@ -35,6 +35,6 @@ void define_components_game_ui(ecs *world) {
     zoxd_tag(MenuNewRealm);;
     zoxd_byte(HitType);
     zox_define_component_int(QuadsCount);
-    zox_define_component_double(FPSDisplayTicker);
+    zoxd_double(FPSDisplayTicker);
     zoxd(DebugLabelData);
 }

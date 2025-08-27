@@ -17,7 +17,7 @@ void define_components_sounds(ecs_world_t *world) {
     zoxd_byte(TriggerSound);;
     zoxd_byte(GenerateSound);;
     zoxd_byte(ProcessSound);;
-    zox_define_component_double(SoundLength);;
+    zoxd_double(SoundLength);;
     zox_define_component_float(SoundFrequency);;
     zox_define_component_float(SoundVolume);;
     zox_define_component_int(SoundFrequencyIndex);;

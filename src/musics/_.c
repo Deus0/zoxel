@@ -68,9 +68,9 @@ zox_begin_module(Musics)
     zoxd_byte(MusicNote);
     zoxd_byte(GenerateMusic);
     zoxd_byte(MusicEnabled);
-    zox_define_component_double(MusicTime);
-    zox_define_component_double(MusicSpeed);
-    zox_define_component_double(MusicLength);
+    zoxd_double(MusicTime);
+    zoxd_double(MusicSpeed);
+    zoxd_double(MusicLength);
     zox_define_entities_component(NoteLinks);
     // playlist
     zoxd_tag(Playlist);

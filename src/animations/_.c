@@ -37,11 +37,11 @@ zox_begin_module(Animations)
     zox_define_component_float3(OscillateDeltaPosition3D);
     // old
     zoxd_byte(AnimationState);
-    zox_define_component_double(AnimationDelay);
+    zoxd_double(AnimationDelay);
     zox_define_component_float4(EternalRotation);
     // single anim
-    zox_define_component_double(AnimationStart);
-    zox_define_component_double(AnimationLength);
+    zoxd_double(AnimationStart);
+    zoxd_double(AnimationLength);
     zox_define_component_float(AnimateSourceFloat);
     zox_define_component_float(AnimateTargetFloat);
     // sequencing

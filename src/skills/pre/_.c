@@ -9,7 +9,7 @@ ecs_entity_t prefab_poison;
 #include "aura.c"
 #include "poison.c"
 
-void spawn_prefabs_skills(ecs_world_t *world) {
+void spawn_prefabs_skills(ecs *world) {
     // skill prefab
     prefab_skill = spawn_prefab_skill(world);
     zox_prefab_set(prefab_skill, SkillActive, { 0 })

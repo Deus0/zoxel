@@ -98,29 +98,3 @@ void player_action_ui_move(
 void button_event_switch_action(ecs_world_t *world, const ClickEventData *event) {
     player_action_ui_move(world, event->clicker, 1);
 }
-
-/*byte get_character_action_index(ecs_world_t *world, const ecs_entity_t e) {
-    if (!zox_valid(e)) {
-        zox_log_error("character invalid")
-        return 255;
-    }
-    zox_geter(e, ElementLinks, elements)
-    find_array_element_with_tag(elements, MenuActions, actionbar)
-    if (!actionbar) {
-        return 255;
-    }
-    const Children *window_children = zox_get(actionbar, Children)
-    if (window_children->length < 2) {
-        return 255;
-    }
-    const Children *children = zox_get(window_children->value[1], Children)
-    for (int i = 0; i < children->length; i++) {
-        const ecs_entity_t child = children->value[i];
-        if (!zox_valid(child) || !zox_has(child, ActiveState)) {
-            continue;
-        } else if (zox_gett_value(child, ActiveState)) {
-            return i;
-        }
-    }
-    return 255;
-}*/

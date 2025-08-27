@@ -91,7 +91,7 @@ void define_components_generic(ecs_world_t *world) {
     zoxd_text(ZoxName);
     // timed
     zoxd_tag(DestroyInFrame);
-    zox_define_component_double(EventTime);
+    zoxd_double(EventTime);
     zoxd_entity(EventInput);
     zoxd(TimedEvent);
     // physics

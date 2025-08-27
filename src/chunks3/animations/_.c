@@ -13,7 +13,7 @@ void spawn_prefabs_voxel_animations(ecs *world) {
 }
 
 zox_begin_module(VoxelsAnimations)
-    zox_define_component_double(AnimateChunk);
+    zoxd_double(AnimateChunk);
     zox_filter(noise_chunks,
         [none] chunks3.NoiseChunk,
         [out] chunks3.GenerateChunk);

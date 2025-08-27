@@ -13,8 +13,8 @@ zoxc_double(DiedTime);
 
 zox_begin_module(Combat)
     zoxd_byte(Dead);
-    zox_define_component_double(DiedTime);
-    zox_define_component_double(LastCombatTime);
+    zoxd_double(DiedTime);
+    zoxd_double(LastCombatTime);
     zoxd_entity(CombatState);
     zoxd_entity(LastDamager);
     define_systems_combat(world);

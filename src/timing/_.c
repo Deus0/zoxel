@@ -11,9 +11,9 @@ zoxc_byte(TimerState);
 #include "systems/_.c"
 
 zox_begin_module(Timing)
-    zox_define_component_double(DestroyInTime);
-    zox_define_component_double(TimerTime);
-    zox_define_component_double(TimerRate);
+    zoxd_double(DestroyInTime);
+    zoxd_double(TimerTime);
+    zoxd_double(TimerRate);
     zoxd_byte(TimerState);
     define_systems_timing(world);
     initialize_time();

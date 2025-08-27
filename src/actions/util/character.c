@@ -1,6 +1,6 @@
 const int actions_count = 8; // 10; // having blank items seems to b reak it
 
-void spawn_character_actions(ecs_world_t *world, spawned_character3D_data *data) {
+void spawn_character_actions(ecs *world, spawned_character3D_data *data) {
     if (!data->p) {
         return;
     }
