@@ -22,9 +22,9 @@ void spawn_character_skills(ecs *world, spawned_character3D_data *data) {
     int place_index = 0;
     if (test_all_skills && data->p) {
         // get voxels
-        zox_geter(data->p, GameLink, gameLink)
-        zox_geter(gameLink->value, RealmLink, realmLink)
-        zox_geter(realmLink->value, SkillLinks, realm_skills)
+        zox_geter(data->p, GameLink, gameLink);
+        zox_geter(gameLink->value, RealmLink, realmLink);
+        zox_geter(realmLink->value, SkillLinks, realm_skills);
         for (int i = 0; i < realm_skills->length; i++) {
             if (i >= skills.length) {
                 break;

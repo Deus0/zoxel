@@ -56,7 +56,10 @@ void player_action_ui_move(
     }
     zox_geter(character, ActionLinks, actions);
     zox_geter_value_non_const(character, ActionIndex, byte, selected);
+
     selected = selected + direction >= 0 ? selected + direction : actions->length + (selected + direction);
+    if (selected >= actions->length) selected -= actions->length;
+
     zox_set(character, ActionIndex, { selected });
     spawn_sound_from_file_name(world, prefab_sound, "swap_action", 0, get_volume_sfx());
 

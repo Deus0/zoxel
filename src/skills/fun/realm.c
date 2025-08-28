@@ -41,25 +41,31 @@ void spawn_realm_skills(ecs_world_t *world, const ecs_entity_t realm) {
         }
     }
 
-    meta_skill_punch = spawn_skill_melee_t(world,
+    meta_skill_punch = spawn_skill_melee_t(
+        world,
         "punch",
         1,
         2,
         2,
         energy,
         1,
-        "punch");
+        "punch",
+        0.16f,
+        0.34f);
 
     // testing
 
-    ecs_entity_t mana_punch = spawn_skill_melee_t(world,
+    ecs_entity_t mana_punch = spawn_skill_melee_t(
+        world,
         "mana punch",
         2,
         6,
         4,
         mana,
         3,
-        "punch");
+        "punch",
+        1,
+        2);
     // zox_set(meta_skill_punch, TextureLink, { string_hashmap_get(files_hashmap_textures, new_string_data("punch")) })
 
     meta_skill_aura_death = spawn_skill_aura_t(world,
