@@ -126,7 +126,8 @@ void MeleeSystem(ecs_iter_t *it) {
             char popup_text[64];
             sprintf(popup_text, "%i", (int) floor(skill_damage));
             const color popup_color = (color) { 255, 0, 0, 255 };
-            spawn_popup3_easy(world,
+            spawn_popup3_easy(
+                world,
                 popup_text,
                 popup_color,
                 popup_position,

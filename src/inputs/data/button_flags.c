@@ -22,6 +22,10 @@ byte devices_get_is_pressed(byte value) {
     return value & zox_device_is_pressed;
 }
 
+byte devices_get_pressed(byte value) {
+    return value & zox_device_is_pressed;
+}
+
 byte devices_get_pressed_this_frame(byte value) {
     return value & zox_device_pressed_this_frame;
 }

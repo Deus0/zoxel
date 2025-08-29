@@ -29,13 +29,15 @@ void Player3DTriggerSystem(ecs_iter_t *it) {
                     const ecs_entity_t zevice = zevices->value[k];
                     if (zox_has(zevice, ZevicePointer)) {
                         zox_geter_value(zevice, ZevicePointer, byte, click);
-                        if (devices_get_pressed_this_frame(click)) {
+                        // if (devices_get_pressed_this_frame(click)) {
+                        if (devices_get_pressed(click)) {
                             is_triggered_a = 1;
                         }
                     }
                     if (zox_has(zevice, ZevicePointerRight)) {
                         zox_geter_value(zevice, ZevicePointerRight, byte, click);
-                        if (devices_get_pressed_this_frame(click)) {
+                        // if (devices_get_pressed_this_frame(click)) {
+                        if (devices_get_pressed(click)) {
                             is_triggered_b = 1;
                         }
                     }
@@ -69,10 +71,10 @@ void Player3DTriggerSystem(ecs_iter_t *it) {
                 }
             }
         }
-        if (is_triggered_a) {
+        if (is_triggered_a && !zox_gett_value(character, TriggerActionB)) {
             zox_set(character, TriggerActionB, { zox_dirty_trigger });
         }
-        if (is_triggered_b) {
+        if (is_triggered_b && !zox_gett_value(character, TriggerActionA)) {
             zox_set(character, TriggerActionA, { zox_dirty_trigger });
         }
     }

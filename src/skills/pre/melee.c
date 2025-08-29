@@ -17,6 +17,5 @@ entity spawn_prefab_melee(
     zox_prefab_set(e, CooldownState, { 0 });
     zox_prefab_set(e, WarmupTime, { 0.2 });
     zox_prefab_set(e, CooldownTime, { 0.3 });
-
     return e;
 }

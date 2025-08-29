@@ -52,42 +52,51 @@ void resize_text3D(
 // todo: split up into update system, and resize system
 // note: update system can be generically for 2D and 3D text
 void Text3DResizeSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TextData)
-    zox_sys_in(FontOutlineColor)
-    zox_sys_in(FontFillColor)
-    zox_sys_in(FontThickness)
-    zox_sys_in(TextDirty)
-    zox_sys_in(RenderDisabled)
-    zox_sys_in(Text3DScale)
-    zox_sys_in(TextSize)
-    zox_sys_out(Children)
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TextDirty);
+    zox_sys_in(TextData);
+    zox_sys_in(FontOutlineColor);
+    zox_sys_in(FontFillColor);
+    zox_sys_in(FontThickness);
+    zox_sys_in(RenderDisabled);
+    zox_sys_in(Text3DScale);
+    zox_sys_in(TextSize);
+    zox_sys_out(Children);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(TextDirty, zextDirty)
-        zox_sys_i(FontThickness, fontThickness)
-        zox_sys_i(FontFillColor, fontFillColor)
-        zox_sys_i(FontOutlineColor, fontOutlineColor)
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(Text3DScale, text3DScale)
-        zox_sys_i(TextSize, textSize)
-        zox_sys_i(TextData, textData)
-        zox_sys_o(Children, children)
-        if (zextDirty->value != zext_update_update) {
+
+        zox_sys_e();
+        zox_sys_i(TextDirty, dirty);
+        zox_sys_i(FontThickness, fontThickness);
+        zox_sys_i(FontFillColor, fontFillColor);
+        zox_sys_i(FontOutlineColor, fontOutlineColor);
+        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(Text3DScale, text3DScale);
+        zox_sys_i(TextSize, textSize);
+        zox_sys_i(TextData, textData);
+        zox_sys_o(Children, children);
+
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
+
         const int new_children_length = calculate_total_zigels(textData->value, textData->length);
         if (children->length == new_children_length) {
+            zox_log_error("same size [%s]", zox_get_name(e));
             continue;
         }
-        char *debug_text = convert_zext_to_text(textData->value, textData->length);
+
+        zox_log_error("new size [%s]", zox_get_name(e));
+        /*char *debug_text = convert_zext_to_text(textData->value, textData->length);
         if (debug_text) {
             zox_log_text3D("+ resizing text3D [%s] [%i:%i]", debug_text, children->length, new_children_length)
             free(debug_text);
         } else {
             zox_log_text3D("+ resizing text3D [null]")
-        }
+        }*/
+
         Zigel3DData zigel_data = {
             .prefab = prefab_zigel3D,
             .resolution = textSize->value, // 128,
@@ -98,6 +107,8 @@ void Text3DResizeSystem(iter *it) {
         zigel_data.outline_color = fontOutlineColor->value;
         zigel_data.render_disabled = renderDisabled->value;
         zigel_data.scale = text3DScale->value;
+
         resize_text3D(world, children, textData, zigel_data);
+
     }
-} zoxd_system(Text3DResizeSystem)
+} zoxd_system2(Text3DResizeSystem);

@@ -7,7 +7,10 @@ typedef struct {
     const char* text;
 } Text3DData;
 
-entity spawn_prefab_text3D(ecs *world, const entity prefab) {
+entity spawn_prefab_text3D(
+    ecs *world,
+    const entity prefab
+) {
     zox_prefab_child(prefab);
     zox_prefab_name("text3D");
     zox_add_tag(e, Zext);
@@ -16,20 +19,25 @@ entity spawn_prefab_text3D(ecs *world, const entity prefab) {
     zox_prefab_set(e, TextSize, { 0 });
     zox_prefab_set(e, TextResolution, { 0 });
     zox_prefab_set(e, TextPadding, { byte2_zero });
+    zox_prefab_set(e, TextData, { 0 });
     zox_prefab_set(e, TextDirty, { 0 });
     zox_prefab_set(e, ParentLink, { 0 });
     zox_prefab_set(e, FontOutlineColor, { { 255, 0, 0, 255 }});
     zox_prefab_set(e, FontFillColor, { { 0, 255, 0, 255 }});
     zox_prefab_set(e, FontThickness, { 1 });
     zox_prefab_set(e, FontOutlineThickness, { 1 });
-    zox_prefab_set(e, TextData, { 0, NULL });
-    zox_prefab_set(e, Children, { 0, NULL });
+    zox_prefab_set(e, Children, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Text3DScale, { 1 });
     return e;
 }
 
-float3 calculate_zigel3D_position(const float2 zigel3D_size, const int data_index, const int zigels_count, float scale) {
+float3 calculate_zigel3D_position(
+    const float2 zigel3D_size,
+    const int data_index,
+    const int zigels_count,
+    float scale
+) {
     if (scale == 0) {
         scale = 1;
     }

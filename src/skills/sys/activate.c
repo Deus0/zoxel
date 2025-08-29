@@ -20,7 +20,7 @@ void SkillWarmupSystem(ecs_iter_t *it) {
         zox_sys_o(SkillActive, skill_active);
         if (state->value == zox_dirty_active) {
             skill_active->value = 1;
-            zox_log("SkillWarmupSystem %i", state->value);
+            // zox_log("SkillWarmupSystem %i", state->value);
         }
     }
 } zoxd_system2(SkillWarmupSystem);

@@ -9,11 +9,11 @@ entity spawn_skill_melee(
     const float cost
 ) {
     const entity e = spawn_meta_skill(world, prefab, name);
-    zox_set(e, SkillDamage, { value })
-    zox_set(e, SkillDamageMax, { value_max })
-    zox_set(e, SkillRange, { range })
-    zox_set(e, SkillCost, { cost })
-    zox_set(e, SkillResourceLink, { resource })
+    zox_set(e, SkillDamage, { value });
+    zox_set(e, SkillDamageMax, { value_max });
+    zox_set(e, SkillRange, { range });
+    zox_set(e, SkillCost, { cost });
+    zox_set(e, SkillResourceLink, { resource });
     return e;
 }
 
@@ -29,7 +29,8 @@ entity spawn_skill_melee_t(
     const float warmup,
     const float cooldown
 ) {
-    const entity e = spawn_skill_melee(world,
+    const entity e = spawn_skill_melee(
+        world,
         prefab_skill_melee,
         name,
         value,

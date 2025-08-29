@@ -2,7 +2,7 @@
 #include "text_panel.c"
 #include "update.c"
 #include "animate.c"
-zox_increment_system_with_reset(TextDirty, zext_update_end);
+zox_increment_system_with_reset(TextDirty, zox_dirty_end);
 
 void define_systems_texts(ecs *world) {
     zoxd_system_increment(TextDirty, [none] Zext);

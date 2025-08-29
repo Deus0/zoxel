@@ -23,11 +23,11 @@ void define_systems_elements3D(ecs *world) {
     zox_system_1(
         Text3DResizeSystem,
         EcsOnUpdate,
+        [in] texts.TextDirty,
         [in] texts.TextData,
         [in] zigels.FontOutlineColor,
         [in] zigels.FontFillColor,
         [in] zigels.FontThickness,
-        [in] texts.TextDirty,
         [in] rendering.RenderDisabled,
         [in] Text3DScale,
         [in] texts.TextSize,

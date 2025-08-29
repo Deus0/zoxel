@@ -6,30 +6,34 @@ void ElementRenderSystem(iter *it) {
     byte is_rendering = 0;
     const float position_z = ((int) renderer_layer) * shader_depth_multiplier;
     zox_geter_value(material_textured2D, MaterialGPULink, uint, material_link)
-    zox_geter(material_textured2D, MaterialTextured2D, material_attributes)
-    zox_sys_begin()
-    zox_sys_in(Position2)
-    zox_sys_in(Rotation2D)
-    zox_sys_in(Scale1D)
-    zox_sys_in(Layer2D)
-    zox_sys_in(RenderDisabled)
-    zox_sys_in(Brightness)
-    zox_sys_in(Alpha)
-    zox_sys_in(MeshGPULink)
-    zox_sys_in(UvsGPULink)
-    zox_sys_in(TextureGPULink)
+    zox_geter(material_textured2D, MaterialTextured2D, material_attributes);
+
+    zox_sys_begin();
+    zox_sys_in(Position2);
+    zox_sys_in(Rotation2D);
+    zox_sys_in(Scale1D);
+    zox_sys_in(Layer2D);
+    zox_sys_in(RenderDisabled);
+    zox_sys_in(Brightness);
+    zox_sys_in(Alpha);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(UvsGPULink);
+    zox_sys_in(TextureGPULink);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(Position2, position2)
-        zox_sys_i(Rotation2D, rotation2D)
-        zox_sys_i(Scale1D, scale1D)
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(Layer2D, layer2D)
-        zox_sys_i(Brightness, brightness)
-        zox_sys_i(Alpha, alpha)
-        zox_sys_i(MeshGPULink, meshGPULink)
-        zox_sys_i(UvsGPULink, uvsGPULink)
-        zox_sys_i(TextureGPULink, textureGPULink)
+
+        zox_sys_e();
+        zox_sys_i(Position2, position2);
+        zox_sys_i(Rotation2D, rotation2D);
+        zox_sys_i(Scale1D, scale1D);
+        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(Layer2D, layer2D);
+        zox_sys_i(Brightness, brightness);
+        zox_sys_i(Alpha, alpha);
+        zox_sys_i(MeshGPULink, meshGPULink);
+        zox_sys_i(UvsGPULink, uvsGPULink);
+        zox_sys_i(TextureGPULink, textureGPULink);
+
         if (layer2D->value != renderer_layer || renderDisabled->value || get_root_canvas_camera(world, e) != renderer_camera || !meshGPULink->value.x || !meshGPULink->value.y || !uvsGPULink->value || !textureGPULink->value) {
             continue;
         }
@@ -65,4 +69,4 @@ void ElementRenderSystem(iter *it) {
         opengl_disable_texture(1);
         zox_disable_material();
     }
-} zoxd_system(ElementRenderSystem)
+} zoxd_system2(ElementRenderSystem);

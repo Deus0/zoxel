@@ -192,7 +192,7 @@ void Light3BuildSystem(iter* it) {
             depth->value,
             0);
 
-        if (color_index != colors->length) {
+        if (color_index != colors->length && colors->length != 4) {
             zox_logw("color building not reached max [%i] / [%i]", color_index, colors->length);
         }
 

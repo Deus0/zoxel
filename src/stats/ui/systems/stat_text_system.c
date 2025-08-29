@@ -43,7 +43,7 @@ void StatTextSystem(ecs_iter_t *it) {
 
         if (!is_zext(textData, text)) {
             set_zext(textData, text);
-            zextDirty->value = zext_update_start;
+            zextDirty->value = zox_dirty_trigger;
         }
     }
 } zoxd_system(StatTextSystem)

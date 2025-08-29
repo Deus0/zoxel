@@ -8,13 +8,13 @@ entity spawn_popup3_easy(
 ) {
     const SpawnDataElement3D popup_spawn_data = {
         .prefab = prefab_popup3D,
-        .base_color = (color) { 5, 5, 5, 0 }, // background color
+        .base_color = (color) { 0, 0, 0, 0 }, // background color
     };
-    Text3DData popup_text_data = {
-        .prefab = prefab_popup3D,
+    Text3DData text_data = {
+        .prefab = prefab_text3D, //popup3D,
         .text = text,
     };
-    Zigel3DData popup_zigel_data = {
+    Zigel3DData zigel_data = {
         .prefab = prefab_zigel3D,
         .resolution = text3D_resolution,
         .font_thickness = text3D_fill_thickness,
@@ -26,11 +26,13 @@ entity spawn_popup3_easy(
         scale = scale,
         lifetime = lifetime,
     };
-    const entity e = spawn_popup3(world,
+    const entity e = spawn_popup3(
+        world,
         popup_spawn_data,
-        popup_text_data,
-        popup_zigel_data,
-        popup_data);
-    zox_set(e, Position3D, { position })
+        text_data,
+        zigel_data,
+        popup_data
+    );
+    zox_set(e, Position3D, { position });
     return e;
 }

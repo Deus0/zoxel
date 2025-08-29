@@ -25,7 +25,8 @@ void ZextBackgroundSystem(iter *it) {
         zox_sys_o(TextureSize, textureSize)
         zox_sys_o(MeshVertices2D, meshVertices2D)
         zox_sys_o(MeshDirty, meshDirty)
-        if (zextDirty->value != zext_update_update) {
+
+        if (zextDirty->value != zox_dirty_active) {
             continue;
         }
         const int2 canvas_size = zox_get_value(canvasLink->value, LayoutSize)
@@ -56,7 +57,8 @@ void ZextParentBackgroundSystem(iter *it) {
         zox_sys_i(TextSize, textSize)
         zox_sys_i(TextPadding, textPadding)
         zox_sys_i(MeshAlignment, meshAlignment)
-        if (zextDirty->value != zext_update_update) {
+
+        if (zextDirty->value != zox_dirty_active) {
             continue;
         }
         const entity e2 = parentLink->value;

@@ -144,7 +144,7 @@ void TextResizeSystem(iter *it) {
         zox_sys_o(Children, children);
         zox_sys_o(RenderDisabled, render_disabled);
 
-        if (dirty->value != zext_update_update) {
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
 

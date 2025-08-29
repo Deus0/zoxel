@@ -82,7 +82,7 @@ void set_entity_label_with_zext(
     initialize_TextData(text_data, length);
     memcpy(text_data->value, value, length);
     text_data->length = length;
-    zox_set(e, TextDirty, { zext_update_start });
+    zox_set(e, TextDirty, { zox_dirty_trigger });
 }
 
 byte set_entity_text(ecs *world, const entity e, const char* text) {
@@ -94,7 +94,7 @@ byte set_entity_text(ecs *world, const entity e, const char* text) {
     if (!is_zext(textData, text)) {
         set_zext(textData, text);
         zox_mut_end(e, TextData);
-        zox_set(e, TextDirty, { zext_update_start });
+        zox_set(e, TextDirty, { zox_dirty_trigger });
         return 1;
     } else {
         return 0;
@@ -105,7 +105,7 @@ byte set_entity_text_raw(ecs *world, const entity e, const char* text) {
     TextData *textData = &((TextData) { 0, NULL });
     set_zext(textData, text);
     zox_set(e, TextData, { textData->length, textData->value })
-    zox_set(e, TextDirty, { zext_update_start })
+    zox_set(e, TextDirty, { zox_dirty_trigger })
     return 1;
 }
 

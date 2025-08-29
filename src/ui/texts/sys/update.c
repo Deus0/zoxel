@@ -34,7 +34,7 @@ void TextUpdateSystem(iter *it) {
         zox_sys_i(TextDirty, zextDirty)
         zox_sys_i(Children, children)
         zox_sys_i(TextData, textData)
-        if (zextDirty->value != zext_update_update || !textData->length) {
+        if (zextDirty->value != zox_dirty_active || !textData->length) {
             continue;
         }
         char *debug_text = convert_zext_to_text(textData->value, textData->length);
