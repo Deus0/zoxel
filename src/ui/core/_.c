@@ -2,13 +2,13 @@
 #define zoxm_ui_core
 
 // todo: move LayoutPosition etc to Transforms/Grid2D - idk what to call it
-#include "settings/_.c"
-#include "components/_.c"
-#include "data/_.c"
-#include "prefabs/_.c"
-#include "util/_.c"
-#include "spawn/_.c"
-#include "systems/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "dat/_.c"
+#include "pre/_.c"
+#include "fun/_.c"
+#include "ins/_.c"
+#include "sys/_.c"
 
 zox_begin_module(ElementsCore)
     define_components_elements_core(world);

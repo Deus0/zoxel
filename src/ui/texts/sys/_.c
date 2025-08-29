@@ -40,13 +40,9 @@ void define_systems_texts(ecs *world) {
             [in] texts.TextData,
             [in] texts.TextSize,
             [in] TextPadding,
-            [in] rendering.MeshAlignment,
             [in] layouts2.CanvasLink,
             [out] layouts2.LayoutSize,
-            [out] rendering.TextureSize,
-            [out] textures.GenerateTexture,
-            [out] rendering.MeshVertices2D,
-            [out] rendering.MeshDirty,
+            [out] layouts2.LayoutSizeDirty,
             [none] Zext
         );
     }

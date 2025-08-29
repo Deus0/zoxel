@@ -1,10 +1,14 @@
-#include "element_raycast_system.c"
-#include "element_active_system.c"
-#include "element_selected_system.c"
+#include "element_raycast.c"
+#include "element_active.c"
+#include "element_selected.c"
+#include "click_sound.c"
+#include "texture_size.c"
+#include "texture_size_generate.c"
+#include "mesh.c"
 
-#include "layouts2D/canvas_resize_system.c"
-#include "layouts2D/canvas_stack_system.c"
-#include "layouts2D/window_layer_system.c"
+#include "layouts2D/canvas_resize.c"
+#include "layouts2D/canvas_stack.c"
+#include "layouts2D/window_layer.c"
 
 #include "rendering/element_begin.c"
 #include "rendering/texture_dirty_begin.c"
@@ -15,18 +19,12 @@
 #include "render_texture/render_texture_renderer.c"
 #include "render_texture/render_texture.c"
 
-
-#include "inputs/button_click_event_system.c"
-#include "inputs/dragger_end_system.c"
-#include "inputs/element_navigation_system.c"
-#include "inputs/mouse_element_system.c"
-#include "inputs/device_click_system.c"
-#include "inputs/zevice_click_system.c"
-#include "click_sound_system.c"
-
-#include "texture_size.c"
-#include "texture_size_generate.c"
-#include "mesh.c"
+#include "inputs/button_click_event.c"
+#include "inputs/dragger_end.c"
+#include "inputs/element_navigation.c"
+#include "inputs/mouse_element.c"
+#include "inputs/device_click.c"
+#include "inputs/zevice_click.c"
 
 zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
 zox_increment_system_with_reset(ActiveStateDirty, zox_dirty_end);
@@ -39,28 +37,39 @@ void define_systems_elements_core(ecs *world) {
     zoxd_system_increment(ActiveStateDirty);
     zoxd_system_increment(ClickState);
     zoxd_system_increment(SelectState);
-    zox_filter(raycast_query,
+    zox_filter(
+        raycast_query,
         [in] layouts2.CanvasPosition,
         [in] layouts2.LayoutSize,
         [in] layouts2.Layer2D,
         [in] rendering.RenderDisabled,
         [none] Element,
-        [none] Selectable);
-    zox_system_ctx(ElementRaycastSystem, EcsOnUpdate, raycast_query,
+        [none] Selectable
+    );
+    zox_system_ctx(
+        ElementRaycastSystem,
+        EcsOnUpdate,
+        raycast_query,
         [in] raycasts.Raycaster,
         [in] inputs.DeviceLink,
         [out] raycasts.RaycasterTarget,
-        [out] WindowRaycasted);
+        [out] WindowRaycasted
+    );
     // inputs
-    zox_system(ZeviceClickSystem, EcsPostUpdate,
+    zox_system(
+        ZeviceClickSystem,
+        EcsPostUpdate,
         [in] inputs.DeviceLink,
         [in] raycasts.RaycasterTarget,
         [in] WindowRaycasted,
         [out] raycasts.RaycasterResult,
         [out] ClickingEntity,
         [out] WindowTarget,
-        [none] inputs.Zevice);
-    zox_system(DeviceClickSystem, EcsPostUpdate,
+        [none] inputs.Zevice
+    );
+    zox_system(
+        DeviceClickSystem,
+        EcsPostUpdate,
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,
@@ -68,40 +77,54 @@ void define_systems_elements_core(ecs *world) {
         [in] hierarchys.Children,
         [out] ClickingEntity,
         [out] WindowTarget,
-        [none] inputs.Device);
-    zox_system(ElementNavigationSystem, EcsPostUpdate,
+        [none] inputs.Device
+    );
+    zox_system(
+        ElementNavigationSystem,
+        EcsPostUpdate,
         [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
         [out] NavigatorState,
         [out] NavigatorTimer,
-        [out] raycasts.RaycasterTarget);
-    zox_system(CanvasStackSystem, EcsOnLoad,
+        [out] raycasts.RaycasterTarget
+    );
+    zox_system(
+        CanvasStackSystem,
+        EcsOnLoad,
         [in] hierarchys.Children,
         [out] layouts2.WindowToTop,
         [out] WindowsLayers,
         [out] WindowsCount,
-        [none] layouts2.Canvas);
-    zox_system(WindowLayerSystem, EcsOnLoad,
+        [none] layouts2.Canvas
+    );
+    zox_system(
+        WindowLayerSystem,
+        EcsOnLoad,
         [in] SetWindowLayer,
         [in] layouts2.CanvasLink,
         [in] hierarchys.Children,
         [out] WindowLayer,
         [out] layouts2.Layer2D,
-        [none] Window);
+        [none] Window
+    );
 
-    zox_system(ElementSelectedSystem, EcsOnUpdate,
+    zox_system(
+        ElementSelectedSystem,
+        EcsOnUpdate,
         [in] elements.core.SelectState,
         [out] rendering.Brightness,
-        [none] Element)
-    zox_system(ElementActiveSystem, EcsOnUpdate,
+        [none] Element
+    );
+    zox_system(
+        ElementActiveSystem,
+        EcsOnUpdate,
         [in] elements.core.ActiveState,
         [in] elements.core.ActiveStateDirty,
-        // [out] colorz.Color,
         [out] textures.OutlineColor,
         [out] rendering.Brightness,
         [out] textures.GenerateTexture,
-        [none] Element);
-        // [none] !SelectState);
+        [none] Element
+    );
 
     zox_system(
         MouseElementSystem,

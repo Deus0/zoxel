@@ -1,7 +1,7 @@
-#include "ui_trail_system.c"
-#include "element_mesh3D_system.c"
-#include "element3D_render_system.c"
-#include "elementbar3D_system.c"
+#include "ui_trail.c"
+#include "element_mesh3.c"
+#include "element3_renderer.c"
+#include "elementbar3.c"
 #include "resize.c"
 
 void define_systems_elements3D(ecs *world) {

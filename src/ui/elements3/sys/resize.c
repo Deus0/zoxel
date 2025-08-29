@@ -84,11 +84,9 @@ void Text3DResizeSystem(iter *it) {
 
         const int new_children_length = calculate_total_zigels(textData->value, textData->length);
         if (children->length == new_children_length) {
-            zox_log_error("same size [%s]", zox_get_name(e));
             continue;
         }
 
-        zox_log_error("new size [%s]", zox_get_name(e));
         /*char *debug_text = convert_zext_to_text(textData->value, textData->length);
         if (debug_text) {
             zox_log_text3D("+ resizing text3D [%s] [%i:%i]", debug_text, children->length, new_children_length)
