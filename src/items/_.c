@@ -5,10 +5,10 @@ byte test_items_blocks = 0;
 zox_tag(ItemBlock);
 zoxc_userdata(Item);
 zoxf_user_prefabs(Item, item, "item")
-#include "prefabs/_.c"
+#include "pre/_.c"
 #include "ui/_.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Items)
     zoxd_tag(ItemBlock);

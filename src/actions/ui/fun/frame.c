@@ -27,7 +27,8 @@ void on_action_updated(
     set_icon_label_from_user_data(
         world,
         frame,
-        meta);
+        meta
+    );
     zox_set(icon, UserDataLink, { action });
 }
 
@@ -49,7 +50,11 @@ void on_action_updated_quantity(
         const entity menu_actions_body = menu_actions_children->value[1];
         zox_geter(menu_actions_body, Children, menu_actions_body_children);
         const entity frame_action = menu_actions_body_children->value[action_selected];
-        set_icon_label_from_user_data_quantity(world, frame_action, quantity);
+        set_icon_label_from_user_data_quantity(
+            world,
+            frame_action,
+            quantity
+        );
     }
 }
 
@@ -136,11 +141,13 @@ void on_action_removed(
                     world,
                     frame_action,
                     icon_action,
-                    0);
+                    0
+                );
                 set_icon_label_from_user_data(
                     world,
                     frame_action,
-                    0);
+                    0
+                );
             }
         } else {
             zox_log_error("character has no actionbar")

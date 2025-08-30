@@ -101,12 +101,15 @@ byte set_entity_text(ecs *world, const entity e, const char* text) {
     }
 }
 
-byte set_entity_text_raw(ecs *world, const entity e, const char* text) {
-    TextData *textData = &((TextData) { 0, NULL });
-    set_zext(textData, text);
-    zox_set(e, TextData, { textData->length, textData->value })
-    zox_set(e, TextDirty, { zox_dirty_trigger })
-    return 1;
+void set_entity_text_raw(
+    ecs* world,
+    const entity e,
+    const char* text
+) {
+    TextData data = (TextData) { 0 };
+    set_zext(&data, text);
+    zox_set_ptr(e, TextData, data);
+    zox_set(e, TextDirty, { zox_dirty_trigger });
 }
 
 byte set_entity_label_with_text(
@@ -127,5 +130,5 @@ void set_new_zox_name(ecs *world, const entity e, const char* text) {
 
 
 int get_zexts_count(ecs *world) {
-    return zox_count_types(Zext)
+    return zox_count_types(Zext);
 }

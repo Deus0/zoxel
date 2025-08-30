@@ -9,6 +9,7 @@ zoxc_double(CooldownTime);
 zoxc_double(ActivateTime);
 zoxc_byte(Quantity);
 zoxc_entity(UserLink);
+zoxc_byte(UserDataDirty);
 zoxc_entity(UserDataLink);
 zoxc_entity(SpawnerLink);
 zoxc_entities(UserLinks)
@@ -29,6 +30,7 @@ void define_components_users(ecs* world) {
     zoxd_byte(Quantity);
     zoxd_entity(UserLink);
     zoxd_entity(UserDataLink);
+    zoxd_byte(UserDataDirty);
     zoxd_entity(SpawnerLink);
     zox_define_entities_component(UserLinks);
 }

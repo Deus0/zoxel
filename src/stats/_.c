@@ -1,13 +1,13 @@
 #if !defined(zoxm_stats) && defined(zoxm_users)
 #define zoxm_stats
 
-#include "settings/_.c"
-#include "data/_.c"
-#include "components/_.c"
-#include "prefabs/_.c"
+#include "set/_.c"
+#include "dat/_.c"
+#include "com/_.c"
+#include "pre/_.c"
 #include "ui/_.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Stats)
     define_components_stats(world);

@@ -1,12 +1,12 @@
-#ifndef zoxm_ui_skills
-#define zoxm_ui_skills
+#ifndef zoxm_skills_ui
+#define zoxm_skills_ui
 
 zox_tag(MenuSkills);
 zox_tag(IconSkill);
 zox_tag(FrameSkill);
-#include "prefabs/prefabs.c"
-#include "util/icon.c"
-#include "systems/skill_overlay_system.c"
+#include "pre/_.c"
+#include "fun/_.c"
+#include "sys/skill_overlay.c"
 
 zox_begin_module(UISkills)
     zoxd_tag(MenuSkills);

@@ -3,7 +3,8 @@
 
 zox_tag(MenuItems);
 zox_tag(IconItem);
-#include "prefabs/_.c"
+#include "fun/_.c"
+#include "pre/_.c"
 
 zox_begin_module(ItemsUI)
     zoxd_tag(MenuItems);
