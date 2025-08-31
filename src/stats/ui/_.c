@@ -5,6 +5,7 @@ zox_tag(Statbar);
 zox_tag(MenuStats);
 zox_tag(StatsLabel);
 zox_tag(Healthbar);
+zox_tag(StatIconLabel);
 
 #include "pre/_.c"
 #include "ins/_.c"
@@ -16,6 +17,7 @@ zox_begin_module(StatsUI)
     zoxd_tag(MenuStats);
     zoxd_tag(StatsLabel);
     zoxd_tag(Healthbar);
+    zoxd_tag(StatIconLabel);
     define_systems_stats_ui(world);
     add_taskbar_button((hook_taskbar) {
         .spawn = &spawn_player_menu_stats,

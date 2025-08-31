@@ -24,7 +24,7 @@ void SunlightSystem(iter *it) {
         zox_sys_i(NodeDepth, depthr);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_i(VoxLink, parent);
+        // zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNodeDirty, dirty);

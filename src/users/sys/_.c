@@ -3,11 +3,14 @@
 zox_increment_system_with_reset(Activate, zox_dirty_end);
 zox_increment_system_with_reset(WarmupState, zox_dirty_end);
 zox_increment_system_with_reset(CooldownState, zox_dirty_end);
+zox_increment_system_with_reset(UserDataDirty, zox_dirty_end);
 
 void define_systems_users(ecs* world) {
     zoxd_system_increment(Activate);
     zoxd_system_increment(WarmupState);
     zoxd_system_increment(CooldownState);
+    zoxd_system_increment(UserDataDirty);
+
     zox_system(
         WarmupSystem,
         EcsOnUpdate,

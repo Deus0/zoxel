@@ -1,5 +1,5 @@
 #ifndef zox_blocks
-#define zox_blocks
+#define zoxm_blocks
 
 #include "dat/_.c"
 #include "com/_.c"

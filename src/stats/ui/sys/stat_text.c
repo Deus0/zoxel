@@ -1,31 +1,40 @@
-void StatTextSystem(ecs_iter_t *it) {
+void StatTextSystem(iter *it) {
     int stat_name_text_count = 32;
     int label_text_count = 64;
     char stat_name_text[stat_name_text_count];
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(StatLink)
-    zox_sys_out(TextData)
-    zox_sys_out(TextDirty)
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(StatLink);
+    zox_sys_out(TextData);
+    zox_sys_out(TextDirty);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(StatLink, statLink)
-        zox_sys_o(TextData, textData)
-        zox_sys_o(TextDirty, zextDirty)
-        const ecs_entity_t stat = statLink->value;
+
+        zox_sys_i(StatLink, stat_link);
+        zox_sys_o(TextData, data);
+        zox_sys_o(TextDirty, dirty);
+
+        const entity stat = stat_link->value;
         if (!zox_valid(stat) || !zox_has(stat, ZoxName) || !zox_has(stat, StatValue)) {
-            zox_sys_e()
-            zox_log_error("[%s] has invalid stat linked", zox_get_name(e))
+            zox_sys_e();
+            zox_log_error("[%s] has invalid stat linked", zox_get_name(e));
             continue;
         }
         if (!zox_valid(stat)) {
             continue;
         }
-        zox_geter(stat, StatValue, statValue)
-        int value = floor(statValue->value);
-        zox_geter(stat, ZoxName, stat_name)
-        convert_zext_to_text_non_malloc(stat_name->value, stat_name->length, stat_name_text, stat_name_text_count);
-        char text[label_text_count];
 
+        zox_geter(stat, StatValue, statValue);
+        zox_geter(stat, ZoxName, stat_name);
+        int value = floor(statValue->value);
+        convert_zext_to_text_non_malloc(
+            stat_name->value,
+            stat_name->length,
+            stat_name_text,
+            stat_name_text_count);
+
+        char text[label_text_count];
         if (zox_has(stat, StatState)) {
             zox_geter(stat, StatValueMax, statValueMax)
             int max_value = ceil(statValueMax->value);
@@ -40,10 +49,9 @@ void StatTextSystem(ecs_iter_t *it) {
             snprintf(text, label_text_count, "%s [%i]", stat_name_text, value);
         }
 
-
-        if (!is_zext(textData, text)) {
-            set_zext(textData, text);
-            zextDirty->value = zox_dirty_trigger;
+        if (!is_zext(data, text)) {
+            set_zext(data, text);
+            dirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system(StatTextSystem)
+} zoxd_system2(StatTextSystem);

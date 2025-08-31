@@ -64,7 +64,7 @@ void player_start_game3D(ecs *world, const entity player) {
     float4 spawn_rotation = quaternion_identity;
 
     zox_geter(realm, SaveGamePath, path);
-    byte is_new_game = !has_save_game_file(game_name, "player.dat");
+    byte is_new_game = !has_save_game_file(path->value, "player.dat");
     if (!is_new_game) {
         load_character_p(
             world,

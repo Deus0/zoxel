@@ -1,12 +1,14 @@
-#include "stat_regen_system.c"
-#include "death_system.c"
-#include "death_animation_system.c"
-#include "level_up_system.c"
-#include "experience_system.c"
+#include "regen.c"
+#include "death.c"
+#include "death_animation.c"
+#include "level_up.c"
+#include "experience.c"
 #include "realm.c"
+zox_increment_system_with_reset(StatDirty, zox_dirty_end);
 zox_declare_system_state_event(RealmStats, GenerateRealm, zox_generate_realm_stats, spawn_realm_stats)
 
 void define_systems_stats(ecs_world_t *world) {
+    zoxd_system_increment(StatDirty);
     zox_define_system_state_event_1(RealmStats, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
     // debuff system here, skills will add debuffs
     zox_system(
@@ -22,6 +24,7 @@ void define_systems_stats(ecs_world_t *world) {
         [in] users.UserLink,
         [in] stats.StatValueMax,
         [out] stats.StatValue,
+        [out] stats.StatDirty,
         [none] stats.StatState
     );
     zox_system(
@@ -47,6 +50,7 @@ void define_systems_stats(ecs_world_t *world) {
         [out] stats.StatValue,
         [out] stats.ExperienceValue,
         [out] stats.ExperienceMax,
+        [out] stats.StatDirty,
         [none] stats.StatLevel
     );
 }

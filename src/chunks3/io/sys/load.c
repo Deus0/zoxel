@@ -48,9 +48,9 @@ byte load_chunk(
     }
     // check if file exist
     FILE* file = fopen(path, "rb");
-    free(path);
     if (!file) {
         zox_log_error("Failed to open filepath [%s]", path);
+        free(path);
         return 0;
     }
     // zox_log("Loading chunk from file: %s", path);
@@ -60,6 +60,7 @@ byte load_chunk(
     if (fclose(file) != 0) {
         zox_log_error("Failed to close file: %s", path);
     }
+    free(path);
     return success;
 }
 
@@ -103,4 +104,4 @@ void Chunk3LoadSystem(iter *it) {
 
         loaded->value = 1;
     }
-} zoxd_system(Chunk3LoadSystem)
+} zoxd_system2(Chunk3LoadSystem);

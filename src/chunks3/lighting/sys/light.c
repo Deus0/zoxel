@@ -7,7 +7,7 @@ void LightSystem(ecs_iter_t *it) {
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxLink);
-    zox_sys_out(LightNodeDepth);
+    // zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNodeDirty);
@@ -20,9 +20,9 @@ void LightSystem(ecs_iter_t *it) {
 
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_i(VoxLink, parent);
+        // zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNode, root_lnode);
-        zox_sys_o(LightNodeDepth, depthl);
+        // zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightQueue, light_queue);
         zox_sys_o(LightNodeDirty, dirty);
 

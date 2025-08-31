@@ -1,17 +1,16 @@
 const byte max_stack_quantity = 255;
 
-
 void on_overlap_pickup(
-    ecs_world_t *world,
-    const ecs_entity_t e,
-    const ecs_entity_t user
+    ecs *world,
+    const entity e,
+    const entity user
 ) {
     if (!zox_gett_value(e, PickedUp) && zox_has(user, PickUpperer)) {
         // zox_log(" > e [%lu] picked up by user [%lu]\n", e, user)
         if (zox_has(e, ItemLink)) {
-            const ecs_entity_t item = zox_get_value(e, ItemLink);
-            zox_muter(user, ActionLinks, actions)
-            const ecs_entity_t meta_item_block = item;
+            zox_muter(user, ActionLinks, actions);
+            zox_geter_value(e, ItemLink, entity, item);
+            const entity meta_item_block = item;
             byte stack_index = 255;
             for (int i = 0; i < actions->length; i++) {
                 if (actions->value[i] == 0) {
@@ -27,11 +26,13 @@ void on_overlap_pickup(
             byte did_stack = 0;
             if (stack_index != 255) {
                 const ecs_entity_t stack_item = actions->value[stack_index];
-                byte quantity = zox_get_value(stack_item, Quantity)
+
+                zox_geter_value_non_const(stack_item, Quantity, byte, quantity);
                 if (quantity != max_stack_quantity) {
                     quantity++;
                     zox_set(stack_item, Quantity, { quantity });
-                    on_action_updated_quantity(world, user, stack_index, quantity);
+                    zox_set(stack_item, QuantityDirty, { zox_dirty_trigger });
+                    // on_action_updated_quantity(world, user, stack_index, quantity);
                     did_stack = 1;
                 }
             }
@@ -50,9 +51,12 @@ void on_overlap_pickup(
                     // cannot pickup!
                     return;
                 }
-                const ecs_entity_t user_item = spawn_user_item_quantity(world, meta_item_block, user, 1);
+                const entity user_item = spawn_user_item_quantity(world, meta_item_block, user, 1);
+                zox_set(user_item, QuantityDirty, { zox_dirty_trigger });
+
                 actions->value[action_index] = user_item;
-                on_action_updated(world, user, action_index, user_item, item);
+
+                on_action_set(world, user, action_index, user_item, item);
             }
         }
         // picked up!

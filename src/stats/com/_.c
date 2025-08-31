@@ -9,6 +9,7 @@ zoxc_float(ExperienceMax);
 zoxc_entities(DotLinks)
 zoxc_userdata(Stat);
 zoxf_user_prefabs(Stat, stat, "stat")
+zoxc_byte(StatDirty);
 // special stats
 zox_tag(HealthStat);
 zox_tag(StatSoul);
@@ -19,6 +20,7 @@ void define_components_stats(ecs_world_t *world) {
     zoxd_tag(StatAttribute);
     zoxd_tag(StatLevel);
     zoxd_userdata(Stat);
+    zoxd_byte(StatDirty);
     zox_define_component_float(StatValue);
     zox_define_component_float(StatValueMax);
     zox_define_component_float(ExperienceValue);

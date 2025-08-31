@@ -5,10 +5,10 @@ byte test_actions_blocks = 0;
 byte test_actions_skills = 0;
 zoxc_userdata(Action);
 zoxc_byte(ActionIndex);
-#include "prefabs/_.c"
-#include "util/_.c"
+#include "pre/_.c"
+#include "fun/_.c"
 #include "ui/_.c"
-#include "systems/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Actions)
     zoxd_userdata(Action);

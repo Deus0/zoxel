@@ -36,34 +36,45 @@ entity3 spawn_frame(
         .texture_size = data.icon.texture_size
     };
     Children children = (Children) { 0, NULL };
+
+    // Spawn Icon
     const entity icon = spawn_icon(world, &spawnIcon).x;
     add_to_Children(&children, icon);
+
+    // Spawn Label
     entity zext = 0;
-    if (zox_has(data.element.prefab, IconLabel)) {
-        const int font_size = 12;
+    if (zox_has(data.element.prefab, LabelPrefabLink)) {
+        byte label_padding = 4;
+        zox_geter_value(data.element.prefab, LabelPrefabLink, entity, prefab_frame_label);
+        const int font_size = 10;
         SpawnZext spawnZext = {
             .canvas = canvas_data,
             .parent = parent_data,
-            .element = {
-                .prefab = prefab_zext,
-                .position = (int2) { -font_size - 4, font_size - 4 },
-                .layer = data.element.layer + 2,
-                .anchor = (float2) { 1, 0 },
-                .size = spawnIcon.element.size,
-                .render_disabled = data.element.render_disabled,
-            },
             .zext = {
+                .font_resolution = font_resolution_frame_label,
                 .text = "",
-                .font_size = font_size,
-                .font_thickness = 2,
-                .font_fill_color = default_font_fill_color,
-                .font_outline_color = default_font_outline_color
-            }
+                .font_size = font_size_frame_label,
+                .font_fill_color = font_fill_frame_label,
+                .font_outline_color = font_outline_frame_label,
+                .font_thickness = font_thickness_frame_label,
+            },
+            .element = {
+                .prefab = prefab_frame_label,
+                .layer = data.element.layer + 2,
+                .render_disabled = data.element.render_disabled,
+                .size = spawnIcon.element.size,
+                .anchor = (float2) { 0.5f, 0 },
+                .position = (int2) {
+                    0, // -(font_size - label_padding),
+                    (font_size - label_padding) },
+            },
         };
         zext = spawn_zext(world, &spawnZext);
         add_to_Children(&children, zext);
         zox_set_unique_name(zext, "icon_text");
     }
+
     zox_set_ptr(e, Children, children);
+
     return (entity3) { e, icon, zext };
 }

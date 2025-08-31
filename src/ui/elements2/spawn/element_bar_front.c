@@ -10,12 +10,10 @@ entity spawn_elementbar2D_front(
     const color front_color
 ) {
     const byte margin = 3;
-    const int2 pixel_size = (int2) {
+    const int2 size = (int2) {
         parent_size.x - margin * 2,
         parent_size.y - margin * 2
     };
-    const float2 anchor = (float2) { 0, 0.5f }; //  float2_half;
-    const int2 position = int2_zero; // parent_position
 
     zox_instance(prefab_elementbar2D_front);
     zox_name("elementbar2D_front");
@@ -29,9 +27,9 @@ entity spawn_elementbar2D_front(
         parent,
         canvas,
         int2_zero,
-        pixel_size,
+        size,
         int2_one,
-        anchor,
+        (float2) { 0, 0.5f },
         layer,
         float2_zero,
         int2_zero

@@ -44,7 +44,33 @@ entity spawn_player_menu_actions(
         .fill_color = fill_color_actionbar,
         .outline_color = outline_color_actionbar
     };
-    entity e = spawn_window_users(world, data, texture, selected);
+
+
+    zox_geter(character, ActionLinks, actions);
+    entity3 spawns[actions->length];
+
+    entity e = spawn_window_users(
+        world,
+        data,
+        texture,
+        selected,
+        spawns
+    );
     zox_set_unique_name(e, "actionbar");
+
+    for (int i = 0; i < actions->length; i++) {
+        entity action = actions->value[i];
+        entity3 frame = spawns[i];
+        if (frame.x) {
+            zox_set(frame.x, ItemLink, { action });
+        }
+        if (frame.y) {
+            zox_set(frame.y, ItemLink, { action });
+        }
+        if (frame.z) {
+            zox_set(frame.z, ItemLink, { action });
+        }
+    }
+
     return e;
 }

@@ -1,9 +1,9 @@
-void set_icon_label_from_user_data_quantity(
+/*void set_icon_label_from_user_data_quantity(
     ecs *world,
     const entity e,
     const byte quantity
 ) {
-    if (!zox_has(e, IconLabel)) {
+    if (!zox_has(e, LabelPrefabLink)) {
         return;
     }
 
@@ -37,7 +37,7 @@ void set_icon_label_from_user_data(
     const entity e,
     const entity data
 ) {
-    if (!zox_valid(e) || !zox_has(e, IconLabel)) {
+    if (!zox_valid(e) || !zox_has(e, LabelPrefabLink)) {
         return;
     }
     if (!zox_has(e, Children)) {
@@ -82,11 +82,8 @@ void set_icon_label_from_user_data_direct(
             sprintf(text, "x%i", quantity);
             set_entity_text_raw(world, e, text);
         }
-    } else {
-        // Testing
-        set_entity_text_raw(world, e, "Lvl 11");
     }
-}
+}*/
 
 void set_icon_from_user_data(
     ecs *world,
@@ -112,20 +109,3 @@ void set_icon_from_user_data(
 
     // zox_log("set usericon data %s %s", zox_get_name(e), zox_get_name(texture));
 }
-
-/*if (!zox_valid(data)) {
-    /*clear_texture_data(world, e);
-    zox_set(e, GenerateTexture, { zox_generate_texture_trigger });
-    zox_set(e, TextureSize, { int2_single(default_icon_texture_size) });
-    return;
-}*/
-/*if (!zox_has(data, TextureLink)) {
-    zox_log_error("[%s] has no texture link component: %i", zox_get_name(data), zox_has(data, TextureLink))
-    return;
-}*/
-
-/*clear_texture_data(world, e);
-zox_set(e, GenerateTexture, { zox_generate_texture_trigger })
-zox_set(e, TextureSize, { int2_single(default_icon_texture_size) })
-zox_log_error("[%s] has no texture", zox_get_name(data))
-return;*/

@@ -1,6 +1,6 @@
-ecs_entity_t prefab_frame_user;
-ecs_entity_t prefab_icon_user;
-ecs_entity_t prefab_window_users;
+entity prefab_frame_user;
+entity prefab_icon_user;
+entity prefab_window_users;
 #include "frame.c"
 #include "icon.c"
 #include "window.c"

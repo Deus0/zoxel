@@ -46,7 +46,8 @@ entity2 spawn_elementbar2D(ecs *world,
     Children *children = &((Children) { 0, NULL });
     resize_memory_component(Children, children, entity, 2)
     // frontbar
-    const entity front_bar = spawn_elementbar2D_front(world,
+    const entity front_bar = spawn_elementbar2D_front(
+        world,
         canvas,
         e,
         int2_zero,

@@ -7,4 +7,10 @@ color nothing_font_color = { 0, 0, 0, 0 };
 const byte is_splotches = 1;
 float2 font_point_padding = { 0.1f, 0.1f };
 
+const byte font_size_frame_label = 12;
+const byte font_resolution_frame_label = 32;
+const byte font_thickness_frame_label = 4;
+const color font_fill_frame_label = { 55, 55, 55, 155 };
+const color font_outline_frame_label = { 55, 155, 155, 222 };
+
 #include "io.c"

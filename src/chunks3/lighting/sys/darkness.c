@@ -24,7 +24,7 @@ void DarkLightSystem(ecs_iter_t *it) {
 
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_i(VoxLink, parent);
+        // zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(DarkQueue, dark_queue);

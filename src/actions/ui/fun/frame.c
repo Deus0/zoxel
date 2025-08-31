@@ -1,5 +1,5 @@
 // note on meta: since just spawned user item, we cant use it yet
-void on_action_updated(
+void on_action_set(
     ecs* world,
     entity e,
     byte index,
@@ -7,16 +7,19 @@ void on_action_updated(
     entity meta
 ) {
     zox_geter(e, ElementLinks, elements);
-    find_array_element_with_tag(elements, MenuActions, ui);
-    if (!zox_valid(ui)) {
+    find_array_element_with_tag(elements, MenuActions, menu);
+    if (!zox_valid(menu)) {
         return;
     }
-    zox_geter(ui, Children, children);
-    const entity menu_actions_body = children->value[1];
-    zox_geter(menu_actions_body, Children, grand_children);
-    const entity frame = grand_children->value[index];
-    zox_geter(frame, Children, great_grand_children);
-    const entity icon = great_grand_children->value[0];
+    zox_geter(menu, Children, children);
+
+    const entity body = children->value[1];
+    zox_geter(body, Children, body_children);
+
+    const entity frame = body_children->value[index];
+    zox_geter(frame, Children, frame_children);
+    const entity icon = frame_children->value[0];
+    const entity label = frame_children->length >= 1 ? frame_children->value[1] : 0;
     // remember: uses meta item for texture source here
     // zox_get_prefab(action, meta);
     set_icon_from_user_data(
@@ -24,17 +27,29 @@ void on_action_updated(
         frame,
         icon,
         meta);
-    set_icon_label_from_user_data(
+    /*set_icon_label_from_user_data(
         world,
         frame,
         meta
-    );
+    );*/
     zox_set(icon, UserDataLink, { action });
+
+    // also set other links
+    zox_set(frame, ItemLink, { action });
+    zox_set(icon, ItemLink, { action });
+
+    if (label) {
+        zox_set(label, ItemLink, { action });
+        zox_muter(label, TextData, text_data);
+        zox_muter(label, TextDirty, text_dirty);
+        dispose_TextData(text_data);
+        text_dirty->value = zox_dirty_trigger;
+    }
 }
 
 
 // when action was updated
-void on_action_updated_quantity(
+/*void on_action_updated_quantity(
     ecs *world,
     const entity character,
     const byte action_selected,
@@ -56,9 +71,9 @@ void on_action_updated_quantity(
             quantity
         );
     }
-}
+}*/
 
-void on_action_updated_quantity2(
+/*void on_action_updated_quantity2(
     ecs *world,
     const entity e,
     const entity user,
@@ -83,7 +98,7 @@ void on_action_updated_quantity2(
         action_index,
         quantity
     );
-}
+}*/
 
 void on_action_removed(
     ecs* world,
@@ -143,11 +158,11 @@ void on_action_removed(
                     icon_action,
                     0
                 );
-                set_icon_label_from_user_data(
+                /*set_icon_label_from_user_data(
                     world,
                     frame_action,
                     0
-                );
+                );*/
             }
         } else {
             zox_log_error("character has no actionbar")

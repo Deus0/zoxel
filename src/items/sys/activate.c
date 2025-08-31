@@ -1,4 +1,4 @@
-extern void on_action_updated_quantity2(ecs*, const entity, const entity, const byte);
+// extern void on_action_updated_quantity2(ecs*, const entity, const entity, const byte);
 extern void on_action_removed(ecs*, entity, entity);
 
 void ItemActivateSystem(iter *it) {
@@ -9,6 +9,7 @@ void ItemActivateSystem(iter *it) {
     zox_sys_in(UserLink);
     zox_sys_in(BlockLink);
     zox_sys_out(Quantity);
+    zox_sys_out(QuantityDirty);
 
     for (int i = 0; i < it->count; i++) {
 
@@ -17,6 +18,7 @@ void ItemActivateSystem(iter *it) {
         zox_sys_i(UserLink, user_link);
         zox_sys_i(BlockLink, block_link);
         zox_sys_o(Quantity, quantity);
+        zox_sys_o(QuantityDirty, dirty);
 
         if (activate->value != zox_dirty_active) {
             continue;
@@ -45,18 +47,16 @@ void ItemActivateSystem(iter *it) {
         }
         if (is_use_quantity) {
             quantity->value--;
+            dirty->value = zox_dirty_trigger;
 
-            // place block sound
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[30 + rand() % 6], 0.6, 1.8f * get_volume_sfx());
-
-            if (quantity->value > 0) {
-                on_action_updated_quantity2(
+            if (quantity->value == 0) {
+                /*on_action_updated_quantity2(
                     world,
                     e,
                     user,
                     quantity->value
                 );
-            } else {
+            } else {*/
                 // set action to nullptr
                 // destroy entity
                 zox_delete(e);
@@ -67,6 +67,9 @@ void ItemActivateSystem(iter *it) {
                     user
                 );
             }
+
+            // place block sound
+            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[30 + rand() % 6], 0.6, 1.8f * get_volume_sfx());
         }
     }
 } zoxd_system2(ItemActivateSystem);

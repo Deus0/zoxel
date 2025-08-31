@@ -46,11 +46,11 @@ void set_player_action(
 }
 
 void player_action_ui_move(
-    ecs_world_t *world,
-    const ecs_entity_t player,
+    ecs *world,
+    const entity player,
     const sbyte direction
 ) {
-    zox_geter_value(player, CharacterLink, ecs_entity_t, character);
+    zox_geter_value(player, CharacterLink, entity, character);
     if (!zox_valid(character)) {
         return;
     }
@@ -98,6 +98,6 @@ void player_action_ui_move(
     }
 }
 
-void button_event_switch_action(ecs_world_t *world, const ClickEventData *event) {
+void button_event_switch_action(ecs *world, const ClickEventData *event) {
     player_action_ui_move(world, event->clicker, 1);
 }

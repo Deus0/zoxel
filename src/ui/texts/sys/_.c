@@ -1,5 +1,6 @@
 #include "resize.c"
 #include "text_panel.c"
+#include "text_panel_child.c"
 #include "update.c"
 #include "animate.c"
 zox_increment_system_with_reset(TextDirty, zox_dirty_end);
@@ -29,7 +30,7 @@ void define_systems_texts(ecs *world) {
             [in] texts.TextData,
             [in] texts.TextSize,
             [in] TextPadding,
-            [in] rendering.MeshAlignment,
+            // [in] rendering.MeshAlignment,
             [in] hierarchys.ParentLink,
             [none] Zext
         );
@@ -40,7 +41,7 @@ void define_systems_texts(ecs *world) {
             [in] texts.TextData,
             [in] texts.TextSize,
             [in] TextPadding,
-            [in] layouts2.CanvasLink,
+            // [in] layouts2.CanvasLink,
             [out] layouts2.LayoutSize,
             [out] layouts2.LayoutSizeDirty,
             [none] Zext

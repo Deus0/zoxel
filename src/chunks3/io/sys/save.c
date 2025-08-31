@@ -60,9 +60,9 @@ void Chunk3SaveSystem(iter *it) {
         char* path = join_path(game_path->value, filename);
 
         FILE* file = fopen(path, "wb");
-        free(path);
         if (file == NULL) {
             zox_log_error("Error saving [%s]", path);
+            free(path);
             continue;
         }
         read_lock_VoxelNode(node);
@@ -71,5 +71,6 @@ void Chunk3SaveSystem(iter *it) {
         if (fclose(file) != 0) {
             zox_log_error("Failed to close file: %s", path);
         }
+        free(path);
     }
-} zoxd_system(Chunk3SaveSystem)
+} zoxd_system2(Chunk3SaveSystem);

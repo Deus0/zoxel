@@ -1,4 +1,4 @@
-void WarmupSystem(ecs_iter_t *it) {
+void WarmupSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(Activate);
     zox_sys_in(CooldownAt);
@@ -14,7 +14,7 @@ void WarmupSystem(ecs_iter_t *it) {
     }
 } zoxd_system2(WarmupSystem);
 
-void WarmupStateSystem(ecs_iter_t *it) {
+void WarmupStateSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(WarmupTime);
     zox_sys_out(WarmupAt);

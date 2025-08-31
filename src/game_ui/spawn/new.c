@@ -55,7 +55,7 @@ void on_cancelled_new_realm(
         zox_delete(menu);
     }
     zox_log("canceled new realm");
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    // zox_geter_value(player, CanvasLink, entity, canvas);
     spawn_main_menu(world, player, game_name);
 }
 

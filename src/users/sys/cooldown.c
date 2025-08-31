@@ -1,4 +1,4 @@
-void CooldownSystem(ecs_iter_t *it) {
+void CooldownSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(WarmupState);
     zox_sys_out(CooldownAt);
@@ -12,7 +12,7 @@ void CooldownSystem(ecs_iter_t *it) {
     }
 } zoxd_system2(CooldownSystem);
 
-void CooldownStateSystem(ecs_iter_t *it) {
+void CooldownStateSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(CooldownTime);
     zox_sys_out(CooldownAt);

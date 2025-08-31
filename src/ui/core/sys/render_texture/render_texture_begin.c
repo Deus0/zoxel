@@ -9,7 +9,7 @@ void RenderTextureBeginSystem(iter *it) {
 
     for (int i = 0; i < it->count; i++) {
 
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(InitializeElement, initialize);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(CameraLink, camera);

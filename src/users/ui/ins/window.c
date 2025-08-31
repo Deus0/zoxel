@@ -3,7 +3,8 @@ entity spawn_window_users(
     ecs *world,
     SpawnWindowUsers data,
     FrameTextureData window_texture,
-    byte selected
+    byte selected,
+    entity3* spawns
 ) {
     const entity character = data.window.character;
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
@@ -53,6 +54,7 @@ entity spawn_window_users(
 
     const int user_datas_count = user_data->length;
     const int grid_elements_count = user_datas_count; // data.window.grid_size.x * data.window.grid_size.y
+
     const int children_length = 1 + is_header;
     // zox_muter(e, Children, children)
     Children children = (Children) { 0, NULL };
@@ -124,11 +126,14 @@ entity spawn_window_users(
     const entity body = spawn_element(world, &spawn_body_data);
     zox_set_unique_name(body, "window_users_body");
     children.value[is_header] = body;
-    Children body_children = (Children) { 0, NULL };
+
+    Children body_children = (Children) { 0 };
     initialize_Children(&body_children, grid_elements_count);
+
     int item_index = 0;
     int array_index = 0;
     const byte active_states = zox_has(data.frame.prefab, ActiveState);
+
     for (int j = data.window.grid_size.y - 1; j >= 0; j--) {
         if (array_index >= body_children.length) {
             break;
@@ -141,7 +146,7 @@ entity spawn_window_users(
                 (int) ((i - (data.window.grid_size.x / 2.0f) + 0.5f) * (data.window.icon_size + data.window.grid_padding.x)),
                 (int) ((j - (data.window.grid_size.y / 2.0f) + 0.5f) * (data.window.icon_size + data.window.grid_padding.y))
             };
-            SpawnFrame spawnFrame = {
+            SpawnFrame frame_data = {
                 .canvas = data.canvas,
                 .icon = data.icon,
                 .parent = {
@@ -158,26 +163,37 @@ entity spawn_window_users(
                 },
                 .texture = data.frame.texture
             };
-            spawnFrame.icon.index = array_index;
+            frame_data.icon.index = array_index;
             const entity user_data_element = user_data->value[item_index];
-            body_children.value[array_index] = spawn_frame_user(
+
+            entity3 frame_spawn = spawn_frame_user(
                 world,
-                spawnFrame,
-                user_data_element);
+                frame_data,
+                user_data_element
+            );
+            body_children.value[array_index] = frame_spawn.x;
+            if (spawns) {
+                spawns[array_index] = frame_spawn;
+            }
+
             array_index++;
             item_index++;
         }
     }
+
     if (active_states) {
         entity selected_frame = body_children.value[selected];
         zox_set(selected_frame, ActiveState, { 1 });
         zox_set(selected_frame, ActiveStateDirty, { zox_dirty_trigger });
     }
+
     zox_set_ptr(body, Children, body_children);
     zox_set_ptr(e, Children, children);
+
     // add to characters element links and link to character
     zox_muter(character, ElementLinks, elementLinks);
     add_to_ElementLinks(elementLinks, e);
     zox_set(e, ElementHolder, { character });
+
     return e;
 }

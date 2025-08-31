@@ -40,8 +40,6 @@ void ScrollbarSystem(iter *it) {
         float scroll_percentage = anchored_position_y / (float) scrollbar_offset;
         // scrollview_spawn - scrollview_shown gives us total_starts
 
-        int list_start = 0; // assume scrollbar is first element (for now)
-
         // zox_geter_value(list_ui, LayoutSize, int2, window_size)
         zox_geter_value(list_ui, ListVisible, byte, visible);
         zox_geter_value(list_ui, ListStart, byte, start);

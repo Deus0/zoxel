@@ -10,18 +10,18 @@ typedef struct {
 
 void DungeonBlockSystem(ecs_iter_t *it) {
 
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TimerState)
-    zox_sys_in(ChunkLink)
-    zox_sys_in(DungeonWallType)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TimerState);
+    zox_sys_in(ChunkLink);
+    zox_sys_in(DungeonWallType);
 
     for (int i = 0; i < it->count; i++) {
 
-        zox_sys_e()
-        zox_sys_i(ChunkLink, chunkLink)
-        zox_sys_i(TimerState, timerState)
-        zox_sys_i(DungeonWallType, place)
+        zox_sys_e();
+        zox_sys_i(ChunkLink, chunkLink);
+        zox_sys_i(TimerState, timerState);
+        zox_sys_i(DungeonWallType, place);
 
         if (timerState->value == 0) {
             continue;
@@ -57,7 +57,7 @@ void DungeonBlockSystem(ecs_iter_t *it) {
         );
 
         entity place_chunk;
-        int3 place_positionv;
+        // int3 place_positionv;
         byte3 place_positionl;
         int3 place_positionc;
         // VoxelNode* place_node;
@@ -121,7 +121,7 @@ void DungeonBlockSystem(ecs_iter_t *it) {
                         place_type = 0;
                         // continue;
                     }
-                    place_positionv = check_positionv;
+                    // place_positionv = check_positionv;
                     place_positionl = check_positionl;
                     place_positionc = check_positionc;
                     place_chunk = check_chunk;
@@ -161,4 +161,4 @@ void DungeonBlockSystem(ecs_iter_t *it) {
         zox_mut_end(place_chunk, VoxelNode);*/
         // zox_log("+ Dungeon Block Placing: %s [%ix%ix%i]: %i", zox_get_name(e), position.x, position.y, position.z, place_type)
     }
-} zoxd_system(DungeonBlockSystem)
+} zoxd_system2(DungeonBlockSystem);

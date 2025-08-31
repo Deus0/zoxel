@@ -1,5 +1,5 @@
 void FontTextureSystem(iter *it) {
-    const color air_color = color_null;
+    // const color air_color = color_null;
     const float2 point_padding = font_point_padding;
     // const byte default_font_outline = 1; // 4
     zox_change_check()

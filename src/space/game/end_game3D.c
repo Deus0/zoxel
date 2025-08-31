@@ -4,7 +4,7 @@ void player_end_game3(
 ) {
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    // zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CameraLink, entity, camera);
     float3 camera_position = float3_zero;
     float4 camera_rotation = quaternion_identity;

@@ -6,21 +6,24 @@
 zox_tag(Pickup);
 zox_tag(PickUpperer);
 zoxc_byte(PickedUp);
-#include "data/pickup_states.c"
-#include "util/collision_util.c"
-#include "prefabs/prefabs.c"
-#include "systems/pickup_sound_system.c"
+#include "dat/_.c"
+#include "fun/_.c"
+#include "pre/_.c"
+#include "sys/_.c"
 zox_increment_system(PickedUp, pickup_state_end);
 
 zox_begin_module(Pickups)
+    add_hook_spawn_prefabs(spawn_prefabs_pickups);
     zoxd_tag(Pickup);
     zoxd_tag(PickUpperer);
     zoxd_byte(PickedUp);
     zoxd_system_increment(PickedUp, [none] Pickup);
-    zox_system_1(PickupSoundSystem, zoxp_mainthread,
+    zox_system_1(
+        PickupSoundSystem,
+        zoxp_mainthread,
         [in] PickedUp,
-        [none] Pickup)
-    add_hook_spawn_prefabs(spawn_prefabs_pickups);
+        [none] Pickup
+    );
 zox_end_module(Pickups)
 
 #endif

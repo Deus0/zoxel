@@ -124,7 +124,11 @@ byte set_entity_label_with_text(
     return set_entity_text(world, children->value[0], text);
 }
 
-void set_new_zox_name(ecs *world, const entity e, const char* text) {
+void set_new_zox_name(
+    ecs *world,
+    const entity e,
+    const char* text
+) {
     zox_set_zext_component(e, ZoxName, text);
 }
 

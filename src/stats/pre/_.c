@@ -4,8 +4,9 @@
 #include "attribute.c"
 #include "stat.c"
 
-void spawn_prefabs_stats(ecs_world_t *world) {
-    spawn_prefab_stat(world);
+void spawn_prefabs_stats(ecs *world) {
+    entity prefab_stat = spawn_prefab_stat(world);
+    zox_set(prefab_stat, StatDirty, { zox_dirty_none });
     // zox_prefab_add(prefab_realm, StatLinks)
     if (prefab_realm) {
         zox_prefab_set(prefab_realm, StatLinks, { 0, NULL });

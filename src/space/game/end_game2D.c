@@ -4,7 +4,7 @@ void player_end_game2D(
 ) {
     const entity camera = zox_get_value(player, CameraLink);
     const entity character = zox_get_value(player, CharacterLink);
-    const entity canvas = zox_get_value(player, CanvasLink);
+    // const entity canvas = zox_get_value(player, CanvasLink);
     zox_delete(world_grid2D);
     zox_delete(character);
     zox_set(player, CharacterLink, { 0 });

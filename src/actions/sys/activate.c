@@ -9,7 +9,7 @@ void ActionActivateSystem(iter *it) {
 
     for (int i = 0; i < it->count; i++) {
 
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(TriggerActionB, trigger);
         zox_sys_i(ActionIndex, index);
         zox_sys_o(ActionLinks, actions);

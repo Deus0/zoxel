@@ -7,10 +7,10 @@ entity spawn_menu_paused(
     // settings
     const byte list_font_size = 32;
     const byte header_font_size = 42;
-    const float2 anchor = (float2) { 0.0f, 1.0f };
-    const int2 position = (int2) { 200, -200 };
-    const byte layer = pause_ui_overlay_layer + 3;
-    const byte is_close_button = 0;
+    // const float2 anchor = (float2) { 0.0f, 1.0f };
+    // const int2 position = (int2) { 200, -200 };
+    // const byte layer = pause_ui_overlay_layer + 3;
+    // const byte is_close_button = 0;
 
     int elements_count = 0;
     SpawnListElement elements[2];

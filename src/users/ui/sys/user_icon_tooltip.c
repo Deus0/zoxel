@@ -1,18 +1,22 @@
 // todo: SelectedEvent, Deselected Event, or, SelectState = SelectedThisFrame, Selected, Deselected, None
 // todo: Give item a texture, spawn as icon!
 
-void UserIconTooltipSystem(ecs_iter_t *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(SelectState)
-    zox_sys_in(UserDataLink)
-    zox_sys_in(CanvasLink)
-    zox_sys_in(TooltipEvent)
+void UserIconTooltipSystem(iter *it) {
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(SelectState);
+    zox_sys_in(UserDataLink);
+    zox_sys_in(CanvasLink);
+    zox_sys_in(TooltipEvent);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(SelectState, selectState)
-        zox_sys_i(UserDataLink, userDataLink)
-        zox_sys_i(TooltipEvent, tooltipEvent)
-        zox_sys_i(CanvasLink, canvasLink)
+
+        zox_sys_i(SelectState, selectState);
+        zox_sys_i(UserDataLink, userDataLink);
+        zox_sys_i(TooltipEvent, tooltipEvent);
+        zox_sys_i(CanvasLink, canvasLink);
+
         if (!(selectState->value == zox_select_state_selected_this_frame || selectState->value == zox_select_state_deselected_this_frame)) {
             continue;
         }
@@ -37,5 +41,4 @@ void UserIconTooltipSystem(ecs_iter_t *it) {
         (*tooltipEvent->value)(world, &data);
         // zox_log(" > icon [%lu] selected at %f\n", it->entities[i], zox_current_time)
     }
-} zoxd_system(UserIconTooltipSystem)
-
+} zoxd_system2(UserIconTooltipSystem);
