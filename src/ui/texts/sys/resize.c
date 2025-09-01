@@ -2,7 +2,7 @@
 // #define zoxel_debug_zext_updates
 
 // For reusing a zigel, set all positions again to position entire text
-void set_zigel_position(
+/*void set_zigel_position(
     ecs *world,
     const TextData *textData,
     const entity e,
@@ -25,7 +25,7 @@ void set_zigel_position(
     );
     zox_set(e, LayoutPosition, { pixel_position });
     zox_set(e, LayoutPositionDirty, { zox_dirty_trigger });
-}
+}*/
 
 void spawn_text2D_zigels(
     ecs* world,
@@ -52,7 +52,7 @@ void spawn_text2D_zigels(
     //  - set old positions, as we are resizing
     for (int i = 0; i < reuse_count; i++) {
         const entity e = old_children[i];
-        const int data_index = calculate_zigel_data_index(text_data->value, text_data->length, i);
+        /*const int data_index = calculate_zigel_data_index(text_data->value, text_data->length, i);
         set_zigel_position(
             world,
             text_data,
@@ -66,7 +66,7 @@ void spawn_text2D_zigels(
             data->parent.position,
             data->parent.size,
             data->canvas.size
-        );
+        );*/
         new_children[i] = e;
     }
     // Spawn New Zigels
@@ -76,9 +76,9 @@ void spawn_text2D_zigels(
 #endif
         for (int i = old_children_length; i < new_children_length; i++) {
             const byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, i);
-            const int data_index = calculate_zigel_data_index(text_data->value, text_data->length, i);
+            // const int data_index = calculate_zigel_data_index(text_data->value, text_data->length, i);
             data->zigel.zigel_index = zigel_index;
-            data->zigel.data_index = data_index;
+            // data->zigel.data_index = data_index;
             const entity zigel = spawn_zext_zigel(
                 world,
                 text_data,
@@ -110,7 +110,7 @@ void TextResizeSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextData);
-    zox_sys_in(TextSize);
+    zox_sys_in(TextFontSize);
     zox_sys_in(TextPadding);
     zox_sys_in(Layer2D);
     zox_sys_in(CanvasPosition);
@@ -130,7 +130,7 @@ void TextResizeSystem(iter *it) {
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
         zox_sys_i(TextData, text_data);
-        zox_sys_i(TextSize, textSize);
+        zox_sys_i(TextFontSize, textSize);
         zox_sys_i(TextPadding, textPadding);
         zox_sys_i(Layer2D, layer2D);
         zox_sys_i(CanvasPosition, canvasPosition);

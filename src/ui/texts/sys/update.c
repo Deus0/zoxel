@@ -11,39 +11,45 @@ void update_text(
         if (!zox_valid(e)) {
             continue;
         }
-        const byte zigel_index = calculate_zigel_index(textData->value, textData->length, i);
-        const byte old_zigel_index = zox_get_value(e, ZigelIndex)
-        if (old_zigel_index != zigel_index) {
-            zox_muter(e, ZigelIndex, zigelIndex2)
-            zox_muter(e, GenerateTexture, generateTexture)
-            zigelIndex2->value = zigel_index;
-            generateTexture->value = zox_generate_texture_trigger;
-            zox_log_text("    + zigel [%i] updated [%i:%i]", i, old_zigel_index, zigel_index)
+        const byte new = calculate_zigel_index(textData->value, textData->length, i);
+        zox_geter_value(e, ZigelIndex, byte, old);
+        if (old != new) {
+            zox_muter(e, ZigelIndex, index);
+            zox_muter(e, GenerateTexture, generate);
+            index->value = new;
+            generate->value = zox_generate_texture_trigger;
+            zox_log_text("    + zigel [%i] updated [%i:%i]", i, old, new);
         }
     }
 }
 
 // just updates previous zigels to new data
 void TextUpdateSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TextDirty)
-    zox_sys_in(TextData)
-    zox_sys_in(Children)
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TextDirty);
+    zox_sys_in(TextData);
+    zox_sys_in(Children);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TextDirty, zextDirty)
-        zox_sys_i(Children, children)
-        zox_sys_i(TextData, textData)
+
+        zox_sys_i(TextDirty, zextDirty);
+        zox_sys_i(Children, children);
+        zox_sys_i(TextData, textData);
+
         if (zextDirty->value != zox_dirty_active || !textData->length) {
             continue;
         }
-        char *debug_text = convert_zext_to_text(textData->value, textData->length);
+
+        /*char *debug_text = convert_zext_to_text(textData->value, textData->length);
         if (debug_text) {
             zox_log_text("+ updating [%s] text: %s", zox_get_name(it->entities[i]), debug_text)
             free(debug_text);
         } else {
             zox_log_text("+ updating [%s] text [null]",  zox_get_name(it->entities[i]))
-        }
+        }*/
+
         update_text(world, children, textData);
         // zox_sys_e()
         // zox_log("+ updating text [%s]", zox_get_name(e))

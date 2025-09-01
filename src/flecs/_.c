@@ -10,6 +10,7 @@ byte running = 1;
 #include "com/_.c"
 #include "util/_.c"
 #include "systems/_.c"
+#include "components/state.c"
 
 ecs_world_t* open_ecs(int argc, char* argv[]) {
     ecs_world_t* new_world = ecs_init_w_args(argc, argv);

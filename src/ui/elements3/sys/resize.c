@@ -35,7 +35,10 @@ void resize_text3D(
         }
     }
     for (int i = 0; i < reuse_count; i++) {     // Reposition old zigels!
-        const int data_index = calculate_zigel_data_index(textData->value, textData->length, i);
+        const int data_index = calculate_zigel_data_index(
+            textData->value,
+            textData->length,
+            i);
         const float3 zigel_position = calculate_zigel3D_position(zigel3D_size, data_index, new_children_length, zigel_data.scale);
         const entity e = old_children[i];
         zox_set(e, LocalPosition3D, { zigel_position })
@@ -62,7 +65,7 @@ void Text3DResizeSystem(iter *it) {
     zox_sys_in(FontThickness);
     zox_sys_in(RenderDisabled);
     zox_sys_in(Text3DScale);
-    zox_sys_in(TextSize);
+    zox_sys_in(TextFontSize);
     zox_sys_out(Children);
 
     for (int i = 0; i < it->count; i++) {
@@ -74,7 +77,7 @@ void Text3DResizeSystem(iter *it) {
         zox_sys_i(FontOutlineColor, fontOutlineColor);
         zox_sys_i(RenderDisabled, renderDisabled);
         zox_sys_i(Text3DScale, text3DScale);
-        zox_sys_i(TextSize, textSize);
+        zox_sys_i(TextFontSize, textSize);
         zox_sys_i(TextData, textData);
         zox_sys_o(Children, children);
 

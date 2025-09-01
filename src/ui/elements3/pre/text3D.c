@@ -16,7 +16,7 @@ entity spawn_prefab_text3D(
     zox_add_tag(e, Zext);
     zox_add_tag(e, Text3D);
     zox_prefab_set(e, MeshAlignment, { 0 });
-    zox_prefab_set(e, TextSize, { 0 });
+    zox_prefab_set(e, TextFontSize, { 0 });
     zox_prefab_set(e, TextResolution, { 0 });
     zox_prefab_set(e, TextPadding, { byte2_zero });
     zox_prefab_set(e, TextData, { 0 });
@@ -63,7 +63,7 @@ entity spawn_text3D(
     zox_set(e, FontFillColor, { zigel_data.fill_color });
     zox_set(e, FontOutlineColor, { zigel_data.outline_color });
     zox_set(e, Text3DScale, { zigel_data.scale });
-    zox_set(e, TextSize, { zigel_data.resolution });
+    zox_set(e, TextFontSize, { zigel_data.resolution });
     // text
     const int length = data.text != NULL ? strlen(data.text) : 0;
     TextData text = (TextData) { 0, NULL };

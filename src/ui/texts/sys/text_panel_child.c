@@ -4,7 +4,7 @@ void ZextParentBackgroundSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(TextDirty);
     zox_sys_in(TextData);
-    zox_sys_in(TextSize);
+    zox_sys_in(TextFontSize);
     zox_sys_in(TextPadding);
     // zox_sys_in(MeshAlignment);
     zox_sys_in(ParentLink);
@@ -14,7 +14,7 @@ void ZextParentBackgroundSystem(iter *it) {
         zox_sys_i(TextDirty, dirty);
         zox_sys_i(ParentLink, parent);
         zox_sys_i(TextData, text);
-        zox_sys_i(TextSize, size);
+        zox_sys_i(TextFontSize, size);
         zox_sys_i(TextPadding, textPadding);
         // zox_sys_i(MeshAlignment, meshAlignment);
 

@@ -30,7 +30,7 @@ void define_systems_elements3D(ecs *world) {
         [in] zigels.FontThickness,
         [in] rendering.RenderDisabled,
         [in] Text3DScale,
-        [in] texts.TextSize,
+        [in] texts.TextFontSize,
         [out] hierarchys.Children,
         [none] texts.Zext,
         [none] Text3D

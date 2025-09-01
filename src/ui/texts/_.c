@@ -7,6 +7,7 @@
 #include "fun/_.c"
 #include "pre/_.c"
 #include "sys/_.c"
+#include "ins/_.c"
 
 zox_begin_module(Texts)
     define_components_texts(world);
