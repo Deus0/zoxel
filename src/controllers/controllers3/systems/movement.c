@@ -86,7 +86,7 @@ void Player3DMoveSystem(ecs_iter_t *it) {
                     } else if (zox_has(zevice_entity, ZeviceButton)) {
                         if (deviceButtonType->value == zox_device_button_lb || deviceButtonType->value == zox_device_button_rb) {
                             zox_geter(zevice_entity, ZeviceButton, zeviceButton)
-                            if (!is_running && devices_get_is_pressed(zeviceButton->value)) {
+                            if (!is_running && devices_get_pressed(zeviceButton->value)) {
                                 is_running = 1;
                             }
                         }

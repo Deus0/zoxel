@@ -105,7 +105,7 @@ void initialize_sdl_gamepads(ecs_world_t *world) {
 }
 
 byte process_byte(const byte old_byte, const byte raw_value) {
-    const byte was_pressed = devices_get_is_pressed(old_byte);
+    const byte was_pressed = devices_get_pressed(old_byte);
     const byte pressed_this_frame = !was_pressed && raw_value;
     const byte released_this_frame = was_pressed && !raw_value;
     if (pressed_this_frame) zox_log_input("  [%i] is pressed this frame", index)
@@ -176,7 +176,7 @@ byte set_gamepad_axis2(ZeviceStick *zeviceStick, SDL_Joystick *joystick, int ind
 byte set_gamepad_button(const byte old_value, SDL_Joystick *joystick, int index) {
     byte raw_value = SDL_JoystickGetButton(joystick, index);
     return process_byte(old_value, raw_value);
-    /*byte was_pressed = devices_get_is_pressed(old_value);
+    /*byte was_pressed = devices_get_pressed(old_value);
     byte pressed_this_frame = !was_pressed && raw_value;
     byte released_this_frame = was_pressed && !raw_value;
 #ifdef zox_log_gamepad_button_pressed

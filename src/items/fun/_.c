@@ -1,11 +1,12 @@
 #include "character.c"
 #include "label.c"
 
-void set_linked_item(ecs_world_t *world,
-    const ecs_entity_t user,
+void set_linked_item(
+    ecs *world,
+    const entity user,
     const int index,
-    const ecs_entity_t e)
-{
+    const entity e
+) {
     if (!zox_valid(user) || !zox_has(user, ItemLinks)) {
         return;
     }
@@ -14,5 +15,27 @@ void set_linked_item(ecs_world_t *world,
         return;
     }
     datas->value[index] = e;
-    zox_mut_end(user, ItemLinks)
+    zox_mut_end(user, ItemLinks);
+}
+
+void link_as_new_item(
+    ecs *world,
+    const entity element,
+    const entity3 frame
+) {
+    // link new element to all uis
+    if (frame.x) {
+        zox_set(frame.x, ItemLink, { element });
+    }
+    if (frame.y) {
+        zox_set(frame.y, ItemLink, { element });
+    }
+    if (frame.z) {
+        zox_set(frame.z, ItemLink, { element });
+        // Clear Label
+        zox_muter(frame.z, TextData, text_data);
+        zox_muter(frame.z, TextDirty, text_dirty);
+        dispose_TextData(text_data);
+        text_dirty->value = zox_dirty_trigger;
+    }
 }

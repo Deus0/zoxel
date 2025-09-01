@@ -26,7 +26,7 @@ void MouseRaycasterSystem(ecs_iter_t *it) {
                     const ecs_entity_t zevice = zevices->value[k];
                     if (zox_has(zevice, ZevicePointer)) {
                         const ZevicePointer *zevicePointer = zox_get(zevice, ZevicePointer)
-                        if (devices_get_released_this_frame(zevicePointer->value) || devices_get_is_pressed(zevicePointer->value)) {
+                        if (devices_get_released_this_frame(zevicePointer->value) || devices_get_pressed(zevicePointer->value)) {
                             const ZevicePointerPosition *zevicePointerPosition = zox_get(zevice, ZevicePointerPosition)
                             int2_add_int2_p(&raycaster->value, zevicePointerPosition->value);
                             // zox_log(" > player raycaster set to [%ix%i]\n", zevicePointerPosition->value.x, zevicePointerPosition->value.y)

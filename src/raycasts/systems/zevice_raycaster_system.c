@@ -8,7 +8,7 @@ void ZeviceRaycasterSystem(ecs_iter_t *it) {
         zox_sys_i(ZevicePointerPosition, zevicePointerPosition)
         zox_sys_o(Raycaster, raycaster)
         // const byte click_value = zevicePointer->value;
-        /*if (!(devices_get_released_this_frame(click_value) || devices_get_is_pressed(click_value))) {
+        /*if (!(devices_get_released_this_frame(click_value) || devices_get_pressed(click_value))) {
             raycaster->value = (int2) { -10000, -10000 };
         } else {
             raycaster->value = zevicePointerPosition->value;

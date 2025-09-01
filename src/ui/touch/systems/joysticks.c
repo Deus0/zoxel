@@ -47,7 +47,7 @@ void handle_touch_drag(ecs *world,
                 zox_set(virtual_joystick, ElementLink, { 0 })
                 virtual_joysticks_spawn_count--;
             }
-        } else if (devices_get_is_pressed(zevicePointer->value)) {
+        } else if (devices_get_pressed(zevicePointer->value)) {
             zox_geter(finger, ZevicePointerPosition, zevicePointerPosition)
             zox_geter(joystick_element, LayoutPosition, virtual_joystick_position)
             zox_geter(joystick_element, Children, ui_children)

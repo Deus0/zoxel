@@ -1,7 +1,8 @@
 extern byte process_icon_type_action(ecs*, const entity);
-extern void set_linked_action(ecs*, const entity, const int, const entity, const entity3);
+extern void set_linked_action(ecs*, const entity, const int, const entity);
 extern void set_linked_item(ecs*, const entity, const int, const entity);
 extern void set_linked_skill(ecs*, const entity, const int, const entity);
+extern void link_as_new_item(ecs*, const entity, const entity3);
 
 void UserIconClickSystem(iter *it) {
 
@@ -97,13 +98,16 @@ void UserIconClickSystem(iter *it) {
         // === Base on Frame clicked ===
         if (iconType->value == zox_icon_type_action) {
             zox_log(" + character [%lu] setting [%s] [%i]", character, "action", iconIndex->value)
-            set_linked_action(world, character, iconIndex->value, mouse_data, framer);
+            set_linked_action(world, character, iconIndex->value, mouse_data);
+            link_as_new_item(world, mouse_data, framer);
         } else if (iconType->value == zox_icon_type_skill) {
             // zox_log(" + character [%lu] setting [%s] [%i]\n", character, "skill", iconIndex->value)
             set_linked_skill(world, character, iconIndex->value, mouse_data);
         } else if (iconType->value == zox_icon_type_item) {
             // zox_log(" + character [%lu] setting [%s] [%i]\n", character, "item", iconIndex->value)
             set_linked_item(world, character, iconIndex->value, mouse_data);
+            link_as_new_item(world, mouse_data, framer);
+
         }
 
         // clear the tooltip when picked up icon

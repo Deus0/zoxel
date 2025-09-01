@@ -12,11 +12,11 @@
 #ifndef zoxm_inputs
 #define zoxm_inputs
 
-#include "data/_.c"
-#include "components/_.c"
-#include "util/_.c"
-#include "prefabs/_.c"
-#include "systems/_.c"
+#include "dat/_.c"
+#include "com/_.c"
+#include "fun/_.c"
+#include "pre/_.c"
+#include "sys/_.c"
 
 void module_dispose_inputs(ecs *world, void *ctx) {
     (void) world;

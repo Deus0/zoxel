@@ -8,7 +8,7 @@ void ZeviceButtonEnableSystem(iter *it) {
         if (!zeviceDisabled->value) {
             continue;
         }
-        const byte has_input = devices_get_is_pressed(zeviceButton->value);
+        const byte has_input = devices_get_pressed(zeviceButton->value);
         if (!has_input) {
             zeviceDisabled->value = 0;
         }

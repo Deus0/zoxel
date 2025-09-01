@@ -56,7 +56,7 @@ void Player3DJumpSystem(ecs_iter_t *it) {
                                 continue;
                             }
                             zox_geter(zevice_entity, ZeviceButton, zeviceButton)
-                            if (devices_get_is_pressed(zeviceButton->value)) {
+                            if (devices_get_pressed(zeviceButton->value)) {
                                 is_jump_triggered = 1;
                             }
                             break;

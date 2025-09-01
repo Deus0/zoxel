@@ -50,17 +50,9 @@ void ItemActivateSystem(iter *it) {
             dirty->value = zox_dirty_trigger;
 
             if (quantity->value == 0) {
-                /*on_action_updated_quantity2(
-                    world,
-                    e,
-                    user,
-                    quantity->value
-                );
-            } else {*/
                 // set action to nullptr
                 // destroy entity
                 zox_delete(e);
-
                 on_action_removed(
                     world,
                     e,

@@ -47,7 +47,7 @@ void Controller2MoveSystem(ecs_iter_t *it) {
                         const DeviceButtonType *deviceButtonType = zox_get(zevice_entity, DeviceButtonType)
                         if (deviceButtonType->value == zox_device_button_lb || deviceButtonType->value == zox_device_button_rb) {
                             const ZeviceButton *zeviceButton = zox_get(zevice_entity, ZeviceButton)
-                            if (!is_running && devices_get_is_pressed(zeviceButton->value)) is_running = 1;
+                            if (!is_running && devices_get_pressed(zeviceButton->value)) is_running = 1;
                         }
                     }
                 }

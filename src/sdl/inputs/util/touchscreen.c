@@ -64,7 +64,7 @@ void set_id(ecs *world, const entity e, const int new_id) {
 
 void finger_released(ecs *world, const entity e) {
     zox_muter(e, ZevicePointer, pointer);
-    if (devices_get_is_pressed(pointer->value)) {
+    if (devices_get_pressed(pointer->value)) {
         devices_set_is_pressed(&pointer->value, 0);
         devices_set_released_this_frame(&pointer->value, 1);
         set_id(world, e, 0);

@@ -6,6 +6,6 @@ void define_systems_actions(ecs* world) {
         EcsOnUpdate,
         [in] triggers.TriggerActionB,
         [in] actions.ActionIndex,
-        [out] actions.ActionLinks
+        [in] actions.ActionLinks
     );
 }

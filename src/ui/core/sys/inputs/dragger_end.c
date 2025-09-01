@@ -32,7 +32,7 @@ void DraggerEndSystem(iter *it) {
                 const int2 delta = zox_get_value(zevice, ZevicePointerDelta)
                 if (devices_get_released_this_frame(click)) {
                     did_drag_end = 1;
-                } else if (devices_get_is_pressed(click)) {
+                } else if (devices_get_pressed(click)) {
                     draggingDelta->value = delta;
                 }
             }
@@ -46,7 +46,7 @@ void DraggerEndSystem(iter *it) {
                     if (zox_has(zevice_entity, ZevicePointer)) {
                         const ZevicePointer *zevicePointer = zox_get(zevice_entity, ZevicePointer)
                         if (devices_get_released_this_frame(zevicePointer->value)) did_drag_end = 1;
-                        else if (devices_get_is_pressed(zevicePointer->value)) draggingDelta->value = zox_get_value(zevice_entity, ZevicePointerDelta);
+                        else if (devices_get_pressed(zevicePointer->value)) draggingDelta->value = zox_get_value(zevice_entity, ZevicePointerDelta);
                         break;
                     }
                 }
