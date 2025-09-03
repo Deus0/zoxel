@@ -1,6 +1,6 @@
-/*ecs_entity_t prefab_stat;
+/*entity prefab_stat;
 
-ecs_entity_t spawn_prefab_stat(ecs_world_t *world) {
+entity spawn_prefab_stat(ecs *world) {
     zox_prefab()
     zox_prefab_name("stat")
     zox_add_tag(e, Stat)
@@ -9,7 +9,7 @@ ecs_entity_t spawn_prefab_stat(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_stat(ecs_world_t *world) {
+entity spawn_stat(ecs *world) {
     zox_instance(prefab_stat)
     zox_name("stat")
     // zox_set(e, Position3D, { position })

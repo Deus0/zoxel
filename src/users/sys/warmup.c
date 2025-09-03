@@ -1,15 +1,16 @@
+// If Not cooling or warming, start warmup state
 void WarmupSystem(iter *it) {
     zox_sys_begin();
-    zox_sys_in(Activate);
+    zox_sys_in(ActivateBegin);
     zox_sys_in(CooldownAt);
     zox_sys_out(WarmupAt);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Activate, activate);
+        zox_sys_i(ActivateBegin, begin);
         zox_sys_i(CooldownAt, cooling);
         zox_sys_o(WarmupAt, start);
-        if (!cooling->value && !start->value && activate->value == zox_dirty_active) {
+        if (!cooling->value && !start->value && begin->value == zox_dirty_active) {
             start->value = zox_current_time;
-            // zox_log("warmup started");
+            // zox_log("warmup started [%0.1f]", zox_current_time);
         }
     }
 } zoxd_system2(WarmupSystem);
@@ -31,7 +32,7 @@ void WarmupStateSystem(iter *it) {
         if (time_passed >= time->value) {
             warmup->value = 0;
             state->value = zox_dirty_trigger;
-            // zox_log("warmup ended %f", time_passed);
+            // zox_log("warmup ended [%f] of [%f]", time_passed, time->value);
         }
     }
 } zoxd_system2(WarmupStateSystem);

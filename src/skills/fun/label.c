@@ -1,4 +1,4 @@
-uint get_label_player_skills(ecs_world_t *world, const ecs_entity_t player, char *buffer, const uint size, uint index) {
+uint get_label_player_skills(ecs *world, const entity player, char *buffer, const uint size, uint index) {
     if (!player) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
@@ -11,7 +11,7 @@ uint get_label_player_skills(ecs_world_t *world, const ecs_entity_t player, char
     zox_geter(characterLink->value, SkillLinks, skills)
     index += snprintf(buffer + index, size - index, "[%s] has [%i] skills\n", zox_get_name(player), skills->length);
     for (int i = 0; i < skills->length; i++) {
-        const ecs_entity_t skill = skills->value[i];
+        const entity skill = skills->value[i];
         if (!zox_valid(skill)) {
             continue;
         }

@@ -1,4 +1,7 @@
-void spawn_realm_skills(ecs_world_t *world, const ecs_entity_t realm) {
+void spawn_realm_skills(
+    ecs *world,
+    const entity realm
+) {
     const float base_death_aura_damage = 1;
     const float base_death_aura_range = 3;
 
@@ -25,11 +28,11 @@ void spawn_realm_skills(ecs_world_t *world, const ecs_entity_t realm) {
     // char *name = generate_name();
     // todo: perhaps life aura can effect character themself!
 
-    ecs_entity_t health = 0;
-    ecs_entity_t energy = 0;
-    ecs_entity_t mana = 0;
+    entity health = 0;
+    entity energy = 0;
+    entity mana = 0;
     for (int i = 0; i < stats->length; i++) {
-        const ecs_entity_t stat = stats->value[i];
+        const entity stat = stats->value[i];
         if (zox_has(stat, StatState)) {
             if (!health) {
                 health = stat;
@@ -50,12 +53,13 @@ void spawn_realm_skills(ecs_world_t *world, const ecs_entity_t realm) {
         energy,
         1,
         "punch",
-        0.16f,
-        0.34f);
+        0.36f,
+        0.44f
+    );
 
     // testing
 
-    ecs_entity_t mana_punch = spawn_skill_melee_t(
+    entity mana_punch = spawn_skill_melee_t(
         world,
         "mana punch",
         2,
@@ -73,19 +77,28 @@ void spawn_realm_skills(ecs_world_t *world, const ecs_entity_t realm) {
         -base_death_aura_damage,
         base_death_aura_range,
         (color) { 5, 5, 5, 122 },
-        "aura_death");
+        "aura_death",
+        0.5f,
+        0.5f
+    );
     meta_skill_aura_life = spawn_skill_aura_t(world,
         "life aura",
         base_death_aura_damage,
         base_death_aura_range,
         (color) { 255, 255, 255, 88 },
-        "aura_life");
+        "aura_life",
+        0.5f,
+        0.5f
+    );
     meta_skill_aura_fire = spawn_skill_aura_t(world,
         "fire aura",
         -base_death_aura_damage * 0.5f,
         base_death_aura_range * 4,
         (color) { 255, 22, 22, 144 },
-        "aura_fire");
+        "aura_fire",
+        0.5f,
+        0.5f
+    );
 
     add_to_SkillLinks(&skills, meta_skill_punch);
     add_to_SkillLinks(&skills, mana_punch);

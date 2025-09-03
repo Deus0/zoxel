@@ -1,7 +1,10 @@
 int character_inventory_count = 8; // 8 | 16; // having blank items seems to b reak it
 byte test_give_npcs_blocks = 1;
 
-void spawn_character_items(ecs_world_t *world, spawned_character3D_data *data) {
+void spawn_character_items(
+    ecs *world,
+    spawned_character3D_data *data
+) {
     if (!data->p) {
         // todo: give them mushroom! or simple block for now
         if (test_give_npcs_blocks) {
@@ -28,47 +31,39 @@ void spawn_character_items(ecs_world_t *world, spawned_character3D_data *data) {
         inventory_count = 16;
     }
 
-    ItemLinks *items = &((ItemLinks) { 0, NULL });
-    initialize_ItemLinks(items, inventory_count);
-    if (!items->value) {
-        zox_log_error(" ! failed allocating memory for items")
+    ItemLinks items = (ItemLinks) { 0 };
+    initialize_ItemLinks(&items, inventory_count);
+    if (!items.value) {
+        zox_log_error("Failed allocating memory for items")
         return;
     }
-    for (int i = 0; i < items->length; i++) {
-        items->value[i] = 0; // blanks are item slots
+    for (int i = 0; i < items.length; i++) {
+        items.value[i] = 0; // blanks are item slots
     }
-    // first block
-    /*if (meta_item_block) {
-        const ecs_entity_t item_block = spawn_user_item(world, meta_item_block, e);
-        // set item data, quantity here
-        // zox_set_name(item_block, "block"); // shold inherit name from meta
-        // link up
-        items->value[0] = item_block;
-        // zox_log(" + spawned inventory item [%lu] character [%lu]\n", item_block, e)
-    } else {
-        zox_log(" ! meta_item_block not found\n")
-    }*/
+
     int place_index = 0;
     if (test_items_blocks && data->p) {
         // get voxels
-        zox_geter(data->realm, VoxelLinks, voxels)
-        for (int i = 0; i < voxels->length; i++) {
-            if (i >= items->length) {
+        zox_geter(data->realm, VoxelLinks, blocks);
+        for (int i = 0; i < blocks->length; i++) {
+            if (i >= items.length) {
                 break;
             }
-            const ecs_entity_t block = voxels->value[i];
+            const entity block = blocks->value[i];
             if (!zox_valid(block) || !zox_has(block, ItemLink)) {
-                zox_log_error("block invalid [%i]", i)
+                zox_log_error("block invalid [%i]", i);
                 continue;
             }
-            zox_geter(block, ItemLink, itemLink);
-            if (!zox_valid(itemLink->value)) {
-                zox_log_error("block item invalid [%i]", i)
+            zox_geter_value(block, ItemLink, entity, block_item);
+            if (!zox_valid(block_item)) {
+                zox_log_error("block item invalid [%i]", i);
                 continue;
             }
-            items->value[place_index++] = spawn_user_item(world, itemLink->value, data->e);
-            zox_set(items->value[place_index - 1], Quantity, { 64 })
+            entity item = spawn_user_item(world, block_item, data->e);
+            zox_set(item, Quantity, { 64 });
+            items.value[place_index++] = item;
         }
     }
-    zox_set(data->e, ItemLinks, { items->length, items->value })
+
+    zox_set_ptr(data->e, ItemLinks, items);
 }

@@ -1,4 +1,4 @@
-void HealthbarSpawnerSystem(ecs_iter_t *it) {
+void HealthbarSpawnerSystem(iter *it) {
     const float trail_offset = trailoffset;
 
     zox_sys_world();

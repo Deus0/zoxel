@@ -1,3 +1,3 @@
-int get_statbars_count(ecs_world_t *world) {
+int get_statbars_count(ecs *world) {
     return zox_count_types(Statbar)
 }

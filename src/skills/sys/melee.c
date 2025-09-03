@@ -1,8 +1,8 @@
 // [none] Melee
-extern ecs_entity_t spawn_pickup_block(ecs_world_t*, const float3, const ecs_entity_t);
+extern entity spawn_pickup_block(ecs*, const float3, const entity);
 
 // TODO: Check Resource Cost before warming up!
-void MeleeSystem(ecs_iter_t *it) {
+void MeleeSystem(iter *it) {
 
     const float popup_spawn_y = 0.18f;
     const double volume = get_volume_sfx();
@@ -15,7 +15,7 @@ void MeleeSystem(ecs_iter_t *it) {
     zox_sys_in(SkillRange);
     zox_sys_in(SkillResourceLink);
     zox_sys_in(SkillCost);
-    zox_sys_out(SkillActive);
+    zox_sys_in(Activate);
 
     for (int i = 0; i < it->count; i++) {
 
@@ -25,27 +25,26 @@ void MeleeSystem(ecs_iter_t *it) {
         zox_sys_i(SkillRange, skillRange);
         zox_sys_i(SkillResourceLink, skillResourceLink);
         zox_sys_i(SkillCost, skillCost);
-        zox_sys_o(SkillActive, skillActive);
+        zox_sys_i(Activate, active);
 
-        const ecs_entity_t user = userLink->value;
-        if (!skillActive->value) {
+        if (active->value != zox_dirty_active) {
             continue;
         }
-        skillActive->value = 0;
 
         // user validation
+        const entity user = userLink->value;
         if (!zox_valid(user) || !zox_has(user, StatLinks) || zox_gett_value(user, Dead)) {
             continue;
         }
 
         // does have skillResourceLink
-        ecs_entity_t resource = 0;
-        ecs_entity_t strength = 0;
+        entity resource = 0;
+        entity strength = 0;
 
-        zox_geter(user, StatLinks, stats)
+        zox_geter(user, StatLinks, stats);
 
         for (int j = 0; j < stats->length; j++) {
-            const ecs_entity_t stat = stats->value[j];
+            const entity stat = stats->value[j];
             zox_get_prefab(stat, stat_parent)
             if (skillResourceLink->value == stat_parent) {
                 resource = stat;
@@ -76,30 +75,39 @@ void MeleeSystem(ecs_iter_t *it) {
             spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[44], 0.3, volume);
             continue;
         }
-        zox_geter(user, RaycastVoxelData,  raycastVoxelData)
+        zox_geter(user, RaycastVoxelData,  raycastVoxelData);
 
         // todo: reduce energy stat value using SkillCost, check if has enough energy
         float skill_damage = randf_range(skillDamage->value, skillDamageMax->value);
         if (strength) {
             skill_damage += strength_damage_multiplier * zox_gett_value(strength, StatValue);
         }
+
         const float skill_range = skillRange->value;
-        const ecs_entity_t hit = raycastVoxelData->chunk;
+        const entity hit = raycastVoxelData->chunk;
         const byte in_range = debug_ray_big_range || raycastVoxelData->distance <= skill_range;
+
         if (!zox_valid(hit) || !in_range) {
             // ray too far
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[44], 0.3, volume);
+            spawn_sound_generated(
+                world,
+                prefab_sound_generated,
+                instrument_violin,
+                note_frequencies[44],
+                0.3,
+                volume
+            );
             continue;
         }
         if (zox_has(hit, Character3)) {
-            zox_geter(hit, StatLinks, hit_stats)
-            find_array_element_with_tag(hit_stats, HealthStat, health_stat)
+            zox_geter(hit, StatLinks, hit_stats);
+            find_array_element_with_tag(hit_stats, HealthStat, health_stat);
             if (!zox_valid(health_stat)) {
                 zox_log_error("hit user had no health")
                 continue;
             } else {
-                const float stat_value_max = zox_get_value(health_stat, StatValueMax)
-                zox_muter(health_stat, StatValue, statValue)
+                const float stat_value_max = zox_get_value(health_stat, StatValueMax);
+                zox_muter(health_stat, StatValue, statValue);
                 statValue->value -= skill_damage;
                 if (statValue->value < 0) {
                     statValue->value = 0;
@@ -111,18 +119,29 @@ void MeleeSystem(ecs_iter_t *it) {
             }
 
             // hit sound
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[28], 0.6, volume);
+            spawn_sound_generated(
+                world,
+                prefab_sound_generated,
+                instrument_violin,
+                note_frequencies[28],
+                0.6,
+                volume
+            );
 
             // add knockback
             float3 hit_impulse = float3_scale(raycastVoxelData->normal, randf_range(knockback_min, knockback_max));
-            zox_muter(hit, Velocity3D, hit_velocity)
+
+            zox_muter(hit, Velocity3D, hit_velocity);
             hit_velocity->value = float3_add(hit_velocity->value, hit_impulse);
             // zox_log("+ added impulse [%fx%fx%f]", hit_impulse.x, hit_impulse.y, hit_impulse.z)
 
             // damage popup
-            zox_geter_value(hit, Bounds3D, float3, bounds3D)
-            zox_geter_value(hit, Position3D, float3, hit_character_position)
-            const float3 popup_position = (float3) { hit_character_position.x, hit_character_position.y + bounds3D.y + popup_spawn_y, hit_character_position.z };
+            zox_geter_value(hit, Bounds3D, float3, bounds3D);
+            zox_geter_value(hit, Position3D, float3, hit_character_position);
+            const float3 popup_position = (float3) {
+                hit_character_position.x, hit_character_position.y + bounds3D.y + popup_spawn_y,
+                hit_character_position.z
+            };
             char popup_text[64];
             sprintf(popup_text, "%i", (int) floor(skill_damage));
             const color popup_color = (color) { 255, 0, 0, 255 };
@@ -132,45 +151,70 @@ void MeleeSystem(ecs_iter_t *it) {
                 popup_color,
                 popup_position,
                 2.5f,
-                randf_range(4, 8));
+                randf_range(4, 8)
+            );
 
         } else if (raycastVoxelData->voxel && raycastVoxelData->hit_block && zox_has(hit, TerrainChunk)) {
-            const ecs_entity_t block = raycastVoxelData->hit_block;
+
+            const entity block = raycastVoxelData->hit_block;
             if (!zox_valid(block)) {
                 zox_log_error("TerrainChunk is valid but block is not.")
                 continue;
             }
+
             if (!zox_has(block, BlockInvinsible)) {
                 // effect our terrain here
                 raycast_action(world, raycastVoxelData, 0, 2);
                 // destroy voxel sound
-                spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + rand() % 6], 0.4, 1.2f * get_volume_sfx());
+                spawn_sound_generated(
+                    world,
+                    prefab_sound_generated,
+                    instrument_piano,
+                    note_frequencies[24 + rand() % 6],
+                    0.4,
+                    1.2f * get_volume_sfx()
+                );
 
                 // todo: spawn pickup in VoxelNodeDirty system - TerrainItemDropSystem
                 // this requires a stack on chunk for its updates
                 // spawn a pickup if removed
                 // now get item and set to pickup
                 if (zox_has(block, ItemLink)) {
-                    zox_geter_value(block, ItemLink, ecs_entity_t, block_item)
+                    zox_geter_value(block, ItemLink, entity, block_item);
                     if (zox_valid(block_item)) {
-                        const ecs_entity_t pickup = spawn_pickup_block(
+                        const entity pickup = spawn_pickup_block(
                             world,
                             raycastVoxelData->positionf,
-                            block);
-                        zox_set(pickup, ItemLink, { block_item })
+                            block
+                        );
+                        zox_set(pickup, ItemLink, { block_item });
                     } else {
-                        zox_log_error("block [%s] has no valid item", zox_get_name(block))
+                        zox_log_error("block [%s] has no valid item", zox_get_name(block));
                     }
                 } else {
-                    zox_log_error("block [%s] has no ItemLink", zox_get_name(block))
+                    zox_log_error("block [%s] has no ItemLink", zox_get_name(block));
                 }
             } else {
                 // cannot destroy voxel sound
-                spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[42 + rand() % 6], 0.26, 1.4f * get_volume_sfx());
+                spawn_sound_generated(
+                    world,
+                    prefab_sound_generated,
+                    instrument_violin,
+                    note_frequencies[42 + rand() % 6],
+                    0.26,
+                    1.4f * get_volume_sfx()
+                );
             }
         } else {
             // cannot hit air
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[44], 0.3, volume);
+            spawn_sound_generated(
+                world,
+                prefab_sound_generated,
+                instrument_violin,
+                note_frequencies[44],
+                0.3,
+                volume
+            );
         }
     }
-} zoxd_system(MeleeSystem)
+} zoxd_system2(MeleeSystem);

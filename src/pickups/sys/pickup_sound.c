@@ -12,4 +12,4 @@ void PickupSoundSystem(ecs_iter_t *it) {
         // todo: move to character, delete after!
         zox_delete(e)
     }
-} zoxd_system(PickupSoundSystem)
+} zoxd_system2(PickupSoundSystem);

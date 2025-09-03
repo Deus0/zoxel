@@ -1,11 +1,12 @@
 #include "warmup.c"
+#include "activate.c"
 #include "cooldown.c"
 
 void define_systems_users(ecs* world) {
     zox_system(
         WarmupSystem,
         EcsOnUpdate,
-        [in] users.Activate,
+        [in] users.ActivateBegin,
         [in] users.CooldownAt,
         [out] users.WarmupAt
     );
@@ -15,6 +16,12 @@ void define_systems_users(ecs* world) {
         [in] users.WarmupTime,
         [out] users.WarmupAt,
         [out] users.WarmupState
+    );
+    zox_system(
+        ActivateSystem,
+        EcsOnUpdate,
+        [in] users.WarmupState,
+        [out] users.Activate
     );
     zox_system(
         CooldownSystem,

@@ -17,10 +17,11 @@
         zox_prefab_name(label); \
         zox_add_tag(e, T); \
         zox_prefab_add(e, ZoxName); \
-        zox_prefab_set(e, UserDataDirty, { 0 }); \
         zox_prefab_set(e, UserLink, { 0 }); \
         zox_prefab_set(e, TextureLink, { 0 }); \
+        zox_prefab_set(e, ActivateBegin, { 0 }); \
         zox_prefab_set(e, Activate, { 0 }); \
+        zox_prefab_set(e, UserDataDirty, { 0 }); \
         prefab_##name = e; \
         return e; \
     }\

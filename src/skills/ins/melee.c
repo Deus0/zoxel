@@ -18,7 +18,7 @@ entity spawn_skill_melee(
 }
 
 entity spawn_skill_melee_t(
-    ecs_world_t *world,
+    ecs *world,
     char* name,
     const float value,
     const float value_max,

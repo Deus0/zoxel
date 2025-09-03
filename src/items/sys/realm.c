@@ -1,49 +1,11 @@
-ecs_entity_t meta_item_block_dirt;
-ecs_entity_t meta_item_block_dark;
-ecs_entity_t meta_item_block_obsidian;
-ecs_entity_t meta_item_block_sand;
-ecs_entity_t meta_item_block_stone;
-ecs_entity_t meta_item_block_dungeon_core;
+entity meta_item_block_dirt;
+entity meta_item_block_dark;
+entity meta_item_block_obsidian;
+entity meta_item_block_sand;
+entity meta_item_block_stone;
+entity meta_item_block_dungeon_core;
 
-ecs_entity_t spawn_block_item(ecs_world_t *world, const ecs_entity_t block) {
-    if (!zox_valid(block) || !zox_has(block, ZoxName)) {
-        zox_log_error(" ! problem with block components name? [%i]\n", zox_has(block, ZoxName))
-        return 0;
-    }
-    // get block data
-    zox_geter(block, ZoxName, voxel_name)
-    // spawn item
-    const ecs_entity_t e = spawn_meta_item_zox_name(world, prefab_item, voxel_name);
-    zox_name("block_item")
-
-    ecs_entity_t t = 0;
-    if (zox_has(block, TextureLinks)) {
-        zox_geter(block, TextureLinks, textures);
-        if (textures->length > 0) {
-            t = textures->value[0];
-        }
-    }
-    if (!t && zox_has(block, TextureLink)) {
-        t = zox_get_value(block, TextureLink);
-    }
-    if (!t) {
-        // zox_log("! warning: [todo] implement vox item textures [%s]", zox_get_name(block))
-        t = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));
-        // zox_log(" ! block [%s] had no textures [%i]\n",  convert_zext_to_text(voxel_name->value, voxel_name->length), textures->length)
-    }
-    zox_set(e, TextureLink, { t })
-    zox_add_tag(e, ItemBlock)
-    zox_set(e, BlockLink, { block })
-    // actually for grass we want to set itemLink differently
-    zox_set(block, ItemLink, { e })
-    // zox_set_name(item, zox_get_name(block));
-    zox_name(zox_get_name(block));
-    // zox_log(" + block item [%s] [%s]\n", zox_get_name(block), zox_get_name(e))
-    // zox_log(" + spawning item for block [%s] textures [%i]\n", convert_zext_to_text(voxel_name->value, voxel_name->length), textures->length)
-    return e;
-}
-
-void spawn_realm_items(ecs_world_t *world, const ecs_entity_t realm) {
+void spawn_realm_items(ecs *world, const entity realm) {
     if (!zox_has(realm, ItemLinks)) {
         zox_log("! realm does not have ItemLinks [%lu]\n", realm)
         return;
@@ -52,9 +14,9 @@ void spawn_realm_items(ecs_world_t *world, const ecs_entity_t realm) {
         zox_log("! realm does not have VoxelLinks [%lu]\n", realm)
         return;
     }
-    zox_geter(realm, VoxelLinks, blocks)
+    zox_geter(realm, VoxelLinks, blocks);
     if (!blocks) {
-        zox_log("! realm blocks was null [%lu]\n", realm)
+        zox_log("! realm blocks was null [%lu]\n", realm);
         return;
     }
     if (blocks->length == 0 || blocks->value == NULL) {
@@ -63,7 +25,7 @@ void spawn_realm_items(ecs_world_t *world, const ecs_entity_t realm) {
     }
     // i should make a BlockItemLinks perhaps? nah  that overcomplicates
     // clear previous
-    zox_geter(realm, ItemLinks, old)
+    zox_geter(realm, ItemLinks, old);
     // if (old->value) return; // TODO: Temp; Remove when crashes gone
 
     if (old) {
@@ -74,10 +36,10 @@ void spawn_realm_items(ecs_world_t *world, const ecs_entity_t realm) {
         }
         // dispose_ItemLinks_const(old);
     }
-    ItemLinks items = (ItemLinks) { 0, NULL };
+    ItemLinks items = (ItemLinks) { 0 };
     initialize_ItemLinks(&items, blocks->length);
     for (int i = 0; i < blocks->length; i++) {
-        const ecs_entity_t block = blocks->value[i];
+        const entity block = blocks->value[i];
         if (!zox_valid(block)) {
             zox_log_error("block [%i] invalid", i)
             items.value[i] = 0;
@@ -85,8 +47,8 @@ void spawn_realm_items(ecs_world_t *world, const ecs_entity_t realm) {
         }
         items.value[i] = spawn_block_item(world, block);
         if (i == zox_block_grass - 1) {
-            const ecs_entity_t item_block_dirt = items.value[zox_block_dirt - 1];
-            zox_set(block, ItemLink, { item_block_dirt })
+            const entity item_block_dirt = items.value[zox_block_dirt - 1];
+            zox_set(block, ItemLink, { item_block_dirt });
         }
     }
     zox_set_ptr(realm, ItemLinks, items);

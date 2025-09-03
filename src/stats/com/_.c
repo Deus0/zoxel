@@ -14,7 +14,7 @@ zoxc_byte(StatDirty);
 zox_tag(HealthStat);
 zox_tag(StatSoul);
 
-void define_components_stats(ecs_world_t *world) {
+void define_components_stats(ecs *world) {
     zoxd_tag(StatState);
     zoxd_tag(StatRegen);
     zoxd_tag(StatAttribute);

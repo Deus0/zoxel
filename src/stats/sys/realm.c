@@ -1,4 +1,4 @@
-void spawn_realm_stats(ecs_world_t *world, ecs_entity_t realm) {
+void spawn_realm_stats(ecs *world, entity realm) {
     if (!zox_has(realm, StatLinks)) {
         zox_log("! realm does not have StatLinks [%lu]\n", realm)
         return;
@@ -11,7 +11,7 @@ void spawn_realm_stats(ecs_world_t *world, ecs_entity_t realm) {
     if (old) {
         // clear previous
         for (int i = 0; i < old->length; i++) {
-            const ecs_entity_t stat = old->value[i];
+            const entity stat = old->value[i];
             if (zox_valid(stat)) {
                 zox_delete(stat);
             }

@@ -1,6 +1,6 @@
 // if poisoned, remove if leaving area
 // I could do this per debuff instead of character...! if it's a area based debuff
-void DamageAuraRemoveSystem(ecs_iter_t *it) {
+void DamageAuraRemoveSystem(iter *it) {
     // const float damage_radius = 3.0f; // todo: grab this off skill
     zox_sys_world()
     zox_sys_begin()
@@ -12,12 +12,12 @@ void DamageAuraRemoveSystem(ecs_iter_t *it) {
         zox_sys_o(DotLinks, dotLinks)
         zox_sys_o(Children, children)
         for (int j = dotLinks->length - 1; j >= 0; j--) {
-            const ecs_entity_t dot = dotLinks->value[j];
+            const entity dot = dotLinks->value[j];
             if (!zox_valid(dot) || !zox_has(dot, SkillLink)) {
                 continue;
             }
-            zox_geter_value(dot, SkillLink, ecs_entity_t, aura)
-            zox_geter_value(dot, SpawnerLink, ecs_entity_t, user)
+            zox_geter_value(dot, SkillLink, entity, aura)
+            zox_geter_value(dot, SpawnerLink, entity, user)
             if (!zox_valid(aura) || !zox_valid(user)) {
                 // todo: remove dots when aura dies too
                 continue;
@@ -36,10 +36,10 @@ void DamageAuraRemoveSystem(ecs_iter_t *it) {
                 zox_delete(dot)
                 // todo: link dot to particles?
                 if (children->length) {
-                    ecs_entity_t particle3D_emitter = 0;
+                    entity particle3D_emitter = 0;
                     for (int j = 0; j < children->length; j++) {
-                        const ecs_entity_t child = children->value[j];
-                        const ecs_entity_t skill = zox_get_value(child, SkillLink)
+                        const entity child = children->value[j];
+                        const entity skill = zox_get_value(child, SkillLink)
                         if (skill == aura) {
                             particle3D_emitter = child;
                             break;

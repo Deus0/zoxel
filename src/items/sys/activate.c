@@ -32,24 +32,29 @@ void ItemActivateSystem(iter *it) {
         zox_geter(user, RaycastVoxelData, raycast_data);
         zox_geter(user, RaycastRange, range);
 
-        byte is_use_quantity = 0;
+        byte is_used = 0;
         const byte hit_block = raycast_data->result == rayhit_terrain;
         const byte in_range = raycast_data->distance <= range->value;
         if (hit_block && in_range) {
             const entity block = block_link->value;
             if (zox_valid(block) && zox_has(block, BlockIndex)) {
                 zox_geter_value(block, BlockIndex, byte, block_index);
-                raycast_action(world, raycast_data, block_index, 1);
-                is_use_quantity = 1;
+                raycast_action(
+                    world,
+                    raycast_data,
+                    block_index,
+                    1
+                );
+                is_used = 1;
             } else {
                 zox_log_error("invalid block [%s]", zox_get_name(block))
             }
         }
-        if (is_use_quantity) {
+        if (is_used) {
             quantity->value--;
             dirty->value = zox_dirty_trigger;
 
-            if (quantity->value == 0) {
+            if (!quantity->value) {
                 // set action to nullptr
                 // destroy entity
                 zox_delete(e);
@@ -61,7 +66,14 @@ void ItemActivateSystem(iter *it) {
             }
 
             // place block sound
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[30 + rand() % 6], 0.6, 1.8f * get_volume_sfx());
+            spawn_sound_generated(
+                world,
+                prefab_sound_generated,
+                instrument_violin,
+                note_frequencies[30 + rand() % 6],
+                0.6,
+                1.8f * get_volume_sfx()
+            );
         }
     }
 } zoxd_system2(ItemActivateSystem);

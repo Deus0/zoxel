@@ -3,7 +3,7 @@
 #include "icon_label.c"
 #include "healthbar_spawner.c"
 
-void define_systems_stats_ui(ecs_world_t *world) {
+void define_systems_stats_ui(ecs *world) {
     zox_system(
         StatbarSystem,
         EcsOnUpdate,

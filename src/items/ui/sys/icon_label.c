@@ -9,7 +9,6 @@ void ItemIconLabelSystem(iter *it) {
 
     for (int i = 0; i < it->count; i++) {
 
-        // zox_sys_e();
         zox_sys_i(ItemLink, item);
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, dirty);

@@ -1,4 +1,4 @@
-/*void spawn_character3D_healthbar3D(ecs_world_t *world,
+/*void spawn_character3D_healthbar3D(ecs *world,
     spawned_character3D_data *data)
 {
     if (disable_npc_uis) {

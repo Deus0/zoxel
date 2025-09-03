@@ -1,6 +1,6 @@
-ecs_entity_t prefab_menu_skills;
-ecs_entity_t prefab_icon_skill;
-ecs_entity_t prefab_frame_skill;
+entity prefab_menu_skills;
+entity prefab_icon_skill;
+entity prefab_frame_skill;
 zox_user_menu_functions_frame_color(Skills, Skill, skills, skill, default_fill_color_frame_skill)
 #include "icon.c"
 #include "frame.c"

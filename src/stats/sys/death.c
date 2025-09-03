@@ -1,6 +1,6 @@
 // When health goes to 0, kill UserLink->value
 // Set Dead to 1
-void DeathSystem(ecs_iter_t *it) {
+void DeathSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(StatValue)

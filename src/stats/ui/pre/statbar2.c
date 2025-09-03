@@ -1,6 +1,6 @@
-ecs_entity_t spawn_prefab_statbar2(
-    ecs_world_t *world,
-    const ecs_entity_t prefab
+entity spawn_prefab_statbar2(
+    ecs *world,
+    const entity prefab
 ) {
     zox_prefab_child(prefab);
     zox_prefab_name("statbar2");

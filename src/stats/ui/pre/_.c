@@ -1,8 +1,8 @@
-ecs_entity_t prefab_menu_stats;
-ecs_entity_t prefab_frame_stat;
-ecs_entity_t prefab_icon_stat;
-ecs_entity_t prefab_statbar2D;
-ecs_entity_t prefab_statbar3D;
+entity prefab_menu_stats;
+entity prefab_frame_stat;
+entity prefab_icon_stat;
+entity prefab_statbar2D;
+entity prefab_statbar3D;
 // zox_user_menu_functions_frame_color(Stats, Stat, stats, stat, default_fill_color_frame_stat)
 #include "statbar2.c"
 #include "statbar3.c"

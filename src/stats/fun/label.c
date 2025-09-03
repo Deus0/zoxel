@@ -1,4 +1,4 @@
-uint add_label_stat_level(ecs_world_t *world, const ecs_entity_t character, const StatLinks *stats, const ecs_entity_t tag, char *buffer, const uint size, uint index) {
+uint add_label_stat_level(ecs *world, const entity character, const StatLinks *stats, const entity tag, char *buffer, const uint size, uint index) {
     find_array_element_with_tag_id(stats, tag, stat)
     if (!zox_valid(stat) || !zox_has(stat, StatValue)) {
         index += snprintf(buffer + index, size - index, "[%s] has no stat [%s]\n", zox_get_name(character), zox_get_name(tag));
@@ -14,7 +14,7 @@ uint add_label_stat_level(ecs_world_t *world, const ecs_entity_t character, cons
     return index;
 }
 
-uint add_label_stat_state(ecs_world_t *world, const ecs_entity_t character, const ecs_entity_t stat, char *buffer, const uint size, uint index) {
+uint add_label_stat_state(ecs *world, const entity character, const entity stat, char *buffer, const uint size, uint index) {
     if (!zox_valid(stat) || !zox_has(stat, StatValue) || !zox_has(stat, ZoxName)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid state stat\n", zox_get_name(character));
         return index;
@@ -28,7 +28,7 @@ uint add_label_stat_state(ecs_world_t *world, const ecs_entity_t character, cons
     return index;
 }
 
-uint add_label_stat_value(ecs_world_t *world, const ecs_entity_t character, const ecs_entity_t stat, char *buffer, const uint size, uint index) {
+uint add_label_stat_value(ecs *world, const entity character, const entity stat, char *buffer, const uint size, uint index) {
     if (!zox_valid(stat) || !zox_has(stat, StatValue) || !zox_has(stat, ZoxName)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid attribute stat\n", zox_get_name(character));
         return index;
@@ -61,7 +61,7 @@ uint get_label_player_stats(
     zox_geter(characterLink->value, StatLinks, stats)
     index = add_label_stat_level(world, characterLink->value, stats, StatSoul, buffer, size, index);
     for (int i = 0; i < stats->length; i++) {
-        const ecs_entity_t stat = stats->value[i];
+        const entity stat = stats->value[i];
         if (!zox_valid(stat)) {
             continue;
         }
@@ -75,7 +75,7 @@ uint get_label_player_stats(
     }
     zox_geter(characterLink->value, DotLinks, dots)
     for (int i = 0; i < dots->length; i++) {
-        const ecs_entity_t dot = dots->value[i];
+        const entity dot = dots->value[i];
         if (!zox_valid(dot)) {
             continue;
         }
@@ -87,8 +87,8 @@ uint get_label_player_stats(
 // todo: refactor this as a event hook
 // used for editor
 void add_to_labels_stat_links(
-    ecs_world_t *world,
-    ecs_entity_t e,
+    ecs *world,
+    entity e,
     text_group_dynamic_array_d* labels,
     entity_array_d* entities,
     int tree_level
@@ -103,7 +103,7 @@ void add_to_labels_stat_links(
     }
 }
 
-uint get_label_player_element_links(ecs_world_t *world, const ecs_entity_t player, char *buffer, const uint size, uint index) {
+uint get_label_player_element_links(ecs *world, const entity player, char *buffer, const uint size, uint index) {
     if (!zox_valid(player)) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
@@ -121,7 +121,7 @@ uint get_label_player_element_links(ecs_world_t *world, const ecs_entity_t playe
     return index;
 }
 
-/*int get_label_local_character_level(ecs_world_t *world, const ecs_entity_t character, char buffer[], int buffer_size, int buffer_index) {
+/*int get_label_local_character_level(ecs *world, const entity character, char buffer[], int buffer_size, int buffer_index) {
  *    if (!character) return buffer_index;
  *    const StatLinks *stats = zox_get(character, StatLinks)
  *    find_array_element_with_tag(stats, StatSoul, soul_stat)
@@ -134,7 +134,7 @@ uint get_label_player_element_links(ecs_world_t *world, const ecs_entity_t playe
  * }
  *
  *
- * int get_label_children(ecs_world_t *world, const ecs_entity_t e, char buffer[], int buffer_size, int buffer_index) {
+ * int get_label_children(ecs *world, const entity e, char buffer[], int buffer_size, int buffer_index) {
  *    if (!e || !zox_has(e, Children)) return buffer_index;
  *    const Children *children = zox_get(e, Children)
  *    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "[%s]'s children [%i]\n", zox_get_name(e), children->length);
@@ -144,7 +144,7 @@ uint get_label_player_element_links(ecs_world_t *world, const ecs_entity_t playe
  *    return buffer_index;
  * }
  *
- * int get_label_local_character_health(ecs_world_t *world, const ecs_entity_t character, char buffer[], int buffer_size, int buffer_index) {
+ * int get_label_local_character_health(ecs *world, const entity character, char buffer[], int buffer_size, int buffer_index) {
  *    if (character) {
  *        const StatLinks *statLinks = zox_get(character, StatLinks)
  *        find_array_element_with_tag(statLinks, HealthStat, health_stat)
@@ -167,7 +167,7 @@ uint get_label_player_element_links(ecs_world_t *world, const ecs_entity_t playe
  *    return buffer_index;
  * }*/
 
-int debug_can_jump(ecs_world_t *world, const ecs_entity_t character, char buffer[], int buffer_size, int buffer_index) {
+int debug_can_jump(ecs *world, const entity character, char buffer[], int buffer_size, int buffer_index) {
     if (character) {
         const byte can_jump = zox_get_value(character, Grounded)
         const int is_jump = (int) 1000.0 * zox_get_value(character, Jump)

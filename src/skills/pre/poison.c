@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_poison(ecs_world_t *world) {
+entity spawn_prefab_poison(ecs *world) {
     zox_prefab()
     zox_prefab_name("poison")
     zox_add_tag(e, Poison)
@@ -9,11 +9,11 @@ ecs_entity_t spawn_prefab_poison(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_poison(ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const ecs_entity_t user,
-    const ecs_entity_t spawner,
-    const ecs_entity_t skill,
+entity spawn_poison(ecs *world,
+    const entity prefab,
+    const entity user,
+    const entity spawner,
+    const entity skill,
     const float damage)
 {
     zox_instance(prefab)

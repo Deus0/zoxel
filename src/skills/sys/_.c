@@ -7,7 +7,7 @@
 #include "aura_sound.c"
 zox_declare_system_state_event(RealmSkills, GenerateRealm, zox_generate_realm_skills, spawn_realm_skills)
 
-void define_systems_skills(ecs_world_t *world) {
+void define_systems_skills(ecs *world) {
     zox_define_system_state_event_1(
         RealmSkills,
         EcsOnLoad,
@@ -22,21 +22,20 @@ void define_systems_skills(ecs_world_t *world) {
         [out] skills.SkillActive,
         [none] Aura
     );
+
     /*zox_system(
         SkillActivateSystem,
         EcsOnUpdate,
         [in] users.Activate,
         [out] skills.SkillActive,
         [none] skills.Melee
-    );*/
+    );
     zox_system(
         SkillWarmupSystem,
         EcsOnUpdate,
         [in] users.WarmupState,
         [out] skills.SkillActive
-    );
-
-
+    );*/
 
     zox_filter(
         characters,
@@ -73,7 +72,7 @@ void define_systems_skills(ecs_world_t *world) {
         [none] Poison
     );
 
-    // todo: make a state system for SkillActive
+    // TODO: split into sound, resource and damage systems
     zox_system_1(
         MeleeSystem,
         zoxp_queue_add,
@@ -83,9 +82,10 @@ void define_systems_skills(ecs_world_t *world) {
         [in] skills.SkillRange,
         [in] skills.SkillResourceLink,
         [in] skills.SkillCost,
-        [out] skills.SkillActive,
+        [in] users.Activate,
         [none] skills.Melee
     );
+
     zox_system_1(
         AuraSoundSystem,
         EcsOnUpdate,

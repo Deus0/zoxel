@@ -29,7 +29,7 @@ void spawn_character_skills(ecs *world, spawned_character3D_data *data) {
             if (i >= skills.length) {
                 break;
             }
-            const ecs_entity_t skill = realm_skills->value[i];
+            const entity skill = realm_skills->value[i];
             if (!zox_valid(skill)) {
                 zox_log_error("skill invalid [%i]", i)
                 continue;

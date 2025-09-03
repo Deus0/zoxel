@@ -1,38 +1,38 @@
 // spawn prefabs for each meta stats
-ecs_entity_t spawn_stat_state_t(ecs_world_t* world,
+entity spawn_stat_state_t(ecs* world,
     const char* name,
     char* texture_name,
     const color_rgb c)
 {
-    const ecs_entity_t texture = string_hashmap_get(files_hashmap_textures, new_string_data(texture_name));
-    ecs_entity_t e = create_stat_state(world, name, texture, c);
+    const entity texture = string_hashmap_get(files_hashmap_textures, new_string_data(texture_name));
+    entity e = create_stat_state(world, name, texture, c);
     return e;
 }
 
-ecs_entity_t spawn_stat_level_t(ecs_world_t* world,
+entity spawn_stat_level_t(ecs* world,
     const char* name,
     char* texture_name,
     const color_rgb c)
 {
-    const ecs_entity_t texture = string_hashmap_get(files_hashmap_textures, new_string_data(texture_name));
-    ecs_entity_t e = create_stat_level(world, name, texture, c);
+    const entity texture = string_hashmap_get(files_hashmap_textures, new_string_data(texture_name));
+    entity e = create_stat_level(world, name, texture, c);
     return e;
 }
 
-ecs_entity_t spawn_stat_regen_t(ecs_world_t* world,
+entity spawn_stat_regen_t(ecs* world,
     const char* name,
     char* texture_name)
 {
-    const ecs_entity_t texture = string_hashmap_get(files_hashmap_textures, new_string_data(texture_name));
-    ecs_entity_t e = create_stat_regen(world, name, texture);
+    const entity texture = string_hashmap_get(files_hashmap_textures, new_string_data(texture_name));
+    entity e = create_stat_regen(world, name, texture);
     return e;
 }
 
-ecs_entity_t spawn_stat_attribute_t(ecs_world_t* world,
+entity spawn_stat_attribute_t(ecs* world,
     const char* name,
     char* texture_name)
 {
-    const ecs_entity_t texture = string_hashmap_get(files_hashmap_textures, new_string_data(texture_name));
-    ecs_entity_t e = create_stat_attribute(world, name, texture);
+    const entity texture = string_hashmap_get(files_hashmap_textures, new_string_data(texture_name));
+    entity e = create_stat_attribute(world, name, texture);
     return e;
 }

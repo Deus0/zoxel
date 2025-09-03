@@ -1,4 +1,4 @@
-void ExperienceSystem(ecs_iter_t *it) {
+void ExperienceSystem(iter *it) {
     const float popup_spawn_y = 0.34f;
     zox_sys_world()
     zox_sys_begin()

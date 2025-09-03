@@ -4,6 +4,7 @@
 byte test_items_blocks = 0;
 #include "com/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "ui/_.c"
 #include "fun/_.c"
 #include "sys/_.c"

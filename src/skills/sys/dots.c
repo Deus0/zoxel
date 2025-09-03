@@ -1,5 +1,5 @@
 // DotsSystem - skill applies damage to a users health
-void DotsSystem(ecs_iter_t *it) {
+void DotsSystem(iter *it) {
     // const float damage_rate = 1.0f; // add this property to dot entity
     init_delta_time()
     zox_sys_world()
@@ -20,7 +20,7 @@ void DotsSystem(ecs_iter_t *it) {
             zox_geter(spawnerLink->value, StatLinks, enemy_stats)
             int k = 0; // assuming intelligence is like 4th stat attribute for now
             for (int j = 0; j < enemy_stats->length; j++) {
-                const ecs_entity_t stat = enemy_stats->value[j];
+                const entity stat = enemy_stats->value[j];
                 if (zox_has(stat, StatAttribute)) {
                     k++;
                     if (k == 3) {
@@ -39,7 +39,7 @@ void DotsSystem(ecs_iter_t *it) {
             zox_log(" ! user had no health\n")
             continue;
         }
-        // const ecs_entity_t health_stat = statLinks->value[0];
+        // const entity health_stat = statLinks->value[0];
         const float stat_value_max = zox_get_value(health_stat, StatValueMax)
         zox_muter(health_stat, StatValue, statValue)
         statValue->value += delta_time * skillDamage->value;

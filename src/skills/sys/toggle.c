@@ -1,4 +1,4 @@
-void SkillToggleSystem(ecs_iter_t *it) {
+void SkillToggleSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(Activate);
     zox_sys_out(SkillActive);

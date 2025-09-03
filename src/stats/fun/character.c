@@ -2,16 +2,16 @@ const int character_stats = 2;
 // #define statbar_float_position 0.32f
 
 void spawn_character_stats(
-    ecs_world_t *world,
+    ecs *world,
     spawned_character3D_data *data
 ) {
     zox_geter(data->realm, StatLinks, realm_stats)
-    ecs_entity_t realm_soul = 0;
-    ecs_entity_t realm_health = 0;
-    ecs_entity_t realm_energy = 0;
-    ecs_entity_t realm_mana = 0;
+    entity realm_soul = 0;
+    entity realm_health = 0;
+    entity realm_energy = 0;
+    entity realm_mana = 0;
     for (int i = 0; i < realm_stats->length; i++) {
-        const ecs_entity_t stat = realm_stats->value[i];
+        const entity stat = realm_stats->value[i];
         if (!realm_soul && zox_has(stat, StatLevel)) {
             realm_soul = stat;
         }
@@ -36,16 +36,16 @@ void spawn_character_stats(
     data->stats_length = character_stats;
     int i = 0;
     StatLinks *stats = &((StatLinks) { 0, NULL });
-    resize_memory_component(StatLinks, stats, ecs_entity_t, data->stats_length)
+    resize_memory_component(StatLinks, stats, entity, data->stats_length)
     data->stats = stats->value;
 
     // Stat: Soul
-    const ecs_entity_t stat_soul = spawn_user_stat(world, realm_soul, data->e);
+    const entity stat_soul = spawn_user_stat(world, realm_soul, data->e);
     zox_set(stat_soul, StatValue, { soul_value })
     stats->value[i++] = stat_soul;
 
     // Stat: Health
-    const ecs_entity_t stat_health = spawn_user_stat(world, realm_health, data->e);
+    const entity stat_health = spawn_user_stat(world, realm_health, data->e);
     zox_set(stat_health, StatValue, { health.x })
     zox_set(stat_health, StatValueMax, { health.y })
     stats->value[i++] = stat_health;
@@ -54,12 +54,12 @@ void spawn_character_stats(
     // players are richer beings from the aether
     if (data->p) {
 
-        const ecs_entity_t stat_energy = spawn_user_stat(world, realm_energy, data->e);
+        const entity stat_energy = spawn_user_stat(world, realm_energy, data->e);
         zox_set(stat_energy, StatValue, { energy_base })
         zox_set(stat_energy, StatValueMax, { energy_base + soul_value * energy_level_increase })
         add_to_StatLinks(stats, stat_energy);
 
-        const ecs_entity_t stat_mana = spawn_user_stat(world, realm_mana, data->e);
+        const entity stat_mana = spawn_user_stat(world, realm_mana, data->e);
         zox_set(stat_mana, StatValue, { mana_base })
         zox_set(stat_mana, StatValueMax, { mana_base + soul_value * mana_level_increase })
         add_to_StatLinks(stats, stat_mana);
@@ -70,15 +70,15 @@ void spawn_character_stats(
 
         // add all attributes as 0
         for (int i = 0; i < realm_stats->length; i++) {
-            const ecs_entity_t stat = realm_stats->value[i];
+            const entity stat = realm_stats->value[i];
             if (!zox_valid(stat)) {
                 continue;
             }
             if (zox_has(stat, StatRegen)) {
-                const ecs_entity_t character_stat = spawn_user_stat(world, stat, data->e);
+                const entity character_stat = spawn_user_stat(world, stat, data->e);
                 add_to_StatLinks(stats, character_stat);
             } else if (zox_has(stat, StatAttribute)) {
-                const ecs_entity_t character_stat = spawn_user_stat(world, stat, data->e);
+                const entity character_stat = spawn_user_stat(world, stat, data->e);
                 add_to_StatLinks(stats, character_stat);
             }
         }
@@ -89,7 +89,7 @@ void spawn_character_stats(
     data->stats_length = stats->length;
     // player character ui
     if (data->p) {
-        const ecs_entity_t canvas = zox_get_value(data->p, CanvasLink)
+        const entity canvas = zox_get_value(data->p, CanvasLink)
         find_child_with_tag(canvas, MenuGame, game_menu)
         // sometimes its here, sometimes not!
         if (zox_valid(game_menu)) {
@@ -98,7 +98,7 @@ void spawn_character_stats(
                 zox_set(healthbar2D, StatLink, { stat_health })
                 zox_geter(healthbar2D, Children, statbar2D_children)
                 if (statbar2D_children->length >= 1) {
-                    const ecs_entity_t healtbar2D_text = statbar2D_children->value[1];
+                    const entity healtbar2D_text = statbar2D_children->value[1];
                     zox_set(healtbar2D_text, StatLink, { stat_health })
                 }
             }

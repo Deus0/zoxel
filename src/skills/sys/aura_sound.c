@@ -1,4 +1,4 @@
-void AuraSoundSystem(ecs_iter_t *it) {
+void AuraSoundSystem(iter *it) {
     // const float popup_spawn_y = 0.18f;
     const double volume = get_volume_sfx();
     zox_sys_world();

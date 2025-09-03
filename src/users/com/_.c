@@ -9,8 +9,9 @@ zoxc_entity(UserLink);
 zoxc_entity(UserDataLink);
 zoxc_entity(SpawnerLink);
 zoxc_entities(UserLinks);
-zoxc_state(Activate);
+zoxc_state(ActivateBegin);
 zoxc_state(WarmupState);
+zoxc_state(Activate);
 zoxc_state(CooldownState);
 zoxc_state(UserDataDirty);
 
@@ -26,6 +27,7 @@ void define_components_users(ecs* world) {
     zoxd_entity(UserDataLink);
     zoxd_entity(SpawnerLink);
     zox_define_entities_component(UserLinks);
+    zoxd_state(ActivateBegin);
     zoxd_state(Activate);
     zoxd_state(WarmupState);
     zoxd_state(CooldownState);
