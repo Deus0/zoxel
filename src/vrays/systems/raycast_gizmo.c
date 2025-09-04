@@ -56,8 +56,9 @@ byte create_raycast_gizmo(
             other_axis.y = 1;
         }
 
-        other_axis = float3_scale(other_axis,
-            data->voxel_scale * 0.5f - data->voxel_scale * (0.125f / raycast_thickness));
+        float axis_scale = data->voxel_scale * 0.5f; // - data->voxel_scale * (0.125f / raycaster_quad_thickness);
+
+        other_axis = float3_scale(other_axis, axis_scale);
         if (data->normal.z != 0) {
             render_line3D_thickness_alpha(world,
                 float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),

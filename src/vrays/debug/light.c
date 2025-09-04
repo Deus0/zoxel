@@ -23,14 +23,22 @@ uint debug_ui_raycasted_light(
     // node debugger
     if (data->node) {
 
-        zox_geter_value(data->chunk, RenderDepth, byte, depth);
-        zox_geter(data->chunk, LightNode, light_node);
-
-        byte light_last = get_value_LightNode(light_node, depth, data->positionl_last, 0);
+        entity chunk_last = data->chunk_last;
+        zox_geter_value(chunk_last, RenderDepth, byte, depth_last);
+        zox_geter(chunk_last, LightNode, light_node_last);
+        byte light_last = get_value_LightNode(light_node_last, depth_last, data->positionl_last, 0);
         index += snprintf(buffer + index, size - index, "   + Light [%i]\n", light_last);
 
+        entity chunk_hit = data->chunk;
+        zox_geter_value(chunk_hit, RenderDepth, byte, depth_hit);
+        zox_geter(chunk_hit, LightNode, light_node_hit);
+        byte light_hit = get_value_LightNode(light_node_hit, depth_hit, data->positionl, 0);
+        index += snprintf(buffer + index, size - index, "   + Light Inside [%i]\n", light_hit);
+
         index += snprintf(buffer + index, size - index, "   + positionl[L] [%ix%ix%i]\n",
-            data->positionl_last.x, data->positionl_last.y, data->positionl_last.z);
+            data->positionl_last.x,
+            data->positionl_last.y,
+            data->positionl_last.z);
 
         index += snprintf(buffer + index, size - index, "   + positionv[L] [%ix%ix%i]\n",
             data->positionv_last.x, data->positionv_last.y, data->positionv_last.z);
@@ -58,16 +66,18 @@ uint debug_ui_raycasted_light(
                 neighbors,
                 nnodesl);
             if (!nnodesl[0]) {
-                zox_log_error("Null Neighbor, weirdness: %s", zox_get_name(neighbors->value[0]));
+                entity n = neighbors->value[0];
+                zox_log_error("Null Neighbor, weirdness: %s",
+                    zox_valid(n) ? zox_get_name(n) : "invalid");
             }
             // later we can get all lights nearby
             byte face = normal_to_direction(data->normal);
             const LightNode* adj_node = get_neighbor_LightNode(
-                light_node,
+                light_node_last,
                 nnodesl,
                 face,
                 data->positionl,
-                depth);
+                depth_last);
             if (adj_node) {
                 index += snprintf(buffer + index, size - index, "   + Light [%i] [adj_check]\n", adj_node->value);
             } else {
@@ -77,7 +87,7 @@ uint debug_ui_raycasted_light(
             index += snprintf(buffer + index, size - index, "   - No Neighbors\n");
         }
 
-        byte light = get_value_LightNode(light_node, depth, data->positionl, 0);
+        byte light = get_value_LightNode(light_node_hit, depth_hit, data->positionl, 0);
         index += snprintf(buffer + index, size - index, "   + inside light [%i]\n", light);
 
     } else {

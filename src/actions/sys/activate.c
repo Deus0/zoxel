@@ -23,7 +23,7 @@ void ActionActivateSystem(iter *it) {
         // no action assigned
         if (zox_valid(action) && !zox_gett_value(action, ActivateBegin)) {
             zox_set(action, ActivateBegin, { zox_dirty_trigger });
-            // zox_log("action begin [%i]", zox_has(action, WarmupAt));
+            // zox_log("action begin [%f]", zox_gett_value(action, WarmupTime));
         }
 
     }
