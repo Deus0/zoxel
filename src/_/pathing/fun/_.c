@@ -1,5 +1,6 @@
 #include "windows.c"
 #include "linux.c"
+#include "link.c"
 #include "path.c"
 #include "android_assets_db.c"
 #include "android_decompress.c"

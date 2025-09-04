@@ -164,7 +164,8 @@ void traverse_directory(
             continue;
         }
 
-        if (S_ISLNK(statbuf.st_mode)) {
+        // if (S_ISLNK(statbuf.st_mode)) {
+        if (is_symlink(path)) {
             continue;
         }
 
