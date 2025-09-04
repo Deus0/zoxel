@@ -29,7 +29,7 @@ void CubeLineRenderSystem(ecs_iter_t *it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DebugCubeLines, debugCubeLines);
-        zox_sys_i(CubeLinesThickness, cubeLinesThickness);
+        zox_sys_i(CubeLinesThickness, thickness);
         zox_sys_i(Color, colorr);
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation3D);
@@ -47,7 +47,7 @@ void CubeLineRenderSystem(ecs_iter_t *it) {
         if (zox_has(e, DebugCubeCorner)) {
             p = float3_add(p, (bounds->value));
         }
-        zox_gpu_line_thickness(cubeLinesThickness->value);
+        zox_gpu_line_thickness(thickness->value * viewport_scale);
         color_rgb lines_color = color_to_color_rgb(colorr->value);
         if (mode == zox_cubeline_debug_transforms) {
             // up axis

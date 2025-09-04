@@ -1,6 +1,7 @@
 // stores camera data to use in camera pass systems
 entity renderer_camera;
 float4x4 render_camera_matrix;
+float3 render_camera_position;
 color_rgb renderer_fog_color;
 byte renderer_layer;
 byte render_camera_fov;

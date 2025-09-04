@@ -4,28 +4,26 @@
 #endif
 
 void UITrailSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(UIHolderLink);
     zox_sys_in(UITrail);
     zox_sys_out(Position3D);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
-        zox_sys_i(UIHolderLink, uiHolderLink);
+        zox_sys_i(UIHolderLink, holder);
         zox_sys_i(UITrail, trail);
         zox_sys_o(Position3D, position);
 
-        if (!zox_valid(uiHolderLink->value)) {
-            zox_log("! character ui wasn't destroyed: %lu", e);
+        if (!zox_valid(holder->value)) {
+            zox_log_error("Character UI wasn't destroyed: %s", zox_get_name(e));
+            zox_delete(e);
             continue;
         }
 
         position->value = trail->value;
-        zox_geter_value(uiHolderLink->value, Position3D, float3, target_position);
-        zox_geter_value(uiHolderLink->value, Bounds3D, float3, bounds);
+        zox_geter_value(holder->value, Position3D, float3, target_position);
+        zox_geter_value(holder->value, Bounds3D, float3, bounds);
         float3_add_float3_p(&position->value, target_position);
         float3_add_float3_p(&position->value, (float3) { 0, bounds.y, 0 });
         if (zox_has(e, Children)) {
@@ -37,8 +35,10 @@ void UITrailSystem(iter *it) {
                 set_position_from_parents(world, e, &child_position3D->value, child_local_position3D->value);
             }
         }
+
 #ifdef zox_debug_ui_trails
         spawn_line3D(world, target_position, position3D->value, ui_trail_debug_thickness, 1.0);
 #endif
+
     }
 } zoxd_system2(UITrailSystem);

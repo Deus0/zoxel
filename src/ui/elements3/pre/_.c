@@ -22,7 +22,8 @@ void set_element_properties(
     }
 }
 
-#include "element_world.c"
+#include "canvas3.c"
+#include "canvas3_textured.c"
 #include "element_world_child.c"
 #include "element3D_invisible.c"
 #include "zigel3D.c"
@@ -31,7 +32,9 @@ void set_element_properties(
 #include "popup3D.c"
 #include "elementbar3D_front.c"
 #include "elementbar3D.c"
-entity prefab_element3D;
+
+entity prefab_canvas3;
+entity prefab_canvas3_textured;
 entity prefab_element3D_child;
 entity prefab_element3D_invisible;
 entity prefab_elementbar3D;
@@ -42,14 +45,17 @@ entity prefab_label3D;
 entity prefab_popup3D;
 
 void spawn_prefabs_elements3D(ecs *world) {
-    prefab_element3D = spawn_prefab_element3D(world);
+
+    prefab_canvas3 = spawn_prefab_canvas3(world);
+    prefab_canvas3_textured = spawn_prefab_canvas3_textured(world, prefab_canvas3);
+
     prefab_element3D_child = spawn_prefab_element3D_child(world);
     prefab_element3D_invisible = spawn_prefab_element3D_invisible(world);
-    prefab_elementbar3D = spawn_prefab_elementbar3D(world, prefab_element3D);
+    prefab_elementbar3D = spawn_prefab_elementbar3D(world, prefab_canvas3_textured);
     prefab_elementbar3D_front = spawn_prefab_elementbar3D_front(world, prefab_element3D_child);
     prefab_text3D = spawn_prefab_text3D(world, prefab_element3D_invisible);
     prefab_zigel3D = spawn_prefab_zigel3D(world, prefab_element3D_child);
-    prefab_label3D = spawn_prefab_label3D(world, prefab_element3D);
+    prefab_label3D = spawn_prefab_label3D(world, prefab_canvas3_textured);
     // should use Layout3D!
-    prefab_popup3D = spawn_prefab_popup3(world, prefab_element3D);
+    prefab_popup3D = spawn_prefab_popup3(world, prefab_canvas3);
 }

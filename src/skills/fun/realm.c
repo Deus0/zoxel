@@ -53,8 +53,8 @@ void spawn_realm_skills(
         energy,
         1,
         "punch",
-        0.36f,
-        0.44f
+        0.5f,
+        0.5f
     );
 
     // testing

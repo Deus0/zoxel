@@ -2,7 +2,7 @@
 #define zoxm_lines3D
 
 // should live for .1 seconds
-const float line_frame_timing = 1 / 30.0f;
+const float line_frame_timing = 1 / 10.0f;
 zox_tag(Line3D);
 zoxc(LineData3D, float6);
 zox_tag(CubeLines);

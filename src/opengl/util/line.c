@@ -1,7 +1,5 @@
-extern float viewport_scale;
-
 static inline void zox_gpu_line_thickness(const float thickness) {
-    glLineWidth(thickness * viewport_scale);
+    glLineWidth(thickness);
 }
 
 static inline void zox_gpu_render_lines(uint length) {
