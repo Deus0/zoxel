@@ -1,6 +1,6 @@
 // only used be lines atm
-extern void resize_ui_line2D(ecs *world, entity e, int2 canvas_size);
-extern void anchor_element_position2(int2 *position, const float2 position_anchor, const int2 window_size);
+// extern void resize_ui_line2D(ecs*, entity, int2);
+extern void anchor_element_position2(int2*, const float2, const int2);
 
 
 // only used be lines atm

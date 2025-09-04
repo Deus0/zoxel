@@ -24,23 +24,22 @@ ecs_entity_t spawn_plot_graph(
     const int lines_max_height = size.y;
     float2 anchor = float2_half;
     int2 position = int2_zero;
-    /*const int2 canvas_size = zox_get_value(canvas, LayoutSize)
-    const int2 positiong = get_element_pixel_positionv(parent_position, parent_size, position, anchor);
-    const float2 positionf = get_element_position(positiong, canvas_size);*/
 
-    // zox_instance(prefab)
     Children children = (Children) { 0 };
     initialize_Children(&children, lines_count + is_label);
-    ecs_entity_t e = spawn_layout2(world,
-            prefab,
-            canvas,
-            parent,
-            position,
-            size,
-            anchor,
-            layer,
-            parent_position,
-            parent_size);
+
+    entity e = spawn_layout2(
+        world,
+        prefab,
+        canvas,
+        parent,
+        position,
+        size,
+        anchor,
+        layer,
+        parent_position,
+        parent_size
+    );
 
     PlotDataDouble data = (PlotDataDouble) { 0 };
     initialize_PlotDataDouble(&data, points_count);
@@ -91,7 +90,8 @@ ecs_entity_t spawn_plot_graph(
         const int position_x = line_margins + i * line_spacing;
         const int2 start_position = (int2) { position_x, lines_min_height };
         const int2 end_position = (int2) { position_x, lines_max_height };
-        const ecs_entity_t e2 = spawn_ui_line2D_v2(world,
+        const ecs_entity_t e2 = spawn_ui_line2_v2(
+            world,
             canvas,
             e,
             start_position,
@@ -101,7 +101,8 @@ ecs_entity_t spawn_plot_graph(
             0,
             float2_zero,
             position,
-            layer);
+            layer
+        );
         zox_set(e2, ChildIndex, { i });
         zox_set(e2, ParentLink, { e });
         zox_add_tag(e2, PlotLine)

@@ -1,3 +1,5 @@
+extern void set_line2_canvas_position(ecs*, entity);
+
 int2 get_element_pixel_positionv(
     const int2 parent_position,
     const int2 parent_size,
@@ -38,6 +40,7 @@ void set_child_canvas_position(
             // NOTE: we pass canvas position down recursively
             cposition = canvas_position->value;
         }
+        set_line2_canvas_position(world, e);
     }
     // also set children ones
     if (zox_has(e, Children)) {
@@ -83,7 +86,7 @@ void LayoutParentPositionSystem(iter *it) {
         zox_sys_o(CanvasPosition, canvas_position);
 
         if (dirty->value != zox_dirty_active) {
-            continue;
+            // continue;
         }
 
         if (!zox_valid(parent->value) || !zox_has(parent->value, LayoutSize)) {
