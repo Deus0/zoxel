@@ -2,15 +2,9 @@
 #include "position2.c"
 #include "anchor_size.c"
 #include "list.c"
-
-zox_increment_system_with_reset(LayoutPositionDirty, zox_dirty_end);
-zox_increment_system_with_reset(LayoutSizeDirty, zox_dirty_end);
-zox_increment_system_with_reset(ListDirty, zox_dirty_end);
+#include "grid.c"
 
 void define_systems_layouts2(ecs* world) {
-    zoxd_system_increment(LayoutPositionDirty);
-    zoxd_system_increment(LayoutSizeDirty);
-    zoxd_system_increment(ListDirty);
     zox_system(
         LayoutParentPositionSystem,
         EcsOnLoad,
@@ -47,5 +41,15 @@ void define_systems_layouts2(ecs* world) {
         [in] layouts2.ListPadding,
         [in] layouts2.ListMargins,
         [in] layouts2.ListStart
+    );
+
+    zox_system(
+        GridSystem,
+        EcsOnUpdate,
+        [in] layouts2.GridDirty,
+        [in] hierarchys.Children,
+        [in] layouts2.LayoutSize,
+        [in] layouts2.GridPadding,
+        [in] layouts2.GridMargins
     );
 }
