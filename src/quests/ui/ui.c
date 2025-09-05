@@ -8,6 +8,7 @@ zox_begin_module(UIQuests)
     zoxd_tag(MenuQuests);
     add_hook_spawn_prefabs(spawn_prefabs_ui_quests);
     add_taskbar_button((hook_taskbar) {
+        .index = 5,
         .spawn = &spawn_player_menu_quests,
         .component_id = MenuQuests,
         .texture_name = "taskbar_quests"

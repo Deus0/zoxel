@@ -34,16 +34,16 @@ if (child_##tag)
 
 
 #define if_has_child_with_id(e, tag)\
-    entity child = 0;\
-    const Children *children = zox_get(e, Children)\
-    for (int i = 0; i < children->length; i++) {\
-        const entity child_e = children->value[i];\
+    entity child_ = 0;\
+    zox_geter(e, Children, children_);\
+    for (int ii = 0; ii < children_->length; ii++) {\
+        const entity child_e = children_->value[ii];\
         if (child_e && zox_has_id(child_e, tag)) {\
-            child = child_e;\
+            child_ = child_e;\
             break;\
         }\
     }\
-    if (child)
+    if (child_)
 
 void on_child_added(ecs *world,
     const entity parent,

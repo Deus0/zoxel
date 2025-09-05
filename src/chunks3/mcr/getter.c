@@ -12,8 +12,11 @@ static inline const void* find_octree_node(
     size_t stride
 ) {
     while (node && depth < target_depth) {
-        void** kids = (void**) node;   // first member = child array
-        if (!kids || !*kids) return node;                  // stop if children missing
+        // read the first-field pointer from the node
+        const void* kids_ptr = *(const void**) node;
+        if (!kids_ptr) {
+            return node;
+        }
 
         const byte div = powers_of_two_byte[target_depth - depth - 1];
         if (div == 0) break;
@@ -24,17 +27,31 @@ static inline const void* find_octree_node(
         byte i = byte3_octree_array_index(node_pos);
         if (i >= 8) return NULL;
 
-        node = (char*)(*kids) + i * stride;
+        node = (char*) kids_ptr + i * stride;
         depth++;
     }
     return node;
 }
 
 // Core: read node value at deepest reachable node
-static inline byte read_octree_value(const void* node, byte target_depth, byte3 pos, byte depth, size_t stride, size_t value_offset) {
+static inline byte read_octree_value(
+    const void* node,
+    byte target_depth,
+    byte3 pos,
+    byte depth,
+    size_t stride,
+    size_t value_offset
+) {
     node = find_octree_node(node, target_depth, pos, depth, stride);
-    if (!node) return 0;
-    return *(byte*)((char*)node + value_offset);
+    if (!node) {
+        return 0;
+    }
+
+    /* quick sanity: reject obviously bad pointers */
+    uintptr_t p = (uintptr_t)node;
+    if (p == 0 || (p & 0x7) != 0) return 0;
+
+    return *(byte*)((char*) node + value_offset);
 }
 
 // Macro wrapper: generates type-safe getters

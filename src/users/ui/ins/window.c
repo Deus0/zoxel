@@ -17,7 +17,6 @@ entity spawn_window_users(
     }
     const UserLinks *user_data = zox_get_id(character, data.window.user_links_id);
 
-    // zox_log(" +  character [%lu] inventory has %i slots\n", character, inventory->length)
     const byte body_layer = data.element.layer + 1;
     const byte icon_layer = body_layer + 1;
     const byte is_header = data.window.prefab_header != 0;
@@ -27,10 +26,8 @@ entity spawn_window_users(
         header_height = data.header_zext.font_size + data.header.margins;
     }
 
-    // anchor_element_position2(&position, data.element.anchor, data.element.size);
-
     zox_instance(data.element.prefab);
-    zox_set_name(e, data.header_zext.text);
+    zox_set_unique_name(e, data.header_zext.text);
     initialize_element(
         world,
         e,
@@ -56,8 +53,7 @@ entity spawn_window_users(
     const int grid_elements_count = user_datas_count; // data.window.grid_size.x * data.window.grid_size.y
 
     const int children_length = 1 + is_header;
-    // zox_muter(e, Children, children)
-    Children children = (Children) { 0, NULL };
+    Children children = (Children) { 0 };
     initialize_Children(&children, children_length);
     if (children.length != children_length) {
         zox_log_error("Failed to iniitalize children.");

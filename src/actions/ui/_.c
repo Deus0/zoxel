@@ -12,6 +12,7 @@ zox_begin_module(ActionsUI)
     zoxd_tag(IconAction);
     add_hook_spawn_prefabs(spawn_prefabs_ui_actions);
     add_taskbar_button((hook_taskbar) {
+        .index = 1,
         .spawn = &spawn_player_menu_actions,
         .component_id = MenuActions,
         .texture_name = "taskbar_actions"

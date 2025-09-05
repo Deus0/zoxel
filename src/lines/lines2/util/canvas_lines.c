@@ -1,4 +1,9 @@
-void spawn_canvas_edge_lines(ecs_world_t *world, const ecs_entity_t canvas, const int edge_size, const color edge_color) {
+void spawn_canvas_edge_lines(
+    ecs *world,
+    const entity canvas,
+    const int edge_size,
+    const color edge_color
+) {
     const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     const byte lines_layer = max_layers2D - 2;
     const float2 canvas_size_f = { (float) canvas_size.x, (float) canvas_size.y };

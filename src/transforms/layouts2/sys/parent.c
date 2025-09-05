@@ -86,7 +86,7 @@ void LayoutParentPositionSystem(iter *it) {
         zox_sys_o(CanvasPosition, canvas_position);
 
         if (dirty->value != zox_dirty_active) {
-            // continue;
+            continue;
         }
 
         if (!zox_valid(parent->value) || !zox_has(parent->value, LayoutSize)) {

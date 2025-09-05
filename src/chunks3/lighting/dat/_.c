@@ -18,7 +18,6 @@ typedef struct {
     byte distance;
 } LightUpdate;
 
-
 typedef struct {
     // 0 Propogate - 1 Beam
     byte type;

@@ -45,17 +45,12 @@ entity spawn_ui_line2(
     if (canvas == 0) {
         canvas = zox_canvases[0];
     }
-    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
-    ecs_entity_t e;
-    if (life_time == 0.0) {
-        e = zox_instancee(prefab_ui_line2D)
-    } else {
-        e = zox_instancee(prefab_temporary_ui_line2D)
-    }
+    // const int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    const entity e = life_time ? zox_instancee(prefab_temporary_ui_line2D) : zox_instancee(prefab_ui_line2D);
     zox_name("ui_line2D");
-    zox_set(e, CanvasLink, { canvas })
-    const float2 canvas_size_f = { (float) canvas_size.x, (float) canvas_size.y };
-    const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
+    zox_set(e, CanvasLink, { canvas });
+    // const float2 canvas_size_f = { (float) canvas_size.x, (float) canvas_size.y };
+    // const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
     const float4 line_anchor = (float4) {
         anchor_a.x,
         anchor_a.y,

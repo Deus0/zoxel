@@ -1,9 +1,9 @@
 entity prefab_menu_skills;
 entity prefab_icon_skill;
 entity prefab_frame_skill;
-zox_user_menu_functions_frame_color(Skills, Skill, skills, skill, default_fill_color_frame_skill)
 #include "icon.c"
 #include "frame.c"
+#include "menu.c"
 
 void spawn_prefabs_ui_skills(ecs *world) {
     prefab_icon_skill = spawn_prefab_icon_skill(world, prefab_icon_user);

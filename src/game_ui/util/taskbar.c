@@ -3,11 +3,13 @@
 //      - spawn function, component_type, texture_name, etc
 
 typedef struct {
+    byte index;
     byte window_type;
     entity component_id;
     char *texture_name;
     entity (*spawn)(ecs *, const entity);
 } hook_taskbar;
+
 zoxel_dynamic_array(hook_taskbar)
 hook_taskbar_array_d* hook_taskbars;
 
@@ -24,7 +26,7 @@ void add_taskbar_button(const hook_taskbar data) {
 }
 
 // set active stat based on ui component id
-void taskbar_set_icons(
+/*void taskbar_set_icons(
     ecs *world,
     const entity canvas,
     const entity e,
@@ -35,30 +37,7 @@ void taskbar_set_icons(
         zox_set(e, ActiveState, { 1 });
         zox_set(e, ActiveStateDirty, { zox_dirty_trigger });
     }
-}
-
-void taskbar_button_click_event(
-    ecs *world,
-    const ClickEventData *event
-) {
-    const byte index = zox_get_value(event->clicked, IconIndex)
-    if (index >= hook_taskbars->size) {
-        zox_log_error("taskbar button index [%i] out of bounds [%zu]", index, hook_taskbars->size)
-        return;
-    }
-    hook_taskbar hook = hook_taskbars->data[index];
-    const entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event->clicker);
-    const entity frame = zox_get_value(event->clicked, ParentLink)
-    if (!zox_valid(frame) || !zox_has(frame, ActiveState)) {
-        zox_log(" ! invalid frame\n")
-        return;
-    }
-    byte window_state = zox_valid(window_ui);
-    zox_set(frame, ActiveState, { window_state });
-    zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
-}
-
-
+}*/
 
 // todo: make tooltip function just return a string
 byte tooltip_event_taskbar_icon(
@@ -69,7 +48,7 @@ byte tooltip_event_taskbar_icon(
         zox_log("! issue with ui, on tooltip\n")
         return 0;
     }
-    zox_geter(data->triggered, TooltipText, tooltip_text)
+    zox_geter(data->triggered, TooltipText, tooltip_text);
     char *result = convert_zext_to_text(tooltip_text->value, tooltip_text->length);
     // char *result = "opens a game ui";
     set_entity_text(world, data->tooltip, result);

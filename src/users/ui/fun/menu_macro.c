@@ -45,14 +45,17 @@ entity spawn_prefab_menu_##name( \
         );\
     }
 
-#define zox_user_menu_functions_frame_color(Name, Name2, name, name2, fill_color_frame)\
+/*#define zox_user_menu_functions_frame_color(Name, Name2, name, name2, fill_color_frame)\
     \
     zox_user_menu_functions_minimal(Name, Name2, name, name2)\
     \
-    entity spawn_player_menu_##name(ecs *world, const entity player) {\
-        const entity character = zox_get_value(player, CharacterLink)\
-        const entity canvas = zox_get_value(player, CanvasLink)\
-        const int2 canvas_size = zox_get_value(canvas, LayoutSize)\
+    entity spawn_player_menu_##name(\
+        ecs *world,\
+        const entity player\
+    ) {\
+        zox_geter_value(player, CharacterLink, entity, character);\
+        zox_geter_value(player, CanvasLink, entity, canvas);\
+        zox_geter_value(canvas, LayoutSize, int2, canvas_size);\
         SpawnWindowUsers data = get_default_spawn_window_users_data( \
             world, \
             prefab_menu_##name, \
@@ -76,6 +79,6 @@ entity spawn_prefab_menu_##name( \
             0,\
             NULL\
         );\
-    }
+    }*/
 
 // Example: zox_user_menu_functions(Skills, Skill, skills, skill)

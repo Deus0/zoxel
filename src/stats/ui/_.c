@@ -20,6 +20,7 @@ zox_begin_module(StatsUI)
     zoxd_tag(StatIconLabel);
     define_systems_stats_ui(world);
     add_taskbar_button((hook_taskbar) {
+        .index = 2,
         .spawn = &spawn_player_menu_stats,
         .component_id = MenuStats,
         .texture_name = "taskbar_stats"

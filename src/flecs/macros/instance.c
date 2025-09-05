@@ -2,7 +2,7 @@
     const ecs_entity_t e = ecs_new_w_pair(world, EcsIsA, prefab);
 
 #define zox_instancee(prefab)\
-    ecs_new_w_pair(world, EcsIsA, prefab);
+    ecs_new_w_pair(world, EcsIsA, prefab)
 
 #define zox_instance_named(prefab, name)\
     const ecs_entity_t name = ecs_new_w_pair(world, EcsIsA, prefab);
