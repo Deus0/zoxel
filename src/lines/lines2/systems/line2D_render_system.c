@@ -14,18 +14,18 @@ void line2D_render_iteration(ecs_iter_t *it, const byte is_element_line) {
         glUniform1f(line2D_depth_location, 0);
     }
     zox_gpu_float4x4(line2D_camera_matrix_location, render_matrix);
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(LineData2D)
-    zox_sys_in(LineThickness)
-    zox_sys_in(Color)
-    zox_sys_in(Layer2D)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(LineData2D);
+    zox_sys_in(LineThickness);
+    zox_sys_in(Color);
+    zox_sys_in(Layer2D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(Layer2D, layer2D)
-        zox_sys_i(LineData2D, lineData2D)
-        zox_sys_i(LineThickness, lineThickness)
-        zox_sys_i(Color, line_color)
+        zox_sys_e();
+        zox_sys_i(Layer2D, layer2D);
+        zox_sys_i(LineData2D, lineData2D);
+        zox_sys_i(LineThickness, lineThickness);
+        zox_sys_i(Color, line_color);
         if (is_element_line) {
             if (layer2D->value != renderer_layer) {
                 continue; // render per layer

@@ -12,8 +12,8 @@ entity spawn_header(
     const int2 parent_pixel_positionv,
     const int2 parent_pixel_size,
     const byte is_close_button,
-    const int2 canvas_size)
-{
+    const int2 canvas_size
+) {
     const int string_length = strlen(label);
     int2 zext_position = (int2) {
         ((font_size * string_length) / 2) + header_margins / 2,
@@ -49,11 +49,11 @@ entity spawn_header(
     SpawnZext zext_spawn_data = {
         .canvas = {
             .e = canvas,
-            .size = canvas_size
+            // .size = canvas_size
         },
         .parent = {
             .e = e,
-            .size = pixel_size
+            // .size = pixel_size
         },
         .element = {
             .prefab = prefab_zext,
@@ -79,10 +79,11 @@ entity spawn_header(
 
     if (is_close_button) {
         int2 close_button_position = (int2) {
-            0, // - (font_size / 2), // - padding.x, //  - header_margins / 2,
+            - (font_size / 2) - padding.x,
             0
         };
-        add_to_Children(&children, spawn_close_button(world,
+        add_to_Children(&children, spawn_close_button(
+            world,
             e,
             canvas,
             int2_zero,

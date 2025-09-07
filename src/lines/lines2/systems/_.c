@@ -1,24 +1,41 @@
 #include "line2D_element_system.c"
 #include "line2D_render_system.c"
+#include "line2_position.c"
 
 void define_systems_line2D(ecs_world_t *world) {
-    zox_system(Line2DElementSystem, zoxp_transforms,
+    zox_system(
+        Line2DElementSystem,
+        zoxp_transforms,
         [in] LinePosition2,
         [in] layouts2.CanvasLink,
         [out] LineData2D,
-        [none] Line2D)
-    zox_render3D_plus_system(Line2DRenderSystem,
+        [none] Line2D
+    );
+    zox_system(
+        Line2PositionSystem,
+        zoxp_transforms,
+        [in] layouts2.LayoutPositionDirty,
+        [in] layouts2.CanvasPosition,
+        [in] layouts2.LayoutSize,
+        [in] hierarchys.Children
+    );
+    zox_render3D_plus_system(
+        Line2DRenderSystem,
         [in] LineData2D,
         [in] lines.LineThickness,
         [in] colorz.Color,
         [in] layouts2.Layer2D,
         [none] Line2D,
-        [none] !ElementLine2D)
-    zox_render2D_system(ElementLine2DRenderSystem,
+        [none] !ElementLine2D
+    );
+    zox_render2D_system(
+        ElementLine2DRenderSystem,
         [in] LineData2D,
         [in] lines.LineThickness,
         [in] colorz.Color,
         [in] layouts2.Layer2D,
         [none] Line2D,
-        [none] ElementLine2D)
+        [none] ElementLine2D
+    );
+
 }

@@ -1,11 +1,11 @@
-ecs_entity_t spawn_profiler(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_profiler(
+    ecs* world,
+    const entity prefab,
     const char *header_label,
     const int2 position,
     const int2 size,
     const float2 anchor,
-    const ecs_entity_t canvas,
+    const entity canvas,
     const byte layer
 ) {
     const byte plots_count = 2;
@@ -28,13 +28,13 @@ ecs_entity_t spawn_profiler(
     const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     const byte is_close_button = 1;
 
-    const ecs_entity_t parent = canvas;
+    const entity parent = canvas;
     const int children_count = is_header + plots_count;
 
     // zox_log(" > line_spacing [%f] - size [%i]\n", line_spacing, pixel_size.x);
-    zox_instance(prefab)
-    zox_name("profiler")
-    zox_add_tag(e, Profiler)
+    zox_instance(prefab);
+    zox_name("profiler");
+    zox_add_tag(e, Profiler);
     initialize_element(world,
         e,
         parent,
@@ -66,7 +66,8 @@ ecs_entity_t spawn_profiler(
             int2_zero,
             size,
             is_close_button,
-            canvas_size);
+            canvas_size
+        );
     }
     int2 plot_size = size;
     plot_size.y -= header_size.y;
@@ -100,9 +101,9 @@ ecs_entity_t spawn_profiler(
     return e;
 }
 
-ecs_entity_t spawn_profiler_canvas(
-    ecs_world_t *world,
-    const ecs_entity_t canvas
+entity spawn_profiler_canvas(
+    ecs* world,
+    const entity canvas
 ) {
     const byte layer = game_overlay_layer + 3; // 3;
     const int2 test_window_size = { 380, 380 };

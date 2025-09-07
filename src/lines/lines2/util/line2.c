@@ -22,34 +22,3 @@
     zox_muter(e, LineData2D, data)
     set_ui_line_position(data, line_position2, canvas_size_f);
 }*/
-
-void set_line2_canvas_position(ecs *world, entity e) {
-    if (!zox_has(e, LineLocalPosition2)) {
-        return;
-    }
-
-    zox_geter_value(e, ParentLink, entity, parent);
-    zox_geter_value(parent, CanvasPosition, int2, parent_position);
-    zox_geter_value(parent, LayoutSize, int2, parent_size);
-
-    zox_geter_value(e, LineAnchor, float4, anchor);
-    zox_geter_value(e, LineLocalPosition2, int4, points);
-
-    // anchoring - point starts from bottom left, then we add 0 to 1 of parent size
-    const int4 new_points = (int4) {
-        parent_position.x + points.x + parent_size.x * anchor.x - parent_size.x / 2,
-        parent_position.y + points.y + parent_size.y * anchor.y - parent_size.y / 2,
-        parent_position.x + points.z + parent_size.x * anchor.z - parent_size.x / 2,
-        parent_position.y + points.w + parent_size.y * anchor.w - parent_size.y / 2
-    };
-
-    zox_muter(e, LinePosition2, canvas_points);
-    canvas_points->value = new_points;
-
-    // zox_set(e, LinePosition2, { line_position2 });
-    // zox_muter(e, LineData2D, data)
-    // set_ui_line_position(data, line_position2, canvas_size_f);
-
-    // zox_log("parent_size: %ix%i", parent_size.x, parent_size.y);
-    // zox_log(" anchor: %fx%f %fx%f", anchor.x, anchor.y, anchor.z, anchor.w);
-}
