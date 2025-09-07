@@ -146,6 +146,6 @@ byte remove_at_##T(T *ptr, int index) {\
     return 1;\
 }
 
-#define zox_define_memory_component(T)\
+#define zoxd_arrayd(T)\
     zoxd(T)\
     zox_define_hooks(T);

@@ -8,7 +8,7 @@ zoxc_float(Scale1D);
 #include "layouts2/_.c"
 
 zox_begin_module(Transforms)
-    zox_define_component_float(Scale1D);
+    zoxd_float(Scale1D);
     zox_import_module(Hierarchys);
     zox_import_module(Transforms2);
     zox_import_module(Transforms3);

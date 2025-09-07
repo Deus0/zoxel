@@ -19,7 +19,7 @@ void dispose_shaders(ecs *world, void *ctx) {
 }
 
 zox_begin_module(Shaders)
-    zox_define_memory_component(ShaderSource);
+    zoxd_arrayd(ShaderSource);
     // zoxd_tag(Shader)
     zox_module_dispose(dispose_shaders);
     // add_hook_files_load(load_files_shaders);

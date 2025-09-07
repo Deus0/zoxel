@@ -21,7 +21,7 @@ zox_begin_module(Plots)
     zoxd_tag(PlotLabel);
     zoxd_double(PlotMin);
     zoxd_double(PlotMax);
-    zox_define_memory_component(PlotDataDouble);
+    zoxd_arrayd(PlotDataDouble);
     zox_system(PlotLineSystem, EcsOnUpdate,
         [in] hierarchys.ParentLink,
         [in] hierarchys.ChildIndex,

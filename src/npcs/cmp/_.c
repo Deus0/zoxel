@@ -20,8 +20,8 @@ void define_components_npcs(ecs* world) {
     zoxd_byte(DefaultBehaviour);
     zoxd_byte(MoveForwards);
     zoxd_byte(RotateTowards);
-    zox_define_component_float(MoveSpeed);
-    zox_define_component_float3(TargetPosition);
-    zox_define_component_float3(ThreatPosition);
-    zox_define_component_float3(WanderDirection);
+    zoxd_float(MoveSpeed);
+    zoxd_float3(TargetPosition);
+    zoxd_float3(ThreatPosition);
+    zoxd_float3(WanderDirection);
 }

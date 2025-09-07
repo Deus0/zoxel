@@ -72,8 +72,8 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(RenderDistance);
     zoxd_byte(RenderDistanceDirty);
     zoxd_byte(RenderDisabled);
-    zox_define_component_float(Brightness);
-    zox_define_component_float(Alpha);
+    zoxd_float(Brightness);
+    zoxd_float(Alpha);
     zoxd_entity(MaterialLink);
     zoxd_int2(TextureSize);
     zoxd_entity(InstanceLink);
@@ -88,12 +88,12 @@ void define_components_rendering(ecs *world) {
     zox_define_component_w_dest(UboGPULink);
     zoxd_byte(ShaderSourceIndex);
     zoxd_entity(ShaderLink);
-    zox_define_memory_component(MeshIndicies);
-    zox_define_memory_component(MeshVertices);
-    zox_define_memory_component(MeshVertices2D);
-    zox_define_memory_component(MeshUVs);
-    zox_define_memory_component(MeshColors);
-    zox_define_memory_component(MeshColorRGBs);
+    zoxd_arrayd(MeshIndicies);
+    zoxd_arrayd(MeshVertices);
+    zoxd_arrayd(MeshVertices2D);
+    zoxd_arrayd(MeshUVs);
+    zoxd_arrayd(MeshColors);
+    zoxd_arrayd(MeshColorRGBs);
     // Models
     zox_define_entities_component(ModelLinks);
     zoxd_entity(ModelLink);

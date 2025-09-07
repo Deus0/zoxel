@@ -19,13 +19,13 @@ void define_components_neurals(ecs* world) {
     zoxd_tag(Connection);
     zoxd_tag(InputNeuron);
     zoxd_tag(OutputNeuron);
-    zox_define_component_float(Weight);
-    zox_define_component_float(Signal);
-    zox_define_component_float(Transfer);
+    zoxd_float(Weight);
+    zoxd_float(Signal);
+    zoxd_float(Transfer);
     zoxd(ConnectionData);
     zoxd_byte(BrainDirty);
     zoxd_entity(BrainLink);
-    zox_define_memory_component(BrainInputs);
-    zox_define_memory_component(BrainOutputs);
-    zox_define_memory_component(BrainLinks);
+    zoxd_arrayd(BrainInputs);
+    zoxd_arrayd(BrainOutputs);
+    zoxd_arrayd(BrainLinks);
 }

@@ -67,7 +67,6 @@ entity spawn_window_users(
                 header_height
             },
         };
-        zox_log("margin y header %i", data.header_zext.margins.y);
         const entity header = spawn_header3(
             world,
             data.canvas,

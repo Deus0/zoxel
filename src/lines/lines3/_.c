@@ -28,8 +28,8 @@ zox_begin_module(Lines3)
     zoxd_tag(DebugCubeCorner);
     zoxd(DebugCubeLines);
     zoxd(LineData3D);
-    zox_define_component_float(CubeLinesThickness);
-    zox_define_component_float(DebugCubeShrink);
+    zoxd_float(CubeLinesThickness);
+    zoxd_float(DebugCubeShrink);
     define_systems_lines3(world);
     add_hook_load_shader(&spawn_shaders_lines3D);
     add_hook_spawn_prefabs(spawn_prefabs_lines3D);

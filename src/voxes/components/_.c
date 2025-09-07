@@ -21,5 +21,5 @@ void define_components_voxes(ecs *world) {
     zoxd_byte(VRegions);
     zox_define_component_int(RubbleCount);
     zoxd_entity(CloneVoxLink);
-    zox_define_component_float(VoxColorRange);
+    zoxd_float(VoxColorRange);
 }

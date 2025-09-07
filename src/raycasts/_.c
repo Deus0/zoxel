@@ -23,8 +23,8 @@ zox_begin_module(Raycasts)
     zoxd_int2(Raycaster);
     zoxd_byte(RaycasterResult);
     zoxd_entity(RaycasterTarget);
-    zox_define_component_float3(RaycastOrigin);
-    zox_define_component_float3(RaycastNormal);
+    zoxd_float3(RaycastOrigin);
+    zoxd_float3(RaycastNormal);
     // zox_system(MouseRaycasterSystem, zoxp_inputs_update, [in] inputs.DeviceLinks, [in] inputs.DeviceMode, [out] raycasts.Raycaster)
     zox_system(ZeviceRaycasterSystem, zoxp_inputs_update,
             [in] inputs.ZevicePointerPosition,

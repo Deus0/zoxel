@@ -21,10 +21,10 @@ void define_components_stats(ecs *world) {
     zoxd_tag(StatLevel);
     zoxd_userdata(Stat);
     zoxd_byte(StatDirty);
-    zox_define_component_float(StatValue);
-    zox_define_component_float(StatValueMax);
-    zox_define_component_float(ExperienceValue);
-    zox_define_component_float(ExperienceMax);
+    zoxd_float(StatValue);
+    zoxd_float(StatValueMax);
+    zoxd_float(ExperienceValue);
+    zoxd_float(ExperienceMax);
     zox_define_entities_component(DotLinks);
     // special stats
     zoxd_tag(HealthStat);

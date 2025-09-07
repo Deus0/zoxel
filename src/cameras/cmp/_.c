@@ -39,8 +39,8 @@ void define_components_cameras(ecs *world) {
     zoxd_byte(CanRoam);
     zoxd_byte(CameraMode);
     zoxd_byte(CameraViewing);
-    zox_define_component_float(FieldOfView);
-    zox_define_component_float(CameraNearDistance);
+    zoxd_float(FieldOfView);
+    zoxd_float(CameraNearDistance);
     zoxd_int2(ScreenPosition);
     zoxd_entity(CameraLink);
     zoxd_entity(CameraTarget);
@@ -48,7 +48,7 @@ void define_components_cameras(ecs *world) {
     zoxd(ProjectionMatrix);
     zoxd(ViewMatrix);
     // zoxd(ViewProjectionMatrix)
-    zox_define_component_float4(ScreenToCanvas);
+    zoxd_float4(ScreenToCanvas);
     zox_define_component_array(FrustumCorners);
     zox_define_component_array(CameraPlanes);
     // render cameras

@@ -136,8 +136,16 @@ static inline float3 float3_sign(const float3 value) {
     return (float3) { float_sign(value.x), float_sign(value.y), float_sign(value.z) };
 }
 
-static inline float3 float3_lerp(const float3 a, const float3 b, const float t) {
-    return (float3) { a.x + t * (b.x - a.x), a.y + t * (b.y - a.y), a.z + t * (b.z - a.z) };
+static inline float3 float3_lerp(
+    const float3 a,
+    const float3 b,
+    const float t
+) {
+    return (float3) {
+        a.x + t * (b.x - a.x),
+        a.y + t * (b.y - a.y),
+        a.z + t * (b.z - a.z)
+    };
 }
 
 static inline float float3_sign2(const float3 value) {

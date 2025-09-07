@@ -60,7 +60,7 @@ zox_begin_module(Networking)
     zoxd(TargetNetAddress);
     zox_define_component_int(NetPort);
     zox_define_component_int(TargetNetPort);
-    zox_define_memory_component(PacketData);
+    zoxd_arrayd(PacketData);
     zox_define_component_w_dest(SocketLink);
     zox_system(PacketRecieveSystem, EcsOnUpdate,
             [in] SocketLink,

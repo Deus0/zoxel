@@ -14,10 +14,10 @@ void define_components_skills(ecs* world) {
     zoxd_tag(Aura);
     zoxd_tag(Poison);
     zoxd_userdata(Skill);
-    zox_define_component_float(SkillDamage);
-    zox_define_component_float(SkillDamageMax);
-    zox_define_component_float(SkillRange);
-    zox_define_component_float(SkillCost);
+    zoxd_float(SkillDamage);
+    zoxd_float(SkillDamageMax);
+    zoxd_float(SkillRange);
+    zoxd_float(SkillCost);
     zoxd_byte(SkillActive);
     zoxd_entity(SkillResourceLink);
 }

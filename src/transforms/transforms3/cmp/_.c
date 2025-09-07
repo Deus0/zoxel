@@ -14,14 +14,14 @@ zoxc(TransformMatrix, float4x4);
 void define_components_transforms3(ecs* world) {
     zoxd_tag(EulerOverride);
     zoxd_tag(CameraTransform);
-    zox_define_component_float3(Position3D);
-    zox_define_component_float4(Rotation3D);
-    zox_define_component_float3(Scale3D);
+    zoxd_float3(Position3D);
+    zoxd_float4(Rotation3D);
+    zoxd_float3(Scale3D);
     zoxd(Matrix);
-    zox_define_component_float3(Euler);
+    zoxd_float3(Euler);
     zoxd_float2(EulerLimitX);
     zoxd_float2(EulerLimitZ);
-    zox_define_component_float3(LocalPosition3D);
-    zox_define_component_float4(LocalRotation3D);
+    zoxd_float3(LocalPosition3D);
+    zoxd_float4(LocalRotation3D);
     zoxd(TransformMatrix);
 }

@@ -11,11 +11,11 @@ zoxc_float3(LastUnstuck3);
 
 void zox_define_components_physics3(ecs *world) {
     zoxd_byte(InitializePhysics3D);
-    zox_define_component_float3(Velocity3D);
-    zox_define_component_float3(Acceleration3D);
-    zox_define_component_float3(Omega3D);
-    zox_define_component_float3(Alpha3D);
-    zox_define_component_float3(Gravity3D);
-    zox_define_component_float3(LastPosition3D);
-    zox_define_component_float3(LastUnstuck3);
+    zoxd_float3(Velocity3D);
+    zoxd_float3(Acceleration3D);
+    zoxd_float3(Omega3D);
+    zoxd_float3(Alpha3D);
+    zoxd_float3(Gravity3D);
+    zoxd_float3(LastPosition3D);
+    zoxd_float3(LastUnstuck3);
 }

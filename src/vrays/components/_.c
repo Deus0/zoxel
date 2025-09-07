@@ -3,5 +3,5 @@
 
 void define_components_vrays(ecs *world) {
     zoxd(RaycastVoxelData);
-    zox_define_component_float(RaycastRange);
+    zoxd_float(RaycastRange);
 }

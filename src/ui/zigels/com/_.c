@@ -22,6 +22,6 @@ void define_components_zigels(ecs *world) {
     zoxd_byte(ZigelIndex);
     zox_define_component_color(FontFillColor);
     zox_define_component_color(FontOutlineColor);
-    zox_define_memory_component(FontData);
+    zoxd_arrayd(FontData);
     zoxd_entity(FontLink);
 }

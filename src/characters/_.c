@@ -26,7 +26,7 @@ void spawn_prefabs_characters(ecs* world) {
 zox_begin_module(Characters)
     zoxd_tag(Character);
     zoxd_entity(CharacterLink);
-    zox_define_memory_component(CharacterLinks);
+    zoxd_arrayd(CharacterLinks);
     add_hook_spawn_prefabs(spawn_prefabs_characters);
     // hooks
     add_hook_terminal_command(process_arguments_characters);

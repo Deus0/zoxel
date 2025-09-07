@@ -18,10 +18,10 @@ void define_components_sounds(ecs_world_t *world) {
     zoxd_byte(GenerateSound);;
     zoxd_byte(ProcessSound);;
     zoxd_double(SoundLength);;
-    zox_define_component_float(SoundFrequency);;
-    zox_define_component_float(SoundVolume);;
+    zoxd_float(SoundFrequency);;
+    zoxd_float(SoundVolume);;
     zox_define_component_int(SoundFrequencyIndex);;
-    // zox_define_memory_component(SoundData);
+    // zoxd_arrayd(SoundData);
     zox_define_component_w_dest(SoundData);;
     zoxd(SoundDataRef);;
 }

@@ -66,7 +66,7 @@ void define_components_elements_core(ecs *world) {
     zoxd_tag(IgnoreWindowLayering);
     zoxd_tag(Tooltip);
     zoxd_byte(ElementFontSize);
-    zox_define_component_float(ElementBar);
+    zoxd_float(ElementBar);
     zoxd_int2(ElementMargins);
     zoxd_float2(ElementBarSize);
     zoxd(NavigatorTimer);

@@ -1,15 +1,15 @@
-void PickupSoundSystem(ecs_iter_t *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(PickedUp)
+void PickupSoundSystem(iter *it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(PickedUp);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(PickedUp, pickedUp)
-        if (pickedUp->value != pickup_state_pickup) {
+        zox_sys_e();
+        zox_sys_i(PickedUp, pickedUp);
+        if (pickedUp->value != zox_dirty_active) {
             continue;
         }
         spawn_sound_from_file_name(world, prefab_sound, "pickup2", 0, get_volume_sfx());
         // todo: move to character, delete after!
-        zox_delete(e)
+        // zox_delete(e);
     }
 } zoxd_system2(PickupSoundSystem);

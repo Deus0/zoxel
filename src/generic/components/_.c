@@ -95,8 +95,8 @@ void define_components_generic(ecs_world_t *world) {
     zoxd_entity(EventInput);
     zoxd(TimedEvent);
     // physics
-    zox_define_component_float3(Bounds3D);
-    zox_define_component_float6(Position3DBounds);
+    zoxd_float3(Bounds3D);
+    zoxd_float6(Position3DBounds);
     // editor
     zoxd_byte(EntityDirty);
     zoxd_entity(EntityTarget);

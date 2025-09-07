@@ -68,7 +68,7 @@ zox_begin_module(Players)
     zoxd_byte(PlayerState);
     zoxd_double(PlayerRespawn);
     zoxd_entity(PlayerLink);
-    zox_define_memory_component(PlayerLinks);
+    zoxd_arrayd(PlayerLinks);
     zoxd_entity(PlayerPauseEvent);
     define_systems_players(world);
     add_hook_on_boot(on_boot_players);

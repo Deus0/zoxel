@@ -1,5 +1,6 @@
 const byte max_stack_quantity = 255;
 
+// TODO: system state instead of events
 void on_overlap_pickup(
     ecs *world,
     const entity e,
@@ -9,8 +10,17 @@ void on_overlap_pickup(
         return;
     }
 
+    // animate + picked up state
     zox_set(e, PickedUp, { pickup_state_trigger });
     zox_set(e, CollisionDisabled, { 1 });
+    lerp_to_entity(
+        world,
+        e,
+        user,
+        0.1f,
+        0.6f
+    );
+    zox_set(e, DestroyInTime, { 1 });
 
     // zox_log(" > e [%lu] picked up by user [%lu]\n", e, user)
     if (!zox_has(e, ItemLink)) {

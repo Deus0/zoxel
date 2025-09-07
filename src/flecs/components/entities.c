@@ -53,5 +53,5 @@
     }
 
 #define zox_define_entities_component(T) \
-    zox_define_memory_component(T) \
+    zoxd_arrayd(T) \
     zox_observe(on_destroyed_##T, EcsOnRemove, [in] T)

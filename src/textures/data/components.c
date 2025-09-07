@@ -51,14 +51,14 @@ void define_components_textures(ecs *world) {
     zoxd_byte(GenerateTexture);
     zoxd_byte(OutlineThickness);
     zoxd_byte(FrameCorner);
-    zox_define_component_float(IconRadius);
+    zoxd_float(IconRadius);
     zoxd_int2(TilemapSize);
     zoxd_double(AnimateTexture);
     zox_define_component_color(OutlineColor);
     zoxd_entity(TilemapLink);
     zoxd_entity(TextureLink);
-    zox_define_memory_component(TextureData);
-    zox_define_memory_component(TilemapUVs);
-    zox_define_memory_component(TextureLinks);
+    zoxd_arrayd(TextureData);
+    zoxd_arrayd(TilemapUVs);
+    zoxd_arrayd(TextureLinks);
     // zox_define_entities_component(Textures);
 }

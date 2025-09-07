@@ -38,8 +38,8 @@ zox_begin_module(Colorz)
     zox_define_component_color_rgb(ColorRGB);
     zox_define_component_color_rgb(SecondaryColorRGB);
     zox_define_component_color_rgb(FogColor);
-    zox_define_memory_component(ColorRGBs);
-    zox_define_memory_component(Colors);
+    zoxd_arrayd(ColorRGBs);
+    zoxd_arrayd(Colors);
     define_systems_colors(world);
     add_hook_spawn_prefabs(spawn_prefabs_colors);
 zox_end_module(Colorz)
