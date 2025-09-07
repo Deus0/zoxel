@@ -1,5 +1,4 @@
 void GridSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GridDirty);
@@ -8,9 +7,7 @@ void GridSystem(iter *it) {
     zox_sys_in(GridSize);
     zox_sys_in(GridPadding);
     zox_sys_in(GridMargins);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(GridDirty, dirty);
         zox_sys_i(Children, children);
         zox_sys_i(LayoutSize, size);

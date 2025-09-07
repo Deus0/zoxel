@@ -16,7 +16,7 @@ zoxc_entity(FramePrefabLink);
 zoxc_float2(SlideBounds);
 zoxc(SliderLabel, const char*);
 
-void define_components_elements2D(ecs *world) {
+void define_components_elements2(ecs *world) {
     zoxd_tag(Label);
     zoxd_tag(Button);
     zoxd_tag(Icon);

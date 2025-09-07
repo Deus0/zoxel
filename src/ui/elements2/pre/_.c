@@ -50,7 +50,7 @@ entity prefab_slider;
 // todo: make a more advanced 'element' prefab, alott of these still use prefab_element
 //  - element_selectable, element_clickable, element_draggable
 
-void spawn_prefabs_elements(ecs *world) {
+void spawn_prefabs_elements2(ecs *world) {
     // elements
     prefab_label = spawn_prefab_label(world, prefab_zext);
     prefab_label_background = spawn_prefab_label_background(world, prefab_zext_background);

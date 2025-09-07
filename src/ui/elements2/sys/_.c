@@ -5,7 +5,7 @@
 #include "slide_event.c"
 #include "list_render_dirty.c"
 
-void define_systems_elements2D(ecs *world) {
+void define_systems_elements2(ecs *world) {
     zox_system(
         ElementDragSystem,
         EcsPostLoad,
