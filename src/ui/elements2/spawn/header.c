@@ -24,7 +24,7 @@ entity spawn_header3(
     // # Header Text # - Left Aligned
     const int string_length = strlen(zext.text);
     int2 zext_position = (int2) {
-        ((zext.font_size * string_length) / 2) + header.margins,
+        ((zext.font_size * string_length) / 2) + zext.margins.x,
         0
     };
     float2 zext_anchor = (float2) { 0, 0.5f };
@@ -36,7 +36,6 @@ entity spawn_header3(
         .canvas = canvas_data,
         .parent = {
             .e = e,
-            .position = element_data.position_in_canvas,
             .size = element_data.size,
         },
         .element = {
@@ -58,7 +57,7 @@ entity spawn_header3(
             (int) (zext.font_size * 0.3f)
         };
         const int2 close_button_position = (int2) {
-            - (zext.font_size / 2) - header.margins,
+            - (zext.font_size + zext.margins.x * 2) / 2,
             0
         };
         add_to_Children(&children,

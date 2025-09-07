@@ -17,7 +17,7 @@ entity spawn_zext(
     zox_set(e, RenderDisabled, { data->element.render_disabled });
     zox_set(e, TextFontSize, { data->zext.font_size });
     zox_set(e, TextResolution, { font_resolution });
-    zox_set(e, TextPadding, { data->zext.padding });
+    zox_set(e, TextPadding, { data->zext.margins });
     zox_set(e, TextAlignment, { data->zext.alignment });
     zox_set(e, MeshAlignment, { data->zext.alignment });
     zox_set(e, FontFillColor, { data->zext.font_fill_color });
@@ -43,7 +43,7 @@ entity spawn_zext(
         text_data.value,
         text_data.length,
         data->zext.font_size,
-        data->zext.padding,
+        data->zext.margins,
         default_line_padding
     );
     initialize_element(

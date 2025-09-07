@@ -1,4 +1,4 @@
-#include "resize.c"
+#include "spawn.c"
 #include "text_panel.c"
 #include "text_panel_child.c"
 #include "update.c"
@@ -18,8 +18,7 @@ void define_systems_texts(ecs *world) {
         EcsOnUpdate,
         [in] texts.TextDirty,
         [in] texts.TextData,
-        [in] hierarchys.Children// ,
-        // [none] texts.Zext
+        [in] hierarchys.Children
     );
     zox_system(
         ZigelPositionSystem,
@@ -50,15 +49,14 @@ void define_systems_texts(ecs *world) {
             [in] texts.TextData,
             [in] texts.TextFontSize,
             [in] TextPadding,
-            // [in] layouts2.CanvasLink,
             [out] layouts2.LayoutSize,
             [out] layouts2.LayoutSizeDirty,
             [none] Zext
         );
     }
     zox_system_1(
-        TextResizeSystem,
-        EcsPreStore,
+        ZigelSpawnSystem,
+        EcsOnUpdate,
         [in] texts.TextData,
         [in] texts.TextFontSize,
         [in] TextPadding,

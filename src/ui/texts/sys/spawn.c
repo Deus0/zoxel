@@ -105,7 +105,7 @@ void spawn_text2D_zigels(
 }
 
 //! When ui text updates, spawn/destroy font entities
-void TextResizeSystem(iter *it) {
+void ZigelSpawnSystem(iter *it) {
 
     zox_sys_world();
     zox_sys_begin();
@@ -195,4 +195,4 @@ void TextResizeSystem(iter *it) {
             text_data
         );
     }
-} zoxd_system2(TextResizeSystem);
+} zoxd_system2(ZigelSpawnSystem);

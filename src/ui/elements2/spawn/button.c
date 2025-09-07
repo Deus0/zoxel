@@ -1,18 +1,19 @@
-entity spawn_button(ecs *world,
+entity spawn_button(
+    ecs *world,
     const LayoutParentData canvas_data,
     const LayoutParentData parent_data,
     ElementSpawnData element_data,
     const SpawnTextData zext_data,
-    const SpawnButtonData button_data)
-{
+    const SpawnButtonData button_data
+) {
     int text_length = zext_data.text != NULL ? strlen(zext_data.text) : 0;
     const int2 zext_size = (int2) {
         zext_data.font_size * text_length,
         zext_data.font_size
     };
     element_data.size = (int2) {
-        zext_size.x + zext_data.padding.x * 2,
-        zext_size.y + zext_data.padding.y * 2
+        zext_size.x + zext_data.margins.x * 2,
+        zext_size.y + zext_data.margins.y * 2
     };
 
     zox_instance(element_data.prefab);
@@ -31,16 +32,13 @@ entity spawn_button(ecs *world,
     zox_set(e, Color, { button_data.fill });
     zox_set(e, OutlineColor, { button_data.outline });
 
-    Children children = (Children) { 0, NULL };
+    Children children = (Children) { 0 };
 
     // text
-    SpawnZext spawnZext = {
+    SpawnZext zext_data2 = {
         .canvas = canvas_data,
-        .parent = {
-            .e = e,
-            .position = element_data.position_in_canvas,
-            .size = element_data.size
-        },
+        .zext = zext_data,
+        .parent = { .e = e },
         .element = {
             .prefab = button_data.prefab_zext,
             .layer = element_data.layer + 1,
@@ -48,9 +46,8 @@ entity spawn_button(ecs *world,
             .size = zext_size,
             .render_disabled = element_data.render_disabled,
         },
-        .zext = zext_data,
     };
-    const entity zext = spawn_zext(world, &spawnZext);
+    const entity zext = spawn_zext(world, &zext_data2);
     add_to_Children(&children, zext);
 
     zox_set_ptr(e, Children, children);

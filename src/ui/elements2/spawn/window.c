@@ -17,7 +17,7 @@ entity spawn_window2(
 
     const LayoutParentData e_parent_data = {
         .e = e,
-        .position = element_data.position_in_canvas,
+        // .position = element_data.position_in_canvas,
         .size = element_data.size,
     };
 
@@ -32,7 +32,6 @@ entity spawn_window2(
     };
     SpawnHeaderData header_data = {
         .prefab_zext = prefab_zext,
-        // .color = color_white,
     };
     SpawnTextData header_text_data = {
         .text = window_data->header_text,
@@ -42,7 +41,7 @@ entity spawn_window2(
         .font_outline_thickness = header_font_thickness_outline,
         .font_fill_color = header_font_fill,
         .font_outline_color = header_font_outline,
-        .padding = window_data->header_padding,
+        .margins = window_data->header_padding,
     };
     // n/a
     const entity header = spawn_header3(

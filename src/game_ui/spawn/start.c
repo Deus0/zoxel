@@ -24,7 +24,7 @@ entity spawn_menu_start(
             .font_thickness = 4,
             .font_fill_color = default_font_fill_color,
             .font_outline_color = default_font_outline_color,
-            .padding = (byte2) { 32, 16 },
+            .margins = (byte2) { 32, 16 },
         },
         .button = {
             .prefab_zext = prefab_zext,

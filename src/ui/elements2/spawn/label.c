@@ -41,7 +41,7 @@ entity spawn_label_background(
             .font_thickness = 1,
             .font_outline_thickness = 1,
             .alignment = alignment,
-            .padding = padding,
+            .margins = padding,
             .font_fill_color = label_font_fill_color,
             .font_outline_color = label_font_outline_color
         }

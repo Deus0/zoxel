@@ -69,7 +69,7 @@ ecs_entity_t spawn_button_old(
             .text = text,
             .font_size = font_size,
             .font_thickness = 1,
-            .padding = padding,
+            .margins = padding,
             .font_fill_color = default_font_fill_color,
             .font_outline_color = default_font_outline_color } };
     const ecs_entity_t zext = spawn_zext(world, &spawnZext);

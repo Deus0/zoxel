@@ -10,12 +10,18 @@ entity spawn_player_menu_actions(
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     zox_geter_value(character, ActionIndex, byte, selected);
+
     SpawnWindowUsers data = get_default_spawn_window_users_data(
         world,
         prefab_menu_actions,
         character,
         canvas,
-        canvas_size);
+        canvas_size
+    );
+
+    // prefabs
+    data.frame.prefab = prefab_frame_action;
+    data.icon.prefab = prefab_icon_action;
     // window
     data.element.prefab = prefab_menu_actions;
     data.element.anchor = (float2) { 0.5f, 0 };
@@ -23,20 +29,16 @@ entity spawn_player_menu_actions(
     // header
     data.header_zext.text = "";
     data.header_zext.font_size = 4;
+    data.header_zext.margins.y = 6;
     // grid
     data.window.grid_size = (byte2) { 8, 1 };
     data.window.grid_padding.x = 12;
     data.window.grid_padding.y = 0;
     data.window.grid_margins.x = 20;
     data.window.grid_margins.y = 8;
-    // elements
-    data.frame.prefab = prefab_frame_action;
-    data.icon.prefab = prefab_icon_action;
-    int header_height = data.header_zext.font_size + data.header.margins * 2;
-    data.element.size = (int2) {
-        data.window.grid_padding.x + (data.window.icon_size + data.window.grid_padding.x) * data.window.grid_size.x + data.window.grid_margins.x * 2,
-        data.window.grid_padding.y + (data.window.icon_size + data.window.grid_padding.y) * data.window.grid_size.y + data.window.grid_margins.y * 2 + header_height
-    };
+
+    int header_height = data.header_zext.font_size + data.header_zext.margins.y * 2;
+    data.element.size = calculate_grid_window_size(data.window, header_height);
     data.element.position = (int2) { 0, data.element.size.y / 2 + 16 };
     data.frame.texture.fill_color = fill_color_frame_action;
     data.frame.texture.outline_color = outline_color_frame_action;

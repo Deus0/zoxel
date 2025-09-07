@@ -165,7 +165,7 @@ entity spawn_ui_list(
         },
         .zext = {
             .font_size = scaled_font_size,
-            .padding = button_padding,
+            .margins = button_padding,
             .font_resolution = button_font_resolution,
             .font_fill_color = button_font_fill,
             .font_outline_color = button_font_outline,

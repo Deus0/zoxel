@@ -74,7 +74,7 @@ ecs_entity_t spawn_plot_graph(
                 .font_size = 14,
                 .font_thickness = 1,
                 .alignment = zox_mesh_alignment_top_left,
-                .padding = (byte2) { 16, 4 },
+                .margins = (byte2) { 16, 4 },
                 .font_fill_color = default_font_fill_color,
                 .font_outline_color = default_font_outline_color
             }

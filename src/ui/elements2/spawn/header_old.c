@@ -69,7 +69,7 @@ entity spawn_header(
             .font_outline_thickness = header_font_thickness_outline,
             .font_fill_color = header_font_fill,
             .font_outline_color = header_font_outline,
-            .padding = padding,
+            .margins = padding,
         }
     };
     Children children = (Children) { 0, NULL };
@@ -100,7 +100,11 @@ entity spawn_header(
 
 entity spawn_header2(ecs *world, SpawnHeader *data) {
     const int string_length = strlen(data->zext.text);
-    int2 zext_position = (int2) { ((data->zext.font_size * string_length) / 2) + data->header.margins, 0 };
+    int2 zext_position = (int2) {
+        ((data->zext.font_size * string_length) / 2)
+        + data->zext.margins.y,
+        0
+    };
     float2 zext_anchor = (float2) { 0, 0.5f };
     if (!data->header.is_close_button) {
         zext_anchor.x = 0.5f;
@@ -134,7 +138,11 @@ entity spawn_header2(ecs *world, SpawnHeader *data) {
     const entity header_zext = spawn_zext(world, &zextSpawnData);
     add_to_Children(&children, header_zext);
     if (data->header.is_close_button) {
-        const int2 close_button_position = (int2) { - (data->zext.font_size / 2) - data->header.margins, 0 };
+        const int2 close_button_position = (int2) {
+            - (data->zext.font_size / 2)
+            - data->zext.margins.y,
+            0
+        };
         add_to_Children(&children,
             spawn_close_button(
                 world,

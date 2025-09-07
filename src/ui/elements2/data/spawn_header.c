@@ -2,7 +2,7 @@
 typedef struct {
     entity prefab_zext;
     byte is_close_button;
-    byte margins;
+    // byte margins;
     color color;
 } SpawnHeaderData;
 

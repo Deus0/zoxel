@@ -43,6 +43,7 @@ entity spawn_menu_game_stats(
     };
 
     ElementSpawn body_data = {
+        .texture = panel_texture,
         .canvas = {
             .e = canvas,
             .size = zox_gett_value(canvas, LayoutSize),
@@ -59,7 +60,6 @@ entity spawn_menu_game_stats(
             .position = panel_position,
             .size = panel_size
         },
-        .texture = panel_texture,
     };
 
     const entity e = spawn_element(world, &body_data);

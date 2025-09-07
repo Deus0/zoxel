@@ -87,7 +87,7 @@ entity spawn_list(
             SpawnTextData child_text_data = {
                 .text = child_data.text,
                 .font_size = list_data.font_size,
-                .padding = list_data.button_padding,
+                .margins = list_data.button_padding,
                 .font_resolution = button_font_resolution,
                 .font_fill_color = button_font_fill,
                 .font_outline_color = button_font_outline,

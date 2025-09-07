@@ -49,6 +49,7 @@ void define_systems_layouts2(ecs* world) {
         [in] layouts2.GridDirty,
         [in] hierarchys.Children,
         [in] layouts2.LayoutSize,
+        [in] layouts2.GridSize,
         [in] layouts2.GridPadding,
         [in] layouts2.GridMargins
     );
