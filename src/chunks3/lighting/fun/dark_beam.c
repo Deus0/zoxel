@@ -16,8 +16,12 @@ byte dark_sunbeam(
     byte type,
     byte* solidity
 ) {
+    byte dirty = 0;
+
     byte length = powers_of_two[depth];
-    if (pos.y > length) return 0;
+    if (pos.y > length) {
+        return dirty;
+    }
 
     byte max_y = pos.y;
     byte flood_start = 0;
@@ -50,6 +54,7 @@ byte dark_sunbeam(
         zox_log_lighting_dark("     - Light Banished at [%ix%ix%i] l[%i]", pos.x, pos.y, pos.z, current_light);
 
         set_LightNode(root_lnode, depth, pos, min_light, 0);
+        dirty = 1;
 
         if (y == 0) {
             flood_end = pos.y;
@@ -69,7 +74,7 @@ byte dark_sunbeam(
 
         zox_log_lighting_dark(" - Dark Beam Spreads [%ix%ix%i]", pos.x,  pos.y, pos.z);
 
-        dark_flood_light(
+        if (dark_flood_light(
             root_vnode,
             root_lnode,
             n_root_vnodes,
@@ -85,7 +90,9 @@ byte dark_sunbeam(
             min_light,
             air_decay,
             solidity
-        );
+        )) {
+            dirty = 1;
+        }
     }
 
     // pass downward into chunk below since we survived until the end
@@ -107,8 +114,7 @@ byte dark_sunbeam(
                 .light = sunlight
         });
         spin_unlock(&queued->lock);
-        return 1;
     }
 
-    return 0;
+    return dirty;
 }

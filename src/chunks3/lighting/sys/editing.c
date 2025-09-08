@@ -3,26 +3,24 @@
 // TODO: Convert local position to terrain position (positionv)
 // Shouuld we use VoxelNodeDepth here? since we are removing/adding at that depth
 
-void VoxelLightSystem(ecs_iter_t *it) {
-
+void VoxelLightSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
-
     zox_sys_in(VoxelNodeQueue);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
     zox_sys_out(LightNode);
     zox_sys_out(LightQueue);
     zox_sys_out(DarkQueue);
-
+    zox_sys_out(LightNodeDirty);
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(VoxelNodeQueue, input_queue);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(LightQueue, light_queue);
         zox_sys_o(DarkQueue, dark_queue);
+        zox_sys_o(LightNodeDirty, light_node_dirty);
 
         if (!input_queue->count) {
             continue;
@@ -39,7 +37,7 @@ void VoxelLightSystem(ecs_iter_t *it) {
             VoxelNodeUpdate update = input_queue->ptr[i];
 
             // Removing Voxel - Spreads Light
-            if (update.value == 0) {
+            if (!update.value) {
 
                 const LightNode* above = get_neighbor_LightNode(
                     root_lnode,
@@ -159,6 +157,7 @@ void VoxelLightSystem(ecs_iter_t *it) {
 
                 // set dark light, as it was filled up
                 set_LightNode(root_lnode, depth->value, update.pos, darklight, 0);
+                light_node_dirty->value = zox_dirty_trigger;
             }
         }
     }

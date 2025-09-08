@@ -1,4 +1,4 @@
-static inline void dark_flood_light(
+static inline byte dark_flood_light(
     const VoxelNode* root_vnode,          // (READ)
     LightNode* root_lnode,                // (WRITE)
     const VoxelNode* n_root_vnodes[6],    // (READ-ONLY)
@@ -15,8 +15,10 @@ static inline void dark_flood_light(
     byte air_decay,
     byte* solidity
 ) {
+    byte dirty = 0;
+
     if (!root_vnode || !root_lnode || distance == 0 || old_light <= min_light) {
-        return;
+        return dirty;
     }
 
     const byte SIZE = (byte)((1u << depth) - 1u);
@@ -114,6 +116,7 @@ static inline void dark_flood_light(
 
             // extinguish here and continue removing
             set_LightNode(root_lnode, depth, pos, min_light, 0);
+            dirty = 1;
 
             dark_flood_light(
                 root_vnode,
@@ -152,4 +155,6 @@ static inline void dark_flood_light(
             }
         }
     }
+
+    return dirty;
 }

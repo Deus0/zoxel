@@ -18,8 +18,14 @@ void MeshColorsTriggerSystem(iter *it) {
         zox_sys_o(MeshColorsGenerate, mesh_colors_generate);
 
         if (light_queue->count || dark_queue->count) {
-            continue;
+            // continue;
         }
+
+        /*if (chunk_mesh_dirty->value) {
+            zox_sys_world();
+            zox_sys_e();
+            zox_log("MeshColorsTriggerSystem %s", zox_get_name(e));
+        }*/
 
         if (chunk_mesh_dirty->value == zox_dirty_active ||
             sunlight_dirty->value == zox_dirty_active ||

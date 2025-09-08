@@ -8,20 +8,3 @@ entity spawn_prefab_elementbar3D_front(ecs *world, const entity prefab) {
     prefab_set_mesh3D_vertices(world, e, square_vertices, 4, statbar_front_mesh_scale);
     return e;
 }
-
-// used atm for statbar front bar
-entity spawn_elementbar3D_front(
-    ecs *world,
-    const entity prefab,
-    // const entity ui_holder,
-    const entity parent,
-    const float3 offset,
-    const byte render_disabled
-) {
-    zox_instance(prefab)
-    zox_name("elementbar3D_front")
-    zox_set(e, ParentLink, { parent })
-    zox_set(e, LocalPosition3D, { offset })
-    zox_set(e, RenderDisabled, { render_disabled })
-    return e;
-}

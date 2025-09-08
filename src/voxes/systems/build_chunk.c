@@ -254,7 +254,7 @@ void ChunkColorsBuildSystem(iter *it) {
     zox_sys_out(MeshColorRGBs);
     zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkMeshDirty, chunkMeshDirty);
+        zox_sys_i(ChunkMeshDirty, dirty);
         zox_sys_i(VoxelNode, voxelNode);
         zox_sys_i(NodeDepth, nodeDepth);
         zox_sys_i(RenderDepth, renderDepth);
@@ -262,12 +262,12 @@ void ChunkColorsBuildSystem(iter *it) {
         zox_sys_i(ColorRGBs, colorRGBs);
         zox_sys_i(ChunkSize, chunkSize);
         zox_sys_i(BlockScale, blockScale);
-        zox_sys_o(MeshDirty, meshDirty);
+        zox_sys_o(MeshDirty, mesh_dirty);
         zox_sys_o(MeshIndicies, meshIndicies);
         zox_sys_o(MeshVertices, meshVertices);
         zox_sys_o(MeshColorRGBs, meshColorRGBs);
 
-        if (chunkMeshDirty->value != zox_dirty_active) {
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
 
@@ -280,7 +280,7 @@ void ChunkColorsBuildSystem(iter *it) {
         // removes mesh when 255
         clear_mesh(meshIndicies, meshVertices, meshColorRGBs);
         if (renderDepth->value >= render_depth_spawning) {
-            meshDirty->value = mesh_state_trigger_slow;
+            mesh_dirty->value = mesh_state_trigger_slow;
             continue;
         }
 
@@ -319,7 +319,7 @@ void ChunkColorsBuildSystem(iter *it) {
 
         read_unlock_VoxelNode(voxelNode);
 
-        meshDirty->value = mesh_state_trigger_slow;
+        mesh_dirty->value = mesh_state_trigger_slow;
     }
     zox_ts_end(build_chunk_colored, 5, zox_profile_system_chunk_builder_c);
 } zoxd_system(ChunkColorsBuildSystem)

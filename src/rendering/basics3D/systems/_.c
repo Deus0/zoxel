@@ -1,14 +1,14 @@
-#include "render3D_system.c"
-#include "render3D_instance_system.c"
-#include "render_characters3D_system.c"
-#include "mesh_update_system.c"
+#include "render3.c"
+#include "render3_instance.c"
+#include "render_characters3.c"
+#include"mesh_colors.c"
+#include "mesh_update.c"
 #include "mesh_update_textured3.c"
-#include "mesh_update_characters3D_system.c"
+#include "mesh_update_characters3.c"
 #include "textured_render_system.c"
 #ifndef zox_disable_rendering_instances
     #include "vox_instance_render_system.c"
 #endif
-#include"mesh_colors.c"
 
 void define_systems_basics3D(ecs* world) {
     // skybox
@@ -65,7 +65,7 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
         [in] rendering.MeshGPULink,
-        [in] rendering.MaterialGPULink,
+        // [in] rendering.MaterialGPULink,
         [none] !rendering.MeshUVs,
         [none] !rendering.MeshColorRGBs
     );
@@ -91,10 +91,10 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshDirty,
         [out] rendering.MeshGPULink,
         [out] rendering.ColorsGPULink,
+        [out] rendering.MeshIndiciesGpu,
         [none] rendering.MeshColorRGBs,
         [none] !rendering.MeshUVs
     );
-
     zox_system_1(
         MeshColorsGpuSystem,
         zoxp_mainthread,

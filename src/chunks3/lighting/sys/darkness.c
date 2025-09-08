@@ -3,8 +3,7 @@
 // Queued side updates for propogation
 // NOTE: We need to account for depth differences
 
-void DarkLightSystem(ecs_iter_t *it) {
-
+void DarkLightSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkNeighbors);
@@ -21,15 +20,13 @@ void DarkLightSystem(ecs_iter_t *it) {
     fetch_first_solidity(world, it, VoxLink_, solidity);
 
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-        // zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(DarkQueue, dark_queue);
         zox_sys_o(LightQueue, light_queue);
-        zox_sys_o(LightNodeDirty, dirty);
+        zox_sys_o(LightNodeDirty, light_node_dirty);
 
         if (!dark_queue->count) {
             continue;
@@ -56,16 +53,17 @@ void DarkLightSystem(ecs_iter_t *it) {
             neighbors,
             n_dark_queues);
 
-        byte queued_dirty = 0;
+        byte dirty = 0;
         entity chunkd = neighbors->value[direction_down];
         DarkQueue* dark_queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, DarkQueue) : NULL;
 
+        int count = dark_queue->count;
         while (dark_queue->count) {
 
             DarkUpdate update = r_DarkQueue(dark_queue);
 
-            if (depthl->value < update.depth) { // depthr->value) {
-                depthl->value = update.depth; // depthr->value;
+            if (depthl->value < update.depth) {
+                depthl->value = update.depth;
             }
 
             // if (depthl->value != update.depth) continue;   // for now
@@ -74,15 +72,19 @@ void DarkLightSystem(ecs_iter_t *it) {
 
                 zox_log_lighting_dark("[%s] Begin Dark Flooding [%ix%ix%i] l[%i] distance [%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, update.distance, dark_queue->count)
 
-                set_LightNode(
-                    root_lnode,
-                    depthl->value,
-                    update.pos,
-                    darklight,
-                    0
-                );
+                byte current_light = get_value_LightNode(root_lnode, depthl->value, update.pos, 0);
+                if (current_light > darklight) {
+                    set_LightNode(
+                        root_lnode,
+                        depthl->value,
+                        update.pos,
+                        darklight,
+                        0
+                    );
+                    dirty = 1;
+                }
 
-                dark_flood_light(
+                if (dark_flood_light(
                     root_vnode,
                     root_lnode,
                     nnodesv,
@@ -98,7 +100,9 @@ void DarkLightSystem(ecs_iter_t *it) {
                     darklight,
                     light_air_decay,
                     solidity
-                );
+                )) {
+                    dirty = 1;
+                }
 
             } else if (update.type == zox_light_type_beam_start || update.type == zox_light_type_beam) {
 
@@ -122,14 +126,17 @@ void DarkLightSystem(ecs_iter_t *it) {
                     update.type,
                     solidity
                 )) {
-                    queued_dirty = 1;
+                    dirty = 1;
                 }
             }
         }
+        zox_mut_end(chunkd, DarkQueue);
 
-        if (queued_dirty) {
-            zox_mut_end(chunkd, LightQueue);
+        if (dirty) {
+            light_node_dirty->value = zox_dirty_trigger;
+            /*zox_sys_world();
+            zox_sys_e();
+            zox_log("DarkSystem %s - %i", zox_get_name(e), count);*/
         }
-        dirty->value = zox_dirty_trigger;
     }
 } zoxd_system2(DarkLightSystem);

@@ -8,7 +8,7 @@
 //          -> if not air, i.e. solid, of course light doesnt go through solid you twat
 // NOTE: Stop setting neighbor data, thats const, you are literally corrupting memory
 
-static inline void flood_light(
+static inline byte flood_light(
     const VoxelNode* root_vnode,         // (READ)
     LightNode* root_lnode,               // (WRITE)
     const VoxelNode* n_root_vnodes[6],   // (READ-ONLY)
@@ -22,8 +22,10 @@ static inline void flood_light(
     byte air_decay,
     byte* solidity
 ) {
+    byte dirty = 0;
+
     if (!root_vnode || !root_lnode || distance == 0 || light <= min_light) {
-        return;
+        return dirty;
     }
 
     const byte length = (byte)((1u << depth) - 1u);
@@ -101,6 +103,7 @@ static inline void flood_light(
         zox_log_lighting_light("     + Light Flooded [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, decayed_light, distance);
 
         set_LightNode(root_lnode, depth, pos, decayed_light, 0);
+        dirty = 1;
 
         flood_light(
             root_vnode,
@@ -117,4 +120,6 @@ static inline void flood_light(
             solidity
         );
     }
+
+    return dirty;
 }

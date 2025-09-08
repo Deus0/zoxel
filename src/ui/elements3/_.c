@@ -9,6 +9,7 @@ zoxc_float(Text3DScale);
 #include "set/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "fun/popup.c"
 #include "sys/_.c"
 #include "dbg/_.c"

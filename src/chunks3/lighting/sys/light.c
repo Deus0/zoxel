@@ -1,13 +1,11 @@
 // Queued side updates for propogation
 void LightSystem(ecs_iter_t *it) {
     zox_ts_begin(light_propogate);
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxLink);
-    // zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNodeDirty);
@@ -17,24 +15,15 @@ void LightSystem(ecs_iter_t *it) {
     fetch_first_solidity(world, it, VoxLink_, solidity);
 
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-        // zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNode, root_lnode);
-        // zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightQueue, light_queue);
-        zox_sys_o(LightNodeDirty, dirty);
+        zox_sys_o(LightNodeDirty, light_node_dirty);
 
         if (!light_queue->count) {
             continue;
         }
-
-        // we skip if already at right depth
-        /*if (depthl->value < depthr->value) {
-            depthl->value = depthr->value;
-        }
-        depthl->value = terrain_depth;*/
 
         const VoxelNode* n_root_vnodes[6];
         fetch_neightbor_voxel_nodes(
@@ -52,14 +41,17 @@ void LightSystem(ecs_iter_t *it) {
             neighbors,
             n_light_queues);
 
-        byte queued_dirty = 0;
         entity chunkd = neighbors->value[direction_down];
 
-        // For now we skip unless bottom chunk - due to loading timing
-        if (!zox_valid(chunkd)) continue;
+        // For now we skip for bottom chunk - due to loading timing
+        if (!zox_valid(chunkd)) {
+            continue;
+        }
 
         LightQueue* sun_queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, LightQueue) : NULL;
 
+        byte dirty = 0;
+        int count = light_queue->count;
         while (light_queue->count) {
 
             LightUpdate update = r_LightQueue(light_queue);
@@ -97,7 +89,7 @@ void LightSystem(ecs_iter_t *it) {
                     light_air_decay,
                     solidity
                 )) {
-                    queued_dirty = 1;
+                    dirty = 1;
                 }
 
             } else if (update.type == zox_light_type_flood) {
@@ -114,10 +106,8 @@ void LightSystem(ecs_iter_t *it) {
 
                 zox_log_lighting_light("[%s]: [%s] ^ Light Flooding at [%ix%ix%i] l[%i] spread [%i] q [%i]", current_light > spread_light ? "Skip" : "Run", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, current_light, spread_light, light_queue->count);
 
-
                 if (current_light > spread_light) {
                     spread_light = current_light;
-                    // continue;
                 } else if (current_light < spread_light) {
                     set_LightNode(
                         root_lnode,
@@ -126,9 +116,10 @@ void LightSystem(ecs_iter_t *it) {
                         spread_light,
                         0
                     );
+                    dirty = 1;
                 }
 
-                flood_light(
+                if (flood_light(
                     root_vnode,
                     root_lnode,
                     n_root_vnodes,
@@ -141,16 +132,20 @@ void LightSystem(ecs_iter_t *it) {
                     darklight,
                     light_air_decay,
                     solidity
-                );
+                )) {
+                    dirty = 1;
+                }
 
             }
         }
+        zox_mut_end(chunkd, LightQueue);
 
-        if (queued_dirty) {
-            zox_mut_end(chunkd, LightQueue);
+        if (dirty) {
+            light_node_dirty->value = zox_dirty_trigger;
+            /*zox_sys_world();
+            zox_sys_e();
+            zox_log("LightSystem %s - %i", zox_get_name(e), count);*/
         }
-        dirty->value = zox_dirty_trigger;
-
     }
     zox_ts_end(light_propogate, 3, zox_profile_light_propogate);
 } zoxd_system2(LightSystem);

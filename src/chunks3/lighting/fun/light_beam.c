@@ -14,10 +14,12 @@ byte sunbeam(
     byte air_decay,
     byte* solidity
 ) {
+    byte dirty = 0;
+
     byte length = powers_of_two[depth];
     if (pos.y >= length) {
         zox_logw("position too high [%i]", pos.y);
-        return 0;
+        return dirty;
     }
 
     byte max_y = pos.y;
@@ -38,6 +40,7 @@ byte sunbeam(
         // set light in LightNode
         zox_log_lighting_light("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
         set_LightNode(root_lnode, depth, pos, light, 0);
+        dirty = 1;
 
         if (y == 0) {
             flood_end = pos.y;
@@ -54,7 +57,7 @@ byte sunbeam(
 
         // TODO: when we change light, we can save light to array, and reuse here
 
-        flood_light(
+        byte floodlight_dirty = flood_light(
             root_vnode,
             root_lnode,
             n_root_vnodes,
@@ -68,6 +71,7 @@ byte sunbeam(
             light_air_decay,
             solidity
         );
+        dirty |= floodlight_dirty;
     }
 
     if (queued && !beam_stopped) {
@@ -83,8 +87,7 @@ byte sunbeam(
             .depth = depth
         });
         spin_unlock(&queued->lock);
-        return 1;
     }
 
-    return 0;
+    return dirty;
 }

@@ -15,3 +15,11 @@ typedef struct {
     color base_color;
 } SpawnDataElement3D;
 
+typedef struct {
+    float percentage;
+    entity ui_holder;
+    Element3DData backbar;
+    Element3DData frontbar;
+    float trail_offset;
+} SpawnDataElementbar3D;
+

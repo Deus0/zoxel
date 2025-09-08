@@ -1,11 +1,3 @@
-typedef struct {
-    float percentage;
-    entity ui_holder;
-    Element3DData backbar;
-    Element3DData frontbar;
-    float trail_offset;
-} SpawnDataElementbar3D;
-
 entity spawn_prefab_elementbar3D(
     ecs *world,
     const entity prefab
@@ -22,47 +14,4 @@ entity spawn_prefab_elementbar3D(
     zox_set(e, UITrail, {{ 0, 0.23f, 0 }});
     prefab_set_mesh3D_vertices(world, e, square_vertices, 4, statbar_back_mesh_scale);
     return e;
-}
-
-entity2 spawn_elementbar3(
-    ecs *world,
-    SpawnDataElementbar3D *data,
-    Text3DData text_data,
-    Zigel3DData zigel_data
-) {
-    entity2 output = { 0 };
-    zox_instance(data->backbar.prefab);
-    output.x = e;
-    zox_name("elementbar3D");
-    zox_set(e, UIHolderLink, { data->ui_holder });
-    zox_set(e, UITrail, { { 0, data->trail_offset, 0 } });
-    zox_set(e, ElementBar, { data->percentage });
-    zox_set(e, ElementBarSize, { statbar_front_mesh_scale });
-    zox_set(e, RenderDisabled, { data->backbar.render_disabled });
-
-    Children children = (Children) { 0 };
-    const float3 frontbar_position = (float3) {
-        0,
-        0,
-        element3D_depth_difference
-    };
-    const entity frontbar = spawn_elementbar3D_front(
-        world,
-        data->frontbar.prefab,
-        e,
-        frontbar_position,
-        data->frontbar.render_disabled
-    );
-    add_to_Children(&children, frontbar);
-    if (text_data.prefab) {
-        text_data.position = (float3) { 0, 0, element3D_depth_difference * 2 };
-        zigel_data.position = text_data.position;
-        text_data.parent = e;
-        const entity text = spawn_text3D(world, text_data, zigel_data);
-        add_to_Children(&children, text);
-        zox_set_unique_name(text, "elementbar3D_text");
-        output.y = text;
-    }
-    zox_set_ptr(e, Children, children);
-    return output;
 }

@@ -11,18 +11,18 @@ void Characters3RenderSystem(iter *it) {
     if (!zox_valid(material_colored3D)) {
         return;
     }
-    zox_geter_value(material_colored3D, MaterialGPULink, uint, material_link)
+    zox_geter_value(material_colored3D, MaterialGPULink, uint, material_link);
     if (!material_link) {
         return;
     }
-    zox_geter(material_colored3D, MaterialColored3D, material_attributes)
+    zox_geter(material_colored3D, MaterialColored3D, material_attributes);
     byte has_set_material = 0;
-    zox_sys_begin()
-    zox_sys_in(MeshIndicies)
-    zox_sys_in(MeshGPULink)
-    zox_sys_in(ColorsGPULink)
-    zox_sys_in(TransformMatrix)
-    zox_sys_in(RenderDisabled)
+    zox_sys_begin();
+    zox_sys_in(MeshIndicies);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(ColorsGPULink);
+    zox_sys_in(TransformMatrix);
+    zox_sys_in(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, renderDisabled)
         zox_sys_i(MeshIndicies, meshIndicies)
@@ -51,6 +51,7 @@ void Characters3RenderSystem(iter *it) {
         catch_basic3D_errors("! Characters3RenderSystem");
         zox_statistics_characters_rendered++;
     }
+
     if (has_set_material) {
         zox_gpu_disable_buffer(material_attributes->vertex_color);
         zox_gpu_disable_buffer(material_attributes->vertex_position);
@@ -61,4 +62,5 @@ void Characters3RenderSystem(iter *it) {
         glEnable(GL_CULL_FACE);
 #endif
     }
+
 } zoxd_system(Characters3RenderSystem)

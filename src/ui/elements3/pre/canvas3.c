@@ -38,14 +38,18 @@ void add_ui_components_world(
         add_gpu_mesh(world, e);
         add_gpu_uvs(world, e);
         add_gpu_colors(world, e);
-        zox_prefab_add(e, MeshIndicies)
-        zox_prefab_add(e, MeshVertices)
-        zox_prefab_add(e, MeshUVs)
-        zox_prefab_add(e, MeshColorRGBs)
+
+        zox_prefab_add(e, MeshIndicies);
+        zox_prefab_add(e, MeshVertices);
+        zox_prefab_add(e, MeshUVs);
+        zox_prefab_add(e, MeshColorRGBs);
+
         prefab_set_mesh_indicies(world, e, square_indicies, 6);
+        zox_prefab_set(e, MeshIndiciesGpu, { 6 });
         prefab_set_mesh3D_vertices(world, e, square_vertices, 4, mesh_scale);
         prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
         prefab_set_mesh_colors_rgb(world, e, (color_rgb) { 255, 255, 255 }, 4);
+
     }
 }
 

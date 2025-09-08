@@ -63,8 +63,8 @@ byte test_terrain_spawn(ecs_world_t *world) {
         prefab_terrain,
         prefab_chunk_terrain
     );
-    zox_set(terrain, RealmLink, { realm })
-    zox_set(realm, TerrainLink, { terrain }) // link terrain to realm too
+    zox_set(terrain, RealmLink, { realm });
+    zox_set(realm, TerrainLink, { terrain }); // link terrain to realm too
     local_terrain = terrain;
     run_count = 0;
     while (run_count <= 4096) {
@@ -82,9 +82,9 @@ byte test_terrain_spawn(ecs_world_t *world) {
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 ecs_entity_t chunk = pair->value;
                 // zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty)
-                zox_geter_value(chunk, GenerateChunk, byte, generate_chunk)
-                zox_geter_value(chunk, MeshDirty, byte, mesh_dirty)
-                zox_geter_value(chunk, ChunkMeshDirty, byte, chunk_mesh_dirty)
+                zox_geter_value(chunk, GenerateChunk, byte, generate_chunk);
+                zox_geter_value(chunk, MeshDirty, byte, mesh_dirty);
+                zox_geter_value(chunk, ChunkMeshDirty, byte, chunk_mesh_dirty);
                 if (log_chunks && generate_chunk == chunk_generate_state_end) {
                     zox_log("- f[%i] chunk generated [%f]", ecs_run_count - 1, time_since_start)
                 }

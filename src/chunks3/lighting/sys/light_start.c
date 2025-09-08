@@ -24,10 +24,9 @@ void SunlightSystem(iter *it) {
         zox_sys_i(NodeDepth, depthr);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-        // zox_sys_i(VoxLink, parent);
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
-        zox_sys_o(LightNodeDirty, dirty);
+        zox_sys_o(LightNodeDirty, light_node_dirty);
 
         if (dirtyv->value != zox_dirty_active) {
             continue;
@@ -59,7 +58,7 @@ void SunlightSystem(iter *it) {
             n_queues);
 
 
-        byte queued_dirty = 0;
+        byte dirty = 0;
         entity chunkd = neighbors->value[direction_down];
 
         // For now we skip unless bottom chunk - due to loading timing
@@ -92,15 +91,14 @@ void SunlightSystem(iter *it) {
                     light_air_decay,
                     solidity
                 )) {
-                    queued_dirty = 1;
+                    dirty = 1;
                 }
             }
         }
+        zox_mut_end(chunkd, LightQueue);
 
-        if (queued_dirty) {
-            zox_mut_end(chunkd, LightQueue);
+        if (dirty) {
+            light_node_dirty->value = zox_dirty_trigger;
         }
-        dirty->value = zox_dirty_trigger;
-
     }
 } zoxd_system2(SunlightSystem);

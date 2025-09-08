@@ -58,7 +58,8 @@ void define_systems_lighting3(ecs* world) {
         [in] chunks3.ChunkNeighbors,
         [out] lighting3.LightNode,
         [out] lighting3.LightQueue,
-        [out] lighting3.DarkQueue
+        [out] lighting3.DarkQueue,
+        [out] lighting3.LightNodeDirty
     );
 
     // this kinda has issues atm hmm

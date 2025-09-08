@@ -28,5 +28,8 @@ void MeshColorsGpuSystem(iter *it) {
             colors->value
         );
 
+        /*zox_sys_world();
+        zox_sys_e();
+        zox_log("updating colors %s", zox_get_name(e));*/
     }
 } zoxd_system2(MeshColorsGpuSystem);
