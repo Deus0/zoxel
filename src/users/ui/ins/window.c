@@ -67,13 +67,32 @@ entity spawn_window_users(
                 header_height
             },
         };
+
+        // nested function (GCC extension)
+        void window_users_close_event(ecs *world, const ClickEventData event) {
+            zox_geter_value(event.clicked, ParentLink, entity, parent);
+            zox_geter_value(parent, ParentLink, entity, window);
+
+            // zox_geter_value(window, CanvasLink, entity, canvas);
+            // find_child_with_tag(canvas, Taskbar, taskbar);
+            if (zox_valid(window)) {
+                zox_geter_value(window, TaskbarButton, entity, button);
+                if (zox_valid(button)) {
+                    zox_set(button, ActiveState, { 0 });
+                    zox_set(button, ActiveStateDirty, { zox_dirty_trigger });
+                }
+                zox_delete(window);
+            }
+        }
+
         const entity header = spawn_header3(
             world,
             data.canvas,
             e_parent_data,
             header_element_data,
             data.header_zext,
-            data.header
+            data.header,
+            (ClickEvent) { &window_users_close_event }
         );
         children.value[0] = header;
     }

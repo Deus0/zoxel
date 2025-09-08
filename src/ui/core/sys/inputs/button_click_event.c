@@ -14,7 +14,7 @@ void ButtonClickEventSystem(iter *it) {
         }
         if (clickEvent->value) {
             const ClickEventData event_data = (ClickEventData) { .clicker = clicker->value, .clicked = e };
-            (*clickEvent->value)(world, &event_data);
+            (*clickEvent->value)(world, event_data);
         }
     }
-} zoxd_system(ButtonClickEventSystem)
+} zoxd_system2(ButtonClickEventSystem);

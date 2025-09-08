@@ -2,10 +2,10 @@
 
 // todo: From actions UI, add to menu_game_touch - need prefabs with children
 #ifdef spawn_actions_on_touch_menu
-    extern void button_event_switch_action(ecs *world, const ClickEventData *event);
+    extern void button_event_switch_action(ecs *world, const ClickEventData event);
 #endif
-extern void button_event_jump(ecs *world, const ClickEventData *event);
-extern void button_event_attack(ecs *world, const ClickEventData *event);
+extern void button_event_jump(ecs *world, const ClickEventData event);
+extern void button_event_attack(ecs *world, const ClickEventData event);
 
 entity spawn_prefab_menu_game_touch(
     ecs *world,

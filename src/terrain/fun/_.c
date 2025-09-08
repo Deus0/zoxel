@@ -6,3 +6,4 @@
 #include "create_terrain.c"
 #include "terminal.c"
 #include "set.c"
+#include "game.c"

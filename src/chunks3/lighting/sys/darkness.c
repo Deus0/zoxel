@@ -57,7 +57,7 @@ void DarkLightSystem(iter *it) {
         entity chunkd = neighbors->value[direction_down];
         DarkQueue* dark_queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, DarkQueue) : NULL;
 
-        int count = dark_queue->count;
+        // int count = dark_queue->count;
         while (dark_queue->count) {
 
             DarkUpdate update = r_DarkQueue(dark_queue);

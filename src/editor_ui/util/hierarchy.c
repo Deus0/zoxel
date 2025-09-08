@@ -163,11 +163,11 @@ void editor_select_entity(ecs_world_t *world, const ecs_entity_t e) {
     set_inspector_element(world, inspector, e);
 }
 
-void button_event_clicked_hierarchy(ecs_world_t *world, const ClickEventData *event) {
-    if (!zox_has(event->clicked, Children)) {
+void button_event_clicked_hierarchy(ecs_world_t *world, const ClickEventData event) {
+    if (!zox_has(event.clicked, Children)) {
         return;
     }
-    const ecs_entity_t target = zox_get_value(event->clicked, EntityTarget)
+    const ecs_entity_t target = zox_get_value(event.clicked, EntityTarget)
     editor_select_entity(world, target);
 }
 

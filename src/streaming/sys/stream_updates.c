@@ -23,7 +23,7 @@ void ChunkLodSystem(iter *it) {
         zox_sys_in_2(StreamDirty);
         for (int j = 0; j < it2.count; j++) {
             zox_sys_i_2(StreamDirty, streamDirty);
-            if (streamDirty->value == zox_general_state_dirty) {
+            if (streamDirty->value == zox_dirty_active) {
                 stream_points = (int3*) StreamPoints_2;
                 stream_points_length = it2.count;
                 streamers_dirty = 1;

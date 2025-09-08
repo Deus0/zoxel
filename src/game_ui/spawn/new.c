@@ -1,8 +1,8 @@
 void on_confirmed_new_realm(
     ecs *world,
-    const ClickEventData *event
+    const ClickEventData event
 ) {
-    entity player = event->clicker;
+    entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuNewRealm, menu);
     if (menu) {
@@ -46,9 +46,9 @@ void on_confirmed_new_realm(
 
 void on_cancelled_new_realm(
     ecs *world,
-    const ClickEventData *event
+    const ClickEventData event
 ) {
-    entity player = event->clicker;
+    entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuNewRealm, menu);
     if (menu) {
@@ -175,9 +175,9 @@ entity spawn_menu_new_realm(
 
 void button_event_new_game(
     ecs *world,
-    const ClickEventData *event
+    const ClickEventData event
 ) {
-    entity player = event->clicker;
+    entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuMain, menu);
     if (menu) {

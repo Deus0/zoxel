@@ -14,7 +14,7 @@ void toggle_pause_ui(
 // from touch_ui
 void button_event_pause_game(
     ecs *world,
-    const ClickEventData *event
+    const ClickEventData event
 ) {
-    toggle_pause_ui(world, event->clicker);
+    toggle_pause_ui(world, event.clicker);
 }

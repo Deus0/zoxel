@@ -16,8 +16,8 @@ void menu_start_triggered(
 
 void button_event_menu_start(
     ecs *world,
-    const ClickEventData *event
+    const ClickEventData event
 ) {
-    const entity canvas = zox_get_value(event->clicker, CanvasLink)
-    menu_start_triggered(world, event->clicker, canvas);
+    zox_geter_value(event.clicker, CanvasLink, entity, canvas);
+    menu_start_triggered(world, event.clicker, canvas);
 }

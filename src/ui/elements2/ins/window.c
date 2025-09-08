@@ -50,7 +50,8 @@ entity spawn_window2(
         e_parent_data,
         header_element_data,
         header_text_data,
-        header_data
+        header_data,
+        (ClickEvent) { NULL }
     );
     add_to_Children(children, header);
 

@@ -1,11 +1,11 @@
 #ifndef zoxm_streaming
 #define zoxm_streaming
 
-#include "settings/_.c"
-#include "components/_.c"
-#include "prefabs/_.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "pre/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Streaming)
     define_components_streaming(world);

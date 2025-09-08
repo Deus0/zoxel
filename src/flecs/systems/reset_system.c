@@ -1,9 +1,3 @@
-// general states
-#define zox_general_state_none 0
-#define zox_general_state_trigger 1
-#define zox_general_state_dirty 2
-#define zox_general_state_end 3
-
 #define zox_set_system(system_name, component_name, t, v)\
 void system_name(ecs_iter_t *it) {\
     zox_sys_begin()\

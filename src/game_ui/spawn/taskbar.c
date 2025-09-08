@@ -1,15 +1,15 @@
 void taskbar_button_click_event(
     ecs *world,
-    const ClickEventData *event
+    const ClickEventData event
 ) {
-    zox_geter_value(event->clicked, IconIndex, byte, index);
+    zox_geter_value(event.clicked, IconIndex, byte, index);
     if (index >= hook_taskbars->size) {
         zox_log_error("taskbar button index [%i] out of bounds [%zu]", index, hook_taskbars->size);
         return;
     }
     hook_taskbar hook = hook_taskbars->data[index];
-    const entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event->clicker);
-    zox_geter_value(event->clicked, ParentLink, entity, frame);
+    const entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event.clicker);
+    zox_geter_value(event.clicked, ParentLink, entity, frame);
     if (!zox_valid(frame) || !zox_has(frame, ActiveState)) {
         zox_log(" ! invalid frame\n")
         return;
@@ -17,6 +17,9 @@ void taskbar_button_click_event(
     byte window_state = zox_valid(window_ui);
     zox_set(frame, ActiveState, { window_state });
     zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
+    if (window_ui) {
+        zox_set(window_ui, TaskbarButton, { frame });
+    }
 }
 
 entity spawn_taskbar(
@@ -44,10 +47,7 @@ entity spawn_taskbar(
     };
     ElementSpawn data = {
         .canvas = { .e = canvas },
-        // .size = canvas_size
         .parent = { .e = parent },
-        // .position = int2_half(canvas_size),
-        // .size = canvas_size
         .element = {
             .prefab = prefab,
             .layer = layer,
@@ -142,9 +142,12 @@ entity spawn_taskbar(
 
         // taskbar_set_icons(world, canvas, frame, i);
 
-        if_has_child_with_id(canvas, hook.component_id) {
+        if_has_child_with_id(canvas, hook.component_id, window) {
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
+            if (window) {
+                zox_set(window, TaskbarButton, { frame });
+            }
         }
 
         zox_set(icon, ClickEvent, { &taskbar_button_click_event });

@@ -1,3 +1,18 @@
+
+
+// End Game
+void game_end_terrain(ecs *world, const entity game) {
+    if (zox_game_type == zox_game_mode_3D) {
+        zox_geter(game, RealmLink, realmLink)
+        zox_geter(realmLink->value, TerrainLink, terrainLink)
+        if (zox_valid(terrainLink->value)) {
+            zox_delete(terrainLink->value)
+            zox_set(realmLink->value, TerrainLink, { 0 })
+        }
+        local_terrain = 0;
+    }
+}
+
 void game_start_terrain2D(
     ecs *world,
     const entity game
@@ -40,4 +55,23 @@ void game_start_terrain(
         delay_event(world, &game_start_terrain2D, game, start_game_delay_terrain);
     }
     unlock_achievement("test_achievement"); // idk if this can be per player
+}
+
+
+// Entry Point
+// state change goes to start and end functions
+void game_state_terrain(ecs *world,
+    const entity game,
+    const byte old_game_state,
+    const byte new_game_state)
+{
+    if (old_game_state == zox_game_loading && new_game_state == zox_game_playing) {
+        game_start_terrain(world, game);
+    } else if (new_game_state == zox_game_start) {
+        if (is_end_game_delays) {
+            delay_event(world, &game_end_terrain, game, end_game_delay2);
+        } else {
+            game_end_terrain(world, game);
+        }
+    }
 }

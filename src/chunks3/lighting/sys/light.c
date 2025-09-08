@@ -51,7 +51,7 @@ void LightSystem(ecs_iter_t *it) {
         LightQueue* sun_queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, LightQueue) : NULL;
 
         byte dirty = 0;
-        int count = light_queue->count;
+        // int count = light_queue->count;
         while (light_queue->count) {
 
             LightUpdate update = r_LightQueue(light_queue);

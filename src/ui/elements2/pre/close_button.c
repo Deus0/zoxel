@@ -1,4 +1,11 @@
-extern void button_event_close_window(ecs*, const ClickEventData*);
+void button_event_close_window(
+    ecs *world,
+    const ClickEventData event
+) {
+    zox_geter_value(event.clicked, ParentLink, entity, parent);
+    zox_geter_value(parent, ParentLink, entity, window);
+    zox_delete(window);
+}
 
 entity spawn_prefab_button_close(
     ecs *world,

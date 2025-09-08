@@ -11,17 +11,16 @@
 #if !defined(zoxm_terrain) && defined(zoxm_chunks3)
 #define zoxm_terrain
 
-#include "settings/_.c"
-#include "components/_.c"
-#include "data/_.c"
-#include "prefabs/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "dat/_.c"
+#include "pre/_.c"
 #include "voxels/_.c"
 #include "block_voxes/_.c"
-#include "spawn/_.c"
-#include "util/_.c"
-#include "systems/_.c"
-#include "game/_.c"
-#include "debug/_.c"
+#include "ins/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
+#include "dbg/_.c"
 
 void module_dispose_terrain(ecs *world, void *ctx) {
     (void) world;

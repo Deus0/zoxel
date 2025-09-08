@@ -13,6 +13,7 @@ zox_tag(Profiler);
 zox_tag(Taskbar);
 zox_tag(MenuNewRealm);
 zoxc_byte(HitType);
+zoxc_entity(TaskbarButton);
 zoxc_int(QuadsCount);
 zoxc_double(FPSDisplayTicker);
 zoxc(DebugLabelData, DebugLabelEvent);
@@ -33,6 +34,7 @@ void define_components_game_ui(ecs *world) {
     zoxd_tag(Profiler);
     zoxd_tag(Taskbar);
     zoxd_tag(MenuNewRealm);;
+    zoxd_entity(TaskbarButton);
     zoxd_byte(HitType);
     zoxd_int(QuadsCount);
     zoxd_double(FPSDisplayTicker);

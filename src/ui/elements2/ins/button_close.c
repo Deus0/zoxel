@@ -2,20 +2,16 @@ entity spawn_close_button(
     ecs *world,
     const entity parent,
     const entity canvas,
-    const int2 parent_position,
-    const int2 parent_size,
     const int2 position,
-    const int size,
-    byte2 padding,
+    const int font_size,
+    byte2 margins,
     const byte layer,
-    const int2 canvas_size
+    ClickEvent on_click
 ) {
     const float2 anchor = (float2) { 1, 0.5f };
-    SpawnButton spawnButton = {
+    SpawnButton button_data = {
         .canvas = { .e = canvas },
         .parent = { .e = parent },
-            // .position = parent_position,
-            // .size = parent_size
         .element = {
             .prefab = prefab_close_button,
             .position = position,
@@ -24,9 +20,9 @@ entity spawn_close_button(
         },
         .zext = {
             .text = "X",
-            .font_size = size,
+            .font_size = font_size,
             .font_thickness = 4,
-            .margins = padding,
+            .margins = margins,
             .font_fill_color = close_button_font_fill,
             .font_outline_color = close_button_font_outline
         },
@@ -36,12 +32,16 @@ entity spawn_close_button(
             .outline = close_button_outline,
         },
     };
-    return spawn_button(
+    entity e = spawn_button(
         world,
-        spawnButton.canvas,
-        spawnButton.parent,
-        spawnButton.element,
-        spawnButton.zext,
-        spawnButton.button
+        button_data.canvas,
+        button_data.parent,
+        button_data.element,
+        button_data.zext,
+        button_data.button
     );
+    if (on_click.value) {
+        zox_set(e, ClickEvent, { on_click.value });
+    }
+    return e;
 }

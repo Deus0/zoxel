@@ -4,7 +4,8 @@ entity spawn_header3(
     const LayoutParentData parent_data,
     const ElementSpawnData element_data,
     const SpawnTextData zext,
-    const SpawnHeaderData header
+    const SpawnHeaderData header,
+    ClickEvent on_click
 ) {
     zox_instance(element_data.prefab);
     zox_name("header");
@@ -60,18 +61,17 @@ entity spawn_header3(
             - (zext.font_size + zext.margins.x * 2) / 2,
             0
         };
-        add_to_Children(&children,
-            spawn_close_button(
-                world,
-                e,
-                canvas_data.e,
-                element_data.position_in_canvas,
-                element_data.size,
-                close_button_position,
-                zext.font_size,
-                padding,
-                element_data.layer + 2,
-                canvas_data.size));
+        entity b = spawn_close_button(
+            world,
+            e,
+            canvas_data.e,
+            close_button_position,
+            zext.font_size,
+            padding,
+            element_data.layer + 2,
+            on_click
+        );
+        add_to_Children(&children, b);
     }
 
     zox_set_ptr(e, Children, children);

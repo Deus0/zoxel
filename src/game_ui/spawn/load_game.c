@@ -1,8 +1,8 @@
 void button_event_load_cancel(
     ecs *world,
-    const ClickEventData *event
+    const ClickEventData event
 ) {
-    entity player = event->clicker;
+    entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuLoad, menu);
     if (!menu) {
@@ -16,9 +16,10 @@ void button_event_load_cancel(
 
 void button_event_load_confirm(
     ecs *world,
-    const ClickEventData* event
+    const ClickEventData event
 ) {
-    entity player = event->clicker;
+    entity player = event.clicker;
+    entity clicked = event.clicked;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuLoad, menu);
     if (!menu) {
@@ -29,7 +30,6 @@ void button_event_load_confirm(
     const entity game = zox_get_value(player, GameLink);
     const entity realm = zox_get_value(game, RealmLink);
 
-    entity clicked = event->clicked;
     zox_geter(clicked, SaveGamePath, path);
     zox_log("Path [%s]", path->value);
     zox_set_ptr(realm, SaveGamePath, path->value);
