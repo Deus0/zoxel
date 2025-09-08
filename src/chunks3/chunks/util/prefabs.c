@@ -9,8 +9,9 @@ void add_noise_chunk(ecs *world, entity e) {
 
 void prefab_add_mesh_basic(ecs *world, const entity e) {
     if (!headless) {
-        zox_prefab_set(e, MeshIndicies, { 0, NULL });
-        zox_prefab_set(e, MeshVertices, { 0, NULL });
+        zox_prefab_set(e, MeshIndicies, { 0 });
+        zox_prefab_set(e, MeshIndiciesGpu, { 0 });
+        zox_prefab_set(e, MeshVertices, { 0 });
         add_gpu_mesh(world, e);
     }
 }

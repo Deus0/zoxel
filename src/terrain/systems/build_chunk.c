@@ -196,10 +196,10 @@ void zox_terrain_building_dig(
 void build_chunk_terrain_mesh(
     const VoxelNode *node,
     const TilemapUVs *tilemap_uvs,
-    MeshIndicies *meshIndicies,
-    MeshVertices *meshVertices,
-    MeshUVs *meshUVs,
-    MeshColorRGBs *meshColorRGBs,
+    MeshIndicies *indicies,
+    MeshVertices *verts,
+    MeshUVs *uvs,
+    MeshColorRGBs *colors,
     // const byte is_max_depth_chunk,
     const byte render_depth,
     const VoxelNode **neighbors,
@@ -238,15 +238,15 @@ void build_chunk_terrain_mesh(
     };
     zox_terrain_building_dig(data, dig);
     // sizes
-    meshIndicies->length = mesh_data.indicies->size;
-    meshVertices->length = mesh_data.vertices->size;
-    meshUVs->length = mesh_data.uvs->size;
-    meshColorRGBs->length = mesh_data.color_rgbs->size;
+    indicies->length = mesh_data.indicies->size;
+    verts->length = mesh_data.vertices->size;
+    uvs->length = mesh_data.uvs->size;
+    colors->length = mesh_data.color_rgbs->size;
     // data
-    meshIndicies->value = zinalize_int_array_d(mesh_data.indicies);
-    meshVertices->value = zinalize_float3_array_d(mesh_data.vertices);
-    meshColorRGBs->value = zinalize_color_rgb_array_d(mesh_data.color_rgbs);
-    meshUVs->value = zinalize_float2_array_d(mesh_data.uvs);
+    indicies->value = zinalize_int_array_d(mesh_data.indicies);
+    verts->value = zinalize_float3_array_d(mesh_data.vertices);
+    colors->value = zinalize_color_rgb_array_d(mesh_data.color_rgbs);
+    uvs->value = zinalize_float2_array_d(mesh_data.uvs);
 }
 
 void fetch_neightbor_chunk_data(
@@ -289,8 +289,8 @@ void Chunk3BuildSystem(iter *it) {
 
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkMeshDirty, chunkMeshDirty)
-        if (chunkMeshDirty->value == chunk_dirty_state_update) {
+        zox_sys_i(ChunkMeshDirty, chunk_mesh_dirty)
+        if (chunk_mesh_dirty->value == zox_dirty_active) {
             any_dirty = 1;
             break;
         }
@@ -384,35 +384,35 @@ void Chunk3BuildSystem(iter *it) {
 
 
     for (int i = 0; i < it->count; i++) {
-
-        zox_sys_i(ChunkMeshDirty, chunkMeshDirty);
+        zox_sys_i(ChunkMeshDirty, chunk_mesh_dirty);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_i(BlockScale, block_scale);
-        zox_sys_i(VoxelNode, voxelNode);
-        zox_sys_o(MeshIndicies, meshIndicies);
-        zox_sys_o(MeshVertices, meshVertices);
-        zox_sys_o(MeshColorRGBs, meshColorRGBs);
-        zox_sys_o(MeshUVs, meshUVs);
-        zox_sys_o(MeshDirty, meshDirty);
+        zox_sys_i(VoxelNode, voxel_node);
+        zox_sys_o(MeshIndicies, indicies);
+        zox_sys_o(MeshVertices, verts);
+        zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(MeshUVs, uvs);
+        zox_sys_o(MeshDirty, mesh_dirty);
 
-        if (chunkMeshDirty->value != chunk_dirty_state_update) {
+        if (chunk_mesh_dirty->value != zox_dirty_active) {
             continue;
         }
+
         if (rdepth->value == render_depth_spawning)  {
             zox_log_error("render_depth_uninitialized");
             continue;
         }
 
         clear_mesh_uvs(
-            meshIndicies,
-            meshVertices,
-            meshColorRGBs,
-            meshUVs
+            indicies,
+            verts,
+            colors,
+            uvs
         );
 
         if (rdepth->value == render_depth_invisible) {
-            meshDirty->value = mesh_state_trigger_slow;
+            mesh_dirty->value = mesh_state_trigger_slow;
             continue;
         }
 
@@ -427,14 +427,14 @@ void Chunk3BuildSystem(iter *it) {
         const byte render_depth =  rdepth->value;
         const float chunk_scale = block_scale->value * powers_of_two[render_depth];
 
-        read_lock_VoxelNode(voxelNode);
+        read_lock_VoxelNode(voxel_node);
         build_chunk_terrain_mesh(
-            voxelNode,
+            voxel_node,
             tilemap_uvs,
-            meshIndicies,
-            meshVertices,
-            meshUVs,
-            meshColorRGBs,
+            indicies,
+            verts,
+            uvs,
+            colors,
             render_depth,
             nnodes,
             ndepths,
@@ -442,15 +442,18 @@ void Chunk3BuildSystem(iter *it) {
             build_data.uvs,
             chunk_scale
         );
-        read_unlock_VoxelNode(voxelNode);
+        read_unlock_VoxelNode(voxel_node);
 
-        meshDirty->value = mesh_state_trigger_slow;
+        mesh_dirty->value = mesh_state_trigger; // mesh_state_trigger_slow;
+
+        // zox_sys_e();
+        // zox_log("built chunk mesh [%s]", zox_get_name(e));
 
         tapwatch(time_chunk3_build, "built mesh");
         updated_count++;
 
         /*zox_log("Building Terrain Chunk! Verts [%i] Scale [%f] Depth [%i]",
-                meshVertices->length,
+                verts->length,
                 chunk_scale,
                 render_depth);*/
     }
@@ -463,28 +466,6 @@ void Chunk3BuildSystem(iter *it) {
 
 } zoxd_system2(Chunk3BuildSystem);
 
-
-
-    /*byte adepth = get_adjacent_depth_VoxelNode(
-        data.ndepths,
-        dig.position,
-        dig.depth,      // data.render_depth,
-        dig.direction);*/
-    // Node finished at: dig.depth
-    // Rendering at: data.render_depth
-    /*byte adjacent_air = !is_adjacent_all_solid(
-        data.voxel_solidity,
-        data.edge_voxel,
-        data.neighbors,
-        data.ndepths,
-        data.root,
-        dig.position,
-        dig.direction,
-        dig.depth   // dig.depth adepth data.render_depth
-    );
-    if (!adjacent_air) {
-        return;
-    }*/
 
 
     // We split up Lower Depth Nodes, and draw all Visible Quads
@@ -594,6 +575,7 @@ void Chunk3BuildSystem(iter *it) {
             }
         }
     }*/
+
 /*#ifndef zox_disable_fake_voxel_lighting
         if (direction == direction_down) {
             color_rgb_multiply_float(&vertex_color, 0.33f);

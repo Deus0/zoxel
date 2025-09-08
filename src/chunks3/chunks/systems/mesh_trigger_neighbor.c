@@ -8,26 +8,28 @@ void Chunk3NeighborsMeshTriggerSystem(iter *it) {
     zox_sys_out(ChunkMeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_i(VoxelNodeDirty, voxelNodeDirty);
-        zox_sys_o(ChunkMeshDirty, chunkMeshDirty);
-        if (chunkMeshDirty->value != zox_dirty_none || voxelNodeDirty->value != zox_dirty_none) {
+        zox_sys_i(VoxelNodeDirty, voxel_node_dirty);
+        zox_sys_o(ChunkMeshDirty, chunk_mesh_dirty);
+
+        if (chunk_mesh_dirty->value != zox_dirty_none || voxel_node_dirty->value != zox_dirty_none) {
             continue;
         }
+
         byte neighbor_dirty = 0;
         for (byte j = 0; j < chunk_neighbors_length; j++) {
-            entity n = neighbors->value[j];
-            if (!zox_valid(n) || !zox_has(n, VoxelNodeDirty)) {
+            entity neighbor = neighbors->value[j];
+            if (!zox_valid(neighbor) || !zox_has(neighbor, VoxelNodeDirty)) {
                 continue;
             }
-            zox_geter_value(n, VoxelNodeDirty, byte, state);
+            zox_geter_value(neighbor, VoxelNodeDirty, byte, state);
             if (state == zox_dirty_active) {
                 neighbor_dirty = 1;
                 break;
             }
-            // zox_set(n, ChunkMeshDirty, { chunk_dirty_state_trigger });
         }
+
         if (neighbor_dirty) {
-            chunkMeshDirty->value = chunk_dirty_state_trigger;
+            chunk_mesh_dirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system(Chunk3NeighborsMeshTriggerSystem)
+} zoxd_system2(Chunk3NeighborsMeshTriggerSystem);

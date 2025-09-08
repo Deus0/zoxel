@@ -2,21 +2,17 @@
 // If queue empty + lightnode dirty, activate!
 
 void MeshColorsTriggerSystem(iter *it) {
-
     zox_sys_begin();
     zox_sys_in(LightQueue);
     zox_sys_in(DarkQueue);
     zox_sys_in(ChunkMeshDirty);
     zox_sys_in(SunlightDirty);
     zox_sys_in(LightNodeDirty);
-
     zox_sys_out(MeshColorsGenerate);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(LightQueue, light_queue);
         zox_sys_i(DarkQueue, dark_queue);
-        zox_sys_i(ChunkMeshDirty, mesh_dirty);
+        zox_sys_i(ChunkMeshDirty, chunk_mesh_dirty);
         zox_sys_i(SunlightDirty, sunlight_dirty);
         zox_sys_i(LightNodeDirty, light_node_dirty);
         zox_sys_o(MeshColorsGenerate, mesh_colors_generate);
@@ -25,7 +21,7 @@ void MeshColorsTriggerSystem(iter *it) {
             continue;
         }
 
-        if (mesh_dirty->value == chunk_dirty_state_end ||
+        if (chunk_mesh_dirty->value == zox_dirty_active ||
             sunlight_dirty->value == zox_dirty_active ||
             light_node_dirty->value == zox_dirty_active
         ) {

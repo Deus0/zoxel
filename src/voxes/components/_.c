@@ -19,7 +19,7 @@ void define_components_voxes(ecs *world) {
     zoxd_byte(CloneVox);
     zoxd_byte(VoxUniqueColors);
     zoxd_byte(VRegions);
-    zox_define_component_int(RubbleCount);
+    zoxd_int(RubbleCount);
     zoxd_entity(CloneVoxLink);
     zoxd_float(VoxColorRange);
 }

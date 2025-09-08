@@ -139,7 +139,7 @@ static inline void zox_gpu_render_points(uint length) {
     glDrawArrays(GL_POINTS, 0, length);
 }
 
-void zox_gpu_buffer_byte(uint shader_index, uint buffer) {
+void zox_gpu_array_buffer_byte(uint shader_index, uint buffer) {
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glEnableVertexAttribArray(shader_index);
     glVertexAttribPointer(shader_index, 1, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);

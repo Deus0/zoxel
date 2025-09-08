@@ -19,7 +19,7 @@ void define_components_texts(ecs *world) {
     zoxd_byte(TextAlignment);
     zoxd_byte(TextResolution);
     zoxd_byte2(TextPadding);
-    zox_define_component_int(TextFontSize);
+    zoxd_int(TextFontSize);
     zoxd_double(AnimateZext);
     zoxd_text(TextData);
     zoxd_state(TextDirty);

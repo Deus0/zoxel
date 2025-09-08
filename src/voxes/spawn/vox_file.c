@@ -176,7 +176,7 @@ entity spawn_vox_file(
         byte render_depth = i; // max_render_depth - i;
         zox_instance(prefab);
         set_vox_file(world, e, data, chunk_depth_reducer);
-        zox_set(e, ChunkMeshDirty, { chunk_dirty_state_trigger });
+        zox_set(e, ChunkMeshDirty, { zox_dirty_trigger });
         zox_set(e, RenderDepth, { render_depth });
         zox_set(e, MaxRenderDepth, { max_render_depth });
         model_lods.value[i] = e;

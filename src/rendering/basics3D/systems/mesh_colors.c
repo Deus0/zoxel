@@ -1,14 +1,10 @@
 void MeshColorsGpuSystem(iter *it) {
-
     zox_sys_begin();
-
     zox_sys_in(MeshColorsDirty);
     zox_sys_in(MeshColorRGBs);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(MeshVertices);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(MeshColorsDirty, dirty);
         zox_sys_i(ColorsGPULink, link);
         zox_sys_i(MeshVertices, verts);
@@ -25,7 +21,7 @@ void MeshColorsGpuSystem(iter *it) {
         }
 
         // Upload only the color data
-        zox_gpu_buffer(
+        zox_gpu_array_buffer(
             link->value,
             verts->length,
             sizeof(color_rgb),
@@ -33,4 +29,4 @@ void MeshColorsGpuSystem(iter *it) {
         );
 
     }
-} zoxd_system(MeshColorsGpuSystem)
+} zoxd_system2(MeshColorsGpuSystem);

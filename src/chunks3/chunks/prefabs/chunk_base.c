@@ -14,9 +14,7 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_prefab_set(e, RenderDepth, { render_depth_spawning });
     zox_prefab_set(e, RenderDepthDirty, { zox_dirty_none });
     // states
-    // zox_prefab_set(e, ChunkDirty, { chunk_dirty_state_none })
-    // zox_prefab_set(e, ChunkLodDirty, { 0 }); // chunk_lod_state_spawning })
-    zox_prefab_set(e, ChunkMeshDirty, { chunk_dirty_state_none });
+    zox_prefab_set(e, ChunkMeshDirty, { zox_dirty_none });
     // allocations
     zox_prefab_set(e, NodeDepth, { 0 });
     zox_prefab_set(e, RenderDepth, { 0 });

@@ -58,8 +58,8 @@ zox_begin_module(Networking)
     zoxd_tag(PacketSender);
     zoxd(NetAddress);
     zoxd(TargetNetAddress);
-    zox_define_component_int(NetPort);
-    zox_define_component_int(TargetNetPort);
+    zoxd_int(NetPort);
+    zoxd_int(TargetNetPort);
     zoxd_arrayd(PacketData);
     zox_define_component_w_dest(SocketLink);
     zox_system(PacketRecieveSystem, EcsOnUpdate,

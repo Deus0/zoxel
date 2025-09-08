@@ -160,6 +160,7 @@ zox_begin_module(ZoxGame)
     const float sub_resolution = 2;
     viewport_scale = 1 / sub_resolution;
     target_fps = 0;
+    // target_fps = 5;
     // is_split_screen = 1;
 
     /*disable_skill_costs = 1;

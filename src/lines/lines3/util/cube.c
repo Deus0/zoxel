@@ -10,7 +10,8 @@ void add_debug_cube(
     zox_prefab_set(e, Bounds3D, { size });
     zox_prefab_set(e, RenderDepth, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });
-    zox_prefab_set(e, MeshIndicies, { 0, NULL });
+    zox_prefab_set(e, MeshIndicies, { 0 });
+    zox_prefab_set(e, MeshIndiciesGpu, { 0 });
 }
 
 /*void debug_cubec(

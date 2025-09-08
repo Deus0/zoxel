@@ -8,64 +8,74 @@ if (check_opengl_error_unlogged()) {\
 }
 
 void Chunk3RenderSystem(iter *it) {
-#ifdef zox_disable_chunks_rendering
-    return;
-#endif
+
     // todo: optimize transform so it doesn't update every frame? StaticTransform tag
     byte has_set_material = 0;
     entity vox_entity = 0;
-    const MaterialGPULink *materialGPULink = NULL;
-    const TextureGPULink *textureGPULink = NULL;
+    const MaterialGPULink *gpu_material = NULL;
+    const TextureGPULink *gpu_texture = NULL;
     const MaterialTextured3D *material_attributes = NULL;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TransformMatrix)
-    zox_sys_in(MeshGPULink)
-    zox_sys_in(UvsGPULink)
-    zox_sys_in(ColorsGPULink)
-    zox_sys_in(MeshIndicies)
-    zox_sys_in(VoxLink)
-    zox_sys_in(RenderDisabled)
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TransformMatrix);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(UvsGPULink);
+    zox_sys_in(ColorsGPULink);
+    zox_sys_in(MeshIndiciesGpu);
+    zox_sys_in(VoxLink);
+    zox_sys_in(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(MeshIndicies, meshIndicies)
-        zox_sys_i(MeshGPULink, meshGPULink)
-        zox_sys_i(VoxLink, voxLink)
-        zox_sys_i(UvsGPULink, uvsGPULink)
-        zox_sys_i(ColorsGPULink, colorsGPULink)
-        zox_sys_i(TransformMatrix, transformMatrix)
-        if (renderDisabled->value) continue;
-        if (!meshIndicies->length) continue;
-        if (!meshGPULink->value.x) continue;
-        if (!voxLink->value) continue;
-        if (vox_entity != voxLink->value) {
-            vox_entity = voxLink->value;
-            const TilemapLink *tilemapLink = zox_get(voxLink->value, TilemapLink)
-            materialGPULink = zox_get(tilemapLink->value, MaterialGPULink)
-            if (!materialGPULink->value) continue;
-            textureGPULink = zox_get(tilemapLink->value, TextureGPULink)
-            if (!textureGPULink->value) continue;
-            material_attributes = zox_get(tilemapLink->value, MaterialTextured3D)
-            if (!material_attributes) break;
+        zox_sys_i(RenderDisabled, disabled);
+        zox_sys_i(MeshIndiciesGpu, count);
+        zox_sys_i(MeshGPULink, gpu_mesh);
+        zox_sys_i(VoxLink, terrain);
+        zox_sys_i(UvsGPULink, gpu_uvs);
+        zox_sys_i(ColorsGPULink, gpu_colors);
+        zox_sys_i(TransformMatrix, matrix);
+
+        if (disabled->value || !count || !zox_valid(terrain->value) || !gpu_mesh->value.x) {
+            continue;
         }
+
+        if (vox_entity != terrain->value) {
+            vox_entity = terrain->value;
+
+            zox_geter_value(terrain->value, TilemapLink, entity, tilemap);
+            gpu_material = zox_get(tilemap, MaterialGPULink);
+            if (!gpu_material->value) {
+                continue;
+            }
+
+            gpu_texture = zox_get(tilemap, TextureGPULink);
+            if (!gpu_texture->value) {
+                continue;
+            }
+
+            material_attributes = zox_get(tilemap, MaterialTextured3D);
+            if (!material_attributes) {
+                break;
+            }
+        }
+
         if (!has_set_material) {
             has_set_material = 1;
-            zox_gpu_material(materialGPULink->value);
-            opengl_bind_texture(textureGPULink->value);
+            zox_gpu_material(gpu_material->value);
+            opengl_bind_texture(gpu_texture->value);
             zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(material_attributes->fog_data, get_fog_value());
             zox_gpu_float(material_attributes->brightness, 1);
         }
-        zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
-        opengl_set_mesh_indicies(meshGPULink->value.x);
-        opengl_enable_vertex_buffer(material_attributes->vertex_position, meshGPULink->value.y);
-        opengl_enable_uv_buffer(material_attributes->vertex_uv, uvsGPULink->value);
-        opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
-        zox_gpu_render(meshIndicies->length);
-#ifdef zoxel_catch_opengl_errors
-        catch_opengl_error("terrain")
-#endif
+
+        zox_gpu_float4x4(material_attributes->transform_matrix, matrix->value);
+        opengl_set_mesh_indicies(gpu_mesh->value.x);
+        opengl_enable_vertex_buffer(material_attributes->vertex_position, gpu_mesh->value.y);
+        opengl_enable_uv_buffer(material_attributes->vertex_uv, gpu_uvs->value);
+        opengl_enable_color_buffer(material_attributes->vertex_color, gpu_colors->value);
+        zox_gpu_render(count->value);
+
     }
+
     if (has_set_material) {
         zox_gpu_disable_buffer(material_attributes->vertex_color);
         zox_gpu_disable_buffer(material_attributes->vertex_uv);
@@ -74,4 +84,5 @@ void Chunk3RenderSystem(iter *it) {
         opengl_disable_texture(0);
         zox_disable_material();
     }
-} zoxd_system(Chunk3RenderSystem)
+
+} zoxd_system2(Chunk3RenderSystem);

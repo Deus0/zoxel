@@ -28,6 +28,7 @@ zoxc_entity(ShaderLink); // links to a shader entity
 zoxc_entity(InstanceLink); // links to a instance parent
 // zoxc_array(InstanceLinks, entity, 8)
 zoxc_arrayd(MeshIndicies, int)
+zoxc_uint(MeshIndiciesGpu);
 zoxc_arrayd(MeshVertices, float3)
 zoxc_arrayd(MeshVertices2D, float2)
 zoxc_arrayd(MeshUVs, float2)
@@ -89,6 +90,7 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(ShaderSourceIndex);
     zoxd_entity(ShaderLink);
     zoxd_arrayd(MeshIndicies);
+    zoxd_uint(MeshIndiciesGpu);
     zoxd_arrayd(MeshVertices);
     zoxd_arrayd(MeshVertices2D);
     zoxd_arrayd(MeshUVs);

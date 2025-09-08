@@ -13,7 +13,7 @@
 #define zox_pip_h EcsOnStore
 
 #define zoxp_update EcsOnUpdate             // normal business here
-#define zoxp_mainthread EcsPreStore         // EcsPreStore | EcsOnStore
+#define zoxp_mainthread EcsOnLoad         // EcsPreStore | EcsOnStore
 
 #define zoxp_inputs_reset EcsOnLoad
 #define zoxp_sdl EcsPostLoad
@@ -47,6 +47,7 @@
 #define zoxp_physics EcsPostUpdate          // Core
 #define zoxp_transforms zoxp_physics + 1    // Transforms
 #define zoxp_cameras zoxp_transforms + 1    // CameraPlanes/Matrix
+// this is EcsOnStore actually
 #define zoxp_rendering zoxp_cameras + 1     // doesnt seem to mind if its in same frame as zoxp_cameras
 
 

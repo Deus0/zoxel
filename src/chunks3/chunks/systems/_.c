@@ -1,8 +1,3 @@
-zox_increment_system_with_reset(ChunkDirty, chunk_dirty_state_end);
-zox_increment_system_with_reset(ChunkMeshDirty, chunk_dirty_state_end);
-zox_increment_system_with_reset(GenerateChunk, chunk_generate_state_end);
-zox_increment_system_with_reset(VoxelNodeGenerated, chunk_generate_state_end);
-// zox_increment_system_with_reset(ChunkLodDirty, chunk_lod_state_end);
 zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 #include "entities_lod.c"
 #include "find_neighbor.c"
@@ -12,15 +7,10 @@ zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 #include "debug.c"
 #include "block_scale.c"
 #include "voxel_node_queue.c"
+#include "voxel_node_queue_clear.c"
 
 void define_systems_chunks(ecs *world) {
-
-    zoxd_system_increment(ChunkDirty);
-    zoxd_system_increment(ChunkMeshDirty);
-    zoxd_system_increment(GenerateChunk);
-    zoxd_system_increment(VoxelNodeGenerated);
     zoxd_system_increment(VoxelNodeDirty);
-    // zoxd_system_increment(ChunkLodDirty);
 
     zox_system(
         ChunkEntitiesLodSystem,

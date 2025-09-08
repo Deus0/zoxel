@@ -94,7 +94,7 @@ byte test_terrain_spawn(ecs_world_t *world) {
                 /*if (log_meshes && mesh_dirty == mesh_dirty_state_end) {
                     zox_log("- f[%i] chunk mesh finished [%f]", ecs_run_count - 1, time_since_start)
                 }*/
-                if (log_meshes && chunk_mesh_dirty == chunk_dirty_state_end) {
+                if (log_meshes && chunk_mesh_dirty == zox_dirty_end) {
                     zox_log("- f[%i] chunk mesh finished [%f]", ecs_run_count - 1, time_since_start)
                 }
                 if (generate_chunk || mesh_dirty || lod_dirty || chunk_mesh_dirty) {
@@ -151,7 +151,7 @@ byte test_terrain_spawn(ecs_world_t *world) {
                 /*if (log_lods && lod_dirty == chunk_lod_state_end) {
                     zox_log("- f[%i] chunk lod finished [%f]", ecs_run_count - 1, time_since_start)
                 }*/
-                if (log_meshes && chunk_mesh_dirty == chunk_dirty_state_end) {
+                if (log_meshes && chunk_mesh_dirty == zox_dirty_end) {
                     zox_log("- f[%i] chunk mesh finished [%f]", ecs_run_count - 1, time_since_start)
                 }
                 if (generate_chunk || mesh_dirty || lod_dirty || chunk_mesh_dirty) {

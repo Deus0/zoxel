@@ -20,7 +20,7 @@ void define_components_sounds(ecs_world_t *world) {
     zoxd_double(SoundLength);;
     zoxd_float(SoundFrequency);;
     zoxd_float(SoundVolume);;
-    zox_define_component_int(SoundFrequencyIndex);;
+    zoxd_int(SoundFrequencyIndex);;
     // zoxd_arrayd(SoundData);
     zox_define_component_w_dest(SoundData);;
     zoxd(SoundDataRef);;

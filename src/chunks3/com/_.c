@@ -5,9 +5,9 @@ zox_tag(ColorChunk);
 zox_tag(ChunkTextured);
 zox_tag(LinkChunk);
 zox_tag(DisableReverseLinkChunk);
-zoxc_byte(ChunkDirty);
-zoxc_byte(ChunkMeshDirty);
-zoxc_byte(GenerateChunk);
+zoxc_state(ChunkDirty);
+zoxc_state(ChunkMeshDirty);
+zoxc_state(GenerateChunk);
 zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
 zoxc_byte(BlocksSpawned);
@@ -27,11 +27,11 @@ void define_components_chunks(ecs *world) {
     zoxd_tag(LinkChunk);
     zoxd_tag(DisableReverseLinkChunk);
     zoxd_tag(ChunkDebugger);
-    zox_define_component_int3(ChunkPosition);
-    zoxd_byte(ChunkDirty);
-    zoxd_byte(ChunkMeshDirty);
-    zox_define_component_int3(ChunkSize);
-    zoxd_byte(GenerateChunk);
+    zoxd_int3(ChunkPosition);
+    zoxd_state(ChunkDirty);
+    zoxd_state(ChunkMeshDirty);
+    zoxd_int3(ChunkSize);
+    zoxd_state(GenerateChunk);
     zoxd_byte(BlocksSpawned);
     zoxd(ChunkNeighbors);
     zox_define_links_component(ChunkLink);
@@ -41,7 +41,7 @@ void define_components_chunks(ecs *world) {
     zoxd_byte(VoxelNodeDirty);
     zoxd_byte(VoxelNodeEdited);
     zoxd_byte(VoxelNodeLoaded);
-    zoxd_byte(VoxelNodeGenerated);
+    zoxd_state(VoxelNodeGenerated);
     zox_define_hashmap_component(ChunkLinks);
     zoxd_queue(VoxelNodeQueue);
 }

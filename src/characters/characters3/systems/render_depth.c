@@ -9,7 +9,7 @@ void CharacterRenderDepthSystem(iter *it) {
         zox_sys_o(ChunkMeshDirty, chunkMeshDirty)
         if (renderDepthDirty->value == zox_dirty_active) {
             // zox_log_error("character is dirty")
-            chunkMeshDirty->value = chunk_dirty_state_trigger;
+            chunkMeshDirty->value = zox_dirty_trigger;
             // todo: set mesh instance link by renderDepth?
             // if instance link
         }

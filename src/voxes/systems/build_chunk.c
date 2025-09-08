@@ -236,50 +236,47 @@ void build_node_mesh_colors(
 
 
 // Builds Colored Vox Meshes
-// When: ChunkMeshDirty is chunk_dirty_state_update
+// When: ChunkMeshDirty is zox_dirty_active
 void ChunkColorsBuildSystem(iter *it) {
-
     zox_ts_begin(build_chunk_colored);
-
-    zox_sys_world()
-    zox_sys_begin()
-
-    zox_sys_in(ChunkMeshDirty)
-    zox_sys_in(VoxelNode)
-    zox_sys_in(NodeDepth)
-    zox_sys_in(RenderDepth)
-    zox_sys_in(ChunkNeighbors)
-    zox_sys_in(ColorRGBs)
-    zox_sys_in(ChunkSize)
-    zox_sys_in(BlockScale)
-    zox_sys_out(MeshIndicies)
-    zox_sys_out(MeshVertices)
-    zox_sys_out(MeshColorRGBs)
-    zox_sys_out(MeshDirty)
-
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(ChunkMeshDirty);
+    zox_sys_in(VoxelNode);
+    zox_sys_in(NodeDepth);
+    zox_sys_in(RenderDepth);
+    zox_sys_in(ChunkNeighbors);
+    zox_sys_in(ColorRGBs);
+    zox_sys_in(ChunkSize);
+    zox_sys_in(BlockScale);
+    zox_sys_out(MeshIndicies);
+    zox_sys_out(MeshVertices);
+    zox_sys_out(MeshColorRGBs);
+    zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_i(ChunkMeshDirty, chunkMeshDirty);
+        zox_sys_i(VoxelNode, voxelNode);
+        zox_sys_i(NodeDepth, nodeDepth);
+        zox_sys_i(RenderDepth, renderDepth);
+        zox_sys_i(ChunkNeighbors, chunkNeighbors);
+        zox_sys_i(ColorRGBs, colorRGBs);
+        zox_sys_i(ChunkSize, chunkSize);
+        zox_sys_i(BlockScale, blockScale);
+        zox_sys_o(MeshDirty, meshDirty);
+        zox_sys_o(MeshIndicies, meshIndicies);
+        zox_sys_o(MeshVertices, meshVertices);
+        zox_sys_o(MeshColorRGBs, meshColorRGBs);
 
-        zox_sys_i(ChunkMeshDirty, chunkMeshDirty)
-        zox_sys_i(VoxelNode, voxelNode)
-        zox_sys_i(NodeDepth, nodeDepth)
-        zox_sys_i(RenderDepth, renderDepth)
-        zox_sys_i(ChunkNeighbors, chunkNeighbors)
-        zox_sys_i(ColorRGBs, colorRGBs)
-        zox_sys_i(ChunkSize, chunkSize)
-        zox_sys_i(BlockScale, blockScale)
-        zox_sys_o(MeshDirty, meshDirty)
-        zox_sys_o(MeshIndicies, meshIndicies)
-        zox_sys_o(MeshVertices, meshVertices)
-        zox_sys_o(MeshColorRGBs, meshColorRGBs)
-
-        if (chunkMeshDirty->value != chunk_dirty_state_update) {
+        if (chunkMeshDirty->value != zox_dirty_active) {
             continue;
         }
+
         if (!colorRGBs->length) {
             zox_sys_e();
             zox_logw("Vox has no colors [%s]", zox_get_name(e));
             continue;
         }
+
         // removes mesh when 255
         clear_mesh(meshIndicies, meshVertices, meshColorRGBs);
         if (renderDepth->value >= render_depth_spawning) {

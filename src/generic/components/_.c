@@ -7,6 +7,7 @@
 #include "int2.c"
 #include "int3.c"
 #include "int4.c"
+#include "uint.c"
 #include "float.c"
 #include "float2.c"
 #include "float3.c"
@@ -29,6 +30,7 @@ void initialize_component_ids() {
     initialize_component_ids_int2();
     initialize_component_ids_int3();
     initialize_component_ids_int4();
+    initialize_component_ids_uint();
     initialize_component_ids_float();
     initialize_component_ids_float2();
     initialize_component_ids_float3();
@@ -50,6 +52,7 @@ void dispose_component_ids() {
     dispose_component_ids_int2();
     dispose_component_ids_int3();
     dispose_component_ids_int4();
+    dispose_component_ids_uint();
     dispose_component_ids_float();
     dispose_component_ids_float2();
     dispose_component_ids_float3();
@@ -84,9 +87,9 @@ zoxc_int2(ScreenDimensions);
 zoxc_byte(SpawnChance);
 zoxc_fixed_string(SaveGamePath, 512);
 
-void define_components_generic(ecs_world_t *world) {
+void define_components_generic(ecs* world) {
     // ids
-    zox_define_component_int(ID);
+    zoxd_int(ID);
     zoxd_lint(Seed);
     zoxd_text(ZoxName);
     // timed

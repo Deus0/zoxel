@@ -141,7 +141,6 @@ void Light3BuildSystem(iter* it) {
     zox_ts_begin(light3_builder);
     zox_sys_world();
     zox_sys_begin();
-
     zox_sys_in(MeshColorsGenerate);
     zox_sys_in(VoxLink);
     zox_sys_in(ChunkNeighbors);
@@ -150,9 +149,7 @@ void Light3BuildSystem(iter* it) {
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
     zox_sys_out(MeshColorsDirty);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(MeshColorsGenerate, trigger);
         zox_sys_i(VoxLink, vox_link);
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -197,8 +194,6 @@ void Light3BuildSystem(iter* it) {
         }
 
         updated->value = zox_dirty_trigger;
-
-        // zox_log("Built Colors [%i] / [%i]", color_index, colors->length);
 
     }
 
