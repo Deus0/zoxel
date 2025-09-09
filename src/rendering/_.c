@@ -1,21 +1,20 @@
 #ifndef zoxm_rendering
 #define zoxm_rendering
 
-#include "components/_.c"
-#include "data/_.c"
-#include "settings/_.c"
+#include "com/_.c"
+#include "dat/_.c"
+#include "set/_.c"
+#include "fun/_.c"
+#include "pre/_.c"
+#include "sys/_.c"
+#include "shd/_.c"
+#include "dbg/_.c"
 
-#include "util/_.c"
-#include "prefabs/_.c"
-#include "systems/_.c"
-
-#include "shaders/_.c"
 #include "basics2D/_.c"
 #ifndef zox_disable_rendering3D
     #include "basics3D/_.c"
 #endif
 #include "cameras/_.c"
-#include "debug/_.c"
 
 byte initialize_rendering(byte render_backend) {
     if (render_backend == zox_render_backend_headless) {

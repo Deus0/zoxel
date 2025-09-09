@@ -7,14 +7,14 @@
  *
  * */
 
-#include "data/_.c"
-#include "components/_.c"
-#include "prefabs/_.c"
-#include "spawn/_.c"
-#include "util/_.c"
-#include "generation/_.c"
+#include "dat/_.c"
+#include "com/_.c"
+#include "pre/_.c"
+#include "ins/_.c"
+#include "fun/_.c"
+#include "gen/_.c"
+#include "sys/_.c"
 #include "io/_.c"
-#include "systems/_.c"
 
 void dispose_voxes(ecs *world, void *ctx) {
     (void) ctx;

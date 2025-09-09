@@ -8,8 +8,6 @@ const byte max_lod_voxes = 0;
 
 const float end_game_delay = 0.8f;
 const float end_game_delay2 = 1.0f;
-const double start_game_delay_terrain = 1.5;
-const double start_game_delay_terrain2 = 2.5;
 const float end_game_delay_fade = 1;
 
 // const int max_chunks_build_per_frame = 32; // 16; // terrain chunks built per frame

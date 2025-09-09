@@ -132,3 +132,9 @@ void spawn_players_cameras_canvases(
     zox_set_ptr(app, CameraLinks, cameras)
 #endif
 }
+
+void on_boot_space(ecs_world_t* world, ecs_entity_t app) {
+    // move to game ui??
+    spawn_players_cameras_canvases(world, players_playing, app);
+    spawn_players_start_ui(world);
+}

@@ -5,20 +5,14 @@
 zox_tag(Planet);
 zox_tag(Asteroid);
 zox_tag(Star);
-#include "util/_.c"
-#include "game/_.c"
-
-void on_boot_space(ecs_world_t* world, ecs_entity_t app) {
-    // move to game ui??
-    spawn_players_cameras_canvases(world, players_playing, app);
-    spawn_players_start_ui(world);
-}
+#include "fun/_.c"
 
 zox_begin_module(Space)
     zoxd_tag(Planet);
     zoxd_tag(Asteroid);
     zoxd_tag(Star);
 
+    // temp
     add_to_event_game_state((zox_game_event) { &players_game_state });
     add_hook_on_boot(on_boot_space);
 

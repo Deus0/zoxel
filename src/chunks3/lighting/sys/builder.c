@@ -99,7 +99,6 @@ void zox_apply_light3(
                     target
                 );
 
-
                 byte light = adj_node ? adj_node->value : sunlight;
                 /*if (!adj_node) {
                     zox_log_error("Adjacent Node ??? [%ix%ix%i] d[%i]", position.x, position.y, position.z, depth);

@@ -1,7 +1,8 @@
 #include "ui.c"
-#include "player_ui.c"
-#include "player_new.c"
-#include "player_load.c"
+#include "resume.c"
+#include "pause.c"
+#include "game2.c"
+#include "game3.c"
 
 // todo: when selecting pickaxe, you can destroy voxels, or with your fists
 // todo: you can only place color cubes on block voxes, which drop from enemies

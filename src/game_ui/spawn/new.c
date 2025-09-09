@@ -41,7 +41,7 @@ void on_confirmed_new_realm(
     save2_realm(save_dir, "seed.dat", &realm_save);
     free(save_dir);
 
-    zox_set(game, GameStateTarget, { zox_game_load });
+    zox_set(game, GameStateTarget, { zox_game_load_start });
 }
 
 void on_cancelled_new_realm(

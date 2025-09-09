@@ -2,11 +2,11 @@
 #define zoxm_realms
 
 // todo: we really should fadeoout first before generating realm!
-#include "data/generate_realm.c"
+#include "dat/generate_realm.c"
 zox_tag(Realm);
 zoxc_byte(GenerateRealm);
 zoxc_entity(RealmLink);
-#include "prefabs/prefabs.c"
+#include "pre/_.c"
 zox_increment_system_with_reset(GenerateRealm, zox_generate_realm_end);
 
 zox_begin_module(Realms)

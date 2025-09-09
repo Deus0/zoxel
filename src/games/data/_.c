@@ -1,5 +1,0 @@
-#include "settings.c"
-#include "rules.c"
-#include "game_modes.c"
-#include "game_states.c"
-#include "zox_game_event.c"

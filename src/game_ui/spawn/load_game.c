@@ -39,7 +39,7 @@ void button_event_load_confirm(
 
     set_noise_seed(realm_save.seed);
     zox_set(realm, Seed, { realm_save.seed });
-    zox_set(game, GameStateTarget, { zox_game_load });
+    zox_set(game, GameStateTarget, { zox_game_load_start });
 }
 
 

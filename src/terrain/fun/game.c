@@ -1,5 +1,3 @@
-
-
 // End Game
 void game_end_terrain(ecs *world, const entity game) {
     if (zox_game_type == zox_game_mode_3D) {
@@ -45,14 +43,15 @@ void game_start_terrain3D(
 }
 
 // Start Game
+extern const double game_spawn_terrain_delay;
 void game_start_terrain(
     ecs *world,
     const entity game
 ) {
     if (zox_game_type == zox_game_mode_3D) {
-        delay_event(world, &game_start_terrain3D, game, start_game_delay_terrain);
+        delay_event(world, &game_start_terrain3D, game, game_spawn_terrain_delay);
     } else if (zox_game_type == zox_game_mode_2D) {
-        delay_event(world, &game_start_terrain2D, game, start_game_delay_terrain);
+        delay_event(world, &game_start_terrain2D, game, game_spawn_terrain_delay);
     }
     unlock_achievement("test_achievement"); // idk if this can be per player
 }
@@ -60,14 +59,15 @@ void game_start_terrain(
 
 // Entry Point
 // state change goes to start and end functions
-void game_state_terrain(ecs *world,
+void game_state_terrain(
+    ecs *world,
     const entity game,
     const byte old_game_state,
-    const byte new_game_state)
-{
-    if (old_game_state == zox_game_loading && new_game_state == zox_game_playing) {
+    const byte state
+) {
+    if (state == zox_game_playing_start) {
         game_start_terrain(world, game);
-    } else if (new_game_state == zox_game_start) {
+    } else if (state == zox_game_start) {
         if (is_end_game_delays) {
             delay_event(world, &game_end_terrain, game, end_game_delay2);
         } else {
