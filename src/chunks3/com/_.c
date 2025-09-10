@@ -14,12 +14,17 @@ zoxc_byte(BlocksSpawned);
 zoxc_byte(NodeDepth);
 zoxc_float(RaycastRange);
 
+zoxc_entity(VoxLink);
+zoxc_entities(ChunkEntities)
+
 zoxc_link(ChunkLink, entity, ChunkEntities)
 #include "neighbors.c"
 #include "chunk_links.c"
 #include "voxel_node.c"
 
-void define_components_chunks(ecs *world) {
+void define_components_chunks(ecs* world) {
+    zoxd_entity(VoxLink);
+    zoxd_entities(ChunkEntities);
     zoxd_tag(Chunk);
     zoxd_tag(NoiseChunk);
     zoxd_tag(ColorChunk);

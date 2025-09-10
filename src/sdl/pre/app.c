@@ -1,7 +1,4 @@
-ecs_entity_t prefab_app_sdl;
-byte zox_log_sdl_window = 0;
-
-ecs_entity_t spawn_prefab_app_sdl(ecs *world) {
+entity spawn_prefab_app_sdl(ecs *world) {
     zox_prefab_child(prefab_app);
     zox_prefab_name("app_sdl");
     zox_prefab_set(e, SDLWindow, { NULL });
@@ -11,7 +8,7 @@ ecs_entity_t spawn_prefab_app_sdl(ecs *world) {
     return e;
 }
 
-ecs_entity_t spawn_app_sdl(
+entity spawn_app_sdl(
     ecs *world,
     const char* name,
     const byte fullscreen,
@@ -46,28 +43,28 @@ ecs_entity_t spawn_app_sdl(
         zox_app_set_maximized(sdl_window, maximized);
     }
 
-    zox_instance(prefab_app_sdl)
-    zox_name("app_sdl")
-    zox_set(e, SDLWindow, { sdl_window })
+    zox_instance(prefab_app_sdl);
+    zox_name("app_sdl");
+    zox_set(e, SDLWindow, { sdl_window });
     // current transform data
-    zox_set(e, WindowPosition, { position })
-    zox_set(e, WindowSize, { size })
+    zox_set(e, WindowPosition, { position });
+    zox_set(e, WindowSize, { size });
     // window restore data
-    zox_set(e, WindowPositionRestore, { position })
-    zox_set(e, WindowSizeRestore, { size_restore })
+    zox_set(e, WindowPositionRestore, { position });
+    zox_set(e, WindowSizeRestore, { size_restore });
     // our properties
-    zox_set(e, WindowFullscreen, { fullscreen })
-    zox_set(e, WindowMaximized, { maximized })
-    zox_set(e, WindowMonitor, { monitor })
+    zox_set(e, WindowFullscreen, { fullscreen });
+    zox_set(e, WindowMaximized, { maximized });
+    zox_set(e, WindowMonitor, { monitor });
 
     // debugs
     if (zox_log_sdl_window) {
-        zox_log("+ spawned window !")
-        zox_log("   - position [%ix%i]", position.x, position.y)
-        zox_log("   - size [%ix%i]", size.x, size.y)
-        zox_log("   - fullscreen [%i]", fullscreen)
-        zox_log("   - maximized [%i]", maximized)
-        zox_log("   - monitor [%i]", monitor)
+        zox_log("+ spawned window !");
+        zox_log("   - position [%ix%i]", position.x, position.y);
+        zox_log("   - size [%ix%i]", size.x, size.y);
+        zox_log("   - fullscreen [%i]", fullscreen);
+        zox_log("   - maximized [%i]", maximized);
+        zox_log("   - monitor [%i]", monitor);
     }
 
     return e;

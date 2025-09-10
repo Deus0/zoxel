@@ -1,4 +1,7 @@
-byte tooltip_event_quest(ecs_world_t *world, const TooltipEventData *data) {
+byte tooltip_event_quest(
+    ecs *world,
+    const TooltipEventData *data
+) {
     if (!data->data || !zox_has(data->data, Quest)) {
         return 0;
     }
@@ -23,9 +26,12 @@ byte tooltip_event_quest(ecs_world_t *world, const TooltipEventData *data) {
     return 1;
 }
 
-ecs_entity_t spawn_prefab_icon_quest(ecs_world_t *world, const ecs_entity_t prefab) {
-    zox_prefab_child(prefab)
-    zox_prefab_name("icon_quest")
-    zox_prefab_set(e, TooltipEvent, { &tooltip_event_quest })
+entity spawn_prefab_icon_quest(
+    ecs *world,
+    const entity prefab
+) {
+    zox_prefab_child(prefab);
+    zox_prefab_name("icon_quest");
+    zox_prefab_set(e, TooltipEvent, { &tooltip_event_quest });
     return e;
 }

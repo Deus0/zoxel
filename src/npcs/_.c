@@ -1,13 +1,12 @@
 #if !defined(zoxm_ai) && defined(zoxm_characters)
 #define zoxm_ai
 
-// todo: a threat level - if you are higher level than npc they should have higher chance to flee!
+// TODO: a threat level - if you are higher level than npc they should have higher chance to flee!
 
-#include "cmp/_.c"
-#include "states/_.c"
-#include "prefabs/_.c"
-#include "systems/_.c"
-#include "util/_.c"
+#include "com/_.c"
+#include "sta/_.c"
+#include "pre/_.c"
+#include "sys/_.c"
 #include "fun/_.c"
 
 zox_begin_module(Npcs)

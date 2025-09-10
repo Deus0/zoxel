@@ -3,8 +3,8 @@
 #define zoxm_vodes3
 
 byte block_vox_render_at_lod = 0;
-#include "hooks/_.c"
-#include "systems/_.c"
+#include "hok/_.c"
+#include "sys/_.c"
 
 void module_dispose_vodes3(ecs *world, void *ctx) {
     (void) world;

@@ -1,10 +1,10 @@
 #ifndef zox_sdl_inputs
 #define zox_sdl_inputs
 
-#include "data/settings.c"
-#include "data/sdl_gamepad.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "dat/settings.c"
+#include "dat/sdl_gamepad.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 void spawn_prefabs_sdl_input(ecs* world) {
 #ifdef zox_sdl

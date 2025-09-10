@@ -1,17 +1,13 @@
 #ifndef zoxm_sdl
 #define zoxm_sdl
 
-#include "components/_.c"
-#include "data/_.c"
+#include "com/_.c"
+#include "dat/_.c"
 #include "wrapper/_.c"
-#include "settings/_.c"
-#include "prefabs/app.c"
+#include "set/_.c"
+#include "pre/_.c"
 #include "inputs/_.c"
-#include "util/_.c"
-
-void spawn_prefabs_sdl(ecs_world_t* world) {
-    prefab_app_sdl = spawn_prefab_app_sdl(world);
-}
+#include "fun/_.c"
 
 zox_begin_module(Sdl)
     define_components_sdl(world);

@@ -3,9 +3,9 @@
 
 zoxc_userdata(Quest);
 zoxf_user_prefabs(Quest, quest, "quest")
-#include "prefabs/_.c"
-#include "ui/ui.c"
-#include "util/_.c"
+#include "pre/_.c"
+#include "ui/_.c"
+#include "fun/_.c"
 zox_declare_system_state_event(RealmQuests, GenerateRealm, zox_generate_realm_quests, spawn_realm_quests)
 
 zox_begin_module(Quests)

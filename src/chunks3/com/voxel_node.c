@@ -5,6 +5,11 @@ typedef struct {
     byte sides;         // new field for lighting/mesh culling
 } VoxelNode;
 
+typedef struct {
+    byte value;
+    byte3 pos;
+} VoxelNodeUpdate;
+
 zoxc_octree_fun1(VoxelNode, byte, 0)
 zoxc_octree_fun2(VoxelNode, byte)
 zox_node_add_link(VoxelNode)

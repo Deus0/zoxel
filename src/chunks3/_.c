@@ -9,13 +9,17 @@
  *
  * */
 
-zoxc_entity(VoxLink);
-zoxc_entities(ChunkEntities)
+#include "set/_.c"
 #include "sta/_.c"
 #include "mcr/_.c"
-#include "dat/_.c"
 #include "com/_.c"
-#include "chunks/_.c"
+#include "dat/_.c"
+#include "fun/_.c"
+#include "pre/_.c"
+#include "sys/_.c"
+#include "dbg/_.c"
+#include "tst/_.c"
+
 #include "io/_.c"
 #include "lighting/_.c"
 #include "structures/_.c"
@@ -29,8 +33,6 @@ void module_dispose_chunks3(ecs *world, void *ctx) {
 }
 
 zox_begin_module(Chunks3)
-    zoxd_entity(VoxLink);
-    zoxd_entities(ChunkEntities);
     define_components_chunks(world);
     define_systems_chunks(world);
     define_systems_chunksio(world);

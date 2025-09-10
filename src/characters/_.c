@@ -1,16 +1,16 @@
 #ifndef zoxm_characters
 #define zoxm_characters
 
-#include "data/settings.c"
+#include "dat/settings.c"
 zox_tag(Character);
 zoxc_entity(CharacterLink);
 zoxc_arrayd(CharacterLinks, ecs_entity_t)
-#include "util/_.c"
+#include "fun/_.c"
 #include "jump/_.c"
 #include "characters2/_.c"
 #include "characters3/_.c"
-#include "util/buttons.c"
-#include "debug/_.c"
+#include "fun/buttons.c"
+#include "dbg/_.c"
 
 ecs_entity_t get_linked_character(ecs_world_t* world, const ecs_entity_t e) {
     return zox_valid(e) && zox_has(e, CharacterLink) ? zox_gett_value(e, CharacterLink) : 0;

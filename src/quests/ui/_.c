@@ -2,7 +2,7 @@
 #define zoxm_ui_quests
 
 zox_tag(MenuQuests);
-#include "prefabs/_.c"
+#include "pre/_.c"
 
 zox_begin_module(UIQuests)
     zoxd_tag(MenuQuests);

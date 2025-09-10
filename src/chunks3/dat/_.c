@@ -1,5 +1,9 @@
-typedef struct {
-    byte value;
-    byte3 pos;
-    // int3 positionv; // i dont need this?
-} VoxelNodeUpdate;
+// data consts
+#include "octree.c"
+#include "mesh.c"
+// data structs
+#include "set_voxel_data.c"
+#include "set_voxel_target_data.c"
+#include "build_chunk_colored.c"
+#include "terrain_place.c"
+#include "node_link.c"
