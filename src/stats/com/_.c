@@ -25,7 +25,7 @@ void define_components_stats(ecs *world) {
     zoxd_float(StatValueMax);
     zoxd_float(ExperienceValue);
     zoxd_float(ExperienceMax);
-    zox_define_entities_component(DotLinks);
+    zoxd_entities(DotLinks);
     // special stats
     zoxd_tag(HealthStat);
     zoxd_tag(StatSoul);

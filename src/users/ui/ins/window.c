@@ -12,7 +12,7 @@ entity spawn_window_users(
         return 0;
     }
     if (!zox_has_id(character, data.window.user_links_id)) {
-        zox_log_error("Character [%lu] has no [%s], cannot spawn ui", character, zox_get_name(data.window.user_links_id))
+        zox_log_error("Character [%lu] has no [%s], cannot spawn ui", character, zox_get_name(data.window.user_links_id));
         return 0;
     }
     const UserLinks *user_data = zox_get_id(character, data.window.user_links_id);

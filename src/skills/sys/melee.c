@@ -164,7 +164,7 @@ void MeleeSystem(iter *it) {
 
             if (!zox_has(block, BlockInvinsible)) {
                 // effect our terrain here
-                raycast_action(world, raycastVoxelData, 0, 2);
+                raycast_action(world, *raycastVoxelData, 0, 2);
                 // destroy voxel sound
                 spawn_sound_generated(
                     world,
@@ -175,25 +175,6 @@ void MeleeSystem(iter *it) {
                     1.2f * get_volume_sfx()
                 );
 
-                // todo: spawn pickup in VoxelNodeDirty system - TerrainItemDropSystem
-                // this requires a stack on chunk for its updates
-                // spawn a pickup if removed
-                // now get item and set to pickup
-                if (zox_has(block, ItemLink)) {
-                    zox_geter_value(block, ItemLink, entity, block_item);
-                    if (zox_valid(block_item)) {
-                        const entity pickup = spawn_pickup_block(
-                            world,
-                            raycastVoxelData->positionf,
-                            block
-                        );
-                        zox_set(pickup, ItemLink, { block_item });
-                    } else {
-                        zox_log_error("block [%s] has no valid item", zox_get_name(block));
-                    }
-                } else {
-                    zox_log_error("block [%s] has no ItemLink", zox_get_name(block));
-                }
             } else {
                 // cannot destroy voxel sound
                 spawn_sound_generated(

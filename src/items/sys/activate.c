@@ -46,7 +46,7 @@ void ItemActivateSystem(iter *it) {
         zox_geter_value(block, BlockIndex, byte, block_index);
         raycast_action(
             world,
-            raycast_data,
+            *raycast_data,
             block_index,
             1
         );

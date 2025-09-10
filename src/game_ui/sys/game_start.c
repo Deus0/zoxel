@@ -1,10 +1,6 @@
-// TODO: Fade Out + Fade In based on game states
-// loading resources
 const double game_spawn_terrain_delay = 0.1;
 const double game_load_player_delay = 0.2; // 1.1;
-// fading
 const double game_load_fade_transition_time = 0.5;
-// const double game_load_fade_time = 3;
 
 void GameStartFaderSystem(iter *it) {
     zox_sys_world();
@@ -13,7 +9,6 @@ void GameStartFaderSystem(iter *it) {
     zox_sys_in(GameState);
     zox_sys_in(PlayerLinks);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
         zox_sys_i(GameStateDirty, dirty);
         zox_sys_i(GameState, state);
         zox_sys_i(PlayerLinks, players);
@@ -44,13 +39,6 @@ void GameStartFaderSystem(iter *it) {
                     game_load_fade_transition_time
                 );
             }
-            /*trigger_canvas_fade_transition(
-                world,
-                canvas,
-                game_load_fade_transition_time,
-                game_load_fade_time
-            );*/
         }
-        // set animation fadeout event to change state
     }
 } zoxd_system2(GameStartFaderSystem);

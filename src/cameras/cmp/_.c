@@ -56,5 +56,5 @@ void define_components_cameras(ecs *world) {
     zoxd_tag(RenderTexture);
     zoxd_entity(RenderTextureLink);
     zoxd_entity(RenderCameraLink);
-    zox_define_entities_component(CameraLinks);
+    zoxd_entities(CameraLinks);
 }

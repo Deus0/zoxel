@@ -33,5 +33,5 @@ void define_components_blocks(ecs_world_t *world) {
     zoxd_float(BlockScale);
     zoxd_entity(BlockLink);
     zoxd_entity(BlockPrefabLink);
-    zox_define_entities_component(VoxelLinks);
+    zoxd_entities(VoxelLinks);
 }

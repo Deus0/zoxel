@@ -71,16 +71,16 @@ zox_begin_module(Musics)
     zoxd_double(MusicTime);
     zoxd_double(MusicSpeed);
     zoxd_double(MusicLength);
-    zox_define_entities_component(NoteLinks);
+    zoxd_entities(NoteLinks);
     // playlist
     zoxd_tag(Playlist);
     zoxd_byte(PlaylistEnabled);
     zoxd_byte(MusicPlaying);
-    zox_define_entities_component(MusicLinks);
+    zoxd_entities(MusicLinks);
     // realm
     zoxd_byte(PlaylistPlaying);
     zoxd_byte(PlaylistMode);
-    zox_define_entities_component(PlaylistLinks);
+    zoxd_entities(PlaylistLinks);
     zoxd_entity(PlaylistLink);
 
     define_systems_music(world);

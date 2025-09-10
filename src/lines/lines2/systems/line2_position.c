@@ -4,6 +4,10 @@ void set_line2_canvas_position_direct(
     const int2 parent_position,
     const int2 parent_size
 ) {
+    if (!zox_valid(e)) {
+        return;
+    }
+
     zox_geter_value(e, LineAnchor, float4, anchor);
     zox_geter_value(e, LineLocalPosition2, int4, points);
     zox_muter(e, LinePosition2, canvas_points);

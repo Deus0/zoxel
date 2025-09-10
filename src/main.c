@@ -88,8 +88,9 @@
 #include "users/_.c"
 #include "combat/_.c"
 #include "stats/_.c"
-#include "items/_.c"
 #include "skills/_.c"
+#include "items/_.c"
+#include "equipment/_.c"
 #include "lores/_.c"
 #include "achievements/_.c"
 #include "dialogues/_.c"
@@ -179,8 +180,9 @@ zox_begin_module(Zox)
     zox_import_module(Users);
     zox_import_module(Combat);
     zox_import_module(Stats);
-    zox_import_module(Items);
     zox_import_module(Skills);
+    zox_import_module(Items);
+    zox_import_module(Equipment);
     zox_import_module(Actions);
     zox_import_module(Dialogues);
     zox_import_module(Quests);

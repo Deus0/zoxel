@@ -3,17 +3,18 @@
 #define zoxm_game_ui
 
 // todo: use a byte index instead for menu type
-#include "settings/_.c"
-#include "data/_.c"
-#include "components/_.c"
-#include "prefabs/_.c"
-#include "util/_.c"
-#include "spawn/_.c"
-#include "systems/_.c"
-#include "debug/_.c"
+#include "set/_.c"
+#include "dat/_.c"
+#include "com/_.c"
+#include "pre/_.c"
+#include "fun/_.c"
+#include "ins/_.c"
+#include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(GameUI)
-    zox_module_dispose(dispose_gameui)
+    zox_module_dispose(dispose_gameui);
+    add_hook_spawn_prefabs(spawn_prefabs_game_ui);
     initialize_hook_taskbar();
     define_components_game_ui(world);
     define_systems_game_ui(world);
@@ -23,7 +24,6 @@ zox_begin_module(GameUI)
         .component_id = MenuPaused,
         .texture_name = "paused"
     });
-    add_hook_spawn_prefabs(spawn_prefabs_game_ui);
 zox_end_module(GameUI)
 
 #endif

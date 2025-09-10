@@ -10,13 +10,15 @@ entity spawn_block_item(
 
     // get block data
     zox_geter(block, ZoxName, voxel_name);
+    char* voxel_name_char = convert_zext_to_text(voxel_name->value, voxel_name->length);
 
     // spawn item
-    const entity e = spawn_meta_item_zox_name(
+    const entity e = spawn_meta_item(
         world,
         prefab_item,
-        voxel_name
+        voxel_name_char
     );
+    free(voxel_name_char);
     zox_name("block_item");
     entity t = 0;
     zox_prefab_addc_user_timings(world, e);

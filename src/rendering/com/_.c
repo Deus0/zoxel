@@ -97,7 +97,7 @@ void define_components_rendering(ecs *world) {
     zoxd_arrayd(MeshColors);
     zoxd_arrayd(MeshColorRGBs);
     // Models
-    zox_define_entities_component(ModelLinks);
+    zoxd_entities(ModelLinks);
     zoxd_entity(ModelLink);
     zox_define_component_array(ModelLods);
 }

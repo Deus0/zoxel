@@ -72,7 +72,7 @@ entity spawn_window_list(
         canvas_data,
         (LayoutParentData) { .e = canvas },
         window_element_data,
-        &window_data
+        window_data
     );
 
     // Spawn Scrollview

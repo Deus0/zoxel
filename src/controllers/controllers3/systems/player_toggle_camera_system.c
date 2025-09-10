@@ -1,18 +1,19 @@
-void PlayerToggleCameraSystem(ecs_iter_t *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(PlayerState)
-    zox_sys_in(DeviceLinks)
-    zox_sys_in(GameLink)
-    zox_sys_in(CharacterLink)
-    zox_sys_in(CameraLink)
+void PlayerToggleCameraSystem(iter *it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(PlayerState);
+    zox_sys_in(DeviceLinks);
+    zox_sys_in(GameLink);
+    zox_sys_in(CharacterLink);
+    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(PlayerState, playerState)
-        zox_sys_i(DeviceLinks, deviceLinks)
-        zox_sys_i(GameLink, gameLink)
-        zox_sys_i(CharacterLink, characterLink)
-        zox_sys_i(CameraLink, cameraLink)
+        zox_sys_e();
+        zox_sys_i(PlayerState, state);
+        zox_sys_i(DeviceLinks, deviceLinks);
+        zox_sys_i(GameLink, gameLink);
+        zox_sys_i(CharacterLink, characterLink);
+        zox_sys_i(CameraLink, cameraLink);
+
         if (!zox_valid(gameLink->value) || !zox_valid(cameraLink->value)) {
             continue;
         }
@@ -56,7 +57,7 @@ void PlayerToggleCameraSystem(ecs_iter_t *it) {
             }
         }
         if (is_toggle_camera && zox_valid(characterLink->value)) {
-            if (playerState->value == zox_player_state_playing) {
+            if (state->value == zox_player_state_playing) {
                 // hack to disable crosshair for different camera modes
                 byte mode = toggle_camera_mode(world, cameraLink->value);
 
@@ -65,16 +66,17 @@ void PlayerToggleCameraSystem(ecs_iter_t *it) {
                 // zox_log("> crosshair [%s]", is_crosshair_shown ? "visible" : "invisible")
             }
         } else if (is_toggle_freeroam) {
-            if (playerState->value == zox_player_state_playing || playerState->value == zox_player_state_free_roam) {
+            zox_log("toggling free roam [%i]", state->value);
+            if (state->value == zox_player_state_playing || state->value == zox_player_state_free_roam) {
                 toggle_free_roam_camera(world, e);
                 if (zox_valid(local_menu_game)) {
                     set_children_component_byte(
                         world,
                         local_menu_game,
                         zox_id(RenderDisabled),
-                        playerState->value != zox_player_state_playing);
+                        state->value != zox_player_state_playing);
                 }
-                // zox_set(local_crosshair, RenderDisabled, { playerState->value == zox_player_state_playing })
+                // zox_set(local_crosshair, RenderDisabled, { state->value == zox_player_state_playing })
             }
         }
     }

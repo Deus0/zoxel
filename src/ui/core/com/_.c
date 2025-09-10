@@ -91,7 +91,7 @@ void define_components_elements_core(ecs *world) {
     zoxd_entity(DraggedLink);
     zoxd_text(TooltipText);
     zoxd(UIHolderLink);
-    zox_define_entities_component(ElementLinks);
+    zoxd_entities(ElementLinks);
     zox_define_component_entities_child(ElementHolder);
     zoxd(ClickEvent);
     zoxd(TooltipEvent);

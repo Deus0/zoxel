@@ -1,6 +1,7 @@
 #include "item_drop.c"
 #include "realm.c"
 #include "activate.c"
+#include "terrain_drop.c"
 zox_declare_system_state_event(RealmItems, GenerateRealm, zox_generate_realm_items, spawn_realm_items)
 
 void define_systems_items(ecs *world) {
@@ -21,5 +22,15 @@ void define_systems_items(ecs *world) {
         [in] combat.Dead,
         [in] transforms3.Position3D,
         [in] items.ItemLinks
+    );
+    zox_system_1(
+        TerrainItemDropSystem,
+        EcsOnUpdate,
+        [in] chunks3.VoxelNodeQueue,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.VoxLink,
+        [in] chunks3.NodeDepth,
+        [in] transforms3.Position3D,
+        [in] blocks.BlockScale,
     );
 }

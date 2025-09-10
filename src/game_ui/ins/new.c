@@ -87,7 +87,7 @@ entity spawn_menu_new_realm(
     LayoutParentData window_parent_data = {
         .e = canvas_data.e,
         .size = canvas_data.size,
-        .position = int2_half(canvas_data.size),
+        // .position = int2_half(canvas_data.size),
     };
     SpawnWindow2 window_data = {
         .header_text = header_label,
@@ -98,11 +98,13 @@ entity spawn_menu_new_realm(
 
     Children children = (Children) { 0 };
     window_data.children = &children;
-    const entity e = spawn_window2(world,
+    const entity e = spawn_window2(
+        world,
         canvas_data,
         window_parent_data,
         window_element_data,
-        &window_data);
+        window_data
+    );
     zox_add_tag(e, MenuNewRealm);
 
     // # List #
@@ -157,11 +159,13 @@ entity spawn_menu_new_realm(
         .padding = (byte2) { 18, 18 },
         .margins = (byte2) { 18, 18 },
     };
-    const entity list = spawn_list(world,
+    const entity list = spawn_list(
+        world,
         canvas_data,
         list_parent_data,
         list_element_data,
-        ui_list_data);
+        ui_list_data
+    );
     add_to_Children(window_data.children, list);
     zox_set_ptr(e, Children, children);
 

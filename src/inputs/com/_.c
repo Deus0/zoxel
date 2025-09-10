@@ -56,5 +56,5 @@ void define_components_inputs(ecs *world) {
     zoxd_entity(MouseLink);
     zoxd_entity(ZeviceLink);
     zoxd_entity(VirtualZeviceLink);
-    zox_define_entities_component(DeviceLinks);
+    zoxd_entities(DeviceLinks);
 }

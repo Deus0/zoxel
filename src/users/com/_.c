@@ -26,7 +26,7 @@ void define_components_users(ecs* world) {
     zoxd_entity(UserLink);
     zoxd_entity(UserDataLink);
     zoxd_entity(SpawnerLink);
-    zox_define_entities_component(UserLinks);
+    zoxd_entities(UserLinks);
     zoxd_state(ActivateBegin);
     zoxd_state(Activate);
     zoxd_state(WarmupState);

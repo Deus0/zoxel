@@ -4,22 +4,22 @@ entity spawn_in_game_ui(
     const entity player
 ) {
     if (!zox_has(player, DeviceMode) || !zox_has(player, CanvasLink)) {
-        zox_log("! invalid player in [spawn_in_game_ui]\n")
+        zox_log_error("Invalid player in [spawn_in_game_ui]")
         return 0;
     }
-    const byte device_mode = zox_get_value(player, DeviceMode);
-    const entity canvas = zox_get_value(player, CanvasLink);
-    byte is_touch = device_mode == zox_device_mode_touchscreen;
-#ifdef zoxel_mouse_emulate_touch
-    is_touch = 1;
-#endif
-    zox_geter(player, CharacterLink, characterLink);
+    zox_geter_value(player, DeviceMode, byte, device_mode);
+    zox_geter_value(player, CanvasLink, entity, canvas);
+    zox_geter(player, CharacterLink, character);
     entity e = spawn_menu_game(
         world,
         prefab_menu_game,
         player,
-        characterLink->value
+        character->value
     );
+    byte is_touch = device_mode == zox_device_mode_touchscreen;
+#ifdef zoxel_mouse_emulate_touch
+    is_touch = 1;
+#endif
     if (is_touch) {
         spawn_in_game_ui_touch(world, player, canvas);
     }

@@ -32,9 +32,9 @@ void VoxelLightSystem(iter *it) {
             neighbors,
             nnodesl);
 
-        for (size_t i = 0; i < input_queue->count; i++) {
+        for (size_t j = 0; j < input_queue->count; j++) {
 
-            VoxelNodeUpdate update = input_queue->ptr[i];
+            VoxelNodeUpdate update = input_queue->ptr[j];
 
             // Removing Voxel - Spreads Light
             if (!update.value) {

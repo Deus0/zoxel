@@ -52,6 +52,6 @@
         }\
     }
 
-#define zox_define_entities_component(T) \
+#define zoxd_entities(T) \
     zoxd_arrayd(T) \
     zox_observe(on_destroyed_##T, EcsOnRemove, [in] T)

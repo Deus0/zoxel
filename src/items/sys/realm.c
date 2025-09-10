@@ -7,20 +7,20 @@ entity meta_item_block_dungeon_core;
 
 void spawn_realm_items(ecs *world, const entity realm) {
     if (!zox_has(realm, ItemLinks)) {
-        zox_log("! realm does not have ItemLinks [%lu]\n", realm)
+        zox_log_error("Realm does not have ItemLinks [%lu]", realm)
         return;
     }
     if (!zox_has(realm, VoxelLinks)) {
-        zox_log("! realm does not have VoxelLinks [%lu]\n", realm)
+        zox_log_error("Realm does not have VoxelLinks [%lu]", realm)
         return;
     }
     zox_geter(realm, VoxelLinks, blocks);
     if (!blocks) {
-        zox_log("! realm blocks was null [%lu]\n", realm);
+        zox_log_error("Realm blocks was null [%lu]", realm);
         return;
     }
     if (blocks->length == 0 || blocks->value == NULL) {
-        zox_log(" ! no blocks to spawn items from\n")
+        zox_log_error("No blocks to spawn items from")
         return;
     }
     // i should make a BlockItemLinks perhaps? nah  that overcomplicates
@@ -34,8 +34,8 @@ void spawn_realm_items(ecs *world, const entity realm) {
                 zox_delete(old->value[i])
             }
         }
-        // dispose_ItemLinks_const(old);
     }
+
     ItemLinks items = (ItemLinks) { 0 };
     initialize_ItemLinks(&items, blocks->length);
     for (int i = 0; i < blocks->length; i++) {

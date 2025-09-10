@@ -8,7 +8,7 @@ zoxc_child(ParentLink, Children)
 
 zox_begin_module(Hierarchys)
     zoxd_byte(ChildIndex);
-    zox_define_entities_component(Children);
+    zoxd_entities(Children);
     zox_define_component_entities_child(ParentLink);
 zox_end_module(Hierarchys)
 

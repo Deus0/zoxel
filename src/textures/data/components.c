@@ -60,5 +60,5 @@ void define_components_textures(ecs *world) {
     zoxd_arrayd(TextureData);
     zoxd_arrayd(TilemapUVs);
     zoxd_arrayd(TextureLinks);
-    // zox_define_entities_component(Textures);
+    // zoxd_entities(Textures);
 }
