@@ -19,16 +19,16 @@ void engine_end_delayed(ecs* world, const entity e) {
 void button_event_exit_app(ecs *world, const ClickEventData event) {
     disable_time_pausing();
     // close on all players
-    const entity game = zox_get_value(event.clicker, GameLink)
+    const entity game = zox_get_value(event.clicker, GameLink);
     zox_geter(game, PlayerLinks, players);
     for (int i = 0; i < players->length; i++) {
         const entity e = players->value[i];
-        const entity canvas = zox_get_value(e, CanvasLink)
-        find_child_with_tag(canvas, MenuMain, menu)
+        const entity canvas = zox_get_value(e, CanvasLink);
+        find_child_with_tag(canvas, MenuMain, menu);
         if (menu) {
-            zox_delete(menu)
+            zox_delete(menu);
         }
-        trigger_canvas_fade_in(world, canvas);
+        trigger_canvas_fade_in(world, canvas, 0, 0.7f);
     }
     delay_event(world, &engine_end_delayed, 0, 2.0f);
 }

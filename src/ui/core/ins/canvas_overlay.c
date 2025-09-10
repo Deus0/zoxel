@@ -1,5 +1,3 @@
-
-
 // todo: stretch to parent size!
 entity spawn_canvas_overlay(
     ecs *world,
@@ -31,7 +29,7 @@ entity spawn_canvas_overlay(
 
     // on_child_added(world, canvas, e);
     zox_set(e, Alpha, { 1 });
-    trigger_canvas_fade_out(world, e);
+    trigger_canvas_overlay_fade_out(world, e, 1.5f, 1.5f);
 
     return e;
 }

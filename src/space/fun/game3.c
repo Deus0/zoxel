@@ -422,10 +422,18 @@ void players_game_state(
         const entity player = players->value[i];
         if (state == zox_game_playing_start) {
             zox_set(player, PlayerState, { zox_player_state_loading })
-            player_start_game(world, player, is_start_game_delays);
+            player_start_game(
+                world,
+                player,
+                is_start_game_delays
+            );
         } else if (state == zox_game_start) {
             zox_set(player, PlayerState, { zox_player_state_main_menu })
-            player_end_game(world, player, is_end_game_delays);
+            player_end_game(
+                world,
+                player,
+                is_end_game_delays
+            );
         } else if (previous_game_state == zox_game_playing && state == zox_game_paused) {
             zox_set(player, PlayerState, { zox_player_state_paused })
             pause_player(world, player);
