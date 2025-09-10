@@ -1,9 +1,9 @@
 #ifndef zoxm_cubes
 #define zoxm_cubes
 
-#include "data/_.c"
-#include "prefabs/_.c"
-#include "debug/_.c"
+#include "dat/_.c"
+#include "pre/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Cubes)
     add_hook_spawn_prefabs(spawn_prefabs_cubes);

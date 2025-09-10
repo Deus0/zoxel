@@ -5,16 +5,16 @@
 byte disable_npc_uis = 0;
 byte disable_npc_hooks = 0;
 byte disable_npc_positioner = 0;
-#include "settings/_.c"
-#include "components/_.c"
-#include "states/_.c"
-#include "data/_.c"
-#include "prefabs/_.c"
-#include "spawn/_.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "sta/_.c"
+#include "dat/_.c"
+#include "pre/_.c"
+#include "ins/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
+#include "dbg/_.c"
 #include "terrain/_.c"
-#include "debug/_.c"
 #include "realm/_.c"
 
 void module_dispose_characters3D(ecs_world_t *world, void *ctx) {

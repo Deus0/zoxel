@@ -13,7 +13,7 @@ zox_tag(Bluelink);
 zox_tag(BluenodeInput);
 zox_tag(BluenodeAction);
 zox_tag(BluenodeOutput);
-#include "prefabs/prefabs.c"
+#include "prefabs/_.c"
 
 zox_begin_module(Blueprints)
     zoxd_tag(Blueprint);

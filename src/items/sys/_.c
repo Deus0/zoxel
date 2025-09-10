@@ -2,6 +2,7 @@
 #include "realm.c"
 #include "activate.c"
 #include "terrain_drop.c"
+#include "character.c"
 zox_declare_system_state_event(RealmItems, GenerateRealm, zox_generate_realm_items, spawn_realm_items)
 
 void define_systems_items(ecs *world) {

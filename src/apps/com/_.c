@@ -1,5 +1,5 @@
 zox_tag(App);
-zoxc_byte(WindowSizeDirty);
+zoxc_state(WindowSizeDirty);
 zoxc_byte(WindowFullscreen);
 zoxc_byte(WindowMaximized);
 zoxc_byte(WindowMonitor);
@@ -11,7 +11,7 @@ zoxc_entity(AppLink);
 
 void define_components_apps(ecs_world_t *world) {
     zoxd_tag(App);
-    zoxd_byte(WindowSizeDirty);
+    zoxd_state(WindowSizeDirty);
     zoxd_byte(WindowFullscreen);
     zoxd_byte(WindowMaximized);
     zoxd_byte(WindowMonitor);

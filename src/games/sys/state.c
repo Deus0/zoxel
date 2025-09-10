@@ -47,7 +47,7 @@ void GameStateSystem(iter *it) {
         // set game state dirty
         dirty->value = zox_dirty_trigger;
         time->value = zox_current_time;
-        zox_log("[%f] Game State [%i] -> [%i]", time->value, old_state, new_state);
+        zox_logv("[%f] Game State [%i] -> [%i]", time->value, old_state, new_state);
 
         // Start Loading Realm after faded
         if (state->value == zox_game_load_faded) {

@@ -1,5 +1,9 @@
 //! Here for now, spawns a one man bobarmy.
-void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCount) {
+void Particle2DSpawnSystem(
+    ecs *world,
+    float2 bobPosition,
+    int spawnCount
+) {
     float2 positionBounds = { 0.01f, 0.1f };
     const float2 velocityBounds = { 0.03f, 0.2f };
     const float torqueBounds = 12.0f;
@@ -38,7 +42,7 @@ void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCoun
     ecs_bulk_init(world, &(ecs_bulk_desc_t) {
         .count = spawnCount,
         .ids = {
-            ecs_pair(EcsIsA, particle2DPrefab),
+            ecs_pair(EcsIsA, prefab_particle2),
             ecs_id(Position2),
             ecs_id(Velocity2D),
             ecs_id(Acceleration2D),
@@ -67,7 +71,7 @@ void Particle2DSpawnSystem(ecs_world_t *world, float2 bobPosition, int spawnCoun
     free(scale1Ds);
     free(brightnesses);
     free(destroyInTimes);
-} zoxd_system(Particle2DSpawnSystem)
+} zoxd_system2(Particle2DSpawnSystem);
 
     /*cs_filter_t *filter = ecs_filter(world, {
         .terms = {{ id }} // by default matches owned & inherited components

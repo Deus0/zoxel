@@ -6,9 +6,9 @@ const int2 character2DTextureSize = { 16, 16 };
 ecs_entity_t prefab_character2D;
 zox_tag(Character2D);
 zoxc_entity(Character2DLink);
-#include "prefabs/character2D.c"
-#include "util/spawn_many.c"
-#include "systems/bob_spawn_system.c"
+#include "pre/character2D.c"
+#include "fun/spawn_many.c"
+#include "sys/bob_spawn_system.c"
 
 void spawn_prefabs_characters2D(ecs_world_t *world) {
     prefab_character2D = spawn_prefab_character2D(world);

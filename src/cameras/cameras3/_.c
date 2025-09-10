@@ -1,8 +1,8 @@
 #if !defined(zoxm_cameras3) && defined(zoxm_transforms3)
 #define zoxm_cameras3
 
-#include "prefabs/camera3.c"
-#include "systems/_.c"
+#include "pre/camera3.c"
+#include "sys/_.c"
 
 void spawn_prefabs_cameras3(ecs* world) {
     prefab_camera_game = spawn_prefab_camera3D(world, prefab_camera);

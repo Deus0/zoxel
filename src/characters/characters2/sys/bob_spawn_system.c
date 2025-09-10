@@ -81,7 +81,7 @@ void PrintBobSpawnSystem(ecs_world_t *world) {
         .count = bobSpawnCount,
         .ids =
         {
-            ecs_pair(EcsIsA, particle2DPrefab),
+            ecs_pair(EcsIsA, prefab_particle2),
             ecs_id(Position2),
             ecs_id(Velocity2D),
             ecs_id(Acceleration2D),

@@ -1,25 +1,13 @@
-void spawn_realm_models(ecs_world_t *world, const ecs_entity_t e) {
+void spawn_realm_models(ecs *world, const entity e) {
     if (!zox_valid(e) || !zox_has(e, ModelLinks)) {
         return;
     }
 
-    /*zox_mut_begin(e, ModelLinks, old);
-    if (old) {
-        for (int i = 0; i < old->length; i++) {
-            zox_delete(old->value[i])
-        }
-        dispose_ModelLinks(old);
-        zox_mut_end(e, ModelLinks);
-    }*/
-
     zox_geter(e, ModelLinks, old);
-    // if (old->value) return; // TODO: Temp - Remove when crashes gone
-
     if (old) {
         for (int i = 0; i < old->length; i++) {
             zox_delete(old->value[i])
         }
-        // dispose_ModelLinks_const(old);
     }
 
     // get realms colors
@@ -41,12 +29,12 @@ void spawn_realm_models(ecs_world_t *world, const ecs_entity_t e) {
         zox_make_neww(e2)
         zox_set_unique_name(e2, "model_group_grass");
 
-        ModelLinks variants = (ModelLinks) { 0, NULL };
+        ModelLinks variants = (ModelLinks) { 0 };
         for (int i = 0; i < grass_variants; i++) {
-            ecs_entity_t model = spawn_model_grass(world, grass_color, 666 * i);
+            entity model = spawn_model_grass(world, grass_color, 666 * i);
             add_to_ModelLinks(&variants, model);
         }
-        zox_set_ptr(e2, ModelLinks, variants)
+        zox_set_ptr(e2, ModelLinks, variants);
 
         add_to_ModelLinks(&models, e2);
     }
@@ -57,9 +45,9 @@ void spawn_realm_models(ecs_world_t *world, const ecs_entity_t e) {
         zox_set_unique_name(e2, "model_group_slem");
         zox_add_tag(e2, ModelCharacter)
 
-        ModelLinks variants = (ModelLinks) { 0, NULL };
+        ModelLinks variants = (ModelLinks) { 0 };
         for (int i = 0; i < grass_variants; i++) {
-            ecs_entity_t model = spawn_model_grass(world,
+            entity model = spawn_model_grass(world,
                 (color) { grass_color.g, grass_color.b, grass_color.r, grass_color.a },
                 2666 * i);
             add_to_ModelLinks(&variants, model);
@@ -69,7 +57,9 @@ void spawn_realm_models(ecs_world_t *world, const ecs_entity_t e) {
         add_to_ModelLinks(&models, e2);
     }
 
-    zox_set_ptr(e, ModelLinks, models)
+    // top hat
+
+    zox_set_ptr(e, ModelLinks, models);
 
     zox_logv("At [%f] Realm [models] [%i] spawned.", zox_current_time, models.length);
 }

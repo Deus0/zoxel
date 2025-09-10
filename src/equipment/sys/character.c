@@ -6,7 +6,21 @@ void spawn_character_equipment(
         return;
     }
 
-    // test - Spawn Tophat!
+    zox_geter(data->realm, ItemLinks, items);
 
-    // zox_set_ptr(data->e, EquipLinks, equips);
+    // test - Spawn Tophat!
+    EquipLinks equips = (EquipLinks) { 0 };
+
+    // get voxels
+    entity add_item = items->value[items->length - 1];
+    if (zox_valid(add_item)) {
+        const entity new_equip = spawn_user_item(
+            world,
+            add_item,
+            data->e
+        );
+        add_to_EquipLinks(&equips, new_equip);
+    }
+
+    zox_set_ptr(data->e, EquipLinks, equips);
 }

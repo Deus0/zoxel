@@ -8,9 +8,9 @@ void spawn_character_items(
     if (!data->p) {
         // todo: give them mushroom! or simple block for now
         if (test_give_npcs_blocks) {
-            ItemLinks items = (ItemLinks) { 0, NULL };
+            ItemLinks items = (ItemLinks) { 0 };
             // get voxels
-            zox_geter(data->realm, VoxelLinks, voxels)
+            zox_geter(data->realm, VoxelLinks, voxels);
             // give npc random voxel
             const ecs_entity_t block = voxels->value[rand() % voxels->length];
             if (zox_valid(block) && zox_has(block, ItemLink)) {
@@ -19,7 +19,7 @@ void spawn_character_items(
                     const ecs_entity_t item = spawn_user_item(world, itemLink->value, data->e);
                     zox_set(item, Quantity, { 1 + rand() % 3 })
                     add_to_ItemLinks(&items, item);
-                    zox_set_ptr(data->e, ItemLinks, items)
+                    zox_set_ptr(data->e, ItemLinks, items);
                 }
             }
         }
@@ -50,8 +50,12 @@ void spawn_character_items(
                 break;
             }
             const entity block = blocks->value[i];
-            if (!zox_valid(block) || !zox_has(block, ItemLink)) {
+            if (!zox_valid(block)) {
                 zox_log_error("block invalid [%i]", i);
+                continue;
+            }
+            if (!zox_has(block, ItemLink)) {
+                zox_log_error("block has no item [%i]", i);
                 continue;
             }
             zox_geter_value(block, ItemLink, entity, block_item);

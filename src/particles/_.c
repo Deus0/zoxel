@@ -1,14 +1,14 @@
 #ifndef zox_particles
 #define zox_particles
 
-zoxc(ParticleEmitRate, int);
-#include "particles2D/_.c"
-#include "particles3D/_.c"
+zoxc_int(ParticleEmitRate);
+#include "particles2/_.c"
+#include "particles3/_.c"
 
 zox_begin_module(Particles)
-    zoxd(ParticleEmitRate);
-    zox_import_module(Particles2D)
-    zox_import_module(Particles3D)
+    zoxd_int(ParticleEmitRate);
+    zox_import_module(Particles2D);
+    zox_import_module(Particles3D);
 zox_end_module(Particles)
 
 #endif

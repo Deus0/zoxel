@@ -4,11 +4,11 @@
 // #define zox_debug_bones
 // #define zox_transparent_skeletons
 byte disable_bone_rendering = 0;
-#include "shaders/_.c"
-#include "components/_.c"
-#include "prefabs/_.c"
-#include "systems/_.c"
-#include "util/test.c"
+#include "sha/_.c"
+#include "com/_.c"
+#include "pre/_.c"
+#include "sys/_.c"
+#include "fun/test.c"
 
 zox_begin_module(Bones)
     define_components_bones(world);

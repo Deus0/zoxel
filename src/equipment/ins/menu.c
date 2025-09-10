@@ -21,7 +21,7 @@ entity spawn_player_menu_equipment(
     );
     data.header_zext.text = "Equipment";
     data.element.prefab = prefab_menu_equipment;
-    // data.icon.prefab = prefab_icon_item;
+    data.icon.prefab = prefab_icon_item;
     data.window.user_links_id = zox_id(EquipLinks);
     data.frame.texture.fill_color = default_fill_color_frame_equip;
 

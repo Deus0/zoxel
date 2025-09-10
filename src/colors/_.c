@@ -11,9 +11,9 @@ zoxc_color_rgb(SecondaryColorRGB);
 zoxc_color_rgb(FogColor);
 zoxc_arrayd(Colors, color)
 zoxc_arrayd(ColorRGBs, color_rgb)
-#include "util/_.c"
-#include "data/_.c"
-#include "systems/_.c"
+#include "fun/_.c"
+#include "dat/_.c"
+#include "sys/_.c"
 
 /*#define zox_biome_grassland 0
 #define zox_biome_desert 1

@@ -2,8 +2,8 @@
 #define zoxm_cameras2
 
 zox_tag(CameraFollower2);
-#include "prefabs/camera2.c"
-#include "systems/_.c"
+#include "pre/camera2.c"
+#include "sys/_.c"
 
 void spawn_prefabs_cameras2(ecs* world) {
     spawn_prefab_camera2D_follower(world, prefab_camera);

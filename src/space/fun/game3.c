@@ -366,7 +366,6 @@ void player_start_game(
     const entity player,
     const byte is_delays
 ) {
-    zox_log("Started!");
     disable_inputs_until_release(world, player, zox_device_mode_none, 1);
     if (zox_game_type == zox_game_mode_3D) {
         delay_event(world, &player_start_game3D, player, game_load_player_delay);

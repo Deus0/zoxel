@@ -6,10 +6,10 @@ zoxc_entity(LastDamager);
 zoxc_double(LastCombatTime);
 zoxc_byte(Dead);
 zoxc_double(DiedTime);
-#include "states/_.c"
-#include "prefabs/_.c"
-#include "systems/_.c"
-#include "util/_.c"
+#include "sta/_.c"
+#include "pre/_.c"
+#include "sys/_.c"
+#include "fun/_.c"
 
 zox_begin_module(Combat)
     zoxd_byte(Dead);
