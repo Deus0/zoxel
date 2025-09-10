@@ -56,6 +56,7 @@ void define_systems_lighting3(ecs* world) {
         [in] chunks3.VoxelNodeQueue,
         [in] chunks3.NodeDepth,
         [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxLink,
         [out] lighting3.LightNode,
         [out] lighting3.LightQueue,
         [out] lighting3.DarkQueue,

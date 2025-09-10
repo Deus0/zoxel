@@ -9,10 +9,16 @@ void VoxelLightSystem(iter *it) {
     zox_sys_in(VoxelNodeQueue);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
+    zox_sys_in(VoxLink);
     zox_sys_out(LightNode);
     zox_sys_out(LightQueue);
     zox_sys_out(DarkQueue);
     zox_sys_out(LightNodeDirty);
+
+    byte solidity[255];
+    for (int j = 0; j < 255; j++) solidity[j] = 1;
+    fetch_first_solidity(world, it, VoxLink_, solidity);
+
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxelNodeQueue, input_queue);
         zox_sys_i(NodeDepth, depth);
@@ -101,6 +107,10 @@ void VoxelLightSystem(iter *it) {
 
             // Placing Voxel - Spreads Darkness!
             else { // if (update.value) {
+
+                if (!solidity[update.value - 1]) {
+                    continue;
+                }
 
                 // TODO: We can add a dark beam here instead
                 //          - It needs to call dark floodfill on all points along
