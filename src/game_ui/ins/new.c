@@ -103,7 +103,9 @@ entity spawn_menu_new_realm(
         canvas_data,
         window_parent_data,
         window_element_data,
-        window_data
+        window_data,
+        (ClickEvent) { &on_cancelled_new_realm },
+        1
     );
     zox_add_tag(e, MenuNewRealm);
 
@@ -128,10 +130,11 @@ entity spawn_menu_new_realm(
         .text = seed_label,
     };
 
-    elements[elements_count++] = (SpawnListElement) {
+    /*elements[elements_count++] = (SpawnListElement) {
         .text = "Exit",
         .on_click = { &on_cancelled_new_realm },
-    };
+    };*/
+
     const byte visible_count = elements_count;
 
     LayoutParentData list_parent_data = {

@@ -23,7 +23,7 @@ void GameStateSystem(iter *it) {
         if (target->value == zox_game_load_fading) {
             double time_passed = zox_current_time - time->value;
             if (zox_valid(realm->value) && time_passed >= 3) {
-                zox_log("Time Passed [%f] -> [%f] - %f", time->value, zox_current_time, time_passed);
+                // zox_log("Time Passed [%f] -> [%f] - %f", time->value, zox_current_time, time_passed);
                 is_update = 1;
             }
         }
@@ -52,7 +52,7 @@ void GameStateSystem(iter *it) {
         // Start Loading Realm after faded
         if (state->value == zox_game_load_faded) {
             target->value = zox_game_load_realm;
-            zox_log("   Realm Loading Started.");
+            // zox_log("   Realm Loading Started.");
             zox_set(realm->value, GenerateRealm, { zox_generate_realm_start });
         }
         // finished loading realm

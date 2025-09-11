@@ -26,7 +26,8 @@ zox_begin_module(UISkills)
         .index = 4,
         .spawn = &spawn_player_menu_skills,
         .component_id = MenuSkills,
-        .texture_name = "taskbar_skills"
+        .texture_name = "taskbar_skills",
+        .tooltip_text = "Skillbook"
     });
 zox_end_module(UISkills)
 

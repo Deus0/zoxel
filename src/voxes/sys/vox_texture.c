@@ -163,48 +163,52 @@ void generate_vox_texture(
 }
 
 void VoxTextureSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TextureSize)
-    zox_sys_in(VoxLink)
-    zox_sys_in(VoxBakeSide)
-    zox_sys_out(GenerateTexture)
-    zox_sys_out(TextureData)
-    zox_sys_out(TextureDirty)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TextureSize);
+    zox_sys_in(VoxLink);
+    zox_sys_in(VoxBakeSide);
+    zox_sys_out(GenerateTexture);
+    zox_sys_out(TextureData);
+    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxLink, voxLink)
-        zox_sys_i(TextureSize, textureSize)
-        zox_sys_i(VoxBakeSide, voxBakeSide)
-        zox_sys_o(GenerateTexture, generateTexture)
-        zox_sys_o(TextureData, textureData)
-        zox_sys_o(TextureDirty, textureDirty)
-        if (generateTexture->value != zox_generate_texture_generate ||
-            !zox_valid(voxLink->value) ||
-            !zox_has(voxLink->value, VoxelNode) ||
-            (zox_has(voxLink->value, GenerateVox) && zox_gett_value(voxLink->value, GenerateVox))) {
+        zox_sys_i(VoxLink, vox);
+        zox_sys_i(TextureSize, size);
+        zox_sys_i(VoxBakeSide, side);
+        zox_sys_o(GenerateTexture, generate);
+        zox_sys_o(TextureData, data);
+        zox_sys_o(TextureDirty, dirty);
+
+        if (generate->value != zox_dirty_active ||
+            !zox_valid(vox->value) ||
+            !zox_has(vox->value, VoxelNode) ||
+            (zox_has(vox->value, GenerateVox) && zox_gett_value(vox->value, GenerateVox))) {
             continue;
         }
-        zox_geter(voxLink->value, ColorRGBs, colors);
-        zox_geter(voxLink->value, VoxelNode, node);
-        zox_geter_value(voxLink->value, NodeDepth, byte, node_depth);
 
-        const int2 texture_size = textureSize->value;
-        initialize_TextureData(textureData, texture_size.x * texture_size.y);
+        zox_geter(vox->value, ColorRGBs, colors);
+        zox_geter(vox->value, VoxelNode, node);
+        zox_geter_value(vox->value, NodeDepth, byte, node_depth);
+
+        const int2 texture_size = size->value;
+        initialize_TextureData(data, texture_size.x * texture_size.y);
 
         read_lock_VoxelNode(node);
         generate_vox_texture(
-            textureData->value,
+            data->value,
             texture_size,
             node,
             colors->value,
-            voxBakeSide->value,
-            node_depth);
+            side->value,
+            node_depth
+        );
         generate_vox_debug_texture(
-            textureData->value,
+            data->value,
             texture_size,
-            voxBakeSide->value);
+            side->value
+        );
         read_unlock_VoxelNode(node);
 
-        textureDirty->value = 1; // actually not using this for tilemap!
+        dirty->value = zox_dirty_trigger; // actually not using this for tilemap!
     }
-} zoxd_system(VoxTextureSystem)
+} zoxd_system2(VoxTextureSystem);

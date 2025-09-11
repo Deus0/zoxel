@@ -17,7 +17,8 @@ zox_begin_module(ItemsUI)
         .index = 3,
         .spawn = &spawn_player_menu_items,
         .component_id = MenuItems,
-        .texture_name = "taskbar_items"
+        .texture_name = "taskbar_items",
+        .tooltip_text = "Inventory"
     });
     add_hook_spawn_prefabs(spawn_prefabs_ui_items);
     define_systems_items_ui(world);

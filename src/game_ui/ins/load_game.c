@@ -68,7 +68,7 @@ entity spawn_menu_load(
                 .save_path = save_dirs[i],
                 .on_click = { &button_event_load_confirm },
             };
-            zox_log("Dir: %s - folder %s", save_dirs[i], folder);
+            zox_logv("Save Dir: %s - folder %s", save_dirs[i], folder);
         }
         free(save_dirs);
         // free_dirs(save_dirs, saves_count);
@@ -79,10 +79,10 @@ entity spawn_menu_load(
         .on_click = { &button_event_load_confirm },
     };*/
 
-    elements[elements_count++] = (SpawnListElement) {
+    /*elements[elements_count++] = (SpawnListElement) {
         .text = "Return",
         .on_click = { &button_event_load_cancel },
-    };
+    };*/
 
     const entity e = spawn_window_list(
         world,
@@ -92,7 +92,9 @@ entity spawn_menu_load(
         elements,
         elements_count,
         visible_count,
-        list_font_size
+        list_font_size,
+        (ClickEvent) { &button_event_load_cancel },
+        1
     );
     zox_add_tag(e, MenuLoad);
     zox_name("menu_load");

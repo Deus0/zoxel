@@ -7,7 +7,9 @@ entity spawn_window_list(
     SpawnListElement* elements,
     byte elements_count,
     byte visible_count,
-    byte list_font_size
+    byte list_font_size,
+    ClickEvent close_event,
+    byte is_close_button
 ) {
     const byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
 
@@ -72,7 +74,9 @@ entity spawn_window_list(
         canvas_data,
         (LayoutParentData) { .e = canvas },
         window_element_data,
-        window_data
+        window_data,
+        close_event,
+        is_close_button
     );
 
     // Spawn Scrollview

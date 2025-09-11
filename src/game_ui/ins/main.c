@@ -41,7 +41,9 @@ entity spawn_main_menu(
         elements,
         elements_count,
         elements_count,
-        list_font_size
+        list_font_size,
+        (ClickEvent) { NULL },
+        0
     );
     zox_name("main_menu");
     zox_add_tag(e, MenuMain);

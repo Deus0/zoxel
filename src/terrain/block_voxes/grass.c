@@ -49,6 +49,7 @@ entity spawn_block_grass(
         zox_set(texture, VoxLink, { vox_lod });
         zox_set(texture, VoxBakeSide, { direction_left }); // direction_front
         zox_set(e, TextureLink, { texture });
+        zox_set(texture, GenerateTexture, { zox_dirty_trigger });
 
     }
     return e;

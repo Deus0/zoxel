@@ -10,13 +10,20 @@ void BakeVoxSystem(iter *it) {
             continue;
         }
         zox_geter_value(model->value, GenerateVox, byte, state);
-        if (state == zox_dirty_active) {
-            for (int j = 0; j < textures->length; j++) {
-                const entity texture = textures->value[j];
-                if (zox_valid(texture)) {
-                    zox_set(textures->value[j], GenerateTexture, { zox_dirty_trigger });
-                }
+        if (state != zox_dirty_end) { // zox_dirty_active) {
+            continue;
+        }
+
+        // zox_sys_e();
+        // zox_log("Block is Generating: %s %i", zox_get_name(e), textures->length);
+
+        for (int j = 0; j < textures->length; j++) {
+            const entity texture = textures->value[j];
+            if (!zox_valid(texture)) {
+                zox_log_error("block texture is invalid [%i]", j);
+                continue;
             }
+            zox_set(texture, GenerateTexture, { zox_dirty_trigger });
         }
     }
-} zoxd_system(BakeVoxSystem)
+} zoxd_system2(BakeVoxSystem);

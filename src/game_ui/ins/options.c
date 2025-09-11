@@ -36,10 +36,10 @@ entity spawn_menu_options(
         }
         // todo: support other types
     }
-    elements[elements_count++] = (SpawnListElement) {
+    /*elements[elements_count++] = (SpawnListElement) {
         .text = "Return",
         .on_click = { &button_event_menu_main },
-    };
+    };*/
 
     const entity e = spawn_window_list(
         world,
@@ -49,7 +49,9 @@ entity spawn_menu_options(
         elements,
         elements_count,
         visible_count,
-        list_font_size
+        list_font_size,
+        (ClickEvent) { &button_event_menu_main },
+        1
     );
     zox_add_tag(e, MenuOptions);
     zox_name("menu_options");

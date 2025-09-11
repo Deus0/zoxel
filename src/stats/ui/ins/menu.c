@@ -13,7 +13,7 @@ entity spawn_player_menu_stats(
         canvas,
         canvas_size
     );
-    data.header_zext.text = "Stats";
+    data.header_zext.text = "Status";
     data.element.prefab = prefab_menu_stats;
     data.icon.prefab = prefab_icon_stat;
     data.window.user_links_id = zox_id(StatLinks);

@@ -5,6 +5,7 @@
 #include "pause.c"
 #include "taskbar.c"
 #include "touch.c"
+#include "crosshair.c"
 #include "game.c"
 #include "start.c"
 #include "load_game.c"

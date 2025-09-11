@@ -8,16 +8,13 @@ typedef struct {
     ecs_entity_t chunk;
 } TerrainPlacePosition;
 
-void DungeonBlockSystem(ecs_iter_t *it) {
-
+void DungeonBlockSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TimerState);
     zox_sys_in(ChunkLink);
     zox_sys_in(DungeonWallType);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(ChunkLink, chunkLink);
         zox_sys_i(TimerState, timerState);

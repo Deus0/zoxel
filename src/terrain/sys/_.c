@@ -12,8 +12,9 @@ zox_declare_system_state_event(RealmTilemaps, GenerateRealm, zox_generate_realm_
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void define_systems_terrain(ecs *world) {
-    zox_define_system_state_event_1(RealmBlocks, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm)
-    zox_define_system_state_event_1(RealmTilemaps, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm)
+
+    zox_define_system_state_event_1(RealmBlocks, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+    zox_define_system_state_event_1(RealmTilemaps, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
 
     zox_system(
         ChunkLinkSystem,
@@ -84,6 +85,7 @@ void define_systems_terrain(ecs *world) {
             [in] rendering.RenderDisabled
         );
     }
+
 #ifdef zox_debug_chunk_bounds
     zox_system_1(
         ChunkBoundsDrawSystem,
@@ -94,4 +96,5 @@ void define_systems_terrain(ecs *world) {
         [none] TerrainChunk
     );
 #endif
+
 }

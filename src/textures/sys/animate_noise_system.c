@@ -19,4 +19,4 @@ void AnimateNoiseSystem(iter *it) {
         }
     }
     if (!changed) zox_skip()
-} zoxd_system(AnimateNoiseSystem)
+} zoxd_system2(AnimateNoiseSystem);

@@ -14,7 +14,7 @@
         // for procedural textures, regenerate upon resize
         // fix for icons
         if (zox_has(e, GenerateTexture)) {
-            zox_set(e, GenerateTexture, { zox_generate_texture_trigger })
+            zox_set(e, GenerateTexture, { zox_dirty_trigger })
         }
         if (zox_has(e, Window)) {
             zox_geter(e, Children, children)

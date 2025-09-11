@@ -14,7 +14,8 @@ zox_begin_module(Crafting)
         .index = 8,
         .spawn = &spawn_player_menu_crafting,
         .component_id = MenuCrafting,
-        .texture_name = "taskbar_crafting"
+        .texture_name = "taskbar_crafting",
+        .tooltip_text = "Craftbench"
     });
 zox_end_module(Crafting)
 

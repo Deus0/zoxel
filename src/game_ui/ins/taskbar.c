@@ -2,6 +2,10 @@ void taskbar_button_click_event(
     ecs *world,
     const ClickEventData event
 ) {
+    if (!zox_has(event.clicked, IconIndex)) {
+        zox_log_error("Clicked [%s] does not have IconIndex", zox_get_name(event.clicked));
+        return;
+    }
     zox_geter_value(event.clicked, IconIndex, byte, index);
     if (index >= hook_taskbars->size) {
         zox_log_error("taskbar button index [%i] out of bounds [%zu]", index, hook_taskbars->size);
@@ -11,7 +15,7 @@ void taskbar_button_click_event(
     const entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event.clicker);
     zox_geter_value(event.clicked, ParentLink, entity, frame);
     if (!zox_valid(frame) || !zox_has(frame, ActiveState)) {
-        zox_log(" ! invalid frame\n")
+        zox_log_error("Invalid frame.");
         return;
     }
     byte window_state = zox_valid(window_ui);
@@ -31,12 +35,11 @@ entity spawn_taskbar(
 ) {
     byte taskbar_count = hook_taskbars->size;
     float2 anchor = (float2) { 0.5f, 1 };
-    const int frame_size = default_frame_size; //  * zox_ui_scale;
-    const int icon_size = default_icon_size; // * zox_ui_scale;
-    const int padding_x = 4; // * zox_ui_scale;
-    const int padding_y = 4; // * zox_ui_scale;
+    const int frame_size = default_frame_size;
+    const int icon_size = default_icon_size;
+    const int padding_x = 4;
+    const int padding_y = 4;
     const int margins = frame_size / 4;
-    // const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     const int2 size = (int2) {
         padding_x + (frame_size + padding_x) * taskbar_count + margins * 2,
         frame_size + padding_y * 2
@@ -65,7 +68,6 @@ entity spawn_taskbar(
     zox_set_unique_name(e, "taskbar");
 
     Children children = (Children) { 0 };
-
     ElementSpawn spawn_frame_data = {
         .canvas = data.canvas,
         .parent = {
@@ -140,8 +142,6 @@ entity spawn_taskbar(
         zox_set_unique_name(icon, "taskbar_icon");
         frame_children.value[0] = icon;
 
-        // taskbar_set_icons(world, canvas, frame, i);
-
         if_has_child_with_id(canvas, hook.component_id, window) {
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
@@ -154,8 +154,9 @@ entity spawn_taskbar(
         zox_prefab_set(icon, TooltipEvent, { &tooltip_event_taskbar_icon });
         zox_set(icon, IconIndex, { hook_index });
 
+        // ecs_get_name(world, hook.component_id)
         char tooltip_text[64];
-        sprintf(tooltip_text, "toggles [%s]", ecs_get_name(world, hook.component_id));
+        sprintf(tooltip_text, "%s", hook.tooltip_text );
         zox_prefab_set(icon, TooltipText, { text_to_zext(tooltip_text) });
 
         // texture
@@ -163,10 +164,10 @@ entity spawn_taskbar(
         clone_texture_to_entity(world, icon, icon_texture_name);
 
         // Active State
-        if (i == 0) {
+        /*if (i == 0) {
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
-        }
+        }*/
 
         zox_set_ptr(frame, Children, frame_children);
         children.value[i] = frame;

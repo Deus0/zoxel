@@ -15,7 +15,7 @@ void SoundPlayRefSystem(ecs_iter_t *it) {
         zox_sys_i(TriggerSound, triggerSound)
         zox_sys_i(SoundDataRef, soundDataRef)
         zox_sys_o(SDLMixChunk, chunk)
-        if (triggerSound->value == zox_sound_play_run) {
+        if (triggerSound->value == zox_dirty_active) {
             if (soundDataRef->value) {
                 // zox_log("+ playing sound ref")
                 sdl_play_sound(

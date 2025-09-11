@@ -22,7 +22,8 @@ zox_begin_module(GameUI)
         .index = 0,
         .spawn = &spawn_menu_paused,
         .component_id = MenuPaused,
-        .texture_name = "paused"
+        .texture_name = "paused",
+        .tooltip_text = "Pause Menu"
     });
 zox_end_module(GameUI)
 

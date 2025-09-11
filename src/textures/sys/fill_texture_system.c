@@ -12,9 +12,11 @@ void FillTextureSystem(iter *it) {
         zox_sys_o(TextureData, textureData);
         zox_sys_o(GenerateTexture, generateTexture);
         zox_sys_o(TextureDirty, textureDirty);
-        if (generateTexture->value != zox_generate_texture_generate) {
+
+        if (generateTexture->value != zox_dirty_active) {
             continue;
         }
+
         initialize_TextureData(textureData, size->value.x * size->value.y);
         generate_texture_fill(textureData->value, size->value, fill_color->value);
         textureDirty->value = 1; // actually this only gets uploaded if has GPUTextureLink!

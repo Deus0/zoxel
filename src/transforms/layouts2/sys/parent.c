@@ -36,7 +36,8 @@ void set_child_canvas_position(
                 parent_position,
                 parent_size,
                 position,
-                anchor);
+                anchor
+            );
             // NOTE: we pass canvas position down recursively
             cposition = canvas_position->value;
         }
@@ -47,7 +48,7 @@ void set_child_canvas_position(
         zox_geter_value(e, LayoutSize, int2, size);
         zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
-            entity e2 = children->value[i];
+            const entity e2 = children->value[i];
             set_child_canvas_position(
                 world,
                 e2,

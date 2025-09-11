@@ -5,7 +5,7 @@ zox_tag(BlockDungeon);
 zox_tag(BlockInvinsible);
 zoxc_byte(BlockModel);
 zoxc_byte(BlockCollider); // zox_block_air | zox_block_solid
-zoxc_byte(VoxelsDirty);
+zoxc_state(BlocksDirty);
 zoxc_byte(VoxBakeSide);
 zoxc_byte(BlockVoxOffset);
 zoxc_byte(BlockIndex);
@@ -24,7 +24,7 @@ void define_components_blocks(ecs_world_t *world) {
     zoxd_tag(BlockInvinsible);
     zoxd_byte(BlockModel);
     zoxd_byte(BlockCollider);
-    zoxd_byte(VoxelsDirty);
+    zoxd_state(BlocksDirty);
     zoxd_byte(VoxBakeSide);
     zoxd_byte(BlockVoxOffset);
     zoxd_byte(BlockIndex);

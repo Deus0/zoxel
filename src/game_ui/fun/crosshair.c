@@ -20,5 +20,5 @@ void crosshair_set_type(ecs* world, entity e, byte new) {
     }
     zox_set(local_crosshair, HitType, { new });
     zox_set(local_crosshair, OutlineColor, { c });
-    zox_set(local_crosshair, GenerateTexture, { zox_generate_texture_trigger });
+    zox_set(local_crosshair, GenerateTexture, { zox_dirty_trigger });
 }

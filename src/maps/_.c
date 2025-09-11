@@ -12,7 +12,8 @@ zox_begin_module(Maps)
         .index = 7,
         .spawn = &spawn_player_menu_map,
         .component_id = MenuMap,
-        .texture_name = "taskbar_map"
+        .texture_name = "taskbar_map",
+        .tooltip_text = "Map"
     });
 zox_end_module(Maps)
 

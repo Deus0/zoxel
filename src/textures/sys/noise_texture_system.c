@@ -13,9 +13,11 @@ void NoiseTextureSystem(iter *it) {
         zox_field_o(TextureDirty, textureDirtys, textureDirty)
         zox_field_o(TextureData, textureDatas, textureData)
         zox_field_o(GenerateTexture, generateTextures, generateTexture)
-        if (generateTexture->value != zox_generate_texture_generate) {
+
+        if (generateTexture->value != zox_dirty_active) {
             continue;
         }
+
         byte texture_type = zox_texture_none;
         if (texture_mode == zox_texture_mode_graybox) {
             texture_type = zox_texture_graybox;

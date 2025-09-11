@@ -13,7 +13,10 @@ void spawn_realm_tilemaps(ecs *world, const entity realm) {
 
     entity tilemap = spawn_tilemap(world, prefab_tilemap);
     zox_set(realm, TilemapLink, { tilemap });
-    if (tilemap) {
-        zox_set(tilemap, RealmLink, { realm });
+    if (!tilemap) {
+        return;
     }
+
+    zox_set(tilemap, RealmLink, { realm });
+    zox_set(realm, BlocksDirty, { zox_dirty_trigger });
 }

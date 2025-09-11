@@ -33,7 +33,7 @@ entity spawn_header3(
         zext_anchor.x = 0.5f;
         zext_position.x = 0;
     }
-    SpawnZext zextSpawnData = {
+    SpawnZext zext_data = {
         .canvas = canvas_data,
         .parent = {
             .e = e,
@@ -47,16 +47,16 @@ entity spawn_header3(
         },
         .zext = zext
     };
-    const entity header_zext = spawn_zext(world, &zextSpawnData);
+    const entity header_zext = spawn_zext(world, &zext_data);
     zox_set_unique_name(header_zext, "header_text");
     add_to_Children(&children, header_zext);
 
     // # Header Close Button #
     if (header.is_close_button) {
-        const byte2 padding = (byte2) {
+        /*const byte2 padding = (byte2) {
             (int) (zext.font_size * 0.3f),
             (int) (zext.font_size * 0.3f)
-        };
+        };*/
         const int2 close_button_position = (int2) {
             - (zext.font_size + zext.margins.x * 2) / 2,
             0
@@ -66,8 +66,8 @@ entity spawn_header3(
             e,
             canvas_data.e,
             close_button_position,
-            zext.font_size,
-            padding,
+            zext.font_size * 0.6,
+            zext.margins, // padding,
             element_data.layer + 2,
             on_click
         );

@@ -15,7 +15,8 @@ zox_begin_module(ActionsUI)
         .index = 1,
         .spawn = &spawn_player_menu_actions,
         .component_id = MenuActions,
-        .texture_name = "taskbar_actions"
+        .texture_name = "taskbar_actions",
+        .tooltip_text = "Actionbar"
     });
 zox_end_module(Actions)
 

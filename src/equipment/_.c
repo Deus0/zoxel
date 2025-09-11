@@ -16,7 +16,8 @@ zox_begin_module(Equipment)
         .index = 6,
         .spawn = &spawn_player_menu_equipment,
         .component_id = MenuEquipment,
-        .texture_name = "taskbar_equipment"
+        .texture_name = "taskbar_equipment",
+        .tooltip_text = "Equipment"
     });
 zox_end_module(Equipment)
 

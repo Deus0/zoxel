@@ -16,7 +16,7 @@ void SoundProcessSystem(ecs_iter_t *it) {
         zox_sys_i(SoundVolume, soundVolume)
         zox_sys_i(SoundFrequency, soundFrequency)
         zox_sys_o(TriggerSound, triggerSound)
-        if (processSound->value != zox_sound_process_run) {
+        if (processSound->value != zox_dirty_active) {
             continue;
         }
         if (!soundData->value) {
@@ -47,7 +47,7 @@ void SoundProcessSystem(ecs_iter_t *it) {
             new_data[j] *= soundVolume->value;
         }
         memcpy(soundData->value, new_data, soundData->length * sizeof(float));
-        triggerSound->value = zox_sound_play_trigger;
+        triggerSound->value = zox_dirty_trigger;
         zox_log_sounds("  -> updated sound frequency to [%f]", frequency_scale);
     }
 } zoxd_system(SoundProcessSystem)

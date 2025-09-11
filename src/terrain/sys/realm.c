@@ -113,7 +113,7 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
         }
     }
     zox_set_ptr(realm, VoxelLinks, blocks);
-    zox_set(realm, VoxelsDirty, { 1 });
+    zox_set(realm, BlocksDirty, { zox_dirty_trigger });
 
     zox_logv("At [%f] Realm [blocks] [%i] spawned.", zox_current_time, blocks.length);
     endwatch(time_realm_blocks, "ending");

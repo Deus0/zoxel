@@ -6,7 +6,7 @@ void TextureSizeGenerateSystem(iter *it) {
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_o(GenerateTexture, generate);
         if (dirty->value == zox_dirty_active) {
-            generate->value = zox_generate_texture_trigger;
+            generate->value = zox_dirty_trigger;
         }
     }
 } zoxd_system2(TextureSizeGenerateSystem);

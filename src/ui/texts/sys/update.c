@@ -17,7 +17,7 @@ void update_text(
             zox_muter(e, ZigelIndex, index);
             zox_muter(e, GenerateTexture, generate);
             index->value = new;
-            generate->value = zox_generate_texture_trigger;
+            generate->value = zox_dirty_trigger;
             zox_log_text("    + zigel [%i] updated [%i:%i]", i, old, new);
         }
     }

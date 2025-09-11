@@ -20,6 +20,6 @@ void ElementActiveSystem(iter *it) {
         }
         brightness->value = activeState->value ? ui_active_brightness : ui_default_brightness;
         outline->value = activeState->value ? color_purple : default_outline_color_frame;
-        generateTexture->value = zox_generate_texture_trigger;
+        generateTexture->value = zox_dirty_trigger;
     }
 } zoxd_system(ElementActiveSystem)

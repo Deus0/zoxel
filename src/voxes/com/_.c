@@ -1,7 +1,7 @@
 zox_tag(Vox);
 zoxc_byte(VoxType);
 zoxc_byte(RubbleHeight);
-zoxc_byte(GenerateVox);
+zoxc_state(GenerateVox);
 zoxc_byte(CloneVox);
 zoxc_byte(ChunkLod);    // we using this??!?!
 zoxc_byte(VoxUniqueColors);
@@ -14,7 +14,7 @@ void define_components_voxes(ecs *world) {
     zoxd_tag(Vox);
     zoxd_byte(VoxType);
     zoxd_byte(RubbleHeight);
-    zoxd_byte(GenerateVox);
+    zoxd_state(GenerateVox);
     zoxd_byte(ChunkLod);
     zoxd_byte(CloneVox);
     zoxd_byte(VoxUniqueColors);

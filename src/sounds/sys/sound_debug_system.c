@@ -14,7 +14,7 @@ void SoundDebugSystem(ecs_iter_t *it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(TriggerSound, triggerSound)
         zox_sys_i(SoundData, soundData)
-        if (triggerSound->value != zox_sound_play_run) {
+        if (triggerSound->value != zox_dirty_active) {
             continue;
         }
         const double decay_time = soundData->length / sample_rate_f; // 6.0 + rand() % 6;

@@ -10,5 +10,5 @@ void on_terrain_settings_changed(ecs *world, const entity realm) {
         }
     }
     zox_geter(realm, TilemapLink, tilemapLink);
-    zox_set(tilemapLink->value, GenerateTexture, { zox_generate_texture_trigger });
+    zox_set(tilemapLink->value, GenerateTexture, { zox_dirty_trigger });
 }

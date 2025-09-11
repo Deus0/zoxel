@@ -14,7 +14,7 @@ zox_tag(FillTexture);
 zox_tag(TextureAddNoise);
 zox_tag(VoxTexture);
 zox_tag(TextureRGB);
-zoxc_byte(GenerateTexture);
+zoxc_state(GenerateTexture);
 zoxc_byte(OutlineThickness);
 zoxc_byte(FrameCorner);
 zoxc_float(IconRadius);
@@ -28,7 +28,7 @@ zoxc_arrayd(TilemapUVs, float2)
 zoxc_arrayd(TextureLinks, entity)
 // zoxc_entities(Textures)
 
-void define_components_textures(ecs *world) {
+void define_components_textures(ecs* world) {
     // entity types
     zoxd_tag(Texture);    // RGBA
     zoxd_tag(TextureRGB);
@@ -48,7 +48,7 @@ void define_components_textures(ecs *world) {
     zoxd_tag(FillTexture);
     zoxd_tag(TextureAddNoise);
 
-    zoxd_byte(GenerateTexture);
+    zoxd_state(GenerateTexture);
     zoxd_byte(OutlineThickness);
     zoxd_byte(FrameCorner);
     zoxd_float(IconRadius);

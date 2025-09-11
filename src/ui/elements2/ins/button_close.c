@@ -32,7 +32,7 @@ entity spawn_close_button(
             .outline = close_button_outline,
         },
     };
-    entity e = spawn_button(
+    const entity e = spawn_button(
         world,
         button_data.canvas,
         button_data.parent,

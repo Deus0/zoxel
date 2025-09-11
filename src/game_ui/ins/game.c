@@ -24,7 +24,8 @@ entity spawn_menu_game(
     zox_name("menu_game")
     Children children = (Children) { 0, NULL };
 
-    const entity crosshair = spawn_crosshair(world,
+    const entity crosshair = spawn_crosshair(
+        world,
         (LayoutParentData) {
             .e = canvas,
             .size = canvas_size,

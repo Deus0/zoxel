@@ -7,6 +7,7 @@ typedef struct {
     byte window_type;
     entity component_id;
     char *texture_name;
+    char *tooltip_text;
     entity (*spawn)(ecs *, const entity);
 } hook_taskbar;
 
@@ -25,20 +26,6 @@ void add_taskbar_button(const hook_taskbar data) {
     add_to_hook_taskbar_array_d(hook_taskbars, data);
 }
 
-// set active stat based on ui component id
-/*void taskbar_set_icons(
-    ecs *world,
-    const entity canvas,
-    const entity e,
-    const int i
-) {
-    hook_taskbar hook = hook_taskbars->data[i];
-    if_has_child_with_id(canvas, hook.component_id) {
-        zox_set(e, ActiveState, { 1 });
-        zox_set(e, ActiveStateDirty, { zox_dirty_trigger });
-    }
-}*/
-
 // todo: make tooltip function just return a string
 byte tooltip_event_taskbar_icon(
     ecs *world,
@@ -56,6 +43,38 @@ byte tooltip_event_taskbar_icon(
     return 1;
 }
 
-/*for (int i = 0; i < load_shader_functions->size; i++) {
-    if (load_shader_functions->data[i].value != NULL) (*load_shader_functions->data[i].value)(world);
- }*/
+// nested function (GCC extension)
+void window_taskbar_close_event(
+    ecs *world,
+    const ClickEventData event
+) {
+    if (!zox_has(event.clicked, ParentLink)) {
+        zox_log_error("close button parent link missing.");
+        return;
+    }
+    zox_geter_value(event.clicked, ParentLink, entity, header);
+
+    if (!zox_valid(header) || !zox_has(header, ParentLink)) {
+        zox_log_error("Header Invalid");
+        return;
+    }
+    zox_geter_value(header, ParentLink, entity, window);
+
+    // zox_geter_value(window, CanvasLink, entity, canvas);
+    // find_child_with_tag(canvas, Taskbar, taskbar);
+    if (!zox_valid(window)) {
+        return;
+    }
+
+    if (!zox_has(window, TaskbarButton)) {
+        zox_log_error("Window [%s] Missing [TaskbarButton]", zox_get_name(window));
+        return;
+    }
+
+    zox_geter_value(window, TaskbarButton, entity, button);
+    if (zox_valid(button)) {
+        zox_set(button, ActiveState, { 0 });
+        zox_set(button, ActiveStateDirty, { zox_dirty_trigger });
+    }
+    zox_delete(window);
+}

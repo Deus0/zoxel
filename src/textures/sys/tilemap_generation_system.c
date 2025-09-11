@@ -19,9 +19,11 @@ void TilemapGenerationSystem(iter *it) {
         zox_sys_o(TextureData, textureData)
         zox_sys_o(TextureDirty, textureDirty)
         zox_sys_o(TilemapUVs, tilemapUVs)
-        if (generateTexture->value != zox_generate_texture_generate || textureDirty->value) {
+
+        if (generateTexture->value != zox_dirty_active || textureDirty->value) {
             continue;
         }
+
         if (!textureLinks->length || !tilemapSize->value.x) {
             zox_log_error("issue with tilemap data!")
             continue;
@@ -50,12 +52,14 @@ void TilemapGenerationSystem(iter *it) {
                     texture_index++;
                     continue;
                 }
-                zox_geter(texture, TextureData, voxel_texture_data)
-                if (!voxel_texture_data->value) {
-                    zox_log_error("invalid texture data [%s] index [%i]", zox_get_name(texture), texture_index)
+
+                zox_geter(texture, TextureData, block_texture);
+                if (!block_texture->value) {
+                    zox_log_error("invalid texture data [%s] index [%i]", zox_get_name(texture), texture_index);
                     texture_index++;
                     continue;
                 }
+
                 zox_geter_value(texture, TextureSize, int2, texture_size)
                 const int2 tilemap_position = (int2) {
                     texture_position.x * unit_size.x,
@@ -73,10 +77,10 @@ void TilemapGenerationSystem(iter *it) {
                             return;
                         }
                         int texture_index = int2_array_index(pixel_position, texture_size);
-                        if (texture_index >= voxel_texture_data->length) {
+                        if (texture_index >= block_texture->length) {
                             continue;
                         }
-                        textureData->value[tilemap_index] = voxel_texture_data->value[texture_index];
+                        textureData->value[tilemap_index] = block_texture->value[texture_index];
                     }
                 }
                 texture_index++;

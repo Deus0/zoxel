@@ -19,7 +19,7 @@
     pixelSize->value = size;
     textureSize->value = size;
     set_mesh_vertices_scale2D(meshVertices2D, get_aligned_mesh2D(mesh_alignment), 4, scale2D);
-    generateTexture->value = zox_generate_texture_trigger;
+    generateTexture->value = zox_dirty_trigger;
     meshDirty->value = mesh_state_trigger;
 }
 */

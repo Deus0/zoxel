@@ -6,19 +6,19 @@ zox_tag(RendererInstance);
 zox_tag(VoxMesh);
 
 zoxc_byte(MeshDirty);
-zoxc_byte(MeshGenerate);    // TODO: Replace ChunkMeshDirty
-zoxc_byte(MeshColorsGenerate);
-zoxc_byte(MeshColorsDirty);
+zoxc_state(TextureDirty);
+zoxc_state(RenderDistanceDirty);
+zoxc_state(RenderDepthDirty);
+zoxc_state(MeshGenerate);    // TODO: Replace ChunkMeshDirty
+zoxc_state(MeshColorsGenerate);
+zoxc_state(MeshColorsDirty);
 
 zoxc_entity(MeshLink);
-zoxc_byte(TextureDirty);
 zoxc_byte(MeshAlignment);
 zoxc_byte(RenderDepth);
-zoxc_byte(RenderDepthDirty);
 zoxc_byte(MaxRenderDepth);
 zoxc_byte(RenderDistance);
 zoxc_byte(RenderDisabled);
-zoxc_byte(RenderDistanceDirty);
 zoxc_float(Brightness);
 zoxc_float(Alpha);
 zoxc_entity(MaterialLink);
@@ -60,18 +60,18 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(VoxMesh);
 
     zoxd_byte(MeshDirty);
-    zoxd_byte(MeshGenerate);
-    zoxd_byte(MeshColorsGenerate);
-    zoxd_byte(MeshColorsDirty);
-    zoxd_byte(MeshAlignment);
+    zoxd_state(TextureDirty);
+    zoxd_state(RenderDistanceDirty);
+    zoxd_state(RenderDepthDirty);
+    zoxd_state(MeshGenerate);
+    zoxd_state(MeshColorsGenerate);
+    zoxd_state(MeshColorsDirty);
 
+    zoxd_byte(MeshAlignment);
     zoxd_entity(MeshLink);
-    zoxd_byte(TextureDirty);
     zoxd_byte(RenderDepth);
-    zoxd_byte(RenderDepthDirty);
     zoxd_byte(MaxRenderDepth);
     zoxd_byte(RenderDistance);
-    zoxd_byte(RenderDistanceDirty);
     zoxd_byte(RenderDisabled);
     zoxd_float(Brightness);
     zoxd_float(Alpha);

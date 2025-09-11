@@ -5,7 +5,7 @@ ecs_entity_t spawn_prefab_sound_file_instance(ecs_world_t *world,
 {
     zox_prefab_child(prefab)
     zox_prefab_name("sound_file_instance")
-    zox_prefab_set(e, ProcessSound, { zox_sound_process_trigger })
+    zox_prefab_set(e, ProcessSound, { zox_dirty_trigger })
     return e;
 }
 
@@ -48,7 +48,7 @@ ecs_entity_t spawn_sound_from_file(ecs_world_t *world,
     if (volume) {
         zox_set(e, SoundVolume, { volume });
     }
-    zox_set(e, ProcessSound, { zox_sound_process_trigger });
+    zox_set(e, ProcessSound, { zox_dirty_trigger });
     // zox_set(e, DestroyInTime, { 1 });
     return e;
 }

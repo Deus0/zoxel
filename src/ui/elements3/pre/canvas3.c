@@ -23,16 +23,17 @@ void add_ui_components_world(
     const float2 mesh_scale
 ) {
     add_element3D_transform(world, e);
-    zox_prefab_set(e, MeshDirty, { 0 })
-    zox_prefab_set(e, Brightness, { 1 })
-    zox_prefab_set(e, RenderDisabled, { 1 })
+    zox_prefab_set(e, MeshDirty, { 0 });
+    zox_prefab_set(e, Brightness, { 1 });
+    zox_prefab_set(e, RenderDisabled, { 1 });
 
-    zox_add_tag(e, Texture)
-    zox_prefab_set(e, TextureData, { 0, NULL })
-    zox_prefab_set(e, TextureSize, { int2_zero })
-    zox_prefab_set(e, TextureDirty, { 0 })
-    zox_prefab_set(e, Seed, { 666 })
-    zox_prefab_set(e, GenerateTexture, { zox_generate_texture_trigger })
+    zox_add_tag(e, Texture);
+    zox_prefab_set(e, TextureData, { 0 });
+    zox_prefab_set(e, TextureSize, { int2_zero });
+    zox_prefab_set(e, TextureDirty, { 0 });
+    zox_prefab_set(e, Seed, { 666 });
+    zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
+
     if (!headless) {
         add_gpu_texture(world, e);
         add_gpu_mesh(world, e);

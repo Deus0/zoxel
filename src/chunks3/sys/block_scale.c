@@ -24,15 +24,22 @@ void BlockScaleSystem(iter *it) {
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(VoxLink, vox_link);
         zox_sys_o(BlockScale, block_scale);
-        if (dirty->value == zox_dirty_active && zox_valid(vox_link->value) && zox_has(vox_link->value, BlockScale)) {
-            zox_geter_value(vox_link->value, NodeDepth, byte, terrain_depth);
-            zox_geter_value(vox_link->value, BlockScale, float, terrain_scalev);
-            block_scale->value = get_chunk_scale(
-                render_depth->value,
-                terrain_depth,
-                terrain_scalev
-            );
-            // zox_log(" [%s] Scale set [%f]", zox_get_name(it->entities[i]), block_scale->value);
+
+        if (dirty->value != zox_dirty_active) {
+            continue;
         }
+
+        if (!zox_valid(vox_link->value) || !zox_has(vox_link->value, BlockScale)) {
+            continue;
+        }
+
+        zox_geter_value(vox_link->value, NodeDepth, byte, terrain_depth);
+        zox_geter_value(vox_link->value, BlockScale, float, terrain_scalev);
+        block_scale->value = get_chunk_scale(
+            render_depth->value,
+            terrain_depth,
+            terrain_scalev
+        );
+        // zox_log(" [%s] Scale set [%f]", zox_get_name(it->entities[i]), block_scale->value);
     }
 } zoxd_system2(BlockScaleSystem);

@@ -10,13 +10,13 @@ entity spawn_prefab_tilemap(ecs *world) {
     zox_prefab_set(e, TextureDirty, { 0 });
     zox_prefab_set(e, Seed, { 666 });
     // zox_remove(e, GenerateTexture);
-    zox_prefab_set(e, GenerateTexture, { zox_generate_texture_none });
+    zox_prefab_set(e, GenerateTexture, { zox_dirty_none });
     if (!headless) {
         add_gpu_texture(world, e);
         add_gpu_material(world, e);
     }
-    zox_prefab_set(e, TextureLinks, { 0, NULL });
-    zox_prefab_set(e, TilemapUVs, { 0, NULL });
+    zox_prefab_set(e, TextureLinks, { 0 });
+    zox_prefab_set(e, TilemapUVs, { 0 });
     return e;
 }
 
@@ -30,7 +30,6 @@ entity spawn_tilemap(ecs *world, entity prefab) {
         if (material) {
             const MaterialTextured3D attributes = create_MaterialTextured3D(material);
             zox_set(e, ShaderLink, { shader_textured3D });
-            // zox_set(e, MaterialGPULink, { material })
             zox_set_data(e, MaterialTextured3D, attributes);
         } else {
             zox_log_error("tilemap material failed  to initialize");

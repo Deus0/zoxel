@@ -1,5 +1,4 @@
 void IconTextureSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureSize);
@@ -10,20 +9,18 @@ void IconTextureSystem(iter *it) {
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     zox_sys_out(TextureDirty);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(TextureSize, size);
         zox_sys_i(Color, color_fill);
         zox_sys_i(OutlineColor, color_outline);
-        zox_sys_i(OutlineThickness, outline_thickness);
+        zox_sys_i(OutlineThickness, thickness);
         zox_sys_i(IconRadius, icon_radius);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
-        zox_sys_o(GenerateTexture, generate_texture);
+        zox_sys_o(GenerateTexture, generate);
 
-        if (generate_texture->value != zox_generate_texture_generate) {
+        if (generate->value != zox_dirty_active) {
             continue;
         }
 
@@ -37,7 +34,7 @@ void IconTextureSystem(iter *it) {
             size->value,
             color_fill->value,
             color_outline->value,
-            outline_thickness->value,
+            thickness->value,
             radius,
             add_noise
         );

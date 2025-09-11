@@ -10,7 +10,7 @@ entity spawn_zigel_prefab(ecs *world, const entity prefab) {
     // font texture
     zox_add_tag(e, FontTexture);
     zox_prefab_set(e, Seed, { 666 });
-    zox_prefab_set(e, GenerateTexture, { zox_generate_texture_trigger });
+    zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
     zox_prefab_set(e, Color, { color_white });
     zox_prefab_set(e, SecondaryColor, { color_white });
     zox_prefab_set(e, FontThickness, { 1 });

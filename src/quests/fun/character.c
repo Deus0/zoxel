@@ -1,24 +1,31 @@
-const int quests_count = 1; // having blank items seems to b reak it
-
-void spawn_character_quests(ecs_world_t *world, spawned_character3D_data *data) {
+void spawn_character_quests(
+    ecs *world,
+    spawned_character3D_data *data
+) {
     if (!data->p) {
         return;
     }
-    QuestLinks *quests = &((QuestLinks) { 0, NULL });
-    initialize_QuestLinks(quests, quests_count);
-    if (!quests->value) {
-        zox_log_error(" ! failed allocating memory for quests")
+    // get voxels
+    zox_geter(data->realm, QuestLinks, realm_quests);
+    if (!realm_quests->length) {
         return;
     }
-    for (int i = 0; i < quests->length; i++) {
-        quests->value[i] = 0; // blanks are item slots
+
+    entity add_quest = realm_quests->value[0];
+    if (!add_quest) {
+        return;
     }
-    // first block
-    if (meta_quest_slay_slems) {
-        const ecs_entity_t quest_slay_slems = spawn_user_quest(world, meta_quest_slay_slems, data->e);
-        quests->value[0] = quest_slay_slems;
-    } else {
-        zox_log_error(" ! meta_quest_slay_slems not found")
+
+    QuestLinks quests = (QuestLinks) { 0 };
+
+    {
+        const entity quest = spawn_user_quest(
+            world,
+            add_quest,
+            data->e
+        );
+        add_to_QuestLinks(&quests, quest);
     }
-    zox_set(data->e, QuestLinks, { quests->length, quests->value })
+
+    zox_set_ptr(data->e, QuestLinks, quests);
 }

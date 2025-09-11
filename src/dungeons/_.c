@@ -1,28 +1,17 @@
-#ifndef zox_dungeons
-#define zox_dungeons
+#ifndef zoxm_dungeons
+#define zoxm_dungeons
 
-#include "settings/_.c"
-zox_tag(Dungeon);
-zox_tag(DungeonCore);
-zoxc_byte(DungeonWallType);
-#include "prefabs/_.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "pre/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Dungeons)
-    zoxd_tag(Dungeon);
-    zoxd_tag(DungeonCore);
-    zoxd_byte(DungeonWallType);
-    // main thread as it spawns currently
-    zox_system_1(DungeonBlockSystem,
-        zoxp_queue_add,
-        [in] timing.TimerState,
-        [in] chunks3.ChunkLink,
-        [in] DungeonWallType,
-        [none] blocks.BlockDungeon
-    );
     add_hook_spawn_blocks(&spawn_block_dungeon_blocks);
     add_hook_spawned_block(&spawn_world_dungeon_core);
+    define_components_dungeons(world);
+    define_systems_dungeons(world);
 zox_end_module(Dungeons)
 
 #endif

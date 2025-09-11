@@ -23,7 +23,8 @@ zox_begin_module(StatsUI)
         .index = 2,
         .spawn = &spawn_player_menu_stats,
         .component_id = MenuStats,
-        .texture_name = "taskbar_stats"
+        .texture_name = "taskbar_stats",
+        .tooltip_text = "Status"
     });
     add_hook_spawn_prefabs(spawn_prefabs_ui_stats);
 zox_end_module(StatsUI)

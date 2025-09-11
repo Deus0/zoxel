@@ -20,7 +20,7 @@ void SoundGenerateSystem(ecs_iter_t *it) {
         zox_sys_i(GenerateSound, generateSound)
         zox_sys_i(SoundData, soundData)
         zox_sys_o(TriggerSound, triggerSound)
-        if (generateSound->value != zox_sound_generate_run) {
+        if (generateSound->value != zox_dirty_active) {
             continue;
         }
         if (!soundData->value) {
@@ -72,7 +72,7 @@ void SoundGenerateSystem(ecs_iter_t *it) {
             value = clampf(value, -sound_bounds, sound_bounds);
             soundData->value[j] = value;
         }
-        triggerSound->value = zox_sound_play_trigger;
+        triggerSound->value = zox_dirty_trigger;
         zox_log_sounds("+ generated [%s] (%f)", zox_sys_e_name, volume)
     }
 } zoxd_system(SoundGenerateSystem)

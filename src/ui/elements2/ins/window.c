@@ -3,7 +3,9 @@ entity spawn_window2(
     const LayoutParentData canvas_data,
     const LayoutParentData parent_data,
     const ElementSpawnData element_data,
-    SpawnWindow2 window_data
+    SpawnWindow2 window_data,
+    ClickEvent on_click,
+    byte is_close_button
 ) {
     const byte header_height = window_data.header_font_size + window_data.header_padding.y * 2;
 
@@ -32,6 +34,7 @@ entity spawn_window2(
     };
     SpawnHeaderData header_data = {
         .prefab_zext = prefab_zext,
+        .is_close_button = is_close_button
     };
     SpawnTextData header_text_data = {
         .text = window_data.header_text,
@@ -51,7 +54,7 @@ entity spawn_window2(
         header_element_data,
         header_text_data,
         header_data,
-        (ClickEvent) { NULL }
+        on_click // (ClickEvent) { NULL }
     );
     add_to_Children(children, header);
 

@@ -8,11 +8,11 @@ entity prefab_terrain_chunk_flat;
 void spawn_prefabs_terrain(ecs *world) {
     prefab_chunk_terrain = spawn_prefab_chunk_terrain(world, prefab_chunk);
     prefab_terrain_chunk_flat = spawn_prefab_chunk_terrain(world, prefab_chunk);
-    zox_add_tag(prefab_terrain_chunk_flat, FlatlandChunk)
+    zox_add_tag(prefab_terrain_chunk_flat, FlatlandChunk);
     prefab_terrain = spawn_prefab_terrain(world);
     if (prefab_realm) {
-        zox_prefab_set(prefab_realm, ModelLinks, { 0, NULL })
-        zox_prefab_set(prefab_realm, VoxelLinks, { 0, NULL })
-        zox_prefab_set(prefab_realm, VoxelsDirty, { 0 })
+        zox_prefab_set(prefab_realm, ModelLinks, { 0 });
+        zox_prefab_set(prefab_realm, VoxelLinks, { 0 });
+        zox_prefab_set(prefab_realm, BlocksDirty, { 0 });
     }
 }

@@ -25,7 +25,7 @@ void clone_texture_data(
 
     zox_geter(src, TextureData, source_data)
     if (source_data->length == 0 || !source_data->value) {
-        zox_log_error("clone_texture_data invalid src data [%lu] > source [%lu]\n", e, src);
+        zox_log_error("[clone_texture_data] Invalid src TextureData [%s] > source [%s]", zox_get_name(e), zox_get_name(src));
         return;
     }
 
