@@ -7,5 +7,5 @@ entity meta_skill_aura_fire;
 
 byte test_all_skills = 0;
 
-float knockback_min = 0.5f;
-float knockback_max = 1.5f;
+float knockback_min = 1.5f;
+float knockback_max = 4.5f;

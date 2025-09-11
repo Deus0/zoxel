@@ -1,6 +1,6 @@
-ecs_entity_t spawn_prefab_character3_npc(
-    ecs_world_t *world,
-    const ecs_entity_t prefab
+entity spawn_prefab_character3_npc(
+    ecs *world,
+    const entity prefab
 ) {
     zox_prefab_child(prefab);
     zox_prefab_name("character3D_npc");
@@ -20,16 +20,18 @@ ecs_entity_t spawn_prefab_character3_npc(
     return e;
 }
 
-
 // hook to spawning
-void on_spawned_character3_npc(ecs_world_t* world, const ecs_entity_t e) {
+void on_spawned_character3_npc(
+    ecs* world,
+    const entity e
+) {
     if (rand() % 100 <= 6) {
-        zox_set(e, DefaultBehaviour, { zox_behaviour_idle })
+        zox_set(e, DefaultBehaviour, { zox_behaviour_idle });
     }
-    if (rand() % 100 <= 40) {
-        zox_add_tag(e, Coward)
+    if (rand() % 100 <= 14) {
+        zox_add_tag(e, Coward);
     }
     if (disable_npc_movement) {
-        zox_set(e, DisableMovement, { 1 })
+        zox_set(e, DisableMovement, { 1 });
     }
 }
