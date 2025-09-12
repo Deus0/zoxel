@@ -1,15 +1,12 @@
 void RenderTextureSizeSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutSizeDirty);
     zox_sys_in(LayoutSize);
     zox_sys_in(TextureGPULink);
     zox_sys_in(CameraLink);
-
     for (int i = 0; i < it->count; i++) {
-
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(TextureGPULink, texture_gpu);
@@ -20,7 +17,7 @@ void RenderTextureSizeSystem(iter *it) {
         }
 
         if (!texture_gpu->value) {
-            zox_log_error("[%s] Render Texture Cannot Upload", zox_get_name(e));
+            // zox_logw("[%s] Render Texture Cannot Upload", zox_get_name(e));
             continue;
         }
 

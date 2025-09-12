@@ -1,8 +1,8 @@
 #define music_file_path "music"character_slash"music.zox"
 
-ecs_entity_t spawn_prefab_music_file(
+entity spawn_prefab_music_file(
     ecs_world_t *world,
-    const ecs_entity_t prefab
+    const entity prefab
 ) {
     zox_prefab_child(prefab)
     zox_prefab_name("music_file")
@@ -10,12 +10,13 @@ ecs_entity_t spawn_prefab_music_file(
 }
 
 // TODO: Load Files for all Music
-ecs_entity_t load_music_file(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const ecs_entity_t prefab_note
+entity load_music_file(
+    ecs *world,
+    const entity prefab,
+    const entity prefab_note,
+    char* filepath
 ) {
-    char* music_filepath = concat_file_path(resources_path, music_file_path);
+    char* music_filepath = concat_file_path(resources_path, filepath);
     zox_logv("Loading Music: %s", music_filepath);
     MidiNote loaded_notes[MAX_NOTES];
     int loaded_note_count = load_notes_from_file(loaded_notes, music_filepath);

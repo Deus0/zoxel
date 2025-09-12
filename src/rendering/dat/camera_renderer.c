@@ -24,7 +24,7 @@ void set_camera_fog_color(ecs* world, color_rgb c) {
         if (zox_valid(camera)) {
             zox_set(camera, FogColor, { c })
         } else {
-            zox_log_error("camera [%i] is invalid", i)
+            zox_logw("Main Camera Invalid at [%i]", i)
         }
     }
 }

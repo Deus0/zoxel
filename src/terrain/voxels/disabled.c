@@ -7,9 +7,9 @@ void process_disabled_block_vox(ecs *world, SpawnBlock *data, byte is_unique_vox
     if (data->vox && is_unique_vox) {
         zox_delete(data->vox)
     }
-    if (data->prefab_block_vox) {
-        zox_delete(data->prefab_block_vox)
-        data->prefab_block_vox = 0;
+    if (data->prefab_world_block) {
+        zox_delete(data->prefab_world_block)
+        data->prefab_world_block = 0;
     }
     entity vox = spawn_vox_generated_invisible(world, prefab_vox_generated, color_gray);
     zox_set_unique_name(vox, "unknown");

@@ -1,15 +1,12 @@
 // TextureRGB's
 void TextureRGBUpdateSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureDirty);
     zox_sys_in(TextureData);
     zox_sys_in(TextureSize);
     zox_sys_in(TextureGPULink);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e()
         zox_sys_i(TextureDirty, dirty)
         zox_sys_i(TextureData, data)
@@ -21,7 +18,7 @@ void TextureRGBUpdateSystem(iter *it) {
         }
 
         if (!gpu_link->value) {
-            zox_log_error("[%s] Invalid GPU Link [0]", zox_get_name(e));
+            zox_logw("[%s] Invalid GPU Link [0]", zox_get_name(e));
             continue;
         }
 

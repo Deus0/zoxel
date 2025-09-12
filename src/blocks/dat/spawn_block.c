@@ -1,6 +1,6 @@
 typedef struct {
-    ecs_entity_t prefab;
-    ecs_entity_t prefab_block_vox;
+    entity prefab;
+    entity prefab_world_block;
     char *name;
     byte index;
     byte model;
@@ -8,14 +8,14 @@ typedef struct {
     char *texture_filename;
     byte disable_collision; // enabled by default
     color color;
-    ecs_entity_t tag;
-    ecs_entity_t texture_tag;
+    entity tag;
+    entity texture_tag;
     // generation
     int seed;
     // textures
-    ecs_entity_t prefab_texture;
+    entity prefab_texture;
     // vox
-    ecs_entity_t vox;
+    entity vox;
     byte bake_vox;
     byte vox_offset;
 } SpawnBlock;

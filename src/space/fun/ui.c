@@ -89,12 +89,16 @@ void spawn_players_cameras_canvases(
     CameraLinks cameras = { 0 };
     for (int i = 0; i < players_playing; i++) {
         const entity player = zox_players[i];
-        set_camera_transform_to_main_menu(&camera_position, &camera_rotation, terrain_depth);
+        set_camera_transform_to_main_menu(
+            &camera_position,
+            &camera_rotation,
+            terrain_depth);
         const float4 screen_to_canvas = (float4) { 1 / (float) players_playing, 1, i / (float) players_playing, 0 };
         const int2 viewport_size = screen_to_canvas_size(screen_size, screen_to_canvas);
         const int2 viewport_position = screen_to_canvas_position(screen_size, screen_to_canvas);
         const int2 game_viewport_size = scale_viewport(viewport_size);
-        const entity2 spawned_cameras = spawn_player_camera(world,
+        const entity2 spawned_cameras = spawn_player_camera(
+            world,
             player,
             zox_game_camera_mode,
             camera_position,
@@ -105,17 +109,28 @@ void spawn_players_cameras_canvases(
             viewport_size);
         add_to_CameraLinks(&cameras, spawned_cameras.x);
         add_to_CameraLinks(&cameras, spawned_cameras.y);
-        set_camera_mode(world, spawned_cameras.x, zox_game_camera_mode);
+        set_camera_mode(
+            world,
+            spawned_cameras.x,
+            zox_game_camera_mode
+        );
 
-        const entity canvas = spawn_default_ui(world,
+        const entity canvas = spawn_default_ui(
+            world,
             spawned_cameras.y,
             viewport_size,
             screen_to_canvas,
-            app);
-        zox_set(player, CanvasLink, { canvas })
-        zox_set(canvas, PlayerLink, { player })
+            app
+        );
+
+        zox_set(player, CanvasLink, { canvas });
+        zox_set(canvas, PlayerLink, { player });
         // spawns a render texture ui and links to camera
-        create_camera_rbo_and_fbo(world, spawned_cameras.x, game_viewport_size);
+        create_camera_rbo_and_fbo(
+            world,
+            spawned_cameras.x,
+            game_viewport_size
+        );
         spawn_render_texture(
             world,
             prefab_render_texture,

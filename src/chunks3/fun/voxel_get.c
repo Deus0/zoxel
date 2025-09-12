@@ -246,26 +246,12 @@ byte is_adjacent_all_solid(
 ) {
     const VoxelNode* anode = get_adjacentn_VoxelNode(
         neighbors,
-        // ndepths,
         node,
         position,
         depth,
         dir);
     byte rdir = reverse_direction(dir);
-    // return is_node_solid(solidity, anode);
     return anode ? get_node_sides_all_solid(solidity, anode, rdir, depth) : edge_voxel;
-    /*
-    byte chunk_index = 0;
-    const VoxelNode* anode = get_root_adjacent_VoxelNode(
-        neighbors,
-        root,
-        node,
-        octree_position,
-        node_index,
-        node_position,
-        depth,
-        direction,
-        &chunk_index);*/
 }
 
 byte get_voxel(

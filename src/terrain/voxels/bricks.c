@@ -26,5 +26,5 @@ entity spawn_block_bricks(
         .vox = v,
         .bake_vox = 1,
     };
-    return spawn_block_vox_meta(world, &data);
+    return spawn_block_vox_meta(world, data);
 }

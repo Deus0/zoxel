@@ -10,8 +10,8 @@ void spawned_block_vox(
         return;
     }
     // gett block data
-    zox_geter_value(data->block, BlockPrefabLink, entity, prefab)
-    zox_geter_value_safe(data->block, ModelLink, entity, vox)
+    zox_geter_value(data->block, BlockPrefabLink, entity, prefab);
+    zox_geter_value_safe(data->block, ModelLink, entity, vox);
     SpawnBlockVox spawn_data = {
         .prefab = prefab,
         .vox = vox,
@@ -23,15 +23,12 @@ void spawned_block_vox(
         .render_depth = data->render_depth,
         .render_disabled = data->render_disabled,
     };
-    // offset property
-    /*if (zox_has(data->block, BlockVoxOffset) && zox_gett_value(data->block, BlockVoxOffset)) {
-        float3_add_float3_p(&spawn_data.positionf, (float3) { 0, data->scale * -0.25f, 0 });
-    }*/
+
     entity e2;
     if (zox_has(prefab, BlockVox)) {
-        e2 = spawn_block_vox(world, &spawn_data);
+        e2 = spawn_block_vox(world, spawn_data);
     } else if (zox_has(prefab, RendererInstance)) {
-        e2 = spawn_block_vox_instanced(world, &spawn_data);
+        e2 = spawn_block_vox_instanced(world, spawn_data);
     } else {
         return;
     }

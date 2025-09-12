@@ -72,44 +72,48 @@ void build_voxel_faces_c(
             NULL,
             edge,
             cneighbors,
-            // cnrender_depths,
             root,
             position,
             i,          // direction
             depth
         );
+        /*if (neighbors[i] == edge && i == direction_up) {
+            neighbors[i] = 0;
+        }*/
     }
 
     for (int i = 0; i < 6; i++) {
-        if (!neighbors[i] || neighbors[i] == 255) {
-            const int* indiciesf = voxel_face_indicies_n + i * voxel_face_indicies_length;
-            const float3* verticesf = voxel_face_vertices_n[i];
+        if (neighbors[i] && neighbors[i] != edge) {
+            continue;
+        }
 
-            add_voxel_face(
-                indicies,
-                vertices,
-                offset,
-                bounds_offset,
-                scale,
-                indiciesf,
-                verticesf
-            );
+        const int* indiciesf = voxel_face_indicies_n + i * voxel_face_indicies_length;
+        const float3* verticesf = voxel_face_vertices_n[i];
+
+        add_voxel_face(
+            indicies,
+            vertices,
+            offset,
+            bounds_offset,
+            scale,
+            indiciesf,
+            verticesf
+        );
 
 #ifdef DISABLE_AO
-            add_voxel_face_colors(
-                color_rgbs,
-                voxel_color,
-                i
-            );
+        add_voxel_face_colors(
+            color_rgbs,
+            voxel_color,
+            i
+        );
 #else
-            add_voxel_face_colors_ao(
-                color_rgbs,
-                voxel_color,
-                i,
-                neighbors
-            );
+        add_voxel_face_colors_ao(
+            color_rgbs,
+            voxel_color,
+            i,
+            neighbors
+        );
 #endif
-        }
         /*if (i != 1 && i != 3) { // why does up need different indicies??
             is_positive = !is_positive;
         }*/

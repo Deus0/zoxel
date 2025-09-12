@@ -12,13 +12,10 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
 
     // clear old
     zox_geter(realm, VoxelLinks, old)
-    // if (old->value) return; // TODO: Temp; Remove when crashes gone
-
     if (old) {
         for (int i = 0; i < old->length; i++) {
             zox_delete(old->value[i])
         }
-        // dispose_VoxelLinks_const(old);
     }
 
     zox_geter(realm, Colors, realm_colors);
@@ -50,8 +47,9 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
         obsidian_color = realm_colors->value[color_index++];
     }
 
-    VoxelLinks blocks = (VoxelLinks) { 0, NULL };
-    initialize_VoxelLinks(&blocks, zox_blocks_end);
+    VoxelLinks blocks = (VoxelLinks) { 0 };
+    initialize_VoxelLinks(&blocks, zox_blocks_end - 1);
+
     for (int i = 0; i < blocks.length; i++) {
         blocks.value[i] = 0;
     }
@@ -90,8 +88,23 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
         model_group_grass
     );
 
-    blocks.value[zox_block_dirt_rubble - 1] = spawn_realm_block_rubble(world, zox_block_dirt_rubble, "rubble", dirt_color);
+    blocks.value[zox_block_dirt_rubble - 1] = spawn_realm_block_rubble(
+        world,
+        zox_block_dirt_rubble,
+        "rubble",
+        dirt_color,
+        vox_type_rubble
+    );
     tapwatch(time_realm_blocks, "built rubble");
+
+    blocks.value[zox_block_dirt_flowers - 1] = spawn_realm_block_rubble(
+        world,
+        zox_block_dirt_flowers,
+        "flowers",
+        dirt_color,
+        vox_type_flowers
+    );
+    tapwatch(time_realm_blocks, "built flowers");
 
     blocks.value[zox_block_dirt_vox - 1] = spawn_realm_block_noisey(world, zox_block_dirt_vox, "dirt pile", dirt_color);
     tapwatch(time_realm_blocks, "built pile");

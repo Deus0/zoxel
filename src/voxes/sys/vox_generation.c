@@ -160,10 +160,59 @@ void VoxGenerationSystem(iter *it) {
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
 
-            vnoise3(node,
+            vnoise3(
+                node,
                 node_depth,
                 voxel_range,
-                black_voxel_3);
+                black_voxel_3
+            );
+
+            byte penetration = 4;
+
+            vnoise3_spray_side(
+                node,
+                node_depth,
+                0,
+                2,
+                penetration,
+                direction_up
+            );
+
+            vnoise3_spray_side(
+                node,
+                node_depth,
+                0,
+                1,
+                penetration,
+                direction_left
+            );
+
+            vnoise3_spray_side(
+                node,
+                node_depth,
+                0,
+                1,
+                penetration,
+                direction_right
+            );
+
+            vnoise3_spray_side(
+                node,
+                node_depth,
+                0,
+                1,
+                penetration,
+                direction_front
+            );
+
+            vnoise3_spray_side(
+                node,
+                node_depth,
+                0,
+                1,
+                penetration,
+                direction_back
+            );
 
         } else if (voxType->value == vox_type_bricks) {
 

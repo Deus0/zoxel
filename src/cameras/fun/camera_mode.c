@@ -27,16 +27,16 @@ void set_camera_transform(
     const entity character,
     const byte mode
 ) {
-    if (!zox_valid(camera) || !zox_valid(character)) {
-        zox_log_error("! cannot [set_camera_transform] camera/character issue.")
+    if (!zox_valid(camera)) {
+        zox_log_error("[set_camera_transform]: Invalid Camera");
         return;
     }
-    float3 target_position = float3_zero;
-    const Position3D *position3D = zox_get(character, Position3D)
-    if (position3D != NULL) {
-        target_position = position3D->value;
-    } else {
-        target_position = (float3) { 8, 0, 8 };
+    float3 target_position = (float3) { 8, 0, 8 };
+    if (zox_valid(character) && zox_has(character, Position3D)) {
+        // zox_log_error("[set_camera_transform]: Invalid Character");
+        // return;
+        zox_geter_value(character, Position3D, float3, position);
+        target_position = position;
     }
     const CameraSpawnData data = get_camera_preset(mode);
     float3 euler = data.euler;
@@ -45,10 +45,10 @@ void set_camera_transform(
     zox_set(camera, LocalPosition3D, { data.position })
     zox_set(camera, Position3D, { float3_add(target_position, data.position) })
     if (camera_follow_mode == zox_camera_follow_mode_attach) {
-        zox_set(camera, LocalRotation3D, { camera_rotation })
-        zox_set(camera, Euler, { euler })
+        zox_set(camera, LocalRotation3D, { camera_rotation });
+        zox_set(camera, Euler, { euler });
     } else {
-        zox_set(camera, Rotation3D, { camera_rotation })
+        zox_set(camera, Rotation3D, { camera_rotation });
     }
 }
 
@@ -58,48 +58,37 @@ byte get_camera_mode_fov(const byte mode) {
 
 void set_camera_mode(
     ecs *world,
-    const ecs_entity_t e,
+    const entity e,
     byte mode
 ) {
     // remove 2 camera modes for now
     if (mode == zox_camera_mode_free) {
         mode = zox_camera_mode_first_person;
     }
-    /*if (camera_mode == mode) {
-        return;
-    }
-    camera_mode = new_camera_mode;*/
     const byte old_camera_follow_mode = camera_follow_mode;
     const byte camera_fov = get_camera_mode_fov(mode);
-
     camera_follow_mode = get_camera_preset(mode).follow_mode;
-
-    //for (int i = 0; i < main_cameras_count; i++) {
-    //    const entity camera = main_cameras[i];
-    //    if (camera == 0 || !zox_valid(camera)) {
-    //        continue;
-    //    }
     zox_set(e, CameraMode, { mode });
     zox_set(e, FieldOfView, { camera_fov });
     // camera_follow_mode is more complicated, involves how camera is attached to character
     entity target = 0;
     if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
-        target = zox_get_value(e, ParentLink)
+        target = zox_get_value(e, ParentLink);
     } else {
-        target = zox_get_value(e, CameraFollowLink)
+        target = zox_get_value(e, CameraFollowLink);
     }
     if (old_camera_follow_mode != camera_follow_mode) {
         // remove old link
         if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
-            zox_set(e, ParentLink, { 0 })
+            zox_set(e, ParentLink, { 0 });
         } else {
-            zox_set(e, CameraFollowLink, { 0 })
+            zox_set(e, CameraFollowLink, { 0 });
         }
         // reattach
         if (camera_follow_mode == zox_camera_follow_mode_attach) {
-            zox_set(e, ParentLink, { target })
+            zox_set(e, ParentLink, { target });
         } else if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
-            zox_set(e, CameraFollowLink, { target })
+            zox_set(e, CameraFollowLink, { target });
         }
     }
     // set up local positions and rotations
@@ -107,7 +96,10 @@ void set_camera_mode(
     set_camera_transform(world, e, target, mode);
 }
 
-byte toggle_camera_mode(ecs *world, const ecs_entity_t camera) {
+byte toggle_camera_mode(
+    ecs *world,
+    const entity camera
+) {
     zox_geter_value_non_const(camera, CameraMode, byte, mode);
     mode = mode + 1;
     if (mode > zox_camera_mode_topdown) {

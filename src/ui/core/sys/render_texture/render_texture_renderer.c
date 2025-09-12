@@ -33,7 +33,7 @@ void RenderTextureRenderSystem(iter *it) {
         }
 
         if (!meshGPULink->value.x || !meshGPULink->value.y || !uvsGPULink->value || !textureGPULink->value) {
-            zox_logw("RenderTexture has invalid gpu link(s)");
+            // zox_logw("RenderTexture has invalid gpu link(s)");
             continue;
         }
 

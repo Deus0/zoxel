@@ -24,5 +24,6 @@
 #define zox_block_dirt_rubble 10
 #define zox_block_vox_grass 11
 #define zox_block_vox_flower 12
+#define zox_block_dirt_flowers 13
 
-#define zox_blocks_end 13 // take 1 off for air
+#define zox_blocks_end 14 // take 1 off for air

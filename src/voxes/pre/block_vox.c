@@ -5,6 +5,7 @@ entity spawn_prefab_block_vox(
     zox_prefab_child(prefab);
     zox_prefab_name("block_vox");
     zox_add_tag(e, BlockVox);
+    zox_add_tag(e, VoxMesh);
     zox_prefab_set(e, CloneVox, { 0});
     zox_prefab_set(e, CloneVoxLink, { 0 });
     zox_prefab_set(e, ChunkLod, { render_depth_spawning });
@@ -18,32 +19,5 @@ entity spawn_prefab_block_vox(
     // for debug
     zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
     prefab_add_cube_lines(world, e, color_white, 0);
-    return e;
-}
-
-entity spawn_block_vox(
-    ecs *world,
-    const SpawnBlockVox *data
-) {
-    zox_instance(data->prefab);
-    zox_name("block_vox");
-    // transforms
-    zox_set(e, Position3D, { data->positionf });
-    // zox_set(e, Scale1D, { data->scale })
-    zox_set(e, BlockScale, { data->scale * 0.5f });
-    // zox_set(e, TransformMatrix, { float4x4_position(data->positionf) })
-    // zox_set(e, TransformMatrix, { float4x4_transform_scale(data->positionf, quaternion_identity, data->scale) })
-    // rendering
-    zox_set(e, RenderDepth, { data->render_depth });
-    zox_set(e, RenderDisabled, { data->render_disabled });
-    // voxels
-    zox_set(e, BlockIndex, { data->block_index });
-    zox_set(e, CloneVox, { 1 });
-    zox_set(e, CloneVoxLink, { data->vox });
-    if (!headless) {
-        spawn_gpu_mesh(world, e);
-        spawn_gpu_colors(world, e);
-    }
-    // zox_log("+ spawned block vox with scale: %f", data->scale)
     return e;
 }

@@ -39,9 +39,9 @@ void generate_colors(lint seed, Colors *colors) {
     zox_logv("  Sky: %fx%fx%f", sky_hsv.x, sky_hsv.y, sky_hsv.z);
 }
 
-extern void set_camera_fog_color(ecs_world_t*, color_rgb) ;
+extern void set_camera_fog_color(ecs*, color_rgb) ;
 
-void spawn_realm_colors(ecs_world_t *world, const ecs_entity_t realm) {
+void spawn_realm_colors(ecs *world, const entity realm) {
     if (!zox_valid(realm) || !zox_has(realm, Seed) || !zox_has(realm, Colors)) {
         zox_log_error("invalid realm in [spawn_realm_colors]")
         return;
@@ -52,7 +52,7 @@ void spawn_realm_colors(ecs_world_t *world, const ecs_entity_t realm) {
     }*/
 
     zox_geter(realm, Seed, seed);
-    Colors colors = (Colors) { 0, NULL };
+    Colors colors = (Colors) { 0 };
     color_rgb sky_color;
     if (!grayscale_mode) {
         initialize_Colors(&colors, 6);

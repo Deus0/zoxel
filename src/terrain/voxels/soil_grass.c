@@ -25,5 +25,5 @@ entity spawn_block_soil_grass(
         .vox = v,
         .bake_vox = 1,
     };
-    return spawn_block_vox_meta(world, &data);
+    return spawn_block_vox_meta(world, data);
 }

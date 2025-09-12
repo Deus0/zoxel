@@ -6,7 +6,7 @@ ecs_entity_t spawn_prefab_bluelink(ecs_world_t *world, const ecs_entity_t prefab
 }
 
 ecs_entity_t spawn_bluelink(ecs_world_t *world, const ecs_entity_t prefab, const ecs_entity_t e1, const ecs_entity_t e2) {
-    const ecs_entity_t e = spawn_nodelink(world, prefab, e1, e2);
+    const ecs_entity_t e = spawn_node_link(world, prefab, e1, e2);
     zox_name("bluelink")
     return e;
 }

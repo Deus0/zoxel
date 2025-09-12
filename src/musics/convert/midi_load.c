@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <math.h>
+// #include <stdio.h>
+// #include <math.h>
 #include "midi_note.c"
 
 // Load the notes from a file
@@ -21,7 +21,7 @@ int load_notes_from_file(MidiNote *notes, const char *filename) {
             return 0;
         } else if (feof(file)) {
             // End of file reached, which is not an error
-            printf("End of file reached, only %zu items read\n", items_read);
+            zox_logw("[load_notes_from_file] items_read less than 1: %i", items_read);
             return 0;
         }
     }
@@ -32,7 +32,8 @@ int load_notes_from_file(MidiNote *notes, const char *filename) {
             perror("(2) Error reading file");
             note_count = 0;
         } else if (feof(file)) {
-            printf("End of file reached, only %zu items read\n", items_read);
+            zox_logw("[load_notes_from_file] Notes Data: items_read [%i] less than [%i]", items_read, note_count);
+            // printf("End of file reached, only %zu items read\n", items_read);
         }
     }
     fclose(file);
