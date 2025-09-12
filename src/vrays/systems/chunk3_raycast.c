@@ -355,19 +355,18 @@ byte raycast_voxel_node(
                 entity vox;
                 // if Instanced mesh, use meta, otherwise use world block spawn!
                 if (zox_has(block_spawn, InstanceLink)) {
-                    vox = zox_get_value(block_spawn, InstanceLink)
+                    vox = zox_gett_value(block_spawn, InstanceLink);
                 } else if (zox_has(hit_block, ModelLink)) {
-                    // zox_log_error("does this happy anymore??")
-                    vox = zox_get_value(hit_block,  ModelLink)
+                    vox = zox_gett_value(hit_block, ModelLink);
                 } else {
                     vox = chunk;
                 }
 
                 if (!zox_valid(vox) || !zox_has(vox, NodeDepth)) {
                     if (zox_valid(vox)) {
-                        zox_log_error("invalid vox selected [%s]", zox_get_name(vox));
+                        zox_log_error("Raycast Error: Vox Missing NodeDepth [%s]", zox_get_name(vox));
                     } else {
-                        zox_log_error("invalid vox selected");
+                        zox_log_error("Raycast Error: Invalid Vox [%lu]", vox);
                     }
                     if (raycast_locks && node_chunk) {
                         read_unlock_VoxelNode(node_chunk);

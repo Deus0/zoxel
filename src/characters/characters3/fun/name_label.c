@@ -1,4 +1,4 @@
-void spawn_character_name_label(
+/*void spawn_character_name_label(
     ecs_world_t *world,
     spawned_character3D_data *data
 ) {
@@ -40,4 +40,4 @@ void spawn_character_name_label(
     );
     add_to_ElementLinks(data->elementLinks, e);
     zox_set(e, ElementHolder, { data->e })
-}
+}*/

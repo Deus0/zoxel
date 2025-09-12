@@ -1,20 +1,28 @@
 #include "spawn.c"
 #include "despawn.c"
-#include "character3_spawn_zone.c"
+#include "can_spawn.c"
 
-void define_systems_characters3_terrain(ecs_world_t* world) {
-    zox_system(Characters3SpawnZoneSystem, EcsPreUpdate,
+void define_systems_characters3_terrain(ecs* world) {
+    zox_system(
+        Characters3SpawnZoneSystem,
+        EcsPreUpdate,
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
-        [out] CharacterSpawnZone)
-    zox_system(Characters3DespawnSystem, EcsPostUpdate,
+        [out] CharacterSpawnZone
+    );
+    zox_system(
+        Characters3DespawnSystem,
+        EcsPostUpdate,
         [in] rendering.RenderDistanceDirty,
         [in] CharacterSpawnZone,
         [out] CharactersSpawned,
         [out] chunks3.ChunkEntities,
-        [none] terrain.TerrainChunk)
+        [none] terrain.TerrainChunk
+    );
     // NOTE: Writes to VoxelNode
-    zox_system_1(Characters3SpawnSystem, zoxp_voxels_read,
+    zox_system_1(
+        Characters3SpawnSystem,
+        zoxp_voxels_read,
         [in] rendering.RenderDistanceDirty,
         [in] chunks3.VoxelNode,
         [in] chunks3.NodeDepth,
@@ -26,5 +34,6 @@ void define_systems_characters3_terrain(ecs_world_t* world) {
         [out] CharactersSpawned,
         [out] CharactersEverSpawned,
         [out] chunks3.ChunkEntities,
-        [none] terrain.TerrainChunk)
+        [none] terrain.TerrainChunk
+    );
 }

@@ -1,15 +1,14 @@
-ecs_entity_t spawn_character3(
-    ecs_world_t *world,
+entity spawn_character3(
+    ecs *world,
     const spawn_character3D_data data
 ) {
-    ecs_entity_t vox = data.model;
+    entity vox = data.model;
     if (!zox_valid(vox)) {
         zox_log_error("[spawn_character3]: Invalid Vox Model");
         return 0;
     }
     // if model, we use lodded for vox
     if (zox_valid(vox) && zox_has(vox, ModelLods)) {
-        // zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
         zox_geter(vox, ModelLods, modelLods);
         const entity vox_lod = modelLods->value[data.render_depth];
         if (zox_valid(vox_lod)) {
@@ -22,8 +21,11 @@ ecs_entity_t spawn_character3(
     }
 
     zox_geter_value(data.prefab, Character3Type, byte, type);
+    entity realm = zox_gett_value(data.terrain, RealmLink);
+
     zox_instance(data.prefab);
     zox_name("character3");
+    zox_set(e, RealmLink, { realm });
     zox_set(e, Position3D, { data.position });
     zox_set(e, LastPosition3D, { data.position });
     if (!float4_equals(data.rotation, quaternion_identity)) {
@@ -43,9 +45,6 @@ ecs_entity_t spawn_character3(
     if (!data.render_disabled) {
         zox_set(e, RenderDisabled, { data.render_disabled });
     }
-    /*if (data.scale) {
-        zox_set(e, BlockScale, { data.scale })
-    }*/
     // voxels
     if (data.terrain) {
         zox_set(e, TerrainLink, { data.terrain });
@@ -89,6 +88,7 @@ ecs_entity_t spawn_character3(
             zox_add_tag(e, PaintedSkeleton);
         }
     }
+
     // name
     if (!disable_npc_hooks) {
         char *name = generate_name();
@@ -96,12 +96,12 @@ ecs_entity_t spawn_character3(
          // data->;
         float soul = data.player ? 1 : randf_range(1, 3);
         spawned_character3D_data spawned_data = (spawned_character3D_data) {
-            .realm = zox_gett_value(data.terrain, RealmLink),
+            .realm = realm,
             .e = e,
             .p = data.player,
             .name = name,
             .render_disabled = data.render_disabled,
-            .elementLinks = &((ElementLinks) { 0, NULL }),
+            .elementLinks = &((ElementLinks) { 0 }),
             .soul_value = soul,
         };
         run_hook_spawned_character3D(world, &spawned_data);
@@ -109,37 +109,38 @@ ecs_entity_t spawn_character3(
         free(name);
     }
 
-    // make a create_bounds function tthat returns float6
-    /*const float min_x_global = -(terrain_spawn_distance) * (real_chunk_scale) + 0.1f;
-    const float max_x_global = (terrain_spawn_distance + 1) * (real_chunk_scale) - 0.1f;
-    const float min_z_global = min_x_global;
-    const float max_z_global = max_x_global;
-    const float min_y_global = - real_chunk_scale * terrain_vertical;
-    const float max_y_global = - min_y_global + real_chunk_scale;
-    float6 character_bounds = (float6) {
-        min_x_global,
-        max_x_global,
-        min_y_global,
-        max_y_global,
-        min_z_global,
-        max_z_global };
-    if (!data.player) {
-        const int bounds_radius = 16;
-        const int bounds_radius_y = 12;
-
-        const float min_x_local = data.position.x - bounds_radius;
-        const float max_x_local = data.position.x + bounds_radius;
-
-        const float min_y_local = data.position.y - bounds_radius_y;
-        const float max_y_local = data.position.y + bounds_radius_y;
-
-        const float min_z_local = data.position.z - bounds_radius;
-        const float max_z_local = data.position.z + bounds_radius;
-        character_bounds = (float6) {
-            min_x_local, max_x_local,
-            min_y_local, max_y_local,
-            min_z_local, max_z_local };
-        zox_set(e, Position3DBounds, { character_bounds })
-    }*/
     return e;
 }
+
+// make a create_bounds function tthat returns float6
+/*const float min_x_global = -(terrain_spawn_distance) * (real_chunk_scale) + 0.1f;
+const float max_x_global = (terrain_spawn_distance + 1) * (real_chunk_scale) - 0.1f;
+const float min_z_global = min_x_global;
+const float max_z_global = max_x_global;
+const float min_y_global = - real_chunk_scale * terrain_vertical;
+const float max_y_global = - min_y_global + real_chunk_scale;
+float6 character_bounds = (float6) {
+    min_x_global,
+    max_x_global,
+    min_y_global,
+    max_y_global,
+    min_z_global,
+    max_z_global };
+if (!data.player) {
+    const int bounds_radius = 16;
+    const int bounds_radius_y = 12;
+
+    const float min_x_local = data.position.x - bounds_radius;
+    const float max_x_local = data.position.x + bounds_radius;
+
+    const float min_y_local = data.position.y - bounds_radius_y;
+    const float max_y_local = data.position.y + bounds_radius_y;
+
+    const float min_z_local = data.position.z - bounds_radius;
+    const float max_z_local = data.position.z + bounds_radius;
+    character_bounds = (float6) {
+        min_x_local, max_x_local,
+        min_y_local, max_y_local,
+        min_z_local, max_z_local };
+    zox_set(e, Position3DBounds, { character_bounds })
+}*/

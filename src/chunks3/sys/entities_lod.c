@@ -8,19 +8,21 @@ void ChunkEntitiesLodSystem(iter *it) {
     zox_sys_in(RenderDistance);
     zox_sys_in(ChunkEntities);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDistanceDirty, renderDistanceDirty);
-        zox_sys_i(RenderDistance, renderDistance);
-        zox_sys_i(ChunkEntities, entityLinks);
-        if (renderDistanceDirty->value != zox_dirty_active) {
+        zox_sys_i(RenderDistanceDirty, state);
+        zox_sys_i(RenderDistance, distance);
+        zox_sys_i(ChunkEntities, entities);
+
+        if (state->value != zox_dirty_active) {
             continue;
         }
-        for (int j = 0; j < entityLinks->length; j++) {
-            const entity e2 = entityLinks->value[j];
+
+        for (int j = 0; j < entities->length; j++) {
+            const entity e2 = entities->value[j];
             if (!(zox_valid(e2) && zox_has(e2, RenderDepth) && zox_has(e2, MaxRenderDepth))) {
                 continue;
             }
             zox_geter_value(e2, MaxRenderDepth, byte, max_render_depth);
-            const byte render_depth = camera_distance_to_npc_render_depth(renderDistance->value, max_render_depth);
+            const byte render_depth = camera_distance_to_npc_render_depth(distance->value, max_render_depth);
             zox_geter_value(e2, RenderDepth, byte, old);
             if (old != render_depth) {
                 zox_set(e2, RenderDepth, { render_depth });
@@ -29,4 +31,4 @@ void ChunkEntitiesLodSystem(iter *it) {
             }
         }
     }
-} zoxd_system(ChunkEntitiesLodSystem)
+} zoxd_system2(ChunkEntitiesLodSystem);

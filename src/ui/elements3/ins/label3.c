@@ -16,7 +16,11 @@ entity spawn_label3D(
         zox_set(e, Color, { data.base_color });
     }
 
-    Children children = (Children) { 0, NULL };
+    if (!is_color_null(data.outline_color)) {
+        zox_set(e, OutlineColor, { data.outline_color });
+    }
+
+    Children children = (Children) { 0 };
 
     // sub text
     text_data.position = (float3) { 0, 0, element3D_depth_difference };

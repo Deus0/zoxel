@@ -1,6 +1,6 @@
-ecs_entity_t spawn_prefab_character3(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_prefab_character3(
+    ecs *world,
+    const entity prefab,
     byte type
 ) {
     if (!prefab) {
@@ -10,6 +10,7 @@ ecs_entity_t spawn_prefab_character3(
     zox_prefab_name("character3");
     zox_add_tag(e, Character3);
     zox_prefab_set(e, Character3Type, { type });
+    zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
     // generation
     zox_prefab_set(prefab, Seed, { 999 });
     // name

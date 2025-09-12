@@ -66,3 +66,5 @@ void spawn_realm_stats(ecs *world, entity realm) {
 
     zox_logv("At [%f] Realm [stats] [%i] spawned.", zox_current_time, stats.length);
 }
+
+zox_declare_system_state_event(RealmStats, GenerateRealm, zox_generate_realm_stats, spawn_realm_stats)

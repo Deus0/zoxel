@@ -31,7 +31,7 @@ zox_begin_module(Characters3)
     initialize_hook_spawned_character3D();
     // hooks
     zox_module_dispose(module_dispose_characters3D)
-    add_hook_spawned_character3D(&spawn_character_name_label);
+    // add_hook_spawned_character3D(&spawn_character_name_label);
     add_hook_spawn_prefabs(spawn_prefabs_characters3D);
     // sub modules
     zox_import_module(Characters3Terrain)

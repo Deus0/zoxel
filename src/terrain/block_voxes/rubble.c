@@ -5,7 +5,6 @@ entity spawn_realm_block_rubble(
     const color block_color,
     const byte vox_type
 ) {
-    // vox
     const entity vox = spawn_vox_basic(
         world,
         prefab_vox,
@@ -13,8 +12,6 @@ entity spawn_realm_block_rubble(
         block_vox_depth
     );
     zox_set_unique_name(vox, "block_rubble");
-    //  zox_set(v, VoxType, { vox_type_rubble })
-    // zox_set(v, VoxType, { vox_type_flowers });
     zox_set(vox, VoxType, { vox_type });
     zox_set(vox, Color, { block_color });
     zox_set(vox, GenerateVox, { zox_dirty_trigger });

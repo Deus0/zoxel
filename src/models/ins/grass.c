@@ -1,5 +1,5 @@
-ecs_entity_t spawn_model_grass(
-    ecs_world_t* world,
+entity spawn_model_grass(
+    ecs* world,
     color c,
     const lint seed
 ) {

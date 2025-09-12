@@ -1,0 +1,81 @@
+// When health goes to 0, kill UserLink->value
+// Set Dead to 1
+void CharacterStatsSystem(iter *it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(GenerateCharacter);
+    zox_sys_in(RealmLink);
+    zox_sys_out(StatLinks);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(GenerateCharacter, state);
+        zox_sys_i(RealmLink, realm);
+        zox_sys_o(StatLinks, stats);
+
+        if (state->value != zox_dirty_active) {
+            continue;
+        }
+
+        // Collect Realm Stats
+        zox_geter(realm->value, StatLinks, realm_stats);
+        entity realm_soul = 0;
+        entity realm_health = 0;
+        entity realm_energy = 0;
+        entity realm_mana = 0;
+        for (int i = 0; i < realm_stats->length; i++) {
+            const entity stat = realm_stats->value[i];
+            if (!realm_soul && zox_has(stat, StatLevel)) {
+                realm_soul = stat;
+            }
+            if (!realm_health && zox_has(stat, StatState)) {
+                realm_health = stat;
+            } else if (!realm_energy && zox_has(stat, StatState)) {
+                realm_energy = stat;
+            } else if (!realm_mana && zox_has(stat, StatState)) {
+                realm_mana = stat;
+            }
+        }
+        if (!zox_valid(realm_soul)) {
+            zox_log_error("the realm has invalid stats")
+            return;
+        }
+
+        // generate numbers here
+        float soul_value = zox_has(e, PlayerLink) ? 1 : randf_range(1, 3);
+        float2 health = (float2) { health_base, health_base + soul_value * health_level_increase };
+        health.x = randf_range(health_base, health.y);
+
+        // Stat: Soul
+        const entity stat_soul = spawn_user_stat(world, realm_soul, e);
+        zox_set(stat_soul, StatValue, { soul_value });
+        add_to_StatLinks(stats, stat_soul);
+
+        // Stat: Health
+        const entity stat_health = spawn_user_stat(world, realm_health, e);
+        zox_set(stat_health, StatValue, { health.x })
+        zox_set(stat_health, StatValueMax, { health.y })
+        add_to_StatLinks(stats, stat_health);
+
+        const entity stat_energy = spawn_user_stat(world, realm_energy, e);
+        zox_set(stat_energy, StatValue, { energy_base });
+        zox_set(stat_energy, StatValueMax, { energy_base + soul_value * energy_level_increase })
+        add_to_StatLinks(stats, stat_energy);
+
+        const entity stat_mana = spawn_user_stat(world, realm_mana, e);
+        zox_set(stat_mana, StatValue, { mana_base })
+        zox_set(stat_mana, StatValueMax, { mana_base + soul_value * mana_level_increase })
+        add_to_StatLinks(stats, stat_mana);
+
+        // Add Regens
+        for (int j = 0; j < realm_stats->length; j++) {
+            const entity stat = realm_stats->value[j];
+            if (!zox_valid(stat)) {
+                continue;
+            }
+            if (zox_has(stat, StatRegen)) {
+                const entity character_stat = spawn_user_stat(world, stat, e);
+                add_to_StatLinks(stats, character_stat);
+            }
+        }
+    }
+} zoxd_system2(CharacterStatsSystem);

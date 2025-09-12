@@ -1,5 +1,5 @@
-ecs_entity_t spawn_character3_player(
-    ecs_world_t *world,
+entity spawn_character3_player(
+    ecs *world,
     spawn_character3D_data spawn_data
 ) {
     spawn_data.prefab = prefab_character3_player;

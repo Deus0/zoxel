@@ -23,50 +23,48 @@ void Characters3SpawnSystem(iter *it) {
     zox_sys_out(ChunkEntities);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(RenderDistanceDirty, renderDistanceDirty);
-        zox_sys_i(VoxelNode, voxelNode);
-        zox_sys_i(NodeDepth, nodeDepth);
-        zox_sys_i(RenderDistance, renderDistance);
-        zox_sys_i(RenderDisabled, renderDisabled);
-        zox_sys_i(ChunkPosition, chunkPosition);
-        zox_sys_i(VoxLink, voxLink);
-        zox_sys_i(ChunkNeighbors, chunkNeighbors);
-        zox_sys_o(CharactersSpawned, charactersSpawned);
-        zox_sys_o(CharactersEverSpawned, charactersEverSpawned);
-        zox_sys_o(ChunkEntities, entityLinks);
+        zox_sys_i(RenderDistanceDirty, state);
+        zox_sys_i(VoxelNode, voxel_node);
+        zox_sys_i(NodeDepth, depth);
+        zox_sys_i(RenderDistance, render_distance);
+        zox_sys_i(RenderDisabled, render_disabled);
+        zox_sys_i(ChunkPosition, cposition);
+        zox_sys_i(VoxLink, terrain);
+        zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_o(CharactersSpawned, spawned);
+        zox_sys_o(CharactersEverSpawned, ever_spawned);
+        zox_sys_o(ChunkEntities, entities);
 
-        const byte is_in_spawn_range = renderDistance->value <= terrain_lod_near;
-        const byte is_first_spawn = is_in_spawn_range && !charactersEverSpawned->value;
+        const byte is_in_spawn_range = render_distance->value <= terrain_lod_near;
+        const byte is_first_spawn = is_in_spawn_range && !ever_spawned->value;
 
         // if already spawned, skip spawning, only update LODs
         // if basically all air, no need to spawn
-        if (!has_children_VoxelNode(voxelNode) && !voxelNode->value) {
+        if (!has_children_VoxelNode(voxel_node) && !voxel_node->value) {
             continue;
         }
 
-        if (!is_first_spawn && renderDistanceDirty->value != zox_dirty_active) {
+        if (!is_first_spawn && state->value != zox_dirty_active) {
             continue;
         }
 
-        if (charactersSpawned->value || !is_in_spawn_range) {
-            // if (charactersSpawned->value) zox_log("- already_spawned [%i]", entityLinks->length)
+        if (spawned->value || !is_in_spawn_range) {
+            // if (spawned->value) zox_log("- already_spawned [%i]", entities->length)
             // if (!is_in_spawn_range) zox_log("- out of range")
             continue;
         }
 
         // getters
-        entity terrain = voxLink->value;
-        zox_geter_value(terrain, RealmLink, entity, realm)
+        zox_geter_value(terrain->value, RealmLink, entity, realm)
         zox_geter(realm, CharacterLinks, characters)
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance)
-        const entity chunk_above = chunkNeighbors->value[direction_up];
+        const entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
 
         // calcs
-        const byte depth = nodeDepth->value;
-        const int chunk_length = powers_of_two[depth];
+        const int chunk_length = powers_of_two[depth->value];
         const int3 chunk_dimensions = int3_single(chunk_length);
-        int3 chunk_voxel_position = get_chunk_positionv(chunkPosition->value, chunk_dimensions);
+        int3 chunk_voxel_position = get_chunk_positionv(cposition->value, chunk_dimensions);
         byte found_position = 0;
         float3 position;
 
@@ -91,12 +89,14 @@ void Characters3SpawnSystem(iter *it) {
                 zox_log_error("failed to find a spawn character_meta")
                 continue;
             }
+
             zox_geter_value_non_const(meta, ModelLink, entity, model)
             zox_geter_value(meta, Character3PrefabLink, entity, prefab_character)
             if (!model || !prefab_character) {
                 zox_log_error("failed to find a spawn character_meta")
                 continue;
             }
+
             // if model group
             if (zox_has(model, ModelLinks)) {
                 zox_geter(model, ModelLinks, models)
@@ -110,7 +110,7 @@ void Characters3SpawnSystem(iter *it) {
             }
 
             zox_geter_value(model, MaxRenderDepth, byte, max_render_depth);
-            const byte render_depth = camera_distance_to_npc_render_depth(renderDistance->value, max_render_depth);
+            const byte render_depth = camera_distance_to_npc_render_depth(render_distance->value, max_render_depth);
 
             // 2) find a place for our new npc
             // sometimes cannot find a position
@@ -122,9 +122,10 @@ void Characters3SpawnSystem(iter *it) {
                 byte3 local_position;
                 for (byte k = 0; k < chunk_length; k++) {
                     local_position = find_random_position_on_ground(
-                        voxelNode,
+                        voxel_node,
                         voxel_node_above,
-                        depth);
+                        depth->value
+                    );
                     if (!byte3_equals(byte3_full, local_position)) {
                         break;
                     }/* else {
@@ -149,34 +150,36 @@ void Characters3SpawnSystem(iter *it) {
                 world,
                 (spawn_character3D_data) {
                     .prefab = prefab_character,
-                    .terrain = voxLink->value,
+                    .terrain = terrain->value,
                     .terrain_chunk = e,
-                    .chunk_position = chunkPosition->value,
+                    .chunk_position = cposition->value,
                     .position = position,
                     .rotation = rotation,
                     .render_depth = render_depth,
-                    .render_disabled = renderDisabled->value,
+                    .render_disabled = render_disabled->value,
                     .model = model,
                     .scale = vox_model_scale,
                 }
             );
+
             if (character) {
                 on_spawned_character3_npc(world, character);
-                add_to_ChunkEntities(entityLinks, character);
+                add_to_ChunkEntities(entities, character);
 
                 zox_log_spawning("+ npc: %s at [%fx%fx%f] [%i of %i]",  zox_get_name(character), position.x, position.y, position.z, (j + 1), (character_spawn_rate))
                 zox_stats_characters++;
             } else {
                 zox_log_error("character spawn failed.");
             }
+
         }
 
-        if (entityLinks->length >= 1) {
-            zox_log_spawning("+ characters spawned [%i] at [%ix%ix%i]", entityLinks->length, chunkPosition->value.x, chunkPosition->value.y, chunkPosition->value.z)
+        if (entities->length >= 1) {
+            zox_log_spawning("+ characters spawned [%i] at [%ix%ix%i]", entities->length, cposition->value.x, cposition->value.y, cposition->value.z)
         }
 
-        charactersSpawned->value = 1;
-        charactersEverSpawned->value = 1;
+        spawned->value = 1;
+        ever_spawned->value = 1;
     }
 
     zox_ts_end(npc_spawns, 3, zox_profile_system_npc_spawns);

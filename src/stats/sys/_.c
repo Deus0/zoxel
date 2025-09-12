@@ -4,11 +4,11 @@
 #include "level_up.c"
 #include "experience.c"
 #include "realm.c"
-zox_increment_system_with_reset(StatDirty, zox_dirty_end);
-zox_declare_system_state_event(RealmStats, GenerateRealm, zox_generate_realm_stats, spawn_realm_stats)
+#include "character.c"
+#include "world_labels.c"
+#include "character_player.c"
 
 void define_systems_stats(ecs *world) {
-    zoxd_system_increment(StatDirty);
     zox_define_system_state_event_1(RealmStats, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
     // debuff system here, skills will add debuffs
     zox_system(
@@ -52,5 +52,20 @@ void define_systems_stats(ecs *world) {
         [out] stats.ExperienceMax,
         [out] stats.StatDirty,
         [none] stats.StatLevel
+    );
+    zox_system_1(
+        CharacterStatsSystem,
+        EcsOnUpdate,
+        [in] characters.GenerateCharacter,
+        [in] realms.RealmLink,
+        [out] stats.StatLinks
+    );
+    zox_system_1(
+        CharacterNameLabelsSystem,
+        EcsOnUpdate,
+        [in] characters.GenerateCharacter,
+        [in] generic.ZoxName,
+        [in] stats.StatLinks,
+        [out] elements.core.ElementLinks
     );
 }

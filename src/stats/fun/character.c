@@ -1,4 +1,4 @@
-const int character_stats = 2;
+/*const int character_stats = 2;
 // #define statbar_float_position 0.32f
 
 void spawn_character_stats(
@@ -64,10 +64,6 @@ void spawn_character_stats(
         zox_set(stat_mana, StatValueMax, { mana_base + soul_value * mana_level_increase })
         add_to_StatLinks(stats, stat_mana);
 
-        /*stats->value[4] = spawn_user_stat(world, realm_stat_regen_health, data->e);
-        stats->value[5] = spawn_user_stat(world, realm_stat_regen_energy, data->e);
-        stats->value[6] = spawn_user_stat(world, realm_stat_regen_mana, data->e);*/
-
         // add all attributes as 0
         for (int i = 0; i < realm_stats->length; i++) {
             const entity stat = realm_stats->value[i];
@@ -104,4 +100,4 @@ void spawn_character_stats(
             }
         }
     }
-}
+}*/

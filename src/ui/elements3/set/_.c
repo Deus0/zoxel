@@ -4,9 +4,6 @@ int text3D_fill_thickness = 1;   // 4
 int text3D_outline_thickness = 0;
 const color statbar3D_font_color_fill = { 33, 233, 233, 205 };
 const color statbar3D_font_color_outline = { 155, 12, 12, 0 };
-// label3D
-const color label3D_font_color_fill = { 122, 222, 199, 205 };
-const color label3D_font_color_outline = { 155, 12, 12, 0 };
 // Positions
 const float element3D_depth_difference = 0.001f;
 // Sizes

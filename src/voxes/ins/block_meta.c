@@ -10,9 +10,7 @@ entity spawn_block_vox_meta(
     zox_set(e, Color, { data.color });
     if (data.prefab_world_block) {
         zox_prefab_set(e, BlockPrefabLink, { data.prefab_world_block });
-        zox_log("Set BlockPrefabLink [%lu] at [%i]",
-            data.prefab_world_block,
-            data.index);
+        // zox_log("Set BlockPrefabLink [%lu] at [%i]", data.prefab_world_block, data.index);
     }
     if (data.tag) {
         zox_add_tag_id(e, data.tag);

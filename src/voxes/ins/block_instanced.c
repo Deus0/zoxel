@@ -38,9 +38,13 @@ entity spawn_block_vox_instanced(
         }
     }
 
-    if (zox_valid(model) && zox_has(model, MaxRenderDepth)) {
+    if (zox_valid(model)) {
         zox_set(e, ModelLink, { model });
-        zox_set(e, MaxRenderDepth, { zox_gett_value(model, MaxRenderDepth) });
+        if (zox_has(model, MaxRenderDepth)) {
+            zox_set(e, MaxRenderDepth, { zox_gett_value(model, MaxRenderDepth) });
+        } /*else {
+            // zox_logw("Spawned BlockVoxInstance [%s::%lu] with Invalid Model (no MaxRenderDepth) [%lu] - block index [%i]", zox_get_name(data.prefab), data.prefab, data.vox, data.block_index);
+        }*/
     } else {
         zox_log_error("Spawned BlockVoxInstance [%s::%lu] with Invalid Model [%lu] - block index [%i]", zox_get_name(data.prefab), data.prefab, data.vox, data.block_index);
     }

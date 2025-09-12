@@ -15,7 +15,7 @@ zox_begin_module(Actions)
     zoxd(ActionIndex);
     add_hook_spawn_prefabs(spawn_prefabs_actions);
     define_systems_actions(world);
-    add_hook_spawned_character3D(&spawn_character_actions);
+    // add_hook_spawned_character3D(&spawn_character_actions);
     zox_import_module(ActionsUI);
 zox_end_module(Actions)
 

@@ -1,12 +1,14 @@
 #if !defined(zoxm_achievements) && defined(zoxm_users)
 #define zoxm_achievements
 
-zoxc_userdata(Achievement);
 // Realm Contains all Achievements
 // Save/Load Players progress - per save game
 // Toast UI -> show popup at top right when completed - this will trigger steam achievements at bottom right
-#include "util/realm_achievements.c"
-// Make sure to disable Steam Achievements while testing
+// NOTE: Make sure to disable Steam Achievements while testing
+
+zoxc_userdata(Achievement);
+#include "pre/_.c"
+#include "fun/realm_achievements.c"
 zox_declare_system_state_event(RealmAchievements, GenerateRealm, zox_generate_realm_achievements, spawn_realm_achievements)
 
 zox_begin_module(Achievements)

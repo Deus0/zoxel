@@ -1,4 +1,4 @@
-const int actions_count = 8; // 10; // having blank items seems to b reak it
+/*const int actions_count = 8; // 10; // having blank items seems to b reak it
 
 void spawn_character_actions(ecs *world, spawned_character3D_data *data) {
     if (!data->p) {
@@ -39,7 +39,7 @@ void spawn_character_actions(ecs *world, spawned_character3D_data *data) {
         }
     }
     zox_set(data->e, ActionLinks, { actions->length, actions->value })
-}
+}*/
 
 // block item!
 /*if (meta_item_block_dirt) actions->value[1] = spawn_user_item(world, meta_item_block_dirt, e);

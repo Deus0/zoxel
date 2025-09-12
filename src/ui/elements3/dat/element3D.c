@@ -13,6 +13,7 @@ typedef struct {
     entity prefab;
     byte render_disabled;
     color base_color;
+    color outline_color;
 } SpawnDataElement3D;
 
 typedef struct {
