@@ -59,7 +59,7 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
     blocks.value[zox_block_dirt - 1] = spawn_block_soil(world, zox_block_dirt, "dirt", dirt_color);
     tapwatch(time_realm_blocks, "built soil");
 
-    blocks.value[zox_block_grass - 1] = spawn_block_soil_grass(world, zox_block_grass, "grass", dirt_color, grass_color);
+    blocks.value[zox_block_grass - 1] = spawn_block_soil_grass(world, zox_block_grass, "soil_grass", dirt_color, grass_color);
     tapwatch(time_realm_blocks, "built soil_grass");
 
     blocks.value[zox_block_sand - 1] = spawn_block_soil(world, zox_block_sand, "sand", sand_color);

@@ -7,11 +7,11 @@ entity spawn_block_grass(
     // zox_log("+ spawning realm_block with model [%s]", zox_get_name(model))
     // use instanced mesh prefab
     SpawnBlock data = {
+        .name = "grass",
         .prefab = prefab_block_vox_meta,
         .prefab_world_block = prefab_block_vox_instanced,
         .tag = zox_id(BlockVox),
         .model = zox_block_vox,
-        .name = "grass",
         .color = block_color,
         .index = index,
         .seed = generate_voxel_seed(index),
