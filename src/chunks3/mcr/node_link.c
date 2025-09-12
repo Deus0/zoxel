@@ -1,9 +1,6 @@
-// typedef struct NodeLink NodeLink;
-
 typedef struct {
     entity value;
-} NodeLink;
-
+} OctreeLink;
 
 #define zox_node_add_link(name)\
 \
@@ -12,11 +9,11 @@ static inline byte is_linked_unlocked_##name(const name *node) {\
 }\
 \
 entity get_node_entity_unlocked_##name(const name *node) {\
-    return is_linked_unlocked_##name(node) ? ((NodeLink*) node->ptr)->value : 0;\
+    return is_linked_unlocked_##name(node) ? ((OctreeLink*) node->ptr)->value : 0;\
 }\
 \
 static inline entity get_entity_##name(const name *node) {\
-    const entity e = ((NodeLink*) node->ptr)->value;\
+    const entity e = ((OctreeLink*) node->ptr)->value;\
     return e;\
 }\
 \
@@ -29,8 +26,8 @@ void link_node_##name(name *node, const entity e) {\
     /*write_lock_##name(node);*/\
     if (node->type == node_type_closed) {\
         node->type = node_type_instance;\
-        node->ptr = malloc(sizeof(NodeLink));\
-        *(NodeLink*) node->ptr = (NodeLink) { e };\
+        node->ptr = malloc(sizeof(OctreeLink));\
+        *(OctreeLink*) node->ptr = (OctreeLink) { e };\
     }\
     /*write_unlock_##name(node);*/\
 }\
@@ -56,6 +53,6 @@ byte destroy_node_link_##name(ecs *world, name *node) {\
 }\
 \
 entity get_node_entity_##name(const name *node) {\
-    const entity e = is_linked_unlocked_##name(node) ? ((NodeLink*) node->ptr)->value : 0;\
+    const entity e = is_linked_unlocked_##name(node) ? ((OctreeLink*) node->ptr)->value : 0;\
     return e;\
 }

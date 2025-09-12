@@ -2,14 +2,30 @@ zox_tag(Node);
 zox_tag(Nodelink);
 zox_tag(Nodeleaf);
 zox_tag(Nodetree);
+zox_tag(NodeRun);
+zoxc_state(NodeBegin);
+zoxc_state(NodeEnd);
+zoxc_state(NodetreeBegin);
+zoxc_state(NodetreeEnd);
 zoxc_entity(NodeParent);
 zoxc_entity(NodeNext);
+zoxc_entity(NodetreeLink);
+zoxc_entity(NodeLink);
+zoxc_entities(NodeLinks)
 
 void define_components_nodes(ecs* world) {
     zoxd_tag(Node);
     zoxd_tag(Nodelink);
     zoxd_tag(Nodeleaf);
     zoxd_tag(Nodetree);
+    zoxd_tag(NodeRun);
+    zoxd_state(NodeBegin);
+    zoxd_state(NodeEnd);
+    zoxd_state(NodetreeBegin);
+    zoxd_state(NodetreeEnd);
     zoxd_entity(NodeParent);
     zoxd_entity(NodeNext);
+    zoxd_entity(NodetreeLink);
+    zoxd_entity(NodeLink);
+    zoxd_entities(NodeLinks);
 }

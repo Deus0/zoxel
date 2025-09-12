@@ -6,6 +6,10 @@
 // TODO: Simple Text Popup
 // TODO: Cinematic Black Bars - Top Bottom - For Dialogue Mode
 
+// NOTE: A Process Entity gets spawned for dialogue:
+//      - The current leaf
+//      - Any relevant links, speaker 1, speaker 2, etc
+
 #include "com/_.c"
 #include "ins/_.c"
 #include "pre/_.c"
