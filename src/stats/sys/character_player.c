@@ -16,7 +16,7 @@ void PlayerCharacterStatsSystem(iter *it) {
         // zox_sys_i(PlayerLink, player);
         zox_sys_o(StatLinks, stats);
 
-        if (state->value != zox_dirty_active) {
+        if (state->value != zox_dirty_end) {
             continue;
         }
 

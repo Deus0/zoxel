@@ -61,6 +61,15 @@ void define_systems_stats(ecs *world) {
         [out] stats.StatLinks
     );
     zox_system_1(
+        PlayerCharacterStatsSystem,
+        EcsOnUpdate,
+        [in] characters.GenerateCharacter,
+        [in] realms.RealmLink,
+        // [in] players.PlayerLink,
+        [out] stats.StatLinks,
+        [none] players.PlayerLink
+    );
+    zox_system_1(
         CharacterNameLabelsSystem,
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
