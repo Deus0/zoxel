@@ -212,9 +212,9 @@ zox_begin_module(ZoxGame)
     // logs
     is_log_gpu_restore = 0;
     // Gameplay
-    hit_terrain_color = (color) { 2, 2, 2, 155 };
-    hit_character_color = (color) { 155, 45, 45, 65 };
-    hit_block_vox_color = (color) { 55, 135, 185, 145 };
+    hit_terrain_color = (color) { 2, 2, 2, 255 };
+    hit_character_color = (color) { 155, 45, 45, 255 };
+    hit_block_vox_color = (color) { 55, 135, 185, 255 };
 
     // world gen
     // terrain_frequency = 0.062216;

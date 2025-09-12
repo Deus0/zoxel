@@ -572,4 +572,4 @@ void Chunk3RaycastSystem(iter *it) {
             data,
             &character_raycast);
     }
-} zoxd_system(Chunk3RaycastSystem)
+} zoxd_system(Chunk3RaycastSystem);

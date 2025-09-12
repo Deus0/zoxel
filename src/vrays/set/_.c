@@ -4,9 +4,17 @@
 #define rayhit_character 3
 
 byte debug_ray_big_range = 0;
+byte is_debug_rayhit_point = 0;
 const uint safety_checks_raycasting = 512;
 const float raycast_thickness = 16;
-const float raycaster_quad_thickness = 2;
-color hit_terrain_color = { 2, 2, 2, 155 };
-color hit_character_color = { 155, 45, 45, 65 };
-color hit_block_vox_color = { 55, 185, 145, 45 };
+const float raycaster_quad_thickness = 4;
+const float hit_character_line_up = 0.02f;
+const float hit_block_vox_line_up = 0.02f;
+float raygizmo_line_length = 0.02f; // 13f;   // 0.2f
+
+color hit_terrain_color = { 2, 2, 2, 15 };
+color hit_block_vox_color = { 55, 185, 145, 15 };
+color hit_character_color = { 155, 45, 45, 255 };
+
+byte is_debug_mid_voxel = 0;
+byte is_slow_gizmos = 0;

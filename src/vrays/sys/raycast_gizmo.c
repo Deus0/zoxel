@@ -1,8 +1,7 @@
 extern entity local_crosshair;
 extern void crosshair_set_type(ecs*, entity, byte);
-byte is_debug_mid_voxel = 0;
-byte is_slow_gizmos = 0;
-float raygizmo_line_length = 0.13f;   // 0.2f
+
+// TODO: Use only Local Voxel Position With Chunk to get PositionF of Block - Cleaner code
 
 // using DDA for raycasting
 byte create_raycast_gizmo(
@@ -15,18 +14,20 @@ byte create_raycast_gizmo(
         // zox_log("data->voxel_scale: %f", data->voxel_scale);
 
         // add line too
-        float3 b = float3_add(
-            data->hit, // hit positionf
-            float3_scale(data->normal, raygizmo_line_length * data->voxel_scale));
+        if (is_debug_rayhit_point) {
+            float3 hit_out = float3_add(
+                data->hit, // hit positionf
+                float3_scale(data->normal, raygizmo_line_length * data->voxel_scale));
 
-        spawn_line3D_colored_alpha(
-            world,
-            data->hit, // hit positionf
-            b,
-            raycast_thickness,
-            is_slow_gizmos ? 30 : 0.5f,
-            hit_block_vox_color
-        );
+            spawn_line3D_colored_alpha(
+                world,
+                data->hit, // hit positionf
+                hit_out,
+                raycast_thickness,
+                is_slow_gizmos ? 30 : 0.5f,
+                hit_block_vox_color
+            );
+        }
 
         // pointf is in middle of block
         float3 center_quad = float3_add(
@@ -102,18 +103,25 @@ byte create_raycast_gizmo(
 
     else if (ray_hit == rayhit_character) {
         // draw a cube above its head instead
-        float3 b = float3_add(data->hit, float3_scale(float3_up, 0.06f));
-        render_line3D_thickness_alpha(world, data->hit, b, hit_character_color, raycast_thickness);
-    }
-
-    else if (ray_hit == rayhit_block_vox) {
-        float3 b = float3_add(data->hit, float3_scale(data->normal, 0.06f));
-        spawn_line3D_colored_alpha(
+        float3 b = float3_add(data->hit, float3_scale(float3_up, hit_character_line_up));
+        render_line3D_thickness_alpha(
             world,
             data->hit,
             b,
-            0.5f,
+            hit_character_color,
+            raycast_thickness
+        );
+        // zox_log("hit character alpha %i", hit_character_color.a);
+    }
+
+    else if (ray_hit == rayhit_block_vox) {
+        float3 hit_out = float3_add(data->hit, float3_scale(data->normal, hit_block_vox_line_up));
+        spawn_line3D_colored_alpha(
+            world,
+            data->hit, // hit positionf
+            hit_out,
             raycast_thickness,
+            is_slow_gizmos ? 30 : 0.2f,
             hit_block_vox_color
         );
     }
@@ -130,4 +138,4 @@ void RaycastGizmoSystem(iter *it) {
         crosshair_set_type(world, local_crosshair, data->result);
         create_raycast_gizmo(world, data);
     }
-} zoxd_system(RaycastGizmoSystem)
+} zoxd_system2(RaycastGizmoSystem);
