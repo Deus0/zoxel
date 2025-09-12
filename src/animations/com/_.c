@@ -9,7 +9,8 @@ zoxc_float4(EternalRotation);
 zoxc_float(AnimateSourceFloat);
 zoxc_float(AnimateTargetFloat);
 zoxc_float(FadeOutEvent);
-zoxc_float3(AnimationStartPosition);
+zoxc_float3(AnimationPositionStart);
+zoxc_float3(AnimationPositionEnd);
 zoxc_entity(LerpToTarget);
 // sequencing
 zoxc_byte(AnimationIndex);
@@ -41,6 +42,7 @@ void define_components_animations(ecs* world) {
     // seperating animations
     zoxd_arrayd(AnimationLinks);
     // lerp to
-    zoxd_float3(AnimationStartPosition);
+    zoxd_float3(AnimationPositionStart);
+    zoxd_float3(AnimationPositionEnd);
     zoxd_entity(LerpToTarget);
 }

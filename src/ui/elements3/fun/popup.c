@@ -34,5 +34,14 @@ entity spawn_popup3_easy(
         popup_data
     );
     zox_set(e, Position3D, { position });
+    float3 end = float3_add(position, float3_scale(float3_up, randf_range(0.1f, 0.15f)));
+    lerp_to_position(
+        world,
+        e,
+        0.02,
+        randf_range(0.4f, 0.6f),
+        position,
+        end
+    );
     return e;
 }

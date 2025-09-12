@@ -8,6 +8,7 @@
 #include "animate_alpha_system.c"
 #include "oscillate_system.c"
 #include "lerp_to_entity.c"
+#include "position.c"
 
 void define_systems_animations(ecs* world) {
     zox_system(
@@ -72,8 +73,21 @@ void define_systems_animations(ecs* world) {
     zox_system(
         LerpToEntitySystem,
         EcsOnUpdate,
-        [in] AnimationStartPosition,
+        [in] AnimationState,
+        [in] AnimationPositionStart,
         [in] LerpToTarget,
+        [in] AnimationStart,
+        [in] AnimationDelay,
+        [in] AnimationLength,
+        [out] transforms3.Position3D
+    );
+
+    zox_system(
+        LerpToPositionSystem,
+        EcsOnUpdate,
+        [in] AnimationState,
+        [in] AnimationPositionStart,
+        [in] AnimationPositionEnd,
         [in] AnimationStart,
         [in] AnimationDelay,
         [in] AnimationLength,
