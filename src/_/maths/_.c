@@ -10,10 +10,10 @@
 
 // NOTE: we use Column Major Matrix (as opposed to Row Major);
 
-#include "data/constants.c"
-#include "data/_.c"
-#include "util/_.c"
-#include "tests/test_quadrants.c"
+#include "dat/constants.c"
+#include "dat/_.c"
+#include "fun/_.c"
+#include "tst/test_quadrants.c"
 #include "bounds/_.c"
 #include "planes/_.c"
 

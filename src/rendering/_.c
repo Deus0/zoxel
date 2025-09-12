@@ -10,9 +10,9 @@
 #include "shd/_.c"
 #include "dbg/_.c"
 
-#include "basics2D/_.c"
+#include "basics2/_.c"
 #ifndef zox_disable_rendering3D
-    #include "basics3D/_.c"
+    #include "basics3/_.c"
 #endif
 #include "cameras/_.c"
 

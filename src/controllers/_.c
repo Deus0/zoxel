@@ -1,10 +1,10 @@
 #if !defined(zoxm_controllers) && defined(zoxm_characters) && defined(zoxm_inputs) && defined(zoxm_physics)
 #define zoxm_controllers
 
-#include "data/settings.c"
+#include "dat/settings.c"
 #include "controllers2/_.c"
 #include "controllers3/_.c"
-#include "free_roam/free_roam.c"
+#include "free_roam/_.c"
 
 zox_begin_module(Controllers)
     if (headless) {

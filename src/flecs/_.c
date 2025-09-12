@@ -3,23 +3,23 @@
 // #define zox_enable_log_new_system
 
 byte running = 1;
-#include "util/spinlock.c"
-#include "macros/_.c"
-#include "data/_.c"
-#include "components/_.c"
+#include "fun/spinlock.c"
+#include "mcr/_.c"
+#include "dat/_.c"
+#include "comm/_.c"
 #include "com/_.c"
-#include "util/_.c"
-#include "systems/_.c"
-#include "components/state.c"
+#include "fun/_.c"
+#include "sys/_.c"
+#include "comm/state.c"
 
-ecs_world_t* open_ecs(int argc, char* argv[]) {
-    ecs_world_t* new_world = ecs_init_w_args(argc, argv);
+ecs* open_ecs(int argc, char* argv[]) {
+    ecs* new_world = ecs_init_w_args(argc, argv);
     return new_world;
 }
 
-ecs_world_t* initialize_ecs(int argc, char* argv[], byte cores) {
+ecs* initialize_ecs(int argc, char* argv[], byte cores) {
     use_cores = cores;
-    ecs_world_t *new_world = open_ecs(argc, argv);
+    ecs *new_world = open_ecs(argc, argv);
     local_world = new_world;
     return new_world;
 }

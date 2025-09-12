@@ -5,7 +5,7 @@
 
 #include "dat/_.c"
 #include "set/_.c"
-#include "cmp/_.c"
+#include "com/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
 #include "sys/_.c"

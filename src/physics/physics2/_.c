@@ -5,8 +5,8 @@ zoxc_float2(Velocity2D);     //! Velocity movement of a 2D Entity
 zoxc_float2(Acceleration2D); //! Accelaration movement of a 2D Entity
 zoxc_float(Torque2D);        //! Rotational velocity of a 2D Entity
 zoxc_float2(Bounds2D);       //! Bounding box of a 2D Entity
-#include "util/physics2D_util.c"
-#include "systems/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Physics2)
     zoxd(Velocity2D);

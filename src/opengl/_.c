@@ -1,10 +1,8 @@
 // OpenGL Wrapper for Zoxel
-#ifndef zoxel_opengl
-#define zoxel_opengl
+#ifndef zoxm_opengl
+#define zoxm_opengl
 
-// byte shader_include_es = 1;
-#include "data/_.c"
-#include "util/_.c"
+#include "dat/_.c"
 #include "fun/_.c"
 
 byte zox_init_glew() {

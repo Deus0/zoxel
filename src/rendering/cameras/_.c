@@ -1,10 +1,10 @@
 #ifndef zox_rendering_cameras
 #define zox_rendering_cameras
 
-#include "data/frame_buffer.c"
-#include "data/render_buffer.c"
-#include "util/render_camera.c"
-#include "systems/_.c"
+#include "dat/frame_buffer.c"
+#include "dat/render_buffer.c"
+#include "fun/render_camera.c"
+#include "sys/_.c"
 
 zox_begin_module(RenderingCameras)
     zox_define_component_w_dest(RenderBufferLink);

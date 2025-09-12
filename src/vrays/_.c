@@ -3,11 +3,11 @@
 #ifndef zoxm_vrays
 #define zoxm_vrays
 
-#include "settings/_.c"
-#include "components/_.c"
-#include "util/_.c"
-#include "systems/_.c"
-#include "debug/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Vrays)
     define_components_vrays(world);

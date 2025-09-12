@@ -3,7 +3,7 @@
 #define zoxm_terminals
 
 byte headless = 0;
-#include "data/terminal_inputs.c"
-#include "util/_.c"
+#include "dat/terminal_inputs.c"
+#include "fun/_.c"
 
 #endif

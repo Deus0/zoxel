@@ -4,7 +4,7 @@
 zoxc_byte(ChildIndex);
 zoxc_entities(Children)
 zoxc_child(ParentLink, Children)
-#include "util/_.c"
+#include "fun/_.c"
 
 zox_begin_module(Hierarchys)
     zoxd_byte(ChildIndex);

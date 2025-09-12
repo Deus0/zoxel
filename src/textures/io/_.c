@@ -6,9 +6,9 @@ int files_count_textures = 0;
 entity *files_textures;
 string_hashmap *files_hashmap_textures;
 zox_tag(SaveTexture);
-#include "prefabs/file_texture.c"
-#include "systems/textures_save_system.c"
-#include "util/texture_files.c"
+#include "pre/file_texture.c"
+#include "sys/textures_save_system.c"
+#include "fun/texture_files.c"
 
 void dispose_textures_io(ecs *world, void *ctx) {
     (void) world;

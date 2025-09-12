@@ -1,10 +1,10 @@
 #if !defined(zoxm_physics3) && defined(zoxm_transforms3)
 #define zoxm_physics3
 
-#include "settings/_.c"
-#include "components/_.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
 #include "collisions3/_.c"
 
 zox_begin_module(Physics3)

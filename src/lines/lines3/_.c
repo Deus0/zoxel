@@ -1,5 +1,5 @@
-#ifndef zoxm_lines3D
-#define zoxm_lines3D
+#ifndef zoxm_lines3
+#define zoxm_lines3
 
 // should live for .1 seconds
 const float line_frame_timing = 1 / 10.0f;
@@ -10,11 +10,11 @@ zoxc_byte(DebugCubeLines);
 zoxc_float(CubeLinesThickness);
 zox_tag(DebugCubeCorner);
 zoxc_float(DebugCubeShrink);
-#include "states/_.c"
-#include "prefabs/_.c"
-#include "shaders/line3D.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "sta/_.c"
+#include "pre/_.c"
+#include "shd/line3D.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 void spawn_shaders_lines3D(ecs_world_t *world) {
     if (render_backend == zox_render_backend_opengl) {

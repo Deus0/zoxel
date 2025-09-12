@@ -1,93 +1,28 @@
 #ifndef zoxm_musics
 #define zoxm_musics
 
-// todo: make sub modules:
+// TODO: make sub modules:
 //      - notes
 //      - songs
 //      - playlists
 //      - io
 
-#include "settings/_.c"
-#define playlist_mode_loop 0    // stick on same track
-#define playlist_mode_cycle 1   // play through list sequentially
-#define playlist_mode shuffle 2 // random non repeating track each time
-zox_tag(Note);
-zox_tag(Music);
-zox_tag(Looping);
-zoxc_byte(MusicNote);
-zoxc_byte(GenerateMusic);
-zoxc_byte(MusicEnabled);
-zoxc_double(MusicLength);
-zoxc_double(MusicTime);
-zoxc_double(MusicSpeed);
-zoxc_entities(NoteLinks)
-// playlist
-zox_tag(Playlist);
-zoxc_byte(PlaylistEnabled);
-zoxc_byte(MusicPlaying);
-zoxc_entities(MusicLinks)
-// realm
-zoxc_byte(PlaylistPlaying);
-zoxc_entities(PlaylistLinks)
-zoxc_entity(PlaylistLink);
-// playlist mode
-zoxc_byte(PlaylistMode);
-
-// zoxc_arrayd(MusicData, int);
-#include "data/music_palette.c"
-#include "convert/midi_load.c"
-#include "prefabs/_.c"
-#include "util/_.c"
-#include "systems/_.c"
-
-void process_arguments_musics(ecs_world_t *world, char* args[], int count) {
-    (void) world;
-    for (int i = 1; i < count; i++) {
-        if (strcmp(args[i], "--nomusic") == 0) {
-            nomusic = 1;
-            zox_log("+ setting enabled [nomusic]");
-        }
-    }
-}
-
-void on_boot_musics(ecs_world_t* world, ecs_entity_t app) {
-    if (nosounds) {
-        zox_logv("Sounds are disabled: no music.");
-        return;
-    }
-    zox_geter_value(app, RealmLink, ecs_entity_t, realm);
-    spawn_realm_playlist(world, realm);
-}
+#include "set/_.c"
+#include "com/_.c"
+#include "dat/_.c"
+#include "cnv/_.c"
+#include "playlists/_.c"
+#include "pre/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Musics)
-    // Notes
-    zoxd_tag(Note);
-    zoxd_tag(Music);
-    zoxd_tag(Looping);
-    // Music
-    zoxd_byte(MusicNote);
-    zoxd_byte(GenerateMusic);
-    zoxd_byte(MusicEnabled);
-    zoxd_double(MusicTime);
-    zoxd_double(MusicSpeed);
-    zoxd_double(MusicLength);
-    zoxd_entities(NoteLinks);
-    // playlist
-    zoxd_tag(Playlist);
-    zoxd_byte(PlaylistEnabled);
-    zoxd_byte(MusicPlaying);
-    zoxd_entities(MusicLinks);
-    // realm
-    zoxd_byte(PlaylistPlaying);
-    zoxd_byte(PlaylistMode);
-    zoxd_entities(PlaylistLinks);
-    zoxd_entity(PlaylistLink);
-
-    define_systems_music(world);
-
-    add_hook_on_boot(on_boot_musics);;
+    add_hook_on_boot(on_boot_musics);
     add_hook_terminal_command(process_arguments_musics);
     add_hook_spawn_prefabs(spawn_prefabs_musics);
+    define_components_musics(world);
+    define_systems_music(world);
+    zox_import_module(Playlists);
 zox_end_module(Musics)
 
 #endif

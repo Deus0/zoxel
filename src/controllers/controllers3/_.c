@@ -1,13 +1,13 @@
-#ifndef zoxm_controllers3D
-#define zoxm_controllers3D
+#ifndef zoxm_controllers3
+#define zoxm_controllers3
 
-#include "settings/_.c"
-#include "components/_.c"
-#include "prefabs/_.c"
-#include "util/_.c"
-#include "spawn/_.c"
-#include "systems/_.c"
-#include "debug/_.c"
+#include "set/_.c"
+#include "com/_.c"
+#include "pre/_.c"
+#include "fun/_.c"
+#include "ins/_.c"
+#include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Controllers3)
     define_components_controllers3D(world);

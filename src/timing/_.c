@@ -1,14 +1,14 @@
 #ifndef zoxm_time
 #define zoxm_time
 
-#include "data/settings.c"
+#include "dat/settings.c"
 zoxc_double(DestroyInTime);
 zoxc_double(TimerTime);
 zoxc_double(TimerRate);
 zoxc_byte(TimerState);
-#include "macros/_.c"
-#include "util/_.c"
-#include "systems/_.c"
+#include "mcr/_.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Timing)
     zoxd_double(DestroyInTime);

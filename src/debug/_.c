@@ -1,10 +1,10 @@
 #if !defined(zoxm_debug) && defined(zoxm_players)
 #define zoxm_debug
 
-#include "data/settings.c"
-#include "util/amd.c"
-#include "util/system.c"
-#include "systems/game_debug_label_system.c"
+#include "dat/settings.c"
+#include "fun/amd.c"
+#include "fun/system.c"
+#include "sys/game_debug_label_system.c"
 
 void dispose_debug(ecs_world_t* world, void* ctx) {
     (void) world;

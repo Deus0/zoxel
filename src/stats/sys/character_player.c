@@ -1,6 +1,3 @@
-
-
-
 // players are richer beings from the aether
 void PlayerCharacterStatsSystem(iter *it) {
     zox_sys_world();

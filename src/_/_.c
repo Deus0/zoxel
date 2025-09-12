@@ -10,12 +10,12 @@
 
 #include "platforms/defines.c"
 #include "platforms/_.c"
-#include "system/_.c"
+#include "sys/_.c"
 #include "terminals/_.c"
 #include "pathing/_.c"
-#include "states/_.c"
+#include "sta/_.c"
 #include "settings/_.c"
-#include "hooks/_.c"
+#include "hok/_.c"
 
 void module_dispose_core(ecs_world_t *world, void *ctx) {
     (void) world;

@@ -1,0 +1,118 @@
+#ifndef zox_windows
+
+    int set_non_blocking(int sock) {
+        int flags = fcntl(sock, f_getfl, 0);
+        if (flags < 0) {
+            perror("    open_socket: fcntl ");
+            return 1;
+        }
+        if (fcntl(sock, f_setfl, flags | non_blocking) < 0) {
+            perror("    open_socket: fcntl ");
+            return 1;
+        }
+        return 0;
+    }
+#else
+
+    void initialize_windows_sockets() {
+        if (sockets_enabled) {
+            return;
+        }
+        WSADATA wsaData;
+        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+            int error_code = WSAGetLastError();
+            zox_log("    open_socket: WSAStartup failed with error code %d\n", error_code)
+        } else {
+            sockets_enabled = 1;
+            zox_log(" + enabled windows sockets")
+        }
+    }
+
+    void dispose_windows_sockets() {
+        if (!sockets_enabled) return;
+        WSACleanup();
+    }
+
+    int set_non_blocking(int sock) {
+        // Set the socket to non-blocking mode
+        u_long non_blocking = 1;
+        if (ioctlsocket(sock, FIONBIO, &non_blocking) != 0) {
+            perror(" ! open_socket: ioctlsocket");
+            // closesocket(sock);
+            return -1;
+        }
+        return 0;
+    }
+#endif
+
+//! Returns socket integer, -1 if failed to bind socket.
+int open_socket(int port) {
+    // create the UDP socket
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0) {
+        perror("    open_socket: socket ");
+        return -1;
+    }
+    if (set_non_blocking(sock)) {
+        return -1;
+    }
+    // set up the address to bind to
+    struct sockaddr_in bind_addr;
+    memset(&bind_addr, 0, sizeof(bind_addr));
+    bind_addr.sin_family = AF_INET;
+    bind_addr.sin_addr.s_addr = INADDR_ANY;
+    bind_addr.sin_port = htons(port);
+    // bind the socket to the address
+    if (bind(sock, (struct sockaddr*) &bind_addr, sizeof(bind_addr)) < 0) {
+        perror("    open_socket: bind");
+        return -1;
+    }
+    zox_log(" > success opening socket [%i] port [%i]", sock, port)
+    return sock;
+}
+
+
+int check_socket_error(char *debug) {
+#ifdef zox_windows
+    // Handle errors on Windows
+    int error_code = WSAGetLastError();
+    if (error_code != WSAEWOULDBLOCK) {
+        if (zox_log_network_errors) {
+            zox_log_error("[%s] error_code %d", debug, error_code);
+        }
+    }
+    return error_code;
+#else
+    // Handle errors on Unix-like systems
+    if (!(errno == EAGAIN || errno == EWOULDBLOCK)) {
+        if (zox_log_network_errors) {
+            perror("    check_socket_error: recvfrom");
+            zox_log_error("[%s]", debug)
+        }
+    }
+    return errno;
+#endif
+}
+
+byte peek_at_packet(int socket, struct sockaddr_in *recv_addr) {
+    socklen_t recv_addr_len = sizeof(*recv_addr);
+    byte recv_buffer[peek_packet_size];
+    int recv_size = recvfrom(socket, (char *) recv_buffer, peek_packet_size, MSG_PEEK, (struct sockaddr*) recv_addr, &recv_addr_len);
+    if (recv_size < 0) {
+        check_socket_error("peek_at_packet");
+        return 0;
+    } else if (recv_size == 0) {
+        return 0;
+    } else {
+#ifdef zox_testing_networking
+        zox_log(" > client packet recieved [%i]", recv_buffer[0])
+        // zox_log("     - sender ip [%s]\n", ip4_to_string(*recv_addr));
+#endif
+        return recv_buffer[0];
+    }
+    return 0;
+}
+
+/*void set_new_socket(ecs *world, entity e, int port) {
+    zox_set(e, SocketLink, { open_socket(port) })
+}*/

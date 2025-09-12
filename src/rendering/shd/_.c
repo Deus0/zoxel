@@ -9,8 +9,8 @@ string_hashmap *files_hashmap_shaders;
 entity prefab_file_shader;
 // zox_tag(Shader)
 zoxc_arrayd(ShaderSource, char)
-#include "prefabs/file_shader.c"
-#include "util/_.c"
+#include "pre/file_shader.c"
+#include "fun/_.c"
 
 void dispose_shaders(ecs *world, void *ctx) {
     (void) world;

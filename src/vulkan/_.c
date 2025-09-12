@@ -1,10 +1,10 @@
-#ifndef zoxel_vulkan
-#define zoxel_vulkan
+#ifndef zoxm_vulkan
+#define zoxm_vulkan
 
 // #include "vulkan/vulkan.c"
-#include "util/vulkan_check.c"
+#include "fun/vulkan_check.c"
 #ifdef zox_vulkan
-    #include "util/vulkan_setup.c"
+    #include "fun/vulkan_setup.c"
 #endif
 
 void dispose_vulkan() {

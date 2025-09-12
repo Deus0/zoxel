@@ -2,8 +2,8 @@
 #define zoxm_players
 
 // todo: move based functionality into here
-#include "states/_.c"
-#include "settings/_.c"
+#include "sta/_.c"
+#include "set/_.c"
 zox_tag(Player);
 zox_tag(PlayerCharacter);
 zoxc_byte(PlayerState);
@@ -11,9 +11,9 @@ zoxc_double(PlayerRespawn);
 zoxc_entity(PlayerLink);
 zoxc_arrayd(PlayerLinks, ecs_entity_t)
 zoxc_entity(PlayerPauseEvent);
-#include "prefabs/_.c"
-#include "spawn/_.c"
-#include "systems/_.c"
+#include "pre/_.c"
+#include "ins/_.c"
+#include "sys/_.c"
 
 // int spawn_players(ecs_world_t *world, const ecs_entity_t game);
 

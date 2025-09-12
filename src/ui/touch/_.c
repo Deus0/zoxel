@@ -9,9 +9,9 @@ const color virtual_joystick_color2 = { 33, 33, 44, 125 };
 const color virtual_joystick_pointer_color2 = { 22, 22, 88, 200 };
 
 zox_tag(JoystickUI);
-#include "prefabs/_.c"
-#include "spawn/_.c"
-#include "systems/_.c"
+#include "pre/_.c"
+#include "ins/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Touch)
     zoxd_tag(JoystickUI);

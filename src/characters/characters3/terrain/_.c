@@ -1,32 +1,17 @@
-#ifndef zox_characters3D_terrain
-#define zox_characters3D_terrain
+#ifndef zoxm_characters3_terrain
+#define zoxm_characters3_terrain
 
-#include "settings/_.c"
-zoxc_byte(CharactersSpawned);
-zoxc_byte(CharactersEverSpawned);
-zoxc_byte(CharacterSpawnZone);
-#include "util/_.c"
-#include "debug/_.c"
-#include "systems/_.c"
-
-static inline byte can_have_characters(ecs_world_t* world, ecs_entity_t chunk) {
-    return zox_get_value(chunk, CharacterSpawnZone);
-}
-
-void spawn_prefabs_characters3_terrain(ecs* world) {
-    if (prefab_chunk_terrain) {
-        zox_prefab_set(prefab_chunk_terrain, CharacterSpawnZone, { 1 });
-        zox_prefab_set(prefab_chunk_terrain, CharactersSpawned, { 0 });
-        zox_prefab_set(prefab_chunk_terrain, CharactersEverSpawned, { 0 });
-    }
-}
+#include "set/_.c"
+#include "com/_.c"
+#include "pre/_.c"
+#include "fun/_.c"
+#include "dbg/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Characters3Terrain)
-    zoxd_byte(CharactersSpawned);
-    zoxd_byte(CharactersEverSpawned);
-    zoxd_byte(CharacterSpawnZone);
-    define_systems_characters3_terrain(world);
     add_hook_spawn_prefabs(spawn_prefabs_characters3_terrain);
+    define_components_characters3_terrain(world);
+    define_systems_characters3_terrain(world);
 zox_end_module(Characters3Terrain)
 
 #endif

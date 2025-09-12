@@ -12,7 +12,7 @@
 //     zox_log("Current brightness: %f\n", zoxs_get_float(s));
 // zox_end_module(ModuleName)
 //
-#include "data/_.c"
+#include "dat/_.c"
 #define max_settings 256
 uint settings_count = 0;
 setting settings[max_settings];
@@ -43,4 +43,4 @@ setting zoxs_get(const char *name) {
     return (setting) { 0 };
 }
 
-#include "util/_.c"
+#include "fun/_.c"

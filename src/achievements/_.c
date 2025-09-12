@@ -6,14 +6,14 @@
 // Toast UI -> show popup at top right when completed - this will trigger steam achievements at bottom right
 // NOTE: Make sure to disable Steam Achievements while testing
 
-zoxc_userdata(Achievement);
+#include "com/_.c"
 #include "pre/_.c"
 #include "fun/realm_achievements.c"
-zox_declare_system_state_event(RealmAchievements, GenerateRealm, zox_generate_realm_achievements, spawn_realm_achievements)
+zox_declare_system_state_event(RealmAchievements, GenerateRealm, zox_generate_realm_achievements, spawn_realm_achievements);
 
 zox_begin_module(Achievements)
-    zoxd_userdata(Achievement)
-    zox_define_system_state_event_1(RealmAchievements, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm)
+    define_components_achievements(world);
+    zox_define_system_state_event_1(RealmAchievements, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
 zox_end_module(Achievements)
 
 #endif

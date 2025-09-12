@@ -1,13 +1,13 @@
 #if !defined(zoxm_neurals) && defined(zoxm_nodes)
 #define zoxm_neurals
 
-#include "data/settings.c"
-#include "cmp/_.c"
-#include "prefabs/prefabs.c"
-#include "util/neuron_util.c"
-#include "util/build_test_brain.c"
-#include "systems/_.c"
-#include "debug/_.c"
+#include "dat/settings.c"
+#include "com/_.c"
+#include "pre/prefabs.c"
+#include "fun/neuron_util.c"
+#include "fun/build_test_brain.c"
+#include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Neurals)
     define_components_neurals(world);
