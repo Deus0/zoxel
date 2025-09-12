@@ -11,9 +11,7 @@
 #include "dbg/_.c"
 
 #include "basics2/_.c"
-#ifndef zox_disable_rendering3D
-    #include "basics3/_.c"
-#endif
+#include "basics3/_.c"
 #include "cameras/_.c"
 
 byte initialize_rendering(byte render_backend) {
@@ -59,15 +57,16 @@ zox_begin_module(Rendering)
     // prefab spawning
     add_hook_spawn_prefabs(spawn_prefabs_rendering_core);
 
-    zox_import_module(Shaders)
-    zox_import_module(Rendering2)
-#ifdef zoxm_rendering_basics3D
-    zox_import_module(Rendering3)
-#endif
-    zox_import_module(RenderingCameras)
-    zox_module_dispose(dispose_rendering)
+    zox_import_module(Shaders);
+    zox_import_module(Rendering2);
+    zox_import_module(Rendering3);
+
+    zox_import_module(RenderingCameras);
+    zox_module_dispose(dispose_rendering);
+
     add_to_update_loop(viewport_clear);
     initialize_settings_rendering(world);
+
     if (prefab_camera_game) {
         zox_prefab_set(prefab_camera_game, FrameBufferLink, { 0 });
         zox_prefab_set(prefab_camera_game, RenderBufferLink, { 0 });
