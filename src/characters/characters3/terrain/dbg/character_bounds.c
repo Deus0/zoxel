@@ -1,6 +1,6 @@
-extern ecs_entity_t get_linked_terrain(ecs_world_t*, ecs_entity_t);
+extern ecs_entity_t get_linked_terrain(ecs*, ecs_entity_t);
 
-void toggle_debug_character_bounds(ecs_world_t *world) {
+void toggle_debug_character_bounds(ecs *world) {
 
     const ecs_entity_t realm = local_realm;
     if (!zox_valid(realm)) return;
@@ -28,7 +28,7 @@ void toggle_debug_character_bounds(ecs_world_t *world) {
     }
 }
 
-void key_down_toggle_debug_character_bounds(ecs_world_t *world, int32_t keycode) {
+void key_down_toggle_debug_character_bounds(ecs *world, int32_t keycode) {
     if (keycode == SDLK_F5) {
         toggle_debug_character_bounds(world);
     }

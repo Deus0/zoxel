@@ -11,9 +11,11 @@
 //      - Any relevant links, speaker 1, speaker 2, etc
 
 #include "com/_.c"
-#include "ins/_.c"
 #include "pre/_.c"
+#include "fun/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
+#include "tst/_.c"
 
 zox_begin_module(Dialogues)
     add_hook_spawn_prefabs(spawn_prefabs_dialogues);

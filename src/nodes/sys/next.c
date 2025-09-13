@@ -27,7 +27,7 @@ void NextNodeSystem(iter *it) {
         } else {
             zox_set(e, NodeBegin, { zox_dirty_trigger });
             // do this for now - then implement dialogue node system with confirm button
-            zox_set(e, NodeEnd, { zox_dirty_trigger });
+            // zox_set(e, NodeEnd, { zox_dirty_trigger });
         }
 
     }

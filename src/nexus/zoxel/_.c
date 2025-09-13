@@ -118,6 +118,8 @@ void zoxel_settings_uis() {
 }
 
 void zoxel_debug_keys() {
+    add_hook_key_down(key_down_toggle_dialogue);
+
     add_hook_key_down(key_down_toggle_light_debug);
     add_hook_key_down(test_load_chunk);
     add_hook_key_down(toggle_sound);

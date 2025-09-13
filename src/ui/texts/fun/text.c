@@ -35,13 +35,13 @@ byte is_zext(TextData *zext, const char* text) {
     return 1;
 }
 
-void set_zext(TextData *textData, const char* text) {
+void set_zext(TextData *data, const char* text) {
     const int text_length = text != NULL ? strlen(text) : 0;
-    if (textData->length != text_length) {
-        resize_memory_component(TextData, textData, byte, text_length)
+    if (data->length != text_length) {
+        resize_memory_component(TextData, data, byte, text_length);
     }
     for (int i = 0; i < text_length; i++) {
-        textData->value[i] = convert_ascii(text[i]);
+        data->value[i] = convert_ascii(text[i]);
     }
 }
 
@@ -49,9 +49,9 @@ void print_entity_zext(ecs *world, const entity e) {
     if (!zox_has(e, TextData)) {
         return;
     }
-    const TextData *textData = zox_get(e, TextData)
-    char *debug_text = get_zext_text(textData);
-    zox_log("   > zext %lu [%s] length %i\n", e, debug_text, textData->length)
+    const TextData *data = zox_get(e, TextData)
+    char *debug_text = get_zext_text(data);
+    zox_log("   > zext %lu [%s] length %i\n", e, debug_text, data->length)
     free(debug_text);
 }
 

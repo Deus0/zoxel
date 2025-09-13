@@ -110,7 +110,10 @@ SpawnWindowUsers get_default_spawn_window_users_data(
     };
 
     const byte header_height = header_text_data.font_size + header_text_data.margins.y * 2;
-    data.element.size = calculate_grid_window_size(data.window, header_height);
+    data.element.size = calculate_grid_window_size(
+        data.window,
+        header_height
+    );
 
     return data;
 }

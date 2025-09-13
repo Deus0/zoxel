@@ -1,5 +1,10 @@
-
-
-entity spawn_ui_dialogue(ecs* world) {
-
+entity spawn_prefab_dialogue_ui(
+    ecs *world,
+    const entity prefab
+) {
+    zox_prefab_child(prefab);
+    zox_prefab_name("dialogue_ui");
+    zox_add_tag(e, DialogueUI);
+    zox_prefab_set(e, DialogueRunLink, { 0 });
+    return e;
 }

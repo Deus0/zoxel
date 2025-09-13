@@ -3,7 +3,7 @@ void key_down_test_aura(ecs *world, int32_t keycode) {
     if (keycode == SDLK_y) {
         const entity player = zox_players[0];
         if (!player) {
-            zox_log("! player is null\n")
+            zox_log("! player is null")
             return;
         }
         const entity character = zox_get_value(player, CharacterLink)
