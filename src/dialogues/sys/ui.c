@@ -23,10 +23,15 @@ void DialogueSpeechSystem(iter *it) {
 
         entity speech = children->value[1];
         zox_geter(node->value, DialogueText, text);
-        zox_log("Node [%s]: Speech [%s]",
-                zox_get_name(node->value), text->value);
+        zox_log("Node [%s]: Target Speech [%s]", zox_get_name(node->value), text->value);
 
-        set_entity_text(world, speech, text->value);
+        TargetText target = { };
+        memcpy(target.value, text->value, 512);
+        zox_set_ptr(speech, TargetText, target);
+        zox_set(speech, AnimateTextBegin, { zox_current_time });
+        zox_set(speech, AnimateTextTime, { 3 });
+
+        // set_entity_text(world, speech, text->value);
         // zox_muter(speech, TextData, data);
     }
 } zoxd_system2(DialogueSpeechSystem);

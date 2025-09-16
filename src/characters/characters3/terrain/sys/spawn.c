@@ -55,9 +55,9 @@ void Characters3SpawnSystem(iter *it) {
         }
 
         // getters
-        zox_geter_value(terrain->value, RealmLink, entity, realm)
-        zox_geter(realm, CharacterLinks, characters)
-        zox_geter_value(realm, CharactersChanceMax, byte, max_chance)
+        zox_geter_value(terrain->value, RealmLink, entity, realm);
+        zox_geter(realm, CharacterLinks, characters);
+        zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         const entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
 
@@ -146,21 +146,20 @@ void Characters3SpawnSystem(iter *it) {
             float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
 
             // 3) Finally we spawn and link
-            const entity character = spawn_character3(
-                world,
-                (spawn_character3D_data) {
-                    .prefab = prefab_character,
-                    .terrain = terrain->value,
-                    .terrain_chunk = e,
-                    .chunk_position = cposition->value,
-                    .position = position,
-                    .rotation = rotation,
-                    .render_depth = render_depth,
-                    .render_disabled = render_disabled->value,
-                    .model = model,
-                    .scale = vox_model_scale,
-                }
-            );
+            const spawn_character3D_data spawn_data = {
+                .prefab = prefab_character,
+                .position = position,
+                .rotation = rotation,
+                .model = model,
+                .scale = vox_model_scale,
+                .render_depth = render_depth,
+                .render_disabled = render_disabled->value,
+                .realm = realm,
+                .terrain = terrain->value,
+                .terrain_chunk = e,
+                .chunk_position = cposition->value,
+            };
+            const entity character = spawn_character3(world, spawn_data);
 
             if (character) {
                 on_spawned_character3_npc(world, character);

@@ -85,7 +85,7 @@ void set_entity_label_with_zext(
     zox_set(e, TextDirty, { zox_dirty_trigger });
 }
 
-byte set_entity_text(ecs *world, const entity e, const char* text) {
+byte set_entity_text(ecs* world, const entity e, const char* text) {
     if (!zox_valid(e) || !zox_has(e, TextData) || !zox_has(e, TextDirty)) {
         zox_log_error("invalid zext in [set_entity_text]")
         return 0;
@@ -135,4 +135,36 @@ void set_new_zox_name(
 
 int get_zexts_count(ecs *world) {
     return zox_count_types(Zext);
+}
+
+
+
+
+byte is_zext_cut(TextData *zext, const char* text, byte cut_length) {
+    if (!zext || !zext->value) {
+        return 0; // error
+    }
+    if (zext->length != cut_length) {
+        return 0;
+    }
+    if (!cut_length && !zext->length) {
+        return 1;
+    }
+    for (int i = 0; i < cut_length; i++) {
+        byte j = convert_ascii(text[i]);
+        byte k = zext->value[i];
+        if (j != k) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void set_zext_cut(TextData *data, const char* text, byte cut_length) {
+    if (data->length != cut_length) {
+        resize_memory_component(TextData, data, byte, cut_length);
+    }
+    for (int i = 0; i < cut_length; i++) {
+        data->value[i] = convert_ascii(text[i]);
+    }
 }

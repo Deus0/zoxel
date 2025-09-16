@@ -21,11 +21,11 @@ entity spawn_character3(
     }
 
     zox_geter_value(data.prefab, Character3Type, byte, type);
-    entity realm = zox_gett_value(data.terrain, RealmLink);
+    // entity realm = zox_gett_value(data.terrain, RealmLink);
 
     zox_instance(data.prefab);
     zox_name("character3");
-    zox_set(e, RealmLink, { realm });
+    zox_set(e, RealmLink, { data.realm });
     zox_set(e, Position3D, { data.position });
     zox_set(e, LastPosition3D, { data.position });
     if (!float4_equals(data.rotation, quaternion_identity)) {
@@ -95,12 +95,12 @@ entity spawn_character3(
         zox_set(e, ZoxName, { text_to_zext(name) })
          // data->;
         float soul = data.player ? 1 : randf_range(1, 3);
-        spawned_character3D_data spawned_data = (spawned_character3D_data) {
-            .realm = realm,
+        spawned_character3D_data spawned_data = {
             .e = e,
             .p = data.player,
             .name = name,
             .render_disabled = data.render_disabled,
+            .realm = data.realm,
             .elementLinks = &((ElementLinks) { 0 }),
             .soul_value = soul,
         };

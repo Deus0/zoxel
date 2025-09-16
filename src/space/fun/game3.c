@@ -78,34 +78,68 @@ void game_start_player_new_delay(
     zox_set(character, DisableMovement, { 0 });
 }
 
+// returns success
+byte get_player_linked_things(
+    ecs* world,
+    entity player,
+    entity* realm_out,
+    entity* terrain_out,
+    entity* camera_out
+) {
+    zox_geter_value(player, GameLink, entity, game);
+    if (!zox_valid(game)) {
+        zox_log_error("Invalid [game]");
+        return 0;
+    }
+    zox_geter_value(game, RealmLink, entity, realm);
+    if (!zox_valid(realm) || !zox_has(realm, TerrainLink)) {
+        if (!zox_valid(realm)) {
+            zox_log_error("Invalid [realm]");
+        } else {
+            zox_log_error("[realm] has No TerrainLink");
+        }
+        return 0;
+    }
+    zox_geter_value(realm, TerrainLink, entity, terrain);
+    if (!zox_valid(terrain)) {
+        zox_log_error("Invalid [terrain]");
+        return 0;
+    }
+    zox_geter_value(player, CameraLink, entity, camera);
+    if (!zox_valid(camera)) {
+        zox_log_error("Invalid [camera]");
+        return 0;
+    }
+    *realm_out = realm;
+    *terrain_out = terrain;
+    *camera_out = camera;
+    return 1;
+}
+
 entity game_start_player_new(
     ecs *world,
     const entity player
 ) {
-    const entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
-    if (!model) {
-        zox_log_error("File [%s] Not Found.", player_vox_model);
-    }
-    const entity camera = zox_get_value(player, CameraLink)
-    if (!camera) {
+    // Getters and Checkers
+    entity realm;
+    entity terrain;
+    entity camera;
+    if (!get_player_linked_things(world, player, &realm, &terrain, &camera)) {
         return 0;
     }
-    const entity game = zox_get_value(player, GameLink)
-    if (!game) {
-        return 0;
-    }
-    const entity realm = zox_get_value(game, RealmLink)
-    if (!realm) {
-        return 0;
-    }
-    const entity terrain = zox_get_value(realm, TerrainLink)
-    if (!terrain) {
-        return 0;
-    }
+
+    const entity model = string_hashmap_get(
+        files_hashmap_voxes,
+        new_string_data(player_vox_model));
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
-    // spawn a column of chunks for new player:
-    zox_mut_begin(terrain, ChunkLinks, chunkLinks)
+    zox_mut_begin(terrain, ChunkLinks, chunkLinks);
     byte did_add = 0;
+
+    if (!model) {
+        zox_log_error("File Not Found [%s]", player_vox_model);
+    }
+
+    // spawn a column of chunks for new player:
     for (int i = -render_distance_y; i <= render_distance_y * 2; i++) {
         int3 chunk_position = (int3) { 0, i, 0 };
         entity chunk = int3_hashmap_get(chunkLinks->value, chunk_position);
@@ -129,18 +163,15 @@ entity game_start_player_new(
     if (did_add) {
         zox_mut_end(terrain, ChunkLinks)
     }
-    // const byte depth = terrain_depth;
-    // const int3 chunk_dimensions = int3_single(powers_of_two[depth]);
+
     const float3 fake_spawn_position = (float3) { 4, 4, 4 };
-    // const int3 chunk_position = real_position_to_chunk_position(fake_spawn_position, chunk_dimensions, depth);
     spawn_character3D_data spawn_data = {
         .player = player,
         .model = model,
+        .realm = realm,
         .terrain = terrain,
         .rotation = quaternion_identity,
         .position = fake_spawn_position,
-        // .chunk_position = chunk_position,
-        // .terrain_chunk = spawn_place.chunk,
     };
     const entity e = spawn_character3_player(world, spawn_data);
     delay_event(world, &game_start_player_new_delay, player, 0.5);
@@ -151,29 +182,24 @@ entity game_start_player_load(
     ecs *world,
     const entity player
 ) {
+    entity realm;
+    entity terrain;
+    entity camera;
+    if (!get_player_linked_things(world, player, &realm, &terrain, &camera)) {
+        return 0;
+    }
+
     const entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
+    zox_geter_value(terrain, BlockScale, float, terrain_scale);
+    zox_mut_begin(terrain, ChunkLinks, chunkLinks);
+    TerrainPlace spawn_place;
+    spawn_place.chunk = 0;
+    byte spawned_first_chunk = 0;
     if (!model) {
         zox_log_error("File [%s] Not Found.", player_vox_model);
     }
-    const entity camera = zox_get_value(player, CameraLink)
-    if (!camera) {
-        return 0;
-    }
-    zox_geter_value(player, GameLink, entity, game);
-    if (!game) {
-        return 0;
-    }
-    zox_geter_value(game, RealmLink, entity, realm);
-    if (!realm) {
-        return 0;
-    }
-    const entity terrain = zox_get_value(realm, TerrainLink)
-    if (!terrain) {
-        return 0;
-    }
-    zox_geter_value(terrain, BlockScale, float, terrain_scale);
-    TerrainPlace spawn_place;
-    spawn_place.chunk = 0;
+
+    // load position for spawning
     load_character_p(
         world,
         realm,
@@ -182,19 +208,17 @@ entity game_start_player_load(
         &spawn_place.euler,
         &spawn_place.rotation);
 
-    // if character not in chunk, spawn one here
+    // Find Place if loaded not found
     const byte depth = terrain_depth;
-    // const int3 chunk_dimensions = int3_single(powers_of_two[depth]);
     const int3 chunk_position = real_position_to_chunk_position(
         spawn_place.position,
         powers_of_two[depth],
         terrain_scale);
-
-    zox_mut_begin(terrain, ChunkLinks, chunkLinks)
     spawn_place.chunk = int3_hashmap_get(chunkLinks->value, chunk_position);
     // check if exists first
-    byte spawned_first_chunk = 0;
-    if (!zox_valid(spawn_place.chunk)) {
+    if (zox_valid(spawn_place.chunk)) {
+        zox_log("+ player character placed into [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z)
+    } else {
         spawn_place.chunk = spawn_chunk_terrain(
             world,
             prefab_chunk_terrain,
@@ -209,16 +233,16 @@ entity game_start_player_load(
             int3_hashmap_add(chunkLinks->value,
                 chunk_position,
                 spawn_place.chunk);
-            zox_mut_end(terrain, ChunkLinks)
+            zox_mut_end(terrain, ChunkLinks);
             // zox_log("+ spawning chunk for player character loading [%ix%ix%i]:%lu", chunk_position.x, chunk_position.y, chunk_position.z, spawn_place.chunk)
         } else {
             zox_log_error("failed to spawn chunk [%ix%ix%i]:%lu", chunk_position.x, chunk_position.y, chunk_position.z, spawn_place.chunk)
         }
-    } else {
-        zox_log("+ player character placed into [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z)
     }
+
     spawn_character3D_data spawn_data = {
         .model = model,
+        .realm = realm,
         .terrain = terrain,
         .terrain_chunk = spawn_place.chunk,
         .chunk_position = chunk_position,
@@ -227,7 +251,7 @@ entity game_start_player_load(
         .euler = spawn_place.euler,
         .player = player,
     };
-    zox_set(camera, Position3D, { spawn_place.position }) // reposition camera too
+
     const entity e = spawn_character3_player(world, spawn_data);
     // assuming we just spawned it
     if (spawned_first_chunk) {
@@ -242,6 +266,7 @@ entity game_start_player_load(
             }
         }
     }
+    zox_set(camera, Position3D, { spawn_place.position });
 
     // TODO: LoadCharacterSystem - States
     delay_event(world, &load_player_e, player, 0.1);

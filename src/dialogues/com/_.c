@@ -6,6 +6,9 @@ zox_tag(DialogueUI);
 zoxc_entity(DialogueUILink);
 zoxc_entity(DialogueRunLink);
 zoxc_fixed_string(DialogueText, 512);
+zoxc_fixed_string(TargetText, 512);
+zoxc_double(AnimateTextBegin);
+zoxc_double(AnimateTextTime);
 
 void define_components_dialogues(ecs* world) {
     zoxd_tag(DialogueNode);
@@ -16,4 +19,7 @@ void define_components_dialogues(ecs* world) {
     zoxd_entity(DialogueUILink);
     zoxd_entity(DialogueRunLink);
     zoxd_fixed_string(DialogueText);
+    zoxd_fixed_string(TargetText);
+    zoxd_double(AnimateTextBegin);
+    zoxd_double(AnimateTextTime);
 }

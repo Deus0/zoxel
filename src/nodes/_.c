@@ -4,6 +4,7 @@
 
 #include "com/_.c"
 #include "pre/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 
 zox_begin_module(Nodes)
