@@ -1,8 +1,6 @@
 #ifndef zoxm_lines
 #define zoxm_lines
 
-// todo: lines_ui should be seperate
-// todo: add a purely lines2D that doesn't rely on UI transforms
 zox_tag(Line);
 zoxc(LineThickness, float);
 // #include "lines2/_.c"

@@ -1,8 +1,8 @@
-#include "line2D_element_system.c"
-#include "line2D_render_system.c"
-#include "line2_position.c"
+#include "element.c"
+#include "render.c"
+#include "position.c"
 
-void define_systems_line2D(ecs_world_t *world) {
+void define_systems_line2(ecs* world) {
     zox_system(
         Line2DElementSystem,
         zoxp_transforms,
@@ -37,5 +37,4 @@ void define_systems_line2D(ecs_world_t *world) {
         [none] Line2D,
         [none] ElementLine2D
     );
-
 }

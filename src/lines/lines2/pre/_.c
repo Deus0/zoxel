@@ -1,10 +1,18 @@
-#include "line2D.c"
-#include "ui_line2D.c"
-#include "ui_line2D_temp.c"
+#include "line.c"
+#include "ui_line.c"
+#include "temp.c"
 
-void spawn_prefabs_lines2D(ecs_world_t *world) {
-    spawn_prefab_line2D(world);
-    spawn_prefab_line2D_temp(world);
-    spawn_prefab_ui_line2D(world);
-    spawn_prefab_ui_line2D_temp(world);
+entity prefab_line2D;
+entity prefab_ui_line2D;
+entity prefab_temporary_ui_line2D;
+entity prefab_temporary_line2D;
+// extern entity prefab_temporary_line2D;
+// extern ecs_entity_t prefab_temporary_ui_line2D;
+// extern void set_ui_line_position(LineData2D*, int4, float2);
+
+void spawn_prefabs_lines2D(ecs *world) {
+    prefab_line2D = spawn_prefab_line2D(world);
+    prefab_ui_line2D = spawn_prefab_ui_line2D(world);
+    prefab_temporary_line2D = spawn_prefab_temp(world, prefab_line2D);
+    prefab_temporary_ui_line2D  = spawn_prefab_temp(world, prefab_ui_line2D);
 }
