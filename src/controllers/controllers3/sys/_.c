@@ -14,6 +14,7 @@
 
 #include "dialogue_begin.c"
 #include "dialogue_player.c"
+#include "dialogue_exit.c"
 #include "dialogue_end.c"
 
 void define_systems_controllers3D(ecs_world_t *world) {
@@ -123,10 +124,17 @@ void define_systems_controllers3D(ecs_world_t *world) {
         [out] players.PlayerState
     );
     zox_system(
-        DialogueEndSystem,
+        DialogueExitSystem,
         EcsOnUpdate,
         [in] triggers.TriggerActionE,
         [in] players.PlayerLink,
         [out] dialogues.DialogueRunLink
+    );
+    zox_system(
+        DialogueEndSystem,
+        EcsOnUpdate,
+        [in] nodes.NodetreeEnd,
+        [in] dialogues.DialogueUILink,
+        [out] dialogues.SpeakerLinks
     );
 }

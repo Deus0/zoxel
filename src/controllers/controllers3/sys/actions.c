@@ -1,21 +1,22 @@
 #ifdef zoxm_actions
 
-void ActionsShortcutSystem(ecs_iter_t *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(DeviceLinks)
+void ActionsShortcutSystem(iter *it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(DeviceLinks);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(DeviceLinks, deviceLinks)
+        zox_sys_e();
+        zox_sys_i(DeviceLinks, devices);
         byte is_shift_action_left = 0;
         byte is_shift_action_right = 0;
-        for (int j = 0; j < deviceLinks->length; j++) {
-            const ecs_entity_t device = deviceLinks->value[j];
+        for (int j = 0; j < devices->length; j++) {
+            const entity device = devices->value[j];
             if (!zox_valid(device)) {
                 continue;
             }
+
             if (zox_has(device, Keyboard)) {
-                const Keyboard *keyboard = zox_get(device, Keyboard)
+                zox_geter(device, Keyboard, keyboard);
                 if (keyboard->_1.pressed_this_frame) {
                     set_player_action(world, e, 0);
                 } else if (keyboard->_2.pressed_this_frame) set_player_action(world, e, 1);
@@ -26,7 +27,7 @@ void ActionsShortcutSystem(ecs_iter_t *it) {
                 else if (keyboard->_7.pressed_this_frame) set_player_action(world, e, 6);
                 else if (keyboard->_8.pressed_this_frame) set_player_action(world, e, 7);
             } else if (zox_has(device, Mouse)) {
-                zox_geter(device, Children, zevices)
+                zox_geter(device, Children, zevices);
                 for (int k = 0; k < zevices->length; k++) {
                     ecs_entity_t zevice_entity = zevices->value[k];
                     if (zox_has(zevice_entity, ZeviceWheel)) {
@@ -39,9 +40,9 @@ void ActionsShortcutSystem(ecs_iter_t *it) {
                     }
                 }
             } else if (zox_has(device, Gamepad)) {
-                const Children *zevices = zox_get(device, Children)
+                zox_geter(device, Children, zevices);
                 for (int k = 0; k < zevices->length; k++) {
-                    ecs_entity_t zevice_entity = zevices->value[k];
+                    entity zevice_entity = zevices->value[k];
                     if (zox_has(zevice_entity, ZeviceButton)) {
                         const ZeviceDisabled *zeviceDisabled = zox_get(zevice_entity, ZeviceDisabled)
                         if (zeviceDisabled->value) {

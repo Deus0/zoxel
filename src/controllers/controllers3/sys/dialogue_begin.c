@@ -33,7 +33,7 @@ void DialogueBeginSystem(iter *it) {
                 continue;
             }
 
-            zox_log("Begin talking to: %s", zox_get_name(npc));
+            // zox_log("Begin talking to: %s", zox_get_name(npc));
 
             zox_geter_value(player->value, GameLink, entity, game);
             zox_geter_value(game, RealmLink, entity, realm);
@@ -73,6 +73,8 @@ void DialogueBeginSystem(iter *it) {
             zox_set(player->value, PlayerState, { zox_player_state_dialogue_begin });
 
             follow_target(world, npc, e);
+
+            // zox_log("Character [%s] spawned dialogue_run [%lu]", zox_get_name(e), run->value);
         }
 
     }

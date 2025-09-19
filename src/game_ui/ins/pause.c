@@ -26,7 +26,7 @@ entity spawn_menu_paused(
         elements_count,
         elements_count,
         list_font_size,
-        (ClickEvent) { &window_taskbar_close_event },
+        (ClickEvent) { &on_closed_taskbar_window },
         1
     );
 

@@ -33,7 +33,7 @@ entity spawn_player_menu_map(
         canvas_data,
         data.element,
         window_data,
-        (ClickEvent) { &window_taskbar_close_event },
+        (ClickEvent) { &on_closed_taskbar_window },
         1
     );
     zox_set_ptr(e, Children, window_children);

@@ -221,7 +221,7 @@ zox_begin_module(ZoxGame)
     // world gen
     // terrain_frequency = 0.062216;
     // block_spawn_chance_grass = 1600; //  512 | 1024 | 2048 | 3000
-    menu_sky_color = color_rgb_grayscale(145);
+    menu_sky_color = color_rgb_grayscale(255);
     menu_sky_bottom_color = menu_sky_color;
     // set_camera_fog_color(world, menu_sky_color);
     // viewport_clear_color = menu_sky_color;

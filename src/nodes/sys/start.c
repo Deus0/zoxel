@@ -21,12 +21,13 @@ void NodetreeBeginSystem(iter *it) {
             // Finished Node Tree!
             // complete->value = zox_dirty_trigger;
             // zox_log("Dialogue Completed.");
-            zox_logw("Node Process has no Tree.", zox_get_name(e));
-        } else {
-            zox_set(e, NodeBegin, { zox_dirty_trigger });
-            // do this for now - then implement dialogue node system with confirm button
-            // zox_set(e, NodeEnd, { zox_dirty_trigger });
+            // zox_logw("Node Process has no Tree.", zox_get_name(e));
+            continue;
         }
+
+        zox_set(e, NodeBegin, { zox_dirty_trigger });
+        // do this for now - then implement dialogue node system with confirm button
+        // zox_set(e, NodeEnd, { zox_dirty_trigger });
 
     }
 } zoxd_system2(NodetreeBeginSystem);

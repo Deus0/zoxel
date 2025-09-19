@@ -20,11 +20,6 @@ void initialize_element_invisible(
         on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }
-
-    /*
-    zox_set(e, Position2, { position2 }); // set this inside pixel position system
-    zox_set(e, CanvasPosition, { pixel_positionv }); // set this inside system too
-    */
 }
 
 void initialize_element(
@@ -70,28 +65,4 @@ void set_element_spawn_data(
         on_child_added(world, canvas_data.e, e);
         zox_set(canvas_data.e, WindowToTop, { e });
     }
-
-    /*element_data.position_in_canvas = get_element_pixel_positionv(
-        parent_data.position,
-        parent_data.size,
-        element_data.position,
-        element_data.anchor);
-
-    const float2 real_position = get_element_position(
-        element_data.position_in_canvas,
-        canvas_data.size);*
-
-    // anchor our position
-    int2 position = element_data.position;
-    anchor_element_position2(&position, element_data.anchor, element_data.size);
-
-    zox_set(e, Position2, { real_position });
-    zox_set(e, CanvasPosition, { element_data.position_in_canvas });
-
-    */
-
-    // zox_set(e, TextureSize, { element_data.size })
-    /*if (element_data.render_disabled) {
-        zox_set(e, RenderDisabled, { element_data.render_disabled })
-    }*/
 }

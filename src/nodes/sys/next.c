@@ -23,7 +23,7 @@ void NextNodeSystem(iter *it) {
             // Finished Node Tree!
             complete->value = zox_dirty_trigger;
             // zox_log("Dialogue Completed.");
-            zox_log("Nodetree End [%s]", zox_get_name(e));
+            // zox_log("Nodetree End [%s]", zox_get_name(e));
         } else {
             zox_set(e, NodeBegin, { zox_dirty_trigger });
             // do this for now - then implement dialogue node system with confirm button

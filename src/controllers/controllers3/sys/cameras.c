@@ -9,7 +9,7 @@ void PlayerToggleCameraSystem(iter *it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(DeviceLinks, deviceLinks);
+        zox_sys_i(DeviceLinks, devices);
         zox_sys_i(GameLink, gameLink);
         zox_sys_i(CharacterLink, characterLink);
         zox_sys_i(CameraLink, cameraLink);
@@ -23,8 +23,8 @@ void PlayerToggleCameraSystem(iter *it) {
         }
         byte is_toggle_camera = 0;
         byte is_toggle_freeroam = 0;
-        for (int j = 0; j < deviceLinks->length; j++) {
-            const ecs_entity_t device = deviceLinks->value[j];
+        for (int j = 0; j < devices->length; j++) {
+            const entity device = devices->value[j];
             if (!zox_valid(device)) {
                 continue;
             }

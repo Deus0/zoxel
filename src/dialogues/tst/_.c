@@ -41,6 +41,8 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
                 return;
             }
 
+            zox_geter_value(player, CharacterLink, entity, character);
+
             entity tree = dialogues->value[0];
 
             test_dialogue_run = spawn_dialogue_run(
@@ -61,8 +63,8 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
                 test_dialogue_run,
                 test_dialogue_ui
             );
-            // Now Run it
-            // Go Through Nodes - key press
+
+            zox_set(character, DialogueRunLink, { test_dialogue_run });
         }
     }
 }

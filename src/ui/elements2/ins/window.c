@@ -11,7 +11,13 @@ entity spawn_window2(
 
     zox_instance(element_data.prefab);
     zox_name("window");
-    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+    set_element_spawn_data(
+        world,
+        e,
+        canvas_data,
+        parent_data,
+        element_data
+    );
     zox_set(e, HeaderHeight, { header_height });
 
     // start children
@@ -19,7 +25,6 @@ entity spawn_window2(
 
     const LayoutParentData e_parent_data = {
         .e = e,
-        // .position = element_data.position_in_canvas,
         .size = element_data.size,
     };
 
@@ -46,7 +51,7 @@ entity spawn_window2(
         .font_outline_color = header_font_outline,
         .margins = window_data.header_padding,
     };
-    // n/a
+
     const entity header = spawn_header3(
         world,
         canvas_data,
@@ -54,7 +59,7 @@ entity spawn_window2(
         header_element_data,
         header_text_data,
         header_data,
-        on_click // (ClickEvent) { NULL }
+        on_click
     );
     add_to_Children(children, header);
 

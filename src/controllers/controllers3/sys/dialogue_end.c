@@ -1,33 +1,35 @@
-// Early Exit from Dialogue
+// Run from DialoguetreeRun
 void DialogueEndSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TriggerActionE);
-    zox_sys_in(PlayerLink);
-    zox_sys_out(DialogueRunLink);
+    zox_sys_in(NodetreeEnd);
+    zox_sys_in(DialogueUILink);
+    zox_sys_in(SpeakerLinks);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TriggerActionE, state);
-        zox_sys_i(PlayerLink, player);
-        zox_sys_o(DialogueRunLink, run);
+        zox_sys_i(NodetreeEnd, state);
+        zox_sys_i(DialogueUILink, ui);
+        zox_sys_i(SpeakerLinks, speakers);
 
+        // Process on completed tree
         if (state->value != zox_dirty_active) {
             continue;
         }
 
-        zox_geter_value(player->value, PlayerState, byte, player_state);
-        if (player_state == zox_player_state_dialogue_active) {
-
-            zox_geter_value(run->value, DialogueUILink, entity, ui);
-            zox_geter(run->value, SpeakerLinks, speakers);
-            zox_delete(ui);
-            zox_delete(run->value);
-            zox_set(player->value, PlayerState, { zox_player_state_dialogue_end });
-
-            run->value = 0;
-
-            zox_log("End talking to: %s", "idk"); // zox_get_name(raycast->chunk));
-
+        if (zox_valid(ui->value)) {
+            zox_delete(ui->value);
+        }
+        if (zox_valid(speakers->value[0])) {
+            zox_geter_value(speakers->value[0], PlayerLink, entity, player);
+            if (zox_valid(player)) {
+                zox_set(player, PlayerState, { zox_player_state_dialogue_end });
+            }
+        }
+        if (zox_valid(speakers->value[1])) {
             unfollow(world, speakers->value[1]);
         }
+        /*if (zox_valid(speakers->value[0]) && zox_valid(speakers->value[1])) {
+            zox_log("[%s] Stopped Talking to [%s]", zox_get_name(speakers->value[0]), zox_get_name(speakers->value[1]));
+        }*/
+
     }
 } zoxd_system2(DialogueEndSystem);

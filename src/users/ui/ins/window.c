@@ -76,7 +76,7 @@ entity spawn_window_users(
             header_element_data,
             data.header_zext,
             data.header,
-            (ClickEvent) { &window_taskbar_close_event }
+            (ClickEvent) { &on_closed_taskbar_window }
         );
         children.value[0] = header;
     }

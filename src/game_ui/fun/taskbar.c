@@ -44,7 +44,7 @@ byte tooltip_event_taskbar_icon(
 }
 
 // nested function (GCC extension)
-void window_taskbar_close_event(
+void on_closed_taskbar_window(
     ecs *world,
     const ClickEventData event
 ) {
@@ -59,9 +59,6 @@ void window_taskbar_close_event(
         return;
     }
     zox_geter_value(header, ParentLink, entity, window);
-
-    // zox_geter_value(window, CanvasLink, entity, canvas);
-    // find_child_with_tag(canvas, Taskbar, taskbar);
     if (!zox_valid(window)) {
         return;
     }
