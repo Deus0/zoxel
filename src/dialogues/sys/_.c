@@ -2,8 +2,10 @@
 #include "realm.c"
 #include "ui.c"
 #include "animate.c"
+zox_declare_system_state_event(RealmDialoguetrees, GenerateRealm, zox_generate_realm_dialoguetrees, spawn_realm_dialoguetrees)
 
 void define_systems_dialogues(ecs* world) {
+    zox_define_system_state_event_1(RealmDialoguetrees, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
     zox_system(
         DialogueSpeechSystem,
         EcsOnUpdate,

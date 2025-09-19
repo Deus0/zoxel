@@ -4,7 +4,7 @@
 // todo: lines_ui should be seperate
 // todo: add a purely lines2D that doesn't rely on UI transforms
 #include "com/_.c"
-#include "shd/line2D.c"
+#include "shd/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"

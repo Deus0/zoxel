@@ -1,12 +1,13 @@
 const double exit_combat_time = 15.0;
 
-void CombatStateSystem(ecs_iter_t *it) {
-    zox_sys_begin()
-    zox_sys_in(LastCombatTime)
-    zox_sys_out(CombatState)
+void CombatStateSystem(iter *it) {
+    zox_sys_begin();
+    zox_sys_in(LastCombatTime);
+    zox_sys_out(CombatState);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(LastCombatTime, lastCombatTime)
-        zox_sys_o(CombatState, combat)
+        zox_sys_i(LastCombatTime, lastCombatTime);
+        zox_sys_o(CombatState, combat);
+
         if (combat->value == zox_combat_trigger_battle) {
             combat->value = zox_combat_enter_battle;
         } else if (combat->value == zox_combat_enter_battle) {
@@ -22,4 +23,4 @@ void CombatStateSystem(ecs_iter_t *it) {
             combat->value = zox_combat_peace;
         }
     }
-} zoxd_system(CombatStateSystem)
+} zoxd_system2(CombatStateSystem);

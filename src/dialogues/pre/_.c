@@ -13,4 +13,10 @@ void spawn_prefabs_dialogues(ecs* world) {
     prefab_dialogue_leaf = spawn_prefab_dialogue_leaf(world, prefab_node_leaf);
     prefab_dialogue_run = spawn_prefab_dialogue_run(world, prefab_node_run);
     prefab_dialogue_ui = spawn_prefab_dialogue_ui(world, prefab_window);
+    if (prefab_realm) {
+        zox_prefab_add(prefab_realm, DialoguetreeLinks);
+    }
+    if (prefab_character3) {
+        zox_prefab_character_add(DialogueRunLink);
+    }
 }

@@ -24,6 +24,25 @@ void set_character3_npc(ecs* world, entity c, byte npc) {
     }
 }
 
-int count_entities_npc(ecs_world_t *world) {
+int count_entities_npc(ecs *world) {
     return zox_count_types(Npc)
+}
+
+void follow_target(
+    ecs* world,
+    entity e,
+    entity t
+) {
+    zox_set(e, Behaviour, { zox_behaviour_follow });
+    zox_set(e, FollowTarget, { t });
+}
+
+void unfollow(
+    ecs* world,
+    entity e
+) {
+    if (zox_valid(e)) {
+        zox_set(e, Behaviour, { zox_behaviour_idle });
+        zox_set(e, FollowTarget, { 0 });
+    }
 }

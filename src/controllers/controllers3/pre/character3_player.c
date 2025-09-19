@@ -24,6 +24,7 @@ entity spawn_prefab_character3_player(
     // Input Triggers
     zox_prefab_set(e, TriggerActionA, { 0 });
     zox_prefab_set(e, TriggerActionB, { 0 });
+    zox_prefab_set(e, TriggerActionE, { 0 });
     // IO
     zox_add_tag(e, SaveCharacter);
     zox_prefab_set(e, CharacterSaveHash, { 0 });

@@ -80,4 +80,4 @@ void PlayerToggleCameraSystem(iter *it) {
             }
         }
     }
-} zoxd_system(PlayerToggleCameraSystem)
+} zoxd_system2(PlayerToggleCameraSystem);

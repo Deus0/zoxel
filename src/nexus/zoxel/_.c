@@ -159,7 +159,7 @@ zox_begin_module(ZoxGame)
     game_name = "Zoxel";
     add_hook_spawn_prefabs(zoxel_on_spawn_prefabs);
 
-    const float sub_resolution = 2;
+    const float sub_resolution = 1;
     viewport_scale = 1 / sub_resolution;
     target_fps = 0;
     // target_fps = 5;
@@ -221,7 +221,7 @@ zox_begin_module(ZoxGame)
     // world gen
     // terrain_frequency = 0.062216;
     // block_spawn_chance_grass = 1600; //  512 | 1024 | 2048 | 3000
-    menu_sky_color = color_rgb_grayscale(15);
+    menu_sky_color = color_rgb_grayscale(145);
     menu_sky_bottom_color = menu_sky_color;
     // set_camera_fog_color(world, menu_sky_color);
     // viewport_clear_color = menu_sky_color;

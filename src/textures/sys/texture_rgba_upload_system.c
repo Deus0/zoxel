@@ -29,7 +29,7 @@ void TextureUpdateSystem(iter *it) {
             // zox_log("+ [%s] cleared texture", zox_get_name(e));
         }
         else if (data->length != size->value.x * size->value.y) {
-            zox_logw("[%s] Invalid TextureRGBA Size s[%ix%i] -> l[%i]", zox_get_name(e), size->value.x, size->value.y, data->length);
+            // zox_logw("[%s] Invalid TextureRGBA Size s[%ix%i] -> l[%i]", zox_get_name(e), size->value.x, size->value.y, data->length);
             glBindTexture(GL_TEXTURE_2D, 0);
             continue;
         }

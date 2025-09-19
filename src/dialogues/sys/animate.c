@@ -1,6 +1,6 @@
 // on the text entity
 void AnimateText2System(iter *it) {
-    zox_sys_world();
+    // zox_sys_world();
     zox_sys_begin();
     zox_sys_in(AnimateTextBegin);
     zox_sys_in(AnimateTextTime);
@@ -27,7 +27,7 @@ void AnimateText2System(iter *it) {
         size_t animated_length = (passed / time->value) * length;
 
 
-        zox_log("Ssetting Text Target [%s] [%i/%i]", target->value, animated_length, length);
+        // zox_log("Setting Text Target [%s] [%i/%i]", target->value, animated_length, length);
 
         if (!is_zext_cut(data, target->value, animated_length)) {
             set_zext_cut(data, target->value, animated_length);

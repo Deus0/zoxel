@@ -1,35 +1,38 @@
-void MoveForwardSystem(ecs_iter_t *it) {
+void MoveForwardSystem(iter *it) {
     const float target_angle = 45;
     const float min_dot_threshold = target_angle * degrees_to_radians; // 0.866f; // cos(30°)
-    const float slow_down_distance = 1.5f;
+    // const float slow_down_distance = 1.5f;
     // TODO: Base Stop Threshold on Bounds3D
-    const float stop_threshold = 0.45f;      // hard stop zone
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(MoveForwards)
-    zox_sys_in(DisableMovement)
-    zox_sys_in(Position3D)
-    zox_sys_in(Rotation3D)
+    // const float stop_threshold = 0.45f;      // hard stop zone
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(MoveForwards);
+    zox_sys_in(DisableMovement);
+    zox_sys_in(Position3D);
+    zox_sys_in(Rotation3D);
     // zox_sys_in(Velocity3D)
-    zox_sys_in(TargetPosition)
-    zox_sys_in(MoveSpeed)
-    zox_sys_out(Acceleration3D)
-
+    zox_sys_in(TargetPosition);
+    zox_sys_in(MoveSpeed);
+    zox_sys_in(MoveToBuffer);
+    zox_sys_out(Acceleration3D);
     for (int i = 0; i < it->count; i++) {
-
-        zox_sys_i(MoveForwards, moveForwards)
-        zox_sys_i(DisableMovement, disable)
-        zox_sys_i(Position3D, position)
-        zox_sys_i(Rotation3D, rotation)
+        zox_sys_i(MoveForwards, moveForwards);
+        zox_sys_i(DisableMovement, disable);
+        zox_sys_i(Position3D, position);
+        zox_sys_i(Rotation3D, rotation);
         // zox_sys_i(Velocity3D, velocity)
-        zox_sys_i(TargetPosition, target)
-        zox_sys_i(MoveSpeed, moveSpeed)
-        zox_sys_o(Acceleration3D, acceleration)
+        zox_sys_i(TargetPosition, target);
+        zox_sys_i(MoveSpeed, speed);
+        zox_sys_i(MoveToBuffer, buffer);
+        zox_sys_o(Acceleration3D, acceleration);
 
         // only face target when commanded to
         if (disable->value || !moveForwards->value) {
             continue;
         }
+
+        const float stop_threshold = buffer->value;
+        const float slow_down_distance = stop_threshold + 1;
 
         // Direction to target
         float3 to_target = float3_subtract(target->value, position->value);
@@ -81,7 +84,7 @@ void MoveForwardSystem(ecs_iter_t *it) {
 
         // Smooth deceleration near target
         float slowdown = fminf(1.0f, (distance - stop_threshold) / (slow_down_distance - stop_threshold));
-        float3 movement_force = float3_scale(forward, moveSpeed->value * slowdown);
+        float3 movement_force = float3_scale(forward, speed->value * slowdown);
         acceleration->value = float3_add(acceleration->value, movement_force);
     }
-} zoxd_system(MoveForwardSystem)
+} zoxd_system2(MoveForwardSystem);

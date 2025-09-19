@@ -13,6 +13,7 @@ entity spawn_prefab_character3_npc(
     zox_prefab_set(e, MoveForwards, { 0 });
     zox_prefab_set(e, RotateTowards, { 0 });
     zox_prefab_set(e, MoveSpeed, { 4 });
+    zox_prefab_set(e, MoveToBuffer, { 0.75f }); // 0.45f
     zox_prefab_set(e, TargetPosition, { float3_zero });
     zox_prefab_set(e, ThreatPosition, { float3_zero });
     zox_prefab_set(e, WanderDirection, { float3_zero });

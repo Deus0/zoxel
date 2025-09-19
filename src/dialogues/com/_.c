@@ -9,6 +9,9 @@ zoxc_fixed_string(DialogueText, 512);
 zoxc_fixed_string(TargetText, 512);
 zoxc_double(AnimateTextBegin);
 zoxc_double(AnimateTextTime);
+zoxc_entities(DialoguetreeLinks);
+#define zox_speakers_max 2
+zoxc_array(SpeakerLinks, entity, zox_speakers_max);
 
 void define_components_dialogues(ecs* world) {
     zoxd_tag(DialogueNode);
@@ -22,4 +25,6 @@ void define_components_dialogues(ecs* world) {
     zoxd_fixed_string(TargetText);
     zoxd_double(AnimateTextBegin);
     zoxd_double(AnimateTextTime);
+    zoxd_entities(DialoguetreeLinks);
+    zoxd(SpeakerLinks);
 }

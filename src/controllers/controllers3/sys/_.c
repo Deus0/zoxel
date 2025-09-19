@@ -2,15 +2,19 @@
 #include "movement.c"
 #include "rotation.c"
 #include "jump.c"
-#include "player3D_trigger_system.c"
+#include "trigger.c"
 #include "respawn.c"
 #include "flying.c"
 // TODO: shortcuts - move to hotkeys or something
-#include "player_pause_system.c"
-#include "player_toggle_camera_system.c"
-#include "qol_shortcuts_system.c"
-#include "editor_input_system.c"
-#include "actions_shortcut_system.c"
+#include "pause.c"
+#include "cameras.c"
+#include "shortcuts.c"
+#include "editor.c"
+#include "actions.c"
+
+#include "dialogue_begin.c"
+#include "dialogue_player.c"
+#include "dialogue_end.c"
 
 void define_systems_controllers3D(ecs_world_t *world) {
 
@@ -63,10 +67,12 @@ void define_systems_controllers3D(ecs_world_t *world) {
         [out] players.PlayerRespawn,
         [out] characters.CharacterLink
     );
-    zox_system_1(
+    zox_system(
         PlayerPauseSystem,
         EcsOnUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
+        [in] games.GameLink,
         [none] players.Player
     );
     zox_system_1(
@@ -99,5 +105,28 @@ void define_systems_controllers3D(ecs_world_t *world) {
         EcsOnUpdate,
         [in] inputs.DeviceLinks,
         [none] players.Player
+    );
+
+    zox_system_1(
+        DialogueBeginSystem,
+        EcsOnUpdate,
+        [in] triggers.TriggerActionA,
+        [in] vrays.RaycastVoxelData,
+        [in] players.PlayerLink,
+        [out] dialogues.DialogueRunLink
+    );
+    zox_system(
+        PlayerDialogueSystem,
+        EcsOnUpdate,
+        [in] characters.CharacterLink,
+        [in] layouts2.CanvasLink,
+        [out] players.PlayerState
+    );
+    zox_system(
+        DialogueEndSystem,
+        EcsOnUpdate,
+        [in] triggers.TriggerActionE,
+        [in] players.PlayerLink,
+        [out] dialogues.DialogueRunLink
     );
 }

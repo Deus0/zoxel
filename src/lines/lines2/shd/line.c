@@ -6,7 +6,7 @@ uint line2D_color_location;
 uint line2D_depth_location;
 uint line2D_camera_matrix_location;
 
-void spawn_shader_line2D(ecs_world_t *world) {
+void spawn_shader_line2D(ecs *world) {
     char* vert = get_shader_source(world, "line2D.vert");
     char* frag = get_shader_source(world, "line2D.frag");
     line2D_shader = zox_gpu_compile_shader(vert, frag);

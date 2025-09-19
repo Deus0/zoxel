@@ -1,20 +1,19 @@
-void FleeSystem(ecs_iter_t *it) {
+void FleeSystem(iter *it) {
     const float flee_distance    = 4.0f;  // how far we want to flee
     const float jitter_power     = 0.4f;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(Behaviour)
-    zox_sys_in(DisableMovement)
-    zox_sys_in(Position3D)
-    zox_sys_in(ThreatPosition)
-    zox_sys_out(TargetPosition)
-
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Behaviour);
+    zox_sys_in(DisableMovement);
+    zox_sys_in(Position3D);
+    zox_sys_in(ThreatPosition);
+    zox_sys_out(TargetPosition);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Behaviour, behaviour)
-        zox_sys_i(DisableMovement, disable)
-        zox_sys_i(Position3D, position)
-        zox_sys_i(ThreatPosition, threat)
-        zox_sys_o(TargetPosition, target)
+        zox_sys_i(Behaviour, behaviour);
+        zox_sys_i(DisableMovement, disable);
+        zox_sys_i(Position3D, position);
+        zox_sys_i(ThreatPosition, threat);
+        zox_sys_o(TargetPosition, target);
 
         // only flee if in “wander” mode and not frozen
         if (disable->value || behaviour->value != zox_behaviour_flee) {
@@ -65,4 +64,4 @@ void FleeSystem(ecs_iter_t *it) {
             debug_linec(world, start, float3_add(start, (float3){0,debug_length,0}), color_rgb_green);*/
         }
     }
-} zoxd_system(FleeSystem)
+} zoxd_system2(FleeSystem);

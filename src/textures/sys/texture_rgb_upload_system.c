@@ -30,7 +30,7 @@ void TextureRGBUpdateSystem(iter *it) {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size->value.x, size->value.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
                 // zox_log("+ [%s] uploaded texture [%ix%i]", zox_get_name(e), size->value.x, size->value.y);
             } else {
-                zox_log_error("[%s] Invalid TextureRGB Size s[%ix%i] -> l[%i]", zox_get_name(e), size->value.x, size->value.y, data->length);
+                // zox_logw("[%s] Invalid TextureRGB Size s[%ix%i] -> l[%i]", zox_get_name(e), size->value.x, size->value.y, data->length);
                 glBindTexture(GL_TEXTURE_2D, 0);
             }
         } else {

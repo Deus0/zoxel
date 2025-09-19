@@ -22,22 +22,22 @@
 
 #ifdef zox_debug_player_movement_direction
 float debug_thickness = 2.0f;
-extern ecs_entity_t spawn_line3D(ecs_world_t *world, float3 pointA, float3 pointB, float thickness, double life_time);
+extern entity spawn_line3D(ecs_world_t *world, float3 pointA, float3 pointB, float thickness, double life_time);
 #endif
 
-void Player3DMoveSystem(ecs_iter_t *it) {
-    init_delta_time()
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(DeviceLinks)
-    zox_sys_in(DeviceMode)
-    zox_sys_in(CharacterLink)
+void Player3DMoveSystem(iter *it) {
+    init_delta_time();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(DeviceLinks);
+    zox_sys_in(DeviceMode);
+    zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(CharacterLink, characterLink)
-        zox_sys_i(DeviceLinks, deviceLinks)
-        zox_sys_i(DeviceMode, deviceMode)
+        zox_sys_i(CharacterLink, character_link);
+        zox_sys_i(DeviceLinks, devices);
+        zox_sys_i(DeviceMode, mode);
 
-        const ecs_entity_t character = characterLink->value;
+        const entity character = character_link->value;
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
@@ -55,12 +55,12 @@ void Player3DMoveSystem(ecs_iter_t *it) {
 
         float2 left_stick = float2_zero;
         byte is_running = 0;
-        for (int j = 0; j < deviceLinks->length; j++) {
-            const ecs_entity_t device = deviceLinks->value[j];
+        for (int j = 0; j < devices->length; j++) {
+            const entity device = devices->value[j];
             if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
                 continue;
             }
-            if (deviceMode->value == zox_device_mode_keyboardmouse && zox_has(device, Keyboard)) {
+            if (mode->value == zox_device_mode_keyboardmouse && zox_has(device, Keyboard)) {
                 zox_geter(device, Keyboard, keyboard)
                 if (keyboard->w.is_pressed) left_stick.y += 1;
                 if (keyboard->s.is_pressed) left_stick.y -= 1;
@@ -68,10 +68,10 @@ void Player3DMoveSystem(ecs_iter_t *it) {
                 if (keyboard->d.is_pressed) left_stick.x += -1;
                 if (keyboard->left_shift.is_pressed) is_running = 1;
                 // float2_normalize_p(&left_stick);
-            } else if (deviceMode->value == zox_device_mode_gamepad && zox_has(device, Gamepad)) {
+            } else if (mode->value == zox_device_mode_gamepad && zox_has(device, Gamepad)) {
                 zox_geter(device, Children, zevices)
                 for (int k = 0; k < zevices->length; k++) {
-                    const ecs_entity_t zevice_entity = zevices->value[k];
+                    const entity zevice_entity = zevices->value[k];
                     zox_geter(zevice_entity, ZeviceDisabled, zeviceDisabled)
                     if (zeviceDisabled->value) {
                         continue;
@@ -92,10 +92,10 @@ void Player3DMoveSystem(ecs_iter_t *it) {
                         }
                     }
                 }
-            } else if (deviceMode->value == zox_device_mode_touchscreen && zox_has(device, Touchscreen)) {
+            } else if (mode->value == zox_device_mode_touchscreen && zox_has(device, Touchscreen)) {
                 zox_geter(device, Children, zevices)
                 for (int k = 0; k < zevices->length; k++) {
-                    const ecs_entity_t zevice = zevices->value[k];
+                    const entity zevice = zevices->value[k];
                     if (zox_has(zevice, Finger)) {
                         continue;
                     }
@@ -207,4 +207,4 @@ void Player3DMoveSystem(ecs_iter_t *it) {
         else zox_log(" > past maximum velocity z: %f\n", potential_velocity_forward.z)
 #endif
     }
-} zoxd_system(Player3DMoveSystem)
+} zoxd_system2(Player3DMoveSystem);

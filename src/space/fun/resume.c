@@ -44,11 +44,11 @@ void resume_player_delayed(
     ecs *world,
     const entity player
 ) {
-    const entity camera = zox_get_value(player, CameraLink)
-    const byte can_roam = zox_get_value(camera, CanRoam)
+    const entity camera = zox_get_value(player, CameraLink);
+    const byte can_roam = zox_get_value(camera, CanRoam);
     if (can_roam == 0 || can_roam == 2) {
         if (local_mouse) {
-            zox_set(local_mouse, MouseLock, { 1 })
+            zox_set(local_mouse, MouseLock, { 1 });
         }
     }
     // return to regular ui
@@ -69,12 +69,13 @@ void resume_player(
     zox_geter_value(player, CanvasLink, entity, canvas);
     find_child_with_tag(canvas, MenuPaused, menu_paused);
     if (menu_paused) {
-        zox_delete(menu_paused)
+        zox_delete(menu_paused);
     }
-    find_child_with_tag(canvas, Taskbar, taskbar)
+    find_child_with_tag(canvas, Taskbar, taskbar);
     if (taskbar) {
-        zox_delete(taskbar)
+        zox_delete(taskbar);
     }
+    // TODO: This should be done when changing player states
     disable_inputs_until_release(
         world,
         player,
@@ -88,7 +89,7 @@ void resume_player(
         pause_fade_alpha,
         0
     );
-    const ecs_entity_t pause_event = delay_event(
+    const entity pause_event = delay_event(
         world,
         &resume_player_delayed,
         player,
@@ -96,7 +97,7 @@ void resume_player(
     );
     zox_geter_value(player, PlayerPauseEvent, entity, previous_event);
     if (zox_valid(previous_event)) {
-        zox_delete(previous_event)
+        zox_delete(previous_event);
     }
-    zox_set(player, PlayerPauseEvent, { pause_event })
+    zox_set(player, PlayerPauseEvent, { pause_event });
 }

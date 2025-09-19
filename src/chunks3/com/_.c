@@ -18,7 +18,8 @@ zoxc_entity(VoxLink);
 zoxc_entities(ChunkEntities)
 
 zoxc_link(ChunkLink, entity, ChunkEntities)
-#include "neighbors.c"
+#define chunk_neighbors_length 6
+zoxc_array(ChunkNeighbors, entity, chunk_neighbors_length);
 #include "chunk_links.c"
 #include "voxel_node.c"
 

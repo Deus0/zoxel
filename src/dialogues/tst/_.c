@@ -1,6 +1,5 @@
 // TODO: Spawn UI on keypress, with Node Process - cycle through tree with key presses too
 
-entity test_dialogue_tree;
 entity test_dialogue_run;
 entity test_dialogue_ui;
 
@@ -17,7 +16,7 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
                 zox_log("Dialogue Finished, Ending.");
                 zox_delete(test_dialogue_run);
                 zox_delete(test_dialogue_ui);
-                delete_nodes(world, test_dialogue_tree);
+                // delete_nodes(world, test_dialogue_tree);
             }
         } else {
             const entity player = zox_players[0];
@@ -28,41 +27,28 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
 
             zox_log("Testing Realm Dialogue Run [0]");
 
-            // TODO: Refactor Tree to Realms Dialogue Gen
-            test_dialogue_tree = spawn_dialogue_tree(
-                world,
-                prefab_dialogue_tree,
-                "Well, well, well..."
-            );
-            entity test_dialogue_leaf = spawn_dialogue_leaf(
-                world,
-                prefab_dialogue_leaf,
-                "Look what the cat dragged in, ay.."
-            );
-            entity test_dialogue_leaf2 = spawn_dialogue_leaf(
-                world,
-                prefab_dialogue_leaf,
-                "Leave for now! Come back with cookies."
-            );
-
-            new_link_single_node(
-                world,
-                test_dialogue_tree,
-                test_dialogue_leaf
-            );
-
-            new_link_single_node(
-                world,
-                test_dialogue_leaf,
-                test_dialogue_leaf2
-            );
-
             // Here is our test run!
+            zox_geter_value(player, GameLink, entity, game);
+            zox_geter_value(game, RealmLink, entity, realm);
+            if (!zox_valid(realm)) {
+                zox_logw("No realm yet.");
+                return;
+            }
+
+            zox_geter(realm, DialoguetreeLinks, dialogues);
+            if (!dialogues->length) {
+                zox_logw("No Dialoguetrees yet.");
+                return;
+            }
+
+            entity tree = dialogues->value[0];
 
             test_dialogue_run = spawn_dialogue_run(
                 world,
                 prefab_dialogue_run,
-                test_dialogue_tree
+                tree,
+                0,
+                0
             );
             test_dialogue_ui = spawn_dialogue_ui(
                 world,
