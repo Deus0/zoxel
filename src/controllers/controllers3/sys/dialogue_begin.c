@@ -33,9 +33,15 @@ void DialogueBeginSystem(iter *it) {
                 continue;
             }
 
+            zox_geter_value(npc, DialoguetreeLink, entity, tree);
+            if (!zox_valid(tree)) {
+                zox_log("NPC has no speech: %s", zox_get_name(npc));
+                continue;
+            }
+
             // zox_log("Begin talking to: %s", zox_get_name(npc));
 
-            zox_geter_value(player->value, GameLink, entity, game);
+            /*zox_geter_value(player->value, GameLink, entity, game);
             zox_geter_value(game, RealmLink, entity, realm);
             if (!zox_valid(realm)) {
                 zox_logw("No realm.");
@@ -45,17 +51,17 @@ void DialogueBeginSystem(iter *it) {
             if (!dialogues->length) {
                 zox_logw("No Dialoguetrees.");
                 continue;
-            }
+            }*/
 
             // TODO: Get Dialogue off NPC
             // TODO: Link UI to player
             // TODO: Set NPC State
             // TODO: Link Run to Player
-            entity dialogue = dialogues->value[0];
+            // entity dialogue = dialogues->value[0];
             run->value = spawn_dialogue_run(
                 world,
                 prefab_dialogue_run,
-                dialogue,
+                tree,
                 e,
                 npc
             );

@@ -22,8 +22,8 @@ void CharacterStatsSystem(iter *it) {
         entity realm_health = 0;
         entity realm_energy = 0;
         entity realm_mana = 0;
-        for (int i = 0; i < realm_stats->length; i++) {
-            const entity stat = realm_stats->value[i];
+        for (int j = 0; j < realm_stats->length; j++) {
+            const entity stat = realm_stats->value[j];
             if (!realm_soul && zox_has(stat, StatLevel)) {
                 realm_soul = stat;
             }

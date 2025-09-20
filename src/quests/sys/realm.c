@@ -1,5 +1,3 @@
-entity meta_quest_slay_slems;
-
 void spawn_realm_quests(
     ecs *world,
     const entity realm
@@ -18,16 +16,31 @@ void spawn_realm_quests(
         }
     }
 
+    zox_geter(realm, CharacterLinks, characters);
+
     QuestLinks quests = (QuestLinks) { 0 };
 
     // slay them dirty slems
     {
-        meta_quest_slay_slems = spawn_meta_quest(world, prefab_quest, "find bob");
-        // meta_quest_slay_slems = spawn_meta_quest(world, prefab_quest, "slay slems");
-        // set quest objectives
-        // zox_set(meta_quest_slay_slems, TextureLink, { files_textures[12] });
-        zox_set(meta_quest_slay_slems, TextureLink, { string_hashmap_get(files_hashmap_textures, new_string_data("Discord")) });
-        add_to_QuestLinks(&quests, meta_quest_slay_slems);
+        entity quest = spawn_meta_quest(world, prefab_quest, "find bob");
+        // TODO: Object: Find NPC named Bob
+
+        // zox_set(quest, TextureLink, { files_textures[12] });
+        entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("discord"));
+        zox_set(quest, TextureLink, { texture });
+        add_to_QuestLinks(&quests, quest);
+    }
+
+    {
+        entity quest = spawn_meta_quest(world, prefab_quest, "slay slems");
+
+        // TODO: Objective: Slay 10 Slimes
+        entity slime = characters->value[0];
+        zox_set(quest, CharacterLink, { slime });
+
+        entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("taskbar_lore"));
+        zox_set(quest, TextureLink, { texture });
+        add_to_QuestLinks(&quests, quest);
     }
 
     zox_set_ptr(realm, QuestLinks, quests);

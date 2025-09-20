@@ -1,5 +1,7 @@
-entity spawn_zigel(ecs *world, const SpawnZigel *data) {
-
+entity spawn_zigel(
+    ecs *world,
+    const SpawnZigel *data
+) {
     zox_instance(prefab_zigel);
     zox_name("zigel");
     zox_set(e, ZigelIndex, { data->zigel.zigel_index });

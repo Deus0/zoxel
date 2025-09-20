@@ -22,4 +22,11 @@ void define_systems_dialogues(ecs* world) {
         [out] texts.TextData,
         [out] texts.TextDirty
     );
+    zox_system(
+        CharacterDialogueSystem,
+        EcsOnUpdate,
+        [in] characters.GenerateCharacter,
+        [in] realms.RealmLink,
+        [out] dialogues.DialoguetreeLink
+    );
 }

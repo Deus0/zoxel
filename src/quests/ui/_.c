@@ -1,7 +1,8 @@
-#ifndef zoxm_ui_quests
-#define zoxm_ui_quests
+#ifndef zoxm_quests_ui
+#define zoxm_quests_ui
 
 zox_tag(MenuQuests);
+#include "fun/_.c"
 #include "pre/_.c"
 
 zox_begin_module(QuestsUI)

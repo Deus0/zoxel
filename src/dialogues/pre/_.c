@@ -18,5 +18,6 @@ void spawn_prefabs_dialogues(ecs* world) {
     }
     if (prefab_character3) {
         zox_prefab_character_add(DialogueRunLink);
+        zox_prefab_character_add(DialoguetreeLink);
     }
 }

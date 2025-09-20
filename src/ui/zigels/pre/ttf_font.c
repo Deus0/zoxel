@@ -5,7 +5,13 @@
 // for now just load first one
 #ifdef zox_lib_ttf
 
-entity spawn_font_ttf(ecs *world, const entity prefab_font, FT_Face face, const float4 face_bounds, const char charcode) {
+entity spawn_font_ttf(
+    ecs *world,
+    const entity prefab_font,
+    FT_Face face,
+    const float4 face_bounds,
+    const char charcode
+) {
     const FT_GlyphSlot glyph = get_glyph(face, charcode);
     if (glyph == 0) return 0;
     int length;
@@ -17,15 +23,19 @@ entity spawn_font_ttf(ecs *world, const entity prefab_font, FT_Face face, const 
     return e;
 }
 
-entity spawn_ttf_as_font_style(ecs *world, const entity prefab,  FT_Face face) {
-    const entity prefab_font = zox_get_value(prefab, FontLink)
+entity spawn_ttf_as_font_style(
+    ecs *world,
+    const entity prefab,
+    FT_Face face
+) {
+    const entity prefab_font = zox_get_value(prefab, FontLink);
     const float4 face_bounds = get_face_bounds(face);   // bounds used to calculate points
     // enter, options, exit
-    zox_instance(prefab)
-    zox_name("font_style_ttf")
-    zox_add_tag(e, TTFFontStyle)
-    zox_muter(e, Children, children)
-    resize_memory_component(Children, children, entity, font_styles_length)
+    zox_instance(prefab);
+    zox_name("font_style_ttf");
+    zox_add_tag(e, TTFFontStyle);
+    zox_muter(e, Children, children);
+    resize_memory_component(Children, children, entity, font_styles_length);
     for (int i = 0; i < font_styles_length; i++) {
         children->value[i] = 0;
     }
@@ -55,7 +65,12 @@ entity spawn_ttf_as_font_style(ecs *world, const entity prefab,  FT_Face face) {
     return e;
 }
 
-entity spawn_ttf_path_as_font_style(ecs *world, const entity prefab, const FT_Library *library, const char *load_path) {
+entity spawn_ttf_path_as_font_style(
+    ecs *world,
+    const entity prefab,
+    const FT_Library *library,
+    const char *load_path
+) {
     FT_Face face;
     if (FT_New_Face(*library, load_path, 0, &face)) {
         fprintf(stderr, " ! error: failure in initialize_ttf [%s]\n", load_path);
@@ -70,13 +85,14 @@ entity spawn_ttf_path_as_font_style(ecs *world, const entity prefab, const FT_Li
     return e;
 }
 
-entity spawn_ttf_from_file(ecs *world,
+entity spawn_ttf_from_file(
+    ecs *world,
     const entity prefab,
     const FT_Library *library,
-    const char *load_path)
-{
+    const char *load_path
+) {
     if (!raw_path) {
-        zox_log_error("raw_path null, fix flow here")
+        zox_log_error("raw_path null, fix flow here");
         return 0;
     }
     // resources_path
@@ -84,21 +100,34 @@ entity spawn_ttf_from_file(ecs *world,
     char* load_directory_slash = concat_file_path(load_directory, character_slash);
     char* font_ttf = concat_file_path(load_directory_slash, load_path);
     zox_log("> loading [%s]\n", font_ttf)
-    const entity e = spawn_ttf_path_as_font_style(world, prefab, library, font_ttf);
+    const entity e = spawn_ttf_path_as_font_style(
+        world,
+        prefab,
+        library,
+        font_ttf
+    );
     free(font_ttf);
     free(load_directory);
     free(load_directory_slash);
     return e;
 }
 
-byte initialize_ttf(ecs *world, const entity prefab) {
+byte initialize_ttf(
+    ecs *world,
+    const entity prefab
+) {
     FT_Library library;
     if (FT_Init_FreeType(&library)) {
-        fprintf(stderr, " ! error: failure in initialize_ttf\n");
+        fprintf(stderr, " ! Error: failure in initialize_ttf");
         return 0;
     }
-    zox_log("+ loading [%s] from resources\n", default_font_ttf)
-    zox_font_style_monocraft = spawn_ttf_from_file(world, prefab, &library, default_font_ttf);
+    zox_log("+ loading [%s] from resources", default_font_ttf)
+    zox_font_style_monocraft = spawn_ttf_from_file(
+        world,
+        prefab,
+        &library,
+        default_font_ttf
+    );
     FT_Done_FreeType(library);
     return 1;
 }

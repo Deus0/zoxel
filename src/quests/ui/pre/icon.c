@@ -1,31 +1,3 @@
-byte tooltip_event_quest(
-    ecs *world,
-    const TooltipEventData *data
-) {
-    if (!data->data || !zox_has(data->data, Quest)) {
-        return 0;
-    }
-    // set_entity_text(world, data->tooltip, "selected skill");
-    byte used_name = 0;
-    char result[64];
-    if (data->data && zox_has(data->data, ZoxName)) {
-        const ZoxName *zox_name = zox_get(data->data, ZoxName)
-        if (zox_name && zox_name->length > 0) {
-            char *name_string = convert_zext_to_text(zox_name->value, zox_name->length);
-            if (name_string != NULL) {
-                used_name = 1;
-                sprintf(result, "quest [%s]\n", name_string);
-                free(name_string);
-            }
-        }
-    }
-    if (!used_name) {
-        sprintf(result, "[%s] q\n", zox_get_name(data->data));
-    }
-    set_entity_text(world, data->tooltip, result);
-    return 1;
-}
-
 entity spawn_prefab_icon_quest(
     ecs *world,
     const entity prefab

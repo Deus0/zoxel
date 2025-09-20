@@ -12,35 +12,37 @@ void spawn_realm_dialoguetrees(ecs *world, const entity realm) {
     DialoguetreeLinks trees = (DialoguetreeLinks) { 0 };
 
     {
-        // TODO: Refactor Tree to Realms Dialogue Gen
-        entity dialogue_tree = spawn_dialogue_tree(
+        byte texts_count = 3;
+        char* texts[] = {
+            "Greetings traveler..",
+            "... *stares*",
+            "Well, get going then."
+        };
+        entity e2 = spawn_dialogue_tree_texts(
             world,
             prefab_dialogue_tree,
-            "Well, well, well..."
-        );
-        entity test_dialogue_leaf = spawn_dialogue_leaf(
-            world,
             prefab_dialogue_leaf,
-            "Look what the cat dragged in, ay.."
+            texts,
+            texts_count
         );
-        entity test_dialogue_leaf2 = spawn_dialogue_leaf(
-            world,
-            prefab_dialogue_leaf,
+        add_to_DialoguetreeLinks(&trees, e2);
+    }
+
+    {
+        byte texts_count = 3;
+        char* texts[] = {
+            "Well, well, well...",
+            "Look what the cat dragged in, ay..",
             "Leave for now! Come back with cookies."
-        );
-
-        new_link_single_node(
+        };
+        entity e2 = spawn_dialogue_tree_texts(
             world,
-            dialogue_tree,
-            test_dialogue_leaf
+            prefab_dialogue_tree,
+            prefab_dialogue_leaf,
+            texts,
+            texts_count
         );
-
-        new_link_single_node(
-            world,
-            test_dialogue_leaf,
-            test_dialogue_leaf2
-        );
-        add_to_DialoguetreeLinks(&trees, dialogue_tree);
+        add_to_DialoguetreeLinks(&trees, e2);
     }
 
 

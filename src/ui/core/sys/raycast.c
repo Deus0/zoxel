@@ -1,50 +1,56 @@
 void ElementRaycastSystem(iter *it) {
-    zox_sys_query()
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(Raycaster)
-    zox_sys_in(DeviceLink)
-    zox_sys_out(RaycasterTarget)
-    zox_sys_out(WindowRaycasted)
+    zox_sys_query();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Raycaster);
+    zox_sys_in(DeviceLink);
+    zox_sys_out(RaycasterTarget);
+    zox_sys_out(WindowRaycasted);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(DeviceLink, deviceLink)
-        zox_sys_i(Raycaster, raycaster)
-        zox_sys_o(RaycasterTarget, raycasterTarget)
-        zox_sys_o(WindowRaycasted, windowRaycasted)
+        zox_sys_e();
+        zox_sys_i(DeviceLink, deviceLink);
+        zox_sys_i(Raycaster, raycaster);
+        zox_sys_o(RaycasterTarget, raycasterTarget);
+        zox_sys_o(WindowRaycasted, windowRaycasted);
+
         if (!deviceLink->value) {
             continue;
         }
+
         if (zox_gett_value(deviceLink->value, DeviceDisabled)) {
             continue;
         }
+
         const entity player = zox_get_value(deviceLink->value, PlayerLink)
         if (!player) {
             continue;
         }
+
         const byte device_mode = zox_get_value(player, DeviceMode)
         if (device_mode != zox_device_mode_keyboardmouse && device_mode != zox_device_mode_touchscreen) {
             continue;
         }
+
         const entity player_canvas = zox_get_value(player, CanvasLink)
-        const entity player_camera_ui = zox_get_value(player_canvas, CameraLink)
+        const entity player_camera_ui = zox_gett_value(player_canvas, CameraLink);
         const int2 position = raycaster->value;
         int ui_layer = -1;
         entity ui_selected = 0;
         int window_layer = -1;
         entity window_selected = 0;
-        zox_sys_query_begin()
+        zox_sys_query_begin();
         while (zox_sys_query_loop()) {
-            zox_sys_begin_2()
-            zox_sys_in_2(CanvasPosition)
-            zox_sys_in_2(LayoutSize)
-            zox_sys_in_2(Layer2D)
-            zox_sys_in_2(RenderDisabled)
+            zox_sys_begin_2();
+            zox_sys_in_2(CanvasPosition);
+            zox_sys_in_2(LayoutSize);
+            zox_sys_in_2(Layer2D);
+            zox_sys_in_2(RenderDisabled);
             for (int j = 0; j < it2.count; j++) {
-                zox_sys_i_2(RenderDisabled, renderDisabled)
-                zox_sys_i_2(CanvasPosition, canvasPosition2)
-                zox_sys_i_2(LayoutSize, pixelSize2)
-                zox_sys_i_2(Layer2D, layer2D)
+                zox_sys_i_2(RenderDisabled, renderDisabled);
+                zox_sys_i_2(CanvasPosition, canvasPosition2);
+                zox_sys_i_2(LayoutSize, pixelSize2);
+                zox_sys_i_2(Layer2D, layer2D);
+
                 if (renderDisabled->value) {
                     continue;
                 }
@@ -56,7 +62,6 @@ void ElementRaycastSystem(iter *it) {
                 if (player_camera_ui != camera) {
                     continue; // only do checks for player canvases
                 }
-                // SelectState *selectState = &selectableStates[j];
                 const int2 pixelSize = pixelSize2->value;
                 const int2 canvas_position = zox_get_value(camera, ScreenPosition)
                 const int2 canvas_size = zox_get_value(camera, ScreenDimensions)
@@ -89,7 +94,7 @@ void ElementRaycastSystem(iter *it) {
                 }
             }
         }
-        zox_sys_query_end()
+        zox_sys_query_end();
         // if only exists to block others (like Window's)
         if (ui_selected && !zox_has(ui_selected, SelectState)) {
             ui_selected = 0;
@@ -101,4 +106,4 @@ void ElementRaycastSystem(iter *it) {
             raycaster_select_window(world, e, window_selected);
         }
     }
-} zoxd_system(ElementRaycastSystem)
+} zoxd_system2(ElementRaycastSystem);

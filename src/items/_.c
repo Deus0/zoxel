@@ -10,10 +10,9 @@ byte test_items_blocks = 0;
 #include "sys/_.c"
 
 zox_begin_module(Items)
+    add_hook_spawn_prefabs(spawn_prefabs_items);
     define_components_items(world);
     define_systems_items(world);
-    add_hook_spawned_character3D(&spawn_character_items);
-    add_hook_spawn_prefabs(spawn_prefabs_items);
     zox_import_module(ItemsUI);
 zox_end_module(Items)
 

@@ -1,3 +1,3 @@
-#include "character.c"
+// #include "character.c"
 #include "realm.c"
 #include "label.c"

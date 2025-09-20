@@ -8,7 +8,6 @@
 #include "ui/_.c"
 
 zox_begin_module(Quests)
-    add_hook_spawned_character3D(&spawn_character_quests);
     add_hook_spawn_prefabs(spawn_prefabs_quests);
     define_components_quests(world);
     define_systems_quests(world);

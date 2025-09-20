@@ -1,13 +1,15 @@
-ecs_entity_t spawn_character3_meta(ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const ecs_entity_t spawn_prefab,
-    const ecs_entity_t model,
-    const byte chance)
-{
-    zox_instance(prefab)
-    zox_name("character3_meta")
-    zox_set(e, ModelLink, { model })
-    zox_set(e, SpawnChance, { chance })
-    zox_set(e, Character3PrefabLink, { spawn_prefab })
+entity spawn_character3_meta(
+    ecs *world,
+    const entity prefab,
+    const entity spawn_prefab,
+    const char* name,
+    const entity model,
+    const byte chance
+) {
+    zox_instance(prefab);
+    zox_name(name); // "character3_meta");
+    zox_set(e, ModelLink, { model });
+    zox_set(e, SpawnChance, { chance });
+    zox_set(e, Character3PrefabLink, { spawn_prefab });
     return e;
 }

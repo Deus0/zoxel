@@ -3,6 +3,7 @@
 #include "activate.c"
 #include "terrain_drop.c"
 #include "character.c"
+#include "character_player.c"
 zox_declare_system_state_event(RealmItems, GenerateRealm, zox_generate_realm_items, spawn_realm_items)
 
 void define_systems_items(ecs *world) {
@@ -33,5 +34,21 @@ void define_systems_items(ecs *world) {
         [in] chunks3.NodeDepth,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
+    );
+    zox_system_1(
+        CharacterItemsSystem,
+        EcsOnUpdate,
+        [in] characters.GenerateCharacter,
+        [in] realms.RealmLink,
+        [out] items.ItemLinks,
+        [none] !players.PlayerLink
+    );
+    zox_system_1(
+        CharacterPlayerItemsSystem,
+        EcsOnUpdate,
+        [in] characters.GenerateCharacter,
+        [in] realms.RealmLink,
+        [out] items.ItemLinks,
+        [none] players.PlayerLink
     );
 }

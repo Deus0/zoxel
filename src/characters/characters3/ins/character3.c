@@ -89,12 +89,14 @@ entity spawn_character3(
         }
     }
 
+    char *name = generate_name();
+    zox_set(e, ZoxName, { text_to_zext(name) });
+    free(name);
+
     // name
     if (!disable_npc_hooks) {
-        char *name = generate_name();
-        zox_set(e, ZoxName, { text_to_zext(name) })
          // data->;
-        float soul = data.player ? 1 : randf_range(1, 3);
+        /*float soul = data.player ? 1 : randf_range(1, 3);
         spawned_character3D_data spawned_data = {
             .e = e,
             .p = data.player,
@@ -105,8 +107,7 @@ entity spawn_character3(
             .soul_value = soul,
         };
         run_hook_spawned_character3D(world, &spawned_data);
-        zox_set(e, ElementLinks, { spawned_data.elementLinks->length, spawned_data.elementLinks->value })
-        free(name);
+        zox_set(e, ElementLinks, { spawned_data.elementLinks->length, spawned_data.elementLinks->value })*/
     }
 
     return e;

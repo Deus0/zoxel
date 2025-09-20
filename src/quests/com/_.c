@@ -1,4 +1,3 @@
-
 zoxc_userdata(Quest);
 zoxf_user_prefabs(Quest, quest, "quest")
 

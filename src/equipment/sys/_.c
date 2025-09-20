@@ -4,4 +4,12 @@ zox_declare_system_state_event(RealmEquips, GenerateRealm, zox_generate_realm_eq
 
 void define_systems_equipment(ecs* world) {
     zox_define_system_state_event_1(RealmEquips, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+    zox_system_1(
+        CharacterPlayerEquipsSystem,
+        EcsOnUpdate,
+        [in] characters.GenerateCharacter,
+        [in] realms.RealmLink,
+        [out] equips.EquipLinks,
+        [none] players.PlayerLink
+    );
 }

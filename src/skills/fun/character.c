@@ -1,4 +1,4 @@
-const int character_skills_count = 8; // having blank items seems to b reak it
+/*const int character_skills_count = 8; // having blank items seems to b reak it
 
 // todo: take in npc spawn meta data, like location, biome, etc
 void spawn_character_skills(ecs *world, spawned_character3D_data *data) {
@@ -39,7 +39,7 @@ void spawn_character_skills(ecs *world, spawned_character3D_data *data) {
     }
 
     zox_set_ptr(data->e, SkillLinks, skills);
-}
+}*/
 
     /*if (meta_skill_aura_life) {
         skills->value[0] = spawn_user_skill(world, meta_skill_aura_life, data->e);

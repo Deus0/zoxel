@@ -182,7 +182,7 @@ zox_begin_module(Zox)
     zox_import_module(Stats);
     zox_import_module(Skills);
     zox_import_module(Items);
-    zox_import_module(Equipment);
+    zox_import_module(Equips);
     zox_import_module(Actions);
     zox_import_module(Dialogues);
     zox_import_module(Quests);

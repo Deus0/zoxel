@@ -10,10 +10,9 @@ void spawn_realm_characters(ecs *world, entity e) {
         zox_log_error("realm does not have CharacterLinks [%s]", zox_get_name(e))
         return;
     }
-    // zox_muter(e, StatLinks, stats)
-    zox_geter(e, CharacterLinks, old)
+
+    zox_geter(e, CharacterLinks, old);
     if (old) {
-        // clear previous
         for (int i = 0; i < old->length; i++) {
             const entity e2 = old->value[i];
             if (zox_valid(e2)) {
@@ -21,10 +20,10 @@ void spawn_realm_characters(ecs *world, entity e) {
             }
         }
     }
-    // zox_log("+ spawning realm characters")
+
     byte chance_max = 0;
     zox_geter(e, ModelLinks, models);
-    CharacterLinks characters = (CharacterLinks) { 0, NULL };
+    CharacterLinks characters = (CharacterLinks) { 0 };
 
     // add files
     int count = 5; // count of below array
@@ -35,17 +34,22 @@ void spawn_realm_characters(ecs *world, entity e) {
 
     for (int i = 0; i < count; i++) {
         entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(vox_names[i]));
-        if (zox_valid(model)) {
-            // can choose here properties for spawning
-            byte chance = chances[i];
-            const entity e2 = spawn_character3_meta(world,
-                prefab_character3_meta,
-                prefab_character,
-                model,
-                chance);
-            add_to_CharacterLinks(&characters, e2);
-            chance_max += chance;
+        if (!zox_valid(model)) {
+            continue;
         }
+
+        // can choose here properties for spawning
+        byte chance = chances[i];
+        const entity e2 = spawn_character3_meta(
+            world,
+            prefab_character3_meta,
+            prefab_character,
+            vox_names[i],
+            model,
+            chance
+        );
+        add_to_CharacterLinks(&characters, e2);
+        chance_max += chance;
     }
 
     // add model links with tag ModelCharacter
@@ -59,11 +63,14 @@ void spawn_realm_characters(ecs *world, entity e) {
             continue;
         }
         byte chance = 8;
-        const entity e2 = spawn_character3_meta(world,
+        const entity e2 = spawn_character3_meta(
+            world,
             prefab_character3_meta,
             prefab_character,
+            "character",
             model,
-            chance);
+            chance
+        );
         add_to_CharacterLinks(&characters, e2);
         chance_max += chance;
     }
@@ -73,11 +80,14 @@ void spawn_realm_characters(ecs *world, entity e) {
         byte chance = 5;
         char* svox_name = "grazor";
         entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(svox_name));
-        const entity e2 = spawn_character3_meta(world,
+        const entity e2 = spawn_character3_meta(
+            world,
             prefab_character3_meta,
             prefab_character3_skeleton_npc,
+            svox_name,
             model,
-            chance);
+            chance
+        );
         add_to_CharacterLinks(&characters, e2);
         chance_max += chance;
     }

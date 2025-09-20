@@ -6,4 +6,5 @@
 #include "debug_label_event.c"
 #include "direction.c"
 #include "pow.c"
+#include "zascii.c"
 int node_memory = 0;

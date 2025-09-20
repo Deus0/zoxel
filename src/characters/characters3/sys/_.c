@@ -1,7 +1,7 @@
 #include "saving.c"
 #include "render_depth.c"
 #include "debug_types.c"
-#include "realm_characters.c"
+#include "realm.c"
 #include "name_labels.c"
 zox_declare_system_state_event(RealmCharacters, GenerateRealm, zox_generate_realm_characters, spawn_realm_characters)
 

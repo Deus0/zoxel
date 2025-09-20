@@ -5,6 +5,7 @@
 #include "activate.c"
 #include "toggle.c"
 #include "aura_sound.c"
+#include "character.c"
 zox_declare_system_state_event(RealmSkills, GenerateRealm, zox_generate_realm_skills, spawn_realm_skills)
 
 void define_systems_skills(ecs *world) {
@@ -91,5 +92,15 @@ void define_systems_skills(ecs *world) {
         EcsOnUpdate,
         [in] users.Activate,
         [none] skills.Aura
+    );
+
+
+    zox_system_1(
+        CharacterSkillsSystem,
+        EcsOnUpdate,
+        [in] characters.GenerateCharacter,
+        [in] realms.RealmLink,
+        [out] skills.SkillLinks
+        // [none] !players.PlayerLink
     );
 }
