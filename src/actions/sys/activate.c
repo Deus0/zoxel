@@ -2,11 +2,11 @@
 void ActionActivateSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TriggerActionB);
+    zox_sys_in(TriggerActionA);
     zox_sys_in(ActionIndex);
     zox_sys_in(ActionLinks);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TriggerActionB, trigger);
+        zox_sys_i(TriggerActionA, trigger);
         zox_sys_i(ActionIndex, index);
         zox_sys_i(ActionLinks, actions);
 

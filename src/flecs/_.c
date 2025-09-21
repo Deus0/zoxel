@@ -23,3 +23,5 @@ ecs* initialize_ecs(int argc, char* argv[], byte cores) {
     local_world = new_world;
     return new_world;
 }
+
+// NOTE: zox_get_prefab(e, name); to get the prefab parent

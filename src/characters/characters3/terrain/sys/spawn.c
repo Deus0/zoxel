@@ -150,6 +150,7 @@ void Characters3SpawnSystem(iter *it) {
                 .prefab = prefab_character,
                 .position = position,
                 .rotation = rotation,
+                .meta = meta,
                 .model = model,
                 .scale = vox_model_scale,
                 .render_depth = render_depth,

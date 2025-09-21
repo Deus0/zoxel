@@ -35,6 +35,9 @@ void spawn_realm_quests(
         entity quest = spawn_meta_quest(world, prefab_quest, "slay slems");
 
         // TODO: Objective: Slay 10 Slimes
+        zox_add_tag(quest, SlayQuest);
+        zox_set(quest, QuestValue, { 0 });
+        zox_set(quest, QuestTarget, { 10 });
         entity slime = characters->value[0];
         zox_set(quest, CharacterLink, { slime });
 

@@ -5,6 +5,7 @@ zoxc_byte(Character3Type);
 zoxc(CharacterSaveHash, ulong);
 zoxc_entity(Character3Link);
 zoxc_entity(Character3PrefabLink);
+zoxc_entity(CharacterMetaLink);
 
 void define_components_characters3(ecs_world_t* world) {
     zoxd_tag(Character3);
@@ -14,4 +15,5 @@ void define_components_characters3(ecs_world_t* world) {
     zoxd(CharacterSaveHash);
     zoxd_entity(Character3Link);
     zoxd_entity(Character3PrefabLink);
+    zoxd_entity(CharacterMetaLink);
 }

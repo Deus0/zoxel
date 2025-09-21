@@ -2,13 +2,13 @@
 void DialogueBeginSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TriggerActionA);
+    zox_sys_in(TriggerActionB);
     zox_sys_in(RaycastVoxelData);
     zox_sys_in(PlayerLink);
     zox_sys_out(DialogueRunLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TriggerActionA, state);
+        zox_sys_i(TriggerActionB, state);
         zox_sys_i(RaycastVoxelData, raycast);
         zox_sys_i(PlayerLink, player);
         zox_sys_o(DialogueRunLink, run);

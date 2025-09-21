@@ -1,5 +1,6 @@
 #include "realm.c"
 #include "character.c"
+#include "slay.c"
 
 zox_declare_system_state_event(RealmQuests, GenerateRealm, zox_generate_realm_quests, spawn_realm_quests)
 
@@ -13,5 +14,12 @@ void define_systems_quests(ecs* world) {
         [in] realms.RealmLink,
         [out] quests.QuestLinks,
         [none] players.PlayerLink
+    );
+
+    zox_system(
+        SlaySystem,
+        EcsOnUpdate,
+        [in] combat.Dead,
+        [in] combat.LastDamager
     );
 }

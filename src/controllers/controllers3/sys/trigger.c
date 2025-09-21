@@ -34,14 +34,14 @@ void Player3DTriggerSystem(iter *it) {
                     if (zox_has(zevice, ZevicePointer)) {
                         zox_geter_value(zevice, ZevicePointer, byte, click);
                         // if (devices_get_pressed_this_frame(click)) {
-                        if (devices_get_pressed_this_frame(click)) {
+                        if (devices_get_pressed(click)) {
                             is_triggered_a = 1;
                         }
                     }
                     if (zox_has(zevice, ZevicePointerRight)) {
                         zox_geter_value(zevice, ZevicePointerRight, byte, click);
                         // if (devices_get_pressed_this_frame(click)) {
-                        if (devices_get_pressed(click)) {
+                        if (devices_get_pressed_this_frame(click)) {
                             is_triggered_b = 1;
                         }
                     }
@@ -87,11 +87,11 @@ void Player3DTriggerSystem(iter *it) {
 
         zox_geter_value(character, DisableMovement, byte, disabled);
         if (!disabled) {
-            if (is_triggered_a && !zox_gett_value(character, TriggerActionB)) {
-                zox_set(character, TriggerActionB, { zox_dirty_trigger });
-            }
-            if (is_triggered_b && !zox_gett_value(character, TriggerActionA)) {
+            if (is_triggered_a && !zox_gett_value(character, TriggerActionA)) {
                 zox_set(character, TriggerActionA, { zox_dirty_trigger });
+            }
+            if (is_triggered_b && !zox_gett_value(character, TriggerActionB)) {
+                zox_set(character, TriggerActionB, { zox_dirty_trigger });
             }
         }
     }

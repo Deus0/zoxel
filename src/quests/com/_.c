@@ -1,6 +1,14 @@
+zox_tag(SlayQuest);
+zoxc_byte(QuestValue);
+zoxc_byte(QuestTarget);
 zoxc_userdata(Quest);
+zoxc_state(QuestsDirty);
 zoxf_user_prefabs(Quest, quest, "quest")
 
 void define_components_quests(ecs* world) {
+    zoxd_tag(SlayQuest);
     zoxd_userdata(Quest);
+    zoxd_state(QuestsDirty);
+    zoxd_byte(QuestValue);
+    zoxd_byte(QuestTarget);
 }

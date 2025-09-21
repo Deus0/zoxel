@@ -19,11 +19,13 @@ byte tooltip_event_quest(
                 used_name = 1;
 
                 // TODO: Get Objectives
-                entity character = zox_has(data->data, CharacterLink) ? zox_gett_value(data->data, CharacterLink) : 0;
-                if (!character) {
-                    sprintf(result, "[%s]: find ???", name_string);
+                if (zox_has(data->data, SlayQuest)) {
+                    zox_geter_value(data->data, CharacterLink, entity, character);
+                    zox_geter_value(data->data, QuestValue, byte, value);
+                    zox_geter_value(data->data, QuestTarget, byte, target);
+                    sprintf(result, "[%s]: slay [%s] [%i/%i]", name_string, zox_get_name(character), value, target);
                 } else {
-                    sprintf(result, "[%s]: slay [%s]", name_string, zox_get_name(character));
+                    sprintf(result, "[%s]: find ???", name_string);
                 }
                 free(name_string);
             }

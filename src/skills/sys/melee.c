@@ -45,7 +45,7 @@ void MeleeSystem(iter *it) {
 
         for (int j = 0; j < stats->length; j++) {
             const entity stat = stats->value[j];
-            zox_get_prefab(stat, stat_parent)
+            zox_get_prefab(stat, stat_parent);
             if (skillResourceLink->value == stat_parent) {
                 resource = stat;
             }

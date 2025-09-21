@@ -25,6 +25,9 @@ entity spawn_character3(
 
     zox_instance(data.prefab);
     zox_name("character3");
+    if (data.meta) {
+        zox_set(e, CharacterMetaLink, { data.meta });
+    }
     zox_set(e, RealmLink, { data.realm });
     zox_set(e, Position3D, { data.position });
     zox_set(e, LastPosition3D, { data.position });

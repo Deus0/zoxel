@@ -1,18 +1,20 @@
 void ExperienceSystem(iter *it) {
     const float popup_spawn_y = 0.34f;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(Dead)
-    zox_sys_in(StatLinks)
-    zox_sys_in(LastDamager)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Dead);
+    zox_sys_in(StatLinks);
+    zox_sys_in(LastDamager);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Dead, dead)
-        zox_sys_i(StatLinks, stats)
-        zox_sys_i(LastDamager, lastDamager)
+        zox_sys_i(Dead, dead);
+        zox_sys_i(StatLinks, stats);
+        zox_sys_i(LastDamager, lastDamager);
+
         // proces if i die
         if (dead->value != zox_dirty_active) {
             continue;
         }
+
         // if enemy invalid or dead, continue
         if (!zox_valid(lastDamager->value) || zox_gett_value(lastDamager->value, Dead)) {
             continue;
@@ -26,6 +28,7 @@ void ExperienceSystem(iter *it) {
         if (!my_soul || !enemy_soul) {
             continue;
         }
+
         zox_geter(my_soul, StatValue, my_level)
         zox_muter(enemy_soul, ExperienceValue, experience)
 
@@ -37,7 +40,6 @@ void ExperienceSystem(iter *it) {
 
         // zox_log(" + [%s] has gained [%f] xp", zox_get_name(lastDamager->value), experience_gain)
 
-
         const float3 bounds3D = zox_get_value(it->entities[i], Bounds3D)
         const float3 position = zox_get_value(it->entities[i], Position3D)
         const float3 popup_position = (float3) { position.x, position.y + bounds3D.y + popup_spawn_y, position.z };
@@ -45,5 +47,6 @@ void ExperienceSystem(iter *it) {
         sprintf(popup_text, "+%i", (int) ceil(experience_gain));
         const color popup_color = (color) { 255, 255, 0, 255 };
         spawn_popup3_easy(world, popup_text, popup_color, popup_position, 5, 7 + rand() % 3);
+
     }
-} zoxd_system(ExperienceSystem)
+} zoxd_system2(ExperienceSystem);

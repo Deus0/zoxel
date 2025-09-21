@@ -5,6 +5,7 @@ typedef struct {
     const float4 rotation;
     const float3 euler;
     float scale;
+    const entity meta;
     const entity model;
     const byte render_depth;
     const byte render_disabled;

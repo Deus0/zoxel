@@ -111,7 +111,7 @@ void define_systems_controllers3D(ecs_world_t *world) {
     zox_system_1(
         DialogueBeginSystem,
         EcsOnUpdate,
-        [in] triggers.TriggerActionA,
+        [in] triggers.TriggerActionB,
         [in] vrays.RaycastVoxelData,
         [in] players.PlayerLink,
         [out] dialogues.DialogueRunLink

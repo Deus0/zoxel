@@ -12,6 +12,6 @@ void button_event_jump(ecs *world, const ClickEventData event) {
 void button_event_attack(ecs *world, const ClickEventData event) {
     const entity character = zox_get_value(event.clicker, CharacterLink)
     if (character) {
-        zox_set(character, TriggerActionB, { 1 })
+        zox_set(character, TriggerActionA, { 1 })
     }
 }
