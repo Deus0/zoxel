@@ -44,8 +44,8 @@
 #include "realms/_.c"
 #include "games/_.c"
 #include "players/_.c"
-#include "biomes/_.c"
 #include "colors/_.c"
+#include "biomes/_.c"
 
 // beef
 #include "cameras/_.c"

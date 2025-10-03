@@ -11,10 +11,10 @@ byte disable_bone_rendering = 0;
 #include "fun/test.c"
 
 zox_begin_module(Bones)
-    define_components_bones(world);
-    define_systems_bones(world);
     add_hook_load_shader(&spawn_shaders_bones);
     add_hook_spawn_prefabs(spawn_prefabs_bones);
+    define_components_bones(world);
+    define_systems_bones(world);
 zox_end_module(Bones)
 
 #endif

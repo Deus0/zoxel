@@ -2,8 +2,10 @@ BiomeData pick_biome(lint seed) {
 
     const BiomeData bcr_earthy = {
         .name = "Earthy Forest",
-        .dirt     = { 25, 35, 50, 70, 30, 50 },   // warm brown
-        .grass    = { 90, 140, 60, 90, 50, 70 },  // natural green
+        // .dirt     = { 15, 45, 40, 70, 30, 50 },   // warm brown
+        // .grass    = { 70, 160, 50, 90, 50, 70 },  // natural green
+        .dirt     = { 0, 360, 10, 90, 20, 70 },   // warm brown
+        .grass    = { 0, 360, 10, 90, 20, 70 },  // natural green
         .stone    = { 20, 40, 20, 40, 30, 50 },   // earthy gray-brown
         .sand     = { 40, 50, 30, 50, 60, 80 },   // dry tan sand
         .obsidian = { 0, 30, 20, 40, 10, 30 },    // deep root rock
