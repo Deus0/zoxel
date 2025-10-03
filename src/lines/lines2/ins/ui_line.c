@@ -1,4 +1,8 @@
-void offset_line_points(int4 *points, const float4 line_anchor, const float2 canvas_size_f) {
+void offset_line_points(
+    int4 *points,
+    const float4 line_anchor,
+    const float2 canvas_size_f
+) {
     points->x += canvas_size_f.x * line_anchor.x;
     points->y += canvas_size_f.y * line_anchor.y;
     points->z += canvas_size_f.x * line_anchor.z;
@@ -83,5 +87,6 @@ entity spawn_ui_line2_v2(ecs *world,
         life_time,
         parent_positionf,
         parent_position,
-        layer);
+        layer
+    );
 }

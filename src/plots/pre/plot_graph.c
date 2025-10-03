@@ -1,19 +1,20 @@
-ecs_entity_t plot_time;
-ecs_entity_t plot_time_system;
+entity plot_time;
+entity plot_time_system;
 const float plot_line_thickness = 1.0f;
 
-ecs_entity_t spawn_plot_graph(
-    ecs_world_t* world,
-    ecs_entity_t canvas,
-    ecs_entity_t parent,
+entity spawn_plot_graph(
+    ecs* world,
+    entity canvas,
+    entity parent,
     int2 parent_position,
     int2 parent_size,
-    ecs_entity_t prefab,
+    entity prefab,
     byte layer,
     int2 size,
     int points_count,
     double start_value,
-    color c,
+    color text_color,
+    color line_color,
     byte is_label,
     byte label_line
 ) {
@@ -75,12 +76,12 @@ ecs_entity_t spawn_plot_graph(
                 .font_thickness = 1,
                 .alignment = zox_mesh_alignment_top_left,
                 .margins = (byte2) { 16, 4 },
-                .font_fill_color = default_font_fill_color,
+                .font_fill_color = text_color, // default_font_fill_color,
                 .font_outline_color = default_font_outline_color
             }
         };
 
-        const ecs_entity_t e2 = spawn_zext(world, &text_data);
+        const entity e2 = spawn_zext(world, &text_data);
         children.value[0] = e2;
         zox_add_tag(e2, PlotLabel);
     }
@@ -90,13 +91,13 @@ ecs_entity_t spawn_plot_graph(
         const int position_x = line_margins + i * line_spacing;
         const int2 start_position = (int2) { position_x, lines_min_height };
         const int2 end_position = (int2) { position_x, lines_max_height };
-        const ecs_entity_t e2 = spawn_ui_line2_v2(
+        const entity e2 = spawn_ui_line2_v2(
             world,
             canvas,
             e,
             start_position,
             end_position,
-            c,
+            line_color,
             plot_line_thickness,
             0,
             float2_zero,
@@ -105,7 +106,7 @@ ecs_entity_t spawn_plot_graph(
         );
         zox_set(e2, ChildIndex, { i });
         zox_set(e2, ParentLink, { e });
-        zox_add_tag(e2, PlotLine)
+        zox_add_tag(e2, PlotLine);
         children.value[is_label + i] = e2;
     }
     zox_set_ptr(e, Children, children);

@@ -9,9 +9,10 @@ entity spawn_profiler(
     const byte layer
 ) {
     const byte plots_count = 2;
+    const color text_color = (color) { 255, 255, 255, 255 };
     const color plot_colors[] = {
         (color) { 33, 133, 133, 255 },
-        (color) { 133, 133, 133, 255 },
+        (color) { 163, 163, 163, 255 },
     };
 
     const byte plot_layer = layer + 1;
@@ -53,7 +54,8 @@ entity spawn_profiler(
     initialize_Children(&children, children_count);
 
     if (is_header) {
-        children.value[0] = spawn_header(world,
+        children.value[0] = spawn_header(
+            world,
             e,
             canvas,
             header_position,
@@ -83,9 +85,11 @@ entity spawn_profiler(
             plot_size,
             record_frames_count,
             0,
+            text_color,
             plot_colors[i],
             1,   // labels
-            i * 2);
+            i * 2
+        );
     }
     // todo: seperate plot data from the graphs here
         // - hotkey to switch them

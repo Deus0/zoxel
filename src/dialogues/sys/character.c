@@ -5,7 +5,7 @@ void CharacterDialogueSystem(iter *it) {
     zox_sys_in(RealmLink);
     zox_sys_out(DialoguetreeLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
         zox_sys_o(DialoguetreeLink, tree);

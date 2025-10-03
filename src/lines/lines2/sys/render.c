@@ -1,7 +1,7 @@
 // cache camera?? todo: refactor!
-extern ecs_entity_t get_root_canvas_camera(ecs_world_t *world, const ecs_entity_t e);
+extern entity get_root_canvas_camera(ecs *world, const entity e);
 
-void line2D_render_iteration(ecs_iter_t *it, const byte is_element_line) {
+void line2D_render_iteration(iter *it, const byte is_element_line) {
     zox_gpu_material(line2D_material);
     glEnableVertexAttribArray(line2D_position_location);
     float4x4 render_matrix;
@@ -26,6 +26,7 @@ void line2D_render_iteration(ecs_iter_t *it, const byte is_element_line) {
         zox_sys_i(LineData2D, lineData2D);
         zox_sys_i(LineThickness, lineThickness);
         zox_sys_i(Color, line_color);
+
         if (is_element_line) {
             if (layer2D->value != renderer_layer) {
                 continue; // render per layer
@@ -34,28 +35,30 @@ void line2D_render_iteration(ecs_iter_t *it, const byte is_element_line) {
                 continue;
             }
         }
-        const float4 color_float4 = color_to_float4(line_color->value);
+
+        const float4 color_f4 = color_to_float4(line_color->value);
+
         glLineWidth(lineThickness->value);
         glVertexAttribPointer(line2D_position_location, 2, GL_FLOAT, GL_FALSE, 0, (GLfloat*) &lineData2D->value);
-        // glUniform4f(line2D_color_location, color_float4.x, color_float4.y, color_float4.z, color_float4.w);
-        zox_gpu_float4(line2D_color_location, color_float4);
-        // zox_log("   - [%fx%f] -> [%fx%f]", lineData2D->value.x, lineData2D->value.y, lineData2D->value.z, lineData2D->value.w)
+        zox_gpu_float4(line2D_color_location, color_f4);
         zox_gpu_render_lines(2);
-#ifdef zoxel_catch_opengl_errors
-        if (check_opengl_error_unlogged() != 0) {
-            zox_log(" > failed to render line2D_render_iteration [%lu]: [%i]\n", it->entities[i], 2)
+
+        /*if (check_opengl_error_unlogged()) {
+            zox_log(" > failed to render line2D_render_iteration [%lu]: [%i]", it->entities[i], 2);
             break;
-        }
-#endif
+        }*/
+        // zox_log("   - [%fx%f] -> [%fx%f]", lineData2D->value.x, lineData2D->value.y, lineData2D->value.z, lineData2D->value.w)
+        // zox_log("line_color: %ix%ix%ix%i", line_color->value.r, line_color->value.g, line_color->value.b, line_color->value.a);
+        // zox_log("color_f4: %fx%fx%fx%f", color_f4.x, color_f4.y, color_f4.z, color_f4.w);
     }
     glDisableVertexAttribArray(line2D_position_location);
     zox_disable_material();
 }
 
-void Line2DRenderSystem(ecs_iter_t *it) {
+void Line2DRenderSystem(iter *it) {
     line2D_render_iteration(it, 0);
-} zoxd_system(Line2DRenderSystem)
+} zoxd_system2(Line2DRenderSystem);
 
-void ElementLine2DRenderSystem(ecs_iter_t *it) {
+void ElementLine2DRenderSystem(iter *it) {
     line2D_render_iteration(it, 1);
-} zoxd_system(ElementLine2DRenderSystem)
+} zoxd_system2(ElementLine2DRenderSystem);

@@ -1,4 +1,5 @@
-//#define zoxel_convert_to_ascii_start(char, number) if (input == number) return char;\
+//#define zoxel_convert_to_ascii_start(char, number) if (input == number) return char;
+
 //#define zoxel_convert_to_ascii(char, number) else if (input == number) return char;
 
 #define zoxel_convert_to_ascii_n(c, n) if (input == n) { return c; }

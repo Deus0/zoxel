@@ -37,15 +37,15 @@ entity load_font_style(ecs *world, char *filename) {
     // spawn font style and spawn fonts based on data
     char* directory = concat_file_path(resources_path, directory_fonts);
     char* directory_slash = concat_file_path(directory, character_slash);
-    free(directory);
     char* path = concat_file_path(directory_slash, filename);
-    free(directory_slash);
     zox_logv("  - Loading Files Font [%s]", path);
     FILE *file = fopen(path, "rb");
     zox_logv(" + loading font style entity");
     zox_logv("   - to zox file [%s]", filename);
     zox_logv("   - directory [%s]", directory);
     zox_logv("   - full path [%s]", path);
+    free(directory_slash);
+    free(directory);
 
     if (!file) {
         zox_log_error(" > file is NULL at path [%s]", path)

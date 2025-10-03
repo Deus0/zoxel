@@ -15,20 +15,20 @@ static inline const LightNode* get_max_light_on_face(
     const LightNode* node,
     byte face,
     byte depth,
-    byte target_depth
+    byte target
 ) {
     if (!node) return NULL;
 
     const LightNode* best_node = node;
     byte max_value = node->value;
 
-    if (depth < target_depth && node->ptr) {
+    if (depth < target && node->ptr) {
         const LightNode* kids = (const LightNode*) node->ptr;
         const byte* idxs = face_children[face];
         for (byte i = 0; i < 4; i++) {
             const LightNode* kid = &kids[idxs[i]];
             const LightNode* candidate = get_max_light_on_face(
-                kid, face, depth + 1, target_depth
+                kid, face, depth + 1, target
             );
             if (candidate && candidate->value > max_value) {
                 max_value = candidate->value;
@@ -46,7 +46,7 @@ static inline const LightNode* get_max_light_on_face_(
     byte face,
     byte3 position,
     byte depth,
-    byte target_depth
+    byte target
 ) {
     const LightNode* node = get_neighbor_LightNode(
         root_node,
@@ -55,7 +55,7 @@ static inline const LightNode* get_max_light_on_face_(
         position,
         depth
     );
-    return get_max_light_on_face(node, face, depth, target_depth);
+    return get_max_light_on_face(node, face, depth, target);
 }
 
 void zox_apply_light3(
@@ -69,7 +69,9 @@ void zox_apply_light3(
     byte target,
     byte depth
 ) {
-    if (!node || node->value == 0) return;
+    if (!node || node->value == 0) {
+        return;
+    }
 
     if (depth >= target || is_closed_VoxelNode(node)) {
 
@@ -90,13 +92,14 @@ void zox_apply_light3(
                     position,
                     depth
                 );*/
+                // TODO: Get Adjacent Depth -> based on chunk index to depth lookup - atm we just assume its render depth + 1
                 const LightNode* adj_node = get_max_light_on_face_(
                     root_lnode,
                     nnodesl,
                     face,
                     position,
                     depth,
-                    target
+                    target + 1 // terrain_depth // target
                 );
 
                 byte light = adj_node ? adj_node->value : sunlight;
@@ -166,7 +169,8 @@ void Light3BuildSystem(iter* it) {
         fetch_neightbor_light_nodes(
             world,
             neighbors,
-            nnodesl);
+            nnodesl
+        );
 
         zox_geter_value(vox_link->value, RealmLink, entity, realm);
         zox_geter(realm, VoxelLinks, blocks);
@@ -186,7 +190,8 @@ void Light3BuildSystem(iter* it) {
             byte3_zero,
             &color_index,
             depth->value,
-            0);
+            0
+        );
 
         if (color_index != colors->length) {
             zox_logw("color building not reached max [%i] / [%i]", color_index, colors->length);

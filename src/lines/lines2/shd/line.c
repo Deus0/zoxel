@@ -7,21 +7,21 @@ uint line2D_depth_location;
 uint line2D_camera_matrix_location;
 
 void spawn_shader_line2D(ecs *world) {
-    char* vert = get_shader_source(world, "line2D.vert");
-    char* frag = get_shader_source(world, "line2D.frag");
+    char* vert = get_shader_source(world, "line2.vert");
+    char* frag = get_shader_source(world, "line2.frag");
     line2D_shader = zox_gpu_compile_shader(vert, frag);
+
     if (uint2_equals(line2D_shader, uint2_zero)) {
         zox_log_error("line2D_shader has failed")
-        return; // EXIT_FAILURE;
+        return;
     }
     line2D_material = spawn_gpu_material_program((const uint2) { line2D_shader.x, line2D_shader.y });
     if (!line2D_material) {
         zox_log_error("line2D_material failed to initialize")
-        return; //  EXIT_FAILURE;
+        return;
     }
     line2D_position_location = glGetAttribLocation(line2D_material, "position");
     line2D_color_location = glGetUniformLocation(line2D_material, "color");
     line2D_depth_location = glGetUniformLocation(line2D_material, "depth");
     line2D_camera_matrix_location = glGetUniformLocation(line2D_material, "camera_matrix");
-    // return EXIT_SUCCESS;
 }
