@@ -136,19 +136,7 @@ void set_inspector_element(
         const int list_index = 0;
         const int child_index = list_start + list_index;
         const byte render_disabled = 0;
-        zox_geter(e, ZoxName, zoxName);
-        char *text;
-        byte did_allocate_text = 0;
-        if (zoxName) {
-            text = convert_zext_to_text(zoxName->value, zoxName->length);
-            if (text) {
-                did_allocate_text = 1;
-            } else {
-                text = "failure";
-            }
-        } else {
-            text = "no name";
-        }
+        const char *name = zox_has(e, ZoxName) ? zox_gett_value(e, ZoxName) : "no name";
         const int2 label_position = get_element_label_position(
             list_index,
             font_size,
@@ -159,23 +147,20 @@ void set_inspector_element(
             is_scrollbar,
             scrollbar_width,
             scrollbar_margins);
-        const ecs_entity_t list_element = spawn_button_old(
+        const entity list_element = spawn_button_old(
             world,
             window,
             canvas,
             label_position,
             button_padding,
             float2_half,
-            text,
+            name,
             font_size,
             button_layer,
             layout_position,
             parent_size,
             canvas_size,
             render_disabled);
-        if (did_allocate_text) {
-            free(text);
-        }
         children->value[child_index] = list_element;
     }
     for (int i = 0; i < components_count; i++) {

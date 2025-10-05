@@ -7,8 +7,8 @@ ecs_entity_t spawn_prefab_block(ecs_world_t *world) {
     zox_prefab_set(e, Color, { color_white });
     zox_prefab_set(e, BlockModel, { zox_block_solid });
     zox_prefab_set(e, BlockCollider, { zox_block_solid });
-    zox_prefab_set(e, TextureLinks, { 0, NULL });
-    zox_prefab_set(e, ZoxName, { 0, NULL });
+    zox_prefab_set(e, TextureLinks, { 0 });
+    zox_prefab_set(e, ZoxName, { 0 });
     return e;
 }
 
@@ -28,7 +28,7 @@ ecs_entity_t spawn_block(ecs_world_t *world, const SpawnBlock *data) {
         zox_set(e, BlockCollider, { zox_block_air })
     }
     if (data->textures) {
-        TextureLinks textures = (TextureLinks) { 0, NULL };
+        TextureLinks textures = (TextureLinks) { 0 };
         initialize_TextureLinks(&textures, data->textures);
         for (int i = 0; i < data->textures; i++) {
             ecs_entity_t e2;
@@ -46,6 +46,7 @@ ecs_entity_t spawn_block(ecs_world_t *world, const SpawnBlock *data) {
         }
         zox_set_ptr(e, TextureLinks, textures);
     }
-    zox_set(e, ZoxName, { text_to_zext(data->name) })
+    set_ZoxName(world, e, data->name);
+    // zox_set(e, ZoxName, { text_to_zext(data->name) });
     return e;
 }

@@ -1,6 +1,6 @@
 // #define zoxel_debug_zext_updates
 
-void set_zox_name(ZoxName *zoxName, const char* text) {
+/*void set_zox_name(ZoxName *zoxName, const char* text) {
     const int text_length = text != NULL ? strlen(text) : 0;
     if (zoxName->length != text_length) {
         resize_memory_component(ZoxName, zoxName, byte, text_length)
@@ -8,7 +8,7 @@ void set_zox_name(ZoxName *zoxName, const char* text) {
     for (int i = 0; i < text_length; i++) {
         zoxName->value[i] = convert_ascii(text[i]);
     }
-}
+}*/
 
 char* get_zext_text(const TextData *textData) {
     return convert_zext_to_text(textData->value, textData->length);
@@ -124,13 +124,13 @@ byte set_entity_label_with_text(
     return set_entity_text(world, children->value[0], text);
 }
 
-void set_new_zox_name(
+/*void set_new_zox_name(
     ecs *world,
     const entity e,
     const char* text
 ) {
     zox_set_zext_component(e, ZoxName, text);
-}
+}*/
 
 
 int get_zexts_count(ecs *world) {

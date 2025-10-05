@@ -1,43 +1,59 @@
-uint add_label_stat_level(ecs *world, const entity character, const StatLinks *stats, const entity tag, char *buffer, const uint size, uint index) {
+uint add_label_stat_level(
+    ecs *world,
+    const entity character,
+    const StatLinks *stats,
+    const entity tag,
+    char *buffer,
+    const uint size,
+    uint index
+) {
     find_array_element_with_tag_id(stats, tag, stat)
     if (!zox_valid(stat) || !zox_has(stat, StatValue)) {
         index += snprintf(buffer + index, size - index, "[%s] has no stat [%s]\n", zox_get_name(character), zox_get_name(tag));
         return index;
     }
-    zox_geter(stat, ZoxName, zext)
-    char *name = convert_zext_to_text(zext->value, zext->length);
+    zox_geter(stat, ZoxName, name);
     float level = zox_get_value(stat, StatValue)
     float experience_value = zox_get_value(stat, ExperienceValue)
     float experience_max = zox_get_value(stat, ExperienceMax)
-    index += snprintf(buffer + index, size - index, "%s [lvl %i - %i/%i]\n", name, (int) level, (int) experience_value, (int) experience_max);
-    free(name);
+    index += snprintf(buffer + index, size - index, "%s [lvl %i - %i/%i]\n", name->value, (int) level, (int) experience_value, (int) experience_max);
     return index;
 }
 
-uint add_label_stat_state(ecs *world, const entity character, const entity stat, char *buffer, const uint size, uint index) {
+uint add_label_stat_state(
+    ecs *world,
+    const entity character,
+    const entity stat,
+    char *buffer,
+    const uint size,
+    uint index
+) {
     if (!zox_valid(stat) || !zox_has(stat, StatValue) || !zox_has(stat, ZoxName)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid state stat\n", zox_get_name(character));
         return index;
     }
-    zox_geter(stat, ZoxName, zext)
-    char *name = convert_zext_to_text(zext->value, zext->length);
+    zox_geter(stat, ZoxName, name);
     float value = zox_get_value(stat, StatValue)
     float value_max = zox_get_value(stat, StatValueMax)
-    index += snprintf(buffer + index, size - index, " - %s [%i/%i]\n", name, (int) value, (int) value_max);
-    free(name);
+    index += snprintf(buffer + index, size - index, " - %s [%i/%i]\n", name->value, (int) value, (int) value_max);
     return index;
 }
 
-uint add_label_stat_value(ecs *world, const entity character, const entity stat, char *buffer, const uint size, uint index) {
+uint add_label_stat_value(
+    ecs *world,
+    const entity character,
+    const entity stat,
+    char *buffer,
+    const uint size,
+    uint index
+) {
     if (!zox_valid(stat) || !zox_has(stat, StatValue) || !zox_has(stat, ZoxName)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid attribute stat\n", zox_get_name(character));
         return index;
     }
-    zox_geter(stat, ZoxName, zext)
-    char *name = convert_zext_to_text(zext->value, zext->length);
+    zox_geter(stat, ZoxName, name);
     float value = zox_get_value(stat, StatValue)
-    index += snprintf(buffer + index, size - index, " - %s [%i]\n", name, (int) value);
-    free(name);
+    index += snprintf(buffer + index, size - index, " - %s [%i]\n", name->value, (int) value);
     return index;
 }
 
@@ -53,12 +69,12 @@ uint get_label_player_stats(
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    zox_geter(player, CharacterLink, characterLink)
+    zox_geter(player, CharacterLink, characterLink);
     if (!zox_valid(characterLink->value)) {
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;
     }
-    zox_geter(characterLink->value, StatLinks, stats)
+    zox_geter(characterLink->value, StatLinks, stats);
     index = add_label_stat_level(world, characterLink->value, stats, StatSoul, buffer, size, index);
     for (int i = 0; i < stats->length; i++) {
         const entity stat = stats->value[i];
@@ -73,7 +89,7 @@ uint get_label_player_stats(
             index = add_label_stat_value(world, characterLink->value, stat, buffer, size, index);
         }
     }
-    zox_geter(characterLink->value, DotLinks, dots)
+    zox_geter(characterLink->value, DotLinks, dots);
     for (int i = 0; i < dots->length; i++) {
         const entity dot = dots->value[i];
         if (!zox_valid(dot)) {

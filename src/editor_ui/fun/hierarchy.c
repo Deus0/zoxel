@@ -29,14 +29,15 @@ void add_entity_to_labels(ecs_world_t *world,
     if (!zox_has(e, ZoxName)) {
         snprintf(text, hierarchy_max_line_characters, "[%s]", zox_get_name(e));
     } else {
-        zox_geter(e, ZoxName, zox_name)
-        char *text2 = convert_zext_to_text(zox_name->value, zox_name->length);
+        zox_geter(e, ZoxName, zox_name);
+        snprintf(text, hierarchy_max_line_characters, "%s", zox_name->value);
+        /*char *text2 = convert_zext_to_text(zox_name->value, zox_name->length);
         if (text2) {
             snprintf(text, hierarchy_max_line_characters, "%s", text2);
             free(text2);
         } else {
             snprintf(text, hierarchy_max_line_characters, "[%s]", zox_get_name(e));
-        }
+        }*/
     }
     for (int i = 0; i < tree_level; i++) {
         char *temp = strdup(text);
@@ -140,12 +141,11 @@ void zox_print_entity(ecs_world_t *world, ecs_entity_t e) {
                     zox_log(" c [%i.%i.%i]", c->value.r, c->value.g, c->value.b);
                 }
             } else {
-                const ZoxName *zoxName = ((const ZoxName*) ecs_get_id(world, e, id));
+                const ZoxName *name = ((const ZoxName*) ecs_get_id(world, e, id));
+                zox_log(" %i: [%s]", strlen(name->value), name->value);
                 //const EntityDirty *byte_component = ((const EntityDirty*) ecs_get_id(world, target, id));
                 //if (byte_component) zox_log(" [uknown]")
-                if (zoxName) {
-                    zox_log(" %i: [%s]", zoxName->length, convert_zext_to_text(zoxName->value, zoxName->length))
-                }
+                // convert_zext_to_text(zoxName->value, zoxName->length))
                 // else zox_log(" [tag]")
             }
             /*const long int *value = ((const long int*) ecs_get_id(world, target, id));

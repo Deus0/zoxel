@@ -6,17 +6,11 @@ byte tooltip_event_skill(
         return 0;
     }
     byte used_name = 0;
-    char result[64];
+    char result[128];
     if (data->data && zox_has(data->data, ZoxName)) {
         zox_geter(data->data, ZoxName, zox_name);
-        if (zox_name && zox_name->length > 0) {
-            char *name_string = convert_zext_to_text(zox_name->value, zox_name->length);
-            if (name_string != NULL) {
-                used_name = 1;
-                sprintf(result, "[%s] lvl [1]\n", name_string);
-                free(name_string);
-            }
-        }
+        used_name = 1;
+        sprintf(result, "[%s] lvl [1]\n", zox_name->value);
     }
     if (!used_name) {
         sprintf(result, "[%s]\n", zox_get_name(data->data));

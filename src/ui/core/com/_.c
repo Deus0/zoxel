@@ -36,7 +36,7 @@ zoxc_entity(ElementLink);
 zoxc_entity(UIHolderLink);
 zoxc_entities(ElementLinks)
 zoxc_child(ElementHolder, ElementLinks)
-zoxc_text(TooltipText)
+zoxc_fixed_string(TooltipText, 128);
 // states
 zoxc_byte(NavigatorState);
 zoxc_byte(DraggableState);
@@ -89,7 +89,7 @@ void define_components_elements_core(ecs *world) {
     zoxd_int2(DraggingDelta);
     zoxd_entity(DraggerLink);
     zoxd_entity(DraggedLink);
-    zoxd_text(TooltipText);
+    zoxd_fixed_string(TooltipText);
     zoxd(UIHolderLink);
     zoxd_entities(ElementLinks);
     zox_define_component_entities_child(ElementHolder);

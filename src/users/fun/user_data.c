@@ -28,9 +28,7 @@
     ) {\
         zox_prefab_child(prefab); \
         zox_set_name(e, name); \
-        ZoxName zox_name = (ZoxName) { 0 };\
-        set_zox_name(&zox_name, name); \
-        zox_set_ptr(e, ZoxName, zox_name); \
+        set_ZoxName(world, e, name); \
         return e;\
     }\
     \

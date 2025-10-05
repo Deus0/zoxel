@@ -8,37 +8,27 @@ byte tooltip_event_stat(
         }
         return 0;
     }
-    char result[64];
-    char *name_string = NULL;
-    const ZoxName *zox_name = zox_get(data->data, ZoxName)
-    if (zox_name) {
-        name_string = convert_zext_to_text(zox_name->value, zox_name->length);
-    } else {
-        name_string = "none";
-        //sprintf(result, "[%lu] lvl 1\n", data->data);
-    }
+    char result[128];
+    const char *name = zox_has(data->data, ZoxName) ? zox_gett_value(data->data, ZoxName) : "none";
     if (zox_has(data->data, StatLevel)) {
         const float value = zox_get_value(data->data, StatValue)
         const float experience = zox_get_value(data->data, ExperienceValue)
         const float experience_max = zox_get_value(data->data, ExperienceMax)
-        sprintf(result, "[%s] lvl %i [%i/%i]\n", name_string, (int) value, (int) experience, (int) experience_max);
+        sprintf(result, "[%s] lvl %i [%i/%i]\n", name, (int) value, (int) experience, (int) experience_max);
     } else if (zox_has(data->data, StatState)) {
         const float value = zox_get_value(data->data, StatValue)
         const float value_max = zox_get_value(data->data, StatValueMax)
-        sprintf(result, "[%s] [%i/%i]\n", name_string, (int) value, (int) value_max);
+        sprintf(result, "[%s] [%i/%i]\n", name, (int) value, (int) value_max);
     } else if (zox_has(data->data, StatRegen)) {
         const float value = zox_get_value(data->data, StatValue)
-        sprintf(result, "[%s] [%i]\n", name_string, (int) value);
+        sprintf(result, "[%s] [%i]\n", name, (int) value);
     } else if (zox_has(data->data, StatAttribute)) {
         const float value = zox_get_value(data->data, StatValue)
-        sprintf(result, "[%s] [%i]\n", name_string, (int) value);
+        sprintf(result, "[%s] [%i]\n", name, (int) value);
     } else {
-        sprintf(result, "[%s]\n", name_string);
+        sprintf(result, "[%s]\n", name);
     }
     set_entity_text(world, data->tooltip, result);
-    if (name_string) {
-        free(name_string);
-    }
     zox_set(data->tooltip, RenderDisabled, { 0 });
     return 1;
 }

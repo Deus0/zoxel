@@ -93,7 +93,8 @@ entity spawn_character3(
     }
 
     char *name = generate_name();
-    zox_set(e, ZoxName, { text_to_zext(name) });
+    // zox_set(e, ZoxName, { text_to_zext(name) });
+    set_ZoxName(world, e, name);
     free(name);
 
     // name

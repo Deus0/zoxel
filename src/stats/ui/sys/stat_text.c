@@ -1,16 +1,13 @@
 void StatTextSystem(iter *it) {
-    int stat_name_text_count = 32;
-    int label_text_count = 64;
-    char stat_name_text[stat_name_text_count];
-
+    // int stat_name_text_count = 32;
+    int label_text_count = 256;
+    // char stat_name_text[stat_name_text_count];
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StatLink);
     zox_sys_out(TextData);
     zox_sys_out(TextDirty);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(StatLink, stat_link);
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, dirty);
@@ -25,28 +22,28 @@ void StatTextSystem(iter *it) {
             continue;
         }
 
-        zox_geter(stat, StatValue, statValue);
+        zox_geter(stat, StatValue, value);
         zox_geter(stat, ZoxName, stat_name);
-        int value = floor(statValue->value);
-        convert_zext_to_text_non_malloc(
+        int value_floored = floor(value->value);
+        /*convert_zext_to_text_non_malloc(
             stat_name->value,
             stat_name->length,
             stat_name_text,
-            stat_name_text_count);
+            stat_name_text_count);*/
 
         char text[label_text_count];
         if (zox_has(stat, StatState)) {
-            zox_geter(stat, StatValueMax, statValueMax)
-            int max_value = ceil(statValueMax->value);
-            snprintf(text, label_text_count, "%s [%i/%i]", stat_name_text, value, max_value);
+            zox_geter(stat, StatValueMax, max)
+            int max_value = ceil(max->value);
+            snprintf(text, label_text_count, "%s [%i/%i]", stat_name->value, value_floored, max_value);
         } else if (zox_has(stat, StatLevel)) {
             zox_geter(stat, ExperienceValue, experience)
             zox_geter(stat, ExperienceMax, experience_max)
             int experience_i = ceil(experience->value);
             int experience_max_i = ceil(experience_max->value);
-            snprintf(text, label_text_count, "%s Lvl %i [%i/%i]", stat_name_text, value, experience_i, experience_max_i);
+            snprintf(text, label_text_count, "%s Lvl %i [%i/%i]", stat_name->value, value_floored, experience_i, experience_max_i);
         } else {
-            snprintf(text, label_text_count, "%s [%i]", stat_name_text, value);
+            snprintf(text, label_text_count, "%s [%i]", stat_name->value, value_floored);
         }
 
         if (!is_zext(data, text)) {

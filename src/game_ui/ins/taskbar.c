@@ -157,7 +157,8 @@ entity spawn_taskbar(
         // ecs_get_name(world, hook.component_id)
         char tooltip_text[64];
         sprintf(tooltip_text, "%s", hook.tooltip_text );
-        zox_prefab_set(icon, TooltipText, { text_to_zext(tooltip_text) });
+        set_TooltipText(world, icon, tooltip_text);
+        // zox_prefab_set(icon, TooltipText, { text_to_zext(tooltip_text) });
 
         // texture
         char* icon_texture_name = hook.texture_name;

@@ -67,7 +67,8 @@ void dispose_component_ids() {
 // identitys
 zoxc_int(ID);
 zoxc_lint(Seed);
-zoxc_text(ZoxName)
+// zoxc_text(ZoxName)
+zoxc_fixed_string(ZoxName, 64);
 // time events
 zox_tag(DestroyInFrame);
 zoxc_double(EventTime);
@@ -91,7 +92,8 @@ void define_components_generic(ecs* world) {
     // ids
     zoxd_int(ID);
     zoxd_lint(Seed);
-    zoxd_text(ZoxName);
+    // zoxd_text(ZoxName);
+    zoxd_fixed_string(ZoxName);
     // timed
     zoxd_tag(DestroyInFrame);
     zoxd_double(EventTime);

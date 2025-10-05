@@ -40,12 +40,10 @@ void CharacterNameLabelsSystem(iter *it) {
         };
 
         // "Dave Lvl 3"
-        char result[64];
+        char result[128];
         int souli = floorf(soul_value);
         // zox_log("+ soul [%i]", souli)
-        char *namec = convert_zext_to_text(name->value, name->length);
-        sprintf(result, "%s lvl %i", namec, souli);
-        free(namec);
+        sprintf(result, "%s lvl %i", name->value, souli);
 
         Text3DData label3D_text_data = {
             .prefab = prefab_text3D,

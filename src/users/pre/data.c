@@ -1,4 +1,4 @@
-entity spawn_prefab_userd(ecs *world) {
+entity spawn_prefab_userd(ecs* world) {
     zox_prefab();
     zox_prefab_name("data");
     zox_prefab_add(e, ZoxName);

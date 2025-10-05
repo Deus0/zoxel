@@ -5,7 +5,8 @@ entity spawn_block_vox_meta(
 ) {
     zox_instance(data.prefab);
     zox_name(data.name);
-    zox_set(e, ZoxName, { text_to_zext(data.name) });
+    // zox_set(e, ZoxName, { text_to_zext(data.name) });
+    set_ZoxName(world, e, data.name);
     zox_set(e, BlockIndex, { data.index });
     zox_set(e, Color, { data.color });
     if (data.prefab_world_block) {

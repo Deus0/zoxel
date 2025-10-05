@@ -36,10 +36,10 @@ byte tooltip_event_taskbar_icon(
         return 0;
     }
     zox_geter(data->triggered, TooltipText, tooltip_text);
-    char *result = convert_zext_to_text(tooltip_text->value, tooltip_text->length);
+    // char *result = convert_zext_to_text(tooltip_text->value, tooltip_text->length);
     // char *result = "opens a game ui";
-    set_entity_text(world, data->tooltip, result);
-    free(result);
+    set_entity_text(world, data->tooltip, tooltip_text->value);
+    // free(result);
     return 1;
 }
 

@@ -1,4 +1,4 @@
-byte* convert_string_to_zext(const char* text) {
+/*byte* convert_string_to_zext(const char* text) {
     if (!text) {
         return NULL;
     }
@@ -8,7 +8,7 @@ byte* convert_string_to_zext(const char* text) {
         zext[i] = convert_ascii(text[i]);
     }
     return zext;
-}
+}*/
 
 byte* convert_text_to_zext(const char* text) {
     if (!text) {
@@ -62,11 +62,11 @@ byte get_text_length(const char* text) {
     return text_length;
 }
 
-#define text_to_zext(text)\
-    get_text_length(text), convert_string_to_zext(text)
+/*#define text_to_zext(text)\
+    get_text_length(text), convert_string_to_zext(text)*/
 
-#define zox_log_name(log, e) {\
-    char *text = convert_zext_to_text(zox_get_value_(e, ZoxName), zox_get_length_(e, ZoxName));\
-    zox_log(log, text)\
-    free(text);\
+#define zox_log_name(log, e) { \
+    zox_geter(e, ZoxName, name); \
+    /*char *text = convert_zext_to_text(zox_get_value_(e, ZoxName), zox_get_length_(e, ZoxName));*/\
+    zox_log(log, name->value)\
 }
