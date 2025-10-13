@@ -67,7 +67,6 @@ int2 calculate_position(
 
 // Centralized position setting for text zigels
 void ZigelPositionSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);  // TextSizeDirty
@@ -76,9 +75,7 @@ void ZigelPositionSystem(iter *it) {
     zox_sys_in(TextFontSize);
     zox_sys_in(TextAlignment);
     zox_sys_in(TextPadding);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(TextDirty, dirty);
         zox_sys_i(Children, children);
         zox_sys_i(TextData, text_data);
@@ -92,6 +89,7 @@ void ZigelPositionSystem(iter *it) {
 
         for (int j = 0; j < children->length; j++) {
             entity e2 = children->value[j];
+
             if (!zox_valid(e2)) {
                 continue;
             }
@@ -114,6 +112,5 @@ void ZigelPositionSystem(iter *it) {
             zox_set(e2, LayoutPosition, { position });
             zox_set(e2, LayoutPositionDirty, { zox_dirty_trigger });
         }
-
     }
 } zoxd_system2(ZigelPositionSystem);

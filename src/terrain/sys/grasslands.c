@@ -12,22 +12,20 @@ byte disable_grass_placements = 0;
 
 // generates our terrain voxels
 void GrassyPlainsSystem(iter *it) {
-
     zox_ts_begin(grassy_plains);
     const uint seed = global_seed;  // TODO: use terrains seed
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
     zox_sys_in(RenderDepth);
     zox_sys_in(RenderDepthDirty);
     zox_sys_in(VoxelNodeEdited);
-    zox_sys_in(VoxelNodeLoaded);
     zox_sys_in(VoxLink);
     zox_sys_out(VoxelNode);
     zox_sys_out(NodeDepth);
     zox_sys_out(VoxelNodeDirty);
     zox_sys_out(VoxelNodeGenerated);
+    zox_sys_out(VoxelNodeLoaded);
 
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
@@ -41,22 +39,19 @@ void GrassyPlainsSystem(iter *it) {
         zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);
         return;
     }
-
     startwatch(time_grassy_plains);
-
-
     for (int i = 0; i < it->count; i++) {
 
         zox_sys_i(RenderDepth, renderDepth);
         zox_sys_i(ChunkPosition, chunkPosition);
         zox_sys_i(RenderDepthDirty, dirty);
         zox_sys_i(VoxelNodeEdited, edited);
-        zox_sys_i(VoxelNodeLoaded, loaded);
         zox_sys_i(VoxLink, voxLink);
         zox_sys_o(NodeDepth, nodeDepth);
         zox_sys_o(VoxelNode, node);
-        zox_sys_o(VoxelNodeDirty, nodeDirty);
+        zox_sys_o(VoxelNodeDirty, node_dirty);
         zox_sys_o(VoxelNodeGenerated, generated);
+        zox_sys_o(VoxelNodeLoaded, loaded);
 
         // todo: remember if has generated yet, keep a generated LOD state!
         //      - better yet just increase NodeDepth - and compare with terrain's one when increasing
@@ -66,12 +61,6 @@ void GrassyPlainsSystem(iter *it) {
 
         zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
         byte generation_depth = optimize_generation_lods ? renderDepth->value : terrain_depth;
-        // terrain_lod_to_node_depth(, terrain_depth) : terrain_depth;
-        /*if (boost_generation_hack && generation_depth < terrain_depth) {
-            depth++;
-        }*/
-        // zox_log("render lod [%i] building to depth [%i]", renderDepth->value, depth);
-
         // if no depth, skip
         if (!generation_depth) {
             continue;
@@ -83,15 +72,11 @@ void GrassyPlainsSystem(iter *it) {
             continue;
         }
 
-        if (!loaded->value) {
-            zox_logw("Not attempted to load, yet generating.");
-        }
-
         // if already at that level
         if (nodeDepth->value >= generation_depth) {
             // we should set to rebuild mesh still, with node dirty
             //  Until we cache those extra meshes
-            nodeDirty->value = zox_dirty_trigger;
+            node_dirty->value = zox_dirty_trigger;
             continue;
         }
 
@@ -219,8 +204,9 @@ void GrassyPlainsSystem(iter *it) {
 
         tapwatch(time_grassy_plains, "mass set_voxels");
 
-        nodeDirty->value = zox_dirty_trigger;
+        node_dirty->value = zox_dirty_trigger;
         generated->value = zox_dirty_trigger;
+        loaded->value = 1;
 
     }
     endwatch(time_grassy_plains, "grassy_plains");

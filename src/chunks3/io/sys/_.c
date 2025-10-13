@@ -10,7 +10,6 @@ void define_systems_chunksio(ecs* world) {
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkPosition
     );
-
     zox_system(
         Chunk3LoadSystem,
         EcsOnLoad,

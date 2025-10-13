@@ -1,32 +1,6 @@
 //! Dynamically updates zext by spawning/destroying zigels and updating remaining
 // #define zoxel_debug_zext_updates
 
-// For reusing a zigel, set all positions again to position entire text
-/*void set_zigel_position(
-    ecs *world,
-    const TextData *textData,
-    const entity e,
-    const int data_index,
-    const int font_size,
-    const byte text_alignment,
-    const byte2 text_padding,
-    float2 anchor,
-    const int2 parent_position,
-    const int2 parent_size,
-    const int2 canvas_size
-) {
-    const int2 pixel_position = calculate_zigel_position(
-        textData->value,
-        textData->length,
-        data_index, font_size,
-        text_alignment,
-        text_padding,
-        default_line_padding
-    );
-    zox_set(e, LayoutPosition, { pixel_position });
-    zox_set(e, LayoutPositionDirty, { zox_dirty_trigger });
-}*/
-
 void spawn_text2D_zigels(
     ecs* world,
     SpawnZigel* data,
@@ -52,21 +26,6 @@ void spawn_text2D_zigels(
     //  - set old positions, as we are resizing
     for (int i = 0; i < reuse_count; i++) {
         const entity e = old_children[i];
-        /*const int data_index = calculate_zigel_data_index(text_data->value, text_data->length, i);
-        set_zigel_position(
-            world,
-            text_data,
-            e,
-            data_index,
-            data->element.size.y,
-            data->zext.text_alignment,
-            data->zext.text_padding,
-            data->element.anchor,
-            // new_children_length,
-            data->parent.position,
-            data->parent.size,
-            data->canvas.size
-        );*/
         new_children[i] = e;
     }
     // Spawn New Zigels
@@ -76,7 +35,6 @@ void spawn_text2D_zigels(
 #endif
         for (int i = old_children_length; i < new_children_length; i++) {
             const byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, i);
-            // const int data_index = calculate_zigel_data_index(text_data->value, text_data->length, i);
             data->zigel.zigel_index = zigel_index;
             // data->zigel.data_index = data_index;
             const entity zigel = spawn_zext_zigel(
@@ -106,7 +64,6 @@ void spawn_text2D_zigels(
 
 //! When ui text updates, spawn/destroy font entities
 void ZigelSpawnSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextData);
@@ -124,9 +81,7 @@ void ZigelSpawnSystem(iter *it) {
     zox_sys_in(TextDirty);
     zox_sys_out(RenderDisabled);
     zox_sys_out(Children);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
         zox_sys_i(TextData, text_data);

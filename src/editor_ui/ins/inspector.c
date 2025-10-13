@@ -1,8 +1,8 @@
-ecs_entity_t spawn_inspector(
+entity spawn_inspector(
     ecs *world,
-    const ecs_entity_t canvas
+    const entity canvas
 ) {
-    const ecs_entity_t player = 0; // zox_players[0];
+    const entity player = 0; // zox_players[0];
     const byte layer = 12;
     const int font_size = 12;
     const int header_font_size = 20;
@@ -15,7 +15,7 @@ ecs_entity_t spawn_inspector(
     int2 window_size = (int2) { 480, 600 };
     const int visible_count = window_size.y / (font_size + 4);
 
-    const ecs_entity_t e = spawn_ui_list(
+    const entity e = spawn_ui_list(
         world,
         prefab_inspector,
         canvas,

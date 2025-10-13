@@ -9,7 +9,7 @@ void FpsDisplaySystem(iter *it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(TextDirty, zextDirty)
         zox_sys_o(FPSDisplayTicker, fpsDisplayTicker)
-        zox_sys_o(TextData, textData)
+        zox_sys_o(TextData, data)
         fpsDisplayTicker->value -= delta_time;
         if (zextDirty->value) {
             continue;
@@ -19,23 +19,23 @@ void FpsDisplaySystem(iter *it) {
             if (fpsDisplayTicker->value <= -frame_rate_update_speed) {
                 fpsDisplayTicker->value = 0;
             }
-            resize_memory_component(TextData, textData, byte, 3)
+            resize_memory_component(TextData, data, byte, 3)
             if (frames_per_second < 10) {
-                textData->value[0] = number_0_start;
-                textData->value[1] = number_0_start;
-                textData->value[2] = number_0_start + frames_per_second;
+                data->value[0] = number_0_start;
+                data->value[1] = number_0_start;
+                data->value[2] = number_0_start + frames_per_second;
             } else if (frames_per_second < 100) {
-                textData->value[0] = number_0_start;
-                textData->value[1] = number_0_start + (frames_per_second / 10);
-                textData->value[2] = number_0_start + (frames_per_second % 10);
+                data->value[0] = number_0_start;
+                data->value[1] = number_0_start + (frames_per_second / 10);
+                data->value[2] = number_0_start + (frames_per_second % 10);
             } else if (frames_per_second < 1000) {
-                textData->value[0] = number_0_start + (frames_per_second / 100);
-                textData->value[1] = number_0_start + (frames_per_second / 10) % 10;
-                textData->value[2] = number_0_start + ((frames_per_second % 100) % 10);
+                data->value[0] = number_0_start + (frames_per_second / 100);
+                data->value[1] = number_0_start + (frames_per_second / 10) % 10;
+                data->value[2] = number_0_start + ((frames_per_second % 100) % 10);
             } else {
-                textData->value[0] = number_0_start;
-                textData->value[1] = number_0_start;
-                textData->value[2] = number_0_start;
+                data->value[0] = number_0_start;
+                data->value[1] = number_0_start;
+                data->value[2] = number_0_start;
             }
             zextDirty->value = 1;
         }

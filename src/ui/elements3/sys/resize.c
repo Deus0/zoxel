@@ -90,14 +90,6 @@ void Text3DResizeSystem(iter *it) {
             continue;
         }
 
-        /*char *debug_text = convert_zext_to_text(textData->value, textData->length);
-        if (debug_text) {
-            zox_log_text3D("+ resizing text3D [%s] [%i:%i]", debug_text, children->length, new_children_length)
-            free(debug_text);
-        } else {
-            zox_log_text3D("+ resizing text3D [null]")
-        }*/
-
         Zigel3DData zigel_data = {
             .prefab = prefab_zigel3D,
             .resolution = textSize->value, // 128,

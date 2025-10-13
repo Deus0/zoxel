@@ -44,12 +44,12 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepth,
         [in] rendering.RenderDepthDirty,
         [in] chunks3.VoxelNodeEdited,
-        [in] chunks3.VoxelNodeLoaded,
         [in] chunks3.VoxLink,
         [out] chunks3.VoxelNode,
         [out] chunks3.NodeDepth,
         [out] chunks3.VoxelNodeDirty,
         [out] chunks3.VoxelNodeGenerated,
+        [out] chunks3.VoxelNodeLoaded,
         [none] !FlatlandChunk,
         [none] TerrainChunk
     );

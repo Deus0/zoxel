@@ -25,15 +25,12 @@ void update_text(
 
 // just updates previous zigels to new data
 void TextUpdateSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);
     zox_sys_in(TextData);
     zox_sys_in(Children);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(TextDirty, zextDirty);
         zox_sys_i(Children, children);
         zox_sys_i(TextData, textData);
@@ -41,14 +38,6 @@ void TextUpdateSystem(iter *it) {
         if (zextDirty->value != zox_dirty_active || !textData->length) {
             continue;
         }
-
-        /*char *debug_text = convert_zext_to_text(textData->value, textData->length);
-        if (debug_text) {
-            zox_log_text("+ updating [%s] text: %s", zox_get_name(it->entities[i]), debug_text)
-            free(debug_text);
-        } else {
-            zox_log_text("+ updating [%s] text [null]",  zox_get_name(it->entities[i]))
-        }*/
 
         update_text(world, children, textData);
         // zox_sys_e()

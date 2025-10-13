@@ -16,10 +16,6 @@ int2 calculate_grid_size(
     };
 }
 
-    /*data.element.size = (int2) {
-        data.window.grid_padding.x + (data.window.icon_size + data.window.grid_padding.x) * data.window.grid_size.x + data.window.grid_margins.x * 2,
-        data.window.grid_padding.y + (data.window.icon_size + data.window.grid_padding.y) * data.window.grid_size.y + data.window.grid_margins.y * 2 + header_height
-    };*/
 int2 calculate_grid_window_size(
     SpawnWindowUsersData data,
     int header_height

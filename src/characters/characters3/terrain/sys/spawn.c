@@ -13,6 +13,7 @@ void Characters3SpawnSystem(iter *it) {
     zox_sys_in(RenderDistanceDirty);
     zox_sys_in(VoxelNode);
     zox_sys_in(NodeDepth);
+    zox_sys_in(VoxelNodeLoaded);
     zox_sys_in(ChunkPosition);
     zox_sys_in(RenderDistance);
     zox_sys_in(RenderDisabled);
@@ -26,6 +27,7 @@ void Characters3SpawnSystem(iter *it) {
         zox_sys_i(RenderDistanceDirty, state);
         zox_sys_i(VoxelNode, voxel_node);
         zox_sys_i(NodeDepth, depth);
+        zox_sys_i(VoxelNodeLoaded, loaded);
         zox_sys_i(RenderDistance, render_distance);
         zox_sys_i(RenderDisabled, render_disabled);
         zox_sys_i(ChunkPosition, cposition);
@@ -54,8 +56,17 @@ void Characters3SpawnSystem(iter *it) {
             continue;
         }
 
+        // valid check for spawning
+        if (!depth->value) {
+            continue;
+        }
+        if (!loaded->value) {
+            continue;
+        }
+
         // getters
         zox_geter_value(terrain->value, RealmLink, entity, realm);
+        zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
         zox_geter(realm, CharacterLinks, characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         const entity chunk_above = neighbors->value[direction_up];
@@ -140,7 +151,7 @@ void Characters3SpawnSystem(iter *it) {
                     local_position,
                     chunk_voxel_position,
                     bounds,
-                    1
+                    terrain_scale // 1
                 );
             }
             float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
@@ -160,22 +171,34 @@ void Characters3SpawnSystem(iter *it) {
                 .terrain_chunk = e,
                 .chunk_position = cposition->value,
             };
+
+            if (only_single_npc && zox_valid(single_npc)) {
+                spawned->value = 1;
+                ever_spawned->value = 1;
+                continue;
+            }
+
             const entity character = spawn_character3(world, spawn_data);
+
+            if (only_single_npc) {
+                single_npc = character;
+            }
 
             if (character) {
                 on_spawned_character3_npc(world, character);
                 add_to_ChunkEntities(entities, character);
 
-                zox_log_spawning("+ npc: %s at [%fx%fx%f] [%i of %i]",  zox_get_name(character), position.x, position.y, position.z, (j + 1), (character_spawn_rate))
+                zox_logv("+ [%s] npc at [%fx%fx%f] [%i of %i] => %lu", zox_get_name(meta), position.x, position.y, position.z, (j + 1), (character_spawn_rate), character);
                 zox_stats_characters++;
+
             } else {
-                zox_log_error("character spawn failed.");
+                zox_logw("! [%s] npc at [%fx%fx%f] [%i of %i]", zox_get_name(meta), position.x, position.y, position.z, (j + 1), (character_spawn_rate));
             }
 
         }
 
-        if (entities->length >= 1) {
-            zox_log_spawning("+ characters spawned [%i] at [%ix%ix%i]", entities->length, cposition->value.x, cposition->value.y, cposition->value.z)
+        if (entities->length) {
+            zox_logv("=> characters spawned [%i] at c[%ix%ix%i] v[%ix%ix%i]", entities->length, cposition->value.x, cposition->value.y, cposition->value.z, chunk_voxel_position.x, chunk_voxel_position.y, chunk_voxel_position.z);
         }
 
         spawned->value = 1;

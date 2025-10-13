@@ -1,8 +1,9 @@
 uint get_debug_label_app(
     ecs *world,
-    const ecs_entity_t player,
+    const entity player,
     char *buffer,
-    const uint size, uint index
+    const uint size,
+    uint index
 ) {
     (void) player;
     zox_geter_value(main_app, WindowSize, int2, window_size)

@@ -81,6 +81,7 @@ float3 voxel_to_real_position(
     return position;
 }*/
 
+// NOTE: this doesn't account for local chunk depth difference to terrain grid
 float3 local_to_real_position_character(
     const byte3 in_chunk_position,
     const int3 chunk_grid_position,

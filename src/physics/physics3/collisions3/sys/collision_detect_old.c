@@ -451,7 +451,7 @@ void CollisionDetectSystem(iter *it) {
         }
 
     }
-} zoxd_system(CollisionDetectSystem)
+} zoxd_system2(CollisionDetectSystem);
 
 
 

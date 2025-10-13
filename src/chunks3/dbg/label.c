@@ -1,4 +1,10 @@
-uint get_label_chunk_link(ecs *world, const entity character, char *buffer, const uint size, uint index) {
+uint get_label_chunk_link(
+    ecs *world,
+    const entity character,
+    char *buffer,
+    const uint size,
+    uint index
+) {
     index += snprintf(buffer + index, size - index, "char [%s]\n", zox_get_name(character));
 
     // terrain

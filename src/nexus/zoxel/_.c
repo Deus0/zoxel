@@ -9,6 +9,7 @@
 // #define zox_enable_log_ui
 // #define zox_enable_log_shader
 
+
 // TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
 void zoxel_on_spawn_prefabs(ecs_world_t* world) {
     // get_debug_label_app
@@ -25,8 +26,10 @@ void zoxel_on_spawn_prefabs(ecs_world_t* world) {
     // set_prefab_debug_label(world, &debug_label_collisions);
     // set_prefab_debug_label(world, &debug_label_app);
     // set_prefab_debug_label(world, &debug_ui_raycasting);
-    set_prefab_debug_label(world, &debug_ui_raycasted_light);
+    // set_prefab_debug_label(world, &debug_ui_raycasted_light);
+    set_prefab_debug_label(world, &debug_ui_single_npc);
 }
+
 
 void zoxel_set_debug() {
     // zox_profile_system_none

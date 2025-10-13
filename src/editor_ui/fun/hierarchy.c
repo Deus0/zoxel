@@ -4,24 +4,25 @@ const byte max_hierarchy_labels = 23;
 unsigned is_first_hierarchy_spawn = 1;
 #endif
 const int hierarchy_max_line_characters = 64;
-ecs_entity_t editor_selected;
-extern void add_to_labels_voxel_links(ecs_world_t *world, ecs_entity_t e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
-extern void add_to_labels_stat_links(ecs_world_t *world, ecs_entity_t e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
-extern ecs_entity_t prefab_app;
-extern ecs_entity_t prefab_window;
-extern ecs_entity_t prefab_button;
-extern ecs_entity_t prefab_zext;
-extern ecs_entity_t prefab_zigel;
-extern ecs_entity_t prefab_realm;
-extern ecs_entity_t prefab_block;
-extern ecs_entity_t prefab_texture;
+entity editor_selected;
+extern void add_to_labels_voxel_links(ecs_world_t *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
+extern void add_to_labels_stat_links(ecs_world_t *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
+extern entity prefab_app;
+extern entity prefab_window;
+extern entity prefab_button;
+extern entity prefab_zext;
+extern entity prefab_zigel;
+extern entity prefab_realm;
+extern entity prefab_block;
+extern entity prefab_texture;
 
-void add_entity_to_labels(ecs_world_t *world,
-    const ecs_entity_t e,
+void add_entity_to_labels(
+    ecs *world,
+    const entity e,
     text_group_dynamic_array_d* labels,
     entity_array_d* entities,
-    const int tree_level)
-{
+    const int tree_level
+) {
     if (!zox_valid(e)) {
         return;
     }
@@ -72,7 +73,7 @@ int get_max_characters_d(
 }
 
 void add_entity_children_to_labels(ecs_world_t *world,
-    ecs_entity_t e,
+    entity e,
     text_group_dynamic_array_d* labels,
     entity_array_d* entities,
     int tree_level)
@@ -90,7 +91,7 @@ void add_entity_children_to_labels(ecs_world_t *world,
     }
 }
 
-void zox_print_entity(ecs_world_t *world, ecs_entity_t e) {
+void zox_print_entity(ecs_world_t *world, entity e) {
     const ecs_type_t *type = ecs_get_type(world, e);
     const ecs_id_t *type_ids = type->array;
     int32_t i, count = type->count;
@@ -101,11 +102,11 @@ void zox_print_entity(ecs_world_t *world, ecs_entity_t e) {
         ecs_id_t id = type_ids[i];
         zox_log("       > ")
         if (ECS_HAS_ID_FLAG(id, PAIR)) {
-            ecs_entity_t rel = ecs_pair_first(world, id);
-            ecs_entity_t tgt = ecs_pair_second(world, id);
+            entity rel = ecs_pair_first(world, id);
+            entity tgt = ecs_pair_second(world, id);
             zox_log(" pair %s [%lu]", ecs_get_name(world, rel), tgt)
         } else {
-            ecs_entity_t comp = id & ECS_COMPONENT_MASK;
+            entity comp = id & ECS_COMPONENT_MASK;
             zox_log(" %lu", comp)
             zox_log(" %s", ecs_get_name(world, comp))
             // how to print void*, get*/ base type of ->value of component
@@ -155,7 +156,7 @@ void zox_print_entity(ecs_world_t *world, ecs_entity_t e) {
     }
 }
 
-void editor_select_entity(ecs_world_t *world, const ecs_entity_t e) {
+void editor_select_entity(ecs_world_t *world, const entity e) {
     if (editor_selected == e) {
         return;
     }
@@ -167,15 +168,15 @@ void button_event_clicked_hierarchy(ecs_world_t *world, const ClickEventData eve
     if (!zox_has(event.clicked, Children)) {
         return;
     }
-    const ecs_entity_t target = zox_get_value(event.clicked, EntityTarget)
+    const entity target = zox_get_value(event.clicked, EntityTarget)
     editor_select_entity(world, target);
 }
 
 // like text, sets the list of text onto the ui element list
 void set_ui_list_hierarchy(ecs_world_t *world,
     Children *children,
-    ecs_entity_t window_entity,
-    const ecs_entity_t canvas,
+    entity window_entity,
+    const entity canvas,
     const int elements_visible,
     text_group_dynamic_array_d* labels,
     entity_array_d* entities,
@@ -209,7 +210,7 @@ void set_ui_list_hierarchy(ecs_world_t *world,
     for (int j = 0; j < labels_count; j++) {
         const byte render_disabled = !(j >= 0 && j < elements_visible);
         int2 label_position = get_element_label_position(j, font_size, button_padding, button_inner_margins, window_size, list_margins, is_scrollbar, scrollbar_width, scrollbar_margins);
-        const ecs_entity_t list_element = spawn_button_old(world, window_entity, canvas, label_position, button_padding, float2_half, labels->data[j].text, font_size, button_layer, window_pixel_positionv, window_size, canvas_size, render_disabled);
+        const entity list_element = spawn_button_old(world, window_entity, canvas, label_position, button_padding, float2_half, labels->data[j].text, font_size, button_layer, window_pixel_positionv, window_size, canvas_size, render_disabled);
         zox_set(list_element, ClickEvent, { click_event.value })
         zox_set(list_element, EntityTarget, { entities->data[j] })
         children->value[list_start + j] = list_element;
