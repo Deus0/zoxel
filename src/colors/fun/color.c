@@ -13,3 +13,7 @@ static inline color float4_to_color(const float4 input) {
 static inline color_rgb color_to_color_rgb(const color input) {
     return (color_rgb) { input.r, input.g, input.b };
 }
+
+static inline byte color_equals(const color a, const color b) {
+    return (a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a);
+}

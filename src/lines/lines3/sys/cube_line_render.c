@@ -13,7 +13,7 @@ static inline void zox_render_line_attr(const float3 a, const float3 b) {
     zox_gpu_render_lines(2);
 }
 
-void CubeLineRenderSystem(ecs_iter_t *it) {
+void CubeLineRenderSystem(iter *it) {
     zox_gpu_material(line3D_material);
     glEnableVertexAttribArray(line3D_position_location);
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());

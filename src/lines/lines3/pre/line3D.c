@@ -1,11 +1,11 @@
 entity spawn_prefab_line3D(ecs *world) {
-    zox_prefab()
-    zox_prefab_name("line3D")
-    zox_add_tag(e, Line3D)
-    zox_prefab_set(e, LineData3D, { { 0, 0, 0, 0, 0, 0 } })
-    zox_prefab_set(e, LineThickness, { 1 })
-    zox_prefab_set(e, DestroyInTime, { 0 })
-    zox_prefab_set(e, Color, { { 0, 0, 0, 255 } })
+    zox_prefab();
+    zox_prefab_name("line3");
+    zox_add_tag(e, Line3D);
+    zox_prefab_set(e, LineData3D, { { 0, 0, 0, 0, 0, 0 } });
+    zox_prefab_set(e, LineThickness, { 1 });
+    zox_prefab_set(e, DestroyInTime, { 0 });
+    zox_prefab_set(e, Color, { { 0, 0, 0, 255 } });
     return e;
 }
 
@@ -87,22 +87,3 @@ void render_line3D(
 ) {
     spawn_line3D_colored(world, a, b, 4, line_frame_timing, line_color);
 }
-
-/*void spawn_line3D_square(ecs *world, float3 point, float3 size, float thickness, double life_time) {
-    spawn_line3D(world,
-        float3_add(point, (float3) { -size.x / 2.0f, -size.y / 2.0f }),
-        float3_add(point, (float3) { size.x / 2.0f, -size.y / 2.0f }),
-        thickness, life_time);
-    spawn_line3D(world,
-        float3_add(point, (float3) { size.x / 2.0f, -size.y / 2.0f }),
-        float3_add(point, (float3) { size.x / 2.0f, size.y / 2.0f }),
-        thickness, life_time);
-    spawn_line3D(world,
-        float3_add(point, (float3) { size.x / 2.0f, size.y / 2.0f }),
-        float3_add(point, (float3) { -size.x / 2.0f, size.y / 2.0f }),
-        thickness, life_time);
-    spawn_line3D(world,
-        float3_add(point, (float3) { -size.x / 2.0f, size.y / 2.0f }),
-        float3_add(point, (float3) { -size.x / 2.0f, -size.y / 2.0f }),
-        thickness, life_time);
-}*/

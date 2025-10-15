@@ -224,3 +224,40 @@ static inline float4 get_delta_rotation(float4 quaternion, float magnitude) {
     return quaternion_from_euler(euler);
     // return (float4) { magnitude * quaternion.x, magnitude * quaternion.y, magnitude * quaternion.z, magnitude * quaternion.w };
 }
+
+static inline float float3_length_squared(const float3 v) {
+    return v.x * v.x + v.y * v.y + v.z * v.z;
+}
+
+static inline float4 quaternion_from_to(float3 from, float3 to) {
+    float3 f = float3_normalize(from);
+    float3 t = float3_normalize(to);
+
+    float dot = float3_dot(f, t);
+
+    if (dot > 0.9999f) {
+        // Vectors are almost the same
+        return (float4){ 0, 0, 0, 1 };
+    }
+
+    if (dot < -0.9999f) {
+        // Vectors are opposite: pick an arbitrary orthogonal axis
+        float3 orthogonal = float3_cross((float3){1, 0, 0}, f);
+        if (float3_length_squared(orthogonal) < 0.0001f)
+            orthogonal = float3_cross((float3){0, 1, 0}, f);
+
+        orthogonal = float3_normalize(orthogonal);
+        return (float4){ orthogonal.x, orthogonal.y, orthogonal.z, 0 };
+    }
+
+    float3 axis = float3_cross(f, t);
+    float s = sqrtf((1.0f + dot) * 2.0f);
+    float invs = 1.0f / s;
+
+    return float4_normalize((float4){
+        axis.x * invs,
+        axis.y * invs,
+        axis.z * invs,
+        s * 0.5f
+    });
+}

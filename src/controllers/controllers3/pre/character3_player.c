@@ -21,6 +21,7 @@ entity spawn_prefab_character3_player(
     // Raycasting
     zox_prefab_set(e, RaycastVoxelData, { 0 });
     zox_prefab_set(e, RaycastRange, { 2.5f });
+    zox_prefab_set(e, GizmoLink, { 0 });
     // Input Triggers
     zox_prefab_set(e, TriggerActionA, { 0 });
     zox_prefab_set(e, TriggerActionB, { 0 });
@@ -36,7 +37,7 @@ entity spawn_prefab_character3_player(
     zox_prefab_set(e, SphereRadius, { pickup_radius });
     zox_prefab_set(e, CollisionDisabled, { 0 });
 #endif
-    // DEbug
+    // Debug
     if (auto_player) {
         zox_add_tag(e, Npc);
         zox_add_tag(e, Jumper);
