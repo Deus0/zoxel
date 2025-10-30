@@ -41,9 +41,7 @@ entity spawn_header(
         pixel_size,
         pixel_size,
         anchor,
-        layer,
-        float2_zero,
-        int2_zero
+        layer
     );
 
     SpawnZext zext_spawn_data = {
@@ -119,8 +117,16 @@ entity spawn_header2(ecs *world, SpawnHeader *data) {
     zox_name("header")
     zox_set(e, DraggedLink, { data->parent.e })
     initialize_element(
-        world, e, data->parent.e, data->canvas.e, data->element.position, data->element.size, data->element.size, data->element.anchor, data->element.layer,
-        float2_zero, int2_zero); // real_position, canvas_position);
+        world,
+        e,
+        data->parent.e,
+        data->canvas.e,
+        data->element.position,
+        data->element.size,
+        data->element.size,
+        data->element.anchor,
+        data->element.layer
+    );
     SpawnZext zextSpawnData = {
         .canvas = data->canvas,
         .parent = {
@@ -135,7 +141,7 @@ entity spawn_header2(ecs *world, SpawnHeader *data) {
         },
         .zext = data->zext
     };
-    Children children = (Children) { 0, NULL };
+    Children children = (Children) { 0 };
     const entity header_zext = spawn_zext(world, &zextSpawnData);
     add_to_Children(&children, header_zext);
     if (data->header.is_close_button) {

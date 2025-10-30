@@ -13,8 +13,8 @@ void resize_window_scrollbar(
     const int elements_visible,
     const int labels_count
 ) {
-    const ecs_entity_t scrollbar = children->value[1];
-    const ecs_entity_t scrollbar_front = zox_gett_value(scrollbar, Children)[0];
+    const entity scrollbar = children->value[1];
+    const entity scrollbar_front = zox_gett_value(scrollbar, Children)[0];
     const int scrollbar_height = (int) window_size.y * ( float_min(1, (float) elements_visible / (float) labels_count));
     const int2 scrollbar_size = (int2) { zox_gett_value(scrollbar, LayoutSize).x, scrollbar_height };
     zox_set(scrollbar_front, LayoutSize, { scrollbar_size })
@@ -25,10 +25,10 @@ void resize_window_scrollbar(
     // on_resized_element(world, scrollbar_front, scrollbar_size, int2_to_float2(canvas_size));
 }
 
-ecs_entity_t spawn_button_old(
+entity spawn_button_old(
     ecs *world,
-    const ecs_entity_t parent,
-    const ecs_entity_t canvas,
+    const entity parent,
+    const entity canvas,
     const int2 pixel_position,
     const byte2 padding,
     const float2 anchor,
@@ -44,9 +44,20 @@ ecs_entity_t spawn_button_old(
     const int2 pixel_size = (int2) { zext_size.x + padding.x * 2, zext_size.y + padding.y * 2 };
     const int2 global_position = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
     const float2 position2 = get_element_position(global_position, canvas_size);
-    zox_instance(prefab_button)
-    zox_name("button")
-    initialize_element(world, e, parent, canvas, pixel_position, pixel_size, pixel_size, anchor, layer, position2, global_position);
+
+    zox_instance(prefab_button);
+    zox_name("button");
+    initialize_element(
+        world,
+        e,
+        parent,
+        canvas,
+        pixel_position,
+        pixel_size,
+        pixel_size,
+        anchor,
+        layer
+    );
     zox_set(e, Color, { button_fill })
     zox_set(e, OutlineColor, { button_outline })
     zox_set(e, RenderDisabled, { render_disabled })
@@ -72,7 +83,7 @@ ecs_entity_t spawn_button_old(
             .margins = padding,
             .font_fill_color = default_font_fill_color,
             .font_outline_color = default_font_outline_color } };
-    const ecs_entity_t zext = spawn_zext(world, &spawnZext);
+    const entity zext = spawn_zext(world, &spawnZext);
     add_to_Children(&children, zext);
     zox_set_ptr(e, Children, children)
     return e;

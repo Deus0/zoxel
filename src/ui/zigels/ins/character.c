@@ -21,9 +21,7 @@ entity spawn_zigel(
         data->element.size,
         data->element.texture_size,
         data->element.anchor,
-        data->element.layer,
-        float2_zero,
-        int2_zero
+        data->element.layer
     );
 
     return e;

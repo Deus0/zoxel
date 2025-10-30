@@ -31,12 +31,15 @@ entity2 spawn_elementbar2D(ecs *world,
     zox_name("elementbar2D")
     zox_set(e, Color, { back_color })
     initialize_element(
-        world, e,
-        parent, canvas,
-        pixel_position, pixel_size,
-        int2_one, anchor, layer,
-        float2_zero,
-        int2_zero
+        world,
+        e,
+        parent,
+        canvas,
+        pixel_position,
+        pixel_size,
+        int2_one,
+        anchor,
+        layer
     );
     if (render_disabled) {
         zox_set(e, RenderDisabled, { render_disabled })

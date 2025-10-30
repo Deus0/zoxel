@@ -1,12 +1,12 @@
 #define clear_memory_component(name, component)\
     dispose_##name(component);
 
-ecs_entity_t find_array_element_with_id(
-    ecs_world_t* world,
-    ecs_entity_t* value,
+entity find_array_element_with_id(
+    ecs* world,
+    entity* value,
     int length,
-    ecs_entity_t id)
-{
+    entity id
+) {
     for (int i = 0; i < length; i++) {
         if (zox_has_id(value[i], id)) {
             return value[i];
@@ -16,7 +16,7 @@ ecs_entity_t find_array_element_with_id(
 }
 
 #define find_array_element_with_tag2(value, length, tag, e)\
-    ecs_entity_t e = 0;\
+    entity e = 0;\
     for (int i = 0; i < length; i++) {\
         if (zox_has(value[i], tag)) {\
             e = value[i];\

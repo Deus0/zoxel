@@ -27,8 +27,8 @@ entity spawn_window(
         pixel_size,
         pixel_size,
         anchor,
-        layer,
-        float2_zero, int2_zero);
+        layer
+    );
     set_window_bounds_to_canvas(world, e, canvas_size, pixel_size, anchor);
     Children children = (Children) { 0, NULL };
     const entity header = spawn_header(world, e, canvas,

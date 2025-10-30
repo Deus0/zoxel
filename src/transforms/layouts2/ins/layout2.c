@@ -11,16 +11,15 @@ entity spawn_layout2(ecs *world,
 ) {
     zox_instance(prefab)
     zox_name("layout2")
-    initialize_element_invisible(world,
+    initialize_element_invisible(
+        world,
         e,
         parent,
         canvas,
         position,
         size,
         anchor,
-        layer,
-        float2_zero,
-        int2_zero
+        layer
     );
     return e;
 }

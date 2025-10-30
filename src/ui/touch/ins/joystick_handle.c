@@ -13,6 +13,16 @@ entity spawn_virtual_joystick_pointer(
 
     zox_instance(prefab_virtual_joystick_pointer)
     zox_name("virtual_joystick_pointer")
-    initialize_element(world, e, parent, canvas, pixel_position, pixel_size, pixel_size, anchor, layer, float2_zero, int2_zero);
+    initialize_element(
+        world,
+        e,
+        parent,
+        canvas,
+        pixel_position,
+        pixel_size,
+        pixel_size,
+        anchor,
+        layer
+    );
     return e;
 }

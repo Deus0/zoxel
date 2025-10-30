@@ -1,22 +1,26 @@
-void PlotLabelSystem(ecs_iter_t *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(ParentLink)
-    zox_sys_out(TextDirty)
-    zox_sys_out(TextData)
+void PlotLabelSystem(iter *it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(ParentLink);
+    zox_sys_out(TextDirty);
+    zox_sys_out(TextData);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ParentLink, parentLink)
-        zox_sys_o(TextDirty, zextDirty)
-        zox_sys_o(TextData, textData)
+        zox_sys_i(ParentLink, parentLink);
+        zox_sys_o(TextDirty, zextDirty);
+        zox_sys_o(TextData, textData);
+
         if (zextDirty->value || !parentLink->value) {
             continue;
         }
+
         if (!zox_has(parentLink->value, PlotMin) || !zox_has(parentLink->value, PlotMax)) {
             zox_log_error("invalid plot");
             continue;
         }
+
         zox_geter_value(parentLink->value, PlotMin, double, min);
         zox_geter_value(parentLink->value, PlotMax, double, max);
+
         const byte buffer_size = 128;
         int buffer_index = 0;
         char buffer[buffer_size];
@@ -26,4 +30,4 @@ void PlotLabelSystem(ecs_iter_t *it) {
             zextDirty->value = 1;
         }
     }
-} zoxd_system(PlotLabelSystem)
+} zoxd_system2(PlotLabelSystem);

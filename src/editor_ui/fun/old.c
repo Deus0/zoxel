@@ -100,9 +100,7 @@ entity spawn_ui_list(
         pixel_size,
         pixel_size,
         anchor,
-        layer,
-        float2_zero,
-        int2_zero
+        layer
     );
 
     Children children = (Children) { 0 };

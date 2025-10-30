@@ -14,8 +14,17 @@ entity spawn_virtual_joystick(
     zox_instance(prefab_virtual_joystick)
     zox_name("virtual_joystick")
     entity parent = canvas;
-    initialize_element(world, e, parent, canvas, pixel_position, pixel_size, pixel_size, anchor, layer, float2_zero, int2_zero);
-    // zox_muter(e, Children, children)
+    initialize_element(
+        world,
+        e,
+        parent,
+        canvas,
+        pixel_position,
+        pixel_size,
+        pixel_size,
+        anchor,
+        layer
+    );
 
     Children children = (Children) { 0 };
     entity joystick = spawn_virtual_joystick_pointer(world,
