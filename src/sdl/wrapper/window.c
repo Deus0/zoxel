@@ -73,7 +73,7 @@ SDL_Window* create_sdl_window(
     SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
     SDL_Window *window = SDL_CreateWindow(name, position.x, position.y, size.x, size.y, flags);
     if (!window) {
-        zox_log_error(" CreateWindowError [%s]\n", SDL_GetError());
+        zox_log_error(" CreateWindowError [%s] - flags [%i]]\n", SDL_GetError(), flags);
         return NULL;
     }
     SDL_SetWindowResizable(window, window_resizeable);

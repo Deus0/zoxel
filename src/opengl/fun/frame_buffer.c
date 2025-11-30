@@ -17,6 +17,10 @@ byte is_frame_buffer_supported() {
 }
 
 void check_frame_buffer() {
+    if (!zox_get_safe_ubo_size()) {
+        zox_logw("Frame Buffer not supported.");
+        zox_use_post_processing = 0;
+    }
     /*if (!is_frame_buffer_supported()) {
         zox_log(" ! frame buffer is unsupported.\n")
     } else {

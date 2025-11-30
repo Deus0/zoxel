@@ -1,7 +1,8 @@
-static inline entity spawn_file_shader_at_path(ecs *world,
+static inline entity spawn_file_shader_at_path(
+    ecs *world,
     const entity prefab,
-    const char* path)
-{
+    const char* path
+) {
     char* source = zox_read_shader(path);
     if (!source) {
         return 0;

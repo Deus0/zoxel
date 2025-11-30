@@ -1,3 +1,25 @@
+// Probes core Compatibility, assumes SDL is initialized
+byte supports_opengl_core() {
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    SDL_Window* window = SDL_CreateWindow("probe", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 16, 16, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+    if (!window) {
+        return 0;
+    }
+
+    SDL_GLContext context = SDL_GL_CreateContext(window);
+    if (!context) {
+        SDL_DestroyWindow(window);
+        return 0;
+    }
+
+    SDL_GL_DeleteContext(context);
+    SDL_DestroyWindow(window);
+
+    return 1;
+}
+
 void set_sdl_attributes() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // 24 | 32
@@ -6,6 +28,14 @@ void set_sdl_attributes() {
     if (is_log_sdl) {
         zox_logi("OpenGL Version [%i.%i]", sdl_gl_major, sdl_gl_minor);
     }
+
+    if (opengl_mode == zox_opengl_core) {
+        if (!supports_opengl_core()) {
+            zox_logw("OpenGL Core Not Supported");
+            opengl_mode = zox_opengl_es;
+        }
+    }
+
     if (opengl_mode == zox_opengl_es) {
         zox_logi("Running with OpenGL ES");
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
@@ -20,7 +50,7 @@ void set_sdl_attributes() {
 
 SDL_GLContext* create_sdl_opengl_context(SDL_Window* window) {
     if (!window) {
-        zox_log_error("SDL_Window is null [%s]", SDL_GetError())
+        zox_log_error("SDL_Window is null [%s]", SDL_GetError());
         return NULL;
     }
     SDL_GLContext* context = SDL_GL_CreateContext(window);
