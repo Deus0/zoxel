@@ -20,9 +20,7 @@ entity spawn_scrollbar_handle(
         size,
         size,
         anchor,
-        layer,
-        float2_zero,
-        int2_zero
+        layer
     );
     zox_add_tag(e, ScrollbarButton);
     zox_set(e, RenderDisabled, { !visible });

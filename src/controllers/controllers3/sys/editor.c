@@ -1,5 +1,5 @@
 // todo: move to add key event
-void EditorInputSystem(ecs_iter_t *it) {
+void EditorInputSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLinks);
@@ -7,12 +7,14 @@ void EditorInputSystem(ecs_iter_t *it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(DeviceLinks, deviceLinks);
         zox_sys_i(CanvasLink, canvasLink);
-        const ecs_entity_t canvas = canvasLink->value;
+
+        const entity canvas = canvasLink->value;
         for (int j = 0; j < deviceLinks->length; j++) {
-            const ecs_entity_t device = deviceLinks->value[j];
+            const entity device = deviceLinks->value[j];
             if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
                 continue;
             }
+
             if (zox_has( device, Keyboard)) {
                 const Keyboard *keyboard = zox_get(device, Keyboard);
                 // toggle uis
@@ -22,16 +24,31 @@ void EditorInputSystem(ecs_iter_t *it) {
                 if (keyboard->c.pressed_this_frame) {
                     toggle_ui_with_tag(spawn_game_debug_label, GameDebugLabel)
                 }
-                // test game uis
-                /*else if (keyboard->u.pressed_this_frame) {
-                    toggle_ui_with_tag_e(spawn_menu_quests_player, MenuQuests, e)
-                } else if (keyboard->i.pressed_this_frame) {
-                    toggle_ui_with_tag_e(spawn_menu_items_player, MenuItems, e)
-                } else if (keyboard->o.pressed_this_frame) {
-                    toggle_ui_with_tag_e(spawn_menu_stats_player, MenuStats, e)
-                } else if (keyboard->p.pressed_this_frame) {
-                    toggle_ui_with_tag_e(spawn_menu_skills_player, MenuSkills, e)
-                }*/
+
+                if (keyboard->v.pressed_this_frame) {
+                    zox_geter(canvas, Children, children);
+                    entity e = find_array_element_with_id(
+                        world,
+                        children->value,
+                        children->length,
+                        zox_id(Profiler)
+                    );
+                    if (e) {
+                        zox_geter(e, Children, plots);
+                        for (int j = 0; j < plots->length; j++) {
+                            entity plot = plots->value[j];
+                            if (!zox_has(plot, PlotPaused)) {
+                                zox_log("   - not plot [%lu]", plot);
+                                continue;
+                            }
+                            byte is_pause = !zox_gett_value(plot, PlotPaused);
+                            zox_set(plot, PlotPaused, { is_pause });
+                            // zox_log("plot [%lu] is %s.", e, is_pause ? "paused" : "running");
+                        }
+                    } else {
+                        zox_logw("Profiler not found.");
+                    }
+                }
             }
         }
     }

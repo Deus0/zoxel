@@ -23,9 +23,7 @@ entity spawn_element_basic(
         pixel_size,
         texture_size,
         anchor,
-        layer,
-        float2_zero,
-        int2_zero
+        layer
     );
 
     return e;

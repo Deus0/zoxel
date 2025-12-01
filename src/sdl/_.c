@@ -3,6 +3,7 @@
 
 #include "com/_.c"
 #include "dat/_.c"
+#include "tst/_.c"
 #include "wrapper/_.c"
 #include "set/_.c"
 #include "pre/_.c"

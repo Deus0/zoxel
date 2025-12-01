@@ -35,26 +35,38 @@ cflags_dever	:= $(cflags_dev)  -Wextra -Wpedantic -pedantic-errors -Werror  -fdi
 # more checks
 cflags_devmem	:= $(cflags_dever) -Wpedantic -fsanitize=address -fno-omit-frame-pointer -D_POSIX_C_SOURCE=200809L
 
-LDFLAGS 	:= -lflecs -lm -lpthread -lGL -lSDL2 -lSDL2_image -lSDL2_mixer \
+LDFLAGS 	:= -lm -lpthread -lGL -lSDL2 -lSDL2_image -lSDL2_mixer \
 			-Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images \
 			-Dzox_game=$(GAME)
 TARGET  	:= bin/$(GAME)
 TARGET_DEV 	:= bin/$(GAME)-debug
 GAMES_DIR	:= $(SRC_DIR)/nexus
 
-.PHONY: game help clean build dev pick run rund runp runpd gdb val
+# Flecs Direct Support Now
+ifeq ("$(wildcard inc/flecs/flecs.c)","")
+    # System Flecs Linker Flag
+    LDFLAGS += -lflecs
+else
+    # Use Source Directly
+    SRC += inc/flecs/flecs.c
+    LDFLAGS += -Iinc/flecs -Dflecssource
+endif
+
+.PHONY: game help clean build dev pick run rund runp runpd gdb val flecs flecs-package
+# .DEFAULT_GOAL := build
+
 
 # Build
 
 $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
 	@ mkdir -p bin
-	@ $(CC) $(CFLAGS) $(SRC) -o $@ $(LDFLAGS)
 	@ echo "-------------------"
+	$(CC) $(CFLAGS) $(SRC) -o $@ $(LDFLAGS)
 	@ echo " - completed -"
 	@ echo "-------------------"
 
-build: $TARGET
+build: flecs $(TARGET)
 
 # Extra
 
@@ -67,6 +79,22 @@ help:
 clean:
 	@ echo "> You are removing [bin dist]"
 	@ rm -rf bin dist
+
+# installs flecs source directly
+flecs:
+	@if pkg-config --exists flecs; then \
+		echo "> Flecs Package Installed"; \
+	else \
+		if test -f inc/flecs/flecs.c; then \
+			echo "> Flecs Source Installed"; \
+		else \
+			echo "+ Installing Flecs Source..."; \
+			mkdir -p inc/flecs; \
+			cd inc/flecs && \
+			wget https://raw.githubusercontent.com/SanderMertens/flecs/v4.0.5/distr/flecs.h -O flecs.h && \
+			wget https://raw.githubusercontent.com/SanderMertens/flecs/v4.0.5/distr/flecs.c -O flecs.c || { echo >&2 "Download failed"; exit 1; } \
+		fi; \
+	fi
 
 # Dev
 
@@ -89,7 +117,7 @@ gdbmem: devmem
 
 # Run
 
-run: $(TARGET)
+run: build
 	@ echo "> Running [$(GAME)]"
 	@ sleep 1
 	@ echo "-------------------"
@@ -115,7 +143,7 @@ gdbp:
 
 # Dep
 
-flecs:
+flecs-package:
 	cd ../flecsing && make clean && make download && make refresh
 
 

@@ -16,10 +16,16 @@ byte is_frame_buffer_supported() {
     }*/
 }
 
-void check_frame_buffer() {
+byte test_frame_buffer() {
+    if (!zox_get_safe_ubo_size()) {
+        zox_logw("Frame Buffer not supported.");
+        return 1;
+    }
     /*if (!is_frame_buffer_supported()) {
         zox_log(" ! frame buffer is unsupported.\n")
     } else {
         zox_log(" + frame buffer is supported.\n")
     }*/
+    zox_log("UBO Size is [%i]", zox_get_safe_ubo_size());
+    return 0;
 }

@@ -30,9 +30,7 @@ entity spawn_elementbar2D_front(
         size,
         int2_one,
         (float2) { 0, 0.5f },
-        layer,
-        float2_zero,
-        int2_zero
+        layer
     );
 
     return e;

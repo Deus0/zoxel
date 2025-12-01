@@ -43,7 +43,11 @@
 #define FLECS_MODULE
 #define FLECS_SYSTEM
 #define FLECS_PIPELINE
-#include <flecs.h>
+#ifdef flecssource
+  #include "flecs.h"
+#else
+  #include <flecs.h>
+#endif
 
 // SDL2 & OpenGL
 #define GL_GLEXT_PROTOTYPES

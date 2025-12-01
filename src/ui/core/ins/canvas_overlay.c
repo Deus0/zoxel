@@ -22,9 +22,7 @@ entity spawn_canvas_overlay(
         pixel_size,
         pixel_size,
         anchor,
-        layer,
-        float2_zero, // position2,
-        int2_zero // pixel_positionv
+        layer
     );
 
     // on_child_added(world, canvas, e);

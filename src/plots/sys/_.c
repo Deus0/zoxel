@@ -1,5 +1,5 @@
-#include "plot_line_system.c"
-#include "plot_label_system.c"
+#include "plot_lines.c"
+#include "plot_labels.c"
 #include "plot_limits.c"
 
 void define_systems_plots(ecs* world) {

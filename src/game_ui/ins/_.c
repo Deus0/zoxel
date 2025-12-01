@@ -9,3 +9,4 @@
 #include "game.c"
 #include "start.c"
 #include "load_game.c"
+#include "fps_display.c"

@@ -2,6 +2,18 @@ entity plot_time;
 entity plot_time_system;
 const float plot_line_thickness = 1.0f;
 
+entity spawn_prefab_plot_graph(ecs *world, entity prefab) {
+    zox_prefab_child(prefab);
+    zox_prefab_name("plot_graph");
+    zox_add_tag(e, Plot);
+    zox_set(e, PlotMin, { 0 });
+    zox_set(e, PlotMax, { 0 });
+    zox_prefab_set(e, PlotDataDouble, { 0 });
+    zox_prefab_set(e, PlotPaused, { 0 });
+    return e;
+}
+
+
 entity spawn_plot_graph(
     ecs* world,
     entity canvas,
@@ -48,9 +60,6 @@ entity spawn_plot_graph(
         data.value[i] = start_value;
     }
     zox_set_ptr(e, PlotDataDouble, data);
-    zox_set(e, PlotMin, { 0 });
-    zox_set(e, PlotMax, { 0 });
-    zox_add_tag(e, Plot);
 
     if (is_label) {
         SpawnZext text_data = {

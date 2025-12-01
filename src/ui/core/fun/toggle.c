@@ -11,16 +11,19 @@ entity player_toggle_ui(ecs *world,
     }
 }
 
-entity player_toggle_ui_id(ecs *world,
+entity player_toggle_ui_id(
+    ecs *world,
     const entity player,
     const ElementLinks* elements,
     const entity id,
-    entity (*spawn_ui)(ecs*, const entity))
-{
-    entity e = find_array_element_with_id(world,
+    entity (*spawn_ui)(ecs*, const entity)
+) {
+    entity e = find_array_element_with_id(
+        world,
         elements->value,
         elements->length,
-        id);
+        id
+    );
     return player_toggle_ui(world, player, e, spawn_ui);
 }
 

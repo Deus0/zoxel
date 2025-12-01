@@ -33,9 +33,7 @@ entity spawn_window_users(
         data.element.size,
         data.element.size,
         data.element.anchor,
-        data.element.layer,
-        float2_zero,
-        int2_zero
+        data.element.layer
     );
     set_window_bounds_to_canvas(
         world,

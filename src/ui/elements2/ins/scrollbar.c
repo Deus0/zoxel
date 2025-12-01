@@ -30,9 +30,7 @@ entity spawn_scrollbar(
         size,
         size,
         anchor,
-        layer,
-        float2_zero,
-        int2_zero
+        layer
     );
     zox_set(e, ElementMargins, { margins });
     zox_set(e, RenderDisabled, { !visible });

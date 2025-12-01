@@ -1,4 +1,3 @@
-// entity prefab_menu_start;
 entity fps_display_prefab;
 entity fps_display;
 entity prefab_game_debug_label;
@@ -11,7 +10,6 @@ entity prefab_menu_game_touch;
 entity zoxel_main_menu;
 entity prefab_crosshair;
 
-// #include "start.c"
 #include "fps_display.c"
 #include "quad_count_label.c"
 #include "game_debug_label.c"
@@ -24,8 +22,7 @@ entity prefab_crosshair;
 #include "menu_game.c"
 
 void spawn_prefabs_game_ui(ecs *world) {
-    // prefab_menu_start = spawn_prefab_main_start(world, prefab_ui_list);
-    spawn_prefab_fps_display(world);
+    fps_display_prefab = spawn_prefab_fps_display(world);
     spawn_prefab_quad_count_label(world);
     spawn_prefab_game_debug_label(world, prefab_label_background);
     prefab_tooltip = spawn_prefab_tooltip(world, prefab_label_background);

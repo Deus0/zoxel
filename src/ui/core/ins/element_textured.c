@@ -1,5 +1,4 @@
 entity spawn_element(ecs *world, ElementSpawn *data) {
-
     zox_instance(data->element.prefab);
     zox_name("element");
     initialize_element(
@@ -10,9 +9,7 @@ entity spawn_element(ecs *world, ElementSpawn *data) {
         data->element.size,
         data->element.size,
         data->element.anchor,
-        data->element.layer,
-        float2_zero, // real_position,
-        data->element.position_in_canvas
+        data->element.layer
     );
     zox_set(e, Color, { data->texture.fill_color });
     zox_set(e, OutlineColor, { data->texture.outline_color });

@@ -27,9 +27,7 @@ entity spawn_render_texture(
         layout_size,
         texture_size,
         anchor,
-        layer,
-        float2_zero,
-        int2_zero
+        layer
     );
 
     return e;

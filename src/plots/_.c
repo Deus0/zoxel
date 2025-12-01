@@ -5,6 +5,7 @@
 zox_tag(Plot);
 zox_tag(PlotLine);
 zox_tag(PlotLabel);
+zoxc_byte(PlotPaused);
 zoxc_arrayd(PlotDataDouble, double)
 zoxc_double(PlotMin);
 zoxc_double(PlotMax);
@@ -17,6 +18,7 @@ zox_begin_module(Plots)
     zoxd_tag(Plot);
     zoxd_tag(PlotLine);
     zoxd_tag(PlotLabel);
+    zoxd_byte(PlotPaused);
     zoxd_double(PlotMin);
     zoxd_double(PlotMax);
     zoxd_arrayd(PlotDataDouble);

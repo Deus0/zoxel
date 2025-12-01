@@ -2,7 +2,7 @@
 int check_compute_shader_support_from_version() {
     const char* version_str = (const char*) glGetString(GL_VERSION);
     if (!version_str) {
-        zox_log_error("GL not enabled.");
+        // zox_logw("GL not enabled.");
         return EXIT_FAILURE;
     }
     int is_opengl_es = strstr(version_str, "ES") != NULL;
@@ -82,7 +82,7 @@ int check_compute_shader_support() {
 }
 
 // removed compute test for now, broke on android version
-void check_compute() {
+void test_compute() {
     if (check_compute_shader_support() == EXIT_FAILURE) {
         zox_log_error("opengl compute is not supported")
     } else {

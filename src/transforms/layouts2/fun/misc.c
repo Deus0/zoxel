@@ -6,9 +6,7 @@ void initialize_element_invisible(
     const int2 pixel_position,
     const int2 pixel_size,
     const float2 anchor,
-    const byte layer,
-    const float2 position2,
-    const int2 pixel_positionv
+    const byte layer
 ) {
     zox_set(e, Anchor, { anchor });
     zox_set(e, Layer2D, { layer });
@@ -16,7 +14,9 @@ void initialize_element_invisible(
     zox_set(e, LayoutPosition, { pixel_position });
     zox_set(e, CanvasLink, { canvas });
     zox_set(e, ParentLink, { parent });
+    // Where we link to canvas children
     if (canvas == parent) {
+        zox_log("added new ui [%lu] to canvas [%lu]", e, canvas);
         on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }
@@ -31,9 +31,7 @@ void initialize_element(
     const int2 pixel_size,
     const int2 texture_size,
     const float2 anchor,
-    const byte layer,
-    const float2 position2,
-    const int2 pixel_positionv
+    const byte layer
 ) {
     initialize_element_invisible(
         world,
@@ -43,9 +41,8 @@ void initialize_element(
         pixel_position,
         pixel_size,
         anchor,
-        layer,
-        position2,
-        pixel_positionv);
+        layer
+    );
 }
 
 void set_element_spawn_data(

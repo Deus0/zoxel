@@ -10,7 +10,6 @@
 #define zox_disable_mouse_constraint
 #define zox_disable_gamepad_stick_as_any_input // used for samsung phone, it's buggy af
 #define zox_disable_gamepad_deadzones
-// #define zox_disable_post_processing
 // release defines
 #ifndef zox_debug
     #define zox_disable_names
@@ -265,19 +264,34 @@ int main(int argc, char* argv[]) {
             return EXIT_FAILURE;
         }
 
+        // Window creates and binds OpenGL Context too!
         zox_logv("Spawning SDL Window");
-        app = spawn_window_opengl_with_icon(world);
+        const char* window_name;
+#ifdef zox_game
+        window_name = game_name;
+#else
+        window_name = "unknown";
+#endif
+        app = spawn_app_sdl_opengl(
+            world,
+            window_name,
+            fullscreen,
+            maximized,
+            monitor
+        );
+        main_app = app;
+        spawn_window_icon(world, app, "game.png");
 
         // inits glew on windows
-        zox_logv("Initializing Rendering");
-        initialize_rendering(render_backend);
-
         zox_logv("Initializing Glew");
         if (zox_init_glew() == EXIT_FAILURE) {
             zox_log_error("[initialize_rendering] failed");
             dispose_zox(world);
             return EXIT_FAILURE;
         }
+
+        zox_logv("Initializing Rendering");
+        initialize_rendering(render_backend);
 
         if (!app) {
             zox_log_error("[engine_spawn_window] failed");

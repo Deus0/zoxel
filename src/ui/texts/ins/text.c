@@ -55,9 +55,7 @@ entity spawn_zext(
         pixel_size,
         texture_size,
         data->element.anchor,
-        data->element.layer,
-        float2_zero, // position2,
-        int2_zero // element_canvas_position
+        data->element.layer
     );
     return e;
 }

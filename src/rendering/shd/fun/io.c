@@ -1,12 +1,12 @@
-static inline entity spawn_file_shader_at_path(ecs *world,
+static inline entity spawn_file_shader_at_path(
+    ecs *world,
     const entity prefab,
-    const char* path)
-{
+    const char* path
+) {
     char* source = zox_read_shader(path);
     if (!source) {
         return 0;
     }
-    byte shader_include_es = is_shaders_es; // opengl_mode == zox_opengl_es;
     int ubo_size = zox_get_safe_ubo_size();
 
     // zox_log("+ shader processing with ver [%i] es [%s] ubo_size [%i]", shader_opengl_version, (shader_include_es ? "es" : ""), ubo_size);
@@ -14,7 +14,7 @@ static inline entity spawn_file_shader_at_path(ecs *world,
     // zox_log("-------------------------------")
 
     // Example: #version 320 es
-    char* versioned_source = append_shader_version(source, shader_opengl_version, shader_include_es);
+    char* versioned_source = append_shader_version(source, shader_opengl_version, is_shaders_es);
     free(source);
 
     if (!versioned_source) {

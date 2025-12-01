@@ -1,7 +1,8 @@
 bin
 dist
-include
 lib
+include
+inc
 *.o
 CMakeLists.txt
 .game

@@ -1,6 +1,6 @@
 zoxc(SDLWindow, SDL_Window*);
 zoxc(Renderer, SDL_Renderer*);
-zoxc(Context, SDL_GLContext*);
+zoxc(Context, SDL_GLContext);
 
 ECS_DTOR(SDLWindow, ptr, {
     if (ptr->value != 0) {

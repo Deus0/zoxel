@@ -96,6 +96,6 @@ byte check_opengl_frame_buffer_status() {
             // An unknown error occurred.
             break;
     }
-    zox_log(" ! frame buffer incomplete [%s]\n", error_code)
+    zox_logw("Framebuffer Error [%s]", error_code);
     return 0;
 }
