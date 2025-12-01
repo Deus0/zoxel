@@ -18,8 +18,10 @@ byte initialize_rendering(byte render_backend) {
     if (render_backend == zox_render_backend_headless) {
         return EXIT_SUCCESS;
     } else if (render_backend == zox_render_backend_opengl) {
+        if (test_opengl()) {
+            return EXIT_FAILURE;
+        }
         rendering_initialized = 1;
-        initialize_opengl();
         return EXIT_SUCCESS;
     } else if (render_backend == zox_render_backend_vulkan) {
         rendering_initialized = 1;

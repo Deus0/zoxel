@@ -264,8 +264,23 @@ int main(int argc, char* argv[]) {
             return EXIT_FAILURE;
         }
 
+        // Window creates and binds OpenGL Context too!
         zox_logv("Spawning SDL Window");
-        app = spawn_window_opengl_with_icon(world);
+        const char* window_name;
+#ifdef zox_game
+        window_name = game_name;
+#else
+        window_name = "unknown";
+#endif
+        app = spawn_app_sdl_opengl(
+            world,
+            window_name,
+            fullscreen,
+            maximized,
+            monitor
+        );
+        main_app = app;
+        spawn_window_icon(world, app, "game.png");
 
         // inits glew on windows
         zox_logv("Initializing Glew");

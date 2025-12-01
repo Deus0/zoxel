@@ -55,10 +55,10 @@ byte zox_app_set_monitor(SDL_Window *window, byte index, byte center_window) {
     return 1;
 }
 
-void zox_app_set_monitor_e(ecs_world_t *world, ecs_entity_t e, byte monitor) {
+void zox_app_set_monitor_e(ecs *world, entity e, byte monitor) {
     zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
     zox_app_set_monitor(sdl_window, monitor, 1);
-    zox_set(e, WindowMonitor, { monitor })
+    zox_set(e, WindowMonitor, { monitor });
 }
 
 int2 get_screen_size_monitor(byte monitor_index) {
@@ -72,4 +72,8 @@ int2 get_screen_size_monitor(byte monitor_index) {
         }
     }
     return (int2) { displayMode.w, displayMode.h };
+}
+
+byte zox_get_max_monitors() {
+    return SDL_GetNumVideoDisplays();
 }

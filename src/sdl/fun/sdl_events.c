@@ -1,12 +1,11 @@
 // todo: link sdl app events to sub systems
-extern void opengl_dispose_resources(ecs_world_t *world);
-extern void opengl_restore_resources(ecs_world_t *world);
+extern void opengl_dispose_resources(ecs *world);
+extern void opengl_restore_resources(ecs *world);
 extern void engine_end(); // engine
-extern byte create_window_opengl_context(ecs_world_t *world, const ecs_entity_t e);
 
 // move this to an app system function?
-void update_sdl(ecs_world_t *world) {
-    const ecs_entity_t e = main_app;
+void update_sdl(ecs *world) {
+    const entity e = main_app;
     input_reset_sdl();
     SDL_Event event = { 0 };
     while (SDL_PollEvent(&event)) {

@@ -8,12 +8,32 @@ void debug_base_path(const char *base_path) {
     } else zox_log(" - failed to open directory [%s]\n", base_path)
 }
 
-char* concat_file_path(const char* resources_path, const char* file_path) {
-    if (resources_path == NULL || file_path == NULL) return NULL;
-    char* full_file_path = malloc(strlen(resources_path) + strlen(file_path) + 1);
-    strcpy(full_file_path, resources_path);
-    strcat(full_file_path, file_path);
-    return full_file_path;
+char* concat_file_path(const char* path1, const char* path2) {
+    if (!path1 || !path2) return NULL;
+
+    size_t len1 = strlen(path1);
+    size_t len2 = strlen(path2);
+
+    // handle empty paths safely
+    int need_slash = 0;
+    if (len1 == 0 || path1[len1 - 1] != char_slash) {
+        need_slash = 1;
+    }
+
+    size_t total = len1 + need_slash + len2 + 1; // +1 for '\0'
+
+    char* output = malloc(total);
+    if (!output) return NULL;
+
+    strcpy(output, path1);
+
+    if (need_slash) {
+        strcat(output, character_slash);
+    }
+
+    strcat(output, path2);
+
+    return output;
 }
 
 char* get_full_file_path(const char* filepath) {

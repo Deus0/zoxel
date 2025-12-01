@@ -59,7 +59,7 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
 
 
 // todo: get position2 to work
-entity spawn_window_opengl(
+entity spawn_app_sdl_opengl(
     ecs *world,
     const char* name,
     const byte fullscreen,
@@ -71,7 +71,8 @@ entity spawn_window_opengl(
         name,
         fullscreen,
         maximized,
-        monitor);
+        monitor
+    );
     if (!e) {
         zox_log_error("failed spawning sdl window");
         return 0;
@@ -80,35 +81,35 @@ entity spawn_window_opengl(
         zox_log_error(" opengl_context creation failed");
         return 0;
     }
+
+    /*zox_geter(e, SDLWindow, window);
+    SDL_GL_SwapWindow(window->value);
+    if (SDL_GL_SetSwapInterval(vsync)) {
+        zox_log_error("Unable to disable VSync: %s", SDL_GetError());
+    }*/
+
     return e;
 }
 
 
 extern byte load_app_icon(SDL_Window*, const char*);
 
-entity spawn_window_opengl_with_icon(ecs *world) {
-    const char* window_name;
-#ifdef zox_game
-    window_name = game_name;
-#else
-    window_name = "unknown";
-#endif
-    const entity app = spawn_window_opengl(
-        world,
-        window_name,
-        fullscreen,
-        maximized,
-        monitor);
+byte spawn_window_icon(ecs *world, const entity app, const char* texture_name) {
     if (!app) {
         zox_log_error("app not spawned");
-        return 0;
+        return 1;
     }
     // Shaders
-    char* icon_path = get_asset_path("textures", "game.png")
-    if (icon_path) {
-        load_app_icon(zox_gett_value(app, SDLWindow), icon_path);
-        free(icon_path);
+    char* path_textures = concat_file_path(resources_path, "textures");  //  character_slash filename
+    if (!path_textures) {
+        return 1;
     }
-    main_app = app;
-    return app;
+    char* path_icon = concat_file_path(path_textures, texture_name);  //  character_slash filename
+    free(path_textures);
+    if (!path_icon) {
+        return 1;
+    }
+    load_app_icon(zox_gett_value(app, SDLWindow), path_icon);
+    free(path_icon);
+    return 0;
 }

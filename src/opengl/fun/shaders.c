@@ -78,7 +78,7 @@ byte check_shader_compile_status(uint shader) {
 }
 
 byte compile_shader(
-    uint shader_type,   // GLenum
+    GLenum shader_type,
     uint* output,
     const GLchar* buffer
 ) {
@@ -94,6 +94,7 @@ byte compile_shader(
     if (check_shader_compile_status(shader)) {
         return 1;
     }
+
     *output = shader;
     return 0;
 }
