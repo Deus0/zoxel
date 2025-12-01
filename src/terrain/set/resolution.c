@@ -1,7 +1,7 @@
 // called when resolution setting changed
 void on_terrain_settings_changed(ecs *world, const entity realm) {
-    if (!zox_has(realm, VoxelLinks)) return;
-    const VoxelLinks *voxels = zox_get(realm, VoxelLinks);
+    if (!zox_has(realm, BlockLinks)) return;
+    const BlockLinks *voxels = zox_get(realm, BlockLinks);
     for (int k = 0; k < voxels->length; k++) {
         const entity voxel = voxels->value[k];
         zox_geter(voxel, TextureLinks, textures);

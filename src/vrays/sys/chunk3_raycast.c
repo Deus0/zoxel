@@ -125,7 +125,7 @@ byte update_chunk_for_raycast(
 byte raycast_voxel_node(
     ecs *world,
     const entity caster,
-    const VoxelLinks* voxels,
+    const BlockLinks* voxels,
     const ChunkLinks* chunk_links,
     int3 chunk_position,
     const float3 chunk_positionf,
@@ -546,7 +546,7 @@ void Chunk3RaycastSystem(iter *it) {
         const int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
 
         zox_geter_value(terrain, RealmLink, entity, realm);
-        zox_geter(realm, VoxelLinks, voxels);
+        zox_geter(realm, BlockLinks, voxels);
         zox_geter(terrain, ChunkLinks, chunk_links);
         zox_geter_value(camera, RaycastOrigin, float3, ray_origin);
         zox_geter_value(camera, RaycastNormal, float3, ray_normal);

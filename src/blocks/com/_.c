@@ -14,7 +14,7 @@ zoxc_byte3(VoxelLocalPosition);
 zoxc_float(BlockScale);
 zoxc_entity(BlockLink);
 zoxc_entity(BlockPrefabLink);
-zoxc_entities(VoxelLinks)
+zoxc_entities(BlockLinks)
 
 void define_components_blocks(ecs_world_t *world) {
     zoxd_tag(Voxel);
@@ -33,5 +33,5 @@ void define_components_blocks(ecs_world_t *world) {
     zoxd_float(BlockScale);
     zoxd_entity(BlockLink);
     zoxd_entity(BlockPrefabLink);
-    zoxd_entities(VoxelLinks);
+    zoxd_entities(BlockLinks);
 }

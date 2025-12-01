@@ -1,17 +1,13 @@
-extern void render_line3D(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
+extern void render_line3D(ecs*, const float3, const float3, const color_rgb);
 
 void ChunkBoundsDrawSystem(iter *it) {
-
     const color_rgb up_color = (color_rgb) { 0, 0, 255 };
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Bounds3D);
     zox_sys_in(RenderDisabled);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(RenderDisabled, renderDisabled);
         zox_sys_i(Position3D, position3D);
         zox_sys_i(Bounds3D, extents);
@@ -19,6 +15,7 @@ void ChunkBoundsDrawSystem(iter *it) {
         if (renderDisabled->value) {
             continue;
         }
+
         const bounds chunk_bounds = {
             .center = float3_add(position3D->value, extents->value),
             .extents = extents->value
@@ -38,4 +35,4 @@ void ChunkBoundsDrawSystem(iter *it) {
         render_line3D(world, float3_add(chunk_bounds.center, (float3) { -chunk_bounds.extents.x, 0, 0 }), float3_add(chunk_bounds.center, (float3) { chunk_bounds.extents.x, 0, 0 }), line_color);
 
     }
-} zoxd_system(ChunkBoundsDrawSystem)
+} zoxd_system2(ChunkBoundsDrawSystem);

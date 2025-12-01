@@ -1,6 +1,6 @@
 extern entity local_crosshair;
 extern void crosshair_set_type(ecs*, entity, byte);
-const float quad_depth_buffer = 0.01f;
+const float quad_depth_buffer = 0.04f;
 
 // TODO: Use only Local Voxel Position With Chunk to get PositionF of Block - Cleaner code
 
@@ -39,8 +39,12 @@ void RaycastGizmoSystem(iter *it) {
                     0
                 );
             } else {
-               zox_set(link->value, Position3D, { quad_position });
-               zox_set(link->value, Rotation3D, { quad_rotation });
+                zox_muter(link->value, Position3D, position);
+                zox_muter(link->value, Rotation3D, rotation);
+                position->value = quad_position;
+                rotation->value = quad_rotation;
+                //zox_set(link->value, Position3D, { quad_position });
+                //zox_set(link->value, Rotation3D, { quad_rotation });
             }
 
             // Debug Line
@@ -87,7 +91,10 @@ void RaycastGizmoSystem(iter *it) {
 
         if (ray_hit != rayhit_terrain) {
             if (zox_valid(link->value)) {
-               zox_set(link->value, Position3D, { (float3) { 0, -666, 0 } });
+                // zox_log("hiding gizmo");
+                const float3 hide_position = (float3) { 0, -666, 0 };
+                zox_muter(link->value, Position3D, position);
+                position->value = hide_position;
             }
         }
     }

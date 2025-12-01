@@ -9,21 +9,20 @@ void spawn_realm_skills(
         zox_log("! realm does not have SkillLinks [%lu]\n", realm)
         return;
     }
+
+    zox_geter(realm, StatLinks, stats);
+
     // clear previous
     zox_geter(realm, SkillLinks, old)
-    // if (old->value) return; // TODO: Temp; Remove when crashes gone
-
     if (old) {
         for (int i = 0; i < old->length; i++) {
             if (old->value[i]) {
                 zox_delete(old->value[i]);
             }
         }
-        // dispose_SkillLinks_const(old);
     }
+    SkillLinks skills = (SkillLinks) { 0 };
 
-    zox_geter(realm, StatLinks, stats)
-    SkillLinks skills = (SkillLinks) { 0, NULL };
     // aura - damage one
     // char *name = generate_name();
     // todo: perhaps life aura can effect character themself!

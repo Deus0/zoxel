@@ -25,7 +25,7 @@ void TerrainItemDropSystem(iter *it) {
             continue;
         }
 
-        zox_geter(realm, VoxelLinks, blocks);
+        zox_geter(realm, BlockLinks, blocks);
 
         for (size_t j = 0; j < queue->count; j++) {
             VoxelNodeUpdate update = queue->ptr[j];

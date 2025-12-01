@@ -173,7 +173,7 @@ void Light3BuildSystem(iter* it) {
         );
 
         zox_geter_value(vox_link->value, RealmLink, entity, realm);
-        zox_geter(realm, VoxelLinks, blocks);
+        zox_geter(realm, BlockLinks, blocks);
         byte solidity[blocks->length];
         for (int j = 0; j < blocks->length; j++) {
             const entity block = blocks->value[j];

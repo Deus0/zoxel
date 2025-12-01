@@ -4,14 +4,14 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
     if (!realm) {
         return;
     }
-    if (!zox_has(realm, VoxelLinks)) {
-        zox_log_error("realm does not have VoxelLinks [%lu]", realm)
+    if (!zox_has(realm, BlockLinks)) {
+        zox_log_error("realm does not have BlockLinks [%lu]", realm)
         return;
     }
     startwatch(time_realm_blocks);
 
     // clear old
-    zox_geter(realm, VoxelLinks, old)
+    zox_geter(realm, BlockLinks, old)
     if (old) {
         for (int i = 0; i < old->length; i++) {
             zox_delete(old->value[i])
@@ -47,8 +47,8 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
         obsidian_color = realm_colors->value[color_index++];
     }
 
-    VoxelLinks blocks = (VoxelLinks) { 0 };
-    initialize_VoxelLinks(&blocks, zox_blocks_end - 1);
+    BlockLinks blocks = (BlockLinks) { 0 };
+    initialize_BlockLinks(&blocks, zox_blocks_end - 1);
 
     for (int i = 0; i < blocks.length; i++) {
         blocks.value[i] = 0;
@@ -125,7 +125,7 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
             zox_log_error("[realm_blocks]: voxel invalid at [%i]", i)
         }
     }
-    zox_set_ptr(realm, VoxelLinks, blocks);
+    zox_set_ptr(realm, BlockLinks, blocks);
     zox_set(realm, BlocksDirty, { zox_dirty_trigger });
 
     zox_logv("At [%f] Realm [blocks] [%i] spawned.", zox_current_time, blocks.length);

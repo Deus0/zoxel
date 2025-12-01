@@ -23,7 +23,7 @@ void CharacterItemsSystem(iter *it) {
 
         // Collect Realm Stats
         // zox_geter(realm->value, ItemLinks, realm_items);
-        zox_geter(realm->value, VoxelLinks, blocks);
+        zox_geter(realm->value, BlockLinks, blocks);
         // give npc random voxel
         const entity block = blocks->value[rand() % blocks->length];
         if (zox_valid(block) && zox_has(block, ItemLink)) {

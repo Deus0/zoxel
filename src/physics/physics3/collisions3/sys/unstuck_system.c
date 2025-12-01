@@ -11,9 +11,9 @@ void UnstuckSystem(iter *it) {
     zox_sys_out(Position3D);
 
     // cache voxels and colliders for speed
-    const VoxelLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
+    const BlockLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
     if (!voxels) {
-        zox_log_error("UnstuckSystem: No VoxelLinks");
+        zox_log_error("UnstuckSystem: No BlockLinks");
         return;
     }
 

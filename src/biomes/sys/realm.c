@@ -52,6 +52,26 @@ void spawn_realm_biomes(ecs *world, const entity realm) {
     }*/
 
     zox_geter(realm, Seed, seed);
+
+    // clear previous
+    zox_geter(realm, BiomeLinks, old)
+    if (old) {
+        for (int i = 0; i < old->length; i++) {
+            if (old->value[i]) {
+                zox_delete(old->value[i]);
+            }
+        }
+    }
+    BiomeLinks biomes = (BiomeLinks) { 0 };
+
+    {
+        entity grasslands = spawn_biome(world, prefab_biome, "grasslands");
+        add_to_BiomeLinks(&biomes, grasslands);
+    }
+
+    zox_set_ptr(realm, BiomeLinks, biomes);
+
+
     Colors colors = (Colors) { 0 };
     color_rgb sky_color;
     if (!grayscale_mode) {

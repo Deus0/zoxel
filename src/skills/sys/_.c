@@ -6,6 +6,7 @@
 #include "toggle.c"
 #include "aura_sound.c"
 #include "character.c"
+#include "realm.c"
 zox_declare_system_state_event(RealmSkills, GenerateRealm, zox_generate_realm_skills, spawn_realm_skills)
 
 void define_systems_skills(ecs *world) {

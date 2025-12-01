@@ -372,7 +372,7 @@ void CollisionDetectSystem(iter *it) {
     zox_sys_out(Collision);
     zox_sys_out(CollisionDistance);
     // find realm first
-    const VoxelLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
+    const BlockLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
     if (!voxels) {
         return;
     }

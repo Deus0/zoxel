@@ -40,8 +40,8 @@ void GrassyPlainsSystem(iter *it) {
         return;
     }
     startwatch(time_grassy_plains);
-    for (int i = 0; i < it->count; i++) {
 
+    for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDepth, renderDepth);
         zox_sys_i(ChunkPosition, chunkPosition);
         zox_sys_i(RenderDepthDirty, dirty);

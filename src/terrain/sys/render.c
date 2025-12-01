@@ -1,5 +1,6 @@
 // #define zoxel_render3D_uvs_system_overdebug
 // later store commands per material to optimize this process
+// TODO: optimize transform so it doesn't update every frame? StaticTransform tag
 
 #define catch_opengl_error(type)\
 if (check_opengl_error_unlogged()) {\
@@ -8,8 +9,6 @@ if (check_opengl_error_unlogged()) {\
 }
 
 void Chunk3RenderSystem(iter *it) {
-
-    // todo: optimize transform so it doesn't update every frame? StaticTransform tag
     byte has_set_material = 0;
     entity vox_entity = 0;
     const MaterialGPULink *gpu_material = NULL;

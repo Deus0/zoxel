@@ -5,11 +5,11 @@ void add_to_labels_voxel_links(
     entity_array_d* entities,
     int tree_level
 ) {
-    if (!(e && zox_has(e, VoxelLinks))) {
+    if (!(e && zox_has(e, BlockLinks))) {
         return;
     }
     tree_level++;
-    const VoxelLinks *component = zox_get(e, VoxelLinks)
+    const BlockLinks *component = zox_get(e, BlockLinks)
     for (int i = 0; i < component->length; i++) {
         const entity e2 = component->value[i];
         add_entity_to_labels(world, e2, labels, entities, tree_level);

@@ -12,7 +12,7 @@ void spawn_prefabs_terrain(ecs *world) {
     prefab_terrain = spawn_prefab_terrain(world);
     if (prefab_realm) {
         zox_prefab_set(prefab_realm, ModelLinks, { 0 });
-        zox_prefab_set(prefab_realm, VoxelLinks, { 0 });
+        zox_prefab_set(prefab_realm, BlockLinks, { 0 });
         zox_prefab_set(prefab_realm, BlocksDirty, { 0 });
     }
 }

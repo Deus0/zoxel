@@ -44,7 +44,6 @@
 #include "games/_.c"
 #include "players/_.c"
 #include "colors/_.c"
-#include "biomes/_.c"
 
 // beef
 #include "cameras/_.c"
@@ -83,6 +82,8 @@
 #include "characters/_.c"
 #include "dungeons/_.c"
 #include "game_ui/_.c"
+#include "biomes/_.c"
+
 // user data
 #include "users/_.c"
 #include "combat/_.c"

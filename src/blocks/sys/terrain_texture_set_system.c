@@ -12,7 +12,7 @@ void TerrainTextureSetSystem(iter *it) {
         zox_sys_o(TilemapSize, size);
         zox_sys_o(TextureLinks, textures);
 
-        if (!zox_valid(realm->value) || !zox_has(realm->value, VoxelLinks)) {
+        if (!zox_valid(realm->value) || !zox_has(realm->value, BlockLinks)) {
             zox_log_error("invalid realm in [TerrainTextureSetSystem]");
             continue;
         }
@@ -29,7 +29,7 @@ void TerrainTextureSetSystem(iter *it) {
         }*/
 
         // Refresh Texture Links for Tilemap
-        zox_geter(realm->value, VoxelLinks, blocks);
+        zox_geter(realm->value, BlockLinks, blocks);
         clear_memory_component(TextureLinks, textures);
         for (int j = 0; j < blocks->length; j++) {
             const entity block = blocks->value[j];

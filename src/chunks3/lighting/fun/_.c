@@ -30,7 +30,7 @@ void fetch_first_solidity(
     }
 
     zox_geter_value(first_terrain, RealmLink, entity, realm);
-    zox_geter(realm, VoxelLinks, blocks);
+    zox_geter(realm, BlockLinks, blocks);
     for (int i = 0; i < blocks->length; i++) {
         const entity block = blocks->value[i];
         if (!zox_valid(block) || !zox_has(block, BlockCollider)) {

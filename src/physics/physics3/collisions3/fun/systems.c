@@ -1,4 +1,4 @@
-const VoxelLinks* get_first_terrain_voxels(ecs *world, const TerrainLink* TerrainLink_, int count) {
+const BlockLinks* get_first_terrain_voxels(ecs *world, const TerrainLink* TerrainLink_, int count) {
     entity realm = 0;
     for (int i = 0; i < count; i++) {
         zox_sys_i(TerrainLink, link)
@@ -11,12 +11,12 @@ const VoxelLinks* get_first_terrain_voxels(ecs *world, const TerrainLink* Terrai
     if (!zox_valid(realm)) {
         return NULL;
     }
-    zox_geter(realm, VoxelLinks, voxels);
+    zox_geter(realm, BlockLinks, voxels);
     return voxels;
 }
 
 // contains air!
-void get_block_collisions(ecs *world, const VoxelLinks *voxels, byte *collisions) {
+void get_block_collisions(ecs *world, const BlockLinks *voxels, byte *collisions) {
     collisions[0] = 0;    // air
     for (int i = 0; i < voxels->length; i++) {
         const entity block = voxels->value[i];

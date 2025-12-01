@@ -2,16 +2,17 @@
 void ChunkFlatlandSystem(iter *it) {
     const byte target_depth = terrain_depth;
     const byte chunk_voxel_length = powers_of_two_byte[target_depth];
-    zox_sys_begin()
-    zox_sys_in(ChunkPosition)
-    zox_sys_out(GenerateChunk)
-    zox_sys_out(VoxelNode)
-    zox_sys_out(NodeDepth)
+    zox_sys_begin();
+    zox_sys_in(ChunkPosition);
+    zox_sys_out(GenerateChunk);
+    zox_sys_out(VoxelNode);
+    zox_sys_out(NodeDepth);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkPosition, chunkPosition)
-        zox_sys_o(VoxelNode, voxelNode)
-        zox_sys_o(NodeDepth, nodeDepth)
-        zox_sys_o(GenerateChunk, generateChunk)
+        zox_sys_i(ChunkPosition, chunkPosition);
+        zox_sys_o(VoxelNode, voxelNode);
+        zox_sys_o(NodeDepth, nodeDepth);
+        zox_sys_o(GenerateChunk, generateChunk);
+
         if (generateChunk->value != chunk_generate_state_update) {
             continue;
         }
@@ -25,4 +26,4 @@ void ChunkFlatlandSystem(iter *it) {
             fill_new_octree(voxelNode, 0, 0);
         }
     }
-} zoxd_system(ChunkFlatlandSystem)
+} zoxd_system2(ChunkFlatlandSystem);

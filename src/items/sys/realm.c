@@ -10,11 +10,11 @@ void spawn_realm_items(ecs *world, const entity realm) {
         zox_log_error("Realm does not have ItemLinks [%lu]", realm)
         return;
     }
-    if (!zox_has(realm, VoxelLinks)) {
-        zox_log_error("Realm does not have VoxelLinks [%lu]", realm)
+    if (!zox_has(realm, BlockLinks)) {
+        zox_log_error("Realm does not have BlockLinks [%lu]", realm)
         return;
     }
-    zox_geter(realm, VoxelLinks, blocks);
+    zox_geter(realm, BlockLinks, blocks);
     if (!blocks) {
         zox_log_error("Realm blocks was null [%lu]", realm);
         return;

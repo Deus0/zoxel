@@ -31,7 +31,7 @@ void CharacterPlayerItemsSystem(iter *it) {
         }
 
         int place_index = 0;
-        zox_geter(realm->value, VoxelLinks, blocks);
+        zox_geter(realm->value, BlockLinks, blocks);
         for (int j = 0; j < blocks->length; j++) {
             if (j >= count) {
                 break;

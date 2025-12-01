@@ -124,7 +124,7 @@ void spawn_vodes(
     const float terrain_scalev
 ) {
     zox_geter_value(terrain, RealmLink, entity, realm);
-    zox_geter(realm, VoxelLinks, blocks);
+    zox_geter(realm, BlockLinks, blocks);
     const byte blocks_length = blocks->length;
     if (blocks_length == 0) {
         return;

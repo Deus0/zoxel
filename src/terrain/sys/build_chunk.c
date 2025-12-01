@@ -319,12 +319,12 @@ void Chunk3BuildSystem(iter *it) {
     } // if failed to find terrain parents
 
     const entity realm = zox_get_value(terrain, RealmLink);
-    if (!zox_valid(realm) || !zox_has(realm, VoxelLinks)) {
+    if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {
         zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return;
     }
 
-    zox_geter(realm, VoxelLinks, blocks);
+    zox_geter(realm, BlockLinks, blocks);
     voxels_length = blocks->length;
     if (voxels_length == 0) {
         zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
