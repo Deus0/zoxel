@@ -1,3 +1,4 @@
+// For Elements of Square Shape - LayoutSize
 void ElementRaycastSystem(iter *it) {
     zox_sys_query();
     zox_sys_world();
@@ -21,12 +22,12 @@ void ElementRaycastSystem(iter *it) {
             continue;
         }
 
-        const entity player = zox_get_value(deviceLink->value, PlayerLink)
+        zox_geter_value(deviceLink->value, PlayerLink, entity, player);
         if (!player) {
             continue;
         }
 
-        const byte device_mode = zox_get_value(player, DeviceMode)
+        zox_geter_value(player, DeviceMode, byte, device_mode);
         if (device_mode != zox_device_mode_keyboardmouse && device_mode != zox_device_mode_touchscreen) {
             continue;
         }

@@ -1,7 +1,6 @@
 // element will follow mouse position
 //  -> linked to MouseTextureSystem
 void MouseElementSystem(iter *it) {
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZeviceLink);
@@ -9,9 +8,7 @@ void MouseElementSystem(iter *it) {
     zox_sys_in(CanvasLink);
     zox_sys_out(LayoutPosition);
     zox_sys_out(LayoutPositionDirty);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(CanvasLink, canvas);
         zox_sys_i(ZeviceLink, zevice);
         zox_sys_i(Anchor, anchor);

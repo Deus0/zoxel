@@ -7,9 +7,6 @@
 #define zox_glitch_fix_hierarchy_labels
 #define zox_set_camera_firstperson
 #define zoxel_time_main_loop_cutoff 33.33f
-#define zox_disable_mouse_constraint
-#define zox_disable_gamepad_stick_as_any_input // used for samsung phone, it's buggy af
-#define zox_disable_gamepad_deadzones
 // release defines
 #ifndef zox_debug
     #define zox_disable_names
@@ -24,213 +21,44 @@
 #include "_/maths/_.c"
 #include "flecs/_.c"
 
-// todo: include all these automatically
-#include "_/_.c"
-#include "generic/_.c"
-#include "timing/_.c"
-#include "transforms/_.c"
-#include "networking/_.c"
-#include "triggers/_.c"
-#include "inputs/_.c"
-#include "apps/_.c"
-#include "sdl/_.c"
-#include "opengl/_.c"
-#include "vulkan/_.c"
-
-// basic b locks
-#include "assets/_.c" // uses sdl path function atm
-#include "nodes/_.c"
-#include "realms/_.c"
-#include "games/_.c"
-#include "players/_.c"
-#include "colors/_.c"
-
-// beef
-#include "cameras/_.c"
-#include "rendering/_.c"
-#include "sounds/_.c"
-
-#include "raycasts/_.c"
-#include "lines/_.c"
-
-// inner core
-#include "textures/_.c"
-#include "musics/_.c"
-#include "animations/_.c"
-#include "bones/_.c"
-
-#include "ui/_.c"
-#include "lines/lines2/_.c"
-#include "plots/_.c"
-
-#include "genetics/_.c"
-#include "neurals/_.c"
-#include "blueprints/_.c"
-#include "cubes/_.c"
-#include "blocks/_.c"
-#include "chunks2/_.c"
-#include "chunks3/_.c"
-#include "voxes/_.c"
-#include "models/_.c"
-#include "terrain/_.c"
-#include "streaming/_.c"
-#include "vrays/_.c"
-
-#include "physics/_.c"
-#include "particles/_.c"
-#include "weathers/_.c"
-#include "characters/_.c"
-#include "dungeons/_.c"
-#include "game_ui/_.c"
-#include "biomes/_.c"
-
-// user data
-#include "users/_.c"
-#include "combat/_.c"
-#include "stats/_.c"
-#include "skills/_.c"
-#include "items/_.c"
-#include "equipment/_.c"
-#include "lores/_.c"
-#include "achievements/_.c"
-#include "dialogues/_.c"
-// more user stuff
-#include "actions/_.c"
-#include "classes/_.c"
-#include "jobs/_.c"
-#include "races/_.c"
-#include "clans/_.c"
-#include "quests/_.c"
-// gameplay
-#include "pickups/_.c"
-#include "crafting/_.c"
-#include "farming/_.c"
-#include "turrets/_.c"
-#include "combat/_.c"
-#include "maps/_.c"
-#include "npcs/_.c"
-#include "editor_ui/_.c"
-// on top
-#include "controllers/_.c"
-#include "space/_.c"
-#include "debug/_.c"
+#include "modules.c"
 
 // event used by testers atm
-typedef byte (*boot_zox)(ecs_world_t*, ecs_entity_t);
+typedef byte (*boot_zox)(ecs*, entity);
 boot_zox boot_event;
-
-// engine imports, besides sub modules, it's core is flecs
-zox_begin_module(Zox)
-    zox_import_module(Core);
-    zox_import_module(Generic);
-    zox_import_module(Timing);
-    zox_import_module(Transforms);
-    zox_import_module(Networking);
-    zox_import_module(Inputs);
-    if (!headless) {
-        zox_import_module(Apps);
-        zox_import_module(Sdl);
-    }
-    zox_import_module(Assets);
-    zox_import_module(Realms);
-    zox_import_module(Games);
-    zox_import_module(Players);
-    zox_import_module(Triggers);
-    zox_import_module(Nodes);
-    zox_import_module(Colorz);
-
-    zox_import_module(Cameras);
-    zox_import_module(Rendering);
-    zox_import_module(Sounds);
-
-    zox_import_module(Raycasts);
-    zox_import_module(Lines);
-
-    zox_import_module(Textures);
-    zox_import_module(Musics);
-    zox_import_module(Animations);
-    zox_import_module(Bones);
-    zox_import_module(Elements);
-    zox_import_module(Lines2D);
-    zox_import_module(Plots);
-
-    zox_import_module(Genetics);
-    zox_import_module(Neurals);
-    zox_import_module(Blueprints);
-    zox_import_module(Cubes);
-
-    zox_import_module(Blocks);
-    zox_import_module(Tiles);
-    zox_import_module(Chunks3);
-    zox_import_module(Voxes);
-    zox_import_module(Models);
-    zox_import_module(Terrain);
-    zox_import_module(Streaming);
-    zox_import_module(Vrays);
-
-    zox_import_module(Physics);
-    zox_import_module(Particles);
-    zox_import_module(Weathers);
-    zox_import_module(Characters);
-    zox_import_module(Dungeons);
-    zox_import_module(GameUI);
-    zox_import_module(Biomes);
-
-    // user data
-    zox_import_module(Users);
-    zox_import_module(Combat);
-    zox_import_module(Stats);
-    zox_import_module(Skills);
-    zox_import_module(Items);
-    zox_import_module(Equips);
-    zox_import_module(Actions);
-    zox_import_module(Dialogues);
-    zox_import_module(Quests);
-    zox_import_module(Classes);
-    zox_import_module(Jobs);
-    zox_import_module(Races);
-    zox_import_module(Clans);
-    zox_import_module(Lores);
-    zox_import_module(Achievements);
-    // gameplay
-    zox_import_module(Pickups);
-    zox_import_module(Crafting);
-    zox_import_module(Farming);
-    zox_import_module(Turrets);
-    zox_import_module(Maps);
-    zox_import_module(Npcs);
-    zox_import_module(EditorUI);
-    // space
-#if defined(zoxm_players)
-    if (!headless) {
-        zox_import_module(Controllers);
-        zox_import_module(Space);
-    }
-#endif
-#if defined(zoxm_debug)
-    zox_import_module(Debug);
-#endif
-zox_end_module(Zox)
 
 #include zox_nexus_game
 
-int main(int argc, char* argv[]) {
+/*
+ * Initialize Flecs
+ * Initialize Flecs Modules
+ * Spawn our Realm (Assets Manager)
+ * Load all our Files
+ * Spawn our Game Manager
+ * Spawn our SDL Window (OpenGL)
+ * Initialize Rendering
+*/
+byte run_engine(int argc, char* argv[]) {
 #ifndef zoxm_game
     zox_log_error("[zoxm_game] not defined: game cannot load");
     return EXIT_FAILURE;
 #endif
+
+    zox_logv("Initializing Flecs");
     fetch_pc_info();    // gets our cpu core count
-    ecs_world_t *world = initialize_ecs(argc, argv, cpu_core_count);
+    ecs *world = initialize_ecs(argc, argv, cpu_core_count);
     if (!world) {
         zox_log_error("[initialize_ecs] failed");
         return EXIT_FAILURE;
     }
 
-    zox_logv("Loading Zox Modules");
+    zox_logv("Initializing Zox Engine");
     zox_import_module(Zox);
+
+    zox_logv("Initializing Game");
     zox_import_module(ZoxGame);
 
-    zox_logv("Running Terminal Commands");
+    zox_logv("Processing Terminal Commands");
     run_hook_terminal_command(world, argv, argc);
 
     zox_logv("Initialize Pathing");
@@ -243,88 +71,52 @@ int main(int argc, char* argv[]) {
     initialize_ecs_settings(world, target_fps); // sets ecs threads
 
     if (!nosounds) {
-        // sound file loading needs mixer
         zox_logv("Initializing Sounds");
         initialize_sounds();                       // starts sdl mixer etc
+    } else {
+        zox_logw("Sounds are disabled");
     }
 
-    zox_logv("Spawning All Prefabs");
+    zox_logv("Spawning Prefabs");
     run_hook_spawn_prefabs(world);
 
-    // loads all our files
-    zox_logv("Loading All Files");
+    zox_logv("Spawning Realm");
+    const entity realm = spawn_realm(world, prefab_realm);
+
+    // TODO: attach Loaded Files to Realm
+    zox_logv("Loading Files");
     run_hook_files_load(world);
 
+    zox_logv("Spawning Game");
+    const entity game = spawn_game(world, realm);
+
     // spawn app (creates our opengl context too)
-    ecs_entity_t app = 0;
-    if (!headless) {
-        zox_logv("Initializing SDL Video");
-        if (initialize_sdl_video() == EXIT_FAILURE) {
-            zox_log_error("[initialize_sdl_video] failed");
-            dispose_zox(world);
-            return EXIT_FAILURE;
-        }
+    zox_logv("Spawning App");
+    const entity app = spawn_engine_app(world);
 
-        // Window creates and binds OpenGL Context too!
-        zox_logv("Spawning SDL Window");
-        const char* window_name;
-#ifdef zox_game
-        window_name = game_name;
-#else
-        window_name = "unknown";
-#endif
-        app = spawn_app_sdl_opengl(
-            world,
-            window_name,
-            fullscreen,
-            maximized,
-            monitor
-        );
-        main_app = app;
-        spawn_window_icon(world, app, "game.png");
-
-        // inits glew on windows
-        zox_logv("Initializing Glew");
-        if (zox_init_glew() == EXIT_FAILURE) {
-            zox_log_error("[initialize_rendering] failed");
-            dispose_zox(world);
-            return EXIT_FAILURE;
-        }
+    if (app) {
+        zox_set(app, RealmLink, { realm });
+        zox_set(app, GameLink, { game });
 
         zox_logv("Initializing Rendering");
         initialize_rendering(render_backend);
 
-        if (!app) {
-            zox_log_error("[engine_spawn_window] failed");
-            dispose_zox(world);
-            return EXIT_FAILURE;
-        }
-
+        zox_logv("Initializing Window Stuff");
+        spawn_window_icon(world, app, "game.png");
         set_vsync(vsync);
 
-        // black screen if no shaders btw
         zox_logv("Loading Shaders");
-        load_files_shaders(world);          // this needs to use render gpu data atm (we append ubo on)
-        zox_logv("Processing Shaders");
-        process_shaders(world); // we should process them after loaded?
-    } else  {
-        zox_logv("Headless Mode Enabled.");
-    }
+        load_files_shaders(world);
 
-    // always have realm and game
-    zox_logv("Spawning Realm and Game");
-    const ecs_entity_t realm = spawn_realm(world, prefab_realm);
-    const ecs_entity_t game = spawn_game(world, realm);
-    if (app) {
-        zox_set(app, RealmLink, { realm });
-        zox_set(app, GameLink, { game });
+        zox_logv("Processing Shaders");
+        process_shaders(world);
     }
 
     // Yet another Hook
     zox_logv("Running our Boot Hook");
     run_hook_on_boot(world, app);
     if (boot_event && boot_event(world, app) == EXIT_FAILURE) {
-        zox_log_error("[boot_event] failed")
+        zox_log_error("[boot_event] failed");
         dispose_zox(world);
         return EXIT_FAILURE;
     }
@@ -332,9 +124,12 @@ int main(int argc, char* argv[]) {
     zox_logv("Running Main Loop [%s]", game_name);
     main_loop(world);
 
-    // return after loop ends; during a close event
     zox_logv("Ended Main Loop [%s]", game_name);
     return EXIT_SUCCESS;
+}
+
+int main(int argc, char* argv[]) {
+    return run_engine(argc, argv);
 }
 
 #ifdef zox_windows

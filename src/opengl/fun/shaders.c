@@ -5,31 +5,43 @@ void clear_regular_buffer(uint *gpu_buffer) {
     }
 }
 
-byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
+byte initialize_material(
+    uint material,
+    uint vert_shader,
+    uint frag_shader
+) {
     if (!vert_shader || !frag_shader) {
         zox_log_error("[initialize_materialial]: invalid shader");
         return EXIT_FAILURE;
     }
+
     glAttachShader(material, vert_shader);
     glAttachShader(material, frag_shader);
     glLinkProgram(material);
-    GLint success;
+    // glValidateProgram(material);
+
+    GLint success = GL_FALSE;
     glGetProgramiv(material, GL_LINK_STATUS, &success);
-    // if errors
+
+    byte output = EXIT_SUCCESS;
     if (success != GL_TRUE) {
         GLint info_log_length;
         glGetProgramiv(material, GL_INFO_LOG_LENGTH, &info_log_length);
-        GLchar* info_log = malloc(info_log_length);
-        glGetProgramInfoLog(material, info_log_length, NULL, info_log);
-        zox_log_error("[initialize_material]: material [%i] Shader [%ix%i]\n [%s]", (int) material, vert_shader, frag_shader, info_log);
-        free(info_log);
-        glDetachShader(material, vert_shader);
-        glDetachShader(material, frag_shader);
-        return EXIT_FAILURE;
+
+        if (info_log_length > 0) {
+            GLchar* log = malloc(info_log_length + 1);
+            glGetProgramInfoLog(material, info_log_length, NULL, log);
+            zox_log_error("[initialize_material]: material %u [%u x %u]\n%s",
+                          material, vert_shader, frag_shader, log);
+            free(log);
+        }
+
+        output = EXIT_FAILURE;
     }
+
     glDetachShader(material, vert_shader);
     glDetachShader(material, frag_shader);
-    return EXIT_SUCCESS;
+    return output;
 }
 
 uint spawn_gpu_material_program(const uint2 shader) {
@@ -90,7 +102,6 @@ byte compile_shader(
 
     glShaderSource(shader, 1, (const GLchar **) &buffer, NULL);
     glCompileShader(shader);
-    // glValidateProgram(shader);
     if (check_shader_compile_status(shader)) {
         return 1;
     }
@@ -116,6 +127,6 @@ uint2 zox_gpu_compile_shader(
         zox_log_error("[compile_shader] frag\n\n[%s]\n", frag_buffer);
         return (uint2) { 0, 0 };
     }
-    zox_log("Returning shader from compiler: %ix%i", shader.x, shader.y);
+    // zox_log("Returning shader from compiler: %ix%i", shader.x, shader.y);
     return shader;
 }
