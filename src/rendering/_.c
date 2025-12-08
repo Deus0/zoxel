@@ -15,6 +15,7 @@
 #include "cameras/_.c"
 
 byte initialize_rendering(byte render_backend) {
+    // rendering_initialized = 1;
     if (render_backend == zox_render_backend_headless) {
         return EXIT_SUCCESS;
     } else if (render_backend == zox_render_backend_opengl) {

@@ -57,7 +57,7 @@ entity spawn_material_vox_instance(ecs *world) {
     }
     uint material;
     const entity e = spawn_material(world, shader, &material);
-    zox_set(e, ShaderLink, { shader })
+    zox_set(e, ShaderLink, { shader });
     if (!material) {
         zox_log_error("vox instance material failed to initialize")
         return 0;

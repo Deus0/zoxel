@@ -10,13 +10,6 @@ byte zox_use_post_processing = 1;
 // uses modules: App, SDL, Rendering
 entity spawn_engine_app(ecs* world) {
     if (!headless) {
-        zox_logv("Initializing SDL Video");
-        if (initialize_sdl_video() == EXIT_FAILURE) {
-            zox_log_error("[initialize_sdl_video] failed");
-            dispose_zox(world);
-            return 0;
-        }
-
         // Window creates and binds OpenGL Context too!
         zox_logv("Spawning SDL Window");
         const char* window_name;
@@ -39,12 +32,6 @@ entity spawn_engine_app(ecs* world) {
 
         // Link to a global
         main_app = app;
-
-        zox_logv("Initializing Glew");
-        if (zox_init_glew() == EXIT_FAILURE) {
-            zox_log_error("[initialize_rendering] failed at [zox_init_glew]");
-            return app;
-        }
 
         return app;
     } else  {

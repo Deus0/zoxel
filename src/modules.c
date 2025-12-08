@@ -1,6 +1,5 @@
 // todo: include all these automatically
 
-#include "_/_.c"
 #include "generic/_.c"
 #include "timing/_.c"
 #include "transforms/_.c"

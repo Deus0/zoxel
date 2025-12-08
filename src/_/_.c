@@ -8,6 +8,25 @@
 #ifndef zoxm_core
 #define zoxm_core
 
+#ifndef zox_game
+    #define zox_game zoxel
+#endif
+#define str_macro(x) #x
+#define inc_nexus_game(x) str_macro(nexus/x/_.c)
+#define zox_nexus_game inc_nexus_game(zox_game)
+#define zox_glitch_fix_hierarchy_labels
+#define zox_set_camera_firstperson
+#define zoxel_time_main_loop_cutoff 33.33f
+// release defines
+#ifndef zox_debug
+    #define zox_disable_names
+    #define zox_disable_logs
+#endif
+
+#include "logs/_.c"
+#include "collections/_.c"
+#include "maths/_.c"
+#include "flecs/_.c"
 #include "platforms/defines.c"
 #include "platforms/_.c"
 #include "sys/_.c"
@@ -16,6 +35,7 @@
 #include "sta/_.c"
 #include "settings/_.c"
 #include "hok/_.c"
+#include "windows/_.c"
 
 void module_dispose_core(ecs_world_t *world, void *ctx) {
     (void) world;
