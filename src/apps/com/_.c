@@ -9,7 +9,7 @@ zoxc_int2(WindowSizeRestore);
 zoxc_int2(WindowPositionRestore);
 zoxc_entity(AppLink);
 
-void define_components_apps(ecs_world_t *world) {
+void define_components_apps(ecs *world) {
     zoxd_tag(App);
     zoxd_state(WindowSizeDirty);
     zoxd_byte(WindowFullscreen);

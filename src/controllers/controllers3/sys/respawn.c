@@ -24,7 +24,7 @@ void Player3RespawnSystem(iter *it) {
         }
         // Playing happily!
         else if (state->value == zox_player_state_playing) {
-            if (zox_valid(character->value) && !zox_gett_value(character->value, Dead)) {
+            if (zox_valid(character->value) && (!zox_has(character->value, Dead) || !zox_gett_value(character->value, Dead))) {
                 continue;
             }
             // start respawn timer!
@@ -43,4 +43,4 @@ void Player3RespawnSystem(iter *it) {
             }
         }
     }
-} zoxd_system(Player3RespawnSystem)
+} zoxd_system2(Player3RespawnSystem);

@@ -7,6 +7,7 @@
 #include "start.c"
 #include "game.c"
 #include "pause.c"
+#include "game_ui.c"
 
 void dispose_gameui(ecs *world, void *ctx) {
     (void) world;

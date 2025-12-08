@@ -17,6 +17,9 @@
 #include "dialogue_exit.c"
 #include "dialogue_end.c"
 
+#include "game_start.c"
+#include "game_end.c"
+
 void define_systems_controllers3D(ecs_world_t *world) {
 
     zox_system(
@@ -136,5 +139,22 @@ void define_systems_controllers3D(ecs_world_t *world) {
         [in] nodes.NodetreeEnd,
         [in] dialogues.DialogueUILink,
         [out] dialogues.SpeakerLinks
+    );
+
+    zox_system_1(
+        PlayerGame3StartSystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] games.GameLink,
+        [in] cameras.CameraLink,
+    );
+    zox_system_1(
+        PlayerGame3EndSystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] cameras.CameraLink,
+        [in] characters.CharacterLink,
     );
 }

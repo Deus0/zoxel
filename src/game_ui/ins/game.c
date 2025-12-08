@@ -45,15 +45,13 @@ entity spawn_menu_game(
         });
 
     add_to_Children(&children, crosshair);
-
     spawn_menu_game_stats(world, e, player, &children);
-
     zox_set_ptr(e, Children, children)
 
     // link to character
-    zox_muter(character, ElementLinks, elementLinks);
-    add_to_ElementLinks(elementLinks, e);
-    zox_set(e, ElementHolder, { character })
+    zox_muter(character, ElementLinks, elements);
+    add_to_ElementLinks(elements, e);
+    zox_set(e, ElementHolder, { character });
 
     local_menu_game = e;
     return e;
@@ -69,4 +67,48 @@ void dispose_menu_game(
         zox_delete(game_ui)
     }
     dispose_menu_game_touch(world, player);
+}
+
+
+
+// called from game state changes
+entity spawn_in_game_ui(
+    ecs *world,
+    const entity player
+) {
+    if (!zox_has(player, DeviceMode) || !zox_has(player, CanvasLink)) {
+        zox_log_error("Invalid player in [spawn_in_game_ui]")
+        return 0;
+    }
+    zox_geter_value(player, DeviceMode, byte, device_mode);
+    zox_geter_value(player, CanvasLink, entity, canvas);
+    zox_geter(player, CharacterLink, character);
+    entity e = spawn_menu_game(
+        world,
+        prefab_menu_game,
+        player,
+        character->value
+    );
+    byte is_touch = device_mode == zox_device_mode_touchscreen;
+#ifdef zoxel_mouse_emulate_touch
+    is_touch = 1;
+#endif
+    if (is_touch) {
+        spawn_in_game_ui_touch(world, player, canvas);
+    }
+    return e;
+}
+
+extern entity spawn_player_menu_actions(ecs *world, const entity player);
+
+void spawn_player_game_ui(
+    ecs *world,
+    const entity player
+) {
+    spawn_in_game_ui(world, player);
+    // zox_geter_value(player, CanvasLink, entity, canvas);
+    // find_child_with_tag(canvas, MenuActions, menu_actions);
+    //if (!menu_actions) {
+    spawn_player_menu_actions(world, player);
+    //}
 }

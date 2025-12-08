@@ -11,6 +11,9 @@
 #include "ins/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+// #define zox_log_camera_spawning
+
+// todo: spawn unique canvas per viewport, viewports per player
 
 zox_begin_module(GameUI)
     zox_module_dispose(dispose_gameui);
@@ -25,6 +28,7 @@ zox_begin_module(GameUI)
         .texture_name = "paused",
         .tooltip_text = "Pause Menu"
     });
+    add_hook_on_boot(on_boot_game_ui);
 zox_end_module(GameUI)
 
 #endif

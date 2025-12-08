@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_action(ecs *world) {
+entity spawn_prefab_action(ecs *world) {
     zox_prefab();
     zox_prefab_name("action");
     zox_add_tag(e, Action);
@@ -6,7 +6,7 @@ ecs_entity_t spawn_prefab_action(ecs *world) {
     return e;
 }
 
-ecs_entity_t spawn_action(ecs *world) {
+entity spawn_action(ecs *world) {
     zox_instance(prefab_action);
     zox_name("action");
     return e;

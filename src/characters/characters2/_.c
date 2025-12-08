@@ -10,8 +10,8 @@ zoxc_entity(Character2DLink);
 #include "fun/spawn_many.c"
 #include "sys/bob_spawn_system.c"
 
-void spawn_prefabs_characters2D(ecs_world_t *world) {
-    prefab_character2D = spawn_prefab_character2D(world);
+void spawn_prefabs_characters2D(ecs *world) {
+    prefab_character2D = spawn_prefab_character2(world);
 }
 
 zox_begin_module(Characters2)

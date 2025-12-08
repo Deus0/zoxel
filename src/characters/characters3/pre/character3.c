@@ -34,8 +34,8 @@ entity spawn_prefab_character3(
     zox_prefab_set(e, AnimationState, { zox_animation_idle })
     zox_prefab_set(e, AnimationStart, { 0 })
     // hierarchy
-    zox_prefab_set(e, Children, { 0, NULL }); // for bones, particles, etc (transforms)
-    zox_prefab_set(e, ElementLinks, { 0, NULL }); // uis
+    zox_prefab_set(e, Children, { 0 }); // for bones, particles, etc (transforms)
+    zox_prefab_set(e, ElementLinks, { 0 }); // uis
     // physics3
     // physics -- too big atm to refactor
     zox_add_tag(e, Frictioned);

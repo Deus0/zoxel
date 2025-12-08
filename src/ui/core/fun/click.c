@@ -33,13 +33,13 @@ void set_raycast_target_children(
         if (zox_valid(last_target)) {
             zox_set(last_target, SelectState, { zox_select_state_trigger_deselect })
         }
-        zox_set(e, RaycasterTarget, { target })
+        zox_set(e, RaycasterTarget, { target });
         if (zox_valid(target)) {
             zox_set(target, SelectState, { zox_select_state_trigger_selected })
         }
     }
     if (zox_has(e, Children)) {
-        zox_geter(e, Children, children)
+        zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
             const entity child = children->value[i];
             if (!zox_valid(child)) {

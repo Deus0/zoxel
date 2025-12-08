@@ -10,9 +10,9 @@ zox_begin_module(Controllers)
     if (headless) {
         return;
     }
-    zox_import_module(Controllers2)
-    zox_import_module(Controllers3)
-    zox_import_module(FreeRoam)
+    zox_import_module(Controllers2);
+    zox_import_module(Controllers3);
+    zox_import_module(FreeRoam);
 zox_end_module(Controllers)
 
 #endif

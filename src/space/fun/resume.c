@@ -1,44 +1,4 @@
-// called from game state changes
-entity spawn_in_game_ui(
-    ecs *world,
-    const entity player
-) {
-    if (!zox_has(player, DeviceMode) || !zox_has(player, CanvasLink)) {
-        zox_log_error("Invalid player in [spawn_in_game_ui]")
-        return 0;
-    }
-    zox_geter_value(player, DeviceMode, byte, device_mode);
-    zox_geter_value(player, CanvasLink, entity, canvas);
-    zox_geter(player, CharacterLink, character);
-    entity e = spawn_menu_game(
-        world,
-        prefab_menu_game,
-        player,
-        character->value
-    );
-    byte is_touch = device_mode == zox_device_mode_touchscreen;
-#ifdef zoxel_mouse_emulate_touch
-    is_touch = 1;
-#endif
-    if (is_touch) {
-        spawn_in_game_ui_touch(world, player, canvas);
-    }
-    return e;
-}
 
-void spawn_player_game_ui(
-    ecs *world,
-    const entity player
-) {
-    spawn_in_game_ui(world, player);
-#ifdef zoxm_actions_ui
-    const entity canvas = zox_get_value(player, CanvasLink);
-    find_child_with_tag(canvas, MenuActions, menu_actions);
-    if (!menu_actions) {
-        spawn_player_menu_actions(world, player);
-    }
-#endif
-}
 
 void resume_player_delayed(
     ecs *world,
@@ -66,15 +26,6 @@ void resume_player(
     ecs *world,
     const entity player
 ) {
-    zox_geter_value(player, CanvasLink, entity, canvas);
-    find_child_with_tag(canvas, MenuPaused, menu_paused);
-    if (menu_paused) {
-        zox_delete(menu_paused);
-    }
-    find_child_with_tag(canvas, Taskbar, taskbar);
-    if (taskbar) {
-        zox_delete(taskbar);
-    }
     // TODO: This should be done when changing player states
     disable_inputs_until_release(
         world,
@@ -82,6 +33,16 @@ void resume_player(
         zox_device_mode_none,
         1
     );
+
+    zox_geter_value(player, CanvasLink, entity, canvas);
+    find_child_with_tag(canvas, MenuPaused, menu_paused);
+    if (zox_valid(menu_paused)) {
+        zox_delete(menu_paused);
+    }
+    find_child_with_tag(canvas, Taskbar, taskbar);
+    if (zox_valid(taskbar)) {
+        zox_delete(taskbar);
+    }
     trigger_canvas_half_fade(
         world,
         canvas,
@@ -99,5 +60,5 @@ void resume_player(
     if (zox_valid(previous_event)) {
         zox_delete(previous_event);
     }
-    zox_set(player, PlayerPauseEvent, { pause_event });
+    // zox_set(player, PlayerPauseEvent, { pause_event });
 }

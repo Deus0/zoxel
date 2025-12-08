@@ -4,6 +4,9 @@
 
 * from Zoxel Unity
 
+New
+- [ ] Make a Change State Event: Takes in id for component and time, id for dirty component as well
+
 User Interfaces
 - [ ] a more animated main menu
 - [ ] dialogue systems

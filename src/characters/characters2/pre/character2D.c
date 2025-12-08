@@ -1,15 +1,17 @@
-ecs_entity_t spawn_prefab_character2D(
-    ecs *world
-) {
+entity spawn_prefab_character2(ecs *world) {
     zox_prefab();
     zox_add_tag(e, Character2D);
+
+    zox_prefab_set(e, ElementLinks, { 0 }); // uis
+    // Physics
     zox_add_tag(e, Frictioned);
-    zox_prefab_set(e, Position2, { float2_zero })
-    zox_prefab_set(e, Rotation2D, { 0 })
-    zox_prefab_set(e, Scale1D, { 1 })
-    zox_prefab_set(e, Brightness, { 1 });
-    zox_prefab_set(e, Rotation2D, { - 90 * degreesToRadians })
+    zox_prefab_set(e, Position2, { float2_zero });
+    zox_prefab_set(e, Rotation2D, { 0 });
+    zox_prefab_set(e, Scale1D, { 1 });
+    zox_prefab_set(e, Rotation2D, { - 90 * degreesToRadians });
     add_physics2D(world, e, world_grid2D_size);
+    // GPU
+    zox_prefab_set(e, Brightness, { 1 });
     add_gpu_material(world, e);
     add_gpu_texture(world, e);
     /*zox_add_tag(e, Texture)
@@ -22,7 +24,7 @@ ecs_entity_t spawn_prefab_character2D(
     return e;
 }
 
-ecs_entity_t spawn_character2D(ecs_world_t *world, const ecs_entity_t prefab, const float2 position) {
+entity spawn_character2D(ecs *world, const entity prefab, const float2 position) {
     zox_instance(prefab)
     zox_set(e, Position2, { position })
     zox_set(e, Scale1D, { 0.4f + ((rand() % 101) / 100.0f) * 0.2f  })

@@ -1,9 +1,5 @@
-// #define zox_log_camera_spawning
 
-// todo: spawn unique canvas per viewport, viewports per player
-#ifdef zoxm_ui
-
-entity spawn_default_ui(
+entity spawn_game_canvas(
     ecs *world,
     const entity ui_camera,
     const int2 dimensions,
@@ -69,8 +65,6 @@ entity spawn_default_ui(
     return canvas;
 }
 
-#endif
-
 // move to game ui?
 void spawn_players_cameras_canvases(
     ecs *world,
@@ -81,7 +75,6 @@ void spawn_players_cameras_canvases(
         zox_logv("No spawning Cameras and Canvases.");
         return;
     }
-#if defined(zoxm_players) && defined(zoxm_ui)
     set_main_cameras((int) players_playing);
     float3 camera_position = float3_zero;
     float4 camera_rotation = quaternion_identity;
@@ -115,7 +108,7 @@ void spawn_players_cameras_canvases(
             zox_game_camera_mode
         );
 
-        const entity canvas = spawn_default_ui(
+        const entity canvas = spawn_game_canvas(
             world,
             spawned_cameras.y,
             viewport_size,
@@ -144,11 +137,10 @@ void spawn_players_cameras_canvases(
         main_cameras[i] = spawned_cameras.x;
         ui_cameras[i] = spawned_cameras.y;
     }
-    zox_set_ptr(app, CameraLinks, cameras)
-#endif
+    zox_set_ptr(app, CameraLinks, cameras);
 }
 
-void on_boot_space(ecs_world_t* world, ecs_entity_t app) {
+void on_boot_game_ui(ecs* world, entity app) {
     // move to game ui??
     spawn_players_cameras_canvases(world, players_playing, app);
     spawn_players_start_ui(world);

@@ -4,13 +4,7 @@
 // todo: move based functionality into here
 #include "sta/_.c"
 #include "set/_.c"
-zox_tag(Player);
-zox_tag(PlayerCharacter);
-zoxc_byte(PlayerState);
-zoxc_double(PlayerRespawn);
-zoxc_entity(PlayerLink);
-zoxc_arrayd(PlayerLinks, ecs_entity_t)
-zoxc_entity(PlayerPauseEvent);
+#include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
@@ -39,7 +33,7 @@ int spawn_players(ecs_world_t *world, const ecs_entity_t game) {
         players = 1;
     }
     for (int i = 0; i < players; i++) {
-        const ecs_entity_t e = spawn_player(world, prefab_player);
+        const entity e = spawn_player(world, prefab_player);
         add_player(world, game, e);
         zox_players[i] = e;
         if (players == 2) {
@@ -62,17 +56,37 @@ void on_boot_players(ecs_world_t *world, ecs_entity_t app) {
     }
 }
 
+void game_state_players(
+    ecs *world,
+    const entity game,
+    const byte last_state,
+    const byte state
+) {
+    zox_geter(game, PlayerLinks, players);
+    for (int i = 0; i < players->length; i++) {
+        const entity player = players->value[i];
+        if (state == zox_game_playing_start) {
+            zox_log("zox_player_state_loading");
+            zox_set(player, PlayerState, { zox_player_state_loading });
+        } else if (state == zox_game_start) {
+            zox_set(player, PlayerState, { zox_player_state_main_menu });
+        } else if (state == zox_game_paused) {
+            zox_set(player, PlayerState, { zox_player_state_paused });
+        } else if (last_state == zox_game_paused && state == zox_game_playing) {
+            zox_set(player, PlayerState, { zox_game_playing });
+        } else {
+            continue;
+        }
+        zox_set(player, PlayerStateDirty, { zox_dirty_trigger });
+    }
+}
+
 zox_begin_module(Players)
-    zoxd_tag(Player);
-    zoxd_tag(PlayerCharacter);
-    zoxd_byte(PlayerState);
-    zoxd_double(PlayerRespawn);
-    zoxd_entity(PlayerLink);
-    zoxd_arrayd(PlayerLinks);
-    zoxd_entity(PlayerPauseEvent);
+    define_components_players(world);
     define_systems_players(world);
     add_hook_on_boot(on_boot_players);
     add_hook_spawn_prefabs(spawn_prefabs_players);
+    add_to_event_game_state((zox_game_event) { &game_state_players });
 zox_end_module(Players)
 
 #endif
