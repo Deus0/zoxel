@@ -1,13 +1,14 @@
-int get_label_player_character2D(ecs_world_t *world, const ecs_entity_t player, char buffer[], int buffer_size, int buffer_index) {
-    const ecs_entity_t character = zox_get_value(player, CharacterLink)
+int get_label_player_character2D(ecs *world, const entity player, char buffer[], int buffer_size, int buffer_index) {
+    const entity character = zox_get_value(player, CharacterLink)
     if (!zox_valid(character) || !zox_has(character, Position2)) return buffer_index;
     const float2 position2 = zox_get_value(character, Position2)
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "player [%ix%i]\n", (int) position2.x, (int) position2.y);
     return buffer_index;
 }
 
-uint get_label_character2_player(ecs_world_t *world,
-    const ecs_entity_t player,
+uint get_label_character2_player(
+    ecs *world,
+    const entity player,
     char *buffer,
     const uint size,
     uint index)

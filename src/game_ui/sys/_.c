@@ -2,7 +2,11 @@
 #include "quads_display.c"
 #include "device_mode_ui.c"
 #include "debug_label.c"
-#include "game_start.c"
+#include "game_start_fader.c"
+#include "game_end.c"
+#include "game_end3.c"
+#include "game_pause.c"
+#include "game_resume.c"
 
 void define_systems_game_ui(ecs *world) {
     zox_system(
@@ -44,5 +48,39 @@ void define_systems_game_ui(ecs *world) {
         [in] games.GameState,
         [in] players.PlayerLinks,
         [none] games.Game
+    );
+
+
+    zox_system_1(
+        PlayerUIGameEndSystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] layouts2.CanvasLink
+    );
+    zox_system_1(
+        PlayerUIGame3EndSystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] games.GameLink
+    );
+    zox_system_1(
+        PlayerUIGamePauseSystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] cameras.CameraLink,
+        [in] layouts2.CanvasLink,
+        [out] players.PlayerPauseEvent
+    );
+    zox_system_1(
+        PlayerUIGameResumeSystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] cameras.CameraLink,
+        [in] layouts2.CanvasLink,
+        [out] players.PlayerPauseEvent
     );
 }

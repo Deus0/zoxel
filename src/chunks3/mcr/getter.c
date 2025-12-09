@@ -12,6 +12,13 @@ static inline const void* find_octree_node(
     size_t stride
 ) {
     while (node && depth < target_depth) {
+
+        /* quick sanity: reject obviously bad pointers */
+        uintptr_t p = (uintptr_t) node;
+        if (p == 0 || (p & 0x7) != 0) {
+            return node;
+        }
+
         // read the first-field pointer from the node
         const void* kids_ptr = *(const void**) node;
         if (!kids_ptr) {
@@ -19,13 +26,17 @@ static inline const void* find_octree_node(
         }
 
         const byte div = powers_of_two_byte[target_depth - depth - 1];
-        if (div == 0) break;
+        if (div == 0) {
+            break;
+        }
 
         byte3 node_pos = { pos.x / div, pos.y / div, pos.z / div };
         byte3_modulus_byte(&pos, div);
 
         byte i = byte3_octree_array_index(node_pos);
-        if (i >= 8) return NULL;
+        if (i >= 8) {
+            return NULL;
+        }
 
         node = (char*) kids_ptr + i * stride;
         depth++;
@@ -48,8 +59,10 @@ static inline byte read_octree_value(
     }
 
     /* quick sanity: reject obviously bad pointers */
-    uintptr_t p = (uintptr_t)node;
-    if (p == 0 || (p & 0x7) != 0) return 0;
+    uintptr_t p = (uintptr_t) node;
+    if (p == 0 || (p & 0x7) != 0) {
+        return 0;
+    }
 
     return *(byte*)((char*) node + value_offset);
 }

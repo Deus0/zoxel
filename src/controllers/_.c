@@ -2,14 +2,13 @@
 #define zoxm_controllers
 
 #include "dat/settings.c"
+#include "sys/_.c"
 #include "controllers2/_.c"
 #include "controllers3/_.c"
 #include "free_roam/_.c"
 
 zox_begin_module(Controllers)
-    if (headless) {
-        return;
-    }
+    define_systems_controllers(world);
     zox_import_module(Controllers2);
     zox_import_module(Controllers3);
     zox_import_module(FreeRoam);

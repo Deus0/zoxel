@@ -56,7 +56,7 @@ void PlayerGame2StartSystem(iter *it) {
         // zox_geter(realm, SaveGamePath, path);
 
 
-        disable_inputs_until_release(world, e, zox_device_mode_none, 1);
+        // disable_inputs_until_release(world, e, zox_device_mode_none, 1);
 
         const double delay = game_load_player_delay + game_load_fade_transition_time;   // 1.4f
 

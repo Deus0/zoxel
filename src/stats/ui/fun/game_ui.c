@@ -8,19 +8,22 @@ entity spawn_menu_game_stats(
         zox_log_error("! invalid player in [spawn_game_ui_stats]");
         return 0;
     }
-    const entity canvas = zox_get_value(player, CanvasLink)
+    zox_geter_value(player, CanvasLink, entity, canvas);
     if (!canvas) {
         zox_log_error("! invalid canvas in [spawn_game_ui_stats]");
         return 0;
     }
-    const entity character = zox_get_value(player, CharacterLink)
-    if (!zox_valid(character) || !zox_has(character, StatLinks)) {
-        zox_log_error("! invalid character in [spawn_game_ui_stats]");
+    zox_geter_value(player, CharacterLink, entity, character);
+    if (!zox_valid(character)) {
+        zox_log_error("Invalid Character [%lu] in [spawn_game_ui_stats]", character);
         return 0;
     }
-    zox_geter(character, StatLinks, stats)
+    if (!zox_has(character, StatLinks)) {
+        zox_log_error("Invalid Character - No StatLinks [%s] in [spawn_game_ui_stats]", zox_get_name(character));
+        return 0;
+    }
 
-    // stats panel:
+    zox_geter(character, StatLinks, stats);
     byte panel_layer = 1;
     const float2 panel_anchor = float2_top_left;
     const byte panel_padding = 24;

@@ -22,7 +22,7 @@ entity spawn_menu_game(
         canvas_size,
         float2_half);
     zox_name("menu_game")
-    Children children = (Children) { 0, NULL };
+    Children children = (Children) { 0 };
 
     const entity crosshair = spawn_crosshair(
         world,
@@ -45,11 +45,14 @@ entity spawn_menu_game(
         });
 
     add_to_Children(&children, crosshair);
+
     spawn_menu_game_stats(world, e, player, &children);
-    zox_set_ptr(e, Children, children)
+
+    zox_set_ptr(e, Children, children);
 
     // link to character
     zox_muter(character, ElementLinks, elements);
+    // zox_muter(player, ElementLinks, elements);
     add_to_ElementLinks(elements, e);
     zox_set(e, ElementHolder, { character });
 
@@ -61,8 +64,8 @@ void dispose_menu_game(
     ecs *world,
     const entity player
 ) {
-    const entity canvas = zox_get_value(player, CanvasLink)
-    find_child_with_tag(canvas, MenuGame, game_ui)
+    zox_geter_value(player, CanvasLink, entity, canvas);
+    find_child_with_tag(canvas, MenuGame, game_ui);
     if (game_ui) {
         zox_delete(game_ui)
     }
@@ -106,9 +109,5 @@ void spawn_player_game_ui(
     const entity player
 ) {
     spawn_in_game_ui(world, player);
-    // zox_geter_value(player, CanvasLink, entity, canvas);
-    // find_child_with_tag(canvas, MenuActions, menu_actions);
-    //if (!menu_actions) {
     spawn_player_menu_actions(world, player);
-    //}
 }

@@ -5,8 +5,6 @@ void player_end_game3(
     zox_geter_value(player, CameraLink, entity, camera);
 }
 
-
-
 void PlayerGame3EndSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
@@ -29,8 +27,6 @@ void PlayerGame3EndSystem(iter *it) {
             continue;
         }
 
-
-        // zox_geter_value(player, CanvasLink, entity, canvas);
         float3 camera_position = float3_zero;
         float4 camera_rotation = quaternion_identity;
         set_camera_transform_to_main_menu(&camera_position, &camera_rotation, terrain_depth);

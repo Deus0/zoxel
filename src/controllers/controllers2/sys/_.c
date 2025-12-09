@@ -1,5 +1,6 @@
 #include "move.c"
 #include "game_start.c"
+#include "game_end.c"
 
 void define_systems_controllers2(ecs *world) {
     zox_system(
@@ -14,8 +15,15 @@ void define_systems_controllers2(ecs *world) {
         EcsOnUpdate,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        // [in] games.GameLink,
-        // [in] cameras.CameraLink,
-        [none] players.Player
+        [none] players.Player2
+    );
+    zox_system_1(
+        PlayerGame2EndSystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [out] cameras.CameraLink,
+        [out] characters.CharacterLink,
+        [none] players.Player2
     );
 }

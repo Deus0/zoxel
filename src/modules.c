@@ -170,11 +170,11 @@ zox_begin_module(Zox)
     zox_import_module(Maps);
     zox_import_module(Npcs);
     zox_import_module(EditorUI);
+    zox_import_module(Space);
     // space
 #if defined(zoxm_players)
     if (!headless) {
         zox_import_module(Controllers);
-        zox_import_module(Space);
     }
 #endif
 #if defined(zoxm_debug)

@@ -258,7 +258,7 @@ entity game_start_player_load(
         if (zox_valid(spawn_place.chunk)) {
             zox_mut_begin(spawn_place.chunk, ChunkEntities, entityLinks)
             if (add_to_ChunkEntities(entityLinks, e)) {
-                zox_mut_end(spawn_place.chunk, ChunkEntities)
+                zox_mut_end(spawn_place.chunk, ChunkEntities);
             }
         }
     }
@@ -267,7 +267,7 @@ entity game_start_player_load(
     // TODO: LoadCharacterSystem - States
     delay_event(world, &load_player_e, player, 0.02);
     // TODO: Remove use of time, and make a LoadedCharacter Event Hook for this!
-    delay_event(world, &spawn_player_game_ui, player, 0.04);
+    delay_event(world, &spawn_player_game_ui, player, 0.05);
 
     return e;
 }
@@ -353,7 +353,7 @@ void PlayerGame3StartSystem(iter *it) {
             continue;
         }
 
-        disable_inputs_until_release(world, e, zox_device_mode_none, 1);
+        // disable_inputs_until_release(world, e, zox_device_mode_none, 1);
 
         zox_geter_value(game->value, RealmLink, entity, realm);
         zox_geter(realm, SaveGamePath, path);

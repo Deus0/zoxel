@@ -148,6 +148,7 @@ void define_systems_controllers3D(ecs_world_t *world) {
         [in] players.PlayerState,
         [in] games.GameLink,
         [in] cameras.CameraLink,
+        [none] players.Player3
     );
     zox_system_1(
         PlayerGame3EndSystem,
@@ -156,5 +157,6 @@ void define_systems_controllers3D(ecs_world_t *world) {
         [in] players.PlayerState,
         [in] cameras.CameraLink,
         [in] characters.CharacterLink,
+        [none] players.Player3
     );
 }

@@ -1,4 +1,5 @@
-byte zox_game_type;
+const char *game_name = "zox";
+byte zox_game_type = zox_game_mode_editor;  // default
 color_rgb menu_sky_color;
 color_rgb menu_sky_bottom_color;
 color_rgb game_sky_color = { 55, 140, 235 };

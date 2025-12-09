@@ -1,7 +1,7 @@
 #include "character3_player.c"
-ecs_entity_t prefab_character3_player;
+entity prefab_character3_player;
 
-void spawn_prefabs_players3D(ecs_world_t *world) {
+void spawn_prefabs_players3D(ecs *world) {
     prefab_character3_player = spawn_prefab_character3_player(
         world,
         prefab_character3_skeleton

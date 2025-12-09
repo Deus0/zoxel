@@ -7,12 +7,9 @@
 void spawn_prefabs_stats(ecs *world) {
     entity prefab_stat = spawn_prefab_stat(world);
     zox_set(prefab_stat, StatDirty, { zox_dirty_none });
-    // zox_prefab_add(prefab_realm, StatLinks)
     if (prefab_realm) {
         zox_prefab_set(prefab_realm, StatLinks, { 0 });
     }
-    if (prefab_character3) {
-        zox_prefab_character_set(StatLinks, { 0 });
-        zox_prefab_character_set(DotLinks, { 0 });
-    }
+    zox_prefab_character_set(StatLinks, { 0 });
+    zox_prefab_character_set(DotLinks, { 0 });
 }

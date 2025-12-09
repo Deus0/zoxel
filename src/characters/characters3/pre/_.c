@@ -3,12 +3,12 @@
 #include "character3_instanced.c"
 #include "character3_skeleton.c"
 ushort prefab_characters_count = 0;
-ecs_entity_t prefabs_characters3[32];
-ecs_entity_t local_character3D;
-ecs_entity_t prefab_character3_meta;
-ecs_entity_t prefab_character3;
-ecs_entity_t prefab_character3_instanced;
-ecs_entity_t prefab_character3_skeleton;
+entity prefabs_characters3[32];
+entity local_character3D;
+entity prefab_character3_meta;
+entity prefab_character3;
+entity prefab_character3_instanced;
+entity prefab_character3_skeleton;
 
 // setters for higher modules to add to characters
 #define zox_prefab_character_set(T, ...) {\
