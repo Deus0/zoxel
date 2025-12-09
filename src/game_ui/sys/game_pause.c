@@ -1,11 +1,10 @@
-void pause_player_ending(ecs *world, const entity player) {
-    const entity canvas = zox_get_value(player, CanvasLink)
+void pause_player_ending(ecs *world, const entity e) {
+    zox_geter_value(e, CanvasLink, entity, canvas);
     if (game_ui_has_taskbar) {
         spawn_taskbar(world, prefab_taskbar, canvas, canvas, pause_ui_overlay_layer + 1);
     }
+    spawn_menu_paused(world, e);
 }
-
-// extern void dispose_menu_game(ecs *world, const entity player);
 
 void PlayerUIGamePauseSystem(iter *it) {
     zox_sys_world();
@@ -33,16 +32,10 @@ void PlayerUIGamePauseSystem(iter *it) {
 
         dispose_menu_game(world, e); // check this, ingame ui should now be linked to player, got from canvas
 
-        // disable_inputs_until_release(world, player, zox_device_mode_none, 1);
         zox_geter_value(camera->value, CanRoam, byte, can_roam);
 
         if (can_roam == 2) { // if attached to character
             zox_set(camera->value, CanRoam, { 1 });
-        } else {
-            zox_geter_value(e, CharacterLink, entity, character);
-            if (zox_alive(character)) {
-                zox_set(character, DisableMovement, { 1 });
-            }
         }
         // zox_log("player paused [%s] [%s]\n", zox_get_name(player), zox_get_name(canvas))
         trigger_canvas_half_fade(

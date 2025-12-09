@@ -3,7 +3,7 @@ void main_menu_event_delay(ecs *world, const entity e) {
 }
 
 void PlayerUIGame3EndSystem(iter *it) {
-    const byte delay_end = is_end_game_delays;
+    // const byte delay_end = is_end_game_delays;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);

@@ -6,6 +6,7 @@ void define_systems_controllers(ecs *world) {
         EcsOnUpdate,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
+        [in] characters.CharacterLink,
         [none] players.Player
     );
 }

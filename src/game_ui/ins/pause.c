@@ -1,11 +1,7 @@
-entity spawn_menu_paused(
-    ecs *world,
-    const entity player
-) {
+entity spawn_menu_paused(ecs *world, const entity player) {
     // settings
     const byte list_font_size = 32;
     const byte header_font_size = 42;
-
     int elements_count = 0;
     SpawnListElement elements[2];
     elements[elements_count++] = (SpawnListElement) {

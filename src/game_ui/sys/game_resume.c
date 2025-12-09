@@ -4,7 +4,7 @@ void resume_player_delayed(
     const entity player
 ) {
     const entity camera = zox_get_value(player, CameraLink);
-    const byte can_roam = zox_get_value(camera, CanRoam);
+    const byte can_roam = zox_valid(camera) ? zox_gett_value(camera, CanRoam) : 0;
     if (can_roam == 0 || can_roam == 2) {
         if (local_mouse) {
             zox_set(local_mouse, MouseLock, { 1 });

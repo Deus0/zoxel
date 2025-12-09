@@ -3,10 +3,12 @@ void PlayerGameStateSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
     zox_sys_in(PlayerState);
+    zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
+        zox_sys_i(CharacterLink, character);
 
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -18,5 +20,12 @@ void PlayerGameStateSystem(iter *it) {
         if (zox_valid(local_mouse)) {
             zox_set(local_mouse, MouseLock, { mouse_lock });
         }
+
+        if (state->value != zox_player_state_paused) {
+            if (zox_alive(character->value)) {
+                zox_set(character->value, DisableMovement, { 1 });
+            }
+        }
+
     }
 } zoxd_system2(PlayerGameStateSystem);
