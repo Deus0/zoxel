@@ -7,7 +7,7 @@ entity spawn_realm_block_noisey(
     // vox
     const entity vox = spawn_vox_basic(
         world,
-        prefab_vox_generated,
+        prefab_vox, // prefab_vox_generated,
         block_vox_depth,
         block_vox_depth
     );
@@ -23,6 +23,7 @@ entity spawn_realm_block_noisey(
 
     // block
     SpawnBlock spawn_data = {
+        .name = name,
         .prefab = prefab_block_vox_meta,
         .prefab_world_block = prefab_world_block,
         .vox = vox,
@@ -30,13 +31,11 @@ entity spawn_realm_block_noisey(
         .model = zox_block_vox,
         .index = index,
         .seed = generate_voxel_seed(index),
-        .name = name,
         .color = block_color,
     };
 
     // disable
     process_disabled_block_vox(world, &spawn_data, 1);
-
 
     const entity e = spawn_block_vox_meta(world, spawn_data);
     if (disable_block_voxes) {

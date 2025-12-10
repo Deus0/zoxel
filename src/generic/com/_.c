@@ -84,6 +84,7 @@ zoxc_entity(ComponentTarget);
 // unsorted
 zoxc_byte(GenericEvent);
 zoxc_byte(EntityInitialize);
+zoxc_state(Generate);
 zoxc_int2(ScreenDimensions);
 zoxc_byte(SpawnChance);
 zoxc_fixed_string(SaveGamePath, 512);
@@ -109,7 +110,8 @@ void define_components_generic(ecs* world) {
     // unsorted
     zoxd_byte(GenericEvent);
     zoxd_byte(EntityInitialize);
-    zoxd_int2(ScreenDimensions);
     zoxd_byte(SpawnChance);
+    zoxd_state(Generate);
+    zoxd_int2(ScreenDimensions);
     zoxd_fixed_string(SaveGamePath);
 }
