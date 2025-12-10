@@ -19,7 +19,7 @@ entity2 spawn_player_camera(
             -main_camera_rotation_speed * degreesToRadians,
             0
         });
-    float fov = get_camera_mode_fov(camera_mode);
+    float fov = get_camera_state_fov(camera_mode);
     const entity e = spawn_camera_base(
         world,
         prefab_camera_game,
@@ -29,15 +29,17 @@ entity2 spawn_player_camera(
         fov,
         viewport_position,
         viewport_size,
-        screen_to_canvas);
+        screen_to_canvas
+    );
     zox_name("camera_game")
-    zox_set(player, CameraLink, { e })
+    zox_set(player, CameraLink, { e });
     const entity e2 = spawn_camera_ui(
         world,
         prefab_camera_ui,
         viewport_position,
         canvas_size,
-        screen_to_canvas);
+        screen_to_canvas
+    );
     zox_set_unique_name(e2, "camera_game_ui");
     return (entity2) { e, e2 };
 }

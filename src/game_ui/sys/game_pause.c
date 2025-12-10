@@ -32,11 +32,10 @@ void PlayerUIGamePauseSystem(iter *it) {
 
         dispose_menu_game(world, e); // check this, ingame ui should now be linked to player, got from canvas
 
-        zox_geter_value(camera->value, CanRoam, byte, can_roam);
-
-        if (can_roam == 2) { // if attached to character
-            zox_set(camera->value, CanRoam, { 1 });
-        }
+        // zox_geter_value(camera->value, Roaming, byte, can_roam);
+        /*if (can_roam == 2) { // if attached to character
+            zox_set(camera->value, Roaming, { 1 });
+        }*/
         // zox_log("player paused [%s] [%s]\n", zox_get_name(player), zox_get_name(canvas))
         trigger_canvas_half_fade(
             world,

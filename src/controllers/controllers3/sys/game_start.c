@@ -174,10 +174,7 @@ entity game_start_player_new(
     return e;
 }
 
-entity game_start_player_load(
-    ecs *world,
-    const entity player
-) {
+entity game_start_player_load(ecs *world, const entity player) {
     entity realm;
     entity terrain;
     entity camera;
@@ -209,7 +206,9 @@ entity game_start_player_load(
     const int3 chunk_position = real_position_to_chunk_position(
         spawn_place.position,
         powers_of_two[depth],
-        terrain_scale);
+        terrain_scale
+    );
+
     spawn_place.chunk = int3_hashmap_get(chunkLinks->value, chunk_position);
     // check if exists first
     if (zox_valid(spawn_place.chunk)) {
@@ -281,10 +280,7 @@ void on_spawned_terrain(ecs *world, const entity player) {
 }
 
 // this connects to terrain end stream event and triggers streaming
-void link_camera_to_terrain(
-    ecs *world,
-    const entity player
-) {
+void link_camera_to_terrain(ecs *world, const entity player) {
     const byte depth = terrain_depth;
     zox_geter_value(player, CameraLink, entity, camera);
     zox_geter_value(camera, Position3D, float3, position);
@@ -300,11 +296,13 @@ void link_camera_to_terrain(
     if (!terrain) {
         return;
     }
+
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
     int3 terrain_position = real_position_to_chunk_position(
         position,
         powers_of_two[depth],
-        terrain_scale);
+        terrain_scale
+    );
 
     // if character
     if (game_rule_attach_to_character) {
@@ -315,10 +313,8 @@ void link_camera_to_terrain(
         } else {
             game_start_player_new(world, player);
         }
-        zox_set(player, PlayerState, { zox_player_state_playing });
-        zox_set(player, PlayerStateDirty, { zox_dirty_trigger });
     } else {
-        set_camera_free(world, camera, 1);
+        set_camera_free(world, camera);
     }
     zox_set(camera, StreamPoint, { terrain_position });
     zox_set(camera, TerrainLink, { terrain });
@@ -328,6 +324,9 @@ void link_camera_to_terrain(
     if (is_log_streaming) {
         zox_log("+ terrain spawning started at [%f]", zox_current_time);
     }
+
+    zox_set(player, PlayerState, { zox_player_state_starting });
+    zox_set(player, PlayerStateDirty, { zox_dirty_trigger });
 }
 
 

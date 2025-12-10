@@ -2,7 +2,7 @@
 extern entity spawn_character2_player(ecs *world, const entity prefab);
 
 void player_start_game2D_delayed(ecs *world, const entity player) {
-    zox_set(player, PlayerState, { zox_player_state_playing });
+    zox_set(player, PlayerState, { zox_player_state_starting });
     zox_set(player, PlayerStateDirty, { zox_dirty_trigger });
 
     // spawn character

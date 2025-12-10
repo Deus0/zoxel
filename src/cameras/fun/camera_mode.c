@@ -2,19 +2,17 @@ void set_main_cameras(int new_count) {
     main_cameras_count = new_count;
 }
 
-CameraSpawnData get_camera_preset(
-    const byte mode
-) {
+CameraSpawnData get_camera_preset(const byte mode) {
     CameraSpawnData data = { 0 };
-    if (mode == zox_camera_mode_topdown) {
+    if (mode == zox_camera_state_topdown) {
         data = camera_preset_top_down;
-    } else if (mode == zox_camera_mode_ortho) {
+    } else if (mode == zox_camera_state_ortho) {
         data = camera_preset_ortho;
-    } else if (mode == zox_camera_mode_first_person) {
+    } else if (mode == zox_camera_state_first_person) {
         data = camera_preset_first_person;
-    } else if (mode == zox_camera_mode_third_person) {
+    } else if (mode == zox_camera_state_third_person) {
         data = camera_preset_third_person;
-    } else if (mode == zox_camera_mode_2D) {
+    } else if (mode == zox_camera_state_2D) {
         data = camera_preset_2D;
     }
     return data;
@@ -52,23 +50,19 @@ void set_camera_transform(
     }
 }
 
-byte get_camera_mode_fov(const byte mode) {
+byte get_camera_state_fov(const byte mode) {
     return get_camera_preset(mode).fov;
 }
 
-void set_camera_mode(
-    ecs *world,
-    const entity e,
-    byte mode
-) {
+void set_camera_mode(ecs *world, const entity e, byte mode) {
     // remove 2 camera modes for now
-    if (mode == zox_camera_mode_free) {
-        mode = zox_camera_mode_first_person;
+    if (mode == zox_camera_state_free) {
+        mode = zox_camera_state_first_person;
     }
     const byte old_camera_follow_mode = camera_follow_mode;
-    const byte camera_fov = get_camera_mode_fov(mode);
+    const byte camera_fov = get_camera_state_fov(mode);
     camera_follow_mode = get_camera_preset(mode).follow_mode;
-    zox_set(e, CameraMode, { mode });
+    zox_set(e, CameraState, { mode });
     zox_set(e, FieldOfView, { camera_fov });
     // camera_follow_mode is more complicated, involves how camera is attached to character
     entity target = 0;
@@ -96,14 +90,14 @@ void set_camera_mode(
     set_camera_transform(world, e, target, mode);
 }
 
-byte toggle_camera_mode(
-    ecs *world,
-    const entity camera
-) {
-    zox_geter_value_non_const(camera, CameraMode, byte, mode);
-    mode = mode + 1;
-    if (mode > zox_camera_mode_topdown) {
-        mode = 0;
+byte toggle_camera_mode(ecs *world, const entity camera) {
+    zox_geter_value_non_const(camera, CameraState, byte, mode);
+    if (mode == zox_camera_state_first_person) {
+        mode = zox_camera_state_third_person;
+    } else if (mode == zox_camera_state_third_person) {
+        mode = zox_camera_state_topdown;
+    } else {
+        mode = zox_camera_state_first_person;
     }
     set_camera_mode(world, camera, mode);
     return mode;

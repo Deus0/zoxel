@@ -20,8 +20,8 @@ void Player3RotateSystem(ecs_iter_t *it) {
             continue;
         }
 
-        byte camera_mode = zox_valid(cameraLink->value) ? zox_gett_value(cameraLink->value, CameraMode) : zox_camera_mode_first_person;
-        if (camera_mode != zox_camera_mode_first_person && camera_mode != zox_camera_mode_third_person) {
+        byte camera_mode = zox_valid(cameraLink->value) ? zox_gett_value(cameraLink->value, CameraState) : zox_camera_state_first_person;
+        if (camera_mode != zox_camera_state_first_person && camera_mode != zox_camera_state_third_person) {
             continue;
         }
 
@@ -99,7 +99,7 @@ void Player3RotateSystem(ecs_iter_t *it) {
         }
 
 
-        if (camera_mode == zox_camera_mode_third_person) {
+        if (camera_mode == zox_camera_state_third_person) {
             euler.x = 0;
         }
 

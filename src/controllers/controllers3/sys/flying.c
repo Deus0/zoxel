@@ -25,8 +25,8 @@ void PlayerFlySystem(iter *it) {
         }
 
         zox_geter_value(character, CameraLink, entity, camera);
-        byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraMode) : zox_camera_mode_first_person;
-        if (camera_mode == zox_camera_mode_free) {
+        byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraState) : zox_camera_state_first_person;
+        if (camera_mode == zox_camera_state_free) {
             continue;
         }
 

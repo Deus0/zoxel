@@ -84,7 +84,6 @@ void define_systems_controllers3D(ecs_world_t *world) {
         EcsOnUpdate,
         [in] players.PlayerState,
         [in] inputs.DeviceLinks,
-        [in] games.GameLink,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
         [none] players.Player

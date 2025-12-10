@@ -7,6 +7,7 @@ void define_systems_free_roam(ecs* world) {
     zox_system(
         FreeCameraMoveSystem,
         EcsOnUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
         [in] cameras.CameraLink,
         [none] players.Player
@@ -14,6 +15,7 @@ void define_systems_free_roam(ecs* world) {
     zox_system(
         FreeCameraRotateSystem,
         EcsOnUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
         [in] cameras.CameraLink,
         [none] players.Player
@@ -21,9 +23,9 @@ void define_systems_free_roam(ecs* world) {
     zox_system(
         FreeCameraToggleSystem,
         EcsOnUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
         [in] cameras.CameraLink,
-        [in] games.GameLink,
         [none] players.Player
     );
 }

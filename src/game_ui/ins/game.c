@@ -75,10 +75,7 @@ void dispose_menu_game(
 
 
 // called from game state changes
-entity spawn_in_game_ui(
-    ecs *world,
-    const entity player
-) {
+entity spawn_in_game_ui(ecs *world, const entity player) {
     if (!zox_has(player, DeviceMode) || !zox_has(player, CanvasLink)) {
         zox_log_error("Invalid player in [spawn_in_game_ui]")
         return 0;

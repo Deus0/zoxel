@@ -48,8 +48,8 @@ void Player3DMoveSystem(iter *it) {
         }
 
         zox_geter_value(character, CameraLink, entity, camera);
-        byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraMode) : zox_camera_mode_first_person;
-        if (camera_mode == zox_camera_mode_free) {
+        byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraState) : zox_camera_state_first_person;
+        if (camera_mode == zox_camera_state_free) {
             continue;
         }
 
@@ -140,7 +140,7 @@ void Player3DMoveSystem(iter *it) {
         zox_geter(character, Rotation3D, rotation3D)
         zox_geter(character, Velocity3D, velocity3D)
         zox_muter(character, Acceleration3D, acceleration3D)
-        if (camera_mode == zox_camera_mode_topdown || camera_mode == zox_camera_mode_ortho) {
+        if (camera_mode == zox_camera_state_topdown || camera_mode == zox_camera_state_ortho) {
             if (zox_has(character, CameraLink)) {
                 if (camera) {
                     zox_geter(camera, Rotation3D, camera_rotation)

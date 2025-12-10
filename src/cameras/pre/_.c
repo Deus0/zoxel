@@ -1,4 +1,4 @@
-#include "base_camera.c"
+#include "camera.c"
 #include "ui_camera.c"
 #include "free_camera.c"
 entity prefab_camera;
@@ -10,6 +10,6 @@ void spawn_prefabs_cameras(ecs *world) {
     prefab_camera_ui = spawn_prefab_camera_ui(world, prefab_camera);
     spawn_prefab_free_camera(world, prefab_camera);
     if (prefab_app) {
-        zox_prefab_add(prefab_app, CameraLinks)
+        zox_prefab_add(prefab_app, CameraLinks);
     }
 }

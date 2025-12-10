@@ -204,8 +204,8 @@ zox_begin_module(ZoxGame)
     game_rule_attach_to_character = 1;
     zox_experience_max_start = 10;
     // regen_rate = 10;
-    // zox_camera_mode_free | zox_camera_mode_first_person | zox_camera_mode_third_person | zox_camera_mode_ortho | zox_camera_mode_topdown | zox_camera_mode_2D
-    zox_game_camera_mode = zox_camera_mode_first_person;
+    // zox_camera_state_free | zox_camera_state_first_person | zox_camera_state_third_person | zox_camera_state_ortho | zox_camera_state_topdown | zox_camera_state_2D
+    zox_game_camera_mode = zox_camera_state_first_person;
 
     zoxel_settings_npcs();
     zoxel_settings_physics();

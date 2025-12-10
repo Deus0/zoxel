@@ -30,7 +30,7 @@ float camera_near_distance = 0.003f;
 float camera_far_distance = 1024;
 int main_cameras_count = 1;
 const float camera_limit_x = 1.25f;
-// byte camera_mode = 0; // zox_camera_mode_first_person;
+// byte camera_mode = 0; // zox_camera_state_first_person;
 byte camera_fov = 0; // camera_fov_first_person;
 byte camera_follow_mode = 0; // zox_camera_follow_mode_attach;
 entity main_cameras[max_cameras];

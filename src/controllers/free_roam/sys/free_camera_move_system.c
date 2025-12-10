@@ -4,21 +4,33 @@ void FreeCameraMoveSystem(ecs_iter_t *it) {
 #ifdef zox_web
     movement_power *= 10.0f;
 #endif
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(DeviceLinks)
-    zox_sys_in(CameraLink)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(PlayerState);
+    zox_sys_in(DeviceLinks);
+    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(CameraLink, cameraLink)
-        zox_sys_i(DeviceLinks, deviceLinks)
-        if (cameraLink->value == 0) {
+        zox_sys_i(PlayerState, state);
+        zox_sys_i(CameraLink, camera);
+        zox_sys_i(DeviceLinks, devices);
+
+        if (state->value != zox_player_state_playing || !zox_valid(camera->value)) {
             continue;
         }
-        const CanRoam *canRoam = zox_get(cameraLink->value, CanRoam)
-        if (canRoam->value != 2) continue;
+
+        zox_geter_value(camera->value, CameraState, byte, camera_state);
+        if (camera_state != zox_camera_state_free) {
+            continue;
+        }
+
+        zox_geter_value(camera->value, Roaming, byte, roaming);
+        if (!roaming) {
+            continue;
+        }
+
         float3 movement = { 0, 0, 0 };
-        for (int j = 0; j < deviceLinks->length; j++) {
-            const ecs_entity_t device = deviceLinks->value[j];
+        for (int j = 0; j < devices->length; j++) {
+            const entity device = devices->value[j];
             if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
                 continue;
             }
@@ -41,10 +53,11 @@ void FreeCameraMoveSystem(ecs_iter_t *it) {
             continue;
         }
         movement = float3_scale(movement, movement_power);
-        const Rotation3D *rotation3D = zox_get(cameraLink->value, Rotation3D)
+
+        const Rotation3D *rotation3D = zox_get(camera->value, Rotation3D);
+        zox_muter(camera->value, Position3D, position);
+
         movement = float4_rotate_float3(rotation3D->value, movement);
-        Position3D *position3D = zox_get_mut(cameraLink->value, Position3D)
-        position3D->value = float3_add(position3D->value, movement);
-        zox_modified(cameraLink->value, Position3D);
+        position->value = float3_add(position->value, movement);
     }
-} zoxd_system(FreeCameraMoveSystem)
+} zoxd_system2(FreeCameraMoveSystem);

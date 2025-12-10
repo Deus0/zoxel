@@ -21,7 +21,7 @@ void PlayerGameStateSystem(iter *it) {
             zox_set(local_mouse, MouseLock, { mouse_lock });
         }
 
-        if (state->value != zox_player_state_paused) {
+        if (state->value == zox_player_state_paused) {
             if (zox_alive(character->value)) {
                 zox_set(character->value, DisableMovement, { 1 });
             }

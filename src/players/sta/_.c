@@ -2,13 +2,14 @@
 #define zox_player_state_loading 1
 
 
-#define zox_player_state_playing 2
-#define zox_player_state_paused 3
-#define zox_player_state_free_roam 4
+#define zox_player_state_starting 2
+#define zox_player_state_resuming 3
+#define zox_player_state_playing 4
+#define zox_player_state_paused 5
 
-#define zox_player_state_dialogue_begin 5
-#define zox_player_state_dialogue_active 6
-#define zox_player_state_dialogue_end 7
+#define zox_player_state_dialogue_begin 21
+#define zox_player_state_dialogue_active 22
+#define zox_player_state_dialogue_end 23
 
 // TODO: Use a different state in respawning
 #define zox_player_state_respawning 30

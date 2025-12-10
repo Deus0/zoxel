@@ -67,7 +67,7 @@ void game_state_players(
         } else if (state == zox_game_paused) {
             zox_set(player, PlayerState, { zox_player_state_paused });
         } else if (last_state == zox_game_paused && state == zox_game_playing) {
-            zox_set(player, PlayerState, { zox_game_playing });
+            zox_set(player, PlayerState, { zox_player_state_resuming });
         } else {
             continue;
         }
