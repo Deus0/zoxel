@@ -19,6 +19,11 @@ byte zox_biome_override = 0;    // stick to earthy for now
 #include "ins/_.c"
 #include "sys/_.c"
 
+// TODO: Add Biome Blocks to Realm, set VoxelID then
+// TODO: Use Biome Blocks in Terrain Generation
+// TODO: Fix Sky Color - set when entering biome for camera
+//      - BiomeLink and set it for camera system - BiomeInsideSystem
+
 zox_begin_module(Biomes)
     add_hook_spawn_prefabs(spawn_prefabs_biomes);
     define_components_biomes(world);

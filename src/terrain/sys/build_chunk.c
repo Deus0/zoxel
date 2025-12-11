@@ -132,7 +132,8 @@ void build_voxel_mesh_final(
             face.vertices,
             face.uvs,
             dig.offset,
-            dig.scale);
+            dig.scale
+        );
     }
 }
 

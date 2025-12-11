@@ -54,7 +54,7 @@ void spawn_realm_biomes(ecs *world, const entity realm) {
     zox_geter(realm, Seed, seed);
 
     // clear previous
-    zox_geter(realm, BiomeLinks, old)
+    zox_geter(realm, BiomeLinks, old);
     if (old) {
         for (int i = 0; i < old->length; i++) {
             if (old->value[i]) {
@@ -65,14 +65,26 @@ void spawn_realm_biomes(ecs *world, const entity realm) {
     BiomeLinks biomes = (BiomeLinks) { 0 };
 
     {
-        entity grasslands = spawn_biome(world, prefab_biome, "grasslands");
+        entity grasslands = spawn_biome(
+            world,
+            prefab_biome,
+            realm,
+            "grasslands",
+            seed->value + 1
+        );
         add_to_BiomeLinks(&biomes, grasslands);
     }
 
-    {
-        entity desert = spawn_biome(world, prefab_biome, "desert");
+    /*{
+        entity desert = spawn_biome(
+            world,
+            prefab_biome,
+            realm,
+            "desert",
+            seed->value + 2
+        );
         add_to_BiomeLinks(&biomes, desert);
-    }
+    }*/
 
     zox_set_ptr(realm, BiomeLinks, biomes);
 

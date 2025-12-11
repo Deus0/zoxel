@@ -1,0 +1,30 @@
+// TODO: On Generate Biome - Spawn Blocks
+
+void BiomeColorsSystem(iter *it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Generate);
+    zox_sys_in(Seed);
+    zox_sys_out(Colors);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(Generate, generate);
+        zox_sys_i(Seed, seed);
+        zox_sys_o(Colors, colors);
+
+        if (generate->value != zox_dirty_active) {
+            continue;
+        }
+
+        zox_sys_e();
+        zox_log("Generating Colors for biome [%s]", zox_get_name(e));
+
+        color_rgb sky_color;
+        if (!grayscale_mode) {
+            initialize_Colors(colors, 6);
+            generate_colors(seed->value, (colors));
+            sky_color = color_to_color_rgb(colors->value[0]);
+        } else {
+            sky_color = color_rgb_grayscale(3);
+        }
+    }
+} zoxd_system2(BiomeColorsSystem);

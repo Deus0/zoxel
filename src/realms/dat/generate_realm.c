@@ -1,6 +1,8 @@
 #define zox_generate_realm_none 0
 
 #define zox_generate_realm_start 1
+#define zox_generate_realm_clear 2
+
 #define zox_generate_realm_colors 2
 #define zox_generate_realm_models 3
 #define zox_generate_realm_stats 4

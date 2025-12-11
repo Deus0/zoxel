@@ -146,7 +146,7 @@ void GrassyPlainsSystem(iter *it) {
                                     value = zox_block_dirt;
                                 } else {
                                     if (!disable_dirt_patches) {
-                                        value = zox_block_grass;
+                                        value = zox_block_dirt_grass;
                                         did_place_grass_top = 1;
                                     } else {
                                         const double place_value = (perlin_terrain(
@@ -156,7 +156,7 @@ void GrassyPlainsSystem(iter *it) {
                                             seed * 2,
                                             4) + 1.0) / 2.0;
                                         if (place_value <= 0.73) {
-                                            value = zox_block_grass;
+                                            value = zox_block_dirt_grass;
                                             did_place_grass_top = 1;
                                         } else {
                                             value = zox_block_dirt;

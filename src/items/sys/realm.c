@@ -41,12 +41,12 @@ void spawn_realm_items(ecs *world, const entity realm) {
     for (int i = 0; i < blocks->length; i++) {
         const entity block = blocks->value[i];
         if (!zox_valid(block)) {
-            zox_log_error("block [%i] invalid", i)
+            zox_log_error("Block Invalid at Realm [%i] - e [%lu] %s", i, block, zox_get_name(block));
             items.value[i] = 0;
             continue;
         }
         items.value[i] = spawn_block_item(world, block);
-        if (i == zox_block_grass - 1) {
+        if (i == zox_block_dirt_grass - 1) {
             const entity item_block_dirt = items.value[zox_block_dirt - 1];
             zox_set(block, ItemLink, { item_block_dirt });
         }
