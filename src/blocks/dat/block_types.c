@@ -3,11 +3,6 @@
 
 // temp lookup for voxels
 // #define zox_block_air 0
-// solids
-byte zox_block_dirt = 1;
-byte zox_block_dirt_grass = 2;
-// #define zox_block_dirt 1
-// #define zox_block_grass 2
 byte zox_block_sand = 3;
 byte zox_block_stone = 4;
 byte zox_block_obsidian = 5;

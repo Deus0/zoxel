@@ -46,6 +46,7 @@
 #include "chunks3/_.c"
 #include "voxes/_.c"
 #include "models/_.c"
+#include "biomes/_.c"
 #include "terrain/_.c"
 #include "streaming/_.c"
 #include "vrays/_.c"
@@ -56,7 +57,6 @@
 #include "characters/_.c"
 #include "dungeons/_.c"
 #include "game_ui/_.c"
-#include "biomes/_.c"
 
 // user data
 #include "users/_.c"
@@ -134,6 +134,7 @@ zox_begin_module(Zox)
     zox_import_module(Chunks3);
     zox_import_module(Voxes);
     zox_import_module(Models);
+    zox_import_module(Biomes);
     zox_import_module(Terrain);
     zox_import_module(Streaming);
     zox_import_module(Vrays);
@@ -144,7 +145,6 @@ zox_begin_module(Zox)
     zox_import_module(Characters);
     zox_import_module(Dungeons);
     zox_import_module(GameUI);
-    zox_import_module(Biomes);
 
     // user data
     zox_import_module(Users);

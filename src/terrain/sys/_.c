@@ -30,12 +30,13 @@ void define_systems_terrain(ecs *world) {
 
     // generate terrain
     zox_system(
-        ChunkFlatlandSystem,
+        FlatlandSystem,
         zoxp_voxels_write,
+        [in] chunks3.GenerateChunk,
         [in] chunks3.ChunkPosition,
-        [out] chunks3.GenerateChunk,
-        [out] chunks3.VoxelNode,
+        [in] chunks3.VoxLink,
         [out] chunks3.NodeDepth,
+        [out] chunks3.VoxelNode,
         [none] TerrainChunk,
         [none] FlatlandChunk
     );

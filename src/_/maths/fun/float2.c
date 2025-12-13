@@ -79,3 +79,7 @@ static inline float2 normalize2D(const float2 input) {
 static inline float float2_distance(const float2 a, const float2 b) {
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
+
+static inline float2 float2_single(const float v) {
+    return (float2) { v, v };
+}

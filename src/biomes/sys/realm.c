@@ -75,7 +75,7 @@ void spawn_realm_biomes(ecs *world, const entity realm) {
         add_to_BiomeLinks(&biomes, grasslands);
     }
 
-    /*{
+    {
         entity desert = spawn_biome(
             world,
             prefab_biome,
@@ -84,7 +84,7 @@ void spawn_realm_biomes(ecs *world, const entity realm) {
             seed->value + 2
         );
         add_to_BiomeLinks(&biomes, desert);
-    }*/
+    }
 
     zox_set_ptr(realm, BiomeLinks, biomes);
 

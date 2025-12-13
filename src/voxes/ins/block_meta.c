@@ -1,17 +1,12 @@
 // our main realm block spawn function
-entity spawn_block_vox_meta(
-    ecs *world,
-    const SpawnBlock data
-) {
+entity spawn_block_vox_meta(ecs *world, const SpawnBlock data) {
     zox_instance(data.prefab);
     zox_name(data.name);
-    // zox_set(e, ZoxName, { text_to_zext(data.name) });
     set_ZoxName(world, e, data.name);
     zox_set(e, BlockIndex, { data.index });
     zox_set(e, Color, { data.color });
     if (data.prefab_world_block) {
         zox_prefab_set(e, BlockPrefabLink, { data.prefab_world_block });
-        // zox_log("Set BlockPrefabLink [%lu] at [%i]", data.prefab_world_block, data.index);
     }
     if (data.tag) {
         zox_add_tag_id(e, data.tag);

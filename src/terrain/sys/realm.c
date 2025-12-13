@@ -58,46 +58,27 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
     }
 
     zox_muter(realm, BlockLinks, blocks);
-    // BlockLinks blocks = (BlockLinks) { 0 };
-    // initialize_BlockLinks(&blocks, zox_blocks_end - 1);
+    zox_log("Realm Blocks (Unique Start ID) [%i]", blocks->length);
 
-    /*for (int i = 0; i < blocks.length; i++) {
-        blocks.value[i] = 0;
-    }
-    tapwatch(time_realm_blocks, "initialized");*/
-
-    // nature blocks
-    // blocks.value[zox_block_dirt - 1]
-    /*entity dirt = spawn_block_soil(
-        world,
-        zox_block_dirt,
-        "dirt",
-        dirt_color
-    );
-    add_to_BlockLinks(blocks, dirt);
-    tapwatch(time_realm_blocks, "built soil");*/
-
-    /*entity soil_grass = spawn_block_soil_grass(world, zox_block_grass, "soil_grass", dirt_color, grass_color);
-    add_to_BlockLinks(blocks, soil_grass);
-    tapwatch(time_realm_blocks, "built soil_grass");*/
-
-    zox_block_sand = blocks->length - 1;
+    zox_block_sand = blocks->length + 1;
     entity sand = spawn_block_soil(world, zox_block_sand, "sand", sand_color);
     add_to_BlockLinks(blocks, sand);
     tapwatch(time_realm_blocks, "built sand");
+    zox_log("Sand ID [%i]", zox_block_sand);
 
-    zox_block_stone = blocks->length - 1;
+    zox_block_stone = blocks->length + 1;
     entity stone = spawn_block_stone(world, zox_block_stone, "stone", stone_color);
     add_to_BlockLinks(blocks, stone);
     tapwatch(time_realm_blocks, "built stone");
+    zox_log("Stone ID [%i]", zox_block_stone);
 
-    zox_block_obsidian = blocks->length - 1;
+    zox_block_obsidian = blocks->length + 1;
     entity obsidian = spawn_block_stone(world, zox_block_obsidian, "obsidian", obsidian_color);
     add_to_BlockLinks(blocks, obsidian);
     zox_add_tag(obsidian, BlockInvinsible);
     tapwatch(time_realm_blocks, "built obsidian");
 
-    zox_block_bricks = blocks->length - 1;
+    zox_block_bricks = blocks->length + 1;
     entity bricks = spawn_block_bricks(
         world,
         zox_block_bricks,
@@ -107,7 +88,7 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
     tapwatch(time_realm_blocks, "built bricks");
 
     // decor
-    zox_block_vox_grass = blocks->length - 1;
+    zox_block_vox_grass = blocks->length + 1;
     entity model_group_grass = models->length >= 1 ? models->value[0] : 0;
     entity grass = spawn_block_grass(
         world,
@@ -117,7 +98,7 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
     );
     add_to_BlockLinks(blocks, grass);
 
-    zox_block_dirt_rubble = blocks->length - 1;
+    zox_block_dirt_rubble = blocks->length + 1;
     entity rubble = spawn_realm_block_rubble(
         world,
         zox_block_dirt_rubble,
@@ -128,7 +109,7 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
     add_to_BlockLinks(blocks, rubble);
     tapwatch(time_realm_blocks, "built rubble");
 
-    zox_block_dirt_flowers = blocks->length - 1;
+    zox_block_dirt_flowers = blocks->length + 1;
     entity flowers = spawn_realm_block_rubble(
         world,
         zox_block_dirt_flowers,
@@ -139,12 +120,12 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
     add_to_BlockLinks(blocks, flowers);
     tapwatch(time_realm_blocks, "built flowers");
 
-    zox_block_dirt_vox = blocks->length - 1;
+    zox_block_dirt_vox = blocks->length + 1;
     entity pile = spawn_realm_block_noisey(world, zox_block_dirt_vox, "dirt pile", dirt_color);
     add_to_BlockLinks(blocks, pile);
     tapwatch(time_realm_blocks, "built pile");
 
-    zox_block_vox_flower = blocks->length - 1;
+    zox_block_vox_flower = blocks->length + 1;
     entity vox_flower = spawn_block_flower(world, zox_block_vox_flower);
     add_to_BlockLinks(blocks, vox_flower);
     tapwatch(time_realm_blocks, "built flower");

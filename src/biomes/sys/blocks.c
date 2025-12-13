@@ -1,3 +1,19 @@
+// TODO: Refactor these into Biomes from Terrain
+// Blocks >> Chunks >> Biomes >> Terrain ?
+extern entity spawn_block_soil(
+    ecs *world,
+    const byte index,
+    char* name,
+    const color block_color
+);
+extern entity spawn_block_soil_grass(
+    ecs *world,
+    const byte index,
+    char* name,
+    const color bottom_color,
+    const color top_color
+);
+
 void BiomeBlocksSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
@@ -53,36 +69,3 @@ void BiomeBlocksSystem(iter *it) {
         // set refresh then
     }
 } zoxd_system2(BiomeBlocksSystem);
-
-void BiomeBlocks2System(iter *it) {
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(Generate);
-    zox_sys_in(RealmLink);
-    zox_sys_in(BlockLinks);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Generate, generate);
-        zox_sys_i(RealmLink, realm);
-        zox_sys_i(BlockLinks, blocks);
-
-        if (generate->value != zox_dirty_active) {
-            continue;
-        }
-
-        zox_muter(realm->value, BlockLinks, realm_blocks);
-        for (int j = 0; j < blocks->length; j++) {
-            const entity block = blocks->value[j];
-            add_to_BlockLinks(realm_blocks, block);
-            // set on block
-            byte index = realm_blocks->length;
-            zox_set(block, BlockIndex, { index });
-            if (j == 0) {
-                zox_block_dirt = index;
-                zox_log("+ Set zox_block_dirt [%i]", index);
-            } else if (j == 1) {
-                zox_block_dirt_grass = index;
-                zox_log("+ Set zox_block_dirt_grass [%i]", index);
-            }
-        }
-    }
-} zoxd_system2(BiomeBlocks2System);

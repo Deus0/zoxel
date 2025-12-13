@@ -1,4 +1,4 @@
-entity meta_item_block_dirt;
+// entity meta_item_block_dirt;
 entity meta_item_block_dark;
 entity meta_item_block_obsidian;
 entity meta_item_block_sand;
@@ -46,14 +46,14 @@ void spawn_realm_items(ecs *world, const entity realm) {
             continue;
         }
         items.value[i] = spawn_block_item(world, block);
-        if (i == zox_block_dirt_grass - 1) {
+        /*if (i == zox_block_dirt_grass - 1) {
             const entity item_block_dirt = items.value[zox_block_dirt - 1];
             zox_set(block, ItemLink, { item_block_dirt });
-        }
+        }*/
     }
     zox_set_ptr(realm, ItemLinks, items);
 
-    meta_item_block_dirt = items.value[zox_block_dirt - 1];
+    // meta_item_block_dirt = items.value[zox_block_dirt - 1];
     meta_item_block_obsidian = items.value[zox_block_obsidian - 1];
     meta_item_block_dark = items.value[zox_block_dark - 1];
     meta_item_block_sand = items.value[zox_block_sand - 1];

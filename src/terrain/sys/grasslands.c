@@ -42,12 +42,12 @@ void GrassyPlainsSystem(iter *it) {
     startwatch(time_grassy_plains);
 
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDepth, renderDepth);
-        zox_sys_i(ChunkPosition, chunkPosition);
+        zox_sys_i(RenderDepth, render_depth);
+        zox_sys_i(ChunkPosition, positionc);
         zox_sys_i(RenderDepthDirty, dirty);
         zox_sys_i(VoxelNodeEdited, edited);
-        zox_sys_i(VoxLink, voxLink);
-        zox_sys_o(NodeDepth, nodeDepth);
+        zox_sys_i(VoxLink, terrain);
+        zox_sys_o(NodeDepth, node_depth);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(VoxelNodeDirty, node_dirty);
         zox_sys_o(VoxelNodeGenerated, generated);
@@ -59,8 +59,8 @@ void GrassyPlainsSystem(iter *it) {
             continue;
         }
 
-        zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
-        byte generation_depth = optimize_generation_lods ? renderDepth->value : terrain_depth;
+        zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
+        byte generation_depth = optimize_generation_lods ? render_depth->value : terrain_depth;
         // if no depth, skip
         if (!generation_depth) {
             continue;
@@ -73,32 +73,60 @@ void GrassyPlainsSystem(iter *it) {
         }
 
         // if already at that level
-        if (nodeDepth->value >= generation_depth) {
+        if (node_depth->value >= generation_depth) {
             // we should set to rebuild mesh still, with node dirty
             //  Until we cache those extra meshes
             node_dirty->value = zox_dirty_trigger;
             continue;
         }
 
-        nodeDepth->value = generation_depth;
-        const byte is_max_depth = nodeDepth->value == terrain_depth;
+        node_depth->value = generation_depth;
+        const byte is_max_depth = node_depth->value == terrain_depth;
 
-        const double terrain_amplifier = powers_of_two[nodeDepth->value] * render_distance_y;
-        const byte chunk_voxel_length = powers_of_two_byte[nodeDepth->value];
-        const float2 map_size_f = (float2) { chunk_voxel_length, chunk_voxel_length };
-        const float3 chunk_position_float3 = float3_from_int3(chunkPosition->value);
+        const double terrain_amplifier = powers_of_two[node_depth->value] * render_distance_y;
+        const byte chunk_voxel_length = powers_of_two_byte[node_depth->value];
+        const float2 map_size_f = float2_single(chunk_voxel_length);
+        const float3 chunk_position_float3 = float3_from_int3(positionc->value);
         const int chunk_position_y = (int) (chunk_position_float3.y * chunk_voxel_length);
-        byte3 voxel_position;
+        byte3 positionl;
         // For each XZ position
+
+        zox_geter(terrain->value, RealmLink, realm);
+        zox_geter(realm->value, BiomeLinks, biomes);
+        if (!biomes->length) {
+            zox_log_error("No Biomes");
+            continue;
+        }
+        const entity biome = positionc->value.z > 0 ? biomes->value[0] :  biomes->value[biomes->length - 1];
+        zox_geter(biome, BlockLinks, biome_blocks);
+        if (!biome_blocks->length) {
+            zox_log_error("No Blocks in Biome [%s]", zox_get_name(biome));
+            continue;
+        }
+        const entity dirt = biome_blocks->value[0];
+        const entity grass = biome_blocks->value[1];
+        if (!zox_valid(dirt) || !zox_valid(grass)) {
+            zox_log_error("Dirt [%s] invalid in Biome [%s]", zox_get_name(biome));
+            continue;
+        }
+        zox_geter_value(dirt, BlockIndex, byte, biome_dirt_id);
+        zox_geter_value(grass, BlockIndex, byte, biome_grass_id);
+        if (!biome_dirt_id) {
+            zox_log_error("Biome dirt is air.");
+            continue;
+        }
+        /*zox_log("   Block [%s] index [%i]", zox_get_name(dirt), biome_dirt_id);
+        zox_log("   Block [%s] index [%i]", zox_get_name(grass), biome_grass_id);*/
+
 
         write_lock_VoxelNode(node);
 
-        for (voxel_position.x = 0; voxel_position.x < chunk_voxel_length; voxel_position.x++) {
-            for (voxel_position.z = 0; voxel_position.z < chunk_voxel_length; voxel_position.z++) {
+        for (positionl.x = 0; positionl.x < chunk_voxel_length; positionl.x++) {
+            for (positionl.z = 0; positionl.z < chunk_voxel_length; positionl.z++) {
 
                 const float2 positionn = (float2) {
-                    noise_positiver2 + chunk_position_float3.x + (voxel_position.x / map_size_f.x),
-                    noise_positiver2 + chunk_position_float3.z + (voxel_position.z / map_size_f.y)
+                    noise_positiver2 + chunk_position_float3.x + (positionl.x / map_size_f.x),
+                    noise_positiver2 + chunk_position_float3.z + (positionl.z / map_size_f.y)
                 };
 
                 const double mountain_amplifier = 2;
@@ -121,7 +149,8 @@ void GrassyPlainsSystem(iter *it) {
                     positionn.y,
                     height_frequency,
                     seed,
-                    terrain_octaves);
+                    terrain_octaves
+                );
                 perlin_value *= height_amplifier;
 
                 const int global_position_y = int_floorf(terrain_boost + -terrain_minus_amplifier + perlin_value);
@@ -131,22 +160,24 @@ void GrassyPlainsSystem(iter *it) {
                 byte did_place_grass_top = 0;
                 // For each Y position
                 if (local_height >= 0) {
-                    for (voxel_position.y = 0; voxel_position.y <= local_height; voxel_position.y++) {
+                    for (positionl.y = 0; positionl.y <= local_height; positionl.y++) {
+                        const int place_positionv = chunk_position_y + positionl.y;
                         // top blocks
                         byte value;
-                        if (chunkPosition->value.y == -render_distance_y && voxel_position.y == 0) {
+                        if (positionc->value.y == -render_distance_y && positionl.y == 0) {
                             value = zox_block_obsidian;
-                        } else if (!disable_top_placements && voxel_position.y  == local_height_raw) {
+                        } else if (!disable_top_placements && positionl.y  == local_height_raw) {
                             if (is_mountain) {
                                 value = zox_block_stone;
                             } else {
+
                                 if (global_position_y < sand_height) {
                                     value = zox_block_sand;
                                 } else if (global_position_y == sand_height) {
-                                    value = zox_block_dirt;
+                                    value = biome_dirt_id;
                                 } else {
                                     if (!disable_dirt_patches) {
-                                        value = zox_block_dirt_grass;
+                                        value = biome_grass_id;
                                         did_place_grass_top = 1;
                                     } else {
                                         const double place_value = (perlin_terrain(
@@ -156,21 +187,24 @@ void GrassyPlainsSystem(iter *it) {
                                             seed * 2,
                                             4) + 1.0) / 2.0;
                                         if (place_value <= 0.73) {
-                                            value = zox_block_dirt_grass;
+                                            value = biome_grass_id;
                                             did_place_grass_top = 1;
                                         } else {
-                                            value = zox_block_dirt;
+                                            value = biome_dirt_id;
                                         }
                                     }
                                 }
                             }
+                            // TODO: Check Global
+                        } else if (place_positionv == global_position_y - 1) {
+                            value = biome_dirt_id;
                         } else {
                             value = zox_block_stone;
                         }
                         set_voxelt(
                             node,
-                            nodeDepth->value,
-                            voxel_position,
+                            node_depth->value,
+                            positionl,
                             value,
                             0);
                     }
@@ -189,11 +223,11 @@ void GrassyPlainsSystem(iter *it) {
                         positionn.y,
                         seed);
                     if (place_grass) {
-                        voxel_position.y = local_height_raw + 1;
+                        positionl.y = local_height_raw + 1;
                         set_voxelt(
                             node,
-                            nodeDepth->value,
-                            voxel_position,
+                            node_depth->value,
+                            positionl,
                             zox_block_vox_grass,
                             0);
                     }
@@ -231,8 +265,8 @@ void GrassyPlainsSystem(iter *it) {
 
 /*const int rando = rand() % 10000;
 if (rando <= block_spawn_chance_grass + block_spawn_chance_flower + block_spawn_chance_rubble) {
-    voxel_position.y = local_height_raw + 1;
-    data.position = voxel_position;
+    positionl.y = local_height_raw + 1;
+    data.position = positionl;
     if (rando <= block_spawn_chance_grass) {
         set_voxel(&datam_grass, data);
     }
@@ -246,15 +280,15 @@ if (rando <= block_spawn_chance_grass + block_spawn_chance_flower + block_spawn_
 }*/
 
 // obisidian bottom
-/*if (chunkPosition->value.y == -render_distance_y) {
-    voxel_position.y = 0;
+/*if (positionc->value.y == -render_distance_y) {
+    positionl.y = 0;
     const int obsidian_height = rand() % terrain_obsidian_height;
-    for (voxel_position.y = 0; voxel_position.y <= obsidian_height; voxel_position.y++) {
+    for (positionl.y = 0; positionl.y <= obsidian_height; positionl.y++) {
         // set_voxel(setter_obsidian, data);
         set_voxelt(
             node,
             node_depth,
-            voxel_position,
+            positionl,
             zox_block_obsidian,
             0);
     }

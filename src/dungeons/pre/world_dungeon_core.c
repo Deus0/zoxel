@@ -1,5 +1,5 @@
 // prefab for our world block
-ecs_entity_t spawn_block_world_dungeon(ecs_world_t *world) {
+entity spawn_block_world_dungeon(ecs *world) {
     zox_prefab();
     zox_name("block_dungeon_core");
     zox_add_tag(e, BlockDungeon);
