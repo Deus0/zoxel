@@ -35,12 +35,18 @@ cflags_dever	:= $(cflags_dev)  -Wextra -Wpedantic -pedantic-errors -Werror  -fdi
 # more checks
 cflags_devmem	:= $(cflags_dever) -Wpedantic -fsanitize=address -fno-omit-frame-pointer -D_POSIX_C_SOURCE=200809L
 
-LDFLAGS 	:= -lm -lpthread -lGL -lSDL2 -lSDL2_image -lSDL2_mixer \
+LDFLAGS 	:= -lm -lpthread -lSDL2 -lSDL2_image -lSDL2_mixer \
 			-Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images \
 			-Dzox_game=$(GAME)
 TARGET  	:= bin/$(GAME)
 TARGET_DEV 	:= bin/$(GAME)-debug
 GAMES_DIR	:= $(SRC_DIR)/nexus
+
+ifeq ($(shell uname -m), aarch64)
+    LDFLAGS += -lGLESv2 -lGL
+else
+    LDFLAGS += -lGL
+endif
 
 # Flecs Direct Support Now
 ifeq ("$(wildcard inc/flecs/flecs.c)","")
@@ -67,6 +73,9 @@ $(TARGET): $(SRCS)
 	@ echo "-------------------"
 
 build: flecs $(TARGET)
+
+build-gles2: flecs
+	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LDFLAGS) -Dzox_gles2
 
 # Extra
 
@@ -128,6 +137,12 @@ rund: dev
 
 runv: dev
 	./$(TARGET_DEV) --verbose
+
+run-gles2: build-gles2
+	@LIBGL_ALWAYS_SOFTWARE=1 \
+	MESA_LOADER_DRIVER_OVERRIDE=llvmpipe \
+	MESA_SOFTWARE_DEVICE=llvmpipe \
+	make run
 
 gdb: dev
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)

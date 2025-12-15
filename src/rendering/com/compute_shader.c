@@ -8,8 +8,12 @@ ECS_DTOR(ComputeShaderLink, ptr, {
 
 // Function to generate a compute shader on gpu
 uint gpu_spawn_compute_shader() {
+#ifndef zox_disable_compute
     uint buffer = glCreateShader(GL_COMPUTE_SHADER);
     return buffer;
+#else
+    return 0;
+#endif
 }
 
 // Function to add a compute shader to a prefab

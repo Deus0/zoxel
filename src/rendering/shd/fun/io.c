@@ -14,26 +14,34 @@ static inline entity spawn_file_shader_at_path(
     // zox_log("-------------------------------")
 
     // Example: #version 320 es
-    char* versioned_source = append_shader_version(source, shader_opengl_version, is_shaders_es);
+    char* source2 = append_shader_version(source, shader_opengl_version, is_shaders_es);
     free(source);
-
-    if (!versioned_source) {
-        zox_log_error("[versioned_source] is invalid")
+    if (!source2) {
+        zox_log_error("[source2] is invalid")
         return 0;
     }
 
-    char* processed_source = process_ubo_max_define(versioned_source, ubo_size);
-    free(versioned_source);
+    char* source3 = source2;
+    if (shader_opengl_version == 100) {
+        source3 = convert_to_gles2_shader(source2);
+        free(source2);
+        if (!source3) {
+            zox_log_error("[source3] is invalid")
+            return 0;
+        }
+    }
 
-    if (!processed_source) {
-        zox_log_error("[processed_source] is invalid")
+    char* source4 = process_ubo_max_define(source3, ubo_size);
+    free(source3);
+    if (!source4) {
+        zox_log_error("[source4] is invalid")
         return 0;
     }
     if (is_log_shaders) {
-        zox_log("final source [%s]\n%s", path, processed_source)
+        zox_log("final source [%s]\n%s", path, source4)
         zox_log("-------------------------------")
     }
-    return spawn_file_shader(world, prefab, processed_source);
+    return spawn_file_shader(world, prefab, source4);
 }
 
 void load_files_shaders(ecs *world) {

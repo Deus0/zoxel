@@ -46,13 +46,10 @@ byte initialize_material(
 
 uint spawn_gpu_material_program(const uint2 shader) {
     uint material = glCreateProgram();
-    if (initialize_material(material, shader.x, shader.y) ==  EXIT_FAILURE) {
+    if (initialize_material(material, shader.x, shader.y) == EXIT_FAILURE) {
         glDeleteProgram(material);
         return 0;
     } else {
-#ifdef zoxel_catch_opengl_errors
-        check_opengl_error("spawn_gpu_material_program");
-#endif
         return material;
     }
 }

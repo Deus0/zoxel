@@ -7,7 +7,7 @@ int check_opengl_error(char* function_name) {
         // printf("check_opengl_error [%s] [%i]\n", function_name, (int) error_code);
         const char* error_message;
         switch (error_code) {
-            case GL_INVALID_ENUM:
+            /*case GL_INVALID_ENUM:
                 error_message = "GL_INVALID_ENUM";
                 break;
             case GL_INVALID_VALUE:
@@ -34,10 +34,7 @@ int check_opengl_error(char* function_name) {
                 break;
             case GL_INVALID_INDEX:
                 error_message = "GL_INVALID_INDEX";
-                break;
-            // case GL_CONTEXT_LOST:
-            //    error_message = "GL_CONTEXT_LOST";
-            //    break;
+                break;*/
             default:
                 error_message = "UNKNOWN";
                 break;
@@ -63,7 +60,7 @@ byte check_opengl_frame_buffer_status() {
     if (status == GL_FRAMEBUFFER_COMPLETE) return 1;
     char* error_code = "";
     switch (status) {
-        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+        /*case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
             error_code = "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
             // One or more framebuffer attachments are incomplete or not attached.
             break;
@@ -90,7 +87,7 @@ byte check_opengl_frame_buffer_status() {
         case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
             error_code = "GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS";
             // Not all attached images have the same width and height.
-            break;
+            break;*/
         default:
             error_code = "UKNOWN";
             // An unknown error occurred.

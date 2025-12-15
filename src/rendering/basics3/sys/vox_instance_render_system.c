@@ -10,6 +10,7 @@
 // extern string_hashmap *files_hashmap_voxes;
 
 void VoxInstanceRenderSystem(iter *it) {
+#ifndef zox_disable_ubos
     const uint max_meshes = 16;
     const uint max_transforms = 1024; // 128;
     if (!material_vox_instance) {
@@ -119,4 +120,5 @@ void VoxInstanceRenderSystem(iter *it) {
     dispose_InstanceRenderCommand_array_d(commands);
     zox_disable_material();
     catch_basic3D_errors("VoxInstanceRenderSystem");
+#endif
 } zoxd_system(VoxInstanceRenderSystem)

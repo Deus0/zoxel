@@ -1,6 +1,6 @@
 // Print All Supported Extensions
 void print_opengl_functions() {
-    GLint numExtensions;
+    /*GLint numExtensions;
     glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
     zox_log("+ OpenGL Extensions: %d", numExtensions);
     const GLubyte *extensions = glGetString(GL_EXTENSIONS);
@@ -8,10 +8,10 @@ void print_opengl_functions() {
         zox_log_error("Could not retrieve extensions [%s]", SDL_GetError())
     } else {
         // zox_log(" - gl extensions: %s", extensions);
-        /*for (int i = 0; i < numExtensions; ++i) {
+        for (int i = 0; i < numExtensions; ++i) {
             zox_log("%s\n", glGetStringi(GL_EXTENSIONS, i))
-        }*/
-    }
+        }
+    }*/
 }
 
 void print_opengl() {

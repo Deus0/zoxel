@@ -36,7 +36,7 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
         return;
     }
     zox_geter_value(e, WindowFullscreen, byte, fullscreen);
-    zox_set(e, WindowMaximized, { maximized })
+    zox_set(e, WindowMaximized, { maximized });
     if (!fullscreen) {
         int2 size;
         int2 position;
@@ -57,7 +57,6 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
     }
 }
 
-
 // todo: get position2 to work
 entity spawn_app_sdl_opengl(
     ecs *world,
@@ -77,16 +76,39 @@ entity spawn_app_sdl_opengl(
         zox_log_error("failed spawning sdl window");
         return 0;
     }
-    if (create_window_opengl_context(world, e) == EXIT_FAILURE) {
-        zox_log_error(" opengl_context creation failed");
+
+    zox_geter(e, SDLWindow, sdl_window);
+    SDL_GLContext context = create_sdl_opengl_context(sdl_window->value);
+    if (!context) {
+        zox_log_error("OpenGL could not create a context");
+        running = 0;
         return 0;
     }
 
-    /*zox_geter(e, SDLWindow, window);
-    SDL_GL_SwapWindow(window->value);
-    if (SDL_GL_SetSwapInterval(vsync)) {
-        zox_log_error("Unable to disable VSync: %s", SDL_GetError());
-    }*/
+    if (set_sdl_window_context(sdl_window->value, context)) {
+        zox_log_error("OpenGL could not set context to sdl window");
+        running = 0;
+        return 0;
+    }
+
+    // --- Now check if the context is ACTUALLY valid ---
+    const char* ver = (const char*)glGetString(GL_VERSION);
+    const char* ren = (const char*)glGetString(GL_RENDERER);
+    const char* ven = (const char*)glGetString(GL_VENDOR);
+
+    if (!ver || !ren || !ven) {
+        zox_log_error("OpenGL context creation failed: GL strings are NULL.");
+        SDL_GL_DeleteContext(context);
+        return EXIT_FAILURE;
+    }
+
+    zox_log("GL_VERSION: %s", ver);
+    zox_log("GL_RENDERER: %s", ren);
+    zox_log("GL_VENDOR: %s", ven);
+
+    zox_log("Created Opengl Context Success");
+    zox_set(e, Context, { context });
+
 
     return e;
 }

@@ -20,8 +20,7 @@ void Particle3DRenderSystem(ecs_iter_t *it) {
     zox_sys_begin()
     zox_sys_in(Position3D)
     zox_sys_in(Color)
-#ifndef zox_disable_particles_gpu_instancing
-
+#if !defined(zox_disable_particles_gpu_instancing) && !defined(zox_disable_instancing)
     // position
     glBindBuffer(GL_ARRAY_BUFFER, particle3D_instanced_position_buffer);
     // glBufferData(GL_ARRAY_BUFFER, it->count * sizeof(float3), position3Ds, GL_STATIC_DRAW);

@@ -10,6 +10,7 @@ ECS_DTOR(RenderBufferLink, ptr, {
 
 // GL_DEPTH24_STENCIL8 GL_DEPTH
 void set_render_buffer_size(const uint rbo, const int2 size) {
+#ifndef zox_gles2
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
     glRenderbufferStorage(
         GL_RENDERBUFFER,
@@ -17,6 +18,7 @@ void set_render_buffer_size(const uint rbo, const int2 size) {
         size.x,
         size.y);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
+#endif
 }
 
 // Create and attach a renderbuffer for depth and stencil (optional, depending on needs)

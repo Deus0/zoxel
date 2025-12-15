@@ -17,7 +17,11 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
     return (MaterialVoxInstance) {
         glGetAttribLocation(material, "vertex_position"),
         glGetAttribLocation(material, "vertex_color"),
+#ifndef zox_disable_ubos
         glGetUniformBlockIndex(material, "InstanceMatrices"),
+#else
+        0,
+#endif
         glGetUniformLocation(material, "camera_matrix"),
         glGetUniformLocation(material, "brightness"),
         glGetUniformLocation(material, "fog_data")
@@ -25,14 +29,18 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
 }
 
 uint generate_ubo(GLint binding_point) {
+#ifndef zox_disable_ubos
     uint ubo;
     glGenBuffers(1, &ubo);
     glBindBuffer(GL_UNIFORM_BUFFER, ubo);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(float4x4) * zox_get_safe_ubo_size(), NULL, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, ubo);
     glBindBuffer(GL_UNIFORM_BUFFER, 0); // Unbind after allocation
-    zox_log_shader(" + spawned ubo: %i binded to block index %i", ubo, binding_point)
+    zox_log_shader(" + spawned ubo: %i binded to block index %i", ubo, binding_point);
     return ubo;
+#else
+    return 0;
+#endif
 }
 
 /*uint spawn_ubo(ecs *world, const entity material) {

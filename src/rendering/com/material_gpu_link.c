@@ -10,10 +10,7 @@ void add_gpu_material(ecs *world, const entity e) {
     }
 }
 
-uint spawn_gpu_material(ecs *world,
-    const entity e,
-    const uint2 shader)
-{
+uint spawn_gpu_material(ecs *world, const entity e, const uint2 shader) {
     if (!shader.x || !shader.y) {
         zox_log_error("[spawn_gpu_material] has invalid shader");
         return 0;
@@ -31,7 +28,7 @@ uint spawn_gpu_material(ecs *world,
 }
 
 ECS_DTOR(MaterialGPULink, ptr, {
-    if (ptr->value != 0) {
+    if (ptr->value) {
         glDeleteProgram(ptr->value);
     }
 })

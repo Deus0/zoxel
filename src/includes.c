@@ -58,6 +58,10 @@
 #endif
 
 #include <SDL2/SDL_opengl.h>
+#ifdef zox_gles2
+    #include <GLES2/gl2.h>
+#endif
+
 #ifdef zox_sdl_images
     #include <SDL2/SDL_image.h>
 #endif

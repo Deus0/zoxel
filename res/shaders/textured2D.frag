@@ -1,8 +1,8 @@
+out lowp vec4 color;
 in lowp vec2 uv;
 uniform sampler2D tex;
 uniform lowp float brightness;
 uniform lowp float alpha;
-out lowp vec4 color;
 
 void main() {
     color = texture(tex, uv) * brightness;

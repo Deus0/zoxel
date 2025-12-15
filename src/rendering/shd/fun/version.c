@@ -1,8 +1,4 @@
-char* append_shader_version(
-    const char* source,
-    unsigned short version,
-    byte is_es)
-{
+char* append_shader_version(const char* source, unsigned short version, byte is_es) {
     if (!source || version < 100 || version > 460) {
         zox_log_error("[append_shader_version] failed, invalid inputs")
         return NULL;

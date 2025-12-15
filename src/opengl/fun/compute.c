@@ -1,5 +1,6 @@
 // uses opengl version to check iif compute is supported
 int check_compute_shader_support_from_version() {
+#ifndef zox_disable_compute
     const char* version_str = (const char*) glGetString(GL_VERSION);
     if (!version_str) {
         // zox_logw("GL not enabled.");
@@ -23,6 +24,7 @@ int check_compute_shader_support_from_version() {
     if (is_log_sdl) {
         zox_log_error("compute not supported: OpenGL %d.%d [%s]", major, minor, version_str)
     }
+#endif
     return EXIT_FAILURE;
 }
 
@@ -91,13 +93,18 @@ void test_compute() {
 }
 
 int test_compute_shader() {
+#ifndef zox_disable_compute
     uint compute_shader = glCreateShader(GL_COMPUTE_SHADER);
     if (compute_shader == 0) {
-        zox_log("    - compute shader creation failed\n");
+        zox_log("    - compute shader creation failed");
         return EXIT_FAILURE;
     } else {
-        zox_log("    > compute shader creation success\n");
+        zox_log("    > compute shader creation success");
         glDeleteShader(compute_shader);
         return EXIT_SUCCESS;
     }
+#else
+    zox_log("Compute Shaders Disabled");
+    return EXIT_FAILURE;
+#endif
 }

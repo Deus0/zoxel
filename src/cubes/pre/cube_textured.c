@@ -57,6 +57,10 @@ entity spawn_cube_textured(
     spawn_gpu_texture(world, e);
     const uint2 shader = zox_get_value(shader_textured3D, ShaderGPULink);
     const uint material = spawn_gpu_material(world, e, shader);
+    if (!material) {
+        zox_log_error("=> [spawn_cube_textured] Failed");
+        return 0;
+    }
     const MaterialTextured3D attributes = create_MaterialTextured3D(material);
     zox_set_data(e, MaterialTextured3D, attributes);
     zox_set(e, ShaderLink, { shader_textured3D });

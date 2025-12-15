@@ -1,11 +1,11 @@
+out lowp vec3 frag_color;
+in lowp vec3 mesh_pos;
+in highp float fog_level;
 uniform lowp float brightness;
 uniform lowp vec3 sky_top_color;
 uniform lowp vec3 sky_bottom_color;
 uniform lowp float time;
 uniform lowp vec4 fog_data;
-in lowp vec3 mesh_pos;
-in highp float fog_level;
-out lowp vec3 frag_color;
 
 lowp float rand(lowp vec2 co) {
     return fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453);

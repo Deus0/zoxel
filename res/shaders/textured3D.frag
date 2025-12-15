@@ -1,10 +1,10 @@
+out lowp vec4 frag_color;
 in lowp vec3 vertex_color_frag;
 in lowp vec2 uv;
 in highp float fog_level;
 uniform sampler2D tex;
 uniform lowp vec4 fog_data;
 uniform lowp float brightness;
-out lowp vec4 frag_color;
 
 void main() {
     lowp vec4 texture_color = texture(tex, uv);

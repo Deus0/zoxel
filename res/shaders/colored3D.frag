@@ -1,8 +1,8 @@
+out lowp vec3 frag_color;
 in lowp vec3 vertex_color_frag;
 in lowp float fog_blend;
 uniform lowp vec4 fog_data;
 uniform lowp float brightness;
-out lowp vec3 frag_color;
 
 void main() {
     frag_color = vertex_color_frag * brightness;

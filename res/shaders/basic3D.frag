@@ -1,7 +1,7 @@
+out lowp vec3 frag_color;
 in highp float fog_level;
 uniform lowp vec4 fog_data;
 uniform lowp float brightness;
-out lowp vec3 frag_color;
 
 void main() {
     frag_color = vec3(brightness, brightness / 3.0, brightness / 3.0);

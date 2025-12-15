@@ -22,7 +22,7 @@ int initialize_shader_line3D(ecs_world_t *world) {
     }
     line3D_material = spawn_gpu_material_program((const uint2) { line3D_shader.x, line3D_shader.y });
     if (!line3D_material) {
-        zox_log_error("line3D_material failed to initialize")
+        zox_log_error("=> [initialize_shader_line3D] Failed:\n%s", vert);
         return EXIT_FAILURE;
     }
     line3D_position_location = glGetAttribLocation(line3D_material, "position");

@@ -1,7 +1,6 @@
 entity shader_render_texture;
 entity material_render_texture;
 
-
 //! Links to locations inside a base material->
 typedef struct {
     GLint vertex_position;

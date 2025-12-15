@@ -24,17 +24,22 @@ ecs_entity_t spawn_prefab_cube(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_cube(ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const float3 position)
-{
-    zox_instance(prefab)
+entity spawn_cube(
+    ecs* world,
+    const entity prefab,
+    const float3 position
+) {
+    zox_instance(prefab);
     // zox_name("cube")
     // zox_add_tag(e, MeshBasic3D)
-    zox_set(e, Position3D, { position })
+    zox_set(e, Position3D, { position });
     spawn_gpu_mesh(world, e);
-    const uint2 shader = zox_get_value(shader_basic3D, ShaderGPULink)
+    const uint2 shader = zox_get_value(shader_basic3D, ShaderGPULink);
     const uint material = spawn_gpu_material(world, e, shader);
+    if (!material) {
+        zox_log_error("=> [spawn_cube] Failed");
+        return 0;
+    }
     const MaterialBasic3D attributes = create_MaterialBasic3D(material);
     zox_set_data(e, MaterialBasic3D, attributes)
     zox_set(e, ShaderLink, { shader_basic3D })

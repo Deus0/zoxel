@@ -2,6 +2,13 @@
 #ifndef zoxm_opengl
 #define zoxm_opengl
 
+#ifdef zox_gles2
+    #define zox_disable_instancing
+    #define zox_disable_ubos
+    #define zox_disable_compute
+    #define zox_disable_geometry_shaders
+#endif
+
 byte zox_use_post_processing = 1;
 #include "dat/_.c"
 #include "fun/_.c"
