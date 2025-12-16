@@ -1,23 +1,16 @@
 # ==== Zoxel ====
 # 	- remembers last picked game
-# Choose your game module
-LAST_GAME_FILE := .game
-
-ifeq ($(origin game), undefined)
-    ifeq ($(shell test -f $(LAST_GAME_FILE) && echo yes),)
-        GAME := zoxel
-    else
-        GAME := $(shell cat $(LAST_GAME_FILE))
-    endif
-else
-    GAME := $(game)
-endif
 
 
 SRC_DIR 	:= src
 SRC    		:= src/main.c
 SRCS 		:= $(shell find $(SRC_DIR) -name "*.c") # Change Detection
 CC      	:= gcc
+LIBS 		:= -lm -lpthread
+GAMES_DIR	:= $(SRC_DIR)/nexus
+
+# shell paths
+pkg_config = $(shell which pkg-config)
 
 # 🧱 Release build — for speed and glory
 # 03 breaks my sounds for now
@@ -35,27 +28,41 @@ cflags_dever	:= $(cflags_dev)  -Wextra -Wpedantic -pedantic-errors -Werror  -fdi
 # more checks
 cflags_devmem	:= $(cflags_dever) -Wpedantic -fsanitize=address -fno-omit-frame-pointer -D_POSIX_C_SOURCE=200809L
 
-LDFLAGS 	:= -lm -lpthread -lSDL2 -lSDL2_image -lSDL2_mixer \
-			-Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images \
-			-Dzox_game=$(GAME)
+
+### Choose your Game!
+LAST_GAME_FILE := .game
+ifeq ($(origin game), undefined)
+    ifeq ($(shell test -f $(LAST_GAME_FILE) && echo yes),)
+        GAME := zoxel
+    else
+        GAME := $(shell cat $(LAST_GAME_FILE))
+    endif
+else
+    GAME := $(game)
+endif
 TARGET  	:= bin/$(GAME)
 TARGET_DEV 	:= bin/$(GAME)-debug
-GAMES_DIR	:= $(SRC_DIR)/nexus
+LIBS 		+= -Dzox_game=$(GAME)
 
-ifeq ($(shell uname -m), aarch64)
-    LDFLAGS += -lGLESv2 -lGL
-else
-    LDFLAGS += -lGL
+# Add SDL
+LIBS += $(shell $(pkg_config) --libs sdl2 SDL2_image SDL2_mixer)
+LIBS += -Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images
+
+# Find and add GL Libaries
+LIBS_GL := $(shell $(pkg_config) --libs egl glesv2)
+ifeq ($(LIBS_GL),)
+	LIBS_GL := $(shell $(pkg_config) --libs gl)
 endif
+LIBS += $(LIBS_GL)
 
 # Flecs Direct Support Now
 ifeq ("$(wildcard inc/flecs/flecs.c)","")
     # System Flecs Linker Flag
-    LDFLAGS += -lflecs
+    LIBS += -lflecs
 else
     # Use Source Directly
     SRC += inc/flecs/flecs.c
-    LDFLAGS += -Iinc/flecs -Dflecssource
+    LIBS += -Iinc/flecs -Dflecssource
 endif
 
 .PHONY: game help clean build dev pick run rund runp runpd gdb val flecs flecs-package
@@ -68,14 +75,14 @@ $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
 	@ mkdir -p bin
 	@ echo "-------------------"
-	$(CC) $(CFLAGS) $(SRC) -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS)
 	@ echo " - completed -"
 	@ echo "-------------------"
 
 build: flecs $(TARGET)
 
 build-gles2: flecs
-	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LDFLAGS) -Dzox_gles2
+	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LIBS) -Dzox_gles2
 
 # Extra
 
@@ -109,17 +116,17 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(cflags_dev) $(SRC) -o $@ $(LDFLAGS)
+	$(CC) $(cflags_dev) $(SRC) -o $@ $(LIBS)
 
 dev: $(TARGET_DEV)
 
 dever: $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(cflags_dever) $(SRC) -o $@ $(LDFLAGS)
+	$(CC) $(cflags_dever) $(SRC) -o $@ $(LIBS)
 
 devmem: $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(cflags_devmem) $(SRC) -o $@ $(LDFLAGS)
+	$(CC) $(cflags_devmem) $(SRC) -o $@ $(LIBS)
 
 gdbmem: devmem
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)
