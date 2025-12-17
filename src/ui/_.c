@@ -1,6 +1,9 @@
 #ifndef zoxm_ui
 #define zoxm_ui
 
+#include "set/_.c"
+#include "com/_.c"
+#include "dat/_.c"
 #include "core/_.c"
 #include "zigels/_.c"
 #include "texts/_.c"

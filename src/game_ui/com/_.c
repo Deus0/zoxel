@@ -26,6 +26,7 @@ zoxc(DebugLabelData, DebugLabelEvent);
 
 void define_components_game_ui(ecs *world) {
     zoxd_byte(MenuType);
+
     zoxd_tag(MenuMain);
     zoxd_tag(MenuOptions);
     zoxd_tag(MenuPaused);
@@ -33,6 +34,8 @@ void define_components_game_ui(ecs *world) {
     zoxd_tag(MenuGameTouch);
     zoxd_tag(MenuStart);
     zoxd_tag(MenuLoad);
+    zoxd_tag(MenuTerminal);
+
     zoxd_tag(FPSDisplay);
     zoxd_tag(QuadsCountLabel);
     zoxd_tag(GameDebugLabel);
