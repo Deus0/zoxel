@@ -8,7 +8,7 @@ void define_systems_stats_ui(ecs *world) {
         StatbarSystem,
         EcsOnUpdate,
         [in] StatLink,
-        [out] elements.core.ElementBar,
+        [out] elements.ElementBar,
         [none] Statbar
     );
     zox_system(
@@ -32,6 +32,6 @@ void define_systems_stats_ui(ecs *world) {
         EcsOnUpdate,
         [in] combat.CombatState,
         [in] stats.StatLinks,
-        [out] elements.core.ElementLinks
+        [out] elements.ElementLinks
     );
 }

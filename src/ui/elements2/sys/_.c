@@ -9,14 +9,14 @@ void define_systems_elements2(ecs *world) {
     zox_system(
         ElementDragSystem,
         EcsPostLoad,
-        [in] elements.core.DraggableState,
-        [in] elements.core.DraggingDelta,
-        [in] elements.core.DraggedLink
+        [in] elements.DraggableState,
+        [in] elements.DraggingDelta,
+        [in] elements.DraggedLink
     );
     zox_system(
         ScrollbarSystem,
         EcsPostUpdate,
-        [in] elements.core.DraggableState,
+        [in] elements.DraggableState,
         [in] layouts2.LayoutPosition,
         [in] layouts2.LayoutSize,
         [in] hierarchys.ParentLink,
@@ -33,8 +33,8 @@ void define_systems_elements2(ecs *world) {
     zox_system(
         Elementbar2System,
         EcsPostUpdate,
-        [in] elements.core.ElementBar,
-        [in] elements.core.ElementBarSize,
+        [in] elements.ElementBar,
+        [in] elements.ElementBarSize,
         [in] hierarchys.Children,
         [in] layouts2.LayoutSize,
         [none] Elementbar2
@@ -42,17 +42,17 @@ void define_systems_elements2(ecs *world) {
     zox_system(
         TooltipSystem,
         EcsOnUpdate,
-        [in] elements.core.SelectState,
+        [in] elements.SelectState,
         [in] layouts2.CanvasLink,
-        [in] elements.core.TooltipEvent
+        [in] elements.TooltipEvent
     );
     zox_system(
         SlideEventSystem,
         EcsOnUpdate,
-        [in] elements.core.SlideEvent,
+        [in] elements.SlideEvent,
         [in] elements2.SlideBounds,
-        [in] elements.core.DraggableState,
-        [in] elements.core.DraggerLink,
+        [in] elements.DraggableState,
+        [in] elements.DraggerLink,
         [in] layouts2.LayoutConstraints,
         [in] layouts2.LayoutPosition
     );

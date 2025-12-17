@@ -12,7 +12,7 @@ void zox_define_systems_editor(ecs_world_t *world) {
         [in] layouts2.Layer2D,
         [in] layouts2.Anchor,
         [in] layouts2.ListUIMax,
-        [in] elements.core.ElementFontSize,
+        [in] elements.ElementFontSize,
         [in] layouts2.CanvasLink,
         [out] HierarchyUIDirty,
         [out] layouts2.LayoutPosition,

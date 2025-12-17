@@ -75,6 +75,6 @@ void define_systems_stats(ecs *world) {
         [in] characters.GenerateCharacter,
         [in] generic.ZoxName,
         [in] stats.StatLinks,
-        [out] elements.core.ElementLinks
+        [out] elements.ElementLinks
     );
 }

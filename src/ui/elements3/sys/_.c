@@ -8,15 +8,15 @@ void define_systems_elements3D(ecs *world) {
     zox_system(
         UITrailSystem,
         zox_transforms_stage,
-        [in] elements.core.UIHolderLink,
+        [in] elements.UIHolderLink,
         [in] UITrail,
         [out] transforms3.Position3D
     );
     zox_system(
         Elementbar3DSystem,
         EcsOnUpdate,
-        [in] elements.core.ElementBar,
-        [in] elements.core.ElementBarSize,
+        [in] elements.ElementBar,
+        [in] elements.ElementBarSize,
         [in] hierarchys.Children,
         [none] rendering.MeshVertices
     );
@@ -39,7 +39,7 @@ void define_systems_elements3D(ecs *world) {
         zox_system_1(
             Element3DMeshSystem,
             zoxp_mainthread,
-            [out] elements.core.InitializeElement,
+            [out] elements.InitializeElement,
             [out] rendering.MeshDirty,
             [out] rendering.MeshGPULink,
             [out] rendering.UvsGPULink,

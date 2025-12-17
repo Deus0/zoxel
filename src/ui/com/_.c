@@ -54,7 +54,7 @@ entity get_linked_canvas(ecs* world, entity e) {
     return zox_valid(e) && zox_has(e, CanvasLink) ? zox_gett_value(e, CanvasLink) : 0;
 }
 
-void define_components_elements_core(ecs *world) {
+void define_components_elements(ecs *world) {
     zoxd_tag(Element);
     zoxd_tag(Element2D);
     zoxd_tag(ElementRaycaster);

@@ -13,6 +13,7 @@
 #include "touch/_.c"
 
 zox_begin_module(Elements)
+    define_components_elements(world);
     zox_import_module(ElementsCore);
     zox_import_module(Zigels);
     zox_import_module(Texts);

@@ -8,7 +8,6 @@
 #include "sys/_.c"
 
 zox_begin_module(ElementsCore)
-    define_components_elements_core(world);
     define_systems_elements_core(world);
     add_hook_spawn_prefabs(spawn_prefabs_ui_core);
 zox_end_module(ElementsCore)

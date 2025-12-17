@@ -111,15 +111,15 @@ void define_systems_elements_core(ecs *world) {
     zox_system(
         ElementSelectedSystem,
         EcsOnUpdate,
-        [in] elements.core.SelectState,
+        [in] elements.SelectState,
         [out] rendering.Brightness,
         [none] Element
     );
     zox_system(
         ElementActiveSystem,
         EcsOnUpdate,
-        [in] elements.core.ActiveState,
-        [in] elements.core.ActiveStateDirty,
+        [in] elements.ActiveState,
+        [in] elements.ActiveStateDirty,
         [out] textures.OutlineColor,
         [out] rendering.Brightness,
         [out] textures.GenerateTexture,
@@ -139,9 +139,9 @@ void define_systems_elements_core(ecs *world) {
     zox_system(
         DraggerEndSystem,
         EcsPostLoad,
-        [out] elements.core.DraggableState,
+        [out] elements.DraggableState,
         [out] DraggerLink,
-        [out] elements.core.DraggingDelta
+        [out] elements.DraggingDelta
     );
     if (!headless) {
         zox_system(
@@ -177,14 +177,14 @@ void define_systems_elements_core(ecs *world) {
     zox_system_1(
         ClickSoundSystem,
         zoxp_mainthread,
-        [in] elements.core.ClickState,
+        [in] elements.ClickState,
         [none] ClickMakeSound
     );
     zox_system_1(
         ButtonClickEventSystem,
         zoxp_mainthread,
         [in] ClickEvent,
-        [in] elements.core.ClickState,
+        [in] elements.ClickState,
         [out] Clicker,
         [none] Element
     );
@@ -194,7 +194,7 @@ void define_systems_elements_core(ecs *world) {
         zox_system_1(
             ElementBeginSystem,
             EcsPostLoad,
-            [in] elements.core.InitializeElement,
+            [in] elements.InitializeElement,
             [in] layouts2.LayoutSize,
             [in] rendering.MeshAlignment,
             [in] layouts2.CanvasLink,
@@ -207,13 +207,13 @@ void define_systems_elements_core(ecs *world) {
         zox_system_1(
             TextureDirtyBeginSystem,
             EcsPostLoad,
-            [in] elements.core.InitializeElement,
+            [in] elements.InitializeElement,
             [out] rendering.TextureDirty
         );
         zox_system_1(
             TextureGpuBeginSystem,
             EcsPostLoad,
-            [in] elements.core.InitializeElement,
+            [in] elements.InitializeElement,
             [out] rendering.TextureGPULink
         );
     }
@@ -257,7 +257,7 @@ void define_systems_elements_core(ecs *world) {
         zox_system_1(
             RenderTextureBeginSystem,
             EcsPreUpdate,
-            [in] elements.core.InitializeElement,
+            [in] elements.InitializeElement,
             [in] layouts2.LayoutSize,
             [in] cameras.CameraLink,
             [in] rendering.TextureGPULink,

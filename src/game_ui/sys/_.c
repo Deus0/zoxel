@@ -91,7 +91,7 @@ void define_systems_game_ui(ecs *world) {
         [in] layouts2.CanvasLink,
         [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
-        [in] elements.core.ElementLinks,
+        [in] elements.ElementLinks,
         [none] players.Player
     );
 }
