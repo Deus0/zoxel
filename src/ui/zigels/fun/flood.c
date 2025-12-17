@@ -1,5 +1,7 @@
 const uint safety_checks_floodfill = 16000;
 
+// NOTE: Moved data to stack from heap, as heap had limits on these sizes
+
 byte texture_does_flood_reach_edge(
     const color* data,
     const int2 size,
@@ -17,12 +19,29 @@ byte texture_does_flood_reach_edge(
         return 0;
     }
 
-    int visited[size.x * size.y];
+    int pixel_count = size.x * size.y;
+
+    int *visited = calloc(pixel_count, sizeof(int));
+    if (!visited) {
+        zox_logw("[texture_does_flood_reach_edge] calloc failed");
+        return 0;
+    }
+
+    int *stack = malloc(pixel_count * 8 * sizeof(int));
+    if (!stack) {
+        zox_logw("[texture_does_flood_reach_edge] malloc failed");
+        free(visited);
+        return 0;
+    }
+
+    /*int visited[size.x * size.y];
     memset(visited, 0, sizeof(visited));
-    int stack[size.x * size.y * 2 * 4];
+    int stack[size.x * size.y * 2 * 4];*/
+
     int stack_top = 0;
     stack[stack_top++] = x; // x-coordinate
     stack[stack_top++] = y; // y-coordinate
+
     // Loop until the stack is empty
     uint checks = 0;
     while (stack_top > 0 && checks < safety_checks_floodfill) {
@@ -37,6 +56,8 @@ byte texture_does_flood_reach_edge(
                 continue;
             }
             if (x == 0 || x == size.x - 1 || y == 0 || y == size.y - 1) {
+                free(visited);
+                free(stack);
                 return 1;
             }
             // Push neighboring pixels onto the stack (left, right, up, down)
@@ -51,6 +72,8 @@ byte texture_does_flood_reach_edge(
         }
         checks++;
     }
+    free(visited);
+    free(stack);
     return 0;
 }
 
@@ -67,16 +90,35 @@ void flood_fill_texture(
         zox_logw("[flood_fill_texture] No Size");
         return;
     }
+
     int index = int2_array_index((int2) { x, y }, size);
     if (!color_equal(data[index], air_color)) {
         return;
     }
-    int visited[size.x * size.y];
+
+    int pixel_count = size.x * size.y;
+
+    int *visited = calloc(pixel_count, sizeof(int));
+    if (!visited) {
+        zox_logw("[flood_fill_texture] calloc failed");
+        return;
+    }
+
+    int *stack = malloc(pixel_count * 8 * sizeof(int));
+    if (!stack) {
+        zox_logw("[flood_fill_texture] malloc failed");
+        free(visited);
+        return;
+    }
+
+    /*int visited[size.x * size.y];
     memset(visited, 0, sizeof(visited));
-    int stack[size.x * size.y * 2 * 4];
+    int stack[size.x * size.y * 2 * 4];*/
+
     int stack_top = 0;
     stack[stack_top++] = x; // x-coordinate
     stack[stack_top++] = y; // y-coordinate
+
     // Loop until the stack is empty
     uint checks = 0;
     while (stack_top > 0 && checks < safety_checks_floodfill) {
@@ -104,4 +146,6 @@ void flood_fill_texture(
         }
         checks++;
     }
+    free(visited);
+    free(stack);
 }
