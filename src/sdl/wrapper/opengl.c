@@ -1,10 +1,10 @@
 void set_sdl_attributes2(byte minor, byte major, byte profile) {
-    zox_log("+ OpenGL Version [%i] [%i.%i]", profile, sdl_gl_major, sdl_gl_minor);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, sdl_gl_major);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, sdl_gl_minor);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // 24 | 32
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile);
+    zox_logi("OpenGL Set [%i] [%i.%i]", profile, sdl_gl_major, sdl_gl_minor);
 }
 
 void set_sdl_attributes() {
@@ -55,6 +55,5 @@ byte set_sdl_window_context(SDL_Window* window, SDL_GLContext context) {
         zox_log_error("Failed to make OpenGL context current: %s\n", SDL_GetError());
         return 1;
     }
-    zox_log("SDL Set OpenGL Context.");
     return 0;
 }

@@ -1,4 +1,9 @@
-void texture_swap_colors(color* data, const int2 size, const color old_color, const color new_color) {
+void texture_swap_colors(
+    color* data,
+    const int2 size,
+    const color old_color,
+    const color new_color
+) {
     for (int i = 0; i < size.x * size.y; i++) {
         if (color_equal(data[i], old_color)) {
             data[i] = new_color;
@@ -7,7 +12,13 @@ void texture_swap_colors(color* data, const int2 size, const color old_color, co
 }
 
 // raycast from all 4 sides!
-void scanline_fill_texture(color* data, const int2 size, const color air_color, const color boundary_color, const color fill_color) {
+void scanline_fill_texture(
+    color* data,
+    const int2 size,
+    const color air_color,
+    const color boundary_color,
+    const color fill_color
+) {
     int2 last_boundary_pixel = int2_zero;
     for (int y = 0; y < size.y; y++) {
         byte intersects = 0;
@@ -16,8 +27,24 @@ void scanline_fill_texture(color* data, const int2 size, const color air_color, 
             const int index = int2_array_index((int2) { x, y }, size);
             if (color_equal(data[index], boundary_color)) {
                 if (intersects && found_filling) {
-                    if (!texture_does_flood_reach_edge(data, size, air_color, boundary_color, last_boundary_pixel.x, last_boundary_pixel.y)) {
-                        flood_fill_texture(data, size, air_color, boundary_color, fill_color, last_boundary_pixel.x, last_boundary_pixel.y);
+                    byte hits_edge = texture_does_flood_reach_edge(
+                        data,
+                        size,
+                        air_color,
+                        boundary_color,
+                        last_boundary_pixel.x,
+                        last_boundary_pixel.y
+                    );
+                    if (!hits_edge) {
+                        flood_fill_texture(
+                            data,
+                            size,
+                            air_color,
+                            boundary_color,
+                            fill_color,
+                            last_boundary_pixel.x,
+                            last_boundary_pixel.y
+                        );
                     }
                 }
                 found_filling = 0;

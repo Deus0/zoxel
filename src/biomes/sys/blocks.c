@@ -30,7 +30,7 @@ void BiomeBlocksSystem(iter *it) {
         }
 
         zox_sys_e();
-        zox_log("Generating blocks for biome [%s]", zox_get_name(e));
+        zox_logi("Generating blocks for biome [%s]", zox_get_name(e));
 
         byte j = 1;   // skip sky
         // const color sky_color = colors->value[j++];

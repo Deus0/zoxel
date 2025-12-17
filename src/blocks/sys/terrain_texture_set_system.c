@@ -57,6 +57,6 @@ void TerrainTextureSetSystem(iter *it) {
         // zox_set(realm->value, BlocksDirty, { 0 });
         generate->value = zox_dirty_trigger;
 
-        zox_log("Generated Tilemap: count [%i]  length [%i]", textures->length, tilemap_length);
+        // zox_log("Generated Tilemap: count [%i]  length [%i]", textures->length, tilemap_length);
     }
 } zoxd_system2(TerrainTextureSetSystem);

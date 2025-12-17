@@ -76,7 +76,7 @@ VoxelNode* get_voxel_node_at_depth(
 
     const byte i = byte3_octree_array_index(positionn);
     if (i >= 8) {
-        zox_log_error("[get_voxel_node_at_depth] node index OOB: %i - depth [%i]", i, depth);
+        zox_logw("[get_voxel_node_at_depth] node index OOB: %i - depth [%i]", i, depth);
         return (VoxelNode*) node;
     }
 

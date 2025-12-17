@@ -73,7 +73,7 @@ entity spawn_app_sdl_opengl(
         monitor
     );
     if (!e) {
-        zox_log_error("failed spawning sdl window");
+        zox_log_error("Failed spawning sdl window");
         return 0;
     }
 
@@ -102,11 +102,12 @@ entity spawn_app_sdl_opengl(
         return EXIT_FAILURE;
     }
 
-    zox_log("GL_VERSION: %s", ver);
-    zox_log("GL_RENDERER: %s", ren);
-    zox_log("GL_VENDOR: %s", ven);
+    zox_log("OpenGL Context Created");
+    zox_log("   GL_VERSION: %s", ver);
+    zox_log("   GL_RENDERER: %s", ren);
+    zox_log("   GL_VENDOR: %s", ven);
 
-    zox_log("Created Opengl Context Success");
+    // zox_log("Created Opengl Context Success");
     zox_set(e, Context, { context });
 
 

@@ -8,6 +8,7 @@ void reset_keyboard(Keyboard *keyboard) {
     reset_key(&keyboard->right_alt);
     reset_key(&keyboard->left_shift);
     reset_key(&keyboard->right_shift);
+    reset_key(&keyboard->back_quote);
     reset_key(&keyboard->a);
     reset_key(&keyboard->b);
     reset_key(&keyboard->c);

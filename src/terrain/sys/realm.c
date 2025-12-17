@@ -58,19 +58,19 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
     }
 
     zox_muter(realm, BlockLinks, blocks);
-    zox_log("Realm Blocks (Unique Start ID) [%i]", blocks->length);
+    // zox_log("Realm Blocks (Unique Start ID) [%i]", blocks->length);
 
     zox_block_sand = blocks->length + 1;
     entity sand = spawn_block_soil(world, zox_block_sand, "sand", sand_color);
     add_to_BlockLinks(blocks, sand);
     tapwatch(time_realm_blocks, "built sand");
-    zox_log("Sand ID [%i]", zox_block_sand);
+    // zox_log("Sand ID [%i]", zox_block_sand);
 
     zox_block_stone = blocks->length + 1;
     entity stone = spawn_block_stone(world, zox_block_stone, "stone", stone_color);
     add_to_BlockLinks(blocks, stone);
     tapwatch(time_realm_blocks, "built stone");
-    zox_log("Stone ID [%i]", zox_block_stone);
+    // zox_log("Stone ID [%i]", zox_block_stone);
 
     zox_block_obsidian = blocks->length + 1;
     entity obsidian = spawn_block_stone(world, zox_block_obsidian, "obsidian", obsidian_color);
@@ -83,7 +83,8 @@ void spawn_realm_blocks(ecs *world, const entity realm) {
         world,
         zox_block_bricks,
         "bricks",
-        obsidian_color);
+        obsidian_color
+    );
     add_to_BlockLinks(blocks, bricks);
     tapwatch(time_realm_blocks, "built bricks");
 

@@ -16,7 +16,7 @@ void BiomeColorsSystem(iter *it) {
         }
 
         zox_sys_e();
-        zox_log("Generating Colors for biome [%s]", zox_get_name(e));
+        zox_logi("Generating Colors for biome [%s]", zox_get_name(e));
 
         color_rgb sky_color;
         if (!grayscale_mode) {

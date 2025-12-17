@@ -24,10 +24,10 @@ int spawn_players(ecs *world, const entity game, byte zox_game_type) {
         const entity e = spawn_player(world, prefab_player);
         if (zox_game_type == zox_game_mode_3D) {
             zox_add_tag(e, Player3);
-            zox_log("Added Player3 [%i]", zox_game_type);
+            // zox_log("Added Player3 [%i]", zox_game_type);
         } else if (zox_game_type == zox_game_mode_2D) {
             zox_add_tag(e, Player2);
-            zox_log("Added Player2 [%i]", zox_game_type);
+            // zox_log("Added Player2 [%i]", zox_game_type);
         }
         add_player(world, game, e);
         zox_players[i] = e;
@@ -60,7 +60,6 @@ void game_state_players(
     for (int i = 0; i < players->length; i++) {
         const entity player = players->value[i];
         if (state == zox_game_playing_start) {
-            zox_log("zox_player_state_loading");
             zox_set(player, PlayerState, { zox_player_state_loading });
         } else if (state == zox_game_start) {
             zox_set(player, PlayerState, { zox_player_state_main_menu });

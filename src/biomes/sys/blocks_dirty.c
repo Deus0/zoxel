@@ -19,7 +19,7 @@ void BiomeBlocksDirtySystem(iter *it) {
             const entity block = blocks->value[j];
             add_to_BlockLinks(realm_blocks, block);
             zox_set(block, BlockIndex, { ++index });
-            zox_log("Block [%s] index [%i]", zox_get_name(block), index);
+            // zox_log("Block [%s] index [%i]", zox_get_name(block), index);
         }
     }
 } zoxd_system2(BiomeBlocksDirtySystem);

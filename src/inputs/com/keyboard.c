@@ -11,6 +11,7 @@ typedef struct {
     PhysicalButton right_alt;
     PhysicalButton tab;
     PhysicalButton capslock;
+    PhysicalButton back_quote;
     PhysicalButton a;
     PhysicalButton b;
     PhysicalButton c;

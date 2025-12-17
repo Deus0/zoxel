@@ -82,7 +82,7 @@ void UnstuckSystem(iter *it) {
 
         if (float3_equals(last->value, float3_zero)) {
             position->value = float3_add(position->value, unstuck_push);
-            zox_log_error("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z);
+            zox_logw("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z);
             continue; // hasn't been unstuck
         }
 

@@ -1,5 +1,5 @@
-entity spawn_prefab_fps_display(ecs *world) {
-    zox_prefab_child(prefab_label_background);
+entity spawn_prefab_fps_display(ecs *world, entity prefab) {
+    zox_prefab_child(prefab);
     zox_prefab_name("fps_display");
     zox_add_tag(e, FPSDisplay);
     zox_prefab_set(e, FPSDisplayTicker, { 0 });

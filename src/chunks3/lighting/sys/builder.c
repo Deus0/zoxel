@@ -79,10 +79,14 @@ void zox_apply_light3(
 
             // for each face that is visible according to node->sides
             for (byte face = 0; face < 6; face++) {
-                if (*color_index + 4 > colors->length) break;
+                if (*color_index + 4 > colors->length) {
+                    break;
+                }
 
                 // skip hidden face
-                if (!(node->sides & (1 << face))) continue;
+                if (!(node->sides & (1 << face))) {
+                    continue;
+                }
 
                 // use adjacent lights
                 /*const LightNode* adj_node = get_LightNode_neighbor(

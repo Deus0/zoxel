@@ -16,7 +16,7 @@ entity spawn_render_texture(
     zox_name("render_texture")
     zox_set(e, CameraLink, { camera });
 
-    zox_log("render texture s %ix%i ts %ix%i", layout_size.x, layout_size.y, texture_size.x, texture_size.y);
+    // zox_log("render texture s %ix%i ts %ix%i", layout_size.x, layout_size.y, texture_size.x, texture_size.y);
 
     initialize_element(
         world,

@@ -30,8 +30,11 @@ entity spawn_window(
         layer
     );
     set_window_bounds_to_canvas(world, e, canvas_size, pixel_size, anchor);
-    Children children = (Children) { 0, NULL };
-    const entity header = spawn_header(world, e, canvas,
+    Children children = (Children) { 0 };
+    const entity header = spawn_header(
+        world,
+        e,
+        canvas,
         header_position,
         header_size,
         header_anchor,
@@ -42,7 +45,8 @@ entity spawn_window(
         int2_zero,
         pixel_size,
         1,
-        canvas_size);
+        canvas_size
+    );
     add_to_Children(&children, header);
     zox_set_ptr(e, Children, children);
     return e;

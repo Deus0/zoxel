@@ -1,7 +1,4 @@
-entity spawn_player_menu_actions(
-    ecs *world,
-    const entity player
-) {
+entity spawn_player_menu_actions(ecs *world, const entity player) {
     zox_geter_value(player, CharacterLink, entity, character);
     if (!zox_valid(character) || !zox_has(character, ActionIndex)) {
         zox_log_error("[!spawn_player_menu_actions] invalid character");

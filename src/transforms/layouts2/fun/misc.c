@@ -16,7 +16,7 @@ void initialize_element_invisible(
     zox_set(e, ParentLink, { parent });
     // Where we link to canvas children
     if (canvas == parent) {
-        zox_log("added new ui [%lu] to canvas [%lu]", e, canvas);
+        // zox_log("added new ui [%lu] to canvas [%lu]", e, canvas);
         on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }

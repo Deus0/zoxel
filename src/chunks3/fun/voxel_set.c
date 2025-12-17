@@ -128,7 +128,7 @@ void set_octree_voxel_final(
 
     const byte i = byte3_octree_array_index(node_position);
     if (i >= 8) {
-        zox_log_error("[set_octree_voxel_final] node index OOB: %i", i);
+        zox_logw("[set_octree_voxel_final] index OOB: %u at [%ix%ix%i] d[%i]", (unsigned) i, node_position.x, node_position.y, node_position.z, depth);
         return;
     }
 

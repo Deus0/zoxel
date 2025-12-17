@@ -24,13 +24,39 @@ void generate_font_texture(
         return;
     }
     if (is_shapes) {
-        generate_font_lines(data, size, font_data, line_color, point_padding);
-        scanline_fill_texture(data, size, nothing_font_color, line_color, fill_color);
+        generate_font_lines(
+            data,
+            size,
+            font_data,
+            line_color,
+            point_padding
+        );
+        scanline_fill_texture(
+            data,
+            size,
+            nothing_font_color,
+            line_color,
+            fill_color
+        );
         if (outline_thickness) {
-            generate_splotches_lines(data, size, font_data, line_color, outline_thickness, point_padding);
+            generate_splotches_lines(
+                data,
+                size,
+                font_data,
+                line_color,
+                outline_thickness,
+                point_padding
+            );
         }
     } else {
         fill_thickness++;
-        generate_splotches_lines(data, size, font_data, line_color, fill_thickness, point_padding);
+        generate_splotches_lines(
+            data,
+            size,
+            font_data,
+            line_color,
+            fill_thickness,
+            point_padding
+        );
     }
 }

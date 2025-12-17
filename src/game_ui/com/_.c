@@ -1,4 +1,7 @@
 zoxc_byte(MenuType);
+
+// Game Menus
+// TODO: Remove use of tags for this, just use an ID
 zox_tag(MenuMain);
 zox_tag(MenuOptions);
 zox_tag(MenuPaused);
@@ -6,6 +9,8 @@ zox_tag(MenuGame);
 zox_tag(MenuGameTouch);
 zox_tag(MenuStart);
 zox_tag(MenuLoad);
+zox_tag(MenuTerminal);
+
 zox_tag(FPSDisplay);
 zox_tag(QuadsCountLabel);
 zox_tag(GameDebugLabel);

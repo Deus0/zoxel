@@ -7,6 +7,7 @@
 #include "game_end3.c"
 #include "game_pause.c"
 #include "game_resume.c"
+#include "terminal.c"
 
 void define_systems_game_ui(ecs *world) {
     zox_system(
@@ -82,5 +83,15 @@ void define_systems_game_ui(ecs *world) {
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,
         [out] players.PlayerPauseEvent
+    );
+
+    zox_system_1(   // spawns ui
+        PlayerTerminalSystem,
+        EcsOnUpdate,
+        [in] layouts2.CanvasLink,
+        [in] inputs.DeviceLinks,
+        [in] inputs.DeviceMode,
+        [in] elements.core.ElementLinks,
+        [none] players.Player
     );
 }

@@ -8,6 +8,10 @@ byte texture_does_flood_reach_edge(
     const int x,
     const int y
 ) {
+    if (!size.x || !size.y) {
+        zox_logw("[texture_does_flood_reach_edge] No Size");
+        return 0;
+    }
     int index = int2_array_index((int2) { x, y }, size);
     if (!color_equal(data[index], air_color)) {
         return 0;
@@ -59,6 +63,10 @@ void flood_fill_texture(
     const int x,
     const int y
 ) {
+    if (!size.x || !size.y) {
+        zox_logw("[flood_fill_texture] No Size");
+        return;
+    }
     int index = int2_array_index((int2) { x, y }, size);
     if (!color_equal(data[index], air_color)) {
         return;
