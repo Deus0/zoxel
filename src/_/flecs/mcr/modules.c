@@ -10,7 +10,7 @@
     ecs_atfini(world, function, NULL);
 
 #define zox_begin_module(name)\
-    void name##Import(ecs_world_t *world) {\
+    void name##Import(ecs *world) {\
         zox_module(name)\
         zox_statistics_modules++;\
         zox_debug_module(world, #name, ecs_id(name));
@@ -19,9 +19,9 @@
     /* end timings here */\
 }
 
-void zox_debug_module(ecs_world_t *world,
+void zox_debug_module(ecs *world,
     const char *name,
-    const ecs_entity_t module_type)
+    const entity module_type)
 {
 #ifdef zox_debug_modules
     zox_log(" + module [%s] > [%s]\n", name, zox_get_name(module_type))
@@ -32,7 +32,7 @@ void zox_debug_module(ecs_world_t *world,
 #endif
 }
 
-void zox_debug_module2(ecs_world_t *world, const char *name, const ecs_entity_t module_type) {
+void zox_debug_module2(ecs *world, const char *name, const entity module_type) {
     zox_log(" + module [%s] > [%s]\n", name, zox_get_name(module_type))
 }
 

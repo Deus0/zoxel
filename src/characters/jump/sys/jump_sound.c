@@ -1,5 +1,5 @@
 // TODO: Make a envelope setting for our generated sounds, jumps need to be sharper at start! WOOSH
-void JumpSoundSystem(ecs_iter_t *it) {
+void JumpSoundSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(JumpState);

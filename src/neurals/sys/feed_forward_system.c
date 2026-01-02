@@ -1,4 +1,4 @@
-void LinkFeedForwardSystem(ecs_iter_t *it) {
+void LinkFeedForwardSystem(iter *it) {
     if (zox_current_time < neural_brain_delay) return;
     /*
     float total_loss = 0.0f;
@@ -23,7 +23,7 @@ void LinkFeedForwardSystem(ecs_iter_t *it) {
         transfer->value = 0;
         byte reached_end = 0;
         zox_field_o(Weight, weights, weight)
-        const ecs_entity_t neuron_b = connectionData->value.y;
+        const entity neuron_b = connectionData->value.y;
         if (neuron_b) {
             // const float weighted_signal = sigmoid((signal->value + 0.1f) * weight->value);
             const float weighted_signal = signal->value * weight->value;

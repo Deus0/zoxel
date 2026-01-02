@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_connection(ecs_world_t *world) {
+entity spawn_prefab_connection(ecs *world) {
     zox_prefab()
     zox_prefab_name("connection")
     zox_add_tag(e, Connection)
@@ -10,7 +10,7 @@ ecs_entity_t spawn_prefab_connection(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_connection(ecs_world_t *world, const ecs_entity_t prefab, const ecs_entity_t brain, const ecs_entity_t a, const ecs_entity_t b, const float weight) {
+entity spawn_connection(ecs *world, const entity prefab, const entity brain, const entity a, const entity b, const float weight) {
     zox_instance(prefab)
     zox_name("connection")
     zox_set(e, ConnectionData, { { a, b } })

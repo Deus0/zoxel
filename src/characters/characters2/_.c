@@ -1,9 +1,9 @@
-#ifndef zoxm_characters2D
-#define zoxm_characters2D
+#ifndef zoxm_characters2
+#define zoxm_characters2
 
 const int spawn_characters2D_count = 64;
 const int2 character2DTextureSize = { 16, 16 };
-ecs_entity_t prefab_character2D;
+entity prefab_character2D;
 zox_tag(Character2D);
 zoxc_entity(Character2DLink);
 #include "pre/character2D.c"

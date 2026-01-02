@@ -7,7 +7,7 @@ entity prefab_ui_line2D;
 entity prefab_temporary_ui_line2D;
 entity prefab_temporary_line2D;
 // extern entity prefab_temporary_line2D;
-// extern ecs_entity_t prefab_temporary_ui_line2D;
+// extern entity prefab_temporary_ui_line2D;
 // extern void set_ui_line_position(LineData2D*, int4, float2);
 
 void spawn_prefabs_lines2D(ecs *world) {

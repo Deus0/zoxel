@@ -43,7 +43,7 @@ int debug_joystick(SDL_Joystick *joystick, char buffer[], int buffer_size, int b
     }*/
     /*const Children *children = zox_get(gamepad_entity, Children)
     for (int i = 0; i < children->length; i++) {
-        const ecs_entity_t e = children->value[i];
+        const entity e = children->value[i];
         if (zox_has(e, ZeviceButton)) {
             const byte value = zox_get_value(e, ZeviceButton)
             buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "  button %i value [%i]\n", i, value);
@@ -69,15 +69,15 @@ byte get_gamepad_type(SDL_Joystick *joystick) {
     return gamepad_type;
 }
 
-ecs_entity_t spawn_gamepad_from_sdl(ecs_world_t *world, SDL_Joystick *joystick) {
+entity spawn_gamepad_from_sdl(ecs *world, SDL_Joystick *joystick) {
     const byte gamepad_type = get_gamepad_type(joystick);
-    const ecs_entity_t e = spawn_gamepad(world, gamepad_type);
+    const entity e = spawn_gamepad(world, gamepad_type);
     zox_set(e, SDLGamepad, { joystick })
     zox_log_input("   + gamepad [%s]", SDL_JoystickName(joystick))
     return e;
 }
 
-void handle_new_sdl_gamepad(ecs_world_t *world, const SDL_Event event) {
+void handle_new_sdl_gamepad(ecs *world, const SDL_Event event) {
     SDL_Joystick *joystick = SDL_JoystickOpen(event.jdevice.which);
     if (!joystick) {
         fprintf(stderr, "   ! joystick error: %s\n", SDL_GetError());
@@ -87,7 +87,7 @@ void handle_new_sdl_gamepad(ecs_world_t *world, const SDL_Event event) {
     spawn_gamepad_from_sdl(world, joystick);
 }
 
-void initialize_sdl_gamepads(ecs_world_t *world) {
+void initialize_sdl_gamepads(ecs *world) {
     // SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
     joysticks_count = SDL_NumJoysticks();
     if (joysticks_count == 0) {
@@ -207,11 +207,11 @@ byte sdl_gamepad_handle_disconnect(SDL_Joystick *joystick) {
 }
 
 // Main Function for Gamepad
-void sdl_extract_gamepad(SDL_Joystick *joystick, ecs_world_t *world, const Children *children) {
+void sdl_extract_gamepad(SDL_Joystick *joystick, ecs *world, const Children *children) {
     if (!joystick) return;
     joystick_axes = SDL_JoystickNumAxes(joystick);
     for (int i = 0; i < children->length; i++) {
-        const ecs_entity_t e = children->value[i];
+        const entity e = children->value[i];
         const RealButtonIndex *realButtonIndex = zox_get(e, RealButtonIndex)
         if (zox_has(e, ZeviceStick)) {
             ZeviceStick *zeviceStick = zox_get_mut(e, ZeviceStick);
@@ -241,8 +241,8 @@ void debug_stick(const PhysicalStick *physical_stick, const char *button_name) {
 }
 #else
 
-void initialize_sdl_gamepads(ecs_world_t *world) { }
+void initialize_sdl_gamepads(ecs *world) { }
 
-void handle_new_sdl_gamepad(ecs_world_t *world, const SDL_Event event) { }
+void handle_new_sdl_gamepad(ecs *world, const SDL_Event event) { }
 
 #endif

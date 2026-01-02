@@ -20,7 +20,7 @@ void initialize_networking(ecs* world) {
     }
 }
 
-void on_boot_networking(ecs_world_t* world, ecs_entity_t app) {
+void on_boot_networking(ecs* world, entity app) {
     (void) app;
     if (zox_is_networking) {
         initialize_networking(world);

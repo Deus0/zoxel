@@ -1,5 +1,5 @@
-extern entity spawn_pickup_basic(ecs_world_t*, const float3);
-extern entity spawn_pickup_block(ecs_world_t*, const float3, const entity);
+extern entity spawn_pickup_basic(ecs*, const float3);
+extern entity spawn_pickup_block(ecs*, const float3, const entity);
 
 // we should drop from actions too!
 void ItemDropSystem(iter *it) {

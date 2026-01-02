@@ -1,7 +1,7 @@
 #include "hierarchy_refresh_system.c"
 #include "inspector_element_system.c"
 
-void zox_define_systems_editor(ecs_world_t *world) {
+void zox_define_systems_editor(ecs *world) {
     zox_system(InspectorElementSystem, EcsOnUpdate,
         [in] generic.EntityTarget,
         [in] generic.ComponentTarget,

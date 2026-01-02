@@ -1,1 +1,1 @@
-zox_hook(terminal_command, (ecs_world_t* world, char* args[], int count), (world, args, count))
+zox_hook(terminal_command, (ecs* world, char* args[], int count), (world, args, count))

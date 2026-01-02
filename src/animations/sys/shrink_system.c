@@ -1,5 +1,5 @@
 // a simple shrink system
-void ShrinkSystem(ecs_iter_t *it) {
+void ShrinkSystem(iter *it) {
     const double time = zox_current_time;
     zox_sys_begin()
     zox_sys_in(AnimationState)

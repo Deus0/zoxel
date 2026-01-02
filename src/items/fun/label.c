@@ -17,7 +17,7 @@ uint get_label_player_items(
     zox_geter(characterLink->value, ItemLinks, items)
     index += snprintf(buffer + index, size - index, "[%s] has [%i] items\n", zox_get_name(player), items->length);
     for (int i = 0; i < items->length; i++) {
-        const ecs_entity_t action = items->value[i];
+        const entity action = items->value[i];
         if (!zox_valid(action)) {
             continue;
         }

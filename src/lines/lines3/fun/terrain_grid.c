@@ -1,13 +1,13 @@
-ecs_entity_t terrain_grid;
+entity terrain_grid;
 
-void destroy_terrain_grid(ecs_world_t *world) {
+void destroy_terrain_grid(ecs *world) {
     if (terrain_grid) {
         zox_delete(terrain_grid)
     }
 }
 
 void spawn_terrain_grid(
-    ecs_world_t *world,
+    ecs *world,
     const float real_chunk_scale,
     byte terrain_spawn_distance,
     byte terrain_vertical

@@ -64,7 +64,7 @@ void PlayerToggleCameraSystem(iter *it) {
             } else if (zox_has(device, Gamepad)) {
                 zox_geter(device, Children, zevices)
                 for (int k = 0; k < zevices->length; k++) {
-                    ecs_entity_t zevice_entity = zevices->value[k];
+                    entity zevice_entity = zevices->value[k];
                     if (zox_has(zevice_entity, ZeviceButton)) {
                         zox_geter(zevice_entity, ZeviceDisabled, zeviceDisabled)
                         if (zeviceDisabled->value) {

@@ -8,4 +8,4 @@
 #define zox_component_type_float3 7
 #define zox_component_type_float4 8
 #define zox_component_type_float4x4 9
-#define zox_component_type_ecs_entity_t 10
+#define zox_component_type_entity 10

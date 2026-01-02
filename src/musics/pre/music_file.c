@@ -1,7 +1,7 @@
 #define music_file_path "music"character_slash"music.zox"
 
 entity spawn_prefab_music_file(
-    ecs_world_t *world,
+    ecs *world,
     const entity prefab
 ) {
     zox_prefab_child(prefab)
@@ -49,7 +49,7 @@ entity load_music_file(
         // zox_log("   - %i - Frequency: %.2f : %.2f Hz, Start time: %.2f, Length: %.2f\n", i + 1, note.frequency, test_frequency, note.time, note.length)
     }
 
-    const ecs_entity_t e = spawn_music(world, prefab, music_speed);
+    const entity e = spawn_music(world, prefab, music_speed);
     zox_set(e, MusicLength, { music_length });
 
     zox_muter(e, NoteLinks, noteLinks);

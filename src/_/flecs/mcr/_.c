@@ -1,3 +1,7 @@
+typedef ecs_entity_t entity;
+typedef ecs_world_t ecs;
+typedef ecs_iter_t iter;
+
 #include "new.c"
 #include "ids.c"
 #include "add.c"

@@ -12,7 +12,7 @@ void dispose_shader_line3D() {
     glDeleteProgram(line3D_material);
 }
 
-int initialize_shader_line3D(ecs_world_t *world) {
+int initialize_shader_line3D(ecs *world) {
     char* vert = get_shader_source(world, "line3D.vert");
     char* frag = get_shader_source(world, "line3D.frag");
     line3D_shader = zox_gpu_compile_shader(vert, frag);

@@ -17,7 +17,7 @@ byte disable_npc_positioner = 0;
 #include "terrain/_.c"
 #include "realm/_.c"
 
-void module_dispose_characters3D(ecs_world_t *world, void *ctx) {
+void module_dispose_characters3D(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
     // dispose_hook_spawned_character3D();

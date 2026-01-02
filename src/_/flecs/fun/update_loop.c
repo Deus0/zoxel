@@ -8,12 +8,12 @@ void dispose_update_loop() {
     dispose_general_fun_array_d(update_functions);
 }
 
-void add_to_update_loop(void (*event)(ecs_world_t *)) {
+void add_to_update_loop(void (*event)(ecs *)) {
     general_fun fun_event = (general_fun) { event };
     add_to_general_fun_array_d(update_functions, fun_event);
 }
 
-void run_update_loop(ecs_world_t *world) {
+void run_update_loop(ecs *world) {
     for (size_t i = 0; i < update_functions->size; i++) {
         if (update_functions->data[i].value != NULL) {
             (*update_functions->data[i].value)(world);

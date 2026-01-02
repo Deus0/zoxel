@@ -1,8 +1,8 @@
 /*
 void brain_test_controls(
-    ecs_world_t *world,
+    ecs *world,
     const Keyboard *keyboard,
-    const ecs_entity_t canvas
+    const entity canvas
 ) {
     if (!local_brain) return;
     if (keyboard->_1.pressed_this_frame) {

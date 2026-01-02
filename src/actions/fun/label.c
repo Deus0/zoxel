@@ -1,4 +1,4 @@
-uint get_label_player_actions(ecs_world_t *world, const ecs_entity_t player, char *buffer, const uint size, uint index) {
+uint get_label_player_actions(ecs *world, const entity player, char *buffer, const uint size, uint index) {
     if (!player) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
@@ -11,7 +11,7 @@ uint get_label_player_actions(ecs_world_t *world, const ecs_entity_t player, cha
     zox_geter(characterLink->value, ActionLinks, actions)
     index += snprintf(buffer + index, size - index, "[%s] has [%i] actions\n", zox_get_name(player), actions->length);
     for (int i = 0; i < actions->length; i++) {
-        const ecs_entity_t action = actions->value[i];
+        const entity action = actions->value[i];
         if (!zox_valid(action)) {
             continue;
         }

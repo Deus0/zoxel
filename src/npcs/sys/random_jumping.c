@@ -1,4 +1,4 @@
-void RandomJump3DSystem(ecs_iter_t *it) {
+void RandomJump3DSystem(iter *it) {
     const int random_jump_chance = 9988;
     zox_sys_begin()
     zox_sys_in(CanJump)

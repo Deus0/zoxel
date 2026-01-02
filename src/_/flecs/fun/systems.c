@@ -1,4 +1,4 @@
-int zox_debug_print_systems(ecs_world_t *world) {
+int zox_debug_print_systems(ecs *world) {
     int checker = zox_count_ids(EcsSystem);
     zox_log("+🛠️   Systems [%i] (query:%i)", zox_statistics_systems, checker)
     return zox_statistics_systems;

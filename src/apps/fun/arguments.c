@@ -1,5 +1,5 @@
 
-void process_arguments_apps(ecs_world_t *world, char* args[], int count) {
+void process_arguments_apps(ecs *world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {
         if (strcmp(args[i], "-z") == 0 || strcmp(args[i], "--headless") == 0) {

@@ -73,7 +73,7 @@ zoxc_fixed_string(ZoxName, 64);
 zox_tag(DestroyInFrame);
 zoxc_double(EventTime);
 zoxc_entity(EventInput);
-zoxc_function(TimedEvent, void, ecs_world_t*, const ecs_entity_t);
+zoxc_function(TimedEvent, void, ecs*, const entity);
 // used for physics
 zoxc_float3(Bounds3D);
 zoxc_float6(Position3DBounds);

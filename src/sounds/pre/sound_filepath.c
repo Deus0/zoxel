@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_sound_filepath(ecs_world_t *world) {
+entity spawn_prefab_sound_filepath(ecs *world) {
     zox_prefab();
     zox_prefab_name("sound_filepath");
     zox_prefab_set(e, SoundVolume, { default_sound_volume });
@@ -6,8 +6,8 @@ ecs_entity_t spawn_prefab_sound_filepath(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_sound_filepath(ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_sound_filepath(ecs *world,
+    const entity prefab,
     const float* value,
     int length,
     const float sound_length)

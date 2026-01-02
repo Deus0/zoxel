@@ -3,9 +3,9 @@
 #include "hooks.c"
 #include "sdl_events.c"
 #include "app_vulkan.c"
-#include "app_entity.c"
+#include "app.c"
 
-void dispose_apps_sdl(ecs_world_t *world, void *ctx) {
+void dispose_apps_sdl(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
     // dispose_sdl_cursor();

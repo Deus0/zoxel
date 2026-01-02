@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_music(ecs_world_t *world) {
+entity spawn_prefab_music(ecs *world) {
     zox_prefab();
     zox_prefab_name("music");
     zox_add_tag(e, Music);
@@ -12,7 +12,7 @@ ecs_entity_t spawn_prefab_music(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_music(ecs_world_t *world, const ecs_entity_t prefab, double speed) {
+entity spawn_music(ecs *world, const entity prefab, double speed) {
     zox_instance(prefab);
     zox_name("music");
     zox_set(e, MusicSpeed, { speed });

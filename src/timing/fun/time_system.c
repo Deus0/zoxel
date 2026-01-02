@@ -21,11 +21,11 @@ byte profiler_logs = 0;
 // zox_ts_begin(name);
 // zox_ts_end(name, 3, zox_profile_system_type);
 
-extern void add_plot_data_time_system(ecs_world_t *world, const double value);
+extern void add_plot_data_time_system(ecs *world, const double value);
 double zox_delta_time_system = 0;
 
 // main loop
-void iterate_time_system(ecs_world_t *world) {
+void iterate_time_system(ecs *world) {
     add_plot_data_time_system(world, zox_delta_time_system);
     zox_delta_time_system = 0;
 }

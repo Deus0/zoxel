@@ -1,4 +1,4 @@
-void FreeCameraMoveSystem(ecs_iter_t *it) {
+void FreeCameraMoveSystem(iter *it) {
     double movement_power = zox_delta_time;
     movement_power *= movement_multiplier;
 #ifdef zox_web

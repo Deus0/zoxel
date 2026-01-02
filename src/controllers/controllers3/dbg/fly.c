@@ -1,4 +1,4 @@
-void toggle_flymode(ecs_world_t *world, int32_t keycode) {
+void toggle_flymode(ecs *world, int32_t keycode) {
     if (keycode == SDLK_f) {
         if (!zox_valid(local_realm) || !zox_has(local_realm, GameLink)) {
             zox_log_error("no realm (local)")
@@ -10,7 +10,7 @@ void toggle_flymode(ecs_world_t *world, int32_t keycode) {
             return;
         }
         zox_geter(gameLink->value, PlayerLinks, players)
-        const ecs_entity_t player = players->value[0];
+        const entity player = players->value[0];
         zox_geter_value(player, CharacterLink, entity, character);
         if (!zox_valid(character)) {
             return;

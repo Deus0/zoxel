@@ -1,4 +1,4 @@
-void draw_planes(ecs_world_t *world, const plane *planes, const int plane_count) {
+void draw_planes(ecs *world, const plane *planes, const int plane_count) {
     // const float plane_size = 16;
     color_rgb plane_color = color_rgb_white;
     for (int i = 0; i < plane_count; i++) {

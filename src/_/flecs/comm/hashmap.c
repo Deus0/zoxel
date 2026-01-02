@@ -4,11 +4,11 @@ extern uint zox_stats_terrain_chunks;
     \
     zoxc(name, type##_hashmap*); \
     \
-    void dispose_hashmap_##type(ecs_world_t *world, type##_hashmap* hashmap) {\
+    void dispose_hashmap_##type(ecs *world, type##_hashmap* hashmap) {\
         for (size_t j = 0; j < hashmap->size; j++) {\
             type##_hashmap_pair *pair = hashmap->data[j];\
             while (pair) {\
-                const ecs_entity_t e = pair->value;\
+                const entity e = pair->value;\
                 if (zox_valid(e)) {\
                     zox_delete(e); \
                     zox_stats_terrain_chunks--; \
@@ -19,7 +19,7 @@ extern uint zox_stats_terrain_chunks;
         type##_##hashmap_dispose(hashmap);\
     }\
     \
-    void on_destroyed_##name(ecs_iter_t *it) {\
+    void on_destroyed_##name(iter *it) {\
         zox_sys_world()\
         zox_sys_begin()\
         zox_sys_out(name)\

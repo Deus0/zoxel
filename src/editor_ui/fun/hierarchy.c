@@ -5,8 +5,8 @@ unsigned is_first_hierarchy_spawn = 1;
 #endif
 const int hierarchy_max_line_characters = 64;
 entity editor_selected;
-extern void add_to_labels_voxel_links(ecs_world_t *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
-extern void add_to_labels_stat_links(ecs_world_t *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
+extern void add_to_labels_voxel_links(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
+extern void add_to_labels_stat_links(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
 extern entity prefab_app;
 extern entity prefab_window;
 extern entity prefab_button;
@@ -72,7 +72,7 @@ int get_max_characters_d(
     return max_characters;
 }
 
-void add_entity_children_to_labels(ecs_world_t *world,
+void add_entity_children_to_labels(ecs *world,
     entity e,
     text_group_dynamic_array_d* labels,
     entity_array_d* entities,
@@ -91,7 +91,7 @@ void add_entity_children_to_labels(ecs_world_t *world,
     }
 }
 
-void zox_print_entity(ecs_world_t *world, entity e) {
+void zox_print_entity(ecs *world, entity e) {
     const ecs_type_t *type = ecs_get_type(world, e);
     const ecs_id_t *type_ids = type->array;
     int32_t i, count = type->count;
@@ -156,7 +156,7 @@ void zox_print_entity(ecs_world_t *world, entity e) {
     }
 }
 
-void editor_select_entity(ecs_world_t *world, const entity e) {
+void editor_select_entity(ecs *world, const entity e) {
     if (editor_selected == e) {
         return;
     }
@@ -164,7 +164,7 @@ void editor_select_entity(ecs_world_t *world, const entity e) {
     set_inspector_element(world, inspector, e);
 }
 
-void button_event_clicked_hierarchy(ecs_world_t *world, const ClickEventData event) {
+void button_event_clicked_hierarchy(ecs *world, const ClickEventData event) {
     if (!zox_has(event.clicked, Children)) {
         return;
     }
@@ -173,7 +173,7 @@ void button_event_clicked_hierarchy(ecs_world_t *world, const ClickEventData eve
 }
 
 // like text, sets the list of text onto the ui element list
-void set_ui_list_hierarchy(ecs_world_t *world,
+void set_ui_list_hierarchy(ecs *world,
     Children *children,
     entity window_entity,
     const entity canvas,

@@ -29,7 +29,7 @@ void ActionsShortcutSystem(iter *it) {
             } else if (zox_has(device, Mouse)) {
                 zox_geter(device, Children, zevices);
                 for (int k = 0; k < zevices->length; k++) {
-                    ecs_entity_t zevice_entity = zevices->value[k];
+                    entity zevice_entity = zevices->value[k];
                     if (zox_has(zevice_entity, ZeviceWheel)) {
                         const int2 wheel = zox_get_value(zevice_entity, ZeviceWheel)
                         if (wheel.y > 0) {

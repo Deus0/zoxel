@@ -10,7 +10,7 @@ void initialize_sounds() {
     }
 }
 
-void dispose_sounds(ecs_world_t *world, void *ctx) {
+void dispose_sounds(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
     dispose_files_sounds();

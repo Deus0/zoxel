@@ -1,10 +1,10 @@
-ecs_entity_t spawn_shader_skybox(ecs *world) {
+entity spawn_shader_skybox(ecs *world) {
     const byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "skybox.vert");
     char* frag = get_shader_source(world, "skybox.frag");
     shader_verts[shader_index] = vert;
     shader_frags[shader_index] = frag;
-    const ecs_entity_t e = spawn_shader(world, shader_index);
+    const entity e = spawn_shader(world, shader_index);
     if (!e) {
         zox_log_error("[shader_skybox] failed to spawn")
         return 0;

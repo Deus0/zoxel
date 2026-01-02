@@ -1,5 +1,5 @@
 //! Adds force to the velocity per frame.
-void NeuronRenderSystem(ecs_iter_t *it) {
+void NeuronRenderSystem(iter *it) {
     if (zox_current_time < 0.1) {
         return;
     }

@@ -4,7 +4,7 @@ static inline float zoxs_get_float(const setting s) {
 }
 
 // limit
-byte zoxs_limit_float(ecs_world_t* world, const char *name, float min, float max) {
+byte zoxs_limit_float(ecs* world, const char *name, float min, float max) {
     for (uint i = 0; i < settings_count; i++) {
         setting s = settings[i];
         if (strcmp(name, s.name) == 0) {
@@ -28,7 +28,7 @@ byte zoxs_limit_float(ecs_world_t* world, const char *name, float min, float max
 }
 
 // set
-byte zoxs_set_float(ecs_world_t *world, const char *name, float value) {
+byte zoxs_set_float(ecs *world, const char *name, float value) {
     for (uint i = 0; i < settings_count; i++) {
         setting s = settings[i];
         if (strcmp(name, s.name) == 0) {

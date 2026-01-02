@@ -1,6 +1,6 @@
-ecs_entity_t local_realm;
+entity local_realm;
 #include "realm.c"
-ecs_entity_t prefab_realm;
+entity prefab_realm;
 
 void spawn_prefabs_realms(ecs* world) {
     prefab_realm = spawn_prefab_realm(world);

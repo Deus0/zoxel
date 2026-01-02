@@ -1,6 +1,6 @@
 uint ecs_run_count = 0;
 
-void update_ecs(ecs_world_t *world) {
+void update_ecs(ecs *world) {
     run_update_loop(world);
     if (debug_pipelines) {
         ecs_log_set_level(1);

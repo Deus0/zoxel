@@ -1,4 +1,4 @@
-ecs_entity_t prefab_app_sdl;
+entity prefab_app_sdl;
 byte zox_log_sdl_window = 0;
 #include "app.c"
 

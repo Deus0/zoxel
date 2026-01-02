@@ -1,5 +1,5 @@
 /*void spawn_character_name_label(
-    ecs_world_t *world,
+    ecs *world,
     spawned_character3D_data *data
 ) {
     if (disable_npc_uis) {
@@ -32,7 +32,7 @@
         .fill_color = label3D_font_color_fill,
         .outline_color = label3D_font_color_outline
     };
-    const ecs_entity_t e = spawn_label3D(
+    const entity e = spawn_label3D(
         world,
         label3D_spawn_data,
         label3D_text_data,

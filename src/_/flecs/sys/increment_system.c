@@ -9,7 +9,7 @@
 
 // if non zero, moves to target state
 #define zox_increment_system(component_name, target) \
-    void component_name##IncrementSystem(ecs_iter_t *it) { \
+    void component_name##IncrementSystem(iter *it) { \
         zox_sys_begin()\
         zox_sys_out(component_name)\
         for (int i = 0; i < it->count; i++) {\
@@ -25,7 +25,7 @@
 
 // if non zero, moves to target state, then resets
 #define zox_increment_system_with_reset(component_name, target)\
-    void component_name##IncrementSystem(ecs_iter_t *it) {\
+    void component_name##IncrementSystem(iter *it) {\
         zox_sys_begin()\
         zox_sys_out(component_name)\
         for (int i = 0; i < it->count; i++) {\
@@ -48,7 +48,7 @@
     target1, \
     start2, \
     target2)\
-        void component_name##IncrementSystem(ecs_iter_t *it) {\
+        void component_name##IncrementSystem(iter *it) {\
             zox_sys_begin()\
             zox_sys_out(component_name)\
             for (int i = 0; i < it->count; i++) {\

@@ -1,5 +1,5 @@
 // todo: alter frequency over time during sound
-void SoundProcessSystem(ecs_iter_t *it) {
+void SoundProcessSystem(iter *it) {
     if (nosounds) {
         return;
     }

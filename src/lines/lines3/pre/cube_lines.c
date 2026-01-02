@@ -40,7 +40,7 @@ entity spawn_prefab_cube_lines(ecs *world) {
 }
 
 entity spawn_cube_lines(
-    ecs_world_t *world,
+    ecs *world,
     const float3 center,
     const float3 extents,
     const float thickness,

@@ -1,4 +1,4 @@
-void test_fall_through_terrain(ecs_world_t *world, int32_t keycode) {
+void test_fall_through_terrain(ecs *world, int32_t keycode) {
     if (keycode == SDLK_f) {
         zox_log("> test_fall_through_terrain")
         if (!zox_valid(local_realm) || !zox_has(local_realm, GameLink)) {
@@ -11,7 +11,7 @@ void test_fall_through_terrain(ecs_world_t *world, int32_t keycode) {
             return;
         }
         zox_geter(gameLink->value, PlayerLinks, players)
-        const ecs_entity_t player = players->value[0];
+        const entity player = players->value[0];
         zox_geter(player, CharacterLink, characterLink)
         if (zox_valid(characterLink->value)) {
             zox_log("- falling player character")

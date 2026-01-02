@@ -2,7 +2,7 @@ static inline const char* zoxs_get_string(const setting s) {
     return s.value_string;
 }
 
-byte zoxs_set_string(ecs_world_t *world, const char *name, const char* value) {
+byte zoxs_set_string(ecs *world, const char *name, const char* value) {
     for (uint i = 0; i < settings_count; i++) {
         setting setting = settings[i];
         if (strcmp(name, setting.name) == 0) {

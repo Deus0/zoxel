@@ -1,4 +1,4 @@
-void test_game_end(ecs_world_t *world, int32_t keycode) {
+void test_game_end(ecs *world, int32_t keycode) {
     if (keycode == SDLK_g) {
         zox_log("> game toggling")
         if (!zox_valid(local_realm) || !zox_has(local_realm, GameLink)) {

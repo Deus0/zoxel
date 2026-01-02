@@ -9,7 +9,7 @@
         dispose_entity_array_d(component_ids_##T);\
     }\
     \
-    byte is_component_type_##T(ecs_entity_t id) {\
+    byte is_component_type_##T(entity id) {\
         return is_in_entity_array_d(component_ids_##T, id);\
     } \
     \

@@ -1,6 +1,6 @@
 #define zoxc_link(name, type, links_name, ...)\
     zoxc(name, type); \
-    void on_destroyed_##name(ecs_iter_t *it) {\
+    void on_destroyed_##name(iter *it) {\
         zox_sys_world(); \
         zox_sys_begin(); \
         zox_sys_out(name); \

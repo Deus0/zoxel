@@ -2,7 +2,7 @@
     zox_set(e, name, { strlen(text), convert_string_to_zext(text) });*/
 
 // #define zox_debug_spawning
-// extern void set_new_zox_name(ecs_world_t *world, const ecs_entity_t e, const char* text);
+// extern void set_new_zox_name(ecs *world, const entity e, const char* text);
 
 char *lint_itoa(char *str, long int num) {
     if (str == NULL) return NULL;
@@ -12,7 +12,7 @@ char *lint_itoa(char *str, long int num) {
 
 #define e_string_length 128
 
-/*char* get_entity_string(const ecs_entity_t e, const char* name) {
+/*char* get_entity_string(const entity e, const char* name) {
     if (!e || !name) {
         return NULL;
     }
@@ -29,7 +29,7 @@ char *lint_itoa(char *str, long int num) {
     return entity_name;
 }*/
 
-/*char* get_entity_string(const ecs_entity_t e, const char* name) {
+/*char* get_entity_string(const entity e, const char* name) {
     if (!e || !name) return NULL;
 
     static char e_string[e_string_length]; // example safe size
@@ -52,7 +52,7 @@ char *lint_itoa(char *str, long int num) {
 
 
 
-void zox_set_entity_name(ecs_world_t *world, const ecs_entity_t e, const char* name) {
+void zox_set_entity_name(ecs *world, const entity e, const char* name) {
     if (!e) {
         return;
     }
@@ -127,8 +127,8 @@ void zox_set_entity_name(
 }
 
 void zox_set_name_spawned(
-    ecs_world_t *world,
-    const ecs_entity_t e,
+    ecs *world,
+    const entity e,
     const char* name
 ) {
 #ifndef zox_disable_names

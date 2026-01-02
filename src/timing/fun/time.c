@@ -1,7 +1,7 @@
 #define init_delta_time()\
     const double delta_time = zox_delta_time;
 
-extern void add_plot_data_time(ecs_world_t *world, const double value);
+extern void add_plot_data_time(ecs *world, const double value);
 
 double current_time_in_seconds() {
     struct timespec current_time;
@@ -24,7 +24,7 @@ void clear_system_times() {
 }
 // todo: find a better way to grab time data in a new module
 
-void iterate_time(ecs_world_t *world) {
+void iterate_time(ecs *world) {
     clear_system_times();
     double last_time = zox_current_time;
     zox_current_time = current_time_in_seconds() - time_begin;

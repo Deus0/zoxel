@@ -19,7 +19,7 @@ byte screens_count = 1; // assume
 #include "monitor.c"
 
 // make our setting
-void initialize_settings_apps(ecs_world_t* world) {
+void initialize_settings_apps(ecs* world) {
     zoxs_new_byte("fullscreen", set_app_fullscreen, fullscreen)
     zoxs_new_byte("maximized", set_app_maximized, maximized)
     zoxs_new_byte("monitor", set_app_monitor, monitor)

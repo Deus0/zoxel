@@ -22,7 +22,7 @@
 
 #ifdef zox_debug_player_movement_direction
 float debug_thickness = 2.0f;
-extern entity spawn_line3D(ecs_world_t *world, float3 pointA, float3 pointB, float thickness, double life_time);
+extern entity spawn_line3D(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
 #endif
 
 void Player3DMoveSystem(iter *it) {

@@ -2,7 +2,7 @@
 #include "combat_states.c"
 zox_increment_system(Dead, zox_dirty_end);
 
-void define_systems_combat(ecs_world_t* world) {
+void define_systems_combat(ecs* world) {
     zoxd_system_increment(Dead);
     zox_system(CombatStateSystem, EcsOnLoad,
             [in] combat.LastCombatTime,

@@ -40,7 +40,7 @@ void unlock_achievement(const char* achievement) {
 
 #endif
 
-void on_boot_game_store(ecs_world_t* world, ecs_entity_t app) {
+void on_boot_game_store(ecs* world, entity app) {
     (void)world;
     (void)app;
     intialize_game_store();

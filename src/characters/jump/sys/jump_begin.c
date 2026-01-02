@@ -1,4 +1,4 @@
-void JumpBeginSystem(ecs_iter_t *it) {
+void JumpBeginSystem(iter *it) {
     zox_sys_begin()
     zox_sys_in(JumpState);
     zox_sys_out(Jump);

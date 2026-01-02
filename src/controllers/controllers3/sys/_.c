@@ -20,7 +20,7 @@
 #include "game_start.c"
 #include "game_end.c"
 
-void define_systems_controllers3D(ecs_world_t *world) {
+void define_systems_controllers3D(ecs *world) {
 
     zox_system(
         Player3DMoveSystem,

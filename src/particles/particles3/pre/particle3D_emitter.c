@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_particle3D_emitter(ecs_world_t *world) {
+entity spawn_prefab_particle3D_emitter(ecs *world) {
     zox_prefab()
     zox_prefab_name("particle3D_emitter")
     zox_add_tag(e, Particle3DEmitter)
@@ -15,7 +15,7 @@ ecs_entity_t spawn_prefab_particle3D_emitter(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_particle3D_emitter(ecs_world_t *world, const ecs_entity_t parent, const int emit_rate, const float3 bounds, const color particles_color) {
+entity spawn_particle3D_emitter(ecs *world, const entity parent, const int emit_rate, const float3 bounds, const color particles_color) {
     zox_instance(prefab_particle3D_emitter)
     zox_name("particle3D_emitter")
     zox_set(e, ParentLink, { parent })

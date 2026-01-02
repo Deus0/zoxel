@@ -1,8 +1,8 @@
-void emit_particle3Ds_slow(ecs_world_t *world, const float3 emit_position, const float3 bounds, const int spawn_count, const color colorr) {
+void emit_particle3Ds_slow(ecs *world, const float3 emit_position, const float3 bounds, const int spawn_count, const color colorr) {
     // const float3 spawn_bounds = { 0.4f, 0.8, 0.4f };
     const float3 acceleration3D_bounds = { 0.4f, 0.8, 0.4f };
     for (int i = 0; i < spawn_count; i++) {
-        // ecs_entity_t e =
+        // entity e =
         float3 spawn_position = emit_position;
         float3 spawn_acceleration3D = float3_zero;
         float3_add_float3_p(&spawn_position, (float3) {
@@ -25,7 +25,7 @@ void emit_particle3Ds_slow(ecs_world_t *world, const float3 emit_position, const
 
 
 // #define zox_bulk_spawning
-void emit_particle3Ds(ecs_world_t *world, const float3 spawn_position, const int spawn_count) {
+void emit_particle3Ds(ecs *world, const float3 spawn_position, const int spawn_count) {
     float3 spawn_bounds = { 0.4f, 0.8, 0.4f };
     const float2 velocityBounds = { 0.03f, 0.2f };
     const float2 scaleBounds = { 0.02f, 0.13f };
@@ -60,7 +60,7 @@ void emit_particle3Ds(ecs_world_t *world, const float3 spawn_position, const int
         brightnesses[i].value = brightnessBounds.x + ((rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
         destroyInTimes[i].value = lifeTime.x + ((rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
     }
-    // const ecs_entity_t *particlesArray =
+    // const entity *particlesArray =
     ecs_bulk_init(world, &(ecs_bulk_desc_t) {
         .count = spawn_count,
         .ids = {

@@ -5,7 +5,7 @@
 #include "name_labels.c"
 zox_declare_system_state_event(RealmCharacters, GenerateRealm, zox_generate_realm_characters, spawn_realm_characters)
 
-void define_systems_characters3(ecs_world_t *world) {
+void define_systems_characters3(ecs *world) {
     zox_define_system_state_event_1(RealmCharacters, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm)
     zox_system(
         CharacterSaveSystem,

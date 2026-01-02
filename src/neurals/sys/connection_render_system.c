@@ -1,5 +1,5 @@
 //! Adds force to the velocity per frame.
-void ConnectionRenderSystem(ecs_iter_t *it) {
+void ConnectionRenderSystem(iter *it) {
     if (zox_current_time < 0.1) return;
     init_delta_time()
     zox_field_world()
@@ -18,9 +18,9 @@ void ConnectionRenderSystem(ecs_iter_t *it) {
     zox_field_in(Transfer, transfers, 4)
     for (int i = 0; i < it->count; i++) {
         zox_field_i(ConnectionData, connectionDatas, connectionData)
-        const ecs_entity_t neuron_a = connectionData->value.x;
+        const entity neuron_a = connectionData->value.x;
         if (!neuron_a) continue;
-        const ecs_entity_t neuron_b = connectionData->value.y;
+        const entity neuron_b = connectionData->value.y;
         if (!neuron_b) continue;
         zox_field_i(Weight, weights, weight)
         zox_field_i(Signal, signals, signal)

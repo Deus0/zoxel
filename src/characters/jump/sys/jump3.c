@@ -1,4 +1,4 @@
-void Jump3VelSystem(ecs_iter_t *it) {
+void Jump3VelSystem(iter *it) {
     const float jump_power = zox_jump_power;
     init_delta_time()
     zox_sys_begin()
@@ -25,7 +25,7 @@ void Jump3VelSystem(ecs_iter_t *it) {
 } zoxd_system(Jump3VelSystem)
 
 // this is having issues now due to new collision detect
-void Jump3AccSystem(ecs_iter_t *it) {
+void Jump3AccSystem(iter *it) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_in(DisableMovement)

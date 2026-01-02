@@ -7,7 +7,7 @@ zoxc(VulkanSurface, VkSurfaceKHR*) // goes onto the sdl app
 
 // from vulkan module:
 extern VkSurfaceKHR create_vulkan_surface( SDL_Window* window, VkInstance instance);
-extern byte create_vulkan_pipeline(ecs_world_t *world, VkInstance* vk_instance, VkSurfaceKHR* vk_surface);
+extern byte create_vulkan_pipeline(ecs *world, VkInstance* vk_instance, VkSurfaceKHR* vk_surface);
 extern VkInstance* vk_instance;
 extern VkSurfaceKHR* vk_surface;
 
@@ -23,7 +23,7 @@ byte load_vulkan_library() {
     return EXIT_SUCCESS;
 }
 
-ecs_entity_t spawn_app_vulkan(ecs_world_t *world, SDL_Window* window, VkSurfaceKHR* surface) {
+entity spawn_app_vulkan(ecs *world, SDL_Window* window, VkSurfaceKHR* surface) {
     zox_instance(prefab_app)
     zox_set(e, SDLWindow, { window })
     zox_set(e, VulkanSurface, { surface })
@@ -54,7 +54,7 @@ void zox_log_vulkan_no_args(const char *text) {
     }\
 }
 
-ecs_entity_t spawn_main_window_vulkan(ecs_world_t *world, SDL_Window* window) {
+entity spawn_main_window_vulkan(ecs *world, SDL_Window* window) {
     zox_log_vulkan(" > creating vulkan surface\n")
     if (window == NULL) {
         zox_log_vulkan(" > window is null, cannot create vulkan surface\n")
@@ -110,7 +110,7 @@ ecs_entity_t spawn_main_window_vulkan(ecs_world_t *world, SDL_Window* window) {
     // link to our ecs
     *vk_instance = instance;
     *vk_surface = surface;
-    const ecs_entity_t e = spawn_app_vulkan(world, window, vk_surface);
+    const entity e = spawn_app_vulkan(world, window, vk_surface);
     zox_log_vulkan(" + success creating vulkan\n")
 
     // what dis do??

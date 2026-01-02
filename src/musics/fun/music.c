@@ -1,4 +1,4 @@
-void stop_music(ecs_world_t *world, const ecs_entity_t playlist) {
+void stop_music(ecs *world, const entity playlist) {
     if (!playlist || !zox_has(playlist, MusicPlaying)) {
         zox_log_error("invalid playlist in [play_music]")
         return;
@@ -15,7 +15,7 @@ void stop_music(ecs_world_t *world, const ecs_entity_t playlist) {
     }
 }
 
-void play_music(ecs_world_t *world, const ecs_entity_t playlist, const byte new_index) {
+void play_music(ecs *world, const entity playlist, const byte new_index) {
     if (!playlist || !zox_has(playlist, MusicPlaying)) {
         zox_log_error("invalid playlist in [play_music]")
         return;
@@ -39,7 +39,7 @@ void play_music(ecs_world_t *world, const ecs_entity_t playlist, const byte new_
     }
 }
 
-void add_music(ecs_world_t *world, ecs_entity_t playlist, ecs_entity_t music) {
+void add_music(ecs *world, entity playlist, entity music) {
     if (!playlist) {
         zox_log_error("cannot add music to null playlist")
         return;

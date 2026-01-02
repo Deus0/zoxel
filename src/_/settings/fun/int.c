@@ -2,7 +2,7 @@ static inline int zoxs_get_int(const setting s) {
     return s.value_int;
 }
 
-byte zoxs_set_int(ecs_world_t *world, const char *name, int value) {
+byte zoxs_set_int(ecs *world, const char *name, int value) {
     for (uint i = 0; i < settings_count; i++) {
         setting setting = settings[i];
         if (strcmp(name, setting.name) == 0) {

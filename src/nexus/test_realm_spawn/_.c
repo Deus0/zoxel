@@ -3,14 +3,14 @@
 
 // clear; make game=test_realm_spawn && make run game=test_realm_spawn
 
-byte test_realm_spawn(ecs_world_t *world) {
+byte test_realm_spawn(ecs *world) {
     const int test_seed = 666;
     game_name = "test_realm_spawn";
     zox_log("> started [%s]", game_name)
     headless = 1;
     initialize_networking();
     // initialize_voxes(world);
-    const ecs_entity_t realm = spawn_realm(world, prefab_realm);
+    const entity realm = spawn_realm(world, prefab_realm);
     zox_log("> seed [%i]", test_seed)
     set_noise_seed(test_seed);
     zox_set(realm, GenerateRealm, { zox_generate_realm_start })

@@ -1,4 +1,4 @@
-/*void spawn_many_characters3D(ecs_world_t *world) {
+/*void spawn_many_characters3D(ecs *world) {
     if (files_voxes_count == 0) {
         return;
     }

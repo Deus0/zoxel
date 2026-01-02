@@ -9,9 +9,9 @@ zoxc_float(Transfer);                   //! The signal value of a connection
 zoxc(ConnectionData, entity2);     //! The weight of the neural connection
 zoxc_byte(BrainDirty);
 zoxc_entity(BrainLink);
-zoxc_arrayd(BrainInputs, ecs_entity_t)
-zoxc_arrayd(BrainOutputs, ecs_entity_t)
-zoxc_arrayd(BrainLinks, ecs_entity_t)
+zoxc_arrayd(BrainInputs, entity)
+zoxc_arrayd(BrainOutputs, entity)
+zoxc_arrayd(BrainLinks, entity)
 
 void define_components_neurals(ecs* world) {
     zoxd_tag(Brain);

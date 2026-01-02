@@ -1,4 +1,4 @@
-uint get_label_realm_colors(ecs_world_t *world, const ecs_entity_t player, char *buffer, const uint size, uint index) {
+uint get_label_realm_colors(ecs *world, const entity player, char *buffer, const uint size, uint index) {
     if (!zox_valid(player)) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;

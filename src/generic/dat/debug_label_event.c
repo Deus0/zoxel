@@ -1,6 +1,6 @@
 typedef uint (*DebugLabelEvent) (
-    ecs_world_t *world,
-    const ecs_entity_t player,
+    ecs *world,
+    const entity player,
     char *buffer,
     const uint size,
     uint index

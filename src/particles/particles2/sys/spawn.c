@@ -38,7 +38,7 @@ void Particle2DSpawnSystem(
         brightnesses[i].value = brightnessBounds.x + ((rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
         destroyInTimes[i].value = lifeTime.x + ((rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
     }
-    // const ecs_entity_t *particles2DArray = 
+    // const entity *particles2DArray =
     ecs_bulk_init(world, &(ecs_bulk_desc_t) {
         .count = spawnCount,
         .ids = {
@@ -76,10 +76,10 @@ void Particle2DSpawnSystem(
     /*cs_filter_t *filter = ecs_filter(world, {
         .terms = {{ id }} // by default matches owned & inherited components
     });
-    ecs_iter_t it = ecs_filter_iter(world, filter);*/
+    iter it = ecs_filter_iter(world, filter);*/
     // ecs_filter_fini(filter);
     // int32_t count = 0;
-    // ecs_iter_t it = ecs_term_iter(world, &(ecs_term_t) { 
+    // iter it = ecs_term_iter(world, &(ecs_term_t) {
     //     .id = id,
     //     .src.flags = EcsSelf
     // });

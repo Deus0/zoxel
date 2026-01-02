@@ -1,1 +1,1 @@
-ecs_entity_t prefab_game3_player;
+entity prefab_game3_player;

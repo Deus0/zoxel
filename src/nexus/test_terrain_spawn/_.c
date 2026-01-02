@@ -14,8 +14,8 @@ const byte log_meshes = 0;
 const byte log_chunks = 0;
 const byte log_lods = 0;
 
-ecs_entity_t test_spawn_realm(ecs_world_t *world, const int seed) {
-    const ecs_entity_t realm = spawn_realm(world, prefab_realm);
+entity test_spawn_realm(ecs *world, const int seed) {
+    const entity realm = spawn_realm(world, prefab_realm);
     set_noise_seed(seed);
     zox_set(realm, GenerateRealm, { zox_generate_realm_start })
     int run_count = 0;
@@ -30,11 +30,11 @@ ecs_entity_t test_spawn_realm(ecs_world_t *world, const int seed) {
     return realm;
 }
 
-void test_spawn_terrain(ecs_world_t *world) {
+void test_spawn_terrain(ecs *world) {
 
 }
 
-byte test_terrain_spawn(ecs_world_t *world) {
+byte test_terrain_spawn(ecs *world) {
     uint lagged_frames = 0;
     const int test_seed = 666;
     const double max_frame_time = 1.0 / 60.0;
@@ -50,14 +50,14 @@ byte test_terrain_spawn(ecs_world_t *world) {
     initialize_networking();
     // initialize_voxes(world);
     double test_start = current_time_in_seconds();
-    const ecs_entity_t realm = test_spawn_realm(world, test_seed);
-    // const ecs_entity_t game = spawn_game(world, realm);
+    const entity realm = test_spawn_realm(world, test_seed);
+    // const entity game = spawn_game(world, realm);
     int run_count = 0;
     double time_since_start = (current_time_in_seconds() - test_start);
     zox_log("### ### ### ### ###")
     zox_log("! [S]:spawned terrain at frame [%i] time [%f]", ecs_run_count - 1, current_time_in_seconds())
-    const ecs_entity_t streamer = spawn_streamer(world, prefab_streamer, int3_zero);
-    const ecs_entity_t terrain = spawn_terrain_streaming(
+    const entity streamer = spawn_streamer(world, prefab_streamer, int3_zero);
+    const entity terrain = spawn_terrain_streaming(
         world,
         realm,
         prefab_terrain,
@@ -80,7 +80,7 @@ byte test_terrain_spawn(ecs_world_t *world) {
             int3_hashmap_pair* pair = chunkLinks->value->data[j];
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
-                ecs_entity_t chunk = pair->value;
+                entity chunk = pair->value;
                 // zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty)
                 zox_geter_value(chunk, GenerateChunk, byte, generate_chunk);
                 zox_geter_value(chunk, MeshDirty, byte, mesh_dirty);
@@ -140,7 +140,7 @@ byte test_terrain_spawn(ecs_world_t *world) {
             int3_hashmap_pair* pair = chunkLinks->value->data[j];
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
-                ecs_entity_t chunk = pair->value;
+                entity chunk = pair->value;
                 // zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty);
                 zox_geter_value(chunk, GenerateChunk, byte, generate_chunk);
                 zox_geter_value(chunk, MeshDirty, byte, mesh_dirty);

@@ -568,7 +568,7 @@ byte create_vulkan_debugger() {
     return EXIT_SUCCESS;
 }
 
-byte create_vulkan_pipeline(ecs_world_t *world, VkInstance* vk_instance, VkSurfaceKHR* vk_surface) {
+byte create_vulkan_pipeline(ecs *world, VkInstance* vk_instance, VkSurfaceKHR* vk_surface) {
     // int width, height;
     // SDL_Vulkan_GetDrawableSize(window, &width, &height);
     int2 screen_size = get_screen_size();

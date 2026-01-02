@@ -1,4 +1,4 @@
-void SoundPlaySystem(ecs_iter_t *it) {
+void SoundPlaySystem(iter *it) {
     int channel = get_channels_count();
     if (!audio_enabled || channel < 0 || nosounds) {
         return;

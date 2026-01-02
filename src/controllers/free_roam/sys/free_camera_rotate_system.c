@@ -2,7 +2,7 @@ const int max_mouse_delta = 120;
 const float begin_rotate_power = 0.46; // 0.62
 #define camera_quaternion_speed 0.004f // 0.01f
 
-void FreeCameraRotateSystem(ecs_iter_t *it) {
+void FreeCameraRotateSystem(iter *it) {
     double rotate_power = begin_rotate_power * zox_delta_time * degreesToRadians * 32.0;
 #ifdef zox_web
     rotate_power *= 10.0;

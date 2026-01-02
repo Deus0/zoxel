@@ -1,7 +1,7 @@
 extern double zox_current_time;
 const double cleanup_time = 2.0;
 // time after death, character will be removed
-void DeathCleanSystem(ecs_iter_t *it) {
+void DeathCleanSystem(iter *it) {
     const double time = zox_current_time;
     zox_sys_world()
     zox_sys_begin()

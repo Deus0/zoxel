@@ -1,4 +1,4 @@
-void LandSoundSystem(ecs_iter_t *it) {
+void LandSoundSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LandState);

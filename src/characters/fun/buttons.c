@@ -1,4 +1,4 @@
-/* inline byte can_jump(ecs_world_t *world, const ecs_entity_t e) {
+/* inline byte can_jump(ecs *world, const entity e) {
     return !zox_gett_value(e, DisableMovement) && zox_gett_value(e, Grounded);
 }*/
 

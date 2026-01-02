@@ -6,7 +6,7 @@ int2 get_element_label_position(int index, const byte font_size, const byte2 but
 
 
 void resize_window_scrollbar(
-    ecs_world_t *world,
+    ecs *world,
     Children *children,
     const int2 window_size,
     const int2 canvas_size,

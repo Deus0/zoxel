@@ -1,4 +1,4 @@
-void spawn_line2D_square(ecs_world_t *world,
+void spawn_line2D_square(ecs *world,
     const float2 point,
     const float2 size,
     const float thickness,

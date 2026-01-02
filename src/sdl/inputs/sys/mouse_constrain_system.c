@@ -1,4 +1,4 @@
-void MouseConstrainSystem(ecs_iter_t *it) {
+void MouseConstrainSystem(iter *it) {
     zox_sys_world()
     // todo: support for multi window contstraints, pass in multiple sdl windows here
     //if (!zox_valid(main_app)) {
@@ -25,7 +25,7 @@ void MouseConstrainSystem(ecs_iter_t *it) {
         if (mouseLock->value) {
             SDL_WarpMouseInWindow(sdl_window, lock_position.x, lock_position.y);
             for (int j = 0; j < children->length; j++) {
-                const ecs_entity_t zevice = children->value[j];
+                const entity zevice = children->value[j];
                 if (zox_has(zevice, ZevicePointerPosition)) {
                     zox_muter(zevice, ZevicePointerPosition, position)
                     position->value = lock_position;

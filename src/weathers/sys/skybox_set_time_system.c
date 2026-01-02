@@ -1,4 +1,4 @@
-void SkyboxSetTimeSystem(ecs_iter_t *it) {
+void SkyboxSetTimeSystem(iter *it) {
     zox_sys_begin()
     zox_sys_in(MaterialGPULink)
     for (int i = 0; i < it->count; i++) {

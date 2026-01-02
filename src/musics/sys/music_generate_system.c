@@ -2,7 +2,7 @@ int get_random_pallete_note(const byte *pallete, int array_length) {
    return pallete[rand() % array_length];
 }
 
-void MusicGenerateSystem(ecs_iter_t *it) {
+void MusicGenerateSystem(iter *it) {
     if (nomusic) {
         return;
     }
@@ -81,7 +81,7 @@ void MusicGenerateSystem(ecs_iter_t *it) {
 
                 const float note_length = 0.8f + 0.6f * (rand() % 100 * 0.01f);
                 const float note_volume = 0.6f + 0.4f * (rand() % 100 * 0.01f);
-                const ecs_entity_t note = spawn_note(world,
+                const entity note = spawn_note(world,
                     prefab_note,
                     music_note,
                     instrument->value,

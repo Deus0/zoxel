@@ -1,4 +1,4 @@
-void MusicPlaySystem(ecs_iter_t *it) {
+void MusicPlaySystem(iter *it) {
     if (nomusic || nosounds) {
         return;
     }
@@ -31,7 +31,7 @@ void MusicPlaySystem(ecs_iter_t *it) {
             if (volume_music == 0) {
                 continue;
             }
-            const ecs_entity_t note = noteLinks->value[musicNote->value];
+            const entity note = noteLinks->value[musicNote->value];
             zox_geter_value(note, SoundFrequencyIndex, int, music_note)
             zox_geter_value(note, SoundVolume, float, note_volume)
             zox_geter_value(note, SoundLength, float, note_time)

@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_music_generated(ecs_world_t *world, const ecs_entity_t prefab) {
+entity spawn_prefab_music_generated(ecs *world, const entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("music_generated");
     zox_prefab_set(e, GenerateMusic, { 1 });
@@ -8,9 +8,9 @@ ecs_entity_t spawn_prefab_music_generated(ecs_world_t *world, const ecs_entity_t
     return e;
 }
 
-ecs_entity_t spawn_music_generated(
-    ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_music_generated(
+    ecs *world,
+    const entity prefab,
     lint seed,
     byte instrument,
     float2 speed_range

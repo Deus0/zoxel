@@ -37,7 +37,7 @@
 #include "hok/_.c"
 #include "windows/_.c"
 
-void module_dispose_core(ecs_world_t *world, void *ctx) {
+void module_dispose_core(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
     dispose_hook_terminal_command();
@@ -49,7 +49,7 @@ void module_dispose_core(ecs_world_t *world, void *ctx) {
 }
 
 void process_arguments_core(
-    ecs_world_t *world,
+    ecs *world,
     char* args[],
     int count
 ) {

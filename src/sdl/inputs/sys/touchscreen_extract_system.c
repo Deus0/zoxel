@@ -1,4 +1,4 @@
-void TouchscreenExtractSystem(ecs_iter_t *it) {
+void TouchscreenExtractSystem(iter *it) {
     global_any_fingers_down = 0;
     zox_sys_world()
     zox_sys_begin()

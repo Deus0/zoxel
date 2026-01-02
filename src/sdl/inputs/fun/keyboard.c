@@ -20,7 +20,7 @@ void set_sdl_key(
         set_sdl_key(world, key, sdl_event, event.type);\
         break
 
-void sdl_extract_keyboard(ecs_world_t *world, SDL_Event event) {
+void sdl_extract_keyboard(ecs *world, SDL_Event event) {
     if (!local_keyboard || !ecs_is_alive(world, local_keyboard)) {
         return;
     }

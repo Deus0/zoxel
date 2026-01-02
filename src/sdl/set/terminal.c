@@ -1,6 +1,6 @@
 
 
-void process_terminal_sdl(ecs_world_t *world, char* args[], int count) {
+void process_terminal_sdl(ecs *world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {
         if (strcmp(args[i], "--opengles") == 0) {

@@ -1,4 +1,4 @@
-void EternalRotationSystem(ecs_iter_t *it) {
+void EternalRotationSystem(iter *it) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_in(EternalRotation)

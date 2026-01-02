@@ -1,6 +1,6 @@
 // Zox settings
 //
-// void on_set_float(ecs_world_t*world, void* value) {
+// void on_set_float(ecs*world, void* value) {
 //     float valuef = *(float*) value;
 //     zox_log("> brightness was set to %f", valuef)
 // }

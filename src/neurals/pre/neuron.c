@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_neuron(ecs_world_t *world) {
+entity spawn_prefab_neuron(ecs *world) {
     zox_prefab()
     zox_prefab_name("neuron")
     zox_add_tag(e, Neuron)
@@ -9,7 +9,7 @@ ecs_entity_t spawn_prefab_neuron(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_neuron(ecs_world_t *world, const ecs_entity_t prefab, const ecs_entity_t brain, const float2 position) {
+entity spawn_neuron(ecs *world, const entity prefab, const entity brain, const float2 position) {
     zox_instance(prefab)
     zox_name("neuron")
     zox_prefab_set(e, ParentLink, { brain })

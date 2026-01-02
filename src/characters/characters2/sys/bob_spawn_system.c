@@ -2,16 +2,16 @@
 
 // forward declarations
 
-int GetBobCount(ecs_world_t *world) {
+int GetBobCount(ecs *world) {
     return ecs_count(world, Position2);
 }
 
-void PrintBobSpawnSystem(ecs_world_t *world) {
+void PrintBobSpawnSystem(ecs *world) {
     zox_log("    Bobs Spawned [%i]\n", GetBobCount(world))
 }
 
 //! Here for now, spawns a one man bobarmy.
-/*void SpawnBobArmy(ecs_world_t *world, ecs_entity_t character2D_prefab, float2 bobPosition, int bobSpawnCount) {
+/*void SpawnBobArmy(ecs *world, entity character2D_prefab, float2 bobPosition, int bobSpawnCount) {
     float2 positionBounds = { 0.1f, 0.5f };
     const float2 velocityBounds = { 0.2f, 12.4f };
     const float torqueBounds = 12.0f;
@@ -76,7 +76,7 @@ void PrintBobSpawnSystem(ecs_world_t *world) {
         brightnesses[i].value = brightnessBounds.x + ((rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
         destroyInTimes[i].value = lifeTime.x + ((rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
     }
-    const ecs_entity_t *bobArmy = ecs_bulk_init(world, &(ecs_bulk_desc_t)
+    const entity *bobArmy = ecs_bulk_init(world, &(ecs_bulk_desc_t)
     {
         .count = bobSpawnCount,
         .ids =
@@ -108,7 +108,7 @@ void PrintBobSpawnSystem(ecs_world_t *world) {
 }*/
 
 //! Debug used for now, Called in main thread
-/*void BobArmySpawnFixer(ecs_world_t *world) {
+/*void BobArmySpawnFixer(ecs *world) {
     if (debugSpawnBobArmy)
     {
         debugSpawnBobArmy = false;

@@ -1,4 +1,4 @@
-void WanderSystem(ecs_iter_t *it) {
+void WanderSystem(iter *it) {
     init_delta_time()
     const float wander_length    = 5.0f;  // units per second
     const float vertical_bias   = 0.0f;   // how much to allow vertical wandering (usually 0 in flatland)
@@ -56,7 +56,7 @@ void WanderSystem(ecs_iter_t *it) {
 // similar to player, make move forward, make rotate randomly
 
 // todo: make similar to flee, just set target position randomly
-/*void WanderSystem(ecs_iter_t *it) {
+/*void WanderSystem(iter *it) {
     const float2 movement_power = (float2) { 0, 4 };
     const float2 max_velocity = { 60 * 60, 160 * 60 };
     const double max_rotate_speed = 0.2; //  0.23;

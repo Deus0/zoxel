@@ -1,7 +1,7 @@
-ecs_entity_t spawn_prefab_character3_skeleton(ecs_world_t *world,
-    const ecs_entity_t prefab)
+entity spawn_prefab_character3_skeleton(ecs *world,
+    const entity prefab)
 {
-    const ecs_entity_t e = spawn_prefab_character3(world, prefab, zox_character_type_skeleton);
+    const entity e = spawn_prefab_character3(world, prefab, zox_character_type_skeleton);
     zox_make_prefab(e)
     // zox_prefab_child(prefab)
     zox_prefab_name("character3_skeleton")

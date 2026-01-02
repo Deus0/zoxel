@@ -1,4 +1,4 @@
-void initialize_threads(ecs_world_t* world) {
+void initialize_threads(ecs* world) {
     zox_logv("Setting Threads [%i]", use_cores);
     if (use_cores > 1 && is_multithreading) {
         ecs_set_threads(world, use_cores);
@@ -9,7 +9,7 @@ void initialize_threads(ecs_world_t* world) {
 }
 
 void initialize_ecs_settings(
-    ecs_world_t *world,
+    ecs *world,
     float fps
 ) {
     initialize_threads(world);

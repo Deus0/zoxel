@@ -1,4 +1,4 @@
-void toggle_sound(ecs_world_t *world, int32_t keycode) {
+void toggle_sound(ecs *world, int32_t keycode) {
     (void) world;
     if (keycode == SDLK_m) {
         nosounds = !nosounds;

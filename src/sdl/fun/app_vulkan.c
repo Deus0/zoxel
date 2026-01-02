@@ -1,5 +1,5 @@
-ecs_entity_t spawn_main_window_vulkan(
-    ecs_world_t *world,
+entity spawn_main_window_vulkan(
+    ecs *world,
     int2 position,
     int2 size,
     const byte fullscreen,

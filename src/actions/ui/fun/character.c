@@ -1,9 +1,9 @@
 void set_player_action(
-    ecs_world_t *world,
-    const ecs_entity_t player,
+    ecs *world,
+    const entity player,
     const byte index
 ) {
-    zox_geter_value(player, CharacterLink, ecs_entity_t, character);
+    zox_geter_value(player, CharacterLink, entity, character);
     if (!zox_valid(character)) {
         return;
     }
@@ -26,7 +26,7 @@ void set_player_action(
     }
     // deselect first
     for (int i = 0; i < children->length; i++) {
-        const ecs_entity_t child = children->value[i];
+        const entity child = children->value[i];
         if (!zox_valid(child)) {
             continue;
         }
@@ -64,7 +64,7 @@ void player_action_ui_move(
     spawn_sound_from_file_name(world, prefab_sound, "swap_action", 0, get_volume_sfx());
 
     // now set the ui
-    zox_geter_value(player, CanvasLink, ecs_entity_t, canvas);
+    zox_geter_value(player, CanvasLink, entity, canvas);
     find_child_with_tag(canvas, MenuActions, actionbar);
     if (!actionbar) {
         return;
@@ -79,7 +79,7 @@ void player_action_ui_move(
     }
     // deselect any prior ones
     for (int i = 0; i < children->length; i++) {
-        const ecs_entity_t child = children->value[i];
+        const entity child = children->value[i];
         if (!zox_valid(child)) {
             continue;
         }

@@ -1,5 +1,5 @@
 #define zox_debug_id(component) {\
-    const ecs_entity_t _id = zox_id(component);\
+    const entity _id = zox_id(component);\
     if (!_id) {\
         zox_log_error("❌ %s is NOT registered", #component)\
     } else {\

@@ -7,7 +7,7 @@ zoxc_entity(Character3Link);
 zoxc_entity(Character3PrefabLink);
 zoxc_entity(CharacterMetaLink);
 
-void define_components_characters3(ecs_world_t* world) {
+void define_components_characters3(ecs* world) {
     zoxd_tag(Character3);
     zoxd_tag(SaveCharacter);
     zoxd_byte(CharactersChanceMax);

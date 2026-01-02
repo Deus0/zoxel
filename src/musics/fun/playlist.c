@@ -1,5 +1,5 @@
-void play_playlist(ecs_world_t *world,
-    const ecs_entity_t realm,
+void play_playlist(ecs *world,
+    const entity realm,
     const byte new_index)
 {
     if (!zox_valid(realm) || !zox_has(realm, PlaylistLinks)) {
@@ -20,8 +20,8 @@ void play_playlist(ecs_world_t *world,
         zox_log_error("playlist already playing track [%i]", old_index)
         return;
     }
-    const ecs_entity_t old_playlist = playlistLinks->value[old_index];
-    const ecs_entity_t new_playlist = playlistLinks->value[new_index];
+    const entity old_playlist = playlistLinks->value[old_index];
+    const entity new_playlist = playlistLinks->value[new_index];
     stop_music(world, old_playlist);
     play_music(world, new_playlist, 0);
     zox_set(realm, PlaylistPlaying, { new_index })

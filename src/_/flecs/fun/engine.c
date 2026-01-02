@@ -18,7 +18,7 @@ void handle_terminal_close(int sig) {
 }
 
 // handles loop with special check on web builds
-void main_loop(ecs_world_t *world) {
+void main_loop(ecs *world) {
 #ifdef zox_web
     emscripten_set_main_loop(&update_ecs_local, -1, 1); // old - 60, 1);
 #else
@@ -30,7 +30,7 @@ void main_loop(ecs_world_t *world) {
 #endif
 }
 
-void dispose_zox(ecs_world_t *world) {
+void dispose_zox(ecs *world) {
     dispose_update_loop();
     dispose_post_update_loop();
     ecs_fini(world);

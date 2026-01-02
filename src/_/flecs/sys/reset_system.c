@@ -1,5 +1,5 @@
 #define zox_set_system(system_name, component_name, t, v)\
-void system_name(ecs_iter_t *it) {\
+void system_name(iter *it) {\
     zox_sys_begin()\
     zox_sys_out(component_name)\
     for (int i = 0; i < it->count; i++) {\
@@ -31,7 +31,7 @@ void system_name(ecs_iter_t *it) {\
     zox_system_1(system_name##StateEventSystem, pip, [in] component, __VA_ARGS__)
 
 #define zox_declare_system_state_event(system_name, component, target, function)\
-    void system_name##StateEventSystem(ecs_iter_t *it) {\
+    void system_name##StateEventSystem(iter *it) {\
         zox_sys_world()\
         zox_sys_begin()\
         zox_sys_in(component)\

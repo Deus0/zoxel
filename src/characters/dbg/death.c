@@ -1,6 +1,6 @@
-extern ecs_entity_t game_start_player_new(ecs_world_t*, const ecs_entity_t);
+extern entity game_start_player_new(ecs*, const entity);
 
-void toggle_player_death(ecs_world_t *world, int32_t keycode) {
+void toggle_player_death(ecs *world, int32_t keycode) {
     if (keycode == SDLK_j) {
         zox_log("> player character death toggling")
         if (!zox_valid(local_realm) || !zox_has(local_realm, GameLink)) {
@@ -13,7 +13,7 @@ void toggle_player_death(ecs_world_t *world, int32_t keycode) {
             return;
         }
         zox_geter(gameLink->value, PlayerLinks, players)
-        const ecs_entity_t player = players->value[0];
+        const entity player = players->value[0];
         zox_geter(player, CharacterLink, characterLink)
         if (zox_valid(characterLink->value)) {
             zox_log("- killing player character")

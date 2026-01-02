@@ -12,7 +12,7 @@ zox_base_type(entity)
 
 // add to tilemap link
 #define zox_component_parented(name) zoxc_entity(name)\
-    void on_destroyed##_##name(ecs_iter_t *it) {\
+    void on_destroyed##_##name(iter *it) {\
         zox_sys_world()\
         zox_sys_begin()\
         zox_sys_out(name)\

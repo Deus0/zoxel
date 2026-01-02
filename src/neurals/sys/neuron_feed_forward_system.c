@@ -1,4 +1,4 @@
-void NeuronFeedForwardSystem(ecs_iter_t *it) {
+void NeuronFeedForwardSystem(iter *it) {
     zox_field_world()
     zox_field_out(Signal, signals, 1)
     for (int i = 0; i < it->count; i++) {

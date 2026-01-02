@@ -1,5 +1,5 @@
 // update inspector element text every .5 seconds by checking if value changed... with a string check
-void InspectorElementSystem(ecs_iter_t *it) {
+void InspectorElementSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(EntityTarget)

@@ -23,7 +23,7 @@ entity prefab_character3_skeleton;
     }\
 }
 
-void spawn_prefabs_characters3D(ecs_world_t *world) {
+void spawn_prefabs_characters3D(ecs *world) {
     prefab_character3_meta = spawn_prefab_character3_meta(world);
     prefab_character3 = spawn_prefab_character3(
         world,

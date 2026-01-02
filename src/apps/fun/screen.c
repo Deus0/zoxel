@@ -1,4 +1,4 @@
-void set_app_screen_resize(ecs_world_t *world, const ecs_entity_t e, const int2 size) {
+void set_app_screen_resize(ecs *world, const entity e, const int2 size) {
     if (fullscreen) {
         default_window_position = (int2) { (size.x) / 2, (size.y) / 2 };
     } else {

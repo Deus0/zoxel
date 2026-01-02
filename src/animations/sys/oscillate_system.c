@@ -1,5 +1,5 @@
 // a simple idle scale animation
-void OscillateSystem(ecs_iter_t *it) {
+void OscillateSystem(iter *it) {
     // const float addition = 0.032f;
     const float speed = 1.0f;
     const double time = zox_current_time;

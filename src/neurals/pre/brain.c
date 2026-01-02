@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_brain(ecs_world_t *world) {
+entity spawn_prefab_brain(ecs *world) {
     zox_prefab()
     zox_prefab_name("brain")
     zox_add_tag(e, Brain)
@@ -10,7 +10,7 @@ ecs_entity_t spawn_prefab_brain(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_brain(ecs_world_t *world, const ecs_entity_t prefab) {
+entity spawn_brain(ecs *world, const entity prefab) {
     zox_instance(prefab)
     zox_name("brain")
     return e;

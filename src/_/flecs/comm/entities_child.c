@@ -1,13 +1,13 @@
 #define zoxc_child(name, parent_name)\
 zoxc_entity(name);\
 \
-void on_destroyed_##name(ecs_iter_t *it) {\
+void on_destroyed_##name(iter *it) {\
     zox_sys_world()\
     zox_sys_begin()\
     zox_sys_in(name)\
     for (int i = 0; i < it->count; i++) {\
         zox_sys_i(name, component)\
-        const ecs_entity_t parent = component->value;\
+        const entity parent = component->value;\
         if (!zox_valid(parent) || !zox_has(parent, parent_name)) {\
             continue;\
         }\

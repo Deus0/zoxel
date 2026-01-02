@@ -1,5 +1,5 @@
 // todo: alter frequency over time during sound
-void SoundGenerateSystem(ecs_iter_t *it) {
+void SoundGenerateSystem(iter *it) {
     if (nosounds) {
         return;
     }

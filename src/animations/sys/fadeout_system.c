@@ -1,11 +1,11 @@
 // a simple alpha animation
-void zox_prefab_add_animation_event(ecs_world_t *world, const ecs_entity_t e, float length) {
+void zox_prefab_add_animation_event(ecs *world, const entity e, float length) {
     zox_prefab_set(e, FadeOutEvent, { length })
     zox_prefab_set(e, Alpha, { 1 })
     zox_prefab_set(e, AnimationStart, { 0 })
 }
 
-void FadeoutSystem(ecs_iter_t *it) {
+void FadeoutSystem(iter *it) {
     const double time = zox_current_time;
     zox_sys_begin()
     zox_sys_in(FadeOutEvent)

@@ -26,7 +26,7 @@ int2 get_webasm_screen_size() {
     return canvas_size;
 }
 
-byte update_web_canvas(ecs_world_t *world) {
+byte update_web_canvas(ecs *world) {
     int2 size = get_canvas_size();
     //if (!int2_equals(screen_dimensions, size)) {
         //zox_log(" > update_web_canvas: Canvas size has changed [%i x %i]\n", size.x, size.y)

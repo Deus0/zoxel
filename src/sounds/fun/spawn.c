@@ -1,5 +1,5 @@
-ecs_entity_t spawn_sound_from_file_index(ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_sound_from_file_index(ecs *world,
+    const entity prefab,
     const int index)
 {
     if (index < sound_files_count && files_sounds[index]) {
@@ -10,13 +10,13 @@ ecs_entity_t spawn_sound_from_file_index(ecs_world_t *world,
     return 0;
 }
 
-ecs_entity_t spawn_sound_from_file_name(ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_sound_from_file_name(ecs *world,
+    const entity prefab,
     char *name,
     float frequency,
     float volume)
 {
-    const ecs_entity_t sound_file = string_hashmap_get(files_hashmap_sounds, new_string_data(name));
+    const entity sound_file = string_hashmap_get(files_hashmap_sounds, new_string_data(name));
     if (sound_file) {
         return spawn_sound_from_file(world,
             prefab,

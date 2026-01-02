@@ -1,6 +1,6 @@
 extern void set_character3_npc(ecs* world, entity c, byte npc);
 
-void toggle_autoroam(ecs_world_t *world, int32_t keycode) {
+void toggle_autoroam(ecs *world, int32_t keycode) {
     if (keycode == SDLK_g) {
         if (!zox_valid(local_realm) || !zox_has(local_realm, GameLink)) {
             zox_log_error("no realm (local)")
@@ -12,7 +12,7 @@ void toggle_autoroam(ecs_world_t *world, int32_t keycode) {
             return;
         }
         zox_geter(gameLink->value, PlayerLinks, players)
-        const ecs_entity_t player = players->value[0];
+        const entity player = players->value[0];
         zox_geter_value(player, CharacterLink, entity, c);
         if (!zox_valid(c)) {
             return;

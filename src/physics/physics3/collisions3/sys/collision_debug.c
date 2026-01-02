@@ -1,6 +1,6 @@
 // responding
 // draw line for collided voxels
-extern ecs_entity_t spawn_line3D_colored(ecs*, const float3, const float3, float, double, const color_rgb);
+extern entity spawn_line3D_colored(ecs*, const float3, const float3, float, double, const color_rgb);
 const byte3 zox_debug_collision_response = { 1, 1, 1 };
 const double debug_collision_lifetime = 30;
 const double debug_collision_line_length = 0.5;

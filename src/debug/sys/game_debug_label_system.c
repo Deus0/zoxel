@@ -7,7 +7,7 @@ int debug_newline_zext(char buffer[], int buffer_size, int buffer_index) {
 }
 
 #define get_label_generic_function(Name, name)\
-int get_label_##name(ecs_world_t *world, char buffer[], int buffer_size, int buffer_index, const ecs_entity_t e) {\
+int get_label_##name(ecs *world, char buffer[], int buffer_size, int buffer_index, const entity e) {\
     if (!e || !zox_has(e, Name)) return buffer_index;\
     const Name *children = zox_get(e, Name)\
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "[%s]'s children [%i]\n", zox_get_name(e), children->length);\
@@ -19,11 +19,11 @@ int get_label_##name(ecs_world_t *world, char buffer[], int buffer_size, int buf
 
 get_label_generic_function(PlayerLinks, player_links)
 
-int debug_label_device(ecs_world_t *world, const ecs_entity_t device, char buffer[], int buffer_size, int buffer_index) {
+int debug_label_device(ecs *world, const entity device, char buffer[], int buffer_size, int buffer_index) {
         if (!device || !zox_has(device, Children)) return buffer_index;
         zox_geter(device, Children, zevices)
         for (int j = 0; j < zevices->length; j++) {
-                const ecs_entity_t zevice = zevices->value[j];
+                const entity zevice = zevices->value[j];
                 if (!zox_has(zevice, ZevicePointer)) continue;
                 buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " - z [%i]", j);
                 if (zox_has(zevice, ZevicePointer)) {
@@ -42,7 +42,7 @@ int debug_label_device(ecs_world_t *world, const ecs_entity_t device, char buffe
         return buffer_index;
 }
 
-void GameDebugLabelSystem(ecs_iter_t *it) {
+void GameDebugLabelSystem(iter *it) {
         return;
     time_update_debug_label_system += zox_delta_time;
     if (time_update_debug_label_system >= time_update_debug_label_system_rate) {
@@ -62,24 +62,24 @@ void GameDebugLabelSystem(ecs_iter_t *it) {
         if (zextDirty->value) {
             continue;
         }
-        const ecs_entity_t canvas = get_root_canvas(world, e);
+        const entity canvas = get_root_canvas(world, e);
         // zox_log("canvas; %s - %i\n", zox_get_name(canvas), zox_has(canvas, PlayerLink))
         if (!canvas || !zox_has(canvas, PlayerLink)) continue;
-        const ecs_entity_t player = zox_get_value(canvas, PlayerLink)
+        const entity player = zox_get_value(canvas, PlayerLink)
         if (!player) continue;
-        // const ecs_entity_t character = zox_get_value(player, CharacterLink)
+        // const entity character = zox_get_value(player, CharacterLink)
 #ifdef zox_debug_ui_device_mode
         const DeviceMode *deviceMode = zox_get(player, DeviceMode)
 #endif
 #ifdef zox_debug_ui_raycaster_target
-        const ecs_entity_t raycaster_target = zox_get_value(player, RaycasterTarget)
+        const entity raycaster_target = zox_get_value(player, RaycasterTarget)
 #endif
         int buffer_index = 0;
         char buffer[buffer_size];
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "%s [v0.0.1]\n", game_name);
 
 #ifdef zox_debug_game_players
-        const ecs_entity_t game = zox_get_value(player, GameLink)
+        const entity game = zox_get_value(player, GameLink)
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "player [%s]\n", zox_get_name(player));
         buffer_index = get_label_player_links(world, buffer, buffer_size, buffer_index, game);
 #endif

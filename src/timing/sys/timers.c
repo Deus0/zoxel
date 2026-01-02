@@ -1,4 +1,4 @@
-void TimerSystem(ecs_iter_t *it) {
+void TimerSystem(iter *it) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_in(TimerRate)

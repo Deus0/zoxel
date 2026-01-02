@@ -5,7 +5,7 @@
 
 typedef struct {
     byte3 position;
-    ecs_entity_t chunk;
+    entity chunk;
 } TerrainPlacePosition;
 
 void DungeonBlockSystem(iter *it) {
@@ -24,7 +24,7 @@ void DungeonBlockSystem(iter *it) {
             continue;
         }
 
-        ecs_entity_t chunk = chunkLink->value;
+        entity chunk = chunkLink->value;
         zox_geter_value(chunk, VoxLink, entity, terrain);
         zox_geter(terrain, ChunkLinks, chunks);
         zox_geter_value(terrain, NodeDepth, byte, terrain_depth);

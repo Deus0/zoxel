@@ -49,7 +49,7 @@ void CharacterSaveSystem(iter *it) {
 
         save2_player(path->value, "player.dat", &data);
         // save camera - move this to camera save system
-        zox_geter_value(e, CameraLink, ecs_entity_t, camera);
+        zox_geter_value(e, CameraLink, entity, camera);
         SaveDataCamera data2 = {
             .camera_euler = zox_gett_value(camera, Euler),
             .camera_rotation_local = zox_gett_value(camera, LocalRotation3D),

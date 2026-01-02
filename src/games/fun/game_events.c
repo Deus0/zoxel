@@ -13,8 +13,8 @@ void add_to_event_game_state(zox_game_event funn) {
     add_to_zox_game_event_array_d(game_state_event, funn);
 }
 
-void trigger_event_game(ecs_world_t* world,
-    const ecs_entity_t game,
+void trigger_event_game(ecs* world,
+    const entity game,
     const byte old_game_state,
     const byte new_game_state)
 {
@@ -23,8 +23,8 @@ void trigger_event_game(ecs_world_t* world,
     }
 }
 
-void pause_resume(ecs_world_t *world, const ecs_entity_t player) {
-    const ecs_entity_t game = zox_get_value(player, GameLink)
+void pause_resume(ecs *world, const entity player) {
+    const entity game = zox_get_value(player, GameLink)
     const byte game_state = zox_get_value(game, GameState)
     if (!(game_state == zox_game_playing || game_state == zox_game_paused)) {
         return;

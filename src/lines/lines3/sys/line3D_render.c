@@ -1,4 +1,4 @@
-void Line3DRenderSystem(ecs_iter_t *it) {
+void Line3DRenderSystem(iter *it) {
     zox_gpu_blend_enable();
     zox_gpu_material(line3D_material);
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());

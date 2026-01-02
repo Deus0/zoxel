@@ -1,4 +1,4 @@
-void spawn_prefabs_quests(ecs_world_t *world) {
+void spawn_prefabs_quests(ecs *world) {
     prefab_quest = spawn_prefab_quest(world);
     // link to core
     if (prefab_realm) {

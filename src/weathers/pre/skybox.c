@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_skybox(ecs *world) {
+entity spawn_prefab_skybox(ecs *world) {
     zox_prefab();
     zox_prefab_name("skybox");
     zox_add_tag(e, Skybox);

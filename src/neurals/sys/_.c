@@ -4,7 +4,7 @@
 #include "connection_render_system.c"
 #include "neuron_render_system.c"
 
-void define_systems_neurals(ecs_world_t* world) {
+void define_systems_neurals(ecs* world) {
     // zox_system(NeuronInputSystem, EcsOnUpdate, [none] InputNeuron) //  [out] Transfer,
     zox_system(LinkFeedForwardSystem, EcsPostUpdate,
         [in] ConnectionData,

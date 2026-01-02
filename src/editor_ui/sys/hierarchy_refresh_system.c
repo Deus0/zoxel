@@ -1,12 +1,12 @@
 // make everything a child of realm
-extern ecs_entity_t local_realm;
+extern entity local_realm;
 
-void add_all_prefabs(ecs_world_t *world,
+void add_all_prefabs(ecs *world,
     entity_array_d* entities,
     text_group_dynamic_array_d* labels,
-    const ecs_entity_t canvas)
+    const entity canvas)
 {
-    ecs_entity_t realm = local_realm;
+    entity realm = local_realm;
     // prefabs
     add_entity_to_labels(world, prefab_app, labels, entities, 0);
     add_entity_to_labels(world, prefab_window, labels, entities, 0);
@@ -39,12 +39,12 @@ void add_all_prefabs(ecs_world_t *world,
     add_entity_children_to_labels(world, canvas, labels, entities, 0);
 }
 
-void HierarchyRefreshSystem(ecs_iter_t *it) {
+void HierarchyRefreshSystem(iter *it) {
     const byte is_header = 1;
     const byte is_scrollbar = 1;
     const byte list_start = is_header + is_scrollbar;
     const ClickEvent click_event = (ClickEvent) { &button_event_clicked_hierarchy };
-    // const ecs_entity_t realm = local_realm;
+    // const entity realm = local_realm;
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(Position2)
@@ -76,12 +76,12 @@ void HierarchyRefreshSystem(ecs_iter_t *it) {
         if (!hierarchyUIDirty->value || !children->value || children->length < 2) {
             continue; // children issues
         }
-        const ecs_entity_t header = children->value[0];
-        const ecs_entity_t scrollbar = children->value[is_header];
+        const entity header = children->value[0];
+        const entity scrollbar = children->value[is_header];
         if (!header || !scrollbar) {
             continue; // no scrollbar
         }
-        const ecs_entity_t canvas = canvasLink->value;
+        const entity canvas = canvasLink->value;
         zox_geter_value(canvas, LayoutSize, int2, canvas_size)
         const int elements_visible = listUIMax->value;
         const int font_size = elementFontSize->value * zox_ui_scale;

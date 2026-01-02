@@ -1,4 +1,4 @@
-void Controller2MoveSystem(ecs_iter_t *it) {
+void Controller2MoveSystem(iter *it) {
     init_delta_time()
     float2 max_delta_velocity = max_velocity2D;
     max_delta_velocity.x *= delta_time;
@@ -10,7 +10,7 @@ void Controller2MoveSystem(ecs_iter_t *it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(DeviceLinks, deviceLinks)
         zox_sys_i(CharacterLink, characterLink)
-        const ecs_entity_t character = characterLink->value;
+        const entity character = characterLink->value;
         if (!zox_valid(character) || !zox_has(character, Character2D)) {
             continue;
         }
@@ -25,7 +25,7 @@ void Controller2MoveSystem(ecs_iter_t *it) {
         float2 left_stick = float2_zero;
         // get the player input vector
         for (int j = 0; j < deviceLinks->length; j++) {
-            ecs_entity_t device = deviceLinks->value[j];
+            entity device = deviceLinks->value[j];
             if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
                 continue;
             }
@@ -39,7 +39,7 @@ void Controller2MoveSystem(ecs_iter_t *it) {
             } else if (zox_has(device, Gamepad)) {
                 const Children *zevices = zox_get(device, Children)
                 for (int k = 0; k < zevices->length; k++) {
-                    ecs_entity_t zevice_entity = zevices->value[k];
+                    entity zevice_entity = zevices->value[k];
                     if (zox_has(zevice_entity, ZeviceStick)) {
                         const ZeviceStick *zeviceStick = zox_get(zevice_entity, ZeviceStick)
                         left_stick = zeviceStick->value;
@@ -54,7 +54,7 @@ void Controller2MoveSystem(ecs_iter_t *it) {
             } else if (zox_has(device, Touchscreen)) { // deviceMode->value == zox_device_mode_touchscreen
                 zox_geter(device, Children, zevices)
                 for (int k = 0; k < zevices->length; k++) {
-                    const ecs_entity_t zevice = zevices->value[k];
+                    const entity zevice = zevices->value[k];
                     if (zox_has(zevice, Finger)) continue;
                     const ZeviceDisabled *zeviceDisabled = zox_get(zevice, ZeviceDisabled)
                     if (zeviceDisabled->value) continue;

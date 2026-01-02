@@ -1,4 +1,4 @@
-void Player3RotateSystem(ecs_iter_t *it) {
+void Player3RotateSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(DeviceLinks)
@@ -10,7 +10,7 @@ void Player3RotateSystem(ecs_iter_t *it) {
         zox_sys_i(CameraLink, cameraLink)
         zox_sys_i(DeviceLinks, deviceLinks)
         zox_sys_i(DeviceMode, deviceMode)
-        const ecs_entity_t character = characterLink->value;
+        const entity character = characterLink->value;
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
@@ -28,14 +28,14 @@ void Player3RotateSystem(ecs_iter_t *it) {
         float2 right_stick = float2_zero;
         float2 euler = float2_zero;
         for (int j = 0; j < deviceLinks->length; j++) {
-            const ecs_entity_t device = deviceLinks->value[j];
+            const entity device = deviceLinks->value[j];
             if (!zox_valid(device)) {
                 continue;
             }
             if (deviceMode->value == zox_device_mode_keyboardmouse && zox_has(device, Mouse)) {
                 zox_geter(device, Children, zevices)
                 for (int k = 0; k < zevices->length; k++) {
-                    const ecs_entity_t zevice = zevices->value[k];
+                    const entity zevice = zevices->value[k];
                     if (!zox_has(zevice, ZevicePointerDelta)) {
                         continue;
                     }
@@ -46,7 +46,7 @@ void Player3RotateSystem(ecs_iter_t *it) {
             } else if (deviceMode->value == zox_device_mode_gamepad && zox_has(device, Gamepad)) {
                 zox_geter(device, Children, zevices)
                 for (int k = 0; k < zevices->length; k++) {
-                    const ecs_entity_t zevice = zevices->value[k];
+                    const entity zevice = zevices->value[k];
                     zox_geter(zevice, DeviceButtonType, deviceButtonType)
                     if (zox_has(zevice, ZeviceStick)) {
                         if (deviceButtonType->value == zox_device_stick_right) {
@@ -63,7 +63,7 @@ void Player3RotateSystem(ecs_iter_t *it) {
             } else if (deviceMode->value == zox_device_mode_touchscreen && zox_has(device, Touchscreen)) {
                 zox_geter(device, Children, zevices)
                 for (int k = 0; k < zevices->length; k++) {
-                    const ecs_entity_t zevice = zevices->value[k];
+                    const entity zevice = zevices->value[k];
                     if (zox_has(zevice, Finger)) {
                         continue;
                     }
@@ -119,7 +119,7 @@ void Player3RotateSystem(ecs_iter_t *it) {
         zox_muter(character, Rotation3D, rotation3D)
         player_euler->value.y += euler.y;
         rotation3D->value = quaternion_from_euler(player_euler->value);
-        const ecs_entity_t player_camera = zox_get_value(character, CameraLink)
+        const entity player_camera = zox_get_value(character, CameraLink)
         if (zox_valid(player_camera)) {
             // this sets camera x
             zox_muter(player_camera, Euler, player_camera_euler)

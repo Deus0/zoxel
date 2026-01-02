@@ -25,7 +25,7 @@ entity find_array_element_with_id(
     }
 
 #define find_array_element_with_tag(component, tag, e)\
-    ecs_entity_t e = 0;\
+    entity e = 0;\
     for (int i = 0; i < component->length; i++) {\
         if (zox_has(component->value[i], tag)) {\
             e = component->value[i];\
@@ -34,7 +34,7 @@ entity find_array_element_with_id(
     }
 
 #define find_array_element_with_tag_id(component, tag_id, name)\
-    ecs_entity_t name = 0;\
+    entity name = 0;\
     for (int i = 0; i < component->length; i++) {\
         if (zox_has_id(component->value[i], tag_id)) {\
             name = component->value[i];\

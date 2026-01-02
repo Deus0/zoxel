@@ -1,5 +1,5 @@
 //! Adds force to the velocity per frame.
-/*void NeuronInputSystem(ecs_iter_t *it) {
+/*void NeuronInputSystem(iter *it) {
     init_delta_time()
     const float brain_speed = 0.5f; //  4.0f;
     const float add_multiplier = 0.1f;

@@ -1,4 +1,4 @@
-void initialize_flecs_profiler(ecs_world_t* world) {
+void initialize_flecs_profiler(ecs* world) {
 #ifdef zox_using_profiler
     //zox_log("+ flecs profiler enabled\n")
     zox_import_module(FlecsRest)

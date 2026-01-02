@@ -1,5 +1,5 @@
 // a simple idle scale animation
-void IdleSystem(ecs_iter_t *it) {
+void IdleSystem(iter *it) {
     const float idle_default_scale = 1.0f;
     const float idle_scale_addition = 0.02f;
     const float idle_animation_speed = 4.0f;

@@ -1,4 +1,4 @@
-void AnimationSequenceSystem(ecs_iter_t *it) {
+void AnimationSequenceSystem(iter *it) {
     const double time = zox_current_time;
     zox_sys_world()
     zox_sys_begin()

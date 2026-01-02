@@ -1,4 +1,4 @@
-void SkyboxRestoreSystem(ecs_iter_t *it) {
+void SkyboxRestoreSystem(iter *it) {
     zox_sys_begin()
     zox_sys_in(MaterialGPULink)
     zox_sys_in(ColorRGB)

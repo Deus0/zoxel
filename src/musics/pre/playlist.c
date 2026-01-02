@@ -8,7 +8,7 @@ entity spawn_prefab_playlist(ecs *world) {
     return e;
 }
 
-ecs_entity_t spawn_playlist(ecs *world, const entity prefab) {
+entity spawn_playlist(ecs *world, const entity prefab) {
     zox_instance(prefab);
     zox_name("playlist");
     return e;

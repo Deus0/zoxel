@@ -24,7 +24,7 @@ entity spawn_model_grass(
             place_count = 1;
         }
 
-        const ecs_entity_t e2 = spawn_vox_basic(
+        const entity e2 = spawn_vox_basic(
             world,
             prefab_vox,
             max_render_depth,

@@ -1,14 +1,14 @@
 // #define zox_debug_particle3Ds
 #ifdef zox_debug_particle3Ds
 const float3 debug_particle_line_addition = (float3) { 0, 0.2f, 0 };
-extern ecs_entity_t spawn_line3D(ecs_world_t *world, float3 pointA, float3 pointB, float thickness, double life_time);
+extern entity spawn_line3D(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
 #endif
 
 // todo: use one draw call with array of positions, instead of multiple calls here
 // todo: also push in colors
 // todo: test function that spawns 100k particles at once and lerps their positions or something out from origin
 
-void Particle3DRenderSystem(ecs_iter_t *it) {
+void Particle3DRenderSystem(iter *it) {
     // zox_log("particles [%i]\n", it->count)
     zox_statistics_particles3D += it->count;
     zox_gpu_blend_enable();

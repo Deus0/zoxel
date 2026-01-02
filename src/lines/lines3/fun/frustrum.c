@@ -1,4 +1,4 @@
-void draw_frustum(ecs_world_t *world, float3 *frustum, const color_rgb debug_color) {
+void draw_frustum(ecs *world, float3 *frustum, const color_rgb debug_color) {
     // const color_rgb plane_color = (color_rgb) { 255, 125, 55 };
     const color_rgb near_plane_color = debug_color; // (color_rgb) { 255, 22, 22 };
     const color_rgb far_plane_color = debug_color; // (color_rgb) { 205, 22, 22 };

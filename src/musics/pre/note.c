@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_note(ecs_world_t *world) {
+entity spawn_prefab_note(ecs *world) {
     zox_prefab()
     zox_prefab_name("note")
     zox_add_tag(e, Note)
@@ -9,8 +9,8 @@ ecs_entity_t spawn_prefab_note(ecs_world_t *world) {
     return e;
 }
 
-ecs_entity_t spawn_note(ecs_world_t *world,
-    const ecs_entity_t prefab,
+entity spawn_note(ecs *world,
+    const entity prefab,
     const int note,
     const byte instrument,
     const float length,

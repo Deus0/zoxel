@@ -1,1 +1,1 @@
-typedef void (*on_set_event)(ecs_world_t*, void*);
+typedef void (*on_set_event)(ecs*, void*);

@@ -2,7 +2,7 @@
 // entity prefab_chunk_streaming;
 entity prefab_streamer;
 
-void prefab_add_terrain_camera(ecs_world_t *world, const ecs_entity_t e) {
+void prefab_add_terrain_camera(ecs *world, const entity e) {
     zox_add_tag(e, Streamer);
     zox_prefab_set(e, StreamPoint, { int3_zero });
     zox_prefab_set(e, TerrainLink, { 0 });

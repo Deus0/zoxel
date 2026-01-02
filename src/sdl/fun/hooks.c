@@ -1,4 +1,4 @@
-void sdl_on_window_moved(ecs_world_t *world, const ecs_entity_t e, int2 position) {
+void sdl_on_window_moved(ecs *world, const entity e, int2 position) {
     zox_log_sdl("> sdl_on_window_moved [%ix%i]", position.x, position.y)
     zox_set(e, WindowPosition, { position })
     if (!zox_gett_value(e, WindowFullscreen) && !zox_gett_value(e, WindowMaximized)) {
@@ -16,7 +16,7 @@ void sdl_on_window_moved(ecs_world_t *world, const ecs_entity_t e, int2 position
     }
 }
 
-void on_window_resized(ecs_world_t *world, const ecs_entity_t e, int2 size) {
+void on_window_resized(ecs *world, const entity e, int2 size) {
     if (!zox_gett_value(e, WindowFullscreen) && !zox_gett_value(e, WindowMaximized)) {
         zox_set(e, WindowSizeRestore, { size })
         zox_log_sdl("+ setting window restore size to [%ix%i]", size.x, size.y)
@@ -29,13 +29,13 @@ void on_window_resized(ecs_world_t *world, const ecs_entity_t e, int2 size) {
 
 }
 
-void on_window_maximized(ecs_world_t *world, const ecs_entity_t e, const int2 size) {
+void on_window_maximized(ecs *world, const entity e, const int2 size) {
     // zox_set_maximized(world, 1);
     zox_set_maximized_silently(world, e, 1);
     zox_log_sdl("+ window maximized [%ix%i]", size.x, size.y)
 }
 
-void on_window_restored(ecs_world_t *world, const ecs_entity_t e, const int2 size) {
+void on_window_restored(ecs *world, const entity e, const int2 size) {
     // zox_set_maximized(world, 0);
     zox_set_maximized_silently(world, e, 0);
     zox_log_sdl("+ window restored [%ix%i]", size.x, size.y)

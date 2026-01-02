@@ -3,10 +3,10 @@
     zoxc_arrayd_removes(T, type)
 
 #define zoxc_entities(T)\
-    zoxc_arrayd_with_remove(T, ecs_entity_t)\
+    zoxc_arrayd_with_remove(T, entity)\
     \
     void dispose2_##T( \
-        ecs_world_t *world, \
+        ecs *world, \
         const T *component \
     ) { \
         if (!component->value || !component->length) {\
@@ -17,7 +17,7 @@
         }\
     }\
     \
-    void on_destroyed_##T(ecs_iter_t *it) {\
+    void on_destroyed_##T(iter *it) {\
         zox_sys_world()\
         zox_sys_begin()\
         zox_sys_in(T)\
@@ -29,7 +29,7 @@
         }\
     }\
     \
-    byte is_in_##T(T *component, const ecs_entity_t data) {\
+    byte is_in_##T(T *component, const entity data) {\
         if (!component || !component->value) {\
             return 0;\
         }\
@@ -43,7 +43,7 @@
     \
     byte add_unique_to_##T( \
         T *component, \
-        const ecs_entity_t data \
+        const entity data \
     ) { \
         if (!is_in_##T(component, data)) {\
             return add_to_##T(component, data);\

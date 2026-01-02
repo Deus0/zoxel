@@ -16,7 +16,7 @@ void enable_input() {
 #endif
 }
 
-void iterate_terminal(ecs_world_t* world) {
+void iterate_terminal(ecs* world) {
     (void) world;
     if (!headless) {
         return;

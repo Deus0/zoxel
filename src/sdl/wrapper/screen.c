@@ -29,7 +29,7 @@ void zox_app_set_maximized(SDL_Window* window, byte maximized) {
     }
 }
 
-void on_sdl_window_restored(ecs_world_t *world, ecs_entity_t e) {
+void on_sdl_window_restored(ecs *world, entity e) {
     if (!zox_has(e, WindowSize)) {
         zox_log_error("invalid app [%lu]", e)
         return;

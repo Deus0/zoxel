@@ -2,7 +2,7 @@ void zox_sdl_window_size( SDL_Window* sdl_window, int2 size) {
     SDL_SetWindowSize(sdl_window, size.x, size.y);
 }
 
-void zox_app_set_size(ecs_world_t *world, ecs_entity_t e, int2 size) {
+void zox_app_set_size(ecs *world, entity e, int2 size) {
     zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
     zox_sdl_window_size(sdl_window, size);
     if (!int2_equals(size, zox_gett_value(e, WindowSize))) {
@@ -11,13 +11,13 @@ void zox_app_set_size(ecs_world_t *world, ecs_entity_t e, int2 size) {
     }
 }
 
-void zox_app_set_position(ecs_world_t *world, ecs_entity_t e, int2 position) {
+void zox_app_set_position(ecs *world, entity e, int2 position) {
     zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
     SDL_SetWindowPosition(sdl_window, position.x, position.y);
     zox_set(e, WindowPosition, { position })
 }
 
-int get_sdl_window_header_size(ecs_world_t* world, ecs_entity_t e) {
+int get_sdl_window_header_size(ecs* world, entity e) {
     zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
     int top, left, bottom, right;
     if (!SDL_GetWindowBordersSize(sdl_window, &top, &left, &bottom, &right)) {
@@ -27,12 +27,12 @@ int get_sdl_window_header_size(ecs_world_t* world, ecs_entity_t e) {
     }
 }
 
-int2 get_window_size_without_header(ecs_world_t* world, ecs_entity_t e, int2 window_size) {
+int2 get_window_size_without_header(ecs* world, entity e, int2 window_size) {
     return int2_sub(window_size, (int2) { 0, get_sdl_window_header_size(world, e) });
 }
 
 // this should... account for taskbar too?
-int2 get_maximized_size(ecs_world_t* world, ecs_entity_t e) {
+int2 get_maximized_size(ecs* world, entity e) {
     return int2_sub(get_screen_size(), (int2) { 0, get_sdl_window_header_size(world, e) });
 }
 

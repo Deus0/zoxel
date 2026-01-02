@@ -1,10 +1,10 @@
-extern ecs_entity_t get_linked_terrain(ecs*, ecs_entity_t);
+extern entity get_linked_terrain(ecs*, entity);
 
 void toggle_debug_character_bounds(ecs *world) {
 
-    const ecs_entity_t realm = local_realm;
+    const entity realm = local_realm;
     if (!zox_valid(realm)) return;
-    const ecs_entity_t terrain = get_linked_terrain(world, realm);
+    const entity terrain = get_linked_terrain(world, realm);
     if (!zox_valid(terrain)) return;
 
     byte mode = zox_get_value(prefab_character3, DebugCubeLines);
@@ -16,10 +16,10 @@ void toggle_debug_character_bounds(ecs *world) {
         int3_hashmap_pair* pair = chunkLinks->value->data[i];
         uint checks = 0;
         while (pair != NULL && checks < max_safety_checks_hashmap) {
-            ecs_entity_t chunk = pair->value;
+            entity chunk = pair->value;
             zox_geter(chunk, ChunkEntities, entityLinks)
             for (int j = 0; j < entityLinks->length; j++) {
-                ecs_entity_t e2 = entityLinks->value[j];
+                entity e2 = entityLinks->value[j];
                 zox_set(e2, DebugCubeLines, { mode })
             }
             pair = pair->next;

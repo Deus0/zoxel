@@ -11,7 +11,7 @@ static const color_rgb color_render_depths[] = {
     { 128, 0, 128 },   // 7 - deep purple
 };
 
-void RenderDepthColorSystem(ecs_iter_t *it) {
+void RenderDepthColorSystem(iter *it) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(DebugCubeLines)

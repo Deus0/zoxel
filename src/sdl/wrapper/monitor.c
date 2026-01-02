@@ -1,4 +1,4 @@
-byte zox_app_get_monitor(ecs_world_t *world, ecs_entity_t e) {
+byte zox_app_get_monitor(ecs *world, entity e) {
     if (!zox_valid(e) || !zox_has(e, SDLWindow)) {
         return 0;
     }

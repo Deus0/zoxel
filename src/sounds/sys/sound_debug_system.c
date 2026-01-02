@@ -1,8 +1,8 @@
-extern ecs_entity_t spawn_line2D(ecs_world_t *world, float2 pointA, float2 pointB, float thickness, double life_time);
+extern entity spawn_line2D(ecs *world, float2 pointA, float2 pointB, float thickness, double life_time);
 
 // todo: rework this to use ui lines
 //      camera matrix 2D breaks it atm
-void SoundDebugSystem(ecs_iter_t *it) {
+void SoundDebugSystem(iter *it) {
     if (!zox_visualize_sounds) {
         return;
     }

@@ -4,7 +4,7 @@
 #include "sound_play_ref_system.c"
 #include "sound_debug_system.c"
 
-void define_systems_sounds(ecs_world_t *world) {
+void define_systems_sounds(ecs *world) {
     zox_system(
         SoundProcessSystem,
         EcsOnUpdate,

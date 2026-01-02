@@ -1,5 +1,5 @@
 // Queued side updates for propogation
-void LightSystem(ecs_iter_t *it) {
+void LightSystem(iter *it) {
     zox_ts_begin(light_propogate);
     zox_sys_world();
     zox_sys_begin();

@@ -5,7 +5,7 @@
     }
 
 #define zox_sys_query_begin()\
-    ecs_iter_t it2 = ecs_query_iter(world, query);
+    iter it2 = ecs_query_iter(world, query);
 
 #define zox_sys_query_loop()\
     ecs_query_next(&it2)

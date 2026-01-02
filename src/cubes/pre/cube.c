@@ -1,4 +1,4 @@
-ecs_entity_t spawn_prefab_cube(ecs_world_t *world) {
+entity spawn_prefab_cube(ecs *world) {
     zox_prefab()
     // zox_prefab_name("cube")
     zox_prefab_set(e, Position3D, { float3_zero })

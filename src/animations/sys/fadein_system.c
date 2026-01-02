@@ -1,5 +1,5 @@
 // a copy of fadeout
-/*void FadeinSystem(ecs_iter_t *it) {
+/*void FadeinSystem(iter *it) {
     const double time = zox_current_time;
     zox_field_in(AnimationState, animationTypes, 1)
     zox_field_in(AnimationStart, animationStarts, 2)

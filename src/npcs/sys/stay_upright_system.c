@@ -1,4 +1,4 @@
-/*void StayUprightSystem(ecs_iter_t *it) {
+/*void StayUprightSystem(iter *it) {
     const float kP = 3.5f;              // a bit stronger correction
     const float kD = 1.0f;              // stronger damping for snappy response
     const float max_upright_torque = 10.0f;

@@ -1,5 +1,5 @@
 #define zox_field_world()\
-    ecs_world_t *world = it->world;
+    ecs *world = it->world;
 
 #define zox_field_in(component_name, name, index)\
     const component_name *name = ecs_field(it, component_name, index);
@@ -20,15 +20,15 @@
     component_name *variable_name = &field_name[i];
 
 #define zox_field_e()\
-    const ecs_entity_t e = it->entities[i];
+    const entity e = it->entities[i];
 
 // new
 
 #define zox_sys_world()\
-    ecs_world_t *world = it->world;
+    ecs *world = it->world;
 
 #define zox_sys_e()\
-    const ecs_entity_t e = it->entities[i];
+    const entity e = it->entities[i];
 
 #define zox_sys_begin()\
     byte fi = 0;
@@ -61,7 +61,7 @@
 // Second Iterator!
 
 #define zox_sys_e_2()\
-    const ecs_entity_t e2 = it2.entities[j];
+    const entity e2 = it2.entities[j];
 
 #define zox_sys_begin_2()\
     byte fi2 = 0;

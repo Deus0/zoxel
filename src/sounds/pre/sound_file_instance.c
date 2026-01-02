@@ -1,7 +1,7 @@
 byte sound_file_index = 0;
 
-ecs_entity_t spawn_prefab_sound_file_instance(ecs_world_t *world,
-    const ecs_entity_t prefab)
+entity spawn_prefab_sound_file_instance(ecs *world,
+    const entity prefab)
 {
     zox_prefab_child(prefab)
     zox_prefab_name("sound_file_instance")
@@ -10,9 +10,9 @@ ecs_entity_t spawn_prefab_sound_file_instance(ecs_world_t *world,
 }
 
 // clones the files sound data for processing to a new frequency
-ecs_entity_t spawn_sound_from_file(ecs_world_t *world,
-    const ecs_entity_t prefab,
-    const ecs_entity_t src,
+entity spawn_sound_from_file(ecs *world,
+    const entity prefab,
+    const entity src,
     float frequency,
     float volume)
 {

@@ -34,7 +34,7 @@ void print_help_menu(const char* arg0) {
     engine_end();
 }
 
-void process_arguments_help(ecs_world_t *world, char* args[], int count) {
+void process_arguments_help(ecs *world, char* args[], int count) {
     (void)world;
     for (int i = 1; i < count; i++) {
         if (strcmp(args[i], "-h") == 0 || strcmp(args[i], "--help") == 0) {
