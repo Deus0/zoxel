@@ -1,4 +1,4 @@
-byte fullscreen = 1;
+byte fullscreen = 0;
 extern entity main_app;
 extern void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen);
 

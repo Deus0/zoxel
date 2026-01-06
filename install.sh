@@ -38,7 +38,17 @@ else
     exit 1
 fi
 
-DESKTOP_CONTENT=$'[Desktop Entry]\nName=Zoxel\nExec=/zoxel\nIcon=zoxel\nType=Application\nCategories=Game;Utility;\nTerminal=false\nStartupWMClass=Zoxel\n'
+DESKTOP_CONTENT=$(cat <<EOF
+[Desktop Entry]
+Name=$APP
+Exec=$APP
+Icon=$APP
+Type=Application
+Categories=Game;Utility;
+Terminal=false
+StartupWMClass=$APP
+EOF
+)
 
 ##############################
 # Build Debian package
