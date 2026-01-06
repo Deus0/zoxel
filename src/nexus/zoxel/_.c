@@ -159,7 +159,7 @@ void zox_set_terrain_settings() {
 
 zox_begin_module(ZoxGame)
 
-    game_name = "Zoxel";
+    game_name = "zoxel";
     add_hook_spawn_prefabs(zoxel_on_spawn_prefabs);
 
     is_generate_vox_outlines = 1;

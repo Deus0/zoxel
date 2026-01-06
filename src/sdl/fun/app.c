@@ -119,20 +119,24 @@ extern byte load_app_icon(SDL_Window*, const char*);
 
 byte spawn_window_icon(ecs *world, const entity app, const char* texture_name) {
     if (!app) {
-        zox_log_error("app not spawned");
+        zox_log_error("App not spawned");
         return 1;
     }
     // Shaders
-    char* path_textures = concat_file_path(resources_path, "textures");  //  character_slash filename
+    char* path_textures = concat_file_path(resources_path, "textures");
     if (!path_textures) {
+        zox_log_error("Textures Path not found.");
         return 1;
     }
-    char* path_icon = concat_file_path(path_textures, texture_name);  //  character_slash filename
+    char* path_icon = concat_file_path(path_textures, texture_name);
+    // zox_logv("Textures Path [%s]", path_textures);
     free(path_textures);
     if (!path_icon) {
+        zox_log_error("Icon Path not found.");
         return 1;
     }
     load_app_icon(zox_gett_value(app, SDLWindow), path_icon);
+    zox_logv("Set Icon [%s]", path_icon);
     free(path_icon);
     return 0;
 }

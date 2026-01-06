@@ -1,10 +1,3 @@
-/*
-struct T {\
-    void* ptr;\
-    base value;\
-    byte type;\
-};\*/
-
 #define zoxc_octree_fun1(T, base, default_value)\
 \
 zoxc_custom(T);\

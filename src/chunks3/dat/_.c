@@ -1,5 +1,4 @@
 // data consts
-#include "octree.c"
 #include "mesh.c"
 // data structs
 #include "set_voxel_data.c"

@@ -127,7 +127,7 @@ char* find_resources_path(char* base_path, const char* resources) {
 }
 
 // sets base_path, data_path
-byte initialize_pathing_native() {
+byte initialize_pathing_native(const char* game_name) {
     char* base_path = initialize_base_path();
     if (base_path == NULL) {
         zox_log_error("failed at [initialize_base_path] char_slash [%c]", char_slash);
@@ -138,18 +138,44 @@ byte initialize_pathing_native() {
     DIR* base_dir = opendir(base_path);
     if (base_dir) {
         closedir(base_dir);
-        resources_path = find_resources_path(base_path, resources_folder_name);
-        if (!resources_path) {
-            zox_log_error("[resources_path] not found.");
+
+        char* check_path = find_resources_path(base_path, resources_folder_name);
+        // zox_log("Checking Binary Path [%s] for [res] - check_path [%s]", base_path, check_path);
+
+        if (check_path) {
+            DIR* check_dir = opendir(check_path);
+            if (check_dir) {
+                closedir(check_dir);
+                resources_path = check_path;
+                zox_logi("[Dev] Resources Path [%s]",   resources_path);
+                return EXIT_SUCCESS;
+            } else {
+                zox_log("[res] not found locally");
+                free(check_path);
+            }
+        }
+
+        char* check_path2 = malloc(256);
+        if (!check_path2) {
+            zox_log_error("Malloc failed in [initialize_pathing_native]");
             return EXIT_FAILURE;
         }
-        zox_logi("Resources Path [%s]", resources_path);
-        DIR* resources_dir = opendir(resources_path);
-        if (!resources_dir) {
-            zox_log_error("Resources Path cannot open.");
-            return EXIT_FAILURE;
+        snprintf(check_path2, 256, "/usr/share/%s/res", game_name);
+
+        DIR* resources_dir = opendir(check_path2);
+        if (resources_dir) {
+            closedir(resources_dir);
+            resources_path = check_path2;
+            zox_logi("[Live] Resources Path [%s]", resources_path);
+            return EXIT_SUCCESS;
+        } else {
+            zox_log_error("Resources Path did not exist [%s]", check_path2);
+            free(check_path2);  // not found, free memory
         }
-        closedir(resources_dir);
+
+        zox_log_error("Resources Path cannot open.");
+        return EXIT_FAILURE;
+
     } else if (ENOENT == errno) {
         zox_log("SDL data_path (DOES NOT EXIST): %s\n", data_path);
     } else {

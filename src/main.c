@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
     run_hook_terminal_command(world, argv, argc);
 
     zox_logv("Initialize Pathing");
-    if (initialize_pathing() == EXIT_FAILURE) {
+    if (initialize_pathing(game_name) == EXIT_FAILURE) {
         zox_log_error("Pathing Setup Failed.");
         return EXIT_FAILURE;
     }

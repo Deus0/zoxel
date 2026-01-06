@@ -1,5 +1,8 @@
 extern entity spawn_chunk_terrain(ecs*, const entity, const entity, const int3, const int3, const byte, const float);
 
+// NOTE: Takes in array of stream points and iterates per chunk
+// NOTE: This logic fails if all chunks dissapear
+
 void ChunkSpawnSystem(iter *it) {
     const entity prefab_chunk = prefab_chunk_terrain;
 
@@ -38,16 +41,16 @@ void ChunkSpawnSystem(iter *it) {
 
         // zox_sys_e();
         zox_sys_i(VoxLink, voxLink);
-        zox_sys_i(RenderDistance, renderDistance);
-        zox_sys_i(ChunkPosition, chunkPosition);
-        zox_sys_o(ChunkNeighbors, chunkNeighbors);
+        zox_sys_i(RenderDistance, rdistance);
+        zox_sys_i(ChunkPosition, cposition);
+        zox_sys_o(ChunkNeighbors, neighbors);
 
         if (!zox_valid(voxLink->value)) {
             continue;
         }
 
         // Pass if loading chunk
-        if (renderDistance->value == 255) {
+        if (rdistance->value == 255) {
             continue;
         }
 
@@ -58,10 +61,10 @@ void ChunkSpawnSystem(iter *it) {
         }*/
 
         zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
-        const byte stream_zone = renderDistance->value < terrain_lod_far;
+        const byte stream_zone = rdistance->value < terrain_lod_far;
         if (stream_zone) {
             for (byte j = 0; j < 6; j++) {
-                entity neighbor = chunkNeighbors->value[j];
+                entity neighbor = neighbors->value[j];
 
                 // no need to spawn if neighbor exists
                 if (zox_valid(neighbor)) {
@@ -69,7 +72,7 @@ void ChunkSpawnSystem(iter *it) {
                 }
 
                 // get position of neighbor and check terrain for it
-                const int3 neighbor_position = int3_add(chunkPosition->value, get_direction_int3(j));
+                const int3 neighbor_position = int3_add(cposition->value, get_direction_int3(j));
                 if (!(neighbor_position.y >= -render_distance_y && neighbor_position.y <= render_distance_y)) {
                     continue;
                 }
@@ -110,7 +113,7 @@ void ChunkSpawnSystem(iter *it) {
                         spawned_chunks++;
                     }
                 }
-                chunkNeighbors->value[j] = neighbor;
+                neighbors->value[j] = neighbor;
             }
         }
     }
@@ -119,4 +122,4 @@ void ChunkSpawnSystem(iter *it) {
         zox_log_streaming(" + [%i] spawned [%i]", ecs_run_count, spawned_chunks);
     }
 
-} zoxd_system(ChunkSpawnSystem)
+} zoxd_system2(ChunkSpawnSystem);

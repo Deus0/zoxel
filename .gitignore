@@ -3,6 +3,7 @@ dist
 lib
 include
 inc
+pkg
 *.o
 CMakeLists.txt
 .game
