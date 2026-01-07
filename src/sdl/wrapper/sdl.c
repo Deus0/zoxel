@@ -3,15 +3,15 @@ int initialize_video() {
         return EXIT_SUCCESS;
     }
 
+    if (disable_decor) {
+        SDL_SetHint(SDL_HINT_VIDEO_WAYLAND_ALLOW_LIBDECOR, "0");
+    }
+
     if (SDL_Init(SDL_INIT_VIDEO)) {
         zox_log_error("Error [SDL_INIT_VIDEO] [%s]", SDL_GetError());
         return EXIT_FAILURE;
     }
     zox_log("Success [SDL_INIT_VIDEO]");
-    /*if (SDL_VideoInit(NULL)) {
-        zox_log_error("failed to initialize sdl [%s]", SDL_GetError())
-        return EXIT_FAILURE;
-    }*/
 
     if (is_log_sdl) {
         print_sdl();

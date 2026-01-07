@@ -74,7 +74,7 @@ And the mysterious Flecs (v4.0.5) [_flecsing_](https://codeberg.org/deus/flecsin
   - C [libc6]
   - SDL2 [libsdl2-2.0-0]
   - Wayland [libwayland-client0]
-  - Decor [libdecor-0-plugin-1-gtk]
+  X Decor [libdecor-0-plugin-1-gtk]
   - OpenGLES [libegl1-mesa libgles2-mesa]
   - Threads [libpthread-stubs0-dev]
 

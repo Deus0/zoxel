@@ -1,3 +1,4 @@
+byte disable_decor = 0;
 
 void process_arguments_apps(ecs *world, char* args[], int count) {
     (void) world;
@@ -14,6 +15,8 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
             is_split_screen = 1;
         } else if (strcmp(args[i], "-b") == 0 || strcmp(args[i], "--vsync") == 0) {
             vsync = 1;
+        } else if (strcmp(args[i], "--nodecor") == 0) {
+            disable_decor = 1;
         }
     }
 }
