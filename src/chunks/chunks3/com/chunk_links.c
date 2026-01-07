@@ -1,4 +1,3 @@
-zoxc_hashmap(ChunkLinks, int3)
 
 /*zoxc(ChunkLinks, int3_hashmap*)
 

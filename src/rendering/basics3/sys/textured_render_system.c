@@ -1,24 +1,25 @@
 void TexturedRenderSystem(iter *it) {
-    zox_sys_begin()
-    zox_sys_in(TransformMatrix)
-    zox_sys_in(MeshGPULink)
-    zox_sys_in(UvsGPULink)
-    zox_sys_in(ColorsGPULink)
-    zox_sys_in(MeshIndicies)
-    zox_sys_in(RenderDisabled)
-    zox_sys_in(MaterialGPULink)
-    zox_sys_in(TextureGPULink)
-    zox_sys_in(MaterialTextured3D)
+    zox_sys_begin();
+    zox_sys_in(TransformMatrix);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(UvsGPULink);
+    zox_sys_in(ColorsGPULink);
+    zox_sys_in(MeshIndicies);
+    zox_sys_in(RenderDisabled);
+    zox_sys_in(MaterialGPULink);
+    zox_sys_in(TextureGPULink);
+    zox_sys_in(MaterialTextured3D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(MeshIndicies, meshIndicies)
-        zox_sys_i(MeshGPULink, meshGPULink)
-        zox_sys_i(MaterialGPULink, materialGPULink)
-        zox_sys_i(TextureGPULink, textureGPULink)
-        zox_sys_i(TransformMatrix, transformMatrix)
-        zox_sys_i(UvsGPULink, uvsGPULink)
-        zox_sys_i(ColorsGPULink, colorsGPULink)
-        zox_sys_i(MaterialTextured3D, material_attributes)
+        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(MeshIndicies, meshIndicies);
+        zox_sys_i(MeshGPULink, meshGPULink);
+        zox_sys_i(MaterialGPULink, materialGPULink);
+        zox_sys_i(TextureGPULink, textureGPULink);
+        zox_sys_i(TransformMatrix, transformMatrix);
+        zox_sys_i(UvsGPULink, uvsGPULink);
+        zox_sys_i(ColorsGPULink, colorsGPULink);
+        zox_sys_i(MaterialTextured3D, material_attributes);
+
         if (renderDisabled->value) continue;
         if (!meshIndicies->length) continue;
         if (!meshGPULink->value.x) continue;

@@ -1,5 +1,4 @@
 #include "build_chunk.c"
-#include "render.c"
 #include "flatlands.c"
 #include "grasslands.c"
 #include "realm.c"
@@ -34,7 +33,7 @@ void define_systems_terrain(ecs *world) {
         zoxp_voxels_write,
         [in] chunks3.GenerateChunk,
         [in] chunks3.ChunkPosition,
-        [in] chunks3.VoxLink,
+        [in] voxes.VoxLink,
         [out] chunks3.NodeDepth,
         [out] chunks3.VoxelNode,
         [none] TerrainChunk,
@@ -47,7 +46,7 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepth,
         [in] rendering.RenderDepthDirty,
         [in] chunks3.VoxelNodeEdited,
-        [in] chunks3.VoxLink,
+        [in] voxes.VoxLink,
         [out] chunks3.VoxelNode,
         [out] chunks3.NodeDepth,
         [out] chunks3.VoxelNodeDirty,
@@ -60,9 +59,9 @@ void define_systems_terrain(ecs *world) {
     if (!headless) {
         // move this into chunk3, for chunk3_textured
         zox_system(
-            Chunk3BuildSystem,
+            Chunk3TexturedBuildSystem,
             zoxp_voxels_read,
-            [in] chunks3.VoxLink,
+            [in] voxes.VoxLink,
             [in] chunks3.ChunkMeshDirty,
             [in] chunks3.VoxelNode,
             [in] rendering.RenderDepth,
@@ -74,18 +73,6 @@ void define_systems_terrain(ecs *world) {
             [out] rendering.MeshColorRGBs,
             [out] rendering.MeshDirty,
             [none] chunks3.ChunkTextured
-        );
-
-        // move this into chunk3, for chunk3_textured
-        zox_render3D_system(
-            Chunk3RenderSystem,
-            [in] transforms3.TransformMatrix,
-            [in] rendering.MeshGPULink,
-            [in] rendering.UvsGPULink,
-            [in] rendering.ColorsGPULink,
-            [in] rendering.MeshIndiciesGpu,
-            [in] chunks3.VoxLink,
-            [in] rendering.RenderDisabled
         );
     }
 

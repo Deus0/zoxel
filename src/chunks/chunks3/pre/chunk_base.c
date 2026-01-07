@@ -7,7 +7,6 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_add_tag(e, Chunk);
     zox_prefab_set(e, ChunkPosition, { int3_zero });
     zox_prefab_set(e, ChunkSize, { size });
-    zox_prefab_set(e, VoxLink, { 0 });
     zox_prefab_set(e, ChunkNeighbors, { { 0, 0, 0, 0, 0, 0 } });
     zox_prefab_set(e, RenderDistance, { render_depth_spawning });
     zox_prefab_set(e, RenderDistanceDirty, { zox_dirty_none });

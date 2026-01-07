@@ -7,7 +7,7 @@ int zox_statistics_characters_rendered;
 
 // for unique meshes
 void Characters3RenderSystem(iter *it) {
-    zox_sys_world()
+    zox_sys_world();
     if (!zox_valid(material_colored3D)) {
         return;
     }
@@ -24,11 +24,12 @@ void Characters3RenderSystem(iter *it) {
     zox_sys_in(TransformMatrix);
     zox_sys_in(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(MeshIndicies, meshIndicies)
-        zox_sys_i(MeshGPULink, meshGPULink)
-        zox_sys_i(ColorsGPULink, colorsGPULink)
-        zox_sys_i(TransformMatrix, transformMatrix)
+        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(MeshIndicies, meshIndicies);
+        zox_sys_i(MeshGPULink, meshGPULink);
+        zox_sys_i(ColorsGPULink, colorsGPULink);
+        zox_sys_i(TransformMatrix, transformMatrix);
+
         if (renderDisabled->value || !meshIndicies->length || !meshGPULink->value.x || !meshGPULink->value.y || !colorsGPULink->value) {
             continue;
         }

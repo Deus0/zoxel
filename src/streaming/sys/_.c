@@ -50,7 +50,7 @@ void define_systems_streaming(ecs* world) {
     zox_system(
         ChunkDieSystem,
         zoxp_destroy,
-        [in] chunks3.VoxLink,
+        [in] voxes.VoxLink,
         [in] chunks3.ChunkPosition,
         [in] rendering.RenderDistance,
         [in] rendering.RenderDepth,
@@ -61,7 +61,7 @@ void define_systems_streaming(ecs* world) {
         StreamEndEventSystem,
         zoxp_mainthread,
         [in] generic.EventInput,
-        [in] chunks3.ChunkLinks,
+        [in] voxes.ChunkLinks,
         [out] StreamEndEvent
     );
     zox_filter(
@@ -73,7 +73,7 @@ void define_systems_streaming(ecs* world) {
         zoxp_mainthread,
         streamers,
         [in] chunks3.ChunkPosition,
-        [in] chunks3.VoxLink,
+        [in] voxes.VoxLink,
         [in] rendering.RenderDistance,
         [out] chunks3.ChunkNeighbors,
         [none] StreamedChunk

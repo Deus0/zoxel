@@ -1,24 +1,14 @@
 zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
-#include "entities_lod.c"
-#include "find_neighbor.c"
 #include "cleanup.c"
 #include "mesh_trigger.c"
 #include "mesh_trigger_neighbor.c"
 #include "debug.c"
-#include "block_scale.c"
 #include "voxel_node_queue.c"
 #include "voxel_node_queue_clear.c"
 
 void define_systems_chunks(ecs *world) {
     zoxd_system_increment(VoxelNodeDirty);
 
-    zox_system(
-        ChunkEntitiesLodSystem,
-        EcsOnUpdate,
-        [in] rendering.RenderDistanceDirty,
-        [in] rendering.RenderDistance,
-        [in] chunks3.ChunkEntities
-    );
     zox_system(
         Chunk3MeshTriggerSystem,
         EcsOnUpdate,
@@ -63,23 +53,5 @@ void define_systems_chunks(ecs *world) {
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkNeighbors,
         [none] ChunkDebugger
-    );
-
-    // Move to Voxes Module
-    zox_system(
-        ChunkFindNeighborSystem,
-        EcsOnLoad,
-        [in] chunks3.ChunkPosition,
-        [in] chunks3.VoxLink,
-        [in] rendering.RenderDepth,
-        [out] chunks3.ChunkNeighbors,
-        [none] ChunkTextured
-    );
-    zox_system(BlockScaleSystem,
-        EcsPostLoad,
-        [in] rendering.RenderDepthDirty,
-        [in] rendering.RenderDepth,
-        [out] chunks3.VoxLink,
-        [out] blocks.BlockScale
     );
 }

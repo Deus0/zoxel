@@ -270,7 +270,7 @@ void fetch_neightbor_chunk_data(
 }
 
 // TODO: Move terrain cache into functions
-void Chunk3BuildSystem(iter *it) {
+void Chunk3TexturedBuildSystem(iter *it) {
     zox_ts_begin(chunk3_builder);
     uint updated_count = 0;
 
@@ -465,7 +465,7 @@ void Chunk3BuildSystem(iter *it) {
     endwatch(time_chunk3_build, "ending");
     zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
 
-} zoxd_system2(Chunk3BuildSystem);
+} zoxd_system2(Chunk3TexturedBuildSystem);
 
 
 

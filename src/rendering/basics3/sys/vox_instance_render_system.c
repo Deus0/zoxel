@@ -17,31 +17,33 @@ void VoxInstanceRenderSystem(iter *it) {
         return;
     }
     // zox_log("rendering [%i] instance renderers", it->count)
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TransformMatrix)
-    zox_sys_in(InstanceLink)
-    zox_sys_in(RenderDisabled)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TransformMatrix);
+    zox_sys_in(InstanceLink);
+    zox_sys_in(RenderDisabled);
     // get material
-    zox_geter_value(material_vox_instance, MaterialGPULink, uint, material_link)
+    zox_geter_value(material_vox_instance, MaterialGPULink, uint, material_link);
     if (!material_link) {
         return;
     }
-    zox_geter(material_vox_instance, UboGPULink, uboGPULink)
+    zox_geter(material_vox_instance, UboGPULink, uboGPULink);
     if (!uboGPULink->value) {
         // zox_log(" ! error with material_vox_instance uboGPULink.\n")
         return;
     }
-    zox_geter(material_vox_instance, MaterialVoxInstance, material_attributes)
+    zox_geter(material_vox_instance, MaterialVoxInstance, material_attributes);
     InstanceRenderCommand_array_d* commands = create_InstanceRenderCommand_array_d(max_meshes);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(InstanceLink, instanceLink)
-        zox_sys_i(TransformMatrix, transformMatrix)
+        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(InstanceLink, instanceLink);
+        zox_sys_i(TransformMatrix, transformMatrix);
+
         if (!zox_valid(instanceLink->value) || renderDisabled->value) {
             // zox_log_error("cannot render instanced mesh [%s]", zox_get_name(instanceLink->value))
             continue;
         }
+
         int index = 0;
         if (has_mesh(commands, instanceLink->value, &index)) {
             InstanceRenderCommand command = commands->data[index];

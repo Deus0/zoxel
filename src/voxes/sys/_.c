@@ -1,9 +1,11 @@
-#include "build_chunk.c"
 #include "grow_bounds3.c"
 #include "vox_generation.c"
 #include "vox_texture.c"
 #include "clone_vox.c"
 #include "bake_vox.c"
+#include "find_neighbor.c"
+#include "block_scale.c"
+#include "entities_lod.c"
 
 void define_systems_voxes(ecs *world) {
     // NOTE: timing specific, fucks up if changes position
@@ -19,7 +21,7 @@ void define_systems_voxes(ecs *world) {
         VoxTextureSystem,
         EcsPreUpdate,
         [in] rendering.TextureSize,
-        [in] chunks3.VoxLink,
+        [in] voxes.VoxLink,
         [in] blocks.VoxBakeSide,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
@@ -58,23 +60,29 @@ void define_systems_voxes(ecs *world) {
         [in] rendering.ModelLink,
         [in] textures.TextureLinks
     );
-    if (!headless) {
-        zox_system(
-            ChunkColorsBuildSystem,
-            zoxp_voxels_read,
-            [in] chunks3.ChunkMeshDirty,
-            [in] chunks3.VoxelNode,
-            [in] chunks3.NodeDepth,
-            [in] rendering.RenderDepth,
-            [in] chunks3.ChunkNeighbors,
-            [in] colorz.ColorRGBs,
-            [in] chunks3.ChunkSize,
-            [in] blocks.BlockScale,
-            [out] rendering.MeshIndicies,
-            [out] rendering.MeshVertices,
-            [out] rendering.MeshColorRGBs,
-            [out] rendering.MeshDirty,
-            [none] chunks3.ColorChunk
-        );
-    }
+
+    // Move to Voxes Module
+    zox_system(
+        ChunkFindNeighborSystem,
+        EcsOnLoad,
+        [in] chunks3.ChunkPosition,
+        [in] voxes.VoxLink,
+        [in] rendering.RenderDepth,
+        [out] chunks3.ChunkNeighbors,
+        [none] chunks3.ChunkTextured    // we should just check if parent has chunk links here
+    );
+    zox_system(BlockScaleSystem,
+        EcsPostLoad,
+        [in] rendering.RenderDepthDirty,
+        [in] rendering.RenderDepth,
+        [out] voxes.VoxLink,
+        [out] blocks.BlockScale
+    );
+    zox_system(
+        ChunkEntitiesLodSystem,
+        EcsOnUpdate,
+        [in] rendering.RenderDistanceDirty,
+        [in] rendering.RenderDistance,
+        [in] chunks3.ChunkEntities
+    );
 }

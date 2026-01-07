@@ -8,9 +8,11 @@ if (check_opengl_error_unlogged()) {\
         break;\
 }
 
-void Chunk3RenderSystem(iter *it) {
+// TODO: For each chunk render, we use linked tilemap GPU data
+
+void Chunk3TexturedRenderSystem(iter *it) {
     byte has_set_material = 0;
-    entity vox_entity = 0;
+    entity tilemap_ref = 0;
     const MaterialGPULink *gpu_material = NULL;
     const TextureGPULink *gpu_texture = NULL;
     const MaterialTextured3D *material_attributes = NULL;
@@ -22,38 +24,33 @@ void Chunk3RenderSystem(iter *it) {
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(MeshIndiciesGpu);
-    zox_sys_in(VoxLink);
+    zox_sys_in(TilemapLink);
     zox_sys_in(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(MeshIndiciesGpu, count);
         zox_sys_i(MeshGPULink, gpu_mesh);
-        zox_sys_i(VoxLink, terrain);
+        zox_sys_i(TilemapLink, tilemap);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
         zox_sys_i(TransformMatrix, matrix);
 
-        if (disabled->value || !count || !zox_valid(terrain->value) || !gpu_mesh->value.x) {
+        if (disabled->value || !count || !gpu_mesh->value.x) {
             continue;
         }
 
-        if (vox_entity != terrain->value) {
-            vox_entity = terrain->value;
-
-            zox_geter_value(terrain->value, TilemapLink, entity, tilemap);
-            gpu_material = zox_get(tilemap, MaterialGPULink);
-            if (!gpu_material->value) {
+        if (tilemap_ref != tilemap->value) {
+            if (!zox_valid(tilemap->value)) {
                 continue;
             }
+            tilemap_ref = tilemap->value;
 
-            gpu_texture = zox_get(tilemap, TextureGPULink);
-            if (!gpu_texture->value) {
+            gpu_material = zox_get(tilemap_ref, MaterialGPULink);
+            gpu_texture = zox_get(tilemap_ref, TextureGPULink);
+            material_attributes = zox_get(tilemap_ref, MaterialTextured3D);
+
+            if (!gpu_material->value || !gpu_texture->value || !material_attributes) {
                 continue;
-            }
-
-            material_attributes = zox_get(tilemap, MaterialTextured3D);
-            if (!material_attributes) {
-                break;
             }
         }
 
@@ -84,4 +81,4 @@ void Chunk3RenderSystem(iter *it) {
         zox_disable_material();
     }
 
-} zoxd_system2(Chunk3RenderSystem);
+} zoxd_system2(Chunk3TexturedRenderSystem);

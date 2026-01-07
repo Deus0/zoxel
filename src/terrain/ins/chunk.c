@@ -20,6 +20,12 @@ entity spawn_chunk_terrain(
     //  - scales by length of chunk and vox scale
     zox_set(e, VoxLink, { terrain });
     zox_set(e, ChunkPosition, { position });
+    zox_geter_value(terrain, TilemapLink, entity, tilemap);
+    if (!tilemap) {
+        zox_log_error("Tilemap on terrain null.");
+    } else {
+        zox_set(e, TilemapLink, { tilemap });
+    }
 
     // scale needs to be based on chunk itself
     const byte camera_distance = get_camera_chunk_distance_xz(camera_position, position);

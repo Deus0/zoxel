@@ -9,6 +9,10 @@
  *
  * */
 
+// TOTO: Finish migrating terrain textured code here
+// TOTO: Move any Chunks3 Colored code here
+
+
 #include "set/_.c"
 #include "sta/_.c"
 #include "mcr/_.c"
@@ -20,10 +24,11 @@
 #include "dbg/_.c"
 #include "tst/_.c"
 
+#include "textured/_.c"
+#include "colored/_.c"
 #include "io/_.c"
 #include "structures/_.c"
 #include "animations/_.c"
-#include "vodes3/_.c"
 
 void module_dispose_chunks3(ecs *world, void *ctx) {
     (void) world;
@@ -42,9 +47,10 @@ zox_begin_module(Chunks3)
     add_hook_on_destroyed_VoxelNode(destroy_node_link_VoxelNode);
     test_chunks3(world);
     // sub modules
+    zox_import_module(Chunks3Colored);
+    zox_import_module(Chunks3Textured);
     zox_import_module(Structures);
     zox_import_module(VoxelsAnimations);
-    zox_import_module(Vodes3);
 zox_end_module(Chunks3)
 
 #endif

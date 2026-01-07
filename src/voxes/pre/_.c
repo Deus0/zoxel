@@ -17,6 +17,9 @@ entity prefab_vox_file;
 entity prefab_vox_texture;
 
 void zox_define_prefabs_voxes(ecs *world) {
+    // Add VoxLink to chunk prefabs
+    zox_prefab_set(prefab_chunk_base, VoxLink, { 0 });
+    zox_prefab_set(prefab_chunk, VoxLink, { 0 });
 
     // Level 1
     prefab_block_vox_meta = spawn_prefab_block_vox_meta(world, prefab_block);

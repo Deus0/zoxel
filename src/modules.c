@@ -43,8 +43,9 @@
 #include "cubes/_.c"
 #include "blocks/_.c"
 #include "chunks/_.c"
-#include "lights/_.c"
 #include "voxes/_.c"
+#include "vodes/_.c"
+#include "lights/_.c"
 #include "models/_.c"
 #include "biomes/_.c"
 #include "terrain/_.c"
@@ -131,8 +132,9 @@ zox_begin_module(Zox)
 
     zox_import_module(Blocks);
     zox_import_module(Chunks);
-    zox_import_module(Lights);
     zox_import_module(Voxes);
+    zox_import_module(Vodes);
+    zox_import_module(Lights);
     zox_import_module(Models);
     zox_import_module(Biomes);
     zox_import_module(Terrain);

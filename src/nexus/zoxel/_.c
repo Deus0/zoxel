@@ -54,7 +54,7 @@ void zoxel_settings_npcs() {
     // issue: npcs can walk outside the bounds of the spawn zone atm, thus making them not be destroyed properly when moving away
     // debug
     character_spawn_rate_min = 1;
-    character_spawn_rate_max = 4;
+    character_spawn_rate_max = 1;
     is_characters_instanced = 1;
     disable_npc_hooks = 0;
     disable_npc_uis = 0;

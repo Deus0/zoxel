@@ -5,6 +5,7 @@
 byte block_vox_render_at_lod = 0;
 #include "hok/_.c"
 #include "sys/_.c"
+#include "fun/_.c"
 
 void module_dispose_vodes3(ecs *world, void *ctx) {
     (void) world;
@@ -13,8 +14,9 @@ void module_dispose_vodes3(ecs *world, void *ctx) {
 }
 
 zox_begin_module(Vodes3)
-    zox_module_dispose(module_dispose_vodes3)
     initialize_hook_spawned_block();
+    zox_module_dispose(module_dispose_vodes3);
+    add_hook_spawned_block(&spawned_block_vox);
     define_systems_vodes3(world);
 zox_end_module(Vodes3)
 
