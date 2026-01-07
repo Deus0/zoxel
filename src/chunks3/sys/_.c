@@ -20,15 +20,6 @@ void define_systems_chunks(ecs *world) {
         [in] chunks3.ChunkEntities
     );
     zox_system(
-        ChunkFindNeighborSystem,
-        EcsOnLoad,
-        [in] chunks3.ChunkPosition,
-        [in] chunks3.VoxLink,
-        [in] rendering.RenderDepth,
-        [out] chunks3.ChunkNeighbors,
-        [none] ChunkTextured
-    );
-    zox_system(
         Chunk3MeshTriggerSystem,
         EcsOnUpdate,
         [in] chunks3.VoxelNodeDirty,
@@ -47,14 +38,6 @@ void define_systems_chunks(ecs *world) {
         [in] chunks3.VoxelNodeDirty,
         [in] chunks3.NodeDepth,
         [out] chunks3.VoxelNode
-    );
-
-    zox_system(BlockScaleSystem,
-        EcsPostLoad,
-        [in] rendering.RenderDepthDirty,
-        [in] rendering.RenderDepth,
-        [out] chunks3.VoxLink,
-        [out] blocks.BlockScale
     );
     zox_system(VoxelNodeQueueSystem,
         zoxp_queue_process1,
@@ -80,5 +63,23 @@ void define_systems_chunks(ecs *world) {
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkNeighbors,
         [none] ChunkDebugger
+    );
+
+    // Move to Voxes Module
+    zox_system(
+        ChunkFindNeighborSystem,
+        EcsOnLoad,
+        [in] chunks3.ChunkPosition,
+        [in] chunks3.VoxLink,
+        [in] rendering.RenderDepth,
+        [out] chunks3.ChunkNeighbors,
+        [none] ChunkTextured
+    );
+    zox_system(BlockScaleSystem,
+        EcsPostLoad,
+        [in] rendering.RenderDepthDirty,
+        [in] rendering.RenderDepth,
+        [out] chunks3.VoxLink,
+        [out] blocks.BlockScale
     );
 }

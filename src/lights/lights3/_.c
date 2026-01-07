@@ -18,9 +18,9 @@
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Lighting3)
-    define_components_lighting3(world);
-    define_systems_lighting3(world);
-zox_end_module(Lighting3)
+zox_begin_module(Lights3)
+    define_components_lights3(world);
+    define_systems_lights3(world);
+zox_end_module(Lights3)
 
 #endif

@@ -16,7 +16,7 @@ zoxc_state(SunlightDirty);
 zoxc_queue(LightQueue, LightUpdate, 1)
 zoxc_queue(DarkQueue, DarkUpdate, 1)
 
-void define_components_lighting3(ecs *world) {
+void define_components_lights3(ecs *world) {
     zoxd_tag(SunnyChunk);
     zoxd_node(LightNode);
     zoxd_byte(LightNodeDepth);

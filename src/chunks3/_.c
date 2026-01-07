@@ -21,7 +21,6 @@
 #include "tst/_.c"
 
 #include "io/_.c"
-#include "lighting/_.c"
 #include "structures/_.c"
 #include "animations/_.c"
 #include "vodes3/_.c"
@@ -43,7 +42,6 @@ zox_begin_module(Chunks3)
     add_hook_on_destroyed_VoxelNode(destroy_node_link_VoxelNode);
     test_chunks3(world);
     // sub modules
-    zox_import_module(Lighting3);
     zox_import_module(Structures);
     zox_import_module(VoxelsAnimations);
     zox_import_module(Vodes3);

@@ -9,7 +9,7 @@
 // TODO: Rename NodeDepth to VoxelNodeDepth
 // TODO: Rename all NodeDepth to OctreeDepth
 
-void define_systems_lighting3(ecs* world) {
+void define_systems_lights3(ecs* world) {
     zox_system(
         SunlightSystem,
         zoxp_lights_write,
@@ -18,10 +18,10 @@ void define_systems_lighting3(ecs* world) {
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxLink,
-        [out] lighting3.LightNodeDepth,
-        [out] lighting3.LightNode,
-        [out] lighting3.LightNodeDirty,
-        [none] lighting3.SunnyChunk
+        [out] lights3.LightNodeDepth,
+        [out] lights3.LightNode,
+        [out] lights3.LightNodeDirty,
+        [none] lights3.SunnyChunk
     );
 
     zox_system(
@@ -30,10 +30,10 @@ void define_systems_lighting3(ecs* world) {
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxLink,
-        // [out] lighting3.LightNodeDepth,
-        [out] lighting3.LightNode,
-        [out] lighting3.LightQueue,
-        [out] lighting3.LightNodeDirty
+        // [out] lights3.LightNodeDepth,
+        [out] lights3.LightNode,
+        [out] lights3.LightQueue,
+        [out] lights3.LightNodeDirty
     );
 
     zox_system(
@@ -42,11 +42,11 @@ void define_systems_lighting3(ecs* world) {
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [in] chunks3.VoxLink,
-        [out] lighting3.LightNodeDepth,
-        [out] lighting3.LightNode,
-        [out] lighting3.DarkQueue,
-        [out] lighting3.LightQueue,
-        [out] lighting3.LightNodeDirty
+        [out] lights3.LightNodeDepth,
+        [out] lights3.LightNode,
+        [out] lights3.DarkQueue,
+        [out] lights3.LightQueue,
+        [out] lights3.LightNodeDirty
     );
 
     // NOTE: This needs to be queue dependent
@@ -57,28 +57,28 @@ void define_systems_lighting3(ecs* world) {
         [in] chunks3.NodeDepth,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxLink,
-        [out] lighting3.LightNode,
-        [out] lighting3.LightQueue,
-        [out] lighting3.DarkQueue,
-        [out] lighting3.LightNodeDirty
+        [out] lights3.LightNode,
+        [out] lights3.LightQueue,
+        [out] lights3.DarkQueue,
+        [out] lights3.LightNodeDirty
     );
 
     // this kinda has issues atm hmm
     zox_system(
         LightNodeReduceSystem,
         zoxp_lights_write + 1,
-        [in] lighting3.LightNodeDirty,
-        [out] lighting3.LightNode
+        [in] lights3.LightNodeDirty,
+        [out] lights3.LightNode
     );
 
     zox_system(
         MeshColorsTriggerSystem,
         zoxp_lights_write + 2,
-        [in] lighting3.LightQueue,
-        [in] lighting3.DarkQueue,
+        [in] lights3.LightQueue,
+        [in] lights3.DarkQueue,
         [in] chunks3.ChunkMeshDirty,
-        [in] lighting3.SunlightDirty,
-        [in] lighting3.LightNodeDirty,
+        [in] lights3.SunlightDirty,
+        [in] lights3.LightNodeDirty,
         [out] rendering.MeshColorsGenerate
     );
 
@@ -89,7 +89,7 @@ void define_systems_lighting3(ecs* world) {
         [in] chunks3.VoxLink,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
-        [in] lighting3.LightNode,
+        [in] lights3.LightNode,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
         [out] rendering.MeshColorsDirty
@@ -103,7 +103,7 @@ void define_systems_lighting3(ecs* world) {
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkPosition,
         [in] chunks3.VoxelNode,
-        [in] lighting3.LightNode,
+        [in] lights3.LightNode,
         [in] rendering.RenderDepth
     );
 }
