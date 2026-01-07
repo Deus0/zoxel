@@ -3,10 +3,16 @@ set -euo pipefail
 
 APP="zoxel"
 VERSION="1.0"
-BINARY_PATH="./bin/zoxel"
+BINARY_PATH="./bin/${APP}"
 RES_DIR="./res"
 ICON_REL="res/textures/game.png"
 ICON_PATH="./${ICON_REL}"
+bin_install_dir="/usr/bin"
+res_install_dir="/usr/share/${APP}"
+shortcut_install_dir="/usr/share/applications"
+shortcut_path="pkg/${APP}.desktop"
+url_path="https://codeberg.org/deus/zoxel"
+staging_dir="pkg"
 
 # Validate inputs
 if [[ ! -x "${BINARY_PATH}" ]]; then
@@ -54,92 +60,79 @@ EOF
 # Build Debian package
 ##############################
 build_deb() {
-    DEB_DIR="pkg"
-    rm -rf "$DEB_DIR"
-    mkdir -p "$DEB_DIR/DEBIAN" \
-             "$DEB_DIR/bin" \
-             "$DEB_DIR/res" \
-             "$DEB_DIR/usr/share/applications"
+    mkdir -p "${staging_dir}/DEBIAN" \
+             "${staging_dir}${bin_install_dir}" \
+             "${staging_dir}${res_install_dir}" \
+             "${staging_dir}${res_install_dir}/res" \
+             "${staging_dir}${shortcut_install_dir}"
 
     # Copy binary
-    install -Dm755 "${BINARY_PATH}" "$DEB_DIR/${APP}"
+    install -Dm755 "${BINARY_PATH}" "${staging_dir}${bin_install_dir}/${APP}"
 
     # Copy resources
-    cp -a "${RES_DIR}/." "$DEB_DIR/res/"
+    cp -a "${RES_DIR}/." "${staging_dir}${res_install_dir}/res/"
 
     # Copy the Iccns
-    mkdir -p "$DEB_DIR/usr/share/icons/hicolor/256x256/apps"
-    install -Dm644 "${ICON_PATH}" "$DEB_DIR/usr/share/icons/hicolor/256x256/apps/zoxel.png"
+    mkdir -p "${staging_dir}/usr/share/icons/hicolor/256x256/apps"
+    install -Dm644 "${ICON_PATH}" "${staging_dir}/usr/share/icons/hicolor/256x256/apps/${APP}.png"
 
     # Desktop entry
-    printf '%s\n' "$DESKTOP_CONTENT" > "$DEB_DIR/usr/share/applications/${APP}.desktop"
+    install -Dm644 "${shortcut_path}" "${staging_dir}${shortcut_install_dir}${APP}.desktop"
 
     # Control file
-    cat > "$DEB_DIR/DEBIAN/control" <<EOF
+    cat > "$staging_dir/DEBIAN/control" <<EOF
 Package: ${APP}
 Version: ${VERSION}-1
 Section: games
 Priority: optional
 Architecture: ${ARCH}
-Depends: libsdl2-2.0-0 libsdl2-image-2.0-0 libsdl2-mixer-2.0-0
+Depends: libsdl2-2.0-0, libsdl2-image-2.0-0, libsdl2-mixer-2.0-0
 Maintainer: Packager <root>
 Description: A voxel game ${APP}
 EOF
 
     # Build and install
-    dpkg-deb --build "$DEB_DIR"
-    echo "Built ${DEB_DIR}.deb"
-    sudo dpkg -i "${DEB_DIR}.deb"
+    dpkg-deb --build "$staging_dir"
+    echo "Built ${staging_dir}.deb"
+    sudo dpkg -i "${staging_dir}.deb"
 }
 
 ##############################
 # Build Arch package
 ##############################
 build_arch() {
-    ARCH_DIR="pkg"
-    rm -rf "$ARCH_DIR"
-    mkdir -p "$ARCH_DIR"
-    # mkdir -p "$ARCH_DIR/res"
-
+    mkdir -p "$staging_dir"
     # Copy sources directly into PKGBUILD folder (makepkg expects them here)
-    cp "${BINARY_PATH}" "$ARCH_DIR/zoxel"
-    # cp -a "${RES_DIR}/." "$ARCH_DIR/res"
-    tar czf  "$ARCH_DIR/res.tar.gz" -C "${RES_DIR}/.." res
-    printf '%s\n' "$DESKTOP_CONTENT" > "$ARCH_DIR/zoxel.desktop"
-
+    cp "${BINARY_PATH}" "$staging_dir/${APP}"
+    # cp -a "${RES_DIR}/." "$staging_dir/res"
+    tar czf  "$staging_dir/res.tar.gz" -C "${RES_DIR}/.." res
     # PKGBUILD
-    cat > "$ARCH_DIR/PKGBUILD" <<'EOF'
-pkgname=zoxel
+    cat > "$staging_dir/PKGBUILD" <<EOF
+pkgname="${APP}"
 pkgver=1.0
 pkgrel=1
-pkgdesc="Prebuilt zoxel package with resources and desktop shortcut"
+pkgdesc="An awesome game [${APP}]"
 arch=('x86_64')
-url="https://codeberg.org/deus/zoxel"
-license=('MIT')
-source=("zoxel" "zoxel.desktop" "res.tar.gz")
+url="${url_path}"
+license=('GPL3')
+source=("${APP}" "${APP}.desktop" "res.tar.gz")
 sha256sums=('SKIP' 'SKIP' 'SKIP')
 depends=('sdl2' 'sdl2_image' 'sdl2_mixer')
 
 package() {
-    install_bin_path="${pkgdir}/usr/bin"
-    install -Dm755 "zoxel" "${install_bin_path}/zoxel"
-
-    # Extract the resources archive into the package
-    install_res_path="${pkgdir}/usr/share/zoxel"
-    mkdir -p "${install_res_path}"
-    tar xzf "$srcdir/res.tar.gz" -C "${install_res_path}"
-
-    # install our icon texture
-    install -Dm644 "$srcdir/res/textures/game.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/zoxel.png" || true
-
-    # install our desktop file
-    install -Dm644 "${srcdir}/zoxel.desktop" "${pkgdir}/usr/share/applications/zoxel.desktop"
+    install_bin_path="\${pkgdir}/usr/bin"
+    install_res_path="\${pkgdir}/usr/share/\${pkgname}"
+    mkdir -p "\${install_res_path}"
+    install -Dm755 "\${pkgname}" "\${install_bin_path}/\${pkgname}"
+    tar xzf "\$srcdir/res.tar.gz" -C "\${install_res_path}"
+    install -Dm644 "\$srcdir/res/textures/game.png" "\${pkgdir}/usr/share/icons/hicolor/256x256/apps/\${pkgname}.png"
+    install -Dm644 "\$srcdir/\${pkgname}.desktop" "\${pkgdir}/usr/share/applications/\${pkgname}.desktop"
 }
 EOF
 
     # Build and install Arch package
-    (cd "$ARCH_DIR" && makepkg --force --noconfirm)
-    PKG_FILE=$(find "$ARCH_DIR" -maxdepth 1 -name "*.pkg.tar.*" | head -n1)
+    (cd "$staging_dir" && makepkg --force --noconfirm)
+    PKG_FILE=$(find "$staging_dir" -maxdepth 1 -name "*.pkg.tar.*" | head -n1)
     if [[ -z "$PKG_FILE" || ! -f "$PKG_FILE" ]]; then
         echo "Error: no Arch package found to install."
         exit 1
@@ -151,6 +144,12 @@ EOF
 ##############################
 # Main
 ##############################
+
+# make our desktop file
+rm -rf pkg
+mkdir -p pkg
+printf '%s\n' "${DESKTOP_CONTENT}" > "${shortcut_path}"
+
 if [[ "$DISTRO" == "debian" ]]; then
     build_deb
 elif [[ "$DISTRO" == "arch" ]]; then

@@ -28,7 +28,7 @@ void button_event_exit_app(ecs *world, const ClickEventData event) {
         if (menu) {
             zox_delete(menu);
         }
-        trigger_canvas_fade_in(world, canvas, 0, 0.7f);
+        trigger_canvas_fade_in(world, canvas, 0, 0.4f);
     }
     delay_event(world, &engine_end_delayed, 0, 2.0f);
 }
