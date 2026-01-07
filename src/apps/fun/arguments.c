@@ -1,5 +1,3 @@
-byte disable_apps_decor = 0;
-
 void process_arguments_apps(ecs *world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {

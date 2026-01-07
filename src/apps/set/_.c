@@ -2,6 +2,7 @@
 int2 default_window_position = { 0, 0 };
 const int2 default_window_size = { 1280, 720 };
 byte minimized = 0;
+byte disable_apps_decor = 0;
 
 #ifdef zox_android
     byte window_resizeable = 0;
@@ -23,4 +24,10 @@ void initialize_settings_apps(ecs* world) {
     zoxs_new_byte("fullscreen", set_app_fullscreen, fullscreen)
     zoxs_new_byte("maximized", set_app_maximized, maximized)
     zoxs_new_byte("monitor", set_app_monitor, monitor)
+    if (is_on_phosh()) {
+        zox_log("Phosh Detected. Disabling Decor.");
+        disable_apps_decor = 1;
+    } else {
+        zox_log("Not on Phosh.");
+    }
 }
