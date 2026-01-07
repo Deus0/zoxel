@@ -19,7 +19,11 @@ zox_begin_module(Sdl)
     add_to_post_update_loop(app_update_gpu);
     add_hook_terminal_command(process_terminal_sdl);
     add_hook_spawn_prefabs(spawn_prefabs_sdl);
-    zox_import_module(SdlInputs)
+    if (is_on_phosh()) {
+        zox_log("Phosh Detected. Disabling Decor.");
+        disable_apps_decor = 1;
+    }
+    zox_import_module(SdlInputs);
 zox_end_module(Sdl)
 
 #endif

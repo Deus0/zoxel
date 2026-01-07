@@ -1,4 +1,4 @@
-byte disable_decor = 0;
+byte disable_apps_decor = 0;
 
 void process_arguments_apps(ecs *world, char* args[], int count) {
     (void) world;
@@ -16,7 +16,7 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
         } else if (strcmp(args[i], "-b") == 0 || strcmp(args[i], "--vsync") == 0) {
             vsync = 1;
         } else if (strcmp(args[i], "--nodecor") == 0) {
-            disable_decor = 1;
+            disable_apps_decor = 1;
         }
     }
 }

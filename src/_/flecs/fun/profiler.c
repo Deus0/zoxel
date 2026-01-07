@@ -1,8 +1,8 @@
 void initialize_flecs_profiler(ecs* world) {
 #ifdef zox_using_profiler
-    //zox_log("+ flecs profiler enabled\n")
-    zox_import_module(FlecsRest)
-    zox_import_module(FlecsMonitor)
+    zox_logw("+ flecs profiler enabled\n")
+    zox_import_module(FlecsRest);
+    zox_import_module(FlecsMonitor);
     ecs_singleton_set(world, EcsRest, {0});
     // ecs_tracing_enable(1);
     ecs_log_set_level(0);

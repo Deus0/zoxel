@@ -15,7 +15,7 @@ zox_begin_module(Stats)
     add_hook_spawn_prefabs(spawn_prefabs_stats);
     // link to characters
     // add_hook_spawned_character3D(&spawn_character_stats);
-    zox_import_module(StatsUI)
+    zox_import_module(StatsUI);
 zox_end_module(Stats)
 
 #endif

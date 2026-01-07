@@ -4,7 +4,7 @@
     ECS_MODULE(world, name);
 
 #define zox_import_module(name)\
-    ECS_IMPORT(world, name);
+    ECS_IMPORT(world, name)
 
 #define zox_module_dispose(function)\
     ecs_atfini(world, function, NULL);

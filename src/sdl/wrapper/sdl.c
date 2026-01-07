@@ -3,7 +3,7 @@ int initialize_video() {
         return EXIT_SUCCESS;
     }
 
-    if (disable_decor) {
+    if (disable_apps_decor) {
         SDL_SetHint(SDL_HINT_VIDEO_WAYLAND_ALLOW_LIBDECOR, "0");
     }
 

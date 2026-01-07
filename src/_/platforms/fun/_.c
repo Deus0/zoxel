@@ -4,3 +4,4 @@
 #include "webasm.c"
 #include "threads.c"
 #include "game_store.c"
+#include "phosh.c"
