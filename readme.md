@@ -1,4 +1,10 @@
-[![Zoxel Banner](doc/banner.png)](https://codeberg.org/deus/zoxel)
+        +--------+
+       /        /|
+      +--------+ |
+      |  ZOXEL | +
+      |        |/
+      +--------+
+   ~ In the void, voxels whisper ~
 
 # 🐙 Zoxel — Embrace the Madness of the Voxels
 
@@ -63,6 +69,14 @@ And the mysterious Flecs (v4.0.5) [_flecsing_](https://codeberg.org/deus/flecsin
   - SDL2 image (`-lSDL2_image`)  
   - SDL2 mixer (`-lSDL2_mixer`)  
   - OpenGL (`-lGL`)
+  
+- **More:**
+  - C [libc6]
+  - SDL2 [libsdl2-2.0-0]
+  - Wayland [libwayland-client0]
+  - Decor [libdecor-0-plugin-1-gtk]
+  - OpenGLES [libegl1-mesa libgles2-mesa]
+  - Threads [libpthread-stubs0-dev]
 
 ---
 
