@@ -64,7 +64,8 @@ build_deb() {
              "${staging_dir}${bin_install_dir}" \
              "${staging_dir}${res_install_dir}" \
              "${staging_dir}${res_install_dir}/res" \
-             "${staging_dir}${shortcut_install_dir}"
+             "${staging_dir}${shortcut_install_dir}" \
+             "${staging_dir}/usr/share/icons/hicolor/256x256/apps"
 
     # Copy binary
     install -Dm755 "${BINARY_PATH}" "${staging_dir}${bin_install_dir}/${APP}"
@@ -73,11 +74,10 @@ build_deb() {
     cp -a "${RES_DIR}/." "${staging_dir}${res_install_dir}/res/"
 
     # Copy the Iccns
-    mkdir -p "${staging_dir}/usr/share/icons/hicolor/256x256/apps"
     install -Dm644 "${ICON_PATH}" "${staging_dir}/usr/share/icons/hicolor/256x256/apps/${APP}.png"
 
     # Desktop entry
-    install -Dm644 "${shortcut_path}" "${staging_dir}${shortcut_install_dir}${APP}.desktop"
+    install -Dm644 "${shortcut_path}" "${staging_dir}${shortcut_install_dir}/${APP}.desktop"
 
     # Control file
     cat > "$staging_dir/DEBIAN/control" <<EOF
