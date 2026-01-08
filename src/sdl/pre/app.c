@@ -22,6 +22,7 @@ entity spawn_app_sdl(
         monitor = 0;
     }
 
+    byte screen_orientation = get_screen_orientation(monitor);
     int2 screen_size = get_screen_size_monitor(monitor);
     int2 size_restore = int2_scalef(screen_size, 0.6f);
     size_restore = int2_single(int_min(size_restore.x, size_restore.y));
@@ -64,16 +65,16 @@ entity spawn_app_sdl(
     zox_set(e, WindowFullscreen, { fullscreen });
     zox_set(e, WindowMaximized, { maximized });
     zox_set(e, WindowMonitor, { monitor });
+    zox_set(e, ScreenOrientation, { screen_orientation });
 
     // debugs
-    if (zox_log_sdl_window) {
-        zox_log("+ spawned window !");
-        zox_log("   - position [%ix%i]", position.x, position.y);
-        zox_log("   - size [%ix%i]", size.x, size.y);
-        zox_log("   - fullscreen [%i]", fullscreen);
-        zox_log("   - maximized [%i]", maximized);
-        zox_log("   - monitor [%i]", monitor);
-    }
+    zox_logv("+ spawned window !");
+    zox_logv("   - position [%ix%i]", position.x, position.y);
+    zox_logv("   - size [%ix%i]", size.x, size.y);
+    zox_logv("   - fullscreen [%i]", fullscreen);
+    zox_logv("   - maximized [%i]", maximized);
+    zox_logv("   - monitor [%i]", monitor);
+    zox_logv("   - screen orientation [%i]", screen_orientation);
 
     return e;
 }

@@ -20,6 +20,7 @@ zox_begin_module(Sdl)
     add_hook_terminal_command(process_terminal_sdl);
     add_hook_spawn_prefabs(spawn_prefabs_sdl);
     zox_import_module(SdlInputs);
+    disable_virtual_keyboard();
 zox_end_module(Sdl)
 
 #endif
