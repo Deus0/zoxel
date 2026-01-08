@@ -3,7 +3,7 @@ void zox_sdl_window_size( SDL_Window* sdl_window, int2 size) {
 }
 
 void zox_app_set_size(ecs *world, entity e, int2 size) {
-    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
+    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
     zox_sdl_window_size(sdl_window, size);
     if (!int2_equals(size, zox_gett_value(e, WindowSize))) {
         zox_set(e, WindowSize, { size })

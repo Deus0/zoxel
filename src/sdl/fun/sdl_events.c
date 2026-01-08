@@ -13,11 +13,28 @@ void update_sdl(ecs *world) {
         if (event.type == SDL_QUIT) {
             engine_end();
         } else if (event.type == SDL_WINDOWEVENT) {
-            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                on_window_resized(world, e, (int2) { event.window.data1, event.window.data2 });
-            } else if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) { // handles application resizing
-                on_window_resized(world, e, (int2) { event.window.data1, event.window.data2 });
-            } else if (event.window.event == SDL_WINDOWEVENT_MOVED) { // handles application resizing
+            // Window is resized
+            if (event.window.event == SDL_WINDOWEVENT_RESIZED ||
+                event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED
+            ) {
+                int2 window_size = (int2) { event.window.data1, event.window.data2 };
+                zox_logv("Screen Size Changed [%ix%i]", window_size.x, window_size.y);
+                on_window_resized(world, e, window_size);
+            }
+
+            else if (event.type == SDL_DISPLAYEVENT && event.display.event == SDL_DISPLAYEVENT_ORIENTATION) {
+                byte display = event.display.display;
+                byte orientation = get_screen_orientation(display);
+                zox_logv("Display [%i] Orientation Changed: %i", display, orientation);
+                // on_window_rotated(world, e, orientation);
+
+                zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
+                int2 window_size = int2_zero;
+                SDL_GetWindowSize(sdl_window, &window_size.x, &window_size.y);
+                on_window_resized(world, e, window_size);
+            }
+
+            else if (event.window.event == SDL_WINDOWEVENT_MOVED) { // handles application resizing
                 sdl_on_window_moved(world, e, (int2) { event.window.data1, event.window.data2 });
             } else if (event.window.event == SDL_WINDOWEVENT_MAXIMIZED) {
                 on_window_maximized(world, e, (int2) { event.window.data1, event.window.data2 });

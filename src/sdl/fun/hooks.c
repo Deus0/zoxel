@@ -26,8 +26,20 @@ void on_window_resized(ecs *world, const entity e, int2 size) {
         zox_set(e, WindowSizeDirty, { zox_dirty_trigger })
         zox_log_sdl("+ window viewport [%ix%i]", size.x, size.y)
     }
-
 }
+
+/*void on_window_rotated(ecs* world, const entity e, byte orientation) {
+    zox_geter_value(e, ScreenOrientation, byte, old_orientation);
+    if (orientation == old_orientation) {
+        return;
+    }
+    if ((orientation <= 1 && old_orientation <= 1) ||
+        (orientation >= && old_orientation  >= 2)) {
+        zox_log("Orientation ratio still the same.");
+        return;
+    }
+    // change window dimensions
+}*/
 
 void on_window_maximized(ecs *world, const entity e, const int2 size) {
     // zox_set_maximized(world, 1);

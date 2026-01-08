@@ -7,3 +7,5 @@
 #include "debug.c"
 #include "sdl.c"
 #include "sdl_mixer.c"
+#include "virtual_keyboard.c"
+#include "orientation.c"

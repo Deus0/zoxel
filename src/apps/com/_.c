@@ -8,6 +8,9 @@ zoxc_int2(WindowPosition);
 zoxc_int2(WindowSizeRestore);
 zoxc_int2(WindowPositionRestore);
 zoxc_entity(AppLink);
+// TODO: Screen entities
+zox_tag(Screen);
+zoxc_byte(ScreenOrientation);
 
 void define_components_apps(ecs *world) {
     zoxd_tag(App);
@@ -15,6 +18,7 @@ void define_components_apps(ecs *world) {
     zoxd_byte(WindowFullscreen);
     zoxd_byte(WindowMaximized);
     zoxd_byte(WindowMonitor);
+    zoxd_byte(ScreenOrientation);
     zoxd_int2(WindowSize);
     zoxd_int2(WindowPosition);
     zoxd_int2(WindowSizeRestore);
