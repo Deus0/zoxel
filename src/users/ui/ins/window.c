@@ -8,14 +8,17 @@ entity spawn_window_users(
     entity3* spawns
 ) {
     const entity character = data.window.character;
+
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         zox_log_error("invalid character in spawn icons window.");
         return 0;
     }
+
     if (!zox_has_id(character, data.window.user_links_id)) {
         zox_log_error("Character [%lu] has no [%s], cannot spawn ui", character, zox_get_name(data.window.user_links_id));
         return 0;
     }
+
     const UserLinks *user_data = zox_get_id(character, data.window.user_links_id);
 
     const byte is_header = data.window.prefab_header != 0;
@@ -114,9 +117,11 @@ entity spawn_window_users(
             break;
         }
         for (int i = 0; i < data.window.grid_size.x; i++) {
+
             if (array_index >= body_children.length) {
                 break;
             }
+
             SpawnFrame frame_data = {
                 .canvas = data.canvas,
                 .texture = data.frame.texture,
@@ -129,6 +134,7 @@ entity spawn_window_users(
                     .anchor = float2_half,
                 },
             };
+
             frame_data.icon.index = array_index;
             const entity user_data_element = user_data->value[item_index];
 

@@ -1,7 +1,8 @@
-entity3 spawn_frame(
-    ecs *world,
-    const SpawnFrame data
-) {
+entity3 spawn_frame(ecs *world, const SpawnFrame data) {
+    // Sizing
+    byte font_size = (font_size_frame_label / 4) * ui_scale;
+    byte font_thickness = (font_thickness_frame_label / 4) * ui_scale;
+
     zox_instance(data.element.prefab);
     zox_name("frame");
     set_element_spawn_data(
@@ -51,12 +52,12 @@ entity3 spawn_frame(
             .canvas = canvas_data,
             .parent = parent_data,
             .zext = {
-                .font_resolution = font_resolution_frame_label,
                 .text = "",
-                .font_size = font_size_frame_label,
                 .font_fill_color = font_fill_frame_label,
                 .font_outline_color = font_outline_frame_label,
-                .font_thickness = font_thickness_frame_label,
+                .font_resolution = font_size,
+                .font_size = font_size,
+                .font_thickness = font_thickness,
             },
             .element = {
                 .prefab = prefab_frame_label,

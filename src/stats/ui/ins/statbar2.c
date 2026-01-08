@@ -36,7 +36,8 @@ entity spawn_statbar2(
         canvas_size,
         0,
         back_color,
-        front_color);
+        front_color
+    );
 
     zox_set_unique_name(e2.x, "statbar2");
     zox_set_unique_name(e2.y, "statbar2_text");

@@ -34,20 +34,22 @@ entity spawn_taskbar(
     const byte layer
 ) {
     byte taskbar_count = hook_taskbars->size;
-    float2 anchor = (float2) { 0.5f, 1 };
-    const int frame_size = default_frame_size;
-    const int icon_size = default_icon_size;
-    const int padding_x = 4;
-    const int padding_y = 4;
-    const int margins = frame_size / 4;
-    const int2 size = (int2) {
+    int frame_size = (default_frame_size / 4) * ui_scale;
+    int icon_size = (default_icon_size / 4) * ui_scale;
+    int padding_x = ui_scale;
+    int padding_y = ui_scale;
+    int margins = ui_scale / 4;
+    int2 size = (int2) {
         padding_x + (frame_size + padding_x) * taskbar_count + margins * 2,
         frame_size + padding_y * 2
     };
     int2 position = (int2) {
         0,
-        -12 - size.y / 2
+        -(ui_scale * 3) - size.y / 2
     };
+
+    float2 anchor = (float2) { 0.5f, 1 };
+
     ElementSpawn data = {
         .canvas = { .e = canvas },
         .parent = { .e = parent },

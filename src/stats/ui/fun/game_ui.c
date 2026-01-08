@@ -23,26 +23,34 @@ entity spawn_menu_game_stats(
         return 0;
     }
 
+    byte total_bars = 4; // TODO: Make dynamic
+
+    // Sizing
+    byte panel_padding = 6 * ui_scale;
+    int2 panel_size = (int2) { 80 * ui_scale, 0 };
+    // NOTE: Font size is scaled from height of bar
+    int2 bar_size = (int2) { 75 * ui_scale, 8 * ui_scale };
+    byte bar_padding = 2 * ui_scale;
+    int panel_height = total_bars * (bar_size.y + bar_padding) - bar_padding;
+    panel_size.y = panel_height + panel_padding * 2;
+    byte2 screen_padding = (byte2) { 4 * ui_scale, 4 * ui_scale };
+
+    // Positioning
+    float2 panel_anchor = float2_top_left;
+    float2 bar_anchor = float2_half;
+    int2 bar_position = (int2) { 0, - bar_size.y / 2 + panel_height / 2 };
+    int2 panel_position = (int2) {
+        panel_size.x / 2 + screen_padding.x,
+        -panel_size.y / 2 - screen_padding.y
+    };
+
+    // Others
     zox_geter(character, StatLinks, stats);
     byte panel_layer = 1;
-    const float2 panel_anchor = float2_top_left;
-    const byte panel_padding = 24;
-    int2 panel_size = (int2) { 360, 0 };
+    byte bar_layer = 2;
     FrameTextureData panel_texture = (FrameTextureData) {
         .fill_color = window_fill,
         .outline_color = window_outline,
-    };
-
-    const byte bar_layer = 2;
-    const float2 bar_anchor = float2_half;
-    const int2 bar_size = (int2) { 300, 32 };
-    const byte bar_padding = 8;
-    const int bars_height = 4 * (bar_size.y + bar_padding) - bar_padding;
-    int2 bar_position = (int2) { 0, - bar_size.y / 2 + bars_height / 2 };
-    panel_size.y = bars_height + panel_padding * 2;
-    const int2 panel_position = (int2) {
-        panel_size.x / 2 + 16,
-        -panel_size.y / 2 -16
     };
 
     ElementSpawn body_data = {
@@ -70,25 +78,24 @@ entity spawn_menu_game_stats(
 
     Children children = { 0 };
     for (int i = 0; i < stats->length; i++) {
-        const entity stat = stats->value[i];
-        if (zox_has(stat, StatState) || zox_has(stat, StatLevel)) {
-            zox_geter_value(stat, ColorRGB, color_rgb, cvalue);
-            const entity statbar = spawn_statbar2(
-                world,
-                canvas,
-                e,
-                (entity2) {
-                    character, stat
-                },
-                cvalue,
-                bar_layer,
-                bar_anchor,
-                bar_size,
-                bar_position
-            );
-            add_to_Children(&children, statbar);
-            bar_position.y -= bar_size.y + bar_padding;
+        entity stat = stats->value[i];
+        if (!zox_has(stat, StatState) && !zox_has(stat, StatLevel)) {
+            continue;
         }
+        zox_geter_value(stat, ColorRGB, color_rgb, cvalue);
+        entity statbar = spawn_statbar2(
+            world,
+            canvas,
+            e,
+            (entity2) { character, stat },
+            cvalue,
+            bar_layer,
+            bar_anchor,
+            bar_size,
+            bar_position
+        );
+        add_to_Children(&children, statbar);
+        bar_position.y -= bar_size.y + bar_padding;
     }
     zox_set_ptr(e, Children, children);
 

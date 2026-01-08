@@ -22,7 +22,7 @@ void set_line2_canvas_position_direct(
 }
 
 void set_line2_canvas_position(ecs *world, entity e) {
-    if (!zox_has(e, LineLocalPosition2)) {
+    if (!zox_valid(e) || !zox_has(e, LineLocalPosition2)) {
         return;
     }
 
@@ -51,14 +51,18 @@ void Line2PositionSystem(iter *it) {
         zox_sys_i(CanvasPosition, cposition);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(Children, children);
+
         if (state->value != zox_dirty_active) {
             // continue;
         }
+
         for (int j = 0; j < children->length; j++) {
             entity e2 = children->value[j];
-            if (!zox_has(e2, LineLocalPosition2)) {
+
+            if (!zox_valid(e2) || !zox_has(e2, LineLocalPosition2)) {
                 continue;
             }
+
             set_line2_canvas_position_direct(
                 world,
                 e2,

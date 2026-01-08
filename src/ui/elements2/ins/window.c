@@ -7,7 +7,10 @@ entity spawn_window2(
     ClickEvent on_click,
     byte is_close_button
 ) {
+    // Sizing
     const byte header_height = window_data.header_font_size + window_data.header_padding.y * 2;
+    byte header_thickness = (header_font_thickness_fill / 4) * ui_scale;
+    byte header_thickness_outline = (header_font_thickness_outline / 4) * ui_scale;
 
     zox_instance(element_data.prefab);
     zox_name("window");
@@ -45,8 +48,8 @@ entity spawn_window2(
         .text = window_data.header_text,
         .font_size = window_data.header_font_size,
         .font_resolution = header_font_resolution,
-        .font_thickness = header_font_thickness_fill,
-        .font_outline_thickness = header_font_thickness_outline,
+        .font_thickness = header_thickness,
+        .font_outline_thickness = header_thickness_outline,
         .font_fill_color = header_font_fill,
         .font_outline_color = header_font_outline,
         .margins = window_data.header_padding,

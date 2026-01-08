@@ -64,13 +64,19 @@ entity spawn_menu_new_realm(
     const entity player,
     lint seed
 ) {
-    zox_geter_value(player, CanvasLink, entity, canvas);
+
+    int2 window_size = (int2) { 130 * ui_scale, 145  * ui_scale };
+    byte header_font_size = 8 * ui_scale;
+    byte2 header_padding = (byte2)  { 2 * ui_scale, ui_scale };
+    byte header_height = header_font_size + header_padding.y * 2;
+    byte list_font_size = 8 * ui_scale;
+    byte2 list_padding = (byte2) { 18, 18 };
 
     // more data
+    zox_geter_value(player, CanvasLink, entity, canvas);
     const char* header_label = "New Realm";
     const int max_labels = max_settings;
     const byte layer = 1;
-    const byte font_size = 32;
 
     // # Window #
     LayoutParentData canvas_data = {
@@ -80,7 +86,7 @@ entity spawn_menu_new_realm(
     ElementSpawnData window_element_data = {
         .prefab = prefab_window,
         .position = (int2) { 0, 0 },
-        .size = (int2) { 520, 580 },
+        .size = window_size,
         .anchor = float2_half,
         .layer = layer,
     };
@@ -91,8 +97,8 @@ entity spawn_menu_new_realm(
     };
     SpawnWindow2 window_data = {
         .header_text = header_label,
-        .header_font_size = 32,
-        .header_padding = (byte2) { 8, 4 },
+        .header_font_size = header_font_size,
+        .header_padding = header_padding,
         .is_scrollbar = 0,
     };
 
@@ -144,8 +150,11 @@ entity spawn_menu_new_realm(
     };
     ElementSpawnData list_element_data = {
         .prefab = prefab_list,
-        .position = (int2) { 0, -25 },
-        .size = (int2) { window_element_data.size.x, window_element_data.size.y - 50 },
+        .position = (int2) { 0, -header_height / 2 },
+        .size = (int2) {
+            window_element_data.size.x,
+            window_element_data.size.y - header_height
+        },
         .anchor = float2_half,
         .layer = layer + 1,
     };
@@ -153,14 +162,14 @@ entity spawn_menu_new_realm(
         .elements = elements,
         .count = elements_count,
         .visible_count = visible_count,
-        .font_size = font_size,
+        .font_size = list_font_size,
         .fill = (color) { 0, 0, 0, 0 },
         .outline = (color) { 0, 255, 255, 55 },
         .slider_height = 64,
         .slider_padding = 64,
-        .button_padding = (byte2) { 18, 12 },
-        .padding = (byte2) { 18, 18 },
-        .margins = (byte2) { 18, 18 },
+        .button_padding = list_padding,
+        .padding = list_padding,
+        .margins = list_padding,
     };
     const entity list = spawn_list(
         world,

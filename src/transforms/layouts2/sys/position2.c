@@ -22,7 +22,11 @@ void set_child_position2(
     entity e,
     int2 canvas_size
 ) {
-    if (zox_valid(e) && zox_has(e, CanvasPosition) && zox_has(e, Position2)) {
+    if (!zox_valid(e)) {
+        return;
+    }
+
+    if (zox_has(e, CanvasPosition) && zox_has(e, Position2)) {
         zox_geter_value(e, CanvasPosition, int2, canvas_position);
         zox_muter(e, Position2, position2);
         position2->value = get_element_position(
@@ -30,6 +34,7 @@ void set_child_position2(
             canvas_size
         );
     }
+
     // also set children ones
     if (zox_has(e, Children)) {
         zox_geter(e, Children, children);

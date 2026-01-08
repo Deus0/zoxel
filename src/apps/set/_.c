@@ -28,7 +28,5 @@ void initialize_settings_apps(ecs* world) {
         zox_log("Phosh Detected. Disabling Decor.");
         disable_apps_decor = 1;
         fullscreen = 1;
-    } else {
-        zox_log("Not on Phosh.");
     }
 }

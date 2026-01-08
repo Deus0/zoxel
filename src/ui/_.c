@@ -4,6 +4,7 @@
 #include "set/_.c"
 #include "com/_.c"
 #include "dat/_.c"
+#include "fun/_.c"
 #include "core/_.c"
 #include "zigels/_.c"
 #include "texts/_.c"
@@ -13,6 +14,8 @@
 #include "touch/_.c"
 
 zox_begin_module(Elements)
+    add_hook_terminal_command(arguments_ui);
+    initialize_settings_elements(world);
     define_components_elements(world);
     zox_import_module(ElementsCore);
     zox_import_module(Zigels);

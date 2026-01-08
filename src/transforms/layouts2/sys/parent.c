@@ -26,9 +26,13 @@ void set_child_canvas_position(
     int2 parent_size,
     byte skip
 ) {
+    if (!zox_valid(e)) {
+        return;
+    }
+
     int2 cposition = parent_position;
     if (!skip) {
-        if (zox_valid(e) && zox_has(e, LayoutPosition) && zox_has(e, CanvasPosition) && zox_has(e, Anchor)) {
+        if (zox_has(e, LayoutPosition) && zox_has(e, CanvasPosition) && zox_has(e, Anchor)) {
             zox_geter_value(e, LayoutPosition, int2, position);
             zox_geter_value(e, Anchor, float2, anchor);
             zox_muter(e, CanvasPosition, canvas_position);
@@ -43,6 +47,7 @@ void set_child_canvas_position(
         }
         set_line2_canvas_position(world, e);
     }
+
     // also set children ones
     if (zox_has(e, Children)) {
         zox_geter_value(e, LayoutSize, int2, size);

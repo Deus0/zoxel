@@ -1,4 +1,19 @@
 // List Menus adjust to the menu size
+
+// TODO: Pass in struct data
+
+typedef struct {
+    entity player;
+    const char *header;
+    byte header_font_size;
+    SpawnListElement* elements;
+    byte elements_count;
+    byte visible_count;
+    byte list_font_size;
+    ClickEvent close_event;
+    byte is_close_button;
+} WindowListSpawnData;
+
 entity spawn_window_list(
     ecs *world,
     const entity player,

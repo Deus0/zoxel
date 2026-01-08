@@ -155,7 +155,7 @@ gdb: dev
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)
 
 gdbv: dev
-	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV) --verbose
+	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV) --verbose -su
 
 val: dev
 	valgrind ./$(TARGET_DEV)

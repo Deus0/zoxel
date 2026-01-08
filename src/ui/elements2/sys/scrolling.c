@@ -33,8 +33,6 @@ void ScrollbarSystem(iter *it) {
         entity list_ui = scrollview_children->value[1];
 
 
-        // const ElementFontSize *elementFontSize = zox_get(list_ui, ElementFontSize)
-        // int scaled_font_size = elementFontSize->value * zox_ui_scale;
         int scrollbar_offset = scrollbarsize.y - size->value.y;
         int anchored_position_y = -position->value.y + scrollbar_offset / 2;
         float scroll_percentage = anchored_position_y / (float) scrollbar_offset;

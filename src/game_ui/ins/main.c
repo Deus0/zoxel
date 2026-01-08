@@ -1,13 +1,12 @@
 // List Menus adjust to the menu size
 entity spawn_main_menu(
     ecs *world,
-    const entity player,
+    entity player,
     const char *header_label
 ) {
-    // zox_geter_value(player, CanvasLink, entity, canvas);
-    // const byte window_layer = 3;
-    const byte header_font_size = 80;
-    byte list_font_size = 48;
+
+    byte header_font_size = 20 * ui_scale;
+    byte list_font_size = 12 * ui_scale;
 
     // # List #
     SpawnListElement elements[4];

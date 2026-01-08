@@ -32,6 +32,11 @@ entity spawn_player_menu_stats(ecs* world, const entity player) {
         spawns
     );
 
+    if (!e) {
+        zox_logw("Stats UI spawning failed.");
+        return 0;
+    }
+
     for (int i = 0; i < stats->length; i++) {
         entity stat = stats->value[i];
         entity3 frame = spawns[i];

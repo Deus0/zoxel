@@ -51,7 +51,7 @@ entity spawn_game_canvas(
     }
 
     // used for icon mouse pickup
-    const int icon_size = default_icon_size;
+    int icon_size = (default_icon_size / 4) * ui_scale;
     icon_mouse_follow = spawn_icon_mouse_follow_canvas(world,
         prefab_icon_mouse_follow,
         canvas,
@@ -65,8 +65,8 @@ entity spawn_game_canvas(
     return canvas;
 }
 
-// move to game ui?
-void spawn_players_cameras_canvases(
+// TODO: Refactor to Cameras (camera spawning) + UIs (canvas spawning)
+void spawn_all_players_cameras_canvases(
     ecs *world,
     int players_playing,
     const entity app
@@ -140,8 +140,10 @@ void spawn_players_cameras_canvases(
     zox_set_ptr(app, CameraLinks, cameras);
 }
 
+extern void spawn_all_players_start_ui(ecs*);
+
 void on_boot_game_ui(ecs* world, entity app) {
     // move to game ui??
-    spawn_players_cameras_canvases(world, players_playing, app);
-    spawn_players_start_ui(world);
+    spawn_all_players_cameras_canvases(world, players_playing, app);
+    spawn_all_players_start_ui(world);
 }

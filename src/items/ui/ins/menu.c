@@ -35,6 +35,11 @@ entity spawn_player_menu_items(
         spawns
     );
 
+    if (!e) {
+        zox_logw("Items UI spawning failed.");
+        return 0;
+    }
+
     for (int i = 0; i < items->length; i++) {
         entity item = items->value[i];
         entity3 frame = spawns[i];

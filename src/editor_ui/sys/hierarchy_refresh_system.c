@@ -84,7 +84,7 @@ void HierarchyRefreshSystem(iter *it) {
         const entity canvas = canvasLink->value;
         zox_geter_value(canvas, LayoutSize, int2, canvas_size)
         const int elements_visible = listUIMax->value;
-        const int font_size = elementFontSize->value * zox_ui_scale;
+        const int font_size = elementFontSize->value;
         const byte button_layer = layer2D->value + 1;
         const int scrollbar_margins = zox_gett_value(scrollbar, ElementMargins).x;
         const int scrollbar_width = zox_gett_value(scrollbar, LayoutSize).x;

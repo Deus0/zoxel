@@ -47,19 +47,20 @@ entity spawn_menu_load(
     ecs *world,
     const entity player
 ) {
+    // Sizing
+    int header_font_size = 16* ui_scale;
+    byte list_font_size = 8 * ui_scale;
+
     // more data
     const char* header_label = "Load";
-    const int header_font_size = 72;
-    const byte visible_count = 4; // 12;
-    // const byte layer = 1;
-    const byte list_font_size = 32;
-
-    SpawnListElement elements[max_settings + 1];
     int elements_count = 0;
-
-    // TODO: Load folder names here
+    byte visible_count = 4;
+    SpawnListElement elements[max_settings + 1];
     char **save_dirs;
     byte saves_count;
+
+
+    // TODO: Load folder names here
     if (get_save_games(game_name, &save_dirs, &saves_count) == 0) {
         for (byte i = 0; i < saves_count; i++) {
             char* folder = get_folder_name(save_dirs[i]);

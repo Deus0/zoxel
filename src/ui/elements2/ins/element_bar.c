@@ -1,4 +1,5 @@
-entity2 spawn_elementbar2D(ecs *world,
+entity2 spawn_elementbar2D(
+    ecs *world,
     const entity prefab,
     const entity canvas,
     const entity parent,
@@ -12,8 +13,8 @@ entity2 spawn_elementbar2D(ecs *world,
     const int2 canvas_size,
     const byte render_disabled,
     const color back_color,
-    const color front_color)
-{
+    const color front_color
+) {
     const color label_font_outline_color = (color) { 33, 33, 33, 255 };
     const color label_font_fill_color = (color) { 155, 155, 155, 255 };
     const byte front_bar_layer = layer + 1;

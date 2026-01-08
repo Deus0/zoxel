@@ -3,7 +3,6 @@
 
 // todo: move LayoutPosition etc to Transforms/Grid2D - idk what to call it
 #include "pre/_.c"
-#include "fun/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
 

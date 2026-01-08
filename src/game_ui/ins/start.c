@@ -1,18 +1,11 @@
-entity spawn_menu_start(
-    ecs* world,
-    const entity player,    // hmm
-    const entity canvas
-) {
-    const byte font_size = 128;
-    const byte layer = 3;
+// Spawn a games Start / Title Menu
+entity spawn_menu_start(ecs* world, entity player, entity canvas) {
+    byte layer = 3;
+    byte font_size = 32 * ui_scale;
+    byte font_thickness = ui_scale;
+    byte2 margins = (byte2) { 8 * ui_scale, 4 * ui_scale };
 
-    SpawnButton spawnButton = {
-        .canvas = {
-            .e = canvas
-        },
-        .parent = {
-            .e = canvas
-        },
+    SpawnButton data = {
         .element = {
             .prefab = prefab_button,
             .layer = layer,
@@ -20,28 +13,41 @@ entity spawn_menu_start(
         },
         .zext = {
             .text = label_start,
-            .font_size = font_size,
-            .font_thickness = 4,
             .font_fill_color = default_font_fill_color,
             .font_outline_color = default_font_outline_color,
-            .margins = (byte2) { 32, 16 },
+            .font_size = font_size,
+            .font_thickness = font_thickness,
+            .margins = margins,
         },
         .button = {
             .prefab_zext = prefab_zext,
             .fill = button_fill,
             .outline = button_outline,
-        }};
+        }
+    };
 
-    const entity e = spawn_button(
+    entity e = spawn_button(
         world,
-        spawnButton.canvas,
-        spawnButton.parent,
-        spawnButton.element,
-        spawnButton.zext,
-        spawnButton.button
+        (LayoutParentData) { canvas },
+        (LayoutParentData) { canvas },
+        data.element,
+        data.zext,
+        data.button
     );
     zox_add_tag(e, MenuStart);
     zox_set(e, ClickEvent, { &button_event_menu_start });
+    // TODO: make  ure clicker is player
+    zox_set(e, PlayerLink, { player });
     zox_name("main_start");
     return e;
+}
+
+void spawn_all_players_start_ui(ecs *world) {
+    zox_logv("Spawning Player Start Menus [%i]", players_playing)
+    for (int i = 0; i < players_playing; i++) {
+        const entity player = zox_players[i];
+        zox_geter_value(player, CanvasLink, entity, canvas);
+        zox_logv("  - player [%s] | canvas [%s]", zox_get_name(player), zox_get_name(canvas));
+        spawn_menu_start(world, player, canvas);
+    }
 }
