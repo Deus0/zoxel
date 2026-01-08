@@ -6,11 +6,15 @@ entity spawn_virtual_joystick(
     const entity virtual_joystick,
     const byte button_type
 ) {
+    // Sizing
+    int2 size = int2_single((zox_virtual_joystick_size / 4) * ui_scale);
+    int2 pointer_size = int2_single((zox_virtual_joystick_pointer_size / 4) * ui_scale);
+
+    // Misc
     const float2 anchor = float2_zero;
     const byte layer = 4;
     const int2 canvas_size = zox_get_value(canvas, LayoutSize);
 
-    int2 pixel_size = virtual_joystick_size;
     zox_instance(prefab_virtual_joystick)
     zox_name("virtual_joystick")
     entity parent = canvas;
@@ -20,22 +24,25 @@ entity spawn_virtual_joystick(
         parent,
         canvas,
         pixel_position,
-        pixel_size,
-        pixel_size,
+        size,
+        size,
         anchor,
         layer
     );
 
     Children children = (Children) { 0 };
-    entity joystick = spawn_virtual_joystick_pointer(world,
+    entity joystick = spawn_virtual_joystick_pointer(
+        world,
         canvas,
         e,
         (layer + 1),
         int2_zero,
+        pointer_size,
         float2_half,
         int2_zero, // pixel_positionv,
-        pixel_size,
-        canvas_size);
+        size,
+        canvas_size
+    );
     add_to_Children(&children, joystick);
     zox_set_ptr(e, Children, children);
 
