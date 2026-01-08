@@ -1,8 +1,8 @@
 void ZeviceFingerResetSystem(iter *it) {
-    zox_sys_begin()
-    zox_sys_in(ZevicePointerOld)
-    zox_sys_out(ZevicePointerPosition)
-    zox_sys_out(ZevicePointerDelta)
+    zox_sys_begin();
+    zox_sys_in(ZevicePointerOld);
+    zox_sys_out(ZevicePointerPosition);
+    zox_sys_out(ZevicePointerDelta);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ZevicePointerOld, zevicePointerOld)
         zox_sys_o(ZevicePointerPosition, zevicePointerPosition)
@@ -12,4 +12,4 @@ void ZeviceFingerResetSystem(iter *it) {
             zevicePointerDelta->value = int2_zero;
         }
     }
-} zoxd_system(ZeviceFingerResetSystem)
+} zoxd_system2(ZeviceFingerResetSystem);

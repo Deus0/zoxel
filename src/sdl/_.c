@@ -11,6 +11,10 @@
 #include "fun/_.c"
 
 zox_begin_module(Sdl)
+    // Sdl settings
+    SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+    disable_virtual_keyboard();
+
     define_components_sdl(world);
     // init
     zox_module_dispose(dispose_apps_sdl);
@@ -20,7 +24,6 @@ zox_begin_module(Sdl)
     add_hook_terminal_command(process_terminal_sdl);
     add_hook_spawn_prefabs(spawn_prefabs_sdl);
     zox_import_module(SdlInputs);
-    disable_virtual_keyboard();
 zox_end_module(Sdl)
 
 #endif

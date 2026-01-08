@@ -36,24 +36,12 @@ int2 get_maximized_size(ecs* world, entity e) {
     return int2_sub(get_screen_size(), (int2) { 0, get_sdl_window_header_size(world, e) });
 }
 
-/*static inline int get_sdl_window_flags() {
-    int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-#ifdef zox_android
-    flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE;
-#endif
-    return flags;
-}*/
-/*
-    flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE; // | SDL_WINDOW_BORDERLESS;
-#endif*/
-
 SDL_Window* create_sdl_window(
     const int2 position,
     const int2 size,
     const char *name,
     byte flags
 ) {
-    SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
     SDL_Window *window = SDL_CreateWindow(name, position.x, position.y, size.x, size.y, flags);
     if (!window) {
         zox_log_error(" CreateWindowError [%s] - flags [%i]]\n", SDL_GetError(), flags);

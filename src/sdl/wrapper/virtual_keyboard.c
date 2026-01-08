@@ -1,4 +1,3 @@
-
 void disable_virtual_keyboard() {
     SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
 }

@@ -9,8 +9,14 @@
 #include "zevice_pointer_right_reset_button.c"
 #include "zevice_finger_reset_button.c"
 #include "device_mode.c"
+#include "hide_vk.c"
 
 void define_systems_input(ecs* world) {
+    zox_system(
+        HideVirtualKeyboardSystem,
+        zoxp_inputs_reset,
+        [in] ZevicePointer
+    );
     // resets
     zox_system(
         ZevicePointerResetSystem,

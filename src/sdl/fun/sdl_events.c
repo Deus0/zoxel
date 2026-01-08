@@ -24,12 +24,13 @@ void update_sdl(ecs *world) {
 
                 zox_geter_value(e, ScreenOrientation, byte, old_orientation);
                 if (old_orientation != orientation) {
-                    byte has_flipped = (orientation <= 1 && old_orientation <= 1) ||
+                    // remove flip, didnt detect
+                    /*byte has_flipped = (orientation <= 1 && old_orientation <= 1) ||
                     (orientation >= 2 && old_orientation >= 2);
                     if (has_flipped) {
                         window_size = (int2) { window_size.y, window_size.x };
                         zox_logv("Display [%i] Orientation has flipped [%i]", monitor, orientation);
-                    }
+                    }*/
                     zox_set(e, ScreenOrientation, { orientation });
                 }
                 on_window_resized(world, e, window_size);
