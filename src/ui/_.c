@@ -5,7 +5,9 @@
 #include "com/_.c"
 #include "dat/_.c"
 #include "fun/_.c"
-#include "core/_.c"
+#include "pre/_.c"
+#include "ins/_.c"
+#include "sys/_.c"
 #include "zigels/_.c"
 #include "texts/_.c"
 #include "elements2/_.c"
@@ -17,7 +19,8 @@ zox_begin_module(Elements)
     add_hook_terminal_command(arguments_ui);
     initialize_settings_elements(world);
     define_components_elements(world);
-    zox_import_module(ElementsCore);
+    define_systems_elements(world);
+    add_hook_spawn_prefabs(spawn_prefabs_elements);
     zox_import_module(Zigels);
     zox_import_module(Texts);
     zox_import_module(Elements2);

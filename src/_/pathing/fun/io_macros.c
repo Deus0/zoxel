@@ -53,7 +53,7 @@ byte load2_##name(const char *game_path, const char *filename, T *data) {\
     }\
     size_t filesize = fread(data, sizeof(T), 1, file);\
     fclose(file);\
-    zox_logi("Loaded from [%s]", path);\
+    zox_logv("Loaded from [%s]", path);\
     free(path); \
     return filesize > 0;\
 }

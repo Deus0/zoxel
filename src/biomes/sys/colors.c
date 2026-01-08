@@ -26,5 +26,9 @@ void BiomeColorsSystem(iter *it) {
         } else {
             sky_color = color_rgb_grayscale(3);
         }
+        // Set sky color hhere
+        game_sky_color = sky_color;
+        game_sky_bottom_color = sky_color;
+        set_camera_fog_color(world, sky_color);
     }
 } zoxd_system2(BiomeColorsSystem);

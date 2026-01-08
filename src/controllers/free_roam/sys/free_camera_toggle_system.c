@@ -21,7 +21,7 @@ void FreeCameraToggleSystem(iter *it) {
         byte is_triggered = 0;
         entity mouse = 0;
         for (int j = 0; j < devices->length; j++) {
-            const entity device = devices->value[j];
+            entity device = devices->value[j];
 
             if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
                 continue;
@@ -30,7 +30,7 @@ void FreeCameraToggleSystem(iter *it) {
             if (zox_has(device, Mouse)) {
                 zox_geter(device, Children, zevices);
                 for (int k = 0; k < zevices->length; k++) {
-                    const entity zevice = zevices->value[k];
+                    entity zevice = zevices->value[k];
 
                     if (!zox_has(zevice, ZevicePointerRight)) {
                         continue;
@@ -48,9 +48,8 @@ void FreeCameraToggleSystem(iter *it) {
 
         if (is_triggered && mouse) {
             zox_geter_value(camera->value, Roaming, byte, roaming);
-            zox_geter_value(camera->value, MouseLock, byte, mouse_locked);
+            // zox_geter_value(camera->value, MouseLock, byte, mouse_locked);
             byte new_roaming = !roaming;
-
             zox_set(mouse, MouseLock, { new_roaming });
             zox_set(camera->value, Roaming, { new_roaming });
         }

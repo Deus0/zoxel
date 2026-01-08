@@ -1,8 +1,12 @@
 entity3 spawn_frame(ecs *world, const SpawnFrame data) {
     // Sizing
-    byte font_size = (font_size_frame_label / 4) * ui_scale;
-    byte font_thickness = (font_thickness_frame_label / 4) * ui_scale;
+    // byte font_size = (font_size_frame_label / 4) * ui_scale;
+    byte font_size = ui_scale * 3;
+    byte font_thickness = ui_scale;
+    byte font_outline_thickness = ui_scale <= 2 ? 2 : ui_scale / 2;
+    byte label_padding = ui_scale;
 
+    // Spawn frame
     zox_instance(data.element.prefab);
     zox_name("frame");
     set_element_spawn_data(
@@ -17,6 +21,7 @@ entity3 spawn_frame(ecs *world, const SpawnFrame data) {
     }
     zox_set(e, Color, { data.texture.fill_color });
     zox_set(e, OutlineColor, { data.texture.outline_color });
+
     LayoutParentData canvas_data = data.canvas;
     LayoutParentData parent_data = {
         .e = e,
@@ -36,7 +41,8 @@ entity3 spawn_frame(ecs *world, const SpawnFrame data) {
         .index = data.icon.index,
         .texture_size = data.icon.texture_size
     };
-    Children children = (Children) { 0, NULL };
+
+    Children children = (Children) { 0 };
 
     // Spawn Icon
     const entity icon = spawn_icon(world, &spawnIcon).x;
@@ -45,19 +51,17 @@ entity3 spawn_frame(ecs *world, const SpawnFrame data) {
     // Spawn Label
     entity zext = 0;
     if (zox_has(data.element.prefab, LabelPrefabLink)) {
-        byte label_padding = 4;
         zox_geter_value(data.element.prefab, LabelPrefabLink, entity, prefab_frame_label);
-        const int font_size = 10;
         SpawnZext spawnZext = {
             .canvas = canvas_data,
             .parent = parent_data,
             .zext = {
-                .text = "",
                 .font_fill_color = font_fill_frame_label,
                 .font_outline_color = font_outline_frame_label,
                 .font_resolution = font_size,
                 .font_size = font_size,
                 .font_thickness = font_thickness,
+                .font_outline_thickness = font_outline_thickness,
             },
             .element = {
                 .prefab = prefab_frame_label,

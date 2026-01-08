@@ -14,7 +14,7 @@ entity spawn_scrollview(
     int visible,
     int max
 ) {
-    int scrollbar_width = 32;
+    int scrollbar_width = 4 * ui_scale;
     int scrollbar_margins = 0;
 
     zox_instance(prefab_element_invisible);

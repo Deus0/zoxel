@@ -231,6 +231,7 @@ entity spawn_ui_list(
                 spawnButton.parent,
                 spawn_slider_data,
                 slider_data,
+                28,
                 button_font_fill,
                 button_font_outline
             );

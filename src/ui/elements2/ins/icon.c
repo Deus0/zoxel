@@ -19,6 +19,8 @@ entity2 spawn_icon(
     zox_set(e, IconIndex, { data->index });
     // icons have overlays now
     Children children = (Children) { 0, NULL };
+
+    // TODO: Optional Overlay!
     // icon overlay
     LayoutParentData icon_data = {
         .e = e,
@@ -32,12 +34,14 @@ entity2 spawn_icon(
         .anchor = float2_half,
         .render_disabled = 1,
     };
-    const entity overlay = spawn_icon_overlay(world,
+    const entity overlay = spawn_icon_overlay(
+        world,
         data->canvas,
         icon_data,
         icon_overlay_data
     );
     add_to_Children(&children, overlay);
+
     // set and return
     zox_set_ptr(e, Children, children);
     return (entity2) { e, overlay };

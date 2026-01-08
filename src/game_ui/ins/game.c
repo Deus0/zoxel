@@ -11,6 +11,9 @@ entity spawn_menu_game(
         zox_log_error("[!spawn_menu_game] Issue with character or player, invalid");
         return 0;
     }
+
+    byte size = (crosshair_pixel_size.x / 4) * ui_scale;
+
     const entity canvas = zox_get_value(player, CanvasLink)
     const int2 canvas_size = zox_get_value(canvas, LayoutSize)
     // make layout2 instead of element_invisible
@@ -28,20 +31,20 @@ entity spawn_menu_game(
         world,
         (LayoutParentData) {
             .e = canvas,
-            .size = canvas_size,
+            // .size = canvas_size,
         },
         (LayoutParentData) {
             .e = e,
             .position = int2_zero,
-            .size = canvas_size,
+            // .size = canvas_size,
         },
         (ElementSpawnData) {
             .prefab = prefab_crosshair,
             .layer = 1,
             .anchor = float2_half,
             .position = int2_zero,
-            .size = crosshair_pixel_size,
-            .texture_size = crosshair_texture_size,
+            .size = int2_single(size),
+            .texture_size = int2_single(size),
         });
 
     add_to_Children(&children, crosshair);
@@ -52,7 +55,6 @@ entity spawn_menu_game(
 
     // link to character
     zox_muter(character, ElementLinks, elements);
-    // zox_muter(player, ElementLinks, elements);
     add_to_ElementLinks(elements, e);
     zox_set(e, ElementHolder, { character });
 

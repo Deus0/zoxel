@@ -11,13 +11,13 @@ entity spawn_icon_mouse_follow_canvas(
     const int2 canvas_size,
     const byte layer,
     const float2 anchor,
-    const float icon_size,
+    const int icon_size,
     const entity zevice
 ) {
     SpawnIcon spawnIcon = {
         .canvas = {
             .e = canvas,
-            .size = canvas_size
+            // .size = canvas_size
         },
         .parent = {
             .e = canvas,
@@ -37,7 +37,7 @@ entity spawn_icon_mouse_follow_canvas(
     };
     const entity e = spawn_icon(world, &spawnIcon).x;
     if (zevice) {
-        zox_set(e, ZeviceLink, { zevice })
+        zox_set(e, ZeviceLink, { zevice });
     }
     return e;
 }

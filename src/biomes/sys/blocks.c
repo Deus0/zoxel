@@ -30,15 +30,15 @@ void BiomeBlocksSystem(iter *it) {
         }
 
         zox_sys_e();
-        zox_logi("Generating blocks for biome [%s]", zox_get_name(e));
+        zox_logv("Generating blocks for biome [%s]", zox_get_name(e));
 
         byte j = 1;   // skip sky
         // const color sky_color = colors->value[j++];
         color dirt_color = colors->value[j++];
         color grass_color = colors->value[j++];
-        color sand_color = colors->value[j++];
-        color stone_color = colors->value[j++];
-        color obsidian_color = colors->value[j++];
+        j++; // color sand_color = colors->value[j++];
+        j++; // color stone_color = colors->value[j++];
+        j++; // color obsidian_color = colors->value[j++];
 
         // zox_geter(realm->value, BlockLinks, realm_blocks);
 

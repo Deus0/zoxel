@@ -45,6 +45,7 @@ entity spawn_list(
     const ElementSpawnData element_data,
     const SpawnList list_data
 ) {
+    byte slider_handle_width = 8 * ui_scale;
 
     zox_instance(element_data.prefab);
     set_element_spawn_data(
@@ -115,7 +116,9 @@ entity spawn_list(
                 SaveGamePath path = { };
 
                 size_t len = strlen(child_data.save_path);
-                if (len >= 512) len = 512 - 1;
+                if (len >= 512) {
+                    len = 512 - 1;
+                }
                 memcpy(path.value, child_data.save_path, len);
                 path.value[len] = '\0';
 
@@ -130,20 +133,21 @@ entity spawn_list(
                 element_data.size.x - list_data.slider_padding,
                 list_data.slider_height
             };
-            SpawnSliderData list_data = (SpawnSliderData) {
+            SpawnSliderData slider_data = (SpawnSliderData) {
                 .name = child_data.text,
                 .prefab_handle = prefab_handle,
                 .type = zox_slider_type_float,
                 .value = child_data.value,
                 .bounds = child_data.value_bounds,
-                .handle_width = 32,
+                .handle_width = slider_handle_width,
             };
             const entity2 e2 = spawn_slider(
                 world,
                 canvas_data,
                 child_parent_data,
                 child_element_data,
-                list_data,
+                slider_data,
+                list_data.font_size,
                 button_font_fill,
                 button_font_outline
             );

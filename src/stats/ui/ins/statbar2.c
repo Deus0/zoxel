@@ -7,7 +7,8 @@ entity spawn_statbar2(
     const byte layer,
     const float2 anchor,
     const int2 size,
-    const int2 position
+    const int2 position,
+    byte font_size
 ) {
     const entity stat = character_group.y;
     if (!zox_valid(stat)) {
@@ -21,18 +22,18 @@ entity spawn_statbar2(
 
     const int2 canvas_size = zox_get_value(canvas, LayoutSize);
 
-    const entity2 e2 = spawn_elementbar2D(
+    const entity2 e2 = spawn_elementbar2(
         world,
         prefab_statbar2D,
         canvas,
         parent,
         position,
         size,
+        font_size,
         padding,
         anchor,
         layer,
         int2_half(canvas_size),
-        canvas_size,
         canvas_size,
         0,
         back_color,

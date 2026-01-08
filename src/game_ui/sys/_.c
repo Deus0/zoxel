@@ -71,7 +71,7 @@ void define_systems_game_ui(ecs *world) {
         EcsOnUpdate,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        [in] cameras.CameraLink,
+        //  [in] cameras.CameraLink,
         [in] layouts2.CanvasLink,
         [out] players.PlayerPauseEvent
     );

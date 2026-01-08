@@ -7,7 +7,7 @@
 #include "pre/_.c"
 #include "sys/_.c"
 #include "tst/test_texture.c"
-#include "fun/sdl_textures.c"
+#include "fun/_.c"
 #include "io/_.c"
 #include "dbg/_.c"
 

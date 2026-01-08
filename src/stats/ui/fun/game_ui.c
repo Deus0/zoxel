@@ -34,6 +34,7 @@ entity spawn_menu_game_stats(
     int panel_height = total_bars * (bar_size.y + bar_padding) - bar_padding;
     panel_size.y = panel_height + panel_padding * 2;
     byte2 screen_padding = (byte2) { 4 * ui_scale, 4 * ui_scale };
+    byte label_font_size = ui_scale * 4;
 
     // Positioning
     float2 panel_anchor = float2_top_left;
@@ -92,7 +93,8 @@ entity spawn_menu_game_stats(
             bar_layer,
             bar_anchor,
             bar_size,
-            bar_position
+            bar_position,
+            label_font_size
         );
         add_to_Children(&children, statbar);
         bar_position.y -= bar_size.y + bar_padding;

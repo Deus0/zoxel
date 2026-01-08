@@ -1,13 +1,15 @@
 entity2 spawn_slider(
     ecs *world,
-    const LayoutParentData canvas_data,
-    const LayoutParentData parent_data,
-    const ElementSpawnData element_data,
-    const SpawnSliderData slider_data,
-    const color font_fill,
-    const color font_outline
+    LayoutParentData canvas_data,
+    LayoutParentData parent_data,
+    ElementSpawnData element_data,
+    SpawnSliderData slider_data,
+    byte font_size,
+    color font_fill,
+    color font_outline
 ) {
-    byte handle_width = 32;
+    byte handle_width = 8 * ui_scale;
+    byte font_thickness = ui_scale;
 
     zox_instance(element_data.prefab);
     zox_name("slider");
@@ -65,10 +67,10 @@ entity2 spawn_slider(
         },
         .zext = {
             .text = slider_data.name,
-            .font_size = 28,
-            .font_resolution = 64,
-            .font_thickness = 6,
-            .font_outline_thickness = 3,
+            .font_size = font_size,
+            .font_resolution = font_size, // font_size * 2?
+            .font_thickness = font_thickness,
+            .font_outline_thickness = font_thickness,
             .font_fill_color = font_fill,
             .font_outline_color = font_outline,
         }

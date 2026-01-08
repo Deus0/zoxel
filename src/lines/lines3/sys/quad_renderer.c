@@ -3,7 +3,7 @@ void QuadLineRenderSystem(iter *it) {
     glEnableVertexAttribArray(line3D_position_location);
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());
     zox_gpu_float4x4(line3D_camera_matrix_location, render_camera_matrix);
-    zox_sys_world();
+    // zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LineThickness);
     zox_sys_in(Color);
@@ -11,7 +11,7 @@ void QuadLineRenderSystem(iter *it) {
     zox_sys_in(Rotation3D);
     zox_sys_in(QuadLineSize);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(LineThickness, thickness);
         zox_sys_i(Color, colorr);
         zox_sys_i(Position3D, position);

@@ -14,8 +14,10 @@ entity spawn_device_gizmo(
     const entity canvas,
     const byte device_type
 ) {
-    const byte size = 64;
-    const byte position_offset = 16 + size / 2;
+    // Sizing
+    const byte size = 16 * ui_scale;
+    const int2 position = int2_single(4 * ui_scale + size / 2);
+
     SpawnIcon spawnIcon = {
         .canvas = {
             .e = canvas
@@ -26,7 +28,7 @@ entity spawn_device_gizmo(
         .element = {
             .prefab = prefab_device_gizmo,
             .size = int2_single(size),
-            .position = (int2) { position_offset, position_offset },
+            .position = position,
             .anchor = float2_zero,
             .layer = 1,
         },
@@ -34,6 +36,7 @@ entity spawn_device_gizmo(
     };
     const entity e = spawn_icon(world, &spawnIcon).x;
     zox_set_unique_name(e, "device_gizmo");
+
     if (device_type == zox_device_mode_gamepad) {
         clone_texture_to_entity(world, e, "device_gamepad");
     } else if (device_type == zox_device_mode_keyboardmouse) {
@@ -43,6 +46,8 @@ entity spawn_device_gizmo(
     } else {
         clone_texture_to_entity(world, e, "device_none");
     }
-    zox_set(e, AnimationStart, { zox_current_time })
+
+    zox_set(e, AnimationStart, { zox_current_time });
+
     return e;
 }

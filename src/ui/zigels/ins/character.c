@@ -8,9 +8,9 @@ entity spawn_zigel(
     zox_set(e, FontThickness, { data->zext.font_thickness });
     zox_set(e, Color, { data->zigel.fill_color });
     zox_set(e, SecondaryColor, { data->zigel.outline_color });
-    if (data->zext.font_outline_thickness) {
-        zox_set(e, FontOutlineThickness, { data->zext.font_outline_thickness });
-    }
+    //if (data->zext.font_outline_thickness) {
+    zox_set(e, FontOutlineThickness, { data->zext.font_outline_thickness });
+    //}
 
     initialize_element(
         world,

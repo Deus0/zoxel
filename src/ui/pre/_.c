@@ -32,10 +32,10 @@ void prefabs_add_ui_to_raycaster(ecs *world, const entity e) {
 
 }
 
-void spawn_prefabs_ui_core(ecs *world) {
+void spawn_prefabs_elements(ecs *world) {
     prefab_canvas = spawn_prefab_canvas(world);
 #if defined(zoxm_players)
-    zox_prefab_set(prefab_canvas, PlayerLink, { 0 })
+    zox_prefab_set(prefab_canvas, PlayerLink, { 0 });
 #endif
     prefab_element_invisible = spawn_prefab_element_invisible(world, prefab_layout2);
     // has a texture also

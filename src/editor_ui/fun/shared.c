@@ -43,7 +43,7 @@ entity spawn_button_old(
     const int2 zext_size = (int2) { font_size * strlen(text), font_size };
     const int2 pixel_size = (int2) { zext_size.x + padding.x * 2, zext_size.y + padding.y * 2 };
     const int2 global_position = get_element_pixel_positionv(parent_pixel_positionv, parent_pixel_size, pixel_position, anchor);
-    const float2 position2 = get_element_position(global_position, canvas_size);
+    // const float2 position2 = get_element_position(global_position, canvas_size);
 
     zox_instance(prefab_button);
     zox_name("button");

@@ -1,10 +1,9 @@
-entity spawn_elementbar2D_front(
+entity spawn_elementbar2_front(
     ecs *world,
     const entity canvas,
     const entity parent,
     const int2 parent_position,
     const int2 parent_size,
-    const int2 canvas_size,
     const byte layer,
     const byte render_disabled,
     const color front_color

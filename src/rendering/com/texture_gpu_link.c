@@ -3,13 +3,19 @@ extern uint spawn_gpu_texture_buffer();
 zoxc(TextureGPULink, uint);
 
 void add_gpu_texture(ecs *world, entity e) {
-    if (!headless) zox_prefab_set(e, TextureGPULink, { 0 });
+    if (!headless) {
+        zox_prefab_set(e, TextureGPULink, { 0 });
+    }
 }
 
 void spawn_gpu_texture(ecs *world, entity e) {
-    if (!headless) zox_set(e, TextureGPULink, { spawn_gpu_texture_buffer() })
+    if (!headless) {
+        zox_set(e, TextureGPULink, { spawn_gpu_texture_buffer() });
+    }
 }
 
 ECS_DTOR(TextureGPULink, ptr, {
-    if (ptr->value != 0) glDeleteTextures(1, &ptr->value);
+    if (ptr->value != 0) {
+        glDeleteTextures(1, &ptr->value);
+    }
 })

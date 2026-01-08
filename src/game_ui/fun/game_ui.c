@@ -20,7 +20,10 @@ entity spawn_game_canvas(
         canvas,
         dimensions
     );
+
+    // Tooltip on player
     spawn_tooltip(world, prefab_tooltip, canvas);
+
     // custom cursor
     entity zevice_follow = 0;
     if (local_mouse) {
@@ -33,33 +36,38 @@ entity spawn_game_canvas(
         zox_log_error("[cursor_01] mouse texture not found")
     }
 
+    byte fake_mouse_size = 8 * ui_scale;
     const entity fake_mouse = spawn_icon_mouse_follow_canvas(
         world,
         prefab_icon_mouse_follow,
         canvas, dimensions,
         max_layers2D - 2,
         float2_zero, // float2_zero float2_half
-        32,
-        zevice_follow);
+        fake_mouse_size,
+        zevice_follow
+    );
     zox_set_unique_name(fake_mouse, "fake_mouse");
     zox_set(fake_mouse, RenderDisabled, { 0 });
     zox_remove(fake_mouse, GenerateTexture);
-    clone_texture_data(world, fake_mouse, cursor);
+    spawn_gpu_texture(world, fake_mouse);
+    clone_texture_data_scale(world, fake_mouse, cursor, int2_single(fake_mouse_size));
     zox_set(fake_mouse, MeshAlignment, { zox_mesh_alignment_top_left });
     if (local_mouse) {
         zox_set(local_mouse, TextureLink, { fake_mouse });
     }
 
-    // used for icon mouse pickup
+    // ### Mouse Pickup UI ###
     int icon_size = (default_icon_size / 4) * ui_scale;
-    icon_mouse_follow = spawn_icon_mouse_follow_canvas(world,
+    icon_mouse_follow = spawn_icon_mouse_follow_canvas(
+        world,
         prefab_icon_mouse_follow,
         canvas,
         dimensions,
         max_layers2D - 3,
         float2_half,
         icon_size,
-        zevice_follow);
+        zevice_follow
+    );
     zox_set_unique_name(icon_mouse_follow, "icon_mouse");
 
     return canvas;
