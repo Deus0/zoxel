@@ -162,7 +162,7 @@ void generate_vox_texture(
     }
 }
 
-void VoxTextureSystem(iter *it) {
+zox_sys2(VoxTextureSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureSize);
@@ -191,7 +191,7 @@ void VoxTextureSystem(iter *it) {
         zox_geter_value(vox->value, NodeDepth, byte, node_depth);
 
         const int2 texture_size = size->value;
-        initialize_TextureData(data, texture_size.x * texture_size.y);
+        resize_TextureData(data, texture_size.x * texture_size.y);
 
         read_lock_VoxelNode(node);
         generate_vox_texture(
@@ -211,4 +211,4 @@ void VoxTextureSystem(iter *it) {
 
         dirty->value = zox_dirty_trigger; // actually not using this for tilemap!
     }
-} zoxd_system2(VoxTextureSystem);
+} zox_sys_end(VoxTextureSystem);

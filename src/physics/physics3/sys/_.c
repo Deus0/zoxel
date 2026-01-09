@@ -60,11 +60,4 @@ void define_systems_physics3(ecs *world) {
         [out] Omega3D,
         [none] physics.Frictioned
     );
-
-    zox_track_system(world, zox_id(Velocity3System));
-    zox_track_system(world, zox_id(Acceleration3System));
-    zox_track_system(world, zox_id(Omega3System));
-    zox_track_system(world, zox_id(Alpha3System));
-    zox_track_system(world, zox_id(Gravity3DSystem));
-    zox_track_system(world, zox_id(Dissipation3System));
 }

@@ -3,7 +3,7 @@ extern entity spawn_chunk_terrain(ecs*, const entity, const entity, const int3, 
 // NOTE: Takes in array of stream points and iterates per chunk
 // NOTE: This logic fails if all chunks dissapear
 
-void ChunkSpawnSystem(iter *it) {
+zox_sys2(ChunkSpawnSystem) {
     const entity prefab_chunk = prefab_chunk_terrain;
 
     zox_sys_query();
@@ -122,4 +122,4 @@ void ChunkSpawnSystem(iter *it) {
         zox_log_streaming(" + [%i] spawned [%i]", ecs_run_count, spawned_chunks);
     }
 
-} zoxd_system2(ChunkSpawnSystem);
+} zox_sys_end(ChunkSpawnSystem);

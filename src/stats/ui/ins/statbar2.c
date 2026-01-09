@@ -12,7 +12,7 @@ entity spawn_statbar2(
 ) {
     const entity stat = character_group.y;
     if (!zox_valid(stat)) {
-        zox_log_error("stat null [spawn_statbar2]")
+        zox_log_error("stat null [spawn_statbar2]");
         return 0;
     }
 

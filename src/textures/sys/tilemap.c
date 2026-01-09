@@ -1,24 +1,24 @@
 // uses terrain's texture links to generate a tilemap
 // todo: support for multiple sizes, would have to place them in? or something
-void TilemapGenerationSystem(iter *it) {
+zox_sys2(TilemapGenerationSystem) {
     const byte uvs_per_tile = 4;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TilemapSize)
-    zox_sys_in(TextureLinks)
-    zox_sys_out(GenerateTexture)
-    zox_sys_out(TextureSize)
-    zox_sys_out(TextureData)
-    zox_sys_out(TextureDirty)
-    zox_sys_out(TilemapUVs)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TilemapSize);
+    zox_sys_in(TextureLinks);
+    zox_sys_out(GenerateTexture);
+    zox_sys_out(TextureSize);
+    zox_sys_out(TextureData);
+    zox_sys_out(TextureDirty);
+    zox_sys_out(TilemapUVs);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TilemapSize, tilemapSize)
-        zox_sys_i(TextureLinks, textureLinks)
-        zox_sys_o(GenerateTexture, generateTexture)
-        zox_sys_o(TextureSize, textureSize)
-        zox_sys_o(TextureData, textureData)
-        zox_sys_o(TextureDirty, textureDirty)
-        zox_sys_o(TilemapUVs, tilemapUVs)
+        zox_sys_i(TilemapSize, tilemapSize);
+        zox_sys_i(TextureLinks, textureLinks);
+        zox_sys_o(GenerateTexture, generateTexture);
+        zox_sys_o(TextureSize, textureSize);
+        zox_sys_o(TextureData, textureData);
+        zox_sys_o(TextureDirty, textureDirty);
+        zox_sys_o(TilemapUVs, tilemapUVs);
 
         if (generateTexture->value != zox_dirty_active || textureDirty->value) {
             continue;
@@ -114,4 +114,4 @@ void TilemapGenerationSystem(iter *it) {
         }
         textureDirty->value = 1;
     }
-} zoxd_system(TilemapGenerationSystem)
+} zox_sys_end(TilemapGenerationSystem);

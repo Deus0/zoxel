@@ -1,12 +1,12 @@
 #define zox_set_system(system_name, component_name, t, v)\
-void system_name(iter *it) {\
+zox_sys2(system_name) {\
     zox_sys_begin()\
     zox_sys_out(component_name)\
     for (int i = 0; i < it->count; i++) {\
         zox_sys_o(component_name, component)\
         if (component->value == t) component->value = v;\
     }\
-} zoxd_system2(system_name);
+} zox_sys_end(system_name);
 
 #define zox_reset_system(component_name) \
     zox_set_system(component_name##ResetSystem, component_name, 1, 0)
@@ -31,7 +31,7 @@ void system_name(iter *it) {\
     zox_system_1(system_name##StateEventSystem, pip, [in] component, __VA_ARGS__)
 
 #define zox_declare_system_state_event(system_name, component, target, function)\
-    void system_name##StateEventSystem(iter *it) {\
+    zox_sys2(system_name##StateEventSystem) {\
         zox_sys_world();\
         zox_sys_begin();\
         zox_sys_in(component);\
@@ -42,4 +42,4 @@ void system_name(iter *it) {\
                 function(world, e);\
             }\
         }\
-    } zoxd_system2(system_name##StateEventSystem);
+    } zox_sys_end(system_name##StateEventSystem);

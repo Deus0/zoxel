@@ -1,5 +1,19 @@
 // Timing Systems
 
+#define zox_max_systems 512
+entity zox_systems[zox_max_systems];
+int zox_systems_count = 0;
+
+void zox_system_on_new(ecs* world, entity system) {
+    if (zox_systems_count == zox_max_systems) {
+        zox_log_error("Max Systems hit, increase limit [%i]", zox_systems_count);
+        return;
+    }
+    zox_systems[zox_systems_count++] = system;
+    // zox_log_new_system("+ new system [%s]", #id_);
+    // zox_statistics_systems++;
+}
+
 /*
 
 Example System T:
@@ -19,38 +33,20 @@ zox_sys(T) {
 
 #define zox_sys_end(T)\
     double system_delta_time = get_time_ms() - system_time_begin;\
-    ecs_set(it->world, it->system, SystemDelta, { system_delta_time });\
+    double current_system_delta_time = ecs_get(it->world, it->system, SystemDelta)->value; \
+    if (system_delta_time > current_system_delta_time) { \
+        ecs_set(it->world, it->system, SystemDelta, { system_delta_time }); \
+    } \
 } ECS_SYSTEM_DECLARE(T)
 
-#ifndef zox_time_systems
+#define zox_sys(T)\
+    void T(iter *it) {
 
-    #define zox_sys(T)\
-        void T(iter *it) {
+#define zoxd_system(T)\
+    ECS_SYSTEM_DECLARE(T);
 
-    #define zoxd_system(T)\
-        ECS_SYSTEM_DECLARE(T);
-
-    #define zoxd_system2(T)\
-        ECS_SYSTEM_DECLARE(T)
-
-#else
-
-    #define zox_sys(T)\
-        void T(iter *it) {\
-            double system_time_begin = get_time_ms();
-
-    #define zoxd_system(T)\
-        double system_delta_time = get_time_ms() - system_time_begin;\
-        zox_set(it->system, SystemDelta, { system_delta_time });\
-    } ECS_SYSTEM_DECLARE(T);
-
-    #define zoxd_system2(T)\
-        } \
-        double system_delta_time = get_time_ms() - system_time_begin;\
-        zox_set(it->system, SystemDelta, { system_delta_time });\
-    } ECS_SYSTEM_DECLARE(T)
-
-#endif
+#define zoxd_system2(T)\
+    ECS_SYSTEM_DECLARE(T)
 
 #if defined(zox_enable_log_new_system) && !defined(zox_disable_logs)
     #define zox_log_new_system(msg, ...) zox_log(msg, ##__VA_ARGS__)
@@ -77,8 +73,7 @@ zox_sys(T) {
         desc.multi_threaded = multi_threaded_;\
         desc.ctx = ctx_;\
         ecs_id(id_) = ecs_system_init(world, &desc); \
-        zox_log_new_system("+ new system [%s]", #id_)\
-        zox_statistics_systems++;\
+        zox_system_on_new(world, zox_id(id_));\
     };
 
 #else
@@ -96,8 +91,7 @@ zox_sys(T) {
         desc.multi_threaded = multi_threaded_;\
         desc.ctx = ctx_;\
         ecs_id(id_) = ecs_system_init(world, &desc); \
-        zox_log_new_system("+ new system [%s]", #id_)\
-        zox_statistics_systems++;\
+        zox_system_on_new(world, zox_id(id_));\
     };
 
 #endif

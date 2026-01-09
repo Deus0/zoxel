@@ -1,4 +1,5 @@
-void PlayerPauseSystem(iter *it) {
+// Player presses input which pauses game
+zox_sys2(PlayerPauseSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -63,4 +64,4 @@ void PlayerPauseSystem(iter *it) {
         }
     }
 
-} zoxd_system2(PlayerPauseSystem);
+} zox_sys_end(PlayerPauseSystem);

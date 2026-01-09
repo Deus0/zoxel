@@ -6,19 +6,18 @@ void pause_player_ending(ecs *world, const entity e) {
     spawn_menu_paused(world, e);
 }
 
-void PlayerUIGamePauseSystem(iter *it) {
+// When player state changes, for player UI
+zox_sys2(PlayerUIGamePauseSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
     zox_sys_in(PlayerState);
-    // zox_sys_in(CameraLink);
     zox_sys_in(CanvasLink);
     zox_sys_out(PlayerPauseEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
-        // zox_sys_i(CameraLink, camera);
         zox_sys_i(CanvasLink, canvas);
         zox_sys_o(PlayerPauseEvent, pause_event_link);
 
@@ -44,7 +43,8 @@ void PlayerUIGamePauseSystem(iter *it) {
             pause_fade_alpha,
             1
         );
-        const entity pause_event = delay_event(
+
+        const entity pause_delay = delay_event(
             world,
             &pause_player_ending,
             e,
@@ -53,7 +53,7 @@ void PlayerUIGamePauseSystem(iter *it) {
         if (zox_valid(pause_event_link->value)) {
             zox_delete(pause_event_link->value)
         }
-        pause_event_link->value = pause_event;
+        pause_event_link->value = pause_delay;
 
     }
-} zoxd_system2(PlayerUIGamePauseSystem);
+} zox_sys_end(PlayerUIGamePauseSystem);

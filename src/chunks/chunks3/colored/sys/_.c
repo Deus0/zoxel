@@ -19,6 +19,6 @@ void define_systems_chunks3_colored(ecs *world) {
             [out] rendering.MeshDirty,
             [none] chunks3.ColorChunk
         );
-        zox_track_system(world, zox_id(ChunkColorsBuildSystem));
+        // zox_track_system(world, zox_id(ChunkColorsBuildSystem));
     }
 }

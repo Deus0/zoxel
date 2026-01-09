@@ -80,7 +80,7 @@ byte aabb_in_frustum_fast(const plane *planes, const bounds b, float eps) {
 }
 
 // this sets RenderDisabled for chunks and their children
-void ChunkFrustumSystem(iter *it) {
+zox_sys2(ChunkFrustumSystem) {
     const byte frustum_inwards = 1; // we just using this for safety
     zox_sys_query();
     zox_sys_world();
@@ -151,4 +151,4 @@ void ChunkFrustumSystem(iter *it) {
             // -=- -=- -=- -=- -=- -=-
         }
     }
-} zoxd_system(ChunkFrustumSystem)
+} zox_sys_end(ChunkFrustumSystem);

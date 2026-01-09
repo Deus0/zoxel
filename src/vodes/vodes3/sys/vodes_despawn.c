@@ -13,7 +13,7 @@ void destroy_vodes(ecs *world, VoxelNode *node) {
     }
 }
 
-void VodesDespawnSystem(iter *it) {
+zox_sys2(VodesDespawnSystem) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(VoxelNodeDirty)
@@ -43,4 +43,4 @@ void VodesDespawnSystem(iter *it) {
         write_unlock_VoxelNode(node);
         blocksSpawned->value = 0;
     }
-} zoxd_system(VodesDespawnSystem)
+} zox_sys_end(VodesDespawnSystem);

@@ -1,5 +1,5 @@
 // Run from DialoguetreeRun
-void DialogueEndSystem(iter *it) {
+zox_sys2(DialogueEndSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodetreeEnd);
@@ -32,4 +32,4 @@ void DialogueEndSystem(iter *it) {
         }*/
 
     }
-} zoxd_system2(DialogueEndSystem);
+} zox_sys_end(DialogueEndSystem);

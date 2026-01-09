@@ -1,7 +1,7 @@
 // When Mesh Rebuilds, rebuild our colors too based on lights
 // If queue empty + lightnode dirty, activate!
 
-void MeshColorsTriggerSystem(iter *it) {
+zox_sys2(MeshColorsTriggerSystem) {
     zox_sys_begin();
     zox_sys_in(LightQueue);
     zox_sys_in(DarkQueue);
@@ -21,12 +21,6 @@ void MeshColorsTriggerSystem(iter *it) {
             // continue;
         }
 
-        /*if (chunk_mesh_dirty->value) {
-            zox_sys_world();
-            zox_sys_e();
-            zox_log("MeshColorsTriggerSystem %s", zox_get_name(e));
-        }*/
-
         if (chunk_mesh_dirty->value == zox_dirty_active ||
             sunlight_dirty->value == zox_dirty_active ||
             light_node_dirty->value == zox_dirty_active
@@ -35,4 +29,4 @@ void MeshColorsTriggerSystem(iter *it) {
         }
 
     }
-} zoxd_system2(MeshColorsTriggerSystem);
+} zox_sys_end(MeshColorsTriggerSystem);

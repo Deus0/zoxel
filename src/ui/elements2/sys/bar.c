@@ -1,16 +1,13 @@
 // extern void on_element_pixels_resized(ecs *world, entity e, const int2 size, byte mesh_alignment);
 
-void Elementbar2System(iter *it) {
-
+zox_sys2(Elementbar2System) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ElementBar);
     zox_sys_in(ElementBarSize);
     zox_sys_in(Children);
     zox_sys_in(LayoutSize);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(Children, children);
         zox_sys_i(LayoutSize, parent_size);
         zox_sys_i(ElementBar, elementBar);
@@ -37,7 +34,7 @@ void Elementbar2System(iter *it) {
             continue;
         }
 
-        zox_geter(front_bar, InitializeElement, initializeElement)
+        zox_geter(front_bar, InitializeElement, initializeElement);
         if (initializeElement->value) {
             continue; // removing this breaks it?!?!
         }
@@ -58,10 +55,22 @@ void Elementbar2System(iter *it) {
             continue;
         }
 
-        zox_muter(front_bar, LayoutPosition, position);
+        // # Important: Check if busy still
+        zox_geter_value(front_bar, GenerateTexture, byte, generate);
+        zox_geter_value(front_bar, TextureDirty, byte, tdirty);
+        if (generate || tdirty) {
+            continue;
+        }
+
         zox_muter(front_bar, LayoutPositionDirty, pdirty);
-        zox_muter(front_bar, LayoutSize, size);
         zox_muter(front_bar, LayoutSizeDirty, sdirty);
+
+        if (pdirty->value || sdirty->value) {
+            continue;
+        }
+
+        zox_muter(front_bar, LayoutPosition, position);
+        zox_muter(front_bar, LayoutSize, size);
         // we should also set LayoutSize here and dirty for it
 
         const float percentage = elementBar->value;
@@ -73,18 +82,11 @@ void Elementbar2System(iter *it) {
         float percecentage_2 = ((int) (percentage * 100)) / 100.0f; // only update per 100 units
         front_size.x = (int) floor(scale.x * front_size.x * percecentage_2);
 
-        size->value = front_size;
-        position->value.x = offset_x;
-        pdirty->value = zox_dirty_trigger;
-        sdirty->value = zox_dirty_trigger;
-
-        // int2 front_pixel_size = zox_get_value(front_bar, LayoutSize);
-        /*on_element_pixels_resized(
-            world,
-            front_bar,
-            front_pixel_size,
-            zox_mesh_alignment_left
-        );*/
-        // zox_log("> elementbar updated %ix%i - position x %i percentage %f\n", front_pixel_size.x, front_pixel_size.y, offset_x, percentage)
+        if (size->value.x != front_size.x) {
+            size->value = front_size;
+            position->value.x = offset_x;
+            pdirty->value = zox_dirty_trigger;
+            sdirty->value = zox_dirty_trigger;
+        }
     }
-} zoxd_system(Elementbar2System)
+} zox_sys_end(Elementbar2System);

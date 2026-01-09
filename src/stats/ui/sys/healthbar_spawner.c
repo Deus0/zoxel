@@ -1,14 +1,11 @@
-void HealthbarSpawnerSystem(iter *it) {
+zox_sys2(HealthbarSpawnerSystem) {
     const float trail_offset = trailoffset;
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CombatState);
     zox_sys_in(StatLinks);
     zox_sys_out(ElementLinks);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(CombatState, combat);
         zox_sys_i(StatLinks, stats);
@@ -71,4 +68,4 @@ void HealthbarSpawnerSystem(iter *it) {
 
         add_to_ElementLinks(elementLinks, healthbar.x);
     }
-} zoxd_system2(HealthbarSpawnerSystem);
+} zox_sys_end(HealthbarSpawnerSystem);

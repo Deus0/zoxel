@@ -1,6 +1,6 @@
 // Queued side updates for propogation
 zox_sys2(LightSystem) {
-    zox_ts_begin(light_propogate);
+    // zox_ts_begin(light_propogate);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNode);
@@ -147,5 +147,5 @@ zox_sys2(LightSystem) {
             zox_log("LightSystem %s - %i", zox_get_name(e), count);*/
         }
     }
-    zox_ts_end(light_propogate, 3, zox_profile_light_propogate);
+    // zox_ts_end(light_propogate, 3, zox_profile_light_propogate);
 } zox_sys_end(LightSystem);

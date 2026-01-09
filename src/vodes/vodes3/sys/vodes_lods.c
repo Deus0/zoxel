@@ -18,7 +18,7 @@ void set_vode_lods(ecs *world, const VoxelNode *node, byte render_depth) {
     }
 }
 
-void VodesLodSystem(iter *it) {
+zox_sys2(VodesLodSystem) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(RenderDistanceDirty)
@@ -35,4 +35,4 @@ void VodesLodSystem(iter *it) {
             set_vode_lods(world, voxelNode, render_depth);
         }
     }
-} zoxd_system(VodesLodSystem)
+} zox_sys_end(VodesLodSystem);

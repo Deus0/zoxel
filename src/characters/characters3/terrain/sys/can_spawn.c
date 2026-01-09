@@ -1,4 +1,4 @@
-void Characters3SpawnZoneSystem(iter *it) {
+zox_sys2(Characters3SpawnZoneSystem) {
     zox_sys_begin();
     zox_sys_in(RenderDistanceDirty);
     zox_sys_in(RenderDistance);
@@ -13,4 +13,4 @@ void Characters3SpawnZoneSystem(iter *it) {
             spawn->value = distance->value <= terrain_lod_near;
         }
     }
-} zoxd_system2(Characters3SpawnZoneSystem);
+} zox_sys_end(Characters3SpawnZoneSystem);

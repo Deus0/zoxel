@@ -2,7 +2,7 @@ static inline float float_to_precision(const float v, const float precision) {
     return (float) ( (int) (v * precision) ) / precision;
 }
 
-void CharacterSaveSystem(iter *it) {
+zox_sys2(CharacterSaveSystem) {
 #ifdef zox_disable_save_games
     return;
 #endif
@@ -58,4 +58,4 @@ void CharacterSaveSystem(iter *it) {
         // zox_log("+ new hash detected at [%fx%fx%f] - %lu", position->value.x, position->value.y, position->value.z, hash)
         characterSaveHash->value = hash;
     }
-} zoxd_system(CharacterSaveSystem)
+} zox_sys_end(CharacterSaveSystem);

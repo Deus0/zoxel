@@ -1,4 +1,4 @@
-void ChunkDieSystem(iter *it) {
+zox_sys2(ChunkDieSystem) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(VoxLink)
@@ -44,4 +44,4 @@ void ChunkDieSystem(iter *it) {
             #endif*/
         }
     }
-} zoxd_system(ChunkDieSystem)
+} zox_sys_end(ChunkDieSystem);

@@ -1,7 +1,7 @@
 extern void on_spawned_character3_npc(ecs*, const entity);
 // we need to check if chunk has generated yet - is there a component for this?
 
-void Characters3SpawnSystem(iter *it) {
+zox_sys2(Characters3SpawnSystem) {
     if (disable_npcs || !character_spawn_rate_max) {
         return;
     }
@@ -207,4 +207,4 @@ void Characters3SpawnSystem(iter *it) {
 
     zox_ts_end(npc_spawns, 3, zox_profile_system_npc_spawns);
 
-} zoxd_system2(Characters3SpawnSystem);
+} zox_sys_end(Characters3SpawnSystem);

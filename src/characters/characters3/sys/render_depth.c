@@ -1,4 +1,4 @@
-void CharacterRenderDepthSystem(iter *it) {
+zox_sys2(CharacterRenderDepthSystem) {
     zox_sys_begin();
     zox_sys_in(RenderDepthDirty);
     zox_sys_out(ChunkMeshDirty);
@@ -12,4 +12,4 @@ void CharacterRenderDepthSystem(iter *it) {
             // if instance link
         }
     }
-} zoxd_system(CharacterRenderDepthSystem)
+} zox_sys_end(CharacterRenderDepthSystem);

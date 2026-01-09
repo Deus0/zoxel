@@ -1,15 +1,17 @@
-void StatbarSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(StatLink)
-    zox_sys_out(ElementBar)
+zox_sys2(StatbarSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(StatLink);
+    zox_sys_out(ElementBar);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(StatLink, statLink)
-        zox_sys_o(ElementBar, elementBar)
+        zox_sys_i(StatLink, statLink);
+        zox_sys_o(ElementBar, elementBar);
+
         const entity stat = statLink->value;
         if (!zox_valid(stat)) {
             continue;
         }
+
         float new_value = elementBar->value;
         if (zox_has(stat, StatState)) {
             zox_geter(stat, StatValue, value)
@@ -24,4 +26,4 @@ void StatbarSystem(iter *it) {
             elementBar->value = new_value;
         }
     }
-} zoxd_system(StatbarSystem)
+} zox_sys_end(StatbarSystem);

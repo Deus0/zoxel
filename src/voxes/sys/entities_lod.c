@@ -1,7 +1,7 @@
 // chunk_lod_state_characters_update :: when terrain lod updates, update character lods
 
 // ChunkDistanceDirty => ChunkEntities -> Update RenderDepths
-void ChunkEntitiesLodSystem(iter *it) {
+zox_sys2(ChunkEntitiesLodSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDistanceDirty);
@@ -31,4 +31,4 @@ void ChunkEntitiesLodSystem(iter *it) {
             }
         }
     }
-} zoxd_system2(ChunkEntitiesLodSystem);
+} zox_sys_end(ChunkEntitiesLodSystem);

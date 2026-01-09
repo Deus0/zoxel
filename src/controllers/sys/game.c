@@ -1,4 +1,5 @@
-void PlayerGameStateSystem(iter *it) {
+// When player state changes, for player
+zox_sys2(PlayerGameStateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
@@ -26,6 +27,5 @@ void PlayerGameStateSystem(iter *it) {
                 zox_set(character->value, DisableMovement, { 1 });
             }
         }
-
     }
-} zoxd_system2(PlayerGameStateSystem);
+} zox_sys_end(PlayerGameStateSystem);

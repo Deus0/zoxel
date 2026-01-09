@@ -50,6 +50,7 @@ void on_boot_players(ecs *world, entity app) {
     }
 }
 
+// Game now effects all players
 void game_state_players(
     ecs *world,
     const entity game,

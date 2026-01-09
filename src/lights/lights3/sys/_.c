@@ -106,13 +106,4 @@ void define_systems_lights3(ecs* world) {
         [in] lights3.LightNode,
         [in] rendering.RenderDepth
     );
-
-
-    zox_track_system(world, zox_id(SunlightSystem));
-    zox_track_system(world, zox_id(LightSystem));
-    zox_track_system(world, zox_id(DarkLightSystem));
-    zox_track_system(world, zox_id(VoxelLightSystem));
-    zox_track_system(world, zox_id(DarkLightSystem));
-    zox_track_system(world, zox_id(Light3BuildSystem));
-    zox_track_system(world, zox_id(LightNodeReduceSystem));
 }

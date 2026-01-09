@@ -12,7 +12,7 @@ static inline float get_chunk_scale(
     return terrain_voxel_scale * powers_of_two[ddepth];  // we multiply by the depth difference power - if 2 = 2*2 = 4, 0.5 becomes 2 in size
 }
 
-void BlockScaleSystem(iter *it) {
+zox_sys2(BlockScaleSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepthDirty);
@@ -42,4 +42,4 @@ void BlockScaleSystem(iter *it) {
         );
         // zox_log(" [%s] Scale set [%f]", zox_get_name(it->entities[i]), block_scale->value);
     }
-} zoxd_system2(BlockScaleSystem);
+} zox_sys_end(BlockScaleSystem);

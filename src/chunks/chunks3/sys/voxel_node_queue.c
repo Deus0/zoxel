@@ -1,6 +1,6 @@
 // TODO: Maybe store Depth of these commands? worried about race conditions (as always)
 
-void VoxelNodeQueueSystem(iter *it) {
+zox_sys2(VoxelNodeQueueSystem) {
     zox_sys_begin();
     zox_sys_in(NodeDepth);
     zox_sys_in(VoxelNodeQueue);
@@ -42,4 +42,4 @@ void VoxelNodeQueueSystem(iter *it) {
             edited->value = 1;
         }
     }
-} zoxd_system2(VoxelNodeQueueSystem);
+} zox_sys_end(VoxelNodeQueueSystem);

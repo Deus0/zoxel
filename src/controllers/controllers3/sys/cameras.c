@@ -17,7 +17,7 @@ void on_set_free_roam(ecs *world, const entity e, byte is_free) {
     }*/
 }
 
-void PlayerToggleCameraSystem(iter *it) {
+zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -97,4 +97,4 @@ void PlayerToggleCameraSystem(iter *it) {
             on_set_free_roam(world, e, is_free);
         }
     }
-} zoxd_system2(PlayerToggleCameraSystem);
+} zox_sys_end(PlayerToggleCameraSystem);

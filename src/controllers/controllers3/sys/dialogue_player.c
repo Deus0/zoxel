@@ -1,4 +1,4 @@
-void PlayerDialogueSystem(iter *it) {
+zox_sys2(PlayerDialogueSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CharacterLink);
@@ -39,4 +39,4 @@ void PlayerDialogueSystem(iter *it) {
             zox_set(character->value, DisableMovement, { 0 });
         }
     }
-} zoxd_system2(PlayerDialogueSystem);
+} zox_sys_end(PlayerDialogueSystem);

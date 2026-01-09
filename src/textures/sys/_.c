@@ -1,11 +1,11 @@
 #include "animate_noise_system.c"
 #include "texture_rgb_upload_system.c"
 #include "texture_rgba_upload_system.c"
-#include "noise_texture_system.c"
-#include "fill_texture_system.c"
-#include "frame_texture_system.c"
-#include "tilemap_generation_system.c"
-#include "mouse_texture_system.c"
+#include "noise.c"
+#include "fill.c"
+#include "frame.c"
+#include "tilemap.c"
+#include "mouse.c"
 #include "icon.c"
 // zox_increment_system_with_reset(GenerateTexture, zox_generate_texture_end);
 

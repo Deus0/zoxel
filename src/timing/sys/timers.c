@@ -1,13 +1,13 @@
-void TimerSystem(iter *it) {
-    init_delta_time()
-    zox_sys_begin()
-    zox_sys_in(TimerRate)
-    zox_sys_out(TimerState)
-    zox_sys_out(TimerTime)
+zox_sys2(TimerSystem) {
+    init_delta_time();
+    zox_sys_begin();
+    zox_sys_in(TimerRate);
+    zox_sys_out(TimerState);
+    zox_sys_out(TimerTime);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TimerRate, timerRate)
-        zox_sys_o(TimerState, timerState)
-        zox_sys_o(TimerTime, timerTime)
+        zox_sys_i(TimerRate, timerRate);
+        zox_sys_o(TimerState, timerState);
+        zox_sys_o(TimerTime, timerTime);
         timerState->value = 0;
         if (timerTime->value == 0) {
             timerTime->value = timerRate->value;
@@ -19,4 +19,4 @@ void TimerSystem(iter *it) {
             }
         }
     }
-} zoxd_system(TimerSystem)
+} zox_sys_end(TimerSystem);

@@ -1,5 +1,4 @@
-void ListSystem(iter *it) {
-
+zox_sys2(ListSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ListDirty);
@@ -8,9 +7,7 @@ void ListSystem(iter *it) {
     zox_sys_in(ListPadding);
     zox_sys_in(ListMargins);
     zox_sys_in(ListStart);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(ListDirty, dirty);
         zox_sys_i(Children, children);
         zox_sys_i(LayoutSize, size);
@@ -65,4 +62,4 @@ void ListSystem(iter *it) {
             list_position_y -= padding->value.y;
         }
     }
-} zoxd_system2(ListSystem);
+} zox_sys_end(ListSystem);

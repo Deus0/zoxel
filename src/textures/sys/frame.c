@@ -1,6 +1,6 @@
 // #define zox_time_frame_texture_system
-void FrameTextureSystem(iter *it) {
-    zox_change_check();
+zox_sys2(FrameTextureSystem) {
+    // zox_change_check();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureSize);
@@ -24,7 +24,8 @@ void FrameTextureSystem(iter *it) {
             continue;
         }
 
-        initialize_TextureData(data, size->value.x * size->value.y);
+        resize_TextureData(data, size->value.x * size->value.y);
+
         const byte add_noise = zox_has(e, TextureAddNoise);
         const color fill_color = color2->value;
         color outline_color;
@@ -53,4 +54,4 @@ void FrameTextureSystem(iter *it) {
         dirty->value = 1;
         //  voronoi2D(textureData->value, textureSize->value, color_gray, color_gray_dark, 0.7f);
     }
-} zoxd_system2(FrameTextureSystem);
+} zox_sys_end(FrameTextureSystem);

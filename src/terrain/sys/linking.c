@@ -81,7 +81,7 @@ byte set_entity_chunk(ecs *world,
     return 1;
 }
 
-void ChunkLinkSystem(iter *it) {
+zox_sys2(ChunkLinkSystem) {
     // const byte depth = terrain_depth;
     // const int3 chunk_dimensions = int3_single(powers_of_two[depth]);
     zox_sys_world()
@@ -115,4 +115,4 @@ void ChunkLinkSystem(iter *it) {
             }
         }
     }
-} zoxd_system(ChunkLinkSystem)
+} zox_sys_end(ChunkLinkSystem);

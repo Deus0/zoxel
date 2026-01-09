@@ -1,6 +1,6 @@
 // todo: make use TargetChunkLod -> and load/unload depth based on that
 // todo: set lod here instead of just applying RenderDepth only with ChunkMeshDirty -> keeps memory down
-void CloneVoxSystem(iter *it) {
+zox_sys2(CloneVoxSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CloneVoxLink);
@@ -62,4 +62,4 @@ void CloneVoxSystem(iter *it) {
             nodeDirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system(CloneVoxSystem)
+} zox_sys_end(CloneVoxSystem);

@@ -1,4 +1,4 @@
-void Characters3DespawnSystem(iter *it) {
+zox_sys2(Characters3DespawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDistanceDirty);
@@ -42,4 +42,4 @@ void Characters3DespawnSystem(iter *it) {
         clear_memory_component(ChunkEntities, entities);
         spawned->value = 0;
     }
-} zoxd_system2(Characters3DespawnSystem);
+} zox_sys_end(Characters3DespawnSystem);

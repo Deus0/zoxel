@@ -1,4 +1,4 @@
-void StatTextSystem(iter *it) {
+zox_sys2(StatTextSystem) {
     // int stat_name_text_count = 32;
     int label_text_count = 256;
     // char stat_name_text[stat_name_text_count];
@@ -51,4 +51,4 @@ void StatTextSystem(iter *it) {
             dirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system2(StatTextSystem);
+} zox_sys_end(StatTextSystem);

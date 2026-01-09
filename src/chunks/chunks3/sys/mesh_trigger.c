@@ -2,7 +2,7 @@
 //  probably grab them, its faster to write in my systems
 
 // When: VoxelNodeDirty is zox_dirty_active
-void Chunk3MeshTriggerSystem(iter *it) {
+zox_sys2(Chunk3MeshTriggerSystem) {
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
     zox_sys_out(ChunkMeshDirty);
@@ -22,4 +22,4 @@ void Chunk3MeshTriggerSystem(iter *it) {
             zox_log("triggering chunk mesh [%s]", zox_get_name(e));*/
         }
     }
-} zoxd_system2(Chunk3MeshTriggerSystem);
+} zox_sys_end(Chunk3MeshTriggerSystem);

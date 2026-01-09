@@ -178,7 +178,7 @@ void spawn_vodes(
 }
 
 // Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
-void VodesSpawnSystem(iter *it) {
+zox_sys2(VodesSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
@@ -236,4 +236,4 @@ void VodesSpawnSystem(iter *it) {
         write_unlock_VoxelNode(node);
         blocksSpawned->value = 1;
     }
-} zoxd_system2(VodesSpawnSystem);
+} zox_sys_end(VodesSpawnSystem);

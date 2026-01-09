@@ -24,7 +24,7 @@ void IconTextureSystem(iter *it) {
             continue;
         }
 
-        initialize_TextureData(data, size->value.x * size->value.y);
+        resize_TextureData(data, size->value.x * size->value.y);
 
         const byte add_noise = zox_has(e, TextureAddNoise);
         const byte radius = (byte) (size->value.y * icon_radius->value);

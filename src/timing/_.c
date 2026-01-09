@@ -9,8 +9,8 @@ zoxc_byte(TimerState);
 zoxc_double(SystemDelta);
 #include "mcr/_.c"
 #include "fun/_.c"
-#include "sys/_.c"
 #include "dbg/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Timing)
     zoxd_double(DestroyInTime);
@@ -22,7 +22,9 @@ zox_begin_module(Timing)
     initialize_time();
     add_to_post_update_loop(iterate_time);
     add_to_post_update_loop(iterate_time_system);
-    add_to_post_update_loop(log_lagging_systems);
+    // stats
+    add_hook_spawn_prefabs(add_system_log_components);
+    // add_to_post_update_loop(log_lagging_systems);
 zox_end_module(Timing)
 
 #endif

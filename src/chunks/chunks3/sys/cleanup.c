@@ -41,12 +41,12 @@ void reduce_voxel_nodes(
 // Break down our nodes, if they are the same type
 // When VoxelNodeDirty is zox_dirty_active
 // TODO: make a flag for Blocks that can group or not - for this
-void VoxelNodeCleanupSystem(iter *it) {
+zox_sys2(VoxelNodeCleanupSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxelNodeDirty)
-    zox_sys_in(NodeDepth)
-    zox_sys_out(VoxelNode)
+    zox_sys_in(VoxelNodeDirty);
+    zox_sys_in(NodeDepth);
+    zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxelNodeDirty, voxelNodeDirty)
         zox_sys_i(NodeDepth, nodeDepth)
@@ -58,4 +58,4 @@ void VoxelNodeCleanupSystem(iter *it) {
         reduce_voxel_nodes(world, node);
         write_unlock_VoxelNode(node);
     }
-} zoxd_system(VoxelNodeCleanupSystem)
+} zox_sys_end(VoxelNodeCleanupSystem);

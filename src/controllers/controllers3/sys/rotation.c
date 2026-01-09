@@ -1,10 +1,10 @@
-void Player3RotateSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(DeviceLinks)
-    zox_sys_in(DeviceMode)
-    zox_sys_in(CharacterLink)
-    zox_sys_in(CameraLink)
+zox_sys2(Player3RotateSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(DeviceLinks);
+    zox_sys_in(DeviceMode);
+    zox_sys_in(CharacterLink);
+    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(CharacterLink, characterLink)
         zox_sys_i(CameraLink, cameraLink)
@@ -155,4 +155,4 @@ void Player3RotateSystem(iter *it) {
 #else*/
 // #endif
     }
-} zoxd_system(Player3RotateSystem)
+} zox_sys_end(Player3RotateSystem);

@@ -1,5 +1,5 @@
 // Streamer components added to cameras
-void StreamPointSystem(iter *it) {
+zox_sys2(StreamPointSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -37,4 +37,4 @@ void StreamPointSystem(iter *it) {
         }
 
     }
-} zoxd_system2(StreamPointSystem);
+} zox_sys_end(StreamPointSystem);

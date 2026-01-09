@@ -3,7 +3,7 @@ define_fun_stopwatch(time_vox_generation, 0);
 // todo: generate colors in another system
 // todo: split processes up to nodes
 // todo: add unique colors as a property too
-void VoxGenerationSystem(iter *it) {
+zox_sys2(VoxGenerationSystem) {
     const byte default_unique_colors = 6;
     const float default_color_range = 0.14f;
 
@@ -273,4 +273,4 @@ void VoxGenerationSystem(iter *it) {
 
     endwatch(time_vox_generation, "ending");
     zox_ts_end(vox_generation, 3, zox_profile_system_vox_generation);
-} zoxd_system(VoxGenerationSystem)
+} zox_sys_end(VoxGenerationSystem);

@@ -74,7 +74,7 @@ void anchor_element_position2(
     position->y += (parent_size.y / 2.0f) - ceil(parent_size.y * anchor.y);
 }
 
-void LayoutParentPositionSystem(iter *it) {
+zox_sys2(LayoutParentPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutPositionDirty);
@@ -145,4 +145,4 @@ void LayoutParentPositionSystem(iter *it) {
             parent_size.y
         );*/
     }
-} zoxd_system2(LayoutParentPositionSystem);
+} zox_sys_end(LayoutParentPositionSystem);

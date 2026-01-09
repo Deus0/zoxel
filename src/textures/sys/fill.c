@@ -1,4 +1,4 @@
-void FillTextureSystem(iter *it) {
+zox_sys2(FillTextureSystem) {
     zox_change_check();
     zox_sys_begin();
     zox_sys_in(TextureSize);
@@ -17,8 +17,8 @@ void FillTextureSystem(iter *it) {
             continue;
         }
 
-        initialize_TextureData(textureData, size->value.x * size->value.y);
+        resize_TextureData(textureData, size->value.x * size->value.y);
         generate_texture_fill(textureData->value, size->value, fill_color->value);
         textureDirty->value = 1; // actually this only gets uploaded if has GPUTextureLink!
     }
-} zoxd_system2(FillTextureSystem);
+} zox_sys_end(FillTextureSystem);

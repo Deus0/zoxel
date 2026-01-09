@@ -1,4 +1,4 @@
-void BakeVoxSystem(iter *it) {
+zox_sys2(BakeVoxSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ModelLink);
@@ -26,4 +26,4 @@ void BakeVoxSystem(iter *it) {
             zox_set(texture, GenerateTexture, { zox_dirty_trigger });
         }
     }
-} zoxd_system2(BakeVoxSystem);
+} zox_sys_end(BakeVoxSystem);

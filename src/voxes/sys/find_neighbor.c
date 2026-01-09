@@ -1,5 +1,5 @@
 // doesn't check for edge chunks
-void ChunkFindNeighborSystem(iter *it) {
+zox_sys2(ChunkFindNeighborSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
@@ -42,4 +42,4 @@ void ChunkFindNeighborSystem(iter *it) {
             }
         }
     }
-} zoxd_system2(ChunkFindNeighborSystem);
+} zox_sys_end(ChunkFindNeighborSystem);

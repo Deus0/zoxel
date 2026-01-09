@@ -1,4 +1,4 @@
-void PlayerFlySystem(iter *it) {
+zox_sys2(PlayerFlySystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLinks);
@@ -49,4 +49,4 @@ void PlayerFlySystem(iter *it) {
             acc->value.y += input;
         }
     }
-} zoxd_system2(PlayerFlySystem);
+} zox_sys_end(PlayerFlySystem);

@@ -24,13 +24,13 @@ void trigger_event_game(ecs* world,
 }
 
 void pause_resume(ecs *world, const entity player) {
-    const entity game = zox_get_value(player, GameLink)
-    const byte game_state = zox_get_value(game, GameState)
+    const entity game = zox_get_value(player, GameLink);
+    const byte game_state = zox_get_value(game, GameState);
     if (!(game_state == zox_game_playing || game_state == zox_game_paused)) {
         return;
     }
     byte is_paused = game_state == zox_game_paused;
     if (is_paused) {
-        zox_set(game, GameStateTarget, { zox_game_playing })
+        zox_set(game, GameStateTarget, { zox_game_playing });
     }
 }

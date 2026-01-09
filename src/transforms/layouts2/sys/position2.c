@@ -49,7 +49,7 @@ void set_child_position2(
     }
 }
 
-void LayoutPosition2System(iter *it) {
+zox_sys2(LayoutPosition2System) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutPositionDirty);
@@ -91,4 +91,4 @@ void LayoutPosition2System(iter *it) {
             canvas_size.y
         );*/
     }
-} zoxd_system2(LayoutPosition2System);
+} zox_sys_end(LayoutPosition2System);

@@ -1,6 +1,6 @@
 #ifdef zoxm_actions
 
-void ActionsShortcutSystem(iter *it) {
+zox_sys2(ActionsShortcutSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLinks);
@@ -79,6 +79,6 @@ void ActionsShortcutSystem(iter *it) {
             player_action_ui_move(world, e, 1);
         }
     }
-} zoxd_system(ActionsShortcutSystem)
+} zox_sys_end(ActionsShortcutSystem);
 
 #endif

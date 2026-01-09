@@ -1,4 +1,4 @@
-void TextureSizeSystem(iter *it) {
+zox_sys2(TextureSizeSystem) {
     zox_sys_begin();
     zox_sys_in(LayoutSizeDirty);
     zox_sys_in(LayoutSize);
@@ -11,4 +11,4 @@ void TextureSizeSystem(iter *it) {
             texture_size->value = layout_size->value;
         }
     }
-} zoxd_system2(TextureSizeSystem);
+} zox_sys_end(TextureSizeSystem);

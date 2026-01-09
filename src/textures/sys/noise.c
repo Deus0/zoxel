@@ -1,11 +1,11 @@
-void NoiseTextureSystem(iter *it) {
-    zox_change_check()
-    zox_field_world()
-    zox_field_in(TextureSize, textureSizes, 1)
-    zox_field_in(Color, colors, 5)
-    zox_field_out(GenerateTexture, generateTextures, 2)
-    zox_field_out(TextureDirty, textureDirtys, 3)
-    zox_field_out(TextureData, textureDatas, 4)
+zox_sys2(NoiseTextureSystem) {
+    zox_change_check();
+    zox_field_world();
+    zox_field_in(TextureSize, textureSizes, 1);
+    zox_field_in(Color, colors, 5);
+    zox_field_out(GenerateTexture, generateTextures, 2);
+    zox_field_out(TextureDirty, textureDirtys, 3);
+    zox_field_out(TextureData, textureDatas, 4);
     for (int i = 0; i < it->count; i++) {
         zox_field_e()
         zox_field_i(TextureSize, textureSizes, textureSize)
@@ -32,9 +32,9 @@ void NoiseTextureSystem(iter *it) {
         } else if (zox_has(e, ObsidianTexture)) {
             texture_type = zox_texture_obsidian;
         }
-        initialize_TextureData(textureData, textureSize->value.x * textureSize->value.y);
+        resize_TextureData(textureData, textureSize->value.x * textureSize->value.y);
         generate_texture_noise(textureData->value, textureSize->value, texture_type, terrain_texture_outline_type, fill_color->value);
         // generateTexture->value = 0;
         textureDirty->value = 1; // remember: this only gets uploaded if has GPUTextureLink!
     }
-} zoxd_system(NoiseTextureSystem)
+} zox_sys_end(NoiseTextureSystem);

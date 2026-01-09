@@ -1,5 +1,5 @@
 // Early Exit from Dialogue
-void DialogueExitSystem(iter *it) {
+zox_sys2(DialogueExitSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TriggerActionE);
@@ -20,4 +20,4 @@ void DialogueExitSystem(iter *it) {
             run->value = 0;
         }
     }
-} zoxd_system2(DialogueExitSystem);
+} zox_sys_end(DialogueExitSystem);

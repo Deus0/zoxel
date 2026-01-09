@@ -1,4 +1,4 @@
-void FontTextureSystem(iter *it) {
+zox_sys2(FontTextureSystem) {
     // const color air_color = color_null;
     const float2 point_padding = font_point_padding;
     // const byte default_font_outline = 1; // 4
@@ -70,4 +70,4 @@ void FontTextureSystem(iter *it) {
         zox_log("     > zigel font is updating [%lu]\n", it->entities[i])
 #endif
     }
-} zoxd_system(FontTextureSystem)
+} zox_sys_end(FontTextureSystem);

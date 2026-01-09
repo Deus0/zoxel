@@ -1,6 +1,6 @@
 // should i grab neighbor states instead, or should i create setters?
 //  probably grab them, its faster to write in my systems
-void Chunk3NeighborsMeshTriggerSystem(iter *it) {
+zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkNeighbors);
@@ -32,4 +32,4 @@ void Chunk3NeighborsMeshTriggerSystem(iter *it) {
             chunk_mesh_dirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system2(Chunk3NeighborsMeshTriggerSystem);
+} zox_sys_end(Chunk3NeighborsMeshTriggerSystem);

@@ -1,4 +1,4 @@
-void Bounds3GrowSystem(iter *it) {
+zox_sys2(Bounds3GrowSystem) {
     zox_sys_begin();
     zox_sys_in(MeshDirty);
     zox_sys_in(ChunkSize);
@@ -19,4 +19,4 @@ void Bounds3GrowSystem(iter *it) {
             scale->value
         );
     }
-} zoxd_system2(Bounds3GrowSystem);
+} zox_sys_end(Bounds3GrowSystem);

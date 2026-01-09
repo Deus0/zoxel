@@ -10,7 +10,7 @@ if (check_opengl_error_unlogged()) {\
 
 // TODO: For each chunk render, we use linked tilemap GPU data
 
-void Chunk3TexturedRenderSystem(iter *it) {
+zox_sys2(Chunk3TexturedRenderSystem) {
     byte has_set_material = 0;
     entity tilemap_ref = 0;
     const MaterialGPULink *gpu_material = NULL;
@@ -81,4 +81,4 @@ void Chunk3TexturedRenderSystem(iter *it) {
         zox_disable_material();
     }
 
-} zoxd_system2(Chunk3TexturedRenderSystem);
+} zox_sys_end(Chunk3TexturedRenderSystem);
