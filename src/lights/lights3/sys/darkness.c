@@ -3,7 +3,7 @@
 // Queued side updates for propogation
 // NOTE: We need to account for depth differences
 
-void DarkLightSystem(iter *it) {
+zox_sys2(DarkLightSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkNeighbors);
@@ -139,4 +139,4 @@ void DarkLightSystem(iter *it) {
             zox_log("DarkSystem %s - %i", zox_get_name(e), count);*/
         }
     }
-} zoxd_system2(DarkLightSystem);
+} zox_sys_end(DarkLightSystem);

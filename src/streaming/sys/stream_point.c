@@ -3,7 +3,6 @@ void StreamPointSystem(iter *it) {
     if (zox_cameras_disable_streaming) {
         return;
     }
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);

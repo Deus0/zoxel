@@ -1,4 +1,4 @@
-void Alpha3System(iter *it) {
+zox_sys2(Alpha3System) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_out(Alpha3D)
@@ -9,4 +9,4 @@ void Alpha3System(iter *it) {
         omega->value = float3_add(omega->value, float3_scale(alpha->value, delta_time));
         float3_make_zero(&alpha->value);
     }
-} zoxd_system(Alpha3System)
+} zox_sys_end(Alpha3System);

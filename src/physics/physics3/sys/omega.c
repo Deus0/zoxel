@@ -1,4 +1,4 @@
-void Omega3System(iter *it) {
+zox_sys2(Omega3System) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_in(Omega3D)
@@ -40,4 +40,4 @@ void Omega3System(iter *it) {
         rotation->value.w *= invLen;
 
     }
-} zoxd_system(Omega3System)
+} zox_sys_end(Omega3System);

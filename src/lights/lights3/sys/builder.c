@@ -143,8 +143,8 @@ void zox_apply_light3(
 }
 
 
-void Light3BuildSystem(iter* it) {
-    zox_ts_begin(light3_builder);
+zox_sys2(Light3BuildSystem) {
+    // zox_ts_begin(light3_builder);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MeshColorsGenerate);
@@ -205,6 +205,5 @@ void Light3BuildSystem(iter* it) {
 
     }
 
-    zox_ts_end(light3_builder, 1, zox_profile_system_light3_builder);
-}
-zoxd_system2(Light3BuildSystem);
+    // zox_ts_end(light3_builder, 1, zox_profile_system_light3_builder);
+} zox_sys_end(Light3BuildSystem);

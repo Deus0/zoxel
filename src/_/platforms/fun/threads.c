@@ -3,8 +3,9 @@
 byte supports_threads() {
     DWORD id;
     HANDLE t = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ExitThread, NULL, 0, &id);
-    if (t == NULL)
+    if (t == NULL) {
         return 0;
+    }
     CloseHandle(t);
     return 1;
 }

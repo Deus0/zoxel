@@ -1,4 +1,4 @@
-void SphereCollideSystem(iter *it) {
+zox_sys2(SphereCollideSystem) {
     zox_sys_query()
     zox_sys_world()
     zox_sys_begin()
@@ -49,4 +49,4 @@ void SphereCollideSystem(iter *it) {
         }
         zox_sys_query_end()
     }
-} zoxd_system(SphereCollideSystem)
+} zox_sys_end(SphereCollideSystem);

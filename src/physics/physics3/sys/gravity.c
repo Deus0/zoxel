@@ -1,4 +1,4 @@
-void Gravity3DSystem(iter *it) {
+zox_sys2(Gravity3DSystem) {
     zox_sys_begin()
     zox_sys_in(Gravity3D)
     zox_sys_in(DisableGravity)
@@ -11,4 +11,4 @@ void Gravity3DSystem(iter *it) {
             float3_add_float3_p(&acceleration3D->value, gravity3D->value);
         }
     }
-} zoxd_system(Gravity3DSystem)
+} zox_sys_end(Gravity3DSystem);

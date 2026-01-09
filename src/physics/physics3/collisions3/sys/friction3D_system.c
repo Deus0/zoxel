@@ -1,12 +1,12 @@
-void Friction3DSystem(iter *it) {
-    init_delta_time()
-    zox_sys_begin()
-    zox_sys_in(Grounded)
-    zox_sys_out(Velocity3D)
+zox_sys2(Friction3DSystem) {
+    init_delta_time();
+    zox_sys_begin();
+    zox_sys_in(Grounded);
+    zox_sys_out(Velocity3D);
     // zox_sys_out(Acceleration3D)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Grounded, grounded)
-        zox_sys_o(Velocity3D, velocity3D)
+        zox_sys_i(Grounded, grounded);
+        zox_sys_o(Velocity3D, velocity3D);
         // zox_sys_o(Acceleration3D, acceleration3D)
         float friction_power = grounded->value ? friction3D : air_friction3D;
         // Clamp friction to prevent exponential explosion
@@ -24,7 +24,7 @@ void Friction3DSystem(iter *it) {
         }*/
 
     }
-} zoxd_system(Friction3DSystem)
+} zox_sys_end(Friction3DSystem);
 
 /*float friction_power = friction3D;
 if (!grounded->value) {

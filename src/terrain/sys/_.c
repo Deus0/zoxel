@@ -87,4 +87,8 @@ void define_systems_terrain(ecs *world) {
     );
 #endif
 
+    zox_track_system(world, zox_id(ChunkLinkSystem));
+    zox_track_system(world, zox_id(Chunk3TexturedBuildSystem));
+    zox_track_system(world, zox_id(GrassyPlainsSystem));
+
 }

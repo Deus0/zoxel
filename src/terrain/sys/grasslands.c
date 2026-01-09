@@ -11,8 +11,8 @@ byte disable_grass_placements = 0;
 // place grass if max depth
 
 // generates our terrain voxels
-void GrassyPlainsSystem(iter *it) {
-    zox_ts_begin(grassy_plains);
+zox_sys2(GrassyPlainsSystem) {
+    // zox_ts_begin(grassy_plains);
     const uint seed = global_seed;  // TODO: use terrains seed
     zox_sys_world();
     zox_sys_begin();
@@ -36,10 +36,10 @@ void GrassyPlainsSystem(iter *it) {
         }
     }
     if (!any_dirty) {
-        zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);
+        // zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);
         return;
     }
-    startwatch(time_grassy_plains);
+    // startwatch(time_grassy_plains);
 
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDepth, render_depth);
@@ -236,16 +236,16 @@ void GrassyPlainsSystem(iter *it) {
         }
         write_unlock_VoxelNode(node);
 
-        tapwatch(time_grassy_plains, "mass set_voxels");
+        // tapwatch(time_grassy_plains, "mass set_voxels");
 
         node_dirty->value = zox_dirty_trigger;
         generated->value = zox_dirty_trigger;
         loaded->value = 1;
 
     }
-    endwatch(time_grassy_plains, "grassy_plains");
-    zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);
-} zoxd_system(GrassyPlainsSystem)
+    // endwatch(time_grassy_plains, "grassy_plains");
+    // zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);
+} zox_sys_end(GrassyPlainsSystem);
 
 
 

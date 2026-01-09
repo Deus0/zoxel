@@ -270,10 +270,11 @@ void fetch_neightbor_chunk_data(
 }
 
 // TODO: Move terrain cache into functions
-void Chunk3TexturedBuildSystem(iter *it) {
-    zox_ts_begin(chunk3_builder);
-    uint updated_count = 0;
-
+//void Chunk3TexturedBuildSystem(iter *it) {
+//    double system_time_begin = get_time_ms();
+zox_sys2(Chunk3TexturedBuildSystem) {
+    // zox_ts_begin(chunk3_builder);
+    // uint updated_count = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxLink);
@@ -297,11 +298,11 @@ void Chunk3TexturedBuildSystem(iter *it) {
         }
     }
     if (!any_dirty) {
-        zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
+        // zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return;
     }
 
-    startwatch(time_chunk3_build);
+    // startwatch(time_chunk3_build);
 
     // Cache terrain data
     int voxels_length = 0;
@@ -315,31 +316,31 @@ void Chunk3TexturedBuildSystem(iter *it) {
         break;
     }
     if (!zox_valid(terrain) || !zox_has(terrain, RealmLink) || !zox_has(terrain, TilemapLink)) {
-        zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
+        // zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return;
     } // if failed to find terrain parents
 
     const entity realm = zox_get_value(terrain, RealmLink);
     if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {
-        zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
+        // zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return;
     }
 
     zox_geter(realm, BlockLinks, blocks);
     voxels_length = blocks->length;
     if (voxels_length == 0) {
-        zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
+        // zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return; // if failed to find terrain parents
     }
     const entity tilemap = zox_get_value(terrain, TilemapLink);
     if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapUVs)) {
-        zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
+        // zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return;
     }
     zox_geter(tilemap, TilemapUVs, tilemap_uvs);
     if (tilemap_uvs->value == NULL || tilemap_uvs->length == 0) {
         // zox_log(" ! tilemap troubles in chunk building: %lu %i\n", tilemap, tilemap_uvs->length)
-        zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
+        // zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
         return; // if tilemap generating still
     }
     ChunkTexturedBuildData build_data;
@@ -450,8 +451,8 @@ void Chunk3TexturedBuildSystem(iter *it) {
         // zox_sys_e();
         // zox_log("built chunk mesh [%s]", zox_get_name(e));
 
-        tapwatch(time_chunk3_build, "built mesh");
-        updated_count++;
+        // tapwatch(time_chunk3_build, "built mesh");
+        // updated_count++;
 
         /*zox_log("Building Terrain Chunk! Verts [%i] Scale [%f] Depth [%i]",
                 verts->length,
@@ -462,10 +463,13 @@ void Chunk3TexturedBuildSystem(iter *it) {
     /*if (updated_count > 0) {
         zox_log_v(" - [%i] updated [%i]", ecs_run_count, updated_count)
     }*/
-    endwatch(time_chunk3_build, "ending");
-    zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
+    // endwatch(time_chunk3_build, "ending");
+    // zox_ts_end(chunk3_builder, 3, zox_profile_system_chunk3_builder);
 
-} zoxd_system2(Chunk3TexturedBuildSystem);
+    //  test delay
+    // SDL_Delay(5);
+
+} zox_sys_end(Chunk3TexturedBuildSystem);
 
 
 

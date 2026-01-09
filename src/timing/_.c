@@ -6,19 +6,23 @@ zoxc_double(DestroyInTime);
 zoxc_double(TimerTime);
 zoxc_double(TimerRate);
 zoxc_byte(TimerState);
+zoxc_double(SystemDelta);
 #include "mcr/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Timing)
     zoxd_double(DestroyInTime);
     zoxd_double(TimerTime);
     zoxd_double(TimerRate);
     zoxd_byte(TimerState);
+    zoxd_double(SystemDelta);
     define_systems_timing(world);
     initialize_time();
     add_to_post_update_loop(iterate_time);
     add_to_post_update_loop(iterate_time_system);
+    add_to_post_update_loop(log_lagging_systems);
 zox_end_module(Timing)
 
 #endif

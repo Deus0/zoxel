@@ -241,8 +241,8 @@ void build_node_mesh_colors(
 
 // Builds Colored Vox Meshes
 // When: ChunkMeshDirty is zox_dirty_active
-void ChunkColorsBuildSystem(iter *it) {
-    zox_ts_begin(build_chunk_colored);
+zox_sys2(ChunkColorsBuildSystem) {
+    // zox_ts_begin(build_chunk_colored);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkMeshDirty);
@@ -325,8 +325,8 @@ void ChunkColorsBuildSystem(iter *it) {
 
         mesh_dirty->value = mesh_state_trigger_slow;
     }
-    zox_ts_end(build_chunk_colored, 5, zox_profile_system_chunk_builder_c);
-} zoxd_system(ChunkColorsBuildSystem)
+    // zox_ts_end(build_chunk_colored, 5, zox_profile_system_chunk_builder_c);
+} zox_sys_end(ChunkColorsBuildSystem);
 
 
 

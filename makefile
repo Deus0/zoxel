@@ -120,6 +120,11 @@ $(TARGET_DEV): $(SRCS)
 
 dev: $(TARGET_DEV)
 
+# flecs profiler
+devfp: $(SRCS)
+	@ mkdir -p bin
+	$(CC) $(cflags_dev) $(SRC) -o $(TARGET_DEV) $(LIBS) -Dzox_use_flecs_profiler
+
 dever: $(SRCS)
 	@ mkdir -p bin
 	$(CC) $(cflags_dever) $(SRC) -o $@ $(LIBS)
@@ -140,6 +145,10 @@ run: build
 	@ ./$(TARGET)
 
 rund: dev
+	./$(TARGET_DEV)
+
+# flecs profiler
+runfp: devfp
 	./$(TARGET_DEV)
 
 runv: dev

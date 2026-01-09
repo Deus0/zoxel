@@ -1,5 +1,5 @@
 // Queued side updates for propogation
-void LightSystem(iter *it) {
+zox_sys2(LightSystem) {
     zox_ts_begin(light_propogate);
     zox_sys_world();
     zox_sys_begin();
@@ -148,4 +148,4 @@ void LightSystem(iter *it) {
         }
     }
     zox_ts_end(light_propogate, 3, zox_profile_light_propogate);
-} zoxd_system2(LightSystem);
+} zox_sys_end(LightSystem);

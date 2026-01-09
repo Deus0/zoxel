@@ -2,7 +2,7 @@ void resume_player_delayed(
     ecs *world,
     const entity player
 ) {
-    const entity camera = zox_get_value(player, CameraLink);
+    // const entity camera = zox_get_value(player, CameraLink);
     // return to regular ui
     const entity character = zox_get_value(player, CharacterLink)
     if (!zox_alive(character)) {
@@ -18,14 +18,14 @@ void resume_player_delayed(
 void PlayerUIResumeSystem(iter *it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraLink);
+    // zox_sys_in(CameraLink);
     zox_sys_in(CanvasLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     zox_sys_out(PlayerPauseEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CameraLink, camera);
+        // zox_sys_i(CameraLink, camera);
         zox_sys_i(CanvasLink, canvas);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);

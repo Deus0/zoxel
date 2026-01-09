@@ -1,8 +1,6 @@
 // if character falls through map, push up
 // todo: draw lines on this to test why it suddenly detects..!
-void UnstuckSystem(iter *it) {
-    // zox_log("Unstucking: %i", it->count);
-
+zox_sys2(UnstuckSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TerrainLink);
@@ -92,7 +90,7 @@ void UnstuckSystem(iter *it) {
         // zox_log_error("Character Unstuck v[%ix%ix%i] l[%ix%ix%i] to f[%f.1x%f.1x%f.1]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z, last->value.x, last->value.y, last->value.z);
 
     }
-} zoxd_system2(UnstuckSystem);
+} zox_sys_end(UnstuckSystem);
 
 
 /*zox_log("unstucking to [%fx%fx%f]", reverse_point.x, reverse_point.y,  reverse_point.z)

@@ -1,9 +1,9 @@
-void player_end_game3(
+/*void player_end_game3(
     ecs *world,
     const entity player
 ) {
-    zox_geter_value(player, CameraLink, entity, camera);
-}
+    // zox_geter_value(player, CameraLink, entity, camera);
+}*/
 
 void PlayerGame3EndSystem(iter *it) {
     zox_sys_world();

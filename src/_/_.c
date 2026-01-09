@@ -83,7 +83,7 @@ byte initialize_pathing(const char* game_name) {
 
 zox_begin_module(Core)
     init_zems();
-    zox_module_dispose(module_dispose_core)
+    zox_module_dispose(module_dispose_core);
     clear_logs();
     initialize_update_loop();
     initialize_post_update_loop();

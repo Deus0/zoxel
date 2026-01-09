@@ -24,13 +24,17 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
 #endif
 
+    zox_logv("Get System Info");
+    byte cores = get_cpu_count();    // gets our cpu core count
+    set_cpu_tier2(cores);
+
     zox_logv("Initializing Flecs");
-    fetch_pc_info();    // gets our cpu core count
-    ecs *world = initialize_ecs(argc, argv, cpu_core_count);
+    ecs *world = initialize_ecs(argc, argv);
     if (!world) {
         zox_log_error("[initialize_ecs] failed");
         return EXIT_FAILURE;
     }
+    initialize_flecs_profiler(world);
 
     zox_logv("Initializing Zox Engine");
     zox_import_module(Zox);
@@ -48,7 +52,7 @@ int main(int argc, char* argv[]) {
     }
 
     zox_logv("Initializing ECS Settings: FPS [%i]", (int) target_fps);
-    initialize_ecs_settings(world, target_fps); // sets ecs threads
+    initialize_ecs_settings(world, target_fps, cores); // sets ecs threads
 
     zox_logv("Initializing Video");
     if (initialize_video() == EXIT_FAILURE) {

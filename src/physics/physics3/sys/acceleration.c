@@ -1,4 +1,4 @@
-void Acceleration3System(iter *it) {
+zox_sys2(Acceleration3System) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_out(Acceleration3D)
@@ -9,4 +9,4 @@ void Acceleration3System(iter *it) {
         velocity->value = float3_add(velocity->value, float3_scale(acceleration->value, delta_time));
         float3_make_zero(&acceleration->value);
     }
-} zoxd_system(Acceleration3System)
+} zox_sys_end(Acceleration3System);

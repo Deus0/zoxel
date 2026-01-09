@@ -6,7 +6,7 @@ void PlayerUIGameEndSystem(iter *it) {
     zox_sys_in(PlayerState);
     zox_sys_in(CanvasLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
         zox_sys_i(CanvasLink, canvas);

@@ -17,8 +17,7 @@ ecs* open_ecs(int argc, char* argv[]) {
     return new_world;
 }
 
-ecs* initialize_ecs(int argc, char* argv[], byte cores) {
-    use_cores = cores;
+ecs* initialize_ecs(int argc, char* argv[]) {
     ecs *new_world = open_ecs(argc, argv);
     local_world = new_world;
     return new_world;

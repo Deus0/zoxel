@@ -1,14 +1,19 @@
+byte is_using_flecs_stats = 1;
+
 void initialize_flecs_profiler(ecs* world) {
-#ifdef zox_using_profiler
-    zox_logw("+ flecs profiler enabled\n")
-    zox_import_module(FlecsRest);
-    zox_import_module(FlecsMonitor);
-    ecs_singleton_set(world, EcsRest, {0});
-    // ecs_tracing_enable(1);
-    ecs_log_set_level(0);
-    ecs_measure_frame_time(world, true);
-    ecs_measure_system_time(world, true);
-#else
     (void) world;
-#endif
+    //if (is_using_flecs_stats) {
+/*#ifdef zox_use_flecs_profiler
+        zox_log("Flecs Profiler Enabled");
+        zox_import_module(FlecsStats);
+        ecs_measure_system_time(world, 1);
+        ecs_measure_frame_time(world, 1);
+
+        //ECS_IMPORT(world, FlecsMonitor);
+        // ecs_tracing_enable(1);
+        // ecs_log_set_level(0);
+#else
+    zox_logw("Profiler Define Missing.");
+#endif*/
+    //}
 }

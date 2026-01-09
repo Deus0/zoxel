@@ -1,9 +1,56 @@
-#define zoxd_system(name)\
-    ECS_SYSTEM_DECLARE(name);
+// Timing Systems
 
-// until i replace old
-#define zoxd_system2(name)\
-    ECS_SYSTEM_DECLARE(name)
+/*
+
+Example System T:
+
+zox_sys(T) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in();
+    // iterate
+} zox_sys_end(T);
+
+*/
+
+#define zox_sys2(T)\
+    void T(iter *it) {\
+        double system_time_begin = get_time_ms();
+
+#define zox_sys_end(T)\
+    double system_delta_time = get_time_ms() - system_time_begin;\
+    ecs_set(it->world, it->system, SystemDelta, { system_delta_time });\
+} ECS_SYSTEM_DECLARE(T)
+
+#ifndef zox_time_systems
+
+    #define zox_sys(T)\
+        void T(iter *it) {
+
+    #define zoxd_system(T)\
+        ECS_SYSTEM_DECLARE(T);
+
+    #define zoxd_system2(T)\
+        ECS_SYSTEM_DECLARE(T)
+
+#else
+
+    #define zox_sys(T)\
+        void T(iter *it) {\
+            double system_time_begin = get_time_ms();
+
+    #define zoxd_system(T)\
+        double system_delta_time = get_time_ms() - system_time_begin;\
+        zox_set(it->system, SystemDelta, { system_delta_time });\
+    } ECS_SYSTEM_DECLARE(T);
+
+    #define zoxd_system2(T)\
+        } \
+        double system_delta_time = get_time_ms() - system_time_begin;\
+        zox_set(it->system, SystemDelta, { system_delta_time });\
+    } ECS_SYSTEM_DECLARE(T)
+
+#endif
 
 #if defined(zox_enable_log_new_system) && !defined(zox_disable_logs)
     #define zox_log_new_system(msg, ...) zox_log(msg, ##__VA_ARGS__)

@@ -90,4 +90,10 @@ void define_systems_collisions3(ecs *world) {
         [none] SphereCollider
     );
 #endif
+
+    zox_track_system(world, zox_id(UnstuckSystem));
+    zox_track_system(world, zox_id(Friction3DSystem));
+    zox_track_system(world, zox_id(CollisionDetectSystem));
+    zox_track_system(world, zox_id(CollisionResponseSystem));
+    zox_track_system(world, zox_id(SphereCollideSystem));
 }

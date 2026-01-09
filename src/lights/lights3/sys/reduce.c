@@ -1,5 +1,5 @@
 // Groups same nodes when dirty
-void LightNodeReduceSystem(iter *it) {
+zox_sys2(LightNodeReduceSystem) {
     zox_sys_begin();
     zox_sys_in(LightNodeDirty);
     zox_sys_out(LightNode);
@@ -11,4 +11,4 @@ void LightNodeReduceSystem(iter *it) {
             reduce_LightNode(lnode);
         }
     }
-} zoxd_system2(LightNodeReduceSystem);
+} zox_sys_end(LightNodeReduceSystem);

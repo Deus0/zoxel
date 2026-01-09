@@ -43,11 +43,24 @@
 #define FLECS_MODULE
 #define FLECS_SYSTEM
 #define FLECS_PIPELINE
+
+/*#ifdef zox_use_flecs_profiler
+    #define FLECS_STATS
+#endif*/
+
 #ifdef flecssource
   #include "flecs.h"
 #else
   #include <flecs.h>
 #endif
+
+/*#ifdef zox_use_flecs_profiler
+    #ifdef flecssource
+        #include "stats.h"
+    #else
+        #include <flecs/addons/stats.h>
+    #endif
+#endif*/
 
 // SDL2 & OpenGL
 #define GL_GLEXT_PROTOTYPES

@@ -3,7 +3,7 @@
 // TODO: Convert local position to terrain position (positionv)
 // Shouuld we use VoxelNodeDepth here? since we are removing/adding at that depth
 
-void VoxelLightSystem(iter *it) {
+zox_sys2(VoxelLightSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeQueue);
@@ -171,4 +171,4 @@ void VoxelLightSystem(iter *it) {
             }
         }
     }
-} zoxd_system2(VoxelLightSystem);
+} zox_sys_end(VoxelLightSystem);

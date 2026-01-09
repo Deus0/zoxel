@@ -78,7 +78,7 @@ void define_systems_game_ui(ecs *world) {
     zox_system_1(
         PlayerUIResumeSystem,
         EcsOnUpdate,
-        [in] cameras.CameraLink,
+        //  cameras.CameraLink,
         [in] layouts2.CanvasLink,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,
