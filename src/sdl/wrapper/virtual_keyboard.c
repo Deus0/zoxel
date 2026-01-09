@@ -7,6 +7,7 @@ void enable_virtual_keyboard() {
 }
 
 void show_virtual_keyboard() {
+    zox_log("Showing Virtual Keyboard");
     SDL_StartTextInput();
 }
 
@@ -14,6 +15,19 @@ void hide_virtual_keyboard() {
     SDL_StopTextInput();
 }
 
+byte can_virtual_keyboard() {
+    return SDL_HasScreenKeyboardSupport();
+}
+
 byte is_virtual_keyboard_shown(SDL_Window* window) {
-    return SDL_IsScreenKeyboardShown(window);
+    // if (SDL_IsScreenKeyboardShown(window)) zox_log("Screen Keyboard Shown");
+    return SDL_IsTextInputActive() || SDL_IsScreenKeyboardShown(window);
+}
+
+void toggle_virtual_keyboard() {
+    if (SDL_IsTextInputActive()) {
+        hide_virtual_keyboard();
+    } else {
+        show_virtual_keyboard();
+    }
 }

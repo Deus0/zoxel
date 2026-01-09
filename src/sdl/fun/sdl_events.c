@@ -10,9 +10,12 @@ void update_sdl(ecs *world) {
     SDL_Event event = { 0 };
     while (SDL_PollEvent(&event)) {
         input_extract_from_sdl(world, event);
+        // Quit the window
         if (event.type == SDL_QUIT) {
             engine_end();
-        } else if (event.type == SDL_WINDOWEVENT) {
+        }
+        // Window Events
+        else if (event.type == SDL_WINDOWEVENT) {
             // Window is resized
             if (event.window.event == SDL_WINDOWEVENT_RESIZED ||
                 event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED
@@ -50,22 +53,30 @@ void update_sdl(ecs *world) {
 
             else if (event.window.event == SDL_WINDOWEVENT_MOVED) { // handles application resizing
                 sdl_on_window_moved(world, e, (int2) { event.window.data1, event.window.data2 });
-            } else if (event.window.event == SDL_WINDOWEVENT_MAXIMIZED) {
+            }
+            else if (event.window.event == SDL_WINDOWEVENT_MAXIMIZED) {
                 on_window_maximized(world, e, (int2) { event.window.data1, event.window.data2 });
-            } else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
+            }
+            else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
                 opengl_restore_resources(world);
                 enable_time();
                 on_window_restored(world, e, (int2) { event.window.data1, event.window.data2 });
-            } else if (event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
+            }
+            else if (event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
                 opengl_dispose_resources(world);
                 disable_time();
-            } else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+            }
+            else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
                 disable_time();
-            } else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+            }
+
+            else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
                 enable_time();
-            } /*else {
-                zox_log("-> unknown sdl event [%i]", event.window.event)
-            }*/
+            }
+        }
+
+        else if (event.type == SDL_TEXTINPUT) {
+            zox_log("SDL Text Input: %s", event.text.text);
         }
     }
 }

@@ -6,4 +6,9 @@ void define_systems_sdl(ecs* world) {
         EcsOnStore,
         [in] SDLWindow
     );
+    zox_system(
+        ToggleVirtualKeyboardSystem,
+        EcsOnUpdate,
+        [in] inputs.Keyboard
+    );
 }

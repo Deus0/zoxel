@@ -4,6 +4,9 @@ void reset_keyboard(Keyboard *keyboard) {
     reset_key(&keyboard->space);
     reset_key(&keyboard->escape);
     reset_key(&keyboard->enter);
+    reset_key(&keyboard->backspace);
+    reset_key(&keyboard->left_control);
+    reset_key(&keyboard->right_control);
     reset_key(&keyboard->left_alt);
     reset_key(&keyboard->right_alt);
     reset_key(&keyboard->left_shift);

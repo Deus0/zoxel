@@ -30,8 +30,11 @@ void sdl_extract_keyboard(ecs *world, SDL_Event event) {
         switch(key) {
             sdl_key_case(SDLK_SPACE, &keyboard->space);
             sdl_key_case(SDLK_BACKQUOTE, &keyboard->back_quote);
-            sdl_key_case(SDLK_ESCAPE, &keyboard->escape);
             sdl_key_case(SDLK_RETURN, &keyboard->enter);
+            sdl_key_case(SDLK_ESCAPE, &keyboard->escape);
+            sdl_key_case(SDLK_BACKSPACE, &keyboard->backspace);
+            sdl_key_case(SDLK_LCTRL, &keyboard->left_control);
+            sdl_key_case(SDLK_RCTRL, &keyboard->right_control);
             sdl_key_case(SDLK_LALT, &keyboard->left_alt);
             sdl_key_case(SDLK_RALT, &keyboard->right_alt);
             sdl_key_case(SDLK_LSHIFT, &keyboard->left_shift);
