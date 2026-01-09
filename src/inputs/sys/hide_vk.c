@@ -1,5 +1,6 @@
 extern void hide_virtual_keyboard();
 
+// NOTE: Used on FLX1S because phosh keeps putting it there!
 void HideVirtualKeyboardSystem(iter *it) {
     zox_sys_begin();
     zox_sys_in(ZevicePointer);

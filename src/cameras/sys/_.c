@@ -19,7 +19,7 @@ void define_systems_cameras(ecs *world) {
         [in] ProjectionMatrix,
         [out] ViewMatrix)
     zox_system(ProjectionMatrixSystem, zoxp_cameras,
-        [in] generic.ScreenDimensions,
+        [in] screens.ScreenDimensions,
         [in] FieldOfView,
         [in] CameraNearDistance,
         [out] ProjectionMatrix)

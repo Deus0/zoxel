@@ -1,14 +1,11 @@
-entity spawn_virtual_joystick_pointer(
+entity spawn_virtual_joystick_handle(
     ecs *world,
     const entity canvas,
     const entity parent,
     const byte layer,
     const int2 position,
     const int2 size,
-    const float2 anchor,
-    const int2 parent_pixel_positionv,
-    const int2 parent_pixel_size,
-    const int2 canvas_size
+    const float2 anchor
 ) {
     zox_instance(prefab_virtual_joystick_pointer);
     zox_name("virtual_joystick_pointer");

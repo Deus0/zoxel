@@ -1,13 +1,7 @@
 #ifndef zoxm_touch
 #define zoxm_touch
 
-const int zox_virtual_joystick_size = 300;
-const int zox_virtual_joystick_pointer_size = 120;
-const color virtual_joystick_color = { 44, 33, 33, 125 };
-const color virtual_joystick_pointer_color = { 88, 22, 22, 200 };
-const color virtual_joystick_color2 = { 33, 33, 44, 125 };
-const color virtual_joystick_pointer_color2 = { 22, 22, 88, 200 };
-
+#include "set/_.c"
 zox_tag(JoystickUI);
 #include "pre/_.c"
 #include "ins/_.c"
@@ -15,8 +9,8 @@ zox_tag(JoystickUI);
 
 zox_begin_module(Touch)
     zoxd_tag(JoystickUI);
-    define_systems_touch(world);
     add_hook_spawn_prefabs(spawn_prefabs_touch);
+    define_systems_touch(world);
 zox_end_module(Touch)
 
 #endif

@@ -13,7 +13,7 @@ void define_systems_sdl_inputs(ecs* world) {
     zox_system_1(TouchscreenExtractSystem, zoxp_sdl,
         [in] hierarchys.Children,
         [in] apps.AppLink,
-        [out] generic.ScreenDimensions,
+        [out] screens.ScreenDimensions,
         [none] inputs.Touchscreen)
     zox_system_1(MouseExtractSystem, zoxp_sdl,
         [in] hierarchys.Children,

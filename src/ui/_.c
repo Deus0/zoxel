@@ -16,10 +16,11 @@
 #include "touch/_.c"
 
 zox_begin_module(Elements)
-    add_hook_terminal_command(arguments_ui);
-    initialize_settings_elements(world);
+    add_hook_terminal_command(arguments_ui);;
     define_components_elements(world);
     define_systems_elements(world);
+    // initialize_settings_elements(world);
+    add_hook_spawn_prefabs(initialize_settings_elements);
     add_hook_spawn_prefabs(spawn_prefabs_elements);
     zox_import_module(Zigels);
     zox_import_module(Texts);

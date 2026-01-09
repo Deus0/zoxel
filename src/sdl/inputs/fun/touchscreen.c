@@ -2,11 +2,7 @@
 int touch_devices_count = 0;
 int touch_fingers_count = 0;
 
-byte touchscreen_has_id(
-    ecs *world,
-    const Children *zevices,
-    const int id
-) {
+byte touchscreen_has_id(ecs *world, const Children *zevices, const int id) {
     for (int i = 0; i < zevices->length; i++) {
         const entity zevice = zevices->value[i];
         if (!zox_has(zevice, Finger)) {
@@ -55,7 +51,7 @@ SDL_Finger* find_finger(int finger_id) {
 
 void set_id(ecs *world, const entity e, const int new_id) {
     if (!zox_has(e, ID)) {
-        zox_log(" ! invalid zevice, no ID");
+        zox_log_error("Invalid zevice, no ID");
         return;
     }
     zox_muter(e, ID, id);
@@ -98,10 +94,10 @@ void sdl_extract_touchscreen(
                 }
                 zevicePointerPosition->value = finger_position;
                 global_any_fingers_down = 1;
-                zox_log_input(" > finger touching [%lu] fingerid [%i]", zevice, zevice_id)
+                zox_logv(" > finger touching [%lu] fingerid [%i]", zevice, zevice_id)
             } else {
                 finger_released(world, zevice);
-                zox_log_input(" - finger released [%lu] fingerid [%i]", zevice, zevice_id)
+                zox_logv(" - finger released [%lu] fingerid [%i]", zevice, zevice_id)
             }
         } else {
             // get unused finger! find a finger that isn't used yet
@@ -117,7 +113,7 @@ void sdl_extract_touchscreen(
                 int2_flip_y(&finger_position, touchscreen_size);
                 zevicePointerPosition->value = finger_position;
                 global_any_fingers_down = 1;
-                zox_log_input(" + finger touched [%lu] fingerid [%i]", zevice, finger_id)
+                zox_logv(" + finger touched [%lu] fingerid [%i]", zevice, finger_id)
             }
         }
     }

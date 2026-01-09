@@ -7,21 +7,23 @@ void ProjectionMatrixSystem(iter *it) {
     if (!ecs_query_changed(NULL, it)) return;
 */
 #ifdef zox_use_orthographic_projection
-    zox_sys_world()
+    zox_sys_world();
 #endif
-    zox_sys_begin()
-    zox_sys_in(ScreenDimensions)
-    zox_sys_in(FieldOfView)
-    zox_sys_in(CameraNearDistance)
-    zox_sys_out(ProjectionMatrix)
+    zox_sys_begin();
+    zox_sys_in(ScreenDimensions);
+    zox_sys_in(FieldOfView);
+    zox_sys_in(CameraNearDistance);
+    zox_sys_out(ProjectionMatrix);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ScreenDimensions, screenDimensions)
-        zox_sys_i(FieldOfView, fieldOfView)
-        zox_sys_i(CameraNearDistance, cameraNearDistance)
-        zox_sys_o(ProjectionMatrix, projectionMatrix)
+        zox_sys_i(ScreenDimensions, screenDimensions);
+        zox_sys_i(FieldOfView, fieldOfView);
+        zox_sys_i(CameraNearDistance, cameraNearDistance);
+        zox_sys_o(ProjectionMatrix, projectionMatrix);
+
         if(screenDimensions->value.y <= 0) {
             continue;
         }
+
         const float aspect_ratio = ((float) screenDimensions->value.x) / ((float) screenDimensions->value.y);
 #ifndef zox_use_orthographic_projection
         calculate_perspective_projection_matrix(
@@ -51,4 +53,4 @@ void ProjectionMatrixSystem(iter *it) {
         }
 #endif
     }
-} zoxd_system(ProjectionMatrixSystem)
+} zoxd_system2(ProjectionMatrixSystem);

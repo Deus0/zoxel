@@ -5,6 +5,7 @@
 #include "transforms/_.c"
 #include "networking/_.c"
 #include "triggers/_.c"
+#include "screens/_.c"
 #include "inputs/_.c"
 #include "apps/_.c"
 #include "sdl/_.c"
@@ -97,6 +98,7 @@ zox_begin_module(Zox)
     zox_import_module(Timing);
     zox_import_module(Transforms);
     zox_import_module(Networking);
+    zox_import_module(Screens);
     zox_import_module(Inputs);
     if (!headless) {
         zox_import_module(Apps);

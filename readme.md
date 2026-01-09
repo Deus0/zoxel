@@ -6,7 +6,7 @@
       +--------+
    ~ In the void, voxels whisper ~
 
-# 🐙 Zoxel — Embrace the Madness of the Voxels
+# 🐙 Embrace the Madness
 
 In the shadowed depths where pixels twist and reality frays, **Zoxel** awakens. A procedural RPG forged in chaos, inspired by the ancient worlds of Warcraft, Minecraft, and Cube World — but beware: every block holds secrets older than time itself.
 
@@ -15,7 +15,7 @@ In the shadowed depths where pixels twist and reality frays, **Zoxel** awakens. 
 
 ---
 
-## What is Zoxel?
+## What is?
 
 - A procedural simulation RPG where the voxels whisper untold secrets
 - Crafted with a flat, nimble architecture fueled by Flecs chaos
@@ -25,7 +25,7 @@ In the shadowed depths where pixels twist and reality frays, **Zoxel** awakens. 
 
 ---
 
-## Play the Latest Ritual
+## The Ritual
 
 Summon the freshest shadows from the depths:
 
@@ -34,7 +34,7 @@ Summon the freshest shadows from the depths:
 ---
 
 
-## How Do I Summon Zoxel?
+## How Do I Summon?
 
 ```bash
 git clone https://codeberg.org/deus/zoxel
@@ -80,7 +80,7 @@ And the mysterious Flecs (v4.0.5) [_flecsing_](https://codeberg.org/deus/flecsin
 
 ---
 
-### Installing Dependencies
+### Dependencies
 
 - **Debian / Ubuntu**
 
@@ -102,7 +102,7 @@ sudo apk add git gcc make ibc-dev sdl2-dev sdl2_image-dev sdl2_mixer-dev glew-de
 
 ---
 
-### The Links
+### Links
 
   - [ twitter ](https://twitter.com/deusxyz) — Whisper to the void
   - [ mastodon ](https://mastodon.gamedev.place/@deus) — The distant signal

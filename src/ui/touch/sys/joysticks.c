@@ -14,23 +14,28 @@ void handle_touch_drag(
         return;
     }
 
-    zox_geter(finger, ZevicePointer, zevicePointer);
+    zox_geter(finger, ZevicePointer, pointer);
 
-    if (devices_get_pressed_this_frame(zevicePointer->value)) {
-        // delete_virtual_joystick(world, canvas);
-        zox_geter(finger, ZevicePointerPosition, zevicePointerPosition)
+    if (devices_get_pressed_this_frame(pointer->value)) {
+
+        zox_geter(finger, ZevicePointerPosition, position);
+
         if (is_game_state_playing) {
             byte button_type = zox_device_stick_left;
             zox_geter_value(finger, DeviceLink, entity, touchscreen)
             if (!zox_valid(touchscreen) || !zox_has(touchscreen, ScreenDimensions)) {
-                zox_log_error("touchscreen invalid")
+                zox_log_error("touchscreen invalid");
                 return;
             }
-            zox_geter_value(touchscreen, ScreenDimensions, int2, size)
-            if (zevicePointerPosition->value.x >= size.x / 2) {
+
+            zox_geter_value(touchscreen, ScreenDimensions, int2, size);
+
+            if (position->value.x >= size.x / 2) {
                 button_type = zox_device_stick_right;
             }
-            spawn_virtual_joystick(world, canvas, zevicePointerPosition->value, finger, virtual_joystick, button_type);
+
+            spawn_virtual_joystick(world, canvas, position->value, finger, virtual_joystick, button_type);
+
             virtual_joysticks_spawn_count++;
         }
     } else {
@@ -38,50 +43,72 @@ void handle_touch_drag(
         if (!zox_has(virtual_joystick, ElementLink)) {
             return;
         }
-        const entity joystick_element = zox_get_value(virtual_joystick, ElementLink);
-        if (!zox_valid(joystick_element)) {
+        zox_geter_value(virtual_joystick, ElementLink, entity, joystick);
+        if (!zox_valid(joystick)) {
             return;
         }
-        if (devices_get_released_this_frame(zevicePointer->value)) {
+
+        // When Finger Released
+        if (devices_get_released_this_frame(pointer->value)) {
             zox_muter(virtual_joystick, ZeviceStick, zeviceStick);
             zeviceStick->value = float2_zero;
-            if (joystick_element) {
-                zox_delete(joystick_element);
+            if (joystick) {
+                zox_delete(joystick);
                 zox_set(virtual_joystick, ElementLink, { 0 });
                 virtual_joysticks_spawn_count--;
             }
-        } else if (devices_get_pressed(zevicePointer->value)) {
-            zox_geter(finger, ZevicePointerPosition, zevicePointerPosition);
-            zox_geter(joystick_element, LayoutPosition, virtual_joystick_position);
-            zox_geter(joystick_element, Children, ui_children)
-            zox_geter(joystick_element, LayoutSize, joystick_size);
+        }
+        // When Finger is Dragging
+        else if (devices_get_pressed(pointer->value)) {
 
+            zox_geter(joystick, Children, ui_children);
             const entity joystick_pointer = ui_children->value[0];
+
             if (!zox_valid(joystick_pointer)) {
-                zox_log_error("invalid joystick_pointer, parent [%s]", zox_get_name(joystick_element))
+                zox_log_error("invalid joystick_pointer, parent [%s]", zox_get_name(joystick))
                 return;
             }
 
-            zox_geter(joystick_pointer, LayoutSize, joystick_pointer_size);
+            zox_geter(finger, ZevicePointerPosition, finger_position);
 
-            const int2 delta_position = int2_sub(zevicePointerPosition->value, virtual_joystick_position->value);
+            zox_geter(joystick, LayoutPosition, virtual_joystick_position);
+            zox_geter(joystick, LayoutSize, joystick_size);
+
+            zox_geter(joystick_pointer, LayoutSize, joystick_pointer_size);
+            zox_muter(joystick_pointer, LayoutPosition, pointer_position);
+            zox_muter(joystick_pointer, LayoutPositionDirty, pointer_position_dirty);
+
+            zox_muter(virtual_joystick, ZeviceStick, stick);
+
+            const int2 delta_position = int2_sub(finger_position->value, virtual_joystick_position->value);
 
             int2 size_limits = int2_multiply_float(int2_sub(joystick_size->value, joystick_pointer_size->value), 0.5f);
 
             // size_limits.x -= 10;
             // size_limits.y -= 10;
 
-            zox_muter(joystick_pointer, LayoutPosition, position);
-            zox_muter(virtual_joystick, ZeviceStick, zeviceStick);
-            position->value.x = delta_position.x;
-            position->value.y = delta_position.y;
-            int2_limit(&position->value, size_limits);
-            const float2 input_value = (float2) { position->value.x / (float) size_limits.x, position->value.y / (float) size_limits.y };
-            zeviceStick->value = input_value;
+            // Set Pointer Position
+            pointer_position->value.x = delta_position.x;
+            pointer_position->value.y = delta_position.y;
+            int2_limit(&pointer_position->value, size_limits);
+            if (!pointer_position_dirty->value) {
+                pointer_position_dirty->value = zox_dirty_trigger;
+            }
+
+            // Set Pointer Value
+            const float2 input_value = (float2) {
+                pointer_position->value.x / (float) size_limits.x,
+                pointer_position->value.y / (float) size_limits.y
+            };
+            stick->value = input_value;
+
+            /*zox_log("size_limits: %ix%i", size_limits.x, size_limits.y);
+            zox_log("   pointer_position: %ix%i", pointer_position->value.x, pointer_position->value.x);
+            zox_log("   virtual_joystick_position: %ix%i", virtual_joystick_position->value.x, virtual_joystick_position->value.x);*/
 
         } else {
-            if (joystick_element) {
-                zox_delete(joystick_element)  // assume not touching
+            if (joystick) {
+                zox_delete(joystick)  // assume not touching
                 zox_set(virtual_joystick, ElementLink, { 0 })
                 virtual_joysticks_spawn_count--;
             }
@@ -100,7 +127,7 @@ void VirtualJoystickSystem(iter *it) {
         zox_sys_e();
         zox_sys_i(RaycasterResult, raycasterResult);
         zox_sys_i(DeviceLink, deviceLink);
-        zox_sys_i(ZevicePointer, zevicePointer);
+        zox_sys_i(ZevicePointer, pointer);
         zox_sys_i(VirtualZeviceLink, virtualZeviceLink);
 
         if (!deviceLink->value || !zox_has(e, Finger)) {
@@ -119,11 +146,12 @@ void VirtualJoystickSystem(iter *it) {
             return;
         }
 
-        const byte game_state = zox_get_value(game, GameState)
+        zox_geter_value(game, GameState, entity, game_state);
+        zox_geter_value(player, CanvasLink, entity, canvas);
         const byte is_game_state_playing = game_state == zox_game_playing;
-        const entity canvas = zox_get_value(player, CanvasLink)
+        const byte click_value = pointer->value;
+
         // if going to spawn a new one, continue
-        const byte click_value = zevicePointer->value;
         if (devices_get_pressed_this_frame(click_value) && raycasterResult->value) {
             continue;
         }
@@ -131,5 +159,5 @@ void VirtualJoystickSystem(iter *it) {
         const entity virtual_joystick = virtualZeviceLink->value;
         handle_touch_drag(world, canvas, e, virtual_joystick, is_game_state_playing);
     }
-} zoxd_system(VirtualJoystickSystem)
+} zoxd_system2(VirtualJoystickSystem);
 

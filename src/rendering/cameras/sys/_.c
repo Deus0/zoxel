@@ -13,7 +13,7 @@ void define_systems_rendering_cameras(ecs *world) {
         [in] transforms3.Position3D,
         [in] cameras.FieldOfView,
         [in] cameras.ScreenPosition,
-        [in] generic.ScreenDimensions,
+        [in] screens.ScreenDimensions,
         [in] colorz.FogColor,
         [none] !cameras.CameraUI
     );
@@ -24,14 +24,14 @@ void define_systems_rendering_cameras(ecs *world) {
         [in] transforms3.Position3D,
         [in] cameras.FieldOfView,
         [in] cameras.ScreenPosition,
-        [in] generic.ScreenDimensions,
+        [in] screens.ScreenDimensions,
         [in] colorz.FogColor,
         [none] cameras.CameraUI
     );
     // restore
     zox_gpu_restore_system(
         RenderBufferRestoreSystem,
-        [in] generic.ScreenDimensions,
+        [in] screens.ScreenDimensions,
         [out] FrameBufferLink,
         [out] RenderBufferLink
     );
