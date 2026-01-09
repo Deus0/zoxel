@@ -9,13 +9,14 @@
 #include "pre/_.c"
 #include "inputs/_.c"
 #include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Sdl)
     // Sdl settings
     SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-    disable_virtual_keyboard();
-
+    // disable_virtual_keyboard();
     define_components_sdl(world);
+    define_systems_sdl(world);
     // init
     zox_module_dispose(dispose_apps_sdl);
     // hooks

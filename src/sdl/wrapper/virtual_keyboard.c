@@ -13,3 +13,7 @@ void show_virtual_keyboard() {
 void hide_virtual_keyboard() {
     SDL_StopTextInput();
 }
+
+byte is_virtual_keyboard_shown(SDL_Window* window) {
+    return SDL_IsScreenKeyboardShown(window);
+}
