@@ -2,7 +2,7 @@ extern entity spawn_pickup_basic(ecs*, const float3);
 extern entity spawn_pickup_block(ecs*, const float3, const entity);
 
 // we should drop from actions too!
-void ItemDropSystem(iter *it) {
+zox_sys2(ItemDropSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Dead);
@@ -38,4 +38,4 @@ void ItemDropSystem(iter *it) {
         // destroy voxel sound
         // spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + rand() % 6], 0.4, 1.2f * get_volume_sfx());
     }
-} zoxd_system(ItemDropSystem)
+} zox_sys_end(ItemDropSystem);

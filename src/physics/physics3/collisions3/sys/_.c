@@ -31,7 +31,7 @@ void define_systems_collisions3(ecs *world) {
         CollisionDetectSystem,
         zoxp_physics,
         [in] terrain.TerrainLink,
-        [in] generic.Bounds3D,
+        [in] transforms3.Bounds3D,
         [in] transforms3.Position3D,
         [in] physics3.LastPosition3D,
         [out] collisions3.Collision,
@@ -43,7 +43,7 @@ void define_systems_collisions3(ecs *world) {
         [in] collisions3.CollisionDistance,
         [in] transforms3.Position3D,
         [in] collisions3.Collision,
-        [in] generic.Bounds3D,
+        [in] transforms3.Bounds3D,
     );
     zox_system(
         CollisionResponseSystem,
@@ -59,7 +59,7 @@ void define_systems_collisions3(ecs *world) {
         UnstuckSystem,
         zoxp_physics,
         [in] terrain.TerrainLink,
-        [in] generic.Bounds3D,
+        [in] transforms3.Bounds3D,
         [out] physics3.LastUnstuck3,
         [out] transforms3.Position3D
     );

@@ -10,6 +10,9 @@ zoxc_float2(EulerLimitZ);    // a limitation of euler z axis
 zoxc_float3(LocalPosition3D);
 zoxc_float4(LocalRotation3D);
 zoxc(TransformMatrix, float4x4);
+// used for physics
+zoxc_float3(Bounds3D);
+zoxc_float6(Position3DBounds);
 
 void define_components_transforms3(ecs* world) {
     zoxd_tag(EulerOverride);
@@ -24,4 +27,7 @@ void define_components_transforms3(ecs* world) {
     zoxd_float3(LocalPosition3D);
     zoxd_float4(LocalRotation3D);
     zoxd(TransformMatrix);
+    // physics
+    zoxd_float3(Bounds3D);
+    zoxd_float6(Position3DBounds);
 }

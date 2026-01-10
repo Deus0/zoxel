@@ -2,7 +2,7 @@ int get_random_pallete_note(const byte *pallete, int array_length) {
    return pallete[rand() % array_length];
 }
 
-void MusicGenerateSystem(iter *it) {
+zox_sys2(MusicGenerateSystem) {
     if (nomusic) {
         return;
     }
@@ -94,5 +94,4 @@ void MusicGenerateSystem(iter *it) {
         }
         generateMusic->value = 0;
     }
-}
-zoxd_system(MusicGenerateSystem)
+} zox_sys_end(MusicGenerateSystem);

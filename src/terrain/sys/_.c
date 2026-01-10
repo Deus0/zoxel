@@ -81,7 +81,7 @@ void define_systems_terrain(ecs *world) {
         ChunkBoundsDrawSystem,
         zoxp_mainthread,
         [in] transforms3.Position3D,
-        [in] generic.Bounds3D,
+        [in] transforms3.Bounds3D,
         [in] rendering.RenderDisabled,
         [none] TerrainChunk
     );

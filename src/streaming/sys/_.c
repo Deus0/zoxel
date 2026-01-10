@@ -17,7 +17,7 @@ void define_systems_streaming(ecs* world) {
     );
     zox_filter(
         filter_cameras,
-        [in] generic.Position3DBounds,
+        [in] transforms3.Position3DBounds,
         [in] cameras.CameraPlanes,
         [none] cameras.Camera3D
     );
@@ -26,7 +26,7 @@ void define_systems_streaming(ecs* world) {
         zoxp_voxels_read,
         filter_cameras,
         [in] transforms3.Position3D,
-        [in] generic.Bounds3D,
+        [in] transforms3.Bounds3D,
         [in] chunks3.ChunkEntities,
         [in] chunks3.VoxelNode,
         [out] rendering.RenderDisabled,
@@ -60,7 +60,7 @@ void define_systems_streaming(ecs* world) {
     zox_system_1(
         StreamEndEventSystem,
         zoxp_mainthread,
-        [in] generic.EventInput,
+        [in] core.EventInput,
         [in] voxes.ChunkLinks,
         [out] StreamEndEvent
     );

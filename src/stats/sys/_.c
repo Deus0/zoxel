@@ -73,7 +73,7 @@ void define_systems_stats(ecs *world) {
         CharacterNameLabelsSystem,
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
-        [in] generic.ZoxName,
+        [in] core.ZoxName,
         [in] stats.StatLinks,
         [out] elements.ElementLinks
     );

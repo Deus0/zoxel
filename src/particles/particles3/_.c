@@ -25,7 +25,7 @@ zox_begin_module(Particles3D)
         EcsPreStore,
         [in] transforms3.Position3D,
         [in] particles.ParticleEmitRate,
-        [in] generic.Bounds3D,
+        [in] transforms3.Bounds3D,
         [in] colorz.Color,
         [none] Particle3DEmitter
     );

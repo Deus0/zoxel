@@ -1,7 +1,3 @@
-extern void canvas_select_first_button(ecs *world, const entity raycaster, const entity canvas);
-
-// #define zox_debug_navigation
-
 // todo: fix this, RaycasterTarget moved to zevices
 zox_sys2(ElementNavigationSystem) {
     init_delta_time();
@@ -15,32 +11,29 @@ zox_sys2(ElementNavigationSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DeviceLinks, devices);
-        zox_sys_i(DeviceMode, deviceMode);
-        zox_sys_o(RaycasterTarget, raycasterTarget);
-        zox_sys_o(NavigatorState, navigatorState);
-        zox_sys_o(NavigatorTimer, navigatorTimer);
+        zox_sys_i(DeviceMode, dmode);
+        zox_sys_o(RaycasterTarget, current);
+        zox_sys_o(NavigatorState, state);
+        zox_sys_o(NavigatorTimer, timer);
 
-        byte device_mode = deviceMode->value;
-#ifdef zox_debug_navigation
-        device_mode = zox_device_mode_gamepad;
-#endif
+        // Navigation needs a current selection
+        if (!zox_valid(current->value)) {
+            continue;
+        }
 
-        if (device_mode != zox_device_mode_gamepad) {
-            if (!navigatorState->value) {
-                navigatorState->value = 1;
-                navigatorTimer->value = 0;
+        byte device_mode = dmode->value;
+
+        if (device_mode != zox_device_mode_gamepad &&
+            device_mode != zox_device_mode_keyboardmouse
+        ) {
+            if (!state->value) {
+                state->value = 1;
+                timer->value = 0;
             }
             continue;
-        } else if (device_mode == zox_device_mode_gamepad && !raycasterTarget->value) {
-            zox_sys_e()
-            const entity canvas = zox_get_value(e, CanvasLink)
-            canvas_select_first_button(world, e, canvas);
         }
 
-        if (!raycasterTarget->value || !zox_alive(raycasterTarget->value)) {
-            continue;
-        }
-
+        // Get Input for Navigation
         float2 left_stick = float2_zero;
         for (int j = 0; j < devices->length; j++) {
             const entity device = devices->value[j];
@@ -81,35 +74,37 @@ zox_sys2(ElementNavigationSystem) {
                 }
             }
         }
-        // here cut
+
+        // If no input
         if (float_abs(left_stick.y) < restore_joystick_cutoff) {
-            navigatorState->value = 0;
+            state->value = 0;
             continue;
         }
+
         // if stops input
-        if (navigatorState->value == 1) {
+        if (state->value == 1) {
             // here we are waiting for gamepad to stop moving, as didn't start within gamepad mode
             continue;
         } else if (float_abs(left_stick.y) < ui_navigation_joystick_cutoff) {
-            navigatorTimer->value = 0;
+            timer->value = 0;
             continue;
-        } else if (navigatorTimer->value > 0) {
-            navigatorTimer->value -= delta_time;
-            if (navigatorTimer->value < 0) {
-                navigatorTimer->value = 0;
+        } else if (timer->value > 0) {
+            timer->value -= delta_time;
+            if (timer->value < 0) {
+                timer->value = 0;
             }
             continue;
         }
 
         // using selected window, we navigation elements of that... this could be done better
-        zox_geter_value(raycasterTarget->value, ParentLink, entity, parent);
+        zox_geter_value(current->value, ParentLink, entity, parent);
         zox_geter(parent, Children, children);
 
         unsigned did_find = 0;
         for (int k = 0; k < children->length; k++) {
             const entity child = children->value[k];
 
-            if (!zox_valid(child) || child != raycasterTarget->value || !zox_has(child, Selectable)) {
+            if (!zox_valid(child) || child != current->value || !zox_has(child, Selectable)) {
                 continue;
             }
 
@@ -122,10 +117,10 @@ zox_sys2(ElementNavigationSystem) {
             break;
         }
         if (did_find) {
-            if (navigatorTimer->value < -ui_navigation_timing / 2) {
-                navigatorTimer->value = ui_navigation_timing;
+            if (timer->value < -ui_navigation_timing / 2) {
+                timer->value = ui_navigation_timing;
             } else {
-                navigatorTimer->value += ui_navigation_timing;
+                timer->value += ui_navigation_timing;
             }
         }
     }

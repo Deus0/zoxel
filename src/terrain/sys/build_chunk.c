@@ -270,11 +270,9 @@ void fetch_neightbor_chunk_data(
 }
 
 // TODO: Move terrain cache into functions
-//void Chunk3TexturedBuildSystem(iter *it) {
-//    double system_time_begin = get_time_ms();
+
 zox_sys2(Chunk3TexturedBuildSystem) {
-    // zox_ts_begin(chunk3_builder);
-    // uint updated_count = 0;
+
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxLink);

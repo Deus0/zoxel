@@ -1,4 +1,4 @@
-void GameStateSystem(iter *it) {
+zox_sys2(GameStateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RealmLink);
@@ -70,7 +70,7 @@ void GameStateSystem(iter *it) {
         }
 
     }
-} zoxd_system2(GameStateSystem);
+} zox_sys_end(GameStateSystem);
 
 // when state changes, we can do events here
 //      game has children which includes all players

@@ -3,7 +3,7 @@
 
 void define_systems_music(ecs* world) {
     zox_system_1(MusicGenerateSystem, zoxp_mainthread,
-        [in] generic.Seed,
+        [in] core.Seed,
         [in] sounds.InstrumentType,
         [out] GenerateMusic,
         [out] NoteLinks,

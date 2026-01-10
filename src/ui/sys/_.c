@@ -21,7 +21,6 @@
 
 #include "inputs/button_click_event.c"
 #include "inputs/dragger_end.c"
-#include "inputs/element_navigation.c"
 #include "inputs/mouse_element.c"
 #include "inputs/device_click.c"
 #include "inputs/zevice_click.c"
@@ -77,15 +76,6 @@ void define_systems_elements(ecs *world) {
         [out] ClickingEntity,
         [out] WindowTarget,
         [none] inputs.Device
-    );
-    zox_system(
-        ElementNavigationSystem,
-        EcsPostUpdate,
-        [in] inputs.DeviceLinks,
-        [in] inputs.DeviceMode,
-        [out] NavigatorState,
-        [out] NavigatorTimer,
-        [out] raycasts.RaycasterTarget
     );
     zox_system(
         CanvasStackSystem,

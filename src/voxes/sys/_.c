@@ -15,7 +15,7 @@ void define_systems_voxes(ecs *world) {
         [in] rendering.MeshDirty,
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
-        [out] generic.Bounds3D
+        [out] transforms3.Bounds3D
     );
     zox_system(
         VoxTextureSystem,

@@ -36,6 +36,7 @@
 #include "settings/_.c"
 #include "hok/_.c"
 #include "windows/_.c"
+#include "types/_.c"
 
 void module_dispose_core(ecs *world, void *ctx) {
     (void) world;
@@ -46,6 +47,7 @@ void module_dispose_core(ecs *world, void *ctx) {
     dispose_hook_on_boot();
     dispose_hook_spawn_prefabs();
     free_zems();
+    dispose_component_ids();
 }
 
 void process_arguments_core(
@@ -91,11 +93,14 @@ zox_begin_module(Core)
     initialize_hook_files_load();
     initialize_hook_spawn_prefabs();
     initialize_hook_on_boot();
+    initialize_component_ids();
     // hooks
     add_hook_terminal_command(process_arguments_core);
     add_hook_on_boot(on_boot_game_store);
     set_noise_seed(get_unique_time_seed());
     add_to_post_update_loop(iterate_terminal);
+    // hmm
+    define_components_generic(world);
 #if zox_web
     add_to_update_loop(update_web_canvas);
 #endif

@@ -36,11 +36,10 @@ void iterate_time(ecs *world) {
     zox_current_time_check += zox_delta_time;
     add_plot_data_time(world, zox_delta_time);
     // todo: use a seperate physics time float? fixed_time?
-#ifdef limit_time_delta
-    if (zox_delta_time > max_zox_delta_time) {
-        zox_delta_time = 0; // max_zox_delta_time;
+    if (max_zox_delta_time&& zox_delta_time > max_zox_delta_time) {
+        zox_delta_time = max_zox_delta_time;
     }
-#endif
+
     // for (int i = 0; i < record_frames_count - 1; i++) zox_delta_times[i] = zox_delta_times[i + 1];
     // zox_delta_times[record_frames_count - 1] = zox_delta_time;
 #ifdef zox_check_current_time

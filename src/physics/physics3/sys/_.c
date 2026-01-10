@@ -50,8 +50,8 @@ void define_systems_physics3(ecs *world) {
     zox_system(
         Position3DBoundsSystem,
         zoxp_physics,
-        [in] generic.Position3DBounds,
-        [in] generic.Bounds3D,
+        [in] transforms3.Position3DBounds,
+        [in] transforms3.Bounds3D,
         [out] transforms3.Position3D
     );
     zox_system(

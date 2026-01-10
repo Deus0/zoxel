@@ -9,15 +9,15 @@ void define_systems_biomes(ecs *world) {
     zox_system(
         BiomeColorsSystem,
         EcsPreUpdate,
-        [in] generic.Generate,
-        [in] generic.Seed,
+        [in] core.Generate,
+        [in] core.Seed,
         [out] colorz.Colors,
         [none] biomes.Biome
     );
     zox_system_1(
         BiomeBlocksSystem,
         EcsOnUpdate,
-        [in] generic.Generate,
+        [in] core.Generate,
         [in] colorz.Colors,
         [out] blocks.BlockLinks,
         [none] biomes.Biome
@@ -25,7 +25,7 @@ void define_systems_biomes(ecs *world) {
     zox_system_1(
         BiomeBlocksDirtySystem,
         EcsPostUpdate,
-        [in] generic.Generate,
+        [in] core.Generate,
         [in] realms.RealmLink,
         [in] blocks.BlockLinks,
         [none] biomes.Biome

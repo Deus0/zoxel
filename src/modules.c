@@ -1,7 +1,7 @@
 // todo: include all these automatically
 
-#include "generic/_.c"
 #include "timing/_.c"
+#include "events/_.c"
 #include "transforms/_.c"
 #include "networking/_.c"
 #include "triggers/_.c"
@@ -94,8 +94,8 @@
 // engine imports, besides sub modules, it's core is flecs
 zox_begin_module(Zox)
     zox_import_module(Core);
-    zox_import_module(Generic);
     zox_import_module(Timing);
+    zox_import_module(Events);
     zox_import_module(Transforms);
     zox_import_module(Networking);
     zox_import_module(Screens);

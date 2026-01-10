@@ -19,7 +19,7 @@ void define_systems_lines3(ecs* world) {
         [in] colorz.Color,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
-        [in] generic.Bounds3D,
+        [in] transforms3.Bounds3D,
         [none] CubeLines
     );
     zox_system(

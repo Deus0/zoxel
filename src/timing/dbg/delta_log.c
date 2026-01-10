@@ -29,7 +29,7 @@ zox_sys2(SystemDeltaLogSystem) {
         did_lag = 1;
     }
     if (did_lag) {
-        zox_logw("Total LAG [%fms]", delta_time * 1000.0);
+        zox_logw("[LAG] Frame Time [%fms]", delta_time * 1000.0);
     }
 } zox_sys_end(SystemDeltaLogSystem);
 

@@ -1,4 +1,4 @@
-void MusicPlaySystem(iter *it) {
+zox_sys2(MusicPlaySystem) {
     if (nomusic || nosounds) {
         return;
     }
@@ -70,4 +70,4 @@ void MusicPlaySystem(iter *it) {
             // zox_log_notes(" > music note played [%i : %i] frequency [%f] instrument [%i]", musicNote->value, music_note, frequency, instrumentType->value)
         }
     }
-} zoxd_system(MusicPlaySystem)
+} zox_sys_end(MusicPlaySystem);

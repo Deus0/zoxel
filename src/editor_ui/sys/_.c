@@ -3,8 +3,8 @@
 
 void zox_define_systems_editor(ecs *world) {
     zox_system(InspectorElementSystem, EcsOnUpdate,
-        [in] generic.EntityTarget,
-        [in] generic.ComponentTarget,
+        [in] core.EntityTarget,
+        [in] core.ComponentTarget,
         [none] InspectorLabel)
     zox_system_1(HierarchyRefreshSystem, zoxp_mainthread,
         [in] transforms2.Position2,

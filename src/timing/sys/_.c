@@ -1,5 +1,7 @@
 #include "time_destroy.c"
 #include "timers.c"
+#include "destroy_in_frame.c"
+#include "timed_event.c"
 
 void define_systems_timing(ecs* world) {
     zox_system(
@@ -24,5 +26,17 @@ void define_systems_timing(ecs* world) {
         SystemDeltaLogSystem,
         EcsOnStore,
         [in] timing.SystemDelta
+    );
+    zox_system(
+        DestroyInFrameSystem,
+        EcsOnStore,
+        [none] core.DestroyInFrame
+    );
+    zox_system_1(
+        TimedEventSystem,
+        EcsPreStore,
+        [in] core.TimedEvent,
+        [in] core.EventInput,
+        [out] core.EventTime
     );
 }

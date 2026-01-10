@@ -14,6 +14,8 @@
 #include "float4.c"
 #include "float6.c"
 #include "entity.c"
+#include "entity2.c"
+#include "entity3.c"
 #include "color.c"
 #include "color_rgb.c"
 #include "zext.c"
@@ -74,9 +76,6 @@ zox_tag(DestroyInFrame);
 zoxc_double(EventTime);
 zoxc_entity(EventInput);
 zoxc_function(TimedEvent, void, ecs*, const entity);
-// used for physics
-zoxc_float3(Bounds3D);
-zoxc_float6(Position3DBounds);
 // used for editor
 zoxc_byte(EntityDirty);
 zoxc_entity(EntityTarget);
@@ -99,9 +98,6 @@ void define_components_generic(ecs* world) {
     zoxd_double(EventTime);
     zoxd_entity(EventInput);
     zoxd(TimedEvent);
-    // physics
-    zoxd_float3(Bounds3D);
-    zoxd_float6(Position3DBounds);
     // editor
     zoxd_byte(EntityDirty);
     zoxd_entity(EntityTarget);

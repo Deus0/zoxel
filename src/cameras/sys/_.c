@@ -26,7 +26,7 @@ void define_systems_cameras(ecs *world) {
     zox_system(CameraFrustumSystem, zoxp_cameras,
         [in] ViewMatrix,
         [out] FrustumCorners,
-        [out] generic.Position3DBounds,
+        [out] transforms3.Position3DBounds,
         [out] CameraPlanes,
         [none] Camera,
         [none] Camera3D)
