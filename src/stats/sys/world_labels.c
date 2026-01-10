@@ -2,7 +2,7 @@
 const color label3D_font_color_fill = { 122, 222, 199, 255 };
 const color label3D_font_color_outline = { 155, 12, 12, 0 };
 
-void CharacterNameLabelsSystem(iter *it) {
+zox_sys2(CharacterNameLabelsSystem) {
     if (disable_npc_uis) {
         return;
     }
@@ -69,4 +69,4 @@ void CharacterNameLabelsSystem(iter *it) {
 
         add_to_ElementLinks(elements, e2);
     }
-} zoxd_system2(CharacterNameLabelsSystem);
+} zox_sys_end(CharacterNameLabelsSystem);

@@ -1,4 +1,4 @@
-void TexturedRenderSystem(iter *it) {
+zox_sys2(TexturedRenderSystem) {
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
     zox_sys_in(MeshGPULink);
@@ -47,4 +47,4 @@ void TexturedRenderSystem(iter *it) {
         // zox_log("texture rendering [%i]\n", i)
         catch_basic3D_errors("! TexturedRenderSystem");
     }
-} zoxd_system(TexturedRenderSystem)
+} zox_sys_end(TexturedRenderSystem);

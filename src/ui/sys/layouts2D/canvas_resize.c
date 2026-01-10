@@ -25,8 +25,7 @@ void set_layout_dirty(
     }
 }
 
-void CanvasResizeSystem(iter *it) {
-
+zox_sys2(CanvasResizeSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ScreenToCanvas);
@@ -36,9 +35,7 @@ void CanvasResizeSystem(iter *it) {
     zox_sys_out(LayoutSize);
     zox_sys_out(LayoutPositionDirty);
     zox_sys_out(LayoutSizeDirty);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(ScreenToCanvas, ratio);
         zox_sys_i(AppLink, appLink);
         zox_sys_i(Children, children);
@@ -72,4 +69,4 @@ void CanvasResizeSystem(iter *it) {
             screen_size.x, screen_size.y);*/
 
     }
-} zoxd_system(CanvasResizeSystem)
+} zox_sys_end(CanvasResizeSystem);

@@ -1,6 +1,5 @@
 // this needs textData with Mesh in one entity
-void ZextBackgroundSystem(iter *it) {
-
+zox_sys2(ZextBackgroundSystem) {
     zox_sys_begin();
     zox_sys_in(TextDirty);
     zox_sys_in(TextData);
@@ -8,9 +7,7 @@ void ZextBackgroundSystem(iter *it) {
     zox_sys_in(TextPadding);
     zox_sys_out(LayoutSize);
     zox_sys_out(LayoutSizeDirty);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(TextDirty, text_dirty);
         zox_sys_i(TextData, text);
         zox_sys_i(TextFontSize, size);
@@ -33,4 +30,4 @@ void ZextBackgroundSystem(iter *it) {
         layout_size_dirty->value = zox_dirty_trigger;
 
     }
-} zoxd_system2(ZextBackgroundSystem);
+} zox_sys_end(ZextBackgroundSystem);

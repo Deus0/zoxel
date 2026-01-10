@@ -1,5 +1,5 @@
 // uploads bon indexes to shader
-void BoneIndexUploadSystem(iter *it) {
+zox_sys2(BoneIndexUploadSystem) {
     if (disable_bone_rendering) {
         return;
     }
@@ -28,4 +28,4 @@ void BoneIndexUploadSystem(iter *it) {
         glBufferData(GL_ARRAY_BUFFER, boneIndexes->length * sizeof(byte), boneIndexes->value, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
-} zoxd_system(BoneIndexUploadSystem)
+} zox_sys_end(BoneIndexUploadSystem);

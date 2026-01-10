@@ -1,5 +1,4 @@
-void ElementBeginSystem(iter *it) {
-
+zox_sys2(ElementBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InitializeElement);
@@ -10,9 +9,7 @@ void ElementBeginSystem(iter *it) {
     zox_sys_out(MeshVertices2D);
     zox_sys_out(MeshGPULink);
     zox_sys_out(UvsGPULink);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(InitializeElement, initialize);
         zox_sys_i(CanvasLink, canvasLink);
         zox_sys_i(LayoutSize, pixelSize);
@@ -39,4 +36,4 @@ void ElementBeginSystem(iter *it) {
         }
         meshDirty->value = mesh_state_trigger; // mesh_state_upload;
     }
-} zoxd_system2(ElementBeginSystem);
+} zox_sys_end(ElementBeginSystem);

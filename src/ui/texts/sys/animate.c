@@ -1,4 +1,4 @@
-void AnimateTextSystem(iter *it) {
+zox_sys2(AnimateTextSystem) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_out(AnimateZext)
@@ -27,4 +27,4 @@ void AnimateTextSystem(iter *it) {
         }
     }
     if (!changed) zox_skip()
-} zoxd_system(AnimateTextSystem)
+} zox_sys_end(AnimateTextSystem);

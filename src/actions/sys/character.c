@@ -1,6 +1,6 @@
 // When health goes to 0, kill UserLink->value
 // Set Dead to 1
-void CharacterActionsSystem(iter *it) {
+zox_sys2(CharacterActionsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -53,4 +53,4 @@ void CharacterActionsSystem(iter *it) {
             }
         }*/
     }
-} zoxd_system2(CharacterActionsSystem);
+} zox_sys_end(CharacterActionsSystem);

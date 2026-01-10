@@ -1,25 +1,26 @@
 // todo: alter frequency over time during sound
-void SoundGenerateSystem(iter *it) {
+zox_sys2(SoundGenerateSystem) {
     if (nosounds) {
         return;
     }
     const float sound_bounds = 1.0f;
-    zox_sys_begin()
-    zox_sys_in(InstrumentType)
-    zox_sys_in(SoundLength)
-    zox_sys_in(SoundFrequency)
-    zox_sys_in(SoundVolume)
-    zox_sys_in(GenerateSound)
-    zox_sys_in(SoundData)
-    zox_sys_out(TriggerSound)
+    zox_sys_begin();
+    zox_sys_in(InstrumentType);
+    zox_sys_in(SoundLength);
+    zox_sys_in(SoundFrequency);
+    zox_sys_in(SoundVolume);
+    zox_sys_in(GenerateSound);
+    zox_sys_in(SoundData);
+    zox_sys_out(TriggerSound);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(SoundLength, soundLength)
-        zox_sys_i(SoundFrequency, soundFrequency)
-        zox_sys_i(InstrumentType, instrumentType)
-        zox_sys_i(SoundVolume, soundVolume)
-        zox_sys_i(GenerateSound, generateSound)
-        zox_sys_i(SoundData, soundData)
-        zox_sys_o(TriggerSound, triggerSound)
+        zox_sys_i(SoundLength, soundLength);
+        zox_sys_i(SoundFrequency, soundFrequency);
+        zox_sys_i(InstrumentType, instrumentType);
+        zox_sys_i(SoundVolume, soundVolume);
+        zox_sys_i(GenerateSound, generateSound);
+        zox_sys_i(SoundData, soundData);
+        zox_sys_o(TriggerSound, triggerSound);
+
         if (generateSound->value != zox_dirty_active) {
             continue;
         }
@@ -75,4 +76,4 @@ void SoundGenerateSystem(iter *it) {
         triggerSound->value = zox_dirty_trigger;
         zox_log_sounds("+ generated [%s] (%f)", zox_sys_e_name, volume)
     }
-} zoxd_system(SoundGenerateSystem)
+} zox_sys_end(SoundGenerateSystem);

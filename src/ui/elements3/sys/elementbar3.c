@@ -1,13 +1,10 @@
-void Elementbar3DSystem(iter *it) {
-
+zox_sys2(Elementbar3DSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ElementBar);
     zox_sys_in(ElementBarSize);
     zox_sys_in(Children);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(Children, children);
         zox_sys_i(ElementBar, bar);
@@ -47,4 +44,4 @@ void Elementbar3DSystem(iter *it) {
             verts->value[j] = (float3) { left_offset + square_vertices[j].x * scale.x * percentage, square_vertices[j].y * scale.y, 0 };
         }
     }
-} zoxd_system(Elementbar3DSystem)
+} zox_sys_end(Elementbar3DSystem);

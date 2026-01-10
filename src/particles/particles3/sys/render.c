@@ -8,7 +8,7 @@ extern entity spawn_line3D(ecs *world, float3 pointA, float3 pointB, float thick
 // todo: also push in colors
 // todo: test function that spawns 100k particles at once and lerps their positions or something out from origin
 
-void Particle3DRenderSystem(iter *it) {
+zox_sys2(Particle3DRenderSystem) {
     // zox_log("particles [%i]\n", it->count)
     zox_statistics_particles3D += it->count;
     zox_gpu_blend_enable();
@@ -70,7 +70,7 @@ void Particle3DRenderSystem(iter *it) {
 #endif
     zox_disable_material();
     zox_gpu_blend_disable();
-} zoxd_system(Particle3DRenderSystem)
+} zox_sys_end(Particle3DRenderSystem);
 
 // const Rotation3D *rotation3D = &rotation3Ds[i];
 // const Scale1D *scale1D = &scale1Ds[i];

@@ -6,7 +6,7 @@ int zox_statistics_characters_rendered;
 // extern int zox_statistics_characters_rendered;
 
 // for unique meshes
-void Characters3RenderSystem(iter *it) {
+zox_sys2(Characters3RenderSystem) {
     zox_sys_world();
     if (!zox_valid(material_colored3D)) {
         return;
@@ -64,4 +64,4 @@ void Characters3RenderSystem(iter *it) {
 #endif
     }
 
-} zoxd_system(Characters3RenderSystem)
+} zox_sys_end(Characters3RenderSystem);

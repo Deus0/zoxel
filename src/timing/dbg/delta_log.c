@@ -1,4 +1,4 @@
-const double zox_lag_cutoff = 1.0;
+const double zox_lag_cutoff = 2;
 
 void add_system_log_components(ecs* world) {
     for (int i = 0; i < zox_systems_count; i++) {

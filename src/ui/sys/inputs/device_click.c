@@ -1,38 +1,51 @@
 // todo: reuse parts of ZeviceClickSystem in this
 // this is now from zevice
-void DeviceClickSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(DeviceDisabled)
-    zox_sys_in(PlayerLink)
-    zox_sys_in(RaycasterTarget)
-    zox_sys_in(WindowRaycasted)
-    zox_sys_in(Children)
-    zox_sys_out(ClickingEntity)
-    zox_sys_out(WindowTarget)
+zox_sys2(DeviceClickSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(DeviceDisabled);
+    zox_sys_in(PlayerLink);
+    zox_sys_in(RaycasterTarget);
+    zox_sys_in(WindowRaycasted);
+    zox_sys_in(Children);
+    zox_sys_out(ClickingEntity);
+    zox_sys_out(WindowTarget);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(DeviceDisabled, deviceDisabled)
-        zox_sys_i(PlayerLink, playerLink)
-        zox_sys_i(RaycasterTarget, raycasterTarget)
-        zox_sys_i(WindowRaycasted, windowRaycasted)
-        zox_sys_i(Children, children)
-        zox_sys_o(ClickingEntity, clickingEntity)
-        zox_sys_o(WindowTarget, windowTarget)
-        const entity player = playerLink->value;
+        zox_sys_i(DeviceDisabled, deviceDisabled);
+        zox_sys_i(PlayerLink, playerLink);
+        zox_sys_i(RaycasterTarget, raycasterTarget);
+        zox_sys_i(WindowRaycasted, windowRaycasted);
+        zox_sys_i(Children, children);
+        zox_sys_o(ClickingEntity, clickingEntity);
+        zox_sys_o(WindowTarget, windowTarget);
+
         if (deviceDisabled->value) {
             continue;
         }
-        if (!player) continue;
-        if (!player || !zox_has(player, CanvasLink)) continue;
-        const entity canvas = zox_get_value(player, CanvasLink)
-        if (!canvas) continue;
+
+        const entity player = playerLink->value;
+        if (!zox_valid(player) || !zox_has(player, CanvasLink)) {
+            continue;
+        }
+
+        const entity canvas = zox_get_value(player, CanvasLink);
+        if (!zox_valid(canvas)) {
+            continue;
+        }
+
         byte click_type = 0;
         for (int j = 0; j < children->length; j++) {
             const entity zevice = children->value[j];
-            if (!zevice) continue;
+
+            if (!zox_valid(zevice)) {
+                continue;
+            }
+
             if (!zox_has(zevice, ZeviceButton)) continue;
             if (!zox_has(zevice, DeviceButtonType)) continue;
+
             const byte button_type = zox_get_value(zevice, DeviceButtonType)
+
             if (button_type == zox_device_button_a) {
                 const byte disabled = zox_get_value(zevice, ZeviceDisabled)
                 if (!disabled) {
@@ -42,7 +55,11 @@ void DeviceClickSystem(iter *it) {
                 }
             }
         }
-        if (click_type == 0) continue;
+
+        if (click_type == 0) {
+            continue;
+        }
+
         const byte device_mode = zox_get_value(player, DeviceMode)
         // used for virtual joysticks to see if a t arget was raycasted, todo: move to raycast system
         // raycasterResult->value = raycasterTarget->value || windowRaycasted->value;
@@ -71,4 +88,4 @@ void DeviceClickSystem(iter *it) {
             clickingEntity->value = 0;
         }
     }
-} zoxd_system(DeviceClickSystem)
+} zox_sys_end(DeviceClickSystem);

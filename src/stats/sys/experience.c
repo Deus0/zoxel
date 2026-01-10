@@ -1,4 +1,4 @@
-void ExperienceSystem(iter *it) {
+zox_sys2(ExperienceSystem) {
     const float popup_spawn_y = 0.34f;
     zox_sys_world();
     zox_sys_begin();
@@ -49,4 +49,4 @@ void ExperienceSystem(iter *it) {
         spawn_popup3_easy(world, popup_text, popup_color, popup_position, 5, 7 + rand() % 3);
 
     }
-} zoxd_system2(ExperienceSystem);
+} zox_sys_end(ExperienceSystem);

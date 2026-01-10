@@ -1,5 +1,5 @@
 // Uplaods Terrain
-void Mesh3DTexturedUploadSystem(iter *it) {
+zox_sys2(Mesh3DTexturedUploadSystem) {
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshVertices);
@@ -70,4 +70,4 @@ void Mesh3DTexturedUploadSystem(iter *it) {
         // zox_sys_e();
         // zox_log("uploaded chunk mesh [%s]", zox_get_name(e));
     }
-} zoxd_system2(Mesh3DTexturedUploadSystem);
+} zox_sys_end(Mesh3DTexturedUploadSystem);

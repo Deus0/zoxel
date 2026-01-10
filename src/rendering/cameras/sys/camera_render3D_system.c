@@ -1,3 +1,3 @@
-void CameraRender3DSystem(iter *it) {
+zox_sys2(CameraRender3DSystem) {
     camera_render_update(it, 0);
-} zoxd_system(CameraRender3DSystem)
+} zox_sys_end(CameraRender3DSystem);

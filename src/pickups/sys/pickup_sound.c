@@ -1,4 +1,4 @@
-void PickupSoundSystem(iter *it) {
+zox_sys2(PickupSoundSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PickedUp);
@@ -14,4 +14,4 @@ void PickupSoundSystem(iter *it) {
             );
         }
     }
-} zoxd_system2(PickupSoundSystem);
+} zox_sys_end(PickupSoundSystem);

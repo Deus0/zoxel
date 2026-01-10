@@ -2,7 +2,7 @@ static inline float wrap_angle(float angle) {
     return remainderf(angle, 2.0f * M_PI);
 }
 
-void RotateTowardsSystem(iter *it) {
+zox_sys2(RotateTowardsSystem) {
     const float kP = 4.0f;          // Stronger response to error
     const float kD = 0.5f;          // Still some damping
     const double max_torque = 15.0; // Let the bird *turn*, dammit
@@ -70,4 +70,4 @@ void RotateTowardsSystem(iter *it) {
         }
 
     }
-} zoxd_system(RotateTowardsSystem)
+} zox_sys_end(RotateTowardsSystem);

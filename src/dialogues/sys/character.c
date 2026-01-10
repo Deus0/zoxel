@@ -1,4 +1,4 @@
-void CharacterDialogueSystem(iter *it) {
+zox_sys2(CharacterDialogueSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -17,4 +17,4 @@ void CharacterDialogueSystem(iter *it) {
         zox_geter(realm->value, DialoguetreeLinks, trees);
         tree->value = trees->value[rand() % trees->length];
     }
-} zoxd_system2(CharacterDialogueSystem);
+} zox_sys_end(CharacterDialogueSystem);

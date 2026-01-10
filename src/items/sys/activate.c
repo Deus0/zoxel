@@ -1,8 +1,7 @@
 // extern void on_action_updated_quantity2(ecs*, const entity, const entity, const byte);
 extern void on_action_removed(ecs*, entity, entity);
 
-void ItemActivateSystem(iter *it) {
-
+zox_sys2(ItemActivateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Activate);
@@ -10,9 +9,7 @@ void ItemActivateSystem(iter *it) {
     zox_sys_in(BlockLink);
     zox_sys_out(Quantity);
     zox_sys_out(QuantityDirty);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(Activate, activate);
         zox_sys_i(UserLink, user_link);
@@ -76,4 +73,4 @@ void ItemActivateSystem(iter *it) {
 
         dirty->value = zox_dirty_trigger;
     }
-} zoxd_system2(ItemActivateSystem);
+} zox_sys_end(ItemActivateSystem);

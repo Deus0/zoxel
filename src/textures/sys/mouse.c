@@ -1,4 +1,4 @@
-void MouseTextureSystem(iter *it) {
+zox_sys2(MouseTextureSystem) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(MouseLock)
@@ -13,4 +13,4 @@ void MouseTextureSystem(iter *it) {
             zox_set(textureLink->value, RenderDisabled, { render_disabled })
         }
     }
-} zoxd_system(MouseTextureSystem)
+} zox_sys_end(MouseTextureSystem);

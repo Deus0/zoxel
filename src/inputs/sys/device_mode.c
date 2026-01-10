@@ -1,17 +1,18 @@
 // System responsible for device switching for a DeviceUser
-void DeviceModeSystem(iter *it) {
-    zox_sys_world()
+zox_sys2(DeviceModeSystem) {
+    zox_sys_world();
     if (!auto_switch_device) {
         return;
     }
-    zox_sys_begin()
-    zox_sys_in(DeviceLinks)
-    zox_sys_in(DeviceMode)
-    zox_sys_out(DeviceModeDirty)
+    zox_sys_begin();
+    zox_sys_in(DeviceLinks);
+    zox_sys_in(DeviceMode);
+    zox_sys_out(DeviceModeDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(DeviceLinks, deviceLinks2)
-        zox_sys_i(DeviceMode, deviceMode)
-        zox_sys_o(DeviceModeDirty, deviceModeDirty)
+        zox_sys_i(DeviceLinks, deviceLinks2);
+        zox_sys_i(DeviceMode, deviceMode);
+        zox_sys_o(DeviceModeDirty, deviceModeDirty);
+
         // first check if currently using selected inputs
         byte using_current_inputs = 0;
         for (int j = 0; j < deviceLinks2->length; j++) {
@@ -130,4 +131,4 @@ void DeviceModeSystem(iter *it) {
             }
         }
     }
-} zoxd_system(DeviceModeSystem)
+} zox_sys_end(DeviceModeSystem);

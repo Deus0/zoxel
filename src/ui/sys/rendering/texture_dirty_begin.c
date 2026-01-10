@@ -1,6 +1,4 @@
-
-void TextureDirtyBeginSystem(iter *it) {
-    if (headless) return;
+zox_sys2(TextureDirtyBeginSystem) {
     zox_sys_begin();
     zox_sys_in(InitializeElement);
     zox_sys_out(TextureDirty);
@@ -13,4 +11,4 @@ void TextureDirtyBeginSystem(iter *it) {
         //if (!zox_has(it->entities[i], GenerateTexture))
         if (dirty->value) dirty->value = zox_dirty_trigger;
     }
-} zoxd_system2(TextureDirtyBeginSystem);
+} zox_sys_end(TextureDirtyBeginSystem);

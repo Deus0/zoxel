@@ -1,5 +1,4 @@
-void TextureGpuBeginSystem(iter *it) {
-    if (headless) return;
+zox_sys2(TextureGpuBeginSystem) {
     zox_sys_begin();
     zox_sys_in(InitializeElement);
     zox_sys_out(TextureGPULink);
@@ -11,4 +10,4 @@ void TextureGpuBeginSystem(iter *it) {
         }
         textureGPULink->value = spawn_gpu_texture_buffer();
     }
-} zoxd_system2(TextureGpuBeginSystem);
+} zox_sys_end(TextureGpuBeginSystem);

@@ -1,5 +1,5 @@
 // on the text entity
-void AnimateText2System(iter *it) {
+zox_sys2(AnimateText2System) {
     // zox_sys_world();
     zox_sys_begin();
     zox_sys_in(AnimateTextBegin);
@@ -34,4 +34,4 @@ void AnimateText2System(iter *it) {
             dirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system2(AnimateText2System);
+} zox_sys_end(AnimateText2System);

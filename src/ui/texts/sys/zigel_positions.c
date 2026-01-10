@@ -66,7 +66,7 @@ int2 calculate_position(
 }
 
 // Centralized position setting for text zigels
-void ZigelPositionSystem(iter *it) {
+zox_sys2(ZigelPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);  // TextSizeDirty
@@ -113,4 +113,4 @@ void ZigelPositionSystem(iter *it) {
             zox_set(e2, LayoutPositionDirty, { zox_dirty_trigger });
         }
     }
-} zoxd_system2(ZigelPositionSystem);
+} zox_sys_end(ZigelPositionSystem);

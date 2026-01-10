@@ -11,7 +11,7 @@ void create_raycast_gizmo(
 ) {
 }
 
-void RaycastGizmoSystem(iter *it) {
+zox_sys2(RaycastGizmoSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RaycastVoxelData);
@@ -98,7 +98,7 @@ void RaycastGizmoSystem(iter *it) {
             }
         }
     }
-} zoxd_system2(RaycastGizmoSystem);
+} zox_sys_end(RaycastGizmoSystem);
 
 
 /*if (is_debug_mid_voxel) {

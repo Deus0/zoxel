@@ -1,4 +1,4 @@
-void SkyboxSetTimeSystem(iter *it) {
+zox_sys2(SkyboxSetTimeSystem) {
     zox_sys_begin()
     zox_sys_in(MaterialGPULink)
     for (int i = 0; i < it->count; i++) {
@@ -12,4 +12,4 @@ void SkyboxSetTimeSystem(iter *it) {
         zox_gpu_float(attribute_time, (float) zox_current_time);
         zox_gpu_material(0);
     }
-} zoxd_system(SkyboxSetTimeSystem)
+} zox_sys_end(SkyboxSetTimeSystem);

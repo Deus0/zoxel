@@ -1,4 +1,4 @@
-void TextureUpdateSystem(iter *it) {
+zox_sys2(TextureUpdateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureDirty);
@@ -41,4 +41,4 @@ void TextureUpdateSystem(iter *it) {
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
-} zoxd_system2(TextureUpdateSystem);
+} zox_sys_end(TextureUpdateSystem);

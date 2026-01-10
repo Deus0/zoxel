@@ -1,5 +1,5 @@
 // triggers on BlocksDirty flag
-void TerrainTextureSetSystem(iter *it) {
+zox_sys2(TerrainTextureSetSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RealmLink);
@@ -59,4 +59,4 @@ void TerrainTextureSetSystem(iter *it) {
 
         // zox_log("Generated Tilemap: count [%i]  length [%i]", textures->length, tilemap_length);
     }
-} zoxd_system2(TerrainTextureSetSystem);
+} zox_sys_end(TerrainTextureSetSystem);

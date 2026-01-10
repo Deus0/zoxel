@@ -1,6 +1,6 @@
 extern void render_line3D(ecs *world, const float3, const float3, const color_rgb);
 
-void RayDebugSystem(iter *it) {
+zox_sys2(RayDebugSystem) {
     const color_rgb debug_color = { 255, 55, 55 };
     const color_rgb debug_color2 = { 155, 155, 155 };
     const float ray_length = 16;
@@ -17,4 +17,4 @@ void RayDebugSystem(iter *it) {
         render_line3D(world, origin->value, float3_add(origin->value, end_point), debug_color);
         render_line3D(world, origin->value, float3_add(origin->value, end_point2), debug_color2);
     }
-} zoxd_system2(RayDebugSystem);
+} zox_sys_end(RayDebugSystem);

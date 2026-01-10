@@ -1,4 +1,4 @@
-void LayoutMeshSystem(iter *it) {
+zox_sys2(LayoutMeshSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutSizeDirty);
@@ -37,4 +37,4 @@ void LayoutMeshSystem(iter *it) {
             sizef.x, sizef.y,
             size->value.x, size->value.y);*/
     }
-} zoxd_system2(LayoutMeshSystem);
+} zox_sys_end(LayoutMeshSystem);

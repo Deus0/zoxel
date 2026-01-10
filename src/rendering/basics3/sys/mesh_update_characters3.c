@@ -12,7 +12,7 @@ void opengl_upload_mesh_colors(uint2 mesh_buffer, uint color_buffer, const int *
 #endif
 }
 
-void MeshUpdateCharacters3DSystem(iter *it) {
+zox_sys2(MeshUpdateCharacters3DSystem) {
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshVertices);
@@ -74,4 +74,4 @@ void MeshUpdateCharacters3DSystem(iter *it) {
 
         count->value = indicies->length;
     }
-} zoxd_system2(MeshUpdateCharacters3DSystem);
+} zox_sys_end(MeshUpdateCharacters3DSystem);

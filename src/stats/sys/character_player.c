@@ -1,5 +1,5 @@
 // players are richer beings from the aether
-void PlayerCharacterStatsSystem(iter *it) {
+zox_sys2(PlayerCharacterStatsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -46,4 +46,4 @@ void PlayerCharacterStatsSystem(iter *it) {
             }
         }*/
     }
-} zoxd_system2(PlayerCharacterStatsSystem);
+} zox_sys_end(PlayerCharacterStatsSystem);

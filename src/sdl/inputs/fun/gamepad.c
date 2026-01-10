@@ -22,53 +22,6 @@ void check_axis(SDL_Joystick *joystick, int index) {
     if (float_abs(axis.x) >= 0.05f || float_abs(axis.y) >= 0.05f) last_axis_index = index;
 }
 
-const char* get_joystick_name(SDL_Joystick *joystick) {
-    if (joystick == NULL) return "";
-    return SDL_JoystickName(joystick);
-}
-
-int debug_joystick(SDL_Joystick *joystick, char buffer[], int buffer_size, int buffer_index) {
-    if (!joystick) return buffer_index;
-    for (int i = 0; i < joystick_axes; i += 2) {
-        check_axis(joystick, i);
-    }
-    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "joystick [%s]\n", get_joystick_name(joystick));
-    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "max axis [%i]\n", joystick_axes);
-    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " index clicked [%i]\n", last_clicked_index);
-    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " index axis [%i]\n", last_axis_index);
-    /*for (int i = 0; i < joystick_axes; i++) {
-        int raw_value = SDL_JoystickGetAxis(joystick, i);
-        raw_value = apply_joystick_deadzone(i, raw_value);
-        buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "  axis %i value [%i] - deadzone [%i]\n", i, raw_value, joystick_deadzones_values[i]);
-    }*/
-    /*const Children *children = zox_get(gamepad_entity, Children)
-    for (int i = 0; i < children->length; i++) {
-        const entity e = children->value[i];
-        if (zox_has(e, ZeviceButton)) {
-            const byte value = zox_get_value(e, ZeviceButton)
-            buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "  button %i value [%i]\n", i, value);
-        }
-    }*/
-    return buffer_index;
-}
-
-byte is_steamdeck_gamepad(SDL_Joystick *joystick) {
-    const char* joystickName = SDL_JoystickName(joystick);
-    return strstr(joystickName, "Steam Deck Controller") != NULL;
-}
-
-byte is_xbox_gamepad(SDL_Joystick *joystick) {
-    const char* joystickName = SDL_JoystickName(joystick);
-    return strstr(joystickName, "Xbox") != NULL || strstr(joystickName, "X360") != NULL || strstr(joystickName, "X-Box") != NULL;
-}
-
-byte get_gamepad_type(SDL_Joystick *joystick) {
-    byte gamepad_type = 0;
-    if (is_xbox_gamepad(joystick)) gamepad_type = zox_gamepad_layout_type_xbox;
-    if (is_steamdeck_gamepad(joystick)) gamepad_type = zox_gamepad_layout_type_steamdeck;
-    return gamepad_type;
-}
-
 entity spawn_gamepad_from_sdl(ecs *world, SDL_Joystick *joystick) {
     const byte gamepad_type = get_gamepad_type(joystick);
     const entity e = spawn_gamepad(world, gamepad_type);
@@ -176,22 +129,6 @@ byte set_gamepad_axis2(ZeviceStick *zeviceStick, SDL_Joystick *joystick, int ind
 byte set_gamepad_button(const byte old_value, SDL_Joystick *joystick, int index) {
     byte raw_value = SDL_JoystickGetButton(joystick, index);
     return process_byte(old_value, raw_value);
-    /*byte was_pressed = devices_get_pressed(old_value);
-    byte pressed_this_frame = !was_pressed && raw_value;
-    byte released_this_frame = was_pressed && !raw_value;
-#ifdef zox_log_gamepad_button_pressed
-    if (pressed_this_frame) zox_log("  [%i] is pressed this frame\n", index)
-    if (released_this_frame) zox_log("  [%i] is released this frame\n", index)
-#endif
-    byte new_value = 0;
-    if (pressed_this_frame) devices_set_pressed_this_frame(&new_value, 1);
-    if (released_this_frame) devices_set_released_this_frame(&new_value, 1);
-    if (raw_value) devices_set_is_pressed(&new_value, raw_value);
-#ifdef zox_log_gamepad_button_pressed
-    if (new_value != old_value) zox_log("   - [%i] has updated [%i > %i]\n", index, old_value, new_value)
-#endif
-    if (pressed_this_frame) last_clicked_index = index;
-    return new_value; // button->value != old_value;*/
 }
 
 byte sdl_gamepad_handle_disconnect(SDL_Joystick *joystick) {
@@ -246,3 +183,51 @@ void initialize_sdl_gamepads(ecs *world) { }
 void handle_new_sdl_gamepad(ecs *world, const SDL_Event event) { }
 
 #endif
+
+
+/*const char* get_joystick_name(SDL_Joystick *joystick) {
+    if (joystick == NULL) return "";
+    return SDL_JoystickName(joystick);
+}
+
+int debug_joystick(SDL_Joystick *joystick, char buffer[], int buffer_size, int buffer_index) {
+    if (!joystick) return buffer_index;
+    for (int i = 0; i < joystick_axes; i += 2) {
+        check_axis(joystick, i);
+    }
+    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "joystick [%s]\n", get_joystick_name(joystick));
+    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "max axis [%i]\n", joystick_axes);
+    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " index clicked [%i]\n", last_clicked_index);
+    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " index axis [%i]\n", last_axis_index);
+    return buffer_index;
+}*/
+    /*for (int i = 0; i < joystick_axes; i++) {
+        int raw_value = SDL_JoystickGetAxis(joystick, i);
+        raw_value = apply_joystick_deadzone(i, raw_value);
+        buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "  axis %i value [%i] - deadzone [%i]\n", i, raw_value, joystick_deadzones_values[i]);
+    }*/
+    /*const Children *children = zox_get(gamepad_entity, Children)
+    for (int i = 0; i < children->length; i++) {
+        const entity e = children->value[i];
+        if (zox_has(e, ZeviceButton)) {
+            const byte value = zox_get_value(e, ZeviceButton)
+            buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "  button %i value [%i]\n", i, value);
+        }
+    }*/
+
+    /*byte was_pressed = devices_get_pressed(old_value);
+    byte pressed_this_frame = !was_pressed && raw_value;
+    byte released_this_frame = was_pressed && !raw_value;
+#ifdef zox_log_gamepad_button_pressed
+    if (pressed_this_frame) zox_log("  [%i] is pressed this frame\n", index)
+    if (released_this_frame) zox_log("  [%i] is released this frame\n", index)
+#endif
+    byte new_value = 0;
+    if (pressed_this_frame) devices_set_pressed_this_frame(&new_value, 1);
+    if (released_this_frame) devices_set_released_this_frame(&new_value, 1);
+    if (raw_value) devices_set_is_pressed(&new_value, raw_value);
+#ifdef zox_log_gamepad_button_pressed
+    if (new_value != old_value) zox_log("   - [%i] has updated [%i > %i]\n", index, old_value, new_value)
+#endif
+    if (pressed_this_frame) last_clicked_index = index;
+    return new_value; // button->value != old_value;*/

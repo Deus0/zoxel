@@ -1,7 +1,7 @@
 int character_inventory_count = 8; // 8 | 16; // having blank items seems to b reak it
 byte test_give_npcs_blocks = 1;
 
-void CharacterItemsSystem(iter *it) {
+zox_sys2(CharacterItemsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -36,4 +36,4 @@ void CharacterItemsSystem(iter *it) {
         }
 
     }
-} zoxd_system2(CharacterItemsSystem);
+} zox_sys_end(CharacterItemsSystem);

@@ -1,4 +1,4 @@
-void ZextParentBackgroundSystem(iter *it) {
+zox_sys2(ZextParentBackgroundSystem) {
 
     zox_sys_world();
     zox_sys_begin();
@@ -43,4 +43,4 @@ void ZextParentBackgroundSystem(iter *it) {
             zox_set(parent->value, LayoutSizeDirty, { zox_dirty_trigger });
         }
     }
-} zoxd_system2(ZextParentBackgroundSystem);
+} zox_sys_end(ZextParentBackgroundSystem);

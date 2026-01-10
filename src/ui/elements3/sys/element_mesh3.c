@@ -1,5 +1,4 @@
-void Element3DMeshSystem(iter *it) {
-
+zox_sys2(Element3DMeshSystem) {
     zox_sys_begin();
     zox_sys_out(InitializeElement);
     zox_sys_out(MeshDirty);
@@ -7,7 +6,6 @@ void Element3DMeshSystem(iter *it) {
     zox_sys_out(UvsGPULink);
     zox_sys_out(ColorsGPULink);
     zox_sys_out(TextureGPULink);
-
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(InitializeElement, initializeElement);
         zox_sys_o(MeshDirty, mesh_dirty);
@@ -30,4 +28,4 @@ void Element3DMeshSystem(iter *it) {
         initializeElement->value = 0;
         zox_log_elements3D("+ updated mesh for element3D [%lu]", it->entities[i]);
     }
-} zoxd_system2(Element3DMeshSystem);
+} zox_sys_end(Element3DMeshSystem);

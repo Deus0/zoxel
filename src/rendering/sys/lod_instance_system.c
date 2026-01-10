@@ -1,15 +1,15 @@
-void LodInstanceSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(RenderDepthDirty)
-    zox_sys_in(RenderDepth)
-    zox_sys_in(ModelLink)
-    zox_sys_out(InstanceLink)
+zox_sys2(LodInstanceSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(RenderDepthDirty);
+    zox_sys_in(RenderDepth);
+    zox_sys_in(ModelLink);
+    zox_sys_out(InstanceLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDepthDirty, renderDepthDirty)
-        zox_sys_i(RenderDepth, renderDepth)
-        zox_sys_i(ModelLink, modelLink)
-        zox_sys_o(InstanceLink, instanceLink)
+        zox_sys_i(RenderDepthDirty, renderDepthDirty);
+        zox_sys_i(RenderDepth, renderDepth);
+        zox_sys_i(ModelLink, modelLink);
+        zox_sys_o(InstanceLink, instanceLink);
 
         if (renderDepthDirty->value != zox_dirty_active || renderDepth->value == render_depth_spawning || renderDepth->value == render_depth_invisible) {
             continue;
@@ -40,4 +40,4 @@ void LodInstanceSystem(iter *it) {
             zox_log_error("model has no ModelLods [%s]", zox_get_name(e))
         }*/
     }
-} zoxd_system(LodInstanceSystem)
+} zox_sys_end(LodInstanceSystem);

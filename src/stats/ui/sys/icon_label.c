@@ -1,6 +1,4 @@
-void StatIconLabelSystem(iter *it) {
-
-    //int stat_name_text_count = 32;
+zox_sys2(StatIconLabelSystem) {
     int label_text_count = 64;
     //char stat_name_text[stat_name_text_count];
 
@@ -47,4 +45,4 @@ void StatIconLabelSystem(iter *it) {
             dirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system2(StatIconLabelSystem);
+} zox_sys_end(StatIconLabelSystem);

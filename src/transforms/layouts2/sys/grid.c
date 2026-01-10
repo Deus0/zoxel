@@ -1,4 +1,4 @@
-void GridSystem(iter *it) {
+zox_sys2(GridSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GridDirty);
@@ -67,4 +67,4 @@ void GridSystem(iter *it) {
             pos.y -= padding->value.y;
         }
     }
-} zoxd_system2(GridSystem);
+} zox_sys_end(GridSystem);

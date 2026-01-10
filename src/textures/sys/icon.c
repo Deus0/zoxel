@@ -1,4 +1,4 @@
-void IconTextureSystem(iter *it) {
+zox_sys2(IconTextureSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureSize);
@@ -43,4 +43,4 @@ void IconTextureSystem(iter *it) {
         // zox_log(" > [%s] radius [%i] size [%ix%i]\n", zox_get_name(it->entities[i]), radius, textureSize->value.x, textureSize->value.y)
 
     }
-} zoxd_system2(IconTextureSystem);
+} zox_sys_end(IconTextureSystem);

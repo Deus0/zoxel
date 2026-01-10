@@ -1,6 +1,6 @@
 // When health goes to 0, kill UserLink->value
 // Set Dead to 1
-void DeathSystem(iter *it) {
+zox_sys2(DeathSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StatValue);
@@ -17,4 +17,4 @@ void DeathSystem(iter *it) {
         zox_muter(user->value, Dead, dead);
         dead->value = zox_dirty_trigger;
     }
-} zoxd_system2(DeathSystem);
+} zox_sys_end(DeathSystem);

@@ -1,5 +1,5 @@
 // For Elements of Square Shape - LayoutSize
-void ElementRaycastSystem(iter *it) {
+zox_sys2(ElementRaycastSystem) {
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
@@ -107,4 +107,4 @@ void ElementRaycastSystem(iter *it) {
             raycaster_select_window(world, e, window_selected);
         }
     }
-} zoxd_system2(ElementRaycastSystem);
+} zox_sys_end(ElementRaycastSystem);

@@ -1,4 +1,4 @@
-void ThreatPositionSystem(iter *it) {
+zox_sys2(ThreatPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LastDamager);
@@ -18,4 +18,4 @@ void ThreatPositionSystem(iter *it) {
             debug_linec(world, position, threatPosition->value, color_rgb_gray);
         }
     }
-} zoxd_system2(ThreatPositionSystem);
+} zox_sys_end(ThreatPositionSystem);

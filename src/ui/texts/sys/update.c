@@ -24,7 +24,7 @@ void update_text(
 }
 
 // just updates previous zigels to new data
-void TextUpdateSystem(iter *it) {
+zox_sys2(TextUpdateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);
@@ -43,4 +43,4 @@ void TextUpdateSystem(iter *it) {
         // zox_sys_e()
         // zox_log("+ updating text [%s]", zox_get_name(e))
     }
-} zoxd_system2(TextUpdateSystem);
+} zox_sys_end(TextUpdateSystem);

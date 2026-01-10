@@ -25,7 +25,7 @@
     zox_set_ptr(data->e, EquipLinks, equips);
 }*/
 
-void CharacterPlayerEquipsSystem(iter *it) {
+zox_sys2(CharacterPlayerEquipsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -56,4 +56,4 @@ void CharacterPlayerEquipsSystem(iter *it) {
         }
 
     }
-} zoxd_system2(CharacterPlayerEquipsSystem);
+} zox_sys_end(CharacterPlayerEquipsSystem);

@@ -1,7 +1,6 @@
 // todo: rework from regen stat, and impact stat value
 // do I need a velocity for stats? then regen will add to it? or just add directly..? :O hmm
-void StatRegenSystem(iter *it) {
-
+zox_sys2(StatRegenSystem) {
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();
@@ -9,9 +8,7 @@ void StatRegenSystem(iter *it) {
     zox_sys_in(StatValueMax);
     zox_sys_out(StatValue);
     zox_sys_out(StatDirty);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(UserLink, userLink);
         zox_sys_i(StatValueMax, max);
         zox_sys_o(StatValue, value);
@@ -39,4 +36,4 @@ void StatRegenSystem(iter *it) {
             dirty->value = zox_dirty_trigger;
         }
     }
-} zoxd_system2(StatRegenSystem);
+} zox_sys_end(StatRegenSystem);

@@ -1,5 +1,5 @@
 // TextureRGB's
-void TextureRGBUpdateSystem(iter *it) {
+zox_sys2(TextureRGBUpdateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureDirty);
@@ -7,11 +7,11 @@ void TextureRGBUpdateSystem(iter *it) {
     zox_sys_in(TextureSize);
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(TextureDirty, dirty)
-        zox_sys_i(TextureData, data)
-        zox_sys_i(TextureSize, size)
-        zox_sys_i(TextureGPULink, gpu_link)
+        zox_sys_e();
+        zox_sys_i(TextureDirty, dirty);
+        zox_sys_i(TextureData, data);
+        zox_sys_i(TextureSize, size);
+        zox_sys_i(TextureGPULink, gpu_link);
 
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -42,4 +42,4 @@ void TextureRGBUpdateSystem(iter *it) {
         glBindTexture(GL_TEXTURE_2D, 0);
         // zox_log_error("+ uploaded [%s] size [%ix%i]", zox_get_name(e), size->value.x, size->value.y)
     }
-} zoxd_system(TextureRGBUpdateSystem)
+} zox_sys_end(TextureRGBUpdateSystem);

@@ -1,4 +1,4 @@
-void ElementRenderSystem(iter *it) {
+zox_sys2(ElementRenderSystem) {
     zox_sys_world()
     if (!zox_valid(material_textured2D)) {
         return;
@@ -69,4 +69,4 @@ void ElementRenderSystem(iter *it) {
         opengl_disable_texture(1);
         zox_disable_material();
     }
-} zoxd_system2(ElementRenderSystem);
+} zox_sys_end(ElementRenderSystem);

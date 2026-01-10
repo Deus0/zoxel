@@ -1,28 +1,30 @@
 zox_sys2(SphereCollideSystem) {
-    zox_sys_query()
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(Position3D)
-    zox_sys_in(SphereRadius)
-    zox_sys_in(CollisionDisabled)
+    zox_sys_query();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Position3D);
+    zox_sys_in(SphereRadius);
+    zox_sys_in(CollisionDisabled);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(Position3D, position3D)
-        zox_sys_i(SphereRadius, sphereRadius)
-        zox_sys_i(CollisionDisabled, collisionDisabled)
+        zox_sys_e();
+        zox_sys_i(Position3D, position3D);
+        zox_sys_i(SphereRadius, sphereRadius);
+        zox_sys_i(CollisionDisabled, collisionDisabled);
+
         if (collisionDisabled->value) {
             continue;
         }
-        zox_sys_query_begin()
+
+        zox_sys_query_begin();
         while (zox_sys_query_loop()) {
-            zox_sys_begin_2()
-            zox_sys_in_2(Position3D)
-            zox_sys_in_2(SphereRadius)
-            zox_sys_in_2(CollisionDisabled)
+            zox_sys_begin_2();
+            zox_sys_in_2(Position3D);
+            zox_sys_in_2(SphereRadius);
+            zox_sys_in_2(CollisionDisabled);
             for (int j = 0; j < it2.count; j++) {
-                zox_sys_i_2(Position3D, position3D2)
-                zox_sys_i_2(SphereRadius, sphereRadius2)
-                zox_sys_i_2(CollisionDisabled, collisionDisabled2)
+                zox_sys_i_2(Position3D, position3D2);
+                zox_sys_i_2(SphereRadius, sphereRadius2);
+                zox_sys_i_2(CollisionDisabled, collisionDisabled2);
                 // const CollisionDisabled *collisionDisabled2 = &collisionDisableds2[j];
                 if (collisionDisabled2->value) {
                     continue;

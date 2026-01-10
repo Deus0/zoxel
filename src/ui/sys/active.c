@@ -1,5 +1,5 @@
 // animation system
-void ElementActiveSystem(iter *it) {
+zox_sys2(ElementActiveSystem) {
     zox_sys_begin()
     zox_sys_in(ActiveState);
     zox_sys_in(ActiveStateDirty);
@@ -21,4 +21,4 @@ void ElementActiveSystem(iter *it) {
         outline->value = state->value ? color_purple : default_outline_color_frame;
         generate->value = zox_dirty_trigger;
     }
-} zoxd_system(ElementActiveSystem)
+} zox_sys_end(ElementActiveSystem);

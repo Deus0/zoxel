@@ -3,7 +3,7 @@
     extern entity spawn_line3D(ecs*, float3, float3, float, double);
 #endif
 
-void UITrailSystem(iter *it) {
+zox_sys2(UITrailSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(UIHolderLink);
@@ -41,4 +41,4 @@ void UITrailSystem(iter *it) {
 #endif
 
     }
-} zoxd_system2(UITrailSystem);
+} zox_sys_end(UITrailSystem);

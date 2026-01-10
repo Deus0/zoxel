@@ -8,17 +8,14 @@ void anchor_element_size2D(
     // zox_log("+ new size [%ix%i] from parent [%ix%i] anchor [%fx%f]", size->x, size->y, parent_size.x, parent_size.y, anchor.x, anchor.y)
 }
 
-void AnchorSizeSystem(iter *it) {
-
+zox_sys2(AnchorSizeSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutSizeDirty);
     zox_sys_in(AnchorSize);
     zox_sys_in(ParentLink);
     zox_sys_out(LayoutSize);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(AnchorSize, anchor);
         zox_sys_i(ParentLink, parent);
@@ -37,4 +34,4 @@ void AnchorSizeSystem(iter *it) {
             parent_size.x, parent_size.y);*/
 
     }
-} zoxd_system2(AnchorSizeSystem);
+} zox_sys_end(AnchorSizeSystem);

@@ -3,7 +3,7 @@
 // using level up state, we spawn sound and particles
 
 
-void LevelUpSystem(iter *it) {
+zox_sys2(LevelUpSystem) {
 
     zox_sys_world();
     zox_sys_begin();
@@ -67,4 +67,4 @@ void LevelUpSystem(iter *it) {
         dirty->value = zox_dirty_trigger;
 
     }
-} zoxd_system2(LevelUpSystem);
+} zox_sys_end(LevelUpSystem);

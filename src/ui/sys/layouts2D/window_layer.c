@@ -1,17 +1,18 @@
-void WindowLayerSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(SetWindowLayer)
-    zox_sys_in(CanvasLink)
-    zox_sys_in(Children)
-    zox_sys_out(WindowLayer)
-    zox_sys_out(Layer2D)
+zox_sys2(WindowLayerSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(SetWindowLayer);
+    zox_sys_in(CanvasLink);
+    zox_sys_in(Children);
+    zox_sys_out(WindowLayer);
+    zox_sys_out(Layer2D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(SetWindowLayer, setWindowLayer)
-        zox_sys_i(CanvasLink, canvasLink)
-        zox_sys_i(Children, children)
-        zox_sys_o(WindowLayer, windowLayer)
-        zox_sys_o(Layer2D, layer2D)
+        zox_sys_i(SetWindowLayer, setWindowLayer);
+        zox_sys_i(CanvasLink, canvasLink);
+        zox_sys_i(Children, children);
+        zox_sys_o(WindowLayer, windowLayer);
+        zox_sys_o(Layer2D, layer2D);
+
         if (windowLayer->value == setWindowLayer->value) {
             continue;
         }
@@ -28,4 +29,4 @@ void WindowLayerSystem(iter *it) {
             set_element_layers(world, child, layer2D->value);
         }
     }
-} zoxd_system(WindowLayerSystem)
+} zox_sys_end(WindowLayerSystem);

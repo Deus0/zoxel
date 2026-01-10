@@ -1,5 +1,5 @@
 // SpawnS a pickup when removed
-void TerrainItemDropSystem(iter *it) {
+zox_sys2(TerrainItemDropSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeQueue);
@@ -68,4 +68,4 @@ void TerrainItemDropSystem(iter *it) {
             zox_set(pickup, ItemLink, { block_item });
         }
     }
-} zoxd_system2(TerrainItemDropSystem);
+} zox_sys_end(TerrainItemDropSystem);

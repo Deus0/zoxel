@@ -1,7 +1,7 @@
 extern byte can_render_ui(ecs *world, entity e);
 // #define zox_time_render3D_textured_system
 
-void Element3DRenderSystem(iter *it) {
+zox_sys2(Element3DRenderSystem) {
     if (!material_textured3D) {
         return;
     }
@@ -70,4 +70,4 @@ void Element3DRenderSystem(iter *it) {
         opengl_unset_mesh();
         zox_disable_material();
     }
-} zoxd_system(Element3DRenderSystem)
+} zox_sys_end(Element3DRenderSystem);

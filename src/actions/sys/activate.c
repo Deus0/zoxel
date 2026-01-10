@@ -1,5 +1,5 @@
 // right click = place
-void ActionActivateSystem(iter *it) {
+zox_sys2(ActionActivateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TriggerActionA);
@@ -44,4 +44,4 @@ void ActionActivateSystem(iter *it) {
         // zox_log("action begin [%f]", zox_gett_value(action, WarmupTime));
 
     }
-} zoxd_system2(ActionActivateSystem);
+} zox_sys_end(ActionActivateSystem);

@@ -1,4 +1,4 @@
-void ElementSelectedSystem(iter *it) {
+zox_sys2(ElementSelectedSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SelectState);
@@ -22,4 +22,4 @@ void ElementSelectedSystem(iter *it) {
         }
 
     }
-} zoxd_system2(ElementSelectedSystem);
+} zox_sys_end(ElementSelectedSystem);

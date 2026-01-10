@@ -1,3 +1,3 @@
-void CameraRenderUISystem(iter *it) {
+zox_sys2(CameraRenderUISystem) {
     camera_render_update(it, 1);
-} zoxd_system(CameraRenderUISystem)
+} zox_sys_end(CameraRenderUISystem);

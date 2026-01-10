@@ -1,4 +1,4 @@
-void CharacterPlayerItemsSystem(iter *it) {
+zox_sys2(CharacterPlayerItemsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -56,4 +56,4 @@ void CharacterPlayerItemsSystem(iter *it) {
         }
 
     }
-} zoxd_system2(CharacterPlayerItemsSystem);
+} zox_sys_end(CharacterPlayerItemsSystem);
