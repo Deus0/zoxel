@@ -63,11 +63,13 @@ zox_sys2(DeviceClickSystem) {
         const byte device_mode = zox_get_value(player, DeviceMode)
         // used for virtual joysticks to see if a t arget was raycasted, todo: move to raycast system
         // raycasterResult->value = raycasterTarget->value || windowRaycasted->value;
+
         // released
         if (click_type == 1) {
             clickingEntity->value = raycasterTarget->value; // clicked
             on_element_clicked(world, player, clickingEntity->value);
         }
+
         if (click_type == 1) { // clicked
             if (windowRaycasted->value != windowTarget->value) {
                 windowTarget->value = windowRaycasted->value;
@@ -77,14 +79,18 @@ zox_sys2(DeviceClickSystem) {
                 // then next in canvas system, reset windows layers to top of window stack
                 zox_set(canvas, WindowToTop, { windowTarget->value })
             }
-            if (zox_has(raycasterTarget->value, Dragable)) {
+
+            if (zox_valid(raycasterTarget->value) && zox_has(raycasterTarget->value, Dragable)) {
                 byte drag_mode = zox_drag_mode_none;
                 if (device_mode == zox_device_mode_keyboardmouse) drag_mode = zox_drag_mode_mouse;
                 else if (device_mode == zox_device_mode_touchscreen) drag_mode = zox_drag_mode_finger;
                 set_element_dragged(world, player, raycasterTarget->value, drag_mode);
             }
+
         } else if (click_type == 2) { // released
-            if (raycasterTarget->value == clickingEntity->value) on_element_released(world, player, raycasterTarget->value);
+            if (raycasterTarget->value == clickingEntity->value) {
+                on_element_released(world, player, raycasterTarget->value);
+            }
             clickingEntity->value = 0;
         }
     }

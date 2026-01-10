@@ -1,41 +1,29 @@
-void on_element_clicked(
-    ecs *world,
-    const entity player,
-    const entity ui
-) {
-    if (ui && zox_has(ui, Clickable)) {
-        zox_set(ui, ClickState, { zox_click_state_trigger_clicked })
-        zox_set(ui, Clicker, { player })
+void on_element_clicked(ecs *world, entity player, entity e) {
+    if (zox_valid(e) && zox_has(e, Clickable)) {
+        zox_set(e, ClickState, { zox_click_state_trigger_clicked });
+        zox_set(e, Clicker, { player });
     }
 }
 
-void on_element_released(
-    ecs *world,
-    const entity player,
-    const entity ui
-) {
-    if (ui && zox_has(ui, Clickable)) {
-        zox_set(ui, ClickState, { zox_click_state_trigger_released })
-        zox_set(ui, Clicker, { player })
+void on_element_released(ecs *world, entity player, entity e) {
+    if (zox_valid(e) && zox_has(e, Clickable)) {
+        zox_set(e, ClickState, { zox_click_state_trigger_released });
+        zox_set(e, Clicker, { player });
     }
 }
 
-void set_raycast_target_children(
-    ecs *world,
-    const entity e,
-    const entity target
-) {
+void set_raycast_target_children(ecs *world, entity e, entity target) {
     if (!zox_valid(e)) {
         return;
     }
     if (zox_has(e, RaycasterTarget)) {
         const entity last_target = zox_get_value(e, RaycasterTarget)
         if (zox_valid(last_target)) {
-            zox_set(last_target, SelectState, { zox_select_state_trigger_deselect })
+            zox_set(last_target, SelectState, { zox_select_state_trigger_deselect });
         }
         zox_set(e, RaycasterTarget, { target });
         if (zox_valid(target)) {
-            zox_set(target, SelectState, { zox_select_state_trigger_selected })
+            zox_set(target, SelectState, { zox_select_state_trigger_selected });
         }
     }
     if (zox_has(e, Children)) {
@@ -60,11 +48,7 @@ void set_raycast_target_children(
     }
 }
 
-void raycaster_select_window_children(
-    ecs *world,
-    const entity e,
-    const entity window
-) {
+void raycaster_select_window_children(ecs *world, entity e, entity window) {
     if (zox_has(e, WindowRaycasted)) {
         zox_set(e, WindowRaycasted, { window })
     }
@@ -88,18 +72,10 @@ void raycaster_select_window_children(
 
 // here we pass down selected components to children
 
-void raycaster_select_element(
-    ecs *world,
-    const entity raycaster,
-    const entity element
-) {
+void raycaster_select_element(ecs *world, entity raycaster, entity element) {
     set_raycast_target_children(world, raycaster, element);
 }
 
-void raycaster_select_window(
-    ecs *world,
-    const entity e,
-    const entity window
-) {
+void raycaster_select_window(ecs *world, entity e, entity window) {
     raycaster_select_window_children(world, e, window);
 }
