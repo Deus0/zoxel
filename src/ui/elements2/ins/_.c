@@ -1,5 +1,6 @@
 #include "button.c"
 #include "label.c"
+#include "toggle.c"
 #include "button_close.c"
 #include "element_bar_front.c"
 #include "element_bar.c"

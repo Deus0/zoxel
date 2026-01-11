@@ -30,6 +30,7 @@ zox_begin_module(Voxes)
     add_hook_spawn_prefabs(zox_define_prefabs_voxes);
     add_hook_terminal_command(process_arguments_voxes);
     add_hook_files_load(load_files_voxes);
+    initialize_settings_voxes(world);
 zox_end_module(Voxes)
 
 #endif

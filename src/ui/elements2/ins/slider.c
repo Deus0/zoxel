@@ -24,7 +24,7 @@ entity2 spawn_slider(
     if (element_data.render_disabled) {
         zox_set(e, RenderDisabled, { element_data.render_disabled });
     }
-    Children children = (Children) { 0, NULL };
+    Children children = (Children) { 0 };
 
     LayoutParentData new_parent_data = {
         .e = e,

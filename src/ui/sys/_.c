@@ -25,14 +25,14 @@
 #include "inputs/device_click.c"
 #include "inputs/zevice_click.c"
 
-zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
-zox_increment_system_with_reset(ActiveStateDirty, zox_dirty_end);
+// zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
+// zox_increment_system_with_reset(ActiveStateDirty, zox_dirty_end);
 zox_increment_system_with_reset_extra(ClickState, zox_click_state_trigger_clicked, zox_click_state_clicked_idle, zox_click_state_trigger_released, zox_click_state_idle);
 zox_increment_system_with_reset_extra(SelectState, zox_select_state_trigger_selected, zox_select_state_selected, zox_select_state_trigger_deselect, zox_select_state_deselected_idle);
 
 void define_systems_elements(ecs *world) {
-    zoxd_system_increment_pip(InitializeElement, EcsOnStore);
-    zoxd_system_increment(ActiveStateDirty);
+    // zoxd_system_increment_pip(InitializeElement, EcsOnStore);
+    // zoxd_system_increment(ActiveStateDirty);
     zoxd_system_increment(ClickState);
     zoxd_system_increment(SelectState);
     zox_filter(

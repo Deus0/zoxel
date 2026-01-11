@@ -84,7 +84,7 @@ entity spawn_list(
             .render_disabled = !visible,
         };
         entity child = 0;
-        if (child_data.type == 0) {
+        if (child_data.type == list_element_type_button) {
             SpawnTextData child_text_data = {
                 .text = child_data.text,
                 .font_size = list_data.font_size,
@@ -126,7 +126,7 @@ entity spawn_list(
                 free(child_data.save_path);
             }
 
-        } else if (child_data.type == 1) {
+        } else if (child_data.type == list_element_type_slider) {
             // zox_log("Spawning Slider %s v[%i]", child_data.text, visible);
             child_element_data.prefab = prefab_slider;
             child_element_data.size = (int2) {
@@ -155,6 +155,39 @@ entity spawn_list(
                 zox_set(e2.y, SlideEvent, { child_data.on_slide.value })
             }
             child = e2.x;
+
+        } else if (child_data.type == list_element_type_toggle) {
+            // Why so many for a button...
+            SpawnTextData child_text_data = {
+                .text = child_data.text,
+                .font_size = list_data.font_size,
+                .margins = list_data.button_padding,
+                .font_resolution = button_font_resolution,
+                .font_fill_color = button_font_fill,
+                .font_outline_color = button_font_outline,
+                .font_thickness = button_font_thickness_fill,
+                .font_outline_thickness = button_font_thickness_outline,
+            };
+            SpawnButtonData child_button_data = {
+                .prefab_zext = prefab_zext,
+                .fill = button_fill,
+                .outline = button_outline,
+            };
+            entity toggle = spawn_toggle(
+                world,
+                canvas_data,
+                child_parent_data,
+                child_element_data,
+                child_text_data,
+                child_button_data,
+                child_data.value
+            );
+            if (child_data.on_toggle.value) {
+                zox_set(toggle, ToggleEvent, { child_data.on_toggle.value });
+            }
+            zox_set(toggle, OptionLabel, { child_data.text });
+
+            child = toggle;
         }
         add_to_Children(&children, child);
     }

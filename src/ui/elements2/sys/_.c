@@ -4,6 +4,8 @@
 #include "tooltip.c"
 #include "slide_event.c"
 #include "list_render_dirty.c"
+#include "toggle_event.c"
+#include "toggle_state.c"
 
 void define_systems_elements2(ecs *world) {
     zox_system(
@@ -56,4 +58,25 @@ void define_systems_elements2(ecs *world) {
         [in] layouts2.LayoutConstraints,
         [in] layouts2.LayoutPosition
     );
+    zox_system(
+        ToggleEventSystem,
+        EcsOnUpdate,
+        [in] elements.ClickState,
+        [in] elements.Clicker,
+        [in] elements2.ToggleEvent,
+        [out] elements2.ToggleState,
+        [out] elements2.ToggleStateDirty,
+        [none] Toggle
+    );
+    zox_system(
+        ToggleStateSystem,
+        EcsOnUpdate,
+        [in] elements2.ToggleState,
+        [in] elements2.ToggleStateDirty,
+        [out] textures.OutlineColor,
+        [out] rendering.Brightness,
+        [out] textures.GenerateTexture,
+        [none] Toggle
+    );
+
 }

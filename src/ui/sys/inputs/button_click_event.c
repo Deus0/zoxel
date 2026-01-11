@@ -1,4 +1,4 @@
-void ButtonClickEventSystem(iter *it) {
+zox_sys2(ButtonClickEventSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ClickEvent);
@@ -24,4 +24,4 @@ void ButtonClickEventSystem(iter *it) {
         };
         (*event->value)(world, event_data);
     }
-} zoxd_system2(ButtonClickEventSystem);
+} zox_sys_end(ButtonClickEventSystem);

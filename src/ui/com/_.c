@@ -21,7 +21,7 @@ zoxc_byte(WindowsCount);
 zoxc_byte(SetWindowLayer);
 zoxc_byte(WindowLayer);
 zoxc_byte(ElementLayer);
-zoxc_byte(InitializeElement);
+zoxc_state(InitializeElement);
 zox_tag(ClickMakeSound);
 zox_tag(Selectable);
 zox_tag(Clickable);
@@ -43,11 +43,12 @@ zoxc_byte(DraggableState);
 zoxc_byte(SelectState);
 zoxc_byte(ActiveState);
 zoxc_byte(ClickState);
-zoxc_byte(ActiveStateDirty);
+zoxc_state(ActiveStateDirty);
 
 #include "click_event.c"
 #include "tooltip_event.c"
 #include "slide_event.c"
+#include "toggle_event.c"
 
 // move to hlp sub folder
 entity get_linked_canvas(ecs* world, entity e) {
@@ -78,7 +79,7 @@ void define_components_elements(ecs *world) {
     zoxd_byte(SetWindowLayer);
     zoxd_byte(WindowLayer);
     zoxd_byte(ElementLayer);
-    zoxd_byte(InitializeElement);
+    zoxd_state(InitializeElement);
     zoxd_tag(ClickMakeSound);
     zoxd_tag(Selectable);
     zoxd_tag(Clickable);
@@ -93,6 +94,7 @@ void define_components_elements(ecs *world) {
     zoxd(UIHolderLink);
     zoxd_entities(ElementLinks);
     zox_define_component_entities_child(ElementHolder);
+
     zoxd(ClickEvent);
     zoxd(TooltipEvent);
     zoxd(SlideEvent);
@@ -103,5 +105,5 @@ void define_components_elements(ecs *world) {
     zoxd_byte(SelectState);
     zoxd_byte(ActiveState);
     zoxd_byte(ClickState);
-    zoxd_byte(ActiveStateDirty);
+    zoxd_state(ActiveStateDirty);
 }

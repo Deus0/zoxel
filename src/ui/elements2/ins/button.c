@@ -1,13 +1,13 @@
 entity spawn_button(
     ecs *world,
-    const LayoutParentData canvas_data,
-    const LayoutParentData parent_data,
+    LayoutParentData canvas_data,
+    LayoutParentData parent_data,
     ElementSpawnData element_data,
-    const SpawnTextData zext_data,
-    const SpawnButtonData button_data
+    SpawnTextData zext_data,
+    SpawnButtonData button_data
 ) {
     int text_length = zext_data.text != NULL ? strlen(zext_data.text) : 0;
-    const int2 zext_size = (int2) {
+    int2 zext_size = (int2) {
         zext_data.font_size * text_length,
         zext_data.font_size
     };
@@ -47,7 +47,7 @@ entity spawn_button(
             .render_disabled = element_data.render_disabled,
         },
     };
-    const entity zext = spawn_zext(world, &zext_data2);
+    entity zext = spawn_zext(world, &zext_data2);
     add_to_Children(&children, zext);
 
     zox_set_ptr(e, Children, children);
