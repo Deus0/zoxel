@@ -1,4 +1,4 @@
-void Line3DRenderSystem(iter *it) {
+zox_sys2(Line3DRenderSystem) {
     zox_gpu_blend_enable();
     zox_gpu_material(line3D_material);
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());
@@ -46,4 +46,4 @@ void Line3DRenderSystem(iter *it) {
     glDisableVertexAttribArray(line3D_position_location);
     zox_disable_material();
     zox_gpu_blend_disable();
-} zoxd_system2(Line3DRenderSystem);
+} zox_sys_end(Line3DRenderSystem);

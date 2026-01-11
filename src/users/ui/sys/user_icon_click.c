@@ -4,7 +4,7 @@ extern void set_linked_item(ecs*, const entity, const int, const entity);
 extern void set_linked_skill(ecs*, const entity, const int, const entity);
 extern void link_as_new_item(ecs*, const entity, const entity3);
 
-void UserIconClickSystem(iter *it) {
+zox_sys2(UserIconClickSystem) {
 
     if (!icon_mouse_follow) {
         return; // global icon_mouse_follow for now
@@ -121,4 +121,4 @@ void UserIconClickSystem(iter *it) {
             }
         }
     }
-} zoxd_system2(UserIconClickSystem);
+} zox_sys_end(UserIconClickSystem);

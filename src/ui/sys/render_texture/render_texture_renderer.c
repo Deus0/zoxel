@@ -1,7 +1,7 @@
 extern entity get_root_canvas_camera(ecs *world, const entity e);
 
 // this is more like a non blend pass!
-void RenderTextureRenderSystem(iter *it) {
+zox_sys2(RenderTextureRenderSystem) {
     zox_sys_world();
     if (!material_render_texture) {
         return;
@@ -17,9 +17,7 @@ void RenderTextureRenderSystem(iter *it) {
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
     zox_sys_in(TextureGPULink);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(TransformMatrix, transformMatrix);
         zox_sys_i(MeshGPULink, meshGPULink);
@@ -71,4 +69,4 @@ void RenderTextureRenderSystem(iter *it) {
         opengl_disable_texture(1);
         zox_disable_material();
     }
-} zoxd_system(RenderTextureRenderSystem)
+} zox_sys_end(RenderTextureRenderSystem);

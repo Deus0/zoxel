@@ -6,6 +6,10 @@ static inline byte3 byte3_single(const byte a) {
     return (byte3) { a, a, a };
 }
 
+static inline byte3 byte3_half(const byte3 v) {
+    return (byte3) { v.x / 2, v.y / 2, v.z / 2 };
+}
+
 static inline int byte3_array_index(const byte3 input, const byte3 size) {
     return input.z + size.z * (input.y + size.y * input.x);
 }

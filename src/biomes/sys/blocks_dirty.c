@@ -1,4 +1,4 @@
-void BiomeBlocksDirtySystem(iter *it) {
+zox_sys2(BiomeBlocksDirtySystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -22,4 +22,4 @@ void BiomeBlocksDirtySystem(iter *it) {
             // zox_log("Block [%s] index [%i]", zox_get_name(block), index);
         }
     }
-} zoxd_system2(BiomeBlocksDirtySystem);
+} zox_sys_end(BiomeBlocksDirtySystem);

@@ -31,6 +31,9 @@ zox_sys(T) {
     void T(iter *it) {\
         double system_time_begin = get_time_ms();
 
+#define zox_sys_untimed(T)\
+    void T(iter *it) {
+
 #define zox_sys_end(T)\
     double system_delta_time = get_time_ms() - system_time_begin;\
     double current_system_delta_time = ecs_get(it->world, it->system, SystemDelta)->value; \
@@ -38,6 +41,9 @@ zox_sys(T) {
         ecs_set(it->world, it->system, SystemDelta, { system_delta_time }); \
     } \
 } ECS_SYSTEM_DECLARE(T)
+
+#define zox_sys_end_untimed(T)\
+    } ECS_SYSTEM_DECLARE(T)
 
 #define zox_sys(T)\
     void T(iter *it) {

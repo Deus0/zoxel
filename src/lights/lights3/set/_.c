@@ -1,5 +1,6 @@
 // NOTE: These 'distances' can be very random, since propogation happens in many ways... so theyre more like algorithm limiters... - can remove if the rules are good to not break
 
+byte disable_lights = 0;
 byte sunlight = 255;        // full sunlight
 byte zox_debug_lights = 0;
 byte darklight = 32;        // min light
@@ -12,3 +13,15 @@ byte zox_is_log_lighting_light = 0;
 byte zox_is_log_lighting_remove = 0;
 byte zox_is_log_lighting_dark = 0;
 byte zox_is_log_lighting_place = 0;
+
+
+
+void on_set_disable_lights(ecs* world, void* value) {
+    (void) world;
+    byte new_value = *(byte*) value;
+    disable_lights = new_value;
+}
+
+void initialize_settings_lights3(ecs *world) {
+    zoxs_new_byte("disable lights", on_set_disable_lights, disable_lights);
+}

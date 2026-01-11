@@ -5,7 +5,6 @@ zox_sys2(Characters3SpawnSystem) {
     if (disable_npcs || !character_spawn_rate_max) {
         return;
     }
-    zox_ts_begin(npc_spawns);
     // todo: dynamically check bounds
     const float3 bounds = (float3) { 0.22f, 0.44f, 0.22f };
     zox_sys_world();
@@ -42,7 +41,7 @@ zox_sys2(Characters3SpawnSystem) {
 
         // if already spawned, skip spawning, only update LODs
         // if basically all air, no need to spawn
-        if (!has_children_VoxelNode(voxel_node) && !voxel_node->value) {
+        if (!has_children_VoxelNode(voxel_node) || !voxel_node->value) {
             continue;
         }
 
@@ -127,10 +126,14 @@ zox_sys2(Characters3SpawnSystem) {
             // sometimes cannot find a position
             // many spawn checks
             if (!found_position) {
+
                 if (disable_npc_positioner) {
                     found_position = 1;
                 }
-                byte3 local_position;
+
+                byte3 local_position = byte3_half(byte3_single(chunk_length));
+
+                /*byte3 local_position;
                 for (byte k = 0; k < chunk_length; k++) {
                     local_position = find_random_position_on_ground(
                         voxel_node,
@@ -139,14 +142,13 @@ zox_sys2(Characters3SpawnSystem) {
                     );
                     if (!byte3_equals(byte3_full, local_position)) {
                         break;
-                    }/* else {
-                        zox_log_error("pos out of bounds [%ix%ix%i]", local_position.x, local_position.y, local_position.z)
-                    }*/
+                    }
                 }
                 if (byte3_equals(byte3_full, local_position)) {
                     zox_log_spawning("! failed to spawn npc")
                     continue;
-                }
+                }*/
+
                 position = local_to_real_position_character(
                     local_position,
                     chunk_voxel_position,
@@ -192,9 +194,8 @@ zox_sys2(Characters3SpawnSystem) {
                 zox_stats_characters++;
 
             } else {
-                zox_logw("! [%s] npc at [%fx%fx%f] [%i of %i]", zox_get_name(meta), position.x, position.y, position.z, (j + 1), (character_spawn_rate));
+                zox_logw("[%s] npc at [%fx%fx%f] [%i of %i]", zox_get_name(meta), position.x, position.y, position.z, (j + 1), (character_spawn_rate));
             }
-
         }
 
         if (entities->length) {
@@ -204,7 +205,4 @@ zox_sys2(Characters3SpawnSystem) {
         spawned->value = 1;
         ever_spawned->value = 1;
     }
-
-    zox_ts_end(npc_spawns, 3, zox_profile_system_npc_spawns);
-
 } zox_sys_end(Characters3SpawnSystem);

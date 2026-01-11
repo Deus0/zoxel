@@ -1,6 +1,6 @@
 const double exit_combat_time = 15.0;
 
-void CombatStateSystem(iter *it) {
+zox_sys2(CombatStateSystem) {
     zox_sys_begin();
     zox_sys_in(LastCombatTime);
     zox_sys_out(CombatState);
@@ -23,4 +23,4 @@ void CombatStateSystem(iter *it) {
             combat->value = zox_combat_peace;
         }
     }
-} zoxd_system2(CombatStateSystem);
+} zox_sys_end(CombatStateSystem);

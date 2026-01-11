@@ -30,17 +30,14 @@ byte save_voxel_node(FILE* out, const VoxelNode* node) {
     return result;
 }
 
-void Chunk3SaveSystem(iter *it) {
-
+zox_sys2(Chunk3SaveSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeEdited);
     zox_sys_in(VoxelNodeDirty);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkPosition);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(VoxelNodeEdited, edited);
         zox_sys_i(VoxelNodeDirty, dirty);
         zox_sys_i(VoxelNode, node);
@@ -73,4 +70,4 @@ void Chunk3SaveSystem(iter *it) {
         }
         free(path);
     }
-} zoxd_system2(Chunk3SaveSystem);
+} zox_sys_end(Chunk3SaveSystem);

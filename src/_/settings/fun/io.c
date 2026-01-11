@@ -131,18 +131,14 @@ void load_files_settings(ecs* world) {
         if (strcmp(type, "byte") == 0) {
             byte v = (byte)atoi(val);
             zoxs_set_byte(world, name, v);
-            if (is_log_load_settings) {
-                zox_log("- loaded byte [%s] [%i]", name, v)
-            }
+            zox_logv("- loaded byte [%s] [%i]", name, v);
         } else if (strcmp(type, "int") == 0) {
             int v = atoi(val);
             zoxs_set_int(world, name, v);
         } else if (strcmp(type, "float") == 0) {
             float v = strtof(val, NULL);
             zoxs_set_float(world, name, v);
-            if (is_log_load_settings) {
-                zox_log("- loaded float [%s] [%f]", name, v)
-            }
+            zox_logv("- loaded float [%s] [%f]", name, v);
         } else if (strcmp(type, "string") == 0) {
             zoxs_set_string(world, name, val);
         }

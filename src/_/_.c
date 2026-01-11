@@ -84,9 +84,8 @@ byte initialize_pathing(const char* game_name) {
 }
 
 zox_begin_module(Core)
+    // hmm
     init_zems();
-    zox_module_dispose(module_dispose_core);
-    clear_logs();
     initialize_update_loop();
     initialize_post_update_loop();
     initialize_hook_terminal_command();
@@ -99,11 +98,14 @@ zox_begin_module(Core)
     add_hook_on_boot(on_boot_game_store);
     set_noise_seed(get_unique_time_seed());
     add_to_post_update_loop(iterate_terminal);
-    // hmm
-    define_components_generic(world);
 #if zox_web
     add_to_update_loop(update_web_canvas);
 #endif
+
+
+    clear_logs();
+    define_components_generic(world);
+    zox_module_dispose(module_dispose_core);
 zox_end_module(Core)
 
 #endif

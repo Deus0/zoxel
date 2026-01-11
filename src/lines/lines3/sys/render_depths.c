@@ -11,19 +11,20 @@ static const color_rgb color_render_depths[] = {
     { 128, 0, 128 },   // 7 - deep purple
 };
 
-void RenderDepthColorSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(DebugCubeLines)
-    zox_sys_in(RenderDepth)
-    zox_sys_in(RenderDisabled)
-    zox_sys_out(Color)
+zox_sys2(RenderDepthColorSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(DebugCubeLines);
+    zox_sys_in(RenderDepth);
+    zox_sys_in(RenderDisabled);
+    zox_sys_out(Color);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(DebugCubeLines, debugCubeLines)
-        zox_sys_i(RenderDepth, renderDepth)
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_o(Color, colorr)
+        zox_sys_e();
+        zox_sys_i(DebugCubeLines, debugCubeLines);
+        zox_sys_i(RenderDepth, renderDepth);
+        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_o(Color, colorr);
+
         const byte mode = debugCubeLines->value;
         if (!mode) {
             continue;
@@ -73,4 +74,4 @@ void RenderDepthColorSystem(iter *it) {
         }
         colorr->value = color_rgb_to_color(output);
     }
-} zoxd_system(RenderDepthColorSystem)
+} zox_sys_end(RenderDepthColorSystem);

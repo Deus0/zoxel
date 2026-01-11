@@ -97,7 +97,7 @@ void define_systems_skills(ecs *world) {
 
 
     zox_system_1(
-        CharacterSkillsSystem,
+        CharacterSkillsSpawnSystem,
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,

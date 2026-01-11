@@ -24,7 +24,7 @@ void quest_on_slay(
     }
 }
 
-void SlaySystem(iter *it) {
+zox_sys2(SlaySystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Dead);
@@ -52,4 +52,4 @@ void SlaySystem(iter *it) {
             quest_on_slay(world, quest, enemy->value, e);
         }
     }
-} zoxd_system2(SlaySystem);
+} zox_sys_end(SlaySystem);

@@ -1,4 +1,4 @@
-void MeshColorsGpuSystem(iter *it) {
+zox_sys2(MeshColorsGpuSystem) {
     zox_sys_begin();
     zox_sys_in(MeshColorsDirty);
     zox_sys_in(MeshColorRGBs);
@@ -32,4 +32,4 @@ void MeshColorsGpuSystem(iter *it) {
         zox_sys_e();
         zox_log("updating colors %s", zox_get_name(e));*/
     }
-} zoxd_system2(MeshColorsGpuSystem);
+} zox_sys_end(MeshColorsGpuSystem);

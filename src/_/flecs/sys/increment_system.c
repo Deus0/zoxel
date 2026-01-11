@@ -9,9 +9,9 @@
 
 // if non zero, moves to target state
 #define zox_increment_system(component_name, target) \
-    void component_name##IncrementSystem(iter *it) { \
-        zox_sys_begin()\
-        zox_sys_out(component_name)\
+    zox_sys_untimed(component_name##IncrementSystem) { \
+        zox_sys_begin();\
+        zox_sys_out(component_name);\
         for (int i = 0; i < it->count; i++) {\
             zox_sys_o(component_name, component)\
             if (component->value) {\
@@ -20,14 +20,13 @@
                 }\
             }\
         }\
-    } \
-    zoxd_system2(component_name##IncrementSystem)
+    } zox_sys_end_untimed(component_name##IncrementSystem);
 
 // if non zero, moves to target state, then resets
 #define zox_increment_system_with_reset(component_name, target)\
-    void component_name##IncrementSystem(iter *it) {\
-        zox_sys_begin()\
-        zox_sys_out(component_name)\
+    zox_sys_untimed(component_name##IncrementSystem) {\
+        zox_sys_begin();\
+        zox_sys_out(component_name);\
         for (int i = 0; i < it->count; i++) {\
             zox_sys_o(component_name, component)\
             if (component->value) {\
@@ -38,21 +37,19 @@
                 } \
             } \
         }\
-    } \
-    zoxd_system2(component_name##IncrementSystem)
+    } zox_sys_end_untimed(component_name##IncrementSystem);
 
 // if non zero, moves to target state
-#define zox_increment_system_with_reset_extra(\
+#define zox_increment_system_with_reset_extra( \
     component_name, \
-    start1, \
-    target1, \
-    start2, \
-    target2)\
-        void component_name##IncrementSystem(iter *it) {\
-            zox_sys_begin()\
-            zox_sys_out(component_name)\
-            for (int i = 0; i < it->count; i++) {\
-                zox_sys_o(component_name, component)\
+    start1, target1, \
+    start2, target2) \
+        zox_sys_untimed(component_name##IncrementSystem) { \
+            zox_sys_begin(); \
+            zox_sys_out(component_name); \
+            for (int i = 0; i < it->count; i++) { \
+                zox_sys_o(component_name, component); \
+                \
                 if (component->value >= start1 && component->value < target1) {\
                     component->value++;\
                 } else if (component->value >= start2 && component->value < target2) {\
@@ -61,5 +58,4 @@
                     component->value = 0;\
                 }\
             }\
-        } \
-        zoxd_system2(component_name##IncrementSystem)
+        } zox_sys_end_untimed(component_name##IncrementSystem);

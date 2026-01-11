@@ -14,7 +14,7 @@ extern entity spawn_block_soil_grass(
     const color top_color
 );
 
-void BiomeBlocksSystem(iter *it) {
+zox_sys2(BiomeBlocksSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -68,4 +68,4 @@ void BiomeBlocksSystem(iter *it) {
         // add blocks in biome to realm
         // set refresh then
     }
-} zoxd_system2(BiomeBlocksSystem);
+} zox_sys_end(BiomeBlocksSystem);

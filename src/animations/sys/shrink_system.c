@@ -1,5 +1,5 @@
 // a simple shrink system
-void ShrinkSystem(iter *it) {
+zox_sys2(ShrinkSystem) {
     const double time = zox_current_time;
     zox_sys_begin()
     zox_sys_in(AnimationState)
@@ -18,4 +18,4 @@ void ShrinkSystem(iter *it) {
         else if (animation_time > 1) animation_time = 1;
         scale1D->value = float_lerp(1, 0, animation_time);
     }
-} zoxd_system(ShrinkSystem)
+} zox_sys_end(ShrinkSystem);

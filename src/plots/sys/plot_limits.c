@@ -1,4 +1,4 @@
-void PlotLimitSystem(iter *it) {
+zox_sys2(PlotLimitSystem) {
     zox_sys_begin();
     zox_sys_in(PlotDataDouble);
     zox_sys_out(PlotMin);
@@ -25,4 +25,4 @@ void PlotLimitSystem(iter *it) {
         min->value = min_;
         max->value = max_;
     }
-} zoxd_system2(PlotLimitSystem);
+} zox_sys_end(PlotLimitSystem);

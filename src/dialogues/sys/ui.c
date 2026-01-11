@@ -1,5 +1,5 @@
 // DialogueUILink
-void DialogueSpeechSystem(iter *it) {
+zox_sys2(DialogueSpeechSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeBegin);
@@ -31,4 +31,4 @@ void DialogueSpeechSystem(iter *it) {
         zox_set(speech, AnimateTextBegin, { zox_current_time });
         zox_set(speech, AnimateTextTime, { 3 });
     }
-} zoxd_system2(DialogueSpeechSystem);
+} zox_sys_end(DialogueSpeechSystem);

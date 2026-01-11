@@ -5,7 +5,7 @@ int text3D_outline_thickness = 0;
 const color statbar3D_font_color_fill = { 33, 233, 233, 205 };
 const color statbar3D_font_color_outline = { 155, 12, 12, 0 };
 // Positions
-const float element3D_depth_difference = 0.001f;
+const float element3D_depth_difference = 0.006f;
 // Sizes
 const float2 statbar_back_mesh_scale = { 0.36f, 0.05f };
 const float2 statbar_front_mesh_scale = { 0.34f, 0.04f };

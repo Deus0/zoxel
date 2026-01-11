@@ -23,7 +23,8 @@ entity spawn_font_style_save_data(
             data->fonts[i].points,
             data->fonts[i].length
         );
-        zox_logv(" - [%i] points: [%i]", i, data->fonts[i].length)
+        // zox_logv(" - [%i] points: [%i]", i, data->fonts[i].length);
+
         /*if (i == 0) {
             for (int j = 0; j < data->fonts[i].length; j++) {
                 zox_log("       - [0] point [%i] [%ix%i]\n", j, data->fonts[i].points[j].x, data->fonts[i].points[j].y)

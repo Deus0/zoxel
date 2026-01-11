@@ -2,7 +2,7 @@
 extern entity spawn_pickup_block(ecs*, const float3, const entity);
 
 // TODO: Check Resource Cost before warming up!
-void MeleeSystem(iter *it) {
+zox_sys2(MeleeSystem) {
 
     const float popup_spawn_y = 0.18f;
     const double volume = get_volume_sfx();
@@ -197,4 +197,4 @@ void MeleeSystem(iter *it) {
             );
         }
     }
-} zoxd_system2(MeleeSystem);
+} zox_sys_end(MeleeSystem);

@@ -1,4 +1,5 @@
 #include "delta_log.c"
+#include "reset.c"
 
 /*void log_lagging_systems(ecs* world) {
     for (int i = 0; i < zox_systems_count; i++) {

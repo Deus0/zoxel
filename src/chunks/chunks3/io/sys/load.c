@@ -65,11 +65,9 @@ byte load_chunk(
 }
 
 // TODO: Should we Load at a LOD Level?
-void Chunk3LoadSystem(iter *it) {
-
+zox_sys2(Chunk3LoadSystem) {
     zox_sys_world();    // used when closing possible nodes
     zox_sys_begin();
-
     zox_sys_in(ChunkPosition);
     zox_sys_out(VoxelNodeDirty);
     zox_sys_out(VoxelNodeEdited);
@@ -77,9 +75,7 @@ void Chunk3LoadSystem(iter *it) {
     zox_sys_out(VoxelNode);
     zox_sys_out(NodeDepth);
     zox_sys_out(VoxelNodeGenerated);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(VoxelNodeEdited, edited);
@@ -104,4 +100,4 @@ void Chunk3LoadSystem(iter *it) {
 
         loaded->value = 1;
     }
-} zoxd_system2(Chunk3LoadSystem);
+} zox_sys_end(Chunk3LoadSystem);

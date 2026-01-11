@@ -23,7 +23,7 @@ void update_sdl(ecs *world) {
                 byte monitor = event.display.display;
                 byte orientation = get_screen_orientation(monitor);
                 int2 window_size = (int2) { event.window.data1, event.window.data2 };
-                zox_logv("Display [%i] Orientation [%i] Size Changed [%ix%i]", monitor, orientation, window_size.x, window_size.y);
+                // zox_logv("Display [%i] Orientation [%i] Size Changed [%ix%i]", monitor, orientation, window_size.x, window_size.y);
 
                 zox_geter_value(e, ScreenOrientation, byte, old_orientation);
                 if (old_orientation != orientation) {

@@ -1,4 +1,4 @@
-void CharacterPlayerQuestsSystem(iter *it) {
+zox_sys2(CharacterPlayerQuestsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -38,4 +38,4 @@ void CharacterPlayerQuestsSystem(iter *it) {
         }
 
     }
-} zoxd_system2(CharacterPlayerQuestsSystem);
+} zox_sys_end(CharacterPlayerQuestsSystem);

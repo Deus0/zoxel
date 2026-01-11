@@ -1,4 +1,4 @@
-void CharacterSkillsSystem(iter *it) {
+zox_sys2(CharacterSkillsSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -47,4 +47,4 @@ void CharacterSkillsSystem(iter *it) {
         }
 
     }
-} zoxd_system2(CharacterSkillsSystem);
+} zox_sys_end(CharacterSkillsSpawnSystem);

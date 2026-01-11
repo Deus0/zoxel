@@ -1,4 +1,4 @@
-void Render3DSystem(iter *it) {
+zox_sys2(Render3DSystem) {
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
     zox_sys_in(Brightness);
@@ -29,4 +29,4 @@ void Render3DSystem(iter *it) {
         opengl_unset_mesh();
         zox_disable_material();
     }
-} zoxd_system2(Render3DSystem);
+} zox_sys_end(Render3DSystem);

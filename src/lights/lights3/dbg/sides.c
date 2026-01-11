@@ -53,7 +53,7 @@ void zox_apply_debug_colors(
 }
 
 
-void Light3BuildSystem(iter* it) {
+zox_sys2(Light3BuildSystem) {
     zox_ts_begin(light3_builder);
     zox_sys_world();
     zox_sys_begin();
@@ -109,5 +109,4 @@ void Light3BuildSystem(iter* it) {
     }
 
     zox_ts_end(light3_builder, 1, zox_profile_system_light3_builder);
-}
-zoxd_system2(Light3BuildSystem);
+} zox_sys_end(Light3BuildSystem);

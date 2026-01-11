@@ -34,7 +34,6 @@ zox_sys2(VoxGenerationSystem) {
     startwatch(time_vox_generation);
 
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(Color, color2);
         zox_sys_i(VoxType, voxType);
@@ -259,9 +258,7 @@ zox_sys2(VoxGenerationSystem) {
             continue;
         }
         if (is_generate_vox_outlines) {
-            vox_outlines(node,
-                node_depth,
-                black_voxel);
+            vox_outlines(node, node_depth, black_voxel);
         }
 
         // Unlocks the node

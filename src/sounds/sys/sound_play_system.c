@@ -1,4 +1,4 @@
-void SoundPlaySystem(iter *it) {
+zox_sys2(SoundPlaySystem) {
     int channel = get_channels_count();
     if (!audio_enabled || channel < 0 || nosounds) {
         return;
@@ -29,4 +29,4 @@ void SoundPlaySystem(iter *it) {
             }
         }
     }
-} zoxd_system(SoundPlaySystem)
+} zox_sys_end(SoundPlaySystem);

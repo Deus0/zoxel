@@ -21,7 +21,12 @@ zox_sys2(SystemDeltaLogSystem) {
         zox_sys_e();
         zox_sys_i(SystemDelta, delta);
 
-        if (delta->value < zox_lag_cutoff) {
+        double cutoff = zox_lag_cutoff;
+        if (zox_has(e, SystemDeltaMax)) {
+            cutoff = zox_gett_value(e, SystemDeltaMax);
+        }
+
+        if (delta->value < cutoff) {
             continue;
         }
 
@@ -32,14 +37,3 @@ zox_sys2(SystemDeltaLogSystem) {
         zox_logw("[LAG] Frame Time [%fms]", delta_time * 1000.0);
     }
 } zox_sys_end(SystemDeltaLogSystem);
-
-// Reset our deltas
-zox_sys2(SystemDeltaLogResetSystem) {
-    zox_sys_begin();
-    zox_sys_out(SystemDelta);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_o(SystemDelta, delta);
-        delta->value = 0;
-    }
-} zox_sys_end(SystemDeltaLogResetSystem);
-

@@ -1,3 +1,5 @@
+#include "outlines.c"
+
 #define directory_voxes "voxes"
 const byte max_vox_file_lods = 5;
 int files_voxes_count = 0;
@@ -5,10 +7,12 @@ entity *files_voxes;
 string_hashmap *files_hashmap_voxes;
 
 // GenerateVox == 1
-byte is_generate_vox_outlines = 0; // 0 | 1
 const byte is_generate_vox_airs = 1;
 const float fracture_dark_multiplier = 0.6f; // 0.13f
 const float grass_blend_dark_multiplier = 0.8f; // 0.13f
+byte disable_block_voxes = 0;
+byte disable_block_vox_generation = 0;
+
 
 void process_arguments_voxes(ecs *world, char* args[], int count) {
     (void) world;
@@ -23,4 +27,9 @@ void process_arguments_voxes(ecs *world, char* args[], int count) {
             disable_block_voxes = 1;
         }
     }
+}
+
+void initialize_settings_voxes(ecs *world) {
+    zox_log("initialize_settings_voxes %i", is_generate_vox_outlines);
+    zoxs_new_byte("outlines", set_block_outlines, is_generate_vox_outlines);
 }

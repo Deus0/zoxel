@@ -10,7 +10,7 @@
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }*/
 
-void MeshUpdateSystem(iter *it) {
+zox_sys2(MeshUpdateSystem) {
     zox_sys_begin();
     zox_sys_in(MeshDirty);
     zox_sys_in(MeshIndicies);
@@ -44,4 +44,4 @@ void MeshUpdateSystem(iter *it) {
 
         // opengl_upload_mesh(meshGPULink->value, materialGPULink->value, meshIndicies->value, meshIndicies->length, meshVertices->value, meshVertices->length);
     }
-} zoxd_system2(MeshUpdateSystem);
+} zox_sys_end(MeshUpdateSystem);

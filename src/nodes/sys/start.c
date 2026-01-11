@@ -1,4 +1,4 @@
-void NodetreeBeginSystem(iter *it) {
+zox_sys2(NodetreeBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodetreeLink);
@@ -30,4 +30,4 @@ void NodetreeBeginSystem(iter *it) {
         // zox_set(e, NodeEnd, { zox_dirty_trigger });
 
     }
-} zoxd_system2(NodetreeBeginSystem);
+} zox_sys_end(NodetreeBeginSystem);

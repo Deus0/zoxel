@@ -1,4 +1,4 @@
-void NodetreeEndSystem(iter *it) {
+zox_sys2(NodetreeEndSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodetreeEnd);
@@ -9,4 +9,4 @@ void NodetreeEndSystem(iter *it) {
             zox_delete(e);
         }
     }
-} zoxd_system2(NodetreeEndSystem);
+} zox_sys_end(NodetreeEndSystem);

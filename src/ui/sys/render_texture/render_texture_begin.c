@@ -1,15 +1,11 @@
-void RenderTextureBeginSystem(iter *it) {
-
+zox_sys2(RenderTextureBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InitializeElement);
     zox_sys_in(LayoutSize);
     zox_sys_in(CameraLink);
     zox_sys_in(TextureGPULink);
-
     for (int i = 0; i < it->count; i++) {
-
-        // zox_sys_e();
         zox_sys_i(InitializeElement, initialize);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(CameraLink, camera);
@@ -49,4 +45,4 @@ void RenderTextureBeginSystem(iter *it) {
             size->value.x, size->value.y);*/
 
     }
-} zoxd_system(RenderTextureBeginSystem)
+} zox_sys_end(RenderTextureBeginSystem);

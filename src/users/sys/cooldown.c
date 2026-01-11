@@ -1,4 +1,4 @@
-void CooldownSystem(iter *it) {
+zox_sys2(CooldownSystem) {
     zox_sys_begin();
     zox_sys_in(WarmupState);
     zox_sys_out(CooldownAt);
@@ -10,9 +10,9 @@ void CooldownSystem(iter *it) {
             // zox_log("cooldown started");
         }
     }
-} zoxd_system2(CooldownSystem);
+} zox_sys_end(CooldownSystem);
 
-void CooldownStateSystem(iter *it) {
+zox_sys2(CooldownStateSystem) {
     zox_sys_begin();
     zox_sys_in(CooldownTime);
     zox_sys_out(CooldownAt);
@@ -32,4 +32,4 @@ void CooldownStateSystem(iter *it) {
             // zox_log("cooldown ended %f", passed);
         }
     }
-} zoxd_system2(CooldownStateSystem);
+} zox_sys_end(CooldownStateSystem);

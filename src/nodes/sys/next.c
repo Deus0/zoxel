@@ -1,4 +1,4 @@
-void NextNodeSystem(iter *it) {
+zox_sys2(NextNodeSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeEnd);
@@ -31,4 +31,4 @@ void NextNodeSystem(iter *it) {
         }
 
     }
-} zoxd_system2(NextNodeSystem);
+} zox_sys_end(NextNodeSystem);

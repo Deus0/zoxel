@@ -1,4 +1,4 @@
-void PlotLabelSystem(iter *it) {
+zox_sys2(PlotLabelSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ParentLink);
@@ -30,4 +30,4 @@ void PlotLabelSystem(iter *it) {
             zextDirty->value = 1;
         }
     }
-} zoxd_system2(PlotLabelSystem);
+} zox_sys_end(PlotLabelSystem);

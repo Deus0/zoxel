@@ -1,5 +1,7 @@
 // if character falls through map, push up
 // todo: draw lines on this to test why it suddenly detects..!
+byte unstuck_log_count = 0;
+
 zox_sys2(UnstuckSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -80,7 +82,11 @@ zox_sys2(UnstuckSystem) {
 
         if (float3_equals(last->value, float3_zero)) {
             position->value = float3_add(position->value, unstuck_push);
-            zox_logw("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z);
+
+            if (unstuck_log_count < 10) {
+                zox_logw("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z);
+                unstuck_log_count++;
+            }
             continue; // hasn't been unstuck
         }
 

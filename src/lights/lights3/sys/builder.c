@@ -144,6 +144,7 @@ void zox_apply_light3(
 
 
 zox_sys2(Light3BuildSystem) {
+    if (disable_lights) return;
     // zox_ts_begin(light3_builder);
     zox_sys_world();
     zox_sys_begin();

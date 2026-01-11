@@ -2,6 +2,8 @@
 // TODO: Optimize LightNode System - group same values
 // Triggers: VoxelNodeGenerated
 zox_sys2(SunlightSystem) {
+    if (disable_lights) return;
+
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeGenerated);
@@ -18,7 +20,6 @@ zox_sys2(SunlightSystem) {
     fetch_first_solidity(world, it, VoxLink_, solidity);
 
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(VoxelNodeGenerated, dirtyv);
         zox_sys_i(NodeDepth, depthr);
         zox_sys_i(VoxelNode, vnode);

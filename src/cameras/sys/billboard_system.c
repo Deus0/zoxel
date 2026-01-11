@@ -3,7 +3,7 @@
 extern entity spawn_line3D(ecs*, float3, float3, float, double);
 #endif
 
-void BillboardSystem(iter *it) {
+zox_sys2(BillboardSystem) {
     if (main_cameras_count == 0) return;
     zox_sys_world()
     zox_sys_begin()
@@ -35,4 +35,4 @@ void BillboardSystem(iter *it) {
         spawn_line3D(world, position3D->value, float3_add(position3D->value, normal), 2, 1);
 #endif
     }
-} zoxd_system(BillboardSystem)
+} zox_sys_end(BillboardSystem);

@@ -2,6 +2,7 @@
 // If queue empty + lightnode dirty, activate!
 
 zox_sys2(MeshColorsTriggerSystem) {
+    if (disable_lights) return;
     zox_sys_begin();
     zox_sys_in(LightQueue);
     zox_sys_in(DarkQueue);

@@ -1,4 +1,4 @@
-void Dissipation3System(iter *it) {
+zox_sys2(Dissipation3System) {
     const float dissipation_rate = 2.0f; // tweak for stronger or weaker drag
     init_delta_time()
     zox_sys_begin()
@@ -13,7 +13,7 @@ void Dissipation3System(iter *it) {
         drag = clampf(drag, 0.0f, 1.0f); // Safety clamp
         omega->value = float3_scale(omega->value, drag);
     }
-} zoxd_system(Dissipation3System)
+} zox_sys_end(Dissipation3System);
 
 /*float friction_power = friction3D;
 if (!grounded->value) {
