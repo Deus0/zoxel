@@ -1,10 +1,10 @@
 entity spawn_canvas(
     ecs *world,
-    const entity prefab,
-    const entity camera,
-    const int2 size,
-    const float4 screen_to_canvas,
-    const entity app
+    entity prefab,
+    entity camera,
+    int2 size,
+    float4 screen_to_canvas,
+    entity app
 ) {
     zox_instance(prefab);
     zox_name("canvas");
@@ -13,5 +13,6 @@ entity spawn_canvas(
     zox_set(e, CameraLink, { camera });
     zox_set(e, ScreenToCanvas, { screen_to_canvas });
     zox_set(e, AppLink, { app });
+    // zox_set(e, CanvasLink, { e });
     return e;
 }

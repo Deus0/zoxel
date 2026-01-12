@@ -8,7 +8,7 @@
 
 zox_begin_module(Transforms3)
     define_components_transforms3(world);
-    zox_define_systems_transforms3D(world);
+    zox_define_systems_transforms3(world);
 zox_end_module(Transforms3)
 
 #endif

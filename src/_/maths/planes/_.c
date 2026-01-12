@@ -12,9 +12,6 @@
 
 // Scraps
 
-
-
-
 /*
 byte is_in_frustum(const plane *planes, bounds b) {
     float3 point;

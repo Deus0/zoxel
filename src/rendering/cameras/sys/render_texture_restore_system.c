@@ -1,13 +1,14 @@
-void RenderTextureRestoreSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TextureGPULink)
-    zox_sys_in(TextureSize)
-    zox_sys_in(CameraLink)
+zox_sys2(RenderTextureRestoreSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TextureGPULink);
+    zox_sys_in(TextureSize);
+    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TextureGPULink, textureGPULink)
-        zox_sys_i(TextureSize, textureSize)
-        zox_sys_i(CameraLink, cameraLink)
+        zox_sys_i(TextureGPULink, textureGPULink);
+        zox_sys_i(TextureSize, textureSize);
+        zox_sys_i(CameraLink, cameraLink);
+
         entity camera = cameraLink->value;
         if (zox_has(camera, FrameBufferLink)) {
             // Refresh Render Camera
@@ -30,4 +31,4 @@ void RenderTextureRestoreSystem(iter *it) {
             zox_log_error("camera does not have frame buffer link: %lu", cameraLink->value)
         }
     }
-} zoxd_system(RenderTextureRestoreSystem)
+} zox_sys_end(RenderTextureRestoreSystem);

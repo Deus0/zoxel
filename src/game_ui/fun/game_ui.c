@@ -108,11 +108,12 @@ void spawn_all_players_cameras_canvases(
             viewport_position,
             game_viewport_size,
             viewport_size);
-        add_to_CameraLinks(&cameras, spawned_cameras.x);
+        entity game_camera = spawned_cameras.x;
+        add_to_CameraLinks(&cameras, game_camera);
         add_to_CameraLinks(&cameras, spawned_cameras.y);
         set_camera_mode(
             world,
-            spawned_cameras.x,
+            game_camera,
             zox_game_camera_mode
         );
 
@@ -129,7 +130,7 @@ void spawn_all_players_cameras_canvases(
         // spawns a render texture ui and links to camera
         create_camera_rbo_and_fbo(
             world,
-            spawned_cameras.x,
+            game_camera,
             game_viewport_size
         );
         spawn_render_texture(
@@ -138,12 +139,17 @@ void spawn_all_players_cameras_canvases(
             canvas,
             viewport_size,
             game_viewport_size,
-            spawned_cameras.x
+            game_camera
         );
         // remove these soon
         zox_canvases[i] = canvas;
-        main_cameras[i] = spawned_cameras.x;
+        main_cameras[i] = game_camera;
         ui_cameras[i] = spawned_cameras.y;
+
+
+        // entity camera = main_cameras[0];
+        spawn_skybox(world, shader_skybox, game_camera);
+        set_skybox_colors(world, menu_sky_color, menu_sky_bottom_color);
     }
     zox_set_ptr(app, CameraLinks, cameras);
 }

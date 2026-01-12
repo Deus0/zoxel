@@ -2,7 +2,7 @@ double last_time_send = 0;
 const int test_send_packet_length = 1; // 100;    // 3
 
 //! Atm this is just testing sending to server and getting replies
-void PacketSendSystem(iter *it) {
+zox_sys2(PacketSendSystem) {
     // every 3 seconds send one packet!
     init_delta_time()
     last_time_send += delta_time;
@@ -49,4 +49,4 @@ void PacketSendSystem(iter *it) {
         }
         free(send_buffer_2);
     }
-} zoxd_system(PacketSendSystem)
+} zox_sys_end(PacketSendSystem);

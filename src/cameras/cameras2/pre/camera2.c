@@ -1,6 +1,6 @@
 entity prefab_camera2D_follower;
 
-entity spawn_prefab_camera2D_follower(ecs *world, const entity prefab) {
+entity spawn_prefab_camera2D_follower(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     // zox_prefab_name("camera2D")
     // ecs_add_id(world, e, EcsPrefab);
@@ -11,11 +11,11 @@ entity spawn_prefab_camera2D_follower(ecs *world, const entity prefab) {
     return e;
 }
 
-entity spawn_camera2D_follower(ecs *world, float3 position, float4 rotation, int2 screenDimensions) {
+entity spawn_camera2D_follower(ecs *world, float3 position, float4 rotation, int2 size) {
     zox_instance(prefab_camera2D_follower);
     zox_name("camera2D_follower");
     zox_set(e, Position3D, { position });
     zox_set(e, Rotation3D, { rotation });
-    zox_set(e, ScreenDimensions, { screenDimensions });
+    zox_set(e, ScreenDimensions, { size });
     return e;
 }

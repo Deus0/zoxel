@@ -23,8 +23,9 @@ entity spawn_menu_game(
         canvas,
         int2_zero,
         canvas_size,
-        float2_half);
-    zox_name("menu_game")
+        float2_half
+    );
+    zox_name("menu_game");
     Children children = (Children) { 0 };
 
     const entity crosshair = spawn_crosshair(

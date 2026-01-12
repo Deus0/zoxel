@@ -1,5 +1,5 @@
 // Calculates our camera to world matrix
-void ViewMatrixSystem(iter *it) {
+zox_sys2(ViewMatrixSystem) {
     zox_sys_begin()
     zox_sys_in(TransformMatrix)
     zox_sys_in(ProjectionMatrix)
@@ -11,4 +11,4 @@ void ViewMatrixSystem(iter *it) {
         const float4x4 view_matrix = float4x4_inverse(transformMatrix->value);
         viewMatrix->value = float4x4_multiply(view_matrix, projectionMatrix->value);
     }
-} zoxd_system(ViewMatrixSystem)
+} zox_sys_end(ViewMatrixSystem);

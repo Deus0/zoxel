@@ -1,5 +1,5 @@
 // This should only update when either ScreenDimensions or FieldOfView changes
-void ProjectionMatrixSystem(iter *it) {
+zox_sys2(ProjectionMatrixSystem) {
 #ifdef main_thread_projection_matrix_system
     // zox_skip_if_unchanged(1)
 #endif
@@ -53,4 +53,4 @@ void ProjectionMatrixSystem(iter *it) {
         }
 #endif
     }
-} zoxd_system2(ProjectionMatrixSystem);
+} zox_sys_end(ProjectionMatrixSystem);

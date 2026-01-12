@@ -1,4 +1,4 @@
-void InstanceRender2DSystem(iter *it) {
+zox_sys2(InstanceRender2DSystem) {
     zox_sys_begin()
     zox_sys_in(Position2)
     zox_sys_in(Rotation2D)
@@ -11,4 +11,4 @@ void InstanceRender2DSystem(iter *it) {
         zox_sys_i(Brightness, brightness)
         render_instance2D(position2->value, rotation2D->value, scale1D->value, brightness->value);
     }
-} zoxd_system(InstanceRender2DSystem)
+} zox_sys_end(InstanceRender2DSystem);

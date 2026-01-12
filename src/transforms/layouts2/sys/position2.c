@@ -1,23 +1,19 @@
 // Convert LayoutPosition to Position2
 // Triggered by LayoutPositionDirty
 
-float2 get_element_position(
-    const int2 pixel_positionv,
-    const int2 canvas_size
-) {
-    const float2 canvas_size_f = int2_to_float2(canvas_size);
-    const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
-    float2 position = int2_to_float2(pixel_positionv);
-    float2_divide_float2(&position, canvas_size_f);
+float2 get_element_position(int2 position, int2 size) {
+    float2 sizef = int2_to_float2(size);
+    float aspect_ratio = sizef.x / sizef.y;
+    float2 positionf = int2_to_float2(position);
+    float2_divide_float2(&positionf, sizef);
     // we get our 0 to 1, make -0.5 to 0.5, then stretch x along canvas
-    position.x -= 0.5f;
-    position.y -= 0.5f;
-    position.x *= aspect_ratio;
-
-    return position;
+    positionf.x -= 0.5f;
+    positionf.y -= 0.5f;
+    positionf.x *= aspect_ratio;
+    return positionf;
 }
 
-void set_child_position2(
+void set_layout_child_position_recursively(
     ecs* world,
     entity e,
     int2 canvas_size
@@ -40,7 +36,8 @@ void set_child_position2(
         zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
             entity e2 = children->value[i];
-            set_child_position2(
+
+            set_layout_child_position_recursively(
                 world,
                 e2,
                 canvas_size
@@ -49,6 +46,7 @@ void set_child_position2(
     }
 }
 
+// Should this just include canvas too?
 zox_sys2(LayoutPosition2System) {
     zox_sys_world();
     zox_sys_begin();
@@ -72,6 +70,7 @@ zox_sys2(LayoutPosition2System) {
                 it->entities[i]);
             continue;
         }
+
         zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
         position2->value = get_element_position(
             canvas_position->value,
@@ -79,7 +78,7 @@ zox_sys2(LayoutPosition2System) {
         );
 
         zox_sys_e();
-        set_child_position2(world, e, canvas_size);
+        set_layout_child_position_recursively(world, e, canvas_size);
 
         /*zox_log("[%s] posf [%.1fx%.1f] canvaspos [%ix%i] - canvas size [%ix%i]",
             zox_get_name(it->entities[i]),

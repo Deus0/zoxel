@@ -8,14 +8,20 @@ int2 get_element_pixel_positionv(
 ) {
     int2 output = parent_position;
     // position is actually the centre point, so get the bottom left corner here
+
+    // Compute parent origin in pixels (top-left)
     output.x -= parent_size.x / 2;
     output.y -= parent_size.y / 2;
+    // zox_log("   - Top Left of Parent [%ix%i] - centre [%ix%i] size [%ix%i]", output.x, output.y, parent_position.x, parent_position.y, parent_size.x, parent_size.y);
+
     // now centre it within the parent element / canvas
     output.x += (int) (parent_size.x * anchor.x);
     output.y += (int) (parent_size.y * anchor.y);
+
     // add local position offset
     output.x += position.x;
     output.y += position.y;
+
     return output;
 }
 
@@ -32,16 +38,21 @@ void set_child_canvas_position(
 
     int2 cposition = parent_position;
     if (!skip) {
-        if (zox_has(e, LayoutPosition) && zox_has(e, CanvasPosition) && zox_has(e, Anchor)) {
+        if (zox_has(e, LayoutPosition) && zox_has(e, CanvasPosition) && zox_has(e, Anchor) && zox_has(e, LayoutSize)) {
             zox_geter_value(e, LayoutPosition, int2, position);
             zox_geter_value(e, Anchor, float2, anchor);
             zox_muter(e, CanvasPosition, canvas_position);
+
             canvas_position->value = get_element_pixel_positionv(
                 parent_position,
                 parent_size,
                 position,
                 anchor
             );
+
+            // zox_geter_value(e, LayoutSize, int2, size);
+            // zox_log("+++ (set) Canvas Position [%s] [%ix%i] - Position [%ix%i] Anchor [%fx%f] Size [%ix%i]  +++", zox_get_name(e), canvas_position->value.x, canvas_position->value.y, position.x, position.y, anchor.x, anchor.y, size.x, size.y);
+
             // NOTE: we pass canvas position down recursively
             cposition = canvas_position->value;
         }
@@ -49,7 +60,7 @@ void set_child_canvas_position(
     }
 
     // also set children ones
-    if (zox_has(e, Children)) {
+    if (zox_has(e, Children) && zox_has(e, LayoutSize)) {
         zox_geter_value(e, LayoutSize, int2, size);
         zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
@@ -96,9 +107,8 @@ zox_sys2(LayoutParentPositionSystem) {
         }
 
         if (!zox_valid(parent->value) || !zox_has(parent->value, LayoutSize)) {
-            zox_log("! invalid parent [%s::%lu]",
-                zox_get_name(it->entities[i]),
-                it->entities[i]);
+            zox_sys_e();
+            zox_logw("Invalid parent [%s]", zox_get_name(e));
             continue;
         }
 
@@ -121,6 +131,8 @@ zox_sys2(LayoutParentPositionSystem) {
         );
 
         zox_sys_e();
+        // zox_log("+++ (root) Canvas Position [%s] [%ix%i] - Position [%ix%i] Anchor [%fx%f] Size [%ix%i] +++", zox_get_name(e), canvas_position->value.x, canvas_position->value.y, position.x, position.y, anchor->value.x, anchor->value.y, parent_size.x, parent_size.y);
+
         set_child_canvas_position(
             world,
             e,

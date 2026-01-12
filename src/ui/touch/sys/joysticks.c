@@ -1,5 +1,5 @@
 // #define zoxel_mouse_emulate_touch
-// #define zoxel_disable_mouse_lock
+
 int virtual_joysticks_spawn_count = 0;
 byte first_joystick_type = zox_device_stick_left;
 

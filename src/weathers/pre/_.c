@@ -6,7 +6,8 @@ void spawn_prefabs_weather(ecs *world) {
 
 void spawn_weather(ecs *world) {
 #ifndef zox_disable_skybox
-    spawn_skybox(world, shader_skybox);
-    set_skybox_colors(world, menu_sky_color, menu_sky_bottom_color);
+    // entity camera = main_cameras[0];
+    // spawn_skybox(world, shader_skybox, camera);
+    // set_skybox_colors(world, menu_sky_color, menu_sky_bottom_color);
 #endif
 }

@@ -1,4 +1,4 @@
-void Mesh2DUpdateSystem(iter *it) {
+zox_sys2(Mesh2DUpdateSystem) {
     // if (!ecs_query_changed(NULL, it)) return;
     zox_sys_begin()
     zox_sys_in(MeshDirty)
@@ -23,4 +23,4 @@ void Mesh2DUpdateSystem(iter *it) {
             meshVertices2D->value,
             meshVertices2D->length);
     }
-} zoxd_system(Mesh2DUpdateSystem)
+} zox_sys_end(Mesh2DUpdateSystem);

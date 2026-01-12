@@ -4,10 +4,21 @@
 #include "list.c"
 #include "grid.c"
 
+// TODO: We probably need a frame by frame, parent to child system, atm it just pushes it all at once, creates race issues
+
 void define_systems_layouts2(ecs* world) {
+    // NOTE: Anchor Size for stretching along canvas, must work before the positioning
+    zox_system(
+        AnchorSizeSystem,
+        EcsOnLoad,
+        [in] layouts2.LayoutSizeDirty,
+        [in] layouts2.AnchorSize,
+        [in] hierarchys.ParentLink,
+        [out] layouts2.LayoutSize
+    );
     zox_system(
         LayoutParentPositionSystem,
-        EcsOnLoad,
+        EcsOnLoad + 1,
         [in] LayoutPositionDirty,
         [in] LayoutPosition,
         [in] LayoutSize,
@@ -17,19 +28,11 @@ void define_systems_layouts2(ecs* world) {
     );
     zox_system(
         LayoutPosition2System,
-        EcsOnLoad,
+        EcsOnLoad + 2,
         [in] LayoutPositionDirty,
         [in] CanvasPosition,
         [in] CanvasLink,
         [out] transforms2.Position2
-    );
-    zox_system(
-        AnchorSizeSystem,
-        EcsOnLoad,
-        [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.AnchorSize,
-        [in] hierarchys.ParentLink,
-        [out] layouts2.LayoutSize
     );
 
     zox_system(

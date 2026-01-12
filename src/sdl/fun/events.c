@@ -20,9 +20,10 @@ void update_sdl(ecs *world) {
             if (event.window.event == SDL_WINDOWEVENT_RESIZED ||
                 event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED
             ) {
-                byte monitor = event.display.display;
-                byte orientation = get_screen_orientation(monitor);
                 int2 window_size = (int2) { event.window.data1, event.window.data2 };
+                byte monitor = event.display.display;
+
+                byte orientation = get_screen_orientation(monitor);
                 // zox_logv("Display [%i] Orientation [%i] Size Changed [%ix%i]", monitor, orientation, window_size.x, window_size.y);
 
                 zox_geter_value(e, ScreenOrientation, byte, old_orientation);
@@ -36,6 +37,13 @@ void update_sdl(ecs *world) {
                     }*/
                     zox_set(e, ScreenOrientation, { orientation });
                 }
+                // zox_log("SDL WINDOW SIZE %ix%i", window_size.x, window_size.y);
+
+                // Re-query drawable size after fullscreen
+                // int draw_w, draw_h;
+                // SDL_GL_GetDrawableSize(zox_gett_value(e, SDLWindow), &draw_w, &draw_h);
+                // zox_log("Fullscreen drawable size %ix%i", draw_w, draw_h);
+
                 on_window_resized(world, e, window_size);
             }
 

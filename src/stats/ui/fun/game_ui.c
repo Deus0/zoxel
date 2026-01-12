@@ -1,7 +1,7 @@
 entity spawn_menu_game_stats(
     ecs* world,
-    const entity parent,
-    const entity player,
+    entity parent,
+    entity player,
     Children* parent_children
 ) {
     if (!player || !zox_has(player, CharacterLink) || !zox_has(player, CanvasLink)) {
@@ -58,12 +58,12 @@ entity spawn_menu_game_stats(
         .texture = panel_texture,
         .canvas = {
             .e = canvas,
-            .size = zox_gett_value(canvas, LayoutSize),
+            // .size = zox_gett_value(canvas, LayoutSize),
         },
         .parent = {
             .e = parent,
-            .position = int2_half(zox_gett_value(canvas, LayoutSize)),
-            .size = zox_gett_value(canvas, LayoutSize)
+            // .position = int2_half(zox_gett_value(canvas, LayoutSize)),
+            // .size = zox_gett_value(canvas, LayoutSize)
         },
         .element = {
             .prefab = prefab_body,
@@ -75,14 +75,17 @@ entity spawn_menu_game_stats(
     };
 
     const entity e = spawn_element(world, &body_data);
+    zox_set_unique_name(e, "stats_panel");
     add_to_Children(parent_children, e);
 
     Children children = { 0 };
     for (int i = 0; i < stats->length; i++) {
         entity stat = stats->value[i];
+
         if (!zox_has(stat, StatState) && !zox_has(stat, StatLevel)) {
             continue;
         }
+
         zox_geter_value(stat, ColorRGB, color_rgb, cvalue);
         entity statbar = spawn_statbar2(
             world,

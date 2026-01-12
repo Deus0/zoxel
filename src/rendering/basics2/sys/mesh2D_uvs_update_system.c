@@ -14,21 +14,22 @@ void opengl_upload_shader2D_textured(uint2 mesh_buffer, uint uv_buffer, const in
 #endif
 }
 
-void Mesh2DUvsUpdateSystem(iter *it) {
-    zox_sys_begin()
-    zox_sys_in(MeshIndicies)
-    zox_sys_in(MeshVertices2D)
-    zox_sys_in(MeshUVs)
-    zox_sys_in(MeshGPULink)
-    zox_sys_in(UvsGPULink)
-    zox_sys_in(MeshDirty)
+zox_sys2(Mesh2DUvsUpdateSystem) {
+    zox_sys_begin();
+    zox_sys_in(MeshIndicies);
+    zox_sys_in(MeshVertices2D);
+    zox_sys_in(MeshUVs);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(UvsGPULink);
+    zox_sys_in(MeshDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MeshDirty, meshDirty)
-        zox_sys_i(MeshIndicies, meshIndicies)
-        zox_sys_i(MeshGPULink, meshGPULink)
-        zox_sys_i(UvsGPULink, uvsGPULink)
-        zox_sys_i(MeshVertices2D, meshVertices2D)
-        zox_sys_i(MeshUVs, meshUVs)
+        zox_sys_i(MeshDirty, meshDirty);
+        zox_sys_i(MeshIndicies, meshIndicies);
+        zox_sys_i(MeshGPULink, meshGPULink);
+        zox_sys_i(UvsGPULink, uvsGPULink);
+        zox_sys_i(MeshVertices2D, meshVertices2D);
+        zox_sys_i(MeshUVs, meshUVs);
+
         if (meshDirty->value != mesh_state_upload) {
             continue;
         }
@@ -40,4 +41,4 @@ void Mesh2DUvsUpdateSystem(iter *it) {
         }
         opengl_upload_shader2D_textured(meshGPULink->value, uvsGPULink->value, meshIndicies->value, meshIndicies->length, meshVertices2D->value, meshUVs->value, meshVertices2D->length);
     }
-} zoxd_system(Mesh2DUvsUpdateSystem)
+} zox_sys_end(Mesh2DUvsUpdateSystem);

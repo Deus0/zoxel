@@ -61,16 +61,17 @@ void zox_app_set_monitor_e(ecs *world, entity e, byte monitor) {
     zox_set(e, WindowMonitor, { monitor });
 }
 
-int2 get_screen_size_monitor(byte monitor_index) {
+int2 get_screen_size_monitor(byte monitor) {
     SDL_DisplayMode displayMode;
-    if (SDL_GetCurrentDisplayMode(monitor_index, &displayMode)) {
-        zox_log_error("[SDL_GetCurrentDisplayMode] (get_screen_size_monitor) failed at %i: %s", monitor_index, SDL_GetError());
-        if (monitor_index == 0) {
+    if (SDL_GetCurrentDisplayMode(monitor, &displayMode)) {
+        zox_log_error("[SDL_GetCurrentDisplayMode] (get_screen_size_monitor) failed at %i: %s", monitor, SDL_GetError());
+        if (monitor == 0) {
             return (int2) { 480, 480 };
         } else {
             return get_screen_size_monitor(0);
         }
     }
+    zox_log("Monitor Screen Size [%i] [%ix%i]", monitor, displayMode.w, displayMode.h);
     return (int2) { displayMode.w, displayMode.h };
 }
 

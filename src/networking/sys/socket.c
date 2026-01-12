@@ -1,4 +1,4 @@
-void SocketSystem(iter *it) {
+zox_sys2(SocketSystem) {
     zox_sys_begin();
     zox_sys_in(NetPort);
     zox_sys_out(SocketLink);
@@ -12,4 +12,4 @@ void SocketSystem(iter *it) {
 
         socket->value = open_socket(port->value);
     }
-} zoxd_system2(SocketSystem);
+} zox_sys_end(SocketSystem);

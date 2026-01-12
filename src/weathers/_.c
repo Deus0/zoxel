@@ -8,7 +8,7 @@ entity skybox; // remove this, link to realm/game
 zox_tag(Weather);
 zox_tag(Skybox);
 #include "shd/skybox.c"
-#include "pre/prefabs.c"
+#include "pre/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
 
@@ -25,14 +25,19 @@ zox_begin_module(Weathers)
     zoxd_tag(Weather);
     zoxd_tag(Skybox);
     if (!headless) {
-        zox_gpu_restore_system(SkyboxRestoreSystem,
+        zox_gpu_restore_system(
+            SkyboxRestoreSystem,
             [in] rendering.MaterialGPULink,
             [in] colorz.ColorRGB,
             [in] colorz.SecondaryColorRGB,
-            [none] Skybox);
-        zox_system_1(SkyboxSetTimeSystem, EcsOnUpdate,
+            [none] Skybox
+        );
+        zox_system_1(
+            SkyboxSetTimeSystem,
+            EcsOnUpdate,
             [in] rendering.MaterialGPULink,
-            [none] Skybox);
+            [none] Skybox
+        );
     }
     // hooks
     add_hook_load_shader(&spawn_shaders_weather);

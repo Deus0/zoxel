@@ -4,7 +4,7 @@ zoxc_int2(LayoutPosition);
 zoxc_int2(LayoutSize);
 zoxc_int2(CanvasPosition);
 zoxc_int4(LayoutConstraints);
-zoxc_float2(Anchor);
+zoxc_float2(Anchor);            // TODO: Rename: AnchorPosition
 zoxc_float2(AnchorSize);
 zoxc_entity(CanvasLink);
 zoxc_byte(Layer2D);

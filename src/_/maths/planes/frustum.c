@@ -6,12 +6,10 @@
 // we need to draw these planes. we can get their overlapping 8 points?
 // return float3_dot(p.normal, point) >= p.distance;
 
-#define frustum_eps 0.01f   // was 0 before
-
 // Returns 1 if the point is outside the plane
 static inline byte is_outside_plane(const plane p, const float3 point) {
     // Positive distance means point is in direction of normal
-    return (float3_dot(p.normal, point) - p.distance) > frustum_eps;
+    return (float3_dot(p.normal, point) - p.distance) > frustum_epsilon;
 }
 
 // checks if any part of bounds is inside 6 planes

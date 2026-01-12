@@ -1,4 +1,4 @@
-void PacketRecieveSystem(iter *it) {
+zox_sys2(PacketRecieveSystem) {
     byte recv_buffer[1];
     zox_sys_begin()
     zox_sys_in(SocketLink)
@@ -66,4 +66,4 @@ void PacketRecieveSystem(iter *it) {
         }
     }
     // zox_log(" === finished attempting to get packets ===\n");
-} zoxd_system(PacketRecieveSystem)
+} zox_sys_end(PacketRecieveSystem);

@@ -1,4 +1,57 @@
-void CameraFrustumSystem(iter *it) {
+void calculate_frustum_corners_d3(const float4x4 view_projection_matrix, double3 *frustum) {
+    frustum[0] = (double3) { -1, -1, -1 };
+    frustum[1] = (double3) { 1, -1, -1 };
+    frustum[2] = (double3) { 1, 1, -1 };
+    frustum[3] = (double3) { -1, 1, -1 };
+    frustum[4] = (double3) { -1, -1, 1 };
+    frustum[5] = (double3) { 1, -1, 1 };
+    frustum[6] = (double3) { 1, 1, 1 };
+    frustum[7] = (double3) { -1, 1, 1 };
+    const float4x4 inv = float4x4_inverse_safe(view_projection_matrix);
+    for (int i = 0; i < 8; i++) {
+        const double4 corner = double4_from_double3(frustum[i], 1);
+        const double4 world_corner = float4x4_multiply_double4(inv, corner);
+        frustum[i] = double3_divide_double(
+            (double3) { world_corner.x, world_corner.y, world_corner.z }, world_corner.w);
+    }
+}
+
+void calculate_frustum_bounds_d3(const double3 *corners, float6 *bounds) {
+    bounds->x = bounds->z = bounds->u = FLT_MAX;
+    bounds->y = bounds->w = bounds->v = -FLT_MAX;
+    for (int i = 0; i < 8; i++) {
+        if (corners[i].x < bounds->x) bounds->x = corners[i].x;
+        if (corners[i].x > bounds->y) bounds->y = corners[i].x;
+        if (corners[i].y < bounds->z) bounds->z = corners[i].y;
+        if (corners[i].y > bounds->w) bounds->w = corners[i].y;
+        if (corners[i].z < bounds->u) bounds->u = corners[i].z;
+        if (corners[i].z > bounds->v) bounds->v = corners[i].z;
+    }
+}
+
+void frustum_to_planes_d3(double3 *frustum, plane *planes) {
+    // Left (swap 3 and 4)
+    planes[0] = calculate_plane_from_points_d3(frustum[0], frustum[4], frustum[3]);
+
+    // Right (swap 2 and 1)
+    planes[1] = calculate_plane_from_points_d3(frustum[5], frustum[1], frustum[2]);
+
+    // Bottom (swap 1 and 0)
+    planes[2] = calculate_plane_from_points_d3(frustum[4], frustum[0], frustum[1]);
+
+    // Top (swap 6 and 7)
+    planes[3] = calculate_plane_from_points_d3(frustum[3], frustum[7], frustum[6]);
+
+    // Near (swap 2 and 3)
+    planes[4] = calculate_plane_from_points_d3(frustum[1], frustum[3], frustum[2]);
+
+    // Far (swap 6 and 5)
+    planes[5] = calculate_plane_from_points_d3(frustum[7], frustum[5], frustum[6]);
+}
+
+#ifdef frustumdouble
+
+zox_sys2(CameraFrustumSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -8,13 +61,15 @@ void CameraFrustumSystem(iter *it) {
     zox_sys_out(Position3DBounds);
     zox_sys_out(CameraPlanes);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ViewMatrix, viewMatrix);
-        zox_sys_o(CameraPlanes, cameraPlanes);
+        zox_sys_i(ViewMatrix, vp_matrix);
+        zox_sys_o(CameraPlanes, planes);
         zox_sys_o(FrustumCorners, corners);
         zox_sys_o(Position3DBounds, bounds);
-        calculate_frustum_corners_d3(viewMatrix->value, corners->value);
+
+        calculate_frustum_corners_d3(vp_matrix->value, corners->value);
         calculate_frustum_bounds_d3(corners->value, &bounds->value);
-        calculate_planes_from_frustum_d3_inwards(corners->value, cameraPlanes->value);
-        // for (int j = 0; j < 6; j++) print_plane("cp: ", j, cameraPlanes->value[j]);
+        frustum_to_planes_d3(corners->value, planes->value);
     }
-} zoxd_system(CameraFrustumSystem)
+} zox_sys_end(CameraFrustumSystem);
+
+#endif

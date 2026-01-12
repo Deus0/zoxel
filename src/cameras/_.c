@@ -1,6 +1,7 @@
 #if !defined(zoxm_cameras) && defined(zoxm_transforms)
 #define zoxm_cameras
 
+// TODO: If Camera Distance > 500, use double precision for planes - it still flickers so we need to use for now
 #define frustumdouble
 
 #include "sta/_.c"
