@@ -8,7 +8,7 @@ void set_layout_dirty_recursive(ecs* world, entity e) {
     if (zox_has(e, LayoutPositionDirty)) {
         zox_muter(e, LayoutPositionDirty, dirty);
         dirty->value = zox_dirty_trigger;
-        zox_log("+++ Position Dirty [%s] +++", zox_get_name(e));
+        // zox_log("+++ Position Dirty [%s] +++", zox_get_name(e));
     }
 
     if (zox_has(e, LayoutSizeDirty)) {
@@ -67,7 +67,6 @@ zox_sys2(CanvasResizeSystem) {
             set_layout_dirty_recursive(world, child);
         }
 
-        zox_log("Canvas resized [%ix%i] screen [%ix%i]", size->value.x, size->value.y, screen_size.x, screen_size.y);
-
+        // zox_log("Canvas resized [%ix%i] screen [%ix%i]", size->value.x, size->value.y, screen_size.x, screen_size.y);
     }
 } zox_sys_end(CanvasResizeSystem);
