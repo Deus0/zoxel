@@ -18,7 +18,7 @@ void define_systems_chunksio(ecs* world) {
         [out] chunks3.VoxelNodeEdited,
         [out] chunks3.VoxelNodeLoaded,
         [out] chunks3.VoxelNode,
-        [out] chunks3.NodeDepth,
+        [out] chunks.NodeDepth,
         [out] chunks3.VoxelNodeGenerated,
     );
 }

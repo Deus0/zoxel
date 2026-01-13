@@ -37,7 +37,7 @@ void define_systems_voxes(ecs *world) {
         [in] VoxType,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
-        [out] chunks3.NodeDepth,
+        [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
     // NOTE: Writes to VoxelNode
@@ -47,7 +47,7 @@ void define_systems_voxes(ecs *world) {
         [in] CloneVoxLink,
         [out] CloneVox,
         [out] chunks3.VoxelNode,
-        [out] chunks3.NodeDepth,
+        [out] chunks.NodeDepth,
         [out] blocks.BlockScale,
         [out] chunks3.ChunkSize,
         [out] colorz.ColorRGBs,

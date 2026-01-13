@@ -37,7 +37,7 @@ void module_dispose_chunks3(ecs *world, void *ctx) {
 }
 
 zox_begin_module(Chunks3)
-    define_components_chunks(world);
+    define_components_chunks3(world);
     define_systems_chunks(world);
     define_systems_chunksio(world);
     // hooks

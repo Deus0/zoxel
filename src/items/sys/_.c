@@ -31,7 +31,7 @@ void define_systems_items(ecs *world) {
         [in] chunks3.VoxelNodeQueue,
         [in] chunks3.VoxelNode,
         [in] voxes.VoxLink,
-        [in] chunks3.NodeDepth,
+        [in] chunks.NodeDepth,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
     );

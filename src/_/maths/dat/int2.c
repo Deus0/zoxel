@@ -12,3 +12,10 @@ static const int2 int2_one    = { 1, 1 };
 static const int2 int2_two    = { 2, 2 };
 static const int2 int2_four   = { 4, 4 };
 static const int2 int2_hidden = { -666, -666 };
+
+static inline uint get_int2_hash(int2 input) {
+    uint hash = hash_constant;
+    hash = hash * 163 + ((uint) input.x);
+    hash = hash * 109 + ((uint) input.y);
+    return hash;
+}

@@ -1,13 +1,11 @@
 entity spawn_chunk_terrain(
     ecs *world,
-    const
     entity prefab,
-    const
     entity terrain,
-    const int3 camera_position,
-    const int3 position,
-    const byte terrain_depth,
-    const float terrain_scalev
+    int3 camera_position,
+    int3 position,
+    byte terrain_depth,
+    float terrain_scalev
 ) {
 
     zox_instance(prefab);

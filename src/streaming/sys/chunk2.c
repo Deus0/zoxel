@@ -1,10 +1,9 @@
-extern entity spawn_chunk_terrain(ecs*, const entity, const entity, const int3, const int3, const byte, const float);
+// Should I Chunk2Neighbors, Chunk2Position
 
-// NOTE: Takes in array of stream points and iterates per chunk
-// NOTE: This logic fails if all chunks dissapear
+// Tunk2 a child of Chunk2 entities
 
-zox_sys2(ChunkSpawnSystem) {
-    const entity prefab_chunk = prefab_chunk_terrain;
+zox_sys2(Tunk2SpawnSystem) {
+    // const entity prefab_chunk = prefab_chunk_terrain;
 
     zox_sys_query();
     zox_sys_world();
@@ -32,18 +31,15 @@ zox_sys2(ChunkSpawnSystem) {
     }
 
     zox_sys_begin();
-    zox_sys_in(ChunkPosition);
     zox_sys_in(VoxLink);
     zox_sys_in(RenderDistance);
-    zox_sys_out(ChunkNeighbors);
-
+    zox_sys_in(Chunk2Position);
+    zox_sys_out(Chunk2Neighbors);
     for (int i = 0; i < it->count; i++) {
-
-        // zox_sys_e();
         zox_sys_i(VoxLink, terrain);
         zox_sys_i(RenderDistance, rdistance);
-        zox_sys_i(ChunkPosition, cposition);
-        zox_sys_o(ChunkNeighbors, neighbors);
+        zox_sys_i(Chunk2Position, cposition);
+        zox_sys_o(Chunk2Neighbors, neighbors);
 
         if (!zox_valid(terrain->value)) {
             continue;
@@ -54,16 +50,13 @@ zox_sys2(ChunkSpawnSystem) {
             continue;
         }
 
-        // Pass if lod changing
-        /*zox_geter_value(e, ChunkLodDirty, byte, chunkLodDirty);
-        if (chunkLodDirty != 0) {
-            continue;
-        }*/
+        // zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
 
-        zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
+        // This is what determines when to grow or not
         const byte stream_zone = rdistance->value < terrain_lod_far;
+
         if (stream_zone) {
-            for (byte j = 0; j < 6; j++) {
+            for (byte j = 0; j < 4; j++) {
                 entity neighbor = neighbors->value[j];
 
                 // no need to spawn if neighbor exists
@@ -72,44 +65,40 @@ zox_sys2(ChunkSpawnSystem) {
                 }
 
                 // get position of neighbor and check terrain for it
-                const int3 neighbor_position = int3_add(cposition->value, get_direction_int3(j));
-                if (!(neighbor_position.y >= -render_distance_y && neighbor_position.y <= render_distance_y)) {
-                    continue;
-                }
+                const int2 nposition = int3_add(cposition->value, get_direction_int2(j));
 
-                zox_geter(terrain->value, ChunkLinks, oldChunkLinks);
-                neighbor = int3_hashmap_get(oldChunkLinks->value, neighbor_position);
+                zox_geter(terrain->value, ChunkLinks2, chunks);
+                neighbor = int3_hashmap_get(chunks->value, nposition);
 
                 // if not existing yet, spawn a new chunk
                 if (!zox_valid(neighbor)) {
 
-                    const int3 stream_point = find_closest_point(
+                    const int2 stream_point = find_closest_point2(
                         stream_points,
                         stream_points_length,
-                        neighbor_position);
+                        nposition);
 
                     // only spawn new chunk if within stream distance
                     const byte camera_distance = get_camera_chunk_distance_xz(
                         stream_point,
-                        neighbor_position);
+                        nposition);
 
                     if (camera_distance <= terrain_lod_far) {
 
-                        neighbor = spawn_chunk_terrain(
+                        entity chunk = 0; // spawn_tunk2(world, prefab_tunk2, nposition);
+                        /*spawn_chunk_terrain(
                             world,
                             prefab_chunk,
                             terrain->value,
                             stream_point,
-                            neighbor_position,
+                            nposition,
                             terrain_depth,
                             terrain_scale
-                        );
+                        );*/
 
-                        zox_geter(terrain->value, ChunkLinks, chunkLinks);
-                        int3_hashmap_add(chunkLinks->value, neighbor_position, neighbor);
-                        if (log_individuals) {
-                            zox_log_streaming("+ streaming: new [%i]s chunk [%ix%ix%i]", spawned_chunks, neighbor_position.x, neighbor_position.y, neighbor_position.z);
-                        }
+                        zox_geter(terrain->value, ChunkLinks2, chunks);
+                        int2_hashmap_add(chunks->value, nposition, chunk);
+
                         spawned_chunks++;
                     }
                 }
@@ -122,4 +111,4 @@ zox_sys2(ChunkSpawnSystem) {
         zox_log_streaming(" + [%i] spawned [%i]", ecs_run_count, spawned_chunks);
     }
 
-} zox_sys_end(ChunkSpawnSystem);
+} zox_sys_end(Tunk2SpawnSystem);

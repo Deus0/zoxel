@@ -78,10 +78,16 @@ entity spawn_terrain_streaming(
         chunk_position,
         real_chunk_scale);*/
 
-    ChunkLinks *chunkLinks = &((ChunkLinks) { NULL });
-    chunkLinks->value = create_int3_hashmap(2048);
+    // ChunkLinks *chunkLinks = &((ChunkLinks) { NULL });
+    ChunkLinks chunks = (ChunkLinks) { NULL };
+    chunks.value = create_int3_hashmap(2048);
+    zox_set_ptr(e, ChunkLinks, chunks);
     // int3_hashmap_add(chunkLinks->value, chunk_position, chunk);
-    zox_set(e, ChunkLinks, { chunkLinks->value })
+    // zox_set(e, ChunkLinks, { chunkLinks->value })
+
+    Chunk2Links chunks2 = (Chunk2Links) { NULL };
+    chunks2.value = create_int2_hashmap(512);
+    zox_set_ptr(e, Chunk2Links, chunks2);
 
     return e;
 }

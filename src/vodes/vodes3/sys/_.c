@@ -26,7 +26,7 @@ void define_systems_vodes3(ecs* world) {
             [in] chunks3.VoxelNodeDirty,
             [in] rendering.RenderDistanceDirty,
             [in] voxes.VoxLink,
-            [in] chunks3.NodeDepth,
+            [in] chunks.NodeDepth,
             [in] rendering.RenderDisabled,
             [in] rendering.RenderDepth,
             [in] rendering.RenderDistance,

@@ -6,12 +6,12 @@ void test_spawn_character_npc(ecs *world, int32_t keycode) {
         int3 chunk_position = int3_zero;
         // float3 position = (float3) { 4, 12, 4 };
 
-        const entity terrain = zox_get_value(local_realm, TerrainLink)
+        const entity terrain = zox_get_value(local_realm, TerrainLink);
         if (!terrain) {
             return;
         }
 
-        zox_geter(terrain, ChunkLinks, chunk_links)
+        zox_geter(terrain, ChunkLinks, chunk_links);
         const entity chunk = int3_hashmap_get(chunk_links->value, chunk_position);
         if (!chunk) {
             return;

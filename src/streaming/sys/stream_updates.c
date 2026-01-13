@@ -2,6 +2,7 @@
 // each chunk will calculate distance to nearest camera and based LOD off this distance
 const byte disable_chunk_loding = 0;
 
+// This sets chunk distances when stream points move
 zox_sys2(ChunkLodSystem) {
     if (zox_cameras_disable_streaming) {
         return;
@@ -12,7 +13,7 @@ zox_sys2(ChunkLodSystem) {
     byte streamers_dirty = 0;
     int3 *stream_points = NULL;
     int stream_points_length = 0;
-    zox_sys_query_begin()
+    zox_sys_query_begin();
 
     while (zox_sys_query_loop()) {
         if (streamers_dirty) {
@@ -44,27 +45,27 @@ zox_sys2(ChunkLodSystem) {
 
     for (int i = 0; i < it->count; i++) {
 
-        zox_sys_i(ChunkPosition, chunkPosition);
-        zox_sys_o(RenderDepth, renderDepth);
-        zox_sys_o(RenderDepthDirty, renderDepthDirty);
-        zox_sys_o(RenderDistance, renderDistance);
-        zox_sys_o(RenderDistanceDirty, renderDistanceDirty);
+        zox_sys_i(ChunkPosition, position);
+        zox_sys_o(RenderDepth, depth);
+        zox_sys_o(RenderDepthDirty, depth_dirty);
+        zox_sys_o(RenderDistance, distance);
+        zox_sys_o(RenderDistanceDirty, distance_dirty);
 
-        const int3 stream_point = find_closest_point(stream_points, stream_points_length, chunkPosition->value);
-        const byte render_distance = get_camera_chunk_distance_xz(stream_point, chunkPosition->value);
+        const int3 stream_point = find_closest_point(stream_points, stream_points_length, position->value);
+        const byte render_distance = get_camera_chunk_distance_xz(stream_point, position->value);
 
-        if (renderDistance->value != render_distance) {
+        if (distance->value != render_distance) {
 
-            renderDistance->value = render_distance;
-            renderDistanceDirty->value = zox_dirty_trigger;
+            distance->value = render_distance;
+            distance_dirty->value = zox_dirty_trigger;
 
             // Our Terrain Chunks Update Here:
             if (disable_chunk_loding) continue;
-            const byte render_depth = camera_distance_to_terrain_render_depth(renderDistance->value);
-            if (renderDepth->value != render_depth) {
-                renderDepth->value = render_depth;
+            const byte render_depth = camera_distance_to_terrain_render_depth(distance->value);
+            if (depth->value != render_depth) {
+                depth->value = render_depth;
                 if (render_depth != render_depth_invisible) {
-                    renderDepthDirty->value = zox_dirty_trigger;
+                    depth_dirty->value = zox_dirty_trigger;
                 }
             }
         }

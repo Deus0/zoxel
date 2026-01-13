@@ -21,6 +21,7 @@
 #include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#include "tunks/_.c"
 
 void module_dispose_terrain(ecs *world, void *ctx) {
     (void) world;
@@ -37,6 +38,7 @@ zox_begin_module(Terrain)
     add_hook_terminal_command(process_arguments_terrain);
     add_to_event_game_state((zox_game_event) { &game_state_terrain });
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
+    zox_import_module(Tunks);
 zox_end_module(Terrain)
 
 #endif

@@ -3,6 +3,7 @@ zox_tag(Vox);
 zoxc_entity(VoxLink);
 zoxc_byte(ChunkLod);    // we using this??!?!
 zoxc_hashmap(ChunkLinks, int3)
+zoxc_hashmap(Chunk2Links, int2)
 
 // TODO: Move to Shapes or something
 zoxc_byte(VoxType);
@@ -20,6 +21,7 @@ void define_components_voxes(ecs *world) {
     zoxd_entity(VoxLink);
     zoxd_byte(ChunkLod);
     zox_define_hashmap_component(ChunkLinks);
+    zox_define_hashmap_component(Chunk2Links);
 
     // TODO: Move to Shapes or something
     zoxd_byte(VoxType);

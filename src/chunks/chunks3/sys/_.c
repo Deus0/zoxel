@@ -26,12 +26,12 @@ void define_systems_chunks(ecs *world) {
         VoxelNodeCleanupSystem,
         zoxp_voxels_write,
         [in] chunks3.VoxelNodeDirty,
-        [in] chunks3.NodeDepth,
+        [in] chunks.NodeDepth,
         [out] chunks3.VoxelNode
     );
     zox_system(VoxelNodeQueueSystem,
         zoxp_queue_process1,
-        [in] chunks3.NodeDepth,
+        [in] chunks.NodeDepth,
         [in] chunks3.VoxelNodeQueue,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
@@ -49,7 +49,7 @@ void define_systems_chunks(ecs *world) {
         [in] blocks.BlockScale,
         [in] transforms3.Position3D,
         [in] chunks3.VoxelNode,
-        [in] chunks3.NodeDepth,
+        [in] chunks.NodeDepth,
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkNeighbors,
         [none] ChunkDebugger

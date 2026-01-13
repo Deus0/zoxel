@@ -7,7 +7,7 @@ void define_systems_chunks3_colored(ecs *world) {
             zoxp_voxels_read,
             [in] chunks3.ChunkMeshDirty,
             [in] chunks3.VoxelNode,
-            [in] chunks3.NodeDepth,
+            [in] chunks.NodeDepth,
             [in] rendering.RenderDepth,
             [in] chunks3.ChunkNeighbors,
             [in] colorz.ColorRGBs,

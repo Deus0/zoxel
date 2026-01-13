@@ -34,7 +34,7 @@ void define_systems_terrain(ecs *world) {
         [in] chunks3.GenerateChunk,
         [in] chunks3.ChunkPosition,
         [in] voxes.VoxLink,
-        [out] chunks3.NodeDepth,
+        [out] chunks.NodeDepth,
         [out] chunks3.VoxelNode,
         [none] TerrainChunk,
         [none] FlatlandChunk
@@ -48,7 +48,7 @@ void define_systems_terrain(ecs *world) {
         [in] chunks3.VoxelNodeEdited,
         [in] voxes.VoxLink,
         [out] chunks3.VoxelNode,
-        [out] chunks3.NodeDepth,
+        [out] chunks.NodeDepth,
         [out] chunks3.VoxelNodeDirty,
         [out] chunks3.VoxelNodeGenerated,
         [out] chunks3.VoxelNodeLoaded,

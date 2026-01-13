@@ -1,6 +1,5 @@
 // Main Chunk Data
-zox_tag(Chunk);
-zoxc_byte(NodeDepth);
+zox_tag(Chunk3);
 zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
 #include "voxel_node.c"
@@ -31,11 +30,10 @@ zox_tag(DisableReverseLinkChunk);
 // Misc
 zoxc_float(RaycastRange);
 
-void define_components_chunks(ecs* world) {
+void define_components_chunks3(ecs* world) {
     // Main Chunk Voxel Data
-    zoxd_tag(Chunk);
+    zoxd_tag(Chunk3);
     zoxd_node(VoxelNode);
-    zoxd_byte(NodeDepth);
     zoxd_queue(VoxelNodeQueue);
     zoxd_int3(ChunkPosition);
     zoxd_int3(ChunkSize);

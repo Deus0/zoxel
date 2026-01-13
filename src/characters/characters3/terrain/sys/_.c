@@ -25,7 +25,7 @@ void define_systems_characters3_terrain(ecs* world) {
         zoxp_voxels_read,
         [in] rendering.RenderDistanceDirty,
         [in] chunks3.VoxelNode,
-        [in] chunks3.NodeDepth,
+        [in] chunks.NodeDepth,
         [in] chunks3.VoxelNodeLoaded,
         [in] chunks3.ChunkPosition,
         [in] rendering.RenderDistance,
