@@ -36,10 +36,7 @@ zox_sys2(ChunkSpawnSystem) {
     zox_sys_in(VoxLink);
     zox_sys_in(RenderDistance);
     zox_sys_out(ChunkNeighbors);
-
     for (int i = 0; i < it->count; i++) {
-
-        // zox_sys_e();
         zox_sys_i(VoxLink, terrain);
         zox_sys_i(RenderDistance, rdistance);
         zox_sys_i(ChunkPosition, cposition);
@@ -77,21 +74,19 @@ zox_sys2(ChunkSpawnSystem) {
                     continue;
                 }
 
-                zox_geter(terrain->value, ChunkLinks, oldChunkLinks);
-                neighbor = int3_hashmap_get(oldChunkLinks->value, neighbor_position);
+                zox_geter(terrain->value, ChunkLinks, chunks);
+                neighbor = int3_hashmap_get(chunks->value, neighbor_position);
 
                 // if not existing yet, spawn a new chunk
                 if (!zox_valid(neighbor)) {
 
-                    const int3 stream_point = find_closest_point(
+                    int3 stream_point = find_closest_point(
                         stream_points,
                         stream_points_length,
                         neighbor_position);
 
                     // only spawn new chunk if within stream distance
-                    const byte camera_distance = get_camera_chunk_distance_xz(
-                        stream_point,
-                        neighbor_position);
+                    byte camera_distance = get_camera_chunk_distance_xz(stream_point, neighbor_position);
 
                     if (camera_distance <= terrain_lod_far) {
 
@@ -105,8 +100,8 @@ zox_sys2(ChunkSpawnSystem) {
                             terrain_scale
                         );
 
-                        zox_geter(terrain->value, ChunkLinks, chunkLinks);
-                        int3_hashmap_add(chunkLinks->value, neighbor_position, neighbor);
+                        // zox_geter(terrain->value, ChunkLinks, chunks);
+                        int3_hashmap_add(chunks->value, neighbor_position, neighbor);
                         if (log_individuals) {
                             zox_log_streaming("+ streaming: new [%i]s chunk [%ix%ix%i]", spawned_chunks, neighbor_position.x, neighbor_position.y, neighbor_position.z);
                         }

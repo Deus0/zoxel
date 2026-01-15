@@ -22,11 +22,11 @@ int get_chunk_index_3(int3 position, int rows, int vertical) {
 
 entity spawn_terrain(
     ecs *world,
-    const entity prefab,
-    const entity tilemap,
-    const float3 position,
-    const byte depth,
-    const float scale
+    entity prefab,
+    entity tilemap,
+    float3 position,
+    byte depth,
+    float scale
 ) {
     zox_instance(prefab);
     zox_name("terrain");
@@ -46,10 +46,10 @@ entity spawn_terrain(
 // todo: pass in through struct
 entity spawn_terrain_streaming(
     ecs *world,
-    const entity realm,
+    entity realm,
     // const int3 center_position,
     // const int3 size,
-    const entity prefab
+    entity prefab
 ) {
     // const int3 chunk_position = int3_zero;
     if (!zox_has(realm, TilemapLink)) {
@@ -70,13 +70,16 @@ entity spawn_terrain_streaming(
         tilemap,
         float3_zero,
         terrain_depth,
-        terrain_scale);
-    /*const entity chunk = spawn_chunk_terrain(world,
+        terrain_scale
+    );
+    /*const entity chunk = spawn_chunk_terrain(
+        world,
         prefab_chunk,
         e,
         center_position,
         chunk_position,
-        real_chunk_scale);*/
+        real_chunk_scale
+    );*/
 
     // ChunkLinks *chunkLinks = &((ChunkLinks) { NULL });
     ChunkLinks chunks = (ChunkLinks) { NULL };

@@ -1,11 +1,7 @@
 // NOTE: uses zox_set here for children setting
 // NOTE: I may need to thread lock/unlock ChunkEntities when reading
 // block spawn delve function
-void set_chunk_block_spawns_render_disabled(
-    ecs *world,
-    const VoxelNode *node,
-    const byte state
-) {
+void set_chunk_block_spawns_rdisabled(ecs *world, const VoxelNode *node, byte state) {
     if (is_closed_VoxelNode(node)) {
         return;
     } else if (is_linked_VoxelNode(node)) {
@@ -16,12 +12,12 @@ void set_chunk_block_spawns_render_disabled(
     } else if (has_children_VoxelNode(node)) {
         VoxelNode* kids = get_children_VoxelNode(node);
         for (int i = 0; i < octree_length; i++) {
-            set_chunk_block_spawns_render_disabled(world, &kids[i], state);
+            set_chunk_block_spawns_rdisabled(world, &kids[i], state);
         }
     }
 }
 
-void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
+void set_entity_rdisabled(ecs* world, entity e, byte disabled) {
     if (!zox_valid(e)) {
         return;
     }
@@ -36,7 +32,7 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
             if (zox_has(e2, RenderDisabled)) {
                 zox_set(e2, RenderDisabled, { disabled });
             }
-            set_entity_render_disabled(world, e2, disabled);
+            set_entity_rdisabled(world, e2, disabled);
         }
     }
     if (zox_has(e, Children)) {
@@ -49,7 +45,7 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
             if (zox_has(e2, RenderDisabled)) {
                 zox_set(e2, RenderDisabled, { disabled });
             }
-            set_entity_render_disabled(world, e2, disabled);
+            set_entity_rdisabled(world, e2, disabled);
         }
     }
 }
@@ -65,7 +61,7 @@ byte is_sphere_in_frustum(const plane* planes, float3 center, float radius) {
 }
 
 // Fast AABB cull using positive-vertex trick (drop-in replacement)
-byte aabb_in_frustum_fast(const plane *planes, const bounds b, float eps) {
+byte aabb_in_frustum_fast(const plane *planes, bounds b, float eps) {
     for (int i = 0; i < 6; ++i) {
         const plane p = planes[i];
         // choose farthest vertex in direction of plane normal
@@ -95,8 +91,8 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Bounds3D, bounds3);
         zox_sys_i(ChunkEntities, entities);
-        zox_sys_i(VoxelNode, voxelNode);
-        zox_sys_o(RenderDisabled, render_disabled);
+        zox_sys_i(VoxelNode, voctree);
+        zox_sys_o(RenderDisabled, rdisabled);
 
         // our bounds3D isn't centred, terrain chunks corner offset!
         bounds chunk_bounds = {
@@ -135,24 +131,24 @@ zox_sys2(ChunkFrustumSystem) {
         }
         zox_sys_query_end();
 
-        if (render_disabled->value != !is_viewed) {
-            render_disabled->value = !is_viewed;
+        if (rdisabled->value != !is_viewed) {
+            rdisabled->value = !is_viewed;
 
             // Also set objects inside our terrain chunks!
             // -=- Block Spawns -=-
             if (zox_gett_value(e, BlocksSpawned)) {
-                set_chunk_block_spawns_render_disabled(
+                set_chunk_block_spawns_rdisabled(
                     world,
-                    voxelNode,
-                    render_disabled->value);
+                    voctree,
+                    rdisabled->value);
             }
             // -=- -=- -=- -=- -=- -=-
             for (int j = 0; j < entities->length; j++) {
                 const entity e2 = entities->value[j];
-                set_entity_render_disabled(
+                set_entity_rdisabled(
                     world,
                     e2,
-                    render_disabled->value);
+                    rdisabled->value);
             }
             // -=- -=- -=- -=- -=- -=-
         }

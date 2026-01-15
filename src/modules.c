@@ -49,8 +49,8 @@
 #include "lights/_.c"
 #include "models/_.c"
 #include "biomes/_.c"
-#include "terrain/_.c"
 #include "streaming/_.c"
+#include "terrain/_.c"
 #include "vrays/_.c"
 
 #include "physics/_.c"
@@ -139,8 +139,8 @@ zox_begin_module(Zox)
     zox_import_module(Lights);
     zox_import_module(Models);
     zox_import_module(Biomes);
-    zox_import_module(Terrain);
     zox_import_module(Streaming);
+    zox_import_module(Terrain);
     zox_import_module(Vrays);
 
     zox_import_module(Physics);

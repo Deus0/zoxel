@@ -116,8 +116,8 @@ byte test_terrain_spawn(ecs *world) {
         }
     }
     // move stream point
-    zox_set(streamer, StreamDirty, { 1 })
-    zox_set(streamer, StreamPoint, { (int3) { 1, 0, 0 } })
+    zox_set(streamer, StreamDirty, { 1 });
+    zox_set(streamer, StreamPoint, { (int3) { 1, 0, 0 } });
     time_since_start = (current_time_in_seconds() - test_start);
     zox_log("### ### ### ### ###")
     zox_log("! [M]:starting update at frame [%i] time [%f]", ecs_run_count - 1, current_time_in_seconds())

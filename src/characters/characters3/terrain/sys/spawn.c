@@ -69,7 +69,7 @@ zox_sys2(Characters3SpawnSystem) {
         zox_geter(realm, CharacterLinks, characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         const entity chunk_above = neighbors->value[direction_up];
-        const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
+        // const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
 
         // calcs
         const int chunk_length = powers_of_two[depth->value];

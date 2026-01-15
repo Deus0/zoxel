@@ -5,6 +5,8 @@
 #include "debug_bounds.c"
 #include "realm_tilemaps.c"
 #include "linking.c"
+#include "spawn.c"
+#include "death.c"
 
 zox_declare_system_state_event(ClearRealmBlocks, GenerateRealm, zox_generate_realm_clear, clear_realm_blocks)
 zox_declare_system_state_event(RealmBlocks, GenerateRealm, zox_generate_realm_blocks, spawn_realm_blocks)
@@ -76,6 +78,33 @@ void define_systems_terrain(ecs *world) {
         );
     }
 
+    // Streaming Terrain Chunks
+    zox_filter(
+        streamers,
+        [in] streaming.StreamPoint,
+        [none] streaming.Streamer
+    );
+    zox_system_ctx_1(
+        ChunkSpawnSystem,
+        zoxp_mainthread,
+        streamers,
+        [in] chunks3.ChunkPosition,
+        [in] voxes.VoxLink,
+        [in] rendering.RenderDistance,
+        [out] chunks3.ChunkNeighbors,
+        [none] streaming.StreamedChunk
+    );
+    zox_system(
+        ChunkDieSystem,
+        zoxp_destroy,
+        [in] voxes.VoxLink,
+        [in] chunks3.ChunkPosition,
+        [in] rendering.RenderDistance,
+        [in] rendering.RenderDepth,
+        [none] streaming.StreamedChunk
+    );
+
+    // Debug Terrains
 #ifdef zox_debug_chunk_bounds
     zox_system_1(
         ChunkBoundsDrawSystem,
@@ -83,7 +112,7 @@ void define_systems_terrain(ecs *world) {
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
         [in] rendering.RenderDisabled,
-        [none] TerrainChunk
+        [none] terrain.TerrainChunk
     );
 #endif
 

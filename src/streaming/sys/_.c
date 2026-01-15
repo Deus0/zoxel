@@ -2,24 +2,35 @@
 #include "stream_updates.c"
 #include "frustum.c"
 #include "stream_end.c"
-#include "spawn.c"
-#include "death.c"
+#include "sync.c"
 
 void define_systems_streaming(ecs* world) {
     zox_system(
         StreamPointSystem,
         zoxp_update,
         [in] transforms3.Position3D,
-        [in] terrain.TerrainLink,
-        [out] StreamPoint,
-        [out] StreamDirty,
-        [none] Streamer
+        [in] blocks.BlockScale,
+        [in] chunks.NodeDepth,
+        [out] streaming.StreamPoint,
+        [out] streaming.StreamPoint2,
+        [out] streaming.StreamDirty,
+        [none] streaming.Streamer
+    );
+    // Set streamer from terrain
+    zox_system(
+        StreamPointSyncSystem,
+        EcsOnUpdate,
+        [in] streaming.StreamLink,
+        [out] blocks.BlockScale,
+        [out] chunks.NodeDepth,
+        [none] streaming.Streamer
     );
     zox_filter(
         filter_cameras,
         [in] transforms3.Position3DBounds,
         [in] cameras.CameraPlanes,
-        [none] cameras.Camera3D
+        // [none] cameras.Camera3D
+        [none] streaming.Streamer
     );
     zox_system_ctx(
         ChunkFrustumSystem,
@@ -30,14 +41,14 @@ void define_systems_streaming(ecs* world) {
         [in] chunks3.ChunkEntities,
         [in] chunks3.VoxelNode,
         [out] rendering.RenderDisabled,
-        [none] StreamedChunk
+        [none] streaming.StreamedChunk
     );
-    // Custom Cuttoff
-    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, { 5 });
 
     zox_filter(streamers2,
-        [in] StreamPoint,
-        [in] StreamDirty);
+        [in] streaming.StreamPoint,
+        [in] streaming.StreamDirty,
+        [none] streaming.Streamer
+    );
     zox_system_ctx(
         ChunkLodSystem,
         zoxp_update,
@@ -50,15 +61,6 @@ void define_systems_streaming(ecs* world) {
         [none] StreamedChunk
     );
     // streams
-    zox_system(
-        ChunkDieSystem,
-        zoxp_destroy,
-        [in] voxes.VoxLink,
-        [in] chunks3.ChunkPosition,
-        [in] rendering.RenderDistance,
-        [in] rendering.RenderDepth,
-        [none] StreamedChunk
-    );
     // main thread
     zox_system_1(
         StreamEndEventSystem,
@@ -67,18 +69,7 @@ void define_systems_streaming(ecs* world) {
         [in] voxes.ChunkLinks,
         [out] StreamEndEvent
     );
-    zox_filter(
-        streamers,
-        [in] StreamPoint
-    );
-    zox_system_ctx_1(
-        ChunkSpawnSystem,
-        zoxp_mainthread,
-        streamers,
-        [in] chunks3.ChunkPosition,
-        [in] voxes.VoxLink,
-        [in] rendering.RenderDistance,
-        [out] chunks3.ChunkNeighbors,
-        [none] StreamedChunk
-    );
+
+    // Custom Cuttoff
+    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, { 5 });
 }

@@ -1,8 +1,4 @@
-entity spawn_prefab_character3(
-    ecs *world,
-    const entity prefab,
-    byte type
-) {
+entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     if (!prefab) {
         return 0;
     }

@@ -9,7 +9,7 @@ static const int3 int3_forward  = {  0, 0, 1 };
 
 static inline int3 get_direction_int3(byte i) {
     if (i >= 6) return int3_zero;
-    const int3 int3_directions[] = {
+    const int3 directions[] = {
         int3_left,
         int3_right,
         int3_down,
@@ -17,5 +17,22 @@ static inline int3 get_direction_int3(byte i) {
         int3_backward,
         int3_forward
     };
-    return int3_directions[i];
+    return directions[i];
+}
+
+
+static const int2 int2_left_     = { -1, 0 };
+static const int2 int2_right_    = {  1, 0 };
+static const int2 int2_backward_ = {  0, -1 };
+static const int2 int2_forward_  = {  0, 1 };
+
+static inline int2 get_direction_int2(byte i) {
+    if (i >= 4) return int2_zero;
+    const int2 directions[] = {
+        int2_left_,
+        int2_right_,
+        int2_backward_,
+        int2_forward_
+    };
+    return directions[i];
 }

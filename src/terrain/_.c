@@ -17,11 +17,11 @@
 #include "pre/_.c"
 #include "voxels/_.c"
 #include "block_voxes/_.c"
+#include "tunks/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
-#include "tunks/_.c"
 
 void module_dispose_terrain(ecs *world, void *ctx) {
     (void) world;

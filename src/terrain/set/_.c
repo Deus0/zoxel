@@ -20,7 +20,6 @@ byte terrain_size = 0;
 #define terrain_texture_resolution 16 // 32
 #define octree_min_height -1.995f // 0.005f
 #define noise_positiver2 32000
-#define terrain_minus_amplifier 0.0
 const int2 chunk_texture_size = { terrain_texture_resolution, terrain_texture_resolution };
 
 #include "grassy_plains.c"
