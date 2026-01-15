@@ -10,9 +10,11 @@
 #ifndef zoxm_tunks2
 #define zoxm_tunks2
 
-// TODO: Chunk2NeighborsSystem
 // TODO: Chunk2LodSystem
 // TODO: Height Map Update based on LODs
+
+// TODO: Use sbyte instead of byte?
+// TODO: Chunk2NeighborsSystem
 
 #include "com/_.c"
 #include "pre/_.c"

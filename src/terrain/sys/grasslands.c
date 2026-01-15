@@ -8,7 +8,7 @@ byte disable_top_placements = 0;
 byte disable_dirt_patches = 1;
 byte disable_grass_placements = 0;
 
-#define disable_newheightmap_gen
+// #define disable_newheightmap_gen
 
 // place grass if max depth
 
@@ -85,8 +85,8 @@ zox_sys2(GrassyPlainsSystem) {
         node_depth->value = generation_depth;
         const byte is_max_depth = node_depth->value == terrain_depth;
 
-        const double terrain_amplifier = powers_of_two[node_depth->value] * render_distance_y;
         const byte chunk_voxel_length = powers_of_two_byte[node_depth->value];
+        const double terrain_amplifier = chunk_voxel_length * render_distance_y;
         const float2 map_size_f = float2_single(chunk_voxel_length);
         const float3 chunk_position_float3 = float3_from_int3(cposition->value);
         const int chunk_position_y = (int) (chunk_position_float3.y * chunk_voxel_length);
@@ -130,22 +130,22 @@ zox_sys2(GrassyPlainsSystem) {
             hmultiplier *= 2;
             ccc++;
         }
+        // zox_log("depth [%i:%i] %i", node_depth->value, terrain_depth, hmultiplier);
+
+        int max_chunk_length = powers_of_two[terrain_depth];
+        int2 hsize = int2_single(max_chunk_length);
+
         int2 cposition2 = (int2) { cposition->value.x, cposition->value.z };
-        int2 hsize = int2_single(chunk_voxel_length);
         zox_geter(terrain->value, Chunk2Links, chunks2);
         entity chunk2 = int2_hashmap_get(chunks2->value, cposition2);
         if (!zox_valid(chunk2)) {
             zox_log_error("Invalid [chunk2] at [%ix%i] [y%i]", cposition2.x, cposition2.y, cposition->value.y);
-            // continue;
+            continue;
         }
-        if (zox_valid(chunk2)) {
-            zox_geter(chunk2, HeightMap, heights);
-            if (!heights->length) {
-                zox_log_error("Invalid [HeightMap] at [%ix%i] [y%i]", cposition2.x, cposition2.y, cposition->value.y);
-                // zox_sys_e();
-                // zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
-                // continue;
-            }
+        zox_geter(chunk2, HeightMap, heights);
+        if (!heights->length) {
+            zox_log_error("Invalid [HeightMap] at [%ix%i] [y%i]", cposition2.x, cposition2.y, cposition->value.y);
+            continue;
         }
 
 #endif
@@ -188,14 +188,15 @@ zox_sys2(GrassyPlainsSystem) {
                 perlin_value *= height_amplifier;
                 const int global_position_y = int_floorf(perlin_value);
 #else
-                int2 hposition = (int2) { positionl.x * hmultiplier, positionl.z * hmultiplier };
+                int2 hposition = (int2) {
+                    positionl.x * hmultiplier,
+                    positionl.z * hmultiplier
+                };
                 int hindex = int2_array_index(hposition, hsize);
-                int global_position_y = 4;
-                /*heights->value[hindex] - 32;
-                if (global_position_y >= 40) {
-                    zox_log_error("global_position_y past max?? %i",global_position_y);
-                    global_position_y = 40;
-                }*/
+                int global_position_y = (int) heights->value[hindex];
+                global_position_y -= 128;
+                global_position_y /= hmultiplier;
+
 #endif
 
 

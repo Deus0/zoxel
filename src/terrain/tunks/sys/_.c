@@ -1,5 +1,6 @@
 #include "spawn.c"
 #include "heights.c"
+#include "end.c"
 
 void define_systems_tunks(ecs* world) {
     zox_filter(
@@ -25,6 +26,15 @@ void define_systems_tunks(ecs* world) {
         [in] chunks2.Chunk2Position,
         [out] tunks.HeightMap
     );
+
+    zox_system(
+        TunkEndSystem,
+        EcsOnUpdate,
+        [in] core.Generate,
+        [in] chunks2.Chunk2Position,
+        [in] voxes.VoxLink
+    );
+
 
     /*zox_system_1(
         TunkDebugSystem,

@@ -56,7 +56,7 @@ entity spawn_chunk_terrain(
     // zox_set(e, RenderDepthMax, { terrain_depth });
     zox_set(e, RenderDepth, { render_depth });
     if (render_depth != render_depth_invisible) {
-        zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
+        // zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
     }
 
     if (position.y == render_distance_y) {

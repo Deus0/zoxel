@@ -338,6 +338,7 @@ void link_camera_to_terrain(ecs *world, entity player) {
     zox_set(camera, StreamPoint2, { terrain_position.x, terrain_position.z });
     zox_set(camera, StreamLink, { terrain });
     zox_set(camera, StreamDirty, { zox_dirty_trigger });
+    zox_set(camera, StreamDirty2, { zox_dirty_trigger });
     zox_set(terrain, EventInput, { player });
     zox_set(terrain, StreamEndEvent, { on_spawned_terrain });
     if (is_log_streaming) {

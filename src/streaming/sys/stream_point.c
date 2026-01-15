@@ -10,6 +10,7 @@ zox_sys2(StreamPointSystem) {
     zox_sys_out(StreamPoint);
     zox_sys_out(StreamPoint2);
     zox_sys_out(StreamDirty);
+    zox_sys_out(StreamDirty2);
     for (int i = 0; i < it->count; i++) {
         // zox_sys_i(VoxLink, terrain);
         zox_sys_i(Position3D, position);
@@ -18,6 +19,7 @@ zox_sys2(StreamPointSystem) {
         zox_sys_o(StreamPoint, point3);
         zox_sys_o(StreamPoint2, point2);
         zox_sys_o(StreamDirty, dirty);
+        zox_sys_o(StreamDirty2, dirty2);
 
         if (dirty->value) {
             continue;
@@ -28,13 +30,19 @@ zox_sys2(StreamPointSystem) {
             powers_of_two[depth->value],
             scale->value
         );
+
         if (int3_equals(npoint, point3->value)) {
             continue;
         }
 
         point3->value = npoint;
-        point2->value = (int2) { npoint.x, npoint.z };
         dirty->value = zox_dirty_trigger;
+
+        int2 npoint2 = (int2) { npoint.x, npoint.z };
+        if (!int2_equals(point2->value, npoint2)) {
+            point2->value = npoint2;
+            dirty2->value = zox_dirty_trigger;
+        }
 
         zox_log("Streaming Dirty: %ix%ix%i", npoint.x, npoint.y, npoint.z);
     }

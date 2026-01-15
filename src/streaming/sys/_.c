@@ -14,6 +14,7 @@ void define_systems_streaming(ecs* world) {
         [out] streaming.StreamPoint,
         [out] streaming.StreamPoint2,
         [out] streaming.StreamDirty,
+        [out] streaming.StreamDirty2,
         [none] streaming.Streamer
     );
     // Set streamer from terrain

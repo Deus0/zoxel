@@ -14,33 +14,45 @@ zox_sys2(HeightMapSystem) {
         }
 
         // now generate heights
+        int max_chunk_length = powers_of_two[terrain_depth];
+        int2 hsize = int2_single(max_chunk_length);
+
         int2 lposition = int2_zero;
-        int2 size = (int2) { 32, 32 };
         if (!heights->value) {
-            initialize_HeightMap(heights, size.x * size.y);
+            initialize_HeightMap(heights, hsize.x * hsize.y);
         }
 
         //byte is_mountain = 0;
         //double height_frequency = is_mountain ? terrain_frequency * mountain_amplifier : terrain_frequency;
 
-        double height_frequency = 0.007216; // terrain_frequency;
-        int2 gposition = (int2) {
-            cposition->value.x * size.x,
-            cposition->value.y * size.y
+        double height_frequency = terrain_frequency;
+        int2 gposition_start = (int2) {
+            cposition->value.x * hsize.x,
+            cposition->value.y * hsize.y
         };
 
-        for (lposition.x = 0; lposition.x < size.x; lposition.x++, gposition.x++) {
-            for (lposition.y = 0; lposition.y < size.y; lposition.y++, gposition.y++) {
-                int index = int2_array_index(lposition, size);
+        int2 gposition = gposition_start;
+        for (lposition.x = 0; lposition.x < hsize.x; lposition.x++, gposition.x++) {
+
+            gposition.y = gposition_start.y;
+            for (lposition.y = 0; lposition.y < hsize.y; lposition.y++, gposition.y++) {
 
                 double perlin_value = perlin_terrain(
-                    noise_positiver2 + gposition.x / 32.0f,
-                    noise_positiver2 + gposition.y / 32.0f,
-                    height_frequency,
+                    noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
+                    noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
+                    height_frequency * 5,
                     seed,
                     terrain_octaves
                 );
-                byte value = 64 + ((int) perlin_value); //rand() % 32;
+                int valuei = int_floorf(perlin_value * max_chunk_length);
+                byte value = 128 + valuei;
+
+                // debug value
+                /*value = 128 + (int_abs(cposition->value.x * 2) + int_abs(cposition->value.y * 2));
+                if (lposition.x >= hsize.x / 2) value += 1;
+                if (lposition.y >= hsize.y / 2) value += 1;*/
+
+                int index = int2_array_index(lposition, hsize);
                 heights->value[index] = value;
 
                 // TODO: Print this out onto texture
@@ -51,8 +63,5 @@ zox_sys2(HeightMapSystem) {
                 //const int global_position_y = int_floorf(+ perlin_value);
             }
         }
-
-        // zox_log("Generated Heightmap at [%ix%i]", cposition->value.x, cposition->value.y);
-
     }
 } zox_sys_end(HeightMapSystem);
