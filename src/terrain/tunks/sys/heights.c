@@ -42,7 +42,7 @@ zox_sys2(HeightMapSystem) {
                 double perlin_value = perlin_terrain(
                     noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
                     noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
-                    height_frequency,
+                    height_frequency * 3,
                     seed,
                     terrain_octaves
                 );

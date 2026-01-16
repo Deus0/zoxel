@@ -17,4 +17,3 @@ const int dissapearChance = 92;
 const int fill_octree_random_rate = 50;
 const int fill_octree_random_rate2 = 40;
 const int fill_octree_random_rate3 = 30;
-byte is_render_chunk_edges = 0;

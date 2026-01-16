@@ -3,8 +3,7 @@
     extern entity spawn_line3D(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
 #endif
 
-void DamageAuraSystem(iter *it) {
-
+zox_sys2(DamageAuraSystem) {
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
@@ -13,9 +12,7 @@ void DamageAuraSystem(iter *it) {
     zox_sys_in(SkillDamage);
     zox_sys_in(SkillRange);
     zox_sys_in(Color);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(UserLink, userLink);
         zox_sys_i(SkillActive, skillActive);
@@ -78,13 +75,13 @@ void DamageAuraSystem(iter *it) {
                     const float3 bounds = zox_get_value(e2, Bounds3D)
                     const entity particle3D_emitter = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
                     add_to_Children(children, particle3D_emitter);
-                    zox_set(particle3D_emitter, SkillLink, { e })
+                    zox_set(particle3D_emitter, SkillLink, { e });
 #ifdef zox_debug_aoe_damage_system
                     spawn_line3D(world, position3, position3D2->value, 0.5f, 0.1);
 #endif
                 }
             }
         }
-        zox_sys_query_end()
+        zox_sys_query_end();
     }
-} zoxd_system(DamageAuraSystem)
+} zox_sys_end(DamageAuraSystem);

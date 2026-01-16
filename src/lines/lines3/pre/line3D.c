@@ -11,10 +11,10 @@ entity spawn_prefab_line3D(ecs *world) {
 
 entity spawn_line3D(
     ecs *world,
-    const float3 pointA,
-    const float3 pointB,
-    const float thickness,
-    const double lifetime
+    float3 pointA,
+    float3 pointB,
+    float thickness,
+    double lifetime
 ) {
     entity prefab = lifetime ? prefab_temporary_line3D : prefab_line3D;
     zox_instance(prefab);
@@ -39,7 +39,7 @@ entity spawn_line3D_colored(
     return e;
 }
 
-entity spawn_line3D_colored_alpha(
+entity spawn_line3_alpha(
     ecs *world,
     const float3 pointA,
     const float3 pointB,
@@ -52,7 +52,7 @@ entity spawn_line3D_colored_alpha(
     return e;
 }
 
-void render_line3D_thickness(
+void spawn_line3_thickness(
     ecs *world,
     const float3 a,
     const float3 b,
@@ -62,14 +62,14 @@ void render_line3D_thickness(
     spawn_line3D_colored(world, a, b, thickness, line_frame_timing, line_color);
 }
 
-void render_line3D_thickness_alpha(
+void spawn_line3_thickness_alpha(
     ecs *world,
     const float3 a,
     const float3 b,
     const color line_color,
     const float thickness
 ) {
-    spawn_line3D_colored_alpha(
+    spawn_line3_alpha(
         world,
         a,
         b,
@@ -79,7 +79,7 @@ void render_line3D_thickness_alpha(
     );
 }
 
-void render_line3D(
+void spawn_line3(
     ecs *world,
     const float3 a,
     const float3 b,

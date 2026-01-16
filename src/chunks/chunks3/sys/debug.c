@@ -1,12 +1,13 @@
 // show lines on quads along chunk edge
-extern void render_line3D(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
+extern void spawn_line3(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
 
-void render_voxel_line(ecs* world,
+void spawn_voxel_debug_line(
+    ecs* world,
     byte3 position,
     float scale,
     float3 chunk_position,
-    const color_rgb c)
-{
+    const color_rgb c
+) {
     float3 positionf = float3_add(
         chunk_position,
         (float3) {
@@ -18,19 +19,17 @@ void render_voxel_line(ecs* world,
     float3_add_float3_p(&positionf, (float3) { 0.25f, 0, 0.25f });
     float3 point_start = positionf;
     float3 point_end = float3_add(positionf, (float3) { 0, scale, 0 });
-    render_line3D(world, point_start, point_end, c);
+    spawn_line3(world, point_start, point_end, c);
 }
 
 // Renders Ground Lines
-void ChunkDebugSystem(iter *it) {
+zox_sys2(ChunkDebugSystem) {
     const byte debug_distance = 1;
     const color_rgb chunk_color = { 155, 0, 0 };
     const color_rgb voxel_color = { 0, 155, 155 };
-    if (!is_render_chunk_edges) {
-        return;
-    }
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(DebugCubeLines);
     zox_sys_in(BlockScale);
     zox_sys_in(Position3D);
     zox_sys_in(VoxelNode);
@@ -38,15 +37,20 @@ void ChunkDebugSystem(iter *it) {
     zox_sys_in(RenderDistance);
     zox_sys_in(ChunkNeighbors);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_i(DebugCubeLines, mode);
         zox_sys_i(BlockScale, blockScale);
         zox_sys_i(Position3D, position);
         zox_sys_i(VoxelNode, voxelNode);
         zox_sys_i(NodeDepth, nodeDepth);
         zox_sys_i(RenderDistance, renderDistance);
         zox_sys_i(ChunkNeighbors, chunkNeighbors);
+
+        if (!mode->value) continue;
+
         if (renderDistance->value > debug_distance) {
             continue;
         }
+
         // draw grid around chunk
         byte length = powers_of_two_byte[nodeDepth->value];
         float scale = blockScale->value;
@@ -70,7 +74,8 @@ void ChunkDebugSystem(iter *it) {
                     positionxz
                 );
                 if (!byte3_equals(ground_position, byte3_full)) {
-                    render_voxel_line(world,
+                    spawn_voxel_debug_line(
+                        world,
                         ground_position,
                         scale,
                         position->value,
@@ -79,4 +84,4 @@ void ChunkDebugSystem(iter *it) {
             }
         }
     }
-} zoxd_system2(ChunkDebugSystem);
+} zox_sys_end(ChunkDebugSystem);

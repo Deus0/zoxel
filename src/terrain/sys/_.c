@@ -95,7 +95,7 @@ void define_systems_terrain(ecs *world) {
         [none] streaming.StreamedChunk
     );
     zox_system(
-        ChunkDieSystem,
+        Chunk3DeathSystem,
         zoxp_destroy,
         [in] voxes.VoxLink,
         [in] chunks3.ChunkPosition,

@@ -1,6 +1,6 @@
 // element will follow mouse position
 //  -> linked to MouseTextureSystem
-void MouseElementSystem(iter *it) {
+zox_sys2(MouseElementSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZeviceLink);
@@ -45,4 +45,4 @@ void MouseElementSystem(iter *it) {
         }
 
     }
-} zoxd_system2(MouseElementSystem);
+} zox_sys_end(MouseElementSystem);

@@ -1,15 +1,12 @@
 // if outside list visible indexes, hide, otherwise show
-void ListRenderDirtySystem(iter *it) {
-
+zox_sys2(ListRenderDirtySystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ListDirty);
     zox_sys_in(ListStart);
     zox_sys_in(ListVisible);
     zox_sys_in(Children);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_i(ListDirty, state);
         zox_sys_i(ListStart, start);
         zox_sys_i(ListVisible, visible);
@@ -27,4 +24,4 @@ void ListRenderDirtySystem(iter *it) {
             set_children_render_disabled(world, e2, !is_visible);
         }
     }
-} zoxd_system2(ListRenderDirtySystem);
+} zox_sys_end(ListRenderDirtySystem);

@@ -1,16 +1,17 @@
 // if poisoned, remove if leaving area
 // I could do this per debuff instead of character...! if it's a area based debuff
-void DamageAuraRemoveSystem(iter *it) {
+zox_sys2(DamageAuraRemoveSystem) {
     // const float damage_radius = 3.0f; // todo: grab this off skill
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(Position3D)
-    zox_sys_out(DotLinks)
-    zox_sys_out(Children)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Position3D);
+    zox_sys_out(DotLinks);
+    zox_sys_out(Children);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Position3D, position3D)
-        zox_sys_o(DotLinks, dotLinks)
-        zox_sys_o(Children, children)
+        zox_sys_i(Position3D, position3D);
+        zox_sys_o(DotLinks, dotLinks);
+        zox_sys_o(Children, children);
+
         for (int j = dotLinks->length - 1; j >= 0; j--) {
             const entity dot = dotLinks->value[j];
             if (!zox_valid(dot) || !zox_has(dot, SkillLink)) {
@@ -54,4 +55,4 @@ void DamageAuraRemoveSystem(iter *it) {
         }
 
     }
-} zoxd_system(DamageAuraRemoveSystem)
+} zox_sys_end(DamageAuraRemoveSystem);

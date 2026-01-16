@@ -19,12 +19,12 @@ void draw_planes(ecs *world, const plane *planes, const int plane_count) {
         corners[1] = float3_add(float3_subtract(plane_point, right), forward);
         corners[2] = float3_subtract(float3_subtract(plane_point, right), forward);
         corners[3] = float3_subtract(float3_add(plane_point, right), forward);
-        render_line3D(world, corners[0], corners[1], plane_color);
-        render_line3D(world, corners[1], corners[2], plane_color);
-        render_line3D(world, corners[2], corners[3], plane_color);
-        render_line3D(world, corners[3], corners[0], plane_color);
+        spawn_line3(world, corners[0], corners[1], plane_color);
+        spawn_line3(world, corners[1], corners[2], plane_color);
+        spawn_line3(world, corners[2], corners[3], plane_color);
+        spawn_line3(world, corners[3], corners[0], plane_color);
         // draw normal in middle of plane
-        render_line3D_thickness(world, plane_point, float3_add(plane_point, planes[i].normal), plane_color, 16);
-        render_line3D(world, float3_zero, plane_point, plane_color);
+        spawn_line3_thickness(world, plane_point, float3_add(plane_point, planes[i].normal), plane_color, 16);
+        spawn_line3(world, float3_zero, plane_point, plane_color);
     }
 }

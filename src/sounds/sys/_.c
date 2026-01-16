@@ -54,4 +54,7 @@ void define_systems_sounds(ecs *world) {
         [in] TriggerSound,
         [none] Sound
     );
+
+    // Sound gen takes longer
+    zox_set(zox_id(SoundGenerateSystem), SystemDeltaMax, { 5 });
 }

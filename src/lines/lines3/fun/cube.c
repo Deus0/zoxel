@@ -1,8 +1,4 @@
-void add_debug_cube(
-    ecs* world,
-    const entity e,
-    const float3 size
-) {
+void add_debug_cube(ecs* world, entity e, float3 size) {
     zox_prefab_set(e, DebugCubeLines, { 1 });
     zox_add_tag(e, CubeLines);
     zox_prefab_set(e, CubeLinesThickness, { 4 });
@@ -63,12 +59,7 @@ void add_debug_cube(
     debug_linec(world, d, h, c);
 }*/
 
-static inline void debug_cubec(
-    ecs* world,
-    const float3 p,
-    const float3 s,
-    color_rgb col
-) {
+static inline void debug_cubec(ecs* world, float3 p, float3 s, color_rgb col) {
     // Half size
     const float hx = s.x * 0.5f;
     const float hy = s.y * 0.5f;

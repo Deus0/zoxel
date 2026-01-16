@@ -25,7 +25,7 @@ int2 get_element_pixel_positionv(
     return output;
 }
 
-void set_child_canvas_position(
+void set_layout_canvas_position_recursively(
     ecs* world,
     entity e,
     int2 parent_position,
@@ -64,8 +64,8 @@ void set_child_canvas_position(
         zox_geter_value(e, LayoutSize, int2, size);
         zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
-            const entity e2 = children->value[i];
-            set_child_canvas_position(
+            entity e2 = children->value[i];
+            set_layout_canvas_position_recursively(
                 world,
                 e2,
                 cposition,
@@ -133,7 +133,7 @@ zox_sys2(LayoutParentPositionSystem) {
         zox_sys_e();
         // zox_log("+++ (root) Canvas Position [%s] [%ix%i] - Position [%ix%i] Anchor [%fx%f] Size [%ix%i] +++", zox_get_name(e), canvas_position->value.x, canvas_position->value.y, position.x, position.y, anchor->value.x, anchor->value.y, parent_size.x, parent_size.y);
 
-        set_child_canvas_position(
+        set_layout_canvas_position_recursively(
             world,
             e,
             canvas_position->value,

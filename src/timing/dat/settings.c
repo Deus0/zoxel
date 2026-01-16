@@ -8,16 +8,20 @@ byte updating_time = 1;
 byte time_pause_disabled = 0;
 #define record_frames_count 120
 
+// NOTE: Time Pausing Disabled because it Line Renders
+//          Will keep spawning and not die
+//          DestroyInTimeSystem needs time for now during pause events
+
 void disable_time_pausing() {
-    time_pause_disabled = 1;
+    // time_pause_disabled = 1;
 }
 
 void enable_time() {
-    updating_time = 1;
+    // updating_time = 1;
 }
 
 void disable_time() {
-    if (!time_pause_disabled) {
-        updating_time = 0;
-    }
+    //if (!time_pause_disabled) {
+    //    updating_time = 0;
+    //}
 }

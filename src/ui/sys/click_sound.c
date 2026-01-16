@@ -1,4 +1,4 @@
-void ClickSoundSystem(iter *it) {
+zox_sys2(ClickSoundSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ClickState);
@@ -18,4 +18,4 @@ void ClickSoundSystem(iter *it) {
             spawn_sound_generated(world, prefab_sound_generated, instrument_flute, note_frequencies[frequency], length, volume);
         }
     }
-} zoxd_system2(ClickSoundSystem);
+} zox_sys_end(ClickSoundSystem);

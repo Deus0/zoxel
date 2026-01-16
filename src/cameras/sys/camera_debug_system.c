@@ -1,6 +1,6 @@
 extern entity spawn_cube_lines(ecs *world, const float3 center, const float3 extents, const float thickness, const double life_time, const color_rgb line_color);
 extern entity spawn_line3D_colored(ecs *world, const float3 pointA, const float3 pointB, const float thickness, const double life_time, const color_rgb line_color);
-extern void render_line3D(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
+extern void spawn_line3(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
 
 /*void debug_transform(ecs *world, const float4x4 mat) {
     // Draw lines to represent the view matrix
@@ -26,7 +26,7 @@ void visualize_frustum(const float4x4 mat, const plane *planes) {
         // point_on_plane = float4x4_multiply_float3(mat, point_on_plane);
         // opposite_point_on_plane = float4x4_multiply_float3(mat, opposite_point_on_plane);
         // Draw a line between these two points to visualize the plane
-        render_line3D(point_on_plane, opposite_point_on_plane, (color_rgb) { 255, 255, 0 });
+        spawn_line3(point_on_plane, opposite_point_on_plane, (color_rgb) { 255, 255, 0 });
     }
 }*/
 
@@ -83,5 +83,5 @@ void CameraDebugSystem(iter *it) {
 
 /*for (int j = 0; j < 6; j++) {
     const plane planer = cameraPlanes->value[j];
-    render_line3D(float3_zero, float3_scale(planer.normal, planer.distance), (color_rgb) { 255, 255, j * 32 });
+    spawn_line3(float3_zero, float3_scale(planer.normal, planer.distance), (color_rgb) { 255, 255, j * 32 });
 }*/

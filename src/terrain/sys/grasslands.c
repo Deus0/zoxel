@@ -92,22 +92,35 @@ zox_sys2(GrassyPlainsSystem) {
             zox_log_error("No Biomes");
             continue;
         }
-        const entity biome = cposition->value.z > 0 ? biomes->value[0] :  biomes->value[biomes->length - 1];
-        zox_geter(biome, BlockLinks, biome_blocks);
-        if (!biome_blocks->length) {
-            zox_log_error("No Blocks in Biome [%s]", zox_get_name(biome));
+
+        // const entity biome = cposition->value.z > 0 ? biomes->value[0] :  biomes->value[biomes->length - 1];
+        entity biome_1 = biomes->value[0];
+        entity biome2 = biomes->value[1];
+
+        zox_geter(biome_1, BlockLinks, biome_blocks_1);
+        zox_geter(biome2, BlockLinks, biome_blocks_2);
+        if (!biome_blocks_1->length || !biome_blocks_2->length) {
+            zox_log_error("No Blocks in Biome [%s]", zox_get_name(biome_1));
             continue;
         }
 
-        const entity dirt = biome_blocks->value[0];
-        const entity grass = biome_blocks->value[1];
-        if (!zox_valid(dirt) || !zox_valid(grass)) {
-            zox_log_error("Dirt [%s] invalid in Biome [%s]", zox_get_name(biome));
+        entity dirt_1 = biome_blocks_1->value[0];
+        entity grass_1 = biome_blocks_1->value[1];
+        entity dirt_2 = biome_blocks_2->value[0];
+        entity grass_2 = biome_blocks_2->value[1];
+        if (!zox_valid(dirt_1) || !zox_valid(grass_1) ||
+            !zox_valid(dirt_2) || !zox_valid(grass_2)
+        ) {
+            zox_log_error("Dirt [%s] invalid in Biome [%s]", zox_get_name(biome_1));
             continue;
         }
-        zox_geter_value(dirt, BlockIndex, byte, biome_dirt_id);
-        zox_geter_value(grass, BlockIndex, byte, biome_grass_id);
-        if (!biome_dirt_id) {
+
+        zox_geter_value(dirt_1, BlockIndex, byte, biome_dirt_id_1);
+        zox_geter_value(grass_1, BlockIndex, byte, biome_grass_id_1);
+        zox_geter_value(dirt_2, BlockIndex, byte, biome_dirt_id_2);
+        zox_geter_value(grass_2, BlockIndex, byte, biome_grass_id_2);
+
+        if (!biome_dirt_id_1) {
             zox_log_error("Biome dirt is air.");
             continue;
         }
@@ -137,8 +150,9 @@ zox_sys2(GrassyPlainsSystem) {
             continue;
         }
 
+        zox_geter(chunk2, BiomeMap, biome_map);
         zox_geter(chunk2, HeightMap, heights);
-        if (!heights->length) {
+        if (!heights->length || !biome_map->length) {
             zox_log_error("Invalid [HeightMap] at [%ix%i] [y%i]", cposition2.x, cposition2.y, cposition->value.y);
             continue;
         }
@@ -167,41 +181,18 @@ zox_sys2(GrassyPlainsSystem) {
                 };
 
                 byte is_mountain = 0;
-                /*if (!disable_biomes) {
-                    const double mountain_noise = (perlin_terrain(
-                        positionn.x,
-                        positionn.y,
-                        0.002,
-                        seed,
-                        3) + 1.0) / 2.0;
-                        is_mountain = mountain_noise >= 0.6; // biome == zox_biome_mountain
-                }*/
 
-                // our height calc
-/*#ifdef disable_newheightmap_gen
-                const double mountain_amplifier = 2;
-                const double height_frequency = is_mountain ? terrain_frequency * mountain_amplifier : terrain_frequency;
-                const double height_amplifier = is_mountain ? terrain_amplifier * mountain_amplifier : terrain_amplifier;
-
-                double perlin_value = perlin_terrain(
-                    positionn.x,
-                    positionn.y,
-                    height_frequency,
-                    seed,
-                    terrain_octaves
-                );
-                perlin_value *= height_amplifier;
-                const int global_position_y = int_floorf(perlin_value);
-#else*/
                 int2 hposition = (int2) {
                     positionl.x * hmultiplier,
                     positionl.z * hmultiplier
                 };
                 int hindex = int2_array_index(hposition, hsize);
-                int global_position_y = (int) heights->value[hindex];
-                global_position_y -= 128;
+                int global_position_y = (int) (heights->value[hindex] - 128);
                 global_position_y /= hmultiplier;
+                byte biome_id = biome_map->value[hindex];
 
+                byte biome_dirt_id = biome_id == 0 ? biome_dirt_id_1 : biome_dirt_id_2;
+                byte biome_grass_id = biome_id == 0 ? biome_grass_id_1 : biome_grass_id_2;
 //#endif
 
 
@@ -337,3 +328,32 @@ if (rando <= block_spawn_chance_grass + block_spawn_chance_flower + block_spawn_
             0);
     }
 }*/
+
+
+
+                /*if (!disable_biomes) {
+                    const double mountain_noise = (perlin_terrain(
+                        positionn.x,
+                        positionn.y,
+                        0.002,
+                        seed,
+                        3) + 1.0) / 2.0;
+                        is_mountain = mountain_noise >= 0.6; // biome == zox_biome_mountain
+                }*/
+
+                // our height calc
+/*#ifdef disable_newheightmap_gen
+                const double mountain_amplifier = 2;
+                const double height_frequency = is_mountain ? terrain_frequency * mountain_amplifier : terrain_frequency;
+                const double height_amplifier = is_mountain ? terrain_amplifier * mountain_amplifier : terrain_amplifier;
+
+                double perlin_value = perlin_terrain(
+                    positionn.x,
+                    positionn.y,
+                    height_frequency,
+                    seed,
+                    terrain_octaves
+                );
+                perlin_value *= height_amplifier;
+                const int global_position_y = int_floorf(perlin_value);
+#else*/

@@ -66,19 +66,24 @@ void update_sdl(ecs *world) {
                 on_window_maximized(world, e, (int2) { event.window.data1, event.window.data2 });
             }
             else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
+                zox_logv("App Gained Focus + Restored");
                 opengl_restore_resources(world);
                 enable_time();
                 on_window_restored(world, e, (int2) { event.window.data1, event.window.data2 });
             }
             else if (event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
+                zox_logv("App Lost Focus + Minimized");
                 opengl_dispose_resources(world);
                 disable_time();
             }
+
             else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+                zox_logv("App Lost Focus");
                 disable_time();
             }
 
             else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+                zox_logv("App Gained Focus");
                 enable_time();
             }
         }

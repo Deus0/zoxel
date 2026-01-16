@@ -13,11 +13,11 @@ void toggle_debug_bounds_terrain(ecs* world) {
 
     cycle_cubeline_debug(&mode);
 
-    is_render_chunk_edges = mode;
     zox_set(prefab_chunk_terrain, DebugCubeLines, { mode });
-    zox_geter(terrain, ChunkLinks, chunkLinks);
-    for (uint i = 0; i < chunkLinks->value->size; i++) {
-        int3_hashmap_pair* pair = chunkLinks->value->data[i];
+
+    zox_geter(terrain, ChunkLinks, chunks);
+    for (uint i = 0; i < chunks->value->size; i++) {
+        int3_hashmap_pair* pair = chunks->value->data[i];
         uint checks = 0;
         while (pair != NULL && checks < max_safety_checks_hashmap) {
             entity c = pair->value;

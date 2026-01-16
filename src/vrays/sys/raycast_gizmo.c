@@ -53,7 +53,7 @@ zox_sys2(RaycastGizmoSystem) {
                     data->hit, // hit positionf
                     float3_scale(data->normal, raygizmo_line_length * data->voxel_scale));
 
-                spawn_line3D_colored_alpha(
+                spawn_line3_alpha(
                     world,
                     data->hit, // hit positionf
                     hit_out,
@@ -67,7 +67,7 @@ zox_sys2(RaycastGizmoSystem) {
         else if (ray_hit == rayhit_character) {
             // draw a cube above its head instead
             float3 b = float3_add(data->hit, float3_scale(float3_up, hit_character_line_up));
-            render_line3D_thickness_alpha(
+            spawn_line3_thickness_alpha(
                 world,
                 data->hit,
                 b,
@@ -79,7 +79,7 @@ zox_sys2(RaycastGizmoSystem) {
 
         else if (ray_hit == rayhit_block_vox) {
             float3 hit_out = float3_add(data->hit, float3_scale(data->normal, hit_block_vox_line_up));
-            spawn_line3D_colored_alpha(
+            spawn_line3_alpha(
                 world,
                 data->hit, // hit positionf
                 hit_out,
@@ -102,7 +102,7 @@ zox_sys2(RaycastGizmoSystem) {
 
 
 /*if (is_debug_mid_voxel) {
-    spawn_line3D_colored_alpha(
+    spawn_line3_alpha(
         world,
         data->positionf,
         data->hit,
@@ -126,38 +126,38 @@ if (data->normal.y != 0) {
 
 other_axis = float3_scale(other_axis, axis_scale);
 if (data->normal.z != 0) {
-    render_line3D_thickness_alpha(world,
+    spawn_line3_thickness_alpha(world,
         float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),
         float3_add(center_quad, (float3) { -other_axis.x, other_axis.y, other_axis.z }),
         hit_terrain_color, raycaster_quad_thickness);
-    render_line3D_thickness_alpha(world,
+    spawn_line3_thickness_alpha(world,
         float3_add(center_quad, (float3) { -other_axis.x, other_axis.y, other_axis.z }),
         float3_add(center_quad, (float3) { other_axis.x, other_axis.y, other_axis.z }),
         hit_terrain_color, raycaster_quad_thickness);
-    render_line3D_thickness_alpha(world,
+    spawn_line3_thickness_alpha(world,
         float3_add(center_quad, (float3) { other_axis.x, -other_axis.y, -other_axis.z }),
         float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),
         hit_terrain_color, raycaster_quad_thickness);
-    render_line3D_thickness_alpha(world,
+    spawn_line3_thickness_alpha(world,
         float3_add(center_quad, (float3) { other_axis.x, other_axis.y, other_axis.z }),
         float3_add(center_quad, (float3) { other_axis.x, -other_axis.y, -other_axis.z }),
         hit_terrain_color, raycaster_quad_thickness);
 
 } else {
     // handles x and y
-    render_line3D_thickness_alpha(world,
+    spawn_line3_thickness_alpha(world,
         float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),
         float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, other_axis.z }),
         hit_terrain_color, raycaster_quad_thickness);
-    render_line3D_thickness_alpha(world,
+    spawn_line3_thickness_alpha(world,
         float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, other_axis.z }),
         float3_add(center_quad, (float3) { other_axis.x, other_axis.y, other_axis.z }),
         hit_terrain_color, raycaster_quad_thickness);
-    render_line3D_thickness_alpha(world,
+    spawn_line3_thickness_alpha(world,
         float3_add(center_quad, (float3) { other_axis.x, other_axis.y, -other_axis.z }),
         float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),
         hit_terrain_color, raycaster_quad_thickness);
-    render_line3D_thickness_alpha(world,
+    spawn_line3_thickness_alpha(world,
         float3_add(center_quad, (float3) { other_axis.x, other_axis.y, other_axis.z }),
         float3_add(center_quad, (float3) { other_axis.x, other_axis.y, -other_axis.z }),
         hit_terrain_color, raycaster_quad_thickness);

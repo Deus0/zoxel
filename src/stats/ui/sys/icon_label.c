@@ -34,7 +34,7 @@ zox_sys2(StatIconLabelSystem) {
             int max = ceil(statValueMax->value);
             snprintf(text, label_text_count, "%i/%i", value, max);
         } else if (zox_has(stat->value, StatLevel)) {
-            snprintf(text, label_text_count, "Lvl %i", value);
+            snprintf(text, label_text_count, "%i", value); // Lvl
         } else {
             snprintf(text, label_text_count, "%i", value);
         }

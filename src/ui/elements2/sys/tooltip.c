@@ -1,13 +1,14 @@
-void TooltipSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(SelectState)
-    zox_sys_in(CanvasLink)
-    zox_sys_in(TooltipEvent)
+zox_sys2(TooltipSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(SelectState);
+    zox_sys_in(CanvasLink);
+    zox_sys_in(TooltipEvent);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(SelectState, selectState)
-        zox_sys_i(TooltipEvent, tooltipEvent)
-        zox_sys_i(CanvasLink, canvasLink)
+        zox_sys_i(SelectState, selectState);
+        zox_sys_i(TooltipEvent, tooltipEvent);
+        zox_sys_i(CanvasLink, canvasLink);
+
         if (!(selectState->value == zox_select_state_selected_this_frame || selectState->value == zox_select_state_deselected_this_frame)) {
             continue;
         }
@@ -33,4 +34,4 @@ void TooltipSystem(iter *it) {
             // hmm need to rethink this
         }
     }
-} zoxd_system(TooltipSystem)
+} zox_sys_end(TooltipSystem);

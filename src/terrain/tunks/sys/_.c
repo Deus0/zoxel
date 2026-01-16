@@ -1,4 +1,6 @@
 #include "spawn.c"
+#include "die.c"
+#include "biomes.c"
 #include "heights.c"
 #include "end.c"
 
@@ -18,7 +20,25 @@ void define_systems_tunks(ecs* world) {
         [out] chunks2.Chunk2Neighbors,
         [none] streaming.StreamedChunk
     );
+    zox_system(
+        Tunk2DeathSystem,
+        zoxp_destroy,
+        [in] voxes.VoxLink,
+        [in] chunks2.Chunk2Position,
+        [in] rendering.RenderDistance,
+        // [in] rendering.RenderDepth,
+        [none] streaming.StreamedChunk
+    );
 
+    zox_system(
+        BiomeMapSystem,
+        EcsPreUpdate,
+        [in] core.Generate,
+        [in] chunks2.Chunk2Position,
+        [out] tunks.BiomeMap
+    );
+
+    // TODO: Pass in BiomeMap and use biome data
     zox_system(
         HeightMapSystem,
         EcsOnUpdate,

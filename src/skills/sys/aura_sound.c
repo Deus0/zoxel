@@ -1,4 +1,4 @@
-void AuraSoundSystem(iter *it) {
+zox_sys2(AuraSoundSystem) {
     // const float popup_spawn_y = 0.18f;
     const double volume = get_volume_sfx();
     zox_sys_world();
@@ -17,4 +17,4 @@ void AuraSoundSystem(iter *it) {
             );
         }
     }
-} zoxd_system2(AuraSoundSystem);
+} zox_sys_end(AuraSoundSystem);

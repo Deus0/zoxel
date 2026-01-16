@@ -44,7 +44,8 @@ entity spawn_menu_options(
             zox_log_error("setting is null at [%i]", i);
             break;
         }
-        zox_log("spawning setting %s [%i]", s.name, s.type);
+
+        // zox_log("spawning setting %s [%i]", s.name, s.type);
         // zox_log("spawning setting %s [%f] [%fx%f]", s.name, s.value_float, s.min_float, s.max_float)
 
         // Toggle

@@ -1,47 +1,42 @@
-zox_sys2(ChunkDieSystem) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(VoxLink)
-    zox_sys_in(ChunkPosition)
-    zox_sys_in(RenderDistance)
-    // zox_sys_in(ChunkLodDirty)
-    zox_sys_in(RenderDepth)
+zox_sys2(Chunk3DeathSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(VoxLink);
+    zox_sys_in(ChunkPosition);
+    zox_sys_in(RenderDistance);
+    zox_sys_in(RenderDepth);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(VoxLink, voxLink)
-        zox_sys_i(RenderDepth, renderDepth)
-        // zox_sys_i(ChunkLodDirty, chunkLodDirty)
-        zox_sys_i(RenderDistance, renderDistance)
-        zox_sys_i(ChunkPosition, chunkPosition)
-        if (!zox_valid(voxLink->value)) {
+        zox_sys_e();
+        zox_sys_i(VoxLink, terrain);
+        zox_sys_i(RenderDepth, depth);
+        zox_sys_i(RenderDistance, distance);
+        zox_sys_i(ChunkPosition, position);
+
+        if (!zox_valid(terrain->value)) {
             zox_delete(e)
             continue;
         }
-        if (renderDepth->value == render_depth_spawning) {
+
+        if (depth->value == render_depth_spawning) {
             continue;
         }
-        /*if (chunkLodDirty->value) {
-            continue;
-        }*/
+
         // Pass if loading chunk
-        if (renderDistance->value == 255) {
+        if (distance->value == 255) {
             continue;
         }
+
         // Pass if lod changing
-        const byte kill = renderDistance->value > terrain_lod_far;
-        if (kill) {
-            // remove from hash - can i do this better?
-            // zox_muter(voxLink->value, ChunkLinks, chunkLinks)
-            zox_geter(voxLink->value, ChunkLinks, chunkLinks)
-            int3_hashmap_remove(chunkLinks->value, chunkPosition->value);
-            // delete (adds to queue)
-            zox_delete(e)
-            /*#ifdef zox_enable_log_streaming
-            if (log_individuals) {
-                zox_geter_value(e, ChunkPosition, int3, chunk_position)
-                zox_log_streaming("- streaming: remove chunk [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z)
-            }
-            #endif*/
+        byte is_kill = distance->value > terrain_lod_far;
+        if (!is_kill) {
+            continue;
         }
+
+        // remove from hash - can i do this better?
+        zox_muter(terrain->value, ChunkLinks, chunks);
+        // zox_geter(terrain->value, ChunkLinks, chunks);
+        int3_hashmap_remove(chunks->value, position->value);
+
+        zox_delete(e);
     }
-} zox_sys_end(ChunkDieSystem);
+} zox_sys_end(Chunk3DeathSystem);

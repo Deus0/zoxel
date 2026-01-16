@@ -1,19 +1,21 @@
 // DotsSystem - skill applies damage to a users health
-void DotsSystem(iter *it) {
+zox_sys2(DotsSystem) {
     // const float damage_rate = 1.0f; // add this property to dot entity
-    init_delta_time()
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(UserLink)
-    zox_sys_in(SpawnerLink)
-    zox_sys_in(SkillDamage)
+    init_delta_time();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(UserLink);
+    zox_sys_in(SpawnerLink);
+    zox_sys_in(SkillDamage);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(UserLink, userLink)
-        zox_sys_i(SkillDamage, skillDamage)
-        zox_sys_i(SpawnerLink, spawnerLink)
+        zox_sys_i(UserLink, userLink);
+        zox_sys_i(SkillDamage, skillDamage);
+        zox_sys_i(SpawnerLink, spawnerLink);
+
         if (!zox_valid(userLink->value) || zox_gett_value(userLink->value, Dead) || !skillDamage->value) {
             continue;
         }
+
         float damage = skillDamage->value;
         if (zox_valid(spawnerLink->value) && !zox_gett_value(spawnerLink->value, Dead)) {
             // todo: influence stat link for auras -> to determine strengthing stats
@@ -52,4 +54,4 @@ void DotsSystem(iter *it) {
         // zox_set(userLink->value, LastDamager, { spawnerLink->value })
         combat_on_hit(world, userLink->value,spawnerLink->value);
     }
-} zoxd_system(DotsSystem)
+} zox_sys_end(DotsSystem);

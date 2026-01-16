@@ -1,5 +1,5 @@
 #ifdef zox_debug_camera_rays
-extern void render_line3D(ecs *world, const float3, const float3, const color_rgb);
+extern void spawn_line3(ecs *world, const float3, const float3, const color_rgb);
 #endif
 
 void calculate_new_frustum(
@@ -46,7 +46,7 @@ zox_sys2(CameraRaySystem) {
         normal->value = ray.normal;
         // zox_log(" > ray [%fx%fx%f] - n [%fx%fx%f]\n", ray.origin.x, ray.origin.y, ray.origin.z, ray.normal.x, ray.normal.y, ray.normal.z)
 #ifdef zox_debug_camera_rays
-        render_line3D(world, ray.origin, float3_add(ray.origin, float3_scale(ray.normal, 8)), color_rgb_white);
+        spawn_line3(world, ray.origin, float3_add(ray.origin, float3_scale(ray.normal, 8)), color_rgb_white);
 #endif
     }
 } zox_sys_end(CameraRaySystem);
