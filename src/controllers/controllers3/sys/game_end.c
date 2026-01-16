@@ -5,7 +5,7 @@
     // zox_geter_value(player, CameraLink, entity, camera);
 }*/
 
-void PlayerGame3EndSystem(iter *it) {
+zox_sys2(PlayerGame3EndSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
@@ -42,4 +42,4 @@ void PlayerGame3EndSystem(iter *it) {
             zox_set(e, CharacterLink, { 0 });
         }
     }
-} zoxd_system2(PlayerGame3EndSystem);
+} zox_sys_end(PlayerGame3EndSystem);

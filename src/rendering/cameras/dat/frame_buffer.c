@@ -20,7 +20,7 @@ uint gpu_spawn_frame_buffer_object() {
     return buffer;
 }
 // Function to spawn and attach a frame buffer object to an entity
-uint spawn_frame_buffer_object(ecs *world, const entity e) {
+uint spawn_frame_buffer_object(ecs *world, entity e) {
     if (headless) {
         return 0;
     }
@@ -31,7 +31,7 @@ uint spawn_frame_buffer_object(ecs *world, const entity e) {
 }
 
 // Attach the texture to the FBO
-void connect_render_texture_to_fbo(const uint fbo, const uint texture) {
+void connect_render_texture_to_fbo(uint fbo, uint texture) {
     // zox_log(" + connecting texture [%i] to fbo [%i]\n", texture, fbo)
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
@@ -41,7 +41,7 @@ void connect_render_texture_to_fbo(const uint fbo, const uint texture) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void set_render_texture_gpu(uint index, const int2 size) {
+void set_render_texture_gpu(uint index, int2 size) {
     // make it a render texture update system
     glBindTexture(GL_TEXTURE_2D, index);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);

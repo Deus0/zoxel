@@ -7,6 +7,7 @@ zoxc_double(TimerTime);
 zoxc_double(TimerRate);
 zoxc_byte(TimerState);
 zoxc_double(SystemDelta);
+zoxc_double(SystemDeltaCache);
 zoxc_double(SystemDeltaMax);
 #include "mcr/_.c"
 #include "fun/_.c"
@@ -19,6 +20,7 @@ zox_begin_module(Timing)
     zoxd_double(TimerRate);
     zoxd_byte(TimerState);
     zoxd_double(SystemDelta);
+    zoxd_double(SystemDeltaCache);
     zoxd_double(SystemDeltaMax);
     define_systems_timing(world);
     initialize_time();

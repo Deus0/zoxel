@@ -1,7 +1,4 @@
-TerrainPlace find_position_in_terrain(
-    ecs *world,
-    const entity terrain
-) {
+TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
     const float3 bounds = (float3) { 0.5f, 1.0, 0.5f };
     // zox_geter(terrain, BlockScale, blockScale)
     zox_geter(terrain, ChunkLinks, chunk_links)
@@ -54,11 +51,13 @@ TerrainPlace find_position_in_terrain(
 }
 
 void game_start_player_new_delay(ecs *world, entity player) {
+
     const entity game = zox_get_value(player, GameLink)
     const entity realm = zox_get_value(game, RealmLink)
     const entity terrain = zox_get_value(realm, TerrainLink)
     const entity character = zox_get_value(player, CharacterLink)
     const entity camera = zox_get_value(player, CameraLink)
+
     TerrainPlace spawn_place = find_position_in_terrain(world, terrain);
     if (!zox_valid(spawn_place.chunk)) {
         zox_log_error("+ placement failure: player character placed into [%ix%ix%i]", spawn_place.chunk_position.x, spawn_place.chunk_position.y, spawn_place.chunk_position.z)
@@ -66,6 +65,7 @@ void game_start_player_new_delay(ecs *world, entity player) {
         zox_set(character, Position3D, { spawn_place.position });
         zox_set(camera, Position3D, { spawn_place.position });
     }
+
     spawn_player_game_ui(world, player);
     zox_set(character, DisableGravity, { 0 });
     zox_set(character, DisableMovement, { 0 });
@@ -177,7 +177,7 @@ entity game_start_player_new(
         .position = fake_spawn_position,
     };
     const entity e = spawn_character3_player(world, spawn_data);
-    delay_event(world, &game_start_player_new_delay, player, 0.5);
+    delay_event(world, &game_start_player_new_delay, player, 1.5);
     return e;
 }
 

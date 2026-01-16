@@ -1,4 +1,4 @@
-void LightNodeDebugSystem(iter *it) {
+zox_sys2(LightNodeDebugSystem) {
 
     if (!zox_debug_lights) return;
 
@@ -45,4 +45,4 @@ void LightNodeDebugSystem(iter *it) {
         );
 
     }
-} zoxd_system2(LightNodeDebugSystem);
+} zox_sys_end(LightNodeDebugSystem);

@@ -8,10 +8,10 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
     zox_sys_out(ChunkMeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_i(VoxelNodeDirty, voxel_node_dirty);
-        zox_sys_o(ChunkMeshDirty, chunk_mesh_dirty);
+        zox_sys_i(VoxelNodeDirty, vdirty);
+        zox_sys_o(ChunkMeshDirty, cdirty);
 
-        if (chunk_mesh_dirty->value != zox_dirty_none || voxel_node_dirty->value != zox_dirty_none) {
+        if (cdirty->value != zox_dirty_none || vdirty->value != zox_dirty_none) {
             continue;
         }
 
@@ -29,7 +29,7 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
         }
 
         if (neighbor_dirty) {
-            chunk_mesh_dirty->value = zox_dirty_trigger;
+            cdirty->value = zox_dirty_trigger;
         }
     }
 } zox_sys_end(Chunk3NeighborsMeshTriggerSystem);

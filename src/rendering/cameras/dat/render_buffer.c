@@ -9,7 +9,7 @@ ECS_DTOR(RenderBufferLink, ptr, {
 })
 
 // GL_DEPTH24_STENCIL8 GL_DEPTH
-void set_render_buffer_size(const uint rbo, const int2 size) {
+void set_render_buffer_size(uint rbo, int2 size) {
 #ifndef zox_gles2
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
     glRenderbufferStorage(
@@ -22,20 +22,20 @@ void set_render_buffer_size(const uint rbo, const int2 size) {
 }
 
 // Create and attach a renderbuffer for depth and stencil (optional, depending on needs)
-uint gpu_spawn_render_buffer(const int2 size) {
+uint gpu_spawn_render_buffer(int2 size) {
     uint rbo;
     glGenRenderbuffers(1, &rbo);
     set_render_buffer_size(rbo, size);
     return rbo;
 }
 
-void prefab_add_render_buffer(ecs *world, const entity e) {
+void prefab_add_render_buffer(ecs *world, entity e) {
     if (!headless) {
         zox_prefab_set(e, RenderBufferLink, { 0 })
     }
 }
 
-uint spawn_render_buffer(ecs *world, const entity e, const int2 size) {
+uint spawn_render_buffer(ecs *world, entity e, int2 size) {
     if (headless) {
         return 0;
     }
@@ -45,7 +45,7 @@ uint spawn_render_buffer(ecs *world, const entity e, const int2 size) {
     return buffer;
 }
 
-void connect_render_buffer_to_fbo(const uint fbo, const uint render_buffer) {
+void connect_render_buffer_to_fbo(uint fbo, uint render_buffer) {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, render_buffer);
     if (!check_opengl_frame_buffer_status()) {

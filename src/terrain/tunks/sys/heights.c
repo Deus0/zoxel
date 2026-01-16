@@ -1,5 +1,8 @@
 zox_sys2(HeightMapSystem) {
-    const uint seed = global_seed;  // TODO: use terrains seed
+    // TODO: use terrains seed
+    // TODO: use height frequency from biome maps
+    const uint seed = global_seed;
+    double height_frequency = terrain_frequency;
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(Chunk2Position);
@@ -25,7 +28,6 @@ zox_sys2(HeightMapSystem) {
         //byte is_mountain = 0;
         //double height_frequency = is_mountain ? terrain_frequency * mountain_amplifier : terrain_frequency;
 
-        double height_frequency = terrain_frequency;
         int2 gposition_start = (int2) {
             cposition->value.x * hsize.x,
             cposition->value.y * hsize.y
@@ -40,7 +42,7 @@ zox_sys2(HeightMapSystem) {
                 double perlin_value = perlin_terrain(
                     noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
                     noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
-                    height_frequency * 5,
+                    height_frequency,
                     seed,
                     terrain_octaves
                 );

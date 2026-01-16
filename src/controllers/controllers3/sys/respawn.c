@@ -1,6 +1,6 @@
 extern entity game_start_player_new(ecs*, const entity);
 
-void Player3RespawnSystem(iter *it) {
+zox_sys2(Player3RespawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(PlayerState);
@@ -43,4 +43,4 @@ void Player3RespawnSystem(iter *it) {
             }
         }
     }
-} zoxd_system2(Player3RespawnSystem);
+} zox_sys_end(Player3RespawnSystem);

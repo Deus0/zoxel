@@ -289,8 +289,8 @@ zox_sys2(Chunk3TexturedBuildSystem) {
 
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkMeshDirty, chunk_mesh_dirty)
-        if (chunk_mesh_dirty->value == zox_dirty_active) {
+        zox_sys_i(ChunkMeshDirty, cdirty)
+        if (cdirty->value == zox_dirty_active) {
             any_dirty = 1;
             break;
         }
@@ -384,7 +384,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
 
 
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkMeshDirty, chunk_mesh_dirty);
+        zox_sys_i(ChunkMeshDirty, cdirty);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_i(BlockScale, block_scale);
@@ -393,9 +393,9 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
-        zox_sys_o(MeshDirty, mesh_dirty);
+        zox_sys_o(MeshDirty, mdirty);
 
-        if (chunk_mesh_dirty->value != zox_dirty_active) {
+        if (cdirty->value != zox_dirty_active) {
             continue;
         }
 
@@ -404,27 +404,18 @@ zox_sys2(Chunk3TexturedBuildSystem) {
             continue;
         }
 
-        clear_mesh_uvs(
-            indicies,
-            verts,
-            colors,
-            uvs
-        );
+        clear_mesh_uvs(indicies, verts, colors, uvs        );
 
         if (rdepth->value == render_depth_invisible) {
-            mesh_dirty->value = mesh_state_trigger_slow;
+            mdirty->value = mesh_state_trigger_slow;
             continue;
         }
 
         const VoxelNode *nnodes[6];
         byte ndepths[6];
-        fetch_neightbor_chunk_data(
-            world,
-            neighbors,
-            nnodes,
-            ndepths);
+        fetch_neightbor_chunk_data(world, neighbors, nnodes, ndepths);
 
-        const byte render_depth =  rdepth->value;
+        const byte render_depth = rdepth->value;
         const float chunk_scale = block_scale->value * powers_of_two[render_depth];
 
         read_lock_VoxelNode(voxel_node);
@@ -444,7 +435,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         );
         read_unlock_VoxelNode(voxel_node);
 
-        mesh_dirty->value = mesh_state_trigger; // mesh_state_trigger_slow;
+        mdirty->value = mesh_state_trigger; // mesh_state_trigger_slow;
 
         // zox_sys_e();
         // zox_log("built chunk mesh [%s]", zox_get_name(e));

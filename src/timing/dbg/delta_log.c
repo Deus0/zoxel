@@ -8,6 +8,7 @@ void add_system_log_components(ecs* world) {
             continue;
         }
         zox_set(system, SystemDelta, { 0 });
+        zox_set(system, SystemDeltaCache, { 0 });
     }
 }
 
@@ -59,7 +60,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
 
     ecs_query_t *q = ecs_query(world, {
         .terms = {
-            { .id = ecs_id(SystemDelta) }
+            { .id = ecs_id(SystemDeltaCache) }
         }
     });
 
@@ -91,7 +92,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
     int idx = 0;
     it = ecs_query_iter(world, q);
     while (ecs_query_next(&it)) {
-        SystemDelta *deltas = ecs_field(&it, SystemDelta, 0);
+        SystemDeltaCache *deltas = ecs_field(&it, SystemDeltaCache, 0);
         for (int i = 0; i < it.count; i++) {
             entries[idx].e = it.entities[i];
             entries[idx].value = deltas[i].value;

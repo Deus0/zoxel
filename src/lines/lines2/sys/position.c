@@ -39,7 +39,7 @@ void set_line2_canvas_position(ecs *world, entity e) {
 }
 
 // TODO: LinePosition2Dirty -> Reposition there
-void Line2PositionSystem(iter *it) {
+zox_sys2(Line2PositionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutPositionDirty);
@@ -71,4 +71,4 @@ void Line2PositionSystem(iter *it) {
             );
         }
     }
-} zoxd_system2(Line2PositionSystem);
+} zox_sys_end(Line2PositionSystem);

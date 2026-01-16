@@ -55,10 +55,10 @@ void line2D_render_iteration(iter *it, const byte is_element_line) {
     zox_disable_material();
 }
 
-void Line2DRenderSystem(iter *it) {
+zox_sys2(Line2DRenderSystem) {
     line2D_render_iteration(it, 0);
-} zoxd_system2(Line2DRenderSystem);
+} zox_sys_end(Line2DRenderSystem);
 
-void ElementLine2DRenderSystem(iter *it) {
+zox_sys2(ElementLine2DRenderSystem) {
     line2D_render_iteration(it, 1);
-} zoxd_system2(ElementLine2DRenderSystem);
+} zox_sys_end(ElementLine2DRenderSystem);

@@ -16,17 +16,6 @@ void define_systems_timing(ecs* world) {
         zoxp_destroy,
         [out] timing.DestroyInTime
     );
-    // TODO: Move this before other systems
-    zox_system(
-        SystemDeltaLogResetSystem,
-        EcsOnLoad,
-        [out] timing.SystemDelta
-    );
-    zox_system(
-        SystemDeltaLogSystem,
-        EcsOnStore,
-        [in] timing.SystemDelta
-    );
     zox_system(
         DestroyInFrameSystem,
         EcsOnStore,
@@ -38,5 +27,17 @@ void define_systems_timing(ecs* world) {
         [in] core.TimedEvent,
         [in] core.EventInput,
         [out] core.EventTime
+    );
+    // TODO: Move this before other systems
+    zox_system(
+        SystemDeltaLogResetSystem,
+        EcsOnLoad,
+        [out] timing.SystemDelta,
+        [out] timing.SystemDeltaCache
+    );
+    zox_system(
+        SystemDeltaLogSystem,
+        EcsOnStore,
+        [in] timing.SystemDelta
     );
 }

@@ -1,4 +1,4 @@
-void QuadLineRenderSystem(iter *it) {
+zox_sys2(QuadLineRenderSystem) {
     zox_gpu_material(line3D_material);
     glEnableVertexAttribArray(line3D_position_location);
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());
@@ -47,4 +47,4 @@ void QuadLineRenderSystem(iter *it) {
     }
     zox_gpu_disable_buffer(line3D_position_location);
     zox_disable_material();
-} zoxd_system2(QuadLineRenderSystem);
+} zox_sys_end(QuadLineRenderSystem);

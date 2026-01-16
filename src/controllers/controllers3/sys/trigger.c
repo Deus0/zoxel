@@ -3,7 +3,7 @@
 // TODO: Refactor the DisableMovement checks for a and b
 
 // NOTE: Player Input -> Character Triggers
-void Player3DTriggerSystem(iter *it) {
+zox_sys2(Player3DTriggerSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLinks);
@@ -95,4 +95,4 @@ void Player3DTriggerSystem(iter *it) {
             }
         }
     }
-} zoxd_system2(Player3DTriggerSystem);
+} zox_sys_end(Player3DTriggerSystem);

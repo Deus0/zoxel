@@ -1,4 +1,4 @@
-// Uplaods Terrain
+// Uplaods Terrain Chunks
 zox_sys2(Mesh3DTexturedUploadSystem) {
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
@@ -25,7 +25,13 @@ zox_sys2(Mesh3DTexturedUploadSystem) {
             continue;
         }
 
-        if (!gpu_mesh->value.x || !gpu_mesh->value.y || !gpu_uvs->value || !gpu_colors->value || !indicies->length || !verts->length || !uvs->length) {
+        if (!gpu_mesh->value.x || !gpu_mesh->value.y || !gpu_uvs->value || !gpu_colors->value) {
+            count->value = 0;
+            continue;
+        }
+
+        if (!indicies->length || !verts->length || !uvs->length) {
+            count->value = 0;
             continue;
         }
 

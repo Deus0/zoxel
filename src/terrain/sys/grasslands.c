@@ -42,7 +42,7 @@ zox_sys2(GrassyPlainsSystem) {
         zox_sys_i(RenderDepthDirty, dirty);
         zox_sys_i(VoxelNodeEdited, edited);
         zox_sys_i(VoxLink, terrain);
-        zox_sys_o(NodeDepth, node_depth);
+        zox_sys_o(NodeDepth, vdepth);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(VoxelNodeDirty, node_dirty);
         zox_sys_o(VoxelNodeGenerated, generated);
@@ -68,21 +68,21 @@ zox_sys2(GrassyPlainsSystem) {
         }
 
         // If Chunk already at or greater in Voxel Octree Resolution depth, we continue
-        if (node_depth->value >= generation_depth) {
+        if (vdepth->value >= generation_depth) {
             // we should set to rebuild mesh still, with node dirty
             //  Until we cache those extra meshes
             node_dirty->value = zox_dirty_trigger;
             continue;
         }
 
-        node_depth->value = generation_depth;
-        const byte is_max_depth = node_depth->value == terrain_depth;
+        vdepth->value = generation_depth;
+        const byte is_max_depth = vdepth->value == terrain_depth;
 
-        const byte chunk_voxel_length = powers_of_two_byte[node_depth->value];
-        const double terrain_amplifier = chunk_voxel_length * render_distance_y;
-        const float2 map_size_f = float2_single(chunk_voxel_length);
+        const byte vlength = powers_of_two_byte[vdepth->value];
+        const double terrain_amplifier = vlength * render_distance_y;
+        const float2 map_size_f = float2_single(vlength);
         const float3 chunk_position_float3 = float3_from_int3(cposition->value);
-        const int chunk_position_y = (int) (chunk_position_float3.y * chunk_voxel_length);
+        const int chunk_position_y = (int) (chunk_position_float3.y * vlength);
         byte3 positionl;
         // For each XZ position
 
@@ -120,7 +120,7 @@ zox_sys2(GrassyPlainsSystem) {
 
         // Gets the power multiplier for depth difference for our array lookups
         int hmultiplier = 1;
-        byte ccc = node_depth->value;
+        byte ccc = vdepth->value;
         while (ccc != terrain_depth) {
             hmultiplier *= 2;
             ccc++;
@@ -147,8 +147,19 @@ zox_sys2(GrassyPlainsSystem) {
 
 
         write_lock_VoxelNode(node);
-        for (positionl.x = 0; positionl.x < chunk_voxel_length; positionl.x++) {
-            for (positionl.z = 0; positionl.z < chunk_voxel_length; positionl.z++) {
+
+        // Clear Octree to Air
+        set_voxelt_air(node);
+        /*for (positionl.x = 0; positionl.x < vlength; positionl.x++) {
+            for (positionl.y = 0; positionl.y <= vlength; positionl.y++) {
+                for (positionl.z = 0; positionl.z < vlength; positionl.z++) {
+                    set_voxelt_override(node, vdepth->value, positionl, 0, 0);
+                }
+            }
+        }*/
+
+        for (positionl.x = 0; positionl.x < vlength; positionl.x++) {
+            for (positionl.z = 0; positionl.z < vlength; positionl.z++) {
 
                 const float2 positionn = (float2) {
                     noise_positiver2 + chunk_position_float3.x + (positionl.x / map_size_f.x),
@@ -197,7 +208,7 @@ zox_sys2(GrassyPlainsSystem) {
                 // zox_log("- TerrainHeight [%ix%i] [%i]", hposition.x, hposition.y, global_position_y);
 
                 const int local_height_raw = global_position_y - chunk_position_y;
-                const int local_height = int_min(chunk_voxel_length - 1, local_height_raw);
+                const int local_height = int_min(vlength - 1, local_height_raw);
 
                 byte did_place_grass_top = 0;
                 // For each Y position
@@ -243,9 +254,10 @@ zox_sys2(GrassyPlainsSystem) {
                         } else {
                             value = zox_block_stone;
                         }
+
                         set_voxelt(
                             node,
-                            node_depth->value,
+                            vdepth->value,
                             positionl,
                             value,
                             0);
@@ -257,7 +269,7 @@ zox_sys2(GrassyPlainsSystem) {
                     is_max_depth && // if max depth
                     did_place_grass_top &&
                     local_height_raw + 1 >= 0 &&
-                    local_height_raw + 1 < chunk_voxel_length &&
+                    local_height_raw + 1 < vlength &&
                     global_position_y > sand_height
                 ) {
                     const byte place_grass = should_place_grass(
@@ -266,7 +278,7 @@ zox_sys2(GrassyPlainsSystem) {
                         seed);
                     if (place_grass) {
                         positionl.y = local_height_raw + 1;
-                        set_voxelt(node, node_depth->value, positionl, zox_block_vox_grass, 0);
+                        set_voxelt(node, vdepth->value, positionl, zox_block_vox_grass, 0);
                     }
                 }
             }
@@ -319,7 +331,7 @@ if (rando <= block_spawn_chance_grass + block_spawn_chance_flower + block_spawn_
         // set_voxel(setter_obsidian, data);
         set_voxelt(
             node,
-            node_depth,
+            vdepth,
             positionl,
             zox_block_obsidian,
             0);

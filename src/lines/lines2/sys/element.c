@@ -26,7 +26,7 @@ void set_ui_line_position(
 // this just sets posiions - sets render position based on canvas
 
 // TODO: Make a dirty flag for canvas line points
-void Line2DElementSystem(iter *it) {
+zox_sys2(Line2DElementSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LinePosition2);
@@ -50,4 +50,4 @@ void Line2DElementSystem(iter *it) {
             canvas_size_f
         );
     }
-} zoxd_system2(Line2DElementSystem);
+} zox_sys_end(Line2DElementSystem);

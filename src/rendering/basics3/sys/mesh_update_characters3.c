@@ -33,20 +33,26 @@ zox_sys2(MeshUpdateCharacters3DSystem) {
         if (dirty->value != mesh_state_upload) {
             continue;
         }
+
         if (indicies->length == 0) {
             // clear mesh and colors buffer if zero again
             if (gpu_mesh->value.x != 0 && gpu_mesh->value.y != 0 && gpu_colors->value != 0) {
                 clear_regular_buffer(&gpu_mesh->value.x);
                 clear_regular_buffer(&gpu_mesh->value.y);
             }
-            if (gpu_colors->value) clear_regular_buffer(&gpu_colors->value);
+            if (gpu_colors->value) {
+                clear_regular_buffer(&gpu_colors->value);
+            }
+            count->value = 0;
             continue;
         }
-        if (gpu_mesh->value.x == 0 && gpu_mesh->value.y == 0) {
+
+        // Spawn new GPU Buffers
+        if (!gpu_mesh->value.x && !gpu_mesh->value.y) {
             gpu_mesh->value.x = spawn_gpu_generic_buffer();
             gpu_mesh->value.y = spawn_gpu_generic_buffer();
         }
-        if (gpu_colors->value == 0) {
+        if (!gpu_colors->value) {
             gpu_colors->value = spawn_gpu_generic_buffer();
         }
         // zox_log(" + Uploading mesh [%i : %i]\n", meshVertices->length, colors->length)
