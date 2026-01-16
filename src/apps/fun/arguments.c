@@ -11,8 +11,12 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
             halfscreen = 1;
         } else if (strcmp(args[i], "-s") == 0 || strcmp(args[i], "--splitscreen") == 0) {
             is_split_screen = 1;
-        } else if (strcmp(args[i], "-b") == 0 || strcmp(args[i], "--vsync") == 0) {
+        } else if (strcmp(args[i], "--vsync") == 0 || strcmp(args[i], "--enablevsync") == 0) {
             vsync = 1;
+            zox_log("Enabled [vsync]");
+        } else if (strcmp(args[i], "--disablevsync") == 0 || strcmp(args[i], "--novsync") == 0) {
+            vsync = 0;
+            zox_log("Disabled [vsync]");
         } else if (strcmp(args[i], "--nodecor") == 0) {
             disable_apps_decor = 1;
         }

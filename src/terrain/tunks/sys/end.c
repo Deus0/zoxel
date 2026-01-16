@@ -1,4 +1,4 @@
-// generate terrain after Tunk generates
+// Signals Terrain Chunks to Generate -> After Tunk (2D maps) finishes generating
 zox_sys2(TunkEndSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -23,6 +23,5 @@ zox_sys2(TunkEndSystem) {
                 zox_set(chunk3, RenderDepthDirty, { zox_dirty_trigger });
             }
         }
-
     }
 } zox_sys_end(TunkEndSystem);

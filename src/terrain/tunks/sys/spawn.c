@@ -5,34 +5,11 @@
 /*zox_sys2(TunkDebugSystem) {
     zox_log("Streaming Tunks? %i", it->count);
 } zox_sys_end(TunkDebugSystem);*/
-
-int2 find_closest_point2(const int2* points, int length, int2 target) {
-    if (points == NULL) {
-        return int2_zero;
-    }
-    if (length == 0) {
-        return int2_zero;
-    }
-    if (length == 1) {
-        return points[0];
-    }
-    int2 closest = points[0];
-    float closest_distance = int2_distance(points[0], target); // 1000000;
-    for (byte i = 1; i < length; i++) {
-        const float distance = int2_distance(points[i], target);
-        if (distance < closest_distance) {
-            closest_distance = distance;
-            closest = points[i];
-        }
-    }
-    return closest;
-}
-
 zox_sys2(Tunk2SpawnSystem) {
     zox_sys_query();
     zox_sys_world();
 
-    int2 *points = NULL;
+    int2 *streamers = NULL;
     int streamers_count = 0;
     byte iterated = 0;
 
@@ -45,7 +22,7 @@ zox_sys2(Tunk2SpawnSystem) {
         iterated = 1;
         zox_sys_begin_2();
         zox_sys_in_2(StreamPoint2);
-        points = (int2*) StreamPoint2s_2;
+        streamers = (int2*) StreamPoint2s_2;
         streamers_count = it2.count;
     }
     zox_sys_query_end();
@@ -111,7 +88,7 @@ zox_sys2(Tunk2SpawnSystem) {
             // if not existing yet, spawn a new chunk
             if (!zox_valid(neighbor)) {
 
-                int2 stream_point = find_closest_point2(points, streamers_count, nposition);
+                int2 stream_point = find_closest_point2(streamers, streamers_count, nposition);
                 // only spawn new chunk if within stream distance
                 byte rdistance = get_camera_chunk2_distance(stream_point, nposition);
 

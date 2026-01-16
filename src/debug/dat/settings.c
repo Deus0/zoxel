@@ -15,8 +15,12 @@
 // #define zox_debug_game_players
 
 // character
-#define zox_debug_ui_player_level
-#define zox_debug_player_chunk_position
+
+
+#define zox_debug_label_system_times
+
+// #define zox_debug_ui_player_level
+// #define zox_debug_player_chunk_position
 // #define zox_debug_player_character3D
 // #define zox_debug_player_grounded
 // #define zox_debug_player_element_links

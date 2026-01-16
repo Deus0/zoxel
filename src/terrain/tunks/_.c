@@ -10,8 +10,10 @@
 #ifndef zoxm_tunks2
 #define zoxm_tunks2
 
-// TODO: Chunk2LodSystem
-// TODO: Height Map Update based on LODs
+// TODO: Biome Map
+// TODO: Vegetation Map for Grass  / trees etc
+// TODO: Maps Update based on LODs??
+// TODO: Quadtrees for map data?
 
 // TODO: Use sbyte instead of byte?
 // TODO: Chunk2NeighborsSystem

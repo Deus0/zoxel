@@ -1,9 +1,6 @@
 // todo: make sure we only close blocks that can be grouped together here (we shouldn't group grass etc)
 // doesn't close any block voxes
-void reduce_voxel_nodes(
-    ecs *world,
-    VoxelNode *node
-) {
+void reduce_voxel_nodes(ecs *world, VoxelNode *node) {
     if (!node || !has_children_VoxelNode(node)) {
         return;
     }
@@ -48,12 +45,14 @@ zox_sys2(VoxelNodeCleanupSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxelNodeDirty, voxelNodeDirty)
-        zox_sys_i(NodeDepth, nodeDepth)
-        zox_sys_o(VoxelNode, node)
-        if (voxelNodeDirty->value != zox_dirty_active || !nodeDepth->value) {
+        zox_sys_i(VoxelNodeDirty, dirty);
+        zox_sys_i(NodeDepth, depth);
+        zox_sys_o(VoxelNode, node);
+
+        if (dirty->value != zox_dirty_active || !depth->value) {
             continue;
         }
+
         write_lock_VoxelNode(node);
         reduce_voxel_nodes(world, node);
         write_unlock_VoxelNode(node);

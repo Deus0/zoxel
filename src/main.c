@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
         spawn_window_icon(world, app, "game.png");
 
         zox_logv("Setting VSync");
-        set_vsync(vsync);
+        on_set_vsync(vsync);
 
         zox_logv("Initializing Rendering");
         initialize_rendering(render_backend);

@@ -1,12 +1,6 @@
 extern entity get_linked_character(ecs*, entity);
 
-uint debug_ui_raycasting(
-    ecs *world,
-    const entity player,
-    char *buffer,
-    const uint size,
-    uint index
-) {
+uint debug_ui_raycasting(ecs *world, entity player, char *buffer, uint size, uint index) {
 
     if (!player) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");

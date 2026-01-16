@@ -1,5 +1,7 @@
 // todo: add raycast position here, and character position
+
 // #define zox_log_mouse
+#define zox_debug_label_system_times
 
 int debug_newline_zext(char buffer[], int buffer_size, int buffer_index) {
     buffer_index += snprintf(buffer + buffer_index, buffer_size, "Day 1.\nToday is a very sunny day.\nHi jerry.");
@@ -42,7 +44,7 @@ int debug_label_device(ecs *world, const entity device, char buffer[], int buffe
         return buffer_index;
 }
 
-void GameDebugLabelSystem(iter *it) {
+zox_sys2(GameDebugLabelSystem) {
         return;
     time_update_debug_label_system += zox_delta_time;
     if (time_update_debug_label_system >= time_update_debug_label_system_rate) {
@@ -51,17 +53,19 @@ void GameDebugLabelSystem(iter *it) {
        return;
     }
     const int buffer_size = max_debug_characters;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_out(TextDirty)
-    zox_sys_out(TextData)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_out(TextDirty);
+    zox_sys_out(TextData);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_o(TextDirty, zextDirty)
-        zox_sys_o(TextData, textData)
+        zox_sys_e();
+        zox_sys_o(TextDirty, zextDirty);
+        zox_sys_o(TextData, textData);
+
         if (zextDirty->value) {
             continue;
         }
+
         const entity canvas = get_root_canvas(world, e);
         // zox_log("canvas; %s - %i\n", zox_get_name(canvas), zox_has(canvas, PlayerLink))
         if (!canvas || !zox_has(canvas, PlayerLink)) continue;
@@ -102,13 +106,15 @@ void GameDebugLabelSystem(iter *it) {
 #ifdef zox_debug_camera_frustum
         buffer_index = get_label_camera_frustum(world, player, buffer, buffer_size, buffer_index);
 #endif
-        // Player / Character
-/*#ifdef zox_debug_ui_player_level
+
+// Player / Character
+#ifdef zox_debug_ui_player_level
         buffer_index = get_label_local_character_level(world, character, buffer, buffer_size, buffer_index);
 #endif
 #ifdef zox_debug_ui_player_health
         buffer_index = get_label_local_character_health(world, character, buffer, buffer_size, buffer_index);
-#endif*/
+#endif
+
 #ifdef zox_debug_player_element_links
         buffer_index = get_label_element_links(world, player, buffer, buffer_size, buffer_index);
         buffer_index = get_label_element_links(world, character, buffer, buffer_size, buffer_index);
@@ -203,10 +209,15 @@ void GameDebugLabelSystem(iter *it) {
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " mouse_position [%ix%i]", mouse_position.x, mouse_position.y);
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " mouse_delta [%ix%i]", mouse_delta.x, mouse_delta.y);
 #endif
+
+/*#ifdef zox_debug_label_system_times
+        buffer_index = debug_system_times(world, buffer, buffer_size, buffer_index);
+#endif*/
+
         if (buffer_index == 0) buffer[0] = '\0';
         if (!is_zext(textData, buffer)) {
             set_zext(textData, buffer);
             zextDirty->value = 1;
         }
     }
-} zoxd_system(GameDebugLabelSystem)
+} zox_sys_end(GameDebugLabelSystem);

@@ -37,3 +37,84 @@ zox_sys2(SystemDeltaLogSystem) {
         zox_logw("[LAG] Frame Time [%fms]", delta_time * 1000.0);
     }
 } zox_sys_end(SystemDeltaLogSystem);
+
+
+
+typedef struct {
+    ecs_entity_t e;
+    double value;
+} system_delta_entry;
+
+static int cmp_system_delta_desc(const void *a, const void *b) {
+    const system_delta_entry *da = a;
+    const system_delta_entry *db = b;
+    if (da->value < db->value) return 1;
+    if (da->value > db->value) return -1;
+    return 0;
+}
+
+uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, uint index) {
+// int debug_system_times(ecs* world, char buffer[], int size, int index) {
+    // Use world global, it's entity flecs world
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { .id = ecs_id(SystemDelta) }
+        }
+    });
+
+    int count = 0;
+
+    /* First pass: count */
+    ecs_iter_t it = ecs_query_iter(world, q);
+    while (ecs_query_next(&it)) {
+        count += it.count;
+    }
+
+    index += snprintf(
+        buffer + index,
+        size - index,
+        "Systems (%i) [%fms]\n",
+        count,
+        zox_delta_time * 1000
+    );
+
+    if (count == 0) {
+        // ecs_query_fini(q);
+        return index;
+    }
+
+    system_delta_entry *entries =
+        malloc(sizeof(system_delta_entry) * count);
+
+    /* Second pass: collect */
+    int idx = 0;
+    it = ecs_query_iter(world, q);
+    while (ecs_query_next(&it)) {
+        SystemDelta *deltas = ecs_field(&it, SystemDelta, 0);
+        for (int i = 0; i < it.count; i++) {
+            entries[idx].e = it.entities[i];
+            entries[idx].value = deltas[i].value;
+            idx++;
+        }
+    }
+
+    qsort(entries, count, sizeof(system_delta_entry), cmp_system_delta_desc);
+
+    int top = count < 10 ? count : 10;
+    for (int i = 0; i < top; i++) {
+        index += snprintf(
+            buffer + index,
+            size - index,
+            "  %2d. %-32s %8.3f ms\n",
+            i + 1,
+            ecs_get_name(world, entries[i].e),
+            entries[i].value
+        );
+    }
+
+    free(entries);
+    // ecs_query_fini(q);
+
+    return index;
+}

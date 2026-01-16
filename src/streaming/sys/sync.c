@@ -1,5 +1,5 @@
 // Set streamer data from the terrain
-zox_sys2(StreamPointSyncSystem) {
+/*zox_sys2(StreamPointSyncSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StreamLink);
@@ -22,4 +22,4 @@ zox_sys2(StreamPointSyncSystem) {
 
         // zox_log("Syncing stream poiint");
     }
-} zox_sys_end(StreamPointSyncSystem);
+} zox_sys_end(StreamPointSyncSystem);*/

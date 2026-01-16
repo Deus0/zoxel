@@ -25,7 +25,8 @@ zox_sys2(StreamEndEventSystem) {
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 const entity chunk = pair->value;
-                if (!zox_valid(chunk) || !zox_has(chunk, GenerateChunk) || !zox_has(chunk, ChunkMeshDirty)) { //  || !zox_has(chunk, ChunkLodDirty)
+
+                if (!zox_valid(chunk) || !zox_has(chunk, GenerateChunk) || !zox_has(chunk, ChunkMeshDirty)) {
                     if (!zox_valid(chunk)) {
                         zox_log_error("chunk invalid in stream end system [%lu]", chunk)
                     } else if (!zox_has(chunk, GenerateChunk)) {

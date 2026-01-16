@@ -1,8 +1,3 @@
-define_fun_stopwatch(time_grassy_plains, 0);
-
-// FIXME(deus): This LOD+1 patch prevents chunk seems.
-byte boost_generation_hack = 0; // 🔥 applied until truth is revealed
-
 byte disable_biomes = 1;
 byte disable_top_placements = 0;
 byte disable_dirt_patches = 1;
@@ -38,10 +33,8 @@ zox_sys2(GrassyPlainsSystem) {
         }
     }
     if (!any_dirty) {
-        // zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);
         return;
     }
-    // startwatch(time_grassy_plains);
 
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDepth, render_depth);
@@ -74,7 +67,7 @@ zox_sys2(GrassyPlainsSystem) {
             continue;
         }
 
-        // if already at that level
+        // If Chunk already at or greater in Voxel Octree Resolution depth, we continue
         if (node_depth->value >= generation_depth) {
             // we should set to rebuild mesh still, with node dirty
             //  Until we cache those extra meshes
@@ -123,36 +116,37 @@ zox_sys2(GrassyPlainsSystem) {
         zox_log("   Block [%s] index [%i]", zox_get_name(grass), biome_grass_id);*/
 
         // Get HeightMMap data
-#ifndef disable_newheightmap_gen
+//#ifndef disable_newheightmap_gen
+
+        // Gets the power multiplier for depth difference for our array lookups
         int hmultiplier = 1;
         byte ccc = node_depth->value;
         while (ccc != terrain_depth) {
             hmultiplier *= 2;
             ccc++;
         }
-        // zox_log("depth [%i:%i] %i", node_depth->value, terrain_depth, hmultiplier);
 
         int max_chunk_length = powers_of_two[terrain_depth];
         int2 hsize = int2_single(max_chunk_length);
-
         int2 cposition2 = (int2) { cposition->value.x, cposition->value.z };
         zox_geter(terrain->value, Chunk2Links, chunks2);
+
         entity chunk2 = int2_hashmap_get(chunks2->value, cposition2);
         if (!zox_valid(chunk2)) {
             zox_log_error("Invalid [chunk2] at [%ix%i] [y%i]", cposition2.x, cposition2.y, cposition->value.y);
             continue;
         }
+
         zox_geter(chunk2, HeightMap, heights);
         if (!heights->length) {
             zox_log_error("Invalid [HeightMap] at [%ix%i] [y%i]", cposition2.x, cposition2.y, cposition->value.y);
             continue;
         }
 
-#endif
+//#endif
 
 
         write_lock_VoxelNode(node);
-
         for (positionl.x = 0; positionl.x < chunk_voxel_length; positionl.x++) {
             for (positionl.z = 0; positionl.z < chunk_voxel_length; positionl.z++) {
 
@@ -161,9 +155,8 @@ zox_sys2(GrassyPlainsSystem) {
                     noise_positiver2 + chunk_position_float3.z + (positionl.z / map_size_f.y)
                 };
 
-                const double mountain_amplifier = 2;
                 byte is_mountain = 0;
-                if (!disable_biomes) {
+                /*if (!disable_biomes) {
                     const double mountain_noise = (perlin_terrain(
                         positionn.x,
                         positionn.y,
@@ -171,10 +164,11 @@ zox_sys2(GrassyPlainsSystem) {
                         seed,
                         3) + 1.0) / 2.0;
                         is_mountain = mountain_noise >= 0.6; // biome == zox_biome_mountain
-                }
+                }*/
 
                 // our height calc
-#ifdef disable_newheightmap_gen
+/*#ifdef disable_newheightmap_gen
+                const double mountain_amplifier = 2;
                 const double height_frequency = is_mountain ? terrain_frequency * mountain_amplifier : terrain_frequency;
                 const double height_amplifier = is_mountain ? terrain_amplifier * mountain_amplifier : terrain_amplifier;
 
@@ -187,7 +181,7 @@ zox_sys2(GrassyPlainsSystem) {
                 );
                 perlin_value *= height_amplifier;
                 const int global_position_y = int_floorf(perlin_value);
-#else
+#else*/
                 int2 hposition = (int2) {
                     positionl.x * hmultiplier,
                     positionl.z * hmultiplier
@@ -197,7 +191,7 @@ zox_sys2(GrassyPlainsSystem) {
                 global_position_y -= 128;
                 global_position_y /= hmultiplier;
 
-#endif
+//#endif
 
 
                 // zox_log("- TerrainHeight [%ix%i] [%i]", hposition.x, hposition.y, global_position_y);
@@ -272,27 +266,17 @@ zox_sys2(GrassyPlainsSystem) {
                         seed);
                     if (place_grass) {
                         positionl.y = local_height_raw + 1;
-                        set_voxelt(
-                            node,
-                            node_depth->value,
-                            positionl,
-                            zox_block_vox_grass,
-                            0);
+                        set_voxelt(node, node_depth->value, positionl, zox_block_vox_grass, 0);
                     }
                 }
             }
         }
         write_unlock_VoxelNode(node);
 
-        // tapwatch(time_grassy_plains, "mass set_voxels");
-
         node_dirty->value = zox_dirty_trigger;
         generated->value = zox_dirty_trigger;
         loaded->value = 1;
-
     }
-    // endwatch(time_grassy_plains, "grassy_plains");
-    // zox_ts_end(grassy_plains, 5, zox_profile_system_grassy_plains);
 } zox_sys_end(GrassyPlainsSystem);
 
 

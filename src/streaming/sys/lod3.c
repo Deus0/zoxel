@@ -2,7 +2,9 @@
 // each chunk will calculate distance to nearest camera and based LOD off this distance
 const byte disable_chunk_loding = 0;
 
-// This sets chunk distances when stream points move
+// If Streamer is Dirty:
+//  - Update Render Distances
+//  - Update Render Depths
 zox_sys2(ChunkLodSystem) {
     if (zox_cameras_disable_streaming) {
         return;
@@ -41,14 +43,14 @@ zox_sys2(ChunkLodSystem) {
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
     zox_sys_out(RenderDepth);
-    zox_sys_out(RenderDepthDirty);
     zox_sys_out(RenderDistance);
+    zox_sys_out(RenderDepthDirty);
     zox_sys_out(RenderDistanceDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(RenderDepth, depth);
-        zox_sys_o(RenderDepthDirty, depth_dirty);
         zox_sys_o(RenderDistance, distance);
+        zox_sys_o(RenderDepthDirty, depth_dirty);
         zox_sys_o(RenderDistanceDirty, distance_dirty);
 
         int3 stream_point = find_closest_point(stream_points, stream_points_length, position->value);

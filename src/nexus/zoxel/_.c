@@ -12,6 +12,10 @@
 
 // TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
 void zoxel_on_spawn_prefabs(ecs* world) {
+    // set_prefab_debug_label(world, &debug_ui_raycasting);
+
+    set_prefab_debug_label(world, &debug_ui_system_times);
+
     // get_debug_label_app
     // set_prefab_debug_label(world, &debug_ui_memory);
     // set_prefab_debug_label(world, &debug_label_chunk_link);
@@ -25,7 +29,6 @@ void zoxel_on_spawn_prefabs(ecs* world) {
     // set_prefab_debug_label(world, &debug_label_lods);
     // set_prefab_debug_label(world, &debug_label_collisions);
     // set_prefab_debug_label(world, &debug_label_app);
-    set_prefab_debug_label(world, &debug_ui_raycasting);
     // set_prefab_debug_label(world, &debug_ui_raycasted_light);
     // set_prefab_debug_label(world, &debug_ui_single_npc);
 }
@@ -174,8 +177,6 @@ zox_begin_module(ZoxGame)
     // disable_npcs = 1;
     // disable_block_voxes = 1;
     // nosounds = 1;
-    // vsync = 0;
-
     /*disable_skill_costs = 1;
     debug_ray_big_range = 1;*/
 

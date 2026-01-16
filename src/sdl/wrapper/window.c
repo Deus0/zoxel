@@ -36,12 +36,7 @@ int2 get_maximized_size(ecs* world, entity e) {
     return int2_sub(get_screen_size(), (int2) { 0, get_sdl_window_header_size(world, e) });
 }
 
-SDL_Window* create_sdl_window(
-    const int2 position,
-    const int2 size,
-    const char *name,
-    byte flags
-) {
+SDL_Window* create_sdl_window(int2 position, int2 size, const char *name, byte flags) {
     SDL_Window *window = SDL_CreateWindow(name, position.x, position.y, size.x, size.y, flags);
     if (!window) {
         zox_log_error(" CreateWindowError [%s] - flags [%i]]\n", SDL_GetError(), flags);
@@ -51,8 +46,8 @@ SDL_Window* create_sdl_window(
     return window;
 }
 
-void set_vsync(byte vsync) {
-    if (SDL_GL_SetSwapInterval(vsync)) {
+void on_set_vsync(byte value) {
+    if (SDL_GL_SetSwapInterval(value)) {
         zox_log_error("Unable to disable VSync: %s", SDL_GetError());
     } else {
         zox_logv("VSync [%s]", vsync ? "Enabled" : "Disabled");

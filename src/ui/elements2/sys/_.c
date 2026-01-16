@@ -58,7 +58,8 @@ void define_systems_elements2(ecs *world) {
         [in] layouts2.LayoutConstraints,
         [in] layouts2.LayoutPosition
     );
-    zox_system(
+    // Main Thread needed due to nature of options
+    zox_system_1(
         ToggleEventSystem,
         EcsOnUpdate,
         [in] elements.ClickState,

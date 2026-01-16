@@ -334,13 +334,16 @@ void link_camera_to_terrain(ecs *world, entity player) {
     } else {
         set_camera_free(world, camera);
     }
+
     zox_set(camera, StreamPoint, { terrain_position });
-    zox_set(camera, StreamPoint2, { terrain_position.x, terrain_position.z });
+    zox_set(camera, StreamPoint2, { { terrain_position.x, terrain_position.z }});
     zox_set(camera, StreamLink, { terrain });
     zox_set(camera, StreamDirty, { zox_dirty_trigger });
     zox_set(camera, StreamDirty2, { zox_dirty_trigger });
+    // On End Event
     zox_set(terrain, EventInput, { player });
     zox_set(terrain, StreamEndEvent, { on_spawned_terrain });
+
     if (is_log_streaming) {
         zox_log("+ terrain spawning started at [%f]", zox_current_time);
     }

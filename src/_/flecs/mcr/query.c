@@ -1,5 +1,5 @@
 #define zox_sys_query()\
-    ecs_query_t *query = it->ctx;\
+    ecs_query_t* query = it->ctx;\
     if (!query) {\
         return;\
     }
@@ -15,7 +15,11 @@
 
 #ifdef zox_flecs_4
 
-    #define zox_sys_query_end() ;
+    #define zox_sys_query_end() \
+        ;
+
+// Seems to be called internally now?
+// ecs_query_fini(query);
 
 #else
 

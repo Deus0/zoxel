@@ -1,4 +1,4 @@
-zox_sys_begin(GenPlaneSpawnSystem) {
+/*zox_sys_begin(GenPlaneSpawnSystem) {
     const entity prefab_chunk = prefab_chunk_terrain;
 
     zox_sys_query();
@@ -60,4 +60,4 @@ zox_sys_begin(GenPlaneSpawnSystem) {
         zox_log_streaming(" + [%i] spawned [%i]", ecs_run_count, spawned_chunks);
     }
 
-} zox_sys_end(GenPlaneSpawnSystem);
+} zox_sys_end(GenPlaneSpawnSystem);*/

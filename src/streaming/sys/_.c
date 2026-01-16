@@ -1,16 +1,18 @@
 #include "stream_point.c"
-#include "stream_updates.c"
+#include "lod2.c"
+#include "lod3.c"
 #include "frustum.c"
 #include "stream_end.c"
-#include "sync.c"
+// #include "sync.c"
 
 void define_systems_streaming(ecs* world) {
     zox_system(
         StreamPointSystem,
         zoxp_update,
+        [in] streaming.StreamLink,
         [in] transforms3.Position3D,
-        [in] blocks.BlockScale,
-        [in] chunks.NodeDepth,
+        // [in] blocks.BlockScale,
+        // [in] chunks.NodeDepth,
         [out] streaming.StreamPoint,
         [out] streaming.StreamPoint2,
         [out] streaming.StreamDirty,
@@ -18,14 +20,14 @@ void define_systems_streaming(ecs* world) {
         [none] streaming.Streamer
     );
     // Set streamer from terrain
-    zox_system(
+    /*zox_system(
         StreamPointSyncSystem,
         EcsOnUpdate,
         [in] streaming.StreamLink,
         [out] blocks.BlockScale,
         [out] chunks.NodeDepth,
         [none] streaming.Streamer
-    );
+    );*/
     zox_filter(
         filter_cameras,
         [in] transforms3.Position3DBounds,
@@ -45,7 +47,7 @@ void define_systems_streaming(ecs* world) {
         [none] streaming.StreamedChunk
     );
 
-    zox_filter(streamers2,
+    zox_filter(streamers3,
         [in] streaming.StreamPoint,
         [in] streaming.StreamDirty,
         [none] streaming.Streamer
@@ -53,13 +55,29 @@ void define_systems_streaming(ecs* world) {
     zox_system_ctx(
         ChunkLodSystem,
         zoxp_update,
-        streamers2,
+        streamers3,
         [in] chunks3.ChunkPosition,
         [out] rendering.RenderDepth,
-        [out] rendering.RenderDepthDirty,
         [out] rendering.RenderDistance,
+        [out] rendering.RenderDepthDirty,
         [out] rendering.RenderDistanceDirty,
-        [none] StreamedChunk
+        [none] streaming.StreamedChunk
+    );
+    zox_filter(streamers2,
+        [in] streaming.StreamPoint2,
+        [in] streaming.StreamDirty2,
+        [none] streaming.Streamer
+    );
+    zox_system_ctx(
+        Chunk2LodSystem,
+        zoxp_update,
+        streamers2,
+        [in] chunks2.Chunk2Position,
+        [out] rendering.RenderDistance,
+        [out] rendering.RenderDepth,
+        [out] rendering.RenderDistanceDirty,
+        [out] rendering.RenderDepthDirty,
+        [none] streaming.StreamedChunk
     );
     // streams
     // main thread

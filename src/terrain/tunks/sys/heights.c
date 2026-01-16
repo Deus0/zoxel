@@ -44,6 +44,7 @@ zox_sys2(HeightMapSystem) {
                     seed,
                     terrain_octaves
                 );
+
                 int valuei = int_floorf(perlin_value * max_chunk_length);
                 byte value = 128 + valuei;
 
