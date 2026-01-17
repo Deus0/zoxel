@@ -1,13 +1,13 @@
-void set_element_dragged(ecs *world, const entity player, const entity element, const byte drag_mode) {
-    DraggableState *dragableState = zox_get_mut(element, DraggableState)
-    if (!dragableState->value) {
-        DraggerLink *draggerLink = zox_get_mut(element, DraggerLink)
-        dragableState->value = drag_mode;
-        draggerLink->value = player;
-        zox_modified(element, DraggableState);
-        zox_modified(element, DraggerLink);
-#ifdef zox_log_ui_dragging
-        zox_log(" > ui dragging at [%f]\n", (float) zox_current_time)
-#endif
+void set_element_dragged(ecs *world, entity ndragger, entity e, byte drag_mode) {
+    DraggableState* state = zox_get_mut(e, DraggableState);
+    if (!state->value) {
+        zox_muter(e, DraggerLink, dragger);
+        dragger->value = ndragger;
+        state->value = drag_mode;
+        zox_modified(e, DraggableState);
+
+        if (is_log_dragging) {
+            zox_log("Dragging Started [%f]", (float) zox_current_time);
+        }
     }
 }

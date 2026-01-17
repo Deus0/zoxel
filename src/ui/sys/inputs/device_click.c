@@ -23,12 +23,12 @@ zox_sys2(DeviceClickSystem) {
             continue;
         }
 
-        const entity player = playerLink->value;
+        entity player = playerLink->value;
         if (!zox_valid(player) || !zox_has(player, CanvasLink)) {
             continue;
         }
 
-        const entity canvas = zox_get_value(player, CanvasLink);
+        entity canvas = zox_get_value(player, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }
@@ -47,20 +47,24 @@ zox_sys2(DeviceClickSystem) {
             const byte button_type = zox_get_value(zevice, DeviceButtonType)
 
             if (button_type == zox_device_button_a) {
-                const byte disabled = zox_get_value(zevice, ZeviceDisabled)
+                byte disabled = zox_get_value(zevice, ZeviceDisabled);
                 if (!disabled) {
-                    const byte click_value = zox_get_value(zevice, ZeviceButton)
-                    if (devices_get_pressed_this_frame(click_value)) click_type = 1;
-                    else if (devices_get_released_this_frame(click_value)) click_type = 2;
+                    zox_geter_value(zevice, ZeviceButton, byte, value);
+
+                    if (devices_get_pressed_this_frame(value)) {
+                        click_type = 1;
+                    } else if (devices_get_released_this_frame(value)) {
+                        click_type = 2;
+                    }
                 }
             }
         }
 
-        if (click_type == 0) {
+        if (!click_type) {
             continue;
         }
 
-        const byte device_mode = zox_get_value(player, DeviceMode)
+        zox_geter_value(player, DeviceMode, byte, device_mode);
         // used for virtual joysticks to see if a t arget was raycasted, todo: move to raycast system
         // raycasterResult->value = raycasterTarget->value || windowRaycasted->value;
 
@@ -82,11 +86,14 @@ zox_sys2(DeviceClickSystem) {
 
             if (zox_valid(raycasterTarget->value) && zox_has(raycasterTarget->value, Dragable)) {
                 byte drag_mode = zox_drag_mode_none;
-                if (device_mode == zox_device_mode_keyboardmouse) drag_mode = zox_drag_mode_mouse;
-                else if (device_mode == zox_device_mode_touchscreen) drag_mode = zox_drag_mode_finger;
+                if (device_mode == zox_device_mode_keyboardmouse) {
+                    drag_mode = zox_drag_mode_mouse;
+                } else if (device_mode == zox_device_mode_touchscreen) {
+                    drag_mode = zox_drag_mode_finger;
+                }
+
                 set_element_dragged(world, player, raycasterTarget->value, drag_mode);
             }
-
         } else if (click_type == 2) { // released
             if (raycasterTarget->value == clickingEntity->value) {
                 on_element_released(world, player, raycasterTarget->value);

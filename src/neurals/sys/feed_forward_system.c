@@ -1,4 +1,4 @@
-void LinkFeedForwardSystem(iter *it) {
+zox_sys2(LinkFeedForwardSystem) {
     if (zox_current_time < neural_brain_delay) return;
     /*
     float total_loss = 0.0f;
@@ -41,4 +41,4 @@ void LinkFeedForwardSystem(iter *it) {
             zox_set(brainLink->value, BrainDirty, { 1 })
         }
     }
-} zoxd_system(LinkFeedForwardSystem)
+} zox_sys_end(LinkFeedForwardSystem);

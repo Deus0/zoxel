@@ -1,6 +1,8 @@
 //! Adds force to the velocity per frame.
-void ConnectionRenderSystem(iter *it) {
-    if (zox_current_time < 0.1) return;
+zox_sys2(ConnectionRenderSystem) {
+    if (zox_current_time < 0.1) {
+        return;
+    }
     init_delta_time()
     zox_field_world()
     // const float signal_height = 0.02f * neural_render_scale;
@@ -50,4 +52,4 @@ void ConnectionRenderSystem(iter *it) {
         // spawn_line2D_square(world, signal_position, (float2) { square_size, square_size }, 0.5f, animate_time);
         // zox_log(" + transfer->value [%f] at pos [%f]\n", transfer->value, signal_position.x)
     }
-} zoxd_system(ConnectionRenderSystem)
+} zox_sys_end(ConnectionRenderSystem);

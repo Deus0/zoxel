@@ -1,20 +1,21 @@
 // a simple alpha animation
-void zox_prefab_add_animation_event(ecs *world, const entity e, float length) {
-    zox_prefab_set(e, FadeOutEvent, { length })
-    zox_prefab_set(e, Alpha, { 1 })
-    zox_prefab_set(e, AnimationStart, { 0 })
+void zox_prefab_add_animation_event(ecs *world, entity e, float length) {
+    zox_prefab_set(e, FadeOutEvent, { length });
+    zox_prefab_set(e, Alpha, { 1 });
+    zox_prefab_set(e, AnimationStart, { 0 });
 }
 
-void FadeoutSystem(iter *it) {
-    const double time = zox_current_time;
-    zox_sys_begin()
-    zox_sys_in(FadeOutEvent)
-    zox_sys_in(AnimationStart)
-    zox_sys_out(Alpha)
+zox_sys2(FadeoutSystem) {
+    double time = zox_current_time;
+    zox_sys_begin();
+    zox_sys_in(FadeOutEvent);
+    zox_sys_in(AnimationStart);
+    zox_sys_out(Alpha);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(FadeOutEvent, fadeOutEvent)
-        zox_sys_i(AnimationStart, animationStart)
-        zox_sys_o(Alpha, alpha)
+        zox_sys_i(FadeOutEvent, fadeOutEvent);
+        zox_sys_i(AnimationStart, animationStart);
+        zox_sys_o(Alpha, alpha);
+
         double animation_time = (time - (animationStart->value)) / fadeOutEvent->value;
         if (animation_time < 0) {
             animation_time = 0;
@@ -23,6 +24,9 @@ void FadeoutSystem(iter *it) {
         }
         alpha->value = float_lerp(1, 0, animation_time);
     }
+} zox_sys_end(FadeoutSystem);
+
+
     /*
     zox_sys_in(AnimationState, animationTypes, 1)
     zox_sys_in(AnimationStart, animationStarts, 2)
@@ -41,4 +45,3 @@ void FadeoutSystem(iter *it) {
         else if (animation_time > 1) animation_time = 1;
         alpha->value = float_lerp(1, 0, animation_time);
     }*/
-} zoxd_system(FadeoutSystem)

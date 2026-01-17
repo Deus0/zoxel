@@ -1,7 +1,6 @@
 // if pixel position moves, update real position
 // if it updates, also update any childrens positions too
 // has to also move children and their children
-byte is_log_dragging = 0;
 
 zox_sys2(ElementDragSystem) {
     zox_sys_world();

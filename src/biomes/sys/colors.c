@@ -1,6 +1,6 @@
 // TODO: On Generate Biome - Spawn Blocks
 
-void BiomeColorsSystem(iter *it) {
+zox_sys2(BiomeColorsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -31,4 +31,4 @@ void BiomeColorsSystem(iter *it) {
         game_sky_bottom_color = sky_color;
         set_camera_fog_color(world, sky_color);
     }
-} zoxd_system2(BiomeColorsSystem);
+} zox_sys_end(BiomeColorsSystem);

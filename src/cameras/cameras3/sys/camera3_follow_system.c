@@ -1,16 +1,18 @@
-void Camera3FollowSystem(iter *it) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(CameraFollowLink)
-    zox_sys_in(LocalPosition3D)
-    zox_sys_out(Position3D)
+zox_sys2(Camera3FollowSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(CameraFollowLink);
+    zox_sys_in(LocalPosition3D);
+    zox_sys_out(Position3D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(CameraFollowLink, cameraFollowLink)
-        zox_sys_i(LocalPosition3D, localPosition3D)
-        zox_sys_o(Position3D, position)
+        zox_sys_i(CameraFollowLink, cameraFollowLink);
+        zox_sys_i(LocalPosition3D, localPosition3D);
+        zox_sys_o(Position3D, position);
+
         if (!cameraFollowLink->value) {
             continue;
         }
+
         if (zox_has(cameraFollowLink->value, Position2)) {
             zox_geter_value(cameraFollowLink->value, Position2, float2, target_position)
             position->value.x = target_position.x;
@@ -24,4 +26,4 @@ void Camera3FollowSystem(iter *it) {
         }
         float3_add_float3_p(&position->value, localPosition3D->value);
     }
-} zoxd_system(Camera3FollowSystem)
+} zox_sys_end(Camera3FollowSystem);

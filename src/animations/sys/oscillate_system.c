@@ -1,5 +1,5 @@
 // a simple idle scale animation
-void OscillateSystem(iter *it) {
+zox_sys2(OscillateSystem) {
     // const float addition = 0.032f;
     const float speed = 1.0f;
     const double time = zox_current_time;
@@ -16,4 +16,4 @@ void OscillateSystem(iter *it) {
         localPosition->value.y = oscillateStartPosition3D->value.y + oscillateDeltaPosition3D->value.y * sin(animation_time * speed);
         localPosition->value.z = oscillateStartPosition3D->value.z + oscillateDeltaPosition3D->value.z * sin(animation_time * speed);
     }
-} zoxd_system(OscillateSystem)
+} zox_sys_end(OscillateSystem);

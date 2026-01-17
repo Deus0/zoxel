@@ -39,7 +39,7 @@ void add_all_prefabs(ecs *world,
     add_entity_children_to_labels(world, canvas, labels, entities, 0);
 }
 
-void HierarchyRefreshSystem(iter *it) {
+zox_sys2(HierarchyRefreshSystem) {
     const byte is_header = 1;
     const byte is_scrollbar = 1;
     const byte list_start = is_header + is_scrollbar;
@@ -153,4 +153,4 @@ void HierarchyRefreshSystem(iter *it) {
         dispose_entity_array_d(entities);
         hierarchyUIDirty->value = 0;
     }
-} zoxd_system(HierarchyRefreshSystem)
+} zox_sys_end(HierarchyRefreshSystem);

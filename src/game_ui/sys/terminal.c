@@ -1,4 +1,4 @@
-void PlayerTerminalSystem(iter *it) {
+zox_sys2(PlayerTerminalSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CanvasLink);
@@ -54,4 +54,4 @@ void PlayerTerminalSystem(iter *it) {
 
         }*/
     }
-} zoxd_system2(PlayerTerminalSystem);
+} zox_sys_end(PlayerTerminalSystem);

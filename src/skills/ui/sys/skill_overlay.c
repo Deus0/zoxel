@@ -1,14 +1,14 @@
 // UserDataLink, RenderDisabled
 
-void SkillOverlaySystem(iter *it) {
+zox_sys2(SkillOverlaySystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(UserDataLink);
     zox_sys_in(Children);
-
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(UserDataLink, link);
         zox_sys_i(Children, children);
+
         if (!children->length) {
             continue;
         }
@@ -52,4 +52,4 @@ void SkillOverlaySystem(iter *it) {
         // zox_log("[%f] warmup_at: %f cooldown_at [%f] - scale %f - new_render_disabled %i", zox_current_time, warmup_at, cooldown_at, scale, new_render_disabled);
 
     }
-} zoxd_system2(SkillOverlaySystem);
+} zox_sys_end(SkillOverlaySystem);

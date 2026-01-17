@@ -20,10 +20,11 @@
 #include "render_texture/render_texture.c"
 
 #include "inputs/button_click_event.c"
-#include "inputs/dragger_end.c"
 #include "inputs/mouse_element.c"
 #include "inputs/device_click.c"
 #include "inputs/zevice_click.c"
+
+#include "drag/dragger_end.c"
 
 // zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
 // zox_increment_system_with_reset(ActiveStateDirty, zox_dirty_end);

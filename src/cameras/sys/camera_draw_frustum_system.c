@@ -1,4 +1,4 @@
-void FrustumDrawSystem(iter *it) {
+zox_sys2(FrustumDrawSystem) {
     /*color_rgb debug_color = (color_rgb) { 0, 0, 0 };
     zox_field_world()
     zox_field_in(FrustumCorners, frustumCornerss, 1)
@@ -7,4 +7,4 @@ void FrustumDrawSystem(iter *it) {
         // need a double3 version now
         // draw_frustum(world, frustumCorners->value, debug_color);
     }*/
-} zoxd_system2(FrustumDrawSystem);
+} zox_sys_end(FrustumDrawSystem);

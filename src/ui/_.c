@@ -1,6 +1,8 @@
 #ifndef zoxm_ui
 #define zoxm_ui
 
+byte is_log_dragging = 0;
+
 #include "set/_.c"
 #include "com/_.c"
 #include "dat/_.c"
@@ -17,7 +19,7 @@
 #include "touch/_.c"
 
 zox_begin_module(Elements)
-    add_hook_terminal_command(arguments_ui);;
+    add_hook_terminal_command(arguments_ui);
     define_components_elements(world);
     define_systems_elements(world);
     // initialize_settings_elements(world);

@@ -1,4 +1,4 @@
-void PlayerUIGameEndSystem(iter *it) {
+zox_sys2(PlayerUIGameEndSystem) {
     const byte delay_end = is_end_game_delays;
     zox_sys_world();
     zox_sys_begin();
@@ -36,4 +36,4 @@ void PlayerUIGameEndSystem(iter *it) {
         }
 
     }
-} zoxd_system2(PlayerUIGameEndSystem);
+} zox_sys_end(PlayerUIGameEndSystem);

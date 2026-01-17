@@ -4,29 +4,31 @@ zox_sys2(Skeleton3RenderSystem) {
     }
     byte has_set_material = 0;
     int rendered_count = 0;
-    zox_sys_world()
-    zox_geter_value(material_bone, MaterialGPULink, uint, material_link)
-    zox_geter(material_bone, MaterialBone, material_attributes)
-    zox_sys_begin()
-    zox_sys_in(MeshIndicies)
-    zox_sys_in(MeshGPULink)
-    zox_sys_in(ColorsGPULink)
-    zox_sys_in(BoneIndexGPULink)
-    zox_sys_in(TransformMatrix)
-    zox_sys_in(RenderDisabled)
-    zox_sys_in(BoneLinks)
+    zox_sys_world();
+    zox_geter_value(material_bone, MaterialGPULink, uint, material_link);
+    zox_geter(material_bone, MaterialBone, material_attributes);
+    zox_sys_begin();
+    zox_sys_in(MeshIndicies);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(ColorsGPULink);
+    zox_sys_in(BoneIndexGPULink);
+    zox_sys_in(TransformMatrix);
+    zox_sys_in(RenderDisabled);
+    zox_sys_in(BoneLinks);
     for (int i = 0; i < it->count; i++) {
         // zox_sys_e()
-        zox_sys_i(RenderDisabled, renderDisabled)
-        zox_sys_i(MeshIndicies, meshIndicies)
-        zox_sys_i(MeshGPULink, meshGPULink)
-        zox_sys_i(ColorsGPULink, colorsGPULink)
-        zox_sys_i(BoneIndexGPULink, boneIndexGPULink)
-        zox_sys_i(BoneLinks, boneLinks)
-        zox_sys_i(TransformMatrix, transformMatrix)
+        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(MeshIndicies, meshIndicies);
+        zox_sys_i(MeshGPULink, meshGPULink);
+        zox_sys_i(ColorsGPULink, colorsGPULink);
+        zox_sys_i(BoneIndexGPULink, boneIndexGPULink);
+        zox_sys_i(BoneLinks, boneLinks);
+        zox_sys_i(TransformMatrix, transformMatrix);
+
         if (renderDisabled->value || !meshIndicies->length || !meshGPULink->value.x || !meshGPULink->value.y || !colorsGPULink->value || !boneIndexGPULink->value || !boneLinks->length) {
             continue;
         }
+
         if (!has_set_material) {
             has_set_material = 1;
 #ifdef zox_transparent_skeletons

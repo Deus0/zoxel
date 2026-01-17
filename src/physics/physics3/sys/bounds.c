@@ -1,14 +1,15 @@
 //! Bounds, because everyone needs limits! Used atm to keep player within the start area.
-void Position3DBoundsSystem(iter *it) {
+zox_sys2(Position3DBoundsSystem) {
     const float teleport_force = 0.2f;
-    zox_sys_begin()
-    zox_sys_in(Position3DBounds)
-    zox_sys_in(Bounds3D)
-    zox_sys_out(Position3D)
+    zox_sys_begin();
+    zox_sys_in(Position3DBounds);
+    zox_sys_in(Bounds3D);
+    zox_sys_out(Position3D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Position3DBounds, position3DBounds)
-        zox_sys_i(Bounds3D, bounds3D)
-        zox_sys_o(Position3D, position3D)
+        zox_sys_i(Position3DBounds, position3DBounds);
+        zox_sys_i(Bounds3D, bounds3D);
+        zox_sys_o(Position3D, position3D);
+
         const float6 bounds = position3DBounds->value;
         if (bounds.x == 0 && bounds.y == 0 && bounds.z == 0 && bounds.w == 0 && bounds.u == 0 && bounds.v == 0) {
             continue; // disabled
@@ -20,4 +21,4 @@ void Position3DBoundsSystem(iter *it) {
         if (position3D->value.z - bounds3D->value.z < bounds.u) position3D->value.z = bounds.u + teleport_force;
         else if (position3D->value.z + bounds3D->value.z > bounds.v) position3D->value.z = bounds.v - teleport_force;
     }
-} zoxd_system(Position3DBoundsSystem)
+} zox_sys_end(Position3DBoundsSystem);

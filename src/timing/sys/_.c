@@ -35,9 +35,9 @@ void define_systems_timing(ecs* world) {
         [out] timing.SystemDelta,
         [out] timing.SystemDeltaCache
     );
-    zox_system(
+    zox_system_1(
         SystemDeltaLogSystem,
         EcsOnStore,
-        [in] timing.SystemDelta
+        [in] timing.SystemDeltaCache
     );
 }

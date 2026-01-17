@@ -8,7 +8,7 @@ typedef struct {
     entity chunk;
 } TerrainPlacePosition;
 
-void DungeonBlockSystem(iter *it) {
+zox_sys2(DungeonBlockSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TimerState);
@@ -158,4 +158,4 @@ void DungeonBlockSystem(iter *it) {
         zox_mut_end(place_chunk, VoxelNode);*/
         // zox_log("+ Dungeon Block Placing: %s [%ix%ix%i]: %i", zox_get_name(e), position.x, position.y, position.z, place_type)
     }
-} zoxd_system2(DungeonBlockSystem);
+} zox_sys_end(DungeonBlockSystem);

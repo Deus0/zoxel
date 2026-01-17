@@ -1,7 +1,10 @@
-#include "gamepad_extract_system.c"
-#include "touchscreen_extract_system.c"
-#include "mouse_extract_system.c"
-#include "mouse_constrain_system.c"
+#ifdef zox_sdl
+    #include "gamepad.c"
+#endif
+
+#include "touchscreen.c"
+#include "mouse.c"
+#include "mouse_constrain.c"
 
 void define_systems_sdl_inputs(ecs* world) {
 #ifdef zox_sdl

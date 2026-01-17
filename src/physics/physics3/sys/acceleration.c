@@ -6,6 +6,7 @@ zox_sys2(Acceleration3System) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(Acceleration3D, acceleration)
         zox_sys_o(Velocity3D, velocity)
+
         velocity->value = float3_add(velocity->value, float3_scale(acceleration->value, delta_time));
         float3_make_zero(&acceleration->value);
     }

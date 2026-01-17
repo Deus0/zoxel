@@ -6,26 +6,38 @@
 
 void define_systems_neurals(ecs* world) {
     // zox_system(NeuronInputSystem, EcsOnUpdate, [none] InputNeuron) //  [out] Transfer,
-    zox_system(LinkFeedForwardSystem, EcsPostUpdate,
+    zox_system(
+        LinkFeedForwardSystem,
+        EcsPostUpdate,
         [in] ConnectionData,
         [out] Weight,
         [out] Signal,
         [out] Transfer,
-        [none] Connection)
-    zox_system(NeuronFeedForwardSystem, EcsOnUpdate,
+        [none] Connection
+    );
+    zox_system(
+        NeuronFeedForwardSystem,
+        EcsOnUpdate,
         [out] Signal,
         [none] Neuron,
-        [none] !OutputNeuron)
+        [none] !OutputNeuron
+    );
 
 #ifdef zox_render_brain
-    zox_system_1(NeuronRenderSystem, zoxp_mainthread,
+    zox_system_1(
+        NeuronRenderSystem,
+        zoxp_mainthread,
         [in] transforms2.Position2,
-        [none] Neuron)
-    zox_system_1(ConnectionRenderSystem, zoxp_mainthread,
+        [none] Neuron
+    );
+    zox_system_1(
+        ConnectionRenderSystem,
+        zoxp_mainthread,
         [in] ConnectionData,
         [in] Weight,
         [in] Signal,
         [in] Transfer,
-        [none] Connection)
+        [none] Connection
+    );
 #endif
 }

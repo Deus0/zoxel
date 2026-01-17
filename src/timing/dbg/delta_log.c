@@ -1,5 +1,20 @@
-const double zox_lag_cutoff = 2;
+const double zox_lag_cutoff = 3;
 
+// used to sort times in ui
+typedef struct {
+    entity e;
+    double value;
+} system_delta_entry;
+
+static int cmp_system_delta_desc(const void *a, const void *b) {
+    const system_delta_entry *da = a;
+    const system_delta_entry *db = b;
+    if (da->value < db->value) return 1;
+    if (da->value > db->value) return -1;
+    return 0;
+}
+
+// When defining system
 void add_system_log_components(ecs* world) {
     for (int i = 0; i < zox_systems_count; i++) {
         entity system = zox_systems[i];
@@ -12,51 +27,7 @@ void add_system_log_components(ecs* world) {
     }
 }
 
-zox_sys2(SystemDeltaLogSystem) {
-    byte did_lag = 0;
-    init_delta_time();
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(SystemDelta);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(SystemDelta, delta);
-
-        double cutoff = zox_lag_cutoff;
-        if (zox_has(e, SystemDeltaMax)) {
-            cutoff = zox_gett_value(e, SystemDeltaMax);
-        }
-
-        if (delta->value < cutoff) {
-            continue;
-        }
-
-        zox_logw("  - LAG [%s] [%fms]", zox_get_name(e), delta->value);
-        did_lag = 1;
-    }
-    if (did_lag) {
-        zox_logw("[LAG] Frame Time [%fms]", delta_time * 1000.0);
-    }
-} zox_sys_end(SystemDeltaLogSystem);
-
-
-
-typedef struct {
-    ecs_entity_t e;
-    double value;
-} system_delta_entry;
-
-static int cmp_system_delta_desc(const void *a, const void *b) {
-    const system_delta_entry *da = a;
-    const system_delta_entry *db = b;
-    if (da->value < db->value) return 1;
-    if (da->value > db->value) return -1;
-    return 0;
-}
-
 uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, uint index) {
-// int debug_system_times(ecs* world, char buffer[], int size, int index) {
-    // Use world global, it's entity flecs world
 
     ecs_query_t *q = ecs_query(world, {
         .terms = {
@@ -119,3 +90,40 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
 
     return index;
 }
+
+
+
+// NOTE: zox_delta_time is on main thread
+//      These system deltas are max for any thread
+zox_sys2(SystemDeltaLogSystem) {
+    byte did_lag = 0;
+    double total = 0;
+    init_delta_time();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(SystemDeltaCache);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(SystemDeltaCache, delta);
+
+        total += delta->value;
+
+        double cutoff = zox_lag_cutoff;
+        if (zox_has(e, SystemDeltaMax)) {
+            cutoff = zox_gett_value(e, SystemDeltaMax);
+        }
+
+        if (delta->value < cutoff) {
+            continue;
+        }
+
+        zox_logw("Lag Detected -> %s: [%fms]", zox_get_name(e), delta->value);
+        did_lag = 1;
+    }
+    if (did_lag) {
+        zox_log("# Delta Totals #");
+        zox_log("   - Logged [%fms]", total);
+        zox_log("   - Zoxxed [%fms]", delta_time * 1000.0);
+        zox_log("# # # # # # # # #");
+    }
+} zox_sys_end(SystemDeltaLogSystem);

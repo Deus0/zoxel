@@ -2,21 +2,23 @@
 // todo: use SphereRadius float per bone for a simple radius
 
 zox_sys2(BoneIndexGenerateSystem) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(MeshDirty)
-    zox_sys_in(MeshVertices)
-    zox_sys_in(BoneLinks)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(MeshDirty);
+    zox_sys_in(MeshVertices);
+    zox_sys_in(BoneLinks);
     // outputting the generated weights
     zox_sys_out(BoneIndexes)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MeshDirty, meshDirty)
-        zox_sys_i(MeshVertices, meshVertices)
-        zox_sys_i(BoneLinks, boneLinks)
-        zox_sys_o(BoneIndexes, boneIndexes)
+        zox_sys_i(MeshDirty, meshDirty);
+        zox_sys_i(MeshVertices, meshVertices);
+        zox_sys_i(BoneLinks, boneLinks);
+        zox_sys_o(BoneIndexes, boneIndexes);
+
         if (meshDirty->value != mesh_state_generate) {
             continue;
         }
+
         // get all children bone positions and sizes
         float3 bone_positions[boneLinks->length];
         float3 bone_sizes[boneLinks->length];

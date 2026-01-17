@@ -1,49 +1,69 @@
+// Core Elements
 zox_tag(Element);
 zox_tag(Element2D);
-zox_tag(ElementRaycaster);
-zox_tag(ElementBillboard);
-zox_tag(CanvasOverlay);
-zox_tag(Window);
-zox_tag(WindowRaycastTarget);
 zox_tag(ElementRender);
-zox_tag(MouseElement);
-zox_tag(Tooltip);
-zoxc_byte(ElementFontSize);
+zoxc_byte(ElementLayer);
+zoxc_state(InitializeElement);
+zoxc_entity(ElementLink);
+zoxc_entities(ElementLinks)
+zoxc_child(ElementHolder, ElementLinks)
+zoxc_entity(UIHolderLink);
+zoxc_int2(ElementMargins);
+zox_tag(ElementBillboard);
+
+// Selecting
+zox_tag(Selectable);
+zoxc_byte(SelectState);
+zox_tag(ElementRaycaster);
+
+// Clicking
+zox_tag(Clickable);
+zox_tag(ClickMakeSound);
+zoxc_byte(ClickState);
+zoxc_entity(Clicker);
+zoxc_entity(ClickingEntity);
+
+// Dragging
+zox_tag(Dragable);
+zoxc_int2(DraggingDelta);
+zoxc_entity(DraggerLink);
+zoxc_entity(DraggedLink);
+zoxc_byte(DraggableState);
+
+// Active
+zoxc_byte(ActiveState);
+zoxc_state(ActiveStateDirty);
+
+// Navigating
+zoxc_byte(NavigatorState);
+zoxc_double(NavigatorTimer);
+
+// TODO: Move to Sub Modules
+
+// Bars
 zoxc_float(ElementBar);
 zoxc_float2(ElementBarSize);
-zoxc_double(NavigatorTimer);
-zoxc_int2(ElementMargins);
-zoxc_byte(HeaderHeight);
+zoxc_byte(ElementFontSize);
+
+// Windows
+zox_tag(Window);
+zox_tag(WindowRaycastTarget);
+zox_tag(IgnoreWindowLayering);
+zoxc_byte(WindowLayer);
+zoxc_byte(SetWindowLayer);
 zoxc_entity(WindowRaycasted);
 zoxc_entity(WindowTarget);
 zoxc_byte(WindowsLayers);
 zoxc_byte(WindowsCount);
-zoxc_byte(SetWindowLayer);
-zoxc_byte(WindowLayer);
-zoxc_byte(ElementLayer);
-zoxc_state(InitializeElement);
-zox_tag(ClickMakeSound);
-zox_tag(Selectable);
-zox_tag(Clickable);
-zox_tag(Dragable);
-zox_tag(IgnoreWindowLayering);
-zoxc_int2(DraggingDelta);
-zoxc_entity(Clicker);
-zoxc_entity(ClickingEntity);
-zoxc_entity(DraggerLink);
-zoxc_entity(DraggedLink);
-zoxc_entity(ElementLink);
-zoxc_entity(UIHolderLink);
-zoxc_entities(ElementLinks)
-zoxc_child(ElementHolder, ElementLinks)
+zoxc_byte(HeaderHeight);
+
+// Tooltips
+zox_tag(Tooltip);
 zoxc_fixed_string(TooltipText, 128);
-// states
-zoxc_byte(NavigatorState);
-zoxc_byte(DraggableState);
-zoxc_byte(SelectState);
-zoxc_byte(ActiveState);
-zoxc_byte(ClickState);
-zoxc_state(ActiveStateDirty);
+
+// Misc
+zox_tag(MouseElement);
+zox_tag(CanvasOverlay);
 
 #include "click_event.c"
 #include "tooltip_event.c"
@@ -83,13 +103,9 @@ void define_components_elements(ecs *world) {
     zoxd_tag(ClickMakeSound);
     zoxd_tag(Selectable);
     zoxd_tag(Clickable);
-    zoxd_tag(Dragable);
     zoxd_entity(ClickingEntity);
     zoxd_entity(Clicker);
     zoxd_entity(ElementLink);
-    zoxd_int2(DraggingDelta);
-    zoxd_entity(DraggerLink);
-    zoxd_entity(DraggedLink);
     zoxd_fixed_string(TooltipText);
     zoxd(UIHolderLink);
     zoxd_entities(ElementLinks);
@@ -100,10 +116,16 @@ void define_components_elements(ecs *world) {
     zoxd(SlideEvent);
 
     // States
-    zoxd_byte(DraggableState);
     zoxd_byte(NavigatorState);
     zoxd_byte(SelectState);
     zoxd_byte(ActiveState);
     zoxd_byte(ClickState);
     zoxd_state(ActiveStateDirty);
+
+    // Dragging
+    zoxd_tag(Dragable);
+    zoxd_int2(DraggingDelta);
+    zoxd_entity(DraggerLink);
+    zoxd_entity(DraggedLink);
+    zoxd_byte(DraggableState);
 }

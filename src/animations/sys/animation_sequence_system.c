@@ -1,34 +1,38 @@
-void AnimationSequenceSystem(iter *it) {
+zox_sys2(AnimationSequenceSystem) {
     const double time = zox_current_time;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(AnimationSequence)
-    zox_sys_in(AnimationTimes)
-    zox_sys_in(AnimationTargets)
-    zox_sys_in(AnimationDelay)
-    zox_sys_out(AnimationIndex)
-    zox_sys_out(AnimationLength)
-    zox_sys_out(AnimationStart)
-    zox_sys_out(AnimationState)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(AnimationSequence);
+    zox_sys_in(AnimationTimes);
+    zox_sys_in(AnimationTargets);
+    zox_sys_in(AnimationDelay);
+    zox_sys_out(AnimationIndex);
+    zox_sys_out(AnimationLength);
+    zox_sys_out(AnimationStart);
+    zox_sys_out(AnimationState);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(AnimationTimes, animationTimes)
-        zox_sys_i(AnimationTargets, animationTargets)
-        zox_sys_i(AnimationDelay, animationDelay)
-        zox_sys_i(AnimationSequence, animationSequence)
-        zox_sys_o(AnimationStart, animationStart)
-        zox_sys_o(AnimationLength, animationLength)
-        zox_sys_o(AnimationState, animationState)
-        zox_sys_o(AnimationIndex, animationIndex)
+        zox_sys_i(AnimationTimes, animationTimes);
+        zox_sys_i(AnimationTargets, animationTargets);
+        zox_sys_i(AnimationDelay, animationDelay);
+        zox_sys_i(AnimationSequence, animationSequence);
+        zox_sys_o(AnimationStart, animationStart);
+        zox_sys_o(AnimationLength, animationLength);
+        zox_sys_o(AnimationState, animationState);
+        zox_sys_o(AnimationIndex, animationIndex);
+
         if (animationIndex->value == 255) {
             continue;
         }
+
         if (!animationSequence->length) {
             continue;
         }
+
         if (animationIndex->value > animationSequence->length) {
             animationIndex->value = 255;
             continue;
         }
+
         byte is_anim_over = 0;
         if (animationIndex->value == 0) {
             is_anim_over = 1;
@@ -55,4 +59,4 @@ void AnimationSequenceSystem(iter *it) {
             }
         }
     }
-} zoxd_system(AnimationSequenceSystem)
+} zox_sys_end(AnimationSequenceSystem);

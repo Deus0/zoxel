@@ -5,8 +5,9 @@
     SDL_GetMouseWheelDirection: Retrieves the current direction of the mouse wheel (if supported)
 */
 
-void MouseExtractSystem(iter *it) {
-    zox_sys_world()
+zox_sys2(MouseExtractSystem) {
+    zox_sys_world();
+
     // remember: sdl doesn't do multiple mouses
     zox_geter_value_non_const(main_app, WindowSize, int2, screen_size)
     // zox_log("screen_size.y: %i", screen_size.y)
@@ -29,12 +30,14 @@ void MouseExtractSystem(iter *it) {
     if (buttons & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
         button_pressed_right = 1;
     }
-    zox_sys_begin()
-    zox_sys_in(Children)
-    zox_sys_in(AppLink)
+
+    zox_sys_begin();
+    zox_sys_in(Children);
+    zox_sys_in(AppLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Children, children)
-        zox_sys_i(AppLink, appLink)
+        zox_sys_i(Children, children);
+        zox_sys_i(AppLink, appLink);
+
         // using button_pressed_left
         for (int j = 0; j < children->length; j++) {
             const entity zevice = children->value[j];
@@ -74,4 +77,4 @@ void MouseExtractSystem(iter *it) {
             }
         }
     }
-} zoxd_system(MouseExtractSystem)
+} zox_sys_end(MouseExtractSystem);

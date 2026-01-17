@@ -90,11 +90,12 @@ ECS_MOVE(T, dst, src, {\
 })\
 \
 void dispose_system_##T(iter *it) {\
-    zox_sys_world()\
-    zox_sys_begin()\
-    zox_sys_out(T)\
+    zox_sys_world();\
+    zox_sys_begin();\
+    zox_sys_out(T);\
     for (int i = 0; i < it->count; i++) {\
-        zox_sys_o(T, component)\
+        zox_sys_o(T, component);\
+        \
         destroy_##T(world, component);\
     }\
 } \

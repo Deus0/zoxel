@@ -2,17 +2,17 @@
 #define cooldown_start_landing 251
 // byte can_jump_delay = 15;
 
-void CanJumpSystem(iter *it) {
-    zox_sys_begin()
-    zox_sys_in(Grounded)
-    zox_sys_in(JumpState)
-    zox_sys_out(CanJump)
-    zox_sys_out(LandState)
+zox_sys2(CanJumpSystem) {
+    zox_sys_begin();
+    zox_sys_in(Grounded);
+    zox_sys_in(JumpState);
+    zox_sys_out(CanJump);
+    zox_sys_out(LandState);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Grounded, grounded)
-        zox_sys_i(JumpState, jump)
-        zox_sys_o(CanJump, can_jump)
-        zox_sys_o(LandState, landed)
+        zox_sys_i(Grounded, grounded);
+        zox_sys_i(JumpState, jump);
+        zox_sys_o(CanJump, can_jump);
+        zox_sys_o(LandState, landed);
 
         // Started to jump!
         if (jump->value) {
@@ -53,4 +53,4 @@ void CanJumpSystem(iter *it) {
             }
         }
     }
-} zoxd_system(CanJumpSystem)
+} zox_sys_end(CanJumpSystem);

@@ -4,17 +4,24 @@ extern entity spawn_line3D(ecs*, float3, float3, float, double);
 #endif
 
 zox_sys2(BillboardSystem) {
-    if (main_cameras_count == 0) return;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(Position3D)
-    zox_sys_out(Rotation3D)
+    if (main_cameras_count == 0) {
+        return;
+    }
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Position3D);
+    zox_sys_out(Rotation3D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(Position3D, position3D)
-        zox_sys_o(Rotation3D, rotation3D)
+        zox_sys_e();
+        zox_sys_i(Position3D, position3D);
+        zox_sys_o(Rotation3D, rotation3D);
+
         const entity camera = find_closest_camera(world, position3D->value);
-        if (!camera || !zox_has(camera, Rotation3D)) continue;
+
+        if (!camera || !zox_has(camera, Rotation3D)) {
+            continue;
+        }
+
         const float4 target_rotation = zox_get_value(camera, Rotation3D)
         rotation3D->value = target_rotation;
         if (zox_has(e, Children)) {
