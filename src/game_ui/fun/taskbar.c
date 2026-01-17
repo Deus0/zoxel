@@ -27,10 +27,7 @@ void add_taskbar_button(const hook_taskbar data) {
 }
 
 // todo: make tooltip function just return a string
-byte tooltip_event_taskbar_icon(
-    ecs *world,
-    const TooltipEventData *data
-) {
+byte tooltip_event_taskbar_icon(ecs *world, const TooltipEventData *data) {
     if (!data->triggered || !zox_has(data->triggered, TooltipText)) {
         zox_log("! issue with ui, on tooltip\n")
         return 0;
@@ -44,10 +41,7 @@ byte tooltip_event_taskbar_icon(
 }
 
 // nested function (GCC extension)
-void on_closed_taskbar_window(
-    ecs *world,
-    const ClickEventData event
-) {
+void on_closed_taskbar_window(ecs *world, const ClickEventData event) {
     if (!zox_has(event.clicked, ParentLink)) {
         zox_log_error("close button parent link missing.");
         return;
@@ -73,5 +67,6 @@ void on_closed_taskbar_window(
         zox_set(button, ActiveState, { 0 });
         zox_set(button, ActiveStateDirty, { zox_dirty_trigger });
     }
+
     zox_delete(window);
 }

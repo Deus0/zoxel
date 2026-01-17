@@ -1,6 +1,4 @@
-void taskbar_button_click_event(
-    ecs *world,
-    const ClickEventData event
+void taskbar_button_click_event(ecs *world, const ClickEventData event
 ) {
     if (!zox_has(event.clicked, IconIndex)) {
         zox_log_error("Clicked [%s] does not have IconIndex", zox_get_name(event.clicked));
@@ -18,9 +16,11 @@ void taskbar_button_click_event(
         zox_log_error("Invalid frame.");
         return;
     }
+
     byte window_state = zox_valid(window_ui);
     zox_set(frame, ActiveState, { window_state });
     zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
+
     if (window_ui) {
         zox_set(window_ui, TaskbarButton, { frame });
     }

@@ -1,5 +1,4 @@
 #include "raycast.c"
-#include "active.c"
 #include "selected.c"
 #include "click_sound.c"
 #include "texture_size.c"
@@ -24,6 +23,9 @@
 #include "inputs/device_click.c"
 #include "inputs/zevice_click.c"
 
+
+#include "active/animate.c"
+
 #include "drag/dragger_end.c"
 
 // zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
@@ -32,8 +34,6 @@ zox_increment_system_with_reset_extra(ClickState, zox_click_state_trigger_clicke
 zox_increment_system_with_reset_extra(SelectState, zox_select_state_trigger_selected, zox_select_state_selected, zox_select_state_trigger_deselect, zox_select_state_deselected_idle);
 
 void define_systems_elements(ecs *world) {
-    // zoxd_system_increment_pip(InitializeElement, EcsOnStore);
-    // zoxd_system_increment(ActiveStateDirty);
     zoxd_system_increment(ClickState);
     zoxd_system_increment(SelectState);
     zox_filter(
@@ -105,11 +105,15 @@ void define_systems_elements(ecs *world) {
         [out] rendering.Brightness,
         [none] Element
     );
+
+    // Active
     zox_system(
         ElementActiveSystem,
         EcsOnUpdate,
         [in] elements.ActiveState,
         [in] elements.ActiveStateDirty,
+        [in] elements.ElementColor,
+        [in] elements.ActiveColor,
         [out] textures.OutlineColor,
         [out] rendering.Brightness,
         [out] textures.GenerateTexture,

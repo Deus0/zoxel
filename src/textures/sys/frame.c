@@ -30,7 +30,7 @@ zox_sys2(FrameTextureSystem) {
         const color fill_color = color2->value;
         color outline_color;
         if (zox_has(e, OutlineColor)) {
-            outline_color = zox_get_value(e, OutlineColor)
+            outline_color = zox_get_value(e, OutlineColor);
         } else {
             outline_color = (color) {
                 fill_color.g + 25 + rand() % 25,

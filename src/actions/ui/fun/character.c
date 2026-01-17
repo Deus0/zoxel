@@ -26,14 +26,17 @@ void set_player_action(
     }
     // deselect first
     for (int i = 0; i < children->length; i++) {
-        const entity child = children->value[i];
+        entity child = children->value[i];
+
         if (!zox_valid(child)) {
             continue;
         }
+
         if (!zox_has(child, ActiveState)) {
             zox_log_error("[%i] has no ActiveState", i);
             continue;
         }
+
         zox_geter_value(child, ActiveState, byte, state);
         if (index != i && state) {
             zox_set(child, ActiveState, { 0 });

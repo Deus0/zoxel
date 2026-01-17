@@ -21,6 +21,7 @@ entity3 spawn_frame(ecs *world, const SpawnFrame data) {
     }
     zox_set(e, Color, { data.texture.fill_color });
     zox_set(e, OutlineColor, { data.texture.outline_color });
+    zox_set(e, ElementColor, { data.texture.outline_color });
 
     LayoutParentData canvas_data = data.canvas;
     LayoutParentData parent_data = {

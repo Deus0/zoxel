@@ -1,8 +1,5 @@
-entity spawn_prefab_crosshair(
-    ecs *world,
-    const entity prefab
-) {
-    zox_prefab_child(prefab);
+entity spawn_prefab_crosshair(ecs *world, entity p) {
+    zox_prefab_child(p);
     zox_set(e, HitType, { 0 });
     zox_set(e, Color, { empty_color });
     zox_set(e, OutlineColor, { crosshair_air });

@@ -1,7 +1,7 @@
 #define zoxc_color(name) \
     zoxc(name, color)
 
-#define zox_define_component_color(name)\
+#define zoxd_color(name)\
     zoxd(name)\
     add_to_entity_array_d(component_ids_color, ecs_id(name));
 

@@ -1,37 +1,24 @@
 // note on meta: since just spawned user item, we cant use it yet
-void on_action_set(
-    ecs* world,
-    entity e,
-    byte index,
-    entity action,
-    entity meta
-) {
+void on_action_set(ecs* world, entity e, byte index, entity action, entity meta) {
     zox_geter(e, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuActions, menu);
+
     if (!zox_valid(menu)) {
         return;
     }
+
     zox_geter(menu, Children, children);
 
-    const entity body = children->value[1];
+    entity body = children->value[1];
     zox_geter(body, Children, body_children);
 
-    const entity frame = body_children->value[index];
+    entity frame = body_children->value[index];
     zox_geter(frame, Children, frame_children);
-    const entity icon = frame_children->value[0];
-    const entity label = frame_children->length >= 1 ? frame_children->value[1] : 0;
+    entity icon = frame_children->value[0];
+    entity label = frame_children->length >= 1 ? frame_children->value[1] : 0;
     // remember: uses meta item for texture source here
     // zox_get_prefab(action, meta);
-    set_icon_from_user_data(
-        world,
-        frame,
-        icon,
-        meta);
-    /*set_icon_label_from_user_data(
-        world,
-        frame,
-        meta
-    );*/
+    set_icon_from_user_data(world, frame, icon, meta);
     zox_set(icon, UserDataLink, { action });
 
     // also set other links

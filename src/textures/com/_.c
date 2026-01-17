@@ -54,7 +54,7 @@ void define_components_textures(ecs* world) {
     zoxd_float(IconRadius);
     zoxd_int2(TilemapSize);
     zoxd_double(AnimateTexture);
-    zox_define_component_color(OutlineColor);
+    zoxd_color(OutlineColor);
     zoxd_entity(TilemapLink);
     zoxd_entity(TextureLink);
     zoxd_arrayd(TextureData);
