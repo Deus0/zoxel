@@ -95,8 +95,8 @@ double perlin_noise(double x, double y, double f, uint seed) {
     // Hash function that maps a 2D vector to a random integer value
 
     // Calculate the lattice coordinates of the grid cell that contains the point (x, y)
-    int x0 = (int)double_floor(x * f);
-    int y0 = (int)double_floor(y * f);
+    int x0 = (int) double_floor(x * f);
+    int y0 = (int) double_floor(y * f);
 
     // Calculate the weights of each corner of the grid cell
     double sx = x * f - x0;
@@ -116,19 +116,23 @@ double perlin_noise(double x, double y, double f, uint seed) {
     double noise = lerp(lerp(n0, n1, u), lerp(n2, n3, u), v);
 
     // Scale the noise value to the range [0, 1]
-    return noise; //  (noise + 1.0) / 2.0;
+    // return noise; //  (noise + 1.0) / 2.0;
+    return (noise + 1.0) / 2.0;
 }
 
-double perlin_terrain(double x, double y, double f, uint seed, int octaves) {
-    double terrain = 0.0;
-    double amplitude = 1.0;
+// returns between 0 and 1
+double perlin_octaves(double x, double y, double f, uint seed, int octaves) {
+    double total = 0.0;
+    double amplitude = 0.5;
     // Add multiple scales of Perlin noise
     for (int i = 0; i < octaves; i++) {
         double frequency = pow(2.0, i);
-        terrain += perlin_noise(x * frequency, y * frequency, f, seed) * amplitude;
+
+        total += perlin_noise(x * frequency, y * frequency, f, seed) * amplitude;
+
         amplitude /= 2.0;
     }
-    return terrain;
+    return total;
 }
 
 // helper to remap any -1…1 noise into 0…1
@@ -147,9 +151,9 @@ static inline double clamp01(double v) {
 // Calculate a smooth 0…1 grass density (unchanged)
 double calculate_grass_density(double x, double y, uint32_t seed) {
     // you already love this blend—keep it
-    double rawH  = perlin_terrain(x,            y,            0.005, seed ^ 0xABCDE, 4);
-    double rawM  = perlin_terrain(x + 4321.0,   y - 9876.0,   0.01,  seed ^ 0x12345, 3);
-    double rawD  = perlin_terrain(x * 2.0,      y * 2.0,      0.1,   seed ^ 0x55555, 2);
+    double rawH  = perlin_octaves(x,            y,            0.005, seed ^ 0xABCDE, 4);
+    double rawM  = perlin_octaves(x + 4321.0,   y - 9876.0,   0.01,  seed ^ 0x12345, 3);
+    double rawD  = perlin_octaves(x * 2.0,      y * 2.0,      0.1,   seed ^ 0x55555, 2);
 
     double height   = normalize01(rawH);
     double moisture = normalize01(rawM);

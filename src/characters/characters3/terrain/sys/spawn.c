@@ -68,8 +68,9 @@ zox_sys2(Characters3SpawnSystem) {
         zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
         zox_geter(realm, CharacterLinks, characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
+
         const entity chunk_above = neighbors->value[direction_up];
-        // const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
+        const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
 
         // calcs
         const int chunk_length = powers_of_two[depth->value];
@@ -125,37 +126,27 @@ zox_sys2(Characters3SpawnSystem) {
             // 2) find a place for our new npc
             // sometimes cannot find a position
             // many spawn checks
-            if (!found_position) {
 
-                if (disable_npc_positioner) {
-                    found_position = 1;
-                }
+            // byte3 local_position = byte3_half(byte3_single(chunk_length));
+            byte3 local_position = find_random_position_on_ground(
+                voxel_node,
+                voxel_node_above,
+                depth->value,
+                8
+            );
 
-                byte3 local_position = byte3_half(byte3_single(chunk_length));
-
-                /*byte3 local_position;
-                for (byte k = 0; k < chunk_length; k++) {
-                    local_position = find_random_position_on_ground(
-                        voxel_node,
-                        voxel_node_above,
-                        depth->value
-                    );
-                    if (!byte3_equals(byte3_full, local_position)) {
-                        break;
-                    }
-                }
-                if (byte3_equals(byte3_full, local_position)) {
-                    zox_log_spawning("! failed to spawn npc")
-                    continue;
-                }*/
-
-                position = local_to_real_position_character(
-                    local_position,
-                    chunk_voxel_position,
-                    bounds,
-                    terrain_scale // 1
-                );
+            if (byte3_equals(byte3_full, local_position)) {
+                zox_log_spawning("! failed to spawn npc");
+                break;
             }
+
+            position = local_to_real_position_character(
+                local_position,
+                chunk_voxel_position,
+                bounds,
+                terrain_scale // 1
+            );
+
             float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
 
             // 3) Finally we spawn and link

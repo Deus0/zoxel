@@ -33,7 +33,7 @@ zox_sys2(BiomeMapSystem) {
             gposition.y = gposition_start.y;
             for (lposition.y = 0; lposition.y < hsize.y; lposition.y++, gposition.y++) {
 
-                double perlin_value = perlin_terrain(
+                double perlin_value = perlin_octaves(
                     noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
                     noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
                     height_frequency * 2,

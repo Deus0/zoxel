@@ -102,16 +102,19 @@ zox_sys2(CubeLineRenderSystem) {
             float3_add_float3_p(&bottom_left, p);
             float3_add_float3_p(&bottom_right2, p);
             float3_add_float3_p(&bottom_left2, p);
+
             // top
             zox_render_line_attr(top_left, top_right);
             zox_render_line_attr(top_left2, top_right2);
             zox_render_line_attr(top_left, top_left2);
             zox_render_line_attr(top_right, top_right2);
+
             // bottom
             zox_render_line_attr(bottom_left, bottom_right);
             zox_render_line_attr(bottom_left2, bottom_right2);
             zox_render_line_attr(bottom_left, bottom_left2);
             zox_render_line_attr(bottom_right, bottom_right2);
+
             // vertical
             zox_render_line_attr(bottom_right, top_right);
             zox_render_line_attr(bottom_left, top_left);

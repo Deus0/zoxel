@@ -2,6 +2,8 @@
 #include "die.c"
 #include "biomes.c"
 #include "heights.c"
+#include "vegetation.c"
+#include "towns.c"
 #include "end.c"
 
 void define_systems_tunks(ecs* world) {
@@ -32,7 +34,7 @@ void define_systems_tunks(ecs* world) {
 
     zox_system(
         BiomeMapSystem,
-        EcsPreUpdate,
+        EcsPostLoad,
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
         [out] tunks.BiomeMap
@@ -44,7 +46,17 @@ void define_systems_tunks(ecs* world) {
         EcsOnUpdate,
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
+        [in] tunks.BiomeMap,
         [out] tunks.HeightMap
+    );
+
+    zox_system(
+        VegetationMapSystem,
+        EcsPreStore,
+        [in] core.Generate,
+        [in] chunks2.Chunk2Position,
+        [in] tunks.BiomeMap,
+        [out] tunks.VegetationMap
     );
 
     zox_system(

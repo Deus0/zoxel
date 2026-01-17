@@ -46,12 +46,12 @@ byte3 find_position_on_ground(
 }
 
 
-byte3 find_random_position_on_ground(const VoxelNode *chunk, const VoxelNode *chunk_above, const byte depth) {
+byte3 find_random_position_on_ground(const VoxelNode *chunk, const VoxelNode *chunk_above, byte depth, byte max_checks) {
 
     const byte length = powers_of_two_byte[depth];
     byte checks_count = 0;
 
-    while (checks_count < max_position_checks) {
+    while (checks_count < max_checks) {
         byte2 positionxz = (byte2) {
             rand() % length,
             rand() % length
@@ -66,5 +66,6 @@ byte3 find_random_position_on_ground(const VoxelNode *chunk, const VoxelNode *ch
         }
         checks_count++;
     }
+
     return byte3_full;
 }

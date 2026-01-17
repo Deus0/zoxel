@@ -31,11 +31,7 @@ void zox_log_chunk_added(
 #endif
 }
 
-byte set_entity_chunk(ecs *world,
-    const entity e,
-    ChunkLink *chunkLink,
-    const entity new_chunk)
-{
+byte set_entity_chunk(ecs *world, entity e, ChunkLink *chunkLink, entity new_chunk) {
     entity old_chunk = chunkLink->value;
     if (!zox_valid(new_chunk) || old_chunk == new_chunk || !can_have_characters(world, new_chunk)) {
         return 0;
@@ -82,23 +78,23 @@ byte set_entity_chunk(ecs *world,
 }
 
 zox_sys2(ChunkLinkSystem) {
-    // const byte depth = terrain_depth;
-    // const int3 chunk_dimensions = int3_single(powers_of_two[depth]);
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(TerrainLink)
-    zox_sys_out(Position3D)
-    zox_sys_out(ChunkPosition)
-    zox_sys_out(ChunkLink)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TerrainLink);
+    zox_sys_out(Position3D);
+    zox_sys_out(ChunkPosition);
+    zox_sys_out(ChunkLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e()
-        zox_sys_i(TerrainLink, link)
-        zox_sys_i(Position3D, position)
-        zox_sys_o(ChunkPosition, chunkPosition)
-        zox_sys_o(ChunkLink, chunkLink)
+        zox_sys_e();
+        zox_sys_i(TerrainLink, link);
+        zox_sys_i(Position3D, position);
+        zox_sys_o(ChunkPosition, chunkPosition);
+        zox_sys_o(ChunkLink, chunkLink);
+
         if (!zox_valid(link->value)) {
             continue; // these shouldn't be here
         }
+
         zox_geter_value(link->value, BlockScale, float, terrain_scale);
         zox_geter_value(link->value, NodeDepth, byte, node_depth);
         // const float3 real_position = position3D->value;

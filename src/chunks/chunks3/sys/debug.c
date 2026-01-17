@@ -24,6 +24,8 @@ void spawn_voxel_debug_line(
 
 // Renders Ground Lines
 zox_sys2(ChunkDebugSystem) {
+    return;
+
     const byte debug_distance = 1;
     const color_rgb chunk_color = { 155, 0, 0 };
     const color_rgb voxel_color = { 0, 155, 155 };

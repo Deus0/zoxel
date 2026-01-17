@@ -8,5 +8,7 @@ entity spawn_prefab_tunk2(ecs *world, entity prefab) {
     zox_prefab_set(e, Generate, { zox_dirty_trigger });
     zox_prefab_set(e, BiomeMap, { 0 });
     zox_prefab_set(e, HeightMap, { 0 });
+    zox_prefab_set(e, VegetationMap, { 0 });
+    zox_prefab_set(e, TownMap, { 0 });
     return e;
 }

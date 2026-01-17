@@ -19,7 +19,8 @@ TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
         local_position = find_random_position_on_ground(
             chunkd,
             voxel_node_above,
-            node_depth);
+            node_depth,
+            200);
         if (!byte3_equals(byte3_full, local_position)) {
             found_position = 1;
             break;

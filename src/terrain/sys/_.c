@@ -1,4 +1,3 @@
-#include "build.c"
 #include "flatlands.c"
 #include "grasslands.c"
 #include "realm.c"
@@ -57,26 +56,6 @@ void define_systems_terrain(ecs *world) {
         [none] !FlatlandChunk,
         [none] TerrainChunk
     );
-
-    if (!headless) {
-        // move this into chunk3, for chunk3_textured
-        zox_system(
-            Chunk3TexturedBuildSystem,
-            zoxp_voxels_read,
-            [in] voxes.VoxLink,
-            [in] chunks3.ChunkMeshDirty,
-            [in] chunks3.VoxelNode,
-            [in] rendering.RenderDepth,
-            [in] chunks3.ChunkNeighbors,
-            [in] blocks.BlockScale,
-            [out] rendering.MeshIndicies,
-            [out] rendering.MeshVertices,
-            [out] rendering.MeshUVs,
-            [out] rendering.MeshColorRGBs,
-            [out] rendering.MeshDirty,
-            [none] chunks3.ChunkTextured
-        );
-    }
 
     // Streaming Terrain Chunks
     zox_filter(

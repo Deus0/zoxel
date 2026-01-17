@@ -1,19 +1,12 @@
-entity spawn_chunk_terrain(
-    ecs *world,
-    entity prefab,
-    entity terrain,
-    int3 camera_position,
-    int3 position,
-    byte terrain_depth,
-    float terrain_scalev
-) {
+entity spawn_chunk_terrain(ecs *world, entity p, entity terrain, int3 camera_position, int3 position, byte terrain_depth, float terrain_scalev) {
 
-    zox_instance(prefab);
+    zox_instance(p);
     zox_name("chunk_terrain");
 
     if (terrain_mode == terrain_mode_flatlands) {
         zox_add_tag(e, FlatlandChunk);
     }
+
     // convert chunk position to real
     //  - scales by length of chunk and vox scale
     zox_set(e, VoxLink, { terrain });
@@ -23,6 +16,12 @@ entity spawn_chunk_terrain(
         zox_log_error("Tilemap on terrain null.");
     } else {
         zox_set(e, TilemapLink, { tilemap });
+    }
+    zox_geter_value(terrain, RealmLink, entity, realm);
+    if (!realm) {
+        zox_logw("realm not on terrain");
+    } else {
+        zox_set(e, BlockManagerLink, { realm });
     }
 
     // scale needs to be based on chunk itself
