@@ -1,4 +1,4 @@
-entity spawn_menu_paused(ecs *world, const entity player) {
+entity spawn_menu_paused(ecs *world, entity player) {
     // settings
     byte header_font_size = 10 * ui_scale;
     byte list_font_size = 8 * ui_scale;
@@ -14,8 +14,9 @@ entity spawn_menu_paused(ecs *world, const entity player) {
         .on_click = { &button_event_end_game },
     };
 
-    const entity e = spawn_window_list(
+    entity e = spawn_window_list(
         world,
+        prefab_menu_paused,
         player,
         menu_paused_header_label,
         header_font_size,
@@ -26,8 +27,10 @@ entity spawn_menu_paused(ecs *world, const entity player) {
         (ClickEvent) { &on_closed_taskbar_window },
         1
     );
-
-    zox_add_tag(e, MenuPaused);
     zox_name("menu_paused");
+
+    // zox_geter_value(player, CanvasLink, entity, canvas);
+    // on_opened_taskbar_window(world, e, canvas);
+
     return e;
 }

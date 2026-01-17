@@ -2,7 +2,7 @@ const double time_update_debug_label_system_rate = 1.0;
 const uint max_debug_characters = 4 * 1024;
 double time_update_debug_label_system = 0;
 
-void DebugLabelSystem(iter *it) {
+zox_sys2(DebugLabelSystem) {
     // timer function for label updates
     time_update_debug_label_system += zox_delta_time;
     if (time_update_debug_label_system >= time_update_debug_label_system_rate) {
@@ -10,21 +10,24 @@ void DebugLabelSystem(iter *it) {
     } else {
         return;
     }
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(PlayerLink)
-    zox_sys_in(DebugLabelData)
-    zox_sys_out(TextDirty)
-    zox_sys_out(TextData)
+
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(PlayerLink);
+    zox_sys_in(DebugLabelData);
+    zox_sys_out(TextDirty);
+    zox_sys_out(TextData);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(PlayerLink, playerLink)
-        zox_sys_i(DebugLabelData, debugLabelData)
-        zox_sys_o(TextData, textData)
-        zox_sys_o(TextDirty, zextDirty)
+        zox_sys_i(PlayerLink, playerLink);
+        zox_sys_i(DebugLabelData, debugLabelData);
+        zox_sys_o(TextData, textData);
+        zox_sys_o(TextDirty, zextDirty);
+
         if (zextDirty->value) {
             continue;
         }
-        const entity player = playerLink->value;
+
+        entity player = playerLink->value;
         if (!player) {
             continue;
         }
@@ -45,4 +48,4 @@ void DebugLabelSystem(iter *it) {
             zextDirty->value = 1;
         }
     }
-} zoxd_system(DebugLabelSystem)
+} zox_sys_end(DebugLabelSystem);

@@ -33,7 +33,7 @@ zox_sys2(PlayerCharacterStatsSystem) {
 
         // Link to StatPanel
         /*zox_geter_value(player->value, CanvasLink, entity, canvas);
-        find_child_with_tag(canvas, MenuGame, game_menu)
+        find_child_with_tag(canvas, MenuPlay, game_menu)
         if (zox_valid(game_menu)) {
             find_child_with_tag(game_menu, ElementBar, healthbar);
             if (zox_valid(healthbar)) {

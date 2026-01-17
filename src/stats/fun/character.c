@@ -86,7 +86,7 @@ void spawn_character_stats(
     // player character ui
     if (data->p) {
         const entity canvas = zox_get_value(data->p, CanvasLink)
-        find_child_with_tag(canvas, MenuGame, game_menu)
+        find_child_with_tag(canvas, MenuPlay, game_menu)
         // sometimes its here, sometimes not!
         if (zox_valid(game_menu)) {
             find_child_with_tag(game_menu, ElementBar, healthbar2D)

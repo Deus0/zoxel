@@ -10,9 +10,11 @@
     }
 
 entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
+
     if (!zox_valid(e) || !zox_has(e, Children)) {
         return 0;
     }
+
     zox_geter(e, Children, children);
     for (int i = 0; i < children->length; i++) {
         entity e2 = children->value[i];
@@ -30,6 +32,7 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
             return e3;
         }
     }
+
     return 0;
 }
 

@@ -16,9 +16,10 @@ typedef struct {
 
 entity spawn_window_list(
     ecs *world,
-    const entity player,
+    entity p,  // prefab
+    entity player,
     const char *header,
-    const byte header_font_size,
+    byte header_font_size,
     SpawnListElement* elements,
     byte elements_count,
     byte visible_count,
@@ -33,7 +34,7 @@ entity spawn_window_list(
     byte2 list_margins =  (byte2) { 16 * ui_scale, 8 * ui_scale };
     byte slider_height = 16 * ui_scale;
 
-    const byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
+    byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
     zox_geter_value(player, CanvasLink, entity, canvas);
     // # Window #
     LayoutParentData canvas_data = {
@@ -41,7 +42,7 @@ entity spawn_window_list(
         .size = zox_gett_value(canvas, LayoutSize)  // need for bounds
     };
     ElementSpawnData window_element_data = {
-        .prefab = prefab_window_invisible,
+        .prefab = p,
         .anchor = float2_half,
         .layer = window_layer,
     };
@@ -89,7 +90,7 @@ entity spawn_window_list(
     window_data.children = &window_children;
 
     // Spawn our Window
-    const entity e = spawn_window2(
+    entity e = spawn_window2(
         world,
         canvas_data,
         (LayoutParentData) { .e = canvas },

@@ -1,13 +1,8 @@
 // TODO: Rename/Refactor to WindowIcons
 
-entity spawn_window_users(
-    ecs *world,
-    SpawnWindowUsers data,
-    FrameTextureData window_texture,
-    byte selected,
-    entity3* spawns
-) {
-    const entity character = data.window.character;
+entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns) {
+
+    entity character = data.window.character;
 
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         zox_log_error("invalid character in spawn icons window.");
@@ -21,7 +16,7 @@ entity spawn_window_users(
 
     const UserLinks *user_data = zox_get_id(character, data.window.user_links_id);
 
-    const byte is_header = data.window.prefab_header != 0;
+    byte is_header = data.window.prefab_header != 0;
     int2 position = data.element.position;
     byte header_height = is_header ? data.header_zext.font_size + data.header_zext.margins.y * 2 : 0;
 
@@ -46,10 +41,10 @@ entity spawn_window_users(
         data.element.anchor
     );
 
-    const int user_datas_count = user_data->length;
-    const int grid_elements_count = user_datas_count;
+    int user_datas_count = user_data->length;
+    int grid_elements_count = user_datas_count;
 
-    const int children_length = 1 + is_header;
+    int children_length = 1 + is_header;
     Children children = (Children) { 0 };
     initialize_Children(&children, children_length);
     if (children.length != children_length) {
@@ -58,7 +53,7 @@ entity spawn_window_users(
     }
 
     if (is_header) {
-        const LayoutParentData e_parent_data = { .e = e };
+        LayoutParentData e_parent_data = { .e = e };
         ElementSpawnData header_element_data = {
             .prefab = data.window.prefab_header,
             .layer = data.element.layer + 1,
@@ -70,7 +65,7 @@ entity spawn_window_users(
             },
         };
 
-        const entity header = spawn_header3(
+        entity header = spawn_header3(
             world,
             data.canvas,
             e_parent_data,
@@ -83,7 +78,7 @@ entity spawn_window_users(
     }
 
     // spawn body
-    const byte body_layer = data.element.layer + 1;
+    byte body_layer = data.element.layer + 1;
     int2 grid_size = int2_sub(data.element.size, (int2) { 0, header_height });
     ElementSpawn grid_data = {
         .texture = window_texture,
@@ -97,7 +92,8 @@ entity spawn_window_users(
             .size = grid_size,
         },
     };
-    const entity grid = spawn_element(world, &grid_data);
+
+    entity grid = spawn_element(world, &grid_data);
     zox_set_unique_name(grid, "window_users_grid");
     children.value[is_header] = grid;
     zox_set(grid, GridSize, { data.window.grid_size });
@@ -107,10 +103,11 @@ entity spawn_window_users(
     Children body_children = (Children) { 0 };
     initialize_Children(&body_children, grid_elements_count);
 
-    const byte icon_layer = body_layer + 1;
+    byte icon_layer = body_layer + 1;
     int item_index = 0;
     int array_index = 0;
-    const byte active_states = zox_has(data.frame.prefab, ActiveState);
+
+    byte active_states = zox_has(data.frame.prefab, ActiveState);
 
     for (int j = data.window.grid_size.y - 1; j >= 0; j--) {
         if (array_index >= body_children.length) {
@@ -136,7 +133,7 @@ entity spawn_window_users(
             };
 
             frame_data.icon.index = array_index;
-            const entity user_data_element = user_data->value[item_index];
+            entity user_data_element = user_data->value[item_index];
 
             entity3 frame_spawn = spawn_frame_user(
                 world,

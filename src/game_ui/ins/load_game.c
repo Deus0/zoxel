@@ -87,6 +87,7 @@ entity spawn_menu_load(
 
     const entity e = spawn_window_list(
         world,
+        prefab_window_invisible,
         player,
         header_label,
         header_font_size,

@@ -4,12 +4,16 @@ void taskbar_button_click_event(ecs *world, const ClickEventData event
         zox_log_error("Clicked [%s] does not have IconIndex", zox_get_name(event.clicked));
         return;
     }
+
+    // This IconIndex links a taskbar to a Window
+    // TODO: Refactor taskbar and make entities
     zox_geter_value(event.clicked, IconIndex, byte, index);
     if (index >= hook_taskbars->size) {
         zox_log_error("taskbar button index [%i] out of bounds [%zu]", index, hook_taskbars->size);
         return;
     }
     hook_taskbar hook = hook_taskbars->data[index];
+
     const entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event.clicker);
     zox_geter_value(event.clicked, ParentLink, entity, frame);
     if (!zox_valid(frame) || !zox_has(frame, ActiveState)) {
@@ -22,17 +26,11 @@ void taskbar_button_click_event(ecs *world, const ClickEventData event
     zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
 
     if (window_ui) {
-        zox_set(window_ui, TaskbarButton, { frame });
+        zox_set(window_ui, TaskbarToggleLink, { frame });
     }
 }
 
-entity spawn_taskbar(
-    ecs *world,
-    const entity prefab,
-    const entity canvas,
-    const entity parent,
-    const byte layer
-) {
+entity spawn_taskbar(ecs *world, entity p, entity canvas, entity parent, byte layer) {
     byte taskbar_count = hook_taskbars->size;
     int frame_size = (default_frame_size / 4) * ui_scale;
     int icon_size = (default_icon_size / 4) * ui_scale;
@@ -54,7 +52,7 @@ entity spawn_taskbar(
         .canvas = { .e = canvas },
         .parent = { .e = parent },
         .element = {
-            .prefab = prefab,
+            .prefab = p,
             .layer = layer,
             .anchor = anchor,
             .position = position,
@@ -107,6 +105,7 @@ entity spawn_taskbar(
     };
 
     initialize_Children(&children, taskbar_count);
+
     for (int i = 0; i < taskbar_count; i++) {
         // hook data
         int hook_index = -1;
@@ -148,7 +147,7 @@ entity spawn_taskbar(
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
             if (window) {
-                zox_set(window, TaskbarButton, { frame });
+                zox_set(window, TaskbarToggleLink, { frame });
             }
         }
 

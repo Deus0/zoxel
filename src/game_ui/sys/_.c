@@ -8,6 +8,7 @@
 #include "game_pause.c"
 #include "game_resume.c"
 #include "terminal.c"
+#include "menu_game.c"
 
 void define_systems_game_ui(ecs *world) {
     zox_system(
@@ -18,6 +19,16 @@ void define_systems_game_ui(ecs *world) {
         [out] FPSDisplayTicker,
         [none] FPSDisplay
     );
+
+    zox_system(
+        MenuGameBeginSystem,
+        EcsOnUpdate,
+        [in] core.EntityInitialize,
+        [in] layouts2.CanvasLink,
+        [out] game.u.i.TaskbarToggleLink //,
+        // [none] MenuGame
+    );
+
     /*zox_system(QuadsLabelSystem, EcsOnUpdate,
             [out] QuadsCount,
             [out] texts.TextDirty,

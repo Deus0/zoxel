@@ -1,13 +1,10 @@
-void resume_player_delayed(
-    ecs *world,
-    const entity player
-) {
-    // const entity camera = zox_get_value(player, CameraLink);
-    // return to regular ui
-    const entity character = zox_get_value(player, CharacterLink)
+void resume_player_delayed(ecs *world, entity player) {
+    zox_geter_value(player, CharacterLink, entity, character);
+
     if (!zox_alive(character)) {
         return;
     }
+
     if (local_mouse) {
         zox_set(local_mouse, MouseLock, { 1 });
     }
@@ -15,7 +12,7 @@ void resume_player_delayed(
     spawn_in_game_ui(world, player);
 }
 
-void PlayerUIResumeSystem(iter *it) {
+zox_sys2(PlayerUIResumeSystem) {
     zox_sys_world();
     zox_sys_begin();
     // zox_sys_in(CameraLink);
@@ -75,4 +72,4 @@ void PlayerUIResumeSystem(iter *it) {
         state->value = zox_player_state_playing;
         dirty->value = zox_dirty_trigger;
     }
-} zoxd_system2(PlayerUIResumeSystem);
+} zox_sys_end(PlayerUIResumeSystem);

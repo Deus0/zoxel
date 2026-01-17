@@ -1,10 +1,15 @@
-entity spawn_menu_game_touch(ecs *world, const entity prefab, const entity player, const entity canvas) {
-    const byte button_size = 35 * ui_scale;
-    const byte button_padding = 5 * ui_scale;
-    const byte2 screen_margins = (byte2) { button_size / 2, 15 * ui_scale };
 
-    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
-    const entity e = spawn_layout2_on_canvas(world, prefab, canvas, int2_zero, canvas_size, float2_half);
+extern void button_event_switch_action(ecs *world, const ClickEventData event);
+extern void button_event_jump(ecs *world, const ClickEventData event);
+extern void button_event_attack(ecs *world, const ClickEventData event);
+
+entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas) {
+    byte button_size = 35 * ui_scale;
+    byte button_padding = 5 * ui_scale;
+    byte2 screen_margins = (byte2) { button_size / 2, 15 * ui_scale };
+
+    int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    entity e = spawn_layout2_on_canvas(world, p, canvas, int2_zero, canvas_size, float2_half);
     zox_name("menu_game_touch");
 
     Children children = (Children) { 0 };
@@ -25,7 +30,7 @@ entity spawn_menu_game_touch(ecs *world, const entity prefab, const entity playe
 
 
     // right side - jump and attack
-    const float2 anchor_right = (float2) { 1, 0 };
+    float2 anchor_right = (float2) { 1, 0 };
     spawn_position.x = -(screen_margins.x + button_size / 2);
     spawn_position.y = screen_margins.y + button_size;
 
@@ -49,19 +54,19 @@ entity spawn_menu_game_touch(ecs *world, const entity prefab, const entity playe
 }
 
 // called from game state changes
-void spawn_in_game_ui_touch(ecs *world, const entity player, const entity canvas) {
+void spawn_in_game_ui_touch(ecs *world, entity player, entity canvas) {
     if (!zox_valid(canvas)) {
         return;
     }
 
-    find_child_with_tag(canvas, MenuGameTouch, game_menu_touch);
+    find_child_with_tag(canvas, MenuPlayTouch, game_menu_touch);
 
     if (!zox_valid(game_menu_touch)) {
-        spawn_menu_game_touch(world, prefab_menu_game_touch, player, canvas);
+        spawn_menu_game_touch(world, prefab_menu_play_touch, player, canvas);
     }
 }
 
-void dispose_menu_game_touch(ecs *world, const entity player) {
+void dispose_menu_game_touch(ecs *world, entity player) {
     if (!zox_valid(player)) {
         return;
     }
@@ -71,7 +76,7 @@ void dispose_menu_game_touch(ecs *world, const entity player) {
         return;
     }
 
-    find_child_with_tag(canvas, MenuGameTouch, game_menu_touch);
+    find_child_with_tag(canvas, MenuPlayTouch, game_menu_touch);
     if (zox_valid(game_menu_touch)) {
         zox_delete(game_menu_touch)
     }

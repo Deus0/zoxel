@@ -21,13 +21,7 @@ void on_settings_slider_slid(ecs* world, const SlideEventData* data) {
 }
 
 // Options uses a set size that has elements adjust
-entity spawn_menu_options(
-    ecs *world,
-    const entity player,
-    const entity canvas,
-    const int2 position,
-    const float2 anchor
-) {
+entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 position, float2 anchor) {
     // more data
     const char* header_label = "Ponder";
     const byte visible_count = 6;
@@ -75,8 +69,9 @@ entity spawn_menu_options(
         .on_click = { &button_event_menu_main },
     };*/
 
-    const entity e = spawn_window_list(
+    entity e = spawn_window_list(
         world,
+        prefab_window_invisible,
         player,
         header_label,
         header_font_size,

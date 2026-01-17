@@ -68,7 +68,7 @@ void dispose_menu_game(
     const entity player
 ) {
     zox_geter_value(player, CanvasLink, entity, canvas);
-    find_child_with_tag(canvas, MenuGame, game_ui);
+    find_child_with_tag(canvas, MenuPlay, game_ui);
     if (game_ui) {
         zox_delete(game_ui)
     }
@@ -78,36 +78,31 @@ void dispose_menu_game(
 
 
 // called from game state changes
-entity spawn_in_game_ui(ecs *world, const entity player) {
+entity spawn_in_game_ui(ecs *world, entity player) {
     if (!zox_has(player, DeviceMode) || !zox_has(player, CanvasLink)) {
         zox_log_error("Invalid player in [spawn_in_game_ui]")
         return 0;
     }
+
     zox_geter_value(player, DeviceMode, byte, device_mode);
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter(player, CharacterLink, character);
-    entity e = spawn_menu_game(
-        world,
-        prefab_menu_game,
-        player,
-        character->value
-    );
-    byte is_touch = device_mode == zox_device_mode_touchscreen;
-#ifdef zoxel_mouse_emulate_touch
-    is_touch = 1;
+
+    entity e = spawn_menu_game(world, prefab_menu_play, player, character->value);
+
+#ifndef zoxel_mouse_emulate_touch
+    if (device_mode == zox_device_mode_touchscreen)
 #endif
-    if (is_touch) {
+    {
         spawn_in_game_ui_touch(world, player, canvas);
     }
+
     return e;
 }
 
-extern entity spawn_player_menu_actions(ecs *world, const entity player);
+extern entity spawn_menu_actions(ecs*, entity);
 
-void spawn_player_game_ui(
-    ecs *world,
-    const entity player
-) {
+void spawn_player_game_ui(ecs *world, entity player) {
     spawn_in_game_ui(world, player);
-    spawn_player_menu_actions(world, player);
+    spawn_menu_actions(world, player);
 }

@@ -57,12 +57,12 @@ void on_closed_taskbar_window(ecs *world, const ClickEventData event) {
         return;
     }
 
-    if (!zox_has(window, TaskbarButton)) {
-        zox_log_error("Window [%s] Missing [TaskbarButton]", zox_get_name(window));
+    if (!zox_has(window, TaskbarToggleLink)) {
+        zox_log_error("Window [%s] Missing [TaskbarToggleLink]", zox_get_name(window));
         return;
     }
 
-    zox_geter_value(window, TaskbarButton, entity, button);
+    zox_geter_value(window, TaskbarToggleLink, entity, button);
     if (zox_valid(button)) {
         zox_set(button, ActiveState, { 0 });
         zox_set(button, ActiveStateDirty, { zox_dirty_trigger });

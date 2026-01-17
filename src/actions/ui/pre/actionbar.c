@@ -1,13 +1,14 @@
-entity spawn_player_menu_actions(ecs *world, entity player) {
+entity spawn_menu_actions(ecs *world, entity player) {
 
     zox_geter_value(player, CharacterLink, entity, character);
-    if (!zox_valid(character) || !zox_has(character, ActionIndex)) {
-        zox_log_error("[!spawn_player_menu_actions] invalid character");
+    if (!zox_valid(character) || !zox_has(character, ActionIndex) || !zox_has(character, ActionLinks)) {
+        zox_log_error("[!spawn_menu_actions] invalid character");
         return 0;
     }
 
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
+    zox_geter(character, ActionLinks, actions);
     zox_geter_value(character, ActionIndex, byte, selected);
 
     // Sizing
@@ -19,13 +20,7 @@ entity spawn_player_menu_actions(ecs *world, entity player) {
     // Misc
     byte2 grid_size = (byte2) { 8, 1 };
 
-    SpawnWindowUsers data = get_default_spawn_window_users_data(
-        world,
-        prefab_menu_actions,
-        character,
-        canvas,
-        canvas_size
-    );
+    SpawnWindowUsers data = get_default_spawn_window_users_data(world, prefab_menu_actions, character, canvas, canvas_size);
 
     // prefabs
     data.frame.prefab = prefab_frame_action;
@@ -53,24 +48,15 @@ entity spawn_player_menu_actions(ecs *world, entity player) {
         .outline_color = outline_color_actionbar
     };
 
-
-    zox_geter(character, ActionLinks, actions);
     entity3 spawns[actions->length];
-
-    entity e = spawn_window_users(
-        world,
-        data,
-        texture,
-        selected,
-        spawns
-    );
+    entity e = spawn_window_users(world, data, texture, selected, spawns);
 
     if (!e) {
         zox_log_error("Failed spawning Actionbar");
         return 0;
     }
-
     zox_set_unique_name(e, "actionbar");
+
     for (int i = 0; i < actions->length; i++) {
         entity action = actions->value[i];
         entity3 frame = spawns[i];

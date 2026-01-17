@@ -1,7 +1,4 @@
-void on_confirmed_new_realm(
-    ecs *world,
-    const ClickEventData event
-) {
+void on_confirmed_new_realm(ecs *world, const ClickEventData event) {
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuNewRealm, menu);
@@ -44,10 +41,7 @@ void on_confirmed_new_realm(
     zox_set(game, GameStateTarget, { zox_game_load_start });
 }
 
-void on_cancelled_new_realm(
-    ecs *world,
-    const ClickEventData event
-) {
+void on_cancelled_new_realm(ecs *world, const ClickEventData event) {
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuNewRealm, menu);
@@ -59,11 +53,7 @@ void on_cancelled_new_realm(
     spawn_main_menu(world, player, game_name);
 }
 
-entity spawn_menu_new_realm(
-    ecs *world,
-    const entity player,
-    lint seed
-) {
+entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
 
     int2 window_size = (int2) { 130 * ui_scale, 145  * ui_scale };
     byte header_font_size = 8 * ui_scale;
@@ -189,10 +179,7 @@ entity spawn_menu_new_realm(
     return e;
 }
 
-void button_event_new_game(
-    ecs *world,
-    const ClickEventData event
-) {
+void button_event_new_game(ecs *world, const ClickEventData event) {
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuMain, menu);

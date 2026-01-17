@@ -15,7 +15,7 @@ zox_begin_module(ItemsUI)
     zoxd_tag(ItemIconLabel);
     add_taskbar_button((hook_taskbar) {
         .index = 3,
-        .spawn = &spawn_player_menu_items,
+        .spawn = &spawn_menu_items,
         .component_id = MenuItems,
         .texture_name = "taskbar_items",
         .tooltip_text = "Inventory"

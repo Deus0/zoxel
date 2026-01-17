@@ -1,8 +1,5 @@
-void set_player_action(
-    ecs *world,
-    const entity player,
-    const byte index
-) {
+void set_player_action(ecs *world, entity player, byte index) {
+
     zox_geter_value(player, CharacterLink, entity, character);
     if (!zox_valid(character)) {
         return;
@@ -16,14 +13,17 @@ void set_player_action(
     if (!actionbar) {
         return;
     }
+
     zox_geter(actionbar, Children, window_children);
     if (window_children->length < 2) {
         return;
     }
+
     zox_geter(window_children->value[1], Children, children);
     if (children->length == 0 || index >= children->length) {
         return;
     }
+
     // deselect first
     for (int i = 0; i < children->length; i++) {
         entity child = children->value[i];
@@ -48,15 +48,13 @@ void set_player_action(
     }
 }
 
-void player_action_ui_move(
-    ecs *world,
-    const entity player,
-    const sbyte direction
-) {
+void player_action_ui_move(ecs *world, entity player, sbyte direction) {
+
     zox_geter_value(player, CharacterLink, entity, character);
     if (!zox_valid(character)) {
         return;
     }
+
     zox_geter(character, ActionLinks, actions);
     zox_geter_value_non_const(character, ActionIndex, byte, selected);
 
@@ -82,7 +80,8 @@ void player_action_ui_move(
     }
     // deselect any prior ones
     for (int i = 0; i < children->length; i++) {
-        const entity child = children->value[i];
+        entity child = children->value[i];
+
         if (!zox_valid(child)) {
             continue;
         }

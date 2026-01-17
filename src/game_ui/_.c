@@ -15,6 +15,7 @@
 
 // todo: spawn unique canvas per viewport, viewports per player
 
+// TODO: Rename so 'game.u.i.' isnt this, maybe rename Huds
 zox_begin_module(GameUI)
     zox_module_dispose(dispose_gameui);
     add_hook_spawn_prefabs(spawn_prefabs_game_ui);

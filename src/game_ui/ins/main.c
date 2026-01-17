@@ -1,9 +1,5 @@
 // List Menus adjust to the menu size
-entity spawn_main_menu(
-    ecs *world,
-    entity player,
-    const char *header_label
-) {
+entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
 
     byte header_font_size = 20 * ui_scale;
     byte list_font_size = 12 * ui_scale;
@@ -32,8 +28,9 @@ entity spawn_main_menu(
     };
 #endif
 
-    const entity e = spawn_window_list(
+    entity e = spawn_window_list(
         world,
+        prefab_menu_game,
         player,
         header_label,
         header_font_size,
@@ -46,5 +43,6 @@ entity spawn_main_menu(
     );
     zox_name("main_menu");
     zox_add_tag(e, MenuMain);
+
     return e;
 }

@@ -5,8 +5,8 @@ zoxc_byte(MenuType);
 zox_tag(MenuMain);
 zox_tag(MenuOptions);
 zox_tag(MenuPaused);
-zox_tag(MenuGame);
-zox_tag(MenuGameTouch);
+zox_tag(MenuPlay);
+zox_tag(MenuPlayTouch);
 zox_tag(MenuStart);
 zox_tag(MenuLoad);
 zox_tag(MenuTerminal);
@@ -15,13 +15,16 @@ zox_tag(FPSDisplay);
 zox_tag(QuadsCountLabel);
 zox_tag(GameDebugLabel);
 zox_tag(Profiler);
-zox_tag(Taskbar);
 zox_tag(MenuNewRealm);
 zoxc_byte(HitType);
-zoxc_entity(TaskbarButton);
 zoxc_int(QuadsCount);
 zoxc_double(FPSDisplayTicker);
 zoxc(DebugLabelData, DebugLabelEvent);
+
+// Taskbar
+zox_tag(Taskbar);
+zoxc_entity(TaskbarToggleLink);
+
 // #include "debug_label_data.c"
 
 void define_components_game_ui(ecs *world) {
@@ -30,8 +33,8 @@ void define_components_game_ui(ecs *world) {
     zoxd_tag(MenuMain);
     zoxd_tag(MenuOptions);
     zoxd_tag(MenuPaused);
-    zoxd_tag(MenuGame);
-    zoxd_tag(MenuGameTouch);
+    zoxd_tag(MenuPlay);
+    zoxd_tag(MenuPlayTouch);
     zoxd_tag(MenuStart);
     zoxd_tag(MenuLoad);
     zoxd_tag(MenuTerminal);
@@ -40,11 +43,13 @@ void define_components_game_ui(ecs *world) {
     zoxd_tag(QuadsCountLabel);
     zoxd_tag(GameDebugLabel);
     zoxd_tag(Profiler);
-    zoxd_tag(Taskbar);
-    zoxd_tag(MenuNewRealm);;
-    zoxd_entity(TaskbarButton);
+    zoxd_tag(MenuNewRealm);
     zoxd_byte(HitType);
     zoxd_int(QuadsCount);
     zoxd_double(FPSDisplayTicker);
     zoxd(DebugLabelData);
+
+    // Taskbar
+    zoxd_tag(Taskbar);
+    zoxd_entity(TaskbarToggleLink);
 }
