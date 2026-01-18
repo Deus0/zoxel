@@ -8,12 +8,11 @@ static inline float get_distance_to_voxel_grid(float v, float direction, float s
     return absf(face - v);
 }
 
-#include "collision_response_system.c"
-#include "collision_detect_old.c" // use old again
-#include "sphere_collide_system.c"
-#include "sphere_collider_draw_system.c"
-#include "unstuck_system.c"
-#include "friction3D_system.c"
+#include "response.c"
+#include "spheres.c"
+#include "spheres_debug.c"
+#include "friction.c"
+
 #include "collision_debug.c"
 
 void define_systems_collisions3(ecs *world) {
@@ -27,16 +26,7 @@ void define_systems_collisions3(ecs *world) {
         [in] physics.CollisionDisabled,
         [none] SphereCollider
     );
-    zox_system(
-        CollisionDetectSystem,
-        zoxp_physics,
-        [in] terrain.TerrainLink,
-        [in] transforms3.Bounds3D,
-        [in] transforms3.Position3D,
-        [in] physics3.LastPosition3D,
-        [out] collisions3.Collision,
-        [out] collisions3.CollisionDistance
-    );
+
     zox_system_1(
         CollisionDebugSystem,
         zoxp_physics,
@@ -45,7 +35,8 @@ void define_systems_collisions3(ecs *world) {
         [in] collisions3.Collision,
         [in] transforms3.Bounds3D,
     );
-    zox_system(
+
+    /*zox_system(
         CollisionResponseSystem,
         zoxp_physics,
         [in] collisions3.CollisionDistance,
@@ -54,15 +45,8 @@ void define_systems_collisions3(ecs *world) {
         [out] physics3.LastPosition3D,
         [out] collisions3.Collision,
         [out] collisions3.Grounded
-    );
-    zox_system(
-        UnstuckSystem,
-        zoxp_physics,
-        [in] terrain.TerrainLink,
-        [in] transforms3.Bounds3D,
-        [out] physics3.LastUnstuck3,
-        [out] transforms3.Position3D
-    );
+    );*/
+
     zox_system(
         Friction3DSystem,
         zoxp_physics,
@@ -70,6 +54,7 @@ void define_systems_collisions3(ecs *world) {
         [out] physics3.Velocity3D,
         [none] physics.Frictioned
     );
+
     // TODO: split up between response and detect
     zox_system_ctx_1(
         SphereCollideSystem,

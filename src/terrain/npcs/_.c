@@ -1,5 +1,6 @@
-#ifndef zoxm_characters3_terrain
-#define zoxm_characters3_terrain
+// TODO: Move this under terrain!
+#ifndef zoxm_terrain_npcs
+#define zoxm_terrain_npcs
 
 #include "set/_.c"
 #include "com/_.c"
@@ -8,10 +9,10 @@
 #include "dbg/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Characters3Terrain)
-    add_hook_spawn_prefabs(spawn_prefabs_characters3_terrain);
+zox_begin_module(TerrainNpcs)
     define_components_characters3_terrain(world);
     define_systems_characters3_terrain(world);
-zox_end_module(Characters3Terrain)
+    add_hook_spawn_prefabs(spawn_prefabs_characters3_terrain);
+zox_end_module(TerrainNpcs)
 
 #endif

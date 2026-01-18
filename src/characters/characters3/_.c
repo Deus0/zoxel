@@ -14,7 +14,6 @@ byte disable_npc_positioner = 0;
 #include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
-#include "terrain/_.c"
 #include "realm/_.c"
 
 void module_dispose_characters3D(ecs *world, void *ctx) {
@@ -33,8 +32,6 @@ zox_begin_module(Characters3)
     zox_module_dispose(module_dispose_characters3D)
     // add_hook_spawned_character3D(&spawn_character_name_label);
     add_hook_spawn_prefabs(spawn_prefabs_characters3D);
-    // sub modules
-    zox_import_module(Characters3Terrain);
 zox_end_module(Characters3)
 
 #endif

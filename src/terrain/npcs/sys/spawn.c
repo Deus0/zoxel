@@ -173,6 +173,8 @@ zox_sys2(Characters3SpawnSystem) {
 
             const entity character = spawn_character3(world, spawn_data);
 
+            zox_set(character, TerrainLink, { terrain->value });
+
             if (only_single_npc) {
                 single_npc = character;
             }

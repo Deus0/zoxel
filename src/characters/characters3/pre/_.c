@@ -2,6 +2,7 @@
 #include "character3.c"
 #include "character3_instanced.c"
 #include "character3_skeleton.c"
+
 ushort prefab_characters_count = 0;
 entity prefabs_characters3[32];
 entity local_character3D;
@@ -35,6 +36,7 @@ void spawn_prefabs_characters3D(ecs *world) {
     prefabs_characters3[prefab_characters_count++] = prefab_character3;
     prefabs_characters3[prefab_characters_count++] = prefab_character3_instanced;
     prefabs_characters3[prefab_characters_count++] = prefab_character3_skeleton;
+
     if (prefab_realm) {
         zox_prefab_add(prefab_realm, CharacterLinks)
         zox_prefab_set(prefab_realm, CharactersChanceMax, { 0 })

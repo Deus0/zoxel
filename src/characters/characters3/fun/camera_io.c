@@ -1,8 +1,4 @@
-void load_camera_e(
-    ecs *world,
-    const entity realm,
-    const entity camera
-) {
+void load_camera_e(ecs *world, entity realm, entity camera) {
 
     zox_geter(realm, SaveGamePath, path);
 

@@ -50,14 +50,14 @@
 #include "models/_.c"
 #include "biomes/_.c"
 #include "streaming/_.c"
-#include "terrain/_.c"
-#include "vrays/_.c"
 
 #include "physics/_.c"
 #include "particles/_.c"
 #include "weathers/_.c"
 #include "characters/_.c"
 #include "dungeons/_.c"
+#include "terrain/_.c"
+#include "vrays/_.c"
 #include "game_ui/_.c"
 
 // user data
@@ -140,14 +140,15 @@ zox_begin_module(Zox)
     zox_import_module(Models);
     zox_import_module(Biomes);
     zox_import_module(Streaming);
-    zox_import_module(Terrain);
-    zox_import_module(Vrays);
 
     zox_import_module(Physics);
     zox_import_module(Particles);
     zox_import_module(Weathers);
     zox_import_module(Characters);
+
     zox_import_module(Dungeons);
+    zox_import_module(Terrain);
+    zox_import_module(Vrays);
     zox_import_module(GameUI);
 
     // user data

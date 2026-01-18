@@ -1,10 +1,19 @@
+/*
+ *  Blocks Module
+ *
+ *      - Data for the Cubes
+ *      - Used by Chunks
+ *      - Some Textured, Some Baked
+ *
+ * */
 #ifndef zoxm_blocks
 #define zoxm_blocks
 
-#include "dat/_.c"
 #include "com/_.c"
-#include "fun/generation_util.c"
+#include "dat/_.c"
+#include "fun/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "sys/terrain_texture_set_system.c"
 
 zox_begin_module(Blocks)

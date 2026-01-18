@@ -2,3 +2,4 @@
 #include "block_types.c"
 #include "block_sides.c"
 #include "spawn_block.c"
+#include "spawn_blocks.c"

@@ -17,17 +17,6 @@ void define_systems_voxes(ecs *world) {
         [in] blocks.BlockScale,
         [out] transforms3.Bounds3D
     );
-    zox_system(
-        VoxTextureSystem,
-        EcsPreUpdate,
-        [in] rendering.TextureSize,
-        [in] voxes.VoxLink,
-        [in] blocks.VoxBakeSide,
-        [out] textures.GenerateTexture,
-        [out] textures.TextureData,
-        [out] rendering.TextureDirty,
-        [none] textures.VoxTexture
-    );
     // NOTE: Writes to VoxelNode
     zox_system(
         VoxGenerationSystem,
@@ -84,5 +73,18 @@ void define_systems_voxes(ecs *world) {
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkEntities
+    );
+
+    // Hmmm?
+    zox_system(
+        VoxTextureSystem,
+        EcsPreUpdate,
+        [in] rendering.TextureSize,
+        [in] voxes.VoxLink,
+        [in] blocks.VoxBakeSide,
+        [out] textures.GenerateTexture,
+        [out] textures.TextureData,
+        [out] rendering.TextureDirty,
+        [none] textures.VoxTexture
     );
 }

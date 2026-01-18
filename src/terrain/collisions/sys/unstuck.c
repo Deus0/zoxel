@@ -2,6 +2,7 @@
 // todo: draw lines on this to test why it suddenly detects..!
 byte unstuck_log_count = 0;
 
+// TODO: Detection should be from edge no center
 zox_sys2(UnstuckSystem) {
     zox_sys_world();
     zox_sys_begin();

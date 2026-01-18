@@ -1,12 +1,11 @@
-entity spawn_character3(
-    ecs *world,
-    const spawn_character3D_data data
-) {
+entity spawn_character3(ecs *world, spawn_character3D_data data) {
     entity vox = data.model;
+
     if (!zox_valid(vox)) {
         zox_log_error("[spawn_character3]: Invalid Vox Model");
         return 0;
     }
+
     // if model, we use lodded for vox
     if (zox_valid(vox) && zox_has(vox, ModelLods)) {
         zox_geter(vox, ModelLods, modelLods);
@@ -25,33 +24,42 @@ entity spawn_character3(
 
     zox_instance(data.prefab);
     zox_name("character3");
+
     if (data.meta) {
         zox_set(e, CharacterMetaLink, { data.meta });
     }
+
     zox_set(e, RealmLink, { data.realm });
     zox_set(e, Position3D, { data.position });
     zox_set(e, LastPosition3D, { data.position });
+
     if (!float4_equals(data.rotation, quaternion_identity)) {
         zox_set(e, Rotation3D, { data.rotation });
     }
+
     if (!float3_equals(data.euler, float3_zero)) {
         zox_set(e, Euler, { data.euler });
     }
+
     // rendering
     if (data.render_depth) {
         zox_set(e, RenderDepth, { data.render_depth });
     }
+
     if (zox_valid(vox) && zox_has(vox, MaxRenderDepth)) {
         zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
         zox_set(e, MaxRenderDepth, { max_render_depth });
     }
+
     if (!data.render_disabled) {
         zox_set(e, RenderDisabled, { data.render_disabled });
     }
+
     // voxels
-    if (data.terrain) {
+    /*if (data.terrain) {
         zox_set(e, TerrainLink, { data.terrain });
-    }
+    }*/
+
     if (data.terrain_chunk) {
         zox_set(e, ChunkLink, { data.terrain_chunk });
         zox_set(e, ChunkPosition, { data.chunk_position });
@@ -63,16 +71,17 @@ entity spawn_character3(
         // zox_has(data.prefab, InstanceLink)) {
         zox_set(e, InstanceLink, { vox });
         if (zox_has(vox, BlockScale)) {
+
             zox_geter_value(vox, BlockScale, float, meta_vox_scale);
             zox_geter_value(vox, ChunkSize, int3, meta_chunk_size);
-            float3 meta_bounds = calculate_vox_bounds(
-                meta_chunk_size,
-                meta_vox_scale);
+
+            float3 meta_bounds = calculate_vox_bounds(meta_chunk_size, meta_vox_scale);
+
             zox_set(e, BlockScale, { meta_vox_scale });
             zox_set(e, Bounds3D, { meta_bounds });
-            // zox_log("vox_model_scale: %f - %f", vox_model_scale, meta_vox_scale)
+
         } else {
-            zox_log_error("vox has no BlockScale [%s]", zox_get_name(vox))
+            zox_log_error("vox has no BlockScale [%s]", zox_get_name(vox));
         }
 
     } else {
@@ -96,23 +105,6 @@ entity spawn_character3(
     // zox_set(e, ZoxName, { text_to_zext(name) });
     set_ZoxName(world, e, name);
     free(name);
-
-    // name
-    if (!disable_npc_hooks) {
-         // data->;
-        /*float soul = data.player ? 1 : randf_range(1, 3);
-        spawned_character3D_data spawned_data = {
-            .e = e,
-            .p = data.player,
-            .name = name,
-            .render_disabled = data.render_disabled,
-            .realm = data.realm,
-            .elementLinks = &((ElementLinks) { 0 }),
-            .soul_value = soul,
-        };
-        run_hook_spawned_character3D(world, &spawned_data);
-        zox_set(e, ElementLinks, { spawned_data.elementLinks->length, spawned_data.elementLinks->value })*/
-    }
 
     return e;
 }

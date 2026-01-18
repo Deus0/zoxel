@@ -371,11 +371,14 @@ zox_sys2(CollisionDetectSystem) {
     zox_sys_in(LastPosition3D);
     zox_sys_out(Collision);
     zox_sys_out(CollisionDistance);
+
     // find realm first
     const BlockLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
     if (!voxels) {
+        zox_logw("No Terrain Detected");
         return;
     }
+
     byte block_collisions[voxels->length + 1];
     get_block_collisions(world, voxels, block_collisions);
 
@@ -387,12 +390,16 @@ zox_sys2(CollisionDetectSystem) {
         zox_sys_i(LastPosition3D, lastPosition3D);
         zox_sys_o(Collision, collision);
         zox_sys_o(CollisionDistance, collisionDistance);
+
         if (!zox_valid(link->value)) {
+            zox_logw("Terrain Invalid");
             continue; // these shouldn't be here
         }
+
         zox_geter(link->value, ChunkLinks, chunks);
         zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
         zox_geter_value(link->value, BlockScale, float, terrain_scale);
+
         if (!chunks || collision->value) {
             continue;
         }

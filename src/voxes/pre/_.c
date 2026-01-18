@@ -5,16 +5,15 @@
 #include "block_vox.c"
 #include "block_vox_instanced.c"
 #include "block_vox_meta.c"
-#include "texture_vox.c"
 
 entity prefab_block_vox_meta;
 entity prefab_block_vox;
 entity prefab_block_vox_instanced;
+
 entity prefab_vox;
 entity prefab_vox_instanced;
 entity prefab_vox_generated;
 entity prefab_vox_file;
-entity prefab_vox_texture;
 
 void zox_define_prefabs_voxes(ecs *world) {
     // Add VoxLink to chunk prefabs
@@ -24,7 +23,7 @@ void zox_define_prefabs_voxes(ecs *world) {
     // Level 1
     prefab_block_vox_meta = spawn_prefab_block_vox_meta(world, prefab_block);
     prefab_vox_file = spawn_prefab_vox_file(world, prefab_chunk_base);
-    prefab_vox_texture = spawn_prefab_vox_texture(world, prefab_texture);
+
     prefab_vox = spawn_prefab_vox(world, prefab_chunk);
     prefab_vox_instanced = spawn_prefab_vox_instanced(world, prefab_renderer_instance);
 

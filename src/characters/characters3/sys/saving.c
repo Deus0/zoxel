@@ -7,16 +7,15 @@ zox_sys2(CharacterSaveSystem) {
     return;
 #endif
     const float precision_level = 10.0f;    // 100
-
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(RealmLink);
     zox_sys_in(Position3D);
     zox_sys_in(Euler);
     zox_sys_out(CharacterSaveHash);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
+        zox_sys_i(RealmLink, realm);
         zox_sys_i(Position3D, position);
         zox_sys_i(Euler, euler);
         zox_sys_o(CharacterSaveHash, characterSaveHash);
@@ -38,13 +37,17 @@ zox_sys2(CharacterSaveSystem) {
             continue;
         }
 
-        zox_geter_value(e, TerrainLink, entity, terrain);
+        /*zox_geter_value(e, TerrainLink, entity, terrain);
         if (!terrain) zox_log_error("terrain link issue");
         if (!terrain) continue;
         zox_geter_value(terrain, RealmLink, entity, realm);
         if (!terrain) zox_log_error("realm link issue");
-        if (!realm) continue;
-        zox_geter(realm, SaveGamePath, path);
+        if (!realm) continue;*/
+        if (!zox_valid(realm->value) || !zox_has(realm->value, SaveGamePath)) {
+            zox_logw("Realm Invalid for Saving.");
+            continue;
+        }
+        zox_geter(realm->value, SaveGamePath, path);
 
 
         save2_player(path->value, "player.dat", &data);

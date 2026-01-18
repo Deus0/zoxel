@@ -75,7 +75,6 @@ if (did_collide##_##d) {\
     }\
 }
 
-
 zox_sys2(CollisionDebugSystem) {
     if (!is_debug_collisions) {
         return;
