@@ -14,6 +14,7 @@
 // TODO: Vegetation Map for Grass  / trees etc
 // TODO: Maps Update based on LODs??
 // TODO: Quadtrees for map data?
+// TODO: After BiomeMap is generated, get most used byte, then link
 
 // TODO: Use sbyte instead of byte?
 // TODO: Chunk2NeighborsSystem

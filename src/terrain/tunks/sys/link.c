@@ -1,4 +1,6 @@
 // Signals Terrain Chunks to Generate -> After Tunk (2D maps) finishes generating
+
+// Terrain Chunk <-> Tunks
 zox_sys2(TunkLinkSystem) {
     zox_sys_world();
     zox_sys_begin();

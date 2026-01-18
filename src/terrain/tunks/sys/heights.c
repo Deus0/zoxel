@@ -2,7 +2,7 @@ zox_sys2(HeightMapSystem) {
     // TODO: use terrains seed
     // TODO: use height frequency from biome maps
     const uint seed = global_seed;
-    double height_frequency = terrain_frequency * 10;
+    double height_frequency = 0.3; // terrain_frequency * 10;
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(Chunk2Position);

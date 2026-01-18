@@ -6,6 +6,8 @@
 #include "towns.c"
 #include "link.c"
 #include "end.c"
+#include "biome_average.c"
+#include "biome_link.c"
 
 void define_systems_tunks(ecs* world) {
     zox_filter(
@@ -83,6 +85,27 @@ void define_systems_tunks(ecs* world) {
         [none] tunks.Tunk
     );
 
+
+    zox_system(
+        BiomeMapAvgSystem,
+        EcsOnUpdate,
+        [in] core.Generate,
+        [in] voxes.VoxLink,
+        [in] tunks.BiomeMap,
+        [out] biomes.BiomeLink,
+        [none] tunks.Tunk
+    );
+
+    zox_system(
+        BiomeLinkSystem,
+        EcsOnUpdate,
+        [in] streaming.StreamDirty2,
+        [in] streaming.StreamPoint2,
+        [in] streaming.StreamLink,
+        [out] tunks.TunkLink,
+        [out] biomes.BiomeLink,
+        [none] streaming.Streamer
+    );
 
     /*zox_system_1(
         TunkDebugSystem,

@@ -6,10 +6,13 @@ entity spawn_prefab_tunk2(ecs *world, entity prefab) {
     zox_add_tag(e, StreamedChunk);
     zox_prefab_set(e, VoxLink, { 0 });
     zox_prefab_set(e, Generate, { zox_dirty_trigger });
+    zox_prefab_set(e, Chunk3Stack, { 0 });
+    // Maps
     zox_prefab_set(e, BiomeMap, { 0 });
     zox_prefab_set(e, HeightMap, { 0 });
     zox_prefab_set(e, VegetationMap, { 0 });
     zox_prefab_set(e, TownMap, { 0 });
-    zox_prefab_set(e, Chunk3Stack, { 0 });
+    // Misc
+    zox_prefab_set(e, BiomeLink, { 0 });
     return e;
 }

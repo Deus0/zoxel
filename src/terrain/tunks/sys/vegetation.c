@@ -1,11 +1,17 @@
 zox_sys2(VegetationMapSystem) {
     // TODO: use terrains seed
     // TODO: use height frequency from biome maps
-    const uint seed = global_seed;
-    double veggie_frequency = 3.0;
-    int veggie_octaves = 8;
+    uint seed = global_seed;
+    double veggie_frequency = 0.6;
     double veggie_amplitude = 1.0;
-    double grass_cutoff = 0.66;
+    byte veggie_octaves = 12;
+
+    double grass_cutoff_0 = 0.52;
+    double weeds_cutoff_0 = 0.59;
+
+    double grass_cutoff_1 = 0.62;
+    double weeds_cutoff_1 = 0.74;
+
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(Chunk2Position);
@@ -46,19 +52,33 @@ zox_sys2(VegetationMapSystem) {
             for (lposition.y = 0; lposition.y < hsize.y; lposition.y++, gposition.y++) {
 
                 int index = int2_array_index(lposition, hsize);
+
+                // Get Biome Data
                 byte biome = bmap->value[index];
+                double frequency = biome == 0 ? veggie_frequency * 2 : veggie_frequency;
+                double grass_cutoff = biome == 0 ? grass_cutoff_0 : grass_cutoff_1;
+                double weeds_cutoff = biome == 0 ? weeds_cutoff_0 : weeds_cutoff_1;
 
-                double frequency = biome == 0 ? veggie_frequency : veggie_frequency * 2;
 
-                double value = veggie_amplitude * perlin_octaves(
+                double pvalue = veggie_amplitude * perlin_octaves(
                     noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
                     noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
                     frequency,
                     seed,
                     veggie_octaves
                 );
-                // Maps value to 1 for grass top, 2 for place grass
-                vmap->value[index] = value >= grass_cutoff ? 2 : ( value >= 0.1 ? 1 : 0);
+
+                byte value;
+
+                if (pvalue >= weeds_cutoff) {
+                    value = 2;  // Weeds
+                } else if (pvalue >= grass_cutoff) {
+                    value = 1;  // Grass
+                } else {
+                    value = 0;  // dirt
+                }
+
+                vmap->value[index] = value;
 
                 // zox_log("value veggie: %f", value);
             }

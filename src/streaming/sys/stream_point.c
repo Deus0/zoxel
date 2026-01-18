@@ -7,8 +7,6 @@ zox_sys2(StreamPointSystem) {
     zox_sys_begin();
     zox_sys_in(StreamLink);
     zox_sys_in(Position3D);
-    // zox_sys_in(BlockScale);
-    // zox_sys_in(NodeDepth);
     zox_sys_out(StreamPoint);
     zox_sys_out(StreamPoint2);
     zox_sys_out(StreamDirty);
@@ -16,8 +14,6 @@ zox_sys2(StreamPointSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(StreamLink, terrain);
         zox_sys_i(Position3D, position);
-        // zox_sys_i(BlockScale, scale);
-        // zox_sys_i(NodeDepth, depth);
         zox_sys_o(StreamPoint, point3);
         zox_sys_o(StreamPoint2, point2);
         zox_sys_o(StreamDirty, dirty);

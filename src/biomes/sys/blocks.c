@@ -14,6 +14,7 @@ extern entity spawn_block_soil_grass(
     const color top_color
 );
 
+// A biome will generate blocks
 zox_sys2(BiomeBlocksSystem) {
     zox_sys_world();
     zox_sys_begin();

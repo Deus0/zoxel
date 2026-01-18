@@ -1,6 +1,8 @@
+// Generates a Biome Map
 zox_sys2(BiomeMapSystem) {
     const uint seed = global_seed;
-    double height_frequency = terrain_frequency;
+    double biome_frequency = 0.04;
+    byte biome_octaves = 2;
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(Chunk2Position);
@@ -36,12 +38,12 @@ zox_sys2(BiomeMapSystem) {
                 double perlin_value = perlin_octaves(
                     noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
                     noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
-                    height_frequency * 2,
+                    biome_frequency,
                     seed,
-                    terrain_octaves
+                    biome_octaves
                 );
 
-                byte value = perlin_value > 0 ? 1 : 0;
+                byte value = perlin_value > 0.5 ? 1 : 0;
 
                 /*byte value = 0;
                 if (cposition->value.x > 0) {
