@@ -11,7 +11,8 @@ int initialize_video() {
         zox_log_error("Error [SDL_INIT_VIDEO] [%s]", SDL_GetError());
         return EXIT_FAILURE;
     }
-    zox_log("Success [SDL_INIT_VIDEO]");
+
+    zox_logv("Initialized [SDL_INIT_VIDEO]");
 
     if (is_log_sdl) {
         print_sdl();

@@ -110,10 +110,7 @@ byte get_player_linked_things(
     return 1;
 }
 
-entity game_start_player_new(
-    ecs *world,
-    const entity player
-) {
+entity game_start_player_new(ecs *world, entity player) {
     // Getters and Checkers
     entity realm;
     entity terrain;
@@ -122,13 +119,13 @@ entity game_start_player_new(
         return 0;
     }
 
-    const entity model = string_hashmap_get(
-        files_hashmap_voxes,
-        new_string_data(player_vox_model));
+    const entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
+
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
-    zox_mut_begin(terrain, ChunkLinks, chunks);
-    zox_mut_begin(terrain, Chunk2Links, chunks2);
-    byte did_add = 0;
+    zox_muter(terrain, ChunkLinks, chunks);
+    zox_muter(terrain, Chunk2Links, chunks2);
+
+    // byte did_add = 0;
 
     if (!model) {
         zox_log_error("File Not Found [%s]", player_vox_model);
@@ -136,37 +133,44 @@ entity game_start_player_new(
 
     // spawn a column of chunks for new player:
     int3 cposition = (int3) { 0, 0, 0 };
-    for (cposition.y = -render_distance_y; cposition.y <= render_distance_y * 2; cposition.y++) {
-        entity chunk = int3_hashmap_get(chunks->value, cposition);
-        if (!zox_valid(chunk)) {
-            chunk = spawn_chunk_terrain(world,
-                    prefab_chunk_terrain,
-                    terrain,
-                    cposition,
-                    cposition,
-                    terrain_depth,
-                    terrain_scale);
-            if (zox_valid(chunk)) {
-                int3_hashmap_add(
-                    chunks->value,
-                    cposition,
-                    chunk);
-                // zox_log("+ spawning chunk for player character loading [%ix%ix%i]:%lu", cposition.x, cposition.y, cposition.z, spawn_place.chunk)
-            }
-        }
-    }
+
 
     // Spawn our Tunk for terrain generation
     int2 tposition = (int2) { cposition.x, cposition.z };
-    entity tunk2 = spawn_tunk2(world, prefab_tunk2, terrain, tposition, 0);
-    if (zox_valid(tunk2)) {
-        int2_hashmap_add(chunks2->value, tposition, tunk2);
-        zox_mut_end(terrain, Chunk2Links);
+    entity tunk = int2_hashmap_get(chunks2->value, tposition);
+    if (!zox_valid(tunk)) {
+        tunk = spawn_tunk(world, prefab_tunk2, terrain, tposition, 0);
+        if (zox_valid(tunk)) {
+            int2_hashmap_add(chunks2->value, tposition, tunk);
+            // zox_mut_end(terrain, Chunk2Links);
+        }
     }
 
-    if (did_add) {
-        zox_mut_end(terrain, ChunkLinks)
+    entity chunk = int3_hashmap_get(chunks->value, cposition);
+    if (!zox_valid(chunk)) {
+        chunk = spawn_chunk_terrain(world, prefab_chunk_terrain, terrain, cposition, cposition, terrain_depth, terrain_scale);
+        if (zox_valid(chunk)) {
+            int3_hashmap_add(chunks->value, cposition, chunk);
+        }
     }
+
+    // * 2
+    /*for (cposition.y = -render_distance_y; cposition.y <= render_distance_y; cposition.y++) {
+        entity chunk = int3_hashmap_get(chunks->value, cposition);
+        if (!zox_valid(chunk)) {
+
+            chunk = spawn_chunk_terrain(world, prefab_chunk_terrain, terrain, cposition, cposition, terrain_depth, terrain_scale);
+
+            if (zox_valid(chunk)) {
+                int3_hashmap_add(chunks->value, cposition, chunk);
+
+                // zox_log("+ spawning chunk for player character loading [%ix%ix%i]:%lu", cposition.x, cposition.y, cposition.z, spawn_place.chunk)
+            }
+        }
+    }*/
+    /*if (did_add) {
+        zox_mut_end(terrain, ChunkLinks)
+    }*/
 
     const float3 fake_spawn_position = (float3) { 4, 4, 4 };
     spawn_character3D_data spawn_data = {
@@ -182,7 +186,8 @@ entity game_start_player_new(
     return e;
 }
 
-entity game_start_player_load(ecs *world, const entity player) {
+entity game_start_player_load(ecs *world, entity player) {
+
     entity realm;
     entity terrain;
     entity camera;
@@ -190,10 +195,11 @@ entity game_start_player_load(ecs *world, const entity player) {
         return 0;
     }
 
-    const entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
+    entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
     zox_mut_begin(terrain, ChunkLinks, chunks);
     zox_mut_begin(terrain, Chunk2Links, chunks2);
+
     TerrainPlace spawn_place;
     spawn_place.chunk = 0;
     byte spawned_first_chunk = 0;
@@ -202,56 +208,39 @@ entity game_start_player_load(ecs *world, const entity player) {
     }
 
     // load position for spawning
-    load_character_p(
-        world,
-        realm,
-        player,
-        &spawn_place.position,
-        &spawn_place.euler,
-        &spawn_place.rotation);
+    load_character_p(world, realm, player, &spawn_place.position, &spawn_place.euler, &spawn_place.rotation);
 
     // Find Place if loaded not found
-    const byte depth = terrain_depth;
-    const int3 cposition = real_position_to_chunk_position(
-        spawn_place.position,
-        powers_of_two[depth],
-        terrain_scale
-    );
+    byte depth = terrain_depth;
+    int3 cposition = real_position_to_chunk_position( spawn_place.position, powers_of_two[depth], terrain_scale);
 
     // TODO: Move chunk spawn code into stream system and out of Controllers
 
-    spawn_place.chunk = int3_hashmap_get(chunks->value, cposition);
+    // Spawn our Tunk for terrain generation
+    int2 tposition = (int2) { cposition.x, cposition.z };
+    // if (!int2_hashmap_has(chunks2, tposition)) {
+    entity tunk2 = spawn_tunk(world, prefab_tunk2, terrain, tposition, 0);
+    if (zox_valid(tunk2)) {
+        int2_hashmap_add(chunks2->value, tposition, tunk2);
+        zox_mut_end(terrain, Chunk2Links);
+    }
 
+    spawn_place.chunk = int3_hashmap_get(chunks->value, cposition);
     // check if exists first
     if (zox_valid(spawn_place.chunk)) {
         zox_log("+ player character placed into [%ix%ix%i]", cposition.x, cposition.y, cposition.z)
     } else {
-        entity first_chunk = spawn_chunk_terrain(
-            world,
-            prefab_chunk_terrain,
-            terrain,
-            cposition,
-            cposition,
-            terrain_depth,
-            terrain_scale
-        );
+        entity chunk3 = spawn_chunk_terrain(world, prefab_chunk_terrain, terrain, cposition, cposition, terrain_depth, terrain_scale);
+
         spawned_first_chunk = 1;
-        if (zox_valid(first_chunk)) {
-            int3_hashmap_add(chunks->value, cposition, first_chunk);
+        if (zox_valid(chunk3)) {
+            int3_hashmap_add(chunks->value, cposition, chunk3);
             zox_mut_end(terrain, ChunkLinks);
             // zox_log("+ spawning chunk for player character loading [%ix%ix%i]:%lu", cposition.x, cposition.y, cposition.z, spawn_place.chunk)
         } else {
             zox_log_error("failed to spawn chunk [%ix%ix%i]:%lu", cposition.x, cposition.y, cposition.z, spawn_place.chunk)
         }
-        spawn_place.chunk = first_chunk;
-
-        // Spawn our Tunk for terrain generation
-        int2 tposition = (int2) { cposition.x, cposition.z };
-        entity tunk2 = spawn_tunk2(world, prefab_tunk2, terrain, tposition, 0);
-        if (zox_valid(tunk2)) {
-            int2_hashmap_add(chunks2->value, tposition, tunk2);
-            zox_mut_end(terrain, Chunk2Links);
-        }
+        spawn_place.chunk = chunk3;
     }
 
     spawn_character3D_data spawn_data = {

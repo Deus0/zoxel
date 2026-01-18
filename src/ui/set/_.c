@@ -15,6 +15,6 @@ void initialize_settings_elements(ecs* world) {
     }*/
     int2 screen_size = get_screen_size();
     byte new_scale = calculate_ui_scale(screen_size);
-    zox_log("Screen [%ix%i] - UI Scale set to: %i", screen_size.x, screen_size.y, new_scale);
+    zox_logv("Screen [%ix%i] - UI Scale set to: %i", screen_size.x, screen_size.y, new_scale);
     ui_scale = new_scale;
 }

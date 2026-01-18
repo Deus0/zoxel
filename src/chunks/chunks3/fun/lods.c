@@ -3,12 +3,8 @@
 /// - depth: highest LOD index (e.g. 4 yields LODs 0,1,2,3,4)
 /// - near: “near‑field” radius under which LOD 0 applies
 /// - far: your global max view distance
-static inline byte camera_distance_to_render_depth(
-    const byte distance,
-    const byte depth,
-    const byte nearf,   // reserved words on windows..
-    const byte farf
-) {
+// NOTE: near is a reserved words on windows..
+static inline byte camera_distance_to_render_depth(byte distance,byte depth, byte nearf, byte farf) {
     // vanish beyond the horizon
     if (distance > farf) {
         // zox_log_error(" lod finder out of range: dist [%i] range [%i-%i] depth [%i]", distance, near, far, depth)
@@ -26,34 +22,20 @@ static inline byte camera_distance_to_render_depth(
             return depth - i;
         }
     }
-    zox_log_error(" fallback lod finder: dist [%i] range [%i-%i] depth [%i] slice [%i]", distance, nearf, farf, depth, slice)
+
+    zox_log_error(" fallback lod finder: dist [%i] range [%i-%i] depth [%i] slice [%i]", distance, nearf, farf, depth, slice);
     // fallback (shouldn’t hit, but safe)
     return render_depth_invisible;
 }
 
-static inline byte camera_distance_to_terrain_render_depth(const byte distance) {
-    return camera_distance_to_render_depth(
-        distance,
-        terrain_depth,
-        terrain_lod_near,
-        terrain_lod_far);
+static inline byte camera_distance_to_terrain_render_depth(byte distance) {
+    return camera_distance_to_render_depth(distance, terrain_depth, terrain_lod_near, terrain_lod_far);
 }
 
-static inline byte camera_distance_to_block_vox_depth(const byte distance) {
-    return camera_distance_to_render_depth(
-        distance,
-        block_vox_depth,
-        vox_lod_near,
-        terrain_lod_near);
+static inline byte camera_distance_to_block_vox_depth(byte distance) {
+    return camera_distance_to_render_depth(distance, block_vox_depth, vox_lod_near, terrain_lod_near);
 }
 
-static inline byte camera_distance_to_npc_render_depth(
-    const byte distance,
-    const byte max_render_depth
-) {
-    return camera_distance_to_render_depth(
-        distance,
-        max_render_depth,
-        vox_lod_near,
-        terrain_lod_near);
+static inline byte camera_distance_to_npc_render_depth(byte distance, byte max_render_depth) {
+    return camera_distance_to_render_depth(distance, max_render_depth, vox_lod_near, terrain_lod_near);
 }

@@ -3,7 +3,9 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity p) {
     // Terrain / Generation
     zox_add_tag(e, TerrainChunk);
     zox_add_tag(e, StreamedChunk);
+
     zox_prefab_set(e, BlockManagerLink, { 0 });
+    zox_prefab_set(e, TunkLink, { 0 });
 
     zox_prefab_set(e, GenerateChunk, { zox_dirty_none });
     zox_prefab_set(e, VoxelNodeEdited, { zox_dirty_none });

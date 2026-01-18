@@ -4,6 +4,7 @@
 #include "heights.c"
 #include "vegetation.c"
 #include "towns.c"
+#include "link.c"
 #include "end.c"
 
 void define_systems_tunks(ecs* world) {
@@ -20,7 +21,8 @@ void define_systems_tunks(ecs* world) {
         [in] chunks2.Chunk2Position,
         [in] rendering.RenderDistance,
         [out] chunks2.Chunk2Neighbors,
-        [none] streaming.StreamedChunk
+        [none] streaming.StreamedChunk,
+        [none] tunks.Tunk
     );
     zox_system(
         Tunk2DeathSystem,
@@ -29,7 +31,8 @@ void define_systems_tunks(ecs* world) {
         [in] chunks2.Chunk2Position,
         [in] rendering.RenderDistance,
         // [in] rendering.RenderDepth,
-        [none] streaming.StreamedChunk
+        [none] streaming.StreamedChunk,
+        [none] tunks.Tunk
     );
 
     zox_system(
@@ -37,7 +40,8 @@ void define_systems_tunks(ecs* world) {
         EcsPostLoad,
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
-        [out] tunks.BiomeMap
+        [out] tunks.BiomeMap,
+        [none] tunks.Tunk
     );
 
     // TODO: Pass in BiomeMap and use biome data
@@ -47,7 +51,8 @@ void define_systems_tunks(ecs* world) {
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
         [in] tunks.BiomeMap,
-        [out] tunks.HeightMap
+        [out] tunks.HeightMap,
+        [none] tunks.Tunk
     );
 
     zox_system(
@@ -56,15 +61,26 @@ void define_systems_tunks(ecs* world) {
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
         [in] tunks.BiomeMap,
-        [out] tunks.VegetationMap
+        [out] tunks.VegetationMap,
+        [none] tunks.Tunk
+    );
+
+    zox_system(
+        TunkLinkSystem,
+        EcsPreUpdate,
+        [in] core.Generate,
+        [in] chunks2.Chunk2Position,
+        [in] voxes.VoxLink,
+        [out] tunks.Chunk3Stack,
+        [none] tunks.Tunk
     );
 
     zox_system(
         TunkEndSystem,
         EcsOnUpdate,
         [in] core.Generate,
-        [in] chunks2.Chunk2Position,
-        [in] voxes.VoxLink
+        [in] tunks.Chunk3Stack,
+        [none] tunks.Tunk
     );
 
 

@@ -20,7 +20,7 @@ int load_notes_from_file(MidiNote *notes, const char *filename) {
             return 0;
         } else if (feof(file)) {
             // End of file reached, which is not an error
-            zox_logw("[load_notes_from_file] items_read less than 1: %i", items_read);
+            zox_logv("[load_notes_from_file] items_read less than 1: %i", items_read);
             return 0;
         }
     }
@@ -31,7 +31,7 @@ int load_notes_from_file(MidiNote *notes, const char *filename) {
             perror("(2) Error reading file");
             note_count = 0;
         } else if (feof(file)) {
-            zox_logw("[load_notes_from_file] Notes Data: items_read [%i] less than [%i]", items_read, note_count);
+            zox_logv("[load_notes_from_file] Notes Data Invalid: [%i] less than [%i]", items_read, note_count);
             // printf("End of file reached, only %zu items read\n", items_read);
         }
     }

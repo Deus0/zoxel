@@ -105,10 +105,10 @@ entity spawn_app_sdl_opengl(
         return EXIT_FAILURE;
     }
 
-    zox_log("OpenGL Context Created");
-    zox_log("   GL_VERSION: %s", ver);
-    zox_log("   GL_RENDERER: %s", ren);
-    zox_log("   GL_VENDOR: %s", ven);
+    zox_logv("OpenGL Context Created");
+    zox_logv("   GL_VERSION: %s", ver);
+    zox_logv("   GL_RENDERER: %s", ren);
+    zox_logv("   GL_VENDOR: %s", ven);
 
     // zox_log("Created Opengl Context Success");
     zox_set(e, Context, { context });

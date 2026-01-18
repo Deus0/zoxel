@@ -40,21 +40,21 @@
 
 #define zox_log(...) zox_log_prefix(">", __VA_ARGS__);
 
-#define zox_logv(...) if (zox_verbose) zox_log_prefix("⚡️", __VA_ARGS__);
+#define zox_logv(...) if (zox_verbose) zox_log_prefix("⚡️ ", __VA_ARGS__);
 
 // #define zox_log(msg, ...) zox_log_("> "msg"\n", ##__VA_ARGS__);
 
 #define zox_log_error(...) zox_log_prefix("❌", __VA_ARGS__);
 
-#define zox_logw(...) zox_log_prefix("⚠️", __VA_ARGS__);
+#define zox_logw(...) zox_log_prefix("⚠️ ", __VA_ARGS__);
 
-#define zox_logi(...) zox_log_prefix("ℹ️", __VA_ARGS__);
+#define zox_logi(...) zox_log_prefix("ℹ️ ", __VA_ARGS__);
 
-#define zox_log_debug(...) zox_log_prefix("🐞", __VA_ARGS__);
+#define zox_log_debug(...) zox_log_prefix("🐞 ", __VA_ARGS__);
 
-#define zox_log_success( ...) zox_log_prefix("✅", __VA_ARGS__);
+#define zox_log_success( ...) zox_log_prefix("✅ ", __VA_ARGS__);
 
-#define zox_log_critical(...) zox_log_prefix("🔥", __VA_ARGS__);
+#define zox_log_critical(...) zox_log_prefix("🔥 ", __VA_ARGS__);
 
 #define zox_log_io(...) if (is_log_io) zox_log(__VA_ARGS__);
 

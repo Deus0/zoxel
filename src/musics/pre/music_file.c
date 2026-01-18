@@ -1,21 +1,13 @@
 #define music_file_path "music"character_slash"music.zox"
 
-entity spawn_prefab_music_file(
-    ecs *world,
-    const entity prefab
-) {
-    zox_prefab_child(prefab)
-    zox_prefab_name("music_file")
+entity spawn_prefab_music_file(ecs *world, entity p) {
+    zox_prefab_child(p);
+    zox_prefab_name("music_file");
     return e;
 }
 
 // TODO: Load Files for all Music
-entity load_music_file(
-    ecs *world,
-    const entity prefab,
-    const entity prefab_note,
-    char* filepath
-) {
+entity load_music_file(ecs *world, entity prefab, entity prefab_note,    char* filepath) {
     char* music_filepath = concat_file_path(resources_path, filepath);
     zox_logv("Loading Music: %s", music_filepath);
     MidiNote loaded_notes[MAX_NOTES];
@@ -27,13 +19,13 @@ entity load_music_file(
     free(music_filepath);
 
     if (loaded_note_count == 0) {
-        zox_log("Music Error: No Notes.");
+        zox_logv("Music Error: No Notes");
         return 0;
     }
     // test_notes_from_file(music_filepath);
     double music_speed = loaded_notes[0].length;
     if (music_speed < 0.05f || music_speed >= 3) {
-        zox_log_error("Music Error: Invalid Speed: %f", music_speed);
+        zox_logv("Music Error: Invalid Speed: %f", music_speed);
         return 0;
     }
     float music_length = 0;
@@ -41,7 +33,7 @@ entity load_music_file(
         MidiNote note = loaded_notes[i];
         // trouble shoot
         if (note.length >= 2) {
-            zox_log_error("Music Error: Note [%i] Invalid Length: %f", i, note.length);
+            zox_logv("Music Error: Note [%i] Invalid Length: %f", i, note.length);
             return 0;
         }
         // int note_index = find_note_index(note.frequency);
@@ -60,7 +52,7 @@ entity load_music_file(
         MidiNote note = loaded_notes[i];
         // trouble shoot
         if (note.length >= 2) {
-            zox_log_error("Note was past max sound length: %f", note.length);
+            zox_logv("Note was past max sound length: %f", note.length);
             note.length = 2;
         }
         int note_index = find_note_index(note.frequency);

@@ -73,13 +73,13 @@ void process_arguments_core(
 
 // sets up resources path per platform - during preload stage
 byte initialize_pathing(const char* game_name) {
-    zox_logi("Threads Support [%s]", supports_threads() ? "YES" : "NO");
     byte pathing_success = EXIT_FAILURE;
 #ifdef zox_android
     pathing_success = initialize_pathing_android();
 #else
     pathing_success = initialize_pathing_native(game_name);
 #endif
+    zox_logv("Threads Support [%s]", supports_threads() ? "YES" : "NO");
     return pathing_success;
 }
 

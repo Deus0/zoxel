@@ -96,7 +96,7 @@ zox_sys2(Tunk2SpawnSystem) {
 
                 if (rdistance <= terrain_lod_far) {
 
-                    entity chunk = spawn_tunk2(world, prefab_tunk2, terrain->value, nposition, rdistance);
+                    entity chunk = spawn_tunk(world, prefab_tunk2, terrain->value, nposition, rdistance);
                     //  terrain_depth,
                     //  terrain_scale
 

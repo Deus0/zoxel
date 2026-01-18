@@ -48,6 +48,7 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepthDirty,
         [in] chunks3.VoxelNodeEdited,
         [in] voxes.VoxLink,
+        [in] tunks.TunkLink,
         [out] chunks3.VoxelNode,
         [out] chunks.NodeDepth,
         [out] chunks3.VoxelNodeDirty,

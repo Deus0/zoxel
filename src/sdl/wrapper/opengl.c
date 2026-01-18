@@ -4,7 +4,7 @@ void set_sdl_attributes2(byte minor, byte major, byte profile) {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // 24 | 32
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile);
-    zox_logi("OpenGL Set [%i] [%i.%i]", profile, sdl_gl_major, sdl_gl_minor);
+    zox_logi("  - OpenGL p[%i] v[%i.%i]", profile, sdl_gl_major, sdl_gl_minor);
 }
 
 void set_sdl_attributes() {
@@ -20,17 +20,13 @@ void set_sdl_attributes() {
             opengl_mode = zox_opengl_compatibility;
         }
     }
-    byte profile;
-    if (opengl_mode == zox_opengl_es) {
-        zox_logi("Running with OpenGL ES");
-        profile = SDL_GL_CONTEXT_PROFILE_ES;
-    } else if (opengl_mode == zox_opengl_core) {
-        zox_logi("Running with OpenGL Core");
-        profile = SDL_GL_CONTEXT_PROFILE_CORE;
-    } else {
-        zox_logi("Running with OpenGL Compatibility");
-        profile = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
-    }
+
+    zox_logi("Graphics Backend [%s]",
+             opengl_mode == zox_opengl_es ? "OpenGL ES" :
+             (opengl_mode == zox_opengl_core ? "OpenGL Core" : "OpenGL Compatibility"));
+
+    byte profile = opengl_mode == zox_opengl_es ? SDL_GL_CONTEXT_PROFILE_ES :
+             (opengl_mode == zox_opengl_core ? SDL_GL_CONTEXT_PROFILE_CORE : SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
     set_sdl_attributes2(sdl_gl_major, sdl_gl_minor, profile);
 }
 

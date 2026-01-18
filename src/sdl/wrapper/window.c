@@ -48,7 +48,7 @@ SDL_Window* create_sdl_window(int2 position, int2 size, const char *name, byte f
 
 void on_set_vsync(byte value) {
     if (SDL_GL_SetSwapInterval(value)) {
-        zox_log_error("Unable to disable VSync: %s", SDL_GetError());
+        zox_logw("Unable to disable VSync: %s", SDL_GetError());
     } else {
         zox_logv("VSync [%s]", vsync ? "Enabled" : "Disabled");
     }

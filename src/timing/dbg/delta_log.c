@@ -1,4 +1,5 @@
 const double zox_lag_cutoff = 3;
+const byte is_log_totals = 0;
 
 // used to sort times in ui
 typedef struct {
@@ -120,7 +121,7 @@ zox_sys2(SystemDeltaLogSystem) {
         zox_logw("Lag Detected -> %s: [%fms]", zox_get_name(e), delta->value);
         did_lag = 1;
     }
-    if (did_lag) {
+    if (did_lag && is_log_totals) {
         zox_log("# Delta Totals #");
         zox_log("   - Logged [%fms]", total);
         zox_log("   - Zoxxed [%fms]", delta_time * 1000.0);

@@ -14,10 +14,13 @@
 #include "set/_.c"
 #include "com/_.c"
 #include "dat/_.c"
-#include "pre/_.c"
+// NOTE: these need to be imported before core
+#include "tunks/_.c"
+#include "regions/_.c"
 #include "voxels/_.c"
 #include "block_voxes/_.c"
-#include "tunks/_.c"
+// Core
+#include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
@@ -30,6 +33,10 @@ void module_dispose_terrain(ecs *world, void *ctx) {
 }
 
 zox_begin_module(Terrain)
+    // NOTE: these need to be imported before core
+    zox_import_module(Regions);
+    zox_import_module(Tunks);
+
     define_components_terrain(world);
     define_systems_terrain(world);
     initialize_hook_spawn_blocks();
@@ -38,7 +45,6 @@ zox_begin_module(Terrain)
     add_hook_terminal_command(process_arguments_terrain);
     add_to_event_game_state((zox_game_event) { &game_state_terrain });
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
-    zox_import_module(Tunks);
 zox_end_module(Terrain)
 
 #endif

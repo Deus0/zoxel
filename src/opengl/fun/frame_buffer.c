@@ -26,6 +26,6 @@ byte test_frame_buffer() {
     } else {
         zox_log(" + frame buffer is supported.\n")
     }*/
-    zox_logi("UBO Size is [%i]", zox_get_safe_ubo_size());
+    zox_logv("Uniform Buffer Size is [%i]", zox_get_safe_ubo_size());
     return 0;
 }
