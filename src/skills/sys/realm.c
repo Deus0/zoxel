@@ -11,7 +11,7 @@ zox_sys2(SkillsRealmSpawnSystem) {
         zox_sys_i(StatLinks, stats);
         zox_sys_o(SkillLinks, skills);
 
-        if (state->value != zox_generate_realm_stats) {
+        if (state->value != zox_generate_realm_skills) {
             continue;
         }
 

@@ -1,11 +1,11 @@
 // TODO: Remove Global Items
-entity meta_item_block_dark;
+/*entity meta_item_block_dark;
 entity meta_item_block_obsidian;
 entity meta_item_block_sand;
 entity meta_item_block_stone;
-entity meta_item_block_dungeon_core;
+entity meta_item_block_dungeon_core;*/
 
-zox_sys2(RealmItemsSpawnSystem) {
+zox_sys2(ItemsRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -25,8 +25,6 @@ zox_sys2(RealmItemsSpawnSystem) {
             continue;
         }
 
-        resize_ItemLinks(items, blocks->length);
-
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
 
@@ -35,7 +33,8 @@ zox_sys2(RealmItemsSpawnSystem) {
                 continue;
             }
 
-            items->value[j] = spawn_block_item(world, block);
+            entity item = spawn_block_item(world, block);
+            add_to_ItemLinks(items, item);
 
             /*if (i == zox_block_dirt_grass - 1) {
                 const entity item_block_dirt = items.value[zox_block_dirt - 1];
@@ -43,16 +42,15 @@ zox_sys2(RealmItemsSpawnSystem) {
             }*/
         }
 
-        // meta_item_block_dirt = items.value[zox_block_dirt - 1];
-        meta_item_block_obsidian = items->value[zox_block_obsidian - 1];
+        /*meta_item_block_obsidian = items->value[zox_block_obsidian - 1];
         meta_item_block_dark = items->value[zox_block_dark - 1];
         meta_item_block_sand = items->value[zox_block_sand - 1];
         meta_item_block_stone = items->value[zox_block_stone - 1];
-        meta_item_block_dungeon_core = items->value[zox_block_dungeon_core - 1];
+        meta_item_block_dungeon_core = items->value[zox_block_dungeon_core - 1];*/
 
         zox_logv("At [%f] Realm [items] [%i] spawned.", zox_current_time, items->length);
     }
-} zox_sys_end(RealmItemsSpawnSystem);
+} zox_sys_end(ItemsRealmSpawnSystem);
 
 
     /*void spawn_realm_items(ecs *world, const entity realm) {

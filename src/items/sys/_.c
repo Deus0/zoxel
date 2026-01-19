@@ -11,7 +11,7 @@ void define_systems_items(ecs *world) {
     realm_clear_systemd(items, ItemLinks);
 
     zox_system_1(
-        RealmItemsSpawnSystem,
+        ItemsRealmSpawnSystem,
         EcsOnLoad,
         [in] realms.GenerateRealm,
         [in] blocks.BlockLinks,
