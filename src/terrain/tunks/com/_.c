@@ -1,6 +1,5 @@
 zox_tag(Tunk);
 zoxc_entity(TunkLink);
-// zoxc_array(HeightMap, byte, 32 * 32);
 zoxc_arrayd(BiomeMap, byte)
 zoxc_arrayd(HeightMap, byte)
 zoxc_arrayd(VegetationMap, byte)

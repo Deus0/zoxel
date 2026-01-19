@@ -1,5 +1,4 @@
 #include "grow_bounds3.c"
-#include "vox_generation.c"
 #include "vox_texture.c"
 #include "clone_vox.c"
 #include "bake_vox.c"
@@ -16,18 +15,6 @@ void define_systems_voxes(ecs *world) {
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
         [out] transforms3.Bounds3D
-    );
-    // NOTE: Writes to VoxelNode
-    zox_system(
-        VoxGenerationSystem,
-        zoxp_voxels_write,
-        [in] GenerateVox,
-        [in] colorz.Color,
-        [in] VoxType,
-        [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
-        [out] chunks.NodeDepth,
-        [out] colorz.ColorRGBs
     );
     // NOTE: Writes to VoxelNode
     zox_system(

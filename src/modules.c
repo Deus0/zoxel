@@ -27,6 +27,7 @@
 
 #include "raycasts/_.c"
 #include "lines/_.c"
+#include "shapes/_.c"
 
 // inner core
 #include "textures/_.c"
@@ -58,7 +59,7 @@
 #include "dungeons/_.c"
 #include "terrain/_.c"
 #include "vrays/_.c"
-#include "game_ui/_.c"
+#include "huds/_.c"
 
 // user data
 #include "users/_.c"
@@ -130,6 +131,7 @@ zox_begin_module(Zox)
     zox_import_module(Genetics);
     zox_import_module(Neurals);
     zox_import_module(Blueprints);
+    zox_import_module(Shapes);
     zox_import_module(Cubes);
 
     zox_import_module(Blocks);
@@ -149,7 +151,7 @@ zox_begin_module(Zox)
     zox_import_module(Dungeons);
     zox_import_module(Terrain);
     zox_import_module(Vrays);
-    zox_import_module(GameUI);
+    zox_import_module(Huds);
 
     // user data
     zox_import_module(Users);

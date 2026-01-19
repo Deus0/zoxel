@@ -14,7 +14,7 @@ entity spawn_realm_block_rubble(
     zox_set_unique_name(vox, "block_rubble");
     zox_set(vox, VoxType, { vox_type });
     zox_set(vox, Color, { block_color });
-    zox_set(vox, GenerateVox, { zox_dirty_trigger });
+    zox_set(vox, Generate, { zox_dirty_trigger });
     zox_set(vox, RenderDepth, { block_vox_depth });
 
     // for instancing

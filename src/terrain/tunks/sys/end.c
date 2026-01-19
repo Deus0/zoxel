@@ -5,7 +5,7 @@ zox_sys2(TunkEndSystem) {
     zox_sys_in(Generate);
     zox_sys_in(Chunk3Stack);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        //zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(Chunk3Stack, stack);
 

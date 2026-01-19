@@ -20,7 +20,7 @@ zox_sys2(BiomeColorsSystem) {
 
         color_rgb sky_color;
         if (!grayscale_mode) {
-            initialize_Colors(colors, 6);
+            resize_Colors(colors, realm_colors_count);
             generate_colors(seed->value, (colors));
             sky_color = color_to_color_rgb(colors->value[0]);
         } else {

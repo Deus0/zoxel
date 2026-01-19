@@ -71,9 +71,9 @@ byte update_chunk_for_raycast(
     byte3* chunk_size,
     float* chunk_scalev,
     CharacterRaycast* character_raycast,
-    const float3 ray_origin,
-    const float3 ray_normal,
-    const entity caster
+    float3 ray_origin,
+    float3 ray_normal,
+    entity caster
 ) {
     // Terrain Pass
     if (chunk_links) {

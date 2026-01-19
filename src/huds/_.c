@@ -1,8 +1,18 @@
-// todo: find a way to add game modules onto game menu - add stats ui on etc
-#ifndef zoxm_game_ui
-#define zoxm_game_ui
+/*
+ *  Zoxel Huds
+ *
+ *      - Game UIs, anything game specific
+ *
+ *      - Taskbar and handles other game uis
+ *
+ * */
+#ifndef zoxm_huds
+#define zoxm_huds
 
-// todo: use a byte index instead for menu type
+// TODO: spawn unique canvas per viewport, viewports per player
+// TODO: use a byte index instead for menu type
+// TODO: find a way to add game modules onto game menu - add stats ui on etc
+
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"
@@ -13,10 +23,8 @@
 #include "dbg/_.c"
 // #define zox_log_camera_spawning
 
-// todo: spawn unique canvas per viewport, viewports per player
 
-// TODO: Rename so 'game.u.i.' isnt this, maybe rename Huds
-zox_begin_module(GameUI)
+zox_begin_module(Huds)
     zox_module_dispose(dispose_gameui);
     add_hook_spawn_prefabs(spawn_prefabs_game_ui);
     initialize_hook_taskbar();
@@ -30,6 +38,6 @@ zox_begin_module(GameUI)
         .tooltip_text = "Pause Menu"
     });
     add_hook_on_boot(on_boot_game_ui);
-zox_end_module(GameUI)
+zox_end_module(Huds)
 
 #endif

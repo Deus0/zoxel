@@ -25,7 +25,7 @@ void define_systems_game_ui(ecs *world) {
         EcsOnUpdate,
         [in] core.EntityInitialize,
         [in] layouts2.CanvasLink,
-        [out] game.u.i.TaskbarToggleLink //,
+        [out] huds.TaskbarToggleLink //,
         // [none] MenuGame
     );
 
@@ -41,7 +41,7 @@ void define_systems_game_ui(ecs *world) {
         [in] DebugLabelData,
         [out] texts.TextDirty,
         [out] texts.TextData,
-        [none] game.u.i.GameDebugLabel
+        [none] huds.GameDebugLabel
     );
     zox_system_1(
         DeviceModeUISystem,

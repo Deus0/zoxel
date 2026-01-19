@@ -37,6 +37,10 @@ zox_sys2(HeightMapSystem) {
             cposition->value.y * hsize.y
         };
 
+        int2 mposition = (int2) { 0, 100 };
+        double mradius = 80;
+        double mheight = 8;
+
         int2 gposition = gposition_start;
         for (lposition.x = 0; lposition.x < hsize.x; lposition.x++, gposition.x++) {
             gposition.y = gposition_start.y;
@@ -49,6 +53,13 @@ zox_sys2(HeightMapSystem) {
                 // TODO: Blend frequency amongst several nearby ones
                 double frequency = biome == 0 ? height_frequency : height_frequency * 2;
 
+                // Mountain Test
+                int mdistance = int2_distance(gposition, mposition);
+                double mmultiplier = 1;
+                if (mdistance < mradius) {
+                    mmultiplier = 1 + mheight * ((mradius - mdistance) / (float) mradius);
+                }
+
                 double perlin_value = perlin_octaves(
                     noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
                     noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
@@ -56,8 +67,9 @@ zox_sys2(HeightMapSystem) {
                     seed,
                     terrain_octaves
                 );
-
-                hmap->value[index] = 128 + int_floorf(perlin_value * max_chunk_length);
+                int value = int_floorf(perlin_value * max_chunk_length * mmultiplier);
+                hmap->value[index] = int_clamp(value, 0, 255);
+                hmap->value[index] = int_clamp(hmap->value[index], 0, render_distance_y * max_chunk_length - 1);
             }
         }
     }

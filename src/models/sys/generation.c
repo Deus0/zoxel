@@ -1,16 +1,13 @@
-define_fun_stopwatch(time_vox_generation, 0);
-
 // todo: generate colors in another system
 // todo: split processes up to nodes
 // todo: add unique colors as a property too
 zox_sys2(VoxGenerationSystem) {
     const byte default_unique_colors = 6;
     const float default_color_range = 0.14f;
-
     zox_ts_begin(vox_generation);
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GenerateVox);
+    zox_sys_in(Generate);
     zox_sys_in(Color);
     zox_sys_in(VoxType);
     zox_sys_out(VoxelNode);
@@ -20,7 +17,8 @@ zox_sys2(VoxGenerationSystem) {
 
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(GenerateVox, generateVox);
+        zox_sys_i(Generate, generateVox);
+
         if (generateVox->value == zox_dirty_active) {
             any_dirty = 1;
             break;
@@ -31,13 +29,11 @@ zox_sys2(VoxGenerationSystem) {
         return;
     }
 
-    startwatch(time_vox_generation);
-
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Color, color2);
         zox_sys_i(VoxType, voxType);
-        zox_sys_i(GenerateVox, generateVox);
+        zox_sys_i(Generate, generateVox);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(VoxelNodeDirty, nodeDirty);
         zox_sys_o(NodeDepth, nodeDepth);
@@ -265,9 +261,6 @@ zox_sys2(VoxGenerationSystem) {
         write_unlock_VoxelNode(node);
 
         nodeDirty->value = zox_dirty_trigger;
-        tapwatch(time_vox_generation, "generate vox");
     }
 
-    endwatch(time_vox_generation, "ending");
-    zox_ts_end(vox_generation, 3, zox_profile_system_vox_generation);
 } zox_sys_end(VoxGenerationSystem);

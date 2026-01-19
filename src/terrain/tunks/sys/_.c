@@ -68,12 +68,12 @@ void define_systems_tunks(ecs* world) {
     );
 
     zox_system(
-        TunkLinkSystem,
-        EcsPreUpdate,
+        TownMapSystem,
+        EcsPreStore,
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
-        [in] voxes.VoxLink,
-        [out] tunks.Chunk3Stack,
+        [in] tunks.BiomeMap,
+        [out] tunks.TownMap,
         [none] tunks.Tunk
     );
 
@@ -85,6 +85,16 @@ void define_systems_tunks(ecs* world) {
         [none] tunks.Tunk
     );
 
+
+    zox_system(
+        TunkLinkSystem,
+        EcsPreUpdate,
+        [in] core.Generate,
+        [in] chunks2.Chunk2Position,
+        [in] voxes.VoxLink,
+        [out] tunks.Chunk3Stack,
+        [none] tunks.Tunk
+    );
 
     zox_system(
         BiomeMapAvgSystem,

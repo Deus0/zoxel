@@ -182,7 +182,7 @@ zox_sys2(VoxTextureSystem) {
         if (generate->value != zox_dirty_active ||
             !zox_valid(vox->value) ||
             !zox_has(vox->value, VoxelNode) ||
-            (zox_has(vox->value, GenerateVox) && zox_gett_value(vox->value, GenerateVox))) {
+            (zox_has(vox->value, Generate) && zox_gett_value(vox->value, Generate))) {
             continue;
         }
 

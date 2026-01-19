@@ -6,10 +6,12 @@ zox_sys2(BakeVoxSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ModelLink, model);
         zox_sys_i(TextureLinks, textures);
-        if (!zox_valid(model->value) || !zox_has(model->value, GenerateVox)) {
+
+        if (!zox_valid(model->value) || !zox_has(model->value, Generate)) {
             continue;
         }
-        zox_geter_value(model->value, GenerateVox, byte, state);
+
+        zox_geter_value(model->value, Generate, byte, state);
         if (state != zox_dirty_end) { // zox_dirty_active) {
             continue;
         }

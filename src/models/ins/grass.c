@@ -37,7 +37,7 @@ entity spawn_model_grass(
         zox_set(e2, MaxRenderDepth, { render_depth });
         zox_set(e2, Seed, { seed });
         zox_set(e2, VoxType, { vox_type_rubble });
-        zox_set(e2, GenerateVox, { zox_dirty_trigger });
+        zox_set(e2, Generate, { zox_dirty_trigger });
         // important
         zox_set(e2, Color, { c });
         zox_set(e2, RubbleCount, { place_count });

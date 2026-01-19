@@ -70,6 +70,5 @@ entity spawn_chunk_terrain(ecs *world, entity p, entity terrain, int3 camera_pos
         spawn_gpu_colors(world, e);
     }
 
-    zox_stats_terrain_chunks++;
     return e;
 }

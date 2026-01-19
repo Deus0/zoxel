@@ -1,7 +1,7 @@
 TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
     const float3 bounds = (float3) { 0.5f, 1.0, 0.5f };
     // zox_geter(terrain, BlockScale, blockScale)
-    zox_geter(terrain, ChunkLinks, chunk_links)
+    zox_geter(terrain, ChunkLinks, chunks);
     entity chunk = 0;
     int3 cposition = int3_zero;
     byte3 local_position = byte3_zero;
@@ -10,7 +10,7 @@ TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
     byte found_position = 0;
     for (int i = render_distance_y; i >= -render_distance_y; i--) {
         cposition.y = i;
-        chunk = int3_hashmap_get(chunk_links->value, cposition);
+        chunk = int3_hashmap_get(chunks->value, cposition);
         if (!zox_valid(chunk)) {
             continue;
         }

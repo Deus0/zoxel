@@ -11,6 +11,11 @@
 #if !defined(zoxm_terrain) && defined(zoxm_chunks3)
 #define zoxm_terrain
 
+// TODO: Refactor Grasslands into different systems
+//      - LandFillSystem
+//      - LandPlantSystem
+//      - TownBuildSystem
+
 // Initial core
 #include "set/_.c"
 #include "com/_.c"

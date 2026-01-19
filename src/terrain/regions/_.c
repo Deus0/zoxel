@@ -14,15 +14,15 @@
 // TODO: Spawn and link Regions
 // TODO: Town Spawn Point
 
-//#include "com/_.c"
-//#include "pre/_.c"
-//#include "ins/_.c"
-//#include "sys/_.c"
+#include "com/_.c"
+#include "pre/_.c"
+#include "ins/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Regions)
-    //define_components_tunks(world);
-    //define_systems_tunks(world);
-    //add_hook_spawn_prefabs(spawn_prefabs_tunks);
+    define_components_regions(world);
+    define_systems_regions(world);
+    add_hook_spawn_prefabs(spawn_prefabs_regions);
 zox_end_module(Regions)
 
 #endif

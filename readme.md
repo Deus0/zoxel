@@ -57,57 +57,18 @@ And the mysterious Flecs (v4.0.5) [_flecsing_](https://codeberg.org/deus/flecsin
 ### Requirements
 
 - **Build tools:**  
-  - `git`  
-  - `make`  
-  - `gcc` (or compatible C compiler)  
+  - git, make, gcc
 
 - **Libraries:**  
-  - math (`-lm`)  
-  - pthreads (`-lpthread`)  
-  - Flecs (`-lflecs`)  
-  - SDL2 (`-lSDL2`)  
-  - SDL2 image (`-lSDL2_image`)  
-  - SDL2 mixer (`-lSDL2_mixer`)  
-  - OpenGL (`-lGL`)
-  
-- **More:**
-  - C [libc6]
-  - SDL2 [libsdl2-2.0-0]
-  - Wayland [libwayland-client0]
-  X Decor [libdecor-0-plugin-1-gtk]
-  - OpenGLES [libegl1-mesa libgles2-mesa]
-  - Threads [libpthread-stubs0-dev]
-
----
-
-### Dependencies
-
-- **Debian / Ubuntu**
-
-```bash
-sudo apt install git gcc make libc6-dev libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libglew-dev
-```
-
-- **Arch Linux / Manjaro**
-
-```bash
-sudo pacman -S git gcc make glibc sdl2 sdl2_image sdl2_mixer glew
-```
-
-- **Alpine Linux**
-
-```bash
-sudo apk add git gcc make ibc-dev sdl2-dev sdl2_image-dev sdl2_mixer-dev glew-dev
-```
+  - Flecs
+  - math, pthread, opengl
+  - sdl2, sdl2_image, sdl2_mixer
 
 ---
 
 ### Links
 
-  - [ twitter ](https://twitter.com/deusxyz) — Whisper to the void
   - [ mastodon ](https://mastodon.gamedev.place/@deus) — The distant signal
-  - [ youtube ](https://www.youtube.com/watch?v=Hseq5iPIJ6s) — See the shadows dance
-  - [ codeberg ](https://codeberg.org/deus/zoxel) — The cryptic archive
 
 ---
 

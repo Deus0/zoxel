@@ -23,12 +23,15 @@ zox_sys2(CloneVoxSystem) {
         zox_sys_o(ChunkLod, chunkLod);
         zox_sys_o(CloneVox, cloneVox);
         const entity src = cloneVoxLink->value;
+
         if (!cloneVox->value || !src) {
             continue;
         }
+
         if (!zox_has(src, VoxelNode)) {
             continue;
         }
+
         // clone one depth at a time
         zox_geter(src, VoxelNode, source_node);
         zox_geter(src, NodeDepth, source_node_depth);

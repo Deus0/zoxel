@@ -1,6 +1,8 @@
+// TODO: use terrains seed
+// TODO: use height frequency from biome maps
+// TODO: Check Sand Height in this system
+
 zox_sys2(VegetationMapSystem) {
-    // TODO: use terrains seed
-    // TODO: use height frequency from biome maps
     uint seed = global_seed;
     double veggie_frequency = 0.6;
     double veggie_amplitude = 1.0;
@@ -8,9 +10,11 @@ zox_sys2(VegetationMapSystem) {
 
     double grass_cutoff_0 = 0.52;
     double weeds_cutoff_0 = 0.59;
+    double trees_cutoff_0 = 0.73;
 
     double grass_cutoff_1 = 0.62;
     double weeds_cutoff_1 = 0.74;
+    double trees_cutoff_1 = 0.86;
 
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -58,6 +62,7 @@ zox_sys2(VegetationMapSystem) {
                 double frequency = biome == 0 ? veggie_frequency * 2 : veggie_frequency;
                 double grass_cutoff = biome == 0 ? grass_cutoff_0 : grass_cutoff_1;
                 double weeds_cutoff = biome == 0 ? weeds_cutoff_0 : weeds_cutoff_1;
+                double trees_cutoff = biome == 0 ? trees_cutoff_0 : trees_cutoff_1;
 
 
                 double pvalue = veggie_amplitude * perlin_octaves(
@@ -70,7 +75,9 @@ zox_sys2(VegetationMapSystem) {
 
                 byte value;
 
-                if (pvalue >= weeds_cutoff) {
+                if (pvalue >= trees_cutoff) {
+                    value = 3;  // Trees
+                } else if (pvalue >= weeds_cutoff) {
                     value = 2;  // Weeds
                 } else if (pvalue >= grass_cutoff) {
                     value = 1;  // Grass

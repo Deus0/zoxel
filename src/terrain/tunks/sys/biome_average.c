@@ -33,6 +33,8 @@ zox_sys2(BiomeMapAvgSystem) {
         zox_geter(realm, BiomeLinks, biomes);
 
         // TODO: Calculate most popular in bmp generically
+        uint counts[biomes->length];
+
         uint used_0 = 0;
         uint used_1 = 0;
         for (int j = 0; j < bmap->length; j++) {

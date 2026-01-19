@@ -8,7 +8,6 @@ zoxc_hashmap(Chunk2Links, int2)
 // TODO: Move to Shapes or something
 zoxc_byte(VoxType);
 zoxc_byte(CloneVox);
-zoxc_state(GenerateVox);
 zoxc_byte(RubbleHeight);
 zoxc_byte(VoxUniqueColors);
 zoxc_int(RubbleCount);
@@ -25,7 +24,6 @@ void define_components_voxes(ecs *world) {
 
     // TODO: Move to Shapes or something
     zoxd_byte(VoxType);
-    zoxd_state(GenerateVox);
     zoxd_byte(CloneVox);
     zoxd_entity(CloneVoxLink);
     zoxd_byte(RubbleHeight);

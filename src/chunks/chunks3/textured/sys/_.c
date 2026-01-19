@@ -36,4 +36,6 @@ void define_systems_chunks3_textured(ecs *world) {
         [out] rendering.MeshDirty,
         [none] chunks3.ChunkTextured
     );
+    // Custom Debug
+    zox_set(zox_id(Chunk3TexturedRenderSystem), SystemDeltaMax, { 6 });
 }

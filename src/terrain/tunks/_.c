@@ -16,6 +16,8 @@
 // TODO: Quadtrees for map data?
 // TODO: After BiomeMap is generated, get most used byte, then link
 
+// TODO: Calculate biome highest based on N biomes, get max from realm
+
 // TODO: Use sbyte instead of byte?
 // TODO: Chunk2NeighborsSystem
 

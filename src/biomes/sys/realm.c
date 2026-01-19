@@ -1,5 +1,7 @@
 extern double terrain_frequency;
 
+byte realm_colors_count = 8;
+
 void generate_colors(lint seed, Colors *colors) {
 
     srand((unsigned int) seed);
@@ -8,19 +10,25 @@ void generate_colors(lint seed, Colors *colors) {
     BiomeData biome = pick_biome(seed);
     terrain_frequency = biome.frequency;
 
-    const float3 dirt_hsv = float6_rand_range(biome.dirt);
-    const float3 grass_hsv = float6_rand_range(biome.grass);
-    const float3 sand_hsv = float6_rand_range(biome.sand);
-    const float3 stone_hsv = float6_rand_range(biome.sand);
-    const float3 obsidian_hsv = float6_rand_range(biome.obsidian);
-    const float3 sky_hsv = float6_rand_range(biome.sky);
+    float3 dirt_hsv = float6_rand_range(biome.dirt);
+    float3 grass_hsv = float6_rand_range(biome.grass);
+    float3 sand_hsv = float6_rand_range(biome.sand);
+    float3 stone_hsv = float6_rand_range(biome.sand);
+    float3 obsidian_hsv = float6_rand_range(biome.obsidian);
+    float3 sky_hsv = float6_rand_range(biome.sky);
+    float3 wood_hsv = (float3) {
+            dirt_hsv.x + rand() % 30,
+            dirt_hsv.y - 10,
+            dirt_hsv.z + 10 + rand() % 10 };
 
-    const color dirt_color = hsv_to_color(dirt_hsv);
-    const color grass_color = hsv_to_color(grass_hsv);
-    const color sand_color = hsv_to_color(sand_hsv);
-    const color stone_color = hsv_to_color(stone_hsv);
-    const color sky_color = hsv_to_color(sky_hsv);
-    const color obsidian_color = hsv_to_color(obsidian_hsv);
+
+    color dirt_color = hsv_to_color(dirt_hsv);
+    color grass_color = hsv_to_color(grass_hsv);
+    color sand_color = hsv_to_color(sand_hsv);
+    color stone_color = hsv_to_color(stone_hsv);
+    color sky_color = hsv_to_color(sky_hsv);
+    color obsidian_color = hsv_to_color(obsidian_hsv);
+    color woodc = hsv_to_color(wood_hsv);
 
     byte i = 0;
     colors->value[i++] = sky_color;
@@ -29,6 +37,7 @@ void generate_colors(lint seed, Colors *colors) {
     colors->value[i++] = sand_color;
     colors->value[i++] = stone_color;
     colors->value[i++] = obsidian_color;
+    colors->value[i++] = woodc;
 
     zox_logv("Biome: %s", biome.name);
     zox_logv("  Dirt: %fx%fx%f", dirt_hsv.x, dirt_hsv.y, dirt_hsv.z);
@@ -92,7 +101,7 @@ void spawn_realm_biomes(ecs *world, const entity realm) {
     Colors colors = (Colors) { 0 };
     color_rgb sky_color;
     if (!grayscale_mode) {
-        initialize_Colors(&colors, 6);
+        initialize_Colors(&colors, realm_colors_count);
         generate_colors(seed->value, (&colors));
         // zox_set(realm, Colors, { .value = colors->value, .length = colors->length })
         zox_set_ptr(realm, Colors, colors);

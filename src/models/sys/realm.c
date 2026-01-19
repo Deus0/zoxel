@@ -11,16 +11,16 @@ void spawn_realm_models(ecs *world, const entity e) {
     }
 
     // get realms colors
-    zox_geter(e, Colors, realm_colors);
+    zox_geter(e, Colors, colors);
     color grass_color;
-    if (realm_colors->length < 5 || grayscale_mode) {
+    if (colors->length < 5 || grayscale_mode) {
         zox_log("+ grayscale_mode enabled")
         grass_color = color_grayscale(144);
     } else {
-        grass_color = realm_colors->value[2];
+        grass_color = colors->value[2];
     }
 
-    ModelLinks models = (ModelLinks) { 0, NULL };
+    ModelLinks models = (ModelLinks) { 0 };
 
     // models
     // grass - contains a bunch of variants

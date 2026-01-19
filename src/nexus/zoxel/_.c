@@ -156,7 +156,7 @@ void zoxel_debug_keys() {
 }
 
 void zox_set_terrain_settings() {
-    render_distance_y = 3;
+    render_distance_y = 4;
     // terrain_mode = terrain_mode_flatlands;
 }
 

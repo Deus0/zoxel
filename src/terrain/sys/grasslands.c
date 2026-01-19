@@ -112,12 +112,13 @@ zox_sys2(GrassyPlainsSystem) {
         zox_geter(tunk->value, BiomeMap, bmap);
         zox_geter(tunk->value, HeightMap, hmap);
         zox_geter(tunk->value, VegetationMap, vmap);
-        if (!hmap->length || !bmap->length || !vmap->length) {
+        zox_geter(tunk->value, TownMap, tmap);
+
+        if (!hmap->length || !bmap->length || !vmap->length || !tmap->length) {
             zox_log_error("Invalid [Tunk] [Maps] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
             continue;
         }
         // ### ### ### ### ###
-
 
 
 
@@ -161,6 +162,7 @@ zox_sys2(GrassyPlainsSystem) {
             zox_log_error("Biome dirt is air.");
             continue;
         }
+
         /*zox_log("   Block [%s] index [%i]", zox_get_name(dirt), biome_dirt_id);
         zox_log("   Block [%s] index [%i]", zox_get_name(grass), biome_grass_id);*/
         // ### ### ### ### ###
@@ -171,13 +173,7 @@ zox_sys2(GrassyPlainsSystem) {
         // Clear Octree to Air
         // set_voxelt_air(node);
 
-        /*const float2 positionn = (float2) {
-            noise_positiver2 + chunk_position_float3.x + (positionl.x / map_size_f.x),
-            noise_positiver2 + chunk_position_float3.z + (positionl.z / map_size_f.y)
-        };
-
-        byte is_mountain = 0;*/
-
+        // For every XZ position in chunk
         for (positionl.x = 0; positionl.x < vlength; positionl.x++) {
             for (positionl.z = 0; positionl.z < vlength; positionl.z++) {
 
@@ -186,11 +182,11 @@ zox_sys2(GrassyPlainsSystem) {
                     positionl.z * hmultiplier
                 };
                 int hindex = int2_array_index(hposition, hsize);
-                int global_position_y = (int) (hmap->value[hindex] - 128);
+                int global_position_y = (int) (hmap->value[hindex]); //  - 128
                 global_position_y /= hmultiplier;
                 byte biome_id = bmap->value[hindex];
                 byte veggie = vmap->value[hindex];
-
+                byte town = tmap->value[hindex];
 
                 byte biome_dirt_id = biome_id == 0 ? biome_dirt_id_1 : biome_dirt_id_2;
                 byte biome_grass_id = biome_id == 0 ? biome_grass_id_1 : biome_grass_id_2;
@@ -229,17 +225,38 @@ zox_sys2(GrassyPlainsSystem) {
                     }
                 }
 
+                // ### Only continue if can place ###
+                //!disable_grass_placements &&
+                //!disable_block_vox_generation &&
+                if (global_position_y <= sand_height ||
+                    !is_max_depth) {
+                    continue;
+                }
+
                 // Place Grass on tops
-                if (!disable_grass_placements &&
-                    !disable_block_vox_generation &&
-                    is_max_depth && // if max depth
-                    veggie == 2 &&
-                    local_height_raw + 1 >= 0 &&
-                    local_height_raw + 1 < vlength &&
-                    global_position_y > sand_height
-                ) {
+
+                if (veggie == 2) {
                     positionl.y = local_height_raw + 1;
-                    set_voxelt(node, vdepth->value, positionl, zox_block_vox_grass, 0);
+                    if (positionl.y >= 0 && positionl.y < vlength) {
+                        set_voxelt(node, vdepth->value, positionl, zox_block_vox_grass, 0);
+                    }
+                } else if (veggie == 3) {
+                    // Trees
+                    for (int h = 1; h <= 2 + rand() % 4; h++) {
+                        positionl.y = local_height_raw + h;
+                        if (positionl.y >= 0 && positionl.y < vlength) {
+                            set_voxelt(node, vdepth->value, positionl, zox_block_wood, 0);
+                        }
+                    }
+                }
+
+                if (town) {
+                    for (int h = 1; h <= 4; h++) {
+                        positionl.y = local_height_raw + h;
+                        if (positionl.y >= 0 && positionl.y < vlength) {
+                            set_voxelt(node, vdepth->value, positionl, zox_block_bricks, 0);
+                        }
+                    }
                 }
             }
         }
