@@ -1,9 +1,19 @@
 #include "realm.c"
 #include "generation.c"
-zox_declare_system_state_event(RealmModels, GenerateRealm, zox_generate_realm_models, spawn_realm_models)
+realm_clear_system(ModelLinks);
 
 void define_systems_models(ecs* world) {
-    zox_define_system_state_event_1(RealmModels, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+
+    realm_clear_systemd(rendering, ModelLinks);
+
+    zox_system_1(
+        ModelsRealmSpawnSystem,
+        EcsOnLoad,
+        [in] realms.GenerateRealm,
+        [in] colorz.Colors,
+        [out] rendering.ModelLinks,
+        [none] realms.Realm
+    );
 
     // NOTE: Writes to VoxelNode
     zox_system(

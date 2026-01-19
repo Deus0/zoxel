@@ -4,10 +4,21 @@
 #include "terrain_drop.c"
 #include "character.c"
 #include "character_player.c"
-zox_declare_system_state_event(RealmItems, GenerateRealm, zox_generate_realm_items, spawn_realm_items)
+realm_clear_system(ItemLinks);
 
 void define_systems_items(ecs *world) {
-    zox_define_system_state_event_1(RealmItems, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+
+    realm_clear_systemd(items, ItemLinks);
+
+    zox_system_1(
+        RealmItemsSpawnSystem,
+        EcsOnLoad,
+        [in] realms.GenerateRealm,
+        [in] blocks.BlockLinks,
+        [out] items.ItemLinks,
+        [none] realms.Realm
+    );
+
     zox_system_1(
         ItemActivateSystem,
         EcsOnUpdate,
@@ -18,6 +29,7 @@ void define_systems_items(ecs *world) {
         [out] items.QuantityDirty,
         [none] ItemBlock
     );
+
     zox_system_1(
         ItemDropSystem,
         EcsOnUpdate,
@@ -25,6 +37,7 @@ void define_systems_items(ecs *world) {
         [in] transforms3.Position3D,
         [in] items.ItemLinks
     );
+
     zox_system_1(
         TerrainItemDropSystem,
         EcsOnUpdate,
@@ -35,6 +48,7 @@ void define_systems_items(ecs *world) {
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
     );
+
     zox_system_1(
         CharacterItemsSystem,
         EcsOnUpdate,
@@ -43,6 +57,7 @@ void define_systems_items(ecs *world) {
         [out] items.ItemLinks,
         [none] !players.PlayerLink
     );
+
     zox_system_1(
         CharacterPlayerItemsSystem,
         EcsOnUpdate,

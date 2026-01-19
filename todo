@@ -23,7 +23,7 @@ architecture & refactors
 - move towns tunk and chunk3 systems into its own module, self contained addons
 - seperate block spawning more from the realm,break it into biomes and modules
 - add local chunk lookups to make the terrain chunks be more future proof to dynamic changes in the blocks list
-
+- remove all realm macros and just use state in their own systems (RealmItemsSpawnSystem, ClearSystem, etc) - wait clear can be a macro tho
 
 new
 - load ui for a save game

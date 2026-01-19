@@ -7,13 +7,18 @@
 #include "aura_sound.c"
 #include "character.c"
 #include "realm.c"
-zox_declare_system_state_event(RealmSkills, GenerateRealm, zox_generate_realm_skills, spawn_realm_skills)
+realm_clear_system(SkillLinks);
 
 void define_systems_skills(ecs *world) {
-    zox_define_system_state_event_1(
-        RealmSkills,
+
+    realm_clear_systemd(skills, SkillLinks);
+
+    zox_system_1(
+        SkillsRealmSpawnSystem,
         EcsOnLoad,
-        realms.GenerateRealm,
+        [in] realms.GenerateRealm,
+        [in] stats.StatLinks,
+        [out] skills.SkillLinks,
         [none] realms.Realm
     );
 

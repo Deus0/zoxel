@@ -3,10 +3,10 @@
 #define zox_generate_realm_start 1
 #define zox_generate_realm_clear 2
 
-#define zox_generate_realm_biomes 2
-#define zox_generate_realm_colors 2
-#define zox_generate_realm_models 3
-#define zox_generate_realm_stats 4
+#define zox_generate_realm_biomes 3
+#define zox_generate_realm_colors 4
+#define zox_generate_realm_models 5
+#define zox_generate_realm_stats 6
 
 // voxels children take more frames
 #define zox_generate_realm_blocks 7

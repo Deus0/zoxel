@@ -1,4 +1,4 @@
-entity spawn_block_vox_instanced(ecs *world, const SpawnBlockVox data) {
+entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
     zox_instance(data.prefab);
     zox_name("block_vox_instanced");
 

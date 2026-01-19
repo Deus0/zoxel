@@ -1,10 +1,6 @@
 // Should I Chunk2Neighbors, Chunk2Position
 
 // Tunk2 a child of Chunk2 entities
-
-/*zox_sys2(TunkDebugSystem) {
-    zox_log("Streaming Tunks? %i", it->count);
-} zox_sys_end(TunkDebugSystem);*/
 zox_sys2(Tunk2SpawnSystem) {
     zox_sys_query();
     zox_sys_world();

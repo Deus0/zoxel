@@ -7,9 +7,20 @@
 #include "character.c"
 #include "world_labels.c"
 #include "character_player.c"
+realm_clear_system(StatLinks);
 
 void define_systems_stats(ecs *world) {
-    zox_define_system_state_event_1(RealmStats, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+
+    realm_clear_systemd(stats, StatLinks);
+
+    zox_system_1(
+        StatsRealmSpawnSystem,
+        EcsOnLoad,
+        [in] realms.GenerateRealm,
+        [out] stats.StatLinks,
+        [none] realms.Realm
+    );
+
     // debuff system here, skills will add debuffs
     zox_system(
         DeathSystem,
