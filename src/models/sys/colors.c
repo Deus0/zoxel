@@ -50,7 +50,7 @@ zox_sys2(ColorsModelNodeSystem) {
 
         zox_geter_value(node->value, NodeType, byte, ntype);
 
-        if (ntype != 0) {
+        if (ntype != zox_model_node_colors) {
             continue;
         }
 

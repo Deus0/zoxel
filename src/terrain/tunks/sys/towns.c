@@ -4,8 +4,8 @@ zox_sys2(TownMapSystem) {
     // uint seed = global_seed;
 
     // TODO: Get these from Region Data
-    int2 tposition = (int2) { 0, - 144 };
-    int2 tsize = (int2) { 64, 64 };
+    int2 tposition = (int2) { 0, - 80 };
+    int2 tsize = (int2) { 52, 52 };
     int gate_width = 4;
 
     zox_sys_begin();

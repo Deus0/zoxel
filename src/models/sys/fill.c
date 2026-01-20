@@ -18,8 +18,6 @@ void process_node_model_fill(ecs* world, entity v, lint seed) {
     // Run for our fill
     write_lock_VoxelNode(voctree);
 
-    zox_log("building Voxel Model at [%i]", ndepth);
-
     // build_vox_soil(voctree, ndepth, vrange, black, vregions);
     build_vox_bricks(voctree, ndepth, vrange, black);
     if (is_generate_vox_outlines) {
@@ -52,7 +50,7 @@ zox_sys2(FillModelNodeSystem) {
 
         zox_geter_value(node->value, NodeType, byte, ntype);
 
-        if (ntype != 1) {
+        if (ntype != zox_model_node_fill) {
             continue;
         }
 

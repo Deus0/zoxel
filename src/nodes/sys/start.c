@@ -15,7 +15,8 @@ zox_sys2(NodetreeBeginSystem) {
         }
 
         current->value = start->value;
-        zox_log("Nodetree Begin [%s]", zox_get_name(e));
+
+        zox_logv("Node Graph Begin [%s]", zox_get_name(e));
 
         if (!zox_valid(current->value)) {
             // Finished Node Tree!

@@ -16,9 +16,19 @@
 #ifndef zoxm_models
 #define zoxm_models
 
+// TODO: Refactor old models into nodegraphs
+// TODO: Link Nodegraphs to realm - have them deleted after
+// TODO: Add Shape Information to fill
+// TODO: Create model size, which the octree can just divide higher for
+// TODO: Add Shape Type, Shape Size, to our Fill Nodes
+
 // TODO: Refactor: Load Vox Files into ModelLinks
 // TODO: Refactor: Vox Generation use Nodes / NodeGraphs
 // TODO: Can we Refactor ModelLinks from Rendering to here
+
+#define zox_model_node_none 0
+#define zox_model_node_colors 1
+#define zox_model_node_fill 2
 
 #include "set/_.c"
 #include "com/_.c"

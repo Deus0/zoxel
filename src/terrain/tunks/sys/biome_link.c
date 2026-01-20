@@ -43,7 +43,8 @@ zox_sys2(BiomeLinkSystem) {
             if (zox_valid(biome)) {
                 tlink->value = tunk;
                 blink->value = biome;
-                zox_log("Inside new Biome [%s]", blink->value ? zox_get_name(blink->value) : "None");
+
+                zox_logv("Inside new Biome [%s]", blink->value ? zox_get_name(blink->value) : "None");
 
                 // Set Sky Colors
                 zox_geter(biome, Colors, bcolors);
