@@ -3,7 +3,9 @@ entity spawn_model_nodegraph_slime(ecs* world, entity p) {
 
     entity e = spawn_node_model(world, p, zox_model_node_colors);
 
-    entity e2 = spawn_node_model(world, p, zox_model_node_fill);
+    byte3 core_position = byte3_single(1);
+    byte3 core_size = byte3_single(30);
+    entity e2 = spawn_node_model_at(world, p, zox_model_node_fill, core_position, core_size);
     new_link_single_node(world, e, e2);
 
     byte eye_ridge = 4;

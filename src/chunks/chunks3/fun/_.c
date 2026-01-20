@@ -14,3 +14,4 @@
 #include "chunk_entity_links.c"
 #include "debug.c"
 #include "settings.c"
+#include "paint.c"

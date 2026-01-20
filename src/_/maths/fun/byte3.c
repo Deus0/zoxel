@@ -119,3 +119,8 @@ static inline byte3 byte3_scale(const byte3 v, const int m) {
 static inline byte3 byte3_inverse_scale(const byte3 v, const int m) {
     return (byte3) { v.x / m, v.y / m, v.z / m };
 }
+
+
+static inline byte byte3_distance(const byte3 a, const byte3 b) {
+    return (byte) ((int) sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z)));
+}
