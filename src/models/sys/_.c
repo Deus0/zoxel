@@ -2,6 +2,7 @@
 #include "generation.c"
 #include "colors.c"
 #include "fill.c"
+#include "paint.c"
 realm_clear_system(ModelLinks);
 
 void define_systems_models(ecs* world) {
@@ -41,6 +42,15 @@ void define_systems_models(ecs* world) {
 
     zox_system(
         ColorsModelNodeSystem,
+        zoxp_voxels_write,
+        [in] nodes.NodeBegin,
+        [in] nodes.NodeLink,
+        [in] rendering.ModelLink,
+        [out] nodes.NodeEnd
+    );
+
+    zox_system(
+        PaintModelNodeSystem,
         zoxp_voxels_write,
         [in] nodes.NodeBegin,
         [in] nodes.NodeLink,

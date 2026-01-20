@@ -29,6 +29,7 @@
 #define zox_model_node_none 0
 #define zox_model_node_colors 1
 #define zox_model_node_fill 2
+#define zox_model_node_paint 3
 
 #include "set/_.c"
 #include "com/_.c"
