@@ -1,10 +1,6 @@
 // TODO: Spawn basic Window + Speech Text + Confirm Button
 
-entity spawn_dialogue_ui(
-    ecs* world,
-    const entity prefab,
-    const entity player
-) {
+entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     // zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
@@ -21,11 +17,11 @@ entity spawn_dialogue_ui(
         .size = canvas_size
     };
     ElementSpawnData element_data = {
-        .prefab = prefab,
+        .prefab = p,
         .size = (int2) { 720, 200 },
         .anchor = (float2) { 0.5f, 0.8f },
     };
-    const entity e = spawn_window2(
+    entity e = spawn_window2(
         world,
         canvas_data,
         canvas_data,
@@ -61,9 +57,8 @@ entity spawn_dialogue_ui(
             .anchor = float2_half,
         },
     };
-    const entity zext = spawn_zext(world, &speech_text_data2);
-    add_to_Children(&window_children, zext);
-
+    entity text = spawn_zext(world, &speech_text_data2);
+    add_to_Children(&window_children, text);
 
     // add confirm button at bottom right
     // Spawn a small button per choice, for max choices, then enable disable them after text finishes animating
@@ -85,7 +80,7 @@ entity spawn_dialogue_ui(
         .outline = button_outline
     };
 
-    const entity button = spawn_button(
+    entity button = spawn_button(
         world,
         canvas_data,
         parent_data,

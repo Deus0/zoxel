@@ -1,13 +1,13 @@
-entity spawn_dialogue_run(
+entity spawn_process_dialogue(
     ecs* world,
-    entity prefab,
-    entity tree,
+    entity p,
+    entity node,
     entity speaker_a,
     entity speaker_b
 ) {
-    zox_instance(prefab);
-    zox_name("dialogue_run");
-    zox_set(e, NodetreeLink, { tree });
+    zox_instance(p);
+    zox_name("dialogue_process");
+    zox_set(e, NodeStartLink, { node });
     // Start the run!
     zox_set(e, NodetreeBegin, { zox_dirty_trigger });
     SpeakerLinks speakers = (SpeakerLinks) { 0 };

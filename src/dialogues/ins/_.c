@@ -1,4 +1,3 @@
-#include "tree.c"
-#include "leaf.c"
-#include "run.c"
+#include "node.c"
+#include "process.c"
 #include "ui.c"

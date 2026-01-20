@@ -1,8 +1,4 @@
-entity spawn_model_grass(
-    ecs* world,
-    color c,
-    const lint seed
-) {
+entity spawn_model_grass(ecs* world, color c, lint seed) {
     // properties
     srand(seed);
     c = color_mutate(c, 40);
@@ -24,7 +20,7 @@ entity spawn_model_grass(
             place_count = 1;
         }
 
-        const entity e2 = spawn_vox_basic(
+        entity e2 = spawn_vox_basic(
             world,
             prefab_vox,
             max_render_depth,

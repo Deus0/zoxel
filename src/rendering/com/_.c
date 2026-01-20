@@ -45,7 +45,8 @@ zoxc_arrayd(MeshColorRGBs, color_rgb)
 // Models
 zoxc_entities(ModelLinks)
 zoxc_entity(ModelLink);                 // a render instance links to model
-zoxc_array(ModelLods, entity, 6);       // a model has multiple models per LOD
+#define model_lods_max_length 6
+zoxc_array(ModelLods, entity, model_lods_max_length);       // a model has multiple models per LOD
 
 static inline int2 get_texture_size(ecs* world, entity e) {
     return zox_get_value(e, TextureSize);

@@ -6,7 +6,7 @@ void define_systems_nodes(ecs* world) {
     zox_system(
         NodetreeBeginSystem,
         EcsOnUpdate,
-        [in] NodetreeLink,
+        [in] NodeStartLink,
         [in] NodetreeBegin,
         [out] NodeLink
     );

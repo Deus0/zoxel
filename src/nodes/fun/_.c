@@ -11,3 +11,9 @@ void delete_nodes(ecs* world, entity e) {
     }
     zox_delete(e);
 }
+
+void new_link_single_node(ecs* world, entity e, entity e2) {
+    NodeLinks links = (NodeLinks) { 0 };
+    add_to_NodeLinks(&links, e2);
+    zox_set_ptr(e, NodeLinks, links);
+}

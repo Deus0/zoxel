@@ -1,12 +1,12 @@
 zox_sys2(NodetreeBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(NodetreeLink);
+    zox_sys_in(NodeStartLink);
     zox_sys_in(NodetreeBegin);
     zox_sys_out(NodeLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(NodetreeLink, start);
+        zox_sys_i(NodeStartLink, start);
         zox_sys_i(NodetreeBegin, state);
         zox_sys_o(NodeLink, current);
 

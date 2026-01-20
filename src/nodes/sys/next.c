@@ -1,3 +1,6 @@
+// NOTE: This runs from a Node Process
+
+// System handles the next node process
 zox_sys2(NextNodeSystem) {
     zox_sys_world();
     zox_sys_begin();

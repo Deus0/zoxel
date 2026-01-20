@@ -18,9 +18,9 @@
 #include "tst/_.c"
 
 zox_begin_module(Dialogues)
-    add_hook_spawn_prefabs(spawn_prefabs_dialogues);
     define_components_dialogues(world);
     define_systems_dialogues(world);
+    add_hook_spawn_prefabs(spawn_prefabs_dialogues);
 zox_end_module(Dialogues)
 
 #endif

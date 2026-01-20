@@ -120,8 +120,8 @@ zox_sys2(Characters3SpawnSystem) {
                 continue;
             }
 
-            zox_geter_value(model, MaxRenderDepth, byte, max_render_depth);
-            const byte render_depth = camera_distance_to_npc_render_depth(render_distance->value, max_render_depth);
+            zox_geter_value(model, MaxRenderDepth, byte, mdepth);
+            byte render_depth = camera_distance_to_npc_render_depth(render_distance->value, mdepth);
 
             // 2) find a place for our new npc
             // sometimes cannot find a position

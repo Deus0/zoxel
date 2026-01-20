@@ -116,7 +116,7 @@ void define_systems_controllers3D(ecs *world) {
         [in] triggers.TriggerActionB,
         [in] vrays.RaycastVoxelData,
         [in] players.PlayerLink,
-        [out] dialogues.DialogueRunLink
+        [out] dialogues.DialogueProcessLink
     );
     zox_system(
         PlayerDialogueSystem,
@@ -130,7 +130,7 @@ void define_systems_controllers3D(ecs *world) {
         EcsOnUpdate,
         [in] triggers.TriggerActionE,
         [in] players.PlayerLink,
-        [out] dialogues.DialogueRunLink
+        [out] dialogues.DialogueProcessLink
     );
     zox_system(
         DialogueEndSystem,

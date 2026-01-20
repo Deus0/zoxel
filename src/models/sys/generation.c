@@ -2,8 +2,6 @@
 // todo: split processes up to nodes
 // todo: add unique colors as a property too
 zox_sys2(VoxGenerationSystem) {
-    const byte default_unique_colors = 6;
-    const float default_color_range = 0.14f;
     zox_ts_begin(vox_generation);
     zox_sys_world();
     zox_sys_begin();
@@ -44,10 +42,11 @@ zox_sys2(VoxGenerationSystem) {
         }
 
         const byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_gett_value(e, VoxUniqueColors) : default_unique_colors;
+        byte vregions = zox_has(e, VRegions) ? zox_gett_value(e, VRegions) :  16;
         const float color_rr = zox_has(e, VoxColorRange) ? zox_gett_value(e, VoxColorRange) : default_color_range;
+
+
         const float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
-
-
         const byte node_depth = nodeDepth->value;
         // nodeDepth->value = node_depth;
         const byte colors_count = unique_colors + is_generate_vox_outlines;
@@ -66,11 +65,6 @@ zox_sys2(VoxGenerationSystem) {
         }
         if (is_generate_vox_outlines) {
             colors->value[unique_colors] = (color_rgb) { 0, 0, 0 };
-        }
-
-        byte vregions = 16;
-        if (zox_has(e, VRegions)) {
-            vregions = zox_get_value(e, VRegions);
         }
 
         // Write Locks node
@@ -216,11 +210,7 @@ zox_sys2(VoxGenerationSystem) {
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
 
-            build_vox_bricks(
-                node,
-                node_depth,
-                voxel_range,
-                black_voxel_3);
+            build_vox_bricks(node, node_depth, voxel_range, black_voxel_3);
 
         } else if (voxType->value == vox_type_flowers) {
 

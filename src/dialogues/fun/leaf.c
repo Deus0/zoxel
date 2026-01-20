@@ -10,9 +10,3 @@ void set_node_speech(ecs* world, entity e, char* text) {
     // zox_log("Set Node: [%s]", text);
     set_DialogueText(world, e, text);
 }
-
-void new_link_single_node(ecs* world, entity e, entity e2) {
-    NodeLinks links = (NodeLinks) { 0 };
-    add_to_NodeLinks(&links, e2);
-    zox_set_ptr(e, NodeLinks, links);
-}

@@ -41,24 +41,40 @@ zox_sys2(ModelsRealmSpawnSystem) {
 
         // spawn slime like npc
         {
+            lint slime_seed =  266 * i;
+            color slime_color = colors->value[3];
+
+            // Create a blueprint for slime
+            entity slime_node = spawn_model_nodegraph(world, prefab_node_model, 0, 1);
+
+            // We should make a generic model spawn function here that process uses
+
             zox_make_neww(e2)
-            zox_set_unique_name(e2, "model_group_slem");
-            zox_add_tag(e2, ModelCharacter)
+            zox_set_unique_name(e2, "model_variants_slime");
+            zox_add_tag(e2, ModelCharacter);
 
             ModelLinks variants = (ModelLinks) { 0 };
-            for (int i = 0; i < grass_variants; i++) {
-                entity model = spawn_model_grass(world,
-                    (color) { grass_color.g, grass_color.b, grass_color.r, grass_color.a },
-                    2666 * i);
+            for (int j = 0; j < grass_variants; j++) {
+                lint variant_seed = slime_seed + j * 1209;
+
+                entity model = spawn_model_lods(world, slime_color, variant_seed);
+
+                // Create a proocess node and link to model
+                entity process = spawn_process_model(world, prefab_process_model, slime_node, model);
+
+
                 add_to_ModelLinks(&variants, model);
             }
-            zox_set_ptr(e2, ModelLinks, variants)
+            zox_set_ptr(e2, ModelLinks, variants);
 
             add_to_ModelLinks(models, e2);
         }
 
         // top hat
         {
+            // spawn a model
+            // then spawn the node tree
+            // spawn a node process for every variant we spawn too with different seeds
 
         }
 

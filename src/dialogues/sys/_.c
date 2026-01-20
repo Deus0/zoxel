@@ -6,6 +6,7 @@ zox_declare_system_state_event(RealmDialoguetrees, GenerateRealm, zox_generate_r
 
 void define_systems_dialogues(ecs* world) {
     zox_define_system_state_event_1(RealmDialoguetrees, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+
     zox_system(
         DialogueSpeechSystem,
         EcsOnUpdate,
@@ -13,6 +14,7 @@ void define_systems_dialogues(ecs* world) {
         [in] nodes.NodeLink,
         [in] DialogueUILink
     );
+
     zox_system(
         AnimateText2System,
         EcsOnUpdate,
@@ -22,6 +24,7 @@ void define_systems_dialogues(ecs* world) {
         [out] texts.TextData,
         [out] texts.TextDirty
     );
+
     zox_system(
         CharacterDialogueSystem,
         EcsOnUpdate,

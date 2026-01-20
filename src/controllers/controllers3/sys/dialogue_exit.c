@@ -4,11 +4,11 @@ zox_sys2(DialogueExitSystem) {
     zox_sys_begin();
     zox_sys_in(TriggerActionE);
     zox_sys_in(PlayerLink);
-    zox_sys_out(DialogueRunLink);
+    zox_sys_out(DialogueProcessLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(TriggerActionE, state);
         zox_sys_i(PlayerLink, player);
-        zox_sys_o(DialogueRunLink, run);
+        zox_sys_o(DialogueProcessLink, run);
 
         if (state->value != zox_dirty_active) {
             continue;

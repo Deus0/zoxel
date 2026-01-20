@@ -19,7 +19,7 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
                 // delete_nodes(world, test_dialogue_tree);
             }
         } else {
-            const entity player = zox_players[0];
+            entity player = zox_players[0];
             if (!player) {
                 zox_log_error("Player is null");
                 return;
@@ -45,9 +45,9 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
 
             entity tree = dialogues->value[0];
 
-            test_dialogue_run = spawn_dialogue_run(
+            test_dialogue_run = spawn_process_dialogue(
                 world,
-                prefab_dialogue_run,
+                prefab_process_dialogue,
                 tree,
                 0,
                 0
@@ -64,7 +64,7 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
                 test_dialogue_ui
             );
 
-            zox_set(character, DialogueRunLink, { test_dialogue_run });
+            zox_set(character, DialogueProcessLink, { test_dialogue_run });
         }
     }
 }

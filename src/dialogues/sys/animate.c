@@ -23,9 +23,9 @@ zox_sys2(AnimateText2System) {
         if (passed > time->value) {
             passed = time->value;
         }
+
         size_t length = strlen(target->value);
         size_t animated_length = (passed / time->value) * length;
-
 
         // zox_log("Setting Text Target [%s] [%i/%i]", target->value, animated_length, length);
 

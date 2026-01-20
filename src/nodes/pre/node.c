@@ -1,4 +1,4 @@
-entity spawn_prefab_node_leaf(ecs *world) {
+entity spawn_prefab_node(ecs *world) {
     zox_prefab();
     zox_prefab_name("node");
     zox_add_tag(e, Node);
@@ -7,8 +7,8 @@ entity spawn_prefab_node_leaf(ecs *world) {
     return e;
 }
 
-entity spawn_node_leaf(ecs *world, const entity prefab) {
-    zox_instance(prefab);
+entity spawn_node_leaf(ecs *world, entity p) {
+    zox_instance(p);
     zox_name("node");
     return e;
 }

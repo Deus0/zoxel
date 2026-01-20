@@ -5,13 +5,13 @@ zox_sys2(DialogueBeginSystem) {
     zox_sys_in(TriggerActionB);
     zox_sys_in(RaycastVoxelData);
     zox_sys_in(PlayerLink);
-    zox_sys_out(DialogueRunLink);
+    zox_sys_out(DialogueProcessLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TriggerActionB, state);
         zox_sys_i(RaycastVoxelData, raycast);
         zox_sys_i(PlayerLink, player);
-        zox_sys_o(DialogueRunLink, run);
+        zox_sys_o(DialogueProcessLink, run);
 
         if (state->value != zox_dirty_active) {
             continue;
@@ -62,9 +62,9 @@ zox_sys2(DialogueBeginSystem) {
         // TODO: Set NPC State
         // TODO: Link Run to Player
         // entity dialogue = dialogues->value[0];
-        run->value = spawn_dialogue_run(
+        run->value = spawn_process_dialogue(
             world,
-            prefab_dialogue_run,
+            prefab_process_dialogue,
             tree,
             e,
             npc

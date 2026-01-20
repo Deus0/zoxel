@@ -20,8 +20,7 @@ void spawn_realm_dialoguetrees(ecs *world, const entity realm) {
         };
         entity e2 = spawn_dialogue_tree_texts(
             world,
-            prefab_dialogue_tree,
-            prefab_dialogue_leaf,
+            prefab_dialogue_node,
             texts,
             texts_count
         );
@@ -37,8 +36,7 @@ void spawn_realm_dialoguetrees(ecs *world, const entity realm) {
         };
         entity e2 = spawn_dialogue_tree_texts(
             world,
-            prefab_dialogue_tree,
-            prefab_dialogue_leaf,
+            prefab_dialogue_node,
             texts,
             texts_count
         );

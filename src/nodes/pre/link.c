@@ -9,11 +9,11 @@ entity spawn_prefab_node_link(ecs *world) {
 
 entity spawn_node_link(
     ecs *world,
-    const entity prefab,
-    const entity e1,
-    const entity e2
+    entity p,
+    entity e1,
+    entity e2
 ) {
-    zox_instance(prefab);
+    zox_instance(p);
     zox_name("nodelink");
     zox_set(e, NodeParent, { e1 });
     zox_set(e, NodeNext, { e2 });
