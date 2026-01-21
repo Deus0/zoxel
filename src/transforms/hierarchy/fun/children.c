@@ -16,7 +16,7 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
     }
 
     zox_geter(e, Children, children);
-    for (int i = 0; i < children->length; i++) {
+    for (byte i = 0; i < children->length; i++) {
         entity e2 = children->value[i];
 
         if (!zox_valid(e2)) {

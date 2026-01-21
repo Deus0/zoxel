@@ -65,8 +65,8 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
     // more data
     zox_geter_value(player, CanvasLink, entity, canvas);
     const char* header_label = "New Realm";
-    const int max_labels = max_settings;
-    const byte layer = 1;
+    int max_labels = max_settings;
+    byte layer = 1;
 
     // # Window #
     LayoutParentData canvas_data = {
@@ -94,7 +94,7 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
 
     Children children = (Children) { 0 };
     window_data.children = &children;
-    const entity e = spawn_window2(
+    entity e = spawn_window2(
         world,
         canvas_data,
         window_parent_data,
@@ -104,15 +104,11 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
         1
     );
     zox_add_tag(e, MenuNewRealm);
+    zox_add_tag(e, NavigationWindow);
 
     // # List #
     SpawnListElement elements[max_labels];
     int elements_count = 0;
-
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Enter",
-        .on_click = { &on_confirmed_new_realm },
-    };
 
     elements[elements_count++] = (SpawnListElement) {
         .type = 0,  // 0 is button or label for now
@@ -126,12 +122,17 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
         .text = seed_label,
     };
 
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Enter",
+        .on_click = { &on_confirmed_new_realm },
+    };
+
     /*elements[elements_count++] = (SpawnListElement) {
         .text = "Exit",
         .on_click = { &on_cancelled_new_realm },
     };*/
 
-    const byte visible_count = elements_count;
+    byte visible_count = elements_count;
 
     LayoutParentData list_parent_data = {
         .e = e,
@@ -161,7 +162,7 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
         .padding = list_padding,
         .margins = list_padding,
     };
-    const entity list = spawn_list(
+    entity list = spawn_list(
         world,
         canvas_data,
         list_parent_data,
@@ -180,14 +181,17 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
 }
 
 void button_event_new_game(ecs *world, const ClickEventData event) {
+
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuMain, menu);
+
     if (menu) {
         zox_delete(menu);
     } else {
         zox_log_error("Could not find main menu.");
     }
+
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
     lint seed = get_unique_time_seed();

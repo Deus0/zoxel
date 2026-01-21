@@ -3,6 +3,7 @@ typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef long int lint;
+typedef signed char sbyte;
 // typedef uint32_t uint;
 // typedef uint64_t ulong;
 

@@ -16,7 +16,7 @@ zox_sys2(ZeviceClickSystem) {
         zox_sys_o(ClickingEntity, clickingEntity);
         zox_sys_o(WindowTarget, windowTarget);
 
-        const entity device = deviceLink->value;
+        entity device = deviceLink->value;
         if (!zox_valid(device)) {
             zox_log_error(" device null from zevice [%lu]", it->entities[i])
             continue;
@@ -26,28 +26,32 @@ zox_sys2(ZeviceClickSystem) {
             continue;
         }
 
-        const entity player = zox_get_value(device, PlayerLink)
+        entity player = zox_get_value(device, PlayerLink)
         if (!player) {
             // zox_log(" ! device has null player [%lu]\n", device)
             continue;
         }
 
-        const byte device_mode = zox_get_value(player, DeviceMode)
-        const entity canvas = zox_get_value(player, CanvasLink)
-        unsigned click_type = 0;
+        byte device_mode = zox_get_value(player, DeviceMode)
+        entity canvas = zox_get_value(player, CanvasLink)
+        byte click_type = 0;
 
         if (zox_has(e, ZevicePointer)) {
-            const byte click_value = zox_get_value(e, ZevicePointer)
+            byte click_value = zox_get_value(e, ZevicePointer);
+
             if (devices_get_pressed_this_frame(click_value)) click_type = 1;
             else if (devices_get_released_this_frame(click_value)) click_type = 2;
         }
 
         if (zox_has(e, ZeviceButton)) {
-            const DeviceButtonType *deviceButtonType = zox_get(e, DeviceButtonType)
+            zox_geter(e, DeviceButtonType, deviceButtonType);
+
             if (deviceButtonType->value == zox_device_button_a) {
-                const ZeviceDisabled *zeviceDisabled = zox_get(e, ZeviceDisabled)
+                zox_geter(e, ZeviceDisabled, zeviceDisabled);
+
                 if (!zeviceDisabled->value) {
-                    const byte click_value = zox_get_value(e, ZeviceButton)
+                    byte click_value = zox_get_value(e, ZeviceButton);
+
                     if (devices_get_pressed_this_frame(click_value)) {
                         click_type = 1;
                     } else if (devices_get_released_this_frame(click_value)) {
@@ -75,8 +79,9 @@ zox_sys2(ZeviceClickSystem) {
                 // todo: set it's window to top
                 // now set WindowToTop entity to windowTarget->value
                 // then next in canvas system, reset windows layers to top of window stack
-                zox_set(canvas, WindowToTop, { windowTarget->value })
+                zox_set(canvas, WindowToTop, { windowTarget->value });
             }
+
             if (raycasterTarget->value && zox_has(raycasterTarget->value, Dragable)) {
                 byte drag_mode = zox_drag_mode_none;
                 if (device_mode == zox_device_mode_keyboardmouse) drag_mode = zox_drag_mode_mouse;

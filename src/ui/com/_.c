@@ -37,6 +37,8 @@ zoxc_state(ActiveStateDirty);
 zoxc_color(ActiveColor);
 
 // Navigating
+zox_tag(NavigationWindow);
+zox_tag(NavigationElement);
 zoxc_byte(NavigatorState);
 zoxc_double(NavigatorTimer);
 
@@ -109,7 +111,6 @@ void define_components_elements(ecs *world) {
     zoxd_byte(ElementFontSize);
     zoxd_float(ElementBar);
     zoxd_float2(ElementBarSize);
-    zoxd(NavigatorTimer);
     zoxd_byte(HeaderHeight);
     zoxd_entity(WindowRaycasted);
     zoxd_entity(WindowTarget);
@@ -117,19 +118,24 @@ void define_components_elements(ecs *world) {
     zoxd_byte(WindowsCount);
     zoxd_byte(SetWindowLayer);
     zoxd_byte(WindowLayer);
-    zoxd_tag(ClickMakeSound);
-    zoxd_tag(Clickable);
-    zoxd_entity(ClickingEntity);
-    zoxd_entity(Clicker);
     zoxd_fixed_string(TooltipText);
 
     zoxd(ClickEvent);
     zoxd(TooltipEvent);
     zoxd(SlideEvent);
 
-    // States
-    zoxd_byte(NavigatorState);
+    // Click
+    zoxd_tag(Clickable);
+    zoxd_tag(ClickMakeSound);
     zoxd_byte(ClickState);
+    zoxd_entity(ClickingEntity);
+    zoxd_entity(Clicker);
+
+    // Navigation
+    zoxd_tag(NavigationWindow);
+    zoxd_tag(NavigationElement);
+    zoxd(NavigatorTimer);
+    zoxd_byte(NavigatorState);
 
     // Dragging
     zoxd_tag(Dragable);

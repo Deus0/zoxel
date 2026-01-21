@@ -1,5 +1,6 @@
 // TODO: Scale UI based on screen size
 byte ui_scale = 4;
+byte keyboard_navigation_mode = 0;
 
 #include "animations.c"
 #include "buttons.c"

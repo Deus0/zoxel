@@ -43,6 +43,7 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
     );
     zox_name("main_menu");
     zox_add_tag(e, MenuMain);
+    zox_add_tag(e, NavigationWindow);
 
     return e;
 }

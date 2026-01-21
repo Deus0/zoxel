@@ -19,6 +19,7 @@ zox_sys2(MouseElementSystem) {
             !zox_valid(zevice->value)) {
             continue;
         }
+
         zox_geter_value(zevice->value, DeviceLink, entity, device);
         if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
             continue;

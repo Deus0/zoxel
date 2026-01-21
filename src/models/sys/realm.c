@@ -51,7 +51,7 @@ zox_sys2(ModelsRealmSpawnSystem) {
             color slime_color = colors->value[3];
 
             // Create a blueprint for slime
-            byte3 rsize = (byte3) { 30, 16, 30 };
+            byte3 rsize = (byte3) { 30, 24, 30 };
             entity slime_node = spawn_model_nodegraph_slime(world, prefab_node_model);
 
             // We should make a generic model spawn function here that process uses

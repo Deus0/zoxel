@@ -8,7 +8,7 @@ void initialize_sdl_input() {
 }
 
 void spawn_connected_devices(ecs *world, entity app) {
-    local_keyboard = spawn_keyboard(world);
+    local_keyboard = spawn_keyboard(world, prefab_keyboard);
     local_mouse = spawn_mouse(world);
     local_touchscreen = spawn_touchscreen(world, prefab_touchscreen);
     zox_set(local_mouse, AppLink, { app })

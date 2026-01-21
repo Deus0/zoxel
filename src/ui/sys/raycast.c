@@ -27,18 +27,24 @@ zox_sys2(ElementRaycastSystem) {
             continue;
         }
 
-        zox_geter_value(player, DeviceMode, byte, device_mode);
-        if (device_mode != zox_device_mode_keyboardmouse && device_mode != zox_device_mode_touchscreen) {
+        zox_geter_value(player, DeviceMode, byte, dmode);
+
+        byte dmode_raycaster =
+            dmode == zox_device_mode_touchscreen ||
+            (!keyboard_navigation_mode && dmode == zox_device_mode_keyboardmouse);
+
+        if (!dmode_raycaster) {
             continue;
         }
 
-        const entity player_canvas = zox_get_value(player, CanvasLink)
-        const entity player_camera_ui = zox_gett_value(player_canvas, CameraLink);
-        const int2 position = raycaster->value;
+        entity player_canvas = zox_get_value(player, CanvasLink)
+        entity player_camera_ui = zox_gett_value(player_canvas, CameraLink);
+        int2 position = raycaster->value;
         int ui_layer = -1;
         entity ui_selected = 0;
         int window_layer = -1;
         entity window_selected = 0;
+
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
@@ -47,41 +53,51 @@ zox_sys2(ElementRaycastSystem) {
             zox_sys_in_2(Layer2D);
             zox_sys_in_2(RenderDisabled);
             for (int j = 0; j < it2.count; j++) {
-                zox_sys_i_2(RenderDisabled, renderDisabled);
+                zox_sys_i_2(RenderDisabled, rdisabled);
                 zox_sys_i_2(CanvasPosition, canvasPosition2);
                 zox_sys_i_2(LayoutSize, pixelSize2);
                 zox_sys_i_2(Layer2D, layer2D);
 
-                if (renderDisabled->value) {
+                if (rdisabled->value) {
                     continue;
                 }
-                const entity e2 = it2.entities[j];
-                const entity camera = get_root_canvas_camera(world, e2);
+
+                entity e2 = it2.entities[j];
+                entity camera = get_root_canvas_camera(world, e2);
                 if (!camera) {
                     continue;
                 }
+
                 if (player_camera_ui != camera) {
                     continue; // only do checks for player canvases
                 }
-                const int2 pixelSize = pixelSize2->value;
-                const int2 canvas_position = zox_get_value(camera, ScreenPosition)
-                const int2 canvas_size = zox_get_value(camera, ScreenDimensions)
-                const byte ray_in_viewport = position.x >= canvas_position.x && position.x <= canvas_position.x + canvas_size.x && position.y >= canvas_position.y && position.y <= canvas_position.y + canvas_size.y;
+
+                int2 pixelSize = pixelSize2->value;
+                int2 canvas_position = zox_get_value(camera, ScreenPosition);
+                int2 canvas_size = zox_get_value(camera, ScreenDimensions);
+
+                byte ray_in_viewport = position.x >= canvas_position.x && position.x <= canvas_position.x + canvas_size.x && position.y >= canvas_position.y && position.y <= canvas_position.y + canvas_size.y;
+
                 if (!ray_in_viewport) {
                     continue;
                 }
+
                 int2 viewport_position = canvasPosition2->value;
                 viewport_position.x += canvas_position.x;
                 viewport_position.y += canvas_position.y;
                 // bounds should be offset with canvas position
-                const int4 ui_bounds = { viewport_position.x - pixelSize.x / 2, viewport_position.x + pixelSize.x / 2, viewport_position.y - pixelSize.y / 2,  viewport_position.y + pixelSize.y / 2};
-                const byte was_raycasted = position.x >= ui_bounds.x && position.x <= ui_bounds.y && position.y >= ui_bounds.z && position.y <= ui_bounds.w;
+                int4 ui_bounds = { viewport_position.x - pixelSize.x / 2, viewport_position.x + pixelSize.x / 2, viewport_position.y - pixelSize.y / 2,  viewport_position.y + pixelSize.y / 2};
+
+                byte was_raycasted = position.x >= ui_bounds.x && position.x <= ui_bounds.y && position.y >= ui_bounds.z && position.y <= ui_bounds.w;
+
                 if (was_raycasted) {
-                    const unsigned window_raycasted = zox_has(e2, WindowRaycastTarget);
+                    byte window_raycasted = zox_has(e2, WindowRaycastTarget);
+
                     if (layer2D->value > ui_layer) { // !window_raycasted &&
                         ui_layer = layer2D->value;
                         ui_selected = e2;
                     }
+
                     if (window_raycasted && layer2D->value > window_layer) {
                         if (!zox_has(e2, Window)) {
                             // if header/body use parent
@@ -96,13 +112,16 @@ zox_sys2(ElementRaycastSystem) {
             }
         }
         zox_sys_query_end();
+
         // if only exists to block others (like Window's)
         if (ui_selected && !zox_has(ui_selected, SelectState)) {
             ui_selected = 0;
         }
+
         if (raycasterTarget->value != ui_selected) {
             raycaster_select_element(world, e, ui_selected);
         }
+
         if (windowRaycasted->value != window_selected) {
             raycaster_select_window(world, e, window_selected);
         }

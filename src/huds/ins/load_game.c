@@ -85,9 +85,9 @@ entity spawn_menu_load(
         .on_click = { &button_event_load_cancel },
     };*/
 
-    const entity e = spawn_window_list(
+    entity e = spawn_window_list(
         world,
-        prefab_window_invisible,
+        prefab_menu_game, // prefab_window_invisible,
         player,
         header_label,
         header_font_size,
@@ -98,8 +98,9 @@ entity spawn_menu_load(
         (ClickEvent) { &button_event_load_cancel },
         1
     );
-    zox_add_tag(e, MenuLoad);
     zox_name("menu_load");
+    zox_add_tag(e, MenuLoad);
+    zox_add_tag(e, NavigationWindow);
 
     return e;
 }

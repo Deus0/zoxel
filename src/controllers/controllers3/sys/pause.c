@@ -17,6 +17,7 @@ zox_sys2(PlayerPauseSystem) {
         if (!zox_valid(game->value)) {
             continue;
         }
+
         zox_geter_value(game->value, GameState, byte, game_state);
         if (!(game_state == zox_game_playing || game_state == zox_game_paused)) {
             continue;
@@ -24,25 +25,30 @@ zox_sys2(PlayerPauseSystem) {
 
         byte did_toggle_pause = 0;
         for (int j = 0; j < devices->length; j++) {
-            const entity device = devices->value[j];
+            entity device = devices->value[j];
+
             if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
                 continue;
             }
+
             if (zox_has(device, Keyboard)) {
                 zox_geter(device, Keyboard, keyboard);
-                if (keyboard->escape.pressed_this_frame ||
-                    (!keyboard->left_alt.is_pressed && !keyboard->right_alt.is_pressed && keyboard->enter.pressed_this_frame)) {
+                if (keyboard->escape.pressed_this_frame
+                    /* || (!keyboard->left_alt.is_pressed && !keyboard->right_alt.is_pressed && keyboard->enter.pressed_this_frame)*/
+                ) {
                     did_toggle_pause = 1;
                     break;
                 }
             } else if (zox_has(device, Gamepad)) {
-                const Children *zevices = zox_get(device, Children)
+                zox_geter(device, Children, zevices);
+
                 for (int k = 0; k < zevices->length; k++) {
-                    const entity zevice = zevices->value[k];
+                    entity zevice = zevices->value[k];
 
                     if (!zox_has(zevice, ZeviceButton)) {
                         continue;
                     }
+
                     zox_geter_value(zevice, ZeviceDisabled, byte, disabled);
                     if (disabled) {
                         continue;

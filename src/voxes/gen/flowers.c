@@ -1,5 +1,3 @@
-typedef signed char sbyte;
-
 void build_vox_flower_patch(
     VoxelNode *node,
     const byte node_depth,

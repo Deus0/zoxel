@@ -82,8 +82,9 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
         (ClickEvent) { &button_event_menu_main },
         1
     );
-    zox_add_tag(e, MenuOptions);
     zox_name("menu_options");
+    zox_add_tag(e, MenuOptions);
+    zox_add_tag(e, NavigationWindow);
 
     return e;
 }

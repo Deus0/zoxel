@@ -22,7 +22,7 @@
 #include "inputs/mouse_element.c"
 #include "inputs/device_click.c"
 #include "inputs/zevice_click.c"
-
+#include "inputs/keyboard_click.c"
 
 #include "active/animate.c"
 
@@ -74,6 +74,18 @@ void define_systems_elements(ecs *world) {
         [in] raycasts.RaycasterTarget,
         [in] WindowRaycasted,
         [in] hierarchys.Children,
+        [out] ClickingEntity,
+        [out] WindowTarget,
+        [none] inputs.Device
+    );
+    zox_system(
+        KeyboardClickSystem,
+        EcsPostUpdate,
+        [in] inputs.DeviceDisabled,
+        [in] players.PlayerLink,
+        [in] raycasts.RaycasterTarget,
+        [in] WindowRaycasted,
+        [in] inputs.Keyboard,
         [out] ClickingEntity,
         [out] WindowTarget,
         [none] inputs.Device
