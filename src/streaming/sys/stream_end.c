@@ -68,7 +68,9 @@ zox_sys2(StreamEndEventSystem) {
         }
 
         // also checks if loaded enough chunks
-        uint chunk_required = (terrain_lod_far * 2 + 1) + (render_distance_y * 2 + 1);
+        int xz_chunks = terrain_lod_near * 2 + 1;
+        int y_chunks = render_distance_y * 2 + 1;
+        uint chunk_required = xz_chunks * xz_chunks * y_chunks;
 
         if (!running && chunks_loaded >= chunk_required) {
             zox_log("Terrain Loaded: @ [%f] w [%i]", zox_current_time, chunks_loaded);
