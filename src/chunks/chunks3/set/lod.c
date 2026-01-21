@@ -3,10 +3,13 @@ byte vox_lod_near = 1;
 byte terrain_lod_near = 3;      // also character far
 byte terrain_lod_far = 8;       // 1 | 2 | 4 | 8 | 16
 byte render_distance_y = 1;     // vertical
-// Sub Divisions
-byte terrain_depth = 4;         // 4 | 5
-byte block_vox_depth = 5;       // 4 | 5
+
+// TODO: Fix these, block_vox_depth is broken
+// Sub Divisions - 4 | 5
+byte terrain_depth = 4;
 byte character_depth = 5;
+byte block_vox_depth = 5;
+
 // options
 byte terrain_lod_far_buffer = 2;    // buffer the near to far - adds a minimum low lods
 byte terrain_lod_near_min = 1;
@@ -19,9 +22,9 @@ extern int count_entities_npc(ecs *world);
 
 uint debug_label_lods(
     ecs *world,
-    const entity player,
+    entity player,
     char *buffer,
-    const uint size,
+    uint size,
     uint index
 ) {
     (void) player;

@@ -3,6 +3,9 @@
 #include "colors.c"
 #include "fill.c"
 #include "paint.c"
+#include "body.c"
+#include "merge.c"
+
 realm_clear_system(ModelLinks);
 
 void define_systems_models(ecs* world) {

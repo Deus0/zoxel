@@ -5,11 +5,11 @@ const float quad_depth_buffer = 0.04f;
 // TODO: Use only Local Voxel Position With Chunk to get PositionF of Block - Cleaner code
 
 // using DDA for raycasting
-void create_raycast_gizmo(
+/*void create_raycast_gizmo(
     ecs *world,
     const RaycastVoxelData *data
 ) {
-}
+}*/
 
 zox_sys2(RaycastGizmoSystem) {
     zox_sys_world();
@@ -19,6 +19,7 @@ zox_sys2(RaycastGizmoSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RaycastVoxelData, data);
         zox_sys_o(GizmoLink, link);
+
         crosshair_set_type(world, local_crosshair, data->result);
 
         byte ray_hit = data->result;
@@ -31,7 +32,7 @@ zox_sys2(RaycastGizmoSystem) {
                 link->value = spawn_quad_lines(
                     world,
                     prefab_quad_lines,
-                    color_black,
+                    hit_terrain_color,
                     quad_position,
                     quad_rotation,
                     raycaster_quad_thickness,
@@ -92,7 +93,7 @@ zox_sys2(RaycastGizmoSystem) {
         if (ray_hit != rayhit_terrain) {
             if (zox_valid(link->value)) {
                 // zox_log("hiding gizmo");
-                const float3 hide_position = (float3) { 0, -666, 0 };
+                float3 hide_position = (float3) { 0, -666, 0 };
                 zox_muter(link->value, Position3D, position);
                 position->value = hide_position;
             }

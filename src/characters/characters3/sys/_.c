@@ -11,13 +11,14 @@ void define_systems_characters3(ecs *world) {
 
     zox_system(
         CharacterSaveSystem,
-        EcsOnUpdate,
+        EcsOnStore,
         [in] realms.RealmLink,
         [in] transforms3.Position3D,
         [in] transforms3.Euler,
-        [out] CharacterSaveHash,
-        [none] SaveCharacter
+        [out] characters3.CharacterSaveHash,
+        [none] characters3.SaveCharacter
     );
+
     zox_system(
         CharacterRenderDepthSystem,
         EcsOnUpdate,
@@ -25,6 +26,7 @@ void define_systems_characters3(ecs *world) {
         [out] chunks3.ChunkMeshDirty,
         [none] Character3
     );
+
     zox_system(
         Character3TypeDebugSystem,
         EcsOnUpdate,

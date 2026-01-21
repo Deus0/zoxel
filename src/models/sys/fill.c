@@ -7,27 +7,42 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
         return;
     }
 
-    zox_geter_value(n, Shape3Position, byte3, position);
-    zox_geter_value(n, Shape3Size, byte3, size);
+    zox_geter_value_non_const(n, Shape3Position, byte3, position);
+    zox_geter_value_non_const(n, Shape3Size, byte3, size);
 
     zox_geter(v, ColorRGBs, colors);
     zox_geter_value(v, NodeDepth, byte, ndepth);
     zox_muter(v, VoxelNode, voctree);
-    byte vregions = zox_has(v, VRegions) ? zox_gett_value(v, VRegions) : 16;
+    // byte vregions = zox_has(v, VRegions) ? zox_gett_value(v, VRegions) : 16;
     byte vlength = powers_of_two[ndepth];
+
+    // Change transform for vlength difference
+
+    // zox_log("OG Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
+
+    float3 positionf = (float3) { position.x / 32.0f, position.y / 32.0f, position.z / 32.0f };
+    position = (byte3) { positionf.x * vlength, positionf.y * vlength, positionf.z * vlength };
+
+    float3 sizef = (float3) { size.x / 32.0f, size.y / 32.0f, size.z / 32.0f };
+    size = (byte3) { sizef.x * vlength, sizef.y * vlength, sizef.z * vlength };
+
+    if (size.x == 0) size.x = 1;
+    if (size.y == 0) size.y = 1;
+    if (size.z == 0) size.z = 1;
+
+    // zox_log("New Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
 
     byte2 vrange = (byte2) { 1, colors->length - 1 };
     byte black = colors->length;
 
     // Run for our fill
     write_lock_VoxelNode(voctree);
-
         // zox_log("Filling Cube at [%ix%ix%i] s[%ix%ix%i]", position.x, position.y, position.z, size.x, size.y, size.z);
         // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
-        voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
+        // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
+        voctree_fill_ellipsoid(voctree, ndepth, vrange.x, position, size);
 
-        // build_vox_soil(voctree, ndepth, vrange, black, vregions);
-
+    // build_vox_soil(voctree, ndepth, vrange, black, vregions);
     /*build_vox_bricks(voctree, ndepth, vrange, black);
     if (is_generate_vox_outlines) {
         vox_outlines(voctree, ndepth, black);

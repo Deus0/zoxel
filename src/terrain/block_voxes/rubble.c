@@ -1,16 +1,11 @@
 entity spawn_realm_block_rubble(
     ecs *world,
-    const byte index,
+    byte index,
     char* name,
-    const color block_color,
-    const byte vox_type
+    color block_color,
+    byte vox_type
 ) {
-    const entity vox = spawn_vox_basic(
-        world,
-        prefab_vox,
-        block_vox_depth,
-        block_vox_depth
-    );
+    entity vox = spawn_vox_basic(world, prefab_vox, block_vox_depth, block_vox_depth);
     zox_set_unique_name(vox, "block_rubble");
     zox_set(vox, VoxType, { vox_type });
     zox_set(vox, Color, { block_color });
@@ -37,7 +32,7 @@ entity spawn_realm_block_rubble(
     // TODO: test non instanced voxes
     process_disabled_block_vox(world, &spawn_data, 1);
 
-    const entity e = spawn_block_vox_meta(world, spawn_data);
+    entity e = spawn_block_vox_meta(world, spawn_data);
     if (disable_block_voxes) {
         return e;
     }

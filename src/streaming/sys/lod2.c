@@ -51,7 +51,6 @@ zox_sys2(Chunk2LodSystem) {
         int2 stream_point = find_closest_point2(streamers, streamers_count, position->value);
 
         byte rdistance = get_camera_chunk2_distance(stream_point, position->value);
-        // byte render_distance = get_camera_chunk_distance_xz(stream_point, position->value);
 
         if (distance->value != rdistance) {
             distance->value = rdistance;

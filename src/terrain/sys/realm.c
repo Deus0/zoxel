@@ -1,6 +1,6 @@
 // TODO: Remove [spawn_blocks_data] Hooks and just use systems
 
-void clear_realm_blocks(ecs *world, const entity realm) {
+void clear_realm_blocks(ecs *world, entity realm) {
     if (!realm) {
         return;
     }
@@ -31,8 +31,8 @@ void spawn_realm_blocks(ecs *world, entity realm) {
     zox_geter(realm, Colors, colors);
     zox_geter(realm, ModelLinks, models);
 
-    const byte target_depth = block_vox_depth;
-    const byte texture_dim = powers_of_two_byte[target_depth];
+    byte target_depth = block_vox_depth;
+    byte texture_dim = powers_of_two_byte[target_depth];
     voxel_texture_size = (int2) { texture_dim, texture_dim };
 
     color dirt_color;

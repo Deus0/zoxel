@@ -1,4 +1,21 @@
-entity spawn_model_lods(ecs* world, color c, lint seed) {
+entity spawn_model(ecs *world, entity p, byte mdepth, byte ndepth, byte3 rsize) {
+
+    byte ddepth = mdepth - ndepth + 1;
+    float voxel_scale = ((float) ddepth) / 64.0f;
+
+    zox_instance(p);
+    zox_set(e, NodeDepth, { ndepth });
+    zox_set(e, BlockScale, { voxel_scale });
+    zox_set(e, ChunkSize, { byte3_to_int3(rsize) });
+
+    // NOTE: Do instanced models need these??
+    spawn_gpu_mesh(world, e);
+    spawn_gpu_colors(world, e);
+
+    return e;
+}
+
+entity spawn_model_lods(ecs* world, color c, lint seed, byte3 rsize) {
     // properties
     srand(seed);
     c = color_mutate(c, 40);
@@ -16,13 +33,15 @@ entity spawn_model_lods(ecs* world, color c, lint seed) {
     for (int i = 0; i <= mdepth; i++) {
         byte rdepth = i;
         byte node_length = powers_of_two[rdepth];
+        byte ddepth = mdepth - rdepth + 1;
 
-        entity e2 = spawn_vox_basic(
-            world,
-            prefab_vox,
-            mdepth,
-            rdepth
-        );
+        byte3 rsized = rsize;
+
+        rsized.x /= ddepth;
+        rsized.y /= ddepth;
+        rsized.z /= ddepth;
+
+        entity e2 = spawn_model(world, prefab_vox, mdepth, rdepth, rsized);
 
         zox_set_unique_name(e2, "model_lod");
 
@@ -36,6 +55,14 @@ entity spawn_model_lods(ecs* world, color c, lint seed) {
         zox_set(e2, MaxRenderDepth, { mdepth });
 
         lods.value[i] = e2;
+
+        /*rsize.x /= 2;
+        rsize.y /= 2;
+        rsize.z /= 2;
+
+        if (rsize.x == 0) rsize.x = 1;
+        if (rsize.y == 0) rsize.y = 1;
+        if (rsize.z == 0) rsize.z = 1;*/
     }
 
     zox_set_ptr(e, ModelLods, lods);

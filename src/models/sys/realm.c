@@ -24,7 +24,8 @@ zox_sys2(ModelsRealmSpawnSystem) {
 
         // models
         // grass - contains a bunch of variants
-        // todo: set different heights
+        // TODO: set different heights
+        // TODO: Spawn this when spawning Block Grass
         {
             zox_make_neww(e2)
             zox_set_unique_name(e2, "model_group_grass");
@@ -41,10 +42,16 @@ zox_sys2(ModelsRealmSpawnSystem) {
 
         // spawn slime like npc
         {
+            // TODO: Shift Properties from Blueprint to Variant (with seed) - i.e. use Node Process Data
+
+            // TODO: Make Vox Size per variant and not blueprint
+            // TODO: Make Eye Size per variant and not blueprint
+
             lint slime_seed =  266 * i;
             color slime_color = colors->value[3];
 
             // Create a blueprint for slime
+            byte3 rsize = (byte3) { 30, 16, 30 };
             entity slime_node = spawn_model_nodegraph_slime(world, prefab_node_model);
 
             // We should make a generic model spawn function here that process uses
@@ -58,7 +65,7 @@ zox_sys2(ModelsRealmSpawnSystem) {
             for (int j = 0; j < grass_variants; j++) {
                 lint vseed = slime_seed + j * 1209;
 
-                entity model = spawn_model_lods(world, slime_color, vseed);
+                entity model = spawn_model_lods(world, slime_color, vseed, rsize);
 
                 // Create a proocess node and link to model
                 entity process = spawn_process_model(world, prefab_process_model, slime_node, model);

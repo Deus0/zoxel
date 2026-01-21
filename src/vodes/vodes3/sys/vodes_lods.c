@@ -19,19 +19,20 @@ void set_vode_lods(ecs *world, const VoxelNode *node, byte render_depth) {
 }
 
 zox_sys2(VodesLodSystem) {
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(RenderDistanceDirty)
-    zox_sys_in(RenderDistance)
-    zox_sys_in(VoxelNode)
-    zox_sys_in(BlocksSpawned)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(RenderDistanceDirty);
+    zox_sys_in(RenderDistance);
+    zox_sys_in(VoxelNode);
+    zox_sys_in(BlocksSpawned);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDistanceDirty, renderDistanceDirty)
-        zox_sys_i(RenderDistance, renderDistance)
-        zox_sys_i(BlocksSpawned, blocksSpawned)
-        zox_sys_i(VoxelNode, voxelNode)
+        zox_sys_i(RenderDistanceDirty, renderDistanceDirty);
+        zox_sys_i(RenderDistance, renderDistance);
+        zox_sys_i(BlocksSpawned, blocksSpawned);
+        zox_sys_i(VoxelNode, voxelNode);
+
         if (renderDistanceDirty->value == zox_dirty_active && blocksSpawned->value) {
-            const byte render_depth = camera_distance_to_block_vox_depth(renderDistance->value);
+            byte render_depth = camera_distance_to_block_vox_depth(renderDistance->value);
             set_vode_lods(world, voxelNode, render_depth);
         }
     }

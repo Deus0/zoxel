@@ -153,12 +153,7 @@ void set_vox_file(
 
 // TODO: Convert vox_file to VoxNode, and clone to depth to ModelLods
 //      atm we rebuild everytime the same
-entity spawn_vox_file(
-    ecs *world,
-    const entity prefab,
-    const vox_file* data,
-    const char* filename
-) {
+entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* filename) {
 
     zox_make_neww(model)
     char name[128];
@@ -166,15 +161,14 @@ entity spawn_vox_file(
     zox_set_unique_name(model, name);
     // zox_log("Generating Model Lods for [%s]", filename);
 
-    // const byte max_node_depth = block_vox_depth;
-    const byte max_render_depth = pick_node_depth(data->chunks[0].size.xyz);
+    byte max_render_depth = pick_node_depth(data->chunks[0].size.xyz);
     zox_set(model, MaxRenderDepth, { max_render_depth });
 
     ModelLods model_lods;
     for (byte i = 0; i <= max_render_depth; i++) {
         byte chunk_depth_reducer = 0;   // i - disabled for now
         byte render_depth = i; // max_render_depth - i;
-        zox_instance(prefab);
+        zox_instance(p);
         set_vox_file(world, e, data, chunk_depth_reducer);
         zox_set(e, ChunkMeshDirty, { zox_dirty_trigger });
         zox_set(e, RenderDepth, { render_depth });

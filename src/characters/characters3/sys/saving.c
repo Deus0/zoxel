@@ -6,7 +6,7 @@ zox_sys2(CharacterSaveSystem) {
 #ifdef zox_disable_save_games
     return;
 #endif
-    const float precision_level = 10.0f;    // 100
+    const float precision_level = 100.0f;    // 100
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RealmLink);

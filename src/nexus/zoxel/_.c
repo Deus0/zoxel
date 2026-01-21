@@ -220,7 +220,7 @@ zox_begin_module(ZoxGame)
     // logs
     is_log_gpu_restore = 0;
     // Gameplay
-    hit_terrain_color = (color) { 2, 2, 2, 255 };
+    // hit_terrain_color = (color) { 2, 2, 2, 255 };
     hit_character_color = (color) { 155, 45, 45, 255 };
     hit_block_vox_color = (color) { 55, 135, 185, 255 };
 
@@ -237,10 +237,9 @@ zox_begin_module(ZoxGame)
     terrain_lod_near = 3;
     // real_chunk_scale = 8.0f; // 4 | 8 | 16 | 32
     terrain_depth = 4;
-    block_vox_depth = 5;
-    character_depth = 5;
-    // vox_model_scale = 1 / ((float) powers_of_two[character_depth]);
-    // terrain_amplifier = powers_of_two[terrain_depth] * render_distance_y;
+    // block_vox_depth = 5;
+    // character_depth = 5;
+
     game_ui_has_taskbar = 1;
 
     // zox_debug_id(Block)

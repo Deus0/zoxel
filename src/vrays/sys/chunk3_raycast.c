@@ -532,22 +532,21 @@ zox_sys2(Chunk3RaycastSystem) {
     zox_sys_out(RaycastVoxelData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(CameraLink, cameraLink);
-        zox_sys_i(TerrainLink, link);
+        zox_sys_i(TerrainLink, terrain);
         zox_sys_i(RaycastRange, raycastRange);
         zox_sys_o(RaycastVoxelData, data);
-        entity terrain = link->value;
         entity camera = cameraLink->value;
-        if (!zox_valid(camera) || !zox_valid(terrain) || !zox_has(terrain, RealmLink) || !zox_has(camera, RaycastOrigin)) {
+        if (!zox_valid(camera) || !zox_valid(terrain->value) || !zox_has(terrain->value, RealmLink) || !zox_has(camera, RaycastOrigin)) {
             continue;
         }
-        zox_geter_value(link->value, BlockScale, float, terrain_scalev);
-        zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
+        zox_geter_value(terrain->value, BlockScale, float, terrain_scalev);
+        zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
         entity caster = get_linked_character(world, camera);
         const int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
 
-        zox_geter_value(terrain, RealmLink, entity, realm);
+        zox_geter_value(terrain->value, RealmLink, entity, realm);
         zox_geter(realm, BlockLinks, voxels);
-        zox_geter(terrain, ChunkLinks, chunk_links);
+        zox_geter(terrain->value, ChunkLinks, chunks);
         zox_geter_value(camera, RaycastOrigin, float3, ray_origin);
         zox_geter_value(camera, RaycastNormal, float3, ray_normal);
 
@@ -558,7 +557,7 @@ zox_sys2(Chunk3RaycastSystem) {
             world,
             caster,
             voxels,
-            chunk_links,
+            chunks,
             int3_zero,
             float3_zero,
             terrain_depth,
