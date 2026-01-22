@@ -36,7 +36,7 @@ static const byte generic_button_map[zox_gamepad_button_count] = {
     11, // LS Push
     12, // RS Push
     13, // ?
-    8  // ?
+    8   // ?
 };
 
 
@@ -53,11 +53,11 @@ static const byte steamdeck_button_map[zox_gamepad_button_count] = {
     6,  // LT
     7,  // RT
     11, // Select
-    12, // Start
+    10, // Start
     9,  // LS Push
     8,  // RS Push
+    12,  // ?
     13, // ?
-    10  // ?
 };
 
 static const byte generic_stick_map[zox_gamepad_stick_count]   = { 0, 2 };

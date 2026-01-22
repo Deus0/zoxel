@@ -1,14 +1,14 @@
-int3 reverse_position(int3 position, byte d, byte b) {
+int3 reverse_position(int3 position, byte d, byte length) {
     if (d == direction_left) {
-        position.x = b - 1;
+        position.x = length - 1;
     } else if (d == direction_right) {
         position.x = 0;
     } else if (d == direction_down) {
-        position.y = b - 1;
+        position.y = length - 1;
     } else if (d == direction_up) {
         position.y = 0;
     } else if (d == direction_back) {
-        position.z = b - 1;
+        position.z = length - 1;
     } else if (d == direction_front) {
         position.z = 0;
     }
@@ -169,7 +169,67 @@ const T* get_adjacent_##T(\
 }\
 \
 \
-const T* get_root_adjacent_##T(\
+const T* get_adjacentn_##T(\
+    const T** neighbors, \
+    const T* vnode,\
+    int3 position, \
+    byte depth, \
+    byte direction \
+) {\
+    if (!vnode) { \
+        return NULL; \
+    } \
+    \
+    position = move_position(position, direction); \
+    byte vlength = powers_of_two[depth];\
+    \
+    if (position.x < 0 || position.x >= vlength || \
+        position.y < 0 || position.y >= vlength || \
+        position.z < 0 || position.z >= vlength) { \
+        \
+        position = reverse_position(position, direction, vlength); \
+        vnode = neighbors[direction];\
+        \
+        if (!vnode) { \
+            return NULL; \
+        } \
+    }\
+    \
+    const T* v = get_##T(vnode, depth, int3_to_byte3(position), 0);\
+    return v; \
+}\
+\
+byte get_adjacent_depth_##T(\
+    const T** neighbors, \
+    const byte* ndepths, \
+    int3 position,\
+    byte depth,\
+    byte dir\
+) {\
+    if (depth >= 8) { \
+        return depth; \
+    } \
+    position = move_position(position, dir); \
+    byte b = powers_of_two[depth]; \
+    if (position.x >= 0 && position.x < b && position.y >= 0 && position.y < b && position.z >= 0 && position.z < b) { \
+        return depth; \
+    } else { \
+        if (neighbors[dir]) { \
+            return ndepths[dir]; \
+        } else { \
+            return depth; \
+        } \
+    } \
+}
+
+
+    /*return gett_##T( \
+        voctree, \
+        position, \
+        depth \
+    );\*/
+
+/*const T* get_root_adjacent_##T(\
     const T** neighbors,\
     const T* root,\
     const T* node,\
@@ -218,60 +278,5 @@ const T* get_root_adjacent_##T(\
             chunk_index);\
     }\
     return NULL;\
-}\
-\
-const T* get_adjacentn_##T(\
-    const T** neighbors, \
-    /*const byte* ndepths,*/ \
-    const T* node,\
-    int3 position, \
-    byte depth, \
-    byte dir \
-) {\
-    if (!node || depth >= 8) { \
-        return NULL; \
-    } \
-    position = move_position(position, dir); \
-    byte b = powers_of_two[depth];\
-    if (!(position.x >= 0 && position.x < b && \
-        position.y >= 0 && position.y < b && \
-        position.z >= 0 && position.z < b) \
-    ) { \
-        node = neighbors[dir];\
-        /* depth = ndepths[dir]; */ \
-        position = reverse_position(position, dir, b); \
-        if (!node || depth >= 8) { \
-            return NULL; \
-        } \
-    }\
-    return gett_##T( \
-        node, \
-        position, \
-        depth \
-    );\
-}\
-\
-byte get_adjacent_depth_##T(\
-    const T** neighbors, \
-    const byte* ndepths, \
-    int3 position,\
-    byte depth,\
-    byte dir\
-) {\
-    if (depth >= 8) { \
-        return depth; \
-    } \
-    position = move_position(position, dir); \
-    byte b = powers_of_two[depth]; \
-    if (position.x >= 0 && position.x < b && position.y >= 0 && position.y < b && position.z >= 0 && position.z < b) { \
-        return depth; \
-    } else { \
-        if (neighbors[dir]) { \
-            return ndepths[dir]; \
-        } else { \
-            return depth; \
-        } \
-    } \
-}
-
+}\*/
 

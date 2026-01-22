@@ -10,13 +10,12 @@ typedef struct {
     byte3 pos;
 } VoxelNodeUpdate;
 
+create_node_setter(VoxelNode)
+create_node_getter(VoxelNode)
+
 zoxc_octree_fun1(VoxelNode, byte, 0)
 zoxc_octree_fun2(VoxelNode, byte)
 zox_node_add_link(VoxelNode)
-
-
-create_node_setter(VoxelNode)
-create_node_getter(VoxelNode)
 
 create_node_reducer(VoxelNode)
 create_node_setreduce(VoxelNode)

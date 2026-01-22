@@ -5,18 +5,6 @@
 
 byte zox_disable_node_face_subdivision = 1;
 
-typedef struct {
-    byte *solidity;
-    int *uvs;
-} ChunkTexturedBuildData;
-
-typedef struct {
-    int_array_d *indicies;
-    float3_array_d* vertices;
-    float2_array_d* uvs;
-    color_rgb_array_d* color_rgbs;
-} mesh_uvs_build_data;
-
 // remember: vertex offset is just node position / voxel position
 
 // static data
@@ -55,47 +43,6 @@ typedef struct {
     byte3 local_position;
 } octree_dig_data;
 
-typedef struct {
-    const int* indicies;
-    const float3 *vertices;
-    const float2 *uvs;
-} octree_face_data;
-
-// this takes 14ms on a 24core cpu, 6ms though during streaming
-// scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
-void zox_build_voxel_face(const mesh_uvs_build_data* mesh, const int* indicies, const float3* verts, const float2* uvs, float3 offset, float scale) {
-
-    // indicies
-    expand_capacity_int_array_d(mesh->indicies, voxel_face_indicies_length);
-    for (byte i = 0; i < 6; i++) {
-        mesh->indicies->data[mesh->indicies->size + i] = mesh->vertices->size + indicies[i];
-    }
-    mesh->indicies->size += voxel_face_indicies_length;
-
-    // verts
-    expand_capacity_float3_array_d(mesh->vertices, voxel_face_vertices_length);
-    for (byte i = 0; i < voxel_face_vertices_length; i++) {
-        float3 vertex_position = verts[i];
-        float3_add_float3_p(&vertex_position, offset);
-        float3_scale_p(&vertex_position, scale);
-        mesh->vertices->data[mesh->vertices->size + i] = vertex_position;
-    }
-    mesh->vertices->size += voxel_face_vertices_length;
-
-    // uvs
-    expand_capacity_float2_array_d(mesh->uvs, voxel_face_vertices_length);
-    for (byte i = 0; i < 4; i++) {
-        const float2 vert_uv = uvs[i];
-        mesh->uvs->data[mesh->uvs->size + i] = vert_uv;
-    }
-    mesh->uvs->size += voxel_face_vertices_length;
-
-    // colors
-    for (byte a = 0; a < voxel_face_vertices_length; a++) {
-        add_to_color_rgb_array_d(mesh->color_rgbs, color_rgb_white);
-    }
-}
-
 // this function accounts for size of drawing voxels
 void build_voxel_mesh_final(terrain_build_data data, octree_dig_data dig, octree_face_data face) {
     // data.render_depth | dig.depth | adepth
@@ -104,7 +51,8 @@ void build_voxel_mesh_final(terrain_build_data data, octree_dig_data dig, octree
         data.ndepths,
         dig.position,
         data.render_depth,
-        dig.direction);
+        dig.direction
+    );
     // get anode at the current dig depth
     const VoxelNode* anode = get_adjacentn_VoxelNode(
         data.neighbors,
@@ -117,16 +65,30 @@ void build_voxel_mesh_final(terrain_build_data data, octree_dig_data dig, octree
     // but this assume the adjacent node is rendering at max level!
     //  it checks for all sub nodes..!
     byte ddepth = adepth - dig.depth < 0 ? 0 : adepth - dig.depth;
+    ddepth++;
+
+
+    byte asolid = anode && anode->value && data.voxel_solidity[anode->value - 1];
+
+    // NOTE: A special case here if neighbor is lesser / higher lod
+    if (asolid && adepth > dig.depth) {
+        asolid = get_node_sides_all_solid(
+            data.voxel_solidity,
+            anode,
+            rdir,
+            dig.depth
+        );
+    }
 
     // we need to know how far to check, using anodes depth
-    byte adjacent_solid = get_node_sides_all_solid(
+    /*byte asolid = get_node_sides_all_solid(
         data.voxel_solidity,
         anode,
         rdir,
-        ddepth + 1);
-    adjacent_solid = anode ? adjacent_solid : data.edge_voxel;
+        ddepth);
+    asolid = anode ? asolid : data.edge_voxel;*/
 
-    if (!adjacent_solid) {
+    if (!asolid) {
         ((VoxelNode*) dig.node)->sides |= (1 << dig.direction);
         zox_build_voxel_face(
             data.mesh_data,
@@ -249,23 +211,12 @@ void build_chunk_terrain_mesh(
     uvs->value = zinalize_float2_array_d(mesh_data.uvs);
 }
 
-void fetch_neightbor_chunk_data(ecs* world, const ChunkNeighbors* chunk_neighbors, const VoxelNode** neighbors, byte* ndepths) {
-    for (int i = 0; i < 6; i++) {
-        entity e = chunk_neighbors->value[i];
-        if (!zox_valid(e) || !zox_has(e, RenderDepth) || !zox_has(e, VoxelNode)) {
-            ndepths[i] = 0;
-            neighbors[i] = 0;
-            continue;
-        }
-        neighbors[i] = zox_get(e, VoxelNode);
-        zox_geter_value(e, RenderDepth, byte, render_depth);
-        ndepths[i] = render_depth;
-    }
-}
-
 // TODO: Move terrain cache into functions
 // TODO: Cache all managers found, not just single
 zox_sys2(Chunk3TexturedBuildSystem) {
+    if (zox_chunk3_texture_builder_new) {
+        return;
+    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);
@@ -314,7 +265,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
     if (voxels_length == 0) {
         return; // if failed to find terrain parents
     }
-    ChunkTexturedBuildData build_data;
+    chunk3_textured_builder_data build_data;
     byte solidity[voxels_length];
     build_data.solidity = solidity;
     int uvs[voxels_length * 6]; //  * sizeof(int)];
@@ -383,6 +334,13 @@ zox_sys2(Chunk3TexturedBuildSystem) {
             continue;
         }
 
+        // We have 3 modes, old, new, and hybrid
+        if (zox_chunk3_texture_builder_mix &&
+            rdepth->value == terrain_depth) {
+            continue;
+        }
+
+
         clear_mesh_uvs(indicies, verts, colors, uvs        );
 
         if (rdepth->value == render_depth_invisible) {
@@ -435,127 +393,3 @@ zox_sys2(Chunk3TexturedBuildSystem) {
     }
 
 } zox_sys_end(Chunk3TexturedBuildSystem);
-
-
-
-    // We split up Lower Depth Nodes, and draw all Visible Quads
-    /*byte is_maxxed = data.render_depth == dig.depth;
-    if (!zox_disable_node_face_subdivision && !is_maxxed) {
-        // so far just increasing face draw resolution for up faces
-        int depth_difference = data.render_depth - dig.depth;
-        if (depth_difference != 0) {
-            is_regular_build = 0;
-            // this checks per voxel position if voxel is solid next to it
-            int3 scaled_octree_position = dig.position;
-            const int amplify_position = pow(2, depth_difference);
-            if (amplify_position != 1) {
-                int3_multiply_int_p(&scaled_octree_position, amplify_position);
-            }
-            int3 position = int3_zero;
-            // place at top of current scale building
-            if (dig.direction == direction_up) {
-                position.y = (dig.scale - 1);
-            } else if (dig.direction == direction_right) {
-                position.x = (dig.scale - 1);
-            } else if (dig.direction == direction_front) {
-                position.z = (dig.scale - 1);
-            }
-            // three edge cases
-            if (dig.direction == direction_up || dig.direction == direction_down) { // y
-                for (position.x = 0; position.x < dig.scale; position.x++) {
-                    for (position.z = 0; position.z < dig.scale; position.z++) {
-                        int3 global_octree_position = scaled_octree_position;
-                        int3_add_int3(&global_octree_position, position);
-                        if (is_adjacent_solid(
-                            dig.direction,
-                            data.root,
-                            data.neighbors,
-                            global_octree_position,
-                            data.render_depth,
-                            data.edge_voxel,
-                            data.voxel_solidity)
-                        ) {
-                            continue;
-                        }
-                        zox_build_voxel_face(
-                            data.mesh_data,
-                            dig.voxel,
-                            face.indicies,
-                            face.vertices,
-                            face.uvs,
-                            dig.direction,
-                            float3_from_int3(global_octree_position),
-                            data.scale);
-                    }
-                }
-            } else if (dig.direction == direction_left || dig.direction == direction_right) { // x
-                for (position.y = 0; position.y < dig.scale; position.y++) {
-                    for (position.z = 0; position.z < dig.scale; position.z++) {
-                        int3 global_octree_position = scaled_octree_position;
-                        int3_add_int3(&global_octree_position, position);
-                        if (is_adjacent_solid(
-                            dig.direction,
-                            data.root,
-                            data.neighbors,
-                            global_octree_position,
-                            data.render_depth,
-                            data.edge_voxel,
-                            data.voxel_solidity)
-                        ) {
-                            continue;
-                        }
-                        zox_build_voxel_face(
-                            data.mesh_data,
-                            dig.voxel,
-                            face.indicies,
-                            face.vertices,
-                            face.uvs,
-                            dig.direction,
-                            float3_from_int3(global_octree_position),
-                            data.scale);
-                    }
-                }
-            } else { // z
-                for (position.x = 0; position.x < dig.scale; position.x++) {
-                    for (position.y = 0; position.y < dig.scale; position.y++) {
-                        int3 global_octree_position = scaled_octree_position;
-                        int3_add_int3(&global_octree_position, position);
-                        if (is_adjacent_solid(
-                            dig.direction,
-                            data.root,
-                            data.neighbors,
-                            global_octree_position,
-                            data.render_depth,
-                            data.edge_voxel,
-                            data.voxel_solidity)
-                        ) {
-                            continue;
-                        }
-                        zox_build_voxel_face(
-                            data.mesh_data,
-                            dig.voxel,
-                            face.indicies,
-                            face.vertices,
-                            face.uvs,
-                            dig.direction,
-                            float3_from_int3(global_octree_position),
-                            data.scale);
-                    }
-                }
-            }
-        }
-    }*/
-
-/*#ifndef zox_disable_fake_voxel_lighting
-        if (direction == direction_down) {
-            color_rgb_multiply_float(&vertex_color, 0.33f);
-        } else if (direction == direction_front) {
-            color_rgb_multiply_float(&vertex_color, 0.44f);
-        } else if (direction == direction_left) {
-            color_rgb_multiply_float(&vertex_color, 0.55f);
-        } else if (direction == direction_back) {
-            color_rgb_multiply_float(&vertex_color, 0.66f);
-        } else if (direction == direction_right) {
-            color_rgb_multiply_float(&vertex_color, 0.76f);
-        }
-#endif*/

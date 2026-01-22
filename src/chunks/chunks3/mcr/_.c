@@ -2,10 +2,10 @@ uint zox_stats_nodes = 0;       // basic nodes
 uint zox_stats_node_links = 0;  // to entities
 
 #include "node.c"
+#include "getter.c"
+#include "setter.c"
 #include "node_fun2.c"
 #include "node_link.c"
-#include "setter.c"
-#include "getter.c"
 #include "reducer.c"
 #include "optimize.c"
 #include "setreduce.c"

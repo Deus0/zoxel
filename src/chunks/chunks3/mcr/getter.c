@@ -71,7 +71,8 @@ static inline byte read_octree_value(
 #define create_node_getter(T)                                             \
 static inline const T* get_##T(const T* node, byte target_depth, byte3 pos, byte depth) { \
     return (T*)find_octree_node((const void*)node, target_depth, pos, depth, sizeof(T)); \
-}                                                                         \
+}\
+\
 static inline byte get_value_##T(const T* node, byte target_depth, byte3 pos, byte depth) { \
     return read_octree_value((void*)node, target_depth, pos, depth, sizeof(T), offsetof(T, value)); \
 }

@@ -58,7 +58,7 @@ zox_sys2(ChunkSpawnSystem) {
         }*/
 
         zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
-        const byte stream_zone = rdistance->value < terrain_lod_far;
+        byte stream_zone = rdistance->value < terrain_lod_far;
         if (stream_zone) {
             for (byte j = 0; j < 6; j++) {
                 entity neighbor = neighbors->value[j];
@@ -69,7 +69,10 @@ zox_sys2(ChunkSpawnSystem) {
                 }
 
                 // get position of neighbor and check terrain for it
-                const int3 neighbor_position = int3_add(cposition->value, get_direction_int3(j));
+                int3 direction = get_direction_int3(j);
+
+                int3 neighbor_position = int3_add(cposition->value, direction);
+
                 if (!(neighbor_position.y >= -render_distance_y && neighbor_position.y <= render_distance_y)) {
                     continue;
                 }
