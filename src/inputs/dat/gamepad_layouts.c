@@ -6,6 +6,8 @@
 #define zox_gamepad_stick_count 2
 #define zox_gamepad_dpad_count 4
 
+// These real indexes get mapped
+
 static const byte generic_button_map[zox_gamepad_button_count] = {
     /* A  */ 0,
     /* B  */ 1,
@@ -40,7 +42,7 @@ static const byte generic_button_map[zox_gamepad_button_count] = {
     7   // ?    (was 13)
 };*/
 
-static const byte steamdeck_button_map[zox_gamepad_button_count] = {
+/*static const byte steamdeck_button_map[zox_gamepad_button_count] = {
     0,  // A
     1,  // B
     2,  // X
@@ -53,6 +55,23 @@ static const byte steamdeck_button_map[zox_gamepad_button_count] = {
     11, // RS  (Right stick press)
     6,  // LT  (Left trigger press)
     7,  // RT  (Right trigger press)
+    12, // ?
+    13  // ?
+};*/
+
+static const byte steamdeck_button_map[zox_gamepad_button_count] = {
+    0,  // A
+    1,  // B
+    2,  // X
+    3,  // Y
+    4,  // LB
+    5,  // RB
+    6,  // SEL (Select / Back)
+    7,  // STA (Start / Menu)
+    8, // LS  (Left stick press)
+    9, // RS  (Right stick press)
+    10,  // LT  (Left trigger press)
+    11,  // RT  (Right trigger press)
     12, // ?
     13  // ?
 };
