@@ -39,6 +39,10 @@ static const byte generic_button_map[zox_gamepad_button_count] = {
     8  // ?
 };
 
+
+// LB is 10?
+// Start 6
+// RSP is 8
 static const byte steamdeck_button_map[zox_gamepad_button_count] = {
     0,  // A
     1,  // B
@@ -46,18 +50,29 @@ static const byte steamdeck_button_map[zox_gamepad_button_count] = {
     3,  // Y
     4,  // LB
     5,  // RB
-
     6,  // LT
     7,  // RT
-
     9,  // Select
-    8,  // Start
+    10, // Start
+    11, // LS Push
+    12, // RS Push
+    13, // ?
+    8  // ?
 
-    10, // Left stick push
-    11, // Right stick push
-
+    /*0,  // A
+    1,  // B
+    2,  // X
+    3,  // Y
+    4,  // LB
+    5,  // RB
+    8,  // LT
+    9,  // RT
+    4,  // Select
+    6,  // Start
+    7, // Left stick push
+    8, // Right stick push
     12, // ?
-    13  // ?
+    13  // ?*/
 };
 
 static const byte generic_stick_map[zox_gamepad_stick_count]   = { 0, 2 };
