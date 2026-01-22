@@ -59,7 +59,9 @@ zox_sys2(ActionsShortcutSystem) {
                                 is_shift_action_right = 1;
                             }
                         }
-                        const byte real_button_index = zox_get_value(zevice_entity, RealButtonIndex)
+
+
+                        byte real_button_index = zox_get_value(zevice_entity, RealButtonIndex)
                         if (real_button_index == zox_device_button_dpad_left) {
                             if (devices_get_pressed_this_frame(zevice_button)) {
                                 is_shift_action_left = 1;
