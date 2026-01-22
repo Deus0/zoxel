@@ -13,7 +13,7 @@ entity spawn_prefab_quad_lines(ecs *world) {
 
 entity spawn_quad_lines(
     ecs* world,
-    entity prefab,
+    entity p,
     color c,
     float3 position,
     float4 rotation,
@@ -21,16 +21,19 @@ entity spawn_quad_lines(
     float size,
     float lifetime
 ) {
-    zox_instance(prefab);
+    zox_instance(p);
     zox_set(e, Position3D, { position });
     zox_set(e, Rotation3D, { rotation });
     zox_set(e, LineThickness, { thickness });
     zox_set(e, QuadLineSize, { size });
+
     if (!color_equals(c, color_black)) {
         zox_set(e, Color, { c });
     }
+
     if (lifetime) {
         zox_set(e, DestroyInTime, { lifetime });
     }
+
     return e;
 }

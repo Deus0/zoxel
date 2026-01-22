@@ -124,19 +124,19 @@ byte update_chunk_for_raycast(
 // - Returns rayhit_* constants for type of hit or none
 byte raycast_voxel_node(
     ecs *world,
-    const entity caster,
+    entity caster,
     const BlockLinks* voxels,
     const ChunkLinks* chunk_links,
     int3 chunk_position,
-    const float3 chunk_positionf,
-    const byte terrain_depth,
-    const int3 max_chunk_size,
+    float3 chunk_positionf,
+    byte terrain_depth,
+    int3 max_chunk_size,
     entity chunk,
-    const float3 ray_origin,
-    const float3 ray_normal,
+    float3 ray_origin,
+    float3 ray_normal,
     int3 hit_normal,
-    const float terrain_scalev,
-    const float ray_length,
+    float terrain_scalev,
+    float ray_length,
     RaycastVoxelData* data,
     CharacterRaycast* character_raycast
 ) {
@@ -536,13 +536,15 @@ zox_sys2(Chunk3RaycastSystem) {
         zox_sys_i(RaycastRange, raycastRange);
         zox_sys_o(RaycastVoxelData, data);
         entity camera = cameraLink->value;
+
         if (!zox_valid(camera) || !zox_valid(terrain->value) || !zox_has(terrain->value, RealmLink) || !zox_has(camera, RaycastOrigin)) {
             continue;
         }
+
         zox_geter_value(terrain->value, BlockScale, float, terrain_scalev);
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
         entity caster = get_linked_character(world, camera);
-        const int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
+        int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
 
         zox_geter_value(terrain->value, RealmLink, entity, realm);
         zox_geter(realm, BlockLinks, voxels);
@@ -551,7 +553,9 @@ zox_sys2(Chunk3RaycastSystem) {
         zox_geter_value(camera, RaycastNormal, float3, ray_normal);
 
         CharacterRaycast character_raycast = { 0 };
-        const float range = !debug_ray_big_range ? raycastRange->value : 128;
+        float range = !debug_ray_big_range ? raycastRange->value : 128;
+
+        // zox_log("Terrain Scale: %f", terrain_scalev);
 
         data->result = raycast_voxel_node(
             world,

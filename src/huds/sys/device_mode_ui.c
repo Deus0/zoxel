@@ -31,10 +31,11 @@ zox_sys2(DeviceModeUISystem) {
             SDL_ShowCursor(SDL_ENABLE);
         }
         // handle new mode
-        if (dmode_new->value == zox_device_mode_gamepad) {
+        /*if (dmode_new->value == zox_device_mode_gamepad) {
             zox_sys_e();
             raycaster_select_first_button(world, e, canvas->value);
-        } else if (dmode_new->value == zox_device_mode_keyboardmouse) {
+        } else */
+        if (dmode_new->value == zox_device_mode_keyboardmouse) {
             raycaster_select_element(world, e, 0);
             SDL_ShowCursor(SDL_DISABLE);
         } else if (dmode_new->value == zox_device_mode_touchscreen) {

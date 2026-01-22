@@ -68,7 +68,7 @@ entity2 spawn_slider(
         .zext = {
             .text = slider_data.name,
             .font_size = font_size,
-            .font_resolution = font_size, // font_size * 2?
+            .font_resolution = font_size,
             .font_thickness = font_thickness,
             .font_outline_thickness = font_thickness,
             .font_fill_color = font_fill,

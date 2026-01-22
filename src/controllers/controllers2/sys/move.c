@@ -1,4 +1,4 @@
-void Controller2MoveSystem(iter *it) {
+zox_sys2(Controller2MoveSystem) {
     init_delta_time()
     float2 max_delta_velocity = max_velocity2D;
     max_delta_velocity.x *= delta_time;
@@ -10,16 +10,19 @@ void Controller2MoveSystem(iter *it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(DeviceLinks, deviceLinks)
         zox_sys_i(CharacterLink, characterLink)
-        const entity character = characterLink->value;
+        entity character = characterLink->value;
+
         if (!zox_valid(character) || !zox_has(character, Character2D)) {
             continue;
         }
+
         if (zox_has(character, DisableMovement)) {
             zox_geter(character, DisableMovement, disableMovement)
             if (disableMovement->value) {
                 continue;
             }
         }
+
         byte is_running = 0;
         float2 movement = float2_zero; // { 0, 0 };
         float2 left_stick = float2_zero;
@@ -30,34 +33,51 @@ void Controller2MoveSystem(iter *it) {
                 continue;
             }
             if (zox_has(device, Keyboard)) {
-                const Keyboard *keyboard = zox_get(device, Keyboard)
+                zox_geter(device, Keyboard, keyboard);
+
                 if (keyboard->a.is_pressed) movement.x = -1;
                 if (keyboard->d.is_pressed) movement.x = 1;
                 if (keyboard->w.is_pressed) movement.y = 1;
                 if (keyboard->s.is_pressed) movement.y = -1;
                 if (keyboard->left_shift.is_pressed) is_running = 1;
             } else if (zox_has(device, Gamepad)) {
-                const Children *zevices = zox_get(device, Children)
+
+                zox_geter(device, Children, zevices);
+
                 for (int k = 0; k < zevices->length; k++) {
-                    entity zevice_entity = zevices->value[k];
-                    if (zox_has(zevice_entity, ZeviceStick)) {
-                        const ZeviceStick *zeviceStick = zox_get(zevice_entity, ZeviceStick)
+                    entity zevice = zevices->value[k];
+
+                    if (zox_has(zevice, ZeviceStick)) {
+
+                        zox_geter(zevice, ZeviceStick, zeviceStick);
                         left_stick = zeviceStick->value;
-                    } else if (zox_has(zevice_entity, ZeviceButton)) {
-                        const DeviceButtonType *deviceButtonType = zox_get(zevice_entity, DeviceButtonType)
+
+                    } else if (zox_has(zevice, ZeviceButton)) {
+                        zox_geter(zevice, DeviceButtonType, deviceButtonType);
+
                         if (deviceButtonType->value == zox_device_button_lb || deviceButtonType->value == zox_device_button_rb) {
-                            const ZeviceButton *zeviceButton = zox_get(zevice_entity, ZeviceButton)
-                            if (!is_running && devices_get_pressed(zeviceButton->value)) is_running = 1;
+                            zox_geter(zevice, ZeviceButton, zeviceButton);
+
+                            if (!is_running && devices_get_pressed(zeviceButton->value)) {
+                                is_running = 1;
+                            }
                         }
                     }
                 }
             } else if (zox_has(device, Touchscreen)) { // deviceMode->value == zox_device_mode_touchscreen
                 zox_geter(device, Children, zevices)
                 for (int k = 0; k < zevices->length; k++) {
-                    const entity zevice = zevices->value[k];
-                    if (zox_has(zevice, Finger)) continue;
-                    const ZeviceDisabled *zeviceDisabled = zox_get(zevice, ZeviceDisabled)
-                    if (zeviceDisabled->value) continue;
+                    entity zevice = zevices->value[k];
+
+                    if (zox_has(zevice, Finger)) {
+                        continue;
+                    }
+
+                    zox_geter(zevice, ZeviceDisabled, disabled);
+                    if (disabled->value) {
+                        continue;
+                    }
+
                     if (zox_has(zevice, ZeviceStick)) {
                         const byte joystick_type = zox_get_value(zevice, DeviceButtonType)
                         if (joystick_type == zox_device_stick_left) {
@@ -87,11 +107,13 @@ void Controller2MoveSystem(iter *it) {
         zox_geter(character, Velocity2D, velocity2D)
         zox_muter(character, Acceleration2D, acceleration2D);
         // const float2 check_velocity = velocity2D->value;
+
         float2 max_speed = max_velocity2D;
         if (is_running) {
             max_speed.x *= run_speed2D;
             max_speed.y *= run_speed2D;
         }
+
         float2 potential_velocity_left = { velocity2D->value.x + (acceleration2D->value.x + movement.x) * delta_time, 0 };
         float2 potential_velocity_up = { 0, velocity2D->value.y + (acceleration2D->value.y + movement.y) * delta_time };
 
@@ -103,4 +125,4 @@ void Controller2MoveSystem(iter *it) {
         }
         // zox_log("movement: %fx%f", movement.x, movement.y)
     }
-} zoxd_system(Controller2MoveSystem)
+} zox_sys_end(Controller2MoveSystem);

@@ -23,14 +23,14 @@ void check_axis(SDL_Joystick *joystick, int index) {
 }
 
 entity spawn_gamepad_from_sdl(ecs *world, SDL_Joystick *joystick) {
-    const byte gamepad_type = get_gamepad_type(joystick);
-    const entity e = spawn_gamepad(world, gamepad_type);
+    byte gamepad_type = get_gamepad_type(joystick);
+    entity e = spawn_gamepad(world, gamepad_type);
     zox_set(e, SDLGamepad, { joystick })
     zox_log_input("   + gamepad [%s]", SDL_JoystickName(joystick))
     return e;
 }
 
-void handle_new_sdl_gamepad(ecs *world, const SDL_Event event) {
+void handle_new_sdl_gamepad(ecs *world, SDL_Event event) {
     SDL_Joystick *joystick = SDL_JoystickOpen(event.jdevice.which);
     if (!joystick) {
         fprintf(stderr, "   ! joystick error: %s\n", SDL_GetError());
@@ -57,10 +57,10 @@ void initialize_sdl_gamepads(ecs *world) {
     }
 }
 
-byte process_byte(const byte old_byte, const byte raw_value) {
-    const byte was_pressed = devices_get_pressed(old_byte);
-    const byte pressed_this_frame = !was_pressed && raw_value;
-    const byte released_this_frame = was_pressed && !raw_value;
+byte process_byte(byte old_byte, byte raw_value) {
+    byte was_pressed = devices_get_pressed(old_byte);
+    byte pressed_this_frame = !was_pressed && raw_value;
+    byte released_this_frame = was_pressed && !raw_value;
     if (pressed_this_frame) zox_log_input("  [%i] is pressed this frame", index)
     if (released_this_frame) zox_log_input("  [%i] is released this frame", index)
     byte new_value = 0;
@@ -71,7 +71,7 @@ byte process_byte(const byte old_byte, const byte raw_value) {
     return new_value;
 }
 
-byte get_gamepad_dpad(const byte old_value, SDL_Joystick *joystick, int index) {
+byte get_gamepad_dpad(byte old_value, SDL_Joystick *joystick, int index) {
     byte is_pressed_down = 0;
     byte is_pressed_up = 0;
     byte is_pressed_left = 0;
@@ -145,11 +145,18 @@ byte sdl_gamepad_handle_disconnect(SDL_Joystick *joystick) {
 
 // Main Function for Gamepad
 void sdl_extract_gamepad(SDL_Joystick *joystick, ecs *world, const Children *children) {
-    if (!joystick) return;
+
+    if (!joystick) {
+        return;
+    }
+
     joystick_axes = SDL_JoystickNumAxes(joystick);
+
     for (int i = 0; i < children->length; i++) {
-        const entity e = children->value[i];
-        const RealButtonIndex *realButtonIndex = zox_get(e, RealButtonIndex)
+        entity e = children->value[i];
+
+        zox_geter(e, RealButtonIndex, realButtonIndex);
+
         if (zox_has(e, ZeviceStick)) {
             ZeviceStick *zeviceStick = zox_get_mut(e, ZeviceStick);
             if (set_gamepad_axis2(zeviceStick, joystick, realButtonIndex->value)) zox_modified(e, ZeviceStick);

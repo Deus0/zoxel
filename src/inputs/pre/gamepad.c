@@ -6,7 +6,8 @@ entity spawn_prefab_gamepad(ecs *world, const entity prefab) {
     return e;
 }
 
-entity spawn_gamepad(ecs *world, const byte gamepad_type) {
+entity spawn_gamepad(ecs *world, byte gamepad_type) {
+
     zox_instance(prefab_gamepad);
     zox_name("gamepad");
     zox_set(e, DeviceLayout, { gamepad_type });
@@ -40,8 +41,8 @@ entity spawn_gamepad(ecs *world, const byte gamepad_type) {
     byte i = 0;
 
     // Buttons
-    for ( ; i < zox_gamepad_button_count; i++) {
-        children.value[i] = spawn_device_button(world, i, button_map[i]);
+    for (byte j = 0; j < zox_gamepad_button_count; j++, i++) {
+        children.value[i] = spawn_device_button(world, prefab_zevice_button, i, button_map[j]);
     }
 
     // Sticks
@@ -51,7 +52,7 @@ entity spawn_gamepad(ecs *world, const byte gamepad_type) {
 
     // The DPAD
     for (byte j = 0; j < zox_gamepad_dpad_count; j++, i++) {
-        children.value[i] = spawn_device_button(world, i, dpad_map[j]);
+        children.value[i] = spawn_device_button(world, prefab_zevice_button, i, dpad_map[j]);
     }
 
     // todo: spawn LT and RT as axis for steamdeck

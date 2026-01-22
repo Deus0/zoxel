@@ -55,7 +55,7 @@ zox_sys2(PlayerPauseSystem) {
                     }
 
                     zox_geter_value(zevice, DeviceButtonType, byte, type);
-                    if (type == zox_device_button_start || type == zox_device_button_select) {
+                    if (type == zox_device_button_start) { // || type == zox_device_button_select) {
                         zox_geter_value(zevice, ZeviceButton, byte, value);
                         if (devices_get_pressed_this_frame(value)) {
                             did_toggle_pause = 1;

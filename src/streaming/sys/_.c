@@ -90,5 +90,5 @@ void define_systems_streaming(ecs* world) {
     );
 
     // Custom Cuttoff
-    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, { 5 });
+    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, { 8 });
 }

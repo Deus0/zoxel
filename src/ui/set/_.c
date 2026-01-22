@@ -19,3 +19,10 @@ void initialize_settings_elements(ecs* world) {
     zox_logv("Screen [%ix%i] - UI Scale set to: %i", screen_size.x, screen_size.y, new_scale);
     ui_scale = new_scale;
 }
+
+void key_down_toggle_keyboard_navigation(ecs *world, int32_t keycode) {
+    if (keycode == SDLK_TAB) {
+        keyboard_navigation_mode = !keyboard_navigation_mode;
+        zox_log("Toggled Navigation [%s]", keyboard_navigation_mode ? "On" : "Off");
+    }
+}

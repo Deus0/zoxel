@@ -1,15 +1,8 @@
 extern entity local_crosshair;
 extern void crosshair_set_type(ecs*, entity, byte);
-const float quad_depth_buffer = 0.04f;
+const float quad_depth_buffer = 0.02f;
 
 // TODO: Use only Local Voxel Position With Chunk to get PositionF of Block - Cleaner code
-
-// using DDA for raycasting
-/*void create_raycast_gizmo(
-    ecs *world,
-    const RaycastVoxelData *data
-) {
-}*/
 
 zox_sys2(RaycastGizmoSystem) {
     zox_sys_world();
@@ -27,6 +20,7 @@ zox_sys2(RaycastGizmoSystem) {
 
             float3 quad_position = float3_add(data->positionf, float3_scale(data->normal, quad_depth_buffer));
             float4 quad_rotation = quaternion_from_to(float3_up, data->normal);
+            float quad_scale = data->voxel_scale * (0.5f - quad_depth_buffer);
 
             if (!zox_valid(link->value)) {
                 link->value = spawn_quad_lines(
@@ -36,16 +30,16 @@ zox_sys2(RaycastGizmoSystem) {
                     quad_position,
                     quad_rotation,
                     raycaster_quad_thickness,
-                    data->voxel_scale * (0.5f - quad_depth_buffer),
+                    quad_scale,
                     0
                 );
             } else {
                 zox_muter(link->value, Position3D, position);
                 zox_muter(link->value, Rotation3D, rotation);
+                zox_muter(link->value, QuadLineSize, scale);
                 position->value = quad_position;
                 rotation->value = quad_rotation;
-                //zox_set(link->value, Position3D, { quad_position });
-                //zox_set(link->value, Rotation3D, { quad_rotation });
+                scale->value = quad_scale;
             }
 
             // Debug Line

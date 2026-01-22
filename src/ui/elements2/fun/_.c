@@ -1,4 +1,3 @@
-#include "close_button.c"
 #include "resize.c"
 #include "navigation.c"
 #include "drag.c"

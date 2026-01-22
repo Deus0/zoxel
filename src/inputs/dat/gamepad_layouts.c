@@ -23,9 +23,38 @@ static const byte generic_button_map[zox_gamepad_button_count] = {
     /* ?  */ 13
 };
 
+/*static const byte steamdeck_button_map[zox_gamepad_button_count] = {
+    0,  // A
+    1,  // B
+    2,  // X
+    3,  // Y
+    4,  // LB
+    5,  // RB
+    12, // SEL  (was 6)
+    13, // STA  (was 7)
+    10, // LS
+    11, // RS
+    8,  // LT
+    9,  // RT
+    6,  // ?    (was 12)
+    7   // ?    (was 13)
+};*/
+
 static const byte steamdeck_button_map[zox_gamepad_button_count] = {
-    0, 1, 2, 3, 4, 5, 6, 7,
-    10, 11, 8, 9, 12, 13
+    0,  // A
+    1,  // B
+    2,  // X
+    3,  // Y
+    4,  // LB
+    5,  // RB
+    8,  // SEL (Select / Back)
+    9,  // STA (Start / Menu)
+    10, // LS  (Left stick press)
+    11, // RS  (Right stick press)
+    6,  // LT  (Left trigger press)
+    7,  // RT  (Right trigger press)
+    12, // ?
+    13  // ?
 };
 
 static const byte generic_stick_map[zox_gamepad_stick_count]   = { 0, 2 };

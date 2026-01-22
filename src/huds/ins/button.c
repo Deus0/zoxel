@@ -1,13 +1,5 @@
-entity spawn_button_game(
-    ecs *world,
-    const entity canvas,
-    const entity parent,
-    const int2 canvas_size,
-    const int2 position,
-    const float2 anchor,
-    const byte size,
-    const ClickEvent event
-) {
+entity spawn_button_game(ecs *world, entity canvas, entity parent, int2 canvas_size, int2 position, float2 anchor, byte size, ClickEvent event) {
+
     SpawnButton spawnButton = {
         .canvas = {
             .e = canvas,
@@ -24,7 +16,7 @@ entity spawn_button_game(
             .anchor = anchor
         },
         .zext = {
-            .text = " ",
+            // .text = " ",
             .font_size = size,
             .font_thickness = 4,
             .font_fill_color = default_font_fill_color,
@@ -35,7 +27,8 @@ entity spawn_button_game(
             .fill = button_fill,
             .outline = button_outline,
         }};
-    const entity e = spawn_button(
+
+    entity e = spawn_button(
         world,
         spawnButton.canvas,
         spawnButton.parent,
@@ -43,6 +36,8 @@ entity spawn_button_game(
         spawnButton.zext,
         spawnButton.button
     );
+
     zox_set(e, ClickEvent, { event.value });
+
     return e;
 }
