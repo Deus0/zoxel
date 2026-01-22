@@ -66,14 +66,14 @@ static const byte steamdeck_button_map[zox_gamepad_button_count] = {
     3,  // Y
     4,  // LB
     5,  // RB
-    10,  // SEL (Select / Back)
-    11,  // STA (Start / Menu)
-    8, // LS  (Left stick press)
-    9, // RS  (Right stick press)
-    6,  // LT  (Left trigger press)
-    7,  // RT  (Right trigger press)
-    12, // ?
-    13  // ?
+    8,  // Select
+    9,  // Start
+    10, // Left stick push
+    11, // Right stick push
+    6,  // LT
+    7,  // RT
+    12, // Left stick
+    13  // Right stick
 };
 
 static const byte generic_stick_map[zox_gamepad_stick_count]   = { 0, 2 };
