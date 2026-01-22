@@ -52,26 +52,32 @@ zox_sys2(Player3DTriggerSystem) {
                     is_triggered_e = 1;
                 }
             } else if (mode->value == zox_device_mode_gamepad && zox_has(device, Gamepad)) {
+
                 zox_geter(device, Children, children);
                 for (int k = 0; k < children->length; k++) {
                     entity zevice = children->value[k];
+
+                    zox_geter_value(zevice, ZeviceDisabled, byte, disabled);
+                    if (disabled) {
+                        continue;
+                    }
+
                     if (zox_has(zevice, ZeviceButton)) {
+
                         zox_geter_value(zevice, DeviceButtonType, byte, type);
-                        if (type == zox_device_button_x || type == zox_device_button_rt) {
-                            zox_geter_value(zevice, ZeviceDisabled, byte, disabled);
-                            if (disabled) {
-                                continue;
-                            }
+
+                        // Atm these are analogue buttons and not digital
+                        //  || type == zox_device_button_rt
+                        //  || type == zox_device_button_lt
+                        if (type == zox_device_button_x) {
                             zox_geter_value(zevice, ZeviceButton, byte, value);
                             if (devices_get_pressed_this_frame(value)) {
                                 is_triggered_a = 1;
                             }
-                        } else if (type == zox_device_button_y || type == zox_device_button_lt) {
-                            zox_geter_value(zevice, ZeviceDisabled, byte, disabled);
-                            if (disabled) {
-                                continue;
-                            }
+                        } else if (type == zox_device_button_y) {
+
                             zox_geter_value(zevice, ZeviceButton, byte, value);
+
                             if (devices_get_pressed_this_frame(value)) {
                                  is_triggered_b = 1;
                             }
