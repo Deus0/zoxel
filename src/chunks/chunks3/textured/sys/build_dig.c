@@ -43,7 +43,11 @@ typedef struct {
 
 
 
-// NOTE: A special case here if neighbor is lesser / higher lod
+// NOTE: A special case here if neighbor is lesser / higher
+
+        // NOTE: For some reason I had to add 1 here, but is fine in other system, the main diff is the dig depth vs render depth
+        // What we really need is adjacent node depth vs dig depth, not render depth differences
+        // actually this makes sense: we are just checking what neighbor is rendering at verse what we are
 
 // this function accounts for size of drawing voxels
 static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_data dig, octree_face_data face) {
@@ -64,26 +68,21 @@ static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_da
 
     byte asolid = anode && anode->value && data.voxel_solidity[anode->value - 1];
 
-    byte neighbor_depth = get_adjacent_depth_VoxelNode(
+    byte adepth = get_adjacent_depth_VoxelNode(
         data.rdepth,
         data.ndepths,
         dig.position,
         dig.direction
     );
 
-    // This checks all adjacent blocks, not just ones at node level
-    if (asolid && neighbor_depth > dig.depth) {
-
-        // NOTE: For some reason I had to add 1 here, but is fine in other system, the main diff is the dig depth vs render depth
-        // What we really need is adjacent node depth vs dig depth, not render depth differences
-        // actually this makes sense: we are just checking what neighbor is rendering at verse what we are
-
+    // Accounts for Dig vs Render Difference
+    if (adepth > dig.depth) { // asolid &&
         asolid = get_node_sides_all_solid(
             data.voxel_solidity,
             anode,
             reverse_direction(dig.direction),
             // depth distance to check
-            neighbor_depth - dig.depth
+            adepth - dig.depth
         );
     }
 
@@ -383,7 +382,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
 
         read_lock_VoxelNode(voctree);
 
-        zox_terrain_building_dig(data, dig);
+            zox_terrain_building_dig(data, dig);
 
         read_unlock_VoxelNode(voctree);
 
