@@ -12,7 +12,12 @@ void fetch_neightbor_chunk_data(ecs* world, const ChunkNeighbors* chunk_neighbor
         }
 
         neighbors[i] = zox_get(e, VoxelNode);
-        zox_geter_value(e, RenderDepth, byte, render_depth);
-        ndepths[i] = render_depth;
+
+        zox_geter_value(e, RenderDepth, byte, rdepth);
+        ndepths[i] = rdepth;
+
+        // Sometimes neighbor is still generating
+        // zox_geter_value(e, NodeDepth, byte, vdepth);
+        // ndepths[i] = rdepth > vdepth ? vdepth : rdepth;
     }
 }

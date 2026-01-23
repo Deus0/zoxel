@@ -3,6 +3,11 @@
 #define rayhit_block_vox 2
 #define rayhit_character 3
 
+float raycaster_range = 2.5f;
+
+// this should be per scale of the quad?
+const float quad_depth_buffer = 0.02f; // 0.02f;
+
 byte debug_ray_big_range = 0;
 byte is_debug_rayhit_point = 0;
 const uint safety_checks_raycasting = 512;

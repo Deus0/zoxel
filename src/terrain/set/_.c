@@ -2,6 +2,9 @@
 byte optimize_generation_lods = 1;
 byte zox_log_terrain_generation = 0;
 
+// debug
+byte zox_dbg_boost_generation_depth = 1;
+
 // voxes lods
 const byte max_vox_blocks = 16; // max spawned vox_blocks
 const byte max_lod_voxes = 0;

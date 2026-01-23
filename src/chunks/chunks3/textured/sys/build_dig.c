@@ -42,17 +42,16 @@ typedef struct {
 } octree_dig_data;
 
 
+
+// NOTE: A special case here if neighbor is lesser / higher lod
+
 // this function accounts for size of drawing voxels
 static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_data dig, octree_face_data face) {
 
-    // data.rdepth | dig.depth | adepth
-    byte adepth = get_adjacent_depth_VoxelNode(
-        data.neighbors,
-        data.ndepths,
-        dig.position,
-        data.rdepth,
-        dig.direction
-    );
+
+    // but this assume the adjacent node is rendering at max level!
+
+    //  it checks for all sub nodes..!
 
     // get anode at the current dig depth
     const VoxelNode* anode = get_adjacentn_VoxelNode(
@@ -63,38 +62,34 @@ static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_da
         dig.direction
     );
 
-    byte rdir = reverse_direction(dig.direction);
-    // but this assume the adjacent node is rendering at max level!
-    //  it checks for all sub nodes..!
-    byte ddepth = adepth - dig.depth < 0 ? 1 : adepth - dig.depth + 1;
+    byte asolid = anode && anode->value && data.voxel_solidity[anode->value - 1];
 
-    byte asolid = anode && anode->value &&
-        data.voxel_solidity[anode->value - 1];
+    byte neighbor_depth = get_adjacent_depth_VoxelNode(
+        data.rdepth,
+        data.ndepths,
+        dig.position,
+        dig.direction
+    );
 
-    // NOTE: A special case here if neighbor is lesser / higher lod
-    if (asolid && adepth > dig.depth) {
-        // TODO: Fix issues here, still edge cases
+    // This checks all adjacent blocks, not just ones at node level
+    if (asolid && neighbor_depth > dig.depth) {
+
+        // NOTE: For some reason I had to add 1 here, but is fine in other system, the main diff is the dig depth vs render depth
+        // What we really need is adjacent node depth vs dig depth, not render depth differences
+        // actually this makes sense: we are just checking what neighbor is rendering at verse what we are
+
         asolid = get_node_sides_all_solid(
             data.voxel_solidity,
             anode,
-            rdir,
-            // data.rdepth
-            dig.depth
+            reverse_direction(dig.direction),
+            // depth distance to check
+            neighbor_depth - dig.depth
         );
     }
 
-    // we need to know how far to check, using anodes depth
-    /*byte asolid = get_node_sides_all_solid(
-        data.voxel_solidity,
-        anode,
-        rdir,
-        ddepth);
-    asolid = anode ? asolid : data.edge_voxel;*/
-
-
     if (!asolid) {
 
-        ((VoxelNode*) dig.node)->sides |= (1 << dig.direction);
+        // ((VoxelNode*) dig.node)->sides |= (1 << dig.direction);
 
         // Scale position first
         float3 positionf = dig.positionf;
@@ -106,7 +101,6 @@ static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_da
             float dividor = (float) powers_of_two[(data.rdepth - dig.depth)];
             float qsize = dig.scale / dividor;
             float3 positionf2 = positionf;
-
 
             if (dig.direction == direction_down || dig.direction == direction_up) {
 
@@ -388,21 +382,9 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         };
 
         read_lock_VoxelNode(voctree);
-        /*build_chunk_terrain_mesh(
-            voctree,
-            tilemap_uvs,
-            indicies,
-            verts,
-            uvs,
-            colors,
-            rdepth,
-            nnodes,
-            ndepths,
-            build_data.solidity,
-            build_data.uvs,
-            cscale
-        );*/
+
         zox_terrain_building_dig(data, dig);
+
         read_unlock_VoxelNode(voctree);
 
         // sizes

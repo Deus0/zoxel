@@ -200,28 +200,33 @@ const T* get_adjacentn_##T(\
 }\
 \
 byte get_adjacent_depth_##T(\
-    const T** neighbors, \
+    byte rdepth,\
     const byte* ndepths, \
     int3 position,\
-    byte depth,\
-    byte dir\
+    byte direction\
 ) {\
-    if (depth >= 8) { \
-        return depth; \
+    if (rdepth >= 8) { \
+        return rdepth; \
     } \
-    position = move_position(position, dir); \
-    byte b = powers_of_two[depth]; \
+    \
+    position = move_position(position, direction); \
+    byte b = powers_of_two[rdepth]; \
+    \
     if (position.x >= 0 && position.x < b && position.y >= 0 && position.y < b && position.z >= 0 && position.z < b) { \
-        return depth; \
+        return rdepth; \
     } else { \
-        if (neighbors[dir]) { \
-            return ndepths[dir]; \
-        } else { \
-            return depth; \
-        } \
+        return ndepths[direction]; \
     } \
 }
 
+/*
+    if (neighbors[direction]) { \
+        return ndepths[direction]; \
+    } else { \
+        zox_logw("Outside Depth");\
+        return depth; \
+    } \
+*/
 
     /*return gett_##T( \
         voctree, \

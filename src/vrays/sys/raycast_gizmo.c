@@ -1,6 +1,5 @@
 extern entity local_crosshair;
 extern void crosshair_set_type(ecs*, entity, byte);
-const float quad_depth_buffer = 0.02f;
 
 // TODO: Use only Local Voxel Position With Chunk to get PositionF of Block - Cleaner code
 

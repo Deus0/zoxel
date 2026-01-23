@@ -58,7 +58,13 @@ zox_sys2(GrassyPlainsSystem) {
         }
 
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
+
         byte generation_depth = optimize_generation_lods ? render_depth->value : terrain_depth;
+
+        if (zox_dbg_boost_generation_depth && generation_depth != terrain_depth) {
+            generation_depth++;
+        }
+
         // if no depth, skip
         if (!generation_depth) {
             continue;

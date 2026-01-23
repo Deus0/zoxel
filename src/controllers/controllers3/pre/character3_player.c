@@ -20,7 +20,7 @@ entity spawn_prefab_character3_player(
     // zox_prefab_set(e, DisableMovement, { 0 });
     // Raycasting
     zox_prefab_set(e, RaycastVoxelData, { 0 });
-    zox_prefab_set(e, RaycastRange, { 2.5f });
+    zox_prefab_set(e, RaycastRange, { raycaster_range });
     zox_prefab_set(e, GizmoLink, { 0 });
     // Input Triggers
     zox_prefab_set(e, TriggerActionA, { 0 });

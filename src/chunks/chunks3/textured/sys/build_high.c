@@ -2,7 +2,7 @@
 
 // This one Builds Top Down, rather than by digging
 zox_sys2(Chunk3TexturedHighBuildSystem) {
-    if (zox_chunk3t_mode == zox_chunk3t_mode_old) {
+    if (zox_chunk3t_mode == zox_chunk3t_mode_dig) {
         return;
     }
     byte edge_voxel = 1;
@@ -140,19 +140,6 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
 
                         // Now just check here per sides
 
-                        byte rdir = reverse_direction(direction);
-
-                        // data.render_depth | dig.depth | adepth
-                        byte adepth = get_adjacent_depth_VoxelNode(
-                            noctrees,
-                            ndepths,
-                            byte3_to_int3(position),
-                            rdepth->value,
-                            direction
-                        );
-
-                        byte ddepth = adepth - rdepth->value < 0 ? 1 : adepth - rdepth->value + 1;
-
                         // get anode at the current dig depth
                         const VoxelNode* anode = get_adjacentn_VoxelNode(
                             noctrees,
@@ -165,11 +152,20 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
                         byte asolid = anode && anode->value && build_data.solidity[anode->value - 1];
 
                         // NOTE: A special case here if neighbor is lesser / higher lod
-                        if (asolid && adepth > rdepth->value) {
+
+                        byte nrdepth = get_adjacent_depth_VoxelNode(
+                            rdepth->value,
+                            ndepths,
+                            byte3_to_int3(position),
+                            direction
+                        );
+
+                        if (asolid && nrdepth > rdepth->value) {
+                            byte ddepth = nrdepth - rdepth->value;
                             asolid = get_node_sides_all_solid(
                                 build_data.solidity,
                                 anode,
-                                rdir,
+                                reverse_direction(direction),
                                 ddepth
                             );
                         }

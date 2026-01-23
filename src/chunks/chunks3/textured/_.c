@@ -5,6 +5,8 @@
 // TODO: Cache all managers found, not just single
 // TODO: Build up adjacent faces in another system
 
+// TODO: Now the Seems are only from chunks that did not generate properly, they are one depth too less in resolution - only in dig mode tho weird - zox_dbg_boost_generation_depth fixed it for now - but shouldn't need to do
+
 #include "set/_.c"
 #include "com/_.c"
 #include "dat/_.c"

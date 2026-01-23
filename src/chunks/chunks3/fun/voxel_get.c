@@ -175,25 +175,21 @@ byte is_adjacent_solid(
 // Fix issues between chunks of different levels of division
 // function to check all adjacent voxels are solid on the face
 
-byte is_node_solid(
-    const byte* solidity,
-    const VoxelNode* node
-) {
+byte is_node_solid(const byte* solidity, const VoxelNode* node) {
     if (!node || !node->value) {
         return 0;
-    } else if (solidity) {
-        return solidity && solidity[node->value - 1];
     } else {
-        return 1;   // vox colors
+        return solidity ? solidity[node->value - 1] : 1;
     }
 }
 
 // delves down a voxel node, but only one one side
+// Returns 0 if any Air
 byte get_node_sides_all_solid(
     const byte* solidity,
     const VoxelNode* node,
     byte direction,
-    byte travel
+    byte distance
 ) {
     if (!node) {
         // zox_log_error("get_node_sides_all_solid has invalid node.");
@@ -201,7 +197,7 @@ byte get_node_sides_all_solid(
     }
 
     // at end of node tree, return if solid
-    if (!has_children_VoxelNode(node) || !travel) {
+    if (!has_children_VoxelNode(node) || !distance) {
         return is_node_solid(solidity, node);
     }
 
@@ -211,10 +207,10 @@ byte get_node_sides_all_solid(
         return 0;
     }
 
-    travel--;
+    distance--;
     for (byte i = 0; i < octree_length; i++) {
         const VoxelNode* child = &kids[i];
-        const byte3 np = octree_positions_b[i];
+        byte3 np = octree_positions_b[i];
 
         if ((direction == direction_left   && np.x != 0) ||
             (direction == direction_right  && np.x != 1) ||
@@ -227,10 +223,11 @@ byte get_node_sides_all_solid(
         }
 
         // check underneath nodes
-        if (!get_node_sides_all_solid(solidity, child, direction, travel)) {
+        if (!get_node_sides_all_solid(solidity, child, direction, distance)) {
             return 0;
         }
     }
+
     return 1;   // if all children pass, they are all solid
 }
 
