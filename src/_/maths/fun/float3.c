@@ -74,6 +74,12 @@ static inline void float3_scale_p(float3* input, const float mul) {
     input->z *= mul;
 }
 
+static inline void float3_scale3p(float3* input, const float3 mul) {
+    input->x *= mul.x;
+    input->y *= mul.y;
+    input->z *= mul.z;
+}
+
 static inline void float3_divide_float_p(float3* input, const float div) {
     input->x /= div;
     input->y /= div;

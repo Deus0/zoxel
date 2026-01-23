@@ -15,3 +15,8 @@ typedef struct {
     const float3 *vertices;
     const float2 *uvs;
 } octree_face_data;
+
+void free_chunk3_textured_builder_data(chunk3_textured_builder_data data) {
+    if (data.solidity) free(data.solidity);
+    if (data.uvs) free(data.uvs);
+}

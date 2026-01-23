@@ -1,5 +1,5 @@
 #include "render.c"
-#include "build.c"
+#include "build_dig.c"
 #include "build_high.c"
 
 void define_systems_chunks3_textured(ecs *world) {

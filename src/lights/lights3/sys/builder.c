@@ -144,7 +144,9 @@ void zox_apply_light3(
 
 
 zox_sys2(Light3BuildSystem) {
-    if (disable_lights) return;
+    if (disable_lights) {
+        return;
+    }
     // zox_ts_begin(light3_builder);
     zox_sys_world();
     zox_sys_begin();
@@ -199,7 +201,7 @@ zox_sys2(Light3BuildSystem) {
         );
 
         if (color_index != colors->length) {
-            zox_logw("color building not reached max [%i] / [%i]", color_index, colors->length);
+            zox_logw("Vert Colors out of Sync [%i] is not [%i]", color_index, colors->length);
         }
 
         updated->value = zox_dirty_trigger;

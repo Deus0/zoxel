@@ -1,13 +1,11 @@
+// NOTE: It's much easier to debug tthis as its more self contained
+
 // This one Builds Top Down, rather than by digging
 zox_sys2(Chunk3TexturedHighBuildSystem) {
-    if (zox_chunk3_texture_builder_old) {
+    if (zox_chunk3t_mode == zox_chunk3t_mode_old) {
         return;
     }
-#ifndef zox_disable_hidden_terrain_edge
     byte edge_voxel = 1;
-#else
-    byte edge_voxel = 1;
-#endif
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);
@@ -37,76 +35,10 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
         return;
     }
 
-    // Caches Block Data
-    // #################
-    int voxels_length = 0;
-    entity manager = 0;
-
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_i(BlockManagerLink, blocker);
-        if (!blocker->value) {
-            continue;
-        }
-        manager = blocker->value;
-        break;
-    }
-
-    if (!manager) {
+    chunk3_textured_builder_data build_data;
+    if (!cache_blocks_data(it, &build_data)) {
         return;
     }
-
-    zox_geter(manager, BlockLinks, blocks);
-    voxels_length = blocks->length;
-    if (!voxels_length) {
-        return; // if failed to find terrain parents
-    }
-
-    chunk3_textured_builder_data build_data;
-    byte solidity[voxels_length];
-    build_data.solidity = solidity;
-    int uvs[voxels_length * 6]; //  * sizeof(int)];
-    build_data.uvs = uvs;
-    // calculate tileuv indexes - voxel and face to index  in tilemap_uvs
-    int uvs_index = 0;
-
-    for (int i = 0; i < voxels_length; i++) {
-        entity block = blocks->value[i];
-        if (!zox_valid(block)) {
-            build_data.solidity[i] = 1;
-            continue;
-        }
-
-        // solidity
-        if (!zox_has(block, BlockModel)) {
-            build_data.solidity[i] = 1;
-        } else {
-            build_data.solidity[i] = zox_gett_value(block, BlockModel) == zox_block_solid;
-        }
-
-        // Cache the UVs if exist
-        if (!zox_has(block, TextureLinks)) {
-            continue;
-        }
-
-        zox_geter(block, TextureLinks, block_textures);
-        byte block_textures_length = block_textures->length;
-        int voxel_uv_indexes_index = i * 6;
-        if (block_textures_length == 1) {
-            // per voxel, 24 uvs
-            for (byte k = 0; k < 6; k++) {
-                build_data.uvs[voxel_uv_indexes_index + k] = uvs_index;
-                // uvs_index += 4;
-            }
-            uvs_index += 4;
-        } else {
-            // for 6 sides textured voxes
-            for (byte k = 0; k < 6; k++) {
-                build_data.uvs[voxel_uv_indexes_index + k] = uvs_index;
-                uvs_index += 4;
-            }
-        }
-    }
-    // #################
 
     // Our Loop
     for (int i = 0; i < it->count; i++) {
@@ -132,7 +64,7 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
         }
 
         // We have 3 modes, old, new, and hybrid
-        if (zox_chunk3_texture_builder_mix &&
+        if (zox_chunk3t_mode == zox_chunk3t_mode_mix &&
             rdepth->value != terrain_depth) {
             continue;
         }
@@ -162,7 +94,9 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
         byte vlength = powers_of_two[rdepth->value];
         const VoxelNode *noctrees[6];
         byte ndepths[6];
+
         fetch_neightbor_chunk_data(world, neighbors, noctrees, ndepths);
+
         mesh_uvs_build_data mdata = {
             .indicies = create_int_array_d(initial_dynamic_array_size),
             .vertices = create_float3_array_d(initial_dynamic_array_size),
@@ -192,7 +126,7 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
                     }
 
                     // Non Solid Blocks Pass
-                    if (!solidity[node->value - 1]) {
+                    if (!build_data.solidity[node->value - 1]) {
                         continue;
                     }
 
@@ -217,8 +151,7 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
                             direction
                         );
 
-                        byte ddepth = adepth - rdepth->value < 0 ? 0 : adepth - rdepth->value;
-                        ddepth++;
+                        byte ddepth = adepth - rdepth->value < 0 ? 1 : adepth - rdepth->value + 1;
 
                         // get anode at the current dig depth
                         const VoxelNode* anode = get_adjacentn_VoxelNode(
@@ -229,33 +162,23 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
                             direction
                         );
 
-                        byte asolid = anode && anode->value && solidity[anode->value - 1];
+                        byte asolid = anode && anode->value && build_data.solidity[anode->value - 1];
 
                         // NOTE: A special case here if neighbor is lesser / higher lod
                         if (asolid && adepth > rdepth->value) {
                             asolid = get_node_sides_all_solid(
-                                solidity,
+                                build_data.solidity,
                                 anode,
                                 rdir,
                                 ddepth
                             );
                         }
 
-
-                        // we need to know how far to check, using anodes depth
-                        /*byte asolid = get_node_sides_all_solid(
-                            solidity,
-                            anode,
-                            rdir,
-                            ddepth
-                        );
-                        asolid = anode ? asolid : edge_voxel;*/
-
                         // If Build Face
                         if (!asolid) {
 
                             // Cache for Lighting
-                            ((VoxelNode*) node)->sides |= (1 << direction);
+                            // ((VoxelNode*) node)->sides |= (1 << direction);
 
                             octree_face_data face = {
                                 .indicies = voxel_face_indicies_n + direction * voxel_face_indicies_length,
@@ -263,13 +186,16 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
                                 .uvs = &tilemap_uvs->value[uv_index],
                             };
 
+                            float3 positionf = byte3_to_float3(position);
+                            float3_scale_p(&positionf, bscale->value);
+
                             zox_build_voxel_face(
                                 &mdata,
                                 face.indicies,
                                 face.vertices,
                                 face.uvs,
-                                byte3_to_float3(position),
-                                bscale->value
+                                positionf,
+                                float3_single(bscale->value)
                             );
                         }
                     }
@@ -292,4 +218,5 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
         mdirty->value = mesh_state_trigger_slow;
     }
 
+    free_chunk3_textured_builder_data(build_data);
 } zox_sys_end(Chunk3TexturedHighBuildSystem);
