@@ -148,35 +148,8 @@ static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_da
 
 static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_data dig) {
 
-    if (dig.depth >= data.rdepth || is_closed_VoxelNode(dig.node)) {
-
-        // we dig until depth is at render level or the node is closed
-        if (dig.node->value && data.voxel_solidity[dig.node->value - 1]) {
-
-            dig.voxel = dig.node->value;
-            dig.positionf = float3_from_int3(dig.position);
-            float3_scale_p(&dig.positionf, dig.scale);
-
-            dig.local_position = octree_positions_b[dig.index];
-
-            int uvindex = (dig.voxel - 1) * 6;
-
-            for (dig.direction = 0; dig.direction < 6; dig.direction++) {
-
-                int uv_index = data.voxel_uv_indexes[uvindex + dig.direction];
-
-                octree_face_data face = {
-                    .indicies = voxel_face_indicies_n + dig.direction * voxel_face_indicies_length,
-                    .vertices = voxel_face_vertices_n[dig.direction],
-                    .uvs = &data.tilemap_uvs->value[uv_index],
-                };
-
-                build_voxel_mesh_final(data, dig, face);
-            }
-
-        }
-
-    } else {
+    // Dig Deeper
+    if (dig.depth < data.rdepth && !is_closed_VoxelNode(dig.node)) {
 
         // keep digging
         byte child_depth = dig.depth + 1;
@@ -189,9 +162,9 @@ static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_
 
         for (byte i = 0; i < 8; i++) {
 
-            if (!kids[i].value) {
+            /*if (!kids[i].value) {
                 continue;
-            }
+            }*/
 
             int3 child_position = int3_add(position, octree_positions[i]);
 
@@ -207,7 +180,41 @@ static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_
 
             zox_terrain_building_dig(data, child);
         }
+
+        return;
     }
+
+    if (!dig.node->sides) {
+        return;
+    }
+
+    // This shouldn't be needed tho
+    // TODO: WHY
+    /*if (!dig.node->value || !data.voxel_solidity[dig.node->value - 1]) {
+        return;
+    }*/
+
+    dig.voxel = dig.node->value;
+    dig.positionf = float3_from_int3(dig.position);
+    float3_scale_p(&dig.positionf, dig.scale);
+
+    dig.local_position = octree_positions_b[dig.index];
+
+    int uvindex = (dig.voxel - 1) * 6;
+
+    for (dig.direction = 0; dig.direction < 6; dig.direction++) {
+
+        int uv_index = data.voxel_uv_indexes[uvindex + dig.direction];
+
+        octree_face_data face = {
+            .indicies = voxel_face_indicies_n + dig.direction * voxel_face_indicies_length,
+            .vertices = voxel_face_vertices_n[dig.direction],
+            .uvs = &data.tilemap_uvs->value[uv_index],
+        };
+
+        build_voxel_mesh_final(data, dig, face);
+    }
+    // }
 }
 
 // TODO: Move terrain cache into functions

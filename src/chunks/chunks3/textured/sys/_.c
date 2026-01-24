@@ -23,7 +23,7 @@ void define_systems_chunks3_textured(ecs *world) {
 
     zox_system(
         Chunk3SidesSystem,
-        zoxp_voxels_read - 1,
+        EcsPreUpdate,
         [in] blocks.BlockManagerLink,
         [in] chunks3.ChunkMeshDirty,
         [in] rendering.RenderDepth,
@@ -37,7 +37,7 @@ void define_systems_chunks3_textured(ecs *world) {
     // move this into chunk3, for chunk3_textured
     zox_system(
         Chunk3TexturedBuildSystem,
-        zoxp_voxels_read,
+        EcsOnUpdate,
         [in] blocks.BlockManagerLink,
         [in] textures.TilemapLink,
         [in] chunks3.ChunkMeshDirty,

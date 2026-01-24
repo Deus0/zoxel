@@ -7,7 +7,7 @@ uint debug_ui_raycasting(ecs *world, entity player, char *buffer, uint size, uin
         return index;
     }
 
-    const entity character = get_linked_character(world, player);
+    entity character = get_linked_character(world, player);
     if (!zox_valid(character)) {
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;
@@ -36,7 +36,26 @@ uint debug_ui_raycasting(ecs *world, entity player, char *buffer, uint size, uin
 
     index += snprintf(buffer + index, size - index, "   + voxel_scale [%f]\n", data->voxel_scale);
 
-    // index += snprintf(buffer + index, size - index, "   * sides [%i]\n", data->node->sides);
+    // TODO: Get Parent one and check its closed values
+
+    if (data->node) {
+        index += snprintf(buffer + index, size - index, "Hit Voxel:\n");
+        index += snprintf(buffer + index, size - index, "   - value [%i]\n", data->node->value);
+        index += snprintf(buffer + index, size - index, "   - sides [%i]\n", data->node->sides);
+        index += snprintf(buffer + index, size - index, "   - closed [%i]\n", is_closed_VoxelNode(data->node));
+    }
+
+    if (data->node_last) {
+        index += snprintf(buffer + index, size - index, "   anode [%i] sides [%i]\n", data->node_last->value, data->node_last->sides);
+    }
+
+    /*const VoxelNode* anode = get_adjacentn_VoxelNode(
+        NULL,
+        root_voctree,
+        position,
+        depth,
+        direction
+    );*/
 
 
     return index;

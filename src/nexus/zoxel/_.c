@@ -12,9 +12,10 @@
 
 // TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
 void zoxel_on_spawn_prefabs(ecs* world) {
-    // set_prefab_debug_label(world, &debug_ui_raycasting);
 
-    set_prefab_debug_label(world, &debug_ui_system_times);
+    set_prefab_debug_label(world, &debug_ui_raycasting);
+
+    // set_prefab_debug_label(world, &debug_ui_system_times);
 
     // get_debug_label_app
     // set_prefab_debug_label(world, &debug_ui_memory);

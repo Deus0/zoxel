@@ -6,9 +6,9 @@ extern void raycaster_select_element(ecs *world, const entity raycaster_entity, 
 // this disables any buttons (zevices) of a device, until they are released, then they get auto re enabled
 void disable_inputs_until_release(
     ecs *world,
-    const entity player,
-    const byte new_device_mode,
-    const byte old_mode
+    entity player,
+    byte new_device_mode,
+    byte old_mode
 ) {
     if (old_mode == 0) {
         return; // no need disable on start

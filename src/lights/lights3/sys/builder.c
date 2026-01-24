@@ -80,9 +80,9 @@ static inline void zox_apply_light3(
 
         for (byte i = 0; i < 8; i++) {
 
-            if (!kids[i].value) {
+            /*if (!kids[i].value) {
                 continue;
-            }
+            }*/
 
             byte3 nposition = byte3_add(position, octree_positions_b[i]);
 
@@ -100,7 +100,6 @@ static inline void zox_apply_light3(
 
         return;
     }
-
 
     if (!voctree->sides) {
         return;

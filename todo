@@ -1,17 +1,7 @@
 ### todo ###
 
-bugs
-- redo ChunkTextured mesh building system
-- new game is missing a ui
-- windows build in zelder, make a bsh/windows.sh
-- controller hotkeys broken for steamdeck
-- first navigator selection missing for gamepad navigation mode
-- fix end game fade out, really bad atm
-- fix memory growth when returning to main menu and returning (this is super low priority)
-- fix music file not importing anymore
-
 architecture & refactors
-- move vox generation into models module
+-x move vox generation into models module
 - first chunk / tunk to move from controllers to stream begin systems
 - remove use of global voxel indexes and use BlockLinks from realm
 - seperate Chunk into Chunk + Render

@@ -235,7 +235,6 @@ byte is_adjacent_all_solid(
     const byte* solidity,
     byte edge_voxel,
     const VoxelNode **neighbors,
-    // const byte *ndepths,
     const VoxelNode *node,
     int3 position,
     byte dir,
