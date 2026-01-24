@@ -35,8 +35,7 @@ zox_sys2(CubeLineRenderSystem) {
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Bounds3D, bounds);
 
-        const byte mode = dmode->value;
-        if (!mode) {
+        if (!dmode->value) {
             continue;
         }
 
@@ -54,7 +53,7 @@ zox_sys2(CubeLineRenderSystem) {
         zox_gpu_line_thickness(thickness->value * viewport_scale);
         color_rgb lines_color = color_to_color_rgb(colorr->value);
 
-        if (mode == zox_cubeline_debug_transforms) {
+        if (dmode->value == zox_cubeline_debug_transforms) {
             // up axis
             // zox_render_line_attr(p, (float3) { p.x, p.y + cube_lines_length, p.z });
             set_line3D_color(lines_color);
@@ -121,7 +120,11 @@ zox_sys2(CubeLineRenderSystem) {
             zox_render_line_attr(bottom_right2, top_right2);
             zox_render_line_attr(bottom_left2, top_left2);
         }
+
+        zox_sys_increment();
     }
+
     zox_gpu_disable_buffer(line3D_position_location);
     zox_disable_material();
+
 } zox_sys_end(CubeLineRenderSystem);

@@ -1,8 +1,10 @@
 zox_sys2(ElementRenderSystem) {
-    zox_sys_world()
+    zox_sys_world();
+
     if (!zox_valid(material_textured2D)) {
         return;
     }
+
     byte is_rendering = 0;
     const float position_z = ((int) renderer_layer) * shader_depth_multiplier;
     zox_geter_value(material_textured2D, MaterialGPULink, uint, material_link)
@@ -19,9 +21,7 @@ zox_sys2(ElementRenderSystem) {
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
     zox_sys_in(TextureGPULink);
-
     for (int i = 0; i < it->count; i++) {
-
         zox_sys_e();
         zox_sys_i(Position2, position2);
         zox_sys_i(Rotation2D, rotation2D);
@@ -37,6 +37,7 @@ zox_sys2(ElementRenderSystem) {
         if (layer2D->value != renderer_layer || renderDisabled->value || get_root_canvas_camera(world, e) != renderer_camera || !meshGPULink->value.x || !meshGPULink->value.y || !uvsGPULink->value || !textureGPULink->value) {
             continue;
         }
+
         if (!is_rendering) {
             is_rendering = 1;
             // per material data
@@ -44,6 +45,7 @@ zox_sys2(ElementRenderSystem) {
             zox_gpu_material(material_link);
             zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
         }
+
         // per mesh data
         opengl_set_mesh_indicies(meshGPULink->value.x);
         opengl_bind_texture(textureGPULink->value);
@@ -59,7 +61,10 @@ zox_sys2(ElementRenderSystem) {
         zox_gpu_float(material_attributes->brightness, brightness->value);
         zox_gpu_float(material_attributes->alpha, alpha->value);
         zox_gpu_render(6);
+
+        zox_sys_increment();
     }
+
     if (is_rendering) {
         // cleanup material data
         zox_gpu_disable_buffer(material_attributes->vertex_uv);

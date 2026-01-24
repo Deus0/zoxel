@@ -66,15 +66,18 @@ zox_sys2(ChunkDebugSystem) {
         byte2 positionxz = byte2_zero;
         for (positionxz.x = 0; positionxz.x < length; positionxz.x++) {
             for (positionxz.y = 0; positionxz.y < length; positionxz.y++) {
+
                 if (!byte2_on_edge(positionxz, byte2_single(length))) {
                     continue;
                 }
+
                 byte3 ground_position = find_position_on_ground(
                     voxelNode,
                     voxel_node_above,
                     nodeDepth->value,
                     positionxz
                 );
+
                 if (!byte3_equals(ground_position, byte3_full)) {
                     spawn_voxel_debug_line(
                         world,

@@ -25,14 +25,23 @@ zox_sys2(VoxelNodeQueueSystem) {
         for (size_t i = 0; i < queue->count; i++) {
             VoxelNodeUpdate update = queue->ptr[i];
             datam.voxel = update.value;
-            SetVoxelData data2 = {
+
+            // TODO: Use set_VoxelNode instead
+
+            if (set_VoxelNode(node, depth->value, update.pos, update.value, 0)) {
+                updated = 1;
+            }
+            //updated = 1;
+
+            /*SetVoxelData data2 = {
                 .node = node,
                 .position = update.pos,
             };
             VoxelNode* placed = set_voxel(datam, data2);
             if (placed) {
                 updated = 1;
-            }
+            }*/
+
             // zox_log("edited voxel: %ix%ix%i", update.positionl.x, update.positionl.y, update.positionl.z);
         }
         // spin_unlock(&queue->lock);

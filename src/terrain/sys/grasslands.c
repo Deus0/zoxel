@@ -3,6 +3,8 @@ byte disable_top_placements = 0;
 byte disable_dirt_patches = 1;
 byte disable_grass_placements = 0;
 
+// NOTE: Needs to use voxelt atm as it sets with air as default
+
 // #define disable_newheightmap_gen
 
 // place grass if max depth
@@ -10,7 +12,7 @@ byte disable_grass_placements = 0;
 // generates our terrain voxels
 zox_sys2(GrassyPlainsSystem) {
     // zox_ts_begin(grassy_plains);
-    const uint seed = global_seed;  // TODO: use terrains seed
+    uint seed = global_seed;  // TODO: use terrains seed
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
@@ -313,22 +315,6 @@ zox_sys2(GrassyPlainsSystem) {
         seed * 16,
         6) + 1.0) / 2.0;*/
 // place_value + place_value2 * 0.1 <= 0.33) {
-
-/*const int rando = rand() % 10000;
-if (rando <= block_spawn_chance_grass + block_spawn_chance_flower + block_spawn_chance_rubble) {
-    positionl.y = local_height_raw + 1;
-    data.position = positionl;
-    if (rando <= block_spawn_chance_grass) {
-        set_voxel(&datam_grass, data);
-    }
-    else if (rando <= block_spawn_chance_grass + block_spawn_chance_flower) {
-        set_voxel(&datam_flower, data);
-    }
-    else if (rando <= block_spawn_chance_grass + block_spawn_chance_flower + block_spawn_chance_rubble) {
-        set_voxel(&datam_rubble, data);
-    }
-    // zox_log(" + flower spawned %f\n", perlin_value)
-}*/
 
 // obisidian bottom
 /*if (cposition->value.y == -render_distance_y) {

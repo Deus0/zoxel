@@ -37,10 +37,8 @@ zox_tag(SunnyChunk);
 typedef struct {
     void* ptr;
     byte value;
-
     // TODO: Remove type from Macros
     byte type;
-
 } SidesOctree;
 
 zoxc_octree_fun1(SidesOctree, byte, 0)

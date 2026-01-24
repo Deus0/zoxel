@@ -1,31 +1,33 @@
-
-// t for terrain
-VoxelNode* set_voxelc(
+// c for colos
+/*VoxelNode* set_voxelc(
     VoxelNode* node,
-    byte target,
+    byte tdepth,
     byte3 position,
     byte value,
     byte depth
 ) {
-    byte depth_reached = depth == target;
+    byte depth_reached = depth == tdepth;
+
     if (!depth_reached && is_closed_VoxelNode(node)) {
         open_VoxelNode(node);
         VoxelNode* kids = get_children_VoxelNode(node);
         for (byte i = 0; i < octree_length; i++) {
-            kids[i].value = 0;
+            // set to parent value
+            kids[i].value = node->value;
         }
     }
+
     // wait this overrides child nodes, rather than reevaluating them
     if (depth_reached) {
         node->value = value;
-    }
-    if (depth_reached || !has_children_VoxelNode(node)) {
+    //}
+    //if (depth_reached || !has_children_VoxelNode(node)) {
         return node;
     }
 
-    byte dividor = powers_of_two_byte[target - depth - 1];
-    if (dividor == 0) {
-        return node; // no need to dive then, we just set voxel anyway
+    byte dividor = powers_of_two_byte[tdepth - depth - 1];
+    if (!dividor) {
+        return node;
     }
 
     byte3 positionn = (byte3) {
@@ -33,7 +35,6 @@ VoxelNode* set_voxelc(
         position.y / dividor,
         position.z / dividor
     };
-    byte3_modulus_byte(&position, dividor);
 
     byte i = byte3_octree_array_index(positionn);
     if (i >= 8) {
@@ -44,11 +45,12 @@ VoxelNode* set_voxelc(
     VoxelNode* kids = get_children_VoxelNode(node);
     node = &kids[i];
     depth++;
+    byte3_modulus_byte(&position, dividor);
 
     return set_voxelc(
         node,
-        target,
+        tdepth,
         position,
         value,
         depth);
-}
+}*/

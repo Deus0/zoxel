@@ -24,9 +24,9 @@ void build_vox_tiles(
 
                 if (in_brick_x && in_brick_y && in_brick_z) {
                     const byte value = color_range.x + rand() % (color_range.y - color_range.x);
-                    set_voxelc(node, node_depth, pos, value, 0);
+                    set_VoxelNode(node, node_depth, pos, value, 0);
                 } else {
-                    set_voxelc(node, node_depth, pos, black_voxel, 0); // Mortar
+                    set_VoxelNode(node, node_depth, pos, black_voxel, 0); // Mortar
                 }
             }
         }

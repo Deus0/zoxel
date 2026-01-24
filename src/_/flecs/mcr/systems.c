@@ -29,16 +29,29 @@ zox_sys(T) {
 
 #define zox_sys2(T)\
     void T(iter *it) {\
-        double system_time_begin = get_time_ms();
+        double system_time_begin = get_time_ms(); \
+        byte is_count_process = ecs_has(it->world, it->system, SystemProcessed); \
+        uint process_count = 0;
+
+#define zox_sys_increment()\
+    if (is_count_process) process_count++\
 
 #define zox_sys_untimed(T)\
     void T(iter *it) {
 
 #define zox_sys_end(T)\
     double system_delta_time = get_time_ms() - system_time_begin;\
-    double current_system_delta_time = ecs_get(it->world, it->system, SystemDelta)->value; \
-    if (system_delta_time > current_system_delta_time) { \
+    \
+    double current_delta = ecs_get(it->world, it->system, SystemDelta)->value; \
+    if (system_delta_time > current_delta) { \
         ecs_set(it->world, it->system, SystemDelta, { system_delta_time }); \
+    } \
+    \
+    if (is_count_process && process_count) { \
+        int current = ecs_get(it->world, it->system, SystemProcessed)->value;\
+        if (process_count > current) {\
+            ecs_set(it->world, it->system, SystemProcessed, { process_count }); \
+        }\
     } \
 } ECS_SYSTEM_DECLARE(T)
 

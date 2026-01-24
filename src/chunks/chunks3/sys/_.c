@@ -2,12 +2,11 @@ zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 #include "cleanup.c"
 #include "mesh_trigger.c"
 #include "mesh_trigger_neighbor.c"
-#include "debug.c"
 #include "voxel_node_queue.c"
 #include "voxel_node_queue_clear.c"
 #include "sides.c"
 
-void define_systems_chunks(ecs *world) {
+void define_systems_chunks3(ecs *world) {
     zoxd_system_increment(VoxelNodeDirty);
 
     zox_system(
@@ -31,6 +30,7 @@ void define_systems_chunks(ecs *world) {
         [in] chunks.NodeDepth,
         [out] chunks3.VoxelNode
     );
+
     zox_system(VoxelNodeQueueSystem,
         zoxp_queue_process1,
         [in] chunks.NodeDepth,
@@ -39,23 +39,11 @@ void define_systems_chunks(ecs *world) {
         [out] chunks3.VoxelNodeDirty,
         [out] chunks3.VoxelNodeEdited
     );
+
     zox_system(
         VoxelNodeQueueClearSystem,
         zoxp_queue_clear,
         [out] VoxelNodeQueue
-    );
-    // main thread
-    zox_system_1(
-        ChunkDebugSystem,
-        zoxp_voxels_read,
-        [in] lines3.DebugCubeLines,
-        [in] blocks.BlockScale,
-        [in] transforms3.Position3D,
-        [in] chunks3.VoxelNode,
-        [in] chunks.NodeDepth,
-        [in] rendering.RenderDistance,
-        [in] chunks3.ChunkNeighbors,
-        [none] ChunkDebugger
     );
 
     // Reduce our air

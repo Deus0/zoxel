@@ -6,74 +6,94 @@
 // Core setter: walks toward target depth, sets value, opens children if missing
 static inline void* set_octree_value(
     void* node,
-    byte target_depth,
+    byte tdepth,
     byte3 pos,
     byte value,
     byte depth,
     size_t stride,
     size_t value_offset
 ) {
-    if (!node) return NULL;
+    if (!node) {
+        return NULL;
+    }
 
     // Are we at target depth?
-    bool depth_reached = (depth == target_depth);
+    byte depth_reached = (depth == tdepth);
 
     // Children ptr is first member
-    void** ptr = (void**)node;
+    void** ptr = (void**) node;
+    void* kids = *ptr;
 
     // Open children if missing and we need to go deeper
-    if (!depth_reached && !*ptr) {
-        *ptr = malloc(stride * 8);   // allocate 8 children
-        if (!*ptr) {
-            zox_log_error("[set_octree_value] failed to allocate children");
+    if (!depth_reached && !kids) {
+
+        kids = malloc(stride * 8);   // allocate 8 children
+
+        if (!kids) {
+            zox_log_error("[set_octree_value] Allocation Failure");
             return node;
         }
 
-        memset(*ptr, 0, stride * 8);    // zero-init
+        memset(kids, 0, stride * 8);    // zero-init
+        *ptr = kids;
 
         // --- New: set all children values ---
         byte parent_value = *(byte*)((char*) node + value_offset);
+
         for (byte j = 0; j < 8; j++) {
-            void* child = (char*)(*ptr) + j * stride;
+            void* child = (char*)(kids) + j * stride;
+
             *(byte*)((char*)child + value_offset) = parent_value;
-            // value;  // initialize with parent value
         }
     }
 
     // Set value if reached depth
-    if (depth_reached) { // || value) {
-        *(byte*)((char*)node + value_offset) = value;
-    }
-
-    void* kids = *ptr;
-    if (depth_reached || !kids) return node;
-
-    // Dive into correct child
-    const byte div = powers_of_two_byte[target_depth - depth - 1];
-    if (div == 0) return node;
-
-    byte3 node_pos = { pos.x / div, pos.y / div, pos.z / div };
-    byte3_modulus_byte(&pos, div);
-
-    byte i = byte3_octree_array_index(node_pos);
-    if (i >= 8) {
-        zox_logw("[set_octree_value] index OOB: %u at [%ix%ix%i] d[%i]", (unsigned)i, node_pos.x, node_pos.y, node_pos.z, depth);
+    if (depth_reached) {
+        // Pointer math to set value
+        *(byte*)((char*) node + value_offset) = value;
+        // zox_log("Depth [%i] Reached [%i]", tdepth, value);
         return node;
     }
 
-    return set_octree_value((char*)kids + i * stride, target_depth, pos, value, depth + 1, stride, value_offset);
+    // Dive into correct child
+    byte div = powers_of_two_byte[tdepth - depth - 1];
+    if (!div) {
+        return node;
+    }
+
+    byte3 npos = { pos.x / div, pos.y / div, pos.z / div };
+    byte i = byte3_octree_array_index(npos);
+
+    if (i >= 8) {
+        zox_logw("[set_octree_value] Invalid Index >= 8 [%i]\n  - pos [%ix%ix%i]\n    - npos [%ix%ix%i]\n    - div [%i]\n    - depth [%i]\n    - tdepth [%i]",
+            i,
+            pos.x, pos.y, pos.z,
+            npos.x, npos.y, npos.z,
+            div, depth, tdepth);
+        return node;
+    }
+
+    byte3 cpos = {
+        pos.x % div,
+        pos.y % div,
+        pos.z % div
+    };
+
+    return set_octree_value((char*) kids + i * stride, tdepth, cpos, value, depth + 1, stride, value_offset);
 }
 
 // Macro wrapper: type-safe setter
 #define create_node_setter(T) \
-static inline T* set_##T(T* node, byte target_depth, byte3 pos, byte value, byte depth) { \
+\
+static inline T* set_##T(T* node, byte tdepth, byte3 pos, byte value, byte depth) { \
     return (T*)set_octree_value(\
         (void*)node,\
-        target_depth,\
+        tdepth,\
         pos, value,\
         depth,\
         sizeof(T),\
-        offsetof(T, value)); \
+        offsetof(T, value)\
+    ); \
 }
 
 // Example usage:

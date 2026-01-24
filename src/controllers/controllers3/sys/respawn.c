@@ -14,12 +14,13 @@ zox_sys2(Player3RespawnSystem) {
 
         // what happened HHere...? NANI?
         if (respawn->value > 0 && zox_valid(character->value)) {
-            zox_log("+++ Respawning Cancelled! (Character Lives) +++");
+            zox_log("Respawn [cancel] (character alive)");
             respawn->value = 0;
             state->value = zox_player_state_playing;
         }
+        // Player State Changes
         else if (respawn->value > 0 && state->value != zox_player_state_respawning) {
-            zox_log("+++ Respawning Cancelled! (PlayerState changed) +++");
+            zox_log("Respawn [cancel] (player state)");
             respawn->value = 0;
         }
         // Playing happily!
@@ -29,7 +30,7 @@ zox_sys2(Player3RespawnSystem) {
             }
             // start respawn timer!
             //  + active red overlay
-            zox_log("+++ Respawning BEGINS +++")
+            zox_log("Respawn [begin] (character dead)");
             state->value = zox_player_state_respawning;
             respawn->value = respawn_time;
         }
@@ -37,7 +38,7 @@ zox_sys2(Player3RespawnSystem) {
         else if (state->value == zox_player_state_respawning) {
             respawn->value -= zox_delta_time;
             if (respawn->value <= 0) {
-                zox_log("+++ Respawning Player +++")
+                zox_log("Respawn [activates]");
                 state->value = zox_player_state_playing;
                 character->value = game_start_player_new(world, e);
             }

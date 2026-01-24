@@ -38,15 +38,15 @@
 void set_terrain_block(
     ecs *world,
     VoxelNode *voxelNode,
-    const byte3 voxel_position,
-    const int chunk_position_y,
-    const byte chunk_voxel_length,
-    const byte2 set_voxel,
-    const int global_place_y
+    byte3 voxel_position,
+    int chunk_position_y,
+    byte chunk_voxel_length,
+    byte2 set_voxel,
+    int global_place_y
 ) {
     (void) world;
-    const int local_place_y = global_place_y - chunk_position_y;
-    const byte place_in_bounds = local_place_y >= 0 && local_place_y < chunk_voxel_length;
+    int local_place_y = global_place_y - chunk_position_y;
+    byte place_in_bounds = local_place_y >= 0 && local_place_y < chunk_voxel_length;
     if (place_in_bounds) {
         byte3 node_position = voxel_position;
         node_position.y = local_place_y;

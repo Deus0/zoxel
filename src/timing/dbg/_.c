@@ -19,3 +19,30 @@
         zox_logw("System [%s] Lagged [%fms]", zox_get_name(system), system_delta);
     }
 }*/
+
+void add_system_process_counter(ecs* world, entity e) {
+    zox_add(e, SystemProcessed);
+    zox_add(e, SystemProcessedCache);
+}
+
+void define_systems_timing_debug(ecs* world) {
+    zox_system(
+        SystemProcessedResetSystem,
+        EcsOnLoad,
+        [out] timing.SystemProcessed,
+        [out] timing.SystemProcessedCache
+    );
+
+    zox_system(
+        SystemDeltaLogResetSystem,
+        EcsOnLoad,
+        [out] timing.SystemDelta,
+        [out] timing.SystemDeltaCache
+    );
+
+    zox_system_1(
+        SystemDeltaLogSystem,
+        EcsOnStore,
+        [in] timing.SystemDeltaCache
+    );
+}

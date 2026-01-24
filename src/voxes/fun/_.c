@@ -1,4 +1,3 @@
-#include "voxelc.c"
 #include "vox.c"
 #include "outlines.c"
 #include "io.c"

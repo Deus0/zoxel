@@ -22,9 +22,10 @@ static inline byte is_linked_##name(const name *node) {\
     return linked;\
 }\
 \
-void link_node_##name(name *node, const entity e) {\
+void link_node_##name(name* node, entity e) {\
     /*write_lock_##name(node);*/\
-    if (node->type == node_type_closed) {\
+    /*if (node->type == node_type_closed) {*/\
+    if (!node->ptr) {\
         node->type = node_type_instance;\
         node->ptr = malloc(sizeof(OctreeLink));\
         *(OctreeLink*) node->ptr = (OctreeLink) { e };\
@@ -39,15 +40,18 @@ byte destroy_node_link_##name(ecs *world, name *node) {\
     /*write_lock_##name(node);*/\
     byte did_destroy = 0;\
     if (is_linked_##name(node)) {\
-        const entity e = get_node_entity_unlocked_##name(node);\
+        entity e = get_node_entity_unlocked_##name(node);\
+        \
         if (zox_valid(e)) {\
             zox_delete(e)\
             did_destroy = 1;\
         }\
+        \
         free(node->ptr);\
         node->ptr = NULL;\
         node->type = node_type_closed;\
     }\
+    \
     /*write_unlock_##name(node);*/\
     return did_destroy;\
 }\

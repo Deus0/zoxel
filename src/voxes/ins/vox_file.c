@@ -39,14 +39,6 @@ byte pick_node_depth(int3 size) {
     return depth;
 }
 
-extern VoxelNode* set_voxelc(
-    VoxelNode* node,
-    byte target_depth,
-    byte3 position,
-    byte value,
-    byte depth
-);
-
 
 // TODO: we should pick the depth that matches the size of the model
 //      - then we scale the model to fit our world
@@ -133,7 +125,7 @@ void set_vox_file(
                 /*ppos.x += offset.x;
                 ppos.y += offset.y;
                 ppos.z += offset.z;*/
-                set_voxelc(node, node_depth, ppos, voxels[vox_index], 0);
+                set_VoxelNode(node, node_depth, ppos, voxels[vox_index], 0);
             }
         }
     }

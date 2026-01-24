@@ -76,13 +76,29 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
 
     int top = count < 10 ? count : 10;
     for (int i = 0; i < top; i++) {
+        entity e =  entries[i].e;
+
         index += snprintf(
             buffer + index,
             size - index,
-            "  %2d. %-32s %8.3f ms\n",
+            "  %2d. %-32s %8.3f ms",
             i + 1,
-            ecs_get_name(world, entries[i].e),
+            zox_get_name(e),
             entries[i].value
+        );
+
+        // Add process data
+        if (zox_has(e, SystemProcessedCache)) {
+            zox_geter_value(e, SystemProcessedCache, int, process_count);
+            index += snprintf(
+                buffer + index,
+                size - index,
+                "  p [%i]",
+                process_count
+            );
+        }
+
+        index += snprintf(buffer + index, size - index,            "\n"
         );
     }
 

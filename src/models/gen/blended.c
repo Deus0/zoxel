@@ -21,7 +21,7 @@ void build_vox_blended(VoxelNode *voxelNode,
     // create new chunk node here, blend two using mask?
 
 
-    const byte grass_position = length - length / 3;
+    byte grass_position = length - length / 3;
     byte3 voxel_position;
     for (voxel_position.x = 0; voxel_position.x < length; voxel_position.x++) {
         for (voxel_position.z = 0; voxel_position.z < length; voxel_position.z++) {

@@ -60,7 +60,7 @@ zox_sys2(TerrainItemDropSystem) {
             // zox_log("Spawned block pickup at [%fx%fx%f] scale [%f]", positionf.x, positionf.y, positionf.z, scale->value);
             // get positionf from local position and depth
 
-            const entity pickup = spawn_pickup_block(
+            entity pickup = spawn_pickup_block(
                 world,
                 positionf,
                 block

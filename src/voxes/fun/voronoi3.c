@@ -27,7 +27,7 @@ int get_closest_index3(const byte3 point, byte3 *points, int points_length, byte
 
 void voronoi3(
     VoxelNode *node,
-    const byte target_depth,
+    const byte depth,
     const byte2 voxel_range,
     byte black_voxel,
     byte vregions
@@ -35,7 +35,7 @@ void voronoi3(
     if (!vregions) {
         return;
     }
-    byte length = powers_of_two[target_depth];
+    byte length = powers_of_two[depth];
     // const byte vregions = 64;
     const int points_length = (int) (length * 1.6f);
     const int voxels_length = length * length * length;
@@ -144,14 +144,14 @@ void voronoi3(
             }
         }
     }
-    // const byte2 set_voxel_black = (byte2) { black_voxel, target_depth };
+    // const byte2 set_voxel_black = (byte2) { black_voxel, depth };
     for (position.x = 0; position.x < length; position.x++) {
         for (position.y = 0; position.y < length; position.y++) {
             for (position.z = 0; position.z < length; position.z++) {
                 const int index = byte3_array_indexl(position, length);
                 const byte region_voxel = region_voxels[index];
                 byte value = black_voxel;
-                //  set_voxel = (byte2) { black_voxel, target_depth };
+                //  set_voxel = (byte2) { black_voxel, depth };
                 if (region_voxel != vregions) {
                     value = voxel_range.x + (region_voxel % (voxel_range.y - voxel_range.x));
                 }
@@ -164,12 +164,7 @@ void voronoi3(
                 }*/
                 //byte3 node_position = position;
                 //set_octree_voxel(node, &node_position, &set_voxel, 0);
-                set_voxelc(
-                    node,
-                    target_depth,
-                    position,
-                    value,
-                    0);
+                set_VoxelNode(node, depth, position, value, 0);
             }
         }
     }

@@ -55,7 +55,7 @@ VoxelNode* set_voxelt(
         depth);
 }
 
-VoxelNode* set_voxelt_override(
+/*VoxelNode* set_voxelt_override(
     VoxelNode* node,
     byte target,
     byte3 position,
@@ -111,9 +111,6 @@ VoxelNode* set_voxelt_override(
 
 
 void set_voxelt_air(VoxelNode* node) {
-    /*if (is_closed_VoxelNode(node) || !node->value) {
-        return;
-    }*/
     node->value = 0;
 
     if (!has_children_VoxelNode(node)) {
@@ -124,4 +121,8 @@ void set_voxelt_air(VoxelNode* node) {
     for (byte i = 0; i < octree_length; i++) {
         set_voxelt_air(&kids[i]);
     }
-}
+}*/
+
+/*if (is_closed_VoxelNode(node) || !node->value) {
+    return;
+}*/

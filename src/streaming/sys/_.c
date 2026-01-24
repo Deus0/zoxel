@@ -46,6 +46,8 @@ void define_systems_streaming(ecs* world) {
         [out] rendering.RenderDisabled,
         [none] streaming.StreamedChunk
     );
+    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, { 8 });
+    add_system_process_counter(world, zox_id(ChunkFrustumSystem));
 
     zox_filter(streamers3,
         [in] streaming.StreamPoint,
@@ -88,7 +90,4 @@ void define_systems_streaming(ecs* world) {
         [in] voxes.ChunkLinks,
         [out] StreamEndEvent
     );
-
-    // Custom Cuttoff
-    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, { 8 });
 }

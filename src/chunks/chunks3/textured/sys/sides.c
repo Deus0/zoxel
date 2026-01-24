@@ -192,6 +192,7 @@ static inline byte build_voxel_sides_dig(
 
     // before we set sides, we need to empty the value
     voctree->sides = 0;
+
     for (byte direction = 0; direction < 6; direction++) {
 
         if (build_voxel_sides(

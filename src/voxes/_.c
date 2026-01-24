@@ -13,7 +13,6 @@
 #include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
-#include "gen/_.c"
 #include "sys/_.c"
 #include "io/_.c"
 #include "dbg/_.c"

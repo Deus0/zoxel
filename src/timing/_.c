@@ -2,26 +2,14 @@
 #define zoxm_time
 
 #include "dat/settings.c"
-zoxc_double(DestroyInTime);
-zoxc_double(TimerTime);
-zoxc_double(TimerRate);
-zoxc_byte(TimerState);
-zoxc_double(SystemDelta);
-zoxc_double(SystemDeltaCache);
-zoxc_double(SystemDeltaMax);
+#include "com/_.c"
 #include "mcr/_.c"
 #include "fun/_.c"
-#include "dbg/_.c"
 #include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Timing)
-    zoxd_double(DestroyInTime);
-    zoxd_double(TimerTime);
-    zoxd_double(TimerRate);
-    zoxd_byte(TimerState);
-    zoxd_double(SystemDelta);
-    zoxd_double(SystemDeltaCache);
-    zoxd_double(SystemDeltaMax);
+    define_components_timing(world);
     define_systems_timing(world);
     initialize_time();
     add_to_post_update_loop(iterate_time);
@@ -29,6 +17,8 @@ zox_begin_module(Timing)
     // stats
     add_hook_spawn_prefabs(add_system_log_components);
     // add_to_post_update_loop(log_lagging_systems);
+
+    define_systems_timing_debug(world);
 zox_end_module(Timing)
 
 #endif

@@ -28,16 +28,4 @@ void define_systems_timing(ecs* world) {
         [in] core.EventInput,
         [out] core.EventTime
     );
-    // TODO: Move this before other systems
-    zox_system(
-        SystemDeltaLogResetSystem,
-        EcsOnLoad,
-        [out] timing.SystemDelta,
-        [out] timing.SystemDeltaCache
-    );
-    zox_system_1(
-        SystemDeltaLogSystem,
-        EcsOnStore,
-        [in] timing.SystemDeltaCache
-    );
 }
