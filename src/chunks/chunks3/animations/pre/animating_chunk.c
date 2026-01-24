@@ -1,9 +1,7 @@
-entity spawn_prefab_animating_chunk(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_animating_chunk(ecs *world, entity p) {
     const int3 chunk_size = int3_single(16);
-    zox_instance(prefab);
+
+    zox_instance(p);
     zox_make_prefab(e);
     // ecs_add_id(world, e, EcsPrefab);
     // prefab_add_chunk_colors(world, e);
@@ -14,6 +12,7 @@ entity spawn_prefab_animating_chunk(
     zox_prefab_set(e, MeshDirty, { 0 });
     // testing: set colors
     ColorRGBs colors = (ColorRGBs) { 0 };
+
     initialize_ColorRGBs(&colors, 8);
     for (int i = 0; i < 8; i++) {
         colors.value[i] = (color_rgb) {
@@ -22,8 +21,10 @@ entity spawn_prefab_animating_chunk(
             255 - (rand() % 60) };
     }
     zox_set_ptr(e, ColorRGBs, colors);
+
     if (!headless) {
         add_gpu_colors(world, e);
     }
+
     return e;
 }

@@ -51,7 +51,7 @@ zox_sys2(KeyboardClickSystem) {
             continue;
         }
 
-        zox_geter_value(player->value, DeviceMode, byte, dmode);
+        // zox_geter_value(player->value, DeviceMode, byte, dmode);
 
         // released
         if (input_type == 1) {

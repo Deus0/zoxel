@@ -1,6 +1,9 @@
 #ifndef zoxm_chunks
 #define zoxm_chunks
 
+
+// TODO: Use BlockCanGroup for reduction - atm grass etc can reduce
+
 #include "com/_.c"
 #include "chunks2/_.c"
 #include "chunks3/_.c"

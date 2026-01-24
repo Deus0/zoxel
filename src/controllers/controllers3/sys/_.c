@@ -69,7 +69,8 @@ void define_systems_controllers3D(ecs *world) {
         EcsOnUpdate,
         [out] players.PlayerState,
         [out] players.PlayerRespawn,
-        [out] characters.CharacterLink
+        [out] characters.CharacterLink,
+        [none] players.Player
     );
     zox_system(
         PlayerPauseSystem,

@@ -175,7 +175,6 @@ entity game_start_player_new(ecs *world, entity player) {
     spawn_arrow3D(world, spawn_data.position, (float3) { 0, 4, 0}, 0.5f, 6, 60);
 
     // Needs ui spawn after frame
-    // spawn_player_game_ui(world, player);
     delay_event(world, &spawn_player_game_ui, player, 0.01);
 
     return e;

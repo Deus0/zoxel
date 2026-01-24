@@ -30,6 +30,30 @@ zox_tag(DisableReverseLinkChunk);
 // Misc
 zoxc_float(RaycastRange);
 
+// Sides
+zox_tag(SunnyChunk);
+
+// A simple struct
+typedef struct {
+    void* ptr;
+    byte value;
+
+    // TODO: Remove type from Macros
+    byte type;
+
+} SidesOctree;
+
+zoxc_octree_fun1(SidesOctree, byte, 0)
+create_node_setter(SidesOctree)
+create_node_getter(SidesOctree)
+create_node_reducer(SidesOctree)
+create_node_optimizer(SidesOctree)
+create_node_setreduce(SidesOctree)
+create_node_neighbor(SidesOctree)
+// create_octree_line_debugger(SidesOctree)
+// create_octree_line_debugger_compare(SidesOctree, VoxelNode)
+zoxc_state(SidesOctreeDirty);
+
 void define_components_chunks3(ecs* world) {
     // Main Chunk Voxel Data
     zoxd_tag(Chunk3);
@@ -62,4 +86,8 @@ void define_components_chunks3(ecs* world) {
     zoxd_tag(LinkChunk);
     zoxd_tag(DisableReverseLinkChunk);
     zoxd_tag(ChunkDebugger);
+
+    // Sides
+    zoxd_node(SidesOctree);
+    zoxd_state(SidesOctreeDirty);
 }

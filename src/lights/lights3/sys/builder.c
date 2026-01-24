@@ -17,7 +17,9 @@ static inline const LightNode* get_max_light_on_face(
     byte depth,
     byte target
 ) {
-    if (!node) return NULL;
+    if (!node) {
+        return NULL;
+    }
 
     const LightNode* best_node = node;
     byte max_value = node->value;
@@ -58,86 +60,97 @@ static inline const LightNode* get_max_light_on_face_(
     return get_max_light_on_face(node, face, depth, target);
 }
 
-void zox_apply_light3(
-    const byte* solidity,
+static inline void zox_apply_light3(
     const LightNode** nnodesl,
-    const VoxelNode* node,
-    const LightNode* root_lnode,
+    const VoxelNode* voctree,
+    const LightNode* lnode,
     const MeshColorRGBs* colors,
     byte3 position,
-    int* color_index,
-    byte target,
+    int* ccount,
+    byte rdepth,
     byte depth
 ) {
-    if (!node || node->value == 0) {
+
+    // Dig Deeper
+    if (depth < rdepth && !is_closed_VoxelNode(voctree)) {
+
+        byte3_multiply_byte(&position, 2);
+        VoxelNode* kids = get_children_VoxelNode(voctree);
+        depth++;
+
+        for (byte i = 0; i < 8; i++) {
+
+            if (!kids[i].value) {
+                continue;
+            }
+
+            byte3 nposition = byte3_add(position, octree_positions_b[i]);
+
+            zox_apply_light3(
+                nnodesl,
+                &kids[i],
+                lnode,
+                colors,
+                nposition,
+                ccount,
+                rdepth,
+                depth
+            );
+        }
+
         return;
     }
 
-    if (depth >= target || is_closed_VoxelNode(node)) {
 
-        if (node->value && solidity[node->value - 1]) {
+    if (!voctree->sides) {
+        return;
+    }
 
-            // for each face that is visible according to node->sides
-            for (byte face = 0; face < 6; face++) {
-                if (*color_index + 4 > colors->length) {
-                    break;
-                }
+    byte sides = voctree->sides;
+    // for each face that is visible according to node->sides
+    for (byte direction = 0; direction < 6; direction++) {
 
-                // skip hidden face
-                if (!(node->sides & (1 << face))) {
-                    continue;
-                }
-
-                // use adjacent lights
-                /*const LightNode* adj_node = get_LightNode_neighbor(
-                    root_lnode,
-                    nnodesl,
-                    face,
-                    position,
-                    depth
-                );*/
-                // TODO: Get Adjacent Depth -> based on chunk index to depth lookup - atm we just assume its render depth + 1
-                const LightNode* adj_node = get_max_light_on_face_(
-                    root_lnode,
-                    nnodesl,
-                    face,
-                    position,
-                    depth,
-                    target + 1 // terrain_depth // target
-                );
-
-                byte light = adj_node ? adj_node->value : sunlight;
-                /*if (!adj_node) {
-                    zox_log_error("Adjacent Node ??? [%ix%ix%i] d[%i]", position.x, position.y, position.z, depth);
-                }*/
-
-                // each face has 4 vertices
-                for (int v = 0; v < voxel_face_vertices_length; v++) {
-                    color_rgb* c = &colors->value[*color_index];
-                    c->r = light;
-                    c->g = light;
-                    c->b = light;
-                    (*color_index)++;
-                }
-            }
+        // skip hidden face
+        if (!(sides & (1 << direction + 1))) {
+            continue;
         }
-    } else {
-        byte3_multiply_byte(&position, 2);
-        VoxelNode* kids = get_children_VoxelNode(node);
 
-        for (byte i = 0; i < 8; i++) {
-            byte3 positionn = byte3_add(position, octree_positions_b[i]);
-            zox_apply_light3(
-                solidity,
-                nnodesl,
-                &kids[i],
-                root_lnode,
-                colors,
-                positionn,
-                color_index,
-                target,
-                depth + 1
-            );
+        if ((*ccount) + 4 > colors->length) {
+            // zox_logw("Face Count Error in Lights [%i]", colors->length);
+
+            break;
+        }
+
+        // use adjacent lights
+        /*const LightNode* adj_node = get_LightNode_neighbor(
+            root_lnode,
+            nnodesl,
+            direction,
+            position,
+            depth
+        );*/
+
+        // TODO: Get Adjacent Depth -> based on chunk index to depth lookup - atm we just assume its render depth + 1
+        const LightNode* anode = get_max_light_on_face_(
+            lnode,
+            nnodesl,
+            direction,
+            position,
+            depth,
+            rdepth + 1 // terrain_depth // target
+        );
+
+        byte light = anode ? anode->value : 0; // sunlight;
+
+        // Set lights of our Quads, 4 Verts each
+        for (byte v = 0; v < voxel_face_vertices_length; v++) {
+            color_rgb* c = &colors->value[*ccount];
+
+            c->r = light;
+            c->g = light;
+            c->b = light;
+
+            (*ccount)++;
         }
     }
 }
@@ -147,7 +160,7 @@ zox_sys2(Light3BuildSystem) {
     if (disable_lights) {
         return;
     }
-    // zox_ts_begin(light3_builder);
+
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MeshColorsGenerate);
@@ -160,13 +173,13 @@ zox_sys2(Light3BuildSystem) {
     zox_sys_out(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(MeshColorsGenerate, trigger);
-        zox_sys_i(VoxLink, vox_link);
+        zox_sys_i(VoxLink, terrain);
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_i(VoxelNode, root_vnode);
-        zox_sys_i(LightNode, root_lnode);
-        zox_sys_i(RenderDepth, depth);
+        zox_sys_i(VoxelNode, voctree);
+        zox_sys_i(LightNode, lnode);
+        zox_sys_i(RenderDepth, rdepth);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(MeshColorsDirty, updated);
+        zox_sys_o(MeshColorsDirty, dirty);
 
         if (trigger->value != zox_dirty_active) {
             continue;
@@ -179,33 +192,40 @@ zox_sys2(Light3BuildSystem) {
             nnodesl
         );
 
-        zox_geter_value(vox_link->value, RealmLink, entity, realm);
-        zox_geter(realm, BlockLinks, blocks);
-        byte solidity[blocks->length];
-        for (int j = 0; j < blocks->length; j++) {
-            const entity block = blocks->value[j];
-            solidity[j] = zox_valid(block) && zox_has(block, BlockModel) ? ((zox_gett_value(block, BlockModel)) == zox_block_solid) : 1;
-        }
+        zox_geter_value(terrain->value, RealmLink, entity, realm);
+        /*zox_geter(realm, BlockLinks, blocks);
 
-        int color_index = 0;
+        byte solidity[blocks->length];
+
+        for (int j = 0; j < blocks->length; j++) {
+            entity block = blocks->value[j];
+
+            solidity[j] = zox_valid(block) && zox_has(block, BlockModel) ? ((zox_gett_value(block, BlockModel)) == zox_block_solid) : 1;
+        }*/
+
+        int ccount = 0;
+
         zox_apply_light3(
-            solidity,
             nnodesl,
-            root_vnode,
-            root_lnode,
+            voctree,
+            lnode,
             colors,
             byte3_zero,
-            &color_index,
-            depth->value,
+            &ccount,
+            rdepth->value,
             0
         );
 
-        if (color_index != colors->length) {
-            zox_logw("Vert Colors out of Sync [%i] is not [%i]", color_index, colors->length);
-        }
+        // I feel like this is race errors
+        /*if (ccount != colors->length) {
+            zox_logw("Lights Sync Error RDepth [%i] :: found [%i] != built [%i]", rdepth->value, ccount, colors->length);
+        }*/
 
-        updated->value = zox_dirty_trigger;
+        /*else {
+            zox_log("RD [%i] Lights Synced [%i]", rdepth->value, colors->length);
+        }*/
 
+        dirty->value = zox_dirty_trigger;
     }
 
     // zox_ts_end(light3_builder, 1, zox_profile_system_light3_builder);

@@ -5,7 +5,8 @@
 typedef struct {
     void* ptr;
     byte value;
-    byte type;  // for now until i decouple it..
+    // TODO: Remove type from Macros
+    byte type;
 } LightNode;
 
 // beams queued

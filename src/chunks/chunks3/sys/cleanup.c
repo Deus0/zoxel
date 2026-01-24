@@ -21,6 +21,7 @@ void reduce_voxel_nodes(ecs *world, VoxelNode *node) {
         }
 
         const byte node_value = child->value;
+
         if (all_same_voxel == 255) {
             all_same_voxel = node_value;
         } else if (all_same_voxel != node_value) {
@@ -37,7 +38,6 @@ void reduce_voxel_nodes(ecs *world, VoxelNode *node) {
 
 // Break down our nodes, if they are the same type
 // When VoxelNodeDirty is zox_dirty_active
-// TODO: make a flag for Blocks that can group or not - for this
 zox_sys2(VoxelNodeCleanupSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -54,7 +54,7 @@ zox_sys2(VoxelNodeCleanupSystem) {
         }
 
         write_lock_VoxelNode(node);
-        reduce_voxel_nodes(world, node);
+            reduce_voxel_nodes(world, node);
         write_unlock_VoxelNode(node);
     }
 } zox_sys_end(VoxelNodeCleanupSystem);

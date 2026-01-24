@@ -6,4 +6,4 @@
 
 byte zox_chunk3t_mode = zox_chunk3t_mode_dig;
 
-byte zox_chunk3t_split = 1;
+byte zox_chunk3t_split = 0;

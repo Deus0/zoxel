@@ -10,6 +10,7 @@
 // TODO: Rename all NodeDepth to OctreeDepth
 
 void define_systems_lights3(ecs* world) {
+
     zox_system(
         SunlightSystem,
         zoxp_lights_write,
@@ -21,7 +22,8 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightNodeDepth,
         [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
-        [none] lights3.SunnyChunk
+        [none] lights3.SunnyChunk,
+        [none] chunks.Chunk
     );
 
     zox_system(
@@ -33,7 +35,8 @@ void define_systems_lights3(ecs* world) {
         // [out] lights3.LightNodeDepth,
         [out] lights3.LightNode,
         [out] lights3.LightQueue,
-        [out] lights3.LightNodeDirty
+        [out] lights3.LightNodeDirty,
+        [none] chunks.Chunk
     );
 
     zox_system(
@@ -46,7 +49,8 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightNode,
         [out] lights3.DarkQueue,
         [out] lights3.LightQueue,
-        [out] lights3.LightNodeDirty
+        [out] lights3.LightNodeDirty,
+        [none] chunks.Chunk
     );
 
     // NOTE: This needs to be queue dependent
@@ -60,7 +64,8 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightNode,
         [out] lights3.LightQueue,
         [out] lights3.DarkQueue,
-        [out] lights3.LightNodeDirty
+        [out] lights3.LightNodeDirty,
+        [none] chunks.Chunk
     );
 
     // this kinda has issues atm hmm
@@ -68,7 +73,8 @@ void define_systems_lights3(ecs* world) {
         LightNodeReduceSystem,
         zoxp_lights_write + 1,
         [in] lights3.LightNodeDirty,
-        [out] lights3.LightNode
+        [out] lights3.LightNode,
+        [none] chunks.Chunk
     );
 
     zox_system(
@@ -79,7 +85,8 @@ void define_systems_lights3(ecs* world) {
         [in] chunks3.ChunkMeshDirty,
         [in] lights3.SunlightDirty,
         [in] lights3.LightNodeDirty,
-        [out] rendering.MeshColorsGenerate
+        [out] rendering.MeshColorsGenerate,
+        [none] chunks.Chunk
     );
 
     zox_system(
@@ -92,7 +99,8 @@ void define_systems_lights3(ecs* world) {
         [in] lights3.LightNode,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
-        [out] rendering.MeshColorsDirty
+        [out] rendering.MeshColorsDirty,
+        [none] chunks.Chunk
     );
 
     zox_system_1(
@@ -104,6 +112,7 @@ void define_systems_lights3(ecs* world) {
         [in] chunks3.ChunkPosition,
         [in] chunks3.VoxelNode,
         [in] lights3.LightNode,
-        [in] rendering.RenderDepth
+        [in] rendering.RenderDepth,
+        [none] chunks.Chunk
     );
 }
