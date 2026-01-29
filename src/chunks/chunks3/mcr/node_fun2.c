@@ -199,29 +199,6 @@ const T* get_adjacentn_##T(\
     return v; \
 }\
 \
-byte get_adjacent_depth_##T(\
-    byte rdepth,\
-    const byte* ndepths, \
-    int3 position,\
-    byte direction\
-) {\
-    if (rdepth >= 8) { \
-        return rdepth; \
-    } \
-    \
-    position = move_position(position, direction); \
-    \
-    byte b = powers_of_two[rdepth]; \
-    \
-    if (position.x >= 0 && position.x < b && \
-        position.y >= 0 && position.y < b && \
-        position.z >= 0 && position.z < b) { \
-        return rdepth; \
-    } else { \
-        return ndepths[direction]; \
-    } \
-} \
-\
 byte is_on_edge_##T(\
     byte depth,\
     int3 position,\
@@ -234,6 +211,19 @@ byte is_on_edge_##T(\
     position = move_position(position, direction); \
     \
     return !(position.x >= 0 && position.x < powers_of_two[depth] && position.y >= 0 && position.y < powers_of_two[depth] &&  position.z >= 0 && position.z < powers_of_two[depth]);\
+} \
+\
+byte get_adjacent_depth_##T(\
+    byte depth,\
+    const byte* ndepths, \
+    int3 position,\
+    byte direction\
+) {\
+    if (is_on_edge_##T(depth, position, direction)) { \
+        return ndepths[direction]; \
+    } else { \
+        return depth; \
+    } \
 }
 
 /*

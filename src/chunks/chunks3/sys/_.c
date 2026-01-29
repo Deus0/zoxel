@@ -1,7 +1,6 @@
 zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 #include "cleanup.c"
 #include "mesh_trigger.c"
-#include "mesh_trigger_neighbor.c"
 #include "voxel_node_queue.c"
 #include "voxel_node_queue_clear.c"
 #include "sides.c"
@@ -11,13 +10,13 @@ void define_systems_chunks3(ecs *world) {
 
     zox_system(
         Chunk3MeshTriggerSystem,
-        EcsOnLoad,
+        EcsOnUpdate,
         [in] chunks3.VoxelNodeDirty,
         [out] chunks3.ChunkMeshDirty
     );
     zox_system(
         Chunk3NeighborsMeshTriggerSystem,
-        EcsOnLoad,
+        EcsOnUpdate,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNodeDirty,
         [out] chunks3.ChunkMeshDirty

@@ -4,6 +4,8 @@
   - its something to do with chunk neighbor depths not showing straight away
   - debugging in Sides System with asolid checks
   - Moving back and forth seems to get it to be proper, so its an order of operations issue maybe
+  - I think it's because the chunk rebuilds, and then the one next to it does too
+  - should RenderDepthDirty also update the terrain chunk mesh??
 
 - controller hotkeys broken for steamdeck
   - r3 is start

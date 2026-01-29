@@ -1,10 +1,12 @@
 // todo: make sure we only close blocks that can be grouped together here (we shouldn't group grass etc)
 // doesn't close any block voxes
 void reduce_voxel_nodes(ecs *world, VoxelNode *node) {
+
     if (!node || !has_children_VoxelNode(node)) {
         return;
     }
 
+    // dig first
     VoxelNode* kids = get_children_VoxelNode(node);
     for (byte i = 0; i < octree_length; i++) {
         reduce_voxel_nodes(world, &kids[i]);
@@ -20,7 +22,7 @@ void reduce_voxel_nodes(ecs *world, VoxelNode *node) {
             return; // if a child node is open, then don't close this node
         }
 
-        const byte node_value = child->value;
+        byte node_value = child->value;
 
         if (all_same_voxel == 255) {
             all_same_voxel = node_value;
@@ -33,6 +35,22 @@ void reduce_voxel_nodes(ecs *world, VoxelNode *node) {
     if (all_same) {
         node->value = all_same_voxel;
         close_VoxelNode(world, node);
+    }
+
+    else if (!node->value) {
+        byte any_solid = 1;
+
+        for (byte i = 0; i < octree_length; i++) {
+            VoxelNode* child = &kids[i];
+            if (child->value) {
+                any_solid = child->value;
+                break;
+            }
+        }
+
+        if (any_solid) {
+            node->value = any_solid;
+        }
     }
 }
 
@@ -54,7 +72,9 @@ zox_sys2(VoxelNodeCleanupSystem) {
         }
 
         write_lock_VoxelNode(node);
+
             reduce_voxel_nodes(world, node);
+
         write_unlock_VoxelNode(node);
     }
 } zox_sys_end(VoxelNodeCleanupSystem);

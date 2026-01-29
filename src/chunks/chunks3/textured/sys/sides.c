@@ -9,7 +9,6 @@ static inline byte build_voxel_sides(
     const byte* ndepths,
     const VoxelNode* voctree,
     SidesOctree* sides,
-    // byte rdepth,
     byte depth,
     int3 position,
     byte direction
@@ -24,31 +23,23 @@ static inline byte build_voxel_sides(
     );
 
     // Accounts for Dig vs Render Difference
-    byte adepth = get_adjacent_depth_VoxelNode(depth, ndepths, position, direction); // rdepth
+    byte adepth = get_adjacent_depth_VoxelNode(depth, ndepths, position, direction);
 
     byte asolid;
     if (adepth > depth) {
-
-        // The depth for neighbor is not detected straight away
-        // asolid = 0;
-
         asolid = anode && get_node_sides_all_solid(
             solids,
             anode,
             reverse_direction(direction),
             adepth - depth
         );
-
     } else {
         asolid = anode && anode->value && solids[anode->value - 1];
     }
 
-    // This doesnt even work
-    // if (adepth != depth) asolid = 0;
-    /*if (asolid && is_on_edge_VoxelNode(depth, position, direction)) {
-        asolid = 0;
-        // zox_log("depth [%i] adepth [%i]", depth, adepth);
-    }*/
+    // Debug These
+    // if (asolid && adepth != depth) asolid = 0;
+    // if (asolid && is_on_edge_VoxelNode(depth, position, direction)) asolid = 0;
 
     return !asolid || zox_dbg_render_all_sides;
 
@@ -65,6 +56,10 @@ static inline byte build_sides_dig(
     byte depth,
     int3 position
 ) {
+    /*if (!voctree->value) {
+        return 0;
+    }*/
+
     byte did_build = 0;
 
     // We should keep digging even when it's closed
@@ -84,7 +79,7 @@ static inline byte build_sides_dig(
 
             const VoxelNode* cvoctree = has_vkids ? &kids[i] : voctree;
 
-            // TODO: Make sure it sets parent node to non air
+            // for sides, we need to set reduce
             /*if (!cvoctree->value) {
                 continue;
             }*/
@@ -117,6 +112,7 @@ static inline byte build_sides_dig(
 
         // TODO: Collapse any sub nodes here?
         set_SidesOctree(sides, depth, int3_to_byte3(position), 0, 0);
+        // close_SidesOctree(world, node);
 
         return did_build;
     }
@@ -135,14 +131,13 @@ static inline byte build_sides_dig(
             position,
             direction
         )) {
-            did_build = 1;
             ssides |= (1 << direction + 1);
         }
     }
 
     set_SidesOctree(sides, depth, int3_to_byte3(position), ssides, 0);
 
-    return did_build;
+    return ssides;
 }
 
 // DECIDE: Should I collapse sides octree nodes here?
@@ -184,21 +179,24 @@ zox_sys2(Chunk3SidesSystem) {
         byte ndepths[6];
         fetch_neightbor_chunk_data(world, neighbors, noctrees, ndepths);
 
-        write_lock_VoxelNode(voctree);
+        write_lock_SidesOctree(sides);
 
-            sides->value = build_sides_dig(
-                build_data.solidity,
-                voctree,        // root_voctree
-                noctrees,
-                ndepths,
-                voctree,
-                sides,
-                rdepth->value,
-                0,
-                int3_zero
-            );
+        // TODO: Just close non rendered sides
+        close2_SidesOctree(sides);
 
-        write_unlock_VoxelNode(voctree);
+        sides->value = build_sides_dig(
+            build_data.solidity,
+            voctree,        // root_voctree
+            noctrees,
+            ndepths,
+            voctree,
+            sides,
+            rdepth->value,
+            0,
+            int3_zero
+        );
+
+        write_unlock_SidesOctree(sides);
 
         sdirty->value = zox_dirty_trigger;
     }

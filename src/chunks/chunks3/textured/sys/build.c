@@ -194,6 +194,11 @@ static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_
         return;
     }
 
+    if (!dig.node->value) {
+        zox_log_error("Sides error, air cannot render.");
+        return;
+    }
+
     dig.voxel = dig.node->value;
     dig.positionf = float3_from_int3(dig.position);
     float3_scale_p(&dig.positionf, dig.scale);
