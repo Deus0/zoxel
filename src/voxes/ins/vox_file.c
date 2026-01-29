@@ -1,23 +1,18 @@
 define_fun_stopwatch(time_set_vox, 0);
 
-void set_colors_from_vox_file(
-    ecs *world,
-    const entity e,
-    const vox_file *vox
-) {
+void set_colors_from_vox_file(ecs *world, entity e, const vox_file *vox) {
+
     if (!vox) {
         return;
     }
+
     int colors_length = vox->palette.values_length;
     zox_muter(e, ColorRGBs, colorRGBs);
     resize_memory_component(ColorRGBs, colorRGBs, color_rgb, colors_length)
     memcpy(colorRGBs->value, vox->palette.values_rgb, colors_length * sizeof(color_rgb));
 }
 
-void set_as_debug_vox(
-    ecs *world,
-    const entity e
-) {
+void set_as_debug_vox(ecs *world, entity e) {
     zox_muter(e, ColorRGBs, colorRGBs);
     resize_memory_component(ColorRGBs, colorRGBs, color_rgb, 1);
     colorRGBs->value[0] = (color_rgb) { 223, 239, 2 };
@@ -44,7 +39,7 @@ byte pick_node_depth(int3 size) {
 //      - then we scale the model to fit our world
 void set_vox_file(
     ecs *world,
-    const entity e,
+    entity e,
     const vox_file* vox,
     byte reducer
 ) {
@@ -134,7 +129,7 @@ void set_vox_file(
     optimize_solid_nodes(node);
     tapwatch(time_set_vox, "optimize_solid_nodes");
 
-    reduce_voxel_nodes(world, node);
+    reduce_voxel_octrees(world, node);
     tapwatch(time_set_vox, "reduce_voxel_nodes");
 
     set_colors_from_vox_file(world, e, vox); // colors

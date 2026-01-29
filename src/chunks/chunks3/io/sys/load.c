@@ -1,10 +1,11 @@
-
 byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
+    // read value of node
     if (fread(&node->value, sizeof(byte), 1, in) != 1) {
         zox_log("[load_voxel_node:1] read error.");
         return 0;
     }
 
+    // read has children
     byte has_children = 0;
     if (fread(&has_children, sizeof(byte), 1, in) != 1) {
         zox_log("[load_voxel_node:2] read error.");
@@ -15,6 +16,7 @@ byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
         if (!has_children_VoxelNode(node)) {
             open_VoxelNode(node);
         }
+
         VoxelNode* children = (VoxelNode*) node->ptr;
         for (int i = 0; i < 8; i++) {
             load_voxel_node(world, in, &children[i]);
@@ -30,7 +32,7 @@ byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
 // returns 1 if loaded
 byte load_chunk(
     ecs *world,
-    const int3 position,
+    int3 position,
     VoxelNode* node
 ) {
     char filename[128];
@@ -46,6 +48,7 @@ byte load_chunk(
         free(path);
         return 0;
     }
+
     // check if file exist
     FILE* file = fopen(path, "rb");
     if (!file) {
@@ -53,13 +56,18 @@ byte load_chunk(
         free(path);
         return 0;
     }
+
     // zox_log("Loading chunk from file: %s", path);
     write_lock_VoxelNode(node);
+
     byte success = load_voxel_node(world, file, node);
+
     write_unlock_VoxelNode(node);
+
     if (fclose(file) != 0) {
         zox_log_error("Failed to close file: %s", path);
     }
+
     free(path);
     return success;
 }
@@ -77,7 +85,7 @@ zox_sys2(Chunk3LoadSystem) {
     zox_sys_out(VoxelNodeGenerated);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkPosition, position);
-        zox_sys_o(VoxelNodeDirty, dirty);
+        zox_sys_o(VoxelNodeDirty, vdirty);
         zox_sys_o(VoxelNodeEdited, edited);
         zox_sys_o(VoxelNodeLoaded, loaded);
         zox_sys_o(VoxelNode, node);
@@ -93,7 +101,7 @@ zox_sys2(Chunk3LoadSystem) {
 
         if (load_chunk(world, position->value, node)) {
             edited->value = 1;
-            dirty->value = 1;
+            vdirty->value = zox_dirty_trigger;
             depth->value = terrain_depth;
             generated->value = zox_dirty_trigger;
         }

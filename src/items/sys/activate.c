@@ -29,24 +29,20 @@ zox_sys2(ItemActivateSystem) {
         zox_geter(user, RaycastVoxelData, raycast_data);
         zox_geter(user, RaycastRange, range);
 
-        const byte hit_block = raycast_data->result == rayhit_terrain;
-        const byte in_range = raycast_data->distance <= range->value;
+        byte hit_block = raycast_data->result == rayhit_terrain;
+        byte in_range = raycast_data->distance <= range->value;
         if (!hit_block || !in_range) {
             continue;
         }
-        const entity block = block_link->value;
+
+        entity block = block_link->value;
         if (!zox_valid(block) || !zox_has(block, BlockIndex)) {
             zox_log_error("invalid block [%s]", zox_get_name(block));
             continue;
         }
 
         zox_geter_value(block, BlockIndex, byte, block_index);
-        raycast_action(
-            world,
-            *raycast_data,
-            block_index,
-            1
-        );
+        raycast_action(world, *raycast_data, block_index, 1);
 
         quantity->value--;
 

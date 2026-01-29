@@ -6,3 +6,4 @@
 #include "soil_grass.c"
 #include "stone.c"
 #include "bricks.c"
+#include "wood.c"

@@ -26,15 +26,17 @@ VoxelNode* set_voxelt(
         return node;
     }
 
-    const byte dividor = powers_of_two_byte[target - depth - 1];
+    byte dividor = powers_of_two_byte[target - depth - 1];
     if (dividor == 0) {
         return node; // no need to dive then, we just set voxel anyway
     }
+
     byte3 node_position = (byte3) {
         position.x / dividor,
         position.y / dividor,
         position.z / dividor
     };
+
     byte3_modulus_byte(&position, dividor);
     byte i = byte3_octree_array_index(node_position);
     if (i >= 8) {

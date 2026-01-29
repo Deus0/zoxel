@@ -153,7 +153,7 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
 
                         // NOTE: A special case here if neighbor is lesser / higher lod
 
-                        byte nrdepth = get_adjacent_depth_VoxelNode(
+                        byte nrdepth = get_adjacent_depth(
                             rdepth->value,
                             ndepths,
                             byte3_to_int3(position),

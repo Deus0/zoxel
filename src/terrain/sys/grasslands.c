@@ -49,7 +49,7 @@ zox_sys2(GrassyPlainsSystem) {
         zox_sys_i(TunkLink, tunk);
         zox_sys_o(NodeDepth, vdepth);
         zox_sys_o(VoxelNode, node);
-        zox_sys_o(VoxelNodeDirty, node_dirty);
+        zox_sys_o(VoxelNodeDirty, vdirty);
         zox_sys_o(VoxelNodeGenerated, generated);
         zox_sys_o(VoxelNodeLoaded, loaded);
 
@@ -75,6 +75,12 @@ zox_sys2(GrassyPlainsSystem) {
         // kicks off lighting if loaded
         if (loaded->value && edited->value) {
             generated->value = zox_dirty_trigger;   // need kick start the lighting, even if loaded!
+
+            // still need this
+            if (vdepth->value >= generation_depth) {
+                vdirty->value = zox_dirty_trigger;
+            }
+
             continue;
         }
 
@@ -82,7 +88,7 @@ zox_sys2(GrassyPlainsSystem) {
         if (vdepth->value >= generation_depth) {
             // we should set to rebuild mesh still, with node dirty
             //  Until we cache those extra meshes
-            node_dirty->value = zox_dirty_trigger;
+            vdirty->value = zox_dirty_trigger;
             continue;
         }
 
@@ -270,7 +276,7 @@ zox_sys2(GrassyPlainsSystem) {
         }
         write_unlock_VoxelNode(node);
 
-        node_dirty->value = zox_dirty_trigger;
+        vdirty->value = zox_dirty_trigger;
         generated->value = zox_dirty_trigger;
         loaded->value = 1;
     }

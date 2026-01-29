@@ -26,7 +26,6 @@ void define_systems_chunks3(ecs *world) {
         VoxelNodeCleanupSystem,
         zoxp_voxels_write,
         [in] chunks3.VoxelNodeDirty,
-        [in] chunks.NodeDepth,
         [out] chunks3.VoxelNode
     );
 

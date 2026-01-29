@@ -1,8 +1,8 @@
 uint debug_ui_raycasted_light(
     ecs *world,
-    const entity player,
+    entity player,
     char *buffer,
-    const uint size,
+    uint size,
     uint index
 ) {
 

@@ -4,14 +4,6 @@ void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) 
     byte3 size = byte3_single(vlength);
     byte3 pos;
 
-    // Testing
-    /*set_VoxelNode(voctree, 0, byte3_zero, voxels.x, 0);
-    set_VoxelNode(voctree, 1, byte3_zero, black, 0);
-    zox_log("1 voctree opened? %i", !is_closed_VoxelNode(voctree));
-    zox_log("1 voctree ptr? %i", voctree->ptr != NULL);
-    return;
-    */
-
     // parameters you can tweak
     byte brick_w     = vlength / 4; // 8;
     byte brick_h     = vlength / 8; // 4;
@@ -65,3 +57,13 @@ void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) 
         }
     }
 }
+
+
+
+// Testing
+/*set_VoxelNode(voctree, 0, byte3_zero, voxels.x, 0);
+set_VoxelNode(voctree, 1, byte3_zero, black, 0);
+zox_log("1 voctree opened? %i", !is_closed_VoxelNode(voctree));
+zox_log("1 voctree ptr? %i", voctree->ptr != NULL);
+return;
+*/

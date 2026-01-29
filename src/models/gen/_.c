@@ -3,4 +3,5 @@
 #include "blended.c"
 #include "rubble.c"
 #include "bricks.c"
+#include "wood.c"
 #include "flowers.c"

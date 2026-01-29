@@ -30,7 +30,7 @@ zox_sys2(VoxGenerationSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Color, color2);
-        zox_sys_i(VoxType, voxType);
+        zox_sys_i(VoxType, gentype);
         zox_sys_i(Generate, generateVox);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(VoxelNodeDirty, nodeDirty);
@@ -41,22 +41,23 @@ zox_sys2(VoxGenerationSystem) {
             continue;
         }
 
-        const byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_gett_value(e, VoxUniqueColors) : default_unique_colors;
+        byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_gett_value(e, VoxUniqueColors) : default_unique_colors;
         byte vregions = zox_has(e, VRegions) ? zox_gett_value(e, VRegions) :  16;
-        const float color_rr = zox_has(e, VoxColorRange) ? zox_gett_value(e, VoxColorRange) : default_color_range;
+        float color_rr = zox_has(e, VoxColorRange) ? zox_gett_value(e, VoxColorRange) : default_color_range;
 
 
-        const float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
-        const byte node_depth = nodeDepth->value;
+        float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
+        byte node_depth = nodeDepth->value;
         // nodeDepth->value = node_depth;
-        const byte colors_count = unique_colors + is_generate_vox_outlines;
+        byte colors_count = unique_colors + is_generate_vox_outlines;
         initialize_ColorRGBs(colors, colors_count);
 
-        const color_rgb color_rgb_2 = color_to_color_rgb(color2->value);
+        color_rgb color_rgb_2 = color_to_color_rgb(color2->value);
         // black color
-        const byte black_voxel = unique_colors + 1;
+        byte black_voxel = unique_colors + 1;
         // colors to pick from
-        const byte2 voxel_range = (byte2) { 1, unique_colors - 1 };
+        byte2 vrange = (byte2) { 1, unique_colors - 1 };
+
         // generates random colors based on primary color
         for (int j = 0; j < unique_colors; j++) {
             colors->value[j] = color_rgb_2;
@@ -71,7 +72,7 @@ zox_sys2(VoxGenerationSystem) {
         write_lock_VoxelNode(node);
 
         // byte3 size = byte3_single(chunk_voxel_length);
-        if (voxType->value == vox_type_soil) {
+        if (gentype->value == vox_type_soil) {
             // colors
             color_rgb dirt_dark_voxel = color_to_color_rgb(color2->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
@@ -81,11 +82,11 @@ zox_sys2(VoxGenerationSystem) {
             build_vox_soil(
                 node,
                 node_depth,
-                voxel_range,
+                vrange,
                 black_voxel_3,
                 vregions);
 
-        } else if (voxType->value == vox_type_blended) {
+        } else if (gentype->value == vox_type_blended) {
 
             // Colors
             zox_geter_value(e, SecondaryColor, color, under_color);
@@ -96,7 +97,7 @@ zox_sys2(VoxGenerationSystem) {
                 color_rgb_multiply_float(&new_color, m);
                 add_to_ColorRGBs(colors, new_color);
             }
-            const byte2 voxel_range_2 = (byte2) {
+            const byte2 vrange_2 = (byte2) {
                 colors_count + 1,
                 colors_count + unique_colors
 
@@ -105,8 +106,8 @@ zox_sys2(VoxGenerationSystem) {
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
-            byte2 range_blend_1 = voxel_range;
-            byte2 range_blend_2 = voxel_range_2;
+            byte2 range_blend_1 = vrange;
+            byte2 range_blend_2 = vrange_2;
             range_blend_2.y++; // include black
             color_rgb new_color = color_to_color_rgb(color2->value);
             color_rgb_multiply_float(&new_color, grass_blend_dark_multiplier);
@@ -119,13 +120,13 @@ zox_sys2(VoxGenerationSystem) {
                 node_depth,
                 black_voxel_2,
                 black_voxel_3,
-                voxel_range,
-                voxel_range_2,
+                vrange,
+                vrange_2,
                 range_blend_1,
                 range_blend_2,
                 vregions);
 
-        } else if (voxType->value == vox_type_rubble) {
+        } else if (gentype->value == vox_type_rubble) {
 
             byte rubble_height = 4;
             if (zox_has(e, RubbleHeight)) {
@@ -138,11 +139,11 @@ zox_sys2(VoxGenerationSystem) {
 
             build_vox_rubble(node,
                 node_depth,
-                voxel_range,
+                vrange,
                 rubble_count,
                 rubble_height);
 
-        } else if (voxType->value == vox_type_noisey) {
+        } else if (gentype->value == vox_type_noisey) {
 
             color_rgb dirt_dark_voxel = color_to_color_rgb(color2->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
@@ -152,7 +153,7 @@ zox_sys2(VoxGenerationSystem) {
             vnoise3(
                 node,
                 node_depth,
-                voxel_range,
+                vrange,
                 black_voxel_3
             );
 
@@ -203,18 +204,43 @@ zox_sys2(VoxGenerationSystem) {
                 direction_back
             );
 
-        } else if (voxType->value == vox_type_bricks) {
+        } else if (gentype->value == vox_type_bricks) {
 
             color_rgb dirt_dark_voxel = color_to_color_rgb(color2->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
 
-            build_vox_bricks(node, node_depth, voxel_range, black_voxel_3);
+            build_vox_bricks(node, node_depth, vrange, black_voxel_3);
 
-        } else if (voxType->value == vox_type_flowers) {
+        } else if (gentype->value == vox_type_wood) {
 
-            for (int j = voxel_range.x; j <= voxel_range.y / 2; j++) {
+            byte2 wood = (byte2) { vrange.x, vrange.y / 2 };
+            byte2 bark = (byte2) { wood.y + 1, vrange.y };
+
+            for (byte k = wood.x; k < wood.y; k++) {
+                color_rgb c = colors->value[k];
+
+                float mul = k % 2 == 0 ? 0.9f : 1.3f;
+
+                color_rgb_multiply_float(&c, mul);
+
+                colors->value[k] = c;
+            }
+
+            for (byte k = bark.x; k < bark.y; k++) {
+                color_rgb c = colors->value[k];
+
+                color_rgb_multiply_float(&c, 0.6f);
+
+                colors->value[k] = c;
+            }
+
+            build_vox_wood(node, node_depth, wood, bark);
+
+        } else if (gentype->value == vox_type_flowers) {
+
+            for (int j = vrange.x; j <= vrange.y / 2; j++) {
                 colors->value[j] = color_rgb_flip(colors->value[j]);
             }
             color_rgb dirt_dark_voxel = color_to_color_rgb(color2->value);
@@ -223,12 +249,12 @@ zox_sys2(VoxGenerationSystem) {
             byte black_voxel_3 = colors->length;
 
             byte2 stem_range = (byte2) {
-                voxel_range.x,
-                voxel_range.x + (voxel_range.y - voxel_range.x) / 2
+                vrange.x,
+                vrange.x + (vrange.y - vrange.x) / 2
             };
             byte2 petal_range = (byte2) {
                 stem_range.y,
-                voxel_range.y
+                vrange.y
             };
 
             build_vox_flower_patch(

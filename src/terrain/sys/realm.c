@@ -85,7 +85,7 @@ void spawn_realm_blocks(ecs *world, entity realm) {
     add_to_BlockLinks(blocks, bricks);
 
     zox_block_wood = blocks->length + 1;
-    entity wood = spawn_block_bricks(
+    entity wood = spawn_block_wood(
         world,
         zox_block_wood,
         "wood",

@@ -13,9 +13,9 @@ byte raycast_locks = 0;
 // Uses AABB intersection to find closest hit along the ray
 CharacterRaycast raycast_character(
     ecs *world,
-    const float3 ray_origin,
-    const float3 ray_normal,
-    const entity caster,
+    float3 ray_origin,
+    float3 ray_normal,
+    entity caster,
     const ChunkEntities* entities
 ) {
     CharacterRaycast ray = {
@@ -26,7 +26,7 @@ CharacterRaycast raycast_character(
         return ray;
     }
     for (int i = 0; i < entities->length; i++) {
-        const entity e = entities->value[i];
+        entity e = entities->value[i];
         if (!zox_valid(e) || caster == e || !zox_has(e, Position3D) || !zox_has(e, Bounds3D)) {
             continue;
         }
@@ -535,6 +535,7 @@ zox_sys2(Chunk3RaycastSystem) {
         zox_sys_i(TerrainLink, terrain);
         zox_sys_i(RaycastRange, raycastRange);
         zox_sys_o(RaycastVoxelData, data);
+
         entity camera = cameraLink->value;
 
         if (!zox_valid(camera) || !zox_valid(terrain->value) || !zox_has(terrain->value, RealmLink) || !zox_has(camera, RaycastOrigin)) {

@@ -1,4 +1,4 @@
-entity spawn_block_bricks(ecs *world, byte index, char* name, color bcolor) {
+entity spawn_block_wood(ecs *world, byte index, char* name, color bcolor) {
     // vox
     entity v = spawn_vox_generated_invisible(
         world,
@@ -6,7 +6,9 @@ entity spawn_block_bricks(ecs *world, byte index, char* name, color bcolor) {
         bcolor
     );
     zox_set_unique_name(v, "block_bricks");
-    zox_set(v, VoxType, { vox_type_bricks });
+    zox_set(v, VoxType, { vox_type_wood });
+    zox_set(v, VoxUniqueColors, { 8 });
+    zox_set(v, VoxColorRange, { 0.34f });
 
     // use instanced mesh prefab
     SpawnBlock data = {

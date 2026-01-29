@@ -57,14 +57,14 @@ void close_##T(ecs *world, T *node) {\
     zox_stats_nodes--; \
 }\
 \
-void close2_##T(T *node) {\
+void collapse_##T(T *node) {\
     if (!has_children_##T(node)) { \
         return; \
     } \
     \
     T* kids = get_children_##T(node); \
     for (byte i = 0; i < octree_length; i++) { \
-        close2_##T(&kids[i]); \
+        collapse_##T(&kids[i]); \
     } \
     \
     free(node->ptr); \

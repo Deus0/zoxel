@@ -23,7 +23,7 @@ static inline byte build_voxel_sides(
     );
 
     // Accounts for Dig vs Render Difference
-    byte adepth = get_adjacent_depth_VoxelNode(depth, ndepths, position, direction);
+    byte adepth = get_adjacent_depth(depth, ndepths, position, direction);
 
     byte asolid;
     if (adepth > depth) {
@@ -56,9 +56,10 @@ static inline byte build_sides_dig(
     byte depth,
     int3 position
 ) {
-    /*if (!voctree->value) {
+
+    if (!voctree->value) {
         return 0;
-    }*/
+    }
 
     byte did_build = 0;
 
@@ -80,29 +81,22 @@ static inline byte build_sides_dig(
             const VoxelNode* cvoctree = has_vkids ? &kids[i] : voctree;
 
             // for sides, we need to set reduce
-            /*if (!cvoctree->value) {
+            // TODO: Fix VoxelOctree data - upper node can get broken
+            if (!cvoctree->value) {
                 continue;
-            }*/
+            }
 
             int3 nposition = int3_add(cposition, octree_positions[i]);
 
-            if (build_sides_dig(
-                solids,
-                rvoctree,
-                noctrees,
-                ndepths,
-                cvoctree,
-                sides,
-                rdepth,
-                depth + 1,
-                nposition
-            )) {
+            if (build_sides_dig(solids, rvoctree, noctrees, ndepths, cvoctree, sides, rdepth, depth + 1, nposition)) {
                 did_build = 1;
             }
         }
 
         // set 1 if built for Branch Nodes
-        set_SidesOctree(sides, depth, int3_to_byte3(position),  did_build, 0);
+        if (did_build) {
+            set_SidesOctree(sides, depth, int3_to_byte3(position),  did_build, 0);
+        }
 
         return did_build;
     }
@@ -111,13 +105,14 @@ static inline byte build_sides_dig(
     if (!voctree->value || !solids[voctree->value - 1]) {
 
         // TODO: Collapse any sub nodes here?
-        set_SidesOctree(sides, depth, int3_to_byte3(position), 0, 0);
+        // set_SidesOctree(sides, depth, int3_to_byte3(position), 0, 0);
         // close_SidesOctree(world, node);
 
         return did_build;
     }
 
     byte ssides = 0;
+
     for (byte direction = 0; direction < 6; direction++) {
 
         if (build_voxel_sides(
@@ -135,7 +130,9 @@ static inline byte build_sides_dig(
         }
     }
 
-    set_SidesOctree(sides, depth, int3_to_byte3(position), ssides, 0);
+    if (ssides) {
+        set_SidesOctree(sides, depth, int3_to_byte3(position), ssides, 0);
+    }
 
     return ssides;
 }
@@ -182,7 +179,8 @@ zox_sys2(Chunk3SidesSystem) {
         write_lock_SidesOctree(sides);
 
         // TODO: Just close non rendered sides
-        close2_SidesOctree(sides);
+        sides->value = 0;
+        collapse_SidesOctree(sides);
 
         sides->value = build_sides_dig(
             build_data.solidity,
