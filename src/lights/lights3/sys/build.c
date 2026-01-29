@@ -74,11 +74,13 @@ static inline void zox_apply_light3(
 
     // Dig Deeper
     if (depth < rdepth &&
-        !is_closed_VoxelNode(voctree) &&
+        // !is_closed_VoxelNode(voctree) &&
         !is_closed_SidesOctree(sides)) {
 
-        const VoxelNode* kids = get_children_VoxelNode(voctree);
         const SidesOctree* sides_kids = get_children_SidesOctree(sides);
+
+        byte has_vkids = !is_closed_VoxelNode(voctree);
+        const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voctree) : NULL;
 
         byte3_multiply_byte(&position, 2);
         depth++;
@@ -89,11 +91,13 @@ static inline void zox_apply_light3(
                 continue;
             }*/
 
+            const VoxelNode* cvoctree = has_vkids ? &vkids[i] : voctree;
+
             byte3 cposition = byte3_add(position, octree_positions_b[i]);
 
             zox_apply_light3(
                 nnodesl,
-                &kids[i],
+                cvoctree,
                 &sides_kids[i],
                 lnode,
                 colors,

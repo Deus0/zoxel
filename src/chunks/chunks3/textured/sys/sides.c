@@ -55,7 +55,7 @@ static inline byte build_voxel_sides(
 
 }
 
-static inline byte build_voxel_sides_dig(
+static inline byte build_sides_dig(
     const byte* solids,
     const VoxelNode* root_voctree,
     const VoxelNode** noctrees,
@@ -68,18 +68,22 @@ static inline byte build_voxel_sides_dig(
 ) {
     byte did_build = 0;
 
+    // We should keep digging even when it's closed
     // keep digging
-    if (depth < rdepth && !is_closed_VoxelNode(voctree)) {
+    byte has_vkids = !is_closed_VoxelNode(voctree);
+
+    if (depth < rdepth &&
+        (zox_split_textured_quads ||
+        (!zox_split_textured_quads && has_vkids))) {
 
         int3 cposition = position;
         int3_multiply_int_p(&cposition, 2);
 
-        // only dig for solid child nodes
-        VoxelNode* kids = get_children_VoxelNode(voctree);
+        const VoxelNode* kids = has_vkids ? get_children_VoxelNode(voctree) : NULL;
 
         for (byte i = 0; i < 8; i++) {
 
-            VoxelNode* child_voctree = &kids[i];
+            const VoxelNode* cvoctree = has_vkids ? &kids[i] : voctree;
 
             // TODO: Make sure it sets parent node to non air
             /*if (!child_voctree->value) {
@@ -88,12 +92,12 @@ static inline byte build_voxel_sides_dig(
 
             int3 nposition = int3_add(cposition, octree_positions[i]);
 
-            if (build_voxel_sides_dig(
+            if (build_sides_dig(
                 solids,
                 root_voctree,
                 noctrees,
                 ndepths,
-                child_voctree,
+                cvoctree,
                 sides,
                 rdepth,
                 depth + 1,
@@ -185,7 +189,7 @@ zox_sys2(Chunk3SidesSystem) {
 
         write_lock_VoxelNode(voctree);
 
-            sides->value = build_voxel_sides_dig(
+            sides->value = build_sides_dig(
                 build_data.solidity,
                 voctree,        // root_voctree
                 noctrees,
