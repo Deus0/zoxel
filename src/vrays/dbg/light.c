@@ -88,9 +88,9 @@ uint debug_ui_raycasted_light(
         index += snprintf(buffer + index, size - index, "   + positionv[L] [%ix%ix%i]\n",
             data->positionv_last.x, data->positionv_last.y, data->positionv_last.z);
 
-        index += snprintf(buffer + index, size - index, "   * sides: 0x%02X [", data->node->sides);
+        // index += snprintf(buffer + index, size - index, "   * sides: 0x%02X [", data->node->sides);
 
-        bool first = true;
+        /*bool first = true;
         for (int face = 0; face < 6; face++) {
             if (data->node->sides & (1 << face)) {
                 if (!first) {
@@ -99,7 +99,7 @@ uint debug_ui_raycasted_light(
                 index += snprintf(buffer + index, size - index, "%s", direction_names[face]);
                 first = false;
             }
-        }
+        }*/
 
         index += snprintf(buffer + index, size - index, "]\n");
 

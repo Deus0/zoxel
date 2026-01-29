@@ -2,7 +2,7 @@ typedef struct {
     void* ptr;
     byte value;
     byte type;          // 0 closed - 1 open - 2 node link
-    byte sides;         // new field for lighting/mesh culling
+    // byte sides;         // new field for lighting/mesh culling
 } VoxelNode;
 
 typedef struct {

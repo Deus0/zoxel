@@ -47,12 +47,12 @@ void define_systems_chunks3(ecs *world) {
     );
 
     // Reduce our air
-    zox_system(
+    /*zox_system(
         SidesOctreeDirtySystem,
         EcsOnStore,
         [in] chunks3.SidesOctreeDirty,
         [out] chunks3.SidesOctree,
         [none] chunks.Chunk
-    );
+    );*/
 
 }

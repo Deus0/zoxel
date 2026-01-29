@@ -41,13 +41,13 @@ uint debug_ui_raycasting(ecs *world, entity player, char *buffer, uint size, uin
     if (data->node) {
         index += snprintf(buffer + index, size - index, "Hit Voxel:\n");
         index += snprintf(buffer + index, size - index, "   - value [%i]\n", data->node->value);
-        index += snprintf(buffer + index, size - index, "   - sides [%i]\n", data->node->sides);
+        // index += snprintf(buffer + index, size - index, "   - sides [%i]\n", data->node->sides);
         index += snprintf(buffer + index, size - index, "   - closed [%i]\n", is_closed_VoxelNode(data->node));
     }
 
-    if (data->node_last) {
+    /*if (data->node_last) {
         index += snprintf(buffer + index, size - index, "   anode [%i] sides [%i]\n", data->node_last->value, data->node_last->sides);
-    }
+    }*/
 
     /*const VoxelNode* anode = get_adjacentn_VoxelNode(
         NULL,

@@ -1,5 +1,4 @@
-
-// t for terrain
+// TODO: Repace with set_VoxelNode
 VoxelNode* set_voxelt(
     VoxelNode* node,
     byte target,

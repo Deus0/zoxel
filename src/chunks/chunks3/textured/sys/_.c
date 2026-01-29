@@ -1,6 +1,6 @@
 #include "render.c"
 #include "sides.c"
-#include "build_dig.c"
+#include "build.c"
 #include "build_high.c"
 
 void define_systems_chunks3_textured(ecs *world) {
@@ -28,7 +28,7 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] chunks3.ChunkMeshDirty,
         [in] rendering.RenderDepth,
         [in] chunks3.ChunkNeighbors,
-        [out] chunks3.VoxelNode,
+        [in] chunks3.VoxelNode,
         [out] chunks3.SidesOctree,
         [out] chunks3.SidesOctreeDirty,
         [none] chunks3.ChunkTextured
@@ -41,10 +41,11 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] blocks.BlockManagerLink,
         [in] textures.TilemapLink,
         [in] chunks3.ChunkMeshDirty,
-        [in] chunks3.VoxelNode,
         [in] rendering.RenderDepth,
-        [in] chunks3.ChunkNeighbors,
+        // [in] chunks3.ChunkNeighbors,
         [in] blocks.BlockScale,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.SidesOctree,
         [out] rendering.MeshIndicies,
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,

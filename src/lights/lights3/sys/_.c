@@ -4,7 +4,7 @@
 #include "darkness.c"
 #include "reduce.c"
 #include "trigger.c"
-#include "builder.c"
+#include "build.c"
 
 // TODO: Rename NodeDepth to VoxelNodeDepth
 // TODO: Rename all NodeDepth to OctreeDepth
@@ -82,6 +82,7 @@ void define_systems_lights3(ecs* world) {
         zoxp_lights_write + 2,
         [in] lights3.LightQueue,
         [in] lights3.DarkQueue,
+        [in] chunks3.VoxelNodeDirty,
         [in] chunks3.ChunkMeshDirty,
         [in] lights3.SunlightDirty,
         [in] lights3.LightNodeDirty,
@@ -92,10 +93,12 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         Light3BuildSystem,
         zoxp_voxels_read + 2,
+        [in] chunks3.VoxelNodeDirty,
         [in] rendering.MeshColorsGenerate,
         [in] voxes.VoxLink,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
+        [in] chunks3.SidesOctree,
         [in] lights3.LightNode,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
