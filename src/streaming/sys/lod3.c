@@ -66,8 +66,10 @@ zox_sys2(ChunkLodSystem) {
             }
 
             byte render_depth = camera_distance_to_terrain_render_depth(distance->value);
+
             if (depth->value != render_depth) {
                 depth->value = render_depth;
+
                 if (render_depth != render_depth_invisible) {
                     depth_dirty->value = zox_dirty_trigger;
                 }

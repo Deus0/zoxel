@@ -4,12 +4,12 @@
 // this function accounts for size of drawing voxels
 static inline byte build_voxel_sides(
     const byte* solids,
-    const VoxelNode* root_voctree,
+    const VoxelNode* rvoctree,
     const VoxelNode** noctrees,
     const byte* ndepths,
     const VoxelNode* voctree,
     SidesOctree* sides,
-    byte rdepth,
+    // byte rdepth,
     byte depth,
     int3 position,
     byte direction
@@ -17,47 +17,46 @@ static inline byte build_voxel_sides(
 
     const VoxelNode* anode = get_adjacentn_VoxelNode(
         noctrees,
-        root_voctree,
+        rvoctree,
         position,
         depth,
         direction
     );
 
-    byte asolid = anode && anode->value && solids[anode->value - 1];
-
     // Accounts for Dig vs Render Difference
-    byte adepth = get_adjacent_depth_VoxelNode(rdepth, ndepths, position, direction);
-    if (adepth > depth) { // asolid &&
-        asolid = get_node_sides_all_solid(
+    byte adepth = get_adjacent_depth_VoxelNode(depth, ndepths, position, direction); // rdepth
+
+    byte asolid;
+    if (adepth > depth) {
+
+        // The depth for neighbor is not detected straight away
+        // asolid = 0;
+
+        asolid = anode && get_node_sides_all_solid(
             solids,
             anode,
             reverse_direction(direction),
             adepth - depth
         );
+
+    } else {
+        asolid = anode && anode->value && solids[anode->value - 1];
     }
 
-    // Commenting thii out for all sides doesn't fix
-    if (asolid && !zox_dbg_render_all_sides) {
-        return 0;
-    }
+    // This doesnt even work
+    // if (adepth != depth) asolid = 0;
+    /*if (asolid && is_on_edge_VoxelNode(depth, position, direction)) {
+        asolid = 0;
+        // zox_log("depth [%i] adepth [%i]", depth, adepth);
+    }*/
 
-    // voctree->sides |= (1 << direction + 1);
-    // set_SidesOctree(sides, depth, position, did_build, 0);
-
-    // Scale position first
-    if (!zox_chunk3t_split) {
-        // zox_log("Adding Side at [%ix%ix%i] - [%i]", position.x, position.y, position.z, direction);
-
-        return 1;
-    }
-
-    return 1;
+    return !asolid || zox_dbg_render_all_sides;
 
 }
 
 static inline byte build_sides_dig(
     const byte* solids,
-    const VoxelNode* root_voctree,
+    const VoxelNode* rvoctree,
     const VoxelNode** noctrees,
     const byte* ndepths,
     const VoxelNode* voctree,
@@ -86,7 +85,7 @@ static inline byte build_sides_dig(
             const VoxelNode* cvoctree = has_vkids ? &kids[i] : voctree;
 
             // TODO: Make sure it sets parent node to non air
-            /*if (!child_voctree->value) {
+            /*if (!cvoctree->value) {
                 continue;
             }*/
 
@@ -94,7 +93,7 @@ static inline byte build_sides_dig(
 
             if (build_sides_dig(
                 solids,
-                root_voctree,
+                rvoctree,
                 noctrees,
                 ndepths,
                 cvoctree,
@@ -108,7 +107,6 @@ static inline byte build_sides_dig(
         }
 
         // set 1 if built for Branch Nodes
-        // voctree->sides = did_build;
         set_SidesOctree(sides, depth, int3_to_byte3(position),  did_build, 0);
 
         return did_build;
@@ -128,12 +126,11 @@ static inline byte build_sides_dig(
 
         if (build_voxel_sides(
             solids,
-            root_voctree,
+            rvoctree,
             noctrees,
             ndepths,
             voctree,
             sides,
-            rdepth,
             depth,
             position,
             direction

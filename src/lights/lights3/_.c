@@ -1,6 +1,8 @@
 #ifndef zoxm_lighting3
 #define zoxm_lighting3
 
+byte zox_disable_low_res_lights = 1;
+
 // ATM: Refactoring queues, so i can make sure not to spread light if darkbeam or darklight exists
 
 // TODO: Player to place with VoxelNodeQueue

@@ -1,9 +1,9 @@
 // hmm
-byte optimize_generation_lods = 1;
 byte zox_log_terrain_generation = 0;
 
 // debug
-byte zox_dbg_boost_generation_depth = 1;
+byte zox_dbg_boost_generation_depth = 0;
+byte zox_dbg_disable_generation_lods = 0;
 
 // voxes lods
 const byte max_vox_blocks = 16; // max spawned vox_blocks

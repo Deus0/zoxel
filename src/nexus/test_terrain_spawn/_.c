@@ -212,9 +212,6 @@ zox_begin_module(ZoxGame)
     character_depth = 5;
     vox_model_scale = 1 / 32.0f;
     disable_npcs = 1;
-
-    // terrain options
-    optimize_generation_lods = 1;
 }
 
 #endif

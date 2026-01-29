@@ -2,6 +2,7 @@
 #include "face.c"
 
 void fetch_neightbor_chunk_data(ecs* world, const ChunkNeighbors* chunk_neighbors, const VoxelNode** neighbors, byte* ndepths) {
+
     for (int i = 0; i < 6; i++) {
         entity e = chunk_neighbors->value[i];
 

@@ -5,7 +5,6 @@
 #define zoxm_chunks3_textured
 
 byte zox_split_textured_quads = 1;
-
 byte zox_dbg_render_all_sides = 0;
 
 // TODO: f2 + f3 = see sometimes  random quads at bottom of chunks, weird asf - now its just occasional mostly fixed

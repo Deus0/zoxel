@@ -11,7 +11,9 @@ zox_sys2(LightSystem) {
     zox_sys_out(LightNodeDirty);
 
     byte solidity[255];
-    for (int j = 0; j < 255; j++) solidity[j] = 1;
+    for (int j = 0; j < 255; j++) {
+        solidity[j] = 1;
+    }
     fetch_first_solidity(world, it, VoxLink_, solidity);
 
     for (int i = 0; i < it->count; i++) {

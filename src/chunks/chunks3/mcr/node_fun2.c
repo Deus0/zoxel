@@ -210,13 +210,30 @@ byte get_adjacent_depth_##T(\
     } \
     \
     position = move_position(position, direction); \
+    \
     byte b = powers_of_two[rdepth]; \
     \
-    if (position.x >= 0 && position.x < b && position.y >= 0 && position.y < b && position.z >= 0 && position.z < b) { \
+    if (position.x >= 0 && position.x < b && \
+        position.y >= 0 && position.y < b && \
+        position.z >= 0 && position.z < b) { \
         return rdepth; \
     } else { \
         return ndepths[direction]; \
     } \
+} \
+\
+byte is_on_edge_##T(\
+    byte depth,\
+    int3 position,\
+    byte direction\
+) {\
+    if (depth >= 8) { \
+        return 0; \
+    } \
+    \
+    position = move_position(position, direction); \
+    \
+    return !(position.x >= 0 && position.x < powers_of_two[depth] && position.y >= 0 && position.y < powers_of_two[depth] &&  position.z >= 0 && position.z < powers_of_two[depth]);\
 }
 
 /*

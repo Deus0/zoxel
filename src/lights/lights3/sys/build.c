@@ -139,17 +139,20 @@ static inline void zox_apply_light3(
             direction,
             position,
             depth,
-            rdepth + 1 // terrain_depth // target
+            rdepth // + 1
         );
 
         byte light = anode ? anode->value : 0; // sunlight;
+
+        if (zox_disable_low_res_lights && rdepth != terrain_depth) {
+            light = sunlight;
+        }
 
         // Set lights of our Quads, 4 Verts each
         for (byte v = 0; v < voxel_face_vertices_length; v++) {
 
             if (*ccount < colors->length) {
                 color_rgb* c = &colors->value[*ccount];
-
                 c->r = light;
                 c->g = light;
                 c->b = light;
