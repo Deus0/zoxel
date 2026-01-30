@@ -10,20 +10,20 @@ static inline byte build_voxel_sides(
     const VoxelNode* voctree,
     SidesOctree* sides,
     byte depth,
-    int3 position,
+    byte3 position,
     byte direction
 ) {
 
     const VoxelNode* anode = get_adjacentn_VoxelNode(
         noctrees,
         rvoctree,
-        position,
+        byte3_to_int3(position),
         depth,
         direction
     );
 
     // Accounts for Dig vs Render Difference
-    byte adepth = get_adjacent_depth(depth, ndepths, position, direction);
+    byte adepth = get_adjacent_depth(depth, ndepths, byte3_to_int3(position), direction);
 
     byte asolid;
     if (adepth > depth) {
@@ -54,14 +54,21 @@ static inline byte build_sides_dig(
     SidesOctree* sides,
     byte rdepth,
     byte depth,
-    int3 position
+    byte3 position
 ) {
 
+    // if air we stop here at any branch node
     if (!voctree->value) {
+        // collapse sub node and set to 0
+        SidesOctree* csides = getm_SidesOctree(sides, depth, position, 0);
+        if (csides) {
+            csides->value = 0;
+            collapse_SidesOctree(csides);
+        }
+
         return 0;
     }
 
-    byte did_build = 0;
 
     // We should keep digging even when it's closed
     // keep digging
@@ -71,22 +78,17 @@ static inline byte build_sides_dig(
         (zox_split_textured_quads ||
         (!zox_split_textured_quads && has_vkids))) {
 
-        int3 cposition = position;
-        int3_multiply_int_p(&cposition, 2);
+        byte3 cposition = position;
+        byte3_multiply_byte(&cposition, 2);
 
         const VoxelNode* kids = has_vkids ? get_children_VoxelNode(voctree) : NULL;
 
+        byte did_build = 0;
         for (byte i = 0; i < 8; i++) {
 
             const VoxelNode* cvoctree = has_vkids ? &kids[i] : voctree;
 
-            // for sides, we need to set reduce
-            // TODO: Fix VoxelOctree data - upper node can get broken
-            if (!cvoctree->value) {
-                continue;
-            }
-
-            int3 nposition = int3_add(cposition, octree_positions[i]);
+            byte3 nposition = byte3_add(cposition, octree_positions_b[i]);
 
             if (build_sides_dig(solids, rvoctree, noctrees, ndepths, cvoctree, sides, rdepth, depth + 1, nposition)) {
                 did_build = 1;
@@ -95,24 +97,25 @@ static inline byte build_sides_dig(
 
         // set 1 if built for Branch Nodes
         if (did_build) {
-            set_SidesOctree(sides, depth, int3_to_byte3(position),  did_build, 0);
+            set_SidesOctree(sides, depth, position, did_build, 0);
         }
 
         return did_build;
     }
 
-    // If air or non block, we return and set drawn to 0
-    if (!voctree->value || !solids[voctree->value - 1]) {
+    // If a non block, we stop here at leaf node
+    if (!solids[voctree->value - 1]) {
 
-        // TODO: Collapse any sub nodes here?
-        // set_SidesOctree(sides, depth, int3_to_byte3(position), 0, 0);
-        // close_SidesOctree(world, node);
+        SidesOctree* csides = getm_SidesOctree(sides, depth, position, 0);
+        if (csides) {
+            csides->value = 0;
+            collapse_SidesOctree(csides);
+        }
 
-        return did_build;
+        return 0;
     }
 
     byte ssides = 0;
-
     for (byte direction = 0; direction < 6; direction++) {
 
         if (build_voxel_sides(
@@ -131,7 +134,14 @@ static inline byte build_sides_dig(
     }
 
     if (ssides) {
-        set_SidesOctree(sides, depth, int3_to_byte3(position), ssides, 0);
+        set_SidesOctree(sides, depth, position, ssides, 0);
+    } else {
+        // collapse sub node and set to 0
+        SidesOctree* csides = getm_SidesOctree(sides, depth, position, 0);
+        if (csides) {
+            csides->value = 0;
+            collapse_SidesOctree(csides);
+        }
     }
 
     return ssides;
@@ -180,7 +190,7 @@ zox_sys2(Chunk3SidesSystem) {
 
         // TODO: Just close non rendered sides
         sides->value = 0;
-        collapse_SidesOctree(sides);
+        // collapse_SidesOctree(sides);
 
         sides->value = build_sides_dig(
             build_data.solidity,
@@ -191,7 +201,7 @@ zox_sys2(Chunk3SidesSystem) {
             sides,
             rdepth->value,
             0,
-            int3_zero
+            byte3_zero
         );
 
         write_unlock_SidesOctree(sides);

@@ -106,7 +106,7 @@ static inline byte byte3_on_edges(const byte3 pos, const byte3 size) {
     return edges_count >= 2;
 }
 
-static inline void byte3_multiply_byte(byte3* input, const byte mul) {
+static inline void byte3_multiply_byte(byte3* input, byte mul) {
     input->x *= mul;
     input->y *= mul;
     input->z *= mul;
