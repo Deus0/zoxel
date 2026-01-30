@@ -60,6 +60,7 @@
 #include "terrain/_.c"
 #include "vrays/_.c"
 #include "huds/_.c"
+#include "space/_.c"
 
 // user data
 #include "users/_.c"
@@ -86,10 +87,11 @@
 #include "combat/_.c"
 #include "maps/_.c"
 #include "npcs/_.c"
-#include "editor_ui/_.c"
+
 // on top
+#include "editor_ui/_.c"
 #include "controllers/_.c"
-#include "space/_.c"
+#include "imports/_.c"
 #include "debug/_.c"
 
 // engine imports, besides sub modules, it's core is flecs
@@ -152,6 +154,7 @@ zox_begin_module(Zox)
     zox_import_module(Terrain);
     zox_import_module(Vrays);
     zox_import_module(Huds);
+    zox_import_module(Space);
 
     // user data
     zox_import_module(Users);
@@ -176,8 +179,9 @@ zox_begin_module(Zox)
     zox_import_module(Turrets);
     zox_import_module(Maps);
     zox_import_module(Npcs);
+
+    zox_import_module(Imports);
     zox_import_module(EditorUI);
-    zox_import_module(Space);
     // space
 #if defined(zoxm_players)
     if (!headless) {

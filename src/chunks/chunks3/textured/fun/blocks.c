@@ -1,5 +1,3 @@
-
-
 byte cache_blocks_data(iter* it, chunk3_textured_builder_data* data) {
     // chunk3_textured_builder_data build_data;
 
@@ -42,6 +40,7 @@ byte cache_blocks_data(iter* it, chunk3_textured_builder_data* data) {
 
     for (int i = 0; i < blocks->length; i++) {
         entity block = blocks->value[i];
+
         if (!zox_valid(block)) {
             data->solidity[i] = 1;
             continue;

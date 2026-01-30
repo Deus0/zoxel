@@ -1,4 +1,5 @@
 zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
+
 #include "cleanup.c"
 #include "mesh_trigger.c"
 #include "voxel_node_queue.c"
@@ -12,21 +13,24 @@ void define_systems_chunks3(ecs *world) {
         Chunk3MeshTriggerSystem,
         EcsOnUpdate,
         [in] chunks3.VoxelNodeDirty,
-        [out] chunks3.ChunkMeshDirty
+        [out] chunks3.ChunkMeshDirty,
+        [none] chunks3.Chunk3
     );
     zox_system(
         Chunk3NeighborsMeshTriggerSystem,
         EcsOnUpdate,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNodeDirty,
-        [out] chunks3.ChunkMeshDirty
+        [out] chunks3.ChunkMeshDirty,
+        [none] chunks3.Chunk3
     );
 
     zox_system(
         VoxelNodeCleanupSystem,
         zoxp_voxels_write,
         [in] chunks3.VoxelNodeDirty,
-        [out] chunks3.VoxelNode
+        [out] chunks3.VoxelNode,
+        [none] chunks3.Chunk3
     );
 
     zox_system(VoxelNodeQueueSystem,
@@ -35,13 +39,15 @@ void define_systems_chunks3(ecs *world) {
         [in] chunks3.VoxelNodeQueue,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
-        [out] chunks3.VoxelNodeEdited
+        [out] chunks3.VoxelNodeEdited,
+        [none] chunks3.Chunk3
     );
 
     zox_system(
         VoxelNodeQueueClearSystem,
         zoxp_queue_clear,
-        [out] VoxelNodeQueue
+        [out] VoxelNodeQueue,
+        [none] chunks3.Chunk3
     );
 
     // Reduce our air
@@ -52,5 +58,4 @@ void define_systems_chunks3(ecs *world) {
         [out] chunks3.SidesOctree,
         [none] chunks.Chunk
     );*/
-
 }

@@ -1,15 +1,8 @@
-define_fun_stopwatch(time_set_vox, 0);
-
 void set_colors_from_vox_file(ecs *world, entity e, const vox_file *vox) {
 
     if (!vox) {
         return;
     }
-
-    int colors_length = vox->palette.values_length;
-    zox_muter(e, ColorRGBs, colorRGBs);
-    resize_memory_component(ColorRGBs, colorRGBs, color_rgb, colors_length)
-    memcpy(colorRGBs->value, vox->palette.values_rgb, colors_length * sizeof(color_rgb));
 }
 
 void set_as_debug_vox(ecs *world, entity e) {
@@ -27,28 +20,25 @@ byte is_vox_valid(const vox_file *vox) {
 
 byte pick_node_depth(int3 size) {
     int max_dim = int_max(size.x, int_max(size.y, size.z));
+
     byte depth = 0;
     while ((1 << depth) < max_dim) {
         depth++;
     }
+
     return depth;
 }
 
 
 // TODO: we should pick the depth that matches the size of the model
 //      - then we scale the model to fit our world
-void set_vox_file(
-    ecs *world,
-    entity e,
-    const vox_file* vox,
-    byte reducer
-) {
+void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float bscale) {
+
     if (!is_vox_valid(vox)) {
         zox_log_error("error reading voxfile");
         set_as_debug_vox(world, e);
         return;
     }
-    startwatch(time_set_vox);
 
     // const byte node_depth = character_depth;
     byte reduction_length = powers_of_two[reducer];
@@ -56,27 +46,23 @@ void set_vox_file(
     int3 size = vox->chunks[0].size.xyz;
     const byte3 ogsize = int3_to_byte3(size);
     byte node_depth = pick_node_depth(size);
+
     if (node_depth - reducer <= 0) {
         zox_log("Skipping VoxFile:");
         zox_log("   - reducer [%i]", reducer);
         return;
     }
+
     node_depth -= reducer;
-    const int length = powers_of_two[node_depth];
+    int length = powers_of_two[node_depth];
     // int max_dim = int_max(size.x, int_max(size.y, size.z));
 
     int3 rsize = size;  // reduce our ogsize too by shrinkiing
     rsize.x /= reduction_length;
     rsize.y /= reduction_length;
     rsize.z /= reduction_length;
-    /*int3 offset = (int3) {
-        (length - rsize.x) / 2,
-        (length - rsize.y) / 2,
-        (length - rsize.z) / 2,
-    };*/
 
     size = int3_single(length);
-    const float scale = 1 / ((float) 64); // 32); // length);
 
     // REMEMBER: Offset is broken atm, i think build mesh still checks the bounds
     //      And we are just offsetting from the corner anyway
@@ -89,13 +75,11 @@ void set_vox_file(
     zox_log("   - size(reduced) [%ix%ix%i]", rsize.x, rsize.y, rsize.z);
     zox_log("   - offset [%ix%ix%i]", offset.x, offset.y, offset.z);*/
 
-    zox_set(e, BlockScale, { scale });
+    zox_set(e, BlockScale, { bscale });
     zox_set(e, NodeDepth, { node_depth });
     zox_set(e, ChunkSize, { rsize });
 
     zox_muter(e, VoxelNode, node);
-    // fill_new_octree(node, 0, node_depth);
-    tapwatch(time_set_vox, "initialized");
 
     // wheres our offset for our vox model into a new grid??
     byte3 position;
@@ -103,10 +87,12 @@ void set_vox_file(
     for (position.x = 0; position.x < size.x; position.x++) {
         for (position.y = 0; position.y < size.y; position.y++) {
             for (position.z = 0; position.z < size.z; position.z++) {
+
                 // at least bound it there
                 if (position.x >= ogsize.x || position.y >= ogsize.y || position.z >= ogsize.z) {
                     continue;
                 }
+
                 // we need to adjust our position GET too
                 byte3 gpos = position;
                 gpos.x *= reduction_length;
@@ -124,18 +110,20 @@ void set_vox_file(
             }
         }
     }
-    tapwatch(time_set_vox, "set_voxel_node");
 
-    optimize_solid_nodes(node);
-    tapwatch(time_set_vox, "optimize_solid_nodes");
+    // NOTE: Optimization happens in the cleanup system
+    // optimize_solid_nodes(node);
+    // reduce_voxel_octrees(world, node);
+    zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
 
-    reduce_voxel_octrees(world, node);
-    tapwatch(time_set_vox, "reduce_voxel_nodes");
+    // Copy our file into our colors
+    int clength = vox->palette.values_length;
+    zox_muter(e, ColorRGBs, colors);
 
-    set_colors_from_vox_file(world, e, vox); // colors
-    tapwatch(time_set_vox, "set_colors_from_vox_file");
+    resize_memory_component(ColorRGBs, colors, color_rgb, clength)
+    memcpy(colors->value, vox->palette.values_rgb, clength * sizeof(color_rgb));
 
-    endwatch(time_set_vox, "set_vox_data");
+    // set_colors_from_vox_file(world, e, vox); // colors
 }
 
 // TODO: Convert vox_file to VoxNode, and clone to depth to ModelLods
@@ -150,16 +138,24 @@ entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* fi
 
     byte max_render_depth = pick_node_depth(data->chunks[0].size.xyz);
     zox_set(model, MaxRenderDepth, { max_render_depth });
+    float bscale = 1 / ((float) 64);
+
+    // zox_log("Checking: Vox File Import scale: 64 - %i: %i", powers_of_two[max_render_depth], max_render_depth);
 
     ModelLods model_lods;
     for (byte i = 0; i <= max_render_depth; i++) {
+
         byte chunk_depth_reducer = 0;   // i - disabled for now
         byte render_depth = i; // max_render_depth - i;
+
         zox_instance(p);
-        set_vox_file(world, e, data, chunk_depth_reducer);
+
+        set_vox_file(world, e, data, chunk_depth_reducer, bscale);
+
         zox_set(e, ChunkMeshDirty, { zox_dirty_trigger });
         zox_set(e, RenderDepth, { render_depth });
         zox_set(e, MaxRenderDepth, { max_render_depth });
+
         model_lods.value[i] = e;
     }
 

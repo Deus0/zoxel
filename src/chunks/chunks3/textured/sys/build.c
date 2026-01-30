@@ -13,11 +13,6 @@ typedef struct {
     const VoxelNode *root;
     const byte rdepth;
     const mesh_uvs_build_data *mesh_data;
-    // neighbor data
-    // const VoxelNode **neighbors;
-    // const byte *ndepths;
-    // vox data
-    // const float scale; // overall scale
     byte edge_voxel;
     // voxels
     const TilemapUVs *tilemap_uvs;
@@ -50,27 +45,7 @@ typedef struct {
         // actually this makes sense: we are just checking what neighbor is rendering at verse what we are
 
 // this function accounts for size of drawing voxels
-static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_data dig, octree_face_data face) {
-
-    /*byte sides = dig.node->sides;
-    if (!(sides & (1 << dig.direction + 1))) {
-        return;
-    }*/
-
-
-    if (!zox_chunk3t_split) {
-
-        zox_build_voxel_face(
-            data.mesh_data,
-            face.indicies,
-            face.vertices,
-            face.uvs,
-            dig.positionf,
-            float3_single(dig.scale)
-        );
-
-        return;
-    }
+/*static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_data dig, octree_face_data face) {
 
     // XZ for now
     float dividor = (float) powers_of_two[(data.rdepth - dig.depth)];
@@ -142,9 +117,8 @@ static inline void build_voxel_mesh_final(terrain_build_data data, octree_dig_da
 
             }
         }
-
     }
-}
+}*/
 
 static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_data dig, const SidesOctree* sides) {
 
@@ -218,7 +192,16 @@ static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_
             .uvs = &data.tilemap_uvs->value[uv_index],
         };
 
-        build_voxel_mesh_final(data, dig, face);
+        // build_voxel_mesh_final(data, dig, face);
+
+        zox_build_voxel_face(
+            data.mesh_data,
+            face.indicies,
+            face.vertices,
+            face.uvs,
+            dig.positionf,
+            float3_single(dig.scale)
+        );
     }
 }
 

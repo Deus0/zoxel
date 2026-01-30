@@ -34,7 +34,9 @@ static inline byte build_voxel_sides(
             adepth - depth
         );
     } else {
-        asolid = anode && anode->value && solids[anode->value - 1];
+        asolid = anode && anode->value &&
+        // Accounts for null solids
+        (!solids || (solids && solids[anode->value - 1]));
     }
 
     // Debug These
@@ -104,7 +106,7 @@ static inline byte build_sides_dig(
     }
 
     // If a non block, we stop here at leaf node
-    if (!solids[voctree->value - 1]) {
+    if (solids && !solids[voctree->value - 1]) {
 
         SidesOctree* csides = getm_SidesOctree(sides, depth, position, 0);
         if (csides) {
@@ -152,19 +154,18 @@ zox_sys2(Chunk3SidesSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);
+
+    byte* solids = blocks_fetch_solids(it);
+    if (!solids) {
+        return;
+    }
+
     zox_sys_in(ChunkMeshDirty);
     zox_sys_in(RenderDepth);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_out(SidesOctree);
     zox_sys_out(SidesOctreeDirty);
-
-    chunk3_textured_builder_data build_data;
-    if (!cache_blocks_data(it, &build_data)) {
-        return;
-    }
-
-    // Our Loop
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkMeshDirty, cdirty);
         zox_sys_i(RenderDepth, rdepth);
@@ -188,12 +189,9 @@ zox_sys2(Chunk3SidesSystem) {
 
         write_lock_SidesOctree(sides);
 
-        // TODO: Just close non rendered sides
-        sides->value = 0;
-        // collapse_SidesOctree(sides);
-
+        // sides->value = 0;
         sides->value = build_sides_dig(
-            build_data.solidity,
+            solids,
             voctree,        // root_voctree
             noctrees,
             ndepths,
@@ -208,4 +206,5 @@ zox_sys2(Chunk3SidesSystem) {
 
         sdirty->value = zox_dirty_trigger;
     }
+    free(solids);
 } zox_sys_end(Chunk3SidesSystem);
