@@ -1,6 +1,6 @@
 ### bugs ###
 
-- chunk seems are there again between lods
+-x chunk seems are there again between lods
   - its something to do with chunk neighbor depths not showing straight away
   - debugging in Sides System with asolid checks
   - Moving back and forth seems to get it to be proper, so its an order of operations issue maybe
