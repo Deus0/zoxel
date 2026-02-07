@@ -10,7 +10,7 @@ entity spawn_prefab_shader(ecs *world) {
     return e;
 }
 
-entity spawn_shader(ecs *world, const int shader_index) {
+entity spawn_shader(ecs *world, int shader_index) {
     uint2 shader = zox_gpu_compile_shader(shader_verts[shader_index], shader_frags[shader_index]);
     if (uint2_equals(shader, uint2_zero)) {
         zox_log_error("shader [%i] has failed with [zox_gpu_compile_shader]", shader_index);

@@ -1,3 +1,5 @@
+precision mediump float;
+
 out lowp vec4 frag_color;
 in highp float fog_level;
 uniform lowp vec4 color;

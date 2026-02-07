@@ -3,7 +3,7 @@
 void process_terminal_sdl(ecs *world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {
-        if (strcmp(args[i], "--opengles") == 0) {
+        if (!strcmp(args[i], "--opengles") || !strcmp(args[i], "--es")) {
             opengl_mode = zox_opengl_es;
             zox_logi("+ opengl_mode -> [opengl_es]");
         } else if (strcmp(args[i], "--openglcore") == 0) {

@@ -1,3 +1,5 @@
+precision mediump float;
+
 layout(location=0) in lowp vec3 vertex_position;
 layout(location=1) in lowp vec2 vertex_uv;
 layout(location=2) in lowp vec3 vertex_color;

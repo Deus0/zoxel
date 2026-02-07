@@ -1,3 +1,5 @@
+precision mediump float;
+
 out lowp vec3 frag_color;
 in lowp vec3 vertex_color_frag;
 in lowp float fog_blend;

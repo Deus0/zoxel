@@ -1,3 +1,5 @@
+precision mediump float;
+
 out lowp vec4 frag_color;
 in lowp vec3 vertex_color_frag;
 in lowp vec2 uv;

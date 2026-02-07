@@ -1,3 +1,5 @@
+precision mediump float;
+
 in highp vec3 position;
 in lowp vec4 color;
 uniform highp mat4 camera_matrix;

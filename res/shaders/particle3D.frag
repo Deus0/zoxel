@@ -1,3 +1,5 @@
+precision mediump float;
+
 out lowp vec4 color_output;
 uniform lowp vec4 fog_data;
 in highp float fog_level;

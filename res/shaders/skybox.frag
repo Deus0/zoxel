@@ -1,3 +1,5 @@
+precision mediump float;
+
 out lowp vec3 frag_color;
 in lowp vec3 mesh_pos;
 in highp float fog_level;

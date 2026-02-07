@@ -1,3 +1,5 @@
+precision mediump float;
+
 out lowp vec4 color;
 in lowp vec2 uv;
 uniform sampler2D tex;

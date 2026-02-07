@@ -1,3 +1,5 @@
+precision mediump float;
+
 layout(location=0) in highp vec3 vertex_position;
 layout(location=1) in highp vec3 vertex_color;
 layout(location=2) in lowp float bone_index;

@@ -1,3 +1,5 @@
+precision mediump float;
+
 out lowp vec4 color;
 uniform lowp float brightness;
 

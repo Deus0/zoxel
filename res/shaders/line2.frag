@@ -1,3 +1,5 @@
+precision mediump float;
+
 out lowp vec4 end;
 uniform lowp vec4 color;
 

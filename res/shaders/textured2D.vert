@@ -1,3 +1,5 @@
+precision mediump float;
+
 uniform highp mat4 camera_matrix;
 uniform lowp vec3 position;
 uniform lowp float angle;
