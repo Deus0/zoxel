@@ -1,12 +1,12 @@
-precision mediump float;
+precision highp float;
 
-uniform highp mat4 camera_matrix;
-uniform lowp vec3 position;
-uniform lowp float angle;
-uniform lowp float scale;
-layout(location=0) in lowp vec2 vertex_position;
-layout(location=1) in lowp vec2 vertex_uv;
-out lowp vec2 uv;
+uniform mat4 camera_matrix;
+uniform vec3 position;
+uniform float angle;
+uniform float scale;
+layout(location=0) in vec2 vertex_position;
+layout(location=1) in vec2 vertex_uv;
+out vec2 uv;
 
 void main() {
     mat2 rotate = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));

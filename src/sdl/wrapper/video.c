@@ -7,6 +7,18 @@ int initialize_video() {
         SDL_SetHint(SDL_HINT_VIDEO_WAYLAND_ALLOW_LIBDECOR, "0");
     }
 
+    int numDrivers = SDL_GetNumVideoDrivers();
+    if (numDrivers < 1) {
+        printf("No video drivers available!\n");
+        return -1;
+    }
+
+    printf("Available video drivers:\n");
+    for (int i = 0; i < numDrivers; i++) {
+        const char* driverName = SDL_GetVideoDriver(i);  // Correct function
+        printf("%d: %s\n", i + 1, driverName);
+    }
+
     if (SDL_Init(SDL_INIT_VIDEO)) {
         zox_log_error("Error [SDL_INIT_VIDEO] [%s]", SDL_GetError());
         return EXIT_FAILURE;

@@ -47,11 +47,12 @@ byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
     }*/
 
     glLinkProgram(material);
-    GLenum error = glGetError();
+
+    /*GLenum error = glGetError();
     if (error != GL_NO_ERROR) {
         zox_log_error("OpenGL error on glLinkProgram(): %i", error);
         return EXIT_FAILURE;
-    }
+    }*/
 
     GLint success = GL_FALSE;
     glGetProgramiv(material, GL_LINK_STATUS, &success);
@@ -74,8 +75,7 @@ byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
         }
 
 
-
-        output = EXIT_FAILURE;
+        // output = EXIT_FAILURE;
     }
 
     glDetachShader(material, vert_shader);
@@ -98,11 +98,11 @@ uint spawn_gpu_material_program(uint2 shader) {
 
 byte check_shader_compile_status(uint shader) {
 
-    GLenum error = glGetError();
+    /*GLenum error = glGetError();
     if (error != GL_NO_ERROR) {
         zox_log_error("OpenGL error on shader compile status: %i", error);
         return 1;
-    }
+    }*/
 
     GLint status = GL_FALSE;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
@@ -161,7 +161,7 @@ uint2 zox_gpu_compile_shader(const GLchar* vert_buffer, const GLchar* frag_buffe
         return (uint2) { 0, 0 };
     }
 
-    zox_log("Compiled shader: %ix%i", shader.x, shader.y);
+    // zox_log("Compiled shader: %ix%i", shader.x, shader.y);
 
     return shader;
 }

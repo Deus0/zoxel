@@ -1,17 +1,17 @@
 precision mediump float;
 
-out lowp vec4 color;
+out vec4 color;
 uniform sampler2D tex;
-in lowp vec2 uv;
+in vec2 uv;
 
-lowp float random(lowp vec2 st) {
+float random(vec2 st) {
     return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
 }
 
 void main() {
     color = texture(tex, uv);
-    lowp float noise = random(uv);
-    lowp float vignette = smoothstep(0.8, 0.2, distance(uv, vec2(0.5)));
+    float noise = random(uv);
+    float vignette = smoothstep(0.8, 0.2, distance(uv, vec2(0.5)));
     color.rgb *= vignette;
     color = mix(color, vec4(noise, noise, noise, 1.0), 0.1);
 }

@@ -1,8 +1,8 @@
-precision mediump float;
+precision highp float;
 
-in highp vec3 position;
-uniform highp mat4 camera_matrix;
-out highp float fog_level;
+in vec3 position;
+uniform mat4 camera_matrix;
+out float fog_level;
 
 void main() {
     gl_Position = camera_matrix * vec4(position, 1);

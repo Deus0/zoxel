@@ -1,10 +1,10 @@
-precision mediump float;
+precision highp float;
 
-out lowp vec3 frag_color;
-in lowp vec3 vertex_color_frag;
-in lowp float fog_blend;
-uniform lowp vec4 fog_data;
-uniform lowp float brightness;
+out vec3 frag_color;
+in vec3 vertex_color_frag;
+in float fog_blend;
+uniform vec4 fog_data;
+uniform float brightness;
 
 void main() {
     frag_color = vertex_color_frag * brightness;
