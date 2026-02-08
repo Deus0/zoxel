@@ -22,12 +22,20 @@ void dispose_shaders(ecs *world, void *ctx) {
     dispose_files_shaders();
 }
 
+void spawn_prefabs_shaders(ecs* world) {
+    if (!using_gpu) {
+        shader_precision_level = 1;
+        zox_log("Software Rendering Detected: Lowering Shader Precision.");
+    }
+    prefab_file_shader = spawn_prefab_file_shader(world);
+}
+
 zox_begin_module(Shaders)
     zoxd_arrayd(ShaderSource);
     // zoxd_tag(Shader)
     zox_module_dispose(dispose_shaders);
     // add_hook_files_load(load_files_shaders);
-    prefab_file_shader = spawn_prefab_file_shader(world);
+    add_hook_spawn_prefabs(spawn_prefabs_shaders);
 zox_end_module(Shaders)
 
 #endif

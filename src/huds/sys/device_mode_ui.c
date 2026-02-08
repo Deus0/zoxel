@@ -41,10 +41,13 @@ zox_sys2(DeviceModeUISystem) {
         } else if (dmode_new->value == zox_device_mode_touchscreen) {
             if (game_state == zox_game_playing) {
                 spawn_in_game_ui_touch(world, e, canvas->value);
+            } else {
+                zox_log("Game isnt playing.");
             }
         }
-        // todo: this isnt being called, fix it!
+
         spawn_device_gizmo(world, canvas->value, dmode_new->value);
+
         menu_start_triggered(world, e, canvas->value);
     }
 } zox_sys_end(DeviceModeUISystem);

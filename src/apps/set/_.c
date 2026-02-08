@@ -3,6 +3,7 @@ int2 default_window_position = { 0, 0 };
 const int2 default_window_size = { 1280, 720 };
 byte minimized = 0;
 byte disable_apps_decor = 0;
+byte using_gpu = 1;
 
 #ifdef zox_android
     byte window_resizeable = 0;

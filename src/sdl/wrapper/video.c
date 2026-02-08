@@ -7,16 +7,17 @@ int initialize_video() {
         SDL_SetHint(SDL_HINT_VIDEO_WAYLAND_ALLOW_LIBDECOR, "0");
     }
 
-    int numDrivers = SDL_GetNumVideoDrivers();
-    if (numDrivers < 1) {
-        printf("No video drivers available!\n");
+    int dcount = SDL_GetNumVideoDrivers();
+
+    if (dcount < 1) {
+        zox_log("No video drivers available!");
         return -1;
     }
 
-    printf("Available video drivers:\n");
-    for (int i = 0; i < numDrivers; i++) {
-        const char* driverName = SDL_GetVideoDriver(i);  // Correct function
-        printf("%d: %s\n", i + 1, driverName);
+    zox_log("Available video drivers:");
+    for (int i = 0; i < dcount; i++) {
+        const char* dname = SDL_GetVideoDriver(i);
+        zox_log("%d: %s", i + 1, dname);
     }
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -24,7 +25,16 @@ int initialize_video() {
         return EXIT_FAILURE;
     }
 
-    zox_logv("Initialized [SDL_INIT_VIDEO]");
+    const char* driver = SDL_GetCurrentVideoDriver();
+
+    using_gpu = strstr(driver, "opengl") ||
+    strstr(driver, "vulkan") ||
+    strstr(driver, "wayland") ||
+    strstr(driver, "direct3d") ||
+    strstr(driver, "metal") ||
+    strstr(driver, "opengles");
+
+    zox_log("Initialized [SDL_INIT_VIDEO] %s - GPU [%i]", driver, using_gpu);
 
     if (is_log_sdl) {
         print_sdl();
