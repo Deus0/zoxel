@@ -23,9 +23,7 @@ uint spawn_gpu_material(ecs *world, entity e, uint2 shader) {
 
     uint gpu_material = spawn_gpu_material_program(shader);
 
-    if (!gpu_material) {
-        zox_log_error("[spawn_gpu_material_program] failed");
-    } else {
+    if (gpu_material) {
         zox_set(e, MaterialGPULink, { gpu_material });
     }
 

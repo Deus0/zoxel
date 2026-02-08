@@ -1,5 +1,3 @@
-precision highp float;
-
 out vec4 end;
 uniform vec4 color;
 

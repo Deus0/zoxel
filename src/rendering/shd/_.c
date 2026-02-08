@@ -3,10 +3,14 @@
 
 byte is_log_shaders = 0;
 #define directory_shaders "shaders"
+
 int files_count_shaders = 0;
+byte shader_precision_level = 2;
+
 entity *files_shaders;
 string_hashmap *files_hashmap_shaders;
 entity prefab_file_shader;
+
 // zox_tag(Shader)
 zoxc_arrayd(ShaderSource, char)
 #include "pre/file_shader.c"

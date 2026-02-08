@@ -1,5 +1,3 @@
-precision highp float;
-
 uniform mat4 camera_matrix;
 uniform vec3 position;
 uniform float angle;
@@ -10,7 +8,6 @@ out vec2 uv;
 
 void main() {
     mat2 rotate = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
-    gl_Position = camera_matrix * vec4(vec2(position.x, position.y) + (rotate * vertex_position) * scale, 0, 1.0);
-    gl_Position.z = position.z;
+    gl_Position = camera_matrix * vec4(vec2(position.x, position.y) + (rotate * vertex_position) * scale, position.z, 1.0);
     uv = vertex_uv;
 }

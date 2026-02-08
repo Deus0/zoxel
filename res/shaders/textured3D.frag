@@ -1,5 +1,3 @@
-precision highp float;
-
 out vec4 frag_color;
 in vec3 vertex_color_frag;
 in vec2 uv;

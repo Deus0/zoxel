@@ -66,6 +66,7 @@ entity spawn_material_textured2D(ecs *world) {
     MaterialTextured2D attributes = create_MaterialTextured2D(material);
     zox_set_data(e, MaterialTextured2D, attributes)
     material_textured2D = e;
+
     shader_textured2D = shader;
     return e;
 }

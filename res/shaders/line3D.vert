@@ -1,5 +1,3 @@
-precision highp float;
-
 in vec3 position;
 uniform mat4 camera_matrix;
 out float fog_level;

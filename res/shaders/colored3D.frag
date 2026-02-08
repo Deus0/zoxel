@@ -1,5 +1,3 @@
-precision highp float;
-
 out vec3 frag_color;
 in vec3 vertex_color_frag;
 in float fog_blend;

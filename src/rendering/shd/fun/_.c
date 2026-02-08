@@ -1,5 +1,6 @@
 #include "read.c"
 #include "version.c"
+#include "precision.c"
 #include "gles2.c"
 #include "ubo.c"
 #include "io.c"

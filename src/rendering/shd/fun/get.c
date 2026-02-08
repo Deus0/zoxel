@@ -1,5 +1,6 @@
 char* get_shader_source(ecs *world, char* filename) {
-    const entity e = string_hashmap_get(files_hashmap_shaders, new_string_data(filename));
+    entity e = string_hashmap_get(files_hashmap_shaders, new_string_data(filename));
+
     if (!zox_valid(e)) {
         zox_log_error("[%s] not found", filename)
         return NULL;

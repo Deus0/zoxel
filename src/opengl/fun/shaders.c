@@ -67,15 +67,13 @@ byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
             GLchar* log = malloc(info_log_length + 1);
             glGetProgramInfoLog(material, info_log_length, NULL, log);
 
-            zox_log_error("[initialize_material]: material %u [%u x %u]\n%s",
-                          material, vert_shader, frag_shader, log);
+            zox_log_error("Material Link Failure [%u] to [%u x %u]\n%s", material, vert_shader, frag_shader, log);
             free(log);
         } else {
-            zox_log_error("[initialize_material] failure with no log.");
+            zox_log_error("Material Link Failed [%u] to [%u x %u]", material, vert_shader, frag_shader);
         }
 
-
-        // output = EXIT_FAILURE;
+        output = EXIT_FAILURE;
     }
 
     glDetachShader(material, vert_shader);

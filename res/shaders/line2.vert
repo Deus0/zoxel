@@ -1,5 +1,3 @@
-precision highp float;
-
 in vec2 position;
 uniform float depth;
 uniform mat4 camera_matrix;

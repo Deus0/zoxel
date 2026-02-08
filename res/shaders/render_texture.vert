@@ -1,5 +1,3 @@
-precision highp float;
-
 uniform mat4 camera_matrix;
 uniform mat4 transform_matrix;
 layout(location=0) in vec2 vertex_position;

@@ -1,7 +1,7 @@
-layout(location=0) in lowp vec3 vertex_position;
-uniform lowp mat4 camera_matrix;
-uniform lowp vec3 position;
-uniform lowp vec4 rotation;
+layout(location=0) in vec3 vertex_position;
+uniform mat4 camera_matrix;
+uniform vec3 position;
+uniform vec4 rotation;
 
 vec3 float4_rotate_float3(vec4 rotation, vec3 value) {
     vec3 rotationXYZ = rotation.xyz;

@@ -1,5 +1,3 @@
-precision highp float;
-
 layout(location=0) in vec3 vertex_position;
 layout(location=1) in vec2 vertex_uv;
 layout(location=2) in vec3 vertex_color;
@@ -14,4 +12,5 @@ void main() {
     uv = vertex_uv;
     vertex_color_frag = vertex_color;
     fog_level = gl_Position.z * gl_Position.z;
+    // hi
 }

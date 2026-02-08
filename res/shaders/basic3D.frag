@@ -1,5 +1,3 @@
-precision highp float;
-
 out vec3 frag_color;
 in float fog_level;
 uniform vec4 fog_data;

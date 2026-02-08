@@ -4,6 +4,9 @@ extern void button_event_jump(ecs *world, const ClickEventData event);
 extern void button_event_attack(ecs *world, const ClickEventData event);
 
 entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas) {
+
+    zox_log("spawn touch ui");
+
     byte button_size = 35 * ui_scale;
     byte button_padding = 5 * ui_scale;
     byte2 screen_margins = (byte2) { button_size / 2, 15 * ui_scale };
