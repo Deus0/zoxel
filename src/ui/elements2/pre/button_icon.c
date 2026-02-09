@@ -1,7 +1,7 @@
 entity spawn_prefab_button_icon(
 ecs *world, entity prefab) {
     zox_prefab_child(prefab);
-    zox_prefab_name("button");
+    zox_prefab_name("button_icon");
     zox_add_tag(e, Button);
     // transform
     zox_prefab_set(e, Children, { 0 });

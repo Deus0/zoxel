@@ -9,11 +9,8 @@ void clear_texture_data(ecs *world, const entity e) {
     }
 }
 
-void clone_texture_data(
-    ecs *world,
-    const entity e,
-    const entity src
-) {
+void clone_texture_data(ecs *world, entity e, entity src) {
+
     if (!src || !zox_has(src, TextureSize) || !zox_has(src, TextureData)) {
         if (!src) {
             zox_log_error("[texture not found] [%s]", zox_get_name(e));

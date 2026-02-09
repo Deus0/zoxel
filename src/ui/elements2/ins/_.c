@@ -1,5 +1,7 @@
-#include "button.c"
+#include "image.c"
+#include "button_icon.c"
 #include "label.c"
+#include "button.c"
 #include "toggle.c"
 #include "button_close.c"
 #include "element_bar_front.c"

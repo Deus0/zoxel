@@ -34,16 +34,15 @@ entity spawn_texture_filename(
     return e;
 }
 
-void clone_texture_to_entity(
-    ecs *world,
-    const entity e,
-    char *filename
-) {
-    const entity texture_source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
+void clone_texture_to_entity(ecs *world, entity e, char *filename) {
+
+    entity texture_source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
+
     if (!texture_source) {
         zox_log("! texture [%s] was not found", filename);
         return;
     }
+
     clone_texture_data(world, e, texture_source);
 }
 

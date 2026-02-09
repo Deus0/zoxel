@@ -4,11 +4,14 @@ extern void button_event_attack(ecs *world, const ClickEventData event);
 
 entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas) {
 
-    byte button_size = 35 * ui_scale;
-    byte button_padding = 5 * ui_scale;
-    byte2 screen_margins = (byte2) { button_size / 2, 15 * ui_scale };
+    byte layer = 1;
+    byte button_size = 36 * ui_scale;
+    byte bpadding = 6 * ui_scale;
+    byte2 screen_margins = (byte2) { button_size / 4, button_size / 4 };
 
-    int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    int2 canvas_size = zox_get_value(canvas, LayoutSize);
+    int2 bsize = int2_single(button_size);
+
     entity e = spawn_layout2_on_canvas(world, p, canvas, int2_zero, canvas_size, float2_half);
     zox_name("menu_game_touch");
 
@@ -16,34 +19,60 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
 
 #ifndef zox_disable_touch_buttons
 
-    int2 spawn_position = (int2) {
+    int2 bposition = (int2) {
         screen_margins.x + button_size / 2,
-        screen_margins.y + button_size
+        screen_margins.y + button_size / 2
     };
 
-    // Left Side, Row 1
-    entity button1 = spawn_button_game(world, canvas, e, canvas_size, spawn_position, float2_zero, button_size, (ClickEvent) { &button_event_pause_game });
+    byte blayer = layer + 1;
 
-    // Left Side, Row 2
-    spawn_position.y += button_size + button_padding;
-    entity button2 = spawn_button_game(world, canvas, e, canvas_size, spawn_position, float2_zero, button_size, (ClickEvent) { &button_event_switch_action });
+    color cfill = (color) { 15, 15, 15, 80 };
+    color coutline = (color) { 40, 40, 40, 130 };
 
-    // right side - jump and attack
-    float2 anchor_right = (float2) { 1, 0 };
-    spawn_position.x = -(screen_margins.x + button_size / 2);
-    spawn_position.y = screen_margins.y + button_size;
+    char* tnames[] = {
+        "paused",
+        "touch_switch",
+        "touch_attack",
+        "touch_jump"
+    };
+    ClickEvent onclicks[] = {
+        (ClickEvent) { &button_event_pause_game },
+        (ClickEvent) { &button_event_switch_action },
+        (ClickEvent) { &button_event_attack },
+        (ClickEvent) { &button_event_jump },
+    };
+    float2 banchors[] = {
+        (float2) { 1, 1 },
+        float2_zero,
+        (float2) { 0, 0 }, (float2) { 1, 0 },
+    };
+    int2 bpositions[] = {
+        (int2) { -bposition.x, -bposition.y },
+        (int2) { bposition.x, bposition.y + button_size + bpadding  },
+        (int2) { bposition.x, bposition.y },
+        (int2) { -bposition.x, bposition.y },
+    };
 
-    // Right Side, Row 1
-    entity button3 = spawn_button_game(world, canvas, e, canvas_size, spawn_position, anchor_right, button_size, (ClickEvent) { &button_event_jump });
-
-    // Right Side, Row 2
-    spawn_position.y += button_size + button_padding;
-    entity button4 = spawn_button_game(world, canvas, e, canvas_size, spawn_position, anchor_right, button_size, (ClickEvent) { &button_event_attack });
-
-    add_to_Children(&children, button1);
-    add_to_Children(&children, button2);
-    add_to_Children(&children, button3);
-    add_to_Children(&children, button4);
+    for (byte i = 0; i < 4; i++) {
+        entity texture = string_hashmap_get(files_hashmap_textures, new_string_data(tnames[i]));
+        entity b = spawn_button_icon(
+            world,
+            prefab_button,
+            texture,
+            canvas,
+            e,
+            bpositions[i],
+            bsize,
+            banchors[i],
+            blayer,
+            cfill,
+            coutline,
+            0,
+            onclicks[i],
+            bpadding
+        );
+        add_to_Children(&children, b);
+    }
 
 #endif
 
