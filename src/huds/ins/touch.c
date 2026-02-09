@@ -21,17 +21,12 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
         screen_margins.y + button_size
     };
 
-    // zox_log("spawn touch ui at %ix%i", spawn_position.x, spawn_position.y);
-
     // Left Side, Row 1
     entity button1 = spawn_button_game(world, canvas, e, canvas_size, spawn_position, float2_zero, button_size, (ClickEvent) { &button_event_pause_game });
-    add_to_Children(&children, button1);
 
     // Left Side, Row 2
     spawn_position.y += button_size + button_padding;
     entity button2 = spawn_button_game(world, canvas, e, canvas_size, spawn_position, float2_zero, button_size, (ClickEvent) { &button_event_switch_action });
-    add_to_Children(&children, button2);
-
 
     // right side - jump and attack
     float2 anchor_right = (float2) { 1, 0 };
@@ -40,11 +35,14 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
 
     // Right Side, Row 1
     entity button3 = spawn_button_game(world, canvas, e, canvas_size, spawn_position, anchor_right, button_size, (ClickEvent) { &button_event_jump });
-    add_to_Children(&children, button3);
 
     // Right Side, Row 2
     spawn_position.y += button_size + button_padding;
     entity button4 = spawn_button_game(world, canvas, e, canvas_size, spawn_position, anchor_right, button_size, (ClickEvent) { &button_event_attack });
+
+    add_to_Children(&children, button1);
+    add_to_Children(&children, button2);
+    add_to_Children(&children, button3);
     add_to_Children(&children, button4);
 
 #endif
