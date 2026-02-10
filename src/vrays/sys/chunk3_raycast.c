@@ -542,13 +542,19 @@ zox_sys2(Chunk3RaycastSystem) {
             continue;
         }
 
+        zox_geter_value(terrain->value, RealmLink, entity, realm);
+        if(!zox_valid(realm)) {
+            continue;
+        }
+
+        zox_geter(realm, BlockLinks, voxels);
+
         zox_geter_value(terrain->value, BlockScale, float, terrain_scalev);
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
         entity caster = get_linked_character(world, camera);
         int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
 
-        zox_geter_value(terrain->value, RealmLink, entity, realm);
-        zox_geter(realm, BlockLinks, voxels);
+
         zox_geter(terrain->value, ChunkLinks, chunks);
         zox_geter_value(camera, RaycastOrigin, float3, ray_origin);
         zox_geter_value(camera, RaycastNormal, float3, ray_normal);

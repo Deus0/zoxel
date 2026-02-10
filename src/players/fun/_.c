@@ -1,10 +1,10 @@
-void add_player(ecs *world, const entity e, const entity player) {
+void add_player(ecs *world, entity e, entity player) {
     zox_muter(e, PlayerLinks, players);
     add_to_PlayerLinks(players, player);
     zox_set(player, GameLink, { e });
 }
 
-int spawn_players(ecs *world, const entity game, byte zox_game_type) {
+int spawn_players(ecs *world, entity game, byte zox_game_type) {
     if (headless) {
         return 0;   // no players in headless mode
     }
@@ -21,7 +21,8 @@ int spawn_players(ecs *world, const entity game, byte zox_game_type) {
         players = 1;
     }
     for (int i = 0; i < players; i++) {
-        const entity e = spawn_player(world, prefab_player);
+        entity e = spawn_player(world, prefab_player);
+
         if (zox_game_type == zox_game_mode_3D) {
             zox_add_tag(e, Player3);
             // zox_log("Added Player3 [%i]", zox_game_type);
@@ -29,7 +30,9 @@ int spawn_players(ecs *world, const entity game, byte zox_game_type) {
             zox_add_tag(e, Player2);
             // zox_log("Added Player2 [%i]", zox_game_type);
         }
+
         add_player(world, game, e);
+
         zox_players[i] = e;
         if (players == 2) {
             if (i == 0) {
@@ -51,15 +54,12 @@ void on_boot_players(ecs *world, entity app) {
 }
 
 // Game now effects all players
-void game_state_players(
-    ecs *world,
-    const entity game,
-    const byte last_state,
-    const byte state
-) {
+void game_state_players(ecs *world, entity game, byte last_state, byte state) {
+
     zox_geter(game, PlayerLinks, players);
+
     for (int i = 0; i < players->length; i++) {
-        const entity player = players->value[i];
+        entity player = players->value[i];
         if (state == zox_game_playing_start) {
             zox_set(player, PlayerState, { zox_player_state_loading });
         } else if (state == zox_game_start) {

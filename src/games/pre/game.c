@@ -10,12 +10,12 @@ entity spawn_prefab_game(ecs* world) {
     return e;
 }
 
-entity spawn_game(ecs* world, const entity realm) {
+entity spawn_game(ecs* world) {
     zox_instance(prefab_game);
     zox_name("game");
-    if (realm) {
+    /*if (realm) {
         zox_set(e, RealmLink, { realm });
         zox_set(realm, GameLink, { e });
-    }
+    }*/
     return e;
 }

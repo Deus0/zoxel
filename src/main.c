@@ -74,18 +74,19 @@ int main(int argc, char* argv[]) {
 
     // TODO: attach Loaded Files to Realm
     zox_logv("Spawning Realm and Loading Assets");
-    const entity realm = spawn_realm(world, prefab_realm);
+
+    // entity realm = spawn_realm(world, prefab_realm);
     run_hook_files_load(world);
 
     zox_logv("Spawning Game");
-    const entity game = spawn_game(world, realm);
+    entity game = spawn_game(world);
 
     // spawn app (creates our opengl context too)
     zox_logv("Spawning App");
-    const entity app = spawn_engine_app(world);
+    entity app = spawn_engine_app(world);
 
     if (app) {
-        zox_set(app, RealmLink, { realm });
+        // zox_set(app, RealmLink, { realm });
         zox_set(app, GameLink, { game });
 
         zox_logv("Setting App Icon [game.png]");
@@ -106,6 +107,7 @@ int main(int argc, char* argv[]) {
     // Yet another Hook
     zox_logv("Running our Boot Hook");
     run_hook_on_boot(world, app);
+
     if (boot_event && boot_event(world, app) == EXIT_FAILURE) {
         zox_log_error("[boot_event] failed");
         dispose_zox(world);
@@ -116,5 +118,6 @@ int main(int argc, char* argv[]) {
     main_loop(world);
 
     zox_logv("Ended Main Loop [%s]", game_name);
+
     return EXIT_SUCCESS;
 }

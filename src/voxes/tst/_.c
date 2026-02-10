@@ -1,6 +1,6 @@
 extern entity get_linked_terrain(ecs*, entity);
 
-void test_load_chunk(ecs *world, int32_t keycode) {
+/*void test_load_chunk(ecs *world, int32_t keycode) {
     if (keycode == SDLK_l) {
         zox_log("Testing Load Chunks");
         entity terrain = get_linked_terrain(world, local_realm);
@@ -27,4 +27,4 @@ void test_load_chunk(ecs *world, int32_t keycode) {
             }
         }
     }
-}
+}*/

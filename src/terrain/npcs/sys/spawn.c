@@ -65,6 +65,10 @@ zox_sys2(Characters3SpawnSystem) {
 
         // getters
         zox_geter_value(terrain->value, RealmLink, entity, realm);
+        if (!zox_valid(realm)) {
+            continue;
+        }
+
         zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
         zox_geter(realm, CharacterLinks, characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);

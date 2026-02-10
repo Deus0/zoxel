@@ -1,4 +1,4 @@
-void on_confirmed_new_realm(ecs *world, const ClickEventData event) {
+void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuNewRealm, menu);
@@ -41,7 +41,7 @@ void on_confirmed_new_realm(ecs *world, const ClickEventData event) {
     zox_set(game, GameStateTarget, { zox_game_load_start });
 }
 
-void on_cancelled_new_realm(ecs *world, const ClickEventData event) {
+void on_cancelled_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuNewRealm, menu);
@@ -49,11 +49,25 @@ void on_cancelled_new_realm(ecs *world, const ClickEventData event) {
         zox_delete(menu);
     }
     zox_log("canceled new realm");
-    // zox_geter_value(player, CanvasLink, entity, canvas);
+
+
+    // Delete Realm
+    zox_geter_value(player, GameLink, entity, game);
+    zox_geter_value(game, RealmLink, entity, realm);
+    zox_delete(realm);
+    zox_set(game, RealmLink, { 0 });
+
     spawn_main_menu(world, player, game_name);
 }
 
-entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
+entity spawn_menu_new_realm(ecs *world, entity player) {
+
+    zox_geter_value(player, GameLink, entity, game);
+    zox_geter_value(game, RealmLink, entity, realm);
+    if (!zox_valid(realm)) {
+        return 0;
+    }
+    zox_geter_value(realm, Seed, lint, seed);
 
     int2 window_size = (int2) { 130 * ui_scale, 145  * ui_scale };
     byte header_font_size = 8 * ui_scale;
@@ -111,19 +125,20 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
     int elements_count = 0;
 
     elements[elements_count++] = (SpawnListElement) {
-        .type = 0,  // 0 is button or label for now
+        .type = list_element_type_label,
         .text = "Seed",
     };
 
     char seed_label[32];
     sprintf(seed_label, "[%lu]", seed);
     elements[elements_count++] = (SpawnListElement) {
-        .type = 0,  // 0 is button or label for now
+        .type = list_element_type_label,
         .text = seed_label,
     };
 
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Enter",
+        .type = list_element_type_button,
+        .text = "Confirm",
         .on_click = { &on_confirmed_new_realm },
     };
 
@@ -139,6 +154,7 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
         .size = window_element_data.size,
         .position = window_element_data.position_in_canvas,
     };
+
     ElementSpawnData list_element_data = {
         .prefab = prefab_list,
         .position = (int2) { 0, -header_height / 2 },
@@ -180,7 +196,15 @@ entity spawn_menu_new_realm(ecs *world, entity player, lint seed) {
     return e;
 }
 
-void button_event_new_game(ecs *world, const ClickEventData event) {
+void delay_spawn_menu_new_realm(ecs* world, entity player) {
+    zox_geter_value(player, GameLink, entity, game);
+    zox_geter_value(game, RealmLink, entity, realm);
+
+    spawn_menu_new_realm(world, player); //, seed);
+}
+
+
+void button_event_new_game(ecs *world, ClickEventData event) {
 
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
@@ -193,9 +217,15 @@ void button_event_new_game(ecs *world, const ClickEventData event) {
     }
 
     zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
+
+    // zox_geter_value(game, RealmLink, entity, realm);
+    entity realm = spawn_realm(world, prefab_realm);
+    zox_set(game, RealmLink, { realm });
+
     lint seed = get_unique_time_seed();
     set_noise_seed(seed);
     zox_set(realm, Seed, { seed });
-    spawn_menu_new_realm(world, player, seed);
+
+
+    delay_event(world, &delay_spawn_menu_new_realm, player, 0.01);
 }

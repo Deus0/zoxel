@@ -18,22 +18,21 @@ void spawn_tilemap_ui(ecs *world, int32_t keycode) {
             tilemap_ui = 0;
         } else {
             // conjure the canvas
-            const entity realm = local_realm;
-            zox_geter(realm, GameLink, gameLink)
-            zox_geter(gameLink->value, PlayerLinks, players)
-            const entity player = players->value[0];
+            entity realm = local_realm;
+
+            zox_geter(realm, GameLink, gameLink);
+            zox_geter(gameLink->value, PlayerLinks, players);
+
+            entity player = players->value[0];
+
             entity canvas = get_linked_canvas(world, player);
             // our logic stuff
             zox_log("+ spawning tilemap ui")
-            const int2 size = (int2) { 320, 320 };
+
+            int2 size = (int2) { 320, 320 };
             const entity tilemap = zox_get_value(realm, TilemapLink)
-            const int2 position = (int2) { 8, 8 };
-            tilemap_ui = spawn_element_texture(
-                world,
-                canvas,
-                tilemap,
-                position,
-                size);
+            int2 position = (int2) { 8, 8 };
+            tilemap_ui = spawn_element_texture(world, canvas, tilemap, position, size);
         }
         spawn_sound_from_file_index(world, prefab_sound, 0);
     }

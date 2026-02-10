@@ -6,12 +6,7 @@
 #include "dark_flood.c"
 #include "dark_beam.c"
 
-void fetch_first_solidity(
-    ecs* world,
-    iter* it,
-    const VoxLink* VoxLink_,
-    byte* solidity
-) {
+void fetch_first_solidity(ecs* world, iter* it, const VoxLink* VoxLink_, byte* solidity) {
     entity first_terrain = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxLink, parent);
@@ -30,9 +25,14 @@ void fetch_first_solidity(
     }
 
     zox_geter_value(first_terrain, RealmLink, entity, realm);
+    if (!zox_valid(realm)) {
+        zox_log_error("Realm Invalid in Lighting");
+        return;
+    }
+
     zox_geter(realm, BlockLinks, blocks);
     for (int i = 0; i < blocks->length; i++) {
-        const entity block = blocks->value[i];
+        entity block = blocks->value[i];
         if (!zox_valid(block) || !zox_has(block, BlockCollider)) {
             solidity[i] = 1;
         } else {

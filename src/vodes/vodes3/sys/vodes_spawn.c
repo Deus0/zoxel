@@ -124,11 +124,17 @@ void spawn_vodes(
     const float terrain_scalev
 ) {
     zox_geter_value(terrain, RealmLink, entity, realm);
+    if (!zox_valid(realm)) {
+        return;
+    }
+
     zox_geter(realm, BlockLinks, blocks);
-    const byte blocks_length = blocks->length;
+
+    byte blocks_length = blocks->length;
     if (blocks_length == 0) {
         return;
     }
+
     entity blocksarr[blocks_length];
     entity models[blocks_length];
     entity block_prefabs[blocks_length];
@@ -136,14 +142,19 @@ void spawn_vodes(
     zero_memory(models, blocks_length, entity);
     zero_memory(block_prefabs, blocks_length, entity);
     zero_memory(block_vox_offsets, blocks_length, byte);
+
     for (int j = 0; j < blocks_length; j++) {
-        const entity block = blocks->value[j];
+
+        entity block = blocks->value[j];
+
         if (!zox_valid(block)) {
             continue;
         }
+
         blocksarr[j] = block;
         if (zox_gett_value(block, BlockModel) == zox_block_vox) {
-            models[j] = zox_get_value(block, ModelLink)
+            models[j] = zox_gett_value(block, ModelLink);
+
             if (zox_has(block, BlockVoxOffset)) {
                 block_vox_offsets[j] = zox_get_value(block, BlockVoxOffset);
             }

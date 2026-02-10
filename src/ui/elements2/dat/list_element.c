@@ -14,3 +14,4 @@ typedef struct {
 #define list_element_type_button 0
 #define list_element_type_slider 1
 #define list_element_type_toggle 2
+#define list_element_type_label 0

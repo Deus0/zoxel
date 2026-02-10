@@ -1,4 +1,4 @@
-void button_event_end_game(ecs *world, const ClickEventData event) {
+void button_event_end_game(ecs *world, ClickEventData event) {
     entity game = zox_get_value(event.clicker, GameLink);
     zox_geter(game, PlayerLinks, players);
 
@@ -16,9 +16,29 @@ void button_event_end_game(ecs *world, const ClickEventData event) {
             zox_delete(taskbar);
         }
     }
+
+    // TODO: destroy realm in system when stats is zox_game_end
+    zox_geter_value(game, RealmLink, entity, realm);
+    if (zox_valid(realm)) {
+
+        zox_geter_value(realm, TerrainLink, entity, terrain);
+
+        if (zox_valid(terrain)) {
+            zox_delete(terrain);
+        }
+        local_terrain = 0;
+
+        zox_delete(realm);
+
+        zox_set(game, RealmLink, { 0 });
+
+    } else {
+        zox_log_error("Realm Missing.");
+    }
+
     zox_set(game, GameStateTarget, { zox_game_start });
 }
 
-void button_event_return_to_game(ecs *world, const ClickEventData event) {
+void button_event_return_to_game(ecs *world, ClickEventData event) {
     pause_resume(world, event.clicker);
 }

@@ -30,16 +30,13 @@ byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
 }
 
 // returns 1 if loaded
-byte load_chunk(
-    ecs *world,
-    int3 position,
-    VoxelNode* node
-) {
+byte load_chunk(ecs *world, entity savegame, int3 position, VoxelNode* node) {
+
     char filename[128];
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
 
-    zox_geter(local_realm, SaveGamePath, game_path);
+    zox_geter(savegame, SaveGamePath, game_path);
     char* path = join_path(game_path->value, filename);
 
     // char path[io_path_size];
@@ -95,11 +92,17 @@ zox_sys2(Chunk3LoadSystem) {
         if (loaded->value) {
             continue;
         }
+
+        entity savegame = local_realm;
+
+        if (!zox_valid(savegame)) {
+            continue;
+        }
         /*if (render_distance_dirty->value != zox_dirty_active || loaded->value) {
             continue; // these shouldn't be here
         }*/
 
-        if (load_chunk(world, position->value, node)) {
+        if (load_chunk(world, savegame, position->value, node)) {
             edited->value = 1;
             vdirty->value = zox_dirty_trigger;
             depth->value = terrain_depth;

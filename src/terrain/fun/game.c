@@ -49,11 +49,11 @@ void game_start_terrain(ecs *world, entity game) {
 void game_state_terrain(ecs *world, entity game, byte old_game_state, byte state) {
     if (state == zox_game_playing_start) {
         game_start_terrain(world, game);
-    } else if (state == zox_game_start) {
+    }/* else if (state == zox_game_start) {
         if (is_end_game_delays) {
             delay_event(world, &game_end_terrain, game, end_game_delay2);
         } else {
             game_end_terrain(world, game);
         }
-    }
+    }*/
 }

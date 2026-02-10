@@ -138,8 +138,12 @@ zox_sys2(GrassyPlainsSystem) {
 
         // ### Get Biome Data ###
 
-        zox_geter(terrain->value, RealmLink, realm);
-        zox_geter(realm->value, BiomeLinks, biomes);
+        zox_geter_value(terrain->value, RealmLink, entity, realm);
+        if (!zox_valid(realm)) {
+            continue;
+        }
+
+        zox_geter(realm, BiomeLinks, biomes);
         if (!biomes->length) {
             zox_log_error("No Biomes");
             continue;

@@ -17,6 +17,13 @@ void on_boot_musics(ecs* world, entity app) {
         zox_logv("Sounds are disabled: no music.");
         return;
     }
-    zox_geter_value(app, RealmLink, entity, realm);
+    zox_geter_value(app, GameLink, entity, game);
+
+    zox_geter_value(game, RealmLink, entity, realm);
+    if (!zox_valid(realm)) {
+        zox_logw("No realm for musics.");
+        return;
+    }
+
     spawn_realm_playlist(world, realm);
 }
