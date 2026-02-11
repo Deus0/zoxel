@@ -28,6 +28,12 @@ void button_event_end_game(ecs *world, ClickEventData event) {
         }
         local_terrain = 0;
 
+        zox_geter_value(realm, TilemapLink, entity, tilemap);
+        if (zox_valid(tilemap)) {
+            zox_delete(tilemap);
+        }
+
+
         zox_delete(realm);
 
         zox_set(game, RealmLink, { 0 });

@@ -1,16 +1,3 @@
-// End Game
-void game_end_terrain(ecs *world, entity game) {
-    if (zox_game_type == zox_game_mode_3D) {
-        zox_geter(game, RealmLink, realm);
-        zox_geter(realm->value, TerrainLink, terrain);
-        if (zox_valid(terrain->value)) {
-            zox_delete(terrain->value);
-            zox_set(realm->value, TerrainLink, { 0 });
-        }
-        local_terrain = 0;
-    }
-}
-
 void game_start_terrain2D(ecs *world, entity game) {
     (void) game;
     spawn_grid2D(world);
@@ -49,11 +36,5 @@ void game_start_terrain(ecs *world, entity game) {
 void game_state_terrain(ecs *world, entity game, byte old_game_state, byte state) {
     if (state == zox_game_playing_start) {
         game_start_terrain(world, game);
-    }/* else if (state == zox_game_start) {
-        if (is_end_game_delays) {
-            delay_event(world, &game_end_terrain, game, end_game_delay2);
-        } else {
-            game_end_terrain(world, game);
-        }
-    }*/
+    }
 }
