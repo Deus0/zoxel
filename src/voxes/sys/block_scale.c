@@ -8,7 +8,7 @@ static inline float get_chunk_scale(byte ndepth, byte tdepth, float tscale) {
     return tscale * powers_of_two[ddepth];  // we multiply by the depth difference power - if 2 = 2*2 = 4, 0.5 becomes 2 in size
 }
 
-// Sync Block Scale to the chunks from the Vox
+// Sync Block Scale to the Terrain Chunks from the Vox
 zox_sys2(BlockScaleSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -35,6 +35,6 @@ zox_sys2(BlockScaleSystem) {
 
         scale->value = get_chunk_scale(rdepth->value, tdepth, terrain_scalev);
 
-        // zox_log(" [%s] Scale set [%f]", zox_get_name(it->entities[i]), block_scale->value);
+        // zox_log(" [%s] Scale set [%f]", zox_get_name(it->entities[i]), scale->value);
     }
 } zox_sys_end(BlockScaleSystem);

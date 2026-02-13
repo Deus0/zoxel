@@ -43,6 +43,7 @@ zox_begin_module(Models)
     define_components_models(world);
     define_systems_models(world);
     add_hook_spawn_prefabs(spawn_prefabs_models);
+    initialize_settings_models(world);
 zox_end_module(Models)
 
 #endif

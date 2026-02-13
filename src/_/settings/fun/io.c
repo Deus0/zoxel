@@ -85,6 +85,10 @@ void save_settings() {
                 break;
             case zox_data_type_int:
                 fprintf(f, "%s:int:%d\n",  s.name, s.value_int);
+                //  if (is_log_save_settings)
+                {
+                    zox_log("+ saved float [%s] [%i]", s.name, s.value_int)
+                }
                 break;
             case zox_data_type_float:
                 fprintf(f, "%s:float:%f\n",s.name, s.value_float);
@@ -135,6 +139,7 @@ void load_files_settings(ecs* world) {
         } else if (strcmp(type, "int") == 0) {
             int v = atoi(val);
             zoxs_set_int(world, name, v);
+            zox_log("- loaded int [%s] [%i]", name, v);
         } else if (strcmp(type, "float") == 0) {
             float v = strtof(val, NULL);
             zoxs_set_float(world, name, v);

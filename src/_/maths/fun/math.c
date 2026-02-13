@@ -76,6 +76,17 @@ static inline float4x4 float4x4_scale(const float scale) {
     return m;
 }
 
+static inline float4x4 float4x4_position_scale(float3 position, float scale) {
+    float4x4 m = float4x4_identity;
+    m.w.x = position.x;
+    m.w.y = position.y;
+    m.w.z = position.z;
+    m.x.x = scale;
+    m.y.y = scale;
+    m.z.z = scale;
+    return m;
+}
+
 static inline float4x4 float4x4_scale3D(const float3 scale) {
     float4x4 m = float4x4_identity;
     m.x.x = scale.x;

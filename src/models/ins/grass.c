@@ -22,11 +22,7 @@ entity spawn_model_grass(ecs* world, color c, lint seed) {
             place_count = 1;
         }
 
-        entity e2 = spawn_vox_basic(
-            world,
-            prefab_vox,
-            max_render_depth,
-            render_depth);
+        entity e2 = spawn_vox_basic(world, prefab_vox, max_render_depth, render_depth);
 
         zox_set_unique_name(e2, "model_lod_grass");
 

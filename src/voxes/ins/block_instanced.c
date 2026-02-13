@@ -1,4 +1,5 @@
 entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
+
     zox_instance(data.prefab);
     zox_name("block_vox_instanced");
 
@@ -8,7 +9,12 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
 
     // Transform
     zox_set(e, Position3D, { data.positionf });
-    zox_set(e, TransformMatrix, { float4x4_position(data.positionf) });
+    // zox_set(e, TransformMatrix, { float4x4_position(data.positionf) });
+    // zox_set(e, TransformMatrix, { float4x4_position_scale(data.positionf, 2) });
+    float scale = block_vox_depth <= 5 ? powers_of_two[5 - block_vox_depth] : 1.0f /  (powers_of_two[block_vox_depth - 5]);
+
+    zox_set(e, Scale1D, { scale });
+    // zox_log("Spawned Block Vox Instanced");
 
     // Render
     zox_set(e, RenderDepth, { data.render_depth });
@@ -16,12 +22,14 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
     // set a random one if contains variants
 
     entity model = 0;
+
     if (zox_valid(data.vox)) {
         // Model Group
         if (zox_has(data.vox, ModelLinks)) {
             // zox_log("+ model group detected [%s]", zox_get_name(data.vox))
             zox_geter(data.vox, ModelLinks, models);
             if (models->length) {
+
                 // srand - pick the model randomly, off our position in world
                 srand(data.positionf.x * data.positionf.z * data.positionf.y);
                 model = models->value[rand() % (models->length)];
@@ -36,9 +44,12 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
 
     if (zox_valid(model)) {
         zox_set(e, ModelLink, { model });
+
         if (zox_has(model, MaxRenderDepth)) {
             zox_set(e, MaxRenderDepth, { zox_gett_value(model, MaxRenderDepth) });
-        } /*else {
+        }
+
+        /*else {
             // zox_logw("Spawned BlockVoxInstance [%s::%lu] with Invalid Model (no MaxRenderDepth) [%lu] - block index [%i]", zox_get_name(data.prefab), data.prefab, data.vox, data.block_index);
         }*/
     } else {

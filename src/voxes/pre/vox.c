@@ -1,4 +1,5 @@
-entity spawn_prefab_vox(ecs *world, entity p) {
+entity spawn_prefab_vox(ecs *world, entity p, byte depth) {
+
     zox_prefab_child(p);
     zox_prefab_name("vox");
     zox_add_tag(e, Vox);
@@ -11,7 +12,7 @@ entity spawn_prefab_vox(ecs *world, entity p) {
 
     // vox
     zox_set(e, BlockScale, { vox_model_scale });
-    zox_set(e, NodeDepth, { block_vox_depth });
+    zox_set(e, NodeDepth, { depth }); // block_vox_depth });
 
     add_components_mesh_colored(world, e);
 

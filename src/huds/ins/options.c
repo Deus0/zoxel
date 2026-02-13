@@ -14,10 +14,19 @@ void on_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
     zox_log("Toggle Option [%s] set to [%i]", name, data->value);
 }
 
-void on_settings_slider_slid(ecs* world, const SlideEventData* data) {
+void on_settings_slider_slid_float(ecs* world, const SlideEventData* data) {
     zox_geter_value(data->dragged, ParentLink, entity, slider)
     zox_geter_value(slider, SliderLabel, char*, slider_name)
     zoxs_set_float(world, slider_name, data->value);
+}
+
+void on_settings_slider_slid_int(ecs* world, const SlideEventData* data) {
+    zox_geter_value(data->dragged, ParentLink, entity, slider);
+    zox_geter_value(slider, SliderLabel, char*, slider_name);
+
+    // zox_log("Slider %s Value %i", slider_name, data->value);
+
+    zoxs_set_int(world, slider_name, (int) round(data->value));
 }
 
 // Options uses a set size that has elements adjust
@@ -57,11 +66,26 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
             elements[elements_count++] = (SpawnListElement) {
                 .type = list_element_type_slider,
                 .text = s.name,
-                .on_slide = { &on_settings_slider_slid },
+                .on_slide = { &on_settings_slider_slid_float },
                 .value = s.value_float,
                 .value_bounds = (float2) { s.min_float, s.max_float },
             };
         }
+
+        else if (s.type == zox_data_type_int) {
+            float slider_value = (float) (s.value_int - s.min_int) / (s.max_int - s.min_int);
+
+            elements[elements_count++] = (SpawnListElement) {
+                .type = list_element_type_slider,
+                .text = s.name,
+                .on_slide = { &on_settings_slider_slid_int },
+                .value =  slider_value,
+                .value_bounds = (float2) { (float) s.min_int, (float) s.max_int },
+            };
+
+            zox_log("New Int Option %s %i %i:%i", s.name, s.value_int, s.min_int, s.max_int);
+        }
+
         // todo: support other types
     }
     /*elements[elements_count++] = (SpawnListElement) {

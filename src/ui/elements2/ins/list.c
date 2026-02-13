@@ -141,7 +141,8 @@ entity spawn_list(
                 .bounds = child_data.value_bounds,
                 .handle_width = slider_handle_width,
             };
-            const entity2 e2 = spawn_slider(
+
+            entity2 e2 = spawn_slider(
                 world,
                 canvas_data,
                 child_parent_data,
@@ -151,6 +152,7 @@ entity spawn_list(
                 button_font_fill,
                 button_font_outline
             );
+
             if (child_data.on_slide.value) {
                 zox_set(e2.y, SlideEvent, { child_data.on_slide.value })
             }

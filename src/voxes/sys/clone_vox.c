@@ -16,13 +16,14 @@ zox_sys2(CloneVoxSystem) {
         zox_sys_i(CloneVoxLink, cloneVoxLink);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(NodeDepth, nodeDepth);
-        zox_sys_o(BlockScale, blockScale);
+        zox_sys_o(BlockScale, scale);
         zox_sys_o(ColorRGBs, colorRGBs);
         zox_sys_o(ChunkSize, chunkSize);
         zox_sys_o(VoxelNodeDirty, nodeDirty);
         zox_sys_o(ChunkLod, chunkLod);
         zox_sys_o(CloneVox, cloneVox);
-        const entity src = cloneVoxLink->value;
+
+        entity src = cloneVoxLink->value;
 
         if (!cloneVox->value || !src) {
             continue;
@@ -38,13 +39,15 @@ zox_sys2(CloneVoxSystem) {
         zox_geter_value(src, BlockScale, float, src_scale);
         zox_geter(src, ChunkSize, source_chunk_size);
         zox_geter(src, ColorRGBs, colors_source);
+
         if (chunkLod->value == 255) {
             chunkLod->value = 0;
         } else {
             chunkLod->value++;
         }
+
         nodeDepth->value = source_node_depth->value;
-        blockScale->value = src_scale;
+        scale->value = src_scale;
 
         // Write Locks node
         write_lock_VoxelNode(node);
@@ -52,17 +55,20 @@ zox_sys2(CloneVoxSystem) {
         // Write Locks node
         write_unlock_VoxelNode(node);
 
-        const byte target_depth = nodeDepth->value;
+        byte target_depth = nodeDepth->value;
+
         if (chunkLod->value == target_depth) {
             chunkSize->value = source_chunk_size->value;
             colorRGBs->length = colors_source->length;
 
-            const int memory_length = sizeof(color_rgb) * colors_source->length;
+            int memory_length = sizeof(color_rgb) * colors_source->length;
             initialize_ColorRGBs(colorRGBs, memory_length);
             memcpy(colorRGBs->value, colors_source->value, memory_length);
 
             cloneVox->value = 0;
             nodeDirty->value = zox_dirty_trigger;
+
+            // zox_log(" [%s] Is cloned from [%s] [%f]", zox_get_name(it->entities[i]), zox_get_name(src), scale->value);
         }
     }
 } zox_sys_end(CloneVoxSystem);

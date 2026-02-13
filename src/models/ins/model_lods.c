@@ -19,6 +19,7 @@ entity spawn_model_lods(ecs* world, color c, lint seed, byte3 rsize) {
     // properties
     srand(seed);
     c = color_mutate(c, 40);
+
     byte mdepth = block_vox_depth;
 
     // spawn model

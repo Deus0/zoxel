@@ -14,6 +14,7 @@ entity2 spawn_slider(
     zox_instance(element_data.prefab);
     zox_name("slider");
     zox_set(e, SliderLabel, { slider_data.name });
+
     set_element_spawn_data(
         world,
         e,
@@ -21,9 +22,11 @@ entity2 spawn_slider(
         parent_data,
         element_data
     );
+
     if (element_data.render_disabled) {
         zox_set(e, RenderDisabled, { element_data.render_disabled });
     }
+
     Children children = (Children) { 0 };
 
     LayoutParentData new_parent_data = {
@@ -33,7 +36,11 @@ entity2 spawn_slider(
     };
 
     // spawn handle
-    int layout_x = -element_data.size.x / 2 + (int) (element_data.size.x * slider_data.value);
+    float percent = clampf(slider_data.value, 0, 1);
+    int layout_x = -element_data.size.x / 2 + (int) (element_data.size.x * percent);
+
+    zox_log("shandle %f to %i", slider_data.value, layout_x);
+
     entity handle = spawn_handle(
         world,
         canvas_data,
@@ -47,7 +54,11 @@ entity2 spawn_slider(
             .render_disabled = element_data.render_disabled,
         }
     );
-    zox_set(handle, SlideBounds, { slider_data.bounds })
+
+    zox_set(handle, SlideBounds, { slider_data.bounds });
+
+    // zox_log("Slider Bounds %f:%f", slider_data.bounds.x, slider_data.bounds.y);
+
     add_to_Children(&children, handle);
 
     // # Slider Text #
