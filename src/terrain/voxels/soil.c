@@ -1,12 +1,7 @@
-entity spawn_block_soil(
-    ecs *world,
-    const byte index,
-    char* name,
-    const color block_color
-) {
-    // return spawn_block_voroni(world, index, name, block_color, 0);
+entity spawn_block_soil(ecs *world, byte index, char* name, color block_color) {
+
     // vox
-    const entity v = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
+    entity v = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
     zox_set_unique_name(v, "block_soil");
     zox_set(v, VoxType, { vox_type_soil });
     zox_set(v, VRegions, { 0 });    // we should remove this

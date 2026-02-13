@@ -2,8 +2,10 @@ entity spawn_model_grass(ecs* world, color c, lint seed) {
     // properties
     srand(seed);
     c = color_mutate(c, 40);
-    int big_rubbles = 10000 + rand() % 8000;
-    const byte max_render_depth = block_vox_depth;
+    byte max_render_depth = block_vox_depth;
+    byte vlength = powers_of_two[max_render_depth];
+
+    int big_rubbles = 10 * vlength * vlength + rand() % vlength * vlength;
 
     // spawn model
     zox_make_new();

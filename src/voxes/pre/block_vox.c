@@ -1,5 +1,5 @@
-entity spawn_prefab_block_vox(ecs *world, const entity prefab) {
-    zox_prefab_child(prefab);
+entity spawn_prefab_block_vox(ecs *world, entity p) {
+    zox_prefab_child(p);
     zox_prefab_name("block_vox");
     zox_add_tag(e, BlockVox);
     zox_add_tag(e, VoxMesh);

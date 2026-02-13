@@ -18,14 +18,20 @@ zox_sys2(BakeVoxSystem) {
 
         // zox_sys_e();
         // zox_log("Block is Generating: %s %i", zox_get_name(e), textures->length);
+        //zox_geter_value(model->value, NodeDepth, byte, ndepth);
+        //byte vlength = powers_of_two[ndepth];
 
         for (int j = 0; j < textures->length; j++) {
-            const entity texture = textures->value[j];
+
+            entity texture = textures->value[j];
+
             if (!zox_valid(texture)) {
                 zox_log_error("block texture is invalid [%i]", j);
                 continue;
             }
+
             zox_set(texture, GenerateTexture, { zox_dirty_trigger });
+            // zox_set(texture, TextureSize, { int2_single(vlength) });
         }
     }
 } zox_sys_end(BakeVoxSystem);

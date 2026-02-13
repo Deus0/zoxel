@@ -8,7 +8,6 @@ byte render_distance_y = 1;     // vertical
 // Sub Divisions - 4 | 5
 byte terrain_depth = 4;
 byte character_depth = 5;
-byte block_vox_depth = 5;
 
 // options
 byte terrain_lod_far_buffer = 2;    // buffer the near to far - adds a minimum low lods
@@ -33,7 +32,7 @@ uint debug_label_lods(
     index += snprintf(buffer + index, size - index, " - terrain near [%i]\n", terrain_lod_near);
     index += snprintf(buffer + index, size - index, " - terrain far [%i]]\n", terrain_lod_far);
     index += snprintf(buffer + index, size - index, " - terrain vertical [%i]\n", render_distance_y);
-    index += snprintf(buffer + index, size - index, " - depths [%i:%i:%i]\n", terrain_depth, block_vox_depth, character_depth);
+    index += // snprintf(buffer + index, size - index, " - depths [%i:%i:%i]\n", terrain_depth, block_vox_depth, character_depth);
     index += snprintf(buffer + index, size - index, " - npcs [%i]\n", count_entities_npc(world));
 
     return index;

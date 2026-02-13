@@ -58,7 +58,7 @@ void spawn_vodes_dive(
     }
 
     // Remove and return if not a World Block
-    const entity block_prefab = data->block_prefabs[block_index];
+    entity block_prefab = data->block_prefabs[block_index];
     if (!block_prefab) {
         return;
     }
@@ -81,19 +81,21 @@ void spawn_vodes_dive(
     if (node->value && !is_linked_VoxelNode(node)) {
         zox_geter(data->chunk, ChunkPosition, chunkPosition);
         zox_geter_value(data->chunk, NodeDepth, byte, node_depth);
-        const int chunk_length = powers_of_two[node_depth];
-        const int3 chunk_dimensions = int3_single(chunk_length);
+        int chunk_length = powers_of_two[node_depth];
+        int3 chunk_dimensions = int3_single(chunk_length);
         int3 chunk_positionv = get_chunk_positionv(chunkPosition->value, chunk_dimensions);
         int3 positionv = int3_add(positionv, chunk_positionv);
 
         // spawn node entity here!
-        const byte block_index = node->value - 1;
+        byte block_index = node->value - 1;
         if (block_index >= data->blocks_length) {
             zox_log_error("voxel [%i] is out of range [%i]", block_index, data->blocks_length)
             return;
         }
 
-        const entity block = data->blocks[block_index];
+        entity block = data->blocks[block_index];
+        float scale = data->chunk_scalev;
+
         spawned_block_data spawned_data = (spawned_block_data) {
             .chunk = data->chunk,
             .node = node,
@@ -102,7 +104,7 @@ void spawn_vodes_dive(
             .positionl = positionl,
             .positionv = positionv,
             .positionf = positionf,
-            .scale = data->chunk_scalev,
+            .scale = scale,
             .render_disabled = data->render_disabled,
             .render_depth = data->render_depth,
         };
@@ -223,10 +225,13 @@ zox_sys2(VodesSpawnSystem) {
         if (!is_first_time && !is_dirty) {
             continue;
         }
+
         //  base off render distance
         zox_geter_value(voxLink->value, NodeDepth, byte, terrain_depth);
         zox_geter_value(voxLink->value, BlockScale, float, terrain_scalev);
+
         byte can_spawn_vodes = renderDepth->value == terrain_depth;
+
         if (!can_spawn_vodes) {
             continue;
         }
@@ -234,16 +239,9 @@ zox_sys2(VodesSpawnSystem) {
         const byte render_depth = camera_distance_to_block_vox_depth(renderDistance->value);
 
         write_lock_VoxelNode(node);
-        spawn_vodes(world,
-            e,
-            voxLink->value,
-            render_depth,
-            renderDisabled,
-            node,
-            nodeDepth->value,
-            position->value,
-            scale->value,
-            terrain_scalev);
+
+        spawn_vodes(world, e, voxLink->value, render_depth, renderDisabled, node, nodeDepth->value, position->value, scale->value, terrain_scalev);
+
         write_unlock_VoxelNode(node);
         blocksSpawned->value = 1;
     }

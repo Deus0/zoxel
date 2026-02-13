@@ -16,7 +16,8 @@ zox_sys2(BiomeBlocksDirtySystem) {
         zox_muter(realm->value, BlockLinks, realm_blocks);
         byte index = realm_blocks->length;
         for (int j = 0; j < blocks->length; j++) {
-            const entity block = blocks->value[j];
+
+            entity block = blocks->value[j];
             add_to_BlockLinks(realm_blocks, block);
             zox_set(block, BlockIndex, { ++index });
             // zox_log("Block [%s] index [%i]", zox_get_name(block), index);

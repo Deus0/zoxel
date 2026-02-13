@@ -43,7 +43,7 @@ zox_sys2(BiomeBlocksSystem) {
 
         // zox_geter(realm->value, BlockLinks, realm_blocks);
 
-        const entity dirt = spawn_block_soil(
+        entity dirt = spawn_block_soil(
             world,
             0,
             "dirt",

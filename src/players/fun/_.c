@@ -4,6 +4,8 @@ void add_player(ecs *world, entity e, entity player) {
     zox_set(player, GameLink, { e });
 }
 
+entity dbg_player;
+
 int spawn_players(ecs *world, entity game, byte zox_game_type) {
     if (headless) {
         return 0;   // no players in headless mode
@@ -22,6 +24,10 @@ int spawn_players(ecs *world, entity game, byte zox_game_type) {
     }
     for (int i = 0; i < players; i++) {
         entity e = spawn_player(world, prefab_player);
+
+        if (i == 0) {
+            dbg_player = e;
+        }
 
         if (zox_game_type == zox_game_mode_3D) {
             zox_add_tag(e, Player3);

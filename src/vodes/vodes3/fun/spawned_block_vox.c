@@ -1,14 +1,14 @@
-void spawned_block_vox(
-    ecs *world,
-    spawned_block_data* data
-) {
+void spawned_block_vox(ecs *world, spawned_block_data* data) {
+
     if (!zox_has(data->block, BlockPrefabLink)) {
         return;
     }
+
     if (!data->node) {
         zox_log_error("null node in [spawned_block_vox]")
         return;
     }
+
     // gett block data
     zox_geter_value(data->block, BlockPrefabLink, entity, prefab);
     zox_geter_value_safe(data->block, ModelLink, entity, vox);

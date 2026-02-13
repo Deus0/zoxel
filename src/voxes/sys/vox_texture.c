@@ -189,9 +189,11 @@ zox_sys2(VoxTextureSystem) {
         zox_geter(vox->value, ColorRGBs, colors);
         zox_geter(vox->value, VoxelNode, node);
         zox_geter_value(vox->value, NodeDepth, byte, node_depth);
+        int2 texture_size = size->value;
 
-        const int2 texture_size = size->value;
         resize_TextureData(data, texture_size.x * texture_size.y);
+
+        zox_log("vox tex gen %ix%i", texture_size.x, texture_size.y);
 
         read_lock_VoxelNode(node);
         generate_vox_texture(

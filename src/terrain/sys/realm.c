@@ -33,7 +33,6 @@ void spawn_realm_blocks(ecs *world, entity realm) {
 
     byte target_depth = block_vox_depth;
     byte texture_dim = powers_of_two_byte[target_depth];
-    voxel_texture_size = (int2) { texture_dim, texture_dim };
 
     color dirt_color;
     color grass_color;

@@ -44,6 +44,7 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
 
     // TODO: Spawn a realm here and window for it
     entity realm = spawn_realm(world, prefab_realm);
+
     zox_set(game, RealmLink, { realm });
     zox_set_ptr(realm, SaveGamePath, path->value);
     load2_realm(path->value, "seed.dat", &realm_save);

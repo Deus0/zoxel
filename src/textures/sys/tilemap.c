@@ -34,8 +34,10 @@ zox_sys2(TilemapGenerationSystem) {
             zox_log_error("first_texture is null in tilemap generation system\n")
             continue;
         }
-        const int2 unit_size = zox_get_value(first_texture, TextureSize)
-        const float tile_uv_size = 1.0f / ((float) tilemapSize->value.x); // for example, 1 / 8 if size is 8
+        int2 unit_size = zox_get_value(first_texture, TextureSize)
+        float tile_uv_size = 1.0f / ((float) tilemapSize->value.x); // for example, 1 / 8 if size is 8
+        zox_log("Tilemap Size %i - u%i", tilemapSize->value.x, unit_size.x);
+
         textureSize->value.x = tilemapSize->value.x * unit_size.x;
         textureSize->value.y = tilemapSize->value.y * unit_size.y;
         resize_memory_component(TextureData, textureData, color, textureSize->value.x * textureSize->value.y)
@@ -73,8 +75,9 @@ zox_sys2(TilemapGenerationSystem) {
                         int tilemap_index = int2_array_index(tilemap_pixel_position, textureSize->value);
                         if (tilemap_index >= textureData->length) {
                             zox_log_error("tilemap_index [%i] >= textureData->length [%i]", tilemap_index, textureData->length)
-                            textureDirty->value = 1;
-                            return;
+                            // textureDirty->value = 1;
+                            // return;
+                            continue;
                         }
                         int texture_index = int2_array_index(pixel_position, texture_size);
                         if (texture_index >= block_texture->length) {

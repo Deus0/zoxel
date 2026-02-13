@@ -30,18 +30,20 @@ entity spawn_block_flower(
     // our block!
     process_disabled_block_vox(world, &spawn_data, 0);
 
-    const entity e = spawn_block_vox_meta(world, spawn_data);
+    entity e = spawn_block_vox_meta(world, spawn_data);
+
     if (disable_block_voxes) {
         return e;
     }
 
     zox_geter(spawn_data.vox, ModelLods, modelLods);
     entity vox_lod = modelLods->value[0];
+
     // link a texture to it
-    const entity texture = spawn_texture(
+    entity texture = spawn_texture(
         world,
         prefab_vox_texture,
-        voxel_texture_size
+        int2_single(powers_of_two[block_vox_depth])
     );
     zox_set_name_e(texture, "grass_texture");
     zox_set(texture, VoxLink, { vox_lod });

@@ -1,10 +1,5 @@
-entity spawn_block_grass(
-    ecs *world,
-    const byte index,
-    const color block_color,
-    const entity model
-) {
-    // zox_log("+ spawning realm_block with model [%s]", zox_get_name(model))
+entity spawn_block_grass(ecs *world, byte index, color block_color, entity model) {
+
     // use instanced mesh prefab
     SpawnBlock data = {
         .name = "grass",
@@ -34,10 +29,10 @@ entity spawn_block_grass(
     zox_geter(vox, ModelLods, modelLods);
     entity vox_lod = modelLods->value[max_render_depth];
 
-    const entity texture = spawn_texture(
+    entity texture = spawn_texture(
         world,
         prefab_vox_texture,
-        voxel_texture_size
+        int2_single(powers_of_two[block_vox_depth])
     );
     zox_set_name_e(texture, "grass_texture");
     zox_set(texture, VoxLink, { vox_lod });

@@ -32,10 +32,6 @@ static inline byte camera_distance_to_terrain_render_depth(byte distance) {
     return camera_distance_to_render_depth(distance, terrain_depth, terrain_lod_near, terrain_lod_far);
 }
 
-static inline byte camera_distance_to_block_vox_depth(byte distance) {
-    return camera_distance_to_render_depth(distance, block_vox_depth, vox_lod_near, terrain_lod_near);
-}
-
 static inline byte camera_distance_to_npc_render_depth(byte distance, byte max_render_depth) {
     return camera_distance_to_render_depth(distance, max_render_depth, vox_lod_near, terrain_lod_near);
 }
