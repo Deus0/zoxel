@@ -28,8 +28,6 @@ void button_event_menu_realm_delete(ecs *world, ClickEventData event) {
     entity clicked = event.clicked;
 
     zox_geter(player, ElementLinks, elements);
-    // zox_geter_value(player, GameLink, entity, game);
-    // zox_geter_value(game, RealmLink, entity, realm);
 
     find_array_element_with_tag(elements, MenuRealm, menu);
     if (!menu) {
@@ -43,8 +41,14 @@ void button_event_menu_realm_delete(ecs *world, ClickEventData event) {
 
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
-    zox_log("Deleting Realm (%s)", zox_get_name(realm));
+    zox_geter(realm, SaveGamePath, realm_path);
 
+    // zox_log("Deleting Realm (%s: %s", zox_get_name(realm), realm_path);
+    if (delete_dir(realm_path->value)) {
+        zox_logi("Success Deleting Realm: %s", realm_path);
+    } else {
+        zox_log_error("Error Deleting Realm: %s", realm_path);
+    }
 
     // Destroys Realm
     zox_delete(realm);
