@@ -88,6 +88,8 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
         if (zox_valid(vox)) {
             zox_set(e, CloneVoxLink, { vox });
             zox_set(e, CloneVox, { 1 });
+        } else {
+              zox_set(e, DisableMovement, { 1 });
         }
     }
 

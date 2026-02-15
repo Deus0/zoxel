@@ -12,7 +12,7 @@ zox_begin_module(Equips)
     define_components_equipment(world);
     define_systems_equipment(world);
     add_taskbar_button((hook_taskbar) {
-        .index = 6,
+        .index = 7,
         .spawn = &spawn_player_menu_equipment,
         .component_id = MenuEquipment,
         .texture_name = "taskbar_equipment",

@@ -1,9 +1,16 @@
 #include "character.c"
 #include "realm.c"
-zox_declare_system_state_event(RealmEquips, GenerateRealm, zox_generate_realm_equips, spawn_realm_equips)
 
 void define_systems_equipment(ecs* world) {
-    zox_define_system_state_event_1(RealmEquips, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+    zox_system_1(
+        EquipsRealmSpawnSystem,
+        EcsOnUpdate,
+        [in] realms.GenerateRealm,
+        [in] rendering.ModelLinks,
+        [out] items.ItemLinks,
+        [none] realms.Realm
+    );
+
     zox_system_1(
         CharacterPlayerEquipsSystem,
         EcsOnUpdate,

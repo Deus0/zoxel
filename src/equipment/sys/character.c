@@ -44,14 +44,24 @@ zox_sys2(CharacterPlayerEquipsSystem) {
         zox_geter(realm->value, ItemLinks, realm_items);
 
         // TODO: Randomly find a "hat" tag equip item from realm
-        entity add_item = realm_items->value[realm_items->length - 1];
+        entity ritem = 0;
 
-        if (zox_valid(add_item)) {
-            const entity new_equip = spawn_user_item(
+        for (uint j = 0; j < realm_items->length; j++) {
+            entity item = realm_items->value[j];
+
+            if (zox_has(item, EquipItem)) {
+                ritem = item;
+                break;
+            }
+        }
+
+        if (zox_valid(ritem)) {
+            entity new_equip = spawn_user_item(
                 world,
-                add_item,
+                ritem,
                 e
             );
+
             add_to_EquipLinks(equips, new_equip);
         }
 
