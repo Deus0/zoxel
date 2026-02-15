@@ -2,8 +2,8 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
     entity vox = data.model;
 
     if (!zox_valid(vox)) {
-        zox_log_error("[spawn_character3]: Invalid Vox Model");
-        return 0;
+        zox_logw("[spawn_character3]: Invalid Vox Model");
+        // return 0;
     }
 
     // if model, we use lodded for vox

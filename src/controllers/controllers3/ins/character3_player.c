@@ -3,7 +3,7 @@ entity spawn_character3_player(ecs *world,spawn_character3D_data spawn_data) {
     spawn_data.prefab = prefab_character3_player;
     spawn_data.scale = vox_model_scale;
 
-    const entity e = spawn_character3(world, spawn_data);
+    entity e = spawn_character3(world, spawn_data);
     // make_test_skeleton(world, e);
     zox_name("character3_player");
 

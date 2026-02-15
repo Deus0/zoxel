@@ -98,7 +98,6 @@ entity spawn_first_chunk(ecs* world, entity realm, entity terrain, float3 positi
     zox_geter_value(terrain, NodeDepth, byte, tdepth);
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
 
-    // float3 position = load_player_position(world, realm);
     int3 cposition = real_position_to_chunk_position(position, powers_of_two[tdepth], terrain_scale);
 
     entity c;
@@ -146,7 +145,6 @@ entity game_start_player_new(ecs *world, entity player) {
     }
 
     TerrainPlace placer = find_position_in_terrain(world, terrain);
-    // float3 fake_spawn_position = (float3) { 4, 4, 4 };
 
     spawn_character3D_data spawn_data = {
         .player = player,

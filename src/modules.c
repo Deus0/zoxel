@@ -68,6 +68,7 @@
 #include "stats/_.c"
 #include "skills/_.c"
 #include "items/_.c"
+#include "bodys/_.c"
 #include "equipment/_.c"
 #include "lores/_.c"
 #include "achievements/_.c"
@@ -162,6 +163,7 @@ zox_begin_module(Zox)
     zox_import_module(Stats);
     zox_import_module(Skills);
     zox_import_module(Items);
+    zox_import_module(Bodys);
     zox_import_module(Equips);
     zox_import_module(Actions);
     zox_import_module(Dialogues);

@@ -1,14 +1,19 @@
 // gets parent in tree's UI Holder, uses its render LOD to check if can render a 3D UI
-byte can_render_ui(ecs *world, const entity e) {
+byte can_render_ui(ecs *world, entity e) {
+
     if (!zox_valid(e)) {
         return 0;
     }
+
     if (zox_has(e, UIHolderLink)) {
-        zox_geter(e, UIHolderLink, uiHolderLink)
+        zox_geter(e, UIHolderLink, uiHolderLink);
         if (zox_valid(uiHolderLink->value)) {
-            if (zox_has(uiHolderLink->value, RenderDepth)) {
+            if (zox_has(uiHolderLink->value, RenderDepth) && zox_has(uiHolderLink->value, MaxRenderDepth)) {
+
                 zox_geter_value(uiHolderLink->value, RenderDepth, byte, render_depth);
+
                 zox_geter_value(uiHolderLink->value, MaxRenderDepth, byte, max_render_depth);
+
                 const byte render_depth_valid =
                     render_depth != render_depth_spawning &&
                     render_depth != render_depth_invisible &&
