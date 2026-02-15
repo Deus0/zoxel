@@ -1,17 +1,23 @@
 entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
+
     if (!prefab) {
         return 0;
     }
+
     zox_prefab_child(prefab);
     zox_prefab_name("character3");
+    zox_set(e, EntityInitialize, { zox_dirty_trigger });
+
     zox_add_tag(e, Character3);
     zox_prefab_set(e, Character3Type, { type });
     zox_prefab_set(e, CharacterMetaLink, { 0 });
     zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
+
     // generation
     zox_prefab_set(prefab, Seed, { 999 });
     // name
     zox_prefab_set(e, ZoxName, { 0 });
+
     // In Terrain
     zox_add_tag(e, LinkChunk);
     // zox_prefab_set(e, TerrainLink, { 0 });
@@ -19,6 +25,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, ChunkPosition, { int3_chaos });
     zox_prefab_set(e, VoxelPosition, { int3_zero });
     zox_prefab_set(e, Position3DBounds, { float6_zero });
+
     // Vox Mesh
     zox_prefab_set(e, ModelLink, { 0 });
     if (type != zox_character_type_instanced) {
@@ -26,6 +33,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
         zox_prefab_set(e, CloneVox, { 0 });
         zox_prefab_set(e, CloneVoxLink, { 0 });
     }
+
     // animation
     zox_prefab_set(e, AnimationState, { zox_animation_idle })
     zox_prefab_set(e, AnimationStart, { 0 })

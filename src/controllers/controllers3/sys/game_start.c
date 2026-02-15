@@ -148,7 +148,7 @@ entity game_start_player_new(ecs *world, entity player) {
 
     spawn_character3D_data spawn_data = {
         .player = player,
-        .model = model,
+        // .model = model,
         .realm = realm,
         .terrain = terrain,
         .terrain_chunk = placer.chunk,
@@ -206,7 +206,7 @@ entity game_start_player_load(ecs *world, entity player) {
 
     spawn_character3D_data spawn_data = {
         .player = player,
-        .model = model,
+        // .model = model,
         .realm = realm,
         .terrain = terrain,
         .terrain_chunk = placer.chunk,

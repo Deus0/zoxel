@@ -193,7 +193,7 @@ zox_sys2(VoxTextureSystem) {
 
         resize_TextureData(data, texture_size.x * texture_size.y);
 
-        zox_log("vox tex gen %ix%i", texture_size.x, texture_size.y);
+        // zox_log("vox tex gen %ix%i", texture_size.x, texture_size.y);
 
         read_lock_VoxelNode(node);
         generate_vox_texture(

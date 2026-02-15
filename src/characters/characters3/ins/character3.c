@@ -25,11 +25,16 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
     zox_instance(data.prefab);
     zox_name("character3");
 
+    char *name = generate_name();
+    set_ZoxName(world, e, name);
+    free(name);
+
+    zox_set(e, RealmLink, { data.realm });
+
     if (data.meta) {
         zox_set(e, CharacterMetaLink, { data.meta });
     }
 
-    zox_set(e, RealmLink, { data.realm });
     zox_set(e, Position3D, { data.position });
     zox_set(e, LastPosition3D, { data.position });
 
@@ -42,9 +47,7 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
     }
 
     // rendering
-    if (data.render_depth) {
-        zox_set(e, RenderDepth, { data.render_depth });
-    }
+    zox_set(e, RenderDepth, { data.render_depth });
 
     if (zox_valid(vox) && zox_has(vox, MaxRenderDepth)) {
         zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
@@ -56,20 +59,17 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
     }
 
     // voxels
-    /*if (data.terrain) {
-        zox_set(e, TerrainLink, { data.terrain });
-    }*/
-
     if (data.terrain_chunk) {
         zox_set(e, ChunkLink, { data.terrain_chunk });
         zox_set(e, ChunkPosition, { data.chunk_position });
     }
 
-    zox_set(e, ModelLink, { data.model })
+    zox_set(e, ModelLink, { data.model });
 
     if (type == zox_character_type_instanced) {
-        // zox_has(data.prefab, InstanceLink)) {
+
         zox_set(e, InstanceLink, { vox });
+
         if (zox_has(vox, BlockScale)) {
 
             zox_geter_value(vox, BlockScale, float, meta_vox_scale);
@@ -85,26 +85,28 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
         }
 
     } else {
-        zox_set(e, CloneVoxLink, { vox });
-        zox_set(e, CloneVox, { 1 });
-        // move this to new system
+        if (zox_valid(vox)) {
+            zox_set(e, CloneVoxLink, { vox });
+            zox_set(e, CloneVox, { 1 });
+        }
+    }
+
+    // move gpu functions to new system
+    if (type != zox_character_type_instanced) {
         spawn_gpu_mesh(world, e);
         spawn_gpu_colors(world, e);
     }
 
     if (type == zox_character_type_skeleton) {
         spawn_gpu_bone_index(world, e);
+
         float head_move_y = data.player ? 0.01f : 0.1f;
         spawn_skeleton_bones(world, e, head_move_y);
+
         if (is_paint_skeletons) {
             zox_add_tag(e, PaintedSkeleton);
         }
     }
-
-    char *name = generate_name();
-    // zox_set(e, ZoxName, { text_to_zext(name) });
-    set_ZoxName(world, e, name);
-    free(name);
 
     return e;
 }
