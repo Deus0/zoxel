@@ -45,6 +45,9 @@
 #include "cubes/_.c"
 #include "blocks/_.c"
 #include "chunks/_.c"
+
+#include "physics/_.c"
+
 #include "voxes/_.c"
 #include "vodes/_.c"
 #include "lights/_.c"
@@ -52,7 +55,7 @@
 #include "biomes/_.c"
 #include "streaming/_.c"
 
-#include "physics/_.c"
+
 #include "particles/_.c"
 #include "weathers/_.c"
 #include "characters/_.c"
@@ -139,6 +142,8 @@ zox_begin_module(Zox)
 
     zox_import_module(Blocks);
     zox_import_module(Chunks);
+    zox_import_module(Physics);
+
     zox_import_module(Voxes);
     zox_import_module(Vodes);
     zox_import_module(Lights);
@@ -146,7 +151,7 @@ zox_begin_module(Zox)
     zox_import_module(Biomes);
     zox_import_module(Streaming);
 
-    zox_import_module(Physics);
+
     zox_import_module(Particles);
     zox_import_module(Weathers);
     zox_import_module(Characters);

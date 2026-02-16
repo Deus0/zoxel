@@ -23,6 +23,7 @@ zox_tag(ClickMakeSound);
 zoxc_byte(ClickState);
 zoxc_entity(Clicker);
 zoxc_entity(ClickingEntity);
+zoxc_byte(ClickDisabled);
 
 // Dragging
 zox_tag(Dragable);
@@ -89,6 +90,15 @@ void define_components_elements(ecs *world) {
     zoxd_int2(ElementMargins);
     zoxd_color(ElementColor);
 
+    // Click
+    zoxd_tag(Clickable);
+    zoxd_tag(ClickMakeSound);
+    zoxd_byte(ClickState);
+    zoxd_entity(ClickingEntity);
+    zoxd_entity(Clicker);
+    zoxd(ClickEvent);
+    zoxd_byte(ClickDisabled);
+
     // Selecting
     zoxd_tag(Selectable);
     zoxd_byte(SelectState);
@@ -120,16 +130,11 @@ void define_components_elements(ecs *world) {
     zoxd_byte(WindowLayer);
     zoxd_fixed_string(TooltipText);
 
-    zoxd(ClickEvent);
+
     zoxd(TooltipEvent);
     zoxd(SlideEvent);
 
-    // Click
-    zoxd_tag(Clickable);
-    zoxd_tag(ClickMakeSound);
-    zoxd_byte(ClickState);
-    zoxd_entity(ClickingEntity);
-    zoxd_entity(Clicker);
+
 
     // Navigation
     zoxd_tag(NavigationWindow);

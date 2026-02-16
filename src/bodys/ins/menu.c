@@ -45,6 +45,11 @@ entity spawn_player_menu_body(ecs* world, entity player) {
         if (frame.z) {
             zox_set(frame.z, ItemLink, { item });
         }
+
+        if (i == 0) {
+            // zox_remove(frame.x, ClickState);
+            zox_set(frame.y, ClickDisabled, { 1 });
+        }
     }
 
     return e;

@@ -5,6 +5,7 @@
 #include "find_neighbor.c"
 #include "block_scale.c"
 #include "entities_lod.c"
+#include "move_bounds.c"
 
 void define_systems_voxes(ecs *world) {
     // NOTE: timing specific, fucks up if changes position
@@ -14,8 +15,18 @@ void define_systems_voxes(ecs *world) {
         [in] rendering.MeshDirty,
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
-        [out] transforms3.Bounds3D
+        [out] transforms3.Bounds3D,
+        [out] transforms3.Bounds3Dirty
     );
+
+    zox_system(
+        Bounds3EnableSystem,
+        EcsOnUpdate,
+        transforms3.Bounds3Dirty,
+        [out] physics.DisableMovement,
+        [out] physics.DisableGravity
+    );
+
     // NOTE: Writes to VoxelNode
     zox_system(
         CloneVoxSystem,
@@ -30,6 +41,7 @@ void define_systems_voxes(ecs *world) {
         [out] chunks3.VoxelNodeDirty,
         [out] ChunkLod
     );
+
     zox_system(
         BakeVoxSystem,
         EcsOnUpdate,
@@ -47,6 +59,7 @@ void define_systems_voxes(ecs *world) {
         [out] chunks3.ChunkNeighbors,
         [none] chunks3.ChunkTextured    // we should just check if parent has chunk links here
     );
+
     zox_system(BlockScaleSystem,
         EcsPostLoad,
         [in] rendering.RenderDepthDirty,
@@ -54,6 +67,7 @@ void define_systems_voxes(ecs *world) {
         [out] voxes.VoxLink,
         [out] blocks.BlockScale
     );
+
     zox_system(
         ChunkEntitiesLodSystem,
         EcsOnUpdate,

@@ -1,8 +1,13 @@
 void on_element_clicked(ecs *world, entity player, entity e) {
-    if (zox_valid(e) && zox_has(e, Clickable)) {
-        zox_set(e, ClickState, { zox_click_state_trigger_clicked });
-        zox_set(e, Clicker, { player });
+    if (!zox_valid(e) || zox_has(e, Clickable)) {
+        return;
     }
+    if (zox_has(e, ClickDisabled) && zox_gett_value(e, ClickDisabled)) {
+        return;
+    }
+
+    zox_set(e, ClickState, { zox_click_state_trigger_clicked });
+    zox_set(e, Clicker, { player });
 }
 
 void on_element_released(ecs *world, entity player, entity e) {

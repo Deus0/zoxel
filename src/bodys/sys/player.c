@@ -31,9 +31,6 @@ zox_sys2(PlayerBodySpawnSystem) {
 
         zox_geter_value_non_const(part, ModelLink, entity, vox);
 
-        // entity vox =  string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
-
-
         if (zox_valid(vox) && zox_has(vox, ModelLods)) {
             zox_geter(vox, ModelLods, modelLods);
 
@@ -61,6 +58,6 @@ zox_sys2(PlayerBodySpawnSystem) {
         zox_set(e, CloneVoxLink, { vox });
         zox_set(e, CloneVox, { 1 });
 
-        zox_set(e, DisableMovement, { 0 });
+        // zox_set(e, DisableMovement, { 0 });
     }
 } zox_sys_end(PlayerBodySpawnSystem);

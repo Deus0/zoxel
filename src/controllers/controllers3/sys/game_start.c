@@ -164,8 +164,8 @@ entity game_start_player_new(ecs *world, entity player) {
         if (add_to_ChunkEntities(entities, e)) {
             zox_mut_end(placer.chunk, ChunkEntities);
         }
-        zox_set(e, DisableGravity, { 0 });
-        zox_set(e, DisableMovement, { 0 });
+        // zox_set(e, DisableGravity, { 0 });
+        // zox_set(e, DisableMovement, { 0 });
     } else {
         zox_log_error("Issue with place chunk");
     }
@@ -224,8 +224,8 @@ entity game_start_player_load(ecs *world, entity player) {
         if (add_to_ChunkEntities(entityLinks, e)) {
             zox_mut_end(placer.chunk, ChunkEntities);
         }
-        zox_set(e, DisableGravity, { 0 });
-        zox_set(e, DisableMovement, { 0 });
+        // zox_set(e, DisableGravity, { 0 });
+        // zox_set(e, DisableMovement, { 0 });
     }
 
     spawn_arrow3D(world, spawn_data.position, (float3) { 0, 4, 0}, 0.5f, 6, 60);

@@ -80,7 +80,8 @@ void spawn_realm_characters(ecs *world, entity e) {
         byte chance = 5;
         char* svox_name = "grazor";
         entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(svox_name));
-        const entity e2 = spawn_character3_meta(
+
+        entity e2 = spawn_character3_meta(
             world,
             prefab_character3_meta,
             prefab_character3_skeleton_npc,

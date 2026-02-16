@@ -15,6 +15,8 @@ entity spawn_prefab_block_vox(ecs *world, entity p) {
     zox_prefab_set(e, BlockScale, { vox_model_scale });
     // for debug
     zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
+    zox_prefab_set(e, Bounds3Dirty, { 0 });
+
     prefab_add_cube_lines(world, e, color_white, 0);
     return e;
 }

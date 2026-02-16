@@ -30,7 +30,10 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity p) {
     add_components_mesh_textured(world, e);
     // Debug
     zox_add_tag(e, ChunkDebugger);
-    zox_prefab_set(e, Bounds3D, { float3_single(1) });  // todo: build this in spawn function
+    zox_prefab_set(e, Bounds3D, { float3_single(1) });
+    zox_prefab_set(e, Bounds3Dirty, { 0 });
+    // todo: build this in spawn function
+
     prefab_add_cube_lines_shrink(world, e, color_white, 0, 0.95f);
     return e;
 }

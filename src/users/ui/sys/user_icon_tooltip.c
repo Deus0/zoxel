@@ -33,6 +33,7 @@ zox_sys2(UserIconTooltipSystem) {
             set_entity_text(world, tooltip, "");
             continue;
         }
+
         TooltipEventData data = {
             .event = selectState->value,
             .tooltip = tooltip,

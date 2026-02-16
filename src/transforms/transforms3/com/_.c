@@ -12,6 +12,7 @@ zoxc_float4(LocalRotation3D);
 zoxc(TransformMatrix, float4x4);
 // used for physics
 zoxc_float3(Bounds3D);
+zoxc_state(Bounds3Dirty);
 zoxc_float6(Position3DBounds);
 zoxc_entity(ShadowLink);
 
@@ -30,6 +31,7 @@ void define_components_transforms3(ecs* world) {
     zoxd(TransformMatrix);
     // physics
     zoxd_float3(Bounds3D);
+    zoxd_state(Bounds3Dirty);
     zoxd_float6(Position3DBounds);
     zoxd_entity(ShadowLink);
 }

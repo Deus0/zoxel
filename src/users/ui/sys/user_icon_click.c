@@ -4,6 +4,7 @@ extern void set_linked_item(ecs*, const entity, const int, const entity);
 extern void set_linked_skill(ecs*, const entity, const int, const entity);
 extern void link_as_new_item(ecs*, const entity, const entity3);
 
+// Called from the clicked UI
 zox_sys2(UserIconClickSystem) {
 
     if (!icon_mouse_follow) {
@@ -41,9 +42,11 @@ zox_sys2(UserIconClickSystem) {
         if (mouse_data_empty && clicked_data_empty) {
             continue; // if both empty
         }
-        // const byte is_mouse_empty = !mouse_data;
+
+
         // check matches mouse's icon type
         zox_geter_value(icon_mouse_follow, IconType, byte, mouse_icon_type);
+
         if (mouse_icon_type > zox_icon_type_action && icon_type > zox_icon_type_action && icon_type != mouse_icon_type) {
             zox_log(" ! cannot place [%i] in [%i] slot\n", mouse_icon_type, icon_type)
             continue; // didn't match
