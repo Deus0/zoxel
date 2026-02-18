@@ -5,11 +5,10 @@ void toggle_character_particles(ecs *world, int32_t keycode) {
         const color test_color = (color) { 0, 255, 255, 200 };
         const float test_scale = 4; // 2
         const float test_rate = 32; // 4
-        // conjure the canvas
-        const entity realm = local_realm;
-        zox_geter(realm, GameLink, gameLink)
-        zox_geter(gameLink->value, PlayerLinks, players)
-        const entity player = players->value[0];
+
+        const entity player = dbg_player;
+        if (!zox_valid(player)) return;
+
         entity character = get_linked_character(world, player);
         if (!character) return;
         // our logic stuffee

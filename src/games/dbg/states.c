@@ -1,20 +1,23 @@
+extern entity dbg_player;
+
 void test_game_end(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_g) {
-        zox_log("> game toggling")
-        if (!zox_valid(local_realm) || !zox_has(local_realm, GameLink)) {
-            zox_log_error("no realm (local)")
-            return;
-        }
-        zox_geter(local_realm, GameLink, gameLink)
-        if (zox_valid(gameLink->value)) {
-            zox_geter(gameLink->value, GameState, gameState);
-            if (gameState->value == zox_game_start) {
-                zox_log("+ game starting %i", gameState->value);
-                zox_set(gameLink->value, GameStateTarget, { zox_game_load_start });
-            } else if (gameState->value == zox_game_playing || gameState->value == zox_game_paused) {
-                zox_log("- game ending: %i", gameState->value);
-                zox_set(gameLink->value, GameStateTarget, { zox_game_start });
-            }
-        }
+    if (keycode != SDLK_g) {
+        return;
+    }
+
+    zox_geter_value(dbg_player, GameLink, entity, game);
+    if (!zox_valid(game)) {
+        return;
+    }
+
+    zox_log("> game toggling [%s]", zox_get_name(game));
+
+    zox_geter_value(game, GameState, byte, gstate);
+    if (gstate == zox_game_start) {
+        zox_log("+ game starting %i", gstate);
+        zox_set(game, GameStateTarget, { zox_game_load_start });
+    } else if (gstate == zox_game_playing || gstate == zox_game_paused) {
+        zox_log("- game ending: %i", gstate);
+        zox_set(game, GameStateTarget, { zox_game_start });
     }
 }

@@ -73,6 +73,7 @@ byte load_chunk(ecs *world, entity savegame, int3 position, VoxelNode* node) {
 zox_sys2(Chunk3LoadSystem) {
     zox_sys_world();    // used when closing possible nodes
     zox_sys_begin();
+    zox_sys_in(RealmLink);
     zox_sys_in(ChunkPosition);
     zox_sys_out(VoxelNodeDirty);
     zox_sys_out(VoxelNodeEdited);
@@ -81,6 +82,7 @@ zox_sys2(Chunk3LoadSystem) {
     zox_sys_out(NodeDepth);
     zox_sys_out(VoxelNodeGenerated);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_i(RealmLink, realm);
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNodeDirty, vdirty);
         zox_sys_o(VoxelNodeEdited, edited);
@@ -93,16 +95,16 @@ zox_sys2(Chunk3LoadSystem) {
             continue;
         }
 
-        entity savegame = local_realm;
-
-        if (!zox_valid(savegame)) {
+        if (!zox_valid(realm->value)) {
+            zox_logw("Realm Invalid for loading chunk");
             continue;
         }
+
         /*if (render_distance_dirty->value != zox_dirty_active || loaded->value) {
             continue; // these shouldn't be here
         }*/
 
-        if (load_chunk(world, savegame, position->value, node)) {
+        if (load_chunk(world, realm->value, position->value, node)) {
             edited->value = 1;
             vdirty->value = zox_dirty_trigger;
             depth->value = terrain_depth;

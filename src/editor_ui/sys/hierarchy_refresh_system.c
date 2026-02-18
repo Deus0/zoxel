@@ -1,12 +1,8 @@
 // make everything a child of realm
 extern entity local_realm;
 
-void add_all_prefabs(ecs *world,
-    entity_array_d* entities,
-    text_group_dynamic_array_d* labels,
-    const entity canvas)
-{
-    entity realm = local_realm;
+void add_all_prefabs(ecs *world, entity_array_d* entities, text_group_dynamic_array_d* labels, entity canvas) {
+
     // prefabs
     add_entity_to_labels(world, prefab_app, labels, entities, 0);
     add_entity_to_labels(world, prefab_window, labels, entities, 0);
@@ -17,11 +13,15 @@ void add_all_prefabs(ecs *world,
     add_entity_to_labels(world, prefab_block, labels, entities, 0);
     add_entity_to_labels(world, prefab_texture, labels, entities, 0);
     // add game entities
-    add_entity_to_labels(world, realm, labels, entities, 0);
-    add_to_labels_voxel_links(world, realm, labels, entities, 0);
-#ifdef zoxm_stats
-    add_to_labels_stat_links(world, realm, labels, entities, 0);
-#endif
+    entity realm = local_realm;
+    if (zox_valid(realm)) {
+        add_entity_to_labels(world, realm, labels, entities, 0);
+        add_to_labels_voxel_links(world, realm, labels, entities, 0);
+    #ifdef zoxm_stats
+        add_to_labels_stat_links(world, realm, labels, entities, 0);
+    #endif
+    }
+
     add_entity_to_labels(world, local_music, labels, entities, 0);
     for (int k = 0; k < main_cameras_count; k++) {
         add_entity_to_labels(world, main_cameras[k], labels, entities, 0);

@@ -2,19 +2,12 @@ entity dbg_chunk;
 
 void select_dbg_chunk(ecs* world) {
 
-    if (!zox_valid(local_realm) || !zox_has(local_realm, GameLink)) {
-        zox_log_error("no realm (local)");
+    // zox_geter(game->value, PlayerLinks, players);
+    entity player = dbg_player;
+    if (!zox_valid(player)) {
         return;
     }
 
-    zox_geter(local_realm, GameLink, game);
-    if (!zox_valid(game->value)) {
-        zox_log_error("realm has no game");
-        return;
-    }
-
-    zox_geter(game->value, PlayerLinks, players);
-    entity player = players->value[0];
     zox_geter_value(player, CharacterLink, entity, character);
     if (!zox_valid(character)) {
         return;

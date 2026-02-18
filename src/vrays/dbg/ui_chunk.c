@@ -58,9 +58,9 @@ uint debug_ui_raycast_chunk3(ecs *world, entity player, char *buffer, uint size,
 
     if (!zox_valid(dbg_chunk)) {
         if (zox_valid(data->chunk)) {
-            index += snprintf(buffer + index, size - index, "Press [f] to select a chunk!\n", zox_get_name(player));
+            index += snprintf(buffer + index, size - index, "Press [f] to select a chunk!\n");
         } else {
-            index += snprintf(buffer + index, size - index, "Aim at a chunk!\n", zox_get_name(player));
+            index += snprintf(buffer + index, size - index, "Aim at a chunk!\n");
         }
     }
 

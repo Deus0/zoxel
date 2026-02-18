@@ -33,11 +33,13 @@ byte save_voxel_node(FILE* out, const VoxelNode* node) {
 zox_sys2(Chunk3SaveSystem) {
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(RealmLink);
     zox_sys_in(VoxelNodeEdited);
     zox_sys_in(VoxelNodeDirty);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkPosition);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_i(RealmLink, realm);
         zox_sys_i(VoxelNodeEdited, edited);
         zox_sys_i(VoxelNodeDirty, dirty);
         zox_sys_i(VoxelNode, node);
@@ -46,6 +48,7 @@ zox_sys2(Chunk3SaveSystem) {
         if (dirty->value != zox_dirty_active || !edited->value) {
             continue; // these shouldn't be here
         }
+
         // later add id/int3 there
         char filename[128];
         get_chunk_filename(filename, position->value);
@@ -53,7 +56,19 @@ zox_sys2(Chunk3SaveSystem) {
         //char path[io_path_size];
         //get_save_filepath(game_name, filename, path, sizeof(path));
         // zox_log("Saving chunk to file: %s", path);
-        zox_geter(local_realm, SaveGamePath, game_path);
+
+
+        /*if (!zox_valid(terrain->value)) {
+            continue;
+        }*/
+        // zox_geter_value(terrain->value, RealmLink, entitiy, savegame);
+        if (!zox_valid(realm->value)) {
+            continue;
+        }
+
+        zox_geter(realm->value, SaveGamePath, game_path);
+
+
         char* path = join_path(game_path->value, filename);
 
         FILE* file = fopen(path, "wb");

@@ -4,12 +4,7 @@ extern entity get_linked_terrain(ecs*, entity);
 
 void toggle_debug_bounds_terrain(ecs* world) {
 
-    entity realm = local_realm;
-    if (!zox_valid(realm)) {
-        return;
-    }
-
-    entity terrain = get_linked_terrain(world, realm);
+    entity terrain = local_terrain;
     if (!zox_valid(terrain)) {
         return;
     }

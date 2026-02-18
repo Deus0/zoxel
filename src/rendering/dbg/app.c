@@ -30,8 +30,7 @@ uint debug_label_app(
 
     // canvas
     // render texture size
-    //zox_geter(local_realm, PlayerLinks, players)
-    //zox_geter_value(players->value[0], CanvasLink, entity, canvas)
+
     entity canvas = zox_canvases[0];
     zox_geter_value(canvas, LayoutSize, int2, canvas_size)
     zox_geter_value(canvas, ScreenToCanvas, float4, canvas_ratio)

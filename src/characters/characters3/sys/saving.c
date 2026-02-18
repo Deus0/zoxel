@@ -31,6 +31,7 @@ zox_sys2(CharacterSaveSystem) {
         data.euler.x = float_to_precision(data.euler.x, precision_level);
         data.euler.y = float_to_precision(data.euler.y, precision_level);
         data.euler.z = float_to_precision(data.euler.z, precision_level);
+
         // check hash
         ulong hash = compute_character_hash(&data);
         if (hash == characterSaveHash->value) {

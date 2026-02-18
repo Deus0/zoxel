@@ -17,10 +17,12 @@ entity spawn_chunk_terrain(ecs *world, entity p, entity terrain, int3 camera_pos
     } else {
         zox_set(e, TilemapLink, { tilemap });
     }
+
     zox_geter_value(terrain, RealmLink, entity, realm);
-    if (!realm) {
+    if (!zox_valid(realm)) {
         zox_logw("realm not on terrain");
     } else {
+        zox_set(e, RealmLink, { realm });
         zox_set(e, BlockManagerLink, { realm });
     }
 

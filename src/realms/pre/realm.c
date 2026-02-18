@@ -7,13 +7,12 @@ entity spawn_prefab_realm(ecs* world) {
     return e;
 }
 
-entity spawn_realm(ecs* world, const entity prefab) {
-    if (!zox_valid(prefab)) {
-        zox_log("! prefab_realm is null.");
-        return 0;
-    }
-    zox_instance(prefab);
+entity spawn_realm(ecs* world, entity p) {
+
+    zox_instance(p);
     zox_name("realm");
+
     local_realm = e;
+
     return e;
 }

@@ -4,19 +4,6 @@ void toggle_player_death(ecs *world, int32_t keycode) {
     if (keycode == SDLK_j) {
         zox_log("> player character death toggling")
 
-
-        /*if (!zox_valid(local_realm) || !zox_has(local_realm, GameLink)) {
-            zox_log_error("no realm (local)")
-            return;
-        }
-        zox_geter(local_realm, GameLink, gameLink)
-        if (!zox_valid(gameLink->value)) {
-            zox_log_error("realm has no game")
-            return;
-        }
-        zox_geter(gameLink->value, PlayerLinks, players)
-        const entity player = players->value[0];*/
-
         entity player = dbg_player;
 
         zox_geter(player, CharacterLink, characterLink)

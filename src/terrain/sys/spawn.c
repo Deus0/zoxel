@@ -1,15 +1,15 @@
-extern entity spawn_chunk_terrain(ecs*, const entity, const entity, const int3, const int3, const byte, const float);
+extern entity spawn_chunk_terrain(ecs*, entity, entity, int3, int3, byte, float);
 
 // NOTE: Takes in array of stream points and iterates per chunk
 // NOTE: This logic fails if all chunks dissapear
 
 zox_sys2(ChunkSpawnSystem) {
-    const entity prefab_chunk = prefab_chunk_terrain;
+    entity prefab_chunk = prefab_chunk_terrain;
 
     zox_sys_query();
     zox_sys_world();
 
-    const byte log_individuals = 0;
+    byte log_individuals = 0;
     uint spawned_chunks = 0;
     int3 *stream_points = NULL;
     int stream_points_length = 0;
