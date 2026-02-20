@@ -134,7 +134,10 @@ zox_sys2(SystemDeltaLogSystem) {
             continue;
         }
 
-        zox_logw("Lag Detected -> %s: [%fms]", zox_get_name(e), delta->value);
+        if (zox_log_lags) {
+            zox_logw("Lag Detected -> %s: [%fms]", zox_get_name(e), delta->value);
+        }
+
         did_lag = 1;
     }
     if (did_lag && is_log_totals) {

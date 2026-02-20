@@ -2,6 +2,7 @@
 // Triggered by LayoutPositionDirty
 
 float2 get_element_position(int2 position, int2 size) {
+
     float2 sizef = int2_to_float2(size);
     float aspect_ratio = sizef.x / sizef.y;
     float2 positionf = int2_to_float2(position);
@@ -10,14 +11,13 @@ float2 get_element_position(int2 position, int2 size) {
     positionf.x -= 0.5f;
     positionf.y -= 0.5f;
     positionf.x *= aspect_ratio;
+
     return positionf;
 }
 
-void set_layout_child_position_recursively(
-    ecs* world,
-    entity e,
-    int2 canvas_size
-) {
+void set_layout_child_position_recursively(ecs* world, entity e,
+    int2 canvas_size) {
+
     if (!zox_valid(e)) {
         return;
     }

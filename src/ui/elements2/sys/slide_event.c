@@ -26,7 +26,7 @@ zox_sys2(SlideEventSystem) {
         // slideBounds is the new bounds
         float slide_value = bounds->value.x  + (percent * (bounds->value.y - bounds->value.x));
 
-        zox_log("value of slider at [%f] [%f]", percent, slide_value);
+        // zox_log("value of slider at [%f] [%f]", percent, slide_value);
 
         // todo: calculate based on position within drag bounds
 

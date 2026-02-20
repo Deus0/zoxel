@@ -8,7 +8,7 @@ void set_block_depth(ecs* world, void* value) {
     int new_value = *(int*) value;
     block_vox_depth = new_value;
 
-    zox_log("Set Block Depth [%i]", new_value);
+    // zox_log("Set Block Depth [%i]", new_value);
 
     if (!prefab_texture) return;
 

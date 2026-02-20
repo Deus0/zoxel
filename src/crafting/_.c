@@ -11,7 +11,7 @@ zox_begin_module(Crafting)
     define_components_crafting(world);
     define_systems_crafting(world);
     add_taskbar_button((hook_taskbar) {
-        .index = 8,
+        .index = 9,
         .spawn = &spawn_player_menu_crafting,
         .component_id = MenuCrafting,
         .texture_name = "taskbar_crafting",

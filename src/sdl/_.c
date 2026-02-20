@@ -1,11 +1,11 @@
 #ifndef zoxm_sdl
 #define zoxm_sdl
 
-#include "com/_.c"
 #include "dat/_.c"
+#include "set/_.c"
+#include "com/_.c"
 #include "tst/_.c"
 #include "wrapper/_.c"
-#include "set/_.c"
 #include "pre/_.c"
 #include "inputs/_.c"
 #include "fun/_.c"

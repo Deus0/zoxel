@@ -9,7 +9,7 @@ zox_begin_module(Maps)
     define_components_maps(world);
     add_hook_spawn_prefabs(spawn_prefabs_maps);
     add_taskbar_button((hook_taskbar) {
-        .index = 7,
+        .index = 8,
         .spawn = &spawn_player_menu_map,
         .component_id = MenuMap,
         .texture_name = "taskbar_map",

@@ -4,7 +4,7 @@ void set_sdl_attributes2(byte minor, byte major, byte profile) {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // 24 | 32
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, profile);
-    zox_logi("  - OpenGL p[%i] v[%i.%i]", profile, sdl_gl_major, sdl_gl_minor);
+    zox_logv("  - OpenGL p[%i] v[%i.%i]", profile, sdl_gl_major, sdl_gl_minor);
 }
 
 void set_sdl_attributes() {
@@ -21,7 +21,7 @@ void set_sdl_attributes() {
         }
     }
 
-    zox_logi("Graphics Backend [%s]",
+    zox_logv("Graphics Backend [%s]",
              opengl_mode == zox_opengl_es ? "OpenGL ES" :
              (opengl_mode == zox_opengl_core ? "OpenGL Core" : "OpenGL Compatibility"));
 

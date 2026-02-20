@@ -75,6 +75,10 @@ void save_texture_as_png(const color *data, const int2 size, const char *filepat
 #endif
 
 byte load_app_icon(SDL_Window* window, const char *icon_path) {
+    if (!window) {
+        return 0;
+    }
+
     SDL_Surface *surface = load_png_as_surface(icon_path);
     if (surface) {
         SDL_SetWindowIcon(window, surface);

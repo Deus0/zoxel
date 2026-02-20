@@ -1,3 +1,5 @@
+// TODO: Give uis a position2 and transform and use that instead directly
+// TODO: Render layers in order instead of positioning with 3D
 zox_sys2(ElementRenderSystem) {
     zox_sys_world();
 

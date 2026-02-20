@@ -99,15 +99,15 @@ entity spawn_app_sdl_opengl(
     const char* ren = (const char*)glGetString(GL_RENDERER);
     const char* ven = (const char*)glGetString(GL_VENDOR);
 
-    if (!ver || !ren || !ven) {
+    /*if (!ver || !ren || !ven) {
         zox_log_error("OpenGL context creation failed: GL strings are NULL.");
         SDL_GL_DeleteContext(context);
         return EXIT_FAILURE;
-    }
+    }*/
 
     zox_logv("OpenGL Context Created");
     zox_logv("   GL_VERSION: %s", ver);
-    zox_logi("   GL_RENDERER: %s", ren);
+    zox_logv("   GL_RENDERER: %s", ren);
     zox_logv("   GL_VENDOR: %s", ven);
 
     // zox_log("Created Opengl Context Success");
@@ -120,11 +120,13 @@ entity spawn_app_sdl_opengl(
 
 extern byte load_app_icon(SDL_Window*, const char*);
 
-byte spawn_window_icon(ecs *world, const entity app, const char* texture_name) {
-    if (!app) {
+byte spawn_window_icon(ecs *world, entity app, const char* texture_name) {
+
+    if (!zox_valid(app) || !zox_has(app, SDLWindow)) {
         zox_log_error("App not spawned");
         return 1;
     }
+
     // Shaders
     char* path_textures = concat_file_path(resources_path, "textures");
     if (!path_textures) {
@@ -138,8 +140,11 @@ byte spawn_window_icon(ecs *world, const entity app, const char* texture_name) {
         zox_log_error("Icon Path not found.");
         return 1;
     }
-    load_app_icon(zox_gett_value(app, SDLWindow), path_icon);
+
+    zox_geter(app, SDLWindow, window);
+    load_app_icon(window->value, path_icon);
     zox_logv("Set Icon [%s]", path_icon);
     free(path_icon);
+
     return 0;
 }

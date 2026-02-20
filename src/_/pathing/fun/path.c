@@ -134,7 +134,7 @@ byte initialize_pathing_native(const char* game_name) {
         return EXIT_FAILURE;
     }
     data_path = base_path;
-    zox_logi("Base Path [%s]", base_path);
+    zox_logv("Base Path [%s]", base_path);
     DIR* base_dir = opendir(base_path);
     if (base_dir) {
         closedir(base_dir);
@@ -147,10 +147,10 @@ byte initialize_pathing_native(const char* game_name) {
             if (check_dir) {
                 closedir(check_dir);
                 resources_path = check_path;
-                zox_logi("[Dev] Resources Path [%s]",   resources_path);
+                zox_logv("[Dev] Resources Path [%s]",   resources_path);
                 return EXIT_SUCCESS;
             } else {
-                zox_log("[res] not found locally");
+                zox_logv("[res] not found locally");
                 free(check_path);
             }
         }

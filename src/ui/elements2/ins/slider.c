@@ -39,7 +39,7 @@ entity2 spawn_slider(
     float percent = clampf(slider_data.value, 0, 1);
     int layout_x = -element_data.size.x / 2 + (int) (element_data.size.x * percent);
 
-    zox_log("shandle %f to %i", slider_data.value, layout_x);
+    // zox_log("shandle %f to %i", slider_data.value, layout_x);
 
     entity handle = spawn_handle(
         world,

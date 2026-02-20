@@ -14,10 +14,10 @@ int initialize_video() {
         return -1;
     }
 
-    zox_log("Available video drivers:");
+    zox_logv("Detected Video Drivers:");
     for (int i = 0; i < dcount; i++) {
         const char* dname = SDL_GetVideoDriver(i);
-        zox_log("%d: %s", i + 1, dname);
+        zox_logv("   %d: %s", i + 1, dname);
     }
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -30,11 +30,12 @@ int initialize_video() {
     using_gpu = strstr(driver, "opengl") ||
     strstr(driver, "vulkan") ||
     strstr(driver, "wayland") ||
+    strstr(driver, "x11") ||
     strstr(driver, "direct3d") ||
     strstr(driver, "metal") ||
     strstr(driver, "opengles");
 
-    zox_log("Initialized [SDL_INIT_VIDEO] %s - GPU [%i]", driver, using_gpu);
+    zox_logv("[SDL_INIT_VIDEO] %s - GPU [%i]", driver, using_gpu);
 
     if (is_log_sdl) {
         print_sdl();

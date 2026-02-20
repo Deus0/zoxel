@@ -1,11 +1,7 @@
 extern void set_line2_canvas_position(ecs*, entity);
 
-int2 get_element_pixel_positionv(
-    const int2 parent_position,
-    const int2 parent_size,
-    const int2 position,
-    const float2 anchor
-) {
+int2 get_element_pixel_positionv(int2 parent_position, int2 parent_size, int2 position, float2 anchor) {
+
     int2 output = parent_position;
     // position is actually the centre point, so get the bottom left corner here
 
@@ -25,13 +21,8 @@ int2 get_element_pixel_positionv(
     return output;
 }
 
-void set_layout_canvas_position_recursively(
-    ecs* world,
-    entity e,
-    int2 parent_position,
-    int2 parent_size,
-    byte skip
-) {
+void set_layout_canvas_position_recursively(ecs* world, entity e, int2 parent_position, int2 parent_size, byte skip) {
+
     if (!zox_valid(e)) {
         return;
     }
