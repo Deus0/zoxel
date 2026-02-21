@@ -47,6 +47,11 @@ zox_sys2(QuestsRealmSpawnSystem) {
             add_to_QuestLinks(quests, quest);
         }
 
+        if (!characters->length) {
+            zox_logw("no characters to spawn realm quests with");
+            continue;
+        }
+
         {
             entity quest = spawn_meta_quest(world, prefab_quest, "slay slems");
 

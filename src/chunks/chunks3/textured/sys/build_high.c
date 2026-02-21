@@ -5,10 +5,10 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
     if (zox_chunk3t_mode == zox_chunk3t_mode_dig) {
         return;
     }
-    byte edge_voxel = 1;
+    // byte edge_voxel = 1;
     zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(BlockManagerLink);
+    zox_sys_begin_at(1);
+    // zox_sys_in(BlockManagerLink);
     zox_sys_in(TilemapLink);
     zox_sys_in(ChunkMeshDirty);
     zox_sys_in(VoxelNode);

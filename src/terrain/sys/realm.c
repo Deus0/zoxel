@@ -1,6 +1,6 @@
 // TODO: Remove [spawn_blocks_data] Hooks and just use systems
 
-void clear_realm_blocks(ecs *world, entity realm) {
+/*void clear_realm_blocks(ecs *world, entity realm) {
     if (!realm) {
         return;
     }
@@ -16,7 +16,7 @@ void clear_realm_blocks(ecs *world, entity realm) {
     }
     // clear_BlockLinks(blocks);
     resize_BlockLinks(blocks, 0);
-}
+}*/
 
 void spawn_realm_blocks(ecs *world, entity realm) {
     if (!realm) {
@@ -75,52 +75,26 @@ void spawn_realm_blocks(ecs *world, entity realm) {
     zox_add_tag(obsidian, BlockInvinsible);
 
     zox_block_bricks = blocks->length + 1;
-    entity bricks = spawn_block_bricks(
-        world,
-        zox_block_bricks,
-        "bricks",
-        obsidian_color
-    );
+    entity bricks = spawn_block_bricks(world, zox_block_bricks, "bricks", obsidian_color);
     add_to_BlockLinks(blocks, bricks);
 
     zox_block_wood = blocks->length + 1;
-    entity wood = spawn_block_wood(
-        world,
-        zox_block_wood,
-        "wood",
-        obsidian_color
-    );
+    entity wood = spawn_block_wood(world, zox_block_wood, "wood", obsidian_color);
     add_to_BlockLinks(blocks, wood);
 
     // decor
     zox_block_vox_grass = blocks->length + 1;
+    // TODO: Spawn Model here instead
     entity model_group_grass = models->length >= 1 ? models->value[0] : 0;
-    entity grass = spawn_block_grass(
-        world,
-        zox_block_vox_grass,
-        grass_color,
-        model_group_grass
-    );
+    entity grass = spawn_block_grass(world, zox_block_vox_grass, grass_color, model_group_grass);
     add_to_BlockLinks(blocks, grass);
 
     zox_block_dirt_rubble = blocks->length + 1;
-    entity rubble = spawn_realm_block_rubble(
-        world,
-        zox_block_dirt_rubble,
-        "rubble",
-        dirt_color,
-        vox_type_rubble
-    );
+    entity rubble = spawn_realm_block_rubble(world, zox_block_dirt_rubble, "rubble", dirt_color, vox_type_rubble);
     add_to_BlockLinks(blocks, rubble);
 
     zox_block_dirt_flowers = blocks->length + 1;
-    entity flowers = spawn_realm_block_rubble(
-        world,
-        zox_block_dirt_flowers,
-        "flowers",
-        dirt_color,
-        vox_type_flowers
-    );
+    entity flowers = spawn_realm_block_rubble(world, zox_block_dirt_flowers, "flowers", dirt_color, vox_type_flowers);
     add_to_BlockLinks(blocks, flowers);
 
     zox_block_dirt_vox = blocks->length + 1;

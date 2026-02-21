@@ -1,7 +1,4 @@
-entity spawn_block_item(
-    ecs *world,
-    const entity block
-) {
+entity spawn_block_item(ecs *world, entity block) {
 
     if (!zox_valid(block) || !zox_has(block, ZoxName)) {
         zox_log_error("Block components name? [%i]\n", zox_has(block, ZoxName))
@@ -13,11 +10,7 @@ entity spawn_block_item(
     // char* voxel_name_char = convert_zext_to_text(voxel_name->value, voxel_name->length);
 
     // spawn item
-    const entity e = spawn_meta_item(
-        world,
-        prefab_item,
-        voxel_name->value
-    );
+    entity e = spawn_meta_item(world, prefab_item, voxel_name->value);
     // free(voxel_name_char);
     zox_name("block_item");
     entity t = 0;

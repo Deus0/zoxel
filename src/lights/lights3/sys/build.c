@@ -170,7 +170,7 @@ zox_sys2(Light3BuildSystem) {
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
     zox_sys_in(MeshColorsGenerate);
-    zox_sys_in(VoxLink);
+    // zox_sys_in(VoxLink);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_in(SidesOctree);
@@ -181,7 +181,7 @@ zox_sys2(Light3BuildSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxelNodeDirty, vdirty);
         zox_sys_i(MeshColorsGenerate, trigger);
-        zox_sys_i(VoxLink, terrain);
+        // zox_sys_i(VoxLink, terrain);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, voctree);
         zox_sys_i(SidesOctree, sides);
@@ -204,7 +204,7 @@ zox_sys2(Light3BuildSystem) {
             continue;
         }
 
-        zox_geter_value(terrain->value, RealmLink, entity, realm);
+        // zox_geter_value(terrain->value, RealmLink, entity, realm);
 
         const LightNode *nnodesl[6];
         fetch_neightbor_light_nodes(

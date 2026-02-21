@@ -9,11 +9,11 @@
 #include "com/_.c"
 #include "pre/_.c"
 #include "fun/realm_achievements.c"
-zox_declare_system_state_event(RealmAchievements, GenerateRealm, zox_generate_realm_achievements, spawn_realm_achievements);
+#include "sys/_.c"
 
 zox_begin_module(Achievements)
     define_components_achievements(world);
-    zox_define_system_state_event_1(RealmAchievements, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+    spawn_systems_achievements(world);
 zox_end_module(Achievements)
 
 #endif

@@ -15,7 +15,7 @@ entity spawn_model(ecs *world, entity p, byte mdepth, byte ndepth, byte3 rsize) 
     return e;
 }
 
-entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize, const char* label) {
+entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize, const char* label, ModelLods* mlods) {
     // properties
     srand(seed);
     c = color_mutate(c, 40);
@@ -29,7 +29,7 @@ entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize
     zox_set(e, MaxRenderDepth, { mdepth });
 
     // spawn model lod variants
-    ModelLods lods;
+    // ModelLods lods;
 
     for (int i = 0; i <= mdepth; i++) {
         byte rdepth = i;
@@ -54,7 +54,7 @@ entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize
         //  - EXPLAIN: Basically in character spawning, uses camera_distance_to_npc_render_depth with camera to set, so needs to be max here!
         zox_set(e2, MaxRenderDepth, { mdepth });
 
-        lods.value[i] = e2;
+        mlods->value[i] = e2;
 
         /*rsize.x /= 2;
         rsize.y /= 2;
@@ -65,7 +65,7 @@ entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize
         if (rsize.z == 0) rsize.z = 1;*/
     }
 
-    zox_set_ptr(e, ModelLods, lods);
+    zox_set_ptr(e, ModelLods, *mlods);
 
     return e;
 }

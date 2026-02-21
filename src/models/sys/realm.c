@@ -72,7 +72,8 @@ zox_sys2(ModelsRealmSpawnSystem) {
                 byte vlength = powers_of_two[mdepth];
                 byte3 vsize = (byte3) { vlength - 1, 2 * (vlength / 3), vlength - 1 };
 
-                entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth, vsize, "mslime");
+                ModelLods mlods2 = (ModelLods) { };
+                entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth, vsize, "mslime", &mlods2);
                 zox_set_unique_name(mlods, "modelv_lods_slime");
                 add_to_ModelLinks(&variants, mlods);
 

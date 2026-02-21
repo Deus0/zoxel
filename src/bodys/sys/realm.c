@@ -1,3 +1,10 @@
+
+void delayed_texture_spawn(ecs* world, entity e) {
+    if (zox_valid(e)) {
+        zox_set(e, GenerateTexture, { zox_dirty_trigger });
+    }
+}
+
 zox_sys2(BodysRealmSpawnSystem) {
     byte nodegraph_vlength = powers_of_two[nodegraph_max_depth];
 
@@ -30,7 +37,9 @@ zox_sys2(BodysRealmSpawnSystem) {
             add_to_ModelLinks(models, model_group);
 
             byte mdepth = block_vox_depth + 1;
+            int2 texture_size = int2_single(powers_of_two[mdepth]);
 
+            entity texture_model = 0;
             ModelLinks variants = (ModelLinks) { 0 };
             lint bseed = 888 * i;
             for (byte j = 0; j < chest_variants; j++) {
@@ -39,9 +48,14 @@ zox_sys2(BodysRealmSpawnSystem) {
                 byte vlength = powers_of_two[mdepth];
                 byte3 vsize = (byte3) { vlength / 2, vlength, vlength / 2 };
 
-                entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth, vsize, "mchest");
+                ModelLods mlods2 = (ModelLods) { };
+                entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth, vsize, "mchest", &mlods2);
                 zox_set_unique_name(mlods, "bodys_chest_mlods");
                 add_to_ModelLinks(&variants, mlods);
+
+                if (j == 0) {
+                    texture_model = mlods2.value[mdepth];
+                }
 
                 entity process = spawn_process_model(world, prefab_process_model, nodegraph, mlods);
             }
@@ -52,7 +66,19 @@ zox_sys2(BodysRealmSpawnSystem) {
             entity model = variants.value[0]; //  model_group;
 
             // TODO: Generate based on model
-            entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("taskbar_body"));
+            // entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("taskbar_body"));
+
+            // Spawn Item Texture
+            entity texture = spawn_texture(world, prefab_vox_texture, texture_size);
+            zox_set_name_e(texture, "texture_mchest");
+            zox_set(texture, VoxBakeSide, { direction_front });
+            // direction_front });
+            zox_set(texture_model, TextureLink, { texture });
+            // Link Model to Texture
+            zox_set_unique_name(texture_model, "bodys_chest_model_high");
+            zox_set(texture, VoxLink, { texture_model });
+            // TODO: Spawn Texture with Model Graph
+            delay_event(world, &delayed_texture_spawn, texture, 1.0f);
 
             entity item = spawn_item_body(world, model, texture, "Chest");
             add_to_ItemLinks(items, item);

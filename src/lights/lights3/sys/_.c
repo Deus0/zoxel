@@ -95,7 +95,7 @@ void define_systems_lights3(ecs* world) {
         zoxp_voxels_read + 2,
         [in] chunks3.VoxelNodeDirty,
         [in] rendering.MeshColorsGenerate,
-        [in] voxes.VoxLink,
+        // [in] voxes.VoxLink,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [in] chunks3.SidesOctree,

@@ -29,6 +29,7 @@ entity spawn_block_grass(ecs *world, byte index, color block_color, entity model
     zox_geter(vox, ModelLods, modelLods);
     entity vox_lod = modelLods->value[max_render_depth];
 
+    // Spawn Item Texture
     entity texture = spawn_texture(
         world,
         prefab_vox_texture,
@@ -38,7 +39,6 @@ entity spawn_block_grass(ecs *world, byte index, color block_color, entity model
     zox_set(texture, VoxLink, { vox_lod });
     zox_set(texture, VoxBakeSide, { direction_left });
     zox_set(texture, GenerateTexture, { zox_dirty_trigger });
-
     zox_set(e, TextureLink, { texture });
 
     return e;

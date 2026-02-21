@@ -29,40 +29,50 @@ void generate_vox_debug_texture(color *data, const int2 size, byte side) {
 
 void generate_vox_texture(
     color *data,
-    const int2 size,
+    int2 size,
     const VoxelNode *chunk,
     const color_rgb *colors,
     byte side,
-    const byte max_depth
+    byte max_depth
 ) {
-    if (chunk == NULL) {
+    if (!chunk) {
         return;
     }
+
     int index = 0;
-    int x = 0;
+    int d = 0;
     if (side == block_side_left || side == block_side_right) {
         if (side == block_side_right) {
-            x = size.y - 1;
+            d = size.y - 1;
         }
+
         for (int i = 0; i < size.x; i++) {
             for (int j = 0; j < size.y; j++) {
-                byte3 node_position = (byte3) { x, i, j };
+
+                byte3 node_position = (byte3) { d, i, j };
                 byte voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
+
                 byte is_darken = 0;
                 if (voxel == 0) {
+
                     is_darken = 1;
                     if (side == block_side_left) {
                         for (int k = 0; k < size.y; k++) {
+
                             node_position = (byte3) { k, i, j };
                             voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
+
                             if (voxel) {
                                 break;
                             }
                         }
                     } else {
+
                         for (int k = size.y - 1; k >= 0; k--) {
+
                             node_position = (byte3) { k, i, j };
                             voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
+
                             if (voxel) {
                                 break;
                             }
@@ -82,11 +92,11 @@ void generate_vox_texture(
         }
     } else if (side == block_side_down || side == block_side_up) {
         if (side == block_side_up) {
-            x = size.y - 1;
+            d = size.y - 1;
         }
         for (int i = 0; i < size.x; i++) {
             for (int j = 0; j < size.y; j++) {
-                byte3 node_position = (byte3) { i, x, j };
+                byte3 node_position = (byte3) { i, d, j };
                 byte voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
                 byte is_darken = 0;
                 if (voxel == 0) {
@@ -122,23 +132,26 @@ void generate_vox_texture(
         }
     } else if (side == block_side_back || side == block_side_front) {
         if (side == block_side_front) {
-            x = size.y - 1;
+            d = size.x - 1;
         }
+
         for (int i = 0; i < size.x; i++) {
             for (int j = 0; j < size.y; j++) {
-                byte3 node_position = (byte3) { i, j, x };
+
+                byte3 node_position = (byte3) { i, j, d };
                 byte voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
+
                 byte is_darken = 0;
                 if (voxel == 0) {
                     is_darken = 1;
                     if (side == block_side_back) {
-                        for (int k = 0; k < size.y; k++) {
+                        for (int k = 0; k < size.x; k++) {
                             node_position = (byte3) { i, j, k };
                             voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
                             if (voxel) break;
                         }
                     } else {
-                        for (int k = size.y - 1; k >= 0; k--) {
+                        for (int k = size.x - 1; k >= 0; k--) {
                             node_position = (byte3) { i, j, k };
                             voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
                             if (voxel) {
@@ -147,6 +160,9 @@ void generate_vox_texture(
                         }
                     }
                 }
+
+                index = int2_array_index((int2) { i, j }, size);
+
                 if (voxel == 0) {
                     data[index] = air_vox_color;
                 } else {
@@ -155,13 +171,14 @@ void generate_vox_texture(
                 if (is_darken) {
                     color_multiply_float(&data[index], 0.8f);
                 }
-                index++;
+                // index++;
             }
         }
 
     }
 }
 
+// TODO: Offset by chunk size difference to node size
 zox_sys2(VoxTextureSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -179,38 +196,43 @@ zox_sys2(VoxTextureSystem) {
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
 
-        if (generate->value != zox_dirty_active ||
-            !zox_valid(vox->value) ||
-            !zox_has(vox->value, VoxelNode) ||
+        if (generate->value != zox_dirty_active) {
+            continue;
+        }
+
+        if (!zox_valid(vox->value) || !zox_has(vox->value, VoxelNode) ||
             (zox_has(vox->value, Generate) && zox_gett_value(vox->value, Generate))) {
+
+            zox_logw("Vox Cannot Generate [%s]", zox_get_name(vox->value));
             continue;
         }
 
         zox_geter(vox->value, ColorRGBs, colors);
         zox_geter(vox->value, VoxelNode, node);
+        zox_geter_value(vox->value, ChunkSize, int3, csize);
         zox_geter_value(vox->value, NodeDepth, byte, node_depth);
         int2 texture_size = size->value;
 
         resize_TextureData(data, texture_size.x * texture_size.y);
 
-        // zox_log("vox tex gen %ix%i", texture_size.x, texture_size.y);
-
         read_lock_VoxelNode(node);
-        generate_vox_texture(
-            data->value,
-            texture_size,
-            node,
-            colors->value,
-            side->value,
-            node_depth
-        );
-        generate_vox_debug_texture(
-            data->value,
-            texture_size,
-            side->value
-        );
+            generate_vox_texture(
+                data->value,
+                texture_size,
+                node,
+                colors->value,
+                side->value,
+                node_depth
+            );
+            generate_vox_debug_texture(
+                data->value,
+                texture_size,
+                side->value
+            );
         read_unlock_VoxelNode(node);
 
         dirty->value = zox_dirty_trigger; // actually not using this for tilemap!
+
+        zox_log("Generated Vox Texture [%s]: %ix%i: %ix%ix%i", zox_get_name(vox->value), texture_size.x, texture_size.y, csize.x, csize.y, csize.z);
     }
 } zox_sys_end(VoxTextureSystem);

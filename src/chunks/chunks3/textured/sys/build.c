@@ -181,7 +181,7 @@ static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_
 
     for (dig.direction = 0; dig.direction < 6; dig.direction++) {
 
-        if (!(sides->value & (1 << dig.direction + 1))) {
+        if (!(sides->value & (1 << (dig.direction + 1)))) {
             continue;
         }
 
@@ -212,8 +212,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         return;
     }
     zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(BlockManagerLink);
+    zox_sys_begin_at(1);
     zox_sys_in(TilemapLink);
     zox_sys_in(ChunkMeshDirty);
     zox_sys_in(RenderDepth);

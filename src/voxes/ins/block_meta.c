@@ -44,6 +44,7 @@ entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
         }
         zox_set_ptr(e, TextureLinks, textures);
     }
+
     // zox_log(" + generated block [vox] name [%s]\n", name)
     return e;
 }

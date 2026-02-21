@@ -4,10 +4,20 @@
 #include "realm.c"
 #include "name_labels.c"
 
-zox_declare_system_state_event(RealmCharacters, GenerateRealm, zox_generate_realm_characters, spawn_realm_characters);
+realm_clear_system(CharacterLinks);
 
 void define_systems_characters3(ecs *world) {
-    zox_define_system_state_event_1(RealmCharacters, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+    realm_clear_systemd(characters, CharacterLinks);
+
+    zox_system_1(
+        Character3RealmSpawnSystem,
+        EcsOnLoad,
+        [in] realms.GenerateRealm,
+        [in] rendering.ModelLinks,
+        [out] characters.CharacterLinks,
+        [out] characters3.CharactersChanceMax,
+        [none] realms.Realm
+    );
 
     zox_system(
         CharacterSaveSystem,
