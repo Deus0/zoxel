@@ -32,7 +32,7 @@ uint debug_label_lods(
     index += snprintf(buffer + index, size - index, " - terrain near [%i]\n", terrain_lod_near);
     index += snprintf(buffer + index, size - index, " - terrain far [%i]]\n", terrain_lod_far);
     index += snprintf(buffer + index, size - index, " - terrain vertical [%i]\n", render_distance_y);
-    index += // snprintf(buffer + index, size - index, " - depths [%i:%i:%i]\n", terrain_depth, block_vox_depth, character_depth);
+    // index += snprintf(buffer + index, size - index, " - depths [%i:%i:%i]\n", terrain_depth, block_vox_depth, character_depth);
     index += snprintf(buffer + index, size - index, " - npcs [%i]\n", count_entities_npc(world));
 
     return index;

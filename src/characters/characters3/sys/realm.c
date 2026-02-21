@@ -54,16 +54,19 @@ void spawn_realm_characters(ecs *world, entity e) {
 
     // add model links with tag ModelCharacter
     for (int i = 0; i < models->length; i++) {
-        const entity model = models->value[i];
+        entity model = models->value[i];
+
         if (!zox_valid(model)) {
             zox_log_error("realm has invalid model [%i]", i)
             continue;
         }
+
         if (!zox_has(model, ModelCharacter)) {
             continue;
         }
+
         byte chance = 8;
-        const entity e2 = spawn_character3_meta(
+        entity e2 = spawn_character3_meta(
             world,
             prefab_character3_meta,
             prefab_character,
@@ -72,6 +75,7 @@ void spawn_realm_characters(ecs *world, entity e) {
             chance
         );
         add_to_CharacterLinks(&characters, e2);
+
         chance_max += chance;
     }
 

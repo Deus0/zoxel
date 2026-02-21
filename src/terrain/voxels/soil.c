@@ -19,5 +19,6 @@ entity spawn_block_soil(ecs *world, byte index, char* name, color block_color) {
         .vox = v,
         .bake_vox = 1,
     };
+
     return spawn_block_vox_meta(world, data);
 }

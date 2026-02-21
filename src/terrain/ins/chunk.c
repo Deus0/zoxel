@@ -27,9 +27,9 @@ entity spawn_chunk_terrain(ecs *world, entity p, entity terrain, int3 camera_pos
     }
 
     // scale needs to be based on chunk itself
-    const byte camera_distance = get_camera_chunk_distance_xz(camera_position, position);
-    const byte render_depth = camera_distance_to_terrain_render_depth(camera_distance);
-    const float chunk_scalev = get_chunk_scale(
+    byte camera_distance = get_camera_chunk_distance_xz(camera_position, position);
+    byte render_depth = camera_distance_to_terrain_render_depth(camera_distance);
+    float chunk_scalev = get_chunk_scale(
         render_depth,
         terrain_depth,
         terrain_scalev
@@ -38,7 +38,7 @@ entity spawn_chunk_terrain(ecs *world, entity p, entity terrain, int3 camera_pos
 
     // we should just pass in positionf - local position of parent!
     byte terrain_length = powers_of_two[terrain_depth];
-    const float3 positionf = float3_scale(
+    float3 positionf = float3_scale(
         float3_from_int3(position),
         terrain_length * terrain_scalev
     );

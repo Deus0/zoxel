@@ -1,15 +1,16 @@
 entity spawn_character3(ecs *world, spawn_character3D_data data) {
     entity vox = data.model;
 
-    if (!zox_valid(vox)) {
+    /*if (!zox_valid(vox)) {
         zox_logw("[spawn_character3]: Invalid Vox Model");
         // return 0;
-    }
+    }*/
 
     // if model, we use lodded for vox
     if (zox_valid(vox) && zox_has(vox, ModelLods)) {
         zox_geter(vox, ModelLods, modelLods);
-        const entity vox_lod = modelLods->value[data.render_depth];
+        entity vox_lod = modelLods->value[data.render_depth];
+
         if (zox_valid(vox_lod)) {
             vox = vox_lod;
         } else {

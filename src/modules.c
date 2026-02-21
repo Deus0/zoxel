@@ -14,11 +14,11 @@
 
 // basic b locks
 #include "assets/_.c" // uses sdl path function atm
-#include "nodes/_.c"
 #include "realms/_.c"
 #include "games/_.c"
 #include "players/_.c"
 #include "colors/_.c"
+#include "nodes/_.c"
 
 // beef
 #include "cameras/_.c"

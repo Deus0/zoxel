@@ -119,7 +119,7 @@ static inline void zox_apply_light3(
     for (byte direction = 0; direction < 6; direction++) {
 
         // skip hidden face
-        if (!(sides->value & (1 << direction + 1))) {
+        if (!(sides->value & (1 << (direction + 1)))) {
             continue;
         }
 

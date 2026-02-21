@@ -5,8 +5,14 @@ void process_node_model_generate_colors(ecs* world, entity v, lint seed) {
         return;
     }
 
+    if (!zox_has(v, Color) || !zox_has(v, ColorRGBs)) {
+        zox_log("Vox [%s] has invalid components.", zox_get_name(v));
+        return;
+    }
+
     zox_geter(v, Color, vcolor);
     zox_muter(v, ColorRGBs, colors);
+
     byte unique_colors = zox_has(v, VoxUniqueColors) ? zox_gett_value(v, VoxUniqueColors) : default_unique_colors;
     float color_range = zox_has(v, VoxColorRange) ? zox_gett_value(v, VoxColorRange) : default_color_range;
 

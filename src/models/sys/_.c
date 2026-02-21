@@ -18,6 +18,7 @@ void define_systems_models(ecs* world) {
         [in] realms.GenerateRealm,
         [in] colorz.Colors,
         [out] rendering.ModelLinks,
+        [out] nodes.NodegraphLinks,
         [none] realms.Realm
     );
 

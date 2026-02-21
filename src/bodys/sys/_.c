@@ -4,13 +4,13 @@
 
 void define_systems_bodys(ecs* world) {
 
-
     zox_system_1(
         BodysRealmSpawnSystem,
         EcsOnUpdate,
         [in] realms.GenerateRealm,
-        [in] rendering.ModelLinks,
+        [out] rendering.ModelLinks,
         [out] items.ItemLinks,
+        [out] nodes.NodegraphLinks,
         [none] realms.Realm
     );
 

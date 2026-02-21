@@ -1,12 +1,8 @@
-entity spawn_block_soil_grass(
-    ecs *world,
-    const byte index,
-    char* name,
-    const color bottom_color,
-    const color top_color
-) {
+entity spawn_block_soil_grass(ecs *world, byte index, char* name, color bottom_color, color top_color) {
+
     // vox
-    const entity v = spawn_vox_generated_invisible(world, prefab_vox_generated, top_color);
+    entity v = spawn_vox_generated_invisible(world, prefab_vox_generated, top_color);
+
     zox_set(v, VoxType, { vox_type_blended });
     zox_set(v, SecondaryColor, { bottom_color });
     zox_set_unique_name(v, "block_soil_grass");
@@ -25,5 +21,6 @@ entity spawn_block_soil_grass(
         .vox = v,
         .bake_vox = 1,
     };
+
     return spawn_block_vox_meta(world, data);
 }

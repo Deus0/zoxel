@@ -15,12 +15,12 @@ entity spawn_model(ecs *world, entity p, byte mdepth, byte ndepth, byte3 rsize) 
     return e;
 }
 
-entity spawn_model_lods(ecs* world, color c, lint seed, byte3 rsize) {
+entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize, const char* label) {
     // properties
     srand(seed);
     c = color_mutate(c, 40);
 
-    byte mdepth = block_vox_depth;
+    // byte mdepth = block_vox_depth;
 
     // spawn model
     zox_make_new();
@@ -43,8 +43,7 @@ entity spawn_model_lods(ecs* world, color c, lint seed, byte3 rsize) {
         rsized.z /= ddepth;
 
         entity e2 = spawn_model(world, prefab_vox, mdepth, rdepth, rsized);
-
-        zox_set_unique_name(e2, "model_lod");
+        zox_set_unique_name(e2, label); // "model_lod");
 
         // default
         zox_set(e2, RenderDepth, { rdepth });  // move this to prefab

@@ -3,27 +3,46 @@
 
 void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
 
-    if (!zox_valid(v)) {
+    if (!zox_valid(n) || !zox_valid(v)) {
         return;
     }
+
+    if (!zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
+        zox_logw("Node [%s] has invalid components.", zox_get_name(n));
+        return;
+    }
+
+    if (!zox_has(v, NodeDepth) || !zox_has(v, ColorRGBs) || !zox_has(v, VoxelNode)) {
+        zox_logw("Vox [%s] has invalid components.", zox_get_name(v));
+        return;
+    }
+
+    // zox_log("Vox [%s] has Valid components.", zox_get_name(v));
 
     zox_geter_value_non_const(n, Shape3Position, byte3, position);
     zox_geter_value_non_const(n, Shape3Size, byte3, size);
 
-    zox_geter(v, ColorRGBs, colors);
     zox_geter_value(v, NodeDepth, byte, ndepth);
-    zox_muter(v, VoxelNode, voctree);
-    // byte vregions = zox_has(v, VRegions) ? zox_gett_value(v, VRegions) : 16;
     byte vlength = powers_of_two[ndepth];
+
+    zox_geter(v, ColorRGBs, colors);
+    zox_muter(v, VoxelNode, voctree);
+
+    // zox_log("Vox [%s] has Valid components. size [%ix%ix%i] - vlength [%i]", zox_get_name(v), size.x, size.y, size.z, vlength);
+
+    // byte vregions = zox_has(v, VRegions) ? zox_gett_value(v, VRegions) : 16;
 
     // Change transform for vlength difference
 
     // zox_log("OG Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
 
-    float3 positionf = (float3) { position.x / 32.0f, position.y / 32.0f, position.z / 32.0f };
+    // Note: Modifys size by vlength
+    float max_vlength = (float) powers_of_two[nodegraph_max_depth]; //  32.0f;
+
+    float3 positionf = (float3) { position.x / max_vlength, position.y / max_vlength, position.z / max_vlength };
     position = (byte3) { positionf.x * vlength, positionf.y * vlength, positionf.z * vlength };
 
-    float3 sizef = (float3) { size.x / 32.0f, size.y / 32.0f, size.z / 32.0f };
+    float3 sizef = (float3) { size.x / max_vlength, size.y / max_vlength, size.z / max_vlength };
     size = (byte3) { sizef.x * vlength, sizef.y * vlength, sizef.z * vlength };
 
     if (size.x == 0) size.x = 1;

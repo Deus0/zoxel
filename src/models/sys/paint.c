@@ -2,15 +2,27 @@
 // DialogueUILink
 
 void process_node_model_paint(ecs* world, entity n, entity v, lint seed) {
-    if (!zox_valid(v)) {
+
+    if (!zox_valid(n) || !zox_valid(v)) {
+        return;
+    }
+
+    if (!zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
+        zox_log("Node [%s] has invalid components.", zox_get_name(n));
+        return;
+    }
+
+    if (!zox_has(v, NodeDepth) || !zox_has(v, ColorRGBs) || !zox_has(v, VoxelNode)) {
+        zox_log("Vox [%s] has invalid components.", zox_get_name(v));
         return;
     }
 
     // zox_geter_value(n, ColorRGB, color_rgb, paintc);
     zox_geter_value(n, Shape3Position, byte3, position);
     zox_geter_value(n, Shape3Size, byte3, size);
-    zox_geter(v, ColorRGBs, colors);
+
     zox_geter_value(v, NodeDepth, byte, ndepth);
+    zox_geter(v, ColorRGBs, colors);
     zox_muter(v, VoxelNode, voctree);
 
     // zox_log("Painting at [%ix%ix%i] s[%ix%ix%i]", position.x, position.y, position.z, size.x, size.y, size.z);

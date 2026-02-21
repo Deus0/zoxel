@@ -1,6 +1,8 @@
+// graphs
 #include "nodegraph.c"
 #include "slime.c"
-
+#include "chest.c"
+// nodes
 #include "paint.c"
 #include "cube.c"
 #include "sphere.c"

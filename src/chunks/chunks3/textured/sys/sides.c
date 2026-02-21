@@ -131,7 +131,7 @@ static inline byte build_sides_dig(
             position,
             direction
         )) {
-            ssides |= (1 << direction + 1);
+            ssides |= (1 << (direction + 1));
         }
     }
 
@@ -151,15 +151,14 @@ static inline byte build_sides_dig(
 
 // DECIDE: Should I collapse sides octree nodes here?
 zox_sys2(Chunk3SidesSystem) {
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(BlockManagerLink);
-
+    // zox_sys_in(BlockManagerLink);
     byte* solids = blocks_fetch_solids(it);
     if (!solids) {
         return;
     }
 
+    zox_sys_world();
+    zox_sys_begin_at(1);
     zox_sys_in(ChunkMeshDirty);
     zox_sys_in(RenderDepth);
     zox_sys_in(ChunkNeighbors);

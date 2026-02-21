@@ -33,6 +33,9 @@
 #define zox_sys_begin()\
     byte fi = 0;
 
+#define zox_sys_begin_at(sys_i)\
+    byte fi = sys_i
+
 #ifdef zox_flecs_4
 
     #define zox_sys_in(name)\

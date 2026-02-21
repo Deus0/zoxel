@@ -1,4 +1,4 @@
-zox_sys2(BodyModelRealmSpawnSystem) {
+/*zox_sys2(BodyModelRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -24,34 +24,29 @@ zox_sys2(BodyModelRealmSpawnSystem) {
             color slime_color = colors->value[3];
 
             // Create a blueprint for slime
-            byte3 rsize = (byte3) { 30, 16, 30 };
+            byte vlength = powers_of_two[block_vox_depth];
+            byte3 rsize = (byte3) { vlength / 2 - 1, vlength - 1, vlength / 2 - 1 };
             entity blueprint = spawn_model_nodegraph_slime(world, prefab_node_model);
 
             // We should make a generic model spawn function here that process uses
 
-            zox_make_neww(e2)
-            zox_set_unique_name(e2, "modelv_slime");
-            zox_add_tag(e2, ModelCharacter);
-
+            zox_make_neww(model);
+            zox_set_unique_name(model, "modelv_slime");
+            zox_add_tag(model, ModelCharacter);
             ModelLinks variants = (ModelLinks) { 0 };
-
             for (int j = 0; j < grass_variants; j++) {
                 lint vseed = mseed + j * 1209;
 
-                entity model = spawn_model_lods(world, slime_color, vseed, rsize);
-
+                entity mlods = spawn_model_lods(world, slime_color, vseed, rsize);
                 // Create a proocess node and link to model
-                // entity process = spawn_process_model(world, prefab_process_model, blueprint, model);
-
-
-                add_to_ModelLinks(&variants, model);
+                // entity process = spawn_process_model(world, prefab_process_model, blueprint, mlods);
+                add_to_ModelLinks(&variants, mlods);
             }
-
-            zox_set_ptr(e2, ModelLinks, variants);
-
-            add_to_ModelLinks(models, e2);
+            zox_set_ptr(model, ModelLinks, variants);
+            add_to_ModelLinks(models, model);
         }
 
         zox_logv("At [%f] Realm [models] [%i] spawned.", zox_current_time, models->length);
     }
 } zox_sys_end(BodyModelRealmSpawnSystem);
+*/

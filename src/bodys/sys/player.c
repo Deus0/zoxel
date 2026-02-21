@@ -1,6 +1,5 @@
 // for now just set vox, later we spawn item and set it from BodyDirty
 zox_sys2(PlayerBodySpawnSystem) {
-    char* player_vox_model = "playerer";
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BodyDirty);
@@ -31,10 +30,20 @@ zox_sys2(PlayerBodySpawnSystem) {
 
         zox_geter_value_non_const(part, ModelLink, entity, vox);
 
-        if (zox_valid(vox) && zox_has(vox, ModelLods)) {
-            zox_geter(vox, ModelLods, modelLods);
+        if (!zox_valid(vox)) {
+            zox_log_error("[player body]: Invalid Part %s Model", zox_get_name(part));
+        }
 
-            entity vox_lod = modelLods->value[rdepth->value];
+        if (!zox_has(vox, MaxRenderDepth)) {
+            zox_log_error("[player body]: Invalid Components on Part %s Model %s", zox_get_name(part), zox_get_name(vox));
+        }
+
+        zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
+
+        if (zox_valid(vox) && zox_has(vox, ModelLods)) {
+            zox_geter(vox, ModelLods, mlods);
+
+            entity vox_lod = mlods->value[max_render_depth]; // rdepth->value];
 
             if (zox_valid(vox_lod)) {
                 vox = vox_lod;
@@ -44,20 +53,24 @@ zox_sys2(PlayerBodySpawnSystem) {
         }
 
         if (!zox_valid(vox)) {
-            zox_log_error("player vox invalid");
+            zox_logw("Entity [%s] has invalid Vox", zox_get_name(e));
             continue;
         }
 
-        if (zox_has(vox, MaxRenderDepth)) {
-            zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
-
-            zox_set(e, MaxRenderDepth, { max_render_depth });
+        /*if (!zox_has(vox, MaxRenderDepth)) {
+            zox_logw("Entity [%s]'s Vox [%s] has no Max Render Depth", zox_get_name(e), zox_get_name(vox));
+            continue;
         }
 
+        zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);*/
+
+        zox_set(e, MaxRenderDepth, { max_render_depth });
         zox_set(e, ModelLink, { vox });
         zox_set(e, CloneVoxLink, { vox });
         zox_set(e, CloneVox, { 1 });
 
         // zox_set(e, DisableMovement, { 0 });
+
+        zox_log("[player body]: Valid Vox Model Lod [%s] Depth [%i] MDepth [%i]", zox_get_name(vox), rdepth->value, max_render_depth);
     }
 } zox_sys_end(PlayerBodySpawnSystem);

@@ -1,18 +1,22 @@
 // TODO: add a bunch of modifiers, like noise, eyes, etc for tests
-entity spawn_model_nodegraph_slime(ecs* world, entity p) {
+entity spawn_model_nodegraph_slime(ecs* world, entity p, byte3 size) {
+
+    // byte vlength = powers_of_two[depth];
 
     // byte3 core_position = byte3_single(16);
-    byte3 core_size = (byte3) { 30, 16, 30 };
-    byte3 core_position = byte3_half(core_size);
-    byte eye_ridge = 6;
-    byte eye_y = core_size.y / 2 + 2;
-    byte3 eye_size = byte3_single(6);
-    byte3 leye_position = (byte3) { 16 - eye_size.x - eye_ridge / 2, eye_y, 28 };
-    byte3 reye_position = (byte3) { 16 + eye_ridge / 2, eye_y, 28 };
+    // byte3 core_size = (byte3) { vlength, vlength / 2, vlength };
+    byte3 core_position = byte3_half(size);
+
+    byte eye_ridge = 1 + size.x / 6;
+    byte3 eye_size = byte3_single(1 + size.x / 6);
+    byte eye_y = size.y / 2 + 2;
+    byte eye_pos_z = size.z - eye_size.z / 2;
+    byte3 leye_position = (byte3) { size.x / 2 - eye_size.x - eye_ridge / 2, eye_y, eye_pos_z };
+    byte3 reye_position = (byte3) { size.x / 2 + eye_ridge / 2, eye_y, eye_pos_z };
 
     entity e = spawn_node_model(world, p, zox_model_node_colors);
 
-    entity e2 = spawn_node_model_at(world, p, zox_model_node_fill, core_position, core_size);
+    entity e2 = spawn_node_model_at(world, p, zox_model_node_fill, core_position, size);
     new_link_single_node(world, e, e2);
 
 

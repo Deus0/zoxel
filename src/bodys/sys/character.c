@@ -16,13 +16,13 @@ zox_sys2(CharacterBodySpawnSystem) {
             continue;
         }
 
-        zox_geter(realm->value, ItemLinks, realm_items);
+        zox_geter(realm->value, ItemLinks, ritems);
 
         // TODO: Randomly find a "hat" tag equip item from realm
         entity ritem = 0;
 
-        for (uint j = 0; j < realm_items->length; j++) {
-            entity item = realm_items->value[j];
+        for (uint j = 0; j < ritems->length; j++) {
+            entity item = ritems->value[j];
 
             if (zox_has(item, BodyItem)) {
                 ritem = item;
@@ -35,15 +35,9 @@ zox_sys2(CharacterBodySpawnSystem) {
             continue;
         }
 
-        entity item = spawn_user_item(
-                world,
-                ritem,
-                e
-            );
-
+        entity item = spawn_user_item(world, ritem, e);
         add_to_BodyLinks(bodys, item);
 
         dirty->value = zox_dirty_trigger;
-
     }
 } zox_sys_end(CharacterBodySpawnSystem);

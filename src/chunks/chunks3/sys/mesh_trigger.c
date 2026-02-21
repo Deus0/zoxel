@@ -27,11 +27,11 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkNeighbors);
-    zox_sys_in(VoxelNodeDirty);
+    // zox_sys_in(VoxelNodeDirty);
     zox_sys_out(ChunkMeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_i(VoxelNodeDirty, vdirty);
+        // zox_sys_i(VoxelNodeDirty, vdirty);
         zox_sys_o(ChunkMeshDirty, cdirty);
 
         /*if (cdirty->value != zox_dirty_none) { // || vdirty->value != zox_dirty_none) {
