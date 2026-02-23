@@ -3,13 +3,17 @@ entity spawn_prefab_scrollbar(ecs *world, entity prefab) {
     zox_prefab_name("scrollbar");
     zox_add_tag(e, Selectable);
     zox_prefab_set(e, SelectState, { zox_select_state_none });
+
     zox_add_tag(e, Clickable);
     zox_prefab_set(e, ClickState, { 0 });
     zox_prefab_set(e, Clicker, { 0 });
     zox_prefab_set(e, ClickEvent, { NULL });
+    zox_prefab_set(e, ClickDisabled, { 0 });
+
     zox_add_tag(e, Scrollbar);
     zox_prefab_set(e, Children, { 0 });
     zox_prefab_set(e, ElementMargins, { int2_zero });
+
     add_frame_texture_type(
         world,
         e,

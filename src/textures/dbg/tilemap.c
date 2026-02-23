@@ -6,9 +6,6 @@ entity tilemap_ui = 0;
 
 void spawn_tilemap_ui(ecs *world, int32_t keycode) {
 
-    int2 size = (int2) { 320, 320 };
-    int2 position = (int2) { 8, 8 };
-
     if (keycode != SDLK_9) {
         return;
     }
@@ -29,13 +26,18 @@ void spawn_tilemap_ui(ecs *world, int32_t keycode) {
             return;
         }
 
+
+        int2 size = (int2) { 320, 320 };
+        int2 position = (int2) { 8, 8 };
+
         entity canvas = get_linked_canvas(world, player);
         zox_geter_value(terrain, TilemapLink, entity, tilemap);
 
         // our logic stuff
-        zox_log("+ spawning tilemap ui")
+        zox_log("+ spawning tilemap ui [%s] on canvas [%s]", zox_get_name(tilemap), zox_get_name(canvas));
 
         tilemap_ui = spawn_element_texture(world, canvas, tilemap, position, size);
     }
+
     spawn_sound_from_file_index(world, prefab_sound, 0);
 }

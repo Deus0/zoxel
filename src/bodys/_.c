@@ -13,6 +13,7 @@
 
 // #include "set/_.c"
 #include "com/_.c"
+#include "sta/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"

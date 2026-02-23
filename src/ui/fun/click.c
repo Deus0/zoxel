@@ -1,7 +1,8 @@
 void on_element_clicked(ecs *world, entity player, entity e) {
-    if (!zox_valid(e) || zox_has(e, Clickable)) {
+    if (!zox_valid(e) || !zox_has(e, Clickable)) {
         return;
     }
+
     if (zox_has(e, ClickDisabled) && zox_gett_value(e, ClickDisabled)) {
         return;
     }

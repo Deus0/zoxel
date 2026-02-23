@@ -17,13 +17,16 @@ zox_sys2(ChunkEntitiesLodSystem) {
         }
 
         for (int j = 0; j < entities->length; j++) {
-            const entity e2 = entities->value[j];
+            entity e2 = entities->value[j];
+
             if (!(zox_valid(e2) && zox_has(e2, RenderDepth) && zox_has(e2, MaxRenderDepth))) {
                 continue;
             }
+
             zox_geter_value(e2, MaxRenderDepth, byte, max_render_depth);
-            const byte render_depth = camera_distance_to_npc_render_depth(distance->value, max_render_depth);
+            byte render_depth = camera_distance_to_npc_render_depth(distance->value, max_render_depth);
             zox_geter_value(e2, RenderDepth, byte, old);
+
             if (old != render_depth) {
                 zox_set(e2, RenderDepth, { render_depth });
                 zox_set(e2, RenderDepthDirty, { zox_dirty_trigger });

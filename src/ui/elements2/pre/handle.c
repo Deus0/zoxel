@@ -13,18 +13,23 @@ entity spawn_prefab_handle(ecs *world, entity prefab) {
     zox_set(e, Color, { default_fill_color });
     zox_set(e, OutlineColor, { default_outline_color });
     // interactable
-    zox_add_tag(e, Clickable);
-    zox_add_tag(e, Dragable);
-    zox_add_tag(e, ClickMakeSound);
+
     zox_add_tag(e, Selectable);
     zox_prefab_set(e, SelectState, { zox_select_state_none });
+
+    zox_add_tag(e, Clickable);
+    zox_add_tag(e, ClickMakeSound);
     zox_prefab_set(e, ClickState, { 0 });
     zox_prefab_set(e, Clicker, { 0 });
     zox_prefab_set(e, ClickEvent, { NULL });
+    zox_prefab_set(e, ClickDisabled, { 0 });
+
+    zox_add_tag(e, Dragable);
     zox_prefab_set(e, DraggableState, { 0 });
     zox_prefab_set(e, DraggingDelta, { int2_zero });
     zox_prefab_set(e, DraggerLink, { 0 });
     zox_prefab_set(e, DraggedLink, { 0 });
+
     zox_prefab_set(e, LayoutConstraints, { int4_zero });
     zox_prefab_set(e, SlideEvent, { 0 });
     zox_prefab_set(e, SlideBounds, { (float2) { 0, 1 }});

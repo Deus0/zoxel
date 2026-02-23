@@ -5,6 +5,9 @@ void delayed_texture_spawn(ecs* world, entity e) {
     }
 }
 
+// NOTE: Confusing AF atm, nodegraphs use a set size, 32 atm, however the vox models spawn at any size, and fill gets scaled to those
+//      - so we have two sizes created per model
+
 zox_sys2(BodysRealmSpawnSystem) {
     byte nodegraph_vlength = powers_of_two[nodegraph_max_depth];
 
@@ -24,29 +27,85 @@ zox_sys2(BodysRealmSpawnSystem) {
             continue;
         }
 
-        {
-            byte chest_variants = 1;
+        byte mdepth = block_vox_depth + 1;
 
-            byte3 nodegraph_size = (byte3) { nodegraph_vlength / 2, nodegraph_vlength, nodegraph_vlength / 2 };
-            entity nodegraph = spawn_model_nodegraph_chest(world, prefab_node_model, nodegraph_size);
+        if (mdepth >= model_lods_max_length) {
+            zox_logw("[BodysRealmSpawnSystem] Does not support depth [%i] max is [%i]", mdepth, model_lods_max_length);
+            continue;
+        }
+
+        zox_log("mdepth in body parts gen [%i]", mdepth);
+
+        byte vlength = powers_of_two_byte[mdepth];
+        int2 texture_size = int2_single(vlength);
+
+        // Chest
+        {
+            byte variants_count = 1;
+
+            // max size for the chest
+            byte3 nsize = (byte3) {
+                nodegraph_vlength / 2,
+                (7 * nodegraph_vlength) / 10,
+                nodegraph_vlength / 2
+            };
+
+            // colors node
+            entity nodegraph = spawn_node_model(world, prefab_node_model, zox_model_node_colors);
             add_to_NodegraphLinks(graphs, nodegraph);
+
+            // fill node
+            {
+                // first fill is a blob pillar
+                byte3 nsize_1 = (byte3) {
+                    (4 * nsize.x) / 5,
+                    nsize.y,
+                    (4 * nsize.z) / 5,
+                };
+                byte3 nposition_1 = (byte3) {
+                    nsize.x / 2,
+                    nsize_1.y / 2,
+                    nsize.z / 2
+                };
+
+                // Upper Chest Blob: spans the shoulder joints part
+                byte3 nsize_2 = (byte3) {
+                    nsize.x,
+                    1 + nsize.y / 4,
+                    nsize.z
+                };
+                byte3 nposition_2 = (byte3) {
+                    nsize.x / 2,
+                    ((7 * nsize.y) / 8) - nsize_2.y / 2,
+                    nsize.z / 2
+                };
+
+                // Create our nodes
+
+                entity node_2 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize_1);
+                new_link_single_node(world, nodegraph, node_2);
+
+                entity node_3 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_2, nsize_2);
+                new_link_single_node(world, node_2, node_3);
+            }
 
             zox_make_neww(model_group);
             zox_set_unique_name(model_group, "bodys_chest");
-            // zox_add_tag(model_group, ModelBody);
+            zox_add_tag(model_group, BodyModel);
             add_to_ModelLinks(models, model_group);
-
-            byte mdepth = block_vox_depth + 1;
-            int2 texture_size = int2_single(powers_of_two[mdepth]);
 
             entity texture_model = 0;
             ModelLinks variants = (ModelLinks) { 0 };
             lint bseed = 888 * i;
-            for (byte j = 0; j < chest_variants; j++) {
+            for (byte j = 0; j < variants_count; j++) {
                 lint vseed = bseed + j * 1209;
                 color vcolor = (color) { 200, 200, 155, 255 };
-                byte vlength = powers_of_two[mdepth];
-                byte3 vsize = (byte3) { vlength / 2, vlength, vlength / 2 };
+
+                byte3 vsize = (byte3) {
+                    vlength / 2,
+                    (7 * vlength) / 10,
+                    vlength / 2
+                };
 
                 ModelLods mlods2 = (ModelLods) { };
                 entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth, vsize, "mchest", &mlods2);
@@ -75,15 +134,82 @@ zox_sys2(BodysRealmSpawnSystem) {
             // direction_front });
             zox_set(texture_model, TextureLink, { texture });
             // Link Model to Texture
-            zox_set_unique_name(texture_model, "bodys_chest_model_high");
+            // zox_set_unique_name(texture_model, "bodys_chest_model_high");
             zox_set(texture, VoxLink, { texture_model });
             // TODO: Spawn Texture with Model Graph
             delay_event(world, &delayed_texture_spawn, texture, 1.0f);
 
-            entity item = spawn_item_body(world, model, texture, "Chest");
-            add_to_ItemLinks(items, item);
+            entity ritem = spawn_item_body(world, model, texture, "Chest");
+            zox_set(ritem, SlotType, { zox_slot_core });
+            add_to_ItemLinks(items, ritem);
         }
 
+        // Head
+        {
+            byte variants_count = 1;
+
+            byte3 nsize = byte3_single(1 + nodegraph_vlength / 4);
+
+            entity node_0 = spawn_node_model(world, prefab_node_model, zox_model_node_colors);
+            add_to_NodegraphLinks(graphs, node_0);
+            {
+                byte3 nsize_1 = nsize;
+                byte3 nposition_1 = byte3_half(nsize_1);
+
+                entity node_1 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize_1);
+                new_link_single_node(world, node_0, node_1);
+            }
+
+            zox_make_neww(model_group);
+            zox_set_unique_name(model_group, "bodys_model_group_head");
+            zox_add_tag(model_group, BodyModel);
+            add_to_ModelLinks(models, model_group);
+
+            entity texture_model = 0;
+            ModelLinks variants = (ModelLinks) { 0 };
+            lint bseed = 888 * i;
+            for (byte j = 0; j < variants_count; j++) {
+                lint vseed = bseed + j * 1209;
+                color vcolor = (color) { 200, 200, 155, 255 };
+
+                byte3 vsize = byte3_single(1 + vlength / 4);
+
+                ModelLods mlods2 = (ModelLods) { };
+                entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth, vsize, "bodys_model_head", &mlods2);
+                zox_set_unique_name(mlods, "bodys_mlods_head");
+                add_to_ModelLinks(&variants, mlods);
+
+                if (j == 0) {
+                    texture_model = mlods2.value[mdepth];
+                }
+
+                entity process = spawn_process_model(world, prefab_process_model, node_0, mlods);
+            }
+
+            zox_set_ptr(model_group, ModelLinks, variants);
+
+            // entity model = string_hashmap_get(files_hashmap_voxes, new_string_data("playerer"));
+            entity model = variants.value[0]; //  model_group;
+
+            // TODO: Generate based on model
+            // entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("taskbar_body"));
+
+            // Spawn Item Texture
+            entity texture = spawn_texture(world, prefab_vox_texture, texture_size);
+            zox_set_name_e(texture, "bodys_texture_head");
+            zox_set(texture, VoxBakeSide, { direction_front });
+            // direction_front });
+            zox_set(texture_model, TextureLink, { texture });
+            // Link Model to Texture
+            // zox_set_unique_name(texture_model, "bodys_chest_model_high");
+            zox_set(texture, VoxLink, { texture_model });
+            // TODO: Spawn Texture with Model Graph
+            delay_event(world, &delayed_texture_spawn, texture, 1.0f);
+
+            entity ritem = spawn_item_body(world, model, texture, "Head");
+            zox_set(ritem, SlotType, { zox_slot_head });
+            add_to_ItemLinks(items, ritem);
+        }
 
         zox_logv("At [%f] Realm [bodys] [%i] spawned.", zox_current_time, items->length);
     }

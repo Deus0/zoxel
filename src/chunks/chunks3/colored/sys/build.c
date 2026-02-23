@@ -69,7 +69,7 @@ void build_voxel_faces_c(const VoxelNode* root, const VoxelNode** noctrees, mesh
 
         const int* indiciesf = voxel_face_indicies_n + direction * voxel_face_indicies_length;
 
-        const float3* verticesf = voxel_face_vertices_n[direction];
+        const float3* verticesf = voxel_face_vertices_v2[direction];
 
         add_voxel_face(mesh, positionf, bounds_offset, scale, indiciesf, verticesf);
 

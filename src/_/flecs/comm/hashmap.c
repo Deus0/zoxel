@@ -30,9 +30,9 @@
         }\
     }
 
-#define zox_define_hashmap_component2(name, ...)\
+#define zoxd_hashmap2(name, ...)\
     zoxd(name)\
     zox_observe(on_destroyed_##name, EcsOnRemove, __VA_ARGS__)
 
-#define zox_define_hashmap_component(name)\
-    zox_define_hashmap_component2(name, [out] name)
+#define zoxd_hashmap(name)\
+    zoxd_hashmap2(name, [out] name)

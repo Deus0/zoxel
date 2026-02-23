@@ -14,12 +14,7 @@ entity spawn_game_canvas(
         screen_to_canvas,
         app
     );
-    spawn_canvas_overlay(
-        world,
-        prefab_canvas_overlay,
-        canvas,
-        dimensions
-    );
+    spawn_canvas_overlay(world, prefab_canvas_overlay, canvas, dimensions);
 
     // Tooltip on player
     spawn_tooltip(world, prefab_tooltip, canvas);

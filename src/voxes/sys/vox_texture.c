@@ -162,6 +162,7 @@ void generate_vox_texture(
                 }
 
                 index = int2_array_index((int2) { i, j }, size);
+                // index = int2_array_index((int2) { j, i }, size);
 
                 if (voxel == 0) {
                     data[index] = air_vox_color;
@@ -233,6 +234,6 @@ zox_sys2(VoxTextureSystem) {
 
         dirty->value = zox_dirty_trigger; // actually not using this for tilemap!
 
-        zox_log("Generated Vox Texture [%s]: %ix%i: %ix%ix%i", zox_get_name(vox->value), texture_size.x, texture_size.y, csize.x, csize.y, csize.z);
+        // zox_log("Generated Vox Texture [%s]: %ix%i: %ix%ix%i", zox_get_name(vox->value), texture_size.x, texture_size.y, csize.x, csize.y, csize.z);
     }
 } zox_sys_end(VoxTextureSystem);

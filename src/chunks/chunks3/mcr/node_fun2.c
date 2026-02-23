@@ -59,17 +59,13 @@ base find_node_value_##T(\
     return find_node_value_##T(&kids[int3_to_node_index(local_position)], child_octree_position, depth);\
 }\
 \
-void clone_at_depth_##T(\
-    T* dst,\
-    const T* src,\
-    const byte target_depth,\
-    byte depth \
-) {\
+void clone_at_depth_##T(T* dst, const T* src, byte target_depth, byte depth) {\
     if (target_depth > 0 && depth == target_depth - 1) {\
         if (src->ptr) {\
             open_##T(dst);\
         }\
     }\
+    \
     if (depth == target_depth) {\
         dst->value = src->value;\
         /*dst->ptr = src->ptr;*/\

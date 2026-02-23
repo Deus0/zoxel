@@ -37,18 +37,18 @@ static const float3 voxel_face_vertices_3[] = {
 
 // back
 static const float3 voxel_face_vertices_4[] = {
+    { 1, 0, 0 },
     { 0, 0, 0 },
     { 0, 1, 0 },
-    { 1, 1, 0 },
-    { 1, 0, 0 }
+    { 1, 1, 0 }
 };
 
 // front
 static const float3 voxel_face_vertices_5[] = {
+    { 1, 0, 1 },
     { 0, 0, 1 },
     { 0, 1, 1 },
-    { 1, 1, 1 },
-    { 1, 0, 1 }
+    { 1, 1, 1 }
 };
 
 static const float3* voxel_face_vertices_n[] = {
@@ -58,6 +58,34 @@ static const float3* voxel_face_vertices_n[] = {
     voxel_face_vertices_3,
     voxel_face_vertices_4,
     voxel_face_vertices_5
+};
+
+// back
+static const float3 voxel_face_vertices_4_v2[] = {
+    // before
+    { 0, 0, 0 },
+    { 0, 1, 0 },
+    { 1, 1, 0 },
+    { 1, 0, 0 }
+};
+
+// front
+static const float3 voxel_face_vertices_5_v2[] = {
+    // before
+    { 0, 0, 1 },
+    { 0, 1, 1 },
+    { 1, 1, 1 },
+    { 1, 0, 1 }
+};
+
+// TODO: Fix verts for lighting in colored chunks!
+static const float3* voxel_face_vertices_v2[] = {
+    voxel_face_vertices_0,
+    voxel_face_vertices_1,
+    voxel_face_vertices_2,
+    voxel_face_vertices_3,
+    voxel_face_vertices_4_v2,
+    voxel_face_vertices_5_v2
 };
 
 static const int voxel_face_indicies_n[] = {

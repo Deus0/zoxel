@@ -1,5 +1,5 @@
 // TODO: add a bunch of modifiers, like noise, eyes, etc for tests
-entity spawn_model_nodegraph_chest(ecs* world, entity p, byte3 size) {
+/*entity spawn_model_nodegraph_chest(ecs* world, entity p, byte3 size) {
 
     byte3 core_position = byte3_half(size);
 
@@ -10,3 +10,4 @@ entity spawn_model_nodegraph_chest(ecs* world, entity p, byte3 size) {
 
     return e;
 }
+*/

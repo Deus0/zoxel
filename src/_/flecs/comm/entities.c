@@ -29,7 +29,7 @@
         }\
     }\
     \
-    byte is_in_##T(T *component, const entity data) {\
+    byte is_in_##T(T *component, entity data) {\
         if (!component || !component->value) {\
             return 0;\
         }\
@@ -41,10 +41,7 @@
         return 0;\
     }\
     \
-    byte add_unique_to_##T( \
-        T *component, \
-        const entity data \
-    ) { \
+    byte add_unique_to_##T(T *component, entity data) { \
         if (!is_in_##T(component, data)) {\
             return add_to_##T(component, data);\
         } else {\
@@ -55,3 +52,9 @@
 #define zoxd_entities(T) \
     zoxd_arrayd(T) \
     zox_observe(on_destroyed_##T, EcsOnRemove, [in] T)
+
+#define zoxc_entities_weak(T)\
+    zoxc_arrayd(T, entity)
+
+#define zoxd_entities_weak(T) \
+    zoxd_arrayd(T)

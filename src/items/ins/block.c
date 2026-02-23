@@ -1,3 +1,4 @@
+// Spawns a item from a block! Can place these and throw them at your enemies
 entity spawn_block_item(ecs *world, entity block) {
 
     if (!zox_valid(block) || !zox_has(block, ZoxName)) {

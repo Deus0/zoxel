@@ -1,11 +1,6 @@
 // TODO: Repace with set_VoxelNode
-VoxelNode* set_voxelt(
-    VoxelNode* node,
-    byte target,
-    byte3 position,
-    byte value,
-    byte depth
-) {
+VoxelNode* set_voxelt(VoxelNode* node, byte target, byte3 position, byte value, byte depth) {
+
     byte depth_reached = depth == target;
     if (!depth_reached && is_closed_VoxelNode(node)) {
         open_VoxelNode(node);
@@ -18,6 +13,7 @@ VoxelNode* set_voxelt(
             kids[i].value = 0; // node->value;
         }
     }
+
     // wait this overrides child nodes, rather than reevaluating them
     if (depth_reached || value) {
         node->value = value;

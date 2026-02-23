@@ -1,8 +1,8 @@
-byte tooltip_event_action(
-    ecs *world,
-    const TooltipEventData *data
-) {
-    if (zox_has(data->data, Item)) {
+byte tooltip_event_action(ecs *world, const TooltipEventData *data) {
+
+    if ( !zox_valid(data->data)) {
+        return 0;
+    } else if (zox_has(data->data, Item)) {
         return tooltip_event_item(world, data);
     } else if (zox_has(data->data, Skill)) {
         return tooltip_event_skill(world, data);

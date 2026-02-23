@@ -1,18 +1,18 @@
 entity spawn_element_basic(
     ecs *world,
-    const entity prefab,
-    const entity canvas,
-    const entity parent,
+    entity p,
+    entity canvas,
+    entity parent,
     int2 position,
-    const int2 pixel_size,
-    const int2 texture_size,
-    const float2 anchor,
-    const byte layer,
-    const int2 parent_position,
-    const int2 parent_size
+    int2 pixel_size,
+    int2 texture_size,
+    float2 anchor,
+    byte layer,
+    int2 parent_position,
+    int2 parent_size
 ) {
 
-    zox_instance(prefab);
+    zox_instance(p);
     zox_name("element_basic");
     initialize_element(
         world,
@@ -31,16 +31,18 @@ entity spawn_element_basic(
 
 entity spawn_element_basic_on_canvas(
     ecs *world,
-    const entity canvas,
-    const int2 position,
-    const int2 pixel_size,
-    const int2 texture_size,
-    const float2 anchor
+    entity p,
+    entity canvas,
+    int2 position,
+    int2 pixel_size,
+    int2 texture_size,
+    float2 anchor
 ) {
-    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    int2 canvas_size = zox_get_value(canvas, LayoutSize);
+
     return spawn_element_basic(
         world,
-        prefab_element_shell,
+        p,
         canvas,
         canvas,
         position,
@@ -52,35 +54,25 @@ entity spawn_element_basic_on_canvas(
         canvas_size);
 }
 
-entity spawn_element_texture(
-    ecs *world,
-    const entity canvas,
-    const entity source_texture,
-    const int2 position,
-    const int2 size
-) {
-    if (!source_texture) {
-        zox_log_error("[spawn_texture_element]: source_texture is empty.")
+entity spawn_element_texture(ecs *world, entity canvas, entity t, int2 position, int2 size) {
+
+    if (!t) {
+        zox_log_error("[spawn_texture_element]: t is empty.")
         return 0;
     }
 
-    zox_geter_value(source_texture, TextureSize, int2, source_size);
-    zox_geter(source_texture, TextureData, source_data);
+    zox_geter_value(t, TextureSize, int2, source_size);
+    zox_geter(t, TextureData, source_data);
 
-    const entity e = spawn_element_basic_on_canvas(
-        world,
-        canvas,
-        position,
-        size,
-        source_size,
-        float2_zero
-    );
+    entity e = spawn_element_basic_on_canvas(world,  prefab_element_shell, canvas, position, size, source_size, float2_zero);
 
     zox_set(e, TextureData, {
         .length = source_data->length,
         .value = source_data->value
     });
-    zox_set(e, TextureDirty, { 1 });
+    zox_set(e, TextureDirty, { zox_dirty_trigger });
+
+    zox_set(e, LayoutSizeDirty, { zox_dirty_trigger });
 
     return e;
 }

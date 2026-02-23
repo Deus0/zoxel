@@ -17,10 +17,10 @@ zox_sys2(TilemapGenerationSystem) {
         zox_sys_o(GenerateTexture, generateTexture);
         zox_sys_o(TextureSize, textureSize);
         zox_sys_o(TextureData, textureData);
-        zox_sys_o(TextureDirty, textureDirty);
+        zox_sys_o(TextureDirty, dirty);
         zox_sys_o(TilemapUVs, tilemapUVs);
 
-        if (generateTexture->value != zox_dirty_active || textureDirty->value) {
+        if (generateTexture->value != zox_dirty_active || dirty->value) {
             continue;
         }
 
@@ -75,7 +75,7 @@ zox_sys2(TilemapGenerationSystem) {
                         int tilemap_index = int2_array_index(tilemap_pixel_position, textureSize->value);
                         if (tilemap_index >= textureData->length) {
                             zox_log_error("tilemap_index [%i] >= textureData->length [%i]", tilemap_index, textureData->length)
-                            // textureDirty->value = 1;
+                            // dirty->value = 1;
                             // return;
                             continue;
                         }
@@ -97,8 +97,16 @@ zox_sys2(TilemapGenerationSystem) {
                     break;
                     break;
                 }
-                const int2 tilemap_position = (int2) { texture_position.x * unit_size.x, texture_position.y * unit_size.y };
-                const float2 tile_uv = (float2) { tilemap_position.x / (float) textureSize->value.x, tilemap_position.y / (float) textureSize->value.y };
+
+                int2 tilemap_position = (int2) {
+                    texture_position.x * unit_size.x,
+                    texture_position.y * unit_size.y
+                };
+                float2 tile_uv = (float2) {
+                    tilemap_position.x / (float) textureSize->value.x,
+                    tilemap_position.y / (float) textureSize->value.y
+                };
+
                 // 4 uvs per face
                 tilemapUVs->value[texture_index * 4 + 3] = (float2) {
                     tile_uv.x, tile_uv.y + tile_uv_size };
@@ -108,13 +116,16 @@ zox_sys2(TilemapGenerationSystem) {
                     tile_uv.x + tile_uv_size, tile_uv.y };
                 tilemapUVs->value[texture_index * 4 + 0] = (float2) {
                     tile_uv.x, tile_uv.y };
+
                 texture_index++;
+
                 if (texture_index >= textureLinks->length) {
                     break;
                     break;
                 }
             }
         }
-        textureDirty->value = 1;
+
+        dirty->value = 1;
     }
 } zox_sys_end(TilemapGenerationSystem);

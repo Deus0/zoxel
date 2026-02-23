@@ -126,5 +126,5 @@ static inline byte get_value_##T(const T* node, byte target_depth, byte3 pos, by
 // create_node_getter(VoxelNode)
 // create_node_getter(LightNode)
 // VoxelNode* n = get_VoxelNode(root, target_depth, (byte3){x,y,z}, 0);
-// byte v = get_VoxelNode_value(root, target_depth, (byte3){x,y,z}, 0);
+// byte v = get_value_VoxelNode(root, target_depth, (byte3){x,y,z}, 0);
 

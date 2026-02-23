@@ -1,3 +1,23 @@
+entity find_slot_type(ecs* world, const ItemLinks* ritems, byte slot) {
+    entity e = 0;
+    for (uint j = 0; j < ritems->length; j++) {
+        entity ritem = ritems->value[j];
+
+        if (!zox_has(ritem, BodyItem)) {
+            continue;
+        }
+
+        if (zox_gett_value(ritem, SlotType) != slot) {
+            continue;
+        }
+
+        e = ritem;
+        break;
+    }
+    return e;
+}
+
+// Currently adds parts from realm
 zox_sys2(CharacterBodySpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -19,24 +39,38 @@ zox_sys2(CharacterBodySpawnSystem) {
         zox_geter(realm->value, ItemLinks, ritems);
 
         // TODO: Randomly find a "hat" tag equip item from realm
-        entity ritem = 0;
+        byte found = 0;
 
-        for (uint j = 0; j < ritems->length; j++) {
-            entity item = ritems->value[j];
+        // pick core
+        entity rcore = find_slot_type(world, ritems, zox_slot_core);
 
-            if (zox_has(item, BodyItem)) {
-                ritem = item;
-                break;
-            }
-        }
-
-
-        if (!zox_valid(ritem)) {
+        if (!rcore) {
             continue;
         }
 
-        entity item = spawn_user_item(world, ritem, e);
-        add_to_BodyLinks(bodys, item);
+        entity bcore = spawn_user_item(world, rcore, e);
+        zox_set(bcore, SlotType, { zox_slot_core });
+        add_to_BodyLinks(bodys, bcore);
+        zox_log("+ Body Core %s", zox_get_name(rcore));
+        // Link up parts together
+        PartLinks core_parts = (PartLinks) { };
+
+        // TODO: Add Shoulders, hips here
+        {
+            entity rhead = find_slot_type(world, ritems, zox_slot_head);
+            if (rhead) {
+                entity bhead = spawn_user_item(world, rhead, e);
+                zox_set(bhead, SlotType, { zox_slot_head });
+                zox_set(bhead, AttachLink, { bcore });
+
+                add_to_BodyLinks(bodys, bhead);
+                add_to_PartLinks(&core_parts, bhead);
+
+                zox_log("+ Body Core %s", zox_get_name(rhead));
+            }
+        }
+
+        zox_set_ptr(bcore, PartLinks, core_parts);
 
         dirty->value = zox_dirty_trigger;
     }

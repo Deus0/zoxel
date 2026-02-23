@@ -1,6 +1,7 @@
 #include "grow_bounds3.c"
 #include "vox_texture.c"
-#include "clone_vox.c"
+#include "clone.c"
+#include "combine.c"
 #include "bake_vox.c"
 #include "find_neighbor.c"
 #include "block_scale.c"
@@ -38,8 +39,20 @@ void define_systems_voxes(ecs *world) {
         [out] blocks.BlockScale,
         [out] chunks3.ChunkSize,
         [out] colorz.ColorRGBs,
-        [out] chunks3.VoxelNodeDirty,
-        [out] ChunkLod
+        [out] chunks3.VoxelNodeDirty
+    );
+    zox_system(
+        CombineVoxSystem,
+        zoxp_voxels_write,
+        [in] voxes.CombineVox,
+        [in] voxes.CombineList,
+        [in] voxes.CombinePositions,
+        [out] blocks.BlockScale,
+        [out] chunks3.ChunkSize,
+        [out] chunks.NodeDepth,
+        [out] chunks3.VoxelNode,
+        [out] colorz.ColorRGBs,
+        [out] chunks3.VoxelNodeDirty
     );
 
     zox_system(

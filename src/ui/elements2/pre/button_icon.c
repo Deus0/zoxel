@@ -22,6 +22,7 @@ ecs *world, entity prefab) {
     zox_prefab_set(e, ClickState, { 0 });
     zox_prefab_set(e, Clicker, { 0 });
     zox_prefab_set(e, ClickEvent, { NULL });
+    zox_prefab_set(e, ClickDisabled, { 0 });
 
     return e;
 }
