@@ -1,27 +1,35 @@
 // Uses a model node to fill with shape data
 
-void process_node_model_generate_colors(ecs* world, entity v, lint seed) {
-    if (!zox_valid(v)) {
+void process_node_model_generate_colors(ecs* world, entity n, entity v, lint seed) {
+    if (!zox_valid(v) || !zox_valid(n)) {
         return;
     }
 
-    if (!zox_has(v, Color) || !zox_has(v, ColorRGBs)) {
+    if (!zox_has(n, Color) || !zox_has(n, NodeColors)) {
+        zox_log("Node (colors) [%s] has invalid components.", zox_get_name(v));
+        return;
+    }
+
+    if (!zox_has(v, ColorRGBs)) {
         zox_log("Vox [%s] has invalid components.", zox_get_name(v));
         return;
     }
 
-    zox_geter(v, Color, vcolor);
+    zox_geter_value(n, Color, color, vcolor);
+    zox_geter_value(n, NodeColors, byte, count);
+    color_rgb vcolor_rgb = color_to_color_rgb(vcolor);
+
+    // zox_geter(v, Color, vcolor);
     zox_muter(v, ColorRGBs, colors);
 
-    byte unique_colors = zox_has(v, VoxUniqueColors) ? zox_gett_value(v, VoxUniqueColors) : default_unique_colors;
-    float color_range = zox_has(v, VoxColorRange) ? zox_gett_value(v, VoxColorRange) : default_color_range;
+    // byte unique_colors = zox_has(v, VoxUniqueColors) ? zox_gett_value(v, VoxUniqueColors) : default_unique_colors;
+    // float color_range = zox_has(v, VoxColorRange) ? zox_gett_value(v, VoxColorRange) : default_color_range;
 
     float2 crange = (float2) { 1 - default_color_range, 1 + default_color_range };
-    color_rgb vcolor_rgb = color_to_color_rgb(vcolor->value);
 
-    resize_ColorRGBs(colors, 0);
+    // resize_ColorRGBs(colors, 0);
 
-    for (byte i = 0; i < unique_colors; i++) {
+    for (byte i = 0; i < count; i++) {
         float m = randf_range(crange.x, crange.y);
 
         color_rgb ucolor = vcolor_rgb;
@@ -34,6 +42,8 @@ void process_node_model_generate_colors(ecs* world, entity v, lint seed) {
         add_to_ColorRGBs(colors, color_rgb_black);
     }
 }
+
+// TODO: Reset colors at start of blueprint running
 
 // Runs from a Model Node Process
 //      This system will simply fill the voxes
@@ -62,7 +72,7 @@ zox_sys2(ColorsModelNodeSystem) {
 
         // for each model LOD, run shapes
 
-        zox_logv(" - Node: Model Colors [%s]", zox_get_name(model->value));
+        zox_log(" - Node: Model Colors [%s]", zox_get_name(model->value));
 
         zox_geter(model->value, Seed, seed);
 
@@ -72,7 +82,7 @@ zox_sys2(ColorsModelNodeSystem) {
             for (int j = 0; j < model_lods_max_length; j++) {
                 entity v = models->value[j];
 
-                process_node_model_generate_colors(world, v, seed->value);
+                process_node_model_generate_colors(world, node->value, v, seed->value);
             }
         }  else {
             zox_logw("Node Process Entity does not have ModelLods");

@@ -51,6 +51,7 @@ zox_sys2(ModelsRealmSpawnSystem) {
             byte3 vsize_max = (byte3) { vlength_max - 1, 2 * (vlength_max / 3), vlength_max - 1 };
 
             // Create a blueprint for slime
+
             entity nodegraph = spawn_model_nodegraph_slime(world, prefab_node_model, vsize_max);
             add_to_NodegraphLinks(graphs, nodegraph);
 

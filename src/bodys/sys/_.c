@@ -1,6 +1,6 @@
-#include "player.c"
-#include "character.c"
 #include "realm.c"
+#include "character.c"
+#include "combine.c"
 
 void define_systems_bodys(ecs* world) {
 
@@ -25,11 +25,13 @@ void define_systems_bodys(ecs* world) {
     );
 
     zox_system(
-        PlayerBodySpawnSystem,
+        BodyCombineSystem,
         EcsOnUpdate,
         [in] bodys.BodyDirty,
         [in] bodys.BodyLinks,
-        [in] rendering.RenderDepth,
+        [out] voxes.CombineList,
+        [out] voxes.CombinePositions,
+        [out] voxes.CombineVox,
         [none] players.PlayerCharacter
     );
 }

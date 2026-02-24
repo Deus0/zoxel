@@ -7,7 +7,7 @@ void process_node_model_paint(ecs* world, entity n, entity v, lint seed) {
         return;
     }
 
-    if (!zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
+    if (!zox_has(n, NodeVoxel) || !zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
         zox_log("Node [%s] has invalid components.", zox_get_name(n));
         return;
     }
@@ -18,6 +18,7 @@ void process_node_model_paint(ecs* world, entity n, entity v, lint seed) {
     }
 
     // zox_geter_value(n, ColorRGB, color_rgb, paintc);
+    zox_geter_value_non_const(n, NodeVoxel, byte, paint_type);
     zox_geter_value(n, Shape3Position, byte3, position);
     zox_geter_value(n, Shape3Size, byte3, size);
 
@@ -29,7 +30,9 @@ void process_node_model_paint(ecs* world, entity n, entity v, lint seed) {
 
     // Run for our fill
     write_lock_VoxelNode(voctree);
-        voctree_paint(voctree, ndepth, colors->length, position, size);
+
+    voctree_paint(voctree, ndepth, paint_type, position, size);
+
     write_unlock_VoxelNode(voctree);
 
     zox_set(v, VoxelNodeDirty, { zox_dirty_trigger });
@@ -62,7 +65,7 @@ zox_sys2(PaintModelNodeSystem) {
 
         // for each model LOD, run shapes
 
-        zox_logv(" - Node: Model Paint [%s]", zox_get_name(model->value));
+        zox_log(" - Node: Model Paint [%s]", zox_get_name(model->value));
 
         zox_geter(model->value, Seed, seed);
 

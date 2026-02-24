@@ -32,4 +32,9 @@ zox_begin_module(Bodys)
     });
 zox_end_module(Bodys)
 
+// TODO: make use TargetChunkLod -> and load/unload depth based on that
+// TODO: set lod here instead of just applying RenderDepth only with ChunkMeshDirty -> keeps memory down
+// TODO: Support for multi chunk voxes
+
+
 #endif

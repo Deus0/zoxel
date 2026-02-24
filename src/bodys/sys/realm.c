@@ -51,8 +51,9 @@ zox_sys2(BodysRealmSpawnSystem) {
             };
 
             // colors node
-            entity nodegraph = spawn_node_model(world, prefab_node_model, zox_model_node_colors);
-            add_to_NodegraphLinks(graphs, nodegraph);
+            color mcolor = (color) { 200, 155, 133, 255 };
+            entity node_0 = spawn_node_model_colors(world, mcolor, 1);
+            add_to_NodegraphLinks(graphs, node_0);
 
             // fill node
             {
@@ -82,11 +83,11 @@ zox_sys2(BodysRealmSpawnSystem) {
 
                 // Create our nodes
 
-                entity node_2 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize_1);
-                new_link_single_node(world, nodegraph, node_2);
+                entity node_1 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize_1, 1);
+                new_link_single_node(world, node_0, node_1);
 
-                entity node_3 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_2, nsize_2);
-                new_link_single_node(world, node_2, node_3);
+                entity node_2 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_2, nsize_2, 1);
+                new_link_single_node(world, node_1, node_2);
             }
 
             zox_make_neww(model_group);
@@ -116,7 +117,7 @@ zox_sys2(BodysRealmSpawnSystem) {
                     texture_model = mlods2.value[mdepth];
                 }
 
-                entity process = spawn_process_model(world, prefab_process_model, nodegraph, mlods);
+                entity process = spawn_process_model(world, prefab_process_model, node_0, mlods);
             }
 
             zox_set_ptr(model_group, ModelLinks, variants);
@@ -150,14 +151,34 @@ zox_sys2(BodysRealmSpawnSystem) {
 
             byte3 nsize = byte3_single(1 + nodegraph_vlength / 4);
 
-            entity node_0 = spawn_node_model(world, prefab_node_model, zox_model_node_colors);
+            color mcolor = (color) { 230, 155, 133, 255 };
+            entity node_0 = spawn_node_model_colors(world, mcolor, 1);
             add_to_NodegraphLinks(graphs, node_0);
             {
                 byte3 nsize_1 = nsize;
                 byte3 nposition_1 = byte3_half(nsize_1);
 
-                entity node_1 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize_1);
-                new_link_single_node(world, node_0, node_1);
+                entity e2 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize_1, 1);
+                new_link_single_node(world, node_0, e2);
+
+                // spawn eyes
+
+                byte eye_ridge = 1 + nsize.x / 6;
+                byte3 eye_size = byte3_single(5 + 1 + nsize.x / 6);
+                byte eye_y = nsize.y / 2 + 2;
+                byte eye_pos_z = nsize.z - eye_size.z / 2;
+                byte3 leye_position = (byte3) { nsize.x / 2 - eye_size.x - eye_ridge / 2, eye_y, eye_pos_z };
+                byte3 reye_position = (byte3) { nsize.x / 2 + eye_ridge / 2, eye_y, eye_pos_z };
+
+                color ecolor = (color) { 230, 122, 122, 255 };
+                entity e3 = spawn_node_model_colors(world, ecolor, 1);
+                new_link_single_node(world, e2, e3);
+
+                entity e4 = spawn_node_model_at(world, prefab_node_model, zox_model_node_paint, leye_position, eye_size, 2);
+                new_link_single_node(world, e3, e4);
+
+                entity e5 = spawn_node_model_at(world, prefab_node_model, zox_model_node_paint, reye_position, eye_size, 2);
+                new_link_single_node(world, e4, e5);
             }
 
             zox_make_neww(model_group);

@@ -21,7 +21,6 @@ zox_sys2(CloneVoxSystem) {
         zox_sys_o(ColorRGBs, colors);
         zox_sys_o(ChunkSize, csize);
         zox_sys_o(VoxelNodeDirty, dirty);
-        // zox_sys_o(ChunkLod, clod);
         zox_sys_o(CloneVox, state);
 
         entity src = source->value;

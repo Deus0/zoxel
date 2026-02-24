@@ -1,8 +1,3 @@
-// todo: make use TargetChunkLod -> and load/unload depth based on that
-// todo: set lod here instead of just applying RenderDepth only with ChunkMeshDirty -> keeps memory down
-
-// TODO: Support for multi chunk voxes
-
 zox_sys2(CombineVoxSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -12,6 +7,7 @@ zox_sys2(CombineVoxSystem) {
     zox_sys_out(BlockScale);
     zox_sys_out(ChunkSize);
     zox_sys_out(NodeDepth);
+    zox_sys_out(RenderDepth);
     zox_sys_out(VoxelNode);
     zox_sys_out(ColorRGBs);
     zox_sys_out(VoxelNodeDirty);
@@ -22,6 +18,7 @@ zox_sys2(CombineVoxSystem) {
         zox_sys_o(BlockScale, bscale);
         zox_sys_o(ChunkSize, csize);
         zox_sys_o(NodeDepth, ndepth);
+        zox_sys_o(RenderDepth, rdepth);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(ColorRGBs, colors);
         zox_sys_o(VoxelNodeDirty, dirty);
@@ -35,7 +32,7 @@ zox_sys2(CombineVoxSystem) {
             continue;
         }
 
-        zox_log("Combining Voxes [%i]", voxes->length);
+        // zox_log("Combining Voxes [%i]", voxes->length);
 
         // TODO: calculate the overall size first
 
@@ -69,8 +66,10 @@ zox_sys2(CombineVoxSystem) {
         }
 
         ndepth->value = new_depth;
+        rdepth->value = ndepth->value;
 
         // set voctree here
+        resize_ColorRGBs(colors, 0);
 
         // TODO: set voctree depth and set to air
 
@@ -99,11 +98,29 @@ zox_sys2(CombineVoxSystem) {
             zox_geter_value(vox, ChunkSize, int3, vsize);
 
             // for now we just set to vox
-            if (acolors->length > colors->length) {
+            /*if (acolors->length > colors->length) {
                 colors->length = acolors->length;
                 int clength = sizeof(color_rgb) * acolors->length;
                 resize_ColorRGBs(colors, clength);
                 memcpy(colors->value, acolors->value, clength);
+            }*/
+            for (int k = 0; k < acolors->length; k++) {
+                color_rgb acolor = acolors->value[k];
+
+                // If not in list
+                byte inlist = 0;
+                for (int l = 0; l < colors->length; l++) {
+                    if (color_rgb_equal(colors->value[l], acolor)) {
+                        inlist = 1;
+                        break;
+                    }
+                }
+
+                if (inlist) {
+                    continue;
+                }
+
+                add_to_ColorRGBs(colors, acolor);
             }
 
             // NOTE: For now lets assume same depth
@@ -129,6 +146,19 @@ zox_sys2(CombineVoxSystem) {
                             continue;
                         }
 
+                        // TODO: Use lookups later
+                        // Convert to our placement
+                        // get color from value
+                        color_rgb pcolor = acolors->value[value - 1];
+                        // find color in place vox
+
+                        for (int k = 0; k < colors->length; k++) {
+                            if (color_rgb_equal(colors->value[k], pcolor)) {
+                                value = k + 1;  // + 1 for air
+                                break;
+                            }
+                        }
+
                         set_VoxelNode(voctree, ndepth->value, position, value, 0);
 
                         if (position.x >= new_csize.x) new_csize.x = position.x;
@@ -140,7 +170,7 @@ zox_sys2(CombineVoxSystem) {
                 }
             }
 
-            zox_log(" + vox %i [%s] c[%i] at [%ix%ix%i] of s[%ix%ix%i]", j, zox_get_name(vox), acolors->length, vposition.x, vposition.y, vposition.z, vsize.x, vsize.y, vsize.z);
+            // zox_log(" + vox %i [%s] c[%i] at [%ix%ix%i] of s[%ix%ix%i]", j, zox_get_name(vox), acolors->length, vposition.x, vposition.y, vposition.z, vsize.x, vsize.y, vsize.z);
         }
 
         write_unlock_VoxelNode(voctree);
@@ -151,12 +181,14 @@ zox_sys2(CombineVoxSystem) {
 
         dirty->value = zox_dirty_trigger;
 
-        zox_sys_e();
-        zox_set(e, MaxRenderDepth, { ndepth->value });
+        // zox_sys_e();
+        // zox_set(e, MaxRenderDepth, { ndepth->value });
+        // zox_set(e, ChunkLod, { 0 });
+        // zox_set(e, RenderDepth, { ndepth->value });
 
-        zox_log(" - colors [%i]", colors->length);
+        /*zox_log(" - colors [%i]", colors->length);
         zox_log(" - vdepth [%i] - grid max [%i]", ndepth->value, powers_of_two_byte[ndepth->value]);
         zox_log(" - csize [%ix%ix%i]", csize->value.x, csize->value.y, csize->value.z);
-        zox_log(" - bscale [%f]", bscale->value);
+        zox_log(" - bscale [%f]", bscale->value);*/
     }
 } zox_sys_end(CombineVoxSystem);

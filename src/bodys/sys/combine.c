@@ -38,24 +38,28 @@ entity item_get_max_depth_vox(ecs* world, entity part) {
 }
 
 // for now just set vox, later we spawn item and set it from BodyDirty
-zox_sys2(PlayerBodySpawnSystem) {
+zox_sys2(BodyCombineSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BodyDirty);
     zox_sys_in(BodyLinks);
-    zox_sys_in(RenderDepth);
+    zox_sys_out(CombineList);
+    zox_sys_out(CombinePositions);
+    zox_sys_out(CombineVox);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BodyDirty, state);
         zox_sys_i(BodyLinks, bodys);
-        zox_sys_i(RenderDepth, rdepth);
+        zox_sys_o(CombineList, voxes);
+        zox_sys_o(CombinePositions, positions);
+        zox_sys_o(CombineVox, output);
 
         if (state->value != zox_dirty_active) {
             continue;
         }
 
         if (!bodys->length) {
-            zox_logw("No Body to Generate");
+            // zox_logw("No Body to Generate");
             continue;
         }
 
@@ -65,26 +69,28 @@ zox_sys2(PlayerBodySpawnSystem) {
         byte mul = 1;
         if (block_vox_depth == 5) mul = 2;
 
+        // atm its based on the realm body items
         byte3 vpositions[] = {
             (byte3) { 0, 0, 0 },
             (byte3) { 4 * mul, 21 * mul, 4 * mul },
         };
 
-        // New Combine Logic
-        CombineList list = (CombineList) { };
-        CombinePositions positions = (CombinePositions) { };
+        resize_CombineList(voxes, 0);
+        resize_CombinePositions(positions, 0);
 
         for (int j = 0; j < bodys->length; j++) {
             entity item = bodys->value[j];
             entity vox = item_get_max_depth_vox(world, item);
 
-            add_to_CombineList(&list, vox);
-            add_to_CombinePositions(&positions, vpositions[j]);
+            add_to_CombineList(voxes, vox);
+            add_to_CombinePositions(positions, vpositions[j]);
         }
 
-        zox_set_ptr(e, CombineList, list);
-        zox_set_ptr(e, CombinePositions, positions);
-        zox_set(e, CombineVox, { zox_dirty_trigger });
+        output->value = zox_dirty_trigger;
+
+        //zox_set_ptr(e, CombineList, list);
+        //zox_set_ptr(e, CombinePositions, positions);
+        //zox_set(e, CombineVox, { zox_dirty_trigger });
 
         // Temporarily clone it there
         /*byte body_index = zox_slot_core; // zox_slot_head | zox_slot_core;
@@ -112,7 +118,7 @@ zox_sys2(PlayerBodySpawnSystem) {
 
         zox_log("[player body]: Valid Vox Model Lod [%s] Depth [%i]", zox_get_name(vox), rdepth->value);*/
     }
-} zox_sys_end(PlayerBodySpawnSystem);
+} zox_sys_end(BodyCombineSystem);
 
 // zox_set(e, ModelLink, { vox });
 // zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);

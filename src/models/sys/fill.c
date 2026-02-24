@@ -1,13 +1,15 @@
 // Uses a model node to fill with shape data
 // DialogueUILink
 
+// TODO: Use input nodes for shape and place color
+
 void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
 
     if (!zox_valid(n) || !zox_valid(v)) {
         return;
     }
 
-    if (!zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
+    if (!zox_has(n, NodeVoxel) || !zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
         zox_logw("Node [%s] has invalid components.", zox_get_name(n));
         return;
     }
@@ -18,7 +20,7 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
     }
 
     // zox_log("Vox [%s] has Valid components.", zox_get_name(v));
-
+    zox_geter_value_non_const(n, NodeVoxel, byte, fill_type);
     zox_geter_value_non_const(n, Shape3Position, byte3, position);
     zox_geter_value_non_const(n, Shape3Size, byte3, size);
 
@@ -26,6 +28,17 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
     byte vlength = powers_of_two[ndepth];
 
     zox_geter(v, ColorRGBs, colors);
+
+    if (!colors->length) {
+        zox_log_error("vox [%s] has no colors", zox_get_name(v));
+        return;
+    }
+
+    if (fill_type > colors->length) {
+        zox_log_error("fill type is out of bounds [%i]", fill_type, colors->length);
+        fill_type = 1;
+    }
+
     zox_muter(v, VoxelNode, voctree);
 
     // zox_log("Vox [%s] has Valid components. size [%ix%ix%i] - vlength [%i]", zox_get_name(v), size.x, size.y, size.z, vlength);
@@ -51,15 +64,15 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
 
     // zox_log("New Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
 
-    byte2 vrange = (byte2) { 1, colors->length - 1 };
-    byte black = colors->length;
+    // byte2 vrange = (byte2) { 1, colors->length - 1 };
+    // byte black = colors->length;
 
     // Run for our fill
     write_lock_VoxelNode(voctree);
         // zox_log("Filling Cube at [%ix%ix%i] s[%ix%ix%i]", position.x, position.y, position.z, size.x, size.y, size.z);
         // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
         // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
-        voctree_fill_ellipsoid(voctree, ndepth, vrange.x, position, size);
+        voctree_fill_ellipsoid(voctree, ndepth, fill_type, position, size);
 
     // build_vox_soil(voctree, ndepth, vrange, black, vregions);
     /*build_vox_bricks(voctree, ndepth, vrange, black);
@@ -99,7 +112,7 @@ zox_sys2(FillModelNodeSystem) {
 
         // for each model LOD, run shapes
 
-        zox_logv(" - Node: Model Fill [%s]", zox_get_name(model->value));
+        zox_log(" - Node: Model Fill [%s]", zox_get_name(model->value));
 
         zox_geter(model->value, Seed, seed);
 
@@ -108,6 +121,7 @@ zox_sys2(FillModelNodeSystem) {
 
             for (int j = 0; j < model_lods_max_length; j++) {
                 entity v = models->value[j];
+
                 process_node_model_fill(world, node->value, v, seed->value);
             }
         }  else {

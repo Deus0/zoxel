@@ -50,6 +50,7 @@ void define_systems_voxes(ecs *world) {
         [out] blocks.BlockScale,
         [out] chunks3.ChunkSize,
         [out] chunks.NodeDepth,
+        [out] rendering.RenderDepth,
         [out] chunks3.VoxelNode,
         [out] colorz.ColorRGBs,
         [out] chunks3.VoxelNodeDirty
