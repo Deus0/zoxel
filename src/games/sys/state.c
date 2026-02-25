@@ -20,6 +20,7 @@ zox_sys2(GameStateSystem) {
 
         // handle different next conditions
         byte is_update = 0;
+        // NOTE: Waits for fade to finish
         if (target->value == zox_game_load_fading) {
             double time_passed = zox_current_time - time->value;
             if (zox_valid(realm->value) && time_passed >= 3) {
@@ -27,7 +28,8 @@ zox_sys2(GameStateSystem) {
                 is_update = 1;
             }
         }
-        else if (target->value == zox_game_load_realm) {
+        // NOTE: Waits for GenerateRealm to finish
+        else if (target->value == zox_game_loading_realm) {
             if (zox_valid(realm->value) && !zox_gett_value(realm->value, GenerateRealm)) {
                 is_update = 1;
             }
@@ -50,23 +52,22 @@ zox_sys2(GameStateSystem) {
         zox_logv("[%f] Game State [%i] -> [%i]", time->value, old_state, new_state);
 
         // Start Loading Realm after faded
-        if (state->value == zox_game_load_faded) {
-            target->value = zox_game_load_realm;
-            // zox_log("   Realm Loading Started.");
-            zox_set(realm->value, GenerateRealm, { zox_generate_realm_start });
-        }
-        // finished loading realm
-        else if (state->value == zox_game_load_realm) {
-            target->value = zox_game_playing_start;
-        }
-        else if (state->value == zox_game_playing_start) {
-            target->value = zox_game_playing;
-        }
-        else if (state->value == zox_game_load_start) {
+        if (state->value == zox_game_load_start) {
             target->value = zox_game_load_fading;
         }
         else if (state->value == zox_game_load_fading) {
             target->value = zox_game_load_faded;
+        }
+        else if (state->value == zox_game_load_faded) {
+            target->value = zox_game_loading_realm;
+            zox_set(realm->value, GenerateRealm, { zox_generate_realm_start });
+        }
+        // finished loading realm
+        else if (state->value == zox_game_loading_realm) {
+            target->value = zox_game_playing_start;
+        }
+        else if (state->value == zox_game_playing_start) {
+            target->value = zox_game_playing;
         }
 
     }

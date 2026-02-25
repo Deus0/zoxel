@@ -151,33 +151,56 @@ zox_sys2(BodysRealmSpawnSystem) {
 
             byte3 nsize = byte3_single(1 + nodegraph_vlength / 4);
 
-            color mcolor = (color) { 230, 155, 133, 255 };
-            entity node_0 = spawn_node_model_colors(world, mcolor, 1);
-            add_to_NodegraphLinks(graphs, node_0);
+            color skin_color = (color) { 230, 155, 133, 255 };
+            entity e1 = spawn_node_model_colors(world, skin_color, 1);
+            add_to_NodegraphLinks(graphs, e1);
             {
-                byte3 nsize_1 = nsize;
-                byte3 nposition_1 = byte3_half(nsize_1);
+                byte3 nposition_1 = byte3_half(nsize);
 
-                entity e2 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize_1, 1);
-                new_link_single_node(world, node_0, e2);
+                entity e2 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize, 1);
+                new_link_single_node(world, e1, e2);
 
                 // spawn eyes
 
-                byte eye_ridge = 1 + nsize.x / 6;
-                byte3 eye_size = byte3_single(5 + 1 + nsize.x / 6);
-                byte eye_y = nsize.y / 2 + 2;
-                byte eye_pos_z = nsize.z - eye_size.z / 2;
-                byte3 leye_position = (byte3) { nsize.x / 2 - eye_size.x - eye_ridge / 2, eye_y, eye_pos_z };
-                byte3 reye_position = (byte3) { nsize.x / 2 + eye_ridge / 2, eye_y, eye_pos_z };
+                byte eye_place_type = zox_model_node_paint; // fill | paint;
 
-                color ecolor = (color) { 230, 122, 122, 255 };
-                entity e3 = spawn_node_model_colors(world, ecolor, 1);
+                byte eye_ridge = nsize.x / 6;
+                if (eye_ridge < 0) eye_ridge = 1;
+                byte eye_size = nsize.x / 5;
+                if (eye_size < 0) eye_size = 1;
+
+                byte eye_pos_y = 1 + nsize.y / 2;
+                byte eye_pos_z = nsize.z - eye_size / 2;
+                byte3 leye_position = (byte3) {
+                    nsize.x / 2 - eye_size / 2 - eye_ridge / 2,
+                    eye_pos_y,
+                    eye_pos_z
+                };
+                byte3 reye_position = (byte3) {
+                    nsize.x / 2 + eye_size / 2 + eye_ridge / 2,
+                    eye_pos_y,
+                    eye_pos_z
+                };
+
+                // eye_size++;
+                if (eye_place_type == zox_model_node_paint) {
+                    // adjust for centered
+                    // leye_position.x -= eye_size / 2;
+                    // reye_position.x -= eye_size / 2;
+                    // leye_position.z -= (eye_size / 2) - 1;
+                    // reye_position.z -= (eye_size / 2) - 1;
+                }
+
+                zox_log("=> eye - ridge [%i] size [%i] at [(L:%ixR:%i)x%ix%i] nsize[%ix%ix%i]", eye_ridge, eye_size, leye_position.x, reye_position.x, eye_pos_y, eye_pos_z, nsize.x, nsize.y, nsize.z);
+
+                color eye_color = (color) { 55, 200, 99, 255 };
+                entity e3 = spawn_node_model_colors(world, eye_color, 1);
                 new_link_single_node(world, e2, e3);
 
-                entity e4 = spawn_node_model_at(world, prefab_node_model, zox_model_node_paint, leye_position, eye_size, 2);
+                entity e4 = spawn_node_model_at(world, prefab_node_model, eye_place_type, leye_position, byte3_single(eye_size), 2);
                 new_link_single_node(world, e3, e4);
 
-                entity e5 = spawn_node_model_at(world, prefab_node_model, zox_model_node_paint, reye_position, eye_size, 2);
+                entity e5 = spawn_node_model_at(world, prefab_node_model, eye_place_type, reye_position, byte3_single(eye_size), 2);
                 new_link_single_node(world, e4, e5);
             }
 
@@ -204,7 +227,7 @@ zox_sys2(BodysRealmSpawnSystem) {
                     texture_model = mlods2.value[mdepth];
                 }
 
-                entity process = spawn_process_model(world, prefab_process_model, node_0, mlods);
+                entity process = spawn_process_model(world, prefab_process_model, e1, mlods);
             }
 
             zox_set_ptr(model_group, ModelLinks, variants);

@@ -1,17 +1,30 @@
 void voctree_paint(VoxelNode* voctree, byte ndepth, byte value, byte3 pp, byte3 ps) {
 
-    byte3 tsize = byte3_single(powers_of_two_byte[ndepth]);
+    byte vlength = powers_of_two_byte[ndepth];
+    byte3 tsize = byte3_single(vlength);
+    byte3 vmax = (byte3) {
+        int_clamp(pp.x + ps.x, 0, 255),
+        int_clamp(pp.y + ps.y, 0, 255),
+        int_clamp(pp.z + ps.z, 0, 255)
+    };
 
-    byte3 pos;
-    for (pos.x = pp.x; pos.x < pp.x + ps.x; pos.x++) {
-        for (pos.y = pp.y; pos.y < pp.y + ps.y; pos.y++) {
-            for (pos.z = pp.z; pos.z < pp.z + ps.z; pos.z++) {
+    byte3 position;
+    for (position.x = pp.x; position.x < vmax.x; position.x++) {
+        for (position.y = pp.y; position.y < vmax.y; position.y++) {
+            for (position.z = pp.z; position.z < vmax.z; position.z++) {
 
-                if (pos.x >= tsize.x || pos.y >= tsize.y || pos.z >= tsize.z) {
+                if (position.x >= vlength || position.y >= vlength || position.z >= vlength) {
                     continue;
                 }
 
-                paint_voctree(voctree, ndepth, pos, value, 0);
+                byte voxel = get_value_VoxelNode(voctree, ndepth, position, 0);
+
+                // can't paint air!
+                if (!voxel) {
+                    continue;
+                }
+
+                set_VoxelNode(voctree, ndepth, position, value, 0);
             }
         }
     }

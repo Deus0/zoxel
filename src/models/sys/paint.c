@@ -17,16 +17,56 @@ void process_node_model_paint(ecs* world, entity n, entity v, lint seed) {
         return;
     }
 
-    // zox_geter_value(n, ColorRGB, color_rgb, paintc);
     zox_geter_value_non_const(n, NodeVoxel, byte, paint_type);
-    zox_geter_value(n, Shape3Position, byte3, position);
-    zox_geter_value(n, Shape3Size, byte3, size);
+    zox_geter_value_non_const(n, Shape3Position, byte3, position);
+    zox_geter_value_non_const(n, Shape3Size, byte3, size);
 
-    zox_geter_value(v, NodeDepth, byte, ndepth);
+    zox_geter_value_non_const(v, NodeDepth, byte, ndepth);
     zox_geter(v, ColorRGBs, colors);
     zox_muter(v, VoxelNode, voctree);
 
-    // zox_log("Painting at [%ix%ix%i] s[%ix%ix%i]", position.x, position.y, position.z, size.x, size.y, size.z);
+    if (!paint_type) {
+        zox_log_error("Cannot paint air type.");
+        return;
+    }
+
+    // NOTE: Scales node sizing to the Vox Size
+    byte vlength = powers_of_two[ndepth];
+    float max_vlength = (float) powers_of_two[nodegraph_max_depth]; //  32.0f;
+    float3 positionf = (float3) {
+        position.x / max_vlength,
+        position.y / max_vlength,
+        position.z / max_vlength
+    };
+    position = (byte3) {
+        positionf.x * vlength,
+        positionf.y * vlength,
+        positionf.z * vlength
+    };
+
+    float3 sizef = (float3) {
+        size.x / max_vlength,
+        size.y / max_vlength,
+        size.z / max_vlength
+    };
+    size = (byte3) {
+        sizef.x * vlength,
+        sizef.y * vlength,
+        sizef.z * vlength
+    };
+
+    if (size.x == 0) size.x = 1;
+    if (size.y == 0) size.y = 1;
+    if (size.z == 0) size.z = 1;
+
+    byte color_index = paint_type - 1;
+    if (color_index >= colors->length) {
+        zox_log_error("Paint Index OOB [%i] colors [%i]", paint_type, colors->length);
+        return;
+    }
+
+    // color_rgb vcolor = colors->value[color_index];
+    // zox_log("     - Painting at [%ix%ix%i] s[%ix%ix%i] :: v%i %ix%ix%i", position.x, position.y, position.z, size.x, size.y, size.z, paint_type, vcolor.r, vcolor.g, vcolor.b);
 
     // Run for our fill
     write_lock_VoxelNode(voctree);
@@ -65,7 +105,7 @@ zox_sys2(PaintModelNodeSystem) {
 
         // for each model LOD, run shapes
 
-        zox_log(" - Node: Model Paint [%s]", zox_get_name(model->value));
+        zox_logv(" - Node: Model Paint [%s]", zox_get_name(model->value));
 
         zox_geter(model->value, Seed, seed);
 

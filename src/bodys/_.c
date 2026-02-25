@@ -11,6 +11,8 @@
 #ifndef zoxm_bodys
 #define zoxm_bodys
 
+// #define zox_debug_head_only
+
 // #include "set/_.c"
 #include "com/_.c"
 #include "sta/_.c"

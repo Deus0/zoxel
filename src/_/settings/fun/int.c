@@ -18,6 +18,8 @@ byte zoxs_limit_int(ecs* world, const char *name, int min, int max) {
 
                     s.on_set(world, &new_value);
                     settings[i] = s;
+
+                    save_settings();
                 }
                 settings[i] = s;
 
@@ -39,6 +41,7 @@ byte zoxs_set_int(ecs *world, const char *name, int value) {
                 setting.value_int = value;
                 setting.on_set(world, &value);
                 settings[i] = setting;
+                save_settings();
                 return 1;
             }
         }

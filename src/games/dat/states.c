@@ -3,7 +3,7 @@
 #define zox_game_load_start 2
 #define zox_game_load_fading 3
 #define zox_game_load_faded 4
-#define zox_game_load_realm 5
+#define zox_game_loading_realm 5
 #define zox_game_playing_start 6
 #define zox_game_playing 7
 #define zox_game_paused 8

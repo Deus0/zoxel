@@ -63,6 +63,10 @@ zox_sys2(BodyCombineSystem) {
             continue;
         }
 
+        // Clear combine data
+        resize_CombineList(voxes, 0);
+        resize_CombinePositions(positions, 0);
+
         // TODO: Generate this from item slot data
         // head size 8^3
         // chest size x: 10, y: 25, z: 10
@@ -75,51 +79,53 @@ zox_sys2(BodyCombineSystem) {
             (byte3) { 4 * mul, 21 * mul, 4 * mul },
         };
 
-        resize_CombineList(voxes, 0);
-        resize_CombinePositions(positions, 0);
-
+#ifndef zox_debug_head_only
         for (int j = 0; j < bodys->length; j++) {
+#else
+        for (int j = 1; j < bodys->length; j++) {
+#endif
             entity item = bodys->value[j];
             entity vox = item_get_max_depth_vox(world, item);
+#ifndef zox_debug_head_only
+            byte3 vposition = vpositions[j];
+#else
+            byte3 vposition = byte3_zero;
+#endif
 
             add_to_CombineList(voxes, vox);
-            add_to_CombinePositions(positions, vpositions[j]);
+            add_to_CombinePositions(positions, vposition);
         }
 
         output->value = zox_dirty_trigger;
-
-        //zox_set_ptr(e, CombineList, list);
-        //zox_set_ptr(e, CombinePositions, positions);
-        //zox_set(e, CombineVox, { zox_dirty_trigger });
-
-        // Temporarily clone it there
-        /*byte body_index = zox_slot_core; // zox_slot_head | zox_slot_core;
-        entity part = body_index < bodys->length ? bodys->value[body_index] : 0;
-
-        if (!zox_valid(part)) {
-            zox_log_error("Player has invalid body part");
-            continue;
-        }
-
-        entity vox = item_get_max_depth_vox(world, part);
-
-        if (!zox_valid(vox)) {
-            zox_logw("{Invalid Part Vox} [%s]", zox_get_name(e));
-            continue;
-        }
-
-        if (!zox_has(vox, MaxRenderDepth)) {
-            zox_logw("Entity [%s]'s Vox [%s] has no Max Render Depth", zox_get_name(e), zox_get_name(vox));
-            continue;
-        }
-
-        // zox_set(e, CloneVox, { 1 });
-        // zox_set(e, CloneVoxLink, { vox });
-
-        zox_log("[player body]: Valid Vox Model Lod [%s] Depth [%i]", zox_get_name(vox), rdepth->value);*/
     }
 } zox_sys_end(BodyCombineSystem);
 
 // zox_set(e, ModelLink, { vox });
 // zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
-// zox_set(e, MaxRenderDepth, { max_render_depth });
+// zox_set(e, MaxRenderDepth, { max_render_depth });;
+
+// Temporarily clone it there
+/*byte body_index = zox_slot_core; // zox_slot_head | zox_slot_core;
+entity part = body_index < bodys->length ? bodys->value[body_index] : 0;
+
+if (!zox_valid(part)) {
+    zox_log_error("Player has invalid body part");
+    continue;
+}
+
+entity vox = item_get_max_depth_vox(world, part);
+
+if (!zox_valid(vox)) {
+    zox_logw("{Invalid Part Vox} [%s]", zox_get_name(e));
+    continue;
+}
+
+if (!zox_has(vox, MaxRenderDepth)) {
+    zox_logw("Entity [%s]'s Vox [%s] has no Max Render Depth", zox_get_name(e), zox_get_name(vox));
+    continue;
+}
+
+// zox_set(e, CloneVox, { 1 });
+// zox_set(e, CloneVoxLink, { vox });
+
+zox_log("[player body]: Valid Vox Model Lod [%s] Depth [%i]", zox_get_name(vox), rdepth->value);*/

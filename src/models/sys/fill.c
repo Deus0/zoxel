@@ -25,7 +25,6 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
     zox_geter_value_non_const(n, Shape3Size, byte3, size);
 
     zox_geter_value(v, NodeDepth, byte, ndepth);
-    byte vlength = powers_of_two[ndepth];
 
     zox_geter(v, ColorRGBs, colors);
 
@@ -47,22 +46,38 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
 
     // Change transform for vlength difference
 
-    // zox_log("OG Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
+    // zox_log("[%s] OG Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", zox_get_name(v), ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
 
-    // Note: Modifys size by vlength
+    // NOTE: Scales node sizing to the Vox Size
+    byte vlength = powers_of_two[ndepth];
     float max_vlength = (float) powers_of_two[nodegraph_max_depth]; //  32.0f;
+    float3 positionf = (float3) {
+        position.x / max_vlength,
+        position.y / max_vlength,
+        position.z / max_vlength
+    };
+    position = (byte3) {
+        positionf.x * vlength,
+        positionf.y * vlength,
+        positionf.z * vlength
+    };
 
-    float3 positionf = (float3) { position.x / max_vlength, position.y / max_vlength, position.z / max_vlength };
-    position = (byte3) { positionf.x * vlength, positionf.y * vlength, positionf.z * vlength };
-
-    float3 sizef = (float3) { size.x / max_vlength, size.y / max_vlength, size.z / max_vlength };
-    size = (byte3) { sizef.x * vlength, sizef.y * vlength, sizef.z * vlength };
+    float3 sizef = (float3) {
+        size.x / max_vlength,
+        size.y / max_vlength,
+        size.z / max_vlength
+    };
+    size = (byte3) {
+        sizef.x * vlength,
+        sizef.y * vlength,
+        sizef.z * vlength
+    };
 
     if (size.x == 0) size.x = 1;
     if (size.y == 0) size.y = 1;
     if (size.z == 0) size.z = 1;
 
-    // zox_log("New Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
+    // zox_log("[%s] New Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", zox_get_name(v), ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
 
     // byte2 vrange = (byte2) { 1, colors->length - 1 };
     // byte black = colors->length;
@@ -73,12 +88,6 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
         // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
         // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
         voctree_fill_ellipsoid(voctree, ndepth, fill_type, position, size);
-
-    // build_vox_soil(voctree, ndepth, vrange, black, vregions);
-    /*build_vox_bricks(voctree, ndepth, vrange, black);
-    if (is_generate_vox_outlines) {
-        vox_outlines(voctree, ndepth, black);
-    }*/
 
     write_unlock_VoxelNode(voctree);
 
@@ -112,7 +121,7 @@ zox_sys2(FillModelNodeSystem) {
 
         // for each model LOD, run shapes
 
-        zox_log(" - Node: Model Fill [%s]", zox_get_name(model->value));
+        zox_logv(" - Node: Model Fill [%s]", zox_get_name(model->value));
 
         zox_geter(model->value, Seed, seed);
 

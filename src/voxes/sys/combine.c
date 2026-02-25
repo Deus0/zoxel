@@ -61,7 +61,9 @@ zox_sys2(CombineVoxSystem) {
                 if (vsize.z > new_csize.z) new_csize.z = vsize.z;
 
                 zox_geter_value(vox, BlockScale, float, vscale);
-                if (!bscale->value || vscale < bscale->value) bscale->value = vscale;
+                if (!bscale->value || vscale < bscale->value) {
+                    bscale->value = vscale;
+                }
             }
         }
 
@@ -77,8 +79,6 @@ zox_sys2(CombineVoxSystem) {
 
         for (byte j = 0; j < voxes->length; j++) {
             entity vox = voxes->value[j];
-
-            // if (j == 1) continue;
 
             if (!zox_valid(vox)) {
                 continue;
@@ -97,19 +97,12 @@ zox_sys2(CombineVoxSystem) {
             zox_geter(vox, ColorRGBs, acolors);
             zox_geter_value(vox, ChunkSize, int3, vsize);
 
-            // for now we just set to vox
-            /*if (acolors->length > colors->length) {
-                colors->length = acolors->length;
-                int clength = sizeof(color_rgb) * acolors->length;
-                resize_ColorRGBs(colors, clength);
-                memcpy(colors->value, acolors->value, clength);
-            }*/
-            for (int k = 0; k < acolors->length; k++) {
+            for (byte k = 0; k < acolors->length; k++) {
                 color_rgb acolor = acolors->value[k];
 
                 // If not in list
                 byte inlist = 0;
-                for (int l = 0; l < colors->length; l++) {
+                for (byte l = 0; l < colors->length; l++) {
                     if (color_rgb_equal(colors->value[l], acolor)) {
                         inlist = 1;
                         break;
@@ -134,33 +127,41 @@ zox_sys2(CombineVoxSystem) {
                 for (position.y = vposition.y; position.y < vposition.y + vsize.y; position.y++) {
                     for (position.z = vposition.z; position.z < vposition.z + vsize.z; position.z++) {
 
-                        byte3 gposition = (byte3) {
+                        byte3 place_vox_position = (byte3) {
                             position.x - vposition.x,
                             position.y - vposition.y,
                             position.z - vposition.z
                         };
 
-                        byte value = get_value_VoxelNode(aoctree, ndepth->value, gposition, 0);
+                        byte place_vox_value = get_value_VoxelNode(aoctree, ndepth->value, place_vox_position, 0);
 
-                        if (!value) {
+                        if (!place_vox_value) {
                             continue;
                         }
 
                         // TODO: Use lookups later
                         // Convert to our placement
                         // get color from value
-                        color_rgb pcolor = acolors->value[value - 1];
+                        color_rgb place_vox_color = acolors->value[place_vox_value - 1];
                         // find color in place vox
 
-                        for (int k = 0; k < colors->length; k++) {
-                            if (color_rgb_equal(colors->value[k], pcolor)) {
+                        byte value = 0;
+                        for (byte k = 0; k < colors->length; k++) {
+                            color_rgb body_color = colors->value[k];
+
+                            if (color_rgb_equal(body_color, place_vox_color)) {
                                 value = k + 1;  // + 1 for air
                                 break;
                             }
                         }
 
+                        if (!value) {
+                            continue;
+                        }
+
                         set_VoxelNode(voctree, ndepth->value, position, value, 0);
 
+                        // Expands the size of our vox
                         if (position.x >= new_csize.x) new_csize.x = position.x;
                         if (position.y >= new_csize.y) new_csize.y = position.y;
                         if (position.z >= new_csize.z) new_csize.z = position.z;
@@ -177,7 +178,13 @@ zox_sys2(CombineVoxSystem) {
 
         // bscale->value = get_chunk_scale(ndepth->value, tdepth, terrain_scalev);
         csize->value = new_csize;
-        bscale->value = (1.0f / (2 * powers_of_two_byte[ndepth->value]));
+
+        bscale->value = (1.0f / (2.0f * powers_of_two_byte[ndepth->value]));
+        // bscale->value = (2.0f / (2 * powers_of_two_byte[6]));
+        /*if (ndepth->value < 6) {
+            zox_log("scaling up UP");
+            bscale->value *= powers_of_two_byte[6 - ndepth->value + 1];
+        }*/
 
         dirty->value = zox_dirty_trigger;
 

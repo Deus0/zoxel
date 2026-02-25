@@ -38,9 +38,9 @@ void process_node_model_generate_colors(ecs* world, entity n, entity v, lint see
         add_to_ColorRGBs(colors, ucolor);
     }
 
-    if (is_generate_vox_outlines) {
+    /*if (is_generate_vox_outlines) {
         add_to_ColorRGBs(colors, color_rgb_black);
-    }
+    }*/
 }
 
 // TODO: Reset colors at start of blueprint running

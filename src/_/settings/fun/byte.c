@@ -18,6 +18,7 @@ byte zoxs_limit_byte(ecs* world, const char *name, byte min, byte max) {
                     s.value_byte = new_value;
                     s.on_set(world, &new_value);
                     settings[i] = s;
+                    save_settings();
                 }
                 settings[i] = s;
                 return 1;

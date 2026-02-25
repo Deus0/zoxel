@@ -17,6 +17,7 @@ byte zoxs_limit_float(ecs* world, const char *name, float min, float max) {
                     s.value_float = new_value;
                     s.on_set(world, &new_value);
                     settings[i] = s;
+                    save_settings();
                 }
                 settings[i] = s;
                 return 1;
