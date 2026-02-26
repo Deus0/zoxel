@@ -168,27 +168,32 @@ zox_sys2(BodysRealmSpawnSystem) {
                 if (eye_ridge < 0) eye_ridge = 1;
                 byte eye_size = nsize.x / 5;
                 if (eye_size < 0) eye_size = 1;
+                byte half_eye_size = eye_size / 2;
+                if (half_eye_size == 0) half_eye_size = 1;
 
                 byte eye_pos_y = 1 + nsize.y / 2;
-                byte eye_pos_z = nsize.z - eye_size / 2;
+                byte eye_pos_z = nsize.z - half_eye_size;
+
+                // eye_size++;
+                if (eye_place_type == zox_model_node_paint) {
+                    eye_pos_z -= half_eye_size;
+                }
+
                 byte3 leye_position = (byte3) {
-                    nsize.x / 2 - eye_size / 2 - eye_ridge / 2,
+                    nsize.x / 2 - half_eye_size - eye_ridge,
                     eye_pos_y,
                     eye_pos_z
                 };
                 byte3 reye_position = (byte3) {
-                    nsize.x / 2 + eye_size / 2 + eye_ridge / 2,
+                    nsize.x / 2 + half_eye_size + eye_ridge,
                     eye_pos_y,
                     eye_pos_z
                 };
-
-                // eye_size++;
+                //  + nsize.x % 2
                 if (eye_place_type == zox_model_node_paint) {
                     // adjust for centered
-                    // leye_position.x -= eye_size / 2;
-                    // reye_position.x -= eye_size / 2;
-                    // leye_position.z -= (eye_size / 2) - 1;
-                    // reye_position.z -= (eye_size / 2) - 1;
+                    // leye_position.x += half_eye_size;
+                    reye_position.x -= half_eye_size;
                 }
 
                 zox_log("=> eye - ridge [%i] size [%i] at [(L:%ixR:%i)x%ix%i] nsize[%ix%ix%i]", eye_ridge, eye_size, leye_position.x, reye_position.x, eye_pos_y, eye_pos_z, nsize.x, nsize.y, nsize.z);

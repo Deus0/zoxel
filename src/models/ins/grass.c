@@ -1,11 +1,13 @@
 entity spawn_model_grass(ecs* world, color c, lint seed) {
+
     // properties
     srand(seed);
     c = color_mutate(c, 40);
-    byte max_render_depth = block_vox_depth;
-    byte vlength = powers_of_two[max_render_depth];
 
-    int big_rubbles = 10 * vlength * vlength + rand() % vlength * vlength;
+    byte max_render_depth = block_vox_depth;
+    byte spawn_depth = 5;
+    byte vlength = powers_of_two[spawn_depth]; // max_render_depth];
+    int voxels = 10 * vlength * vlength + rand() % vlength * vlength;
 
     // spawn model
     zox_make_new();
@@ -17,7 +19,10 @@ entity spawn_model_grass(ecs* world, color c, lint seed) {
     for (int i = 0; i <= max_render_depth; i++) {
         byte render_depth = i; // max_render_depth - i;
         byte node_length = powers_of_two[render_depth];
-        int place_count = big_rubbles / (pow((max_render_depth - i) + 1, 2 + (max_render_depth - i)));
+
+        byte depth_difference = spawn_depth - render_depth;
+        int place_count = voxels / (pow(depth_difference + 1, 2 + depth_difference));
+
         if (place_count == 0) {
             place_count = 1;
         }

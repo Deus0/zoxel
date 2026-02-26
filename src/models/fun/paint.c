@@ -3,9 +3,9 @@ void voctree_paint(VoxelNode* voctree, byte ndepth, byte value, byte3 pp, byte3 
     byte vlength = powers_of_two_byte[ndepth];
     byte3 tsize = byte3_single(vlength);
     byte3 vmax = (byte3) {
-        int_clamp(pp.x + ps.x, 0, 255),
-        int_clamp(pp.y + ps.y, 0, 255),
-        int_clamp(pp.z + ps.z, 0, 255)
+        int_clamp(pp.x + ps.x + 1, 0, 255),
+        int_clamp(pp.y + ps.y + 1, 0, 255),
+        int_clamp(pp.z + ps.z + 1, 0, 255)
     };
 
     byte3 position;
