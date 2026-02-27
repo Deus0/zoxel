@@ -43,8 +43,9 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
     // const byte node_depth = character_depth;
     byte reduction_length = powers_of_two[reducer];
     const byte* voxels = vox->chunks[0].xyzi.voxels;
+
     int3 size = vox->chunks[0].size.xyz;
-    const byte3 ogsize = int3_to_byte3(size);
+    byte3 ogsize = int3_to_byte3(size);
     byte node_depth = pick_node_depth(size);
 
     if (node_depth - reducer <= 0) {
@@ -98,10 +99,17 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
                 gpos.x *= reduction_length;
                 gpos.y *= reduction_length;
                 gpos.z *= reduction_length;
+
+                if (gpos.x >= ogsize.x || gpos.y >= ogsize.y || gpos.z >= ogsize.z) {
+                    continue;
+                }
+
                 vox_index = byte3_array_index(gpos, ogsize);
+
                 if (!voxels[vox_index]) {
                     continue;
                 }
+
                 byte3 ppos = position;
                 /*ppos.x += offset.x;
                 ppos.y += offset.y;
@@ -111,18 +119,14 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
         }
     }
 
-    // NOTE: Optimization happens in the cleanup system
-    // optimize_solid_nodes(node);
-    // reduce_voxel_octrees(world, node);
     zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
 
     // Copy our file into our colors
     int clength = vox->palette.values_length;
     zox_muter(e, ColorRGBs, colors);
-
-    resize_memory_component(ColorRGBs, colors, color_rgb, clength)
+    resize_ColorRGBs(colors, clength);
     memcpy(colors->value, vox->palette.values_rgb, clength * sizeof(color_rgb));
-
+    // resize_memory_component(ColorRGBs, colors, color_rgb, clength)
     // set_colors_from_vox_file(world, e, vox); // colors
 }
 
@@ -130,36 +134,45 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
 //      atm we rebuild everytime the same
 entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* filename) {
 
-    zox_make_neww(model)
+    zox_make_neww(model);
     char name[128];
     sprintf(name, "vox_file_%s", filename);
     zox_set_unique_name(model, name);
     // zox_log("Generating Model Lods for [%s]", filename);
 
-    byte max_render_depth = pick_node_depth(data->chunks[0].size.xyz);
-    zox_set(model, MaxRenderDepth, { max_render_depth });
-    float bscale = 1 / ((float) 64);
+    byte mdepth = pick_node_depth(data->chunks[0].size.xyz);
+    // byte mdepth = block_vox_depth;
+    zox_set(model, MaxRenderDepth, { mdepth });
 
-    // zox_log("Checking: Vox File Import scale: 64 - %i: %i", powers_of_two[max_render_depth], max_render_depth);
+    // zox_log("Checking: Vox File Import scale: 64 - %i: %i", powers_of_two[mdepth], mdepth);
 
     ModelLods model_lods;
-    for (byte i = 0; i <= max_render_depth; i++) {
+    for (byte rdepth = 0; rdepth <= mdepth; rdepth++) {
 
-        byte chunk_depth_reducer = 0;   // i - disabled for now
-        byte render_depth = i; // max_render_depth - i;
+        byte reducer = mdepth - rdepth;
+        // byte reducer = 0;
+        // i - disabled for now
+        byte ddepth = powers_of_two[mdepth - rdepth];
+        // float bscale = (1.0f / (float) ddepth) * (1 / 64.0f);
+        // float bscale = ((float) ddepth) * (1 / 64.0f);
+        float bscale = (1 / 64.0f);
+
+        zox_log("> rdepth [%i] ddepth [%i] scale [%f]", rdepth, ddepth, bscale);
 
         zox_instance(p);
 
-        set_vox_file(world, e, data, chunk_depth_reducer, bscale);
+        set_vox_file(world, e, data, reducer, bscale);
 
         zox_set(e, ChunkMeshDirty, { zox_dirty_trigger });
-        zox_set(e, RenderDepth, { render_depth });
-        zox_set(e, MaxRenderDepth, { max_render_depth });
+        zox_set(e, RenderDepth, { rdepth });
+        // zox_set(e, MaxRenderDepth, { mdepth });
+        zox_set(e, MaxRenderDepth, { rdepth});
 
-        model_lods.value[i] = e;
+        model_lods.value[rdepth] = e;
     }
+    zox_set_ptr(model, ModelLods, model_lods);
 
     // zox_log("Generating Complete [%s]", filename);
-    zox_set_ptr(model, ModelLods, model_lods);
+
     return model;
 }

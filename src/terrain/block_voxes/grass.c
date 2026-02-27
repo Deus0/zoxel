@@ -26,16 +26,12 @@ entity spawn_block_grass(ecs *world, byte index, color block_color, entity model
     zox_geter(model, ModelLinks, models);   // model group
     entity vox = models->value[0];  // use first model
     zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
-    zox_geter(vox, ModelLods, modelLods);
-    entity vox_lod = modelLods->value[max_render_depth];
+    zox_geter(vox, ModelLods, mlods);
+    entity vox_lod = mlods->value[max_render_depth];
 
     // Spawn Item Texture
-    entity texture = spawn_texture(
-        world,
-        prefab_vox_texture,
-        int2_single(powers_of_two[block_vox_depth])
-    );
-    zox_set_name_e(texture, "grass_texture");
+    entity texture = spawn_texture(world, prefab_vox_texture, int2_single(powers_of_two[block_vox_depth]));
+    zox_set_name_e(texture, "texture_grass");
     zox_set(texture, VoxLink, { vox_lod });
     zox_set(texture, VoxBakeSide, { direction_left });
     zox_set(texture, GenerateTexture, { zox_dirty_trigger });

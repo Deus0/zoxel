@@ -1,35 +1,39 @@
 void load_files_voxes(ecs *world) {
-    const entity prefab = prefab_vox_file;
+
+    entity prefab = prefab_vox_file;
+
     char* load_directory = concat_file_path(resources_path, directory_voxes);
     zox_logv("  - Loading Files Voxes [%s]", load_directory);
+
     FileList files = get_files(load_directory, 0);
     files_voxes_count = files.count;
     files_voxes = malloc(sizeof(entity) * files_voxes_count);
     files_hashmap_voxes = create_string_hashmap(files_voxes_count);
     zox_logv("      + Count [%i]", files.count);
+
     for (int i = 0; i < files.count; i++) {
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
+
         files_voxes[i] = 0;
         zox_logv("   - [%i] [vox] [%s]", i, filepath);
         vox_file data;
+
         if (read_vox(filepath, &data) == EXIT_FAILURE) {
             zox_log_error("[%s] failed to load", filepath);
             continue;
         }
-        if (data.chunks) {
-            const entity e = spawn_vox_file(
-                world,
-                prefab,
-                &data,
-                filename);
-            dispose_vox_file(&data);
-            if (e) {
-                string_hashmap_add(files_hashmap_voxes, new_string_data_clone(filename), e);
-                files_voxes[i] = e;
-            }
-        } else {
+
+        if (!data.chunks) {
             zox_log_error("[%s] failed to load properly", filepath)
+            continue;
+        }
+        entity e = spawn_vox_file(world, prefab, &data, filename);
+        dispose_vox_file(&data);
+
+        if (e) {
+            string_hashmap_add(files_hashmap_voxes, new_string_data_clone(filename), e);
+            files_voxes[i] = e;
         }
     }
     free_files(&files);

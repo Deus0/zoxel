@@ -12,7 +12,6 @@ zox_tag(StoneTexture);
 zox_tag(ObsidianTexture);
 zox_tag(FillTexture);
 zox_tag(TextureAddNoise);
-zox_tag(VoxTexture);
 zox_tag(TextureRGB);
 zoxc_state(GenerateTexture);
 zoxc_byte(OutlineThickness);
@@ -28,11 +27,14 @@ zoxc_arrayd(TilemapUVs, float2)
 zoxc_arrayd(TextureLinks, entity)
 // zoxc_entities(Textures)
 
+// Voxes
+zox_tag(VoxTexture);
+zox_tag(CenterVoxTexture);
+
 void define_components_textures(ecs* world) {
     // entity types
     zoxd_tag(Texture);    // RGBA
     zoxd_tag(TextureRGB);
-    zoxd_tag(VoxTexture);
     zoxd_tag(Tilemap);
     // Properties
     zoxd_tag(FixToLayout);
@@ -47,6 +49,9 @@ void define_components_textures(ecs* world) {
     zoxd_tag(ObsidianTexture);
     zoxd_tag(FillTexture);
     zoxd_tag(TextureAddNoise);
+
+    zoxd_tag(VoxTexture);
+    zoxd_tag(CenterVoxTexture);
 
     zoxd_state(GenerateTexture);
     zoxd_byte(OutlineThickness);

@@ -1,11 +1,11 @@
 entity spawn_model(ecs *world, entity p, byte mdepth, byte ndepth, byte3 rsize) {
 
     byte ddepth = mdepth - ndepth + 1;
-    float voxel_scale = ((float) ddepth) / 64.0f;
+    float bscale = ((float) ddepth) / 64.0f;
 
     zox_instance(p);
     zox_set(e, NodeDepth, { ndepth });
-    zox_set(e, BlockScale, { voxel_scale });
+    zox_set(e, BlockScale, { bscale });
     zox_set(e, ChunkSize, { byte3_to_int3(rsize) });
 
     // NOTE: Do instanced models need these??
