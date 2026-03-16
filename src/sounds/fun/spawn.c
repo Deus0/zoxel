@@ -10,13 +10,10 @@ entity spawn_sound_from_file_index(ecs *world,
     return 0;
 }
 
-entity spawn_sound_from_file_name(ecs *world,
-    const entity prefab,
-    char *name,
-    float frequency,
-    float volume)
-{
-    const entity sound_file = string_hashmap_get(files_hashmap_sounds, new_string_data(name));
+entity spawn_sound_from_file_name(ecs *world, entity prefab, char *name, float frequency, float volume) {
+
+    entity sound_file = string_hashmap_get(files_hashmap_sounds, new_string_data(name));
+
     if (sound_file) {
         return spawn_sound_from_file(world,
             prefab,

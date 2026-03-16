@@ -18,6 +18,8 @@ entity spawn_block_grass(ecs *world, byte index, color block_color, entity model
     process_disabled_block_vox(world, &data, 1);
 
     entity e = spawn_block_vox_meta(world, data);
+    zox_prefab_set(e, BlockSound, { 1 });
+
     if (disable_block_voxes) {
         return e;
     }

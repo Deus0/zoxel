@@ -157,7 +157,7 @@ entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* fi
         // float bscale = ((float) ddepth) * (1 / 64.0f);
         float bscale = (1 / 64.0f);
 
-        zox_log("> rdepth [%i] ddepth [%i] scale [%f]", rdepth, ddepth, bscale);
+        // zox_log("> rdepth [%i] ddepth [%i] scale [%f]", rdepth, ddepth, bscale);
 
         zox_instance(p);
 

@@ -10,6 +10,8 @@ zoxc_state(BlocksDirty);
 zoxc_byte(VoxBakeSide);
 zoxc_byte(BlockVoxOffset);
 zoxc_byte(BlockIndex);
+zoxc_byte(InsideBlock);
+zoxc_state(InsideBlockDirty);
 zoxc_int3(VoxelPosition);
 zoxc_byte3(VoxelLocalPosition);
 zoxc_float(BlockScale);
@@ -17,6 +19,8 @@ zoxc_entity(BlockLink);
 zoxc_entity(BlockPrefabLink);
 zoxc_entities(BlockLinks)
 zoxc_entity(BlockManagerLink);
+zox_tag(BlockSoundTrigger);
+zoxc_entity(BlockSound);        // Links Block to a Sound
 
 void define_components_blocks(ecs *world) {
     zoxd_tag(Voxel);
@@ -38,4 +42,8 @@ void define_components_blocks(ecs *world) {
     zoxd_entity(BlockPrefabLink);
     zoxd_entities(BlockLinks);
     zoxd_entity(BlockManagerLink);
+    zoxd_byte(InsideBlock);
+    zoxd_state(InsideBlockDirty);
+    zoxd_tag(BlockSoundTrigger);
+    zoxd_entity(BlockSound);
 }

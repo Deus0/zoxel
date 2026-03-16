@@ -1,5 +1,6 @@
 #include "detect2.c"    // using old (2) atm
 #include "unstuck.c"
+#include "inside_sound.c"
 
 void define_systems_terrain_collisions(ecs* world) {
     zox_system(
@@ -25,12 +26,28 @@ void define_systems_terrain_collisions(ecs* world) {
         [out] collisions3.Grounded
     );
 
+#ifdef zox_dbg_lines_unstuck
     zox_system(
+#else
+    zox_system_1(
+#endif
         UnstuckSystem,
         zoxp_physics + 1,
         [in] terrain.TerrainLink,
         [in] transforms3.Bounds3D,
         [out] physics3.LastUnstuck3,
+        [out] blocks.InsideBlock,
+        [out] blocks.InsideBlockDirty,
         [out] transforms3.Position3D
+    );
+
+    zox_system_1(
+        InsideBlockSoundSystem,
+        EcsOnUpdate,
+        [in] terrain.TerrainLink,
+        [in] blocks.InsideBlockDirty,
+        [in] blocks.InsideBlock,
+        [in] transforms3.Position3D,
+        [none] blocks.BlockSoundTrigger
     );
 }

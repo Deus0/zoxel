@@ -127,11 +127,10 @@ void zoxel_settings_uis() {
 }
 
 void zoxel_debug_keys() {
-    add_hook_key_down(key_down_toggle_dialogue);
-
-    add_hook_key_down(key_down_toggle_light_debug);
+    // add_hook_key_down(key_down_toggle_dialogue);
+    // add_hook_key_down(key_down_toggle_light_debug);
     // add_hook_key_down(test_load_chunk);
-    add_hook_key_down(toggle_sound);
+    // add_hook_key_down(toggle_sound);
     add_hook_key_down(toggle_fps_viewer);
     add_hook_key_down(toggle_life_terrain);
     add_hook_key_down(toggle_player_death);
@@ -144,7 +143,7 @@ void zoxel_debug_keys() {
     add_hook_key_down(toggle_hierarchy);
     add_hook_key_down(toggle_flymode);
     add_hook_key_down(toggle_autoroam);
-    add_hook_key_down(key_down_toggle_keyboard_navigation);
+    // add_hook_key_down(key_down_toggle_keyboard_navigation);
     // add_hook_key_down(key_down_test_aura);
     // add_hook_key_down(keydown_test_cubes);
     // add_hook_key_down(keydown_test_popup3);
@@ -157,8 +156,8 @@ void zoxel_debug_keys() {
     // add_hook_key_down(test_spawn_chunk_terrain);
     // add_hook_key_down(test_key_element_front2D);
     // add_hook_key_down(key_down_update_text3D);
-
-    add_hook_key_down(key_down_dbg_chunk);
+    // add_hook_key_down(key_down_dbg_chunk);
+    add_hook_key_down(debug_key_down_unstucking);
 }
 
 void zox_set_terrain_settings() {

@@ -2,7 +2,8 @@ zox_sys2(MusicPlaySystem) {
     if (nomusic || nosounds) {
         return;
     }
-    const float volume_music = get_volume_music();
+
+    float volume_music = get_volume_music();
     init_delta_time()
     zox_sys_world()
     zox_sys_begin()
@@ -12,26 +13,34 @@ zox_sys2(MusicPlaySystem) {
     zox_sys_out(MusicNote)
     zox_sys_out(MusicTime)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MusicEnabled, musicPlaying)
-        zox_sys_i(NoteLinks, noteLinks)
+        zox_sys_i(MusicEnabled, playing)
+        zox_sys_i(NoteLinks, notes)
         zox_sys_i(MusicSpeed, musicSpeed)
         zox_sys_o(MusicNote, musicNote)
         zox_sys_o(MusicTime, musicTime)
-        if (!musicPlaying->value || !noteLinks->length) {
+
+        if (!playing->value || !notes->length) {
+            // zox_logw("Music disabled");
             continue;
         }
+
         musicTime->value += delta_time * global_music_speed;
-        if (noteLinks->length > 0 && musicTime->value >= musicSpeed->value) {
+        if (notes->length > 0 && musicTime->value >= musicSpeed->value) {
             musicTime->value -= musicSpeed->value;
             musicNote->value++;
-            if (musicNote->value >= noteLinks->length) {
+
+            if (musicNote->value >= notes->length) {
+                // zox_logw("Music disabled");
                 musicNote->value = 0;
             }
+
             // music notes disabled atm
-            if (volume_music == 0) {
+            if (!volume_music) {
+                // zox_logw("Music disabled");
                 continue;
             }
-            const entity note = noteLinks->value[musicNote->value];
+
+            entity note = notes->value[musicNote->value];
             zox_geter_value(note, SoundFrequencyIndex, int, music_note)
             zox_geter_value(note, SoundVolume, float, note_volume)
             zox_geter_value(note, SoundLength, float, note_time)
@@ -66,7 +75,7 @@ zox_sys2(MusicPlaySystem) {
                 // zox_log_notes("+ [%s] created [%lu]", zox_get_name(sound), sound)
             }
 
-            zox_log_notes("+ playing [%lu:%s] at [%i]: (i%i:f%f) [note_volume [%f] - volume[%f]]", note, zox_get_name(note), musicNote->value, note_instrument, frequency, note_volume, volume)
+            // zox_log("+ playing [%lu:%s] at [%i]: (i%i:f%f) [note_volume [%f] - volume[%f]]", note, zox_get_name(note), musicNote->value, note_instrument, frequency, note_volume, volume)
             // zox_log_notes(" > music note played [%i : %i] frequency [%f] instrument [%i]", musicNote->value, music_note, frequency, instrumentType->value)
         }
     }

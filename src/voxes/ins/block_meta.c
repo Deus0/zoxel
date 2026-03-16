@@ -17,12 +17,15 @@ entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
     if (data.disable_collision) {
         zox_set(e, BlockCollider, { zox_block_air });
     }
+
     if (data.model) {
         zox_set(e, BlockModel, { data.model });
     }
+
     if (data.vox) {
         zox_set(e, ModelLink, { data.vox });
     }
+
     if (data.vox_offset) {
         zox_set(e, BlockVoxOffset, { 1 });
     }

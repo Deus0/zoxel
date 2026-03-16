@@ -18,6 +18,7 @@
 #include "sta/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 
 zox_begin_module(Bodys)

@@ -24,4 +24,6 @@
 #define zox_generate_realm_quests 18
 #define zox_generate_realm_dialoguetrees 19
 
+#define zox_generate_realm_music 20
+
 #define zox_generate_realm_end 32

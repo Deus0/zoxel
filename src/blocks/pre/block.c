@@ -9,5 +9,6 @@ entity spawn_prefab_block(ecs *world) {
     zox_prefab_set(e, BlockCollider, { zox_block_solid });
     zox_prefab_set(e, TextureLinks, { 0 });
     zox_prefab_set(e, ZoxName, { 0 });
+    zox_prefab_set(e, BlockSound, { 0 });
     return e;
 }

@@ -12,7 +12,7 @@ void process_arguments_musics(ecs *world, char* args[], int count) {
     }
 }
 
-void on_boot_musics(ecs* world, entity app) {
+/*void on_boot_musics(ecs* world, entity app) {
     if (nosounds) {
         zox_logv("Sounds are disabled: no music.");
         return;
@@ -26,4 +26,4 @@ void on_boot_musics(ecs* world, entity app) {
     }
 
     spawn_realm_playlist(world, realm);
-}
+}*/

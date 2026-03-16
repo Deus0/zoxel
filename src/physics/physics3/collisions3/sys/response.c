@@ -41,17 +41,19 @@ zox_sys2(CollisionResponseSystem) {
         zox_sys_o(LastPosition3D, lastPosition3D);
         zox_sys_o(Collision, collision);
         zox_sys_o(Grounded, grounded);
+
         if (!collision->value) {
             grounded->value = 0;
             lastPosition3D->value = position3D->value;
             continue;
         }
-        const float3 collision_distance = collisionDistance->value;
+
+        float3 collision_distance = collisionDistance->value;
         // Unpacking:
         byte did_collide_x = (collision->value >> 0) & 0x3;
         byte did_collide_y = (collision->value >> 2) & 0x3;
         byte did_collide_z = (collision->value >> 4) & 0x3;
-        const byte is_falling = velocity3D->value.y < 0;
+        byte is_falling = velocity3D->value.y < 0;
 
         respond_collision_pen(x);
         respond_collision_pen(y);
