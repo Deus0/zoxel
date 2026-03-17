@@ -109,7 +109,7 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         BiomeLinkSystem,
         EcsOnUpdate,
-        [in] streaming.StreamDirty2,
+        // [in] streaming.StreamDirty2,
         [in] streaming.StreamPoint2,
         [in] streaming.StreamLink,
         [out] tunks.TunkLink,

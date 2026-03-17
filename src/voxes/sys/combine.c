@@ -39,7 +39,7 @@ zox_sys2(CombineVoxSystem) {
         // add each vox to the current node
         int3 new_csize = int3_zero;
         byte new_depth = 0;
-        float new_scale = 0;
+        // float new_scale = 0;
         for (byte j = 0; j < voxes->length; j++) {
             entity vox = voxes->value[j];
 

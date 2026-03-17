@@ -1,7 +1,7 @@
 // Counts the biomes used in the map, and sets to highest used
 zox_sys2(BiomeMapAvgSystem) {
-    const uint seed = global_seed;
-    double height_frequency = terrain_frequency;
+    // const uint seed = global_seed;
+    // double height_frequency = terrain_frequency;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -33,7 +33,7 @@ zox_sys2(BiomeMapAvgSystem) {
         zox_geter(realm, BiomeLinks, biomes);
 
         // TODO: Calculate most popular in bmp generically
-        uint counts[biomes->length];
+      //   uint counts[biomes->length];
 
         uint used_0 = 0;
         uint used_1 = 0;

@@ -39,8 +39,8 @@ zox_sys2(InsideBlockSoundSystem) {
         }
 
         // TODO: Link properly to block
-        spawn_sound_from_file_name(world, prefab_sound, "hit_grass", 0, 2 * get_volume_sfx());
-        // spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[22 + rand() % 8], 0.6, 1.8f * get_volume_sfx());
+        spawn_sound_from_file_name(world, prefab_sound, "hit_grass", 0, get_volume_sfx());
+        // spawn_sound_generated(world, prefab_sound_generated, instrument_organ, note_frequencies[26 + rand() % 8], 0.4, 1.2f * get_volume_sfx());
 
         // zox_sys_e();
         // zox_log("- [%s] inside block [%i] sound [%i]", zox_get_name(e), inside->value, sound);

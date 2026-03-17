@@ -9,13 +9,13 @@ zox_sys2(BiomeLinkSystem) {
     double height_frequency = terrain_frequency;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(StreamDirty2);
+    // zox_sys_in(StreamDirty2);
     zox_sys_in(StreamPoint2);
     zox_sys_in(StreamLink);
     zox_sys_out(TunkLink);
     zox_sys_out(BiomeLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(StreamDirty2, state);
+        // zox_sys_i(StreamDirty2, state);
         zox_sys_i(StreamPoint2, position);
         zox_sys_i(StreamLink, terrain);
         zox_sys_o(TunkLink, tlink);

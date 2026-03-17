@@ -10,7 +10,6 @@ void delayed_texture_spawn(ecs* world, entity e) {
 
 zox_sys2(BodysRealmSpawnSystem) {
     byte nodegraph_vlength = powers_of_two[nodegraph_max_depth];
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);

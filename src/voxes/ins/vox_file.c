@@ -152,7 +152,7 @@ entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* fi
         byte reducer = mdepth - rdepth;
         // byte reducer = 0;
         // i - disabled for now
-        byte ddepth = powers_of_two[mdepth - rdepth];
+        // byte ddepth = powers_of_two[mdepth - rdepth];
         // float bscale = (1.0f / (float) ddepth) * (1 / 64.0f);
         // float bscale = ((float) ddepth) * (1 / 64.0f);
         float bscale = (1 / 64.0f);

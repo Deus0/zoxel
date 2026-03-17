@@ -3,7 +3,7 @@
 byte unstuck_log_count = 0;
 
 #ifdef zox_dbg_lines_unstuck
-extern entity spawn_line3D(ecs*, float3, float3, float, double);
+extern entity spawn_line3c(ecs*, float3, float3, float, double, color_rgb);
 #endif
 
 // TODO: Dont cache a position, just raycast in direction of gravity
@@ -41,7 +41,9 @@ zox_sys2(UnstuckSystem) {
         zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
         float3 unstuck_push = (float3) { 0, terrain_scale, 0 };
 
-        float3 pointf = float3_add(position->value, (float3) { 0, bounds->value.y / 2.0f, 0 });
+        float3 poffset = (float3) { 0, - bounds->value.y / 2.0f, 0 };
+
+        float3 pointf = float3_add(position->value, poffset);
         int3 pointv = positionf_to_positionv(pointf, terrain_scale);
         byte3 max_chunk_size = byte3_single(powers_of_two[terrain_depth]);
         int3 pointc = positionv_to_positionc(pointv, max_chunk_size);
@@ -102,12 +104,8 @@ zox_sys2(UnstuckSystem) {
 
         // If Hasn't been unstuck
         if (float3_equals(last->value, float3_zero)) {
-            last->value = float3_add(position->value, unstuck_push);
-            /*position->value = float3_add(position->value, unstuck_push);
-            if (unstuck_log_count < 10) {
-                zox_logw("Character never unstuck v[%ix%ix%i] l[%ix%ix%i]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z);
-                unstuck_log_count++;
-            }*/
+            // last->value = float3_add(position->value, unstuck_push);
+            // position->value = last->value;
             continue;
         }
 
@@ -116,10 +114,34 @@ zox_sys2(UnstuckSystem) {
         float3 ogposition = position->value;
 #endif
 
-        position->value = float3_add(last->value, unstuck_push);
+        // position->value = float3_add(last->value, unstuck_push);
+
+        // Set new position is above ground
+        int positionv = positionf_to_positionv1(position->value.y + poffset.y, terrain_scale);
+        // positionv.y ++; // move up / - gravity direction
+        float distance_to_above_ground = positionv_to_positionf1(positionv + 1, terrain_scale) - (position->value.y + poffset.y);
+        // position->value.y = positionv_to_positionf1(positionv, terrain_scale).y;
+        const float buffer_up = 0.01f;
+        position->value.y += distance_to_above_ground + buffer_up;
+
+        // reverse vel down
+        zox_sys_e();
+        if (zox_has(e, Velocity3D)) {
+            zox_geter_value(e, Velocity3D, float3, vel);
+            position->value.y -= vel.y;
+        }
 
 #ifdef zox_dbg_lines_unstuck
-        spawn_line3D(world, ogposition, position->value, 0.5f, 0.1);
+        float dthickness = 2.5f;
+        float dtime = 15;
+
+        spawn_line3c(world, ogposition, float3_add(ogposition, (float3) { 0, distance_to_above_ground, 0 }), dthickness, dtime, color_rgb_red);
+
+        spawn_line3c(world, ogposition, float3_add(ogposition, (float3) { 0, 0, terrain_scale }), dthickness, dtime, color_rgb_cyan);
+
+        // spawn_line3c(world, ogposition, position->value, dthickness, dtime, color_rgb_red);
+        // spawn_line3c(world, ogposition, float3_add(ogposition, float3_forward), dthickness, dtime, color_rgb_green);
+        // spawn_line3c(world, pointf, float3_add(pointf, float3_right), dthickness, dtime, color_rgb_cyan);
 #endif
 
         // zox_log_error("Character Unstuck v[%ix%ix%i] l[%ix%ix%i] to f[%f.1x%f.1x%f.1]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z, last->value.x, last->value.y, last->value.z);

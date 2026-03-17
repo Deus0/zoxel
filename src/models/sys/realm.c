@@ -79,7 +79,7 @@ zox_sys2(ModelsRealmSpawnSystem) {
                 add_to_ModelLinks(&variants, mlods);
 
                 // Create a proocess node and link to model, which will generate the voxel data
-                entity process = spawn_process_model(world, prefab_process_model, nodegraph, mlods);
+                spawn_process_model(world, prefab_process_model, nodegraph, mlods);
             }
 
             zox_set_ptr(model_group, ModelLinks, variants);

@@ -33,7 +33,7 @@ entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize
 
     for (int i = 0; i <= mdepth; i++) {
         byte rdepth = i;
-        byte node_length = powers_of_two[rdepth];
+        // byte node_length = powers_of_two[rdepth];
         byte ddepth = mdepth - rdepth + 1;
 
         byte3 rsized = rsize;

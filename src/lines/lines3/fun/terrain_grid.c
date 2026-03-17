@@ -31,8 +31,8 @@ void spawn_terrain_grid(
     for (float k = back_bounds; k <= front_bounds; k += (front_bounds - back_bounds)) {
         for (float i = left_bounds; i <= right_bounds; i += spacing) {
             for (float j = bottom_bounds; j <= top_bounds; j += spacing) {
-                if (j != top_bounds) add_to_Children(children, spawn_line3D_colored(world, (float3) { i, j, k }, (float3) { i, j + spacing, k }, thickness, 0, grid_color));
-                if ((int) i != (int) right_bounds) add_to_Children(children, spawn_line3D_colored(world, (float3) { i, j, k }, (float3) { i + spacing, j, k }, thickness, 0, grid_color));
+                if (j != top_bounds) add_to_Children(children, spawn_line3c(world, (float3) { i, j, k }, (float3) { i, j + spacing, k }, thickness, 0, grid_color));
+                if ((int) i != (int) right_bounds) add_to_Children(children, spawn_line3c(world, (float3) { i, j, k }, (float3) { i + spacing, j, k }, thickness, 0, grid_color));
             }
         }
     }
@@ -40,31 +40,31 @@ void spawn_terrain_grid(
     for (float k = left_bounds; k <= right_bounds; k += (right_bounds - left_bounds)) {
         for (float i = back_bounds; i <= front_bounds; i += spacing) {
             for (float j = bottom_bounds; j <= top_bounds; j += spacing) {
-                if (j != top_bounds) add_to_Children(children, spawn_line3D_colored(world, (float3) { k, j, i }, (float3) { k, j + spacing, i }, thickness, 0, grid_color));
-                if (i != front_bounds) add_to_Children(children, spawn_line3D_colored(world, (float3) { k, j, i }, (float3) { k, j, i + spacing }, thickness, 0, grid_color));
+                if (j != top_bounds) add_to_Children(children, spawn_line3c(world, (float3) { k, j, i }, (float3) { k, j + spacing, i }, thickness, 0, grid_color));
+                if (i != front_bounds) add_to_Children(children, spawn_line3c(world, (float3) { k, j, i }, (float3) { k, j, i + spacing }, thickness, 0, grid_color));
             }
         }
     }
     /*for (int i = bottom_bounds; i <= top_bounds; i += spacing) {
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { -radius, i, -radius }, (float3) { -radius, i, radius2 }, thickness, 0, grid_color));
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { -radius, i, radius2 }, (float3) { radius2, i, radius2 }, thickness, 0, grid_color));
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { radius2, i, radius2 }, (float3) { radius2, i, -radius }, thickness, 0, grid_color));
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { radius2, i, -radius }, (float3) { -radius, i, -radius }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { -radius, i, -radius }, (float3) { -radius, i, radius2 }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { -radius, i, radius2 }, (float3) { radius2, i, radius2 }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { radius2, i, radius2 }, (float3) { radius2, i, -radius }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { radius2, i, -radius }, (float3) { -radius, i, -radius }, thickness, 0, grid_color));
     }*/
     /*for (float i = -radius; i <= radius2; i += spacing) {
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { radius2, bottom_bounds, i }, (float3) { radius2, top_bounds, i }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { radius2, bottom_bounds, i }, (float3) { radius2, top_bounds, i }, thickness, 0, grid_color));
     }
     for (float i = -radius; i <= radius2; i += spacing) {
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { i, bottom_bounds, -radius }, (float3) { i, top_bounds, -radius }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { i, bottom_bounds, -radius }, (float3) { i, top_bounds, -radius }, thickness, 0, grid_color));
     }
     for (float i = -radius; i <= radius2; i += spacing) {
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { -radius, bottom_bounds, i }, (float3) { -radius, top_bounds, i }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { -radius, bottom_bounds, i }, (float3) { -radius, top_bounds, i }, thickness, 0, grid_color));
     }
     for (float i = -radius + spacing; i < radius2; i += spacing) {
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { i, top_bounds, -radius }, (float3) { i, top_bounds, radius2 }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { i, top_bounds, -radius }, (float3) { i, top_bounds, radius2 }, thickness, 0, grid_color));
     }
     for (float i = -radius + spacing; i < radius2; i += spacing) {
-        add_to_Children(children, spawn_line3D_colored(world, (float3) { -radius, top_bounds, i }, (float3) { radius2, top_bounds, i }, thickness, 0, grid_color));
+        add_to_Children(children, spawn_line3c(world, (float3) { -radius, top_bounds, i }, (float3) { radius2, top_bounds, i }, thickness, 0, grid_color));
     }*/
 
     // bottom

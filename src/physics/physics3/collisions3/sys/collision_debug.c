@@ -1,6 +1,6 @@
 // responding
 // draw line for collided voxels
-extern entity spawn_line3D_colored(ecs*, const float3, const float3, float, double, const color_rgb);
+extern entity spawn_line3c(ecs*, const float3, const float3, float, double, const color_rgb);
 const byte3 zox_debug_collision_response = { 1, 1, 1 };
 const double debug_collision_lifetime = 30;
 const double debug_collision_line_length = 0.5;
@@ -30,7 +30,7 @@ if (did_collide##_##d) {\
             voxel_normal.d *= -1;\
             c = c2; \
         }\
-        spawn_line3D_colored( \
+        spawn_line3c( \
             world, \
             collision_point, \
             float3_add(collision_point, float3_scale(voxel_normal, debug_collision_line_length)), \
@@ -57,7 +57,7 @@ if (did_collide##_##d) {\
         float3 normal = float3_zero;\
         normal.d = negative ? 1 : -1;\
         \
-        spawn_line3D_colored( \
+        spawn_line3c( \
             world, \
             hit_pen, \
             hit, \
@@ -65,7 +65,7 @@ if (did_collide##_##d) {\
             debug_collision_lifetime, \
             color_rgb_black);\
         \
-        spawn_line3D_colored( \
+        spawn_line3c( \
             world, \
             hit, \
             float3_add(hit, float3_scale(normal, debug_collision_line_length)), \

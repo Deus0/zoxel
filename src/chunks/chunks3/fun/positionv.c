@@ -1,18 +1,20 @@
-static inline int3 positionf_to_positionv(
-    const float3 positionf,
-    const float terrain_scale
-) {
+static inline int3 positionf_to_positionv(float3 positionf, float scale) {
     return (int3) {
-        positionf_to_positionv1(positionf.x, terrain_scale),
-        positionf_to_positionv1(positionf.y, terrain_scale),
-        positionf_to_positionv1(positionf.z, terrain_scale)
+        positionf_to_positionv1(positionf.x, scale),
+        positionf_to_positionv1(positionf.y, scale),
+        positionf_to_positionv1(positionf.z, scale)
     };
 }
 
-int3 positionv_to_chunk_position(
-    const int3 positionv,
-    const int3 chunk_size
-) {
+static inline float3 positionv_to_positionf(int3 positionv, float scale) {
+    return (float3) {
+        positionv_to_positionf1(positionv.x, scale),
+        positionv_to_positionf1(positionv.y, scale),
+        positionv_to_positionf1(positionv.z, scale)
+    };
+}
+
+int3 positionv_to_chunk_position(int3 positionv, int3 chunk_size) {
     int3 positionv2 = positionv;
     if (positionv.x < 0) positionv2.x += 1;
     if (positionv.y < 0) positionv2.y += 1;

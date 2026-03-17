@@ -12,20 +12,22 @@ void define_systems_music(ecs* world) {
         zoxp_mainthread,
         [in] core.Seed,
         [in] sounds.InstrumentType,
-        [out] GenerateMusic,
-        [out] NoteLinks,
-        [none] Music
+        [out] musics.GenerateMusic,
+        [out] musics.NoteLinks,
+        [none] musics.Music
     );
+
     zox_system_1(
         MusicPlaySystem,
         zoxp_mainthread,
-        [in] MusicEnabled,
-        [in] NoteLinks,
-        [in] MusicSpeed,
-        [out] MusicNote,
-        [out] MusicTime,
-        [none] Music
+        [in] musics.MusicEnabled,
+        [in] musics.NoteLinks,
+        [in] musics.MusicSpeed,
+        [out] musics.MusicNote,
+        [out] musics.MusicTime,
+        [none] musics.Music
     );
+
     zox_system_1(
         MusicRealmSpawnSystem,
         zoxp_mainthread,

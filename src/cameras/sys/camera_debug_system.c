@@ -1,5 +1,5 @@
 extern entity spawn_cube_lines(ecs *world, const float3 center, const float3 extents, const float thickness, const double life_time, const color_rgb line_color);
-extern entity spawn_line3D_colored(ecs *world, const float3 pointA, const float3 pointB, const float thickness, const double life_time, const color_rgb line_color);
+extern entity spawn_line3c(ecs*, float3, const float3, float, double, color_rgb);
 extern void spawn_line3(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
 
 /*void debug_transform(ecs *world, const float4x4 mat) {
@@ -12,9 +12,9 @@ extern void spawn_line3(ecs *world, const float3 a, const float3 b, const color_
     float3 forward = { mat.z.x, mat.z.y, mat.z.z };
     float3 right = { mat.x.x, mat.x.y, mat.x.z };
     float3 up = { mat.y.x, mat.y.y, mat.y.z };
-    spawn_line3D_colored(world, camera_position, float3_add(camera_position, float3_scale(forward, line_length)), 2, spawn_life_time, camera_color2);
-    spawn_line3D_colored(world, camera_position, float3_add(camera_position, float3_scale(right, line_length)), 2, spawn_life_time, camera_color);
-    spawn_line3D_colored(world, camera_position, float3_add(camera_position, float3_scale(up, line_length)), 2, spawn_life_time, camera_color);
+    spawn_line3c(world, camera_position, float3_add(camera_position, float3_scale(forward, line_length)), 2, spawn_life_time, camera_color2);
+    spawn_line3c(world, camera_position, float3_add(camera_position, float3_scale(right, line_length)), 2, spawn_life_time, camera_color);
+    spawn_line3c(world, camera_position, float3_add(camera_position, float3_scale(up, line_length)), 2, spawn_life_time, camera_color);
 }
 
 void visualize_frustum(const float4x4 mat, const plane *planes) {
@@ -75,9 +75,9 @@ zox_sys2(CameraDebugSystem) {
     }
 } zox_sys_end(CameraDebugSystem);
 
-// spawn_line3D_colored(world, float3_add(test_bounds.center, (float3) { 0, -line_length, 0 }), float3_add(test_bounds.center, (float3) { 0, line_length, 0 }), 0.5f, 0.03, cube_color);
-// spawn_line3D_colored(world, float3_add(test_bounds.center, (float3) { -line_length, 0, 0 }), float3_add(test_bounds.center, (float3) { line_length, 0, 0 }), 0.5f, 0.03, cube_color);
-// spawn_line3D_colored(world, float3_add(test_bounds.center, (float3) { 0, 0, -line_length }), float3_add(test_bounds.center, (float3) { 0, 0, line_length }), 0.5f, 0.03, cube_color);
+// spawn_line3c(world, float3_add(test_bounds.center, (float3) { 0, -line_length, 0 }), float3_add(test_bounds.center, (float3) { 0, line_length, 0 }), 0.5f, 0.03, cube_color);
+// spawn_line3c(world, float3_add(test_bounds.center, (float3) { -line_length, 0, 0 }), float3_add(test_bounds.center, (float3) { line_length, 0, 0 }), 0.5f, 0.03, cube_color);
+// spawn_line3c(world, float3_add(test_bounds.center, (float3) { 0, 0, -line_length }), float3_add(test_bounds.center, (float3) { 0, 0, line_length }), 0.5f, 0.03, cube_color);
 // debug_transform(world, transformMatrix->value);
 // visualize_frustum(transformMatrix->value, cameraPlanes->value);
 

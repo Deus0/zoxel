@@ -51,7 +51,7 @@ zox_sys2(TownMapSystem) {
                 int index = int2_array_index(lposition, hsize);
 
                 // Get Biome Data
-                byte biome = bmap->value[index];
+                // byte biome = bmap->value[index];
 
                 byte value = 0;
 

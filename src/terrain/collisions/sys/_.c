@@ -27,9 +27,9 @@ void define_systems_terrain_collisions(ecs* world) {
     );
 
 #ifdef zox_dbg_lines_unstuck
-    zox_system(
-#else
     zox_system_1(
+#else
+    zox_system(
 #endif
         UnstuckSystem,
         zoxp_physics + 1,
