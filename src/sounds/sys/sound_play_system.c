@@ -18,12 +18,7 @@ zox_sys2(SoundPlaySystem) {
         if (triggerSound->value == zox_dirty_active) {
             if (soundData->value) {
                 zox_log_sounds("+ playing [%s] (%i:%f)", zox_sys_e_name, channel, mixer_audio_volume)
-                sdl_play_sound(
-                    chunk,
-                    soundData->value,
-                    soundData->length,
-                    mixer_audio_volume,
-                    channel);
+                sdl_play_sound(chunk, soundData->value, soundData->length, mixer_audio_volume, channel);
             } else {
                 zox_log_error("Invalid SoundData, triggered.");
             }
