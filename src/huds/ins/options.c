@@ -3,12 +3,13 @@ void on_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
         zox_log_error("Invalid [e]");
         return;
     }
-    // zox_geter_value(data->e, ParentLink, entity, toggle);
+
     entity toggle = data->e;
     if (!zox_valid(toggle) || !zox_has(toggle, OptionLabel)) {
         zox_log_error("Invalid [toggle]");
         return;
     }
+
     zox_geter_value(toggle, OptionLabel, char*, name);
     zoxs_set_byte(world, name, data->value);
     zox_log("Toggle Option [%s] set to [%i]", name, data->value);
@@ -29,13 +30,16 @@ void on_settings_slider_slid_int(ecs* world, const SlideEventData* data) {
     zoxs_set_int(world, slider_name, (int) round(data->value));
 }
 
+// TODO: Spawn buttons here and just link the setting entity to the buttons
+
 // Options uses a set size that has elements adjust
 entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 position, float2 anchor) {
+
     // more data
     const char* header_label = "Ponder";
-    const byte visible_count = 6;
     SpawnListElement elements[max_settings + 1];
     int elements_count = 0;
+    byte visible_count = 6;
 
     // Sizing
     byte header_font_size = 18 * ui_scale;
@@ -86,26 +90,36 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
             zox_log("New Int Option %s %i %i:%i", s.name, s.value_int, s.min_int, s.max_int);
         }
 
-        // todo: support other types
+        // TODO: support other types
     }
-    /*elements[elements_count++] = (SpawnListElement) {
-        .text = "Return",
-        .on_click = { &button_event_menu_main },
-    };*/
 
-    entity e = spawn_window_list(
-        world,
-        prefab_window_invisible,
-        player,
-        header_label,
-        header_font_size,
-        elements,
-        elements_count,
-        visible_count,
-        list_font_size,
-        (ClickEvent) { &button_event_menu_main },
-        1
-    );
+    if (zox_valid(settings_manager)) {
+        zox_geter(settings_manager, SettingLinks, settings);
+        for (int i = 0; i < settings->length; i++) {
+            entity setting = settings->value[i];
+
+            if (!zox_valid(setting)) {
+                continue;
+            }
+
+            zox_geter(setting, ZoxName, name);
+
+            // use entity data instead
+            if (zox_has(setting, SettingByte)) {
+                zox_geter_value(setting, SettingByte, byte, value);
+
+                elements[elements_count++] = (SpawnListElement) {
+                    .type = list_element_type_toggle,
+                    .text = name->value,
+                    .on_toggle = { &on_settings_toggle_toggled },
+                    .value = value,
+                };
+            }
+        }
+    }
+
+    entity e = spawn_window_list(world, prefab_window_invisible, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_menu_main }, 1);
+
     zox_name("menu_options");
     zox_add_tag(e, MenuOptions);
     zox_add_tag(e, NavigationWindow);

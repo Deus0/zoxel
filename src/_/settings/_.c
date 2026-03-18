@@ -43,4 +43,44 @@ setting zoxs_get(const char *name) {
     return (setting) { 0 };
 }
 
+entity settings_manager;
+
+zox_tag(Setting);
+zoxc_state(SettingDirty);
+zoxc_entities(SettingLinks);
+zoxc_byte(SettingByte);
+
+entity spawn_settings_manager(ecs* world) {
+    zox_make_new();
+
+    zox_set(e, SettingLinks, { 0 });
+
+    settings_manager = e;
+
+    return e;
+}
+
+entity spawn_setting_byte(ecs* world, const char* name, byte value) {
+    zox_make_new();
+
+    set_ZoxName(world, e, name);
+    zox_set(e, SettingByte, { value });
+
+    // add to manager
+    zox_muter(settings_manager, SettingLinks, settings);
+    add_to_SettingLinks(settings, e);
+
+    return e;
+}
+
 #include "fun/_.c"
+#include "pre/_.c"
+
+zox_begin_module(Settings)
+    zoxd_tag(Setting);
+    zoxd_state(SettingDirty);
+    zoxd_entities(SettingLinks);
+    zoxd_byte(SettingByte);
+
+    spawn_settings_manager(world);
+zox_end_module(Settings)

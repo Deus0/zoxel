@@ -39,7 +39,8 @@ void define_systems_physics3(ecs *world) {
         zoxp_physics,
         [out] InitializePhysics3D,
         [out] transforms3.Position3D,
-        [out] physics3.Velocity3D)
+        [out] physics3.Velocity3D
+    );
     zox_system(
         Gravity3DSystem,
         zoxp_physics,

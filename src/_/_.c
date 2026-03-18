@@ -33,10 +33,10 @@
 #include "terminals/_.c"
 #include "pathing/_.c"
 #include "sta/_.c"
-#include "settings/_.c"
 #include "hok/_.c"
 #include "windows/_.c"
 #include "types/_.c"
+#include "settings/_.c"
 
 void module_dispose_core(ecs *world, void *ctx) {
     (void) world;
@@ -50,11 +50,7 @@ void module_dispose_core(ecs *world, void *ctx) {
     dispose_component_ids();
 }
 
-void process_arguments_core(
-    ecs *world,
-    char* args[],
-    int count
-) {
+void process_arguments_core(ecs *world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {
         if (!strcmp(args[i], "--fps")) {
@@ -106,6 +102,9 @@ zox_begin_module(Core)
     clear_logs();
     define_components_generic(world);
     zox_module_dispose(module_dispose_core);
+
+
+    zox_import_module(Settings);
 zox_end_module(Core)
 
 #endif

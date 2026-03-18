@@ -15,6 +15,8 @@ zox_begin_module(Bones)
     add_hook_spawn_prefabs(spawn_prefabs_bones);
     define_components_bones(world);
     define_systems_bones(world);
+
+    spawn_setting_byte(world, "transparent mesh", 0);
 zox_end_module(Bones)
 
 #endif

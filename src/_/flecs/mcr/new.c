@@ -11,8 +11,8 @@
 #endif
 
 #define zox_make_new()\
-    const entity e = zox_new();
+    entity e = zox_new();
 
 #define zox_make_neww(name)\
-    const entity name = zox_new();
+    entity name = zox_new();
 
