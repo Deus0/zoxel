@@ -1,4 +1,8 @@
 zox_sys2(BonePaintSystem) {
+    if (!paint_bone_weights) {
+        return;
+    }
+
     zox_sys_begin();
     zox_sys_in(MeshDirty);
     zox_sys_in(BoneIndexes);

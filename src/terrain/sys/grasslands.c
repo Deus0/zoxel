@@ -12,7 +12,7 @@ byte disable_grass_placements = 0;
 // generates our terrain voxels
 zox_sys2(GrassyPlainsSystem) {
     // zox_ts_begin(grassy_plains);
-    uint seed = global_seed;  // TODO: use terrains seed
+    // uint seed = global_seed;  // TODO: use terrains seed
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
@@ -93,13 +93,13 @@ zox_sys2(GrassyPlainsSystem) {
         }
 
         vdepth->value = generation_depth;
-        const byte is_max_depth = vdepth->value == terrain_depth;
+        byte is_max_depth = vdepth->value == terrain_depth;
 
-        const byte vlength = powers_of_two_byte[vdepth->value];
-        const double terrain_amplifier = vlength * render_distance_y;
-        const float2 map_size_f = float2_single(vlength);
-        const float3 chunk_position_float3 = float3_from_int3(cposition->value);
-        const int chunk_position_y = (int) (chunk_position_float3.y * vlength);
+        byte vlength = powers_of_two_byte[vdepth->value];
+        // double terrain_amplifier = vlength * render_distance_y;
+        // const float2 map_size_f = float2_single(vlength);
+        float3 chunk_position_float3 = float3_from_int3(cposition->value);
+        int chunk_position_y = (int) (chunk_position_float3.y * vlength);
         byte3 positionl;
         // For each XZ position
 

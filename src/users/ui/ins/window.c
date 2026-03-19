@@ -151,9 +151,17 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     }
 
     if (active_states) {
-        entity selected_frame = body_children.value[selected];
-        zox_set(selected_frame, ActiveState, { 1 });
-        zox_set(selected_frame, ActiveStateDirty, { zox_dirty_trigger });
+        if (selected >= body_children.length) {
+            zox_logw("selected [%i] out of bounds [%i]", selected, body_children.length);
+            selected = body_children.length - 1;
+        }
+        if (!body_children.length) {
+            zox_logw("no children to select");
+        } else {
+            entity selected_frame = body_children.value[selected];
+            zox_set(selected_frame, ActiveState, { 1 });
+            zox_set(selected_frame, ActiveStateDirty, { zox_dirty_trigger });
+        }
     }
 
     zox_set_ptr(grid, Children, body_children);

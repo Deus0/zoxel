@@ -1,5 +1,7 @@
 zox_sys2(Skeleton3RenderSystem) {
-    if (!material_bone) {
+    entity rmaterial = transparent_meshes ? material_bonet : material_bone;
+
+    if (!rmaterial) {
         return;
     }
 
@@ -7,8 +9,8 @@ zox_sys2(Skeleton3RenderSystem) {
     int rendered_count = 0;
     zox_sys_world();
 
-    zox_geter_value(material_bone, MaterialGPULink, uint, material_link);
-    zox_geter(material_bone, MaterialBone, material_attributes);
+    zox_geter_value(rmaterial, MaterialGPULink, uint, material_link);
+    zox_geter(rmaterial, MaterialBone, material_attributes);
 
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
@@ -33,10 +35,12 @@ zox_sys2(Skeleton3RenderSystem) {
 
         if (!has_set_material) {
             has_set_material = 1;
-#ifdef zox_transparent_skeletons
-            zox_gpu_blend_enable();
-            glDisable(GL_CULL_FACE);
-#endif
+
+            if (transparent_meshes) {
+                zox_gpu_blend_enable();
+                glDisable(GL_CULL_FACE);
+            }
+
             zox_gpu_material(material_link);
             zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(material_attributes->fog_data, get_fog_value());
@@ -79,9 +83,10 @@ zox_sys2(Skeleton3RenderSystem) {
         zox_gpu_disable_buffer(material_attributes->vertex_position);
         opengl_unset_mesh();
         zox_disable_material();
-#ifdef zox_transparent_skeletons
-        zox_gpu_blend_disable();
-        glEnable(GL_CULL_FACE);
-#endif
+
+        if (transparent_meshes) {
+            zox_gpu_blend_disable();
+            glEnable(GL_CULL_FACE);
+        }
     }
 } zox_sys_end(Skeleton3RenderSystem);

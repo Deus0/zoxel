@@ -4,13 +4,13 @@
 // #define zox_debug_spawning
 // extern void set_new_zox_name(ecs *world, const entity e, const char* text);
 
-char *lint_itoa(char *str, long int num) {
+/*char *lint_itoa(char *str, long int num) {
     if (str == NULL) return NULL;
     sprintf(str, "%lu", num);
     return str;
 }
 
-#define e_string_length 128
+#define e_string_length 128*/
 
 /*char* get_entity_string(const entity e, const char* name) {
     if (!e || !name) {
@@ -69,7 +69,7 @@ void zox_set_entity_name(ecs *world, const entity e, const char* name) {
     free(name_plus_id);
 }*/
 
-void get_entity_string_stack(
+/*void get_entity_string_stack(
     char* buffer,
     size_t buffer_size,
     entity e,
@@ -97,56 +97,4 @@ void get_entity_string_stack(
     memcpy(buffer + nlen + 1, e_string, elen);
     buffer[needed - 1] = '\0';
 }
-
-
-void zox_set_entity_name(
-    ecs *world,
-    entity e,
-    const char* name
-) {
-    if (!e || !name) return;
-
-    //char name_buffer[128]; // Adjust size if needed
-    //get_entity_string_stack(name_buffer, sizeof(name_buffer), e, name);
-
-    char buffer[128]; // ample stack buffer, tune size
-    int nlen = snprintf(buffer, sizeof(buffer), "%s_%lu", name, (unsigned long)e);
-    if (nlen < 0 || nlen >= (int)sizeof(buffer)) {
-        zox_log_error("Entity name too long");
-        return;
-    }
-
-    ecs_set_name(world, e, buffer);
-
-    /*if (name_buffer[0] != '\0') {
-        zox_set_name(e, name_buffer);
-#ifdef zox_debug_spawning
-        zox_log(" + spawned %s [%lu] [%s]", name, e, name_buffer);
-#endif
-    }*/
-}
-
-void zox_set_name_spawned(
-    ecs *world,
-    const entity e,
-    const char* name
-) {
-#ifndef zox_disable_names
-    zox_set_entity_name(world, e, name);
-#endif
-}
-
-#define zox_prefab_name2(label, label2)\
-    zox_set_name_spawned(world, e, label2 label);
-
-#define zox_prefab_name(label)\
-    zox_prefab_name2(label, "prefab_")
-
-#define zox_name(label)\
-    zox_set_name_spawned(world, e, label);
-
-#define zox_set_unique_name(e, name)\
-    zox_set_entity_name(world, e, name)
-
-#define zox_set_name_e(e, name)\
-    zox_set_entity_name(world, e, name);
+*/

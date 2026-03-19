@@ -49,8 +49,8 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
     byte node_depth = pick_node_depth(size);
 
     if (node_depth - reducer <= 0) {
-        zox_log("Skipping VoxFile:");
-        zox_log("   - reducer [%i]", reducer);
+        // zox_log("Skipping VoxFile:");
+        // zox_log("   - reducer [%i]", reducer);
         return;
     }
 

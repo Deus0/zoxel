@@ -87,9 +87,8 @@ void define_systems_game_ui(ecs *world) {
         [out] players.PlayerPauseEvent
     );
     zox_system_1(
-        PlayerUIResumeSystem,
+        PlayerResumeSystem,
         EcsOnUpdate,
-        //  cameras.CameraLink,
         [in] layouts2.CanvasLink,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,

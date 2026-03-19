@@ -55,7 +55,7 @@ zox_begin_module(Terrain)
     set_terrain_render_distance();  // update this
     zox_module_dispose(module_dispose_terrain);
     add_hook_terminal_command(process_arguments_terrain);
-    add_to_event_game_state((zox_game_event) { &game_state_terrain });
+    // add_to_event_game_state((zox_game_event) { &game_state_terrain });
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
 
     zox_import_module(TerrainCollisions);

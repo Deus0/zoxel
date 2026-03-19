@@ -10,20 +10,20 @@ void on_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
         return;
     }
 
-    zox_geter_value(toggle, OptionLabel, char*, name);
+    zox_geter_value(toggle, OptionLabel, const char*, name);
     zoxs_set_byte(world, name, data->value);
     zox_log("Toggle Option [%s] set to [%i]", name, data->value);
 }
 
 void on_settings_slider_slid_float(ecs* world, const SlideEventData* data) {
     zox_geter_value(data->dragged, ParentLink, entity, slider)
-    zox_geter_value(slider, SliderLabel, char*, slider_name)
+    zox_geter_value(slider, SliderLabel, const char*, slider_name)
     zoxs_set_float(world, slider_name, data->value);
 }
 
 void on_settings_slider_slid_int(ecs* world, const SlideEventData* data) {
     zox_geter_value(data->dragged, ParentLink, entity, slider);
-    zox_geter_value(slider, SliderLabel, char*, slider_name);
+    zox_geter_value(slider, SliderLabel, const char*, slider_name);
 
     // zox_log("Slider %s Value %i", slider_name, data->value);
 

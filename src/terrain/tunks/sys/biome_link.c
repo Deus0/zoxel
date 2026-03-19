@@ -5,8 +5,8 @@
 
 // A Streamer will Link to a Biome based on the Tunk's BiomeLink
 zox_sys2(BiomeLinkSystem) {
-    const uint seed = global_seed;
-    double height_frequency = terrain_frequency;
+    // const uint seed = global_seed;
+    // double height_frequency = terrain_frequency;
     zox_sys_world();
     zox_sys_begin();
     // zox_sys_in(StreamDirty2);

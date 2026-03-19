@@ -25,7 +25,7 @@ void button_event_menu_realm_cancel(ecs *world, ClickEventData event) {
 
 void button_event_menu_realm_delete(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity clicked = event.clicked;
+    // entity clicked = event.clicked;
 
     zox_geter(player, ElementLinks, elements);
 
@@ -60,7 +60,7 @@ void button_event_menu_realm_delete(ecs *world, ClickEventData event) {
 void button_event_menu_realm_confirm(ecs *world, ClickEventData event) {
 
     entity player = event.clicker;
-    entity clicked = event.clicked;
+    // entity clicked = event.clicked;
 
     zox_geter(player, ElementLinks, elements);
     zox_geter_value(player, GameLink, entity, game);

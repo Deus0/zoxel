@@ -11,6 +11,7 @@ void spawn_prefabs_terrain(ecs *world) {
     zox_add_tag(prefab_terrain_chunk_flat, FlatlandChunk);
     prefab_terrain = spawn_prefab_terrain(world);
     if (prefab_realm) {
+        zox_prefab_set(prefab_realm, TerrainLink, { 0 });
         zox_prefab_set(prefab_realm, ModelLinks, { 0 });
         zox_prefab_set(prefab_realm, BlockLinks, { 0 });
         zox_prefab_set(prefab_realm, BlocksDirty, { 0 });

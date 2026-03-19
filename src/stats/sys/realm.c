@@ -22,7 +22,6 @@ zox_sys2(StatsRealmSpawnSystem) {
         energy_c = color_rgb_darken(color_rgb_saturate(energy_c, sat), dark);
         mana_c = color_rgb_darken(color_rgb_saturate(mana_c, sat), dark);
 
-        byte i = 0;
         // levels
         entity soul = spawn_stat_level_t(world, "soul", "soul", soul_c);
         zox_add_tag(soul, StatSoul);

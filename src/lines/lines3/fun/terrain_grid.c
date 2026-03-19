@@ -70,15 +70,15 @@ void spawn_terrain_grid(
     // bottom
     /*for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 16; j++) {
-            spawn_line3D(world, (float3) { i, 0, j }, (float3) { i + 1, 0, j + 1 }, thickness, 32);
+            spawn_line3(world, (float3) { i, 0, j }, (float3) { i + 1, 0, j + 1 }, thickness, 32);
         }
     }*/
 }
-        /*spawn_line3D(world, (float3) { -radius, bottom_bounds, -radius }, (float3) { -radius, bottom_bounds, radius2 }, thickness, 0);
-        spawn_line3D(world, (float3) { -radius, bottom_bounds, radius2 }, (float3) { radius2, bottom_bounds, radius2 }, thickness, 0);
-        spawn_line3D(world, (float3) { radius2, bottom_bounds, radius2 }, (float3) { radius2, bottom_bounds, -radius }, thickness, 0);
-        spawn_line3D(world, (float3) { radius2, bottom_bounds, -radius }, (float3) { -radius, bottom_bounds, -radius }, thickness, 0);
-        spawn_line3D(world, (float3) { -radius, top_bounds, -radius }, (float3) { -radius, top_bounds, radius2 }, thickness, 0);
-        spawn_line3D(world, (float3) { -radius, top_bounds, radius2 }, (float3) { radius2, top_bounds, radius2 }, thickness, 0);
-        spawn_line3D(world, (float3) { radius2, top_bounds, radius2 }, (float3) { radius2, top_bounds, -radius }, thickness, 0);
-        spawn_line3D(world, (float3) { radius2, top_bounds, -radius }, (float3) { -radius, top_bounds, -radius }, thickness, 0);*/
+        /*spawn_line3(world, (float3) { -radius, bottom_bounds, -radius }, (float3) { -radius, bottom_bounds, radius2 }, thickness, 0);
+        spawn_line3(world, (float3) { -radius, bottom_bounds, radius2 }, (float3) { radius2, bottom_bounds, radius2 }, thickness, 0);
+        spawn_line3(world, (float3) { radius2, bottom_bounds, radius2 }, (float3) { radius2, bottom_bounds, -radius }, thickness, 0);
+        spawn_line3(world, (float3) { radius2, bottom_bounds, -radius }, (float3) { -radius, bottom_bounds, -radius }, thickness, 0);
+        spawn_line3(world, (float3) { -radius, top_bounds, -radius }, (float3) { -radius, top_bounds, radius2 }, thickness, 0);
+        spawn_line3(world, (float3) { -radius, top_bounds, radius2 }, (float3) { radius2, top_bounds, radius2 }, thickness, 0);
+        spawn_line3(world, (float3) { radius2, top_bounds, radius2 }, (float3) { radius2, top_bounds, -radius }, thickness, 0);
+        spawn_line3(world, (float3) { radius2, top_bounds, -radius }, (float3) { -radius, top_bounds, -radius }, thickness, 0);*/

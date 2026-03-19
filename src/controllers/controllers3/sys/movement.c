@@ -22,7 +22,7 @@
 
 #ifdef zox_debug_player_movement_direction
 float debug_thickness = 2.0f;
-extern entity spawn_line3D(ecs*, float3, float3, float, double);
+extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
 zox_sys2(Player3DMoveSystem) {
@@ -156,9 +156,9 @@ zox_sys2(Player3DMoveSystem) {
                     zox_modified(character, Rotation3D);
 #ifdef zox_debug_player_movement_direction
                     const Position3D *position3D = zox_get(character, Position3D)
-                    spawn_line3D(world, position3D->value, float3_add(position3D->value, movement), debug_thickness, 34.0);
+                    spawn_line3(world, position3D->value, float3_add(position3D->value, movement), debug_thickness, 34.0);
                     float3 movement2 = float4_rotate_float3(face_direction, (float3) { 0, 0, -1 });
-                    spawn_line3D(world, position3D->value, float3_add(position3D->value, movement2), debug_thickness, 34.0);
+                    spawn_line3(world, position3D->value, float3_add(position3D->value, movement2), debug_thickness, 34.0);
                     zox_log(" > face_direction %fx%fx%fx%f\n", face_direction.x, face_direction.y, face_direction.z, face_direction.w);
 #endif
                 }

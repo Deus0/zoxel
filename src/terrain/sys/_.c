@@ -6,6 +6,7 @@
 #include "linking.c"
 #include "spawn.c"
 #include "death.c"
+#include "game_start.c"
 
 realm_clear_system(BlockLinks);
 
@@ -99,4 +100,12 @@ void define_systems_terrain(ecs *world) {
     );
 #endif
 
+    zox_system_1(
+        TerrainGameStartSystem,
+        zoxp_mainthread,
+        [in] realms.RealmLink,
+        [in] games.GameState,
+        [in] games.GameStateDirty,
+        [none] games.Game
+    )
 }

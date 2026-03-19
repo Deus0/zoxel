@@ -72,7 +72,7 @@ zox_sys2(ColorsModelNodeSystem) {
 
         // for each model LOD, run shapes
 
-        zox_log(" - Node: Model Colors [%s]", zox_get_name(model->value));
+        zox_logv(" - Node: Model Colors [%s]", zox_get_name(model->value));
 
         zox_geter(model->value, Seed, seed);
 

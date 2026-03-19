@@ -1,6 +1,6 @@
 extern entity spawn_cube_lines(ecs *world, const float3 center, const float3 extents, const float thickness, const double life_time, const color_rgb line_color);
 extern entity spawn_line3c(ecs*, float3, const float3, float, double, color_rgb);
-extern void spawn_line3(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
+// extern void spawn_line3(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
 
 /*void debug_transform(ecs *world, const float4x4 mat) {
     // Draw lines to represent the view matrix

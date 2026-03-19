@@ -1,4 +1,4 @@
-extern void spawn_line3(ecs*, const float3, const float3, const color_rgb);
+extern void spawn_line3t(ecs*, const float3, const float3, const color_rgb);
 
 zox_sys2(ChunkBoundsDrawSystem) {
     const color_rgb up_color = (color_rgb) { 0, 0, 255 };
@@ -27,12 +27,12 @@ zox_sys2(ChunkBoundsDrawSystem) {
         color_rgb line_color = up_color;
         //if (renderDisabled->value) line_color = up_color_disabled;
         spawn_cube_lines(world, chunk_bounds.center, chunk_bounds.extents, 1, 1, line_color);
-        // spawn_line3(world, chunk_bounds.center, float3_add(chunk_bounds.center, float3_up), line_color);
-        spawn_line3(world, float3_add(chunk_bounds.center, float3_down), float3_add(chunk_bounds.center, float3_up), line_color);
-        spawn_line3(world, float3_add(chunk_bounds.center, float3_left), float3_add(chunk_bounds.center, float3_right), line_color);
+        // spawn_line3t(world, chunk_bounds.center, float3_add(chunk_bounds.center, float3_up), line_color);
+        spawn_line3t(world, float3_add(chunk_bounds.center, float3_down), float3_add(chunk_bounds.center, float3_up), line_color);
+        spawn_line3t(world, float3_add(chunk_bounds.center, float3_left), float3_add(chunk_bounds.center, float3_right), line_color);
 
-        spawn_line3(world, float3_add(chunk_bounds.center, (float3) { 0, 0, -chunk_bounds.extents.z}), float3_add(chunk_bounds.center, (float3) { 0, 0, chunk_bounds.extents.z}), line_color);
-        spawn_line3(world, float3_add(chunk_bounds.center, (float3) { -chunk_bounds.extents.x, 0, 0 }), float3_add(chunk_bounds.center, (float3) { chunk_bounds.extents.x, 0, 0 }), line_color);
+        spawn_line3t(world, float3_add(chunk_bounds.center, (float3) { 0, 0, -chunk_bounds.extents.z}), float3_add(chunk_bounds.center, (float3) { 0, 0, chunk_bounds.extents.z}), line_color);
+        spawn_line3t(world, float3_add(chunk_bounds.center, (float3) { -chunk_bounds.extents.x, 0, 0 }), float3_add(chunk_bounds.center, (float3) { chunk_bounds.extents.x, 0, 0 }), line_color);
 
     }
 } zox_sys_end(ChunkBoundsDrawSystem);

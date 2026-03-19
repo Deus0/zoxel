@@ -27,26 +27,3 @@ entity spawn_prefab_camera(ecs *world) {
     zox_prefab_add(e, FrustumCorners);
     return e;
 }
-
-entity spawn_camera_base(
-    ecs *world,
-    const entity prefab,
-    const float3 position,
-    const float4 rotation,
-    const byte state,
-    const float fov,
-    const int2 screen_position,
-    const int2 size,
-    const float4 screen_to_canvas
-) {
-    zox_instance(prefab);
-    zox_name("camera");
-    zox_set(e, Position3D, { position });
-    zox_set(e, Rotation3D, { rotation });
-    zox_set(e, CameraState, { state });
-    zox_set(e, FieldOfView, { fov });
-    zox_set(e, ScreenPosition, { screen_position });
-    zox_set(e, ScreenDimensions, { size });
-    zox_set(e, ScreenToCanvas, { screen_to_canvas });
-    return e;
-}

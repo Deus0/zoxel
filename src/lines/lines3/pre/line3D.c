@@ -9,7 +9,7 @@ entity spawn_prefab_line3D(ecs *world) {
     return e;
 }
 
-entity spawn_line3D(ecs *world, float3 pointA, float3 pointB, float thickness, double lifetime) {
+entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickness, double lifetime) {
 
     entity prefab = lifetime ? prefab_temporary_line3D : prefab_line3D;
 
@@ -25,7 +25,7 @@ entity spawn_line3D(ecs *world, float3 pointA, float3 pointB, float thickness, d
 }
 
 entity spawn_line3c(ecs *world, float3 a, float3 b, float thickness, double life_time, color_rgb c) {
-    entity e = spawn_line3D(world, a, b, thickness, life_time);
+    entity e = spawn_line3(world, a, b, thickness, life_time);
 
     zox_set(e, Color, { color_rgb_to_color(c) });
 
@@ -33,7 +33,7 @@ entity spawn_line3c(ecs *world, float3 a, float3 b, float thickness, double life
 }
 
 entity spawn_line3_alpha(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time, color line_color) {
-    entity e = spawn_line3D(world, pointA, pointB, thickness, life_time);
+    entity e = spawn_line3(world, pointA, pointB, thickness, life_time);
 
     zox_set(e, Color, { line_color });
 
@@ -48,6 +48,6 @@ void spawn_line3_thickness_alpha(ecs *world, float3 a, float3 b, color line_colo
     spawn_line3_alpha(world, a, b, thickness, line_frame_timing, line_color);
 }
 
-void spawn_line3(ecs *world, float3 a, float3 b, color_rgb line_color) {
+void spawn_line3t(ecs *world, float3 a, float3 b, color_rgb line_color) {
     spawn_line3c(world, a, b, 4, line_frame_timing, line_color);
 }

@@ -47,7 +47,7 @@ zox_sys2(BodyCombineSystem) {
     zox_sys_out(CombinePositions);
     zox_sys_out(CombineVox);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(BodyDirty, state);
         zox_sys_i(BodyLinks, bodys);
         zox_sys_o(CombineList, voxes);

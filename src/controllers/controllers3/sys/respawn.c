@@ -18,11 +18,13 @@ zox_sys2(Player3RespawnSystem) {
             respawn->value = 0;
             state->value = zox_player_state_playing;
         }
+
         // Player State Changes
         else if (respawn->value > 0 && state->value != zox_player_state_respawning) {
             zox_log("Respawn [cancel] (player state)");
             respawn->value = 0;
         }
+
         // Playing happily!
         else if (state->value == zox_player_state_playing) {
             if (zox_valid(character->value) && (!zox_has(character->value, Dead) || !zox_gett_value(character->value, Dead))) {
@@ -34,6 +36,7 @@ zox_sys2(Player3RespawnSystem) {
             state->value = zox_player_state_respawning;
             respawn->value = respawn_time;
         }
+
         // What happens after death??
         else if (state->value == zox_player_state_respawning) {
             respawn->value -= zox_delta_time;

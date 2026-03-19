@@ -5,14 +5,14 @@
 #define direction_back 4
 #define direction_front 5
 
-static const char* direction_names[6] = {
+/*static const char* direction_names[6] = {
     "left",   // 0
     "right",  // 1
     "down",   // 2
     "up",     // 3
     "back",   // 4
     "front"   // 5
-};
+};*/
 
 byte reverse_direction(byte d) {
     switch (d) {

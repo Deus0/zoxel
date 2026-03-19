@@ -9,7 +9,7 @@ zox_sys2(MenuGameBeginSystem) {
     zox_sys_in(CanvasLink);
     zox_sys_out(TaskbarToggleLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(EntityInitialize, state);
         zox_sys_i(CanvasLink, canvas);
         zox_sys_o(TaskbarToggleLink, link);

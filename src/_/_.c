@@ -36,6 +36,7 @@
 #include "hok/_.c"
 #include "windows/_.c"
 #include "types/_.c"
+#include "timing/_.c"
 #include "settings/_.c"
 
 void module_dispose_core(ecs *world, void *ctx) {
@@ -98,12 +99,11 @@ zox_begin_module(Core)
     add_to_update_loop(update_web_canvas);
 #endif
 
-
     clear_logs();
-    define_components_generic(world);
+    define_components_core(world);
     zox_module_dispose(module_dispose_core);
 
-
+    zox_import_module(Timing);
     zox_import_module(Settings);
 zox_end_module(Core)
 

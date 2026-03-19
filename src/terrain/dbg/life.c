@@ -14,8 +14,8 @@ void toggle_life_terrain(ecs *world, int32_t keycode) {
 
         if (!zox_valid(terrain)) {
             zox_log("Spawning Terrain on [%s]", zox_get_name(realm));
-
-            spawn_terrain_on_realm(world, realm);
+            zox_logw("Removed debug function.");
+            // spawn_terrain_on_realm(world, realm);
         } else {
             zox_log("Destroying Terrain [%s]", zox_get_name(terrain));
 

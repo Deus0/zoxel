@@ -1,4 +1,4 @@
-extern void spawn_line3(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
+extern void spawn_line3t(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
 
 zox_sys2(SphereColliderDrawSystem) {
     const color_rgb line_color = (color_rgb) { 55, 55, 55 };
@@ -16,11 +16,11 @@ zox_sys2(SphereColliderDrawSystem) {
             continue;
         }
         // spawn_cube_lines(world, chunk_bounds.center, chunk_bounds.extents, 1, 1, line_color);
-        spawn_line3(world, position3D->value, float3_add(position3D->value, (float3) { sphereRadius->value, 0, 0 }), line_color);
-        spawn_line3(world, position3D->value, float3_add(position3D->value, (float3) { -sphereRadius->value, 0, 0 }), line_color);
-        spawn_line3(world, position3D->value, float3_add(position3D->value, (float3) { 0, sphereRadius->value, 0 }), line_color);
-        spawn_line3(world, position3D->value, float3_add(position3D->value, (float3) { 0, -sphereRadius->value, 0 }), line_color);
-        spawn_line3(world, position3D->value, float3_add(position3D->value, (float3) { 0, 0, sphereRadius->value }), line_color);
-        spawn_line3(world, position3D->value, float3_add(position3D->value, (float3) { 0, 0, -sphereRadius->value }), line_color);
+        spawn_line3t(world, position3D->value, float3_add(position3D->value, (float3) { sphereRadius->value, 0, 0 }), line_color);
+        spawn_line3t(world, position3D->value, float3_add(position3D->value, (float3) { -sphereRadius->value, 0, 0 }), line_color);
+        spawn_line3t(world, position3D->value, float3_add(position3D->value, (float3) { 0, sphereRadius->value, 0 }), line_color);
+        spawn_line3t(world, position3D->value, float3_add(position3D->value, (float3) { 0, -sphereRadius->value, 0 }), line_color);
+        spawn_line3t(world, position3D->value, float3_add(position3D->value, (float3) { 0, 0, sphereRadius->value }), line_color);
+        spawn_line3t(world, position3D->value, float3_add(position3D->value, (float3) { 0, 0, -sphereRadius->value }), line_color);
     }
 } zox_sys_end(SphereColliderDrawSystem);

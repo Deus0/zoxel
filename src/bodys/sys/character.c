@@ -39,7 +39,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         zox_geter(realm->value, ItemLinks, ritems);
 
         // TODO: Randomly find a "hat" tag equip item from realm
-        byte found = 0;
+        // byte found = 0;
 
         // pick core
         entity rcore = find_slot_type(world, ritems, zox_slot_core);

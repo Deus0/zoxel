@@ -1,7 +1,7 @@
 // #define zox_debug_particle3Ds
 #ifdef zox_debug_particle3Ds
 const float3 debug_particle_line_addition = (float3) { 0, 0.2f, 0 };
-extern entity spawn_line3D(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
+extern entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
 #endif
 
 // todo: use one draw call with array of positions, instead of multiple calls here
@@ -57,7 +57,7 @@ zox_sys2(Particle3DRenderSystem) {
         glUniform4f(particle3D_color_location, color_f.x, color_f.y, color_f.z, color_f.w);
         zox_gpu_render_points(1);
 #ifdef zox_debug_particle3Ds
-        spawn_line3D(world, position3D->value, float3_add(position3D->value, debug_particle_line_addition), 0.5f, 0.03);
+        spawn_line3(world, position3D->value, float3_add(position3D->value, debug_particle_line_addition), 0.5f, 0.03);
 #endif
 #ifdef zoxel_catch_opengl_errors
         if (check_opengl_error_unlogged() != 0) {

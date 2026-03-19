@@ -53,16 +53,11 @@ zox_sys2(LevelUpSystem) {
 
         // spawn particle system
         zox_muter(userLink->value, Children, children);
-        const float3 bounds = zox_get_value(userLink->value, Bounds3D);
-        const entity e2 = spawn_particle3D_emitter(
-            world,
-            userLink->value,
-            10,
-            float3_scale(bounds, 3),
-            (color) { 255, 255, 0, 55 }
-        );
-        add_to_Children(children, e2);
+        float3 bounds = zox_get_value(userLink->value, Bounds3D);
+
+        entity e2 = spawn_particle3D_emitter(world, userLink->value, 10, float3_scale(bounds, 3), (color) { 255, 255, 0, 55 });
         zox_set(e2, DestroyInTime, { 3 + statValue->value });
+        add_to_Children(children, e2);
 
         dirty->value = zox_dirty_trigger;
 

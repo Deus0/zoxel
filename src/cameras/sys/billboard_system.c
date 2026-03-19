@@ -1,6 +1,6 @@
 // #define zox_debug_billboard_system
 #ifdef zox_debug_billboard_system
-extern entity spawn_line3D(ecs*, float3, float3, float, double);
+extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
 zox_sys2(BillboardSystem) {
@@ -43,7 +43,7 @@ zox_sys2(BillboardSystem) {
             }
         }
 #ifdef zox_debug_billboard_system
-        spawn_line3D(world, position3D->value, float3_add(position3D->value, normal), 2, 1);
+        spawn_line3(world, position3D->value, float3_add(position3D->value, normal), 2, 1);
 #endif
     }
 } zox_sys_end(BillboardSystem);

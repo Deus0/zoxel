@@ -44,11 +44,12 @@ zox_sys2(GameStateSystem) {
 
         byte old_state = state->value;
         byte new_state = target->value;
+
         state->value = new_state;
-        trigger_event_game(world, e, old_state, target->value);
-        // set game state dirty
         dirty->value = zox_dirty_trigger;
         time->value = zox_current_time;
+        trigger_event_game(world, e, old_state, target->value);
+
         zox_logv("[%f] Game State [%i] -> [%i]", time->value, old_state, new_state);
 
         // Start Loading Realm after faded

@@ -1,6 +1,6 @@
 #ifdef zox_debug_ui_trails
     float ui_trail_debug_thickness = 2.0f;
-    extern entity spawn_line3D(ecs*, float3, float3, float, double);
+    extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
 zox_sys2(UITrailSystem) {
@@ -37,7 +37,7 @@ zox_sys2(UITrailSystem) {
         }
 
 #ifdef zox_debug_ui_trails
-        spawn_line3D(world, target_position, position3D->value, ui_trail_debug_thickness, 1.0);
+        spawn_line3(world, target_position, position3D->value, ui_trail_debug_thickness, 1.0);
 #endif
 
     }

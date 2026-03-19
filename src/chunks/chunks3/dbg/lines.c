@@ -1,5 +1,5 @@
 // show lines on quads along chunk edge
-extern void spawn_line3(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
+extern void spawn_line3t(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
 
 void spawn_voxel_debug_line(
     ecs* world,
@@ -19,7 +19,7 @@ void spawn_voxel_debug_line(
     float3_add_float3_p(&positionf, (float3) { 0.25f, 0, 0.25f });
     float3 point_start = positionf;
     float3 point_end = float3_add(positionf, (float3) { 0, scale, 0 });
-    spawn_line3(world, point_start, point_end, c);
+    spawn_line3t(world, point_start, point_end, c);
 }
 
 // Renders Ground Lines

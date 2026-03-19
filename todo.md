@@ -1,60 +1,138 @@
 ### todo ###
 
-architecture & refactors
+Improvements:
+- fix bone spawning based on joints / skinning shapes
+	- Atm it does it randomly
+- spawn camera onto headbone
+- Center the vox textures for body parts
+- Use realm colors for UI
 
-engine
-  - move import modules into a new module - which will only be included when building zengine workflow (with another define)
-  - windows build in zelder, make a bsh/windows.sh
-  - fix music file not importing anymore
+Bugs:
+- Audio missing from main menu - need to spawn a realm for it
+- Npcs spawning in lesser chunks - just disable this for now, collision broken there
+- Slimes not adapting to block vox depths
+- Decor (SDL window edge) missing on khadas - try compile sdl together?
+	- test sdl window
+	- test wayland window
+- fix collisions in lesser resolution terrain chunks
+	- test by forcing all terrain chunks at a sub res for easier testing
+	
 
-ui
-  - remove use of list window / list ui, just spawn elements into a listview and have system handle the rest
+Refactors:
+- refactor models to just spawn one vox model and multiple render objects as children
+- make shape type and centering part of painting as well - use fill system just with diff byte for checks
+- Make lods just use the same model, no need to create 5 models per slime
+	- just generate per each level - set with shapes per node level
+- move sand/wood/stone into biome blocks
+- refactor soil/blocks into nodegraphs for models
+- link nodegraphs to realm's nodegraphLinks
+- list uis should just reposition inside system when children dirty
+- chunk = chunk + renders (seperate)
+- taskbar data into entities
+- settings data into entities
+- remove sdl_image and create a seperate image import
+- remove sdl_mixer and use another simpler audio lib
 
-blocks
-  - seperate block spawning more from the realm,break it into biomes and modules
-  - remove use of global voxel indexes and use BlockLinks from realm
+Engine [Builds]:
+- windows build in zelder, make a bsh/windows.sh
+- make builder:
+	- build linux
+	- build windows
+	- build android
+	- push to itch io
+- move import modules into a new module - which will only be included when building zengine workflow (with another define)
+- prefabs should spawn children too
 
-chunks
-  - Sides Generation to use new sides data
-  - Slice mesh properly for voxel faces
-  - first chunk / tunk to move from controllers to stream begin systems
-  - seperate Chunk into Chunk + Render
-  - after chunk3 refactor, use a render per lod, instead of regenerating everytime
-  - add local chunk lookups to make the terrain chunks be more future proof to dynamic changes in the blocks list
+Module [Nodes]:
+- create generic variables for our nodes
+- our head blueprint needs a l_eye_size r_eye_size
+- set these variables on process
+- for eye size, its a paint sphere, we can hook a input node up to the fill node
 
-realms (+ games)
-  - fix end game fade out, really bad atm
-  - remove all realm macros and just use state in their own systems (RealmItemsSpawnSystem, ClearSystem, etc) - wait clear can be a macro tho
+Module [Bodys]:
+- disable pickup part if it has attached parts
+- if pickup part - refresh body model
+- handle color combos by making head a different color
+	- uses lookup table when placing
+- generate head position from slot position of chest, and slot position of head
+- handle increasing depth for > 32^3 max size
+- use chest shape data from zoxel for the chest
+- Spawn bones from item slot positions
+- Body Part Tooltip
+	- show PartLinks
+	- show AttachLinks
 
-tunks
+Module [Biomes]:
+- Generate unique color per biome
+	- base on prior biomes so it stands out too
+	- primary color dirt - others based off this
+- Refactor more blocks into per biome
+
+Module [Terrain/Regions]:
+- region stream position / detect system
+- spawn / destroy regions
+- region lods
+- region town/mountain links
+
+Module [Blocks]:
+- when hit block - create entity for block health
+- block damage overlay effect
+
+Module [Rendering]:
+- test vulkan build
+- push voxel data and generate mesh on gpu
+
+Module [Tools]:
+- terminal log text list
+- chunk debugger - show lods of chunks etc
+- character debugger - show number per tunk2D of npcs
+
+Module [Sounds]:
+- fix music file not importing anymore
+
+Module [UI]:
+- remove use of list window / list ui, just spawn elements into a listview and have system handle the rest
+
+Module [Blocks]:
+- seperate block spawning more from the realm,break it into biomes and modules
+- remove use of global voxel indexes and use BlockLinks from realm
+
+Module [Chunks]:
+- first chunk / tunk to move from controllers to stream begin systems
+- seperate Chunk into Chunk + Render
+- after chunk3 refactor, use a render per lod, instead of regenerating everytime
+- add local chunk lookups to make the terrain chunks be more future proof to dynamic changes in the blocks list
+
+Module [Realms]: (+ games)
+- fix end game fade out, really bad atm
+- remove all realm macros and just use state in their own systems (RealmItemsSpawnSystem, ClearSystem, etc) - wait clear can be a macro tho
+
+Module [Terrain/Tunks]:
   - tunks to handle increasing resolution when needed - using the depth update
   - refactor: towns tunk and chunk3 systems into its own module, self contained addons
 
-nice to haves
-  - prefabs should spawn children too
 
 new
-  - load ui for a save game
-    - window with confirm
-    - shows play time
-    - delete option w confirm
-  - town layers walls
-  - spawn/destroy regions per 32x32 tunks
-  - spawn slime model from shapes3 data
-    - use node system
-    - link to ModelLinks in realm spawn system
-    - shape data on a node will go through with a vox data to generate sphere for now
-    - add eyes after using a fill node
-  - simple print blueprint function that logs a blueprint nodes
-  - spawn chest and head items and add to body ui
-  - spawn arm bones
-  - spawn held item into hand bone (use HandLink and SecondaryHandLink)
-  - map UI - show tunk heightmap for now
-  - map icons - and character ones - show player arrow overlay
-  - block damages, heal, and destroy feature
-  - terminal ui
-  - drop item button
-
+- load ui for a save game
+	- window with confirm
+	- shows play time
+	- delete option w confirm
+- town layers walls
+- spawn/destroy regions per 32x32 tunks
+- spawn slime model from shapes3 data
+- use node system
+- link to ModelLinks in realm spawn system
+- shape data on a node will go through with a vox data to generate sphere for now
+- add eyes after using a fill node
+- simple print blueprint function that logs a blueprint nodes
+- spawn chest and head items and add to body ui
+- spawn arm bones
+- spawn held item into hand bone (use HandLink and SecondaryHandLink)
+- map UI - show tunk heightmap for now
+- map icons - and character ones - show player arrow overlay
+- block damages, heal, and destroy feature
+- terminal ui
+- drop item button
 
 
 tools (this will help fix bugs)
@@ -65,3 +143,31 @@ tools (this will help fix bugs)
       - Verts
       - States?
       - Idk
+      
+
+done:
+-x ui off on khadas
+-x Generate a Chest Item for the realm bodys
+-x generate texture for the chest item
+-x create a head model / item
+-x Unique Character Tag
+-x Link the body parts together
+-x combine the two character items into one model for use
+-x add position and sizes to the combine list
+-x bug: player body still smaller during low res mode
+-x bug: hangs atm, due to paint size of eyes
+-x bug: low res mode has eye issue, just sets entire head green
+-x finish eyes on head of body
+-x bug: blockdepth not savings / loading
+-x bug: eye painting still not right
+-x bug: flower block vox scaled wrong when lower depth
+-x play sound when enter grass
+-x unstuck should perfectly reposition above nearest ground
+	-x atm if you flymode and teleport under, it moves you up randomly + 1
+-x option for transparent meshes
+-x option for painting weight
+-x Sides Generation to use new sides data
+-x Slice mesh properly for voxel faces
+-x spawn particles when hit grass
+-x Grass sound cuts off midway
+-x add option for rendering bones

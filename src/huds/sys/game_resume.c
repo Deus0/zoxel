@@ -12,17 +12,15 @@ void resume_player_delayed(ecs *world, entity player) {
     spawn_in_game_ui(world, player);
 }
 
-zox_sys2(PlayerUIResumeSystem) {
+zox_sys2(PlayerResumeSystem) {
     zox_sys_world();
     zox_sys_begin();
-    // zox_sys_in(CameraLink);
     zox_sys_in(CanvasLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     zox_sys_out(PlayerPauseEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(CameraLink, camera);
         zox_sys_i(CanvasLink, canvas);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
@@ -30,12 +28,6 @@ zox_sys2(PlayerUIResumeSystem) {
 
         if (dirty->value != zox_dirty_active) {
             continue;
-        }
-
-        // TODO: a start system instead
-        if (state->value == zox_player_state_starting) {
-            state->value = zox_player_state_playing;
-            dirty->value = zox_dirty_trigger;
         }
 
         if (state->value != zox_player_state_resuming) {
@@ -57,7 +49,8 @@ zox_sys2(PlayerUIResumeSystem) {
             pause_fade_alpha,
             0
         );
-        const entity pause_event = delay_event(
+
+        entity pause_event = delay_event(
             world,
             &resume_player_delayed,
             e,
@@ -72,4 +65,4 @@ zox_sys2(PlayerUIResumeSystem) {
         state->value = zox_player_state_playing;
         dirty->value = zox_dirty_trigger;
     }
-} zox_sys_end(PlayerUIResumeSystem);
+} zox_sys_end(PlayerResumeSystem);

@@ -10,13 +10,15 @@ zox_sys2(StreamEndEventSystem) {
     zox_sys_begin();
     zox_sys_in(EventInput);
     zox_sys_in(ChunkLinks);
+    zox_sys_out(Loaded);
     zox_sys_out(StreamEndEvent);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_o(StreamEndEvent, event);
         zox_sys_i(ChunkLinks, chunks);
         zox_sys_i(EventInput, eventInput);
+        zox_sys_o(Loaded, loaded);
+        zox_sys_o(StreamEndEvent, event);
 
-        if (!event->value) {
+        if (loaded->value != zox_load_begin) {
             continue;
         }
 
@@ -73,11 +75,17 @@ zox_sys2(StreamEndEventSystem) {
         uint chunk_required = xz_chunks * xz_chunks * y_chunks;
 
         if (!running && chunks_loaded >= chunk_required) {
-            zox_log("Terrain Loaded: @ [%f]\n   - chunks: [%i]", zox_current_time, chunks_loaded);
+            zox_log("Terrain Loaded: @ [%f] - chunks: [%i]", zox_current_time, chunks_loaded);
 
             // we should check if all chunks have finished here
-            (*event->value)(world, eventInput->value);
-            event->value = NULL;
+
+            if (event->value) {
+                (*event->value)(world, eventInput->value);
+                event->value = NULL;
+            }
+
+            // now loaded
+            loaded->value = zox_load_done;
         }
 
     }

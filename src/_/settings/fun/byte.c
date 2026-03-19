@@ -1,5 +1,5 @@
 // get
-static inline byte zoxs_get_byte(const setting s) {
+static inline byte zoxs_get_byte(setting s) {
     return s.value_byte;
 }
 
@@ -48,7 +48,7 @@ byte zoxs_set_byte_silently(ecs *world, const char *name, byte value) {
             }
         }
     }
-    zox_log_error("missing [byte] setting [%s]", name)
+    zox_log_error("missing [byte] setting [%s]", name);
     return 0;
 }
 
@@ -69,7 +69,7 @@ byte zoxs_set_byte(ecs *world, const char *name, byte value) {
             }
         }
     }
-    zox_log_error("missing [byte] setting [%s]", name)
+    zox_log_error("missing [byte] setting [%s]", name);
     return 0;
 }
 

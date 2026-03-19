@@ -1,8 +1,8 @@
-// uploads bon indexes to shader
+// uploads bone indexes to shader
 zox_sys2(BoneIndexUploadSystem) {
-    if (disable_bone_rendering) {
+    /*if (!render_bones) {
         return;
-    }
+    }*/
 
     zox_sys_begin();
     zox_sys_in(MeshDirty);
@@ -16,6 +16,7 @@ zox_sys2(BoneIndexUploadSystem) {
         if (meshDirty->value != mesh_state_upload) {
             continue;
         }
+
         if (boneIndexes->length == 0) {
             // zox_log(" ! boneIndexes 0\n")
             if (boneIndexGPULink->value != 0) {
@@ -23,9 +24,11 @@ zox_sys2(BoneIndexUploadSystem) {
             }
             continue;
         }
+
         if (boneIndexGPULink->value == 0) {
             boneIndexGPULink->value = spawn_gpu_generic_buffer();
         }
+
         glBindBuffer(GL_ARRAY_BUFFER, boneIndexGPULink->value);
         glBufferData(GL_ARRAY_BUFFER, boneIndexes->length * sizeof(byte), boneIndexes->value, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);

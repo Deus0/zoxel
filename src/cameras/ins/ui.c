@@ -1,0 +1,11 @@
+entity spawn_camera_ui(ecs *world, entity prefab, int2 position, int2 dimensions, float4 screen_to_canvas) {
+
+    zox_instance(prefab);
+    zox_name("ui_camera");
+
+    zox_set(e, ScreenPosition, { position });
+    zox_set(e, ScreenDimensions, { dimensions });
+    zox_set(e, ScreenToCanvas, { screen_to_canvas });
+
+    return e;
+}

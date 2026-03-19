@@ -1,6 +1,6 @@
 // #define zox_debug_aoe_damage_system
 #ifdef zox_debug_aoe_damage_system
-    extern entity spawn_line3D(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
+    extern entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
 #endif
 
 zox_sys2(DamageAuraSystem) {
@@ -72,12 +72,14 @@ zox_sys2(DamageAuraSystem) {
                     // zox_log(" + added new dot [%s] [%lu] total dots [%i]\n", zox_get_name(new_dot), new_dot, dotLinks->length)
                     add_to_DotLinks(dotLinks, new_dot);
                     // spawn particle system
-                    const float3 bounds = zox_get_value(e2, Bounds3D)
-                    const entity particle3D_emitter = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
-                    add_to_Children(children, particle3D_emitter);
+                    const float3 bounds = zox_get_value(e2, Bounds3D);
+
+                    entity particle3D_emitter = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
                     zox_set(particle3D_emitter, SkillLink, { e });
+                    add_to_Children(children, particle3D_emitter);
+
 #ifdef zox_debug_aoe_damage_system
-                    spawn_line3D(world, position3, position3D2->value, 0.5f, 0.1);
+                    spawn_line3(world, position3, position3D2->value, 0.5f, 0.1);
 #endif
                 }
             }

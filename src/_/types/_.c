@@ -80,14 +80,20 @@ zoxc_function(TimedEvent, void, ecs*, const entity);
 zoxc_byte(EntityDirty);
 zoxc_entity(EntityTarget);
 zoxc_entity(ComponentTarget);
-// unsorted
-zoxc_byte(GenericEvent);
-zoxc_state(EntityInitialize);
+// General
+zoxc_byte(Loaded);
 zoxc_state(Generate);
+zoxc_state(EntityInitialize);
+zoxc_byte(GenericEvent);
 zoxc_byte(SpawnChance);
+// unsorted
 zoxc_fixed_string(SaveGamePath, 512);
 
-void define_components_generic(ecs* world) {
+#define zox_load_none 0
+#define zox_load_begin 1
+#define zox_load_done 2
+
+void define_components_core(ecs* world) {
     // ids
     zoxd_int(ID);
     zoxd_lint(Seed);
@@ -102,10 +108,12 @@ void define_components_generic(ecs* world) {
     zoxd_byte(EntityDirty);
     zoxd_entity(EntityTarget);
     zoxd_entity(ComponentTarget);
-    // unsorted
-    zoxd_byte(GenericEvent);
-    zoxd_state(EntityInitialize);
-    zoxd_byte(SpawnChance);
+    // General
+    zoxd_byte(Loaded);
     zoxd_state(Generate);
+    zoxd_state(EntityInitialize);
+    zoxd_byte(GenericEvent);
+    zoxd_byte(SpawnChance);
+    // unsorted
     zoxd_fixed_string(SaveGamePath);
 }

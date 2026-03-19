@@ -26,6 +26,7 @@ void initialize_settings_apps(ecs* world) {
     zoxs_new_byte("maximized", set_app_maximized, maximized)
     zoxs_new_byte("monitor", set_app_monitor, monitor)
     zoxs_new_byte("vsync", set_app_vsync, vsync)
+
     if (is_on_phosh()) {
         zox_log("Phosh Detected. Disabling Decor.");
         disable_apps_decor = 1;

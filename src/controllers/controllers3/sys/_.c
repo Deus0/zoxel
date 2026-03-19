@@ -17,10 +17,11 @@
 #include "dialogue_exit.c"
 #include "dialogue_end.c"
 
+#include "begin.c"
 #include "game_start.c"
 #include "game_end.c"
 
-void define_systems_controllers3D(ecs *world) {
+void define_systems_controllers3(ecs *world) {
 
     zox_system(
         Player3DMoveSystem,
@@ -141,6 +142,14 @@ void define_systems_controllers3D(ecs *world) {
         [out] dialogues.SpeakerLinks
     );
 
+    zox_system_1(
+        PlayerBeginSystem,
+        EcsOnUpdate,
+        [in] games.GameLink,
+        [out] players.PlayerState,
+        [out] players.PlayerStateDirty,
+        [none] players.Player3
+    );
     zox_system_1(
         PlayerGame3StartSystem,
         EcsOnUpdate,

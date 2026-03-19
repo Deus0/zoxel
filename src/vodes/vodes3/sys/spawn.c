@@ -60,7 +60,7 @@ void spawned_block_vox(ecs *world, spawned_block_data* data) {
     zox_log("   - local [%ix%ix%i] ", spawn_data.positionl.x, spawn_data.positionl.y, spawn_data.positionl.z)
     zox_log("   - global [%ix%ix%i] ", spawn_data.positionv.x, spawn_data.positionv.y, spawn_data.positionv.z)
     zox_log("   - real [%fx%fx%f] ", spawn_data.positionf.x, spawn_data.positionf.y, spawn_data.positionf.z)*/
-    // spawn_line3D(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
+    // spawn_line3(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
 }
 
 

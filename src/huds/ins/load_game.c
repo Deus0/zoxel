@@ -16,11 +16,9 @@ void button_event_load_cancel(ecs *world, ClickEventData event) {
 }
 
 void delay_spawn_menu_realm(ecs* world, entity player) {
-    zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
-
-
-    entity menu_realm = spawn_menu_realm(world, player);
+    // zox_geter_value(player, GameLink, entity, game);
+    // zox_geter_value(game, RealmLink, entity, realm);
+    spawn_menu_realm(world, player);
 }
 
 void button_event_load_confirm(ecs *world, ClickEventData event) {
@@ -51,7 +49,7 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
     set_noise_seed(realm_save.seed);
     zox_set(realm, Seed, { realm_save.seed });
 
-    entity d = delay_event(world, &delay_spawn_menu_realm, player, 0.01);
+    delay_event(world, &delay_spawn_menu_realm, player, 0.01);
 }
 
 entity spawn_menu_load(ecs *world, entity player) {

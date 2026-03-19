@@ -197,8 +197,8 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
 }
 
 void delay_spawn_menu_new_realm(ecs* world, entity player) {
-    zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
+    //zox_geter_value(player, GameLink, entity, game);
+    //zox_geter_value(game, RealmLink, entity, realm);
 
     spawn_menu_new_realm(world, player); //, seed);
 }

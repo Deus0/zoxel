@@ -1,6 +1,7 @@
 #include "camera.c"
-#include "ui_camera.c"
-#include "free_camera.c"
+#include "ui.c"
+#include "free.c"
+
 entity prefab_camera;
 entity prefab_camera_ui;
 entity prefab_camera_game;

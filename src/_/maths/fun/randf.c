@@ -6,6 +6,10 @@ float randf() {
     return (float) rand() / max;
 }*/
 
+int rand_range(int min, int max) {
+    return min + rand() % (max - min);
+}
+
 float randf_range(float min, float max) {
     return min + (max - min) * randf();
 }

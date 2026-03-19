@@ -78,7 +78,7 @@ zox_sys2(BodysRealmSpawnSystem) {
                     texture_model = mlods2.value[mdepth];
                 }
 
-                entity process = spawn_process_model(world, prefab_process_model, blueprint_chest, mlods);
+                spawn_process_model(world, prefab_process_model, blueprint_chest, mlods);
             }
 
             zox_set_ptr(model_group, ModelLinks, variants);
@@ -138,7 +138,7 @@ zox_sys2(BodysRealmSpawnSystem) {
                     texture_model = mlods2.value[mdepth];
                 }
 
-                entity process = spawn_process_model(world, prefab_process_model, blueprint_head, mlods);
+                spawn_process_model(world, prefab_process_model, blueprint_head, mlods);
             }
 
             zox_set_ptr(model_group, ModelLinks, variants);

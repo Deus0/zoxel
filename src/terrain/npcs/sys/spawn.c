@@ -73,17 +73,17 @@ zox_sys2(Characters3SpawnSystem) {
         zox_geter(realm, CharacterLinks, characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
 
-        const entity chunk_above = neighbors->value[direction_up];
+        entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
 
         // calcs
-        const int chunk_length = powers_of_two[depth->value];
-        const int3 chunk_dimensions = int3_single(chunk_length);
+        int chunk_length = powers_of_two[depth->value];
+        int3 chunk_dimensions = int3_single(chunk_length);
         int3 chunk_voxel_position = get_chunk_positionv(cposition->value, chunk_dimensions);
-        byte found_position = 0;
+        // byte found_position = 0;
         float3 position;
 
-        const byte character_spawn_rate = character_spawn_rate_min + rand() % (character_spawn_rate_max - character_spawn_rate_min + 1);
+        byte character_spawn_rate = character_spawn_rate_min + rand() % (character_spawn_rate_max - character_spawn_rate_min + 1);
         for (byte j = 0; j < character_spawn_rate; j++) {
 
             // 1) Find a npc to place
@@ -154,7 +154,7 @@ zox_sys2(Characters3SpawnSystem) {
             float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
 
             // 3) Finally we spawn and link
-            const spawn_character3D_data spawn_data = {
+            spawn_character3D_data spawn_data = {
                 .prefab = prefab_character,
                 .position = position,
                 .rotation = rotation,
@@ -175,7 +175,7 @@ zox_sys2(Characters3SpawnSystem) {
                 continue;
             }
 
-            const entity character = spawn_character3(world, spawn_data);
+            entity character = spawn_character3(world, spawn_data);
 
             zox_set(character, TerrainLink, { terrain->value });
 

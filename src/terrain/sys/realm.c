@@ -31,15 +31,15 @@ void spawn_realm_blocks(ecs *world, entity realm) {
     zox_geter(realm, Colors, colors);
     zox_geter(realm, ModelLinks, models);
 
-    byte target_depth = block_vox_depth;
-    byte texture_dim = powers_of_two_byte[target_depth];
+    // byte target_depth = block_vox_depth;
+    // byte texture_dim = powers_of_two_byte[target_depth];
 
     color dirt_color;
     color grass_color;
     color sand_color;
     color stone_color;
     color obsidian_color;
-    color wood_color;
+    // color wood_color;
     if (colors->length < 5 || grayscale_mode) {
         zox_log("+ grayscale_mode enabled")
         dirt_color = color_grayscale(88);
@@ -47,7 +47,7 @@ void spawn_realm_blocks(ecs *world, entity realm) {
         sand_color = color_grayscale(166);
         stone_color = color_grayscale(45);
         obsidian_color = color_grayscale(13);
-        wood_color = color_grayscale(122);
+        // wood_color = color_grayscale(122);
     } else {
         byte color_index = 1;   // skip sky
         // const color sky_color = colors->value[color_index++];
@@ -56,7 +56,7 @@ void spawn_realm_blocks(ecs *world, entity realm) {
         sand_color = colors->value[color_index++];
         stone_color = colors->value[color_index++];
         obsidian_color = colors->value[color_index++];
-        wood_color = colors->value[color_index++];
+        // wood_color = colors->value[color_index++];
     }
 
     zox_muter(realm, BlockLinks, blocks);
