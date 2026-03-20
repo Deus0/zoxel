@@ -104,24 +104,28 @@ void resize_##T(T* ptr, int length) {\
     }\
 } \
 \
-byte add_to_##T(T *ptr, const type data) { \
+byte add_to_##T(T *ptr, type data) { \
     spin_lock(&ptr->lock); \
     int new_length = ptr->length + 1; \
     type* new_value = ptr->value \
         ? rezalloc(ptr->value, new_length * sizeof(type)) \
         : zalloc(new_length * sizeof(type)); \
+    \
     if (!new_value) { \
         zox_log_error("zalloc failed in add_to_" #T); \
         spin_unlock(&ptr->lock); \
         return 0; \
     } \
+    \
     if (!ptr->value) { \
         zox_stats_arrayds_mallocs++; \
     } \
+    \
     ptr->value = new_value; \
     ptr->value[ptr->length] = data; \
     ptr->length++; \
     spin_unlock(&ptr->lock); \
+    \
     return 1; \
 } \
 \

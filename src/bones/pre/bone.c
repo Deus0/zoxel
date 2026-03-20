@@ -20,7 +20,7 @@ entity spawn_prefab_bone(ecs *world) {
     return e;
 }
 
-entity spawn_bone(ecs *world, entity p, entity skeleton, float3 skeleton_position, const float3 local_position, float3 size) {
+entity spawn_bone(ecs *world, entity p, entity skeleton, float3 skeleton_position, float3 local_position, float3 size) {
 
     zox_instance(p);
 

@@ -102,13 +102,16 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
 
     if (type == zox_character_type_skeleton) {
         spawn_gpu_bone_index(world, e);
-
-        float head_move_y = data.player ? 0.01f : 0.1f;
-        spawn_skeleton_bones(world, e, head_move_y);
-
         if (is_paint_skeletons) {
             zox_add_tag(e, PaintedSkeleton);
         }
+        if (!data.player) {
+            BoneLinks bones = (BoneLinks) { 0 };
+            spawn_skeleton_bones(world, e, &bones, 0.01f);
+            zox_set_ptr(e, BoneLinks, bones);
+        }
+        //float head_move_y = data.player ? 0.01f : 0.1f;
+        //spawn_skeleton_bones(world, e, head_move_y);
     }
 
     return e;

@@ -55,5 +55,6 @@ entity spawn_prefab_character3_player(ecs *world, entity p) {
         zox_prefab_set(e, ThreatPosition, { float3_zero });
         zox_prefab_set(e, WanderDirection, { float3_zero });
     }
+
     return e;
 }

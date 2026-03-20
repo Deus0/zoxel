@@ -56,14 +56,7 @@ zox_sys2(Character3RealmSpawnSystem) {
 
             // can choose here properties for spawning
             byte chance = chances[i];
-            const entity e2 = spawn_character3_meta(
-                world,
-                prefab_character3_meta,
-                prefab_character,
-                vox_names[i],
-                model,
-                chance
-            );
+            entity e2 = spawn_character3_meta(world, prefab_character3_meta, prefab_character, vox_names[i], model, chance);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
         }
@@ -73,7 +66,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             entity model = models->value[i];
 
             if (!zox_valid(model)) {
-                zox_log_error("realm has invalid model [%i]", i)
+                zox_log_error("realm has invalid model [%i]", i);
                 continue;
             }
 
@@ -82,14 +75,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
 
             byte chance = 8;
-            entity e2 = spawn_character3_meta(
-                world,
-                prefab_character3_meta,
-                prefab_character,
-                "character",
-                model,
-                chance
-            );
+            entity e2 = spawn_character3_meta(world, prefab_character3_meta, prefab_character, "character", model, chance);
             add_to_CharacterLinks(characters, e2);
 
             chance_max += chance;
@@ -101,14 +87,8 @@ zox_sys2(Character3RealmSpawnSystem) {
             char* svox_name = "grazor";
             entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(svox_name));
 
-            entity e2 = spawn_character3_meta(
-                world,
-                prefab_character3_meta,
-                prefab_character3_skeleton_npc,
-                svox_name,
-                model,
-                chance
-            );
+            entity e2 = spawn_character3_meta(world, prefab_character3_meta,
+ prefab_character3_skeleton_npc, svox_name, model, chance);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
         }

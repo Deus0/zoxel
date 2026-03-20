@@ -6,7 +6,7 @@
 #include "set/_.c"
 #include "pre/_.c"
 #include "sys/_.c"
-#include "fun/test.c"
+#include "fun/_.c"
 
 zox_begin_module(Bones)
     add_hook_load_shader(&spawn_shaders_bones);

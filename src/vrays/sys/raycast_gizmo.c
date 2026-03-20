@@ -61,13 +61,7 @@ zox_sys2(RaycastGizmoSystem) {
         else if (ray_hit == rayhit_character) {
             // draw a cube above its head instead
             float3 b = float3_add(data->hit, float3_scale(float3_up, hit_character_line_up));
-            spawn_line3_thickness_alpha(
-                world,
-                data->hit,
-                b,
-                hit_character_color,
-                raycast_thickness
-            );
+            /*spawn_line3_thickness_alpha(world, data->hit, b, hit_character_color, raycast_thickness);*/
             // zox_log("hit character alpha %i", hit_character_color.a);
         }
 
