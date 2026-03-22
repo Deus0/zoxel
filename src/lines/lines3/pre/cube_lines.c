@@ -34,20 +34,19 @@ entity spawn_prefab_cube_lines(ecs *world) {
     return e;
 }
 
-entity spawn_cube_lines(
-    ecs *world,
-    const float3 center,
-    const float3 extents,
-    const float thickness,
-    const double life_time,
-    const color_rgb line_color
-) {
+entity spawn_cube_lines(ecs *world, float3 center, float3 extents, float thickness, double life_time, color_rgb line_color) {
+
     zox_instance(prefab_cube_lines);
     // zox_name("cube_lines")
+
     zox_set(e, Position3D, { center });
     zox_set(e, Bounds3D, { extents });
     zox_set(e, LineThickness, { thickness });
     zox_set(e, ColorRGB, { line_color });
-    if (life_time) zox_set(e, DestroyInTime, { life_time });
+
+    if (life_time) {
+        zox_set(e, DestroyInTime, { life_time });
+    }
+
     return e;
 }

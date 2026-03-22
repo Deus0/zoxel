@@ -1,8 +1,9 @@
-#include "skeleton_render3D_system.c"
-#include "bone_index_generate_system.c"
-#include "bone_index_upload_system.c"
-#include "bone_paint_system.c"
-#include "render_bones.c"
+#include "generate.c"
+#include "upload.c"
+#include "paint.c"
+#include "mesh_render.c"
+#include "bone_render.c"
+#include "head_bob.c"
 
 void define_systems_bones(ecs *world) {
     // generating bone indexes here
@@ -15,44 +16,57 @@ void define_systems_bones(ecs *world) {
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,
         [in] rendering.ColorsGPULink,
-        [in] BoneIndexGPULink,
+        [in] bones.BoneIndexGPULink,
         [in] transforms3.TransformMatrix,
         [in] rendering.RenderDisabled,
-        [in] BoneLinks,
+        [in] bones.BoneLinks,
         [none] rendering3.SkeletonMesh,
         [none] rendering.MeshColorRGBs,
         [none] !rendering.UvsGPULink
     );
+
     zox_system(
         BoneIndexGenerateSystem,
         EcsOnUpdate,
+        [in] bones.SkeletonDirty,
         [in] rendering.MeshDirty,
         [in] rendering.MeshVertices,
-        [in] BoneLinks,
-        [out] BoneIndexes
+        [in] bones.BoneLinks,
+        [out] bones.BoneIndexes,
+        [none] bones.Skeleton
     );
+
     zox_system(
         BonePaintSystem,
         EcsPostUpdate,
         [in] rendering.MeshDirty,
-        [in] BoneIndexes,
+        [in] bones.BoneIndexes,
         [out] rendering.MeshColorRGBs,
-        [none] Skeleton
-        // [none] PaintedSkeleton
+        [none] bones.Skeleton
     );
+
     zox_system_1(
         BoneIndexUploadSystem,
         zoxp_mainthread,
         [in] rendering.MeshDirty,
-        [in] BoneIndexes,
-        [out] BoneIndexGPULink
+        [in] bones.BoneIndexes,
+        [out] bones.BoneIndexGPULink
     );
+
     zox_system_1(
         BoneRenderSystem,
         zoxp_mainthread,
-        // [in] bones.SkeletonLink,
         [in] hierarchys.ParentLink,
         [in] transforms3.Position3D,
+        [in] bones.BoneSize,
         [none] bones.Bone
+    );
+
+    zox_system(
+        HeadAnimateSystem,
+        EcsOnUpdate,
+        [in] bones.SkeletonDirty,
+        [in] bones.BoneLinks,
+        [none] bones.Skeleton
     );
 }

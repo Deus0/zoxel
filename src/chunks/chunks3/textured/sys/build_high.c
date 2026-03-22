@@ -69,7 +69,7 @@ zox_sys2(Chunk3TexturedHighBuildSystem) {
             continue;
         }
 
-        clear_mesh_uvs(indicies, verts, colors, uvs        );
+        clear_mesh_uvs(indicies, verts, colors, uvs);
 
         if (rdepth->value == render_depth_invisible) {
             mdirty->value = mesh_state_trigger_slow;

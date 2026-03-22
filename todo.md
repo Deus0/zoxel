@@ -1,11 +1,14 @@
 ### todo ###
 
 Improvements:
-- fix bone spawning based on joints / skinning shapes
-	- Atm it does it randomly
-- spawn camera onto headbone
+- Spawn Hips Body Part
+- Spawn Shoulders Body Parts
+- Spawn Biceps Body Parts
+- Spawn camera onto headbone
 - Center the vox textures for body parts
 - Use realm colors for UI
+- Spawn RenderCamera + Render Texture + Render UI
+- Spawn Status UI + player model through the UI
 
 Bugs:
 - Audio missing from main menu - need to spawn a realm for it
@@ -171,3 +174,5 @@ done:
 -x spawn particles when hit grass
 -x Grass sound cuts off midway
 -x add option for rendering bones
+-x Render Part Position / Sizes
+-x Spawn Part Position / Sizes from Parts Vox Combining

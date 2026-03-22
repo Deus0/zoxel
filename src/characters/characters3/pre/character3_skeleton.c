@@ -6,6 +6,7 @@ entity spawn_prefab_character3_skeleton(ecs *world, entity p) {
 
     zox_add_tag(e, Skeleton);
     zox_add_tag(e, SkeletonMesh);
+    zox_prefab_set(e, SkeletonDirty, { 0 });
 #ifdef zox_paint_skeletons
     zox_add_tag(e, PaintedSkeleton);
 #endif

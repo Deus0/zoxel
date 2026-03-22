@@ -137,7 +137,7 @@ entity game_start_player_new(ecs *world, entity player) {
         zox_log_error("Issue with place chunk");
     }
 
-    spawn_arrow3D(world, spawn_data.position, (float3) { 0, 4, 0}, 0.5f, 6, 60);
+    // spawn_arrow3D(world, spawn_data.position, (float3) { 0, 4, 0}, 0.5f, 6, 60);
 
     // Needs ui spawn after frame
     delay_event(world, &spawn_player_game_ui, player, 0.01);
@@ -195,7 +195,7 @@ entity game_start_player_load(ecs *world, entity player) {
         // zox_set(e, DisableMovement, { 0 });
     }
 
-    spawn_arrow3D(world, spawn_data.position, (float3) { 0, 4, 0}, 0.5f, 6, 60);
+    // spawn_arrow3D(world, spawn_data.position, (float3) { 0, 4, 0}, 0.5f, 6, 60);
 
     load_player_e(world, player);
     // load_camera_e(world, realm, camera);

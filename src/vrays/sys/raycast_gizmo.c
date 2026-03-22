@@ -22,16 +22,7 @@ zox_sys2(RaycastGizmoSystem) {
             float quad_scale = data->voxel_scale * (0.5f - quad_depth_buffer);
 
             if (!zox_valid(link->value)) {
-                link->value = spawn_quad_lines(
-                    world,
-                    prefab_quad_lines,
-                    hit_terrain_color,
-                    quad_position,
-                    quad_rotation,
-                    raycaster_quad_thickness,
-                    quad_scale,
-                    0
-                );
+                link->value = spawn_quad_lines(world, prefab_quad_lines, hit_terrain_color, quad_position, quad_rotation, raycaster_quad_thickness, quad_scale, 0);
             } else {
                 zox_muter(link->value, Position3D, position);
                 zox_muter(link->value, Rotation3D, rotation);
@@ -43,38 +34,22 @@ zox_sys2(RaycastGizmoSystem) {
 
             // Debug Line
             if (is_debug_rayhit_point) {
-                float3 hit_out = float3_add(
-                    data->hit, // hit positionf
-                    float3_scale(data->normal, raygizmo_line_length * data->voxel_scale));
+                float3 hit_out = float3_add(data->hit, float3_scale(data->normal, raygizmo_line_length * data->voxel_scale));
 
-                spawn_line3_alpha(
-                    world,
-                    data->hit, // hit positionf
-                    hit_out,
-                    raycast_thickness,
-                    is_slow_gizmos ? 30 : 0.5f,
-                    hit_block_vox_color
-                );
+                spawn_line3_alpha(world, data->hit, hit_out, raycast_thickness, is_slow_gizmos ? 30 : 0.5f, hit_block_vox_color);
             }
         }
 
         else if (ray_hit == rayhit_character) {
             // draw a cube above its head instead
-            float3 b = float3_add(data->hit, float3_scale(float3_up, hit_character_line_up));
+            // float3 b = float3_add(data->hit, float3_scale(float3_up, hit_character_line_up));
             /*spawn_line3_thickness_alpha(world, data->hit, b, hit_character_color, raycast_thickness);*/
             // zox_log("hit character alpha %i", hit_character_color.a);
         }
 
         else if (ray_hit == rayhit_block_vox) {
             float3 hit_out = float3_add(data->hit, float3_scale(data->normal, hit_block_vox_line_up));
-            spawn_line3_alpha(
-                world,
-                data->hit, // hit positionf
-                hit_out,
-                raycast_thickness,
-                is_slow_gizmos ? 30 : 0.2f,
-                hit_block_vox_color
-            );
+            spawn_line3_alpha(world, data->hit, hit_out, raycast_thickness,  is_slow_gizmos ? 30 : 0.2f, hit_block_vox_color);
         }
 
         if (ray_hit != rayhit_terrain) {
@@ -87,68 +62,3 @@ zox_sys2(RaycastGizmoSystem) {
         }
     }
 } zox_sys_end(RaycastGizmoSystem);
-
-
-/*if (is_debug_mid_voxel) {
-    spawn_line3_alpha(
-        world,
-        data->positionf,
-        data->hit,
-        raycast_thickness,
-        5,
-        color_red
-    );
-}
-
-float3 other_axis = float3_zero;
-if (data->normal.y != 0) {
-    other_axis.x = 1;
-    other_axis.z = 1;
-} else if (data->normal.x != 0) {
-    other_axis.y = 1;
-    other_axis.z = 1;
-} else if (data->normal.z != 0) {
-    other_axis.x = 1;
-    other_axis.y = 1;
-}
-
-other_axis = float3_scale(other_axis, axis_scale);
-if (data->normal.z != 0) {
-    spawn_line3_thickness_alpha(world,
-        float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),
-        float3_add(center_quad, (float3) { -other_axis.x, other_axis.y, other_axis.z }),
-        hit_terrain_color, raycaster_quad_thickness);
-    spawn_line3_thickness_alpha(world,
-        float3_add(center_quad, (float3) { -other_axis.x, other_axis.y, other_axis.z }),
-        float3_add(center_quad, (float3) { other_axis.x, other_axis.y, other_axis.z }),
-        hit_terrain_color, raycaster_quad_thickness);
-    spawn_line3_thickness_alpha(world,
-        float3_add(center_quad, (float3) { other_axis.x, -other_axis.y, -other_axis.z }),
-        float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),
-        hit_terrain_color, raycaster_quad_thickness);
-    spawn_line3_thickness_alpha(world,
-        float3_add(center_quad, (float3) { other_axis.x, other_axis.y, other_axis.z }),
-        float3_add(center_quad, (float3) { other_axis.x, -other_axis.y, -other_axis.z }),
-        hit_terrain_color, raycaster_quad_thickness);
-
-} else {
-    // handles x and y
-    spawn_line3_thickness_alpha(world,
-        float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),
-        float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, other_axis.z }),
-        hit_terrain_color, raycaster_quad_thickness);
-    spawn_line3_thickness_alpha(world,
-        float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, other_axis.z }),
-        float3_add(center_quad, (float3) { other_axis.x, other_axis.y, other_axis.z }),
-        hit_terrain_color, raycaster_quad_thickness);
-    spawn_line3_thickness_alpha(world,
-        float3_add(center_quad, (float3) { other_axis.x, other_axis.y, -other_axis.z }),
-        float3_add(center_quad, (float3) { -other_axis.x, -other_axis.y, -other_axis.z }),
-        hit_terrain_color, raycaster_quad_thickness);
-    spawn_line3_thickness_alpha(world,
-        float3_add(center_quad, (float3) { other_axis.x, other_axis.y, other_axis.z }),
-        float3_add(center_quad, (float3) { other_axis.x, other_axis.y, -other_axis.z }),
-        hit_terrain_color, raycaster_quad_thickness);
-}
-// zox_log(" > h [%fx%fx%f]\n", data->hit.x, data->hit.y, data->hit.z)
-// zox_log(" > r [%fx%fx%f]\n", data->positionf.x, data->positionf.y, data->positionf.z)*/

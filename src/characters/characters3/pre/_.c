@@ -18,6 +18,12 @@ entity prefab_character3_skeleton;
     }\
 }
 
+#define zox_prefab_character_addt(T) {\
+    for (int i = 0; i < prefab_characters_count; i++) {\
+        zox_add_tag(prefabs_characters3[i], T)\
+    }\
+}
+
 #define zox_prefab_character_add(T) {\
     for (int i = 0; i < prefab_characters_count; i++) {\
         zox_prefab_add(prefabs_characters3[i], T)\

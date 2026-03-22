@@ -25,11 +25,11 @@ zox_sys2(CharacterItemsSystem) {
         // zox_geter(realm->value, ItemLinks, realm_items);
         zox_geter(realm->value, BlockLinks, blocks);
         // give npc random voxel
-        const entity block = blocks->value[rand() % blocks->length];
+        entity block = blocks->value[rand() % blocks->length];
         if (zox_valid(block) && zox_has(block, ItemLink)) {
             zox_geter(block, ItemLink, itemLink)
             if (zox_valid(itemLink->value)) {
-                const entity item = spawn_user_item(world, itemLink->value, e);
+                entity item = spawn_user_item(world, itemLink->value, e);
                 zox_set(item, Quantity, { 1 + rand() % 3 });
                 add_to_ItemLinks(items, item);
             }

@@ -105,47 +105,14 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
         if (is_paint_skeletons) {
             zox_add_tag(e, PaintedSkeleton);
         }
-        if (!data.player) {
+        /*if (!data.player) {
             BoneLinks bones = (BoneLinks) { 0 };
             spawn_skeleton_bones(world, e, &bones, 0.01f);
             zox_set_ptr(e, BoneLinks, bones);
-        }
+        }*/
         //float head_move_y = data.player ? 0.01f : 0.1f;
         //spawn_skeleton_bones(world, e, head_move_y);
     }
 
     return e;
 }
-
-// make a create_bounds function tthat returns float6
-/*const float min_x_global = -(terrain_spawn_distance) * (real_chunk_scale) + 0.1f;
-const float max_x_global = (terrain_spawn_distance + 1) * (real_chunk_scale) - 0.1f;
-const float min_z_global = min_x_global;
-const float max_z_global = max_x_global;
-const float min_y_global = - real_chunk_scale * terrain_vertical;
-const float max_y_global = - min_y_global + real_chunk_scale;
-float6 character_bounds = (float6) {
-    min_x_global,
-    max_x_global,
-    min_y_global,
-    max_y_global,
-    min_z_global,
-    max_z_global };
-if (!data.player) {
-    const int bounds_radius = 16;
-    const int bounds_radius_y = 12;
-
-    const float min_x_local = data.position.x - bounds_radius;
-    const float max_x_local = data.position.x + bounds_radius;
-
-    const float min_y_local = data.position.y - bounds_radius_y;
-    const float max_y_local = data.position.y + bounds_radius_y;
-
-    const float min_z_local = data.position.z - bounds_radius;
-    const float max_z_local = data.position.z + bounds_radius;
-    character_bounds = (float6) {
-        min_x_local, max_x_local,
-        min_y_local, max_y_local,
-        min_z_local, max_z_local };
-    zox_set(e, Position3DBounds, { character_bounds })
-}*/

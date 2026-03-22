@@ -1,19 +1,15 @@
 // uploads bone indexes to shader
 zox_sys2(BoneIndexUploadSystem) {
-    /*if (!render_bones) {
-        return;
-    }*/
-
     zox_sys_begin();
     zox_sys_in(MeshDirty);
     zox_sys_in(BoneIndexes);
     zox_sys_out(BoneIndexGPULink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MeshDirty, meshDirty);
+        zox_sys_i(MeshDirty, mdirty);
         zox_sys_i(BoneIndexes, boneIndexes);
         zox_sys_o(BoneIndexGPULink, boneIndexGPULink);
 
-        if (meshDirty->value != mesh_state_upload) {
+        if (mdirty->value != mesh_state_upload) {
             continue;
         }
 

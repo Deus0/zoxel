@@ -1,6 +1,7 @@
 #include "realm.c"
 #include "character.c"
 #include "combine.c"
+#include "bones.c"
 
 void define_systems_bodys(ecs* world) {
 
@@ -19,17 +20,27 @@ void define_systems_bodys(ecs* world) {
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
-        [out] bodys.BodyLinks,
-        [out] bones.BoneLinks,
+        [out] bodys.PartLinks,
         [out] bodys.BodyDirty,
         [none] players.PlayerCharacter
+    );
+
+    zox_system_1(
+        CharacterBoneSpawnSystem,
+        EcsOnUpdate,
+        [in] bodys.BodyDirty,
+        [in] bodys.PartLinks,
+        [out] hierarchys.Children,
+        [out] bones.BoneLinks,
+        [out] bones.SkeletonDirty,
+        [none] bones.Skeleton
     );
 
     zox_system(
         BodyCombineSystem,
         EcsOnUpdate,
         [in] bodys.BodyDirty,
-        [in] bodys.BodyLinks,
+        [in] bodys.PartLinks,
         [out] voxes.CombineList,
         [out] voxes.CombinePositions,
         [out] voxes.CombineVox,

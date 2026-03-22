@@ -1,12 +1,13 @@
 const color default_fill_color_frame_body = { 33, 63, 63, frame_alpha };
 
+
 entity spawn_player_menu_body(ecs* world, entity player) {
 
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
 
-    if (!zox_has(character, BodyLinks)) {
+    if (!zox_has(character, PartLinks)) {
         return 0;
     }
 
@@ -17,7 +18,7 @@ entity spawn_player_menu_body(ecs* world, entity player) {
     data.element.prefab = prefab_menu_body;
     data.icon.prefab = prefab_icon_item;
 
-    data.window.user_links_id = zox_id(BodyLinks);
+    data.window.user_links_id = zox_id(PartLinks);
 
     data.frame.texture.fill_color = default_fill_color_frame_body;
 
@@ -26,14 +27,16 @@ entity spawn_player_menu_body(ecs* world, entity player) {
         .outline_color = window_outline
     };
 
-    zox_geter(character, BodyLinks, links);
-    entity3 spawns[links->length];
+    entity_array_d* parts = create_entity_array_d(1);
+    fetch_parts_recursive(world, parts, character);
+
+    entity3 spawns[parts->size];
 
     entity e = spawn_window_users(world, data, texture, 0, spawns);
 
-    for (int i = 0; i < links->length; i++) {
+    for (int i = 0; i < parts->size; i++) {
 
-        entity item = links->value[i];
+        entity item = parts->data[i];
 
         entity3 frame = spawns[i];
         if (frame.x) {
@@ -51,6 +54,8 @@ entity spawn_player_menu_body(ecs* world, entity player) {
             zox_set(frame.y, ClickDisabled, { 1 });
         }
     }
+
+    dispose_entity_array_d(parts);
 
     return e;
 }

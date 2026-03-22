@@ -11,29 +11,29 @@ byte raycast_locks = 0;
 
 // Raycast through characters linked to chunks, excluding the caster itself
 // Uses AABB intersection to find closest hit along the ray
-CharacterRaycast raycast_character(
-    ecs *world,
-    float3 ray_origin,
-    float3 ray_normal,
-    entity caster,
-    const ChunkEntities* entities
-) {
+CharacterRaycast raycast_character(ecs *world, float3 ray_origin, float3 ray_normal, entity caster, const ChunkEntities* entities) {
+
     CharacterRaycast ray = {
         .e = 0,
         .distance = FLT_MAX,
     };
+
     if (!entities) {
         return ray;
     }
+
     for (int i = 0; i < entities->length; i++) {
         entity e = entities->value[i];
+
         if (!zox_valid(e) || caster == e || !zox_has(e, Position3D) || !zox_has(e, Bounds3D)) {
             continue;
         }
+
         zox_geter_value(e, Position3D, float3, position3);
         zox_geter_value(e, Rotation3D, float4, rotation3);
         zox_geter_value(e, Bounds3D, float3, bounds3);
-        const bounds character_bounds = {
+
+        bounds character_bounds = {
             .center = position3,
             .extents = calculate_aabb_extents(bounds3, rotation3)
         };
@@ -44,6 +44,7 @@ CharacterRaycast raycast_character(
         } else if (!ray_intersects_aabb(ray_origin, ray_normal, character_bounds, &tmin, &tmax)) {
             continue;
         }
+
         if (tmin < ray.distance) {
             ray.distance = tmin;
             ray.point = float3_add(ray_origin, float3_scale(ray_normal, tmin));
@@ -51,6 +52,7 @@ CharacterRaycast raycast_character(
             ray.e = e;
         }
     }
+
     return ray;
 }
 
@@ -142,8 +144,8 @@ byte raycast_voxel_node(
 ) {
 
     // setup voxel data
-    const byte raycasting_terrain = voxels && voxels->length && chunk_links;
-    const byte3 max_chunk_sizeb3 = int3_to_byte3(max_chunk_size);
+    byte raycasting_terrain = voxels && voxels->length && chunk_links;
+    byte3 max_chunk_sizeb3 = int3_to_byte3(max_chunk_size);
 
 
     const VoxelNode* node_chunk = NULL;
@@ -195,13 +197,13 @@ byte raycast_voxel_node(
     float3 local_ray_origin = float3_subtract(ray_origin, chunk_positionf);
     // Convert Ray Origin to Terrain Local Voxel Position
     positionv = positionf_to_positionv(local_ray_origin, terrain_scalev);
-    const float3 ray_origin_scaled = float3_scale(local_ray_origin, 1.0f / terrain_scalev); // get float voxel position
+    float3 ray_origin_scaled = float3_scale(local_ray_origin, 1.0f / terrain_scalev); // get float voxel position
 
     // NOTE: As positionv is terrain local, we need to increase our steps by chunk node reduction
 
     // Prepare stepping vectors for DDA traversal along the ray direction
-    const int3 step_direction = float3_to_int3(float3_sign(ray_normal));
-    const float3 ray_unit_size = (float3) {
+    int3 step_direction = float3_to_int3(float3_sign(ray_normal));
+    float3 ray_unit_size = (float3) {
         1.0f / float_abs(ray_normal.x),
         1.0f / float_abs(ray_normal.y),
         1.0f / float_abs(ray_normal.z)
@@ -256,10 +258,8 @@ byte raycast_voxel_node(
                 chunk_position = new_chunk_position;
             }
 
-            positionl = get_positionl_byte3(
-                positionv,
-                max_chunk_sizeb3    // modulus this
-            );
+            positionl = get_positionl_byte3(positionv, max_chunk_sizeb3);
+
             // NOTE: This fixes it for sub chunk nodes
             positionl = byte3_inverse_scale(positionl, (int) powers_of_two[chunk_depth_reduction]);
         }
@@ -346,9 +346,7 @@ byte raycast_voxel_node(
 
                 // NOTE: Minivoxes are centred, so get cornered position, we offset
                 zox_geter_value_non_const(block_spawn, Position3D, float3, block_position);
-                float3 ray_point = float3_add(
-                    ray_origin,
-                    float3_scale(ray_normal, ray_distancef));
+                float3 ray_point = float3_add(ray_origin, float3_scale(ray_normal, ray_distancef));
                 float3_subtract_float3_p(&block_position, float3_single(0.5f * chunk_scalev));
 
                 // model itself
@@ -454,10 +452,7 @@ byte raycast_voxel_node(
         // NOTE: Cache last, used for placement of blocks
         positionl_last = positionl;
         positionv_last = positionv;
-        positionf_last = voxel_to_real_position(
-            positionv,
-            terrain_scalev,
-            chunk_scalev);
+        positionf_last = voxel_to_real_position(positionv, terrain_scalev, chunk_scalev);
         chunk_last = chunk;
         node_last = node_voxel;
 
@@ -466,8 +461,7 @@ byte raycast_voxel_node(
     }
 
     // If Hit terrain or block vox
-    if (result == rayhit_terrain ||
-        (result == rayhit_block_vox && raycasting_terrain))
+    if (result == rayhit_terrain || (result == rayhit_block_vox && raycasting_terrain))
     {
         if (result == rayhit_terrain) {
             data->distance = ray_distancef; //  * chunk_scalev; //  terrain_scalev;
@@ -564,22 +558,6 @@ zox_sys2(Chunk3RaycastSystem) {
 
         // zox_log("Terrain Scale: %f", terrain_scalev);
 
-        data->result = raycast_voxel_node(
-            world,
-            caster,
-            voxels,
-            chunks,
-            int3_zero,
-            float3_zero,
-            terrain_depth,
-            chunk_dimensions,
-            0,
-            ray_origin,
-            ray_normal,
-            int3_zero,
-            terrain_scalev,
-            range,
-            data,
-            &character_raycast);
+        data->result = raycast_voxel_node(world, caster, voxels, chunks, int3_zero, float3_zero, terrain_depth, chunk_dimensions, 0, ray_origin, ray_normal, int3_zero, terrain_scalev, range, data, &character_raycast);
     }
 } zox_sys_end(Chunk3RaycastSystem);

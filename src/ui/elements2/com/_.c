@@ -23,7 +23,7 @@ zox_tag(ScrollbarButton);
 // Move to Windows
 zox_tag(Header);
 zox_tag(CloseButton);
-zox_tag(Body);
+// zox_tag(Body);
 
 zoxc(OptionLabel, const char*);
 
@@ -51,7 +51,7 @@ void define_components_elements2(ecs *world) {
     // Move to Windows
     zoxd_tag(Header);
     zoxd_tag(CloseButton);
-    zoxd_tag(Body);
+    // zoxd_tag(Body);
 
     zoxd(OptionLabel);
 }

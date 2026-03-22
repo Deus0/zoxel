@@ -42,14 +42,14 @@ zox_sys2(BodyCombineSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BodyDirty);
-    zox_sys_in(BodyLinks);
+    zox_sys_in(PartLinks);
     zox_sys_out(CombineList);
     zox_sys_out(CombinePositions);
     zox_sys_out(CombineVox);
     for (int i = 0; i < it->count; i++) {
         // zox_sys_e();
         zox_sys_i(BodyDirty, state);
-        zox_sys_i(BodyLinks, bodys);
+        zox_sys_i(PartLinks, parts);
         zox_sys_o(CombineList, voxes);
         zox_sys_o(CombinePositions, positions);
         zox_sys_o(CombineVox, output);
@@ -58,43 +58,32 @@ zox_sys2(BodyCombineSystem) {
             continue;
         }
 
-        if (!bodys->length) {
-            // zox_logw("No Body to Generate");
+        /*if (!parts->length) {
             continue;
+        }*/
+
+        entity_array_d* flat_parts = create_entity_array_d(1);
+        for (int j = 0; j < parts->length; j++) {
+            entity part = parts->value[j];
+            add_to_entity_array_d(flat_parts, part);
+
+            fetch_parts_recursive(world, flat_parts, part);
         }
 
         // Clear combine data
         resize_CombineList(voxes, 0);
         resize_CombinePositions(positions, 0);
 
-        // TODO: Generate this from item slot data
-        // head size 8^3
-        // chest size x: 10, y: 25, z: 10
-        byte mul = 1;
-        if (block_vox_depth == 5) mul = 2;
-
-        // atm its based on the realm body items
-        byte3 vpositions[] = {
-            (byte3) { 0, 0, 0 },
-            (byte3) { 4 * mul, 21 * mul, 4 * mul },
-        };
-
-#ifndef zox_debug_head_only
-        for (int j = 0; j < bodys->length; j++) {
-#else
-        for (int j = 1; j < bodys->length; j++) {
-#endif
-            entity item = bodys->value[j];
-            entity vox = item_get_max_depth_vox(world, item);
-#ifndef zox_debug_head_only
-            byte3 vposition = vpositions[j];
-#else
-            byte3 vposition = byte3_zero;
-#endif
+        for (int j = 0; j < flat_parts->size; j++) {
+            entity part = flat_parts->data[j];
+            entity vox = item_get_max_depth_vox(world, part);
+            zox_geter_value(part, VoxelPosition, int3, vposition);
 
             add_to_CombineList(voxes, vox);
-            add_to_CombinePositions(positions, vposition);
+            add_to_CombinePositions(positions, int3_to_byte3(vposition));
         }
+
+        dispose_entity_array_d(flat_parts);
 
         output->value = zox_dirty_trigger;
     }

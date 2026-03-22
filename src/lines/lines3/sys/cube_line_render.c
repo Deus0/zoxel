@@ -46,6 +46,7 @@ zox_sys2(CubeLineRenderSystem) {
         }
 
         float3 p = position->value;
+
         if (zox_has(e, DebugCubeCorner)) {
             p = float3_add(p, (bounds->value));
         }

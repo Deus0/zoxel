@@ -26,13 +26,10 @@ entity spawn_bone(ecs *world, entity p, entity skeleton, float3 skeleton_positio
 
     zox_set(e, SkeletonLink, { skeleton });
     zox_set(e, LocalPosition3D, { local_position });
-    zox_set(e, Position3D, { skeleton_position });
-    zox_set(e, BonePosition, { skeleton_position }); // actually position within skeleton, local to root bone
+    // zox_set(e, Position3D, { skeleton_position });
+    // actually position within skeleton, local to root bone
+    zox_set(e, BonePosition, { skeleton_position });
     zox_set(e, BoneSize, { size });
-
-    /*if (render_bones) {
-        add_debug_cube(world, e, bone_size);
-    }*/
 
     return e;
 }

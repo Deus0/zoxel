@@ -32,13 +32,11 @@
         return e;\
     }\
     \
-    entity spawn_user_##name( \
-        ecs *world, \
-        entity prefab, \
-        entity user \
-    ) {\
-        zox_instance(prefab); \
-        zox_name(zox_get_name(prefab)); \
+    entity spawn_user_##name(ecs *world, entity p, entity user) {\
+        zox_instance(p); \
+        zox_name(zox_get_name(p)); \
+        \
         zox_set(e, UserLink, { user }); \
+        \
         return e; \
     }

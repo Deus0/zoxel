@@ -16,16 +16,12 @@ extern entity prefab_realm;
 extern entity prefab_block;
 extern entity prefab_texture;
 
-void add_entity_to_labels(
-    ecs *world,
-    const entity e,
-    text_group_dynamic_array_d* labels,
-    entity_array_d* entities,
-    const int tree_level
-) {
+void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
+
     if (!zox_valid(e)) {
         return;
     }
+
     char *text = malloc(hierarchy_max_line_characters);
     if (!zox_has(e, ZoxName)) {
         snprintf(text, hierarchy_max_line_characters, "[%s]", zox_get_name(e));
@@ -40,6 +36,7 @@ void add_entity_to_labels(
             snprintf(text, hierarchy_max_line_characters, "[%s]", zox_get_name(e));
         }*/
     }
+
     for (int i = 0; i < tree_level; i++) {
         char *temp = strdup(text);
         if (temp) {
