@@ -100,13 +100,10 @@ zox_sys2(CharacterBoneSpawnSystem) {
 
         entity core_model = get_item_model(world, parts->value[0]);
         // zox_geter_value_non_const(core_model, BlockScale, float, bscale);
+
+        // TODO: Body dirty should set Body's MaxRenderDepth and BlockScale, before VoxCombination
         zox_geter_value_non_const(core_model, MaxRenderDepth, byte, mdepth);
         float bscale = (1.0f / (2.0f * powers_of_two_byte[mdepth]));
-        // Why do i need to do this?
-        /*if (mdepth == 5) {
-            zox_log("mdepth is 5");
-            bscale *= 0.5f;
-        }*/
 
         // zox_geter_value(e, BlockScale, float, bscale);
         zox_geter_value(e, BodySize, byte3, bsize);

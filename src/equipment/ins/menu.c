@@ -30,13 +30,7 @@ entity spawn_player_menu_equipment(ecs* world, entity player) {
     zox_geter(character, EquipLinks, links);
     entity3 spawns[links->length];
 
-    entity e = spawn_window_users(
-        world,
-        data,
-        texture,
-        0,
-        spawns
-    );
+    entity e = spawn_window_users_id(world, data, texture, 0, spawns);
 
     for (uint i = 0; i < links->length; i++) {
         entity item = links->value[i];

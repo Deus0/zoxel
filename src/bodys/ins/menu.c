@@ -32,7 +32,7 @@ entity spawn_player_menu_body(ecs* world, entity player) {
 
     entity3 spawns[parts->size];
 
-    entity e = spawn_window_users(world, data, texture, 0, spawns);
+    entity e = spawn_window_users(world, data, texture, 0, spawns, parts->data, parts->size);
 
     for (int i = 0; i < parts->size; i++) {
 
@@ -49,10 +49,11 @@ entity spawn_player_menu_body(ecs* world, entity player) {
             zox_set(frame.z, ItemLink, { item });
         }
 
-        if (i == 0) {
-            // zox_remove(frame.x, ClickState);
+        if (i == 0 && frame.y) {
             zox_set(frame.y, ClickDisabled, { 1 });
         }
+
+        break;
     }
 
     dispose_entity_array_d(parts);

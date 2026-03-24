@@ -6,13 +6,8 @@ entity spawn_player_menu_skills(
     zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
 
-    SpawnWindowUsers spawn_data = get_default_spawn_window_users_data(
-        world,
-        prefab_menu_skills,
-        character,
-        canvas,
-        canvas_size
-    );
+    SpawnWindowUsers spawn_data = get_default_spawn_window_users_data(world, prefab_menu_skills, character, canvas, canvas_size);
+
     spawn_data.header_zext.text = "Skillbook";
     // spawn_data.element.prefab = prefab_menu_items;
     spawn_data.element.prefab = prefab_menu_skills;
@@ -28,13 +23,7 @@ entity spawn_player_menu_skills(
     zox_geter(character, SkillLinks, skills);
     entity3 spawns[skills->length];
 
-    entity e = spawn_window_users(
-        world,
-        spawn_data,
-        texture_data,
-        0,
-        spawns
-    );
+    entity e = spawn_window_users_id(world, spawn_data, texture_data, 0, spawns);
 
     for (int i = 0; i < skills->length; i++) {
         entity e2 = skills->value[i];

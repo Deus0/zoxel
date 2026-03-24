@@ -14,13 +14,12 @@ entity spawn_prefab_menu_##name( \
     \
     zox_user_menu_functions_minimal(Name, Name2, name, name2)\
     \
-    entity spawn_player_menu_##name( \
-        ecs *world, \
-        const entity player \
-    ) {\
-        const entity character = zox_get_value(player, CharacterLink)\
-        const entity canvas = zox_get_value(player, CanvasLink)\
-        const int2 canvas_size = zox_get_value(canvas, LayoutSize)\
+    entity spawn_player_menu_##name(ecs *world, entity player) {\
+        \
+        entity character = zox_get_value(player, CharacterLink)\
+        entity canvas = zox_get_value(player, CanvasLink)\
+        int2 canvas_size = zox_get_value(canvas, LayoutSize)\
+        \
         SpawnWindowUsers data = get_default_spawn_window_users_data( \
             world, \
             prefab_menu_##name, \
@@ -28,6 +27,7 @@ entity spawn_prefab_menu_##name( \
             canvas, \
             canvas_size \
         );\
+        \
         data.header_zext.text = #Name;\
         data.element.prefab = prefab_menu_##name;\
         data.icon.prefab = prefab_icon_##name2;\
@@ -36,13 +36,8 @@ entity spawn_prefab_menu_##name( \
             .fill_color = window_fill, \
             .outline_color = window_outline \
         }; \
-        return spawn_window_users(\
-            world,\
-            data,\
-            texture,\
-            0,\
-            NULL\
-        );\
+        \
+        return spawn_window_users_id(world, data, texture, 0, NULL);\
     }
 
 /*#define zox_user_menu_functions_frame_color(Name, Name2, name, name2, fill_color_frame)\

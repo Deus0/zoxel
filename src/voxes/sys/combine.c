@@ -4,7 +4,7 @@ zox_sys2(CombineVoxSystem) {
     zox_sys_in(CombineVox);
     zox_sys_in(CombineList);
     zox_sys_in(CombinePositions);
-    zox_sys_out(BlockScale);
+    // zox_sys_out(BlockScale);
     zox_sys_out(ChunkSize);
     zox_sys_out(NodeDepth);
     zox_sys_out(RenderDepth);
@@ -15,7 +15,7 @@ zox_sys2(CombineVoxSystem) {
         zox_sys_i(CombineVox, state);
         zox_sys_i(CombineList, voxes);
         zox_sys_i(CombinePositions, positions);
-        zox_sys_o(BlockScale, bscale);
+        // zox_sys_o(BlockScale, bscale);
         zox_sys_o(ChunkSize, csize);
         zox_sys_o(NodeDepth, ndepth);
         zox_sys_o(RenderDepth, rdepth);
@@ -60,10 +60,10 @@ zox_sys2(CombineVoxSystem) {
                 if (vsize.y > new_csize.y) new_csize.y = vsize.y;
                 if (vsize.z > new_csize.z) new_csize.z = vsize.z;
 
-                zox_geter_value(vox, BlockScale, float, vscale);
+                /*zox_geter_value(vox, BlockScale, float, vscale);
                 if (!bscale->value || vscale < bscale->value) {
                     bscale->value = vscale;
-                }
+                }*/
             }
         }
 
@@ -179,7 +179,8 @@ zox_sys2(CombineVoxSystem) {
         // bscale->value = get_chunk_scale(ndepth->value, tdepth, terrain_scalev);
         csize->value = new_csize;
 
-        bscale->value = (1.0f / (2.0f * powers_of_two_byte[ndepth->value]));
+        // bscale->value = (1.0f / (2.0f * powers_of_two_byte[ndepth->value]));
+
         // bscale->value = (2.0f / (2 * powers_of_two_byte[6]));
         /*if (ndepth->value < 6) {
             zox_log("scaling up UP");

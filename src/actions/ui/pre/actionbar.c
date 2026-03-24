@@ -49,7 +49,7 @@ entity spawn_menu_actions(ecs *world, entity player) {
     };
 
     entity3 spawns[actions->length];
-    entity e = spawn_window_users(world, data, texture, selected, spawns);
+    entity e = spawn_window_users_id(world, data, texture, selected, spawns);
 
     if (!e) {
         zox_log_error("Failed spawning Actionbar");

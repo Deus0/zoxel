@@ -49,6 +49,7 @@ void define_systems_terrain_collisions(ecs* world) {
         [in] blocks.InsideBlockDirty,
         [in] blocks.InsideBlock,
         [in] transforms3.Position3D,
+        [out] blocks.InsideBlockTime,
         [none] blocks.BlockSoundTrigger
     );
 }

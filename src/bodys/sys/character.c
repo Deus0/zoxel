@@ -29,12 +29,14 @@ zox_sys2(CharacterBodySpawnSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
     zox_sys_in(RealmLink);
+    zox_sys_out(BodySize);
     zox_sys_out(PartLinks);
     zox_sys_out(BodyDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
+        zox_sys_o(BodySize, bsize);
         zox_sys_o(PartLinks, parts);
         zox_sys_o(BodyDirty, dirty);
 
@@ -45,56 +47,72 @@ zox_sys2(CharacterBodySpawnSystem) {
         zox_geter(realm->value, ItemLinks, ritems);
 
         // pick core
-        entity base_chest = find_slot_type(world, ritems, zox_slot_core);
+        entity rchest = find_slot_type(world, ritems, zox_slot_core);
+        entity rhips = find_slot_type(world, ritems, zox_slot_hips);
+        entity rhead = find_slot_type(world, ritems, zox_slot_head);
 
-        if (!base_chest) {
+        if (!rchest || !rhips || !rhead) {
             continue;
         }
 
-        entity chest_model = get_item_model(world, base_chest);
-        zox_geter_value(chest_model, ChunkSize, int3, chest_size);
+        entity mchest = get_item_model(world, rchest);
+        entity mhips = get_item_model(world, rhips);
+        entity mhead = get_item_model(world, rhead);
 
-        entity chest = spawn_user_item_body(world, e, base_chest, e, zox_slot_core, byte3_zero, byte3_half(int3_to_byte3(chest_size)));
+        zox_geter_value(mchest, ChunkSize, int3, schest);
+        zox_geter_value(mhips, ChunkSize, int3, ships);
+        zox_geter_value(mhead, ChunkSize, int3, shead);
+
+        byte3 body_size = int3_to_byte3(schest);
+        body_size.y += ships.y;
+        body_size.y += shead.y;
+
+        byte3 pchest = (byte3) { 0, ships.y, 0 };
+        byte3 cpchest = byte3_add(pchest, byte3_half(int3_to_byte3(schest)));
+
+        entity chest = spawn_user_item_body(world, e, rchest, e, zox_slot_core, pchest, cpchest);
         add_to_PartLinks(parts, chest);
-
-        zox_log("+ Body Chest %s: s[%ix%ix%i]", zox_get_name(base_chest), chest_size.x, chest_size.y, chest_size.z);
-
-        byte3 body_size = int3_to_byte3(chest_size);
-
-        // Link up parts together
         PartLinks chest_parts = (PartLinks) { };
-        {
-            entity base_head = find_slot_type(world, ritems, zox_slot_head);
-            if (base_head) {
-                entity head_model = get_item_model(world, base_head);
-                zox_geter_value(head_model, ChunkSize, int3, head_size);
-                byte3 head_position = (byte3) {
-                    (chest_size.x - head_size.x) / 2,
-                    chest_size.y,
-                    (chest_size.z - head_size.z) / 2
-                };
-                // Center Position
-                byte3 head_center_position = byte3_add(head_position, byte3_half(int3_to_byte3(head_size)));
-                // byte3 head_position = byte3_scale((byte3) { 4, 21, 4 }, position_mul);
 
-                // atm its based on the realm body items
-                entity head = spawn_user_item_body(world, e, base_head, chest, zox_slot_head, head_position, head_center_position);
-                add_to_PartLinks(&chest_parts, head);
+        zox_log("+ Body Chest %s: s[%ix%ix%i]", zox_get_name(rchest), schest.x, schest.y, schest.z);
 
-                /*entity bhead = spawn_user_item(world, base_head, e);
-                zox_set(bhead, SlotType, { zox_slot_head });
-                zox_set(bhead, AttachLink, { chest });
-                zox_set(bhead, VoxelPosition, { byte3_to_int3(head_position) });*/
+        // Head
+        if (rhead) {
+            byte3 phead = (byte3) {
+                (schest.x - shead.x) / 2,
+                ships.y + schest.y,
+                (schest.z - shead.z) / 2
+            };
+            byte3 cposition = byte3_add(phead, byte3_half(int3_to_byte3(shead)));
 
-                zox_log("+ Spawned Body Head %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(base_head), head_position.x, head_position.y, head_position.z, head_size.x, head_size.y, head_size.z);
+            entity part = spawn_user_item_body(world, e, rhead, chest, zox_slot_head, phead, cposition);
+            add_to_PartLinks(&chest_parts, part);
 
-                body_size.y += head_size.y;
-            }
+            zox_log("+ Spawned Body Head %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(rhead), phead.x, phead.y, phead.z, shead.x, shead.y, shead.z);
         }
+
+        // Hips
+        if (rhips) {
+            byte3 phips = (byte3) {
+                (schest.x - ships.x) / 2,
+                0,
+                (schest.z - ships.z) / 2
+            };
+            byte3 cposition = byte3_add(phips, byte3_half(int3_to_byte3(ships)));
+
+            entity part = spawn_user_item_body(world, e, rhips, chest, zox_slot_hips, phips, cposition);
+            add_to_PartLinks(&chest_parts, part);
+
+            zox_log("+ Spawned Body Hips %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(rhips), phips.x, phips.y, phips.z, ships.x, ships.y, ships.z);
+        }
+
         zox_set_ptr(chest, PartLinks, chest_parts);
 
-        zox_set(e, BodySize, { body_size });
-
+        bsize->value = body_size;
         dirty->value = zox_dirty_trigger;
+
+        byte mdepth = block_vox_depth + 2;
+        float bscale = (1.0f / (powers_of_two_byte[mdepth]));
+        zox_set(e, BlockScale, { bscale });
     }
 } zox_sys_end(CharacterBodySpawnSystem);

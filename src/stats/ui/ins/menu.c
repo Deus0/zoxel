@@ -24,13 +24,7 @@ entity spawn_player_menu_stats(ecs* world, const entity player) {
     zox_geter(character, StatLinks, stats);
     entity3 spawns[stats->length];
 
-    entity e = spawn_window_users(
-        world,
-        data,
-        texture,
-        0,
-        spawns
-    );
+    entity e = spawn_window_users_id(world, data, texture, 0, spawns);
 
     if (!e) {
         zox_logw("Stats UI spawning failed.");

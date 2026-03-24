@@ -1,9 +1,7 @@
 const color default_fill_color_frame_crafting = { 233, 233, 233, frame_alpha };
 
-entity spawn_player_menu_crafting(
-    ecs* world,
-    const entity player
-) {
+entity spawn_player_menu_crafting(ecs* world, entity player) {
+
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
@@ -32,17 +30,12 @@ entity spawn_player_menu_crafting(
     zox_geter(character, CraftLinks, links);
     entity3 spawns[links->length];
 
-    entity e = spawn_window_users(
-        world,
-        data,
-        texture,
-        0,
-        spawns
-    );
+    entity e = spawn_window_users_id(world, data, texture, 0, spawns);
 
     for (int i = 0; i < links->length; i++) {
         entity item = links->value[i];
         entity3 frame = spawns[i];
+
         if (frame.x) {
             zox_set(frame.x, ItemLink, { item });
         }

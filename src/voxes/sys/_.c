@@ -47,7 +47,7 @@ void define_systems_voxes(ecs *world) {
         [in] voxes.CombineVox,
         [in] voxes.CombineList,
         [in] voxes.CombinePositions,
-        [out] blocks.BlockScale,
+        // [out] blocks.BlockScale,
         [out] chunks3.ChunkSize,
         [out] chunks.NodeDepth,
         [out] rendering.RenderDepth,

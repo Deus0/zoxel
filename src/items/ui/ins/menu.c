@@ -24,13 +24,7 @@ entity spawn_menu_items(ecs* world, entity player) {
     zox_geter(character, ItemLinks, items);
     entity3 spawns[items->length];
 
-    entity e = spawn_window_users(
-        world,
-        data,
-        texture,
-        0,
-        spawns
-    );
+    entity e = spawn_window_users_id(world, data, texture, 0, spawns);
 
     if (!e) {
         zox_logw("Items UI spawning failed.");
@@ -40,6 +34,7 @@ entity spawn_menu_items(ecs* world, entity player) {
     for (int i = 0; i < items->length; i++) {
         entity item = items->value[i];
         entity3 frame = spawns[i];
+
         if (frame.x) {
             zox_set(frame.x, ItemLink, { item });
         }

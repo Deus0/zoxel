@@ -20,6 +20,7 @@ void define_systems_bodys(ecs* world) {
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
+        [out] bodys.BodySize,
         [out] bodys.PartLinks,
         [out] bodys.BodyDirty,
         [none] players.PlayerCharacter

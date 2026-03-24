@@ -12,6 +12,7 @@ zoxc_byte(BlockVoxOffset);
 zoxc_byte(BlockIndex);
 zoxc_byte(InsideBlock);
 zoxc_state(InsideBlockDirty);
+zoxc_double(InsideBlockTime);
 zoxc_int3(VoxelPosition);
 zoxc_byte3(VoxelLocalPosition);
 zoxc_float(BlockScale);
@@ -44,6 +45,7 @@ void define_components_blocks(ecs *world) {
     zoxd_entity(BlockManagerLink);
     zoxd_byte(InsideBlock);
     zoxd_state(InsideBlockDirty);
+    zoxd_double(InsideBlockTime);
     zoxd_tag(BlockSoundTrigger);
     zoxd_entity(BlockSound);
 }

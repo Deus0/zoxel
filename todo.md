@@ -1,14 +1,19 @@
 ### todo ###
 
 Improvements:
-- Spawn Hips Body Part
-- Spawn Shoulders Body Parts
-- Spawn Biceps Body Parts
+- Update body when picking up head
+	- only allow to pickup shoulder if bicep is up
 - Spawn camera onto headbone
+- Set body positions based on item anchor types dynamically
+- combine vox TopHat onto body as well - Equipment layer
+- Spawn Hips Body Part onto character
+	- Spawn Shoulders Body Parts
+	- Spawn Biceps Body Parts
 - Center the vox textures for body parts
 - Use realm colors for UI
 - Spawn RenderCamera + Render Texture + Render UI
 - Spawn Status UI + player model through the UI
+- Position Y chart - showing fluctuations - use to stabilize physics
 
 Bugs:
 - Audio missing from main menu - need to spawn a realm for it
