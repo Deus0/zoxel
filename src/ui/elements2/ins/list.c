@@ -10,11 +10,10 @@ byte calculate_list_max_characters(const SpawnList data) {
     return max_list_characters;
 }
 
-static inline int2 calculate_list_size(
-    byte max_characters,
-    const SpawnList data
-) {
-    const int list_element_height = data.font_size + data.button_padding.y * 2;
+static inline int2 calculate_list_size(byte max_characters, SpawnList data) {
+
+    int list_element_height = data.font_size + data.button_padding.y * 2;
+
     return (int2) {
         max_characters * data.font_size +
             data.button_padding.x * 2 + data.margins.x * 2,
@@ -24,11 +23,8 @@ static inline int2 calculate_list_size(
     };
 }
 
-static inline int2 calculate_header_size(
-    byte length,
-    byte font_size,
-    byte2 padding
-) {
+static inline int2 calculate_header_size(byte length, byte font_size, byte2 padding) {
+
     return (int2) {
         length * font_size + padding.x * 2,
         font_size + padding.y * 2
@@ -38,30 +34,22 @@ static inline int2 calculate_header_size(
 
 // TODO: Set scrollbar visible/invisible based on list count
 // TODO: spawn list panel, and scrollbar as children of list entity
-entity spawn_list(
-    ecs *world,
-    const LayoutParentData canvas_data,
-    const LayoutParentData parent_data,
-    const ElementSpawnData element_data,
-    const SpawnList list_data
-) {
+entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnList list_data) {
+
     byte slider_handle_width = 8 * ui_scale;
 
     zox_instance(element_data.prefab);
-    set_element_spawn_data(
-        world,
-        e,
-        canvas_data,
-        parent_data,
-        element_data
-    );
+    zox_name("list");
+    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+
     if (element_data.render_disabled) {
         zox_set(e, RenderDisabled, { element_data.render_disabled });
     }
-    zox_name("list");
+
     zox_set(e, ListVisible, { list_data.visible_count });
     zox_set(e, ListMargins, { list_data.margins });
     zox_set(e, ListPadding, { list_data.padding });
+    zox_set(e, TextPadding, { list_data.button_padding });
     zox_set(e, Color, { list_data.fill });
     zox_set(e, OutlineColor, { list_data.outline });
 
@@ -100,17 +88,13 @@ entity spawn_list(
                 .fill = button_fill,
                 .outline = button_outline,
             };
-            child = spawn_button(
-                world,
-                canvas_data,
-                child_parent_data,
-                child_element_data,
-                child_text_data,
-                child_button_data
-            );
+
+            child = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
+
             if (child_data.on_click.value) {
                 zox_set(child, ClickEvent, { child_data.on_click.value });
             }
+
             zox_add_tag(child, ZextLabel);
             if (child_data.save_path) {
                 SaveGamePath path = { };
@@ -142,16 +126,7 @@ entity spawn_list(
                 .handle_width = slider_handle_width,
             };
 
-            entity2 e2 = spawn_slider(
-                world,
-                canvas_data,
-                child_parent_data,
-                child_element_data,
-                slider_data,
-                list_data.font_size,
-                button_font_fill,
-                button_font_outline
-            );
+            entity2 e2 = spawn_slider(world, canvas_data, child_parent_data, child_element_data, slider_data, list_data.font_size, button_font_fill, button_font_outline);
 
             if (child_data.on_slide.value) {
                 zox_set(e2.y, SlideEvent, { child_data.on_slide.value })
@@ -175,15 +150,8 @@ entity spawn_list(
                 .fill = button_fill,
                 .outline = button_outline,
             };
-            entity toggle = spawn_toggle(
-                world,
-                canvas_data,
-                child_parent_data,
-                child_element_data,
-                child_text_data,
-                child_button_data,
-                child_data.value
-            );
+            entity toggle = spawn_toggle(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data, child_data.value);
+
             if (child_data.on_toggle.value) {
                 zox_set(toggle, ToggleEvent, { child_data.on_toggle.value });
             }
@@ -194,5 +162,6 @@ entity spawn_list(
         add_to_Children(&children, child);
     }
     zox_set_ptr(e, Children, children);
+
     return e;
 }

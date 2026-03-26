@@ -38,7 +38,7 @@ void define_systems_layouts2(ecs* world) {
     zox_system(
         ListSystem,
         EcsOnUpdate,
-        [in] layouts2.ListDirty,
+        [in] layouts2.ListPositionDirty,
         [in] hierarchys.Children,
         [in] layouts2.LayoutSize,
         [in] layouts2.ListPadding,

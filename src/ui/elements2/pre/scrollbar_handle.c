@@ -1,9 +1,13 @@
-entity spawn_prefab_scrollbar_front(ecs *world,  entity p) {
+entity spawn_prefab_scrollbar_handle(ecs *world, entity p) {
+
     zox_prefab_child(p);
-    zox_prefab_name("scrollbar_front");
+    zox_prefab_name("scrollbar_handle");
 
     zox_add_tag(e, Scrollbar);
+    zox_prefab_set(e, ScrollviewLink, { 0 });
+
     zox_add_tag(e, Selectable);
+
     zox_prefab_set(e, SelectState, { zox_select_state_none });
 
     zox_add_tag(e, Clickable);

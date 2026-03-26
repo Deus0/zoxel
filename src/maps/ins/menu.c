@@ -27,14 +27,15 @@ entity spawn_player_menu_map(
     window_data.children = &window_children;
     LayoutParentData canvas_data = (LayoutParentData) { .e = canvas, .size = canvas_size };
 
-    const entity e = spawn_window2(
+    entity e = spawn_window2(
         world,
         canvas_data,
         canvas_data,
         data.element,
         window_data,
         (ClickEvent) { &on_closed_taskbar_window },
-        1
+        1,
+        zox_window_map
     );
     zox_set_ptr(e, Children, window_children);
 

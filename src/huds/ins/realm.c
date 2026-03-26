@@ -129,9 +129,10 @@ entity spawn_menu_realm(ecs *world, entity player) {
         visible_count,
         list_font_size,
         (ClickEvent) { &button_event_menu_realm_cancel },
-        1
+        1, zox_window_new_realm
     );
     zox_name("menu_realm");
+
     zox_add_tag(e, MenuRealm);
     zox_add_tag(e, NavigationWindow);
 

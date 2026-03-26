@@ -6,8 +6,10 @@
 #include "list_render_dirty.c"
 #include "toggle_event.c"
 #include "toggle_state.c"
+#include "scrollbar_handle.c"
 
 void define_systems_elements2(ecs *world) {
+
     zox_system(
         ElementDragSystem,
         EcsPostLoad,
@@ -15,6 +17,7 @@ void define_systems_elements2(ecs *world) {
         [in] elements.DraggingDelta,
         [in] elements.DraggedLink
     );
+
     zox_system(
         ScrollbarSystem,
         EcsPostUpdate,
@@ -22,16 +25,29 @@ void define_systems_elements2(ecs *world) {
         [in] layouts2.LayoutPosition,
         [in] layouts2.LayoutSize,
         [in] hierarchys.ParentLink,
-        [none] ScrollbarButton
+        [in] elements2.ScrollviewLink,
+        [none] elements2.ScrollbarHandle
     );
+
+    // make elements visible/invisible within list
     zox_system(
         ListRenderDirtySystem,
-        EcsPostUpdate,
-        [in] layouts2.ListDirty,
+        EcsOnUpdate,
+        [in] layouts2.ListPositionDirty,
         [in] layouts2.ListStart,
         [in] layouts2.ListVisible,
         [in] hierarchys.Children
     );
+
+    // resize handle when list dirty
+    zox_system(
+        ScrollbarHandleSystem,
+        EcsOnUpdate,
+        [in] layouts2.ListDirty,
+        [in] layouts2.ListVisible,
+        [in] elements2.ScrollviewLink
+    );
+
     zox_system(
         Elementbar2System,
         EcsPostUpdate,

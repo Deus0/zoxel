@@ -21,6 +21,7 @@ zoxc_byte(ListUIMax);   // TODO: remove just use children length
 zoxc_state(LayoutPositionDirty);
 zoxc_state(LayoutSizeDirty);
 zoxc_state(ListDirty);
+zoxc_state(ListPositionDirty);
 zoxc_state(GridDirty);
 
 void define_components_layouts2(ecs* world) {
@@ -46,5 +47,6 @@ void define_components_layouts2(ecs* world) {
     zoxd_state(LayoutPositionDirty);
     zoxd_state(LayoutSizeDirty);
     zoxd_state(ListDirty);
+    zoxd_state(ListPositionDirty);
     zoxd_state(GridDirty);
 }

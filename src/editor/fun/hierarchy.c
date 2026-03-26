@@ -51,10 +51,8 @@ void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labe
     add_to_entity_array_d(entities, e);
 }
 
-int get_max_characters_d(
-    const char *header_label,
-    text_group_dynamic_array_d* labels)
-{
+int get_max_characters_d(const char *header_label, text_group_dynamic_array_d* labels) {
+
     int max_characters = 0; // get max text length out of all of the words
     for (size_t i = 0; i < labels->size; i++) {
         int txt_size = strlen(labels->data[i].text);
@@ -62,22 +60,21 @@ int get_max_characters_d(
             max_characters = txt_size;
         }
     }
+
     int header_txt_size = strlen(header_label);
     if (header_txt_size > max_characters) {
         max_characters = header_txt_size;
     }
+
     return max_characters;
 }
 
-void add_entity_children_to_labels(ecs *world,
-    entity e,
-    text_group_dynamic_array_d* labels,
-    entity_array_d* entities,
-    int tree_level)
-{
+void add_entity_children_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
+
     if (!zox_valid(e)) {
         return;
     }
+
     add_entity_to_labels(world, e, labels, entities, tree_level);
     if (zox_has(e, Children)) {
         tree_level++;
@@ -153,63 +150,61 @@ void zox_print_entity(ecs *world, entity e) {
     }
 }
 
-void editor_select_entity(ecs *world, const entity e) {
+void editor_select_entity(ecs *world, entity player, entity e) {
+
     if (editor_selected == e) {
         return;
     }
+
     editor_selected = e;
+
+    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity inspector = get_canvas_window(world, canvas, zox_window_inspector);
+
     set_inspector_element(world, inspector, e);
 }
 
 void button_event_clicked_hierarchy(ecs *world, const ClickEventData event) {
-    if (!zox_has(event.clicked, Children)) {
+
+    entity e = event.clicked;
+
+    if (!zox_has(e, EntityTarget)) {
+        zox_log_error("Clicked has no target [%s]", zox_get_name(e));
         return;
     }
-    const entity target = zox_get_value(event.clicked, EntityTarget)
-    editor_select_entity(world, target);
+
+    entity player = event.clicker;
+    entity target = zox_get_value(e, EntityTarget);
+
+    editor_select_entity(world, player, target);
 }
 
-// like text, sets the list of text onto the ui element list
-void set_ui_list_hierarchy(ecs *world,
-    Children *children,
-    entity window_entity,
-    const entity canvas,
-    const int elements_visible,
-    text_group_dynamic_array_d* labels,
-    entity_array_d* entities,
-    int labels_count,
-    const ClickEvent click_event,
-    const byte button_layer,
-    const byte2 button_padding,
-    const int button_inner_margins,
-    const byte font_size,
-    const byte list_start,
-    const int2 list_margins,
-    const byte is_scrollbar,
-    const int scrollbar_width,
-    const int scrollbar_margins,
-    const float2 window_position,
-    const int2 window_pixel_positionv,
-    const int2 window_size,
-    const int2 canvas_size)
-{
-    (void) window_position;
-    // resize scrollbar
-    resize_window_scrollbar(world, children, window_size, canvas_size, elements_visible, labels_count);
-    // refresh elements
-    const int childrens_length = list_start + labels_count;
-    // destroy previous ones
-    for (int j = list_start; j < children->length; j++) {
-        zox_delete(children->value[j])
+
+
+void fetch_entity_list_by_id(ecs *world, entity e, entity id, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
+
+    if (!zox_valid(e)) {
+        return;
     }
-    // set new elements size
-    resize_Children(children, childrens_length);
-    for (int j = 0; j < labels_count; j++) {
-        const byte render_disabled = !(j >= 0 && j < elements_visible);
-        int2 label_position = get_element_label_position(j, font_size, button_padding, button_inner_margins, window_size, list_margins, is_scrollbar, scrollbar_width, scrollbar_margins);
-        const entity list_element = spawn_button_old(world, window_entity, canvas, label_position, button_padding, float2_half, labels->data[j].text, font_size, button_layer, window_pixel_positionv, window_size, canvas_size, render_disabled);
-        zox_set(list_element, ClickEvent, { click_event.value })
-        zox_set(list_element, EntityTarget, { entities->data[j] })
-        children->value[list_start + j] = list_element;
+
+    if (!zox_has_id(e, id)) {
+        return;
+    }
+
+    tree_level++;
+
+    // Transforms our void* to Children*
+    const Children* children = (Children*) (zox_get_id(e, id));
+
+    for (int i = 0; i < children->length; i++) {
+        entity child = children->value[i];
+
+        if (!zox_valid(child)) {
+            continue;
+        }
+
+        add_entity_to_labels(world, child, labels, entities, tree_level);
+
+        fetch_entity_list_by_id(world, child, id, labels, entities, tree_level);
     }
 }

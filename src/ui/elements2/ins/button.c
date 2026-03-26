@@ -1,11 +1,5 @@
-entity spawn_button(
-    ecs *world,
-    LayoutParentData canvas_data,
-    LayoutParentData parent_data,
-    ElementSpawnData element_data,
-    SpawnTextData zext_data,
-    SpawnButtonData button_data
-) {
+entity spawn_button(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnTextData zext_data, SpawnButtonData button_data) {
+
     int text_length = zext_data.text != NULL ? strlen(zext_data.text) : 0;
     int2 zext_size = (int2) {
         zext_data.font_size * text_length,
@@ -18,19 +12,14 @@ entity spawn_button(
 
     zox_instance(element_data.prefab);
     zox_name("button");
-    set_element_spawn_data(
-        world,
-        e,
-        canvas_data,
-        parent_data,
-        element_data
-    );
+
+    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+    zox_set(e, Color, { button_data.fill });
+    zox_set(e, OutlineColor, { button_data.outline });
+
     if (element_data.render_disabled) {
         zox_set(e, RenderDisabled, { element_data.render_disabled });
     }
-
-    zox_set(e, Color, { button_data.fill });
-    zox_set(e, OutlineColor, { button_data.outline });
 
     Children children = (Children) { 0 };
 
@@ -47,6 +36,7 @@ entity spawn_button(
             .render_disabled = element_data.render_disabled,
         },
     };
+
     entity zext = spawn_zext(world, &zext_data2);
     add_to_Children(&children, zext);
 

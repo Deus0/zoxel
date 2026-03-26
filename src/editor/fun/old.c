@@ -24,8 +24,7 @@ int get_max_width(
 }
 
 // todo: use struct inputs SpawnUIList
-entity spawn_ui_list(
-    ecs *world,
+entity spawn_ui_list(ecs *world,
     const entity prefab,
     const entity canvas,
     const char *header_label,
@@ -46,29 +45,29 @@ entity spawn_ui_list(
     const int2 min_size
 ) {
 
-    const entity parent = canvas;
-    const byte is_header = 1;
-    const byte list_start = is_header + is_scrollbar;
-    const int children_length = (list_start + elements_count);
-    const int scaled_font_size = (int) font_size;   // zox_ui_scale *
-    const int scaled_header_font_size = (int) header_font_size; // zox_ui_scale *
-    const int scrollbar_width = 36; // * zox_ui_scale;
-    const int scrollbar_margins = 8; //  * zox_ui_scale;
-    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    entity parent = canvas;
+    byte is_header = 1;
+    byte list_start = is_header + is_scrollbar;
+    int children_length = (list_start + elements_count);
+    int scaled_font_size = (int) font_size;   // zox_ui_scale *
+    int scaled_header_font_size = (int) header_font_size; // zox_ui_scale *
+    int scrollbar_width = 36; // * zox_ui_scale;
+    int scrollbar_margins = 8; //  * zox_ui_scale;
+    int2 canvas_size = zox_get_value(canvas, LayoutSize)
 
 
     // header
-    const byte header_layer = layer + 1;
-    const int header_padding_x = (int)(scaled_header_font_size * 0.6f);
-    const int header_padding_y = (int)(scaled_header_font_size * 0.33f);
-    const int header_height = (scaled_header_font_size + header_padding_y * 2);
+    byte header_layer = layer + 1;
+    int header_padding_x = (int)(scaled_header_font_size * 0.6f);
+    int header_padding_y = (int)(scaled_header_font_size * 0.33f);
+    int header_height = (scaled_header_font_size + header_padding_y * 2);
 
 
     // list
-    const byte button_layer = layer + 1;
-    const int2 list_margins = (int2) { (int) (scaled_font_size * 0.8f), (int) (scaled_font_size * 0.8f) };
-    const byte2 button_padding = (byte2) { (int) (scaled_font_size * 0.46f), (int) (scaled_font_size * 0.3f) };
-    const int button_inner_margins = (int) (scaled_font_size * 0.5f);
+    byte button_layer = layer + 1;
+    int2 list_margins = (int2) { (int) (scaled_font_size * 0.8f), (int) (scaled_font_size * 0.8f) };
+    byte2 button_padding = (byte2) { (int) (scaled_font_size * 0.46f), (int) (scaled_font_size * 0.3f) };
+    int button_inner_margins = (int) (scaled_font_size * 0.5f);
     int window_width = get_max_width(header_label, scaled_header_font_size, header_padding_x, labels, elements_count, scaled_font_size, button_padding.x + list_margins.x);
     int window_height = (scaled_font_size + button_padding.y * 2) * max_elements + button_inner_margins * (max_elements - 1) + list_margins.y * 2;
     if (min_size.x) {
@@ -86,7 +85,6 @@ entity spawn_ui_list(
         pixel_size.x += (scrollbar_width / 2) + scrollbar_margins;
         anchor_element_position2_with_header(&pixel_position, anchor, pixel_size, header_height);
     }
-
 
     zox_instance(prefab);
     zox_name("ui_list");
@@ -107,9 +105,9 @@ entity spawn_ui_list(
     initialize_Children(&children, children_length);
 
     if (is_header) {
-        const int2 header_size = (int2) { pixel_size.x, header_height };
-        const int2 header_position = (int2) { 0, header_height / 2 };
-        const float2 header_anchor = (float2) { 0.5f, 1.0f };
+        int2 header_size = (int2) { pixel_size.x, header_height };
+        int2 header_position = (int2) { 0, header_height / 2 };
+        float2 header_anchor = (float2) { 0.5f, 1.0f };
         children.value[0] = spawn_header(world,
             e,
             canvas,
@@ -125,23 +123,20 @@ entity spawn_ui_list(
             is_close_button,
             canvas_size);
     }
+
     set_window_bounds_to_canvas(world, e, canvas_size, pixel_size, anchor);
     if (is_scrollbar) {
-        const entity scrollbar = spawn_scrollbar(
-            world,
-            e,
-            canvas,
-            (int2) { -(scrollbar_width / 2) - scrollbar_margins, 0 },
-            header_layer,
-            pixel_size,
-            scrollbar_width,
-            scrollbar_margins,
-            max_elements,
-            elements_count,
-            elements_count != max_elements
-        );
+
+        entity scrollbar = spawn_scrollbar(world, e, canvas, (int2) { -(scrollbar_width / 2) - scrollbar_margins, 0 }, header_layer, pixel_size, scrollbar_width, scrollbar_margins, max_elements, elements_count, elements_count != max_elements, e);
+
         children.value[is_header] = scrollbar;
+
+        // Tempoarily add scrollview components to window
+        zox_set(e, ListUILink, { e });
+        zox_set(e, ListStart, { 0 });
+        zox_set(e, ListVisible, { elements_count });
     }
+
     SpawnButton spawnButton = {
         .canvas = {
             .e = canvas,
@@ -197,8 +192,7 @@ entity spawn_ui_list(
             if (labels) {
                 spawnButton.zext.text = labels[i].text;
             }
-            const entity e2 = spawn_button(
-                world,
+            entity e2 = spawn_button(world,
                 spawnButton.canvas,
                 spawnButton.parent,
                 spawnButton.element,
@@ -225,7 +219,8 @@ entity spawn_ui_list(
                 .value = 0.5f,
                 .bounds = (float2) { 0, 1 },    // todo: pass this in from setting
             };
-            const entity2 e2 = spawn_slider(
+
+            entity2 e2 = spawn_slider(
                 world,
                 spawnButton.canvas,
                 spawnButton.parent,
@@ -250,5 +245,6 @@ entity spawn_ui_list(
             raycaster_select_element(world, player, children.value[list_start]);
         }
     }
+
     return e;
 }

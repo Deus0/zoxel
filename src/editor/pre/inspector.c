@@ -1,7 +1,10 @@
-entity spawn_prefab_inspector(ecs *world) {
-    zox_prefab_child(prefab_ui_list);
+entity spawn_prefab_inspector(ecs *world, entity p) {
+
+    zox_prefab_child(p);
     zox_prefab_name("inspector");
-    // zox_add_tag(e, Inspector)
+
+    zox_set(e, WindowType, { zox_window_inspector });
+
     return e;
 }
 

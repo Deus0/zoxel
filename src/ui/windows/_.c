@@ -4,8 +4,9 @@
 #include "dat/_.c"
 #include "com/_.c"
 #include "pre/_.c"
-#include "sys/_.c"
+#include "fun/_.c"
 #include "ins/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Windows)
     define_components_windows(world);

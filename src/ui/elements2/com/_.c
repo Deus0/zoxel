@@ -2,13 +2,16 @@
 zox_tag(Label);
 zox_tag(Button);
 zox_tag(Elementbar2);
+
 // Slider
 zoxc_float2(SlideBounds);
 zoxc(SliderLabel, const char*);
+
 // Toggle
 zox_tag(Toggle);
 zoxc_byte(ToggleState);
 zoxc_state(ToggleStateDirty);
+
 // Frames
 zox_tag(Frame);
 zox_tag(Icon);
@@ -17,13 +20,16 @@ zoxc_byte(IconType);
 zoxc_byte(IconIndex);
 zoxc_entity(LabelPrefabLink);
 zoxc_entity(FramePrefabLink);
+
 // Scroll
 zox_tag(Scrollbar);
-zox_tag(ScrollbarButton);
+zox_tag(ScrollbarHandle);
+zoxc_entity(ScrollviewLink);
+zoxc_entity(ListUILink);
+
 // Move to Windows
 zox_tag(Header);
 zox_tag(CloseButton);
-// zox_tag(Body);
 
 zoxc(OptionLabel, const char*);
 
@@ -33,8 +39,6 @@ void define_components_elements2(ecs *world) {
     zoxd_tag(Icon);
     zoxd_tag(Frame);
     zoxd_tag(IconOverlay);
-    zoxd_tag(Scrollbar);
-    zoxd_tag(ScrollbarButton);
     zoxd_tag(Elementbar2);
     zoxd_byte(IconType);
     zoxd_byte(IconIndex);
@@ -42,6 +46,11 @@ void define_components_elements2(ecs *world) {
     zoxd_entity(FramePrefabLink);
     zoxd_float2(SlideBounds);
     zoxd(SliderLabel);
+
+    zoxd_tag(Scrollbar);
+    zoxd_tag(ScrollbarHandle);
+    zoxd_entity(ScrollviewLink);
+    zoxd_entity(ListUILink);
 
     zoxd_tag(Toggle);
     zoxd_byte(ToggleState);

@@ -1,19 +1,30 @@
 ### todo ###
 
+Tools:
+- Left Align Hierarchy Buttons / List
+- Inspector UI
+	-X fix opening with target entity
+	- fix refreshing buttons like hiararchy system
+- arrows to fold/unfold children
+- Resizable Windows
+- Spawn RenderCamera + Render Texture + Render UI
+- Position Y chart - showing fluctuations - use to stabilize physics
+- Slider UI to show Text of Number
+- Slider UI to snap on integer points
+	- visually show points to with little up arrows
+
 Improvements:
+- Spawn camera onto headbone
 - Update body when picking up head
 	- only allow to pickup shoulder if bicep is up
-- Spawn camera onto headbone
 - Set body positions based on item anchor types dynamically
-- combine vox TopHat onto body as well - Equipment layer
+- Combine vox TopHat onto body as well - Equipment layer
 - Spawn Hips Body Part onto character
 	- Spawn Shoulders Body Parts
 	- Spawn Biceps Body Parts
 - Center the vox textures for body parts
 - Use realm colors for UI
-- Spawn RenderCamera + Render Texture + Render UI
 - Spawn Status UI + player model through the UI
-- Position Y chart - showing fluctuations - use to stabilize physics
 
 Bugs:
 - Audio missing from main menu - need to spawn a realm for it
@@ -181,3 +192,4 @@ done:
 -x add option for rendering bones
 -x Render Part Position / Sizes
 -x Spawn Part Position / Sizes from Parts Vox Combining
+-X Hierarchy UI for realm and children

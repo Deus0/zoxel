@@ -115,7 +115,8 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         window_element_data,
         window_data,
         (ClickEvent) { &on_cancelled_new_realm },
-        1
+        1,
+        zox_window_new_realm
     );
     zox_add_tag(e, MenuNewRealm);
     zox_add_tag(e, NavigationWindow);

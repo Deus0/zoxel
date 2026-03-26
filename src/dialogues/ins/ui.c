@@ -28,7 +28,8 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
         element_data,
         window_data,
         (ClickEvent) { &on_closed_dialogue_ui },
-        1
+        1,
+        zox_window_dialogue
     );
     // TODO: Spawn Body Here instead
     zox_set(e, Color, { (color) { 23, 23, 23, 210 } });
@@ -80,14 +81,7 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
         .outline = button_outline
     };
 
-    entity button = spawn_button(
-        world,
-        canvas_data,
-        parent_data,
-        button_data,
-        button_text_data,
-        button_data2
-    );
+    entity button = spawn_button(world, canvas_data, parent_data, button_data, button_text_data, button_data2);
     add_to_Children(&window_children, button);
     zox_set(button, ClickEvent, { &on_click_dialogue_button });
 

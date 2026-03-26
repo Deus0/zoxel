@@ -28,14 +28,7 @@ entity spawn_close_button(ecs *world, entity parent, entity canvas, int2 positio
         },
     };
 
-    entity e = spawn_button(
-        world,
-        button_data.canvas,
-        button_data.parent,
-        button_data.element,
-        button_data.zext,
-        button_data.button
-    );
+    entity e = spawn_button(world, button_data.canvas, button_data.parent, button_data.element, button_data.zext, button_data.button);
 
     if (on_click.value) {
         zox_set(e, ClickEvent, { on_click.value });

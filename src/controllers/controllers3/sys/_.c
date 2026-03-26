@@ -9,7 +9,6 @@
 #include "pause.c"
 #include "cameras.c"
 #include "shortcuts.c"
-#include "editor.c"
 #include "actions.c"
 
 #include "dialogue_begin.c"
@@ -96,13 +95,6 @@ void define_systems_controllers3(ecs *world) {
         QolShortcutsSystem,
         EcsOnUpdate,
         [in] inputs.DeviceLinks,
-        [none] players.Player
-    );
-    zox_system_1(
-        EditorInputSystem,
-        EcsPreStore,
-        [in] inputs.DeviceLinks,
-        [in] layouts2.CanvasLink,
         [none] players.Player
     );
     zox_system_1(

@@ -28,10 +28,7 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
     };
 #endif
 
-    entity e = spawn_window_list(
-        world,
-        prefab_menu_game,
-        player,
+    entity e = spawn_window_list(world, prefab_menu_game, player,
         header_label,
         header_font_size,
         elements,
@@ -39,7 +36,7 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
         elements_count,
         list_font_size,
         (ClickEvent) { NULL },
-        0
+        0, zox_window_main_menu
     );
     zox_name("main_menu");
     zox_add_tag(e, MenuMain);

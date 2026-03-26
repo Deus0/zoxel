@@ -17,6 +17,5 @@
 #define zox_id(name)\
     ecs_id(name)
 
-#define zox_get_id(e, e2)\
-    ecs_get_id(world, e, e2);
-
+#define zox_get_id(e, id)\
+    ecs_get_id(world, e, id)

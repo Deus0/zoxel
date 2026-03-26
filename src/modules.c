@@ -92,9 +92,9 @@
 #include "npcs/_.c"
 
 // on top
-#include "editor_ui/_.c"
 #include "controllers/_.c"
 #include "imports/_.c"
+#include "editor/_.c"
 #include "debug/_.c"
 
 // engine imports, besides sub modules, it's core is flecs
@@ -186,7 +186,7 @@ zox_begin_module(Zox)
     zox_import_module(Npcs);
 
     zox_import_module(Imports);
-    zox_import_module(EditorUI);
+    zox_import_module(Editor);
     // space
 #if defined(zoxm_players)
     if (!headless) {
