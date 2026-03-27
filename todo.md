@@ -1,11 +1,10 @@
 ### todo ###
 
 Tools:
-- Left Align Hierarchy Buttons / List
-- Inspector UI
-	-X fix opening with target entity
-	- fix refreshing buttons like hiararchy system
-- arrows to fold/unfold children
+- Left Align Hierarchy / Inspector Buttons / List
+- Give the name button different colors
+- Keep hierarchy elements selected - active state
+- arrows to fold/unfold children in hierarchy
 - Resizable Windows
 - Spawn RenderCamera + Render Texture + Render UI
 - Position Y chart - showing fluctuations - use to stabilize physics
@@ -193,3 +192,6 @@ done:
 -x Render Part Position / Sizes
 -x Spawn Part Position / Sizes from Parts Vox Combining
 -X Hierarchy UI for realm and children
+-x Inspector UI
+	-x fix opening with target entity
+	-x fix refreshing buttons like hiararchy system

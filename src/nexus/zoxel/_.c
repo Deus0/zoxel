@@ -118,12 +118,16 @@ void zoxel_settings_uis() {
     button_font_fill = color_grayscale(44);
     button_font_outline = color_grayscale(122);
 
-    default_fill_color = header_fill;
+    default_fill_color = color_grayscale_a(2, 248);
+    // default_fill_color = header_fill;
     default_outline_color = header_outline;
     // nothing_font_color = debug_color; // debug font texture
     // fades
     is_start_game_delays = 1;
     is_end_game_delays = 1;
+    // pause
+    pause_fade_alpha = 0.9f; // 0.72f;
+    pause_fade_time = 0.42f;
 }
 
 void zoxel_debug_keys() {

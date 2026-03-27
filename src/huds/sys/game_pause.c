@@ -29,24 +29,11 @@ zox_sys2(PlayerUIGamePauseSystem) {
             continue;
         }
 
-        dispose_menu_game(world, e); // check this, ingame ui should now be linked to player, got from canvas
-
-        // zox_log("player paused [%s] [%s]\n", zox_get_name(player), zox_get_name(canvas))
-        trigger_canvas_half_fade(
-            world,
-            canvas->value,
-            pause_fade_time,
-            pause_fade_alpha,
-            1
-        );
+        dispose_menu_game(world, e);
+        trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 1);
 
         // TODO: Animation End Event - add onto animation created for fader
-        entity pause_delay = delay_event(
-            world,
-            &pause_player_ending,
-            e,
-            pause_fade_time
-        );
+        entity pause_delay = delay_event(world, &pause_player_ending, e, pause_fade_time);
 
         if (zox_valid(pause_event_link->value)) {
             zox_delete(pause_event_link->value)

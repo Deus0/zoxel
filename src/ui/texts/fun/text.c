@@ -101,14 +101,6 @@ void set_entity_text_raw(ecs* world, entity e, const char* text) {
     zox_set(e, TextDirty, { zox_dirty_trigger });
 }
 
-byte set_entity_label_with_text(ecs *world, entity e, const char* text) {
-    zox_geter(e, Children, children);
-    if (children->length == 0) {
-        return 0;
-    }
-    return set_entity_text(world, children->value[0], text);
-}
-
 int get_zexts_count(ecs *world) {
     return zox_count_types(Zext);
 }

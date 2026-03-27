@@ -22,26 +22,25 @@ void button_event_clicked_inspepctor(ecs *world, entity trigger_entity) {
         } \
     }*/
 
-void get_component_label(ecs *world, entity e, entity component, char *buffer) {
+void get_component_label(ecs *world, entity e, entity component, char* buffer, uint length) {
 
     if (!zox_valid(e) || !zox_valid(component)) {
         zox_logw("invalid e or c in inspector label");
         return;
     }
 
-    const int buffer_size = inspector_component_size_buffer;
-    int buffer_index = 0;
+    // int buffer_size = inspector_component_size_buffer;
+    int index = 0;
     ecs_id_t id = component & ECS_COMPONENT_MASK;
-    // entity comp = id & ECS_COMPONENT_MASK;
-    buffer_index += snprintf(buffer + buffer_index, buffer_size, "%s", ecs_get_name(world, component));
+    index += snprintf(buffer + index, length, "%s", zox_get_name(component));
 
     #define add_component_label(T)\
         else if (is_component_type_##T(id)) { \
-            buffer_index = get_type_label_##T(world, e, id, buffer, buffer_size, buffer_index); \
+            index = get_type_label_##T(world, e, id, buffer, length, index); \
         }
 
     if (is_component_type_byte(id)) {
-        buffer_index = get_type_label_byte(world, e, id, buffer, buffer_size, buffer_index);
+        index = get_type_label_byte(world, e, id, buffer, length, index);
     }
     add_component_label(byte)
     add_component_label(byte2)
@@ -61,13 +60,16 @@ void get_component_label(ecs *world, entity e, entity component, char *buffer) {
     add_component_label(color)
     add_component_label(color_rgb)
     add_component_label(text)
+
     else {
         const EcsComponent* c = (EcsComponent*) ecs_get(world, id, EcsComponent);
-        unsigned int component_size = c !=  NULL ? c->size : 0;
+
+        uint component_size = c !=  NULL ? c->size : 0;
+
         if (!component_size) {
-            buffer_index += snprintf(buffer + buffer_index, buffer_size, " [tag]");
+            index += snprintf(buffer + index, length - index, " [T]");
         } else {
-            buffer_index += snprintf(buffer + buffer_index, buffer_size, " [?]");
+            index += snprintf(buffer + index, length - index, " [?]");
         }
     }
     // zox_log("   c [%lu] %s\n", component, buffer)
@@ -75,7 +77,7 @@ void get_component_label(ecs *world, entity e, entity component, char *buffer) {
 
 // Recreates our list elements
 // sets inspector ui compponents, the inspector ui
-void set_inspector_element(ecs *world, entity window, entity e) {
+/*void set_inspector_element(ecs *world, entity window, entity e) {
 
     if (!zox_valid(window) || !zox_valid(e)) {
         return;
@@ -237,3 +239,4 @@ void set_inspector_element(ecs *world, entity window, entity e) {
     }
     zox_modified(window, Children);
 }
+*/

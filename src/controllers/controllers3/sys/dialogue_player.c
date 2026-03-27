@@ -12,30 +12,23 @@ zox_sys2(PlayerDialogueSystem) {
         if (state->value == zox_player_state_dialogue_begin) {
             state->value = zox_player_state_dialogue_active;
 
-            trigger_canvas_half_fade(
-                world,
-                canvas->value,
-                pause_fade_time,
-                pause_fade_alpha,
-                1
-            );
+            trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 1);
+
             if (local_mouse) {
                 zox_set(local_mouse, MouseLock, { 0 });
             }
+
             zox_set(character->value, DisableMovement, { 1 });
+
         } else if (state->value == zox_player_state_dialogue_end) {
             state->value = zox_player_state_playing;
 
-            trigger_canvas_half_fade(
-                world,
-                canvas->value,
-                pause_fade_time,
-                pause_fade_alpha,
-                0
-            );
+            trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 0);
+
             if (local_mouse) {
                 zox_set(local_mouse, MouseLock, { 1 });
             }
+
             zox_set(character->value, DisableMovement, { 0 });
         }
     }

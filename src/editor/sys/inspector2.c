@@ -1,81 +1,75 @@
-void button_event_clicked_hierarchy(ecs *world, const ClickEventData event) {
+void fetch_entity_components(ecs* world, entity_array_d* ids, text_group_dynamic_array_d* labels, entity target) {
 
-    entity clicked = event.clicked;
+    const uint tlength = inspector_component_size_buffer;
 
-    if (!zox_has(clicked, EntityTarget)) {
-        zox_log_error("Clicked [%s] Invalid Components", zox_get_name(clicked));
-        return;
+    const ecs_type_t* type = ecs_get_type(world, target);
+
+    // add name first
+    add_entity_to_labels(world, target, labels, ids, 0);
+
+    for (int i = 0; i < type->count; i++) {
+        ecs_id_t id = type->array[i];
+
+        entity e = 0;
+        char* text = malloc(tlength);
+
+        if (zox_is_override(id)) {
+
+            e = id & ECS_COMPONENT_MASK;
+
+            if (!zox_valid(e)) {
+                snprintf(text, tlength, "Invalid");
+            } else {
+                snprintf(text, tlength, "*[%s]*", zox_get_name(e));
+            }
+
+        } else if (ECS_HAS_ID_FLAG(id, PAIR)) {
+
+            entity pair1 = ecs_pair_first(world, id);
+            entity pair2 = ecs_pair_second(world, id);
+
+            if (!zox_valid(pair1) || !zox_valid(pair2)) {
+                snprintf(text, tlength, "[bad pair]");
+            } else {
+                snprintf(text, tlength, "%s -=- %s", zox_get_name(pair1), zox_get_name(pair2));
+            }
+
+        } else {
+            e = id & ECS_COMPONENT_MASK;
+            if (!zox_valid(e)) {
+                snprintf(text, tlength, "Invalid");
+            } else {
+                get_component_label(world, target, e, text, tlength);
+            }
+            // snprintf(text, tlength, "%s", zox_get_name(e));
+        }
+
+        /*if (!zox_has(e, ZoxName)) {
+            snprintf(text, hierarchy_max_line_characters, "%s", zox_get_name(e));
+        } else {
+            zox_geter(e, ZoxName, zox_name);
+            snprintf(text, hierarchy_max_line_characters, "%s", zox_name->value);
+        }*/
+
+        add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { text = text });
+        add_to_entity_array_d(ids, e);
     }
-
-    zox_geter_value(clicked, EntityTarget, entity, target);
-
-    entity player = event.clicker;
-
-    zox_geter_value(player, CanvasLink, entity, canvas);
-    entity inspector = get_canvas_window(world, canvas, zox_window_inspector);
-
-    if (!zox_valid(inspector)) {
-        zox_log("Inspector Closed");
-        return;
-    }
-
-    if (!zox_has(inspector, EditorTarget)) {
-        zox_log("Inspector Invalid Components");
-        return;
-    }
-
-    zox_geter_value(inspector, EditorTarget, entity, old_target);
-
-    if (old_target == target) {
-        zox_log("Inspector Same Target [%s]", target ? zox_get_name(target) : "None");
-        return;
-    }
-
-    zox_set(inspector, EditorTarget, { target });
-    zox_set(inspector, InspectorDirty, { zox_dirty_trigger });
-
-    zox_log("+ Inspector Target [%s]", zox_get_name(target));
-
-    // editor_select_entity(world, player, target);
 }
 
-// grabs all entity list data into entity + name labels
-void editor_fetch_children(ecs *world, entity_array_d* entities, text_group_dynamic_array_d* labels, entity target) {
+zox_sys2(InspectorSpawnSystem) {
 
-    // add game entities
-    if (!zox_valid(target)) {
-        return;
-    }
-
-    add_entity_to_labels(world, target, labels, entities, 0);
-
-    fetch_entity_list_by_id(world, target, zox_id(Children), labels, entities, 0);
-    fetch_entity_list_by_id(world, target, zox_id(TextureLinks), labels, entities, 0);
-    fetch_entity_list_by_id(world, target, zox_id(CameraLinks), labels, entities, 0);
-
-    fetch_entity_list_by_id(world, target, zox_id(PlayerLinks), labels, entities, 0);
-
-    fetch_entity_list_by_id(world, target, zox_id(BlockLinks), labels, entities, 0);
-    fetch_entity_list_by_id(world, target, zox_id(StatLinks), labels, entities, 0);
-    fetch_entity_list_by_id(world, target, zox_id(ItemLinks), labels, entities, 0);
-    fetch_entity_list_by_id(world, target, zox_id(QuestLinks), labels, entities, 0);
-}
-
-
-zox_sys2(HierarchySpawnSystem) {
-
-    const ClickEvent on_click = (ClickEvent) { &button_event_clicked_hierarchy };
+    const ClickEvent on_click = (ClickEvent) { NULL };
+    // &button_event_clicked_hierarchy };
 
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(HierarchyUIDirty);
+    zox_sys_in(InspectorDirty);
     zox_sys_in(CanvasLink);
     zox_sys_in(EditorTarget);
     zox_sys_in(ScrollviewLink);
     zox_sys_in(ElementFontSize);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
-        zox_sys_i(HierarchyUIDirty, dirty);
+        zox_sys_i(InspectorDirty, dirty);
         zox_sys_i(CanvasLink, canvas);
         zox_sys_i(EditorTarget, target);
         zox_sys_i(ScrollviewLink, scrollview);
@@ -110,22 +104,19 @@ zox_sys2(HierarchySpawnSystem) {
         }
 
         zox_geter_value(list_ui, Layer2D, byte, scrollview_layer);
+        zox_geter_value(list_ui, ListVisible, byte, visible);
 
         // 1: Fetch Target Hierarchy Data
-        entity_array_d* entities = create_entity_array_d(16);
+        entity_array_d* ids = create_entity_array_d(16);
         text_group_dynamic_array_d* labels = create_text_group_dynamic_array_d(16);
-        editor_fetch_children(world, entities, labels, target->value);
+        fetch_entity_components(world, ids, labels, target->value);
 
         // 3: Initialize Data
-        // byte2 button_padding = (byte2) { (int) (font_size->value * 0.46f), (int) (font_size->value * 0.3f) };
-        // fetch this from list data
         zox_geter_value(list_ui, TextPadding, byte2, text_padding);
-        // byte2 button_padding = (byte2) { 8 * ui_scale, 4 * ui_scale };
         ElementSpawnData child_element_data = {
             .prefab = prefab_button,
             .layer = scrollview_layer + 1,
             .anchor = float2_half,
-            .render_disabled = 1, // hide until list set
         };
         SpawnTextData child_text_data = {
             .font_size = font_size->value,
@@ -154,8 +145,9 @@ zox_sys2(HierarchySpawnSystem) {
         resize_Children(children, 0);
         for (size_t j = 0; j < labels->size; j++) {
             child_text_data.text = labels->data[j].text;
-            entity target = entities->data[j];
+            entity target = ids->data[j];
 
+            child_element_data.render_disabled = j >= visible;
             entity e2 = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
 
             zox_set(e2, ClickEvent, { on_click.value });
@@ -170,8 +162,7 @@ zox_sys2(HierarchySpawnSystem) {
         zox_set(list_ui, ListPositionDirty, { zox_dirty_trigger });
 
         // 7: Debug
-        zox_geter_value(list_ui, ListVisible, byte, visible);
-        zox_logv("Hierarchy Refreshed");
+        zox_logv("Inspector Refreshed [%i]", children->length);
         zox_logv("   - Elements [%i]", labels->size);
         zox_logv("   - Visible [%i]", visible);
         for (size_t j = 0; j < labels->size; j++) {
@@ -183,6 +174,6 @@ zox_sys2(HierarchySpawnSystem) {
             free(labels->data[j].text);
         }
         dispose_text_group_dynamic_array_d(labels);
-        dispose_entity_array_d(entities);
+        dispose_entity_array_d(ids);
     }
-} zox_sys_end(HierarchySpawnSystem);
+} zox_sys_end(InspectorSpawnSystem);

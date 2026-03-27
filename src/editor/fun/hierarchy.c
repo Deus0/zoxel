@@ -24,7 +24,7 @@ void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labe
 
     char *text = malloc(hierarchy_max_line_characters);
     if (!zox_has(e, ZoxName)) {
-        snprintf(text, hierarchy_max_line_characters, "[%s]", zox_get_name(e));
+        snprintf(text, hierarchy_max_line_characters, "%s", zox_get_name(e));
     } else {
         zox_geter(e, ZoxName, zox_name);
         snprintf(text, hierarchy_max_line_characters, "%s", zox_name->value);
@@ -40,7 +40,7 @@ void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labe
     for (int i = 0; i < tree_level; i++) {
         char *temp = strdup(text);
         if (temp) {
-            snprintf(text, hierarchy_max_line_characters, "-%s", temp);
+            snprintf(text, hierarchy_max_line_characters, ".%s", temp);
             free(temp);
         } else {
             zox_log_error("no temp was created")
@@ -150,7 +150,7 @@ void zox_print_entity(ecs *world, entity e) {
     }
 }
 
-void editor_select_entity(ecs *world, entity player, entity e) {
+/*void editor_select_entity(ecs *world, entity player, entity e) {
 
     if (editor_selected == e) {
         return;
@@ -162,24 +162,7 @@ void editor_select_entity(ecs *world, entity player, entity e) {
     entity inspector = get_canvas_window(world, canvas, zox_window_inspector);
 
     set_inspector_element(world, inspector, e);
-}
-
-void button_event_clicked_hierarchy(ecs *world, const ClickEventData event) {
-
-    entity e = event.clicked;
-
-    if (!zox_has(e, EntityTarget)) {
-        zox_log_error("Clicked has no target [%s]", zox_get_name(e));
-        return;
-    }
-
-    entity player = event.clicker;
-    entity target = zox_get_value(e, EntityTarget);
-
-    editor_select_entity(world, player, target);
-}
-
-
+}*/
 
 void fetch_entity_list_by_id(ecs *world, entity e, entity id, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
 

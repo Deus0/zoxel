@@ -118,9 +118,9 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
         }
     }
 
-    entity e = spawn_window_list(world, prefab_window_invisible, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_menu_main }, 1, zox_window_options);
-
+    entity e = spawn_window_list(world, prefab_window_invisible, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_menu_main }, 1, zox_window_options, 0);
     zox_name("menu_options");
+
     zox_add_tag(e, MenuOptions);
     zox_add_tag(e, NavigationWindow);
 

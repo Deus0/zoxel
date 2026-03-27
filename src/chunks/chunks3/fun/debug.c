@@ -1,4 +1,4 @@
-void add_to_labels_voxel_links(
+/*void add_to_labels_voxel_links(
     ecs *world,
     const entity e,
     text_group_dynamic_array_d* labels,
@@ -16,3 +16,4 @@ void add_to_labels_voxel_links(
         add_to_labels_textures(world, e2, labels, entities, tree_level);
     }
 }
+*/

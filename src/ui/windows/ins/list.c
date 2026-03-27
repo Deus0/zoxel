@@ -14,7 +14,7 @@ typedef struct {
     byte is_close_button;
 } WindowListSpawnData;
 
-entity spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte is_close_button, byte window_type) {
+entity spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte is_close_button, byte window_type, int min_width) {
 
     // Sizing
     byte2 header_padding = (byte2) { 6 * ui_scale, 2 * ui_scale };
@@ -69,6 +69,14 @@ entity spawn_window_list(ecs *world, entity p, entity player, const char *header
         calculate_list_max_characters(list_data),
         list_data
     );
+
+    if (min_width) {
+        if (list_size.x < min_width) {
+            zox_log("+ list size [%i] < min_width [%i]", list_size.x, min_width);
+            list_size.x = min_width;
+        }
+    }
+
     zox_log("+ list size [%ix%i] from visible [%i] header_height [%i]", list_size.x, list_size.y, visible_count, header_height);
 
     // we use the bigger size out of list and header widths

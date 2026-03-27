@@ -6,25 +6,19 @@
 // why does raycasting mess up after this spawns
 entity spawn_window_hierarchy(ecs *world, entity canvas, entity player, entity root) {
 
+    const char* header_label = "Hierarchy";
     int visible_count = 10;
-    const char* header_label = "hierarchy";
+    int header_font_size = 18;
     int list_font_size = 16;
-    int header_font_size = list_font_size * 2;
-
-    SpawnListElement elements[1];
-    elements[0] = (SpawnListElement) {
-        .text = "--- --- Loading --- ---",
-        .on_click = { NULL },
-    };
+    int min_width = 500;
 
     // prefab_menu_game
-    entity e = spawn_window_list(world, prefab_hierarchy, player, "hierarchy", header_font_size, elements, 1, visible_count, list_font_size, (ClickEvent) { NULL }, 1, zox_window_hierarchy);
+    entity e = spawn_window_list(world, prefab_hierarchy, player, header_label, header_font_size, NULL, 0, visible_count, list_font_size, (ClickEvent) { NULL }, 1, zox_window_hierarchy, min_width);
     zox_name("hierarchy");
 
     zox_set(e, ElementFontSize, { list_font_size });
     // zox_set(e, WindowType, { zox_window_hierarchy });
     zox_set(e, EditorTarget, { root });
 
-    hierarchy = e;
     return e;
 }

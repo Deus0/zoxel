@@ -1,16 +1,16 @@
 #include "hierarchy2.c"
-#include "inspector.c"
+#include "inspector2.c"
 #include "input.c"
 
 void define_systems_editor(ecs *world) {
 
-    zox_system(
+    /*zox_system(
         InspectorElementSystem,
         EcsOnUpdate,
         [in] core.EntityTarget,
         [in] core.ComponentTarget,
         [none] InspectorLabel
-    );
+    );*/
 
     zox_system_1(
         HierarchySpawnSystem,
@@ -19,8 +19,17 @@ void define_systems_editor(ecs *world) {
         [in] layouts2.CanvasLink,
         [in] editor.EditorTarget,
         [in] elements2.ScrollviewLink,
-        [in] elements.ElementFontSize,
-        [none] editor.HierarchyUI
+        [in] elements.ElementFontSize
+    );
+
+    zox_system_1(
+        InspectorSpawnSystem,
+        zoxp_mainthread,
+        [in] editor.InspectorDirty,
+        [in] layouts2.CanvasLink,
+        [in] editor.EditorTarget,
+        [in] elements2.ScrollviewLink,
+        [in] elements.ElementFontSize
     );
 
     /*zox_system_1(

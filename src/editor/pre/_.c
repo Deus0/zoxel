@@ -1,7 +1,5 @@
 entity prefab_inspector;
 entity prefab_hierarchy;
-entity inspector;
-entity hierarchy;
 
 #include "hierarchy.c"
 #include "inspector.c"
