@@ -14,7 +14,7 @@ void spawn_prefabs_sdl_input(ecs* world) {
 
 zox_begin_module(SdlInputs)
 #ifdef zox_sdl
-    zox_define_component_w_dest(SDLGamepad);
+    zoxd_dest(SDLGamepad);
 #endif
     define_systems_sdl_inputs(world);
     initialize_sdl_input();

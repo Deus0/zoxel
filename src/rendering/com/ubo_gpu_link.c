@@ -1,4 +1,4 @@
-zoxc(UboGPULink, uint);
+zoxc_uint(UboGPULink);
 
 void add_gpu_ubo(ecs *world, entity e) {
     if (!headless) {

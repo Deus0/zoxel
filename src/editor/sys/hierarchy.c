@@ -46,7 +46,7 @@ zox_sys2(HierarchyRefreshSystem) {
     zox_sys_in(ListUIMax);
     zox_sys_in(ElementFontSize);
     zox_sys_in(CanvasLink);
-    zox_sys_in(EditorTarget);
+    zox_sys_in(EntityTarget);
     zox_sys_out(HierarchyUIDirty);
     zox_sys_out(LayoutPosition);
     zox_sys_out(LayoutSize);
@@ -61,7 +61,7 @@ zox_sys2(HierarchyRefreshSystem) {
         zox_sys_i(ListUIMax, max);
         zox_sys_i(ElementFontSize, font_size);
         zox_sys_i(CanvasLink, canvas);
-        zox_sys_i(EditorTarget, target);
+        zox_sys_i(EntityTarget, target);
         zox_sys_o(LayoutPosition, position);
         zox_sys_o(LayoutSize, size);
         zox_sys_o(TextureSize, tsize);

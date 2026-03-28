@@ -11,7 +11,7 @@ entity spawn_window_inspector(ecs *world, entity canvas, entity player, entity t
 
     // zox_set(e, WindowType, { zox_window_inspector });
     zox_set(e, ElementFontSize, { list_font_size });
-    zox_set(e, EditorTarget, { target });
+    zox_set(e, EntityTarget, { target });
 
     return e;
 }

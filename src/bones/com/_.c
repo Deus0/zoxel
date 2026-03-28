@@ -21,6 +21,6 @@ void define_components_bones(ecs* world) {
     zoxd(MaterialBone);
     zoxd_arrayd(BoneIndexes);
     zoxd_arrayd(BoneLinks);
-    zox_define_component_w_dest(BoneIndexGPULink);
+    zoxd_dest(BoneIndexGPULink);
     zoxd_entity(SkeletonLink);
 }

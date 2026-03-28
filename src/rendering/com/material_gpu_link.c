@@ -1,7 +1,7 @@
 extern uint spawn_gpu_material_program(uint2 shader);
 
-zoxc(MaterialGPULink, uint);
-zoxc(MaterialInstancedGPULink, uint);
+zoxc_uint(MaterialGPULink);
+zoxc_uint(MaterialInstancedGPULink);
 
 void add_gpu_material(ecs *world, entity e) {
     if (!headless) {

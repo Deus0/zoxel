@@ -1,5 +1,5 @@
 // Define the ComputeShaderLink component
-zoxc(ComputeShaderLink, uint);
+zoxc_uint(ComputeShaderLink);
 
 // Destructor for ComputeShaderLink component
 ECS_DTOR(ComputeShaderLink, ptr, {

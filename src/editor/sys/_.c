@@ -17,7 +17,7 @@ void define_systems_editor(ecs *world) {
         zoxp_mainthread,
         [in] editor.HierarchyUIDirty,
         [in] layouts2.CanvasLink,
-        [in] editor.EditorTarget,
+        [in] core.EntityTarget,
         [in] elements2.ScrollviewLink,
         [in] elements.ElementFontSize
     );
@@ -27,7 +27,7 @@ void define_systems_editor(ecs *world) {
         zoxp_mainthread,
         [in] editor.InspectorDirty,
         [in] layouts2.CanvasLink,
-        [in] editor.EditorTarget,
+        [in] core.EntityTarget,
         [in] elements2.ScrollviewLink,
         [in] elements.ElementFontSize
     );
@@ -42,7 +42,7 @@ void define_systems_editor(ecs *world) {
         [in] layouts2.ListUIMax,
         [in] elements.ElementFontSize,
         [in] layouts2.CanvasLink,
-        [in] editor.EditorTarget,
+        [in] core.EntityTarget,
         [out] HierarchyUIDirty,
         [out] layouts2.LayoutPosition,
         [out] layouts2.LayoutSize,

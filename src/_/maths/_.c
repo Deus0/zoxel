@@ -17,10 +17,4 @@
 #include "bounds/_.c"
 #include "planes/_.c"
 
-zoxel_dynamic_array(int)
-create_is_in_array_d(int)
-zoxel_dynamic_array(float3)
-zoxel_dynamic_array(float2)
-zoxel_dynamic_array(float4x4)
-
 #endif

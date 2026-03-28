@@ -1,3 +1,4 @@
+#include "types.c"
 #include "byte.c"
 #include "byte2.c"
 #include "byte3.c"
@@ -8,6 +9,7 @@
 #include "int3.c"
 #include "int4.c"
 #include "uint.c"
+#include "uint2.c"
 #include "float.c"
 #include "float2.c"
 #include "float3.c"
@@ -22,6 +24,14 @@
 
 #define zox_component_string(type) zox_component_string##_##type(component##_##type)
 
+// Dynamic Array Definitions
+zoxel_dynamic_array(byte)
+zoxel_dynamic_array(int)
+create_is_in_array_d(int)
+zoxel_dynamic_array(float3)
+zoxel_dynamic_array(float2)
+zoxel_dynamic_array(float4x4)
+
 void initialize_component_ids() {
     initialize_component_ids_byte();
     initialize_component_ids_byte2();
@@ -33,6 +43,7 @@ void initialize_component_ids() {
     initialize_component_ids_int3();
     initialize_component_ids_int4();
     initialize_component_ids_uint();
+    initialize_component_ids_uint2();
     initialize_component_ids_float();
     initialize_component_ids_float2();
     initialize_component_ids_float3();
@@ -55,6 +66,7 @@ void dispose_component_ids() {
     dispose_component_ids_int3();
     dispose_component_ids_int4();
     dispose_component_ids_uint();
+    dispose_component_ids_uint2();
     dispose_component_ids_float();
     dispose_component_ids_float2();
     dispose_component_ids_float3();

@@ -1,5 +1,39 @@
-void button_event_clicked_hierarchy(ecs *world, const ClickEventData event) {
+void inspector_select_target(ecs* world, entity player, entity target) {
 
+    if (!zox_valid(player)) {
+        return;
+    }
+
+    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity inspector = get_canvas_window(world, canvas, zox_window_inspector);
+
+    if (!zox_valid(inspector)) {
+        zox_log("Inspector Closed, Spawning for Target [%s]", target ? zox_get_name(target) : "None");
+        spawn_window_inspector(world, canvas, player, target);
+        return;
+    }
+
+    if (!zox_has(inspector, EntityTarget)) {
+        zox_log("Inspector Invalid Components");
+        return;
+    }
+
+    zox_geter_value(inspector, EntityTarget, entity, old_target);
+
+    if (old_target == target) {
+        zox_log("Inspector Same Target [%s]", target ? zox_get_name(target) : "None");
+        return;
+    }
+
+    zox_set(inspector, EntityTarget, { target });
+    zox_set(inspector, InspectorDirty, { zox_dirty_trigger });
+
+    zox_log("+ Inspector Target [%s]", target ? zox_get_name(target) : "None");
+}
+
+void button_event_clicked_hierarchy(ecs* world, const ClickEventData event) {
+
+    entity player = event.clicker;
     entity clicked = event.clicked;
 
     if (!zox_has(clicked, EntityTarget)) {
@@ -9,34 +43,7 @@ void button_event_clicked_hierarchy(ecs *world, const ClickEventData event) {
 
     zox_geter_value(clicked, EntityTarget, entity, target);
 
-    entity player = event.clicker;
-
-    zox_geter_value(player, CanvasLink, entity, canvas);
-    entity inspector = get_canvas_window(world, canvas, zox_window_inspector);
-
-    if (!zox_valid(inspector)) {
-        zox_log("Inspector Closed");
-        return;
-    }
-
-    if (!zox_has(inspector, EditorTarget)) {
-        zox_log("Inspector Invalid Components");
-        return;
-    }
-
-    zox_geter_value(inspector, EditorTarget, entity, old_target);
-
-    if (old_target == target) {
-        zox_log("Inspector Same Target [%s]", target ? zox_get_name(target) : "None");
-        return;
-    }
-
-    zox_set(inspector, EditorTarget, { target });
-    zox_set(inspector, InspectorDirty, { zox_dirty_trigger });
-
-    zox_log("+ Inspector Target [%s]", zox_get_name(target));
-
-    // editor_select_entity(world, player, target);
+    inspector_select_target(world, player, target);
 }
 
 // grabs all entity list data into entity + name labels
@@ -70,14 +77,13 @@ zox_sys2(HierarchySpawnSystem) {
     zox_sys_begin();
     zox_sys_in(HierarchyUIDirty);
     zox_sys_in(CanvasLink);
-    zox_sys_in(EditorTarget);
+    zox_sys_in(EntityTarget);
     zox_sys_in(ScrollviewLink);
     zox_sys_in(ElementFontSize);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
         zox_sys_i(HierarchyUIDirty, dirty);
         zox_sys_i(CanvasLink, canvas);
-        zox_sys_i(EditorTarget, target);
+        zox_sys_i(EntityTarget, target);
         zox_sys_i(ScrollviewLink, scrollview);
         zox_sys_i(ElementFontSize, font_size);
 

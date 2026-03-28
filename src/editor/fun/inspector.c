@@ -22,59 +22,6 @@ void button_event_clicked_inspepctor(ecs *world, entity trigger_entity) {
         } \
     }*/
 
-void get_component_label(ecs *world, entity e, entity component, char* buffer, uint length) {
-
-    if (!zox_valid(e) || !zox_valid(component)) {
-        zox_logw("invalid e or c in inspector label");
-        return;
-    }
-
-    // int buffer_size = inspector_component_size_buffer;
-    int index = 0;
-    ecs_id_t id = component & ECS_COMPONENT_MASK;
-    index += snprintf(buffer + index, length, "%s", zox_get_name(component));
-
-    #define add_component_label(T)\
-        else if (is_component_type_##T(id)) { \
-            index = get_type_label_##T(world, e, id, buffer, length, index); \
-        }
-
-    if (is_component_type_byte(id)) {
-        index = get_type_label_byte(world, e, id, buffer, length, index);
-    }
-    add_component_label(byte)
-    add_component_label(byte2)
-    add_component_label(byte3)
-    add_component_label(int)
-    add_component_label(int2)
-    add_component_label(int3)
-    add_component_label(int4)
-    add_component_label(float)
-    add_component_label(float2)
-    add_component_label(float3)
-    add_component_label(float4)
-    add_component_label(float6)
-    add_component_label(double)
-    add_component_label(lint)
-    add_component_label(entity)
-    add_component_label(color)
-    add_component_label(color_rgb)
-    add_component_label(text)
-
-    else {
-        const EcsComponent* c = (EcsComponent*) ecs_get(world, id, EcsComponent);
-
-        uint component_size = c !=  NULL ? c->size : 0;
-
-        if (!component_size) {
-            index += snprintf(buffer + index, length - index, " [T]");
-        } else {
-            index += snprintf(buffer + index, length - index, " [?]");
-        }
-    }
-    // zox_log("   c [%lu] %s\n", component, buffer)
-}
-
 // Recreates our list elements
 // sets inspector ui compponents, the inspector ui
 /*void set_inspector_element(ecs *world, entity window, entity e) {

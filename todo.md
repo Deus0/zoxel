@@ -2,10 +2,17 @@
 
 Tools:
 - Left Align Hierarchy / Inspector Buttons / List
-- Give the name button different colors
+- dock hierarchy/window on left of window
+	- left drag to edge and release
+	- add a button on header to restore from docked
 - Keep hierarchy elements selected - active state
 - arrows to fold/unfold children in hierarchy
+- tag filter dropdown on header of hierarchy
+	- Block, Item, Stat, Etc
+	- Just add a list of tags for now to it
 - Resizable Windows
+	- add corner button to bottom right
+	- debug when release + hold system for the dragging
 - Spawn RenderCamera + Render Texture + Render UI
 - Position Y chart - showing fluctuations - use to stabilize physics
 - Slider UI to show Text of Number
@@ -195,3 +202,4 @@ done:
 -x Inspector UI
 	-x fix opening with target entity
 	-x fix refreshing buttons like hiararchy system
+-x color coding on component types

@@ -22,7 +22,7 @@
     } name;\
     zoxc_custom(name)
 
-#define zox_define_component_w_dest(name)\
+#define zoxd_dest(name)\
     zoxd(name)\
     ecs_set_hooks(world, name, { .dtor = ecs_dtor(name) });
 

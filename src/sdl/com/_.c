@@ -23,8 +23,8 @@ ECS_DTOR(Context, ptr, {
 #include "mix_chunk.c"
 
 void define_components_sdl(ecs *world) {
-    zox_define_component_w_dest(SDLWindow);
-    zox_define_component_w_dest(Context);
-    zox_define_component_w_dest(Renderer);
-    zox_define_component_w_dest(SDLMixChunk);
+    zoxd_dest(SDLWindow);
+    zoxd_dest(Context);
+    zoxd_dest(Renderer);
+    zoxd_dest(SDLMixChunk);
 }

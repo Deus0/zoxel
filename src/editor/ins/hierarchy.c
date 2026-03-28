@@ -18,7 +18,7 @@ entity spawn_window_hierarchy(ecs *world, entity canvas, entity player, entity r
 
     zox_set(e, ElementFontSize, { list_font_size });
     // zox_set(e, WindowType, { zox_window_hierarchy });
-    zox_set(e, EditorTarget, { root });
+    zox_set(e, EntityTarget, { root });
 
     return e;
 }
