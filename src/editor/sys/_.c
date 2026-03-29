@@ -1,16 +1,9 @@
 #include "hierarchy2.c"
 #include "inspector2.c"
 #include "input.c"
+#include "inspector_label.c"
 
 void define_systems_editor(ecs *world) {
-
-    /*zox_system(
-        InspectorElementSystem,
-        EcsOnUpdate,
-        [in] core.EntityTarget,
-        [in] core.ComponentTarget,
-        [none] InspectorLabel
-    );*/
 
     zox_system_1(
         HierarchySpawnSystem,
@@ -32,30 +25,24 @@ void define_systems_editor(ecs *world) {
         [in] elements.ElementFontSize
     );
 
-    /*zox_system_1(
-        HierarchyRefreshSystem,
-        zoxp_mainthread,
-        [in] transforms2.Position2,
-        [in] layouts2.CanvasPosition,
-        [in] layouts2.Layer2D,
-        [in] layouts2.Anchor,
-        [in] layouts2.ListUIMax,
-        [in] elements.ElementFontSize,
-        [in] layouts2.CanvasLink,
-        [in] core.EntityTarget,
-        [out] HierarchyUIDirty,
-        [out] layouts2.LayoutPosition,
-        [out] layouts2.LayoutSize,
-        [out] rendering.TextureSize,
-        [out] hierarchys.Children,
-        [none] HierarchyUI
-    );*/
-
     zox_system_1(
         EditorInputSystem,
         EcsPreStore,
         [in] inputs.DeviceLinks,
         [in] layouts2.CanvasLink,
         [none] players.Player
+    );
+
+    zox_system(
+        InspectorLabelSystem,
+        EcsOnUpdate,
+        [in] rendering.RenderDisabled,
+        [in] core.ComponentType,
+        [in] core.EntityTarget,
+        [in] core.ComponentTarget,
+        [in] hierarchys.Children,
+        //[in] texts.TextData,
+        //[in] texts.TextDirty,
+        [none] editor.InspectorLabel
     );
 }

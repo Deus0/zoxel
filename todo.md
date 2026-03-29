@@ -1,18 +1,34 @@
 ### todo ###
 
-Tools:
+Finish Editor:
 - Left Align Hierarchy / Inspector Buttons / List
+- Keep hierarchy elements selected - active state
+- Component Tooltips, e.g.:
+	- IconType [byte] [3]
+- Component Element for a list (MeshIndicies, etc)
+	- using folded button group
+	- for now just spawn a multiline text that shows list
+- Scrollbar horizontal
+- Resizable Windows
+	- add corner button to bottom right
+	- debug when release + hold system for the dragging
+- Texture UI in component list - TextData
+- Editor Style function that sets:
+	- window_color
+	- font_size
+	- element_font_color + outline
+	- header_font_size
+	+ header_font_color + outline
+- SoundData play button to test sound
+
+Tools:
 - dock hierarchy/window on left of window
 	- left drag to edge and release
 	- add a button on header to restore from docked
-- Keep hierarchy elements selected - active state
 - arrows to fold/unfold children in hierarchy
 - tag filter dropdown on header of hierarchy
 	- Block, Item, Stat, Etc
 	- Just add a list of tags for now to it
-- Resizable Windows
-	- add corner button to bottom right
-	- debug when release + hold system for the dragging
 - Spawn RenderCamera + Render Texture + Render UI
 - Position Y chart - showing fluctuations - use to stabilize physics
 - Slider UI to show Text of Number
@@ -31,6 +47,7 @@ Improvements:
 - Center the vox textures for body parts
 - Use realm colors for UI
 - Spawn Status UI + player model through the UI
+- bar at bottom of texture to resize individual component (later)
 
 Bugs:
 - Audio missing from main menu - need to spawn a realm for it
@@ -41,6 +58,7 @@ Bugs:
 	- test wayland window
 - fix collisions in lesser resolution terrain chunks
 	- test by forcing all terrain chunks at a sub res for easier testing
+- fix text label size when resizing - button size
 	
 
 Refactors:
@@ -201,5 +219,8 @@ done:
 -X Hierarchy UI for realm and children
 -x Inspector UI
 	-x fix opening with target entity
-	-x fix refreshing buttons like hiararchy system
+	-x fix refreshing buttons like hierarchy system
 -x color coding on component types
+-x update component text system
+	-x watch character position update in real-time
+-x debug key to open inspector for player

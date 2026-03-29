@@ -33,3 +33,4 @@
 #define zox_type_entity2 41
 #define zox_type_entity3 42
 #define zox_type_name 43
+#define zox_type_unknown 44

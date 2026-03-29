@@ -1,22 +1,20 @@
 //! Dynamically updates zext by spawning/destroying zigels and updating remaining
 // #define zoxel_debug_zext_updates
 
-void spawn_text2D_zigels(
-    ecs* world,
-    SpawnZigel* data,
-    Children* children,
-    const TextData* text_data
-) {
-    const int old_children_length = children->length;
-    const int new_children_length = calculate_total_zigels(text_data->value, text_data->length);
-    const int has_old_children = old_children_length > 0;
-    const int reuse_count = int_min(old_children_length, new_children_length);
+void spawn_text2D_zigels(ecs* world, SpawnZigel* data, Children* children, const TextData* text_data) {
+
+    int old_children_length = children->length;
+    int new_children_length = calculate_total_zigels(text_data->value, text_data->length);
+    int has_old_children = old_children_length > 0;
+    int reuse_count = int_min(old_children_length, new_children_length);
+
 #ifdef zoxel_debug_zext_updates
     zox_log("spawn_zext_zigels :: [%i] -> [%i]; reuse [%i];", children->length, text_data->length, reuse_count)
     if (children->length == text_data->length) {
         zox_log("    - zext remained the same [%i]", text_data->length)
     }
 #endif
+
     entity *old_children = children->value;
     entity *new_children = NULL;
     if (new_children_length > 0) {
@@ -25,7 +23,7 @@ void spawn_text2D_zigels(
     // old children needs new
     //  - set old positions, as we are resizing
     for (int i = 0; i < reuse_count; i++) {
-        const entity e = old_children[i];
+        entity e = old_children[i];
         new_children[i] = e;
     }
     // Spawn New Zigels
@@ -34,30 +32,30 @@ void spawn_text2D_zigels(
         zox_log("    - spawning new_children [%i]", new_children_length - old_children_length)
 #endif
         for (int i = old_children_length; i < new_children_length; i++) {
-            const byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, i);
+            byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, i);
             data->zigel.zigel_index = zigel_index;
-            // data->zigel.data_index = data_index;
-            const entity zigel = spawn_zext_zigel(
-                world,
-                text_data,
-                data
-            );
-            zox_set(zigel, RenderDisabled, { data->element.render_disabled });
-            new_children[i] = zigel;
+
+            entity e2 = spawn_zext_zigel(world, text_data, data);
+
+            zox_set(e2, RenderDisabled, { data->element.render_disabled });
+
+            new_children[i] = e2;
         }
-    }
-    // Delete Old Zigels
-    else if (new_children_length < old_children_length) {
+    } else if (new_children_length < old_children_length) {
+        // Delete Old Zigels
         for (int i = new_children_length; i < old_children_length; i++) {
-            zox_delete(old_children[i]);
+            entity e2 = old_children[i];
+            zox_delete(e2);
         }
 #ifdef zoxel_debug_zext_updates
         zox_log("    - deleted old_children [%i]", (old_children_length - new_children_length))
 #endif
     }
+
     if (has_old_children) {
         dispose_Children(children);
     }
+
     children->value = new_children;
     children->length = new_children_length;
 }

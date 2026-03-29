@@ -92,6 +92,7 @@ zoxc_function(TimedEvent, void, ecs*, const entity);
 zoxc_byte(EntityDirty);
 zoxc_entity(EntityTarget);
 zoxc_entity(ComponentTarget);
+zoxc_byte(ComponentType);
 // General
 zoxc_byte(Loaded);
 zoxc_state(Generate);
@@ -120,6 +121,7 @@ void define_components_core(ecs* world) {
     zoxd_byte(EntityDirty);
     zoxd_entity(EntityTarget);
     zoxd_entity(ComponentTarget);
+    zoxd_byte(ComponentType);
     // General
     zoxd_byte(Loaded);
     zoxd_state(Generate);

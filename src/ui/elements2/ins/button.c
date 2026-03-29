@@ -1,6 +1,7 @@
 entity spawn_button(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnTextData zext_data, SpawnButtonData button_data) {
 
     int text_length = zext_data.text != NULL ? strlen(zext_data.text) : 0;
+
     int2 zext_size = (int2) {
         zext_data.font_size * text_length,
         zext_data.font_size

@@ -143,10 +143,15 @@ void zoxel_debug_keys() {
     add_hook_key_down(key_down_toggle_debug_character_bounds);
     add_hook_key_down(key_down_toggle_debug_voxes_bounds);
     add_hook_key_down(key_down_toggle_streaming);
+
     add_hook_key_down(toggle_inspector);
     add_hook_key_down(toggle_hierarchy);
+    add_hook_key_down(toggle_inspector_player);
+
     add_hook_key_down(toggle_flymode);
-    add_hook_key_down(toggle_autoroam);
+
+    // add_hook_key_down(debug_key_down_unstucking);
+    // add_hook_key_down(toggle_autoroam);
     // add_hook_key_down(key_down_toggle_keyboard_navigation);
     // add_hook_key_down(key_down_test_aura);
     // add_hook_key_down(keydown_test_cubes);
@@ -161,7 +166,6 @@ void zoxel_debug_keys() {
     // add_hook_key_down(test_key_element_front2D);
     // add_hook_key_down(key_down_update_text3D);
     // add_hook_key_down(key_down_dbg_chunk);
-    add_hook_key_down(debug_key_down_unstucking);
 }
 
 void zox_set_terrain_settings() {

@@ -1,119 +1,21 @@
-byte fetch_compoent_label(ecs *world, entity target, entity component, char* buffer, uint length) {
-
-    byte type = zox_type_none;
-
-    if (!zox_valid(target) || !zox_valid(component)) {
-        zox_logw("invalid e or c in inspector label");
-        return type;
-    }
-
-    // int buffer_size = inspector_component_size_buffer;
-    int index = 0;
-    ecs_id_t id = component & ECS_COMPONENT_MASK;
-    index += snprintf(buffer + index, length, "%s", zox_get_name(component));
-
-    #define add_component_label(T)\
-        else if (is_component_type_##T(id)) { \
-            index = get_type_label_##T(world, target, id, buffer, length, index); \
-            type = zox_type_##T; \
-        }
-
-    if (is_component_type_byte(id)) {
-        index = get_type_label_byte(world, target, id, buffer, length, index);
-        type = zox_type_byte;
-    }
-    add_component_label(byte2)
-    add_component_label(byte3)
-    add_component_label(int)
-    add_component_label(int2)
-    add_component_label(int3)
-    add_component_label(int4)
-    add_component_label(uint)
-    add_component_label(uint2)
-    add_component_label(float)
-    add_component_label(float2)
-    add_component_label(float3)
-    add_component_label(float4)
-    add_component_label(float6)
-    add_component_label(double)
-    add_component_label(lint)
-    add_component_label(entity)
-    add_component_label(color)
-    add_component_label(color_rgb)
-    add_component_label(text)
-
-    else {
-
-        const EcsComponent* component = (EcsComponent*) ecs_get(world, id, EcsComponent);
-
-        uint component_size = component !=  NULL ? component->size : 0;
-
-        if (!component_size) {
-            index += snprintf(buffer + index, length - index, " [T]");
-            type = zox_type_tag;
-        } else {
-            index += snprintf(buffer + index, length - index, " [?]");
-        }
-    }
-
-    return type;
-}
-
 void fetch_entity_components(ecs* world, entity_array_d* entity_ids, entity_array_d* component_ids, byte_array_d* types, text_group_dynamic_array_d* labels, entity target) {
 
     if (!zox_valid(target)) {
         return;
     }
 
-    const uint tlength = inspector_component_size_buffer;
-
-    const ecs_type_t* type = ecs_get_type(world, target);
-
-    // add name first
+    // Add name first
     add_to_entity_array_d(component_ids, 0);
     add_to_byte_array_d(types, zox_type_name);
     add_entity_to_labels(world, target, labels, entity_ids, 0);
 
+    const ecs_type_t* type = ecs_get_type(world, target);
     for (int i = 0; i < type->count; i++) {
-        ecs_id_t id = type->array[i];
+        ecs_id_t component_id = type->array[i];
 
-        entity component_id = 0;
-        byte type = zox_type_none;
-        char* text = malloc(tlength);
-
-        if (zox_is_override(id)) {
-
-            component_id = id & ECS_COMPONENT_MASK;
-
-            if (!zox_valid(component_id)) {
-                snprintf(text, tlength, "Invalid");
-            } else {
-                type = zox_type_override;
-                snprintf(text, tlength, "*[%s]*", zox_get_name(component_id));
-            }
-
-        } else if (ECS_HAS_ID_FLAG(id, PAIR)) {
-
-            entity pair1 = ecs_pair_first(world, id);
-            entity pair2 = ecs_pair_second(world, id);
-
-            if (!zox_valid(pair1) || !zox_valid(pair2)) {
-                snprintf(text, tlength, "[bad pair]");
-            } else {
-                type = zox_type_pair;
-                snprintf(text, tlength, "%s -=- %s", zox_get_name(pair1), zox_get_name(pair2));
-            }
-
-        } else {
-            component_id = id & ECS_COMPONENT_MASK;
-
-            if (!zox_valid(component_id)) {
-                snprintf(text, tlength, "Invalid");
-            } else {
-                type = fetch_compoent_label(world, target, component_id, text, tlength);
-            }
-            // snprintf(text, tlength, "%s", zox_get_name(e));
-        }
+        // NOTE: Can set this tto null and see button size failing to resize
+        char* text = fetch_compoent_label(world, target, component_id);
+        byte type = fetch_component_type(world, target, component_id);
 
         add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { text = text });
         add_to_entity_array_d(entity_ids, target);
@@ -278,10 +180,11 @@ zox_sys2(InspectorSpawnSystem) {
             child_element_data.render_disabled = j >= visible;
             entity e2 = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
 
-            zox_set(e2, ClickEvent, { on_click.value });
+            zox_add_tag(e2, InspectorLabel);
             zox_set(e2, ComponentType, { type });
             zox_set(e2, EntityTarget, { target });
             zox_set(e2, ComponentTarget, { component_id });
+            zox_set(e2, ClickEvent, { on_click.value });
 
             add_to_Children(children, e2);
         }

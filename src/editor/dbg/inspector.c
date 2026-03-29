@@ -25,3 +25,60 @@ void toggle_inspector(ecs *world, int32_t keycode) {
         spawn_sound_from_file_index(world, prefab_sound, 0);
     }
 }
+
+void toggle_inspector_target(ecs* world, entity player, entity target) {
+    zox_geter_value(player, CanvasLink, entity, canvas);
+
+    if (!zox_valid(target)) {
+        return;
+    }
+
+    entity e = 0;   // target inspector
+    zox_geter(canvas, Children, children);
+    for (int i = 0; i < children->length; i++) {
+        entity child = children->value[i];
+
+        if (!zox_valid(child) || !zox_has(child, WindowType)) {
+            continue;
+        }
+
+        zox_geter_value(child, WindowType, byte, window_type);
+        if (window_type == zox_window_inspector) {
+            // check target
+            zox_geter_value(child, EntityTarget, entity, otarget);
+            if (otarget == target) {
+                e = child;
+                break;
+            }
+        }
+    }
+
+    if (e) {
+        zox_log("Deleting Editor Inspector for [%s]", zox_get_name(target));
+
+        zox_delete(e);
+        spawn_sound_from_file_index(world, prefab_sound, 1);
+    } else {
+        zox_log("Spawning Editor Inspector for [%s]", zox_get_name(target));
+
+        spawn_window_inspector(world, canvas, player, target);
+        spawn_sound_from_file_index(world, prefab_sound, 0);
+    }
+}
+
+void toggle_inspector_player(ecs *world, int32_t keycode) {
+
+    // our logic stuff
+    if (keycode != SDLK_i) {
+        return;
+    }
+
+    entity player = dbg_player;
+
+    if (!zox_valid(player)) {
+        return;
+    }
+
+    entity target = player;
+    toggle_inspector_target(world, player, target);
+}

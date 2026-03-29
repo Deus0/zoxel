@@ -1,18 +1,19 @@
-void update_text(
-    ecs *world,
-    const Children* children,
-    const TextData* textData
-) {
+void update_text(ecs *world, const Children* children, const TextData* textData) {
+
     // calculate checks for spaces new lines etc and removes those
-    const int new_children_length = calculate_total_zigels(textData->value, textData->length);
-    const int update_count = int_min(children->length, new_children_length);
+    int new_children_length = calculate_total_zigels(textData->value, textData->length);
+    int update_count = int_min(children->length, new_children_length);
+
     for (int i = 0; i < update_count; i++) {
-        const entity e = children->value[i];
+        entity e = children->value[i];
+
         if (!zox_valid(e)) {
             continue;
         }
-        const byte new = calculate_zigel_index(textData->value, textData->length, i);
+
+        byte new = calculate_zigel_index(textData->value, textData->length, i);
         zox_geter_value(e, ZigelIndex, byte, old);
+
         if (old != new) {
             zox_muter(e, ZigelIndex, index);
             zox_muter(e, GenerateTexture, generate);

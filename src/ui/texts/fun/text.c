@@ -27,14 +27,25 @@ byte is_zext(TextData *zext, const char* text) {
     return 1;
 }
 
-void set_zext(TextData *data, const char* text) {
-    int text_length = text != NULL ? strlen(text) : 0;
-    if (data->length != text_length) {
-        resize_memory_component(TextData, data, byte, text_length);
+void set_zext(TextData* text, const char* ntext) {
+    int length = ntext != NULL ? strlen(ntext) : 0;
+
+    if (text->length != length) {
+        resize_TextData(text, length);
+        // resize_memory_component(TextData, text, byte, text_length);
     }
 
-    for (int i = 0; i < text_length; i++) {
-        data->value[i] = convert_ascii(text[i]);
+    for (int i = 0; i < length; i++) {
+        text->value[i] = convert_ascii(ntext[i]);
+    }
+}
+
+byte set_text_component(TextData* text, const char* ntext) {
+    if (is_zext(text, ntext)) {
+        return 0;
+    } else {
+        set_zext(text, ntext);
+        return 1;
     }
 }
 

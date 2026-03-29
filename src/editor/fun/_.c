@@ -2,3 +2,4 @@
 #include "old.c"
 #include "inspector.c"
 #include "hierarchy.c"
+#include "component.c"
