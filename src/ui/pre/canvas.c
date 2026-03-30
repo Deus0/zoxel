@@ -1,6 +1,8 @@
 entity spawn_prefab_canvas(ecs *world) {
+
     zox_prefab();
     zox_prefab_name("canvas");
+
     zox_add_tag(e, Canvas);
     zox_prefab_add(e, AppLink);
     zox_prefab_set(e, CameraLink, { 0 });
@@ -13,5 +15,6 @@ entity spawn_prefab_canvas(ecs *world) {
     zox_prefab_set(e, WindowToTop, { 0 });
     zox_prefab_set(e, WindowsLayers, { 0 });
     zox_prefab_set(e, WindowsCount, { 0 });
+
     return e;
 }

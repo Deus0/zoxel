@@ -179,13 +179,8 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .padding = list_padding,
         .margins = list_padding,
     };
-    entity list = spawn_list(
-        world,
-        canvas_data,
-        list_parent_data,
-        list_element_data,
-        ui_list_data
-    );
+
+    entity list = spawn_list(world, canvas_data, list_parent_data, list_element_data, ui_list_data, zox_alignment_center);
     add_to_Children(window_data.children, list);
     zox_set_ptr(e, Children, children);
 

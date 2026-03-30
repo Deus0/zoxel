@@ -31,7 +31,7 @@ void inspector_select_target(ecs* world, entity player, entity target) {
     zox_log("+ Inspector Target [%s]", target ? zox_get_name(target) : "None");
 }
 
-void button_event_clicked_hierarchy(ecs* world, const ClickEventData event) {
+void button_event_clicked_hierarchy(ecs* world, ClickEventData event) {
 
     entity player = event.clicker;
     entity clicked = event.clicked;
@@ -44,6 +44,9 @@ void button_event_clicked_hierarchy(ecs* world, const ClickEventData event) {
     zox_geter_value(clicked, EntityTarget, entity, target);
 
     inspector_select_target(world, player, target);
+
+    zox_set(clicked, ActiveState, { 1 });
+    zox_set(clicked, ActiveStateDirty, { zox_dirty_trigger });
 }
 
 // grabs all entity list data into entity + name labels
@@ -128,7 +131,7 @@ zox_sys2(HierarchySpawnSystem) {
         zox_geter_value(list_ui, TextPadding, byte2, text_padding);
         // byte2 button_padding = (byte2) { 8 * ui_scale, 4 * ui_scale };
         ElementSpawnData child_element_data = {
-            .prefab = prefab_button,
+            .prefab = prefab_button_hierarchy,
             .layer = scrollview_layer + 1,
             .anchor = float2_half,
             .render_disabled = 1, // hide until list set

@@ -1,4 +1,4 @@
-
+/*
 
 // like text, sets the list of text onto the ui element list
 void set_ui_list_hierarchy(ecs *world, Children *children, entity window_entity, entity canvas, int elements_visible, text_group_dynamic_array_d* labels, entity_array_d* entities, int labels_count, ClickEvent click_event, byte button_layer, byte2 button_padding, int button_inner_margins, byte font_size, byte list_start, int2 list_margins, byte is_scrollbar, int scrollbar_width, int scrollbar_margins, float2 window_position, int2 window_pixel_positionv, int2 window_size, int2 canvas_size) {
@@ -137,7 +137,7 @@ zox_sys2(HierarchyRefreshSystem) {
     }
 } zox_sys_end(HierarchyRefreshSystem);
 
-
+*/
 
 
     /*add_entity_to_labels(world, target, labels, entities, 0);

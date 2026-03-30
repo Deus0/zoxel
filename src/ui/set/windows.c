@@ -1,5 +1,5 @@
 // windows
-color window_color = { 48, 42, 36, 255 };
+// color window_color = { 48, 42, 36, 255 };
 color window_fill = { 22, 22, 22, 99 };
 color window_outline = { 44, 44, 44, 177 };
 // header

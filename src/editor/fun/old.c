@@ -88,18 +88,10 @@ entity spawn_ui_list(ecs *world,
 
     zox_instance(prefab);
     zox_name("ui_list");
-    zox_set(e, ListUIMax, { max_elements });
+
+    // zox_set(e, ListUIMax, { max_elements });
     zox_set(e, ElementFontSize, { font_size });
-    initialize_element(world,
-        e,
-        parent,
-        canvas,
-        pixel_position,
-        pixel_size,
-        pixel_size,
-        anchor,
-        layer
-    );
+    initialize_element(world, e, parent, canvas, pixel_position, pixel_size, pixel_size, anchor, layer);
 
     Children children = (Children) { 0 };
     initialize_Children(&children, children_length);
@@ -108,9 +100,7 @@ entity spawn_ui_list(ecs *world,
         int2 header_size = (int2) { pixel_size.x, header_height };
         int2 header_position = (int2) { 0, header_height / 2 };
         float2 header_anchor = (float2) { 0.5f, 1.0f };
-        children.value[0] = spawn_header(world,
-            e,
-            canvas,
+        children.value[0] = spawn_header(world, e, canvas,
             header_position,
             header_size,
             header_anchor,

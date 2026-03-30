@@ -3,12 +3,13 @@ entity spawn_prefab_button(ecs *world, entity p) {
     zox_prefab_child(p);
     zox_prefab_name("button");
     zox_add_tag(e, Button);
+    zox_add_tag(e, TextResizer);
 
     // transform
     zox_prefab_set(e, Children, { 0 });
 
     // texture
-    set_frame_texture_type(world, e, default_fill_color, default_outline_color, default_button_corner, default_button_frame_thickness);
+    set_frame_texture_type(world, e, button_fill, button_outline, default_button_corner, default_button_frame_thickness);
 
     //  interactable
     zox_add_tag(e, Selectable);

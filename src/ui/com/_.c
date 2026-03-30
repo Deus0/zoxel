@@ -36,6 +36,8 @@ zoxc_byte(DraggableState);
 zoxc_byte(ActiveState);
 zoxc_state(ActiveStateDirty);
 zoxc_color(ActiveColor);
+zox_tag(ActiveSingle);
+zoxc_entity(ActiveLink);    // parents active link
 
 // Navigating
 zox_tag(NavigationWindow);
@@ -108,6 +110,8 @@ void define_components_elements(ecs *world) {
     zoxd_byte(ActiveState);
     zoxd_state(ActiveStateDirty);
     zoxd_color(ActiveColor);
+    zoxd_entity(ActiveLink);
+    zoxd_tag(ActiveSingle);
 
     // Windows
     zoxd_tag(CanvasOverlay);
@@ -130,11 +134,8 @@ void define_components_elements(ecs *world) {
     zoxd_byte(WindowLayer);
     zoxd_fixed_string(TooltipText);
 
-
     zoxd(TooltipEvent);
     zoxd(SlideEvent);
-
-
 
     // Navigation
     zoxd_tag(NavigationWindow);

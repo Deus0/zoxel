@@ -1,10 +1,13 @@
 ### todo ###
 
+- Fix 'inside block' updating when on edge of block
+	- hard physics issue
+	- triggers position updates per frame
+
 Finish Editor:
-- Left Align Hierarchy / Inspector Buttons / List
-- Keep hierarchy elements selected - active state
 - Component Tooltips, e.g.:
 	- IconType [byte] [3]
+- Texture UI in component list - TextData
 - Component Element for a list (MeshIndicies, etc)
 	- using folded button group
 	- for now just spawn a multiline text that shows list
@@ -12,7 +15,6 @@ Finish Editor:
 - Resizable Windows
 	- add corner button to bottom right
 	- debug when release + hold system for the dragging
-- Texture UI in component list - TextData
 - Editor Style function that sets:
 	- window_color
 	- font_size
@@ -224,3 +226,5 @@ done:
 -x update component text system
 	-x watch character position update in real-time
 -x debug key to open inspector for player
+-x Left Align Hierarchy / Inspector Buttons / List
+-x Keep hierarchy elements selected - active state

@@ -24,7 +24,6 @@ zox_sys2(ListRenderDirtySystem) {
             }
 
             byte is_visible = j >= start->value && j <  start->value + visible->value;
-            // zox_set(e2, RenderDisabled, { !is_visible });
             set_children_render_disabled(world, e2, !is_visible);
         }
     }

@@ -7,18 +7,20 @@
 entity spawn_window_hierarchy(ecs *world, entity canvas, entity player, entity root) {
 
     const char* header_label = "Hierarchy";
-    int visible_count = 10;
-    int header_font_size = 18;
-    int list_font_size = 16;
-    int min_width = 500;
+    int visible_count = 12;
+    int header_font_size = 22;
+    int list_font_size = 12;
+    int min_width = 440;
 
     // prefab_menu_game
-    entity e = spawn_window_list(world, prefab_hierarchy, player, header_label, header_font_size, NULL, 0, visible_count, list_font_size, (ClickEvent) { NULL }, 1, zox_window_hierarchy, min_width);
-    zox_name("hierarchy");
+    entity2 e = spawn_window_list(world, prefab_hierarchy, player, header_label, header_font_size, NULL, 0, visible_count, list_font_size, (ClickEvent) { NULL }, 1, zox_window_hierarchy, min_width, zox_alignment_left, byte2_single(2));
+    zox_set_name_spawned(world, e.x, "hierarchy");
 
-    zox_set(e, ElementFontSize, { list_font_size });
-    // zox_set(e, WindowType, { zox_window_hierarchy });
-    zox_set(e, EntityTarget, { root });
+    zox_set(e.x, ElementFontSize, { list_font_size });
+    zox_set(e.x, EntityTarget, { root });
 
-    return e;
+    zox_add_tag(e.y, ActiveSingle);
+    zox_set(e.y, ActiveLink, { 0 });
+
+    return e.x;
 }

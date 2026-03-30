@@ -25,6 +25,7 @@
 #include "inputs/keyboard_click.c"
 
 #include "active/animate.c"
+#include "active/link.c"
 
 #include "drag/dragger_end.c"
 
@@ -131,6 +132,15 @@ void define_systems_elements(ecs *world) {
         [out] textures.GenerateTexture,
         [none] Element
     );
+    zox_system(
+        ElementActiveLinkSystem,
+        EcsOnUpdate,
+        [in] elements.ActiveState,
+        [in] elements.ActiveStateDirty,
+        [in] hierarchys.ParentLink,
+        [none] Element
+    );
+
 
     zox_system(
         MouseElementSystem,

@@ -34,7 +34,7 @@ static inline int2 calculate_header_size(byte length, byte font_size, byte2 padd
 
 // TODO: Set scrollbar visible/invisible based on list count
 // TODO: spawn list panel, and scrollbar as children of list entity
-entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnList list_data) {
+entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnList list_data, byte alignment) {
 
     byte slider_handle_width = 8 * ui_scale;
 
@@ -46,6 +46,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
         zox_set(e, RenderDisabled, { element_data.render_disabled });
     }
 
+    zox_set(e, ListAlignment, { alignment });
     zox_set(e, ListVisible, { list_data.visible_count });
     zox_set(e, ListMargins, { list_data.margins });
     zox_set(e, ListPadding, { list_data.padding });

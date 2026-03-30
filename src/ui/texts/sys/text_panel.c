@@ -1,5 +1,5 @@
 // this needs textData with Mesh in one entity
-zox_sys2(ZextBackgroundSystem) {
+zox_sys2(TextBackgroundSystem) {
     zox_sys_begin();
     zox_sys_in(TextDirty);
     zox_sys_in(TextData);
@@ -30,4 +30,4 @@ zox_sys2(ZextBackgroundSystem) {
         layout_size_dirty->value = zox_dirty_trigger;
 
     }
-} zox_sys_end(ZextBackgroundSystem);
+} zox_sys_end(TextBackgroundSystem);

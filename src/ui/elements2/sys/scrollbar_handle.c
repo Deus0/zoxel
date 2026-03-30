@@ -1,4 +1,5 @@
-// if outside list visible indexes, hide, otherwise show
+// Resizes the scrollbar handle upon list updates
+// TODO: shouldn't this be on scrollarea resizes??
 zox_sys2(ScrollbarHandleSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -37,9 +38,9 @@ zox_sys2(ScrollbarHandleSystem) {
         zox_set(handle, LayoutPositionDirty, { zox_dirty_trigger });
         zox_set(handle, LayoutConstraints, { (int4) { 0, 0, -ybounds, ybounds } });
 
-        zox_log("Resizing Scrollbar Handle [%s]:", zox_get_name(handle));
-        zox_log("   + new height [%i] scrollbar height [%i]", handle_height, scrollbar_size.y );
-        zox_log("   visible [%i] existing [%i]", visible->value, existing);
+        //zox_log("Resizing Scrollbar Handle [%s]:", zox_get_name(handle));
+        //zox_log("   + new height [%i] scrollbar height [%i]", handle_height, scrollbar_size.y );
+        //zox_log("   visible [%i] existing [%i]", visible->value, existing);
 
     }
 } zox_sys_end(ScrollbarHandleSystem);

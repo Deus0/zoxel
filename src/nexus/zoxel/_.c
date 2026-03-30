@@ -95,28 +95,30 @@ void zoxel_settings_physics() {
 }
 
 void zoxel_settings_uis() {
-    // main menu
-    // header
-    header_fill = color_grayscale_a(4, header_fill.a);
-    header_outline = color_grayscale_a(44, header_outline.a);
-    // header text
+
+    // Windows
+    window_fill = color_grayscale_a(8, 200);
+    window_outline = color_grayscale_a(96, window_fill.a);
+
+    // Headers
+    header_fill = color_grayscale_a(4, 200);
+    header_outline = color_grayscale_a(44, header_fill.a);
+    header_font_fill = color_grayscale_a(32, header_fill.a);
+    header_font_outline = color_grayscale_a(122, header_fill.a);
+
+    // Buttons
+    button_fill = color_grayscale_a(48, 244);
+    button_outline = color_grayscale_a(80, button_fill.a);
+    button_font_fill = color_grayscale_a(160, button_fill.a);
+    button_font_outline = color_grayscale_a(8, button_fill.a);
+
+    // Font Data
     header_font_resolution = 64;
     header_font_thickness_fill = 4;
     header_font_thickness_outline = 4;
-    header_font_fill = color_grayscale_a(32, header_font_fill.a);
-    header_font_outline = color_grayscale_a(122, header_font_outline.a);
-    // window
-    window_fill = color_grayscale_a(10, window_fill.a);
-    window_outline = color_grayscale_a(44, window_outline.a);
-    // buttons
-    button_fill = color_grayscale_a(10, window_fill.a);
-    button_outline = color_grayscale_a(44, window_outline.a);
-    // button text
-    button_font_resolution = 16;
-    button_font_thickness_fill = 1;
+    button_font_resolution = 32;
+    button_font_thickness_fill = 3;
     button_font_thickness_outline = 2;
-    button_font_fill = color_grayscale(44);
-    button_font_outline = color_grayscale(122);
 
     default_fill_color = color_grayscale_a(2, 248);
     // default_fill_color = header_fill;

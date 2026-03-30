@@ -24,6 +24,7 @@ zox_sys2(ElementActiveSystem) {
         outline->value = state->value ? acolor->value : ecolor->value;
 
         brightness->value = state->value ? ui_active_brightness : ui_default_brightness;
+
         generate->value = zox_dirty_trigger;
     }
 } zox_sys_end(ElementActiveSystem);

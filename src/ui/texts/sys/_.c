@@ -32,7 +32,7 @@ void define_systems_texts(ecs *world) {
     );
     if (!headless) {
         zox_system(
-            ZextParentBackgroundSystem,
+            TextParentBackgroundSystem,
             zox_pipelines_zext_backgrounds,
             [in] texts.TextDirty,
             [in] texts.TextData,
@@ -43,7 +43,7 @@ void define_systems_texts(ecs *world) {
             [none] Zext
         );
         zox_system(
-            ZextBackgroundSystem,
+            TextBackgroundSystem,
             zox_pipelines_zext_backgrounds,
             [in] texts.TextDirty,
             [in] texts.TextData,

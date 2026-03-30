@@ -1,8 +1,4 @@
-void anchor_element_size2D(
-    int2 *size,
-    const float2 anchor,
-    const int2 parent_size
-) {
+void anchor_element_size2D(int2 *size, float2 anchor, int2 parent_size) {
     size->x = ceil(parent_size.x * anchor.x);
     size->y = ceil(parent_size.y * anchor.y);
     // zox_log("+ new size [%ix%i] from parent [%ix%i] anchor [%fx%f]", size->x, size->y, parent_size.x, parent_size.y, anchor.x, anchor.y)

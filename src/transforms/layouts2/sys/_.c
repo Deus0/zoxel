@@ -3,6 +3,7 @@
 #include "anchor_size.c"
 #include "list.c"
 #include "grid.c"
+#include "list_element.c"
 
 // TODO: We probably need a frame by frame, parent to child system, atm it just pushes it all at once, creates race issues
 
@@ -36,17 +37,6 @@ void define_systems_layouts2(ecs* world) {
     );
 
     zox_system(
-        ListSystem,
-        EcsOnUpdate,
-        [in] layouts2.ListPositionDirty,
-        [in] hierarchys.Children,
-        [in] layouts2.LayoutSize,
-        [in] layouts2.ListPadding,
-        [in] layouts2.ListMargins,
-        [in] layouts2.ListStart
-    );
-
-    zox_system(
         GridSystem,
         EcsOnUpdate,
         [in] layouts2.GridDirty,
@@ -55,5 +45,28 @@ void define_systems_layouts2(ecs* world) {
         [in] layouts2.GridSize,
         [in] layouts2.GridPadding,
         [in] layouts2.GridMargins
+    );
+
+
+    zox_system(
+        ListSystem,
+        EcsOnUpdate,
+        [in] layouts2.ListPositionDirty,
+        [in] hierarchys.Children,
+        [in] layouts2.LayoutSize,
+        [in] layouts2.ListPadding,
+        [in] layouts2.ListMargins,
+        [in] layouts2.ListStart,
+        [in] layouts2.ListAlignment
+    );
+
+    zox_system(
+        ListElementPositionSystem,
+        EcsOnUpdate,
+        [in] hierarchys.ParentLink,
+        [in] layouts2.LayoutSize,
+        [in] layouts2.LayoutSizeDirty,
+        [out] layouts2.LayoutPosition,
+        [out] layouts2.LayoutPositionDirty
     );
 }

@@ -14,12 +14,13 @@ typedef struct {
     byte is_close_button;
 } WindowListSpawnData;
 
-entity spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte is_close_button, byte window_type, int min_width) {
+// Returns window + list
+entity2 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte is_close_button, byte window_type, int min_width, byte alignment, byte2 padding) {
 
     // Sizing
     byte2 header_padding = (byte2) { 6 * ui_scale, 2 * ui_scale };
     byte2 button_padding = (byte2) { 8 * ui_scale, 4 * ui_scale };
-    byte2 list_padding = (byte2) { 4 * ui_scale, 4 * ui_scale };
+    byte2 list_padding = (byte2) { padding.x * ui_scale, padding.y * ui_scale };
     byte2 list_margins =  (byte2) { 16 * ui_scale, 8 * ui_scale };
     byte slider_height = 16 * ui_scale;
 
@@ -115,7 +116,7 @@ entity spawn_window_list(ecs *world, entity p, entity player, const char *header
         .layer = window_layer + 2,
     };
 
-    entity list = spawn_list(world, canvas_data, (LayoutParentData) { .e = scrollview }, list_element_data, list_data);
+    entity list = spawn_list(world, canvas_data, (LayoutParentData) { .e = scrollview }, list_element_data, list_data, alignment);
     add_to_Children(&scrollview_children, list);
 
     // make sure to link them together
@@ -127,5 +128,5 @@ entity spawn_window_list(ecs *world, entity p, entity player, const char *header
     add_to_ElementLinks(pelements, e);
     zox_set(e, ElementHolder, { player });
 
-    return e;
+    return (entity2) { e, list };
 }

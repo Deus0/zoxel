@@ -41,6 +41,7 @@ zox_sys2(MenuGameBeginSystem) {
         }
 
         link->value = wtoggle;
+
         // zox_set(e, TaskbarToggleLink, { wtoggle });
         zox_set(wtoggle, ActiveState, { 1 });
         zox_set(wtoggle, ActiveStateDirty, { zox_dirty_trigger });
