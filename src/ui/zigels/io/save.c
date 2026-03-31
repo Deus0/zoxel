@@ -1,10 +1,6 @@
 // todo: save properly
-byte save_font_style(
-    ecs *world,
-    const entity e,
-    char *resources_directory,
-    char *filename
-) {
+byte save_font_style(ecs *world, entity e, char *resources_directory, char *filename) {
+
     if (!e) {
         zox_log_error("error saving entity [%lu] invalid children [%s]", e, filename)
         return 0;

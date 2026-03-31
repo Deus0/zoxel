@@ -2,22 +2,28 @@
 #include "byte.c"
 #include "byte2.c"
 #include "byte3.c"
-#include "lint.c"
-#include "double.c"
+
 #include "int.c"
 #include "int2.c"
 #include "int3.c"
 #include "int4.c"
+
 #include "uint.c"
 #include "uint2.c"
+#include "lint.c"
+
 #include "float.c"
 #include "float2.c"
 #include "float3.c"
 #include "float4.c"
 #include "float6.c"
+
+#include "double.c"
+
 #include "entity.c"
 #include "entity2.c"
 #include "entity3.c"
+#include "entities.c"
 #include "color.c"
 #include "color_rgb.c"
 #include "zext.c"
@@ -50,6 +56,9 @@ void initialize_component_ids() {
     initialize_component_ids_float4();
     initialize_component_ids_float6();
     initialize_component_ids_entity();
+    initialize_component_ids_entity2();
+    initialize_component_ids_entity3();
+    initialize_component_ids_entities();
     initialize_component_ids_color();
     initialize_component_ids_color_rgb();
     initialize_component_ids_text();
@@ -73,6 +82,9 @@ void dispose_component_ids() {
     dispose_component_ids_float4();
     dispose_component_ids_float6();
     dispose_component_ids_entity();
+    dispose_component_ids_entity2();
+    dispose_component_ids_entity3();
+    dispose_component_ids_entities();
     dispose_component_ids_color();
     dispose_component_ids_color_rgb();
     dispose_component_ids_text();
@@ -81,7 +93,6 @@ void dispose_component_ids() {
 // identitys
 zoxc_int(ID);
 zoxc_lint(Seed);
-// zoxc_text(ZoxName)
 zoxc_fixed_string(ZoxName, 64);
 // time events
 zox_tag(DestroyInFrame);
@@ -110,7 +121,6 @@ void define_components_core(ecs* world) {
     // ids
     zoxd_int(ID);
     zoxd_lint(Seed);
-    // zoxd_text(ZoxName);
     zoxd_fixed_string(ZoxName);
     // timed
     zoxd_tag(DestroyInFrame);

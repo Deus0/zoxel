@@ -5,32 +5,9 @@
 	- triggers position updates per frame
 
 Finish Editor:
-- Component Tooltips, e.g.:
-	- IconType [byte] [3]
-- Texture UI in component list - TextData
-- Component Element for a list (MeshIndicies, etc)
-	- using folded button group
-	- for now just spawn a multiline text that shows list
-- Scrollbar horizontal
-- Resizable Windows
-	- add corner button to bottom right
-	- debug when release + hold system for the dragging
-- Editor Style function that sets:
-	- window_color
-	- font_size
-	- element_font_color + outline
-	- header_font_size
-	+ header_font_color + outline
-- SoundData play button to test sound
-
-Tools:
-- dock hierarchy/window on left of window
-	- left drag to edge and release
-	- add a button on header to restore from docked
+- Click TextureData label to open a texture window
+- Click SoundData to play the sound
 - arrows to fold/unfold children in hierarchy
-- tag filter dropdown on header of hierarchy
-	- Block, Item, Stat, Etc
-	- Just add a list of tags for now to it
 - Spawn RenderCamera + Render Texture + Render UI
 - Position Y chart - showing fluctuations - use to stabilize physics
 - Slider UI to show Text of Number
@@ -49,7 +26,28 @@ Improvements:
 - Center the vox textures for body parts
 - Use realm colors for UI
 - Spawn Status UI + player model through the UI
-- bar at bottom of texture to resize individual component (later)
+
+Editor Delayed:
+- TextureData UI in Inspector Label
+- Scrollbar horizontal
+- bar at bottom of texture to resize individual component
+- Component Element for a list (MeshIndicies, etc)
+	- using folded button group
+- Resizable Windows
+	- add corner button to bottom right
+	- debug when release + hold system for the dragging
+- Editor Style function that sets:
+	- window_color
+	- font_size
+	- element_font_color + outline
+	- header_font_size
+	+ header_font_color + outline
+- dock hierarchy/window on left of window
+	- left drag to edge and release
+	- add a button on header to restore from docked
+- tag filter dropdown on header of hierarchy
+	- Block, Item, Stat, Etc
+	- Just add a list of tags for now to it
 
 Bugs:
 - Audio missing from main menu - need to spawn a realm for it
@@ -228,3 +226,5 @@ done:
 -x debug key to open inspector for player
 -x Left Align Hierarchy / Inspector Buttons / List
 -x Keep hierarchy elements selected - active state
+-x Component Tooltips, e.g.:
+	-x IconType [byte] [3]

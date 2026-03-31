@@ -85,7 +85,7 @@ void add_entity_children_to_labels(ecs *world, entity e, text_group_dynamic_arra
     }
 }
 
-void zox_print_entity(ecs *world, entity e) {
+/*void zox_print_entity(ecs *world, entity e) {
     const ecs_type_t *type = ecs_get_type(world, e);
     const ecs_id_t *type_ids = type->array;
     int32_t i, count = type->count;
@@ -103,7 +103,7 @@ void zox_print_entity(ecs *world, entity e) {
             entity comp = id & ECS_COMPONENT_MASK;
             zox_log(" %lu", comp)
             zox_log(" %s", ecs_get_name(world, comp))
-            // how to print void*, get*/ base type of ->value of component
+            // how to print void*, get base type of ->value of component
             // zox_log(" [%i]", ecs_get_id(world, target, id)->value)
             if (is_component_type_byte(id)) {
                 const EntityDirty *byte_component = ((const EntityDirty*) ecs_get_id(world, e, id));
@@ -143,12 +143,10 @@ void zox_print_entity(ecs *world, entity e) {
                 // convert_zext_to_text(zoxName->value, zoxName->length))
                 // else zox_log(" [tag]")
             }
-            /*const long int *value = ((const long int*) ecs_get_id(world, target, id));
-            if (value) zox_log(" [%lu]", value)*/
         }
         zox_log("\n")
     }
-}
+}*/
 
 /*void editor_select_entity(ecs *world, entity player, entity e) {
 

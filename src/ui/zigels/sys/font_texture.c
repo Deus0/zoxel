@@ -1,9 +1,9 @@
 zox_sys2(FontTextureSystem) {
-    // const color air_color = color_null;
-    const float2 point_padding = font_point_padding;
-    // const byte default_font_outline = 1; // 4
+    float2 point_padding = font_point_padding;
+
     zox_change_check();
     zox_sys_world();
+
     // todo: link each zigel to fontstyle's font
     entity zox_font_style = get_font_style_using();
     if (!zox_font_style || !zox_has(zox_font_style, Children)) {
@@ -14,7 +14,8 @@ zox_sys2(FontTextureSystem) {
         zox_log("! font_style_children is NULL\n")
         return;
     }
-    const byte is_use_shapes = zox_has(zox_font_style, TTFFontStyle);
+
+    byte is_use_shapes = zox_has(zox_font_style, TTFFontStyle);
 
     zox_sys_begin();
     zox_sys_in(GenerateTexture);
@@ -40,32 +41,23 @@ zox_sys2(FontTextureSystem) {
         if (generate->value != zox_dirty_active || zindex->value >= font_styles_length) {
             continue;
         }
+
         // get font based on zigel index
-        const entity font = font_style_children->value[zindex->value];
+        entity font = font_style_children->value[zindex->value];
         int length = size->value.x * size->value.y;
         if (length <= 0 || !thickness->value || !zox_valid(font)) {
             resize_TextureData(data, 0);
-            /*for (int j = 0; j < length; j++) {
-                textureData->value[j] = air_color;
-            }*/
             dirty->value = zox_dirty_trigger;
             continue;
         }
 
         zox_geter(font, FontData, fontData);
         resize_TextureData(data, length);
-        generate_font_texture(
-            data->value,
-            size->value,
-            fontData,
-            secondary_color->value,
-            color_variable->value,
-            is_use_shapes,
-            thickness->value,
-            outline_thickness->value,
-            point_padding
-        );
+
+        generate_font_texture(data->value, size->value, fontData, secondary_color->value, color_variable->value, is_use_shapes, thickness->value, outline_thickness->value, point_padding);
+
         dirty->value = zox_dirty_trigger;
+
 #ifdef zoxel_debug_zigel_updates
         zox_log("     > zigel font is updating [%lu]\n", it->entities[i])
 #endif

@@ -100,6 +100,9 @@ char convert_to_ascii(byte input) {
     zoxel_convert_to_ascii('>')
     zoxel_convert_to_ascii('<')
     zoxel_convert_to_ascii(':')
+
+    zoxel_convert_to_ascii('?')
+
     return ' ';
 }
 

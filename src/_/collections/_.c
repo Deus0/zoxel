@@ -8,8 +8,7 @@
 #ifndef zoxm_collections
 #define zoxm_collections
 
-#include "data/types.c"
-#include "data/bit.c"
+#include "data/_.c"
 #include "../memory/_.c"    // uses types: uint
 #include "settings/_.c"
 #include "macros/_.c"

@@ -97,6 +97,8 @@ byte convert_ascii(char input) {
     zoxel_convert_ascii('<')
     zoxel_convert_ascii(':')
 
+    zoxel_convert_ascii('?')
+
     return 0;
 }
 

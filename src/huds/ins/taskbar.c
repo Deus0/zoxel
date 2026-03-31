@@ -155,21 +155,14 @@ entity spawn_taskbar(ecs *world, entity p, entity canvas, entity parent, byte la
         zox_prefab_set(icon, TooltipEvent, { &tooltip_event_taskbar_icon });
         zox_set(icon, IconIndex, { hook_index });
 
-        // ecs_get_name(world, hook.component_id)
+        // Set Tooltip
         char tooltip_text[64];
         sprintf(tooltip_text, "%s", hook.tooltip_text );
         set_TooltipText(world, icon, tooltip_text);
-        // zox_prefab_set(icon, TooltipText, { text_to_zext(tooltip_text) });
 
         // texture
         char* icon_texture_name = hook.texture_name;
         clone_texture_to_entity(world, icon, icon_texture_name);
-
-        // Active State
-        /*if (i == 0) {
-            zox_set(frame, ActiveState, { 1 });
-            zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
-        }*/
 
         zox_set_ptr(frame, Children, frame_children);
         children.value[i] = frame;

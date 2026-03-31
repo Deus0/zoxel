@@ -58,6 +58,63 @@ static inline color blend_color(color a, color b, float m) {
         (byte) (a.a * m + (1.0f - m) * b.a) };
 }
 
+
+byte inspector_label_tooltip(ecs *world, const TooltipEventData *data) {
+
+    entity label = data->triggered;
+    entity tooltip = data->tooltip;
+
+    if (!zox_valid(label) || !zox_has(label, TooltipText)) {
+        zox_log_error("Invalid Tooltip UI");
+        return 0;
+    }
+
+
+    zox_geter_value(label, ComponentType, byte, ctype);
+
+    if (ctype < zox_type_labels_length) {
+
+        zox_geter_value(label, EntityTarget, entity, e);
+        zox_geter_value(label, ComponentTarget, entity, cid);
+
+        uint index = 0;
+        char text[TooltipText_length];
+        index += sprintf(text, "%s [%s]",
+            cid ? zox_get_name(cid) : (zox_valid(e) ? zox_get_name(e) : "Invalid"), ctype < zox_types_length ? zox_type_labels[ctype] : "invalid");
+
+        if (ctype == zox_type_entities) {
+            const entities* links = (const entities*) zox_get_id(e, cid);
+
+            index += sprintf(index + text, " len [%i]", links->length);
+            for (int i = 0; i < links->length; i++) {
+                entity e2 = links->value[i];
+
+                // TODO: Check overflow before we add
+                index += sprintf(index + text, "\n  - %s", zox_valid(e2) ? zox_get_name(e2) : " None");
+
+                if (index + 64 >= TooltipText_length) {
+                    index += sprintf(index + text, "\n  ...");
+                    break;
+                }
+            }
+
+        } else if (ctype == zox_type_unknown) {
+            index += sprintf(index + text, " ?");
+        }
+
+        set_entity_text(world, tooltip, text);
+
+    } else {
+
+        zox_geter(label, TooltipText, text);
+
+        set_entity_text(world, tooltip, text->value);
+
+    }
+
+    return 1;
+}
+
 zox_sys2(InspectorSpawnSystem) {
 
     const ClickEvent on_click = (ClickEvent) { button_event_clicked_inspector };
@@ -179,6 +236,11 @@ zox_sys2(InspectorSpawnSystem) {
 
             child_element_data.render_disabled = j >= visible;
             entity e2 = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
+
+            char tooltip_text[64];
+            sprintf(tooltip_text, "%s", child_text_data.text);
+            set_TooltipText(world, e2, tooltip_text);
+            zox_set(e2, TooltipEvent, { &inspector_label_tooltip });
 
             zox_add_tag(e2, InspectorLabel);
             zox_set(e2, ComponentType, { type });

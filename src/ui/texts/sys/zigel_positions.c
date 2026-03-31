@@ -1,9 +1,6 @@
 // calculates the child index, takes out ascii like new line that have no zigel spawns
-int calculate_zigel_data_index(
-    const byte *data,
-    const int length,
-    const int spawn_index
-) {
+int calculate_zigel_data_index(const byte *data, int length, int spawn_index) {
+
     int j = 0;
     for (int i = 0; i < length; i++) {
         if (data[i] != zox_char_newline) {
@@ -13,22 +10,18 @@ int calculate_zigel_data_index(
             j++;
         }
     }
+
     zox_log_error("calculate_zigel_data_index: j [%i] spawn_index [%i] length [%i]", j, spawn_index, length);
+
     return 0;
 }
 
-int2 calculate_position(
-    const byte *data,
-    const int length,
-    const int data_index,
-    const byte font_size,
-    const byte text_alignment,
-    const byte2 padding,
-    const byte line_padding
-) {
-    const int x = get_zext_x(data, data_index);
-    const int y = get_zext_y(data, length, data_index);
-    const int2 size = calculate_zext_size(data, length, font_size, padding, line_padding);
+int2 calculate_position(const byte *data, int length, int data_index, byte font_size, byte text_alignment, byte2 padding, byte line_padding) {
+
+    int x = get_zext_x(data, data_index);
+    int y = get_zext_y(data, length, data_index);
+    int2 size = calculate_zext_size(data, length, font_size, padding, line_padding);
+
     int2 position = int2_zero;
     // add half zigel size offset
     position.x += font_size / 2;
@@ -94,20 +87,9 @@ zox_sys2(ZigelPositionSystem) {
                 continue;
             }
 
-            const int data_index = calculate_zigel_data_index(
-                text_data->value,
-                text_data->length,
-                j);
+            int data_index = calculate_zigel_data_index(text_data->value, text_data->length, j);
 
-            int2 position = calculate_position(
-                text_data->value,
-                text_data->length,
-                data_index,
-                size->value,
-                alignment->value,
-                padding->value,
-                default_line_padding
-            );
+            int2 position = calculate_position(text_data->value, text_data->length, data_index, size->value, alignment->value, padding->value, default_line_padding);
 
             zox_set(e2, LayoutPosition, { position });
             zox_set(e2, LayoutPositionDirty, { zox_dirty_trigger });

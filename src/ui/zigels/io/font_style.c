@@ -1,10 +1,9 @@
-entity spawn_font_style_save_data(
-    ecs *world,
-    const entity prefab,
-    const SaveDataFontStyle *data
-) {
+entity spawn_font_style_save_data(ecs *world, entity prefab, const SaveDataFontStyle *data) {
+
     zox_logv("[spawn_font_style_save_data] fonts [%i]", data->length);
-    const entity prefab_font = zox_get_value(prefab, FontLink);
+
+    entity prefab_font = zox_get_value(prefab, FontLink);
+
     zox_instance(prefab);
     zox_name("font_style_io");
     zox_add_tag(e, TTFFontStyle);
@@ -35,6 +34,7 @@ entity spawn_font_style_save_data(
 }
 
 entity load_font_style(ecs *world, char *filename) {
+
     // spawn font style and spawn fonts based on data
     char* directory = concat_file_path(resources_path, directory_fonts);
     char* directory_slash = concat_file_path(directory, character_slash);

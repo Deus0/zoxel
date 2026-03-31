@@ -5,6 +5,8 @@
 // Define a component with fixed buffer (for use in a module)
 #define zoxc_fixed_string(T, l) \
 \
+uint T##_length = l;\
+\
 typedef struct { \
     char value[l]; \
 } T; \

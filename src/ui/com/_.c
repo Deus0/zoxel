@@ -9,7 +9,6 @@ zoxc_entities(ElementLinks)
 zoxc_child(ElementHolder, ElementLinks)
 zoxc_entity(UIHolderLink);
 zoxc_int2(ElementMargins);
-// zox_tag(ElementBillboard);
 zoxc_color(ElementColor);
 
 // Selecting
@@ -66,14 +65,14 @@ zoxc_byte(HeaderHeight);
 
 // Tooltips
 zox_tag(Tooltip);
-zoxc_fixed_string(TooltipText, 128);
+zoxc_fixed_string(TooltipText, 512);
+#include "tooltip_event.c"
 
 // Misc
 zox_tag(MouseElement);
 zox_tag(CanvasOverlay);
 
 #include "click_event.c"
-#include "tooltip_event.c"
 #include "slide_event.c"
 #include "toggle_event.c"
 
@@ -119,9 +118,13 @@ void define_components_elements(ecs *world) {
     zoxd_tag(WindowRaycastTarget);
     zoxd_tag(IgnoreWindowLayering);
 
+    // Tooltips
+    zoxd_tag(Tooltip);
+    zoxd_fixed_string(TooltipText);
+    zoxd(TooltipEvent);
+
     // Misc
     zoxd_tag(MouseElement);
-    zoxd_tag(Tooltip);
     zoxd_byte(ElementFontSize);
     zoxd_float(ElementBar);
     zoxd_float2(ElementBarSize);
@@ -132,9 +135,8 @@ void define_components_elements(ecs *world) {
     zoxd_byte(WindowsCount);
     zoxd_byte(SetWindowLayer);
     zoxd_byte(WindowLayer);
-    zoxd_fixed_string(TooltipText);
 
-    zoxd(TooltipEvent);
+    // Slides
     zoxd(SlideEvent);
 
     // Navigation

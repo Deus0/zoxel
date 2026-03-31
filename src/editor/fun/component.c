@@ -31,23 +31,34 @@ byte fetch_component_type(ecs* world, entity target, entity component) {
     }
     fetch_component_type_i(byte2)
     fetch_component_type_i(byte3)
+
     fetch_component_type_i(int)
     fetch_component_type_i(int2)
     fetch_component_type_i(int3)
     fetch_component_type_i(int4)
+
     fetch_component_type_i(uint)
     fetch_component_type_i(uint2)
+
     fetch_component_type_i(float)
     fetch_component_type_i(float2)
     fetch_component_type_i(float3)
     fetch_component_type_i(float4)
     fetch_component_type_i(float6)
+
     fetch_component_type_i(double)
     fetch_component_type_i(lint)
+
     fetch_component_type_i(entity)
+    fetch_component_type_i(entity2)
+    fetch_component_type_i(entity3)
+    fetch_component_type_i(entities)
+
     fetch_component_type_i(color)
     fetch_component_type_i(color_rgb)
+
     fetch_component_type_i(text)
+
     else {
         const EcsComponent* component = (EcsComponent*) ecs_get(world, id, EcsComponent);
         uint component_size = component != NULL ? component->size : 0;
@@ -72,8 +83,6 @@ char* fetch_compoent_label(ecs *world, entity target, entity component) {
         snprintf(buffer, tlength, "Invalid Entity");
         return buffer;
     }
-
-    // int buffer_size = inspector_component_size_buffer;
 
     if (zox_has_id_flag(component, PAIR)) {
         entity pair1 = ecs_pair_first(world, component);
@@ -118,23 +127,33 @@ char* fetch_compoent_label(ecs *world, entity target, entity component) {
     }
     add_component_label(byte2)
     add_component_label(byte3)
+
     add_component_label(int)
     add_component_label(int2)
     add_component_label(int3)
     add_component_label(int4)
+
     add_component_label(uint)
     add_component_label(uint2)
+
     add_component_label(float)
     add_component_label(float2)
     add_component_label(float3)
     add_component_label(float4)
     add_component_label(float6)
+
     add_component_label(double)
     add_component_label(lint)
+
     add_component_label(entity)
+    add_component_label(entity2)
+    add_component_label(entity3)
+    add_component_label(entities)
+
     add_component_label(color)
     add_component_label(color_rgb)
     add_component_label(text)
+
     else {
         const EcsComponent* component = (EcsComponent*) ecs_get(world, id, EcsComponent);
         uint component_size = component !=  NULL ? component->size : 0;

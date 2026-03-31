@@ -6,7 +6,7 @@ zox_tag(OutputNeuron);
 zoxc_float(Weight);                     //! The weight of the neural connection
 zoxc_float(Signal);                     //! If the signal is sending
 zoxc_float(Transfer);                   //! The signal value of a connection
-zoxc(ConnectionData, entity2);     //! The weight of the neural connection
+zoxc_entity2(ConnectionData);     //! The weight of the neural connection
 zoxc_byte(BrainDirty);
 zoxc_entity(BrainLink);
 zoxc_arrayd(BrainInputs, entity)
@@ -22,7 +22,7 @@ void define_components_neurals(ecs* world) {
     zoxd_float(Weight);
     zoxd_float(Signal);
     zoxd_float(Transfer);
-    zoxd(ConnectionData);
+    zoxd_entity2(ConnectionData);
     zoxd_byte(BrainDirty);
     zoxd_entity(BrainLink);
     zoxd_arrayd(BrainInputs);

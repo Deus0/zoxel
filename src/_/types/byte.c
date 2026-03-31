@@ -1,8 +1,7 @@
 #define zoxc_byte(name) \
     zoxc(name, byte)
 
-#define zox_component_string_byte(c) \
-    " b [%i]", c->value
+#define zox_component_string_byte(c) " b [%i]", c->value
 
 zox_base_type(byte)
 

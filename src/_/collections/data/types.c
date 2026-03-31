@@ -4,16 +4,13 @@ typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef long int lint;
 typedef signed char sbyte;
+typedef long int entity;
 // typedef uint32_t uint;
 // typedef uint64_t ulong;
 
 typedef void (*event_pointer)(void*);
 
 // base type, watch out for name conflicts tho
-typedef struct {
-    int length;
-    byte* value;
-} text;
 
 typedef struct {
     byte x, y;

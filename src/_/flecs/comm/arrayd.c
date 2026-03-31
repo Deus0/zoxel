@@ -1,11 +1,14 @@
 // Dynamic Arrays
 #define zoxc_arrayd(T, type) \
+\
 typedef struct { \
     int length; \
-    type *value; \
+    type* value; \
     SpinLock lock; \
 } T; \
+\
 zoxc_custom(T); \
+\
 \
 ECS_CTOR(T, ptr, { \
     ptr->length = 0; \

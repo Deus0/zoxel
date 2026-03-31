@@ -28,30 +28,34 @@ void add_taskbar_button(const hook_taskbar data) {
 
 // todo: make tooltip function just return a string
 byte tooltip_event_taskbar_icon(ecs *world, const TooltipEventData *data) {
+
     if (!data->triggered || !zox_has(data->triggered, TooltipText)) {
-        zox_log("! issue with ui, on tooltip\n")
+        zox_log_error("Invalid Tooltip UI");
         return 0;
     }
+
     zox_geter(data->triggered, TooltipText, tooltip_text);
-    // char *result = convert_zext_to_text(tooltip_text->value, tooltip_text->length);
-    // char *result = "opens a game ui";
+
     set_entity_text(world, data->tooltip, tooltip_text->value);
-    // free(result);
+
     return 1;
 }
 
 // nested function (GCC extension)
-void on_closed_taskbar_window(ecs *world, const ClickEventData event) {
+void on_closed_taskbar_window(ecs *world, ClickEventData event) {
+
     if (!zox_has(event.clicked, ParentLink)) {
         zox_log_error("close button parent link missing.");
         return;
     }
+
     zox_geter_value(event.clicked, ParentLink, entity, header);
 
     if (!zox_valid(header) || !zox_has(header, ParentLink)) {
         zox_log_error("Header Invalid");
         return;
     }
+
     zox_geter_value(header, ParentLink, entity, window);
     if (!zox_valid(window)) {
         return;
