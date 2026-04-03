@@ -2,7 +2,7 @@ zox_tag(Character3);
 zox_tag(SaveCharacter);
 zoxc_byte(CharactersChanceMax);
 zoxc_byte(Character3Type);
-zoxc(CharacterSaveHash, ulong);
+zoxc_ulong(CharacterSaveHash);
 zoxc_entity(Character3Link);
 zoxc_entity(Character3PrefabLink);
 zoxc_entity(CharacterMetaLink);
@@ -12,7 +12,7 @@ void define_components_characters3(ecs* world) {
     zoxd_tag(SaveCharacter);
     zoxd_byte(CharactersChanceMax);
     zoxd_byte(Character3Type);
-    zoxd(CharacterSaveHash);
+    zoxd_ulong(CharacterSaveHash);
     zoxd_entity(Character3Link);
     zoxd_entity(Character3PrefabLink);
     zoxd_entity(CharacterMetaLink);

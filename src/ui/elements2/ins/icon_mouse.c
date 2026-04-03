@@ -7,17 +7,12 @@ entity spawn_icon_mouse_follow(ecs *world, SpawnIcon *data) {
     return e;
 }
 
-entity spawn_icon_mouse_follow_canvas(
-    ecs *world,
-    entity prefab,
-    entity canvas,
-    int2 canvas_size,
-    byte layer,
-    float2 anchor,
-    int icon_size,
-    entity zevice
-) {
-    SpawnIcon spawnIcon = {
+entity spawn_icon_mouse_follow_canvas(ecs *world, entity p, entity canvas, int2 csize, byte layer, float2 anchor, int size, entity zevice) {
+
+    int2 position = int2_half(csize);
+    entity e = spawn_element2(world, p, canvas, canvas, position, int2_single(size), int2_single(size), anchor, layer, default_fill_color_icon, default_outline_color_icon);
+
+    /*SpawnIcon spawnIcon = {
         .canvas = { .e = canvas },
         .parent = {
             .e = canvas,
@@ -25,7 +20,7 @@ entity spawn_icon_mouse_follow_canvas(
             .size = canvas_size
         },
         .element = {
-            .prefab = prefab,
+            .prefab = p,
             .size = int2_single(icon_size),
             .anchor = anchor,
             .layer = layer,
@@ -37,7 +32,7 @@ entity spawn_icon_mouse_follow_canvas(
         }
     };
 
-    entity e = spawn_icon(world, &spawnIcon).x;
+    entity e = spawn_icon(world, &spawnIcon).x;*/
 
     if (zevice) {
         zox_set(e, ZeviceLink, { zevice });

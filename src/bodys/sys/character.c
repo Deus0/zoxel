@@ -32,6 +32,7 @@ zox_sys2(CharacterBodySpawnSystem) {
     zox_sys_out(BodySize);
     zox_sys_out(PartLinks);
     zox_sys_out(BodyDirty);
+    zox_sys_out(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
@@ -39,6 +40,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         zox_sys_o(BodySize, bsize);
         zox_sys_o(PartLinks, parts);
         zox_sys_o(BodyDirty, dirty);
+        zox_sys_o(BlockScale, bscale);
 
         if (state->value != zox_dirty_active) {
             continue;
@@ -74,7 +76,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         add_to_PartLinks(parts, chest);
         PartLinks chest_parts = (PartLinks) { };
 
-        zox_log("+ Body Chest %s: s[%ix%ix%i]", zox_get_name(rchest), schest.x, schest.y, schest.z);
+        // zox_log("+ Body Chest %s: s[%ix%ix%i]", zox_get_name(rchest), schest.x, schest.y, schest.z);
 
         // Head
         if (rhead) {
@@ -88,7 +90,7 @@ zox_sys2(CharacterBodySpawnSystem) {
             entity part = spawn_user_item_body(world, e, rhead, chest, zox_slot_head, phead, cposition);
             add_to_PartLinks(&chest_parts, part);
 
-            zox_log("+ Spawned Body Head %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(rhead), phead.x, phead.y, phead.z, shead.x, shead.y, shead.z);
+            // zox_log("+ Spawned Body Head %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(rhead), phead.x, phead.y, phead.z, shead.x, shead.y, shead.z);
         }
 
         // Hips
@@ -103,7 +105,7 @@ zox_sys2(CharacterBodySpawnSystem) {
             entity part = spawn_user_item_body(world, e, rhips, chest, zox_slot_hips, phips, cposition);
             add_to_PartLinks(&chest_parts, part);
 
-            zox_log("+ Spawned Body Hips %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(rhips), phips.x, phips.y, phips.z, ships.x, ships.y, ships.z);
+            // zox_log("+ Spawned Body Hips %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(rhips), phips.x, phips.y, phips.z, ships.x, ships.y, ships.z);
         }
 
         zox_set_ptr(chest, PartLinks, chest_parts);
@@ -112,7 +114,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         dirty->value = zox_dirty_trigger;
 
         byte mdepth = block_vox_depth + 2;
-        float bscale = (1.0f / (powers_of_two_byte[mdepth]));
-        zox_set(e, BlockScale, { bscale });
+
+        bscale->value = (1.0f / (powers_of_two_byte[mdepth]));
     }
 } zox_sys_end(CharacterBodySpawnSystem);

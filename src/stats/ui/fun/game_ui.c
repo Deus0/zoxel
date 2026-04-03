@@ -74,7 +74,7 @@ entity spawn_menu_game_stats(
         },
     };
 
-    const entity e = spawn_element(world, &body_data);
+    entity e = spawn_element(world, &body_data);
     zox_set_unique_name(e, "stats_panel");
     add_to_Children(parent_children, e);
 

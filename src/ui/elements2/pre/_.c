@@ -60,6 +60,7 @@ void spawn_prefabs_elements2(ecs *world) {
     // statbars
     prefab_elementbar2D         = spawn_prefab_elementbar2D(world, prefab_element_textured);
     prefab_elementbar2D_front   = spawn_prefab_elementbar2D_front(world, prefab_element_textured);
+
     // icons
     prefab_icon                 = spawn_prefab_icon(world, prefab_element_ready);
     prefab_frame                = spawn_prefab_frame(world, prefab_element_textured, default_fill_color_frame, default_outline_color_frame);

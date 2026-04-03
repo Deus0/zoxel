@@ -24,7 +24,7 @@ zoxc_entity(TilemapLink);
 zoxc_entity(TextureLink);
 zoxc_arrayd(TextureData, color)
 zoxc_arrayd(TilemapUVs, float2)
-zoxc_arrayd(TextureLinks, entity)
+zoxc_entities(TextureLinks)
 // zoxc_entities(Textures)
 
 // Voxes
@@ -64,6 +64,6 @@ void define_components_textures(ecs* world) {
     zoxd_entity(TextureLink);
     zoxd_arrayd(TextureData);
     zoxd_arrayd(TilemapUVs);
-    zoxd_arrayd(TextureLinks);
+    zoxd_entities(TextureLinks);
     // zoxd_entities(Textures);
 }

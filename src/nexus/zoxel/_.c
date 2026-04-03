@@ -140,7 +140,11 @@ void zoxel_debug_keys() {
     add_hook_key_down(toggle_fps_viewer);
     add_hook_key_down(toggle_life_terrain);
     add_hook_key_down(toggle_player_death);
+
     add_hook_key_down(spawn_tilemap_ui);
+    add_hook_key_down(spawn_dbg_texture_generated);
+
+
     add_hook_key_down(key_down_toggle_debug_chunks);
     add_hook_key_down(key_down_toggle_debug_character_bounds);
     add_hook_key_down(key_down_toggle_debug_voxes_bounds);

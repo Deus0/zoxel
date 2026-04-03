@@ -1,4 +1,5 @@
-const byte zox_types_length = 31;
+const byte zox_types_length = 32;
+const byte zox_type_labels_length = 32;
 
 #define zox_type_none 0
 #define zox_type_tag 1
@@ -40,7 +41,8 @@ const byte zox_types_length = 31;
 #define zox_type_entity3 29
 #define zox_type_entities 30
 
-const byte zox_type_labels_length = 31;
+#define zox_type_ulong 31
+
 const char* zox_type_labels[] = {
     "none",
     "tag",
@@ -80,4 +82,6 @@ const char* zox_type_labels[] = {
     "entity2",
     "entity3",
     "entities",
+
+    "ulong",
 };

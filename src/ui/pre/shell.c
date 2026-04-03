@@ -1,18 +1,16 @@
-entity spawn_prefab_element_invisible(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_element_invisible(ecs *world, entity prefab) {
+
     zox_prefab_child(prefab);
     zox_prefab_name("element_invisible");
+
     zox_add_tag(e, Element);
     zox_prefab_set(e, InitializeElement, { zox_dirty_trigger });
+
     return e;
 }
 
-entity spawn_prefab_element_shell(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_element_shell(ecs *world, entity prefab) {
+
     zox_prefab_child(prefab);
     zox_prefab_name("element_shell");
 

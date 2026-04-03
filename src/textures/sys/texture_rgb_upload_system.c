@@ -40,6 +40,7 @@ zox_sys2(TextureRGBUpdateSystem) {
         }
 
         glBindTexture(GL_TEXTURE_2D, 0);
-        // zox_log_error("+ uploaded [%s] size [%ix%i]", zox_get_name(e), size->value.x, size->value.y)
+
+        // zox_log("+ rgb uploaded [%s] size [%ix%i]", zox_get_name(e), size->value.x, size->value.y);
     }
 } zox_sys_end(TextureRGBUpdateSystem);

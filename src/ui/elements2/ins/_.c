@@ -18,7 +18,5 @@
 #include "scrollview.c"
 
 #include "header_old.c"
-// #include "window_old.c"
 #include "header.c"
 #include "list.c"
-// #include "window_list.c"

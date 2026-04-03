@@ -1,12 +1,6 @@
-void set_window_bounds_to_canvas(
-    ecs *world,
-    const entity e,
-    const int2 canvas_size,
-    const int2 window_size,
-    const float2 anchor
-) {
+void set_window_bounds_to_canvas(ecs *world, entity e, int2 canvas_size, int2 window_size, float2 anchor) {
     // note: can't actually use components in frame we spawn them
-    const float2 anchor_reverse = (float2) { 1 - anchor.x, 1 - anchor.y };
+    float2 anchor_reverse = (float2) { 1 - anchor.x, 1 - anchor.y };
     int4 drag_limits = (int4) {
         - canvas_size.x * anchor.x + window_size.x / 2,
         canvas_size.x * anchor_reverse.x - window_size.x / 2,
@@ -19,10 +13,7 @@ void set_window_bounds_to_canvas(
         drag_limits.x, drag_limits.y, drag_limits.z, drag_limits.w);*/
 }
 
-void limited_element(
-    int2* position,
-    const int4 b
-) {
+void limited_element(int2* position, int4 b) {
     if (position->x < b.x) {
         position->x = b.x;
     }
@@ -37,13 +28,12 @@ void limited_element(
     }
 }
 
-void limit_element(
-    ecs *world,
-    const entity e
-) {
+void limit_element(ecs *world, entity e) {
+
     if (!zox_valid(e) || !zox_has(e, LayoutPosition) || !zox_has(e, LayoutConstraints)) {
         return;
     }
+
     zox_muter(e, LayoutPosition, pixel_position);
     zox_geter_value(e, LayoutConstraints, int4, drag_bounds);
     limited_element(&pixel_position->value, drag_bounds);

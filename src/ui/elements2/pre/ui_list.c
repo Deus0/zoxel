@@ -11,5 +11,7 @@ entity spawn_prefab_ui_list(ecs *world, entity prefab) {
     zox_prefab_set(e, ListDirty, { zox_dirty_trigger });
     zox_prefab_set(e, ListPositionDirty, { zox_dirty_trigger });
 
+    zox_add_tag(e, FixToLayout);
+
     return e;
 }

@@ -112,6 +112,14 @@ static inline void byte3_multiply_byte(byte3* input, byte mul) {
     input->z *= mul;
 }
 
+static inline byte3 byte3_scalef(byte3 v, float m) {
+    return (byte3) { (int) (v.x * m), (int) (v.y * m), (int) (v.z * m) };
+}
+
+static inline byte3 byte3_scale3f(byte3 v, float3 m) {
+    return (byte3) { (int) (v.x * m.x), (int) (v.y * m.y), (int) (v.z * m.z) };
+}
+
 static inline byte3 byte3_scale(const byte3 v, const int m) {
     return (byte3) { v.x * m, v.y * m, v.z * m };
 }

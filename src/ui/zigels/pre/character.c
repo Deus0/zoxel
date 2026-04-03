@@ -3,7 +3,7 @@ entity spawn_zigel_prefab(ecs *world, const entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("zigel");
     // Layouts2
-    zox_add_tag(e, FixToLayout);
+    // zox_add_tag(e, FixToLayout);
     // zigel
     zox_add_tag(e, Zigel);
     zox_prefab_set(e, ZigelIndex, { 0 });

@@ -142,7 +142,7 @@ void define_components_elements(ecs *world) {
     // Navigation
     zoxd_tag(NavigationWindow);
     zoxd_tag(NavigationElement);
-    zoxd(NavigatorTimer);
+    zoxd_double(NavigatorTimer);
     zoxd_byte(NavigatorState);
 
     // Dragging

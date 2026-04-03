@@ -1,29 +1,20 @@
-entity spawn_element(ecs *world, ElementSpawn *data) {
+entity spawn_element(ecs *world, const ElementSpawn *data) {
+
     zox_instance(data->element.prefab);
     zox_name("element");
-    initialize_element(
-        world,
-        e, data->parent.e,
-        data->canvas.e,
-        data->element.position, // position,
-        data->element.size,
-        data->element.size,
-        data->element.anchor,
-        data->element.layer
-    );
+
+    initialize_element(world, e, data->parent.e, data->canvas.e, data->element.position, data->element.size, data->element.size, data->element.anchor, data->element.layer);
+
     zox_set(e, Color, { data->texture.fill_color });
     zox_set(e, OutlineColor, { data->texture.outline_color });
 
     return e;
 }
 
-entity spawn_element_on_canvas(ecs *world,
-    const entity canvas,
-    const int2 pixel_position,
-    const int2 pixel_size,
-    const float2 anchor
-) {
-    const int2 canvas_size = zox_get_value(canvas, LayoutSize)
+entity spawn_element_on_canvas(ecs *world, entity canvas, int2 position, int2 size, float2 anchor) {
+
+    int2 canvas_size = zox_get_value(canvas, LayoutSize);
+
     ElementSpawn spawn_element_data = {
         .canvas = {
             .e = canvas,
@@ -38,13 +29,27 @@ entity spawn_element_on_canvas(ecs *world,
             .prefab = prefab_element_textured,
             .layer = 2,
             .anchor = anchor,
-            .position = pixel_position,
-            .size = pixel_size
+            .position = position,
+            .size = size
         },
         .texture = {
             .fill_color = default_fill_color,
             .outline_color = default_outline_color,
         }
     };
+
     return spawn_element(world, &spawn_element_data);
+}
+
+entity spawn_element2(ecs *world, entity p, entity canvas, entity parent, int2 position, int2 size, int2 tsize, float2 anchor, byte layer, color fcolor, color ocolor) {
+
+    zox_instance(p);
+    zox_name("element");
+
+    initialize_element(world, e, parent, canvas, position, size, tsize, anchor, layer);
+
+    zox_set(e, Color, { fcolor });
+    zox_set(e, OutlineColor, { ocolor });
+
+    return e;
 }

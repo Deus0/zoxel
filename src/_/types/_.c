@@ -1,4 +1,7 @@
 #include "types.c"
+
+#include "zext.c"
+
 #include "byte.c"
 #include "byte2.c"
 #include "byte3.c"
@@ -20,13 +23,15 @@
 
 #include "double.c"
 
+#include "color.c"
+#include "color_rgb.c"
+
 #include "entity.c"
 #include "entity2.c"
 #include "entity3.c"
 #include "entities.c"
-#include "color.c"
-#include "color_rgb.c"
-#include "zext.c"
+
+#include "ulong.c"
 
 #define zox_component_string(type) zox_component_string##_##type(component##_##type)
 
@@ -39,6 +44,7 @@ zoxel_dynamic_array(float2)
 zoxel_dynamic_array(float4x4)
 
 void initialize_component_ids() {
+    initialize_component_ids_text();
     initialize_component_ids_byte();
     initialize_component_ids_byte2();
     initialize_component_ids_byte3();
@@ -61,10 +67,11 @@ void initialize_component_ids() {
     initialize_component_ids_entities();
     initialize_component_ids_color();
     initialize_component_ids_color_rgb();
-    initialize_component_ids_text();
+    initialize_component_ids_ulong();
 }
 
 void dispose_component_ids() {
+    dispose_component_ids_text();
     dispose_component_ids_byte();
     dispose_component_ids_byte2();
     dispose_component_ids_byte3();
@@ -87,7 +94,7 @@ void dispose_component_ids() {
     dispose_component_ids_entities();
     dispose_component_ids_color();
     dispose_component_ids_color_rgb();
-    dispose_component_ids_text();
+    dispose_component_ids_ulong();
 }
 
 // identitys

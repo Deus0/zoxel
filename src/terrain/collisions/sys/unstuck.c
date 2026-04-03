@@ -14,8 +14,6 @@ zox_sys2(UnstuckSystem) {
     zox_sys_in(TerrainLink);
     zox_sys_in(Bounds3D);
     zox_sys_out(LastUnstuck3);
-    zox_sys_out(InsideBlock);
-    zox_sys_out(InsideBlockDirty);
     zox_sys_out(Position3D);
 
     // cache voxels and colliders for speed
@@ -32,14 +30,12 @@ zox_sys2(UnstuckSystem) {
         zox_sys_i(TerrainLink, link);
         zox_sys_i(Bounds3D, bounds);
         zox_sys_o(LastUnstuck3, last);
-        zox_sys_o(InsideBlock, inside);
-        zox_sys_o(InsideBlockDirty, idirty);
         zox_sys_o(Position3D, position);
 
         zox_geter(link->value, ChunkLinks, chunks);
         zox_geter_value(link->value, BlockScale, float, terrain_scale);
         zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
-        float3 unstuck_push = (float3) { 0, terrain_scale, 0 };
+        // float3 unstuck_push = (float3) { 0, terrain_scale, 0 };
 
         float3 poffset = (float3) { 0, - bounds->value.y / 2.0f, 0 };
 
@@ -48,8 +44,8 @@ zox_sys2(UnstuckSystem) {
         byte3 max_chunk_size = byte3_single(powers_of_two[terrain_depth]);
         int3 pointc = positionv_to_positionc(pointv, max_chunk_size);
 
-        float3 lastf = float3_add(last->value, (float3) { 0, bounds->value.y / 2.0f, 0 });
-        int3 lastv = positionf_to_positionv(lastf, terrain_scale);
+        // float3 lastf = float3_add(last->value, (float3) { 0, bounds->value.y / 2.0f, 0 });
+        // int3 lastv = positionf_to_positionv(lastf, terrain_scale);
 
         entity chunk = int3_hashmap_get(chunks->value, pointc);
         if (!zox_valid(chunk)) {
@@ -57,7 +53,10 @@ zox_sys2(UnstuckSystem) {
             // zox_log_error("[%s] Chunk Not Found [%lu] v[%ix%ix%i] c[%ix%ix%i]", zox_get_name(e), chunk, pointv.x, pointv.y, pointv.z, pointc.x, pointc.y, pointc.z);
             if (position->value.y < 0) {
                 if (!float3_equals(last->value, float3_zero)) {
-                    position->value = float3_add(last->value, unstuck_push);
+                    position->value.y = 100;
+                    zox_sys_e();
+                    zox_logw("Character [%s] Fell through map", zox_get_name(e));
+                    // position->value = float3_add(last->value, unstuck_push);
                     // zox_log_error("[%s] Chunk Not Found [%lu] v[%ix%ix%i] c[%ix%ix%i]", zox_get_name(e), chunk, pointv.x, pointv.y, pointv.z, pointc.x, pointc.y, pointc.z);
                 }
             }
@@ -87,14 +86,14 @@ zox_sys2(UnstuckSystem) {
         // voxel
         byte voxel = get_sub_node_voxel_locked(node, &pointl, cdepth);
 
-        if (inside->value != voxel) {
+        /*if (inside->value != voxel) {
             inside->value = voxel;
             idirty->value = zox_dirty_trigger;
             // zox_log("Inside new block [%i]", voxel);
         } else if (!int3_equals(pointv, lastv)) {
             // Compares voxel position and triggers when moving into same block type
             idirty->value = zox_dirty_trigger;
-        }
+        }*/
 
         // If in air, we just cache inside position
         if (!voxel || !colliders[voxel]) {

@@ -5,6 +5,7 @@ entity spawn_prefab_label(ecs *world, entity p) {
 
     zox_add_tag(e, Label);
     zox_add_tag(e, TextResizer);
+    zox_add_tag(e, FixToLayout);
 
     return e;
 }

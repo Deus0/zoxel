@@ -35,9 +35,11 @@ zox_sys2(BodysRealmSpawnSystem) {
 
         // Chest
         {
-            byte3 bsize = (byte3) {  nodegraph_vlength / 2, (4 * nodegraph_vlength) / 10, nodegraph_vlength / 2 };
+            float3 bscale = (float3) { 0.44f, 0.4f, 0.3f };
+
+            byte3 bsize = byte3_scale3f(byte3_single(nodegraph_vlength), bscale);
+            byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
             lint mseed = 888 * (i * models->length);
-            byte3 msize = (byte3) { vlength / 2, (4 * vlength) / 10, vlength / 2 };
 
             entity mblueprint = spawn_blueprint_chest(world, bsize);
             entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "chest", mseed, tsize, zox_slot_core);
@@ -49,9 +51,12 @@ zox_sys2(BodysRealmSpawnSystem) {
 
         // Head
         {
-            byte3 bsize = byte3_single(1 + nodegraph_vlength / 4);
+            float3 bscale = float3_single(0.22f);
+
+            byte3 bsize = byte3_scale3f(byte3_single(nodegraph_vlength), bscale);
+            byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
+
             lint mseed = 888 * (i * models->length);
-            byte3 msize = byte3_single(1 + vlength / 4);
 
             entity mblueprint = spawn_blueprint_head(world, bsize);
             entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "head", mseed, tsize, zox_slot_head);
@@ -63,10 +68,12 @@ zox_sys2(BodysRealmSpawnSystem) {
 
         // Hips
         {
-            byte3 bsize = byte3_single(1 + nodegraph_vlength / 4);
+            float3 bscale = (float3) { 0.36f, 0.16f, 0.26f };
+
+            byte3 bsize = byte3_scale3f(byte3_single(nodegraph_vlength), bscale);
+            byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
+
             lint mseed = 888 * (i * models->length);
-            byte3 msize = byte3_single(1 + vlength / 4);
-            msize.y /= 2;
 
             entity mblueprint = spawn_blueprint_hips(world, bsize);
             entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "hips", mseed, tsize, zox_slot_hips);

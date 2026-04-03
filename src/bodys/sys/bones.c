@@ -46,18 +46,21 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 hb
 
     // TODO: calculate local position by subtracting parent position
     entity bone = spawn_body_bone(world, prefab_bone, skeleton, parent, position, local_position, size);
+    zox_set_unique_name(bone, "body_bone");
     add_to_BoneLinks(bones, bone);
 
-    zox_log("+ Spawned bone for Part [%s]:", zox_get_name(part));
+    // zox_log("+ Spawned bone for Part [%s]:", zox_get_name(part));
 
-    zox_log("   # size  b [%ix%ix%i] f [%fx%fx%f]", vsize.x, vsize.y, vsize.z, size.x, size.y, size.z);
-    zox_log("   @ position b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", pposition.x, pposition.y, pposition.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
+    // zox_log("   # size  b [%ix%ix%i] f [%fx%fx%f]", vsize.x, vsize.y, vsize.z, size.x, size.y, size.z);
+    // zox_log("   @ position b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", pposition.x, pposition.y, pposition.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
 
     // Now Recursively add parts
     Children bchildren = (Children) { 0 };
     for (int i = 0; i < parts->length; i++) {
         entity sub_part = parts->value[i];
+
         entity e3 = spawn_part_bones(world, skeleton, bones, hbounds, bscale, bone, position, sub_part);
+
         if (e3) {
             add_to_Children(&bchildren, e3);
         }
@@ -103,54 +106,25 @@ zox_sys2(CharacterBoneSpawnSystem) {
 
         // TODO: Body dirty should set Body's MaxRenderDepth and BlockScale, before VoxCombination
         zox_geter_value_non_const(core_model, MaxRenderDepth, byte, mdepth);
-        float bscale = (1.0f / (2.0f * powers_of_two_byte[mdepth]));
+        float bscale = (1.0f / (powers_of_two_byte[mdepth])); // 2.0f *
 
         // zox_geter_value(e, BlockScale, float, bscale);
         zox_geter_value(e, BodySize, byte3, bsize);
         float3 hbounds = float3_scale(byte3_to_float3(bsize), bscale * 0.5f);
 
-        zox_log("- Spawned Bones  vsize [%ix%ix%i] - scale [%f] - hbounds [%fx%fx%f] depth [%i]", bsize.x, bsize.y, bsize.z, bscale, hbounds.x, hbounds.y, hbounds.z, mdepth);
+        // zox_log("- Spawned Bones  vsize [%ix%ix%i] - scale [%f] - hbounds [%fx%fx%f] depth [%i]", bsize.x, bsize.y, bsize.z, bscale, hbounds.x, hbounds.y, hbounds.z, mdepth);
 
         // TODO: Delete old children bones, and old parts
         for (int j = 0; j < parts->length; j++) {
             entity part = parts->value[j];
+
             entity e2 = spawn_part_bones(world, e, bones, hbounds, bscale, e, float3_zero, part);
+
             add_to_Children(children, e2);
         }
 
         dirty->value = zox_dirty_trigger;
 
-        zox_log("+ Spawned Bones [%i]", bones->length);
+        // zox_log("+ Spawned Bones [%i]", bones->length);
     }
 } zox_sys_end(CharacterBoneSpawnSystem);
-
-
-        /*entity head_bone = bones->value[0];
-        if (bones->length >= 2) {
-            head_bone = bones->value[1];
-        }
-
-        if (!zox_valid(head_bone)) {
-            zox_log_error("Head bone invalid.");
-        } else {
-            float head_delta = randf_range(0.01f, 0.06f);
-            float3 delta = (float3) { 0, head_delta, 0 };
-            zox_add_tag(head_bone, HeadBone);
-            zox_add_tag(head_bone, OscillatePosition3D);
-            // zox_set(head_bone, OscillateStartPosition3D, { float3_add(bone_head_position, delta) });
-            zox_set(head_bone, OscillateStartPosition3D, { delta });
-            zox_set(head_bone, OscillateDeltaPosition3D, { delta });
-        }*/
-
-        // = Body Bone =
-        /*entity core = parts->value[0];
-        entity core_model = get_item_model(world, core);
-        zox_geter_value(core_model, BlockScale, float, bscale);
-        entity e2 = spawn_body_bone(world, prefab_bone, e, bones, e, children, float3_zero, float3_zero, float3_single(0.08f));
-        add_to_BoneLinks(bones, head_bone);
-
-
-        Children core_children = (Children) { 0 };
-        entity head_bone = spawn_skeleton_head_bone(world, e, e2, bones, 0.06f, bscale);
-        add_to_BoneLinks(bones, head_bone);
-        zox_set_ptr(e2, Children, core_children);*/

@@ -8,6 +8,7 @@ zoxc_float3(BoneSize);
 zoxc_arrayd(BoneIndexes, byte)
 zoxc_arrayd(BoneLinks, entity)
 zoxc_entity(SkeletonLink);
+zoxc_entity(HeadBoneLink);
 #include "bone_index.c"
 
 void define_components_bones(ecs* world) {
@@ -23,4 +24,5 @@ void define_components_bones(ecs* world) {
     zoxd_arrayd(BoneLinks);
     zoxd_dest(BoneIndexGPULink);
     zoxd_entity(SkeletonLink);
+    zoxd_entity(HeadBoneLink);
 }

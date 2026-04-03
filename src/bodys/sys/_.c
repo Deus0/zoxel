@@ -23,6 +23,7 @@ void define_systems_bodys(ecs* world) {
         [out] bodys.BodySize,
         [out] bodys.PartLinks,
         [out] bodys.BodyDirty,
+        [out] blocks.BlockScale,
         [none] players.PlayerCharacter
     );
 

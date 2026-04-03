@@ -1,13 +1,16 @@
 void set_prefab_window(ecs* world, entity e) {
+
     // Layout Constraints
     zox_add_tag(e, BoundToCanvas);
     zox_prefab_set(e, LayoutConstraints, { int4_zero });
+
     // Window
     zox_add_tag(e, Window);
     zox_add_tag(e, WindowRaycastTarget);
     zox_prefab_set(e, HeaderHeight, { 0 });
     zox_prefab_set(e, WindowLayer, { 0 });
     zox_prefab_set(e, SetWindowLayer, { 0 });
+
     // Hierarchy
     zox_prefab_set(e, Children, { 0 });
     // text properties used for spawning list elements
@@ -24,6 +27,7 @@ entity spawn_prefab_window(ecs *world, entity prefab) {
 
     set_prefab_window(world, e);
 
+    zox_add_tag(e, FixToLayout);
     zox_set(e, FrameCorner, { default_window_corner });
     zox_set(e, Color, { window_fill });
     zox_set(e, OutlineColor, { window_outline });

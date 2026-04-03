@@ -6,6 +6,16 @@
 #include "head_bob.c"
 
 void define_systems_bones(ecs *world) {
+
+    zox_system(
+        HeadAnimateSystem,
+        EcsOnUpdate,
+        [in] bones.SkeletonDirty,
+        [in] bones.BoneLinks,
+        [out] bones.HeadBoneLink,
+        [none] bones.Skeleton
+    );
+
     // generating bone indexes here
     if (headless) {
         return;
@@ -60,13 +70,5 @@ void define_systems_bones(ecs *world) {
         [in] transforms3.Position3D,
         [in] bones.BoneSize,
         [none] bones.Bone
-    );
-
-    zox_system(
-        HeadAnimateSystem,
-        EcsOnUpdate,
-        [in] bones.SkeletonDirty,
-        [in] bones.BoneLinks,
-        [none] bones.Skeleton
     );
 }

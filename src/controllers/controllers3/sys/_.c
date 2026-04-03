@@ -20,6 +20,9 @@
 #include "game_start.c"
 #include "game_end.c"
 
+// Cameras
+#include "head_camera.c"
+
 void define_systems_controllers3(ecs *world) {
 
     zox_system(
@@ -159,5 +162,15 @@ void define_systems_controllers3(ecs *world) {
         [in] cameras.CameraLink,
         [in] characters.CharacterLink,
         [none] players.Player3
+    );
+
+    zox_system(
+        HeadCameraSystem,
+        EcsPostUpdate,
+        [in] bones.SkeletonDirty,
+        [in] bones.HeadBoneLink,
+        [in] cameras.CameraLink,
+        [in] blocks.BlockScale,
+        [none] bones.Skeleton
     );
 }

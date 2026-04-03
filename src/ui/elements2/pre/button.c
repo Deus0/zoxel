@@ -9,6 +9,7 @@ entity spawn_prefab_button(ecs *world, entity p) {
     zox_prefab_set(e, Children, { 0 });
 
     // texture
+    zox_add_tag(e, FixToLayout);
     set_frame_texture_type(world, e, button_fill, button_outline, default_button_corner, default_button_frame_thickness);
 
     //  interactable

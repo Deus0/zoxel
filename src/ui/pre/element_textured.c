@@ -1,15 +1,14 @@
-entity spawn_prefab_element_textured(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_element_textured(ecs *world, entity prefab) {
+
     zox_prefab_child(prefab);
     zox_prefab_name("element_textured");
 
-    // frame texture
-    zox_add_tag(e, FixToLayout);
-    zox_add_tag(e, FrameTexture);
+
     zox_prefab_set(e, TextureDirty, { 0 });
+
+    // frame texture
     zox_prefab_set(e, Seed, { 666 });
+    zox_add_tag(e, FrameTexture);
     zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
     zox_prefab_set(e, FrameCorner, { default_button_corner });
     zox_prefab_set(e, OutlineThickness, { default_button_frame_thickness });

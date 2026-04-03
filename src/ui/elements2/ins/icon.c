@@ -28,16 +28,10 @@ entity2 spawn_icon(ecs* world, SpawnIcon *data) {
         .anchor = float2_half,
         .render_disabled = 1,
     };
-
-    entity overlay = spawn_icon_overlay(
-        world,
-        data->canvas,
-        icon_data,
-        icon_overlay_data
-    );
+    entity overlay = spawn_icon_overlay(world, data->canvas, icon_data, icon_overlay_data);
     add_to_Children(&children, overlay);
 
-    // set and return
     zox_set_ptr(e, Children, children);
+
     return (entity2) { e, overlay };
 }

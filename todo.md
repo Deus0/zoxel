@@ -1,31 +1,50 @@
 ### todo ###
 
-- Fix 'inside block' updating when on edge of block
-	- hard physics issue
-	- triggers position updates per frame
+- Fix tilemap errors
+- Wood Texture is off atm - debug tilemap
+- Head position - transform - lags behind rest of body
+	- make hierarchy update recursively from root bones - just for skeleton for now
 
-Finish Editor:
-- Click TextureData label to open a texture window
-- Click SoundData to play the sound
-- arrows to fold/unfold children in hierarchy
-- Spawn RenderCamera + Render Texture + Render UI
-- Position Y chart - showing fluctuations - use to stabilize physics
-- Slider UI to show Text of Number
-- Slider UI to snap on integer points
-	- visually show points to with little up arrows
+- F6 key to toggle bone render debugs
 
-Improvements:
-- Spawn camera onto headbone
-- Update body when picking up head
-	- only allow to pickup shoulder if bicep is up
+- Head bob to move faster when walking
+- Footstep Sounds when walking around
+
+- Add Neck to head + chest blueprints
+	- cylinder shape at bottom+top
+- NPC to hit back when combating me
+- Spawn 2 Thighs onto character, left + right
+- Spawn Shoulders Body Parts
+- Spawn Biceps Body Parts
+- Body Updates (using debug)
+	- when parts change
+	- remove / readd head to body
+- Update body when picking up head (in ui)
+	- detects ui pickup in system
+- Item [Body] Pickups - only allow to pickup shoulder if bicep is up
 - Set body positions based on item anchor types dynamically
-- Combine vox TopHat onto body as well - Equipment layer
-- Spawn Hips Body Part onto character
-	- Spawn Shoulders Body Parts
-	- Spawn Biceps Body Parts
+- Equipment - Vox Layers
+	- Combine vox TopHat onto body as well - Equipment layer
 - Center the vox textures for body parts
+- Generate better biome colors randomly - more chaos
 - Use realm colors for UI
 - Spawn Status UI + player model through the UI
+- Spawn RenderCamera + Render Texture + Render UI
+- Click TextureData label to open a texture window
+- Click SoundData to play the sound
+- Arrows to fold/unfold children in hierarchy
+- Click MeshIndicies or MeshVertices label to open a Mesh Window
+- Slider UI to show Text of Number
+- Slider UI to snap on integer points - when integer - on release
+- Fix music importer
+- Fix import workflow - make import call
+
+
+Position Debugger:
+- Debug Component for Position Curve (float3 curve)
+- Position Y chart - showing fluctuations - use to stabilize physics
+- Position atm shakes when grounded
+- If unstuck disabled, it will fall through ground when loading
 
 Editor Delayed:
 - TextureData UI in Inspector Label
@@ -48,6 +67,7 @@ Editor Delayed:
 - tag filter dropdown on header of hierarchy
 	- Block, Item, Stat, Etc
 	- Just add a list of tags for now to it
+- Slider UI - visually show points to with little up arrows
 
 Bugs:
 - Audio missing from main menu - need to spawn a realm for it
@@ -228,3 +248,11 @@ done:
 -x Keep hierarchy elements selected - active state
 -x Component Tooltips, e.g.:
 	-x IconType [byte] [3]
+-x Fix 'inside block' updating when on edge of block
+	- hard physics issue
+	- triggers position updates per frame
+	- for now we just fixed by moving detection point
+-x Fix bones they're half scale atm
+-x Spawn camera onto headbone
+-x Spawn Hips Body Part onto character
+-x Handle falling through terrain

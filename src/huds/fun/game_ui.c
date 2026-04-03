@@ -8,34 +8,55 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     spawn_tooltip(world, prefab_tooltip, canvas);
 
     // custom cursor
-    entity zevice_follow = 0;
+    entity mouse_pointer = 0;
     if (local_mouse) {
-        zox_geter(local_mouse, Children, zevices)
-        zevice_follow = zevices->value[0];
+        zox_geter(local_mouse, Children, zevices);
+
+        mouse_pointer = zevices->value[0];
     }
 
     // SDL_ShowCursor(SDL_DISABLE);
-    entity cursor = string_hashmap_get(files_hashmap_textures, new_string_data("cursor_01"));
-    if (!cursor) {
-        zox_log_error("[cursor_01] mouse texture not found")
+    entity texture_mouse = string_hashmap_get(files_hashmap_textures, new_string_data("cursor_01"));
+    if (!texture_mouse) {
+        zox_log_error("[cursor_01] mouse texture not found");
     }
 
-    byte fake_mouse_size = 8 * ui_scale;
-    entity fake_mouse = spawn_icon_mouse_follow_canvas(world, prefab_icon_mouse_follow, canvas, dimensions, max_layers2D - 2, float2_zero, fake_mouse_size, zevice_follow);
-    zox_set_unique_name(fake_mouse, "texture_mouse");
+    byte mouse_ui_size = 6 * ui_scale;
+    entity prefab_mouse = prefab_element_shell;
 
-    zox_set(fake_mouse, RenderDisabled, { 0 });
-    zox_remove(fake_mouse, GenerateTexture);
-    spawn_gpu_texture(world, fake_mouse);
-    clone_texture_data_scale(world, fake_mouse, cursor, int2_single(fake_mouse_size));
-    zox_set(fake_mouse, MeshAlignment, { zox_mesh_alignment_top_left });
+    entity e = spawn_icon_mouse_follow_canvas(world, prefab_mouse, canvas, dimensions, max_layers2D - 2, float2_zero, mouse_ui_size, mouse_pointer);
+    zox_set_unique_name(e, "mouse_ui");
+
+    zox_add_tag(e, MouseElement);
+
+    zox_set(e, MeshAlignment, { zox_mesh_alignment_top_left });
+    clone_texture_data_scale(world, e, texture_mouse, int2_single(mouse_ui_size));
+
+    zox_set(e, LayoutSize, { int2_single(mouse_ui_size) });
+    zox_set(e, LayoutSizeDirty, { zox_dirty_trigger });
+    zox_set(e, LayoutPositionDirty, { zox_dirty_trigger });
+
+    spawn_gpu_texture(world, e);
+
     if (local_mouse) {
-        zox_set(local_mouse, TextureLink, { fake_mouse });
+        zox_set(local_mouse, TextureLink, { e });
     }
+
+    // testing from prefab
+    // zox_set(e, RenderDisabled, { 0 });
+    // zox_remove(e, GenerateTexture);
+
+    /*zox_add_tag(e, Icon);
+    zox_add_tag(e, IconTexture);
+    zox_prefab_set(e, IconType, { 0 });
+    zox_set(e, IconRadius, { default_icon_radius });
+
+    zox_set(e, RenderDisabled, { 1 });*/
 
     // ### Mouse Pickup UI ###
     int icon_size = (default_icon_size / 4) * ui_scale;
-    icon_mouse_follow = spawn_icon_mouse_follow_canvas(world, prefab_icon_mouse_follow, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, zevice_follow);
+
+    icon_mouse_follow = spawn_icon_mouse_follow_canvas(world, prefab_icon_mouse_follow, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, mouse_pointer);
     zox_set_unique_name(icon_mouse_follow, "icon_mouse");
 
     return canvas;

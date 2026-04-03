@@ -66,10 +66,10 @@ void toggle_inspector_target(ecs* world, entity player, entity target) {
     }
 }
 
-void toggle_inspector_player(ecs *world, int32_t keycode) {
+void toggle_inspector_player(ecs* world, int32_t keycode) {
 
     // our logic stuff
-    if (keycode != SDLK_i) {
+    if (keycode != SDLK_i && keycode != SDLK_o) {
         return;
     }
 
@@ -79,6 +79,11 @@ void toggle_inspector_player(ecs *world, int32_t keycode) {
         return;
     }
 
-    entity target = player;
+    entity target = keycode == SDLK_i ? player : zox_has(player, CharacterLink) ? zox_gett_value(player, CharacterLink) : 0;
+
+    if (!zox_valid(target)) {
+        return;
+    }
+
     toggle_inspector_target(world, player, target);
 }

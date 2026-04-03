@@ -141,7 +141,6 @@ void define_systems_elements(ecs *world) {
         [none] Element
     );
 
-
     zox_system(
         MouseElementSystem,
         zox_transforms_stage,

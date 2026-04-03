@@ -1,6 +1,7 @@
 #include "detect2.c"    // using old (2) atm
 #include "unstuck.c"
 #include "inside_sound.c"
+#include "inside.c"
 
 void define_systems_terrain_collisions(ecs* world) {
 
@@ -37,9 +38,18 @@ void define_systems_terrain_collisions(ecs* world) {
         [in] terrain.TerrainLink,
         [in] transforms3.Bounds3D,
         [out] physics3.LastUnstuck3,
-        [out] blocks.InsideBlock,
-        [out] blocks.InsideBlockDirty,
         [out] transforms3.Position3D
+    );
+
+    zox_system(
+        InsideBlockSystem,
+        EcsOnStore,
+        [in] terrain.TerrainLink,
+        [in] transforms3.Position3D,
+        [in] transforms3.Bounds3D,
+        [out] blocks.InsideBlock,
+        [out] blocks.InsideBlockPosition,
+        [out] blocks.InsideBlockDirty,
     );
 
     zox_system_1(

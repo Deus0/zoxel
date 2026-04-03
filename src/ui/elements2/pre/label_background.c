@@ -5,6 +5,8 @@ entity spawn_prefab_label_background(ecs *world, entity p) {
 
     zox_add_tag(e, Label);
     zox_add_tag(e, TextResizer);
+
+    zox_add_tag(e, FixToLayout);
     zox_add_tag(e, FrameTexture);
     zox_prefab_set(e, FrameCorner, { 7 });
     zox_prefab_set(e, OutlineThickness, { 3 });

@@ -80,7 +80,7 @@ byte inspector_label_tooltip(ecs *world, const TooltipEventData *data) {
         uint index = 0;
         char text[TooltipText_length];
         index += sprintf(text, "%s [%s]",
-            cid ? zox_get_name(cid) : (zox_valid(e) ? zox_get_name(e) : "Invalid"), ctype < zox_types_length ? zox_type_labels[ctype] : "invalid");
+            zox_valid(cid) ? zox_get_name(cid) : (zox_valid(e) ? zox_get_name(e) : "Invalid"), ctype < zox_types_length ? zox_type_labels[ctype] : "invalid");
 
         if (ctype == zox_type_entities) {
             const entities* links = (const entities*) zox_get_id(e, cid);

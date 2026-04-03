@@ -27,6 +27,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, Position3DBounds, { float6_zero });
 
     zox_prefab_set(e, InsideBlock, { 0 });
+    zox_prefab_set(e, InsideBlockPosition, { int3_zero });
     zox_prefab_set(e, InsideBlockDirty, { 0 });
     zox_prefab_set(e, InsideBlockTime, { 0 });
 

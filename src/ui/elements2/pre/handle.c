@@ -7,13 +7,8 @@ entity spawn_prefab_handle(ecs *world, entity prefab) {
 
     // transforms
     zox_prefab_set(e, ParentLink, { 0 });
-    // set t texture data
-    zox_set(e, FrameCorner, { default_button_corner });
-    zox_set(e, OutlineThickness, { default_button_frame_thickness });
-    zox_set(e, Color, { default_fill_color });
-    zox_set(e, OutlineColor, { default_outline_color });
-    // interactable
 
+    // interactable
     zox_add_tag(e, Selectable);
     zox_prefab_set(e, SelectState, { zox_select_state_none });
 
@@ -29,10 +24,17 @@ entity spawn_prefab_handle(ecs *world, entity prefab) {
     zox_prefab_set(e, DraggingDelta, { int2_zero });
     zox_prefab_set(e, DraggerLink, { 0 });
     zox_prefab_set(e, DraggedLink, { 0 });
-
     zox_prefab_set(e, LayoutConstraints, { int4_zero });
+
     zox_prefab_set(e, SlideEvent, { 0 });
     zox_prefab_set(e, SlideBounds, { (float2) { 0, 1 }});
+
+    // set t texture data
+    zox_add_tag(e, FixToLayout);
+    zox_set(e, FrameCorner, { default_button_corner });
+    zox_set(e, OutlineThickness, { default_button_frame_thickness });
+    zox_set(e, Color, { default_fill_color });
+    zox_set(e, OutlineColor, { default_outline_color });
 
     return e;
 }
