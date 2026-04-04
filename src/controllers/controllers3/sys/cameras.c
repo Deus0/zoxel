@@ -1,4 +1,5 @@
-void on_set_free_roam(ecs *world, const entity e, byte is_free) {
+void on_set_free_roam(ecs *world, entity e, byte is_free) {
+
     zox_geter_value(e, CameraLink, entity, camera);
     if (!is_free) {
         zox_geter_value(e, CharacterLink, entity, character);
@@ -6,15 +7,6 @@ void on_set_free_roam(ecs *world, const entity e, byte is_free) {
     } else {
         set_camera_free(world, camera);
     }
-    /*if (zox_valid(local_menu_game)) {
-        set_children_component_byte(
-            world,
-            local_menu_game,
-            zox_id(RenderDisabled),
-            is_free);
-    } else {
-        zox_logw("[local_menu_game] not found.");
-    }*/
 }
 
 zox_sys2(PlayerToggleCameraSystem) {
@@ -22,34 +14,28 @@ zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_begin();
     zox_sys_in(PlayerState);
     zox_sys_in(DeviceLinks);
-    // zox_sys_in(GameLink);
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(DeviceLinks, devices);
-        // zox_sys_i(GameLink, gameLink);
-        zox_sys_i(CharacterLink, characterLink);
+        zox_sys_i(CharacterLink, character);
         zox_sys_i(CameraLink, camera);
 
         if (state->value != zox_player_state_playing) {
             continue;
         }
-        /*if (!zox_valid(gameLink->value) || !zox_valid(camera->value)) {
+
+        if (!zox_valid(camera->value)) {
             continue;
         }
-
-        zox_geter_value(gameLink->value, GameState, byte, game_state);
-        if (game_state != zox_game_playing) {
-            continue;
-        }*/
 
         byte is_toggle_camera = 0;
         byte is_toggle_freeroam = 0;
         for (int j = 0; j < devices->length; j++) {
 
-            const entity device = devices->value[j];
+            entity device = devices->value[j];
             if (!zox_valid(device)) {
                 continue;
             }
@@ -89,10 +75,12 @@ zox_sys2(PlayerToggleCameraSystem) {
         }
 
         zox_geter_value(camera->value, CameraState, byte, camera_state);
-        if (is_toggle_camera && zox_valid(characterLink->value)) {
+        if (is_toggle_camera && zox_valid(character->value)) {
+
             byte mode = toggle_camera_mode(world, camera->value);
             byte is_first_person = mode == zox_camera_state_first_person;
             zox_set(local_crosshair, RenderDisabled, { !is_first_person });
+
         } else if (is_toggle_freeroam) {
 
             byte is_free = camera_state != zox_camera_state_free;

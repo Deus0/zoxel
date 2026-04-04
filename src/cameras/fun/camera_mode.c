@@ -50,17 +50,18 @@ void set_camera_transform(
     }
 }
 
-byte get_camera_state_fov(const byte mode) {
+byte get_camera_state_fov(byte mode) {
     return get_camera_preset(mode).fov;
 }
 
-void set_camera_mode(ecs *world, const entity e, byte mode) {
+void set_camera_mode(ecs *world, entity e, byte mode) {
     // remove 2 camera modes for now
     if (mode == zox_camera_state_free) {
         mode = zox_camera_state_first_person;
     }
-    const byte old_camera_follow_mode = camera_follow_mode;
-    const byte camera_fov = get_camera_state_fov(mode);
+    byte old_camera_follow_mode = camera_follow_mode;
+    byte camera_fov = get_camera_state_fov(mode);
+
     camera_follow_mode = get_camera_preset(mode).follow_mode;
     zox_set(e, CameraState, { mode });
     zox_set(e, FieldOfView, { camera_fov });
@@ -71,6 +72,7 @@ void set_camera_mode(ecs *world, const entity e, byte mode) {
     } else {
         target = zox_get_value(e, CameraFollowLink);
     }
+
     if (old_camera_follow_mode != camera_follow_mode) {
         // remove old link
         if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
@@ -80,17 +82,25 @@ void set_camera_mode(ecs *world, const entity e, byte mode) {
         }
         // reattach
         if (camera_follow_mode == zox_camera_follow_mode_attach) {
+
+            if (target) {
+                zox_muter(target, Children, children)
+                add_to_Children(children, e);
+            }
+
             zox_set(e, ParentLink, { target });
+
         } else if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
             zox_set(e, CameraFollowLink, { target });
         }
     }
+
     // set up local positions and rotations
     // use a helper function so attach does the same thing
     set_camera_transform(world, e, target, mode);
 }
 
-byte toggle_camera_mode(ecs *world, const entity camera) {
+byte toggle_camera_mode(ecs *world, entity camera) {
     zox_geter_value_non_const(camera, CameraState, byte, mode);
     if (mode == zox_camera_state_first_person) {
         mode = zox_camera_state_third_person;

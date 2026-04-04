@@ -1,22 +1,22 @@
 // grid like ui
 const float device_gizmo_fade_time = 3;
 
-entity spawn_prefab_device_gizmo(ecs *world, const entity prefab) {
+entity spawn_prefab_device_gizmo(ecs *world, entity prefab) {
+
     zox_prefab_child(prefab);
+
     zox_prefab_set(e, DestroyInTime, { device_gizmo_fade_time });
     zox_prefab_add_animation_event(world, e, device_gizmo_fade_time);
+
     return e;
 }
 
 // when switch, spawn, destroy after x seconds, add a cooldown on switching devices
-entity spawn_device_gizmo(
-    ecs* world,
-    const entity canvas,
-    const byte device_type
-) {
+entity spawn_device_gizmo(ecs* world, entity canvas, byte device_type) {
+
     // Sizing
-    const byte size = 16 * ui_scale;
-    const int2 position = int2_single(4 * ui_scale + size / 2);
+    byte size = 16 * ui_scale;
+    int2 position = int2_single(4 * ui_scale + size / 2);
 
     SpawnIcon spawnIcon = {
         .canvas = {
@@ -34,7 +34,8 @@ entity spawn_device_gizmo(
         },
         .texture_size = int2_single(size),
     };
-    const entity e = spawn_icon(world, &spawnIcon).x;
+
+    entity e = spawn_icon(world, &spawnIcon).x;
     zox_set_unique_name(e, "device_gizmo");
 
     if (device_type == zox_device_mode_gamepad) {

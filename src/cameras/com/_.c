@@ -1,9 +1,10 @@
 zox_tag(Camera);
 zox_tag(Camera2D);
 zox_tag(Camera3D);
-zox_tag(FirstPersonCamera);
+// zox_tag(FirstPersonCamera);
 zox_tag(CameraUI);
 zox_tag(ElementBillboard);
+
 zoxc_byte(CameraState);
 zoxc_byte(Roaming);
 zoxc_byte(CameraViewing);
@@ -22,6 +23,9 @@ zoxc_array(CameraPlanes, plane, 6);
 #else
     zoxc_array(FrustumCorners, float3, 8);
 #endif
+
+zoxc_state(AttachDirty);
+
 // Render Cameras
 zox_tag(RenderCamera);
 zox_tag(RenderTexture);
@@ -33,7 +37,7 @@ void define_components_cameras(ecs *world) {
     zoxd_tag(Camera);
     zoxd_tag(Camera2D);
     zoxd_tag(Camera3D);
-    zoxd_tag(FirstPersonCamera);
+    // zoxd_tag(FirstPersonCamera);
     zoxd_tag(CameraUI);
     zoxd_tag(ElementBillboard);
     zoxd_byte(CameraState);
@@ -51,10 +55,14 @@ void define_components_cameras(ecs *world) {
     zoxd_float4(ScreenToCanvas);
     zox_define_component_array(FrustumCorners);
     zox_define_component_array(CameraPlanes);
+
+    zoxd_state(AttachDirty);
+
     // render cameras
     zoxd_tag(RenderCamera);
     zoxd_tag(RenderTexture);
     zoxd_entity(RenderTextureLink);
     zoxd_entity(RenderCameraLink);
     zoxd_entities(CameraLinks);
+
 }

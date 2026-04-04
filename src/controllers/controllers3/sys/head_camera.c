@@ -23,8 +23,20 @@ zox_sys2(HeadCameraSystem) {
         zox_geter_value(head->value, BoneSize, float3, head_size);
         float3 camera_offset = (float3) { 0, 0, head_size.z + bscale->value };
 
+        // TODO: Make parenting a system in hierarchy to handle this
+
+        // Remove from last Parent Children
+        zox_geter_value(camera->value, ParentLink, entity, old_parent);
+        zox_muter(old_parent, Children, old_parent_children);
+        remove_from_Children(old_parent_children, camera->value);
+
+        // Add to new Parent Children
+        zox_muter(head->value, Children, new_parent_children);
+        add_to_Children(new_parent_children, camera->value);
+
         zox_set(camera->value, ParentLink, { head->value });
         zox_set(camera->value, LocalPosition3D, { camera_offset });
+        zox_set(camera->value, LocalRotation3D, { quaternion_identity });
 
         // zox_log("Set Camera on Head (%s) at [%f]", zox_get_name(head->value), camera_offset.z);
     }

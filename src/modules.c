@@ -153,9 +153,9 @@ zox_begin_module(Zox)
     zox_import_module(Particles);
     zox_import_module(Weathers);
     zox_import_module(Characters);
-
     zox_import_module(Dungeons);
     zox_import_module(Terrain);
+
     zox_import_module(Vrays);
     zox_import_module(Huds);
     zox_import_module(Space);

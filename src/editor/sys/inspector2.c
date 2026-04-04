@@ -19,8 +19,8 @@ void fetch_entity_components(ecs* world, entity_array_d* entity_ids, entity_arra
 
         add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { text = text });
         add_to_entity_array_d(entity_ids, target);
-        add_to_byte_array_d(types, type);
         add_to_entity_array_d(component_ids, component_id);
+        add_to_byte_array_d(types, type);
     }
 }
 
@@ -73,7 +73,6 @@ byte inspector_label_tooltip(ecs *world, const TooltipEventData *data) {
     zox_geter_value(label, ComponentType, byte, ctype);
 
     if (ctype < zox_type_labels_length) {
-
         zox_geter_value(label, EntityTarget, entity, e);
         zox_geter_value(label, ComponentTarget, entity, cid);
 
@@ -103,13 +102,9 @@ byte inspector_label_tooltip(ecs *world, const TooltipEventData *data) {
         }
 
         set_entity_text(world, tooltip, text);
-
     } else {
-
         zox_geter(label, TooltipText, text);
-
         set_entity_text(world, tooltip, text->value);
-
     }
 
     return 1;
@@ -165,10 +160,11 @@ zox_sys2(InspectorSpawnSystem) {
         zox_geter_value(list_ui, ListVisible, byte, visible);
 
         // 1: Fetch Target Hierarchy Data
-        byte_array_d* types = create_byte_array_d(16);
-        entity_array_d* entity_ids = create_entity_array_d(16);
-        entity_array_d* component_ids = create_entity_array_d(16);
-        text_group_dynamic_array_d* labels = create_text_group_dynamic_array_d(16);
+        byte_array_d* types = create_byte_array_d(4);
+        entity_array_d* entity_ids = create_entity_array_d(4);
+        entity_array_d* component_ids = create_entity_array_d(4);
+        text_group_dynamic_array_d* labels = create_text_group_dynamic_array_d(4);
+
         fetch_entity_components(world, entity_ids, component_ids, types, labels, target->value);
 
         // 3: Initialize Data
@@ -200,9 +196,9 @@ zox_sys2(InspectorSpawnSystem) {
         for (int j = 0; j < children->length; j++) {
             zox_delete(children->value[j]);
         }
+        resize_Children(children, 0);
 
         // 5: Spawn new buttons
-        resize_Children(children, 0);
         for (size_t j = 0; j < labels->size; j++) {
             child_text_data.text = labels->data[j].text;
             entity target = entity_ids->data[j];
@@ -237,7 +233,7 @@ zox_sys2(InspectorSpawnSystem) {
             child_element_data.render_disabled = j >= visible;
             entity e2 = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
 
-            char tooltip_text[64];
+            char tooltip_text[inspector_component_size_buffer];
             sprintf(tooltip_text, "%s", child_text_data.text);
             set_TooltipText(world, e2, tooltip_text);
             zox_set(e2, TooltipEvent, { &inspector_label_tooltip });

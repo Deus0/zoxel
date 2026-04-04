@@ -18,6 +18,7 @@ entity spawn_body_bone(ecs* world, entity prefab, entity skeleton, entity parent
     // NOTE: New entity so we need to just set rather than grab
     entity e2 = spawn_bone(world, prefab, skeleton, position, local_position, size);
     zox_set(e2, ParentLink, { parent });
+
     // add_to_Children(children, e2);
     // add_to_BoneLinks(bones, e2);
 

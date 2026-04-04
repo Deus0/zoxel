@@ -7,12 +7,11 @@ typedef struct {
     const char* text;
 } Text3DData;
 
-entity spawn_prefab_text3D(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_text3D(ecs *world, entity prefab) {
+
     zox_prefab_child(prefab);
     zox_prefab_name("text3D");
+
     zox_add_tag(e, Zext);
     zox_add_tag(e, Text3D);
     zox_prefab_set(e, MeshAlignment, { 0 });
@@ -29,5 +28,6 @@ entity spawn_prefab_text3D(
     zox_prefab_set(e, Children, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Text3DScale, { 1 });
+
     return e;
 }

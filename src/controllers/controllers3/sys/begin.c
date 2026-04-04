@@ -125,6 +125,12 @@ entity game_start_player_new(ecs *world, entity player) {
     };
 
     entity e = spawn_character3_player(world, spawn_data);
+
+    // player
+    if (local_mouse) {
+        zox_set(local_mouse, MouseLock, { 1 }) // lock mouse since attached
+    }
+
     // Add spawned to chunk
     if (zox_valid(placer.chunk)) {
         zox_mut_begin(placer.chunk, ChunkEntities, entities);
@@ -182,6 +188,11 @@ entity game_start_player_load(ecs *world, entity player) {
         .rotation = placer.rotation,
         .euler = placer.euler,
     };
+
+    // player
+    if (local_mouse) {
+        zox_set(local_mouse, MouseLock, { 1 }) // lock mouse since attached
+    }
 
     entity e = spawn_character3_player(world, spawn_data);
     // Add spawned to chunk

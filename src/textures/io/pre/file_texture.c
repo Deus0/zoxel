@@ -1,11 +1,10 @@
-entity spawn_texture_filepath(
-    ecs *world,
-    const entity prefab,
-    const char *filepath
-) {
-    zox_instance(prefab)
-    zox_name("texture_filepath")
-    TextureData *textureData = &((TextureData) { 0, NULL });
+entity spawn_texture_filepath(ecs *world, entity prefab,const char *filepath) {
+
+    zox_instance(prefab);
+    zox_name("texture_filepath");
+
+    TextureData *textureData = &((TextureData) { 0 });
+
     int2 texture_size = int2_zero;
     load_texture_from_png(filepath, textureData, &texture_size);
     if (!textureData->value) {
@@ -13,24 +12,28 @@ entity spawn_texture_filepath(
         zox_delete(e)
         return 0;
     }
+
     zox_set(e, TextureData, { textureData->length, textureData->value });
     zox_set(e, TextureSize, { texture_size });
+
 #ifdef zox_disable_io_textures
     zox_log(" ! texture io disabled at [%s]\n", filepath)
     zox_delete(e)
     return 0;
 #endif
+
     return e;
 }
 
-entity spawn_texture_filename(
-    ecs *world,
-    char *filename
-) {
-    const entity source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
+entity spawn_texture_filename(ecs *world, char *filename, int2 size) {
+
+    entity source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
+
     zox_instance(prefab_texture);
     zox_name("texture_filename");
-    clone_texture_data(world, e, source);
+
+    clone_texture_data_scale(world, e, source, size);
+
     return e;
 }
 

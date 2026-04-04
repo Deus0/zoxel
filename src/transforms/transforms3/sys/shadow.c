@@ -8,7 +8,7 @@ zox_sys2(ShadowPositionSystem) {
         zox_sys_o(Position3D, position);
 
         if (!zox_valid(link->value)) {
-            zox_logw("link is invalid in Shadow Position System");
+            // zox_logw("link is invalid in Shadow Position System");
             continue;
         }
 

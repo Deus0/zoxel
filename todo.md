@@ -1,9 +1,13 @@
 ### todo ###
 
-- Fix tilemap errors
-- Wood Texture is off atm - debug tilemap
-- Head position - transform - lags behind rest of body
-	- make hierarchy update recursively from root bones - just for skeleton for now
+- System that handles parenting - reparenting
+	- use for camera attachment
+	- Children links are more important as transforms are recursive
+- Make layout positions recursive too
+
+- Handle player death by spawning a death camera
+
+- fix dungeon core texture issue (on lower res)
 
 - F6 key to toggle bone render debugs
 
@@ -256,3 +260,7 @@ done:
 -x Spawn camera onto headbone
 -x Spawn Hips Body Part onto character
 -x Handle falling through terrain
+-x Fix tilemap errors
+	-x Wood Texture is off atm - debug tilemap
+-x Head position - transform - lags behind rest of body
+	-x make hierarchy update recursively from root bones - just for skeleton for now

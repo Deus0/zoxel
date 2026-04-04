@@ -1,11 +1,6 @@
 entity spawn_character3(ecs *world, spawn_character3D_data data) {
     entity vox = data.model;
 
-    /*if (!zox_valid(vox)) {
-        zox_logw("[spawn_character3]: Invalid Vox Model");
-        // return 0;
-    }*/
-
     // if model, we use lodded for vox
     if (zox_valid(vox) && zox_has(vox, ModelLods)) {
         zox_geter(vox, ModelLods, modelLods);
@@ -21,7 +16,6 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
     }
 
     zox_geter_value(data.prefab, Character3Type, byte, type);
-    // entity realm = zox_gett_value(data.terrain, RealmLink);
 
     zox_instance(data.prefab);
     zox_name("character3");
@@ -60,6 +54,9 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
     }
 
     // voxels
+    /*if (data.terrain) {
+        zox_set(e, TerrainLink, { data.terrain });
+    }*/
     if (data.terrain_chunk) {
         zox_set(e, ChunkLink, { data.terrain_chunk });
         zox_set(e, ChunkPosition, { data.chunk_position });

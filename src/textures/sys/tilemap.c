@@ -12,43 +12,50 @@ zox_sys2(TilemapGenerationSystem) {
     zox_sys_out(TextureDirty);
     zox_sys_out(TilemapUVs);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TilemapSize, tilemapSize);
-        zox_sys_i(TextureLinks, textureLinks);
-        zox_sys_o(GenerateTexture, generateTexture);
-        zox_sys_o(TextureSize, textureSize);
-        zox_sys_o(TextureData, textureData);
+        zox_sys_i(TilemapSize, tmsize);
+        zox_sys_i(TextureLinks, textures);
+        zox_sys_o(GenerateTexture, state);
+        zox_sys_o(TextureSize, tsize);
+        zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
-        zox_sys_o(TilemapUVs, tilemapUVs);
+        zox_sys_o(TilemapUVs, uvs);
 
-        if (generateTexture->value != zox_dirty_active || dirty->value) {
+        if (state->value != zox_dirty_active || dirty->value) {
             continue;
         }
 
-        if (!textureLinks->length || !tilemapSize->value.x) {
-            zox_log_error("issue with tilemap data!")
+        if (!textures->length || !tmsize->value.x) {
+            zox_log_error("Invalid Textures for Tilemap");
             continue;
         }
-        // generate textureSize based on TilemapSize
-        const entity first_texture = textureLinks->value[0];
+
+        // generate tsize based on TilemapSize
+        entity first_texture = textures->value[0];
         if (!zox_valid(first_texture)) {
-            zox_log_error("first_texture is null in tilemap generation system\n")
+            zox_log_error("Invalid First Texture for Tilemap");
             continue;
         }
-        int2 unit_size = zox_get_value(first_texture, TextureSize)
-        float tile_uv_size = 1.0f / ((float) tilemapSize->value.x); // for example, 1 / 8 if size is 8
-        zox_log("Tilemap Size %i - u%i", tilemapSize->value.x, unit_size.x);
 
-        textureSize->value.x = tilemapSize->value.x * unit_size.x;
-        textureSize->value.y = tilemapSize->value.y * unit_size.y;
-        resize_memory_component(TextureData, textureData, color, textureSize->value.x * textureSize->value.y)
+        zox_geter_value(first_texture, TextureSize, int2, unit_size);
+        float unit_sizef = 1.0f / ((float) tmsize->value.x);
+
+        // for example, 1 / 8 if size is 8
+        // zox_log("Tilemap Size %i - u%i", tmsize->value.x, unit_size.x);
+
+        tsize->value.x = tmsize->value.x * unit_size.x;
+        tsize->value.y = tmsize->value.y * unit_size.y;
+        resize_memory_component(TextureData, data, color, tsize->value.x * tsize->value.y)
         int2 texture_position = int2_zero;
         int texture_index = 0;
-        for (int j = 0; j < textureData->length; j++) {
-            textureData->value[j] = color_white;
+        for (int j = 0; j < data->length; j++) {
+            data->value[j] = color_white;
         }
-        for (texture_position.y = 0; texture_position.y < tilemapSize->value.y && texture_index < textureLinks->length; texture_position.y++) {
-            for (texture_position.x = 0; texture_position.x < tilemapSize->value.x && texture_index < textureLinks->length; texture_position.x++) {
-                const entity texture = textureLinks->value[texture_index];
+
+        for (texture_position.y = 0; texture_position.y < tmsize->value.y && texture_index < textures->length; texture_position.y++) {
+            for (texture_position.x = 0; texture_position.x < tmsize->value.x && texture_index < textures->length; texture_position.x++) {
+
+                entity texture = textures->value[texture_index];
+
                 if (!zox_valid(texture) || !zox_has(texture, TextureData)) {
                     zox_log_error("invalid texture [%s] index [%i]", zox_get_name(texture), texture_index)
                     texture_index++;
@@ -62,38 +69,48 @@ zox_sys2(TilemapGenerationSystem) {
                     continue;
                 }
 
-                zox_geter_value(texture, TextureSize, int2, texture_size)
-                const int2 tilemap_position = (int2) {
+                zox_geter_value(texture, TextureSize, int2, texture_size);
+
+                int2 tilemap_position = (int2) {
                     texture_position.x * unit_size.x,
                     texture_position.y * unit_size.y
                 };
+
                 // tod: refactor - make this into a function
                 int2 pixel_position = int2_zero;
                 for (pixel_position.x = 0; pixel_position.x < texture_size.x; pixel_position.x++) {
                     for (pixel_position.y = 0; pixel_position.y < texture_size.y; pixel_position.y++) {
+
                         int2 tilemap_pixel_position = int2_add(pixel_position, tilemap_position);
-                        int tilemap_index = int2_array_index(tilemap_pixel_position, textureSize->value);
-                        if (tilemap_index >= textureData->length) {
-                            zox_log_error("tilemap_index [%i] >= textureData->length [%i]", tilemap_index, textureData->length)
+
+                        int tilemap_index = int2_array_index(tilemap_pixel_position, tsize->value);
+
+                        if (tilemap_index >= data->length) {
+                            zox_log_error("tilemap_index [%i] >= data->length [%i]", tilemap_index, data->length)
                             // dirty->value = 1;
                             // return;
                             continue;
                         }
+
                         int texture_index = int2_array_index(pixel_position, texture_size);
                         if (texture_index >= block_texture->length) {
                             continue;
                         }
-                        textureData->value[tilemap_index] = block_texture->value[texture_index];
+
+                        data->value[tilemap_index] = block_texture->value[texture_index];
                     }
                 }
                 texture_index++;
             }
         }
+
         texture_index = 0;
-        resize_memory_component(TilemapUVs, tilemapUVs, float2, textureLinks->length * uvs_per_tile)
-        for (texture_position.y = 0; texture_position.y < tilemapSize->value.y; texture_position.y++) {
-            for (texture_position.x = 0; texture_position.x < tilemapSize->value.x; texture_position.x++) {
-                if (texture_index >= textureLinks->length) {
+        resize_TilemapUVs(uvs, textures->length * uvs_per_tile);
+
+        for (texture_position.y = 0; texture_position.y < tmsize->value.y; texture_position.y++) {
+            for (texture_position.x = 0; texture_position.x < tmsize->value.x; texture_position.x++) {
+
+                if (texture_index >= textures->length) {
                     break;
                     break;
                 }
@@ -103,29 +120,25 @@ zox_sys2(TilemapGenerationSystem) {
                     texture_position.y * unit_size.y
                 };
                 float2 tile_uv = (float2) {
-                    tilemap_position.x / (float) textureSize->value.x,
-                    tilemap_position.y / (float) textureSize->value.y
+                    tilemap_position.x / (float) tsize->value.x,
+                    tilemap_position.y / (float) tsize->value.y
                 };
 
                 // 4 uvs per face
-                tilemapUVs->value[texture_index * 4 + 3] = (float2) {
-                    tile_uv.x, tile_uv.y + tile_uv_size };
-                tilemapUVs->value[texture_index * 4 + 2] = (float2) {
-                    tile_uv.x + tile_uv_size, tile_uv.y + tile_uv_size };
-                tilemapUVs->value[texture_index * 4 + 1] = (float2) {
-                    tile_uv.x + tile_uv_size, tile_uv.y };
-                tilemapUVs->value[texture_index * 4 + 0] = (float2) {
-                    tile_uv.x, tile_uv.y };
+                uvs->value[texture_index * 4 + 3] = (float2) { tile_uv.x, tile_uv.y + unit_sizef };
+                uvs->value[texture_index * 4 + 2] = (float2) { tile_uv.x + unit_sizef, tile_uv.y + unit_sizef };
+                uvs->value[texture_index * 4 + 1] = (float2) { tile_uv.x + unit_sizef, tile_uv.y };
+                uvs->value[texture_index * 4 + 0] = (float2) { tile_uv.x, tile_uv.y };
 
                 texture_index++;
 
-                if (texture_index >= textureLinks->length) {
+                if (texture_index >= textures->length) {
                     break;
                     break;
                 }
             }
         }
 
-        dirty->value = 1;
+        dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(TilemapGenerationSystem);

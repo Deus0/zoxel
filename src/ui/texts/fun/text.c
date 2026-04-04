@@ -2,28 +2,32 @@ char* get_zext_text(const TextData *textData) {
     return convert_zext_to_text(textData->value, textData->length);
 }
 
-byte is_zext(TextData *zext, const char* text) {
+byte is_zext(TextData* zext, const char* text) {
 
     if (!zext || !zext->value) {
         return 0; // error
     }
 
-    int text_length = text != NULL ? strlen(text) : 0;
-    if (zext->length != text_length) {
+    int length = text ? strlen(text) : 0;
+
+    if (zext->length != length) {
         return 0;
     }
 
-    if (text_length == 0 && zext->length == 0) {
+    if (!length) {
         return 1;
     }
 
-    for (int i = 0; i < text_length; i++) {
+    for (int i = 0; i < length; i++) {
+
         byte j = convert_ascii(text[i]);
         byte k = zext->value[i];
+
         if (j != k) {
             return 0;
         }
     }
+
     return 1;
 }
 

@@ -1,7 +1,8 @@
-entity spawn_prefab_zext(ecs* world, const entity prefab) {
+entity spawn_prefab_zext(ecs* world, entity p) {
 
-    zox_prefab_child(prefab);
+    zox_prefab_child(p);
     zox_prefab_name("zext");
+
     // hierarchy
     zox_prefab_set(e, Children, { 0 });
     zox_prefab_set(e, ParentLink, { 0 });

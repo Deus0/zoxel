@@ -7,6 +7,7 @@
 #include "transform_matrix_scale.c"
 #include "camera_transform_matrix.c"
 #include "shadow.c"
+#include "children.c"
 
 void zox_define_systems_transforms3(ecs *world) {
     zox_system(
@@ -28,7 +29,8 @@ void zox_define_systems_transforms3(ecs *world) {
         [out] Rotation3D,
         [none] EulerOverride
     );
-    zox_system(
+
+    /*zox_system(
         ParentRotationSystem,
         zox_transforms_stage,
         [in] hierarchys.ParentLink,
@@ -41,7 +43,16 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] hierarchys.ParentLink,
         [in] LocalPosition3D,
         [out] Position3D
+    );*/
+    zox_system(
+        ChildrenPositionSystem,
+        zox_transforms_stage,
+        [in] transforms3.Position3D,
+        [in] transforms3.Rotation3D,
+        [in] hierarchys.Children
     );
+
+
     zox_system(
         TransformMatrixSystem,
         zox_transforms_stage,

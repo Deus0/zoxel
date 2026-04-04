@@ -54,12 +54,14 @@ zox_sys2(CharacterSaveSystem) {
         save2_player(path->value, "player.dat", &data);
         // save camera - move this to camera save system
         zox_geter_value(e, CameraLink, entity, camera);
-        SaveDataCamera data2 = {
-            .position = zox_gett_value(camera, Position3D),
-            .euler = zox_gett_value(camera, Euler),
-            .lrotation = zox_gett_value(camera, LocalRotation3D),
-        };
-        save2_camera(path->value, "camera.dat", &data2);
+        if (zox_valid(camera)) {
+            SaveDataCamera data2 = {
+                .position = zox_gett_value(camera, Position3D),
+                .euler = zox_gett_value(camera, Euler),
+                .lrotation = zox_gett_value(camera, LocalRotation3D),
+            };
+            save2_camera(path->value, "camera.dat", &data2);
+        }
         // zox_log("+ new hash detected at [%fx%fx%f] - %lu", position->value.x, position->value.y, position->value.z, hash)
         characterSaveHash->value = hash;
     }

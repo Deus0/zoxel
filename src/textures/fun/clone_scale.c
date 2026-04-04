@@ -1,9 +1,5 @@
-void clone_texture_data_scale(
-    ecs *world,
-    const entity e,
-    const entity src,
-    const int2 scaled_size
-) {
+void clone_texture_data_scale(ecs *world, entity e, entity src, int2 new_size) {
+
     if (!src || !zox_has(src, TextureSize) || !zox_has(src, TextureData)) {
         if (!src) {
             zox_log_error("[texture not found] [%s]", zox_get_name(e));
@@ -22,15 +18,15 @@ void clone_texture_data_scale(
     zox_geter_value(src, TextureSize, int2, original_size);
 
     /* basic sanity */
-    if (original_size.x <= 0 || original_size.y <= 0 || scaled_size.x <= 0 || scaled_size.y <= 0) {
-        zox_log_error("[clone_texture_data] invalid sizes src=%dx%d dst=%dx%d", original_size.x, original_size.y, scaled_size.x, scaled_size.y);
+    if (original_size.x <= 0 || original_size.y <= 0 || new_size.x <= 0 || new_size.y <= 0) {
+        zox_log_error("[clone_texture_data] invalid sizes src=%dx%d dst=%dx%d", original_size.x, original_size.y, new_size.x, new_size.y);
         return;
     }
 
     TextureData data = { 0 };
 
     /* allocate destination buffer (element count = width * height) */
-    initialize_TextureData(&data, scaled_size.x * scaled_size.y);
+    initialize_TextureData(&data, new_size.x * new_size.y);
     if (!data.value) {
         zox_log_error("texture data malloc failed");
         return;
@@ -42,10 +38,10 @@ void clone_texture_data_scale(
     const pixel_t *src_pixels = (const pixel_t*)source_data->value;
     pixel_t *dst_pixels = (pixel_t*)data.value;
 
-    const int orig_w = original_size.x;
-    const int orig_h = original_size.y;
-    const int dst_w = scaled_size.x;
-    const int dst_h = scaled_size.y;
+    int orig_w = original_size.x;
+    int orig_h = original_size.y;
+    int dst_w = new_size.x;
+    int dst_h = new_size.y;
 
     /* If sizes are identical, memcpy full buffer (fast path) */
     if (orig_w == dst_w && orig_h == dst_h) {
@@ -65,7 +61,7 @@ void clone_texture_data_scale(
     }
 
     zox_set_ptr(e, TextureData, data);
-    zox_set(e, TextureSize, { scaled_size });
+    zox_set(e, TextureSize, { new_size });
     zox_set(e, TextureDirty, { 1 });
 
     // zox_log("cloned texture data %s => %s", zox_get_name(e), zox_get_name(src));
