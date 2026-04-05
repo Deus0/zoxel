@@ -1,12 +1,12 @@
 #include "euler_override.c"
-#include "parent_position.c"
-#include "parent_rotation.c"
+//#include "parent_position.c"
+//#include "parent_rotation.c"
+#include "shadow.c"
 #include "euler_limit_x.c"
 #include "euler_limit_z.c"
 #include "transform_matrix.c"
 #include "transform_matrix_scale.c"
 #include "camera_transform_matrix.c"
-#include "shadow.c"
 #include "children.c"
 
 void zox_define_systems_transforms3(ecs *world) {

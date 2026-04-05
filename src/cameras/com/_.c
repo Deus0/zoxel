@@ -37,7 +37,6 @@ void define_components_cameras(ecs *world) {
     zoxd_tag(Camera);
     zoxd_tag(Camera2D);
     zoxd_tag(Camera3D);
-    // zoxd_tag(FirstPersonCamera);
     zoxd_tag(CameraUI);
     zoxd_tag(ElementBillboard);
     zoxd_byte(CameraState);

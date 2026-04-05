@@ -1,16 +1,9 @@
 ### todo ###
-
-- System that handles parenting - reparenting
-	- use for camera attachment
-	- Children links are more important as transforms are recursive
+	
 - Make layout positions recursive too
-
 - Handle player death by spawning a death camera
-
 - fix dungeon core texture issue (on lower res)
-
 - F6 key to toggle bone render debugs
-
 - Head bob to move faster when walking
 - Footstep Sounds when walking around
 
@@ -264,3 +257,7 @@ done:
 	-x Wood Texture is off atm - debug tilemap
 -x Head position - transform - lags behind rest of body
 	-x make hierarchy update recursively from root bones - just for skeleton for now
+-x Fix free camera toggle with new parents / hierarchys
+-x System that handles parenting - reparenting
+	-x use for camera attachment
+	-x Children links are more important as transforms are recursive

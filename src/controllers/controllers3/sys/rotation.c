@@ -11,7 +11,7 @@ zox_sys2(Player3RotateSystem) {
         zox_sys_i(DeviceLinks, deviceLinks)
         zox_sys_i(DeviceMode, deviceMode)
 
-        const entity character = characterLink->value;
+        entity character = characterLink->value;
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
@@ -99,6 +99,7 @@ zox_sys2(Player3RotateSystem) {
                 euler.y = right_stick.x * gamepad_rotate_multiplier_x;
             }
         }
+
         if (float_abs(right_stick.y) >= joystick_cutoff_buffer) {
             if (right_stick.y < -joystick_cutoff_buffer) {
                 euler.x = right_stick.y * gamepad_rotate_multiplier_y;
@@ -124,38 +125,43 @@ zox_sys2(Player3RotateSystem) {
         // todo: effect only rotation of axis for this
 
         // effect characters euler
-        zox_muter(character, Euler, character_euler)
-        zox_muter(character, Rotation3D, character_rotation)
+        zox_muter(character, Euler, character_euler);
+        zox_muter(character, Rotation3D, character_rotation);
+
         character_euler->value.y += euler.y;
         character_rotation->value = quaternion_from_euler(character_euler->value);
 
-        entity camera = zox_get_value(character, CameraLink);
+        zox_geter_value(character, CameraLink, entity, camera);
+
         if (!zox_valid(camera)) {
             zox_logw("camera  invalid for rotation");
             continue;
         }
 
-        // this sets camera x
-        zox_muter(camera, Euler, camera_euler);
-        zox_muter(camera, LocalRotation3D, camera_rotation);
+        // add mouse/device input (Y INPUT)
+        zox_muter(camera, Euler, ceuler);
+        ceuler->value.x -= euler.x * radians_to_degrees;
 
-        // add mouse/device input
-        camera_euler->value.x -= euler.x;
+        zox_log("New Camera Euler X (%f)", ceuler->value.x);
+
         // makes sure to keep euler between values -180 and 180
-        if (camera_euler->value.x >= 180 * degreesToRadians) {
-            camera_euler->value.x -= 360 * degreesToRadians;
-        } else if (camera_euler->value.x < -180 * degreesToRadians) {
-            camera_euler->value.x += 360 * degreesToRadians;
-        }
+        /*if (ceuler->value.x >= 180) {
+            ceuler->value.x -= 360;
+        } else if (ceuler->value.x < -180) {
+            ceuler->value.x += 360;
+        }*/
 
         // limit camera for player head
-        float2 limit_camera_x = (float2) { 89, 89 };
-        if (camera_euler->value.x > limit_camera_x.x * degreesToRadians)  {
-            camera_euler->value.x = limit_camera_x.x * degreesToRadians;
-        } else if (camera_euler->value.x < -limit_camera_x.y * degreesToRadians) {
-            camera_euler->value.x = -limit_camera_x.y * degreesToRadians;
+        float2 camera_limit_x = (float2) { 89, 89 };
+        if (ceuler->value.x < -camera_limit_x.y) {
+            ceuler->value.x = -camera_limit_x.y;
+        }
+        else if (ceuler->value.x > camera_limit_x.x)  {
+            ceuler->value.x = camera_limit_x.x;
         }
 
-        camera_rotation->value = quaternion_from_euler(camera_euler->value);
+        // TODO: Use LocalEuler and the override for this
+        zox_muter(camera, LocalRotation3D, crotation);
+        crotation->value = quaternion_from_euler(float3_scale(ceuler->value, degrees_to_radians));
     }
 } zox_sys_end(Player3RotateSystem);

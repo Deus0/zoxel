@@ -18,13 +18,11 @@ entity spawn_character3_player(ecs *world,spawn_character3D_data data) {
     // TODO: Attach in seperate system
     zox_geter_value(player, CameraLink, entity, camera);
 
-    zox_set(camera, CharacterLink, { e });
     zox_set(e, CameraLink, { camera });
+    zox_set(camera, CharacterLink, { e });
 
     zox_set(camera, EntityTarget, { e });
     zox_set(camera, AttachDirty, { zox_dirty_trigger });
-
-    // attach_camera_to_character(world, camera, e);
 
     return e;
 }

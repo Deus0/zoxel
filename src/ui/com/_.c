@@ -87,7 +87,7 @@ void define_components_elements(ecs *world) {
     zoxd_entity(ElementLink);
     zoxd_entities(ElementLinks);
     zoxd(UIHolderLink);
-    zox_define_component_entities_child(ElementHolder);
+    zoxd_child(ElementHolder);
     zoxd_int2(ElementMargins);
     zoxd_color(ElementColor);
 

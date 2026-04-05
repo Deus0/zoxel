@@ -41,18 +41,14 @@ zox_sys2(ChildrenPositionSystem) {
     zox_sys_in(Rotation3D);
     zox_sys_in(Children);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Children, children);
-
 
         for (int j = 0; j < children->length; j++) {
             entity e2 = children->value[j];
 
             set_position_recursive(world, e2, position->value, rotation->value);
         }
-
-        //set_position_recursive(world, e, position->value, rotation->value);
     }
 } zox_sys_end(ChildrenPositionSystem);

@@ -234,19 +234,13 @@ void on_spawned_terrain(ecs *world, entity player) {
     // actually we need to do this on loaded player model for bounds
 
     // if character
-    if (game_rule_attach_to_character) {
+    zox_geter(realm, SaveGamePath, path);
+    byte is_new_game = !has_save_game_file(path->value, "player.dat");
 
-        zox_geter(realm, SaveGamePath, path);
-        byte is_new_game = !has_save_game_file(path->value, "player.dat");
-
-        if (!is_new_game) {
-            game_start_player_load(world, player);
-        } else {
-            game_start_player_new(world, player);
-        }
-
+    if (!is_new_game) {
+        game_start_player_load(world, player);
     } else {
-        set_camera_free(world, camera);
+        game_start_player_new(world, player);
     }
 }
 

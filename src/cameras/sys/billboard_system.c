@@ -4,9 +4,10 @@ extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
 zox_sys2(BillboardSystem) {
-    if (main_cameras_count == 0) {
+    if (!main_cameras_count) {
         return;
     }
+
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);

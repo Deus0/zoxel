@@ -2,7 +2,7 @@ void set_main_cameras(int new_count) {
     main_cameras_count = new_count;
 }
 
-CameraSpawnData get_camera_preset(const byte mode) {
+CameraSpawnData get_camera_preset(byte mode) {
     CameraSpawnData data = { 0 };
     if (mode == zox_camera_state_topdown) {
         data = camera_preset_top_down;
@@ -19,16 +19,13 @@ CameraSpawnData get_camera_preset(const byte mode) {
 }
 
 // our main camera transformer
-void set_camera_transform(
-    ecs *world,
-    const entity camera,
-    const entity character,
-    const byte mode
-) {
+void set_camera_transform(ecs *world, entity camera, entity character, byte mode) {
+
     if (!zox_valid(camera)) {
         zox_log_error("[set_camera_transform]: Invalid Camera");
         return;
     }
+
     float3 target_position = (float3) { 8, 0, 8 };
     if (zox_valid(character) && zox_has(character, Position3D)) {
         // zox_log_error("[set_camera_transform]: Invalid Character");
@@ -36,17 +33,16 @@ void set_camera_transform(
         zox_geter_value(character, Position3D, float3, position);
         target_position = position;
     }
-    const CameraSpawnData data = get_camera_preset(mode);
-    float3 euler = data.euler;
-    float3_scale_p(&euler, degreesToRadians);
-    float4 camera_rotation = quaternion_from_euler(euler);
-    zox_set(camera, LocalPosition3D, { data.position })
-    zox_set(camera, Position3D, { float3_add(target_position, data.position) })
+
+    CameraSpawnData data = get_camera_preset(mode);
+
     if (camera_follow_mode == zox_camera_follow_mode_attach) {
-        zox_set(camera, LocalRotation3D, { camera_rotation });
-        zox_set(camera, Euler, { euler });
+        zox_set(camera, LocalPosition3D, { data.position });
+        zox_set(camera, Euler, { data.euler });
+        zox_set(camera, LocalRotation3D, { quaternion_from_euler(float3_scale(data.euler, degreesToRadians)) });
     } else {
-        zox_set(camera, Rotation3D, { camera_rotation });
+        zox_set(camera, Position3D, { float3_add(target_position, data.position) });
+        zox_set(camera, Rotation3D, { quaternion_from_euler(float3_scale(data.euler, degreesToRadians)) });
     }
 }
 
@@ -55,6 +51,7 @@ byte get_camera_state_fov(byte mode) {
 }
 
 void set_camera_mode(ecs *world, entity e, byte mode) {
+
     // remove 2 camera modes for now
     if (mode == zox_camera_state_free) {
         mode = zox_camera_state_first_person;
@@ -65,6 +62,7 @@ void set_camera_mode(ecs *world, entity e, byte mode) {
     camera_follow_mode = get_camera_preset(mode).follow_mode;
     zox_set(e, CameraState, { mode });
     zox_set(e, FieldOfView, { camera_fov });
+
     // camera_follow_mode is more complicated, involves how camera is attached to character
     entity target = 0;
     if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
@@ -114,12 +112,9 @@ byte toggle_camera_mode(ecs *world, entity camera) {
 }
 
 // sets camera to main menu location
-void set_camera_transform_to_main_menu(
-    float3 *camera_position,
-    float4 *camera_rotation,
-    const byte terrain_depth
-) {
-    const float overall_voxel_scale = powers_of_two[terrain_depth]; //  32.0f;
+void set_camera_transform_to_main_menu(float3 *camera_position, float4 *camera_rotation, byte terrain_depth) {
+
+    float overall_voxel_scale = powers_of_two[terrain_depth]; //  32.0f;
     camera_position->x = 0.25f * overall_voxel_scale;
     camera_position->y = 0.1f * overall_voxel_scale;
     camera_position->z = 0.25f * overall_voxel_scale;
@@ -127,6 +122,7 @@ void set_camera_transform_to_main_menu(
     camera_rotation->y = 0;
     camera_rotation->z = 0;
     camera_rotation->w = 1;
+
     float rot_x = -0.2f;
     float rot_y = -M_PI_2 + M_PI * (rand() % 101) / 100.0f;
     float4 camera_rotation2 = quaternion_from_euler((float3) { rot_x, rot_y, 0 });

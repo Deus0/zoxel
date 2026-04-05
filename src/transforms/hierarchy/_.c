@@ -1,15 +1,13 @@
 #ifndef zoxm_hierarchy
 #define zoxm_hierarchy
 
-zoxc_byte(ChildIndex);
-zoxc_entities(Children)
-zoxc_child(ParentLink, Children)
+#include "com/_.c"
 #include "fun/_.c"
+#include "sys/_.c"
 
 zox_begin_module(Hierarchys)
-    zoxd_byte(ChildIndex);
-    zoxd_entities(Children);
-    zox_define_component_entities_child(ParentLink);
+    define_components_hierarchy(world);
+    define_systems_hierarchy(world);
 zox_end_module(Hierarchys)
 
 #endif

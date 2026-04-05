@@ -9,7 +9,6 @@ typedef struct { \
 \
 zoxc_custom(T); \
 \
-\
 ECS_CTOR(T, ptr, { \
     ptr->length = 0; \
     ptr->value = NULL; \
