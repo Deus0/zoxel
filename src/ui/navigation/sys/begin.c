@@ -28,6 +28,7 @@ entity find_child_with_mtag_rec(ecs* world, entity e, entity tag, entity mtag, e
 
 void raycaster_select_first_button(ecs *world, entity e, entity window) {
     // entity button = find_child_with_tag_recursive(world, window, zox_id(Button));
+
     entity button = find_child_with_mtag_rec(world, window, zox_id(Button), zox_id(Header), zox_id(CloseButton));
     // find_child_with_tag(window, Button, element);
     if (!button) {

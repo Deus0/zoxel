@@ -6,7 +6,8 @@ zox_sys2(CharacterSaveSystem) {
 #ifdef zox_disable_save_games
     return;
 #endif
-    const float precision_level = 100.0f;    // 100
+
+    float precision_level = 100.0f;    // 100
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RealmLink);
@@ -14,7 +15,7 @@ zox_sys2(CharacterSaveSystem) {
     zox_sys_in(Euler);
     zox_sys_out(CharacterSaveHash);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(RealmLink, realm);
         zox_sys_i(Position3D, position);
         zox_sys_i(Euler, euler);

@@ -10,6 +10,7 @@ byte is_log_dragging = 0;
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "dbg/_.c"
 #include "zigels/_.c"
 #include "texts/_.c"
 #include "elements2/_.c"

@@ -64,7 +64,7 @@ entity spawn_taskbar(ecs *world, entity p, entity canvas, entity parent, byte la
         }
     };
 
-    const entity e = spawn_element(world, &data);
+    entity e = spawn_element(world, &data);
     zox_set_unique_name(e, "taskbar");
 
     Children children = (Children) { 0 };
@@ -136,14 +136,13 @@ entity spawn_taskbar(ecs *world, entity p, entity canvas, entity parent, byte la
         spawn_icon_data.parent.position = spawn_frame_data.element.position;
 
         // Icon
-        const entity icon = spawn_element(
-            world,
-            &spawn_icon_data
-        );
+        entity icon = spawn_element(world, &spawn_icon_data);
         zox_set_unique_name(icon, "taskbar_icon");
         frame_children.value[0] = icon;
 
-        if_has_child_with_id(canvas, hook.component_id, window) {
+        entity window = find_child_with_tag_recursive(world, canvas,  hook.component_id);
+        if (zox_valid(window)) {
+       // if_has_child_with_id(canvas, hook.component_id, window) {
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
             if (window) {

@@ -93,9 +93,10 @@ void spawn_in_game_ui_touch(ecs *world, entity player, entity canvas) {
         return;
     }
 
-    find_child_with_tag(canvas, MenuPlayTouch, game_menu_touch);
+    // find_child_with_tag(canvas, MenuPlayTouch, game_menu_touch);
 
-    if (zox_valid(game_menu_touch)) {
+    entity menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuPlayTouch));
+    if (zox_valid(menu)) {
         zox_log("touch ui already exists");
         return;
     }
@@ -113,8 +114,9 @@ void dispose_menu_game_touch(ecs *world, entity player) {
         return;
     }
 
-    find_child_with_tag(canvas, MenuPlayTouch, game_menu_touch);
-    if (zox_valid(game_menu_touch)) {
-        zox_delete(game_menu_touch)
+    // find_child_with_tag(canvas, MenuPlayTouch, game_menu_touch);
+    entity menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuPlayTouch));
+    if (zox_valid(menu)) {
+        zox_delete(menu);
     }
 }

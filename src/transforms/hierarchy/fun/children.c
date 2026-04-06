@@ -59,7 +59,7 @@ for (int i = 0; i < children_##tag->length; i++) {\
 }\
 if (child_##tag)
 
-
+/*
 #define if_has_child_with_id(e, tag, name)\
     entity name = 0;\
     zox_geter(e, Children, children_);\
@@ -71,6 +71,7 @@ if (child_##tag)
         }\
     }\
     if (name)
+*/
 
 void on_child_added(ecs *world, entity parent, entity child) {
     // zox_log(" + added [%lu] to canvas [%lu]\n", e, canvas)

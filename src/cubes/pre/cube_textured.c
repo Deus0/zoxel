@@ -1,10 +1,9 @@
-entity spawn_prefab_cube_textured(
-    ecs *world,
-    const entity prefab
-) {
-    const int2 texture_size = int2_zero; // { 16, 16 };
+entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
+
+    int2 texture_size = int2_zero; // { 16, 16 };
     // zox_prefab_child(prefab)
     zox_clone(prefab);
+
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Brightness, { 1 });
@@ -16,9 +15,11 @@ entity spawn_prefab_cube_textured(
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
     add_noise_texture(world, e);
+
     if (headless) {
         return e;
     }
+
     zox_remove_tag(e, MeshBasic3D);
     zox_add_tag(e, TexturedMesh3D);
     zox_prefab_set(e, MaterialTextured3D, { 0 });
@@ -33,36 +34,39 @@ entity spawn_prefab_cube_textured(
     prefab_set_mesh_colors_rgb(world, e, (color_rgb) { 255, 255, 255 }, cube2_vertices_length);
     add_gpu_texture(world, e);
     prefab_set_mesh_uvs_float2(world, e, cube2_uvs, cube2_uvs_length);
+
     return e;
 }
 
 // unique mesh, need to instance these!
-entity spawn_cube_textured(
-    ecs* world,
-    const entity prefab,
-    const float3 position,
-    const entity texture
-) {
-    const entity e = spawn_cube(world, prefab, position);
+entity spawn_cube_textured(ecs* world, entity prefab, float3 position, entity texture) {
+
+    entity e = spawn_cube(world, prefab, position);
     // zox_name("cube_textured")
+
     if (zox_valid(texture)) {
         clone_texture_entity_to_entity(world, e, texture);
     }
+
     if (headless || !zox_valid(shader_textured3D)) {
         return e;
     }
+
     spawn_gpu_mesh(world, e);
     spawn_gpu_uvs(world, e);
     spawn_gpu_colors(world, e);
     spawn_gpu_texture(world, e);
-    const uint2 shader = zox_get_value(shader_textured3D, ShaderGPULink);
-    const uint material = spawn_gpu_material(world, e, shader);
+
+    uint2 shader = zox_get_value(shader_textured3D, ShaderGPULink);
+    zox_set(e, ShaderLink, { shader_textured3D });
+
+    uint material = spawn_gpu_material(world, e, shader);
     if (!material) {
         zox_log_error("=> [spawn_cube_textured] Failed");
-        return 0;
+    } else {
+        MaterialTextured3D attributes = create_MaterialTextured3D(material);
+        zox_set_data(e, MaterialTextured3D, attributes);
     }
-    const MaterialTextured3D attributes = create_MaterialTextured3D(material);
-    zox_set_data(e, MaterialTextured3D, attributes);
-    zox_set(e, ShaderLink, { shader_textured3D });
+
     return e;
 }

@@ -1,4 +1,4 @@
-entity spawn_camera_base(ecs *world, entity p, float3 position, float4 rotation, byte state, float fov, int2 screen_position, int2 size, float4 screen_to_canvas) {
+entity spawn_camera(ecs *world, entity p, float3 position, float4 rotation, byte state, float fov, int2 screen_position, int2 size, float4 screen_to_canvas) {
 
     zox_instance(p);
     zox_name("camera");

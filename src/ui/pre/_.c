@@ -4,6 +4,7 @@
 #include "element_textured.c"
 #include "canvas_overlay.c"
 #include "render_texture.c"
+
 entity prefab_canvas;
 entity prefab_element_invisible;
 entity prefab_element_shell;      // has a texture and renderer, good for setting
@@ -38,15 +39,20 @@ void spawn_prefabs_elements(ecs *world) {
     zox_prefab_set(prefab_canvas, PlayerLink, { 0 });
 #endif
     prefab_element_invisible = spawn_prefab_element_invisible(world, prefab_layout2);
+
     // has a texture also
     prefab_element_shell = spawn_prefab_element_shell(world, prefab_element_invisible);
+
     // has a texture also
     prefab_element_ready = spawn_prefab_element_ready(world, prefab_element_shell);
+
     // has a frame texture
     prefab_element_textured = spawn_prefab_element_textured(world, prefab_element_ready);
+
     // more stuffs
     prefab_render_texture = spawn_prefab_render_texture(world, prefab_element_shell);
     prefab_canvas_overlay = spawn_prefab_canvas_overlay(world, prefab_element_textured);
+
     // linking
     if (prefab_player) {
         prefabs_add_ui_to_raycaster(world, prefab_player);

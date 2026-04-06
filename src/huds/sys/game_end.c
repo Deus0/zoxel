@@ -20,14 +20,16 @@ zox_sys2(PlayerUIGameEndSystem) {
         }
 
         // Remove UIs
-        find_child_with_tag(canvas->value, MenuPaused, menu_paused);
-        if (zox_valid(menu_paused)) {
-            zox_delete(menu_paused); // for second player
+        entity menu = find_child_with_tag_recursive(world, canvas->value, zox_id(MenuPaused));
+        // find_child_with_tag(canvas->value, MenuPaused, menu_paused);
+        if (zox_valid(menu)) {
+            zox_delete(menu); // for second player
         }
 
-        find_child_with_tag(canvas->value, Taskbar, taskbar);
-        if (zox_valid(taskbar)) {
-            zox_delete(taskbar);
+        // find_child_with_tag(canvas->value, Taskbar, taskbar);
+        menu = find_child_with_tag_recursive(world, canvas->value, zox_id(Taskbar));
+        if (zox_valid(menu)) {
+            zox_delete(menu);
         }
 
         // FadeOut

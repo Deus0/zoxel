@@ -6,7 +6,8 @@ zox_sys2(RenderTextureRenderSystem) {
     if (!material_render_texture) {
         return;
     }
-    const uint material_link = zox_get_value(material_render_texture, MaterialGPULink);
+
+    uint material_link = zox_get_value(material_render_texture, MaterialGPULink);
     const MaterialAttributesRenderTexture *material_attributes = zox_get(material_render_texture, MaterialAttributesRenderTexture);
     byte has_set_material = 0;
 

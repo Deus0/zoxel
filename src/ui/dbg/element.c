@@ -1,4 +1,4 @@
-void key_down_test_ui(ecs *world, int32_t keycode) {
+/*void key_down_test_ui(ecs *world, int32_t keycode) {
     if (keycode != SDLK_h) {
         return;
     }
@@ -9,4 +9,4 @@ void key_down_test_ui(ecs *world, int32_t keycode) {
     entity source_texture = files_textures[2];
     spawn_element_texture(world, canvas, source_texture, position, size);
     spawn_sound_from_file_index(world, prefab_sound, 0);
-}
+}*/

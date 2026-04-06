@@ -49,7 +49,7 @@ zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(DeviceLinks, devices);
         zox_sys_i(CharacterLink, character);

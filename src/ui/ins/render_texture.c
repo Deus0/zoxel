@@ -10,6 +10,7 @@ entity spawn_render_texture(ecs *world, entity p, entity canvas, int2 layout_siz
     zox_name("render_texture");
 
     initialize_element(world, e, parent, canvas, position, layout_size, texture_size, anchor, layer);
+
     zox_set(e, CameraLink, { camera });
 
     // zox_log("render texture s %ix%i ts %ix%i", layout_size.x, layout_size.y, texture_size.x, texture_size.y);

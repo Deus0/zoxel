@@ -8,7 +8,7 @@ void set_element_properties(ecs *world, entity e, entity parent, entity canvas, 
     zox_set(e, ParentLink, { parent });
 
     if (canvas == parent) {
-        on_child_added(world, canvas, e);
+        // on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }
 }

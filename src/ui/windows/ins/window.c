@@ -10,6 +10,7 @@ entity spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData 
     zox_set(e, WindowType, { type });
 
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+
     zox_set(e, HeaderHeight, { header_height });
 
     // start children

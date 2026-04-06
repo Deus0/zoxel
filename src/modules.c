@@ -30,6 +30,7 @@
 
 // inner core
 #include "textures/_.c"
+#include "cubes/_.c"
 #include "musics/_.c"
 #include "animations/_.c"
 #include "bones/_.c"
@@ -41,7 +42,6 @@
 #include "genetics/_.c"
 #include "neurals/_.c"
 #include "blueprints/_.c"
-#include "cubes/_.c"
 #include "blocks/_.c"
 #include "chunks/_.c"
 
@@ -125,6 +125,7 @@ zox_begin_module(Zox)
     zox_import_module(Lines);
 
     zox_import_module(Textures);
+    zox_import_module(Cubes);
     zox_import_module(Musics);
     zox_import_module(Animations);
     zox_import_module(Bones);
@@ -136,7 +137,6 @@ zox_begin_module(Zox)
     zox_import_module(Neurals);
     zox_import_module(Blueprints);
     zox_import_module(Shapes);
-    zox_import_module(Cubes);
 
     zox_import_module(Blocks);
     zox_import_module(Chunks);

@@ -20,12 +20,13 @@ zox_sys2(RenderTextureBeginSystem) {
             continue;
         }
 
-        if (!zox_valid(camera->value) || !zox_has(camera->value, FrameBufferLink)) {
-            zox_log_error("render_texture failed: camera_invalid [%s]", zox_get_name(camera->value))
+        if (!zox_valid(camera->value)) {
+            zox_logw("Invalid Render Camera");
             continue;
         }
 
         if (!zox_has(camera->value, FrameBufferLink)) {
+            zox_log_error("Render Camera has no FrameBufferLink [%s]", zox_get_name(camera->value));
             continue;
         }
 
@@ -34,7 +35,7 @@ zox_sys2(RenderTextureBeginSystem) {
         connect_render_texture_to_fbo(fbo, gpu_link->value);
 
         // set size
-        const int2 scaled_size = scale_viewport(size->value);
+        int2 scaled_size = scale_viewport(size->value);
         zox_geter_value(camera->value, RenderBufferLink, uint, rbo);
         set_render_texture_gpu(gpu_link->value, scaled_size);
         set_render_buffer_size(rbo, scaled_size);

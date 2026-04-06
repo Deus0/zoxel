@@ -142,7 +142,8 @@ void zoxel_debug_keys() {
     add_hook_key_down(toggle_player_death);
 
     add_hook_key_down(spawn_tilemap_ui);
-    add_hook_key_down(spawn_dbg_texture_generated);
+    // add_hook_key_down(spawn_dbg_texture_generated);
+    add_hook_key_down(spawn_test_render_texture);
 
 
     add_hook_key_down(key_down_toggle_debug_chunks);

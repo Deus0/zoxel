@@ -60,12 +60,8 @@ void trigger_canvas_fade_in(
     zox_set(e, RenderDisabled, { 0 });
 }
 
-void trigger_canvas_fade_transition(
-    ecs* world,
-    const entity canvas,
-    const double fade_time,
-    const double delay_time
-) {
+void trigger_canvas_fade_transition(ecs* world, entity canvas, double fade_time, double delay_time) {
+
     find_child_with_tag(canvas, CanvasOverlay, e);
     if (!e) {
         zox_log_error("Failed to find canvas_overlay on canvas");
@@ -95,14 +91,9 @@ void trigger_canvas_fade_transition(
     animationTargets->value[2] = 0;
 }
 
-void trigger_canvas_half_fade(
-    ecs *world,
-    const entity canvas,
-    const float time_length,
-    const float alpha,
-    const byte direction
-) {
-    const float canvas_fade_delay = 0.02f;
+void trigger_canvas_half_fade(ecs *world, entity canvas, float time_length, float alpha, byte direction) {
+
+    float canvas_fade_delay = 0.02f;
     find_child_with_tag(canvas, CanvasOverlay, e)
     if (!e) {
         zox_log_error("Failed to find canvas_overlay on canvas");

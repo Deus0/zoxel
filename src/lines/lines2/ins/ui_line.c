@@ -1,8 +1,4 @@
-void offset_line_points(
-    int4 *points,
-    const float4 line_anchor,
-    const float2 canvas_size_f
-) {
+void offset_line_points(int4 *points, float4 line_anchor, float2 canvas_size_f) {
     points->x += canvas_size_f.x * line_anchor.x;
     points->y += canvas_size_f.y * line_anchor.y;
     points->z += canvas_size_f.x * line_anchor.z;
@@ -28,12 +24,12 @@ entity spawn_ui_line2(
         canvas = zox_canvases[0];
     }
     // const int2 canvas_size = zox_get_value(canvas, LayoutSize)
-    const entity e = life_time ? zox_instancee(prefab_temporary_ui_line2D) : zox_instancee(prefab_ui_line2D);
+
+    entity e = life_time ? zox_instancee(prefab_temporary_ui_line2D) : zox_instancee(prefab_ui_line2D);
     zox_name("ui_line2D");
     zox_set(e, CanvasLink, { canvas });
-    // const float2 canvas_size_f = { (float) canvas_size.x, (float) canvas_size.y };
-    // const float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
-    const float4 line_anchor = (float4) {
+
+    float4 line_anchor = (float4) {
         anchor_a.x,
         anchor_a.y,
         anchor_b.x,
@@ -56,7 +52,7 @@ entity spawn_ui_line2(
 
     // adds to canvas
     if (parent == canvas) {
-        on_child_added(world, canvas, e);
+        // on_child_added(world, canvas, e);
     }
 
     return e;

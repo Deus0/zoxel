@@ -27,7 +27,7 @@ entity spawn_button_icon(
     zox_set(e, CanvasLink, { canvas });
 
     if (canvas == parent) {
-        on_child_added(world, canvas, e);
+        // on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }
 

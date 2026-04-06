@@ -12,7 +12,7 @@ entity spawn_image(ecs* world, entity p, entity texture, entity canvas, entity p
     zox_set(e, RenderDisabled, { rdisabled });
 
     if (canvas == parent) {
-        on_child_added(world, canvas, e);
+        // on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }
 

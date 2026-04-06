@@ -63,15 +63,19 @@ entity spawn_menu_game(
     return e;
 }
 
-void dispose_menu_game(
-    ecs *world,
-    const entity player
-) {
+void dispose_menu_game(ecs *world, entity player) {
+
     zox_geter_value(player, CanvasLink, entity, canvas);
-    find_child_with_tag(canvas, MenuPlay, game_ui);
-    if (game_ui) {
-        zox_delete(game_ui)
+    if (!zox_valid(canvas)) {
+        return;
     }
+
+    // find_child_with_tag(canvas, MenuPlay, menu);
+    entity menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuPlay));
+    if (zox_valid(menu)) {
+        zox_delete(menu)
+    }
+
     dispose_menu_game_touch(world, player);
 }
 

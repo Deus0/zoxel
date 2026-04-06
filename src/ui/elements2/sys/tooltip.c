@@ -7,7 +7,7 @@ zox_sys2(TooltipSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(SelectState, selectState);
         zox_sys_i(TooltipEvent, tooltipEvent);
-        zox_sys_i(CanvasLink, canvasLink);
+        zox_sys_i(CanvasLink, canvas);
 
         if (!(selectState->value == zox_select_state_selected_this_frame || selectState->value == zox_select_state_deselected_this_frame)) {
             continue;
@@ -15,16 +15,21 @@ zox_sys2(TooltipSystem) {
         if (!tooltipEvent->value) {
             continue;
         }
-        find_child_with_tag(canvasLink->value, Tooltip, tooltip)
+
+       //find_child_with_tag(canvasLink->value, Tooltip, tooltip)
+
+        entity tooltip = find_child_with_tag_recursive(world, canvas->value, zox_id(Tooltip));
         if (!tooltip) {
-            zox_log(" ! tooltip not found in canvas\n")
+            zox_log("Tooltip not found in canvas");
             continue;
         }
+
         if (selectState->value == zox_select_state_deselected_this_frame) {
             set_entity_text(world, tooltip, "");
             continue;
         }
-        zox_sys_e()
+
+        zox_sys_e();
         TooltipEventData data = {
             .event = selectState->value,
             .tooltip = tooltip,

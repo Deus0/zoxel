@@ -227,7 +227,7 @@ entity game_start_player_load(ecs *world, entity player) {
 void on_spawned_terrain(ecs *world, entity player) {
 
     zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(player, CameraLink, entity, camera);
+    // zox_geter_value(player, CameraLink, entity, camera);
     zox_geter_value(game, RealmLink, entity, realm);
 
     play_playlist(world, realm, 1);

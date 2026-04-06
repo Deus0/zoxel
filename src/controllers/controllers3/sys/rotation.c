@@ -142,14 +142,7 @@ zox_sys2(Player3RotateSystem) {
         zox_muter(camera, Euler, ceuler);
         ceuler->value.x -= euler.x * radians_to_degrees;
 
-        zox_log("New Camera Euler X (%f)", ceuler->value.x);
-
-        // makes sure to keep euler between values -180 and 180
-        /*if (ceuler->value.x >= 180) {
-            ceuler->value.x -= 360;
-        } else if (ceuler->value.x < -180) {
-            ceuler->value.x += 360;
-        }*/
+        // zox_log("New Camera Euler X (%f)", ceuler->value.x);
 
         // limit camera for player head
         float2 camera_limit_x = (float2) { 89, 89 };
@@ -160,8 +153,16 @@ zox_sys2(Player3RotateSystem) {
             ceuler->value.x = camera_limit_x.x;
         }
 
-        // TODO: Use LocalEuler and the override for this
+        // TODO: Use LocalEuler and the override for this, confusing to debug atm due to inconsistency
+
         zox_muter(camera, LocalRotation3D, crotation);
         crotation->value = quaternion_from_euler(float3_scale(ceuler->value, degrees_to_radians));
     }
 } zox_sys_end(Player3RotateSystem);
+
+// makes sure to keep euler between values -180 and 180
+/*if (ceuler->value.x >= 180) {
+    ceuler->value.x -= 360;
+} else if (ceuler->value.x < -180) {
+    ceuler->value.x += 360;
+}*/

@@ -34,28 +34,22 @@ zox_sys2(PlayerResumeSystem) {
             continue;
         }
 
-        find_child_with_tag(canvas->value, MenuPaused, menu_paused);
-        if (zox_valid(menu_paused)) {
-            zox_delete(menu_paused);
+        // find_child_with_tag(canvas->value, MenuPaused, menu_paused);
+        entity menu = find_child_with_tag_recursive(world, canvas->value, zox_id(MenuPaused));
+        if (zox_valid(menu)) {
+            zox_delete(menu);
         }
-        find_child_with_tag(canvas->value, Taskbar, taskbar);
-        if (zox_valid(taskbar)) {
-            zox_delete(taskbar);
-        }
-        trigger_canvas_half_fade(
-            world,
-            canvas->value,
-            pause_fade_time,
-            pause_fade_alpha,
-            0
-        );
 
-        entity pause_event = delay_event(
-            world,
-            &resume_player_delayed,
-            e,
-            pause_fade_time
-        );
+        // find_child_with_tag(canvas->value, Taskbar, taskbar);
+        menu = find_child_with_tag_recursive(world, canvas->value, zox_id(Taskbar));
+        if (zox_valid(menu)) {
+            zox_delete(menu);
+        }
+
+        trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 0);
+
+        entity pause_event = delay_event(world, &resume_player_delayed, e, pause_fade_time);
+
         if (zox_valid(pause_event_link->value)) {
             zox_delete(pause_event_link->value)
         }

@@ -1,8 +1,12 @@
 ### todo ###
-	
+
+
 - Make layout positions recursive too
-- Handle player death by spawning a death camera
-- fix dungeon core texture issue (on lower res)
+- Transform layout data to transform
+- Make all ui shadrs use transforms like render texture does
+
+- Handle player death by  removing camera on death state
+- Fix dungeon core texture issue (on lower res)
 - F6 key to toggle bone render debugs
 - Head bob to move faster when walking
 - Footstep Sounds when walking around

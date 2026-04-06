@@ -117,7 +117,10 @@ zox_sys2(UserIconClickSystem) {
         if (!clicked_data_empty) {
             zox_geter_value(e, CanvasLink, entity, canvas);
             if (zox_valid(canvas)) {
-                find_child_with_tag(canvas, Tooltip, tooltip)
+
+                entity tooltip = find_child_with_tag_recursive(world, canvas, zox_id(Tooltip));
+                // find_child_with_tag(canvas, Tooltip, tooltip)
+
                 if (zox_valid(tooltip)) {
                     set_entity_text(world, tooltip, "");
                 }

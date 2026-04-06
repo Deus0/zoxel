@@ -1,8 +1,10 @@
-void pause_player_ending(ecs *world, const entity e) {
+void pause_player_ending(ecs *world, entity e) {
     zox_geter_value(e, CanvasLink, entity, canvas);
+
     if (game_ui_has_taskbar) {
         spawn_taskbar(world, prefab_taskbar, canvas, canvas, pause_ui_overlay_layer + 1);
     }
+
     spawn_menu_paused(world, e);
 }
 
