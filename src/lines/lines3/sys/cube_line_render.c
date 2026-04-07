@@ -26,6 +26,9 @@ zox_sys2(CubeLineRenderSystem) {
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
     zox_sys_in(Bounds3D);
+
+    camera_filtering_begin();
+
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DebugCubeLines, dmode);
@@ -38,6 +41,8 @@ zox_sys2(CubeLineRenderSystem) {
         if (!dmode->value) {
             continue;
         }
+
+        camera_filtering_check();
 
         float3 b = bounds->value;
         if (zox_has(e, DebugCubeShrink)) {

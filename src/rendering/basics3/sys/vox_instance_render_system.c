@@ -25,6 +25,8 @@ zox_sys2(VoxInstanceRenderSystem) {
     zox_sys_in(InstanceLink);
     zox_sys_in(RenderDisabled);
 
+    camera_filtering_begin();
+
     // get material
     zox_geter_value(material_vox_instance, MaterialGPULink, uint, material_link);
     if (!material_link) {
@@ -38,16 +40,20 @@ zox_sys2(VoxInstanceRenderSystem) {
     }
 
     zox_geter(material_vox_instance, MaterialVoxInstance, material_attributes);
+
     InstanceRenderCommand_array_d* commands = create_InstanceRenderCommand_array_d(max_meshes);
+
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(RenderDisabled, rdisabled);
         zox_sys_i(InstanceLink, instanceLink);
         zox_sys_i(TransformMatrix, matrix);
 
-        if (!zox_valid(instanceLink->value) || renderDisabled->value) {
+        if (!zox_valid(instanceLink->value) || rdisabled->value) {
             // zox_log_error("cannot render instanced mesh [%s]", zox_get_name(instanceLink->value))
             continue;
         }
+
+        camera_filtering_check();
 
         int index = 0;
         if (has_mesh(commands, instanceLink->value, &index)) {

@@ -20,6 +20,9 @@ zox_sys2(Skeleton3RenderSystem) {
     zox_sys_in(TransformMatrix);
     zox_sys_in(RenderDisabled);
     zox_sys_in(BoneLinks);
+
+    camera_filtering_begin();
+
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, renderDisabled);
         zox_sys_i(MeshIndicies, meshIndicies);
@@ -32,6 +35,8 @@ zox_sys2(Skeleton3RenderSystem) {
         if (renderDisabled->value || !meshIndicies->length || !meshGPULink->value.x || !meshGPULink->value.y || !colorsGPULink->value || !boneIndexGPULink->value || !bones->length) {
             continue;
         }
+
+        camera_filtering_check();
 
         if (!has_set_material) {
             has_set_material = 1;

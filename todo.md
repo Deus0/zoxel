@@ -3,7 +3,7 @@
 - fix no post processing mode - zox_use_post_processing
 	- add to settings
 
-- Filter the camera, so it only shows the cube or a few cubes added
+- Test camera filter for multiple cubes
 - Add render texture + render camera spawn facing player character when open a ui from taskbar (status ui)
 - Make render textures check layers
 
@@ -275,3 +275,4 @@ done:
 	-x use for camera attachment
 	-x Children links are more important as transforms are recursive
 -x Transform layout data to transform so we can position the render textures
+-x Filter the camera, so it only shows the cube

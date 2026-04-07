@@ -194,6 +194,9 @@ zox_begin_module(ZoxGame)
     float viewport_downscale = 1;
     viewport_scale = 1 / viewport_downscale;
     target_fps = 0;
+
+    zox_log_lags = 1;
+
     // target_fps = 5;
     // is_split_screen = 1;
     // auto_player = 1;

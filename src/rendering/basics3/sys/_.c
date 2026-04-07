@@ -13,7 +13,7 @@
 void define_systems_basics3D(ecs* world) {
     // skybox
     zox_render3D_plus_system(
-        Render3DSystem,
+        Basic3RenderSystem,
         [in] transforms.TransformMatrix,
         [in] rendering.Brightness,
         [in] rendering.MeshGPULink,

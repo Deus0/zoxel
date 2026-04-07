@@ -54,6 +54,7 @@ void spawn_test_render_texture(ecs *world, int32_t keycode) {
         color ocolor = color_white;
 
         dbg_render_camera = spawn_camera(world, prefab_camera, cposition, crotation, 0, 45, int2_zero, tsize, single_screen_to_canvas);
+        zox_add_tag(dbg_render_camera, CameraFilter);
         create_camera_rbo_and_fbo(world, dbg_render_camera, tsize);
 
         // Create texture
@@ -62,9 +63,12 @@ void spawn_test_render_texture(ecs *world, int32_t keycode) {
         zox_set_unique_name(dbg_render_texture, "dbg_render_texture");
 
         // our scene
-        // float3 cube_position = float3_add(cposition, quaternion_rotate_vector(crotation, float3_backward));
-        float3 cube_position = cposition;
+        float3 cube_position = float3_add(cposition, quaternion_rotate_vector(crotation, float3_scale(float3_backward, 0.3f)));
+        // float3 cube_position = cposition;
         dbg_render_cube = spawn_cube(world, prefab_cube, cube_position);
+        zox_set(dbg_render_cube, CameraRenderer, { dbg_render_camera });
+        float4 rotation_speed = quaternion_from_euler( (float3) { 0, 25 * degreesToRadians, 0 });
+        zox_set(dbg_render_cube, EternalRotation, { rotation_speed });
 
         // zox_log("Spawned [dbg_render_texture]");
         spawn_sound_from_file_index(world, prefab_sound, 0);

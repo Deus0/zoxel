@@ -3,3 +3,4 @@
 #include "viewport.c"
 #include "camera.c"
 #include "debug.c"
+#include "filters.c"

@@ -26,6 +26,10 @@ zoxc_array(CameraPlanes, plane, 6);
 
 zoxc_state(AttachDirty);
 
+// Filters
+zox_tag(CameraFilter);
+zoxc_entity(CameraRenderer);
+
 // Render Cameras
 zox_tag(RenderCamera);
 zox_tag(RenderTexture);
@@ -63,5 +67,9 @@ void define_components_cameras(ecs *world) {
     zoxd_entity(RenderTextureLink);
     zoxd_entity(RenderCameraLink);
     zoxd_entities(CameraLinks);
+
+    // Filters
+    zoxd_tag(CameraFilter);
+    zoxd_entity(CameraRenderer);
 
 }

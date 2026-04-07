@@ -126,6 +126,7 @@ zox_sys2(SystemDeltaLogSystem) {
         total += delta->value;
 
         double cutoff = zox_lag_cutoff;
+
         if (zox_has(e, SystemDeltaMax)) {
             cutoff = zox_gett_value(e, SystemDeltaMax);
         }

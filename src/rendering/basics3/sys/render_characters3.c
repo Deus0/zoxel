@@ -23,6 +23,9 @@ zox_sys2(Characters3RenderSystem) {
     zox_sys_in(ColorsGPULink);
     zox_sys_in(TransformMatrix);
     zox_sys_in(RenderDisabled);
+
+    camera_filtering_begin();
+
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, renderDisabled);
         zox_sys_i(MeshIndicies, meshIndicies);
@@ -33,6 +36,10 @@ zox_sys2(Characters3RenderSystem) {
         if (renderDisabled->value || !meshIndicies->length || !meshGPULink->value.x || !meshGPULink->value.y || !colorsGPULink->value) {
             continue;
         }
+
+        camera_filtering_check();
+
+
         if (!has_set_material) {
             has_set_material = 1;
 #ifdef zox_transparent_voxes
