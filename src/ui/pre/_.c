@@ -3,14 +3,14 @@
 #include "element.c"
 #include "element_textured.c"
 #include "canvas_overlay.c"
-#include "render_texture.c"
 
 entity prefab_canvas;
+
 entity prefab_element_invisible;
 entity prefab_element_shell;      // has a texture and renderer, good for setting
 entity prefab_element_ready;      // ready for generating textures
 entity prefab_element_textured;   // rename to textured_frame
-entity prefab_render_texture;     // a child of prefab_element_basic
+
 entity prefab_canvas_overlay;
 
 void prefabs_add_ui_to_player(ecs *world, const entity e) {
@@ -50,7 +50,6 @@ void spawn_prefabs_elements(ecs *world) {
     prefab_element_textured = spawn_prefab_element_textured(world, prefab_element_ready);
 
     // more stuffs
-    prefab_render_texture = spawn_prefab_render_texture(world, prefab_element_shell);
     prefab_canvas_overlay = spawn_prefab_canvas_overlay(world, prefab_element_textured);
 
     // linking

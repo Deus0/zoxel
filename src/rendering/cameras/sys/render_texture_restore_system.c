@@ -17,6 +17,7 @@ zox_sys2(RenderTextureRestoreSystem) {
             if (fbo && rbo) {
                 connect_render_buffer_to_fbo(fbo, rbo);
             }
+
             // Refresh Texture
             set_render_texture_gpu(textureGPULink->value, textureSize->value);
             connect_render_texture_to_fbo(fbo, textureGPULink->value);

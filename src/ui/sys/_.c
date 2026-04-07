@@ -14,10 +14,6 @@
 #include "rendering/texture_gpu_begin.c"
 #include "rendering/element_renderer.c"
 
-#include "render_texture/render_texture_begin.c"
-#include "render_texture/render_texture_renderer.c"
-#include "render_texture/render_texture.c"
-
 #include "inputs/button_click_event.c"
 #include "inputs/mouse_element.c"
 #include "inputs/device_click.c"
@@ -259,38 +255,6 @@ void define_systems_elements(ecs *world) {
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
         [out] rendering.MeshDirty
-    );
-
-    // Render Texture
-    zox_system(
-        RenderTextureSizeSystem,
-        EcsOnUpdate,
-        [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.LayoutSize,
-        [in] rendering.TextureGPULink,
-        [in] cameras.CameraLink,
-        [none] cameras.RenderTexture
-    );
-    if (!headless) {
-        zox_system_1(
-            RenderTextureBeginSystem,
-            EcsPreUpdate,
-            [in] elements.InitializeElement,
-            [in] layouts2.LayoutSize,
-            [in] cameras.CameraLink,
-            [in] rendering.TextureGPULink,
-            [none] cameras.RenderTexture
-        );
-    }
-    zox_render2D_system(
-        RenderTextureRenderSystem,
-        [in] transforms3.TransformMatrix,
-        [in] layouts2.Layer2D,
-        [in] rendering.RenderDisabled,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.TextureGPULink,
-        [none] cameras.RenderTexture
     );
 
 }

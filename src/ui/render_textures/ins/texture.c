@@ -1,5 +1,4 @@
-// todo: stretch to canvas_size, AnchorSize
-entity spawn_render_texture(ecs *world, entity p, entity canvas, int2 layout_size, int2 texture_size, entity camera) {
+entity spawn_render_texture_canvas(ecs *world, entity p, entity canvas, int2 layout_size, int2 texture_size, entity camera) {
 
     byte layer = 0;
     entity parent = canvas;

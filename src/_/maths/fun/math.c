@@ -118,27 +118,24 @@ static inline float4x4 float4x4_rotation(const float4 rotation) {
     return m;
 }
 
-static inline float4x4 float4x4_transform(
-    const float3 position,
-    const float4 rotation
-) {
-    const float4x4 position_matrix = float4x4_position(position);
-    const float4x4 rotation_matrix = float4x4_rotation(float4_normalize(rotation));
+static inline float4x4 float4x4_transform(float3 position,float4 rotation) {
+
+    float4x4 position_matrix = float4x4_position(position);
+    float4x4 rotation_matrix = float4x4_rotation(float4_normalize(rotation));
+
     return float4x4_multiply(rotation_matrix, position_matrix);
 }
 
-static inline float4x4 float4x4_transform_scale(
-    const float3 position,
-    const float4 rotation,
-    const float scale
-) {
-    const float4x4 position_m = float4x4_position(position);
-    const float4x4 rotation_m = float4x4_rotation(rotation);
-    const float4x4 scale_m = float4x4_scale(scale);
+static inline float4x4 float4x4_transform_scale(float3 position, float4 rotation, float scale) {
+
+    float4x4 position_m = float4x4_position(position);
+    float4x4 rotation_m = float4x4_rotation(rotation);
+    float4x4 scale_m = float4x4_scale(scale);
+
     return float4x4_multiply(scale_m, float4x4_multiply(rotation_m, position_m));
 }
 
-static inline float4x4 float4x4_transpose(const float4x4 mat) {
+static inline float4x4 float4x4_transpose(float4x4 mat) {
     float4x4 result;
     result.x = (float4) { mat.x.x, mat.y.x, mat.z.x, mat.w.x };
     result.y = (float4) { mat.x.y, mat.y.y, mat.z.y, mat.w.y };
@@ -147,11 +144,11 @@ static inline float4x4 float4x4_transpose(const float4x4 mat) {
     return result;
 }
 
-static inline float3 float4x4_get_position(const float4x4 matrix) {
+static inline float3 float4x4_get_position(float4x4 matrix) {
     return (float3) { matrix.w.x, matrix.w.y, matrix.w.z };
 }
 
-static inline float4x4 float4x4_inverse_position(const float4x4 matrix) {
+static inline float4x4 float4x4_inverse_position(float4x4 matrix) {
     return (float4x4) {
         matrix.x,
         matrix.y,
@@ -161,11 +158,8 @@ static inline float4x4 float4x4_inverse_position(const float4x4 matrix) {
 }
 
 //! View Matrix multipled by projection and used to distort pixel magic.
-static inline float4x4 float4x4_view_matrix(
-    const float3 position,
-    const float3 forward,
-    const float3 up
-) {
+static inline float4x4 float4x4_view_matrix(float3 position, float3 forward, float3 up) {
+
     float4x4 matrix = float4x4_position(float3_scale(position, -1.0f));
     float3 side = float3_cross(forward, up);
     side = float3_normalize(side);
@@ -178,10 +172,11 @@ static inline float4x4 float4x4_view_matrix(
     matrix.x.z = -forward.x;
     matrix.y.z = -forward.y;
     matrix.z.z = -forward.z;
+
     return matrix;
 }
 
-static inline void float4x4_rotate(float4x4 *matrix, const float4 rotation) {
+static inline void float4x4_rotate(float4x4 *matrix, float4 rotation) {
     matrix->x.x *= rotation.x;
     matrix->y.x *= rotation.x;
     matrix->z.x *= rotation.x;
@@ -200,40 +195,38 @@ static inline void float4x4_rotate(float4x4 *matrix, const float4 rotation) {
     matrix->w.w *= rotation.w;
 }
 
-static inline void float4_divide(float4 *input, const float division) {
+static inline void float4_divide(float4 *input, float division) {
     input->x /= division;
     input->y /= division;
     input->z /= division;
     input->w /= division;
 }
 
-static inline float3 float4x4_multiply_float3(
-    const float4x4 mat,
-    const float3 point
-) {
+static inline float3 float4x4_multiply_float3(float4x4 mat, float3 point) {
     float3 result;
     result.x = mat.x.x * point.x + mat.y.x * point.y + mat.z.x * point.z + mat.w.x;
     result.y = mat.x.y * point.x + mat.y.y * point.y + mat.z.y * point.z + mat.w.y;
     result.z = mat.x.z * point.x + mat.y.z * point.y + mat.z.z * point.z + mat.w.z;
+
     return result;
 }
 
-static inline float4 float4x4_multiply_float4(const float4x4 mat, const float4 point) {
+static inline float4 float4x4_multiply_float4(float4x4 mat, float4 point) {
     float4 result;
     result.x = mat.x.x * point.x + mat.y.x * point.y + mat.z.x * point.z + mat.w.x * point.w;
     result.y = mat.x.y * point.x + mat.y.y * point.y + mat.z.y * point.z + mat.w.y * point.w;
     result.z = mat.x.z * point.x + mat.y.z * point.y + mat.z.z * point.z + mat.w.z * point.w;
     result.w = mat.x.w * point.x + mat.y.w * point.y + mat.z.w * point.z + mat.w.w * point.w;
+
     return result;
 }
 
-static inline float3 float4x4_multiply_float3_without_translation(
-    const float4x4 mat,
-    const float3 point
-) {
+static inline float3 float4x4_multiply_float3_without_translation(float4x4 mat, float3 point) {
+
     float3 result;
     result.x = mat.x.x * point.x + mat.y.x * point.y + mat.z.x * point.z;
     result.y = mat.x.y * point.x + mat.y.y * point.y + mat.z.y * point.z;
     result.z = mat.x.z * point.x + mat.y.z * point.y + mat.z.z * point.z;
+
     return result;
 }

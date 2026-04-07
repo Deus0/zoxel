@@ -3,8 +3,6 @@ entity spawn_prefab_render_texture(ecs *world, entity p) {
     zox_prefab_child(p);    // from element_basic
 
     zox_add_tag(e, RenderTexture);
-    // zox_add_tag(e, TextureRGB);
-    zox_prefab_set(e, AnchorSize, { float2_one });
     zox_prefab_set(e, CameraLink, { 0 });
 
     // for now we must do this otherwise we get edge pixels

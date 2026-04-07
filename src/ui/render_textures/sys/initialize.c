@@ -2,12 +2,12 @@ zox_sys2(RenderTextureBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InitializeElement);
-    zox_sys_in(LayoutSize);
+    zox_sys_in(TextureSize);
     zox_sys_in(CameraLink);
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(InitializeElement, initialize);
-        zox_sys_i(LayoutSize, size);
+        zox_sys_i(TextureSize, tsize);
         zox_sys_i(CameraLink, camera);
         zox_sys_i(TextureGPULink, gpu_link);
 
@@ -35,15 +35,12 @@ zox_sys2(RenderTextureBeginSystem) {
         connect_render_texture_to_fbo(fbo, gpu_link->value);
 
         // set size
-        int2 scaled_size = scale_viewport(size->value);
         zox_geter_value(camera->value, RenderBufferLink, uint, rbo);
-        set_render_texture_gpu(gpu_link->value, scaled_size);
-        set_render_buffer_size(rbo, scaled_size);
+        set_render_texture_gpu(gpu_link->value, tsize->value);
+        set_render_buffer_size(rbo, tsize->value);
 
-        /*zox_log("+ [%s] RenderTexture Uploaded: %ix%i - og [%ix%i]",
-            zox_get_name(e),
-            scaled_size.x, scaled_size.y,
-            size->value.x, size->value.y);*/
+        zox_sys_e();
+        zox_log("+ [%s] RenderTexture Uploaded: %ix%i", zox_get_name(e), tsize->value.x, tsize->value.y);
 
     }
 } zox_sys_end(RenderTextureBeginSystem);

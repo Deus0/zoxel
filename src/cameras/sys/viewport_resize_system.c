@@ -27,13 +27,15 @@ zox_sys2(ViewportResizeSystem) {
             int2 size = screen_to_canvas_size(wsize->value, screen_to_canvas);
             int2 position = screen_to_canvas_position(wsize->value, screen_to_canvas);
 
-            zox_set(camera, ScreenPosition, { position });
-
             if (zox_has(camera, Camera3D)) {
                 size = scale_viewport(size);
             }
+            /*  if (!zox_has(camera, RenderCamera)) {  }*/
+
+            zox_set(camera, ScreenPosition, { position });
             zox_set(camera, ScreenDimensions, { size });
-            // zox_log("Viewport Resize [%s] size [%ix%i]", zox_get_name(camera), size.x, size.y)
+
+            // zox_logw("+ Viewport Resize [%s] size [%ix%i] render camera? %i", zox_get_name(camera), size.x, size.y, zox_has(camera, RenderCamera));
         }
     }
 } zox_sys_end(ViewportResizeSystem);

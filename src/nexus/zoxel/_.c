@@ -188,8 +188,11 @@ zox_begin_module(ZoxGame)
     // zox_log("is_generate_vox_outlines is now 1");
     // is_generate_vox_outlines = 1;
 
-    const float sub_resolution = 1;
-    viewport_scale = 1 / sub_resolution;
+    // TODO: Fix this
+    // zox_use_post_processing = 0;
+
+    float viewport_downscale = 1;
+    viewport_scale = 1 / viewport_downscale;
     target_fps = 0;
     // target_fps = 5;
     // is_split_screen = 1;

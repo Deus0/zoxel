@@ -58,7 +58,7 @@ zox_sys2(LayoutPosition2System) {
         zox_sys_i(LayoutPositionDirty, dirty);
         zox_sys_i(CanvasPosition, canvas_position);
         zox_sys_i(CanvasLink, canvas);
-        zox_sys_o(Position2, position2);
+        zox_sys_o(Position2, position);
 
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -72,10 +72,7 @@ zox_sys2(LayoutPosition2System) {
         }
 
         zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
-        position2->value = get_element_position(
-            canvas_position->value,
-            canvas_size
-        );
+        position->value = get_element_position(canvas_position->value, canvas_size);
 
         zox_sys_e();
         set_layout_child_position_recursively(world, e, canvas_size);

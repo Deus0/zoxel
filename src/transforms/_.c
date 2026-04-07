@@ -2,6 +2,7 @@
 #define zoxm_transforms
 
 zoxc_float(Scale1D);
+zoxc(TransformMatrix, float4x4);
 #include "hierarchy/_.c"
 #include "transforms2/_.c"
 #include "transforms3/_.c"
@@ -9,6 +10,7 @@ zoxc_float(Scale1D);
 
 zox_begin_module(Transforms)
     zoxd_float(Scale1D);
+    zoxd(TransformMatrix);
     zox_import_module(Hierarchys);
     zox_import_module(Transforms2);
     zox_import_module(Transforms3);

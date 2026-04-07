@@ -1,23 +1,14 @@
 entity shader_render_texture;
 entity material_render_texture;
 
-//! Links to locations inside a base material->
-typedef struct {
-    GLint vertex_position;
-    GLint vertex_uv;
-    uint camera_matrix;
-    uint transform_matrix;
-    uint texture;
-} MaterialAttributesRenderTexture;
-zoxc_custom(MaterialAttributesRenderTexture);
-
-MaterialAttributesRenderTexture create_MaterialAttributesRenderTexture(const uint material) {
+MaterialAttributesRenderTexture create_MaterialAttributesRenderTexture(uint material) {
     return (MaterialAttributesRenderTexture) {
         .vertex_position = glGetAttribLocation(material, "vertex_position"),
         .vertex_uv = glGetAttribLocation(material, "vertex_uv"),
         .camera_matrix = glGetUniformLocation(material, "camera_matrix"),
         .transform_matrix = glGetUniformLocation(material, "transform_matrix"),
-        .texture = glGetUniformLocation(material, "texture") };
+        .texture = glGetUniformLocation(material, "texture")
+    };
 }
 
 entity spawn_shader_render_texture(ecs *world) {
@@ -34,24 +25,28 @@ entity spawn_shader_render_texture(ecs *world) {
         return 0;
     }
 
-    zox_name("shader_render_texture")
+    zox_name("shader_render_texture");
     return e;
 }
 
-entity spawn_material_render_texture(ecs *world) {
+entity spawn_material_render_texture(ecs* world) {
 
     entity shader = spawn_shader_render_texture(world);
-    if (!shader) return 0;
+    if (!shader) {
+        return 0;
+    }
+    shader_render_texture = shader;
 
     uint material;
 
     entity e = spawn_material(world, shader, &material);
-    zox_set(e, ShaderLink, { shader })
+    zox_set(e, ShaderLink, { shader });
     const MaterialAttributesRenderTexture attributes = create_MaterialAttributesRenderTexture(material);
     zox_set_data(e, MaterialAttributesRenderTexture, attributes);
 
-    material_render_texture = e;
-    shader_render_texture = shader;
-
     return e;
+}
+
+void spawn_materials_render_textures(ecs* world) {
+    material_render_texture = spawn_material_render_texture(world);
 }

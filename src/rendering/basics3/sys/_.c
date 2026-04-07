@@ -14,7 +14,7 @@ void define_systems_basics3D(ecs* world) {
     // skybox
     zox_render3D_plus_system(
         Render3DSystem,
-        [in] transforms3.TransformMatrix,
+        [in] transforms.TransformMatrix,
         [in] rendering.Brightness,
         [in] rendering.MeshGPULink,
         [in] rendering.MeshIndicies,
@@ -24,7 +24,7 @@ void define_systems_basics3D(ecs* world) {
     // unique textured meshes - items
     zox_render3D_plus_system(
         TexturedRenderSystem,
-        [in] transforms3.TransformMatrix,
+        [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,
@@ -41,7 +41,7 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,
         [in] rendering.ColorsGPULink,
-        [in] transforms3.TransformMatrix,
+        [in] transforms.TransformMatrix,
         [in] rendering.RenderDisabled,
         [none] rendering.MeshColorRGBs,
         [none] !rendering.UvsGPULink,
@@ -51,7 +51,7 @@ void define_systems_basics3D(ecs* world) {
 #ifndef zox_disable_rendering_instances
     zox_render3D_plus_system(
         VoxInstanceRenderSystem,
-        [in] transforms3.TransformMatrix,
+        [in] transforms.TransformMatrix,
         [in] rendering.InstanceLink,
         [in] rendering.RenderDisabled,
         [none] rendering.RendererInstance

@@ -82,25 +82,26 @@ void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity 
         set_camera_transform_to_main_menu(&camera_position, &camera_rotation, terrain_depth);
 
         float4 screen_to_canvas = (float4) { 1 / (float) players_playing, 1, i / (float) players_playing, 0 };
-        int2 viewport_size = screen_to_canvas_size(screen_size, screen_to_canvas);
+        int2 vp_size = screen_to_canvas_size(screen_size, screen_to_canvas);
         int2 viewport_position = screen_to_canvas_position(screen_size, screen_to_canvas);
-        int2 svp_size = scale_viewport(viewport_size);
+        int2 svp_size = scale_viewport(vp_size);
 
-        entity2 spawned_cameras = spawn_camera_player(world, player, zox_game_camera_mode, camera_position, camera_rotation, screen_to_canvas, viewport_position, svp_size, viewport_size);
+        entity2 spawned_cameras = spawn_camera_player(world, player, zox_game_camera_mode, camera_position, camera_rotation, screen_to_canvas, viewport_position, svp_size, vp_size);
 
         entity game_camera = spawned_cameras.x;
         add_to_CameraLinks(&cameras, game_camera);
         add_to_CameraLinks(&cameras, spawned_cameras.y);
         set_camera_mode(world, game_camera, zox_game_camera_mode);
 
-        entity canvas = spawn_game_canvas(world, spawned_cameras.y, viewport_size, screen_to_canvas, app);
+        entity canvas = spawn_game_canvas(world, spawned_cameras.y, vp_size, screen_to_canvas, app);
 
         zox_set(player, CanvasLink, { canvas });
         zox_set(canvas, PlayerLink, { player });
 
         // spawns a render texture ui and links to camera
         create_camera_rbo_and_fbo(world, game_camera, svp_size);
-        spawn_render_texture(world, prefab_render_texture, canvas, viewport_size, svp_size, game_camera);
+
+        spawn_render_texture_canvas(world, prefab_render_texture_screen, canvas, vp_size, svp_size, game_camera);
 
         // remove these soon
         zox_canvases[i] = canvas;

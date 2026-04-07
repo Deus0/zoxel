@@ -49,7 +49,7 @@ void define_systems_elements3D(ecs *world) {
         );
         zox_render3D_plus_system(
             Element3DRenderSystem,
-            [in] transforms3.TransformMatrix,
+            [in] transforms.TransformMatrix,
             [in] rendering.MeshGPULink,
             [in] rendering.UvsGPULink,
             [in] rendering.ColorsGPULink,

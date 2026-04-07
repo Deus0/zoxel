@@ -12,7 +12,7 @@ void define_systems_chunks3_textured(ecs *world) {
     // move this into chunk3, for chunk3_textured
     zox_render3D_system(
         Chunk3TexturedRenderSystem,
-        [in] transforms3.TransformMatrix,
+        [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,

@@ -4,6 +4,7 @@
 #include "list.c"
 #include "grid.c"
 #include "list_element.c"
+#include "transform.c"
 
 // TODO: We probably need a frame by frame, parent to child system, atm it just pushes it all at once, creates race issues
 
@@ -35,6 +36,15 @@ void define_systems_layouts2(ecs* world) {
         [in] CanvasLink,
         [out] transforms2.Position2
     );
+    zox_system(
+        LayoutTransform2System,
+        EcsOnUpdate,
+        [in] layouts2.LayoutPositionDirty,
+        [in] transforms2.Position2,
+        [in] transforms.Scale1D,
+        [out] transforms.TransformMatrix
+    );
+
 
     zox_system(
         GridSystem,

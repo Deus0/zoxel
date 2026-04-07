@@ -1,11 +1,20 @@
 ### todo ###
 
+- fix no post processing mode - zox_use_post_processing
+	- add to settings
+
+- Filter the camera, so it only shows the cube or a few cubes added
+- Add render texture + render camera spawn facing player character when open a ui from taskbar (status ui)
+- Make render textures check layers
+
+- Handle the position Z from layouts transforms (atm it doesnt get added)
+
+- make editor text use fixed font res (FixToLayout)
 
 - Make layout positions recursive too
-- Transform layout data to transform
-- Make all ui shadrs use transforms like render texture does
+- Make all ui shaders use transforms like render texture does
 
-- Handle player death by  removing camera on death state
+- Handle player death by removing camera on death state
 - Fix dungeon core texture issue (on lower res)
 - F6 key to toggle bone render debugs
 - Head bob to move faster when walking
@@ -265,3 +274,4 @@ done:
 -x System that handles parenting - reparenting
 	-x use for camera attachment
 	-x Children links are more important as transforms are recursive
+-x Transform layout data to transform so we can position the render textures

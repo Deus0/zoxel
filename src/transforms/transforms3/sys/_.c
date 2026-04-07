@@ -58,7 +58,7 @@ void zox_define_systems_transforms3(ecs *world) {
         zox_transforms_stage,
         [in] Position3D,
         [in] Rotation3D,
-        [out] TransformMatrix,
+        [out] transforms.TransformMatrix,
         [none] !transforms.Scale1D
     );
     zox_system(
@@ -67,7 +67,7 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] Position3D,
         [in] Rotation3D,
         [in] transforms.Scale1D,
-        [out] TransformMatrix
+        [out] transforms.TransformMatrix
     );
     // TODO: Add Lerp Slower Follow
     zox_system(

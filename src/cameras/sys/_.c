@@ -14,7 +14,7 @@ void define_systems_cameras(ecs *world) {
     zox_system(
         ViewMatrixSystem,
         zoxp_cameras,
-        [in] transforms3.TransformMatrix,
+        [in] transforms.TransformMatrix,
         [in] ProjectionMatrix,
         [out] ViewMatrix
     );

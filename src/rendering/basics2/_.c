@@ -9,7 +9,6 @@
 zox_begin_module(Rendering2)
     add_hook_load_shader(&spawn_shaders_basics2D);
     zoxd(MaterialTextured2D);
-    zoxd(MaterialAttributesRenderTexture);
     define_systems_basics2D(world);
 zox_end_module(Rendering2)
 

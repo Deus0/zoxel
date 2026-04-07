@@ -14,6 +14,14 @@ static inline int2 float2_to_int2(float2 input) {
     return (int2) { (int) ceil(input.x), (int) ceil(input.y) };
 }
 
+static inline float3 float2_to_float3(float2 v) {
+    return (float3) { v.x, v.y, 0 };
+}
+
+static inline float3 float2_to_float3_z(float2 v, float z) {
+    return (float3) { v.x, v.y, z };
+}
+
 static inline int2 byte2_to_int2(byte2 input) {
     return (int2) { (int) input.x, (int) input.y };
 }

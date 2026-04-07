@@ -8,13 +8,7 @@ entity spawn_prefab_app_sdl(ecs *world) {
     return e;
 }
 
-entity spawn_app_sdl(
-    ecs *world,
-    const char* name,
-    const byte fullscreen,
-    const byte maximized,
-    byte monitor
-) {
+entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximized, byte monitor) {
 
     byte max_monitors = zox_get_max_monitors();
     if (monitor >= max_monitors) {

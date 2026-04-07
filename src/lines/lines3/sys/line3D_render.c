@@ -13,24 +13,23 @@ zox_sys2(Line3DRenderSystem) {
         zox_sys_i(LineThickness, thickness);
         zox_sys_i(Color, c);
 
-        const float3 position_a = (float3) {
+        float3 position_a = (float3) {
             data->value.x,
             data->value.y,
             data->value.z
         };
-        const float3 position_b = (float3) {
+        float3 position_b = (float3) {
             data->value.w,
             data->value.u,
             data->value.v
         };
 
-        float distance = float3_length(
-            float3_sub(render_camera_position, float3_mid(position_a, position_b))
-        );
+        float distance = float3_length(float3_sub(render_camera_position, float3_mid(position_a, position_b)));
 
         zox_gpu_line_thickness((thickness->value / distance) * viewport_scale);
 
-        const float4 colorf = color_to_float4(c->value);
+        float4 colorf = color_to_float4(c->value);
+
         glVertexAttribPointer(
             line3D_position_location,
             3,
@@ -39,10 +38,12 @@ zox_sys2(Line3DRenderSystem) {
             0,
             (GLfloat*) &data->value
         );
+
         zox_gpu_float4(line3D_color_location, colorf);
 
         zox_gpu_render_lines(2);
     }
+
     glDisableVertexAttribArray(line3D_position_location);
     zox_disable_material();
     zox_gpu_blend_disable();
