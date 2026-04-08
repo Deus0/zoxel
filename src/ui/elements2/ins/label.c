@@ -1,31 +1,16 @@
-entity spawn_label_background(
-    ecs *world,
-    const entity prefab,
-    const entity parent,
-    const entity canvas,
-    int2 pixel_position,
-    const float2 anchor,
-    const byte2 padding,
-    const char* text,
-    const byte font_size,
-    const byte alignment,
-    const byte layer,
-    const int2 parent_position,
-    const int2 parent_size,
-    const color label_font_outline_color,
-    const color label_font_fill_color,
-    const byte render_disabled
-) {
+entity spawn_label_background(ecs *world, entity prefab, entity parent, entity canvas, int2 pixel_position, float2 anchor, byte2 padding, const char* text, byte font_size, byte alignment, byte layer, int2 parent_position, int2 parent_size, color fill, color fillo, color font_fill, color font_fillo, byte render_disabled) {
+
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
+
     SpawnZext zextSpawnData = {
         .canvas = {
             .e = canvas,
-            .size = canvas_size
+            // .size = canvas_size
         },
         .parent = {
             .e = parent,
             .position = parent_position,
-            .size = parent_size
+            // .size = parent_size
         },
         .element = {
             .prefab = prefab,
@@ -35,18 +20,22 @@ entity spawn_label_background(
             .render_disabled = render_disabled,
         },
         .zext = {
-            .font_resolution = 32,
             .text = text,
+            .font_resolution = font_size, // 32,
             .font_size = font_size,
             .font_thickness = 1,
             .font_outline_thickness = 1,
             .alignment = alignment,
             .margins = padding,
-            .font_fill_color = label_font_fill_color,
-            .font_outline_color = label_font_outline_color
+            .font_fill_color = font_fill,
+            .font_outline_color = font_fillo
         }
     };
-    const entity e = spawn_zext(world, &zextSpawnData);
+
+    entity e = spawn_zext(world, &zextSpawnData);
     zox_name("label_background");
+    zox_set(e, Color, { fill });
+    zox_set(e, OutlineColor, { fillo });
+
     return e;
 }

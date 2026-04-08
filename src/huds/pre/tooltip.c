@@ -10,27 +10,33 @@ entity spawn_prefab_tooltip(ecs *world, const entity prefab) {
     return e;
 }
 
-entity spawn_tooltip(ecs *world, const entity prefab, const entity canvas) {
+entity spawn_tooltip(ecs *world, entity prefab, entity canvas) {
+
+    color tooltip_fill = color_white;
+    color tooltip_fillo = color_black;
+    color tooltip_font_fill = color_black; // (color) { 76, 66, 133, 255 };
+    color tooltip_font_fillo = color_white; // (color) { 122, 122, 122, 255 };
+
     // Sizing
-    const byte font_size = 5 * ui_scale;
-    const byte2 padding = (byte2) { 3 * ui_scale, 2  * ui_scale };
-    const int2 pixel_position = (int2) { -2 * ui_scale, -2 * ui_scale };
+    byte font_size = 5 * ui_scale;
+    byte2 padding = (byte2) { 3 * ui_scale, 2  * ui_scale };
+    int2 position = (int2) { -2 * ui_scale, -2 * ui_scale };
 
     // Misc
-    const entity parent = canvas;
-    const int layer = max_layers2D - 2;
-    const byte alignment = zox_mesh_alignment_top_right;
-    const float2 anchor = float2_one;
-    const int2 parent_pixel_size = zox_get_value(parent, LayoutSize)
-    const color debug_color_outline = (color) { 76, 66, 133, 255 };
-    const color debug_color_fill = (color) { 122, 122, 122, 255 };
+    entity parent = canvas;
+    int layer = max_layers2D - 2;
+    byte alignment = zox_mesh_alignment_top_right;
+    float2 anchor = float2_one;
+    zox_geter_value(parent, LayoutSize, int2, parent_size);
 
     // le spawn
-    const entity e = spawn_label_background(world, prefab, parent, canvas, pixel_position, anchor, padding, "", font_size, alignment, layer, int2_half(parent_pixel_size), parent_pixel_size, debug_color_outline, debug_color_fill, 1);
+    entity e = spawn_label_background(world, prefab, parent, canvas, position, anchor, padding, "", font_size, alignment, layer, int2_half(parent_size), parent_size, tooltip_fill, tooltip_fillo, tooltip_font_fill,tooltip_font_fillo,  1);
     zox_name("tooltip");
+
     if (local_mouse) {
         zox_geter(local_mouse, Children, zevices);
         zox_set(e, ZeviceLink, { zevices->value[0] });
     }
+
     return e;
 }

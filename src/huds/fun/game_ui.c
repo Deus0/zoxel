@@ -1,4 +1,5 @@
 // spawn our games canvas
+// NOTE: Runs on boot
 entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 screen_to_canvas, entity app) {
 
     entity canvas = spawn_canvas(world, prefab_canvas, ui_camera, dimensions, screen_to_canvas, app);
@@ -63,6 +64,8 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
 }
 
 // TODO: Refactor to Cameras (camera spawning) + UIs (canvas spawning)
+
+// NOTE: Runs on boot
 void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity app) {
 
     if (!app) {
@@ -71,15 +74,13 @@ void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity 
     }
 
     set_main_cameras((int) players_playing);
-    float3 camera_position = float3_zero;
-    float4 camera_rotation = quaternion_identity;
+    float3 camera_position = main_menu_camera_position;
+    float4 camera_rotation = main_menu_camera_rotation;
     zox_geter_value(app, WindowSize, int2, screen_size)
     CameraLinks cameras = { 0 };
 
     for (int i = 0; i < players_playing; i++) {
         entity player = zox_players[i];
-
-        set_camera_transform_to_main_menu(&camera_position, &camera_rotation, terrain_depth);
 
         float4 screen_to_canvas = (float4) { 1 / (float) players_playing, 1, i / (float) players_playing, 0 };
         int2 vp_size = screen_to_canvas_size(screen_size, screen_to_canvas);

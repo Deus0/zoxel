@@ -3,6 +3,7 @@
 
 #include "dat/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "dbg/_.c"
 
 zox_begin_module(Cubes)

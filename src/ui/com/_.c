@@ -49,6 +49,7 @@ zoxc_double(NavigatorTimer);
 // Bars
 zoxc_float(ElementBar);
 zoxc_float2(ElementBarSize);
+zoxc_byte(FontSize);
 zoxc_byte(ElementFontSize);
 
 // Windows
@@ -125,6 +126,7 @@ void define_components_elements(ecs *world) {
 
     // Misc
     zoxd_tag(MouseElement);
+    zoxd_byte(FontSize);
     zoxd_byte(ElementFontSize);
     zoxd_float(ElementBar);
     zoxd_float2(ElementBarSize);

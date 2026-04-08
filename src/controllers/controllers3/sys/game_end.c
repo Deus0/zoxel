@@ -20,9 +20,9 @@ zox_sys2(PlayerGame3EndSystem) {
             continue;
         }
 
-        float3 camera_position = float3_zero;
-        float4 camera_rotation = quaternion_identity;
-        set_camera_transform_to_main_menu(&camera_position, &camera_rotation, terrain_depth);
+        float3 camera_position = main_menu_camera_position;
+        float4 camera_rotation = main_menu_camera_rotation;
+        // set_camera_transform_to_main_menu(&camera_position, &camera_rotation, terrain_depth);
 
         zox_set(camera->value, Position3D, { camera_position });
         zox_set(camera->value, Rotation3D, { camera_rotation });

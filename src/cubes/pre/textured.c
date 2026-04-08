@@ -37,36 +37,3 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
 
     return e;
 }
-
-// unique mesh, need to instance these!
-entity spawn_cube_textured(ecs* world, entity prefab, float3 position, entity texture) {
-
-    entity e = spawn_cube(world, prefab, position);
-    // zox_name("cube_textured")
-
-    if (zox_valid(texture)) {
-        clone_texture_entity_to_entity(world, e, texture);
-    }
-
-    if (headless || !zox_valid(shader_textured3D)) {
-        return e;
-    }
-
-    spawn_gpu_mesh(world, e);
-    spawn_gpu_uvs(world, e);
-    spawn_gpu_colors(world, e);
-    spawn_gpu_texture(world, e);
-
-    uint2 shader = zox_get_value(shader_textured3D, ShaderGPULink);
-    zox_set(e, ShaderLink, { shader_textured3D });
-
-    uint material = spawn_gpu_material(world, e, shader);
-    if (!material) {
-        zox_log_error("=> [spawn_cube_textured] Failed");
-    } else {
-        MaterialTextured3D attributes = create_MaterialTextured3D(material);
-        zox_set_data(e, MaterialTextured3D, attributes);
-    }
-
-    return e;
-}

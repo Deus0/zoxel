@@ -4,7 +4,8 @@ entity test_dialogue_run;
 entity test_dialogue_ui;
 
 void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
-    if (keycode != SDLK_v) {
+
+    if (keycode != SDLK_1) {
         return;
     }
 
@@ -48,24 +49,11 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
 
         entity tree = dialogues->value[0];
 
-        test_dialogue_run = spawn_process_dialogue(
-            world,
-            prefab_process_dialogue,
-            tree,
-            0,
-            0
-        );
-        test_dialogue_ui = spawn_dialogue_ui(
-            world,
-            prefab_dialogue_ui,
-            player
-        );
+        test_dialogue_run = spawn_process_dialogue(world, prefab_process_dialogue, tree, 0, 0);
 
-        link_dialogue_run_to_ui(
-            world,
-            test_dialogue_run,
-            test_dialogue_ui
-        );
+        test_dialogue_ui = spawn_dialogue_ui(world, prefab_dialogue_ui, player);
+
+        link_dialogue_run_to_ui(world, test_dialogue_run, test_dialogue_ui);
 
         zox_set(character, DialogueProcessLink, { test_dialogue_run });
     }

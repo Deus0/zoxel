@@ -97,14 +97,14 @@ void zoxel_settings_physics() {
 void zoxel_settings_uis() {
 
     // Windows
-    window_fill = color_grayscale_a(8, 200);
-    window_outline = color_grayscale_a(96, window_fill.a);
+    window_fill = color_grayscale_a(0, 244);
+    window_outline = color_grayscale_a(44, window_fill.a);
 
     // Headers
-    header_fill = color_grayscale_a(4, 200);
-    header_outline = color_grayscale_a(44, header_fill.a);
-    header_font_fill = color_grayscale_a(32, header_fill.a);
-    header_font_outline = color_grayscale_a(122, header_fill.a);
+    header_fill = color_grayscale_a(14, 244);
+    header_outline = color_grayscale_a(0, header_fill.a);
+    header_font_fill = color_grayscale_a(255, header_fill.a);
+    header_font_outline = color_grayscale_a(0, header_fill.a);
 
     // Buttons
     button_fill = color_grayscale_a(48, 244);
@@ -133,35 +133,35 @@ void zoxel_settings_uis() {
 }
 
 void zoxel_debug_keys() {
-    // add_hook_key_down(key_down_toggle_dialogue);
     // add_hook_key_down(key_down_toggle_light_debug);
     // add_hook_key_down(test_load_chunk);
     // add_hook_key_down(toggle_sound);
     add_hook_key_down(toggle_fps_viewer);
-    add_hook_key_down(toggle_life_terrain);
-    add_hook_key_down(toggle_player_death);
+    add_hook_key_down(toggle_flymode);
 
-    add_hook_key_down(spawn_tilemap_ui);
+    // add_hook_key_down(toggle_life_terrain);
+    // add_hook_key_down(toggle_player_death);
+    // add_hook_key_down(spawn_tilemap_ui);
     // add_hook_key_down(spawn_dbg_texture_generated);
     add_hook_key_down(spawn_test_render_texture);
+    add_hook_key_down(toggle_inspector);
+    add_hook_key_down(toggle_hierarchy);
+    // add_hook_key_down(toggle_inspector_player);
+
+    // add_hook_key_down(key_down_toggle_dialogue);
 
 
     add_hook_key_down(key_down_toggle_debug_chunks);
     add_hook_key_down(key_down_toggle_debug_character_bounds);
     add_hook_key_down(key_down_toggle_debug_voxes_bounds);
-    add_hook_key_down(key_down_toggle_streaming);
+    // add_hook_key_down(key_down_toggle_streaming);
 
-    add_hook_key_down(toggle_inspector);
-    add_hook_key_down(toggle_hierarchy);
-    add_hook_key_down(toggle_inspector_player);
-
-    add_hook_key_down(toggle_flymode);
-
+    // Test our cube meshes
+    // add_hook_key_down(keydown_test_cubes);
     // add_hook_key_down(debug_key_down_unstucking);
     // add_hook_key_down(toggle_autoroam);
     // add_hook_key_down(key_down_toggle_keyboard_navigation);
     // add_hook_key_down(key_down_test_aura);
-    // add_hook_key_down(keydown_test_cubes);
     // add_hook_key_down(keydown_test_popup3);
     // add_hook_key_down(test_game_end);
     // add_hook_key_down(test_fall_through_terrain);

@@ -112,7 +112,8 @@ byte toggle_camera_mode(ecs *world, entity camera) {
 }
 
 // sets camera to main menu location
-void set_camera_transform_to_main_menu(float3 *camera_position, float4 *camera_rotation, byte terrain_depth) {
+
+/*void set_camera_transform_to_main_menu(float3 *camera_position, float4 *camera_rotation, byte terrain_depth) {
 
     float overall_voxel_scale = powers_of_two[terrain_depth]; //  32.0f;
     camera_position->x = 0.25f * overall_voxel_scale;
@@ -130,4 +131,4 @@ void set_camera_transform_to_main_menu(float3 *camera_position, float4 *camera_r
     camera_rotation->y = camera_rotation2.y;
     camera_rotation->z = camera_rotation2.z;
     camera_rotation->w = camera_rotation2.w;
-}
+}*/

@@ -21,7 +21,7 @@ void toggle_inspector(ecs *world, int32_t keycode) {
         spawn_sound_from_file_index(world, prefab_sound, 1);
     } else {
         zox_log("Spawning Editor Inspector");
-        spawn_window_inspector(world, canvas, player, canvas);
+        spawn_inspector(world, canvas, player, canvas);
         spawn_sound_from_file_index(world, prefab_sound, 0);
     }
 }
@@ -61,7 +61,7 @@ void toggle_inspector_target(ecs* world, entity player, entity target) {
     } else {
         zox_log("Spawning Editor Inspector for [%s]", zox_get_name(target));
 
-        spawn_window_inspector(world, canvas, player, target);
+        spawn_inspector(world, canvas, player, target);
         spawn_sound_from_file_index(world, prefab_sound, 0);
     }
 }

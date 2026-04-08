@@ -1,6 +1,8 @@
 byte zox_game_camera_mode = 0;
 // Scaling
 float viewport_scale = 1;
+float3 main_menu_camera_position = (float3) { 0, 0, 3 };
+float4 main_menu_camera_rotation = (float4) { 0, 0, 0, 1 };
 
 // debugs
 // #define zox_draw_frustum

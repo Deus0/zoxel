@@ -2,7 +2,7 @@ entity dbg_render_texture = 0;
 entity dbg_render_camera = 0;
 entity dbg_render_cube= 0;
 
-extern entity spawn_window_inspector(ecs*, entity, entity, entity);
+extern entity spawn_inspector(ecs*, entity, entity, entity);
 
 // TODO: render texture shouldn't take up entire screen - just ui, mesh issue??
 
@@ -42,13 +42,13 @@ void spawn_test_render_texture(ecs *world, int32_t keycode) {
         entity p = prefab_render_texture;
         byte layer = 2;
         int padding = 40;
-        float downscale = 4;
+        float downscale = 1;
         int2 lsize = int2_single(256);
-        int2 tsize = int2_scalef(lsize, 1 / downscale); // lsize; // int2_single(333);
+        int2 tsize = int2_scalef(lsize, 1 / downscale);
         int2 position = (int2) { -lsize.x / 2, -lsize.y / 2 };
         position.x -= padding;
         position.y -= padding;
-        float2 anchor = (float2) { 1, 1 }; // float2_half;
+        float2 anchor = (float2) { 1, 1 };
         entity parent = canvas;
         color fcolor = color_white;
         color ocolor = color_white;
@@ -63,16 +63,29 @@ void spawn_test_render_texture(ecs *world, int32_t keycode) {
         zox_set_unique_name(dbg_render_texture, "dbg_render_texture");
 
         // our scene
-        float3 cube_position = float3_add(cposition, quaternion_rotate_vector(crotation, float3_scale(float3_backward, 0.3f)));
-        // float3 cube_position = cposition;
-        dbg_render_cube = spawn_cube(world, prefab_cube, cube_position);
+        float3 cube_position = float3_add(cposition, quaternion_rotate_vector(crotation, (float3) { 0, 0, -1.5f }));
+
+        dbg_render_cube = spawn_cube(world, prefab_cube, cube_position, 0.16f);
         zox_set(dbg_render_cube, CameraRenderer, { dbg_render_camera });
-        float4 rotation_speed = quaternion_from_euler( (float3) { 0, 25 * degreesToRadians, 0 });
-        zox_set(dbg_render_cube, EternalRotation, { rotation_speed });
+        zox_set(dbg_render_cube, Children, { 0 });
+        add_eternal_euler(world, dbg_render_cube, (float3) { 24, 24, 0 });
+
+        entity e2 = spawn_cube(world, prefab_cube, float3_zero, 0.09f);
+        zox_set(e2, CameraRenderer, { dbg_render_camera });
+        zox_set(e2, ParentLink, { dbg_render_cube });
+        add_eternal_euler(world, e2, (float3) { -4, -12, 0 });
+        zox_set(e2, LocalPosition3D, {{ 0.5f, 0, 0 }});
+
+
+        entity e3 = spawn_cube(world, prefab_cube, float3_zero, 0.1f);
+        zox_set(e3, CameraRenderer, { dbg_render_camera });
+        zox_set(e3, ParentLink, { dbg_render_cube });
+        add_eternal_euler(world, e3, (float3) { 4, 16, 0 });
+        zox_set(e3, LocalPosition3D, {{ 0, 0.5f, 0 }});
 
         // zox_log("Spawned [dbg_render_texture]");
         spawn_sound_from_file_index(world, prefab_sound, 0);
-
-        // spawn_window_inspector(world, canvas, player, dbg_render_texture);
+        // spawn_inspector(world, canvas, player, dbg_render_texture);
+        // spawn_inspector(world, canvas, player, dbg_render_cube);
     }
 }

@@ -1,18 +1,16 @@
 ### todo ###
 
-- fix no post processing mode - zox_use_post_processing
-	- add to settings
+- Spawn the test render texture in a window container
 
-- Test camera filter for multiple cubes
-- Add render texture + render camera spawn facing player character when open a ui from taskbar (status ui)
-- Make render textures check layers
+- Status UI
+	- Test button first
+	- Spawn render texture
+	- Spawn render camera facing this
+	- Spawn characters mesh object (mesh clone)
 
-- Handle the position Z from layouts transforms (atm it doesnt get added)
-
-- make editor text use fixed font res (FixToLayout)
-
-- Make layout positions recursive too
+- Make layout positions recursive too - so it updates in a single frame
 - Make all ui shaders use transforms like render texture does
+	- need to refactor the shaders and element render system
 
 - Handle player death by removing camera on death state
 - Fix dungeon core texture issue (on lower res)
@@ -216,9 +214,12 @@ tools (this will help fix bugs)
       - Verts
       - States?
       - Idk
-      
 
-done:
+Delayed:
+- fix no post processing mode - zox_use_post_processing
+	- add to settings
+
+Done:
 -x ui off on khadas
 -x Generate a Chest Item for the realm bodys
 -x generate texture for the chest item
@@ -276,3 +277,5 @@ done:
 	-x Children links are more important as transforms are recursive
 -x Transform layout data to transform so we can position the render textures
 -x Filter the camera, so it only shows the cube
+-x Test camera filter for multiple cubes
+-x make editor text use fixed font res (FixToLayout) - a bit blurry atm

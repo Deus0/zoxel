@@ -1,6 +1,6 @@
 extern entity local_terrain;
 extern entity prefab_element_shell;
-extern entity spawn_window_inspector(ecs*, entity, entity, entity);
+extern entity spawn_inspector(ecs*, entity, entity, entity);
 extern entity spawn_element_texture(ecs *world, entity p, entity canvas, entity parent, int2 position, int2 size, float2 anchor, byte layer, entity t);
 
 entity tilemap_ui = 0;
@@ -59,7 +59,7 @@ void spawn_tilemap_ui(ecs *world, int32_t keycode) {
         zox_set(e, LayoutPositionDirty, { zox_dirty_trigger });
         spawn_gpu_texture(world, e);
 
-        spawn_window_inspector(world, canvas, player, e);
+        spawn_inspector(world, canvas, player, e);
 
     }
 
