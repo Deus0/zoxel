@@ -9,13 +9,6 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
         return 0;
     }
 
-    /*if (!zox_has_id(character, data.window.user_links_id)) {
-        zox_log_error("Character [%lu] has no [%s], cannot spawn ui", character, zox_get_name(data.window.user_links_id));
-        return 0;
-    }
-
-    const UserLinks* user_data = zox_get_id(character, data.window.user_links_id);*/
-
     byte is_header = data.window.prefab_header != 0;
     int2 position = data.element.position;
     byte header_height = is_header ? data.header_zext.font_size + data.header_zext.margins.y * 2 : 0;
@@ -50,15 +43,9 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
             },
         };
 
-        entity header = spawn_header3(
-            world,
-            data.canvas,
-            e_parent_data,
-            header_element_data,
-            data.header_zext,
-            data.header,
-            (ClickEvent) { &on_closed_taskbar_window }
-        );
+        data.header_zext.font_resolution = data.header_zext.font_size;
+        entity header = spawn_header3(world, data.canvas, e_parent_data, header_element_data, data.header_zext, data.header, (ClickEvent) { &on_closed_taskbar_window });
+
         children.value[0] = header;
     }
 
@@ -80,10 +67,11 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
 
     entity grid = spawn_element(world, &grid_data);
     zox_set_unique_name(grid, "window_users_grid");
-    children.value[is_header] = grid;
     zox_set(grid, GridSize, { data.window.grid_size });
     zox_set(grid, GridPadding, { data.window.grid_padding });
     zox_set(grid, GridMargins, { data.window.grid_margins });
+
+    children.value[is_header] = grid;
 
     Children body_children = (Children) { 0 };
     initialize_Children(&body_children, grid_elements_count);

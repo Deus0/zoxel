@@ -5,12 +5,10 @@ entity spawn_label_background(ecs *world, entity prefab, entity parent, entity c
     SpawnZext zextSpawnData = {
         .canvas = {
             .e = canvas,
-            // .size = canvas_size
         },
         .parent = {
             .e = parent,
             .position = parent_position,
-            // .size = parent_size
         },
         .element = {
             .prefab = prefab,

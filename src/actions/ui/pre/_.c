@@ -1,9 +1,11 @@
 entity prefab_menu_actions;
 entity prefab_frame_action;
 entity prefab_icon_action;
+
 #include "frame.c"
 #include "icon.c"
 #include "actionbar.c"
+
 zox_user_menu_functions_minimal(Actions, Action, actions, action)
 
 void spawn_prefabs_ui_actions(ecs *world) {

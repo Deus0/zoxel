@@ -29,8 +29,8 @@ zox_sys2(ExperienceSystem) {
             continue;
         }
 
-        zox_geter(my_soul, StatValue, my_level)
-        zox_muter(enemy_soul, ExperienceValue, experience)
+        zox_geter(my_soul, StatValue, my_level);
+        zox_muter(enemy_soul, ExperienceValue, experience);
 
         // base xp
         float experience_gain = experience_gain_base + my_level->value * randf_range(experience_per_level_min, experience_per_level_max);
@@ -40,12 +40,13 @@ zox_sys2(ExperienceSystem) {
 
         // zox_log(" + [%s] has gained [%f] xp", zox_get_name(lastDamager->value), experience_gain)
 
-        const float3 bounds3D = zox_get_value(it->entities[i], Bounds3D)
-        const float3 position = zox_get_value(it->entities[i], Position3D)
-        const float3 popup_position = (float3) { position.x, position.y + bounds3D.y + popup_spawn_y, position.z };
+        float3 bounds3D = zox_get_value(it->entities[i], Bounds3D)
+        float3 position = zox_get_value(it->entities[i], Position3D)
+        float3 popup_position = (float3) { position.x, position.y + bounds3D.y + popup_spawn_y, position.z };
         char popup_text[64];
         sprintf(popup_text, "+%i", (int) ceil(experience_gain));
-        const color popup_color = (color) { 255, 255, 0, 255 };
+        color popup_color = (color) { 255, 255, 0, 255 };
+
         spawn_popup3_easy(world, popup_text, popup_color, popup_position, 5, 7 + rand() % 3);
 
     }

@@ -74,11 +74,13 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
         };
         entity child = 0;
         if (child_data.type == list_element_type_button) {
+
             SpawnTextData child_text_data = {
                 .text = child_data.text,
                 .font_size = list_data.font_size,
+                .font_resolution = list_data.font_size,
+                // .font_resolution = button_font_resolution,
                 .margins = list_data.button_padding,
-                .font_resolution = button_font_resolution,
                 .font_fill_color = button_font_fill,
                 .font_outline_color = button_font_outline,
                 .font_thickness = button_font_thickness_fill,
@@ -140,7 +142,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .text = child_data.text,
                 .font_size = list_data.font_size,
                 .margins = list_data.button_padding,
-                .font_resolution = button_font_resolution,
+                .font_resolution = list_data.font_size, // button_font_resolution,
                 .font_fill_color = button_font_fill,
                 .font_outline_color = button_font_outline,
                 .font_thickness = button_font_thickness_fill,

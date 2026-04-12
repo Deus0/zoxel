@@ -12,12 +12,13 @@ zox_sys2(StatTextSystem) {
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, dirty);
 
-        const entity stat = stat_link->value;
+        entity stat = stat_link->value;
         if (!zox_valid(stat) || !zox_has(stat, ZoxName) || !zox_has(stat, StatValue)) {
             zox_sys_e();
             zox_log_error("[%s] has invalid stat linked", zox_get_name(e));
             continue;
         }
+
         if (!zox_valid(stat)) {
             continue;
         }
@@ -25,11 +26,6 @@ zox_sys2(StatTextSystem) {
         zox_geter(stat, StatValue, value);
         zox_geter(stat, ZoxName, stat_name);
         int value_floored = floor(value->value);
-        /*convert_zext_to_text_non_malloc(
-            stat_name->value,
-            stat_name->length,
-            stat_name_text,
-            stat_name_text_count);*/
 
         char text[label_text_count];
         if (zox_has(stat, StatState)) {

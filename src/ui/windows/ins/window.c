@@ -37,7 +37,7 @@ entity spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData 
     SpawnTextData header_text_data = {
         .text = window_data.header_text,
         .font_size = window_data.header_font_size,
-        .font_resolution = header_font_resolution,
+        .font_resolution = window_data.header_font_size, // header_font_resolution,
         .font_thickness = header_thickness,
         .font_outline_thickness = header_thickness_outline,
         .font_fill_color = header_font_fill,

@@ -16,7 +16,7 @@ entity spawn_button_game(ecs *world, entity canvas, entity parent, int2 canvas_s
             .anchor = anchor
         },
         .zext = {
-            .text = " ",
+            .text = "",
             .font_size = size,
             .font_thickness = 4,
             .font_fill_color = default_font_fill_color,

@@ -1,8 +1,10 @@
 // a small square frame ui with an icon in it
 // used for game - action/skill/stat - uis
-entity spawn_prefab_icon(ecs *world, const entity prefab) {
-    zox_prefab_child(prefab);
+entity spawn_prefab_icon(ecs *world, entity p) {
+
+    zox_prefab_child(p);
     zox_prefab_name("icon");
+
     // Texture
     zox_add_tag(e, Icon);
     zox_add_tag(e, IconTexture);  // general one
@@ -12,18 +14,21 @@ entity spawn_prefab_icon(ecs *world, const entity prefab) {
     zox_prefab_set(e, OutlineColor, { default_outline_color_icon });
     zox_prefab_set(e, IconRadius, { default_icon_radius });
     zox_prefab_set(e, OutlineThickness, { 4 });
-    // Interaction
+
+    // Hierarchy
+    zox_prefab_set(e, ParentLink, { 0 });
+    zox_prefab_set(e, Children, { 0 });
+
+    // Selection
     zox_add_tag(e, Selectable);
     zox_prefab_set(e, SelectState, { zox_select_state_none });
 
+    // Clicking
     zox_add_tag(e, Clickable);
     zox_prefab_set(e, ClickState, { 0 });
     zox_prefab_set(e, Clicker, { 0 });
     zox_prefab_set(e, ClickEvent, { NULL });
     zox_prefab_set(e, ClickDisabled, { 0 });
 
-    // Hierarchy
-    zox_prefab_set(e, ParentLink, { 0 });
-    zox_prefab_set(e, Children, { 0, NULL });
     return e;
 }

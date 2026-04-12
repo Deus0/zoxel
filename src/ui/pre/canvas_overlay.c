@@ -16,7 +16,7 @@ entity spawn_prefab_canvas_overlay(ecs *world, entity p) {
     zox_prefab_add(e, AnimationTargets);
 
     // set
-    zox_set(e, Color, { color_black });
+    zox_set(e, Color, { color_white }); // color_black });
 
     return e;
 }

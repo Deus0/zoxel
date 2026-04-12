@@ -1,9 +1,9 @@
 // windows
 // color window_color = { 48, 42, 36, 255 };
-color window_fill = { 22, 22, 22, 99 };
+color window_fill = { 255, 22, 22, 99 };
 color window_outline = { 44, 44, 44, 177 };
 // header
-byte header_font_resolution = 32;
+// byte header_font_resolution = 32;
 byte header_font_thickness_fill = 1;
 byte header_font_thickness_outline = 1;
 color header_fill = { 122, 22, 22, 122 };

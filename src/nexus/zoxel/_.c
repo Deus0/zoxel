@@ -97,39 +97,45 @@ void zoxel_settings_physics() {
 void zoxel_settings_uis() {
 
     // Windows
-    window_fill = color_grayscale_a(0, 244);
-    window_outline = color_grayscale_a(44, window_fill.a);
+    window_fill = color_grayscale_a(222, 255);
+    window_outline = color_grayscale_a(0, window_fill.a);
 
     // Headers
-    header_fill = color_grayscale_a(14, 244);
+    header_fill = color_grayscale_a(199, 255);
     header_outline = color_grayscale_a(0, header_fill.a);
     header_font_fill = color_grayscale_a(255, header_fill.a);
     header_font_outline = color_grayscale_a(0, header_fill.a);
 
     // Buttons
-    button_fill = color_grayscale_a(48, 244);
-    button_outline = color_grayscale_a(80, button_fill.a);
-    button_font_fill = color_grayscale_a(160, button_fill.a);
-    button_font_outline = color_grayscale_a(8, button_fill.a);
+    button_fill = color_grayscale_a(177, 255);
+    button_outline = color_grayscale_a(0, button_fill.a);
+    button_font_fill = color_grayscale_a(255, button_fill.a);
+    button_font_outline = color_grayscale_a(0, button_fill.a);
+
+    // Buttons (Close)
+    close_button_fill = button_fill;
+    close_button_outline = button_outline;
+    close_button_font_fill = button_font_fill;
+    close_button_font_outline = button_font_outline;
 
     // Font Data
-    header_font_resolution = 64;
     header_font_thickness_fill = 4;
     header_font_thickness_outline = 4;
-    button_font_resolution = 32;
     button_font_thickness_fill = 3;
     button_font_thickness_outline = 2;
 
+    frame_label_font_size = 4;
+    frame_label_padding = 2;
+
     default_fill_color = color_grayscale_a(2, 248);
-    // default_fill_color = header_fill;
     default_outline_color = header_outline;
-    // nothing_font_color = debug_color; // debug font texture
     // fades
     is_start_game_delays = 1;
     is_end_game_delays = 1;
     // pause
-    pause_fade_alpha = 0.9f; // 0.72f;
-    pause_fade_time = 0.42f;
+    // pause_fade_alpha = 0.9f; // 0.72f;
+    // pause_fade_time = 0.42f;
+
 }
 
 void zoxel_debug_keys() {

@@ -1,5 +1,9 @@
 ### todo ###
 
+-x Fix Icon Label Text (cant read)
+-x Change outlines of windows to White
+-x improve contrast with their texture fills
+
 - Spawn the test render texture in a window container
 
 - Status UI

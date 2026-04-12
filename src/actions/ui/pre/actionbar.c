@@ -13,7 +13,7 @@ entity spawn_menu_actions(ecs *world, entity player) {
 
     // Sizing
     byte2 grid_padding = (byte2) { 3 * ui_scale, 0 };
-    byte2 grid_margins = (byte2) { 5 * ui_scale, 2 * ui_scale };
+    byte2 grid_margins = (byte2) { 6 * ui_scale, 4 * ui_scale };
     int2 screen_margins = (int2) { 0, 4 * ui_scale };
     byte header_buffer = ui_scale * 4;
 
@@ -44,22 +44,18 @@ entity spawn_menu_actions(ecs *world, entity player) {
     data.frame.texture.fill_color = fill_color_frame_action;
     data.frame.texture.outline_color = outline_color_frame_action;
     FrameTextureData texture = (FrameTextureData) {
-        .fill_color = fill_color_actionbar,
-        .outline_color = outline_color_actionbar
+        .fill_color = color_white, // fill_color_actionbar,
+        .outline_color = color_black // outline_color_actionbar
     };
 
     entity3 spawns[actions->length];
     entity e = spawn_window_users_id(world, data, texture, selected, spawns);
-
-    if (!e) {
-        zox_log_error("Failed spawning Actionbar");
-        return 0;
-    }
     zox_set_unique_name(e, "actionbar");
 
     for (int i = 0; i < actions->length; i++) {
         entity action = actions->value[i];
         entity3 frame = spawns[i];
+
         if (frame.x) {
             zox_set(frame.x, ItemLink, { action });
         }

@@ -19,7 +19,7 @@ entity spawn_close_button(ecs *world, entity parent, entity canvas, int2 positio
         .zext = {
             .text = "X",
             .font_size = font_size,
-            .font_resolution = close_button_font_resolution, // font_size,
+            .font_resolution = font_size, // close_button_font_resolution, // font_size,
             .font_thickness = close_button_font_thickness,
             .font_outline_thickness = close_button_fonto_thickness,
             .margins = margins,

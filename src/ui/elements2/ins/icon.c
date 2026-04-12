@@ -1,4 +1,4 @@
-entity2 spawn_icon(ecs* world, SpawnIcon *data) {
+entity2 spawn_icon(ecs* world, SpawnIcon* data) {
 
     zox_instance(data->element.prefab);
     zox_name("icon");
@@ -13,7 +13,6 @@ entity2 spawn_icon(ecs* world, SpawnIcon *data) {
     // icons have overlays now
     Children children = (Children) { 0 };
 
-    // TODO: Optional Overlay!
     // icon overlay
     LayoutParentData icon_data = {
         .e = e,
@@ -21,14 +20,14 @@ entity2 spawn_icon(ecs* world, SpawnIcon *data) {
         .size = data->element.size
     };
 
-    ElementSpawnData icon_overlay_data = {
+    ElementSpawnData doverlay = {
         .prefab = prefab_icon_overlay,
         .layer = data->element.layer + 1,
         .size = data->element.size,
         .anchor = float2_half,
         .render_disabled = 1,
     };
-    entity overlay = spawn_icon_overlay(world, data->canvas, icon_data, icon_overlay_data);
+    entity overlay = spawn_icon_overlay(world, data->canvas, icon_data, doverlay);
     add_to_Children(&children, overlay);
 
     zox_set_ptr(e, Children, children);

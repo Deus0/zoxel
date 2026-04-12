@@ -114,7 +114,7 @@ entity spawn_ui_list(ecs *world, entity prefab, entity canvas, const char *heade
         .zext = {
             .font_size = scaled_font_size,
             .margins = button_padding,
-            .font_resolution = button_font_resolution,
+            .font_resolution = scaled_font_size, // button_font_resolution,
             .font_fill_color = button_font_fill,
             .font_outline_color = button_font_outline,
             .font_thickness = button_font_thickness_fill,

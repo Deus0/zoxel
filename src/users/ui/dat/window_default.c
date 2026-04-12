@@ -68,7 +68,7 @@ SpawnWindowUsers get_default_spawn_window_users_data(
     SpawnTextData header_text_data = {
         .text = "Users",
         .font_size = header_font_size,
-        .font_resolution = header_font_resolution,
+        .font_resolution = header_font_size, // header_font_resolution,
         .font_thickness = header_thickness,
         .font_outline_thickness = header_thickness_outline,
         .font_fill_color = header_font_fill,
