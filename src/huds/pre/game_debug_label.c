@@ -31,7 +31,7 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
     int layer = 1;
     byte font_size = 16;
     byte2 padding = (byte2) { 12, 8 };
-    byte alignment = zox_mesh_alignment_top_right;
+    byte alignment = zox_alignment_top_right;
     float2 anchor = float2_one; //  { 1.0f, 1.0f };
     int2 pixel_position = (int2) { -8, -8 };
     int2 parent_pixel_size = zox_get_value(parent, LayoutSize)

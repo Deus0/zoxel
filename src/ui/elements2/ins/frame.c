@@ -62,7 +62,7 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
                 .anchor = (float2) { 1, 0 },
             },
             .zext = {
-                .alignment = zox_mesh_alignment_bottom_right,
+                .alignment = zox_alignment_bottom_right,
                 .margins = byte2_single(font_padding),
                 .font_size = font_size,
                 .font_resolution = font_size,

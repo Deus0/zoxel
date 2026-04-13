@@ -30,7 +30,7 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
 
     zox_add_tag(e, MouseElement);
 
-    zox_set(e, MeshAlignment, { zox_mesh_alignment_top_left });
+    zox_set(e, MeshAlignment, { zox_alignment_top_left });
     clone_texture_data_scale(world, e, texture_mouse, int2_single(mouse_ui_size));
 
     zox_set(e, LayoutSize, { int2_single(mouse_ui_size) });

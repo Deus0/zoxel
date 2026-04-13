@@ -14,7 +14,7 @@ entity spawn_menu_paused(ecs *world, entity player) {
         .on_click = { &button_event_end_game },
     };
 
-    entity e = spawn_window_list(world, prefab_menu_game, player, menu_paused_header_label, header_font_size, elements, elements_count, elements_count, list_font_size, (ClickEvent) { &on_closed_taskbar_window }, 1, zox_window_paused, 0, zox_alignment_center, byte2_single(4)).x;
+    entity e = spawn_window_list(world, prefab_menu_game, player, menu_paused_header_label, header_font_size, elements, elements_count, elements_count, list_font_size, (ClickEvent) { &on_closed_taskbar_window }, 1, zox_window_paused, 0, zox_alignment_centre, byte2_single(4)).x;
     zox_name("menu_paused");
 
     zox_add_tag(e, MenuPaused);

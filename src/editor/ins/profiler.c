@@ -35,42 +35,17 @@ entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 posit
     initialize_Children(&children, children_count);
 
     if (is_header) {
-        children.value[0] = spawn_header(world, e,
-            canvas,
-            header_position,
-            header_size,
-            header_anchor,
-            header_label,
-            font_size,
-            header_margins,
-            header_layer,
-            int2_zero,
-            size,
-            is_close_button,
-            canvas_size
-        );
+        children.value[0] = spawn_header(world, e, canvas, header_position, header_size, header_anchor, header_label, font_size, header_margins, header_layer, int2_zero, size, is_close_button, canvas_size);
     }
+
     int2 plot_size = size;
     plot_size.y -= header_size.y;
     for (int i = 0; i < plots_count; i++) {
-        children.value[is_header + i] = spawn_plot_graph(world, canvas,
-            e,
-            position,
-            size,
-            prefab_plot_graph,
-            plot_layer,
-            plot_size,
-            record_frames_count,
-            0,
-            text_color,
-            plot_colors[i],
-            1,   // labels
-            i * 2
-        );
+        children.value[is_header + i] = spawn_plot_graph(world, canvas, e, position, size, prefab_plot_graph, plot_layer, plot_size, record_frames_count, 0, text_color, plot_colors[i], 1, i * 2);
     }
     // todo: seperate plot data from the graphs here
-        // - hotkey to switch them
-        // PlotLinks from our Profiler
+    // - hotkey to switch them
+    // PlotLinks from our Profiler
     plot_time = children.value[1];
     plot_time_system = children.value[2];
     zox_set_ptr(e, Children, children);
@@ -79,15 +54,16 @@ entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 posit
     zox_set(e, FrameCorner, { default_window_corner });
     zox_set(e, Color, { window_fill });
     zox_set(e, OutlineColor, { window_outline });
+
     return e;
 }
 
 entity spawn_profiler_canvas(ecs* world, entity canvas) {
 
-    const byte layer = game_overlay_layer + 3; // 3;
-    const int2 test_window_size = { 380, 380 };
-    const int2 test_window_position = { - test_window_size.x / 2, test_window_size.y / 2 };
-    const float2 test_window_anchor = { 1.0f, 0.0f };
+    byte layer = game_overlay_layer + 3; // 3;
+    int2 test_window_size = { 380, 380 };
+    int2 test_window_position = { - test_window_size.x / 2, test_window_size.y / 2 };
+    float2 test_window_anchor = { 1.0f, 0.0f };
 
     // zox_log(" > showing frame_debugger_window\n")
     return spawn_profiler(world, prefab_plot_window, "Profiler", test_window_position, test_window_size, test_window_anchor, canvas, layer);

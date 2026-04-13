@@ -33,24 +33,27 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
     position.x += x * font_size;
     position.y -= y * (font_size + line_padding);
     // position.y += size.y / 2;
-    if (text_alignment == zox_mesh_alignment_centred) return position;
+
+    if (text_alignment == zox_alignment_centre) {
+        return position;
+    }
     // default was centred
-    if (text_alignment == zox_mesh_alignment_right) {
+    if (text_alignment == zox_alignment_right) {
         position.x -= size.x / 2;
         //position.x -= padding.x;
-    } else if (text_alignment == zox_mesh_alignment_left) {
+    } else if (text_alignment == zox_alignment_left) {
         position.x += size.x / 2;
         //position.x += padding.x;
-    } else if (text_alignment == zox_mesh_alignment_top_right) {
+    } else if (text_alignment == zox_alignment_top_right) {
         position.x -= size.x / 2;
         position.y -= size.y / 2;
-    } else if (text_alignment == zox_mesh_alignment_bottom_right) {
+    } else if (text_alignment == zox_alignment_bottom_right) {
         position.x -= size.x / 2;
         position.y += size.y / 2;
-    } else if (text_alignment == zox_mesh_alignment_top_left) {
+    } else if (text_alignment == zox_alignment_top_left) {
         position.x += size.x / 2;
         position.y -= size.y / 2;
-    } else if (text_alignment == zox_mesh_alignment_bottom_left) {
+    } else if (text_alignment == zox_alignment_bottom_left) {
         position.x += size.x / 2;
         position.y += size.y / 2;
     }

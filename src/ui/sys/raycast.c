@@ -55,7 +55,7 @@ zox_sys2(ElementRaycastSystem) {
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(RenderDisabled, rdisabled);
                 zox_sys_i_2(CanvasPosition, canvasPosition2);
-                zox_sys_i_2(LayoutSize, pixelSize2);
+                zox_sys_i_2(LayoutSize, lsize2);
                 zox_sys_i_2(Layer2D, layer2D);
 
                 if (rdisabled->value) {
@@ -72,7 +72,7 @@ zox_sys2(ElementRaycastSystem) {
                     continue; // only do checks for player canvases
                 }
 
-                int2 pixelSize = pixelSize2->value;
+                int2 lsize = lsize2->value;
                 int2 canvas_position = zox_get_value(camera, ScreenPosition);
                 int2 canvas_size = zox_get_value(camera, ScreenDimensions);
 
@@ -86,7 +86,23 @@ zox_sys2(ElementRaycastSystem) {
                 viewport_position.x += canvas_position.x;
                 viewport_position.y += canvas_position.y;
                 // bounds should be offset with canvas position
-                int4 ui_bounds = { viewport_position.x - pixelSize.x / 2, viewport_position.x + pixelSize.x / 2, viewport_position.y - pixelSize.y / 2,  viewport_position.y + pixelSize.y / 2};
+                int4 ui_bounds = {
+                    viewport_position.x - lsize.x / 2,
+                    viewport_position.x + lsize.x / 2,
+                    viewport_position.y - lsize.y / 2,
+                    viewport_position.y + lsize.y / 2
+                };
+
+                if (zox_has(e2, MeshAlignment)) {
+                    zox_geter_value(e2, MeshAlignment, byte, alignment);
+                    float4 scaler = alignment_to_scaler(alignment);
+                    ui_bounds = (int4) {
+                        viewport_position.x - lsize.x * scaler.x,
+                        viewport_position.x + lsize.x * scaler.y,
+                        viewport_position.y - lsize.y * scaler.z,
+                        viewport_position.y + lsize.y * scaler.w
+                    };
+                }
 
                 byte was_raycasted = position.x >= ui_bounds.x && position.x <= ui_bounds.y && position.y >= ui_bounds.z && position.y <= ui_bounds.w;
 

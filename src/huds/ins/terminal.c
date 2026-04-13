@@ -21,7 +21,7 @@ entity spawn_menu_terminal(ecs *world, entity canvas) {
         anchor, padding,
         "Terminal",
         font_size,
-        zox_mesh_alignment_top_right,
+        zox_alignment_top_right,
         layer,
         int2_half(parent_size),
         parent_size,

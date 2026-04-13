@@ -1,12 +1,15 @@
-entity spawn_prefab_tooltip(ecs *world, const entity prefab) {
-    zox_prefab_child(prefab)
-    zox_add_tag(e, Tooltip)
-    zox_add_tag(e, ZextRenderEnabler)
-    zox_prefab_set(e, RenderDisabled, { 1 })
-    zox_prefab_set(e, MeshAlignment, { zox_mesh_alignment_top_right })
+entity spawn_prefab_tooltip(ecs *world, entity prefab) {
+
+    zox_prefab_child(prefab);
+
+    zox_add_tag(e, Tooltip);
+    zox_add_tag(e, ZextRenderEnabler);
+    zox_prefab_set(e, RenderDisabled, { 1 });
+    zox_prefab_set(e, MeshAlignment, { zox_alignment_top_right });
     // prefab_set_mesh2D_vertices(world, e, square_vertices_top_right_aligned, 4);
-    zox_add_tag(e, MouseElement)
-    zox_prefab_set(e, ZeviceLink, { 0 })
+    zox_add_tag(e, MouseElement);
+    zox_prefab_set(e, ZeviceLink, { 0 });
+
     return e;
 }
 
@@ -25,7 +28,7 @@ entity spawn_tooltip(ecs *world, entity prefab, entity canvas) {
     // Misc
     entity parent = canvas;
     int layer = max_layers2D - 2;
-    byte alignment = zox_mesh_alignment_top_right;
+    byte alignment = zox_alignment_top_right;
     float2 anchor = float2_one;
     zox_geter_value(parent, LayoutSize, int2, parent_size);
 

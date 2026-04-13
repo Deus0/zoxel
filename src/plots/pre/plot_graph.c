@@ -83,7 +83,7 @@ entity spawn_plot_graph(
                 .text = "",
                 .font_size = 14,
                 .font_thickness = 1,
-                .alignment = zox_mesh_alignment_top_left,
+                .alignment = zox_alignment_top_left,
                 .margins = (byte2) { 16, 4 },
                 .font_fill_color = text_color, // default_font_fill_color,
                 .font_outline_color = default_font_outline_color

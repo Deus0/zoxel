@@ -36,22 +36,29 @@ zox_sys2(CharacterPlayerItemsSystem) {
             if (j >= count) {
                 break;
             }
-            const entity block = blocks->value[j];
+
+            entity block = blocks->value[j];
             if (!zox_valid(block)) {
                 zox_log_error("block invalid [%i]", j);
                 continue;
             }
+
             if (!zox_has(block, ItemLink)) {
                 zox_log_error("block has no item [%i]", j);
                 continue;
             }
+
             zox_geter_value(block, ItemLink, entity, block_item);
             if (!zox_valid(block_item)) {
                 zox_log_error("block item invalid [%i]", j);
                 continue;
             }
+
+            byte quantity =  4 + rand() % 60;
+
             entity item = spawn_user_item(world, block_item, e);
-            zox_set(item, Quantity, { 255 });
+            zox_set(item, Quantity, { quantity });
+
             items->value[place_index++] = item;
         }
 

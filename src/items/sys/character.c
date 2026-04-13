@@ -29,8 +29,11 @@ zox_sys2(CharacterItemsSystem) {
         if (zox_valid(block) && zox_has(block, ItemLink)) {
             zox_geter(block, ItemLink, itemLink)
             if (zox_valid(itemLink->value)) {
+                byte quantity =  1 + rand() % 3;
+
                 entity item = spawn_user_item(world, itemLink->value, e);
-                zox_set(item, Quantity, { 1 + rand() % 3 });
+                zox_set(item, Quantity, { quantity });
+
                 add_to_ItemLinks(items, item);
             }
         }

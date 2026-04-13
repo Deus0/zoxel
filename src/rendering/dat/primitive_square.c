@@ -87,19 +87,19 @@ const float2 square_vertices_bottom_left_aligned[] = {
 };
 
 const float2* get_aligned_mesh2D(byte alignment) {
-    if (alignment == zox_mesh_alignment_centred) {
+    if (alignment == zox_alignment_centre) {
         return square_vertices;
-    } else if (alignment == zox_mesh_alignment_right) {
+    } else if (alignment == zox_alignment_right) {
         return square_vertices_right_aligned;
-    } else if (alignment == zox_mesh_alignment_top_right) {
+    } else if (alignment == zox_alignment_top_right) {
         return square_vertices_top_right_aligned;
-    } else if (alignment == zox_mesh_alignment_top_left) {
+    } else if (alignment == zox_alignment_top_left) {
         return square_vertices_top_left_aligned;
-    } else if (alignment == zox_mesh_alignment_bottom_right) {
+    } else if (alignment == zox_alignment_bottom_right) {
         return square_vertices_bottom_right_aligned;
-    } else if (alignment == zox_mesh_alignment_bottom_left) {
+    } else if (alignment == zox_alignment_bottom_left) {
         return square_vertices_bottom_left_aligned;
-    } else if (alignment == zox_mesh_alignment_left) {
+    } else if (alignment == zox_alignment_left) {
         return square_vertices_left_aligned;
     } else {
         return square_vertices;

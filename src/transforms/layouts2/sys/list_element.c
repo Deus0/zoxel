@@ -24,7 +24,7 @@ zox_sys2(ListElementPositionSystem) {
 
         zox_geter_value(parent->value, ListAlignment, byte, alignment);
 
-        if (alignment == zox_alignment_center) {
+        if (alignment == zox_alignment_centre) {
             continue;
         }
 

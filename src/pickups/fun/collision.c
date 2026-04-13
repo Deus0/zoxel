@@ -1,11 +1,8 @@
 const byte max_stack_quantity = 255;
 
 // TODO: system state instead of events
-void on_overlap_pickup(
-    ecs *world,
-    const entity e,
-    const entity user
-) {
+void on_overlap_pickup(ecs *world, entity e, entity user) {
+
     if (zox_gett_value(e, PickedUp) || !zox_has(user, PickUpperer)) {
         return;
     }
@@ -13,13 +10,7 @@ void on_overlap_pickup(
     // animate + picked up state
     zox_set(e, PickedUp, { pickup_state_trigger });
     zox_set(e, CollisionDisabled, { 1 });
-    lerp_to_entity(
-        world,
-        e,
-        user,
-        0.1f,
-        0.6f
-    );
+    lerp_to_entity(world, e, user, 0.1f, 0.6f);
     zox_set(e, DestroyInTime, { 1 });
 
     // zox_log(" > e [%lu] picked up by user [%lu]\n", e, user)
@@ -35,6 +26,7 @@ void on_overlap_pickup(
         if (actions->value[i] == 0) {
             continue;
         }
+
         zox_get_prefab(actions->value[i], item_prefab);
         if (item_prefab == item) {
             stack_index = i;
@@ -45,7 +37,7 @@ void on_overlap_pickup(
     // stack first
     byte did_stack = 0;
     if (stack_index != 255) {
-        const entity stack_item = actions->value[stack_index];
+        entity stack_item = actions->value[stack_index];
 
         zox_geter_value_non_const(stack_item, Quantity, byte, quantity);
         if (quantity != max_stack_quantity) {
@@ -71,21 +63,11 @@ void on_overlap_pickup(
             return;
         }
 
-        const entity new_item = spawn_item_pickedup(
-            world,
-            item,
-            user,
-            1
-        );
+        entity new_item = spawn_item_pickedup(world, item, user, 1);
 
         actions->value[action_index] = new_item;
 
-        on_action_set(
-            world,
-            user,
-            action_index,
-            new_item,
-            item
-        );
+        on_action_set(world, user, action_index, new_item, item);
+
     }
 }

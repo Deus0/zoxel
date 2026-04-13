@@ -105,24 +105,24 @@ void zoxel_settings_uis() {
     header_outline = color_grayscale_a(0, header_fill.a);
     header_font_fill = color_grayscale_a(255, header_fill.a);
     header_font_outline = color_grayscale_a(0, header_fill.a);
+    header_font_thickness = 1;
+    header_fonto_thickness = 1;
 
     // Buttons
-    button_fill = color_grayscale_a(177, 255);
+    button_fill = color_grayscale_a(155, 255);
     button_outline = color_grayscale_a(0, button_fill.a);
     button_font_fill = color_grayscale_a(255, button_fill.a);
     button_font_outline = color_grayscale_a(0, button_fill.a);
+    button_font_thickness_fill = 2;
+    button_font_thickness_outline = 2;
 
     // Buttons (Close)
-    close_button_fill = button_fill;
+    close_button_fill = color_grayscale_a(233, button_fill.a);;
     close_button_outline = button_outline;
-    close_button_font_fill = button_font_fill;
-    close_button_font_outline = button_font_outline;
-
-    // Font Data
-    header_font_thickness_fill = 4;
-    header_font_thickness_outline = 4;
-    button_font_thickness_fill = 3;
-    button_font_thickness_outline = 2;
+    close_button_font_fill = color_grayscale_a(0, close_button_fill.a);
+    close_button_font_outline = color_grayscale_a(0, close_button_fill.a);
+    close_button_font_thickness = 2;
+    close_button_fonto_thickness = 0;
 
     frame_label_font_size = 4;
     frame_label_padding = 2;

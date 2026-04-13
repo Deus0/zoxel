@@ -51,13 +51,13 @@ SpawnWindowUsers get_default_spawn_window_users_data(
     byte2 grid_margins = byte2_single(4 * ui_scale);
     int frame_size = (default_frame_size / 4) * ui_scale;
     int icon_size = (default_icon_size / 4) * ui_scale;
-    byte header_thickness = (header_font_thickness_fill / 4) * ui_scale;
-    byte header_thickness_outline = (header_font_thickness_outline / 4) * ui_scale;
+    byte header_font_thickness_s = header_font_thickness * ui_scale;
+    byte header_fonto_thickness_s = header_font_thickness * ui_scale;
 
     // Misc
     byte2 grid_size = byte2_single(4);
-    const float2 anchor = float2_half;
-    const int2 position = position;
+    float2 anchor = float2_half;
+    int2 position = position;
 
     entity prefab_frame_ = prefab_frame;
     if (zox_has(prefab, FramePrefabLink)) {
@@ -69,8 +69,8 @@ SpawnWindowUsers get_default_spawn_window_users_data(
         .text = "Users",
         .font_size = header_font_size,
         .font_resolution = header_font_size, // header_font_resolution,
-        .font_thickness = header_thickness,
-        .font_outline_thickness = header_thickness_outline,
+        .font_thickness = header_font_thickness_s,
+        .font_outline_thickness = header_fonto_thickness_s,
         .font_fill_color = header_font_fill,
         .font_outline_color = header_font_outline,
         .margins = header_margins

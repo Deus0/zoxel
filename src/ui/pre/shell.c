@@ -30,7 +30,7 @@ entity spawn_prefab_element_shell(ecs *world, entity prefab) {
     // Rendering GPU
     if (!headless) {
         zox_prefab_set(e, MeshDirty, { mesh_state_trigger });
-        zox_prefab_set(e, MeshAlignment, { zox_mesh_alignment_centred });
+        zox_prefab_set(e, MeshAlignment, { zox_alignment_centre });
         zox_prefab_add(e, MeshIndicies);
         zox_prefab_add(e, MeshVertices2D);
         zox_prefab_add(e, MeshUVs);

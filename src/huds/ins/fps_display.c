@@ -20,7 +20,7 @@ entity spawn_fps_display(ecs *world, entity canvas) {
         anchor, padding,
         "",
         font_size,
-        zox_mesh_alignment_top_right,
+        zox_alignment_top_right,
         layer,
         int2_half(parent_pixel_size),
         parent_pixel_size,

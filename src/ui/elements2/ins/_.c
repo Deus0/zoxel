@@ -17,6 +17,5 @@
 #include "scrollbar.c"
 #include "scrollview.c"
 
-#include "header_old.c"
 #include "header.c"
 #include "list.c"

@@ -1,10 +1,13 @@
 ### todo ###
 
--x Fix Icon Label Text (cant read)
--x Change outlines of windows to White
--x improve contrast with their texture fills
-
+- add blue to render texture post processor shader
 - Spawn the test render texture in a window container
+- Use a HighlightColor - instead of just adjusting brightness
+- add quantity label as child of icon - for mouse pickup too
+- event for pickup we can latch onto in system
+	- trigger the body dirty if body item picked up
+- upgrade the texture for the item frames
+- spawn item model as child of character - when switch action
 
 - Status UI
 	- Test button first
@@ -283,3 +286,9 @@ Done:
 -x Filter the camera, so it only shows the cube
 -x Test camera filter for multiple cubes
 -x make editor text use fixed font res (FixToLayout) - a bit blurry atm
+-x fixed raycasting for mesh alignments of centre
+-x Remove padding in close button - big X
+-x Try header text just black
+-x Fix Icon Label Text (cant read)
+-x Change outlines of windows to White
+-x improve contrast with their texture fills

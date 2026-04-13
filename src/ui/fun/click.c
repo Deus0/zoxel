@@ -23,7 +23,7 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
         return;
     }
     if (zox_has(e, RaycasterTarget)) {
-        const entity last_target = zox_get_value(e, RaycasterTarget)
+        entity last_target = zox_get_value(e, RaycasterTarget)
         if (zox_valid(last_target)) {
             zox_set(last_target, SelectState, { zox_select_state_trigger_deselect });
         }
@@ -35,7 +35,8 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
     if (zox_has(e, Children)) {
         zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
-            const entity child = children->value[i];
+            entity child = children->value[i];
+
             if (!zox_valid(child)) {
                 continue;
             }
@@ -45,7 +46,8 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
     if (zox_has(e, DeviceLinks)) {
         zox_geter(e, DeviceLinks, children)
         for (int i = 0; i < children->length; i++) {
-            const entity child = children->value[i];
+            entity child = children->value[i];
+
             if (!zox_valid(child)) {
                 continue;
             }
@@ -61,16 +63,20 @@ void raycaster_select_window_children(ecs *world, entity e, entity window) {
     if (zox_has(e, Children)) {
         zox_geter(e, Children, children)
         for (int i = 0; i < children->length; i++) {
-            const entity child = children->value[i];
+            entity child = children->value[i];
+
             if (!child) continue;
+
             raycaster_select_window_children(world, child, window);
         }
     }
     if (zox_has(e, DeviceLinks)) {
         zox_geter(e, DeviceLinks, children)
         for (int i = 0; i < children->length; i++) {
-            const entity child = children->value[i];
+            entity child = children->value[i];
+
             if (!child) continue;
+
             raycaster_select_window_children(world, child, window);
         }
     }
