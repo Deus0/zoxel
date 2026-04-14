@@ -2,6 +2,7 @@
 #include "resize.c"
 #include "renderer.c"
 #include "screen.c"
+#include "camera_blur.c"
 
 void define_systems_render_textures(ecs* world) {
 
@@ -47,5 +48,12 @@ void define_systems_render_textures(ecs* world) {
         [in] rendering.UvsGPULink,
         [in] rendering.TextureGPULink,
         [none] cameras.RenderTexture
+    );
+
+    zox_system_1(
+        CameraBlurSystem,
+        EcsOnUpdate,
+        cameras.CameraBlur,
+        cameras.Camera
     );
 }

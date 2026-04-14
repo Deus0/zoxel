@@ -1,4 +1,4 @@
-#include "camera3_follow_system.c"
+#include "follow.c"
 #include "attach.c"
 
 void define_systems_cameras3(ecs *world) {

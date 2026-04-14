@@ -53,6 +53,13 @@ zox_sys2(RenderTextureRenderSystem) {
             zox_gpu_material(mlink);
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
             zox_gpu_blend_disable();
+
+            if (zox_has(mat, CameraBlur)) {
+                zox_geter_value(mat,  CameraBlur, float, blur);
+                zox_gpu_float(attributes->blur_strength, blur);
+                // zox_log("Set Camera Blur [%s] %f", zox_get_name(camera->value), blur);
+            }
+            // zox_gpu_float(attributes->blur_strength, 1);
         }
 
         // Bind data in GPU

@@ -1,15 +1,90 @@
-out vec4 color;
 uniform sampler2D tex;
+uniform float blur_strength;
 in vec2 uv;
+out vec4 color;
+
+// === constants ===
+const float BLUR_RADIUS = 3.0;
+const float BLUR_SCALE = 512.0;
+const float NOISE_STRENGTH = 0.15;
+
+const float GAUSS_KERNEL[9] = float[](
+    1.0, 2.0, 1.0,
+    2.0, 4.0, 2.0,
+    1.0, 2.0, 1.0
+);
+
 
 float random(vec2 st) {
     return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
 }
 
+// simple blur
+vec4 box_blur(sampler2D image, vec2 uv, float radius) {
+    vec4 sum = vec4(0.0);
+
+    float offset = radius / 512.0; // tweak depending on resolution
+
+    sum += texture(image, uv + vec2(-offset, -offset));
+    sum += texture(image, uv + vec2( 0.0,    -offset));
+    sum += texture(image, uv + vec2( offset, -offset));
+
+    sum += texture(image, uv + vec2(-offset,  0.0));
+    sum += texture(image, uv);
+    sum += texture(image, uv + vec2( offset,  0.0));
+
+    sum += texture(image, uv + vec2(-offset,  offset));
+    sum += texture(image, uv + vec2( 0.0,     offset));
+    sum += texture(image, uv + vec2( offset,  offset));
+
+    return sum / 9.0;
+}
+
+// Gaussian blur (9-tap)
+vec4 gaussian_blur(sampler2D image, vec2 uv, float radius) {
+    float offset = radius / 512.0; // tweak for resolution
+
+    vec2 offsets[9] = vec2[](
+        vec2(-offset,  offset), // top-left
+        vec2( 0.0,     offset), // top-center
+        vec2( offset,  offset), // top-right
+        vec2(-offset,  0.0),    // center-left
+        vec2( 0.0,     0.0),    // center
+        vec2( offset,  0.0),    // center-right
+        vec2(-offset, -offset), // bottom-left
+        vec2( 0.0,    -offset), // bottom-center
+        vec2( offset, -offset)  // bottom-right
+    );
+
+    vec4 sum = vec4(0.0);
+    float weightSum = 0.0;
+
+    for (int i = 0; i < 9; i++) {
+        vec4 s = texture(image, uv + offsets[i]);
+        sum += s * GAUSS_KERNEL[i];
+        weightSum += GAUSS_KERNEL[i];
+    }
+
+    return sum / weightSum;
+}
+
 void main() {
-    color = texture(tex, uv);
-    float noise = random(uv);
+    vec4 base = texture(tex, uv);
+
+    // apply blur
+    if (blur_strength > 0.0) {
+        vec4 blurred = gaussian_blur(tex, uv, BLUR_RADIUS);
+        color = mix(base, blurred, blur_strength);
+    } else {
+        color = base;
+    }
+
+    //vec4 blurred = gaussian_blur(tex, uv, BLUR_RADIUS);
+    //color = mix(base, blurred, 0.9);
+
     float vignette = smoothstep(0.8, 0.2, distance(uv, vec2(0.5)));
     color.rgb *= vignette;
-    color = mix(color, vec4(noise, noise, noise, 1.0), 0.1);
+
+    float noise = random(uv);
+    color = mix(color, vec4(noise, noise, noise, 1.0), NOISE_STRENGTH);
 }

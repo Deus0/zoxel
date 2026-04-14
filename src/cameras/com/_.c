@@ -36,6 +36,7 @@ zox_tag(RenderTexture);
 zoxc_entity(RenderTextureLink);
 zoxc_entity(RenderCameraLink);
 zoxc_entities(CameraLinks)
+zoxc_float(CameraBlur);
 
 void define_components_cameras(ecs *world) {
     zoxd_tag(Camera);
@@ -67,6 +68,7 @@ void define_components_cameras(ecs *world) {
     zoxd_entity(RenderTextureLink);
     zoxd_entity(RenderCameraLink);
     zoxd_entities(CameraLinks);
+    zoxd_float(CameraBlur);
 
     // Filters
     zoxd_tag(CameraFilter);

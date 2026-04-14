@@ -81,6 +81,8 @@ void trigger_canvas_fade_transition(ecs* world, entity canvas, double fade_time,
 
 void trigger_canvas_half_fade(ecs *world, entity canvas, float time_length, float alpha, byte direction) {
 
+    byte layer = 2;
+
     float canvas_fade_delay = 0.02f;
     find_child_with_tag(canvas, CanvasOverlay, e)
     if (!e) {
@@ -88,7 +90,7 @@ void trigger_canvas_half_fade(ecs *world, entity canvas, float time_length, floa
         return;
     }
     // zox_log(" + [%lu] triggering half fade for canvas_overlay [%lu]\n", canvas, e)
-    zox_set(e, Layer2D, { pause_ui_overlay_layer });
+    zox_set(e, Layer2D, { layer });
     zox_set(e, RenderDisabled, { 0 });
     // i should add multiple animationions as children or something
     clear_animation_sequence(world, e);

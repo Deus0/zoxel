@@ -1,6 +1,8 @@
 ### todo ###
 
-- add blue to render texture post processor shader
+-x add BLUR to render texture post processor shader
+
+- Vox Frames - different vox models we swap between
 - Spawn the test render texture in a window container
 - Use a HighlightColor - instead of just adjusting brightness
 - add quantity label as child of icon - for mouse pickup too

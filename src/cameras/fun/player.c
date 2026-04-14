@@ -11,6 +11,7 @@ entity2 spawn_camera_player(ecs *world, entity player, byte camera_mode, float3 
     zox_name("camera_game");
 
     zox_set(player, CameraLink, { e });
+
     entity e2 = spawn_camera_ui(world, prefab_camera_ui, vp_position, ui_vpsize, screen_to_canvas);
     zox_set_unique_name(e2, "camera_game_ui");
 

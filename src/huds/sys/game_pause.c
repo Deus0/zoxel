@@ -15,12 +15,14 @@ zox_sys2(PlayerUIGamePauseSystem) {
     zox_sys_in(PlayerStateDirty);
     zox_sys_in(PlayerState);
     zox_sys_in(CanvasLink);
+    zox_sys_in(CameraLink);
     zox_sys_out(PlayerPauseEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
         zox_sys_i(CanvasLink, canvas);
+        zox_sys_i(CameraLink, camera);
         zox_sys_o(PlayerPauseEvent, pause_event_link);
 
         if (dirty->value != zox_dirty_active) {
@@ -41,6 +43,10 @@ zox_sys2(PlayerUIGamePauseSystem) {
             zox_delete(pause_event_link->value)
         }
         pause_event_link->value = pause_delay;
+
+        float blur = pause_blur;
+        zox_log("Set Camera Blur [%s] %f", zox_get_name(camera->value), blur);
+        zox_set(camera->value, CameraBlur, { blur });
 
     }
 } zox_sys_end(PlayerUIGamePauseSystem);

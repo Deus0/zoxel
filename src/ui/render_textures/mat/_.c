@@ -7,7 +7,8 @@ MaterialAttributesRenderTexture create_MaterialAttributesRenderTexture(uint mate
         .vertex_uv = glGetAttribLocation(material, "vertex_uv"),
         .camera_matrix = glGetUniformLocation(material, "camera_matrix"),
         .transform_matrix = glGetUniformLocation(material, "transform_matrix"),
-        .texture = glGetUniformLocation(material, "texture")
+        .texture = glGetUniformLocation(material, "tex"),
+        .blur_strength = glGetUniformLocation(material, "blur_strength")
     };
 }
 
@@ -21,7 +22,7 @@ entity spawn_shader_render_texture(ecs *world) {
 
     entity e = spawn_shader(world, shader_index);
     if (!e) {
-        zox_log_error("[shader_render_texture] failed to spawn")
+        zox_log_error("[shader_render_texture] failed to spawn");
         return 0;
     }
 
@@ -41,8 +42,12 @@ entity spawn_material_render_texture(ecs* world) {
 
     entity e = spawn_material(world, shader, &material);
     zox_set(e, ShaderLink, { shader });
+
+    // Shader properties
     const MaterialAttributesRenderTexture attributes = create_MaterialAttributesRenderTexture(material);
+
     zox_set_data(e, MaterialAttributesRenderTexture, attributes);
+    zox_set(e, CameraBlur, { 0 });
 
     return e;
 }
