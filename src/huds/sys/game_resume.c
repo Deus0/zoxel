@@ -36,8 +36,9 @@ zox_sys2(PlayerResumeSystem) {
             continue;
         }
 
+        entity menu = get_canvas_window(world, canvas->value, zox_window_paused);
         // find_child_with_tag(canvas->value, MenuPaused, menu_paused);
-        entity menu = find_child_with_tag_recursive(world, canvas->value, zox_id(MenuPaused));
+        // entity menu = find_child_with_tag_recursive(world, canvas->value, zox_id(MenuPaused));
         if (zox_valid(menu)) {
             zox_delete(menu);
         }

@@ -1,14 +1,24 @@
 ### todo ###
 
--x add BLUR to render texture post processor shader
+- Spawn label top left above stats - show block / npc selected
+- Fix initial lighting in terrain
+- Refactor Header Spawning to system
+- Refactor headers to window module 	
+- Remove all struct data out of UIs
+- Reuse as many ui prefabs as possible
+- Generate a mouse texture - arrow
+- maximize a window
+- resize window grabber
 
+- refactor texture generation to blueprints
+- upgrade the texture for the item frames
+ 	
 - Vox Frames - different vox models we swap between
 - Spawn the test render texture in a window container
 - Use a HighlightColor - instead of just adjusting brightness
 - add quantity label as child of icon - for mouse pickup too
 - event for pickup we can latch onto in system
 	- trigger the body dirty if body item picked up
-- upgrade the texture for the item frames
 - spawn item model as child of character - when switch action
 
 - Status UI
@@ -294,3 +304,5 @@ Done:
 -x Fix Icon Label Text (cant read)
 -x Change outlines of windows to White
 -x improve contrast with their texture fills
+
+-x add BLUR to render texture post processor shader

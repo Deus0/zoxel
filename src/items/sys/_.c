@@ -1,5 +1,4 @@
 #include "item_drop.c"
-#include "realm.c"
 #include "activate.c"
 #include "terrain_drop.c"
 #include "character.c"
@@ -9,15 +8,6 @@ realm_clear_system(ItemLinks);
 void define_systems_items(ecs *world) {
 
     realm_clear_systemd(items, ItemLinks);
-
-    zox_system_1(
-        ItemsRealmSpawnSystem,
-        EcsOnLoad,
-        [in] realms.GenerateRealm,
-        [in] blocks.BlockLinks,
-        [out] items.ItemLinks,
-        [none] realms.Realm
-    );
 
     zox_system_1(
         ItemActivateSystem,

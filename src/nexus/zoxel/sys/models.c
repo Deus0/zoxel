@@ -15,6 +15,11 @@ zox_sys2(ModelsRealmSpawnSystem) {
             continue;
         }
 
+        if (colors->length < 4) {
+            zox_log_error("Colors too small or models");
+            continue;
+        }
+
         // realm data for model gens
         byte vlength_max = powers_of_two[nodegraph_max_depth];
 

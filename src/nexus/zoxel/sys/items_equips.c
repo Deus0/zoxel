@@ -1,20 +1,3 @@
-/*void spawn_realm_equips(ecs *world, entity realm) {
-    if (!zox_has(realm, ItemLinks)) {
-        zox_log_error("Realm does not have ItemLinks [%lu]", realm)
-        return;
-    }
-    if (!zox_has(realm, ModelLinks)) {
-        zox_log_error("Realm does not have ModelLinks [%lu]", realm)
-        return;
-    }
-
-    zox_muter(realm, ItemLinks, items);
-
-
-
-
-    zox_logv("At [%f] Realm [equips] [%i] spawned.", zox_current_time, items->length);
-}*/
 
 
 zox_sys2(EquipsRealmSpawnSystem) {

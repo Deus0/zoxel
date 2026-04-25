@@ -3,7 +3,6 @@
 #include "death_animation.c"
 #include "level_up.c"
 #include "experience.c"
-#include "realm.c"
 #include "character.c"
 #include "world_labels.c"
 #include "character_player.c"
@@ -12,14 +11,6 @@ realm_clear_system(StatLinks);
 void define_systems_stats(ecs *world) {
 
     realm_clear_systemd(stats, StatLinks);
-
-    zox_system_1(
-        StatsRealmSpawnSystem,
-        EcsOnLoad,
-        [in] realms.GenerateRealm,
-        [out] stats.StatLinks,
-        [none] realms.Realm
-    );
 
     // debuff system here, skills will add debuffs
     zox_system(
@@ -76,7 +67,6 @@ void define_systems_stats(ecs *world) {
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
-        // [in] players.PlayerLink,
         [out] stats.StatLinks,
         [none] players.PlayerLink
     );

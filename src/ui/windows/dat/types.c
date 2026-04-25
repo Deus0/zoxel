@@ -8,6 +8,7 @@
 #define zox_window_new_realm 5
 #define zox_window_select_realm 6
 #define zox_window_load_realm 7
+#define zox_window_taskbar 8
 
 
 #define zox_window_actionbar 100

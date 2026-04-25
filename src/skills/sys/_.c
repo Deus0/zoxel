@@ -6,21 +6,11 @@
 #include "toggle.c"
 #include "aura_sound.c"
 #include "character.c"
-#include "realm.c"
 realm_clear_system(SkillLinks);
 
 void define_systems_skills(ecs *world) {
 
     realm_clear_systemd(skills, SkillLinks);
-
-    zox_system_1(
-        SkillsRealmSpawnSystem,
-        EcsOnLoad,
-        [in] realms.GenerateRealm,
-        [in] stats.StatLinks,
-        [out] skills.SkillLinks,
-        [none] realms.Realm
-    );
 
     zox_system(
         SkillToggleSystem,

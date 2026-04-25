@@ -1,4 +1,4 @@
-#include "realm.c"
+// #include "realm.c"
 // zox_declare_system_state_event(RealmColors, GenerateRealm, zox_generate_realm_colors, spawn_realm_colors)
 
 void define_systems_colors(ecs *world) {

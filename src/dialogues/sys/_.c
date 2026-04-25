@@ -1,20 +1,10 @@
 #include "character.c"
-#include "realm.c"
 #include "ui.c"
 #include "animate.c"
 realm_clear_system(DialoguetreeLinks);
 
 void define_systems_dialogues(ecs* world) {
     realm_clear_systemd(dialogues, DialoguetreeLinks);
-
-    zox_system_1(
-        DialogueRealmSpawnSystem,
-        EcsOnLoad,
-        [in] realms.GenerateRealm,
-        // [in] blocks.BlockLinks,
-        [out] dialogues.DialoguetreeLinks,
-        [none] realms.Realm
-    );
 
     zox_system(
         DialogueSpeechSystem,

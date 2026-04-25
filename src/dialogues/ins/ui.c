@@ -2,7 +2,6 @@
 
 entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
-    // zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
 
     Children window_children = (Children) { 0 };

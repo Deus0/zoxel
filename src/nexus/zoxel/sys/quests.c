@@ -1,24 +1,3 @@
-/*void spawn_realm_quests(
-    ecs *world,
-    const entity realm
-) {
-    if (!zox_has(realm, QuestLinks)) {
-        zox_log("! realm does not have QuestLinks [%lu]\n", realm)
-        return;
-    }
-
-    zox_geter(realm, QuestLinks, old)
-    if (old) {
-        for (int i = 0; i < old->length; i++) {
-            if (old->value[i]) {
-                zox_delete(old->value[i])
-            }
-        }
-    }
-
-    zox_geter(realm, CharacterLinks, characters);
-
-    QuestLinks quests = (QuestLinks) { 0 };*/
 
 
 

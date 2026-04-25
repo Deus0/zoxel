@@ -46,12 +46,16 @@ zox_sys2(Player3DTriggerSystem) {
                         }
                     }
                 }
-            } else if (mode->value == zox_device_mode_keyboardmouse && zox_has(device, Keyboard)) {
+            }
+
+            /* else if (mode->value == zox_device_mode_keyboardmouse && zox_has(device, Keyboard)) {
                 zox_geter(device, Keyboard, keyboard);
                 if (keyboard->escape.pressed_this_frame) {
                     is_triggered_e = 1;
                 }
-            } else if (mode->value == zox_device_mode_gamepad && zox_has(device, Gamepad)) {
+            } */
+
+            else if (mode->value == zox_device_mode_gamepad && zox_has(device, Gamepad)) {
 
                 zox_geter(device, Children, children);
                 for (int k = 0; k < children->length; k++) {
@@ -69,6 +73,7 @@ zox_sys2(Player3DTriggerSystem) {
                         // Atm these are analogue buttons and not digital
                         //  || type == zox_device_button_rt
                         //  || type == zox_device_button_lt
+
                         if (type == zox_device_button_x) {
                             zox_geter_value(zevice, ZeviceButton, byte, value);
                             if (devices_get_pressed_this_frame(value)) {

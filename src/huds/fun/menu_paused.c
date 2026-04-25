@@ -7,13 +7,15 @@ void button_event_end_game(ecs *world, ClickEventData event) {
         entity canvas = zox_get_value(e, CanvasLink);
 
         // find_child_with_tag(canvas, MenuPaused, menu_paused);
-        entity menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuPaused));
+        entity menu = get_canvas_window(world, canvas, zox_window_paused);
+        // entity menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuPaused));
         if (menu) {
             zox_delete(menu);
         }
 
         // find_child_with_tag(canvas, Taskbar, taskbar);
-        entity taskbar = find_child_with_tag_recursive(world, canvas, zox_id(Taskbar));
+        entity taskbar = get_canvas_window(world, canvas, zox_window_taskbar);
+        // entity taskbar = find_child_with_tag_recursive(world, canvas, zox_id(Taskbar));
         if (taskbar) {
             zox_delete(taskbar);
         }

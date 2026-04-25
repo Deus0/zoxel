@@ -52,6 +52,7 @@ entity spawn_header3(ecs *world, LayoutParentData canvas_data, LayoutParentData 
 
     return e;
 }
+
 entity spawn_header(ecs *world, entity parent, entity canvas, int2 pixel_position, int2 pixel_size, float2 anchor, const char* label, int font_size, int header_margins, byte layer, int2 parent_position, int2 parent_size, byte is_close_button, int2 canvas_size) {
 
     int string_length = strlen(label);

@@ -33,9 +33,8 @@ zox_sys2(PlayerPauseSystem) {
 
             if (zox_has(device, Keyboard)) {
                 zox_geter(device, Keyboard, keyboard);
-                if (keyboard->escape.pressed_this_frame
-                    /* || (!keyboard->left_alt.is_pressed && !keyboard->right_alt.is_pressed && keyboard->enter.pressed_this_frame)*/
-                ) {
+                if (keyboard->escape.pressed_this_frame ||
+                    keyboard->enter.pressed_this_frame) {
                     did_toggle_pause = 1;
                     break;
                 }
@@ -67,7 +66,6 @@ zox_sys2(PlayerPauseSystem) {
 
         if (did_toggle_pause) {
             byte is_paused = game_state == zox_game_paused;
-
             zox_set(game->value, GameStateTarget, { is_paused ? zox_game_playing : zox_game_paused });
         }
     }

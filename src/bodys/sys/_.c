@@ -1,19 +1,8 @@
-#include "realm.c"
 #include "character.c"
 #include "combine.c"
 #include "bones.c"
 
 void define_systems_bodys(ecs* world) {
-
-    zox_system_1(
-        BodysRealmSpawnSystem,
-        EcsOnUpdate,
-        [in] realms.GenerateRealm,
-        [out] rendering.ModelLinks,
-        [out] items.ItemLinks,
-        [out] nodes.NodegraphLinks,
-        [none] realms.Realm
-    );
 
     zox_system_1(
         CharacterBodySpawnSystem,
