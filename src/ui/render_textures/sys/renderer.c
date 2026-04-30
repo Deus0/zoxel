@@ -64,10 +64,10 @@ zox_sys2(RenderTextureRenderSystem) {
 
         // Bind data in GPU
         opengl_set_mesh_indicies(mesh->value.x);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh->value.y);
+        zox_gpu_bind_buffer_array(mesh->value.y);
         glEnableVertexAttribArray(attributes->vertex_position);
         glVertexAttribPointer(attributes->vertex_position, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, uvs->value);
+        zox_gpu_bind_buffer_array(uvs->value);
         glEnableVertexAttribArray(attributes->vertex_uv);
         glVertexAttribPointer(attributes->vertex_uv, 2, GL_FLOAT, GL_FALSE, 0, 0);
         opengl_bind_texture(texture->value);

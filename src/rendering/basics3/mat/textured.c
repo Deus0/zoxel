@@ -2,9 +2,9 @@ entity shader_textured3D;
 entity material_textured3D;
 
 typedef struct {
-    GLint vertex_position;
-    GLint vertex_uv;
-    GLint vertex_color;
+    gint vertex_position;
+    gint vertex_uv;
+    gint vertex_color;
     uint transform_matrix;
     uint camera_matrix;
     uint texture;

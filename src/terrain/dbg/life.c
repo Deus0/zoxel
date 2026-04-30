@@ -1,5 +1,5 @@
 void toggle_life_terrain(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_k) {
+    if (keycode == zox_key_k) {
 
         zox_log("> terrain death toggling");
 

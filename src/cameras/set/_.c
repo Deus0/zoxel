@@ -1,4 +1,7 @@
 byte zox_game_camera_mode = 0;
+
+byte zox_use_post_processing = 1;
+
 // Scaling
 float viewport_scale = 1;
 float3 main_menu_camera_position = (float3) { 0, 0, 3 };

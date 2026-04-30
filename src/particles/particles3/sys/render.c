@@ -22,7 +22,7 @@ zox_sys2(Particle3DRenderSystem) {
     zox_sys_in(Color)
 #if !defined(zox_disable_particles_gpu_instancing) && !defined(zox_disable_instancing)
     // position
-    glBindBuffer(GL_ARRAY_BUFFER, particle3D_instanced_position_buffer);
+    zox_gpu_bind_buffer_array(particle3D_instanced_position_buffer);
     // glBufferData(GL_ARRAY_BUFFER, it->count * sizeof(float3), position3Ds, GL_STATIC_DRAW);
     glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glBufferSubData(GL_ARRAY_BUFFER, 0, it->count * sizeof(float3), Position3D_); //, GL_STATIC_DRAW);
@@ -30,7 +30,7 @@ zox_sys2(Particle3DRenderSystem) {
     glVertexAttribDivisor(particle3D_position_location, 1); // Update per instance
 
     // colors
-    glBindBuffer(GL_ARRAY_BUFFER, particle3D_instanced_color_buffer);
+    zox_gpu_bind_buffer_array(particle3D_instanced_color_buffer);
     // glBufferData(GL_ARRAY_BUFFER, it->count * sizeof(color), colors, GL_STATIC_DRAW);
     glVertexAttribPointer(particle3D_color_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*) 0);
     glBufferSubData(GL_ARRAY_BUFFER, 0, it->count * sizeof(color), Color_); // , GL_STATIC_DRAW);
@@ -45,7 +45,7 @@ zox_sys2(Particle3DRenderSystem) {
     glVertexAttribDivisor(particle3D_position_location, 0); // Update per instance
     glDisableVertexAttribArray(particle3D_color_location);
     glDisableVertexAttribArray(particle3D_position_location);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    zox_gpu_bind_buffer_array(0);
 #else
     glEnableVertexAttribArray(particle3D_position_location);
     for (int i = 0; i < it->count; i++) {

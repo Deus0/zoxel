@@ -1,6 +1,6 @@
 //! Links to locations inside a base material->
 typedef struct {
-    GLint vertex_position;
+    gint vertex_position;
     uint camera_matrix;
     uint position;
     //uint positionY;

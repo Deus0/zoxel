@@ -1,17 +1,3 @@
-// frag_color = vec4(0.6, 0.0, 0.0, 0.6);
-// old - uniform lowp vec4 color;
-
-//     color_output = vec4(1.0, 1.0, 1.0, 1.0);
-
-// maybe color.w -= fog_blend, but limit to 0, so it fades out
-/*
-    highp float point_size = 100.0;\
-    highp vec3 camera_position = vec3(camera_matrix[3][0], camera_matrix[3][1], camera_matrix[3][2]);\
-    highp float distance_to_camera = distance(camera_position, position);\
-    gl_PointSize = point_size - distance_to_camera / point_size;\
-    gl_PointSize = point_size * (1.0 / distance_to_camera);\
-*/
-
 uint2 particle3D_shader;
 uint particle3D_material;
 uint particle3D_position_location;
@@ -29,8 +15,11 @@ void initialize_particle_gpu_instancing(uint particle3D_position_location, uint 
     // zox_log(" > locations are: %i x %i\n", particle3D_position_location, particle3D_color_location)
     // Setup position buffer
     glGenBuffers(1, &particle3D_instanced_position_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, particle3D_instanced_position_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Position3D) * max_particles, NULL, GL_STATIC_DRAW); // NULL for data to be uploaded later
+    zox_gpu_bind_buffer_array(particle3D_instanced_position_buffer);
+
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(Position3D) * max_particles, NULL, GL_STATIC_DRAW); // NULL for data to be uploaded later
+    zox_gpu_set_buffer_array(NULL, sizeof(Position3D) * max_particles);
+
     glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
     // glEnableVertexAttribArray(particle3D_position_location);
@@ -40,23 +29,25 @@ void initialize_particle_gpu_instancing(uint particle3D_position_location, uint 
 
     // Setup color buffer
     glGenBuffers(1, &particle3D_instanced_color_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, particle3D_instanced_color_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Color) * max_particles, NULL, GL_STATIC_DRAW); // NULL for data to be uploaded later
+    zox_gpu_bind_buffer_array(particle3D_instanced_color_buffer);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(Color) * max_particles, NULL, GL_STATIC_DRAW); // NULL for data to be uploaded later
+    zox_gpu_set_buffer_array(NULL, sizeof(Color) * max_particles);
+
     glVertexAttribPointer(particle3D_color_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*) 0);
     // glEnableVertexAttribArray(particle3D_color_location);
     // glVertexAttribPointer(particle3D_color_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
     // glVertexAttribDivisor(particle3D_color_location, 1); // Update per instance
     // glDisableVertexAttribArray(particle3D_color_location);
     // Unbind the buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    zox_gpu_bind_buffer_array(0);
 }
 
 void cleanup_particle_gpu_instancing() {
 #ifdef zox_disable_particles_gpu_instancing
     return;
 #endif
-    glDeleteBuffers(1, & particle3D_instanced_position_buffer);
-    glDeleteBuffers(1, & particle3D_instanced_color_buffer);
+    zox_gpu_dispose_buffer(particle3D_instanced_position_buffer);
+    zox_gpu_dispose_buffer(particle3D_instanced_color_buffer);
 }
 
 int initialize_shader_particle3D(ecs *world) {
@@ -89,6 +80,6 @@ int initialize_shader_particle3D(ecs *world) {
 void dispose_shader_particle3D() {
     glDeleteShader(particle3D_shader.x);
     glDeleteShader(particle3D_shader.y);
-    glDeleteProgram(particle3D_material);
+    zox_dispose_material(particle3D_material);
     cleanup_particle_gpu_instancing();
 }

@@ -8,6 +8,15 @@ typedef long int entity;
 // typedef uint32_t uint;
 // typedef uint64_t ulong;
 
+// Used for graphics
+#ifdef zox_sdl
+    typedef GLint gint;
+    typedef GLchar gchar;
+#else
+    typedef int gint;
+    typedef char gchar;
+#endif
+
 typedef void (*event_pointer)(void*);
 
 // base type, watch out for name conflicts tho

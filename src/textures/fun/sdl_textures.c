@@ -63,7 +63,7 @@ void save_texture_as_png(const color *data, const int2 size, const char *filepat
 
 #else
 
-SDL_Surface* load_png_as_surface(const char *filepath) { return NULL; }
+// SDL_Surface* load_png_as_surface(const char *filepath) { return NULL; }
 
 byte load_texture_from_png(const char *filepath, TextureData* data, int2 *size) {
     zox_log("sdl_image disabled");
@@ -79,6 +79,7 @@ byte load_app_icon(SDL_Window* window, const char *icon_path) {
         return 0;
     }
 
+#ifdef zox_sdl_images
     SDL_Surface *surface = load_png_as_surface(icon_path);
     if (surface) {
         SDL_SetWindowIcon(window, surface);
@@ -89,4 +90,7 @@ byte load_app_icon(SDL_Window* window, const char *icon_path) {
         zox_log_error("Failed to load app icon [%s]", icon_path);
         return 0;
     }
+#else
+    return 0;
+#endif
 }

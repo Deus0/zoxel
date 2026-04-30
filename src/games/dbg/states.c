@@ -1,7 +1,7 @@
 extern entity dbg_player;
 
 void test_game_end(ecs *world, int32_t keycode) {
-    if (keycode != SDLK_g) {
+    if (keycode != zox_key_g) {
         return;
     }
 

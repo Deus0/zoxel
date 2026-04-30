@@ -2,8 +2,8 @@ entity shader_colored3D;
 entity material_colored3D;
 
 typedef struct {
-    GLint vertex_position;
-    GLint vertex_color;
+    gint vertex_position;
+    gint vertex_color;
     uint transform_matrix;
     uint camera_matrix;
     uint brightness;

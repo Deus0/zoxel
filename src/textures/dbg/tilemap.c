@@ -7,7 +7,7 @@ entity tilemap_ui = 0;
 
 void spawn_tilemap_ui(ecs *world, int32_t keycode) {
 
-    if (keycode != SDLK_9) {
+    if (keycode != zox_key_9) {
         return;
     }
 

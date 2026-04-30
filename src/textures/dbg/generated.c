@@ -4,7 +4,7 @@ extern entity prefab_element_textured;
 
 void spawn_dbg_texture_generated(ecs *world, int32_t keycode) {
 
-    if (keycode != SDLK_0) {
+    if (keycode != zox_key_0) {
         return;
     }
 

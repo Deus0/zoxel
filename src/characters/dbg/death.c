@@ -1,7 +1,7 @@
 extern entity game_start_player_new(ecs*, const entity);
 
 void toggle_player_death(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_j) {
+    if (keycode == zox_key_j) {
         zox_log("> player character death toggling")
 
         entity player = dbg_player;

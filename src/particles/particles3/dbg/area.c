@@ -5,7 +5,7 @@ void toggle_test_particle_system(ecs *world, int32_t keycode) {
     const float3 big_old_particle_zone_bounds = (float3) { 32, 32, 32 };
     const color test_color = (color) { 158, 118, 44, 200 };
     // max should be around 10k
-    if (keycode == SDLK_l) {
+    if (keycode == zox_key_l) {
         if (big_old_particle_zone) {
             zox_log("- deleting a big old particle zone")
             zox_delete(big_old_particle_zone)

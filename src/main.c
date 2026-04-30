@@ -54,6 +54,8 @@ int main(int argc, char* argv[]) {
     zox_logv("Initializing ECS Settings: FPS [%i]", (int) target_fps);
     initialize_ecs_settings(world, target_fps, cores); // sets ecs threads
 
+#ifdef zox_sdl
+
     zox_logv("Initializing Video");
     if (initialize_video() == EXIT_FAILURE) {
         zox_log_error("[initialize_video] failed");
@@ -65,6 +67,8 @@ int main(int argc, char* argv[]) {
         zox_log_error("[initialize_rendering] failed at [zox_init_glew]");
         return EXIT_FAILURE;
     }
+
+#endif
 
     zox_logv("Initializing Sounds");
     initialize_sounds();
@@ -85,6 +89,8 @@ int main(int argc, char* argv[]) {
     zox_logv("Spawning App");
     entity app = spawn_engine_app(world);
 
+#ifdef zox_sdl
+
     if (app) {
         // zox_set(app, RealmLink, { realm });
         zox_set(app, GameLink, { game });
@@ -103,6 +109,8 @@ int main(int argc, char* argv[]) {
         load_files_shaders(world);
         process_shaders(world);
     }
+
+#endif
 
     // Yet another Hook
     zox_logv("Running our Boot Hook");

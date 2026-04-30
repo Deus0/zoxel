@@ -6,7 +6,7 @@ entity test_chunk_terrain = 0;
 
 // h
 void test_spawn_chunk_terrain(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_h) {
+    if (keycode == zox_key_h) {
         if (test_chunk_terrain) {
             zox_log("- deleting test chunk terrain");
             zox_delete(test_chunk_terrain);

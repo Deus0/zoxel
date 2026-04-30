@@ -1,5 +1,5 @@
 void test_fall_through_terrain(ecs *world, int32_t keycode) {
-    if (keycode != SDLK_p) {
+    if (keycode != zox_key_p) {
         return;
     }
 

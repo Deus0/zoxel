@@ -2,8 +2,8 @@ entity shader_textured2D = 0;
 entity material_textured2D = 0;
 
 typedef struct {
-    GLint vertex_position;
-    GLint vertex_uv;
+    gint vertex_position;
+    gint vertex_uv;
     uint position;
     uint angle;
     uint scale;
@@ -76,23 +76,24 @@ uint2 squareTexturedMesh;
 uint squareTexturedModelUVs;
 
 void dispose_square_mesh() {
-    glDeleteBuffers(1, &squareTexturedMesh.x);
-    glDeleteBuffers(1, &squareTexturedMesh.y);
-    glDeleteBuffers(1, &squareTexturedModelUVs);
-    // glDeleteTextures(1, &textureID);
-    #ifdef zoxel_catch_opengl_errors
-    check_opengl_error("dispose_shader2D_textured");
-    #endif
+    zox_gpu_dispose_buffer(squareTexturedMesh.x);
+    zox_gpu_dispose_buffer(squareTexturedMesh.y);
+    zox_gpu_dispose_buffer(squareTexturedModelUVs);
 }
 
 void initialize_square_mesh_textured() {
     glGenBuffers(1, &squareTexturedMesh.x);
     glGenBuffers(1, &squareTexturedMesh.y);  // generate a new VBO and get the associated ID
     glGenBuffers(1, &squareTexturedModelUVs);  // generate a new VBO and get the associated ID
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, squareTexturedMesh.x);
-    glBindBuffer(GL_ARRAY_BUFFER, squareTexturedMesh.y);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square_indicies), square_indicies, GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(squareTexturedVerts), squareTexturedVerts, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    zox_gpu_bind_buffer_element(squareTexturedMesh.x);
+    zox_gpu_bind_buffer_array(squareTexturedMesh.y);
+
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square_indicies), square_indicies, GL_STATIC_DRAW);
+    zox_gpu_set_buffer_element(square_indicies, sizeof(square_indicies));
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(squareTexturedVerts), squareTexturedVerts, GL_STATIC_DRAW);
+    zox_gpu_set_buffer_array(squareTexturedVerts, sizeof(squareTexturedVerts));
+
+    zox_gpu_bind_buffer_element(0);
+    zox_gpu_bind_buffer_array(0);
 }

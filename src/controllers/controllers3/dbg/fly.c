@@ -1,5 +1,5 @@
 void toggle_flymode(ecs *world, int32_t keycode) {
-    if (keycode != SDLK_f) {
+    if (keycode != zox_key_f) {
         return;
     }
 

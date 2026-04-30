@@ -8,6 +8,7 @@ zoxc_float(SoundFrequency);     //! The frequency of the generated sound
 zoxc_float(SoundVolume);     //! The frequency of the generated sound
 zoxc_int(SoundFrequencyIndex);     //! The frequency of the generated sound
 zoxc_double(SoundLength);       //! The length of a sound
+
 #include "sound_data.c"
 #include "sound_data_ref.c"
 

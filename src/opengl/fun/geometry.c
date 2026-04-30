@@ -1,6 +1,6 @@
 byte does_support_geometry_shaders() {
 #ifndef zox_disable_geometry_shaders
-    GLint maxGeometryOutputVertices;
+    gint maxGeometryOutputVertices;
     glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &maxGeometryOutputVertices);
     return (maxGeometryOutputVertices > 0);
 #else

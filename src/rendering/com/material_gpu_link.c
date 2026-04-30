@@ -31,7 +31,5 @@ uint spawn_gpu_material(ecs *world, entity e, uint2 shader) {
 }
 
 ECS_DTOR(MaterialGPULink, ptr, {
-    if (ptr->value) {
-        glDeleteProgram(ptr->value);
-    }
+    zox_dispose_material(ptr->value);
 })

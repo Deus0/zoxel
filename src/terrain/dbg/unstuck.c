@@ -1,7 +1,7 @@
 extern entity get_linked_character(ecs*, entity);
 
 void debug_key_down_unstucking(ecs *world, int32_t keycode) {
-    if (keycode != SDLK_b) {
+    if (keycode != zox_key_b) {
         return;
     }
 

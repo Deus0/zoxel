@@ -45,13 +45,13 @@ void refresh_dbg_chunk2(ecs* world) {
 }
 
 void key_down_dbg_chunk(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_f) {
+    if (keycode == zox_key_f) {
         select_dbg_chunk(world);
     }
-    if (keycode == SDLK_g) {
+    if (keycode == zox_key_g) {
         refresh_dbg_chunk(world);
     }
-    if (keycode == SDLK_h) {
+    if (keycode == zox_key_h) {
         refresh_dbg_chunk2(world);
     }
 }

@@ -1,8 +1,18 @@
 void clear_regular_buffer(uint *gpu_buffer) {
-    if (gpu_buffer) {
-        glDeleteBuffers(1, gpu_buffer);
-        *gpu_buffer = 0;
-    }
+    zox_gpu_dispose_buffer(*gpu_buffer);
+    *gpu_buffer = 0;
+}
+
+uint create_shader_compute() {
+    return glCreateShader(GL_COMPUTE_SHADER);
+}
+
+uint create_shader_vertex() {
+    return glCreateShader(GL_VERTEX_SHADER);
+}
+
+uint create_shader_fragment() {
+    return glCreateShader(GL_FRAGMENT_SHADER);
 }
 
 byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
@@ -12,7 +22,7 @@ byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
         return EXIT_FAILURE;
     }
 
-    GLint attached_shaders = 0;
+    gint attached_shaders = 0;
 
     glAttachShader(material, vert_shader);
     glGetProgramiv(material, GL_ATTACHED_SHADERS, &attached_shaders);
@@ -29,10 +39,10 @@ byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
     }
 
     /*glValidateProgram(material);
-    GLint validate_status = GL_FALSE;
+    gint validate_status = GL_FALSE;
     glGetProgramiv(material, GL_VALIDATE_STATUS, &validate_status);
     if (validate_status == GL_FALSE) {
-        GLint info_log_length;
+        gint info_log_length;
         glGetProgramiv(material, GL_INFO_LOG_LENGTH, &info_log_length);
         if (info_log_length > 0) {
             GLchar* log = malloc(info_log_length + 1);
@@ -54,17 +64,17 @@ byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
         return EXIT_FAILURE;
     }*/
 
-    GLint success = GL_FALSE;
+    gint success = GL_FALSE;
     glGetProgramiv(material, GL_LINK_STATUS, &success);
 
     byte output = EXIT_SUCCESS;
 
     if (success != GL_TRUE) {
-        GLint info_log_length;
+        gint info_log_length;
         glGetProgramiv(material, GL_INFO_LOG_LENGTH, &info_log_length);
 
         if (info_log_length > 0) {
-            GLchar* log = malloc(info_log_length + 1);
+            gchar* log = malloc(info_log_length + 1);
             glGetProgramInfoLog(material, info_log_length, NULL, log);
 
             zox_log_error("Material Link Failure [%u] to [%u x %u]\n%s", material, vert_shader, frag_shader, log);
@@ -102,13 +112,13 @@ byte check_shader_compile_status(uint shader) {
         return 1;
     }*/
 
-    GLint status = GL_FALSE;
+    gint status = GL_FALSE;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 
     if (status != GL_TRUE) {
-        GLint info_log_length;
+        gint info_log_length;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_log_length);
-        GLchar* info_log = malloc(info_log_length + 1); // +1 for null-terminator
+        gchar* info_log = malloc(info_log_length + 1); // +1 for null-terminator
 
         if (info_log) {
             glGetShaderInfoLog(shader, info_log_length, NULL, info_log);
@@ -122,7 +132,7 @@ byte check_shader_compile_status(uint shader) {
     return 0;
 }
 
-byte compile_shader(GLenum shader_type, uint* output, const GLchar* buffer) {
+byte compile_shader(GLenum shader_type, uint* output, const gchar* buffer) {
 
     uint shader = glCreateShader(shader_type);
     if (!shader) {
@@ -130,7 +140,7 @@ byte compile_shader(GLenum shader_type, uint* output, const GLchar* buffer) {
         return 1;
     }
 
-    glShaderSource(shader, 1, (const GLchar **) &buffer, NULL);
+    glShaderSource(shader, 1, (const gchar **) &buffer, NULL);
     glCompileShader(shader);
     if (check_shader_compile_status(shader)) {
         return 1;
@@ -140,7 +150,7 @@ byte compile_shader(GLenum shader_type, uint* output, const GLchar* buffer) {
     return 0;
 }
 
-uint2 zox_gpu_compile_shader(const GLchar* vert_buffer, const GLchar* frag_buffer) {
+uint2 zox_gpu_compile_shader(const gchar* vert_buffer, const gchar* frag_buffer) {
 
     if (render_backend != zox_render_backend_opengl) {
         zox_logw("Render Backend not OpenGL");

@@ -2,7 +2,7 @@ entity test_elementbar2D_front = 0;
 
 void test_key_element_front2D(ecs *world, int32_t keycode) {
 
-    if (keycode != SDLK_o) {
+    if (keycode != zox_key_o) {
         return;
     }
 

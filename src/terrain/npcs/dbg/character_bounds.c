@@ -29,7 +29,7 @@ void toggle_debug_character_bounds(ecs *world) {
 }
 
 void key_down_toggle_debug_character_bounds(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_F5) {
+    if (keycode == zox_key_F5) {
         toggle_debug_character_bounds(world);
     }
 }

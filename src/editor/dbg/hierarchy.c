@@ -1,7 +1,7 @@
 void toggle_hierarchy(ecs *world, int32_t keycode) {
 
     // our logic stuff
-    if (keycode != SDLK_y) {
+    if (keycode != zox_key_y) {
         return;
     }
 

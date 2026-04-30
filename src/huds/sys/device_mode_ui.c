@@ -23,12 +23,20 @@ zox_sys2(DeviceModeUISystem) {
         }
         // handle previous mode
         if (dmode->value == zox_device_mode_touchscreen) {
+
+#ifdef zox_sdl
             SDL_ShowCursor(SDL_DISABLE);
+#endif
+
             if (game_state == zox_game_playing) {
                 dispose_menu_game_touch(world, e);
             }
         } else if (dmode->value == zox_device_mode_keyboardmouse) {
+
+#ifdef zox_sdl
             SDL_ShowCursor(SDL_ENABLE);
+#endif
+
         }
         // handle new mode
         /*if (dmode_new->value == zox_device_mode_gamepad) {
@@ -37,7 +45,11 @@ zox_sys2(DeviceModeUISystem) {
         } else */
         if (dmode_new->value == zox_device_mode_keyboardmouse) {
             raycaster_select_element(world, e, 0);
+
+#ifdef zox_sdl
             SDL_ShowCursor(SDL_DISABLE);
+#endif
+
         } else if (dmode_new->value == zox_device_mode_touchscreen) {
             if (game_state == zox_game_playing) {
                 spawn_in_game_ui_touch(world, e, canvas->value);

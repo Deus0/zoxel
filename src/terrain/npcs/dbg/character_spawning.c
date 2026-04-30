@@ -1,7 +1,7 @@
 // todo: pass player entity through here
 void test_spawn_character_npc(ecs *world, int32_t keycode) {
     // zox_log("keydown %i\n", keycode)
-    if (keycode == SDLK_l) {
+    if (keycode == zox_key_l) {
         // spawn at here
         int3 chunk_position = int3_zero;
         // float3 position = (float3) { 4, 12, 4 };

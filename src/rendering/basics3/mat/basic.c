@@ -2,7 +2,7 @@ entity shader_basic3D;
 entity material_basic3D;
 
 typedef struct {
-    GLint vertex_position;
+    gint vertex_position;
     uint transform_matrix;
     uint camera_matrix;
     uint fog_data;

@@ -1,5 +1,17 @@
 ### todo ###
 
+- Fix headless mode
+	- Move all OpenGL code to stubs for headless mode
+	- Remove sdl completely from project - headless mode is compiling without it
+	- linux-headless.sh
+	
+- BUG: Terrain doesnt die when leaving game
+
+- fix a make-windows to work
+	- use bsh/windows.sh
+
+- cleanup zelder bash and move back into zoxel bsh folder - keep clean and tiny
+
 - Spawn label top left above stats - show block / npc selected
 - Fix initial lighting in terrain
 - Refactor Header Spawning to system

@@ -1,6 +1,6 @@
 // todo: rewrite this test (aura now on skill not player character)
 void key_down_test_aura(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_y) {
+    if (keycode == zox_key_y) {
         const entity player = zox_players[0];
         if (!player) {
             zox_log("! player is null")

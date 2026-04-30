@@ -8,7 +8,7 @@ extern entity spawn_inspector(ecs*, entity, entity, entity);
 
 void spawn_test_render_texture(ecs *world, int32_t keycode) {
 
-    if (keycode != SDLK_0) {
+    if (keycode != zox_key_0) {
         return;
     }
 

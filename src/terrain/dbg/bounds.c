@@ -44,7 +44,7 @@ void toggle_debug_block_voxes_bounds(ecs *world) {
 }
 
 void key_down_toggle_debug_voxes_bounds(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_F6) {
+    if (keycode == zox_key_F6) {
         toggle_debug_block_voxes_bounds(world);
     }
 }

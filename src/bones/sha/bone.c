@@ -1,8 +1,8 @@
 
 typedef struct {
-    GLint vertex_position;
-    GLint vertex_color;
-    GLint bone_index;
+    gint vertex_position;
+    gint vertex_color;
+    gint bone_index;
     uint transform_matrix;
     uint camera_matrix;
     uint bone_matrix;

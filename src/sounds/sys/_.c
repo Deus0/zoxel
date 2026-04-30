@@ -1,8 +1,11 @@
 #include "sound_process_system.c"
 #include "sound_generate_system.c"
-#include "sound_play_system.c"
-#include "sound_play_ref_system.c"
 #include "sound_debug_system.c"
+
+#ifdef zox_sdl_mixer
+    #include "sound_play_system.c"
+    #include "sound_play_ref_system.c"
+#endif
 
 void define_systems_sounds(ecs *world) {
     zox_system(
@@ -27,6 +30,14 @@ void define_systems_sounds(ecs *world) {
         [out] TriggerSound,
         [none] Sound
     );
+    zox_system_1(
+        SoundDebugSystem,
+        zoxp_mainthread,
+        [in] SoundData,
+        [in] TriggerSound,
+        [none] Sound
+    );
+
 #ifdef zox_sdl_mixer
     if (!headless) {
         zox_system(
@@ -47,13 +58,6 @@ void define_systems_sounds(ecs *world) {
         );
     }
 #endif
-    zox_system_1(
-        SoundDebugSystem,
-        zoxp_mainthread,
-        [in] SoundData,
-        [in] TriggerSound,
-        [none] Sound
-    );
 
     // Sound gen takes longer
     zox_set(zox_id(SoundGenerateSystem), SystemDeltaMax, { 5 });

@@ -21,7 +21,7 @@ void initialize_settings_elements(ecs* world) {
 }
 
 void key_down_toggle_keyboard_navigation(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_TAB) {
+    if (keycode == zox_key_TAB) {
         keyboard_navigation_mode = !keyboard_navigation_mode;
         zox_log("Toggled Navigation [%s]", keyboard_navigation_mode ? "On" : "Off");
     }

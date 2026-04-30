@@ -7,15 +7,6 @@ void initialize_sdl_input() {
     if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0) fprintf(stderr, "Failed SDL joystick subsystem: %s\n", SDL_GetError());
 }
 
-void spawn_connected_devices(ecs *world, entity e) {
-    local_keyboard = spawn_keyboard(world, prefab_keyboard);
-    local_mouse = spawn_mouse(world);
-    local_touchscreen = spawn_touchscreen(world, prefab_touchscreen);
-    zox_set(local_mouse, AppLink, { e });
-    zox_set(local_touchscreen, AppLink, { e });
-    initialize_sdl_gamepads(world);
-}
-
 void input_reset_sdl() {
     sdl_reset_mouse_wheel();
 }

@@ -81,42 +81,42 @@ static inline uint spawn_gpu_generic_buffer() {
 }
 
 static inline void opengl_bind_mesh(uint2 mesh) {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.x);    // for indices
-    glBindBuffer(GL_ARRAY_BUFFER, mesh.y);            // for vertex coordinates
+    zox_gpu_bind_buffer_element(mesh.x);    // for indices
+    zox_gpu_bind_buffer_array(mesh.y);            // for vertex coordinates
 }
 
 static inline void opengl_set_mesh_indicies(uint indices_buffer) {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buffer);    // for indices
+    zox_gpu_bind_buffer_element(indices_buffer);    // for indices
 }
 
 static inline void opengl_set_mesh_uvs(uint uv_buffer) {
-    glBindBuffer(GL_ARRAY_BUFFER, uv_buffer);         // for UV coordinates
+    zox_gpu_bind_buffer_array(uv_buffer);         // for UV coordinates
 }
 
 static inline void opengl_unset_mesh() {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    zox_gpu_bind_buffer_element(0);
+    zox_gpu_bind_buffer_array(0);
 }
 
 static inline void opengl_enable_vertex_buffer(uint shader_index, uint vertex_buffer) {
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    zox_gpu_bind_buffer_array(vertex_buffer);
     glEnableVertexAttribArray(shader_index);
     glVertexAttribPointer(shader_index, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    zox_gpu_bind_buffer_array(0);
 }
 
 static inline void opengl_enable_uv_buffer(uint shader_index, uint uv_buffer) {
-    glBindBuffer(GL_ARRAY_BUFFER, uv_buffer);
+    zox_gpu_bind_buffer_array(uv_buffer);
     glEnableVertexAttribArray(shader_index);
     glVertexAttribPointer(shader_index, 2, GL_FLOAT, GL_FALSE,  0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    zox_gpu_bind_buffer_array(0);
 }
 
 static inline void opengl_enable_color_buffer(uint shader_index, uint color_buffer) {
-    glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
+    zox_gpu_bind_buffer_array(color_buffer);
     glEnableVertexAttribArray(shader_index);
     glVertexAttribPointer(shader_index, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    zox_gpu_bind_buffer_array(0);
 }
 
 static inline void zox_gpu_disable_buffer(uint shader_index) {
@@ -140,10 +140,10 @@ static inline void zox_gpu_render_points(uint length) {
 }
 
 void zox_gpu_array_buffer_byte(uint shader_index, uint buffer) {
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    zox_gpu_bind_buffer_array(buffer);
     glEnableVertexAttribArray(shader_index);
     glVertexAttribPointer(shader_index, 1, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    zox_gpu_bind_buffer_array(0);
 }
 
 

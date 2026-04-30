@@ -1,7 +1,7 @@
 // material attributes
 typedef struct {
-    GLint vertex_position;
-    GLint vertex_uv;
+    gint vertex_position;
+    gint vertex_uv;
     uint camera_matrix;
     uint transform_matrix;
     uint texture;

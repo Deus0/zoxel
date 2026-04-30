@@ -1,9 +1,9 @@
 extern void set_character3_npc(ecs* world, entity c, byte npc);
 
-void toggle_autoroam(ecs *world, int32_t keycode) {
-    if (keycode != SDLK_g) {
+void toggle_autoroam(ecs *world) {
+    /*if (keycode != zox_key_g) {
         return;
-    }
+    }*/
 
     entity player = dbg_player;
     if (!zox_valid(player)) {

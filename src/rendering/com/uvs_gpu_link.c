@@ -9,5 +9,5 @@ void spawn_gpu_uvs(ecs *world, entity e) {
 }
 
 ECS_DTOR(UvsGPULink, ptr, {
-    if (ptr->value != 0) glDeleteBuffers(1, &ptr->value);
+    zox_gpu_dispose_buffer(ptr->value);
 })

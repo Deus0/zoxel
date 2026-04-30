@@ -9,7 +9,7 @@ uint line3D_fog_data_location;
 void dispose_shader_line3D() {
     glDeleteShader(line3D_shader.x);
     glDeleteShader(line3D_shader.y);
-    glDeleteProgram(line3D_material);
+    zox_dispose_material(line3D_material);
 }
 
 int initialize_shader_line3D(ecs *world) {

@@ -12,6 +12,7 @@ string_hashmap *files_hashmap_shaders;
 
 // zox_tag(Shader)
 zoxc_arrayd(ShaderSource, char)
+#include "set/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

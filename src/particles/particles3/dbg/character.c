@@ -1,7 +1,7 @@
 extern entity get_linked_character(ecs*, entity);
 
 void toggle_character_particles(ecs *world, int32_t keycode) {
-    if (keycode != SDLK_r) {
+    if (keycode != zox_key_r) {
         return;
     }
 

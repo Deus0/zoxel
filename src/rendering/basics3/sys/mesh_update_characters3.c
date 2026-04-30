@@ -1,12 +1,20 @@
 void opengl_upload_mesh_colors(uint2 mesh_buffer, uint color_buffer, const int *indicies, int indicies_length, const float3 *verts, const color_rgb *color_rgbs, int verts_length) {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_buffer.x);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies_length * sizeof(int), indicies, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh_buffer.y);
-    glBufferData(GL_ARRAY_BUFFER, verts_length * sizeof(float3), verts, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
-    glBufferData(GL_ARRAY_BUFFER, verts_length * sizeof(color_rgb), color_rgbs, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    zox_gpu_bind_buffer_element(mesh_buffer.x);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies_length * sizeof(int), indicies, GL_STATIC_DRAW);
+    zox_gpu_set_buffer_element(indicies, indicies_length * sizeof(int));
+    zox_gpu_bind_buffer_array(mesh_buffer.y);
+
+    // glBufferData(GL_ARRAY_BUFER, verts_length * sizeof(float3), verts, GL_STATIC_DRAW);
+    zox_gpu_set_buffer_array(verts, verts_length * sizeof(float3));
+
+    zox_gpu_bind_buffer_array(color_buffer);
+    // glBufferData(GL_ARRAY_BUFFER, verts_length * sizeof(color_rgb), color_rgbs, GL_STATIC_DRAW);
+    zox_gpu_set_buffer_array(color_rgbs, verts_length * sizeof(color_rgb));
+
+    zox_gpu_bind_buffer_element(0);
+    zox_gpu_bind_buffer_array(0);
+
 #ifdef zoxel_catch_opengl_errors
     check_opengl_error("opengl_upload_mesh_colors");
 #endif

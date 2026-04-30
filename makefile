@@ -8,6 +8,7 @@ SRCS 		:= $(shell find $(SRC_DIR) -name "*.c") # Change Detection
 CC      	:= gcc
 LIBS 		:= -lm -lpthread
 GAMES_DIR	:= $(SRC_DIR)/nexus
+DFLAGS		:= -Iinc
 
 # shell paths
 pkg_config = $(shell which pkg-config)
@@ -42,11 +43,11 @@ else
 endif
 TARGET  	:= bin/$(GAME)
 TARGET_DEV 	:= bin/$(GAME)-debug
-LIBS 		+= -Dzox_game=$(GAME)
+DFLAGS 		+= -Dzox_game=$(GAME)
 
 # Add SDL
 LIBS += $(shell $(pkg_config) --libs sdl2 SDL2_image SDL2_mixer)
-LIBS += -Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images
+DFLAGS += -Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images
 
 # Find and add GL Libaries
 LIBS_GL := $(shell $(pkg_config) --libs egl glesv2)
@@ -62,7 +63,7 @@ ifeq ("$(wildcard inc/flecs/flecs.c)","")
 else
     # Use Source Directly
     SRC += inc/flecs/flecs.c
-    LIBS += -Iinc/flecs -Dflecssource
+    DFLAGS += -Dflecssource # -Iinc/flecs
 endif
 
 .PHONY: game help clean build dev pick run rund runp runpd gdb val flecs flecs-package
@@ -75,14 +76,14 @@ $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
 	@ mkdir -p bin
 	@ echo "-------------------"
-	$(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS)
+	$(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 	@ echo " - completed -"
 	@ echo "-------------------"
 
 build: flecs $(TARGET)
 
 build-gles2: flecs
-	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LIBS) -Dzox_gles2
+	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LIBS) $(DFLAGS) -Dzox_gles2
 
 # Extra
 
@@ -116,22 +117,22 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(cflags_dev) $(SRC) -o $@ $(LIBS)
+	$(CC) $(cflags_dev) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
 dev: $(TARGET_DEV)
 
 # flecs profiler
 devfp: $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(cflags_dev) $(SRC) -o $(TARGET_DEV) $(LIBS) -Dzox_use_flecs_profiler
+	$(CC) $(cflags_dev) $(SRC) -o $(TARGET_DEV) $(LIBS) $(DFLAGS) -Dzox_use_flecs_profiler
 
 dever: $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(cflags_dever) $(SRC) -o $@ $(LIBS)
+	$(CC) $(cflags_dever) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
 devmem: $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(cflags_devmem) $(SRC) -o $@ $(LIBS)
+	$(CC) $(cflags_devmem) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
 gdbmem: devmem
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)

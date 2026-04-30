@@ -9,6 +9,6 @@ void spawn_gpu_bone_index(ecs *world, entity e) {
 }
 
 ECS_DTOR(BoneIndexGPULink, ptr, {
-    if (ptr->value) glDeleteBuffers(1, &ptr->value);
+    zox_gpu_dispose_buffer(ptr->value);
 })
 

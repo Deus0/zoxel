@@ -5,7 +5,7 @@ entity test_dialogue_ui;
 
 void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
 
-    if (keycode != SDLK_1) {
+    if (keycode != zox_key_1) {
         return;
     }
 

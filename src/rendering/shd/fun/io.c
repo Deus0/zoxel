@@ -1,12 +1,10 @@
-static inline entity spawn_file_shader_at_path(
-    ecs *world,
-    const entity prefab,
-    const char* path
-) {
+static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const char* path) {
+
     char* source = zox_read_shader(path);
     if (!source) {
         return 0;
     }
+
     int ubo_size = zox_get_safe_ubo_size();
 
     // zox_log("+ shader processing with ver [%i] es [%s] ubo_size [%i]", shader_opengl_version, (shader_include_es ? "es" : ""), ubo_size);

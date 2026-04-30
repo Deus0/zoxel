@@ -20,11 +20,15 @@ ECS_DTOR(Context, ptr, {
     }
 })
 
-#include "mix_chunk.c"
+#ifdef zox_sdl_mixer
+    #include "mix_chunk.c"
+#endif
 
 void define_components_sdl(ecs *world) {
     zoxd_dest(SDLWindow);
     zoxd_dest(Context);
     zoxd_dest(Renderer);
+#ifdef zox_sdl_mixer
     zoxd_dest(SDLMixChunk);
+#endif
 }

@@ -15,10 +15,6 @@ void spawn_gpu_mesh(ecs *world, entity e) {
 }
 
 ECS_DTOR(MeshGPULink, ptr, {
-    if (ptr->value.x) {
-        glDeleteBuffers(1, &ptr->value.x);
-    }
-    if (ptr->value.y) {
-        glDeleteBuffers(1, &ptr->value.y);
-    }
+    zox_gpu_dispose_buffer(ptr->value.x);
+    zox_gpu_dispose_buffer(ptr->value.y);
 })

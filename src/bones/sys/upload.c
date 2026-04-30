@@ -25,8 +25,8 @@ zox_sys2(BoneIndexUploadSystem) {
             boneIndexGPULink->value = spawn_gpu_generic_buffer();
         }
 
-        glBindBuffer(GL_ARRAY_BUFFER, boneIndexGPULink->value);
-        glBufferData(GL_ARRAY_BUFFER, boneIndexes->length * sizeof(byte), boneIndexes->value, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        zox_gpu_bind_buffer_array(boneIndexGPULink->value);
+        zox_gpu_set_buffer_array(boneIndexes->value, boneIndexes->length * sizeof(byte));
+        zox_gpu_bind_buffer_array(0);
     }
 } zox_sys_end(BoneIndexUploadSystem);

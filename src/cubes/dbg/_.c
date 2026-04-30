@@ -7,7 +7,7 @@ void keydown_test_cubes(ecs *world, int32_t keycode) {
     char* tname = "block_dungeon_core";
     float3 spawn_position = float3_zero;
 
-    if (keycode == SDLK_1) {
+    if (keycode == zox_key_1) {
 
         if (dbg_cube) {
             zox_log("> Cleaning [spawn_cube]");
@@ -21,7 +21,7 @@ void keydown_test_cubes(ecs *world, int32_t keycode) {
         }
     }
 
-    if (keycode == SDLK_2) {
+    if (keycode == zox_key_2) {
 
         if (dbg_cube) {
             zox_log("> Cleaning [spawn_cube_textured]");

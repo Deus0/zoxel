@@ -2,7 +2,12 @@
 #ifndef zoxm_terminals
 #define zoxm_terminals
 
-byte headless = 0;
+#ifdef zox_headless
+    byte headless = 1;
+#else
+    byte headless = 0;
+#endif
+
 #include "dat/terminal_inputs.c"
 #include "fun/_.c"
 

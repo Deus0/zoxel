@@ -4,7 +4,8 @@
 #include "dat/settings.c"
 zox_tag(Particle3D);
 zox_tag(Particle3DEmitter);
-#include "sha/particle_shader.c"
+
+#include "sha/_.c"
 #include "pre/_.c"
 #include "fun/debug.c"
 #include "fun/spawn.c"
@@ -20,22 +21,7 @@ zox_begin_module(Particles3D)
     add_hook_spawn_prefabs(spawn_prefabs_particles3D);
     zoxd_tag(Particle3D);
     zoxd_tag(Particle3DEmitter);
-    zox_system_1(
-        Particle3DEmitSystem,
-        EcsPreStore,
-        [in] transforms3.Position3D,
-        [in] particles.ParticleEmitRate,
-        [in] transforms3.Bounds3D,
-        [in] colorz.Color,
-        [none] Particle3DEmitter
-    );
-    // if making rotation ones, just create new systems, add [none] transforms3.Rotation3D - for this one
-    zox_render3D_plus_system(
-        Particle3DRenderSystem,
-        [in] transforms3.Position3D,
-        [in] colorz.Color,
-        [none] Particle3D
-    );
+    define_systems_particles3(world);
 zox_end_module(Particles3D)
 
 #endif

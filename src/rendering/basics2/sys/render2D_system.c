@@ -32,8 +32,8 @@ zox_sys2(RenderMaterial2DSystem) {
         zox_gpu_material(material);
         zox_gpu_blend_enable();
         glBindTexture(GL_TEXTURE_2D, textureGPULink->value);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, squareTexturedMesh.x);    // for indices
-        glBindBuffer(GL_ARRAY_BUFFER, squareTexturedMesh.y);            // for vertex buffer data
+        zox_gpu_bind_buffer_element(squareTexturedMesh.x);    // for indices
+        zox_gpu_bind_buffer_array(squareTexturedMesh.y);            // for vertex buffer data
         glEnableVertexAttribArray(attributes.vertex_position);
         glEnableVertexAttribArray(attributes.vertex_uv);
         glVertexAttribPointer(attributes.vertex_position, 2, GL_FLOAT, GL_FALSE, 16, (GLvoid*)(0 * sizeof(float)));

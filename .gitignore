@@ -4,6 +4,8 @@ lib
 include
 inc
 pkg
+ext
 *.o
 CMakeLists.txt
 .game
+.deb

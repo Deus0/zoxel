@@ -1,5 +1,5 @@
 /*void opengl_upload_mesh(uint2 mesh, uint material, const int *indicies, int indicies_length, const float3 *verts, int verts_length) {
-    GLint vertex_attribute_position = glGetAttribLocation(material, "vertex_position");
+    gint vertex_attribute_position = glGetAttribLocation(material, "vertex_position");
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.x);
     glBindBuffer(GL_ARRAY_BUFFER, mesh.y);
     glEnableVertexAttribArray(vertex_attribute_position);

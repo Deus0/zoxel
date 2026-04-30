@@ -1,5 +1,5 @@
 void toggle_fps_viewer(ecs *world, int32_t keycode) {
-    if (keycode != SDLK_z) {
+    if (keycode != zox_key_z) {
         return;
     }
 

@@ -1,10 +1,13 @@
 void TextureGPUDisposeSystem(iter *it) {
-    zox_sys_begin()
-    zox_sys_in(TextureGPULink)
+    zox_sys_begin();
+    zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TextureGPULink, textureGPULink)
-        if (textureGPULink->value != 0) {
-            glDeleteTextures(1, &textureGPULink->value);
-        }
+        zox_sys_i(TextureGPULink, texture);
+
+        if (!texture->value) continue;
+
+        zox_gpu_dispose_texture(texture->value);
+
+        // texture->value = 0;
     }
 } zoxd_system(TextureGPUDisposeSystem)

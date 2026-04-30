@@ -160,10 +160,11 @@ void zoxel_debug_keys() {
     add_hook_key_down(key_down_toggle_debug_voxes_bounds);
     // add_hook_key_down(key_down_toggle_streaming);
 
+    add_hook_key_down_2(zox_key_g, toggle_autoroam);
+
     // Test our cube meshes
     // add_hook_key_down(keydown_test_cubes);
     // add_hook_key_down(debug_key_down_unstucking);
-    // add_hook_key_down(toggle_autoroam);
     // add_hook_key_down(key_down_toggle_keyboard_navigation);
     // add_hook_key_down(key_down_test_aura);
     // add_hook_key_down(keydown_test_popup3);

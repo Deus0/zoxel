@@ -31,7 +31,7 @@ void toggle_debug_bounds_terrain(ecs* world) {
 }
 
 void key_down_toggle_debug_chunks(ecs* world, int32_t keycode) {
-    if (keycode == SDLK_F4) {
+    if (keycode == zox_key_F4) {
         toggle_debug_bounds_terrain(world);
     }
 }

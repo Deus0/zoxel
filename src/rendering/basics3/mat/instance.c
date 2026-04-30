@@ -4,9 +4,9 @@ entity shader_vox_instance = 0;
 entity material_vox_instance = 0;
 
 typedef struct {
-    GLint vertex_position;
-    GLint vertex_color;
-    GLint matrices;
+    gint vertex_position;
+    gint vertex_color;
+    gint matrices;
     uint camera_matrix;
     uint brightness;
     uint fog_data;
@@ -28,7 +28,7 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
     };
 }
 
-uint generate_ubo(GLint binding_point) {
+uint generate_ubo(gint binding_point) {
 #ifndef zox_disable_ubos
     uint ubo;
     glGenBuffers(1, &ubo);
@@ -45,7 +45,7 @@ uint generate_ubo(GLint binding_point) {
 
 /*uint spawn_ubo(ecs *world, const entity material) {
     zox_geter(material, MaterialVoxInstance, materialVoxInstance)
-    const GLint binding_point = materialVoxInstance->matrices;
+    const gint binding_point = materialVoxInstance->matrices;
     if (binding_point == GL_INVALID_INDEX) {
         zox_log_error("InstanceMatrices block index not found in shader")
     }

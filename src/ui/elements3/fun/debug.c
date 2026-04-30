@@ -1,7 +1,7 @@
 entity debug_entity_text3D;
 
 void key_down_update_text3D(ecs *world, int32_t keycode) {
-    if (keycode == SDLK_g) {
+    if (keycode == zox_key_g) {
         const entity e = debug_entity_text3D;
         if (!e) {
             return;

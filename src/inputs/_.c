@@ -25,6 +25,10 @@ void module_dispose_inputs(ecs *world, void *ctx) {
     dispose_hook_key_down();
 }
 
+void add_hook_key_down_2(int keycode, void *e) {
+
+}
+
 zox_begin_module(Inputs)
     zox_module_dispose(module_dispose_inputs);
     initialize_hook_key_down();

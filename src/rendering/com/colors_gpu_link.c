@@ -9,5 +9,5 @@ void spawn_gpu_colors(ecs *world, entity e) {
 }
 
 ECS_DTOR(ColorsGPULink, ptr, {
-    if (ptr->value) glDeleteBuffers(1, &ptr->value);
+    zox_gpu_dispose_buffer(ptr->value);
 })

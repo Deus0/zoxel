@@ -7,7 +7,7 @@ void set_gpu_mesh2D(
     const float2 *verts,
     int verts_length
 ) {
-    GLint vertex_shader_index = 0;
+    gint vertex_shader_index = 0;
     int float_per_data = 2;
     int floats_length = verts_length * float_per_data;
     float combined_verts[floats_length];
@@ -16,12 +16,16 @@ void set_gpu_mesh2D(
         combined_verts[i * float_per_data + 0] = vert.x;
         combined_verts[i * float_per_data + 1] = vert.y;
     }
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.x);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies_length * 4, indicies, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh.y);
+    zox_gpu_bind_buffer_element(mesh.x);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies_length * 4, indicies, GL_STATIC_DRAW);
+    zox_gpu_set_buffer_element(indicies, indicies_length * 4);
+    zox_gpu_bind_buffer_element(0);
+    zox_gpu_bind_buffer_array(mesh.y);
     glEnableVertexAttribArray(vertex_shader_index);
-    glBufferData(GL_ARRAY_BUFFER, floats_length * 4, combined_verts, GL_STATIC_DRAW);
+    zox_gpu_set_buffer_array(combined_verts, floats_length * 4);
+
+    // glBufferData(GL_ARRAY_BUFFER, floats_length * 4, combined_verts, GL_STATIC_DRAW);
+
     glVertexAttribPointer(vertex_shader_index, 2, GL_FLOAT, GL_FALSE, 4 * float_per_data, (GLvoid*)(0 * sizeof(float)));
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    zox_gpu_bind_buffer_array(0);
 }
