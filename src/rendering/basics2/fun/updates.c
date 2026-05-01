@@ -21,11 +21,14 @@ void set_gpu_mesh2D(
     zox_gpu_set_buffer_element(indicies, indicies_length * 4);
     zox_gpu_bind_buffer_element(0);
     zox_gpu_bind_buffer_array(mesh.y);
-    glEnableVertexAttribArray(vertex_shader_index);
+
+    zox_gpu_enable_attribute_float2(vertex_shader_index);
+    //glEnableVertexAttribArray(vertex_shader_index);
+    // glVertexAttribPointer(vertex_shader_index, 2, GL_FLOAT, GL_FALSE, 4 * float_per_data, (GLvoid*)(0 * sizeof(float)));
+
     zox_gpu_set_buffer_array(combined_verts, floats_length * 4);
 
     // glBufferData(GL_ARRAY_BUFFER, floats_length * 4, combined_verts, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(vertex_shader_index, 2, GL_FLOAT, GL_FALSE, 4 * float_per_data, (GLvoid*)(0 * sizeof(float)));
     zox_gpu_bind_buffer_array(0);
 }

@@ -2,22 +2,17 @@ zoxc(RenderBufferLink, uint);
 
 // Destructor for RenderBufferLink component
 ECS_DTOR(RenderBufferLink, ptr, {
-    if (ptr->value) {
-        glDeleteRenderbuffers(1, &ptr->value);
-    }
+    zox_gpu_dispose_rbo(ptr->value);
     ptr->value = 0;
 })
 
 // GL_DEPTH24_STENCIL8 GL_DEPTH
 void set_render_buffer_size(uint rbo, int2 size) {
 #ifndef zox_gles2
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(
-        GL_RENDERBUFFER,
-        GL_DEPTH24_STENCIL8,
-        size.x,
-        size.y);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    zox_gpu_set_rbo_size(rbo, size);
+    // glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    // glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
+    // glBindRenderbuffer(GL_RENDERBUFFER, 0);
 #endif
 }
 
@@ -39,19 +34,14 @@ uint spawn_render_buffer(ecs *world, entity e, int2 size) {
     if (headless) {
         return 0;
     }
+
     uint buffer = gpu_spawn_render_buffer(size);
     zox_set(e, RenderBufferLink, { buffer })
     // zox_log(" + spawn_render_buffer [%u]\n", buffer)
+
     return buffer;
 }
 
-void connect_render_buffer_to_fbo(uint fbo, uint render_buffer) {
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, render_buffer);
-    if (!check_opengl_frame_buffer_status()) {
-        zox_log(" !!! connect_render_buffer_to_fbo error on fbo [%u]\n", fbo)
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        return;
-    }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+void connect_render_buffer_to_fbo(uint fbo, uint rbo) {
+    zox_gpu_link_fbo_rbo(fbo, rbo);
 }

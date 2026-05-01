@@ -43,7 +43,7 @@ zox_sys2(Skeleton3RenderSystem) {
 
             if (transparent_meshes) {
                 zox_gpu_blend_enable();
-                glDisable(GL_CULL_FACE);
+                zox_gpu_disable_culling();
             }
 
             zox_gpu_material(material_link);
@@ -91,7 +91,7 @@ zox_sys2(Skeleton3RenderSystem) {
 
         if (transparent_meshes) {
             zox_gpu_blend_disable();
-            glEnable(GL_CULL_FACE);
+            zox_gpu_enable_culling();
         }
     }
 } zox_sys_end(Skeleton3RenderSystem);

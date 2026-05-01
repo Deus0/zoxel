@@ -4,7 +4,6 @@ extern void zox_set_app_maximized(ecs* world, entity e, byte maximized);
 // when setting is set
 void set_app_maximized(ecs* world, void* value) {
     maximized = *(byte*) value;
-    // zox_log_sdl("> setting [maximized] set to [%i]", maximized)
     if (zox_valid(main_app)) {
         zox_set_app_maximized(world, main_app, maximized);
     }

@@ -16,15 +16,15 @@ zoxc_custom(MaterialTextured2D);
 
 MaterialTextured2D create_MaterialTextured2D(uint material) {
     return (MaterialTextured2D) {
-        glGetAttribLocation(material, "vertex_position"),
-        glGetAttribLocation(material, "vertex_uv"),
-        glGetUniformLocation(material, "position"),
-        glGetUniformLocation(material, "angle"),
-        glGetUniformLocation(material, "scale"),
-        glGetUniformLocation(material, "camera_matrix"),
-        glGetUniformLocation(material, "texture"),
-        glGetUniformLocation(material, "brightness"),
-        glGetUniformLocation(material, "alpha") };
+        zox_gpu_get_material_attribute(material, "vertex_position"),
+        zox_gpu_get_material_attribute(material, "vertex_uv"),
+        zox_gpu_get_material_property(material, "position"),
+        zox_gpu_get_material_property(material, "angle"),
+        zox_gpu_get_material_property(material, "scale"),
+        zox_gpu_get_material_property(material, "camera_matrix"),
+        zox_gpu_get_material_property(material, "texture"),
+        zox_gpu_get_material_property(material, "brightness"),
+        zox_gpu_get_material_property(material, "alpha") };
 }
 
 entity spawn_shader_textured2D(ecs *world) {
@@ -82,9 +82,11 @@ void dispose_square_mesh() {
 }
 
 void initialize_square_mesh_textured() {
-    glGenBuffers(1, &squareTexturedMesh.x);
-    glGenBuffers(1, &squareTexturedMesh.y);  // generate a new VBO and get the associated ID
-    glGenBuffers(1, &squareTexturedModelUVs);  // generate a new VBO and get the associated ID
+    squareTexturedMesh = (uint2) { zox_gpu_create_buffer(), zox_gpu_create_buffer() };
+    squareTexturedModelUVs = zox_gpu_create_buffer();
+    // glGenBuffers(1, &squareTexturedMesh.x);
+    // glGenBuffers(1, &squareTexturedMesh.y);  // generate a new VBO and get the associated ID
+    // glGenBuffers(1, &squareTexturedModelUVs);  // generate a new VBO and get the associated ID
 
     zox_gpu_bind_buffer_element(squareTexturedMesh.x);
     zox_gpu_bind_buffer_array(squareTexturedMesh.y);

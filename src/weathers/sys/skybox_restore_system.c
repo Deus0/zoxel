@@ -15,8 +15,8 @@ zox_sys2(SkyboxRestoreSystem) {
 
         zox_gpu_material(material->value);
 
-        uint color_location = glGetUniformLocation(material->value, "sky_top_color");
-        uint secondary_color_location = glGetUniformLocation(material->value, "sky_bottom_color");
+        uint color_location = zox_gpu_get_material_property(material->value, "sky_top_color");
+        uint secondary_color_location = zox_gpu_get_material_property(material->value, "sky_bottom_color");
 
         zox_gpu_float3(color_location, color_rgb_to_float3(color->value));
         zox_gpu_float3(secondary_color_location, color_rgb_to_float3(secondaryColor->value));

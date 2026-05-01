@@ -74,6 +74,7 @@ zox_begin_module(Rendering)
         zox_prefab_set(prefab_camera_game, FrameBufferLink, { 0 });
         zox_prefab_set(prefab_camera_game, RenderBufferLink, { 0 });
     }
+
 zox_end_module(Rendering)
 
 #endif

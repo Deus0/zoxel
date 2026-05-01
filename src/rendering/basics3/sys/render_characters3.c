@@ -44,7 +44,7 @@ zox_sys2(Characters3RenderSystem) {
             has_set_material = 1;
 #ifdef zox_transparent_voxes
             zox_gpu_blend_enable();
-            glDisable(GL_CULL_FACE);
+            zox_gpu_disable_culling();
 #endif
             zox_gpu_material(material_link);
             zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
@@ -67,7 +67,7 @@ zox_sys2(Characters3RenderSystem) {
         zox_disable_material();
 #ifdef zox_transparent_voxes
         zox_gpu_blend_disable();
-        glEnable(GL_CULL_FACE);
+        zox_gpu_enable_culling();
 #endif
     }
 

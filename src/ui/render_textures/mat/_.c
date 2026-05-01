@@ -3,12 +3,12 @@ entity material_render_texture;
 
 MaterialAttributesRenderTexture create_MaterialAttributesRenderTexture(uint material) {
     return (MaterialAttributesRenderTexture) {
-        .vertex_position = glGetAttribLocation(material, "vertex_position"),
-        .vertex_uv = glGetAttribLocation(material, "vertex_uv"),
-        .camera_matrix = glGetUniformLocation(material, "camera_matrix"),
-        .transform_matrix = glGetUniformLocation(material, "transform_matrix"),
-        .texture = glGetUniformLocation(material, "tex"),
-        .blur_strength = glGetUniformLocation(material, "blur_strength")
+        .vertex_position = zox_gpu_get_material_attribute(material, "vertex_position"),
+        .vertex_uv = zox_gpu_get_material_attribute(material, "vertex_uv"),
+        .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
+        .transform_matrix = zox_gpu_get_material_property(material, "transform_matrix"),
+        .texture = zox_gpu_get_material_property(material, "tex"),
+        .blur_strength = zox_gpu_get_material_property(material, "blur_strength")
     };
 }
 

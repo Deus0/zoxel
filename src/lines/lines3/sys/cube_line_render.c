@@ -7,8 +7,12 @@ static inline void set_line3D_color(color_rgb value) {
 
 static inline void zox_render_line_attr(float3 a, float3 b) {
     // glLineWidth(cubeLinesThickness->value);
-    glVertexAttribPointer(line3D_position_location, 3, GL_FLOAT, GL_FALSE, 0,
-        (float[]) { a.x, a.y, a.z, b.x, b.y, b.z });
+
+    const float3* line = (float3[]) { a.x, a.y, a.z, b.x, b.y, b.z };
+    zox_gpu_set_attribute_float3(line3D_position_location, line);
+
+    // glVertexAttribPointer(line3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (float[]) { a.x, a.y, a.z, b.x, b.y, b.z });
+
     zox_gpu_render_lines(2);
 }
 

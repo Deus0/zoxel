@@ -12,16 +12,16 @@ int check_compute_shader_support_from_version() {
     glGetIntegerv(GL_MINOR_VERSION, &minor);
     if (is_opengl_es) {
         if (major >= 3 && minor >= 1) {
-            zox_log_sdl("+ compute supported: OpenGL ES %d.%d [%s]", major, minor, version_str)
+            zox_log_opengl("+ compute supported: OpenGL ES %d.%d [%s]", major, minor, version_str)
             return EXIT_SUCCESS;
         }
     } else {
         if (major >= 4 && minor >= 3) {
-            zox_log_sdl("+ compute supported: OpenGL %d.%d [%s]", major, minor, version_str)
+            zox_log_opengl("+ compute supported: OpenGL %d.%d [%s]", major, minor, version_str)
             return EXIT_SUCCESS;
         }
     }
-    if (is_log_sdl) {
+    if (is_log_opengl) {
         zox_log_error("compute not supported: OpenGL %d.%d [%s]", major, minor, version_str)
     }
 #endif
@@ -88,7 +88,7 @@ void test_compute() {
     if (check_compute_shader_support() == EXIT_FAILURE) {
         zox_log_error("opengl compute is not supported")
     } else {
-        zox_log_sdl("+ opengl compute supported")
+        zox_log_opengl("+ opengl compute supported")
     }
 }
 
@@ -100,7 +100,7 @@ int test_compute_shader() {
         return EXIT_FAILURE;
     } else {
         zox_log("    > compute shader creation success");
-        glDeleteShader(compute_shader);
+        zox_gpu_dispose_shader(compute_shader);
         return EXIT_SUCCESS;
     }
 #else

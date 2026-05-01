@@ -21,26 +21,29 @@ zox_sys2(TextureUpdateSystem) {
             continue;
         }
 
-        glBindTexture(GL_TEXTURE_2D, gpu_link->value);
+        // zox_gpu_bind_texture(gpu_link->value);
 
         if (!data->length) {
-            const byte values[4] = { 0, 0, 0, 0 };  // RGBA all zero
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, values);
+
+            const byte* values = (byte[]) { 0, 0, 0, 0 };  // RGBA all zero
+            zox_gpu_set_texture_color_rgba(gpu_link->value, int2_one, values);
+            // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, values);
 
             // zox_log("+ rgba [%s] cleared texture", zox_get_name(e));
         }
         else if (data->length != size->value.x * size->value.y) {
             // zox_logw("[%s] Invalid TextureRGBA Size s[%ix%i] -> l[%i]", zox_get_name(e), size->value.x, size->value.y, data->length);
-            glBindTexture(GL_TEXTURE_2D, 0);
+            // zox_gpu_bind_texture(0);
             continue;
         }
         // if data and lengths all valid
         else if (data->length) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size->value.x, size->value.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data->value);
+            zox_gpu_set_texture_color_rgba(gpu_link->value, size->value, data->value);
+            // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size->value.x, size->value.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data->value);
 
             // zox_log("+ rgba uploaded [%s] size [%ix%i]", zox_get_name(e), size->value.x, size->value.y);
         }
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        // zox_gpu_bind_texture(0);
     }
 } zox_sys_end(TextureUpdateSystem);

@@ -6,19 +6,8 @@
 #include "triggers/_.c"
 #include "screens/_.c"
 #include "inputs/_.c"
+#include "graphics/_.c"
 #include "apps/_.c"
-
-#ifdef zox_sdl
-
-    #include "sdl/_.c"
-    #include "opengl/_.c"
-    #include "vulkan/_.c"
-
-#else
-
-    #include "headless/_.c"
-
-#endif
 
 // basic b locks
 #include "assets/_.c" // uses sdl path function atm
@@ -116,14 +105,9 @@ zox_begin_module(Zox)
     zox_import_module(Inputs);
     if (!headless) {
         zox_import_module(Apps);
-
-#ifdef zox_sdl
-        zox_import_module(Sdl);
-#else
-        zox_import_module(Headless);
-#endif
-
     }
+    zox_import_module(Graphics);
+
     zox_import_module(Assets);
     zox_import_module(Realms);
     zox_import_module(Games);

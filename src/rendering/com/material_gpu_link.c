@@ -4,10 +4,8 @@ zoxc_uint(MaterialGPULink);
 zoxc_uint(MaterialInstancedGPULink);
 
 void add_gpu_material(ecs *world, entity e) {
-    if (!headless) {
-        zox_prefab_set(e, MaterialGPULink, { 0 });
-        zox_prefab_set(e, ShaderLink, { 0 });
-    }
+    zox_prefab_set(e, MaterialGPULink, { 0 });
+    zox_prefab_set(e, ShaderLink, { 0 });
 }
 
 uint spawn_gpu_material(ecs *world, entity e, uint2 shader) {

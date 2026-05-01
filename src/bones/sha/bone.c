@@ -14,15 +14,15 @@ zoxc_custom(MaterialBone);
 
 MaterialBone create_MaterialBone(const uint material) {
     return (MaterialBone) {
-        glGetAttribLocation(material, "vertex_position"),
-        glGetAttribLocation(material, "vertex_color"),
-        glGetAttribLocation(material, "bone_index"),
-        glGetUniformLocation(material, "transform_matrix"),
-        glGetUniformLocation(material, "camera_matrix"),
-        glGetUniformLocation(material, "bone_matrix"),
-        glGetUniformLocation(material, "bone_positions"),
-        glGetUniformLocation(material, "brightness"),
-        glGetUniformLocation(material, "fog_data")
+        zox_gpu_get_material_attribute(material, "vertex_position"),
+        zox_gpu_get_material_attribute(material, "vertex_color"),
+        zox_gpu_get_material_attribute(material, "bone_index"),
+        zox_gpu_get_material_property(material, "transform_matrix"),
+        zox_gpu_get_material_property(material, "camera_matrix"),
+        zox_gpu_get_material_property(material, "bone_matrix"),
+        zox_gpu_get_material_property(material, "bone_positions"),
+        zox_gpu_get_material_property(material, "brightness"),
+        zox_gpu_get_material_property(material, "fog_data")
     };
 }
 

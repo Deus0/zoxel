@@ -3,15 +3,11 @@ extern uint spawn_gpu_texture_buffer();
 zoxc_uint(TextureGPULink);
 
 void add_gpu_texture(ecs *world, entity e) {
-    if (!headless) {
-        zox_prefab_set(e, TextureGPULink, { 0 });
-    }
+    zox_prefab_set(e, TextureGPULink, { 0 });
 }
 
 void spawn_gpu_texture(ecs *world, entity e) {
-    if (!headless) {
-        zox_set(e, TextureGPULink, { spawn_gpu_texture_buffer() });
-    }
+    zox_set(e, TextureGPULink, { spawn_gpu_texture_buffer() });
 }
 
 ECS_DTOR(TextureGPULink, ptr, {

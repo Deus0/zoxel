@@ -3,8 +3,7 @@
 
 byte test_opengl() {
 
-    if (is_log_sdl) {
-        // zox_log_sdl("test_opengl: OpenGL version [%u]", shader_opengl_version);
+    if (is_log_opengl) {
         print_opengl();
     }
 

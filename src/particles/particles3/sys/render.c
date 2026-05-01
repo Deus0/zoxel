@@ -17,28 +17,38 @@ zox_sys2(Particle3DRenderSystem) {
     zox_gpu_float4x4(particle3D_camera_matrix_location, render_camera_matrix);
     float fov_fixer = 90.0f / ((float) render_camera_fov);
     zox_gpu_float(particle3D_location_thickness, fov_fixer * default_point_thickness * viewport_scale);
-    zox_sys_begin()
-    zox_sys_in(Position3D)
-    zox_sys_in(Color)
+
+    zox_sys_begin();
+    zox_sys_in(Position3D);
+    zox_sys_in(Color);
+
 #if !defined(zox_disable_particles_gpu_instancing) && !defined(zox_disable_instancing)
     // position
     zox_gpu_bind_buffer_array(particle3D_instanced_position_buffer);
     // glBufferData(GL_ARRAY_BUFFER, it->count * sizeof(float3), position3Ds, GL_STATIC_DRAW);
-    glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, it->count * sizeof(float3), Position3D_); //, GL_STATIC_DRAW);
+
+    zox_gpu_set_attribute_float3(particle3D_position_location, (void*) 0);
+    // glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+
+    zox_gpu_set_sub_buffer_float3(it->count, Position3D_);
+    // glBufferSubData(GL_ARRAY_BUFFER, 0, it->count * sizeof(float3), Position3D_); //, GL_STATIC_DRAW);
     glEnableVertexAttribArray(particle3D_position_location);// Set divisor for position attribute
     glVertexAttribDivisor(particle3D_position_location, 1); // Update per instance
 
     // colors
     zox_gpu_bind_buffer_array(particle3D_instanced_color_buffer);
     // glBufferData(GL_ARRAY_BUFFER, it->count * sizeof(color), colors, GL_STATIC_DRAW);
-    glVertexAttribPointer(particle3D_color_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*) 0);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, it->count * sizeof(color), Color_); // , GL_STATIC_DRAW);
+    zox_gpu_set_attribute_color(particle3D_color_location, (void*) 0);
+    // glVertexAttribPointer(particle3D_color_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*) 0);
+
+    zox_gpu_set_sub_buffer_color(it->count, Color_);
+    // glBufferSubData(GL_ARRAY_BUFFER, 0, it->count * sizeof(color), Color_); // , GL_STATIC_DRAW);
     glEnableVertexAttribArray(particle3D_color_location);// Set divisor for position attribute
     glVertexAttribDivisor(particle3D_color_location, 1); // Update per instance
 
     // draw
-    glDrawArraysInstanced(GL_POINTS, 0, 1, it->count);
+    zox_gpu_render_points_instanced(it->count);
+    // glDrawArraysInstanced(GL_POINTS, 0, 1, it->count);
 
     // resets
     glVertexAttribDivisor(particle3D_color_location, 0); // Update per instance
@@ -48,17 +58,23 @@ zox_sys2(Particle3DRenderSystem) {
     zox_gpu_bind_buffer_array(0);
 #else
     glEnableVertexAttribArray(particle3D_position_location);
+
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Position3D, position3D)
         zox_sys_i(Color, color)
-        const float data[] = { position3D->value.x, position3D->value.y, position3D->value.z };
-        glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, data);
+        const float* data = { position3D->value.x, position3D->value.y, position3D->value.z };
+
+        zox_gpu_set_attribute_float3(particle3D_position_location, data);
+        // glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, data);
+
         float4 color_f = color_to_float4(color->value);
         glUniform4f(particle3D_color_location, color_f.x, color_f.y, color_f.z, color_f.w);
         zox_gpu_render_points(1);
+
 #ifdef zox_debug_particle3Ds
         spawn_line3(world, position3D->value, float3_add(position3D->value, debug_particle_line_addition), 0.5f, 0.03);
 #endif
+
 #ifdef zoxel_catch_opengl_errors
         if (check_opengl_error_unlogged() != 0) {
             zox_log(" ! Particle3DRenderSystem [%lu]: [%i]\n", it->entities[i], 1)
@@ -66,10 +82,12 @@ zox_sys2(Particle3DRenderSystem) {
         }
 #endif
     }
+
     glDisableVertexAttribArray(particle3D_position_location);
 #endif
     zox_disable_material();
     zox_gpu_blend_disable();
+
 } zox_sys_end(Particle3DRenderSystem);
 
 // const Rotation3D *rotation3D = &rotation3Ds[i];

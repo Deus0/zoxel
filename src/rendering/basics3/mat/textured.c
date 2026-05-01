@@ -15,14 +15,14 @@ zoxc_custom(MaterialTextured3D);
 
 MaterialTextured3D create_MaterialTextured3D(const uint material) {
     return (MaterialTextured3D) {
-        glGetAttribLocation(material, "vertex_position"),
-        glGetAttribLocation(material, "vertex_uv"),
-        glGetAttribLocation(material, "vertex_color"),
-        glGetUniformLocation(material, "transform_matrix"),
-        glGetUniformLocation(material, "camera_matrix"),
-        glGetUniformLocation(material, "tex"),
-        glGetUniformLocation(material, "fog_data"),
-        glGetUniformLocation(material, "brightness") };
+        zox_gpu_get_material_attribute(material, "vertex_position"),
+        zox_gpu_get_material_attribute(material, "vertex_uv"),
+        zox_gpu_get_material_attribute(material, "vertex_color"),
+        zox_gpu_get_material_property(material, "transform_matrix"),
+        zox_gpu_get_material_property(material, "camera_matrix"),
+        zox_gpu_get_material_property(material, "tex"),
+        zox_gpu_get_material_property(material, "fog_data"),
+        zox_gpu_get_material_property(material, "brightness") };
 }
 
 entity spawn_shader_textured3D(ecs *world) {

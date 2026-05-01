@@ -1,4 +1,4 @@
-int2 get_screen_size() {
+static inline int2 get_screen_size() {
 #ifdef zox_web
     return get_webasm_screen_size();
 #else

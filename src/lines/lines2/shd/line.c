@@ -20,8 +20,8 @@ void spawn_shader_line2D(ecs *world) {
         zox_log_error("=> [spawn_shader_line2D] Failed:\n%s", vert);
         return;
     }
-    line2D_position_location = glGetAttribLocation(line2D_material, "position");
-    line2D_color_location = glGetUniformLocation(line2D_material, "color");
-    line2D_depth_location = glGetUniformLocation(line2D_material, "depth");
-    line2D_camera_matrix_location = glGetUniformLocation(line2D_material, "camera_matrix");
+    line2D_position_location = zox_gpu_get_material_attribute(line2D_material, "position");
+    line2D_color_location = zox_gpu_get_material_property(line2D_material, "color");
+    line2D_depth_location = zox_gpu_get_material_property(line2D_material, "depth");
+    line2D_camera_matrix_location = zox_gpu_get_material_property(line2D_material, "camera_matrix");
 }

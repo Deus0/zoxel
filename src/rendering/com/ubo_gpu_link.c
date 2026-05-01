@@ -1,15 +1,11 @@
 zoxc_uint(UboGPULink);
 
 void add_gpu_ubo(ecs *world, entity e) {
-    if (!headless) {
-        zox_prefab_set(e, UboGPULink, { 0 })
-    }
+    zox_prefab_set(e, UboGPULink, { 0 });
 }
 
 void spawn_gpu_ubo(ecs *world, entity e) {
-    if (!headless) {
-        zox_set(e, UboGPULink, { spawn_gpu_generic_buffer() })
-    }
+    zox_set(e, UboGPULink, { spawn_gpu_generic_buffer() });
 }
 
 // actually this gets called during flecs table changes

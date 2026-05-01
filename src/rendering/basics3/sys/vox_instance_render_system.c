@@ -124,14 +124,17 @@ zox_sys2(VoxInstanceRenderSystem) {
 
         int render_count = command.transforms->size;
         // update transform data
-        glBindBuffer(GL_UNIFORM_BUFFER, ubo->value);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, render_count * sizeof(float4x4), command.transforms->data);
+        zox_gpu_ubo_set_matricies(ubo->value, render_count, command.transforms->data);
+        // glBindBuffer(GL_UNIFORM_BUFFER, ubo->value);
+        // glBufferSubData(GL_UNIFORM_BUFFER, 0, render_count * sizeof(float4x4), command.transforms->data);
 
         // draw
-        glDrawElementsInstanced(GL_TRIANGLES, meshIndicies->length, GL_UNSIGNED_INT, 0, render_count);
+        zox_gpu_render_triangles_instanced(meshIndicies->length, render_count);
+        // glDrawElementsInstanced(GL_TRIANGLES, meshIndicies->length, GL_UNSIGNED_INT, 0, render_count);
 
         // reset the things
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        // glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        zox_gpu_ubo_reset();
         zox_gpu_disable_buffer(material_attributes->vertex_color);
         zox_gpu_disable_buffer(material_attributes->vertex_position);
         opengl_unset_mesh();

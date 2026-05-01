@@ -8,7 +8,7 @@ zox_sys2(SkyboxSetTimeSystem) {
             continue;
         }
         zox_gpu_material(material);
-        const uint attribute_time = glGetUniformLocation(material, "time");
+        const uint attribute_time = zox_gpu_get_material_property(material, "time");
         zox_gpu_float(attribute_time, (float) zox_current_time);
         zox_gpu_material(0);
     }

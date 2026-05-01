@@ -5,6 +5,7 @@
 #include "dat/sdl_gamepad.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "dbg/_.c"
 
 void spawn_prefabs_sdl_input(ecs* world) {
 #ifdef zox_sdl

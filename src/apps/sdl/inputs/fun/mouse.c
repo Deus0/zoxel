@@ -10,11 +10,14 @@ void sdl_extract_mouse_wheel(SDL_Event event) {
     }
 }
 
-int2 get_mouse_center_point(ecs *world, const entity e) {
-    zox_geter_value_non_const(e, WindowSize, int2, size)
+int2 get_mouse_center_point(ecs *world, entity e) {
+
+    zox_geter_value_non_const(e, WindowSize, int2, size);
     size = int2_half(size);
+
     if (zox_gett_value(e, WindowMaximized)) {
     //    size = get_window_size_without_header(world, e, size);
     }
+
     return size;
 }

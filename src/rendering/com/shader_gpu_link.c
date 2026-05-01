@@ -1,16 +1,18 @@
 zoxc_uint2(ShaderGPULink);
 
-void add_gpu_shader(ecs *world, const entity e) {
-    if (!headless) zox_prefab_set(e, ShaderGPULink, { { 0, 0 } })
+void add_gpu_shader(ecs *world, entity e) {
+    zox_prefab_set(e, ShaderGPULink, { { 0, 0 } })
 }
 
 ECS_DTOR(ShaderGPULink, ptr, {
-    // delete_shader(ptr->value); // why cant we do this
-    if (ptr->value.x != 0) glDeleteShader(ptr->value.x);
-    if (ptr->value.y != 0) glDeleteShader(ptr->value.y);
+    zox_gpu_dispose_shader(ptr->value.x);
+    zox_gpu_dispose_shader(ptr->value.y);
 })
 
-uint2 get_shader_value(ecs *world, const entity shader) {
-    if (!zox_valid(shader)) return (uint2) { 0, 0 };
-    return zox_get_value(shader, ShaderGPULink)
+uint2 get_shader_value(ecs *world, entity shader) {
+    if (!zox_valid(shader)) {
+        return (uint2) { 0, 0 };
+    }
+
+    return zox_get_value(shader, ShaderGPULink);
 }

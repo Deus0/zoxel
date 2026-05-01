@@ -37,7 +37,8 @@ zox_sys2(Line3DRenderSystem) {
 
         float4 colorf = color_to_float4(c->value);
 
-        glVertexAttribPointer(line3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (GLfloat*) &data->value);
+        zox_gpu_set_attribute_float3(line3D_position_location, &data->value);
+        // glVertexAttribPointer(line3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (GLfloat*) &data->value);
 
         zox_gpu_float4(line3D_color_location, colorf);
 

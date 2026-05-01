@@ -12,11 +12,11 @@ zoxc_custom(MaterialBasic3D);
 
 MaterialBasic3D create_MaterialBasic3D(const uint material) {
     return (MaterialBasic3D) {
-        glGetAttribLocation(material, "vertex_position"),
-        glGetUniformLocation(material, "transform_matrix"),
-        glGetUniformLocation(material, "camera_matrix"),
-        glGetUniformLocation(material, "fog_data"),
-        glGetUniformLocation(material, "brightness")
+        zox_gpu_get_material_attribute(material, "vertex_position"),
+        zox_gpu_get_material_property(material, "transform_matrix"),
+        zox_gpu_get_material_property(material, "camera_matrix"),
+        zox_gpu_get_material_property(material, "fog_data"),
+        zox_gpu_get_material_property(material, "brightness")
     };
 }
 

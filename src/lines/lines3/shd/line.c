@@ -7,8 +7,8 @@ uint line3D_camera_matrix_location;
 uint line3D_fog_data_location;
 
 void dispose_shader_line3D() {
-    glDeleteShader(line3D_shader.x);
-    glDeleteShader(line3D_shader.y);
+    zox_gpu_dispose_shader(line3D_shader.x);
+    zox_gpu_dispose_shader(line3D_shader.y);
     zox_dispose_material(line3D_material);
 }
 
@@ -25,9 +25,9 @@ int initialize_shader_line3D(ecs *world) {
         zox_log_error("=> [initialize_shader_line3D] Failed:\n%s", vert);
         return EXIT_FAILURE;
     }
-    line3D_position_location = glGetAttribLocation(line3D_material, "position");
-    line3D_color_location = glGetUniformLocation(line3D_material, "color");
-    line3D_camera_matrix_location = glGetUniformLocation(line3D_material, "camera_matrix");
-    line3D_fog_data_location = glGetUniformLocation(line3D_material, "fog_data");
+    line3D_position_location = zox_gpu_get_material_attribute(line3D_material, "position");
+    line3D_color_location = zox_gpu_get_material_property(line3D_material, "color");
+    line3D_camera_matrix_location = zox_gpu_get_material_property(line3D_material, "camera_matrix");
+    line3D_fog_data_location = zox_gpu_get_material_property(line3D_material, "fog_data");
     return EXIT_SUCCESS;
 }

@@ -24,7 +24,8 @@ zox_sys2(MouseConstrainSystem) {
         }
 
         zox_geter_value_non_const(app->value, SDLWindow, SDL_Window*, sdl_window);
-        const int2 lock_position = get_mouse_center_point(world, app->value);
+
+        int2 lock_position = get_mouse_center_point(world, app->value);
         // now lock
         SDL_SetRelativeMouseMode(lock->value);
         if (lock->value) {

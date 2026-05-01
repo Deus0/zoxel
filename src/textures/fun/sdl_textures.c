@@ -1,13 +1,5 @@
 #ifdef zox_sdl_images
 
-SDL_Surface* load_png_as_surface(const char *filepath) {
-#ifndef zox_sdl_images
-    return NULL;
-#else
-    return (SDL_Surface*) IMG_Load(filepath);
-#endif
-}
-
 // Assuming TextureData and TextureSize are defined as they are in your save function
 byte load_texture_from_png(const char *filepath, TextureData* data, int2 *size) {
     SDL_Surface* surface = IMG_Load(filepath);
@@ -73,24 +65,3 @@ byte load_texture_from_png(const char *filepath, TextureData* data, int2 *size) 
 void save_texture_as_png(const color *data, const int2 size, const char *filepath) { }
 
 #endif
-
-byte load_app_icon(SDL_Window* window, const char *icon_path) {
-    if (!window) {
-        return 0;
-    }
-
-#ifdef zox_sdl_images
-    SDL_Surface *surface = load_png_as_surface(icon_path);
-    if (surface) {
-        SDL_SetWindowIcon(window, surface);
-        SDL_FreeSurface(surface);
-        zox_logv("Loaded Icon at [%s]", icon_path);
-        return 1;
-    } else {
-        zox_log_error("Failed to load app icon [%s]", icon_path);
-        return 0;
-    }
-#else
-    return 0;
-#endif
-}

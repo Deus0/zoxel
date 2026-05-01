@@ -1,9 +1,21 @@
+static inline void opengl_begin_camera(byte is_3D) {
+    if (is_3D) {
+        zox_gpu_enable_depth_test();        // cull for 3D things
+        zox_gpu_enable_culling();
+        zox_gpu_disable_blend();
+    } else {
+        zox_gpu_disable_depth_test();
+        zox_gpu_disable_culling();
+        zox_gpu_enable_blend();
+    }
+}
+
 void camera_render_update(iter *it, const byte is_camera2D) {
     byte do_renders = !headless && rendering;
     if (!do_renders) {
         return;
     }
-    opengl_set_defaults(!is_camera2D);
+    opengl_begin_camera(!is_camera2D);
 
     zox_sys_world();
     zox_sys_begin();
@@ -54,15 +66,18 @@ void camera_render_update(iter *it, const byte is_camera2D) {
         }
         // todo: this required but breaks it for both render cameras
         if (fbo) {
-            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-            #ifdef zoxel_catch_opengl_errors
+            zox_gpu_bind_fbo(fbo);
+
+#ifdef zoxel_catch_opengl_errors
             if (!check_opengl_frame_buffer_status()) {
                 zox_log(" !! camera render - error on fbo [%u]\n", fbo)
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                zox_gpu_bind_fbo(0);
                 continue;
             }
-            #endif
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+#endif
+
+            zox_gpu_clear_viewport();
+            // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         }
         #ifdef zox_vulkan
         // else { set vulkan viewport; }
@@ -82,8 +97,7 @@ void camera_render_update(iter *it, const byte is_camera2D) {
                 }
             }
         }
-        if (fbo) {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        }
+
+        if (fbo) zox_gpu_bind_fbo(0);
     }
 }

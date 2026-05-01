@@ -4,16 +4,17 @@ Material2D material2D;
 uint2 squareMesh;
 
 void dispose_shader2D_instance_material() {
-    glDeleteShader(shader2D_basic.x);
-    glDeleteShader(shader2D_basic.y);
+    zox_gpu_dispose_shader(shader2D_basic.x);
+    zox_gpu_dispose_shader(shader2D_basic.y);
     zox_gpu_dispose_buffer(squareMesh.x);
     zox_gpu_dispose_buffer(squareMesh.y);
     zox_dispose_material(square2DMaterial);
 }
 
 void initialize_mesh() {
-    glGenBuffers(1, &squareMesh.x);
-    glGenBuffers(1, &squareMesh.y);
+    squareMesh = (uint2) { zox_gpu_create_buffer(), zox_gpu_create_buffer() };
+    //glGenBuffers(1, &squareMesh.x);
+    //glGenBuffers(1, &squareMesh.y);
 
     zox_gpu_bind_buffer_element(squareMesh.x);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square_indicies), square_indicies, GL_STATIC_DRAW);
@@ -24,8 +25,10 @@ void initialize_mesh() {
     zox_gpu_set_buffer_array(square_vertices, sizeof(squareTexturedVerts));
     // glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_STATIC_DRAW);
 
-    glEnableVertexAttribArray(material2D.vertex_position);
-    glVertexAttribPointer(material2D.vertex_position, 2, GL_FLOAT, GL_FALSE, 8, 0);
+    zox_gpu_enable_attribute_float2(material2D.vertex_position);
+    //glEnableVertexAttribArray(material2D.vertex_position);
+    //glVertexAttribPointer(material2D.vertex_position, 2, GL_FLOAT, GL_FALSE, 8, 0);
+
     zox_gpu_bind_buffer_array(0);
 }
 
@@ -61,8 +64,11 @@ void shader2D_instance_begin(const float4x4 viewMatrix) {
     zox_gpu_material(square2DMaterial);
     zox_gpu_bind_buffer_element(squareMesh.x);    // for indices
     zox_gpu_bind_buffer_array(squareMesh.y);            // for vertex coordinates
-    glEnableVertexAttribArray(material2D.vertex_position);
-    glVertexAttribPointer(material2D.vertex_position, 2, GL_FLOAT, GL_FALSE, 8, 0);  // 2 * 4
+
+    zox_gpu_enable_attribute_float2(material2D.vertex_position);
+    //glEnableVertexAttribArray(material2D.vertex_position);
+    //glVertexAttribPointer(material2D.vertex_position, 2, GL_FLOAT, GL_FALSE, 8, 0);  // 2 * 4
+
     zox_gpu_float4x4(material2D.camera_matrix, viewMatrix);
 }
 

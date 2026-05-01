@@ -15,27 +15,32 @@ zoxc_custom(MaterialVoxInstance);
 
 MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
     return (MaterialVoxInstance) {
-        glGetAttribLocation(material, "vertex_position"),
-        glGetAttribLocation(material, "vertex_color"),
+        zox_gpu_get_material_attribute(material, "vertex_position"),
+        zox_gpu_get_material_attribute(material, "vertex_color"),
 #ifndef zox_disable_ubos
         glGetUniformBlockIndex(material, "InstanceMatrices"),
 #else
         0,
 #endif
-        glGetUniformLocation(material, "camera_matrix"),
-        glGetUniformLocation(material, "brightness"),
-        glGetUniformLocation(material, "fog_data")
+        zox_gpu_get_material_property(material, "camera_matrix"),
+        zox_gpu_get_material_property(material, "brightness"),
+        zox_gpu_get_material_property(material, "fog_data")
     };
 }
 
 uint generate_ubo(gint binding_point) {
 #ifndef zox_disable_ubos
-    uint ubo;
-    glGenBuffers(1, &ubo);
-    glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(float4x4) * zox_get_safe_ubo_size(), NULL, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, ubo);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0); // Unbind after allocation
+
+    uint ubo = zox_gpu_create_buffer();
+    zox_gpu_ubo_initialize_matricies(ubo, binding_point, zox_get_safe_ubo_size());
+    zox_gpu_ubo_reset();
+
+    // glGenBuffers(1, &ubo);
+    // glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+    // glBufferData(GL_UNIFORM_BUFFER, sizeof(float4x4) * zox_get_safe_ubo_size(), NULL, GL_DYNAMIC_DRAW);
+    // glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, ubo);
+    // glBindBuffer(GL_UNIFORM_BUFFER, 0); // Unbind after allocation
+
     zox_log_shader(" + spawned ubo: %i binded to block index %i", ubo, binding_point);
     return ubo;
 #else

@@ -3,7 +3,7 @@ zoxc_uint(ComputeShaderLink);
 
 // Destructor for ComputeShaderLink component
 ECS_DTOR(ComputeShaderLink, ptr, {
-    if (ptr->value) glDeleteShader(ptr->value);
+    zox_gpu_dispose_shader(ptr->value);
 })
 
 // Function to generate a compute shader on gpu
@@ -17,11 +17,11 @@ uint gpu_spawn_compute_shader() {
 }
 
 // Function to add a compute shader to a prefab
-void prefab_add_compute_shader(ecs *world, const entity e) {
-    if (!headless) zox_prefab_set(e, ComputeShaderLink, { 0 })
+void prefab_add_compute_shader(ecs *world, entity e) {
+    zox_prefab_set(e, ComputeShaderLink, { 0 })
 }
 
 // Function to spawn and attach a compute shader to an entity
-void spawn_compute_shader(ecs *world, const entity e) {
-    if (!headless) zox_set(e, ComputeShaderLink, { gpu_spawn_compute_shader() })
+void spawn_compute_shader(ecs *world, entity e) {
+    zox_set(e, ComputeShaderLink, { gpu_spawn_compute_shader() })
 }

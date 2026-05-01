@@ -60,65 +60,36 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
     }
 }
 
-// todo: get position2 to work
-entity spawn_app_sdl_opengl(
-    ecs *world,
-    const char* name,
-    const byte fullscreen,
-    const byte maximized,
-    const byte monitor
-) {
-    const entity e = spawn_app_sdl(
-        world,
-        name,
-        fullscreen,
-        maximized,
-        monitor
-    );
-    if (!e) {
-        zox_log_error("Failed spawning sdl window");
-        return 0;
-    }
-
-    zox_geter(e, SDLWindow, sdl_window);
-    SDL_GLContext context = create_sdl_opengl_context(sdl_window->value);
-    if (!context) {
-        zox_log_error("OpenGL could not create a context");
-        running = 0;
-        return 0;
-    }
-
-    if (set_sdl_window_context(sdl_window->value, context)) {
-        zox_log_error("OpenGL could not set context to sdl window");
-        running = 0;
-        return 0;
-    }
-
-    // --- Now check if the context is ACTUALLY valid ---
-    const char* ver = (const char*)glGetString(GL_VERSION);
-    const char* ren = (const char*)glGetString(GL_RENDERER);
-    const char* ven = (const char*)glGetString(GL_VENDOR);
-
-    /*if (!ver || !ren || !ven) {
-        zox_log_error("OpenGL context creation failed: GL strings are NULL.");
-        SDL_GL_DeleteContext(context);
-        return EXIT_FAILURE;
-    }*/
-
-    zox_logv("OpenGL Context Created");
-    zox_logv("   GL_VERSION: %s", ver);
-    zox_logv("   GL_RENDERER: %s", ren);
-    zox_logv("   GL_VENDOR: %s", ven);
-
-    // zox_log("Created Opengl Context Success");
-    zox_set(e, Context, { context });
-
-
-    return e;
+SDL_Surface* load_png_as_surface(const char *filepath) {
+#ifndef zox_sdl_images
+    return NULL;
+#else
+    return (SDL_Surface*) IMG_Load(filepath);
+#endif
 }
 
+byte load_app_icon(SDL_Window* window, const char *icon_path) {
+    if (!window) {
+        return 0;
+    }
 
-extern byte load_app_icon(SDL_Window*, const char*);
+#ifdef zox_sdl_images
+    SDL_Surface *surface = load_png_as_surface(icon_path);
+    if (surface) {
+        SDL_SetWindowIcon(window, surface);
+        SDL_FreeSurface(surface);
+        zox_logv("Loaded Icon at [%s]", icon_path);
+        return 1;
+    } else {
+        zox_log_error("Failed to load app icon [%s]", icon_path);
+        return 0;
+    }
+#else
+    return 0;
+#endif
+}
+
+// extern byte load_app_icon(SDL_Window*, const char*);
 
 byte spawn_window_icon(ecs *world, entity app, const char* texture_name) {
 

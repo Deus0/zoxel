@@ -6,11 +6,7 @@ void ShaderDisposeSystem(iter *it) {
 #ifdef zox_log_gpu_management
         zox_log(" + disposing [%s] [%ix%i]\n", zox_get_name(it->entities[i]), shaderGPULink->value.x, shaderGPULink->value.x)
 #endif
-        if (shaderGPULink->value.x) {
-            glDeleteShader(shaderGPULink->value.x);
-        }
-        if (shaderGPULink->value.y) {
-            glDeleteShader(shaderGPULink->value.y);
-        }
+        zox_gpu_dispose_shader(shaderGPULink->value.x);
+        zox_gpu_dispose_shader(shaderGPULink->value.y);
     }
 } zoxd_system(ShaderDisposeSystem)

@@ -87,10 +87,10 @@ int main(int argc, char* argv[]) {
 
     // spawn app (creates our opengl context too)
     zox_logv("Spawning App");
-    entity app = spawn_engine_app(world);
 
 #ifdef zox_sdl
 
+    entity app = spawn_engine_app(world);
     if (app) {
         // zox_set(app, RealmLink, { realm });
         zox_set(app, GameLink, { game });
@@ -110,6 +110,8 @@ int main(int argc, char* argv[]) {
         process_shaders(world);
     }
 
+#else
+    entity app = 0;
 #endif
 
     // Yet another Hook
