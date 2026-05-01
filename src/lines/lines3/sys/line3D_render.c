@@ -7,11 +7,11 @@ zox_sys2(Line3DRenderSystem) {
 
     camera_filtering_begin();
 
-    zox_gpu_blend_enable();
+    zox_gpu_enable_blend();
     zox_gpu_material(line3D_material);
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());
     zox_gpu_float4x4(line3D_camera_matrix_location, render_camera_matrix);
-    glEnableVertexAttribArray(line3D_position_location);
+    zox_gpu_enable_attribute(line3D_position_location);
 
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LineData3D, data);
@@ -45,8 +45,8 @@ zox_sys2(Line3DRenderSystem) {
         zox_gpu_render_lines(2);
     }
 
-    glDisableVertexAttribArray(line3D_position_location);
+    zox_gpu_disable_attribute(line3D_position_location);
     zox_disable_material();
-    zox_gpu_blend_disable();
+    zox_gpu_disable_blend();
 
 } zox_sys_end(Line3DRenderSystem);

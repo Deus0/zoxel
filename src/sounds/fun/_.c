@@ -1,20 +1,9 @@
-void initialize_sounds() {
-    if (nosounds) {
-        return;
-    }
-    if (initialize_sdl_mixer(channel_sample_rate, channels_count) == EXIT_SUCCESS) {
-        audio_enabled = 1;
-        zox_log_sounds("> initialize_sdl_mixer success")
-    } else {
-        zox_log_error("[initialize_sdl_mixer] failed")
-    }
-}
+
 
 void dispose_sounds(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
     dispose_files_sounds();
-    close_audio_sdl();
 }
 
 #include "spawn.c"

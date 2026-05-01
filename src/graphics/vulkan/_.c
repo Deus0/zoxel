@@ -1,17 +1,10 @@
 #ifndef zoxm_vulkan
 #define zoxm_vulkan
 
-// #include "vulkan/vulkan.c"
 #include "fun/vulkan_check.c"
 #ifdef zox_vulkan
     #include "fun/vulkan_setup.c"
 #endif
-
-void dispose_vulkan() {
-#ifdef zox_vulkan
-    dispose_vulkan_globals();
-#endif
-}
 
 byte initialize_vulkan() {
     // load shaders, vulkan load shader
@@ -27,5 +20,15 @@ byte check_vulkan_suppport() {
     }
     return vulkan_supported;
 }
+
+void dispose_vulkan(ecs *world, void *ctx) {
+    (void) world;
+    (void) ctx;
+    dispose_vulkan_globals();
+}
+
+zox_begin_module(Vulkan)
+    zox_module_dispose(dispose_vulkan);
+zox_end_module(Vulkan)
 
 #endif

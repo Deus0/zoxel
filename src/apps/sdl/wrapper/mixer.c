@@ -12,40 +12,36 @@ byte initialize_sdl_mixer(ulong sample_rate, byte channels_count) {
     }
 }
 
-void close_audio_sdl() {
-    Mix_Quit();
-}
-
 int get_channels_count() {
     return Mix_GroupAvailable(-1);
 }
 
-byte sdl_play_sound(
-    SDLMixChunk* chunk,
-    const float* data,
-    const int length,
-    const float volume,
-    const int channel
-) {
+byte sdl_play_sound(SDLMixChunk* chunk, const float* data, int length, float volume, int channel) {
+
     if (!length || !volume || !data) {
         return 0;
     }
+
     if (!chunk->value) {
         chunk->value = zalloc(sizeof(Mix_Chunk));
     }
+
     if (!chunk->value) {
         return 0;
     }
+
     *chunk->value = (Mix_Chunk) {
         .allocated = 0,
         .volume = (Uint8)(volume * 128.f),
         .alen = length * sizeof(float),
         .abuf = (void*) data,
     };
+
     if (Mix_PlayChannel(channel, chunk->value, 0) == -1) {
         zox_log_error("Failed to play sound: %s", Mix_GetError());
         return 0;
     }
+
     return 1;
 }
 
@@ -73,23 +69,13 @@ static inline double get_mix_chunk_sound_length(Mix_Chunk* chunk) {
 
 #else
 
-byte initialize_sdl_mixer() {
+byte initialize_sdl_mixer(ulong sample_rate, byte channels_coun) {
     return EXIT_FAILURE;
 }
-
-void close_audio_sdl() { }
 
 int get_channels_count() {
     return -1;
 }
-
-/*byte sdl_play_sound(const SoundData *soundData, int channels, float volume) {
-    return 1;
-}
-
-SoundData process_mix_chunk(Mix_Chunk *mix_chunk) {
-    return (SoundData) { 0 }; // .value = NULL, .length = 0
-}*/
 
 void spawn_mixer_pool(int max_buffers, int buffer_size) { }
 

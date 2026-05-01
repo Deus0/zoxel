@@ -1,8 +1,5 @@
-void zox_set_app_fullscreen(
-    ecs* world,
-    entity e,
-    byte fullscreen
-) {
+void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
+
     if (!zox_valid(e) || !zox_has(e, WindowFullscreen)) {
         zox_log_error("invalid app in [zox_set_app_fullscreen]");
         return;
@@ -13,23 +10,6 @@ void zox_set_app_fullscreen(
     zox_geter_value(e, WindowMonitor, byte, monitor);
     zox_app_set_fullscreen(window->value, monitor, fullscreen);
     // zox_log("Setting Viewport [%s]", fullscreen ? "fullscreen" : "windowed");
-
-    /*int2 size;
-    if (fullscreen) {
-        zox_geter_value(e, WindowMonitor, byte, monitor);
-        size = get_screen_size_monitor(monitor);
-    } else {
-        size = zox_get_value(e, WindowSizeRestore);
-    }
-
-    if (int2_equals(size, zox_gett_value(e, WindowSize))) {
-        return;
-    }
-
-    zox_log("Setting Screen in Toggle FS [%ix%i]", size.x, size.y);
-    zox_set(e, WindowSize, { size });
-    zox_set(e, WindowSizeDirty, { zox_dirty_trigger });
-    zox_log_sdl("+ setting app [%s]", fullscreen ? "fullscreen" : "windowed");*/
 }
 
 // sdl implementation for maximized state

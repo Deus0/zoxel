@@ -1,8 +1,8 @@
 /*void render_entity_3D(float3 position, float4 rotation, float scale1D, float brightness) {
-    glUniform3f(material3D.position, position.x, position.y, position.z);
-    glUniform4f(material3D.rotation, rotation.x, rotation.y, rotation.z, rotation.w);
-    glUniform1f(material3D.scale, scale1D);
-    glUniform1f(material3D.brightness, brightness);
+    zox_gpu_float3(material3D.position, position.x, position.y, position.z);
+    zox_gpu_float4(material3D.rotation, rotation.x, rotation.y, rotation.z, rotation.w);
+    zox_gpu_float(material3D.scale, scale1D);
+    zox_gpu_float(material3D.brightness, brightness);
     // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
     zox_gpu_render(6);
 }

@@ -5,7 +5,7 @@ void add_gpu_uvs(ecs *world, entity e) {
 }
 
 void spawn_gpu_uvs(ecs *world, entity e) {
-    zox_set(e, UvsGPULink, { spawn_gpu_generic_buffer() })
+    zox_set(e, UvsGPULink, { zox_gpu_create_buffer() })
 }
 
 ECS_DTOR(UvsGPULink, ptr, {

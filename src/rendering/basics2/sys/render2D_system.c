@@ -32,7 +32,7 @@ zox_sys2(RenderMaterial2DSystem) {
 
         MaterialTextured2D attributes = create_MaterialTextured2D(material);
         zox_gpu_material(material);
-        zox_gpu_blend_enable();
+        zox_gpu_enable_blend();
         zox_gpu_bind_texture(textureGPULink->value);
         zox_gpu_bind_buffer_element(squareTexturedMesh.x);    // for indices
 
@@ -56,7 +56,7 @@ zox_sys2(RenderMaterial2DSystem) {
         zox_gpu_render(6);
 
         zox_gpu_bind_texture(0);
-        zox_gpu_blend_disable();
+        zox_gpu_disable_blend();
         zox_disable_material();
 
 #ifdef zoxel_catch_opengl_errors

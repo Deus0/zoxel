@@ -18,27 +18,18 @@ void set_render_buffer_size(uint rbo, int2 size) {
 
 // Create and attach a renderbuffer for depth and stencil (optional, depending on needs)
 uint gpu_spawn_render_buffer(int2 size) {
-    uint rbo;
-    glGenRenderbuffers(1, &rbo);
+    uint rbo = zox_gpu_create_rbo();
     set_render_buffer_size(rbo, size);
     return rbo;
 }
 
 void prefab_add_render_buffer(ecs *world, entity e) {
-    if (!headless) {
-        zox_prefab_set(e, RenderBufferLink, { 0 })
-    }
+    zox_prefab_set(e, RenderBufferLink, { 0 });
 }
 
 uint spawn_render_buffer(ecs *world, entity e, int2 size) {
-    if (headless) {
-        return 0;
-    }
-
     uint buffer = gpu_spawn_render_buffer(size);
-    zox_set(e, RenderBufferLink, { buffer })
-    // zox_log(" + spawn_render_buffer [%u]\n", buffer)
-
+    zox_set(e, RenderBufferLink, { buffer });
     return buffer;
 }
 

@@ -26,7 +26,7 @@ void initialize_particle_gpu_instancing(uint particle3D_position_location, uint 
 
     // glEnableVertexAttribArray(particle3D_position_location);
     // glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    // glVertexAttribDivisor(particle3D_position_location, 1); // Update per instance
+    // zox_gpu_attribute_divisor(particle3D_position_location, 1); // Update per instance
     // glDisableVertexAttribArray(particle3D_position_location);
 
     // Setup color buffer
@@ -40,7 +40,7 @@ void initialize_particle_gpu_instancing(uint particle3D_position_location, uint 
     // glVertexAttribPointer(particle3D_color_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*) 0);
     // glEnableVertexAttribArray(particle3D_color_location);
     // glVertexAttribPointer(particle3D_color_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
-    // glVertexAttribDivisor(particle3D_color_location, 1); // Update per instance
+    // zox_gpu_attribute_divisor(particle3D_color_location, 1); // Update per instance
     // glDisableVertexAttribArray(particle3D_color_location);
     // Unbind the buffer
     zox_gpu_bind_buffer_array(0);

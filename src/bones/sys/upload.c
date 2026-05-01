@@ -14,15 +14,13 @@ zox_sys2(BoneIndexUploadSystem) {
         }
 
         if (boneIndexes->length == 0) {
-            // zox_log(" ! boneIndexes 0\n")
-            if (boneIndexGPULink->value != 0) {
-                clear_regular_buffer(&boneIndexGPULink->value);
-            }
+            zox_gpu_dispose_buffer(boneIndexGPULink->value);
+            boneIndexGPULink->value = 0;
             continue;
         }
 
         if (boneIndexGPULink->value == 0) {
-            boneIndexGPULink->value = spawn_gpu_generic_buffer();
+            boneIndexGPULink->value = zox_gpu_create_buffer();
         }
 
         zox_gpu_bind_buffer_array(boneIndexGPULink->value);

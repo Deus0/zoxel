@@ -15,35 +15,31 @@
 #include "cameras/_.c"
 
 byte initialize_rendering(byte render_backend) {
-    // rendering_initialized = 1;
+    if (test_graphics() == EXIT_FAILURE) {
+        return EXIT_FAILURE;
+    }
     if (render_backend == zox_render_backend_headless) {
         return EXIT_SUCCESS;
     } else if (render_backend == zox_render_backend_opengl) {
-        if (test_opengl()) {
-            return EXIT_FAILURE;
-        }
         rendering_initialized = 1;
         return EXIT_SUCCESS;
-    } else if (render_backend == zox_render_backend_vulkan) {
+    }
+#ifdef zox_vulkan
+    else if (render_backend == zox_render_backend_vulkan) {
         rendering_initialized = 1;
         return initialize_vulkan(); // SDL_WINDOW_VULKAN
-    } else {
+    }
+#endif
+    else {
         zox_log_error("! unknown render_backend")
         return EXIT_FAILURE;
     }
 }
 
-void dispose_rendering(ecs *world, void *ctx) {
-    (void) world;
-    (void) ctx;
-    if (!headless) {
-        dispose_vulkan();
-    }
-}
-
 void viewport_clear(ecs *world) {
     (void) world;
-    opengl_clear(color_rgb_to_float3(viewport_clear_color));
+    zox_gpu_set_clear_color(color_rgb_to_float3(viewport_clear_color));
+    zox_gpu_clear_viewport();
 }
 
 zox_begin_module(Rendering)
@@ -65,7 +61,6 @@ zox_begin_module(Rendering)
     zox_import_module(Rendering3);
 
     zox_import_module(RenderingCameras);
-    zox_module_dispose(dispose_rendering);
 
     add_to_update_loop(viewport_clear);
     initialize_settings_rendering(world);

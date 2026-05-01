@@ -38,18 +38,18 @@ zox_sys2(TexturedRenderSystem) {
         zox_gpu_float4(material_attributes->fog_data, get_fog_value());
         zox_gpu_float(material_attributes->brightness, 1);
         zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
-        opengl_set_mesh_indicies(meshGPULink->value.x);
+        zox_gpu_bind_buffer_element(meshGPULink->value.x);
         opengl_enable_vertex_buffer(material_attributes->vertex_position, meshGPULink->value.y);
         opengl_enable_uv_buffer(material_attributes->vertex_uv, uvsGPULink->value);
         opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
         zox_gpu_render(meshIndicies->length);
 
         // disabling
-        zox_gpu_disable_buffer(material_attributes->vertex_color);
-        zox_gpu_disable_buffer(material_attributes->vertex_uv);
-        zox_gpu_disable_buffer(material_attributes->vertex_position);
-        opengl_unset_mesh();
-        opengl_disable_texture(0);
+        zox_gpu_disable_attribute(material_attributes->vertex_color);
+        zox_gpu_disable_attribute(material_attributes->vertex_uv);
+        zox_gpu_disable_attribute(material_attributes->vertex_position);
+        zox_gpu_reset_mesh();
+        opengl_reset_texture();
         zox_disable_material();
 
         // zox_log(" + rendering cube [%s]\n", zox_get_name(it->entities[i]))

@@ -12,12 +12,8 @@ ECS_DTOR(FrameBufferLink, ptr, {
 
 // Function to generate a frame buffer object on gpu
 uint gpu_spawn_frame_buffer_object() {
-    uint buffer;
-    glGenFramebuffers(1, &buffer);
-#ifdef zoxel_catch_opengl_errors
-    if (check_opengl_error_unlogged()) zox_log(" ! [gpu_spawn_frame_buffer_object] error at glGenFramebuffers\n")
-#endif
-    return buffer;
+    uint id = zox_gpu_create_fbo();
+    return id;
 }
 // Function to spawn and attach a frame buffer object to an entity
 uint spawn_frame_buffer_object(ecs *world, entity e) {

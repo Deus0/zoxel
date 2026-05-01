@@ -28,11 +28,11 @@ zox_sys2(Basic3RenderSystem) {
         zox_gpu_float4(attributes.fog_data, get_fog_value());
         zox_gpu_float(attributes.brightness, brightness->value);
         zox_gpu_float4x4(attributes.transform_matrix, transformMatrix->value);
-        opengl_set_mesh_indicies(meshGPULink->value.x);
+        zox_gpu_bind_buffer_element(meshGPULink->value.x);
         opengl_enable_vertex_buffer(attributes.vertex_position, meshGPULink->value.y);
         zox_gpu_render(meshIndicies->length);
-        zox_gpu_disable_buffer(attributes.vertex_position);
-        opengl_unset_mesh();
+        zox_gpu_disable_attribute(attributes.vertex_position);
+        zox_gpu_reset_mesh();
         zox_disable_material();
     }
 } zox_sys_end(Basic3RenderSystem);

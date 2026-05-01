@@ -70,8 +70,8 @@ int main(int argc, char* argv[]) {
 
 #endif
 
-    zox_logv("Initializing Sounds");
-    initialize_sounds();
+    // zox_logv("Initializing Sounds");
+    // initialize_sounds();
 
     zox_logv("Spawning Prefabs");
     run_hook_spawn_prefabs(world);

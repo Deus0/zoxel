@@ -43,7 +43,7 @@ zox_sys2(Characters3RenderSystem) {
         if (!has_set_material) {
             has_set_material = 1;
 #ifdef zox_transparent_voxes
-            zox_gpu_blend_enable();
+            zox_gpu_enable_blend();
             zox_gpu_disable_culling();
 #endif
             zox_gpu_material(material_link);
@@ -51,7 +51,7 @@ zox_sys2(Characters3RenderSystem) {
             zox_gpu_float4(material_attributes->fog_data, get_fog_value());
             zox_gpu_float(material_attributes->brightness, 1);
         }
-        opengl_set_mesh_indicies(meshGPULink->value.x);
+        zox_gpu_bind_buffer_element(meshGPULink->value.x);
         opengl_enable_vertex_buffer(material_attributes->vertex_position, meshGPULink->value.y);
         opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
         zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
@@ -61,12 +61,12 @@ zox_sys2(Characters3RenderSystem) {
     }
 
     if (has_set_material) {
-        zox_gpu_disable_buffer(material_attributes->vertex_color);
-        zox_gpu_disable_buffer(material_attributes->vertex_position);
-        opengl_unset_mesh();
+        zox_gpu_disable_attribute(material_attributes->vertex_color);
+        zox_gpu_disable_attribute(material_attributes->vertex_position);
+        zox_gpu_reset_mesh();
         zox_disable_material();
 #ifdef zox_transparent_voxes
-        zox_gpu_blend_disable();
+        zox_gpu_disable_blend();
         zox_gpu_enable_culling();
 #endif
     }

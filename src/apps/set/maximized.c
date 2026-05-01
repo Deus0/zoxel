@@ -1,4 +1,5 @@
 byte maximized = 1;
+
 extern void zox_set_app_maximized(ecs* world, entity e, byte maximized);
 
 // when setting is set

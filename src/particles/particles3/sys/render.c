@@ -11,7 +11,7 @@ extern entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickn
 zox_sys2(Particle3DRenderSystem) {
     // zox_log("particles [%i]\n", it->count)
     zox_statistics_particles3D += it->count;
-    zox_gpu_blend_enable();
+    zox_gpu_enable_blend();
     zox_gpu_material(particle3D_material);
     zox_gpu_float4(particle3D_fog_data_location, get_fog_value());
     zox_gpu_float4x4(particle3D_camera_matrix_location, render_camera_matrix);
@@ -32,8 +32,8 @@ zox_sys2(Particle3DRenderSystem) {
 
     zox_gpu_set_sub_buffer_float3(it->count, Position3D_);
     // glBufferSubData(GL_ARRAY_BUFFER, 0, it->count * sizeof(float3), Position3D_); //, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(particle3D_position_location);// Set divisor for position attribute
-    glVertexAttribDivisor(particle3D_position_location, 1); // Update per instance
+    zox_gpu_enable_attribute(particle3D_position_location);// Set divisor for position attribute
+    zox_gpu_attribute_divisor(particle3D_position_location, 1); // Update per instance
 
     // colors
     zox_gpu_bind_buffer_array(particle3D_instanced_color_buffer);
@@ -43,21 +43,21 @@ zox_sys2(Particle3DRenderSystem) {
 
     zox_gpu_set_sub_buffer_color(it->count, Color_);
     // glBufferSubData(GL_ARRAY_BUFFER, 0, it->count * sizeof(color), Color_); // , GL_STATIC_DRAW);
-    glEnableVertexAttribArray(particle3D_color_location);// Set divisor for position attribute
-    glVertexAttribDivisor(particle3D_color_location, 1); // Update per instance
+    zox_gpu_enable_attribute(particle3D_color_location);// Set divisor for position attribute
+    zox_gpu_attribute_divisor(particle3D_color_location, 1); // Update per instance
 
     // draw
     zox_gpu_render_points_instanced(it->count);
     // glDrawArraysInstanced(GL_POINTS, 0, 1, it->count);
 
     // resets
-    glVertexAttribDivisor(particle3D_color_location, 0); // Update per instance
-    glVertexAttribDivisor(particle3D_position_location, 0); // Update per instance
-    glDisableVertexAttribArray(particle3D_color_location);
-    glDisableVertexAttribArray(particle3D_position_location);
+    zox_gpu_attribute_divisor(particle3D_color_location, 0); // Update per instance
+    zox_gpu_attribute_divisor(particle3D_position_location, 0); // Update per instance
+    zox_gpu_disable_attribute(particle3D_color_location);
+    zox_gpu_disable_attribute(particle3D_position_location);
     zox_gpu_bind_buffer_array(0);
 #else
-    glEnableVertexAttribArray(particle3D_position_location);
+    zox_gpu_enable_attribute(particle3D_position_location);
 
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Position3D, position3D)
@@ -68,7 +68,7 @@ zox_sys2(Particle3DRenderSystem) {
         // glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, data);
 
         float4 color_f = color_to_float4(color->value);
-        glUniform4f(particle3D_color_location, color_f.x, color_f.y, color_f.z, color_f.w);
+        zox_gpu_float4(particle3D_color_location, color_f);
         zox_gpu_render_points(1);
 
 #ifdef zox_debug_particle3Ds
@@ -83,10 +83,10 @@ zox_sys2(Particle3DRenderSystem) {
 #endif
     }
 
-    glDisableVertexAttribArray(particle3D_position_location);
+    zox_gpu_disable_attribute(particle3D_position_location);
 #endif
     zox_disable_material();
-    zox_gpu_blend_disable();
+    zox_gpu_disable_blend();
 
 } zox_sys_end(Particle3DRenderSystem);
 

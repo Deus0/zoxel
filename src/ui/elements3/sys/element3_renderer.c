@@ -40,14 +40,14 @@ zox_sys2(Element3DRenderSystem) {
         }
         if (!has_set_material) {
             has_set_material = 1;
-            zox_gpu_blend_enable();
+            zox_gpu_enable_blend();
             zox_gpu_material(material_link);
             zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(material_attributes->fog_data, get_fog_value());
             zox_gpu_float(material_attributes->brightness, 1);
         }
         zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
-        opengl_set_mesh_indicies(meshGPULink->value.x);
+        zox_gpu_bind_buffer_element(meshGPULink->value.x);
         opengl_enable_vertex_buffer(material_attributes->vertex_position, meshGPULink->value.y);
         opengl_enable_uv_buffer(material_attributes->vertex_uv, uvsGPULink->value);
         opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
@@ -62,12 +62,12 @@ zox_sys2(Element3DRenderSystem) {
 #endif
     }
     if (has_set_material) {
-        zox_gpu_blend_disable();
-        zox_gpu_disable_buffer(material_attributes->vertex_color);
-        zox_gpu_disable_buffer(material_attributes->vertex_uv);
-        zox_gpu_disable_buffer(material_attributes->vertex_position);
-        opengl_disable_texture(0);
-        opengl_unset_mesh();
+        zox_gpu_disable_blend();
+        zox_gpu_disable_attribute(material_attributes->vertex_color);
+        zox_gpu_disable_attribute(material_attributes->vertex_uv);
+        zox_gpu_disable_attribute(material_attributes->vertex_position);
+        opengl_reset_texture();
+        zox_gpu_reset_mesh();
         zox_disable_material();
     }
 } zox_sys_end(Element3DRenderSystem);

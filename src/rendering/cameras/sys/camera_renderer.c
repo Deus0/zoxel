@@ -51,17 +51,9 @@ void camera_render_update(iter *it, const byte is_camera2D) {
         if (render_backend == zox_render_backend_opengl) {
             if (fbo) {
                 // rendering to texture
-                glViewport(
-                    0,
-                    0,
-                    screen_size->value.x / 1,
-                    screen_size->value.y / 1);
+                zox_gpu_set_viewport(float2_zero, int2_to_float2(screen_size->value));
             } else {
-                glViewport(
-                    screen_position->value.x,
-                    screen_position->value.y,
-                    screen_size->value.x,
-                    screen_size->value.y);
+                zox_gpu_set_viewport(int2_to_float2(screen_position->value),  int2_to_float2(screen_size->value));
             }
         }
         // todo: this required but breaks it for both render cameras
@@ -70,14 +62,13 @@ void camera_render_update(iter *it, const byte is_camera2D) {
 
 #ifdef zoxel_catch_opengl_errors
             if (!check_opengl_frame_buffer_status()) {
-                zox_log(" !! camera render - error on fbo [%u]\n", fbo)
+                zox_log_error("Camera render - error on fbo [%u]", fbo);
                 zox_gpu_bind_fbo(0);
                 continue;
             }
 #endif
 
             zox_gpu_clear_viewport();
-            // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         }
         #ifdef zox_vulkan
         // else { set vulkan viewport; }

@@ -5,7 +5,7 @@ void add_gpu_bone_index(ecs *world, entity e) {
 }
 
 void spawn_gpu_bone_index(ecs *world, entity e) {
-    if (!headless) zox_set(e, BoneIndexGPULink, { spawn_gpu_generic_buffer() })
+    if (!headless) zox_set(e, BoneIndexGPULink, { zox_gpu_create_buffer() })
 }
 
 ECS_DTOR(BoneIndexGPULink, ptr, {

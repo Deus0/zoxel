@@ -64,7 +64,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         }
 
         zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
-        opengl_set_mesh_indicies(mesh->value.x);
+        zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
         opengl_enable_uv_buffer(attributes->vertex_uv, gpu_uvs->value);
         opengl_enable_color_buffer(attributes->vertex_color, gpu_colors->value);
@@ -76,11 +76,11 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         return;
     }
 
-    zox_gpu_disable_buffer(attributes->vertex_color);
-    zox_gpu_disable_buffer(attributes->vertex_uv);
-    zox_gpu_disable_buffer(attributes->vertex_position);
-    opengl_unset_mesh();
-    opengl_disable_texture(0);
+    zox_gpu_disable_attribute(attributes->vertex_color);
+    zox_gpu_disable_attribute(attributes->vertex_uv);
+    zox_gpu_disable_attribute(attributes->vertex_position);
+    zox_gpu_reset_mesh();
+    opengl_reset_texture();
     zox_disable_material();
 
 } zox_sys_end(Chunk3TexturedRenderSystem);

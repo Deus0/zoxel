@@ -1,8 +1,3 @@
-void clear_regular_buffer(uint *gpu_buffer) {
-    zox_gpu_dispose_buffer(*gpu_buffer);
-    *gpu_buffer = 0;
-}
-
 uint create_shader_compute() {
     return glCreateShader(GL_COMPUTE_SHADER);
 }

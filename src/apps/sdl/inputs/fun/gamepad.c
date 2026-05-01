@@ -40,7 +40,7 @@ void handle_new_sdl_gamepad(ecs *world, SDL_Event event) {
     spawn_gamepad_from_sdl(world, joystick);
 }
 
-void initialize_sdl_gamepads(ecs *world) {
+void initialize_sdl_gamepads(ecs *world, entity app) {
     // SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
     joysticks_count = SDL_NumJoysticks();
     if (joysticks_count == 0) {
@@ -201,7 +201,7 @@ void debug_stick(const PhysicalStick *physical_stick, const char *button_name) {
 }
 #else
 
-void initialize_sdl_gamepads(ecs *world) { }
+void initialize_sdl_gamepads(ecs *world, entity app) { }
 
 void handle_new_sdl_gamepad(ecs *world, const SDL_Event event) { }
 

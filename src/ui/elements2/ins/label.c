@@ -1,6 +1,6 @@
 entity spawn_label_background(ecs *world, entity prefab, entity parent, entity canvas, int2 pixel_position, float2 anchor, byte2 padding, const char* text, byte font_size, byte alignment, byte layer, int2 parent_position, int2 parent_size, color fill, color fillo, color font_fill, color font_fillo, byte render_disabled) {
 
-    zox_geter_value(canvas, LayoutSize, int2, canvas_size);
+    // zox_geter_value(canvas, LayoutSize, int2, canvas_size);
 
     SpawnZext zextSpawnData = {
         .canvas = {

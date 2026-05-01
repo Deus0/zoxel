@@ -75,10 +75,11 @@ void shader2D_instance_begin(const float4x4 viewMatrix) {
 // does this per material!
 void render_instance2D(float2 position, float angle, float scale, float brightness) {
     // set variables, can this be done using a filtered / system ?
-    glUniform3f(material2D.position, position.x, position.y, 0);
-    glUniform1f(material2D.scale, scale);
-    glUniform1f(material2D.angle, angle);
-    glUniform1f(material2D.brightness, brightness);
+    zox_gpu_float3(material2D.position, (float3) { position.x, position.y, 0 });
+    zox_gpu_float(material2D.scale, scale);
+    zox_gpu_float(material2D.angle, angle);
+    zox_gpu_float(material2D.brightness, brightness);
+
     zox_gpu_render(6);
 }
 

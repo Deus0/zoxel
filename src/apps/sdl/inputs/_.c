@@ -20,6 +20,7 @@ zox_begin_module(SdlInputs)
     define_systems_sdl_inputs(world);
     initialize_sdl_input();
     add_hook_spawn_prefabs(spawn_prefabs_sdl_input);
+    add_hook_on_boot(initialize_sdl_gamepads);
 zox_end_module(SdlInputs)
 
 #endif

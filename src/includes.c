@@ -65,19 +65,22 @@
 #endif*/
 
 // SDL2 & OpenGL
-#define GL_GLEXT_PROTOTYPES
 
-#ifdef zox_windows
-
-    #ifdef sdlsource
-        #include "GL/glew.h"
-    #else
-        #include <GL/glew.h>
-    #endif
-
-#endif
+// TODO: if zox_opengl we import Glew
 
 #ifdef zox_sdl
+
+    #define GL_GLEXT_PROTOTYPES
+
+    #ifdef zox_windows
+
+        #ifdef sdlsource
+            #include "GL/glew.h"
+        #else
+            #include <GL/glew.h>
+        #endif
+
+    #endif
 
     #ifdef sdlsource
         #include "SDL.h"

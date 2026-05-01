@@ -9,14 +9,25 @@
 
 #ifdef zox_sdl
     #include "opengl/_.c"
-    #include "vulkan/_.c"
 #else
     #include "headless/_.c"
 #endif
+#ifdef zox_vulkan
+    #include "vulkan/_.c"
+#endif
+
 
 zox_begin_module(Graphics)
 #ifndef zox_sdl
     zox_import_module(Headless);
+#endif
+
+#ifdef zox_sdl // zox_opengl
+    zox_import_module(Opengl);
+#endif
+
+#ifdef zox_vulkan
+    zox_import_module(Vulkan);
 #endif
 zox_end_module(Headless)
 

@@ -4,8 +4,12 @@
 // zoxel apps: handles os windows, using (sdl, glut) libraries
 #include "com/_.c"
 #include "set/_.c"
+
+#ifdef zox_headless
+    #include "headless/_.c"
+#endif
+
 #include "pre/_.c"
-#include "fun/_.c"
 
 #ifdef zox_sdl
     #include "sdl/_.c"
@@ -13,9 +17,9 @@
     #include "glut/_.c"
 #elif zox_glfw
     #include "glfw/_.c"
-#else
-    #include "headless/_.c"
 #endif
+
+#include "fun/_.c"
 
 zox_begin_module(Apps)
     define_components_apps(world);

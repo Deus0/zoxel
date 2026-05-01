@@ -51,15 +51,12 @@ int spawn_players(ecs *world, entity game, byte zox_game_type) {
     return players;
 }
 
-extern void initialize_sdl_gamepads(ecs*);
-
 void spawn_connected_devices(ecs *world, entity e) {
     local_keyboard = spawn_keyboard(world, prefab_keyboard);
     local_mouse = spawn_mouse(world);
     local_touchscreen = spawn_touchscreen(world, prefab_touchscreen);
     zox_set(local_mouse, AppLink, { e });
     zox_set(local_touchscreen, AppLink, { e });
-    initialize_sdl_gamepads(world);
 }
 
 void on_boot_players(ecs *world, entity app) {

@@ -54,7 +54,7 @@ entity spawn_taskbar(ecs *world, entity canvas) {
     add_to_Children(&children, header);
 
     ElementSpawn spawn_frame_data = {
-        .canvas = canvas,
+        .canvas = { canvas },
         .parent = {
             .e = e,
             .position = position,
@@ -71,7 +71,7 @@ entity spawn_taskbar(ecs *world, entity canvas) {
     };
 
     ElementSpawn spawn_icon_data = {
-        .canvas = canvas,
+        .canvas = { canvas },
         .parent = {
             .size = spawn_frame_data.element.size
         },

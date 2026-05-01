@@ -18,4 +18,8 @@ byte is_log_opengl = 0;
 #include "fun/_.c"
 #include "tst/_.c"
 
+zox_begin_module(Opengl)
+
+zox_end_module(Opengl)
+
 #endif

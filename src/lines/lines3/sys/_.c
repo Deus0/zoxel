@@ -22,7 +22,8 @@ void define_systems_lines3(ecs* world) {
         [in] transforms3.Bounds3D,
         [none] CubeLines
     );
-    add_system_process_counter(world, zox_id(CubeLineRenderSystem));
+    if (!headless)
+        add_system_process_counter(world, zox_id(CubeLineRenderSystem));
 
     zox_system(
         RenderDepthColorSystem,

@@ -5,7 +5,7 @@ void add_gpu_colors(ecs *world, entity e) {
 }
 
 void spawn_gpu_colors(ecs *world, entity e) {
-    zox_set(e, ColorsGPULink, { spawn_gpu_generic_buffer() })
+    zox_set(e, ColorsGPULink, { zox_gpu_create_buffer() })
 }
 
 ECS_DTOR(ColorsGPULink, ptr, {

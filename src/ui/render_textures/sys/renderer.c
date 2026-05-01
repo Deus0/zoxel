@@ -52,7 +52,7 @@ zox_sys2(RenderTextureRenderSystem) {
             zox_geter_value(mat, MaterialGPULink, uint, mlink);
             zox_gpu_material(mlink);
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
-            zox_gpu_blend_disable();
+            zox_gpu_disable_blend();
 
             if (zox_has(mat, CameraBlur)) {
                 zox_geter_value(mat,  CameraBlur, float, blur);
@@ -63,7 +63,7 @@ zox_sys2(RenderTextureRenderSystem) {
         }
 
         // Bind data in GPU
-        opengl_set_mesh_indicies(mesh->value.x);
+        zox_gpu_bind_buffer_element(mesh->value.x);
 
         zox_gpu_bind_buffer_array(mesh->value.y);
         zox_gpu_enable_attribute_float2(attributes->vertex_position);
@@ -86,10 +86,11 @@ zox_sys2(RenderTextureRenderSystem) {
         return;
     }
 
-    zox_gpu_disable_buffer(attributes->vertex_uv);
-    zox_gpu_disable_buffer(attributes->vertex_position);
-    opengl_unset_mesh();
-    opengl_disable_texture(1);
+    zox_gpu_disable_attribute(attributes->vertex_uv);
+    zox_gpu_disable_attribute(attributes->vertex_position);
+    zox_gpu_reset_mesh();
+    zox_gpu_disable_blend();
+    opengl_reset_texture();
     zox_disable_material();
 
 } zox_sys_end(RenderTextureRenderSystem);

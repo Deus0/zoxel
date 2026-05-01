@@ -11,7 +11,7 @@ zox_sys2(QuadLineRenderSystem) {
     camera_filtering_begin();
 
     zox_gpu_material(line3D_material);
-    glEnableVertexAttribArray(line3D_position_location);
+    zox_gpu_enable_attribute(line3D_position_location);
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());
     zox_gpu_float4x4(line3D_camera_matrix_location, render_camera_matrix);
     for (int i = 0; i < it->count; i++) {
@@ -50,6 +50,6 @@ zox_sys2(QuadLineRenderSystem) {
         zox_render_line_attr(top_right, top_right2);
 
     }
-    zox_gpu_disable_buffer(line3D_position_location);
+    zox_gpu_disable_attribute(line3D_position_location);
     zox_disable_material();
 } zox_sys_end(QuadLineRenderSystem);

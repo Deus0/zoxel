@@ -5,6 +5,9 @@ byte minimized = 0;
 byte disable_apps_decor = 0;
 byte using_gpu = 1;
 
+byte audio_enabled = 0;
+byte nosounds = 0;
+
 #ifdef zox_android
     byte window_resizeable = 0;
 #else

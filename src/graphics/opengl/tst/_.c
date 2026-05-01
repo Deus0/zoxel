@@ -1,7 +1,6 @@
 #include "shader.c"
 
-
-byte test_opengl() {
+byte test_graphics() {
 
     if (is_log_opengl) {
         print_opengl();
@@ -10,7 +9,7 @@ byte test_opengl() {
     if (test_opengl_shaders()) {
         zox_log_error("Shaders not supported");
         // zox_use_post_processing = 0;
-        return 1;
+        return EXIT_FAILURE;
     }
 
     if (test_frame_buffer()) {
@@ -22,5 +21,5 @@ byte test_opengl() {
 
     // check_geometry();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

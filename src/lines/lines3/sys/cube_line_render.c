@@ -6,9 +6,9 @@ static inline void set_line3D_color(color_rgb value) {
 }
 
 static inline void zox_render_line_attr(float3 a, float3 b) {
-    // glLineWidth(cubeLinesThickness->value);
+    // zox_gpu_line_thickness(cubeLinesThickness->value);
 
-    const float3* line = (float3[]) { a.x, a.y, a.z, b.x, b.y, b.z };
+    const float* line = (float[]) { a.x, a.y, a.z, b.x, b.y, b.z };
     zox_gpu_set_attribute_float3(line3D_position_location, line);
 
     // glVertexAttribPointer(line3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (float[]) { a.x, a.y, a.z, b.x, b.y, b.z });
@@ -19,7 +19,7 @@ static inline void zox_render_line_attr(float3 a, float3 b) {
 // TODO: Use Instancing here, lags!
 zox_sys2(CubeLineRenderSystem) {
     zox_gpu_material(line3D_material);
-    glEnableVertexAttribArray(line3D_position_location);
+    zox_gpu_enable_attribute(line3D_position_location);
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());
     zox_gpu_float4x4(line3D_camera_matrix_location, render_camera_matrix);
     zox_sys_world();
@@ -134,7 +134,7 @@ zox_sys2(CubeLineRenderSystem) {
         zox_sys_increment();
     }
 
-    zox_gpu_disable_buffer(line3D_position_location);
+    zox_gpu_disable_attribute(line3D_position_location);
     zox_disable_material();
 
 } zox_sys_end(CubeLineRenderSystem);

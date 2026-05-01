@@ -18,7 +18,7 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
         zox_gpu_get_material_attribute(material, "vertex_position"),
         zox_gpu_get_material_attribute(material, "vertex_color"),
 #ifndef zox_disable_ubos
-        glGetUniformBlockIndex(material, "InstanceMatrices"),
+        zox_gpu_get_material_uniform(material, "InstanceMatrices"),
 #else
         0,
 #endif

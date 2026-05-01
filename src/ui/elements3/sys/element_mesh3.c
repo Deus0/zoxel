@@ -21,8 +21,8 @@ zox_sys2(Element3DMeshSystem) {
         if (!headless) {
             meshGPULink->value = spawn_gpu_mesh_buffers();
             textureGPULink->value = spawn_gpu_texture_buffer();
-            uvsGPULink->value = spawn_gpu_generic_buffer();
-            colorsGPULink->value = spawn_gpu_generic_buffer();
+            uvsGPULink->value = zox_gpu_create_buffer();
+            colorsGPULink->value = zox_gpu_create_buffer();
         }
         mesh_dirty->value = mesh_state_trigger;
         initializeElement->value = 0;

@@ -28,8 +28,8 @@ entity create_terrain_bulk(ecs *world, const entity prefab, const int3 center_po
         voxLinks[i].value = terrain_world;
         if (!headless) {
             meshGPULinks[i].value = spawn_gpu_mesh_buffers();
-            uvsGPULinks[i].value = spawn_gpu_generic_buffer();
-            colorsGPULinks[i].value = spawn_gpu_generic_buffer();
+            uvsGPULinks[i].value = zox_gpu_create_buffer();
+            colorsGPULinks[i].value = zox_gpu_create_buffer();
         }
     }
     // const entity *particles2DArray =

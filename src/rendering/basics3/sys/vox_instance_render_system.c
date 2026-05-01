@@ -117,7 +117,7 @@ zox_sys2(VoxInstanceRenderSystem) {
 
         // zox_log(" [%i] rendering %lu - %i - UBO %i\n", i, mesh, command.transforms->size, uboGPULink->value)
         // set mesh verts
-        opengl_set_mesh_indicies(gpumesh->value.x);
+        zox_gpu_bind_buffer_element(gpumesh->value.x);
         opengl_enable_vertex_buffer(material_attributes->vertex_position, gpumesh->value.y);
 
         opengl_enable_color_buffer(material_attributes->vertex_color, gpucolors->value);
@@ -135,9 +135,9 @@ zox_sys2(VoxInstanceRenderSystem) {
         // reset the things
         // glBindBuffer(GL_UNIFORM_BUFFER, 0);
         zox_gpu_ubo_reset();
-        zox_gpu_disable_buffer(material_attributes->vertex_color);
-        zox_gpu_disable_buffer(material_attributes->vertex_position);
-        opengl_unset_mesh();
+        zox_gpu_disable_attribute(material_attributes->vertex_color);
+        zox_gpu_disable_attribute(material_attributes->vertex_position);
+        zox_gpu_reset_mesh();
     }
 
     // cleanup

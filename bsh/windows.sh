@@ -15,7 +15,14 @@ ext/sdl_mixer/src/*.c \
 \
 -o bin/zoxel_x86.exe \
 \
--lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lopengl32 -lgdi32 -lwinmm \
+-lmingw32 \
+-lwinmm \
+-lgdi32 \
+-lopengl32 \
+-lSDL2main \
+-lSDL2 \
+-lSDL2_image \
+-lSDL2_mixer \
 \
 -Iinc \
 -Iext/glew/include \
@@ -26,5 +33,8 @@ ext/sdl_mixer/src/*.c \
 -Dzox_game=zoxel \
 -Dzox_debug \
 -Dflecssource \
--Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images -Dsdlsource \
+-Dzox_sdl \
+-Dzox_sdl_mixer \
+-Dzox_sdl_images \
+-Dsdlsource \
 -Dzox_windows

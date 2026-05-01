@@ -32,7 +32,7 @@ zox_sys2(ElementBeginSystem) {
         if (!headless) {
             // spawn mesh buffers needs to be done on main thread
             meshGPULink->value = spawn_gpu_mesh_buffers();
-            uvsGPULink->value = spawn_gpu_generic_buffer();
+            uvsGPULink->value = zox_gpu_create_buffer();
         }
         meshDirty->value = mesh_state_trigger; // mesh_state_upload;
     }

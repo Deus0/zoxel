@@ -185,7 +185,8 @@ void define_systems_elements(ecs *world) {
         [none] ElementRender,
         [none] !cameras.RenderTexture
     );
-    add_system_process_counter(world, zox_id(ElementRenderSystem));
+    if (!headless)
+        add_system_process_counter(world, zox_id(ElementRenderSystem));
 
     // healthbars
     zox_system_1(

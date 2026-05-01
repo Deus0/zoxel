@@ -42,7 +42,7 @@ zox_sys2(Skeleton3RenderSystem) {
             has_set_material = 1;
 
             if (transparent_meshes) {
-                zox_gpu_blend_enable();
+                zox_gpu_enable_blend();
                 zox_gpu_disable_culling();
             }
 
@@ -67,7 +67,7 @@ zox_sys2(Skeleton3RenderSystem) {
         zox_gpu_float4x4_array(material_attributes->bone_matrix, transforms, bones->length);
         zox_gpu_float3_array(material_attributes->bone_positions, bone_positions, bones->length);
         zox_gpu_array_buffer_byte(material_attributes->bone_index, boneIndexGPULink->value);
-        opengl_set_mesh_indicies(meshGPULink->value.x);
+        zox_gpu_bind_buffer_element(meshGPULink->value.x);
         opengl_enable_vertex_buffer(material_attributes->vertex_position, meshGPULink->value.y);
         opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
         zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
@@ -84,13 +84,13 @@ zox_sys2(Skeleton3RenderSystem) {
         zox_statistics_characters_rendered++;
     }
     if (has_set_material) {
-        zox_gpu_disable_buffer(material_attributes->vertex_color);
-        zox_gpu_disable_buffer(material_attributes->vertex_position);
-        opengl_unset_mesh();
+        zox_gpu_disable_attribute(material_attributes->vertex_color);
+        zox_gpu_disable_attribute(material_attributes->vertex_position);
+        zox_gpu_reset_mesh();
         zox_disable_material();
 
         if (transparent_meshes) {
-            zox_gpu_blend_disable();
+            zox_gpu_disable_blend();
             zox_gpu_enable_culling();
         }
     }
