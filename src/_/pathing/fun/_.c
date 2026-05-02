@@ -13,3 +13,14 @@
 #include "io_macros.c"
 #include "realm_save.c"
 #include "game.c"
+
+static int ends_with(const char *str, const char *suffix) {
+    if (!str || !suffix) return 0;
+
+    size_t len_str = strlen(str);
+    size_t len_suf = strlen(suffix);
+
+    if (len_suf > len_str) return 0;
+
+    return strcmp(str + (len_str - len_suf), suffix) == 0;
+}

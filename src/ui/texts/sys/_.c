@@ -30,30 +30,28 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextAlignment,
         [in] texts.TextPadding
     );
-    if (!headless) {
-        zox_system(
-            TextParentBackgroundSystem,
-            zox_pipelines_zext_backgrounds,
-            [in] texts.TextDirty,
-            [in] texts.TextData,
-            [in] texts.TextFontSize,
-            [in] TextPadding,
-            // [in] rendering.MeshAlignment,
-            [in] hierarchys.ParentLink,
-            [none] Zext
-        );
-        zox_system(
-            TextBackgroundSystem,
-            zox_pipelines_zext_backgrounds,
-            [in] texts.TextDirty,
-            [in] texts.TextData,
-            [in] texts.TextFontSize,
-            [in] TextPadding,
-            [out] layouts2.LayoutSize,
-            [out] layouts2.LayoutSizeDirty,
-            [none] Zext
-        );
-    }
+    zox_system(
+        TextParentBackgroundSystem,
+        zox_pipelines_zext_backgrounds,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [in] texts.TextFontSize,
+        [in] TextPadding,
+        // [in] rendering.MeshAlignment,
+        [in] hierarchys.ParentLink,
+        [none] Zext
+    );
+    zox_system(
+        TextBackgroundSystem,
+        zox_pipelines_zext_backgrounds,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [in] texts.TextFontSize,
+        [in] TextPadding,
+        [out] layouts2.LayoutSize,
+        [out] layouts2.LayoutSizeDirty,
+        [none] Zext
+    );
     zox_system_1(
         ZigelSpawnSystem,
         EcsOnUpdate,

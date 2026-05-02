@@ -2,7 +2,8 @@
 // TODO: Spawn a button on it
 // TODO: Raycast button by transforming ray that hits quad into the canvas
 
-void add_element3D_transform(ecs *world, const entity e) {
+void add_element3D_transform(ecs *world, entity e) {
+
     zox_prefab_set(e, Position3D, { float3_zero });
     zox_prefab_set(e, Rotation3D, { float4_identity });
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
@@ -17,11 +18,8 @@ void add_element3D_transform(ecs *world, const entity e) {
     zox_prefab_set(e, CanvasLink, { 0 });
 }
 
-void add_ui_components_world(
-    ecs *world,
-    const entity e,
-    const float2 mesh_scale
-) {
+void add_ui_components_world(ecs *world, entity e, float2 mesh_scale) {
+
     add_element3D_transform(world, e);
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, Brightness, { 1 });
@@ -34,32 +32,32 @@ void add_ui_components_world(
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
 
-    if (!headless) {
-        add_gpu_texture(world, e);
-        add_gpu_mesh(world, e);
-        add_gpu_uvs(world, e);
-        add_gpu_colors(world, e);
+    // Rendering
+    add_gpu_texture(world, e);
+    add_gpu_mesh(world, e);
+    add_gpu_uvs(world, e);
+    add_gpu_colors(world, e);
 
-        zox_prefab_add(e, MeshIndicies);
-        zox_prefab_add(e, MeshVertices);
-        zox_prefab_add(e, MeshUVs);
-        zox_prefab_add(e, MeshColorRGBs);
+    zox_prefab_add(e, MeshIndicies);
+    zox_prefab_add(e, MeshVertices);
+    zox_prefab_add(e, MeshUVs);
+    zox_prefab_add(e, MeshColorRGBs);
 
-        prefab_set_mesh_indicies(world, e, square_indicies, 6);
-        zox_prefab_set(e, MeshIndiciesGpu, { 6 });
-        prefab_set_mesh3D_vertices(world, e, square_vertices, 4, mesh_scale);
-        prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
-        prefab_set_mesh_colors_rgb(world, e, (color_rgb) { 255, 255, 255 }, 4);
-
-    }
+    prefab_set_mesh_indicies(world, e, square_indicies, 6);
+    zox_prefab_set(e, MeshIndiciesGpu, { 6 });
+    prefab_set_mesh3D_vertices(world, e, square_vertices, 4, mesh_scale);
+    prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
+    prefab_set_mesh_colors_rgb(world, e, (color_rgb) { 255, 255, 255 }, 4);
 }
 
 entity spawn_prefab_canvas3(ecs *world) {
     zox_prefab();
     zox_prefab_name("canvas3");
+
     zox_add_tag(e, Element3D);
     add_ui_components_world(world, e, (float2) { 0.04f, 0.04f });
     zox_add_tag(e, ElementBillboard);
     zox_prefab_set(e, CameraLink, { 0 });
+
     return e;
 }

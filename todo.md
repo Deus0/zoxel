@@ -1,16 +1,11 @@
 ### todo ###
 
-- Fix headless mode
-	- Move all OpenGL code to stubs for headless mode
-	- Remove sdl completely from project - headless mode is compiling without it
-	- linux-headless.sh
-	
-- BUG: Terrain doesnt die when leaving game
+- Fix realm / Terrain not deleting when game ends
 
-- fix a make-windows to work
+- Fix ./bsh/windows-headless.sh
+- Fix ./bsh/windows.sh
 	- use bsh/windows.sh
-
-- cleanup zelder bash and move back into zoxel bsh folder - keep clean and tiny
+- Fix DungeonCore not showing texture properly
 
 - Spawn label top left above stats - show block / npc selected
 - Fix initial lighting in terrain
@@ -316,5 +311,8 @@ Done:
 -x Fix Icon Label Text (cant read)
 -x Change outlines of windows to White
 -x improve contrast with their texture fills
-
 -x add BLUR to render texture post processor shader
+-x Fix headless mode
+	-x Move all OpenGL code to stubs for headless mode
+	-x Remove sdl completely from project - headless mode is compiling without it
+	-x linux-headless.sh

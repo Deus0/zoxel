@@ -103,9 +103,7 @@ zox_begin_module(Zox)
     zox_import_module(Networking);
     zox_import_module(Screens);
     zox_import_module(Inputs);
-    if (!headless) {
-        zox_import_module(Apps);
-    }
+    zox_import_module(Apps);
     zox_import_module(Graphics);
 
     zox_import_module(Assets);
@@ -188,9 +186,7 @@ zox_begin_module(Zox)
     zox_import_module(Editor);
     // space
 #if defined(zoxm_players)
-    if (!headless) {
-        zox_import_module(Controllers);
-    }
+    zox_import_module(Controllers);
 #endif
 #if defined(zoxm_debug)
     zox_import_module(Debug);

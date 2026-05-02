@@ -28,19 +28,17 @@ entity spawn_prefab_element_shell(ecs *world, entity prefab) {
     zox_prefab_set(e, Alpha, { 1 });
 
     // Rendering GPU
-    if (!headless) {
-        zox_prefab_set(e, MeshDirty, { mesh_state_trigger });
-        zox_prefab_set(e, MeshAlignment, { zox_alignment_centre });
-        zox_prefab_add(e, MeshIndicies);
-        zox_prefab_add(e, MeshVertices2D);
-        zox_prefab_add(e, MeshUVs);
-        zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
-        zox_prefab_set(e, TextureGPULink, { 0 });
-        zox_prefab_set(e, UvsGPULink, { 0 });
-        prefab_set_mesh_indicies(world, e, square_indicies, 6);
-        prefab_set_mesh2D_vertices(world, e, NULL, 0);
-        prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
-    }
+    zox_prefab_set(e, MeshDirty, { mesh_state_trigger });
+    zox_prefab_set(e, MeshAlignment, { zox_alignment_centre });
+    zox_prefab_add(e, MeshIndicies);
+    zox_prefab_add(e, MeshVertices2D);
+    zox_prefab_add(e, MeshUVs);
+    zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
+    zox_prefab_set(e, TextureGPULink, { 0 });
+    zox_prefab_set(e, UvsGPULink, { 0 });
+    prefab_set_mesh_indicies(world, e, square_indicies, 6);
+    prefab_set_mesh2D_vertices(world, e, NULL, 0);
+    prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
 
     return e;
 }

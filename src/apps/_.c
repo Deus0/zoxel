@@ -28,7 +28,7 @@ zox_begin_module(Apps)
     add_hook_files_load(load_files_settings);
     add_hook_spawn_prefabs(spawn_prefabs_apps);
 #ifdef zox_sdl
-        zox_import_module(Sdl);
+    zox_import_module(Sdl);
 #endif
 zox_end_module(Apps)
 

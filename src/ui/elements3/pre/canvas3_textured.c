@@ -6,9 +6,8 @@ entity spawn_prefab_canvas3_textured(ecs *world, entity prefab) {
     zox_prefab_set(e, UITrail, {{ 0, 0.43f, 0 }});
     // Texture
     zox_prefab_set(e, Color, {{ 0, 255, 0, 255 }});
-    if (!headless) {
-        zox_add_tag(e, SingleMaterial);
-    }
+
+    zox_add_tag(e, SingleMaterial);
 
     return e;
 }

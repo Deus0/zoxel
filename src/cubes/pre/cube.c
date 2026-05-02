@@ -11,10 +11,6 @@ entity spawn_prefab_cube(ecs *world) {
     zox_prefab_set(e, MeshDirty, { mesh_state_trigger_slow });
     zox_prefab_set(e, RenderDisabled, { 0 });
 
-    if (headless) {
-        return e;
-    }
-
     zox_add_tag(e, MeshBasic3D);
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshIndiciesGpu, { 0 });

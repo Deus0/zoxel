@@ -19,13 +19,9 @@ entity spawn_shader_skybox(ecs *world) {
     return e;
 }
 
-void set_skybox_material_color(
-    uint material,
-    color_rgb top_color,
-    color_rgb bottom_color
-) {
+void set_skybox_material_color(uint material, color_rgb top_color, color_rgb bottom_color) {
 
-    if (headless || !skybox) {
+    if (!skybox) {
         return;
     }
 

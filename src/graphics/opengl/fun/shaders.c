@@ -2,13 +2,13 @@ uint create_shader_compute() {
     return glCreateShader(GL_COMPUTE_SHADER);
 }
 
-uint create_shader_vertex() {
+/*uint create_shader_vertex() {
     return glCreateShader(GL_VERTEX_SHADER);
 }
 
 uint create_shader_fragment() {
     return glCreateShader(GL_FRAGMENT_SHADER);
-}
+}*/
 
 byte initialize_material(uint material, uint vert_shader, uint frag_shader) {
 

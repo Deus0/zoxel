@@ -29,11 +29,9 @@ zox_sys2(ElementBeginSystem) {
         const float2 size2D = (float2) { pixelSize->value.x / canvas_sizef.y, pixelSize->value.y / canvas_sizef.y };
         set_mesh_vertices_scale2D(meshVertices2D, get_aligned_mesh2D(meshAlignment->value), 4, size2D);
         // spawn gpu bufers
-        if (!headless) {
-            // spawn mesh buffers needs to be done on main thread
-            meshGPULink->value = spawn_gpu_mesh_buffers();
-            uvsGPULink->value = zox_gpu_create_buffer();
-        }
+        // spawn mesh buffers needs to be done on main thread
+        meshGPULink->value = spawn_gpu_mesh_buffers();
+        uvsGPULink->value = zox_gpu_create_buffer();
         meshDirty->value = mesh_state_trigger; // mesh_state_upload;
     }
 } zox_sys_end(ElementBeginSystem);

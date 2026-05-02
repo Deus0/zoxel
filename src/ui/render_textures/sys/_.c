@@ -15,10 +15,6 @@ void define_systems_render_textures(ecs* world) {
         [none] render.textures.RenderTextureScreen
     );
 
-    if (headless) {
-        return;
-    }
-
     zox_system_1(
         RenderTextureBeginSystem,
         EcsPreUpdate,

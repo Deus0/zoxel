@@ -2,6 +2,7 @@ void free_files(FileList *fileList) {
     if (!fileList) {
         return;
     }
+
     if (fileList->files) {
         for (int i = 0; i < fileList->count; i++) {
             if (fileList->files[i]) {
@@ -11,6 +12,7 @@ void free_files(FileList *fileList) {
         free(fileList->files);
         fileList->files = NULL;
     }
+
     if (fileList->filenames) {
         for (int i = 0; i < fileList->count; i++) {
             if (fileList->filenames[i]) {
@@ -20,15 +22,14 @@ void free_files(FileList *fileList) {
         free(fileList->filenames);
         fileList->filenames = NULL;
     }
+
     fileList->count = 0;
 }
 
 
 // without extension
-char* get_filename(
-    const char* filepath,
-    const byte keep_extension
-) {
+char* get_filename(const char* filepath, byte keep_extension) {
+
     // Find the last occurrence of the directory separator
     const char *last_slash = strrchr(filepath, char_slash);
     const char *filename = (last_slash) ? last_slash + 1 : filepath;
@@ -55,15 +56,13 @@ char* get_filename(
     return result;
 }
 
-void add_file(
-    FileList *fileList,
-    const char *filepath,
-    byte keep_extension
-) {
+void add_file(FileList *fileList, const char *filepath, byte keep_extension) {
+
     if (fileList == NULL || filepath == NULL || !*filepath) {
         zox_log_error("[add_file] invalid input: fileList=%p, filepath=%s", fileList, filepath ? filepath : "NULL");
         return;
     }
+
     // zox_log(" + adding filepath: %s\n", filepath)
     // static int capacity = 10;
     if (fileList->count == 0) {
@@ -94,7 +93,7 @@ void add_file(
         fileList->filenames = temp2;
     }
 
-    const int len = strlen(filepath) + 1;
+    int len = strlen(filepath) + 1;
     char* filepath2 = malloc(len * sizeof(char));
     snprintf(filepath2, len, "%s", filepath);
 
@@ -113,14 +112,11 @@ void add_file(
         perror("get_filename failed");
         return;
     }
+
     fileList->count++;
 }
 
-void traverse_directory(
-    FileList* fileList,
-    const char* directory,
-    byte keep_extension
-) {
+void traverse_directory(FileList* fileList, const char* directory, byte keep_extension) {
 
     if (directory == NULL || !*directory) {
         zox_log_error("[traverse_directory] invalid directory");

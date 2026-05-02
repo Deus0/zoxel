@@ -24,21 +24,7 @@ void on_boot_weathers(ecs* world, entity app) {
 zox_begin_module(Weathers)
     zoxd_tag(Weather);
     zoxd_tag(Skybox);
-    if (!headless) {
-        zox_gpu_restore_system(
-            SkyboxRestoreSystem,
-            [in] rendering.MaterialGPULink,
-            [in] colorz.ColorRGB,
-            [in] colorz.SecondaryColorRGB,
-            [none] Skybox
-        );
-        zox_system_1(
-            SkyboxSetTimeSystem,
-            EcsOnUpdate,
-            [in] rendering.MaterialGPULink,
-            [none] Skybox
-        );
-    }
+    define_systems_weather(world);
     // hooks
     add_hook_load_shader(&spawn_shaders_weather);
     add_hook_on_boot(on_boot_weathers);

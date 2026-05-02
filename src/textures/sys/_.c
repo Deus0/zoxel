@@ -75,7 +75,6 @@ void define_systems_textures(ecs *world) {
         [none] IconTexture
     );
 
-
     zox_system(
         TilemapGenerationSystem,
         zox_pip_texture_generation,
@@ -88,24 +87,23 @@ void define_systems_textures(ecs *world) {
         [out] TilemapUVs,
         [none] Tilemap
     );
-    if (!headless) {
-        zox_system_1(
-            TextureUpdateSystem,
-            EcsPreStore,
-            [in] rendering.TextureDirty,
-            [in] textures.TextureData,
-            [in] rendering.TextureSize,
-            [in] rendering.TextureGPULink,
-            [none] !TextureRGB
-        );
-        zox_system_1(
-            TextureRGBUpdateSystem,
-            EcsPreStore,
-            [in] rendering.TextureDirty,
-            [in] textures.TextureData,
-            [in] rendering.TextureSize,
-            [in] rendering.TextureGPULink,
-            [none] TextureRGB
-        );
-    }
+
+    zox_system_1(
+        TextureUpdateSystem,
+        EcsPreStore,
+        [in] rendering.TextureDirty,
+        [in] textures.TextureData,
+        [in] rendering.TextureSize,
+        [in] rendering.TextureGPULink,
+        [none] !TextureRGB
+    );
+    zox_system_1(
+        TextureRGBUpdateSystem,
+        EcsPreStore,
+        [in] rendering.TextureDirty,
+        [in] textures.TextureData,
+        [in] rendering.TextureSize,
+        [in] rendering.TextureGPULink,
+        [none] TextureRGB
+    );
 }

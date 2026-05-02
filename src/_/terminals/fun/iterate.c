@@ -18,6 +18,7 @@ void enable_input() {
 
 void iterate_terminal(ecs* world) {
     (void) world;
+
     if (!headless) {
         return;
     }

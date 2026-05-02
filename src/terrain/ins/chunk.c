@@ -66,11 +66,9 @@ entity spawn_chunk_terrain(ecs *world, entity p, entity terrain, int3 camera_pos
 
     // can move this to init systems
     //  note: keep spawn functions only for passing through sending outside information
-    if (!headless) {
-        spawn_gpu_mesh(world, e);
-        spawn_gpu_uvs(world, e);
-        spawn_gpu_colors(world, e);
-    }
+    spawn_gpu_mesh(world, e);
+    spawn_gpu_uvs(world, e);
+    spawn_gpu_colors(world, e);
 
     return e;
 }

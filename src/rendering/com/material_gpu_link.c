@@ -10,10 +10,6 @@ void add_gpu_material(ecs *world, entity e) {
 
 uint spawn_gpu_material(ecs *world, entity e, uint2 shader) {
 
-    if (headless) {
-        return 0;
-    }
-
     if (!shader.x || !shader.y) {
         zox_log_error("[spawn_gpu_material] has invalid shader");
         return 0;

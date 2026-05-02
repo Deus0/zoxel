@@ -39,8 +39,8 @@ zox_sys2(RenderTextureBeginSystem) {
         set_render_texture_gpu(gpu_link->value, tsize->value);
         set_render_buffer_size(rbo, tsize->value);
 
-        zox_sys_e();
-        zox_log("+ [%s] RenderTexture Uploaded: %ix%i", zox_get_name(e), tsize->value.x, tsize->value.y);
+        // zox_sys_e();
+        // zox_log("+ [%s] RenderTexture Uploaded: %ix%i", zox_get_name(e), tsize->value.x, tsize->value.y);
 
     }
 } zox_sys_end(RenderTextureBeginSystem);

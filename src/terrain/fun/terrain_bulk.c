@@ -21,19 +21,18 @@ entity create_terrain_bulk(ecs *world, const entity prefab, const int3 center_po
     UvsGPULink *uvsGPULinks = malloc(sizeof(UvsGPULink) * chunks_total_length);
     ColorsGPULink *colorsGPULinks = malloc(sizeof(ColorsGPULink) * chunks_total_length);
     for (int i = 0; i < chunks_total_length; i++) {
-        const int3 chunk_position = chunk_positions[i];
+        int3 chunk_position = chunk_positions[i];
         chunkPositions[i].value = chunk_position;
         position3Ds[i].value = float3_scale(float3_from_int3(chunk_position), real_chunk_scale);
         renderDepths[i].value = get_camera_chunk_distance_xz(int3_zero, chunk_position);
         voxLinks[i].value = terrain_world;
-        if (!headless) {
-            meshGPULinks[i].value = spawn_gpu_mesh_buffers();
-            uvsGPULinks[i].value = zox_gpu_create_buffer();
-            colorsGPULinks[i].value = zox_gpu_create_buffer();
-        }
+
+        meshGPULinks[i].value = spawn_gpu_mesh_buffers();
+        uvsGPULinks[i].value = zox_gpu_create_buffer();
+        colorsGPULinks[i].value = zox_gpu_create_buffer();
     }
     // const entity *particles2DArray =
-    const entity *entities = ecs_bulk_init(world, &(ecs_bulk_desc_t) {
+    entity *entities = ecs_bulk_init(world, &(ecs_bulk_desc_t) {
         .count = chunks_total_length,
         .ids = {
             ecs_pair(EcsIsA, prefab),
@@ -80,10 +79,16 @@ entity create_terrain_bulk(ecs *world, const entity prefab, const int3 center_po
             }
         }
     }
+
     ChunkLinks *chunkLinks = zox_get_mut(terrain_world, ChunkLinks)
     chunkLinks->value = create_int3_hashmap(chunks_total_length);
-    for (int i = 0; i < chunks_total_length; i++) int3_hashmap_add(chunkLinks->value, chunk_positions[i], chunks[i]);
+
+    for (int i = 0; i < chunks_total_length; i++) {
+        int3_hashmap_add(chunkLinks->value, chunk_positions[i], chunks[i]);
+    }
+
     zox_modified(terrain_world, ChunkLinks);
+
     return terrain_world;
 }
 #endif

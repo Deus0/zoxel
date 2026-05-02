@@ -1,3 +1,5 @@
+extern int main(int argc, char* argv[]);    // implemented in game code
+
 int WINAPI WinMain(
     HINSTANCE hInstance,
     HINSTANCE hPrevInstance,

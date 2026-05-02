@@ -41,16 +41,15 @@ void define_systems_cameras(ecs *world) {
         [out] transforms3.Rotation3D,
         [none] ElementBillboard
     );
-    if (!headless) {
-        zox_system(
-            ViewportResizeSystem,
-            EcsOnUpdate,
-            [in] apps.WindowSizeDirty,
-            [in] apps.WindowSize,
-            [in] CameraLinks,
-            [none] apps.App
-        );
-    }
+    zox_system(
+        ViewportResizeSystem,
+        EcsOnUpdate,
+        [in] apps.WindowSizeDirty,
+        [in] apps.WindowSize,
+        [in] CameraLinks,
+        [none] apps.App
+    );
+
     #ifdef zox_draw_frustum
     //zox_system_1(CameraPlanesDrawSystem, zoxp_mainthread, [in] CameraPlanes, [none] Camera3D)
     //zox_system_1(FrustumDrawSystem, zoxp_mainthread, [in] FrustumCorners, [none] Camera3D)

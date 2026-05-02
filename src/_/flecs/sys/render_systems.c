@@ -1,19 +1,19 @@
 byte is_log_gpu_restore = 0;
 
 #define zox_render2D_system(name, ...) \
-    if (!headless) {\
+    {\
         zox_system_1(name, 0, __VA_ARGS__)\
         add_to_render2D_loop(ecs_id(name));\
     }
 
 #define zox_render3D_system(name, ...)\
-    if (!headless) {\
+    {\
         zox_system_1(name, 0, __VA_ARGS__)\
         add_to_render3D_loop(ecs_id(name));\
     }
 
 #define zox_render3D_plus_system(name, ...)\
-    if (!headless) {\
+    {\
         zox_system_1(name, 0, __VA_ARGS__)\
         add_to_render3D_plus_loop(ecs_id(name));\
     }

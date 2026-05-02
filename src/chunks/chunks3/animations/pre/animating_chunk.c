@@ -22,9 +22,7 @@ entity spawn_prefab_animating_chunk(ecs *world, entity p) {
     }
     zox_set_ptr(e, ColorRGBs, colors);
 
-    if (!headless) {
-        add_gpu_colors(world, e);
-    }
+    add_gpu_colors(world, e);
 
     return e;
 }

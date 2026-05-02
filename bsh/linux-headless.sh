@@ -7,16 +7,14 @@ game=zoxel
 bin=zoxel-headless
 debug="True"
 
-cflags_debug="
--fPIC \
+cflags_debug="-fPIC \
 -O0 \
 -g3 \
 -Wall \
 -ggdb3 \
 -Dzox_debug "
 
-cflags_release="
--fPIC \
+cflags_release="-fPIC \
 -O3 \
 -march=native \
 -flto=auto "

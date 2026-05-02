@@ -1,5 +1,7 @@
 int initialize_video() {
+
     if (headless) {
+        zox_logw("Headless should not reach here.");
         return EXIT_SUCCESS;
     }
 

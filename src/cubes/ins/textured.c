@@ -5,10 +5,10 @@ entity spawn_cube_textured(ecs* world, entity prefab, float3 position, entity te
     zox_name("cube_textured");
 
     if (zox_valid(texture)) {
-        clone_texture_entity_to_entity(world, e, texture);
+        clone_texture_data(world, e, texture);
     }
 
-    if (headless || !zox_valid(shader_textured3D)) {
+    if (!zox_valid(shader_textured3D)) {
         return e;
     }
 

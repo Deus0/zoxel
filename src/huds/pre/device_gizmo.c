@@ -39,13 +39,13 @@ entity spawn_device_gizmo(ecs* world, entity canvas, byte device_type) {
     zox_set_unique_name(e, "device_gizmo");
 
     if (device_type == zox_device_mode_gamepad) {
-        clone_texture_to_entity(world, e, "device_gamepad");
+        clone_texture_file_to_entity(world, e, "device_gamepad");
     } else if (device_type == zox_device_mode_keyboardmouse) {
-        clone_texture_to_entity(world, e, "device_keyboard");
+        clone_texture_file_to_entity(world, e, "device_keyboard");
     } else if (device_type == zox_device_mode_touchscreen) {
-        clone_texture_to_entity(world, e, "device_touchscreen");
+        clone_texture_file_to_entity(world, e, "device_touchscreen");
     } else {
-        clone_texture_to_entity(world, e, "device_none");
+        clone_texture_file_to_entity(world, e, "device_none");
     }
 
     zox_set(e, AnimationStart, { zox_current_time });

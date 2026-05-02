@@ -95,7 +95,10 @@ zox_begin_module(Core)
     add_hook_terminal_command(process_arguments_core);
     add_hook_on_boot(on_boot_game_store);
     set_noise_seed(get_unique_time_seed());
-    add_to_post_update_loop(iterate_terminal);
+
+    // Headless UI
+    // add_to_post_update_loop(iterate_terminal);
+
     zox_module_dispose(module_dispose_core);
 #if zox_web
     add_to_update_loop(update_web_canvas);

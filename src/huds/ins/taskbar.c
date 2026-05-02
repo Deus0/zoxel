@@ -142,7 +142,7 @@ entity spawn_taskbar(ecs *world, entity canvas) {
 
         // texture
         char* icon_texture_name = hook.texture_name;
-        clone_texture_to_entity(world, icon, icon_texture_name);
+        clone_texture_file_to_entity(world, icon, icon_texture_name);
 
         zox_set_ptr(frame, Children, frame_children);
         // children.value[i] = frame;

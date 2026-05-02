@@ -46,6 +46,8 @@
 
 #define zox_log_error(...) zox_log_prefix("❌", __VA_ARGS__);
 
+#define zox_loge(...) zox_log_prefix("❌", __VA_ARGS__);
+
 #define zox_logw(...) zox_log_prefix("⚠️ ", __VA_ARGS__);
 
 #define zox_logi(...) zox_log_prefix("ℹ️ ", __VA_ARGS__);

@@ -9,9 +9,8 @@ entity spawn_prefab_element3D_child(ecs *world) {
     zox_prefab_set(e, LocalPosition3D, { float3_zero });
     zox_prefab_set(e, LocalRotation3D, { quaternion_identity });
     add_ui_components_world(world, e, (float2) { 0.04f, 0.04f });
-    if (!headless) {
-        zox_add_tag(e, SingleMaterial);
-    }
+
+    zox_add_tag(e, SingleMaterial);
 
     return e;
 }

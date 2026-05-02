@@ -11,9 +11,7 @@ entity spawn_prefab_sound(ecs *world) {
     zox_prefab_set(e, SoundData, { 0 });
 
 #ifdef zox_sdl_mixer
-    if (!headless) {
-        zox_prefab_set(e, SDLMixChunk, { NULL });
-    }
+    zox_prefab_set(e, SDLMixChunk, { NULL });
 #endif
 
     return e;

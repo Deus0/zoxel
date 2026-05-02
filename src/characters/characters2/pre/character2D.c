@@ -36,6 +36,6 @@ entity spawn_character2D(ecs *world, const entity prefab, const float2 position)
         zox_log_error("character2D material failed to initialize")
     }
     spawn_gpu_texture(world, e);
-    clone_texture_to_entity(world, e, "taskbar_body");
+    clone_texture_file_to_entity(world, e, "taskbar_body");
     return e;
 }

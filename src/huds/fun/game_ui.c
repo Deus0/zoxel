@@ -17,12 +17,12 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     }
 
     // SDL_ShowCursor(SDL_DISABLE);
-    entity texture_mouse = string_hashmap_get(files_hashmap_textures, new_string_data("cursor_01"));
+    entity texture_mouse = string_hashmap_get(files_hashmap_textures, new_string_data("cursor"));
     if (!texture_mouse) {
-        zox_log_error("[cursor_01] mouse texture not found");
+        zox_log_error("[cursor] mouse texture not found");
     }
 
-    byte mouse_ui_size = 6 * ui_scale;
+    byte mouse_ui_size = 8 * ui_scale;
     entity prefab_mouse = prefab_element_shell;
 
     entity e = spawn_icon_mouse_follow_canvas(world, prefab_mouse, canvas, dimensions, max_layers2D - 2, float2_zero, mouse_ui_size, mouse_pointer);

@@ -5,10 +5,6 @@
 
 void define_systems_chunks3_textured(ecs *world) {
 
-    if (headless) {
-        return;
-    }
-
     // move this into chunk3, for chunk3_textured
     zox_render3D_system(
         Chunk3TexturedRenderSystem,

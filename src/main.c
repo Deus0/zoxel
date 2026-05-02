@@ -112,6 +112,7 @@ int main(int argc, char* argv[]) {
 
 #else
     entity app = 0;
+    (void) game;
 #endif
 
     // Yet another Hook

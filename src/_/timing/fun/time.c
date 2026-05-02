@@ -1,13 +1,8 @@
 #define init_delta_time()\
-    const double delta_time = zox_delta_time;
+    double delta_time = zox_delta_time;
 
-extern void add_plot_data_time(ecs *world, const double value);
+extern void add_plot_data_time(ecs *world, double value);
 
-double current_time_in_seconds() {
-    struct timespec current_time;
-    clock_gettime(CLOCK_REALTIME, &current_time);
-    return current_time.tv_sec + (double) current_time.tv_nsec / 1000000000.0;
-}
 
 void initialize_time() {
     time_begin = current_time_in_seconds();

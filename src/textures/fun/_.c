@@ -1,2 +1,3 @@
 #include "clone_scale.c"
-#include "sdl_textures.c"
+#include "clone.c"
+#include "clear.c"

@@ -34,7 +34,7 @@ zox_begin_module(Huds)
         .index = 0,
         .spawn = &spawn_menu_paused,
         .component_id = MenuPaused,
-        .texture_name = "paused",
+        .texture_name = "taskbar_paused",
         .tooltip_text = "Pause Menu"
     });
     add_hook_on_boot(on_boot_game_ui);

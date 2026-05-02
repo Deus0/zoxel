@@ -39,24 +39,22 @@ void define_systems_sounds(ecs *world) {
     );
 
 #ifdef zox_sdl_mixer
-    if (!headless) {
-        zox_system(
-            SoundPlaySystem,
-            EcsOnUpdate,
-            [in] TriggerSound,
-            [in] SoundData,
-            [out] sdl.SDLMixChunk,
-            [none] Sound
-        );
-        zox_system(
-            SoundPlayRefSystem,
-            EcsOnUpdate,
-            [in] TriggerSound,
-            [in] SoundDataRef,
-            [out] sdl.SDLMixChunk,
-            [none] Sound
-        );
-    }
+    zox_system(
+        SoundPlaySystem,
+        EcsOnUpdate,
+        [in] TriggerSound,
+        [in] SoundData,
+        [out] sdl.SDLMixChunk,
+        [none] Sound
+    );
+    zox_system(
+        SoundPlayRefSystem,
+        EcsOnUpdate,
+        [in] TriggerSound,
+        [in] SoundDataRef,
+        [out] sdl.SDLMixChunk,
+        [none] Sound
+    );
 #endif
 
     // Sound gen takes longer

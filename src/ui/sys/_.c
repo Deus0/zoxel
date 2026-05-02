@@ -155,20 +155,18 @@ void define_systems_elements(ecs *world) {
         [out] DraggerLink,
         [out] elements.DraggingDelta
     );
-    if (!headless) {
-        zox_system(
-            CanvasResizeSystem,
-            EcsOnUpdate,
-            [in] cameras.ScreenToCanvas,
-            [in] apps.AppLink,
-            [in] hierarchys.Children,
-            [out] layouts2.LayoutPosition,
-            [out] layouts2.LayoutSize,
-            [out] layouts2.LayoutPositionDirty,
-            [out] layouts2.LayoutSizeDirty,
-            [none] layouts2.Canvas
-        );
-    }
+    zox_system(
+        CanvasResizeSystem,
+        EcsOnUpdate,
+        [in] cameras.ScreenToCanvas,
+        [in] apps.AppLink,
+        [in] hierarchys.Children,
+        [out] layouts2.LayoutPosition,
+        [out] layouts2.LayoutSize,
+        [out] layouts2.LayoutPositionDirty,
+        [out] layouts2.LayoutSizeDirty,
+        [none] layouts2.Canvas
+    );
     // all ui
     zox_render2D_system(
         ElementRenderSystem,
@@ -185,8 +183,7 @@ void define_systems_elements(ecs *world) {
         [none] ElementRender,
         [none] !cameras.RenderTexture
     );
-    if (!headless)
-        add_system_process_counter(world, zox_id(ElementRenderSystem));
+    add_system_process_counter(world, zox_id(ElementRenderSystem));
 
     // healthbars
     zox_system_1(
@@ -204,34 +201,32 @@ void define_systems_elements(ecs *world) {
         [none] Element
     );
 
-    if (!headless) {
-        // EcsOnLoad - zoxp_mainthread
-        zox_system_1(
-            ElementBeginSystem,
-            EcsPostLoad,
-            [in] elements.InitializeElement,
-            [in] layouts2.LayoutSize,
-            [in] rendering.MeshAlignment,
-            [in] layouts2.CanvasLink,
-            [out] rendering.MeshDirty,
-            [out] rendering.MeshVertices2D,
-            [out] rendering.MeshGPULink,
-            [out] rendering.UvsGPULink,
-            [none] Element
-        );
-        zox_system_1(
-            TextureDirtyBeginSystem,
-            EcsPostLoad,
-            [in] elements.InitializeElement,
-            [out] rendering.TextureDirty
-        );
-        zox_system_1(
-            TextureGpuBeginSystem,
-            EcsPostLoad,
-            [in] elements.InitializeElement,
-            [out] rendering.TextureGPULink
-        );
-    }
+    // EcsOnLoad - zoxp_mainthread
+    zox_system_1(
+        ElementBeginSystem,
+        EcsPostLoad,
+        [in] elements.InitializeElement,
+        [in] layouts2.LayoutSize,
+        [in] rendering.MeshAlignment,
+        [in] layouts2.CanvasLink,
+        [out] rendering.MeshDirty,
+        [out] rendering.MeshVertices2D,
+        [out] rendering.MeshGPULink,
+        [out] rendering.UvsGPULink,
+        [none] Element
+    );
+    zox_system_1(
+        TextureDirtyBeginSystem,
+        EcsPostLoad,
+        [in] elements.InitializeElement,
+        [out] rendering.TextureDirty
+    );
+    zox_system_1(
+        TextureGpuBeginSystem,
+        EcsPostLoad,
+        [in] elements.InitializeElement,
+        [out] rendering.TextureGPULink
+    );
 
     zox_system(
         TextureSizeSystem,

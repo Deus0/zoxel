@@ -13,8 +13,8 @@
 // Shaders
 
 uint2 zox_gpu_compile_shader(const gchar* vert_buffer, const gchar* frag_buffer) { return uint2_zero; }
-static uint create_shader_vertex() { return 0; }
-static uint create_shader_fragment() { return 0; }
+// static uint create_shader_vertex() { return 0; }
+// static uint create_shader_fragment() { return 0; }
 static uint create_shader_compute() { return 0; }
 
 

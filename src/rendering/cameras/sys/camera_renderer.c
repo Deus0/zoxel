@@ -11,7 +11,7 @@ static inline void opengl_begin_camera(byte is_3D) {
 }
 
 void camera_render_update(iter *it, const byte is_camera2D) {
-    byte do_renders = !headless && rendering;
+    byte do_renders = rendering;
     if (!do_renders) {
         return;
     }

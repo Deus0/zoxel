@@ -1,4 +1,6 @@
-static __thread int local_thread_index = -1;
+// NOTE: pthread is linux only
+
+/*static __thread int local_thread_index = -1;
 
 int get_thread_index() {
     if (local_thread_index == -1) {
@@ -9,4 +11,4 @@ int get_thread_index() {
         pthread_mutex_unlock(&lock);
     }
     return local_thread_index;
-}
+}*/

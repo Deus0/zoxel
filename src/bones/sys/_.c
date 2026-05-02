@@ -17,10 +17,6 @@ void define_systems_bones(ecs *world) {
     );
 
     // generating bone indexes here
-    if (headless) {
-        return;
-    }
-
     zox_render3D_plus_system(
         Skeleton3RenderSystem,
         [in] rendering.MeshIndicies,

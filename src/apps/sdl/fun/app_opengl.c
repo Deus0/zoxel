@@ -49,7 +49,7 @@ entity spawn_app_sdl_opengl(ecs *world, const char* name, byte fullscreen, byte 
 entity spawn_engine_app(ecs* world) {
 
     if (headless) {
-        zox_logv("Headless Mode Enabled.");
+        zox_logw("Headless should not reach here.");
         return 0;
     }
 

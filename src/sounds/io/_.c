@@ -1,12 +1,11 @@
-/*SoundData process_mix_chunk(Mix_Chunk *mix_chunk) {
-    return data;
-}*/
+// File implementation for Sounds
 
 void load_files_sounds(ecs *world) {
     if (nosounds) {
         zox_logv("Sounds are disabled: No Loading Sounds.");
         return;
     }
+
     char* load_directory = concat_file_path(resources_path, directory_sounds);
     zox_logv("  - Loading Files Sounds [%s]", load_directory);
     FileList files = get_files(load_directory, 0);
@@ -16,10 +15,10 @@ void load_files_sounds(ecs *world) {
     zox_log_io(" + io loaded [sounds] [%i]", files.count)
     zox_log_sounds(" + io loaded [sounds] [%i]", files.count)
     for (int i = 0; i < files.count; i++) {
+#ifdef zox_sdl_mixer
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
-        zox_log_io("   - [%i] [sound] [%s]", i, filepath)
-#ifdef zox_sdl_mixer
+        zox_log_io("   - [%i] [sound] [%s]", i, filepath);
         Mix_Chunk *mix_chunk = Mix_LoadWAV(filepath);
         if (!mix_chunk) {
             zox_log_error("sound file failed to load [%s] due to [%s]", filepath, Mix_GetError())

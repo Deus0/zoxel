@@ -7,21 +7,14 @@ void add_player(ecs *world, entity e, entity player) {
 entity dbg_player;
 
 int spawn_players(ecs *world, entity game, byte zox_game_type) {
-    if (headless) {
-        return 0;   // no players in headless mode
-    }
-    /*if (zox_game_type == zox_game_mode_editor) {
-        zox_log("Game Mode [Editor]");
-        return 0;
-    }*/
     int players = 0;
     if (is_split_screen) {
         players = 2;
         auto_switch_device = 0;
-    }
-    else {
+    } else {
         players = 1;
     }
+
     for (int i = 0; i < players; i++) {
         entity e = spawn_player(world, prefab_player);
 
@@ -60,11 +53,18 @@ void spawn_connected_devices(ecs *world, entity e) {
 }
 
 void on_boot_players(ecs *world, entity app) {
-    if (!headless && zox_is_players) {
-        zox_geter_value(app, GameLink, entity, game);
-        spawn_connected_devices(world, app);
-        players_playing = spawn_players(world, game, zox_game_type);
+    if (!zox_valid(app)) {
+        zox_logw("App is invalid.");
+        return;
     }
+    if (!zox_is_players) {
+        zox_logw("Players are not present.");
+        return;
+    }
+
+    zox_geter_value(app, GameLink, entity, game);
+    spawn_connected_devices(world, app);
+    players_playing = spawn_players(world, game, zox_game_type);
 }
 
 // Game now effects all players
