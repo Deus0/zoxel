@@ -7,7 +7,7 @@ SRC    		:= src/main.c
 SRCS 		:= $(shell find $(SRC_DIR) -name "*.c") # Change Detection
 CC      	:= gcc
 LIBS 		:= -lm -lpthread
-GAMES_DIR	:= $(SRC_DIR)/nexus
+GAMES_DIR	:= $(SRC_DIR)/../gam
 DFLAGS		:= -Iinc
 
 # shell paths
@@ -15,11 +15,11 @@ pkg_config = $(shell which pkg-config)
 
 # 🧱 Release build — for speed and glory
 # 03 breaks my sounds for now
-CFLAGS      	:= -fPIC -O3 -march=native -flto=auto -DNDEBUG -Dzox_debug
+CFLAGS      	:= -fPIC -O3 -march=native -flto=auto -DNDEBUG -Dzox_debug -Dzox_opengl
 
 # 🐛 Debug build — for truth and stacktraces
 #	-g3 -g -Werror  -std=c11
-cflags_dev 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug
+cflags_dev 	:= -fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug -Dzox_opengl
 
 # more checks
 cflags_dever	:= $(cflags_dev)  -Wextra -Wpedantic -pedantic-errors -Werror  -fdiagnostics-color=always # -std=c99

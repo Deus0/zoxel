@@ -7,27 +7,21 @@
 #ifndef zoxm_graphics
 #define zoxm_graphics
 
-#ifdef zox_sdl
+#ifdef zox_opengl
     #include "opengl/_.c"
+#elif zox_vulkan
+    #include "vulkan/_.c"
 #else
     #include "headless/_.c"
 #endif
-#ifdef zox_vulkan
-    #include "vulkan/_.c"
-#endif
-
 
 zox_begin_module(Graphics)
-#ifndef zox_sdl
-    zox_import_module(Headless);
-#endif
-
-#ifdef zox_sdl // zox_opengl
+#ifdef zox_opengl
     zox_import_module(Opengl);
-#endif
-
-#ifdef zox_vulkan
+#elif zox_vulkan
     zox_import_module(Vulkan);
+#else
+    zox_import_module(Headless);
 #endif
 zox_end_module(Headless)
 

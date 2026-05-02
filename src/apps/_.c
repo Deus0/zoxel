@@ -27,9 +27,13 @@ zox_begin_module(Apps)
     add_hook_terminal_command(process_arguments_apps);
     add_hook_files_load(load_files_settings);
     add_hook_spawn_prefabs(spawn_prefabs_apps);
+
 #ifdef zox_sdl
     zox_import_module(Sdl);
+#elif zox_glut
+    zox_import_module(Glut);
 #endif
+
 zox_end_module(Apps)
 
 #endif

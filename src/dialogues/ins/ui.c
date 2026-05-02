@@ -20,23 +20,13 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
         .size = (int2) { 720, 200 },
         .anchor = (float2) { 0.5f, 0.8f },
     };
-    entity e = spawn_window2(
-        world,
-        canvas_data,
-        canvas_data,
-        element_data,
-        window_data,
-        (ClickEvent) { &on_closed_dialogue_ui },
-        1,
-        zox_window_dialogue
-    );
+    entity e = spawn_window2(world, canvas_data, canvas_data, element_data, window_data, (ClickEvent) { &on_closed_dialogue_ui }, 1, zox_window_dialogue);
+
     // TODO: Spawn Body Here instead
-    zox_set(e, Color, { (color) { 23, 23, 23, 210 } });
+    zox_set(e, Color, { window_fill }); // (color) { 23, 23, 23, 210 } });
 
     // add speech text
-    LayoutParentData parent_data = (LayoutParentData) {
-        .e = e
-    };
+    LayoutParentData parent_data = (LayoutParentData) { .e = e };
 
     SpawnTextData speech_text_data = {
         .text = "",
@@ -44,10 +34,11 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
         .font_resolution = 64,
         .font_thickness = 12,
         .font_outline_thickness = 4,
-        .font_fill_color = (color) { 55, 200, 200, 235 },
-        .font_outline_color = (color) { 55, 5, 5, 235 },
+        .font_fill_color = window_outline, // (color) { 55, 200, 200, 235 },
+        .font_outline_color = window_outline, // (color) { 55, 5, 5, 235 },
         .margins = window_data.header_padding,
     };
+
     SpawnZext speech_text_data2 = {
         .canvas = canvas_data,
         .parent = parent_data,
@@ -57,6 +48,7 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
             .anchor = float2_half,
         },
     };
+
     entity text = spawn_zext(world, &speech_text_data2);
     add_to_Children(&window_children, text);
 

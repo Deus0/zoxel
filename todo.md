@@ -1,5 +1,9 @@
 ### todo ###
 
+- Finish SDL refactor
+	- Glut should spawn a window
+	- We should wrap all other sdl functions properly for glut
+
 - Fix realm / Terrain not deleting when game ends
 
 - Fix ./bsh/windows-headless.sh

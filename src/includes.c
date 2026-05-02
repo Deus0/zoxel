@@ -68,9 +68,13 @@
 
 // TODO: if zox_opengl we import Glew
 
-#ifdef zox_sdl
+#ifdef zox_web
+    #include <emscripten.h>
+#endif
 
-    #define GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES
+
+#ifdef zox_sdl
 
     #ifdef zox_windows
 
@@ -80,6 +84,10 @@
             #include <GL/glew.h>
         #endif
 
+    #endif
+
+    #ifdef zox_vulkan
+        #include <SDL2/SDL_vulkan.h>
     #endif
 
     #ifdef sdlsource
@@ -94,10 +102,19 @@
         #include <SDL2/SDL_opengl.h>
     #endif
 
+#elif zox_glut
+    // Glut Lib!
+    #include <GL/freeglut.h>
+
 #endif
 
 #ifdef zox_gles2
     #include <GLES2/gl2.h>
+#endif
+
+#ifdef zox_vulkan
+    #include <vulkan/vulkan.h>
+    #include <vulkan/vulkan_wayland.h>
 #endif
 
 #ifdef zox_sdl_images
@@ -108,16 +125,6 @@
         #include <SDL2/SDL_image.h>
     #endif
 
-#endif
-
-#ifdef zox_vulkan
-    #include <SDL2/SDL_vulkan.h>
-    #include <vulkan/vulkan.h>
-    #include <vulkan/vulkan_wayland.h>
-#endif
-
-#ifdef zox_web
-    #include <emscripten.h>
 #endif
 
 #ifdef zox_android

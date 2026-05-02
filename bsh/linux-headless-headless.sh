@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Building Zoxel Linux [Headless]"
-
-game=zoxel
-bin=zoxel-headless
+game_name=$1
 debug="True"
+GLB="headless"
+bin=bin/${game_name}-${GLB}
+
+sleep 1
+echo "Building Linux [${game_name}]"
+sleep 1
+
 
 cflags_debug="-fPIC \
 -O0 \
@@ -40,10 +44,12 @@ src/main.c \
 -lpthread \
 -Iinc \
 \
--DNDEBUG \
--Dzox_debug \
 -Dzox_headless \
--Dzox_game=$game \
 -Dzox_linux \
 -Dflecssource \
--Dzox_headless
+-DNDEBUG \
+\
+-Dzox_debug \
+-Dzox_game=${game_name}
+
+echo "Completed Build [${bin}]"

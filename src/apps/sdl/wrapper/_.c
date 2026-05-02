@@ -9,3 +9,7 @@
 #include "mixer.c"
 #include "virtual_keyboard.c"
 #include "orientation.c"
+
+byte apps_is_extension_supported(const char* name) {
+    return SDL_GL_ExtensionSupported(name);
+}
