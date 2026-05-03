@@ -25,8 +25,8 @@ entity spawn_fps_display(ecs *world, entity canvas) {
         int2_half(parent_pixel_size),
         parent_pixel_size,
         button_fill, button_outline,
-        default_label_font_fill_color,
-        default_label_font_outline_color,
+        button_font_fill, button_font_outline,// default_label_font_fill_color,
+        // default_label_font_outline_color,
         0
     );
 }

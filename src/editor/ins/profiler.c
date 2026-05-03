@@ -1,9 +1,9 @@
 entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 position, int2 size, float2 anchor, entity canvas, byte layer) {
 
-    byte plots_count = 2;
-    color text_color = (color) { 255, 255, 255, 255 };
+    byte plots_count = 1;
+    color text_color = window_outline; // (color) { 255, 255, 255, 255 };
     color plot_colors[] = {
-        (color) { 33, 133, 133, 255 },
+        window_outline, // (color) { 33, 133, 133, 255 },
         (color) { 163, 163, 163, 255 },
     };
 
@@ -31,6 +31,11 @@ entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 posit
     initialize_element(world, e, parent, canvas, position, size, size, anchor, layer);
     set_window_bounds_to_canvas(world, e, canvas_size, size, anchor);
 
+    // set texture
+    zox_set(e, FrameCorner, { default_window_corner });
+    zox_set(e, Color, { window_fill });
+    zox_set(e, OutlineColor, { window_outline });
+
     Children children = (Children) { 0 };
     initialize_Children(&children, children_count);
 
@@ -43,17 +48,13 @@ entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 posit
     for (int i = 0; i < plots_count; i++) {
         children.value[is_header + i] = spawn_plot_graph(world, canvas, e, position, size, prefab_plot_graph, plot_layer, plot_size, record_frames_count, 0, text_color, plot_colors[i], 1, i * 2);
     }
+
     // todo: seperate plot data from the graphs here
     // - hotkey to switch them
     // PlotLinks from our Profiler
     plot_time = children.value[1];
     plot_time_system = children.value[2];
     zox_set_ptr(e, Children, children);
-
-    // set texture
-    zox_set(e, FrameCorner, { default_window_corner });
-    zox_set(e, Color, { window_fill });
-    zox_set(e, OutlineColor, { window_outline });
 
     return e;
 }

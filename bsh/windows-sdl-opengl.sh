@@ -13,8 +13,9 @@ cflags_release="-fPIC \
 -O3 \
 -flto=auto"
 
+# -O0 \
+
 cflags_debug="-fPIC \
--O0 \
 -g3 \
 -Wall \
 -ggdb3 \
@@ -101,6 +102,7 @@ ext/glew/src/glew.c \
 -lws2_32 \
 -lopengl32 \
 -lpthread \
+-ldbghelp \
 \
 -Lext/sdl/build \
 -Lext/sdl_image/build \
@@ -130,14 +132,7 @@ ext/glew/src/glew.c \
 
 if [[ -debug ]]; then
     WINEDEBUG=+backtrace wine bin/${bin}
+    # winedbg ?
+else
+    wine bin/${bin}
 fi
-
-# ext/sdl_image/src/*.c \
-# ext/sdl_mixer/src/*.c \
-# -Iext/sdl_image/include \
-# -Iext/sdl_mixer/include \
-# -lSDL2main \
-# -lSDL2 \
-# ext/sdl/src/*.c \
-# -Dsdlsource \
-# ext/glew/src/*.c \

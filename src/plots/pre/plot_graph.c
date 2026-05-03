@@ -79,14 +79,13 @@ entity spawn_plot_graph(
                 .anchor = (float2) { 0, 1.0f },
             },
             .zext = {
-                .font_resolution = 64,
-                .text = "",
-                .font_size = 14,
-                .font_thickness = 1,
+                .font_resolution = 16,
+                .font_size = 16,
+                .font_thickness = 3,
                 .alignment = zox_alignment_top_left,
                 .margins = (byte2) { 16, 4 },
-                .font_fill_color = text_color, // default_font_fill_color,
-                .font_outline_color = default_font_outline_color
+                .font_fill_color = text_color,
+                .font_outline_color = text_color
             }
         };
 
@@ -118,6 +117,8 @@ entity spawn_plot_graph(
         zox_add_tag(e2, PlotLine);
         children.value[is_label + i] = e2;
     }
+
     zox_set_ptr(e, Children, children);
+
     return e;
 }
