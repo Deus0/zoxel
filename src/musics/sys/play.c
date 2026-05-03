@@ -45,12 +45,14 @@ zox_sys2(MusicPlaySystem) {
             zox_geter_value(note, SoundVolume, float, note_volume)
             zox_geter_value(note, SoundLength, float, note_time)
             // const int music_note = musicData->value[musicNote->value];
+
             if (!music_note || !note_volume || !note_time) {
                 continue;
             }
-            const float volume = note_volume * get_volume_music();
-            const byte note_instrument = zox_get_value(note, InstrumentType)
-            const float frequency = note_frequencies[music_note];
+
+            float volume = note_volume * get_volume_music();
+            zox_geter_value(note, InstrumentType, byte, note_instrument);
+            float frequency = note_frequencies[music_note];
             // zox_log(" > spawning note type: %i\n", note_instrument)
 
             if (note_instrument == instrument_piano_file) {

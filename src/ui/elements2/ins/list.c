@@ -36,7 +36,7 @@ static inline int2 calculate_header_size(byte length, byte font_size, byte2 padd
 // TODO: spawn list panel, and scrollbar as children of list entity
 entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnList list_data, byte alignment) {
 
-    byte slider_handle_width = 8 * ui_scale;
+    byte slider_handle_width = 16 * ui_scale;
 
     zox_instance(element_data.prefab);
     zox_name("list");
@@ -65,6 +65,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
 
     for (int i = 0; i < list_data.count; i++) {
         byte visible = (i >= 0 && i < list_data.visible_count);
+
         SpawnListElement child_data = list_data.elements[i];
         ElementSpawnData child_element_data = {
             .prefab = prefab_button,
@@ -72,6 +73,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
             .anchor = float2_half,
             .render_disabled = !visible,
         };
+
         entity child = 0;
         if (child_data.type == list_element_type_button) {
 
@@ -79,13 +81,13 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .text = child_data.text,
                 .font_size = list_data.font_size,
                 .font_resolution = list_data.font_size,
-                // .font_resolution = button_font_resolution,
                 .margins = list_data.button_padding,
                 .font_fill_color = button_font_fill,
                 .font_outline_color = button_font_outline,
                 .font_thickness = button_font_thickness_fill,
                 .font_outline_thickness = button_font_thickness_outline,
             };
+
             SpawnButtonData child_button_data = {
                 .prefab_zext = prefab_zext,
                 .fill = button_fill,
@@ -129,7 +131,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .handle_width = slider_handle_width,
             };
 
-            entity2 e2 = spawn_slider(world, canvas_data, child_parent_data, child_element_data, slider_data, list_data.font_size, button_font_fill, button_font_outline);
+            entity2 e2 = spawn_slider(world, canvas_data, child_parent_data, child_element_data, slider_data, button_fill, button_outline, list_data.font_size, button_font_fill, button_font_outline);
 
             if (child_data.on_slide.value) {
                 zox_set(e2.y, SlideEvent, { child_data.on_slide.value })

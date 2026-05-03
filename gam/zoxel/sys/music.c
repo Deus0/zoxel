@@ -20,12 +20,8 @@ zox_sys2(MusicRealmSpawnSystem) {
         MusicLinks musics_game = (MusicLinks) { 0 };
 
         // musics
-        entity music_file = load_music_file(
-            world,
-            prefab_music_file,
-            prefab_note,
-            music_file_path
-        );
+        entity music_file = load_music_file(world, prefab_music_file, prefab_note, music_file_path);
+
         // add musics to playlists
         if (music_file) {
             // add_music(world, playlist_main_menu, music_file);

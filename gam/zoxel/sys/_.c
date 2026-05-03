@@ -7,6 +7,14 @@
 #include "items_equips.c"
 #include "quests.c"
 #include "dialogues.c"
+#include "blocks.c"
+#include "characters.c"
+#include "music.c"
+#include "achievements.c"
+
+zox_declare_system_state_event(RealmBlocks, GenerateRealm, zox_generate_realm_blocks, spawn_realm_blocks);
+zox_declare_system_state_event(RealmTilemaps, GenerateRealm, zox_generate_realm_tilemaps, spawn_realm_tilemaps);
+zox_declare_system_state_event(RealmAchievements, GenerateRealm, zox_generate_realm_achievements, spawn_realm_achievements);
 
 void define_systems_zoxel(ecs *world) {
 
@@ -92,4 +100,26 @@ void define_systems_zoxel(ecs *world) {
         [out] dialogues.DialoguetreeLinks,
         [none] realms.Realm
     );
+
+    zox_system_1(
+        MusicRealmSpawnSystem,
+        zoxp_mainthread,
+        [in] realms.GenerateRealm,
+        [out] musics.PlaylistLinks,
+        [none] realms.Realm
+    );
+
+    zox_system_1(
+        Character3RealmSpawnSystem,
+        EcsOnLoad,
+        [in] realms.GenerateRealm,
+        [in] rendering.ModelLinks,
+        [out] characters.CharacterLinks,
+        [out] characters3.CharactersChanceMax,
+        [none] realms.Realm
+    );
+
+    zox_define_system_state_event_1(RealmBlocks, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+    zox_define_system_state_event_1(RealmTilemaps, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+    zox_define_system_state_event_1(RealmAchievements, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
 }

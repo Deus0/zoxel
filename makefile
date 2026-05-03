@@ -99,19 +99,7 @@ clean:
 
 # installs flecs source directly
 flecs:
-	@if pkg-config --exists flecs; then \
-		echo "> Flecs Package Installed"; \
-	else \
-		if test -f inc/flecs/flecs.c; then \
-			echo "> Flecs Source Installed"; \
-		else \
-			echo "+ Installing Flecs Source..."; \
-			mkdir -p inc/flecs; \
-			cd inc/flecs && \
-			wget https://raw.githubusercontent.com/SanderMertens/flecs/v4.0.5/distr/flecs.h -O flecs.h && \
-			wget https://raw.githubusercontent.com/SanderMertens/flecs/v4.0.5/distr/flecs.c -O flecs.c || { echo >&2 "Download failed"; exit 1; } \
-		fi; \
-	fi
+	bash bsh/flecs.sh
 
 # Dev
 

@@ -43,8 +43,13 @@ echo "=> Graphics [${GLB}]"
 sleep 2
 echo ""
 
-GFX=$(select_option "Select Windowing" glut sdl glfw headless)
+GFX=$(select_option "Select Windowing" sdl glut glfw headless)
 echo "=> Windowing [${GFX}]"
+sleep 2
+echo ""
+
+PRF=$(select_option "Select Profile" release development)
+echo "=> Profile [${PRF}]"
 sleep 2
 echo ""
 

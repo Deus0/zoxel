@@ -22,12 +22,6 @@ zox_sys2(TerrainTextureSetSystem) {
             continue;
         }
 
-        // wait for realm to generate, voxels and textures
-        /*zox_geter(realm->value, GenerateRealm, generate_realm);
-        if (generate_realm->value) {
-            continue;
-        }*/
-
         // Refresh Texture Links for Tilemap
         zox_geter(realm->value, BlockLinks, blocks);
         clear_memory_component(TextureLinks, textures);

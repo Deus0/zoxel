@@ -29,19 +29,12 @@ entity spawn_chunk_terrain(ecs *world, entity p, entity terrain, int3 camera_pos
     // scale needs to be based on chunk itself
     byte camera_distance = get_camera_chunk_distance_xz(camera_position, position);
     byte render_depth = camera_distance_to_terrain_render_depth(camera_distance);
-    float chunk_scalev = get_chunk_scale(
-        render_depth,
-        terrain_depth,
-        terrain_scalev
-    );
+    float chunk_scalev = get_chunk_scale(render_depth, terrain_depth, terrain_scalev);
     zox_set(e, BlockScale, { chunk_scalev });    // set from parent
 
     // we should just pass in positionf - local position of parent!
     byte terrain_length = powers_of_two[terrain_depth];
-    float3 positionf = float3_scale(
-        float3_from_int3(position),
-        terrain_length * terrain_scalev
-    );
+    float3 positionf = float3_scale(float3_from_int3(position), terrain_length * terrain_scalev);
     zox_set(e, ChunkSize, { int3_single(terrain_length) });
 
     // zox_log("placing: chunk_scale [%f] voxscale [%f] terrain_length [%i]", chunk_scale, scale, terrain_length);

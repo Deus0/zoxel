@@ -1,20 +1,23 @@
 ### todo ###
 
-- Finish SDL refactor
+- Move first chunk spawning into StreamSpawnSystem - so it will spawn whatever we are inside of
+- Terrain loading and finishing should be overseen by GameState and not Player events
+- Fix little teleport when loading player character
+
+- Make Glut Build work
 	- Glut should spawn a window
 	- We should wrap all other sdl functions properly for glut
-
-- Fix realm / Terrain not deleting when game ends
 
 - Fix ./bsh/windows-headless.sh
 - Fix ./bsh/windows.sh
 	- use bsh/windows.sh
+	
 - Fix DungeonCore not showing texture properly
 
 - Spawn label top left above stats - show block / npc selected
 - Fix initial lighting in terrain
 - Refactor Header Spawning to system
-- Refactor headers to window module 	
+- Refactor headers to window module
 - Remove all struct data out of UIs
 - Reuse as many ui prefabs as possible
 - Generate a mouse texture - arrow
@@ -320,3 +323,5 @@ Done:
 	-x Move all OpenGL code to stubs for headless mode
 	-x Remove sdl completely from project - headless mode is compiling without it
 	-x linux-headless.sh
+-x Fix realm / Terrain not deleting when game ends
+	-x omg this was camera issue - didnt update it

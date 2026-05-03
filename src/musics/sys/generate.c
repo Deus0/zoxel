@@ -6,9 +6,9 @@ zox_sys2(MusicGenerateSystem) {
     if (nomusic) {
         return;
     }
-    const byte lowest_note = 12;
-    const byte highest_note = 36;
-    const byte note_verse_difference = 6;
+    byte lowest_note = 12;
+    byte highest_note = 36;
+    byte note_verse_difference = 6;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Seed);
@@ -79,17 +79,15 @@ zox_sys2(MusicGenerateSystem) {
                     music_instrument = instrument_organ;
                 }*/
 
-                const float note_length = 0.8f + 0.6f * (rand() % 100 * 0.01f);
-                const float note_volume = 0.6f + 0.4f * (rand() % 100 * 0.01f);
-                const entity note = spawn_note(world,
-                    prefab_note,
-                    music_note,
-                    instrument->value,
-                    note_length,
-                    note_volume);
+                float note_length = 0.8f + 0.6f * (rand() % 100 * 0.01f);
+                float note_volume = 0.6f + 0.4f * (rand() % 100 * 0.01f);
+
+                entity note = spawn_note(world, prefab_note, music_note, instrument->value, note_length, note_volume);
+
                 noteLinks->value[sound_index] = note;
                 sound_index++;
-                zox_logv("  + note [%lu:%s] at [%i] is: (%i:%i) [volume[%f]]", note, zox_get_name(note), sound_index, music_note, instrument->value, note_volume)
+
+                zox_logv("  + note [%lu:%s] at [%i] is: (%i:%i) [volume[%f]]", note, zox_get_name(note), sound_index, music_note, instrument->value, note_volume);
             }
         }
         generateMusic->value = 0;

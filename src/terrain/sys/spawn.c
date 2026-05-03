@@ -4,6 +4,10 @@ extern entity spawn_chunk_terrain(ecs*, entity, entity, int3, int3, byte, float)
 // NOTE: This logic fails if all chunks dissapear
 
 zox_sys2(ChunkSpawnSystem) {
+    if (zox_tst_single_terrain_chunk) {
+        return;
+    }
+
     entity prefab_chunk = prefab_chunk_terrain;
 
     zox_sys_query();
@@ -51,12 +55,6 @@ zox_sys2(ChunkSpawnSystem) {
             continue;
         }
 
-        // Pass if lod changing
-        /*zox_geter_value(e, ChunkLodDirty, byte, chunkLodDirty);
-        if (chunkLodDirty != 0) {
-            continue;
-        }*/
-
         zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
         byte stream_zone = rdistance->value < terrain_lod_far;
         if (stream_zone) {
@@ -93,17 +91,8 @@ zox_sys2(ChunkSpawnSystem) {
 
                     if (camera_distance <= terrain_lod_far) {
 
-                        neighbor = spawn_chunk_terrain(
-                            world,
-                            prefab_chunk,
-                            terrain->value,
-                            stream_point,
-                            neighbor_position,
-                            terrain_depth,
-                            terrain_scale
-                        );
+                        neighbor = spawn_chunk_terrain(world, prefab_chunk, terrain->value, stream_point, neighbor_position, terrain_depth, terrain_scale                        );
 
-                        // zox_geter(terrain->value, ChunkLinks, chunks);
                         int3_hashmap_add(chunks->value, neighbor_position, neighbor);
                         if (log_individuals) {
                             zox_log_streaming("+ streaming: new [%i]s chunk [%ix%ix%i]", spawned_chunks, neighbor_position.x, neighbor_position.y, neighbor_position.z);

@@ -1,6 +1,6 @@
-entity spawn_scrollbar_handle(ecs *world, entity parent, entity canvas, int2 position, float2 anchor, byte layer, int2 size, int2 parent_size, byte visible) {
+entity spawn_scrollbar_handle(ecs *world, entity p, entity parent, entity canvas, int2 position, float2 anchor, byte layer, int2 size, int2 parent_size, byte visible) {
 
-    zox_instance(prefab_scrollbar_front);
+    zox_instance(p);
     zox_name("scrollbar_handle");
 
     initialize_element(world, e, parent, canvas, position, size, size, anchor, layer);

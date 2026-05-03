@@ -4,8 +4,17 @@
 //          - everytime it finishes, decrease
 //  A simple way to make sure its done
 
+extern byte zox_tst_single_terrain_chunk;   // from terrain
+
 // A state checker for stream loading
-zox_sys2(StreamEndEventSystem) {
+zox_sys2(StreamEndSystem) {
+    // also checks if loaded enough chunks
+    int xz_chunks = terrain_lod_near * 2 + 1;
+    int y_chunks = render_distance_y * 2 + 1;
+    uint chunk_required = xz_chunks * xz_chunks * y_chunks;
+    if (zox_tst_single_terrain_chunk) {
+        chunk_required = 1;
+    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(EventInput);
@@ -69,11 +78,6 @@ zox_sys2(StreamEndEventSystem) {
             }
         }
 
-        // also checks if loaded enough chunks
-        int xz_chunks = terrain_lod_near * 2 + 1;
-        int y_chunks = render_distance_y * 2 + 1;
-        uint chunk_required = xz_chunks * xz_chunks * y_chunks;
-
         if (!running && chunks_loaded >= chunk_required) {
             zox_log("Terrain Loaded: @ [%f] - chunks: [%i]", zox_current_time, chunks_loaded);
 
@@ -89,4 +93,4 @@ zox_sys2(StreamEndEventSystem) {
         }
 
     }
-} zox_sys_end(StreamEndEventSystem);
+} zox_sys_end(StreamEndSystem);

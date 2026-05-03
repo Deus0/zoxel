@@ -166,12 +166,12 @@ entity spawn_ui_list(ecs *world, entity prefab, entity canvas, const char *heade
                 .bounds = (float2) { 0, 1 },    // todo: pass this in from setting
             };
 
-            entity2 e2 = spawn_slider(
-                world,
+            entity2 e2 = spawn_slider(world,
                 spawnButton.canvas,
                 spawnButton.parent,
                 spawn_slider_data,
                 slider_data,
+                button_fill, button_outline,
                 28,
                 button_font_fill,
                 button_font_outline

@@ -5,12 +5,14 @@
 #define zoxc_entities(T)\
     zoxc_arrayd_with_remove(T, entity)\
     \
-    void dispose2_##T(ecs *world, const T *component) { \
+    void dispose2_##T(ecs *world, const T* component) { \
         \
         if (!component->value || !component->length) {\
+            /*zox_log("Cannot dispose, component empty %s", #T);*/\
             return;\
         }\
         \
+        /*zox_log("Disposing of entities [%i] %s", component->length, #T);*/\
         for (int j = 0; j < component->length; j++) {\
             zox_delete_safe(component->value[j])\
         }\

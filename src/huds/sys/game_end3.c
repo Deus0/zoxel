@@ -24,6 +24,8 @@ void PlayerUIGame3EndSystem(iter *it) {
         }
 
         zox_geter_value(game->value, RealmLink, entity, realm);
+
+        // TODO: Realm is missing at this point, need a main menu realm
         // music - attach to game from music module
         play_playlist(world, realm, 0);
 

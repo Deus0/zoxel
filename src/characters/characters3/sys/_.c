@@ -9,16 +9,6 @@ realm_clear_system(CharacterLinks);
 void define_systems_characters3(ecs *world) {
     realm_clear_systemd(characters, CharacterLinks);
 
-    zox_system_1(
-        Character3RealmSpawnSystem,
-        EcsOnLoad,
-        [in] realms.GenerateRealm,
-        [in] rendering.ModelLinks,
-        [out] characters.CharacterLinks,
-        [out] characters3.CharactersChanceMax,
-        [none] realms.Realm
-    );
-
     zox_system(
         CharacterSaveSystem,
         EcsOnStore,

@@ -1,19 +1,3 @@
-/*void game_start_terrain2D(ecs *world, entity game) {
-    (void) game;
-    spawn_grid2D(world);
-}*/
-
-/*void spawn_terrain_on_realm(ecs *world, entity realm) {
-    entity terrain = spawn_terrain_streaming(world, realm, prefab_terrain);
-    zox_set(terrain, RealmLink, { realm });
-    zox_set(realm, TerrainLink, { terrain }); // link terrain to realm too
-    local_terrain = terrain;
-}*/
-
-/*void game_start_terrain3D(ecs *world, entity game) {
-    zox_geter(game, RealmLink, realmLink)
-}*/
-
 extern const double game_spawn_terrain_delay;
 
 zox_sys2(TerrainGameStartSystem) {

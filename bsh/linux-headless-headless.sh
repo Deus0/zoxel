@@ -2,9 +2,9 @@
 set -euo pipefail
 
 game_name=$1
-debug="True"
 GLB="headless"
 bin=bin/${game_name}-${GLB}
+debug="False"
 
 sleep 1
 echo "Building Linux [${game_name}]"
@@ -23,7 +23,7 @@ cflags_release="-fPIC \
 -march=native \
 -flto=auto "
 
-if [[ -debug ]]; then
+if [[ ${debug} == "True" ]]; then
     cflags=${cflags_debug}
 else
     cflags=${cflags_release}
@@ -38,7 +38,7 @@ ${cflags} \
 inc/flecs/flecs.c \
 src/main.c \
 \
--o bin/$bin \
+-o $bin \
 \
 -lm \
 -lpthread \

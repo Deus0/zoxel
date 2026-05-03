@@ -4,6 +4,7 @@
 #include "paint.c"
 #include "body.c"
 #include "merge.c"
+#include "blocks.c"
 
 realm_clear_system(ModelLinks);
 

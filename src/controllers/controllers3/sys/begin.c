@@ -84,10 +84,12 @@ entity spawn_first_chunk(ecs* world, entity realm, entity terrain, float3 positi
     }
 
     if (!int3_hashmap_has(chunks3->value, cposition)) {
+
         c = spawn_chunk_terrain(world, prefab_chunk_terrain, terrain, cposition, cposition, tdepth, terrain_scale);
         if (zox_valid(c)) {
             int3_hashmap_add(chunks3->value, cposition, c);
             zox_mut_end(terrain, ChunkLinks);
+            zox_log("Spawned first terrain chunk!!!");
         } else {
             zox_log_error("Failed to spawn chunk [%ix%ix%i]:%lu", cposition.x, cposition.y, cposition.z, c);
         }
@@ -229,7 +231,6 @@ void on_spawned_terrain(ecs *world, entity player) {
     zox_geter_value(player, GameLink, entity, game);
     // zox_geter_value(player, CameraLink, entity, camera);
     zox_geter_value(game, RealmLink, entity, realm);
-
     play_playlist(world, realm, 1);
     // actually we need to do this on loaded player model for bounds
 

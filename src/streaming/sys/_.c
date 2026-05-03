@@ -84,7 +84,7 @@ void define_systems_streaming(ecs* world) {
     // streams
     // main thread
     zox_system_1(
-        StreamEndEventSystem,
+        StreamEndSystem,
         zoxp_mainthread,
         [in] core.EventInput,
         [in] voxes.ChunkLinks,

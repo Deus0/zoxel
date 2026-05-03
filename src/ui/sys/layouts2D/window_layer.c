@@ -7,24 +7,28 @@ zox_sys2(WindowLayerSystem) {
     zox_sys_out(WindowLayer);
     zox_sys_out(Layer2D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(SetWindowLayer, setWindowLayer);
+        zox_sys_i(SetWindowLayer, nlayer);
         zox_sys_i(CanvasLink, canvasLink);
         zox_sys_i(Children, children);
-        zox_sys_o(WindowLayer, windowLayer);
+        zox_sys_o(WindowLayer, wlayer);
         zox_sys_o(Layer2D, layer2D);
 
-        if (windowLayer->value == setWindowLayer->value) {
+        if (wlayer->value == nlayer->value) {
             continue;
         }
         if (!zox_valid(canvasLink->value) || !zox_has(canvasLink->value, WindowsLayers)) {
             continue;
         }
-        const byte layers_per_window = zox_get_value(canvasLink->value, WindowsLayers)
-        windowLayer->value = setWindowLayer->value;
-        const byte window_layer = windowLayer->value;
+
+        zox_geter_value(canvasLink->value, WindowsLayers, byte, layers_per_window);
+
+        wlayer->value = nlayer->value;
+
+        byte window_layer = wlayer->value;
         layer2D->value = window_layer * layers_per_window;
+
         for (int j = 0; j < children->length; j++) {
-            const entity child = children->value[j];
+            entity child = children->value[j];
             set_element_layers_auto(world, child, layer2D->value);
             set_element_layers(world, child, layer2D->value);
         }

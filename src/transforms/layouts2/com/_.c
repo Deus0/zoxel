@@ -3,6 +3,7 @@ zox_tag(Canvas);
 zox_tag(BoundToCanvas);
 zoxc_entity(CanvasLink);
 zoxc_byte(Layer2D);
+zoxc_byte(BonusLayer2); // for shifting things above others
 
 // Positions
 zoxc_int2(LayoutPosition);
@@ -40,6 +41,7 @@ void define_components_layouts2(ecs* world) {
     zoxd_tag(BoundToCanvas);
     zoxd_entity(CanvasLink);
     zoxd_byte(Layer2D);
+    zoxd_byte(BonusLayer2);
 
     // local positions
     zoxd_int2(LayoutPosition);

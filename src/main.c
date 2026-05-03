@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
     // TODO: attach Loaded Files to Realm
     zox_logv("Spawning Realm and Loading Assets");
 
+    // TODO: Menu Realm
     // entity realm = spawn_realm(world, prefab_realm);
     run_hook_files_load(world);
 
@@ -92,7 +93,6 @@ int main(int argc, char* argv[]) {
 
     entity app = spawn_engine_app(world);
     if (app) {
-        // zox_set(app, RealmLink, { realm });
         zox_set(app, GameLink, { game });
 
         zox_logv("Setting App Icon [game.png]");

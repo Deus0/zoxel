@@ -31,8 +31,8 @@
 #include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
-#include "sys/_.c"
 #include "dbg/_.c"
+#include "sys/_.c"
 
 #include "collisions/_.c"
 #include "npcs/_.c"

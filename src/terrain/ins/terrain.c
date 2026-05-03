@@ -21,6 +21,9 @@ int get_chunk_index_3(int3 position, int rows, int vertical) {
 }
 
 entity spawn_terrain(ecs *world, entity p, entity tilemap, float3 position, byte depth, float scale) {
+
+    // zox_log("SPAWNING TERRAIN");
+
     zox_instance(p);
     zox_name("terrain");
 
@@ -56,25 +59,14 @@ entity spawn_terrain_streaming(ecs *world, entity realm, entity p
     }
 
     float terrain_scale = 0.5f; // 0.5f | 1
-    entity e = spawn_terrain(world, p, tilemap, float3_zero, terrain_depth, terrain_scale    );
-    /*const entity chunk = spawn_chunk_terrain(
-        world,
-        prefab_chunk,
-        e,
-        center_position,
-        chunk_position,
-        real_chunk_scale
-    );*/
+    entity e = spawn_terrain(world, p, tilemap, float3_zero, terrain_depth, terrain_scale);
 
-    // ChunkLinks *chunkLinks = &((ChunkLinks) { NULL });
     ChunkLinks chunks = (ChunkLinks) { NULL };
-    chunks.value = create_int3_hashmap(2048);
+    chunks.value = create_int3_hashmap(128);
     zox_set_ptr(e, ChunkLinks, chunks);
-    // int3_hashmap_add(chunkLinks->value, chunk_position, chunk);
-    // zox_set(e, ChunkLinks, { chunkLinks->value })
 
     Chunk2Links chunks2 = (Chunk2Links) { NULL };
-    chunks2.value = create_int2_hashmap(512);
+    chunks2.value = create_int2_hashmap(32);
     zox_set_ptr(e, Chunk2Links, chunks2);
 
     return e;

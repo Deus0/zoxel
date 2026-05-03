@@ -23,6 +23,7 @@ entity2 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     byte2 list_padding = (byte2) { padding.x * ui_scale, padding.y * ui_scale };
     byte2 list_margins =  (byte2) { 16 * ui_scale, 8 * ui_scale };
     byte slider_height = 16 * ui_scale;
+    byte slider_padding = 24 * ui_scale;
 
     byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
     zox_geter_value(player, CanvasLink, entity, canvas);
@@ -61,7 +62,7 @@ entity2 spawn_window_list(ecs *world, entity p, entity player, const char *heade
         .padding = list_padding,
         .margins = list_margins,
         .slider_height = slider_height,
-        .slider_padding = slider_height,
+        .slider_padding = slider_padding,
     };
 
     // Our window again, spawn using list size
@@ -103,9 +104,10 @@ entity2 spawn_window_list(ecs *world, entity p, entity player, const char *heade
 
     // NOTE: Scrollview has 2 Children: 1: Scrollbar, 2: ListUI
     Children scrollview_children = { 0 };
-
     entity scrollview = spawn_scrollview(world, canvas_data, (LayoutParentData) { .e = e }, scrollview_data, &scrollview_children, list_data.visible_count, list_data.count);
     add_to_Children(&window_children, scrollview);
+
+
     zox_set_ptr(e, Children, window_children);
 
     // Spawn our list
