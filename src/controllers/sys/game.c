@@ -23,7 +23,7 @@ zox_sys2(PlayerGameStateSystem) {
         }
 
         if (state->value == zox_player_state_paused) {
-            if (zox_alive(character->value)) {
+            if (zox_valid(character->value)) {
                 zox_set(character->value, DisableMovement, { 1 });
             }
         }

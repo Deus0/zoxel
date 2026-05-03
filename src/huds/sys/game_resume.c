@@ -1,7 +1,7 @@
 void resume_player_delayed(ecs *world, entity player) {
     zox_geter_value(player, CharacterLink, entity, character);
 
-    if (!zox_alive(character)) {
+    if (!zox_valid(character)) {
         return;
     }
 

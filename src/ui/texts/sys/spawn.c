@@ -1,7 +1,7 @@
 //! Dynamically updates zext by spawning/destroying zigels and updating remaining
 // #define zoxel_debug_zext_updates
 
-void spawn_text2D_zigels(ecs* world, SpawnZigel* data, Children* children, const TextData* text_data) {
+void spawn_text2D_zigels(ecs* world, SpawnZigel* data, Children* children, const TextData* text_data, entity canvas) {
 
     int old_children_length = children->length;
     int new_children_length = calculate_total_zigels(text_data->value, text_data->length);
@@ -35,7 +35,8 @@ void spawn_text2D_zigels(ecs* world, SpawnZigel* data, Children* children, const
             byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, i);
             data->zigel.zigel_index = zigel_index;
 
-            entity e2 = spawn_zext_zigel(world, text_data, data);
+            data->element.anchor = float2_half;
+            entity e2 = spawn_zigel(world, data, canvas);
 
             zox_set(e2, RenderDisabled, { data->element.render_disabled });
 
@@ -101,7 +102,7 @@ zox_sys2(ZigelSpawnSystem) {
             continue;
         }
 
-        const entity canvas = get_root_canvas(world, e);
+        entity canvas = get_root_canvas(world, e);
         if (!zox_valid(canvas)) {
             zox_log_error("no canvas found on text")
             continue;
@@ -141,11 +142,7 @@ zox_sys2(ZigelSpawnSystem) {
                 .fill_color = fontFillColor->value
             }
         };
-        spawn_text2D_zigels(
-            world,
-            &spawn_data,
-            children,
-            text_data
-        );
+
+        spawn_text2D_zigels(world, &spawn_data, children, text_data, canvas);
     }
 } zox_sys_end(ZigelSpawnSystem);

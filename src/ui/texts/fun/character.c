@@ -69,9 +69,3 @@ int2 calculate_zext_size(const byte *data, int length, byte font_size, byte2 pad
     // zox_log("sizey: %i\n", y)
     return (int2) { font_size * x + padding.x * 2, (font_size) * y + (y - 1) * line_padding + padding.y * 2 };
 }
-
-// a wrapper for spawn_zigel, also sets position for text character
-entity spawn_zext_zigel(ecs* world, const TextData* text_data, SpawnZigel *data) {
-    data->element.anchor = float2_half;
-    return spawn_zigel(world, data);
-}

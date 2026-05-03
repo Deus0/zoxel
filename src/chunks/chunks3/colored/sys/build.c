@@ -176,8 +176,8 @@ zox_sys2(ChunkColorsBuildSystem) {
         }
 
         if (!vcolors->length) {
-            zox_sys_e();
-            zox_logw("Vox has no colors [%s:%lu]", zox_get_name(e), e);
+            // zox_sys_e();
+            // zox_logw("Vox has no colors [%s:%lu]", zox_get_name(e), e);
             continue;
         }
 

@@ -2,12 +2,12 @@ entity spawn_main_menu(ecs*, entity, const char*);
 
 void button_event_menu_main(ecs *world, ClickEventData event) {
 
-    zox_geter_value(event.clicker, CanvasLink, entity, canvas)
-    // find_child_with_tag(canvas, MenuOptions, menu);
-    entity menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuOptions));
+    zox_geter_value(event.clicker, CanvasLink, entity, canvas);
 
-    if (menu) {
-        zox_delete(menu);
+    entity options_menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuOptions));
+
+    if (zox_valid(options_menu)) {
+        zox_delete(options_menu);
     }
 
     spawn_main_menu(world, event.clicker, game_name);

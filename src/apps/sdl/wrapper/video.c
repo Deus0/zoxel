@@ -30,12 +30,17 @@ int initialize_video() {
     const char* driver = SDL_GetCurrentVideoDriver();
 
     using_gpu = strstr(driver, "opengl") ||
-    strstr(driver, "vulkan") ||
-    strstr(driver, "wayland") ||
-    strstr(driver, "x11") ||
-    strstr(driver, "direct3d") ||
-    strstr(driver, "metal") ||
-    strstr(driver, "opengles");
+        strstr(driver, "vulkan") ||
+        strstr(driver, "wayland") ||
+        strstr(driver, "x11") ||
+        strstr(driver, "direct3d") ||
+        strstr(driver, "metal") ||
+        strstr(driver, "opengles") ||
+        strstr(driver, "windows");
+
+    if (!using_gpu) {
+        zox_log("GPU Not Detected: %s", driver);
+    }
 
     zox_logv("[SDL_INIT_VIDEO] %s - GPU [%i]", driver, using_gpu);
 

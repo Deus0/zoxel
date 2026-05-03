@@ -7,6 +7,7 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
     // # List #
     SpawnListElement elements[4];
     int elements_count = 0;
+
     if (has_save_game_directory(game_name)) {
         elements[elements_count++] = (SpawnListElement) {
             .text = label_continue,
@@ -30,9 +31,10 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
 
     entity e = spawn_window_list(world, prefab_menu_game, player, header_label, header_font_size, elements, elements_count, elements_count, list_font_size, (ClickEvent) { NULL }, 0, zox_window_main_menu, 0, zox_alignment_centre, byte2_single(4)).x;
     zox_name("main_menu");
-
     zox_add_tag(e, MenuMain);
     zox_add_tag(e, NavigationWindow);
+
+    zox_log("+ spawned main menu");
 
     return e;
 }

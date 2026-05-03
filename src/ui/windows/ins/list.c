@@ -82,10 +82,7 @@ entity2 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     zox_log("+ list size [%ix%i] from visible [%i] header_height [%i]", list_size.x, list_size.y, visible_count, header_height);
 
     // we use the bigger size out of list and header widths
-    window_element_data.size = (int2) {
-        int_max(list_size.x, header_size.x),
-        list_size.y + header_height
-    };
+    window_element_data.size = (int2) { int_max(list_size.x, header_size.x), list_size.y + header_height };
 
     Children window_children = (Children) { 0 };
     window_data.children = &window_children;

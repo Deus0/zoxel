@@ -20,15 +20,17 @@ void set_sdl_key(ecs *world, PhysicalButton *key, SDL_Keycode keycode, SDL_Event
         set_sdl_key(world, key, sdl_event, event.type);\
         break
 
-void sdl_extract_keyboard(ecs *world, SDL_Event event) {
+void sdl_extract_keyboard(ecs* world, SDL_Event event) {
 
-    if (!local_keyboard || !ecs_is_alive(world, local_keyboard)) {
+    entity e = local_keyboard;
+
+    if (!zox_valid(e)) {
         return;
     }
 
     if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
 
-        zox_muter(local_keyboard, Keyboard, keyboard);
+        zox_muter(e, Keyboard, keyboard);
 
         SDL_Keycode key = event.key.keysym.sym;
         switch (key) {

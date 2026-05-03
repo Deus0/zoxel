@@ -21,25 +21,23 @@ inc/flecs/flecs.c \
 \
 -o ${bin} \
 \
+-Iinc \
+\
 -lm \
 -lpthread \
-\
+-lEGL \
+-lGLESv2 \
 -lSDL2_image \
 -lSDL2_mixer \
 -lSDL2 \
--lEGL \
--lGLESv2 \
-\
--Iinc \
 \
 -DNDEBUG \
+-Dzox_debug \
+-Dzox_game=${game_name} \
 -Dflecssource \
 -Dzox_opengl \
 -Dzox_sdl \
 -Dzox_sdl_mixer \
--Dzox_sdl_images \
-\
--Dzox_debug \
--Dzox_game=${game_name}
+-Dzox_sdl_images
 
 echo "Completed Build [${bin}]"

@@ -3,7 +3,7 @@ void initialize_threads(ecs* world, byte cores) {
     if (cores > 1 && is_multithreading) {
         ecs_set_threads(world, cores);
     } else {
-        zox_log("# warning, single threads set");
+        zox_logw("Single Threads Enabled");
         ecs_set_threads(world, 0);
     }
 }

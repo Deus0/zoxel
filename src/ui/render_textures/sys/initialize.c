@@ -21,7 +21,7 @@ zox_sys2(RenderTextureBeginSystem) {
         }
 
         if (!zox_valid(camera->value)) {
-            zox_logw("Invalid Render Camera");
+            zox_logw("Invalid Render Camera [%lu]", camera->value);
             continue;
         }
 

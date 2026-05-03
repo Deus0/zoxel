@@ -17,7 +17,7 @@ cflags_debug="-fPIC \
 
 cflags_release="-fPIC \
 -O3 \
--flto=auto "
+-flto=auto"
 
 if [[ -debug ]]; then
     cflags=${cflags_debug}

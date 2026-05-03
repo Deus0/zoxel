@@ -14,7 +14,7 @@
         \
         /*zox_log("Disposing of entities [%i] %s", component->length, #T);*/\
         for (int j = 0; j < component->length; j++) {\
-            zox_delete_safe(component->value[j])\
+            zox_delete_safe(component->value[j]);\
         }\
     }\
     \

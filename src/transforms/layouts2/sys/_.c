@@ -31,9 +31,9 @@ void define_systems_layouts2(ecs* world) {
     zox_system(
         LayoutPosition2System,
         EcsOnLoad, // + 2,
-        [in] LayoutPositionDirty,
-        [in] CanvasPosition,
-        [in] CanvasLink,
+        [in] layouts2.LayoutPositionDirty,
+        [in] layouts2.CanvasPosition,
+        [in] layouts2.CanvasLink,
         [out] transforms2.Position2
     );
     zox_system(

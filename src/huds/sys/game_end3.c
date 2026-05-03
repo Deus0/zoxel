@@ -1,4 +1,4 @@
-void main_menu_event_delay(ecs *world, const entity e) {
+void main_menu_event_delay(ecs *world, entity e) {
     spawn_main_menu(world, e, game_name);
 }
 

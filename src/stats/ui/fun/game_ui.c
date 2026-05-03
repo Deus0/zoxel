@@ -1,23 +1,22 @@
-entity spawn_menu_game_stats(
-    ecs* world,
-    entity parent,
-    entity player,
-    Children* parent_children
-) {
+entity spawn_menu_game_stats(ecs* world, entity parent, entity player, Children* parent_children) {
+
     if (!player || !zox_has(player, CharacterLink) || !zox_has(player, CanvasLink)) {
         zox_log_error("! invalid player in [spawn_game_ui_stats]");
         return 0;
     }
+
     zox_geter_value(player, CanvasLink, entity, canvas);
     if (!canvas) {
         zox_log_error("! invalid canvas in [spawn_game_ui_stats]");
         return 0;
     }
+
     zox_geter_value(player, CharacterLink, entity, character);
     if (!zox_valid(character)) {
         zox_log_error("Invalid Character [%lu] in [spawn_game_ui_stats]", character);
         return 0;
     }
+
     if (!zox_has(character, StatLinks)) {
         zox_log_error("Invalid Character - No StatLinks [%s] in [spawn_game_ui_stats]", zox_get_name(character));
         return 0;

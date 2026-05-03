@@ -45,6 +45,8 @@ static inline void zox_gpu_render_triangles_instanced(uint indicies, uint length
 static inline void zox_gpu_render_points(uint length) { }
 static inline void zox_gpu_render_points_instanced(uint length) { }
 
+byte zox_init_glew() { return EXIT_SUCCESS; }
+
 #include "fun/_.c"
 
 zox_begin_module(Headless)

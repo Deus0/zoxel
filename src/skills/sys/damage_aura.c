@@ -20,9 +20,10 @@ zox_sys2(DamageAuraSystem) {
         zox_sys_i(SkillRange, skillRange);
         zox_sys_i(Color, colorr);
 
-        if (!zox_alive(userLink->value) || !skillActive->value || !skillDamage->value || !skillRange->value) {
+        if (!zox_valid(userLink->value) || !skillActive->value || !skillDamage->value || !skillRange->value) {
             continue;
         }
+
         // zox_get_prefab(prefab_aura, e)
         const entity user = userLink->value;
         zox_geter_value(userLink->value, Position3D, float3, position3)

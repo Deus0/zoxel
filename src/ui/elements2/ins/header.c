@@ -8,7 +8,6 @@ entity spawn_header3(ecs *world, LayoutParentData canvas_data, LayoutParentData 
     zox_set(e, RenderDisabled, { element_data.render_disabled });
 
     zox_set(e, DraggedLink, { parent_data.e });
-    Children children = (Children) { 0 };
 
     // # Header Text # - Left Aligned
     int string_length = strlen(zext.text);
@@ -37,6 +36,9 @@ entity spawn_header3(ecs *world, LayoutParentData canvas_data, LayoutParentData 
         },
         .zext = zext
     };
+
+
+    Children children = (Children) { 0 };
 
     entity text = spawn_zext(world, &tdata);
     zox_set_unique_name(text, "header_text");

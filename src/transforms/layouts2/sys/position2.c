@@ -15,8 +15,7 @@ float2 get_element_position(int2 position, int2 size) {
     return positionf;
 }
 
-void set_layout_child_position_recursively(ecs* world, entity e,
-    int2 canvas_size) {
+void set_layout_child_position_recursively(ecs* world, entity e, int2 canvas_size) {
 
     if (!zox_valid(e)) {
         return;
@@ -37,11 +36,7 @@ void set_layout_child_position_recursively(ecs* world, entity e,
         for (int i = 0; i < children->length; i++) {
             entity e2 = children->value[i];
 
-            set_layout_child_position_recursively(
-                world,
-                e2,
-                canvas_size
-            );
+            set_layout_child_position_recursively(world, e2, canvas_size);
         }
     }
 }
@@ -65,9 +60,8 @@ zox_sys2(LayoutPosition2System) {
         }
 
         if (!zox_valid(canvas->value)) {
-            zox_log("! invalid canvas [%s::%lu]",
-                zox_get_name(it->entities[i]),
-                it->entities[i]);
+            zox_sys_e();
+            zox_logw("Element has Invalid Canvas [%s]: %lu", zox_get_name(e), canvas->value);
             continue;
         }
 
