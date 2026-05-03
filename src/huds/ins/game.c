@@ -28,17 +28,10 @@ entity spawn_menu_game(
     zox_name("menu_game");
     Children children = (Children) { 0 };
 
-    const entity crosshair = spawn_crosshair(
+    entity crosshair = spawn_crosshair(
         world,
-        (LayoutParentData) {
-            .e = canvas,
-            // .size = canvas_size,
-        },
-        (LayoutParentData) {
-            .e = e,
-            .position = int2_zero,
-            // .size = canvas_size,
-        },
+        (LayoutParentData) { .e = canvas },
+        (LayoutParentData) { .e = e },
         (ElementSpawnData) {
             .prefab = prefab_crosshair,
             .layer = 1,
@@ -71,7 +64,7 @@ void dispose_menu_game(ecs *world, entity player) {
     }
 
     // find_child_with_tag(canvas, MenuPlay, menu);
-    entity menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuPlay));
+    entity menu = find_child_with_tag2(world, canvas, zox_id(MenuPlay));
     if (zox_valid(menu)) {
         zox_delete(menu)
     }

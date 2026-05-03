@@ -6,7 +6,7 @@ entity prefab_window_users;
 #include "window.c"
 
 void spawn_prefabs_users_ui(ecs* world) {
-    prefab_window_users = spawn_prefab_window_users(world, prefab_window_invisible);
+    prefab_window_users = spawn_prefab_window_users(world, prefab_window);
     if (!prefab_icon) {
         zox_log_error("ui prefab did not spawn");
     } else {

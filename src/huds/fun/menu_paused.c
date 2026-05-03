@@ -21,9 +21,13 @@ void button_event_end_game(ecs *world, ClickEventData event) {
     for (byte i = 0; i < players->length; i++) {
         entity e = players->value[i];
 
-
         // Remove game uis
         zox_geter_value(e, CanvasLink, entity, canvas);
+
+        if (!zox_valid(canvas)) {
+            continue;
+        }
+
         entity menu = get_canvas_window(world, canvas, zox_window_paused);
         if (menu) {
             zox_delete(menu);
@@ -32,9 +36,18 @@ void button_event_end_game(ecs *world, ClickEventData event) {
         if (taskbar) {
             zox_delete(taskbar);
         }
+    }
 
-        // Detatch Camera and Deblur
+    // Detatch Camera and Deblur
+    for (byte i = 0; i < players->length; i++) {
+        entity e = players->value[i];
+
         zox_geter_value(e, CameraLink, entity, camera);
+
+        if (!zox_valid(camera)) {
+            continue;
+        }
+
         zox_geter_value(camera, ParentLink, entity, old_parent);
         zox_muter(old_parent, Children, old_parent_children);
         remove_from_Children(old_parent_children, camera);

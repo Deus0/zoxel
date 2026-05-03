@@ -8,6 +8,10 @@ zox_sys2(EditorInputSystem) {
         zox_sys_i(DeviceLinks, devices);
         zox_sys_i(CanvasLink, canvas);
 
+        if (!zox_valid(canvas->value)) {
+            continue;
+        }
+
         for (int j = 0; j < devices->length; j++) {
             entity device = devices->value[j];
 

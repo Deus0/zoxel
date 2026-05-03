@@ -27,6 +27,7 @@ entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 posit
     zox_instance(p);
     zox_name("profiler");
 
+    zox_add_tag(e, EditorElement);
     zox_add_tag(e, Profiler);
     initialize_element(world, e, parent, canvas, position, size, size, anchor, layer);
     set_window_bounds_to_canvas(world, e, canvas_size, size, anchor);

@@ -4,8 +4,11 @@ void button_event_menu_main(ecs *world, ClickEventData event) {
 
     zox_geter_value(event.clicker, CanvasLink, entity, canvas);
 
-    entity options_menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuOptions));
+    if (!zox_valid(canvas)) {
+        return;
+    }
 
+    entity options_menu = find_child_with_tag2(world, canvas, zox_id(MenuOptions));
     if (zox_valid(options_menu)) {
         zox_delete(options_menu);
     }

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Note: Requires: sudo apt install gcc-mingw-w64-i686
+# NOTE: Requires: sudo apt install gcc-mingw-w64-i686
+# NOTE: This uses GLEW source code
+# NOTE: This compiles SDL libraries with cmake and then links them
 
 bsh/libs.sh
 
@@ -9,22 +11,19 @@ game_name=$1
 bin="${game_name}.exe"
 debug="True"
 
-cflags_release="-fPIC \
+cflags="-fPIC \
 -O3 \
--flto=auto"
-
-# -O0 \
-
-cflags_debug="-fPIC \
--g3 \
--Wall \
--ggdb3 \
--Dzox_debug"
+-flto=auto \
+-DNDEBUG"
 
 if [[ ${debug} == "True" ]]; then
-    cflags=${cflags_debug}
-else
-    cflags=${cflags_release}
+    cflags="-fPIC \
+        -O0 \
+        -g3 \
+        -Wall \
+        -ggdb3 \
+        -Dzox_debug"
+    bin="${game_name}-dev.exe"
 fi
 
 # Compile SDL first:
@@ -104,6 +103,7 @@ ext/glew/src/glew.c \
 -lpthread \
 -ldbghelp \
 \
+-Iinc \
 -Lext/sdl/build \
 -Lext/sdl_image/build \
 -Lext/sdl_mixer/build \
@@ -111,11 +111,8 @@ ext/glew/src/glew.c \
 -lSDL2_image \
 -lSDL2_mixer \
 \
--Iinc \
-\
 -Iext/glew/include \
 -DGLEW_STATIC \
-\
 -Iext/sdl/include \
 -Iext/sdl_image/include \
 -Iext/sdl_mixer/include \
@@ -127,8 +124,9 @@ ext/glew/src/glew.c \
 -Dzox_sdl \
 -Dzox_sdl_images \
 -Dzox_sdl_mixer \
--Dzox_windows \
--DNDEBUG
+-Dzox_windows -Dzox_disable_start_main_menu
+
+# -Dzox_disable_zigels
 
 if [[ -debug ]]; then
     WINEDEBUG=+backtrace wine bin/${bin}

@@ -73,7 +73,7 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
             },
         };
 
-        text = spawn_zext(world, &spawnZext);
+        text = spawn_zext(world, spawnZext);
         zox_set_unique_name(text, "icon_text");
 
         add_to_Children(&children, text);

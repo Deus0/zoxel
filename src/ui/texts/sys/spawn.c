@@ -63,6 +63,9 @@ void spawn_text2D_zigels(ecs* world, SpawnZigel* data, Children* children, const
 
 //! When ui text updates, spawn/destroy font entities
 zox_sys2(ZigelSpawnSystem) {
+#ifdef zox_disable_zigels
+    return;
+#endif
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextData);
@@ -104,11 +107,12 @@ zox_sys2(ZigelSpawnSystem) {
 
         entity canvas = get_root_canvas(world, e);
         if (!zox_valid(canvas)) {
-            zox_log_error("no canvas found on text")
+            zox_log_error("no canvas found on text");
             continue;
         }
-        const int2 canvas_size = zox_get_value(canvas, LayoutSize)
-        const byte zext_length = calculate_total_zigels(text_data->value, text_data->length);
+
+        int2 canvas_size = zox_get_value(canvas, LayoutSize)
+        byte zext_length = calculate_total_zigels(text_data->value, text_data->length);
         if (zox_has(e, ZextRenderEnabler)) {
             render_disabled->value = text_data->length == 0;
         }

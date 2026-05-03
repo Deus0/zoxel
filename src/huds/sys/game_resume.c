@@ -36,15 +36,17 @@ zox_sys2(PlayerResumeSystem) {
             continue;
         }
 
+        if (!zox_valid(canvas->value)) {
+            zox_logw("Canvas is missing from Player [PlayerResumeSystem]");
+            continue;
+        }
+
         entity menu = get_canvas_window(world, canvas->value, zox_window_paused);
-        // find_child_with_tag(canvas->value, MenuPaused, menu_paused);
-        // entity menu = find_child_with_tag_recursive(world, canvas->value, zox_id(MenuPaused));
         if (zox_valid(menu)) {
             zox_delete(menu);
         }
 
-        // find_child_with_tag(canvas->value, Taskbar, taskbar);
-        menu = find_child_with_tag_recursive(world, canvas->value, zox_id(Taskbar));
+        menu = find_child_with_tag2(world, canvas->value, zox_id(Taskbar));
         if (zox_valid(menu)) {
             zox_delete(menu);
         }

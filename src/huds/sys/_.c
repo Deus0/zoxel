@@ -29,11 +29,6 @@ void define_systems_game_ui(ecs *world) {
         // [none] MenuGame
     );
 
-    /*zox_system(QuadsLabelSystem, EcsOnUpdate,
-            [out] QuadsCount,
-            [out] texts.TextDirty,
-            [out] texts.TextData,
-            [none] QuadsCountLabel)*/
     zox_system(
         DebugLabelSystem,
         EcsOnStore,

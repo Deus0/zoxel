@@ -44,7 +44,7 @@ entity spawn_taskbar(ecs *world, entity canvas) {
     int2 position = (int2) { 0, - window_size.y / 2 };
     float2 anchor = (float2) { 0.5f, 1 };
 
-    entity e = spawn_window(world, prefab_window, canvas, canvas, zox_window_taskbar, position, window_size, anchor);
+    entity e = spawn_window(world, prefab_window_textured, canvas, canvas, zox_window_taskbar, position, window_size, anchor);
     zox_set_unique_name(e, "taskbar");
     zox_add_tag(e, Taskbar);
 
@@ -109,7 +109,7 @@ entity spawn_taskbar(ecs *world, entity canvas) {
             0
         };
 
-        entity frame = spawn_element(world, &spawn_frame_data);
+        entity frame = spawn_element(world, spawn_frame_data);
         zox_set_unique_name(frame, "taskbar_frame");
 
         Children frame_children = (Children) { 0 };
@@ -118,11 +118,11 @@ entity spawn_taskbar(ecs *world, entity canvas) {
         spawn_icon_data.parent.position = spawn_frame_data.element.position;
 
         // Icon
-        entity icon = spawn_element(world, &spawn_icon_data);
+        entity icon = spawn_element(world, spawn_icon_data);
         zox_set_unique_name(icon, "taskbar_icon");
         frame_children.value[0] = icon;
 
-        entity window = find_child_with_tag_recursive(world, canvas,  hook.component_id);
+        entity window = find_child_with_tag2(world, canvas,  hook.component_id);
         if (zox_valid(window)) {
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });

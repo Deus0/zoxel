@@ -1,9 +1,20 @@
 #define zox_set_data(e, T, data)\
     ecs_set_id(world, e, ecs_id(T), sizeof(T), &data);
 
-#define zox_set(e, T, ...) {\
-    ecs_set_id(world, e, ecs_id(T), sizeof(T), &(T)__VA_ARGS__);\
-}
+#ifdef zox_debug
+
+    #define zox_set(e, T, ...) {\
+        assert(zox_valid(e) && zox_alive(e)); \
+        ecs_set_id(world, e, ecs_id(T), sizeof(T), &(T)__VA_ARGS__); \
+    }
+
+#else
+
+    #define zox_set(e, T, ...) {\
+        ecs_set_id(world, e, ecs_id(T), sizeof(T), &(T)__VA_ARGS__); \
+    }
+
+#endif
 
 #define zox_set_ptr(e, T, c)\
     ecs_set_ptr(world, e, T, &c);

@@ -132,6 +132,10 @@ zox_sys2(InspectorSpawnSystem) {
             continue;
         }
 
+        if (!zox_valid(canvas->value)) {
+            continue;
+        }
+
         if (!zox_valid(scrollview->value)) {
             zox_log_error("Scrollview Link is invalid.");
             continue;

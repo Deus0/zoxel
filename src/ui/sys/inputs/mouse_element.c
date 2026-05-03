@@ -15,8 +15,7 @@ zox_sys2(MouseElementSystem) {
         zox_sys_o(LayoutPosition, position);
         zox_sys_o(LayoutPositionDirty, dirty);
 
-        if (!zox_valid(canvas->value) ||
-            !zox_valid(zevice->value)) {
+        if (!zox_valid(canvas->value) || !zox_valid(zevice->value)) {
             continue;
         }
 

@@ -88,7 +88,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .size = zox_gett_value(canvas, LayoutSize),
     };
     ElementSpawnData window_element_data = {
-        .prefab = prefab_window,
+        .prefab = prefab_window_textured,
         .position = (int2) { 0, 0 },
         .size = window_size,
         .anchor = float2_half,

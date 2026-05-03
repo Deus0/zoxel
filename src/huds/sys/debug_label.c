@@ -1,5 +1,5 @@
-const double time_update_debug_label_system_rate = 1.0;
-const uint max_debug_characters = 4 * 1024;
+double time_update_debug_label_system_rate = 1.0;
+uint max_debug_characters = 4 * 1024;
 double time_update_debug_label_system = 0;
 
 zox_sys2(DebugLabelSystem) {
@@ -20,10 +20,10 @@ zox_sys2(DebugLabelSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(PlayerLink, playerLink);
         zox_sys_i(DebugLabelData, debugLabelData);
-        zox_sys_o(TextData, textData);
-        zox_sys_o(TextDirty, zextDirty);
+        zox_sys_o(TextData, data);
+        zox_sys_o(TextDirty, dirty);
 
-        if (zextDirty->value) {
+        if (dirty->value) {
             continue;
         }
 
@@ -33,19 +33,22 @@ zox_sys2(DebugLabelSystem) {
         }
 
         uint index = 0;
-        const uint size = max_debug_characters;
+        uint size = max_debug_characters;
         char buffer[size];
         index += snprintf(buffer + index, size - index, "%s [v0.0.1]\n", game_name);
+
         if (debugLabelData->value) {
             debugLabelData->value(world, player, buffer, size, index);
         }
+
         // now finish it
         if (index == 0) {
             buffer[0] = '\0';
         }
-        if (!is_zext(textData, buffer)) {
-            set_zext(textData, buffer);
-            zextDirty->value = 1;
+
+        if (!is_zext(data, buffer)) {
+            set_zext(data, buffer);
+            dirty->value = 1;
         }
     }
 } zox_sys_end(DebugLabelSystem);

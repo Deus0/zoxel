@@ -1,3 +1,4 @@
+// Initialize Mesh2D data when size changes
 zox_sys2(LayoutMeshSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -19,16 +20,16 @@ zox_sys2(LayoutMeshSystem) {
             continue;
         }
 
-        const float2 canvas_size = int2_to_float2(zox_gett_value(canvas->value, LayoutSize));
-        const float2 sizef = (float2) {
+        if (!zox_valid(canvas->value)) {
+            continue;
+        }
+
+        float2 canvas_size = int2_to_float2(zox_gett_value(canvas->value, LayoutSize));
+        float2 sizef = (float2) {
             size->value.x / canvas_size.y,
             size->value.y / canvas_size.y };
 
-        set_mesh_vertices_scale2D(
-            verts,
-            get_aligned_mesh2D(alignment->value),
-            4,
-            sizef);
+        set_mesh_vertices_scale2D(verts, get_aligned_mesh2D(alignment->value), 4, sizef);
         mesh_dirty->value = mesh_state_trigger;
 
         /*zox_sys_e();

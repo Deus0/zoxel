@@ -7,6 +7,7 @@
 #include "fun/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Windows)
     define_components_windows(world);

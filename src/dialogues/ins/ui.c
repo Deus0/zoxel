@@ -49,7 +49,7 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
         },
     };
 
-    entity text = spawn_zext(world, &speech_text_data2);
+    entity text = spawn_zext(world, speech_text_data2);
     add_to_Children(&window_children, text);
 
     // add confirm button at bottom right

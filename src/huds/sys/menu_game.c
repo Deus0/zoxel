@@ -18,7 +18,12 @@ zox_sys2(MenuGameBeginSystem) {
             continue;
         }
 
-        entity taskbar = find_child_with_tag_recursive(world, canvas->value, zox_id(Taskbar));
+        if (!zox_valid(canvas->value)) {
+            zox_logw("Canvas is missing from taskbar");
+            continue;
+        }
+
+        entity taskbar = find_child_with_tag2(world, canvas->value, zox_id(Taskbar));
 
         if (!taskbar) {
             zox_log("Taskbar not on canvas [%s]", zox_get_name(canvas->value));

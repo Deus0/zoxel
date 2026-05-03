@@ -19,6 +19,11 @@ zox_sys2(PlayerUIGameEndSystem) {
             continue;
         }
 
+        if (!zox_valid(canvas->value)) {
+            zox_logw("Canvas is missing from Player [PlayerUIGameEndSystem]");
+            continue;
+        }
+
         // Remove UIs
         entity menu = get_canvas_window(world, canvas->value, zox_window_paused);
         if (zox_valid(menu)) {

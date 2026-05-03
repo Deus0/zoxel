@@ -9,6 +9,11 @@ zox_sys2(PlayerDialogueSystem) {
         zox_sys_i(CanvasLink, canvas);
         zox_sys_o(PlayerState, state);
 
+        if (!zox_valid(canvas->value)) {
+            zox_logw("Canvas is missing from Player");
+            continue;
+        }
+
         if (state->value == zox_player_state_dialogue_begin) {
             state->value = zox_player_state_dialogue_active;
 

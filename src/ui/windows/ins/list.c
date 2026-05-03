@@ -17,6 +17,13 @@ typedef struct {
 // Returns window + list
 entity2 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte is_close_button, byte window_type, int min_width, byte alignment, byte2 padding) {
 
+    zox_geter_value(player, CanvasLink, entity, canvas);
+
+    if (!zox_valid(canvas)) {
+        zox_logw("Invalid canvas in [spawn_window_list]");
+        return (entity2) { 0, 0 };
+    }
+
     // Sizing
     byte2 header_padding = (byte2) { 6 * ui_scale, 2 * ui_scale };
     byte2 button_padding = (byte2) { 8 * ui_scale, 4 * ui_scale };
@@ -26,7 +33,7 @@ entity2 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     byte slider_padding = 24 * ui_scale;
 
     byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
-    zox_geter_value(player, CanvasLink, entity, canvas);
+
     // # Window #
     LayoutParentData canvas_data = {
         .e = canvas,

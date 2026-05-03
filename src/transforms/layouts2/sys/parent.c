@@ -67,11 +67,7 @@ void set_layout_canvas_position_recursively(ecs* world, entity e, int2 parent_po
     }
 }
 
-void anchor_element_position2(
-    int2* position,
-    const float2 anchor,
-    const int2 parent_size
-) {
+void anchor_element_position2(int2* position, float2 anchor, int2 parent_size) {
     position->x += (parent_size.x / 2.0f) - ceil(parent_size.x * anchor.x);
     position->y += (parent_size.y / 2.0f) - ceil(parent_size.y * anchor.y);
 }
@@ -99,7 +95,7 @@ zox_sys2(LayoutParentPositionSystem) {
 
         if (!zox_valid(parent->value) || !zox_has(parent->value, LayoutSize)) {
             zox_sys_e();
-            zox_logw("Invalid parent [%s]", zox_get_name(e));
+            zox_logw("Layout [%s:lu] has invalid parent [%s]", zox_get_name(e), e, parent->value);
             continue;
         }
 
@@ -114,23 +110,12 @@ zox_sys2(LayoutParentPositionSystem) {
         }
 
         int2 position = layout_position->value;
-        canvas_position->value = get_element_pixel_positionv(
-            parent_position,
-            parent_size,
-            position,
-            anchor->value
-        );
+        canvas_position->value = get_element_pixel_positionv(parent_position, parent_size, position, anchor->value);
 
         zox_sys_e();
         // zox_log("+++ (root) Canvas Position [%s] [%ix%i] - Position [%ix%i] Anchor [%fx%f] Size [%ix%i] +++", zox_get_name(e), canvas_position->value.x, canvas_position->value.y, position.x, position.y, anchor->value.x, anchor->value.y, parent_size.x, parent_size.y);
 
-        set_layout_canvas_position_recursively(
-            world,
-            e,
-            canvas_position->value,
-            layout_size->value,
-            1
-        );
+        set_layout_canvas_position_recursively(world, e, canvas_position->value, layout_size->value, 1);
 
         /*zox_log("[%s] anc [%.1fx%.1f] loc [%ix%i] -> [%ix%i] => pos [%ix%i] from parent p[%ix%i] s[%ix%i]",
             zox_get_name(it->entities[i]),

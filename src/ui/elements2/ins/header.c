@@ -40,7 +40,7 @@ entity spawn_header3(ecs *world, LayoutParentData canvas_data, LayoutParentData 
 
     Children children = (Children) { 0 };
 
-    entity text = spawn_zext(world, &tdata);
+    entity text = spawn_zext(world, tdata);
     zox_set_unique_name(text, "header_text");
     add_to_Children(&children, text);
 
@@ -108,7 +108,7 @@ entity spawn_header(ecs *world, entity parent, entity canvas, int2 pixel_positio
 
     Children children = (Children) { 0 };
 
-    entity text = spawn_zext(world, &zext_spawn_data);
+    entity text = spawn_zext(world, zext_spawn_data);
     add_to_Children(&children, text);
 
     if (is_close_button) {

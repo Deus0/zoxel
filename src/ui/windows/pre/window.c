@@ -20,10 +20,10 @@ void set_prefab_window(ecs* world, entity e) {
     // zox_prefab_set(e, SelectState, { zox_select_state_none });
 }
 
-entity spawn_prefab_window(ecs *world, entity prefab) {
+entity spawn_prefab_window_textured(ecs *world, entity prefab) {
 
     zox_prefab_child(prefab);
-    zox_prefab_name("window");
+    zox_prefab_name("window_textured");
 
     set_prefab_window(world, e);
 
@@ -35,10 +35,10 @@ entity spawn_prefab_window(ecs *world, entity prefab) {
     return e;
 }
 
-entity spawn_prefab_window_invisible(ecs *world, entity prefab) {
+entity spawn_prefab_window(ecs *world, entity prefab) {
 
     zox_prefab_child(prefab);
-    zox_prefab_name("window_invisible");
+    zox_prefab_name("window");
 
     set_prefab_window(world, e);
 

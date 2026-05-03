@@ -5,6 +5,11 @@ void inspector_select_target(ecs* world, entity player, entity target) {
     }
 
     zox_geter_value(player, CanvasLink, entity, canvas);
+
+    if (!zox_valid(canvas)) {
+        return;
+    }
+
     entity inspector = get_canvas_window(world, canvas, zox_window_inspector);
 
     if (!zox_valid(inspector)) {

@@ -67,7 +67,7 @@ void player_action_ui_move(ecs *world, entity player, sbyte direction) {
     // now set the ui
     zox_geter_value(player, CanvasLink, entity, canvas);
     // find_child_with_tag(canvas, MenuActions, actionbar);
-    entity actionbar = find_child_with_tag_recursive(world, canvas, zox_id(MenuActions));
+    entity actionbar = find_child_with_tag2(world, canvas, zox_id(MenuActions));
 
     if (!actionbar) {
         return;

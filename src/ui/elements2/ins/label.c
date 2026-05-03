@@ -1,6 +1,9 @@
 entity spawn_label_background(ecs *world, entity prefab, entity parent, entity canvas, int2 pixel_position, float2 anchor, byte2 padding, const char* text, byte font_size, byte alignment, byte layer, int2 parent_position, int2 parent_size, color fill, color fillo, color font_fill, color font_fillo, byte render_disabled) {
 
-    // zox_geter_value(canvas, LayoutSize, int2, canvas_size);
+    if (!zox_valid(canvas)) {
+        zox_logw("Canvas invalid in [spawn_label_background]");
+        return 0;
+    }
 
     SpawnZext zextSpawnData = {
         .canvas = {
@@ -30,8 +33,15 @@ entity spawn_label_background(ecs *world, entity prefab, entity parent, entity c
         }
     };
 
-    entity e = spawn_zext(world, &zextSpawnData);
+    entity e = spawn_zext(world, zextSpawnData);
+
+    if (!zox_valid(e)) {
+        zox_loge("Invalid e in [spawn_label_background]");
+        return 0;
+    }
+
     zox_name("label_background");
+
     zox_set(e, Color, { fill });
     zox_set(e, OutlineColor, { fillo });
 

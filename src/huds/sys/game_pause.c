@@ -33,6 +33,11 @@ zox_sys2(PlayerUIGamePauseSystem) {
             continue;
         }
 
+        if (!zox_valid(canvas->value)) {
+            zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
+            continue;
+        }
+
         dispose_menu_game(world, e);
         trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 1);
 

@@ -83,8 +83,10 @@ entity spawn_button_old(
             .margins = padding,
             .font_fill_color = default_font_fill_color,
             .font_outline_color = default_font_outline_color } };
-    const entity zext = spawn_zext(world, &spawnZext);
+
+    entity zext = spawn_zext(world, spawnZext);
     add_to_Children(&children, zext);
+
     zox_set_ptr(e, Children, children)
     return e;
 }

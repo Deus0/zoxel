@@ -65,7 +65,7 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
         },
     };
 
-    entity grid = spawn_element(world, &grid_data);
+    entity grid = spawn_element(world, grid_data);
     zox_set_unique_name(grid, "window_users_grid");
     zox_set(grid, GridSize, { data.window.grid_size });
     zox_set(grid, GridPadding, { data.window.grid_padding });

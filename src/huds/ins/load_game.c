@@ -3,14 +3,12 @@ void button_event_load_cancel(ecs *world, ClickEventData event) {
     entity player = event.clicker;
 
     zox_geter(player, ElementLinks, elements);
-
-    find_array_element_with_tag(elements, MenuLoad, menu);
-    if (!menu) {
-        zox_log_error("MenuLoad menu not found");
-        return;
+    find_array_element_with_tag(elements, MenuLoad, load_menu);
+    if (!load_menu) {
+        zox_logw("MenuLoad menu not found");
+    } else {
+        zox_delete(load_menu);
     }
-
-    zox_delete(menu);
 
     spawn_main_menu(world, player, game_name);
 }
@@ -85,7 +83,7 @@ entity spawn_menu_load(ecs *world, entity player) {
     }
 
 
-    entity e = spawn_window_list(world, prefab_menu_game, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_load_cancel }, 1, zox_window_load_realm, 0, zox_alignment_centre, byte2_single(4)).x;
+    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_load_cancel }, 1, zox_window_load_realm, 0, zox_alignment_centre, byte2_single(4)).x;
     zox_name("menu_load");
 
     zox_add_tag(e, MenuLoad);

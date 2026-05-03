@@ -9,6 +9,11 @@ zox_sys2(TooltipSystem) {
         zox_sys_i(TooltipEvent, tooltipEvent);
         zox_sys_i(CanvasLink, canvas);
 
+        if (!zox_valid(canvas->value)) {
+            zox_logw("Canvas is missing from Tooltip");
+            continue;
+        }
+
         if (!(selectState->value == zox_select_state_selected_this_frame || selectState->value == zox_select_state_deselected_this_frame)) {
             continue;
         }

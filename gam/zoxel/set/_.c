@@ -11,9 +11,11 @@
 // TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
 void zoxel_on_spawn_prefabs(ecs* world) {
 
+    set_prefab_debug_label(world, &zox_dbg_ui_canvas);
+
+    // set_prefab_debug_label(world, &debug_ui_raycast_chunk3);
     // set_prefab_debug_label(world, &debug_ui_raycasting);
 
-    set_prefab_debug_label(world, &debug_ui_raycast_chunk3);
 
     // set_prefab_debug_label(world, &debug_ui_system_times);
 
@@ -178,6 +180,12 @@ void zoxel_debug_keys() {
     // add_hook_key_down(test_key_element_front2D);
     // add_hook_key_down(key_down_update_text3D);
     // add_hook_key_down(key_down_dbg_chunk);
+
+    // Test our uis
+    // add_hook_key_down(zox_tst_key_down_window_list);
+    // add_hook_key_down(zox_tst_key_down_text);
+    add_hook_key_down(zox_tst_key_down_element);
+
 }
 
 void zox_set_terrain_settings() {

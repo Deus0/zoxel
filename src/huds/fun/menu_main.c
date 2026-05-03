@@ -4,7 +4,11 @@ void button_event_menu_options(ecs *world, ClickEventData event) {
 
     zox_geter_value(event.clicker, CanvasLink, entity, canvas);
 
-    entity main_menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuMain));
+    if (!zox_valid(canvas)) {
+        return;
+    }
+
+    entity main_menu = find_child_with_tag2(world, canvas, zox_id(MenuMain));
 
     if (!zox_valid(main_menu)) {
         zox_loge("No MenuMain found on canvas");
@@ -31,9 +35,14 @@ void button_event_exit_app(ecs *world, ClickEventData event) {
 
     for (int i = 0; i < players->length; i++) {
         entity e = players->value[i];
-        entity canvas = zox_get_value(e, CanvasLink);
 
-        entity menu = find_child_with_tag_recursive(world, canvas, zox_id(MenuMain));
+        zox_geter_value(e, CanvasLink, entity, canvas);
+
+        if (!zox_valid(canvas)) {
+            continue;
+        }
+
+        entity menu = find_child_with_tag2(world, canvas, zox_id(MenuMain));
         if (menu) {
             zox_delete(menu);
         }

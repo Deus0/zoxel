@@ -1,7 +1,24 @@
 // #define zox_debug_spawning
 
-#define zox_get_name(e)\
-    ecs_get_name(world, e)
+#ifdef zox_debug
+
+    #define zox_get_name(e)\
+        (zox_valid(e) && zox_alive(e)) ? ecs_get_name(world, e) : "Invalid"
+
+    #define zox_sys_e_name\
+        (ecs_is_valid(it->world, it->entities[i]) && ecs_is_alive(it->world, it->entities[i])) ? ecs_get_name(it->world, it->entities[i]) : "Invalid"
+
+#else
+
+
+    #define zox_get_name(e)\
+        ecs_get_name(world, e)
+
+    #define zox_sys_e_name\
+        ecs_get_name(it->world, it->entities[i])
+
+
+#endif
 
 #define zox_set_name(e, name)\
     ecs_set_name(world, e, name);
@@ -11,9 +28,6 @@
 
 #define zox_get_namespace(e)\
     ecs_get_fullpath(world, e)
-
-#define zox_sys_e_name\
-    ecs_get_name(it->world, it->entities[i])
 
 
 

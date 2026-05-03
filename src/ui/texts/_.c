@@ -8,6 +8,7 @@
 #include "pre/_.c"
 #include "sys/_.c"
 #include "ins/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Texts)
     define_components_texts(world);

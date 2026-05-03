@@ -9,18 +9,18 @@ void toggle_fps_viewer(ecs *world, int32_t keycode) {
     }
 
     zox_geter_value(player, CanvasLink, entity, canvas);
-    zox_geter(player, ElementLinks, elements);
-    entity ui = player_toggle_ui_id(
-        world,
-        canvas,
-        elements,
-        zox_id(FPSDisplay),
-        spawn_fps_display);
-    if (ui) {
-        zox_muter(player, ElementLinks, elements2);
-        add_to_ElementLinks(elements2, ui);
-        zox_set(ui, ElementHolder, { player });
+
+    if (!zox_valid(canvas)) {
+        return;
     }
-    // toggle_ui_with_tag(spawn_fps_display, FPSDisplay);
-    zox_log("FPSViewer %s", ui ? "Enabled" : "Disabled");
+
+    entity fps_viewer = find_child_with_tag2(world, canvas, zox_id(FPSDisplay));
+
+    if (fps_viewer) {
+        zox_delete(fps_viewer);
+    } else {
+        spawn_fps_display(world, canvas);
+    }
+
+    zox_log("FPSViewer %s", !fps_viewer ? "Enabled" : "Disabled");
 }

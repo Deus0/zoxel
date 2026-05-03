@@ -70,7 +70,8 @@ entity2 spawn_slider(ecs *world, LayoutParentData canvas_data, LayoutParentData 
             .font_outline_color = font_outline,
         }
     };
-    entity text = spawn_zext(world, &text_data);
+
+    entity text = spawn_zext(world, text_data);
     add_to_Children(&children, text);
 
     // finish up

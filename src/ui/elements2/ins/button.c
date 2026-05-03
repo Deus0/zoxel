@@ -38,7 +38,7 @@ entity spawn_button(ecs *world, LayoutParentData canvas_data, LayoutParentData p
         },
     };
 
-    entity zext = spawn_zext(world, &zext_data2);
+    entity zext = spawn_zext(world, zext_data2);
     add_to_Children(&children, zext);
 
     zox_set_ptr(e, Children, children);

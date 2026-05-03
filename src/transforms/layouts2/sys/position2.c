@@ -61,7 +61,7 @@ zox_sys2(LayoutPosition2System) {
 
         if (!zox_valid(canvas->value)) {
             zox_sys_e();
-            zox_logw("Element has Invalid Canvas [%s]: %lu", zox_get_name(e), canvas->value);
+            zox_logw("Element [%s:%lu] has Invalid Canvas: %lu", zox_get_name(e), e, canvas->value);
             continue;
         }
 

@@ -19,6 +19,7 @@ void set_element_spawn_data(ecs *world, entity e, LayoutParentData canvas_data, 
 
     zox_set(e, ParentLink, { parent_data.e });
     zox_set(e, CanvasLink, { canvas_data.e });
+
     zox_set(e, LayoutPosition, { element_data.position });
     zox_set(e, LayoutSize, { element_data.size });
     zox_set(e, Anchor, { element_data.anchor });
@@ -26,7 +27,6 @@ void set_element_spawn_data(ecs *world, entity e, LayoutParentData canvas_data, 
 
     // TODO: Children Dirty Flag?
     if (canvas_data.e == parent_data.e) {
-        // on_child_added(world, canvas_data.e, e);
         zox_set(canvas_data.e, WindowToTop, { e });
     }
 }

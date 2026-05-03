@@ -8,7 +8,7 @@ entity editor_selected;
 extern void add_to_labels_voxel_links(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
 extern void add_to_labels_stat_links(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level);
 extern entity prefab_app;
-extern entity prefab_window;
+// extern entity prefab_window;
 extern entity prefab_button;
 extern entity prefab_zext;
 extern entity prefab_zigel;

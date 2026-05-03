@@ -9,7 +9,7 @@
         }\
     }
 
-entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
+entity find_child_with_tag2(ecs* world, entity e, entity tag) {
 
     if (!zox_valid(e) || !zox_has(e, Children)) {
         return 0;
@@ -17,6 +17,28 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
 
     zox_geter(e, Children, children);
     for (byte i = 0; i < children->length; i++) {
+        entity e2 = children->value[i];
+
+        if (!zox_valid(e2)) {
+            continue;
+        }
+
+        if (zox_has_id(e2, tag)) {
+            return e2;
+        }
+    }
+
+    return 0;
+}
+
+entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
+
+    if (!zox_valid(e) || !zox_has(e, Children)) {
+        return 0;
+    }
+
+    zox_geter(e, Children, children);
+    for (int i = 0; i < children->length; i++) {
         entity e2 = children->value[i];
 
         if (!zox_valid(e2)) {
@@ -51,7 +73,7 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
 entity child_##tag = 0;\
 const Children *children_##tag = zox_get(e, Children)\
 for (int i = 0; i < children_##tag->length; i++) {\
-    const entity child_e = children_##tag->value[i];\
+    entity child_e = children_##tag->value[i];\
     if (child_e && zox_has(child_e, tag)) {\
         child_##tag = child_e;\
         break;\

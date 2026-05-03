@@ -1,12 +1,33 @@
-entity spawn_element(ecs *world, const ElementSpawn *data) {
+entity spawn_element(ecs *world, ElementSpawn data) {
 
-    zox_instance(data->element.prefab);
+    entity p = data.element.prefab;
+    entity parent = data.parent.e;
+    entity canvas = data.canvas.e;
+    int2 position = data.element.position;
+    int2 size = data.element.size;
+    float2 anchor = data.element.anchor;
+    byte layer = data.element.layer;
+    int2 tsize = data.element.texture_size;
+    color fill = data.texture.fill_color;
+    color outline = data.texture.outline_color;
+
+    zox_instance(p);
     zox_name("element");
+    zox_set(e, ParentLink, { parent });
+    zox_set(e, CanvasLink, { canvas });
+    zox_set(e, Layer2D, { layer });
+    zox_set(e, Anchor, { anchor });
+    zox_set(e, LayoutPosition, { position });
+    zox_set(e, LayoutSize, { size });
+    zox_set(e, TextureSize, { tsize });
+    zox_set(e, Color, { fill });
+    zox_set(e, OutlineColor, { outline });
 
-    initialize_element(world, e, data->parent.e, data->canvas.e, data->element.position, data->element.size, data->element.size, data->element.anchor, data->element.layer);
+    // Where we link to canvas children
+    if (canvas == parent) zox_set(canvas, WindowToTop, { e });
 
-    zox_set(e, Color, { data->texture.fill_color });
-    zox_set(e, OutlineColor, { data->texture.outline_color });
+    // initialize_element(world, e, data.parent.e, data.canvas.e, data.element.position, data.element.size, data.element.size, data.element.anchor, data.element.layer);
+    // initialize_layout2(world, e, parent, canvas, position, size, anchor, layer);
 
     return e;
 }
@@ -38,7 +59,7 @@ entity spawn_element_on_canvas(ecs *world, entity canvas, int2 position, int2 si
         }
     };
 
-    return spawn_element(world, &spawn_element_data);
+    return spawn_element(world, spawn_element_data);
 }
 
 entity spawn_element2(ecs *world, entity p, entity canvas, entity parent, int2 position, int2 size, int2 tsize, float2 anchor, byte layer, color fcolor, color ocolor) {

@@ -20,7 +20,7 @@ void prefabs_add_ui_to_player(ecs *world, const entity e) {
     zox_prefab_set(e, DeviceLinks, { 0 });
     // Player -> UI Links
     zox_prefab_set(e, ElementLinks, { 0 });
-    zox_prefab_set(e, CanvasLink, { 0 })
+    zox_prefab_set(e, CanvasLink, { 0 });
     // this is all UI interaction
     zox_prefab_set(e, NavigatorState, { 0 })
     zox_prefab_set(e, NavigatorTimer, { 0 })

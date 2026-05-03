@@ -8,6 +8,7 @@
 #include "ins/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Elements2)
     define_components_elements2(world);

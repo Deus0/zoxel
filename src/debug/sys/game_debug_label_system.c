@@ -45,7 +45,7 @@ int debug_label_device(ecs *world, const entity device, char buffer[], int buffe
 }
 
 zox_sys2(GameDebugLabelSystem) {
-        return;
+    return;
     time_update_debug_label_system += zox_delta_time;
     if (time_update_debug_label_system >= time_update_debug_label_system_rate) {
        time_update_debug_label_system = 0;
@@ -66,10 +66,11 @@ zox_sys2(GameDebugLabelSystem) {
             continue;
         }
 
-        const entity canvas = get_root_canvas(world, e);
+        entity canvas = get_root_canvas(world, e);
         // zox_log("canvas; %s - %i\n", zox_get_name(canvas), zox_has(canvas, PlayerLink))
         if (!canvas || !zox_has(canvas, PlayerLink)) continue;
-        const entity player = zox_get_value(canvas, PlayerLink)
+
+        entity player = zox_get_value(canvas, PlayerLink)
         if (!player) continue;
         // const entity character = zox_get_value(player, CharacterLink)
 #ifdef zox_debug_ui_device_mode

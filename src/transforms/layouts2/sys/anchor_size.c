@@ -21,6 +21,10 @@ zox_sys2(AnchorSizeSystem) {
             continue;
         }
 
+        if (!zox_valid(parent->value)) {
+            continue;
+        }
+
         zox_geter_value(parent->value, LayoutSize, int2, parent_size);
         anchor_element_size2D(&size->value, anchor->value, parent_size);
 

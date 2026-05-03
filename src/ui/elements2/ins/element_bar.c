@@ -94,7 +94,8 @@ entity2 spawn_elementbar2(
             .font_outline_color = label_font_outline_color
         }
     };
-    const entity text = spawn_zext(world, &zextSpawnData);
+
+    entity text = spawn_zext(world, zextSpawnData);
     children.value[1] = text;
     zox_set_unique_name(text, "element2D_text");
 
