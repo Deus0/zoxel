@@ -34,9 +34,9 @@ void define_systems_layouts2(ecs* world) {
         LayoutPosition2System,
         EcsOnLoad, // + 2,
         [in] layouts2.LayoutPositionDirty,
-        [in] layouts2.CanvasPosition,
+        // [in] layouts2.CanvasPosition,
         [in] layouts2.CanvasLink,
-        [out] transforms2.Position2
+        // [out] transforms2.Position2
     );
 
     // New
@@ -63,9 +63,9 @@ void define_systems_layouts2(ecs* world) {
         LayoutPosition2NewSystem,
         EcsOnLoad,
         [in] layouts2.LayoutPositionDirty,
-        [in] layouts2.CanvasPosition,
+        //[in] layouts2.CanvasPosition,
         [in] layouts2.CanvasLink,
-        [out] transforms2.Position2
+        // [out] transforms2.Position2
     );
 
     // Transform Layouts to Real Space

@@ -42,7 +42,10 @@ entity spawn_block_item(ecs *world, entity block) {
     // actually for grass we want to set itemLink differently
     zox_set(block, ItemLink, { e });
     // zox_set_name(item, zox_get_name(block));
-    zox_name(zox_get_name(block));
+
+    const char* meta_name = zox_get_name(block);
+    zox_set_unique_name(e, meta_name);
+
     // zox_log(" + block item [%s] [%s]\n", zox_get_name(block), zox_get_name(e))
     // zox_log(" + spawning item for block [%s] textures [%i]\n", convert_zext_to_text(voxel_name->value, voxel_name->length), textures->length)
     return e;

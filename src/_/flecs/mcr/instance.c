@@ -1,7 +1,7 @@
 #define zox_instance(prefab)\
     const entity e = ecs_new_w_pair(world, EcsIsA, prefab);
 
-#define zox_instancee(prefab)\
+#define zox_ins(prefab)\
     ecs_new_w_pair(world, EcsIsA, prefab)
 
 #define zox_instance_named(prefab, name)\
@@ -24,7 +24,7 @@
         zox_muter(e, Children, children)\
         zox_geter(prefab, Children, prefab_children)\
         for (int a = 0; a < children->length; a++) {\
-            entity e2 = zox_instancee(prefab_children->value[i]);\
+            entity e2 = zox_ins(prefab_children->value[i]);\
             add_to_Children(children, e2)\
             zox_set(e2, ParentLink, { e })\
         }\

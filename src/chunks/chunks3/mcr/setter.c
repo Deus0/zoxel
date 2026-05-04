@@ -57,6 +57,7 @@ static inline void* set_octree_value(
 
     // Dive into correct child
     byte div = powers_of_two_byte[tdepth - depth - 1];
+
     if (!div) {
         return node;
     }

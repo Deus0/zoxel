@@ -1,9 +1,5 @@
 #define squareSize 0.1f
 
-const int square_indicies[] = {
-    2, 1, 0,    0, 3, 2
-};
-
 /*const float square_vertices2[] = {
     -1, -1,
     -1, 1,
@@ -12,10 +8,12 @@ const int square_indicies[] = {
 };*/
 
 // createt cube floats
+#define global_mesh_size 0.1f
+
 const float squareVerts3D[] = {
-    -squareSize, -squareSize, -squareSize,
-    -squareSize,  squareSize, -squareSize,
-     squareSize,  squareSize, -squareSize,
+    -global_mesh_size, -global_mesh_size, -global_mesh_size,
+    -global_mesh_size,  global_mesh_size, -global_mesh_size,
+     global_mesh_size,  global_mesh_size, -global_mesh_size,
      squareSize, -squareSize, -squareSize
 };
 
@@ -27,19 +25,12 @@ const float squareUVs[] = {
     0, 1
 };
 
-const float squareTexturedVerts[] = {
-    -squareSize, -squareSize,       0, 0,   // top right
-    -squareSize, squareSize,        1, 0,   // bottom right
-    squareSize, squareSize,         1, 1,   // bottom left
-    squareSize,  -squareSize,       0, 1    // top left 
-};
-
-const float squareTexturedVerts2[] = {
+/*const float square_mesh_verts2[] = {
     0, 0,         0, 0,   // top right
     0, 1,         0, 1,   // bottom right
     1, 1,         1, 1,   // bottom left
     1, 0,         1, 0    // top left 
-};
+};*/
 
 const float2 square_vertices[] = {
     { -0.5f, -0.5f },

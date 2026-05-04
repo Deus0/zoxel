@@ -17,8 +17,11 @@ static inline float quaternion_magnitude(float4 quaternion) {
     return sqrt(quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z);
 }
 
-static inline float4 quaternion_normalized(float4 quaternion, float magnitude) {
-    return (float4) { quaternion.x / magnitude, quaternion.y / magnitude, quaternion.z / magnitude, 0.0f };
+static inline float4 quaternion_normalized(float4 q, float magnitude) {
+    if (!magnitude) {
+        return q;
+    }
+    return (float4) { q.x / magnitude, q.y / magnitude, q.z / magnitude, 0.0f };
 }
 
 static inline float quaternion_to_euler_y(float4 q) {

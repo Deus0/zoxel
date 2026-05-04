@@ -1,3 +1,10 @@
+static inline float float_div(float v, float d) {
+    if (!d) {
+        return v;
+    }
+    return v / d;
+}
+
 static inline float float_abs(const float input) {
     return (input < 0) ? -input : input;
 }

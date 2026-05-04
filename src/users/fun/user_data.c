@@ -21,22 +21,17 @@
     }\
     \
     /* generic meta spawn function*/\
-    entity spawn_meta_##name( \
-        ecs *world, \
-        const entity prefab, \
-        const char *name \
-    ) {\
+    entity spawn_meta_##name(ecs *world, entity prefab, const char *name) {\
         zox_prefab_child(prefab); \
-        zox_set_name(e, name); \
+        zox_set_unique_name(e, name); \
         set_ZoxName(world, e, name); \
         return e;\
     }\
     \
-    entity spawn_user_##name(ecs *world, entity p, entity user) {\
-        zox_instance(p); \
-        zox_name(zox_get_name(p)); \
-        \
+    entity spawn_user_##name(ecs *world, entity prefab, entity user) {\
+        entity e = zox_ins(prefab); \
+        const char* meta_name = zox_get_name(prefab); \
+        zox_set_unique_name(e, meta_name); \
         zox_set(e, UserLink, { user }); \
-        \
         return e; \
     }

@@ -28,23 +28,6 @@ void zox_dbg_spawn_element(ecs *world, int32_t keycode) {
     byte size = ui_scale * 32;
     int2 position = (int2) { size, size * 2 };
 
-    /*ElementSpawn sdata = {
-        .canvas = { canvas },
-        .parent = { canvas },
-        .element = {
-            .prefab = prefab_element_textured,
-            .layer = 1,
-            .anchor = float2_half,
-            .position = position,
-            .size = int2_single(size),
-            .texture_size = int2_single(size),
-        },
-        .texture = {
-            .fill_color = default_fill_color_icon,
-            .outline_color = default_outline_color_icon,
-        }
-    };*/
-
     // zox_dbg_element = spawn_element(world, sdata);
     entity element = spawn_element3(world, prefab_element_textured, float2_half, position, int2_single(size), int2_single(size), default_fill_color_icon, default_outline_color_icon);
 

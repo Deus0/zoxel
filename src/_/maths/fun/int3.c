@@ -15,11 +15,17 @@ static inline int3 int3_sub(const int3 a, const int3 b) {
     return (int3) { a.x - b.x, a.y - b.y, a.z - b.z };
 }
 
-static inline int3 int3_div(const int3 a, const int3 b) {
+static inline int3 int3_div(int3 a, int3 b) {
+    if (!b.x || !b.y || !b.z) {
+        return a;
+    }
     return (int3) { a.x / b.x, a.y / b.y, a.z / b.z };
 }
 
-static inline int3 int3_div1(const int3 a, const int d) {
+static inline int3 int3_div1(int3 a, int d) {
+    if (!d) {
+        return a;
+    }
     return (int3) { a.x / d, a.y / d, a.z / d };
 }
 

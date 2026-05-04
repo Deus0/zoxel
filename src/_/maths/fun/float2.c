@@ -34,7 +34,10 @@ static inline float2 float2_multiply_float(const float2 input, const float mul) 
     return (float2) { input.x * mul, input.y * mul };
 }
 
-static inline float2 float2_divide(const float2 input, const float div) {
+static inline float2 float2_divide(float2 input, float div) {
+    if (!div) {
+        return input;
+    }
     return (float2) { input.x / div, input.y / div };
 }
 
@@ -70,8 +73,11 @@ static inline float2 float2_normalize(const float2 input) {
     return float2_divide(input, length);
 }
 
-static inline float2 normalize2D(const float2 input) {
-    const float length = sqrt(input.x * input.x + input.y * input.y);
+static inline float2 normalize2D(float2 input) {
+    float length = sqrt(input.x * input.x + input.y * input.y);
+    if (!length) {
+        return input;
+    }
     return (float2) { input.x / length, input.y / length };
 }
 

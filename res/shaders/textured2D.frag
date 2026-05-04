@@ -5,7 +5,8 @@ uniform float brightness;
 uniform float alpha;
 
 void main() {
-    color = texture(tex, uv) * brightness;
-    color.w *= alpha;
-    if (alpha < -0.99) color.w = 1.0;
+    color = texture(tex, uv);
+    color.rgb *= brightness;
+    color.a *= alpha;
+    // if (alpha < -0.99) color.a = 1.0;
 }

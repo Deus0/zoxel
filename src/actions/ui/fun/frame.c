@@ -12,6 +12,11 @@ void on_action_set(ecs* world, entity e, byte index, entity action, entity meta)
     entity body = children->value[1];
     zox_geter(body, Children, body_children);
 
+    if (index >= body_children->length) {
+        zox_logw("Index [%i] >= UIs [%i]", index, body_children->length);
+        return;
+    }
+
     entity frame = body_children->value[index];
     zox_geter(frame, Children, frame_children);
     entity icon = frame_children->value[0];

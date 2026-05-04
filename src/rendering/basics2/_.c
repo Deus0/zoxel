@@ -2,6 +2,7 @@
 #define zoxm_rendering_basics2
 
 #include "set/_.c"
+#include "dat/_.c"
 #include "mat/_.c"
 #include "fun/_.c"
 #include "sys/_.c"

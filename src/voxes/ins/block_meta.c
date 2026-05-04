@@ -1,7 +1,8 @@
 // our main realm block spawn function
 entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
-    zox_instance(data.prefab);
-    zox_name(data.name);
+    entity e = zox_ins(data.prefab);
+    // zox_set_unique_name(e, data.name);
+
     set_ZoxName(world, e, data.name);
     zox_set(e, BlockIndex, { data.index });
     zox_set(e, Color, { data.color });

@@ -62,7 +62,7 @@ void clone_texture_data_scale(ecs *world, entity e, entity src, int2 new_size) {
 
     zox_set_ptr(e, TextureData, data);
     zox_set(e, TextureSize, { new_size });
-    zox_set(e, TextureDirty, { 1 });
+    zox_set(e, TextureDirty, { zox_dirty_trigger });
 
     // zox_log("cloned texture data %s => %s", zox_get_name(e), zox_get_name(src));
 }

@@ -4,17 +4,32 @@ set -euo pipefail
 game_name=$1
 GLB="opengl"
 GFX="sdl"
-bin=bin/${game_name}-${GLB}-${GFX}
+debug="False"
+[[ " $* " == *" --debug "* ]] && debug="True"
+[[ " $* " == *" --development "* ]] && debug="True"
+bin=${game_name}-${GLB}-${GFX}
 
-sleep 1
-echo "Building Linux [${game_name}]"
-sleep 1
+cflags="-fPIC \
+-O3 \
+-flto=auto \
+-DNDEBUG \
+-march=native"
+
+if [[ ${debug} == "True" ]]; then
+    cflags="-fPIC \
+-O0 \
+-g3 \
+-Wall \
+-ggdb3 \
+-Dzox_debug"
+    bin="bin/${game_name}-dev"
+fi
+
+echo "Compiling for [linux-sdl-opengl] [${bin}]"
+echo "  - Cflags [${cflags}]"
 
 gcc \
--fPIC \
--O3 \
--march=native \
--flto=auto \
+${cflags} \
 \
 src/main.c \
 inc/flecs/flecs.c \
@@ -22,7 +37,6 @@ inc/flecs/flecs.c \
 -o ${bin} \
 \
 -Iinc \
-\
 -lm \
 -lpthread \
 -lEGL \

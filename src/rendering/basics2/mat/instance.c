@@ -22,7 +22,7 @@ void initialize_mesh() {
 
     zox_gpu_bind_buffer_element(0);
     zox_gpu_bind_buffer_array(squareMesh.y);
-    zox_gpu_set_buffer_array(square_vertices, sizeof(squareTexturedVerts));
+    zox_gpu_set_buffer_array(square_vertices, sizeof(square_vertices));
     // glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_STATIC_DRAW);
 
     zox_gpu_enable_attribute_float2(material2D.vertex_position);

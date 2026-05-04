@@ -120,12 +120,15 @@ static inline byte3 byte3_scale3f(byte3 v, float3 m) {
     return (byte3) { (int) (v.x * m.x), (int) (v.y * m.y), (int) (v.z * m.z) };
 }
 
-static inline byte3 byte3_scale(const byte3 v, const int m) {
+static inline byte3 byte3_scale(byte3 v, int m) {
     return (byte3) { v.x * m, v.y * m, v.z * m };
 }
 
-static inline byte3 byte3_inverse_scale(const byte3 v, const int m) {
-    return (byte3) { v.x / m, v.y / m, v.z / m };
+static inline byte3 byte3_inverse_scale(byte3 v, int div) {
+    if (!div) {
+        return v;
+    }
+    return (byte3) { v.x / div, v.y / div, v.z / div };
 }
 
 

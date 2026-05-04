@@ -143,6 +143,11 @@ byte raycast_voxel_node(
     CharacterRaycast* character_raycast
 ) {
 
+    if (!terrain_scalev) {
+        zox_logw("terrain_scalev is 0, cannot divide by this");
+        return 0;
+    }
+
     // setup voxel data
     byte raycasting_terrain = voxels && voxels->length && chunk_links;
     byte3 max_chunk_sizeb3 = int3_to_byte3(max_chunk_size);

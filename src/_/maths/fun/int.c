@@ -1,3 +1,10 @@
+static inline int int_div(int v, int d) {
+    if (!d) {
+        return v;
+    }
+    return v / d;
+}
+
 static inline int abs_integer(int v) {
     return v < 0 ? -v : v;
 }

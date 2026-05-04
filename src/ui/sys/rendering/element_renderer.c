@@ -55,9 +55,10 @@ zox_sys2(ElementRenderSystem) {
         if (!init) {
             init = 1;
 
-            zox_geter_value(mat, MaterialGPULink, uint, mlink)
-            zox_gpu_enable_blend();
+            zox_geter_value(mat, MaterialGPULink, uint, mlink);
+
             zox_gpu_material(mlink);
+            zox_gpu_enable_blend();
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
         }
 
@@ -67,13 +68,8 @@ zox_sys2(ElementRenderSystem) {
 
         zox_gpu_bind_buffer_array(mesh->value.y);
         zox_gpu_enable_attribute_float2(attributes->vertex_position);
-        //glEnableVertexAttribArray(attributes->vertex_position);
-        //glVertexAttribPointer(attributes->vertex_position, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
         zox_gpu_bind_buffer_array(uvs->value);
         zox_gpu_enable_attribute_float2(attributes->vertex_uv);
-        //glEnableVertexAttribArray(attributes->vertex_uv);
-        //glVertexAttribPointer(attributes->vertex_uv, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
         zox_gpu_float3(attributes->position, (float3) { position2->value.x, position2->value.y, position_z });
         zox_gpu_float(attributes->angle, rotation2D->value);

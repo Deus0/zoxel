@@ -41,11 +41,12 @@ entity load_music_file(ecs *world, entity prefab, entity prefab_note,    char* f
         // zox_log("   - %i - Frequency: %.2f : %.2f Hz, Start time: %.2f, Length: %.2f\n", i + 1, note.frequency, test_frequency, note.time, note.length)
     }
 
-    const entity e = spawn_music(world, prefab, music_speed);
+    entity e = spawn_music(world, prefab, music_speed);
     zox_set(e, MusicLength, { music_length });
 
-    zox_muter(e, NoteLinks, noteLinks);
-    initialize_NoteLinks(noteLinks, loaded_note_count);
+    NoteLinks notes = (NoteLinks) { 0 };
+    // zox_muter(e, NoteLinks, noteLinks);
+    initialize_NoteLinks(&notes, loaded_note_count);
 
     const byte instrument = music_load_instrument;
     for (int i = 0; i < loaded_note_count; i++) {
@@ -57,14 +58,10 @@ entity load_music_file(ecs *world, entity prefab, entity prefab_note,    char* f
         }
         int note_index = find_note_index(note.frequency);
         // double test_frequency = note_frequencies[note_index];
-        noteLinks->value[i] = spawn_note(world,
-            prefab_note,
-            note_index,
-            instrument,
-            note.length,
-            music_load_volume);
+        notes.value[i] = spawn_note(world, prefab_note, note_index, instrument, note.length, music_load_volume);
         // zox_log("   - %i - Frequency: %.2f : %.2f Hz, Start time: %.2f, Length: %.2f\n", i + 1, note.frequency, test_frequency, note.time, note.length)
     }
+    zox_set_ptr(e, NoteLinks, notes);
 
     return e;
 }

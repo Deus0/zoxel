@@ -51,7 +51,7 @@ void set_player_action(ecs *world, entity player, byte index) {
 void player_action_ui_move(ecs *world, entity player, sbyte direction) {
 
     zox_geter_value(player, CharacterLink, entity, character);
-    if (!zox_valid(character)) {
+    if (!zox_valid(character) || !zox_has(character,  ActionLinks) || !zox_has(character, ActionIndex)) {
         return;
     }
 

@@ -12,7 +12,4 @@ void spawn_gpu_texture(ecs *world, entity e) {
 
 ECS_DTOR(TextureGPULink, ptr, {
     zox_gpu_dispose_texture(ptr->value);
-    //if (ptr->value != 0) {
-    //    glDeleteTextures(1, &ptr->value);
-    //}
 })

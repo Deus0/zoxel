@@ -104,7 +104,10 @@ static inline void float3_scale3_p(float3* a, const float3 b) {
     a->z *= b.z;
 }
 
-static inline float3 float3_divide_float(const float3 input, const float div) {
+static inline float3 float3_divide_float(float3 input, float div) {
+    if (!div) {
+        return input;
+    }
     return (float3) { input.x / div, input.y / div, input.z / div };
 }
 

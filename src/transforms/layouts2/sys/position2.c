@@ -46,14 +46,14 @@ zox_sys2(LayoutPosition2System) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutPositionDirty);
-    zox_sys_in(CanvasPosition);
+    //zox_sys_in(CanvasPosition);
     zox_sys_in(CanvasLink);
-    zox_sys_out(Position2);
+    //zox_sys_out(Position2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LayoutPositionDirty, dirty);
-        zox_sys_i(CanvasPosition, canvas_position);
+        //zox_sys_i(CanvasPosition, canvas_position);
         zox_sys_i(CanvasLink, canvas);
-        zox_sys_o(Position2, position);
+        //zox_sys_o(Position2, position);
 
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -65,11 +65,11 @@ zox_sys2(LayoutPosition2System) {
             continue;
         }
 
-        zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
-        position->value = get_element_position(canvas_position->value, canvas_size);
-
         zox_sys_e();
+        zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
         set_layout_child_position_recursively(world, e, canvas_size);
+        /*position->value = get_element_position(canvas_position->value, canvas_size);*/
+
 
         /*zox_log("[%s] posf [%.1fx%.1f] canvaspos [%ix%i] - canvas size [%ix%i]",
             zox_get_name(it->entities[i]),
@@ -111,15 +111,15 @@ zox_sys2(LayoutPosition2NewSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutPositionDirty);
-    zox_sys_in(CanvasPosition);
+    //zox_sys_in(CanvasPosition);
     zox_sys_in(CanvasLink);
-    zox_sys_out(Position2);
+    //zox_sys_out(Position2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutPositionDirty, dirty);
-        zox_sys_i(CanvasPosition, canvas_position);
+        //zox_sys_i(CanvasPosition, canvas_position);
         zox_sys_i(CanvasLink, canvas);
-        zox_sys_o(Position2, position);
+        //zox_sys_o(Position2, position);
 
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -132,7 +132,6 @@ zox_sys2(LayoutPosition2NewSystem) {
         }
 
         zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
-
         set_layout_child_position_recursively_new(world, e, canvas_size);
     }
 } zox_sys_end(LayoutPosition2NewSystem);

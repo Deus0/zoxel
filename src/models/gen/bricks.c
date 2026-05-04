@@ -1,6 +1,11 @@
 void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) {
 
     byte vlength = powers_of_two_byte[depth];
+    if (vlength == 1) {
+        set_VoxelNode(voctree, depth, byte3_zero, black, 0);
+        return;
+    }
+
     byte3 size = byte3_single(vlength);
     byte3 pos;
 
@@ -11,9 +16,16 @@ void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) 
     byte mortar      = vlength > 8 ? 1 : 0;
     byte chip_chance = vlength / 8; // 5; // percent
 
+    if (brick_w < 2) brick_w = 2;
+    if (brick_h < 2) brick_h = 2;
+    if (brick_d < 2) brick_d = 2;
+    if (!mortar) mortar = 1;
+    if (!chip_chance) chip_chance = 1;
+
     for (pos.y = 0; pos.y < size.y; pos.y++) {
         // which “row” of bricks am I in?
-        byte row = pos.y / (brick_h + mortar);
+        byte div = (brick_h + mortar);
+        byte row = byte_div(pos.y, div);
         byte stagger = row & 1;  // every other row is offset
 
         for (pos.x = 0; pos.x < size.x; pos.x++) {

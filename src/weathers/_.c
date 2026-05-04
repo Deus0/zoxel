@@ -16,18 +16,13 @@ void spawn_shaders_weather(ecs *world) {
     shader_skybox = spawn_shader_skybox(world);
 }
 
-void on_boot_weathers(ecs* world, entity app) {
-    (void) app;
-    spawn_weather(world);
-}
-
 zox_begin_module(Weathers)
     zoxd_tag(Weather);
     zoxd_tag(Skybox);
     define_systems_weather(world);
     // hooks
     add_hook_load_shader(&spawn_shaders_weather);
-    add_hook_on_boot(on_boot_weathers);
+    // add_hook_on_boot(spawn_weather);
     add_to_event_game_state((zox_game_event) { &game_state_weather });
     // prefabs
     spawn_prefabs_weather(world);

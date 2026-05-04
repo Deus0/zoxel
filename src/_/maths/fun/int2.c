@@ -48,6 +48,9 @@ static inline int2 int2_multiply_int(int2 input, int mul) {
 }
 
 int2 int2_divide_int(int2 input, int div) {
+    if (!div) {
+        return input;
+    }
     return (int2) { input.x / div, input.y / div };
 }
 

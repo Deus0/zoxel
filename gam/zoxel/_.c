@@ -13,6 +13,8 @@ zox_begin_module(ZoxGame)
     define_systems_zoxel(world);
     add_hook_spawn_prefabs(zoxel_on_spawn_prefabs);
 
+    add_hook_on_boot(spawn_weather);
+
 zox_end_module(ZoxGame)
 
 #endif

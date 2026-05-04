@@ -29,6 +29,8 @@ entity spawn_menu_start(ecs* world, entity player, entity canvas) {
     entity e = spawn_button(world, (LayoutParentData) { canvas }, (LayoutParentData) { canvas }, data.element, data.zext, data.button);
     zox_name("main_start");
 
+    // entity e = zox_ins(prefab_button);
+
     zox_add_tag(e, MenuStart);
     zox_set(e, PlayerLink, { player });
     zox_set(e, ClickEvent, { &button_event_menu_start });
@@ -43,6 +45,10 @@ void spawn_all_players_start_ui(ecs *world) {
         zox_geter_value(player, CanvasLink, entity, canvas);
 
         zox_logv("  - player [%s] | canvas [%s]", zox_get_name(player), zox_get_name(canvas));
+
+#ifdef zox_disable_start_menu
+        continue;
+#endif
 
         spawn_menu_start(world, player, canvas);
     }

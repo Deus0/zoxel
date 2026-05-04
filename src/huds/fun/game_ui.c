@@ -109,8 +109,8 @@ void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity 
         main_cameras[i] = game_camera;
         ui_cameras[i] = spawned_cameras.y;
 
-        spawn_skybox(world, shader_skybox, game_camera);
-        set_skybox_colors(world, menu_sky_color, menu_sky_bottom_color);
+        // spawn_skybox(world, shader_skybox, game_camera);
+        // set_skybox_colors(world, menu_sky_color, menu_sky_bottom_color);
     }
     zox_set_ptr(app, CameraLinks, cameras);
 }

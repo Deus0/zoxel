@@ -22,6 +22,14 @@ static inline void zox_gpu_enable_blend() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+static inline void zox_gpu_enable_blend2() {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glDepthMask(GL_FALSE);
+    // glDepthFunc(GL_LEQUAL);
+    // glDepthMask(GL_FALSE);
+}
+
 static inline void zox_gpu_disable_blend() {
     glDisable(GL_BLEND);
 }

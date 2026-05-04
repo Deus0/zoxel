@@ -4,7 +4,7 @@ typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef long int lint;
 typedef signed char sbyte;
-typedef long int entity;
+// typedef long int entity;
 // typedef uint32_t uint;
 // typedef uint64_t ulong;
 

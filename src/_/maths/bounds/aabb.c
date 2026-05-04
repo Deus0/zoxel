@@ -1,10 +1,10 @@
-byte ray_intersects_aabb(
-    const float3 ray_origin,
-    const float3 ray_direction,
-    const bounds box,
-    float *tmin,
-    float *tmax
-) {
+byte ray_intersects_aabb(float3 ray_origin, float3 ray_direction, bounds box, float *tmin, float *tmax) {
+
+    if  (!ray_direction.x || !ray_direction.y || !ray_direction.z) {
+        zox_logw("Ray Direction is 0, Division error.");
+        return 0;
+    }
+
     float t1 = (box.center.x - box.extents.x - ray_origin.x) / ray_direction.x;
     float t2 = (box.center.x + box.extents.x - ray_origin.x) / ray_direction.x;
     float t3 = (box.center.y - box.extents.y - ray_origin.y) / ray_direction.y;
@@ -23,6 +23,7 @@ byte ray_intersects_aabb(
 
     *tmin = tmin_temp;
     *tmax = tmax_temp;
+
     return 1;
 }
 

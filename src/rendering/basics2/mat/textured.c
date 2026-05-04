@@ -64,38 +64,10 @@ entity spawn_material_textured2D(ecs *world) {
     zox_set(e, ShaderLink, { shader });
 
     MaterialTextured2D attributes = create_MaterialTextured2D(material);
-    zox_set_data(e, MaterialTextured2D, attributes)
+    zox_set_data(e, MaterialTextured2D, attributes);
+
     material_textured2D = e;
-
     shader_textured2D = shader;
+
     return e;
-}
-
-// todo: refactor this into entity, and just link other ones to it for mesh, MeshLink?
-uint2 squareTexturedMesh;
-uint squareTexturedModelUVs;
-
-void dispose_square_mesh() {
-    zox_gpu_dispose_buffer(squareTexturedMesh.x);
-    zox_gpu_dispose_buffer(squareTexturedMesh.y);
-    zox_gpu_dispose_buffer(squareTexturedModelUVs);
-}
-
-void initialize_square_mesh_textured() {
-    squareTexturedMesh = (uint2) { zox_gpu_create_buffer(), zox_gpu_create_buffer() };
-    squareTexturedModelUVs = zox_gpu_create_buffer();
-    // glGenBuffers(1, &squareTexturedMesh.x);
-    // glGenBuffers(1, &squareTexturedMesh.y);  // generate a new VBO and get the associated ID
-    // glGenBuffers(1, &squareTexturedModelUVs);  // generate a new VBO and get the associated ID
-
-    zox_gpu_bind_buffer_element(squareTexturedMesh.x);
-    zox_gpu_bind_buffer_array(squareTexturedMesh.y);
-
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square_indicies), square_indicies, GL_STATIC_DRAW);
-    zox_gpu_set_buffer_element(square_indicies, sizeof(square_indicies));
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(squareTexturedVerts), squareTexturedVerts, GL_STATIC_DRAW);
-    zox_gpu_set_buffer_array(squareTexturedVerts, sizeof(squareTexturedVerts));
-
-    zox_gpu_bind_buffer_element(0);
-    zox_gpu_bind_buffer_array(0);
 }

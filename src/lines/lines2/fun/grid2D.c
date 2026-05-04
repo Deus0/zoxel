@@ -13,11 +13,11 @@ entity spawn_grid2D(ecs *world) {
     for (position.x = -size; position.x <= size; position.x += grid_size) {
         for (position.y = -size; position.y <= size; position.y += grid_size) {
             if (position.x != size) {
-                const entity line2 = spawn_line2D_colored(world, position, (float2) { position.x + grid_size, position.y }, thickness, 0, grid_color);
+                entity line2 = spawn_line2D_colored(world, position, (float2) { position.x + grid_size, position.y }, thickness, 0, grid_color);
                 add_to_Children(&children, line2);
             }
             if (position.y != size) {
-                const entity line2 = spawn_line2D_colored(world, position, (float2) { position.x, position.y + grid_size }, thickness, 0, grid_color);
+                entity line2 = spawn_line2D_colored(world, position, (float2) { position.x, position.y + grid_size }, thickness, 0, grid_color);
                 add_to_Children(&children, line2);
             }
         }

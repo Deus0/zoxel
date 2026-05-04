@@ -25,9 +25,9 @@ VoxelNode* fill_voctree(VoxelNode* node, byte target, byte3 position, byte value
     }
 
     byte3 positionn = (byte3) {
-        position.x / dividor,
-        position.y / dividor,
-        position.z / dividor
+        byte_div(position.x, dividor),
+        byte_div(position.y, dividor),
+        byte_div(position.z, dividor)
     };
     byte3_modulus_byte(&position, dividor);
 
@@ -71,9 +71,9 @@ VoxelNode* paint_voctree(VoxelNode* node, byte target, byte3 position, byte valu
     }
 
     byte3 positionn = (byte3) {
-        position.x / dividor,
-        position.y / dividor,
-        position.z / dividor
+        byte_div(position.x, dividor),
+        byte_div(position.y, dividor),
+        byte_div(position.z, dividor)
     };
 
     byte3_modulus_byte(&position, dividor);

@@ -13,9 +13,9 @@ static inline int3 positionv_to_positionc(
 
     // Base chunk grid coords (terrain-scale)
     int3 chunk_position = (int3) {
-        pos.x / (int)terrain_chunk_size.x,
-        pos.y / (int)terrain_chunk_size.y,
-        pos.z / (int)terrain_chunk_size.z
+        int_div(pos.x, (int)terrain_chunk_size.x),
+        int_div(pos.y, (int)terrain_chunk_size.y),
+        int_div(pos.z, (int)terrain_chunk_size.z)
     };
 
     // Adjust for negatives so that they map to the correct chunk
