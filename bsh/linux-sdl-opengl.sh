@@ -7,7 +7,7 @@ GFX="sdl"
 debug="False"
 [[ " $* " == *" --debug "* ]] && debug="True"
 [[ " $* " == *" --development "* ]] && debug="True"
-bin=${game_name}-${GLB}-${GFX}
+bin=bin/${game_name}-${GLB}-${GFX}
 
 cflags="-fPIC \
 -O3 \
