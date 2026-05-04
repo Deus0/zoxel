@@ -7,6 +7,8 @@
 // TODO: just use LayoutParentData instead of [LayoutParentData, CanvasSpawndata]
 // TODO: WindowToTop -> just trigger Canvas's ChildrenDirty flag instead
 
+byte max_layout_children = 32;
+
 #include "com/_.c"
 #include "dat/_.c"
 #include "pre/_.c"

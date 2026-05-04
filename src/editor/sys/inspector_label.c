@@ -18,7 +18,7 @@ zox_sys2(InspectorLabelSystem) {
             continue;
         }
 
-        if (type->value == zox_type_none || type->value == zox_type_name) {
+        if (type->value == zox_type_none || type->value == zox_type_name || type->value == zox_type_parent || type->value == zox_type_children) {
             continue;
         }
 

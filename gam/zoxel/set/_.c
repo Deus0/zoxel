@@ -184,7 +184,8 @@ void zoxel_debug_keys() {
     // Test our uis
     // add_hook_key_down(zox_tst_key_down_window_list);
     // add_hook_key_down(zox_tst_key_down_text);
-    add_hook_key_down(zox_tst_key_down_element);
+    add_hook_key_down(zox_dbg_spawn_element);
+    add_hook_key_down(zox_dbg_spawn_new_canvas);
 
 }
 

@@ -9,6 +9,16 @@ void fetch_entity_components(ecs* world, entity_array_d* entity_ids, entity_arra
     add_to_byte_array_d(types, zox_type_name);
     add_entity_to_labels(world, target, labels, entity_ids, 0);
 
+    // Add parent if exists
+    add_to_entity_array_d(component_ids, 0);
+    add_to_byte_array_d(types, zox_type_parent);
+    entity parent = zox_get_parent(world, target);
+    // Get parent name if exists
+    const char* parent_name = !zox_valid(parent) ? "None" : zox_get_name(parent);
+    add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { .text = zox_copy_string(parent_name) });
+    // add_entity_to_labels(world, target, labels, entity_ids, 0);
+
+
     const ecs_type_t* type = ecs_get_type(world, target);
     for (int i = 0; i < type->count; i++) {
         ecs_id_t component_id = type->array[i];
@@ -216,7 +226,7 @@ zox_sys2(InspectorSpawnSystem) {
             // Color code our element outlines
             child_button_data.outline = button_outline;
 
-            if (type == zox_type_name) {
+            if (type == zox_type_name || type == zox_type_parent) {
                 child_button_data.outline = blend_color(button_outline, color_black, 0.5f);
             } else if (type == zox_type_tag) {
                 child_button_data.outline = blend_color(button_outline, color_green, 0.8f);

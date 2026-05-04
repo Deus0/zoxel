@@ -24,3 +24,4 @@ typedef ecs_iter_t iter;
 #include "entities.c"
 #include "query.c"
 #include "hooks.c"
+#include "children.c"

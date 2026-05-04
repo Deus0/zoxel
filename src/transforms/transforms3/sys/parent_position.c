@@ -1,5 +1,4 @@
-
-
+/*
 zox_sys2(ParentPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -17,4 +16,4 @@ zox_sys2(ParentPositionSystem) {
 
         set_position_from_parents(world, parent->value, &position->value, local->value);
     }
-} zox_sys_end(ParentPositionSystem);
+} zox_sys_end(ParentPositionSystem);*/

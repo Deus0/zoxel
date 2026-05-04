@@ -44,6 +44,7 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] LocalPosition3D,
         [out] Position3D
     );*/
+
     zox_system(
         ChildrenPositionSystem,
         zox_transforms_stage,

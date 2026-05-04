@@ -10,6 +10,8 @@
 
 void define_systems_layouts2(ecs* world) {
     // NOTE: Anchor Size for stretching along canvas, must work before the positioning
+
+    // Old Hierarchys
     zox_system(
         AnchorSizeSystem,
         EcsOnLoad,
@@ -36,6 +38,38 @@ void define_systems_layouts2(ecs* world) {
         [in] layouts2.CanvasLink,
         [out] transforms2.Position2
     );
+
+    // New
+
+    zox_system(
+        AnchorSizeNewSystem,
+        EcsOnLoad,
+        [in] layouts2.LayoutSizeDirty,
+        [in] layouts2.AnchorSize,
+        // [in] hierarchys.ParentLink,
+        [out] layouts2.LayoutSize
+    );
+    zox_system(
+        LayoutParentPositionNewSystem,
+        EcsOnLoad, // + 1,
+        [in] LayoutPositionDirty,
+        [in] LayoutPosition,
+        [in] LayoutSize,
+        [in] Anchor,
+        // [in] hierarchys.ParentLink,
+        [out] CanvasPosition
+    );
+    zox_system(
+        LayoutPosition2NewSystem,
+        EcsOnLoad,
+        [in] layouts2.LayoutPositionDirty,
+        [in] layouts2.CanvasPosition,
+        [in] layouts2.CanvasLink,
+        [out] transforms2.Position2
+    );
+
+    // Transform Layouts to Real Space
+
     zox_system(
         LayoutTransform2System,
         EcsOnUpdate,

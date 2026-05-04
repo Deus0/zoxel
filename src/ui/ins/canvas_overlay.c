@@ -1,6 +1,6 @@
 // todo: stretch to parent size!
-const float app_fade_in_delay_time = 0.25;
-const float app_fade_in_time = 1.0;
+float app_fade_in_delay_time = 0.25;
+float app_fade_in_time = 1.0;
 
 entity spawn_canvas_overlay(ecs *world, entity p, entity canvas, int2 canvas_size) {
 

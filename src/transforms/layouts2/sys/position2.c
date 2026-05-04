@@ -61,7 +61,7 @@ zox_sys2(LayoutPosition2System) {
 
         if (!zox_valid(canvas->value)) {
             zox_sys_e();
-            zox_logw("Element [%s:%lu] has Invalid Canvas: %lu", zox_get_name(e), e, canvas->value);
+            zox_logw("[LayoutPosition2System] Element [%s:%lu] has Invalid Canvas: %lu", zox_get_name(e), e, canvas->value);
             continue;
         }
 
@@ -82,3 +82,58 @@ zox_sys2(LayoutPosition2System) {
         );*/
     }
 } zox_sys_end(LayoutPosition2System);
+
+
+
+void set_layout_child_position_recursively_new(ecs* world, entity e, int2 canvas_size) {
+
+    if (!zox_valid(e)) {
+        return;
+    }
+
+    if (zox_has(e, CanvasPosition) && zox_has(e, Position2)) {
+        zox_geter_value(e, CanvasPosition, int2, canvas_position);
+        zox_muter(e, Position2, position2);
+
+        position2->value = get_element_position(canvas_position, canvas_size);
+    }
+
+    // also set children ones
+    entity children[max_layout_children];
+    uint count = zox_get_children(world, e, children, max_layout_children);
+    for (int i = 0; i < count; i++) {
+        entity child = children[i];
+        set_layout_child_position_recursively_new(world, child, canvas_size);
+    }
+}
+
+zox_sys2(LayoutPosition2NewSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(LayoutPositionDirty);
+    zox_sys_in(CanvasPosition);
+    zox_sys_in(CanvasLink);
+    zox_sys_out(Position2);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(LayoutPositionDirty, dirty);
+        zox_sys_i(CanvasPosition, canvas_position);
+        zox_sys_i(CanvasLink, canvas);
+        zox_sys_o(Position2, position);
+
+        if (dirty->value != zox_dirty_active) {
+            continue;
+        }
+
+        if (!zox_valid(canvas->value)) {
+            zox_sys_e();
+            zox_logw("[LayoutPosition2System] Element [%s:%lu] has Invalid Canvas: %lu", zox_get_name(e), e, canvas->value);
+            continue;
+        }
+
+        zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
+
+        set_layout_child_position_recursively_new(world, e, canvas_size);
+    }
+} zox_sys_end(LayoutPosition2NewSystem);
+

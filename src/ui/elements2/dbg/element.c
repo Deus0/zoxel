@@ -1,8 +1,8 @@
  entity zox_dbg_element;
 
-void zox_tst_key_down_element(ecs *world, int32_t keycode) {
+void zox_dbg_spawn_element(ecs *world, int32_t keycode) {
 
-    if (keycode != zox_key_h) {
+    if (keycode != zox_key_g) {
         return;
     }
 
@@ -28,7 +28,7 @@ void zox_tst_key_down_element(ecs *world, int32_t keycode) {
     byte size = ui_scale * 32;
     int2 position = (int2) { size, size * 2 };
 
-    ElementSpawn sdata = {
+    /*ElementSpawn sdata = {
         .canvas = { canvas },
         .parent = { canvas },
         .element = {
@@ -43,7 +43,15 @@ void zox_tst_key_down_element(ecs *world, int32_t keycode) {
             .fill_color = default_fill_color_icon,
             .outline_color = default_outline_color_icon,
         }
-    };
+    };*/
 
-    zox_dbg_element = spawn_element(world, sdata);
+    // zox_dbg_element = spawn_element(world, sdata);
+    entity element = spawn_element3(world, prefab_element_textured, float2_half, position, int2_single(size), int2_single(size), default_fill_color_icon, default_outline_color_icon);
+
+    zox_set(element, Layer2D, { 1 });
+    zox_set(element, CanvasLink, { canvas });
+    zox_set(element, ParentLink, { canvas });
+    zox_set(canvas, WindowToTop, { element });
+
+    zox_dbg_element = element;
 }

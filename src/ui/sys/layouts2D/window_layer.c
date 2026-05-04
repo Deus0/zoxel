@@ -1,3 +1,4 @@
+// This sets layers based on a Windows new layer 2D when it is restacked in canvas
 zox_sys2(WindowLayerSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -16,6 +17,7 @@ zox_sys2(WindowLayerSystem) {
         if (wlayer->value == nlayer->value) {
             continue;
         }
+
         if (!zox_valid(canvasLink->value) || !zox_has(canvasLink->value, WindowsLayers)) {
             continue;
         }

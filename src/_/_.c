@@ -36,6 +36,7 @@
 #include "hok/_.c"
 #include "windows/_.c"
 #include "types/_.c"
+#include "strings/_.c"
 #include "timing/_.c"
 #include "settings/_.c"
 

@@ -134,3 +134,93 @@ zox_sys2(LayoutParentPositionSystem) {
         );*/
     }
 } zox_sys_end(LayoutParentPositionSystem);
+
+
+void set_layout_canvas_position_recursively_new(ecs* world, entity e, int2 parent_position, int2 parent_size, byte skip) {
+
+    if (!zox_valid(e)) {
+        return;
+    }
+
+    int2 cposition = parent_position;
+    if (!skip) {
+        if (zox_has(e, LayoutPosition) && zox_has(e, CanvasPosition) && zox_has(e, Anchor) && zox_has(e, LayoutSize)) {
+            zox_geter_value(e, LayoutPosition, int2, position);
+            zox_geter_value(e, Anchor, float2, anchor);
+            zox_muter(e, CanvasPosition, canvas_position);
+
+            canvas_position->value = get_element_pixel_positionv(
+                parent_position,
+                parent_size,
+                position,
+                anchor
+            );
+
+            // NOTE: we pass canvas position down recursively
+            cposition = canvas_position->value;
+        }
+        set_line2_canvas_position(world, e);
+    }
+
+    // also set children ones
+    if (zox_has(e, LayoutSize)) {
+        zox_geter_value(e, LayoutSize, int2, size);
+        entity children[max_layout_children];
+        uint count = zox_get_children(world, e, children, max_layout_children);
+        for (int i = 0; i < count; i++) {
+            entity e2 = children[i];
+            set_layout_canvas_position_recursively_new(world, e2, cposition, size, 0 );
+        }
+    }
+}
+
+zox_sys2(LayoutParentPositionNewSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(LayoutPositionDirty);
+    zox_sys_in(LayoutPosition);
+    zox_sys_in(LayoutSize);
+    zox_sys_in(Anchor);
+    // zox_sys_in(ParentLink);
+    zox_sys_out(CanvasPosition);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(LayoutPositionDirty, dirty);
+        zox_sys_i(LayoutPosition, layout_position);
+        zox_sys_i(LayoutSize, layout_size);
+        zox_sys_i(Anchor, anchor);
+        // zox_sys_i(ParentLink, parent);
+        zox_sys_o(CanvasPosition, canvas_position);
+
+        if (dirty->value != zox_dirty_active) {
+            continue;
+        }
+
+        zox_sys_e();
+        entity parent = zox_get_parent(world, e);
+
+        if (!zox_valid(parent)) {
+            continue;
+        }
+
+        if (!zox_has(parent, LayoutSize)) {
+            zox_logw("Layout Parent Invalid; Child [%s:%lu] Parent [%lu]", zox_get_name(e), e, parent);
+            continue;
+        }
+
+        zox_geter_value(parent, LayoutSize, int2, parent_size);
+        int2 parent_position;
+        if (zox_has(parent, CanvasPosition)) {
+            parent_position = zox_get_value(parent, CanvasPosition);
+        } else if (zox_has(parent, LayoutPosition)) {
+            parent_position = zox_get_value(parent, LayoutPosition);
+        } else {
+            parent_position = int2_zero;
+        }
+
+        int2 position = layout_position->value;
+
+        canvas_position->value = get_element_pixel_positionv(parent_position, parent_size, position, anchor->value);
+
+        set_layout_canvas_position_recursively_new(world, e, canvas_position->value, layout_size->value, 1);
+    }
+} zox_sys_end(LayoutParentPositionNewSystem);

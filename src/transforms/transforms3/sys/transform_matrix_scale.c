@@ -10,10 +10,6 @@ zox_sys2(TransformMatrixScaleSystem) {
         zox_sys_i(Scale1D, scale);
         zox_sys_o(TransformMatrix, matrix);
 
-        matrix->value = float4x4_transform_scale(
-            position->value,
-            rotation->value,
-            scale->value
-        );
+        matrix->value = float4x4_transform_scale(position->value, rotation->value, scale->value);
     }
 } zox_sys_end(TransformMatrixScaleSystem);
