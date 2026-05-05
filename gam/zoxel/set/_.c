@@ -169,7 +169,6 @@ void zoxel_debug_keys() {
     // add_hook_key_down(debug_key_down_unstucking);
     // add_hook_key_down(key_down_toggle_keyboard_navigation);
     // add_hook_key_down(key_down_test_aura);
-    // add_hook_key_down(keydown_test_popup3);
     // add_hook_key_down(test_game_end);
     // add_hook_key_down(test_fall_through_terrain);
     // add_hook_key_down(toggle_character_particles);
@@ -186,6 +185,8 @@ void zoxel_debug_keys() {
     // add_hook_key_down(zox_tst_key_down_text);
     add_hook_key_down(zox_dbg_spawn_element);
     add_hook_key_down(zox_dbg_spawn_new_canvas);
+    add_hook_key_down(zox_dbg_spawn_popup3);
+    add_hook_key_down(zox_dbg_spawn_particle_emitter);
 
 }
 

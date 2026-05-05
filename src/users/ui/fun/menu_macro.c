@@ -1,9 +1,6 @@
 #define zox_user_menu_functions_minimal(Name, Name2, name, name2)\
 \
-entity spawn_prefab_menu_##name( \
-    ecs *world, \
-    const entity prefab \
-) {\
+entity spawn_prefab_menu_##name(ecs *world, entity prefab) {\
     zox_prefab_child(prefab); \
     zox_prefab_name("menu_"#name); \
     zox_add_tag(e, Menu##Name); \
@@ -25,13 +22,7 @@ entity spawn_prefab_menu_##name( \
         \
         int2 canvas_size = zox_get_value(canvas, LayoutSize)\
         \
-        SpawnWindowUsers data = get_default_spawn_window_users_data( \
-            world, \
-            prefab_menu_##name, \
-            character, \
-            canvas, \
-            canvas_size \
-        );\
+        SpawnWindowUsers data = get_default_spawn_window_users_data(world, prefab_menu_##name, character, canvas, canvas_size);\
         \
         data.header_zext.text = #Name;\
         data.element.prefab = prefab_menu_##name;\

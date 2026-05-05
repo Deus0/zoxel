@@ -8,14 +8,12 @@ zox_sys2(ScrollbarSystem) {
     zox_sys_in(DraggableState);
     zox_sys_in(LayoutPosition);
     zox_sys_in(LayoutSize);
-    //zox_sys_in(ParentLink);
     zox_sys_in(ScrollviewLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DraggableState, state);
         zox_sys_i(LayoutPosition, position);
         zox_sys_i(LayoutSize, size);
-        //zox_sys_i(ParentLink, parent);
         zox_sys_i(ScrollviewLink, scrollview);
 
         if (!state->value) {
@@ -54,10 +52,6 @@ zox_sys2(ScrollbarSystem) {
 
         entity list_elements[layouts2_children_capacity];
         uint list_elements_length = zox_get_children(world, list_ui, list_elements, layouts2_children_capacity);
-        //for (uint j = 0; j < children_length; j++) {
-        //    entity e2 = children[j];
-
-        // zox_geter(list_ui, Children, list_elements);
         zox_geter_value(list_ui, ListVisible, byte, visible);
         zox_geter_value(list_ui, ListStart, byte, start);
 

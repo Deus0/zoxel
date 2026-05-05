@@ -3,7 +3,7 @@ void menu_start_triggered(ecs *world, entity player, entity canvas) {
     if (!zox_valid(start_menu)) {
         zox_loge("No MenuStart found on canvas");
     } else {
-        zox_log("Deleting [%s]", zox_get_name(start_menu));
+        // zox_log("Deleting [%s]", zox_get_name(start_menu));
         zox_delete(start_menu);
     }
 

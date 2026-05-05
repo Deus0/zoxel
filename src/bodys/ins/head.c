@@ -47,7 +47,7 @@ entity spawn_blueprint_head(ecs* world, byte3 nsize) {
         reye_position.x -= half_eye_size;
     }
 
-    zox_log("=> eye - ridge [%i] size [%i] at [(L:%ixR:%i)x%ix%i] nsize[%ix%ix%i]", eye_ridge, eye_size, leye_position.x, reye_position.x, eye_pos_y, eye_pos_z, nsize.x, nsize.y, nsize.z);
+    // zox_log("=> eye - ridge [%i] size [%i] at [(L:%ixR:%i)x%ix%i] nsize[%ix%ix%i]", eye_ridge, eye_size, leye_position.x, reye_position.x, eye_pos_y, eye_pos_z, nsize.x, nsize.y, nsize.z);
 
     color eye_color = (color) { 55, 200, 99, 255 };
     entity e3 = spawn_node_model_colors(world, eye_color, 1);

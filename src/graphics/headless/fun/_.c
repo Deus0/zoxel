@@ -5,6 +5,7 @@
 #include "settings.c"
 #include "viewport.c"
 #include "ubo.c"
+#include "points.c"
 #include "lines.c"
 #include "attributes.c"
 #include "shaders.c"

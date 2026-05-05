@@ -1,4 +1,4 @@
-const double zox_lag_cutoff = 6;
+const double zox_lag_cutoff = 8;
 const byte is_log_totals = 0;
 
 // used to sort times in ui

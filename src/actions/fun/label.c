@@ -1,4 +1,4 @@
-uint get_label_player_actions(ecs *world, const entity player, char *buffer, const uint size, uint index) {
+uint get_label_player_actions(ecs *world, entity player, char *buffer, uint size, uint index) {
     if (!player) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;

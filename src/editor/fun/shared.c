@@ -47,10 +47,7 @@ entity spawn_button_old(
 
     zox_instance(prefab_button);
     zox_name("button");
-    initialize_element(
-        world,
-        e,
-        parent,
+    initialize_element(world, e, parent,
         canvas,
         pixel_position,
         pixel_size,

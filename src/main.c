@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
 
     // TODO: Menu Realm
     // entity realm = spawn_realm(world, prefab_realm);
-    run_hook_files_load(world);
+    // run_hook_files_load(world);
 
     zox_logv("Spawning Game");
     entity game = spawn_game(world);
@@ -115,6 +115,9 @@ int main(int argc, char* argv[]) {
     entity app = 0;
     (void) game;
 #endif
+
+    // Resource Loading
+    run_hook_files_load(world);
 
     // Yet another Hook
     zox_logv("Running our Boot Hook");

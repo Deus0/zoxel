@@ -89,7 +89,7 @@ entity spawn_first_chunk(ecs* world, entity realm, entity terrain, float3 positi
         if (zox_valid(c)) {
             int3_hashmap_add(chunks3->value, cposition, c);
             zox_mut_end(terrain, ChunkLinks);
-            zox_log("Spawned first terrain chunk!!!");
+            // zox_log("Spawned first terrain chunk!!!");
         } else {
             zox_log_error("Failed to spawn chunk [%ix%ix%i]:%lu", cposition.x, cposition.y, cposition.z, c);
         }
@@ -264,17 +264,17 @@ zox_sys2(PlayerBeginSystem) {
         // Checks if terrain is done loading
         zox_geter_value(game->value, RealmLink, entity, realm);
         if (!zox_valid(realm)) {
-            zox_log_error("Game has no realm");
+            zox_loge("Game has no realm");
             continue;
         }
         if (!zox_has(realm, TerrainLink)) {
-            zox_log_error("Realm [%s] has no Terrain Link", zox_get_name(realm));
+            zox_loge("Realm [%s] has no Terrain Link", zox_get_name(realm));
             continue;
         }
 
         zox_geter_value(realm, TerrainLink, entity, terrain);
         if (!zox_valid(terrain)) {
-            zox_log_error("Invalid Terrain on Realm");
+            zox_loge("Invalid Terrain on Realm");
             continue;
         }
 
@@ -284,12 +284,10 @@ zox_sys2(PlayerBeginSystem) {
             continue;
         }
 
-        zox_log("Spawning Player Character @ [%f]", zox_current_time);
-
+        // zox_log("Spawning Player Character @ [%f]", zox_current_time);
         // spawn character here
         zox_sys_e();
         on_spawned_terrain(world, e);
-
         state->value = zox_player_state_playing;
         dirty->value = zox_dirty_trigger;
     }

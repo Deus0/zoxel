@@ -17,7 +17,7 @@ void define_systems_elements3D(ecs *world) {
         EcsOnUpdate,
         [in] elements.ElementBar,
         [in] elements.ElementBarSize,
-        [in] hierarchys.Children,
+        // [in] hierarchys.Children,
         [none] rendering.MeshVertices
     );
     zox_system_1(
@@ -31,7 +31,7 @@ void define_systems_elements3D(ecs *world) {
         [in] rendering.RenderDisabled,
         [in] Text3DScale,
         [in] texts.TextFontSize,
-        [out] hierarchys.Children,
+        // [out] hierarchys.Children,
         [none] texts.Zext,
         [none] Text3D
     );

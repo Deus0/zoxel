@@ -106,18 +106,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .is_scrollbar = 0,
     };
 
-    // Children children = (Children) { 0 };
-    // window_data.children = &children;
-    entity e = spawn_window2(
-        world,
-        canvas_data,
-        window_parent_data,
-        window_element_data,
-        window_data,
-        (ClickEvent) { &on_cancelled_new_realm },
-        1,
-        zox_window_new_realm
-    ).x;
+    entity e = spawn_window2(world, canvas_data, window_parent_data, window_element_data,window_data, (ClickEvent) { &on_cancelled_new_realm }, 1, zox_window_new_realm).x;
     zox_add_tag(e, MenuNewRealm);
     zox_add_tag(e, NavigationWindow);
 

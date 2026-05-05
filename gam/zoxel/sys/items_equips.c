@@ -24,10 +24,9 @@ zox_sys2(EquipsRealmSpawnSystem) {
             entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("top_hat"));
 
             entity top_hat = spawn_equip_item(world, model, texture, "Top Hat");
-
             add_to_ItemLinks(items, top_hat);
 
-            zox_log("model %s", zox_get_name(model));
+            // zox_log("model %s", zox_get_name(model));
         }
 
         zox_logv("At [%f] Realm [bodys] [%i] spawned.", zox_current_time, items->length);

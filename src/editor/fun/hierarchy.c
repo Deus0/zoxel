@@ -40,7 +40,7 @@ void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labe
     for (int i = 0; i < tree_level; i++) {
         char *temp = strdup(text);
         if (temp) {
-            snprintf(text, hierarchy_max_line_characters, ".%s", temp);
+            snprintf(text, hierarchy_max_line_characters, "-%s", temp);
             free(temp);
         } else {
             zox_log_error("no temp was created")
@@ -76,16 +76,46 @@ void add_entity_children_to_labels(ecs *world, entity e, text_group_dynamic_arra
     }
 
     add_entity_to_labels(world, e, labels, entities, tree_level);
-    if (zox_has(e, Children)) {
-        tree_level++;
-        zox_geter(e, Children, children)
-        for (int i = 0; i < children->length; i++) {
-            add_entity_children_to_labels(world, children->value[i], labels, entities, tree_level);
+
+    tree_level++;
+
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity e2 = children[j];
+        add_entity_children_to_labels(world, e2, labels, entities, tree_level);
+    }
+}
+
+void fetch_entity_labels_children(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
+
+    if (!zox_valid(e)) {
+        return;
+    }
+
+    tree_level++;
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity e2 = children[j];
+
+        if (!zox_valid(e2)) {
+            continue;
         }
+
+        add_entity_to_labels(world, e2, labels, entities, tree_level);
+
+        fetch_entity_labels_children(world, e2, labels, entities, tree_level);
     }
 }
 
 void fetch_entity_list_by_id(ecs *world, entity e, entity id, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
+
+    // used for polymorphism
+    typedef struct {
+        entity* value;
+        int length;
+    } placeholder;
 
     if (!zox_valid(e)) {
         return;
@@ -97,18 +127,16 @@ void fetch_entity_list_by_id(ecs *world, entity e, entity id, text_group_dynamic
 
     tree_level++;
 
-    // Transforms our void* to Children*
-    const Children* children = (Children*) (zox_get_id(e, id));
+    const placeholder* entities2 = (placeholder*) (zox_get_id(e, id));
 
-    for (int i = 0; i < children->length; i++) {
-        entity child = children->value[i];
+    for (int i = 0; i < entities2->length; i++) {
+        entity e2 = entities2->value[i];
 
-        if (!zox_valid(child)) {
+        if (!zox_valid(e2)) {
             continue;
         }
 
-        add_entity_to_labels(world, child, labels, entities, tree_level);
-
-        fetch_entity_list_by_id(world, child, id, labels, entities, tree_level);
+        add_entity_to_labels(world, e2, labels, entities, tree_level);
+        fetch_entity_list_by_id(world, e2, id, labels, entities, tree_level);
     }
 }

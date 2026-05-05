@@ -71,22 +71,13 @@ static inline void zox_gpu_render_triangles_instanced(uint indicies, uint length
     glDrawElementsInstanced(GL_TRIANGLES, indicies, GL_UNSIGNED_INT, 0, length);
 }
 
-// Points
-
-static inline void zox_gpu_render_points(uint length) {
-    glDrawArrays(GL_POINTS, 0, length);
-}
-
-static inline void zox_gpu_render_points_instanced(uint length) {
-    glDrawArraysInstanced(GL_POINTS, 0, 1, length);
-}
-
 #include "buffers.c"
 #include "texture.c"
 #include "settings.c"
 #include "viewport.c"
 #include "material.c"
 #include "uniform.c"
+#include "points.c"
 #include "lines.c"
 #include "attributes.c"
 

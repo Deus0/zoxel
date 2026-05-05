@@ -77,19 +77,8 @@ void player_action_ui_move(ecs *world, entity player, sbyte direction) {
         return;
     }
 
-    /*zox_geter(actionbar, Children, window_children);
-    if (window_children->length < 2) {
-        return;
-    }
-    zox_geter(window_children->value[1], Children, children);
-    if (children->length == 0) {
-        return;
-    }*/
-
-
     entity window_children[layouts2_children_capacity];
     uint window_children_length = zox_get_children(world, actionbar, window_children, layouts2_children_capacity);
-    // zox_geter(actionbar, Children, window_children);
     if (window_children_length < 2) {
         return;
     }
@@ -97,7 +86,6 @@ void player_action_ui_move(ecs *world, entity player, sbyte direction) {
     entity body = window_children[1];
     entity body_children[layouts2_children_capacity];
     uint body_children_length = zox_get_children(world, body, window_children, layouts2_children_capacity);
-    // zox_geter(window_children[1], Children, children);
 
     // deselect any prior ones
     for (uint i = 0; i < body_children_length; i++) {

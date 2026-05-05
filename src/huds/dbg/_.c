@@ -22,5 +22,5 @@ void toggle_fps_viewer(ecs *world, int32_t keycode) {
         spawn_fps_display(world, canvas);
     }
 
-    zox_log("FPSViewer %s", !fps_viewer ? "Enabled" : "Disabled");
+    // zox_log("FPSViewer %s", !fps_viewer ? "Enabled" : "Disabled");
 }

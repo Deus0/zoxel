@@ -11,6 +11,8 @@ entity spawn_menu_actions(ecs *world, entity player) {
     zox_geter(character, ActionLinks, actions);
     zox_geter_value(character, ActionIndex, byte, selected);
 
+    entity prefab = prefab_window_users; // prefab_menu_actions
+
     // Sizing
     byte2 grid_padding = (byte2) { 3 * ui_scale, 0 };
     byte2 grid_margins = (byte2) { 6 * ui_scale, 4 * ui_scale };
@@ -20,13 +22,12 @@ entity spawn_menu_actions(ecs *world, entity player) {
     // Misc
     byte2 grid_size = (byte2) { 8, 1 };
 
-    SpawnWindowUsers data = get_default_spawn_window_users_data(world, prefab_menu_actions, character, canvas, canvas_size);
-
+    SpawnWindowUsers data = get_default_spawn_window_users_data(world, prefab, character, canvas, canvas_size);
     // prefabs
     data.frame.prefab = prefab_frame_action;
     data.icon.prefab = prefab_icon_action;
     // window
-    data.element.prefab = prefab_menu_actions;
+    data.element.prefab = prefab;
     data.element.anchor = (float2) { 0.5f, 0 };
     data.window.user_links_id = zox_id(ActionLinks);
     // header
@@ -51,6 +52,8 @@ entity spawn_menu_actions(ecs *world, entity player) {
     entity3 spawns[actions->length];
     entity e = spawn_window_users_id(world, data, texture, selected, spawns);
     zox_set_unique_name(e, "actionbar");
+    zox_add_tag(e, MenuActions);
+    zox_set(e, FramePrefabLink, { prefab_frame_action });
 
     for (int i = 0; i < actions->length; i++) {
         entity action = actions->value[i];

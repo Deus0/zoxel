@@ -18,6 +18,15 @@ void fetch_entity_components(ecs* world, entity_array_d* entity_ids, entity_arra
     add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { .text = zox_copy_string(parent_name) });
     // add_entity_to_labels(world, target, labels, entity_ids, 0);
 
+    // Add children if they exist:
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, target, children, layouts2_children_capacity);
+    char children_label[TooltipText_length];
+    sprintf(children_label, "children [%i]",children_length);
+    add_to_entity_array_d(component_ids, 0);
+    add_to_byte_array_d(types, zox_type_children);
+    add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { .text = zox_copy_string(children_label) });
+
 
     const ecs_type_t* type = ecs_get_type(world, target);
     for (int i = 0; i < type->count; i++) {
@@ -210,11 +219,13 @@ zox_sys2(InspectorSpawnSystem) {
         LayoutParentData child_parent_data = { .e = list_ui };
 
         // 4: Delete old list elements
-        zox_muter(list_ui, Children, children);
-        for (int j = 0; j < children->length; j++) {
-            zox_delete(children->value[j]);
+        entity list_children[layouts2_children_capacity];
+        uint list_children_length = zox_get_children(world, list_ui, list_children, layouts2_children_capacity);
+        for (uint j = 0; j < list_children_length; j++) {
+            entity e2 = list_children[j];
+            zox_delete(e2);
         }
-        resize_Children(children, 0);
+        // resize_Children(children, 0);
 
         // 5: Spawn new buttons
         for (size_t j = 0; j < labels->size; j++) {
@@ -266,8 +277,7 @@ zox_sys2(InspectorSpawnSystem) {
             zox_set(e2, EntityTarget, { target });
             zox_set(e2, ComponentTarget, { component_id });
             zox_set(e2, ClickEvent, { on_click.value });
-
-            add_to_Children(children, e2);
+            zox_set_parent(world, e2, list_ui);
         }
 
         // 6: Set ListDirty for positioning / hiding etc
@@ -276,7 +286,7 @@ zox_sys2(InspectorSpawnSystem) {
         zox_set(list_ui, ListPositionDirty, { zox_dirty_trigger });
 
         // 7: Debug
-        zox_logv("Inspector Refreshed [%i]", children->length);
+        zox_logv("Inspector Refreshed [%i]", list_children_length);
         zox_logv("   - Elements [%i]", labels->size);
         zox_logv("   - Visible [%i]", visible);
         for (size_t j = 0; j < labels->size; j++) {

@@ -81,18 +81,15 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
 
     if (min_width) {
         if (list_size.x < min_width) {
-            zox_log("+ list size [%i] < min_width [%i]", list_size.x, min_width);
+            // zox_log("+ list size [%i] < min_width [%i]", list_size.x, min_width);
             list_size.x = min_width;
         }
     }
 
-    zox_log("+ list size [%ix%i] from visible [%i] header_height [%i]", list_size.x, list_size.y, visible_count, header_height);
+    // zox_log("+ list size [%ix%i] from visible [%i] header_height [%i]", list_size.x, list_size.y, visible_count, header_height);
 
     // we use the bigger size out of list and header widths
     window_element_data.size = (int2) { int_max(list_size.x, header_size.x), list_size.y + header_height };
-
-    // Children window_children = (Children) { 0 };
-    // window_data.children = &window_children;
 
     // Spawn our Window
     entity2 e2 = spawn_window2(world, canvas_data, (LayoutParentData) { .e = canvas }, window_element_data, window_data, close_event, is_close_button, window_type);
@@ -108,12 +105,8 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     };
 
     // NOTE: Scrollview has 2 Children: 1: Scrollbar, 2: ListUI
-    // Children scrollview_children = { 0 };
     entity scrollview = spawn_scrollview(world, canvas_data, (LayoutParentData) { .e = e }, scrollview_data, list_data.visible_count, list_data.count);
-    // add_to_Children(&window_children, scrollview);
     zox_set_parent(world, scrollview, e);
-
-    // zox_set_ptr(e, Children, window_children);
 
     // Spawn our list
     ElementSpawnData list_element_data = {
@@ -125,7 +118,6 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
 
     entity list = spawn_list(world, canvas_data, (LayoutParentData) { .e = scrollview }, list_element_data, list_data, alignment, elements2);
     zox_set_parent(world, list, scrollview);
-    // add_to_Children(&scrollview_children, list);
 
     // make sure to link them together
     zox_set(list, ScrollviewLink, { scrollview });

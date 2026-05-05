@@ -1,52 +1,57 @@
-void resize_text3D(ecs *world, Children *children, const TextData *textData, Zigel3DData zigel_data) {
+void resize_text3D(ecs *world, entity e, entity* children, uint children_length, const TextData* text, Zigel3DData zigel_data, int new_children_length) {
 
     // no need to resize / reposition text if same size
-    if (children->length == textData->length) {
+    /*int new_children_length = calculate_total_zigels(text->value, text->length);
+    if (children_length == new_children_length) {
         return;
-    }
+    }*/
 
-    entity *old_children = children->value;
-    int old_children_length = children->length;
-    int has_old_children = old_children_length > 0;
-    int new_children_length = calculate_total_zigels(textData->value, textData->length);
-    int reuse_count = int_min(old_children_length, new_children_length);
+    // entity *old_children = children->value;
+    // int old_children_length = children->length;
+    /*int has_old_children = old_children_length > 0;
     entity *new_children = NULL;
-
     if (new_children_length > 0) {
         new_children = zalloc(new_children_length * sizeof(entity));
+    }*/
+
+    // Set old zigels
+    int reuse_count = int_min(children_length, new_children_length);
+    for (uint i = 0; i < reuse_count; i++) {     // Reposition old zigels!
+        int data_index = calculate_zigel_data_index(text->value, text->length, i);
+        float3 zigel_position = calculate_zigel3D_position(zigel3D_size, data_index, new_children_length, zigel_data.scale);
+
+        entity e2 = children[i];
+        zox_set(e2, LocalPosition3D, { zigel_position });
+        // new_children[i] = e;
+        // zox_log_text3D("    > reusing [%i] zigel [%s]", i, zox_get_name(e))
     }
 
-    if (new_children_length > old_children_length) {    // spawn new zigels
-        for (int i = old_children_length; i < new_children_length; i++) {
-            int data_index = calculate_zigel_data_index(textData->value, textData->length, i);
-
-            byte zigel_index = calculate_zigel_index(textData->value, textData->length, i);
+    // Spawn if extended text
+    if (new_children_length > children_length) {
+        for (uint i = children_length; i < new_children_length; i++) {
+            int data_index = calculate_zigel_data_index(text->value, text->length, i);
+            byte zigel_index = calculate_zigel_index(text->value, text->length, i);
             zigel_data.zigel_index = zigel_index;
             zigel_data.position = calculate_zigel3D_position(zigel3D_size, data_index, new_children_length, zigel_data.scale);
-            entity e = spawn_zigel3(world, zigel_data);
-            new_children[i] = e;
-            zox_log_text3D("    + spawned [%i] zigel [%s]", i, zox_get_name(e))
-        }
-    } else if (new_children_length < old_children_length) { // remove old zigels
-        for (int i = new_children_length; i < old_children_length; i++) {
-            entity e = old_children[i];
-            zox_log_text3D("    - deleting [%i] zigel [%s]", i, zox_get_name(e))
-            zox_delete(e)
+            entity e2 = spawn_zigel3(world, zigel_data);
+            zox_set_parent(world, e2, e);
+            // new_children[i] = e;
+            // zox_log_text3D("    + spawned [%i] zigel [%s]", i, zox_get_name(e))
         }
     }
-    for (int i = 0; i < reuse_count; i++) {     // Reposition old zigels!
-        int data_index = calculate_zigel_data_index(textData->value, textData->length, i);
-        float3 zigel_position = calculate_zigel3D_position(zigel3D_size, data_index, new_children_length, zigel_data.scale);
-        entity e = old_children[i];
-        zox_set(e, LocalPosition3D, { zigel_position })
-        new_children[i] = e;
-        zox_log_text3D("    > reusing [%i] zigel [%s]", i, zox_get_name(e))
+    // Remove if shortening text
+    else if (new_children_length < children_length) {
+        for (uint i = new_children_length; i < children_length; i++) {
+            entity e2 = children[i];
+            //zox_log_text3D("    - deleting [%i] zigel [%s]", i, zox_get_name(e))
+            zox_delete(e2);
+        }
     }
-    if (has_old_children) {
+    /*if (has_old_children) {
         dispose_Children(children);
     }
     children->value = new_children;
-    children->length = new_children_length;
+    children->length = new_children_length;*/
 }
 
 // todo: split up into update system, and resize system
@@ -62,7 +67,7 @@ zox_sys2(Text3DResizeSystem) {
     zox_sys_in(RenderDisabled);
     zox_sys_in(Text3DScale);
     zox_sys_in(TextFontSize);
-    zox_sys_out(Children);
+    // zox_sys_out(Children);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
@@ -72,15 +77,17 @@ zox_sys2(Text3DResizeSystem) {
         zox_sys_i(RenderDisabled, renderDisabled);
         zox_sys_i(Text3DScale, text3DScale);
         zox_sys_i(TextFontSize, textSize);
-        zox_sys_i(TextData, textData);
-        zox_sys_o(Children, children);
+        zox_sys_i(TextData, text);
+        // zox_sys_o(Children, children);
 
         if (dirty->value != zox_dirty_active) {
             continue;
         }
 
-        int new_children_length = calculate_total_zigels(textData->value, textData->length);
-        if (children->length == new_children_length) {
+        int new_length = calculate_total_zigels(text->value, text->length);
+        entity children[layouts2_children_capacity];
+        uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+        if (children_length == new_length) {
             continue;
         }
 
@@ -95,7 +102,7 @@ zox_sys2(Text3DResizeSystem) {
         zigel_data.render_disabled = renderDisabled->value;
         zigel_data.scale = text3DScale->value;
 
-        resize_text3D(world, children, textData, zigel_data);
+        resize_text3D(world, e, children, children_length, text, zigel_data, new_length);
 
     }
 } zox_sys_end(Text3DResizeSystem);

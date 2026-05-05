@@ -87,25 +87,20 @@ zox_sys2(PlayerGame3StartSystem) {
 
             load_character_p(world, realm, e, &position, &spawn_euler, &spawn_rotation);
 
-            float3 camera_position = load_camera_position(world, realm);
-
-            if (float3_distance(camera_position, position) <= 3) {
+            // float3 camera_position = load_camera_position(world, realm);
+            /*if (float3_distance(camera_position, position) <= 3) {
                 // if attached
                 position = camera_position;
-            }
+            }*/
         }
 
-        zox_log("Spawning Player Terrain Chunk at [%fx%fx%f] @ [%f]", position.x, position.y, position.z, zox_current_time);
-
+        // zox_log("Spawning Player Terrain Chunk at [%fx%fx%f] @ [%f]", position.x, position.y, position.z, zox_current_time);
         zox_set(camera->value, Position3D, { position });
         zox_set(camera->value, Euler, { spawn_euler });
         zox_set(camera->value, Rotation3D, { spawn_rotation });
-
         // waits for fadeout?
         double delay = game_load_player_delay + game_load_fade_transition_time;
-
         delay_event(world, &delayed_start_streamer, e, delay);
-
         // Alert our player too
         zox_set(e, PlayerState, { zox_player_state_starting });
         zox_set(e, PlayerStateDirty, { zox_dirty_trigger });

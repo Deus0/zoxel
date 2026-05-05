@@ -27,7 +27,7 @@ zox_sys2(BodysRealmSpawnSystem) {
             continue;
         }
 
-        zox_log("mdepth in body parts gen [%i]", mdepth);
+        // zox_log("mdepth in body parts gen [%i]", mdepth);
 
         byte variants = 1;
         byte vlength = powers_of_two_byte[mdepth];

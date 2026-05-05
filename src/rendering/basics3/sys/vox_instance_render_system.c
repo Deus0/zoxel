@@ -92,26 +92,37 @@ zox_sys2(VoxInstanceRenderSystem) {
         }
 
         entity mesh = command.mesh;
+
+        // Safety First!
+        if (!zox_valid(mesh)){
+            continue;
+        }
+
+        if (!zox_has(mesh, MeshIndicies)) {
+            zox_loge("Invalid Instance Mesh [%s]: No MeshIndicies", zox_get_name(mesh));
+            continue;
+        }
+
+        // Ignore if no indicies
+        zox_geter(mesh, MeshIndicies, meshIndicies);
+        if (!meshIndicies->length) {
+            continue;
+        }
+
         if (!zox_has(mesh, MeshGPULink)) {
-            zox_log_error("Invalid Instance Mesh [%s]", zox_get_name(mesh))
+            zox_loge("Invalid Instance Mesh [%s]: No MeshGPULink", zox_get_name(mesh));
             continue;
         }
 
         zox_geter(mesh, MeshGPULink, gpumesh);
         if (!gpumesh->value.x || !gpumesh->value.y) {
-            zox_log_error("Invalid Instance Mesh [%s]", zox_get_name(mesh))
+            zox_loge("Invalid Instance Mesh [%s]: GPU Mesh is 0.", zox_get_name(mesh));
             continue;
         }
 
         zox_geter(mesh, ColorsGPULink, gpucolors);
         if (!gpucolors->value) {
-            zox_log_error("[VoxInstanceRenderSystem] Error: colorsGPULink is 0 [%s]", zox_get_name(mesh))
-            continue;
-        }
-
-        zox_geter(mesh, MeshIndicies, meshIndicies);
-        if (!meshIndicies->length) {
-            // zox_log_error("[VoxInstanceRenderSystem] Error: meshIndicies is 0 [%s]", zox_get_name(mesh))
+            zox_loge("Invalid Instance Mesh [%s]: GPU Color is 0.", zox_get_name(mesh));
             continue;
         }
 

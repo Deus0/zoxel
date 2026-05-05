@@ -16,20 +16,16 @@ zox_sys2(TerrainGameStartSystem) {
         }
 
         if (zox_game_type == zox_game_mode_3D) {
-
-            zox_log("Game Spawning Terrain @ [%f]", zox_current_time);
+            // zox_log("Game Spawning Terrain @ [%f]", zox_current_time);
             // delay_event(world, &game_start_terrain3D, game, game_spawn_terrain_delay);
-
             entity terrain = spawn_terrain_streaming(world, realm->value, prefab_terrain);
             zox_set(terrain, RealmLink, { realm->value });
             zox_set(realm->value, TerrainLink, { terrain }); // link terrain to realm too
             local_terrain = terrain;
-
         } else if (zox_game_type == zox_game_mode_2D) {
             // delay_event(world, &game_start_terrain2D, game, game_spawn_terrain_delay);
             // spawn_terrain_on_realm(world, realmLink->value);
             spawn_grid2D(world);
         }
-
     }
 } zox_sys_end(TerrainGameStartSystem);

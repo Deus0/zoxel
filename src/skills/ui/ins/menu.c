@@ -1,7 +1,4 @@
-entity spawn_player_menu_skills(
-    ecs* world,
-    const entity player
-) {
+entity spawn_player_menu_skills(ecs* world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);

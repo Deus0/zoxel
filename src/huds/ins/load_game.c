@@ -35,18 +35,15 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
     }
 
     zox_delete(menu);
-
-    zox_log("Realm Path [%s]", path->value);
+    zox_logv("Save Realm Path [%s]", path->value);
 
     // TODO: Spawn a realm here and window for it
     entity realm = spawn_realm(world, prefab_realm);
-
     zox_set(game, RealmLink, { realm });
     zox_set_ptr(realm, SaveGamePath, path->value);
     load2_realm(path->value, "seed.dat", &realm_save);
     set_noise_seed(realm_save.seed);
     zox_set(realm, Seed, { realm_save.seed });
-
     delay_event(world, &delay_spawn_menu_realm, player, 0.01);
 }
 

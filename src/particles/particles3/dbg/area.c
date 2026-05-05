@@ -1,19 +1,28 @@
 entity big_old_particle_zone = 0;
 
-void toggle_test_particle_system(ecs *world, int32_t keycode) {
-    const int test_particle_zone_spawn_rate = 5000;
-    const float3 big_old_particle_zone_bounds = (float3) { 32, 32, 32 };
-    const color test_color = (color) { 158, 118, 44, 200 };
-    // max should be around 10k
-    if (keycode == zox_key_l) {
-        if (big_old_particle_zone) {
-            zox_log("- deleting a big old particle zone")
-            zox_delete(big_old_particle_zone)
-            big_old_particle_zone = 0;
-            return;
-        }
-        zox_log("+ spawning a big old particle zone")
-        const entity particle3D_emitter = spawn_particle3D_emitter(world, 0, test_particle_zone_spawn_rate, float3_scale(big_old_particle_zone_bounds, 2), test_color);
-        big_old_particle_zone = particle3D_emitter;
+void zox_dbg_spawn_particle_emitter(ecs *world, int32_t keycode) {
+    if (keycode != zox_key_l) {
+        return;
     }
+
+    // max should be around 10k
+    if (big_old_particle_zone) {
+        zox_log("- Deleting a big old particle zone");
+        zox_delete(big_old_particle_zone);
+        big_old_particle_zone = 0;
+        return;
+    }
+
+    zox_geter_value(dbg_player, CameraLink, entity, camera);
+    zox_geter_value(camera, Position3D, float3, cposition);
+
+    int spawn_rate = 100;
+    float3 bounds = float3_single(4);
+    color pcolor = (color) { rand_range(0, 255), rand_range(0, 255), rand_range(0, 255), rand_range(0, 255) };
+    zox_log("+ Spawning Particles [%ix%ix%ix%i", pcolor.r, pcolor.g, pcolor.b, pcolor.a);
+
+    entity e = spawn_particle3D_emitter(world, 0, spawn_rate, float3_scale(bounds, 2), pcolor);
+    zox_set(e, Position3D, { cposition });
+
+    big_old_particle_zone = e;
 }

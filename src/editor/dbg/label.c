@@ -1,21 +1,18 @@
 uint zox_dbg_ui_hierarchy(ecs *world, entity e, char *buffer, uint size, uint index, byte dig) {
     byte estimated_line = 64;
 
-    if (!zox_has(e, Children)) {
-        return index;
-    }
-
     dig++;
 
-    zox_geter(e, Children, children);
-    for (int i = 0; i < children->length; i++) {
-        entity child = children->value[i];
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity e2 = children[j];
 
-        if (!child) {
+        if (!e2) {
             continue;
         }
 
-        if (zox_has(child, EditorElement)) {
+        if (zox_has(e2, EditorElement)) {
             continue;
         }
 
@@ -23,13 +20,13 @@ uint zox_dbg_ui_hierarchy(ecs *world, entity e, char *buffer, uint size, uint in
             index += snprintf(buffer + index, size - index, " ");
         }
 
-        index += snprintf(buffer + index, size - index, "- [%s]\n", zox_get_name(child));
+        index += snprintf(buffer + index, size - index, "- [%s]\n", zox_get_name(e2));
 
         if (index + estimated_line >= size) {
             return index;
         }
 
-        index = zox_dbg_ui_hierarchy(world, child, buffer, size, index, dig);
+        index = zox_dbg_ui_hierarchy(world, e2, buffer, size, index, dig);
     }
 
     return index;

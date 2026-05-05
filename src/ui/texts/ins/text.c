@@ -1,15 +1,12 @@
 entity spawn_zext(ecs *world, SpawnZext data) {
-
     if (!zox_valid(data.canvas.e)) {
         zox_logw("Canvas invalid in [spawn_zext]");
         return 0;
     }
-
     if (!zox_valid(data.element.prefab)) {
         zox_logw("Invalid Prefab in [spawn_zext]");
         return 0;
     }
-
     int2 texture_size;
     byte font_resolution;
     if (data.zext.font_resolution) {
@@ -29,15 +26,12 @@ entity spawn_zext(ecs *world, SpawnZext data) {
     int2 pixel_size = calculate_zext_size(text_data.value, text_data.length, data.zext.font_size, data.zext.margins, default_line_padding);
 
     zox_instance(data.element.prefab);
-    // zox_name("zext");
-
+    zox_name("text");
     if (!zox_valid(e)) {
         zox_loge("Invalid e in [spawn_zext]");
         return 0;
     }
-
     initialize_element(world, e, data.parent.e, data.canvas.e, data.element.position, pixel_size, texture_size, data.element.anchor, data.element.layer);
-
     zox_set(e, RenderDisabled, { data.element.render_disabled });
     zox_set(e, TextFontSize, { data.zext.font_size });
     zox_set(e, TextResolution, { font_resolution });
@@ -54,6 +48,5 @@ entity spawn_zext(ecs *world, SpawnZext data) {
     }
     zox_set_ptr(e, TextData, text_data);
     zox_set(e, TextDirty, { zox_dirty_trigger });
-
     return e;
 }

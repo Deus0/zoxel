@@ -49,9 +49,8 @@ zox_sys2(PlayerUIGamePauseSystem) {
         }
         pause_event_link->value = pause_delay;
 
-        float blur = pause_blur;
-        zox_log("Set Camera Blur [%s] %f", zox_get_name(camera->value), blur);
-        zox_set(camera->value, CameraBlur, { blur });
+        // zox_log("Set Camera Blur [%s] %f", zox_get_name(camera->value), pause_blur);
+        zox_set(camera->value, CameraBlur, { pause_blur });
 
     }
 } zox_sys_end(PlayerUIGamePauseSystem);

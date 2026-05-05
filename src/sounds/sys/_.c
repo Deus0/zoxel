@@ -58,5 +58,5 @@ void define_systems_sounds(ecs *world) {
 #endif
 
     // Sound gen takes longer
-    zox_set(zox_id(SoundGenerateSystem), SystemDeltaMax, { 5 });
+    zox_set(zox_id(SoundGenerateSystem), SystemDeltaMax, { zox_lag_cutoff * 2 });
 }

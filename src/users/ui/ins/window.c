@@ -12,20 +12,12 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     int2 position = data.element.position;
     byte header_height = is_header ? data.header_zext.font_size + data.header_zext.margins.y * 2 : 0;
 
+    // Spawns window here spawn_window_users
     zox_instance(data.element.prefab);
     zox_set_unique_name(e, data.header_zext.text);
     initialize_element(world, e, data.parent.e, data.canvas.e, position, data.element.size, data.element.size, data.element.anchor, data.element.layer);
     set_window_bounds_to_canvas(world, e, data.canvas.size, data.element.size, data.element.anchor);
-    // int user_datas_count = udata->length;
     int grid_elements_count = udata_length;
-
-    // int children_length = 1 + is_header;
-    // Children children = (Children) { 0 };
-    // initialize_Children(&children, children_length);
-    /*if (children.length != children_length) {
-        zox_log_error("Failed to iniitalize children.");
-        return e;
-    }*/
 
     if (is_header) {
         LayoutParentData e_parent_data = { .e = e };
@@ -66,13 +58,9 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     zox_set(grid, GridSize, { data.window.grid_size });
     zox_set(grid, GridPadding, { data.window.grid_padding });
     zox_set(grid, GridMargins, { data.window.grid_margins });
-
-    // children.value[is_header] = grid;
     zox_set_parent(world, grid, e);
 
     entity body_children[grid_elements_count];
-    //Children body_children = (Children) { 0 };
-    //initialize_Children(&body_children, grid_elements_count);
 
     byte icon_layer = body_layer + 1;
     int item_index = 0;
@@ -106,7 +94,6 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
             entity user_data_element = udata[item_index];
 
             entity3 frame_spawn = spawn_frame_user(world, frame_data, user_data_element);
-            // body_children.value[array_index] = frame_spawn.x;
             body_children[array_index] = frame_spawn.x;
             zox_set_parent(world, frame_spawn.x, grid);
 
@@ -133,9 +120,6 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
         }
     }
 
-    //zox_set_ptr(grid, Children, body_children);
-    //zox_set_ptr(e, Children, children);
-
     // add to characters element links and link to character
     zox_muter(character, ElementLinks, elementLinks);
     add_to_ElementLinks(elementLinks, e);
@@ -146,7 +130,6 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
 
 
 entity spawn_window_users_id(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns) {
-
     entity character = data.window.character;
 
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {

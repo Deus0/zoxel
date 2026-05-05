@@ -1,22 +1,17 @@
 float3 calculate_zigel3D_position(float2 zigel3D_size, int data_index, int zigels_count, float scale) {
-
     if (scale == 0) {
         scale = 1;
     }
-
     float3 position = float3_zero;
     position.x += zigel3D_size.x * 0.5f * scale;
     position.x -= zigel3D_size.x * 0.5f * zigels_count * scale; // centre
     position.x += zigel3D_size.x * data_index * scale;
-
     return position;
 }
 
 entity spawn_text3D(ecs *world, Text3DData data, Zigel3DData zigel_data) {
     zox_instance(data.prefab);
     zox_name("text3D");
-    //zox_set(e, ParentLink, { data.parent });
-    zox_set_parent(world, e, data.parent);
     zox_set(e, LocalPosition3D, { data.position });
     zox_set(e, TextPadding, { data.padding });
     zox_set(e, MeshAlignment, { data.alignment });
@@ -25,6 +20,7 @@ entity spawn_text3D(ecs *world, Text3DData data, Zigel3DData zigel_data) {
     zox_set(e, FontOutlineColor, { zigel_data.outline_color });
     zox_set(e, Text3DScale, { zigel_data.scale });
     zox_set(e, TextFontSize, { zigel_data.resolution });
+    zox_set_parent(world, e, data.parent);
     // text
     TextData text = (TextData) { 0 };
     int length = data.text != NULL ? strlen(data.text) : 0;

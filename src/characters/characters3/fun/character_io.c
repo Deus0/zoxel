@@ -44,12 +44,11 @@ float3 load_player_position(ecs *world, entity e) {
     return save.position;
 }
 
+/*float3 load_camera_position(ecs *world, entity e) {
+    // zox_geter(e, SaveGamePath, path);
 
-float3 load_camera_position(ecs *world, entity e) {
-    zox_geter(e, SaveGamePath, path);
-
-    SaveDataCamera save;
-    load2_camera(path->value, "camera.dat", &save);
+    // SaveDataCamera save;
+    // load2_camera(path->value, "camera.dat", &save);
 
     return save.position;
-}
+}*/

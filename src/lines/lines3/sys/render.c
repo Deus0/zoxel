@@ -12,6 +12,7 @@ zox_sys2(Line3DRenderSystem) {
     zox_gpu_float4(line3D_fog_data_location, get_fog_value());
     zox_gpu_float4x4(line3D_camera_matrix_location, render_camera_matrix);
     zox_gpu_enable_attribute(line3D_position_location);
+    zox_gpu_enable_attribute(line3D_color_location);
 
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LineData3D, data);
@@ -38,13 +39,12 @@ zox_sys2(Line3DRenderSystem) {
         float4 colorf = color_to_float4(c->value);
 
         zox_gpu_set_attribute_float3(line3D_position_location, &data->value);
-        // glVertexAttribPointer(line3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, (GLfloat*) &data->value);
-
         zox_gpu_float4(line3D_color_location, colorf);
 
         zox_gpu_render_lines(2);
     }
 
+    zox_gpu_disable_attribute(line3D_color_location);
     zox_gpu_disable_attribute(line3D_position_location);
     zox_disable_material();
     zox_gpu_disable_blend();

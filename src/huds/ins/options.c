@@ -12,7 +12,7 @@ void on_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
 
     zox_geter_value(toggle, OptionLabel, const char*, name);
     zoxs_set_byte(world, name, data->value);
-    zox_log("Toggle Option [%s] set to [%i]", name, data->value);
+    // zox_log("Toggle Option [%s] set to [%i]", name, data->value);
 }
 
 void on_settings_slider_slid_float(ecs* world, const SlideEventData* data) {
@@ -47,10 +47,10 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
     byte header_font_size = 18 * ui_scale;
     byte list_font_size = 8 * ui_scale;
 
-    for (uint i = 0; i < max_settings; i++) {
+    for (uint i = 0; i < settings_count; i++) {
         setting s = settings[i];
         if (!s.name) {
-            zox_log_error("setting is null at [%i]", i);
+            zox_log_error("Setting Null: [%i] / [%i], Type %i", i, max_settings, s.type);
             break;
         }
 
@@ -88,8 +88,7 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
                 .value =  slider_value,
                 .value_bounds = (float2) { (float) s.min_int, (float) s.max_int },
             };
-
-            zox_log("New Int Option %s %i %i:%i - f%f", s.name, s.value_int, s.min_int, s.max_int, slider_value);
+            // zox_logv("New Int Option %s %i %i:%i - f%f", s.name, s.value_int, s.min_int, s.max_int, slider_value);
         }
 
         // TODO: support other types

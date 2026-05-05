@@ -1,4 +1,4 @@
-int get_max_width(const char *header_label, int header_font_size, int header_padding, const text_group labels[], int elements_count, int element_font_size, int element_padding) {
+/*int get_max_width(const char *header_label, int header_font_size, int header_padding, const text_group labels[], int elements_count, int element_font_size, int element_padding) {
 
     int max_characters = 0; // get max text length out of all of the words
     for (int i = 0; i < elements_count; i++) {
@@ -17,10 +17,10 @@ int get_max_width(const char *header_label, int header_font_size, int header_pad
     } else {
         return element_width;
     }
-}
+}*/
 
 // todo: use struct inputs SpawnUIList
-entity spawn_ui_list(ecs *world, entity prefab, entity canvas, const char *header_label, int elements_count, int max_elements, const text_group* labels, const ClickEvent* click_events, const SlideEvent* slide_events, const byte* types, int2 pixel_position, float2 anchor, byte is_close_button, byte header_font_size, byte font_size, byte layer, byte is_scrollbar, entity player, int2 min_size) {
+/*entity spawn_ui_list(ecs *world, entity prefab, entity canvas, const char *header_label, int elements_count, int max_elements, const text_group* labels, const ClickEvent* click_events, const SlideEvent* slide_events, const byte* types, int2 pixel_position, float2 anchor, byte is_close_button, byte header_font_size, byte font_size, byte layer, byte is_scrollbar, entity player, int2 min_size) {
 
     entity parent = canvas;
     byte is_header = 1;
@@ -193,4 +193,4 @@ entity spawn_ui_list(ecs *world, entity prefab, entity canvas, const char *heade
     }
 
     return e;
-}
+}*/

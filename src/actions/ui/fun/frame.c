@@ -7,8 +7,6 @@ void on_action_set(ecs* world, entity e, byte index, entity action, entity meta)
         return;
     }
 
-    // zox_geter(menu, Children, children);
-
     entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, menu, children, layouts2_children_capacity);
     if (children_length < 2) {
@@ -18,7 +16,6 @@ void on_action_set(ecs* world, entity e, byte index, entity action, entity meta)
     entity body = children[1];
     entity body_children[layouts2_children_capacity];
     uint body_children_length = zox_get_children(world, body, body_children, layouts2_children_capacity);
-    // zox_geter(body, Children, body_children);
 
     if (index >= body_children_length) {
         zox_logw("Index [%i] >= UIs [%i]", index, body_children_length);
@@ -29,7 +26,6 @@ void on_action_set(ecs* world, entity e, byte index, entity action, entity meta)
     entity frame_children[layouts2_children_capacity];
     uint frame_children_length = zox_get_children(world, frame, frame_children, layouts2_children_capacity);
 
-    // zox_geter(frame, Children, frame_children);
     entity icon = frame_children[0];
     entity label = frame_children_length >= 1 ? frame_children[1] : 0;
     // remember: uses meta item for texture source here
@@ -82,7 +78,6 @@ void on_action_removed(ecs* world, entity e, entity user) {
 
     entity actionbar_children[layouts2_children_capacity];
     uint actionbar_children_length = zox_get_children(world, actionbar, actionbar_children, layouts2_children_capacity);
-    // zox_geter(actionbar, Children, menu_actions_children);
     if (actionbar_children_length < 2) {
         zox_log_error("Character has bad menu_actions_children");
         return;
@@ -96,7 +91,6 @@ void on_action_removed(ecs* world, entity e, entity user) {
 
     entity body_children[layouts2_children_capacity];
     uint body_children_length = zox_get_children(world, body, body_children, layouts2_children_capacity);
-    // zox_geter(menu_actions_body, Children, menu_actions_body_children);
     if (action_index >= body_children_length) {
         return;
     }
@@ -109,7 +103,6 @@ void on_action_removed(ecs* world, entity e, entity user) {
 
     entity frame_children[layouts2_children_capacity];
     uint frame_children_length = zox_get_children(world, frame, frame_children, layouts2_children_capacity);
-    // zox_geter(frame_action, Children, frame_children);
     if (!frame_children_length ) {
         return;
     }

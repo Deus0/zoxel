@@ -64,6 +64,8 @@ void editor_fetch_children(ecs *world, entity_array_d* entities, text_group_dyna
 
     add_entity_to_labels(world, target, labels, entities, 0);
 
+    fetch_entity_labels_children(world, target, labels, entities, 0);
+
     fetch_entity_list_by_id(world, target, zox_id(Children), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(TextureLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(CameraLinks), labels, entities, 0);
@@ -172,13 +174,15 @@ zox_sys2(HierarchySpawnSystem) {
         LayoutParentData child_parent_data = { .e = list_ui };
 
         // 4: Delete old list elements
-        zox_muter(list_ui, Children, children);
-        for (int j = 0; j < children->length; j++) {
-            zox_delete(children->value[j]);
+        entity list_children[layouts2_children_capacity];
+        uint list_children_length = zox_get_children(world, list_ui, list_children, layouts2_children_capacity);
+        for (uint j = 0; j < list_children_length; j++) {
+            entity e2 = list_children[j];
+            zox_delete(e2);
         }
 
         // 5: Spawn new buttons
-        resize_Children(children, 0);
+        // resize_Children(children, 0);
         for (size_t j = 0; j < labels->size; j++) {
             child_text_data.text = labels->data[j].text;
             entity target = entities->data[j];
@@ -188,7 +192,8 @@ zox_sys2(HierarchySpawnSystem) {
             zox_set(e2, ClickEvent, { on_click.value });
             zox_set(e2, EntityTarget, { target });
 
-            add_to_Children(children, e2);
+            // add_to_Children(children, e2);
+            zox_set_parent(world, e2, list_ui);
         }
 
         // 6: Set ListDirty for positioning / hiding etc

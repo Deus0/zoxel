@@ -1,5 +1,15 @@
+/*
+ *  Particles Module in 3D Space!
+ *
+ *      - spawns point like entities
+ *      - renders them as points, lines, meshes etc
+ *      - uses instancing
+ *
+ * */
 #ifndef zoxm_particles3
 #define zoxm_particles3
+
+// #define zox_disable_particles_gpu_instancing
 
 #include "dat/settings.c"
 zox_tag(Particle3D);

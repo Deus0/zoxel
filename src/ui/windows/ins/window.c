@@ -108,6 +108,6 @@ entity spawn_window_header(ecs* world, entity canvas, entity window, int2 wsize,
         .is_close_button = can_close
     };
     zox_set(window, HeaderHeight, { size.y });
-    zox_log("header spawned at: %ix%i", position.x, position.y);
+    // zox_log("header spawned at: %ix%i", position.x, position.y);
     return spawn_header3(world, canvas_data, parent_data, edata, tdata, hdata, on_close);
 }

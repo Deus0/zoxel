@@ -46,7 +46,7 @@ void define_systems_streaming(ecs* world) {
         [out] rendering.RenderDisabled,
         [none] streaming.StreamedChunk
     );
-    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, { 8 });
+    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, {  zox_lag_cutoff * 2 });
     add_system_process_counter(world, zox_id(ChunkFrustumSystem));
 
     zox_filter(streamers3,

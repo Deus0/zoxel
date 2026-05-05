@@ -5,12 +5,10 @@ zox_sys2(ListRenderDirtySystem) {
     zox_sys_in(ListPositionDirty);
     zox_sys_in(ListStart);
     zox_sys_in(ListVisible);
-    //zox_sys_in(Children);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ListPositionDirty, state);
         zox_sys_i(ListStart, start);
         zox_sys_i(ListVisible, visible);
-        //zox_sys_i(Children, children);
 
         if (state->value != zox_dirty_active) {
             continue;

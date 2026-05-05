@@ -79,15 +79,12 @@ zox_sys2(StreamEndSystem) {
         }
 
         if (!running && chunks_loaded >= chunk_required) {
-            zox_log("Terrain Loaded: @ [%f] - chunks: [%i]", zox_current_time, chunks_loaded);
-
+            // zox_log("Terrain Loaded: @ [%f] - chunks: [%i]", zox_current_time, chunks_loaded);
             // we should check if all chunks have finished here
-
             if (event->value) {
                 (*event->value)(world, eventInput->value);
                 event->value = NULL;
             }
-
             // now loaded
             loaded->value = zox_load_done;
         }

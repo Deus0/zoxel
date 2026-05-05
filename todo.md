@@ -1,12 +1,10 @@
 ### todo ###
 
-- 3D uis are broken atm due to changes in parenting
-
--x Tooltip text isnt moving
--x Header text is missing for user uis
--x icon text all just dissapeared
--x tooltip doesnt dissapear when the ui dies - keep a link on it and react if it dies / becomes non selected
-
+- remove any use of user macros from user data, just reuse their prefabs and add tags
+- use functions like spawn_window, or spawn_user_grid inside those uis
+-x test particles
+- test function for character spawning
+- now they keep falling through map
 - investigate characters sometimes small - due to block depth
 - sometimes character missing a mesh too
 
@@ -319,6 +317,11 @@ Done:
 -x Fix ./bsh/windows-headless.sh
 -x Fix ./bsh/windows.sh
 	-x use bsh/windows.sh
+-x 3D uis are broken atm due to changes in parenting
+-x Tooltip text isnt moving
+-x Header text is missing for user uis
+-x icon text all just dissapeared
+-x tooltip doesnt dissapear when the ui dies - keep a link on it and react if it dies / becomes non selected
 	
 	
 # Delayed Post Release #

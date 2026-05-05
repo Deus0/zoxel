@@ -28,7 +28,7 @@ void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
 
 
         int monitor_current = SDL_GetWindowDisplayIndex(window);
-        if (monitor_current >= 0) {
+        if (monitor_current >= 0 && monitor != monitor_current) {
             zox_log("Window moved monitors [%i] => [%i]", monitor, monitor_current);
             monitor = monitor_current;
         }

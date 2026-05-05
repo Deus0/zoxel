@@ -40,11 +40,6 @@ void zox_gpu_dispose_shader(uint id) { }
 static inline void zox_gpu_render(uint length) { }
 static inline void zox_gpu_render_triangles_instanced(uint indicies, uint length) { }
 
-// Points
-
-static inline void zox_gpu_render_points(uint length) { }
-static inline void zox_gpu_render_points_instanced(uint length) { }
-
 byte zox_init_glew() { return EXIT_SUCCESS; }
 
 #include "fun/_.c"

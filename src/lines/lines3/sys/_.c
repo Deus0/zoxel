@@ -1,4 +1,4 @@
-#include "line3D_render.c"
+#include "render.c"
 #include "cube_line_render.c"
 #include "render_depths.c"
 #include "quad_renderer.c"
