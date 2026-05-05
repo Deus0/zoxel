@@ -14,20 +14,16 @@ zox_sys2(TextBackgroundSystem) {
         zox_sys_i(TextPadding, padding);
         zox_sys_o(LayoutSize, layout_size);
         zox_sys_o(LayoutSizeDirty, layout_size_dirty);
-
         if (text_dirty->value != zox_dirty_active) {
             continue;
         }
-
-        const int2 new_size = calculate_zext_size(
+        int2 new_size = calculate_zext_size(
             text->value,
             text->length,
             size->value,
             padding->value,
             default_line_padding);
-
         layout_size->value = new_size;
         layout_size_dirty->value = zox_dirty_trigger;
-
     }
 } zox_sys_end(TextBackgroundSystem);

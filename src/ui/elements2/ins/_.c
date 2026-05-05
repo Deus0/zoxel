@@ -3,7 +3,6 @@
 #include "label.c"
 #include "button.c"
 #include "toggle.c"
-#include "button_close.c"
 #include "element_bar_front.c"
 #include "element_bar.c"
 #include "icon_overlay.c"
@@ -12,10 +11,7 @@
 #include "icon_mouse.c"
 #include "handle.c"
 #include "slider.c"
-
 #include "scrollbar_handle.c"
 #include "scrollbar.c"
 #include "scrollview.c"
-
-#include "header.c"
 #include "list.c"

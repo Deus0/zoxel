@@ -12,13 +12,17 @@ void set_element_layers_auto(ecs *world, entity e, byte layer) {
         zox_set(e, Layer2D, { new_layer })
     }
 
-    if (!zox_has(e, Children)) {
+    /*if (!zox_has(e, Children)) {
         return;
     }
 
     zox_geter(e, Children, children);
     for (int j = 0; j < children->length; j++) {
-        entity child = children->value[j];
+        entity child = children->value[j];*/
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity child = children[j];
         set_element_layers_auto(world, child, new_layer);
     }
 }
@@ -38,13 +42,18 @@ void set_element_layers(ecs *world, entity e, byte window_layer) {
         zox_set(e, Layer2D, { new_layer });
     }
 
-    if (!zox_has(e, Children)) {
+    /*if (!zox_has(e, Children)) {
         return;
     }
 
     zox_geter(e, Children, children);
     for (int j = 0; j < children->length; j++) {
-        entity child = children->value[j];
+        entity child = children->value[j];*/
+
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity child = children[j];
         set_element_layers(world, child, window_layer);
     }
 }
@@ -52,16 +61,21 @@ void set_element_layers(ecs *world, entity e, byte window_layer) {
 
 // todo: implement localLayer2D's here for elements'
 byte get_highest_layer(ecs *world, entity e, byte layer) {
-    if (!e || !zox_has(e, Children)) {
+    if (!e) { //|| !zox_has(e, Children)) {
         return layer;
     }
 
     byte child_layer = layer + 1;
     byte highest_layer = layer;
 
-    zox_geter(e, Children, children);
+    /*zox_geter(e, Children, children);
     for (int j = 0; j < children->length; j++) {
-        entity child = children->value[j];
+        entity child = children->value[j];*/
+
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity child = children[j];
         byte new_layer = get_highest_layer(world, child, child_layer);
         // if (new_layer > highest_layer) zox_log("    > [%lu] layers_per_window at %i / %i [%i]\n", e, j, children->length, new_layer)
         if (new_layer > highest_layer) {

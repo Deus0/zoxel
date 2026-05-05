@@ -19,15 +19,13 @@ typedef struct {
 typedef struct {
     // header
     const char *header_text;
-    const byte header_font_size;
-    const byte2 header_padding;
+    byte header_font_size;
+    byte2 header_padding;
     // list area
     byte is_scrollbar;
-
     // todo
     color fill;
     color outline;
-
     // output
-    Children* children;
+    // Children* children;
 } SpawnWindow2;

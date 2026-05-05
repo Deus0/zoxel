@@ -29,11 +29,9 @@ void limited_element(int2* position, int4 b) {
 }
 
 void limit_element(ecs *world, entity e) {
-
     if (!zox_valid(e) || !zox_has(e, LayoutPosition) || !zox_has(e, LayoutConstraints)) {
         return;
     }
-
     zox_muter(e, LayoutPosition, pixel_position);
     zox_geter_value(e, LayoutConstraints, int4, drag_bounds);
     limited_element(&pixel_position->value, drag_bounds);

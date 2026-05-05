@@ -15,5 +15,5 @@ typedef struct {
     int slider_height; // = 64; // now we doing labels
     int slider_padding; // = 64;
     // from window
-    Children *children;
+    // Children *children;
 } SpawnList;

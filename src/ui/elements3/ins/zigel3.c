@@ -1,14 +1,12 @@
 entity spawn_zigel3(ecs *world, Zigel3DData data) {
-
     if (!zox_valid(data.prefab)) {
         zox_log_error("prefab_zigel3 is invalid")
         return 0;
     }
-
     zox_instance(data.prefab);
     // zox_name("zigel3")
-
-    zox_set(e, ParentLink, { data.parent });
+    zox_set_parent(world, e, data.parent);
+    // zox_set(e, ParentLink, { data.parent });
     zox_set(e, ZigelIndex, { data.zigel_index });
     zox_set(e, FontThickness, { data.font_thickness });
     zox_set(e, FontOutlineThickness, { data.font_outline });
@@ -24,6 +22,5 @@ entity spawn_zigel3(ecs *world, Zigel3DData data) {
     if (data.scale) {
         zox_set(e, Scale1D, { data.scale });
     }
-
     return e;
 }

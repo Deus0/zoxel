@@ -23,8 +23,9 @@ entity spawn_button_icon(
     zox_set(e, Anchor, { panchor });
 
     zox_set(e, Layer2D, { layer });
-    zox_set(e, ParentLink, { parent });
+    // zox_set(e, ParentLink, { parent });
     zox_set(e, CanvasLink, { canvas });
+    zox_set_parent(world, e, parent);
 
     if (canvas == parent) {
         // on_child_added(world, canvas, e);
@@ -38,7 +39,7 @@ entity spawn_button_icon(
 
     zox_set(e, ClickEvent, { onclick.value });
 
-    Children children = (Children) { 0 };
+    // Children children = (Children) { 0 };
 
     // spawn texture ui image here
     entity image = spawn_image(
@@ -52,9 +53,9 @@ entity spawn_button_icon(
         layer + 1,
         rdisabled
     );
-    add_to_Children(&children, image);
-
-    zox_set_ptr(e, Children, children);
+    zox_set_parent(world, image, e);
+    //add_to_Children(&children, image);
+    //zox_set_ptr(e, Children, children);
 
     return e;
 }

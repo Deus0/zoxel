@@ -5,14 +5,16 @@ void set_children_render_disabled(ecs *world, entity e, byte disabled) {
         render_disabled->value = disabled;
     }
 
-    if (zox_has(e, Children)) {
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity child = children[j];
+    /*if (zox_has(e, Children)) {
         zox_geter(e, Children, children);
         if (children) {
             for (int i = 0; i < children->length; i++) {
-                entity child = children->value[i];
+                entity child = children->value[i];*/
 
-                set_children_render_disabled(world, child, disabled);
-            }
-        }
+        set_children_render_disabled(world, child, disabled);
     }
 }

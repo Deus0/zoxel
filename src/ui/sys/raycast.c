@@ -117,7 +117,8 @@ zox_sys2(ElementRaycastSystem) {
                     if (window_raycasted && layer2D->value > window_layer) {
                         if (!zox_has(e2, Window)) {
                             // if header/body use parent
-                            window_selected = zox_get_value(e2, ParentLink)
+                            // window_selected = zox_get_value(e2, ParentLink);
+                            window_selected = zox_get_parent(world, e2);
                             window_layer = zox_get_value(ui_selected, Layer2D);
                         } else {
                             window_selected = e2;

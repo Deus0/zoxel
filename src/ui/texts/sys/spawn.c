@@ -5,8 +5,8 @@
 void spawn_text2D_zigels(ecs* world, entity e, SpawnZigel data, const TextData* tdata, entity canvas) {
 
     uint new_length = (uint) calculate_total_zigels(tdata->value, tdata->length);
-    entity children[texts_max_children];
-    uint old_length = zox_get_children(world, e, children, texts_max_children);
+    entity children[texts_children_capacity];
+    uint old_length = zox_get_children(world, e, children, texts_children_capacity);
 
     // Spawn New Zigels
     if (new_length > old_length) {

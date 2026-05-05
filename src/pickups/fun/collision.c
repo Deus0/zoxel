@@ -18,16 +18,23 @@ void on_overlap_pickup(ecs *world, entity e, entity user) {
         return;
     }
 
-    zox_muter(user, ActionLinks, actions);
     zox_geter_value(e, ItemLink, entity, item);
 
+    if (!zox_valid(item)) {
+        zox_loge("Pickup item is invalid");
+        return;
+    }
+
+    zox_muter(user, ActionLinks, actions);
     byte stack_index = 255;
     for (int i = 0; i < actions->length; i++) {
-        if (actions->value[i] == 0) {
+        entity action = actions->value[i];
+
+        if (!zox_valid(action)) {
             continue;
         }
 
-        zox_get_prefab(actions->value[i], item_prefab);
+        zox_get_prefab(action, item_prefab);
         if (item_prefab == item) {
             stack_index = i;
             break;

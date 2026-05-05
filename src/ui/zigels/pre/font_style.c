@@ -1,7 +1,4 @@
-entity spawn_prefab_font_style(
-    ecs *world,
-    const entity prefab_font
-) {
+entity spawn_prefab_font_style(ecs *world, entity prefab_font) {
     zox_prefab();
     zox_prefab_name("font_style");
     zox_add_tag(e, FontStyle);
@@ -10,14 +7,10 @@ entity spawn_prefab_font_style(
     return e;
 }
 
-entity spawn_font_style(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_font_style(ecs *world, entity prefab) {
     const entity prefab_font = zox_get_value(prefab, FontLink);
     zox_instance(prefab);
     zox_name("font_style");
-
     Children children = (Children) { 0 };
     // zox_muter(e, Children, children)
     initialize_Children(&children, font_styles_length);
@@ -99,15 +92,12 @@ entity spawn_font_style(
     children.value[73] = spawn_font(world, prefab_font, font_minus, font_minus_length);
     children.value[74] = spawn_font(world, prefab_font, font_plus, font_plus_length);
     children.value[76] = spawn_font(world, prefab_font, font_percentage, font_percentage_length);
-
     // The Unset ones
     for (int i = 0; i < font_styles_length; i++) {
         if (!children.value[i]) {
             children.value[i] = spawn_font(world, prefab_font, font_question_mark, font_question_mark_length);
         }
     }
-
     zox_set_ptr(e, Children, children);
-
     return e;
 }

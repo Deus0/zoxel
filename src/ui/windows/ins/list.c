@@ -91,8 +91,8 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     // we use the bigger size out of list and header widths
     window_element_data.size = (int2) { int_max(list_size.x, header_size.x), list_size.y + header_height };
 
-    Children window_children = (Children) { 0 };
-    window_data.children = &window_children;
+    // Children window_children = (Children) { 0 };
+    // window_data.children = &window_children;
 
     // Spawn our Window
     entity2 e2 = spawn_window2(world, canvas_data, (LayoutParentData) { .e = canvas }, window_element_data, window_data, close_event, is_close_button, window_type);
@@ -108,12 +108,12 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     };
 
     // NOTE: Scrollview has 2 Children: 1: Scrollbar, 2: ListUI
-    Children scrollview_children = { 0 };
-    entity scrollview = spawn_scrollview(world, canvas_data, (LayoutParentData) { .e = e }, scrollview_data, &scrollview_children, list_data.visible_count, list_data.count);
-    add_to_Children(&window_children, scrollview);
+    // Children scrollview_children = { 0 };
+    entity scrollview = spawn_scrollview(world, canvas_data, (LayoutParentData) { .e = e }, scrollview_data, list_data.visible_count, list_data.count);
+    // add_to_Children(&window_children, scrollview);
+    zox_set_parent(world, scrollview, e);
 
-
-    zox_set_ptr(e, Children, window_children);
+    // zox_set_ptr(e, Children, window_children);
 
     // Spawn our list
     ElementSpawnData list_element_data = {
@@ -124,13 +124,14 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     };
 
     entity list = spawn_list(world, canvas_data, (LayoutParentData) { .e = scrollview }, list_element_data, list_data, alignment, elements2);
-    add_to_Children(&scrollview_children, list);
+    zox_set_parent(world, list, scrollview);
+    // add_to_Children(&scrollview_children, list);
 
     // make sure to link them together
     zox_set(list, ScrollviewLink, { scrollview });
     zox_set(scrollview, ListUILink, { list });
 
-    zox_set_ptr(scrollview, Children, scrollview_children);
+    // zox_set_ptr(scrollview, Children, scrollview_children);
     zox_muter(player, ElementLinks, pelements);
     add_to_ElementLinks(pelements, e);
     zox_set(e, ElementHolder, { player });

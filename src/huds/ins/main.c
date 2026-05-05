@@ -48,7 +48,7 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
     zox_log("+ spawned main menu");
 
     zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
-    zox_set(elements2[0], TooltipEvent, { &tooltip_event_main_menu });
+    // zox_set(elements2[0], TooltipEvent, { &tooltip_event_main_menu });
 
     return e3.x;
 }

@@ -49,22 +49,17 @@ zox_sys2(ItemActivateSystem) {
         if (!quantity->value) {
             // set action to nullptr
             // destroy entity
+            on_action_removed(world, e, user);
             zox_delete(e);
-            on_action_removed(
-                world,
-                e,
-                user
-            );
         }
 
         // place block sound
-        spawn_sound_generated(
-            world,
+        spawn_sound_generated(world,
             prefab_sound_generated,
             instrument_violin,
             note_frequencies[30 + rand() % 6],
             0.6,
-            1.8f * get_volume_sfx()
+            1.4f * get_volume_sfx()
         );
 
         dirty->value = zox_dirty_trigger;

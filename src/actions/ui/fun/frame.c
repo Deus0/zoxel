@@ -7,20 +7,31 @@ void on_action_set(ecs* world, entity e, byte index, entity action, entity meta)
         return;
     }
 
-    zox_geter(menu, Children, children);
+    // zox_geter(menu, Children, children);
 
-    entity body = children->value[1];
-    zox_geter(body, Children, body_children);
-
-    if (index >= body_children->length) {
-        zox_logw("Index [%i] >= UIs [%i]", index, body_children->length);
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, menu, children, layouts2_children_capacity);
+    if (children_length < 2) {
         return;
     }
 
-    entity frame = body_children->value[index];
-    zox_geter(frame, Children, frame_children);
-    entity icon = frame_children->value[0];
-    entity label = frame_children->length >= 1 ? frame_children->value[1] : 0;
+    entity body = children[1];
+    entity body_children[layouts2_children_capacity];
+    uint body_children_length = zox_get_children(world, body, body_children, layouts2_children_capacity);
+    // zox_geter(body, Children, body_children);
+
+    if (index >= body_children_length) {
+        zox_logw("Index [%i] >= UIs [%i]", index, body_children_length);
+        return;
+    }
+
+    entity frame = body_children[index];
+    entity frame_children[layouts2_children_capacity];
+    uint frame_children_length = zox_get_children(world, frame, frame_children, layouts2_children_capacity);
+
+    // zox_geter(frame, Children, frame_children);
+    entity icon = frame_children[0];
+    entity label = frame_children_length >= 1 ? frame_children[1] : 0;
     // remember: uses meta item for texture source here
     // zox_get_prefab(action, meta);
     set_icon_from_user_data(world, frame, icon, meta);
@@ -40,63 +51,7 @@ void on_action_set(ecs* world, entity e, byte index, entity action, entity meta)
 }
 
 
-// when action was updated
-/*void on_action_updated_quantity(
-    ecs *world,
-    const entity character,
-    const byte action_selected,
-    const byte quantity
-) {
-    if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
-        return;
-    }
-    zox_geter(character, ElementLinks, elements);
-    find_array_element_with_tag(elements, MenuActions, actionbar);
-    if (actionbar) {
-        zox_geter(actionbar, Children, menu_actions_children);
-        const entity menu_actions_body = menu_actions_children->value[1];
-        zox_geter(menu_actions_body, Children, menu_actions_body_children);
-        const entity frame_action = menu_actions_body_children->value[action_selected];
-        set_icon_label_from_user_data_quantity(
-            world,
-            frame_action,
-            quantity
-        );
-    }
-}*/
-
-/*void on_action_updated_quantity2(
-    ecs *world,
-    const entity e,
-    const entity user,
-    const byte quantity
-) {
-    zox_muter(user, ActionLinks, actions);
-    int action_index = -1;
-    for (int j = 0; j < actions->length; j++) {
-        if (actions->value[j] == e) {
-            action_index = j;
-            break;
-        }
-    }
-
-    if (action_index == -1) {
-        return;
-    }
-
-    on_action_updated_quantity(
-        world,
-        user,
-        action_index,
-        quantity
-    );
-}*/
-
-void on_action_removed(
-    ecs* world,
-    entity e,
-    entity user
-) {
+void on_action_removed(ecs* world, entity e, entity user) {
     zox_muter(user, ActionLinks, actions);
 
     int action_index = -1;
@@ -113,53 +68,58 @@ void on_action_removed(
 
     actions->value[action_index] = 0;
 
-    if (zox_has(user, ElementLinks)) {
-        zox_geter(user, ElementLinks, elements);
-
-        find_array_element_with_tag(elements, MenuActions, actionbar);
-        if (zox_valid(actionbar)) {
-
-            zox_geter(actionbar, Children, menu_actions_children);
-            if (menu_actions_children->length >= 2) {
-
-                const entity menu_actions_body = menu_actions_children->value[1];
-                if (!zox_valid(menu_actions_body)) {
-                    zox_log_error("invalid menu_actions_body")
-                    return;
-                }
-                zox_geter(menu_actions_body, Children, menu_actions_body_children);
-
-                const entity frame_action = menu_actions_body_children->value[action_index];
-                if (!zox_valid(frame_action)) {
-                    zox_log_error("invalid frame_action")
-                    return;
-                }
-
-                zox_geter(frame_action, Children, frame_action_children);
-
-                const entity icon_action = frame_action_children->value[0];
-                if (!zox_valid(icon_action)) {
-                    zox_log_error("invalid icon_action")
-                    return;
-                }
-
-                // now reset icon
-                set_icon_from_user_data(
-                    world,
-                    frame_action,
-                    icon_action,
-                    0
-                );
-                /*set_icon_label_from_user_data(
-                    world,
-                    frame_action,
-                    0
-                );*/
-            }
-        } else {
-            zox_log_error("character has no actionbar")
-        }
-    } else {
-        zox_log_error("character has no element links")
+    if (!zox_has(user, ElementLinks)) {
+        zox_log_error("Character has no ElementLinks");
+        return;
     }
+    zox_geter(user, ElementLinks, elements);
+
+    find_array_element_with_tag(elements, MenuActions, actionbar);
+    if (!zox_valid(actionbar)) {
+        zox_log_error("Character has no actionbar");
+        return;
+    }
+
+    entity actionbar_children[layouts2_children_capacity];
+    uint actionbar_children_length = zox_get_children(world, actionbar, actionbar_children, layouts2_children_capacity);
+    // zox_geter(actionbar, Children, menu_actions_children);
+    if (actionbar_children_length < 2) {
+        zox_log_error("Character has bad menu_actions_children");
+        return;
+    }
+
+    entity body = actionbar_children[1];
+    if (!zox_valid(body)) {
+        zox_log_error("invalid menu_actions_body")
+        return;
+    }
+
+    entity body_children[layouts2_children_capacity];
+    uint body_children_length = zox_get_children(world, body, body_children, layouts2_children_capacity);
+    // zox_geter(menu_actions_body, Children, menu_actions_body_children);
+    if (action_index >= body_children_length) {
+        return;
+    }
+
+    entity frame = body_children[action_index];
+    if (!zox_valid(frame)) {
+        zox_log_error("invalid frame_action")
+        return;
+    }
+
+    entity frame_children[layouts2_children_capacity];
+    uint frame_children_length = zox_get_children(world, frame, frame_children, layouts2_children_capacity);
+    // zox_geter(frame_action, Children, frame_children);
+    if (!frame_children_length ) {
+        return;
+    }
+
+    entity icon = frame_children[0];
+    if (!zox_valid(icon)) {
+        zox_log_error("invalid icon_action")
+        return;
+    }
+
+    // now reset icon
+    set_icon_from_user_data(world, frame, icon, 0);
 }

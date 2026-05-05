@@ -14,12 +14,14 @@ zox_sys2(DialogueSpeechSystem) {
             continue;
         }
 
-        zox_geter(ui->value, Children, children);
-        if (children->length < 2) {
+        entity children[layouts2_children_capacity];
+        uint children_length = zox_get_children(world, ui->value, children, layouts2_children_capacity);
+        // zox_geter(ui->value, Children, children);
+        if (children_length < 2) {
             continue;
         }
 
-        entity speech = children->value[1];
+        entity speech = children[1];
         zox_geter(node->value, DialogueText, text);
         // zox_log("Node [%s]: Target Speech [%s]", zox_get_name(node->value), text->value);
 

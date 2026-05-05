@@ -8,7 +8,6 @@
 #include "label.c"
 #include "label_background.c"
 #include "button.c"
-#include "close_button.c"
 #include "frame.c"
 #include "slider.c"
 
@@ -20,14 +19,11 @@
 #include "mouse_follow_icon.c"
 
 // Panels
-#include "header.c"
-#include "body.c"
 #include "grid.c"
 #include "ui_list.c"
 
 entity prefab_label;
 entity prefab_button;
-entity prefab_close_button;
 entity prefab_icon;
 entity prefab_frame;
 entity prefab_label_background;
@@ -37,8 +33,6 @@ entity prefab_scrollbar;
 
 entity prefab_list;
 entity prefab_ui_list;
-entity prefab_header;
-entity prefab_body;
 entity prefab_grid;
 entity prefab_elementbar2D;
 entity prefab_elementbar2D_front;
@@ -78,12 +72,7 @@ void spawn_prefabs_elements2(ecs *world) {
     prefab_icon_mouse_follow    = spawn_prefab_icon_mouse_follow(world, prefab_element_textured);
 
     // panel
-    prefab_body                 = spawn_prefab_body(world, prefab_element_textured);
-    prefab_grid                 = spawn_prefab_grid(world, prefab_body);
-
-    // header
-    prefab_header               = spawn_prefab_header(world, prefab_element_textured);
-    prefab_close_button         = spawn_prefab_button_close(world, prefab_button);
+    prefab_grid                 = spawn_prefab_grid(world, prefab_element_textured);
 
     // lists
     // prefab_ui_list              = spawn_prefab_ui_list(world, prefab_window);

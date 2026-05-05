@@ -3,7 +3,6 @@
 entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns, const entity* udata, int udata_length) {
 
     entity character = data.window.character;
-
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         zox_log_error("invalid character in spawn icons window.");
         return 0;
@@ -16,19 +15,17 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     zox_instance(data.element.prefab);
     zox_set_unique_name(e, data.header_zext.text);
     initialize_element(world, e, data.parent.e, data.canvas.e, position, data.element.size, data.element.size, data.element.anchor, data.element.layer);
-
     set_window_bounds_to_canvas(world, e, data.canvas.size, data.element.size, data.element.anchor);
-
     // int user_datas_count = udata->length;
     int grid_elements_count = udata_length;
 
-    int children_length = 1 + is_header;
-    Children children = (Children) { 0 };
-    initialize_Children(&children, children_length);
-    if (children.length != children_length) {
+    // int children_length = 1 + is_header;
+    // Children children = (Children) { 0 };
+    // initialize_Children(&children, children_length);
+    /*if (children.length != children_length) {
         zox_log_error("Failed to iniitalize children.");
         return e;
-    }
+    }*/
 
     if (is_header) {
         LayoutParentData e_parent_data = { .e = e };
@@ -45,8 +42,8 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
 
         data.header_zext.font_resolution = data.header_zext.font_size;
         entity header = spawn_header3(world, data.canvas, e_parent_data, header_element_data, data.header_zext, data.header, (ClickEvent) { &on_closed_taskbar_window });
-
-        children.value[0] = header;
+        zox_set_parent(world, header, e);
+        // children.value[0] = header;
     }
 
     // spawn body
@@ -64,17 +61,18 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
             .size = grid_size,
         },
     };
-
     entity grid = spawn_element(world, grid_data);
     zox_set_unique_name(grid, "window_users_grid");
     zox_set(grid, GridSize, { data.window.grid_size });
     zox_set(grid, GridPadding, { data.window.grid_padding });
     zox_set(grid, GridMargins, { data.window.grid_margins });
 
-    children.value[is_header] = grid;
+    // children.value[is_header] = grid;
+    zox_set_parent(world, grid, e);
 
-    Children body_children = (Children) { 0 };
-    initialize_Children(&body_children, grid_elements_count);
+    entity body_children[grid_elements_count];
+    //Children body_children = (Children) { 0 };
+    //initialize_Children(&body_children, grid_elements_count);
 
     byte icon_layer = body_layer + 1;
     int item_index = 0;
@@ -83,12 +81,12 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     byte active_states = zox_has(data.frame.prefab, ActiveState);
 
     for (int j = data.window.grid_size.y - 1; j >= 0; j--) {
-        if (array_index >= body_children.length) {
+        if (array_index >= grid_elements_count) {
             break;
         }
         for (int i = 0; i < data.window.grid_size.x; i++) {
 
-            if (array_index >= body_children.length) {
+            if (array_index >= grid_elements_count) {
                 break;
             }
 
@@ -104,12 +102,14 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
                     .anchor = float2_half,
                 },
             };
-
             frame_data.icon.index = array_index;
             entity user_data_element = udata[item_index];
 
             entity3 frame_spawn = spawn_frame_user(world, frame_data, user_data_element);
-            body_children.value[array_index] = frame_spawn.x;
+            // body_children.value[array_index] = frame_spawn.x;
+            body_children[array_index] = frame_spawn.x;
+            zox_set_parent(world, frame_spawn.x, grid);
+
             if (spawns) {
                 spawns[array_index] = frame_spawn;
             }
@@ -120,21 +120,21 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     }
 
     if (active_states) {
-        if (selected >= body_children.length) {
-            zox_logw("selected [%i] out of bounds [%i]", selected, body_children.length);
-            selected = body_children.length - 1;
+        if (selected >= grid_elements_count) {
+            zox_logw("selected [%i] out of bounds [%i]", selected, grid_elements_count);
+            selected = grid_elements_count - 1;
         }
-        if (!body_children.length) {
+        if (!grid_elements_count) {
             zox_logw("no children to select");
         } else {
-            entity selected_frame = body_children.value[selected];
+            entity selected_frame = body_children[selected];
             zox_set(selected_frame, ActiveState, { 1 });
             zox_set(selected_frame, ActiveStateDirty, { zox_dirty_trigger });
         }
     }
 
-    zox_set_ptr(grid, Children, body_children);
-    zox_set_ptr(e, Children, children);
+    //zox_set_ptr(grid, Children, body_children);
+    //zox_set_ptr(e, Children, children);
 
     // add to characters element links and link to character
     zox_muter(character, ElementLinks, elementLinks);

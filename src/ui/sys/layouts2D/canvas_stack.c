@@ -21,13 +21,14 @@ byte2 count_windows_in_stack(ecs *world, const Children *children) {
 zox_sys2(CanvasStackSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Children);
+    // zox_sys_in(Children);
     zox_sys_out(WindowToTop);
     zox_sys_out(WindowsLayers);
     zox_sys_out(WindowsCount);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_o(WindowToTop, add_window);
-        zox_sys_i(Children, children);
+        // zox_sys_i(Children, children);
         zox_sys_o(WindowsLayers, windowsLayers);
         zox_sys_o(WindowsCount, windowsCount);
 
@@ -41,7 +42,11 @@ zox_sys2(CanvasStackSystem) {
             continue;
         }
 
-        byte2 counter = count_windows_in_stack(world, children);
+        entity childrens[layouts2_children_capacity];
+        uint children_length = zox_get_children(world, e, childrens, layouts2_children_capacity);
+        Children children = (Children) { .value = childrens, .length = children_length };
+
+        byte2 counter = count_windows_in_stack(world, &children);
         byte windows_count = counter.x; // maybe count windows first
         byte layers_per_window = counter.y;
 
@@ -74,8 +79,8 @@ zox_sys2(CanvasStackSystem) {
         zox_log("   - [%i] event WindowLayer [%lu]\n", windows_count, add_window->value)
 #endif
 
-        for (int j = 0; j < children->length; j++) {
-            entity child = children->value[j];
+        for (uint j = 0; j < children_length; j++) {
+            entity child = childrens[j];
 
             if (!zox_valid(child) || !zox_has(child, Window)) {
                 continue;
@@ -89,7 +94,7 @@ zox_sys2(CanvasStackSystem) {
                 continue;
             }
 
-            byte child_window_layer = zox_get_value(child, WindowLayer)
+            byte child_window_layer = zox_get_value(child, WindowLayer);
             // if on top
             if (child_window_layer == 0) {
                 // if (int_hashmap_has(windows, not_assigned_index)) zox_log("   ! issue with index, possible removal\n")

@@ -33,8 +33,9 @@ void zox_dbg_spawn_element(ecs *world, int32_t keycode) {
 
     zox_set(element, Layer2D, { 1 });
     zox_set(element, CanvasLink, { canvas });
-    zox_set(element, ParentLink, { canvas });
+    // zox_set(element, ParentLink, { canvas });
     zox_set(canvas, WindowToTop, { element });
+    zox_set_parent(world, element, canvas);
 
     zox_dbg_element = element;
 }

@@ -8,20 +8,22 @@ zox_sys2(ScrollbarSystem) {
     zox_sys_in(DraggableState);
     zox_sys_in(LayoutPosition);
     zox_sys_in(LayoutSize);
-    zox_sys_in(ParentLink);
+    //zox_sys_in(ParentLink);
     zox_sys_in(ScrollviewLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(DraggableState, state);
         zox_sys_i(LayoutPosition, position);
         zox_sys_i(LayoutSize, size);
-        zox_sys_i(ParentLink, parent);
+        //zox_sys_i(ParentLink, parent);
         zox_sys_i(ScrollviewLink, scrollview);
 
         if (!state->value) {
             continue;
         }
 
-        entity scrollbar = parent->value;
+        entity scrollbar = zox_get_parent(world, e);
+        // entity scrollbar = parent->value;
         if (!zox_valid(scrollbar) || !zox_has(scrollbar, LayoutSize)) {
             zox_log_error("Scrollbar parent is invalid");
             continue;
@@ -33,7 +35,7 @@ zox_sys2(ScrollbarSystem) {
         }
 
         // entity scrollview = zox_get_value(scrollbar, ParentLink);
-        if (!zox_valid(scrollview->value) || !zox_has(scrollview->value, Children)) {
+        if (!zox_valid(scrollview->value)) {
             zox_log_error("ScrollView is invalid (scrollbar [%s]'s parent)", zox_get_name(scrollbar));
             continue;
         }
@@ -45,12 +47,17 @@ zox_sys2(ScrollbarSystem) {
             continue;
         }
 
-        if (!zox_has(list_ui, Children) || !zox_has(list_ui, ListVisible) || !zox_has(list_ui, ListStart)) {
+        if (!zox_has(list_ui, ListVisible) || !zox_has(list_ui, ListStart)) {
             zox_log_error("List UI: Invalid Components. [%s]", zox_get_name(list_ui));
             continue;
         }
 
-        zox_geter(list_ui, Children, list_elements);
+        entity list_elements[layouts2_children_capacity];
+        uint list_elements_length = zox_get_children(world, list_ui, list_elements, layouts2_children_capacity);
+        //for (uint j = 0; j < children_length; j++) {
+        //    entity e2 = children[j];
+
+        // zox_geter(list_ui, Children, list_elements);
         zox_geter_value(list_ui, ListVisible, byte, visible);
         zox_geter_value(list_ui, ListStart, byte, start);
 
@@ -59,7 +66,7 @@ zox_sys2(ScrollbarSystem) {
         float scroll_percentage = anchored_position_y / (float) scrollbar_offset;
         // scrollview_spawn - scrollview_shown gives us total_starts
 
-        byte total_elements = list_elements->length;
+        byte total_elements = list_elements_length;
         byte total_starts = total_elements - visible;
 
         byte new_start = (byte) round(total_starts * scroll_percentage);

@@ -1,6 +1,5 @@
 entity spawn_element(ecs *world, ElementSpawn data) {
-
-    entity p = data.element.prefab;
+    entity prefab = data.element.prefab;
     entity parent = data.parent.e;
     entity canvas = data.canvas.e;
     int2 position = data.element.position;
@@ -10,10 +9,10 @@ entity spawn_element(ecs *world, ElementSpawn data) {
     int2 tsize = data.element.texture_size;
     color fill = data.texture.fill_color;
     color outline = data.texture.outline_color;
-
-    zox_instance(p);
+    zox_instance(prefab);
     zox_name("element");
-    zox_set(e, ParentLink, { parent });
+    zox_set_parent(world, e, parent);
+    // zox_set(e, ParentLink, { parent });
     zox_set(e, CanvasLink, { canvas });
     zox_set(e, Layer2D, { layer });
     zox_set(e, Anchor, { anchor });
@@ -22,13 +21,10 @@ entity spawn_element(ecs *world, ElementSpawn data) {
     zox_set(e, TextureSize, { tsize });
     zox_set(e, Color, { fill });
     zox_set(e, OutlineColor, { outline });
-
     // Where we link to canvas children
-    if (canvas == parent) zox_set(canvas, WindowToTop, { e });
-
-    // initialize_element(world, e, data.parent.e, data.canvas.e, data.element.position, data.element.size, data.element.size, data.element.anchor, data.element.layer);
-    // initialize_layout2(world, e, parent, canvas, position, size, anchor, layer);
-
+    if (canvas == parent) {
+        zox_set(canvas, WindowToTop, { e });
+    }
     return e;
 }
 

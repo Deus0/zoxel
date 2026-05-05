@@ -6,7 +6,7 @@ entity spawn_prefab_handle(ecs *world, entity prefab) {
     zox_prefab_name("handle");
 
     // transforms
-    zox_prefab_set(e, ParentLink, { 0 });
+    // zox_prefab_set(e, ParentLink, { 0 });
 
     // interactable
     zox_add_tag(e, Selectable);

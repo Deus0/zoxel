@@ -27,19 +27,20 @@ void on_click_dialogue_button(ecs *world, const ClickEventData data) {
     zox_set(e, NodeEnd, { zox_dirty_trigger });
 }
 
-void on_closed_dialogue_ui(ecs* world, const ClickEventData data) {
-
-    if (!zox_has(data.clicked, ParentLink)) {
+void on_closed_dialogue_ui(ecs* world, ClickEventData data) {
+    entity header = zox_get_parent(world, data.clicked);
+    /*if (!zox_has(data.clicked, ParentLink)) {
         zox_log_error("[on_closed_dialogue_ui] close button parent link missing.");
         return;
     }
-    zox_geter_value(data.clicked, ParentLink, entity, header);
+    zox_geter_value(data.clicked, ParentLink, entity, header);*/
 
-    if (!zox_valid(header) || !zox_has(header, ParentLink)) {
+    if (!zox_valid(header)) {
         zox_log_error("[on_closed_dialogue_ui] Header Invalid");
         return;
     }
-    zox_geter_value(header, ParentLink, entity, window);
+    entity window = zox_get_parent(world, header);
+    // zox_geter_value(header, ParentLink, entity, window);
     if (!zox_valid(window) || !zox_has(window, DialogueProcessLink)) {
         zox_log_error("[on_closed_dialogue_ui] window ParentLink Invalid");
         return;

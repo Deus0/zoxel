@@ -19,16 +19,17 @@ entity spawn_popup3(
     if (popup_data.lifetime) {
         zox_set(e, DestroyInTime, { popup_data.lifetime });
     }
-    Children children = (Children) { 0 };
+    // Children children = (Children) { 0 };
     text_data.position = depth_position;
     text_data.parent = e;
     zigel_data.position = depth_position;
     zigel_data.scale = popup_data.scale; // 2;
-    const entity text = spawn_text3D(world, text_data, zigel_data);
+    entity text = spawn_text3D(world, text_data, zigel_data);
     // zox_set(text, Scale1D, { 4 })
     zox_set_unique_name(text, "popup_text");
-    add_to_Children(&children, text);
-    zox_set_ptr(e, Children, children);
+    // add_to_Children(&children, text);
+    zox_set_parent(world, text, e);
+    // zox_set_ptr(e, Children, children);
     // zox_log_error("spawned popup [%lu]", e);
     return e;
 }

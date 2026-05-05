@@ -4,13 +4,14 @@ zox_sys2(WindowLayerSystem) {
     zox_sys_begin();
     zox_sys_in(SetWindowLayer);
     zox_sys_in(CanvasLink);
-    zox_sys_in(Children);
+    // zox_sys_in(Children);
     zox_sys_out(WindowLayer);
     zox_sys_out(Layer2D);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(SetWindowLayer, nlayer);
         zox_sys_i(CanvasLink, canvasLink);
-        zox_sys_i(Children, children);
+        // zox_sys_i(Children, children);
         zox_sys_o(WindowLayer, wlayer);
         zox_sys_o(Layer2D, layer2D);
 
@@ -29,8 +30,12 @@ zox_sys2(WindowLayerSystem) {
         byte window_layer = wlayer->value;
         layer2D->value = window_layer * layers_per_window;
 
-        for (int j = 0; j < children->length; j++) {
-            entity child = children->value[j];
+        entity children[layouts2_children_capacity];
+        uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+        for (uint j = 0; j < children_length; j++) {
+            entity child = children[j];
+        //for (int j = 0; j < children->length; j++) {
+            //entity child = children->value[j];
             set_element_layers_auto(world, child, layer2D->value);
             set_element_layers(world, child, layer2D->value);
         }

@@ -24,11 +24,12 @@ byte can_render_ui(ecs *world, entity e) {
             }
         }
     }
-    if (zox_has(e, ParentLink)) {
-        zox_geter(e, ParentLink, parentLink)
-        if (zox_valid(parentLink->value)) {
-            return can_render_ui(world, parentLink->value);
+    entity parent = zox_get_parent(world, e);
+    //if (zox_has(e, ParentLink)) {
+    //    zox_geter(e, ParentLink, parentLink)
+    if (zox_valid(parent)) {
+        return can_render_ui(world, parent);
         }
-    }
+    //}
     return 1;
 }

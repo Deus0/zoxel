@@ -7,7 +7,8 @@ entity spawn_image(ecs* world, entity p, entity texture, entity canvas, entity p
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { panchor });
     zox_set(e, Layer2D, { layer });
-    zox_set(e, ParentLink, { parent });
+    // zox_set(e, ParentLink, { parent });
+    zox_set_parent(world, e, parent);
     zox_set(e, CanvasLink, { canvas });
     zox_set(e, RenderDisabled, { rdisabled });
 

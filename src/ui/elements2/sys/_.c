@@ -24,7 +24,7 @@ void define_systems_elements2(ecs *world) {
         [in] elements.DraggableState,
         [in] layouts2.LayoutPosition,
         [in] layouts2.LayoutSize,
-        [in] hierarchys.ParentLink,
+        // [in] hierarchys.ParentLink,
         [in] elements2.ScrollviewLink,
         [none] elements2.ScrollbarHandle
     );
@@ -36,7 +36,7 @@ void define_systems_elements2(ecs *world) {
         [in] layouts2.ListPositionDirty,
         [in] layouts2.ListStart,
         [in] layouts2.ListVisible,
-        [in] hierarchys.Children
+        //[in] hierarchys.Children
     );
 
     // resize handle when list dirty

@@ -65,8 +65,8 @@ void set_layout_canvas_position_recursively_new(ecs* world, entity e, int2 paren
     // also set children ones
     if (zox_has(e, LayoutSize)) {
         zox_geter_value(e, LayoutSize, int2, size);
-        entity children[laysouts_children_capacity];
-        uint count = zox_get_children(world, e, children, laysouts_children_capacity);
+        entity children[layouts2_children_capacity];
+        uint count = zox_get_children(world, e, children, layouts2_children_capacity);
         for (uint i = 0; i < count; i++) {
             entity e2 = children[i];
             set_layout_canvas_position_recursively_new(world, e2, cposition, size, 0);
@@ -91,8 +91,8 @@ void set_layout_child_position_recursively_new(ecs* world, entity e, int2 canvas
     }
 
     // also set children ones
-    entity children[laysouts_children_capacity];
-    uint count = zox_get_children(world, e, children, laysouts_children_capacity);
+    entity children[layouts2_children_capacity];
+    uint count = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint i = 0; i < count; i++) {
         entity child = children[i];
         set_layout_child_position_recursively_new(world, child, canvas_size);

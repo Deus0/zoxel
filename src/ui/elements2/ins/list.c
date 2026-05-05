@@ -34,18 +34,15 @@ static inline int2 calculate_header_size(byte length, byte font_size, byte2 padd
 
 // TODO: Set scrollbar visible/invisible based on list count
 // TODO: spawn list panel, and scrollbar as children of list entity
+
 entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnList list_data, byte alignment, entity* elements) {
-
     byte slider_handle_width = 16 * ui_scale;
-
     zox_instance(element_data.prefab);
     zox_name("list");
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
-
     if (element_data.render_disabled) {
         zox_set(e, RenderDisabled, { element_data.render_disabled });
     }
-
     zox_set(e, ListAlignment, { alignment });
     zox_set(e, ListVisible, { list_data.visible_count });
     zox_set(e, ListMargins, { list_data.margins });
@@ -54,7 +51,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
     zox_set(e, Color, { list_data.fill });
     zox_set(e, OutlineColor, { list_data.outline });
 
-    Children children = (Children) { 0 };
+    // Children children = (Children) { 0 };
 
     // now spawn elements to fit our window
     LayoutParentData child_parent_data = {
@@ -164,12 +161,12 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
 
             child = toggle;
         }
-        add_to_Children(&children, child);
+        // add_to_Children(&children, child);
+        zox_set_parent(world, child, e);
         if (elements) {
             elements[i] = child;
         }
     }
-    zox_set_ptr(e, Children, children);
-
+    // zox_set_ptr(e, Children, children);
     return e;
 }

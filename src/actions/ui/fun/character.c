@@ -14,26 +14,28 @@ void set_player_action(ecs *world, entity player, byte index) {
         return;
     }
 
-    zox_geter(actionbar, Children, window_children);
-    if (window_children->length < 2) {
+    entity window_children[layouts2_children_capacity];
+    uint window_children_length = zox_get_children(world, actionbar, window_children, layouts2_children_capacity);
+    if (window_children_length < 2) {
         return;
     }
 
-    zox_geter(window_children->value[1], Children, children);
-    if (children->length == 0 || index >= children->length) {
-        return;
-    }
+    entity body = window_children[1];
+    entity body_children[layouts2_children_capacity];
+    uint body_children_length = zox_get_children(world, body, body_children, layouts2_children_capacity);
 
     // deselect first
-    for (int i = 0; i < children->length; i++) {
-        entity child = children->value[i];
+    for (uint i = 0; i < body_children_length; i++) {
+        entity child = body_children[i];
 
         if (!zox_valid(child)) {
             continue;
         }
 
         if (!zox_has(child, ActiveState)) {
-            zox_log_error("[%i] has no ActiveState", i);
+            zox_loge("[%i] has no ActiveState", i);
+            zox_loge("  - child [%s]", zox_get_name(child));
+            zox_loge("  - body [%s]", zox_get_name(body));
             continue;
         }
 
@@ -59,7 +61,9 @@ void player_action_ui_move(ecs *world, entity player, sbyte direction) {
     zox_geter_value_non_const(character, ActionIndex, byte, selected);
 
     selected = selected + direction >= 0 ? selected + direction : actions->length + (selected + direction);
-    if (selected >= actions->length) selected -= actions->length;
+    if (selected >= actions->length) {
+        selected -= actions->length;
+    }
 
     zox_set(character, ActionIndex, { selected });
     spawn_sound_from_file_name(world, prefab_sound, "swap_action", 0, get_volume_sfx());
@@ -72,17 +76,32 @@ void player_action_ui_move(ecs *world, entity player, sbyte direction) {
     if (!actionbar) {
         return;
     }
-    zox_geter(actionbar, Children, window_children);
+
+    /*zox_geter(actionbar, Children, window_children);
     if (window_children->length < 2) {
         return;
     }
     zox_geter(window_children->value[1], Children, children);
     if (children->length == 0) {
         return;
+    }*/
+
+
+    entity window_children[layouts2_children_capacity];
+    uint window_children_length = zox_get_children(world, actionbar, window_children, layouts2_children_capacity);
+    // zox_geter(actionbar, Children, window_children);
+    if (window_children_length < 2) {
+        return;
     }
+
+    entity body = window_children[1];
+    entity body_children[layouts2_children_capacity];
+    uint body_children_length = zox_get_children(world, body, window_children, layouts2_children_capacity);
+    // zox_geter(window_children[1], Children, children);
+
     // deselect any prior ones
-    for (int i = 0; i < children->length; i++) {
-        entity child = children->value[i];
+    for (uint i = 0; i < body_children_length; i++) {
+        entity child = body_children[i];
 
         if (!zox_valid(child)) {
             continue;
@@ -102,6 +121,6 @@ void player_action_ui_move(ecs *world, entity player, sbyte direction) {
     }
 }
 
-void button_event_switch_action(ecs *world, const ClickEventData event) {
+void button_event_switch_action(ecs *world, ClickEventData event) {
     player_action_ui_move(world, event.clicker, 1);
 }

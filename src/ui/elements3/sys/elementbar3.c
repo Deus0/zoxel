@@ -14,7 +14,7 @@ zox_sys2(Elementbar3DSystem) {
             continue;
         }
 
-        const entity front_bar = children->value[0];
+        entity front_bar = children->value[0];
         if (!zox_valid(front_bar)) {
             continue;
         }

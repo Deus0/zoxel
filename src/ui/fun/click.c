@@ -32,21 +32,24 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
             zox_set(target, SelectState, { zox_select_state_trigger_selected });
         }
     }
-    if (zox_has(e, Children)) {
+    entity children[layouts2_children_capacity];
+    uint count = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint i = 0; i < count; i++) {
+        entity child = children[i];
+    /*if (zox_has(e, Children)) {
         zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
-            entity child = children->value[i];
-
-            if (!zox_valid(child)) {
-                continue;
-            }
-            set_raycast_target_children(world, child, target);
+            entity child = children->value[i];*/
+        if (!zox_valid(child)) {
+            continue;
         }
+        set_raycast_target_children(world, child, target);
     }
+    //}
     if (zox_has(e, DeviceLinks)) {
-        zox_geter(e, DeviceLinks, children)
-        for (int i = 0; i < children->length; i++) {
-            entity child = children->value[i];
+        zox_geter(e, DeviceLinks, devices);
+        for (int i = 0; i < devices->length; i++) {
+            entity child = devices->value[i];
 
             if (!zox_valid(child)) {
                 continue;
@@ -60,15 +63,18 @@ void raycaster_select_window_children(ecs *world, entity e, entity window) {
     if (zox_has(e, WindowRaycasted)) {
         zox_set(e, WindowRaycasted, { window })
     }
-    if (zox_has(e, Children)) {
+    entity children[layouts2_children_capacity];
+    uint count = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint i = 0; i < count; i++) {
+        entity child = children[i];
+    /*if (zox_has(e, Children)) {
         zox_geter(e, Children, children)
         for (int i = 0; i < children->length; i++) {
-            entity child = children->value[i];
-
-            if (!child) continue;
-
-            raycaster_select_window_children(world, child, window);
+            entity child = children->value[i];*/
+        if (!zox_valid(child)) {
+            continue;
         }
+        raycaster_select_window_children(world, child, window);
     }
     if (zox_has(e, DeviceLinks)) {
         zox_geter(e, DeviceLinks, children)

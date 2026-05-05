@@ -12,12 +12,12 @@ void define_systems_layouts2(ecs* world) {
     // NOTE: Anchor Size for stretching along canvas, must work before the positioning
 
     // Old Hierarchys
-    zox_system(
+    /*zox_system(
         AnchorSizeSystem,
         EcsOnLoad,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.AnchorSize,
-        [in] hierarchys.ParentLink,
+        // [in] hierarchys.ParentLink,
         [out] layouts2.LayoutSize
     );
     zox_system(
@@ -38,7 +38,7 @@ void define_systems_layouts2(ecs* world) {
         [in] layouts2.CanvasLink,
         // [out] transforms2.Position2
     );
-
+    */
     // New
 
     zox_system(
@@ -84,7 +84,7 @@ void define_systems_layouts2(ecs* world) {
         GridSystem,
         EcsOnUpdate,
         [in] layouts2.GridDirty,
-        [in] hierarchys.Children,
+        //[in] hierarchys.Children,
         [in] layouts2.LayoutSize,
         [in] layouts2.GridSize,
         [in] layouts2.GridPadding,
@@ -96,7 +96,7 @@ void define_systems_layouts2(ecs* world) {
         ListSystem,
         EcsOnUpdate,
         [in] layouts2.ListPositionDirty,
-        [in] hierarchys.Children,
+        //[in] hierarchys.Children,
         [in] layouts2.LayoutSize,
         [in] layouts2.ListPadding,
         [in] layouts2.ListMargins,
@@ -107,7 +107,7 @@ void define_systems_layouts2(ecs* world) {
     zox_system(
         ListElementPositionSystem,
         EcsOnUpdate,
-        [in] hierarchys.ParentLink,
+        //[in] hierarchys.ParentLink,
         [in] layouts2.LayoutSize,
         [in] layouts2.LayoutSizeDirty,
         [out] layouts2.LayoutPosition,

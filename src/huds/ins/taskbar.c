@@ -14,8 +14,9 @@ void taskbar_button_click_event(ecs *world, ClickEventData event) {
     }
     hook_taskbar hook = hook_taskbars->data[index];
 
-    const entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event.clicker);
-    zox_geter_value(event.clicked, ParentLink, entity, frame);
+    entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event.clicker);
+    entity frame = zox_get_parent(world, event.clicked);
+    // zox_geter_value(event.clicked, ParentLink, entity, frame);
     if (!zox_valid(frame) || !zox_has(frame, ActiveState)) {
         zox_log_error("Invalid frame.");
         return;

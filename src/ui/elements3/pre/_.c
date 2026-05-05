@@ -1,12 +1,11 @@
 void set_element_properties(ecs *world, entity e, entity parent, entity canvas, int2 pixel_position, int2 pixel_size, float2 anchor, byte layer, float2 position2, int2 pixel_positionv) {
-
     zox_set(e, Anchor, { anchor });
     zox_set(e, Layer2D, { layer });
     zox_set(e, LayoutSize, { pixel_size });
     zox_set(e, LayoutPosition, { pixel_position });
     zox_set(e, CanvasLink, { canvas });
-    zox_set(e, ParentLink, { parent });
-
+    // zox_set(e, ParentLink, { parent });
+    zox_set_parent(world, e, parent);
     if (canvas == parent) {
         // on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });

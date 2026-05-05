@@ -30,8 +30,9 @@ dflags="-Dzox_game=${game_name} \
 -Dzox_opengl \
 -Dzox_sdl \
 -Dzox_sdl_mixer \
--Dzox_sdl_images \
--Dzox_disable_load_settings"
+-Dzox_sdl_images"
+
+# -Dzox_disable_load_settings"
 
 libs="-Iinc \
 -lm \

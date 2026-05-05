@@ -4,12 +4,12 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
 
-    Children window_children = (Children) { 0 };
+    // Children window_children = (Children) { 0 };
     SpawnWindow2 window_data = {
         .header_text = "Dialogue",
         .header_font_size = 32,
         .header_padding = (byte2) { 16, 16 },
-        .children = &window_children,
+        // .children = &window_children,
     };
     LayoutParentData canvas_data = (LayoutParentData) {
         .e = canvas,
@@ -50,7 +50,8 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     };
 
     entity text = spawn_zext(world, speech_text_data2);
-    add_to_Children(&window_children, text);
+    // add_to_Children(&window_children, text);
+    zox_set_parent(world, text, e);
 
     // add confirm button at bottom right
     // Spawn a small button per choice, for max choices, then enable disable them after text finishes animating
@@ -73,10 +74,11 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     };
 
     entity button = spawn_button(world, canvas_data, parent_data, button_data, button_text_data, button_data2);
-    add_to_Children(&window_children, button);
+    // add_to_Children(&window_children, button);
+    zox_set_parent(world, button, e);
     zox_set(button, ClickEvent, { &on_click_dialogue_button });
 
-    zox_set_ptr(e, Children, window_children);
+    // zox_set_ptr(e, Children, window_children);
 
     return e;
 }

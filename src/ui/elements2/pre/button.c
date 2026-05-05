@@ -6,7 +6,7 @@ entity spawn_prefab_button(ecs *world, entity p) {
     zox_add_tag(e, TextResizer);
 
     // transform
-    zox_prefab_set(e, Children, { 0 });
+    // zox_prefab_set(e, Children, { 0 });
 
     // texture
     zox_add_tag(e, FixToLayout);

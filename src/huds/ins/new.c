@@ -106,8 +106,8 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .is_scrollbar = 0,
     };
 
-    Children children = (Children) { 0 };
-    window_data.children = &children;
+    // Children children = (Children) { 0 };
+    // window_data.children = &children;
     entity e = spawn_window2(
         world,
         canvas_data,
@@ -181,8 +181,9 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     };
 
     entity list = spawn_list(world, canvas_data, list_parent_data, list_element_data, ui_list_data, zox_alignment_centre, NULL);
-    add_to_Children(window_data.children, list);
-    zox_set_ptr(e, Children, children);
+    zox_set_parent(world, list, e);
+    //add_to_Children(window_data.children, list);
+    //zox_set_ptr(e, Children, children);
 
     zox_muter(player, ElementLinks, pelements);
     add_to_ElementLinks(pelements, e);

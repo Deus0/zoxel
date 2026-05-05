@@ -109,7 +109,12 @@ zox_sys2(ElementNavigationSystem) {
 
         // TODO: Move up to window, grab all navigation elements, then find one below?
 
-        zox_geter_value(current->value, ParentLink, entity, parent);
+        entity parent = zox_get_parent(world, current->value);
+        // zox_geter_value(current->value, ParentLink, entity, parent);
+        if (!zox_has(parent, Children)) {
+            zox_loge("AWEOIAJWEOIWE");
+            return;
+        }
         zox_geter(parent, Children, children);
 
         // Get Selected Index

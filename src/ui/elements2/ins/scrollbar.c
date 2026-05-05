@@ -17,13 +17,13 @@ entity spawn_scrollbar(ecs *world, entity parent, entity canvas, int2 position, 
     zox_set(e, ElementMargins, { margins });
     zox_set(e, RenderDisabled, { !visible });
 
-    Children children = { 0 };
+    // Children children = { 0 };
 
     entity handle = spawn_scrollbar_handle(world, prefab_scrollbar_front, e, canvas, handle_position, float2_half, layer + 1, (int2) { width, handle_height }, parent_size, visible);
     zox_set(handle, ScrollviewLink, { scrollview });
-    add_to_Children(&children, handle);
-
-    zox_set_ptr(e, Children, children);
+    zox_set_parent(world, handle, e);
+    // add_to_Children(&children, handle);
+    // zox_set_ptr(e, Children, children);
     //zox_log("- scrollbar height set to: [%i] out of [%i]", height, parent_pixel_size.y)
     // zox_log("- scrollbar showing [%i] out of [%i]", visible_elements, total_elements);
 

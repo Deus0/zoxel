@@ -1,10 +1,14 @@
 ### todo ###
 
-- Tooltip text isnt moving
-- Header text is missing for user uis
-- icon text all just dissapeared
+- 3D uis are broken atm due to changes in parenting
+
+-x Tooltip text isnt moving
+-x Header text is missing for user uis
+-x icon text all just dissapeared
+-x tooltip doesnt dissapear when the ui dies - keep a link on it and react if it dies / becomes non selected
 
 - investigate characters sometimes small - due to block depth
+- sometimes character missing a mesh too
 
 - set the slider text block depth [5] when sliding
 

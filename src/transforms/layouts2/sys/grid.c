@@ -2,24 +2,32 @@ zox_sys2(GridSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GridDirty);
-    zox_sys_in(Children);
+    //zox_sys_in(Children);
     zox_sys_in(LayoutSize);
     zox_sys_in(GridSize);
     zox_sys_in(GridPadding);
     zox_sys_in(GridMargins);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(GridDirty, dirty);
-        zox_sys_i(Children, children);
+        //zox_sys_i(Children, children);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(GridSize, grid_size);
         zox_sys_i(GridPadding, padding);
         zox_sys_i(GridMargins, margins);
 
-        if (dirty->value != zox_dirty_active || !children->length) {
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
 
-        const entity first_child = children->value[0];
+        zox_sys_e();
+        entity children[layouts2_children_capacity];
+        uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+
+        if (!children_length) {
+            continue;
+        }
+
+        entity first_child = children[0];
         zox_geter_value(first_child, LayoutSize, int2, frame_size);
 
         // calculate total size first: ListUIMax - center it?
@@ -41,9 +49,10 @@ zox_sys2(GridSystem) {
             }
 
             for (int x = 0; x < grid_size->value.x; x++) {
-                if (k >= children->length) break;
-
-                const entity child = children->value[k++];
+                if (k >= children_length) {
+                    break;
+                }
+                entity child = children[k++];
 
                 if (!zox_valid(child) || !zox_has(child, LayoutPositionDirty)) {
                     continue;

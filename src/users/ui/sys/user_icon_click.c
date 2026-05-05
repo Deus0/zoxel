@@ -80,17 +80,18 @@ zox_sys2(UserIconClickSystem) {
         swap_textures(world, e, icon_mouse_follow);
 
         // remember: this is a temporary fix for: bug where e doesn't clear on picked up items
-        zox_geter_value(e, ParentLink, entity, frame);
+        entity frame = zox_get_parent(world, e);
+        // zox_geter_value(e, ParentLink, entity, frame);
         if (mouse_data_empty) {
             set_icon_from_user_data(world, frame, e, 0);
         }
 
-        zox_geter(frame, Children, frame_children);
-        entity3 framer = (entity3) {
-            frame,
-            e,
+        entity frame_children[layouts2_children_capacity];
+        uint frame_children_length = zox_get_children(world, frame, frame_children, layouts2_children_capacity);
+        // zox_geter(frame, Children, frame_children);
+        entity3 framer = (entity3) { frame, e,
             // fetches the label
-            frame_children->length > 1 ? frame_children->value[1] : 0
+            frame_children_length > 1 ? frame_children[1] : 0
         };
         // set_icon_label_from_user_data(world, frame, mouse_data);
 

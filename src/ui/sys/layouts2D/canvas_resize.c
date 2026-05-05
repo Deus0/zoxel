@@ -16,12 +16,16 @@ void set_layout_dirty_recursive(ecs* world, entity e) {
         dirty->value = zox_dirty_trigger;
     }
 
-    if (zox_has(e, Children)) {
+    /*if (zox_has(e, Children)) {
         zox_geter(e, Children, children);
         for (int i = 0; i < children->length; i++) {
-            const entity child = children->value[i];
-            set_layout_dirty_recursive(world, child);
-        }
+            const entity child = children->value[i];*/
+
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity e2 = children[j];
+        set_layout_dirty_recursive(world, e2);
     }
 }
 
@@ -33,15 +37,16 @@ zox_sys2(CanvasResizeSystem) {
     zox_sys_begin();
     zox_sys_in(ScreenToCanvas);
     zox_sys_in(AppLink);
-    zox_sys_in(Children);
+    // zox_sys_in(Children);
     zox_sys_out(LayoutPosition);
     zox_sys_out(LayoutSize);
     zox_sys_out(LayoutPositionDirty);
     zox_sys_out(LayoutSizeDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(ScreenToCanvas, ratio);
         zox_sys_i(AppLink, app);
-        zox_sys_i(Children, children);
+        // zox_sys_i(Children, children);
         zox_sys_o(LayoutPosition, position);
         zox_sys_o(LayoutPositionDirty, pdirty);
         zox_sys_o(LayoutSize, size);
@@ -62,9 +67,13 @@ zox_sys2(CanvasResizeSystem) {
         sdirty->value = zox_dirty_trigger;
         pdirty->value = zox_dirty_trigger;
 
-        for (int j = 0; j < children->length; j++) {
-            entity child = children->value[j];
-            set_layout_dirty_recursive(world, child);
+        //for (int j = 0; j < children->length; j++) {
+        //    entity child = children->value[j];
+        entity children[layouts2_children_capacity];
+        uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+        for (uint j = 0; j < children_length; j++) {
+            entity e2 = children[j];
+            set_layout_dirty_recursive(world, e2);
         }
 
         // zox_log("Canvas resized [%ix%i] screen [%ix%i]", size->value.x, size->value.y, screen_size.x, screen_size.y);

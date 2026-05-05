@@ -1,11 +1,11 @@
-entity spawn_render_texture_canvas(ecs *world, entity p, entity canvas, int2 layout_size, int2 texture_size, entity camera) {
+entity spawn_render_texture_canvas(ecs *world, entity prefab, entity canvas, int2 layout_size, int2 texture_size, entity camera) {
 
     byte layer = 0;
     entity parent = canvas;
     int2 position = int2_zero;
     float2 anchor = float2_half;
 
-    zox_instance(p);
+    zox_instance(prefab);
     zox_name("render_texture");
 
     initialize_element(world, e, parent, canvas, position, layout_size, texture_size, anchor, layer);

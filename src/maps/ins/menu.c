@@ -21,8 +21,8 @@ entity spawn_player_menu_map(ecs* world, entity player) {
         .is_scrollbar = 0,
     };
 
-    Children window_children = (Children) { 0 };
-    window_data.children = &window_children;
+    // Children window_children = (Children) { 0 };
+    // window_data.children = &window_children;
     LayoutParentData canvas_data = (LayoutParentData) { .e = canvas, .size = canvas_size };
 
     entity e = spawn_window2(
@@ -35,7 +35,7 @@ entity spawn_player_menu_map(ecs* world, entity player) {
         1,
         zox_window_map
     ).x;
-    zox_set_ptr(e, Children, window_children);
+    // zox_set_ptr(e, Children, window_children);
 
     return e;
 }

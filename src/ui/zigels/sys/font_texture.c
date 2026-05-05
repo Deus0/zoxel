@@ -9,7 +9,7 @@ zox_sys2(FontTextureSystem) {
     if (!zox_font_style || !zox_has(zox_font_style, Children)) {
         return;
     }
-    zox_geter(zox_font_style, Children, font_style_children)
+    zox_geter(zox_font_style, Children, font_style_children);
     if (!font_style_children) {
         zox_log("! font_style_children is NULL\n")
         return;

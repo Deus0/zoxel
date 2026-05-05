@@ -29,14 +29,14 @@ zox_sys2(SphereCollideSystem) {
                 if (collisionDisabled2->value) {
                     continue;
                 }
-                const entity e2 = it2.entities[j];
+                entity e2 = it2.entities[j];
                 if (e == e2) {
                     continue;
                 }
                 //const Position3D *position3D2 = &position3Ds2[j];
                 //const SphereRadius *sphereRadius2 = &sphereRadiuss2[j];
-                const float distance = float3_distance(position3D->value, position3D2->value);
-                const byte overlaps = (distance <= sphereRadius->value + sphereRadius2->value);
+                float distance = float3_distance(position3D->value, position3D2->value);
+                byte overlaps = (distance <= sphereRadius->value + sphereRadius2->value);
                 if (overlaps) {
                     if (zox_has(e, OverlapEvent)) {
                         zox_geter(e, OverlapEvent, overlapEvent)

@@ -2,13 +2,13 @@
 zox_sys2(ListElementPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ParentLink);
+    // zox_sys_in(ParentLink);
     zox_sys_in(LayoutSize);
     zox_sys_in(LayoutSizeDirty);
     zox_sys_out(LayoutPosition);
     zox_sys_out(LayoutPositionDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ParentLink, parent);
+        // zox_sys_i(ParentLink, parent);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(LayoutSizeDirty, state);
         zox_sys_o(LayoutPosition, position);
@@ -18,18 +18,21 @@ zox_sys2(ListElementPositionSystem) {
             continue;
         }
 
-        if (!zox_valid(parent->value) || !zox_has(parent->value, ListAlignment) || !zox_has(parent->value, ListMargins) || !zox_has(parent->value, LayoutSize)) {
+        zox_sys_e();
+        entity parent = zox_get_parent(world, e);
+
+        if (!zox_valid(parent) || !zox_has(parent, ListAlignment) || !zox_has(parent, ListMargins) || !zox_has(parent, LayoutSize)) {
             continue;
         }
 
-        zox_geter_value(parent->value, ListAlignment, byte, alignment);
+        zox_geter_value(parent, ListAlignment, byte, alignment);
 
         if (alignment == zox_alignment_centre) {
             continue;
         }
 
-        zox_geter_value(parent->value, ListMargins, byte2, margins);
-        zox_geter_value(parent->value, LayoutSize, int2, lsize);
+        zox_geter_value(parent, ListMargins, byte2, margins);
+        zox_geter_value(parent, LayoutSize, int2, lsize);
 
         if (alignment == zox_alignment_left) {
             position->value.x = margins.x - lsize.x / 2 + size->value.x / 2;

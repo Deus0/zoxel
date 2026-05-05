@@ -67,8 +67,8 @@ void print_entity_zext(ecs *world, entity e) {
 
 /*byte is_zext_updating(ecs *world, entity e) {
     // const Children *children) {
-    entity children[texts_max_children];
-    uint length = zox_get_children(world, e, children, texts_max_children);
+    entity children[texts_children_capacity];
+    uint length = zox_get_children(world, e, children, texts_children_capacity);
 
     for (uint j = 0; j < length; j++) {
         entity e2 = children[j];
