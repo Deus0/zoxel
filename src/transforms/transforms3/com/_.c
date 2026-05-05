@@ -5,8 +5,8 @@ zoxc_float4(Rotation3D);     // A quaternion rotation
 zoxc_float3(Scale3D);          // A Non Uniform 3D Scale
 zoxc(Matrix, float4x4);       // A matrix used for rendering
 zoxc_float3(Euler);          // A rotation but kept in euler form
-zoxc_float2(EulerLimitX);    // a limitation of euler x axis
-zoxc_float2(EulerLimitZ);    // a limitation of euler z axis
+zoxc_float2(EulerLimitX);
+zoxc_float2(EulerLimitZ);
 zoxc_float3(LocalPosition3D);
 zoxc_float4(LocalRotation3D);
 // used for physics
@@ -27,7 +27,7 @@ void define_components_transforms3(ecs* world) {
     zoxd_float2(EulerLimitZ);
     zoxd_float3(LocalPosition3D);
     zoxd_float4(LocalRotation3D);
-    // physics
+    // Others
     zoxd_float3(Bounds3D);
     zoxd_state(Bounds3Dirty);
     zoxd_float6(Position3DBounds);

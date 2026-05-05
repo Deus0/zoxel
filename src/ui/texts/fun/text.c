@@ -65,16 +65,22 @@ void print_entity_zext(ecs *world, entity e) {
     free(debug_text);
 }
 
-byte is_zext_updating(ecs *world, const Children *children) {
-    for (int i = 0; i < children->length; i++) { // update the reused ones
-        const entity zigel = children->value[i];
-        const byte generate_texture = zox_get_value(zigel, GenerateTexture)
-        if (generate_texture) {
+/*byte is_zext_updating(ecs *world, entity e) {
+    // const Children *children) {
+    entity children[texts_max_children];
+    uint length = zox_get_children(world, e, children, texts_max_children);
+
+    for (uint j = 0; j < length; j++) {
+        entity e2 = children[j];
+    //for (int i = 0; i < children->length; i++) { // update the reused ones
+        //const entity zigel = children->value[i];
+        zox_geter_value(e2, GenerateTexture, byte, generating);
+        if (generating) {
             return 1;
         }
     }
     return 0;
-}
+}*/
 
 
 void set_entity_label_with_zext(ecs *world, entity parent, byte *value, int length) {

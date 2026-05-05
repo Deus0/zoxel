@@ -20,7 +20,7 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
         .size = (int2) { 720, 200 },
         .anchor = (float2) { 0.5f, 0.8f },
     };
-    entity e = spawn_window2(world, canvas_data, canvas_data, element_data, window_data, (ClickEvent) { &on_closed_dialogue_ui }, 1, zox_window_dialogue);
+    entity e = spawn_window2(world, canvas_data, canvas_data, element_data, window_data, (ClickEvent) { &on_closed_dialogue_ui }, 1, zox_window_dialogue).x;
 
     // TODO: Spawn Body Here instead
     zox_set(e, Color, { window_fill }); // (color) { 23, 23, 23, 210 } });

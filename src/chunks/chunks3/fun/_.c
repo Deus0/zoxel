@@ -15,3 +15,7 @@
 #include "debug.c"
 #include "settings.c"
 #include "paint.c"
+
+static inline byte camera_distance_to_block_vox_depth(byte distance) {
+    return camera_distance_to_render_depth(distance, block_vox_depth, vox_lod_near, terrain_lod_near);
+}

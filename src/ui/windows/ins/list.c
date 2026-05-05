@@ -15,13 +15,13 @@ typedef struct {
 } WindowListSpawnData;
 
 // Returns window + list
-entity2 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte is_close_button, byte window_type, int min_width, byte alignment, byte2 padding) {
+entity3 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte is_close_button, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2) {
 
     zox_geter_value(player, CanvasLink, entity, canvas);
 
     if (!zox_valid(canvas)) {
         zox_logw("Invalid canvas in [spawn_window_list]");
-        return (entity2) { 0, 0 };
+        return (entity3) { 0, 0, 0 };
     }
 
     // Sizing
@@ -95,7 +95,8 @@ entity2 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     window_data.children = &window_children;
 
     // Spawn our Window
-    entity e = spawn_window2(world, canvas_data, (LayoutParentData) { .e = canvas }, window_element_data, window_data, close_event, is_close_button, window_type);
+    entity2 e2 = spawn_window2(world, canvas_data, (LayoutParentData) { .e = canvas }, window_element_data, window_data, close_event, is_close_button, window_type);
+    entity e = e2.x;
 
     // Spawn Scrollview
     ElementSpawnData scrollview_data = {
@@ -122,7 +123,7 @@ entity2 spawn_window_list(ecs *world, entity p, entity player, const char *heade
         .layer = window_layer + 2,
     };
 
-    entity list = spawn_list(world, canvas_data, (LayoutParentData) { .e = scrollview }, list_element_data, list_data, alignment);
+    entity list = spawn_list(world, canvas_data, (LayoutParentData) { .e = scrollview }, list_element_data, list_data, alignment, elements2);
     add_to_Children(&scrollview_children, list);
 
     // make sure to link them together
@@ -134,5 +135,5 @@ entity2 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     add_to_ElementLinks(pelements, e);
     zox_set(e, ElementHolder, { player });
 
-    return (entity2) { e, list };
+    return (entity3) { e, list, e2.y };
 }

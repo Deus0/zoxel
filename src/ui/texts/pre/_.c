@@ -5,7 +5,7 @@ entity prefab_zext_background;
 entity prefab_zext_input;
 
 void spawn_prefabs_texts(ecs *world) {
-    prefab_zext = spawn_prefab_zext(world, prefab_layout2);
-    prefab_zext_background = spawn_prefab_zext(world, prefab_element_textured);
-    prefab_zext_input = spawn_prefab_zext_input(world, prefab_zext_background);
+    prefab_zext = spawn_prefab_text(world, prefab_layout2);
+    prefab_zext_background = spawn_prefab_text(world, prefab_element_textured);
+    prefab_zext_input = spawn_prefab_text_input(world, prefab_zext_background);
 }

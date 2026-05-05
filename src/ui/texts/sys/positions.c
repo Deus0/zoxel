@@ -66,14 +66,13 @@ zox_sys2(ZigelPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);  // TextSizeDirty
-    zox_sys_in(Children);
     zox_sys_in(TextData);
     zox_sys_in(TextFontSize);
     zox_sys_in(TextAlignment);
     zox_sys_in(TextPadding);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(TextDirty, dirty);
-        zox_sys_i(Children, children);
         zox_sys_i(TextData, text_data);
         zox_sys_i(TextFontSize, size);
         zox_sys_i(TextAlignment, alignment);
@@ -83,19 +82,32 @@ zox_sys2(ZigelPositionSystem) {
             continue;
         }
 
-        for (int j = 0; j < children->length; j++) {
-            entity e2 = children->value[j];
+        entity children[texts_max_children];
+        uint length = zox_get_children(world, e, children, texts_max_children);
+
+        for (uint j = 0; j < length; j++) {
+            entity e2 = children[j];
 
             if (!zox_valid(e2)) {
                 continue;
             }
 
             int data_index = calculate_zigel_data_index(text_data->value, text_data->length, j);
-
             int2 position = calculate_position(text_data->value, text_data->length, data_index, size->value, alignment->value, padding->value, default_line_padding);
 
-            zox_set(e2, LayoutPosition, { position });
-            zox_set(e2, LayoutPositionDirty, { zox_dirty_trigger });
+
+            zox_muter(e2, LayoutPosition, lposition);
+            if (!int2_equals(lposition->value, position)) {
+                zox_muter(e2, LayoutPositionDirty, ldirty);
+
+                lposition->value = position;
+                ldirty->value = zox_dirty_trigger;
+
+                // zox_log("+ Text [%s]:[%i] New Position [%ix%i]", zox_get_name(e), j, position.x, position.y);
+            }
+
+            // zox_set(e2, LayoutPosition, { position });
+            // zox_set(e2, LayoutPositionDirty, { zox_dirty_trigger });
         }
     }
 } zox_sys_end(ZigelPositionSystem);

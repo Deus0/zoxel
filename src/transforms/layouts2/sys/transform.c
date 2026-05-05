@@ -6,12 +6,13 @@ zox_sys2(LayoutTransform2System) {
     zox_sys_in(Scale1D);
     zox_sys_out(TransformMatrix);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(LayoutPositionDirty, state);
+        zox_sys_i(LayoutPositionDirty, dirty);
         zox_sys_i(Position2, position);
         zox_sys_i(Scale1D, scale);
         zox_sys_o(TransformMatrix, matrix);
 
-        if (state->value != zox_dirty_active) {
+        // Can set immediately when dirty
+        if (dirty->value != zox_dirty_trigger && dirty->value != zox_dirty_active) {
             continue;
         }
 

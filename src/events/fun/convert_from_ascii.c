@@ -73,7 +73,7 @@ byte convert_ascii(char input) {
     zoxel_convert_ascii('\\')
 
     // numbers
-    zoxel_convert_ascii('0')
+    zoxel_convert_ascii('0')    // 60
     zoxel_convert_ascii('1')
     zoxel_convert_ascii('2')
     zoxel_convert_ascii('3')

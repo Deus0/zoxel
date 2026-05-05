@@ -273,8 +273,6 @@ void initialize_zoxel_settings(ecs* world) {
     terrain_lod_near = 3;
     // real_chunk_scale = 8.0f; // 4 | 8 | 16 | 32
     terrain_depth = 4;
-    // block_vox_depth = 5;
-    // character_depth = 5;
 
     game_ui_has_taskbar = 1;
 

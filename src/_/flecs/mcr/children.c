@@ -53,7 +53,7 @@ byte zox_set_parent(ecs *world, entity child, entity parent) {
         ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
     }
 
-    zox_log("Setting [%s] new Parent [%s]", zox_get_name(child), zox_get_name(parent));
+    // zox_log("Setting [%s] new Parent [%s]", zox_get_name(child), zox_get_name(parent));
     ecs_add_pair(world, child, EcsChildOf, parent);
 
     return 1;
@@ -69,18 +69,22 @@ uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity
 
     ecs_iter_t it = ecs_children(world, parent);
 
+    byte warned = 0;
     uint count = 0;
     while (ecs_children_next(&it)) {
         for (int i = 0; i < it.count; i++) {
 
             // If Buffer is Full
             if (count >= capacity) {
-                zox_logw("Children Exceeded Capacity [%i]", capacity);
-                return count;
+                if (!warned) {
+                    warned = 1;
+                    zox_logw("[%s]'s Children Exceeded Capacity [%i]", zox_get_name(parent), capacity);
+                }
+                // return count;
+            } else {
+                entities[count] = it.entities[i];
+                count++;
             }
-
-            entities[count] = it.entities[i];
-            count++;
         }
     }
 

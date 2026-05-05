@@ -1,67 +1,37 @@
 //! Dynamically updates zext by spawning/destroying zigels and updating remaining
 // #define zoxel_debug_zext_updates
 
-void spawn_text2D_zigels(ecs* world, SpawnZigel* data, Children* children, const TextData* text_data, entity canvas) {
+// Children* children,
+void spawn_text2D_zigels(ecs* world, entity e, SpawnZigel data, const TextData* tdata, entity canvas) {
 
-    int old_children_length = children->length;
-    int new_children_length = calculate_total_zigels(text_data->value, text_data->length);
-    int has_old_children = old_children_length > 0;
-    int reuse_count = int_min(old_children_length, new_children_length);
+    uint new_length = (uint) calculate_total_zigels(tdata->value, tdata->length);
+    entity children[texts_max_children];
+    uint old_length = zox_get_children(world, e, children, texts_max_children);
 
-#ifdef zoxel_debug_zext_updates
-    zox_log("spawn_zext_zigels :: [%i] -> [%i]; reuse [%i];", children->length, text_data->length, reuse_count)
-    if (children->length == text_data->length) {
-        zox_log("    - zext remained the same [%i]", text_data->length)
-    }
-#endif
-
-    entity *old_children = children->value;
-    entity *new_children = NULL;
-    if (new_children_length > 0) {
-        new_children = zalloc(new_children_length * sizeof(entity));
-    }
-    // old children needs new
-    //  - set old positions, as we are resizing
-    for (int i = 0; i < reuse_count; i++) {
-        entity e = old_children[i];
-        new_children[i] = e;
-    }
     // Spawn New Zigels
-    if (new_children_length > old_children_length) {
-#ifdef zoxel_debug_zext_updates
-        zox_log("    - spawning new_children [%i]", new_children_length - old_children_length)
-#endif
-        for (int i = old_children_length; i < new_children_length; i++) {
-            byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, i);
-            data->zigel.zigel_index = zigel_index;
+    if (new_length > old_length) {
+        for (uint i = old_length; i < new_length; i++) {
 
-            data->element.anchor = float2_half;
+            byte zigel_index = calculate_zigel_index(tdata->value, tdata->length, i);
+            data.zigel.zigel_index = zigel_index;
+            data.element.anchor = float2_half;
+
             entity e2 = spawn_zigel(world, data, canvas);
+            zox_set(e2, RenderDisabled, { data.element.render_disabled });
+            zox_set_parent(world, e2, e);
 
-            zox_set(e2, RenderDisabled, { data->element.render_disabled });
-
-            new_children[i] = e2;
+            // new_children[i] = e2;
         }
-    } else if (new_children_length < old_children_length) {
-        // Delete Old Zigels
-        for (int i = new_children_length; i < old_children_length; i++) {
-            entity e2 = old_children[i];
-            zox_delete(e2);
+    }
+    // Delete Old Zigels
+    else if (new_length < old_length) {
+        for (uint i = new_length; i < old_length; i++) {
+            zox_delete(children[i]);
         }
-#ifdef zoxel_debug_zext_updates
-        zox_log("    - deleted old_children [%i]", (old_children_length - new_children_length))
-#endif
     }
-
-    if (has_old_children) {
-        dispose_Children(children);
-    }
-
-    children->value = new_children;
-    children->length = new_children_length;
 }
 
-//! When ui text updates, spawn/destroy font entities
+// Dynamically keeps the text characters the right length using entities
 zox_sys2(ZigelSpawnSystem) {
 #ifdef zox_disable_zigels
     return;
@@ -82,11 +52,11 @@ zox_sys2(ZigelSpawnSystem) {
     zox_sys_in(TextResolution);
     zox_sys_in(TextDirty);
     zox_sys_out(RenderDisabled);
-    zox_sys_out(Children);
+    // zox_sys_out(Children);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
-        zox_sys_i(TextData, text_data);
+        zox_sys_i(TextData, tdata);
         zox_sys_i(TextFontSize, textSize);
         zox_sys_i(TextPadding, textPadding);
         zox_sys_i(Layer2D, layer2D);
@@ -98,7 +68,7 @@ zox_sys2(ZigelSpawnSystem) {
         zox_sys_i(FontThickness, fontThickness);
         zox_sys_i(FontOutlineThickness, fontOutlineThickness);
         zox_sys_i(TextResolution, textResolution);
-        zox_sys_o(Children, children);
+        // zox_sys_o(Children, children);
         zox_sys_o(RenderDisabled, render_disabled);
 
         if (dirty->value != zox_dirty_active) {
@@ -112,12 +82,13 @@ zox_sys2(ZigelSpawnSystem) {
         }
 
         int2 canvas_size = zox_get_value(canvas, LayoutSize)
-        byte zext_length = calculate_total_zigels(text_data->value, text_data->length);
+        byte zext_length = calculate_total_zigels(tdata->value, tdata->length);
         if (zox_has(e, ZextRenderEnabler)) {
-            render_disabled->value = text_data->length == 0;
+            render_disabled->value = tdata->length == 0;
         }
+
         // set parent to or refactor debug ui?
-        SpawnZigel spawn_data = {
+        SpawnZigel cdata = {
             .canvas = {
                 .e = canvas,
                 .size = canvas_size
@@ -147,6 +118,50 @@ zox_sys2(ZigelSpawnSystem) {
             }
         };
 
-        spawn_text2D_zigels(world, &spawn_data, children, text_data, canvas);
+        // children,
+        spawn_text2D_zigels(world, e, cdata, tdata, canvas);
     }
 } zox_sys_end(ZigelSpawnSystem);
+
+
+    /*for (uint j = 0; j < count; j++) {
+        entity e2 = children[j];
+        set_position_recursive(world, e2, nposition->value, nrotation->value);
+    }*/
+
+    /*int old_children_length = children->length;
+    int has_old_children = old_children_length > 0;
+    int reuse_count = int_min(old_children_length, length);*/
+
+/*#ifdef zoxel_debug_zext_updates
+    zox_log("spawn_zext_zigels :: [%i] -> [%i]; reuse [%i];", children->length, tdata.length, reuse_count)
+    if (children->length == tdata.length) {
+        zox_log("    - zext remained the same [%i]", tdata.length)
+    }
+#endif*/
+
+    /*entity *old_children = children->value;
+    entity *new_children = NULL;
+    if (length > 0) {
+        new_children = zalloc(length * sizeof(entity));
+    }*/
+    // old children needs new
+    //  - set old positions, as we are resizing
+    /*for (int i = 0; i < reuse_count; i++) {
+        entity e = old_children[i];
+        new_children[i] = e;
+    }*/
+
+
+/*#ifdef zoxel_debug_zext_updates
+        zox_log("    - spawning new_children [%i]", length - old_children_length);
+#endif*/
+/*#ifdef zoxel_debug_zext_updates
+        zox_log("    - deleted old_children [%i]", (old_children_length - new_children_length))
+#endif*/
+
+    /*if (has_old_children) {
+        dispose_Children(children);
+    }
+    children->value = new_children;
+    children->length = new_children_length;*/

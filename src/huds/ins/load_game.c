@@ -83,7 +83,7 @@ entity spawn_menu_load(ecs *world, entity player) {
     }
 
 
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_load_cancel }, 1, zox_window_load_realm, 0, zox_alignment_centre, byte2_single(4)).x;
+    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_load_cancel }, 1, zox_window_load_realm, 0, zox_alignment_centre, byte2_single(4), NULL).x;
     zox_name("menu_load");
 
     zox_add_tag(e, MenuLoad);

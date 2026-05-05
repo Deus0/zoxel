@@ -1,18 +1,78 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+STATE_FILE=".build_settings"
 GAME_DIR="gam"
-timer=0 #1
-big_timer=3
+big_timer=0
 
-echo "... welcome traveler"
-sleep ${big_timer}
-clear
+# TODO: Rename the settings to more readable
+#echo "=> Platform [${OS}]"
+#echo "=> Graphics [${GLB}]"
+#echo "=> Windowing [${GFX}]"
+#echo "=> Profile [${PRF}]"
+
+flash_logo() {
+    echo " # ! # ! # "
+    echo "    - -    "
+    echo "    zOx    "
+    echo "    - -    "
+    echo " # ! # ! # "
+    sleep ${big_timer}
+    clear
+}
 
 if [[ ! -d "$GAME_DIR" ]]; then
   echo "Error: $GAME_DIR folder not found."
   exit 1
 fi
+
+# Loads last used settings
+load_settings() {
+  source "$STATE_FILE"
+  echo "Saved config found:"
+  echo "GAME=$GAME"
+  echo "OS=$OS"
+  echo "GLB=$GLB"
+  echo "GFX=$GFX"
+  echo "PRF=$PRF"
+}
+
+# User picks new settings
+pick_settings() {
+  # 1) Pick Game
+  echo "Select game:"
+  mapfile -t GAMES < <(find "$GAME_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+  if [[ ${#GAMES[@]} -eq 0 ]]; then
+    echo "Error: No game folders found in $GAME_DIR"
+    exit 1
+  fi
+  for i in "${!GAMES[@]}"; do
+    echo "$((i+1))) ${GAMES[$i]}"
+  done
+  read -rp "Enter number: " GAME_INDEX
+  if ! [[ "$GAME_INDEX" =~ ^[0-9]+$ ]] || (( GAME_INDEX < 1 || GAME_INDEX > ${#GAMES[@]} )); then
+    echo "Invalid selection"
+    exit 1
+  fi
+  GAME="${GAMES[$((GAME_INDEX-1))]}"
+  clear
+
+  OS=$(select_option "Select Platform:" linux windows android webgl)
+  echo ""
+  clear
+
+  GLB=$(select_option "Select Graphics:" opengl vulkan headless)
+  echo ""
+  clear
+
+  GFX=$(select_option "Select Windowing" sdl glut glfw headless)
+  echo ""
+  clear
+
+  PRF=$(select_option "Select Profile" release development)
+  echo ""
+  clear
+}
 
 select_option() {
 
@@ -35,52 +95,33 @@ select_option() {
     fi
 
     printf '%s\n' "${options[$((choice - 1))]}"
-
-    sleep ${timer}
 }
 
-echo " # ! # ! # "
-echo "    - -    "
-echo "    zOx    "
-echo "    - -    "
-echo " # ! # ! # "
+echo "... welcome traveler"
 sleep ${big_timer}
 clear
 
-# 1) Pick Game
-echo "Select game:"
-mapfile -t GAMES < <(find "$GAME_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-if [[ ${#GAMES[@]} -eq 0 ]]; then
-  echo "Error: No game folders found in $GAME_DIR"
-  exit 1
+flash_logo
+
+if [[ -f "$STATE_FILE" ]]; then
+  echo "Last Used Settings:"
+  echo ""
+  cat "$STATE_FILE"
+  echo ""
+
+  read -rp "...Use saved config? (y/n): " USE_SAVED
+  sleep ${big_timer}
+  clear
+else
+  USE_SAVED="n"
 fi
-for i in "${!GAMES[@]}"; do
-  echo "$((i+1))) ${GAMES[$i]}"
-done
-read -rp "Enter number: " GAME_INDEX
-if ! [[ "$GAME_INDEX" =~ ^[0-9]+$ ]] || (( GAME_INDEX < 1 || GAME_INDEX > ${#GAMES[@]} )); then
-  echo "Invalid selection"
-  exit 1
+
+# Loads Settings
+if [[ "$USE_SAVED" == "y" ]]; then
+  load_settings
+else
+  pick_settings
 fi
-GAME="${GAMES[$((GAME_INDEX-1))]}"
-clear
-
-OS=$(select_option "Select Platform:" linux windows android webgl)
-echo ""
-clear
-
-GLB=$(select_option "Select Graphics:" opengl vulkan headless)
-echo ""
-clear
-
-GFX=$(select_option "Select Windowing" sdl glut glfw headless)
-echo ""
-clear
-
-PRF=$(select_option "Select Profile" release development)
-echo ""
-clear
-
 
 BUILD_SCRIPT="bsh/${OS}-${GFX}-${GLB}.sh"
 
@@ -90,22 +131,22 @@ if [[ ! -f "$BUILD_SCRIPT" ]]; then
 fi
 clear
 
-#echo ""
-# read -rp "CPU (arm64, x86_64): " CPU
-# read -rp "OS (linux, windows, android, webgl): " OS
-# read -rp "Window (glut, sdl, glfw): " GFX
-# read -rp "Graphics (opengl, vulkan, headless): " GLB
+flash_logo
 
+# Saves Settings
+cat > "$STATE_FILE" <<EOF
+GAME="$GAME"
+OS="$OS"
+GLB="$GLB"
+GFX="$GFX"
+PRF="$PRF"
+EOF
 
-echo "Building ${GAME}"
-echo "=> Platform [${OS}]"
-echo "=> Graphics [${GLB}]"
-echo "=> Windowing [${GFX}]"
-echo "=> Profile [${PRF}]"
-
-echo " # ! # ! # "
-echo "+ Calling [$BUILD_SCRIPT] +"
-echo "# Args [${GAME} --${PRF}] #"
-echo " # ! # ! # "
+echo "Building..."
+echo ""
+cat "$STATE_FILE"
+echo ""
+echo "...[$BUILD_SCRIPT ${GAME} --${PRF}]"
+echo ""
 
 bash "$BUILD_SCRIPT" ${GAME} --${PRF}

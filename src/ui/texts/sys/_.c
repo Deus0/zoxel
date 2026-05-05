@@ -3,7 +3,7 @@
 #include "text_panel_child.c"
 #include "update.c"
 #include "animate.c"
-#include "zigel_positions.c"
+#include "positions.c"
 
 void define_systems_texts(ecs *world) {
     zox_system(
@@ -18,13 +18,12 @@ void define_systems_texts(ecs *world) {
         EcsOnUpdate,
         [in] texts.TextDirty,
         [in] texts.TextData,
-        [in] hierarchys.Children
+        [none] Zext
     );
     zox_system(
         ZigelPositionSystem,
         EcsOnUpdate,
         [in] texts.TextDirty,
-        [in] hierarchys.Children,
         [in] texts.TextData,
         [in] texts.TextFontSize,
         [in] texts.TextAlignment,
@@ -69,7 +68,6 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextResolution,
         [in] texts.TextDirty,
         [out] rendering.RenderDisabled,
-        [out] hierarchys.Children,
         [none] Zext,
         [none] Text2D
     );

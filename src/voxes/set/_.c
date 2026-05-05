@@ -1,5 +1,3 @@
-#include "outlines.c"
-
 #define directory_voxes "voxes"
 const byte max_vox_file_lods = 5;
 int files_voxes_count = 0;
@@ -12,7 +10,9 @@ const float fracture_dark_multiplier = 0.6f; // 0.13f
 const float grass_blend_dark_multiplier = 0.8f; // 0.13f
 byte disable_block_voxes = 0;
 byte disable_block_vox_generation = 0;
+byte is_generate_vox_outlines = 1;
 
+#include "outlines.c"
 
 void process_arguments_voxes(ecs *world, char* args[], int count) {
     (void) world;

@@ -39,9 +39,9 @@ zox_sys2(MouseElementSystem) {
             position->value = output;
             dirty->value = zox_dirty_trigger;
             /*zox_log("[%s] mouse at [%ix%i] => [%ix%i]",
-                    zox_get_name(it->entities[i]),
-                    pre.x, pre.y,
-                    output.x, output.y);*/
+                zox_get_name(it->entities[i]),
+                pre.x, pre.y,
+                output.x, output.y);*/
         }
 
     }

@@ -1,6 +1,7 @@
 #ifndef zoxm_zexts
 #define zoxm_zexts
 
+uint texts_max_children = 512;
 // todo: move labels to here as prefab
 #include "dat/_.c"
 #include "com/_.c"

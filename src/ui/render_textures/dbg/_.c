@@ -67,21 +67,23 @@ void spawn_test_render_texture(ecs *world, int32_t keycode) {
 
         dbg_render_cube = spawn_cube(world, prefab_cube, cube_position, 0.16f);
         zox_set(dbg_render_cube, CameraRenderer, { dbg_render_camera });
-        zox_set(dbg_render_cube, Children, { 0 });
+        // zox_set(dbg_render_cube, Children, { 0 });
         add_eternal_euler(world, dbg_render_cube, (float3) { 24, 24, 0 });
 
         entity e2 = spawn_cube(world, prefab_cube, float3_zero, 0.09f);
         zox_set(e2, CameraRenderer, { dbg_render_camera });
-        zox_set(e2, ParentLink, { dbg_render_cube });
         add_eternal_euler(world, e2, (float3) { -4, -12, 0 });
         zox_set(e2, LocalPosition3D, {{ 0.5f, 0, 0 }});
+        // zox_set(e2, ParentLink, { dbg_render_cube });
+        zox_set_parent(world, e2, dbg_render_cube);
 
 
         entity e3 = spawn_cube(world, prefab_cube, float3_zero, 0.1f);
         zox_set(e3, CameraRenderer, { dbg_render_camera });
-        zox_set(e3, ParentLink, { dbg_render_cube });
         add_eternal_euler(world, e3, (float3) { 4, 16, 0 });
         zox_set(e3, LocalPosition3D, {{ 0, 0.5f, 0 }});
+        // zox_set(e3, ParentLink, { dbg_render_cube });
+        zox_set_parent(world, e3, dbg_render_cube);
 
         // zox_log("Spawned [dbg_render_texture]");
         spawn_sound_from_file_index(world, prefab_sound, 0);

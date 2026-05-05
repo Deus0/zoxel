@@ -57,15 +57,18 @@ byte zoxs_set_byte(ecs *world, const char *name, byte value) {
         setting s = settings[i];
         if (strcmp(name, s.name) == 0) {
             if (s.type == zox_data_type_byte) {
-                byte has_limit = s.min_byte == s.max_byte;
-                byte new_value = has_limit ? value : clampf(value, s.min_byte, s.max_byte);
-                if (new_value != s.value_byte) {
-                    s.value_byte = new_value;
-                    s.on_set(world, &new_value);
+                // byte has_limit = s.min_byte == s.max_byte;
+                //byte new_value = has_limit ? value : clampf(value, s.min_byte, s.max_byte);
+                if (value != s.value_byte) {
+                    s.value_byte = value;
+                    s.on_set(world, &value);
                     settings[i] = s;
                     save_settings();
+                    return 1;
+                } else {
+                    // zox_logw("Setting [%s] at [%i]", name, value);
+                    return 0;
                 }
-                return 1;
             }
         }
     }
@@ -75,8 +78,8 @@ byte zoxs_set_byte(ecs *world, const char *name, byte value) {
 
 #define zoxs_new_byte_lim(name, function, value, min, max) {\
     zoxs_set(name, zox_data_type_byte, function);\
-    zoxs_limit_byte(world, name, min, max);\
     zoxs_set_byte(world, name, value);\
+    zoxs_limit_byte(world, name, min, max);\
 }
 
 #define zoxs_new_byte(name, function, value) {\

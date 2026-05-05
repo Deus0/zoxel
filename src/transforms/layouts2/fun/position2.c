@@ -2,7 +2,6 @@
 // extern void resize_ui_line2D(ecs*, entity, int2);
 extern void anchor_element_position2(int2*, const float2, const int2);
 
-
 // only used be lines atm
 float2 get_ui_real_position2_canvas(int2 local_pixel_position, float2 anchor, float2 canvas_size_f, float aspect_ratio) {
 

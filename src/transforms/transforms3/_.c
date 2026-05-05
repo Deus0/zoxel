@@ -1,6 +1,7 @@
 #ifndef zoxm_transforms3
 #define zoxm_transforms3
 
+uint transforms3_children_capacity = 64;
 #define zox_transforms_stage EcsPreStore // EcsPostUpdate | EcsPreStore
 #include "com/_.c"
 #include "fun/_.c"

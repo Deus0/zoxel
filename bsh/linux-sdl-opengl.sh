@@ -25,33 +25,31 @@ if [[ ${debug} == "True" ]]; then
     bin="bin/${game_name}-dev"
 fi
 
-echo "Compiling for [linux-sdl-opengl] [${bin}]"
-echo "  - Cflags [${cflags}]"
+dflags="-Dzox_game=${game_name} \
+-Dflecssource \
+-Dzox_opengl \
+-Dzox_sdl \
+-Dzox_sdl_mixer \
+-Dzox_sdl_images \
+-Dzox_disable_load_settings"
 
-gcc \
-${cflags} \
-\
-src/main.c \
-inc/flecs/flecs.c \
-\
--o ${bin} \
-\
--Iinc \
+libs="-Iinc \
 -lm \
 -lpthread \
 -lEGL \
 -lGLESv2 \
 -lSDL2_image \
 -lSDL2_mixer \
--lSDL2 \
-\
--DNDEBUG \
--Dzox_debug \
--Dzox_game=${game_name} \
--Dflecssource \
--Dzox_opengl \
--Dzox_sdl \
--Dzox_sdl_mixer \
--Dzox_sdl_images
+-lSDL2"
+
+echo ""
+echo "Building [linux-sdl-opengl]"
+echo "  - Bin [${bin}]"
+echo "  - CFlags [${cflags}]"
+echo "  - DFlags [${dflags}]"
+echo "  - Libs [${libs}]"
+echo ""
+
+gcc ${cflags} src/main.c inc/flecs/flecs.c -o ${bin} ${dflags} ${libs}
 
 echo "Completed Build [${bin}]"

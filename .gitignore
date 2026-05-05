@@ -9,3 +9,4 @@ ext
 CMakeLists.txt
 .game
 .deb
+.build_settings

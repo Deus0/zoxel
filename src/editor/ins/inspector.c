@@ -6,7 +6,7 @@ entity spawn_inspector(ecs *world, entity canvas, entity player, entity target) 
     int fsize = 14;
     int min_width = 560;
 
-    entity e = spawn_window_list(world, prefab_inspector, player, header_label, header_font_size, NULL, 0, visible_count, fsize, (ClickEvent) { NULL }, 1, zox_window_inspector, min_width, zox_alignment_left, byte2_single(2)).x;
+    entity e = spawn_window_list(world, prefab_inspector, player, header_label, header_font_size, NULL, 0, visible_count, fsize, (ClickEvent) { NULL }, 1, zox_window_inspector, min_width, zox_alignment_left, byte2_single(2), NULL).x;
     zox_name("inspector");
 
     // zox_set(e, WindowType, { zox_window_inspector });

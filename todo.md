@@ -1,16 +1,16 @@
 ### todo ###
 
+- Tooltip text isnt moving
+- Header text is missing for user uis
+- icon text all just dissapeared
+
+- investigate characters sometimes small - due to block depth
+
+- set the slider text block depth [5] when sliding
+
 - Move first chunk spawning into StreamSpawnSystem - so it will spawn whatever we are inside of
 - Terrain loading and finishing should be overseen by GameState and not Player events
 - Fix little teleport when loading player character
-
-- Make Glut Build work
-	- Glut should spawn a window
-	- We should wrap all other sdl functions properly for glut
-
-- Fix ./bsh/windows-headless.sh
-- Fix ./bsh/windows.sh
-	- use bsh/windows.sh
 	
 - Fix DungeonCore not showing texture properly
 
@@ -34,6 +34,8 @@
 - event for pickup we can latch onto in system
 	- trigger the body dirty if body item picked up
 - spawn item model as child of character - when switch action
+
+- Audio missing from main menu - need to spawn a realm for it
 
 - Status UI
 	- Test button first
@@ -111,7 +113,6 @@ Editor Delayed:
 - Slider UI - visually show points to with little up arrows
 
 Bugs:
-- Audio missing from main menu - need to spawn a realm for it
 - Npcs spawning in lesser chunks - just disable this for now, collision broken there
 - Slimes not adapting to block vox depths
 - Decor (SDL window edge) missing on khadas - try compile sdl together?
@@ -238,20 +239,6 @@ new
 - terminal ui
 - drop item button
 
-
-tools (this will help fix bugs)
-  - press 'f' while raycasting chunk to select it as debug target
-    - this will show the 'chunk ui' which shows all chunk info
-    - itll have a close button on it
-    - Stats
-      - Verts
-      - States?
-      - Idk
-
-Delayed:
-- fix no post processing mode - zox_use_post_processing
-	- add to settings
-
 Done:
 -x ui off on khadas
 -x Generate a Chest Item for the realm bodys
@@ -325,3 +312,24 @@ Done:
 	-x linux-headless.sh
 -x Fix realm / Terrain not deleting when game ends
 	-x omg this was camera issue - didnt update it
+-x Fix ./bsh/windows-headless.sh
+-x Fix ./bsh/windows.sh
+	-x use bsh/windows.sh
+	
+	
+# Delayed Post Release #
+
+- Make Glut Build work
+	- Glut should spawn a window
+	- We should wrap all other sdl functions properly for glut
+- fix no post processing mode - zox_use_post_processing
+	- add to settings
+
+tools (this will help fix bugs)
+  - press 'f' while raycasting chunk to select it as debug target
+    - this will show the 'chunk ui' which shows all chunk info
+    - itll have a close button on it
+    - Stats
+      - Verts
+      - States?
+      - Idk

@@ -13,7 +13,7 @@ entity spawn_window_hierarchy(ecs *world, entity canvas, entity player, entity r
     int min_width = 440;
 
     // prefab_menu_game
-    entity2 e = spawn_window_list(world, prefab_hierarchy, player, header_label, header_font_size, NULL, 0, visible_count, fsize, (ClickEvent) { NULL }, 1, zox_window_hierarchy, min_width, zox_alignment_left, byte2_single(2));
+    entity3 e = spawn_window_list(world, prefab_hierarchy, player, header_label, header_font_size, NULL, 0, visible_count, fsize, (ClickEvent) { NULL }, 1, zox_window_hierarchy, min_width, zox_alignment_left, byte2_single(2), NULL);
     zox_set_name_spawned(world, e.x, "hierarchy");
 
     zox_set(e.x, ElementFontSize, { fsize });

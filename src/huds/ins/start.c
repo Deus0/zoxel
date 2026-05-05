@@ -1,3 +1,8 @@
+byte tooltip_event_menu_start(ecs *world, const TooltipEventData *data) {
+    set_entity_text(world, data->tooltip, "hello world");
+    return 1;
+}
+
 // Spawn a games Start / Title Menu
 entity spawn_menu_start(ecs* world, entity player, entity canvas) {
     byte layer = 3;
@@ -28,6 +33,8 @@ entity spawn_menu_start(ecs* world, entity player, entity canvas) {
 
     entity e = spawn_button(world, (LayoutParentData) { canvas }, (LayoutParentData) { canvas }, data.element, data.zext, data.button);
     zox_name("main_start");
+
+    zox_prefab_set(e, TooltipEvent, { &tooltip_event_menu_start });
 
     // entity e = zox_ins(prefab_button);
 

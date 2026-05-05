@@ -1,4 +1,4 @@
-entity spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnWindow2 window_data, ClickEvent on_click, byte is_close_button, byte type) {
+entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnWindow2 window_data, ClickEvent on_click, byte is_close_button, byte type) {
 
     byte header_height = window_data.header_font_size + window_data.header_padding.y * 2;
     byte header_font_thickness_s = header_font_thickness * ui_scale;
@@ -50,7 +50,7 @@ entity spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData 
 
     set_window_bounds_to_canvas(world, e, canvas_data.size, element_data.size, element_data.anchor);
 
-    return e;
+    return (entity2) { e, header };
 }
 
 // TODO: Spawn header in HeaderSpawnSystem

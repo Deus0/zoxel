@@ -19,13 +19,7 @@ byte terrain_lod_far_max = 24;  // options, min + percentage*max
 extern int get_characters_count(ecs *world);
 extern int count_entities_npc(ecs *world);
 
-uint debug_label_lods(
-    ecs *world,
-    entity player,
-    char *buffer,
-    uint size,
-    uint index
-) {
+uint debug_label_lods(ecs *world, entity player, char *buffer, uint size, uint index) {
     (void) player;
     index += snprintf(buffer + index, size - index, "### Lod Settings ###\n");
     index += snprintf(buffer + index, size - index, " - vox near [%i]\n", vox_lod_near);

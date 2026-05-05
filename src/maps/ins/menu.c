@@ -1,7 +1,5 @@
-entity spawn_player_menu_map(
-    ecs* world,
-    const entity player
-) {
+entity spawn_player_menu_map(ecs* world, entity player) {
+
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
@@ -36,7 +34,7 @@ entity spawn_player_menu_map(
         (ClickEvent) { &on_closed_taskbar_window },
         1,
         zox_window_map
-    );
+    ).x;
     zox_set_ptr(e, Children, window_children);
 
     return e;

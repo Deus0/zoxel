@@ -87,7 +87,7 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
                 .value_bounds = (float2) { (float) s.min_int, (float) s.max_int },
             };
 
-            zox_log("New Int Option %s %i %i:%i", s.name, s.value_int, s.min_int, s.max_int);
+            zox_log("New Int Option %s %i %i:%i - f%f", s.name, s.value_int, s.min_int, s.max_int, slider_value);
         }
 
         // TODO: support other types
@@ -118,7 +118,7 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
         }
     }
 
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_menu_main }, 1, zox_window_options, 0, zox_alignment_centre, byte2_single(4)).x;
+    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { &button_event_menu_main }, 1, zox_window_options, 0, zox_alignment_centre, byte2_single(4), NULL).x;
     zox_name("menu_options");
 
     zox_add_tag(e, MenuOptions);
