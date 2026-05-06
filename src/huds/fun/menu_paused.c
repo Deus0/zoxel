@@ -48,10 +48,11 @@ void button_event_end_game(ecs *world, ClickEventData event) {
             continue;
         }
 
-        zox_geter_value(camera, ParentLink, entity, old_parent);
-        zox_muter(old_parent, Children, old_parent_children);
-        remove_from_Children(old_parent_children, camera);
-        zox_set(camera, ParentLink, { 0 });
+        zox_set_parent(world, camera, 0);
+        //zox_geter_value(camera, ParentLink, entity, old_parent);
+        //zox_muter(old_parent, Children, old_parent_children);
+        //remove_from_Children(old_parent_children, camera);
+        //zox_set(camera, ParentLink, { 0 });
         zox_set(camera, CameraBlur, { 0 });
     }
 

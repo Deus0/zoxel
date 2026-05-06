@@ -22,7 +22,7 @@ void set_position_recursive_new(ecs* world, entity e, float3 pposition, float4 p
     uint count = zox_get_children(world, e, children, transforms3_children_capacity);
     for (uint j = 0; j < count; j++) {
         entity e2 = children[j];
-        set_position_recursive(world, e2, nposition->value, nrotation->value);
+        set_position_recursive_new(world, e2, nposition->value, nrotation->value);
     }
 }
 

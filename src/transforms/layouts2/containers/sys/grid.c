@@ -1,16 +1,15 @@
 zox_sys2(GridSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GridDirty);
-    //zox_sys_in(Children);
     zox_sys_in(LayoutSize);
+    zox_sys_in(GridDirty);
     zox_sys_in(GridSize);
     zox_sys_in(GridPadding);
     zox_sys_in(GridMargins);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(GridDirty, dirty);
-        //zox_sys_i(Children, children);
+        zox_sys_e();
         zox_sys_i(LayoutSize, size);
+        zox_sys_i(GridDirty, dirty);
         zox_sys_i(GridSize, grid_size);
         zox_sys_i(GridPadding, padding);
         zox_sys_i(GridMargins, margins);
@@ -19,10 +18,8 @@ zox_sys2(GridSystem) {
             continue;
         }
 
-        zox_sys_e();
         entity children[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
-
         if (!children_length) {
             continue;
         }

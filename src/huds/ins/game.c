@@ -72,8 +72,6 @@ void dispose_menu_game(ecs *world, entity player) {
     dispose_menu_game_touch(world, player);
 }
 
-
-
 // called from game state changes
 entity spawn_in_game_ui(ecs *world, entity player) {
     if (!zox_has(player, DeviceMode) || !zox_has(player, CanvasLink)) {
@@ -95,11 +93,4 @@ entity spawn_in_game_ui(ecs *world, entity player) {
     }
 
     return e;
-}
-
-extern entity spawn_menu_actions(ecs*, entity);
-
-void spawn_player_game_ui(ecs *world, entity player) {
-    spawn_in_game_ui(world, player);
-    spawn_menu_actions(world, player);
 }

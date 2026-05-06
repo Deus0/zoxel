@@ -5,20 +5,23 @@ zox_sys2(BoneRenderSystem) {
 
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ParentLink);
+    //zox_sys_in(ParentLink);
     zox_sys_in(Position3D);
     zox_sys_in(BoneSize);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ParentLink, parent);
+        //zox_sys_i(ParentLink, parent);
         zox_sys_i(Position3D, position);
         zox_sys_i(BoneSize, size);
 
-        if (!zox_valid(parent->value)) {
+        zox_sys_e();
+        entity parent = zox_get_parent(world, e);
+
+        if (!zox_valid(parent)) {
             continue;
         }
 
         // zox_geter_value(skeleton->value, Position3D, float3, sposition);
-        zox_geter_value(parent->value, Position3D, float3, pposition);
+        zox_geter_value(parent, Position3D, float3, pposition);
 
         // zox_log("Rendering Bone");
 

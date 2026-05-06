@@ -140,7 +140,7 @@ void define_systems_elements(ecs *world) {
 
     zox_system(
         MouseElementSystem,
-        zox_transforms_stage,
+        EcsOnUpdate,
         [in] inputs.ZeviceLink,
         [in] layouts2.Anchor,
         [in] layouts2.CanvasLink,

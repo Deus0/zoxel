@@ -9,9 +9,9 @@ void load_character_p(ecs *world, entity realm, entity e, float3 *position, floa
     *rotation = quaternion_from_euler(save.euler);
 }
 
-void load_character_e(ecs *world, entity realm, entity e) {
+float3 load_character_transform(ecs *world, entity realm, entity e) {
     if (!zox_valid(realm) || !zox_valid(e)) {
-        return;
+        return float3_zero;
     }
 
     zox_geter(realm, SaveGamePath, path);
@@ -31,6 +31,8 @@ void load_character_e(ecs *world, entity realm, entity e) {
     zox_set(e, Rotation3D, { quaternion_from_euler(save.euler) });
     //zox_set(e, DisableGravity, { 0 });
     //zox_set(e, DisableMovement, { 0 });
+
+    return position;
 }
 
 

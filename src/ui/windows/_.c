@@ -1,6 +1,8 @@
 #ifndef zoxm_windows
 #define zoxm_windows
 
+// TODO: HeaderSpawnSystem, HeaderResizeSystem (when window is dirty)
+
 #include "dat/_.c"
 #include "com/_.c"
 #include "pre/_.c"

@@ -2,18 +2,16 @@
 zox_sys2(ListSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ListPositionDirty);
-    // zox_sys_in(Children);
     zox_sys_in(LayoutSize);
+    zox_sys_in(ListPositionDirty);
     zox_sys_in(ListPadding);
     zox_sys_in(ListMargins);
     zox_sys_in(ListStart);
     zox_sys_in(ListAlignment);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ListPositionDirty, state);
-        // zox_sys_i(Children, children);
         zox_sys_i(LayoutSize, size);
+        zox_sys_i(ListPositionDirty, state);
         zox_sys_i(ListPadding, padding);
         zox_sys_i(ListMargins, margins);
         zox_sys_i(ListStart, start);
@@ -38,8 +36,6 @@ zox_sys2(ListSystem) {
 
             for (uint j = 0; j < children_length; j++) {
                 entity child = children[j];
-            //for (int j = 0; j < children->length; j++) {
-                //entity child = children->value[j];
 
                 if (!zox_valid(child) || !zox_has(child, LayoutPositionDirty)) {
                     continue;

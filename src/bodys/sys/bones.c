@@ -55,17 +55,18 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 hb
     // zox_log("   @ position b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", pposition.x, pposition.y, pposition.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
 
     // Now Recursively add parts
-    Children bchildren = (Children) { 0 };
+    // Children bchildren = (Children) { 0 };
     for (int i = 0; i < parts->length; i++) {
         entity sub_part = parts->value[i];
 
         entity e3 = spawn_part_bones(world, skeleton, bones, hbounds, bscale, bone, position, sub_part);
 
         if (e3) {
-            add_to_Children(&bchildren, e3);
+            zox_set_parent(world, e3, bone);
+            // add_to_Children(&bchildren, e3);
         }
     }
-    zox_set_ptr(bone, Children, bchildren);
+    // zox_set_ptr(bone, Children, bchildren);
 
     return bone;
 }
@@ -75,14 +76,14 @@ zox_sys2(CharacterBoneSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(BodyDirty);
     zox_sys_in(PartLinks);
-    zox_sys_out(Children);
+    // zox_sys_out(Children);
     zox_sys_out(BoneLinks);
     zox_sys_out(SkeletonDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BodyDirty, state);
         zox_sys_i(PartLinks, parts);
-        zox_sys_o(Children, children);
+        // zox_sys_o(Children, children);
         zox_sys_o(BoneLinks, bones);
         zox_sys_o(SkeletonDirty, dirty);
 
@@ -120,7 +121,8 @@ zox_sys2(CharacterBoneSpawnSystem) {
 
             entity e2 = spawn_part_bones(world, e, bones, hbounds, bscale, e, float3_zero, part);
 
-            add_to_Children(children, e2);
+            zox_set_parent(world, e2, e);
+            // add_to_Children(children, e2);
         }
 
         dirty->value = zox_dirty_trigger;

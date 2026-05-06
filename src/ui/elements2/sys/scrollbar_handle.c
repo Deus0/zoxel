@@ -40,10 +40,7 @@ zox_sys2(ScrollbarHandleSystem) {
         if (!scrollbar_children_length) {
             continue;
         }
-        // zox_geter(list, Children, list_children);
-        // byte existing = list_children->length;
-        // zox_geter(scrollview->value, Children, scrollarea_children);
-        // zox_geter(scrollbar, Children, scrollbar_children);
+
         entity handle = scrollbar_children[0];
         zox_geter_value(scrollbar, LayoutSize, int2, scrollbar_size);
 

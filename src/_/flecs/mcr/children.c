@@ -44,11 +44,20 @@ byte zox_set_parent(ecs *world, entity child, entity parent) {
         return 0;
     }
 
+    // Special case for removing parents
+    if (parent == 0) {
+        if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
+            ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
+        }
+        return 1;
+    }
+
     if (!ecs_is_alive(world, parent)) {
         zox_logw("Trying to set parent from invalid parent");
         return 0;
     }
 
+    // Removes previous parent pair
     if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
         ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
     }

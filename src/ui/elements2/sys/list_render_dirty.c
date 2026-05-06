@@ -1,4 +1,5 @@
 // if outside list visible indexes, hide, otherwise show
+// This sets visibility of the list recursively
 zox_sys2(ListRenderDirtySystem) {
     zox_sys_world();
     zox_sys_begin();

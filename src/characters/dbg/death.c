@@ -1,4 +1,4 @@
-extern entity game_start_player_new(ecs*, entity);
+extern entity game_start_player_new(ecs*, entity, float3*);
 
 void toggle_player_death(ecs *world, int32_t keycode) {
     if (keycode != zox_key_j) {
@@ -14,6 +14,7 @@ void toggle_player_death(ecs *world, int32_t keycode) {
         zox_delete(characterLink->value);
     } else {
         zox_log("+ spawning player character");
-        game_start_player_new(world, player);
+        float3 spawned;
+        game_start_player_new(world, player, &spawned);
     }
 }

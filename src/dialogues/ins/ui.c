@@ -4,12 +4,12 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
 
-    // Children window_children = (Children) { 0 };
+    byte font_size = 16;
+
     SpawnWindow2 window_data = {
         .header_text = "Dialogue",
-        .header_font_size = 32,
+        .header_font_size = 24,
         .header_padding = (byte2) { 16, 16 },
-        // .children = &window_children,
     };
     LayoutParentData canvas_data = (LayoutParentData) {
         .e = canvas,
@@ -18,7 +18,7 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     ElementSpawnData element_data = {
         .prefab = p,
         .size = (int2) { 720, 200 },
-        .anchor = (float2) { 0.5f, 0.8f },
+        .anchor = (float2) { 0.5f, 0.72f },
     };
     entity e = spawn_window2(world, canvas_data, canvas_data, element_data, window_data, (ClickEvent) { &on_closed_dialogue_ui }, 1, zox_window_dialogue).x;
 
@@ -30,12 +30,12 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
 
     SpawnTextData speech_text_data = {
         .text = "",
-        .font_size = 16,
-        .font_resolution = 64,
-        .font_thickness = 12,
-        .font_outline_thickness = 4,
-        .font_fill_color = window_outline, // (color) { 55, 200, 200, 235 },
-        .font_outline_color = window_outline, // (color) { 55, 5, 5, 235 },
+        .font_size = font_size,
+        .font_resolution = font_size,
+        .font_thickness = 8,
+        .font_outline_thickness = 1,
+        .font_fill_color = window_outline,
+        .font_outline_color = window_outline,
         .margins = window_data.header_padding,
     };
 
@@ -50,7 +50,6 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     };
 
     entity text = spawn_zext(world, speech_text_data2);
-    // add_to_Children(&window_children, text);
     zox_set_parent(world, text, e);
 
     // add confirm button at bottom right
@@ -74,11 +73,8 @@ entity spawn_dialogue_ui(ecs* world, entity p, entity player) {
     };
 
     entity button = spawn_button(world, canvas_data, parent_data, button_data, button_text_data, button_data2);
-    // add_to_Children(&window_children, button);
     zox_set_parent(world, button, e);
     zox_set(button, ClickEvent, { &on_click_dialogue_button });
-
-    // zox_set_ptr(e, Children, window_children);
 
     return e;
 }

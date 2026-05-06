@@ -1,4 +1,4 @@
-// Should this just include canvas too?
+// This calculcates the matrix from Position2 and Scale1 when Layout is dirty
 zox_sys2(LayoutTransform2System) {
     zox_sys_begin();
     zox_sys_in(LayoutPositionDirty);
@@ -11,7 +11,7 @@ zox_sys2(LayoutTransform2System) {
         zox_sys_i(Scale1D, scale);
         zox_sys_o(TransformMatrix, matrix);
 
-        // Can set immediately when dirty
+        // Sets immediately when dirty
         if (dirty->value != zox_dirty_trigger && dirty->value != zox_dirty_active) {
             continue;
         }

@@ -15,7 +15,7 @@ entity spawn_prefab_bone(ecs *world) {
     zox_prefab_set(e, LocalRotation3D, { quaternion_identity });
     zox_prefab_set(e, BonePosition, { float3_zero });
     zox_prefab_set(e, BoneSize, { float3_zero });
-    zox_prefab_set(e, Children, { 0 });
+    // zox_prefab_set(e, Children, { 0 });
 
     return e;
 }

@@ -264,3 +264,38 @@ static inline float4 quaternion_from_to(float3 from, float3 to) {
         s * 0.5f
     });
 }
+
+
+// Untested
+static inline float3 quaternion_to_normal(float4 q) {
+    // normalize quaternion (optional but usually recommended)
+    float inv_len = 1.0f / sqrtf(q.x*q.x + q.y*q.y + q.z*q.z + q.w*q.w);
+    q.x *= inv_len;
+    q.y *= inv_len;
+    q.z *= inv_len;
+    q.w *= inv_len;
+
+    // assume forward vector
+    float3 v = {0.0f, 0.0f, 1.0f};
+
+    // float3 qv = {q.x, q.y, q.z};
+    float3 t;
+
+    // t = 2 * cross(qv, v)
+    t.x = 2.0f * (q.y * v.z - q.z * v.y);
+    t.y = 2.0f * (q.z * v.x - q.x * v.z);
+    t.z = 2.0f * (q.x * v.y - q.y * v.x);
+
+    // v' = v + w * t + cross(qv, t)
+    float3 cross_qv_t;
+    cross_qv_t.x = q.y * t.z - q.z * t.y;
+    cross_qv_t.y = q.z * t.x - q.x * t.z;
+    cross_qv_t.z = q.x * t.y - q.y * t.x;
+
+    float3 out;
+    out.x = v.x + q.w * t.x + cross_qv_t.x;
+    out.y = v.y + q.w * t.y + cross_qv_t.y;
+    out.z = v.z + q.w * t.z + cross_qv_t.z;
+
+    return out;
+}

@@ -1,13 +1,12 @@
 void set_camera_free(ecs *world, entity e) {
     // zox_set(e, CharacterLink, { 0 });
-
     zox_geter_value(e, Rotation3D, float4, camera_rotation3D);
-
     float3 euler = quaternion_to_euler(camera_rotation3D);
-
     zox_add_tag(e, EulerOverride);
     zox_set(e, Euler, { euler });
-    zox_set(e, ParentLink, { 0 });
+    // zox_set(e, ParentLink, { 0 });
+    zox_set_parent(world, e, 0);
+
     if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
         zox_set(e, CameraFollowLink, { 0 })
     }
@@ -23,21 +22,21 @@ void attach_camera_to_character(ecs *world, entity e, entity character) {
     // Initial Linking
     zox_set(e, CharacterLink, { character });
     zox_set(character, CameraLink, { e });
-
     // reset using head bone
     zox_set(e, CameraState, { zox_camera_state_first_person });
     zox_set(e, Roaming, { 0 });
-    zox_set(e, ParentLink, { character });
     zox_remove_tag(e, EulerOverride);
     float3 euler = (float3) { 0, 180, 0 };
     zox_set(e, Euler, { euler });
     zox_set(e, LocalRotation3D, { quaternion_from_euler(float3_scale(euler, degreesToRadians)) });
     // zox_set(e, LocalRotation3D, { quaternion_identity });
-
     // set_camera_locked(world, e, character);
     // TODO: Add CameraDirty to Character for headbone adjustment system
     zox_set(character, SkeletonDirty, { zox_dirty_trigger });
     if (local_mouse) zox_set(local_mouse, MouseLock, { 1 });
+
+    // zox_set(e, ParentLink, { character });
+    zox_set_parent(world, e, character);
 }
 
 
@@ -132,7 +131,7 @@ zox_sys2(PlayerToggleCameraSystem) {
             }
 
             zox_set(camera->value, CameraState, { new });
-            zox_log("= toggling free roam - old: [%i] -> new: [%i]", old, state->value);
+            // zox_log("= toggling free roam - old: [%i] -> new: [%i]", old, state->value);
         }
     }
 } zox_sys_end(PlayerToggleCameraSystem);

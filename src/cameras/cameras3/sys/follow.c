@@ -19,7 +19,7 @@ zox_sys2(Camera3FollowSystem) {
             position->value.y = target_position.y;
             position->value.z = 0;
         } else if (zox_has(cameraFollowLink->value, Position3D)) {
-            zox_geter_value(cameraFollowLink->value, Position3D, float3, target_position)
+            zox_geter_value(cameraFollowLink->value, Position3D, float3, target_position);
             position->value = target_position;
         } else {
             continue;

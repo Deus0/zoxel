@@ -21,7 +21,7 @@ entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 posit
     byte is_close_button = 1;
 
     entity parent = canvas;
-    int children_count = is_header + plots_count;
+    // int children_count = is_header + plots_count;
 
     // zox_log(" > line_spacing [%f] - size [%i]\n", line_spacing, pixel_size.x);
     zox_instance(p);

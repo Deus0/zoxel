@@ -35,19 +35,19 @@ void define_systems_cameras(ecs *world) {
         [none] Camera3D
     );
     zox_system(
-        BillboardSystem,
-        zox_transforms_stage,
-        [in] transforms3.Position3D,
-        [out] transforms3.Rotation3D,
-        [none] ElementBillboard
-    );
-    zox_system(
         ViewportResizeSystem,
         EcsOnUpdate,
         [in] apps.WindowSizeDirty,
         [in] apps.WindowSize,
         [in] CameraLinks,
         [none] apps.App
+    );
+    zox_system_1(
+        BillboardSystem,
+        EcsOnUpdate,
+        [in] transforms3.Position3D,
+        [out] transforms3.Rotation3D,
+        [none] ElementBillboard
     );
 
     #ifdef zox_draw_frustum

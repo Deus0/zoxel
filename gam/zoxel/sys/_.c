@@ -20,7 +20,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         BiomesRealmSpawnSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [in] core.Seed,
         [out] biomes.BiomeLinks,
@@ -30,7 +30,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         ModelsRealmSpawnSystem,
-        EcsOnLoad,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [in] colorz.Colors,
         [out] rendering.ModelLinks,
@@ -40,7 +40,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         StatsRealmSpawnSystem,
-        EcsOnLoad,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [out] stats.StatLinks,
         [none] realms.Realm
@@ -48,7 +48,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         SkillsRealmSpawnSystem,
-        EcsOnLoad,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [in] stats.StatLinks,
         [out] skills.SkillLinks,
@@ -57,7 +57,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         ItemsRealmSpawnSystem,
-        EcsOnLoad,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [in] blocks.BlockLinks,
         [out] items.ItemLinks,
@@ -66,7 +66,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         BodysRealmSpawnSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [out] rendering.ModelLinks,
         [out] items.ItemLinks,
@@ -76,7 +76,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         EquipsRealmSpawnSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [in] rendering.ModelLinks,
         [out] items.ItemLinks,
@@ -85,7 +85,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         QuestsRealmSpawnSystem,
-        EcsOnLoad,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [in] characters.CharacterLinks,
         [out] quests.QuestLinks,
@@ -94,7 +94,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         DialogueRealmSpawnSystem,
-        EcsOnLoad,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         // [in] blocks.BlockLinks,
         [out] dialogues.DialoguetreeLinks,
@@ -111,7 +111,7 @@ void define_systems_zoxel(ecs *world) {
 
     zox_system_1(
         Character3RealmSpawnSystem,
-        EcsOnLoad,
+        zoxp_mainthread,
         [in] realms.GenerateRealm,
         [in] rendering.ModelLinks,
         [out] characters.CharacterLinks,

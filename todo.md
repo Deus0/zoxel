@@ -1,6 +1,21 @@
 ### todo ###
 
-- remove any use of user macros from user data, just reuse their prefabs and add tags
+- Find out why dialogue ui header is inside window 
+- Give game uis the realm colors so feels different to the main menu
+- Move first chunk spawn to stream systems - StreamKickstartSystem
+- Fix new game UI (actionbar and stats ui) / Code cleanup
+- Remove any random delays, and make the state changes timed instead
+- Cleanup all UI code, remove all duplicates, remove struct use etc
+- Add Stats panel to the taskbar
+- Add a tooltip that just stores a string - no need for event every time
+- Spawn mr penguin on screen
+- Give the ability to change his hat
+- Make a penguin module
+- Adds a penguin to taskbar
+- Adds a penguin render scene and 3 buttons to change his hat
+
+- remove any use of user macros from user data
+	- just reuse their prefabs and add tags
 - use functions like spawn_window, or spawn_user_grid inside those uis
 -x test particles
 - test function for character spawning

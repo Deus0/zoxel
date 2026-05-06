@@ -1,4 +1,4 @@
-void set_position_recursive(ecs* world, entity e, float3 pposition, float4 protation) {
+/*void set_position_recursive(ecs* world, entity e, float3 pposition, float4 protation) {
 
     if (!zox_valid(e) || !zox_has(e, Position3D) || !zox_has(e, Rotation3D)) {
         return;
@@ -51,4 +51,4 @@ zox_sys2(ChildrenPositionSystem) {
             set_position_recursive(world, e2, position->value, rotation->value);
         }
     }
-} zox_sys_end(ChildrenPositionSystem);
+} zox_sys_end(ChildrenPositionSystem);*/

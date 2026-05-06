@@ -47,6 +47,8 @@ entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData
 
     set_window_bounds_to_canvas(world, e, canvas_data.size, element_data.size, element_data.anchor);
 
+    zox_log("Dialogue? with [%i]", header_height);
+
     return (entity2) { e, header };
 }
 

@@ -29,7 +29,8 @@ zox_sys2(HeadCameraSystem) {
         // zox_geter_value(camera->value, ParentLink, entity, old_parent);
         // zox_set(camera->value, OldParentLink, { old_parent });
 
-        zox_set(camera->value, ParentLink, { head->value });
+        // zox_set(camera->value, ParentLink, { head->value });
+        zox_set_parent(world, camera->value, head->value);
         zox_set(camera->value, LocalPosition3D, { camera_offset });
 
         // TODO: Remove euler use

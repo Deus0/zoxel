@@ -38,8 +38,8 @@ entity spawn_plot_graph(
     float2 anchor = float2_half;
     int2 position = int2_zero;
 
-    Children children = (Children) { 0 };
-    initialize_Children(&children, lines_count + is_label);
+    // Children children = (Children) { 0 };
+    // initialize_Children(&children, lines_count + is_label);
 
     entity e = spawn_layout2(
         world,
@@ -90,16 +90,17 @@ entity spawn_plot_graph(
         };
 
         entity e2 = spawn_zext(world, text_data);
-        children.value[0] = e2;
+        zox_set_parent(world, e2, e);
+        // children.value[0] = e2;
         zox_add_tag(e2, PlotLabel);
     }
 
     // our plot here
     for (int i = 0; i < lines_count; i++) {
-        const int position_x = line_margins + i * line_spacing;
-        const int2 start_position = (int2) { position_x, lines_min_height };
-        const int2 end_position = (int2) { position_x, lines_max_height };
-        const entity e2 = spawn_ui_line2_v2(
+        int position_x = line_margins + i * line_spacing;
+        int2 start_position = (int2) { position_x, lines_min_height };
+        int2 end_position = (int2) { position_x, lines_max_height };
+        entity e2 = spawn_ui_line2_v2(
             world,
             canvas,
             e,
@@ -113,12 +114,13 @@ entity spawn_plot_graph(
             layer
         );
         zox_set(e2, ChildIndex, { i });
-        zox_set(e2, ParentLink, { e });
+        // zox_set(e2, ParentLink, { e });
+        zox_set_parent(world, e2, e);
         zox_add_tag(e2, PlotLine);
-        children.value[is_label + i] = e2;
+        // children.value[is_label + i] = e2;
     }
 
-    zox_set_ptr(e, Children, children);
+    // zox_set_ptr(e, Children, children);
 
     return e;
 }

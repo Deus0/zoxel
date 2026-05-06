@@ -21,7 +21,7 @@ void define_systems_bodys(ecs* world) {
         EcsOnUpdate,
         [in] bodys.BodyDirty,
         [in] bodys.PartLinks,
-        [out] hierarchys.Children,
+        // [out] hierarchys.Children,
         [out] bones.BoneLinks,
         [out] bones.SkeletonDirty,
         [none] bones.Skeleton

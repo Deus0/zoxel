@@ -33,9 +33,9 @@ void define_systems_elements2(ecs *world) {
     zox_system(
         ListRenderDirtySystem,
         EcsOnUpdate,
-        [in] layouts2.ListPositionDirty,
-        [in] layouts2.ListStart,
-        [in] layouts2.ListVisible,
+        [in] containers.ListPositionDirty,
+        [in] containers.ListStart,
+        [in] containers.ListVisible,
         //[in] hierarchys.Children
     );
 
@@ -43,8 +43,8 @@ void define_systems_elements2(ecs *world) {
     zox_system(
         ScrollbarHandleSystem,
         EcsOnUpdate,
-        [in] layouts2.ListDirty,
-        [in] layouts2.ListVisible,
+        [in] containers.ListDirty,
+        [in] containers.ListVisible,
         [in] elements2.ScrollviewLink
     );
 

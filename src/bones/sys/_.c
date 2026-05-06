@@ -62,7 +62,7 @@ void define_systems_bones(ecs *world) {
     zox_system_1(
         BoneRenderSystem,
         zoxp_mainthread,
-        [in] hierarchys.ParentLink,
+        // [in] hierarchys.ParentLink,
         [in] transforms3.Position3D,
         [in] bones.BoneSize,
         [none] bones.Bone

@@ -1,4 +1,4 @@
-extern entity game_start_player_new(ecs*, const entity);
+extern entity game_start_player_new(ecs*, entity, float3* spawned);
 
 zox_sys2(Player3RespawnSystem) {
     zox_sys_world();
@@ -43,7 +43,8 @@ zox_sys2(Player3RespawnSystem) {
             if (respawn->value <= 0) {
                 zox_log("Respawn [activates]");
                 state->value = zox_player_state_playing;
-                character->value = game_start_player_new(world, e);
+                float3 spawned;
+                character->value = game_start_player_new(world, e, &spawned);
             }
         }
     }
