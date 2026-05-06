@@ -25,24 +25,29 @@ zox_sys2(BillboardSystem) {
 
         float4 target_rotation = zox_get_value(camera, Rotation3D)
         rotation3D->value = target_rotation;
-        if (zox_has(e, Children)) {
-            zox_geter(e, Children, children);
 
-            for (int j = 0; j < children->length; j++) {
-                entity child = children->value[j];
+        /*entity children[layouts2_children_capacity];
+        uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+        for (uint j = 0; j < children_length; j++) {
+            entity e2 = children[j];
+        //if (zox_has(e, Children)) {
+            //zox_geter(e, Children, children);
 
-                if (!zox_has(child, LocalRotation3D)) {
-                    // zox_log("! billboard child [%i:%s] doesn't have [LocalRotation3D]\n", j, zox_get_name(child))
-                    continue;
-                }
+            //for (int j = 0; j < children->length; j++) {
+            //    entity child = children->value[j];
 
-                zox_geter_value(child, LocalRotation3D, float4, child_local_rotation3D);
-
-                zox_muter(child, Rotation3D, child_rotation);
-
-                set_rotation_from_parents(world, e, &child_rotation->value, child_local_rotation3D);
+            if (!zox_has(e2, LocalRotation3D)) {
+                // zox_log("! billboard child [%i:%s] doesn't have [LocalRotation3D]\n", j, zox_get_name(child))
+                continue;
             }
-        }
+
+            zox_geter_value(e2, LocalRotation3D, float4, child_local_rotation3D);
+
+            zox_muter(e2, Rotation3D, child_rotation);
+
+            set_rotation_from_parents(world, e, &child_rotation->value, child_local_rotation3D);
+        }*/
+
 #ifdef zox_debug_billboard_system
         spawn_line3(world, position3D->value, float3_add(position3D->value, normal), 2, 1);
 #endif

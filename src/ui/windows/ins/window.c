@@ -13,9 +13,6 @@ entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData
 
     zox_set(e, HeaderHeight, { header_height });
 
-    // start children
-    // Children* children = window_data.children;
-
     LayoutParentData e_parent_data = {
         .e = e,
         .size = element_data.size,
@@ -47,7 +44,6 @@ entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData
 
     entity header = spawn_header3(world, canvas_data, e_parent_data, header_element_data, header_text_data, header_data, on_click);
     zox_set_parent(world, header, e);
-    // add_to_Children(children, header);
 
     set_window_bounds_to_canvas(world, e, canvas_data.size, element_data.size, element_data.anchor);
 
@@ -59,7 +55,6 @@ entity spawn_window(ecs *world, entity p, entity canvas, entity parent, byte wty
     zox_instance(p);
     zox_name("window");
     zox_set(e, WindowType, { wtype });
-    // zox_set(e, ParentLink, { parent });
     zox_set(e, CanvasLink, { canvas });
     zox_set(e, LayoutPosition, { position });
     zox_set(e, LayoutSize, { size });

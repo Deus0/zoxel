@@ -3,9 +3,6 @@ entity spawn_prefab_text(ecs* world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("text");
 
-    // hierarchy
-    // zox_prefab_set(e, ParentLink, { 0 });
-    // zox_prefab_set(e, Children, { 0 });
     // text
     zox_add_tag(e, Zext);
     zox_add_tag(e, Text2D);

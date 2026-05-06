@@ -21,14 +21,12 @@ byte2 count_windows_in_stack(ecs *world, const Children *children) {
 zox_sys2(CanvasStackSystem) {
     zox_sys_world();
     zox_sys_begin();
-    // zox_sys_in(Children);
     zox_sys_out(WindowToTop);
     zox_sys_out(WindowsLayers);
     zox_sys_out(WindowsCount);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(WindowToTop, add_window);
-        // zox_sys_i(Children, children);
         zox_sys_o(WindowsLayers, windowsLayers);
         zox_sys_o(WindowsCount, windowsCount);
 

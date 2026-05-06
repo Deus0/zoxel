@@ -4,11 +4,6 @@ void set_camera_locked(ecs *world, entity e, entity target) {
     zox_set(e, Roaming, { 0 });
     zox_set(e, ParentLink, { target });
 
-    /*if (target) {
-        zox_muter(target, Children, children);
-        add_to_Children(children, e);
-    }*/
-
     // zox_remove(e, EulerOverride);
 
     /*if (camera_follow_mode == zox_camera_follow_mode_attach) {

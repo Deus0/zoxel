@@ -106,17 +106,15 @@ entity spawn_header(ecs *world, entity parent, entity canvas, int2 pixel_positio
         }
     };
 
-    Children children = (Children) { 0 };
+    // Children children = (Children) { 0 };
 
     entity text = spawn_zext(world, zext_spawn_data);
-    add_to_Children(&children, text);
+    zox_set_parent(world, text, e);
 
     if (is_close_button) {
         entity close_button = spawn_close_button(world, e, canvas, font_size, padding.y, button_layer, (ClickEvent) { NULL });
-        add_to_Children(&children, close_button);
+        zox_set_parent(world, close_button, e);
     }
-
-    zox_set_ptr(e, Children, children);
 
     return e;
 }

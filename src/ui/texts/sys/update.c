@@ -1,29 +1,3 @@
-/*void update_text(ecs *world, const Children* children, const TextData* textData) {
-
-    // calculate checks for spaces new lines etc and removes those
-    int new_children_length = calculate_total_zigels(textData->value, textData->length);
-    int update_count = int_min(children->length, new_children_length);
-
-    for (int i = 0; i < update_count; i++) {
-        entity e = children->value[i];
-
-        if (!zox_valid(e)) {
-            continue;
-        }
-
-        byte new = calculate_zigel_index(textData->value, textData->length, i);
-        zox_geter_value(e, ZigelIndex, byte, old);
-
-        if (old != new) {
-            zox_muter(e, ZigelIndex, index);
-            zox_muter(e, GenerateTexture, generate);
-            index->value = new;
-            generate->value = zox_dirty_trigger;
-            zox_log_text("    + zigel [%i] updated [%i:%i]", i, old, new);
-        }
-    }
-}*/
-
 // just updates previous zigels to new data
 zox_sys2(TextUpdateSystem) {
     zox_sys_world();
@@ -65,10 +39,6 @@ zox_sys2(TextUpdateSystem) {
                 // zox_log("+ Text [%s]:[%i] New [%i] Old [%i]", zox_get_name(e), j, new_index, old_index);
             }
         }
-
-
-        // update_text(world, children, text);
-        // zox_sys_e()
         // zox_log("+ updating text [%s]", zox_get_name(e))
     }
 } zox_sys_end(TextUpdateSystem);

@@ -37,25 +37,19 @@ entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 posit
     zox_set(e, Color, { window_fill });
     zox_set(e, OutlineColor, { window_outline });
 
-    Children children = (Children) { 0 };
-    initialize_Children(&children, children_count);
-
     if (is_header) {
-        children.value[0] = spawn_header(world, e, canvas, header_position, header_size, header_anchor, header_label, font_size, header_margins, header_layer, int2_zero, size, is_close_button, canvas_size);
+        entity header = spawn_header(world, e, canvas, header_position, header_size, header_anchor, header_label, font_size, header_margins, header_layer, int2_zero, size, is_close_button, canvas_size);
+        zox_set_parent(world, header, e);
     }
 
     int2 plot_size = size;
     plot_size.y -= header_size.y;
     for (int i = 0; i < plots_count; i++) {
-        children.value[is_header + i] = spawn_plot_graph(world, canvas, e, position, size, prefab_plot_graph, plot_layer, plot_size, record_frames_count, 0, text_color, plot_colors[i], 1, i * 2);
+        entity plot_graph = spawn_plot_graph(world, canvas, e, position, size, prefab_plot_graph, plot_layer, plot_size, record_frames_count, 0, text_color, plot_colors[i], 1, i * 2);
+        zox_set_parent(world, plot_graph, e);
+        if (i == 0) plot_time = plot_graph;
+        else plot_time_system = plot_graph;
     }
-
-    // todo: seperate plot data from the graphs here
-    // - hotkey to switch them
-    // PlotLinks from our Profiler
-    plot_time = children.value[1];
-    plot_time_system = children.value[2];
-    zox_set_ptr(e, Children, children);
 
     return e;
 }

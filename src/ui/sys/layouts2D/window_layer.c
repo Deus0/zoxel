@@ -4,14 +4,12 @@ zox_sys2(WindowLayerSystem) {
     zox_sys_begin();
     zox_sys_in(SetWindowLayer);
     zox_sys_in(CanvasLink);
-    // zox_sys_in(Children);
     zox_sys_out(WindowLayer);
     zox_sys_out(Layer2D);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SetWindowLayer, nlayer);
         zox_sys_i(CanvasLink, canvasLink);
-        // zox_sys_i(Children, children);
         zox_sys_o(WindowLayer, wlayer);
         zox_sys_o(Layer2D, layer2D);
 

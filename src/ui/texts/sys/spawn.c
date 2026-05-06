@@ -52,7 +52,6 @@ zox_sys2(ZigelSpawnSystem) {
     zox_sys_in(TextResolution);
     zox_sys_in(TextDirty);
     zox_sys_out(RenderDisabled);
-    // zox_sys_out(Children);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
@@ -68,7 +67,6 @@ zox_sys2(ZigelSpawnSystem) {
         zox_sys_i(FontThickness, fontThickness);
         zox_sys_i(FontOutlineThickness, fontOutlineThickness);
         zox_sys_i(TextResolution, textResolution);
-        // zox_sys_o(Children, children);
         zox_sys_o(RenderDisabled, render_disabled);
 
         if (dirty->value != zox_dirty_active) {
@@ -123,45 +121,3 @@ zox_sys2(ZigelSpawnSystem) {
     }
 } zox_sys_end(ZigelSpawnSystem);
 
-
-    /*for (uint j = 0; j < count; j++) {
-        entity e2 = children[j];
-        set_position_recursive(world, e2, nposition->value, nrotation->value);
-    }*/
-
-    /*int old_children_length = children->length;
-    int has_old_children = old_children_length > 0;
-    int reuse_count = int_min(old_children_length, length);*/
-
-/*#ifdef zoxel_debug_zext_updates
-    zox_log("spawn_zext_zigels :: [%i] -> [%i]; reuse [%i];", children->length, tdata.length, reuse_count)
-    if (children->length == tdata.length) {
-        zox_log("    - zext remained the same [%i]", tdata.length)
-    }
-#endif*/
-
-    /*entity *old_children = children->value;
-    entity *new_children = NULL;
-    if (length > 0) {
-        new_children = zalloc(length * sizeof(entity));
-    }*/
-    // old children needs new
-    //  - set old positions, as we are resizing
-    /*for (int i = 0; i < reuse_count; i++) {
-        entity e = old_children[i];
-        new_children[i] = e;
-    }*/
-
-
-/*#ifdef zoxel_debug_zext_updates
-        zox_log("    - spawning new_children [%i]", length - old_children_length);
-#endif*/
-/*#ifdef zoxel_debug_zext_updates
-        zox_log("    - deleted old_children [%i]", (old_children_length - new_children_length))
-#endif*/
-
-    /*if (has_old_children) {
-        dispose_Children(children);
-    }
-    children->value = new_children;
-    children->length = new_children_length;*/
