@@ -3,11 +3,7 @@
 entity test_dialogue_run;
 entity test_dialogue_ui;
 
-void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
-
-    if (keycode != zox_key_1) {
-        return;
-    }
+void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
 
     if (zox_valid(test_dialogue_run)) {
 
@@ -22,39 +18,40 @@ void key_down_toggle_dialogue(ecs *world, int32_t keycode) {
             zox_delete(test_dialogue_ui);
             // delete_nodes(world, test_dialogue_tree);
         }
-    } else {
-        entity player = zox_players[0];
-        if (!player) {
-            zox_log_error("Player is null");
-            return;
-        }
-
-        zox_log("Testing Realm Dialogue Run [0]");
-
-        // Here is our test run!
-        zox_geter_value(player, GameLink, entity, game);
-        zox_geter_value(game, RealmLink, entity, realm);
-        if (!zox_valid(realm)) {
-            zox_logw("No realm yet.");
-            return;
-        }
-
-        zox_geter(realm, DialoguetreeLinks, dialogues);
-        if (!dialogues->length) {
-            zox_logw("No Dialoguetrees yet.");
-            return;
-        }
-
-        zox_geter_value(player, CharacterLink, entity, character);
-
-        entity tree = dialogues->value[0];
-
-        test_dialogue_run = spawn_process_dialogue(world, prefab_process_dialogue, tree, 0, 0);
-
-        test_dialogue_ui = spawn_dialogue_ui(world, prefab_dialogue_ui, player);
-
-        link_dialogue_run_to_ui(world, test_dialogue_run, test_dialogue_ui);
-
-        zox_set(character, DialogueProcessLink, { test_dialogue_run });
+        return;
     }
+
+    entity player = zox_players[0];
+    if (!player) {
+        zox_log_error("Player is null");
+        return;
+    }
+
+    zox_log("Testing Realm Dialogue Run [0]");
+
+    // Here is our test run!
+    zox_geter_value(player, GameLink, entity, game);
+    zox_geter_value(game, RealmLink, entity, realm);
+    if (!zox_valid(realm)) {
+        zox_logw("No realm yet.");
+        return;
+    }
+
+    zox_geter(realm, DialoguetreeLinks, dialogues);
+    if (!dialogues->length) {
+        zox_logw("No Dialoguetrees yet.");
+        return;
+    }
+
+    zox_geter_value(player, CharacterLink, entity, character);
+
+    entity tree = dialogues->value[0];
+
+    test_dialogue_run = spawn_process_dialogue(world, prefab_process_dialogue, tree, 0, 0);
+
+    test_dialogue_ui = spawn_dialogue_ui(world, prefab_dialogue_ui, player);
+
+    link_dialogue_run_to_ui(world, test_dialogue_run, test_dialogue_ui);
+
+    zox_set(character, DialogueProcessLink, { test_dialogue_run });
 }

@@ -96,7 +96,7 @@ entity2 spawn_elementbar2(
         }
     };
 
-    entity text = spawn_zext(world, zextSpawnData);
+    entity text = spawn_text(world, zextSpawnData);
     // children.value[1] = text;
     zox_set_parent(world, text, e);
     zox_set_unique_name(text, "element2D_text");

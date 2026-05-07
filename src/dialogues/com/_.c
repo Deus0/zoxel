@@ -1,11 +1,10 @@
 zox_tag(DialogueNode);
-//zox_tag(DialogueLeaf);
-//zox_tag(DialogueTree);
 zox_tag(DialogueRun);
 zox_tag(DialogueUI);
 zoxc_entity(DialogueUILink);
 zoxc_entity(DialogueProcessLink);
 zoxc_entity(DialoguetreeLink);
+zoxc_entity(DialogueTextLink);
 zoxc_fixed_string(DialogueText, 512);
 zoxc_fixed_string(TargetText, 512);
 zoxc_double(AnimateTextBegin);
@@ -23,6 +22,7 @@ void define_components_dialogues(ecs* world) {
     zoxd_entity(DialogueUILink);
     zoxd_entity(DialogueProcessLink);
     zoxd_entity(DialoguetreeLink);
+    zoxd_entity(DialogueTextLink);
     zoxd_fixed_string(DialogueText);
     zoxd_fixed_string(TargetText);
     zoxd_double(AnimateTextBegin);

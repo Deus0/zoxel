@@ -3,7 +3,7 @@ typedef struct {
     SpawnListElement* elements;
     int count;
     int visible_count;
-    byte is_scrollbar;
+    // byte is_scrollbar;
     byte font_size;
     color fill;
     color outline;

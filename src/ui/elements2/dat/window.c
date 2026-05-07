@@ -22,7 +22,7 @@ typedef struct {
     byte header_font_size;
     byte2 header_padding;
     // list area
-    byte is_scrollbar;
+    // byte is_scrollbar;
     // todo
     color fill;
     color outline;

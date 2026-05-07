@@ -4,6 +4,7 @@ entity spawn_prefab_dialogue_ui(ecs *world, entity p) {
     zox_add_tag(e, DialogueUI);
     zox_prefab_set(e, DialogueProcessLink, { 0 });
     zox_prefab_set(e, TargetText, { 0 });
+    zox_prefab_set(e, DialogueTextLink, { 0 });
     zox_add_tag(e, NavigationWindow);
     return e;
 }

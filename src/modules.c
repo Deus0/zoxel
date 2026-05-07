@@ -56,6 +56,7 @@
 #include "particles/_.c"
 #include "weathers/_.c"
 #include "characters/_.c"
+#include "pets/_.c"
 #include "dungeons/_.c"
 #include "terrain/_.c"
 #include "vrays/_.c"
@@ -181,6 +182,7 @@ zox_begin_module(Zox)
     zox_import_module(Turrets);
     zox_import_module(Maps);
     zox_import_module(Npcs);
+    zox_import_module(Pets);
 
     zox_import_module(Imports);
     zox_import_module(Editor);

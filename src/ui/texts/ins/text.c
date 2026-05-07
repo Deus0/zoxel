@@ -1,4 +1,4 @@
-entity spawn_zext(ecs *world, SpawnZext data) {
+entity spawn_text(ecs *world, SpawnZext data) {
     if (!zox_valid(data.canvas.e)) {
         zox_logw("Canvas invalid in [spawn_zext]");
         return 0;
@@ -48,5 +48,49 @@ entity spawn_zext(ecs *world, SpawnZext data) {
     }
     zox_set_ptr(e, TextData, text_data);
     zox_set(e, TextDirty, { zox_dirty_trigger });
+    return e;
+}
+
+
+entity spawn_text_new(ecs *world, entity prefab, entity parent, entity canvas, int2 position, float2 position_anchor, byte font_size, byte alignment, byte2 padding, const char* text, color fill, color outline) {
+
+    TextData tdata = (TextData) { 0 };
+    uint length;
+    tdata.value = convert_text_data(text, &length);
+    tdata.length = length;
+    int2 size = calculate_zext_size(tdata.value, length, font_size, padding, default_line_padding);
+
+    zox_instance(prefab);
+    zox_name("text");
+    zox_set_parent(world, e, parent);
+    zox_set(e, CanvasLink, { canvas });
+    if (canvas == parent) {
+        // TODO: Make this auto
+        zox_set(canvas, WindowToTop, { e });
+    }
+    zox_set_ptr(e, TextData, tdata);
+    zox_set(e, TextDirty, { zox_dirty_trigger });
+    zox_set(e, Anchor, { position_anchor });
+    zox_set(e, LayoutPosition, { position });
+    zox_set(e, LayoutSize, { size });
+    zox_set(e, TextFontSize, { font_size });
+    zox_set(e, TextPadding, { padding });
+    zox_set(e, TextResolution, { font_size });
+    zox_set(e, TextAlignment, { alignment });
+    zox_set(e, MeshAlignment, { alignment });
+    // Panel
+    zox_set(e, TextureSize, { size });
+    zox_set(e, FontFillColor, { fill });
+    zox_set(e, FontOutlineColor, { outline });
+
+    // Do we need to set them? Are font thickness used?
+    byte fill_thickness = 1;
+    byte outline_thickness = 1;
+    byte render_disabled = 0;
+    zox_set(e, RenderDisabled, { render_disabled });
+    zox_set(e, FontThickness, { fill_thickness });
+    zox_set(e, FontOutlineThickness, { outline_thickness });
+    zox_set(e, Layer2D, { 0 });
+
     return e;
 }

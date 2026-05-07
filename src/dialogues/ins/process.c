@@ -1,10 +1,4 @@
-entity spawn_process_dialogue(
-    ecs* world,
-    entity p,
-    entity node,
-    entity speaker_a,
-    entity speaker_b
-) {
+entity spawn_process_dialogue(ecs* world, entity p, entity node, entity speaker_a, entity speaker_b) {
     zox_instance(p);
     zox_name("dialogue_process");
     zox_set(e, NodeStartLink, { node });

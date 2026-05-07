@@ -89,7 +89,7 @@ entity spawn_plot_graph(
             }
         };
 
-        entity e2 = spawn_zext(world, text_data);
+        entity e2 = spawn_text(world, text_data);
         zox_set_parent(world, e2, e);
         // children.value[0] = e2;
         zox_add_tag(e2, PlotLabel);

@@ -1,12 +1,7 @@
 // extern entity spawn_dialogue_tree(ecs*, entity, char*);
 extern entity spawn_dialogue_node(ecs*, entity, char*);
 
-entity spawn_dialogue_tree_texts(
-    ecs* world,
-    entity p,
-    char** texts,
-    byte count
-) {
+entity spawn_dialogue_tree_texts(ecs* world, entity p, char** texts, byte count) {
     if (!count) {
         zox_log_error("Cannot have 0 texts.");
         return 0;
@@ -16,11 +11,7 @@ entity spawn_dialogue_tree_texts(
     entity last_node = e;
 
     for (int i = 0; i < count; i++) {
-        entity e2 = spawn_dialogue_node(
-            world,
-            p,
-            texts[i]
-        );
+        entity e2 = spawn_dialogue_node(world, p, texts[i]);
 
         if (!e) {
             // if first node

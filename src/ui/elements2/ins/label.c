@@ -33,7 +33,7 @@ entity spawn_label_background(ecs *world, entity prefab, entity parent, entity c
         }
     };
 
-    entity e = spawn_zext(world, zextSpawnData);
+    entity e = spawn_text(world, zextSpawnData);
 
     if (!zox_valid(e)) {
         zox_loge("Invalid e in [spawn_label_background]");

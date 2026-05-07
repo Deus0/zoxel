@@ -1,5 +1,11 @@
 ### todo ###
 
+- Sometimes npcs spawn in same chunk twice
+- issue with first chunk raycasting at start
+
+- test function for character spawning
+
+-x Spawn a Test UI, toggle it, add function in zoxel code
 - Find out why dialogue ui header is inside window 
 - Give game uis the realm colors so feels different to the main menu
 - Move first chunk spawn to stream systems - StreamKickstartSystem
@@ -18,7 +24,6 @@
 	- just reuse their prefabs and add tags
 - use functions like spawn_window, or spawn_user_grid inside those uis
 -x test particles
-- test function for character spawning
 - now they keep falling through map
 - investigate characters sometimes small - due to block depth
 - sometimes character missing a mesh too

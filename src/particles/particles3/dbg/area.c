@@ -1,9 +1,9 @@
 entity big_old_particle_zone = 0;
 
-void zox_dbg_spawn_particle_emitter(ecs *world, int32_t keycode) {
-    if (keycode != zox_key_l) {
+void zox_dbg_spawn_particle_emitter(ecs *world, ClickEventData data) {
+    /*if (keycode != zox_key_l) {
         return;
-    }
+    }*/
 
     // max should be around 10k
     if (big_old_particle_zone) {

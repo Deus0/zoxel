@@ -11,43 +11,43 @@ entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData
 
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
 
-    zox_set(e, HeaderHeight, { header_height });
-
     LayoutParentData e_parent_data = {
         .e = e,
-        .size = element_data.size,
+        // .size = element_data.size,
     };
 
-    // # Window Header #
-    // todo: pass more of t this in from top
-    ElementSpawnData header_element_data = {
-        .prefab = prefab_header,
-        .anchor = (float2) { 0.5f, 1.0f },
-        .position = (int2) { 0, - header_height / 2 },
-        .size = (int2) { element_data.size.x, header_height },
-        .layer = element_data.layer + 1,
-    };
-    SpawnHeaderData header_data = {
-        .prefab_zext = prefab_zext,
-        .is_close_button = is_close_button
-    };
-    SpawnTextData header_text_data = {
-        .text = window_data.header_text,
-        .font_size = window_data.header_font_size,
-        .font_resolution = window_data.header_font_size, // header_font_resolution,
-        .font_thickness = header_font_thickness_s,
-        .font_outline_thickness = header_fonto_thickness_s,
-        .font_fill_color = header_font_fill,
-        .font_outline_color = header_font_outline,
-        .margins = window_data.header_padding,
-    };
+    entity header;
+    {
+        // # Window Header #
+        // todo: pass more of t this in from top
+        ElementSpawnData header_element_data = {
+            .prefab = prefab_header,
+            .anchor = (float2) { 0.5f, 1.0f },
+            .position = (int2) { 0, - header_height / 2 },
+            .size = (int2) { element_data.size.x, header_height },
+            .layer = element_data.layer + 1,
+        };
+        SpawnHeaderData header_data = {
+            .prefab_zext = prefab_zext,
+            .is_close_button = is_close_button
+        };
+        SpawnTextData header_text_data = {
+            .text = window_data.header_text,
+            .font_size = window_data.header_font_size,
+            .font_resolution = window_data.header_font_size, // header_font_resolution,
+            .font_thickness = header_font_thickness_s,
+            .font_outline_thickness = header_fonto_thickness_s,
+            .font_fill_color = header_font_fill,
+            .font_outline_color = header_font_outline,
+            .margins = window_data.header_padding,
+        };
+        header = spawn_header3(world, canvas_data, e_parent_data, header_element_data, header_text_data, header_data, on_click);
+        zox_set_parent(world, header, e);
 
-    entity header = spawn_header3(world, canvas_data, e_parent_data, header_element_data, header_text_data, header_data, on_click);
-    zox_set_parent(world, header, e);
+        zox_set(e, HeaderHeight, { header_height });
+    }
 
     set_window_bounds_to_canvas(world, e, canvas_data.size, element_data.size, element_data.anchor);
-
-    zox_log("Dialogue? with [%i]", header_height);
 
     return (entity2) { e, header };
 }

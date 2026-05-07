@@ -1,14 +1,10 @@
  entity zox_dbg_text;
 
-void zox_tst_key_down_text(ecs *world, int32_t keycode) {
-
-    if (keycode != zox_key_h) {
-        return;
-    }
+void zox_tst_spawn_text2(ecs* world, ClickEventData data) {
 
     entity player = dbg_player;
 
-    zox_log("Testing [spawn_text]: %lu", zox_tst_key_down_text);
+    zox_log("Testing [spawn_text]: %lu", zox_dbg_text);
 
     if (zox_dbg_text) {
         zox_delete(zox_dbg_text);
@@ -46,5 +42,5 @@ void zox_tst_key_down_text(ecs *world, int32_t keycode) {
         },
     };
 
-    zox_dbg_text = spawn_zext(world, textd);
+    zox_dbg_text = spawn_text(world, textd);
 }

@@ -31,9 +31,9 @@ void spawn_test_uis(ecs *world) {
     // test ui
     // test_action_bar(world);
     // spawn_element_on_canvas(world, canvas, (int2) { screenDimensions.x / 2, screenDimensions.y / 2 }, testSize);   // crosshair
-    // spawn_zext(world, (int2) { 0, 0}, (float2) { 0.5f, 0.5f }, "Hello World.");
-    // spawn_zext(world, (int2) { 0, - 8}, (float2) { 0.5f, 1.0f }, "abcdefghijklmnopqrstuvwxyz");
-    // spawn_zext(world, (int2) { 0, actionbar_size4.y + 48}, (float2) { 0.5f, 0.0f }, "greetings minion");
+    // spawn_text(world, (int2) { 0, 0}, (float2) { 0.5f, 0.5f }, "Hello World.");
+    // spawn_text(world, (int2) { 0, - 8}, (float2) { 0.5f, 1.0f }, "abcdefghijklmnopqrstuvwxyz");
+    // spawn_text(world, (int2) { 0, actionbar_size4.y + 48}, (float2) { 0.5f, 0.0f }, "greetings minion");
 }
 
 void test_ui_pixel_positions(ecs *world) {

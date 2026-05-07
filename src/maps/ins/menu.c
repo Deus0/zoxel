@@ -18,7 +18,7 @@ entity spawn_player_menu_map(ecs* world, entity player) {
         .header_text = "Map",
         .header_font_size = 32,
         .header_padding = (byte2) { 8, 4 },
-        .is_scrollbar = 0,
+        // .is_scrollbar = 0,
     };
 
     // Children window_children = (Children) { 0 };

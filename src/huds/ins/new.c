@@ -103,7 +103,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .header_text = header_label,
         .header_font_size = header_font_size,
         .header_padding = header_padding,
-        .is_scrollbar = 0,
+        // .is_scrollbar = 0,
     };
 
     entity e = spawn_window2(world, canvas_data, window_parent_data, window_element_data,window_data, (ClickEvent) { &on_cancelled_new_realm }, 1, zox_window_new_realm).x;

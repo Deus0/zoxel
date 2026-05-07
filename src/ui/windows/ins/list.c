@@ -11,11 +11,11 @@ typedef struct {
     byte visible_count;
     byte list_font_size;
     ClickEvent close_event;
-    byte is_close_button;
+    byte can_close;
 } WindowListSpawnData;
 
 // Returns window + list
-entity3 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte is_close_button, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2) {
+entity3 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2) {
 
     zox_geter_value(player, CanvasLink, entity, canvas);
 
@@ -25,9 +25,11 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     }
 
     // Sizing
+    byte2 list_padding = (byte2) { padding.x, padding.y  };
+
+    // Scale all ones that are created locally
     byte2 header_padding = (byte2) { 6 * ui_scale, 2 * ui_scale };
     byte2 button_padding = (byte2) { 8 * ui_scale, 4 * ui_scale };
-    byte2 list_padding = (byte2) { padding.x * ui_scale, padding.y * ui_scale };
     byte2 list_margins =  (byte2) { 16 * ui_scale, 8 * ui_scale };
     byte slider_height = 16 * ui_scale;
     byte slider_padding = 24 * ui_scale;
@@ -35,9 +37,10 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
 
     // # Window #
+    int2 canvas_size = zox_gett_value(canvas, LayoutSize);
     LayoutParentData canvas_data = {
         .e = canvas,
-        .size = zox_gett_value(canvas, LayoutSize)  // need for bounds
+        .size = canvas_size  // need for bounds
     };
     ElementSpawnData window_element_data = {
         .prefab = p,
@@ -48,13 +51,10 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
         .header_text = header,
         .header_font_size = header_font_size,
         .header_padding = header_padding,
-        .is_scrollbar = 0,
+        // .is_scrollbar = 0,
     };
     // we need to calculate header size too
-    int2 header_size = calculate_header_size(
-        strlen(header),
-        window_data.header_font_size,
-        window_data.header_padding);
+    int2 header_size = calculate_header_size(strlen(header), window_data.header_font_size, window_data.header_padding);
     int header_height = header_size.y;
 
     // # List #
@@ -92,7 +92,7 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     window_element_data.size = (int2) { int_max(list_size.x, header_size.x), list_size.y + header_height };
 
     // Spawn our Window
-    entity2 e2 = spawn_window2(world, canvas_data, (LayoutParentData) { .e = canvas }, window_element_data, window_data, close_event, is_close_button, window_type);
+    entity2 e2 = spawn_window2(world, canvas_data, (LayoutParentData) { .e = canvas }, window_element_data, window_data, close_event, can_close, window_type);
     entity e = e2.x;
 
     // Spawn Scrollview

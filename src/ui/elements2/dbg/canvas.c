@@ -5,11 +5,11 @@ extern entity spawn_inspector(ecs*, entity, entity, entity);
 // TODO: Refactor CanvasLink and just scan for root canvas
 // TODO: Use ecs pair here too for canvaslinks
 // DONE: Remove this and use new parent system for rendering / transform
-void zox_dbg_spawn_new_canvas(ecs* world, int32_t keycode) {
+void zox_dbg_spawn_canvas(ecs* world, ClickEventData data) {
 
-    if (keycode != zox_key_h) {
+    /*if (keycode != zox_key_h) {
         return;
-    }
+    }*/
 
     if (!zox_valid(prefab_canvas)) {
         zox_loge("Invalid Prefab [prefab_canvas]");

@@ -112,3 +112,12 @@ byte* convert_from_ascii_text_at(const char *input, byte start_buffer) {
     }
     return output;
 }
+
+byte* convert_text_data(const char* text, uint* length) {
+    *length = text != NULL ? strlen(text) : 0;
+    byte* data = malloc(*length);
+    for (uint i = 0; i < *length; i++) {
+        data[i] = convert_ascii(text[i]);
+    }
+    return data;
+}

@@ -1,12 +1,12 @@
  entity zox_dbg_element;
 
-void zox_dbg_spawn_element(ecs *world, int32_t keycode) {
-    if (keycode != zox_key_g) {
+void zox_dbg_spawn_element(ecs *world, ClickEventData data) {
+    /*if (keycode != zox_key_g) {
         return;
-    }
+    }*/
 
     entity player = dbg_player;
-    zox_log("Testing [element]: %lu", zox_tst_key_down_text);
+    zox_log("Testing [element]: %lu", zox_dbg_element);
     if (zox_dbg_element) {
         zox_delete(zox_dbg_element);
         zox_dbg_element = 0;

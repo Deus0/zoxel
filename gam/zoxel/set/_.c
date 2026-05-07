@@ -154,8 +154,6 @@ void zoxel_debug_keys() {
     add_hook_key_down(toggle_hierarchy);
     // add_hook_key_down(toggle_inspector_player);
 
-    // add_hook_key_down(key_down_toggle_dialogue);
-
 
     add_hook_key_down(key_down_toggle_debug_chunks);
     add_hook_key_down(key_down_toggle_debug_character_bounds);
@@ -171,22 +169,14 @@ void zoxel_debug_keys() {
     // add_hook_key_down(key_down_test_aura);
     // add_hook_key_down(test_game_end);
     // add_hook_key_down(test_fall_through_terrain);
-    // add_hook_key_down(toggle_character_particles);
     // test function for npc spawning
-    // add_hook_key_down(test_spawn_character_npc);
     // add_hook_key_down(key_down_test_aura);
     // add_hook_key_down(test_spawn_chunk_terrain);
     // add_hook_key_down(test_key_element_front2D);
     // add_hook_key_down(key_down_update_text3D);
     // add_hook_key_down(key_down_dbg_chunk);
 
-    // Test our uis
-    // add_hook_key_down(zox_tst_key_down_window_list);
-    // add_hook_key_down(zox_tst_key_down_text);
-    add_hook_key_down(zox_dbg_spawn_element);
-    add_hook_key_down(zox_dbg_spawn_new_canvas);
-    add_hook_key_down(zox_dbg_spawn_popup3);
-    add_hook_key_down(zox_dbg_spawn_particle_emitter);
+
 
 }
 

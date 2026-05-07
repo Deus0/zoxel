@@ -27,7 +27,7 @@ entity spawn_button(ecs *world, LayoutParentData canvas_data, LayoutParentData p
             .render_disabled = element_data.render_disabled,
         },
     };
-    entity text = spawn_zext(world, zext_data2);
+    entity text = spawn_text(world, zext_data2);
     // add_to_Children(&children, zext);
     zox_set_parent(world, text, e);
     // zox_set_ptr(e, Children, children);
