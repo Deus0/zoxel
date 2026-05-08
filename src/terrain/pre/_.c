@@ -16,7 +16,7 @@ void spawn_prefabs_terrain(ecs *world) {
         zox_prefab_set(prefab_realm, BlockLinks, { 0 });
         zox_prefab_set(prefab_realm, BlocksDirty, { 0 });
     }
-    if (zox_valid(prefab_character3)) {
+    /*if (zox_valid(prefab_character3)) {
         zox_prefab_character_set(TerrainLink, { 0 });
-    }
+    }*/
 }

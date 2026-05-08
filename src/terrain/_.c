@@ -35,7 +35,6 @@
 #include "sys/_.c"
 
 #include "collisions/_.c"
-#include "npcs/_.c"
 
 void module_dispose_terrain(ecs *world, void *ctx) {
     (void) world;
@@ -59,7 +58,6 @@ zox_begin_module(Terrain)
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
 
     zox_import_module(TerrainCollisions);
-    zox_import_module(TerrainNpcs);
 
 zox_end_module(Terrain)
 

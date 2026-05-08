@@ -525,20 +525,35 @@ byte raycast_voxel_node(
 zox_sys2(Chunk3RaycastSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraLink);
+    // zox_sys_in(CameraLink);
     zox_sys_in(TerrainLink);
     zox_sys_in(RaycastRange);
     zox_sys_out(RaycastVoxelData);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(CameraLink, cameraLink);
+        zox_sys_e();
+        // zox_sys_i(CameraLink, cameraLink);
         zox_sys_i(TerrainLink, terrain);
         zox_sys_i(RaycastRange, raycastRange);
         zox_sys_o(RaycastVoxelData, data);
 
-        entity camera = cameraLink->value;
+        // entity camera = cameraLink->value;
 
-        if (!zox_valid(camera) || !zox_valid(terrain->value) || !zox_has(terrain->value, RealmLink) || !zox_has(camera, RaycastOrigin)) {
+        if (!zox_valid(terrain->value) || !zox_has(terrain->value, RealmLink)) {
             continue;
+        }
+
+        // entity caster = get_linked_character(world, camera);
+        entity caster = e;
+        float3 ray_origin;
+        float3 ray_normal;
+        if (zox_has(e, CameraLink)) {
+            zox_geter_value(e, CameraLink, entity, camera);
+            ray_origin = zox_gett_value(camera, RaycastOrigin);
+            ray_normal = zox_gett_value(camera, RaycastNormal);
+        } else {
+            ray_origin = zox_gett_value(e, Position3D);
+            float4 rotation = zox_gett_value(e, Rotation3D);
+            ray_normal = quaternion_to_normal(rotation);
         }
 
         zox_geter_value(terrain->value, RealmLink, entity, realm);
@@ -550,13 +565,11 @@ zox_sys2(Chunk3RaycastSystem) {
 
         zox_geter_value(terrain->value, BlockScale, float, terrain_scalev);
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
-        entity caster = get_linked_character(world, camera);
+
         int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
 
 
         zox_geter(terrain->value, ChunkLinks, chunks);
-        zox_geter_value(camera, RaycastOrigin, float3, ray_origin);
-        zox_geter_value(camera, RaycastNormal, float3, ray_normal);
 
         CharacterRaycast character_raycast = { 0 };
         float range = !debug_ray_big_range ? raycastRange->value : 128;

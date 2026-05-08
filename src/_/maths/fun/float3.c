@@ -47,6 +47,10 @@ static inline float3 float3_subtract(const float3 inputA, const float3 inputB) {
     return (float3) { inputA.x - inputB.x, inputA.y - inputB.y, inputA.z - inputB.z };
 }
 
+static inline float3 float3_mulf(const float3 a, const float m) {
+    return (float3) { a.x * m, a.y * m, a.z * m };
+}
+
 static inline float3 float3_mul(const float3 a, const float3 b) {
     return (float3) { a.x * b.x, a.y * b.y, a.z * b.z };
 }

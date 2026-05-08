@@ -21,11 +21,6 @@ typedef struct {
     const char *header_text;
     byte header_font_size;
     byte2 header_padding;
-    // list area
-    // byte is_scrollbar;
-    // todo
     color fill;
     color outline;
-    // output
-    // Children* children;
 } SpawnWindow2;

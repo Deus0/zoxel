@@ -1,12 +1,14 @@
 ### todo ###
 
+- Move first chunk spawning into StreamSpawnSystem - so it will spawn whatever we are inside of
+- Terrain loading and finishing should be overseen by GameState and not Player events
+- Fix little teleport when loading player character
+- Make user data ChildOf relationships
+	- Remake Character Meta to be actual Characters
+	- Minimizes prefab instantiate code
+- Move name generation to system under new module Names
 - Sometimes npcs spawn in same chunk twice
 - issue with first chunk raycasting at start
-
-- test function for character spawning
-
--x Spawn a Test UI, toggle it, add function in zoxel code
-- Find out why dialogue ui header is inside window 
 - Give game uis the realm colors so feels different to the main menu
 - Move first chunk spawn to stream systems - StreamKickstartSystem
 - Fix new game UI (actionbar and stats ui) / Code cleanup
@@ -19,20 +21,13 @@
 - Make a penguin module
 - Adds a penguin to taskbar
 - Adds a penguin render scene and 3 buttons to change his hat
-
 - remove any use of user macros from user data
 	- just reuse their prefabs and add tags
 - use functions like spawn_window, or spawn_user_grid inside those uis
--x test particles
 - now they keep falling through map
 - investigate characters sometimes small - due to block depth
 - sometimes character missing a mesh too
-
 - set the slider text block depth [5] when sliding
-
-- Move first chunk spawning into StreamSpawnSystem - so it will spawn whatever we are inside of
-- Terrain loading and finishing should be overseen by GameState and not Player events
-- Fix little teleport when loading player character
 	
 - Fix DungeonCore not showing texture properly
 
@@ -342,6 +337,10 @@ Done:
 -x Header text is missing for user uis
 -x icon text all just dissapeared
 -x tooltip doesnt dissapear when the ui dies - keep a link on it and react if it dies / becomes non selected
+-x test particles
+-x test function for character spawning
+-x Spawn a Test UI, toggle it, add function in zoxel code
+-X Find out why dialogue ui header is inside window 
 	
 	
 # Delayed Post Release #

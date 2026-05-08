@@ -1,12 +1,14 @@
 // TODO: Spawn basic Window + Speech Text + Confirm Button
 
-entity spawn_dialogue_ui(ecs* world, entity prefab, entity player) {
-    zox_geter_value(player, CanvasLink, entity, canvas);
+entity spawn_dialogue_ui(ecs* world, entity prefab, entity canvas, entity character, entity target) {
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
 
     int2 window_size = (int2) { 940, 140 };
     float2 position_anchor = (float2) { 0.5f, 0.62f };
-    const char* header_text = "Dialogue";
+    const char* header_text = zox_valid(target) ? zox_gett_value(target, ZoxName) : zox_gett_value(character, ZoxName);
+    // const char* header_text = zox_valid(target) ? zox_get_name(target) : zox_get_name(character);
+    // "Dialogue";
+
     byte header_font_size = 7 * ui_scale;
     byte2 header_padding = byte2_single(4 * ui_scale);
     int2 header_size = calculate_header_size(strlen(header_text), header_font_size, header_padding);
@@ -60,7 +62,7 @@ entity spawn_dialogue_ui(ecs* world, entity prefab, entity player) {
         byte font_size = 8 * ui_scale;
         int button_size = font_size + 8;
         int button_padding = 24;
-        LayoutParentData parent_data = (LayoutParentData) { .e = body };
+        LayoutParentData parent_data = (LayoutParentData) { .e = parent };
         SpawnTextData bdata = {
             .text = "Z",
             .font_size = font_size,

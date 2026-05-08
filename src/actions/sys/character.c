@@ -1,6 +1,6 @@
 // When health goes to 0, kill UserLink->value
 // Set Dead to 1
-zox_sys2(CharacterActionsSystem) {
+zox_sys2(CharacterActionsSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -17,14 +17,13 @@ zox_sys2(CharacterActionsSystem) {
         }
 
         // skill!
+        // TODO: Find a punch skill at level 1
         if (meta_skill_punch) {
-            const entity action = spawn_user_skill(
-                world,
-                meta_skill_punch,
-                e
-            );
+            entity action = spawn_user_skill(world, meta_skill_punch, e);
             add_to_ActionLinks(actions, action);
         }
+
+
         // If Player, Fill with Blank!
         if (zox_has(e, PlayerLink)) {
             for (int j = actions->length; j < 8; j++) {
@@ -53,4 +52,4 @@ zox_sys2(CharacterActionsSystem) {
             }
         }*/
     }
-} zox_sys_end(CharacterActionsSystem);
+} zox_sys_end(CharacterActionsSpawnSystem);

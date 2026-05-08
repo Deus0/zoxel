@@ -22,13 +22,24 @@ zox_sys2(DialogueBeginSystem) {
         }
 
         zox_geter_value(player->value, PlayerState, byte, player_state);
-        zox_geter_value(player->value, CameraLink, entity, camera);
-        zox_geter_value(camera, CameraState, byte, camera_state);
 
         // zox_player_state_dialogue_active
-        if (player_state != zox_player_state_playing || camera_state != zox_camera_state_first_person) {
+        if (player_state != zox_player_state_playing) {
             continue;
         }
+        zox_geter_value(player->value, CharacterLink, entity, character);
+        zox_geter_value(player->value, CameraLink, entity, camera);
+        zox_geter_value(player->value, CanvasLink, entity, canvas);
+
+        if (!zox_valid(character) || !zox_valid(camera) || !zox_valid(canvas)) {
+            continue;
+        }
+
+        zox_geter_value(camera, CameraState, byte, camera_state);
+        if (camera_state != zox_camera_state_first_person) {
+            continue;
+        }
+
         entity npc = raycast->chunk;
 
         zox_geter_value(npc, CombatState, byte, combat);
@@ -62,26 +73,10 @@ zox_sys2(DialogueBeginSystem) {
         // TODO: Set NPC State
         // TODO: Link Run to Player
         // entity dialogue = dialogues->value[0];
-        run->value = spawn_process_dialogue(
-            world,
-            prefab_process_dialogue,
-            tree,
-            e,
-            npc
-        );
-        entity dialogue_ui = spawn_dialogue_ui(
-            world,
-            prefab_dialogue_ui,
-            player->value
-        );
-        link_dialogue_run_to_ui(
-            world,
-            run->value,
-            dialogue_ui
-        );
-
+        run->value = spawn_process_dialogue(world, prefab_process_dialogue, tree, e, npc);
+        entity dialogue_ui = spawn_dialogue_ui(world, prefab_dialogue_ui, canvas, character, npc);
+        link_dialogue_run_to_ui(world, run->value, dialogue_ui);
         zox_set(player->value, PlayerState, { zox_player_state_dialogue_begin });
-
         follow_target(world, npc, e);
 
         // zox_log("Character [%s] spawned dialogue_run [%lu]", zox_get_name(e), run->value);

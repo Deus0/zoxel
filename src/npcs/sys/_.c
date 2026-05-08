@@ -14,7 +14,7 @@ byte is_debug_attack = 0;
 #include "rotate_towards_system.c"
 #include "move_forward_system.c"
 #include "target_set_system.c"
-#include "attack_system.c"
+#include "attack.c"
 #include "stay_upright_system.c"
 #include "random_jumping.c"
 
@@ -81,6 +81,15 @@ void define_systems_npcs(ecs *world) {
         [out] npcs.TargetPosition,
         [none] npcs.Npc
     );
+    zox_system_m(
+        AttackTriggerSystem,
+        !is_debug_attack,
+        [in] npcs.Behaviour,
+        [in] physics.DisableMovement,
+        [out] triggers.TriggerActionA,
+        [none] npcs.Npc
+    );
+
     zox_system_m(
         FleeSystem,
         !is_debug_flee,

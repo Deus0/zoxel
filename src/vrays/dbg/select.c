@@ -1,14 +1,15 @@
 entity dbg_chunk;
 
+extern entity get_linked_character(ecs*, entity);
+
 void select_dbg_chunk(ecs* world) {
 
-    // zox_geter(game->value, PlayerLinks, players);
     entity player = dbg_player;
     if (!zox_valid(player)) {
         return;
     }
 
-    zox_geter_value(player, CharacterLink, entity, character);
+    entity character = get_linked_character(world, player);
     if (!zox_valid(character)) {
         return;
     }

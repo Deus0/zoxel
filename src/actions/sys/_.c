@@ -2,7 +2,7 @@
 #include "character.c"
 
 void define_systems_actions(ecs* world) {
-    zox_system_1(
+    zox_system(
         ActionActivateSystem,
         EcsOnUpdate,
         [in] triggers.TriggerActionA,
@@ -10,7 +10,7 @@ void define_systems_actions(ecs* world) {
         [in] actions.ActionLinks
     );
     zox_system_1(
-        CharacterActionsSystem,
+        CharacterActionsSpawnSystem,
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         // [in] realms.RealmLink,

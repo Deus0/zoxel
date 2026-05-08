@@ -55,11 +55,11 @@
 
 #include "particles/_.c"
 #include "weathers/_.c"
+#include "terrain/_.c"
+#include "vrays/_.c"
 #include "characters/_.c"
 #include "pets/_.c"
 #include "dungeons/_.c"
-#include "terrain/_.c"
-#include "vrays/_.c"
 #include "huds/_.c"
 #include "space/_.c"
 
@@ -89,6 +89,9 @@
 #include "combat/_.c"
 #include "maps/_.c"
 #include "npcs/_.c"
+
+// Placement
+#include "terrain/npcs/_.c"
 
 // on top
 #include "controllers/_.c"
@@ -147,14 +150,13 @@ zox_begin_module(Zox)
     zox_import_module(Biomes);
     zox_import_module(Streaming);
 
-
     zox_import_module(Particles);
     zox_import_module(Weathers);
+    zox_import_module(Terrain);
+    zox_import_module(Vrays);
     zox_import_module(Characters);
     zox_import_module(Dungeons);
-    zox_import_module(Terrain);
 
-    zox_import_module(Vrays);
     zox_import_module(Huds);
     zox_import_module(Space);
 
@@ -175,7 +177,11 @@ zox_begin_module(Zox)
     zox_import_module(Clans);
     zox_import_module(Lores);
     zox_import_module(Achievements);
-    // gameplay
+
+    // Placement
+    zox_import_module(TerrainNpcs);
+
+    // Gameplay
     zox_import_module(Pickups);
     zox_import_module(Crafting);
     zox_import_module(Farming);

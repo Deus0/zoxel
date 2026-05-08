@@ -45,11 +45,17 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
 
     zox_geter_value(player, CharacterLink, entity, character);
 
+    if (!zox_valid(character)) {
+        zox_logw("Player has no character.");
+        return;
+    }
+    zox_geter_value(player, CanvasLink, entity, canvas);
+
     entity tree = dialogues->value[0];
 
     test_dialogue_run = spawn_process_dialogue(world, prefab_process_dialogue, tree, 0, 0);
 
-    test_dialogue_ui = spawn_dialogue_ui(world, prefab_dialogue_ui, player);
+    test_dialogue_ui = spawn_dialogue_ui(world, prefab_dialogue_ui, canvas, character, 0);
 
     link_dialogue_run_to_ui(world, test_dialogue_run, test_dialogue_ui);
 

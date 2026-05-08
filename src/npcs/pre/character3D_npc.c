@@ -1,7 +1,4 @@
-entity spawn_prefab_character3_npc(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("character3D_npc");
     zox_add_tag(e, Npc);
@@ -22,10 +19,7 @@ entity spawn_prefab_character3_npc(
 }
 
 // hook to spawning
-void on_spawned_character3_npc(
-    ecs* world,
-    const entity e
-) {
+void on_spawned_character3_npc(ecs* world, entity e) {
     if (rand() % 100 <= 6) {
         zox_set(e, DefaultBehaviour, { zox_behaviour_idle });
     }

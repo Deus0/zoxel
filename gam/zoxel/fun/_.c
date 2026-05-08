@@ -21,16 +21,15 @@
 
      zox_log("   + spawning [zox_dbg_test_window] on player %s on canvas %s", zox_get_name(player), zox_get_name(canvas));
 
-    byte header_font_size = 6 * ui_scale;
-    byte list_font_size = 4 * ui_scale;
-
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
     SpawnListElement elements[9];
-    byte2 list_padding = byte2_single(2 * ui_scale);
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
+    byte header_font_size = 6 * ui_scale;
+    byte list_font_size = 4 * ui_scale;
+    byte2 list_padding = byte2_single(2 * ui_scale);
 
     elements[elements_count++] = (SpawnListElement) {
         .text = "Canvas",
@@ -74,7 +73,6 @@
 
 
     // Test our uis
-
     entity spawned[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Testing", header_font_size, elements, elements_count, visible_count, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, list_padding, spawned);
     zox_set_unique_name(e3.x, "menu_test");

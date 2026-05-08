@@ -13,35 +13,32 @@ zox_sys2(ActionActivateSystem) {
         if (trigger->value != zox_dirty_active) {
             continue;
         }
-
         if (index->value >= actions->length) {
-            zox_logw("Action selected is out of bounds [%i of %i]", index->value, actions->length);
+            zox_loge("Action selected is out of bounds [%i of %i]", index->value, actions->length);
             continue;
         }
 
-        const entity action = actions->value[index->value];
+        entity action = actions->value[index->value];
         // no action assigned
         if (!zox_valid(action)) {
+            zox_logw("Action Invalid at [%i]", index->value);
             continue;
         }
 
         // TODO: Replace with CanActivate later
-
         byte is_activate = zox_has(action, Activate) ? zox_gett_value(action, Activate) : 0;
         byte is_activate_begin = zox_has(action, ActivateBegin) ? zox_gett_value(action, ActivateBegin) : 0;
-        const byte warmup_state = zox_has(action, WarmupState) ? zox_gett_value(action, WarmupState) : 0;
-        const double warmup_at = zox_has(action, WarmupAt) ? zox_gett_value(action, WarmupAt) : 0;
-        const byte is_warmup = warmup_state || warmup_at;
-        const byte cooldown_state = zox_has(action, CooldownState) ? zox_gett_value(action, CooldownState) : 0;
-        const double cooldown_at = zox_has(action, CooldownAt) ? zox_gett_value(action, CooldownAt) : 0;
-        const byte is_cooldown = cooldown_state || cooldown_at;
-
+        byte warmup_state = zox_has(action, WarmupState) ? zox_gett_value(action, WarmupState) : 0;
+        double warmup_at = zox_has(action, WarmupAt) ? zox_gett_value(action, WarmupAt) : 0;
+        byte is_warmup = warmup_state || warmup_at;
+        byte cooldown_state = zox_has(action, CooldownState) ? zox_gett_value(action, CooldownState) : 0;
+        double cooldown_at = zox_has(action, CooldownAt) ? zox_gett_value(action, CooldownAt) : 0;
+        byte is_cooldown = cooldown_state || cooldown_at;
         if (is_activate || is_activate_begin || is_warmup || is_cooldown) {
             continue;
         }
-
         zox_set(action, ActivateBegin, { zox_dirty_trigger });
-        // zox_log("action begin [%f]", zox_gett_value(action, WarmupTime));
-
+        // zox_sys_e();
+        // zox_log(" - [%s] Action Begins", zox_get_name(e));
     }
 } zox_sys_end(ActionActivateSystem);

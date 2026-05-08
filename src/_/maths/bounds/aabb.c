@@ -1,4 +1,4 @@
-byte ray_intersects_aabb(float3 ray_origin, float3 ray_direction, bounds box, float *tmin, float *tmax) {
+/*byte ray_intersects_aabb(float3 ray_origin, float3 ray_direction, bounds box, float *tmin, float *tmax) {
 
     if  (!ray_direction.x || !ray_direction.y || !ray_direction.z) {
         zox_logw("Ray Direction is 0, Division error.");
@@ -22,6 +22,68 @@ byte ray_intersects_aabb(float3 ray_origin, float3 ray_direction, bounds box, fl
         tmin_temp = 0;
 
     *tmin = tmin_temp;
+    *tmax = tmax_temp;
+
+    return 1;
+}*/
+
+byte ray_intersects_aabb(float3 ray_origin, float3 ray_direction, bounds box, float *tmin, float *tmax) {
+
+    float tmin_temp = -INFINITY;
+    float tmax_temp =  INFINITY;
+
+    float3 min = {
+        box.center.x - box.extents.x,
+        box.center.y - box.extents.y,
+        box.center.z - box.extents.z
+    };
+
+    float3 max = {
+        box.center.x + box.extents.x,
+        box.center.y + box.extents.y,
+        box.center.z + box.extents.z
+    };
+
+    // X axis
+    if (ray_direction.x != 0.0f) {
+        float tx1 = (min.x - ray_origin.x) / ray_direction.x;
+        float tx2 = (max.x - ray_origin.x) / ray_direction.x;
+
+        tmin_temp = fmax(tmin_temp, fmin(tx1, tx2));
+        tmax_temp = fmin(tmax_temp, fmax(tx1, tx2));
+    } else {
+        if (ray_origin.x < min.x || ray_origin.x > max.x)
+            return 0;
+    }
+
+    // Y axis
+    if (ray_direction.y != 0.0f) {
+        float ty1 = (min.y - ray_origin.y) / ray_direction.y;
+        float ty2 = (max.y - ray_origin.y) / ray_direction.y;
+
+        tmin_temp = fmax(tmin_temp, fmin(ty1, ty2));
+        tmax_temp = fmin(tmax_temp, fmax(ty1, ty2));
+    } else {
+        if (ray_origin.y < min.y || ray_origin.y > max.y)
+            return 0;
+    }
+
+    // Z axis
+    if (ray_direction.z != 0.0f) {
+        float tz1 = (min.z - ray_origin.z) / ray_direction.z;
+        float tz2 = (max.z - ray_origin.z) / ray_direction.z;
+
+        tmin_temp = fmax(tmin_temp, fmin(tz1, tz2));
+        tmax_temp = fmin(tmax_temp, fmax(tz1, tz2));
+    } else {
+        if (ray_origin.z < min.z || ray_origin.z > max.z)
+            return 0;
+    }
+
+    if (tmax_temp < 0 || tmin_temp > tmax_temp)
+        return 0;
+
+    *tmin = fmax(tmin_temp, 0.0f);
     *tmax = tmax_temp;
 
     return 1;

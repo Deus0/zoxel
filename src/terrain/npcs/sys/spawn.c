@@ -105,7 +105,7 @@ zox_sys2(Characters3SpawnSystem) {
                 continue;
             }
 
-            zox_geter_value_non_const(meta, ModelLink, entity, model)
+            zox_geter_value_non_const(meta, ModelLink, entity, model);
             zox_geter_value(meta, Character3PrefabLink, entity, prefab_character)
             if (!model || !prefab_character) {
                 zox_log_error("failed to find a spawn character_meta")

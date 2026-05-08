@@ -13,6 +13,7 @@ zox_sys2(DeathSystem) {
             !zox_has(user->value, Dead) || zox_gett_value(user->value, Dead)) {
             continue;
         }
+
         // we should just set a dead state here
         zox_muter(user->value, Dead, dead);
         dead->value = zox_dirty_trigger;

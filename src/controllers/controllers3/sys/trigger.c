@@ -23,7 +23,7 @@ zox_sys2(Player3DTriggerSystem) {
         byte is_triggered_b = 0;
         byte is_triggered_e = 0;
         for (int j = 0; j < devices->length; j++) {
-            const entity device = devices->value[j];
+            entity device = devices->value[j];
             if (!zox_valid(device) || !zox_has(device, DeviceDisabled) || zox_gett_value(device, DeviceDisabled)) {
                 continue;
             }
