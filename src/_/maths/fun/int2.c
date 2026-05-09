@@ -1,13 +1,13 @@
-static inline int2 int2_half(int2 value) {
-    return (int2) { value.x / 2, value.y / 2 };
+static inline int2 int2_half(int2 v) {
+    return (int2) { v.x / 2, v.y / 2 };
 }
 
 static inline int2 int2_scalef(int2 v, float f) {
     return (int2) { (int) (v.x * f), (int) (v.y * f) };
 }
 
-static inline int2 int2_single(int value) {
-    return (int2) { value, value };
+static inline int2 int2_single(int v) {
+    return (int2) { v, v };
 }
 
 static inline byte int2_equals(int2 a, int2 b) {

@@ -12,9 +12,6 @@ entity spawn_prefab_icon(ecs *world, entity p) {
     zox_prefab_set(e, OutlineColor, { default_outline_color_icon });
     zox_prefab_set(e, IconRadius, { default_icon_radius });
     zox_prefab_set(e, OutlineThickness, { 4 });
-    // Hierarchy
-    // zox_prefab_set(e, ParentLink, { 0 });
-    // zox_prefab_set(e, Children, { 0 });
     // Selection
     zox_add_tag(e, Selectable);
     zox_prefab_set(e, SelectState, { zox_select_state_none });

@@ -50,16 +50,12 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
     zox_set(e, TextPadding, { list_data.button_padding });
     zox_set(e, Color, { list_data.fill });
     zox_set(e, OutlineColor, { list_data.outline });
-
-    // Children children = (Children) { 0 };
-
     // now spawn elements to fit our window
     LayoutParentData child_parent_data = {
         .e = e,
         .position = element_data.position_in_canvas,
         .size = element_data.size
     };
-
     for (int i = 0; i < list_data.count; i++) {
         byte visible = (i >= 0 && i < list_data.visible_count);
 
@@ -161,12 +157,10 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
 
             child = toggle;
         }
-        // add_to_Children(&children, child);
         zox_set_parent(world, child, e);
         if (elements) {
             elements[i] = child;
         }
     }
-    // zox_set_ptr(e, Children, children);
     return e;
 }

@@ -63,7 +63,7 @@ zox_sys2(ElementRaycastSystem) {
                 }
 
                 entity e2 = it2.entities[j];
-                entity camera = get_root_canvas_camera(world, e2);
+                entity camera = zox_get_root_canvas_camera(world, e2);
                 if (!camera) {
                     continue;
                 }

@@ -91,7 +91,6 @@ void define_systems_elements(ecs *world) {
     zox_system(
         CanvasStackSystem,
         EcsOnLoad,
-        // [in] hierarchys.Children,
         [out] layouts2.WindowToTop,
         [out] WindowsLayers,
         [out] WindowsCount,
@@ -102,7 +101,6 @@ void define_systems_elements(ecs *world) {
         EcsOnLoad,
         [in] SetWindowLayer,
         [in] layouts2.CanvasLink,
-        // [in] hierarchys.Children,
         [out] WindowLayer,
         [out] layouts2.Layer2D,
         [none] Window
@@ -134,7 +132,6 @@ void define_systems_elements(ecs *world) {
         EcsOnUpdate,
         [in] elements.ActiveState,
         [in] elements.ActiveStateDirty,
-        // [in] hierarchys.ParentLink,
         [none] Element
     );
 
@@ -160,7 +157,6 @@ void define_systems_elements(ecs *world) {
         EcsOnUpdate,
         [in] cameras.ScreenToCanvas,
         [in] apps.AppLink,
-       // [in] hierarchys.Children,
         [out] layouts2.LayoutPosition,
         [out] layouts2.LayoutSize,
         [out] layouts2.LayoutPositionDirty,

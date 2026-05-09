@@ -6,7 +6,7 @@ void define_systems_plots(ecs* world) {
     zox_system(
         PlotLineSystem,
         EcsOnUpdate,
-        [in] hierarchys.ParentLink,
+        // [in] hierarchys.ParentLink,
         [in] hierarchys.ChildIndex,
         [out] lines2.d.LineLocalPosition2,
         [none] PlotLine
@@ -14,7 +14,7 @@ void define_systems_plots(ecs* world) {
     zox_system(
         PlotLabelSystem,
         EcsOnUpdate,
-        [in] hierarchys.ParentLink,
+        // [in] hierarchys.ParentLink,
         [out] texts.TextDirty,
         [out] texts.TextData,
         [none] PlotLabel

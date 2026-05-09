@@ -5,23 +5,16 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
     byte font_padding = ui_scale * frame_label_padding;
     byte font_thickness = ui_scale * 1;
     byte fonto_thickness = ui_scale * 1;
-
     // Spawn frame
-    zox_instance(data.element.prefab);
+    entity e = spawn_element3(world, data.element.prefab, data.parent.e, float2_half, data.element.position, data.element.size, data.element.size, data.texture.fill_color, data.texture.outline_color);
+    // zox_instance(data.element.prefab);
     zox_name("frame");
-    set_element_spawn_data(world, e, data.canvas, data.parent, data.element);
-    zox_set(e, RenderDisabled, { data.element.render_disabled });
-    zox_set(e, Color, { data.texture.fill_color });
-    zox_set(e, OutlineColor, { data.texture.outline_color });
     zox_set(e, ElementColor, { data.texture.outline_color });
-
-    LayoutParentData canvas_data = data.canvas;
-    LayoutParentData parent_data = {
-        .e = e,
-        .position = data.element.position_in_canvas,
-        .size = data.element.size
-    };
-
+    // set_element_spawn_data(world, e, data.canvas, data.parent, data.element);
+    // zox_set(e, RenderDisabled, { data.element.render_disabled });
+    // zox_set(e, Color, { data.texture.fill_color });
+    // zox_set(e, OutlineColor, { data.texture.outline_color });
+    /*
     SpawnIcon spawnIcon = {
         .canvas = canvas_data,
         .parent = parent_data,
@@ -34,20 +27,20 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
         .texture = data.icon.texture,
         .index = data.icon.index,
         .texture_size = data.icon.texture_size
-    };
-
-    // Children children = (Children) { 0 };
-
+    };*/
     // Spawn Icon
-    entity icon = spawn_icon(world, &spawnIcon).x;
-    // add_to_Children(&children, icon);
-    zox_set_parent(world, icon, e);
-
+    int2 size = int2_single(data.icon.size);
+    entity icon = spawn_icon(world, data.icon.prefab, e, int2_zero, size , data.icon.texture.fill_color, data.icon.texture.outline_color, data.icon.index).x;
     // Spawn Label
     entity text = 0;
-
     if (zox_has(data.element.prefab, LabelPrefabLink)) {
         zox_geter_value(data.element.prefab, LabelPrefabLink, entity, prefab_frame_label);
+        LayoutParentData canvas_data = data.canvas;
+        LayoutParentData parent_data = {
+            .e = e,
+            // .position = data.element.position_in_canvas,
+            // .size = size
+        };
         SpawnZext spawnZext = {
             .canvas = canvas_data,
             .parent = parent_data,
@@ -55,7 +48,7 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
                 .prefab = prefab_frame_label,
                 .layer = data.element.layer + 2,
                 .render_disabled = data.element.render_disabled,
-                .size = spawnIcon.element.size,
+                .size = size,
                 .anchor = (float2) { 1, 0 },
             },
             .zext = {
@@ -69,15 +62,9 @@ entity3 spawn_frame(ecs *world, SpawnFrame data) {
                 .font_outline_color = color_black,
             },
         };
-
         text = spawn_text(world, spawnZext);
         zox_set_unique_name(text, "icon_text");
-
-        // add_to_Children(&children, text);
         zox_set_parent(world, text, e);
     }
-
-    // zox_set_ptr(e, Children, children);
-
     return (entity3) { e, icon, text };
 }

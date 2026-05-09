@@ -9,7 +9,6 @@
 #include "scrollbar_handle.c"
 
 void define_systems_elements2(ecs *world) {
-
     zox_system(
         ElementDragSystem,
         EcsPostLoad,
@@ -17,28 +16,23 @@ void define_systems_elements2(ecs *world) {
         [in] elements.DraggingDelta,
         [in] elements.DraggedLink
     );
-
     zox_system(
         ScrollbarSystem,
         EcsPostUpdate,
         [in] elements.DraggableState,
         [in] layouts2.LayoutPosition,
         [in] layouts2.LayoutSize,
-        // [in] hierarchys.ParentLink,
         [in] elements2.ScrollviewLink,
         [none] elements2.ScrollbarHandle
     );
-
     // make elements visible/invisible within list
     zox_system(
         ListRenderDirtySystem,
         EcsOnUpdate,
         [in] containers.ListPositionDirty,
         [in] containers.ListStart,
-        [in] containers.ListVisible,
-        //[in] hierarchys.Children
+        [in] containers.ListVisible
     );
-
     // resize handle when list dirty
     zox_system(
         ScrollbarHandleSystem,
@@ -47,13 +41,11 @@ void define_systems_elements2(ecs *world) {
         [in] containers.ListVisible,
         [in] elements2.ScrollviewLink
     );
-
     zox_system(
         Elementbar2System,
         EcsPostUpdate,
         [in] elements.ElementBar,
         [in] elements.ElementBarSize,
-        [in] hierarchys.Children,
         [in] layouts2.LayoutSize,
         [none] Elementbar2
     );
@@ -95,5 +87,4 @@ void define_systems_elements2(ecs *world) {
         [out] textures.GenerateTexture,
         [none] Toggle
     );
-
 }

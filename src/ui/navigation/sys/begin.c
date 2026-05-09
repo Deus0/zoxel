@@ -1,28 +1,22 @@
-
 entity find_child_with_mtag_rec(ecs* world, entity e, entity tag, entity mtag, entity mtag2) {
-
     if (!zox_valid(e) || !zox_has(e, Children)) {
         return 0;
     }
-
-    zox_geter(e, Children, children);
-    for (int i = 0; i < children->length; i++) {
-        entity e2 = children->value[i];
-
+    entity children[layouts2_children_capacity];
+    uint count = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint i = 0; i < count; i++) {
+        entity e2 = children[i];
         if (!zox_valid(e2)) {
             continue;
         }
-
         if (zox_has_id(e2, tag) && !zox_has_id(e2, mtag2) && !zox_has_id(e2, mtag2)) {
             return e2;
         }
-
         entity e3 = find_child_with_mtag_rec(world, e2, tag, mtag, mtag2);
         if (e3) {
             return e3;
         }
     }
-
     return 0;
 }
 

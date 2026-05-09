@@ -88,13 +88,11 @@ zox_sys2(UserIconClickSystem) {
 
         entity frame_children[layouts2_children_capacity];
         uint frame_children_length = zox_get_children(world, frame, frame_children, layouts2_children_capacity);
-        // zox_geter(frame, Children, frame_children);
         entity3 framer = (entity3) { frame, e,
             // fetches the label
             frame_children_length > 1 ? frame_children[1] : 0
         };
         // set_icon_label_from_user_data(world, frame, mouse_data);
-
         // new data placed in mouse_data
         // use iconType->value and iconIndex->value to set data on character
         // how to get character from icon? UserLink!

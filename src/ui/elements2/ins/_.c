@@ -5,7 +5,6 @@
 #include "toggle.c"
 #include "element_bar_front.c"
 #include "element_bar.c"
-#include "icon_overlay.c"
 #include "icon.c"
 #include "frame.c"
 #include "icon_mouse.c"

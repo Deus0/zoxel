@@ -1,7 +1,6 @@
 // spawn our games canvas
 // NOTE: Runs on boot
 entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 screen_to_canvas, entity app) {
-
     entity canvas = spawn_canvas(world, prefab_canvas, ui_camera, dimensions, screen_to_canvas, app);
     spawn_canvas_overlay(world, prefab_canvas_overlay, canvas, dimensions);
 
@@ -56,7 +55,6 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
 
     // ### Mouse Pickup UI ###
     int icon_size = (default_icon_size / 4) * ui_scale;
-
     icon_mouse_follow = spawn_icon_mouse_follow_canvas(world, prefab_icon_mouse_follow, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, mouse_pointer);
     zox_set_unique_name(icon_mouse_follow, "icon_mouse");
 

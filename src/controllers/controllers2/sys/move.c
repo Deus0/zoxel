@@ -41,9 +41,7 @@ zox_sys2(Controller2MoveSystem) {
                 if (keyboard->s.is_pressed) movement.y = -1;
                 if (keyboard->left_shift.is_pressed) is_running = 1;
             } else if (zox_has(device, Gamepad)) {
-
                 zox_geter(device, Children, zevices);
-
                 for (int k = 0; k < zevices->length; k++) {
                     entity zevice = zevices->value[k];
 

@@ -24,15 +24,6 @@ zox_sys2(DialogueSpeechSystem) {
             continue;
         }
 
-        /*entity children[layouts2_children_capacity];
-        uint children_length = zox_get_children(world, ui->value, children, layouts2_children_capacity);
-        // zox_geter(ui->value, Children, children);
-        if (children_length < 2) {
-            continue;
-        }*/
-
-        // entity speech = children[1];
-
         zox_geter(node->value, DialogueText, text);
         set_TargetText(world, e2, text->value);
         zox_set(e2, AnimateTextBegin, { zox_current_time });

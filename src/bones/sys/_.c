@@ -6,7 +6,6 @@
 #include "head_bob.c"
 
 void define_systems_bones(ecs *world) {
-
     zox_system(
         HeadAnimateSystem,
         EcsOnUpdate,
@@ -15,7 +14,6 @@ void define_systems_bones(ecs *world) {
         [out] bones.HeadBoneLink,
         [none] bones.Skeleton
     );
-
     // generating bone indexes here
     zox_render3D_plus_system(
         Skeleton3RenderSystem,
@@ -30,7 +28,6 @@ void define_systems_bones(ecs *world) {
         [none] rendering.MeshColorRGBs,
         [none] !rendering.UvsGPULink
     );
-
     zox_system(
         BoneIndexGenerateSystem,
         EcsOnUpdate,
@@ -41,7 +38,6 @@ void define_systems_bones(ecs *world) {
         [out] bones.BoneIndexes,
         [none] bones.Skeleton
     );
-
     zox_system(
         BonePaintSystem,
         EcsPostUpdate,
@@ -50,7 +46,6 @@ void define_systems_bones(ecs *world) {
         [out] rendering.MeshColorRGBs,
         [none] bones.Skeleton
     );
-
     zox_system_1(
         BoneIndexUploadSystem,
         zoxp_mainthread,
@@ -58,11 +53,9 @@ void define_systems_bones(ecs *world) {
         [in] bones.BoneIndexes,
         [out] bones.BoneIndexGPULink
     );
-
     zox_system_1(
         BoneRenderSystem,
         zoxp_mainthread,
-        // [in] hierarchys.ParentLink,
         [in] transforms3.Position3D,
         [in] bones.BoneSize,
         [none] bones.Bone

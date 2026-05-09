@@ -55,7 +55,6 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 hb
     // zox_log("   @ position b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", pposition.x, pposition.y, pposition.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
 
     // Now Recursively add parts
-    // Children bchildren = (Children) { 0 };
     for (int i = 0; i < parts->length; i++) {
         entity sub_part = parts->value[i];
 
@@ -63,10 +62,8 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 hb
 
         if (e3) {
             zox_set_parent(world, e3, bone);
-            // add_to_Children(&bchildren, e3);
         }
     }
-    // zox_set_ptr(bone, Children, bchildren);
 
     return bone;
 }
@@ -76,57 +73,43 @@ zox_sys2(CharacterBoneSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(BodyDirty);
     zox_sys_in(PartLinks);
-    // zox_sys_out(Children);
     zox_sys_out(BoneLinks);
     zox_sys_out(SkeletonDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BodyDirty, state);
         zox_sys_i(PartLinks, parts);
-        // zox_sys_o(Children, children);
         zox_sys_o(BoneLinks, bones);
         zox_sys_o(SkeletonDirty, dirty);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         // for each body part in tree: PartLinks
         for (int j = 0; j < bones->length; j++) {
             entity e2 = bones->value[j];
             zox_delete(e2);
         }
         resize_BoneLinks(bones, 0);
-
         if (!parts->length) {
             continue;
         }
-
         entity core_model = get_item_model(world, parts->value[0]);
         // zox_geter_value_non_const(core_model, BlockScale, float, bscale);
-
         // TODO: Body dirty should set Body's MaxRenderDepth and BlockScale, before VoxCombination
         zox_geter_value_non_const(core_model, MaxRenderDepth, byte, mdepth);
         float bscale = (1.0f / (powers_of_two_byte[mdepth])); // 2.0f *
-
         // zox_geter_value(e, BlockScale, float, bscale);
         zox_geter_value(e, BodySize, byte3, bsize);
         float3 hbounds = float3_scale(byte3_to_float3(bsize), bscale * 0.5f);
-
         // zox_log("- Spawned Bones  vsize [%ix%ix%i] - scale [%f] - hbounds [%fx%fx%f] depth [%i]", bsize.x, bsize.y, bsize.z, bscale, hbounds.x, hbounds.y, hbounds.z, mdepth);
-
         // TODO: Delete old children bones, and old parts
         for (int j = 0; j < parts->length; j++) {
             entity part = parts->value[j];
 
             entity e2 = spawn_part_bones(world, e, bones, hbounds, bscale, e, float3_zero, part);
-
             zox_set_parent(world, e2, e);
-            // add_to_Children(children, e2);
         }
-
         dirty->value = zox_dirty_trigger;
-
         // zox_log("+ Spawned Bones [%i]", bones->length);
     }
 } zox_sys_end(CharacterBoneSpawnSystem);

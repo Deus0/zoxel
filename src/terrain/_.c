@@ -36,19 +36,11 @@
 
 #include "collisions/_.c"
 
-void module_dispose_terrain(ecs *world, void *ctx) {
-    (void) world;
-    (void) ctx;
-    dispose_hook_spawn_blocks();
-}
-
 zox_begin_module(Terrain)
     define_components_terrain(world);
-
     // NOTE: these need to be imported before core
     zox_import_module(Regions);
     zox_import_module(Tunks);
-
     define_systems_terrain(world);
     initialize_hook_spawn_blocks();
     set_terrain_render_distance();  // update this
@@ -56,9 +48,7 @@ zox_begin_module(Terrain)
     add_hook_terminal_command(process_arguments_terrain);
     // add_to_event_game_state((zox_game_event) { &game_state_terrain });
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
-
     zox_import_module(TerrainCollisions);
-
 zox_end_module(Terrain)
 
 #endif

@@ -1,20 +1,24 @@
 ### todo ###
 
-- Move first chunk spawning into StreamSpawnSystem - so it will spawn whatever we are inside of
-- Terrain loading and finishing should be overseen by GameState and not Player events
-- Fix little teleport when loading player character
+- Pause ui toggle not showing on spawn taskbar + pause
+- Remove User Macros and Speghetti
+- Remove structs from UI prefab use
+	- Cleanup all UI code, remove all duplicates, remove struct use etc
+- Remove any Duplicate UI prefabs that arn't special
+- Write a test function to spawn a world item to pickup
+- Give game uis the realm colors so feels different to the main menu
+- Add Stats panel to the taskbar and give header / window
+
+Refactoring:
 - Make user data ChildOf relationships
 	- Remake Character Meta to be actual Characters
 	- Minimizes prefab instantiate code
-- Move name generation to system under new module Names
-- Sometimes npcs spawn in same chunk twice
-- issue with first chunk raycasting at start
-- Give game uis the realm colors so feels different to the main menu
-- Move first chunk spawn to stream systems - StreamKickstartSystem
-- Fix new game UI (actionbar and stats ui) / Code cleanup
+- Refactor texture generation to blueprints
+- upgrade the texture for the item frames
+- Terrain loading and finishing should be overseen by GameState and not Player events
+- Move character/block name generation to system under new module Names
 - Remove any random delays, and make the state changes timed instead
-- Cleanup all UI code, remove all duplicates, remove struct use etc
-- Add Stats panel to the taskbar
+
 - Add a tooltip that just stores a string - no need for event every time
 - Spawn mr penguin on screen
 - Give the ability to change his hat
@@ -24,26 +28,16 @@
 - remove any use of user macros from user data
 	- just reuse their prefabs and add tags
 - use functions like spawn_window, or spawn_user_grid inside those uis
-- now they keep falling through map
-- investigate characters sometimes small - due to block depth
-- sometimes character missing a mesh too
-- set the slider text block depth [5] when sliding
-	
-- Fix DungeonCore not showing texture properly
-
 - Spawn label top left above stats - show block / npc selected
-- Fix initial lighting in terrain
 - Refactor Header Spawning to system
-- Refactor headers to window module
-- Remove all struct data out of UIs
-- Reuse as many ui prefabs as possible
 - Generate a mouse texture - arrow
-- maximize a window
-- resize window grabber
+- Refactor Texture Generation into Nodegraphs
+- Maximize a window - button on map header
+- Resize window grabber at corner
+- move sand/wood/stone into biome blocks
 
-- refactor texture generation to blueprints
-- upgrade the texture for the item frames
- 	
+# Unsorted #
+
 - Vox Frames - different vox models we swap between
 - Spawn the test render texture in a window container
 - Use a HighlightColor - instead of just adjusting brightness
@@ -51,9 +45,6 @@
 - event for pickup we can latch onto in system
 	- trigger the body dirty if body item picked up
 - spawn item model as child of character - when switch action
-
-- Audio missing from main menu - need to spawn a realm for it
-
 - Status UI
 	- Test button first
 	- Spawn render texture
@@ -65,7 +56,6 @@
 	- need to refactor the shaders and element render system
 
 - Handle player death by removing camera on death state
-- Fix dungeon core texture issue (on lower res)
 - F6 key to toggle bone render debugs
 - Head bob to move faster when walking
 - Footstep Sounds when walking around
@@ -98,7 +88,6 @@
 - Slider UI to snap on integer points - when integer - on release
 - Fix music importer
 - Fix import workflow - make import call
-
 
 Position Debugger:
 - Debug Component for Position Curve (float3 curve)
@@ -145,7 +134,6 @@ Refactors:
 - make shape type and centering part of painting as well - use fill system just with diff byte for checks
 - Make lods just use the same model, no need to create 5 models per slime
 	- just generate per each level - set with shapes per node level
-- move sand/wood/stone into biome blocks
 - refactor soil/blocks into nodegraphs for models
 - link nodegraphs to realm's nodegraphLinks
 - list uis should just reposition inside system when children dirty
@@ -158,8 +146,6 @@ Refactors:
 Engine [Builds]:
 - windows build in zelder, make a bsh/windows.sh
 - make builder:
-	- build linux
-	- build windows
 	- build android
 	- push to itch io
 - move import modules into a new module - which will only be included when building zengine workflow (with another define)
@@ -200,10 +186,6 @@ Module [Blocks]:
 - when hit block - create entity for block health
 - block damage overlay effect
 
-Module [Rendering]:
-- test vulkan build
-- push voxel data and generate mesh on gpu
-
 Module [Tools]:
 - terminal log text list
 - chunk debugger - show lods of chunks etc
@@ -233,8 +215,6 @@ Module [Terrain/Tunks]:
   - tunks to handle increasing resolution when needed - using the depth update
   - refactor: towns tunk and chunk3 systems into its own module, self contained addons
 
-
-new
 - load ui for a save game
 	- window with confirm
 	- shows play time
@@ -255,8 +235,28 @@ new
 - block damages, heal, and destroy feature
 - terminal ui
 - drop item button
+	
+# Delayed Post Release #
+- Make Glut Build work
+	- Glut should spawn a window
+	- We should wrap all other sdl functions properly for glut
+- fix no post processing mode - zox_use_post_processing
+	- add to settings
+tools (this will help fix bugs)
+  - press 'f' while raycasting chunk to select it as debug target
+    - this will show the 'chunk ui' which shows all chunk info
+    - itll have a close button on it
+    - Stats
+      - Verts
+      - States?
+      - Idk
+Module [Rendering]:
+- test vulkan build
+- push voxel data and generate mesh on gpu
 
 Done:
+-x build linux
+-x build windows
 -x ui off on khadas
 -x Generate a Chest Item for the realm bodys
 -x generate texture for the chest item
@@ -341,21 +341,10 @@ Done:
 -x test function for character spawning
 -x Spawn a Test UI, toggle it, add function in zoxel code
 -X Find out why dialogue ui header is inside window 
-	
-	
-# Delayed Post Release #
-
-- Make Glut Build work
-	- Glut should spawn a window
-	- We should wrap all other sdl functions properly for glut
-- fix no post processing mode - zox_use_post_processing
-	- add to settings
-
-tools (this will help fix bugs)
-  - press 'f' while raycasting chunk to select it as debug target
-    - this will show the 'chunk ui' which shows all chunk info
-    - itll have a close button on it
-    - Stats
-      - Verts
-      - States?
-      - Idk
+-x Move first chunk spawning into StreamSpawnSystem - so it will spawn whatever we are inside of
+	-x issue with first chunk raycasting at start
+-x Fix rest of children bugs, including skill overlays
+-x Refactor headers to window module
+-x Move first chunk spawn to stream systems - StreamKickstartSystem
+-x Fix new game UI (actionbar and stats ui) / Code cleanup
+-x Fix DeviceGizmo icon

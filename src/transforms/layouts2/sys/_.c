@@ -2,6 +2,7 @@
 #include "position2.c"
 #include "anchor_size.c"
 #include "transform.c"
+#include "canvas.c"
 
 // TODO: We probably need a frame by frame, parent to child system, atm it just pushes it all at once, creates race issues
 // NOTE: Anchor Size for stretching along canvas, must work before the positioning
@@ -31,7 +32,6 @@ void define_systems_layouts2(ecs* world) {
         [in] layouts2.CanvasPosition,
         [out] transforms2.Position2
     );
-
     // Transform Layouts to Real Space
     zox_system(
         LayoutTransform2System,
@@ -41,34 +41,10 @@ void define_systems_layouts2(ecs* world) {
         [in] transforms.Scale1D,
         [out] transforms.TransformMatrix
     );
-}
-
-
-    // Old Hierarchys
-    /*zox_system(
-        AnchorSizeSystem,
+    zox_system(
+        CanvasLinkSystem,
         EcsOnLoad,
-        [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.AnchorSize,
-        // [in] hierarchys.ParentLink,
-        [out] layouts2.LayoutSize
+        [out] layouts2.CanvasLink,
+        // [none] layouts2.Layout
     );
-    zox_system(
-        LayoutParentPositionSystem,
-        EcsOnLoad, // + 1,
-        [in] LayoutPositionDirty,
-        [in] LayoutPosition,
-        [in] LayoutSize,
-        [in] Anchor,
-        [in] hierarchys.ParentLink,
-        [out] CanvasPosition
-    );
-    zox_system(
-        LayoutPosition2System,
-        EcsOnLoad, // + 2,
-        [in] layouts2.LayoutPositionDirty,
-        // [in] layouts2.CanvasPosition,
-        [in] layouts2.CanvasLink,
-        // [out] transforms2.Position2
-    );
-    */
+}

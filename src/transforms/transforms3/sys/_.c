@@ -12,16 +12,6 @@
 #include "children_new.c"
 
 void zox_define_systems_transforms3(ecs *world) {
-
-    // Hierarchy transforms
-    /*zox_system(
-        ChildrenPositionSystem,
-        zox_transforms_stage,
-        [in] transforms3.Position3D,
-        [in] transforms3.Rotation3D,
-        [in] hierarchys.Children
-    );*/
-
     // New hieerarchys using flecs
     // NOTE: Moved before transforms_stage so matricies can update after we have processed position/rotatios
     // NOTE: So normal EcsOnUpdate can set position/rotations without worrying about children
@@ -31,8 +21,6 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D
     );
-
-
     // TODO: Merge these limits, EulerLimits float4
     zox_system(
         EulerLimitXSystem,
@@ -81,20 +69,4 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] transforms3.ShadowLink,
         [out] transforms3.Position3D
     );
-
-    // Even older per frame transforms
-    /*zox_system(
-        ParentRotationSystem,
-        zox_transforms_stage,
-        [in] hierarchys.ParentLink,
-        [in] LocalRotation3D,
-        [out] Rotation3D
-    );
-    zox_system(
-        ParentPositionSystem,
-        zox_transforms_stage,
-        [in] hierarchys.ParentLink,
-        [in] LocalPosition3D,
-        [out] Position3D
-    );*/
 }

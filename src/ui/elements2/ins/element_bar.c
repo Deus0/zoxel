@@ -51,9 +51,6 @@ entity2 spawn_elementbar2(
     byte frontbar_padding = 6;
     zox_set(e, ElementBarSize, { (float2) { (pixel_size.x - frontbar_padding * 2) / (float) pixel_size.x, 1 } });
 
-    //Children children = (Children) { 0 };
-    //initialize_Children(&children, 2);
-
     // frontbar
     entity front_bar = spawn_elementbar2_front(
         world,
@@ -66,7 +63,6 @@ entity2 spawn_elementbar2(
         front_color
     );
     zox_set_unique_name(front_bar, "element2D_frontbar");
-    // children.value[0] = front_bar;
     zox_set_parent(world, front_bar, e);
 
     // text
@@ -97,12 +93,8 @@ entity2 spawn_elementbar2(
     };
 
     entity text = spawn_text(world, zextSpawnData);
-    // children.value[1] = text;
     zox_set_parent(world, text, e);
     zox_set_unique_name(text, "element2D_text");
-
-    // finish
-    // zox_set_ptr(e, Children, children);
 
     return (entity2) { e, text };
 }

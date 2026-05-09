@@ -52,15 +52,12 @@ TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
     };
 }
 
-entity spawn_first_chunk(ecs* world, entity realm, entity terrain, float3 position) {
-
+/*entity spawn_first_chunk(ecs* world, entity realm, entity terrain, float3 position) {
     zox_geter_value(terrain, NodeDepth, byte, tdepth);
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
-
     int3 cposition = real_position_to_chunk_position(position, powers_of_two[tdepth], terrain_scale);
-
     entity c;
-    zox_mut_begin(terrain, ChunkLinks, chunks3);
+    // zox_mut_begin(terrain, ChunkLinks, chunks3);
     zox_mut_begin(terrain, Chunk2Links, chunks2);
 
     // TODO: Move chunk spawn code into stream system and out of Controllers
@@ -89,8 +86,8 @@ entity spawn_first_chunk(ecs* world, entity realm, entity terrain, float3 positi
         c = int3_hashmap_get(chunks3->value, cposition);
     }
 
-    return c;
-}
+    return 0;
+}*/
 
 entity game_start_player_new(ecs *world, entity player, float3* spawned_position) {
     entity realm;

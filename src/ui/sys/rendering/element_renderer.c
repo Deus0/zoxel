@@ -43,7 +43,7 @@ zox_sys2(ElementRenderSystem) {
             continue;
         }
 
-        entity rcamera = get_root_canvas_camera(world, e);
+        entity rcamera = zox_get_root_canvas_camera(world, e);
         if (rcamera != renderer_camera) {
             continue;
         }

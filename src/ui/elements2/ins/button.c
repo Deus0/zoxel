@@ -13,7 +13,6 @@ entity spawn_button(ecs *world, LayoutParentData canvas_data, LayoutParentData p
         zox_set(e, RenderDisabled, { element_data.render_disabled });
     }
     set_element_spawn_data(world, e, canvas_data, parent, element_data);
-    // Children children = (Children) { 0 };
     // text
     SpawnZext zext_data2 = {
         .canvas = canvas_data,
@@ -28,8 +27,6 @@ entity spawn_button(ecs *world, LayoutParentData canvas_data, LayoutParentData p
         },
     };
     entity text = spawn_text(world, zext_data2);
-    // add_to_Children(&children, zext);
     zox_set_parent(world, text, e);
-    // zox_set_ptr(e, Children, children);
     return e;
 }

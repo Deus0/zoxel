@@ -11,12 +11,10 @@ entity spawn_scrollview(ecs *world, LayoutParentData canvas, LayoutParentData pa
     zox_instance(prefab_element_invisible);
     set_element_spawn_data(world, e, canvas, parent, edata);
     zox_name("scrollview");
-    // zox_set(e, ListUILink, { parent.e });
     int2 scrollbar_position = (int2) { -(scrollbar_width / 2) - scrollbar_margins, 0 };
     byte scrollbar_layer = edata.layer + 3;
     entity scrollbar = spawn_scrollbar(world, e, canvas.e, scrollbar_position, scrollbar_layer, edata.size, scrollbar_width, scrollbar_margins, visible, max, visible != max, e);
     zox_set_parent(world, scrollbar, e);
-    //add_to_Children(children, scrollbar);
     zox_set(parent.e, ScrollviewLink, { e });
     return e;
 }

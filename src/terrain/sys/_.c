@@ -6,14 +6,13 @@
 #include "spawn.c"
 #include "death.c"
 #include "game_start.c"
+#include "kickstart.c"
 
 realm_clear_system(BlockLinks);
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void define_systems_terrain(ecs *world) {
-
     realm_clear_systemd(blocks, BlockLinks);
-
     zox_system(
         ChunkLinkSystem,
         EcsOnUpdate,
@@ -23,7 +22,6 @@ void define_systems_terrain(ecs *world) {
         [out] chunks3.ChunkLink,
         [none] chunks3.LinkChunk
     );
-
     // generate terrain
     zox_system(
         FlatlandSystem,
@@ -53,11 +51,26 @@ void define_systems_terrain(ecs *world) {
         [none] !FlatlandChunk,
         [none] TerrainChunk
     );
-
     // Streaming Terrain Chunks
     zox_filter(
         streamers,
         [in] streaming.StreamPoint,
+        [none] streaming.Streamer
+    );
+    zox_system_1(
+        FirstTerrainTunkSystem,
+        zoxp_mainthread,
+        [in] streaming.StreamLink,
+        [in] streaming.StreamPoint2,
+        [in] streaming.StreamDirty2,
+        [none] streaming.Streamer
+    );
+    zox_system_1(
+        FirstTerrainChunkSystem,
+        zoxp_mainthread,
+        [in] streaming.StreamLink,
+        [in] streaming.StreamPoint,
+        [in] streaming.StreamDirty,
         [none] streaming.Streamer
     );
     zox_system_ctx_1(
@@ -79,7 +92,6 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepth,
         [none] streaming.StreamedChunk
     );
-
     // Debug Terrains
 #ifdef zox_debug_chunk_bounds
     zox_system_1(
@@ -91,7 +103,6 @@ void define_systems_terrain(ecs *world) {
         [none] terrain.TerrainChunk
     );
 #endif
-
     zox_system_1(
         TerrainGameStartSystem,
         zoxp_mainthread,

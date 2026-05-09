@@ -1,9 +1,7 @@
 entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
-
     if (!prefab) {
         return 0;
     }
-
     zox_prefab_child(prefab);
     zox_prefab_name("character3");
     zox_set(e, EntityInitialize, { zox_dirty_trigger });
@@ -17,7 +15,6 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, ZoxName, { 0 });
     // In Terrain
     zox_add_tag(e, LinkChunk);
-    // zox_prefab_set(e, TerrainLink, { 0 });
     zox_prefab_set(e, ChunkLink, { 0 });
     zox_prefab_set(e, ChunkPosition, { int3_chaos });
     zox_prefab_set(e, VoxelPosition, { int3_zero });
@@ -36,10 +33,8 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
         zox_prefab_set(e, CloneVoxLink, { 0 });
     }
     // animation
-    zox_prefab_set(e, AnimationState, { zox_animation_idle })
-    zox_prefab_set(e, AnimationStart, { 0 })
-    // hierarchy
-    // zox_prefab_set(e, Children, { 0 }); // for bones, particles, etc (transforms)
+    zox_prefab_set(e, AnimationState, { zox_animation_idle });
+    zox_prefab_set(e, AnimationStart, { 0 });
     zox_prefab_set(e, ElementLinks, { 0 }); // uis
     // physics3
     // physics -- too big atm to refactor
@@ -57,24 +52,19 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, Bounds3D, { float3_single(0) });
     zox_prefab_set(e, Bounds3Dirty, { 0 });
     zox_prefab_set(e, DisableMovement, { 0 });
-
     zox_prefab_set(e, Grounded, { 0 });
     zox_prefab_set(e, Collision, { 0 });
     zox_prefab_set(e, CollisionDistance, { float3_zero });
-
     // jump
     zox_prefab_set(e, CanJump, { 0 });
     zox_prefab_set(e, JumpState, { 0 });
     zox_prefab_set(e, LandState, { 0 });
     zox_prefab_set(e, Jump, { 0 });
-
     // Triggers
     zox_prefab_set(e, RaycastVoxelData, { 0 });
     zox_prefab_set(e, RaycastRange, { raycaster_range });
     zox_prefab_set(e, TriggerActionA, { 0 });
-
     // Debug
     prefab_add_cube_lines(world, e, color_white, 0);
-
     return e;
 }

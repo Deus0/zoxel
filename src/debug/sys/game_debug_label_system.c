@@ -22,11 +22,15 @@ int get_label_##name(ecs *world, char buffer[], int buffer_size, int buffer_inde
 get_label_generic_function(PlayerLinks, player_links)
 
 int debug_label_device(ecs *world, const entity device, char buffer[], int buffer_size, int buffer_index) {
-        if (!device || !zox_has(device, Children)) return buffer_index;
+        if (!device || !zox_has(device, Children)) {
+            return buffer_index;
+        }
         zox_geter(device, Children, zevices)
         for (int j = 0; j < zevices->length; j++) {
                 const entity zevice = zevices->value[j];
-                if (!zox_has(zevice, ZevicePointer)) continue;
+                if (!zox_has(zevice, ZevicePointer)) {
+                    continue;
+                }
                 buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " - z [%i]", j);
                 if (zox_has(zevice, ZevicePointer)) {
                         const byte click_value = zox_get_value(zevice, ZevicePointer)
@@ -44,7 +48,7 @@ int debug_label_device(ecs *world, const entity device, char buffer[], int buffe
         return buffer_index;
 }
 
-zox_sys2(GameDebugLabelSystem) {
+/*zox_sys2(GameDebugLabelSystem) {
     return;
     time_update_debug_label_system += zox_delta_time;
     if (time_update_debug_label_system >= time_update_debug_label_system_rate) {
@@ -52,7 +56,7 @@ zox_sys2(GameDebugLabelSystem) {
     } else {
        return;
     }
-    const int buffer_size = max_debug_characters;
+    int buffer_size = max_debug_characters;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(TextDirty);
@@ -66,7 +70,7 @@ zox_sys2(GameDebugLabelSystem) {
             continue;
         }
 
-        entity canvas = get_root_canvas(world, e);
+        entity canvas = zox_get_root_canvas(world, e);
         // zox_log("canvas; %s - %i\n", zox_get_name(canvas), zox_has(canvas, PlayerLink))
         if (!canvas || !zox_has(canvas, PlayerLink)) continue;
 
@@ -157,9 +161,9 @@ zox_sys2(GameDebugLabelSystem) {
         buffer_index = debug_joystick(buffer, buffer_size, buffer_index);
 #endif
 #ifdef zox_debug_ui_device_mode
-        /*if (deviceMode->value == zox_device_mode_none) {
+        if (deviceMode->value == zox_device_mode_none) {
             buffer_index += snprintf(buffer + buffer_index,buffer_size - buffer_index, "[ ]");
-        } else */
+        } else
         if (deviceMode->value == zox_device_mode_keyboardmouse) {
             buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "[keyboardmouse]\n");
             buffer_index = debug_label_device(world, local_mouse, buffer, buffer_size, buffer_index);
@@ -211,9 +215,9 @@ zox_sys2(GameDebugLabelSystem) {
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " mouse_delta [%ix%i]", mouse_delta.x, mouse_delta.y);
 #endif
 
-/*#ifdef zox_debug_label_system_times
+#ifdef zox_debug_label_system_times
         buffer_index = debug_system_times(world, buffer, buffer_size, buffer_index);
-#endif*/
+#endif
 
         if (buffer_index == 0) buffer[0] = '\0';
         if (!is_zext(textData, buffer)) {
@@ -221,4 +225,4 @@ zox_sys2(GameDebugLabelSystem) {
             zextDirty->value = 1;
         }
     }
-} zox_sys_end(GameDebugLabelSystem);
+} zox_sys_end(GameDebugLabelSystem);*/

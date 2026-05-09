@@ -1,4 +1,4 @@
-extern entity get_root_canvas_camera(ecs *world, const entity e);
+// extern entity zox_get_root_canvas_camera(ecs *world, entity e);
 
 // this is more like a non blend pass!
 
@@ -36,7 +36,7 @@ zox_sys2(RenderTextureRenderSystem) {
             continue;
         }
 
-        entity rcamera = get_root_canvas_camera(world, e);
+        entity rcamera = zox_get_root_canvas_camera(world, e);
         if (rcamera != renderer_camera) {
             continue;
         }

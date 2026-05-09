@@ -14,21 +14,15 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
 
     entity e = spawn_layout2_on_canvas(world, p, canvas, int2_zero, canvas_size, float2_half);
     zox_name("menu_game_touch");
-
-    Children children = (Children) { 0 };
-
 #ifndef zox_disable_touch_buttons
-
     int2 bposition = (int2) {
         screen_margins.x + button_size / 2,
         screen_margins.y + button_size / 2
     };
-
     byte blayer = layer + 1;
 
     color cfill = (color) { 15, 15, 15, 80 };
     color coutline = (color) { 40, 40, 40, 130 };
-
     char* tnames[] = {
         "paused",
         "touch_switch",
@@ -71,18 +65,15 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
             onclicks[i],
             bpadding
         );
-        add_to_Children(&children, b);
+        zox_set_parent(world, b, e);
     }
 
 #endif
-
     // link to character
     zox_geter(player, CharacterLink, characterLink);
     zox_muter(characterLink->value, ElementLinks, elementLinks);
     add_to_ElementLinks(elementLinks, e);
     zox_set(e, ElementHolder, { characterLink->value });
-    zox_set_ptr(e, Children, children);
-
     return e;
 }
 

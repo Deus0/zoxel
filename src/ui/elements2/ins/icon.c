@@ -1,29 +1,17 @@
-entity2 spawn_icon(ecs* world, SpawnIcon* data) {
-    zox_instance(data->element.prefab);
+color icon_overlay_fill = { 191, 107, 6, 144 };
+color icon_overlay_outline = { 0, 0, 0, 144 };
+
+entity2 spawn_icon(ecs* world, entity prefab, entity parent, int2 position, int2 size, color fill, color outline, byte index) {
+    entity e = spawn_element3(world, prefab, parent, float2_half, position, size, size, fill, outline);
     zox_name("icon");
-    set_element_spawn_data(world, e, data->canvas, data->parent, data->element);
-    zox_set(e, RenderDisabled, { data->element.render_disabled });
-    zox_set(e, Color, { data->texture.fill_color });
-    zox_set(e, OutlineColor, { data->texture.outline_color });
-    zox_set(e, IconIndex, { data->index });
-    // icons have overlays now
-    // Children children = (Children) { 0 };
-    // icon overlay
-    LayoutParentData icon_data = {
-        .e = e,
-        .position = data->element.position_in_canvas,
-        .size = data->element.size
-    };
-    ElementSpawnData odata = {
-        .prefab = prefab_icon_overlay,
-        .layer = data->element.layer + 1,
-        .size = data->element.size,
-        .anchor = float2_half,
-        .render_disabled = 1,
-    };
-    entity overlay = spawn_icon_overlay(world, data->canvas, icon_data, odata);
-    zox_set_parent(world, overlay, e);
-    // add_to_Children(&children, overlay);
-    // zox_set_ptr(e, Children, children);
-    return (entity2) { e, overlay };
+    zox_set(e, IconIndex, { index });
+    // zox_set(e, Layer2D, { data.element.layer });
+    // zox_set(e, RenderDisabled, { data.element.render_disabled });
+    // add the overlay
+    int2 icon_overlay_position = int2_zero;
+    int2 icon_overlay_size = size;
+    entity icon_overlay = spawn_element3(world, prefab_element_textured, e, float2_half, icon_overlay_position, icon_overlay_size, icon_overlay_size, icon_overlay_fill, icon_overlay_outline);
+    // zox_set(e, Layer2D, { data.element.layer + 1 });
+    // zox_set(e, RenderDisabled, { data.element.render_disabled });
+    return (entity2) { e, icon_overlay };
 }

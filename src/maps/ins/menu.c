@@ -1,9 +1,7 @@
 entity spawn_player_menu_map(ecs* world, entity player) {
-
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-
     SpawnWindowUsers data = get_default_spawn_window_users_data(
         world,
         prefab_menu_map,
@@ -13,18 +11,13 @@ entity spawn_player_menu_map(ecs* world, entity player) {
     );
     data.header_zext.text = "Map";
     data.element.prefab = prefab_menu_map;
-
     SpawnWindow2 window_data = {
         .header_text = "Map",
         .header_font_size = 32,
         .header_padding = (byte2) { 8, 4 },
         // .is_scrollbar = 0,
     };
-
-    // Children window_children = (Children) { 0 };
-    // window_data.children = &window_children;
     LayoutParentData canvas_data = (LayoutParentData) { .e = canvas, .size = canvas_size };
-
     entity e = spawn_window2(
         world,
         canvas_data,
@@ -35,7 +28,5 @@ entity spawn_player_menu_map(ecs* world, entity player) {
         1,
         zox_window_map
     ).x;
-    // zox_set_ptr(e, Children, window_children);
-
     return e;
 }

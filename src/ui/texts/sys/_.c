@@ -36,8 +36,6 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextData,
         [in] texts.TextFontSize,
         [in] TextPadding,
-        // [in] rendering.MeshAlignment,
-        // [in] hierarchys.ParentLink,
         [none] Zext
     );
     zox_system(

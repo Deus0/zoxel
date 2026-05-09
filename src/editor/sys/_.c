@@ -40,9 +40,6 @@ void define_systems_editor(ecs *world) {
         [in] core.ComponentType,
         [in] core.EntityTarget,
         [in] core.ComponentTarget,
-        [in] hierarchys.Children,
-        //[in] texts.TextData,
-        //[in] texts.TextDirty,
         [none] editor.InspectorLabel
     );
 }

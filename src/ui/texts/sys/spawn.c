@@ -73,7 +73,7 @@ zox_sys2(ZigelSpawnSystem) {
             continue;
         }
 
-        entity canvas = get_root_canvas(world, e);
+        entity canvas = zox_get_root_canvas(world, e);
         if (!zox_valid(canvas)) {
             zox_log_error("no canvas found on text");
             continue;

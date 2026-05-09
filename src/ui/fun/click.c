@@ -36,10 +36,6 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
     uint count = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint i = 0; i < count; i++) {
         entity child = children[i];
-    /*if (zox_has(e, Children)) {
-        zox_geter(e, Children, children);
-        for (int i = 0; i < children->length; i++) {
-            entity child = children->value[i];*/
         if (!zox_valid(child)) {
             continue;
         }
@@ -67,10 +63,6 @@ void raycaster_select_window_children(ecs *world, entity e, entity window) {
     uint count = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint i = 0; i < count; i++) {
         entity child = children[i];
-    /*if (zox_has(e, Children)) {
-        zox_geter(e, Children, children)
-        for (int i = 0; i < children->length; i++) {
-            entity child = children->value[i];*/
         if (!zox_valid(child)) {
             continue;
         }

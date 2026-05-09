@@ -81,14 +81,7 @@ void set_camera_mode(ecs *world, entity e, byte mode) {
         }
         // reattach
         if (camera_follow_mode == zox_camera_follow_mode_attach) {
-
-            /*if (target) {
-                zox_muter(target, Children, children)
-                add_to_Children(children, e);
-            }*/
-
             zox_set_parent(world, e, target);
-            // zox_set(e, ParentLink, { target });
 
         } else if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
             zox_set(e, CameraFollowLink, { target });

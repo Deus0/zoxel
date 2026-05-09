@@ -61,8 +61,6 @@ entity spawn_window(ecs *world, entity p, entity canvas, entity parent, byte wty
     zox_set(e, LayoutPosition, { position });
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { anchor });
-    // zox_set(e, Layer2D, { layer });
-    // TODO: Children Dirty Flag?
     zox_set(canvas, WindowToTop, { e });
     set_window_bounds_to_canvas(world, e, zox_gett_value(canvas, LayoutSize), size, anchor);
     zox_set_parent(world, e, parent);

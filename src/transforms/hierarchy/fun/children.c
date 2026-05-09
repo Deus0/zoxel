@@ -40,9 +40,6 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
     uint children_length = zox_get_children(world, e, children, hierarhys_children_capacity);
     for (uint i = 0; i < children_length; i++) {
         entity e2 = children[i];
-    //zox_geter(e, Children, children);
-    //for (int i = 0; i < children->length; i++) {
-        //entity e2 = children->value[i];
         if (!zox_valid(e2)) {
             continue;
         }
@@ -59,9 +56,6 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
 
 #define find_child_with_id(e, id, child_name)\
     entity child_name = 0;\
-    /*const Children *children = zox_get(parent, Children)*/\
-    /*for (int i = 0; i < children->length; i++) {*/\
-        /*const entity child_e = children->value[i];*/\
     entity children[hierarhys_children_capacity];\
     uint children_length = zox_get_children(world, e, children, hierarhys_children_capacity);\
     for (uint i = 0; i < children_length; i++) {\
@@ -73,20 +67,17 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
     }
 
 #define if_has_child_with_tag(e, tag)\
-entity child_##tag = 0;\
-entity children_##tag[hierarhys_children_capacity];\
-uint children_length = zox_get_children(world, e, children_##tag, hierarhys_children_capacity);\
-for (uint i = 0; i < children_length; i++) {\
-    entity e2 = children_##tag[i];\
-/*const Children *children_##tag = zox_get(e, Children)*/\
-/*for (int i = 0; i < children_##tag->length; i++) {*/\
-    /*entity child_e = children_##tag->value[i];*/\
-    if (e2 && zox_has(e2, tag)) {\
-        child_##tag = e2;\
-        break;\
+    entity child_##tag = 0;\
+    entity children_##tag[hierarhys_children_capacity];\
+    uint children_length = zox_get_children(world, e, children_##tag, hierarhys_children_capacity);\
+    for (uint i = 0; i < children_length; i++) {\
+        entity e2 = children_##tag[i];\
+        if (e2 && zox_has(e2, tag)) {\
+            child_##tag = e2;\
+            break;\
+        }\
     }\
-}\
-if (child_##tag)
+    if (child_##tag)
 
 /*
 #define if_has_child_with_id(e, tag, name)\

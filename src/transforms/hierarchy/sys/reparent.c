@@ -1,6 +1,6 @@
 // Remove from old parent when cache changes
 //      # Detects Modifications #
-zox_sys2(ReparentSystem) {
+/*zox_sys2(ReparentSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ParentLink);
@@ -25,3 +25,4 @@ zox_sys2(ReparentSystem) {
         old->value = new->value;
     }
 } zox_sys_end(ReparentSystem);
+*/

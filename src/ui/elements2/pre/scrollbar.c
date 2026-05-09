@@ -9,7 +9,6 @@ entity spawn_prefab_scrollbar(ecs *world, entity prefab) {
     zox_prefab_set(e, ClickEvent, { NULL });
     zox_prefab_set(e, ClickDisabled, { 0 });
     zox_add_tag(e, Scrollbar);
-    // zox_prefab_set(e, Children, { 0 });
     zox_prefab_set(e, ElementMargins, { int2_zero });
     zox_add_tag(e, FixToLayout);
     add_frame_texture_type(world, e, scrollbar_color, default_outline_color, default_button_corner, default_button_frame_thickness);

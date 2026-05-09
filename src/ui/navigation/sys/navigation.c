@@ -109,43 +109,31 @@ zox_sys2(ElementNavigationSystem) {
 
         // TODO: Move up to window, grab all navigation elements, then find one below?
 
-        entity parent = zox_get_parent(world, current->value);
-        // zox_geter_value(current->value, ParentLink, entity, parent);
-        if (!zox_has(parent, Children)) {
-            zox_loge("AWEOIAJWEOIWE");
-            return;
-        }
-        zox_geter(parent, Children, children);
-
-        // Get Selected Index
+        // Get Selected Index TODO: Make this a generic parent function
         sbyte selected_index = -1;
-        for (byte k = 0; k < children->length; k++) {
-            entity child = children->value[k];
-
+        entity parent = zox_get_parent(world, current->value);
+        entity children[layouts2_children_capacity];
+        uint children_length = zox_get_children(world, parent, children, layouts2_children_capacity);
+        for (byte k = 0; k < children_length; k++) {
+            entity child = children[k];
             if (!zox_valid(child) || !zox_has(child, Selectable)) {
                 continue;
             }
-
             if (child == current->value) {
                 selected_index = k;
                 break;
             }
         }
-
         if (selected_index != -1) {
-
             // zox_log("Going Down Town [%i] -> %f", selected_index, left_stick.y);
-
             entity target = 0;
-
             if (left_stick.y >= ui_navigation_joystick_cutoff
                 && selected_index >= 1) {
-                target = children->value[selected_index - 1];
+                target = children[selected_index - 1];
             } else if (left_stick.y <= -ui_navigation_joystick_cutoff
-                && selected_index < children->length - 1) {
-                target = children->value[selected_index + 1];
+                && selected_index < children_length - 1) {
+                target = children[selected_index + 1];
             }
-
             if (target) {
                 raycaster_select_element(world, e, target);
 

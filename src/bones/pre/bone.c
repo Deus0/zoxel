@@ -4,7 +4,6 @@ const float3 initial_bone_size = { 0.03f, 0.03f, 0.03f };
 entity spawn_prefab_bone(ecs *world) {
     zox_prefab();
     zox_prefab_name("bone");
-
     zox_add_tag(e, Bone);
     zox_prefab_set(e, SkeletonLink, { 0 });
     zox_prefab_set(e, Position3D, { float3_zero });
@@ -15,21 +14,16 @@ entity spawn_prefab_bone(ecs *world) {
     zox_prefab_set(e, LocalRotation3D, { quaternion_identity });
     zox_prefab_set(e, BonePosition, { float3_zero });
     zox_prefab_set(e, BoneSize, { float3_zero });
-    // zox_prefab_set(e, Children, { 0 });
-
     return e;
 }
 
 entity spawn_bone(ecs *world, entity p, entity skeleton, float3 skeleton_position, float3 local_position, float3 size) {
-
     zox_instance(p);
-
     zox_set(e, SkeletonLink, { skeleton });
     zox_set(e, LocalPosition3D, { local_position });
     // zox_set(e, Position3D, { skeleton_position });
     // actually position within skeleton, local to root bone
     zox_set(e, BonePosition, { skeleton_position });
     zox_set(e, BoneSize, { size });
-
     return e;
 }

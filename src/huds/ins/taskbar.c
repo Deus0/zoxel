@@ -49,10 +49,8 @@ entity spawn_taskbar(ecs *world, entity canvas) {
     zox_set_unique_name(e, "taskbar");
     zox_add_tag(e, Taskbar);
 
-    Children children = (Children) { 0 };
-
     entity header = spawn_window_header(world, canvas, e, window_size, "taskbar", header_font_size, header_padding, 2, 1, (ClickEvent) { NULL });
-    add_to_Children(&children, header);
+    zox_set_parent(world, header, e);
 
     ElementSpawn spawn_frame_data = {
         .canvas = { canvas },
@@ -70,7 +68,6 @@ entity spawn_taskbar(ecs *world, entity canvas) {
             .outline_color = default_outline_color_frame,
         }
     };
-
     ElementSpawn spawn_icon_data = {
         .canvas = { canvas },
         .parent = {
@@ -86,9 +83,7 @@ entity spawn_taskbar(ecs *world, entity canvas) {
             .outline_color = default_outline_color_icon,
         }
     };
-
     for (int i = 0; i < taskbar_count; i++) {
-
         // hook data
         int hook_index = -1;
         for (int j = 0; j < taskbar_count; j++) {
@@ -98,30 +93,23 @@ entity spawn_taskbar(ecs *world, entity canvas) {
                 break;
             }
         }
-
         if (hook_index == -1) {
             zox_log_error("hook_index [%i] not found.", i);
             continue;
         }
         hook_taskbar hook = hook_taskbars->data[hook_index];
-
-        spawn_frame_data.element.position = (int2) {
-            (int) ((i - (taskbar_count / 2.0f) + 0.5f) * (frame_size + padding.x)),
-            0
-        };
+        spawn_frame_data.element.position = (int2) { (int) ((i - (taskbar_count / 2.0f) + 0.5f) * (frame_size + padding.x)), 0 };
 
         entity frame = spawn_element(world, spawn_frame_data);
         zox_set_unique_name(frame, "taskbar_frame");
 
-        Children frame_children = (Children) { 0 };
-        initialize_Children(&frame_children, 1);
         spawn_icon_data.parent.e = frame;
         spawn_icon_data.parent.position = spawn_frame_data.element.position;
 
         // Icon
         entity icon = spawn_element(world, spawn_icon_data);
         zox_set_unique_name(icon, "taskbar_icon");
-        frame_children.value[0] = icon;
+        zox_set_parent(world, icon, frame);
 
         entity window = find_child_with_tag2(world, canvas,  hook.component_id);
         if (zox_valid(window)) {
@@ -144,13 +132,8 @@ entity spawn_taskbar(ecs *world, entity canvas) {
         // texture
         char* icon_texture_name = hook.texture_name;
         clone_texture_file_to_entity(world, icon, icon_texture_name);
-
-        zox_set_ptr(frame, Children, frame_children);
-        // children.value[i] = frame;
-        add_to_Children(&children, frame);
+        zox_set_parent(world, frame, e);
     }
-
-    zox_set_ptr(e, Children, children);
 
     return e;
 }

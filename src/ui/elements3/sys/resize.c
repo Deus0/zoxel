@@ -67,7 +67,6 @@ zox_sys2(Text3DResizeSystem) {
     zox_sys_in(RenderDisabled);
     zox_sys_in(Text3DScale);
     zox_sys_in(TextFontSize);
-    // zox_sys_out(Children);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
@@ -78,12 +77,9 @@ zox_sys2(Text3DResizeSystem) {
         zox_sys_i(Text3DScale, text3DScale);
         zox_sys_i(TextFontSize, textSize);
         zox_sys_i(TextData, text);
-        // zox_sys_o(Children, children);
-
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-
         int new_length = calculate_total_zigels(text->value, text->length);
         entity children[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
@@ -101,8 +97,6 @@ zox_sys2(Text3DResizeSystem) {
         zigel_data.outline_color = fontOutlineColor->value;
         zigel_data.render_disabled = renderDisabled->value;
         zigel_data.scale = text3DScale->value;
-
         resize_text3D(world, e, children, children_length, text, zigel_data, new_length);
-
     }
 } zox_sys_end(Text3DResizeSystem);

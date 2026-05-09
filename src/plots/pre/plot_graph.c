@@ -37,10 +37,6 @@ entity spawn_plot_graph(
     const int lines_max_height = size.y;
     float2 anchor = float2_half;
     int2 position = int2_zero;
-
-    // Children children = (Children) { 0 };
-    // initialize_Children(&children, lines_count + is_label);
-
     entity e = spawn_layout2(
         world,
         prefab,
@@ -53,14 +49,12 @@ entity spawn_plot_graph(
         parent_position,
         parent_size
     );
-
     PlotDataDouble data = (PlotDataDouble) { 0 };
     initialize_PlotDataDouble(&data, points_count);
     for (int i = 0; i < points_count; i++) {
         data.value[i] = start_value;
     }
     zox_set_ptr(e, PlotDataDouble, data);
-
     if (is_label) {
         SpawnZext text_data = {
             .canvas = {
@@ -94,7 +88,6 @@ entity spawn_plot_graph(
         // children.value[0] = e2;
         zox_add_tag(e2, PlotLabel);
     }
-
     // our plot here
     for (int i = 0; i < lines_count; i++) {
         int position_x = line_margins + i * line_spacing;
@@ -114,13 +107,9 @@ entity spawn_plot_graph(
             layer
         );
         zox_set(e2, ChildIndex, { i });
-        // zox_set(e2, ParentLink, { e });
         zox_set_parent(world, e2, e);
         zox_add_tag(e2, PlotLine);
-        // children.value[is_label + i] = e2;
     }
-
-    // zox_set_ptr(e, Children, children);
 
     return e;
 }

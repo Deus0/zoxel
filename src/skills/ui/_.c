@@ -18,7 +18,6 @@ zox_begin_module(UISkills)
         SkillOverlaySystem,
         EcsOnUpdate,
         [in] users.UserDataLink,
-        [in] hierarchys.Children,
         [none] elements2.Icon
     );
     add_hook_spawn_prefabs(spawn_prefabs_ui_skills);

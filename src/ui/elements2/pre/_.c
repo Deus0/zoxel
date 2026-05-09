@@ -1,5 +1,4 @@
 // Fronts
-#include "icon_overlay.c"
 #include "handle.c"
 #include "elementbar2D_front.c"
 #include "icon.c"
@@ -37,7 +36,7 @@ entity prefab_grid;
 entity prefab_elementbar2D;
 entity prefab_elementbar2D_front;
 entity prefab_icon_mouse_follow;
-entity prefab_icon_overlay;
+// entity prefab_icon_overlay;
 entity prefab_handle;
 entity prefab_slider;
 
@@ -58,7 +57,7 @@ void spawn_prefabs_elements2(ecs *world) {
     // icons
     prefab_icon                 = spawn_prefab_icon(world, prefab_element_ready);
     prefab_frame                = spawn_prefab_frame(world, prefab_element_textured, default_fill_color_frame, default_outline_color_frame);
-    prefab_icon_overlay         = spawn_prefab_icon_overlay(world, prefab_element_textured);
+    // prefab_icon_overlay         = spawn_prefab_icon_overlay(world, prefab_element_textured);
 
     // scrollbars
     prefab_scrollbar            = spawn_prefab_scrollbar(world, prefab_element_textured);

@@ -16,8 +16,7 @@ void define_systems_line2(ecs* world) {
         zoxp_transforms,
         [in] layouts2.LayoutPositionDirty,
         [in] layouts2.CanvasPosition,
-        [in] layouts2.LayoutSize,
-        [in] hierarchys.Children
+        [in] layouts2.LayoutSize
     );
     // zox_render3D_plus_system(
     zox_render3D_system(

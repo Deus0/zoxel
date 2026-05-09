@@ -1,10 +1,6 @@
  entity zox_dbg_element;
 
 void zox_dbg_spawn_element(ecs *world, ClickEventData data) {
-    /*if (keycode != zox_key_g) {
-        return;
-    }*/
-
     entity player = dbg_player;
     zox_log("Testing [element]: %lu", zox_dbg_element);
     if (zox_dbg_element) {
@@ -22,11 +18,10 @@ void zox_dbg_spawn_element(ecs *world, ClickEventData data) {
     byte size = ui_scale * 32;
     int2 position = (int2) { size, size * 2 };
     // zox_dbg_element = spawn_element(world, sdata);
-    entity element = spawn_element3(world, prefab_element_textured, float2_half, position, int2_single(size), int2_single(size), default_fill_color_icon, default_outline_color_icon);
-    zox_set(element, Layer2D, { 1 });
-    zox_set(element, CanvasLink, { canvas });
-    // zox_set(element, ParentLink, { canvas });
+    entity element = spawn_element3(world, prefab_element_textured, canvas, float2_half, position, int2_single(size), int2_single(size), default_fill_color_icon, default_outline_color_icon);
+    // zox_set_parent(world, element, canvas);
+    // zox_set(element, CanvasLink, { canvas });
     zox_set(canvas, WindowToTop, { element });
-    zox_set_parent(world, element, canvas);
+    zox_set(element, Layer2D, { 1 });
     zox_dbg_element = element;
 }

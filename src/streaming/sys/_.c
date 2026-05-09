@@ -11,8 +11,6 @@ void define_systems_streaming(ecs* world) {
         zoxp_update,
         [in] streaming.StreamLink,
         [in] transforms3.Position3D,
-        // [in] blocks.BlockScale,
-        // [in] chunks.NodeDepth,
         [out] streaming.StreamPoint,
         [out] streaming.StreamPoint2,
         [out] streaming.StreamDirty,
