@@ -1,14 +1,31 @@
 // #define zox_debug_canvas_stack
+void set_recursively_layer2(ecs* world, entity e, byte value) {
+    if (!zox_has(e, Layer2D)) {
+        return;
+    }
+    zox_muter(e, Layer2D, layer2);
+    layer2->value = value;
+    value++;
+    entity children[layouts2_children_capacity];
+    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint j = 0; j < children_length; j++) {
+        entity child = children[j];
+        if (!zox_valid(child)) {
+            continue;
+        }
+        set_recursively_layer2(world, child, value);
+    }
+}
 
-byte2 count_windows_in_stack(ecs *world, const Children *children) {
+byte2 count_windows_in_stack(ecs *world, const entity* children, uint children_length) {
     byte windows_count = 0;
     byte layers_per_window = 1;
-    for (int j = 0; j < children->length; j++) {
-        const entity child = children->value[j];
+    for (uint j = 0; j < children_length; j++) {
+        entity child = children[j];
         if (!zox_valid(child) || !zox_has(child, Window) || zox_has(child, IgnoreWindowLayering)) {
             continue;
         }
-        const byte window_layers = get_highest_layer(world, child, 1);
+        byte window_layers = get_highest_layer(world, child, 1);
         if (window_layers > layers_per_window) {
             layers_per_window = window_layers;
         }
@@ -29,40 +46,31 @@ zox_sys2(CanvasStackSystem) {
         zox_sys_o(WindowToTop, add_window);
         zox_sys_o(WindowsLayers, windowsLayers);
         zox_sys_o(WindowsCount, windowsCount);
-
-        if (!zox_valid(add_window->value)) {
+        if (!zox_valid(add_window->value) || !zox_has(add_window->value, WindowLayer) || zox_has(add_window->value, IgnoreWindowLayering)) {
             continue;
         }
-
-        if (!zox_has(add_window->value, Window) || zox_has(add_window->value, IgnoreWindowLayering)) {
-            add_window->value = 0;
-            // zox_log(" > add_window->value set wrongly\n")
-            continue;
-        }
-
+        byte old_layer = zox_get_value(add_window->value, WindowLayer);
+        /*if (!zox_has(add_window->value, Window) || zox_has(add_window->value, IgnoreWindowLayering)) {
+         *            add_window->value = 0;
+         *            // zox_log(" > add_window->value set wrongly\n")
+         *            continue;
+        }*/
         entity childrens[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, childrens, layouts2_children_capacity);
-        Children children = (Children) { .value = childrens, .length = children_length };
-
-        byte2 counter = count_windows_in_stack(world, &children);
+        byte2 counter = count_windows_in_stack(world, childrens, children_length);
         byte windows_count = counter.x; // maybe count windows first
         byte layers_per_window = counter.y;
-
         // gett previous window layer of moving to top window
-        byte old_window_layer = zox_get_value(add_window->value, WindowLayer)
-
         // skip if: same window clicked as already on top
-        if (windows_count == windowsCount->value && old_window_layer == windows_count) {
+        if (windows_count == windowsCount->value && old_layer == windows_count) {
             add_window->value = 0;
-#ifdef zox_debug_canvas_stack
-            zox_log(" > skipping stack refresh as same window as last selected\n", old_window_layer)
-#endif
+            #ifdef zox_debug_canvas_stack
+            zox_log(" > skipping stack refresh as same window as last selected\n", old_layer)
+            #endif
             continue;
         }
-
-        // should we pass in these instead
-        zox_set(add_window->value, SetWindowLayer, { windows_count })
-
+        // set_recursively_layer2(world, add->window, windows_count * layers_per_window);
+        zox_set(add_window->value, SetWindowLayer, { windows_count });
         windowsLayers->value = layers_per_window;
         byte old_windows_count = windowsCount->value;
         byte not_assigned_index = windowsCount->value + 1; // start on top of stack, but below latest
@@ -71,27 +79,21 @@ zox_sys2(CanvasStackSystem) {
         windowsCount->value = windows_count;
         int_hashmap *windows = create_int_hashmap(windows_count);
         int_hashmap_add(windows, windows_count, add_window->value);
-
-#ifdef zox_debug_canvas_stack
+        #ifdef zox_debug_canvas_stack
         zox_log(" >  canvas stack system refreshing [%i] out of [%i]\n", windows_count, children->length)
         zox_log("   - [%i] event WindowLayer [%lu]\n", windows_count, add_window->value)
-#endif
-
+        #endif
         for (uint j = 0; j < children_length; j++) {
             entity child = childrens[j];
-
             if (!zox_valid(child) || !zox_has(child, Window)) {
                 continue;
             }
-
             if (zox_has(child, IgnoreWindowLayering)) {
                 continue;
             }
-
             if (add_window->value == child) {
                 continue;
             }
-
             byte child_window_layer = zox_get_value(child, WindowLayer);
             // if on top
             if (child_window_layer == 0) {
@@ -104,9 +106,9 @@ zox_sys2(CanvasStackSystem) {
                     } else {
                         new_layer--;
                     }
-#ifdef zox_debug_canvas_stack
+                    #ifdef zox_debug_canvas_stack
                     zox_log("   ! issue with index, lowering [%i]\n", new_layer)
-#endif
+                    #endif
                     checks++;
                     if (checks > max_checks) {
                         zox_log("FAILED CANVAS STACKING 1\n")
@@ -123,10 +125,10 @@ zox_sys2(CanvasStackSystem) {
                 }
                 zox_set(child, SetWindowLayer, { new_layer })
                 not_assigned_index++;
-#ifdef zox_debug_canvas_stack
+                #ifdef zox_debug_canvas_stack
                 zox_log("   - [%i] setting new child WindowLayer [%lu]\n", new_layer, child)
-#endif
-            } else if (old_window_layer != 0 && child_window_layer > old_window_layer) {
+                #endif
+            } else if (old_layer != 0 && child_window_layer > old_layer) {
                 byte new_layer = child_window_layer - 1;
                 if (new_layer > windows_count - 1) {
                     new_layer = windows_count - 1;
@@ -138,9 +140,9 @@ zox_sys2(CanvasStackSystem) {
                     } else {
                         new_layer--;
                     }
-#ifdef zox_debug_canvas_stack
+                    #ifdef zox_debug_canvas_stack
                     zox_log("   ! issue with index, lowering [%i]\n", new_layer)
-#endif
+                    #endif
                     checks++;
                     if (checks > max_checks) {
                         zox_log("FAILED CANVAS STACKING 2\n")
@@ -154,10 +156,10 @@ zox_sys2(CanvasStackSystem) {
                 } else {
                     zox_log("! layer already stacked [%i]\n", new_layer)
                 }
-                zox_set(child, SetWindowLayer, { new_layer })
-#ifdef zox_debug_canvas_stack
+                zox_set(child, SetWindowLayer, { new_layer });
+                #ifdef zox_debug_canvas_stack
                 zox_log("   - [%i] decreasing WindowLayer [%lu]\n", new_layer, child)
-#endif
+                #endif
             } else {
                 if (int_hashmap_has(windows, child_window_layer)) {
                     byte new_layer = child_window_layer;
@@ -168,9 +170,9 @@ zox_sys2(CanvasStackSystem) {
                         } else {
                             new_layer--;
                         }
-    #ifdef zox_debug_canvas_stack
+                        #ifdef zox_debug_canvas_stack
                         zox_log("   ! issue with index, lowering [%i]\n", new_layer)
-    #endif
+                        #endif
                         checks++;
                         if (checks > max_checks) {
                             zox_log("FAILED CANVAS STACKING 3\n")
@@ -185,20 +187,18 @@ zox_sys2(CanvasStackSystem) {
                         zox_log("! layer already stacked [%i]\n", new_layer)
                     }
                     zox_set(child, SetWindowLayer, { new_layer })
-    #ifdef zox_debug_canvas_stack
+                    #ifdef zox_debug_canvas_stack
                     zox_log("   - [%i] anew WindowLayer [%lu]\n", new_layer, child)
-    #endif
+                    #endif
                 } else {
                     int_hashmap_add(windows, child_window_layer, child);
-#ifdef zox_debug_canvas_stack
+                    #ifdef zox_debug_canvas_stack
                     zox_log("   - [%i] keeping WindowLayer [%lu]\n", child_window_layer, child)
-#endif
+                    #endif
                 }
             }
         }
-
         int_hashmap_dispose(windows);
-
         add_window->value = 0;
     }
 } zox_sys_end(CanvasStackSystem);

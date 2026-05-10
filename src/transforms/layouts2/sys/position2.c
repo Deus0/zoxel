@@ -17,16 +17,12 @@ void set_layout_child_position_recursively_new(ecs* world, entity e, float2 canv
     uint count = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint i = 0; i < count; i++) {
         entity e2 = children[i];
-
         if (!zox_valid(e2) || !zox_has(e2, CanvasPosition) || !zox_has(e2, Position2)) {
             continue;
         }
-
         zox_geter_value(e2, CanvasPosition, int2, position);
         zox_muter(e2, Position2, positionf);
-
         positionf->value = get_element_position(position, canvas_sizef, aspect_ratio);
-
         set_layout_child_position_recursively_new(world, e2, canvas_sizef, aspect_ratio);
     }
 }

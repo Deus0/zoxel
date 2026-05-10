@@ -6,8 +6,6 @@
 #include "mesh.c"
 
 #include "layouts2D/canvas_resize.c"
-#include "layouts2D/canvas_stack.c"
-#include "layouts2D/window_layer.c"
 
 #include "rendering/element_begin.c"
 #include "rendering/texture_dirty_begin.c"
@@ -49,19 +47,18 @@ void define_systems_elements(ecs *world) {
         [in] raycasts.Raycaster,
         [in] inputs.DeviceLink,
         [out] raycasts.RaycasterTarget,
-        [out] WindowRaycasted
+        // [out] WindowRaycasted
     );
-
     // inputs
     zox_system(
         ZeviceClickSystem,
         EcsPostUpdate,
         [in] inputs.DeviceLink,
         [in] raycasts.RaycasterTarget,
-        [in] WindowRaycasted,
+        // [in] WindowRaycasted,
         [out] raycasts.RaycasterResult,
         [out] ClickingEntity,
-        [out] WindowTarget,
+        // [out] WindowTarget,
         [none] inputs.Zevice
     );
     zox_system(
@@ -70,10 +67,10 @@ void define_systems_elements(ecs *world) {
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,
-        [in] WindowRaycasted,
+        //[in] WindowRaycasted,
         [in] hierarchys.Children,
         [out] ClickingEntity,
-        [out] WindowTarget,
+        //[out] WindowTarget,
         [none] inputs.Device
     );
     zox_system(
@@ -82,28 +79,11 @@ void define_systems_elements(ecs *world) {
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,
-        [in] WindowRaycasted,
+        //[in] WindowRaycasted,
         [in] inputs.Keyboard,
         [out] ClickingEntity,
-        [out] WindowTarget,
+        //[out] WindowTarget,
         [none] inputs.Device
-    );
-    zox_system(
-        CanvasStackSystem,
-        EcsOnLoad,
-        [out] layouts2.WindowToTop,
-        [out] WindowsLayers,
-        [out] WindowsCount,
-        [none] layouts2.Canvas
-    );
-    zox_system(
-        WindowLayerSystem,
-        EcsOnLoad,
-        [in] SetWindowLayer,
-        [in] layouts2.CanvasLink,
-        [out] WindowLayer,
-        [out] layouts2.Layer2D,
-        [none] Window
     );
 
     zox_system(

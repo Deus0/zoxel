@@ -5,12 +5,10 @@
 #include "canvas_overlay.c"
 
 entity prefab_canvas;
-
 entity prefab_element_invisible;
 entity prefab_element_shell;      // has a texture and renderer, good for setting
 entity prefab_element_ready;      // ready for generating textures
 entity prefab_element_textured;   // rename to textured_frame
-
 entity prefab_canvas_overlay;
 
 void prefabs_add_ui_to_player(ecs *world, const entity e) {
@@ -26,11 +24,8 @@ void prefabs_add_ui_to_player(ecs *world, const entity e) {
     zox_prefab_set(e, NavigatorTimer, { 0 })
 }
 
-void prefabs_add_ui_to_raycaster(ecs *world, const entity e) {
-    zox_prefab_set(e, WindowRaycasted, { 0 })
-    zox_prefab_set(e, WindowTarget, { 0 })
-    zox_prefab_set(e, ClickingEntity, { 0 })
-
+void prefabs_add_ui_raycaster(ecs *world, entity e) {
+    zox_prefab_set(e, ClickingEntity, { 0 });
 }
 
 void spawn_prefabs_elements(ecs *world) {
@@ -39,28 +34,23 @@ void spawn_prefabs_elements(ecs *world) {
     zox_prefab_set(prefab_canvas, PlayerLink, { 0 });
 #endif
     prefab_element_invisible = spawn_prefab_element_invisible(world, prefab_layout2);
-
     // has a texture also
     prefab_element_shell = spawn_prefab_element_shell(world, prefab_element_invisible);
-
     // has a texture also
     prefab_element_ready = spawn_prefab_element_ready(world, prefab_element_shell);
-
     // has a frame texture
-    prefab_element_textured = spawn_prefab_element_textured(world, prefab_element_ready);
-
+    prefab_element_textured = spawn_prefab_ui_textured(world, prefab_element_ready);
     // more stuffs
     prefab_canvas_overlay = spawn_prefab_canvas_overlay(world, prefab_element_textured);
-
     // linking
     if (prefab_player) {
-        prefabs_add_ui_to_raycaster(world, prefab_player);
+        prefabs_add_ui_raycaster(world, prefab_player);
         prefabs_add_ui_to_player(world, prefab_player);
     }
     if (prefab_device) {
-        prefabs_add_ui_to_raycaster(world, prefab_device);
+        prefabs_add_ui_raycaster(world, prefab_device);
     }
     if (prefab_zevice_pointer) {
-        prefabs_add_ui_to_raycaster(world, prefab_zevice_pointer);
+        prefabs_add_ui_raycaster(world, prefab_zevice_pointer);
     }
 }

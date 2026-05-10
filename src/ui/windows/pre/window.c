@@ -1,7 +1,7 @@
 void set_prefab_window(ecs* world, entity e) {
     // Window
     zox_add_tag(e, Window);
-    zox_add_tag(e, WindowRaycastTarget);
+    // zox_add_tag(e, WindowRaycastTarget);
     zox_prefab_set(e, HeaderHeight, { 0 });
     zox_prefab_set(e, WindowLayer, { 0 });
     zox_prefab_set(e, SetWindowLayer, { 0 });

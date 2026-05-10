@@ -61,27 +61,23 @@ void on_cancelled_new_realm(ecs *world, ClickEventData event) {
 }
 
 entity spawn_menu_new_realm(ecs *world, entity player) {
-
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
     if (!zox_valid(realm)) {
         return 0;
     }
     zox_geter_value(realm, Seed, lint, seed);
-
     int2 window_size = (int2) { 130 * ui_scale, 145  * ui_scale };
     byte header_font_size = 8 * ui_scale;
     byte2 header_padding = (byte2)  { 2 * ui_scale, ui_scale };
     byte header_height = header_font_size + header_padding.y * 2;
     byte list_font_size = 8 * ui_scale;
     byte2 list_padding = (byte2) { 18, 18 };
-
     // more data
     zox_geter_value(player, CanvasLink, entity, canvas);
     const char* header_label = "New Realm";
     int max_labels = max_settings;
     byte layer = 1;
-
     // # Window #
     LayoutParentData canvas_data = {
         .e = canvas,
@@ -97,54 +93,43 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     LayoutParentData window_parent_data = {
         .e = canvas_data.e,
         .size = canvas_data.size,
-        // .position = int2_half(canvas_data.size),
     };
     SpawnWindow2 window_data = {
         .header_text = header_label,
         .header_font_size = header_font_size,
         .header_padding = header_padding,
-        // .is_scrollbar = 0,
     };
-
-    entity e = spawn_window2(world, canvas_data, window_parent_data, window_element_data,window_data, (ClickEvent) { &on_cancelled_new_realm }, 1, zox_window_new_realm).x;
+    entity e = spawn_window2(world, canvas_data, window_parent_data, window_element_data,window_data, (ClickEvent) { &on_cancelled_new_realm }, 1, 0).x;
     zox_add_tag(e, MenuNewRealm);
     zox_add_tag(e, NavigationWindow);
-
     // # List #
     SpawnListElement elements[max_labels];
     int elements_count = 0;
-
     elements[elements_count++] = (SpawnListElement) {
         .type = list_element_type_label,
         .text = "Seed",
     };
-
     char seed_label[32];
     sprintf(seed_label, "[%lu]", seed);
     elements[elements_count++] = (SpawnListElement) {
         .type = list_element_type_label,
         .text = seed_label,
     };
-
     elements[elements_count++] = (SpawnListElement) {
         .type = list_element_type_button,
         .text = "Confirm",
         .on_click = { &on_confirmed_new_realm },
     };
-
     /*elements[elements_count++] = (SpawnListElement) {
         .text = "Exit",
         .on_click = { &on_cancelled_new_realm },
     };*/
-
     byte visible_count = elements_count;
-
     LayoutParentData list_parent_data = {
         .e = e,
         .size = window_element_data.size,
         .position = window_element_data.position_in_canvas,
     };
-
     ElementSpawnData list_element_data = {
         .prefab = prefab_list,
         .position = (int2) { 0, -header_height / 2 },
@@ -168,50 +153,32 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .padding = list_padding,
         .margins = list_padding,
     };
-
     entity list = spawn_list(world, canvas_data, list_parent_data, list_element_data, ui_list_data, zox_alignment_centre, NULL);
     zox_set_parent(world, list, e);
-    //add_to_Children(window_data.children, list);
-    //zox_set_ptr(e, Children, children);
-
     zox_muter(player, ElementLinks, pelements);
     add_to_ElementLinks(pelements, e);
     zox_set(e, ElementHolder, { player });
-
-    // return our window
     return e;
 }
 
 void delay_spawn_menu_new_realm(ecs* world, entity player) {
-    //zox_geter_value(player, GameLink, entity, game);
-    //zox_geter_value(game, RealmLink, entity, realm);
-
-    spawn_menu_new_realm(world, player); //, seed);
+    spawn_menu_new_realm(world, player);
 }
 
-
 void button_event_new_game(ecs *world, ClickEventData event) {
-
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuMain, menu);
-
     if (menu) {
         zox_delete(menu);
     } else {
         zox_log_error("Could not find main menu.");
     }
-
     zox_geter_value(player, GameLink, entity, game);
-
-    // zox_geter_value(game, RealmLink, entity, realm);
     entity realm = spawn_realm(world, prefab_realm);
     zox_set(game, RealmLink, { realm });
-
     lint seed = get_unique_time_seed();
     set_noise_seed(seed);
     zox_set(realm, Seed, { seed });
-
-
     delay_event(world, &delay_spawn_menu_new_realm, player, 0.01);
 }

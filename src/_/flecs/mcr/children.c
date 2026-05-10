@@ -70,14 +70,11 @@ byte zox_set_parent(ecs *world, entity child, entity parent) {
 
 // Fills the buffer with the found children from the flecs query
 uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity) {
-
     if (!ecs_is_alive(world, parent) || !entities || capacity <= 0) {
         zox_loge("Cannot get children");
         return 0;
     }
-
     ecs_iter_t it = ecs_children(world, parent);
-
     byte warned = 0;
     uint count = 0;
     while (ecs_children_next(&it)) {
@@ -96,8 +93,37 @@ uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity
             }
         }
     }
-
     return count;
+}
+
+
+entity zox_get_child_by_id(ecs* world, entity parent, entity id) {
+    if (!ecs_is_alive(world, parent)) {
+        zox_loge("Cannot get children from invalid parent.");
+        return 0;
+    }
+    ecs_iter_t it = ecs_children(world, parent);
+    while (ecs_children_next(&it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e =  it.entities[i];;
+            if (zox_has_id(e, id)) {
+                return e;
+            }
+        }
+    }
+    return 0;
+}
+
+entity zox_get_parent_by_id(ecs* world, entity e, entity id) {
+    if (!ecs_is_alive(world, e)) {
+        return 0;
+    }
+    entity parent = zox_get_parent(world, e);
+    if (zox_has_id(parent, id)) {
+        return parent;
+    } else {
+        return zox_get_parent_by_id(world, parent, id);
+    }
 }
 
 // Removes the parent relationship from `child`

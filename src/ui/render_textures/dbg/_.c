@@ -39,7 +39,7 @@ void spawn_test_render_texture(ecs *world, int32_t keycode) {
         zox_geter_value(camera, Position3D, float3, cposition);
         zox_geter_value(camera, Rotation3D, float4, crotation);
 
-        entity p = prefab_render_texture;
+        entity prefab = prefab_render_texture;
         byte layer = 2;
         int padding = 40;
         float downscale = 1;
@@ -58,7 +58,8 @@ void spawn_test_render_texture(ecs *world, int32_t keycode) {
         create_camera_rbo_and_fbo(world, dbg_render_camera, tsize);
 
         // Create texture
-        dbg_render_texture = spawn_element2(world, p, canvas, parent, position, lsize, tsize, anchor, layer, fcolor, ocolor);
+        dbg_render_texture = spawn_ui(world, prefab, canvas, anchor, position, lsize, tsize);
+        zox_set(dbg_render_texture, Layer2D, { layer });
         zox_set(dbg_render_texture, CameraLink, { dbg_render_camera });
         zox_set_unique_name(dbg_render_texture, "dbg_render_texture");
 

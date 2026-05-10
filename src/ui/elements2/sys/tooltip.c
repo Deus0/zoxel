@@ -10,7 +10,8 @@ zox_sys2(TooltipSystem) {
         zox_sys_i(TooltipEvent, tooltipEvent);
         zox_sys_i(CanvasLink, canvas);
         if (!zox_valid(canvas->value)) {
-            zox_logw("Canvas Missing on [%s]", zox_get_name(e));
+            // sets in system now
+            // zox_logw("Canvas Missing on [%s]", zox_get_name(e));
             continue;
         }
         if (!(selectState->value == zox_select_state_selected_this_frame || selectState->value == zox_select_state_deselected_this_frame)) {

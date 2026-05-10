@@ -1,67 +1,50 @@
 void inspector_select_target(ecs* world, entity player, entity target) {
-
     if (!zox_valid(player)) {
         return;
     }
-
     zox_geter_value(player, CanvasLink, entity, canvas);
-
     if (!zox_valid(canvas)) {
         return;
     }
-
-    entity inspector = get_canvas_window(world, canvas, zox_window_inspector);
-
+    entity inspector = zox_get_child_by_id(world, canvas, zox_id(InspectorUI));
     if (!zox_valid(inspector)) {
         zox_log("Inspector Closed, Spawning for Target [%s]", target ? zox_get_name(target) : "None");
         spawn_inspector(world, canvas, player, target);
         return;
     }
-
     if (!zox_has(inspector, EntityTarget)) {
         zox_log("Inspector Invalid Components");
         return;
     }
-
     zox_geter_value(inspector, EntityTarget, entity, old_target);
-
     if (old_target == target) {
         zox_log("Inspector Same Target [%s]", target ? zox_get_name(target) : "None");
         return;
     }
-
     zox_set(inspector, EntityTarget, { target });
     zox_set(inspector, InspectorDirty, { zox_dirty_trigger });
-
     zox_log("+ Inspector Target [%s]", target ? zox_get_name(target) : "None");
 }
 
 void button_event_clicked_hierarchy(ecs* world, ClickEventData event) {
-
     entity player = event.clicker;
     entity clicked = event.clicked;
-
     if (!zox_has(clicked, EntityTarget)) {
         zox_log_error("Clicked [%s] Invalid Components", zox_get_name(clicked));
         return;
     }
-
     zox_geter_value(clicked, EntityTarget, entity, target);
-
     inspector_select_target(world, player, target);
-
     zox_set(clicked, ActiveState, { 1 });
     zox_set(clicked, ActiveStateDirty, { zox_dirty_trigger });
 }
 
 // grabs all entity list data into entity + name labels
 void editor_fetch_children(ecs *world, entity_array_d* entities, text_group_dynamic_array_d* labels, entity target) {
-
     // add game entities
     if (!zox_valid(target)) {
         return;
     }
-
     add_entity_to_labels(world, target, labels, entities, 0);
 
     fetch_entity_labels_children(world, target, labels, entities, 0);
@@ -92,9 +75,7 @@ void editor_fetch_children(ecs *world, entity_array_d* entities, text_group_dyna
 
 
 zox_sys2(HierarchySpawnSystem) {
-
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_hierarchy };
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(HierarchyUIDirty);
@@ -108,35 +89,27 @@ zox_sys2(HierarchySpawnSystem) {
         zox_sys_i(EntityTarget, target);
         zox_sys_i(ScrollviewLink, scrollview);
         zox_sys_i(ElementFontSize, font_size);
-
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-
         if (!zox_valid(scrollview->value)) {
             zox_log_error("Scrollview Link is invalid.");
             continue;
         }
-
         if (!zox_has(scrollview->value, ListUILink)) {
             zox_log_error("Scrollview [%s] has no list link", zox_get_name(scrollview->value));
             continue;
         }
-
         // 2: Fetch our scrollview data
         entity list_ui = zox_gett_value(scrollview->value, ListUILink);
-
         if (!zox_valid(list_ui)) {
             zox_log_error("Scrollview [%s] Invalid ListUI", zox_get_name(scrollview->value));
             continue;
         }
-
-
         if (!zox_has(list_ui, Layer2D) || !zox_has(list_ui, ListVisible)) {
             zox_log_error("List UI [%s] Invalid Components", zox_get_name(list_ui));
             continue;
         }
-
         zox_geter_value(list_ui, Layer2D, byte, scrollview_layer);
 
         // 1: Fetch Target Hierarchy Data
@@ -153,7 +126,6 @@ zox_sys2(HierarchySpawnSystem) {
             .anchor = float2_half,
             .render_disabled = 1, // hide until list set
         };
-
         SpawnTextData child_text_data = {
             .font_resolution = font_size->value,
             .font_size = font_size->value,
@@ -169,7 +141,6 @@ zox_sys2(HierarchySpawnSystem) {
             .fill = editor_color_fill,
             .outline = editor_color_fillo,
         };
-
         LayoutParentData canvas_data = { .e = canvas->value };
         LayoutParentData child_parent_data = { .e = list_ui };
 

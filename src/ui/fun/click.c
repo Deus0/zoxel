@@ -55,37 +55,12 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
     }
 }
 
-void raycaster_select_window_children(ecs *world, entity e, entity window) {
-    if (zox_has(e, WindowRaycasted)) {
-        zox_set(e, WindowRaycasted, { window })
-    }
-    entity children[layouts2_children_capacity];
-    uint count = zox_get_children(world, e, children, layouts2_children_capacity);
-    for (uint i = 0; i < count; i++) {
-        entity child = children[i];
-        if (!zox_valid(child)) {
-            continue;
-        }
-        raycaster_select_window_children(world, child, window);
-    }
-    if (zox_has(e, DeviceLinks)) {
-        zox_geter(e, DeviceLinks, children)
-        for (int i = 0; i < children->length; i++) {
-            entity child = children->value[i];
-
-            if (!child) continue;
-
-            raycaster_select_window_children(world, child, window);
-        }
-    }
-}
-
 // here we pass down selected components to children
 
 void raycaster_select_element(ecs *world, entity raycaster, entity element) {
     set_raycast_target_children(world, raycaster, element);
 }
 
-void raycaster_select_window(ecs *world, entity e, entity window) {
+/*void raycaster_select_window(ecs *world, entity e, entity window) {
     raycaster_select_window_children(world, e, window);
-}
+}*/

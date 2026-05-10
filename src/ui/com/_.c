@@ -11,6 +11,9 @@ zoxc_entity(UIHolderLink);
 zoxc_int2(ElementMargins);
 zoxc_color(ElementColor);
 
+// Canvas
+zox_tag(CanvasOverlay);
+
 // Selecting
 zox_tag(Selectable);
 zoxc_byte(SelectState);
@@ -52,18 +55,6 @@ zoxc_float2(ElementBarSize);
 zoxc_byte(FontSize);
 zoxc_byte(ElementFontSize);
 
-// Windows
-zox_tag(Window);
-zox_tag(WindowRaycastTarget);
-zox_tag(IgnoreWindowLayering);
-zoxc_byte(WindowLayer);
-zoxc_byte(SetWindowLayer);
-zoxc_entity(WindowRaycasted);
-zoxc_entity(WindowTarget);
-zoxc_byte(WindowsLayers);
-zoxc_byte(WindowsCount);
-zoxc_byte(HeaderHeight);
-
 // Tooltips
 zox_tag(Tooltip);
 zoxc_fixed_string(TooltipText, 512);
@@ -71,7 +62,6 @@ zoxc_fixed_string(TooltipText, 512);
 
 // Misc
 zox_tag(MouseElement);
-zox_tag(CanvasOverlay);
 
 #include "click_event.c"
 #include "slide_event.c"
@@ -113,30 +103,10 @@ void define_components_elements(ecs *world) {
     zoxd_entity(ActiveLink);
     zoxd_tag(ActiveSingle);
 
-    // Windows
-    zoxd_tag(CanvasOverlay);
-    zoxd_tag(Window);
-    zoxd_tag(WindowRaycastTarget);
-    zoxd_tag(IgnoreWindowLayering);
-
     // Tooltips
     zoxd_tag(Tooltip);
     zoxd_fixed_string(TooltipText);
     zoxd(TooltipEvent);
-
-    // Misc
-    zoxd_tag(MouseElement);
-    zoxd_byte(FontSize);
-    zoxd_byte(ElementFontSize);
-    zoxd_float(ElementBar);
-    zoxd_float2(ElementBarSize);
-    zoxd_byte(HeaderHeight);
-    zoxd_entity(WindowRaycasted);
-    zoxd_entity(WindowTarget);
-    zoxd_byte(WindowsLayers);
-    zoxd_byte(WindowsCount);
-    zoxd_byte(SetWindowLayer);
-    zoxd_byte(WindowLayer);
 
     // Slides
     zoxd(SlideEvent);
@@ -153,4 +123,14 @@ void define_components_elements(ecs *world) {
     zoxd_entity(DraggerLink);
     zoxd_entity(DraggedLink);
     zoxd_byte(DraggableState);
+
+    // Misc
+    zoxd_byte(FontSize);
+    zoxd_tag(MouseElement);
+    zoxd_byte(ElementFontSize);
+    zoxd_float(ElementBar);
+    zoxd_float2(ElementBarSize);
+
+    // Canvas
+    zoxd_tag(CanvasOverlay);
 }

@@ -7,11 +7,8 @@ zox_sys2(ElementSelectedSystem) {
         zox_sys_e();
         zox_sys_i(SelectState, state);
         zox_sys_o(Brightness, brightness);
-
         byte is_dragging = zox_has(e, DraggableState) ? zox_gett_value(e, DraggableState) : 0;
-
         byte is_active = zox_has(e, ActiveState) ? zox_gett_value(e, ActiveState) : 0;
-
         if (is_active) {
             brightness->value = ui_active_brightness;
         } else if (is_dragging) {
@@ -21,6 +18,5 @@ zox_sys2(ElementSelectedSystem) {
         } else {
             brightness->value = ui_default_brightness;
         }
-
     }
 } zox_sys_end(ElementSelectedSystem);

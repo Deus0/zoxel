@@ -1,10 +1,8 @@
 void resume_player_delayed(ecs *world, entity player) {
     zox_geter_value(player, CharacterLink, entity, character);
-
     if (!zox_valid(character)) {
         return;
     }
-
     if (local_mouse) {
         zox_set(local_mouse, MouseLock, { 1 });
     }
@@ -27,43 +25,34 @@ zox_sys2(PlayerResumeSystem) {
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
         zox_sys_o(PlayerPauseEvent, pause_event_link);
-
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-
         if (state->value != zox_player_state_resuming) {
             continue;
         }
-
         if (!zox_valid(canvas->value)) {
             zox_logw("Canvas is missing from Player [PlayerResumeSystem]");
             continue;
         }
-
-        entity menu = get_canvas_window(world, canvas->value, zox_window_paused);
-        if (zox_valid(menu)) {
-            zox_delete(menu);
+        // entity menu = get_canvas_window(world, canvas->value, zox_window_paused);
+        entity pause_menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPaused));
+        if (zox_valid(pause_menu)) {
+            zox_delete(pause_menu);
         }
-
-        menu = find_child_with_tag2(world, canvas->value, zox_id(Taskbar));
-        if (zox_valid(menu)) {
-            zox_delete(menu);
+        entity taskbar = zox_get_child_by_id(world, canvas->value, zox_id(Taskbar));
+        if (zox_valid(taskbar)) {
+            zox_delete(taskbar);
         }
-
         trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 0);
-
         entity pause_event = delay_event(world, &resume_player_delayed, e, pause_fade_time);
-
         if (zox_valid(pause_event_link->value)) {
             zox_delete(pause_event_link->value)
         }
-
         // setters
         pause_event_link->value = pause_event;
         state->value = zox_player_state_playing;
         dirty->value = zox_dirty_trigger;
-
         zox_set(camera->value, CameraBlur, { 0 });
     }
 } zox_sys_end(PlayerResumeSystem);

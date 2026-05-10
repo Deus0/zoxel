@@ -8,7 +8,7 @@ entity spawn_device_gizmo(ecs* world, entity canvas, byte device_type) {
     int2 position = int2_single(16 * ui_scale);
     position.x = 32 * ui_scale;   // testing anchor
     float2 position_anchor = float2_zero;
-    entity e = spawn_element3(world, prefab, canvas, position_anchor, position, size, size, color_white, color_white);
+    entity e = spawn_uic(world, prefab, canvas, position_anchor, position, size, size, color_white, color_white);
     zox_name("device_gizmo");
     zox_set(e, Layer2D, { 1 });
     zox_set(e, Alpha, { 1 });

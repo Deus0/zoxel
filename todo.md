@@ -3,8 +3,14 @@
 - Pause ui toggle not showing on spawn taskbar + pause
 - Remove User Macros and Speghetti
 - Remove structs from UI prefab use
-	- Cleanup all UI code, remove all duplicates, remove struct use etc
-- Remove any Duplicate UI prefabs that arn't special
+	-x spawn_uis (previously spawn_element)
+	- spawn_button
+	- spawn_window
+	- spawn_text
+	- spawn_frame
+	- spawn_icon
+	- Delete any old structs
+	- Remove Duplicate UI prefabs
 - Write a test function to spawn a world item to pickup
 - Give game uis the realm colors so feels different to the main menu
 - Add Stats panel to the taskbar and give header / window

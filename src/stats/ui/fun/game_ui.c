@@ -44,26 +44,7 @@ entity spawn_menu_game_stats(ecs* world, entity parent, entity player) {
         .fill_color = window_fill,
         .outline_color = window_outline,
     };
-    ElementSpawn body_data = {
-        .texture = panel_texture,
-        .canvas = {
-            .e = canvas,
-            // .size = zox_gett_value(canvas, LayoutSize),
-        },
-        .parent = {
-            .e = parent,
-            // .position = int2_half(zox_gett_value(canvas, LayoutSize)),
-            // .size = zox_gett_value(canvas, LayoutSize)
-        },
-        .element = {
-            .prefab = prefab_body,
-            .layer = panel_layer,
-            .anchor = panel_anchor,
-            .position = panel_position,
-            .size = panel_size
-        },
-    };
-    entity e = spawn_element(world, body_data);
+    entity e = spawn_ui(world, prefab_body, parent, panel_anchor, panel_position, panel_size, panel_size);
     zox_set_unique_name(e, "stats_panel");
     zox_set_parent(world, e, parent);
     // Children children = { 0 };
@@ -73,18 +54,7 @@ entity spawn_menu_game_stats(ecs* world, entity parent, entity player) {
             continue;
         }
         zox_geter_value(stat, ColorRGB, color_rgb, cvalue);
-        entity statbar = spawn_statbar2(
-            world,
-            canvas,
-            e,
-            (entity2) { character, stat },
-            cvalue,
-            bar_layer,
-            bar_anchor,
-            bar_size,
-            bar_position,
-            label_font_size
-        );
+        entity statbar = spawn_statbar2(world, canvas, e, (entity2) { character, stat }, cvalue, bar_layer, bar_anchor, bar_size, bar_position, label_font_size        );
         zox_set_parent(world, statbar, e);
         bar_position.y -= bar_size.y + bar_padding;
     }

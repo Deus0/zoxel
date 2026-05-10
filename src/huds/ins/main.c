@@ -12,10 +12,9 @@ byte tooltip_event_zoxel_header(ecs* world, const TooltipEventData *data) {
 entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
     int elements_count = 0;
     SpawnListElement elements[4];
-    byte header_font_size = 20 * ui_scale;
-    byte list_font_size = 12 * ui_scale;
+    byte header_font_size = 16 * ui_scale;
+    byte list_font_size = 10 * ui_scale;
     byte2 padding = byte2_single(4 * ui_scale);
-
     if (has_save_game_directory(game_name)) {
         elements[elements_count++] = (SpawnListElement) {
             .text = label_continue,
@@ -36,9 +35,8 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
         .on_click = { &button_event_exit_app },
     };
 #endif
-
     entity elements2[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, header_label, header_font_size, elements, elements_count, elements_count, list_font_size, (ClickEvent) { NULL }, 0, zox_window_main_menu, 0, zox_alignment_centre, padding, elements2);
+    entity3 e3 = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { NULL }, 0, 0, 0, zox_alignment_centre, padding, elements2, elements, elements_count, elements_count);
     zox_set_unique_name(e3.x, "main_menu");
     zox_add_tag(e3.x, MenuMain);
     zox_add_tag(e3.x, NavigationWindow);

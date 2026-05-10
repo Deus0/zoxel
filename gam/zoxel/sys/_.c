@@ -12,12 +12,10 @@
 #include "music.c"
 #include "achievements.c"
 
-zox_declare_system_state_event(RealmBlocks, GenerateRealm, zox_generate_realm_blocks, spawn_realm_blocks);
 zox_declare_system_state_event(RealmTilemaps, GenerateRealm, zox_generate_realm_tilemaps, spawn_realm_tilemaps);
 zox_declare_system_state_event(RealmAchievements, GenerateRealm, zox_generate_realm_achievements, spawn_realm_achievements);
 
 void define_systems_zoxel(ecs *world) {
-
     zox_system_1(
         BiomesRealmSpawnSystem,
         zoxp_mainthread,
@@ -27,7 +25,6 @@ void define_systems_zoxel(ecs *world) {
         [out] colorz.Colors,
         [none] realms.Realm
     );
-
     zox_system_1(
         ModelsRealmSpawnSystem,
         zoxp_mainthread,
@@ -37,7 +34,6 @@ void define_systems_zoxel(ecs *world) {
         [out] nodes.NodegraphLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         StatsRealmSpawnSystem,
         zoxp_mainthread,
@@ -119,7 +115,17 @@ void define_systems_zoxel(ecs *world) {
         [none] realms.Realm
     );
 
-    zox_define_system_state_event_1(RealmBlocks, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
-    zox_define_system_state_event_1(RealmTilemaps, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
-    zox_define_system_state_event_1(RealmAchievements, EcsOnLoad, realms.GenerateRealm, [none] realms.Realm);
+    zox_system_1(
+        BlocksRealmSpawnSystem,
+        zoxp_mainthread,
+        [in] realms.GenerateRealm,
+        [in] colorz.Colors,
+        [in] rendering.ModelLinks,
+        [out] blocks.BlockLinks,
+        [out] blocks.BlocksDirty,
+        [none] realms.Realm
+    );
+
+    zox_define_system_state_event_1(RealmTilemaps, zoxp_mainthread, realms.GenerateRealm, [none] realms.Realm);
+    zox_define_system_state_event_1(RealmAchievements, zoxp_mainthread, realms.GenerateRealm, [none] realms.Realm);
 }

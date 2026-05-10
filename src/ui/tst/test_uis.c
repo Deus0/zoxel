@@ -1,4 +1,4 @@
-void test_action_bar(ecs *world, entity canvas) {
+/*void test_action_bar(ecs *world, entity canvas) {
     int2 actionbar_size4 = (int2) { 420, 54 };
     int2 testSize2 = (int2) { 48, 48 };
     // actionbar - anchor actionbar to bottom
@@ -12,19 +12,19 @@ void test_action_bar(ecs *world, entity canvas) {
     spawn_element_on_canvas(world, action_bar, (int2) { 3 * testSize2.x / 2, 10 + actionbar_size4.y / 2 }, testSize2, (float2) { 0.5f, 0 });
     spawn_element_on_canvas(world, action_bar, (int2) { - 6 * testSize2.x / 2, 10 + actionbar_size4.y / 2 }, testSize2, (float2) { 0.5f, 0 });
     spawn_element_on_canvas(world, action_bar, (int2) { 6 * testSize2.x / 2, 10 + actionbar_size4.y / 2 }, testSize2, (float2) { 0.5f, 0 });
-}
+}*/
 
 // used for testing the canvas scaling
-void spawn_corner_uis(ecs *world) {
+/*void spawn_corner_uis(ecs *world) {
     const int2 testSize = { 32, 32 };
     spawn_element_on_canvas(world, canvas, (int2) { testSize.x / 2, testSize.y / 2 }, testSize, (float2) { 0, 0 });             // bottom left
     spawn_element_on_canvas(world, canvas, (int2) { - testSize.x / 2, testSize.y / 2 }, testSize, (float2) { 1.0f, 0.0 });      // bottom right
     spawn_element_on_canvas(world, canvas, (int2) { testSize.x / 2, - testSize.y / 2 }, testSize, (float2) { 0, 1.0f });        // top left
     spawn_element_on_canvas(world, canvas, (int2) { - testSize.x / 2, - testSize.y / 2 }, testSize, (float2) { 1.0f, 1.0f});
     zox_log("Spawned 4 corner ui elements.\n")    // top right
-}
+}*/
 
-void spawn_test_uis(ecs *world) {
+/*void spawn_test_uis(ecs *world) {
     spawn_corner_uis(world);
     // crosshair
     // spawn_element_on_canvas(world, canvas, (int2) { 0, 0 }, (int2) { 32, 32 }, (float2) { 0.5f, 0.5f });
@@ -34,9 +34,9 @@ void spawn_test_uis(ecs *world) {
     // spawn_text(world, (int2) { 0, 0}, (float2) { 0.5f, 0.5f }, "Hello World.");
     // spawn_text(world, (int2) { 0, - 8}, (float2) { 0.5f, 1.0f }, "abcdefghijklmnopqrstuvwxyz");
     // spawn_text(world, (int2) { 0, actionbar_size4.y + 48}, (float2) { 0.5f, 0.0f }, "greetings minion");
-}
+}*/
 
-void test_ui_pixel_positions(ecs *world) {
+/*void test_ui_pixel_positions(ecs *world) {
     zox_geter_value(main_app, WindowSize, int2, screen_size)
     // test horizontal by spawning one per bar
     int width_division = 2; // 16;
@@ -54,4 +54,4 @@ void test_ui_pixel_positions(ecs *world) {
                 (int2) { bar_width, bar_height }, (float2) { 0, 0 });
         }
     }
-}
+}*/

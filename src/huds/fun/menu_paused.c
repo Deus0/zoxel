@@ -23,16 +23,16 @@ void button_event_end_game(ecs *world, ClickEventData event) {
 
         // Remove game uis
         zox_geter_value(e, CanvasLink, entity, canvas);
-
         if (!zox_valid(canvas)) {
             continue;
         }
-
-        entity menu = get_canvas_window(world, canvas, zox_window_paused);
-        if (menu) {
-            zox_delete(menu);
+        entity pause_menu = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
+        // entity menu = get_canvas_window(world, canvas, zox_window_paused);
+        if (pause_menu) {
+            zox_delete(pause_menu);
         }
-        entity taskbar = get_canvas_window(world, canvas, zox_window_taskbar);
+        entity taskbar = zox_get_child_by_id(world, canvas, zox_id(Taskbar));
+        // entity taskbar = get_canvas_window(world, canvas, zox_window_taskbar);
         if (taskbar) {
             zox_delete(taskbar);
         }

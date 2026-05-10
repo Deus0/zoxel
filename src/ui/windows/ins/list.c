@@ -15,7 +15,7 @@ typedef struct {
 } WindowListSpawnData;
 
 // Returns window + list
-entity3 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, SpawnListElement* elements, byte elements_count, byte visible_count, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2) {
+entity3 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2, SpawnListElement* elements, byte elements_count, byte visible_count) {
 
     zox_geter_value(player, CanvasLink, entity, canvas);
 
@@ -51,7 +51,6 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
         .header_text = header,
         .header_font_size = header_font_size,
         .header_padding = header_padding,
-        // .is_scrollbar = 0,
     };
     // we need to calculate header size too
     int2 header_size = calculate_header_size(strlen(header), window_data.header_font_size, window_data.header_padding);

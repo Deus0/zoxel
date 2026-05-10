@@ -2,35 +2,31 @@ extern double terrain_frequency;
 
 byte realm_colors_count = 8;
 
-static float wrap_hue(float h) {
+static inline float wrap_hue(float h) {
     while (h < 0.0f) h += 360.0f;
     while (h >= 360.0f) h -= 360.0f;
     return h;
 }
 
-static float frand_range(float a, float b) {
+static inline float frand_range(float a, float b) {
     return a + ((float)rand() / (float)RAND_MAX) * (b - a);
 }
 
-static float3 hsv_shift(float3 hsv, float dh, float ds, float dv) {
+static inline float3 hsv_shift(float3 hsv, float dh, float ds, float dv) {
     hsv.x = wrap_hue(hsv.x + dh);
     hsv.y = clampf(hsv.y + ds, 0.0f, 100.0f);
     hsv.z = clampf(hsv.z + dv, 0.0f, 100.0f);
     return hsv;
 }
 
-
 void generate_colors(lint seed, Colors *colors) {
-
     srand((unsigned int) seed);
-
     // One random seed color, then the rest are related off it.
     float3 dirt_hsv = (float3) {
         frand_range(0, 360),
         frand_range(10, 90),
         frand_range(10, 90)
     };
-
     // Grass: same family, more alive.
     float3 grass_hsv = hsv_shift(
         dirt_hsv,
@@ -38,7 +34,6 @@ void generate_colors(lint seed, Colors *colors) {
         frand_range(8.0f, 25.0f),
         frand_range(4.0f, 18.0f)
     );
-
     // Sand: dirt warmed and bleached a bit.
     float3 sand_hsv = hsv_shift(
         dirt_hsv,
@@ -46,7 +41,6 @@ void generate_colors(lint seed, Colors *colors) {
         frand_range(-18.0f, -4.0f),
         frand_range(18.0f, 35.0f)
     );
-
     // Stone: the same note, stripped down and quiet.
     float3 stone_hsv = hsv_shift(
         dirt_hsv,
@@ -54,7 +48,6 @@ void generate_colors(lint seed, Colors *colors) {
         frand_range(-55.0f, -25.0f),
         frand_range(8.0f, 22.0f)
     );
-
     // Obsidian: opposite hue, low saturation, low value.
     float3 obsidian_hsv = hsv_shift(
         dirt_hsv,
@@ -62,7 +55,6 @@ void generate_colors(lint seed, Colors *colors) {
         frand_range(-65.0f, -40.0f),
         frand_range(-35.0f, -18.0f)
     );
-
     // Sky: far away, softer, brighter, slightly displaced.
     float3 sky_hsv = hsv_shift(
         dirt_hsv,
@@ -70,7 +62,6 @@ void generate_colors(lint seed, Colors *colors) {
         frand_range(-45.0f, -15.0f),
         frand_range(20.0f, 45.0f)
     );
-
     // Wood: dirt with a sunburn and a little age.
     float3 wood_hsv = hsv_shift(
         dirt_hsv,
@@ -78,16 +69,26 @@ void generate_colors(lint seed, Colors *colors) {
         frand_range(-18.0f, 4.0f),
         frand_range(4.0f, 18.0f)
     );
-
-
+    // Limit our value within a visually safe range
+    // NOTE: too dark and we cannot see
+    float vmin = 15;
+    float vmax = 90;
+    dirt_hsv.z = clampf(dirt_hsv.z, vmin, vmax);
+    grass_hsv.z = clampf(grass_hsv.z, vmin, vmax);
+    sand_hsv.z = clampf(sand_hsv.z, vmin, vmax);
+    stone_hsv.z = clampf(stone_hsv.z, vmin, vmax);
+    sky_hsv.z = clampf(sky_hsv.z, vmin, vmax);
+    obsidian_hsv.z = clampf(obsidian_hsv.z, vmin, vmax);
+    wood_hsv.z = clampf(wood_hsv.z, vmin, vmax);
+    // Convert colors from hues
     color dirt_color = hsv_to_color(dirt_hsv);
     color grass_color = hsv_to_color(grass_hsv);
     color sand_color = hsv_to_color(sand_hsv);
     color stone_color = hsv_to_color(stone_hsv);
     color sky_color = hsv_to_color(sky_hsv);
     color obsidian_color = hsv_to_color(obsidian_hsv);
-    color woodc = hsv_to_color(wood_hsv);
-
+    color wood_color = hsv_to_color(wood_hsv);
+    // add to our array
     byte i = 0;
     colors->value[i++] = sky_color;
     colors->value[i++] = dirt_color;
@@ -95,10 +96,11 @@ void generate_colors(lint seed, Colors *colors) {
     colors->value[i++] = sand_color;
     colors->value[i++] = stone_color;
     colors->value[i++] = obsidian_color;
-    colors->value[i++] = woodc;
-
-    BiomeData biome = pick_biome(seed);
-    terrain_frequency = biome.frequency;
+    colors->value[i++] = wood_color;
+    // pick frequency now
+    terrain_frequency = randf(0.003f, 0.019f);
+    // BiomeData biome = pick_biome(seed);
+    //terrain_frequency = biome.frequency;
 }
 
 /*void generate_colors_old(lint seed, Colors *colors) {

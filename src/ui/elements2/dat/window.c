@@ -15,9 +15,7 @@ typedef struct {
     SpawnWindowData window;
 } SpawnWindow;
 
-
 typedef struct {
-    // header
     const char *header_text;
     byte header_font_size;
     byte2 header_padding;

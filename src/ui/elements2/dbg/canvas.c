@@ -46,13 +46,13 @@ void zox_dbg_spawn_canvas(ecs* world, ClickEventData data) {
     zox_log("Spawned Canvas was Valid");
     zox_set_unique_name(canvas, "tst_canvas");
 
-    entity element = spawn_element3(world, prefab_element_textured, canvas, float2_half, position, size, size, default_fill_color_icon, default_outline_color_icon);
+    entity element = spawn_uic(world, prefab_element_textured, canvas, float2_half, position, size, size, default_fill_color_icon, default_outline_color_icon);
     zox_set(element, Layer2D, { 1 });
     // zox_set_parent(world, element, canvas);
     // zox_set(element, CanvasLink, { canvas });
     zox_set(canvas, WindowToTop, { element });
 
-    entity element2 = spawn_element3(world, prefab_element_textured, element, float2_half, int2_zero, size2, size2, default_outline_color_icon, default_fill_color_icon);
+    entity element2 = spawn_uic(world, prefab_element_textured, element, float2_half, int2_zero, size2, size2, default_outline_color_icon, default_fill_color_icon);
     zox_set(element2, Layer2D, { 2 });
     // zox_set_parent(world, element2, element);
     // zox_set(element2, CanvasLink, { canvas });

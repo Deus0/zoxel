@@ -25,7 +25,7 @@ void zox_tst_spawn_window_list(ecs *world, ClickEventData data) {
     int elements_count = 0;
     int visible_count = 1;
     ClickEvent close_event = (ClickEvent) { NULL };
-    byte menu_type = zox_window_main_menu;
+    byte menu_type = 0; // zox_window_main_menu;
     byte alignment = zox_alignment_centre;
 
     elements[elements_count++] = (SpawnListElement) {
@@ -36,5 +36,5 @@ void zox_tst_spawn_window_list(ecs *world, ClickEventData data) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_log("   + spawning on player %s on canvas %s", zox_get_name(player), zox_get_name(canvas));
 
-    zox_dbg_window_list = spawn_window_list(world, prefab_window, player, header_label, header_font_size, elements, visible_count, elements_count, list_font_size, close_event, can_close, menu_type, 0, alignment, byte2_single(4), NULL).x;
+    zox_dbg_window_list = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, close_event, can_close, menu_type, 0, alignment, byte2_single(4), NULL, elements, visible_count, elements_count).x;
 }

@@ -1,21 +1,12 @@
 entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnWindow2 window_data, ClickEvent on_click, byte is_close_button, byte type) {
-
     byte header_height = window_data.header_font_size + window_data.header_padding.y * 2;
     byte header_font_thickness_s = header_font_thickness * ui_scale;
     byte header_fonto_thickness_s = header_font_thickness * ui_scale;
-
     zox_instance(element_data.prefab);
     zox_name("window");
-
-    zox_set(e, WindowType, { type });
-
+    // zox_set(e, WindowType, { type });
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
-
-    LayoutParentData e_parent_data = {
-        .e = e,
-        // .size = element_data.size,
-    };
-
+    LayoutParentData e_parent_data = { .e = e };
     entity header;
     {
         // # Window Header #
@@ -46,9 +37,7 @@ entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData
 
         zox_set(e, HeaderHeight, { header_height });
     }
-
     set_window_bounds_to_canvas(world, e, canvas_data.size, element_data.size, element_data.anchor);
-
     return (entity2) { e, header };
 }
 
@@ -56,7 +45,7 @@ entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData
 entity spawn_window(ecs *world, entity p, entity canvas, entity parent, byte wtype, int2 position, int2 size, float2 anchor) {
     zox_instance(p);
     zox_name("window");
-    zox_set(e, WindowType, { wtype });
+    // zox_set(e, WindowType, { wtype });
     zox_set(e, CanvasLink, { canvas });
     zox_set(e, LayoutPosition, { position });
     zox_set(e, LayoutSize, { size });

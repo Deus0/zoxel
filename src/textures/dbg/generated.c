@@ -1,4 +1,4 @@
-entity dbg_texture_generated = 0;
+/*entity dbg_texture_generated = 0;
 
 extern entity prefab_element_textured;
 
@@ -39,3 +39,4 @@ void spawn_dbg_texture_generated(ecs *world, int32_t keycode) {
 
     spawn_sound_from_file_index(world, prefab_sound, 0);
 }
+*/

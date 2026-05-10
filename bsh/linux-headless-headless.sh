@@ -5,23 +5,23 @@ game_name=$1
 GLB="headless"
 bin=bin/${game_name}-${GLB}
 debug="False"
+[[ " $* " == *" --debug "* ]] && debug="True"
+[[ " $* " == *" --development "* ]] && debug="True"
 
-sleep 1
 echo "Building Linux [${game_name}]"
-sleep 1
-
 
 cflags_debug="-fPIC \
--O0 \
--g3 \
--Wall \
--ggdb3 \
--Dzox_debug "
+    -O0 \
+    -g3 \
+    -Wall \
+    -ggdb3 \
+    -Dzox_debug "
 
 cflags_release="-fPIC \
--O3 \
--march=native \
--flto=auto "
+    -O3 \
+    -march=native \
+    -DNDEBUG \
+    -flto=auto "
 
 if [[ ${debug} == "True" ]]; then
     cflags=${cflags_debug}
@@ -29,27 +29,23 @@ else
     cflags=${cflags_release}
 fi
 
-echo "Cflags [${cflags}]"
+dflags="-Dzox_game=${game_name} \
+    -Dflecssource \
+    -Dzox_linux \
+    -Dzox_headless"
 
-gcc \
-\
-${cflags} \
-\
-inc/flecs/flecs.c \
-src/main.c \
-\
--o $bin \
-\
+libs="-Iinc \
 -lm \
--lpthread \
--Iinc \
-\
--Dzox_headless \
--Dzox_linux \
--Dflecssource \
--DNDEBUG \
-\
--Dzox_debug \
--Dzox_game=${game_name}
+-lpthread"
+
+echo ""
+echo "Building [linux, headless]"
+echo "  - Bin [${bin}]"
+echo "  - CFlags [${cflags}]"
+echo "  - DFlags [${dflags}]"
+echo "  - Libs [${libs}]"
+echo ""
+
+gcc ${cflags} src/main.c inc/flecs/flecs.c -o ${bin} ${dflags} ${libs}
 
 echo "Completed Build [${bin}]"

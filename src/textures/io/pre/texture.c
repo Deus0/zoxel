@@ -17,7 +17,7 @@ entity spawn_texture_filepath(ecs *world, entity prefab, const char *path) {
     }
 
     if (!texture.value) {
-        zox_log_error("Texture failed to load [%s]", path);
+        // zox_logw("Texture failed to load [%s]", path);
         zox_delete(e);
         return 0;
     }

@@ -32,7 +32,6 @@ char ascii_to_upper(char c) {
 }
 
 char* generate_name() {
-    // srand(time(NULL));
     int max_syllable_length = 4;
     int syllable_count = 2 + (rand() % 3); // Random number between 2 and 4
     char* name = (char*) malloc((syllable_count * max_syllable_length) + 1); // Assuming max length of syllable is 3
