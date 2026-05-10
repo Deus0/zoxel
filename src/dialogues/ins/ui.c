@@ -44,7 +44,7 @@ entity spawn_dialogue_ui(ecs* world, entity prefab, entity canvas, entity charac
         int2 position = int2_zero;
         byte font_size = 6 * ui_scale;
         byte2 padding = (byte2) { 4 * ui_scale, 2 * ui_scale };
-        entity e2 = spawn_text_new(world, prefab, parent, canvas, position, position_anchor, font_size, alignment, padding, text, window_outline, window_outline);
+        entity e2 = spawn_text_new(world, prefab, parent, position, position_anchor, font_size, alignment, padding, text, window_outline, window_outline);
         zox_set(e, DialogueTextLink, { e2 });
     }
     // add confirm button at bottom right

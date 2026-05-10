@@ -4,11 +4,11 @@
 - Remove User Macros and Speghetti
 - Remove structs from UI prefab use
 	-x spawn_uis (previously spawn_element)
+	-x spawn_icon
+	- spawn_text to spawn_text_new
+	- spawn_frame
 	- spawn_button
 	- spawn_window
-	- spawn_text
-	- spawn_frame
-	- spawn_icon
 	- Delete any old structs
 	- Remove Duplicate UI prefabs
 - Write a test function to spawn a world item to pickup

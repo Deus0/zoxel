@@ -8,12 +8,10 @@ zox_sys2(DeathSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(StatValue, stat);
         zox_sys_i(UserLink, user);
-
         if (stat->value > 0 || !zox_valid(user->value) ||
             !zox_has(user->value, Dead) || zox_gett_value(user->value, Dead)) {
             continue;
         }
-
         // we should just set a dead state here
         zox_muter(user->value, Dead, dead);
         dead->value = zox_dirty_trigger;

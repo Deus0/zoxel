@@ -10,6 +10,7 @@ zoxc_double(DiedTime);
 #include "pre/_.c"
 #include "sys/_.c"
 #include "fun/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Combat)
     zoxd_byte(Dead);

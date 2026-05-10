@@ -1,28 +1,5 @@
-// TOOD: Spawn a tilemap when blocks dirty / set old one
-void spawn_realm_tilemaps(ecs *world, entity realm) {
-
-    // spawn a tilemap!
-    if (!zox_has(realm, TilemapLink)) {
-        return;
-    }
-    zox_geter_value(realm, TilemapLink, entity, old);
-    // if (old) return; // TODO: Temp; Remove when crashes gone
-
-    if (zox_valid(old)) {
-        zox_delete(old);
-    }
-
-    entity tilemap = spawn_tilemap(world, prefab_tilemap);
-    zox_set(realm, TilemapLink, { tilemap });
-    if (!tilemap) {
-        return;
-    }
-
-    zox_set(tilemap, RealmLink, { realm });
-    zox_set(realm, BlocksDirty, { zox_dirty_trigger });
-}
-
 // TODO: Remove [spawn_blocks_data] Hooks and just use systems
+// Unique Realm Blocks spawn here
 zox_sys2(BlocksRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();

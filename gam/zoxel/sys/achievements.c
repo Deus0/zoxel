@@ -1,9 +1,16 @@
-void spawn_realm_achievements(ecs *world, const entity realm) {
-    (void)world;
-    (void)realm;
-    // zox_muter(realm, AchievementLinks, achievements)
-    // clear previous
-    // for (int i = 0; i < achievements->length; i++) if (achievements->value[i]) zox_delete(achievements->value[i])
-    // initialize_memory_component(AchievementLinks, achievements, entity, 1)
-    zox_logv("At [%f] Realm [achievements] [%i] spawned.", zox_current_time, 0);
-}
+zox_sys2(AchievementRealmSpawnSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(GenerateRealm);
+    zox_sys_out(AchievementLinks);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(GenerateRealm, state);
+        zox_sys_o(AchievementLinks, achievements);
+        if (state->value != zox_generate_realm_achievements) {
+            continue;
+        }
+        // TODO: This.
+        zox_logv("At [%f] Realm [achievements] [%i] spawned.", zox_current_time, achievements->length);
+    }
+} zox_sys_end(AchievementRealmSpawnSystem);

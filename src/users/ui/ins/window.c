@@ -82,8 +82,8 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
             };
             frame_data.icon.index = array_index;
             entity user_data_element = udata[item_index];
-
-            entity3 frame_spawn = spawn_frame_user(world, frame_data, user_data_element);
+            entity3 frame_spawn = spawn_frame(world, frame_data);
+            set_icon_from_user_data(world, frame_spawn.x, frame_spawn.y, user_data_element);
             body_children[array_index] = frame_spawn.x;
             // zox_set_parent(world, frame_spawn.x, grid);
             if (spawns) {
@@ -93,7 +93,6 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
             item_index++;
         }
     }
-
     if (active_states) {
         if (selected >= grid_elements_count) {
             zox_logw("selected [%i] out of bounds [%i]", selected, grid_elements_count);
@@ -107,12 +106,10 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
             zox_set(selected_frame, ActiveStateDirty, { zox_dirty_trigger });
         }
     }
-
     // add to characters element links and link to character
     zox_muter(character, ElementLinks, elementLinks);
     add_to_ElementLinks(elementLinks, e);
     zox_set(e, ElementHolder, { character });
-
     return e;
 }
 

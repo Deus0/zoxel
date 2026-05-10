@@ -12,9 +12,6 @@
 #include "music.c"
 #include "achievements.c"
 
-zox_declare_system_state_event(RealmTilemaps, GenerateRealm, zox_generate_realm_tilemaps, spawn_realm_tilemaps);
-zox_declare_system_state_event(RealmAchievements, GenerateRealm, zox_generate_realm_achievements, spawn_realm_achievements);
-
 void define_systems_zoxel(ecs *world) {
     zox_system_1(
         BiomesRealmSpawnSystem,
@@ -41,7 +38,6 @@ void define_systems_zoxel(ecs *world) {
         [out] stats.StatLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         SkillsRealmSpawnSystem,
         zoxp_mainthread,
@@ -50,7 +46,6 @@ void define_systems_zoxel(ecs *world) {
         [out] skills.SkillLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         ItemsRealmSpawnSystem,
         zoxp_mainthread,
@@ -59,7 +54,6 @@ void define_systems_zoxel(ecs *world) {
         [out] items.ItemLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         BodysRealmSpawnSystem,
         zoxp_mainthread,
@@ -69,7 +63,6 @@ void define_systems_zoxel(ecs *world) {
         [out] nodes.NodegraphLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         EquipsRealmSpawnSystem,
         zoxp_mainthread,
@@ -78,7 +71,6 @@ void define_systems_zoxel(ecs *world) {
         [out] items.ItemLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         QuestsRealmSpawnSystem,
         zoxp_mainthread,
@@ -87,7 +79,6 @@ void define_systems_zoxel(ecs *world) {
         [out] quests.QuestLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         DialogueRealmSpawnSystem,
         zoxp_mainthread,
@@ -96,7 +87,6 @@ void define_systems_zoxel(ecs *world) {
         [out] dialogues.DialoguetreeLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         MusicRealmSpawnSystem,
         zoxp_mainthread,
@@ -104,7 +94,6 @@ void define_systems_zoxel(ecs *world) {
         [out] musics.PlaylistLinks,
         [none] realms.Realm
     );
-
     zox_system_1(
         Character3RealmSpawnSystem,
         zoxp_mainthread,
@@ -114,7 +103,6 @@ void define_systems_zoxel(ecs *world) {
         [out] characters3.CharactersChanceMax,
         [none] realms.Realm
     );
-
     zox_system_1(
         BlocksRealmSpawnSystem,
         zoxp_mainthread,
@@ -125,7 +113,11 @@ void define_systems_zoxel(ecs *world) {
         [out] blocks.BlocksDirty,
         [none] realms.Realm
     );
-
-    zox_define_system_state_event_1(RealmTilemaps, zoxp_mainthread, realms.GenerateRealm, [none] realms.Realm);
-    zox_define_system_state_event_1(RealmAchievements, zoxp_mainthread, realms.GenerateRealm, [none] realms.Realm);
+    zox_system_1(
+        AchievementRealmSpawnSystem,
+        zoxp_mainthread,
+        [in] realms.GenerateRealm,
+        [out] achievements.AchievementLinks,
+        [none] realms.Realm
+    );
 }

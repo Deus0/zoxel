@@ -95,27 +95,23 @@ void zoxel_settings_physics() {
 }
 
 void zoxel_settings_uis() {
-
     // Windows
-    window_fill = color_grayscale_a(222, 255);
+    window_fill = color_grayscale_a(211, 255);
     window_outline = color_grayscale_a(0, window_fill.a);
-
     // Headers
-    header_fill = color_grayscale_a(199, 255);
+    header_fill = color_grayscale_a(188, 255);
     header_outline = color_grayscale_a(0, header_fill.a);
     header_font_fill = color_grayscale_a(255, header_fill.a);
     header_font_outline = color_grayscale_a(0, header_fill.a);
     header_font_thickness = 1;
     header_fonto_thickness = 1;
-
     // Buttons
-    button_fill = color_grayscale_a(155, 255);
+    button_fill = color_grayscale_a(188, 255);
     button_outline = color_grayscale_a(0, button_fill.a);
     button_font_fill = color_grayscale_a(255, button_fill.a);
     button_font_outline = color_grayscale_a(0, button_fill.a);
     button_font_thickness_fill = 2;
     button_font_thickness_outline = 2;
-
     // Buttons (Close)
     close_button_fill = color_grayscale_a(233, button_fill.a);;
     close_button_outline = button_outline;
@@ -123,10 +119,8 @@ void zoxel_settings_uis() {
     close_button_font_outline = color_grayscale_a(0, close_button_fill.a);
     close_button_font_thickness = 2;
     close_button_fonto_thickness = 0;
-
     frame_label_font_size = 4;
     frame_label_padding = 2;
-
     default_fill_color = color_grayscale_a(2, 248);
     default_outline_color = header_outline;
     // fades
@@ -135,32 +129,23 @@ void zoxel_settings_uis() {
     // pause
     // pause_fade_alpha = 0.9f; // 0.72f;
     // pause_fade_time = 0.42f;
-
 }
 
 void zoxel_debug_keys() {
-    // add_hook_key_down(key_down_toggle_light_debug);
-    // add_hook_key_down(test_load_chunk);
-    // add_hook_key_down(toggle_sound);
     add_hook_key_down(toggle_fps_viewer);
     add_hook_key_down(toggle_flymode);
-
-    // add_hook_key_down(toggle_life_terrain);
-    // add_hook_key_down(toggle_player_death);
-    // add_hook_key_down(spawn_tilemap_ui);
-    add_hook_key_down(spawn_test_render_texture);
     add_hook_key_down(toggle_inspector);
     add_hook_key_down(toggle_hierarchy);
-    // add_hook_key_down(toggle_inspector_player);
-
-
     add_hook_key_down(key_down_toggle_debug_chunks);
     add_hook_key_down(key_down_toggle_debug_character_bounds);
     add_hook_key_down(key_down_toggle_debug_voxes_bounds);
+    // add_hook_key_down(key_down_toggle_light_debug);
+    // add_hook_key_down(test_load_chunk);
+    // add_hook_key_down(toggle_sound);
+    // add_hook_key_down(toggle_life_terrain);
+    // add_hook_key_down(toggle_inspector_player);
+    // add_hook_key_down_2(zox_key_g, toggle_autoroam);
     // add_hook_key_down(key_down_toggle_streaming);
-
-    add_hook_key_down_2(zox_key_g, toggle_autoroam);
-
     // Test our cube meshes
     // add_hook_key_down(keydown_test_cubes);
     // add_hook_key_down(debug_key_down_unstucking);
@@ -174,9 +159,6 @@ void zoxel_debug_keys() {
     // add_hook_key_down(test_key_element_front2D);
     // add_hook_key_down(key_down_update_text3D);
     // add_hook_key_down(key_down_dbg_chunk);
-
-
-
 }
 
 void zox_set_terrain_settings() {

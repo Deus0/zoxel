@@ -1,5 +1,9 @@
  entity zox_dbg_test_window;
 
+ void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
+     zox_tst_spawn_tilemap(world);
+ }
+
  void spawn_test_list(ecs* world, int32_t keycode) {
      if (keycode != zox_key_g) {
          return;
@@ -24,13 +28,12 @@
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
-    SpawnListElement elements[9];
+    SpawnListElement elements[12];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
     byte header_font_size = 6 * ui_scale;
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
-
     elements[elements_count++] = (SpawnListElement) {
         .text = "Canvas",
         .on_click = { &zox_dbg_spawn_canvas },
@@ -47,12 +50,10 @@
         .text = "Window List",
         .on_click = { &zox_tst_spawn_window_list },
     };
-
     elements[elements_count++] = (SpawnListElement) {
         .text = "Dialogue",
         .on_click = { &zox_tst_spawn_dialogue },
     };
-
     elements[elements_count++] = (SpawnListElement) {
         .text = "Particles3",
         .on_click = { &zox_dbg_spawn_particle_emitter },
@@ -69,7 +70,19 @@
         .text = "NPC",
         .on_click = { &zox_tst_spawn_character3_npc },
     };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Tilemap",
+        .on_click = { &zox_tst_spawn_tilemap2 },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Death",
+        .on_click = { &zox_tst_player_character_death },
+    };
 
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Render Texture",
+        .on_click = { &zox_tst_render_texture },
+    };
 
 
     // Test our uis
