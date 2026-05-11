@@ -32,34 +32,19 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
         zox_set_parent(world, header, e);
         // children.value[0] = header;
     }
-    // spawn body
-    byte body_layer = data.element.layer + 1;
     int2 grid_size = int2_sub(data.element.size, (int2) { 0, header_height });
     int2 grid_position = (int2) { 0, -header_height / 2 };
-    /*ElementSpawn grid_data = {
-        .texture = window_texture,
-        .canvas = data.canvas,
-        .parent = { .e = e },
-        .element = {
-            .prefab = prefab_grid,
-            .layer = body_layer,
-            .anchor = float2_half,
-            .position = (int2) { 0, -header_height / 2 },
-            .size = grid_size,
-        },
-    };*/
-    //entity grid = spawn_element(world, grid_data);
     entity grid = spawn_uic(world, prefab_grid, e, float2_half, grid_position, grid_size, grid_size, window_texture.fill_color, window_texture.outline_color);
     zox_set_unique_name(grid, "window_users_grid");
     zox_set(grid, GridSize, { data.window.grid_size });
     zox_set(grid, GridPadding, { data.window.grid_padding });
     zox_set(grid, GridMargins, { data.window.grid_margins });
-    // zox_set_parent(world, grid, e);
-    entity body_children[grid_elements_count];
-    byte icon_layer = body_layer + 1;
+    byte active_states = zox_has(data.frame.prefab, ActiveState);
+    int2 frame_size = int2_single(data.window.icon_size);
+    int2 icon_size =  int2_single(data.icon.size);
     int item_index = 0;
     int array_index = 0;
-    byte active_states = zox_has(data.frame.prefab, ActiveState);
+    entity body_children[grid_elements_count];
     for (int j = data.window.grid_size.y - 1; j >= 0; j--) {
         if (array_index >= grid_elements_count) {
             break;
@@ -68,21 +53,9 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
             if (array_index >= grid_elements_count) {
                 break;
             }
-            SpawnFrame frame_data = {
-                .canvas = data.canvas,
-                .texture = data.frame.texture,
-                .icon = data.icon,
-                .parent = { .e = grid },
-                .element = {
-                    .prefab = data.frame.prefab,
-                    .size = int2_single(data.window.icon_size),
-                    .layer = icon_layer,
-                    .anchor = float2_half,
-                },
-            };
-            frame_data.icon.index = array_index;
+            entity3 frame_spawn = spawn_frame(world, data.frame.prefab, grid, position, frame_size, data.icon.prefab, icon_size, array_index);
+
             entity user_data_element = udata[item_index];
-            entity3 frame_spawn = spawn_frame(world, frame_data);
             set_icon_from_user_data(world, frame_spawn.x, frame_spawn.y, user_data_element);
             body_children[array_index] = frame_spawn.x;
             // zox_set_parent(world, frame_spawn.x, grid);

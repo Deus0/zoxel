@@ -38,12 +38,6 @@ entity spawn_menu_game_stats(ecs* world, entity parent, entity player) {
     };
     // Others
     zox_geter(character, StatLinks, stats);
-    byte panel_layer = 1;
-    byte bar_layer = 2;
-    FrameTextureData panel_texture = (FrameTextureData) {
-        .fill_color = window_fill,
-        .outline_color = window_outline,
-    };
     entity e = spawn_ui(world, prefab_body, parent, panel_anchor, panel_position, panel_size, panel_size);
     zox_set_unique_name(e, "stats_panel");
     zox_set_parent(world, e, parent);
@@ -54,7 +48,7 @@ entity spawn_menu_game_stats(ecs* world, entity parent, entity player) {
             continue;
         }
         zox_geter_value(stat, ColorRGB, color_rgb, cvalue);
-        entity statbar = spawn_statbar2(world, canvas, e, (entity2) { character, stat }, cvalue, bar_layer, bar_anchor, bar_size, bar_position, label_font_size        );
+        entity statbar = spawn_statbar2(world, canvas, e, (entity2) { character, stat }, cvalue, 0, bar_anchor, bar_size, bar_position, label_font_size        );
         zox_set_parent(world, statbar, e);
         bar_position.y -= bar_size.y + bar_padding;
     }

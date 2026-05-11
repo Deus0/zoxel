@@ -38,7 +38,7 @@ entity spawn_dialogue_ui(ecs* world, entity prefab, entity canvas, entity charac
         entity prefab = prefab_zext;
         entity parent = body;
         const char* text = "";
-        entity canvas = canvas_data.e;
+        // entity canvas = canvas_data.e;
         float2 position_anchor = float2_half;
         byte alignment = 0;
         int2 position = int2_zero;

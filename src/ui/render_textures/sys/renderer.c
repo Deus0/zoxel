@@ -1,4 +1,3 @@
-// extern entity zox_get_root_canvas_camera(ecs *world, entity e);
 // this is more like a non blend pass!
 // NOTE: Needs to skip GPU calls for non layers since called per layer
 zox_sys2(RenderTextureRenderSystem) {

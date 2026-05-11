@@ -4,7 +4,7 @@ byte tooltip_event_main_menu(ecs *world, const TooltipEventData *data) {
 }
 
 byte tooltip_event_zoxel_header(ecs* world, const TooltipEventData *data) {
-    set_entity_text(world, data->tooltip, "zoxel v0.1.1");
+    set_entity_text(world, data->tooltip, "v0.0.1");
     return 1;
 }
 

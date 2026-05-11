@@ -6,39 +6,40 @@ zox_sys2(ElementRaycastSystem) {
     zox_sys_in(Raycaster);
     zox_sys_in(DeviceLink);
     zox_sys_out(RaycasterTarget);
-    // zox_sys_out(WindowRaycasted);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceLink, deviceLink);
+        zox_sys_i(DeviceLink, device);
         zox_sys_i(Raycaster, raycaster);
-        zox_sys_o(RaycasterTarget, raycasterTarget);
-        // zox_sys_o(WindowRaycasted, windowRaycasted);
-        if (!deviceLink->value) {
+        zox_sys_o(RaycasterTarget, target);
+        if (!device->value) {
             continue;
         }
-        if (zox_gett_value(deviceLink->value, DeviceDisabled)) {
+        if (zox_gett_value(device->value, DeviceDisabled)) {
             continue;
         }
-        zox_geter_value(deviceLink->value, PlayerLink, entity, player);
+        zox_geter_value(device->value, PlayerLink, entity, player);
         if (!player) {
             continue;
         }
         zox_geter_value(player, DeviceMode, byte, dmode);
-        byte dmode_raycaster =
-            dmode == zox_device_mode_touchscreen ||
-            (!keyboard_navigation_mode && dmode == zox_device_mode_keyboardmouse);
-
+        byte dmode_raycaster = dmode == zox_device_mode_touchscreen || (!keyboard_navigation_mode && dmode == zox_device_mode_keyboardmouse);
         if (!dmode_raycaster) {
             continue;
         }
-
-        entity player_canvas = zox_get_value(player, CanvasLink)
-        entity player_camera_ui = zox_gett_value(player_canvas, CameraLink);
+        zox_geter_value(player, CanvasLink, entity, pcanvas);
+        if (!zox_valid(pcanvas)) {
+            continue;
+        }
+        zox_geter_value(pcanvas, CameraLink, entity, camera);
+        if (!zox_valid(camera)) {
+            continue;
+        }
+        // NOTE: Now it only works for one canvas hmmm
+        zox_geter_value(camera, ScreenPosition, int2, canvas_position);
+        zox_geter_value(camera, ScreenDimensions, int2, canvas_size);
         int2 position = raycaster->value;
         int ui_layer = -1;
         entity ui_selected = 0;
-        int window_layer = -1;
-        // entity window_selected = 0;
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
@@ -55,16 +56,11 @@ zox_sys2(ElementRaycastSystem) {
                     continue;
                 }
                 entity e2 = it2.entities[j];
-                entity camera = zox_get_root_canvas_camera(world, e2);
-                if (!camera) {
+                entity rcanvas = zox_get_parent_by_id(world, e2, zox_id(Canvas));
+                if (pcanvas != rcanvas) {
                     continue;
                 }
-                if (player_camera_ui != camera) {
-                    continue; // only do checks for player canvases
-                }
                 int2 lsize = lsize2->value;
-                int2 canvas_position = zox_get_value(camera, ScreenPosition);
-                int2 canvas_size = zox_get_value(camera, ScreenDimensions);
                 byte ray_in_viewport = position.x >= canvas_position.x && position.x <= canvas_position.x + canvas_size.x && position.y >= canvas_position.y && position.y <= canvas_position.y + canvas_size.y;
                 if (!ray_in_viewport) {
                     continue;
@@ -95,32 +91,16 @@ zox_sys2(ElementRaycastSystem) {
                         ui_layer = layer2D->value;
                         ui_selected = e2;
                     }
-                    /* byte window_raycasted = zox_has(e2, WindowRaycastTarget);
-                    if (window_raycasted && layer2D->value > window_layer) {
-                        if (!zox_has(e2, Window)) {
-                            // if header/body use parent
-                            // window_selected = zox_get_value(e2, ParentLink);
-                            window_selected = zox_get_parent(world, e2);
-                            window_layer = zox_get_value(ui_selected, Layer2D);
-                        } else {
-                            window_selected = e2;
-                            window_layer = layer2D->value;
-                        }
-                    }*/
                 }
             }
         }
         zox_sys_query_end();
-
         // if only exists to block others (like Window's)
         if (ui_selected && !zox_has(ui_selected, SelectState)) {
             ui_selected = 0;
         }
-        if (raycasterTarget->value != ui_selected) {
+        if (target->value != ui_selected) {
             raycaster_select_element(world, e, ui_selected);
         }
-        /*if (windowRaycasted->value != window_selected) {
-            raycaster_select_window_children(world, e, window_selected);
-        }*/
     }
 } zox_sys_end(ElementRaycastSystem);

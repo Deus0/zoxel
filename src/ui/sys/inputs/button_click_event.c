@@ -9,16 +9,13 @@ zox_sys2(ButtonClickEventSystem) {
         zox_sys_i(ClickEvent, event);
         zox_sys_i(ClickState, state);
         zox_sys_o(Clicker, clicker);
-
         if (state->value != zox_click_state_released_this_frame) {
             continue;
         }
-
         if (!event->value || !*event->value) {
             continue;
         }
-
-        const ClickEventData event_data = (ClickEventData) {
+        ClickEventData event_data = (ClickEventData) {
             .clicked = e,
             .clicker = clicker->value
         };

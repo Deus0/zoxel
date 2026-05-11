@@ -9,24 +9,8 @@ entity spawn_button(ecs *world, LayoutParentData canvas_data, LayoutParentData p
     zox_name("button");
     zox_set(e, Color, { button_data.fill });
     zox_set(e, OutlineColor, { button_data.outline });
-    if (element_data.render_disabled) {
-        zox_set(e, RenderDisabled, { element_data.render_disabled });
-    }
     set_element_spawn_data(world, e, canvas_data, parent, element_data);
-    // text
-    SpawnZext zext_data2 = {
-        .canvas = canvas_data,
-        .zext = zext_data,
-        .parent = { .e = e },
-        .element = {
-            .prefab = button_data.prefab_zext,
-            .layer = element_data.layer + 1,
-            .anchor = float2_half,
-            .size = size,
-            .render_disabled = element_data.render_disabled,
-        },
-    };
-    entity text = spawn_text(world, zext_data2);
-    zox_set_parent(world, text, e);
+    entity text = spawn_text_new(world, button_data.prefab_zext, e, int2_zero, float2_half, zext_data.font_size, zext_data.alignment, zext_data.margins, zext_data.text, zext_data.font_fill_color, zext_data.font_outline_color);
+    zox_set(text, Layer2D, { element_data.layer + 1 });
     return e;
 }

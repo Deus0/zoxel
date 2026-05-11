@@ -1,12 +1,10 @@
 byte tooltip_event_stat(ecs *world, const TooltipEventData *data) {
-
     if (!data->data || !zox_has(data->data, Stat)) {
         if (data->data) {
             zox_log("e [%s] has no Stat", zox_get_name(data->data));
         }
         return 0;
     }
-
     char result[128];
     const char *name = zox_has(data->data, ZoxName) ? zox_gett_value(data->data, ZoxName) : "none";
     if (zox_has(data->data, StatLevel)) {

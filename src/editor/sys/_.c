@@ -14,7 +14,6 @@ void define_systems_editor(ecs *world) {
         [in] elements2.ScrollviewLink,
         [in] elements.ElementFontSize
     );
-
     zox_system_1(
         InspectorSpawnSystem,
         zoxp_mainthread,
@@ -24,7 +23,6 @@ void define_systems_editor(ecs *world) {
         [in] elements2.ScrollviewLink,
         [in] elements.FontSize
     );
-
     zox_system_1(
         EditorInputSystem,
         EcsPreStore,
@@ -32,7 +30,6 @@ void define_systems_editor(ecs *world) {
         [in] layouts2.CanvasLink,
         [none] players.Player
     );
-
     zox_system(
         InspectorLabelSystem,
         EcsOnUpdate,

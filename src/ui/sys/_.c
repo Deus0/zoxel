@@ -4,23 +4,18 @@
 #include "texture_size.c"
 #include "texture_size_generate.c"
 #include "mesh.c"
-
 #include "layouts2D/canvas_resize.c"
-
 #include "rendering/element_begin.c"
 #include "rendering/texture_dirty_begin.c"
 #include "rendering/texture_gpu_begin.c"
 #include "rendering/element_renderer.c"
-
 #include "inputs/button_click_event.c"
 #include "inputs/mouse_element.c"
 #include "inputs/device_click.c"
 #include "inputs/zevice_click.c"
 #include "inputs/keyboard_click.c"
-
 #include "active/animate.c"
 #include "active/link.c"
-
 #include "drag/dragger_end.c"
 
 // zox_increment_system_with_reset(InitializeElement, zox_dirty_end);
@@ -55,10 +50,8 @@ void define_systems_elements(ecs *world) {
         EcsPostUpdate,
         [in] inputs.DeviceLink,
         [in] raycasts.RaycasterTarget,
-        // [in] WindowRaycasted,
         [out] raycasts.RaycasterResult,
         [out] ClickingEntity,
-        // [out] WindowTarget,
         [none] inputs.Zevice
     );
     zox_system(
@@ -67,10 +60,8 @@ void define_systems_elements(ecs *world) {
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,
-        //[in] WindowRaycasted,
         [in] hierarchys.Children,
         [out] ClickingEntity,
-        //[out] WindowTarget,
         [none] inputs.Device
     );
     zox_system(
@@ -79,10 +70,8 @@ void define_systems_elements(ecs *world) {
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,
-        //[in] WindowRaycasted,
         [in] inputs.Keyboard,
         [out] ClickingEntity,
-        //[out] WindowTarget,
         [none] inputs.Device
     );
 
@@ -120,7 +109,6 @@ void define_systems_elements(ecs *world) {
         EcsOnUpdate,
         [in] inputs.ZeviceLink,
         [in] layouts2.Anchor,
-        [in] layouts2.CanvasLink,
         [out] layouts2.LayoutPosition,
         [out] layouts2.LayoutPositionDirty,
         [none] MouseElement
@@ -184,7 +172,6 @@ void define_systems_elements(ecs *world) {
         [in] elements.InitializeElement,
         [in] layouts2.LayoutSize,
         [in] rendering.MeshAlignment,
-        [in] layouts2.CanvasLink,
         [out] rendering.MeshDirty,
         [out] rendering.MeshVertices2D,
         [out] rendering.MeshGPULink,
@@ -222,7 +209,6 @@ void define_systems_elements(ecs *world) {
         LayoutMeshSystem,
         EcsPostUpdate,
         [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.CanvasLink,
         [in] layouts2.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,

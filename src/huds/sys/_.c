@@ -19,7 +19,6 @@ void define_systems_game_ui(ecs *world) {
         [out] FPSDisplayTicker,
         [none] FPSDisplay
     );
-
     zox_system(
         MenuGameBeginSystem,
         EcsOnUpdate,
@@ -28,7 +27,6 @@ void define_systems_game_ui(ecs *world) {
         [out] huds.TaskbarToggleLink //,
         // [none] MenuGame
     );
-
     zox_system(
         DebugLabelSystem,
         EcsOnStore,
@@ -46,8 +44,6 @@ void define_systems_game_ui(ecs *world) {
         [in] games.GameLink,
         [in] layouts2.CanvasLink
     ); // note: must update before
-
-
     zox_system(
         GameStartFaderSystem,
         EcsOnUpdate,
@@ -56,8 +52,6 @@ void define_systems_game_ui(ecs *world) {
         [in] players.PlayerLinks,
         [none] games.Game
     );
-
-
     zox_system_1(
         PlayerUIGameEndSystem,
         EcsOnUpdate,
@@ -72,7 +66,6 @@ void define_systems_game_ui(ecs *world) {
         [in] players.PlayerState,
         [in] games.GameLink
     );
-
     // Pause UI
     zox_system_1(
         PlayerUIGamePauseSystem,
@@ -92,7 +85,6 @@ void define_systems_game_ui(ecs *world) {
         [out] players.PlayerStateDirty,
         [out] players.PlayerPauseEvent
     );
-
     zox_system_1(   // spawns ui
         PlayerTerminalSystem,
         EcsOnUpdate,

@@ -17,7 +17,7 @@ void resize_text3D(ecs *world, entity e, entity* children, uint children_length,
     // Set old zigels
     int reuse_count = int_min(children_length, new_children_length);
     for (uint i = 0; i < reuse_count; i++) {     // Reposition old zigels!
-        int data_index = calculate_zigel_data_index(text->value, text->length, i);
+        uint data_index = calculate_zigel_data_index(text->value, text->length, i);
         float3 zigel_position = calculate_zigel3D_position(zigel3D_size, data_index, new_children_length, zigel_data.scale);
 
         entity e2 = children[i];
@@ -29,10 +29,10 @@ void resize_text3D(ecs *world, entity e, entity* children, uint children_length,
     // Spawn if extended text
     if (new_children_length > children_length) {
         for (uint i = children_length; i < new_children_length; i++) {
-            int data_index = calculate_zigel_data_index(text->value, text->length, i);
+            uint index = calculate_zigel_data_index(text->value, text->length, i);
             byte zigel_index = calculate_zigel_index(text->value, text->length, i);
             zigel_data.zigel_index = zigel_index;
-            zigel_data.position = calculate_zigel3D_position(zigel3D_size, data_index, new_children_length, zigel_data.scale);
+            zigel_data.position = calculate_zigel3D_position(zigel3D_size, index, new_children_length, zigel_data.scale);
             entity e2 = spawn_zigel3(world, zigel_data);
             zox_set_parent(world, e2, e);
             // new_children[i] = e;

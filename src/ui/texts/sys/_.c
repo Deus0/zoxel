@@ -9,25 +9,9 @@ void define_systems_texts(ecs *world) {
     zox_system(
         AnimateTextSystem,
         zox_pipelines_zext_textures,
-        [out] AnimateZext,
+        [out] texts.AnimateZext,
         [out] texts.TextDirty,
         [out] texts.TextData
-    );
-    zox_system(
-        TextUpdateSystem,
-        EcsOnUpdate,
-        [in] texts.TextDirty,
-        [in] texts.TextData,
-        [none] Zext
-    );
-    zox_system(
-        ZigelPositionSystem,
-        EcsOnUpdate,
-        [in] texts.TextDirty,
-        [in] texts.TextData,
-        [in] texts.TextFontSize,
-        [in] texts.TextAlignment,
-        [in] texts.TextPadding
     );
     zox_system(
         TextParentBackgroundSystem,
@@ -36,7 +20,7 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextData,
         [in] texts.TextFontSize,
         [in] TextPadding,
-        [none] Zext
+        [none] texts.Zext
     );
     zox_system(
         TextBackgroundSystem,
@@ -47,26 +31,39 @@ void define_systems_texts(ecs *world) {
         [in] TextPadding,
         [out] layouts2.LayoutSize,
         [out] layouts2.LayoutSizeDirty,
-        [none] Zext
+        [none] texts.Zext
+    );
+    zox_system(
+        TextUpdateSystem,
+        EcsOnUpdate,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [none] texts.Zext
     );
     zox_system_1(
         ZigelSpawnSystem,
         EcsOnUpdate,
+        [in] texts.TextDirty,
         [in] texts.TextData,
         [in] texts.TextFontSize,
-        [in] TextPadding,
-        [in] layouts2.Layer2D,
-        [in] layouts2.CanvasPosition,
-        [in] layouts2.LayoutSize,
-        [in] rendering.MeshAlignment,
         [in] zigels.FontOutlineColor,
         [in] zigels.FontFillColor,
         [in] zigels.FontThickness,
         [in] zigels.FontOutlineThickness,
         [in] texts.TextResolution,
-        [in] texts.TextDirty,
+        [in] layouts2.Layer2D,
         [out] rendering.RenderDisabled,
-        [none] Zext,
-        [none] Text2D
+        [none] texts.Zext,
+        [none] texts.Text2D
+    );
+    zox_system(
+        TextsPositionSystem,
+        EcsOnUpdate,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [in] texts.TextFontSize,
+        [in] texts.TextAlignment,
+        [in] texts.TextPadding,
+        [none] texts.Zext
     );
 }

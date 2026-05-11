@@ -1,8 +1,7 @@
 // calculates the child index, takes out ascii like new line that have no zigel spawns
-int calculate_zigel_data_index(const byte *data, int length, int spawn_index) {
-
-    int j = 0;
-    for (int i = 0; i < length; i++) {
+uint calculate_zigel_data_index(const byte *data, uint length, int spawn_index) {
+    uint j = 0;
+    for (uint i = 0; i < length; i++) {
         if (data[i] != zox_char_newline) {
             if (j == spawn_index) {
                 return i;
@@ -10,18 +9,14 @@ int calculate_zigel_data_index(const byte *data, int length, int spawn_index) {
             j++;
         }
     }
-
     zox_log_error("calculate_zigel_data_index: j [%i] spawn_index [%i] length [%i]", j, spawn_index, length);
-
     return 0;
 }
 
 int2 calculate_position(const byte *data, int length, int data_index, byte font_size, byte text_alignment, byte2 padding, byte line_padding) {
-
     int x = get_zext_x(data, data_index);
     int y = get_zext_y(data, length, data_index);
     int2 size = calculate_zext_size(data, length, font_size, padding, line_padding);
-
     int2 position = int2_zero;
     // add half zigel size offset
     position.x += font_size / 2;
@@ -33,7 +28,6 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
     position.x += x * font_size;
     position.y -= y * (font_size + line_padding);
     // position.y += size.y / 2;
-
     if (text_alignment == zox_alignment_centre) {
         return position;
     }
@@ -62,10 +56,12 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
 }
 
 // Centralized position setting for text zigels
-zox_sys2(ZigelPositionSystem) {
+zox_sys2(TextsPositionSystem) {
+    byte is_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TextDirty);  // TextSizeDirty
+    // TextSizeDirty
+    zox_sys_in(TextDirty);
     zox_sys_in(TextData);
     zox_sys_in(TextFontSize);
     zox_sys_in(TextAlignment);
@@ -77,37 +73,32 @@ zox_sys2(ZigelPositionSystem) {
         zox_sys_i(TextFontSize, size);
         zox_sys_i(TextAlignment, alignment);
         zox_sys_i(TextPadding, padding);
-
         if (dirty->value != zox_dirty_end) {
             continue;
         }
-
         entity children[texts_children_capacity];
         uint length = zox_get_children(world, e, children, texts_children_capacity);
-
+        if (is_log) {
+            zox_log("Text [%s] - %i positions", zox_get_name(e), length);
+        }
         for (uint j = 0; j < length; j++) {
             entity e2 = children[j];
-
             if (!zox_valid(e2)) {
                 continue;
             }
-
-            int data_index = calculate_zigel_data_index(text_data->value, text_data->length, j);
-            int2 position = calculate_position(text_data->value, text_data->length, data_index, size->value, alignment->value, padding->value, default_line_padding);
-
-
-            zox_muter(e2, LayoutPosition, lposition);
-            if (!int2_equals(lposition->value, position)) {
-                zox_muter(e2, LayoutPositionDirty, ldirty);
-
+            uint index = calculate_zigel_data_index(text_data->value, text_data->length, j);
+            int2 position = calculate_position(text_data->value, text_data->length, index, size->value, alignment->value, padding->value, default_line_padding);
+            zox_mut_begin(e2, LayoutPosition, lposition);
+            zox_mut_begin(e2, LayoutPositionDirty, ldirty);
+            //if (!int2_equals(lposition->value, position)) {
                 lposition->value = position;
                 ldirty->value = zox_dirty_trigger;
-
-                // zox_log("+ Text [%s]:[%i] New Position [%ix%i]", zox_get_name(e), j, position.x, position.y);
-            }
-
-            // zox_set(e2, LayoutPosition, { position });
-            // zox_set(e2, LayoutPositionDirty, { zox_dirty_trigger });
+                zox_mut_end(e2, LayoutPosition);
+                zox_mut_end(e2, LayoutPositionDirty);
+                if (is_log) {
+                    zox_log("   + [%s]:[%i] at [%ix%i]", zox_get_name(e2), j, position.x, position.y);
+                }
+            //}
         }
     }
-} zox_sys_end(ZigelPositionSystem);
+} zox_sys_end(TextsPositionSystem);

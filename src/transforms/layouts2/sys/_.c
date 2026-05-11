@@ -3,7 +3,6 @@
 #include "anchor_size.c"
 #include "transform.c"
 #include "canvas.c"
-
 // TODO: We probably need a frame by frame, parent to child system, atm it just pushes it all at once, creates race issues
 // NOTE: Anchor Size for stretching along canvas, must work before the positioning
 
@@ -28,7 +27,6 @@ void define_systems_layouts2(ecs* world) {
         LayoutToCanvasSystem,
         EcsOnLoad,
         [in] layouts2.LayoutPositionDirty,
-        [in] layouts2.CanvasLink,
         [in] layouts2.CanvasPosition,
         [out] transforms2.Position2
     );
@@ -45,6 +43,6 @@ void define_systems_layouts2(ecs* world) {
         CanvasLinkSystem,
         EcsOnLoad,
         [out] layouts2.CanvasLink,
-        // [none] layouts2.Layout
+        [none] layouts2.Layout
     );
 }

@@ -1,7 +1,4 @@
-byte tooltip_event_quest(
-    ecs *world,
-    const TooltipEventData *data
-) {
+byte tooltip_event_quest(ecs *world, const TooltipEventData *data) {
     if (!data->data || !zox_has(data->data, Quest)) {
         return 0;
     }

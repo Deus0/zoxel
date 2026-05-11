@@ -7,7 +7,6 @@ void define_systems_users_ui(ecs* world) {
         EcsOnUpdate,
         [in] elements.SelectState,
         [in] users.UserDataLink,
-        [in] layouts2.CanvasLink,
         [in] elements.TooltipEvent,
         [none] UserIcon
     );

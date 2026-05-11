@@ -66,17 +66,17 @@ void print_entity_zext(ecs *world, entity e) {
 }
 
 byte set_entity_text(ecs* world, entity e, const char* text) {
-
     if (!zox_valid(e) || !zox_has(e, TextData) || !zox_has(e, TextDirty)) {
         zox_log_error("invalid zext in [set_entity_text]")
         return 0;
     }
-
-    zox_mut_begin(e, TextData, textData);
-    if (!is_zext(textData, text)) {
-        set_zext(textData, text);
+    zox_mut_begin(e, TextData, tdata);
+    if (!is_zext(tdata, text)) {
+        set_zext(tdata, text);
         zox_mut_end(e, TextData);
-        zox_set(e, TextDirty, { zox_dirty_trigger });
+        zox_muter(e, TextDirty, dirty);
+        dirty->value = zox_dirty_trigger;
+        // zox_set(e, TextDirty, { zox_dirty_trigger });
         return 1;
     } else {
         return 0;

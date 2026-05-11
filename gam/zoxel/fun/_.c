@@ -43,7 +43,7 @@
         .on_click = { &zox_dbg_spawn_element },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Text2",
+        .text = "Text",
         .on_click = { &zox_tst_spawn_text2 },
     };
     elements[elements_count++] = (SpawnListElement) {

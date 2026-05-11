@@ -34,9 +34,9 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
     position.x -= padding;
     position.y -= padding;
     float2 anchor = (float2) { 1, 1 };
-    entity parent = canvas;
-    color fcolor = color_white;
-    color ocolor = color_white;
+    // entity parent = canvas;
+    // color fcolor = color_white;
+    // color ocolor = color_white;
     dbg_render_camera = spawn_camera(world, prefab_camera, cposition, crotation, 0, 45, int2_zero, tsize, single_screen_to_canvas);
     zox_add_tag(dbg_render_camera, CameraFilter);
     create_camera_rbo_and_fbo(world, dbg_render_camera, tsize);

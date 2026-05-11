@@ -46,37 +46,6 @@ entity spawn_taskbar(ecs *world, entity canvas) {
     zox_set_parent(world, header, e);
     int2 fsize = int2_single(frame_size);
     int2 isize = int2_single(icon_size);
-    /*ElementSpawn spawn_frame_data = {
-        .canvas = { canvas },
-        .parent = {
-            .e = e,
-            .position = position,
-        },
-        .element = {
-            .prefab = prefab_frame_taskbar,
-            .anchor = float2_half,
-            .size = int2_single(frame_size),
-        },
-        .texture = {
-            .fill_color = default_fill_color_frame,
-            .outline_color = default_outline_color_frame,
-        }
-    };*/
-    /*ElementSpawn spawn_icon_data = {
-        .canvas = { canvas },
-        .parent = {
-            .size = spawn_frame_data.element.size
-        },
-        .element = {
-            .prefab = prefab_icon,
-            .anchor = float2_half,
-            .size = int2_single(icon_size)
-        },
-        .texture = {
-            .fill_color = default_fill_color_icon,
-            .outline_color = default_outline_color_icon,
-        }
-    };*/
     for (int i = 0; i < taskbar_count; i++) {
         // hook data
         int hook_index = -1;

@@ -28,7 +28,7 @@ zox_sys2(ZeviceClickSystem) {
             continue;
         }
         byte device_mode = zox_get_value(player, DeviceMode);
-        entity canvas = zox_get_value(player, CanvasLink)
+        // entity canvas = zox_get_value(player, CanvasLink)
         byte click_type = 0;
         if (zox_has(e, ZevicePointer)) {
             byte click_value = zox_get_value(e, ZevicePointer);

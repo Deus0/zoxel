@@ -7,10 +7,10 @@ entity spawn_ui(ecs *world, entity prefab, entity parent, float2 anchor, int2 po
     zox_set(e, LayoutSize, { size });
     zox_set(e, TextureSize, { texture_size });
     zox_set_parent(world, e, parent);
-    entity canvas = zox_get_root_canvas(world, parent);
+    /*entity canvas = zox_get_root_canvas(world, parent);
     if (zox_valid(canvas)) {
         zox_set(e, CanvasLink, { canvas });
-    }
+    }*/
     // zox_set(e, CanvasLink, { canvas });
     // Where we link to canvas children
     // zox_set(e, ParentLink, { parent });

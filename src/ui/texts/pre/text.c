@@ -1,8 +1,6 @@
 entity spawn_prefab_text(ecs* world, entity prefab) {
-
     zox_prefab_child(prefab);
     zox_prefab_name("text");
-
     // text
     zox_add_tag(e, Zext);
     zox_add_tag(e, Text2D);
@@ -16,8 +14,9 @@ entity spawn_prefab_text(ecs* world, entity prefab) {
     zox_prefab_set(e, TextResolution, { 0 });
     zox_prefab_set(e, FontOutlineColor, { { 255, 0, 0, 255 }});
     zox_prefab_set(e, FontFillColor, { { 0, 255, 0, 255 }});
+    zox_prefab_set(e, FontOutlineThickness, { 2 });
+    zox_prefab_set(e, RenderDisabled, { 0 });
+    // Do we need to set them? Are font thickness used?
     zox_prefab_set(e, FontThickness, { 1 });
-    zox_prefab_set(e, FontOutlineThickness, { 0 });
-
     return e;
 }

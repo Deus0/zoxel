@@ -53,7 +53,6 @@ void define_systems_elements2(ecs *world) {
         TooltipSystem,
         EcsPostUpdate,
         [in] elements.SelectState,
-        [in] layouts2.CanvasLink,
         [in] elements.TooltipEvent
     );
     zox_system(

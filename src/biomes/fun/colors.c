@@ -98,7 +98,7 @@ void generate_colors(lint seed, Colors *colors) {
     colors->value[i++] = obsidian_color;
     colors->value[i++] = wood_color;
     // pick frequency now
-    terrain_frequency = randf(0.003f, 0.019f);
+    terrain_frequency = randf_range(0.003f, 0.019f);
     // BiomeData biome = pick_biome(seed);
     //terrain_frequency = biome.frequency;
 }

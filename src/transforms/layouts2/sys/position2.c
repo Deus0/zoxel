@@ -29,71 +29,31 @@ void set_layout_child_position_recursively_new(ecs* world, entity e, float2 canv
 
 // NOTE: Dirty flag only triggers on one entity, needs to propogate changes down the tree!
 zox_sys2(LayoutToCanvasSystem) {
+    byte is_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutPositionDirty);
-    zox_sys_in(CanvasLink);
     zox_sys_in(CanvasPosition);
     zox_sys_out(Position2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutPositionDirty, dirty);
-        zox_sys_i(CanvasLink, canvas);
         zox_sys_i(CanvasPosition, position);
         zox_sys_o(Position2, positionf);
-
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-
-        if (!zox_valid(canvas->value)) {
+        entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
+        if (!zox_valid(canvas)) {
             continue;
         }
-
-        zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
+        zox_geter_value(canvas, LayoutSize, int2, canvas_size);
         float2 canvas_sizef = int2_to_float2(canvas_size);
         float aspect_ratio = canvas_sizef.x / canvas_sizef.y;
-
         positionf->value = get_element_position(position->value, canvas_sizef, aspect_ratio);
-
         set_layout_child_position_recursively_new(world, e, canvas_sizef, aspect_ratio);
+        if (is_log) {
+            zox_log("-[%s] RPos [%fx%f] CPos [%ix%i]", zox_get_name(e), positionf->value.x, positionf->value.y, position->value.x, position->value.y);
+        }
     }
 } zox_sys_end(LayoutToCanvasSystem);
-
-/*zox_sys2(LayoutToCanvasSystem) {
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(LayoutPositionDirty);
-    zox_sys_in(CanvasLink);
-    zox_sys_in(CanvasPosition);
-    zox_sys_out(Position2);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(LayoutPositionDirty, dirty);
-        zox_sys_i(CanvasLink, canvas);
-        zox_sys_i(CanvasPosition, position);
-        zox_sys_o(Position2, positionf);
-
-        if (dirty->value != zox_dirty_trigger && dirty->value != zox_dirty_active) {
-            continue;
-        }
-
-        if (!zox_valid(canvas->value)) {
-            continue;
-        }
-
-        zox_geter_value(canvas->value, LayoutSize, int2, canvas_size);
-        float2 canvas_sizef = int2_to_float2(canvas_size);
-        float aspect_ratio = canvas_sizef.x / canvas_sizef.y;
-
-        position2->value = get_element_position(position->value, canvas_sizef, aspect_ratio);
-
-        // positionf->value = int2_to_float2(position->value);
-        // float2_divide_float2(&positionf->value, canvas_sizef);
-        // Shift [0,1] to [-0.5,0.5]
-        // positionf->value.x -= 0.5f;
-        // positionf->value.y -= 0.5f;
-        // Multiply by Canvas Aspect Ratio
-        // positionf->value.x *= aspect_ratio;
-    }
-} zox_sys_end(LayoutToCanvasSystem);*/

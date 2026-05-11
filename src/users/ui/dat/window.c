@@ -10,6 +10,37 @@ typedef struct {
     entity user_links_id;
 } SpawnWindowUsersData;
 
+// for only the button
+typedef struct {
+    entity prefab;
+    FrameTextureData texture;
+    int size;
+    int index;
+    int2 texture_size;
+} IconData;
+
+typedef struct {
+    LayoutParentData canvas;
+    LayoutParentData parent;
+    FrameTextureData texture;
+    ElementSpawnData element;
+    int index;
+    int2 texture_size;
+} SpawnIcon;
+// for only the button
+typedef struct {
+    entity prefab;
+    FrameTextureData texture;
+} FrameData;
+
+typedef struct {
+    LayoutParentData canvas;
+    LayoutParentData parent;
+    FrameTextureData texture;
+    ElementSpawnData element;
+    IconData icon;
+} SpawnFrame;
+
 typedef struct {
     LayoutParentData canvas;
     LayoutParentData parent;
