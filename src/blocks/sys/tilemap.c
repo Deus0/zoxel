@@ -43,7 +43,7 @@ zox_sys2(RealmTilemapSystem) {
                     continue;
                 }
                 if (zox_has(texture, GenerateTexture) && zox_gett_value(texture, GenerateTexture)) {
-                    zox_logw("Block [%s:%i]'s Texture [%s] still generating...", zox_get_name(block), j, zox_get_name(texture));
+                    // zox_logw("Block [%s:%i]'s Texture [%s] still generating...", zox_get_name(block), j, zox_get_name(texture));
                     generating = 1;
                     break;
                 }

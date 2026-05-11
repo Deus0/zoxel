@@ -70,8 +70,11 @@ byte zox_set_parent(ecs *world, entity child, entity parent) {
 
 // Fills the buffer with the found children from the flecs query
 uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity) {
-    if (!ecs_is_alive(world, parent) || !entities || capacity <= 0) {
-        zox_loge("Cannot get children");
+    if (!ecs_is_alive(world, parent)) {
+        return 0;
+    }
+    if (!entities || capacity <= 0) {
+        zox_loge("Cannot get children by id [%i]", capacity);
         return 0;
     }
     ecs_iter_t it = ecs_children(world, parent);
@@ -79,7 +82,6 @@ uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity
     uint count = 0;
     while (ecs_children_next(&it)) {
         for (int i = 0; i < it.count; i++) {
-
             // If Buffer is Full
             if (count >= capacity) {
                 if (!warned) {
@@ -96,6 +98,37 @@ uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity
     return count;
 }
 
+// Fills the buffer with the found children from the flecs query
+uint zox_get_children_by_id(ecs *world, entity parent, entity* entities, uint capacity, entity id) {
+    if (!ecs_is_alive(world, parent)) {
+        return 0;
+    }
+    if (!entities || capacity <= 0) {
+        zox_loge("Cannot get children by id [%i]", capacity);
+        return 0;
+    }
+    ecs_iter_t it = ecs_children(world, parent);
+    byte warned = 0;
+    uint count = 0;
+    while (ecs_children_next(&it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e2 = it.entities[i];
+            // If Buffer is Full
+            if (count >= capacity) {
+                if (!warned) {
+                    warned = 1;
+                    zox_logw("[%s]'s Children Exceeded Capacity [%i]", zox_get_name(parent), capacity);
+                }
+            } else {
+                if (zox_has_id(e2, id)) {
+                    entities[count] = e2;
+                    count++;
+                }
+            }
+        }
+    }
+    return count;
+}
 
 entity zox_get_child_by_id(ecs* world, entity parent, entity id) {
     if (!ecs_is_alive(world, parent)) {

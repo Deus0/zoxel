@@ -1,7 +1,5 @@
 zox_sys2(StatTextSystem) {
-    // int stat_name_text_count = 32;
     int label_text_count = 256;
-    // char stat_name_text[stat_name_text_count];
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StatLink);
@@ -11,22 +9,23 @@ zox_sys2(StatTextSystem) {
         zox_sys_i(StatLink, stat_link);
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, dirty);
-
         entity stat = stat_link->value;
-        if (!zox_valid(stat) || !zox_has(stat, ZoxName) || !zox_has(stat, StatValue)) {
+        if (!zox_valid(stat)) {
             zox_sys_e();
             zox_log_error("[%s] has invalid stat linked", zox_get_name(e));
             continue;
         }
-
+        if (!zox_has(stat, ZoxName) || !zox_has(stat, StatValue)) {
+            zox_sys_e();
+            zox_log_error("[%s] Stat [%s] has Invalid Components", zox_get_name(e), zox_get_name(stat));
+            continue;
+        }
         if (!zox_valid(stat)) {
             continue;
         }
-
         zox_geter(stat, StatValue, value);
         zox_geter(stat, ZoxName, stat_name);
         int value_floored = floor(value->value);
-
         char text[label_text_count];
         if (zox_has(stat, StatState)) {
             zox_geter(stat, StatValueMax, max)
@@ -41,7 +40,6 @@ zox_sys2(StatTextSystem) {
         } else {
             snprintf(text, label_text_count, "%s [%i]", stat_name->value, value_floored);
         }
-
         if (!is_zext(data, text)) {
             set_zext(data, text);
             dirty->value = zox_dirty_trigger;

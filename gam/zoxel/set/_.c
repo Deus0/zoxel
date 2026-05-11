@@ -1,24 +1,16 @@
-
 // todo: spawn_prefab_hook -> spawn after settings are set here in GameModule
-
 // log types
 // #define zox_enable_log_ios
 // #define zox_enable_log_input
 // #define zox_enable_log_ui
 // #define zox_enable_log_shader
 
-
 // TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
 void zoxel_on_spawn_prefabs(ecs* world) {
-
     set_prefab_debug_label(world, &zox_dbg_ui_canvas);
-
     // set_prefab_debug_label(world, &debug_ui_raycast_chunk3);
     // set_prefab_debug_label(world, &debug_ui_raycasting);
-
-
     // set_prefab_debug_label(world, &debug_ui_system_times);
-
     // get_debug_label_app
     // set_prefab_debug_label(world, &debug_ui_memory);
     // set_prefab_debug_label(world, &debug_label_chunk_link);
@@ -47,7 +39,6 @@ void zoxel_set_debug() {
     // zox_profile_light_propogate
     profiler_state = zox_profile_light_propogate;
     profiler_logs = 0;
-
     // disable_block_voxes = 1;
     // debug
     disable_block_vox_generation = 0;
@@ -168,19 +159,14 @@ void zox_set_terrain_settings() {
 
 
 void initialize_zoxel_settings(ecs* world) {
-
-    // zox_log("is_generate_vox_outlines is now 1");
-    // is_generate_vox_outlines = 1;
-
-    // TODO: Fix this
-    // zox_use_post_processing = 0;
-
     float viewport_downscale = 1;
     viewport_scale = 1 / viewport_downscale;
     target_fps = 0;
-
-    zox_log_lags = 1;
-
+    // zox_log("is_generate_vox_outlines is now 1");
+    // is_generate_vox_outlines = 1;
+    // TODO: Fix this
+    // zox_use_post_processing = 0;
+    // zox_log_lags = 1;
     // target_fps = 5;
     // is_split_screen = 1;
     // auto_player = 1;
@@ -189,27 +175,20 @@ void initialize_zoxel_settings(ecs* world) {
     // nosounds = 1;
     /*disable_skill_costs = 1;
     debug_ray_big_range = 1;*/
-
     // disable until fixed
     // disable_frustum_culling = 1;
-
     // disable_bone_rendering = 1;
     // disable_block_voxes = 1;
     // is_debug_collisions = 1;
-
     // global_music_speed = 1;
     // app settings
     // headless = 0;
     // nosounds = 0;
     zoxel_set_debug();
-
-
     // world
     zox_set_terrain_settings();
-
     // art
     grayscale_mode = 0; // todo: make a grayscale biome
-
     // game
     zox_game_type = zox_game_mode_3D;
     game_rule_attach_to_character = 1;
@@ -217,12 +196,10 @@ void initialize_zoxel_settings(ecs* world) {
     // regen_rate = 10;
     // zox_camera_state_free | zox_camera_state_first_person | zox_camera_state_third_person | zox_camera_state_ortho | zox_camera_state_topdown | zox_camera_state_2D
     zox_game_camera_mode = zox_camera_state_first_person;
-
     zoxel_settings_npcs();
     zoxel_settings_physics();
     zoxel_settings_uis();
     zoxel_debug_keys();
-
     // graphs
     zox_visualize_sounds = 0;
     // logs
@@ -231,7 +208,6 @@ void initialize_zoxel_settings(ecs* world) {
     // hit_terrain_color = (color) { 2, 2, 2, 255 };
     hit_character_color = (color) { 155, 45, 45, 255 };
     hit_block_vox_color = (color) { 55, 135, 185, 255 };
-
     // world gen
     // terrain_frequency = 0.062216;
     // block_spawn_chance_grass = 1600; //  512 | 1024 | 2048 | 3000
@@ -245,9 +221,7 @@ void initialize_zoxel_settings(ecs* world) {
     terrain_lod_near = 3;
     // real_chunk_scale = 8.0f; // 4 | 8 | 16 | 32
     terrain_depth = 4;
-
     game_ui_has_taskbar = 1;
-
     // zox_debug_id(Block)
     // zox_debug_print_modules();
     // zox_debug_print_systems(world);

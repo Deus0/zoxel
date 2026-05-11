@@ -1,4 +1,4 @@
-entity create_stat_level(
+/*entity create_stat_level(
     ecs *world,
     const char *name,
     const entity texture,
@@ -12,4 +12,4 @@ entity create_stat_level(
     zox_prefab_set(e, TextureLink, { texture });
     zox_prefab_set(e, ColorRGB, { c });
     return e;
-}
+}*/

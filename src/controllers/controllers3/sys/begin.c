@@ -97,14 +97,11 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
         *spawned_position = float3_zero;
         return 0;
     }
-
     entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
     if (!model) {
         zox_log_error("File Not Found [%s]", player_vox_model);
     }
-
     TerrainPlace placer = find_position_in_terrain(world, terrain);
-
     spawn_character3D_data spawn_data = {
         .player = player,
         .realm = realm,
@@ -114,16 +111,13 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
         .position = placer.position, // fake_spawn_position,
         .rotation = quaternion_identity, // placer.rotation
     };
-
     entity e = spawn_character3_player(world, spawn_data);
-
     // player
     if (local_mouse) {
         zox_set(local_mouse, MouseLock, { 1 }) // lock mouse since attached
     }
-
     // Add spawned to chunk
-    if (zox_valid(placer.chunk)) {
+    /*if (zox_valid(placer.chunk)) {
         zox_mut_begin(placer.chunk, ChunkEntities, entities);
         if (add_to_ChunkEntities(entities, e)) {
             zox_mut_end(placer.chunk, ChunkEntities);
@@ -132,10 +126,8 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
         // zox_set(e, DisableMovement, { 0 });
     } else {
         zox_log_error("Issue with place chunk");
-    }
-
+    }*/
     *spawned_position = placer.position;
-
     return e;
 }
 
@@ -147,23 +139,19 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
         *spawned_position = float3_zero;
         return 0;
     }
-
     entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
     zox_mut_begin(terrain, ChunkLinks, chunks);
-
     TerrainPlace placer;
     placer.chunk = 0;
     if (!model) {
         zox_log_error("File [%s] Not Found.", player_vox_model);
     }
-
     // load position for spawning
     load_character_p(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
     byte depth = terrain_depth;
     int3 cposition = real_position_to_chunk_position(placer.position, powers_of_two[depth], terrain_scale);
     placer.chunk = int3_hashmap_get(chunks->value, cposition);
-
     spawn_character3D_data spawn_data = {
         .player = player,
         .realm = realm,
@@ -174,27 +162,22 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
         .rotation = placer.rotation,
         .euler = placer.euler,
     };
-
     // player
     if (local_mouse) {
         zox_set(local_mouse, MouseLock, { 1 }) // lock mouse since attached
     }
-
     entity e = spawn_character3_player(world, spawn_data);
-
     // Add spawned to chunk
     // TODO: This in a system? Character Initialize?
-    if (zox_valid(placer.chunk)) {
+    /*if (zox_valid(placer.chunk)) {
         zox_mut_begin(placer.chunk, ChunkEntities, entityLinks)
         if (add_to_ChunkEntities(entityLinks, e)) {
             zox_mut_end(placer.chunk, ChunkEntities);
         }
         // zox_set(e, DisableGravity, { 0 });
         // zox_set(e, DisableMovement, { 0 });
-    }
-
+    }*/
     *spawned_position = load_character_transform(world, realm, e);
-
     return e;
 }
 
@@ -214,18 +197,14 @@ zox_sys2(PlayerBeginSystem) {
         zox_sys_i(GameLink, game);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
-
         if (state->value != zox_player_state_starting) {
             // zox_log(" Waiting [%i]", state->value);
             continue;
         }
-
         if (!zox_valid(game->value)) {
             zox_loge("No Game on Player.");
             continue;
         }
-
-
         // Checks if terrain is done loading
         zox_geter_value(game->value, RealmLink, entity, realm);
         if (!zox_valid(realm)) {
@@ -236,41 +215,33 @@ zox_sys2(PlayerBeginSystem) {
             zox_loge("Realm [%s] has no Terrain Link", zox_get_name(realm));
             continue;
         }
-
         zox_geter_value(realm, TerrainLink, entity, terrain);
         if (!zox_valid(terrain)) {
             zox_loge("Invalid Terrain on Realm");
             continue;
         }
-
         // Wait for Terrain to load
         byte loaded = zox_gett_value(terrain, Loaded);
         if (loaded != zox_load_done) {
             // zox_log("   - Terrain Loaded [%i]", loaded);
             continue;
         }
-
         // actually we need to do this on loaded player model for bounds
         // if character
         zox_geter(realm, SaveGamePath, path);
         byte is_new_game = !has_save_game_file(path->value, "player.dat");
-
         float3 spawn_position;
         if (!is_new_game) {
             game_start_player_load(world, e, &spawn_position);
         } else {
             game_start_player_new(world, e, &spawn_position);
         }
-
         spawn_arrow3D(world, spawn_position, (float3) { 0, 4, 0}, 0.5f, 6, 60);
-
         // Needs ui spawn after frame
         play_playlist(world, realm, 1);
         delay_event(world, &spawn_player_game_ui, e, 1.5);
-
         // TODO: Spawn game ui and let it update when ActionsDirty flagged
         // spawn_player_game_ui(world, player);
-
         state->value = zox_player_state_playing;
         dirty->value = zox_dirty_trigger;
     }

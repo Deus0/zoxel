@@ -13,10 +13,10 @@ entity spawn_menu_game_stats(ecs* world, entity parent, entity player) {
         zox_log_error("Invalid Character [%lu] in [spawn_game_ui_stats]", character);
         return 0;
     }
-    if (!zox_has(character, StatLinks)) {
+    /*if (!zox_has(character, StatLinks)) {
         zox_log_error("Invalid Character - No StatLinks [%s] in [spawn_game_ui_stats]", zox_get_name(character));
         return 0;
-    }
+    }*/
     byte total_bars = 4; // TODO: Make dynamic
     // Sizing
     byte panel_padding = 6 * ui_scale;
@@ -37,14 +37,26 @@ entity spawn_menu_game_stats(ecs* world, entity parent, entity player) {
         -panel_size.y / 2 - screen_padding.y
     };
     // Others
-    zox_geter(character, StatLinks, stats);
+    entity stats[stats_children_capacity];
+    uint stats_length = zox_get_children_by_id(world, character, stats, stats_children_capacity, zox_id(Stat));
+    if (!stats_length) {
+        zox_logw("[%s] has no stats", zox_get_name(parent));
+        return 0;
+    }
+    // zox_geter(character, StatLinks, stats);
     entity e = spawn_ui(world, prefab_body, parent, panel_anchor, panel_position, panel_size, panel_size);
     zox_set_unique_name(e, "stats_panel");
     zox_set_parent(world, e, parent);
-    // Children children = { 0 };
-    for (int i = 0; i < stats->length; i++) {
-        entity stat = stats->value[i];
+    for (uint i = 0; i < stats_length; i++) {
+        entity stat = stats[i];
+        if (!zox_valid(stat)) {
+            continue;
+        }
         if (!zox_has(stat, StatState) && !zox_has(stat, StatLevel)) {
+            continue;
+        }
+        if (!zox_has(stat, ColorRGB)) {
+            zox_loge("Stat [%s] has no ColorRGB", zox_get_name(stat));
             continue;
         }
         zox_geter_value(stat, ColorRGB, color_rgb, cvalue);

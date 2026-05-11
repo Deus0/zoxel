@@ -1,10 +1,22 @@
+/*
+ *  Module: Stats
+ *
+ *  - Health
+ *  - Resources
+ *  - Base Stats
+ *  - Attributes
+ *
+ * */
 #if !defined(zoxm_stats) && defined(zoxm_users)
 #define zoxm_stats
+
+uint stats_children_capacity = 64;
 
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "ui/_.c"
 #include "fun/_.c"
 #include "sys/_.c"

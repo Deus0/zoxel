@@ -1,18 +1,11 @@
-/*entity prefab_stat;
-
 entity spawn_prefab_stat(ecs *world) {
-    zox_prefab()
-    zox_prefab_name("stat")
-    zox_add_tag(e, Stat)
-    // zox_add(e, ZoxName);
-    prefab_stat = e;
+    zox_prefab();
+    zox_prefab_name("stat");
+    zox_prefab_set(e, ZoxName, { 0 });
+    zox_add_tag(e, Stat);
+    zox_prefab_set(e, StatValue, { 0 });
+    zox_prefab_set(e, StatDirty, { zox_dirty_none });
+    zox_prefab_set(e, ColorRGB, { color_rgb_white });
+    zox_prefab_set(e, TextureLink, { 0 });
     return e;
 }
-
-entity spawn_stat(ecs *world) {
-    zox_instance(prefab_stat)
-    zox_name("stat")
-    // zox_set(e, Position3D, { position })
-    return e;
-}
-*/

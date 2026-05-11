@@ -1,5 +1,6 @@
 ### todo ###
 
+- Raycasting is broken in first chunk, or origin one, doesnt seem to be linking error
 - Pause ui toggle not showing on spawn taskbar + pause
 - Remove User Macros and Speghetti
 - Remove structs from UI prefab use
@@ -16,9 +17,9 @@
 - Add Stats panel to the taskbar and give header / window
 
 Refactoring:
-- Make user data ChildOf relationships
-	- Remake Character Meta to be actual Characters
-	- Minimizes prefab instantiate code
+-x Make user data ChildOf relationships
+- Remake Character Meta to be actual Characters
+-x Minimizes prefab instantiate code
 - Refactor texture generation to blueprints
 - upgrade the texture for the item frames
 - Terrain loading and finishing should be overseen by GameState and not Player events

@@ -31,7 +31,6 @@ void define_systems_stats_ui(ecs *world) {
         HealthbarSpawnerSystem,
         EcsOnUpdate,
         [in] combat.CombatState,
-        [in] stats.StatLinks,
         [out] elements.ElementLinks
     );
 }

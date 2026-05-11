@@ -46,10 +46,11 @@ zox_sys2(MeleeSystem) {
         entity strength = 0;
 
         zox_geter(user, RaycastVoxelData,  raycast);
-        zox_geter(user, StatLinks, stats);
-
-        for (int j = 0; j < stats->length; j++) {
-            entity stat = stats->value[j];
+        // zox_geter(user, StatLinks, stats);
+        entity user_stats[stats_children_capacity];
+        uint user_stats_length = zox_get_children(world, user, user_stats, stats_children_capacity);
+        for (uint j = 0; j < user_stats_length; j++) {
+            entity stat = user_stats[j];
             zox_get_prefab(stat, stat_parent);
             if (rresource->value == stat_parent) {
                 resource = stat;
@@ -105,14 +106,15 @@ zox_sys2(MeleeSystem) {
         }
 
         if (zox_has(hit, Character3)) {
-            zox_geter(hit, StatLinks, hit_stats);
-            find_array_element_with_tag(hit_stats, HealthStat, health_stat);
-            if (!zox_valid(health_stat)) {
+            entity hit_health = zox_get_child_by_id(world, hit, zox_id(HealthStat));
+            //zox_geter(hit, StatLinks, hit_stats);
+            //find_array_element_with_tag(hit_stats, HealthStat, health_stat);
+            if (!zox_valid(hit_health)) {
                 zox_log_error("hit user had no health")
                 continue;
             } else {
-                float stat_value_max = zox_get_value(health_stat, StatValueMax);
-                zox_muter(health_stat, StatValue, statValue);
+                float stat_value_max = zox_get_value(hit_health, StatValueMax);
+                zox_muter(hit_health, StatValue, statValue);
                 statValue->value -= skill_damage;
                 if (statValue->value < 0) {
                     statValue->value = 0;

@@ -18,7 +18,6 @@ entity spawn_prefab_particle3D_emitter(ecs *world) {
 entity spawn_particle3D_emitter(ecs *world, entity parent, int emit_rate, float3 bounds, color particles_color) {
     zox_instance(prefab_particle3D_emitter);
     zox_name("particle3D_emitter");
-    //zox_set(e, ParentLink, { parent });
     zox_set(e, ParticleEmitRate, { emit_rate });
     zox_set(e, Bounds3D, { bounds });
     zox_set(e, Color, { particles_color });

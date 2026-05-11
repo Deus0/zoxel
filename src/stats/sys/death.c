@@ -4,16 +4,18 @@ zox_sys2(DeathSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StatValue);
-    zox_sys_in(UserLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(StatValue, stat);
-        zox_sys_i(UserLink, user);
-        if (stat->value > 0 || !zox_valid(user->value) ||
-            !zox_has(user->value, Dead) || zox_gett_value(user->value, Dead)) {
+        entity user = zox_get_parent(world, e);
+        if (!zox_valid(user) || !zox_has(user, Dead)) {
+            continue;
+        }
+        if (stat->value > 0 || zox_gett_value(user, Dead)) {
             continue;
         }
         // we should just set a dead state here
-        zox_muter(user->value, Dead, dead);
+        zox_muter(user, Dead, dead);
         dead->value = zox_dirty_trigger;
     }
 } zox_sys_end(DeathSystem);

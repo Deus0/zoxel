@@ -9,21 +9,17 @@
 realm_clear_system(StatLinks);
 
 void define_systems_stats(ecs *world) {
-
     realm_clear_systemd(stats, StatLinks);
-
     // debuff system here, skills will add debuffs
     zox_system(
         DeathSystem,
         EcsOnUpdate,
         [in] stats.StatValue,
-        [in] users.UserLink,
         [none] stats.HealthStat
     );
     zox_system(
         StatRegenSystem,
         EcsOnUpdate,
-        [in] users.UserLink,
         [in] stats.StatValueMax,
         [out] stats.StatValue,
         [out] stats.StatDirty,
@@ -42,13 +38,11 @@ void define_systems_stats(ecs *world) {
         ExperienceSystem,
         EcsOnUpdate,
         [in] combat.Dead,
-        [in] stats.StatLinks,
         [in] combat.LastDamager
     );
     zox_system_1(
         LevelUpSystem,
         EcsOnUpdate,
-        [in] users.UserLink,
         [out] stats.StatValue,
         [out] stats.ExperienceValue,
         [out] stats.ExperienceMax,
@@ -60,14 +54,12 @@ void define_systems_stats(ecs *world) {
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
-        [out] stats.StatLinks
     );
     zox_system_1(
         PlayerCharacterStatsSystem,
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
-        [out] stats.StatLinks,
         [none] players.PlayerLink
     );
     zox_system_1(
@@ -75,7 +67,6 @@ void define_systems_stats(ecs *world) {
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] core.ZoxName,
-        [in] stats.StatLinks,
         [out] elements.ElementLinks
     );
 }

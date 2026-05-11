@@ -103,7 +103,7 @@ zox_sys2(CombineVoxSystem) {
                 // If not in list
                 byte inlist = 0;
                 for (byte l = 0; l < colors->length; l++) {
-                    if (color_rgb_equal(colors->value[l], acolor)) {
+                    if (color_rgb_equals(colors->value[l], acolor)) {
                         inlist = 1;
                         break;
                     }
@@ -144,23 +144,18 @@ zox_sys2(CombineVoxSystem) {
                         // get color from value
                         color_rgb place_vox_color = acolors->value[place_vox_value - 1];
                         // find color in place vox
-
                         byte value = 0;
                         for (byte k = 0; k < colors->length; k++) {
                             color_rgb body_color = colors->value[k];
-
-                            if (color_rgb_equal(body_color, place_vox_color)) {
+                            if (color_rgb_equals(body_color, place_vox_color)) {
                                 value = k + 1;  // + 1 for air
                                 break;
                             }
                         }
-
                         if (!value) {
                             continue;
                         }
-
                         set_VoxelNode(voctree, ndepth->value, position, value, 0);
-
                         // Expands the size of our vox
                         if (position.x >= new_csize.x) new_csize.x = position.x;
                         if (position.y >= new_csize.y) new_csize.y = position.y;

@@ -1,8 +1,8 @@
-static inline byte color_rgb_equal(const color_rgb a, const color_rgb b) {
+static inline byte color_rgb_equals(color_rgb a, color_rgb b) {
     return a.r == b.r && a.g == b.g && a.b == b.b;
 }
 
-static inline void color_rgb_multiply_float(color_rgb *input, const float multiplier) {
+static inline void color_rgb_multiply_float(color_rgb *input, float multiplier) {
     int r = (int)(input->r * multiplier);
     int g = (int)(input->g * multiplier);
     int b = (int)(input->b * multiplier);

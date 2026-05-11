@@ -1,6 +1,6 @@
 // TODO: Rename/Refactor to WindowIcons
 
-entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns, const entity* udata, int udata_length) {
+entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns, const entity* udata, uint count) {
     entity character = data.window.character;
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         zox_log_error("invalid character in spawn icons window.");
@@ -14,7 +14,7 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     zox_set_unique_name(e, data.header_zext.text);
     initialize_element(world, e, data.parent.e, data.canvas.e, position, data.element.size, data.element.size, data.element.anchor, data.element.layer);
     set_window_bounds_to_canvas(world, e, data.canvas.size, data.element.size, data.element.anchor);
-    int grid_elements_count = udata_length;
+    // int grid_elements_count = udata_length;
     if (is_header) {
         LayoutParentData e_parent_data = { .e = e };
         ElementSpawnData header_element_data = {
@@ -30,7 +30,6 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
         data.header_zext.font_resolution = data.header_zext.font_size;
         entity header = spawn_header3(world, data.canvas, e_parent_data, header_element_data, data.header_zext, data.header, (ClickEvent) { &on_closed_taskbar_window });
         zox_set_parent(world, header, e);
-        // children.value[0] = header;
     }
     int2 grid_size = int2_sub(data.element.size, (int2) { 0, header_height });
     int2 grid_position = (int2) { 0, -header_height / 2 };
@@ -44,37 +43,36 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     int2 icon_size =  int2_single(data.icon.size);
     int item_index = 0;
     int array_index = 0;
-    entity body_children[grid_elements_count];
+    entity frames[count];
     for (int j = data.window.grid_size.y - 1; j >= 0; j--) {
-        if (array_index >= grid_elements_count) {
+        if (array_index >= count) {
             break;
         }
         for (int i = 0; i < data.window.grid_size.x; i++) {
-            if (array_index >= grid_elements_count) {
+            if (array_index >= count) {
                 break;
             }
+            entity eudata = udata[item_index];
+            item_index++;
             entity3 frame_spawn = spawn_frame(world, data.frame.prefab, grid, position, frame_size, data.icon.prefab, icon_size, array_index);
-
-            entity user_data_element = udata[item_index];
-            set_icon_from_user_data(world, frame_spawn.x, frame_spawn.y, user_data_element);
-            body_children[array_index] = frame_spawn.x;
-            // zox_set_parent(world, frame_spawn.x, grid);
+            // NOTE: Atm this is what connects user data textures
+            set_icon_from_user_data(world, frame_spawn.x, frame_spawn.y, eudata);
+            frames[array_index] = frame_spawn.x;
             if (spawns) {
                 spawns[array_index] = frame_spawn;
             }
             array_index++;
-            item_index++;
         }
     }
     if (active_states) {
-        if (selected >= grid_elements_count) {
-            zox_logw("selected [%i] out of bounds [%i]", selected, grid_elements_count);
-            selected = grid_elements_count - 1;
+        if (selected >= count) {
+            zox_logw("selected [%i] out of bounds [%i]", selected, count);
+            selected = count - 1;
         }
-        if (!grid_elements_count) {
+        if (!count) {
             zox_logw("no children to select");
         } else {
-            entity selected_frame = body_children[selected];
+            entity selected_frame = frames[selected];
             zox_set(selected_frame, ActiveState, { 1 });
             zox_set(selected_frame, ActiveStateDirty, { zox_dirty_trigger });
         }
@@ -86,21 +84,16 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     return e;
 }
 
-
 entity spawn_window_users_id(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns) {
     entity character = data.window.character;
-
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         zox_log_error("invalid character in spawn icons window.");
         return 0;
     }
-
     if (!zox_has_id(character, data.window.user_links_id)) {
         zox_log_error("Character [%lu] has no [%s], cannot spawn ui", character, zox_get_name(data.window.user_links_id));
         return 0;
     }
-
-    const UserLinks *udata = zox_get_id(character, data.window.user_links_id);
-
+    const UserLinks* udata = zox_get_id(character, data.window.user_links_id);
     return spawn_window_users(world, data, window_texture, selected, spawns, udata->value, udata->length);
 }
