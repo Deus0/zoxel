@@ -19,7 +19,7 @@ zox_sys2(MenuGameBeginSystem) {
             zox_logw("Canvas is missing from taskbar");
             continue;
         }
-        entity taskbar = find_child_with_tag2(world, canvas->value, zox_id(Taskbar));
+        entity taskbar = zox_get_child_by_id(world, canvas->value, zox_id(Taskbar));
         if (!taskbar) {
             zox_log("Taskbar not on canvas [%s]", zox_get_name(canvas->value));
             continue;

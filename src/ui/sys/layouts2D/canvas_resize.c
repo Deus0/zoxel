@@ -12,11 +12,16 @@ void set_layout_dirty_recursive(ecs* world, entity e) {
         zox_muter(e, LayoutSizeDirty, dirty);
         dirty->value = zox_dirty_trigger;
     }
-    entity children[layouts2_children_capacity];
-    uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
-    for (uint j = 0; j < children_length; j++) {
-        entity e2 = children[j];
-        set_layout_dirty_recursive(world, e2);
+    iter it = zox_children(world, e);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e2 = it.entities[i];
+            set_layout_dirty_recursive(world, e2);
+    //entity children[layouts2_children_capacity];
+    //uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
+    //for (uint j = 0; j < children_length; j++) {
+        //entity e2 = children[j];
+        }
     }
 }
 
@@ -52,11 +57,16 @@ zox_sys2(CanvasResizeSystem) {
         position->value = int2_half(viewport_size);
         sdirty->value = zox_dirty_trigger;
         pdirty->value = zox_dirty_trigger;
-        entity children[layouts2_children_capacity];
+        /*entity children[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
         for (uint j = 0; j < children_length; j++) {
-            entity e2 = children[j];
-            set_layout_dirty_recursive(world, e2);
+            entity e2 = children[j];*/
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                set_layout_dirty_recursive(world, e2);
+            }
         }
         // zox_log("Canvas resized [%ix%i] screen [%ix%i]", size->value.x, size->value.y, screen_size.x, screen_size.y);
     }

@@ -33,12 +33,20 @@ void set_layout_canvas_position_recursively_new(ecs* world, entity e, int2 paren
         set_line2_canvas_position(world, e);
     }
     // also set children ones
-    if (zox_has(e, LayoutSize)) {
-        zox_geter_value(e, LayoutSize, int2, size);
-        entity children[layouts2_children_capacity];
-        uint count = zox_get_children(world, e, children, layouts2_children_capacity);
-        for (uint i = 0; i < count; i++) {
-            entity e2 = children[i];
+    if (!zox_has(e, LayoutSize)) {
+        return;
+    }
+    zox_geter_value(e, LayoutSize, int2, size);
+    /*entity children[layouts2_children_capacity];
+    uint count = zox_get_children(world, e, children, layouts2_children_capacity);
+    for (uint i = 0; i < count; i++) {
+        entity e2 = children[i];
+        set_layout_canvas_position_recursively_new(world, e2, cposition, size, 0);
+    }*/
+    iter it = zox_children(world, e);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e2 = it.entities[i];
             set_layout_canvas_position_recursively_new(world, e2, cposition, size, 0);
         }
     }

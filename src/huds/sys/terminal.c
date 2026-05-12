@@ -11,11 +11,9 @@ zox_sys2(PlayerTerminalSystem) {
         zox_sys_i(DeviceLinks, devices);
         zox_sys_i(DeviceMode, dmode);
         zox_sys_o(ElementLinks, elements);
-
         if (dmode->value != zox_device_mode_keyboardmouse) {
             continue;
         }
-
         byte is_toggle_terminal = 0;
         for (int j = 0; j < devices->length; j++) {
             const entity device = devices->value[j];
@@ -30,11 +28,9 @@ zox_sys2(PlayerTerminalSystem) {
                 }
             }
         }
-
         if (!is_toggle_terminal) {
             continue;
         }
-
         entity menu = player_toggle_ui_id(
             world,
             canvas->value,
@@ -46,12 +42,5 @@ zox_sys2(PlayerTerminalSystem) {
             add_to_ElementLinks(elements, menu);
             zox_set(menu, ElementHolder, { e });
         }
-
-        /*find_child_with_tag(canvas->value, MenuTerminal, menu);
-        if (zox_valid(menu)) {
-            zox_delete(menu);
-        } else {
-
-        }*/
     }
 } zox_sys_end(PlayerTerminalSystem);

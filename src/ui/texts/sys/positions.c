@@ -76,29 +76,34 @@ zox_sys2(TextsPositionSystem) {
         if (dirty->value != zox_dirty_end) {
             continue;
         }
-        entity children[texts_children_capacity];
-        uint length = zox_get_children(world, e, children, texts_children_capacity);
-        if (is_log) {
-            zox_log("Text [%s] - %i positions", zox_get_name(e), length);
-        }
-        for (uint j = 0; j < length; j++) {
-            entity e2 = children[j];
-            if (!zox_valid(e2)) {
-                continue;
-            }
-            uint index = calculate_zigel_data_index(text_data->value, text_data->length, j);
-            int2 position = calculate_position(text_data->value, text_data->length, index, size->value, alignment->value, padding->value, default_line_padding);
-            zox_mut_begin(e2, LayoutPosition, lposition);
-            zox_mut_begin(e2, LayoutPositionDirty, ldirty);
-            //if (!int2_equals(lposition->value, position)) {
-                lposition->value = position;
-                ldirty->value = zox_dirty_trigger;
-                zox_mut_end(e2, LayoutPosition);
-                zox_mut_end(e2, LayoutPositionDirty);
-                if (is_log) {
-                    zox_log("   + [%s]:[%i] at [%ix%i]", zox_get_name(e2), j, position.x, position.y);
+        //entity children[texts_children_capacity];
+        //uint length = zox_get_children(world, e, children, texts_children_capacity);
+        //if (is_log) {
+        //    zox_log("Text [%s] - %i positions", zox_get_name(e), length);
+        //}
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+        //for (uint j = 0; j < length; j++) {
+            //entity e2 = children[j];
+                if (!zox_valid(e2)) {
+                    continue;
                 }
-            //}
+                uint index = calculate_zigel_data_index(text_data->value, text_data->length, j);
+                int2 position = calculate_position(text_data->value, text_data->length, index, size->value, alignment->value, padding->value, default_line_padding);
+                zox_mut_begin(e2, LayoutPosition, lposition);
+                zox_mut_begin(e2, LayoutPositionDirty, ldirty);
+                //if (!int2_equals(lposition->value, position)) {
+                    lposition->value = position;
+                    ldirty->value = zox_dirty_trigger;
+                    zox_mut_end(e2, LayoutPosition);
+                    zox_mut_end(e2, LayoutPositionDirty);
+                    if (is_log) {
+                        zox_log("   + [%s]:[%i] at [%ix%i]", zox_get_name(e2), j, position.x, position.y);
+                    }
+                // }
+            }
         }
     }
 } zox_sys_end(TextsPositionSystem);

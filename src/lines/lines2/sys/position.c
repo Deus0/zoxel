@@ -42,14 +42,19 @@ zox_sys2(Line2PositionSystem) {
         if (state->value != zox_dirty_active) {
             // continue;
         }
-        entity children[layouts2_children_capacity];
+        /*entity children[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
         for (uint j = 0; j < children_length; j++) {
-            entity e2 = children[j];
-            if (!zox_valid(e2) || !zox_has(e2, LineLocalPosition2)) {
-                continue;
+            entity e2 = children[j];*/
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                if (!zox_valid(e2) || !zox_has(e2, LineLocalPosition2)) {
+                    continue;
+                }
+                set_line2_canvas_position_direct(world, e2, cposition->value, size->value);
             }
-            set_line2_canvas_position_direct(world, e2, cposition->value, size->value);
         }
     }
 } zox_sys_end(Line2PositionSystem);

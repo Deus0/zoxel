@@ -22,7 +22,6 @@ entity find_child_with_mtag_rec(ecs* world, entity e, entity tag, entity mtag, e
 
 void raycaster_select_first_button(ecs *world, entity e, entity window) {
     entity button = find_child_with_mtag_rec(world, window, zox_id(Button), zox_id(Header), zox_id(CloseButton));
-    // find_child_with_tag(window, Button, element);
     if (!button) {
         return;
     }
@@ -56,8 +55,7 @@ zox_sys2(ElementNavigationBeginSystem) {
             zox_logw("Canvas is missing from Player");
             continue;
         }
-        // find_child_with_tag(canvas->value, Window, window);
-        entity window = find_child_with_tag_recursive(world, canvas->value, zox_id(NavigationWindow));
+        entity window = zox_get_child_by_id(world, canvas->value, zox_id(NavigationWindow));
         if (!window) {
             continue;
         }

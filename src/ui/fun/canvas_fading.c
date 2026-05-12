@@ -21,7 +21,7 @@ void trigger_canvas_overlay_fade_out(ecs *world, entity e, float delay, float le
 }
 
 void trigger_canvas_fade_out(ecs *world, entity canvas, float delay, float length) {
-    find_child_with_tag(canvas, CanvasOverlay, e);
+    entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
     if (!e) {
         zox_log_error("Failed to find canvas_overlay on canvas");
         return;
@@ -30,13 +30,11 @@ void trigger_canvas_fade_out(ecs *world, entity canvas, float delay, float lengt
 }
 
 void trigger_canvas_fade_in(ecs *world, entity canvas, float delay, float length) {
-
-    find_child_with_tag(canvas, CanvasOverlay, e);
+    entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
     if (!e) {
         zox_log_error("Failed to find canvas_overlay on canvas");
         return;
     }
-
     clear_animation_sequence(world, e);
     zox_set(e, AnimationState, { zox_animate_alpha });
     zox_set(e, AnimationStart, { zox_current_time });
@@ -49,12 +47,11 @@ void trigger_canvas_fade_in(ecs *world, entity canvas, float delay, float length
 
 void trigger_canvas_fade_transition(ecs* world, entity canvas, double fade_time, double delay_time) {
 
-    find_child_with_tag(canvas, CanvasOverlay, e);
+    entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
     if (!e) {
         zox_log_error("Failed to find canvas_overlay on canvas");
         return;
     }
-
     zox_set(e, Layer2D, { game_overlay_layer });
     zox_set(e, AnimationIndex, { 0 });
     zox_set(e, AnimationDelay, { 0 });
@@ -63,11 +60,9 @@ void trigger_canvas_fade_transition(ecs* world, entity canvas, double fade_time,
     zox_muter(e, AnimationSequence, animationSequence);
     zox_muter(e, AnimationTimes, animationTimes);
     zox_muter(e, AnimationTargets, animationTargets);
-
     resize_memory_component(AnimationSequence, animationSequence, byte, 3);
     resize_memory_component(AnimationTimes, animationTimes, double, 3);
     resize_memory_component(AnimationTargets, animationTargets, float, 3);
-
     animationSequence->value[0] = zox_animate_alpha;
     animationTimes->value[0] = fade_time;
     animationTargets->value[0] = 1;
@@ -80,11 +75,9 @@ void trigger_canvas_fade_transition(ecs* world, entity canvas, double fade_time,
 }
 
 void trigger_canvas_half_fade(ecs *world, entity canvas, float time_length, float alpha, byte direction) {
-
     byte layer = 2;
-
     float canvas_fade_delay = 0.02f;
-    find_child_with_tag(canvas, CanvasOverlay, e)
+    entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
     if (!e) {
         zox_log_error("Failed to find canvas_overlay on canvas");
         return;

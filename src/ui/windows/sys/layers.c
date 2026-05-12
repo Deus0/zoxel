@@ -22,12 +22,18 @@ zox_sys2(WindowLayerSystem) {
         wlayer->value = nlayer->value;
         byte window_layer = wlayer->value;
         layer2D->value = window_layer * layers_per_window;
-        entity children[layouts2_children_capacity];
+        /*entity children[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
         for (uint j = 0; j < children_length; j++) {
-            entity child = children[j];
-            set_element_layers_auto(world, child, layer2D->value);
-            set_element_layers(world, child, layer2D->value);
+            entity child = children[j];*/
+
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                set_element_layers_auto(world, e2, layer2D->value);
+                set_element_layers(world, e2, layer2D->value);
+            }
         }
     }
 } zox_sys_end(WindowLayerSystem);

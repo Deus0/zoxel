@@ -1,4 +1,4 @@
-#define find_child_with_tag(e, tag, child_name)\
+/*#define find_child_with_tag(e, tag, child_name)\
     entity children_##tag[hierarhys_children_capacity];\
     uint tag_##length = zox_get_children(world, e, children_##tag, hierarhys_children_capacity);\
     entity child_name = 0;\
@@ -8,9 +8,9 @@
             child_name = child_e;\
             break;\
         }\
-    }
+    }*/
 
-entity find_child_with_tag2(ecs* world, entity e, entity tag) {
+/*entity find_child_with_tag2(ecs* world, entity e, entity tag) {
     if (!zox_valid(e)) {
         return 0;
     }
@@ -26,9 +26,9 @@ entity find_child_with_tag2(ecs* world, entity e, entity tag) {
         }
     }
     return 0;
-}
+}*/
 
-entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
+/*entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
     if (!zox_valid(e)) {
         return 0;
     }
@@ -48,7 +48,7 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
         }
     }
     return 0;
-}
+}*/
 
 #define find_child_with_id(e, id, child_name)\
     entity child_name = 0;\

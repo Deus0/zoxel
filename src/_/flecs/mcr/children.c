@@ -25,6 +25,9 @@
 
 */
 
+#define zox_children(world, e) ecs_children(world, e)
+#define zox_children_next(it) ecs_children_next(&it)
+
 // TODO: Make use wrapped flecs children query instead for many
 byte is_warn_capacity = 1;
 uint zox_children_capacity = 64;
@@ -72,6 +75,18 @@ byte zox_set_parent(ecs *world, entity child, entity parent) {
     return 1;
 }
 
+uint zox_get_children_count(ecs* world, entity parent) {
+    if (!ecs_is_alive(world, parent)) {
+        return 0;
+    }
+    uint count = 0;
+    ecs_iter_t it = ecs_children(world, parent);
+    while (ecs_children_next(&it)) {
+        count += it.count;
+    }
+    return count;
+}
+
 // Fills the buffer with the found children from the flecs query
 uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity) {
     if (!ecs_is_alive(world, parent)) {
@@ -102,16 +117,16 @@ uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity
 
 // Fills the buffer with the found children from the flecs query
 uint zox_get_children_by_id(ecs *world, entity parent, entity* entities, uint capacity, entity id) {
-    if (!ecs_is_alive(world, parent)) {
+    if (!zox_alive(parent)) {
         return 0;
     }
     if (!entities || capacity <= 0) {
         zox_logw("[%s]'s No Capacity [zox_get_children_by_id]", zox_get_name(parent));
         return 0;
     }
-    ecs_iter_t it = ecs_children(world, parent);
     uint count = 0;
-    while (ecs_children_next(&it)) {
+    iter it = zox_children(world, parent);
+    while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             entity e2 = it.entities[i];
             // If Buffer is Full

@@ -9,11 +9,18 @@ void set_element_layers_auto(ecs *world, entity e, byte layer) {
     if (zox_has(e, Layer2D)) {
         zox_set(e, Layer2D, { new_layer })
     }
-    entity children[layouts2_children_capacity];
+    /*entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint j = 0; j < children_length; j++) {
-        entity child = children[j];
-        set_element_layers_auto(world, child, new_layer);
+        entity e2 = children[j];
+        set_element_layers_auto(world, e2, new_layer);
+    }*/
+    iter it = zox_children(world, e);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e2 = it.entities[i];
+            set_element_layers_auto(world, e2, new_layer);
+        }
     }
 }
 
@@ -29,11 +36,17 @@ void set_element_layers(ecs *world, entity e, byte window_layer) {
         }
         zox_set(e, Layer2D, { new_layer });
     }
-    entity children[layouts2_children_capacity];
+    /*entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint j = 0; j < children_length; j++) {
-        entity child = children[j];
-        set_element_layers(world, child, window_layer);
+        entity child = children[j];*/
+
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity e2 = it2.entities[j];
+            set_element_layers(world, e2, window_layer);
+        }
     }
 }
 
@@ -45,14 +58,19 @@ byte get_highest_layer(ecs *world, entity e, byte layer) {
     }
     byte child_layer = layer + 1;
     byte highest_layer = layer;
-    entity children[layouts2_children_capacity];
+    /*entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint j = 0; j < children_length; j++) {
-        entity child = children[j];
-        byte new_layer = get_highest_layer(world, child, child_layer);
-        // if (new_layer > highest_layer) zox_log("    > [%lu] layers_per_window at %i / %i [%i]\n", e, j, children->length, new_layer)
-        if (new_layer > highest_layer) {
-            highest_layer = new_layer;
+        entity child = children[j];*/
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity e2 = it2.entities[j];
+            byte new_layer = get_highest_layer(world, e2, child_layer);
+            // if (new_layer > highest_layer) zox_log("    > [%lu] layers_per_window at %i / %i [%i]\n", e, j, children->length, new_layer)
+            if (new_layer > highest_layer) {
+                highest_layer = new_layer;
+            }
         }
     }
     return highest_layer;

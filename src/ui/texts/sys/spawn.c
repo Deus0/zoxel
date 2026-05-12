@@ -45,22 +45,28 @@ zox_sys2(ZigelSpawnSystem) {
         byte othickness = fontOutlineThickness->value;
         color fill = fontFillColor->value;
         color outline = fontOutlineColor->value;
-        entity children[texts_children_capacity];
-        uint old_length = zox_get_children(world, e, children, texts_children_capacity);
-        // Spawn New Zigels
-        if (new_length > old_length) {
+        uint old_length = zox_get_children_count(world, e);
+        if (new_length < old_length) {
+            iter it2 = zox_children(world, e);
+            while (zox_children_next(it2)) {
+                for (int j = 0; j < it2.count; j++) {
+                    if (old_length == new_length) {
+                        continue;
+                    }
+                    // keep deleting until we arrive at new length;
+                    old_length--;
+                    entity e2 = it2.entities[j];
+                    zox_delete(e2);
+                }
+            }
+        }
+        else if (new_length > old_length) {
             for (uint j = old_length; j < new_length; j++) {
                 byte index = calculate_zigel_index(tdata->value, tdata->length, j);
                 entity e2 = spawn_zigel(world, prefab_zigel, e, position_anchor, size, texture_size, index, thickness, othickness, fill, outline);
                 zox_set(e2, RenderDisabled, { render_disabled->value });
                 zox_set(e2, Layer2D, { layer->value + 1 });
                 // zox_log("zigel [%i] is invisible [%i]", i, data.element.render_disabled);
-            }
-        }
-        // Delete Old Zigels
-        else if (new_length < old_length) {
-            for (uint i = new_length; i < old_length; i++) {
-                zox_delete(children[i]);
             }
         }
     }

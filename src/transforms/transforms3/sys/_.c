@@ -4,11 +4,7 @@
 #include "transform_matrix.c"
 #include "transform_matrix_scale.c"
 #include "camera_transform_matrix.c"
-
 #include "shadow.c"
-
-// Hierarchys
-#include "children.c"
 #include "children_new.c"
 
 void zox_define_systems_transforms3(ecs *world) {

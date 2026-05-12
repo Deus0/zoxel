@@ -13,9 +13,7 @@ void toggle_fps_viewer(ecs *world, int32_t keycode) {
     if (!zox_valid(canvas)) {
         return;
     }
-
-    entity fps_viewer = find_child_with_tag2(world, canvas, zox_id(FPSDisplay));
-
+    entity fps_viewer = zox_get_child_by_id(world, canvas, zox_id(FPSDisplay));
     if (fps_viewer) {
         zox_delete(fps_viewer);
     } else {

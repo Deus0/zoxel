@@ -22,7 +22,7 @@ zox_sys2(UserIconTooltipSystem) {
         if (!zox_valid(canvas)) {
             continue;
         }
-        entity tooltip = find_child_with_tag_recursive(world, canvas, zox_id(Tooltip));
+        entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
         if (!tooltip) {
             zox_loge("Tooltip not found in canvas");
             continue;

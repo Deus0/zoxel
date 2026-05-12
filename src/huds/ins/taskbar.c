@@ -72,7 +72,7 @@ entity spawn_taskbar(ecs *world, entity canvas) {
         // entity icon = spawn_element(world, spawn_icon_data);
         zox_set_unique_name(icon, "taskbar_icon");
         zox_set_parent(world, icon, frame);
-        entity window = find_child_with_tag2(world, canvas,  hook.component_id);
+        entity window = zox_get_child_by_id(world, canvas,  hook.component_id);
         if (zox_valid(window)) {
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });

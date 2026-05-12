@@ -50,11 +50,6 @@ zox_sys2(CanvasStackSystem) {
             continue;
         }
         byte old_layer = zox_get_value(add_window->value, WindowLayer);
-        /*if (!zox_has(add_window->value, Window) || zox_has(add_window->value, IgnoreWindowLayering)) {
-         *            add_window->value = 0;
-         *            // zox_log(" > add_window->value set wrongly\n")
-         *            continue;
-        }*/
         entity childrens[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, childrens, layouts2_children_capacity);
         byte2 counter = count_windows_in_stack(world, childrens, children_length);
@@ -74,7 +69,6 @@ zox_sys2(CanvasStackSystem) {
         windowsLayers->value = layers_per_window;
         byte old_windows_count = windowsCount->value;
         byte not_assigned_index = windowsCount->value + 1; // start on top of stack, but below latest
-        // if (old_windows_count > windows_count) not_assigned_index = 1;  // temporary fixed deletion just be reassigning new stack indexes lol
         int max_checks = 255;
         windowsCount->value = windows_count;
         int_hashmap *windows = create_int_hashmap(windows_count);
