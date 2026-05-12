@@ -3,10 +3,12 @@ extern entity spawn_pickup_block(ecs*, float3, entity);
 
 // TODO: Check Resource Cost before warming up!
 zox_sys2(MeleeSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     float popup_spawn_y = 0.18f;
     double volume = get_volume_sfx();
     color popup_color = (color) { 255, 0, 0, 255 };
+    float knockback_min = 0.5f;
+    float knockback_max = 1.5f;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkillDamage);

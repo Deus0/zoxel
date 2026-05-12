@@ -37,8 +37,6 @@ void set_entity_rdisabled(ecs* world, entity e, byte disabled) {
     }
     entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, e, children, transforms3_children_capacity);
-    //if (zox_has(e, Children)) {
-        //zox_geter(e, Children, children);
     for (uint l = 0; l < children_length; l++) {
         entity e2 = children[l];
         if (!zox_valid(e2)) {

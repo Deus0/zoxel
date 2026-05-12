@@ -11,80 +11,60 @@ zox_sys2(Controller2MoveSystem) {
         zox_sys_i(DeviceLinks, deviceLinks)
         zox_sys_i(CharacterLink, characterLink)
         entity character = characterLink->value;
-
         if (!zox_valid(character) || !zox_has(character, Character2D)) {
             continue;
         }
-
         if (zox_has(character, DisableMovement)) {
             zox_geter(character, DisableMovement, disableMovement)
             if (disableMovement->value) {
                 continue;
             }
         }
-
         byte is_running = 0;
         float2 movement = float2_zero; // { 0, 0 };
         float2 left_stick = float2_zero;
         // get the player input vector
         for (int j = 0; j < deviceLinks->length; j++) {
-            entity device = deviceLinks->value[j];
-            if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
+            entity e2 = deviceLinks->value[j];
+            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }
-            if (zox_has(device, Keyboard)) {
-                zox_geter(device, Keyboard, keyboard);
-
+            uint children_capacity = zox_children_capacity;
+            entity children[children_capacity];
+            uint children_length = zox_get_children(world, e2, children, children_capacity);
+            for (uint k = 0; k < children_length; k++) {
+                entity e3 = children[k];
+                if (!zox_valid(e3)) {
+                    continue;
+                }
+                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
+                if (disabled) {
+                    continue;
+                }
+                if (zox_has(e3, ZeviceStick)) {
+                    zox_geter_value(e3, DeviceButtonType, byte, type);
+                    if (type == zox_device_stick_left) {
+                        zox_geter(e3, ZeviceStick, stick);
+                        left_stick = stick->value;
+                    }
+                }
+                if (zox_has(e3, ZeviceButton)) {
+                    zox_geter_value(e3, DeviceButtonType, byte, type);
+                    if (type == zox_device_button_lb || type == zox_device_button_rb) {
+                        zox_geter_value(e3, ZeviceButton, byte, value);
+                        if (!is_running && devices_get_pressed(value)) {
+                            is_running = 1;
+                        }
+                    }
+                }
+            }
+            if (zox_has(e2, Keyboard)) {
+                zox_geter(e2, Keyboard, keyboard);
                 if (keyboard->a.is_pressed) movement.x = -1;
                 if (keyboard->d.is_pressed) movement.x = 1;
                 if (keyboard->w.is_pressed) movement.y = 1;
                 if (keyboard->s.is_pressed) movement.y = -1;
                 if (keyboard->left_shift.is_pressed) is_running = 1;
-            } else if (zox_has(device, Gamepad)) {
-                zox_geter(device, Children, zevices);
-                for (int k = 0; k < zevices->length; k++) {
-                    entity zevice = zevices->value[k];
-
-                    if (zox_has(zevice, ZeviceStick)) {
-
-                        zox_geter(zevice, ZeviceStick, zeviceStick);
-                        left_stick = zeviceStick->value;
-
-                    } else if (zox_has(zevice, ZeviceButton)) {
-                        zox_geter(zevice, DeviceButtonType, deviceButtonType);
-
-                        if (deviceButtonType->value == zox_device_button_lb || deviceButtonType->value == zox_device_button_rb) {
-                            zox_geter(zevice, ZeviceButton, zeviceButton);
-
-                            if (!is_running && devices_get_pressed(zeviceButton->value)) {
-                                is_running = 1;
-                            }
-                        }
-                    }
-                }
-            } else if (zox_has(device, Touchscreen)) { // deviceMode->value == zox_device_mode_touchscreen
-                zox_geter(device, Children, zevices)
-                for (int k = 0; k < zevices->length; k++) {
-                    entity zevice = zevices->value[k];
-
-                    if (zox_has(zevice, Finger)) {
-                        continue;
-                    }
-
-                    zox_geter(zevice, ZeviceDisabled, disabled);
-                    if (disabled->value) {
-                        continue;
-                    }
-
-                    if (zox_has(zevice, ZeviceStick)) {
-                        const byte joystick_type = zox_get_value(zevice, DeviceButtonType)
-                        if (joystick_type == zox_device_stick_left) {
-                            const ZeviceStick *zeviceStick = zox_get(zevice, ZeviceStick)
-                            left_stick.x += zeviceStick->value.x;
-                            left_stick.y += zeviceStick->value.y;
-                        }
-                    }
-                }
             }
         }
         if (float_abs(left_stick.x) > joystick_cutoff_buffer) {

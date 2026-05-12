@@ -1,9 +1,6 @@
 entity spawn_menu_load(ecs*, const entity);
 
-void button_event_continue_game(
-    ecs *world,
-    const ClickEventData event
-) {
+void button_event_continue_game(ecs *world, ClickEventData event) {
     entity player = event.clicker;
     zox_geter(player, ElementLinks, elements);
     find_array_element_with_tag(elements, MenuMain, menu);

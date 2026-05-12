@@ -10,13 +10,57 @@ zox_sys2(ActionsShortcutSystem) {
         byte is_shift_action_left = 0;
         byte is_shift_action_right = 0;
         for (int j = 0; j < devices->length; j++) {
-            const entity device = devices->value[j];
-            if (!zox_valid(device)) {
+            entity e2 = devices->value[j];
+            if (!zox_valid(e2)) {
                 continue;
             }
+            uint children_capacity = zox_children_capacity;
+            entity children[children_capacity];
+            uint children_length = zox_get_children(world, e2, children, children_capacity);
+            for (uint k = 0; k < children_length; k++) {
+                entity e3 = children[k];
+                if (!zox_valid(e3)) {
+                    continue;
+                }
+                if (zox_has(e3, ZeviceButton)) {
+                    zox_geter_value(e3, ZeviceDisabled, byte, disabled);
+                    if (disabled) {
+                        continue;
+                    }
+                    byte device_button_type = zox_get_value(e3, DeviceButtonType)
+                    byte zevice_button = zox_get_value(e3, ZeviceButton)
+                    if (device_button_type == zox_device_button_lb) {
+                        if (devices_get_pressed_this_frame(zevice_button)) {
+                            is_shift_action_left = 1;
+                        }
+                    } else if (device_button_type == zox_device_button_rb) {
+                        if (devices_get_pressed_this_frame(zevice_button)) {
+                            is_shift_action_right = 1;
+                        }
+                    }
+                    byte real_button_index = zox_get_value(e3, RealButtonIndex)
+                    if (real_button_index == zox_device_button_dpad_left) {
+                        if (devices_get_pressed_this_frame(zevice_button)) {
+                            is_shift_action_left = 1;
+                        }
+                    } else if (real_button_index == zox_device_button_dpad_right) {
+                        if (devices_get_pressed_this_frame(zevice_button)) {
+                            is_shift_action_right = 1;
+                        }
+                    }
+                }
+                if (zox_has(e3, ZeviceWheel)) {
+                    int2 wheel = zox_get_value(e3, ZeviceWheel)
+                    if (wheel.y > 0) {
+                        is_shift_action_right = 1;
+                    } else if (wheel.y < 0) {
+                        is_shift_action_left = 1;
+                    }
+                }
+            }
 
-            if (zox_has(device, Keyboard)) {
-                zox_geter(device, Keyboard, keyboard);
+            if (zox_has(e2, Keyboard)) {
+                zox_geter(e2, Keyboard, keyboard);
                 if (keyboard->_1.pressed_this_frame) {
                     set_player_action(world, e, 0);
                 } else if (keyboard->_2.pressed_this_frame) set_player_action(world, e, 1);
@@ -26,53 +70,6 @@ zox_sys2(ActionsShortcutSystem) {
                 else if (keyboard->_6.pressed_this_frame) set_player_action(world, e, 5);
                 else if (keyboard->_7.pressed_this_frame) set_player_action(world, e, 6);
                 else if (keyboard->_8.pressed_this_frame) set_player_action(world, e, 7);
-            } else if (zox_has(device, Mouse)) {
-                zox_geter(device, Children, zevices);
-                for (int k = 0; k < zevices->length; k++) {
-                    entity zevice_entity = zevices->value[k];
-                    if (zox_has(zevice_entity, ZeviceWheel)) {
-                        const int2 wheel = zox_get_value(zevice_entity, ZeviceWheel)
-                        if (wheel.y > 0) {
-                            is_shift_action_right = 1;
-                        } else if (wheel.y < 0) {
-                            is_shift_action_left = 1;
-                        }
-                    }
-                }
-            } else if (zox_has(device, Gamepad)) {
-                zox_geter(device, Children, zevices);
-                for (int k = 0; k < zevices->length; k++) {
-                    entity zevice_entity = zevices->value[k];
-                    if (zox_has(zevice_entity, ZeviceButton)) {
-                        const ZeviceDisabled *zeviceDisabled = zox_get(zevice_entity, ZeviceDisabled)
-                        if (zeviceDisabled->value) {
-                            continue;
-                        }
-                        const byte device_button_type = zox_get_value(zevice_entity, DeviceButtonType)
-                        const byte zevice_button = zox_get_value(zevice_entity, ZeviceButton)
-                        if (device_button_type == zox_device_button_lb) {
-                            if (devices_get_pressed_this_frame(zevice_button)) {
-                                is_shift_action_left = 1;
-                            }
-                        } else if (device_button_type == zox_device_button_rb) {
-                            if (devices_get_pressed_this_frame(zevice_button)) {
-                                is_shift_action_right = 1;
-                            }
-                        }
-
-
-                        byte real_button_index = zox_get_value(zevice_entity, RealButtonIndex)
-                        if (real_button_index == zox_device_button_dpad_left) {
-                            if (devices_get_pressed_this_frame(zevice_button)) {
-                                is_shift_action_left = 1;
-                            }
-                        } else if (real_button_index == zox_device_button_dpad_right) {
-                            if (devices_get_pressed_this_frame(zevice_button)) {
-                                is_shift_action_right = 1;
-                            }
-                        }
-                    }
-                }
             }
         }
         if (is_shift_action_left) {

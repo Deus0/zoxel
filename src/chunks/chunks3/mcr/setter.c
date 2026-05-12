@@ -19,8 +19,6 @@ static inline void* set_octree_value(
 
     // Are we at target depth?
     byte depth_reached = (depth == tdepth);
-
-    // Children ptr is first member
     void** ptr = (void**) node;
     void* kids = *ptr;
 

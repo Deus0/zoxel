@@ -1,7 +1,7 @@
 extern entity zox_canvases[16];
 static inline int2 get_texture_size(ecs*, entity);
 
-uint debug_label_app(
+/*uint debug_label_app(
     ecs *world,
     const entity player,
     char *buffer,
@@ -34,7 +34,6 @@ uint debug_label_app(
     entity canvas = zox_canvases[0];
     zox_geter_value(canvas, LayoutSize, int2, canvas_size)
     zox_geter_value(canvas, ScreenToCanvas, float4, canvas_ratio)
-    zox_geter(canvas, Children, canvas_children)
     index += snprintf(buffer + index, size - index, "Canvas [%s]\n", zox_get_name(canvas));
     index += snprintf(buffer + index, size - index, "   - size [%ix%i]\n", canvas_size.x, canvas_size.y);
     index += snprintf(buffer + index, size - index, "   - ratio [%fx%fx%fx%f]\n", canvas_ratio.x, canvas_ratio.y, canvas_ratio.z, canvas_ratio.w);
@@ -52,13 +51,14 @@ uint debug_label_app(
         index += snprintf(buffer + index, size - index, "   - size [%ix%i]\n", element_size.x, element_size.y);
         index += snprintf(buffer + index, size - index, "   - t_size [%ix%i]\n", texture_size.x, texture_size.y);
         // zox_geter(element, MeshVertices2D, texture_verts)
-        /*for (int j = 0; j < texture_verts->length; j++) {
-            float2 vert = texture_verts->value[j];
-            index += snprintf(buffer + index, size - index, "       - v [%fx%f]\n", vert.x, vert.y);
-        }*/
     }
 
 
     // ----?
     return index;
-}
+}*/
+
+        /*for (int j = 0; j < texture_verts->length; j++) {
+            float2 vert = texture_verts->value[j];
+            index += snprintf(buffer + index, size - index, "       - v [%fx%f]\n", vert.x, vert.y);
+        }*/

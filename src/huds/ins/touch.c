@@ -79,17 +79,14 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
 
 // called from game state changes
 void spawn_in_game_ui_touch(ecs *world, entity player, entity canvas) {
-
     if (!zox_valid(canvas)) {
         return;
     }
-
     entity menu = find_child_with_tag2(world, canvas, zox_id(MenuPlayTouch));
     if (zox_valid(menu)) {
         zox_log("touch ui already exists");
         return;
     }
-
     spawn_menu_game_touch(world, prefab_menu_play_touch, player, canvas);
 }
 
@@ -97,12 +94,10 @@ void dispose_menu_game_touch(ecs *world, entity player) {
     if (!zox_valid(player)) {
         return;
     }
-
     zox_geter_value(player, CanvasLink, entity, canvas);
     if (!zox_valid(canvas)) {
         return;
     }
-
     entity menu = find_child_with_tag2(world, canvas, zox_id(MenuPlayTouch));
     if (zox_valid(menu)) {
         zox_delete(menu);

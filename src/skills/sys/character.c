@@ -21,9 +21,10 @@ zox_sys2(CharacterSkillsSpawnSystem) {
         for (int j = 0; j < skills_count; j++) {
             skills->value[j] = 0; // blanks are item slots
         }
+        // Give skill?
         // When Testing all skills
         // TODO: Remove this and make a test function
-        /*if (!test_all_skills) {
+        if (!test_all_skills) {
             continue;
         }
         zox_geter(realm->value, SkillLinks, rskills);
@@ -38,6 +39,6 @@ zox_sys2(CharacterSkillsSpawnSystem) {
                 continue;
             }
             skills->value[place_index++] = spawn_user_skill(world, e, rskill);
-        }*/
+        }
     }
 } zox_sys_end(CharacterSkillsSpawnSystem);

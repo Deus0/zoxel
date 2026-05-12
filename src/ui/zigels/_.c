@@ -1,6 +1,8 @@
 #ifndef zoxm_zigels
 #define zoxm_zigels
 
+uint font_children_capacity = 512;
+
 #include "set/_.c"
 #include "com/_.c"
 #include "dat/_.c"

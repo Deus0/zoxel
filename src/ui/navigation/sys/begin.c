@@ -1,5 +1,5 @@
 entity find_child_with_mtag_rec(ecs* world, entity e, entity tag, entity mtag, entity mtag2) {
-    if (!zox_valid(e) || !zox_has(e, Children)) {
+    if (!zox_valid(e)) {
         return 0;
     }
     entity children[layouts2_children_capacity];
@@ -26,9 +26,7 @@ void raycaster_select_first_button(ecs *world, entity e, entity window) {
     if (!button) {
         return;
     }
-
     zox_log("Navigation Beginning on w[%s]", zox_get_name(window), zox_get_name(button));
-
     raycaster_select_element(world, e, button);
 }
 
@@ -44,38 +42,25 @@ zox_sys2(ElementNavigationBeginSystem) {
         zox_sys_i(DeviceMode, dmode);
         zox_sys_i(CanvasLink, canvas);
         zox_sys_o(RaycasterTarget, current);
-
         if (zox_valid(current->value)) {
             continue;
         }
-
         byte device_mode = dmode->value;
         if (keyboard_navigation_mode && device_mode == zox_device_mode_keyboardmouse) {
             device_mode = zox_device_mode_gamepad;
         }
-
         if (device_mode != zox_device_mode_gamepad) {
             continue;
         }
-
         if (!zox_valid(canvas->value)) {
             zox_logw("Canvas is missing from Player");
             continue;
         }
-
         // find_child_with_tag(canvas->value, Window, window);
         entity window = find_child_with_tag_recursive(world, canvas->value, zox_id(NavigationWindow));
         if (!window) {
-            // zox_geter(canvas->value, Children, wchildren);
-            // zox_log("Navigation Begin Failed: %s - %i", zox_get_name(canvas->value), wchildren->length);
-            /*for (int j = 0; j < wchildren->length; j++) {
-                zox_log("   - w: %s? %i", zox_get_name(wchildren->value[j]), zox_has(wchildren->value[j], Window));
-            }*/
             continue;
         }
-
-        // zox_log("Navigation Begin: %s", zox_get_name(window));
-
         raycaster_select_first_button(world, e, window);
     }
 } zox_sys_end(ElementNavigationBeginSystem);

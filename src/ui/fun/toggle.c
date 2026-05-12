@@ -18,7 +18,7 @@ entity toggle_ui_with_id(ecs *world, entity (*spawn_ui)(ecs*, const entity), ent
     return player_toggle_ui(world, player, ui, spawn_ui);
 }
 
-#define toggle_ui_with_tag_e(spawn_ui, tag, e, canvas) {\
+/*#define toggle_ui_with_tag_e(spawn_ui, tag, e, canvas) {\
     find_child_with_tag(canvas, tag, ui)\
     player_toggle_ui(world, e, ui, spawn_ui);\
 }
@@ -26,7 +26,7 @@ entity toggle_ui_with_id(ecs *world, entity (*spawn_ui)(ecs*, const entity), ent
 #define toggle_ui_with_tag(spawn_ui, tag, canvas) {\
     find_child_with_tag(canvas, tag, ui)\
     player_toggle_ui(world, canvas, ui, spawn_ui);\
-}
+}*/
 
 void toggle_ui(ecs *world, entity canvas, entity *e, entity (*spawn_ui)(ecs*, entity)) {
     if (*e == 0) {

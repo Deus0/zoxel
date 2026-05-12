@@ -32,16 +32,4 @@ void tst_spawn_character3_particles(ecs *world, ClickEventData data) {
 
     zox_set_parent(world, e, character);
     zox_tst_character3_particles = e;
-
-    // our logic stuffee
-    // spawn particle system
-    //zox_muter(character, Children, children);
-    // const entity previous_particles = children->length > 0 && zox_has(children->value[children->length - 1], Particle3DEmitter) ? children->value[children->length - 1] : 0;
-    //if (previous_particles) {
-    //    zox_log(" + removing particles from character")
-    //    zox_delete(previous_particles)
-    //} else {
-
-    // not linked to skill
-    // zox_set(particle3D_emitter, SkillLink, { character })
 }

@@ -3,7 +3,6 @@
 #include "menu_paused.c"
 #include "game_loading.c"
 #include "taskbar.c"
-#include "crosshair.c"
 #include "start.c"
 #include "pause.c"
 #include "game_ui.c"

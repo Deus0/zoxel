@@ -2,15 +2,14 @@ byte touchscreen_is_any_input(ecs *world, entity e) {
     if (!e || !zox_valid(e)) {
         return 0;
     }
-
-    zox_geter(e, Children, children);
-    for (int i = 0; i < children->length; i++) {
-        entity e2 = children->value[i];
-
+    uint children_capacity = zox_children_capacity;
+    entity children[children_capacity];
+    uint children_length = zox_get_children(world, e, children, children_capacity);
+    for (uint i = 0; i < children_length; i++) {
+        entity e2 = children[i];
         if (!e2 || !zox_has(e2, ZevicePointer) || !zox_has(e2, Finger)) {
             continue;
         }
-
         zox_geter(e2, ZevicePointer, zevicePointer)
         if (zevice_pointer_has_input(zevicePointer)) {
             return 1;
@@ -23,16 +22,15 @@ byte mouse_is_any_input(ecs *world, entity e) {
     if (!e || !zox_valid(e)) {
         return 0;
     }
-
-    zox_geter(e, Children, children);
-    for (int i = 0; i < children->length; i++) {
-        entity e = children->value[i];
-
-        if (!zox_has(e, ZevicePointer)) {
+    uint children_capacity = zox_children_capacity;
+    entity children[children_capacity];
+    uint children_length = zox_get_children(world, e, children, children_capacity);
+    for (uint i = 0; i < children_length; i++) {
+        entity e2 = children[i];
+        if (!zox_has(e2, ZevicePointer)) {
             continue;
         }
-
-        zox_geter(e, ZevicePointer, zevicePointer)
+        zox_geter(e2, ZevicePointer, zevicePointer)
         if (zevice_pointer_has_input(zevicePointer)) {
             return 1;
         }
@@ -44,23 +42,23 @@ byte gamepad_is_any_input(ecs *world, entity e) {
     if (!e || !zox_valid(e)) {
         return 0;
     }
-
-    zox_geter(e, Children, children);
-    for (int i = 0; i < children->length; i++) {
-        entity e2 = children->value[i];
-
-        #ifndef zox_disable_gamepad_stick_as_any_input
-        if (zox_has(e2, ZeviceStick)) {
+    uint children_capacity = zox_children_capacity;
+    entity children[children_capacity];
+    uint children_length = zox_get_children(world, e, children, children_capacity);
+    for (uint i = 0; i < children_length; i++) {
+        entity e2 = children[i];
+        if (zox_has(e2, ZeviceButton)) {
+            zox_geter(e2, ZeviceButton, zeviceButton)
+            if (devices_get_pressed_this_frame(zeviceButton->value)) {
+                return 1;
+            }
+        }
+#ifndef zox_disable_gamepad_stick_as_any_input
+        else if (zox_has(e2, ZeviceStick)) {
             zox_geter(e2, ZeviceStick, zeviceStick)
             return zevice_stick_has_input(zeviceStick, joystick_min_cutoff);
-        } else
-        #endif
-            if (zox_has(e2, ZeviceButton)) {
-                zox_geter(e2, ZeviceButton, zeviceButton)
-                if (devices_get_pressed_this_frame(zeviceButton->value)) {
-                    return 1;
-                }
-            }
+        }
+#endif
     }
     return 0;
 }

@@ -12,6 +12,5 @@ entity spawn_prefab_canvas(ecs *world) {
     // Links
     zox_prefab_set(e, CameraLink, { 0 });
     zox_prefab_add(e, AppLink);
-    // zox_prefab_set(e, Children, { 0 });
     return e;
 }

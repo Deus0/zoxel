@@ -1,19 +1,4 @@
 void resize_text3D(ecs *world, entity e, entity* children, uint children_length, const TextData* text, Zigel3DData zigel_data, int new_children_length) {
-
-    // no need to resize / reposition text if same size
-    /*int new_children_length = calculate_total_zigels(text->value, text->length);
-    if (children_length == new_children_length) {
-        return;
-    }*/
-
-    // entity *old_children = children->value;
-    // int old_children_length = children->length;
-    /*int has_old_children = old_children_length > 0;
-    entity *new_children = NULL;
-    if (new_children_length > 0) {
-        new_children = zalloc(new_children_length * sizeof(entity));
-    }*/
-
     // Set old zigels
     int reuse_count = int_min(children_length, new_children_length);
     for (uint i = 0; i < reuse_count; i++) {     // Reposition old zigels!
@@ -25,7 +10,6 @@ void resize_text3D(ecs *world, entity e, entity* children, uint children_length,
         // new_children[i] = e;
         // zox_log_text3D("    > reusing [%i] zigel [%s]", i, zox_get_name(e))
     }
-
     // Spawn if extended text
     if (new_children_length > children_length) {
         for (uint i = children_length; i < new_children_length; i++) {
@@ -47,11 +31,6 @@ void resize_text3D(ecs *world, entity e, entity* children, uint children_length,
             zox_delete(e2);
         }
     }
-    /*if (has_old_children) {
-        dispose_Children(children);
-    }
-    children->value = new_children;
-    children->length = new_children_length;*/
 }
 
 // todo: split up into update system, and resize system
@@ -86,7 +65,6 @@ zox_sys2(Text3DResizeSystem) {
         if (children_length == new_length) {
             continue;
         }
-
         Zigel3DData zigel_data = {
             .prefab = prefab_zigel3D,
             .resolution = textSize->value, // 128,

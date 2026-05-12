@@ -1,8 +1,15 @@
+
+entity spawn_body_bone(ecs* world, entity prefab, entity skeleton, entity parent, float3 position, float3 local_position, float3 size) {
+    // NOTE: New entity so we need to just set rather than grab
+    entity e2 = spawn_bone(world, prefab, skeleton, position, local_position, size);
+    zox_set_parent(world, e2, parent);
+    // zox_set(e2, ParentLink, { parent });
+    return e2;
+}
 // todo: use iterative instance function: prefab_children
 /*void prefab_make_skeleton(ecs *world, const entity e) {
     zox_add_tag(e, Skeleton)
     zox_add_tag(e, SkeletonMesher)
-    zox_prefab_set(e, Children, { 0, NULL });
     zox_prefab_add(e, BoneLinks)
     zox_prefab_add(e, BoneIndexes)
     // add_gpu_bone_index(world, e);
@@ -12,14 +19,6 @@
     zox_add_tag(e, PaintedSkeleton)
 #endif
 }*/
-
-entity spawn_body_bone(ecs* world, entity prefab, entity skeleton, entity parent, float3 position, float3 local_position, float3 size) {
-    // NOTE: New entity so we need to just set rather than grab
-    entity e2 = spawn_bone(world, prefab, skeleton, position, local_position, size);
-    zox_set_parent(world, e2, parent);
-    // zox_set(e2, ParentLink, { parent });
-    return e2;
-}
 
 // will this effect other children though?
 /*entity spawn_skeleton_head_bone(ecs *world, entity e, entity parent, Children* children, BoneLinks* bones, float head_move_y, float bscale) {

@@ -6,43 +6,35 @@ entity spawn_menu_game(ecs *world, entity prefab, entity player, entity characte
         zox_log_error("[!spawn_menu_game] Issue with character or player, invalid");
         return 0;
     }
-    byte size = (crosshair_pixel_size.x / 4) * ui_scale;
-    entity canvas = zox_get_value(player, CanvasLink)
-    int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    entity canvas = zox_get_value(player, CanvasLink);
+    int2 canvas_size = zox_get_value(canvas, LayoutSize);
+    // spawn a crosshair first
+    int2 csize = int2_single((crosshair_pixel_size.x / 4) * ui_scale);
+    spawn_ui(world, prefab_crosshair, canvas, float2_half, int2_zero, csize, csize);
     // make layout2 instead of element_invisible
     entity e = spawn_layout2_on_canvas(world, prefab, canvas, int2_zero, canvas_size, float2_half);
     zox_name("menu_game");
-    entity crosshair = spawn_crosshair(world,
-        (LayoutParentData) { .e = canvas },
-        (LayoutParentData) { .e = e },
-        (ElementSpawnData) {
-            .prefab = prefab_crosshair,
-            .layer = 1,
-            .anchor = float2_half,
-            .position = int2_zero,
-            .size = int2_single(size),
-            .texture_size = int2_single(size),
-        });
-    zox_set_parent(world, crosshair, e);
     spawn_menu_game_stats(world, e, player);
+    local_menu_game = e;
     // link to character
     zox_muter(character, ElementLinks, elements);
     add_to_ElementLinks(elements, e);
     zox_set(e, ElementHolder, { character });
-    local_menu_game = e;
     return e;
 }
 
 void dispose_menu_game(ecs *world, entity player) {
-
     zox_geter_value(player, CanvasLink, entity, canvas);
     if (!zox_valid(canvas)) {
         return;
     }
-    // find_child_with_tag(canvas, MenuPlay, menu);
-    entity menu = find_child_with_tag2(world, canvas, zox_id(MenuPlay));
+    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuPlay));
     if (zox_valid(menu)) {
         zox_delete(menu)
+    }
+    entity crosshair = zox_get_child_by_id(world, canvas, zox_id(Crosshair));
+    if (zox_valid(crosshair)) {
+        zox_delete(crosshair)
     }
     dispose_menu_game_touch(world, player);
 }

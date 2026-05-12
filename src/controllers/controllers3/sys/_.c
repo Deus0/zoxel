@@ -24,12 +24,11 @@
 #include "head_camera.c"
 
 void define_systems_controllers3(ecs *world) {
-
     zox_system(
         Player3DMoveSystem,
         EcsOnUpdate,
         [in] inputs.DeviceLinks,
-        [in] inputs.DeviceMode,
+        // [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
         [none] players.Player
     );
@@ -41,12 +40,11 @@ void define_systems_controllers3(ecs *world) {
         [in] characters.CharacterLink,
         [none] players.Player
     );
-
     zox_system(
         Player3RotateSystem,
         EcsOnUpdate,
         [in] inputs.DeviceLinks,
-        [in] inputs.DeviceMode,
+        // [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
         [none] players.Player
@@ -63,7 +61,6 @@ void define_systems_controllers3(ecs *world) {
         Player3DTriggerSystem,
         EcsPostUpdate,
         [in] inputs.DeviceLinks,
-        [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
         [none] players.Player
     );
@@ -90,9 +87,9 @@ void define_systems_controllers3(ecs *world) {
         [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
+        [in] layouts2.CanvasLink,
         [none] players.Player
     );
-
     // more shortcuts
     zox_system(
         QolShortcutsSystem,
@@ -106,7 +103,6 @@ void define_systems_controllers3(ecs *world) {
         [in] inputs.DeviceLinks,
         [none] players.Player
     );
-
     zox_system_1(
         DialogueBeginSystem,
         EcsOnUpdate,
@@ -136,7 +132,6 @@ void define_systems_controllers3(ecs *world) {
         [in] dialogues.DialogueUILink,
         [out] dialogues.SpeakerLinks
     );
-
     zox_system_1(
         PlayerBeginSystem,
         EcsOnUpdate,
@@ -163,7 +158,6 @@ void define_systems_controllers3(ecs *world) {
         [in] characters.CharacterLink,
         [none] players.Player3
     );
-
     zox_system(
         HeadCameraSystem,
         EcsPostUpdate,

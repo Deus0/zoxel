@@ -6,7 +6,6 @@ void set_prefab_window(ecs* world, entity e) {
     zox_prefab_set(e, WindowLayer, { 0 });
     zox_prefab_set(e, SetWindowLayer, { 0 });
     // Hierarchy
-    // zox_prefab_set(e, Children, { 0 });
     // text properties used for spawning list elements
     zox_prefab_set(e, ElementFontSize, { default_font_size });
     // interaction

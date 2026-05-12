@@ -1,31 +1,34 @@
-#ifdef zox_sdl
-    #include "gamepad.c"
-#endif
-
+#include "gamepad.c"
 #include "touchscreen.c"
 #include "mouse.c"
 #include "mouse_constrain.c"
 
 void define_systems_sdl_inputs(ecs* world) {
-#ifdef zox_sdl
-    zox_system_1(GamepadExtractSystem, zoxp_sdl,
-        [in] hierarchys.Children,
-        [in] SDLGamepad,
-        [none] inputs.Gamepad)
-#endif
-    zox_system_1(TouchscreenExtractSystem, zoxp_sdl,
-        [in] hierarchys.Children,
+    zox_system_1(
+        MouseExtractSystem,
+        zoxp_sdl,
         [in] apps.AppLink,
-        [out] screens.ScreenDimensions,
-        [none] inputs.Touchscreen)
-    zox_system_1(MouseExtractSystem, zoxp_sdl,
-        [in] hierarchys.Children,
-        [in] apps.AppLink,
-        [none] inputs.Mouse)
-    zox_system_1(MouseConstrainSystem, zoxp_sdl,
+        [none] inputs.Mouse
+    );
+    zox_system_1(
+        MouseConstrainSystem,
+        zoxp_sdl,
         [in] inputs.DeviceDisabled,
         [in] inputs.MouseLock,
-        [in] hierarchys.Children,
         [in] apps.AppLink,
-        [none] inputs.Mouse)
+        [none] inputs.Mouse
+    );
+    zox_system_1(
+        TouchscreenExtractSystem,
+        zoxp_sdl,
+        [in] apps.AppLink,
+        [out] screens.ScreenDimensions,
+        [none] inputs.Touchscreen
+    );
+    zox_system_1(
+        GamepadExtractSystem,
+        zoxp_sdl,
+        [in] SDLGamepad,
+        [none] inputs.Gamepad
+    );
 }

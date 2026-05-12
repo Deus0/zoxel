@@ -28,18 +28,24 @@ zox_sys2(FreeCameraRotateSystem) {
             continue;
         }
         for (int j = 0; j < devices->length; j++) {
-            entity device = devices->value[j];
-            if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
+            entity e2 = devices->value[j];
+            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }
-            zox_geter(device, Children, zevices);
-            for (int k = 0; k < zevices->length; k++) {
-                entity zevice = zevices->value[k];
-                if (zox_has(device, Mouse)) {
-                    if (!zox_has(zevice, ZevicePointerDelta)) {
-                        continue;
-                    }
-                    float2 delta = int2_to_float2(zox_gett_value(zevice, ZevicePointerDelta));
+            uint children_capacity = zox_children_capacity;
+            entity children[children_capacity];
+            uint children_length = zox_get_children(world, e2, children, children_capacity);
+            for (uint k = 0; k < children_length; k++) {
+                entity e3 = children[k];
+                if (!zox_valid(e3)) {
+                    continue;
+                }
+                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
+                if (disabled) {
+                    continue;
+                }
+                if (zox_has(e3, ZevicePointerDelta)) {
+                    float2 delta = int2_to_float2(zox_gett_value(e3, ZevicePointerDelta));
                     if (int_absf(delta.x) + int_absf(delta.y) >= max_mouse_delta || (delta.x == 0 &&delta.y == 0)) {
                         continue;
                     }

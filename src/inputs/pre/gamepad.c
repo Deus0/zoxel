@@ -1,4 +1,4 @@
-entity spawn_prefab_gamepad(ecs *world, const entity prefab) {
+entity spawn_prefab_gamepad(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("gamepad");
     zox_add_tag(e, Gamepad);
@@ -7,15 +7,12 @@ entity spawn_prefab_gamepad(ecs *world, const entity prefab) {
 }
 
 entity spawn_gamepad(ecs *world, byte gamepad_type) {
-
     zox_instance(prefab_gamepad);
     zox_name("gamepad");
     zox_set(e, DeviceLayout, { gamepad_type });
-
     const byte *button_map = NULL;
     const byte *stick_map = NULL;
     const byte *dpad_map = NULL;
-
     switch (gamepad_type) {
         case zox_gamepad_layout_type_xbox:
             button_map = generic_button_map;
@@ -33,34 +30,25 @@ entity spawn_gamepad(ecs *world, byte gamepad_type) {
             dpad_map = generic_dpad_map;
             break;
     }
-
-    Children children = { 0 };
-    byte total = zox_gamepad_button_count + zox_gamepad_stick_count + zox_gamepad_dpad_count;
-    initialize_Children(&children, total);
-
+    // byte total = zox_gamepad_button_count + zox_gamepad_stick_count + zox_gamepad_dpad_count;
     byte i = 0;
-
     // Buttons
     for (byte j = 0; j < zox_gamepad_button_count; j++, i++) {
-        children.value[i] = spawn_device_button(world, prefab_zevice_button, i, button_map[j]);
+        entity e2 = spawn_device_button(world, prefab_zevice_button, i, button_map[j]);
+        zox_set_parent(world, e2, e);
     }
-
     // Sticks
     for (byte j = 0; j < zox_gamepad_stick_count; j++, i++) {
-        children.value[i] = spawn_zevice_stick(world, e, j, stick_map[j]);
+        entity e2 = spawn_zevice_stick(world, e, j, stick_map[j]);
+        zox_set_parent(world, e2, e);
     }
-
     // The DPAD
     for (byte j = 0; j < zox_gamepad_dpad_count; j++, i++) {
-        children.value[i] = spawn_device_button(world, prefab_zevice_button, i, dpad_map[j]);
+        entity e2 = spawn_device_button(world, prefab_zevice_button, i, dpad_map[j]);
+        zox_set_parent(world, e2, e);
     }
-
     // todo: spawn LT and RT as axis for steamdeck
-
-    zox_set_ptr(e, Children, children);
-
     gamepad_entity = e;
-
     return e;
 }
 

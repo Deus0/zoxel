@@ -13,7 +13,6 @@ zox_sys2(TextUpdateSystem) {
         }
         entity children[texts_children_capacity];
         uint length = zox_get_children(world, e, children, texts_children_capacity);
-        // zox_log("+ Text [%s] Dirty, Children [%i]", zox_get_name(e), length);
         for (uint j = 0; j < length; j++) {
             entity e2 = children[j];
             if (!zox_valid(e2)) {

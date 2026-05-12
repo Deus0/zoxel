@@ -1,5 +1,4 @@
 #define find_child_with_tag(e, tag, child_name)\
-    /*zox_geter(e, Children, children_##tag);*/\
     entity children_##tag[hierarhys_children_capacity];\
     uint tag_##length = zox_get_children(world, e, children_##tag, hierarhys_children_capacity);\
     entity child_name = 0;\
@@ -15,7 +14,6 @@ entity find_child_with_tag2(ecs* world, entity e, entity tag) {
     if (!zox_valid(e)) {
         return 0;
     }
-    // zox_geter(e, Children, children);
     entity children[hierarhys_children_capacity];
     uint children_length = zox_get_children(world, e, children, hierarhys_children_capacity);
     for (uint i = 0; i < children_length; i++) {
@@ -31,11 +29,9 @@ entity find_child_with_tag2(ecs* world, entity e, entity tag) {
 }
 
 entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
-
-    if (!zox_valid(e)) { // || !zox_has(e, Children)) {
+    if (!zox_valid(e)) {
         return 0;
     }
-
     entity children[hierarhys_children_capacity];
     uint children_length = zox_get_children(world, e, children, hierarhys_children_capacity);
     for (uint i = 0; i < children_length; i++) {
@@ -78,36 +74,3 @@ entity find_child_with_tag_recursive(ecs* world, entity e, entity tag) {
         }\
     }\
     if (child_##tag)
-
-/*
-#define if_has_child_with_id(e, tag, name)\
-    entity name = 0;\
-    zox_geter(e, Children, children_);\
-    for (int ii = 0; ii < children_->length; ii++) {\
-        const entity child_e = children_->value[ii];\
-        if (child_e && zox_has_id(child_e, tag)) {\
-            name = child_e;\
-            break;\
-        }\
-    }\
-    if (name)
-*/
-
-/*void on_child_added(ecs *world, entity parent, entity child) {
-    // zox_log(" + added [%lu] to canvas [%lu]\n", e, canvas)
-    // todo: make this generic for when component is set, event
-    // this isn't systematic enough for children linking!
-    Children *children = zox_get_mut(parent, Children);
-    if (add_to_Children(children, child)) {
-        zox_modified(parent, Children);
-    }
-}*/
-
-void zox_debug_children(ecs *world, entity parent) {
-    Children *children = zox_get_mut(parent, Children);
-    zox_log(" > children of [%s]\n", zox_get_name(parent));
-    for (int i = 0; i < children->length; i++) {
-        entity child = children->value[i];
-        zox_log("       - child [%s]\n", zox_get_name(child));
-    }
-}

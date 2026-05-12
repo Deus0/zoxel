@@ -1,11 +1,9 @@
 // todo: save properly
 byte save_font_style(ecs *world, entity e, char *resources_directory, char *filename) {
-
     if (!e) {
         zox_log_error("error saving entity [%lu] invalid children [%s]", e, filename)
         return 0;
     }
-
     char* directory = concat_file_path(resources_directory, directory_fonts);
     char* directory2 = concat_file_path(directory, character_slash);
     char* path = concat_file_path(directory2, filename);
@@ -15,7 +13,6 @@ byte save_font_style(ecs *world, entity e, char *resources_directory, char *file
     zox_logv("   - full path [%s]", path);
     free(directory);
     free(directory2);
-
     FILE *file = fopen(path, "wb");
     if (file == NULL) {
         zox_log_error(" > error saving [%s]", path)
@@ -23,16 +20,15 @@ byte save_font_style(ecs *world, entity e, char *resources_directory, char *file
         free(path);
         return 0;
     }
-
     // get full filepath
     // get binary for each font and added with seperation?
+    // TODO: FIX THIS, Children Obsolete
     zox_geter(e, Children, children);
     if (children == NULL) {
         zox_log_error("! error saving entity [%lu] invalid children [%s]", e, path)
         free(path);
         return 0;
     }
-
     SaveDataFontStyle data = {
         .length = children->length
     };
@@ -56,10 +52,8 @@ byte save_font_style(ecs *world, entity e, char *resources_directory, char *file
             data.fonts[i].points[j] = fdata->value[j];
         }
     }
-
     fwrite(&data, sizeof(SaveDataFontStyle), 1, file);
     fclose(file);
     free(path);
-
     return 1; // success
 }

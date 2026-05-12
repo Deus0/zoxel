@@ -1,4 +1,3 @@
-entity local_crosshair;
 const int2 crosshair_pixel_size = { 16, 16 };
 const int2 crosshair_texture_size = { 8, 8 };
 const byte crosshair_thickness = 3;

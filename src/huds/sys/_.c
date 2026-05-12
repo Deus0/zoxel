@@ -9,6 +9,7 @@
 #include "game_resume.c"
 #include "terminal.c"
 #include "menu_game.c"
+#include "crosshair.c"
 
 void define_systems_game_ui(ecs *world) {
     zox_system(
@@ -93,5 +94,11 @@ void define_systems_game_ui(ecs *world) {
         [in] inputs.DeviceMode,
         [in] elements.ElementLinks,
         [none] players.Player
+    );
+    zox_system(
+        RaycastCrosshairSystem,
+        EcsOnUpdate,
+        [in] vrays.RaycastVoxelData,
+        [in] players.PlayerLink
     );
 }

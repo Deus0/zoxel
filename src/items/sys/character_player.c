@@ -1,13 +1,13 @@
 zox_sys2(CharacterPlayerItemsSystem) {
-    zox_sys_world();
+    // zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
-    zox_sys_in(RealmLink);
+    //zox_sys_in(RealmLink);
     zox_sys_out(ItemLinks);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
-        zox_sys_i(RealmLink, realm);
+        //zox_sys_i(RealmLink, realm);
         zox_sys_o(ItemLinks, items);
 
         if (state->value != zox_dirty_active) {

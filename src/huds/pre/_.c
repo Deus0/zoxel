@@ -1,7 +1,5 @@
 // TODO: Move instance functions to ins
 entity prefab_quad_count_label;
-
-#include "game.c"
 #include "fps_display.c"
 #include "quad_count_label.c"
 #include "game_debug_label.c"
@@ -11,7 +9,6 @@ entity prefab_quad_count_label;
 #include "play_touch.c"
 #include "play.c"
 #include "terminal.c"
-
 entity prefab_menu_play;
 entity prefab_menu_play_touch;
 entity fps_display_prefab;

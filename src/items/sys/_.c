@@ -46,7 +46,7 @@ void define_systems_items(ecs* world) {
         CharacterPlayerItemsSystem,
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
+        //[in] realms.RealmLink,
         [out] items.ItemLinks,
         [none] players.PlayerLink
     );

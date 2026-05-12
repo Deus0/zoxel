@@ -30,14 +30,13 @@ zox_sys2(Player3DMoveSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLinks);
-    zox_sys_in(DeviceMode);
+    // zox_sys_in(DeviceMode);
     zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(CharacterLink, character_link);
         zox_sys_i(DeviceLinks, devices);
-        zox_sys_i(DeviceMode, mode);
-
-        const entity character = character_link->value;
+        // zox_sys_i(DeviceMode, mode);
+        entity character = character_link->value;
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
@@ -46,72 +45,55 @@ zox_sys2(Player3DMoveSystem) {
         if (disabled) {
             continue;
         }
-
         zox_geter_value(character, CameraLink, entity, camera);
         byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraState) : zox_camera_state_first_person;
         if (camera_mode == zox_camera_state_free) {
             continue;
         }
-
         float2 left_stick = float2_zero;
         byte is_running = 0;
         for (int j = 0; j < devices->length; j++) {
-            const entity device = devices->value[j];
-            if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
+            entity e2 = devices->value[j];
+            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }
-            if (mode->value == zox_device_mode_keyboardmouse && zox_has(device, Keyboard)) {
-                zox_geter(device, Keyboard, keyboard)
+            uint children_capacity = zox_children_capacity;
+            entity children[children_capacity];
+            uint children_length = zox_get_children(world, e2, children, children_capacity);
+            for (uint k = 0; k < children_length; k++) {
+                entity e3 = children[k];
+                if (!zox_valid(e3)) {
+                    continue;
+                }
+                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
+                if (disabled) {
+                    continue;
+                }
+                zox_geter_value(e3, DeviceButtonType, byte, type);
+                if (zox_has(e3, ZeviceStick)) {
+                    if (type == zox_device_stick_left) {
+                        zox_geter(e3, ZeviceStick, zeviceStick)
+                        left_stick.x += zeviceStick->value.x;
+                        left_stick.y += zeviceStick->value.y;
+                    }
+                }
+                if (zox_has(e3, ZeviceButton)) {
+                    if (type == zox_device_button_lb || type == zox_device_button_rb) {
+                        zox_geter(e3, ZeviceButton, zeviceButton)
+                        if (!is_running && devices_get_pressed(zeviceButton->value)) {
+                            is_running = 1;
+                        }
+                    }
+                }
+            }
+            if (zox_has(e2, Keyboard)) {
+                zox_geter(e2, Keyboard, keyboard);
                 if (keyboard->w.is_pressed) left_stick.y += 1;
                 if (keyboard->s.is_pressed) left_stick.y -= 1;
                 if (keyboard->a.is_pressed) left_stick.x += 1;
                 if (keyboard->d.is_pressed) left_stick.x += -1;
                 if (keyboard->left_shift.is_pressed) is_running = 1;
                 // float2_normalize_p(&left_stick);
-            } else if (mode->value == zox_device_mode_gamepad && zox_has(device, Gamepad)) {
-                zox_geter(device, Children, zevices)
-                for (int k = 0; k < zevices->length; k++) {
-                    const entity zevice_entity = zevices->value[k];
-                    zox_geter(zevice_entity, ZeviceDisabled, zeviceDisabled)
-                    if (zeviceDisabled->value) {
-                        continue;
-                    }
-                    zox_geter(zevice_entity, DeviceButtonType, deviceButtonType)
-                    if (zox_has(zevice_entity, ZeviceStick)) {
-                        if (deviceButtonType->value == zox_device_stick_left) {
-                            zox_geter(zevice_entity, ZeviceStick, zeviceStick)
-                            left_stick.x += zeviceStick->value.x; // joysticks are weird
-                            left_stick.y += zeviceStick->value.y;
-                        }
-                    } else if (zox_has(zevice_entity, ZeviceButton)) {
-                        if (deviceButtonType->value == zox_device_button_lb || deviceButtonType->value == zox_device_button_rb) {
-                            zox_geter(zevice_entity, ZeviceButton, zeviceButton)
-                            if (!is_running && devices_get_pressed(zeviceButton->value)) {
-                                is_running = 1;
-                            }
-                        }
-                    }
-                }
-            } else if (mode->value == zox_device_mode_touchscreen && zox_has(device, Touchscreen)) {
-                zox_geter(device, Children, zevices)
-                for (int k = 0; k < zevices->length; k++) {
-                    const entity zevice = zevices->value[k];
-                    if (zox_has(zevice, Finger)) {
-                        continue;
-                    }
-                    zox_geter(zevice, ZeviceDisabled, zeviceDisabled)
-                    if (zeviceDisabled->value) {
-                        continue;
-                    }
-                    if (zox_has(zevice, ZeviceStick)) {
-                        const byte joystick_type = zox_get_value(zevice, DeviceButtonType)
-                        if (joystick_type == zox_device_stick_left) {
-                            const ZeviceStick *zeviceStick = zox_get(zevice, ZeviceStick)
-                            left_stick.x -= zeviceStick->value.x;
-                            left_stick.y += zeviceStick->value.y;
-                        }
-                    }
-                }
             }
         }
         if (left_stick.x == 0 && left_stick.y == 0) {
@@ -133,9 +115,6 @@ zox_sys2(Player3DMoveSystem) {
                 movement.y *= fly_run_acc;
             }
         }
-
-        // float delta_time_adjustment = 1.0f / (60 * delta_time);
-        // float3_scale_p(&movement, delta_time_adjustment);
         float4 movement_rotation = float4_identity;
         zox_geter(character, Rotation3D, rotation3D)
         zox_geter(character, Velocity3D, velocity3D)
@@ -179,27 +158,21 @@ zox_sys2(Player3DMoveSystem) {
                 max_speed.y *= fly_run_speed;
             }
         }
-
         float3 movement_real_z = float4_rotate_float3(movement_rotation, (float3) { 0, 0, movement.z });
         movement_real_z.y = 0;
-
         float3 movement_real_x = float4_rotate_float3(movement_rotation, (float3) { movement.x, 0, 0 });
         movement_real_x.y = 0;
-
         float4 inverse_rotation = float4_inverse(rotation3D->value);
         float3 velocity_local = float4_rotate_float3(inverse_rotation, velocity3D->value);
         float3 acceleration_local = float4_rotate_float3(inverse_rotation, acceleration3D->value);
-
         float3 potential_velocity_forward = { 0, 0, velocity_local.z + (acceleration_local.z + movement.y) * delta_time };
         float3 potential_velocity_left = { velocity_local.x + (acceleration_local.x + movement.x) * delta_time, 0, 0 };
-
         if (float_abs(potential_velocity_forward.z) < max_speed.y) {
             float3_add_float3_p(&acceleration3D->value, movement_real_z);
         }
         if (float_abs(potential_velocity_left.x) < max_speed.x) {
             float3_add_float3_p(&acceleration3D->value, movement_real_x);
         }
-
 #ifdef zox_debug_player_speed_limits
         if (float_abs(potential_velocity_left.x) < max_speed.x) zox_log(" > under maximum velocity x: %f\n", potential_velocity_left.x)
         else zox_log(" > past maximum velocity x: %f\n", potential_velocity_left.x)

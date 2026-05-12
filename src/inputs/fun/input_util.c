@@ -4,12 +4,7 @@
 extern void raycaster_select_element(ecs *world, const entity raycaster_entity, const entity element);
 
 // this disables any buttons (zevices) of a device, until they are released, then they get auto re enabled
-void disable_inputs_until_release(
-    ecs *world,
-    entity player,
-    byte new_device_mode,
-    byte old_mode
-) {
+void disable_inputs_until_release(ecs *world, entity player, byte new_device_mode, byte old_mode) {
     if (old_mode == 0) {
         return; // no need disable on start
     }
@@ -22,31 +17,42 @@ void disable_inputs_until_release(
     }
     zox_geter(player, DeviceLinks, devices);
     for (int j = 0; j < devices->length; j++) {
-        entity device = devices->value[j];
-        if (!zox_valid(device)) {
+        entity e2 = devices->value[j];
+        if (!zox_valid(e2)) {
             continue;
         }
-        if (!zox_has(device, Gamepad)) {
+        if (!zox_has(e2, Gamepad)) {
             continue;
         }
-        zox_geter(device, Children, zevices);
-        for (int k = 0; k < zevices->length; k++) {
-            entity zevice_entity = zevices->value[k];
-            ZeviceDisabled *zeviceDisabled = zox_get_mut(zevice_entity, ZeviceDisabled);
-            if (!zeviceDisabled->value) {
-                byte has_input = 0;
-                if (zox_has(zevice_entity, ZeviceStick)) {
-                    const ZeviceStick *zeviceStick = zox_get(zevice_entity, ZeviceStick)
-                    has_input = zevice_stick_has_input(zeviceStick, joystick_min_cutoff);
-                } else if (zox_has(zevice_entity, ZeviceButton)) {
-                    const ZeviceButton *zeviceButton = zox_get(zevice_entity, ZeviceButton)
-                    has_input = zeviceButton->value !=  0;
-                }
-                if (has_input) {
-                    zeviceDisabled->value = 1;
-                    zox_modified(zevice_entity, ZeviceDisabled);
-                    zox_log_input("  = button disabled [%lu] at %f", zevice_entity, zox_current_time)
-                }
+        uint children_capacity = zox_children_capacity;
+        entity children[children_capacity];
+        uint children_length = zox_get_children(world, e2, children, children_capacity);
+        for (uint i = 0; i < children_length; i++) {
+            entity e3 = children[i];
+            if (!zox_valid(e3)) {
+                continue;
+            }
+            if (!zox_has(e3, ZeviceDisabled)) {
+                zox_loge("Zevice No Disabled Component [%s]", zox_get_name(e3));
+                continue;
+            }
+            zox_mut_begin(e3, ZeviceDisabled, zeviceDisabled);
+            if (zeviceDisabled->value) {
+                continue;
+            }
+            byte has_input = 0;
+            if (zox_has(e3, ZeviceStick)) {
+                zox_geter(e3, ZeviceStick, stick);
+                has_input = zevice_stick_has_input(stick, joystick_min_cutoff);
+            } else if (zox_has(e3, ZeviceButton)) {
+                zox_geter(e3, ZeviceButton, button);
+                has_input = button->value !=  0;
+            }
+            if (has_input) {
+                zeviceDisabled->value = 1;
+                zox_mut_end(e3, ZeviceDisabled);
+                zox_modified(e3, ZeviceDisabled);
+                zox_log_input("  = button disabled [%lu] at %f", zevice_entity, zox_current_time);
             }
         }
     }

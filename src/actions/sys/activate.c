@@ -1,6 +1,6 @@
 // right click = place
 zox_sys2(ActionActivateSystem) {
-    byte is_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TriggerActionA);
@@ -20,7 +20,7 @@ zox_sys2(ActionActivateSystem) {
         entity action = actions->value[index->value];
         // no action assigned
         if (!zox_valid(action)) {
-            if (is_log) {
+            if (dbg_log) {
                 zox_log("Action Empty at [%i]", index->value);
             }
             continue;
@@ -38,7 +38,7 @@ zox_sys2(ActionActivateSystem) {
             continue;
         }
         zox_set(action, ActivateBegin, { zox_dirty_trigger });
-        if (is_log) {
+        if (dbg_log) {
             zox_sys_e();
             zox_log(" - [%s] Action [%s] Begins", zox_get_name(e), zox_get_name(action));
         }

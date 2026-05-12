@@ -13,7 +13,6 @@ static void print_octree_recursive(const void* node, byte depth, byte target_dep
         return;
     }
 
-    // Children pointer is first member
     const void* kids = *(const void* const*)node;
     if (!kids) return; // stop if children missing
 

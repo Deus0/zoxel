@@ -2,10 +2,8 @@
 #define directory_fonts "fonts"
 
 void load_files_fonts(ecs *world) {
-
     // TODO: Load All Font Files as Styles
     // TODO: Create a Convert Module for TTF Library Imports
-
     entity prefab = prefab_font_style;
     zox_font_style_default = spawn_font_style(world, prefab);
     // for now save

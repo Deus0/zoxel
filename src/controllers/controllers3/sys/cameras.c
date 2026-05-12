@@ -39,7 +39,6 @@ void attach_camera_to_character(ecs *world, entity e, entity character) {
     zox_set_parent(world, e, character);
 }
 
-
 zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -47,81 +46,73 @@ zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_in(DeviceLinks);
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
+    zox_sys_in(CanvasLink);
     for (int i = 0; i < it->count; i++) {
         // zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(DeviceLinks, devices);
         zox_sys_i(CharacterLink, character);
         zox_sys_i(CameraLink, camera);
-
+        zox_sys_i(CanvasLink, canvas);
         if (state->value != zox_player_state_playing) {
             continue;
         }
-
         if (!zox_valid(camera->value)) {
             continue;
         }
-
         byte is_toggle_camera = 0;
         byte is_toggle_freeroam = 0;
         for (int j = 0; j < devices->length; j++) {
-
-            entity device = devices->value[j];
-
-            if (!zox_valid(device)) {
+            entity e2 = devices->value[j];
+            if (!zox_valid(e2)) {
                 continue;
             }
-
-            if (zox_has(device, Keyboard)) {
-                zox_geter(device, Keyboard, keyboard);
-
-                if (keyboard->f1.pressed_this_frame) {
-                    is_toggle_freeroam = 1;
+            if (!zox_has(e2, DeviceDisabled) || zox_gett_value(e2, DeviceDisabled)) {
+                continue;
+            }
+            uint children_capacity = zox_children_capacity;
+            entity children[children_capacity];
+            uint children_length = zox_get_children(world, e2, children, children_capacity);
+            for (uint k = 0; k < children_length; k++) {
+                entity e3 = children[k];
+                if (!zox_valid(e3)) {
+                    continue;
                 }
-
-                else if (keyboard->f2.pressed_this_frame) {
-                    is_toggle_camera = 1;
+                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
+                if (disabled) {
+                    continue;
                 }
-
-            } else if (zox_has(device, Gamepad)) {
-
-                zox_geter(device, Children, zevices);
-                for (int k = 0; k < zevices->length; k++) {
-                    entity zevice = zevices->value[k];
-
-                    if (!zox_has(zevice, ZeviceButton)) {
-                        continue;
-                    }
-
-                    zox_geter(zevice, ZeviceDisabled, zeviceDisabled);
-                    if (zeviceDisabled->value) {
-                        continue;
-                    }
-
-                    zox_geter(zevice, DeviceButtonType, deviceButtonType);
-                    if (deviceButtonType->value == zox_device_button_right_stick_push) {
-
-                        zox_geter(zevice, ZeviceButton, zeviceButton);
-                        if (devices_get_pressed_this_frame(zeviceButton->value)) {
+                if (zox_has(e3, ZeviceButton)) {
+                    zox_geter(e3, DeviceButtonType, type);
+                    if (type->value == zox_device_button_right_stick_push) {
+                        zox_geter_value(e3, ZeviceButton, byte, button);
+                        if (devices_get_pressed_this_frame(button)) {
                             is_toggle_camera = 1;
                             break;
                         }
                     }
                 }
             }
+            if (zox_has(e2, Keyboard)) {
+                zox_geter(e2, Keyboard, keyboard);
+                if (keyboard->f1.pressed_this_frame) {
+                    is_toggle_freeroam = 1;
+                }
+                else if (keyboard->f2.pressed_this_frame) {
+                    is_toggle_camera = 1;
+                }
+            }
         }
-
         if (is_toggle_camera && zox_valid(character->value)) {
-
             byte mode = toggle_camera_mode(world, camera->value);
             byte is_first_person = mode == zox_camera_state_first_person;
-            zox_set(local_crosshair, RenderDisabled, { !is_first_person });
-
+            entity crosshair = zox_get_child_by_id(world, canvas->value, zox_id(Crosshair));
+            if (zox_valid(crosshair)) {
+                zox_set(crosshair, RenderDisabled, { !is_first_person });
+            }
         } else if (is_toggle_freeroam) {
-
             zox_geter_value(camera->value, CameraState, byte, old);
             byte new = old;
-
             if (old == zox_camera_state_free) {
                 new = zox_camera_state_first_person;
                 attach_camera_to_character(world, camera->value, character->value);
@@ -129,7 +120,6 @@ zox_sys2(PlayerToggleCameraSystem) {
                 new = zox_camera_state_free;
                 set_camera_free(world, camera->value);
             }
-
             zox_set(camera->value, CameraState, { new });
             // zox_log("= toggling free roam - old: [%i] -> new: [%i]", old, state->value);
         }

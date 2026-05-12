@@ -25,6 +25,8 @@
 
 */
 
+uint zox_children_capacity = 64;
+
 // Returns the direct parent (ChildOf target), or 0 if none
 entity zox_get_parent(ecs *world, entity child) {
     if (!ecs_is_alive(world, child)) {
@@ -74,7 +76,7 @@ uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity
         return 0;
     }
     if (!entities || capacity <= 0) {
-        zox_loge("Cannot get children by id [%i]", capacity);
+        zox_logw("[%s]'s No Capacity [zox_get_children]", zox_get_name(parent));
         return 0;
     }
     ecs_iter_t it = ecs_children(world, parent);
@@ -86,7 +88,7 @@ uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity
             if (count >= capacity) {
                 if (!warned) {
                     warned = 1;
-                    zox_logw("[%s]'s Children Exceeded Capacity [%i]", zox_get_name(parent), capacity);
+                    zox_logw("[%s]'s Exceeded Capacity [%i] [zox_get_children] ", zox_get_name(parent), capacity);
                 }
                 // return count;
             } else {
@@ -104,7 +106,7 @@ uint zox_get_children_by_id(ecs *world, entity parent, entity* entities, uint ca
         return 0;
     }
     if (!entities || capacity <= 0) {
-        zox_loge("Cannot get children by id [%i]", capacity);
+        zox_logw("[%s]'s No Capacity [zox_get_children_by_id]", zox_get_name(parent));
         return 0;
     }
     ecs_iter_t it = ecs_children(world, parent);
@@ -117,7 +119,7 @@ uint zox_get_children_by_id(ecs *world, entity parent, entity* entities, uint ca
             if (count >= capacity) {
                 if (!warned) {
                     warned = 1;
-                    zox_logw("[%s]'s Children Exceeded Capacity [%i]", zox_get_name(parent), capacity);
+                    zox_logw("[%s]'s Exceeded Capacity [%i] [zox_get_children_by_id]", zox_get_name(parent), capacity);
                 }
             } else {
                 if (zox_has_id(e2, id)) {
@@ -132,7 +134,7 @@ uint zox_get_children_by_id(ecs *world, entity parent, entity* entities, uint ca
 
 entity zox_get_child_by_id(ecs* world, entity parent, entity id) {
     if (!ecs_is_alive(world, parent)) {
-        zox_loge("Cannot get children from invalid parent.");
+        zox_loge("Cannot get children from invalid parent [%s]", zox_get_name(id));
         return 0;
     }
     ecs_iter_t it = ecs_children(world, parent);

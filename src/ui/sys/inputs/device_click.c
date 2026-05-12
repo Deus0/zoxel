@@ -6,18 +6,13 @@ zox_sys2(DeviceClickSystem) {
     zox_sys_in(DeviceDisabled);
     zox_sys_in(PlayerLink);
     zox_sys_in(RaycasterTarget);
-    // zox_sys_in(WindowRaycasted);
-    zox_sys_in(Children);
     zox_sys_out(ClickingEntity);
-    // zox_sys_out(WindowTarget);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(DeviceDisabled, disabled);
         zox_sys_i(PlayerLink, playerLink);
         zox_sys_i(RaycasterTarget, raycasterTarget);
-        // zox_sys_i(WindowRaycasted, windowRaycasted);
-        zox_sys_i(Children, children);
         zox_sys_o(ClickingEntity, clickingEntity);
-        // zox_sys_o(WindowTarget, windowTarget);
         if (disabled->value) {
             continue;
         }
@@ -30,19 +25,21 @@ zox_sys2(DeviceClickSystem) {
             continue;
         }
         byte input_type = 0;
-        for (byte j = 0; j < children->length; j++) {
-            entity zevice = children->value[j];
-            if (!zox_valid(zevice)) {
+        uint children_capacity = zox_children_capacity;
+        entity children[children_capacity];
+        uint children_length = zox_get_children(world, e, children, children_capacity);
+        for (uint j = 0; j < children_length; j++) {
+            entity e2 = children[j];
+            if (!zox_valid(e2)) {
                 continue;
             }
-            if (!zox_has(zevice, ZeviceButton)) continue;
-            if (!zox_has(zevice, DeviceButtonType)) continue;
-            byte button_type = zox_get_value(zevice, DeviceButtonType);
+            if (!zox_has(e2, ZeviceButton)) continue;
+            if (!zox_has(e2, DeviceButtonType)) continue;
+            byte button_type = zox_get_value(e2, DeviceButtonType);
             if (button_type == zox_device_button_a) {
-                byte disabled = zox_get_value(zevice, ZeviceDisabled);
+                byte disabled = zox_get_value(e2, ZeviceDisabled);
                 if (!disabled) {
-                    zox_geter_value(zevice, ZeviceButton, byte, value);
-
+                    zox_geter_value(e2, ZeviceButton, byte, value);
                     if (devices_get_pressed_this_frame(value)) {
                         input_type = 1;
                     } else if (devices_get_released_this_frame(value)) {

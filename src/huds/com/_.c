@@ -13,6 +13,7 @@ zox_tag(QuadsCountLabel);
 zox_tag(GameDebugLabel);
 zox_tag(Profiler);
 zox_tag(MenuNewRealm);
+zox_tag(Crosshair);
 zoxc_byte(HitType);
 zoxc_int(QuadsCount);
 zoxc_double(FPSDisplayTicker);
@@ -40,6 +41,7 @@ void define_components_game_ui(ecs *world) {
     zoxd_tag(GameDebugLabel);
     zoxd_tag(Profiler);
     zoxd_tag(MenuNewRealm);
+    zoxd_tag(Crosshair);
     zoxd_byte(HitType);
     zoxd_int(QuadsCount);
     zoxd_double(FPSDisplayTicker);

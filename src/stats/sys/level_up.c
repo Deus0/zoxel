@@ -47,12 +47,10 @@ zox_sys2(LevelUpSystem) {
         // level up sound
         spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[32 + rand() % 4], 3.4, 1.4f * get_volume_sfx());
         // spawn particle system
-        // zox_muter(userLink->value, Children, children);
         float3 bounds = zox_get_value(parent, Bounds3D);
         // Spawns level up particles
         entity e2 = spawn_particle3D_emitter(world, parent, 10, float3_scale(bounds, 3), (color) { 255, 255, 0, 55 });
         zox_set(e2, DestroyInTime, { 3 + statValue->value });
-        // add_to_Children(children, e2);
         // dirty
         dirty->value = zox_dirty_trigger;
     }

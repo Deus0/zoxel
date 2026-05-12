@@ -19,9 +19,9 @@ zox_begin_module(Layouts2)
     zox_import_module(Containers);
 zox_end_module(Layouts2)
 
+// TODO: WindowToTop -> just trigger Canvas's CanvasDirty flag instead
 // TODO: Implement BoundToCanvas - Constraints in position systems itself, instead of functions
 // TODO: Rename CanvasPosition -> just LayoutPosition
 // TODO: just use LayoutParentData instead of [LayoutParentData, CanvasSpawndata]
-// TODO: WindowToTop -> just trigger Canvas's ChildrenDirty flag instead
 
 #endif

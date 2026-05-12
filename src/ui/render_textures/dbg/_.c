@@ -49,7 +49,6 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
     float3 cube_position = float3_add(cposition, quaternion_rotate_vector(crotation, (float3) { 0, 0, -1.5f }));
     dbg_render_cube = spawn_cube(world, prefab_cube, cube_position, 0.16f);
     zox_set(dbg_render_cube, CameraRenderer, { dbg_render_camera });
-    // zox_set(dbg_render_cube, Children, { 0 });
     add_eternal_euler(world, dbg_render_cube, (float3) { 24, 24, 0 });
     entity e2 = spawn_cube(world, prefab_cube, float3_zero, 0.09f);
     zox_set(e2, CameraRenderer, { dbg_render_camera });

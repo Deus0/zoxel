@@ -62,12 +62,9 @@ void zox_dbg_spawn_canvas(ecs* world, ClickEventData data) {
     // spawn_inspector(world, pcanvas, player, element);
     // spawn_inspector(world, pcanvas, player, element2);
 
-
     // zox_print_children(world, zox_dbg_canvas);
     /*entity dbg_children[32];
     uint count = zox_get_children(world, zox_dbg_canvas, dbg_children, 32);
-
-    zox_log("+ Debugging Children [%i]", count);
     for (uint i = 0; i < count; i++) {
         entity child = dbg_children[i];
 

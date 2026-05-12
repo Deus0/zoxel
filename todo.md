@@ -1,10 +1,22 @@
 ### todo ###
 
+- Raycast Range should be Skill Range
+	- Change when skill is equiped - using actions
+
+- Write a test function to spawn a world item to pickup
+
+- Sometimes namelabel didnt load on npcs
+- test key for keyboard navigation mode
 -x Refactor Skills to use Children and no Users
 - Skills UI - harder refactor
     - Needs to account for UI Slot Indexes
     - Create a component that stores entities array on character, this can be used for the UIs itself (when ui is closed/opened)
     - Or we create a UI child for character, basically just keeps UI references, slots to items themselves
+    
+uint children_capacity = zox_children_capacity;
+entity children[children_capacity];
+uint children_length = zox_get_children(world, e, children, children_capacity);
+zox_set_parent(world, e, e2);
 
 - Pause ui toggle not showing on spawn taskbar + pause
 - Remove User Macros and Speghetti
@@ -17,7 +29,6 @@
 	- spawn_window
 	- Delete any old structs
 	- Remove Duplicate UI prefabs
-- Write a test function to spawn a world item to pickup
 - Give game uis the realm colors so feels different to the main menu
 - Add Stats panel to the taskbar and give header / window
 

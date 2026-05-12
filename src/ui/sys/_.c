@@ -60,7 +60,6 @@ void define_systems_elements(ecs *world) {
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,
-        [in] hierarchys.Children,
         [out] ClickingEntity,
         [none] inputs.Device
     );

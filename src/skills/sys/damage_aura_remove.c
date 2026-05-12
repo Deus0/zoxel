@@ -36,22 +36,6 @@ zox_sys2(AuraRemoveSystem) {
                 }
                 remove_from_DotLinks(dotLinks, dot);
                 zox_delete(dot);
-                // todo: link dot to particles?
-                /*if (children->length) {
-                    entity particle3D_emitter = 0;
-                    for (int j = 0; j < children->length; j++) {
-                        entity child = children->value[j];
-                        entity skill = zox_get_value(child, SkillLink);
-                        if (skill == aura) {
-                            particle3D_emitter = child;
-                            break;
-                        }
-                    }
-                    if (particle3D_emitter) {
-                        // remove_from_Children(children, particle3D_emitter);
-                        zox_delete(particle3D_emitter);
-                    }
-                }*/
             }
         }
 

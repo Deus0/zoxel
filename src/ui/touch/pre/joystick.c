@@ -7,7 +7,6 @@ entity spawn_prefab_virtual_joystick(ecs *world, entity prefab) {
     zox_prefab_set(e, FrameCorner, { 2 });
     zox_prefab_set(e, OutlineThickness, { 2 });
     zox_prefab_set(e, Color, { virtual_joystick_color });
-    zox_prefab_set(e, Children, { 0 });
     zox_prefab_add(e, ZeviceLink);
     return e;
 }

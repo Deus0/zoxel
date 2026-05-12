@@ -169,7 +169,6 @@ zox_sys2(InspectorSpawnSystem) {
             entity e2 = list_children[j];
             zox_delete(e2);
         }
-        // resize_Children(children, 0);
 
         // 5: Spawn new buttons
         for (size_t j = 0; j < labels->size; j++) {

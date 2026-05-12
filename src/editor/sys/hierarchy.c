@@ -47,7 +47,7 @@ void editor_fetch_children(ecs *world, entity_array_d* entities, text_group_dyna
     }
     add_entity_to_labels(world, target, labels, entities, 0);
     fetch_entity_labels_children(world, target, labels, entities, 0);
-    /*fetch_entity_list_by_id(world, target, zox_id(Children), labels, entities, 0);
+    /*
     fetch_entity_list_by_id(world, target, zox_id(TextureLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(CameraLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(PlayerLinks), labels, entities, 0);
@@ -147,17 +147,12 @@ zox_sys2(HierarchySpawnSystem) {
         }
 
         // 5: Spawn new buttons
-        // resize_Children(children, 0);
         for (size_t j = 0; j < labels->size; j++) {
             child_text_data.text = labels->data[j].text;
             entity target = entities->data[j];
-
             entity e2 = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
-
             zox_set(e2, ClickEvent, { on_click.value });
             zox_set(e2, EntityTarget, { target });
-
-            // add_to_Children(children, e2);
             zox_set_parent(world, e2, list_ui);
         }
 
