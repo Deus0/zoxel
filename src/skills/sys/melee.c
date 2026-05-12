@@ -2,6 +2,8 @@
 extern entity spawn_pickup_block(ecs*, float3, entity);
 
 // TODO: Check Resource Cost before warming up!
+// TODO: Move resource use out of this System
+
 zox_sys2(MeleeSystem) {
     byte dbg_log = 0;
     float popup_spawn_y = 0.18f;
@@ -42,7 +44,7 @@ zox_sys2(MeleeSystem) {
             continue;
         }
         // validate their components
-        if ( !zox_has(user, RaycastVoxelData)) {
+        if (!zox_has(user, RaycastVoxelData)) {
             zox_loge("User [%s]: Invalid Melee Components", zox_get_name(user));
             continue;
         }
@@ -77,6 +79,7 @@ zox_sys2(MeleeSystem) {
                 if (dbg_log) {
                     zox_logw("User [%s] needs more [%s] [%f]", zox_get_name(user), zox_get_name(resource), lresource);
                 }
+                spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[14], 0.6, 0.6f * get_volume_sfx());
                 continue;
             }
             // this should be muter -> instant use
@@ -95,7 +98,6 @@ zox_sys2(MeleeSystem) {
             }
             continue;
         }
-
         float skill_range = range->value;
         byte in_range = debug_ray_big_range || !skill_range || raycast->distance <= skill_range;
         if (!in_range) {
@@ -111,8 +113,9 @@ zox_sys2(MeleeSystem) {
             skill_damage += strength_damage_multiplier * zox_gett_value(strength, StatValue);
         }
         if (!zox_has(user, PlayerLink)) {
-            skill_damage *= 0.6f; // EASY MODE
+            skill_damage *= 0.4f; // EASY MODE
         }
+        // Hitting NPC
         if (zox_has(hit, Character3)) {
             entity hit_health = zox_get_child_by_id(world, hit, zox_id(HealthStat));
             if (!zox_valid(hit_health)) {
@@ -150,27 +153,75 @@ zox_sys2(MeleeSystem) {
             sprintf(popup_text, "%i", (int) floor(skill_damage));
             spawn_popup3_easy(world, popup_text, popup_color, popup_position, 2.5f, randf_range(4, 8));
 
-        } else if (raycast->voxel && raycast->hit_block && zox_has(hit, TerrainChunk)) {
+        }
+        // Hitting Terrain
+        else if (raycast->voxel && raycast->hit_block && zox_has(hit, TerrainChunk)) {
             entity block = raycast->hit_block;
             if (!zox_valid(block)) {
                 zox_loge("TerrainChunk is valid but block is not.");
                 continue;
             }
-            if (!zox_has(block, BlockInvinsible)) {
-                // effect our terrain here
-                raycast_action(world, *raycast, 0, 2);
-                // destroy voxel sound
-                spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + rand() % 6], 0.4, 1.2f * get_volume_sfx());
-                if (dbg_log) {
-                    zox_log("User [%s] hit block at []", zox_get_name(user));
-                }
-            } else {
+            // Hit Bedrock!
+            if (zox_has(block, BlockInvinsible)) {
                 // cannot destroy voxel sound
                 spawn_sound_generated(world, prefab_sound_generated,  instrument_violin, note_frequencies[42 + rand() % 6], 0.26, 1.4f * get_volume_sfx());
+                continue;
             }
-        } else {
-            // cannot hit air
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[44], 0.3, volume);
+            // effect our terrain here
+            byte3 positionl = raycast->positionl;
+            entity chunk = raycast->chunk;
+            zox_mut_begin(chunk, VoxelNode, root);
+            // First check Vode:
+            VoxelNode* leaf = getm_VoxelNode(root, raycast->depth, positionl, 0);
+            if (!leaf) {
+                zox_loge("Leaf is null in melee system");
+                continue;
+            }
+            byte linked = is_linked_VoxelNode(leaf);
+            if (linked) {
+                // delete linked
+                entity block = get_entity_VoxelNode(leaf);
+                if (!zox_valid(block)) {
+                    zox_loge("Voxel Health Issues");
+                    continue;
+                }
+                zox_muter(block, StatValue, health);
+                health->value--;
+                byte dead = health->value <= 0;
+                zox_log("Voxel Health [%s]:%f", zox_get_name(block), health->value);
+                if (dead) {
+                    zox_delete(block);
+                    dispose_node_link_VoxelNode(leaf);
+                    zox_mut_end(chunk, VoxelNode);
+                    // finally remove from chunk
+                    zox_muter(chunk, VoxelNodeQueue, queue);
+                    a_VoxelNodeQueue(queue,
+                        (VoxelNodeUpdate) {
+                            .value = 0,
+                            .pos = positionl,
+                        });
+                }
+            } else {
+                // create health entity
+                entity e2 = zox_new();
+                zox_set_unique_name(e2, "voxel_health");
+                zox_set(e2, StatValue, { rand_range(2, 4) });
+                link_node_VoxelNode(leaf, e2);
+                zox_mut_end(chunk, VoxelNode);
+            }
+            // destroy voxel sound
+            spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + rand() % 6], 0.4, 1.2f * get_volume_sfx());
+            // hit block popup
+            float3 popup_position = raycast->positionf;
+            popup_position.x += randf_range(-0.15f, 0.15f);
+            popup_position.z += randf_range(-0.15f, 0.15f);
+            popup_position.y += randf_range(0.2f, 0.33f);
+            char popup_text[64];
+            sprintf(popup_text, "%i", (int) floor(skill_damage));
+            spawn_popup3_easy(world, popup_text, popup_color, popup_position, 2.5f, randf_range(4, 8));
+            if (dbg_log) {
+                zox_log("User [%s] hit block at []", zox_get_name(user));
+            }
         }
     }
 } zox_sys_end(MeleeSystem);

@@ -2,6 +2,7 @@ typedef struct {
     byte result;
     byte voxel;
     entity hit_block;
+    byte depth;
     // current
     byte3 positionl;
     int3 positionv;

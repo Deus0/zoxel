@@ -33,6 +33,16 @@ void link_node_##name(name* node, entity e) {\
     /*write_unlock_##name(node);*/\
 }\
 \
+byte dispose_node_link_##name(name *node) {\
+    if (!node || !is_linked_##name(node)) {\
+        return 0;\
+    }\
+    free(node->ptr);\
+    node->ptr = NULL;\
+    node->type = node_type_closed;\
+    return 1;\
+}\
+\
 byte destroy_node_link_##name(ecs *world, name *node) {\
     if (!node || !is_linked_##name(node)) {\
         return 0;\

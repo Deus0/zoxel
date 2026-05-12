@@ -1,5 +1,7 @@
 ### todo ###
 
+- Remove all old chunk getters/setters and just use latest ones
+
 - Use proper flecs functions for core transform childrens, so it processes them all
 
 - Raycast Range should be Skill Range
