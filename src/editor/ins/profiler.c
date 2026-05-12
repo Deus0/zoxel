@@ -1,4 +1,8 @@
 entity spawn_profiler(ecs* world, entity p, const char *header_label, int2 position, int2 size, float2 anchor, entity canvas, byte layer) {
+    if (!zox_valid(canvas)) {
+        zox_loge("Invalid Canvas");
+        return 0;
+    }
 
     byte plots_count = 1;
     color text_color = window_outline; // (color) { 255, 255, 255, 255 };

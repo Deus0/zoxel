@@ -1,7 +1,8 @@
 #ifndef zoxm_zexts
 #define zoxm_zexts
 
-uint texts_children_capacity = 512;
+uint texts_children_capacity = 64;
+
 // todo: move labels to here as prefab
 #include "dat/_.c"
 #include "com/_.c"

@@ -1,7 +1,7 @@
 #ifndef zoxm_hierarchy
 #define zoxm_hierarchy
 
-uint hierarhys_children_capacity = 256;
+uint hierarhys_children_capacity = 64;
 #include "com/_.c"
 #include "fun/_.c"
 #include "sys/_.c"

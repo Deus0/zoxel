@@ -1,4 +1,14 @@
 // todo: move to add key event
+
+entity canvas_toggle_ui(ecs *world, entity canvas, entity e, entity (*spawn_ui)(ecs*, const entity)) {
+    if (e == 0) {
+        return (*spawn_ui)(world, canvas);
+    } else {
+        zox_delete(e);
+        return 0;
+    }
+}
+
 zox_sys2(EditorInputSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -21,11 +31,11 @@ zox_sys2(EditorInputSystem) {
                 // toggle uis
                 if (keyboard->x.pressed_this_frame) {
                     entity profiler = zox_get_child_by_id(world, canvas->value, zox_id(Profiler));
-                    player_toggle_ui(world, e, profiler, spawn_profiler_canvas);
+                    canvas_toggle_ui(world, canvas->value, profiler, spawn_profiler_canvas);
                 }
                 else if (keyboard->c.pressed_this_frame) {
                     entity label = zox_get_child_by_id(world, canvas->value, zox_id(GameDebugLabel));
-                    player_toggle_ui(world, e, label, spawn_profiler_canvas);
+                    canvas_toggle_ui(world, canvas->value,  label, spawn_game_debug_label);
                 }
                 /*else if (keyboard->v.pressed_this_frame) {
                     entity profiler = zox_get_child_by_id(world, canvas->value, zox_id(Profiler));

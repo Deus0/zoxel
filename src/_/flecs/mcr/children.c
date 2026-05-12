@@ -25,6 +25,8 @@
 
 */
 
+// TODO: Make use wrapped flecs children query instead for many
+byte is_warn_capacity = 1;
 uint zox_children_capacity = 64;
 
 // Returns the direct parent (ChildOf target), or 0 if none
@@ -80,14 +82,12 @@ uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity
         return 0;
     }
     ecs_iter_t it = ecs_children(world, parent);
-    byte warned = 0;
     uint count = 0;
     while (ecs_children_next(&it)) {
         for (int i = 0; i < it.count; i++) {
             // If Buffer is Full
             if (count >= capacity) {
-                if (!warned) {
-                    warned = 1;
+                if (is_warn_capacity) {
                     zox_logw("[%s]'s Exceeded Capacity [%i] [zox_get_children] ", zox_get_name(parent), capacity);
                 }
                 // return count;
@@ -110,15 +110,13 @@ uint zox_get_children_by_id(ecs *world, entity parent, entity* entities, uint ca
         return 0;
     }
     ecs_iter_t it = ecs_children(world, parent);
-    byte warned = 0;
     uint count = 0;
     while (ecs_children_next(&it)) {
         for (int i = 0; i < it.count; i++) {
             entity e2 = it.entities[i];
             // If Buffer is Full
             if (count >= capacity) {
-                if (!warned) {
-                    warned = 1;
+                if (is_warn_capacity) {
                     zox_logw("[%s]'s Exceeded Capacity [%i] [zox_get_children_by_id]", zox_get_name(parent), capacity);
                 }
             } else {

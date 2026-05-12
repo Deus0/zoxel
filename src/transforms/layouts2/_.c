@@ -2,7 +2,8 @@
 #if !defined(zoxm_layouts2) && defined(zoxm_transforms2)
 #define zoxm_layouts2
 
-uint layouts2_children_capacity = 256;  // for big ass text
+// TODO: Use proper flecs for the core systems so it gets all of them
+uint layouts2_children_capacity = 64;  // for big ass text
 
 #include "com/_.c"
 #include "dat/_.c"

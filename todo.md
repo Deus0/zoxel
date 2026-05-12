@@ -1,5 +1,7 @@
 ### todo ###
 
+- Use proper flecs functions for core transform childrens, so it processes them all
+
 - Raycast Range should be Skill Range
 	- Change when skill is equiped - using actions
 
