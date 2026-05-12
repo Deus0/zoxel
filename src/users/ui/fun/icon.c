@@ -1,12 +1,10 @@
 void set_icon_from_user_data(ecs *world, entity frame, entity icon, entity data) {
-
     if (!zox_valid(frame) || !zox_valid(icon)) {
         zox_log_error("invalid frame or e in icon setting")
         return;
     }
-
-    zox_set(frame, UserDataLink, { data });
-    zox_set(icon, UserDataLink, { data });
+    zox_set(frame, DataLink, { data });
+    zox_set(icon, DataLink, { data });
     entity texture = zox_valid(data) && zox_has(data, TextureLink) ? zox_gett_value(data, TextureLink) : 0;
     if (!texture) {
         if (zox_valid(data)) {

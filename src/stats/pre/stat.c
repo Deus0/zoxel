@@ -1,4 +1,4 @@
-entity spawn_prefab_stat(ecs *world) {
+entity spawn_prefab_stat(ecs* world) {
     zox_prefab();
     zox_prefab_name("stat");
     zox_prefab_set(e, ZoxName, { 0 });

@@ -19,10 +19,9 @@ zox_sys2(CharacterActionsSpawnSystem) {
         // skill!
         // TODO: Find a punch skill at level 1
         if (meta_skill_punch) {
-            entity action = spawn_user_skill(world, meta_skill_punch, e);
-            add_to_ActionLinks(actions, action);
+            entity e2 = spawn_user_skill(world, e, meta_skill_punch);
+            add_to_ActionLinks(actions, e2);
         }
-
 
         // If Player, Fill with Blank!
         if (zox_has(e, PlayerLink)) {

@@ -1,4 +1,5 @@
- entity zox_dbg_test_window;
+entity zox_dbg_test_window;
+#define zox_tsts_count 14
 
  void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
      zox_tst_spawn_tilemap(world);
@@ -8,15 +9,12 @@
      if (keycode != zox_key_g) {
          return;
      }
-
      zox_log("Testing [All]: %lu", zox_dbg_test_window);
-
-     if (zox_dbg_test_window) {
+     if (zox_valid(zox_dbg_test_window)) {
          zox_delete(zox_dbg_test_window);
          zox_dbg_element = 0;
          return;
      }
-
      entity player = dbg_player;
      zox_geter_value(player, CanvasLink, entity, canvas);
      if (!zox_valid(canvas)) {
@@ -28,12 +26,13 @@
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
-    SpawnListElement elements[12];
+    SpawnListElement elements[zox_tsts_count];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
     byte header_font_size = 6 * ui_scale;
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
+    // UI
     elements[elements_count++] = (SpawnListElement) {
         .text = "Canvas",
         .on_click = { &zox_dbg_spawn_canvas },
@@ -54,6 +53,11 @@
         .text = "Dialogue",
         .on_click = { &zox_tst_spawn_dialogue },
     };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Render Texture",
+        .on_click = { &zox_tst_render_texture },
+    };
+    // 3D
     elements[elements_count++] = (SpawnListElement) {
         .text = "Particles3",
         .on_click = { &zox_dbg_spawn_particle_emitter },
@@ -78,12 +82,14 @@
         .text = "Death",
         .on_click = { &zox_tst_player_character_death },
     };
-
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Render Texture",
-        .on_click = { &zox_tst_render_texture },
+        .text = "All Items",
+        .on_click = { &zox_tst_all_items },
     };
-
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "All Skills",
+        .on_click = { &zox_tst_all_skills },
+    };
 
     // Test our uis
     entity spawned[elements_count];
@@ -93,4 +99,5 @@
     zox_add_tag(e3.x, NavigationWindow);
     zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
     // zox_set(spawned[0], TooltipEvent, { &tooltip_event_main_menu });
+    zox_dbg_test_window = e3.x;
 }

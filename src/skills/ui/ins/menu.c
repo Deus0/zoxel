@@ -1,6 +1,9 @@
 entity spawn_player_menu_skills(ecs* world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
+    return spawn_datagrid(world, prefab_menu_skills, prefab_icon_skill, canvas, character, zox_id(Skill), zox_id(SkillLink), "Skillbook", default_fill_color_frame_skill, default_fill_color_frame_skill);
+    /*zox_geter_value(player, CanvasLink, entity, canvas);
+    zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
 
     SpawnWindowUsers spawn_data = get_default_spawn_window_users_data(world, prefab_menu_skills, character, canvas, canvas_size);
@@ -21,7 +24,6 @@ entity spawn_player_menu_skills(ecs* world, entity player) {
     entity3 spawns[skills->length];
 
     entity e = spawn_window_users_id(world, spawn_data, texture_data, 0, spawns);
-
     for (int i = 0; i < skills->length; i++) {
         entity e2 = skills->value[i];
         entity3 frame = spawns[i];
@@ -36,5 +38,5 @@ entity spawn_player_menu_skills(ecs* world, entity player) {
         }
     }
 
-    return e;
+    return e;*/
 }

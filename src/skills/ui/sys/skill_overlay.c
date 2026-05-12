@@ -3,10 +3,10 @@ zox_sys2(SkillOverlaySystem) {
     byte debug_system = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(UserDataLink);
+    zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(UserDataLink, link);
+        zox_sys_i(DataLink, link);
         entity children[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
         if (!children_length) {

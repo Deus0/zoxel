@@ -9,7 +9,7 @@
 #include "fun/_.c"
 #include "sys/_.c"
 #include "ui/_.c"
-#include "tst/aura.c"
+#include "tst/_.c"
 
 zox_begin_module(Skills)
     add_hook_spawn_prefabs(spawn_prefabs_skills);

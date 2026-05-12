@@ -7,10 +7,6 @@ extern entity spawn_inspector(ecs*, entity, entity, entity);
 // DONE: Remove this and use new parent system for rendering / transform
 void zox_dbg_spawn_canvas(ecs* world, ClickEventData data) {
 
-    /*if (keycode != zox_key_h) {
-        return;
-    }*/
-
     if (!zox_valid(prefab_canvas)) {
         zox_loge("Invalid Prefab [prefab_canvas]");
         return;

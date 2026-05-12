@@ -9,7 +9,7 @@ zoxc_hashmap(Chunk2Links, int2)
 zoxc_byte(CloneVox);
 zoxc_entity(CloneVoxLink);
 zoxc_state(CombineVox);
-zoxc_entities_weak(CombineList);
+zoxc_entitiesw(CombineList);
 zoxc_arrayd(CombinePositions, byte3);
 
 // TODO: Move to Shapes or something
@@ -31,7 +31,7 @@ void define_components_voxes(ecs *world) {
     zoxd_byte(CloneVox);
     zoxd_state(CombineVox);
     zoxd_entity(CloneVoxLink);
-    zoxd_entities_weak(CombineList);
+    zoxd_entitiesw(CombineList);
     zoxd_arrayd(CombinePositions);
 
     // TODO: Move to Shapes or something

@@ -5,10 +5,8 @@
 #include "character_player.c"
 realm_clear_system(ItemLinks);
 
-void define_systems_items(ecs *world) {
-
+void define_systems_items(ecs* world) {
     realm_clear_systemd(items, ItemLinks);
-
     zox_system_1(
         ItemActivateSystem,
         EcsOnUpdate,
@@ -19,7 +17,6 @@ void define_systems_items(ecs *world) {
         [out] items.QuantityDirty,
         [none] ItemBlock
     );
-
     zox_system_1(
         ItemDropSystem,
         EcsOnUpdate,
@@ -27,7 +24,6 @@ void define_systems_items(ecs *world) {
         [in] transforms3.Position3D,
         [in] items.ItemLinks
     );
-
     zox_system_1(
         TerrainItemDropSystem,
         EcsOnUpdate,
@@ -38,7 +34,6 @@ void define_systems_items(ecs *world) {
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
     );
-
     zox_system_1(
         CharacterItemsSystem,
         EcsOnUpdate,
@@ -47,7 +42,6 @@ void define_systems_items(ecs *world) {
         [out] items.ItemLinks,
         [none] !players.PlayerLink
     );
-
     zox_system_1(
         CharacterPlayerItemsSystem,
         EcsOnUpdate,

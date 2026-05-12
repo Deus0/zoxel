@@ -22,14 +22,7 @@ zox_sys2(PlayerCharacterStatsSystem) {
             if (!zox_has(rstat, StatAttribute)) {
                 continue;
             }
-            // Spawn a regen
-            entity stat = spawn_stat_attribute(world, rstat, e, NULL, 0, 0);
-            // add_to_StatLinks(stats, stat);
-
-            /*if (zox_has(stat, StatAttribute)) {
-                entity character_stat = spawn_user_stat(world, stat, e);
-                add_to_StatLinks(stats, character_stat);
-            }*/
+            spawn_stat_attribute(world, e, rstat, 0);
         }
     }
 } zox_sys_end(PlayerCharacterStatsSystem);

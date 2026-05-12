@@ -1,6 +1,11 @@
 ### todo ###
 
-- Raycasting is broken in first chunk, or origin one, doesnt seem to be linking error
+-x Refactor Skills to use Children and no Users
+- Skills UI - harder refactor
+    - Needs to account for UI Slot Indexes
+    - Create a component that stores entities array on character, this can be used for the UIs itself (when ui is closed/opened)
+    - Or we create a UI child for character, basically just keeps UI references, slots to items themselves
+
 - Pause ui toggle not showing on spawn taskbar + pause
 - Remove User Macros and Speghetti
 - Remove structs from UI prefab use
@@ -17,9 +22,9 @@
 - Add Stats panel to the taskbar and give header / window
 
 Refactoring:
--x Make user data ChildOf relationships
-- Remake Character Meta to be actual Characters
--x Minimizes prefab instantiate code
+- Make user data ChildOf relationships
+	- Remake Character Meta to be actual Characters
+	- Minimizes prefab instantiate code
 - Refactor texture generation to blueprints
 - upgrade the texture for the item frames
 - Terrain loading and finishing should be overseen by GameState and not Player events

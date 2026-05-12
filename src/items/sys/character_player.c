@@ -14,7 +14,7 @@ zox_sys2(CharacterPlayerItemsSystem) {
             continue;
         }
 
-        int count = !test_items_blocks ? character_inventory_count : 16;
+        int count = character_inventory_count; // !test_items_blocks ? character_inventory_count : 16;
 
         initialize_ItemLinks(items, count);
         if (!items->value) {
@@ -26,7 +26,7 @@ zox_sys2(CharacterPlayerItemsSystem) {
             items->value[i] = 0; // blanks are item slots
         }
 
-        if (!test_items_blocks) {
+        /*if (!test_items_blocks) {
             continue;
         }
 
@@ -60,7 +60,7 @@ zox_sys2(CharacterPlayerItemsSystem) {
             zox_set(item, Quantity, { quantity });
 
             items->value[place_index++] = item;
-        }
+        }*/
 
     }
 } zox_sys_end(CharacterPlayerItemsSystem);

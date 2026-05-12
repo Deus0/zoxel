@@ -46,15 +46,11 @@ void editor_fetch_children(ecs *world, entity_array_d* entities, text_group_dyna
         return;
     }
     add_entity_to_labels(world, target, labels, entities, 0);
-
     fetch_entity_labels_children(world, target, labels, entities, 0);
-
-    fetch_entity_list_by_id(world, target, zox_id(Children), labels, entities, 0);
+    /*fetch_entity_list_by_id(world, target, zox_id(Children), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(TextureLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(CameraLinks), labels, entities, 0);
-
     fetch_entity_list_by_id(world, target, zox_id(PlayerLinks), labels, entities, 0);
-
     fetch_entity_list_by_id(world, target, zox_id(BlockLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(StatLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(ItemLinks), labels, entities, 0);
@@ -63,14 +59,12 @@ void editor_fetch_children(ecs *world, entity_array_d* entities, text_group_dyna
     fetch_entity_list_by_id(world, target, zox_id(SkillLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(QuestLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(DialoguetreeLinks), labels, entities, 0);
-
     fetch_entity_list_by_id(world, target, zox_id(CharacterLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(BiomeLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(RecipeLinks), labels, entities, 0);
     fetch_entity_list_by_id(world, target, zox_id(PlaylistLinks), labels, entities, 0);
-
     fetch_entity_list_by_id(world, target, zox_id(ModelLinks), labels, entities, 0);
-    fetch_entity_list_by_id(world, target, zox_id(NodegraphLinks), labels, entities, 0);
+    fetch_entity_list_by_id(world, target,  zox_id(NodegraphLinks), labels, entities, 0);*/
 }
 
 

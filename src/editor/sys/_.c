@@ -4,7 +4,6 @@
 #include "inspector_label.c"
 
 void define_systems_editor(ecs *world) {
-
     zox_system_1(
         HierarchySpawnSystem,
         zoxp_mainthread,

@@ -42,9 +42,9 @@ void zoxel_set_debug() {
     // disable_block_voxes = 1;
     // debug
     disable_block_vox_generation = 0;
-    test_actions_skills = 0;
-    test_items_blocks = 1;
-    test_all_skills = 1;
+    // test_actions_skills = 0;
+    // test_items_blocks = 1;
+    // test_all_skills = 1;
 }
 
 void zoxel_settings_npcs() {

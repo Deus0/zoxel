@@ -7,10 +7,11 @@ zox_base_type(entities)
     add_to_entity_array_d(component_ids_entities, ecs_id(T)); \
     zox_observe(on_destroyed_##T, EcsOnRemove, [in] T)
 
-#define zoxc_entities_weak(T)\
+// Weak is without the Destruction Hooks
+#define zoxc_entitiesw(T)\
     /*add_to_entity_array_d(component_ids_entities, ecs_id(T));*/ \
     zoxc_arrayd(T, entity)
 
-#define zoxd_entities_weak(T) \
-    /*add_to_entity_array_d(component_ids_entities, ecs_id(T));*/ \
-    zoxd_arrayd(T)
+#define zoxd_entitiesw(T) \
+    zoxd_arrayd(T) \
+    add_to_entity_array_d(component_ids_entities, ecs_id(T));

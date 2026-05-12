@@ -12,21 +12,6 @@ int2 calculate_grid_size(SpawnWindowUsersData data) {
     };
 }
 
-int2 calculate_grid_window_size(SpawnWindowUsersData data, int header_height) {
-    return (int2) {
-
-        data.grid_padding.x * (data. grid_size.x - 1)
-        + data.icon_size * data. grid_size.x
-        + data.grid_margins.x * 2,
-
-        data.grid_padding.y * (data. grid_size.y - 1)
-        + data.icon_size * data. grid_size.y
-        + data.grid_margins.y * 2
-        + header_height
-
-    };
-}
-
 SpawnWindowUsers get_default_spawn_window_users_data(ecs *world, entity prefab, entity character, entity canvas, int2 canvas_size) {
     // Sizing
     byte header_font_size = 6 * ui_scale;

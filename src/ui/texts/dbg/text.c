@@ -3,7 +3,7 @@ entity zox_dbg_text;
 void zox_tst_spawn_text2(ecs* world, ClickEventData data) {
     entity player = dbg_player;
     zox_log("Testing [spawn_text]: %lu", zox_dbg_text);
-    if (zox_dbg_text) {
+    if (zox_valid(zox_dbg_text)) {
         zox_delete(zox_dbg_text);
         zox_dbg_text = 0;
         return;

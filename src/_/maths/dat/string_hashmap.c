@@ -1,9 +1,9 @@
 typedef struct {
-    char *value;
+    const char *value;
     int length;
 } string_data;
 
-string_data new_string_data(char *value) {
+string_data new_string_data(const char *value) {
     return (string_data) { .value = value, .length = strlen(value) };
 }
 

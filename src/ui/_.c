@@ -18,6 +18,7 @@ byte is_log_dragging = 0;
 #include "navigation/_.c"
 #include "touch/_.c"
 #include "render_textures/_.c"
+#include "containers/_.c"
 #include "dbg/_.c"
 
 zox_begin_module(Elements)
@@ -34,6 +35,7 @@ zox_begin_module(Elements)
     zox_import_module(Navigation);
     zox_import_module(Touch);
     zox_import_module(RenderTextures);
+    zox_import_module(UIContainers);
 zox_end_module(Elements)
 
 #endif

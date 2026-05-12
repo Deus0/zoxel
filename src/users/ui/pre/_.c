@@ -14,6 +14,6 @@ void spawn_prefabs_users_ui(ecs* world) {
         prefab_frame_user = spawn_prefab_frame_user(world, prefab_frame);
     }
     if (prefab_icon_mouse_follow) {
-        zox_prefab_set(prefab_icon_mouse_follow, UserDataLink, { 0 });
+        zox_prefab_set(prefab_icon_mouse_follow, DataLink, { 0 });
     }
 }

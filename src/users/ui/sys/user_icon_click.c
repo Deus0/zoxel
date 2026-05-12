@@ -14,13 +14,13 @@ zox_sys2(UserIconClickSystem) {
     zox_sys_in(ClickState);
     zox_sys_in(IconType);
     zox_sys_in(IconIndex);
-    zox_sys_out(UserDataLink);
+    zox_sys_out(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ClickState, clickState);
         zox_sys_i(IconType, iconType);
         zox_sys_i(IconIndex, iconIndex);
-        zox_sys_o(UserDataLink, userDataLink);
+        zox_sys_o(DataLink, userDataLink);
         if (clickState->value != zox_click_state_clicked_this_frame) {
             continue;
         }
@@ -28,7 +28,7 @@ zox_sys2(UserIconClickSystem) {
         if (!icon_type) {
             continue;
         }
-        zox_geter_value(icon_mouse_follow, UserDataLink, entity, mouse_data);
+        zox_geter_value(icon_mouse_follow, DataLink, entity, mouse_data);
         byte mouse_data_empty = !zox_valid(mouse_data);
         byte clicked_data_empty = !zox_valid(userDataLink->value);
         if (mouse_data_empty && clicked_data_empty) {
@@ -58,7 +58,7 @@ zox_sys2(UserIconClickSystem) {
         } else {
             zox_set(icon_mouse_follow, IconType, { 0 });
         }
-        zox_set(icon_mouse_follow, UserDataLink, { userDataLink->value });
+        zox_set(icon_mouse_follow, DataLink, { userDataLink->value });
         zox_set(icon_mouse_follow, RenderDisabled, { clicked_data_empty });
         userDataLink->value = mouse_data;
         // zox_log("swapping textures\n")

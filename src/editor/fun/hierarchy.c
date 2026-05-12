@@ -109,7 +109,7 @@ void fetch_entity_labels_children(ecs *world, entity e, text_group_dynamic_array
     }
 }
 
-void fetch_entity_list_by_id(ecs *world, entity e, entity id, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
+void fetch_entity_list_by_id(ecs* world, entity e, entity id, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
 
     // used for polymorphism
     typedef struct {
@@ -117,26 +117,19 @@ void fetch_entity_list_by_id(ecs *world, entity e, entity id, text_group_dynamic
         int length;
     } placeholder;
 
-    if (!zox_valid(e)) {
-        return;
-    }
-
-    if (!zox_has_id(e, id)) {
+    if (!zox_valid(e) || !zox_has_id(e, id)) {
         return;
     }
 
     tree_level++;
-
     const placeholder* entities2 = (placeholder*) (zox_get_id(e, id));
-
     for (int i = 0; i < entities2->length; i++) {
         entity e2 = entities2->value[i];
-
         if (!zox_valid(e2)) {
             continue;
         }
-
         add_entity_to_labels(world, e2, labels, entities, tree_level);
+        fetch_entity_labels_children(world, e2, labels, entities, 0);
         fetch_entity_list_by_id(world, e2, id, labels, entities, tree_level);
     }
 }

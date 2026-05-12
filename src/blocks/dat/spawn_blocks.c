@@ -1,6 +1,6 @@
 typedef struct {
     entity realm;
-    BlockLinks *blocks;
+    BlockLinks* blocks;
 } spawn_blocks_data;
 
 // todo: move this to core voxels module

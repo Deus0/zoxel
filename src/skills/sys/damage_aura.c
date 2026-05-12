@@ -3,30 +3,26 @@
     extern entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
 #endif
 
-zox_sys2(DamageAuraSystem) {
+zox_sys2(AuraSystem) {
+    byte dbg_log = 1;
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(UserLink);
     zox_sys_in(SkillActive);
     zox_sys_in(SkillDamage);
     zox_sys_in(SkillRange);
     zox_sys_in(Color);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(UserLink, userLink);
         zox_sys_i(SkillActive, skillActive);
         zox_sys_i(SkillDamage, skillDamage);
         zox_sys_i(SkillRange, skillRange);
         zox_sys_i(Color, colorr);
-
-        if (!zox_valid(userLink->value) || !skillActive->value || !skillDamage->value || !skillRange->value) {
+        entity user = zox_get_parent(world, e);
+        if (!zox_valid(user) || !skillActive->value || !skillDamage->value || !skillRange->value) {
             continue;
         }
-
-        // zox_get_prefab(prefab_aura, e)
-        const entity user = userLink->value;
-        zox_geter_value(userLink->value, Position3D, float3, position3)
+        zox_geter_value(user, Position3D, float3, position3)
         // todo: Get Chunk' Characters instead, this could potentially go through tens of thousands..
         // get nearby characters using distance formula
         // make this spherecast
@@ -35,30 +31,26 @@ zox_sys2(DamageAuraSystem) {
             zox_sys_begin_2()
             zox_sys_in_2(Dead)
             zox_sys_in_2(Position3D)
-            zox_sys_out_2(Children)
             zox_sys_out_2(DotLinks)
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_e_2()
                 zox_sys_i_2(Position3D, position3D2)
                 zox_sys_i_2(Dead, dead)
-                zox_sys_o_2(Children, children)
                 zox_sys_o_2(DotLinks, dotLinks)
                 if (user == e2 || dead->value) {
                     continue;
                 }
-                const float distance = float3_distance(position3, position3D2->value);
+                float distance = float3_distance(position3, position3D2->value);
                 entity poisoned_entity = 0;
                 // Checks if dot was already added to player!
                 // get poison, that  was initiated by this aura user
                 for (int k = 0; k < dotLinks->length; k++) {
-                    const entity dot = dotLinks->value[k];
+                    entity dot = dotLinks->value[k];
                     if (!zox_has(dot, SkillLink)) {
                         continue;
                     }
-                    zox_geter_value(dot, SkillLink, entity, skill_spawner)
-                    // zox_get_prefab(prefab_aura, e)
-                    // if added in this function, SpawnerLink doesn't get added into flecs table until after the function, so the dot will not have component access yet, assume we havn't added a dot yet from the current user
-                    if (skill_spawner == e) { // zox_has(dot, SpawnerLink) && zox_gett_value(dot, SpawnerLink) == user) {
+                    zox_geter_value(dot, SkillLink, entity, skill_spawner);
+                    if (skill_spawner == e) {
                         poisoned_entity = dot;
                         break;
                     }
@@ -69,16 +61,16 @@ zox_sys2(DamageAuraSystem) {
                 // makes sure to check the debuff is linked to same character
                 // makes it so t two players can damage a character at once
                 if (distance <= skillRange->value) {
-                    const entity new_dot = spawn_poison(world, prefab_poison, e2, user, e, skillDamage->value);
-                    // zox_log(" + added new dot [%s] [%lu] total dots [%i]\n", zox_get_name(new_dot), new_dot, dotLinks->length)
-                    add_to_DotLinks(dotLinks, new_dot);
+                    entity e3 = spawn_poison(world, e2, prefab_poison, user, e, skillDamage->value);
+                    if (dbg_log) {
+                        zox_log("Added new dot [%s] total dots [%i]", zox_get_name(e3), dotLinks->length);
+                    }
+                    add_to_DotLinks(dotLinks, e3);
                     // spawn particle system
-                    const float3 bounds = zox_get_value(e2, Bounds3D);
-
-                    entity particle3D_emitter = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
-                    zox_set(particle3D_emitter, SkillLink, { e });
-                    add_to_Children(children, particle3D_emitter);
-
+                    float3 bounds = zox_get_value(e2, Bounds3D);
+                    entity p = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
+                    zox_set(p, SkillLink, { e });
+                    zox_set(e3, ParticlesEmitterLink, { p });
 #ifdef zox_debug_aoe_damage_system
                     spawn_line3(world, position3, position3D2->value, 0.5f, 0.1);
 #endif
@@ -87,4 +79,4 @@ zox_sys2(DamageAuraSystem) {
         }
         zox_sys_query_end();
     }
-} zox_sys_end(DamageAuraSystem);
+} zox_sys_end(AuraSystem);

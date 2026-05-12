@@ -5,7 +5,6 @@ zox_sys2(SkillToggleSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Activate, activate);
         zox_sys_o(SkillActive, skill_active);
-
         if (activate->value == zox_dirty_active) {
             skill_active->value = !skill_active->value;
         }

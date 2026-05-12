@@ -1,7 +1,8 @@
 //zoxc_userdata(Stat);
 zox_tag(Stat);
 zoxc_entity(StatLink);
-zoxc_entities(StatLinks);   // Used for realm atm
+zoxc_entitiesw(StatLinks);   // Used for realm atm
+zoxc_entities(DotLinks)
 // Types
 zox_tag(StatBase);
 zox_tag(StatState);
@@ -13,7 +14,6 @@ zoxc_float(StatValue);
 zoxc_float(StatValueMax);
 zoxc_float(ExperienceValue);
 zoxc_float(ExperienceMax);
-zoxc_entities(DotLinks)
 zoxc_state(StatDirty);
 // special stats
 zox_tag(HealthStat);
@@ -22,7 +22,8 @@ zox_tag(StatSoul);
 void define_components_stats(ecs *world) {
     zoxd_tag(Stat);
     zoxd_entity(StatLink);
-    zoxd_entities(StatLinks);
+    zoxd_entitiesw(StatLinks);
+    zoxd_entities(DotLinks);
     // Types
     zoxd_tag(StatBase);
     zoxd_tag(StatState);
@@ -35,7 +36,6 @@ void define_components_stats(ecs *world) {
     zoxd_float(StatValueMax);
     zoxd_float(ExperienceValue);
     zoxd_float(ExperienceMax);
-    zoxd_entities(DotLinks);
     // special stats
     zoxd_tag(HealthStat);
     zoxd_tag(StatSoul);

@@ -25,3 +25,10 @@ typedef ecs_iter_t iter;
 #include "query.c"
 #include "hooks.c"
 #include "children.c"
+
+
+entity zox_ins_named(ecs* world, entity prefab) {
+    entity e = zox_ins(prefab);
+    zox_set_unique_name(e, zox_get_name(prefab));
+    return e;
+}

@@ -9,42 +9,35 @@ zox_sys2(CharacterSkillsSpawnSystem) {
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
         zox_sys_o(SkillLinks, skills);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         int skills_count = 8;
         initialize_SkillLinks(skills, skills_count);
         if (!skills->value) {
             zox_log_error("Failed allocating memory for skills");
             continue;
         }
-
         for (int j = 0; j < skills_count; j++) {
             skills->value[j] = 0; // blanks are item slots
         }
-
-        if (!test_all_skills) {
+        // When Testing all skills
+        // TODO: Remove this and make a test function
+        /*if (!test_all_skills) {
             continue;
         }
-
-        zox_geter(realm->value, SkillLinks, realm_skills);
-
+        zox_geter(realm->value, SkillLinks, rskills);
         int place_index = 0;
-        for (int j = 0; j < realm_skills->length; j++) {
+        for (int j = 0; j < rskills->length; j++) {
             if (j >= skills_count) {
                 break;
             }
-
-            const entity skill = realm_skills->value[j];
-            if (!zox_valid(skill)) {
-                zox_log_error("skill invalid [%i]", j)
+            entity rskill = rskills->value[j];
+            if (!zox_valid(rskill)) {
+                zox_log_error("Skill invalid [%i]", j)
                 continue;
             }
-
-            skills->value[place_index++] = spawn_user_skill(world, skill, e);
-        }
-
+            skills->value[place_index++] = spawn_user_skill(world, e, rskill);
+        }*/
     }
 } zox_sys_end(CharacterSkillsSpawnSystem);

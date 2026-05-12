@@ -1,7 +1,4 @@
-void zox_prefab_addc_user_timings(
-    ecs* world,
-    entity e
-) {
+void zox_prefab_addc_user_timings(ecs* world, entity e) {
     zox_prefab_set(e, WarmupAt, { 0 });
     zox_prefab_set(e, WarmupState, { 0 });
     zox_prefab_set(e, CooldownAt, { 0 });

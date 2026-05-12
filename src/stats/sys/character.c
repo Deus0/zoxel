@@ -46,15 +46,11 @@ zox_sys2(CharacterStatsSystem) {
         float2 energy = (float2) { energy_base, energy_base + soul_value * energy_level_increase };
         float2 mana = (float2) { mana_base, mana_base + soul_value * mana_level_increase };
         // Soul
-        entity ssoul = spawn_stat_level(world, realm_soul, e, NULL, soul_value, 0);
+        spawn_stat_level(world, e, realm_soul, soul_value);
         // Health
-        entity shealth = spawn_stat_state(world, realm_health, e, NULL, health.x, health.y, 0);
-        entity senergy = spawn_stat_state(world, realm_energy, e, NULL, energy.x, energy.y, 0);
-        entity smana = spawn_stat_state(world, realm_mana, e, NULL, mana.x, mana.y, 0);
-        /*add_to_StatLinks(stats, ssoul);
-        add_to_StatLinks(stats, shealth);
-        add_to_StatLinks(stats, senergy);
-        add_to_StatLinks(stats, smana);*/
+        spawn_stat_state(world, e, realm_health, health.x, health.y);
+        spawn_stat_state(world, e, realm_energy, energy.x, energy.y);
+        spawn_stat_state(world, e, realm_mana, mana.x, mana.y);
         // Add Regen Stats
         for (int j = 0; j < rstats->length; j++) {
             entity rstat = rstats->value[j];
@@ -65,9 +61,7 @@ zox_sys2(CharacterStatsSystem) {
                 continue;
             }
             // Spawn a regen
-            entity stat = spawn_stat_regen(world, rstat, e, NULL, 10, 0);
-            // entity character_stat = spawn_user_stat(world, rstat, e);
-            // add_to_StatLinks(stats, stat);
+            spawn_stat_regen(world, e, rstat, 10);
         }
 
         //entity stat_soul = spawn_user_stat(world, realm_soul, e);

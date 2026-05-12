@@ -31,7 +31,7 @@ void on_action_set(ecs* world, entity e, byte index, entity action, entity meta)
     // remember: uses meta item for texture source here
     // zox_get_prefab(action, meta);
     set_icon_from_user_data(world, frame, icon, meta);
-    zox_set(icon, UserDataLink, { action });
+    zox_set(icon, DataLink, { action });
 
     // also set other links
     zox_set(frame, ItemLink, { action });

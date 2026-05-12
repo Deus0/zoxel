@@ -1,5 +1,6 @@
 // right click = place
 zox_sys2(ActionActivateSystem) {
+    byte is_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TriggerActionA);
@@ -9,7 +10,6 @@ zox_sys2(ActionActivateSystem) {
         zox_sys_i(TriggerActionA, trigger);
         zox_sys_i(ActionIndex, index);
         zox_sys_i(ActionLinks, actions);
-
         if (trigger->value != zox_dirty_active) {
             continue;
         }
@@ -17,14 +17,14 @@ zox_sys2(ActionActivateSystem) {
             zox_loge("Action selected is out of bounds [%i of %i]", index->value, actions->length);
             continue;
         }
-
         entity action = actions->value[index->value];
         // no action assigned
         if (!zox_valid(action)) {
-            zox_logw("Action Invalid at [%i]", index->value);
+            if (is_log) {
+                zox_log("Action Empty at [%i]", index->value);
+            }
             continue;
         }
-
         // TODO: Replace with CanActivate later
         byte is_activate = zox_has(action, Activate) ? zox_gett_value(action, Activate) : 0;
         byte is_activate_begin = zox_has(action, ActivateBegin) ? zox_gett_value(action, ActivateBegin) : 0;
@@ -38,7 +38,9 @@ zox_sys2(ActionActivateSystem) {
             continue;
         }
         zox_set(action, ActivateBegin, { zox_dirty_trigger });
-        // zox_sys_e();
-        // zox_log(" - [%s] Action Begins", zox_get_name(e));
+        if (is_log) {
+            zox_sys_e();
+            zox_log(" - [%s] Action [%s] Begins", zox_get_name(e), zox_get_name(action));
+        }
     }
 } zox_sys_end(ActionActivateSystem);

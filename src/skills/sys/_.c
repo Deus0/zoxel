@@ -4,14 +4,13 @@
 #include "dots.c"
 #include "activate.c"
 #include "toggle.c"
+#include "aura_particles.c"
 #include "aura_sound.c"
 #include "character.c"
 realm_clear_system(SkillLinks);
 
 void define_systems_skills(ecs *world) {
-
     realm_clear_systemd(skills, SkillLinks);
-
     zox_system(
         SkillToggleSystem,
         EcsOnUpdate,
@@ -19,7 +18,6 @@ void define_systems_skills(ecs *world) {
         [out] skills.SkillActive,
         [none] Aura
     );
-
     /*zox_system(
         SkillActivateSystem,
         EcsOnUpdate,
@@ -33,20 +31,17 @@ void define_systems_skills(ecs *world) {
         [in] users.WarmupState,
         [out] skills.SkillActive
     );*/
-
+    // TODO: DotLinks just parent them instead
     zox_filter(
         characters,
         [in] combat.Dead,
         [in] transforms3.Position3D,
-        [out] hierarchys.Children,
         [out] stats.DotLinks
     );
-
     zox_system_ctx_1(
-        DamageAuraSystem,
+        AuraSystem,
         zoxp_mainthread,
         characters,
-        [in] users.UserLink,
         [in] SkillActive,
         [in] SkillDamage,
         [in] SkillRange,
@@ -54,26 +49,22 @@ void define_systems_skills(ecs *world) {
         [none] Aura
     );
     zox_system(
-        DamageAuraRemoveSystem,
+        AuraRemoveSystem,
         EcsOnUpdate,
         [in] transforms3.Position3D,
-        [out] stats.DotLinks,
-        [out] hierarchys.Children
+        [out] stats.DotLinks
     );
     zox_system(
         DotsSystem,
         EcsOnUpdate,
-        [in] users.UserLink,
         [in] users.SpawnerLink,
         [in] SkillDamage,
         [none] Poison
     );
-
     // TODO: split into sound, resource and damage systems
     zox_system_1(
         MeleeSystem,
         zoxp_queue_add,
-        [in] users.UserLink,
         [in] skills.SkillDamage,
         [in] skills.SkillDamageMax,
         [in] skills.SkillRange,
@@ -82,15 +73,6 @@ void define_systems_skills(ecs *world) {
         [in] users.Activate,
         [none] skills.Melee
     );
-
-    zox_system_1(
-        AuraSoundSystem,
-        EcsOnUpdate,
-        [in] users.Activate,
-        [none] skills.Aura
-    );
-
-
     zox_system_1(
         CharacterSkillsSpawnSystem,
         EcsOnUpdate,
@@ -98,5 +80,22 @@ void define_systems_skills(ecs *world) {
         [in] realms.RealmLink,
         [out] skills.SkillLinks
         // [none] !players.PlayerLink
+    );
+    // Spawn particles around player for Auras
+    zox_system_1(
+        AuraParticlesSystem,
+        zoxp_mainthread,
+        [in] users.Activate,
+        [in] skills.SkillActive,
+        [in] skills.SkillRange,
+        [in] colorz.Color,
+        [out] particles.ParticlesEmitterLink,
+        [none] skills.Aura
+    );
+    zox_system_1(
+        AuraSoundSystem,
+        zoxp_mainthread,
+        [in] users.Activate,
+        [none] skills.Aura
     );
 }

@@ -1,4 +1,7 @@
-zoxc_userdata(Skill);
+//zoxc_userdata(Skill);
+zox_tag(Skill);
+zoxc_entity(SkillLink);
+zoxc_entitiesw(SkillLinks);   // Used for realm atm
 zox_tag(Melee);
 zox_tag(Aura);
 zox_tag(Poison);
@@ -10,10 +13,13 @@ zoxc_float(SkillCost);
 zoxc_entity(SkillResourceLink);
 
 void define_components_skills(ecs* world) {
+    zoxd_tag(Skill);
+    zoxd_entity(SkillLink);
+    zoxd_entitiesw(SkillLinks);
     zoxd_tag(Melee);
     zoxd_tag(Aura);
     zoxd_tag(Poison);
-    zoxd_userdata(Skill);
+    // zoxd_userdata(Skill);
     zoxd_float(SkillDamage);
     zoxd_float(SkillDamageMax);
     zoxd_float(SkillRange);

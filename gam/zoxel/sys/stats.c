@@ -4,15 +4,14 @@ zox_sys2(StatsRealmSpawnSystem) {
     zox_sys_in(GenerateRealm);
     zox_sys_out(StatLinks);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(GenerateRealm, state);
         zox_sys_o(StatLinks, stats);
-
         if (state->value != zox_generate_realm_stats) {
             continue;
         }
-
-        const float sat = 1.4f;
-        const float dark = 0.4f;
+        float sat = 1.4f;
+        float dark = 0.4f;
         color_rgb soul_c = color_rgb_purple;
         color_rgb health_c = color_rgb_red;
         color_rgb energy_c = color_rgb_yellow;
@@ -21,39 +20,36 @@ zox_sys2(StatsRealmSpawnSystem) {
         health_c = color_rgb_darken(color_rgb_saturate(health_c, sat), dark);
         energy_c = color_rgb_darken(color_rgb_saturate(energy_c, sat), dark);
         mana_c = color_rgb_darken(color_rgb_saturate(mana_c, sat), dark);
-
         // levels
-        entity soul = spawn_stat_level_t(world, "soul", "soul", soul_c);
+        // entity soul = spawn_stat_level_t(world, "soul", "soul", soul_c);
+        entity soul = spawn_realm_stat(world, e, prefab_stat_level, "soul", "soul", soul_c);
         zox_add_tag(soul, StatSoul);
-        add_to_StatLinks(stats, soul);
-
         // states
-        entity health = spawn_stat_state_t(world, "health", "health", health_c);
+        entity health = spawn_realm_stat(world, e, prefab_stat_state, "health", "health", health_c);
         zox_add_tag(health, HealthStat);
-        entity energy = spawn_stat_state_t(world, "energy", "energy", energy_c);
-        entity mana = spawn_stat_state_t(world, "mana", "mana", mana_c);
+        entity energy = spawn_realm_stat(world, e, prefab_stat_state, "energy", "energy", energy_c);
+        entity mana = spawn_realm_stat(world, e, prefab_stat_state, "mana", "mana", mana_c);
+        // Regens
+        entity health_regen = spawn_realm_stat(world, e, prefab_stat_regen, "health regen", "healthregen", health_c);
+        entity energy_regen = spawn_realm_stat(world, e, prefab_stat_regen, "energy regen", "energyregen", energy_c);
+        entity mana_regen = spawn_realm_stat(world, e, prefab_stat_regen, "mana regen", "manaregen", mana_c);
+        // Attributes
+        entity strength = spawn_realm_stat(world, e, prefab_stat_attribute, "strength", "strength", color_rgb_white);
+        entity vitality = spawn_realm_stat(world, e, prefab_stat_attribute, "vitality", "vitality", color_rgb_white);
+        entity endurance = spawn_realm_stat(world, e, prefab_stat_attribute, "endurance", "magic_defence", color_rgb_white);
+        entity intelligence = spawn_realm_stat(world, e, prefab_stat_attribute, "intelligence", "intelligence", color_rgb_white);
+        entity wisdom = spawn_realm_stat(world, e, prefab_stat_attribute, "wisdom", "wisdom", color_rgb_white);
+        entity agility = spawn_realm_stat(world, e, prefab_stat_attribute, "agility", "agility", color_rgb_white);
+        entity dexterity = spawn_realm_stat(world, e, prefab_stat_attribute, "dexterity", "dexterity", color_rgb_white);
+        entity charm = spawn_realm_stat(world, e, prefab_stat_attribute, "charm", "charm", color_rgb_white);
+        entity luck = spawn_realm_stat(world, e, prefab_stat_attribute, "luck", "luck", color_rgb_white);
+        add_to_StatLinks(stats, soul);
         add_to_StatLinks(stats, health);
         add_to_StatLinks(stats, energy);
         add_to_StatLinks(stats, mana);
-
-        // Regens
-        entity health_regen = spawn_stat_regen_t(world, "health regen", "healthregen");
-        entity energy_regen = spawn_stat_regen_t(world, "energy regen", "energyregen");
-        entity mana_regen = spawn_stat_regen_t(world, "mana regen", "manaregen");
         add_to_StatLinks(stats, health_regen);
         add_to_StatLinks(stats, energy_regen);
         add_to_StatLinks(stats, mana_regen);
-
-        // Attributes
-        entity strength = spawn_stat_attribute_t(world, "strength", "strength");
-        entity vitality = spawn_stat_attribute_t(world, "vitality", "vitality");
-        entity endurance = spawn_stat_attribute_t(world, "endurance", "endurance");
-        entity intelligence = spawn_stat_attribute_t(world, "intelligence", "intelligence");
-        entity wisdom = spawn_stat_attribute_t(world, "wisdom", "wisdom");
-        entity agility = spawn_stat_attribute_t(world, "agility", "agility");
-        entity dexterity = spawn_stat_attribute_t(world, "dexterity", "dexterity");
-        entity charm = spawn_stat_attribute_t(world, "charm", "charm");
-        entity luck = spawn_stat_attribute_t(world, "luck", "luck");
         add_to_StatLinks(stats, strength);
         add_to_StatLinks(stats, vitality);
         add_to_StatLinks(stats, endurance);

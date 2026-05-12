@@ -7,7 +7,7 @@ zoxc_state(BodyDirty);
 zoxc_byte(SlotType);
 zoxc_entity(AttachLink);
 zoxc_entities(PartLinks);
-// zoxc_entities_weak(PartLinks);
+// zoxc_entitiesw(PartLinks);
 zoxc_byte3(BodySize);
 zoxc_byte3(PartSize);
 zoxc_byte3(PartPosition);

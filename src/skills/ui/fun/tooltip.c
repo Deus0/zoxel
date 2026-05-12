@@ -1,4 +1,4 @@
-byte tooltip_event_skill(ecs *world, const TooltipEventData *data) {
+byte tooltip_event_skill(ecs *world, const TooltipEventData* data) {
     if (!data->data || !zox_has(data->data, Skill)) {
         return 0;
     }
