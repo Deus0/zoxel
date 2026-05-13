@@ -262,14 +262,11 @@ void collide_with_chunk(
     // firstt  we get our intersection line! (two points)
     position_last_d += offset_d;
     position_d += offset_d;
-
     const int position_vox_last_d = positionf_to_positionv1(position_last_d, terrain_scale);
     const int position_vox_d = positionf_to_positionv1(position_d, terrain_scale);
-
     if (position_vox_d == position_vox_last_d) {
         return;
     }
-
     const int3 max_chunk_size = int3_single(powers_of_two[terrain_depth]);
     // const byte3 chunk_dimensions_b3 = byte3_single(powers_of_two[terrain_depth]);
     // set dimensional variables to newer point
@@ -284,15 +281,12 @@ void collide_with_chunk(
     if (!node) {
         return;
     }
-
     zox_geter_value(chunk, NodeDepth, byte, chunk_depth);
-
     // account for node depth differences
     byte ddepth = terrain_depth - chunk_depth + 1;  // depth difference
     /*zox_log("terrain_depth: %i", terrain_depth);
     zox_log("   chunk_depth: %i", chunk_depth);
     zox_log("   ddepth: %i", ddepth);*/
-
     int3 voxel_position2 = int3_div1(voxel_position, (int) ddepth);
     byte3 chunk_size = byte3_single(powers_of_two[chunk_depth]);
     byte3 voxel_positionl = get_positionl_byte3(voxel_position2, chunk_size);

@@ -9,7 +9,6 @@ zox_sys2(ChunkLodSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
-
     zox_sys_query();
     zox_sys_world();
     byte streamers_dirty = 0;

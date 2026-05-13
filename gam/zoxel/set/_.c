@@ -55,12 +55,8 @@ void zoxel_settings_npcs() {
     is_characters_instanced = 1;
     disable_npc_hooks = 0;
     disable_npc_uis = 0;
-    disable_npc_movement = 0;
     disable_npc_positioner = 0;
     is_paint_skeletons = 0;
-    // max npcs
-    // disable_instancing = 1; // test so we can reverse backward etc
-    // disable_npc_movement = 1;
     /*
     character_spawn_rate = 128;
     is_characters_instanced = 1;
@@ -127,6 +123,8 @@ void zoxel_debug_keys() {
     add_hook_key_down(toggle_flymode);
     add_hook_key_down(toggle_inspector);
     add_hook_key_down(toggle_hierarchy);
+    add_hook_key_down(key_down_toggle_streaming);
+    add_hook_key_down(key_down_toggle_npc_movement);
     add_hook_key_down(key_down_toggle_debug_chunks);
     add_hook_key_down(key_down_toggle_debug_character_bounds);
     add_hook_key_down(key_down_toggle_debug_voxes_bounds);
@@ -136,7 +134,6 @@ void zoxel_debug_keys() {
     // add_hook_key_down(toggle_life_terrain);
     // add_hook_key_down(toggle_inspector_player);
     // add_hook_key_down_2(zox_key_g, toggle_autoroam);
-    // add_hook_key_down(key_down_toggle_streaming);
     // Test our cube meshes
     // add_hook_key_down(keydown_test_cubes);
     // add_hook_key_down(debug_key_down_unstucking);

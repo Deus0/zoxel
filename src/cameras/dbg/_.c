@@ -1,15 +1,8 @@
-void toggle_cameras_updates() {
-    zox_cameras_disable_streaming = !zox_cameras_disable_streaming;
-    zox_log("+ streaming is [%s]", zox_cameras_disable_streaming ? "disabled" : "enabled")
-}
-
-void key_down_toggle_streaming(ecs *world, int32_t keycode) {
-    (void) world;
-
+void key_down_toggle_streaming(ecs* world, int32_t keycode) {
     if (keycode != zox_key_F3) {
         return;
     }
-
-    toggle_cameras_updates();
+    zox_cameras_disable_streaming = !zox_cameras_disable_streaming;
+    zox_log("+ streaming is [%s]", zox_cameras_disable_streaming ? "disabled" : "enabled");
     // spawn_sound_from_file_index(world, prefab_sound, 0);
 }

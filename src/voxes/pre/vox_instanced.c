@@ -1,8 +1,5 @@
 // TransformMatrix, RenderDisabled, InstanceLink
-entity spawn_prefab_vox_instanced(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_vox_instanced(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("vox_instanced");
     zox_prefab_set(e, RenderDisabled, { 0 });
@@ -13,6 +10,5 @@ entity spawn_prefab_vox_instanced(
     zox_prefab_set(e, BlockScale, { vox_model_scale });
     zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
     zox_prefab_set(e, Bounds3Dirty, { 0 });
-
     return e;
 }

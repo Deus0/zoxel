@@ -26,7 +26,4 @@ void on_spawned_character3_npc(ecs* world, entity e) {
     if (rand() % 100 <= 14) {
         zox_add_tag(e, Coward);
     }
-    if (disable_npc_movement) {
-        zox_set(e, DisableMovement, { 1 });
-    }
 }

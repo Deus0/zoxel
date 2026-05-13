@@ -1,5 +1,8 @@
 ### todo ###
 
+- Fix NPC streaming
+    - issues on LODs
+    -x issues on LOD Scales
 - Replace all find_random_position_on_ground with getv_VoxelNode's
 - Remove all old chunk getters/setters and just use latest ones
 

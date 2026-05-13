@@ -29,6 +29,7 @@ void define_systems_characters3_terrain(ecs* world) {
         [in] chunks3.VoxelNodeLoaded,
         [in] chunks3.ChunkPosition,
         [in] transforms3.Position3D,
+        [in] blocks.BlockScale,
         [in] rendering.RenderDistance,
         [in] rendering.RenderDisabled,
         [in] voxes.VoxLink,

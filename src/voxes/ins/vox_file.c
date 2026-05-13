@@ -148,7 +148,6 @@ entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* fi
 
     ModelLods model_lods;
     for (byte rdepth = 0; rdepth <= mdepth; rdepth++) {
-
         byte reducer = mdepth - rdepth;
         // byte reducer = 0;
         // i - disabled for now
@@ -156,23 +155,19 @@ entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* fi
         // float bscale = (1.0f / (float) ddepth) * (1 / 64.0f);
         // float bscale = ((float) ddepth) * (1 / 64.0f);
         float bscale = (1 / 64.0f);
+        bscale *= powers_of_two[mdepth - rdepth];
 
         // zox_log("> rdepth [%i] ddepth [%i] scale [%f]", rdepth, ddepth, bscale);
 
         zox_instance(p);
-
         set_vox_file(world, e, data, reducer, bscale);
-
         zox_set(e, ChunkMeshDirty, { zox_dirty_trigger });
         zox_set(e, RenderDepth, { rdepth });
         // zox_set(e, MaxRenderDepth, { mdepth });
         zox_set(e, MaxRenderDepth, { rdepth});
-
         model_lods.value[rdepth] = e;
     }
     zox_set_ptr(model, ModelLods, model_lods);
-
     // zox_log("Generating Complete [%s]", filename);
-
     return model;
 }

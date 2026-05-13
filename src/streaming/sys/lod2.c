@@ -10,7 +10,6 @@ zox_sys2(Chunk2LodSystem) {
     byte dirty = 0;
     int2* streamers = NULL;
     int streamers_count = 0;
-
     zox_sys_query_begin();
     while (zox_sys_query_loop()) {
         if (dirty) {
