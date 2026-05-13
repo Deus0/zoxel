@@ -6,6 +6,7 @@ extern entity spawn_pickup_block(ecs*, float3, entity);
 
 zox_sys2(MeleeSystem) {
     byte dbg_log = 0;
+    byte dbg_log_block = 0;
     float popup_spawn_y = 0.18f;
     double volume = get_volume_sfx();
     color popup_color = (color) { 255, 0, 0, 255 };
@@ -170,45 +171,69 @@ zox_sys2(MeleeSystem) {
             // effect our terrain here
             byte3 positionl = raycast->positionl;
             entity chunk = raycast->chunk;
-            zox_mut_begin(chunk, VoxelNode, root);
+            float block_damage = randf_range(1, 3);
             // First check Vode:
-            VoxelNode* leaf = getm_VoxelNode(root, raycast->depth, positionl, 0);
+            zox_mut_begin(chunk, VoxelNode, root);
+            VoxelNode* leaf = open_at_VoxelNode(root, raycast->depth, positionl, 0); //  getm
+            // TODO: Subdivide Octree if not lowest level! we need it at lowest level for destruction
             if (!leaf) {
                 zox_loge("Leaf is null in melee system");
                 continue;
             }
             byte linked = is_linked_VoxelNode(leaf);
+            entity world_block;
             if (linked) {
-                // delete linked
-                entity block = get_entity_VoxelNode(leaf);
-                if (!zox_valid(block)) {
-                    zox_loge("Voxel Health Issues");
-                    continue;
-                }
-                zox_muter(block, StatValue, health);
-                health->value--;
-                byte dead = health->value <= 0;
-                zox_log("Voxel Health [%s]:%f", zox_get_name(block), health->value);
-                if (dead) {
-                    zox_delete(block);
+                world_block = get_entity_VoxelNode(leaf);
+            }
+            // Create new block health
+            float block_health;
+            if (!zox_valid(world_block) || !zox_has(world_block, StatValue)) {
+                block_health = randf_range(3, 6);
+            } else {
+                block_health = zox_gett_value(world_block, StatValue);
+            }
+            block_health -= block_damage;
+            if (block_health <= 0) {
+                // Only dispose block if had to spawn health entity
+                if (zox_valid(world_block)) {
+                    zox_delete(world_block);
                     dispose_node_link_VoxelNode(leaf);
                     zox_mut_end(chunk, VoxelNode);
-                    // finally remove from chunk
-                    zox_muter(chunk, VoxelNodeQueue, queue);
-                    a_VoxelNodeQueue(queue,
-                        (VoxelNodeUpdate) {
-                            .value = 0,
-                            .pos = positionl,
-                        });
+                    if (dbg_log_block) {
+                        zox_log("Disposing of Block");
+                    }
                 }
+                // finally remove from chunk
+                zox_muter(chunk, VoxelNodeQueue, queue);
+                a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = 0, .pos = positionl });
             } else {
-                // create health entity
-                entity e2 = zox_new();
-                zox_set_unique_name(e2, "voxel_health");
-                zox_set(e2, StatValue, { rand_range(2, 4) });
-                link_node_VoxelNode(leaf, e2);
-                zox_mut_end(chunk, VoxelNode);
+                if (!zox_valid(world_block)) {
+                    // create health entity
+                    // TODO: Get health off meta or use prefab
+                    world_block = zox_new();
+                    zox_set_unique_name(world_block, "block_health");
+                    link_node_VoxelNode(leaf, world_block);
+                    zox_mut_end(chunk, VoxelNode);
+                    zox_set(world_block, StatValue, { block_health });
+                    if (dbg_log_block) {
+                        zox_log("- New Block Health [%s]:%f", zox_get_name(world_block), block_health);
+                    }
+                } else if (!zox_has(world_block, StatValue)) {
+                    zox_set(world_block, StatValue, { block_health });
+                    if (dbg_log_block) {
+                        zox_log("- Grass Block Health [%s]:%f", zox_get_name(world_block), block_health);
+                    }
+                } else {
+                    zox_muter(world_block, StatValue, health);
+                    health->value = block_health;
+                    if (dbg_log_block) {
+                        zox_log("- Block Health [%s]:%f", zox_get_name(world_block), block_health);
+                    }
+                }
             }
+            // zox_muter(chunk, VoxelNodeQueue, queue);
+            // a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = 0, .pos = positionl });
+            // add health to block child
             // destroy voxel sound
             spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + rand() % 6], 0.4, 1.2f * get_volume_sfx());
             // hit block popup
@@ -217,7 +242,7 @@ zox_sys2(MeleeSystem) {
             popup_position.z += randf_range(-0.15f, 0.15f);
             popup_position.y += randf_range(0.2f, 0.33f);
             char popup_text[64];
-            sprintf(popup_text, "%i", (int) floor(skill_damage));
+            sprintf(popup_text, "%i", (int) floor(block_damage));
             spawn_popup3_easy(world, popup_text, popup_color, popup_position, 2.5f, randf_range(4, 8));
             if (dbg_log) {
                 zox_log("User [%s] hit block at []", zox_get_name(user));

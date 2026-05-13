@@ -4,19 +4,10 @@
 // =======================================
 
 // Core setter: walks toward target depth, sets value, opens children if missing
-static inline void* set_octree_value(
-    void* node,
-    byte tdepth,
-    byte3 pos,
-    byte value,
-    byte depth,
-    size_t stride,
-    size_t value_offset
-) {
+static inline void* set_octree_value(void* node, byte tdepth, byte3 pos, byte value, byte depth, size_t stride, size_t value_offset) {
     if (!node) {
         return NULL;
     }
-
     // Are we at target depth?
     byte depth_reached = (depth == tdepth);
     void** ptr = (void**) node;
@@ -24,27 +15,21 @@ static inline void* set_octree_value(
 
     // Open children if missing and we need to go deeper
     if (!depth_reached && !kids) {
-
         kids = malloc(stride * 8);   // allocate 8 children
-
         if (!kids) {
             zox_log_error("[set_octree_value] Allocation Failure");
             return node;
         }
-
         memset(kids, 0, stride * 8);    // zero-init
         *ptr = kids;
-
         // --- New: set all children values ---
         byte parent_value = *(byte*)((char*) node + value_offset);
-
         for (byte j = 0; j < 8; j++) {
             void* child = (char*)(kids) + j * stride;
 
             *(byte*)((char*)child + value_offset) = parent_value;
         }
     }
-
     // Set value if reached depth
     if (depth_reached) {
         // Pointer math to set value
@@ -52,17 +37,13 @@ static inline void* set_octree_value(
         // zox_log("Depth [%i] Reached [%i]", tdepth, value);
         return node;
     }
-
     // Dive into correct child
     byte div = powers_of_two_byte[tdepth - depth - 1];
-
     if (!div) {
         return node;
     }
-
     byte3 npos = { pos.x / div, pos.y / div, pos.z / div };
     byte i = byte3_octree_array_index(npos);
-
     if (i >= 8) {
         zox_logw("[set_octree_value] Invalid Index >= 8 [%i]\n  - pos [%ix%ix%i]\n    - npos [%ix%ix%i]\n    - div [%i]\n    - depth [%i]\n    - tdepth [%i]",
             i,
@@ -71,13 +52,7 @@ static inline void* set_octree_value(
             div, depth, tdepth);
         return node;
     }
-
-    byte3 cpos = {
-        pos.x % div,
-        pos.y % div,
-        pos.z % div
-    };
-
+    byte3 cpos = { pos.x % div, pos.y % div, pos.z % div };
     return set_octree_value((char*) kids + i * stride, tdepth, cpos, value, depth + 1, stride, value_offset);
 }
 

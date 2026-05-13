@@ -1,38 +1,26 @@
 extern entity get_linked_character(ecs*, entity);
 byte raycast_locks = 0;
-
 // TODO: Handle out-of-bounds raycasting
 // TODO: Raycast through character voxels too!
-
 // NOTE: We Raycast Character Bounds | Terrain seperately
 // NOTE: Characters Linked to Chunks, ones on bounds might overlap and confilct!
 //  todo: seperate character raycast from terrain, and we just compare both distances
 
-
 // Raycast through characters linked to chunks, excluding the caster itself
 // Uses AABB intersection to find closest hit along the ray
 CharacterRaycast raycast_character(ecs *world, float3 ray_origin, float3 ray_normal, entity caster, const ChunkEntities* entities) {
-
-    CharacterRaycast ray = {
-        .e = 0,
-        .distance = FLT_MAX,
-    };
-
+    CharacterRaycast ray = { .e = 0, .distance = FLT_MAX };
     if (!entities) {
         return ray;
     }
-
     for (int i = 0; i < entities->length; i++) {
         entity e = entities->value[i];
-
         if (!zox_valid(e) || caster == e || !zox_has(e, Position3D) || !zox_has(e, Bounds3D)) {
             continue;
         }
-
         zox_geter_value(e, Position3D, float3, position3);
         zox_geter_value(e, Rotation3D, float4, rotation3);
         zox_geter_value(e, Bounds3D, float3, bounds3);
-
         bounds character_bounds = {
             .center = position3,
             .extents = calculate_aabb_extents(bounds3, rotation3)
@@ -44,7 +32,6 @@ CharacterRaycast raycast_character(ecs *world, float3 ray_origin, float3 ray_nor
         } else if (!ray_intersects_aabb(ray_origin, ray_normal, character_bounds, &tmin, &tmax)) {
             continue;
         }
-
         if (tmin < ray.distance) {
             ray.distance = tmin;
             ray.point = float3_add(ray_origin, float3_scale(ray_normal, tmin));
@@ -52,10 +39,8 @@ CharacterRaycast raycast_character(ecs *world, float3 ray_origin, float3 ray_nor
             ray.e = e;
         }
     }
-
     return ray;
 }
-
 
 // Update chunk info for current ray position, unlock previous chunk if locked
 // Returns 0 if chunk is invalid or not loaded
@@ -79,44 +64,36 @@ byte update_chunk_for_raycast(
 ) {
     // Terrain Pass
     if (chunk_links) {
-
         if (raycast_locks && *node_chunk) {
             read_unlock_VoxelNode(*node_chunk);
         }
-
         entity new_chunk = int3_hashmap_get(chunk_links->value, chunk_position);
-        if (!zox_valid(new_chunk)) return 0;
-
+        if (!zox_valid(new_chunk)) {
+            return 0;
+        }
         *chunk = new_chunk;
-
     }
-
+    if (!zox_valid(*chunk)) {
+        return 0;
+    }
     *node_chunk = zox_get(*chunk, VoxelNode);
-    if (!*node_chunk) return 0;
-
+    if (!*node_chunk) {
+        return 0;
+    }
     if (raycast_locks) {
         read_lock_VoxelNode(*node_chunk);
     }
-
     *chunk_depth = zox_get_value(*chunk, RenderDepth);
     *chunk_size = byte3_single(powers_of_two[*chunk_depth]);
     *chunk_scalev = get_chunk_scale(*chunk_depth, terrain_depth, terrain_scalev);
     *chunk_depth_reduction = terrain_depth - *chunk_depth;
-
     // NOTE: Raycast Character per Terrain Chunk - Only do so when we havn't hit Character yet
     if (chunk_links && !character_raycast->e) {
         zox_geter(*chunk, ChunkEntities, entities);
-        *character_raycast = raycast_character(
-            world,
-            ray_origin,
-            ray_normal,
-            caster,
-            entities);
+        *character_raycast = raycast_character(world, ray_origin, ray_normal, caster, entities);
     }
-
     return 1;
 }
-
 
 // Main voxel raycast function using DDA traversal:
 // - Traverses voxel chunks grid stepping through chunks dynamically
@@ -124,8 +101,7 @@ byte update_chunk_for_raycast(
 // - Compares character raycast hit vs terrain voxel hit and returns closest
 // - Maintains chunk locking state for thread safety during voxel reads
 // - Returns rayhit_* constants for type of hit or none
-byte raycast_voxel_node(
-    ecs *world,
+byte raycast_voxel_node(ecs *world,
     entity caster,
     const BlockLinks* voxels,
     const ChunkLinks* chunk_links,
@@ -142,17 +118,13 @@ byte raycast_voxel_node(
     RaycastVoxelData* data,
     CharacterRaycast* character_raycast
 ) {
-
     if (!terrain_scalev) {
         zox_logw("terrain_scalev is 0, cannot divide by this");
         return 0;
     }
-
     // setup voxel data
     byte raycasting_terrain = voxels && voxels->length && chunk_links;
     byte3 max_chunk_sizeb3 = int3_to_byte3(max_chunk_size);
-
-
     const VoxelNode* node_chunk = NULL;
     VoxelNode* node_voxel = NULL;
     byte chunk_depth;
@@ -164,31 +136,13 @@ byte raycast_voxel_node(
     byte result = 0;
     uint checks = 0;
     byte was_hitting = 0;
-
     // NOTE: This is called from Minivoxes
     if (zox_valid(chunk)) {
-        if (!update_chunk_for_raycast(
-            world,
-            &chunk,
-            &node_chunk,
-            chunk_links,
-            chunk_position,
-            terrain_depth,
-            terrain_scalev,
-            &chunk_depth,
-            &chunk_depth_reduction,
-            &chunk_size,
-            &chunk_scalev,
-            character_raycast,
-            ray_origin,
-            ray_normal,
-            caster)
-        ) {
+        if (!update_chunk_for_raycast(world, &chunk, &node_chunk, chunk_links, chunk_position, terrain_depth, terrain_scalev, &chunk_depth, &chunk_depth_reduction, &chunk_size, &chunk_scalev, character_raycast, ray_origin, ray_normal, caster)) {
             zox_log_error("Minivox Invalid Node");
             return 0;
         }
     }
-
     // position
     byte3 positionl;
     int3 positionv;
@@ -197,15 +151,12 @@ byte raycast_voxel_node(
     float3 positionf_last;
     entity chunk_last = chunk;
     VoxelNode *node_last = NULL;
-
     // zero for terrain raycasting
     float3 local_ray_origin = float3_subtract(ray_origin, chunk_positionf);
     // Convert Ray Origin to Terrain Local Voxel Position
     positionv = positionf_to_positionv(local_ray_origin, terrain_scalev);
     float3 ray_origin_scaled = float3_scale(local_ray_origin, 1.0f / terrain_scalev); // get float voxel position
-
     // NOTE: As positionv is terrain local, we need to increase our steps by chunk node reduction
-
     // Prepare stepping vectors for DDA traversal along the ray direction
     int3 step_direction = float3_to_int3(float3_sign(ray_normal));
     float3 ray_unit_size = (float3) {
@@ -213,8 +164,6 @@ byte raycast_voxel_node(
         1.0f / float_abs(ray_normal.y),
         1.0f / float_abs(ray_normal.z)
     };
-    // const float3 world_space_step = float3_scale(ray_unit_size, terrain_scalev);
-
     // Calculate initial distances to voxel boundaries along each axis
     float3 ray_add = float3_zero;
     if (ray_normal.x < 0) {
@@ -233,53 +182,31 @@ byte raycast_voxel_node(
         ray_add.z = ((float) positionv.z + 1 - ray_origin_scaled.z);
     }
     float3_scale3_p(&ray_add, ray_unit_size);
-
+    byte has_fetched = 0;
     // Loop stepping through voxels until ray length exceeded or max checks
     while (ray_distancef <= ray_length && checks < safety_checks_raycasting) {
-
         // Terrain!
         if (raycasting_terrain) {
-            const int3 new_chunk_position = positionv_to_chunk_position(positionv, max_chunk_size);
-
+            int3 new_chunk_position = positionv_to_chunk_position(positionv, max_chunk_size);
             // Steps through chunks in our terrain!
-            if (!int3_equals(chunk_position, new_chunk_position)) {
+            if (!has_fetched || !int3_equals(chunk_position, new_chunk_position)) {
+                has_fetched = 1;
                 // NOTE: we traverse through the void of space now
-                update_chunk_for_raycast(
-                    world,
-                    &chunk,
-                    &node_chunk,
-                    chunk_links,
-                    new_chunk_position,
-                    terrain_depth,
-                    terrain_scalev,
-                    &chunk_depth,
-                    &chunk_depth_reduction,
-                    &chunk_size,
-                    &chunk_scalev,
-                    character_raycast,
-                    ray_origin,
-                    ray_normal,
-                    caster);
+                update_chunk_for_raycast(world, &chunk, &node_chunk, chunk_links, new_chunk_position, terrain_depth, terrain_scalev, &chunk_depth, &chunk_depth_reduction, &chunk_size, &chunk_scalev, character_raycast, ray_origin, ray_normal, caster);
                 chunk_position = new_chunk_position;
             }
-
             positionl = get_positionl_byte3(positionv, max_chunk_sizeb3);
-
             // NOTE: This fixes it for sub chunk nodes
             positionl = byte3_inverse_scale(positionl, (int) powers_of_two[chunk_depth_reduction]);
         }
-
         // Function Inside Minivoxes - Sub Entity Nodes
         else {
-
             if (int3_in_bounds(positionv, max_chunk_size)) {
                 positionl = int3_to_byte3(positionv);
                 if (!was_hitting) {
                     was_hitting = 1;
                 }
-            }
-
-            else {
+            } else {
                 positionl = (byte3) { 255, 255, 255 }; // failure!
                 // return here ?
                 if (was_hitting) {
@@ -290,7 +217,6 @@ byte raycast_voxel_node(
                 }
             }
         }
-
         // Character Ray: if didnt hit voxel, use character hit
         if (character_raycast->e && character_raycast->distance <= ray_distancef) {
             data->chunk = character_raycast->e;
@@ -302,20 +228,14 @@ byte raycast_voxel_node(
             }
             return rayhit_character;
         }
-
         byte hit_voxel = 0;
         byte is_in_bounds = byte3_in_bounds(positionl, chunk_size);
         if (is_in_bounds) {
             byte3 positionl_temp = positionl;
-            node_voxel = get_voxel_node_at_depth(
-                &hit_voxel,
-                node_chunk,
-                &positionl_temp,
-                chunk_depth);
+            node_voxel = get_voxel_node_at_depth(&hit_voxel, node_chunk, &positionl_temp, chunk_depth);
         }
-
         if (is_in_bounds && hit_voxel) {
-
+            byte block_index = hit_voxel - 1;
             if (!raycasting_terrain) {
                 data->distance = ray_distancef;
                 data->normal = int3_to_float3(hit_normal);
@@ -324,36 +244,30 @@ byte raycast_voxel_node(
                 }
                 return rayhit_block_vox;
             }
-
             // safety!
-            if (hit_voxel - 1 >= voxels->length) {
+            if (block_index >= voxels->length) {
                 zox_logw("voxel index out of bounds [%i]", hit_voxel);
                 if (raycast_locks && node_chunk) {
                     read_unlock_VoxelNode(node_chunk);
                 }
                 return rayhit_none;
             }
-
-            entity hit_block = voxels->value[hit_voxel - 1];
+            entity hit_block = voxels->value[block_index];
             if (raycasting_terrain) {
                 data->hit_block = hit_block;
             }
-
             // Raycast into minivox if hit voxel is marked as such, recurse deeper
             byte is_minivox = is_minivox = zox_has(hit_block, BlockVox);
             if (!is_minivox) {
                 result = rayhit_terrain;
                 break;
             }
-
             entity block_spawn = get_node_entity_VoxelNode(node_voxel);
-            if (block_spawn && zox_has(block_spawn, Position3D)) {
-
+            if (zox_valid(block_spawn) && zox_has(block_spawn, Position3D)) {
                 // NOTE: Minivoxes are centred, so get cornered position, we offset
                 zox_geter_value_non_const(block_spawn, Position3D, float3, block_position);
                 float3 ray_point = float3_add(ray_origin, float3_scale(ray_normal, ray_distancef));
                 float3_subtract_float3_p(&block_position, float3_single(0.5f * chunk_scalev));
-
                 // model itself
                 entity vox;
                 // if Instanced mesh, use meta, otherwise use world block spawn!
@@ -364,66 +278,43 @@ byte raycast_voxel_node(
                 } else {
                     vox = chunk;
                 }
-
-                if (!zox_valid(vox) || !zox_has(vox, NodeDepth)) {
-                    if (zox_valid(vox)) {
-                        zox_log_error("Raycast Error: Vox Missing NodeDepth [%s]", zox_get_name(vox));
-                    } else {
-                        zox_log_error("Raycast Error: Invalid Vox [%lu]", vox);
-                    }
+                if (!zox_valid(vox)) {
+                    zox_log_error("Raycast Invalid Vox [%s] [%s] %i", zox_get_name(block_spawn), zox_get_name(hit_block), block_index);
                     if (raycast_locks && node_chunk) {
                         read_unlock_VoxelNode(node_chunk);
                     }
                     return rayhit_none;
                 }
-
+                if (!zox_has(vox, NodeDepth)) {
+                    zox_log_error("Raycast Error: Vox Missing NodeDepth [%s] [%s] [%s]", zox_get_name(vox), zox_get_name(block_spawn), zox_get_name(hit_block));
+                    if (raycast_locks && node_chunk) {
+                        read_unlock_VoxelNode(node_chunk);
+                    }
+                    return rayhit_none;
+                }
                 zox_geter_value(vox, RenderDepth, byte, minivox_render_depth);
                 int minivox_chunk_length = powers_of_two[minivox_render_depth];
+                int3 minivox_chunk_size = int3_single(minivox_chunk_length);
                 float minivox_scalev = chunk_scalev * (1.0f / (float) minivox_chunk_length);
-
+                float minivox_ray_length = minivox_chunk_length * 3;
                 // Recursive Raycasting to Minivox!
-                result = raycast_voxel_node(
-                    world,
-                    caster,
-                    NULL,
-                    NULL,
-                    int3_zero,
-                    block_position,
-                    minivox_render_depth,
-                    int3_single(minivox_chunk_length),
-                    vox,
-                    ray_point,
-                    ray_normal,
-                    hit_normal,
-                    minivox_scalev,
-                    minivox_chunk_length * 3,   // ray length through minivox
-                    data,
-                    character_raycast);
-
+                result = raycast_voxel_node(world, caster, NULL, NULL, int3_zero, block_position, minivox_render_depth, minivox_chunk_size, vox, ray_point, ray_normal, hit_normal, minivox_scalev, minivox_ray_length, data, character_raycast);
                 // We hit Grass!
                 if (result == rayhit_block_vox) {
                     data->distance += ray_distancef;
                     break;
                 }
-
                 // Hitting NPC Through Minivox
                 else if (result == rayhit_character) {
-
                     data->distance += ray_distancef;
-                    data->hit = float3_add(
-                        ray_origin,
-                        float3_scale(ray_normal, data->distance));
-
+                    data->hit = float3_add(ray_origin, float3_scale(ray_normal, data->distance));
                     if (raycast_locks && node_chunk) {
                         read_unlock_VoxelNode(node_chunk);
                     }
-
                     return rayhit_character;
                 }
-
             }
         }
-
         // Advance ray along shortest axis crossing using DDA increments
         if (ray_add.x < ray_add.y && ray_add.x < ray_add.z) {
             ray_distancef = ray_add.x * terrain_scalev;
@@ -453,18 +344,15 @@ byte raycast_voxel_node(
                 hit_normal = int3_forward;
             }
         }
-
         // NOTE: Cache last, used for placement of blocks
         positionl_last = positionl;
         positionv_last = positionv;
         positionf_last = voxel_to_real_position(positionv, terrain_scalev, chunk_scalev);
         chunk_last = chunk;
         node_last = node_voxel;
-
         // safety first - limit our function total
         checks++;
     }
-
     // If Hit terrain or block vox
     if (result == rayhit_terrain || (result == rayhit_block_vox && raycasting_terrain))
     {
@@ -474,7 +362,6 @@ byte raycast_voxel_node(
         }
         // calculate our point off the distance
         data->hit = float3_add(ray_origin, float3_scale(ray_normal, data->distance));
-
         // used for quad position, position of voxel hit
         if (chunk_depth_reduction) {
             int3 chunk_positionv = int3_scale(chunk_position, powers_of_two[terrain_depth]);
@@ -482,16 +369,9 @@ byte raycast_voxel_node(
             int3 positionl2 = int3_sub(positionv, chunk_positionv);
             positionl2 = int3_div1(positionl2, (int) powers_of_two[chunk_depth_reduction]);
             // now we convert back to positionv, scale back, add to chunk voxel position
-            positionv = int3_add(
-                chunk_positionv,
-                int3_scale(positionl2, powers_of_two[chunk_depth_reduction]));
+            positionv = int3_add(chunk_positionv, int3_scale(positionl2, powers_of_two[chunk_depth_reduction]));
         }
-
-        data->positionf = voxel_to_real_position(
-            positionv,
-            terrain_scalev,
-            chunk_scalev);
-
+        data->positionf = voxel_to_real_position(positionv, terrain_scalev, chunk_scalev);
         data->positionl = positionl;
         data->positionv = positionv;
         data->voxel_scale = chunk_scalev;
@@ -503,18 +383,14 @@ byte raycast_voxel_node(
         data->node = node_voxel;
         data->node_last = node_last;
         data->voxel = node_voxel ? node_voxel->value : 0;
-
     }
-
     // TODO: Remove this, make sure all users are checking result
     else if (result == rayhit_none) {
         clear_raycast_data(data);
     }
-
     if (raycast_locks && node_chunk) {
         read_unlock_VoxelNode(node_chunk);
     }
-
     return result;
 }
 
@@ -525,22 +401,17 @@ byte raycast_voxel_node(
 zox_sys2(Chunk3RaycastSystem) {
     zox_sys_world();
     zox_sys_begin();
-    // zox_sys_in(CameraLink);
     zox_sys_in(TerrainLink);
     zox_sys_in(RaycastRange);
     zox_sys_out(RaycastVoxelData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(CameraLink, cameraLink);
         zox_sys_i(TerrainLink, terrain);
         zox_sys_i(RaycastRange, raycastRange);
         zox_sys_o(RaycastVoxelData, data);
-        // entity camera = cameraLink->value;
         if (!zox_valid(terrain->value) || !zox_has(terrain->value, RealmLink)) {
             continue;
         }
-        // entity caster = get_linked_character(world, camera);
-        entity caster = e;
         float3 ray_origin;
         float3 ray_normal;
         if (zox_has(e, CameraLink)) {
@@ -563,8 +434,7 @@ zox_sys2(Chunk3RaycastSystem) {
         zox_geter(terrain->value, ChunkLinks, chunks);
         CharacterRaycast character_raycast = { 0 };
         float range = !debug_ray_big_range ? raycastRange->value : 128;
-        // zox_log("Terrain Scale: %f", terrain_scalev);
-        data->result = raycast_voxel_node(world, caster, voxels, chunks, int3_zero, float3_zero, terrain_depth, chunk_dimensions, 0, ray_origin, ray_normal, int3_zero, terrain_scalev, range, data, &character_raycast);
+        data->result = raycast_voxel_node(world, e, voxels, chunks, int3_zero, float3_zero, terrain_depth, chunk_dimensions, 0, ray_origin, ray_normal, int3_zero, terrain_scalev, range, data, &character_raycast);
         data->depth = terrain_depth;
     }
 } zox_sys_end(Chunk3RaycastSystem);

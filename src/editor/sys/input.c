@@ -1,6 +1,6 @@
 // todo: move to add key event
 
-entity canvas_toggle_ui(ecs *world, entity canvas, entity e, entity (*spawn_ui)(ecs*, const entity)) {
+entity canvas_toggle_ui(ecs *world, entity canvas, entity e, entity (*spawn_ui)(ecs*, entity)) {
     if (e == 0) {
         return (*spawn_ui)(world, canvas);
     } else {
@@ -15,7 +15,7 @@ zox_sys2(EditorInputSystem) {
     zox_sys_in(DeviceLinks);
     zox_sys_in(CanvasLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(DeviceLinks, devices);
         zox_sys_i(CanvasLink, canvas);
         if (!zox_valid(canvas->value)) {

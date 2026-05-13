@@ -2,8 +2,8 @@ zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 
 #include "cleanup.c"
 #include "mesh_trigger.c"
-#include "voxel_node_queue.c"
-#include "voxel_node_queue_clear.c"
+#include "queue.c"
+#include "clear.c"
 #include "sides.c"
 
 void define_systems_chunks3(ecs *world) {

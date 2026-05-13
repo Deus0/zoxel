@@ -1,6 +1,4 @@
 // TODO: Maybe store Depth of these commands? worried about race conditions (as always)
-
-
 // NOTE: Now we optimize branch nodes in cleanup system
 zox_sys2(VoxelNodeQueueSystem) {
     zox_sys_begin();
@@ -15,22 +13,14 @@ zox_sys2(VoxelNodeQueueSystem) {
         zox_sys_o(VoxelNode, node);
         zox_sys_o(VoxelNodeDirty, vdirty);
         zox_sys_o(VoxelNodeEdited, edited);
-
         byte updated = 0;
-
-        // spin_lock(&queue->lock);
-        // while (queue->count) {
         for (size_t i = 0; i < queue->count; i++) {
             VoxelNodeUpdate update = queue->ptr[i];
-
             if (set_VoxelNode(node, depth->value, update.pos, update.value, 0)) {
                 updated = 1;
+                // zox_log("edited voxel: %ix%ix%i", update.positionl.x, update.positionl.y, update.positionl.z);
             }
-
-            // zox_log("edited voxel: %ix%ix%i", update.positionl.x, update.positionl.y, update.positionl.z);
         }
-        // spin_unlock(&queue->lock);
-
         if (updated) {
             vdirty->value = zox_dirty_trigger;
             edited->value = 1;

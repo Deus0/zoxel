@@ -40,12 +40,7 @@ zox_sys2(ItemActivateSystem) {
         byte3 positionl = raycast_data->positionl_last;
         entity chunk = raycast_data->chunk_last;
         zox_muter(chunk, VoxelNodeQueue, queue);
-        a_VoxelNodeQueue(queue,
-            (VoxelNodeUpdate) {
-                .value = block_index,
-                .pos = positionl,
-            });
-
+        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = block_index, .pos = positionl });
         quantity->value--;
         if (!quantity->value) {
             // set action to nullptr

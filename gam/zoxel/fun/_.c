@@ -90,7 +90,6 @@ entity zox_dbg_test_window;
         .text = "All Skills",
         .on_click = { &zox_tst_all_skills },
     };
-
     // Test our uis
     entity spawned[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Testing", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, list_padding, spawned, elements, elements_count, visible_count);
