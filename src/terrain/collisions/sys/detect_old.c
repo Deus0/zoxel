@@ -1,4 +1,4 @@
-byte is_do_all_collision_points = 0;
+/*byte is_do_all_collision_points = 0;
 const byte collision_check_types = 1;
 const float collision_check_delta = 0.25f;
 #define collision_fudge 0
@@ -13,24 +13,13 @@ static inline float3 bias_sample_by_movement(float3 sample, const byte3 movement
     return sample;
 }
 
-
-byte check_collision_point(
-    ecs *world,
-    const ChunkLinks *chunks,
-    const byte terrain_depth,
-    const float terrain_scale,
-    const byte *block_collisions,
-    const float3 positionf
-) {
+// returns 1 of positionf is within a solid block
+byte check_collision_point(ecs *world, const ChunkLinks* chunks, byte terrain_depth, float terrain_scale, const byte* block_collisions, float3 position) {
     // voxel position from real
-    const int3 positionv = positionf_to_positionv(positionf, terrain_scale);
-
+    int3 terrain_position = positionf_to_positionv(position, terrain_scale);
     // get chunk from position
-    const int3 positionc = real_position_to_chunk_position(
-        positionf,
-        powers_of_two[terrain_depth],
-        terrain_scale);
-    const entity chunk = int3_hashmap_get(chunks->value, positionc);
+    int3 chunk_position = real_position_to_chunk_position(terrain_position, powers_of_two[terrain_depth], terrain_scale);
+    entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk)) {
         return 0;
     }
@@ -38,24 +27,15 @@ byte check_collision_point(
     if (!node) {
         return 0;
     }
-
     // check local position
-    const byte3 chunk_size = byte3_single(powers_of_two[terrain_depth]);
-    byte3 positionl = get_positionl_byte3(
-        positionv,
-        chunk_size
-    );
-    if (!byte3_in_bounds(positionl, chunk_size)) {
+    byte3 chunk_size = byte3_single(powers_of_two[terrain_depth]);
+    byte3 in_chunk_position = get_positionl_byte3(terrain_position, chunk_size);
+    if (!byte3_in_bounds(in_chunk_position, chunk_size)) {
         return 0;
     }
-
     zox_geter_value(chunk, NodeDepth, byte, chunk_depth);
-    const byte voxel = get_sub_node_voxel_locked(
-        node,
-        &positionl,
-        chunk_depth);
-
-    return (block_collisions[voxel]);
+    byte block_index = get_sub_node_voxel_locked(node, &in_chunk_position, chunk_depth);
+    return block_collisions[block_index];
 }
 
 void collide_with_chunkf(
@@ -63,7 +43,7 @@ void collide_with_chunkf(
     const ChunkLinks *chunks,
     const byte terrain_depth,
     const float terrain_scale,
-    const byte *block_collisions,
+    const byte* block_collisions,
     float3 pointf_new,
     float3 pointf_last,
     const float3 offset,
@@ -78,44 +58,19 @@ void collide_with_chunkf(
     float3 sample;
 
     if (check_type == 0) {
-
         sample = (float3) { pointf_last.x, pointf_new.y, pointf_last.z };
         sample = bias_sample_by_movement(sample, movement_axis);
         did_collide->y |= axis_check.y &&
-            check_collision_point(
-                world,
-                chunks,
-                terrain_depth,
-                terrain_scale,
-                block_collisions,
-                sample
-            );
-
+            check_collision_point(world, chunks, terrain_depth, terrain_scale, block_collisions, sample);
         sample = (float3) { pointf_new.x, pointf_last.y, pointf_last.z };
         sample = bias_sample_by_movement(sample, movement_axis);
         did_collide->x |= axis_check.x &&
-            check_collision_point(
-                world,
-                chunks,
-                terrain_depth,
-                terrain_scale,
-                block_collisions,
-                sample
-            );
-
+            check_collision_point(world, chunks, terrain_depth, terrain_scale, block_collisions, sample);
         sample = (float3) { pointf_last.x, pointf_last.y, pointf_new.z };
         sample = bias_sample_by_movement(sample, movement_axis);
         did_collide->z |= axis_check.z &&
-            check_collision_point(
-                world,
-                chunks,
-                terrain_depth,
-                terrain_scale,
-                block_collisions,
-                sample
-            );
+            check_collision_point(world, chunks, terrain_depth, terrain_scale, block_collisions, sample);
     }
-
     else if (check_type == 1) {
         if (!did_collide->y && !did_collide->z && axis_check.y && axis_check.z) {
             sample = (float3) { pointf_last.x, pointf_new.y, pointf_new.z };
@@ -254,8 +209,7 @@ zox_sys2(CollisionDetectSystem) {
         // if (b.x > b.z) b.z = b.x;
         // else b.x = b.z;
         const float3 bounds_left = float3_scale(b, -1);
-        const float3 bounds_right = b;
-
+        float3 bounds_right = b;
 
         // 0 None, 1 Right, 2 Left
         byte3 movement_axis = (byte3) {
@@ -311,19 +265,7 @@ zox_sys2(CollisionDetectSystem) {
                 };
                 for (byte j = 0; j < 6; j++) {
                     offset = offsets[j];
-                    collide_with_chunkf(
-                        world,
-                        chunks,
-                        terrain_depth,
-                        terrain_scale,
-                        block_collisions,
-                        float3_add(pointf_new, offset),
-                        float3_add(pointf_last, offset),
-                        offset,
-                        movement_axis,
-                        &did_collide,
-                        &closestd,
-                        check_type);
+                    collide_with_chunkf(world, chunks, terrain_depth, terrain_scale, block_collisions, float3_add(pointf_new, offset),  float3_add(pointf_last, offset), offset, movement_axis, &did_collide, &closestd, check_type);
                 }
             }
         }
@@ -340,4 +282,4 @@ zox_sys2(CollisionDetectSystem) {
         }
 
     }
-} zox_sys_end(CollisionDetectSystem);
+} zox_sys_end(CollisionDetectSystem);*/

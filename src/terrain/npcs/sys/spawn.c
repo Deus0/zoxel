@@ -1,6 +1,5 @@
 extern void on_spawned_character3_npc(ecs*, entity);
 // we need to check if chunk has generated yet - is there a component for this?
-
 zox_sys2(Characters3SpawnSystem) {
     if (disable_npcs || !character_spawn_rate_max) {
         return;
@@ -14,6 +13,7 @@ zox_sys2(Characters3SpawnSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_in(VoxelNodeLoaded);
     zox_sys_in(ChunkPosition);
+    zox_sys_in(Position3D);
     zox_sys_in(RenderDistance);
     zox_sys_in(RenderDisabled);
     zox_sys_in(VoxLink);
@@ -24,12 +24,13 @@ zox_sys2(Characters3SpawnSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDistanceDirty, state);
-        zox_sys_i(VoxelNode, voxel_node);
+        zox_sys_i(VoxelNode, voctree);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(VoxelNodeLoaded, loaded);
         zox_sys_i(RenderDistance, render_distance);
         zox_sys_i(RenderDisabled, render_disabled);
         zox_sys_i(ChunkPosition, cposition);
+        zox_sys_i(Position3D, positionf);
         zox_sys_i(VoxLink, terrain);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(CharactersSpawned, spawned);
@@ -39,9 +40,6 @@ zox_sys2(Characters3SpawnSystem) {
         byte is_first_spawn = is_in_spawn_range && !ever_spawned->value;
         // if already spawned, skip spawning, only update LODs
         // if basically all air, no need to spawn
-        if (!has_children_VoxelNode(voxel_node) || !voxel_node->value) {
-            continue;
-        }
         if (!is_first_spawn && state->value != zox_dirty_active) {
             continue;
         }
@@ -57,22 +55,28 @@ zox_sys2(Characters3SpawnSystem) {
         if (!loaded->value) {
             continue;
         }
+        // NOTE: If has No children or all air, we avoid
+        if (!has_children_VoxelNode(voctree) || !voctree->value) {
+            continue;
+        }
         // getters
         zox_geter_value(terrain->value, RealmLink, entity, realm);
         if (!zox_valid(realm)) {
             continue;
         }
-        zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
+        //zox_geter_value(terrain, BlockScale, float, tscale);
+        //zox_geter_value(chunk, Position3D, float3, chunk_positionf);
+        zox_geter_value(terrain->value, BlockScale, float, tscale);
         zox_geter(realm, CharacterLinks, characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         entity chunk_above = neighbors->value[direction_up];
-        const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
+        const VoxelNode* voctree_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
         // calcs
         int chunk_length = powers_of_two[depth->value];
         int3 chunk_dimensions = int3_single(chunk_length);
         int3 chunk_voxel_position = get_chunk_positionv(cposition->value, chunk_dimensions);
         // byte found_position = 0;
-        float3 position;
+        // float3 position;
         byte character_spawn_rate = character_spawn_rate_min + rand() % (character_spawn_rate_max - character_spawn_rate_min + 1);
         for (byte j = 0; j < character_spawn_rate; j++) {
             // 1) Find a npc to place
@@ -115,23 +119,21 @@ zox_sys2(Characters3SpawnSystem) {
             // 2) find a place for our new npc
             // sometimes cannot find a position
             // many spawn checks
-            byte3 local_position = find_random_position_on_ground(
-                voxel_node,
-                voxel_node_above,
-                depth->value,
-                8
-            );
-            if (byte3_equals(byte3_full, local_position)) {
-                zox_log_spawning("! failed to spawn npc");
+            byte3 in_chunk_position;
+            if (!find_random_position_on_ground(voctree, voctree_above, depth->value, 32, &in_chunk_position)) {
+                // zox_loge("Failed find Position for NPC at [%ix%ix%i]:%i", cposition->value.x, cposition->value.y, cposition->value.z, j);
                 break;
             }
-            position = local_to_real_position_character(
-                local_position,
-                chunk_voxel_position,
-                bounds,
-                terrain_scale // 1
-            );
+
+            zox_geter_value(e, BlockScale, float, tscale);
+            // float3 position = local_to_real_position_character(in_chunk_position, chunk_voxel_position, bounds, tscale);
+            float3 position = byte3_to_float3(in_chunk_position);
+            float3_scale_p(&position, tscale);
+            float3_add_float3_p(&position, positionf->value); // chunk
+            float3_add_float3_p(&position, float3_single(tscale * 0.5f));
             float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
+            spawn_arrow3D(world, position, (float3) { 0, 1.5, 0}, 0.1f, 6, 40);
+
             // 3) Finally we spawn and link
             spawn_character3D_data spawn_data = {
                 .prefab = prefab_character,
@@ -160,7 +162,6 @@ zox_sys2(Characters3SpawnSystem) {
             if (character) {
                 on_spawned_character3_npc(world, character);
                 add_to_ChunkEntities(entities, character);
-
                 zox_logv("+ [%s] npc at [%fx%fx%f] [%i of %i] => %lu", zox_get_name(meta), position.x, position.y, position.z, (j + 1), (character_spawn_rate), character);
                 zox_stats_characters++;
 

@@ -9,23 +9,18 @@ zox_sys2(CharacterPlayerItemsSystem) {
         zox_sys_i(GenerateCharacter, state);
         //zox_sys_i(RealmLink, realm);
         zox_sys_o(ItemLinks, items);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         int count = character_inventory_count; // !test_items_blocks ? character_inventory_count : 16;
-
         initialize_ItemLinks(items, count);
         if (!items->value) {
             zox_log_error("Failed allocating memory for items")
             continue;
         }
-
         for (int i = 0; i < count; i++) {
             items->value[i] = 0; // blanks are item slots
         }
-
         /*if (!test_items_blocks) {
             continue;
         }
@@ -61,6 +56,5 @@ zox_sys2(CharacterPlayerItemsSystem) {
 
             items->value[place_index++] = item;
         }*/
-
     }
 } zox_sys_end(CharacterPlayerItemsSystem);

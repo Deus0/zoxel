@@ -1,10 +1,9 @@
-#include "detect2.c"    // using old (2) atm
+#include "detection.c"
 #include "unstuck.c"
 #include "inside_sound.c"
 #include "inside.c"
 
 void define_systems_terrain_collisions(ecs* world) {
-
     zox_system(
         CollisionDetectSystem,
         zoxp_physics,
@@ -15,7 +14,6 @@ void define_systems_terrain_collisions(ecs* world) {
         [out] collisions3.Collision,
         [out] collisions3.CollisionDistance
     );
-
     // TODO: Find a better way to modulate this system
     zox_system(
         CollisionResponseSystem,
@@ -40,7 +38,6 @@ void define_systems_terrain_collisions(ecs* world) {
         [out] physics3.LastUnstuck3,
         [out] transforms3.Position3D
     );
-
     zox_system(
         InsideBlockSystem,
         EcsOnStore,
@@ -51,7 +48,6 @@ void define_systems_terrain_collisions(ecs* world) {
         [out] blocks.InsideBlockPosition,
         [out] blocks.InsideBlockDirty,
     );
-
     zox_system_1(
         InsideBlockSoundSystem,
         EcsOnUpdate,

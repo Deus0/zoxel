@@ -1,93 +1,55 @@
 TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
-    // test bounds for spawning
     float3 bounds = (float3) { 0.5f, 1.0, 0.5f };
     zox_geter(terrain, ChunkLinks, chunks);
     entity chunk;
     int3 cposition = int3_zero;
-    byte3 local_position = byte3_zero;
     const VoxelNode *voxel_node_above = NULL;
     byte node_depth = 0;
     byte found_position = 0;
+    byte3 in_chunk_position = byte3_zero;
     for (int i = render_distance_y; i >= -render_distance_y; i--) {
         cposition.y = i;
         chunk = int3_hashmap_get(chunks->value, cposition);
-
         if (!zox_valid(chunk)) {
             zox_logw("Chunk Missing at [0x%ix0]", i);
             continue;
         }
-
         zox_geter(chunk, VoxelNode, chunkd);
         node_depth = zox_get_value(chunk, NodeDepth);
-        local_position = find_random_position_on_ground(chunkd, voxel_node_above, node_depth, 200);
-
-        if (!byte3_equals(byte3_full, local_position)) {
+        if (find_random_position_on_ground(chunkd, voxel_node_above, node_depth, 200, &in_chunk_position)) {
+            // zox_log("Found Position for Player [%i] of [%i] at [%ix%ix%i]", i, render_distance_y, in_chunk_position.x, in_chunk_position.y, in_chunk_position.z);
             found_position = 1;
             break;
-        }
-
+        } /*else {
+            zox_loge("Failed find Position for Player [%i] of [%i]", i, render_distance_y);
+        }*/
         voxel_node_above = chunkd;
     }
-
     if (!found_position) {
         int count = count_int3_hashmap(chunks->value);
-        zox_log_error("Failed finding spawn position for player; Chunks [%i]", count);
+        zox_loge("Failed finding spawn position for player; Chunks [%i]", count);
         if (!count) {
-            zox_log_error(" -> ? No chunks!");
+            zox_loge(" -> ? No chunks!");
         }
     }
-
-    int vlength = powers_of_two[node_depth];
+    zox_geter_value(terrain, BlockScale, float, tscale);
+    float3 positionf = byte3_to_float3(in_chunk_position);
+    float3_scale_p(&positionf, tscale);
+    zox_geter_value(chunk, Position3D, float3, chunk_positionf);
+    float3_add_float3_p(&positionf, chunk_positionf); // chunk
+    float3_add_float3_p(&positionf, float3_single(tscale * 0.5f));
+    float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
+    /*int vlength = powers_of_two[node_depth];
     int3 chunk_voxel_position = get_chunk_positionv(cposition, int3_single(vlength));
-
-    float3 spawn_position = local_to_real_position_character(local_position,  chunk_voxel_position, bounds, 1);
-
-    // zox_log("Terrain Place Found [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z)
-
+    float3 positionf = local_to_real_position_character(in_chunk_position,  chunk_voxel_position, bounds, 1);*/
+    // zox_log("Terrain Place Found [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z);
     return (TerrainPlace) {
         .chunk = chunk,
         .chunk_position = cposition,
-        .position = spawn_position,
-        .rotation = quaternion_identity,
+        .position = positionf,
+        .rotation = rotation,
     };
 }
-
-/*entity spawn_first_chunk(ecs* world, entity realm, entity terrain, float3 position) {
-    zox_geter_value(terrain, NodeDepth, byte, tdepth);
-    zox_geter_value(terrain, BlockScale, float, terrain_scale);
-    int3 cposition = real_position_to_chunk_position(position, powers_of_two[tdepth], terrain_scale);
-    entity c;
-    // zox_mut_begin(terrain, ChunkLinks, chunks3);
-    zox_mut_begin(terrain, Chunk2Links, chunks2);
-
-    // TODO: Move chunk spawn code into stream system and out of Controllers
-
-    // Spawn our Tunk for terrain generation
-    int2 tposition = (int2) { cposition.x, cposition.z };
-    if (!int2_hashmap_has(chunks2->value, tposition)) {
-        entity t = spawn_tunk(world, prefab_tunk2, terrain, tposition, 0);
-        if (zox_valid(t)) {
-            int2_hashmap_add(chunks2->value, tposition, t);
-            zox_mut_end(terrain, Chunk2Links);
-        }
-    }
-
-    if (!int3_hashmap_has(chunks3->value, cposition)) {
-
-        c = spawn_chunk_terrain(world, prefab_chunk_terrain, terrain, cposition, cposition, tdepth, terrain_scale);
-        if (zox_valid(c)) {
-            int3_hashmap_add(chunks3->value, cposition, c);
-            zox_mut_end(terrain, ChunkLinks);
-            // zox_log("Spawned first terrain chunk!!!");
-        } else {
-            zox_log_error("Failed to spawn chunk [%ix%ix%i]:%lu", cposition.x, cposition.y, cposition.z, c);
-        }
-    } else {
-        c = int3_hashmap_get(chunks3->value, cposition);
-    }
-
-    return 0;
-}*/
 
 entity game_start_player_new(ecs *world, entity player, float3* spawned_position) {
     entity realm;
@@ -99,7 +61,7 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
     }
     entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
     if (!model) {
-        zox_log_error("File Not Found [%s]", player_vox_model);
+        zox_loge("File Not Found [%s]", player_vox_model);
     }
     TerrainPlace placer = find_position_in_terrain(world, terrain);
     spawn_character3D_data spawn_data = {
@@ -108,25 +70,10 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
         .terrain = terrain,
         .terrain_chunk = placer.chunk,
         .chunk_position = placer.chunk_position,
-        .position = placer.position, // fake_spawn_position,
-        .rotation = quaternion_identity, // placer.rotation
+        .position = placer.position,
+        .rotation = quaternion_identity,
     };
     entity e = spawn_character3_player(world, spawn_data);
-    // player
-    if (local_mouse) {
-        zox_set(local_mouse, MouseLock, { 1 }) // lock mouse since attached
-    }
-    // Add spawned to chunk
-    /*if (zox_valid(placer.chunk)) {
-        zox_mut_begin(placer.chunk, ChunkEntities, entities);
-        if (add_to_ChunkEntities(entities, e)) {
-            zox_mut_end(placer.chunk, ChunkEntities);
-        }
-        // zox_set(e, DisableGravity, { 0 });
-        // zox_set(e, DisableMovement, { 0 });
-    } else {
-        zox_log_error("Issue with place chunk");
-    }*/
     *spawned_position = placer.position;
     return e;
 }
@@ -162,21 +109,7 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
         .rotation = placer.rotation,
         .euler = placer.euler,
     };
-    // player
-    if (local_mouse) {
-        zox_set(local_mouse, MouseLock, { 1 }) // lock mouse since attached
-    }
     entity e = spawn_character3_player(world, spawn_data);
-    // Add spawned to chunk
-    // TODO: This in a system? Character Initialize?
-    /*if (zox_valid(placer.chunk)) {
-        zox_mut_begin(placer.chunk, ChunkEntities, entityLinks)
-        if (add_to_ChunkEntities(entityLinks, e)) {
-            zox_mut_end(placer.chunk, ChunkEntities);
-        }
-        // zox_set(e, DisableGravity, { 0 });
-        // zox_set(e, DisableMovement, { 0 });
-    }*/
     *spawned_position = load_character_transform(world, realm, e);
     return e;
 }
@@ -198,7 +131,6 @@ zox_sys2(PlayerBeginSystem) {
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
         if (state->value != zox_player_state_starting) {
-            // zox_log(" Waiting [%i]", state->value);
             continue;
         }
         if (!zox_valid(game->value)) {
@@ -236,10 +168,13 @@ zox_sys2(PlayerBeginSystem) {
         } else {
             game_start_player_new(world, e, &spawn_position);
         }
-        spawn_arrow3D(world, spawn_position, (float3) { 0, 4, 0}, 0.5f, 6, 60);
+        spawn_arrow3D(world, spawn_position, (float3) { 0, 1, 0}, 0.2f, 6, 30);
         // Needs ui spawn after frame
         play_playlist(world, realm, 1);
-        delay_event(world, &spawn_player_game_ui, e, 1.5);
+        delay_event(world, &spawn_player_game_ui, e, 1);
+        if (local_mouse) {
+            zox_set(local_mouse, MouseLock, { 1 });
+        }
         // TODO: Spawn game ui and let it update when ActionsDirty flagged
         // spawn_player_game_ui(world, player);
         state->value = zox_player_state_playing;

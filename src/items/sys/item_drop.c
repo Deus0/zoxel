@@ -12,16 +12,14 @@ zox_sys2(ItemDropSystem) {
         zox_sys_i(Dead, dead);
         zox_sys_i(Position3D, position);
         zox_sys_i(ItemLinks, items);
-
         // proces if i die
         if (dead->value != zox_dirty_active) {
             continue;
         }
-
         // drop item
         // zox_log("character dropping [%i] items", items->length)
         for (int j = 0; j < items->length; j++) {
-            const entity item = items->value[j];
+            entity item = items->value[j];
             if (zox_valid(item)) {
                 zox_get_prefab(item, meta);
                 entity pickup;

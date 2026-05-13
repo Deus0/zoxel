@@ -1,13 +1,16 @@
 ### todo ###
 
+- Replace all find_random_position_on_ground with getv_VoxelNode's
 - Remove all old chunk getters/setters and just use latest ones
 
-- Use proper flecs functions for core transform childrens, so it processes them all
+-x Use proper flecs functions for core transform childrens, so it processes them all
 
 - Raycast Range should be Skill Range
 	- Change when skill is equiped - using actions
 
 - Write a test function to spawn a world item to pickup
+
+flatpak run org.kde.kate
 
 - Sometimes namelabel didnt load on npcs
 - test key for keyboard navigation mode

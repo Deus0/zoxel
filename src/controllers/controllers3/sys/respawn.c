@@ -46,7 +46,7 @@ zox_sys2(Player3RespawnSystem) {
                 state->value = zox_player_state_playing;
                 float3 spawned;
                 character->value = game_start_player_new(world, e, &spawned);
-                spawn_arrow3D(world, spawned, (float3) { 0, 2, 0}, 0.5f, 6, 60);
+                spawn_arrow3D(world, spawned, (float3) { 0, 1, 0}, 0.2f, 6, 15);
                 delay_event(world, &spawn_player_game_ui, e, 1.5);
             }
         }

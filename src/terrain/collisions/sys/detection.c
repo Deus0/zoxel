@@ -2,31 +2,6 @@
 // todo: support multiple realms - use a hashmap for realms, and cache their data per terrain here
 
 
-/*
- * 3D Collision Detection System
- *
- *      This system handles collision detection in a 3D voxel-based environment. The main goal is to determine
- *  if an object moving within the voxel grid has collided with any solid voxels (obstacles) in the environment.
- *
- *  General Theory:
- *
- *      1. **Single Axis Collision**: Detect collisions along a single axis (x, y, or z) by checking both sides of the axis.
- *
- *      2. **Double Axis Collision**: Detect collisions along two axes simultaneously (e.g., x-z, x-y, z-y) to handle cases where movement occurs in a plane.
- *
- *      3. **Triple Axis Collision**: Detect collisions along all three axes (x, y, and z) simultaneously to handle full 3D movement and ensure no corner cases are missed.
- *
- * The process involves:
- *      - Updating the position of the object based on its movement and checking the new position against the voxel grid.
- *      - Converting real-world positions to voxel positions to determine which voxels the object occupies.
- *      - Checking the voxel grid to see if the new positions contain solid chunks3.
- *      - If a collision is detected, updating the collision status and adjusting the object's position and velocity accordingly.
- *
- * Macros are used to handle different collision scenarios efficiently by expanding the necessary function calls with appropriate parameters for single, double, and triple axis collisions.
- *
- */
-
-
 // Function for 3-dimensional collision detection
 void collide_with_chunk_d3(
     ecs *world,
@@ -97,9 +72,7 @@ void collide_with_chunk_d3(
     if (!byte3_in_bounds(voxel_positionl, chunk_dimensions_b3)) {
         return;
     }
-    // zox_geter_value(chunk, NodeDepth, byte, node_depth)
-
-    const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
+    byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
     if (block_collisions[voxel]) {
         // Calculate deltas
         const int delta_vox_d1 = int_abs(position_vox_d1 - position_vox_last_d1);
@@ -491,3 +464,27 @@ zox_sys2(CollisionDetectSystem) {
             zox_log("     ! + real position was [%fx%fx%f]\n", collision_point_real.x, collision_point_real.y, collision_point_real.z);
         }
 #endif*/
+
+/*
+ * 3D Collision Detection System
+ *
+ *      This system handles collision detection in a 3D voxel-based environment. The main goal is to determine
+ *  if an object moving within the voxel grid has collided with any solid voxels (obstacles) in the environment.
+ *
+ *  General Theory:
+ *
+ *      1. **Single Axis Collision**: Detect collisions along a single axis (x, y, or z) by checking both sides of the axis.
+ *
+ *      2. **Double Axis Collision**: Detect collisions along two axes simultaneously (e.g., x-z, x-y, z-y) to handle cases where movement occurs in a plane.
+ *
+ *      3. **Triple Axis Collision**: Detect collisions along all three axes (x, y, and z) simultaneously to handle full 3D movement and ensure no corner cases are missed.
+ *
+ * The process involves:
+ *      - Updating the position of the object based on its movement and checking the new position against the voxel grid.
+ *      - Converting real-world positions to voxel positions to determine which voxels the object occupies.
+ *      - Checking the voxel grid to see if the new positions contain solid chunks3.
+ *      - If a collision is detected, updating the collision status and adjusting the object's position and velocity accordingly.
+ *
+ * Macros are used to handle different collision scenarios efficiently by expanding the necessary function calls with appropriate parameters for single, double, and triple axis collisions.
+ *
+ */

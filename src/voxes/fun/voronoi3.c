@@ -8,12 +8,12 @@
     }\
 }
 
-int get_closest_index3(const byte3 point, byte3 *points, int points_length, byte length) {
-    const float3 point_f3 = byte3_to_float3(point);
+int get_closest_index3(byte3 point, byte3 *points, int points_length, byte length) {
+    float3 point_f3 = byte3_to_float3(point);
     float smallestDistance = 100000; // float.MaxValue;
     float smallestIndex = 0;
     for (int i = 0; i < points_length; i++) {
-        const float3 region_point = byte3_to_float3(points[i]);
+        float3 region_point = byte3_to_float3(points[i]);
         for (float x = -1; x <= 1; x++) {
             for (float y = -1; y <= 1; y++) {
                 for (float z = -1; z <= 1; z++) {
@@ -25,21 +25,15 @@ int get_closest_index3(const byte3 point, byte3 *points, int points_length, byte
     return smallestIndex;
 }
 
-void voronoi3(
-    VoxelNode *node,
-    const byte depth,
-    const byte2 voxel_range,
-    byte black_voxel,
-    byte vregions
-) {
+void voronoi3(VoxelNode *node, byte depth, byte2 voxel_range, byte black_voxel, byte vregions) {
     if (!vregions) {
         return;
     }
     byte length = powers_of_two[depth];
     // const byte vregions = 64;
-    const int points_length = (int) (length * 1.6f);
-    const int voxels_length = length * length * length;
-    const float pointCloseness = length / 5;
+    int points_length = (int) (length * 1.6f);
+    int voxels_length = length * length * length;
+    float pointCloseness = length / 5;
     byte3 position = byte3_zero;
     byte3 points[points_length];
     byte regions[points_length];
@@ -155,15 +149,6 @@ void voronoi3(
                 if (region_voxel != vregions) {
                     value = voxel_range.x + (region_voxel % (voxel_range.y - voxel_range.x));
                 }
-                /*if (voxels[index])
-                if (black_voxel && is_darken[index]) {
-                    set_octree_voxel(node, &node_position, &set_voxel_black, 0);
-                } else {
-                    uint voxel_type = voxels[index] % (voxel_range.y);
-                    if (voxel_type < voxel_range.x) voxel_type += voxel_range.x;
-                }*/
-                //byte3 node_position = position;
-                //set_octree_voxel(node, &node_position, &set_voxel, 0);
                 set_VoxelNode(node, depth, position, value, 0);
             }
         }

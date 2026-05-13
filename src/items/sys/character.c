@@ -12,11 +12,9 @@ zox_sys2(CharacterItemsSystem) {
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
         zox_sys_o(ItemLinks, items);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         /*if (!test_give_npcs_blocks) {
             continue;
         }*/

@@ -1,5 +1,5 @@
 // show lines on quads along chunk edge
-extern void spawn_line3t(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
+/*extern void spawn_line3t(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
 
 void spawn_voxel_debug_line(
     ecs* world,
@@ -25,7 +25,6 @@ void spawn_voxel_debug_line(
 // Renders Ground Lines
 zox_sys2(ChunkDebugSystem) {
     return;
-
     const byte debug_distance = 1;
     const color_rgb chunk_color = { 155, 0, 0 };
     const color_rgb voxel_color = { 0, 155, 155 };
@@ -46,47 +45,33 @@ zox_sys2(ChunkDebugSystem) {
         zox_sys_i(NodeDepth, nodeDepth);
         zox_sys_i(RenderDistance, renderDistance);
         zox_sys_i(ChunkNeighbors, chunkNeighbors);
-
-        if (!mode->value) continue;
-
+        if (!mode->value) {
+            continue;
+        }
         if (renderDistance->value > debug_distance) {
             continue;
         }
-
         // draw grid around chunk
         byte length = powers_of_two_byte[nodeDepth->value];
         float scale = blockScale->value;
         const entity chunk_above = chunkNeighbors->value[direction_up];
         const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
-
         const float3 size = float3_single(length);
         const float3 draw_position = float3_add(position->value, float3_half(size));
         debug_cubec(world, draw_position, size, chunk_color);
-
         byte2 positionxz = byte2_zero;
         for (positionxz.x = 0; positionxz.x < length; positionxz.x++) {
             for (positionxz.y = 0; positionxz.y < length; positionxz.y++) {
-
                 if (!byte2_on_edge(positionxz, byte2_single(length))) {
                     continue;
                 }
-
-                byte3 ground_position = find_position_on_ground(
-                    voxelNode,
-                    voxel_node_above,
-                    nodeDepth->value,
-                    positionxz
-                );
-
-                if (!byte3_equals(ground_position, byte3_full)) {
-                    spawn_voxel_debug_line(
-                        world,
-                        ground_position,
-                        scale,
-                        position->value,
-                        voxel_color);
+                byte y = find_position_on_ground(voxelNode, voxel_node_above, nodeDepth->value, positionxz);
+                if (y != 255) {
+                    byte3 ground_position = (byte3) { positionxz.x, y, positionxz.y };
+                    spawn_voxel_debug_line(world, ground_position, scale,  position->value, voxel_color);
                 }
             }
         }
     }
 } zox_sys_end(ChunkDebugSystem);
+*/

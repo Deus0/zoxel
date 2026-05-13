@@ -107,7 +107,7 @@ void set_octree_voxel(
     set_voxel(datam, data);
 }
 
-void set_octree_voxel_final(
+/*void set_octree_voxel_final(
     VoxelNode* node,
     byte3* position,
     const byte2 data,
@@ -134,4 +134,4 @@ void set_octree_voxel_final(
 
     VoxelNode* kids = get_children_VoxelNode(node);
     set_octree_voxel_final(&kids[i], position, data, depth);
-}
+}*/

@@ -2,10 +2,9 @@
 #include "memory.c"
 #include "lines.c"
 
-
 void define_systems_chunks3_debug(ecs *world) {
     // main thread
-    zox_system_1(
+    /*zox_system_1(
         ChunkDebugSystem,
         zoxp_voxels_read,
         [in] lines3.DebugCubeLines,
@@ -16,5 +15,5 @@ void define_systems_chunks3_debug(ecs *world) {
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkNeighbors,
         [none] ChunkDebugger
-    );
+    );*/
 }

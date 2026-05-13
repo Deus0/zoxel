@@ -147,7 +147,7 @@ byte get_adjacent_voxel(
 }
 
 // single voxel check!
-byte is_adjacent_solid(
+/*byte is_adjacent_solid(
     byte direction,
     const VoxelNode *root_node,
     const VoxelNode **neighbors,
@@ -168,86 +168,12 @@ byte is_adjacent_solid(
     }
     voxel_adjacent--; // remove air from index
     return voxel_solidity[voxel_adjacent];
-}
+}*/
 
 // Check all voxels on a side, instead of just one, a big voxel with 4 small voxels on its side should be face culled.
 // node_depth is per chunk... refactor that
 // Fix issues between chunks of different levels of division
 // function to check all adjacent voxels are solid on the face
-
-byte is_node_solid(const byte* solidity, const VoxelNode* node) {
-    if (!node || !node->value) {
-        return 0;
-    } else {
-        return solidity ? solidity[node->value - 1] : 1;
-    }
-}
-
-// delves down a voxel node, but only one one side
-// Returns 0 if any Air
-byte get_node_sides_all_solid(
-    const byte* solidity,
-    const VoxelNode* node,
-    byte direction,
-    byte distance
-) {
-    if (!node) {
-        // zox_log_error("get_node_sides_all_solid has invalid node.");
-        return 0;
-    }
-
-    // at end of node tree, return if solid
-    if (!has_children_VoxelNode(node) || !distance) {
-        return is_node_solid(solidity, node);
-    }
-
-    VoxelNode* kids = get_children_VoxelNode(node);
-    if (!kids) {
-        zox_log_error("get_node_sides_all_solid: null children.");
-        return 0;
-    }
-
-    distance--;
-    for (byte i = 0; i < octree_length; i++) {
-        const VoxelNode* child = &kids[i];
-        byte3 np = octree_positions_b[i];
-
-        if ((direction == direction_left   && np.x != 0) ||
-            (direction == direction_right  && np.x != 1) ||
-            (direction == direction_down   && np.y != 0) ||
-            (direction == direction_up     && np.y != 1) ||
-            (direction == direction_back   && np.z != 0) ||
-            (direction == direction_front  && np.z != 1)
-        ) {
-            continue;
-        }
-
-        // check underneath nodes
-        if (!get_node_sides_all_solid(solidity, child, direction, distance)) {
-            return 0;
-        }
-    }
-
-    return 1;   // if all children pass, they are all solid
-}
-
-byte is_adjacent_all_solid(
-    const byte* solidity,
-    byte edge,
-    const VoxelNode **neighbors,
-    const VoxelNode *node,
-    int3 position,
-    byte direction,
-    byte depth
-) {
-    const VoxelNode* anode = get_adjacentn_VoxelNode(neighbors, node, position, depth, direction);
-
-    byte rdirection = reverse_direction(direction);
-
-    return anode ?
-        get_node_sides_all_solid(solidity, anode, rdirection, depth) :
-        edge;
-}
 
 byte get_voxel(
     VoxelNode *node,

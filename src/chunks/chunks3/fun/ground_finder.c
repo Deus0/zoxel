@@ -1,71 +1,41 @@
 // uses chunk above for air check
 // chunk_above used purely for top of chunk checks
-byte3 find_position_on_ground(
-    const VoxelNode *chunk,
-    const VoxelNode *chunk_above,
-    const byte depth,
-    const byte2 positionxz)
-{
+byte find_position_on_ground(const VoxelNode *chunk, const VoxelNode *chunk_above, byte depth, byte2 input) {
     if (chunk == NULL) {
-        return byte3_full;
+        return 255;
     }
-    const byte length = powers_of_two_byte[depth];
-    // byte checks_count = 0;
-    byte3 position = (byte3) {
-        positionxz.x,
-        0,
-        positionxz.y
-    };
+    byte length = powers_of_two_byte[depth];
     // find ground from tallest point
-    // special case for top of chunks
+    // NOTE: Special case for top of chunks
     if (chunk_above) {
-        byte3 temp1 = position;
-        byte3 temp2 = (byte3) {
-            position.x,
-            length - 1,
-            position.z
-        };
-        const byte voxel_up = get_sub_node_voxel(chunk_above, &temp1, depth);
-        const byte voxel_down = get_sub_node_voxel(chunk, &temp2, depth);
+        byte voxel_up = getv_VoxelNode(chunk_above, (byte3) { input.x, 0, input.y }, depth);
+        byte voxel_down = getv_VoxelNode(chunk, (byte3) { input.x, length - 1, input.y }, depth);
         if (!voxel_up && voxel_down) { // can stand on voxel
-            position.y = length;
-            return position;
+            return length;
         }
     }
-    for (position.y = length - 1; position.y >= 1; position.y--)
+    for (byte y = length - 1; y >= 1; y--)
     {
-        byte3 temp3 = position;
-        byte3 temp4 = (byte3) { position.x, position.y - 1, position.z };
-        const byte voxel_up = get_sub_node_voxel(chunk, &temp3, depth);
-        const byte voxel_down = get_sub_node_voxel(chunk, &temp4, depth);
+        byte voxel_up = getv_VoxelNode(chunk, (byte3) { input.x, y, input.y }, depth);
+        byte voxel_down = getv_VoxelNode(chunk, (byte3) { input.x, y - 1, input.y }, depth);
         if (!voxel_up && voxel_down) { // can stand on voxel
-            return position;
+            return y;
         }
     }
-    return byte3_full;
+    return 255;
 }
 
-
-byte3 find_random_position_on_ground(const VoxelNode *chunk, const VoxelNode *chunk_above, byte depth, byte max_checks) {
-
-    const byte length = powers_of_two_byte[depth];
+byte find_random_position_on_ground(const VoxelNode* chunk, const VoxelNode* chunk_above, byte depth, byte max_checks, byte3* position) {
+    byte length = powers_of_two_byte[depth];
     byte checks_count = 0;
-
     while (checks_count < max_checks) {
-        byte2 positionxz = (byte2) {
-            rand() % length,
-            rand() % length
-        };
-        byte3 position = find_position_on_ground(
-            chunk,
-            chunk_above,
-            depth,
-            positionxz);
-        if (!byte3_equals(position, byte3_full)) {
-            return position;
+        byte2 positionxz = (byte2) { rand() % length, rand() % length        };
+        byte y = find_position_on_ground(chunk, chunk_above, depth, positionxz);
+        if (y != 255) {
+            *position = (byte3) { positionxz.x, y, positionxz.y };
+            return 1;
         }
         checks_count++;
     }
-
-    return byte3_full;
+    return 0;
 }
