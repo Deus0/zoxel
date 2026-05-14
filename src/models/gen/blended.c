@@ -23,7 +23,6 @@ void build_vox_blended(VoxelNode *voxelNode, byte node_depth,
         }
     }
     // add outline between blended parts
-    byte2 set_voxel_black_2 = (byte2) { black_voxel_2, node_depth };
     for (voxel_position.x = 0; voxel_position.x < length; voxel_position.x++) {
         for (voxel_position.z = 0; voxel_position.z < length; voxel_position.z++) {
             for (voxel_position.y = 1; voxel_position.y < length - 1; voxel_position.y++) {

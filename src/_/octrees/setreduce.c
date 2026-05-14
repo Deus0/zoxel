@@ -2,15 +2,12 @@
 // zox_node_setreduce.h
 // Octree Setter + Immediate Branch Collapse
 // =======================================
-
 // Forward declaration of internal collapse check for one branch
 static inline byte collapse_octree_branch(void* node, size_t stride, size_t value_offset) {
     if (!node) return 0;
-
     void** ptr = (void**)node;
     void* kids = *ptr;
     if (!kids) return 0;
-
     // Check if all children match first value and have no subchildren
     byte first_val = *(byte*)((char*)kids + value_offset);
     for (byte i = 0; i < 8; i++) {
@@ -21,7 +18,6 @@ static inline byte collapse_octree_branch(void* node, size_t stride, size_t valu
             return 0; // can't collapse
         }
     }
-
     // Collapse
     *(byte*)((char*)node + value_offset) = first_val;
     free(kids);
@@ -34,37 +30,29 @@ static inline void* setreduce_octree_value(
     void* node, byte target_depth, byte3 pos, byte value, byte depth, size_t stride, size_t value_offset
 ) {
     if (!node) return NULL;
-
     bool depth_reached = (depth == target_depth);
     if (depth_reached || value) {
         *(byte*)((char*)node + value_offset) = value;
     }
-
     void** ptr = (void**)node;
     if (!depth_reached && !*ptr) {
         *ptr = malloc(stride * 8);
         if (!*ptr) return node;
         memset(*ptr, 0, stride * 8);
     }
-
     void* kids = *ptr;
     if (depth_reached || !kids) {
         // Try collapse if we just hit target
         collapse_octree_branch(node, stride, value_offset);
         return node;
     }
-
-    const byte div = powers_of_two_byte[target_depth - depth - 1];
+    byte div = powers_of_two_byte[target_depth - depth - 1];
     if (div == 0) return node;
-
     byte3 node_pos = { pos.x / div, pos.y / div, pos.z / div };
     byte3_modulus_byte(&pos, div);
-
     byte i = byte3_octree_array_index(node_pos);
     if (i >= 8) return node;
-
     setreduce_octree_value((char*)kids + i * stride, target_depth, pos, value, depth + 1, stride, value_offset);
-
     // After child update, check if we can collapse this node
     collapse_octree_branch(node, stride, value_offset);
     return node;

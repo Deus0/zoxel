@@ -15,7 +15,7 @@ zox_sys2(FlatlandSystem) {
         zox_sys_i(VoxLink, terrain);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(NodeDepth, node_depth);
-        if (generate->value != chunk_generate_state_update) {
+        if (generate->value != zox_dirty_active) {
             continue;
         }
         node_depth->value = target_depth;

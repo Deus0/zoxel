@@ -25,3 +25,4 @@
 #include "closest_point.c"
 #include "randf.c"
 #include "fmod.c"
+#include "pow.c"

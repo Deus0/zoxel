@@ -9,50 +9,50 @@ void generate_colors(lint seed, Colors *colors) {
     // One random seed color, then the rest are related off it.
     float3 dirt_hsv = (float3) {
         frand_range(0, 360),
-        frand_range(10, 90),
-        frand_range(10, 90)
+        frand_range(14, 48),
+        frand_range(10, 42)
     };
     // Grass: same family, more alive.
     float3 grass_hsv = hsv_shift(
         dirt_hsv,
         frand_range(55.0f, 105.0f),
-                                 frand_range(8.0f, 25.0f),
-                                 frand_range(4.0f, 18.0f)
+        frand_range(8.0f, 25.0f),
+        frand_range(4.0f, 18.0f)
     );
     // Sand: dirt warmed and bleached a bit.
     float3 sand_hsv = hsv_shift(
         dirt_hsv,
         frand_range(-12.0f, 18.0f),
-                                frand_range(-18.0f, -4.0f),
-                                frand_range(18.0f, 35.0f)
+        frand_range(-18.0f, -4.0f),
+        frand_range(18.0f, 35.0f)
     );
     // Stone: the same note, stripped down and quiet.
     float3 stone_hsv = hsv_shift(
         dirt_hsv,
         frand_range(-10.0f, 10.0f),
-                                 frand_range(-55.0f, -25.0f),
-                                 frand_range(8.0f, 22.0f)
+        frand_range(-55.0f, -25.0f),
+        frand_range(8.0f, 22.0f)
     );
     // Obsidian: opposite hue, low saturation, low value.
     float3 obsidian_hsv = hsv_shift(
         dirt_hsv,
         180.0f + frand_range(-25.0f, 25.0f),
-                                    frand_range(-65.0f, -40.0f),
-                                    frand_range(-35.0f, -18.0f)
+        frand_range(-65.0f, -40.0f),
+        frand_range(-35.0f, -18.0f)
     );
     // Sky: far away, softer, brighter, slightly displaced.
     float3 sky_hsv = hsv_shift(
         dirt_hsv,
         180.0f + frand_range(-45.0f, 45.0f),
-                               frand_range(-45.0f, -15.0f),
-                               frand_range(20.0f, 45.0f)
+        frand_range(-45.0f, -15.0f),
+        frand_range(20.0f, 45.0f)
     );
     // Wood: dirt with a sunburn and a little age.
     float3 wood_hsv = hsv_shift(
         dirt_hsv,
         frand_range(8.0f, 28.0f),
-                                frand_range(-18.0f, 4.0f),
-                                frand_range(4.0f, 18.0f)
+        frand_range(-18.0f, 4.0f),
+        frand_range(4.0f, 18.0f)
     );
     // Limit our value within a visually safe range
     // NOTE: too dark and we cannot see

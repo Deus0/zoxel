@@ -32,8 +32,6 @@ void build_voxel_faces_c(const VoxelNode* root, const VoxelNode** noctrees, mesh
                     nposition.z < 0 || nposition.z >= vlength) {
                     naos[i] = 0;
                 } else {
-                    // naos[i] = 0;
-                    // byte asolid = is_adjacent_all_solid(NULL, edge, noctrees, root, position, direction, depth);
                     const VoxelNode* noctree = get_VoxelNode(root, depth, int3_to_byte3(nposition), 0);
                     naos[i] = noctree ? noctree->value > 0 : edge;
                 }

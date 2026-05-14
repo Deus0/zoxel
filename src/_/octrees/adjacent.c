@@ -1,7 +1,7 @@
 // =======================================
 // zox_node_neighbor.h
 // Root-first neighbor-aware octree getter for Zoxel
-// Descends safely using find_octree_node, adjusts position for adjacent voxels
+// Descends safely using get_octree, adjusts position for adjacent voxels
 // =======================================
 // Praise be to Cthulhu, whose tentacles guide our pointers through the void
 
@@ -40,7 +40,7 @@ static inline const void* octree_get_adjacent_leaf(
         else neighbor_pos.z = is_pos ? 0 : max_idx;
 
         // Descend safely inside neighbor
-        return find_octree_node(neighbor_root, depth, neighbor_pos, 0, stride);
+        return get_octree(neighbor_root, depth, neighbor_pos, 0, stride);
     }
 
     // Not at boundary: adjust pos to adjacent voxel inside the same root
@@ -49,7 +49,7 @@ static inline const void* octree_get_adjacent_leaf(
     else if (axis == 1) adj.y = (byte)(is_pos ? (coord + 1) : (coord - 1));
     else adj.z = (byte)(is_pos ? (coord + 1) : (coord - 1));
 
-    return find_octree_node(root_node, depth, adj, 0, stride);
+    return get_octree(root_node, depth, adj, 0, stride);
 }
 
 // Type-safe macro for root-first neighbor fetchers

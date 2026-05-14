@@ -4,8 +4,8 @@ zox_sys2(Characters3SpawnSystem) {
     if (disable_npcs || !character_spawn_rate_max) {
         return;
     }
-    // todo: dynamically check bounds
-    float3 bounds = (float3) { 0.22f, 0.44f, 0.22f };
+    // TODO: Use Bounds to place into terrain
+    // float3 bounds = (float3) { 0.22f, 0.44f, 0.22f };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDistanceDirty);

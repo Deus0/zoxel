@@ -29,7 +29,6 @@ static inline byte is_closed_##T(const T *node) {\
 }\
 \
 static inline byte has_children_##T(const T *node) {\
-    /*return node->type == node_type_children;*/\
     return node->ptr && node->type == node_type_children;\
 }\
 \

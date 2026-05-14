@@ -1,5 +1,5 @@
 TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
-    float3 bounds = (float3) { 0.5f, 1.0, 0.5f };
+    // float3 bounds = (float3) { 0.5f, 1.0, 0.5f };
     zox_geter(terrain, ChunkLinks, chunks);
     entity chunk;
     int3 cposition = int3_zero;

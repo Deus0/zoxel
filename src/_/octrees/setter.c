@@ -16,11 +16,10 @@ static inline void* set_octree_value(void* node, byte tdepth, byte3 pos, byte va
             return NULL;
         }
     }
-    // Are we at target depth?
-    byte depth_reached = (depth == tdepth);
     void** ptr = (void**) node;
     void* kids = *ptr;
     // Open children if missing and we need to go deeper
+    byte depth_reached = depth == tdepth;
     if (!depth_reached && !kids) {
         kids = malloc(stride * 8);   // allocate 8 children
         if (!kids) {

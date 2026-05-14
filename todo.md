@@ -3,8 +3,6 @@
 
 - Fix Skill Indexing though for Skillbook
 - Refactor Model Spawning out of block_vox_meta functions
-- Replace all find_random_position_on_ground with getv_VoxelNode's
-- Remove all old chunk getters/setters and just use latest ones
 - Raycast Range should be Skill Range
 	- Change when skill is equiped - using actions
 - Write a test function to spawn a world item to pickup
@@ -379,3 +377,5 @@ Done:
 -x Use proper flecs functions for core transform childrens, so it processes them all
 -x Move camera first for respawning
 -x Refactor Skills to use Children and no Users
+-x Replace all find_random_position_on_ground with getv_VoxelNode's
+-x Remove all old chunk getters/setters and just use latest ones
