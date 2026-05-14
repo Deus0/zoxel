@@ -28,34 +28,26 @@ void build_vox_flower_patch(VoxelNode *voctree, byte depth, byte2 stem_range, by
                 set_VoxelNode(voctree, depth, (byte3) {pos.x,pos.y,pos.z+1}, flower_color, 0);
                 set_VoxelNode(voctree, depth, (byte3) {pos.x,pos.y,pos.z-1}, flower_color, 0);
                 break;
-
             case 1: // cluster ball
                 for (sbyte dx = -1; dx <= 1; dx++) {
                     for (sbyte dz = -1; dz <= 1; dz++) {
                         if (rand() % 2) {
                             byte3 petal = { pos.x + dx, pos.y, pos.z + dz };
-
                             set_VoxelNode(voctree, depth, petal, flower_color, 0);
                         }
                     }
                 }
                 break;
-
             case 2: // flat ring
                 for (byte i = 0; i < 6; i++) {
                     sbyte dx = (i & 1) ? 1 : -1;
                     sbyte dz = (i & 2) ? 1 : -1;
                     byte3 ring = { pos.x + dx, pos.y, pos.z + dz };
-
                     set_VoxelNode(voctree, depth, ring, flower_color, 0);
-
                 }
                 break;
-
             case 3: // withered single
-
                 set_VoxelNode(voctree, depth, pos, black_voxel, 0);
-
                 break;
         }
     }
