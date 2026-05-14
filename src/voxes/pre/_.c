@@ -1,3 +1,10 @@
+void add_components_mesh_colored(ecs *world, entity e) {
+    zox_add_tag(e, ColorChunk);
+    zox_prefab_set(e, ColorRGBs, { 0 });
+    zox_prefab_set(e, MeshColorRGBs, { 0 });
+    add_gpu_colors(world, e);
+}
+
 #include "vox.c"
 #include "vox_generated.c"
 #include "vox_file.c"
@@ -5,7 +12,6 @@
 #include "block_vox.c"
 #include "block_vox_instanced.c"
 #include "block_vox_meta.c"
-
 entity prefab_block_vox_meta;
 entity prefab_block_vox;
 entity prefab_block_vox_instanced;

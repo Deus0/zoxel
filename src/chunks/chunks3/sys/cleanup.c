@@ -1,6 +1,5 @@
 // todo: make sure we only close blocks that can be grouped together here (we shouldn't group grass etc)
 // doesn't close any block voxes
-
 // if air but any children are not air, set to the first solid voxel
 void optimize_voxel_solids(VoxelNode* voctree) {
     if (!voctree || !has_children_VoxelNode(voctree)) {
@@ -26,7 +25,6 @@ void optimize_voxel_solids(VoxelNode* voctree) {
         voctree->value = any_solid;
     }
 }
-
 
 void reduce_voxel_octrees(ecs* world, VoxelNode* octree) {
     if (!octree || !has_children_VoxelNode(octree)) {

@@ -2,14 +2,12 @@ zox_sys2(Player3RotateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLinks);
-    // zox_sys_in(DeviceMode);
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(CharacterLink, characterLink);
         zox_sys_i(CameraLink, cameraLink);
         zox_sys_i(DeviceLinks, deviceLinks);
-        // zox_sys_i(DeviceMode, deviceMode);
         entity character = characterLink->value;
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
@@ -29,7 +27,7 @@ zox_sys2(Player3RotateSystem) {
             if (!zox_valid(e2)) {
                 continue;
             }
-            if (!zox_valid(e2) || !zox_has(e2, DeviceDisabled) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_has(e2, DeviceDisabled) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;
@@ -49,10 +47,10 @@ zox_sys2(Player3RotateSystem) {
                     euler.x = - delta.y * mouse_rotate_multiplier;
                     euler.y = - delta.x * mouse_rotate_multiplier;
                 }
-                zox_geter(e3, DeviceButtonType, type)
+                zox_geter_value(e3, DeviceButtonType, byte, type);
                 if (zox_has(e3, ZeviceStick)) {
-                    if (type->value == zox_device_stick_right) {
-                        zox_geter(e3, ZeviceStick, zeviceStick)
+                    if (type == zox_device_stick_right) {
+                        zox_geter(e3, ZeviceStick, zeviceStick);
                         right_stick.x += zeviceStick->value.x;
                         right_stick.y -= zeviceStick->value.y;
                     }

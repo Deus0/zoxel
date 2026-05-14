@@ -4,28 +4,27 @@ extern void spawn_player_game_ui(ecs*, entity);
 zox_sys2(Player3RespawnSystem) {
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(CameraLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerRespawn);
     zox_sys_out(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(CameraLink, camera);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerRespawn, respawn);
         zox_sys_o(CharacterLink, character);
-
         // what happened HHere...? NANI?
         if (respawn->value > 0 && zox_valid(character->value)) {
             zox_log("Respawn [cancel] (character alive)");
             respawn->value = 0;
             state->value = zox_player_state_playing;
         }
-
         // Player State Changes
         else if (respawn->value > 0 && state->value != zox_player_state_respawning) {
             zox_log("Respawn [cancel] (player state)");
             respawn->value = 0;
         }
-
         // Playing happily!
         else if (state->value == zox_player_state_playing) {
             if (zox_valid(character->value) && (!zox_has(character->value, Dead) || !zox_gett_value(character->value, Dead))) {
@@ -36,8 +35,8 @@ zox_sys2(Player3RespawnSystem) {
             zox_log("Respawn [begin] (character dead)");
             state->value = zox_player_state_respawning;
             respawn->value = respawn_time;
+            zox_set(camera->value, Position3D, { float3_single(4) });
         }
-
         // What happens after death??
         else if (state->value == zox_player_state_respawning) {
             respawn->value -= zox_delta_time;
@@ -48,6 +47,9 @@ zox_sys2(Player3RespawnSystem) {
                 character->value = game_start_player_new(world, e, &spawned);
                 spawn_arrow3D(world, spawned, (float3) { 0, 1, 0}, 0.2f, 6, 15);
                 delay_event(world, &spawn_player_game_ui, e, 1.5);
+                if (local_mouse) {
+                    zox_set(local_mouse, MouseLock, { 1 });
+                }
             }
         }
     }

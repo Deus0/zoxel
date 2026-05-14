@@ -4,7 +4,7 @@ void set_as_debug_vox(ecs *world, entity e) {
     colorRGBs->value[0] = (color_rgb) { 223, 239, 2 };
     zox_set(e, ChunkSize, { { 1, 1, 1 } });
     zox_muter(e, VoxelNode, voxelNode);
-    fill_new_octree(voxelNode, 1, 1);
+    fill_octree(voxelNode, 1, 1);
 }
 
 byte is_vox_valid(const vox_file *vox) {
@@ -96,12 +96,11 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
 
 // TODO: Convert vox_file to VoxNode, and clone to depth to ModelLods
 //      atm we rebuild everytime the same
-entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* filename) {
+entity spawn_vox_file(ecs *world, entity prefab, const vox_file* data, const char* filename) {
     zox_make_neww(model);
     char name[128];
     sprintf(name, "vox_file_%s", filename);
     zox_set_unique_name(model, name);
-    // zox_log("Generating Model Lods for [%s]", filename);
     byte mdepth = pick_node_depth(data->chunks[0].size.xyz);
     zox_set(model, MaxRenderDepth, { mdepth });
     ModelLods model_lods;
@@ -109,7 +108,7 @@ entity spawn_vox_file(ecs *world, entity p, const vox_file* data, const char* fi
         byte reducer = mdepth - rdepth;
         float bscale = (1 / 64.0f);
         bscale *= powers_of_two[mdepth - rdepth];
-        zox_instance(p);
+        zox_instance(prefab);
         set_vox_file(world, e, data, reducer, bscale);
         zox_set(e, ChunkMeshDirty, { zox_dirty_trigger });
         zox_set(e, RenderDepth, { rdepth });

@@ -5,7 +5,7 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
     if (!zox_valid(n) || !zox_valid(v)) {
         return;
     }
-    if (!zox_has(n, NodeVoxel) || !zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
+    if (!zox_has(n, NodeDepth) || !zox_has(n, NodeVoxel) || !zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
         zox_logw("Node [%s] has invalid components.", zox_get_name(n));
         return;
     }
@@ -14,9 +14,10 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
         return;
     }
     // zox_log("Vox [%s] has Valid components.", zox_get_name(v));
-    zox_geter_value_non_const(n, NodeVoxel, byte, fill_type);
-    zox_geter_value_non_const(n, Shape3Position, byte3, position);
-    zox_geter_value_non_const(n, Shape3Size, byte3, size);
+    zox_geter_value(n, NodeDepth, byte, ndepth_max);
+    zox_geter_value(n, NodeVoxel, byte, fill_type);
+    zox_geter_value(n, Shape3Position, byte3, position);
+    zox_geter_value(n, Shape3Size, byte3, size);
     zox_geter_value(v, NodeDepth, byte, ndepth);
     zox_geter(v, ColorRGBs, colors);
     if (!colors->length) {
@@ -34,7 +35,7 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
     // zox_log("[%s] OG Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", zox_get_name(v), ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
     // NOTE: Scales node sizing to the Vox Size
     byte vlength = powers_of_two[ndepth];
-    float max_vlength = (float) powers_of_two[nodegraph_max_depth]; //  32.0f;
+    float max_vlength = (float) powers_of_two[ndepth_max]; // nodegraph_max_depth];
     float3 positionf = (float3) {
         position.x / max_vlength,
         position.y / max_vlength,

@@ -1,4 +1,4 @@
-void test_nodes(ecs* world, int n, int d) {
+/*void test_nodes(ecs* world, int n, int d) {
     zox_log("Running Node Test:");
     zox_log("   N: %i", n);
     zox_log("   Depth: %i", d);
@@ -20,4 +20,4 @@ void test_nodes(ecs* world, int n, int d) {
         zox_delete(e);
     }
     zox_log("   Dead Nodes: %i", zox_stats_nodes);
-}
+}*/

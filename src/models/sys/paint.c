@@ -32,7 +32,7 @@ void process_node_model_paint(ecs* world, entity n, entity v, lint seed) {
 
     // NOTE: Scales node sizing to the Vox Size
     byte vlength = powers_of_two[ndepth];
-    float max_vlength = (float) powers_of_two[nodegraph_max_depth]; //  32.0f;
+    float max_vlength = (float) powers_of_two[nodegraph_max_depth];
     float3 positionf = (float3) {
         position.x / max_vlength,
         position.y / max_vlength,

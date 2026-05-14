@@ -27,7 +27,11 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity p) {
     zox_add_tag(e, ChunkTextured);
     zox_set(e, RenderDisabled, { 1 });
     zox_prefab_set(e, RenderDepthDirty, { 0 });
-    add_components_mesh_textured(world, e);
+    zox_prefab_set(e, MeshUVs, { 0 });
+    zox_prefab_set(e, MeshColorRGBs, { 0 });
+    add_gpu_uvs(world, e);
+    add_gpu_texture(world, e);
+    add_gpu_colors(world, e);
     // Debug
     zox_add_tag(e, ChunkDebugger);
     zox_prefab_set(e, Bounds3D, { float3_single(1) });

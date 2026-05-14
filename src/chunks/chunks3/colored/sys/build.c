@@ -1,5 +1,3 @@
-
-
 byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **neighbors, const VoxelNode *node, int3 position, byte direction, byte depth) {
     const VoxelNode* anode = get_adjacentn_VoxelNode(neighbors, node, position, depth, direction);
     byte rdirection = reverse_direction(direction);

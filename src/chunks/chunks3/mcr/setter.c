@@ -8,16 +8,23 @@ static inline void* set_octree_value(void* node, byte tdepth, byte3 pos, byte va
     if (!node) {
         return NULL;
     }
+    if (depth == 0) {
+        // check bounds
+        byte length = powers_of_two[tdepth];
+        if (pos.x >= length || pos.y >= length || pos.z >= length) {
+            zox_logw("OOB [set_octree_value] [%ix%ix%i] depth [%i] vlength [%i]", pos.x, pos.y, pos.z, tdepth, length);
+            return NULL;
+        }
+    }
     // Are we at target depth?
     byte depth_reached = (depth == tdepth);
     void** ptr = (void**) node;
     void* kids = *ptr;
-
     // Open children if missing and we need to go deeper
     if (!depth_reached && !kids) {
         kids = malloc(stride * 8);   // allocate 8 children
         if (!kids) {
-            zox_log_error("[set_octree_value] Allocation Failure");
+            zox_loge("[set_octree_value] Allocation Failure");
             return node;
         }
         memset(kids, 0, stride * 8);    // zero-init
@@ -26,7 +33,6 @@ static inline void* set_octree_value(void* node, byte tdepth, byte3 pos, byte va
         byte parent_value = *(byte*)((char*) node + value_offset);
         for (byte j = 0; j < 8; j++) {
             void* child = (char*)(kids) + j * stride;
-
             *(byte*)((char*)child + value_offset) = parent_value;
         }
     }
@@ -45,8 +51,7 @@ static inline void* set_octree_value(void* node, byte tdepth, byte3 pos, byte va
     byte3 npos = { pos.x / div, pos.y / div, pos.z / div };
     byte i = byte3_octree_array_index(npos);
     if (i >= 8) {
-        zox_logw("[set_octree_value] Invalid Index >= 8 [%i]\n  - pos [%ix%ix%i]\n    - npos [%ix%ix%i]\n    - div [%i]\n    - depth [%i]\n    - tdepth [%i]",
-            i,
+        zox_logw("[set_octree_value] Invalid Index >= 8 [%i]\n  - pos [%ix%ix%i]\n    - npos [%ix%ix%i]\n    - div [%i]\n    - depth [%i]\n    - tdepth [%i]", i,
             pos.x, pos.y, pos.z,
             npos.x, npos.y, npos.z,
             div, depth, tdepth);
@@ -60,8 +65,8 @@ static inline void* set_octree_value(void* node, byte tdepth, byte3 pos, byte va
 #define create_node_setter(T) \
 \
 static inline T* set_##T(T* node, byte tdepth, byte3 pos, byte value, byte depth) { \
-    return (T*)set_octree_value(\
-        (void*)node,\
+    return (T*) set_octree_value(\
+        (void*) node,\
         tdepth,\
         pos, value,\
         depth,\

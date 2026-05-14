@@ -1,6 +1,5 @@
 uint zox_stats_nodes = 0;       // basic nodes
 uint zox_stats_node_links = 0;  // to entities
-
 #include "node.c"
 #include "getter.c"
 #include "setter.c"

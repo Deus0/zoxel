@@ -1,5 +1,15 @@
+/*#ifdef zox_bulk_spawn_terrain
 
-#ifdef zox_bulk_spawn_terrain
+void set_chunk_neighbors_six_directions(ecs *world, entity e, entity chunk_left,entity chunk_right, entity chunk_down, entity chunk_up, entity chunk_back, entity chunk_front) {
+    zox_muter(e, ChunkNeighbors, chunkNeighbors);
+    chunkNeighbors->value[0] = chunk_left;
+    chunkNeighbors->value[1] = chunk_right;
+    chunkNeighbors->value[2] = chunk_down;
+    chunkNeighbors->value[3] = chunk_up;
+    chunkNeighbors->value[4] = chunk_back;
+    chunkNeighbors->value[5] = chunk_front;
+}
+
 entity create_terrain_bulk(ecs *world, const entity prefab, const int3 center_position) {
     int chunks_total_length = calculate_terrain_chunks_count(terrain_spawn_distance, terrain_vertical);
     entity terrain_world = spawn_terrain(world, prefab_terrain, tilemap, float3_zero, 1);
@@ -91,4 +101,4 @@ entity create_terrain_bulk(ecs *world, const entity prefab, const int3 center_po
 
     return terrain_world;
 }
-#endif
+#endif*/

@@ -209,7 +209,6 @@ zox_begin_module(ZoxGame)
     disable_block_voxes = 1;
 
     // npcs
-    character_depth = 5;
     vox_model_scale = 1 / 32.0f;
     disable_npcs = 1;
 }

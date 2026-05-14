@@ -12,6 +12,7 @@ zox_sys2(StreamEndSystem) {
     int xz_chunks = terrain_lod_near * 2 + 1;
     int y_chunks = render_distance_y * 2 + 1;
     uint chunk_required = xz_chunks * xz_chunks * y_chunks;
+    chunk_required /= 3;
     if (zox_tst_single_terrain_chunk) {
         chunk_required = 1;
     }
@@ -26,25 +27,20 @@ zox_sys2(StreamEndSystem) {
         zox_sys_i(EventInput, eventInput);
         zox_sys_o(Loaded, loaded);
         zox_sys_o(StreamEndEvent, event);
-
         if (loaded->value != zox_load_begin) {
             continue;
         }
-
         if (!chunks->value || !chunks->value->size) {
             continue;
         }
-
         // check all chunks chunks if chunks are dirty]
         uint chunks_loaded = 0;
         byte running = 0;
         for (size_t j = 0; j < chunks->value->size; j++) {
             int3_hashmap_pair* pair = chunks->value->data[j];
-
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 entity chunk = pair->value;
-
                 if (!zox_valid(chunk) || !zox_has(chunk, GenerateChunk) || !zox_has(chunk, ChunkMeshDirty)) {
                     if (!zox_valid(chunk)) {
                         zox_log_error("chunk invalid in stream end system [%lu]", chunk);
@@ -63,11 +59,9 @@ zox_sys2(StreamEndSystem) {
                 } else if (zox_gett_value(chunk, GenerateChunk)) {
                     running = 1;
                 }
-
                 if (running) {
                     break;
                 }
-
                 int3_hashmap_pair* next_pair = pair->next;
                 pair = next_pair;
                 chunks_loaded++;
@@ -77,7 +71,6 @@ zox_sys2(StreamEndSystem) {
                 break;
             }
         }
-
         if (!running && chunks_loaded >= chunk_required) {
             // zox_log("Terrain Loaded: @ [%f] - chunks: [%i]", zox_current_time, chunks_loaded);
             // we should check if all chunks have finished here
@@ -88,6 +81,5 @@ zox_sys2(StreamEndSystem) {
             // now loaded
             loaded->value = zox_load_done;
         }
-
     }
 } zox_sys_end(StreamEndSystem);

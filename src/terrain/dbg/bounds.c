@@ -14,7 +14,7 @@ void toggle_debug_bounds_delve(ecs *world, const VoxelNode *node, byte mode) {
     }
 }
 
-void toggle_debug_block_voxes_bounds(ecs *world) {
+void zox_dbg_toggle_gizmos_vodes(ecs *world, ClickEventData data) {
     if (!zox_valid(local_terrain) || !zox_valid(prefab_block_vox) || !zox_has(prefab_block_vox, DebugCubeLines)) {
         return;
     }
@@ -41,8 +41,8 @@ void toggle_debug_block_voxes_bounds(ecs *world) {
     }
 }
 
-void key_down_toggle_debug_voxes_bounds(ecs *world, int32_t keycode) {
+/*void key_down_toggle_debug_voxes_bounds(ecs *world, int32_t keycode) {
     if (keycode == zox_key_F6) {
         toggle_debug_block_voxes_bounds(world);
     }
-}
+}*/

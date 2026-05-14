@@ -1,5 +1,5 @@
 entity zox_dbg_test_window;
-#define zox_tsts_count 14
+#define zox_tsts_count 16
 
  void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
      zox_tst_spawn_tilemap(world);
@@ -33,6 +33,22 @@ entity zox_dbg_test_window;
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UI
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Character Gizmos",
+        .on_click = { &zox_dbg_toggle_gizmos_characters },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Vode Gizmos",
+        .on_click = { &zox_dbg_toggle_gizmos_vodes },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "All Items",
+        .on_click = { &zox_tst_all_items },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "All Skills",
+        .on_click = { &zox_tst_all_skills },
+    };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Canvas",
         .on_click = { &zox_dbg_spawn_canvas },
@@ -82,14 +98,7 @@ entity zox_dbg_test_window;
         .text = "Death",
         .on_click = { &zox_tst_player_character_death },
     };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "All Items",
-        .on_click = { &zox_tst_all_items },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "All Skills",
-        .on_click = { &zox_tst_all_skills },
-    };
+
     // Test our uis
     entity spawned[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Testing", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, list_padding, spawned, elements, elements_count, visible_count);

@@ -1,7 +1,7 @@
 void build_vox_rubble(VoxelNode *voctree, byte depth, byte2 voxel_range, int rubble_count, byte rubble_height) {
     byte length = powers_of_two_byte[depth];
     byte3 position;
-    fill_new_octree(voctree, 0, depth);  // clear chunk
+    fill_octree(voctree, 0, depth);  // clear chunk
     for (int j = 0; j < rubble_count; j++) {
         position.x = rand() % length;
         position.z = rand() % length;

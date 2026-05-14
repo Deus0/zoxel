@@ -12,12 +12,13 @@ void handle_touch_drag(ecs *world, entity canvas, entity finger, entity virtual_
         zox_geter(finger, ZevicePointerPosition, position);
         if (is_game_state_playing) {
             byte button_type = zox_device_stick_left;
-            zox_geter_value(finger, DeviceLink, entity, touchscreen)
+            zox_geter_value(finger, DeviceLink, entity, touchscreen);
             if (!zox_valid(touchscreen) || !zox_has(touchscreen, ScreenDimensions)) {
                 zox_log_error("touchscreen invalid");
                 return;
             }
-            zox_geter_value(touchscreen, ScreenDimensions, int2, size);
+            zox_geter_value(canvas, LayoutSize, int2, size);
+            // zox_geter_value(touchscreen, ScreenDimensions, int2, size);
             if (position->value.x >= size.x / 2) {
                 button_type = zox_device_stick_right;
             }

@@ -1,7 +1,8 @@
 // NOTE: Assumes node depth is lower than terrain (max depth)
 static inline float get_chunk_scale(byte ndepth, byte tdepth, float tscale) {
     if (tdepth < ndepth) {
-        zox_log_error("terrain < node: %i < %i", tdepth, ndepth);
+        // if invisible depth is 254/255 tho
+        // zox_log_error("terrain < node: %i < %i", tdepth, ndepth);
         return tscale;
     }
     byte ddepth = tdepth - ndepth;

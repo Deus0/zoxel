@@ -8,11 +8,19 @@ void vox_outlines(VoxelNode *chunk, byte node_depth, byte black_voxel) {
                 byte on_edges = byte3_on_edges(voxel_position, size);
                 if (on_edges) {
                     // skip if air
-                    byte3 temp_position_2 = voxel_position;
-                    if (get_sub_node_voxel(chunk, &temp_position_2, node_depth) == 0) continue;
-                    byte2 set_voxel = (byte2) { black_voxel, node_depth };
-                    byte3 temp_position = voxel_position;
-                    set_octree_voxel(chunk, &temp_position, &set_voxel, 0);
+                    // byte3 temp_position_2 = voxel_position;
+                    /*if (get_sub_node_voxel(chunk, &temp_position_2, node_depth) == 0) {
+                        continue;
+                    }*/
+                    if (get_value_VoxelNode(chunk, node_depth, voxel_position, 0) == 0) {
+                        continue;
+                    }
+                    if (!set_VoxelNode(chunk, node_depth, voxel_position, black_voxel, 0)) {
+                        zox_logw("Set Voxel Failure [%ix%ix%i]", voxel_position.x, voxel_position.x, voxel_position.z);
+                    }
+                    //byte2 set_voxel = (byte2) { black_voxel, node_depth };
+                    //byte3 temp_position = voxel_position;
+                    //set_octree_voxel(chunk, &temp_position, &set_voxel, 0);
                 }
             }
         }

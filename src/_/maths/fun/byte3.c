@@ -1,35 +1,44 @@
-static inline byte byte3_equals(const byte3 a, const byte3 b) {
+static inline byte byte3_equals(byte3 a, byte3 b) {
     return a.x == b.x && a.y == b.y && a.z == b.z;
 }
 
-static inline byte3 byte3_single(const byte a) {
+static inline byte3 byte3_single(byte a) {
     return (byte3) { a, a, a };
 }
 
-static inline byte3 byte3_half(const byte3 v) {
+static inline byte3 byte3_half(byte3 v) {
     return (byte3) { v.x / 2, v.y / 2, v.z / 2 };
 }
 
-static inline int byte3_array_index(const byte3 input, const byte3 size) {
+static inline int byte3_array_index(byte3 input, byte3 size) {
     return input.z + size.z * (input.y + size.y * input.x);
 }
 
-static inline int byte3_array_indexl(const byte3 input, const byte length) {
+static inline int byte3_array_indexl(byte3 input, byte length) {
     return input.z + length * (input.y + length * input.x);
 }
 
-static inline byte byte3_octree_array_index(const byte3 input) {
+static inline byte byte3_octree_array_index(byte3 input) {
     return input.z + 2 * (input.y + 2 * input.x);
 }
 
-static inline byte3 byte3_add(const byte3 a, const byte3 b) {
+static inline byte3 byte3_add(byte3 a, byte3 b) {
     return (byte3) { a.x + b.x, a.y + b.y, a.z + b.z };
 }
 
-static inline void byte3_add_byte3_p(byte3 *value, const byte3 add) {
+static inline void byte3_add_byte3_p(byte3 *value, byte3 add) {
     value->x += add.x;
     value->y += add.y;
     value->z += add.z;
+}
+
+
+static inline byte3 byte3_div1(byte3 a, byte d) {
+    if (d == 0) {
+        zox_loge("byte3_div1 0 error");
+        return a;
+    }
+    return (byte3) { a.x / d, a.y / d, a.z / d };
 }
 
 static inline void byte3_modulus_byte(byte3 *value, const byte moduli) {

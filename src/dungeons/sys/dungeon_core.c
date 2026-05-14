@@ -2,7 +2,6 @@
 // todo: place walls
 // todo: place in neighbor chunks too
 // todo: every 5 seconds, build a new block along connects dungeon bricks (dark blocks)
-
 typedef struct {
     byte3 position;
     entity chunk;
@@ -19,11 +18,9 @@ zox_sys2(DungeonBlockSystem) {
         zox_sys_i(ChunkLink, chunkLink);
         zox_sys_i(TimerState, timerState);
         zox_sys_i(DungeonWallType, place);
-
         if (timerState->value == 0) {
             continue;
         }
-
         entity chunk = chunkLink->value;
         zox_geter_value(chunk, VoxLink, entity, terrain);
         zox_geter(terrain, ChunkLinks, chunks);
@@ -38,27 +35,20 @@ zox_sys2(DungeonBlockSystem) {
             place_type = place->value; // zox_block_dark;
         }
         // find next z position
-        const byte radius = 3;
-        const byte height = 5;
-
+        byte radius = 3;
+        byte height = 5;
         // chunk stuff
-        // zox_geter_value(chunk, NodeDepth, byte, node_depth);
         zox_geter_value(chunk, ChunkSize, int3, chunk_size);
         zox_geter_value(chunk, ChunkPosition, int3, chunk_position);
-
         int3 positionv = positionl_to_positionv(
             positionl,
             chunk_position,
             chunk_size,
             terrain_sizec
         );
-
         entity place_chunk;
-        // int3 place_positionv;
         byte3 place_positionl;
         int3 place_positionc;
-        // VoxelNode* place_node;
-
         // placing
         byte find = 0;
         int3 check_positionv;
@@ -80,7 +70,6 @@ zox_sys2(DungeonBlockSystem) {
                     if (x == 0 && z == radius && y != 0 && y != height) {
                         continue;
                     }
-
                     // now we have positionv:
                     //  get chunk positionc
                     int3 check_positionc = positionv_to_positionc(
@@ -93,7 +82,6 @@ zox_sys2(DungeonBlockSystem) {
                     }
                     zox_geter_value(check_chunk, ChunkSize, int3, check_sizec);
                     zox_geter_value(check_chunk, NodeDepth, byte, check_node_depth);
-
                     byte3 check_positionl = positionv_to_positionl(
                         check_positionv,
                         check_positionc,
@@ -103,12 +91,11 @@ zox_sys2(DungeonBlockSystem) {
                     if (!byte3_in_bounds(check_positionl, int3_to_byte3(check_sizec))) {
                         continue;
                     }
-
                     zox_geter(check_chunk, VoxelNode, check_node);
-                    const VoxelNode* check_subnode = get_node(
+                    const VoxelNode* check_subnode = get_VoxelNode(
                         (VoxelNode*) check_node,
                         check_node_depth,
-                        check_positionl
+                        check_positionl, 0
                     );
                     if (!check_subnode || check_subnode->value == place_type) {
                         continue;
@@ -126,17 +113,14 @@ zox_sys2(DungeonBlockSystem) {
                 }
             }
         }
-
         if (!find) {
             continue;
         }
-
         if (!place_chunk || !zox_has(place_chunk, VoxelNodeQueue)) {
             zox_log_error("Cannot place: Invalid VoxelNodeQueue [%ix%ix%i]",
                 place_positionc.x, place_positionc.y, place_positionc.z);
             continue;
         }
-
         // add to queue
         zox_muter(place_chunk, VoxelNodeQueue, queue);
         a_VoxelNodeQueue(queue,
@@ -145,7 +129,6 @@ zox_sys2(DungeonBlockSystem) {
                 .pos = place_positionl
                 // .positionv = place_positionv
             });
-
         /*zox_mut_begin(place_chunk, VoxelNode, place_node); // get node function
         // float3 positionf = positionv_to_real_position(voxel_position, int3_to_byte3(chunk_bounds), default_vox_scale);
         place_block(world,

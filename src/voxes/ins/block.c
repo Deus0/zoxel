@@ -1,10 +1,4 @@
 entity spawn_block_vox(ecs *world, SpawnBlockVox data) {
-    /*byte mdepth = block_vox_depth_limits.y;
-    if (zox_has(data.prefab, MaxRenderDepth)) {
-        mdepth = zox_gett_value(data.prefab, MaxRenderDepth);
-    }
-    byte ddepth = mdepth - block_vox_depth;
-    float scale = 1.0f / (data.scale * powers_of_two[ddepth]);*/
     zox_instance(data.prefab);
     zox_name("block_vox");
     zox_set(e, BlockScale, { data.scale }); // * 0.5f });

@@ -1,24 +1,15 @@
-void build_vox_flower_patch(
-    VoxelNode *voctree,
-    const byte depth,
-    const byte2 stem_range,
-    const byte2 petal_range,
-    const byte black_voxel
-) {
-    const byte spawn_count = 4 + rand() % 8; // 32
-    const byte size = powers_of_two_byte[depth];
+void build_vox_flower_patch(VoxelNode *voctree, byte depth, byte2 stem_range, byte2 petal_range, byte black_voxel) {
+    byte spawn_count = 4 + rand() % 8; // 32
+    byte size = powers_of_two_byte[depth];
     byte3 pos;
     byte3 base = byte3_zero;
-
     for (int i = 0; i < spawn_count; i++) {
         // random flower base
-        base.x = rand() % size;
+        base.x = rand_range(1, size - 1); // rand() % size;
         base.y = 0; // rand() % (size / 4); // keep them grounded
-        base.z = rand() % size;
-
+        base.z = rand_range(1, size - 1);
         byte stem_height = 2 + rand() % 7;
         byte petal_type = rand() % 4;
-
         // stem
         for (byte h = 0; h < stem_height; h++) {
             pos = base;
@@ -26,18 +17,12 @@ void build_vox_flower_patch(
             byte c = stem_range.x + rand() % (stem_range.y - stem_range.x);
             set_VoxelNode(voctree, depth, pos, c, 0);
         }
-
         // petals
         pos.y = base.y + stem_height;
-
         byte flower_color = petal_range.x + rand() % (petal_range.y - petal_range.x);
-
         switch (petal_type) {
             case 0: // cross pattern
-
                 set_VoxelNode(voctree, depth, pos, flower_color, 0);
-
-
                 set_VoxelNode(voctree, depth, (byte3) {pos.x+1,pos.y,pos.z}, flower_color, 0);
                 set_VoxelNode(voctree, depth, (byte3) {pos.x-1,pos.y,pos.z}, flower_color, 0);
                 set_VoxelNode(voctree, depth, (byte3) {pos.x,pos.y,pos.z+1}, flower_color, 0);

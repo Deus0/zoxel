@@ -3,7 +3,9 @@
 #include "scale.c"
 #include "lod.c"
 
-byte block_vox_depth = 4;
+byte character_depth = 5;
+byte block_vox_depth = 4;   // just make this game depth - octree_depth
+byte terrain_depth = 4;
 byte2 block_vox_depth_limits = (byte2) { 2, 5 };
 
 int fill_octree_random_rate = 50;

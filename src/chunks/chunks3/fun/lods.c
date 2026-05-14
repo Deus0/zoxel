@@ -36,8 +36,10 @@ static inline byte camera_distance_to_npc_render_depth(byte distance, byte mdept
     if (zox_dbg_npc_all_max_depth) {
         return mdepth;
     }
-    byte ddepth = (block_vox_depth_limits.y - block_vox_depth);
-    mdepth = mdepth - ddepth < 0 ? 0 : mdepth - ddepth;
+    if (block_vox_depth < mdepth) {
+        byte ddepth = (block_vox_depth_limits.y - block_vox_depth);
+        mdepth = mdepth - ddepth < 0 ? 0 : mdepth - ddepth;
+    }
     return camera_distance_to_render_depth(distance, mdepth, vox_lod_near, terrain_lod_near);
 }
 

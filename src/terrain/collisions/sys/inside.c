@@ -46,7 +46,8 @@ zox_sys2(InsideBlockSystem) {
             continue;
         }
         // voxel
-        byte voxel = get_sub_node_voxel_locked(voctree, &positionl, cdepth);
+        byte voxel = get_value_VoxelNode(voctree, cdepth, positionl, 0);
+        // byte voxel = get_sub_node_voxel_locked(voctree, &positionl, cdepth);
         if (inside->value != voxel) {
             inside->value = voxel;
             idirty->value = zox_dirty_trigger;

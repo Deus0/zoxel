@@ -72,7 +72,8 @@ void collide_with_chunk_d3(
     if (!byte3_in_bounds(voxel_positionl, chunk_dimensions_b3)) {
         return;
     }
-    byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
+    byte voxel = get_value_VoxelNode(node, terrain_depth, voxel_positionl, 0);
+    // byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
     if (block_collisions[voxel]) {
         // Calculate deltas
         const int delta_vox_d1 = int_abs(position_vox_d1 - position_vox_last_d1);
@@ -162,7 +163,8 @@ void collide_with_chunk_d2(
     }
 
     // use terrain depth here for now
-    const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
+    // const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, terrain_depth); // node_depth);
+    byte voxel = get_value_VoxelNode(node, terrain_depth, voxel_positionl, 0);
     if (block_collisions[voxel]) {
         // float_abs
         const int delta_vox_d1 = int_abs(position_vox_d1 - position_vox_last_d1);
@@ -298,8 +300,8 @@ void collide_with_chunk(
     if (!byte3_in_bounds(voxel_positionl, chunk_dimensions_b3)) {
         return;
     }*/
-
-    const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, chunk_depth);
+    // const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, chunk_depth);
+    byte voxel = get_value_VoxelNode(node, terrain_depth, voxel_positionl, 0);
     if (block_collisions[voxel]) {
         *collided_d = 1 + is_negative;
 

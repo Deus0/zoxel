@@ -35,14 +35,12 @@ TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
     zox_geter_value(terrain, BlockScale, float, tscale);
     float3 positionf = byte3_to_float3(in_chunk_position);
     float3_scale_p(&positionf, tscale);
-    zox_geter_value(chunk, Position3D, float3, chunk_positionf);
-    float3_add_float3_p(&positionf, chunk_positionf); // chunk
+    if (zox_valid(chunk)) {
+        zox_geter_value(chunk, Position3D, float3, chunk_positionf);
+        float3_add_float3_p(&positionf, chunk_positionf); // chunk
+    }
     float3_add_float3_p(&positionf, float3_single(tscale * 0.5f));
     float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
-    /*int vlength = powers_of_two[node_depth];
-    int3 chunk_voxel_position = get_chunk_positionv(cposition, int3_single(vlength));
-    float3 positionf = local_to_real_position_character(in_chunk_position,  chunk_voxel_position, bounds, 1);*/
-    // zox_log("Terrain Place Found [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z);
     return (TerrainPlace) {
         .chunk = chunk,
         .chunk_position = cposition,

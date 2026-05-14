@@ -10,17 +10,13 @@
 #include "cameras.c"
 #include "shortcuts.c"
 #include "actions.c"
-
 #include "dialogue_begin.c"
 #include "dialogue_player.c"
 #include "dialogue_exit.c"
 #include "dialogue_end.c"
-
 #include "begin.c"
 #include "game_start.c"
 #include "game_end.c"
-
-// Cameras
 #include "head_camera.c"
 
 void define_systems_controllers3(ecs *world) {
@@ -28,7 +24,6 @@ void define_systems_controllers3(ecs *world) {
         Player3DMoveSystem,
         EcsOnUpdate,
         [in] inputs.DeviceLinks,
-        // [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
         [none] players.Player
     );
@@ -44,7 +39,6 @@ void define_systems_controllers3(ecs *world) {
         Player3RotateSystem,
         EcsOnUpdate,
         [in] inputs.DeviceLinks,
-        // [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
         [none] players.Player
@@ -67,6 +61,7 @@ void define_systems_controllers3(ecs *world) {
     zox_system_1(
         Player3RespawnSystem,
         EcsOnUpdate,
+        [in] cameras.CameraLink,
         [out] players.PlayerState,
         [out] players.PlayerRespawn,
         [out] characters.CharacterLink,

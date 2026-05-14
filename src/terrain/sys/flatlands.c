@@ -1,7 +1,7 @@
 // generates our terrain voxels
 zox_sys2(FlatlandSystem) {
-    const byte target_depth = terrain_depth;
-    const byte chunk_voxel_length = powers_of_two_byte[target_depth];
+    byte target_depth = terrain_depth;
+    byte chunk_voxel_length = powers_of_two_byte[target_depth];
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateChunk);
@@ -15,28 +15,23 @@ zox_sys2(FlatlandSystem) {
         zox_sys_i(VoxLink, terrain);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(NodeDepth, node_depth);
-
         if (generate->value != chunk_generate_state_update) {
             continue;
         }
-
         node_depth->value = target_depth;
-
-        const float3 chunk_positionc_float3 = float3_from_int3(positionc->value);
-        const int chunk_positionc_y = (int) (chunk_positionc_float3.y * chunk_voxel_length);
-
+        float3 chunk_positionc_float3 = float3_from_int3(positionc->value);
+        int chunk_positionc_y = (int) (chunk_positionc_float3.y * chunk_voxel_length);
         if (chunk_positionc_y >= 0) {
-            fill_new_octree(node, 0, 0);
+            fill_octree(node, 0, 0);
             continue;
         }
-
         zox_geter(terrain->value, RealmLink, realm);
         zox_geter(realm->value, BiomeLinks, biomes);
         if (!biomes->length) {
             zox_log_error("No Biomes");
             continue;
         }
-        const entity biome = positionc->value.z > 0 ? biomes->value[0] :  biomes->value[biomes->length - 1];
+        entity biome = positionc->value.z > 0 ? biomes->value[0] :  biomes->value[biomes->length - 1];
         zox_geter(biome, BlockLinks, biome_blocks);
         if (!biome_blocks->length) {
             zox_log_error("No Blocks in Biome [%s]", zox_get_name(biome));
@@ -52,7 +47,6 @@ zox_sys2(FlatlandSystem) {
             zox_log_error("Biome dirt is air.");
             continue;
         }
-
-        fill_new_octree(node, biome_dirt_id, 0);
+        fill_octree(node, biome_dirt_id, 0);
     }
 } zox_sys_end(FlatlandSystem);

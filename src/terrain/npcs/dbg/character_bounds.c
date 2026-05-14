@@ -1,6 +1,6 @@
 extern entity get_linked_terrain(ecs*, entity);
 
-void toggle_debug_character_bounds(ecs *world) {
+void zox_dbg_toggle_gizmos_characters(ecs *world, ClickEventData data) {
     entity terrain = local_terrain;
     if (!zox_valid(terrain)) {
         return;
@@ -25,8 +25,8 @@ void toggle_debug_character_bounds(ecs *world) {
     }
 }
 
-void key_down_toggle_debug_character_bounds(ecs *world, int32_t keycode) {
+/*void key_down_toggle_debug_character_bounds(ecs *world, int32_t keycode) {
     if (keycode == zox_key_F5) {
         toggle_debug_character_bounds(world);
     }
-}
+}*/

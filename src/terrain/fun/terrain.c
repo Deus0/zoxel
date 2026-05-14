@@ -35,7 +35,7 @@
     }
 }*/
 
-void set_terrain_block(
+/*void set_terrain_block(
     ecs *world,
     VoxelNode *voxelNode,
     byte3 voxel_position,
@@ -50,6 +50,10 @@ void set_terrain_block(
     if (place_in_bounds) {
         byte3 node_position = voxel_position;
         node_position.y = local_place_y;
-        set_octree_voxel(voxelNode, &node_position, &set_voxel, 0); // testing
+        // set_octree_voxel(voxelNode, &node_position, &set_voxel, 0); // testing
+        if (!set_VoxelNode(voxelNode, set_voxel.y, node_position, set_voxel.x, 0)) {
+            zox_logw("Set Voxel Failure [%ix%ix%i]", voxel_position.x, voxel_position.x, voxel_position.z);
+        }
     }
 }
+*/

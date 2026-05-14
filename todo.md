@@ -1,24 +1,15 @@
 ### todo ###
+# flatpak run org.kde.kate
 
+- Fix Skill Indexing though for Skillbook
 - Refactor Model Spawning out of block_vox_meta functions
--x Fix NPC streaming
-    -x issues on LODs
-    -x issues on LOD Scales
 - Replace all find_random_position_on_ground with getv_VoxelNode's
 - Remove all old chunk getters/setters and just use latest ones
-
--x Use proper flecs functions for core transform childrens, so it processes them all
-
 - Raycast Range should be Skill Range
 	- Change when skill is equiped - using actions
-
 - Write a test function to spawn a world item to pickup
-
-flatpak run org.kde.kate
-
 - Sometimes namelabel didnt load on npcs
 - test key for keyboard navigation mode
--x Refactor Skills to use Children and no Users
 - Skills UI - harder refactor
     - Needs to account for UI Slot Indexes
     - Create a component that stores entities array on character, this can be used for the UIs itself (when ui is closed/opened)
@@ -382,3 +373,9 @@ Done:
 -x Move first chunk spawn to stream systems - StreamKickstartSystem
 -x Fix new game UI (actionbar and stats ui) / Code cleanup
 -x Fix DeviceGizmo icon
+-x Fix NPC streaming
+    -x issues on LODs
+    -x issues on LOD Scales
+-x Use proper flecs functions for core transform childrens, so it processes them all
+-x Move camera first for respawning
+-x Refactor Skills to use Children and no Users

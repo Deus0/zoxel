@@ -25,7 +25,6 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
     if (!zox_has(model, MaxRenderDepth)) {
         zox_loge("Max Depth not on vox [%s]", zox_get_name(model));
         return 0;
-
     }
     byte mdepth = zox_gett_value(model, MaxRenderDepth);
     //byte ddepth = mdepth - block_vox_depth; // block_vox_depth;

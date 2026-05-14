@@ -126,8 +126,8 @@ void zoxel_debug_keys() {
     add_hook_key_down(key_down_toggle_streaming);
     add_hook_key_down(key_down_toggle_npc_movement);
     add_hook_key_down(key_down_toggle_debug_chunks);
-    add_hook_key_down(key_down_toggle_debug_character_bounds);
-    add_hook_key_down(key_down_toggle_debug_voxes_bounds);
+    // add_hook_key_down(key_down_toggle_debug_character_bounds);
+    // add_hook_key_down(key_down_toggle_debug_voxes_bounds);
     // add_hook_key_down(key_down_toggle_light_debug);
     // add_hook_key_down(test_load_chunk);
     // add_hook_key_down(toggle_sound);

@@ -1,7 +1,5 @@
-
 // NOTE: Confusing AF atm, nodegraphs use a set size, 32 atm, however the vox models spawn at any size, and fill gets scaled to those
 //      - so we have two sizes created per model
-
 zox_sys2(BodysRealmSpawnSystem) {
     byte nodegraph_vlength = powers_of_two[nodegraph_max_depth];
     zox_sys_world();
@@ -30,14 +28,11 @@ zox_sys2(BodysRealmSpawnSystem) {
         // Chest
         {
             float3 bscale = (float3) { 0.44f, 0.4f, 0.3f };
-
             byte3 bsize = byte3_scale3f(byte3_single(nodegraph_vlength), bscale);
             byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
             lint mseed = 888 * (i * models->length);
-
             entity mblueprint = spawn_blueprint_chest(world, bsize);
             entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "chest", mseed, tsize, zox_slot_core);
-
             add_to_NodegraphLinks(graphs, mblueprint);
             add_to_ItemLinks(items, spawn.x);
             add_to_ModelLinks(models, spawn.y);
