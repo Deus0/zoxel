@@ -37,8 +37,8 @@ entity spawn_character3(ecs *world, spawn_character3D_data data) {
     zox_set(e, RenderDepth, { data.render_depth });
     zox_set(e, RenderDisabled, { data.render_disabled });
     if (zox_valid(model) && zox_has(model, MaxRenderDepth)) {
-        zox_geter_value(model, MaxRenderDepth, byte, max_render_depth);
-        zox_set(e, MaxRenderDepth, { max_render_depth });
+        zox_geter_value(model, MaxRenderDepth, byte, model_mdepth);
+        zox_set(e, MaxRenderDepth, { model_mdepth });
     }
     // voxels
     /*if (data.terrain) {
@@ -101,9 +101,9 @@ entity spawn_character3_new(ecs *world, entity prefab, entity meta, entity realm
         zox_log_error("Model Invalid [%s]", zox_get_name(model));
         return 0;
     }
-    zox_geter_value(model, MaxRenderDepth, byte, max_render_depth);
-    if (render_depth > max_render_depth) {
-        render_depth = max_render_depth;
+    zox_geter_value(model, MaxRenderDepth, byte, mdepth);
+    if (render_depth > mdepth) {
+        render_depth = mdepth;
     }
     // If Model, get the Vox (its lodded)
     if (zox_has(model, ModelLods)) {
@@ -137,7 +137,7 @@ entity spawn_character3_new(ecs *world, entity prefab, entity meta, entity realm
     }
     // this should just be found automatically? using terrain link?
     zox_set(e, RenderDepth, { render_depth });
-    zox_set(e, MaxRenderDepth, { max_render_depth });
+    zox_set(e, MaxRenderDepth, { mdepth });
     zox_set(e, RenderDisabled, { 0 });
     zox_set(e, ModelLink, { model });
     if (type == zox_character_type_instanced) {

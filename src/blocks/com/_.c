@@ -24,11 +24,6 @@ zoxc_double(InsideBlockTime);
 zox_tag(BlockSoundTrigger);
 zoxc_entity(BlockSound);        // Links Block to a Sound
 
-void copy_block_scale(ecs* world, entity e1, entity e2) {
-    zox_geter_value(e2, BlockScale, float, bscale);
-    zox_set(e2, BlockScale, { bscale });
-}
-
 void define_components_blocks(ecs *world) {
     zoxd_tag(Voxel);
     zoxd_tag(Block);

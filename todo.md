@@ -1,7 +1,8 @@
 ### todo ###
 
-- Fix NPC streaming
-    - issues on LODs
+- Refactor Model Spawning out of block_vox_meta functions
+-x Fix NPC streaming
+    -x issues on LODs
     -x issues on LOD Scales
 - Replace all find_random_position_on_ground with getv_VoxelNode's
 - Remove all old chunk getters/setters and just use latest ones

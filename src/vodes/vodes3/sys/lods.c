@@ -30,7 +30,6 @@ zox_sys2(VodesLodSystem) {
         zox_sys_i(RenderDistance, renderDistance);
         zox_sys_i(BlocksSpawned, blocksSpawned);
         zox_sys_i(VoxelNode, voxelNode);
-
         if (renderDistanceDirty->value == zox_dirty_active && blocksSpawned->value) {
             byte render_depth = camera_distance_to_block_vox_depth(renderDistance->value);
             set_vode_lods(world, voxelNode, render_depth);

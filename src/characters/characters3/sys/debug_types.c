@@ -7,11 +7,9 @@ zox_sys2(Character3TypeDebugSystem) {
         zox_sys_i(DebugCubeLines, mode);
         zox_sys_i(Character3Type, type);
         zox_sys_o(Color, dcolor);
-
         if (!mode->value) {
             continue;
         }
-
         color_rgb output = color_rgb_black;
         if (mode->value == zox_cubeline_debug_character_types) {
             if (type->value == zox_character_type_instanced) {
@@ -24,7 +22,6 @@ zox_sys2(Character3TypeDebugSystem) {
         } else {
             continue;
         }
-
         dcolor->value = color_rgb_to_color(output);
     }
 } zox_sys_end(Character3TypeDebugSystem);

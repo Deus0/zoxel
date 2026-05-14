@@ -15,7 +15,6 @@ zox_sys2(ChunkLodSystem) {
     int3 *stream_points = NULL;
     int stream_points_length = 0;
     zox_sys_query_begin();
-
     while (zox_sys_query_loop()) {
         if (streamers_dirty) {
             continue;
@@ -34,11 +33,9 @@ zox_sys2(ChunkLodSystem) {
         }
     }
     zox_sys_query_end()
-
     if (!streamers_dirty) {
         return;
     }
-
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
     zox_sys_out(RenderDepth);
@@ -51,24 +48,18 @@ zox_sys2(ChunkLodSystem) {
         zox_sys_o(RenderDistance, distance);
         zox_sys_o(RenderDepthDirty, depth_dirty);
         zox_sys_o(RenderDistanceDirty, distance_dirty);
-
         int3 stream_point = find_closest_point(stream_points, stream_points_length, position->value);
         byte render_distance = get_camera_chunk_distance_xz(stream_point, position->value);
-
         if (distance->value != render_distance) {
             distance->value = render_distance;
             distance_dirty->value = zox_dirty_trigger;
-
             // Our Terrain Chunks Update Here:
             if (disable_chunk_loding) {
                 continue;
             }
-
             byte render_depth = camera_distance_to_terrain_render_depth(distance->value);
-
             if (depth->value != render_depth) {
                 depth->value = render_depth;
-
                 if (render_depth != render_depth_invisible) {
                     depth_dirty->value = zox_dirty_trigger;
                 }

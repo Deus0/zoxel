@@ -1,12 +1,13 @@
-entity spawn_vox_basic(ecs *world, entity p, byte mdepth, byte depth) {
-    byte ddepth = mdepth - depth; // + 1;
-    // const float bscale = ((float) ddepth) / 64.0f;
+entity spawn_vox_basic(ecs *world, entity prefab, byte rdepth, byte mdepth) {
+    byte ddepth = mdepth - rdepth; // + 1;
     float bscale = ((float) powers_of_two[ddepth]) / 64.0f;
-    const int3 chunk_size = int3_single(powers_of_two[depth]);
-    zox_instance(p);
-    zox_set(e, NodeDepth, { depth });
+    const int3 chunk_size = int3_single(powers_of_two[rdepth]);
+    zox_instance(prefab);
     zox_set(e, BlockScale, { bscale });
     zox_set(e, ChunkSize, { chunk_size });
+    zox_set(e, NodeDepth, { rdepth });
+    zox_set(e, RenderDepth, { rdepth });
+    zox_set(e, MaxRenderDepth, { mdepth });
     // NOTE: Do instanced models need these??
     spawn_gpu_mesh(world, e);
     spawn_gpu_colors(world, e);

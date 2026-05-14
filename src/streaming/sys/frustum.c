@@ -92,7 +92,6 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_i(ChunkEntities, entities);
         zox_sys_i(VoxelNode, voctree);
         zox_sys_o(RenderDisabled, rdisabled);
-
         // our bounds3D isn't centred, terrain chunks corner offset!
         bounds chunk_bounds = {
             .center = float3_add(position->value, bounds3->value),
@@ -101,7 +100,6 @@ zox_sys2(ChunkFrustumSystem) {
         float3_scale_p(&chunk_bounds.extents, fudge_frustum_extents);
         zox_sys_query_begin();
         byte is_viewed = disable_frustum_culling;
-
         while (zox_sys_query_loop()) {
             if (is_viewed) {
                 continue;   // make sure to iterate all flecs query
@@ -112,27 +110,22 @@ zox_sys2(ChunkFrustumSystem) {
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(Position3DBounds, frustum_bounds);
                 zox_sys_i_2(CameraPlanes, planes);
-
                 // our normals appear to be flipped
                 byte inside_sphere = is_sphere_in_frustum(
                     planes->value,
                     chunk_bounds.center,
                     float3_length(chunk_bounds.extents));
-
                 is_viewed = inside_sphere &&
                     is_bounds_in_position_bounds(frustum_bounds->value, chunk_bounds) &&
                     is_in_frustum(planes->value, chunk_bounds, frustum_inwards);
-
                 if (is_viewed) {
                     break;
                 }
             }
         }
         zox_sys_query_end();
-
         if (rdisabled->value != !is_viewed) {
             rdisabled->value = !is_viewed;
-
             // Also set objects inside our terrain chunks!
             // -=- Block Spawns -=-
             if (zox_gett_value(e, BlocksSpawned)) {
@@ -151,7 +144,6 @@ zox_sys2(ChunkFrustumSystem) {
             }
             // -=- -=- -=- -=- -=- -=-
         }
-
         zox_sys_increment();
     }
 } zox_sys_end(ChunkFrustumSystem);

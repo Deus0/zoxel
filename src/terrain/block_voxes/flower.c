@@ -1,15 +1,12 @@
 entity spawn_block_flower(ecs *world, byte index) {
-
     entity model = string_hashmap_get(files_hashmap_voxes, new_string_data("flower"));
     if (!model) {
         zox_log_error("[flower] model file not found");
         return 0;
     }
-
     // for instancing
     zox_prefab_child_named(prefab_block_vox_instanced, prefab_world_block);
     zox_set(prefab_world_block, InstanceLink, { model });
-
     SpawnBlock spawn_data = {
         .name = "flower",
         .prefab = prefab_block_vox_meta,
@@ -24,31 +21,23 @@ entity spawn_block_flower(ecs *world, byte index) {
         .vox_offset = 1,
         .vox = model
     };
-
     // our block!
     process_disabled_block_vox(world, &spawn_data, 0);
-
     entity e = spawn_block_vox_meta(world, spawn_data);
-
     if (disable_block_voxes) {
         return e;
     }
-
     zox_geter(spawn_data.vox, ModelLods, mlods);
     byte max_render_depth = block_vox_depth;
     entity vox_lod = mlods->value[max_render_depth];
     // zox_set_name_e(vox_lod, "vox_lod0_flower");
-
     // link a texture to it
     entity texture = spawn_texture(world, prefab_vox_texture, int2_single(powers_of_two[block_vox_depth]));
     zox_set_name_e(texture, "texture_flower");
-
     zox_set(texture, VoxLink, { vox_lod });
     zox_set(texture, VoxBakeSide, { direction_front }); // direction_left });
     zox_set(texture, GenerateTexture, { zox_dirty_trigger });
     zox_set(e, TextureLink, { texture });
-
     zox_add_tag(texture, CenterVoxTexture);
-
     return e;
 }

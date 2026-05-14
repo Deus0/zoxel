@@ -1,5 +1,4 @@
 // chunk_lod_state_characters_update :: when terrain lod updates, update character lods
-
 // ChunkDistanceDirty => ChunkEntities -> Update RenderDepths
 zox_sys2(ChunkEntitiesLodSystem) {
     zox_sys_world();
@@ -11,26 +10,20 @@ zox_sys2(ChunkEntitiesLodSystem) {
         zox_sys_i(RenderDistanceDirty, state);
         zox_sys_i(RenderDistance, distance);
         zox_sys_i(ChunkEntities, entities);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         for (int j = 0; j < entities->length; j++) {
             entity e2 = entities->value[j];
-
             if (!(zox_valid(e2) && zox_has(e2, RenderDepth) && zox_has(e2, MaxRenderDepth))) {
                 continue;
             }
-
-            zox_geter_value(e2, MaxRenderDepth, byte, max_render_depth);
-            byte render_depth = camera_distance_to_npc_render_depth(distance->value, max_render_depth);
+            zox_geter_value(e2, MaxRenderDepth, byte, mdepth);
+            byte rdepth = camera_distance_to_npc_render_depth(distance->value, mdepth);
             zox_geter_value(e2, RenderDepth, byte, old);
-
-            if (old != render_depth) {
-                zox_set(e2, RenderDepth, { render_depth });
+            if (old != rdepth) {
+                zox_set(e2, RenderDepth, { rdepth });
                 zox_set(e2, RenderDepthDirty, { zox_dirty_trigger });
-                // zox_log("[%s] is now dirty [%i]", zox_get_name(e2), new_lod);
             }
         }
     }

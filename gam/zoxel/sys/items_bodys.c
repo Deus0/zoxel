@@ -15,24 +15,18 @@ zox_sys2(BodysRealmSpawnSystem) {
         zox_sys_o(ModelLinks, models);
         zox_sys_o(ItemLinks, items);
         zox_sys_o(NodegraphLinks, graphs);
-
         if (state->value != zox_generate_realm_items) {
             continue;
         }
-
         byte mdepth = block_vox_depth + 2;
-
         if (mdepth >= model_lods_max_length) {
             zox_logw("[BodysRealmSpawnSystem] Does not support depth [%i] max is [%i]", mdepth, model_lods_max_length);
             continue;
         }
-
         // zox_log("mdepth in body parts gen [%i]", mdepth);
-
         byte variants = 1;
         byte vlength = powers_of_two_byte[mdepth];
         byte2 tsize = byte2_single(vlength);
-
         // Chest
         {
             float3 bscale = (float3) { 0.44f, 0.4f, 0.3f };
@@ -48,41 +42,30 @@ zox_sys2(BodysRealmSpawnSystem) {
             add_to_ItemLinks(items, spawn.x);
             add_to_ModelLinks(models, spawn.y);
         }
-
         // Head
         {
             float3 bscale = float3_single(0.22f);
-
             byte3 bsize = byte3_scale3f(byte3_single(nodegraph_vlength), bscale);
             byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
-
             lint mseed = 888 * (i * models->length);
-
             entity mblueprint = spawn_blueprint_head(world, bsize);
             entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "head", mseed, tsize, zox_slot_head);
-
             add_to_NodegraphLinks(graphs, mblueprint);
             add_to_ItemLinks(items, spawn.x);
             add_to_ModelLinks(models, spawn.y);
         }
-
         // Hips
         {
             float3 bscale = (float3) { 0.36f, 0.16f, 0.26f };
-
             byte3 bsize = byte3_scale3f(byte3_single(nodegraph_vlength), bscale);
             byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
-
             lint mseed = 888 * (i * models->length);
-
             entity mblueprint = spawn_blueprint_hips(world, bsize);
             entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "hips", mseed, tsize, zox_slot_hips);
-
             add_to_NodegraphLinks(graphs, mblueprint);
             add_to_ItemLinks(items, spawn.x);
             add_to_ModelLinks(models, spawn.y);
         }
-
         zox_logv("At [%f] Realm [bodys] [%i] spawned.", zox_current_time, items->length);
     }
 } zox_sys_end(BodysRealmSpawnSystem);

@@ -194,9 +194,7 @@ zox_sys2(VoxGenerationSystem) {
             }
             for (byte k = bark.x; k < bark.y; k++) {
                 color_rgb c = colors->value[k];
-
                 color_rgb_multiply_float(&c, 0.6f);
-
                 colors->value[k] = c;
             }
             build_vox_wood(node, node_depth, wood, bark);
@@ -208,7 +206,6 @@ zox_sys2(VoxGenerationSystem) {
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
-
             byte2 stem_range = (byte2) {
                 vrange.x,
                 vrange.x + (vrange.y - vrange.x) / 2

@@ -63,10 +63,10 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
     // byte black = colors->length;
     // Run for our fill
     write_lock_VoxelNode(voctree);
-        // zox_log("Filling Cube at [%ix%ix%i] s[%ix%ix%i]", position.x, position.y, position.z, size.x, size.y, size.z);
-        // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
-        // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
-        voctree_fill_ellipsoid(voctree, ndepth, fill_type, position, size);
+    // zox_log("Filling Cube at [%ix%ix%i] s[%ix%ix%i]", position.x, position.y, position.z, size.x, size.y, size.z);
+    // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
+    // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
+    voctree_fill_ellipsoid(voctree, ndepth, fill_type, position, size);
     write_unlock_VoxelNode(voctree);
     zox_set(v, VoxelNodeDirty, { zox_dirty_trigger });
 }
@@ -85,35 +85,25 @@ zox_sys2(FillModelNodeSystem) {
         zox_sys_i(NodeLink, node);
         zox_sys_i(ModelLink, model);
         zox_sys_o(NodeEnd, end);
-
         if (state->value != zox_dirty_active || !zox_valid(model->value)) {
             continue;
         }
-
         zox_geter_value(node->value, NodeType, byte, ntype);
-
         if (ntype != zox_model_node_fill) {
             continue;
         }
-
         // for each model LOD, run shapes
-
         zox_logv(" - Node: Model Fill [%s]", zox_get_name(model->value));
-
         zox_geter(model->value, Seed, seed);
-
         if (zox_has(model->value, ModelLods)) {
             zox_geter(model->value, ModelLods, models);
-
-            for (int j = 0; j < model_lods_max_length; j++) {
+            for (byte j = 0; j < model_lods_max_length; j++) {
                 entity v = models->value[j];
-
                 process_node_model_fill(world, node->value, v, seed->value);
             }
         }  else {
             zox_logw("Node Process Entity does not have ModelLods");
         }
-
         end->value = zox_dirty_trigger;
     }
 } zox_sys_end(FillModelNodeSystem);

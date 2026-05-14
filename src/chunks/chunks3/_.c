@@ -9,9 +9,7 @@
  *
  * */
 
-// TOTO: Finish migrating terrain textured code here
-// TOTO: Move any Chunks3 Colored code here
-
+byte zox_dbg_npc_all_max_depth = 0;
 
 #include "set/_.c"
 #include "sta/_.c"
@@ -23,7 +21,6 @@
 #include "sys/_.c"
 #include "dbg/_.c"
 #include "tst/_.c"
-
 #include "textured/_.c"
 #include "colored/_.c"
 #include "io/_.c"
@@ -41,20 +38,17 @@ zox_begin_module(Chunks3)
     define_systems_chunks3(world);
     define_systems_chunksio(world);
     define_systems_chunks3_debug(world);
-
     // hooks
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
     zox_module_dispose(module_dispose_chunks3);
     initialize_hook_on_destroyed_VoxelNode();
     add_hook_on_destroyed_VoxelNode(destroy_node_link_VoxelNode);
     test_chunks3(world);
-
     // sub modules
     zox_import_module(Chunks3Colored);
     zox_import_module(Chunks3Textured);
     zox_import_module(Structures);
     zox_import_module(VoxelsAnimations);
-
 zox_end_module(Chunks3)
 
 #endif

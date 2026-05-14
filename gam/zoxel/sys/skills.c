@@ -32,7 +32,7 @@ zox_sys2(SkillsRealmSpawnSystem) {
                 }
             }
         }
-
+        // Punch Skills
         {
             color ecolor = (color) { 155, 155, 155, 255 };
             float range = 1.0f;
@@ -41,7 +41,7 @@ zox_sys2(SkillsRealmSpawnSystem) {
             add_to_SkillLinks(skills, e2);
             meta_skill_punch = e2;
         }
-
+        // Aura Skill
         {
             color ecolor = (color) { 5, 5, 5, 122 };
             float damage = -base_death_aura_damage;
@@ -87,7 +87,6 @@ zox_sys2(SkillsRealmSpawnSystem) {
             0.5f
         );
         // add_to_SkillLinks(skills, meta_skill_aura_fire);*/
-
         zox_logv("At [%f] Realm [skills] [%i] spawned.", zox_current_time, skills->length);
     }
 } zox_sys_end(SkillsRealmSpawnSystem);

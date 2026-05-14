@@ -28,6 +28,5 @@ uint debug_label_lods(ecs *world, entity player, char *buffer, uint size, uint i
     index += snprintf(buffer + index, size - index, " - terrain vertical [%i]\n", render_distance_y);
     // index += snprintf(buffer + index, size - index, " - depths [%i:%i:%i]\n", terrain_depth, block_vox_depth, character_depth);
     index += snprintf(buffer + index, size - index, " - npcs [%i]\n", count_entities_npc(world));
-
     return index;
 }

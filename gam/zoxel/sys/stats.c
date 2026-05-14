@@ -21,7 +21,6 @@ zox_sys2(StatsRealmSpawnSystem) {
         energy_c = color_rgb_darken(color_rgb_saturate(energy_c, sat), dark);
         mana_c = color_rgb_darken(color_rgb_saturate(mana_c, sat), dark);
         // levels
-        // entity soul = spawn_stat_level_t(world, "soul", "soul", soul_c);
         entity soul = spawn_realm_stat(world, e, prefab_stat_level, "soul", "soul", soul_c);
         zox_add_tag(soul, StatSoul);
         // states
@@ -59,11 +58,9 @@ zox_sys2(StatsRealmSpawnSystem) {
         add_to_StatLinks(stats, dexterity);
         add_to_StatLinks(stats, charm);
         add_to_StatLinks(stats, luck);
-
         // Jobs
         // create regen stat
         // stats.value[i++] = spawn_stat_level_t(world, "farming", "farming", color_rgb_gray);
-
         zox_logv("At [%f] Realm [stats] [%i] spawned.", zox_current_time, stats->length);
     }
 } zox_sys_end(StatsRealmSpawnSystem);

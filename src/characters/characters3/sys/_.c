@@ -2,13 +2,11 @@
 #include "render_depth.c"
 #include "debug_types.c"
 #include "realm.c"
-#include "name_labels.c"
 
 realm_clear_system(CharacterLinks);
 
 void define_systems_characters3(ecs *world) {
     realm_clear_systemd(characters, CharacterLinks);
-
     zox_system(
         CharacterSaveSystem,
         EcsOnStore,
@@ -18,7 +16,6 @@ void define_systems_characters3(ecs *world) {
         [out] characters3.CharacterSaveHash,
         [none] characters3.SaveCharacter
     );
-
     zox_system(
         CharacterRenderDepthSystem,
         EcsOnUpdate,
@@ -26,7 +23,6 @@ void define_systems_characters3(ecs *world) {
         [out] chunks3.ChunkMeshDirty,
         [none] Character3
     );
-
     zox_system(
         Character3TypeDebugSystem,
         EcsOnUpdate,

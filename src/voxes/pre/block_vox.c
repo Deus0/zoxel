@@ -1,5 +1,5 @@
-entity spawn_prefab_block_vox(ecs *world, entity p) {
-    zox_prefab_child(p);
+entity spawn_prefab_block_vox(ecs *world, entity prefab) {
+    zox_prefab_child(prefab);
     zox_prefab_name("block_vox");
     zox_add_tag(e, BlockVox);
     zox_add_tag(e, VoxMesh);
@@ -16,7 +16,6 @@ entity spawn_prefab_block_vox(ecs *world, entity p) {
     // for debug
     zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
     zox_prefab_set(e, Bounds3Dirty, { 0 });
-
     prefab_add_cube_lines(world, e, color_white, 0);
     return e;
 }

@@ -1,4 +1,3 @@
-#include "biomes.c"
 #include "models.c"
 #include "stats.c"
 #include "skills.c"
@@ -11,22 +10,14 @@
 #include "characters.c"
 #include "music.c"
 #include "achievements.c"
+#include "biomes.c"
+#include "biome_blocks.c"
 
 void define_systems_zoxel(ecs *world) {
-    zox_system_1(
-        BiomesRealmSpawnSystem,
-        zoxp_mainthread,
-        [in] realms.GenerateRealm,
-        [in] core.Seed,
-        [out] biomes.BiomeLinks,
-        [out] colorz.Colors,
-        [none] realms.Realm
-    );
     zox_system_1(
         ModelsRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        [in] colorz.Colors,
         [out] rendering.ModelLinks,
         [out] nodes.NodegraphLinks,
         [none] realms.Realm
@@ -107,7 +98,7 @@ void define_systems_zoxel(ecs *world) {
         BlocksRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        [in] colorz.Colors,
+        // [in] colorz.Colors,
         [in] rendering.ModelLinks,
         [out] blocks.BlockLinks,
         [out] blocks.BlocksDirty,
@@ -119,5 +110,22 @@ void define_systems_zoxel(ecs *world) {
         [in] realms.GenerateRealm,
         [out] achievements.AchievementLinks,
         [none] realms.Realm
+    );
+    zox_system_1(
+        BiomesRealmSpawnSystem,
+        zoxp_mainthread,
+        [in] realms.GenerateRealm,
+        [in] core.Seed,
+        [out] biomes.BiomeLinks,
+        [none] realms.Realm
+    );
+    zox_system_1(
+        BiomeBlocksSystem,
+        zoxp_mainthread,
+        [in] core.Generate,
+        [in] core.Seed,
+        [out] colorz.Colors,
+        [out] blocks.BlockLinks,
+        [none] biomes.Biome
     );
 }

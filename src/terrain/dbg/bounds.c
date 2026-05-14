@@ -18,13 +18,11 @@ void toggle_debug_block_voxes_bounds(ecs *world) {
     if (!zox_valid(local_terrain) || !zox_valid(prefab_block_vox) || !zox_has(prefab_block_vox, DebugCubeLines)) {
         return;
     }
-
     zox_geter_value_non_const(prefab_block_vox, DebugCubeLines, byte, mode);
     cycle_cubeline_debug(&mode);
     zox_set(prefab_block_vox, DebugCubeLines, { mode });
     zox_set(prefab_block_vox_instanced, DebugCubeLines, { mode });
     zox_geter(local_terrain, ChunkLinks, chunkLinks);
-
     for (uint i = 0; i < chunkLinks->value->size; i++) {
         int3_hashmap_pair* pair = chunkLinks->value->data[i];
         uint checks = 0;

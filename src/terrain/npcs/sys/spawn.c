@@ -119,7 +119,8 @@ zox_sys2(Characters3SpawnSystem) {
                 continue;
             }
             zox_geter_value(model, MaxRenderDepth, byte, mdepth);
-            byte render_depth = camera_distance_to_npc_render_depth(render_distance->value, mdepth);
+            byte rdepth = camera_distance_to_npc_render_depth(render_distance->value, mdepth);
+            // zox_log("Spawning model [%s] with mdepth [%i]", zox_get_name(model), mdepth);
             // 2) find a place for our new npc
             // sometimes cannot find a position
             // many spawn checks
@@ -144,7 +145,7 @@ zox_sys2(Characters3SpawnSystem) {
                 .meta = meta,
                 .model = model,
                 .scale = vox_model_scale,
-                .render_depth = render_depth,
+                .render_depth = rdepth,
                 .render_disabled = render_disabled->value,
                 .realm = realm,
                 .terrain = terrain->value,

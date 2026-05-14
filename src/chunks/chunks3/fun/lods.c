@@ -4,7 +4,7 @@
 /// - near: “near‑field” radius under which LOD 0 applies
 /// - far: your global max view distance
 // NOTE: near is a reserved words on windows..
-static inline byte camera_distance_to_render_depth(byte distance,byte depth, byte nearf, byte farf) {
+static inline byte camera_distance_to_render_depth(byte distance, byte depth, byte nearf, byte farf) {
     // vanish beyond the horizon
     if (distance > farf) {
         // zox_log_error(" lod finder out of range: dist [%i] range [%i-%i] depth [%i]", distance, near, far, depth)
@@ -27,13 +27,20 @@ static inline byte camera_distance_to_render_depth(byte distance,byte depth, byt
     return render_depth_invisible;
 }
 
+// Used for Lodding the Terrain Chunks
 static inline byte camera_distance_to_terrain_render_depth(byte distance) {
     return camera_distance_to_render_depth(distance, terrain_depth, terrain_lod_near, terrain_lod_far);
 }
 
-static inline byte camera_distance_to_npc_render_depth(byte distance, byte max_render_depth) {
-    return camera_distance_to_render_depth(distance, max_render_depth, vox_lod_near, terrain_lod_near);
+static inline byte camera_distance_to_npc_render_depth(byte distance, byte mdepth) {
+    if (zox_dbg_npc_all_max_depth) {
+        return mdepth;
+    }
+    byte ddepth = (block_vox_depth_limits.y - block_vox_depth);
+    mdepth = mdepth - ddepth < 0 ? 0 : mdepth - ddepth;
+    return camera_distance_to_render_depth(distance, mdepth, vox_lod_near, terrain_lod_near);
 }
+
 // returns simple camera distance for chunks
 static inline byte get_camera_chunk_distance(int3 camera_position, int3 chunk_position) {
     return (byte) int3_max(chunk_position, camera_position);

@@ -1,13 +1,9 @@
 // #define zox_debug_chunk_link_system
 static inline byte can_have_characters(ecs*, entity);
 
-void zox_log_chunk_removed(
-    ecs *world,
-    const entity e,
-    const entity e2
-) {
+void zox_log_chunk_removed(ecs *world, entity e, entity e2) {
 #ifdef zox_debug_chunk_link_system
-    const int3 chunk_position = zox_get_value(e, ChunkPosition);
+    int3 chunk_position = zox_get_value(e, ChunkPosition);
     zox_log("- chunk [%s] removed e [%s] [%ix%ix%i]", zox_get_name(e), zox_get_name(e2), chunk_position.x, chunk_position.y, chunk_position.z);
 #else
     (void) world;
@@ -16,11 +12,7 @@ void zox_log_chunk_removed(
 #endif
 }
 
-void zox_log_chunk_added(
-    ecs *world,
-    const entity e,
-    const entity e2
-) {
+void zox_log_chunk_added(ecs *world, entity e, entity e2) {
 #ifdef zox_debug_chunk_link_system
     const int3 chunk_position = zox_get_value(e, ChunkPosition);
     zox_log("+ chunk [%s] added e [%s] [%ix%ix%i]", zox_get_name(e), zox_get_name(e2), chunk_position.x, chunk_position.y, chunk_position.z);
@@ -52,28 +44,22 @@ byte set_entity_chunk(ecs *world, entity e, ChunkLink *chunkLink, entity new_chu
     }
     chunkLink->value = new_chunk;
     // now render distabled
-    zox_geter_value(new_chunk, RenderDisabled, byte, chunk_render_disabled)
-    zox_geter_value(new_chunk, RenderDistance, byte, chunk_render_distance)
-    zox_geter_value(e, RenderDisabled, byte, character_render_disabled)
+    zox_geter_value(new_chunk, RenderDisabled, byte, chunk_render_disabled);
+    zox_geter_value(new_chunk, RenderDistance, byte, chunk_render_distance);
+    zox_geter_value(e, RenderDisabled, byte, character_render_disabled);
     if (character_render_disabled != chunk_render_disabled) {
-        zox_set(e, RenderDisabled, { chunk_render_disabled })
+        zox_set(e, RenderDisabled, { chunk_render_disabled });
     }
     // now lod
     // calculate_lods
     // zox_geter_value(e, NodeDepth, byte, node_depth)
     // todo: this should be used by system itself
     if (zox_has(e, RenderDepth) && zox_has(e, MaxRenderDepth)) {
-
         zox_geter_value(e, RenderDepth, byte, old);
-        zox_geter_value(e, MaxRenderDepth, byte, max_render_depth);
-
-        const byte render_depth = camera_distance_to_npc_render_depth(
-            chunk_render_distance,
-            max_render_depth
-        );
-
-        if (old != render_depth) {
-            zox_set(e, RenderDepth, { render_depth });
+        zox_geter_value(e, MaxRenderDepth, byte, mdepth);
+        byte rdepth = camera_distance_to_npc_render_depth(chunk_render_distance, mdepth);
+        if (old != rdepth) {
+            zox_set(e, RenderDepth, { rdepth });
             zox_set(e, RenderDepthDirty, { zox_dirty_trigger } );
         }
     }
@@ -93,18 +79,12 @@ zox_sys2(ChunkLinkSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_o(ChunkPosition, chunkPosition);
         zox_sys_o(ChunkLink, chunkLink);
-
         if (!zox_valid(link->value)) {
             continue; // these shouldn't be here
         }
-
         zox_geter_value(link->value, BlockScale, float, terrain_scale);
         zox_geter_value(link->value, NodeDepth, byte, node_depth);
-        // const float3 real_position = position3D->value;
-        const int3 new_chunk_position = real_position_to_chunk_position(
-            position->value,
-            powers_of_two[node_depth],
-            terrain_scale);
+        int3 new_chunk_position = real_position_to_chunk_position(position->value, powers_of_two[node_depth], terrain_scale);
         byte is_set = !chunkLink->value || (!int3_equals(new_chunk_position, chunkPosition->value));
         if (is_set) {
             zox_geter(link->value, ChunkLinks, chunkLinks)

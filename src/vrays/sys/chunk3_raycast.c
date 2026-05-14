@@ -271,15 +271,25 @@ byte raycast_voxel_node(ecs *world,
                 // model itself
                 entity vox;
                 // if Instanced mesh, use meta, otherwise use world block spawn!
+                byte block_type = 0;
                 if (zox_has(block_spawn, InstanceLink)) {
+                    block_type = 1;
                     vox = zox_gett_value(block_spawn, InstanceLink);
                 } else if (zox_has(hit_block, ModelLink)) {
+                    block_type = 2;
                     vox = zox_gett_value(hit_block, ModelLink);
                 } else {
                     vox = chunk;
                 }
                 if (!zox_valid(vox)) {
-                    zox_log_error("Raycast Invalid Vox [%s] [%s] %i", zox_get_name(block_spawn), zox_get_name(hit_block), block_index);
+                    if (block_type == 1) {
+                        // Could be spawning / invisible here
+                        // zox_logw("Raycast Invalid Instance Vox [%s]  %i Block [%s]", zox_get_name(block_spawn), block_index, zox_get_name(hit_block));
+                    } else if (block_type == 2) {
+                        zox_loge("Raycast Invalid Unique Vox [%s] %i", zox_get_name(hit_block), block_index);
+                    } else {
+                        zox_loge("Raycast Invalid Vox %i",  block_index);
+                    }
                     if (raycast_locks && node_chunk) {
                         read_unlock_VoxelNode(node_chunk);
                     }
@@ -393,7 +403,6 @@ byte raycast_voxel_node(ecs *world,
     }
     return result;
 }
-
 
 // ECS system iterating entities with camera & voxel links to perform raycasting
 // Sets up raycast parameters and executes raycast_voxel_node with proper inputs

@@ -28,12 +28,10 @@ zox_sys2(Chunk2LodSystem) {
             }
         }
     }
-    zox_sys_query_end()
-
+    zox_sys_query_end();
     if (!dirty) {
         return;
     }
-
     zox_sys_begin();
     zox_sys_in(Chunk2Position);
     zox_sys_out(RenderDistance);
@@ -46,15 +44,11 @@ zox_sys2(Chunk2LodSystem) {
         zox_sys_o(RenderDepth, depth);
         zox_sys_o(RenderDistanceDirty, distance_dirty);
         zox_sys_o(RenderDepthDirty, depth_dirty);
-
         int2 stream_point = find_closest_point2(streamers, streamers_count, position->value);
-
         byte rdistance = get_camera_chunk2_distance(stream_point, position->value);
-
         if (distance->value != rdistance) {
             distance->value = rdistance;
             distance_dirty->value = zox_dirty_trigger;
-
             byte rdepth = camera_distance_to_terrain_render_depth(distance->value);
             if (depth->value != rdepth) {
                 depth->value = rdepth;

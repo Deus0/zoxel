@@ -25,11 +25,9 @@ zox_sys2(RenderDepthColorSystem) {
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_i(RenderDisabled, renderDisabled);
         zox_sys_o(Color, colorr);
-
         if (!mode->value) {
             continue;
         }
-
         color_rgb output = color_rgb_black;
         if (mode->value == zox_cubeline_debug_render_disabled) {
             if (renderDisabled->value) {
