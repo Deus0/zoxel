@@ -9,27 +9,21 @@ zox_sys2(ItemIconLabelSystem) {
         zox_sys_i(ItemLink, item);
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, dirty);
-
         if (!zox_valid(item->value) || !zox_has(item->value, QuantityDirty)) {
             continue;
         }
-
         zox_geter_value(item->value, QuantityDirty, byte, quantity_dirty);
 
         if (data->length && quantity_dirty != zox_dirty_active) {
             continue;
         }
-
         zox_geter_value(item->value, Quantity, byte, quantity);
         char text[label_text_count];
-
-
         if (quantity > 1) {
             snprintf(text, label_text_count, "x%i", quantity);
         } else {
             text[0] = '\0';
         }
-
         // set text of quantity label
         if (!is_zext(data, text)) {
             set_zext(data, text);

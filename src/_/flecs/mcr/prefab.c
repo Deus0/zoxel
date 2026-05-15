@@ -32,3 +32,6 @@
 // Retrieve the prefab (parent) from the entity
 #define zox_get_prefab(e, name)\
     entity name = ecs_get_target(world, e, EcsIsA, 0)
+
+#define zox_getp(world, e)\
+    ecs_get_target(world, e, EcsIsA, 0)

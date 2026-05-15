@@ -130,7 +130,7 @@ int debug_can_jump(ecs *world, entity character, char buffer[], int buffer_size,
  * int get_label_local_character_health(ecs *world, const entity character, char buffer[], int buffer_size, int buffer_index) {
  *    if (character) {
  *        const StatLinks *statLinks = zox_get(character, StatLinks)
- *        find_array_element_with_tag(statLinks, HealthStat, health_stat)
+ *        find_array_element_with_tag(statLinks, StatHealth, health_stat)
  *
  *        if (!zox_has(health_stat, StatValue)) return buffer_index;
  *

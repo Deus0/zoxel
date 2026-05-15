@@ -12,49 +12,36 @@
 // Renders Characters and Mimuvoxes
 zox_sys2(VoxInstanceRenderSystem) {
 #ifndef zox_disable_ubos
-    const uint max_meshes = 16;
-    const uint max_transforms = 1024; // 128;
-
     if (!material_vox_instance) {
         return;
     }
-
+    uint max_meshes = 16;
+    uint max_transforms = 2048;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
     zox_sys_in(InstanceLink);
     zox_sys_in(RenderDisabled);
-
     camera_filtering_begin();
-
-    // get material
     zox_geter_value(material_vox_instance, MaterialGPULink, uint, material_link);
     if (!material_link) {
         return;
     }
-
     zox_geter(material_vox_instance, UboGPULink, ubo);
     if (!ubo->value) {
         // zox_log(" ! error with material_vox_instance uboGPULink.\n")
         return;
     }
-
     zox_geter(material_vox_instance, MaterialVoxInstance, material_attributes);
-
     InstanceRenderCommand_array_d* commands = create_InstanceRenderCommand_array_d(max_meshes);
-
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, rdisabled);
         zox_sys_i(InstanceLink, instanceLink);
         zox_sys_i(TransformMatrix, matrix);
-
         if (!zox_valid(instanceLink->value) || rdisabled->value) {
-            // zox_log_error("cannot render instanced mesh [%s]", zox_get_name(instanceLink->value))
             continue;
         }
-
         camera_filtering_check();
-
         int index = 0;
         if (has_mesh(commands, instanceLink->value, &index)) {
             InstanceRenderCommand command = commands->data[index];
@@ -69,97 +56,64 @@ zox_sys2(VoxInstanceRenderSystem) {
                 // errored out
                 break;
             }
-
             add_to_float4x4_array_d(command.transforms, matrix->value);
             add_to_InstanceRenderCommand_array_d(commands, command);
-
-            // zox_log("[%i] created new render command for [%s] at [%s]", zox_get_name(instanceLink->value), zox_get_name(it->entities[i]))
-            // zox_log(" [%i] created new command %lu - %i\n", i, instanceLink->value, commands->size)
         }
     }
-
-    // set material attributes
     zox_gpu_material(material_link);
     zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
     zox_gpu_float4(material_attributes->fog_data, get_fog_value());
     zox_gpu_float(material_attributes->brightness, 1);
-    // Instance Rendering!
     for (size_t i = 0; i < commands->size; i++) {
         InstanceRenderCommand command = commands->data[i];
-
         if (!command.transforms) {
             continue;
         }
-
         entity mesh = command.mesh;
-
-        // Safety First!
         if (!zox_valid(mesh)){
             continue;
         }
-
         if (!zox_has(mesh, MeshIndicies)) {
             zox_loge("Invalid Instance Mesh [%s]: No MeshIndicies", zox_get_name(mesh));
             continue;
         }
-
         // Ignore if no indicies
         zox_geter(mesh, MeshIndicies, meshIndicies);
         if (!meshIndicies->length) {
             continue;
         }
-
         if (!zox_has(mesh, MeshGPULink)) {
             zox_loge("Invalid Instance Mesh [%s]: No MeshGPULink", zox_get_name(mesh));
             continue;
         }
-
         zox_geter(mesh, MeshGPULink, gpumesh);
         if (!gpumesh->value.x || !gpumesh->value.y) {
             zox_loge("Invalid Instance Mesh [%s]: GPU Mesh is 0.", zox_get_name(mesh));
             continue;
         }
-
         zox_geter(mesh, ColorsGPULink, gpucolors);
         if (!gpucolors->value) {
             zox_loge("Invalid Instance Mesh [%s]: GPU Color is 0.", zox_get_name(mesh));
             continue;
         }
-
-        // zox_log(" [%i] rendering %lu - %i - UBO %i\n", i, mesh, command.transforms->size, uboGPULink->value)
-        // set mesh verts
         zox_gpu_bind_buffer_element(gpumesh->value.x);
         opengl_enable_vertex_buffer(material_attributes->vertex_position, gpumesh->value.y);
-
         opengl_enable_color_buffer(material_attributes->vertex_color, gpucolors->value);
-
         int render_count = command.transforms->size;
-        // update transform data
         zox_gpu_ubo_set_matricies(ubo->value, render_count, command.transforms->data);
-        // glBindBuffer(GL_UNIFORM_BUFFER, ubo->value);
-        // glBufferSubData(GL_UNIFORM_BUFFER, 0, render_count * sizeof(float4x4), command.transforms->data);
-
-        // draw
         zox_gpu_render_triangles_instanced(meshIndicies->length, render_count);
-        // glDrawElementsInstanced(GL_TRIANGLES, meshIndicies->length, GL_UNSIGNED_INT, 0, render_count);
-
-        // reset the things
-        // glBindBuffer(GL_UNIFORM_BUFFER, 0);
         zox_gpu_ubo_reset();
         zox_gpu_disable_attribute(material_attributes->vertex_color);
         zox_gpu_disable_attribute(material_attributes->vertex_position);
         zox_gpu_reset_mesh();
     }
-
     // cleanup
     for (size_t i = 0; i < commands->size; i++) {
-        const InstanceRenderCommand command = commands->data[i];
+        InstanceRenderCommand command = commands->data[i];
         dispose_float4x4_array_d(command.transforms);
     }
-
     dispose_InstanceRenderCommand_array_d(commands);
     zox_disable_material();
     catch_basic3D_errors("VoxInstanceRenderSystem");
 #endif
-
 } zox_sys_end(VoxInstanceRenderSystem);

@@ -1,6 +1,6 @@
 entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
-    zox_prefab_name("character3D_npc");
+    zox_prefab_name("character3_npc");
     zox_add_tag(e, Npc);
     zox_add_tag(e, VoxMesh);
     zox_add_tag(e, Jumper);
@@ -16,14 +16,4 @@ entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     zox_prefab_set(e, WanderDirection, { float3_zero });
     zox_set(e, RenderDisabled, { 1 });
     return e;
-}
-
-// hook to spawning
-void on_spawned_character3_npc(ecs* world, entity e) {
-    if (rand() % 100 <= 6) {
-        zox_set(e, DefaultBehaviour, { zox_behaviour_idle });
-    }
-    if (rand() % 100 <= 14) {
-        zox_add_tag(e, Coward);
-    }
 }

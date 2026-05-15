@@ -1,18 +1,15 @@
 // When health goes to 0, kill UserLink->value
 // Set Dead to 1
 // NOTE: Generates base stats for Characters
-// TODO: Just add these onto the prefab
 zox_sys2(CharacterStatsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
     zox_sys_in(RealmLink);
-    // zox_sys_out(StatLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
-        // zox_sys_o(StatLinks, stats);
         if (state->value != zox_dirty_active) {
             continue;
         }
@@ -46,9 +43,15 @@ zox_sys2(CharacterStatsSystem) {
         float2 energy = (float2) { energy_base, energy_base + soul_value * energy_level_increase };
         float2 mana = (float2) { mana_base, mana_base + soul_value * mana_level_increase };
         // Soul
-        spawn_stat_level(world, e, realm_soul, soul_value);
+        entity soule = zox_get_child_by_id(world, e, zox_id(StatSoul));
+        if (!zox_valid(soule)) {
+            spawn_stat_level(world, e, realm_soul, soul_value);
+        }
         // Health
-        spawn_stat_state(world, e, realm_health, health.x, health.y);
+        entity healthe = zox_get_child_by_id(world, e, zox_id(StatHealth));
+        if (!zox_valid(healthe)) {
+            spawn_stat_state(world, e, realm_health, health.x, health.y);
+        }
         spawn_stat_state(world, e, realm_energy, energy.x, energy.y);
         spawn_stat_state(world, e, realm_mana, mana.x, mana.y);
         // Add Regen Stats
@@ -63,21 +66,5 @@ zox_sys2(CharacterStatsSystem) {
             // Spawn a regen
             spawn_stat_regen(world, e, rstat, 10);
         }
-
-        //entity stat_soul = spawn_user_stat(world, realm_soul, e);
-        //zox_set(stat_soul, StatValue, { soul_value });
-        /*entity stat_health = spawn_user_stat(world, realm_health, e);
-        zox_set(stat_health, StatValue, { health.x })
-        zox_set(stat_health, StatValueMax, { health.y })*/
-        // Energy
-        /*entity stat_energy = spawn_user_stat(world, realm_energy, e);
-        zox_set(stat_energy, StatValue, { energy_base });
-        zox_set(stat_energy, StatValueMax, { energy_base + soul_value * energy_level_increase })
-        add_to_StatLinks(stats, stat_energy);*/
-        // Mana
-        /*entity stat_mana = spawn_user_stat(world, realm_mana, e);
-        zox_set(stat_mana, StatValue, { mana_base })
-        zox_set(stat_mana, StatValueMax, { mana_base + soul_value * mana_level_increase })
-        add_to_StatLinks(stats, stat_mana);*/
     }
 } zox_sys_end(CharacterStatsSystem);

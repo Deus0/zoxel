@@ -6,25 +6,21 @@ zox_sys2(BoneIndexUploadSystem) {
     zox_sys_out(BoneIndexGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(MeshDirty, mdirty);
-        zox_sys_i(BoneIndexes, boneIndexes);
-        zox_sys_o(BoneIndexGPULink, boneIndexGPULink);
-
+        zox_sys_i(BoneIndexes, weights);
+        zox_sys_o(BoneIndexGPULink, gpu);
         if (mdirty->value != mesh_state_upload) {
             continue;
         }
-
-        if (boneIndexes->length == 0) {
-            zox_gpu_dispose_buffer(boneIndexGPULink->value);
-            boneIndexGPULink->value = 0;
+        if (weights->length == 0) {
+            zox_gpu_dispose_buffer(gpu->value);
+            gpu->value = 0;
             continue;
         }
-
-        if (boneIndexGPULink->value == 0) {
-            boneIndexGPULink->value = zox_gpu_create_buffer();
+        if (gpu->value == 0) {
+            gpu->value = zox_gpu_create_buffer();
         }
-
-        zox_gpu_bind_buffer_array(boneIndexGPULink->value);
-        zox_gpu_set_buffer_array(boneIndexes->value, boneIndexes->length * sizeof(byte));
+        zox_gpu_bind_buffer_array(gpu->value);
+        zox_gpu_set_buffer_array(weights->value, weights->length * sizeof(byte));
         zox_gpu_bind_buffer_array(0);
     }
 } zox_sys_end(BoneIndexUploadSystem);

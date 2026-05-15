@@ -116,7 +116,7 @@ zox_sys2(MeleeSystem) {
         }
         // Hitting NPC
         if (zox_has(hit, Character3)) {
-            entity hit_health = zox_get_child_by_id(world, hit, zox_id(HealthStat));
+            entity hit_health = zox_get_child_by_id(world, hit, zox_id(StatHealth));
             if (!zox_valid(hit_health)) {
                 zox_log_error("hit user had no health")
                 continue;

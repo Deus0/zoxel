@@ -4,8 +4,16 @@
 #include "mesh_render.c"
 #include "bone_render.c"
 #include "head_bob.c"
+#include "init.c"
 
 void define_systems_bones(ecs *world) {
+    zox_system_1(
+        BonesInitializeSystem,
+        zoxp_mainthread,
+        [in] core.EntityInitialize,
+        [out] bones.BoneIndexGPULink,
+        [none] bones.Skeleton
+    );
     zox_system(
         HeadAnimateSystem,
         EcsOnUpdate,

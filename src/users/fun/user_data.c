@@ -1,4 +1,4 @@
-#define zoxc_userdata(T) \
+/*#define zoxc_userdata(T) \
     zox_tag(T); \
     zoxc_entities(T##Links) \
     zoxc_entity(T##Link)
@@ -6,7 +6,7 @@
 #define zoxd_userdata(T) \
     zoxd_tag(T); \
     zoxd_entities(T##Links); \
-    zoxd_entity(T##Link)
+    zoxd_entity(T##Link)*/
 
 // macro for creating prefab data for user data
 #define zoxf_user_prefabs(T, name, label)\

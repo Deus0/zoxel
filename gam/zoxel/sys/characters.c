@@ -7,6 +7,7 @@ zox_sys2(Character3RealmSpawnSystem) {
     zox_sys_out(CharacterLinks);
     zox_sys_out(CharactersChanceMax);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(GenerateRealm, state);
         zox_sys_i(ModelLinks, models);
         zox_sys_o(CharacterLinks, characters);
@@ -23,9 +24,13 @@ zox_sys2(Character3RealmSpawnSystem) {
         }
         byte chance_max = 0;
         // add files
+        entity rsoul = zox_get_child_by_id(world, e, zox_id(StatSoul));
+        entity rhealth = zox_get_child_by_id(world, e, zox_id(StatHealth));
         int count = 5; // count of below array
         char* vox_names[] = { "slime", "chicken", "mrpenguin", "bob", "bigmrpenguin" };
         byte chances[] = { 30, 30, 8, 8, 3 };
+        byte souls[] = { 1, 1, 2, 1, 3 };
+        byte healths[] = { 6, 4, 8, 6, 12 };
         entity prefab_character = is_characters_instanced ? prefab_character3_instanced_npc : prefab_character3_npc;
         for (int j = 0; j < count; j++) {
             const char* name = vox_names[j];
@@ -35,9 +40,13 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             // can choose here properties for spawning
             byte chance = chances[j];
-            entity e2 = spawn_character3_meta(world, prefab_character3_meta, prefab_character, name, model, chance);
+            entity e2 = spawn_character3_meta(world, prefab_character, name, model, chance);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
+            float soul_value = (float)(souls[j]);
+            float health = (float)(healths[j]);
+            spawn_stat_level(world, e2, rsoul, soul_value);
+            spawn_stat_state(world, e2, rhealth, health, health);
         }
         // add model links with tag ModelCharacter
         for (int j = 0; j < models->length; j++) {
@@ -50,9 +59,11 @@ zox_sys2(Character3RealmSpawnSystem) {
                 continue;
             }
             byte chance = 8;
-            entity e2 = spawn_character3_meta(world, prefab_character3_meta, prefab_character, "character", model, chance);
+            entity e2 = spawn_character3_meta(world, prefab_character, "character", model, chance);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
+            spawn_stat_level(world, e2, rsoul, 2);
+            spawn_stat_state(world, e2, rhealth, 8, 8);
         }
 
         // add our skeleton prefab

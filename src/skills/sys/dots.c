@@ -38,7 +38,7 @@ zox_sys2(DotsSystem) {
             }
         }
         // the character being damaged by debuff
-        entity health_stat = zox_get_child_by_id(world, defender, zox_id(HealthStat));
+        entity health_stat = zox_get_child_by_id(world, defender, zox_id(StatHealth));
         if (!health_stat) {
             zox_logw("Uuser had no health");
             continue;

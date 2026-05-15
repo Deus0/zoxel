@@ -1,6 +1,5 @@
 // todo: SelectedEvent, Deselected Event, or, SelectState = SelectedThisFrame, Selected, Deselected, None
 // todo: Give item a texture, spawn as icon!
-
 zox_sys2(UserIconTooltipSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -38,6 +37,5 @@ zox_sys2(UserIconTooltipSystem) {
             .data = userDataLink->value
         };
         (*tooltipEvent->value)(world, &data);
-        // zox_log(" > icon [%lu] selected at %f\n", it->entities[i], zox_current_time)
     }
 } zox_sys_end(UserIconTooltipSystem);

@@ -15,11 +15,9 @@ zox_sys2(BoneIndexGenerateSystem) {
         zox_sys_i(MeshVertices, verts);
         zox_sys_i(BoneLinks, bones);
         zox_sys_o(BoneIndexes, weights);
-
         if (sdirty->value != zox_dirty_active && mdirty->value != zox_dirty_active) {
             continue;
         }
-
         // get all children bone positions and sizes
         float3 bone_positions[bones->length];
         float3 bone_sizes[bones->length];
@@ -27,27 +25,20 @@ zox_sys2(BoneIndexGenerateSystem) {
         float3 bones_bounds_upper[bones->length];
         for (int j = 0; j < bones->length; j++) {
             entity bone = bones->value[j];
-
             bone_positions[j] = zox_gett_value(bone, BonePosition);
             bone_sizes[j] = zox_gett_value(bone, BoneSize);
             float3 half_size = bone_sizes[j];
-
             bones_bounds_lower[j] = float3_subtract(bone_positions[j], half_size);
             bones_bounds_upper[j] = float3_add(bone_positions[j], half_size);
         }
-
         resize_BoneIndexes(weights, verts->length);
-
         for (int j = 0; j < verts->length; j++) {
             float3 position = verts->value[j];
-
             // default weight
             weights->value[j] = 0;
-
             for (int k = bones->length - 1; k >= 0; k--) {
                 float3 lower = bones_bounds_lower[k];
                 float3 upper = bones_bounds_upper[k];
-
                 // check in constraints
                 if (position.x >= lower.x && position.x <= upper.x && position.y >= lower.y && position.y <= upper.y && position.z >= lower.z && position.z <= upper.z) {
                     weights->value[j] = k;
@@ -56,7 +47,6 @@ zox_sys2(BoneIndexGenerateSystem) {
                     }*/
                     break;
                 }
-
                 /*if (j >= verts->length - 100) {
                     zox_log("Bone Vert Index Found: %i (vert %i)\n", k, j)
                     zox_log("  > position: %fx%fx%f", position.x, position.y, position.z)

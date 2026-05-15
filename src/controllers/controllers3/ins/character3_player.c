@@ -1,16 +1,9 @@
-entity spawn_character3_player(ecs *world,spawn_character3D_data data) {
-    entity player = data.player;
-    data.prefab = prefab_character3_player;
-    data.scale = vox_model_scale;
-    entity e = spawn_character3(world, data);
+entity spawn_character3_player(ecs *world, entity prefab, entity realm, entity terrain, entity model, byte render_depth, byte render_disabled, float3 position, float4 rotation, const char* name, entity player) {
+    zox_geter_value(player, CameraLink, entity, camera);
+    entity e = spawn_character3(world, prefab, realm, terrain, model, render_depth, render_disabled, position, rotation, name);
     zox_name("character3_player");
     zox_set(e, PlayerLink, { player });
     zox_set(player, CharacterLink, { e });
-    if (data.terrain) {
-        zox_set(e, TerrainLink, { data.terrain });
-    }
-    // TODO: Attach in seperate system
-    zox_geter_value(player, CameraLink, entity, camera);
     zox_set(e, CameraLink, { camera });
     zox_set(camera, CharacterLink, { e });
     zox_set(camera, EntityTarget, { e });

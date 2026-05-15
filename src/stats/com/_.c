@@ -16,7 +16,7 @@ zoxc_float(ExperienceValue);
 zoxc_float(ExperienceMax);
 zoxc_state(StatDirty);
 // special stats
-zox_tag(HealthStat);
+zox_tag(StatHealth);
 zox_tag(StatSoul);
 
 void define_components_stats(ecs *world) {
@@ -37,6 +37,6 @@ void define_components_stats(ecs *world) {
     zoxd_float(ExperienceValue);
     zoxd_float(ExperienceMax);
     // special stats
-    zoxd_tag(HealthStat);
+    zoxd_tag(StatHealth);
     zoxd_tag(StatSoul);
 }

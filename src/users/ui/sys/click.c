@@ -3,7 +3,6 @@ extern void set_linked_action(ecs*, const entity, const int, const entity);
 extern void set_linked_item(ecs*, const entity, const int, const entity);
 extern void set_linked_skill(ecs*, const entity, const int, const entity);
 extern void link_as_new_item(ecs*, const entity, const entity3);
-
 // Called from the clicked UI
 zox_sys2(UserIconClickSystem) {
     if (!icon_mouse_follow) {

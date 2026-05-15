@@ -3,7 +3,10 @@
 
 byte test_actions_blocks = 0;
 byte test_actions_skills = 0;
-zoxc_userdata(Action);
+// zoxc_userdata(Action);
+zox_tag(Action);
+zoxc_entity(ActionLink);
+zoxc_entitiesw(ActionLinks);
 zoxc_byte(ActionIndex);
 #include "pre/_.c"
 #include "fun/_.c"
@@ -11,7 +14,9 @@ zoxc_byte(ActionIndex);
 #include "sys/_.c"
 
 zox_begin_module(Actions)
-    zoxd_userdata(Action);
+    zoxd_tag(Action);
+    zoxd_entity(ActionLink);
+    zoxd_entitiesw(ActionLinks);
     zoxd_byte(ActionIndex);
     add_hook_spawn_prefabs(spawn_prefabs_actions);
     define_systems_actions(world);

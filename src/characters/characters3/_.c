@@ -14,7 +14,6 @@ byte disable_npc_positioner = 0;
 #include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
-#include "realm/_.c"
 
 zox_begin_module(Characters3)
     define_components_characters3(world);

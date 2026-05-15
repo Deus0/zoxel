@@ -1,5 +1,5 @@
-#include "user_icon_tooltip.c"
-#include "user_icon_click.c"
+#include "tooltip.c"
+#include "click.c"
 
 void define_systems_users_ui(ecs* world) {
     zox_system(

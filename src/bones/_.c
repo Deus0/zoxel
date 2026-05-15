@@ -1,6 +1,7 @@
 #if !defined(zoxm_bones) && defined(zoxm_transforms)
 #define zoxm_bones
 
+byte is_paint_skeletons = 0;
 #include "sha/_.c"
 #include "com/_.c"
 #include "set/_.c"

@@ -21,7 +21,6 @@ void zox_tst_spawn_character3_npc(ecs *world, ClickEventData data) {
         return;
     }
     zox_geter_value(pcharacter, TerrainLink, entity, terrain);
-    // zox_getter_value(pcharacter, ChunkPosition, int3, cposition);
     if (!zox_valid(terrain)) {
         return;
     }
@@ -37,10 +36,11 @@ void zox_tst_spawn_character3_npc(ecs *world, ClickEventData data) {
     zox_geter(realm, CharacterLinks, rcharacters);
     uint mindex = rand_range(0, rcharacters->length - 1);
     entity meta = rcharacters->value[mindex];
+    entity model = zox_gett_value(meta, ModelLink);
     const char* name = "TS-G391";
     // char* name = generate_name();
     zox_log("+ Test [zox_tst_character3_npc] Meta [%s:%i]", zox_get_name(meta), mindex);
-    entity e = spawn_character3_new(world, prefab, meta, realm, terrain, render_depth, sposition, srotation, name);
+    entity e = spawn_character3(world, prefab, realm, terrain, model, render_depth, 0, sposition, srotation, name);
     zox_tst_character3_npc = e;
     zox_geter_value(player, CanvasLink, entity, canvas);
     spawn_inspector(world, canvas, player, e);

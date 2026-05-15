@@ -15,7 +15,7 @@ void define_systems_stats(ecs *world) {
         DeathSystem,
         EcsOnUpdate,
         [in] stats.StatValue,
-        [none] stats.HealthStat
+        [none] stats.StatHealth
     );
     zox_system(
         StatRegenSystem,

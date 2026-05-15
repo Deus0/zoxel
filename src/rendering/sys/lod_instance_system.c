@@ -19,7 +19,12 @@ zox_sys2(LodInstanceSystem) {
             instance->value = 0;
             continue;
         }
-        if (!zox_valid(model->value) || !zox_has(model->value, ModelLods)) {
+        if (!zox_valid(model->value)) {
+            zox_loge("[%s] has invalid Model", zox_get_name(e));
+            continue;
+        }
+        if (!zox_has(model->value, ModelLods)) {
+            zox_loge("[%s] has invalid Model [%s]", zox_get_name(e), zox_get_name(model->value));
             continue;
         }
         zox_geter(model->value, ModelLods, lods);

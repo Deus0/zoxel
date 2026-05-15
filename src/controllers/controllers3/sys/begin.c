@@ -1,5 +1,4 @@
 TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
-    // float3 bounds = (float3) { 0.5f, 1.0, 0.5f };
     zox_geter(terrain, ChunkLinks, chunks);
     entity chunk;
     int3 cposition = int3_zero;
@@ -20,9 +19,7 @@ TerrainPlace find_position_in_terrain(ecs *world, entity terrain) {
             // zox_log("Found Position for Player [%i] of [%i] at [%ix%ix%i]", i, render_distance_y, in_chunk_position.x, in_chunk_position.y, in_chunk_position.z);
             found_position = 1;
             break;
-        } /*else {
-            zox_loge("Failed find Position for Player [%i] of [%i]", i, render_distance_y);
-        }*/
+        }
         voxel_node_above = chunkd;
     }
     if (!found_position) {
@@ -57,22 +54,14 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
         *spawned_position = float3_zero;
         return 0;
     }
-    entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
+    /*entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
     if (!model) {
         zox_loge("File Not Found [%s]", player_vox_model);
-    }
+    }*/
     TerrainPlace placer = find_position_in_terrain(world, terrain);
-    spawn_character3D_data spawn_data = {
-        .player = player,
-        .realm = realm,
-        .terrain = terrain,
-        .terrain_chunk = placer.chunk,
-        .chunk_position = placer.chunk_position,
-        .position = placer.position,
-        .rotation = quaternion_identity,
-    };
-    entity e = spawn_character3_player(world, spawn_data);
     *spawned_position = placer.position;
+    byte render_depth = 5;
+    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, 0, render_depth, 0, placer.position, quaternion_identity, "Bob", player);
     return e;
 }
 
@@ -84,31 +73,22 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
         *spawned_position = float3_zero;
         return 0;
     }
-    entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
+    // entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
     zox_mut_begin(terrain, ChunkLinks, chunks);
     TerrainPlace placer;
     placer.chunk = 0;
-    if (!model) {
+    /*if (!model) {
         zox_log_error("File [%s] Not Found.", player_vox_model);
-    }
+    }*/
     // load position for spawning
     load_character_p(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
     byte depth = terrain_depth;
     int3 cposition = real_position_to_chunk_position(placer.position, powers_of_two[depth], terrain_scale);
     placer.chunk = int3_hashmap_get(chunks->value, cposition);
-    spawn_character3D_data spawn_data = {
-        .player = player,
-        .realm = realm,
-        .terrain = terrain,
-        .terrain_chunk = placer.chunk,
-        .chunk_position = cposition,
-        .position = placer.position,
-        .rotation = placer.rotation,
-        .euler = placer.euler,
-    };
-    entity e = spawn_character3_player(world, spawn_data);
-    *spawned_position = load_character_transform(world, realm, e);
+    *spawned_position = placer.position; // load_character_transform(world, realm, e);
+    byte render_depth = 5;
+    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, 0, render_depth, 0, placer.position, quaternion_identity, "Bob", player);
     return e;
 }
 

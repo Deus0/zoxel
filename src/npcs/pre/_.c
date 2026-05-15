@@ -1,4 +1,4 @@
-#include "character3D_npc.c"
+#include "character.c"
 entity prefab_character3_npc;
 entity prefab_character3_instanced_npc;
 entity prefab_character3_skeleton_npc;

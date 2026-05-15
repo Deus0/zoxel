@@ -1,6 +1,8 @@
 ### todo ###
 # flatpak run org.kde.kate
 
+- Vitality should increase health stat
+- Add base stat "Physical Damage" that punch uses, strength should increase this
 - Fix Skill Indexing though for Skillbook
 - Refactor Model Spawning out of block_vox_meta functions
 - Raycast Range should be Skill Range
@@ -12,12 +14,6 @@
     - Needs to account for UI Slot Indexes
     - Create a component that stores entities array on character, this can be used for the UIs itself (when ui is closed/opened)
     - Or we create a UI child for character, basically just keeps UI references, slots to items themselves
-    
-uint children_capacity = zox_children_capacity;
-entity children[children_capacity];
-uint children_length = zox_get_children(world, e, children, children_capacity);
-zox_set_parent(world, e, e2);
-
 - Pause ui toggle not showing on spawn taskbar + pause
 - Remove User Macros and Speghetti
 - Remove structs from UI prefab use

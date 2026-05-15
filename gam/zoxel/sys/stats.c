@@ -25,7 +25,7 @@ zox_sys2(StatsRealmSpawnSystem) {
         zox_add_tag(soul, StatSoul);
         // states
         entity health = spawn_realm_stat(world, e, prefab_stat_state, "health", "health", health_c);
-        zox_add_tag(health, HealthStat);
+        zox_add_tag(health, StatHealth);
         entity energy = spawn_realm_stat(world, e, prefab_stat_state, "energy", "energy", energy_c);
         entity mana = spawn_realm_stat(world, e, prefab_stat_state, "mana", "mana", mana_c);
         // Regens
