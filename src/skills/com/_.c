@@ -1,6 +1,7 @@
 zox_tag(Skill);
 zoxc_entity(SkillLink);
 zoxc_entitiesw(SkillLinks);   // Used for realm atm
+zox_tag(Skillbook);
 zox_tag(Melee);
 zox_tag(Aura);
 zox_tag(Poison);
@@ -15,6 +16,7 @@ void define_components_skills(ecs* world) {
     zoxd_tag(Skill);
     zoxd_entity(SkillLink);
     zoxd_entitiesw(SkillLinks);
+    zoxd_tag(Skillbook);
     zoxd_tag(Melee);
     zoxd_tag(Aura);
     zoxd_tag(Poison);

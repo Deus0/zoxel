@@ -3,8 +3,8 @@
 entity spawn_prefab_icon(ecs *world, entity p) {
     zox_prefab_child(p);
     zox_prefab_name("icon");
-    // Texture
     zox_add_tag(e, Icon);
+    // Texture
     zox_add_tag(e, IconTexture);  // general one
     zox_prefab_set(e, IconType, { 0 });
     zox_prefab_set(e, IconIndex, { 0 });

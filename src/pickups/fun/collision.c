@@ -19,8 +19,37 @@ void on_overlap_pickup(ecs *world, entity e, entity user) {
         zox_loge("Pickup item is invalid");
         return;
     }
-    zox_muter(user, ActionLinks, actions);
-    byte stack_index = 255;
+    entity actionbar = zox_get_child_by_id(world, user, zox_id(Actionbar));
+    if (!zox_valid(actionbar)) {
+        zox_loge("Cannot Pickup without Actionbar Slots");
+        return;
+    }
+    entity inventory = zox_get_child_by_id(world, user, zox_id(Inventory));
+    if (!zox_valid(inventory)) {
+        zox_loge("Cannot Pickup without Inventory Slots");
+        return;
+    }
+    entity slot = 0;
+    entity action_slot = zox_get_empty_slot(world, actionbar);
+    entity item_slot = zox_get_empty_slot(world, inventory);
+    if (!slot) {
+        slot = action_slot;
+    }
+    if (!slot) {
+        slot = item_slot;
+    }
+    if (!zox_valid(slot)) {
+        zox_loge("No Empty Slot for new Item");
+        return;
+    }
+    entity e2 = spawn_item_pickedup(world, item, user, 1);
+    zox_muter(slot, DataLink, slot_data);
+    slot_data->value = e2;
+    zox_set(slot, DataDirty, { zox_dirty_trigger });
+    // TODO: We need to set UI to dirty too
+    // TODO: Get Stack Index, Check all slots
+
+    /*byte stack_index = 255;
     for (int i = 0; i < actions->length; i++) {
         entity action = actions->value[i];
         if (!zox_valid(action)) {
@@ -31,9 +60,9 @@ void on_overlap_pickup(ecs *world, entity e, entity user) {
             stack_index = i;
             break;
         }
-    }
+    }*/
     // stack first
-    byte did_stack = 0;
+    /*byte did_stack = 0;
     if (stack_index != 255) {
         entity stack_item = actions->value[stack_index];
         zox_geter_value(stack_item, Quantity, byte, quantity);
@@ -58,12 +87,7 @@ void on_overlap_pickup(ecs *world, entity e, entity user) {
             // zox_log(" ! cannot  pickup, full or item is [%lu]\n", item)
             return;
         }
-
-        entity new_item = spawn_item_pickedup(world, item, user, 1);
-
-        actions->value[action_index] = new_item;
-
-        on_action_set(world, user, action_index, new_item, item);
-
-    }
+        // actions->value[action_index] = new_item;
+        // on_action_set(world, user, action_index, new_item, item);
+    }*/
 }

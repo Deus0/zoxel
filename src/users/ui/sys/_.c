@@ -10,7 +10,7 @@ void define_systems_users_ui(ecs* world) {
         [in] elements.TooltipEvent,
         [none] UserIcon
     );
-    zox_system(
+    /*zox_system(
         UserIconClickSystem,
         EcsPreUpdate,
         [in] elements.ClickState,
@@ -18,5 +18,5 @@ void define_systems_users_ui(ecs* world) {
         [in] elements2.IconIndex,
         [out] u.i.containers.DataLink,
         [none] UserIcon
-    );
+    );*/
 }

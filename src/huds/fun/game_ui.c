@@ -50,6 +50,9 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     int icon_size = (default_icon_size / 4) * ui_scale;
     icon_mouse_follow = spawn_icon_mouse_follow_canvas(world, prefab_icon_mouse_follow, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, mouse_pointer);
     zox_set_unique_name(icon_mouse_follow, "icon_mouse");
+    entity empty_texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));
+    clone_texture_data(world, icon_mouse_follow, empty_texture);
+
     return canvas;
 }
 

@@ -2,7 +2,15 @@ entity spawn_menu_inventory(ecs* world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     entity inventory = zox_get_child_by_id(world, character, zox_id(Inventory));
-    return spawn_datagrid3(world, prefab_menu_items, prefab_icon_item, canvas, character, inventory, zox_id(Item), zox_id(ItemLink), "Inventory", default_fill_color_frame_item, default_fill_color_frame_item);
+    entity prefab = prefab_window_users;
+    entity prefab_frame = prefab_frame_item;
+    entity prefab_icon = prefab_icon_item;
+    byte2 cells_size = byte2_single(5);
+    float2 position_anchor = float2_half;
+    int2 position = int2_zero;
+    entity e = spawn_datagrid3(world, prefab, prefab_frame, prefab_icon, canvas, character, inventory, cells_size, "Inventory", default_fill_color_frame_item, default_fill_color_frame_item, position_anchor, position);
+    zox_add_tag(e, MenuItems);
+    return e;
 }
 
 /*entity spawn_menu_inventory(ecs* world, entity player) {

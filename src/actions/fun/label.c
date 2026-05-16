@@ -1,4 +1,4 @@
-uint get_label_player_actions(ecs *world, entity player, char *buffer, uint size, uint index) {
+/*uint get_label_player_actions(ecs *world, entity player, char *buffer, uint size, uint index) {
     if (!player) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
@@ -18,4 +18,4 @@ uint get_label_player_actions(ecs *world, entity player, char *buffer, uint size
         index += snprintf(buffer + index, size - index, " - [%i] %s\n", i, zox_get_name(action));
     }
     return index;
-}
+}*/

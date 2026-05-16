@@ -6,7 +6,6 @@ byte is_debug_move_forwards = 0;
 byte is_debug_wander = 0;
 byte is_debug_flee = 0;
 byte is_debug_attack = 0;
-
 #include "wander_system.c"
 #include "flee_system.c"
 #include "follow_system.c"
@@ -15,6 +14,7 @@ byte is_debug_attack = 0;
 #include "move_forward_system.c"
 #include "target_set_system.c"
 #include "attack.c"
+#include "attack_trigger.c"
 #include "stay_upright_system.c"
 #include "random_jumping.c"
 
@@ -47,7 +47,8 @@ void define_systems_npcs(ecs *world) {
         [in] physics3.Omega3D,
         [in] npcs.TargetPosition,
         [out] physics3.Alpha3D,
-        [none] npcs.Npc);
+        [none] npcs.Npc
+    );
     zox_system_m(
         MoveForwardSystem,
         !is_debug_move_forwards,
@@ -86,6 +87,7 @@ void define_systems_npcs(ecs *world) {
         !is_debug_attack,
         [in] npcs.Behaviour,
         [in] physics.DisableMovement,
+        [out] actions.ActiveAction,
         [out] triggers.TriggerActionA,
         [none] npcs.Npc
     );

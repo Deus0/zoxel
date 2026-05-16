@@ -35,12 +35,12 @@ void define_systems_items(ecs* world) {
         [in] blocks.BlockScale,
     );
     zox_system_1(
-        CharacterItemsSystem,
+        CharacterItemsSpawnSystem,
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [none] characters.Character,
-        [none] !players.PlayerLink
+        // [none] !players.PlayerLink
     );
     zox_system_1(
         CharacterPlayerItemsSystem,

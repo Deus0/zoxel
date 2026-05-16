@@ -46,11 +46,12 @@ zox_sys2(DataFrameClickSystem) {
         data->value = temp;
         zox_mut_end(mouse_ui, DataLink);
         zox_set(mouse_ui, RenderDisabled, { !zox_valid(mouse_data->value) });
+        // we should just set DataDirty here
         swap_textures(world, e, mouse_ui);
-        entity frame = zox_get_parent(world, e);
-        zox_muter(frame, DataLink, frame_data);
-        frame_data->value = data->value;
-        entity slot = zox_gett_value(frame, SlotLink);
+        // entity frame = zox_get_parent(world, e);
+        // zox_muter(e, DataLink, data);
+        // frame_data->value = data->value;
+        entity slot = zox_gett_value(e, SlotLink);
         zox_muter(slot, DataLink, slot_data);
         slot_data->value = data->value;
         // clear the tooltip when picked up icon

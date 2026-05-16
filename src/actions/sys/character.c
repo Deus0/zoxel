@@ -5,30 +5,34 @@ zox_sys2(CharacterActionsSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
     //zox_sys_in(RealmLink);
-    zox_sys_out(ActionLinks);
+    // zox_sys_out(ActionLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         //zox_sys_i(RealmLink, realm);
-        zox_sys_o(ActionLinks, actions);
-
+        // zox_sys_o(ActionLinks, actions);
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         // skill!
+        entity actionbar = zox_get_child_by_id(world, e, zox_id(Actionbar));
         // TODO: Find a punch skill at level 1
         if (meta_skill_punch) {
             entity e2 = spawn_user_skill(world, e, meta_skill_punch);
-            add_to_ActionLinks(actions, e2);
+            if (zox_valid(actionbar)) {
+                entity slot = zox_get_empty_slot(world, actionbar);
+                if (zox_valid(slot)) {
+                    zox_muter(slot, DataLink, slot_data);
+                    slot_data->value = e2;
+                }
+            }
         }
-
         // If Player, Fill with Blank!
-        if (zox_has(e, PlayerLink)) {
+        /*if (zox_has(e, PlayerLink)) {
             for (int j = actions->length; j < 8; j++) {
                 add_to_ActionLinks(actions, 0);
             }
-        }
+        }*/
 
         /*if (test_actions_skills) {
             if (meta_skill_aura_death) {

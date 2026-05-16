@@ -44,8 +44,8 @@ void spawn_prefabs_elements2(ecs *world) {
     prefab_elementbar2D         = spawn_prefab_elementbar2D(world, prefab_element_textured);
     prefab_elementbar2D_front   = spawn_prefab_elementbar2D_front(world, prefab_element_textured);
     // icons
-    prefab_icon                 = spawn_prefab_icon(world, prefab_element_ready);
-    prefab_frame                = spawn_prefab_frame(world, prefab_element_textured, default_fill_color_frame, default_outline_color_frame);
+    prefab_icon = spawn_prefab_icon(world, prefab_element_ready);
+    prefab_frame = spawn_prefab_frame(world, prefab_element_textured, default_fill_color_frame, default_outline_color_frame);
     // prefab_icon_overlay         = spawn_prefab_icon_overlay(world, prefab_element_textured);
     // scrollbars
     prefab_scrollbar            = spawn_prefab_scrollbar(world, prefab_element_textured);
@@ -54,10 +54,9 @@ void spawn_prefabs_elements2(ecs *world) {
     prefab_handle               = spawn_prefab_handle(world, prefab_element_textured);
     prefab_slider               = spawn_prefab_slider(world, prefab_element_textured);
     // mouse
-    prefab_icon_mouse_follow    = spawn_prefab_icon_mouse_follow(world, prefab_element_textured);
+    prefab_icon_mouse_follow    = spawn_prefab_icon_mouse_follow(world, prefab_element_shell); // prefab_element_textured);
     // panel
-    prefab_grid                 = spawn_prefab_grid(world, prefab_element_textured);
+    prefab_grid = spawn_prefab_grid(world, prefab_element_textured);
     // lists
-    // prefab_ui_list              = spawn_prefab_ui_list(world, prefab_window);
-    prefab_list                 = spawn_prefab_ui_list(world, prefab_element_textured);
+    prefab_list = spawn_prefab_ui_list(world, prefab_element_textured);
 }

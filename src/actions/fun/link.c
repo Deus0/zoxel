@@ -1,4 +1,4 @@
-void set_linked_action(ecs *world, entity user, int index, entity element) {
+/*void set_linked_action(ecs *world, entity user, int index, entity element) {
     if (!zox_valid(user) || !zox_has(user, ActionLinks)) {
         return;
     }
@@ -8,4 +8,4 @@ void set_linked_action(ecs *world, entity user, int index, entity element) {
     }
     datas->value[index] = element;
     zox_mut_end(user, ActionLinks);
-}
+}*/

@@ -1,5 +1,4 @@
 byte tooltip_event_action(ecs *world, const TooltipEventData *data) {
-
     if ( !zox_valid(data->data)) {
         return 0;
     } else if (zox_has(data->data, Item)) {
@@ -26,10 +25,7 @@ byte process_icon_type_action(ecs *world, const entity data) {
     }
 }
 
-entity spawn_prefab_icon_action(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_icon_action(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("icon_action");
     zox_set(e, TooltipEvent, { &tooltip_event_action });

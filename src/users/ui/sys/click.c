@@ -1,4 +1,4 @@
-extern byte process_icon_type_action(ecs*, const entity);
+/*extern byte process_icon_type_action(ecs*, const entity);
 extern void set_linked_action(ecs*, const entity, const int, const entity);
 extern void set_linked_item(ecs*, const entity, const int, const entity);
 extern void set_linked_skill(ecs*, const entity, const int, const entity);
@@ -88,14 +88,6 @@ zox_sys2(UserIconClickSystem) {
         } else {
             zox_set_parent(world, mouse_data, character);
         }
-        /*if (data_type->value == zox_icon_type_skill) {
-            // zox_log(" + character [%lu] setting [%s] [%i]\n", character, "skill", iconIndex->value)
-            set_linked_skill(world, character, iconIndex->value, mouse_data);
-        } else if (data_type->value == zox_icon_type_item) {
-            // zox_log(" + character [%lu] setting [%s] [%i]\n", character, "item", iconIndex->value)
-            set_linked_item(world, character, iconIndex->value, mouse_data);
-            link_as_new_item(world, mouse_data, framer);
-        }*/
         // clear the tooltip when picked up icon
         if (!clicked_data_empty) {
             zox_geter_value(e, CanvasLink, entity, canvas);
@@ -107,4 +99,14 @@ zox_sys2(UserIconClickSystem) {
             }
         }
     }
-} zox_sys_end(UserIconClickSystem);
+} zox_sys_end(UserIconClickSystem);*/
+
+
+        /*if (data_type->value == zox_icon_type_skill) {
+            // zox_log(" + character [%lu] setting [%s] [%i]\n", character, "skill", iconIndex->value)
+            set_linked_skill(world, character, iconIndex->value, mouse_data);
+        } else if (data_type->value == zox_icon_type_item) {
+            // zox_log(" + character [%lu] setting [%s] [%i]\n", character, "item", iconIndex->value)
+            set_linked_item(world, character, iconIndex->value, mouse_data);
+            link_as_new_item(world, mouse_data, framer);
+        }*/

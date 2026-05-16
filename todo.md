@@ -1,8 +1,14 @@
 ### todo ###
 # flatpak run org.kde.kate
 
-- Finish Slot Links Refactor for UI
-- Refactor ActionLinks
+- Fix Item Stacking
+	- when picking up items
+	- when dropping item onto another
+- Right click to split items
+- Fix Skillbook to use datagrid3
+
+-x Finish Slot Links Refactor for UI
+-x Refactor ActionLinks
 - Refactor PartLinks
 - Refactor EquipLinks
 - Refactor Quests to use new parenting

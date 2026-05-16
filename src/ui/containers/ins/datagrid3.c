@@ -1,5 +1,5 @@
 // NOTE: Using Slots for linking UIs to Data
-entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_icon, entity canvas, entity character, entity slots_manager, entity id, entity link_id, const char* header_label, color fill, color outline) {
+entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity canvas, entity character, entity slots_manager, byte2 cells_size, const char* header_label, color fill, color outline, float2 position_anchor, int2 position) {
     if (!zox_valid(character)) {
         zox_log_error("invalid character in [spawn_datagrid3]");
         return 0;
@@ -7,7 +7,7 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_icon, entity can
     // Get our Slots
     entity slots[layouts2_children_capacity];
     uint slots_length = zox_get_children_by_id(world, slots_manager, slots, layouts2_children_capacity, zox_id(Slot));
-    byte2 cells_size = byte2_single(5);
+    // byte2 cells_size = byte2_single(5);
     // Get our window data
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     color grid_fill = window_fill;
@@ -15,12 +15,12 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_icon, entity can
     // TODO: Remove these structs
     SpawnWindowUsers data = get_default_datagrid_data(world, prefab, character, canvas, canvas_size);
     // TODO: Calculate Grid Rows/Height based on slots length
-    int2 icon_size = int2_single(data.icon.size);
-    int2 frame_size = int2_single(data.window.icon_size);
+    int2 icon_size = int2_single((default_icon_size / 4) * ui_scale);
+    int2 frame_size = int2_single((default_frame_size / 4) * ui_scale);
     int2 size = calculate_grid_size(cells_size, frame_size.x, data.window.grid_padding, data.window.grid_margins);
     data.frame.texture.fill_color = fill;
-    int2 position = int2_zero;
-    float2 anchor = float2_half;
+    // int2 position = int2_zero;
+    // float2 anchor = float2_half;
     byte active_states = zox_has(prefab_frame, ActiveState);
     byte selected = 0;
     if (active_states) {
@@ -50,8 +50,8 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_icon, entity can
         spawn_header(world, e, canvas, header_position, header_size, header_anchor, header_label, header_font_size, header_margins, int2_zero, header_size, is_close_button, &on_closed_taskbar_window, canvas_size);
     }
     size.y += header_height;
-    initialize_element(world, e, canvas, canvas, position, size, size, anchor, 0);
-    set_window_bounds_to_canvas(world, e, canvas_size, size, anchor);
+    initialize_element(world, e, canvas, canvas, position, size, size, position_anchor, 0);
+    set_window_bounds_to_canvas(world, e, canvas_size, size, position_anchor);
     int2 grid_size = int2_sub(size, (int2) { 0, header_height });
     int2 grid_position = (int2) { 0, -header_height / 2 };
     // Spawns Grid !!!
@@ -65,27 +65,32 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_icon, entity can
         for (int i = 0; i < cells_size.x; i++) {
             entity slot = slots[array_index];
             if (!zox_valid(slot) || !zox_has(slot, DataLink)) {
-                zox_loge("Invalid Slot at [%i]", array_index);
+                zox_loge("Invalid [%s] Slot at [%i]", zox_get_name(slots_manager), array_index);
                 continue;
             }
             entity dat = zox_gett_value(slot, DataLink);
             entity3 spawn = spawn_frame(world, prefab_frame, grid, position, frame_size, prefab_icon, icon_size, array_index);
-            set_frame_texture_from_data(world, spawn.x, spawn.y, dat);
+            // set_frame_texture_from_data(world, spawn.x, spawn.y, dat);
             // NOTE: Atm this is what connects user data textures
             if (zox_valid(spawn.x)) {
-                zox_set(spawn.x, SlotLink, { slot });
-                zox_add_tag(spawn.x, DataFrame);
-                zox_set(spawn.x, DataLink, { dat });
+                // zox_set(spawn.x, SlotLink, { slot });
+                // zox_add_tag(spawn.x, DataFrame);
+                // zox_set(spawn.x, DataLink, { dat });
+                // zox_set(spawn.x, DataDirty, { zox_dirty_trigger });
                 // zox_set(spawn.x, ClickState, { 0 });
-                zox_set_id(spawn.x, link_id, sizeof(entity), dat);
+                // zox_set_id(spawn.x, link_id, sizeof(entity), dat);
             }
+            // We can just link icons now
             if (zox_valid(spawn.y)) {
                 zox_add_tag(spawn.y, DataFrame);
                 zox_set(spawn.y, DataLink, { dat });
-                zox_set_id(spawn.y, link_id, sizeof(entity), dat);
+                zox_set(spawn.y, SlotLink, { slot });
+                zox_set(spawn.y, DataDirty, { zox_dirty_trigger });
+                // zox_set_id(spawn.y, link_id, sizeof(entity), dat);
             }
             if (zox_valid(spawn.z)) {
-                zox_set_id(spawn.z, link_id, sizeof(entity), dat);
+                zox_set(spawn.z, DataLink, { dat });
+                // zox_set_id(spawn.z, link_id, sizeof(entity), dat);
             }
             if (active_states) {
                 if (array_index == selected) {
