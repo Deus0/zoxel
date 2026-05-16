@@ -17,9 +17,9 @@
     } name;
 
 #define zoxc_function(name, return_type, ...)\
-    typedef struct {\
-        return_type (*value)(__VA_ARGS__);\
-    } name;\
+    typedef struct { \
+        return_type (*value)(__VA_ARGS__); \
+    } name; \
     zoxc_custom(name)
 
 #define zoxd_dest(name)\

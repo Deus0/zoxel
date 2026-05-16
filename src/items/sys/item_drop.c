@@ -1,25 +1,28 @@
-extern entity spawn_pickup_basic(ecs*, const float3);
-extern entity spawn_pickup_block(ecs*, const float3, const entity);
+extern entity spawn_pickup_basic(ecs*, float3);
+extern entity spawn_pickup_block(ecs*, float3, entity);
 
 // we should drop from actions too!
+// TODO: Reparent the item to the new world item object
 zox_sys2(ItemDropSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Dead);
     zox_sys_in(Position3D);
-    zox_sys_in(ItemLinks);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Dead, dead);
         zox_sys_i(Position3D, position);
-        zox_sys_i(ItemLinks, items);
         // proces if i die
         if (dead->value != zox_dirty_active) {
             continue;
         }
         // drop item
         // zox_log("character dropping [%i] items", items->length)
-        for (int j = 0; j < items->length; j++) {
-            entity item = items->value[j];
+        uint capacity = zox_children_capacity;
+        entity items[capacity];
+        uint items_length = zox_get_children_by_id(world, e, items, capacity, zox_id(Item));
+        for (int j = 0; j < items_length; j++) {
+            entity item = items[j];
             if (zox_valid(item)) {
                 zox_get_prefab(item, meta);
                 entity pickup;

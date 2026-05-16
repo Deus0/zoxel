@@ -1,15 +1,11 @@
-zoxf_user_prefabs(Item, item, "item")
+#include "item.c"
+#include "active.c"
+entity prefab_item;
+entity prefab_item_active;
 
 void spawn_prefabs_items(ecs *world) {
-
     prefab_item = spawn_prefab_item(world);
-    zox_set(prefab_item, Quantity, { 1 });
-    zox_set(prefab_item, ItemDirty, { zox_dirty_none });
-    zox_set(prefab_item, QuantityDirty, { zox_dirty_none });
-
-    if (prefab_character3) {
-        zox_prefab_character_add(ItemLinks);
-    }
+    prefab_item_active = spawn_prefab_item_active(world, prefab_item);
     if (prefab_realm) {
         zox_prefab_add(prefab_realm, ItemLinks);
     }

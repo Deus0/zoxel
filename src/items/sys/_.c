@@ -22,7 +22,7 @@ void define_systems_items(ecs* world) {
         EcsOnUpdate,
         [in] combat.Dead,
         [in] transforms3.Position3D,
-        [in] items.ItemLinks
+        [none] characters.Character
     );
     zox_system_1(
         TerrainItemDropSystem,
@@ -39,7 +39,7 @@ void define_systems_items(ecs* world) {
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
-        [out] items.ItemLinks,
+        [none] characters.Character,
         [none] !players.PlayerLink
     );
     zox_system_1(
@@ -47,7 +47,7 @@ void define_systems_items(ecs* world) {
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         //[in] realms.RealmLink,
-        [out] items.ItemLinks,
+        [none] characters.Character,
         [none] players.PlayerLink
     );
 }

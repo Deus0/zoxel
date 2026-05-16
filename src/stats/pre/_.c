@@ -1,5 +1,4 @@
 #include "stat.c"
-
 entity prefab_stat;
 entity prefab_stat_base;
 entity prefab_stat_state;

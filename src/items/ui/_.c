@@ -1,18 +1,21 @@
+/*
+ *  Module: Items UI
+ *
+ *      - UIs for all our things
+ *
+ * */
 #ifndef zoxm_items_ui
 #define zoxm_items_ui
 
-zox_tag(MenuItems);
-zox_tag(IconItem);
-zox_tag(ItemIconLabel);
+#include "com/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
 #include "sys/_.c"
 #include "ins/_.c"
 
-zox_begin_module(ItemsUI)
-    zoxd_tag(MenuItems);
-    zoxd_tag(IconItem);
-    zoxd_tag(ItemIconLabel);
+zox_begin_module(ItemsUI) {
+    define_components_items_ui(world);
+    define_systems_items_ui(world);
     add_taskbar_button((hook_taskbar) {
         .index = 3,
         .spawn = &spawn_menu_inventory,
@@ -21,7 +24,6 @@ zox_begin_module(ItemsUI)
         .tooltip_text = "Inventory"
     });
     add_hook_spawn_prefabs(spawn_prefabs_ui_items);
-    define_systems_items_ui(world);
-zox_end_module(ItemsUI)
+} zox_end_module(ItemsUI)
 
 #endif

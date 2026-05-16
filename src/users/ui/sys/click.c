@@ -2,9 +2,11 @@ extern byte process_icon_type_action(ecs*, const entity);
 extern void set_linked_action(ecs*, const entity, const int, const entity);
 extern void set_linked_item(ecs*, const entity, const int, const entity);
 extern void set_linked_skill(ecs*, const entity, const int, const entity);
-extern void link_as_new_item(ecs*, const entity, const entity3);
+extern void link_as_new_item(ecs*, entity, entity3);
 // Called from the clicked UI
 zox_sys2(UserIconClickSystem) {
+    return;
+
     if (!icon_mouse_follow) {
         return; // global icon_mouse_follow for now
     }
@@ -17,13 +19,13 @@ zox_sys2(UserIconClickSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ClickState, clickState);
-        zox_sys_i(IconType, iconType);
+        zox_sys_i(IconType, data_type);
         zox_sys_i(IconIndex, iconIndex);
         zox_sys_o(DataLink, userDataLink);
         if (clickState->value != zox_click_state_clicked_this_frame) {
             continue;
         }
-        byte icon_type = iconType->value;
+        byte icon_type = data_type->value;
         if (!icon_type) {
             continue;
         }
@@ -36,7 +38,7 @@ zox_sys2(UserIconClickSystem) {
         // check matches mouse's icon type
         zox_geter_value(icon_mouse_follow, IconType, byte, mouse_icon_type);
         if (mouse_icon_type > zox_icon_type_action && icon_type > zox_icon_type_action && icon_type != mouse_icon_type) {
-            zox_log(" ! cannot place [%i] in [%i] slot\n", mouse_icon_type, icon_type)
+            zox_loge("Cannot place [%i] in [%i] slot\n", mouse_icon_type, icon_type);
             continue; // didn't match
         }
         entity character = 0;
@@ -76,21 +78,24 @@ zox_sys2(UserIconClickSystem) {
         };
         // set_icon_label_from_user_data(world, frame, mouse_data);
         // new data placed in mouse_data
-        // use iconType->value and iconIndex->value to set data on character
+        // use data_type->value and iconIndex->value to set data on character
         // how to get character from icon? UserLink!
         // === Base on Frame clicked ===
-        if (iconType->value == zox_icon_type_action) {
+        if (data_type->value == zox_icon_type_action) {
             zox_log(" + character [%lu] setting [%s] [%i]", character, "action", iconIndex->value)
             set_linked_action(world, character, iconIndex->value, mouse_data);
             link_as_new_item(world, mouse_data, framer);
-        } else if (iconType->value == zox_icon_type_skill) {
+        } else {
+            zox_set_parent(world, mouse_data, character);
+        }
+        /*if (data_type->value == zox_icon_type_skill) {
             // zox_log(" + character [%lu] setting [%s] [%i]\n", character, "skill", iconIndex->value)
             set_linked_skill(world, character, iconIndex->value, mouse_data);
-        } else if (iconType->value == zox_icon_type_item) {
+        } else if (data_type->value == zox_icon_type_item) {
             // zox_log(" + character [%lu] setting [%s] [%i]\n", character, "item", iconIndex->value)
             set_linked_item(world, character, iconIndex->value, mouse_data);
             link_as_new_item(world, mouse_data, framer);
-        }
+        }*/
         // clear the tooltip when picked up icon
         if (!clicked_data_empty) {
             zox_geter_value(e, CanvasLink, entity, canvas);

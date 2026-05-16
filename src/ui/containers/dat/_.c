@@ -53,6 +53,17 @@ typedef struct {
     SpawnWindowUsersData window;
 } SpawnWindowUsers;
 
+int2 calculate_grid_size(byte2 grid_size, byte icon_size, byte2 padding, byte2 margins) {
+    return (int2) {
+        padding.x * (grid_size.x - 1)
+        + icon_size * grid_size.x
+        + margins.x * 2,
+        padding.y * (grid_size.y - 1)
+        + icon_size * grid_size.y
+        + margins.y * 2
+    };
+}
+
 int2 calculate_grid_window_size(SpawnWindowUsersData data, int header_height) {
     return (int2) {
         data.grid_padding.x * (data. grid_size.x - 1)

@@ -4,6 +4,7 @@ entity spawn_realm_stat(ecs* world, entity parent, entity prefab, const char* na
         zox_loge("Stat Texture not found [%s]", texture_name);
     }
     entity e = zox_ins_named(world, prefab);
+    zox_make_prefab(e);
     if (parent) {
         zox_set_parent(world, e, parent);
     }
@@ -17,6 +18,5 @@ entity spawn_realm_stat(ecs* world, entity parent, entity prefab, const char* na
     if (!color_rgb_equals(ecolor, color_rgb_white)) {
         zox_set(e, ColorRGB, { ecolor });
     }
-    zox_make_prefab(e);
     return e;
 }

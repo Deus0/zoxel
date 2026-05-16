@@ -1,8 +1,5 @@
-entity spawn_prefab_character3_player(ecs *world, entity p) {
-    if (!p) {
-        return 0;
-    }
-    zox_prefab_child(p);
+entity spawn_prefab_character3_player(ecs *world, entity prefab) {
+    zox_prefab_child(prefab);
     zox_prefab_name("character3_player");
     zox_add_tag(e, PlayerCharacter);
     // disable until loaded terrain
@@ -14,7 +11,6 @@ entity spawn_prefab_character3_player(ecs *world, entity p) {
     zox_prefab_set(e, Movement3, { float3_zero });
     zox_prefab_set(e, CameraLink, { 0 });
     zox_prefab_set(e, PlayerLink, { 0 });
-    // zox_prefab_set(e, DisableMovement, { 0 });
     // Raycasting
     zox_prefab_set(e, GizmoLink, { 0 });
     // Input Triggers
@@ -45,5 +41,9 @@ entity spawn_prefab_character3_player(ecs *world, entity p) {
         zox_prefab_set(e, ThreatPosition, { float3_zero });
         zox_prefab_set(e, WanderDirection, { float3_zero });
     }
+    // Spawn inventory slots
+    entity inventory = spawn_ui_slots(world, e, 25);
+    zox_set_unique_name(inventory, "Inventory");
+    zox_add_tag(inventory, Inventory);
     return e;
 }

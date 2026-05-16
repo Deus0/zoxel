@@ -4,6 +4,7 @@ entity spawn_realm_skill(ecs* world, entity parent, entity prefab, const char* n
         zox_loge("Stat Texture not found [%s]", tname);
     }
     entity e = zox_ins_named(world, prefab);
+    zox_make_prefab(e);
     if (name) {
         zox_set_unique_name(e, name);
         set_ZoxName(world, e, name);

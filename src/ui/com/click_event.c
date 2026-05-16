@@ -3,4 +3,4 @@ typedef struct {
     entity clicked;
 } ClickEventData;
 
-zoxc_function(ClickEvent, void, ecs*, const ClickEventData);
+zoxc_function(ClickEvent, void, ecs*, ClickEventData);

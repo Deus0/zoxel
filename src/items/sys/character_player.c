@@ -1,26 +1,29 @@
 zox_sys2(CharacterPlayerItemsSystem) {
-    // zox_sys_world();
+    /*zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
     //zox_sys_in(RealmLink);
-    zox_sys_out(ItemLinks);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         //zox_sys_i(RealmLink, realm);
-        zox_sys_o(ItemLinks, items);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        int count = character_inventory_count; // !test_items_blocks ? character_inventory_count : 16;
-        initialize_ItemLinks(items, count);
-        if (!items->value) {
+        int count = character_inventory_count;
+        // blanks are item slots
+        for (int j = 0; j < count; j++) {
+            // items->value[j] = 0;
+            spawn_user_item(world, e, prefab_item);
+        }
+    }*/
+        /*if (!items->value) {
             zox_log_error("Failed allocating memory for items")
             continue;
         }
         for (int i = 0; i < count; i++) {
             items->value[i] = 0; // blanks are item slots
-        }
+        }*/
         /*if (!test_items_blocks) {
             continue;
         }
@@ -56,5 +59,4 @@ zox_sys2(CharacterPlayerItemsSystem) {
 
             items->value[place_index++] = item;
         }*/
-    }
 } zox_sys_end(CharacterPlayerItemsSystem);

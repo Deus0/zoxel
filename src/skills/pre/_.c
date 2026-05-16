@@ -1,4 +1,3 @@
-// zoxf_user_prefabs(Skill, skill, "skill")
 entity prefab_skill;
 entity prefab_skill_melee;
 entity prefab_skill_aura;

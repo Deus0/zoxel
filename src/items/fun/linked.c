@@ -1,10 +1,6 @@
-void set_linked_item(
-    ecs *world,
-    const entity user,
-    const int index,
-    const entity e
-) {
-    if (!zox_valid(user) || !zox_has(user, ItemLinks)) {
+void set_linked_item(ecs *world, entity user, int index, entity e) {
+    zox_set_parent(world, e, user);
+    /*if (!zox_valid(user) || !zox_has(user, ItemLinks)) {
         return;
     }
     zox_mut_begin(user, ItemLinks, datas);
@@ -12,14 +8,10 @@ void set_linked_item(
         return;
     }
     datas->value[index] = e;
-    zox_mut_end(user, ItemLinks);
+    zox_mut_end(user, ItemLinks);*/
 }
 
-void link_as_new_item(
-    ecs *world,
-    const entity element,
-    const entity3 frame
-) {
+void link_as_new_item(ecs *world, entity element, entity3 frame) {
     // link new element to all uis
     if (frame.x) {
         zox_set(frame.x, ItemLink, { element });

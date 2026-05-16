@@ -26,12 +26,10 @@ SpawnWindowUsers get_default_datagrid_data(ecs *world, entity prefab, entity cha
     int icon_size = (default_icon_size / 4) * ui_scale;
     byte header_font_thickness_s = header_font_thickness * ui_scale;
     byte header_fonto_thickness_s = header_font_thickness * ui_scale;
-
     // Misc
     byte2 grid_size = byte2_single(4);
     float2 anchor = float2_half;
     int2 position = position;
-
     entity prefab_frame_ = prefab_frame;
     if (zox_has(prefab, FramePrefabLink)) {
         prefab_frame_ = zox_get_value(prefab, FramePrefabLink);
@@ -87,13 +85,11 @@ SpawnWindowUsers get_default_datagrid_data(ecs *world, entity prefab, entity cha
             .prefab_header = prefab_header,
         },
     };
-
     byte header_height = header_text_data.font_size + header_text_data.margins.y * 2;
     data.element.size = calculate_grid_window_size(
         data.window,
         header_height
     );
-
     return data;
 }
 
@@ -185,7 +181,6 @@ entity spawn_datagrid2(ecs *world, SpawnWindowUsers data, FrameTextureData windo
 
 entity spawn_datagrid(ecs* world, entity prefab, entity prefab_icon, entity canvas, entity character, entity id, entity link_id, const char* header, color fill, color outline) {
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-
     SpawnWindowUsers data = get_default_datagrid_data(world, prefab, character, canvas, canvas_size);
     data.header_zext.text = header;
     data.element.prefab = prefab;

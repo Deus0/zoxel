@@ -1,6 +1,11 @@
 ### todo ###
 # flatpak run org.kde.kate
 
+- Finish Slot Links Refactor for UI
+- Refactor ActionLinks
+- Refactor PartLinks
+- Refactor EquipLinks
+- Refactor Quests to use new parenting
 - Vitality should increase health stat
 - Add base stat "Physical Damage" that punch uses, strength should increase this
 - Fix Skill Indexing though for Skillbook

@@ -1,17 +1,5 @@
 extern entity prefab_window_users;
 
-int2 calculate_grid_size(SpawnWindowUsersData data) {
-
-    return (int2) {
-        data.grid_padding.x
-        + (data.icon_size + data.grid_padding.x) * data. grid_size.x
-        + data.grid_margins.x * 2,
-        data.grid_padding.y
-        + (data.icon_size + data.grid_padding.y) * data.grid_size.y
-        + data.grid_margins.y * 2
-    };
-}
-
 SpawnWindowUsers get_default_spawn_window_users_data(ecs *world, entity prefab, entity character, entity canvas, int2 canvas_size) {
     // Sizing
     byte header_font_size = 6 * ui_scale;
