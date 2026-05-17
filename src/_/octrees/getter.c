@@ -5,6 +5,16 @@
 
 // Core: walk toward target depth, return deepest reachable node
 static inline const void* get_octree(const void* node, byte tdepth, byte3 pos, byte depth, size_t stride) {
+    if (depth == 0) {
+        // check bounds
+        byte length = powers_of_two[tdepth];
+        if (pos.x >= length || pos.y >= length || pos.z >= length) {
+            if (dbg_log_octree_errors) {
+                zox_logw("OOB [get_octree] [%ix%ix%i] depth [%i] vlength [%i]", pos.x, pos.y, pos.z, tdepth, length);
+            }
+            return NULL;
+        }
+    }
     while (node && depth < tdepth) {
         /* quick sanity: reject obviously bad pointers */
         uintptr_t p = (uintptr_t) node;
@@ -24,10 +34,12 @@ static inline const void* get_octree(const void* node, byte tdepth, byte3 pos, b
         byte3_modulus_byte(&pos, div);
         byte i = byte3_octree_array_index(npos);
         if (i >= 8) {
-            zox_logw("[get_octree] Invalid Index >= 8 [%i]\n  - pos [%ix%ix%i]\n    - npos [%ix%ix%i]\n    - div [%i]\n    - depth [%i]\n    - tdepth [%i]", i,
+            if (dbg_log_octree_errors) {
+                zox_logw("[get_octree] Invalid Index >= 8 [%i]\n  - pos [%ix%ix%i]\n    - npos [%ix%ix%i]\n    - div [%i]\n    - depth [%i]\n    - tdepth [%i]", i,
                      pos.x, pos.y, pos.z,
                      npos.x, npos.y, npos.z,
                      div, depth, tdepth);
+            }
             return NULL;
         }
         node = (char*) kids_ptr + i * stride;
@@ -36,7 +48,18 @@ static inline const void* get_octree(const void* node, byte tdepth, byte3 pos, b
     return node;
 }
 
+// TODO: Just make all these start at 0 depth
 static inline void* get_octree_mut(void* node, byte tdepth, byte3 pos, byte depth, size_t stride) {
+    if (depth == 0) {
+        // check bounds
+        byte length = powers_of_two[tdepth];
+        if (pos.x >= length || pos.y >= length || pos.z >= length) {
+            if (dbg_log_octree_errors) {
+                zox_logw("OOB [get_octree_mut] [%ix%ix%i] depth [%i] vlength [%i]", pos.x, pos.y, pos.z, tdepth, length);
+            }
+            return NULL;
+        }
+    }
     while (node && depth < tdepth) {
         /* quick sanity: reject obviously bad pointers */
         uintptr_t p = (uintptr_t) node;
@@ -56,10 +79,12 @@ static inline void* get_octree_mut(void* node, byte tdepth, byte3 pos, byte dept
         byte3_modulus_byte(&pos, div);
         byte i = byte3_octree_array_index(npos);
         if (i >= 8) {
-            zox_logw("[get_octree_mut] Invalid Index >= 8 [%i]\n  - pos [%ix%ix%i]\n    - npos [%ix%ix%i]\n    - div [%i]\n    - depth [%i]\n    - tdepth [%i]", i,
+            if (dbg_log_octree_errors) {
+                zox_logw("[get_octree_mut] Invalid Index >= 8 [%i]\n  - pos [%ix%ix%i]\n    - npos [%ix%ix%i]\n    - div [%i]\n    - depth [%i]\n    - tdepth [%i]", i,
                      pos.x, pos.y, pos.z,
                      npos.x, npos.y, npos.z,
                      div, depth, tdepth);
+            }
             return NULL;
         }
         node = (char*) kids_ptr + i * stride;
@@ -114,13 +139,11 @@ static inline byte read_octree_value(const void* node, byte target_depth, byte3 
     if (!node) {
         return 0;
     }
-
     /* quick sanity: reject obviously bad pointers */
     uintptr_t p = (uintptr_t) node;
     if (p == 0 || (p & 0x7) != 0) {
         return 0;
     }
-
     return *(byte*)((char*) node + value_offset);
 }
 

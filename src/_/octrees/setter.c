@@ -12,7 +12,9 @@ static inline void* set_octree_value(void* node, byte tdepth, byte3 pos, byte va
         // check bounds
         byte length = powers_of_two[tdepth];
         if (pos.x >= length || pos.y >= length || pos.z >= length) {
-            zox_logw("OOB [set_octree_value] [%ix%ix%i] depth [%i] vlength [%i]", pos.x, pos.y, pos.z, tdepth, length);
+            if (dbg_log_octree_errors) {
+                zox_logw("OOB [set_octree_value] [%ix%ix%i] depth [%i] vlength [%i]", pos.x, pos.y, pos.z, tdepth, length);
+            }
             return NULL;
         }
     }

@@ -1,4 +1,4 @@
-zox_sys2(TooltipSystem) {
+zox_sys2(TooltipEventSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SelectState);
@@ -35,4 +35,4 @@ zox_sys2(TooltipSystem) {
             // hmm need to rethink this
         }
     }
-} zox_sys_end(TooltipSystem);
+} zox_sys_end(TooltipEventSystem);

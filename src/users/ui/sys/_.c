@@ -1,4 +1,4 @@
-#include "tooltip.c"
+/*#include "tooltip.c"
 #include "click.c"
 
 void define_systems_users_ui(ecs* world) {
@@ -7,10 +7,10 @@ void define_systems_users_ui(ecs* world) {
         EcsOnUpdate,
         [in] elements.SelectState,
         [in] u.i.containers.DataLink,
-        [in] elements.TooltipEvent,
+        [in] tooltips.TooltipEvent,
         [none] UserIcon
     );
-    /*zox_system(
+    zox_system(
         UserIconClickSystem,
         EcsPreUpdate,
         [in] elements.ClickState,
@@ -18,5 +18,5 @@ void define_systems_users_ui(ecs* world) {
         [in] elements2.IconIndex,
         [out] u.i.containers.DataLink,
         [none] UserIcon
-    );*/
-}
+    );
+}*/

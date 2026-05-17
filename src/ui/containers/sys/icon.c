@@ -67,16 +67,3 @@ zox_sys2(DataIconUpdateSystem) {
         // zox_log("Set Icon [%s] to texture [%s]", zox_get_name(e), zox_get_name(texture));
     }
 } zox_sys_end(DataIconUpdateSystem);
-
-
-// if the user data dies, we should clear the texture
-// TODO: Detect this from a slot system and just set data dirty there
-/*if (data->value && !zox_valid(data->value)) {
-    entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));
-    clone_texture_data(world, e, texture);
-    // zox_log("Cleared Icon [%s] T:[%s]", zox_get_name(e), zox_get_name(texture));
-    zox_set(slot->value, DataLink, { 0 });
-    data->value = 0;
-    // zox_set(slot->value, DataDirty, { 0 });
-    continue;
-}*/

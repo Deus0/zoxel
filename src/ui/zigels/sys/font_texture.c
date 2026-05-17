@@ -54,7 +54,7 @@ zox_sys2(FontTextureSystem) {
         generate_font_texture(data->value, size->value, fontData, secondary_color->value, color_variable->value, is_use_shapes, thickness->value, outline_thickness->value, point_padding);
         dirty->value = zox_dirty_trigger;
 #ifdef zoxel_debug_zigel_updates
-        zox_log("     > zigel font is updating [%lu]\n", it->entities[i])
+        zox_log("Zigel font is updating [%lu]\n", it->entities[i])
 #endif
     }
 } zox_sys_end(FontTextureSystem);

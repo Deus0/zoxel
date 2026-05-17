@@ -1,7 +1,8 @@
 #include "statbar.c"
 #include "stat_text.c"
-#include "icon_label.c"
+#include "label.c"
 #include "healthbar_spawner.c"
+#include "tooltip.c"
 
 void define_systems_stats_ui(ecs *world) {
     zox_system(
@@ -22,15 +23,22 @@ void define_systems_stats_ui(ecs *world) {
     zox_system(
         StatIconLabelSystem,
         EcsOnUpdate,
-        [in] StatLink,
+        [in] u.i.containers.DataLink,
         [out] texts.TextData,
         [out] texts.TextDirty,
-        [none] StatIconLabel
+        [none] elements2.Label
     );
     zox_system_1(
         HealthbarSpawnerSystem,
         EcsOnUpdate,
         [in] combat.CombatState,
         [out] elements.ElementLinks
+    );
+    zox_system(
+        StatIconTooltipSystem,
+        EcsOnUpdate,
+        [in] elements.SelectState,
+        [in] u.i.containers.DataLink,
+        [none] elements2.Icon
     );
 }

@@ -9,7 +9,7 @@
 
 zox_begin_module(ActionsUI) {
     zox_define_components_actions_ui(world);
-    add_hook_spawn_prefabs(spawn_prefabs_ui_actions);
+    // add_hook_spawn_prefabs(spawn_prefabs_ui_actions);
     add_taskbar_button((hook_taskbar) {
         .index = 1,
         .spawn = &spawn_menu_actions,

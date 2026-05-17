@@ -11,7 +11,7 @@ zoxc_color(FontOutlineColor);
 zoxc_entity(FontLink);
 zoxc_arrayd(FontData, byte2)
 
-void define_components_zigels(ecs *world) {
+void zox_define_components_zigels(ecs *world) {
     zoxd_tag(FontStyle);
     zoxd_tag(TTFFontStyle);
     zoxd_tag(Font);

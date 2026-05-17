@@ -13,8 +13,9 @@
 
 #include "com/_.c"
 #include "pre/_.c"
-#include "sys/_.c"
+#include "ins/_.c"
 #include "fun/_.c"
+#include "sys/_.c"
 #include "ui/_.c"
 
 zox_begin_module(Quests)

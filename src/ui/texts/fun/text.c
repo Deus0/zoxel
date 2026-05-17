@@ -76,7 +76,6 @@ byte set_entity_text(ecs* world, entity e, const char* text) {
         zox_mut_end(e, TextData);
         zox_muter(e, TextDirty, dirty);
         dirty->value = zox_dirty_trigger;
-        // zox_set(e, TextDirty, { zox_dirty_trigger });
         return 1;
     } else {
         return 0;

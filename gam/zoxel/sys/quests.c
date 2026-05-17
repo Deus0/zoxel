@@ -5,6 +5,7 @@ zox_sys2(QuestsRealmSpawnSystem) {
     zox_sys_in(CharacterLinks);
     zox_sys_out(QuestLinks);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(GenerateRealm, state);
         zox_sys_i(CharacterLinks, characters);
         zox_sys_o(QuestLinks, quests);
@@ -13,10 +14,7 @@ zox_sys2(QuestsRealmSpawnSystem) {
         }
         // slay them dirty slems
         {
-            entity quest = spawn_meta_quest(world, prefab_quest, "find bob");
-            // zox_set(quest, TextureLink, { files_textures[12] });
-            entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("discord"));
-            zox_set(quest, TextureLink, { texture });
+            entity quest = spawn_realm_quest(world, e, prefab_quest, "find bob", "discord");
             add_to_QuestLinks(quests, quest);
         }
         if (!characters->length) {
@@ -24,15 +22,13 @@ zox_sys2(QuestsRealmSpawnSystem) {
             continue;
         }
         {
-            entity quest = spawn_meta_quest(world, prefab_quest, "slay slems");
+            entity quest = spawn_realm_quest(world, e, prefab_quest, "Slem Infestation", "taskbar_lore");
             // TODO: Objective: Slay 10 Slimes
             zox_add_tag(quest, SlayQuest);
             zox_set(quest, QuestValue, { 0 });
             zox_set(quest, QuestTarget, { 10 });
             entity slime = characters->value[0];
             zox_set(quest, CharacterLink, { slime });
-            entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("taskbar_lore"));
-            zox_set(quest, TextureLink, { texture });
             add_to_QuestLinks(quests, quest);
         }
         zox_logv("At [%f] Realm [quests] [%i] spawned.", zox_current_time, quests->length);

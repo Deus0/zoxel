@@ -1,7 +1,6 @@
 #include "drag.c"
 #include "bar.c"
 #include "scrolling.c"
-#include "tooltip.c"
 #include "slide_event.c"
 #include "list_render_dirty.c"
 #include "toggle_event.c"
@@ -48,12 +47,6 @@ void define_systems_elements2(ecs *world) {
         [in] elements.ElementBarSize,
         [in] layouts2.LayoutSize,
         [none] Elementbar2
-    );
-    zox_system(
-        TooltipSystem,
-        EcsPostUpdate,
-        [in] elements.SelectState,
-        [in] elements.TooltipEvent
     );
     zox_system(
         SlideEventSystem,

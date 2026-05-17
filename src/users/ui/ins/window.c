@@ -43,6 +43,7 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     int2 icon_size =  int2_single(data.icon.size);
     int item_index = 0;
     int array_index = 0;
+    byte label_font_size = 3 * ui_scale;
     entity frames[count];
     for (int j = data.window.grid_size.y - 1; j >= 0; j--) {
         if (array_index >= count) {
@@ -54,7 +55,7 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
             }
             entity eudata = udata[item_index];
             item_index++;
-            entity3 frame_spawn = spawn_frame(world, data.frame.prefab, grid, position, frame_size, data.icon.prefab, icon_size, array_index);
+            entity3 frame_spawn = spawn_frame(world, data.frame.prefab, data.icon.prefab, 0, grid, position, frame_size, icon_size, label_font_size, array_index);
             // NOTE: Atm this is what connects user data textures
             set_icon_from_user_data(world, frame_spawn.x, frame_spawn.y, eudata);
             frames[array_index] = frame_spawn.x;

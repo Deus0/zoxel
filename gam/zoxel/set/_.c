@@ -106,8 +106,6 @@ void zoxel_settings_uis() {
     close_button_font_outline = color_grayscale_a(0, close_button_fill.a);
     close_button_font_thickness = 2;
     close_button_fonto_thickness = 0;
-    frame_label_font_size = 4;
-    frame_label_padding = 2;
     default_fill_color = color_grayscale_a(2, 248);
     default_outline_color = header_outline;
     // fades

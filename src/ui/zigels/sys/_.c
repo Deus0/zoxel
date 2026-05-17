@@ -1,6 +1,6 @@
 #include "font_texture.c"
 
-void define_systems_zigels(ecs* world) {
+void zox_define_systems_zigels(ecs* world) {
     zox_filter(
         fonts,
         [none] FontTexture,

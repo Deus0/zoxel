@@ -41,6 +41,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             // can choose here properties for spawning
             byte chance = chances[j];
             entity e2 = spawn_character3_meta(world, prefab_character, name, model, chance);
+            zox_set_name(e2, name); // assuming name is unique to the ecs world
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
             float soul_value = (float)(souls[j]);

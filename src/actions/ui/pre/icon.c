@@ -1,8 +1,9 @@
-byte tooltip_event_action(ecs *world, const TooltipEventData *data) {
+/*byte tooltip_event_action(ecs *world, const TooltipEventData *data) {
     if ( !zox_valid(data->data)) {
         return 0;
     } else if (zox_has(data->data, Item)) {
-        return tooltip_event_item(world, data);
+        return 0;
+        // return tooltip_event_item(world, data);
     } else if (zox_has(data->data, Skill)) {
         return tooltip_event_skill(world, data);
     } else {
@@ -13,9 +14,9 @@ byte tooltip_event_action(ecs *world, const TooltipEventData *data) {
         }
         return 0;
     }
-}
+}*/
 
-byte process_icon_type_action(ecs *world, const entity data) {
+/*byte process_icon_type_action(ecs *world, const entity data) {
     if (zox_has(data, Item)) {
         return zox_icon_type_item;
     } else if (zox_has(data, Skill)) {
@@ -23,12 +24,13 @@ byte process_icon_type_action(ecs *world, const entity data) {
     } else {
         return 0;
     }
-}
+}*/
 
-entity spawn_prefab_icon_action(ecs *world, entity prefab) {
+/*entity spawn_prefab_icon_action(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("icon_action");
-    zox_set(e, TooltipEvent, { &tooltip_event_action });
+    // zox_set(e, TooltipEvent, { &tooltip_event_action });
     zox_set(e, IconType, { zox_icon_type_action });
     return e;
 }
+*/

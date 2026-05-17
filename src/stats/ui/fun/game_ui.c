@@ -13,10 +13,6 @@ entity spawn_menu_game_stats(ecs* world, entity parent, entity player) {
         zox_log_error("Invalid Character [%lu] in [spawn_game_ui_stats]", character);
         return 0;
     }
-    /*if (!zox_has(character, StatLinks)) {
-        zox_log_error("Invalid Character - No StatLinks [%s] in [spawn_game_ui_stats]", zox_get_name(character));
-        return 0;
-    }*/
     byte total_bars = 4; // TODO: Make dynamic
     // Sizing
     byte panel_padding = 6 * ui_scale;
@@ -43,7 +39,6 @@ entity spawn_menu_game_stats(ecs* world, entity parent, entity player) {
         zox_logw("[%s] has no stats", zox_get_name(parent));
         return 0;
     }
-    // zox_geter(character, StatLinks, stats);
     entity e = spawn_ui(world, prefab_body, parent, panel_anchor, panel_position, panel_size, panel_size);
     zox_set_unique_name(e, "stats_panel");
     zox_set_parent(world, e, parent);

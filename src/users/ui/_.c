@@ -16,7 +16,7 @@ zox_begin_module(UsersUI)
     zoxd_tag(UserIcon);
     zoxd_tag(UserIconWindow);
     zoxd_tag(MenuStatus);
-    define_systems_users_ui(world);
+    // define_systems_users_ui(world);
 zox_end_module(Users)
 
 #endif

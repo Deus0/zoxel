@@ -30,12 +30,12 @@ SpawnWindowUsers get_default_datagrid_data(ecs *world, entity prefab, entity cha
     byte2 grid_size = byte2_single(4);
     float2 anchor = float2_half;
     int2 position = position;
-    entity prefab_frame_ = prefab_frame;
+    /*entity prefab_frame_ = prefab_frame;
     if (zox_has(prefab, FramePrefabLink)) {
         prefab_frame_ = zox_get_value(prefab, FramePrefabLink);
     } else {
         zox_log_error("prefab frame failed! %s", zox_get_name(prefab));
-    }
+    }*/
     SpawnTextData header_text_data = {
         .text = "Users",
         .font_size = header_font_size,
@@ -61,7 +61,7 @@ SpawnWindowUsers get_default_datagrid_data(ecs *world, entity prefab, entity cha
         },
         .header_zext = header_text_data,
         .frame = {
-            .prefab = prefab_frame_,
+            // .prefab = prefab_frame_,
             .texture = {
                 .fill_color = default_fill_color_frame,
                 .outline_color = default_outline_color_frame
@@ -93,7 +93,7 @@ SpawnWindowUsers get_default_datagrid_data(ecs *world, entity prefab, entity cha
     return data;
 }
 
-entity spawn_datagrid2(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns, const entity* udata, uint count) {
+entity spawn_datagrid2(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, entity prefab_frame, entity prefab_icon, entity prefab_label, byte label_font_size, byte selected, const entity* udata, uint count) {
     entity character = data.window.character;
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         zox_log_error("invalid character in spawn icons window.");
@@ -107,7 +107,6 @@ entity spawn_datagrid2(ecs *world, SpawnWindowUsers data, FrameTextureData windo
     zox_set_unique_name(e, data.header_zext.text);
     initialize_element(world, e, data.parent.e, data.canvas.e, position, data.element.size, data.element.size, data.element.anchor, data.element.layer);
     set_window_bounds_to_canvas(world, e, data.canvas.size, data.element.size, data.element.anchor);
-    // int grid_elements_count = udata_length;
     if (is_header) {
         LayoutParentData e_parent_data = { .e = e };
         ElementSpawnData header_element_data = {
@@ -147,15 +146,15 @@ entity spawn_datagrid2(ecs *world, SpawnWindowUsers data, FrameTextureData windo
             }
             entity dat = udata[item_index];
             item_index++;
-            entity3 frame_spawn = spawn_frame(world, data.frame.prefab, grid, position, frame_size, data.icon.prefab, icon_size, array_index);
+            entity3 frame_spawn = spawn_frame(world, prefab_frame, prefab_icon, prefab_label, grid, position, frame_size, icon_size, label_font_size, array_index);
             // NOTE: Atm this is what connects user data textures
             zox_set(frame_spawn.x, DataLink, { dat });
             zox_set(frame_spawn.y, DataLink, { dat });
+            if (frame_spawn.z) {
+                zox_set(frame_spawn.z, DataLink, { dat });
+            }
             set_frame_texture_from_data(world, frame_spawn.x, frame_spawn.y, dat);
             frames[array_index] = frame_spawn.x;
-            if (spawns) {
-                spawns[array_index] = frame_spawn;
-            }
             array_index++;
         }
     }
@@ -179,13 +178,11 @@ entity spawn_datagrid2(ecs *world, SpawnWindowUsers data, FrameTextureData windo
     return e;
 }
 
-entity spawn_datagrid(ecs* world, entity prefab, entity prefab_icon, entity canvas, entity character, entity id, entity link_id, const char* header, color fill, color outline) {
+entity spawn_datagrid(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity prefab_label, byte label_font_size, entity canvas, entity character, entity id, const char* header, color fill, color outline) {
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     SpawnWindowUsers data = get_default_datagrid_data(world, prefab, character, canvas, canvas_size);
     data.header_zext.text = header;
     data.element.prefab = prefab;
-    data.icon.prefab = prefab_icon;
-    // data.window.user_links_id = zox_id(StatLinks);
     data.frame.texture.fill_color = fill;
     FrameTextureData texture = (FrameTextureData) {
         .fill_color = window_fill,
@@ -193,24 +190,5 @@ entity spawn_datagrid(ecs* world, entity prefab, entity prefab_icon, entity canv
     };
     entity datas[layouts2_children_capacity];
     uint dlength = zox_get_children_by_id(world, character, datas, layouts2_children_capacity, id);
-    entity3 spawns[dlength];
-    entity e = spawn_datagrid2(world, data, texture, 0, spawns, datas, dlength);
-    if (!zox_valid(e)) {
-        zox_logw("DataGrid spawning failed.");
-        return 0;
-    }
-    for (uint i = 0; i < dlength; i++) {
-        entity dat = datas[i];
-        entity3 frame = spawns[i];
-        if (zox_valid(frame.x)) {
-            zox_set_id(frame.x, link_id, sizeof(entity), dat);
-        }
-        if (zox_valid(frame.y)) {
-            zox_set_id(frame.y, link_id, sizeof(entity), dat);
-        }
-        if (zox_valid(frame.z)) {
-            zox_set_id(frame.z, link_id, sizeof(entity), dat);
-        }
-    }
-    return e;
+    return spawn_datagrid2(world, data, texture, prefab_frame, prefab_icon, prefab_label, label_font_size, 0, datas, dlength);
 }

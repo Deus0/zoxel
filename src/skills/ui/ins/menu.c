@@ -1,42 +1,20 @@
 entity spawn_player_menu_skills(ecs* world, entity player) {
-    zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
-    return spawn_datagrid(world, prefab_menu_skills, prefab_icon_skill, canvas, character, zox_id(Skill), zox_id(SkillLink), "Skillbook", default_fill_color_frame_skill, default_fill_color_frame_skill);
-    /*zox_geter_value(player, CanvasLink, entity, canvas);
-    zox_geter_value(player, CharacterLink, entity, character);
-    zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-
-    SpawnWindowUsers spawn_data = get_default_spawn_window_users_data(world, prefab_menu_skills, character, canvas, canvas_size);
-
-    spawn_data.header_zext.text = "Skillbook";
-    // spawn_data.element.prefab = prefab_menu_items;
-    spawn_data.element.prefab = prefab_menu_skills;
-    spawn_data.icon.prefab = prefab_icon_skill;
-    spawn_data.window.user_links_id = zox_id(SkillLinks);
-    spawn_data.frame.texture.fill_color = default_fill_color_frame_skill;
-
-    FrameTextureData texture_data = (FrameTextureData) {
-        .fill_color = window_fill,
-        .outline_color = window_outline
-    };
-
-    zox_geter(character, SkillLinks, skills);
-    entity3 spawns[skills->length];
-
-    entity e = spawn_window_users_id(world, spawn_data, texture_data, 0, spawns);
-    for (int i = 0; i < skills->length; i++) {
-        entity e2 = skills->value[i];
-        entity3 frame = spawns[i];
-        if (frame.x) {
-            zox_set(frame.x, SkillLink, { e2 });
-        }
-        if (frame.y) {
-            zox_set(frame.y, SkillLink, { e2 });
-        }
-        if (frame.z) {
-            zox_set(frame.z, SkillLink, { e2 });
-        }
+    if (!zox_valid(character)) {
+        zox_loge("Player has no Character", zox_get_name(player));
+        return 0;
     }
-
-    return e;*/
+    entity skillbook = zox_get_child_by_id(world, character, zox_id(Skillbook));
+    if (!zox_valid(skillbook)) {
+        zox_loge("Player Character has no Skillbook [%s]", zox_get_name(character));
+        return 0;
+    }
+    zox_geter_value(player, CanvasLink, entity, canvas);
+    byte2 cells_size = byte2_single(4);
+    byte label_font_size = 5 * ui_scale;
+    float2 position_anchor = float2_half;
+    int2 position = int2_zero;
+    entity e = spawn_datagrid3(world, prefab_window, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, skillbook, cells_size, "Skillbook", default_fill_color_frame_skill, default_fill_color_frame_skill, position_anchor, position);
+    zox_add_tag(e, MenuSkills);
+    return e;
 }

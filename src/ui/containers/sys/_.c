@@ -1,5 +1,6 @@
 #include "click.c"
 #include "icon.c"
+#include "label.c"
 
 void define_systems_ui_containers(ecs* world) {
     zox_system(
@@ -30,5 +31,13 @@ void define_systems_ui_containers(ecs* world) {
         [in] DataDirty,
         [in] DataLink,
         [none] elements2.Icon
+    );
+    zox_system(
+        DataFrameLabelSystem,
+        EcsOnUpdate,
+        [in] u.i.containers.SlotLink,
+        [out] texts.TextData,
+        [out] texts.TextDirty,
+        [none] elements2.Label
     );
 }

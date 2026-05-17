@@ -2,79 +2,12 @@ entity spawn_menu_actions(ecs* world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     entity actionbar = zox_get_child_by_id(world, character, zox_id(Actionbar));
-    entity prefab = prefab_window_users;
-    entity prefab_frame = prefab_frame_action;
-    entity prefab_icon = prefab_icon_action;
     byte2 cells_size = (byte2) { 10, 1 };
+    byte label_font_size = 5 * ui_scale;
     int frame_size = ((default_frame_size / 4) * ui_scale);
     float2 position_anchor = (float2) { 0.5f, 0 };
-    int2 position = (int2) { 0, frame_size * 2 };
-    entity e = spawn_datagrid3(world, prefab, prefab_frame, prefab_icon, canvas, character, actionbar, cells_size, "", fill_color_frame_action, outline_color_frame_action, position_anchor, position);
+    int2 position = (int2) { 0, frame_size * 1.5f };
+    entity e = spawn_datagrid3(world, prefab_window, prefab_frame_selectable, prefab_icon, prefab_label, label_font_size, canvas, character, actionbar, cells_size, "", fill_color_frame_action, outline_color_frame_action, position_anchor, position);
     zox_add_tag(e, MenuActions);
     return e;
 }
-
-/*entity spawn_menu_actions(ecs *world, entity player) {
-    zox_geter_value(player, CharacterLink, entity, character);
-    if (!zox_valid(character) || !zox_has(character, ActionIndex) || !zox_has(character, ActionLinks)) {
-        zox_log_error("[!spawn_menu_actions] invalid character");
-        return 0;
-    }
-    zox_geter_value(player, CanvasLink, entity, canvas);
-    zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-    zox_geter(character, ActionLinks, actions);
-    zox_geter_value(character, ActionIndex, byte, selected);
-    entity prefab = prefab_window_users; // prefab_menu_actions
-    // Sizing
-    byte2 grid_padding = (byte2) { 3 * ui_scale, 0 };
-    byte2 grid_margins = (byte2) { 6 * ui_scale, 4 * ui_scale };
-    int2 screen_margins = (int2) { 0, 4 * ui_scale };
-    byte header_buffer = ui_scale * 4;
-    // Misc
-    byte2 grid_size = (byte2) { 8, 1 };
-    SpawnWindowUsers data = get_default_spawn_window_users_data(world, prefab, character, canvas, canvas_size);
-    // prefabs
-    data.frame.prefab = prefab_frame_action;
-    data.icon.prefab = prefab_icon_action;
-    // window
-    data.element.prefab = prefab;
-    data.element.anchor = (float2) { 0.5f, 0 };
-    data.window.user_links_id = zox_id(ActionLinks);
-    // header
-    data.header_zext.text = "";
-    data.header_zext.font_size = header_buffer;
-    data.header_zext.margins.y = 0;
-    // grid
-    data.window.grid_size = grid_size;
-    data.window.grid_padding = grid_padding;
-    data.window.grid_margins = grid_margins;
-    int header_height = data.header_zext.font_size + data.header_zext.margins.y * 2;
-    data.element.size = calculate_grid_window_size(data.window, header_height);
-    data.element.position = (int2) { 0, data.element.size.y / 2 + screen_margins.y };
-    data.frame.texture.fill_color = fill_color_frame_action;
-    data.frame.texture.outline_color = outline_color_frame_action;
-    FrameTextureData texture = (FrameTextureData) {
-        .fill_color = color_white, // fill_color_actionbar,
-        .outline_color = color_black // outline_color_actionbar
-    };
-    entity3 spawns[actions->length];
-    entity e = spawn_window_users_id(world, data, texture, selected, spawns);
-    zox_set_unique_name(e, "actionbar");
-    zox_add_tag(e, MenuActions);
-    zox_set(e, FramePrefabLink, { prefab_frame_action });
-    for (int i = 0; i < actions->length; i++) {
-        entity action = actions->value[i];
-        entity3 frame = spawns[i];
-
-        if (frame.x) {
-            zox_set(frame.x, ItemLink, { action });
-        }
-        if (frame.y) {
-            zox_set(frame.y, ItemLink, { action });
-        }
-        if (frame.z) {
-            zox_set(frame.z, ItemLink, { action });
-        }
-    }
-    return e;
-}*/

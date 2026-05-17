@@ -9,6 +9,9 @@ zoxc_entity(WindowTarget);
 zoxc_byte(HeaderHeight);
 zoxc_byte(WindowsLayers);
 zoxc_byte(WindowsCount);
+// Move to Windows
+zox_tag(Header);
+zox_tag(CloseButton);
 
 void define_components_windows(ecs* world) {
     zoxd_tag(Window);
@@ -23,4 +26,8 @@ void define_components_windows(ecs* world) {
     zoxd_byte(HeaderHeight);
     zoxd_byte(WindowsLayers);
     zoxd_byte(WindowsCount);
+    // Move to Windows
+    zoxd_tag(Header);
+    zoxd_tag(CloseButton);
+    // zoxd_tag(Body);
 }

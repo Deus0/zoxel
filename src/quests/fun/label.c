@@ -1,4 +1,4 @@
-uint get_label_player_quests(
+/*uint get_label_player_quests(
     ecs *world,
     const entity player,
     char *buffer,
@@ -26,4 +26,4 @@ uint get_label_player_quests(
     }
 
     return index;
-}
+}*/

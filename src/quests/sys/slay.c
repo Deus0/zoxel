@@ -1,22 +1,23 @@
-void quest_on_slay(ecs* world, entity e, entity killer, entity dyer) {
+void quest_on_slay(ecs* world, entity e, entity killer, entity slayed) {
     if (!zox_has(e, SlayQuest)) {
-        zox_log("Quest not a SlayQuest [%s]", zox_get_name(e));
+        zox_logv("Quest not a SlayQuest [%s]", zox_get_name(e));
         return;
     }
     zox_geter_value(e, CharacterLink, entity, target);
-    // zox_geter_value(dyer, CharacterMetaLink, entity, dyer_meta);
-    entity meta = zox_getp(world, dyer);
+    entity meta = zox_getp(world, slayed);
     if (target == meta) {
         zox_muter(e, QuestValue, value);
         zox_geter(e, QuestTarget, target_value);
         if (value->value < target_value->value) {
             value->value++;
-            zox_log("Incrementing Slay Count [%s]", zox_get_name(target));
+            zox_muter(e, QuestDirty, qdirty);
+            qdirty->value = zox_dirty_trigger;
+            zox_logv("Incrementing Slay Count [%s]", zox_get_name(target));
         } else {
-            zox_log("Slay Count Maxxed [%s]", zox_get_name(target));
+            zox_logv("Slay Count Maxxed [%s]", zox_get_name(target));
         }
     } else {
-        zox_log("Not Slay Target [%s] != [%s]", zox_get_name(target), zox_get_name(meta));
+        zox_logv("Not Slay Target [%s] != [%s]", zox_get_name(target), zox_get_name(meta));
     }
 }
 
@@ -38,9 +39,12 @@ zox_sys2(SlaySystem) {
             continue;
         }
         // add experience to soul stat
-        zox_geter(enemy->value, QuestLinks, enemy_quests);
-        for (int j = 0; j < enemy_quests->length; j++) {
-            entity quest = enemy_quests->value[j];
+        // Others
+        entity enemy_quests[zox_children_capacity];
+        uint enemy_quests_length = zox_get_children_by_id(world, enemy->value, enemy_quests, zox_children_capacity, zox_id(Quest));
+        // zox_geter(enemy->value, QuestLinks, enemy_quests);
+        for (uint j = 0; j < enemy_quests_length; j++) {
+            entity quest = enemy_quests[j];
             quest_on_slay(world, quest, enemy->value, e);
         }
     }

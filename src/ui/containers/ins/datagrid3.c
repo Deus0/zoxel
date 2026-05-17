@@ -1,13 +1,16 @@
 // NOTE: Using Slots for linking UIs to Data
-entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity canvas, entity character, entity slots_manager, byte2 cells_size, const char* header_label, color fill, color outline, float2 position_anchor, int2 position) {
+entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity prefab_label, byte label_font_size, entity canvas, entity character, entity slots_manager, byte2 cells_size, const char* header_label, color fill, color outline, float2 position_anchor, int2 position) {
     if (!zox_valid(character)) {
         zox_log_error("invalid character in [spawn_datagrid3]");
+        return 0;
+    }
+    if (!zox_valid(prefab_frame)) {
+        zox_loge("[%s] has an invalid prefab frame", header_label);
         return 0;
     }
     // Get our Slots
     entity slots[layouts2_children_capacity];
     uint slots_length = zox_get_children_by_id(world, slots_manager, slots, layouts2_children_capacity, zox_id(Slot));
-    // byte2 cells_size = byte2_single(5);
     // Get our window data
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     color grid_fill = window_fill;
@@ -19,8 +22,6 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity pr
     int2 frame_size = int2_single((default_frame_size / 4) * ui_scale);
     int2 size = calculate_grid_size(cells_size, frame_size.x, data.window.grid_padding, data.window.grid_margins);
     data.frame.texture.fill_color = fill;
-    // int2 position = int2_zero;
-    // float2 anchor = float2_half;
     byte active_states = zox_has(prefab_frame, ActiveState);
     byte selected = 0;
     if (active_states) {
@@ -33,11 +34,14 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity pr
     zox_instance(prefab);
     zox_set_unique_name(e, header_label);
     // Spawn the header!!!
-    byte is_header = data.window.prefab_header != 0;
+    // byte is_header = header_label != NULL;
     byte header_height = 0;
-    if (is_header) {
+    {
         byte is_close_button = 1;
         byte header_font_size = 6 * ui_scale;
+        if (header_label == "") {
+            header_font_size = 0;
+        }
         byte2 header_margins = (byte2) { 4 * ui_scale, 3 * ui_scale };
         byte header_font_thickness_s = header_font_thickness * ui_scale;
         byte header_fonto_thickness_s = header_font_thickness * ui_scale;
@@ -69,17 +73,7 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity pr
                 continue;
             }
             entity dat = zox_gett_value(slot, DataLink);
-            entity3 spawn = spawn_frame(world, prefab_frame, grid, position, frame_size, prefab_icon, icon_size, array_index);
-            // set_frame_texture_from_data(world, spawn.x, spawn.y, dat);
-            // NOTE: Atm this is what connects user data textures
-            if (zox_valid(spawn.x)) {
-                // zox_set(spawn.x, SlotLink, { slot });
-                // zox_add_tag(spawn.x, DataFrame);
-                // zox_set(spawn.x, DataLink, { dat });
-                // zox_set(spawn.x, DataDirty, { zox_dirty_trigger });
-                // zox_set(spawn.x, ClickState, { 0 });
-                // zox_set_id(spawn.x, link_id, sizeof(entity), dat);
-            }
+            entity3 spawn = spawn_frame(world, prefab_frame, prefab_icon, prefab_label, grid, position, frame_size, icon_size, label_font_size, array_index);
             // We can just link icons now
             if (zox_valid(spawn.y)) {
                 zox_add_tag(spawn.y, DataFrame);
@@ -89,7 +83,8 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity pr
                 // zox_set_id(spawn.y, link_id, sizeof(entity), dat);
             }
             if (zox_valid(spawn.z)) {
-                zox_set(spawn.z, DataLink, { dat });
+                // zox_set(spawn.z, DataLink, { dat });
+                zox_set(spawn.z, SlotLink, { slot });
                 // zox_set_id(spawn.z, link_id, sizeof(entity), dat);
             }
             if (active_states) {

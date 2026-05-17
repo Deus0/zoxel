@@ -23,7 +23,6 @@ zox_begin_module(ItemsUI) {
         .texture_name = "taskbar_items",
         .tooltip_text = "Inventory"
     });
-    add_hook_spawn_prefabs(spawn_prefabs_ui_items);
 } zox_end_module(ItemsUI)
 
 #endif
