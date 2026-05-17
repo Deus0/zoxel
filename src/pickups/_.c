@@ -9,10 +9,10 @@ zoxc_state(PickedUp);
 #include "dat/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
 
 zox_begin_module(Pickups)
-    add_hook_spawn_prefabs(spawn_prefabs_pickups);
     zoxd_tag(Pickup);
     zoxd_tag(PickUpperer);
     zoxd_state(PickedUp);
@@ -22,6 +22,7 @@ zox_begin_module(Pickups)
         [in] PickedUp,
         [none] Pickup
     );
+    add_hook_spawn_prefabs(spawn_prefabs_pickups);
 zox_end_module(Pickups)
 
 #endif

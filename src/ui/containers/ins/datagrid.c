@@ -14,7 +14,6 @@ void set_frame_texture_from_data(ecs *world, entity frame, entity icon, entity d
 }
 
 SpawnWindowUsers get_default_datagrid_data(ecs *world, entity prefab, entity character, entity canvas, int2 canvas_size) {
-    // Sizing
     byte header_font_size = 6 * ui_scale;
     byte2 header_margins = (byte2) {
         4 * ui_scale,

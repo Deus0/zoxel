@@ -1,16 +1,15 @@
 ### todo ###
 # flatpak run org.kde.kate
 
-- Fix Item Stacking when picking up items
 - Handle the icon dropping into other Frames
 	- Set a Frame Tag?
 	- Only can place Skill in Skillbook or Actions
 	- Only can place Item in Inventory or Actions
+- Right click to split items
+- Item Stacking when dropping item onto another - combine two items of same prefab type together
 - Refactor PartLinks
 - Refactor EquipLinks
 - remove struct use spawn_datagrid spawn_datagrid3 as well
-- Right click to split items
--Item Stacking when dropping item onto another - combine two items of same prefab type together
 - Vitality should increase health stat
 - Add base stat "Physical Damage" that punch uses, strength should increase this
 - Refactor Model Spawning out of block_vox_meta functions
@@ -390,3 +389,4 @@ Done:
 -x Test Quest Tooltips before
 -x Refactor Quests to use new parenting
 -x Fix Skill Indexing though for Skillbook
+-x Fix Item Stacking when picking up items

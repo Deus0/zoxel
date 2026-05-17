@@ -1,6 +1,48 @@
-const byte max_stack_quantity = 255;
+byte max_stack_quantity = 255;
 
-// TODO: system state instead of events
+byte add_item_to_slot_manager(ecs* world, entity smanager, entity user, entity base_item, byte value) {
+    if (!zox_valid(smanager)) {
+        return 0;
+    }
+    entity slots[zox_children_capacity];
+    uint slots_length = zox_get_slots_by_data(world, smanager, base_item, slots, zox_children_capacity);
+    // zox_log("Item Stacking Slots [%s]:[%i]", zox_get_name(base_item), stacking_slots_length);
+    entity stack_slot = 0;
+    for (uint i = 0; i < slots_length; i++) {
+        entity e2 = slots[i];
+        if (!zox_valid(e2) || !zox_has(e2, DataLink)) {
+            continue;
+        }
+        // zox_log("Stacking Slot [%i]:%s", i, zox_get_name(e2));
+        entity e3 = zox_gett_value(e2, DataLink);
+        if (!zox_valid(e3)) {
+            continue;
+        }
+        // Check if MaxQuantity
+        if (zox_gett_value(e3, Quantity) + value > max_stack_quantity) {
+            continue;
+        }
+        stack_slot = e2;
+        // zox_log("Stacking Slot Found [%i]:%s:%s", i, zox_get_name(e2), zox_get_name(e3));
+        break;
+    }
+    if (stack_slot) {
+        zox_set(stack_slot, DataDirty, { zox_dirty_trigger });
+        entity e3 = zox_gett_value(stack_slot, DataLink);
+        zox_geter_value(e3, Quantity, byte, quantity);
+        zox_set(e3, Quantity, { quantity + value });
+        zox_set(e3, QuantityDirty, { zox_dirty_trigger });
+        return 1;
+    }
+    entity add_slot = zox_get_empty_slot(world, smanager);
+    entity new_item = spawn_item_pickedup(world, base_item, user, value);
+    zox_muter(add_slot, DataLink, slot_data);
+    slot_data->value = new_item;
+    zox_set(add_slot, DataDirty, { zox_dirty_trigger });
+    return 1;
+}
+
+// TODO: Use System instead of Hook!
 void on_overlap_pickup(ecs *world, entity e, entity user) {
     if (zox_gett_value(e, PickedUp) || !zox_has(user, PickUpperer)) {
         return;
@@ -10,84 +52,21 @@ void on_overlap_pickup(ecs *world, entity e, entity user) {
     zox_set(e, CollisionDisabled, { 1 });
     lerp_to_entity(world, e, user, 0.1f, 0.6f);
     zox_set(e, DestroyInTime, { 1 });
-    // zox_log(" > e [%lu] picked up by user [%lu]\n", e, user)
     if (!zox_has(e, ItemLink)) {
         return;
     }
-    zox_geter_value(e, ItemLink, entity, item);
-    if (!zox_valid(item)) {
+    zox_geter_value(e, ItemLink, entity, base_item);
+    if (!zox_valid(base_item)) {
         zox_loge("Pickup item is invalid");
         return;
     }
+    // Try add to actionbar first
     entity actionbar = zox_get_child_by_id(world, user, zox_id(Actionbar));
-    if (!zox_valid(actionbar)) {
-        zox_loge("Cannot Pickup without Actionbar Slots");
+    if (add_item_to_slot_manager(world, actionbar, user, base_item, 1)) {
         return;
     }
     entity inventory = zox_get_child_by_id(world, user, zox_id(Inventory));
-    if (!zox_valid(inventory)) {
-        zox_loge("Cannot Pickup without Inventory Slots");
+    if (add_item_to_slot_manager(world, inventory, user, base_item, 1)) {
         return;
     }
-    entity slot = 0;
-    entity action_slot = zox_get_empty_slot(world, actionbar);
-    entity item_slot = zox_get_empty_slot(world, inventory);
-    if (!slot) {
-        slot = action_slot;
-    }
-    if (!slot) {
-        slot = item_slot;
-    }
-    if (!zox_valid(slot)) {
-        zox_loge("No Empty Slot for new Item");
-        return;
-    }
-    entity e2 = spawn_item_pickedup(world, item, user, 1);
-    zox_muter(slot, DataLink, slot_data);
-    slot_data->value = e2;
-    zox_set(slot, DataDirty, { zox_dirty_trigger });
-    // TODO: We need to set UI to dirty too
-    // TODO: Get Stack Index, Check all slots
-
-    /*byte stack_index = 255;
-    for (int i = 0; i < actions->length; i++) {
-        entity action = actions->value[i];
-        if (!zox_valid(action)) {
-            continue;
-        }
-        zox_get_prefab(action, item_prefab);
-        if (item_prefab == item) {
-            stack_index = i;
-            break;
-        }
-    }*/
-    // stack first
-    /*byte did_stack = 0;
-    if (stack_index != 255) {
-        entity stack_item = actions->value[stack_index];
-        zox_geter_value(stack_item, Quantity, byte, quantity);
-        if (quantity != max_stack_quantity) {
-            quantity++;
-            zox_set(stack_item, Quantity, { quantity });
-            zox_set(stack_item, QuantityDirty, { zox_dirty_trigger });
-            did_stack = 1;
-        }
-    }
-    if (!did_stack) {
-        // place as new
-        byte action_index = 255;
-        for (int i = 0; i < actions->length; i++) {
-            if (actions->value[i] == 0) {
-                action_index = i;
-                break;
-            }
-        }
-        // zox_get_prefab(item, item)
-        if (action_index == 255 || !item) {
-            // zox_log(" ! cannot  pickup, full or item is [%lu]\n", item)
-            return;
-        }
-        // actions->value[action_index] = new_item;
-        // on_action_set(world, user, action_index, new_item, item);
-    }*/
 }

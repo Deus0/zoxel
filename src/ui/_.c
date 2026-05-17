@@ -9,6 +9,7 @@ byte is_log_dragging = 0;
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "slots/_.c"
 #include "zigels/_.c"
 #include "texts/_.c"
 #include "tooltips/_.c"
@@ -27,6 +28,7 @@ zox_begin_module(Elements)
     add_hook_terminal_command(arguments_ui);
     add_hook_spawn_prefabs(initialize_settings_elements);
     add_hook_spawn_prefabs(spawn_prefabs_elements);
+    zox_import_module(Slots);
     zox_import_module(Zigels);
     zox_import_module(Texts);
     zox_import_module(Tooltips);

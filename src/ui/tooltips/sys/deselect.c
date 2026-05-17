@@ -6,7 +6,6 @@ zox_sys2(TooltipDeselectSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SelectState, state);
-        // zox_sys_i(TooltipEvent, tooltipe);
         if (state->value != zox_select_state_deselected_this_frame) {
             continue;
         }

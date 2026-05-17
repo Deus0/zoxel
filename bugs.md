@@ -1,7 +1,7 @@
 Bugs:
 
 - At start a terrain chunk lights didn't load
-- Fix set_octree_value Warnings
+-x Fix set_octree_value Warnings
 - Fix Raycast Error: Invalid Vox warning
 - Fix dungeon core texture issues
 - Fix DungeonCore not showing texture properly

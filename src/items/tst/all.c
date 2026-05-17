@@ -20,8 +20,6 @@ void zox_tst_all_items(ecs* world, ClickEventData data) {
     //      - make event for picking up item, if fails, just drops into world?
     // Get our Slots
     entity inventory = zox_get_child_by_id(world, character, zox_id(Inventory));
-    // entity slots[layouts2_children_capacity];
-    // uint slots_length = zox_get_children_by_id(world, inventory, slots, layouts2_children_capacity, zox_id(Slot));
     zox_geter(realm, ItemLinks, ritems);
     zox_log("Giving [%s] [%i] Items.", zox_get_name(character), ritems->length);
     for (int j = 0; j < ritems->length; j++) {
@@ -36,11 +34,16 @@ void zox_tst_all_items(ecs* world, ClickEventData data) {
             zox_print_slots(world, inventory);
             break;
         }
-        byte quantity = rand_range(1, 10);
+        byte quantity = 1;
         entity item = spawn_user_item(world, character, ritem);
-        zox_set(item, Quantity, { quantity });
+        if (zox_has(ritem, Quantity)) {
+            quantity = rand_range(1, 10);
+            zox_set(item, Quantity, { quantity });
+        }
         zox_muter(slot, DataLink, slot_data);
         slot_data->value = item;
+        zox_muter(slot, DataDirty, dirty);
+        dirty->value = zox_dirty_trigger;
         zox_log("   + [%s] x%i", zox_get_name(ritem), quantity);
     }
     tst_all_items = 1;

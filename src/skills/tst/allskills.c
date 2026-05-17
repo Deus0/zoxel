@@ -16,8 +16,8 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
     if (!zox_valid(character) || !zox_valid(realm)) {
         return;
     }
+    entity skillbook = zox_get_child_by_id(world, character, zox_id(Skillbook));
     zox_geter(realm, SkillLinks, rskills);
-    zox_muter(character, SkillLinks, skills);
     zox_log("Giving [%s] [%i] Skills.", zox_get_name(character), rskills->length);
     for (int j = 0; j < rskills->length; j++) {
         entity rskill = rskills->value[j];
@@ -25,8 +25,17 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
             zox_log_error("Skill invalid [%i]", j)
             continue;
         }
+        entity slot = zox_get_empty_slot(world, skillbook);
+        if (!zox_valid(slot)) {
+            zox_logw("Out of empty slots.");
+            zox_print_slots(world, skillbook);
+            break;
+        }
         entity skill = spawn_user_skill(world, character, rskill);
-        add_to_SkillLinks(skills, skill);
+        zox_muter(slot, DataLink, slot_data);
+        slot_data->value = skill;
+        zox_muter(slot, DataDirty, dirty);
+        dirty->value = zox_dirty_trigger;
         zox_log("   + [%s]", zox_get_name(rskill));
     }
     tst_all_skills = 1;

@@ -5,9 +5,9 @@ extern entity spawn_pickup_block(ecs*, float3, entity);
 zox_sys2(MeleeSystem) {
     byte dbg_log = 0;
     byte dbg_log_block = 0;
+    color popup_color = (color) { 255, 0, 0, 255 };
     float popup_spawn_y = 0.18f;
     double volume = get_volume_sfx();
-    color popup_color = (color) { 255, 0, 0, 255 };
     float knockback_min = 0.5f;
     float knockback_max = 1.5f;
     zox_sys_world();
@@ -56,8 +56,8 @@ zox_sys2(MeleeSystem) {
         uint user_stats_length = zox_get_children(world, user, user_stats, stats_children_capacity);
         for (uint j = 0; j < user_stats_length; j++) {
             entity stat = user_stats[j];
-            zox_get_prefab(stat, stat_parent);
-            if (rresource->value == stat_parent) {
+            entity meta = zox_get_prefab(world, stat);
+            if (rresource->value == meta) {
                 resource = stat;
             }
             if (!strength && zox_has(stat, StatAttribute)) {

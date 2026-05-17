@@ -8,6 +8,7 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity pr
         zox_loge("[%s] has an invalid prefab frame", header_label);
         return 0;
     }
+    // TODO: Calculate Grid Rows/Height based on slots length
     // Get our Slots
     entity slots[layouts2_children_capacity];
     uint slots_length = zox_get_children_by_id(world, slots_manager, slots, layouts2_children_capacity, zox_id(Slot));
@@ -15,13 +16,11 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity pr
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     color grid_fill = window_fill;
     color grid_outline = window_outline;
-    // TODO: Remove these structs
-    SpawnWindowUsers data = get_default_datagrid_data(world, prefab, character, canvas, canvas_size);
-    // TODO: Calculate Grid Rows/Height based on slots length
+    byte2 grid_padding = byte2_single(2 * ui_scale);
+    byte2 grid_margins = byte2_single(4 * ui_scale);
     int2 icon_size = int2_single((default_icon_size / 4) * ui_scale);
     int2 frame_size = int2_single((default_frame_size / 4) * ui_scale);
-    int2 size = calculate_grid_size(cells_size, frame_size.x, data.window.grid_padding, data.window.grid_margins);
-    data.frame.texture.fill_color = fill;
+    int2 size = calculate_grid_size(cells_size, frame_size.x, grid_padding, grid_margins);
     byte active_states = zox_has(prefab_frame, ActiveState);
     byte selected = 0;
     if (active_states) {
@@ -34,7 +33,6 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity pr
     zox_instance(prefab);
     zox_set_unique_name(e, header_label);
     // Spawn the header!!!
-    // byte is_header = header_label != NULL;
     byte header_height = 0;
     {
         byte is_close_button = 1;
@@ -62,8 +60,8 @@ entity spawn_datagrid3(ecs* world, entity prefab, entity prefab_frame, entity pr
     entity grid = spawn_uic(world, prefab_grid, e, float2_half, grid_position, grid_size, grid_size, grid_fill, grid_outline);
     zox_set_unique_name(grid, "window_gridgrid");
     zox_set(grid, GridSize, { cells_size });
-    zox_set(grid, GridPadding, { data.window.grid_padding });
-    zox_set(grid, GridMargins, { data.window.grid_margins });
+    zox_set(grid, GridPadding, { grid_padding });
+    zox_set(grid, GridMargins, { grid_margins });
     uint array_index = 0;
     for (int j = cells_size.y - 1; j >= 0; j--) {
         for (int i = 0; i < cells_size.x; i++) {

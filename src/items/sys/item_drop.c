@@ -24,7 +24,7 @@ zox_sys2(ItemDropSystem) {
         for (int j = 0; j < items_length; j++) {
             entity item = items[j];
             if (zox_valid(item)) {
-                zox_get_prefab(item, meta);
+                entity meta = zox_get_prefab(world, item);
                 entity pickup;
                 if (zox_has(item, BlockLink)) {
                     zox_geter_value(item, BlockLink, entity, block)
