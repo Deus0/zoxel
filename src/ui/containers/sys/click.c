@@ -1,3 +1,10 @@
+// For Stacking Icons
+extern byte can_stack_items(ecs*, entity, entity);
+extern byte stack_items(ecs*, entity, entity);
+extern byte is_action_frame(ecs*, entity);
+extern byte can_place_icon_in_skill_frame(ecs*, entity, entity);
+extern byte can_place_icon_in_item_frame(ecs*, entity, entity);
+
 // NOTE: Called from the clicked icon
 zox_sys2(DataFrameClickSystem) {
     byte dbg_log = 0;
@@ -35,6 +42,15 @@ zox_sys2(DataFrameClickSystem) {
             }
             continue;
         }
+        // check if can place here
+        entity place_in_frame = zox_get_parent(world, e);
+        if (!is_action_frame(world, place_in_frame)) {
+            if (!can_place_icon_in_skill_frame(world, place_in_frame, mouse_data->value)) {
+                continue;
+            } else if (!can_place_icon_in_item_frame(world, place_in_frame, mouse_data->value)) {
+                continue;
+            }
+        }
         // If One is Empty and one is exists!
         else if (mouse_data_empty && !clicked_data_empty) {
             if (dbg_log) {
@@ -49,6 +65,20 @@ zox_sys2(DataFrameClickSystem) {
         else {
             if (dbg_log) {
                 zox_log("   DataFrame has [%s], Mouse has [%s]", zox_get_name(data->value), zox_get_name(mouse_data->value));
+            }
+            // check if both base types are the same
+            entity base_item_1 = zox_get_prefab(world, mouse_data->value);
+            entity base_item_2 = zox_get_prefab(world, data->value);
+            if (base_item_1 == base_item_2) {
+                if (can_stack_items(world, data->value, mouse_data->value)) {
+                    zox_log("Stacking Items! %s", zox_get_name(base_item_1));
+                    stack_items(world, data->value, mouse_data->value);
+                    dirty->value = zox_dirty_trigger;
+                    mouse_data->value = 0;
+                    zox_mut_end(mouse_ui, DataLink);
+                    zox_set(mouse_ui, RenderDisabled, { 1 });
+                    continue;
+                }
             }
         }
         // NOTE: This Handles Swapping

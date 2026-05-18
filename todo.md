@@ -1,15 +1,11 @@
 ### todo ###
 # flatpak run org.kde.kate
 
-- Handle the icon dropping into other Frames
-	- Set a Frame Tag?
-	- Only can place Skill in Skillbook or Actions
-	- Only can place Item in Inventory or Actions
+- terminal ui
+	
 - Right click to split items
-- Item Stacking when dropping item onto another - combine two items of same prefab type together
 - Refactor PartLinks
 - Refactor EquipLinks
-- remove struct use spawn_datagrid spawn_datagrid3 as well
 - Vitality should increase health stat
 - Add base stat "Physical Damage" that punch uses, strength should increase this
 - Refactor Model Spawning out of block_vox_meta functions
@@ -146,13 +142,9 @@ Editor Delayed:
 - Slider UI - visually show points to with little up arrows
 
 Bugs:
-- Npcs spawning in lesser chunks - just disable this for now, collision broken there
-- Slimes not adapting to block vox depths
 - Decor (SDL window edge) missing on khadas - try compile sdl together?
 	- test sdl window
 	- test wayland window
-- fix collisions in lesser resolution terrain chunks
-	- test by forcing all terrain chunks at a sub res for easier testing
 - fix text label size when resizing - button size
 	
 
@@ -260,7 +252,6 @@ Module [Terrain/Tunks]:
 - map UI - show tunk heightmap for now
 - map icons - and character ones - show player arrow overlay
 - block damages, heal, and destroy feature
-- terminal ui
 - drop item button
 	
 # Delayed Post Release #
@@ -390,3 +381,13 @@ Done:
 -x Refactor Quests to use new parenting
 -x Fix Skill Indexing though for Skillbook
 -x Fix Item Stacking when picking up items
+-x Handle the icon dropping into other Frames
+	-x Set a Frame Tag?
+	-x Only can place Skill in Skillbook or Actions
+	-x Only can place Item in Inventory or Actions
+-x Item Stacking when dropping item onto another - combine two items of same prefab type together
+-x remove struct use spawn_datagrid spawn_datagrid3 as well
+-x Npcs spawning in lesser chunks - just disable this for now, collision broken there
+-x Slimes not adapting to block vox depths
+-o fix collisions in lesser resolution terrain chunks
+	-o test by forcing all terrain chunks at a sub res for easier testing

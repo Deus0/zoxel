@@ -1,8 +1,11 @@
 #define zox_has_id(e, id) \
     ecs_has_id(world, e, id)
 
+#define zox_add_id(e, id) \
+    ecs_add_id(world, e, id)
+
 #define zox_set_id(e, id, size, data) \
-    ecs_set_id(world, e, id, size, &data);
+    ecs_set_id(world, e, id, size, &data)
 
 #define zox_id(name)\
     ecs_id(name)

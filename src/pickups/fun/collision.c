@@ -1,5 +1,3 @@
-byte max_stack_quantity = 255;
-
 byte add_item_to_slot_manager(ecs* world, entity smanager, entity user, entity base_item, byte value) {
     if (!zox_valid(smanager)) {
         return 0;

@@ -1,3 +1,4 @@
+// NOTE: This assumes item quantity!
 zox_sys2(ItemActivateSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -39,13 +40,13 @@ zox_sys2(ItemActivateSystem) {
         zox_muter(chunk, VoxelNodeQueue, queue);
         a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = block_index, .pos = positionl });
         quantity->value--;
-        if (!quantity->value) {
-            // Deletes the item itself
-            zox_delete(e);
-        }
         // place block sound
         spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[30 + rand() % 6], 0.6, 1.4f * get_volume_sfx());
         dirty->value = zox_dirty_trigger;
+        // Deletes the item itself
+        /*if (!quantity->value) {
+            zox_delete(e);
+        }*/
     }
 } zox_sys_end(ItemActivateSystem);
 

@@ -1,18 +1,14 @@
 #ifndef zoxm_skills_ui
 #define zoxm_skills_ui
 
-zox_tag(MenuSkills);
-zox_tag(IconSkill);
-zox_tag(FrameSkill);
+#include "com/_.c"
 #include "pre/_.c"
 #include "fun/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
 
 zox_begin_module(UISkills) {
-    zoxd_tag(MenuSkills);
-    zoxd_tag(IconSkill);
-    zoxd_tag(FrameSkill);
+    zox_define_components_skills_ui(world);
     zox_define_systems_skills_ui(world);
     // add_hook_spawn_prefabs(spawn_prefabs_ui_skills);
     add_taskbar_button((hook_taskbar) {

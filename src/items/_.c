@@ -7,6 +7,7 @@
 #if !defined(zoxm_items) && defined(zoxm_users)
 #define zoxm_items
 
+byte max_stack_quantity = 255;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

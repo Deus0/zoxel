@@ -3,6 +3,7 @@
 #include "terrain_drop.c"
 #include "character.c"
 #include "character_player.c"
+#include "death.c"
 realm_clear_system(ItemLinks);
 
 void define_systems_items(ecs* world) {
@@ -14,7 +15,7 @@ void define_systems_items(ecs* world) {
         [in] users.UserLink,
         [in] blocks.BlockLink,
         [out] users.Quantity,
-        [out] items.QuantityDirty,
+        [out] users.QuantityDirty,
         [none] ItemBlock
     );
     zox_system_1(
@@ -49,5 +50,12 @@ void define_systems_items(ecs* world) {
         //[in] realms.RealmLink,
         [none] characters.Character,
         [none] players.PlayerLink
+    );
+    zox_system(
+        ItemQuantityDeathSystem,
+        EcsOnUpdate,
+        [in] users.QuantityDirty,
+        [in] users.Quantity,
+        [none] items.Item
     );
 }
