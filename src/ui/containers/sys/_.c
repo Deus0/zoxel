@@ -6,7 +6,7 @@ void zox_define_systems_ui_containers(ecs* world) {
     zox_system(
         DataFrameClickSystem,
         EcsOnUpdate,
-        [in] elements.ClickState,
+        [in] interaction.ClickState,
         [in] slots.SlotLink,
         [out] u.i.containers.DataLink,
         [out] u.i.containers.DataDirty,

@@ -8,11 +8,11 @@
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(RenderTextures)
-    add_hook_spawn_prefabs(spawn_prefabs_render_textures);
-    add_hook_load_shader(&spawn_materials_render_textures);
+zox_begin_module(RenderTextures) {
     define_components_render_textures(world);
     define_systems_render_textures(world);
-zox_end_module(RenderTextures)
+    add_hook_spawn_prefabs(spawn_prefabs_render_textures);
+    add_hook_load_shader(&spawn_materials_render_textures);
+} zox_end_module(RenderTextures)
 
 #endif

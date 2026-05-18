@@ -1,32 +1,25 @@
 entity spawn_prefab_element_invisible(ecs *world, entity prefab) {
-
     zox_prefab_child(prefab);
     zox_prefab_name("element_invisible");
-
     zox_add_tag(e, Element);
     zox_prefab_set(e, InitializeElement, { zox_dirty_trigger });
-
     return e;
 }
 
 entity spawn_prefab_element_shell(ecs *world, entity prefab) {
-
     zox_prefab_child(prefab);
     zox_prefab_name("element_shell");
-
     // texture
     zox_add_tag(e, Texture);
     zox_prefab_set(e, TextureData, { 0 });
     zox_prefab_set(e, TextureSize, { int2_zero });
     // zox_prefab_set(e, TextureDirty, { 0 })
     // zox_prefab_set(e, Color, { color_white })   // do i need this here? does basic lack texture info for generation?
-
     // # Rendering#
     zox_add_tag(e, ElementRender);
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Brightness, { 1 });
     zox_prefab_set(e, Alpha, { 1 });
-
     // Rendering GPU
     zox_prefab_set(e, MeshDirty, { mesh_state_trigger });
     zox_prefab_set(e, MeshAlignment, { zox_alignment_centre });
@@ -39,6 +32,5 @@ entity spawn_prefab_element_shell(ecs *world, entity prefab) {
     prefab_set_mesh_indicies(world, e, square_indicies, 6);
     prefab_set_mesh2D_vertices(world, e, NULL, 0);
     prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
-
     return e;
 }

@@ -38,8 +38,8 @@ zox_sys2(ElementRenderSystem) {
         if (layer->value != renderer_layer || rdisabled->value) {
             continue;
         }
-        entity rcamera = zox_get_root_canvas_camera(world, e);
-        if (rcamera != renderer_camera) {
+        entity root_camera = zox_get_root_canvas_camera(world, e);
+        if (root_camera != renderer_camera) {
             if (is_log) {
                 zox_logw("Not Rendering [%s] at L[%i]", zox_get_name(e), renderer_layer);
             }

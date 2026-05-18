@@ -26,10 +26,5 @@ zox_sys2(LayoutMeshSystem) {
         float2 sizef = (float2) { size->value.x / canvas_size.y, size->value.y / canvas_size.y };
         set_mesh_vertices_scale2D(verts, get_aligned_mesh2D(alignment->value), 4, sizef);
         mesh_dirty->value = mesh_state_trigger;
-        /*zox_sys_e();
-        zox_log("+ [%s] Mesh Rescaled: %fx%f - og [%ix%i]",
-            zox_get_name(e),
-            sizef.x, sizef.y,
-            size->value.x, size->value.y);*/
     }
 } zox_sys_end(LayoutMeshSystem);

@@ -1,6 +1,6 @@
 entity3 spawn_frame(ecs *world, entity prefab, entity prefab_icon, entity prefab_label, entity parent, int2 position, int2 size, int2 icon_size, byte font_size, byte index) {
-    color fill = color_white;
-    color outline = color_black;
+    color fill = frame_fill;
+    color outline = frame_outline;
     entity e = spawn_uic(world, prefab, parent, float2_half, position, size, size, fill, outline);
     zox_name("frame");
     zox_set(e, ElementColor, { outline });

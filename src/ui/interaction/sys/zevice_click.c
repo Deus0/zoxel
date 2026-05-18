@@ -3,18 +3,14 @@ zox_sys2(ZeviceClickSystem) {
     zox_sys_begin();
     zox_sys_in(DeviceLink);
     zox_sys_in(RaycasterTarget);
-    //  zox_sys_in(WindowRaycasted);
     zox_sys_out(RaycasterResult);
     zox_sys_out(ClickingEntity);
-    // zox_sys_out(WindowTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DeviceLink, device);
         zox_sys_i(RaycasterTarget, raycasterTarget);
-        // zox_sys_i(WindowRaycasted, windowRaycasted);
         zox_sys_o(RaycasterResult, raycasterResult);
         zox_sys_o(ClickingEntity, clickingEntity);
-        // zox_sys_o(WindowTarget, windowTarget);
         if (!zox_valid(device->value)) {
             zox_log_error(" device null from zevice [%lu]", it->entities[i])
             continue;

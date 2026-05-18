@@ -10,6 +10,7 @@ byte is_log_dragging = 0;
 #include "ins/_.c"
 #include "sys/_.c"
 #include "slots/_.c"
+#include "interaction/_.c"
 #include "zigels/_.c"
 #include "texts/_.c"
 #include "tooltips/_.c"
@@ -31,6 +32,7 @@ zox_begin_module(Elements)
     zox_import_module(Slots);
     zox_import_module(Zigels);
     zox_import_module(Texts);
+    zox_import_module(Interaction);
     zox_import_module(Tooltips);
     zox_import_module(Elements2);
     zox_import_module(Elements3);

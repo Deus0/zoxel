@@ -7,12 +7,12 @@ entity player_toggle_ui(ecs *world, entity player, entity e, entity (*spawn_ui)(
     }
 }
 
-entity player_toggle_ui_id(ecs *world, entity player, const ElementLinks* elements, entity id, entity (*spawn_ui)(ecs*, const entity)) {
+entity player_toggle_ui_id(ecs *world, entity player, const ElementLinks* elements, entity id, entity (*spawn_ui)(ecs*, entity)) {
     entity e = find_array_element_with_id(world, elements->value, elements->length, id);
     return player_toggle_ui(world, player, e, spawn_ui);
 }
 
-entity toggle_ui_with_id(ecs *world, entity (*spawn_ui)(ecs*, const entity), entity id, entity player) {
+entity toggle_ui_with_id(ecs *world, entity (*spawn_ui)(ecs*, entity), entity id, entity player) {
     entity canvas = zox_get_value(player, CanvasLink)
     find_child_with_id(canvas, id, ui)
     return player_toggle_ui(world, player, ui, spawn_ui);

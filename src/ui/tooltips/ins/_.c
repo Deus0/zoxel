@@ -1,10 +1,11 @@
 extern entity spawn_label_background(ecs *world, entity prefab, entity parent, entity canvas, int2 position, float2 anchor, byte2 padding, const char* text, byte font_size, byte alignment, byte layer, int2 parent_position, int2 parent_size, color fill, color fillo, color font_fill, color font_fillo, byte render_disabled);
 
+color tooltip_fill = color_white;
+color tooltip_fillo = color_black;
+color tooltip_font_fill = color_black;
+color tooltip_font_fillo = color_white;
+
 entity spawn_tooltip(ecs *world, entity prefab, entity canvas) {
-    color tooltip_fill = color_white;
-    color tooltip_fillo = color_black;
-    color tooltip_font_fill = color_black; // (color) { 76, 66, 133, 255 };
-    color tooltip_font_fillo = color_white; // (color) { 122, 122, 122, 255 };
     // Sizing
     byte font_size = 5 * ui_scale;
     byte2 padding = (byte2) { 3 * ui_scale, 2  * ui_scale };

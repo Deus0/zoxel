@@ -30,21 +30,9 @@ void zoxel_on_spawn_prefabs(ecs* world) {
 
 
 void zoxel_set_debug() {
-    // zox_profile_system_none
-    // zox_profile_system_grassy_plains
-    // zox_profile_system_vox_generation
-    // zox_profile_system_chunk_builder_c
-    // zox_profile_system_npc_spawns
-    // zox_profile_system_chunk3_builder
-    // zox_profile_light_propogate
     profiler_state = zox_profile_light_propogate;
     profiler_logs = 0;
-    // disable_block_voxes = 1;
-    // debug
     disable_block_vox_generation = 0;
-    // test_actions_skills = 0;
-    // test_items_blocks = 1;
-    // test_all_skills = 1;
 }
 
 void zoxel_settings_npcs() {
@@ -82,38 +70,52 @@ void zoxel_settings_physics() {
 }
 
 void zoxel_settings_uis() {
-    // Windows
-    window_fill = color_grayscale_a(211, 255);
-    window_outline = color_grayscale_a(0, window_fill.a);
+    byte fill_alpha = 68;
+    byte text_alpha = 211;
     // Headers
-    header_fill = color_grayscale_a(188, 255);
-    header_outline = color_grayscale_a(0, header_fill.a);
-    header_font_fill = color_grayscale_a(255, header_fill.a);
-    header_font_outline = color_grayscale_a(0, header_fill.a);
+    header_fill = color_grayscale_a(188, fill_alpha);
+    header_outline = color_grayscale_a(0, fill_alpha);
+    header_font_fill = color_grayscale_a(255, text_alpha);
+    header_font_outline = color_grayscale_a(0, text_alpha);
     header_font_thickness = 1;
     header_fonto_thickness = 1;
+    // Windows - Bodys
+    window_fill = color_grayscale_a(211, fill_alpha);
+    window_outline = color_grayscale_a(0, fill_alpha);
+    // Add Color
+    header_fill.r += 10;
+    header_fill.g -= 10;
+    header_fill.b -= 10;
+    window_fill.r - 10;
+    window_fill.g += 10;
+    window_fill.b += 10;
+    // Frames
+    frame_fill = color_grayscale_a(188, fill_alpha);
+    frame_outline = color_grayscale_a(0, fill_alpha);
     // Buttons
-    button_fill = color_grayscale_a(188, 255);
-    button_outline = color_grayscale_a(0, button_fill.a);
-    button_font_fill = color_grayscale_a(255, button_fill.a);
-    button_font_outline = color_grayscale_a(0, button_fill.a);
+    button_fill = color_grayscale_a(188, fill_alpha);
+    button_outline = color_grayscale_a(0, fill_alpha);
+    button_font_fill = color_grayscale_a(255, text_alpha);
+    button_font_outline = color_grayscale_a(0, text_alpha);
     button_font_thickness_fill = 2;
     button_font_thickness_outline = 2;
     // Buttons (Close)
-    close_button_fill = color_grayscale_a(233, button_fill.a);;
+    close_button_fill = color_grayscale_a(233, fill_alpha);;
     close_button_outline = button_outline;
-    close_button_font_fill = color_grayscale_a(0, close_button_fill.a);
-    close_button_font_outline = color_grayscale_a(0, close_button_fill.a);
+    close_button_font_fill = color_grayscale_a(0, text_alpha);
+    close_button_font_outline = color_grayscale_a(0, text_alpha);
     close_button_font_thickness = 2;
     close_button_fonto_thickness = 0;
-    default_fill_color = color_grayscale_a(2, 248);
+    default_fill_color = color_grayscale_a(2, fill_alpha);
     default_outline_color = header_outline;
     // fades
     is_start_game_delays = 1;
     is_end_game_delays = 1;
-    // pause
-    // pause_fade_alpha = 0.9f; // 0.72f;
-    // pause_fade_time = 0.42f;
+    // Tooltips
+    tooltip_fill = window_fill;
+    tooltip_fillo = window_outline;
+    tooltip_font_fill = button_font_fill;
+    tooltip_font_fillo = window_outline;
 }
 
 void zoxel_debug_keys() {
@@ -147,12 +149,6 @@ void zoxel_debug_keys() {
     // add_hook_key_down(key_down_dbg_chunk);
 }
 
-void zox_set_terrain_settings() {
-    render_distance_y = 4;
-    // terrain_mode = terrain_mode_flatlands;
-}
-
-
 void initialize_zoxel_settings(ecs* world) {
     float viewport_downscale = 1;
     viewport_scale = 1 / viewport_downscale;
@@ -180,8 +176,7 @@ void initialize_zoxel_settings(ecs* world) {
     // headless = 0;
     // nosounds = 0;
     zoxel_set_debug();
-    // world
-    zox_set_terrain_settings();
+    render_distance_y = 4;
     // art
     grayscale_mode = 0; // todo: make a grayscale biome
     // game

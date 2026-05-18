@@ -96,8 +96,7 @@ void trigger_canvas_half_fade(ecs *world, entity canvas, float time_length, floa
         zox_set(e, RenderDisabled, { 0 });
         zox_set(e, AnimateSourceFloat, { 0 });
         zox_set(e, AnimateTargetFloat, { alpha });
-    }
-    else {
+    } else {
         zox_set(e, AnimateSourceFloat, { alpha });
         zox_set(e, AnimateTargetFloat, { 0 });
     }

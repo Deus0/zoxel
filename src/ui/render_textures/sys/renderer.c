@@ -27,8 +27,8 @@ zox_sys2(RenderTextureRenderSystem) {
         if (layer->value != renderer_layer || rdisabled->value) {
             continue;
         }
-        entity rcamera = zox_get_root_canvas_camera(world, e);
-        if (rcamera != renderer_camera) {
+        entity root_camera = zox_get_root_canvas_camera(world, e);
+        if (root_camera != renderer_camera) {
             continue;
         }
         if (!mesh->value.x || !mesh->value.y || !uvs->value || !texture->value) {

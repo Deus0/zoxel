@@ -26,7 +26,7 @@ entity spawn_pickup_block(ecs *world, float3 position, entity block) {
     }
     entity e;
     if (zox_valid(texture)) {
-        e = spawn_cube_textured(world, prefab_pickup, position, texture, 0.125f);
+        e = spawn_cube_textured(world, prefab_pickup, texture, position, 0.125f);
     } else {
         e = spawn_cube(world, prefab_pickup_basic, position, 0.125f);
     }

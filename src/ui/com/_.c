@@ -12,29 +12,6 @@ zoxc_int2(ElementMargins);
 zoxc_color(ElementColor);
 // Canvas
 zox_tag(CanvasOverlay);
-// Selecting
-zox_tag(Selectable);
-zoxc_byte(SelectState);
-zox_tag(ElementRaycaster);
-// Clicking
-zox_tag(Clickable);
-zox_tag(ClickMakeSound);
-zoxc_byte(ClickState);
-zoxc_entity(Clicker);
-zoxc_entity(ClickingEntity);
-zoxc_byte(ClickDisabled);
-// Dragging
-zox_tag(Dragable);
-zoxc_int2(DraggingDelta);
-zoxc_entity(DraggerLink);
-zoxc_entity(DraggedLink);
-zoxc_byte(DraggableState);
-// Active
-zoxc_byte(ActiveState);
-zoxc_state(ActiveStateDirty);
-zoxc_color(ActiveColor);
-zox_tag(ActiveSingle);
-zoxc_entity(ActiveLink);    // parents active link
 // Navigating
 zox_tag(NavigationWindow);
 zox_tag(NavigationElement);
@@ -47,9 +24,6 @@ zoxc_byte(FontSize);
 zoxc_byte(ElementFontSize);
 // Misc
 zox_tag(MouseElement);
-#include "click_event.c"
-#include "slide_event.c"
-#include "toggle_event.c"
 
 void zox_define_components_elements(ecs *world) {
     // Core Elements
@@ -65,37 +39,11 @@ void zox_define_components_elements(ecs *world) {
     zoxd_child(ElementHolder);
     zoxd_int2(ElementMargins);
     zoxd_color(ElementColor);
-    // Click
-    zoxd_tag(Clickable);
-    zoxd_tag(ClickMakeSound);
-    zoxd_byte(ClickState);
-    zoxd_entity(ClickingEntity);
-    zoxd_entity(Clicker);
-    zoxd(ClickEvent);
-    zoxd_byte(ClickDisabled);
-    // Selecting
-    zoxd_tag(Selectable);
-    zoxd_byte(SelectState);
-    zoxd_tag(ElementRaycaster);
-    // Active
-    zoxd_byte(ActiveState);
-    zoxd_state(ActiveStateDirty);
-    zoxd_color(ActiveColor);
-    zoxd_entity(ActiveLink);
-    zoxd_tag(ActiveSingle);
-    // Slides
-    zoxd(SlideEvent);
     // Navigation
     zoxd_tag(NavigationWindow);
     zoxd_tag(NavigationElement);
     zoxd_double(NavigatorTimer);
     zoxd_byte(NavigatorState);
-    // Dragging
-    zoxd_tag(Dragable);
-    zoxd_int2(DraggingDelta);
-    zoxd_entity(DraggerLink);
-    zoxd_entity(DraggedLink);
-    zoxd_byte(DraggableState);
     // Misc
     zoxd_byte(FontSize);
     zoxd_tag(MouseElement);

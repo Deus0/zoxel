@@ -1,5 +1,6 @@
 // TODO: HeadBoneLink?
 zox_sys2(HeadAnimateSystem) {
+    float2 headbob_range = (float2) { 0.004f, 0.006f };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkeletonDirty);
@@ -20,7 +21,7 @@ zox_sys2(HeadAnimateSystem) {
         head->value = head_bone;
         zox_set_unique_name(head_bone, "bone_head");
         zox_geter_value(head_bone, LocalPosition3D, float3, position);
-        float3 delta = (float3) { 0, randf_range(0.01f, 0.02f), 0 };
+        float3 delta = (float3) { 0, randf_range(headbob_range.x, headbob_range.y), 0 };
         float3 start_position = float3_add(position, delta);
         zox_add_tag(head_bone, HeadBone);
         zox_add_tag(head_bone, OscillatePosition3D);

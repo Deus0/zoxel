@@ -30,16 +30,11 @@ zox_sys2(MouseElementSystem) {
         }
         zox_geter_value(canvas, LayoutSize, int2, canvas_size);
         zox_geter_value_non_const(zevice->value, ZevicePointerPosition, int2, output);
-        // int2 pre = output;
         output.x -= anchor->value.x * canvas_size.x;
         output.y -= anchor->value.y * canvas_size.y;
         if (!int2_equals(position->value, output)) {
             position->value = output;
             dirty->value = zox_dirty_trigger;
-            /*zox_log("[%s] mouse at [%ix%i] => [%ix%i]",
-                zox_get_name(it->entities[i]),
-                pre.x, pre.y,
-                output.x, output.y);*/
         }
     }
 } zox_sys_end(MouseElementSystem);

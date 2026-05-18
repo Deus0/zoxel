@@ -1,3 +1,4 @@
+// NOTE: Triggers texture generation when the layout size changes
 zox_sys2(TextureSizeGenerateSystem) {
     zox_sys_begin();
     zox_sys_in(LayoutSizeDirty);

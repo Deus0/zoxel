@@ -100,6 +100,9 @@ entity spawn_datagrid_slots(ecs* world, entity prefab, entity prefab_frame, enti
                 break;
             }
         }
+        if (array_index >= slots_length) {
+            break;
+        }
     }
     // add to characters element links and link to character
     if (zox_has(character, ElementLinks)) {

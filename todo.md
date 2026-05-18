@@ -1,48 +1,48 @@
 ### todo ###
-# flatpak run org.kde.kate
-
-- terminal ui
-	
-- Right click to split items
-- Refactor PartLinks
-- Refactor EquipLinks
-- Vitality should increase health stat
-- Add base stat "Physical Damage" that punch uses, strength should increase this
-- Refactor Model Spawning out of block_vox_meta functions
+# Body #
+- Refactor PartLinks + EquipLinks
 - Raycast Range should be Skill Range
 	- Change when skill is equiped - using actions
-- Write a test function to spawn a world item to pickup
+- Footstep Sounds when walking around
+- Head bob to move faster when walking
+- Add Neck to head + chest blueprints
+	- cylinder shape at bottom+top
+- Designate a hand bone
+	- Spawn Held Item onto handbone
+# Huds #
+- Seperate Pause UI from Game Menu
+- Pause UI to use blacked out screen, game ui to just use blur
 - Sometimes namelabel didnt load on npcs
-- test key for keyboard navigation mode
-- Skills UI - harder refactor
-    - Needs to account for UI Slot Indexes
-    - Create a component that stores entities array on character, this can be used for the UIs itself (when ui is closed/opened)
-    - Or we create a UI child for character, basically just keeps UI references, slots to items themselves
 - Pause ui toggle not showing on spawn taskbar + pause
-- Remove User Macros and Speghetti
-- Remove structs from UI prefab use
-	-x spawn_uis (previously spawn_element)
-	-x spawn_icon
-	- spawn_text to spawn_text_new
-	- spawn_frame
-	- spawn_button
-	- spawn_window
-	- Delete any old structs
-	- Remove Duplicate UI prefabs
 - Give game uis the realm colors so feels different to the main menu
+### UI ###
+- Remove Duplicate UI prefabs
+- Remove structs from UI prefab use
+- Refactor Header Spawning to system
+# Stats #
 - Add Stats panel to the taskbar and give header / window
-
-Refactoring:
-- Make user data ChildOf relationships
-	- Remake Character Meta to be actual Characters
-	- Minimizes prefab instantiate code
+# Items #
+- Right click to split items
+- Write a test function to spawn a world item to pickup
+# Editor #
+- Terminal UI
+- test key for keyboard navigation mode
+# Stats #
+- Vitality should increase health stat
+- Add base stat "Physical Damage" that punch uses, strength should increase this
+# Blocks #
+- Refactor Model Spawning out of block_vox_meta functions
+- block damage overlay effect
+- seperate block spawning more from the realm,break it into biomes and modules
+- remove use of global voxel indexes and use BlockLinks from realm
+# Refactoring #
 - Refactor texture generation to blueprints
 - upgrade the texture for the item frames
 - Terrain loading and finishing should be overseen by GameState and not Player events
 - Move character/block name generation to system under new module Names
 - Remove any random delays, and make the state changes timed instead
-
 - Add a tooltip that just stores a string - no need for event every time
+# Pets #
 - Spawn mr penguin on screen
 - Give the ability to change his hat
 - Make a penguin module
@@ -52,15 +52,12 @@ Refactoring:
 	- just reuse their prefabs and add tags
 - use functions like spawn_window, or spawn_user_grid inside those uis
 - Spawn label top left above stats - show block / npc selected
-- Refactor Header Spawning to system
 - Generate a mouse texture - arrow
 - Refactor Texture Generation into Nodegraphs
 - Maximize a window - button on map header
 - Resize window grabber at corner
 - move sand/wood/stone into biome blocks
-
 # Unsorted #
-
 - Vox Frames - different vox models we swap between
 - Spawn the test render texture in a window container
 - Use a HighlightColor - instead of just adjusting brightness
@@ -73,19 +70,12 @@ Refactoring:
 	- Spawn render texture
 	- Spawn render camera facing this
 	- Spawn characters mesh object (mesh clone)
-
 - Make layout positions recursive too - so it updates in a single frame
 - Make all ui shaders use transforms like render texture does
 	- need to refactor the shaders and element render system
-
 - Handle player death by removing camera on death state
 - F6 key to toggle bone render debugs
-- Head bob to move faster when walking
-- Footstep Sounds when walking around
-
-- Add Neck to head + chest blueprints
-	- cylinder shape at bottom+top
-- NPC to hit back when combating me
+-x NPC to hit back when combating me
 - Spawn 2 Thighs onto character, left + right
 - Spawn Shoulders Body Parts
 - Spawn Biceps Body Parts
@@ -111,13 +101,11 @@ Refactoring:
 - Slider UI to snap on integer points - when integer - on release
 - Fix music importer
 - Fix import workflow - make import call
-
 Position Debugger:
 - Debug Component for Position Curve (float3 curve)
 - Position Y chart - showing fluctuations - use to stabilize physics
 - Position atm shakes when grounded
 - If unstuck disabled, it will fall through ground when loading
-
 Editor Delayed:
 - TextureData UI in Inspector Label
 - Scrollbar horizontal
@@ -140,14 +128,11 @@ Editor Delayed:
 	- Block, Item, Stat, Etc
 	- Just add a list of tags for now to it
 - Slider UI - visually show points to with little up arrows
-
 Bugs:
 - Decor (SDL window edge) missing on khadas - try compile sdl together?
 	- test sdl window
 	- test wayland window
 - fix text label size when resizing - button size
-	
-
 Refactors:
 - refactor models to just spawn one vox model and multiple render objects as children
 - make shape type and centering part of painting as well - use fill system just with diff byte for checks
@@ -161,7 +146,6 @@ Refactors:
 - settings data into entities
 - remove sdl_image and create a seperate image import
 - remove sdl_mixer and use another simpler audio lib
-
 Engine [Builds]:
 - windows build in zelder, make a bsh/windows.sh
 - make builder:
@@ -169,14 +153,12 @@ Engine [Builds]:
 	- push to itch io
 - move import modules into a new module - which will only be included when building zengine workflow (with another define)
 - prefabs should spawn children too
-
 Module [Nodes]:
 - create generic variables for our nodes
 - our head blueprint needs a l_eye_size r_eye_size
 - set these variables on process
 - for eye size, its a paint sphere, we can hook a input node up to the fill node
-
-Module [Bodys]:
+# Bodys 2 #
 - disable pickup part if it has attached parts
 - if pickup part - refresh body model
 - handle color combos by making head a different color
@@ -188,52 +170,31 @@ Module [Bodys]:
 - Body Part Tooltip
 	- show PartLinks
 	- show AttachLinks
-
-Module [Biomes]:
+# Biomes #
 - Generate unique color per biome
 	- base on prior biomes so it stands out too
 	- primary color dirt - others based off this
 - Refactor more blocks into per biome
-
 Module [Terrain/Regions]:
 - region stream position / detect system
 - spawn / destroy regions
 - region lods
 - region town/mountain links
-
-Module [Blocks]:
-- when hit block - create entity for block health
-- block damage overlay effect
-
-Module [Tools]:
+# Tools #
 - terminal log text list
 - chunk debugger - show lods of chunks etc
 - character debugger - show number per tunk2D of npcs
-
-Module [Sounds]:
-- fix music file not importing anymore
-
-Module [UI]:
-- remove use of list window / list ui, just spawn elements into a listview and have system handle the rest
-
-Module [Blocks]:
-- seperate block spawning more from the realm,break it into biomes and modules
-- remove use of global voxel indexes and use BlockLinks from realm
-
-Module [Chunks]:
+# Chunks #
 - first chunk / tunk to move from controllers to stream begin systems
 - seperate Chunk into Chunk + Render
 - after chunk3 refactor, use a render per lod, instead of regenerating everytime
 - add local chunk lookups to make the terrain chunks be more future proof to dynamic changes in the blocks list
-
 Module [Realms]: (+ games)
 - fix end game fade out, really bad atm
 - remove all realm macros and just use state in their own systems (RealmItemsSpawnSystem, ClearSystem, etc) - wait clear can be a macro tho
-
-Module [Terrain/Tunks]:
+# Tunks #
   - tunks to handle increasing resolution when needed - using the depth update
   - refactor: towns tunk and chunk3 systems into its own module, self contained addons
-
 - load ui for a save game
 	- window with confirm
 	- shows play time
@@ -248,12 +209,11 @@ Module [Terrain/Tunks]:
 - simple print blueprint function that logs a blueprint nodes
 - spawn chest and head items and add to body ui
 - spawn arm bones
-- spawn held item into hand bone (use HandLink and SecondaryHandLink)
 - map UI - show tunk heightmap for now
 - map icons - and character ones - show player arrow overlay
 - block damages, heal, and destroy feature
 - drop item button
-	
+# flatpak run org.kde.kate
 # Delayed Post Release #
 - Make Glut Build work
 	- Glut should spawn a window
@@ -271,8 +231,7 @@ tools (this will help fix bugs)
 Module [Rendering]:
 - test vulkan build
 - push voxel data and generate mesh on gpu
-
-Done:
+### Done ###
 -x build linux
 -x build windows
 -x ui off on khadas
@@ -391,3 +350,12 @@ Done:
 -x Slimes not adapting to block vox depths
 -o fix collisions in lesser resolution terrain chunks
 	-o test by forcing all terrain chunks at a sub res for easier testing
+-x Skills UI - harder refactor
+    -x Needs to account for UI Slot Indexes
+    -x Create a component that stores entities array on character, this can be used for the UIs itself (when ui is closed/opened)
+    -x Or we create a UI child for character, basically just keeps UI references, slots to items themselves
+-x Spawn Held Item
+-x when hit block - create entity for block health
+-x Make user data ChildOf relationships
+-x Remake Character Meta to be actual Characters
+-x remove use of list window / list ui, just spawn elements into a listview and have system handle the rest

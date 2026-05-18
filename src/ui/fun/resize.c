@@ -1,5 +1,6 @@
 // based off 1920x1080
 const float test_screen_height = 1080;
+
 void fix_for_screen_size(int2 *pixel_size, int2 screen_size) {
     float max_dimension = int2_min(screen_size);
     pixel_size->x = (int) ((pixel_size->x / test_screen_height) * max_dimension);

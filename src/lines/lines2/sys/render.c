@@ -1,6 +1,4 @@
 // cache camera?? todo: refactor!
-// extern entity zox_get_root_canvas_camera(ecs*, entity);
-
 void line2D_render_iteration(iter *it, byte is_element_line) {
     zox_gpu_material(line2D_material);
     zox_gpu_enable_attribute(line2D_position_location);
@@ -25,14 +23,12 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
         zox_sys_i(LineData2D, lineData2D);
         zox_sys_i(LineThickness, lineThickness);
         zox_sys_i(Color, line_color);
-
         if (is_element_line) {
-
             if (layer2D->value != renderer_layer) {
                 continue; // render per layer
             }
-
-            if (zox_get_root_canvas_camera(world, e) != renderer_camera) {
+            entity root_camera = zox_get_root_canvas_camera(world, e);
+            if (root_camera != renderer_camera) {
                 continue;
             }
         }

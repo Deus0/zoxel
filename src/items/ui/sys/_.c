@@ -13,7 +13,7 @@ void define_systems_items_ui(ecs *world) {
     zox_system(
         ItemIconTooltipSystem,
         EcsOnUpdate,
-        [in] elements.SelectState,
+        [in] interaction.SelectState,
         [in] u.i.containers.DataLink,
         [none] elements2.Icon
     );

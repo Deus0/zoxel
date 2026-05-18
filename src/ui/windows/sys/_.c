@@ -23,6 +23,6 @@ void define_systems_windows(ecs* world) {
     zox_system(
         WindowElementClickedSystem,
         EcsOnUpdate,
-        [in] elements.ClickState
+        [in] interaction.ClickState
     );
 }

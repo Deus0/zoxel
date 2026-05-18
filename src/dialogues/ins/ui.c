@@ -1,8 +1,8 @@
 // TODO: Spawn basic Window + Speech Text + Confirm Button
 entity spawn_dialogue_ui(ecs* world, entity prefab, entity canvas, entity character, entity target) {
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-    int2 window_size = (int2) { 940, 140 };
-    float2 position_anchor = (float2) { 0.5f, 0.78f };
+    int2 window_size = (int2) { 940, 200 };
+    float2 position_anchor = (float2) { 0.5f, 0.74f };
     const char* header_text = zox_valid(target) ? zox_gett_value(target, ZoxName) : zox_gett_value(character, ZoxName);    // "Dialogue";
     byte header_font_size = 7 * ui_scale;
     byte2 header_padding = byte2_single(4 * ui_scale);
@@ -44,7 +44,7 @@ entity spawn_dialogue_ui(ecs* world, entity prefab, entity canvas, entity charac
         int2 position = int2_zero;
         byte font_size = 6 * ui_scale;
         byte2 padding = (byte2) { 4 * ui_scale, 2 * ui_scale };
-        entity e2 = spawn_text_new(world, prefab, parent, position, position_anchor, font_size, alignment, padding, text, window_outline, window_outline);
+        entity e2 = spawn_text_new(world, prefab, parent, position, position_anchor, font_size, alignment, padding, text, button_font_fill, button_font_outline);
         zox_set(e, DialogueTextLink, { e2 });
     }
     // add confirm button at bottom right
@@ -60,8 +60,8 @@ entity spawn_dialogue_ui(ecs* world, entity prefab, entity canvas, entity charac
             .font_resolution = font_size,
             .font_thickness = 8,
             .font_outline_thickness = 1,
-            .font_fill_color = window_outline,
-            .font_outline_color = window_outline,
+            .font_fill_color = button_font_fill,
+            .font_outline_color = button_font_outline,
             .margins = window_data.header_padding,
         };
         ElementSpawnData button_data = (ElementSpawnData) {
