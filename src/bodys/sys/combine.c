@@ -33,26 +33,22 @@ zox_sys2(BodyCombineSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BodyDirty);
-    zox_sys_in(PartLinks);
     zox_sys_out(CombineList);
     zox_sys_out(CombinePositions);
     zox_sys_out(CombineVox);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(BodyDirty, state);
-        zox_sys_i(PartLinks, parts);
         zox_sys_o(CombineList, voxes);
         zox_sys_o(CombinePositions, positions);
         zox_sys_o(CombineVox, output);
         if (state->value != zox_dirty_active) {
             continue;
         }
+        entity core_part = zox_get_child_by_id(world, e, zox_id(BodyPart));
         entity_array_d* flat_parts = create_entity_array_d(1);
-        for (int j = 0; j < parts->length; j++) {
-            entity part = parts->value[j];
-            add_to_entity_array_d(flat_parts, part);
-
-            fetch_parts_recursive(world, flat_parts, part);
-        }
+        add_to_entity_array_d(flat_parts, core_part);
+        fetch_parts_recursive(world, flat_parts, core_part);
         // Clear combine data
         resize_CombineList(voxes, 0);
         resize_CombinePositions(positions, 0);

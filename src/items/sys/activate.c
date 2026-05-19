@@ -3,14 +3,14 @@ zox_sys2(ItemActivateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Activate);
-    zox_sys_in(UserLink);
+    // zox_sys_in(UserLink);
     zox_sys_in(BlockLink);
     zox_sys_out(Quantity);
     zox_sys_out(QuantityDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Activate, activate);
-        zox_sys_i(UserLink, user_link);
+        // zox_sys_i(UserLink, user_link);
         zox_sys_i(BlockLink, block_link);
         zox_sys_o(Quantity, quantity);
         zox_sys_o(QuantityDirty, dirty);
@@ -20,7 +20,8 @@ zox_sys2(ItemActivateSystem) {
         if (!quantity->value) {
             continue;
         }
-        entity user = user_link->value;
+        entity user = zox_get_parent(world, e);
+        // entity user = user_link->value;
         zox_geter(user, RaycastVoxelData, raycast_data);
         zox_geter(user, RaycastRange, range);
         byte hit_block = raycast_data->result == rayhit_terrain;

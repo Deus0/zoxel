@@ -11,11 +11,10 @@ void define_systems_items(ecs* world) {
     zox_system_1(
         ItemActivateSystem,
         EcsOnUpdate,
-        [in] users.Activate,
-        [in] users.UserLink,
+        [in] timers.Activate,
         [in] blocks.BlockLink,
-        [out] users.Quantity,
-        [out] users.QuantityDirty,
+        [out] items.Quantity,
+        [out] items.QuantityDirty,
         [none] ItemBlock
     );
     zox_system_1(
@@ -54,8 +53,8 @@ void define_systems_items(ecs* world) {
     zox_system(
         ItemQuantityDeathSystem,
         EcsOnUpdate,
-        [in] users.QuantityDirty,
-        [in] users.Quantity,
+        [in] items.QuantityDirty,
+        [in] items.Quantity,
         [none] items.Item
     );
 }

@@ -19,9 +19,7 @@ entity spawn_prefab_scrollbar_handle(ecs *world, entity p) {
     zox_prefab_set(e, DraggerLink, { 0 });
     zox_prefab_set(e, DraggedLink, { 0 });
     zox_prefab_set(e, LayoutConstraints, { int4_zero });
-
     zox_add_tag(e, FixToLayout);
-    zox_set(e, Color, { scrollbar_front_color });
-
+    // zox_set(e, Color, { scrollbar_front_color });
     return e;
 }

@@ -29,5 +29,4 @@ void define_components_windows(ecs* world) {
     // Move to Windows
     zoxd_tag(Header);
     zoxd_tag(CloseButton);
-    // zoxd_tag(Body);
 }

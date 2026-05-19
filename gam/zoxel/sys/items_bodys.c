@@ -32,7 +32,7 @@ zox_sys2(BodysRealmSpawnSystem) {
             byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
             lint mseed = 888 * (i * models->length);
             entity mblueprint = spawn_blueprint_chest(world, bsize);
-            entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "chest", mseed, tsize, zox_slot_core);
+            entity2 spawn = spawn_realm_body_part(world, variants, mdepth, msize, mblueprint, "chest", mseed, tsize, zox_slot_core);
             add_to_NodegraphLinks(graphs, mblueprint);
             add_to_ItemLinks(items, spawn.x);
             add_to_ModelLinks(models, spawn.y);
@@ -44,7 +44,7 @@ zox_sys2(BodysRealmSpawnSystem) {
             byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
             lint mseed = 888 * (i * models->length);
             entity mblueprint = spawn_blueprint_head(world, bsize);
-            entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "head", mseed, tsize, zox_slot_head);
+            entity2 spawn = spawn_realm_body_part(world, variants, mdepth, msize, mblueprint, "head", mseed, tsize, zox_slot_head);
             add_to_NodegraphLinks(graphs, mblueprint);
             add_to_ItemLinks(items, spawn.x);
             add_to_ModelLinks(models, spawn.y);
@@ -56,7 +56,7 @@ zox_sys2(BodysRealmSpawnSystem) {
             byte3 msize = byte3_scale3f(byte3_single(vlength), bscale);
             lint mseed = 888 * (i * models->length);
             entity mblueprint = spawn_blueprint_hips(world, bsize);
-            entity2 spawn = spawn_body_model_item(world, variants, mdepth, msize, mblueprint, "hips", mseed, tsize, zox_slot_hips);
+            entity2 spawn = spawn_realm_body_part(world, variants, mdepth, msize, mblueprint, "hips", mseed, tsize, zox_slot_hips);
             add_to_NodegraphLinks(graphs, mblueprint);
             add_to_ItemLinks(items, spawn.x);
             add_to_ModelLinks(models, spawn.y);

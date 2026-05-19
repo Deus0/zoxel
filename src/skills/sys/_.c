@@ -14,23 +14,10 @@ void define_systems_skills(ecs *world) {
     zox_system(
         SkillToggleSystem,
         EcsOnUpdate,
-        [in] users.Activate,
+        [in] timers.Activate,
         [out] skills.SkillActive,
         [none] Aura
     );
-    /*zox_system(
-        SkillActivateSystem,
-        EcsOnUpdate,
-        [in] users.Activate,
-        [out] skills.SkillActive,
-        [none] skills.Melee
-    );
-    zox_system(
-        SkillWarmupSystem,
-        EcsOnUpdate,
-        [in] users.WarmupState,
-        [out] skills.SkillActive
-    );*/
     // TODO: DotLinks just parent them instead
     zox_filter(
         characters,
@@ -57,9 +44,9 @@ void define_systems_skills(ecs *world) {
     zox_system(
         DotsSystem,
         EcsOnUpdate,
-        [in] users.SpawnerLink,
-        [in] SkillDamage,
-        [none] Poison
+        [in] skills.SpawnerLink,
+        [in] skills.SkillDamage,
+        [none] skills.Poison
     );
     // TODO: split into sound, resource and damage systems
     zox_system_1(
@@ -70,7 +57,7 @@ void define_systems_skills(ecs *world) {
         [in] skills.SkillRange,
         [in] skills.SkillResourceLink,
         [in] skills.SkillCost,
-        [in] users.Activate,
+        [in] timers.Activate,
         [none] skills.Melee
     );
     zox_system_1(
@@ -85,7 +72,7 @@ void define_systems_skills(ecs *world) {
     zox_system_1(
         AuraParticlesSystem,
         zoxp_mainthread,
-        [in] users.Activate,
+        [in] timers.Activate,
         [in] skills.SkillActive,
         [in] skills.SkillRange,
         [in] colorz.Color,
@@ -95,7 +82,7 @@ void define_systems_skills(ecs *world) {
     zox_system_1(
         AuraSoundSystem,
         zoxp_mainthread,
-        [in] users.Activate,
+        [in] timers.Activate,
         [none] skills.Aura
     );
 }

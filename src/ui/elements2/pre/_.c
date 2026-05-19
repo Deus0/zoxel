@@ -1,13 +1,11 @@
-// Fronts
-#include "handle.c"
-#include "elementbar2D_front.c"
-#include "icon.c"
-// Elements
 #include "label.c"
 #include "label_background.c"
 #include "button.c"
+#include "icon.c"
 #include "frame.c"
+#include "handle.c"
 #include "slider.c"
+#include "elementbar2D_front.c"
 #include "elementbar2D.c"
 #include "scrollbar_handle.c"
 #include "scrollbar.c"
@@ -46,7 +44,7 @@ void spawn_prefabs_elements2(ecs *world) {
     {
         prefab_frame_selectable = zox_prefab_from_parent(world, prefab_frame);
         zox_prefab_set(prefab_frame_selectable, OutlineColor, { default_outline_color_frame });
-        prefab_add_active_state(world, prefab_frame_selectable, color_purple);
+        prefab_add_active_state(world, prefab_frame_selectable, active_outline);
     }
     // scrollbars
     prefab_scrollbar = spawn_prefab_scrollbar(world, prefab_element_textured);

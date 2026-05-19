@@ -1,6 +1,8 @@
 ### todo ###
 # Body #
-- Refactor PartLinks + EquipLinks
+- Create Slots for Body / Equip
+- Fix Crafting and use Slots
+- Remove all spawn_window_users's
 - Raycast Range should be Skill Range
 	- Change when skill is equiped - using actions
 - Footstep Sounds when walking around
@@ -359,3 +361,5 @@ Module [Rendering]:
 -x Make user data ChildOf relationships
 -x Remake Character Meta to be actual Characters
 -x remove use of list window / list ui, just spawn elements into a listview and have system handle the rest
+-x Refactor PartLinks
+-x Refactor EquipLinks

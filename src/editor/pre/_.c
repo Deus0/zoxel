@@ -9,12 +9,9 @@ entity prefab_button_hierarchy;
 entity prefab_game_debug_label;
 
 entity spawn_prefab_button_hierarchy(ecs* world, entity p) {
-
     zox_prefab_child(p);
     zox_prefab_name("button_hierarchy");
-
-    prefab_add_active_state(world, e, color_purple);
-
+    prefab_add_active_state(world, e, active_outline);
     return e;
 }
 

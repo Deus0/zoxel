@@ -102,7 +102,7 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     return e;
 }
 
-entity spawn_window_users_id(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns) {
+/*entity spawn_window_users_id(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns) {
     entity character = data.window.character;
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         zox_log_error("invalid character in spawn icons window.");
@@ -114,4 +114,4 @@ entity spawn_window_users_id(ecs *world, SpawnWindowUsers data, FrameTextureData
     }
     const UserLinks* udata = zox_get_id(character, data.window.user_links_id);
     return spawn_window_users(world, data, window_texture, selected, spawns, udata->value, udata->length);
-}
+}*/

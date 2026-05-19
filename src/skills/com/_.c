@@ -11,6 +11,7 @@ zoxc_float(SkillDamageMax);
 zoxc_float(SkillRange);
 zoxc_float(SkillCost);
 zoxc_entity(SkillResourceLink);
+zoxc_entity(SpawnerLink);
 
 void define_components_skills(ecs* world) {
     zoxd_tag(Skill);
@@ -26,4 +27,5 @@ void define_components_skills(ecs* world) {
     zoxd_float(SkillCost);
     zoxd_byte(SkillActive);
     zoxd_entity(SkillResourceLink);
+    zoxd_entity(SpawnerLink);
 }

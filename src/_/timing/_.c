@@ -7,6 +7,7 @@
 #include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#include "timers/_.c"
 
 zox_begin_module(Timing)
     define_components_timing(world);
@@ -17,8 +18,8 @@ zox_begin_module(Timing)
     // stats
     add_hook_spawn_prefabs(add_system_log_components);
     // add_to_post_update_loop(log_lagging_systems);
-
     define_systems_timing_debug(world);
+    zox_import_module(Timers);
 zox_end_module(Timing)
 
 #endif

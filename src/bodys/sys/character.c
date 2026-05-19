@@ -18,14 +18,13 @@ entity find_slot_type(ecs* world, const entity* items, uint length, byte slot) {
 // TODO: Add Shoulders, hips here
 // TODO: Spawn location of head: Half chest + half head sizes, minus half head size (cornered spawn location)
 // TODO: Calculate bone positions from this
-// Currently adds parts from realm
+// NOTE: Spawns in body parts from Realm
 zox_sys2(CharacterBodySpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
     zox_sys_in(RealmLink);
     zox_sys_out(BodySize);
-    zox_sys_out(PartLinks);
     zox_sys_out(BodyDirty);
     zox_sys_out(BlockScale);
     for (int i = 0; i < it->count; i++) {
@@ -33,7 +32,6 @@ zox_sys2(CharacterBodySpawnSystem) {
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
         zox_sys_o(BodySize, bsize);
-        zox_sys_o(PartLinks, parts);
         zox_sys_o(BodyDirty, dirty);
         zox_sys_o(BlockScale, bscale);
         if (state->value != zox_dirty_active) {
@@ -58,9 +56,22 @@ zox_sys2(CharacterBodySpawnSystem) {
         body_size.y += shead.y;
         byte3 pchest = (byte3) { 0, ships.y, 0 };
         byte3 cpchest = byte3_add(pchest, byte3_half(int3_to_byte3(schest)));
+
+        entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
+        if (!zox_valid(chest_slot) || !zox_has(chest_slot, DataLink)) {
+            zox_logw("No chest slot on character [%s]", zox_get_name(e));
+            continue;
+        }
+
+        // Spawn Chest on character
+        // Then set to body slot link
         entity chest = spawn_user_item_body(world, e, rchest, e, zox_slot_core, pchest, cpchest);
-        add_to_PartLinks(parts, chest);
-        PartLinks chest_parts = (PartLinks) { };
+        zox_muter(chest_slot, DataLink, chest_slotd);
+        chest_slotd->value = chest;
+
+        // TODO: Once we attach chest to this slot, we should spawn sub slots of chest onto the slot
+        // This is the harder part
+
         // zox_log("+ Body Chest %s: s[%ix%ix%i]", zox_get_name(rchest), schest.x, schest.y, schest.z);
         // Head
         if (rhead) {
@@ -71,7 +82,7 @@ zox_sys2(CharacterBodySpawnSystem) {
             };
             byte3 cposition = byte3_add(phead, byte3_half(int3_to_byte3(shead)));
             entity part = spawn_user_item_body(world, e, rhead, chest, zox_slot_head, phead, cposition);
-            add_to_PartLinks(&chest_parts, part);
+            zox_set_parent(world, part, chest);
             // zox_log("+ Spawned Body Head %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(rhead), phead.x, phead.y, phead.z, shead.x, shead.y, shead.z);
         }
         // Hips
@@ -83,10 +94,9 @@ zox_sys2(CharacterBodySpawnSystem) {
             };
             byte3 cposition = byte3_add(phips, byte3_half(int3_to_byte3(ships)));
             entity part = spawn_user_item_body(world, e, rhips, chest, zox_slot_hips, phips, cposition);
-            add_to_PartLinks(&chest_parts, part);
+            zox_set_parent(world, part, chest);
             // zox_log("+ Spawned Body Hips %s: p[%ix%ix%i] - s[%ix%ix%i]", zox_get_name(rhips), phips.x, phips.y, phips.z, ships.x, ships.y, ships.z);
         }
-        zox_set_ptr(chest, PartLinks, chest_parts);
         bsize->value = body_size;
         dirty->value = zox_dirty_trigger;
         byte mdepth = block_vox_depth + 2;

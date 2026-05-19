@@ -42,16 +42,20 @@ entity spawn_prefab_character3_player(ecs *world, entity prefab) {
         zox_prefab_set(e, WanderDirection, { float3_zero });
     }
     // Spawn inventory slots
-    entity inventory = spawn_ui_slots(world, e, 25);
+    entity inventory = spawn_slots(world, e, 25);
     zox_set_unique_name(inventory, "inventory");
     zox_add_tag(inventory, Inventory);
     // Spawn Actionbar slots
-    entity actionbar = spawn_ui_slots(world, e, 10);
+    entity actionbar = spawn_slots(world, e, 10);
     zox_set_unique_name(actionbar, "actionbar");
     zox_add_tag(actionbar, Actionbar);
     // Spawn Skillbook slots
-    entity skillbook = spawn_ui_slots(world, e, 16);
+    entity skillbook = spawn_slots(world, e, 16);
     zox_set_unique_name(skillbook, "skillbook");
     zox_add_tag(skillbook, Skillbook);
+    // Spawn Crafting Slots
+    entity craftspace = spawn_slots(world, e, 10);
+    zox_set_unique_name(craftspace, "craftspace");
+    zox_add_tag(craftspace, Craftspace);
     return e;
 }

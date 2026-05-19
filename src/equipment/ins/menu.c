@@ -1,7 +1,8 @@
 const color default_fill_color_frame_equip = { 63, 43, 33, frame_alpha };
 
 entity spawn_player_menu_equipment(ecs* world, entity player) {
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    return 0;
+    /*zox_geter_value(player, CanvasLink, entity, canvas);
     if (!zox_valid(canvas)) {
         return 0;
     }
@@ -36,5 +37,5 @@ entity spawn_player_menu_equipment(ecs* world, entity player) {
             zox_set(frame.z, ItemLink, { item });
         }
     }
-    return e;
+    return e;*/
 }

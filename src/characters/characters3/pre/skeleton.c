@@ -1,3 +1,4 @@
+// NOTE: The character3 version with a skeleton
 entity spawn_prefab_character3_skeleton(ecs *world, entity prefab) {
     entity e = spawn_prefab_character3(world, prefab, zox_character_type_skeleton);
     zox_make_prefab(e);

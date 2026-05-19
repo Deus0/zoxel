@@ -1,12 +1,10 @@
 // NOTE: entity_array_d* parts = create_entity_array_d(1);
 // NOTE: dispose_entity_array_d(parts);
 void fetch_parts_recursive(ecs *world, entity_array_d* entities, entity e) {
-    if (!zox_has(e, PartLinks)) {
-        return;
-    }
-    zox_geter(e, PartLinks, parts);
-    for (int i = 0; i < parts->length; i++) {
-        entity part = parts->value[i];
+    entity parts[zox_children_capacity];
+    uint parts_length = zox_get_children_by_id(world, e, parts, zox_children_capacity, zox_id(BodyPart));
+    for (uint k = 0; k < parts_length; k++) {
+        entity part = parts[k];
         add_to_entity_array_d(entities, part);
         fetch_parts_recursive(world, entities, part);
     }

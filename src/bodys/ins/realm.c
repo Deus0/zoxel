@@ -1,10 +1,19 @@
+entity spawn_item_body(ecs *world, entity model, entity texture, const char* name) {
+    entity e = spawn_realm_item2(world, prefab_item, name);
+    zox_add_tag(e, BodyItem);
+    zox_set(e, ModelLink, { model });
+    zox_set(e, TextureLink, { texture });
+    zox_add_tag(e, BodyPart);
+    return e;
+}
+
 void delayed_texture_spawn(ecs* world, entity e) {
     if (zox_valid(e)) {
         zox_set(e, GenerateTexture, { zox_dirty_trigger });
     }
 }
 
-entity2 spawn_body_model_item(ecs* world, byte variants, byte mdepth, byte3 size, entity blueprint, const char* name, lint seed, byte2 tsize, byte slot_type) {
+entity2 spawn_realm_body_part(ecs* world, byte variants, byte mdepth, byte3 size, entity blueprint, const char* name, lint seed, byte2 tsize, byte slot_type) {
     zox_make_neww(model_group);
     // zox_set_unique_name(model_group, name);
     zox_add_tag(model_group, BodyModel);

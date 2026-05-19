@@ -1,15 +1,25 @@
-const color default_fill_color_frame_crafting = { 233, 233, 233, frame_alpha };
-
 entity spawn_player_menu_crafting(ecs* world, entity player) {
+     zox_geter_value(player, CanvasLink, entity, canvas);
+     zox_geter_value(player, CharacterLink, entity, character);
+     entity craftspace = zox_get_child_by_id(world, character, zox_id(Craftspace));
+     byte2 cells_size = byte2_single(3);
+     byte label_font_size = 5 * ui_scale;
+     float2 position_anchor = float2_half;
+     int2 position = int2_zero;
+     entity frame_id = zox_id(ItemFrame);
+     entity e = spawn_datagrid_slots(world, prefab_window, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, craftspace, cells_size, "Craft", color_white, color_white, position_anchor, position, frame_id);
+     zox_add_tag(e, MenuCrafting);
+     return e;
+ }
 
+
+/*entity spawn_player_menu_crafting(ecs* world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-
     if (!zox_has(character, CraftLinks)) {
         return 0;
     }
-
     SpawnWindowUsers data = get_default_spawn_window_users_data(
         world,
         prefab_menu_crafting,
@@ -29,23 +39,6 @@ entity spawn_player_menu_crafting(ecs* world, entity player) {
 
     zox_geter(character, CraftLinks, links);
     entity3 spawns[links->length];
-
-    entity e = spawn_window_users_id(world, data, texture, 0, spawns);
-
-    for (int i = 0; i < links->length; i++) {
-        entity item = links->value[i];
-        entity3 frame = spawns[i];
-
-        if (frame.x) {
-            zox_set(frame.x, ItemLink, { item });
-        }
-        if (frame.y) {
-            zox_set(frame.y, ItemLink, { item });
-        }
-        if (frame.z) {
-            zox_set(frame.z, ItemLink, { item });
-        }
-    }
-
-    return e;
+    return 0;
 }
+*/

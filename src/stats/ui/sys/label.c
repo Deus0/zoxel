@@ -25,6 +25,8 @@ zox_sys2(StatIconLabelSystem) {
             zox_geter(e2, StatValueMax, maxx);
             int max = ceil(maxx->value);
             snprintf(result, label_text_capacity, "%i", max);
+        } else if (!val) {
+            result[0] = '\0';
         } else if (zox_has(e2, StatLevel)) {
             snprintf(result, label_text_capacity, "%i", val); // Lvl
         } else {

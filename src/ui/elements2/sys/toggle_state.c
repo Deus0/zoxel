@@ -1,4 +1,4 @@
-// animation system
+// TODO: Use Entity Colors here instead of globals
 zox_sys2(ToggleStateSystem) {
     zox_sys_begin()
     zox_sys_in(ToggleState);
@@ -12,13 +12,11 @@ zox_sys2(ToggleStateSystem) {
         zox_sys_o(OutlineColor, outline);
         zox_sys_o(Brightness, brightness);
         zox_sys_o(GenerateTexture, generate);
-
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-
         brightness->value = state->value ? ui_active_brightness : ui_default_brightness;
-        outline->value = state->value ? color_purple : default_outline_color_frame;
+        outline->value = state->value ? active_outline : button_outline;
         generate->value = zox_dirty_trigger;
     }
 } zox_sys_end(ToggleStateSystem);
