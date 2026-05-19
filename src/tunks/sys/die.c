@@ -11,34 +11,24 @@ zox_sys2(Tunk2DeathSystem) {
         zox_sys_i(Chunk2Position, position);
         // zox_sys_i(RenderDepth, depth);
         zox_sys_i(RenderDistance, distance);
-
         if (!zox_valid(terrain->value) || !zox_has(terrain->value, Chunk2Links)) {
             zox_delete(e)
             continue;
         }
-
-        /*if (depth->value == render_depth_spawning) {
-            continue;
-        }*/
-
         // Pass if loading chunk
         if (distance->value == 255) {
             continue;
         }
-
         // Pass if lod changing
         byte is_kill = distance->value > terrain_lod_far;
         if (!is_kill) {
             continue;
         }
-
         // remove from hash - can i do this better?
         zox_muter(terrain->value, Chunk2Links, chunks);
         // zox_geter(terrain->value, ChunkLinks, chunks);
         int2_hashmap_remove(chunks->value, position->value);
-
         zox_delete(e);
-
         // zox_log("Deleted Tunk2 [%ix%i]", position->value.x, position->value.y);
     }
 } zox_sys_end(Tunk2DeathSystem);

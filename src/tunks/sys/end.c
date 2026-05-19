@@ -8,18 +8,14 @@ zox_sys2(TunkEndSystem) {
         //zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(Chunk3Stack, stack);
-
         if (generate->value != zox_dirty_end) {
             continue;
         }
-
         for (int j = -render_distance_y, k = 0; j <= render_distance_y; j++, k++) {
             entity chunk3 = stack->value[k];
-
             if (!zox_valid(chunk3)) {
                 continue;
             }
-
             zox_set(chunk3, RenderDepthDirty, { zox_dirty_trigger });
         }
     }

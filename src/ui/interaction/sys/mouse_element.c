@@ -16,20 +16,20 @@ zox_sys2(MouseElementSystem) {
         if (!zox_valid(zevice->value)) {
             continue;
         }
+        if (!zox_has(zevice->value, ZevicePointerPosition)) {
+            zox_loge("Pointer Invalid: %s", zox_get_name(zevice->value));
+            continue;
+        }
+        if (zox_getv(zevice->value, ZeviceDisabled)) {
+            continue;
+        }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {
             zox_loge("Invalid Canvas for Layout %s", zox_get_name(e));
             continue;
         }
-        zox_geter_value(zevice->value, DeviceLink, entity, device);
-        if (!zox_valid(device) || zox_gett_value(device, DeviceDisabled)) {
-            continue;
-        }
-        if (!zox_has(zevice->value, ZevicePointerPosition)) {
-            zox_log(" > mouse link invalid, needs pointer position: %s\n", zox_get_name(zevice->value))
-        }
-        zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-        zox_geter_value_non_const(zevice->value, ZevicePointerPosition, int2, output);
+        int2 output = zox_getv(zevice->value, ZevicePointerPosition);
+        int2 canvas_size = zox_getv(canvas, LayoutSize);
         output.x -= anchor->value.x * canvas_size.x;
         output.y -= anchor->value.y * canvas_size.y;
         if (!int2_equals(position->value, output)) {

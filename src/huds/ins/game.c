@@ -49,10 +49,7 @@ entity spawn_in_game_ui(ecs *world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter(player, CharacterLink, character);
     entity e = spawn_menu_game(world, prefab_menu_play, player, character->value);
-#ifndef zoxel_mouse_emulate_touch
-    if (device_mode == zox_device_mode_touchscreen)
-#endif
-    {
+    if (device_mode == zox_device_mode_touchscreen || zox_dbg_touch_with_mouse) {
         spawn_in_game_ui_touch(world, player, canvas);
     }
     return e;

@@ -1,5 +1,5 @@
 zox_sys2(MouseConstrainSystem) {
-    if (disable_mouse_lock) {
+    if (disable_mouse_lock || zox_dbg_touch_with_mouse) {
         return;
     }
     zox_sys_world();

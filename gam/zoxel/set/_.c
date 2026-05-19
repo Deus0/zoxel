@@ -209,13 +209,10 @@ void initialize_zoxel_settings(ecs* world) {
     fog_density = 0.034f;
     // scaling
     terrain_lod_near = 3;
-    // real_chunk_scale = 8.0f; // 4 | 8 | 16 | 32
     terrain_depth = 4;
     game_ui_has_taskbar = 1;
     // zox_debug_id(Block)
     // zox_debug_print_modules();
     // zox_debug_print_systems(world);
     // zox_debug_print_components();
-    // is_log_io = 1;
-    // is_log_sounds = 1;
 }

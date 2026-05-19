@@ -10,14 +10,7 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     // custom cursor
     entity mouse_pointer = 0;
     if (local_mouse) {
-        uint children_capacity = zox_children_capacity;
-        entity children[children_capacity];
-        uint children_length = zox_get_children(world, local_mouse, children, children_capacity);
-        if (children_length) {
-            mouse_pointer = children[0];
-        } else {
-            zox_loge("Mouse has no children.");
-        }
+        mouse_pointer = zox_get_child_by_id(world, local_mouse, zox_id(ZevicePointer));
     }
     // SDL_ShowCursor(SDL_DISABLE);
     entity texture_mouse = string_hashmap_get(files_hashmap_textures, new_string_data("cursor"));

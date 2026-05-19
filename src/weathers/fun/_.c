@@ -1,4 +1,3 @@
-
 // game
 void game_state_weather(ecs *world, entity game, byte old, byte new) {
     (void) game;

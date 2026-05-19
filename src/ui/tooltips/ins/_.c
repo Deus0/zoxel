@@ -20,13 +20,11 @@ entity spawn_tooltip(ecs *world, entity prefab, entity canvas) {
     entity e = spawn_label_background(world, prefab, parent, canvas, position, anchor, padding, "", font_size, alignment, layer, int2_half(parent_size), parent_size, tooltip_fill, tooltip_fillo, tooltip_font_fill,tooltip_font_fillo,  1);
     zox_name("tooltip");
     if (local_mouse) {
-        uint children_capacity = zox_children_capacity;
-        entity children[children_capacity];
-        uint children_length = zox_get_children(world, local_mouse, children, children_capacity);
-        if (children_length) {
-            zox_set(e, ZeviceLink, { children[0] });
+        entity pointer = zox_get_child_by_id(world, local_mouse, zox_id(ZevicePointer));
+        if (zox_valid(pointer)) {
+            zox_set(e, ZeviceLink, { pointer });
         } else {
-            zox_loge("Mouse has no children.");
+            zox_loge("Mouse has no Pointer child");
         }
     }
     return e;

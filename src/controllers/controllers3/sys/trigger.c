@@ -4,6 +4,9 @@
 
 // NOTE: Player Input -> Character Triggers
 zox_sys2(Player3DTriggerSystem) {
+    if (zox_dbg_touch_with_mouse) {
+        return;
+    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLinks);

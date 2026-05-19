@@ -8,7 +8,7 @@ void ZeviceStickEnableSystem(iter *it) {
         if (!zeviceDisabled->value) {
             continue;
         }
-        const byte has_input = zevice_stick_has_input(zeviceStick, joystick_min_cutoff);
+        byte has_input = zevice_stick_has_input(zeviceStick, joystick_min_cutoff);
         if (!has_input) {
             zeviceDisabled->value = 0;
         }

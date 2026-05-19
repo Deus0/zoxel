@@ -22,8 +22,6 @@
 #include "dat/_.c"
 
 // NOTE: these need to be imported before core
-#include "tunks/_.c"
-#include "regions/_.c"
 #include "voxels/_.c"
 #include "block_voxes/_.c"
 
@@ -39,8 +37,6 @@
 zox_begin_module(Terrain)
     define_components_terrain(world);
     // NOTE: these need to be imported before core
-    zox_import_module(Regions);
-    zox_import_module(Tunks);
     define_systems_terrain(world);
     initialize_hook_spawn_blocks();
     set_terrain_render_distance();  // update this

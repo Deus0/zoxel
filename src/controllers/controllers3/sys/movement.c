@@ -54,7 +54,11 @@ zox_sys2(Player3DMoveSystem) {
         byte is_running = 0;
         for (int j = 0; j < devices->length; j++) {
             entity e2 = devices->value[j];
-            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_valid(e2) || !zox_has(e2, DeviceDisabled)) {
+                continue;
+            }
+            byte ddisabled = zox_getv(e2, DeviceDisabled);
+            if (ddisabled) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;
@@ -65,16 +69,16 @@ zox_sys2(Player3DMoveSystem) {
                 if (!zox_valid(e3)) {
                     continue;
                 }
-                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
-                if (disabled) {
+                byte zdisabled = zox_getv(e3, ZeviceDisabled);
+                if (zdisabled) {
                     continue;
                 }
                 zox_geter_value(e3, DeviceButtonType, byte, type);
                 if (zox_has(e3, ZeviceStick)) {
                     if (type == zox_device_stick_left) {
-                        zox_geter(e3, ZeviceStick, zeviceStick)
-                        left_stick.x += zeviceStick->value.x;
-                        left_stick.y += zeviceStick->value.y;
+                        float2 stick = zox_getv(e3, ZeviceStick);
+                        left_stick.x += stick.x;
+                        left_stick.y += stick.y;
                     }
                 }
                 if (zox_has(e3, ZeviceButton)) {
@@ -86,7 +90,7 @@ zox_sys2(Player3DMoveSystem) {
                     }
                 }
             }
-            if (zox_has(e2, Keyboard)) {
+            if (zox_has(e2, Keyboard) && !zox_dbg_touch_with_mouse) {
                 zox_geter(e2, Keyboard, keyboard);
                 if (keyboard->w.is_pressed) left_stick.y += 1;
                 if (keyboard->s.is_pressed) left_stick.y -= 1;
@@ -98,12 +102,6 @@ zox_sys2(Player3DMoveSystem) {
         }
         if (left_stick.x == 0 && left_stick.y == 0) {
             continue;
-        }
-        if (zox_players_reverse_x) {
-            left_stick.x *= -1;
-        }
-        if (zox_players_reverse_y) {
-            left_stick.y *= -1;
         }
         float3 movement = { left_stick.x * player_movement_power.x, 0, left_stick.y * player_movement_power.y };
         if (is_running) {

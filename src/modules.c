@@ -50,8 +50,10 @@
 #include "lights/_.c"
 #include "models/_.c"
 #include "biomes/_.c"
-#include "streaming/_.c"
 
+#include "streaming/_.c"
+#include "regions/_.c"
+#include "tunks/_.c"
 
 #include "particles/_.c"
 #include "weathers/_.c"
@@ -148,7 +150,10 @@ zox_begin_module(Zox)
     zox_import_module(Lights);
     zox_import_module(Models);
     zox_import_module(Biomes);
+
     zox_import_module(Streaming);
+    zox_import_module(Regions);
+    zox_import_module(Tunks);
 
     zox_import_module(Particles);
     zox_import_module(Weathers);

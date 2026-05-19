@@ -1,5 +1,7 @@
 // NOTE: Uses slot index to equip a new action
 zox_sys2(ActiveActionHoldSystem) {
+    float scale = 0.125f / 2.5f;
+    float3 position = (float3) { -0.125f / 4, 0.26f, 0.16f };
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -18,8 +20,6 @@ zox_sys2(ActiveActionHoldSystem) {
             // check if exists
             if (!e2) {
                 // TODO: Spawn based on hand bone
-                float scale = 0.125f / 2;
-                float3 position = (float3) { -scale / 2, 0.26f, scale * 3 };
                 if (dbg_log) {
                     zox_log("Spawning Item [%s]", zox_get_name(aaction->value));
                 }
