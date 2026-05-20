@@ -9,5 +9,6 @@ void spawn_prefabs_bodys(ecs* world) {
         entity body = spawn_slot(world, prefab_character3_skeleton);
         zox_set_unique_name(body, "body");
         zox_add_tag(body, Body);
+        zox_set(body, SlotAnchor, { 0 });
     }
 }

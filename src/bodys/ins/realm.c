@@ -46,7 +46,8 @@ entity2 spawn_realm_body_part(ecs* world, byte variants, byte mdepth, byte3 size
     // TODO: Spawn Texture with Model Graph
     delay_event(world, &delayed_texture_spawn, texture, 1.0f);
     // # # # Spawn Item from model and texture # # #
-    entity ritem = spawn_item_body(world, model, texture, name);
-    zox_set(ritem, SlotType, { slot_type });
-    return (entity2) { ritem, model_group };
+    entity e = spawn_item_body(world, model, texture, name);
+    zox_set(e, SlotType, { slot_type });
+    zox_set(e, MaxRenderDepth, { mdepth });
+    return (entity2) { e, model_group };
 }

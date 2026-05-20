@@ -6,7 +6,7 @@ zox_tag(BodyModel);
 zox_tag(BodyUnique);
 zoxc_state(BodyDirty);
 zoxc_byte(SlotType);
-zoxc_entity(AttachLink);
+zoxc_byte(SlotAnchor);
 zoxc_byte3(BodySize);
 zoxc_byte3(PartSize);
 zoxc_byte3(PartPosition);
@@ -20,7 +20,7 @@ void define_components_bodys(ecs* world) {
     zoxd_tag(BodyUnique);
     zoxd_state(BodyDirty);
     zoxd_byte(SlotType);
-    zoxd_entity(AttachLink);
+    zoxd_byte(SlotAnchor);
     zoxd_byte3(BodySize);
     zoxd_byte3(PartSize);
     zoxd_byte3(PartPosition);

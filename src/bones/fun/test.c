@@ -6,6 +6,7 @@ entity spawn_body_bone(ecs* world, entity prefab, entity skeleton, entity parent
     // zox_set(e2, ParentLink, { parent });
     return e2;
 }
+
 // todo: use iterative instance function: prefab_children
 /*void prefab_make_skeleton(ecs *world, const entity e) {
     zox_add_tag(e, Skeleton)

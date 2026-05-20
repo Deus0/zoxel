@@ -8,15 +8,15 @@ void define_systems_bodys(ecs* world) {
         EcsOnUpdate,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
-        [out] bodys.BodySize,
         [out] bodys.BodyDirty,
-        [out] blocks.BlockScale,
         [none] players.PlayerCharacter
     );
     zox_system_1(
         CharacterBoneSpawnSystem,
         EcsOnUpdate,
         [in] bodys.BodyDirty,
+        [in] bodys.BodySize,
+        [in] blocks.BlockScale,
         [out] bones.BoneLinks,
         [out] bones.SkeletonDirty,
         [none] bones.Skeleton
@@ -25,9 +25,12 @@ void define_systems_bodys(ecs* world) {
         BodyCombineSystem,
         EcsOnUpdate,
         [in] bodys.BodyDirty,
+        [out] bodys.BodySize,
         [out] voxes.CombineList,
         [out] voxes.CombinePositions,
         [out] voxes.CombineVox,
+        [out] chunks.NodeDepth,
+        [out] blocks.BlockScale,
         [none] players.PlayerCharacter
     );
 }

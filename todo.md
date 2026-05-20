@@ -1,16 +1,17 @@
 ### todo ###
 # Body #
-- Create Slots for Body / Equip
-- Fix Crafting and use Slots
-- Remove all spawn_window_users's
-- Raycast Range should be Skill Range
-	- Change when skill is equiped - using actions
-- Footstep Sounds when walking around
-- Head bob to move faster when walking
+- Retype ChunkSize as byte3
 - Add Neck to head + chest blueprints
 	- cylinder shape at bottom+top
 - Designate a hand bone
 	- Spawn Held Item onto handbone
+- Remove all spawn_window_users's
+- Create Slots for Body / Equip
+- Raycast Range should be Skill Range
+	- Change when skill is equiped - using actions
+- Footstep Sounds when walking around
+- Head bob to move faster when walking
+- Fix Crafting and use Slots
 # Huds #
 - Seperate Pause UI from Game Menu
 - Pause UI to use blacked out screen, game ui to just use blur

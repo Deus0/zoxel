@@ -15,11 +15,14 @@ entity spawn_player_menu_body(ecs* world, entity player) {
         .outline_color = window_outline
     };
     entity_array_d* parts = create_entity_array_d(1);
-    fetch_parts_recursive(world, parts, character);
+    entity chest_slot = zox_get_child_by_id(world, character, zox_id(Body));
+    entity chest_part = zox_getv(chest_slot, DataLink);
+    add_to_entity_array_d(parts, chest_part);
+    fetch_slots_parts_r(world, parts, chest_slot);
     entity3 spawns[parts->size];
     entity e = spawn_window_users(world, data, texture, 0, spawns, parts->data, parts->size);
     zox_add_tag(e, MenuBody);
-    for (int i = 0; i < parts->size; i++) {
+    /*for (int i = 0; i < parts->size; i++) {
         entity item = parts->data[i];
         entity3 frame = spawns[i];
         if (frame.x) {
@@ -35,7 +38,7 @@ entity spawn_player_menu_body(ecs* world, entity player) {
             zox_set(frame.y, ClickDisabled, { 1 });
         }
         break;
-    }
+    }*/
     dispose_entity_array_d(parts);
     return e;
 }

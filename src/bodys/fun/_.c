@@ -1,12 +1,24 @@
 // NOTE: entity_array_d* parts = create_entity_array_d(1);
 // NOTE: dispose_entity_array_d(parts);
-void fetch_parts_recursive(ecs *world, entity_array_d* entities, entity e) {
-    entity parts[zox_children_capacity];
-    uint parts_length = zox_get_children_by_id(world, e, parts, zox_children_capacity, zox_id(BodyPart));
-    for (uint k = 0; k < parts_length; k++) {
-        entity part = parts[k];
+
+void fetch_slots_r(ecs *world, entity_array_d* entities, entity e) {
+    add_to_entity_array_d(entities, e);
+    entity slots[zox_children_capacity];
+    uint length = zox_get_children_by_id(world, e, slots, zox_children_capacity, zox_id(Slot));
+    for (uint k = 0; k < length; k++) {
+        entity slot = slots[k];
+        fetch_slots_r(world, entities, slot);
+    }
+}
+
+void fetch_slots_parts_r(ecs *world, entity_array_d* entities, entity e) {
+    entity slots[zox_children_capacity];
+    uint length = zox_get_children_by_id(world, e, slots, zox_children_capacity, zox_id(Slot));
+    for (uint k = 0; k < length; k++) {
+        entity slot = slots[k];
+        entity part = zox_getv(slot, DataLink);
         add_to_entity_array_d(entities, part);
-        fetch_parts_recursive(world, entities, part);
+        fetch_slots_parts_r(world, entities, slot);
     }
 }
 

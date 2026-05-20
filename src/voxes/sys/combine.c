@@ -31,7 +31,7 @@ zox_sys2(CombineVoxSystem) {
         // TODO: calculate the overall size first
         // add each vox to the current node
         int3 new_csize = int3_zero;
-        byte new_depth = 0;
+        /*byte new_depth = 0;
         // float new_scale = 0;
         for (byte j = 0; j < voxes->length; j++) {
             entity vox = voxes->value[j];
@@ -43,18 +43,13 @@ zox_sys2(CombineVoxSystem) {
                 new_depth = vdepth;
             }
             if (vdepth == new_depth) {
-                zox_geter_value(vox, ChunkSize, int3, vsize);
-                if (vsize.x > new_csize.x) new_csize.x = vsize.x;
-                if (vsize.y > new_csize.y) new_csize.y = vsize.y;
-                if (vsize.z > new_csize.z) new_csize.z = vsize.z;
-                /*zox_geter_value(vox, BlockScale, float, vscale);
-                if (!bscale->value || vscale < bscale->value) {
-                    bscale->value = vscale;
-                }*/
+                zox_geter_value(vox, ChunkSize, int3, vox_size);
+                if (vox_size.x > new_csize.x) new_csize.x = vox_size.x;
+                if (vox_size.y > new_csize.y) new_csize.y = vox_size.y;
+                if (vox_size.z > new_csize.z) new_csize.z = vox_size.z;
             }
         }
-        ndepth->value = new_depth;
-        rdepth->value = ndepth->value;
+        ndepth->value = new_depth;*/
         // set voctree here
         resize_ColorRGBs(colors, 0);
         // TODO: set voctree depth and set to air
@@ -64,52 +59,54 @@ zox_sys2(CombineVoxSystem) {
             if (!zox_valid(vox)) {
                 continue;
             }
-            if (ndepth->value != zox_gett_value(vox, NodeDepth)) {
+            /*if (ndepth->value != zox_gett_value(vox, NodeDepth)) {
                 zox_logw("We don't support adding different depths yet");
                 continue;
-            }
+            }*/
             // NOTE: Colors, we will need to make a lookup table for index placement
             byte3 vposition = positions->value[j];
-            zox_geter(vox, VoxelNode, aoctree);
-            zox_geter(vox, ColorRGBs, acolors);
-            zox_geter_value(vox, ChunkSize, int3, vsize);
-            for (byte k = 0; k < acolors->length; k++) {
-                color_rgb acolor = acolors->value[k];
+            byte vox_depth = zox_getv(vox, NodeDepth);
+            int3 vox_size = zox_getv(vox, ChunkSize);
+            const VoxelNode* vox_octree = zox_get(vox, VoxelNode);
+            const ColorRGBs* vox_colors = zox_get(vox, ColorRGBs);
+            for (byte k = 0; k < vox_colors->length; k++) {
+                color_rgb acolor = vox_colors->value[k];
                 // If not in list
-                byte inlist = 0;
+                byte already_added = 0;
                 for (byte l = 0; l < colors->length; l++) {
-                    if (color_rgb_equals(colors->value[l], acolor)) {
-                        inlist = 1;
+                    color_rgb base_color = colors->value[l];
+                    if (color_rgb_equals(base_color, acolor)) {
+                        already_added = 1;
                         break;
                     }
                 }
-                if (inlist) {
-                    continue;
+                if (!already_added) {
+                    add_to_ColorRGBs(colors, acolor);
                 }
-                add_to_ColorRGBs(colors, acolor);
             }
             // NOTE: For now lets assume same depth
             // add aoctree into voctree
             // account for depth difference
             // position, size for placement into new grid?
             // combine colors too
+            byte3 lposition = byte3_zero;
             byte3 position;
-            for (position.x = vposition.x; position.x < vposition.x + vsize.x; position.x++) {
-                for (position.y = vposition.y; position.y < vposition.y + vsize.y; position.y++) {
-                    for (position.z = vposition.z; position.z < vposition.z + vsize.z; position.z++) {
-                        byte3 place_vox_position = (byte3) {
+            for (lposition.x = 0, position.x = vposition.x; position.x < vposition.x + vox_size.x; position.x++, lposition.x++) {
+                for (lposition.y = 0, position.y = vposition.y; position.y < vposition.y + vox_size.y; position.y++, lposition.y++) {
+                    for (lposition.z = 0, position.z = vposition.z; position.z < vposition.z + vox_size.z; position.z++, lposition.z++) {
+                        /*byte3 place_vox_position = (byte3) {
                             position.x - vposition.x,
                             position.y - vposition.y,
                             position.z - vposition.z
-                        };
-                        byte place_vox_value = get_value_VoxelNode(aoctree, ndepth->value, place_vox_position, 0);
+                        };*/
+                        byte place_vox_value = get_value_VoxelNode(vox_octree, vox_depth, lposition, 0);
                         if (!place_vox_value) {
                             continue;
                         }
                         // TODO: Use lookups later
                         // Convert to our placement
                         // get color from value
-                        color_rgb place_vox_color = acolors->value[place_vox_value - 1];
+                        color_rgb place_vox_color = vox_colors->value[place_vox_value - 1];
                         // find color in place vox
                         byte value = 0;
                         for (byte k = 0; k < colors->length; k++) {
@@ -131,10 +128,11 @@ zox_sys2(CombineVoxSystem) {
                     }
                 }
             }
-            // zox_log(" + vox %i [%s] c[%i] at [%ix%ix%i] of s[%ix%ix%i]", j, zox_get_name(vox), acolors->length, vposition.x, vposition.y, vposition.z, vsize.x, vsize.y, vsize.z);
+            // zox_log(" + vox %i [%s] c[%i] at [%ix%ix%i] of s[%ix%ix%i]", j, zox_get_name(vox), acolors->length, vposition.x, vposition.y, vposition.z, vox_size.x, vox_size.y, vox_size.z);
         }
         write_unlock_VoxelNode(voctree);
         csize->value = new_csize;
+        rdepth->value = ndepth->value;
         dirty->value = zox_dirty_trigger;
         /*zox_log(" - colors [%i]", colors->length);
         zox_log(" - vdepth [%i] - grid max [%i]", ndepth->value, powers_of_two_byte[ndepth->value]);
