@@ -1,7 +1,7 @@
 zox_sys2(Player3RotateSystem) {
     double gamepad_rotate_multiplier_x = 0.04;
     double gamepad_rotate_multiplier_y = 0.03;
-    float touchscreen_rotate_multiplier = 0.6f;
+    // float touchscreen_rotate_multiplier = 0.6f;
     double mouse_rotate_multiplier = 0.0032; // 0.008;
     zox_sys_world();
     zox_sys_begin();

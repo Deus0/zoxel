@@ -86,7 +86,7 @@ void zoxel_settings_uis() {
     header_fill.r += 10;
     header_fill.g -= 10;
     header_fill.b -= 10;
-    window_fill.r - 10;
+    window_fill.r -= 10;
     window_fill.g += 10;
     window_fill.b += 10;
     // Frames

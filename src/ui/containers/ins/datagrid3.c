@@ -33,12 +33,12 @@ entity spawn_datagrid_slots(ecs* world, entity prefab, entity prefab_frame, enti
     {
         byte is_close_button = 1;
         byte header_font_size = 6 * ui_scale;
-        if (header_label == "") {
+        if (header_label == NULL || header_label[0] == '\0') {
             header_font_size = 0;
         }
         byte2 header_margins = (byte2) { 4 * ui_scale, 3 * ui_scale };
-        byte header_font_thickness_s = header_font_thickness * ui_scale;
-        byte header_fonto_thickness_s = header_font_thickness * ui_scale;
+        //byte header_font_thickness_s = header_font_thickness * ui_scale;
+        //byte header_fonto_thickness_s = header_font_thickness * ui_scale;
         color header_font_fill = header_font_fill;
         color header_font_outline = header_font_outline;
         header_height = header_font_size + header_margins.y * 2;

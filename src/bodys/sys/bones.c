@@ -10,11 +10,11 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
         // zox_logw("Invalid Part for Slot [%s]", zox_get_name(slot));
         return 0;
     }
-    if (!zox_has(part, PartPosition)) {
+    if (!zox_has(slot, PartPosition)) {
         zox_logw("Invalid Part [%s]", zox_get_name(part));
         return 0;
     }
-    byte3 pposition = zox_getv(part, PartPosition);
+    byte3 pposition = zox_getv(slot, PartPosition);
     entity vox = get_item_model(world, part);
     if (!zox_valid(vox) || !zox_has(vox, ChunkSize)) {
         zox_logw("Model components invalid for part [%s]", zox_get_name(part));

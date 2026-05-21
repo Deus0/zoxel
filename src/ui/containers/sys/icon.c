@@ -8,7 +8,7 @@ zox_sys2(SlotDataCleanSystem) {
     zox_sys_out(DataLink);
     zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_o(DataLink, data);
         zox_sys_o(DataDirty, state);
         if (data->value && !zox_valid(data->value)) {
@@ -26,7 +26,7 @@ zox_sys2(DataIconSystem) {
     zox_sys_out(DataLink);
     zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(SlotLink, slot);
         zox_sys_o(DataLink, data);
         zox_sys_o(DataDirty, state);

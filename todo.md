@@ -1,5 +1,6 @@
 ### todo ###
 # Body #
+- Make parts attach to previous parts, not to entire body dimensions
 - Retype ChunkSize as byte3
 - Add Neck to head + chest blueprints
 	- cylinder shape at bottom+top

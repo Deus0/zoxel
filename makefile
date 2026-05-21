@@ -41,8 +41,8 @@ ifeq ($(origin game), undefined)
 else
     GAME := $(game)
 endif
-TARGET  	:= bin/$(GAME)
-TARGET_DEV 	:= bin/$(GAME)-debug
+TARGET  	:= bin/$(GAME).bin
+TARGET_DEV 	:= bin/$(GAME)-dev.bin
 DFLAGS 		+= -Dzox_game=$(GAME)
 
 # Add SDL
@@ -76,7 +76,8 @@ $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
 	@ mkdir -p bin
 	@ echo "-------------------"
-	$(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS) $(DFLAGS)
+	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release
+	# $(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 	@ echo " - completed -"
 	@ echo "-------------------"
 
@@ -105,7 +106,8 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	$(CC) $(cflags_dev) $(SRC) -o $@ $(LIBS) $(DFLAGS)
+	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --debug
+	# $(CC) $(cflags_dev) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
 dev: $(TARGET_DEV)
 

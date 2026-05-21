@@ -34,6 +34,7 @@ load_settings() {
   echo "OS=$OS"
   echo "GLB=$GLB"
   echo "GFX=$GFX"
+  echo "ARC=$ARC"
   echo "PRF=$PRF"
 }
 
@@ -69,31 +70,29 @@ pick_settings() {
   echo ""
   clear
 
+  ARC=$(select_option "Select Architecture" x64 arm64)
+  echo ""
+  clear
+
   PRF=$(select_option "Select Profile" release development)
   echo ""
   clear
 }
 
 select_option() {
-
     local prompt="$1"
     shift
     local options=("$@")
     local choice
-
     printf '%s\n' "$prompt" >&2
-
     for i in "${!options[@]}"; do
         printf '%d) %s\n' "$((i + 1))" "${options[$i]}" >&2
     done
-
     read -rp "Enter number: " choice
-
     if ! [[ "$choice" =~ ^[0-9]+$ ]] || (( choice < 1 || choice > ${#options[@]} )); then
         echo "Invalid selection" >&2
         exit 1
     fi
-
     printf '%s\n' "${options[$((choice - 1))]}"
 }
 
@@ -108,7 +107,6 @@ if [[ -f "$STATE_FILE" ]]; then
   echo ""
   cat "$STATE_FILE"
   echo ""
-
   read -rp "...Use saved config? (y/n): " USE_SAVED
   sleep ${big_timer}
   clear
@@ -123,7 +121,7 @@ else
   pick_settings
 fi
 
-BUILD_SCRIPT="bsh/${OS}-${GFX}-${GLB}.sh"
+BUILD_SCRIPT="bsh/${OS}.sh"
 
 if [[ ! -f "$BUILD_SCRIPT" ]]; then
   echo "Warning: $BUILD_SCRIPT is not supported or does not exist."
@@ -139,6 +137,7 @@ GAME="$GAME"
 OS="$OS"
 GLB="$GLB"
 GFX="$GFX"
+ARC="$ARC"
 PRF="$PRF"
 EOF
 
@@ -146,7 +145,7 @@ echo "Building..."
 echo ""
 cat "$STATE_FILE"
 echo ""
-echo "...[$BUILD_SCRIPT ${GAME} --${PRF}]"
+echo "...[$BUILD_SCRIPT ${GAME} ${GLB} ${GFX} ${ARC} --${PRF}]"
 echo ""
 
-bash "$BUILD_SCRIPT" ${GAME} --${PRF}
+bash "$BUILD_SCRIPT" ${GAME} ${GLB} ${GFX} ${ARC} --${PRF}

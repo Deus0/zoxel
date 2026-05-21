@@ -1,3 +1,6 @@
+byte zox_dbg_extraheads = 0;
+byte zox_dbg_slot_anchor = body_anchor_right; // body_anchor_top
+
 entity find_slot_type(ecs* world, const entity* items, uint length, byte slot) {
     entity e = 0;
     for (uint j = 0; j < length; j++) {
@@ -39,8 +42,8 @@ zox_sys2(CharacterBodySpawnSystem) {
         // We can add first to the character then set body dirty
         entity rchest = find_slot_type(world, ritems->value, ritems->length, zox_slot_core);
         if (rchest) {
-            entity mchest = get_item_model(world, rchest);
-            zox_geter_value(mchest, ChunkSize, int3, schest);
+            // entity mchest = get_item_model(world, rchest);
+            // zox_geter_value(mchest, ChunkSize, int3, schest);
             entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
             if (!zox_valid(chest_slot) || !zox_has(chest_slot, DataLink)) {
                 zox_logw("No chest slot on character [%s]", zox_get_name(e));
@@ -52,13 +55,13 @@ zox_sys2(CharacterBodySpawnSystem) {
             chest_slotd->value = chest;
             // Given our chest spawned, we can spawn slots now
             entity head_slot = spawn_slot(world, chest_slot);
-            zox_set(head_slot, SlotAnchor, { 1 });
+            zox_set(head_slot, SlotAnchor, { body_anchor_top });
             entity hips_slot = spawn_slot(world, chest_slot);
-            zox_set(hips_slot, SlotAnchor, { 2 });
+            zox_set(hips_slot, SlotAnchor, { body_anchor_bottom });
             entity left_shoulder_slot = spawn_slot(world, chest_slot);
-            zox_set(left_shoulder_slot, SlotAnchor, { 3 });
+            zox_set(left_shoulder_slot, SlotAnchor, { body_anchor_left });
             entity right_shoulder_slot = spawn_slot(world, chest_slot);
-            zox_set(right_shoulder_slot, SlotAnchor, { 4 });
+            zox_set(right_shoulder_slot, SlotAnchor, { body_anchor_right });
             // Now add parts to those slots
             entity rhead = find_slot_type(world, ritems->value, ritems->length, zox_slot_head);
             if (rhead)
@@ -69,19 +72,18 @@ zox_sys2(CharacterBodySpawnSystem) {
             // Test slot systems
             // byte positions are limited
             // TODO: FIx Glitch when out of bounds
-            /*
-            entity pslot = head_slot;*
-            for (byte j = 0; j < 4; j++)
-            {
-                pslot = spawn_slot(world, pslot);
-                zox_set(pslot, SlotAnchor, { 1 });
-                entity e2 = spawn_user_item_body(world, e, rhead, zox_slot_head);
-                zox_set(pslot, DataLink, { e2 });
-            }*/
             entity rhips = find_slot_type(world, ritems->value, ritems->length, zox_slot_hips);
             if (rhips) {
                 entity e2 = spawn_user_item_body(world, e, rhips, zox_slot_hips);
                 zox_set(hips_slot, DataLink, { e2 });
+            }
+            entity pslot = head_slot;
+            for (byte j = 0; j < zox_dbg_extraheads; j++)
+            {
+                pslot = spawn_slot(world, pslot);
+                zox_set(pslot, SlotAnchor, { zox_dbg_slot_anchor });
+                entity e2 = spawn_user_item_body(world, e, rhead, zox_slot_head);
+                zox_set(pslot, DataLink, { e2 });
             }
         }
         // TODO: Once we attach chest to this slot, we should spawn sub slots of chest onto the slot

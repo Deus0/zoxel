@@ -13,6 +13,12 @@
 
 // #define zox_debug_head_only
 
+#define body_anchor_core 0
+#define body_anchor_top 1
+#define body_anchor_bottom 2
+#define body_anchor_right 3
+#define body_anchor_left 4
+
 // #include "set/_.c"
 #include "com/_.c"
 #include "sta/_.c"

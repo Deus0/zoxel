@@ -22,23 +22,6 @@ entity spawn_player_menu_body(ecs* world, entity player) {
     entity3 spawns[parts->size];
     entity e = spawn_window_users(world, data, texture, 0, spawns, parts->data, parts->size);
     zox_add_tag(e, MenuBody);
-    /*for (int i = 0; i < parts->size; i++) {
-        entity item = parts->data[i];
-        entity3 frame = spawns[i];
-        if (frame.x) {
-            zox_set(frame.x, ItemLink, { item });
-        }
-        if (frame.y) {
-            zox_set(frame.y, ItemLink, { item });
-        }
-        if (frame.z) {
-            zox_set(frame.z, ItemLink, { item });
-        }
-        if (i == 0 && frame.y) {
-            zox_set(frame.y, ClickDisabled, { 1 });
-        }
-        break;
-    }*/
     dispose_entity_array_d(parts);
     return e;
 }

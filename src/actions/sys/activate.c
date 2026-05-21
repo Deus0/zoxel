@@ -7,7 +7,7 @@ zox_sys2(ActionActivateSystem) {
     zox_sys_in(TriggerActionA);
     zox_sys_in(ActiveAction);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(TriggerActionA, trigger);
         zox_sys_i(ActiveAction, action);
         if (trigger->value != zox_dirty_active) {
