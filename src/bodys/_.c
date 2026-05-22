@@ -18,6 +18,8 @@
 #define body_anchor_bottom 2
 #define body_anchor_right 3
 #define body_anchor_left 4
+#define body_anchor_back 5
+#define body_anchor_forward 6
 
 // #include "set/_.c"
 #include "com/_.c"

@@ -14,7 +14,9 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
         zox_logw("Invalid Part [%s]", zox_get_name(part));
         return 0;
     }
-    byte3 pposition = zox_getv(slot, PartPosition);
+    byte3 part_position = zox_getv(slot, PartPosition);
+    byte3 part_size = zox_getv(slot, PartSize);
+    byte3 part_centre_position = byte3_add(part_position, byte3_half(part_size));
     entity vox = get_item_model(world, part);
     if (!zox_valid(vox) || !zox_has(vox, ChunkSize)) {
         zox_logw("Model components invalid for part [%s]", zox_get_name(part));
@@ -23,7 +25,7 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
     int3 vsize = zox_getv(vox, ChunkSize);
     float3 size = float3_scale(int3_to_float3(vsize), bscale * 0.5f);
     size = float3_add(size, float3_single(bscale * 0.5f));
-    float3 position = float3_scale(byte3_to_float3(pposition), bscale);
+    float3 position = float3_scale(byte3_to_float3(part_centre_position), bscale);
     position = float3_sub(position, half_bounds);
     position = float3_add(position, float3_single(bscale * 0.5f));
     float3 local_position = float3_sub(position, parent_position);
@@ -34,7 +36,7 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
     if (dbg_log) {
         zox_log("+ Spawned bone for Part [%s]:", zox_get_name(part));
         zox_log("   # size  b [%ix%ix%i] f [%fx%fx%f]", vsize.x, vsize.y, vsize.z, size.x, size.y, size.z);
-        zox_log("   @ position b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", pposition.x, pposition.y, pposition.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
+        zox_log("   @ position b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", part_centre_position.x, part_centre_position.y, part_centre_position.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
     }
     // Now Recursively add parts
     entity slots[zox_children_capacity];

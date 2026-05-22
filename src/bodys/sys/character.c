@@ -1,5 +1,4 @@
-byte zox_dbg_extraheads = 0;
-byte zox_dbg_slot_anchor = body_anchor_right; // body_anchor_top
+byte zox_dbg_extraheads = 0; // 16;
 
 entity find_slot_type(ecs* world, const entity* items, uint length, byte slot) {
     entity e = 0;
@@ -54,14 +53,10 @@ zox_sys2(CharacterBodySpawnSystem) {
             zox_muter(chest_slot, DataLink, chest_slotd);
             chest_slotd->value = chest;
             // Given our chest spawned, we can spawn slots now
-            entity head_slot = spawn_slot(world, chest_slot);
-            zox_set(head_slot, SlotAnchor, { body_anchor_top });
-            entity hips_slot = spawn_slot(world, chest_slot);
-            zox_set(hips_slot, SlotAnchor, { body_anchor_bottom });
-            entity left_shoulder_slot = spawn_slot(world, chest_slot);
-            zox_set(left_shoulder_slot, SlotAnchor, { body_anchor_left });
-            entity right_shoulder_slot = spawn_slot(world, chest_slot);
-            zox_set(right_shoulder_slot, SlotAnchor, { body_anchor_right });
+            entity head_slot = spawn_body_slot(world, chest_slot, body_anchor_top);
+            entity hips_slot = spawn_body_slot(world, chest_slot, body_anchor_bottom);
+            entity left_shoulder_slot = spawn_body_slot(world, chest_slot, body_anchor_left);
+            entity right_shoulder_slot = spawn_body_slot(world, chest_slot, body_anchor_right);
             // Now add parts to those slots
             entity rhead = find_slot_type(world, ritems->value, ritems->length, zox_slot_head);
             if (rhead)
@@ -77,11 +72,31 @@ zox_sys2(CharacterBodySpawnSystem) {
                 entity e2 = spawn_user_item_body(world, e, rhips, zox_slot_hips);
                 zox_set(hips_slot, DataLink, { e2 });
             }
-            entity pslot = head_slot;
+            entity pslot1 = head_slot;
+            entity pslot2 = head_slot;
+            entity pslot3 = head_slot;
+            entity pslot4 = head_slot;
+            entity pslot5 = head_slot;
             for (byte j = 0; j < zox_dbg_extraheads; j++)
             {
-                pslot = spawn_slot(world, pslot);
-                zox_set(pslot, SlotAnchor, { zox_dbg_slot_anchor });
+                entity pslot;
+                int slot_rand = rand_range(1, 100);
+                if (slot_rand >= 80) {
+                    pslot1 = spawn_body_slot(world, pslot1, body_anchor_top);
+                    pslot = pslot1;
+                } else if (slot_rand >= 60) {
+                    pslot2 = spawn_body_slot(world, pslot2, body_anchor_left);
+                    pslot = pslot2;
+                } else if (slot_rand >= 40) {
+                    pslot3 = spawn_body_slot(world, pslot3, body_anchor_right);
+                    pslot = pslot3;
+                } else if (slot_rand >= 20) {
+                    pslot4 = spawn_body_slot(world, pslot4, body_anchor_forward);
+                    pslot = pslot4;
+                } else {
+                    pslot5 = spawn_body_slot(world, pslot5, body_anchor_back);
+                    pslot = pslot5;
+                }
                 entity e2 = spawn_user_item_body(world, e, rhead, zox_slot_head);
                 zox_set(pslot, DataLink, { e2 });
             }
