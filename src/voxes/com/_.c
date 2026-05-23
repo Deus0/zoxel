@@ -3,7 +3,6 @@ zox_tag(Vox);
 zoxc_entity(VoxLink);
 zoxc_byte(ChunkLod);    // we using this??!?!
 zoxc_hashmap(ChunkLinks, int3)
-zoxc_hashmap(Chunk2Links, int2)
 // operations
 zoxc_byte(CloneVox);
 zoxc_entity(CloneVoxLink);
@@ -23,7 +22,6 @@ void define_components_voxes(ecs *world) {
     zoxd_entity(VoxLink);
     zoxd_byte(ChunkLod);
     zoxd_hashmap(ChunkLinks);
-    zoxd_hashmap(Chunk2Links);
     // operations
     zoxd_byte(CloneVox);
     zoxd_state(CombineVox);

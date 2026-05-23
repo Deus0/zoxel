@@ -1,5 +1,4 @@
 // todo: include all these automatically
-
 #include "events/_.c"
 #include "transforms/_.c"
 #include "networking/_.c"
@@ -8,7 +7,6 @@
 #include "inputs/_.c"
 #include "graphics/_.c"
 #include "apps/_.c"
-
 // basic b locks
 #include "assets/_.c" // uses sdl path function atm
 #include "realms/_.c"
@@ -16,55 +14,46 @@
 #include "players/_.c"
 #include "colors/_.c"
 #include "nodes/_.c"
-
 // beef
 #include "cameras/_.c"
 #include "rendering/_.c"
 #include "sounds/_.c"
-
 #include "raycasts/_.c"
 #include "lines/_.c"
 #include "shapes/_.c"
-
 // inner core
 #include "textures/_.c"
 #include "cubes/_.c"
 #include "musics/_.c"
 #include "animations/_.c"
 #include "bones/_.c"
-
 #include "ui/_.c"
 #include "lines/lines2/_.c"
 #include "plots/_.c"
-
 #include "genetics/_.c"
 #include "neurals/_.c"
 #include "blueprints/_.c"
 #include "blocks/_.c"
 #include "chunks/_.c"
-
 #include "physics/_.c"
-
 #include "voxes/_.c"
 #include "vodes/_.c"
 #include "lights/_.c"
 #include "models/_.c"
 #include "biomes/_.c"
-
 #include "streaming/_.c"
 #include "regions/_.c"
 #include "tunks/_.c"
-
 #include "particles/_.c"
 #include "weathers/_.c"
 #include "terrain/_.c"
+#include "towns/_.c"
 #include "vrays/_.c"
 #include "characters/_.c"
 #include "pets/_.c"
 #include "dungeons/_.c"
 #include "huds/_.c"
 #include "space/_.c"
-
 // user data
 #include "users/_.c"
 #include "combat/_.c"
@@ -91,10 +80,8 @@
 #include "combat/_.c"
 #include "maps/_.c"
 #include "npcs/_.c"
-
 // Placement
 #include "terrain/npcs/_.c"
-
 // on top
 #include "controllers/_.c"
 #include "imports/_.c"
@@ -158,6 +145,8 @@ zox_begin_module(Zox)
     zox_import_module(Particles);
     zox_import_module(Weathers);
     zox_import_module(Terrain);
+    zox_import_module(Towns);
+
     zox_import_module(Vrays);
     zox_import_module(Characters);
     zox_import_module(Dungeons);

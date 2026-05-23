@@ -10,7 +10,7 @@ zoxc_double(AnimateChunk);
 zox_begin_module(VoxelsAnimations)
     add_hook_spawn_prefabs(spawn_prefabs_voxel_animations);
     zoxd_double(AnimateChunk);
-    zox_filter(
+    /*zox_filter(
         noise_chunks,
         [none] chunks3.NoiseChunk,
         [out] chunks3.GenerateChunk
@@ -20,9 +20,9 @@ zox_begin_module(VoxelsAnimations)
         EcsOnUpdate,
         [out] AnimateChunk,
         [out] chunks3.GenerateChunk
-    );
+    );*/
     // NOTE: Writes to VoxelNode
-    zox_system_ctx(
+    /*zox_system_ctx(
         NoiseVoxelNodeSystem,
         EcsPreUpdate,
         noise_chunks,
@@ -31,7 +31,7 @@ zox_begin_module(VoxelsAnimations)
         [out] chunks3.VoxelNode,
         [out] chunks3.GenerateChunk,
         [none] chunks3.NoiseChunk
-    );
+    );*/
 zox_end_module(VoxelsAnimations)
 
 #endif

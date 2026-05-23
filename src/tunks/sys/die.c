@@ -11,7 +11,7 @@ zox_sys2(Tunk2DeathSystem) {
         zox_sys_i(Chunk2Position, position);
         // zox_sys_i(RenderDepth, depth);
         zox_sys_i(RenderDistance, distance);
-        if (!zox_valid(terrain->value) || !zox_has(terrain->value, Chunk2Links)) {
+        if (!zox_valid(terrain->value) || !zox_has(terrain->value, TunkLinks)) {
             zox_delete(e)
             continue;
         }
@@ -25,7 +25,7 @@ zox_sys2(Tunk2DeathSystem) {
             continue;
         }
         // remove from hash - can i do this better?
-        zox_muter(terrain->value, Chunk2Links, chunks);
+        zox_muter(terrain->value, TunkLinks, chunks);
         // zox_geter(terrain->value, ChunkLinks, chunks);
         int2_hashmap_remove(chunks->value, position->value);
         zox_delete(e);

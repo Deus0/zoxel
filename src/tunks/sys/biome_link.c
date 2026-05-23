@@ -22,10 +22,10 @@ zox_sys2(BiomeLinkSystem) {
         /*if (state->value != zox_dirty_active) {
             continue;
         }*/
-        if (!zox_valid(terrain->value) || !zox_has(terrain->value, Chunk2Links)) {
+        if (!zox_valid(terrain->value) || !zox_has(terrain->value, TunkLinks)) {
             continue;
         }
-        zox_geter(terrain->value, Chunk2Links, chunks);
+        zox_geter(terrain->value, TunkLinks, chunks);
         entity tunk = int2_hashmap_get(chunks->value, position->value);
         if (!zox_valid(tunk) || !zox_has(tunk, BiomeLink)) {
             continue;

@@ -11,7 +11,7 @@ entity spawn_prefab_vox(ecs *world, entity prefab, byte depth) {
     zox_set(e, BlockScale, { vox_model_scale });
     zox_set(e, NodeDepth, { depth }); // block_vox_depth });
     add_components_mesh_colored(world, e);
-    zox_set(e, GenerateChunk, { 0 });
+    zox_set(e, Generate, { 0 });
     zox_prefab_set(e, VoxType, { vox_type_soil });
     return e;
 }

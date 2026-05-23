@@ -81,8 +81,7 @@ byte test_terrain_spawn(ecs *world) {
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 entity chunk = pair->value;
-                // zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty)
-                zox_geter_value(chunk, GenerateChunk, byte, generate_chunk);
+                zox_geter_value(chunk, Generate, byte, generate_chunk);
                 zox_geter_value(chunk, MeshDirty, byte, mesh_dirty);
                 zox_geter_value(chunk, ChunkMeshDirty, byte, chunk_mesh_dirty);
                 if (log_chunks && generate_chunk == chunk_generate_state_end) {
@@ -142,7 +141,7 @@ byte test_terrain_spawn(ecs *world) {
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 entity chunk = pair->value;
                 // zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty);
-                zox_geter_value(chunk, GenerateChunk, byte, generate_chunk);
+                zox_geter_value(chunk, Generate, byte, generate_chunk);
                 zox_geter_value(chunk, MeshDirty, byte, mesh_dirty);
                 zox_geter_value(chunk, ChunkMeshDirty, byte, chunk_mesh_dirty);
                 if (log_chunks && generate_chunk == chunk_generate_state_end) {

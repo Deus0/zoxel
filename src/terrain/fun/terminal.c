@@ -1,12 +1,12 @@
-void print_terrain_settings() {
+/*void print_terrain_settings() {
     zox_log(" > terrain settings set")
     // zox_log("     + terrain seed is [%i]\n", (int) terrain_seed)
     zox_log("     + terrain_depth is [%i]", terrain_depth)
-    zox_log("     + render distance is [%i]", terrain_spawn_distance)
+    // zox_log("     + render distance is [%i]", terrain_spawn_distance)
     zox_log("     + terrain vertical is [%i]", terrain_vertical)
     zox_log("     + height noise frequency is [%f]", terrain_frequency)
     zox_log("     + lowest low is [%i]", lowest_voxel_height)
-}
+}*/
 
 void process_arguments_terrain(ecs *world, char* args[], int count) {
     (void) world;

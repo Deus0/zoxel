@@ -26,17 +26,17 @@ zox_sys2(AuraSystem) {
         // todo: Get Chunk' Characters instead, this could potentially go through tens of thousands..
         // get nearby characters using distance formula
         // make this spherecast
-        zox_sys_query_begin()
+        zox_sys_query_begin();
         while (zox_sys_query_loop()) {
-            zox_sys_begin_2()
-            zox_sys_in_2(Dead)
-            zox_sys_in_2(Position3D)
-            zox_sys_out_2(DotLinks)
+            zox_sys_begin_2();
+            zox_sys_in_2(Dead);
+            zox_sys_in_2(Position3D);
+            zox_sys_out_2(DotLinks);
             for (int j = 0; j < it2.count; j++) {
-                zox_sys_e_2()
+                zox_sys_e_2();
                 zox_sys_i_2(Position3D, position3D2)
-                zox_sys_i_2(Dead, dead)
-                zox_sys_o_2(DotLinks, dotLinks)
+                zox_sys_i_2(Dead, dead);
+                zox_sys_o_2(DotLinks, dotLinks);
                 if (user == e2 || dead->value) {
                     continue;
                 }

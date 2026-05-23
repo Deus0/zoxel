@@ -51,7 +51,7 @@ zox_sys2(Tunk2SpawnSystem) {
         if (!stream_zone) {
             continue;
         }
-        zox_geter(terrain->value, Chunk2Links, chunks);
+        zox_geter(terrain->value, TunkLinks, chunks);
         for (byte j = 0; j < 4; j++) {
             entity neighbor = neighbors->value[j];
             // no need to spawn if neighbor exists
@@ -69,7 +69,7 @@ zox_sys2(Tunk2SpawnSystem) {
                 // zox_log("Streaming - nposition [%ix%i] rdistance [%i] streamer [%ix%i]", nposition.x, nposition.y, rdistance, stream_point.x, stream_point.y);
                 if (rdistance <= terrain_lod_far) {
                     entity chunk = spawn_tunk(world, prefab_tunk2, terrain->value, nposition, rdistance);
-                    //  zox_geter(terrain->value, Chunk2Links, chunks);
+                    //  zox_geter(terrain->value, TunkLinks, chunks);
                     int2_hashmap_add(chunks->value, nposition, chunk);
                     // zox_log("+  New Tunk at [%ix%i]", nposition.x, nposition.y);
                 }

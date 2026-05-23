@@ -1,4 +1,4 @@
-zox_sys2(AnimateChunkSystem) {
+/*zox_sys2(AnimateChunkSystem) {
     return;
     double current_time = zox_current_time;
     AnimateChunk *animateChunks = ecs_field(it, AnimateChunk, 1);
@@ -16,4 +16,4 @@ zox_sys2(AnimateChunkSystem) {
         }
     }
     if (!changed) zox_skip()
-} zox_sys_end(AnimateChunkSystem);
+} zox_sys_end(AnimateChunkSystem);*/

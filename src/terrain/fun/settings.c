@@ -1,7 +1,7 @@
 // actually amount of detail, so 0 is lowest
 // todo: lod should be reversed, 0 highest, and we subtract from max resolution of game
 
-void set_terrain_render_distance() {
+/*void set_terrain_render_distance() {
     if (cpu_tier == 3) {
         terrain_spawn_distance = 16;
         terrain_vertical = 3;
@@ -50,4 +50,4 @@ void set_terrain_render_distance() {
 #ifdef zoxel_debug_settings
     print_terrain_settings();
 #endif
-}
+}*/

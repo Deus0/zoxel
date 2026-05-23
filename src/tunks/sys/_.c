@@ -3,16 +3,24 @@
 #include "biomes.c"
 #include "heights.c"
 #include "vegetation.c"
-#include "towns.c"
 #include "link.c"
 #include "end.c"
 #include "biome_average.c"
 #include "biome_link.c"
+#include "kickstart.c"
 
 void define_systems_tunks(ecs* world) {
     zox_filter(
         streamers,
         [in] streaming.StreamPoint2,
+        [none] streaming.Streamer
+    );
+    zox_system_1(
+        FirstTerrainTunkSystem,
+        zoxp_mainthread,
+        [in] streaming.StreamLink,
+        [in] streaming.StreamPoint2,
+        [in] streaming.StreamDirty2,
         [none] streaming.Streamer
     );
     zox_system_ctx_1(
@@ -36,7 +44,6 @@ void define_systems_tunks(ecs* world) {
         [none] streaming.StreamedChunk,
         [none] tunks.Tunk
     );
-
     zox_system(
         BiomeMapSystem,
         EcsPostLoad,
@@ -45,7 +52,6 @@ void define_systems_tunks(ecs* world) {
         [out] tunks.BiomeMap,
         [none] tunks.Tunk
     );
-
     // TODO: Pass in BiomeMap and use biome data
     zox_system(
         HeightMapSystem,
@@ -56,7 +62,6 @@ void define_systems_tunks(ecs* world) {
         [out] tunks.HeightMap,
         [none] tunks.Tunk
     );
-
     zox_system(
         VegetationMapSystem,
         EcsPreStore,
@@ -66,17 +71,6 @@ void define_systems_tunks(ecs* world) {
         [out] tunks.VegetationMap,
         [none] tunks.Tunk
     );
-
-    zox_system(
-        TownMapSystem,
-        EcsPreStore,
-        [in] core.Generate,
-        [in] chunks2.Chunk2Position,
-        [in] tunks.BiomeMap,
-        [out] tunks.TownMap,
-        [none] tunks.Tunk
-    );
-
     zox_system(
         TunkEndSystem,
         EcsOnUpdate,
@@ -84,8 +78,6 @@ void define_systems_tunks(ecs* world) {
         [in] tunks.Chunk3Stack,
         [none] tunks.Tunk
     );
-
-
     zox_system(
         TunkLinkSystem,
         EcsPreUpdate,
@@ -95,7 +87,6 @@ void define_systems_tunks(ecs* world) {
         [out] tunks.Chunk3Stack,
         [none] tunks.Tunk
     );
-
     zox_system(
         BiomeMapAvgSystem,
         EcsOnUpdate,
@@ -105,7 +96,6 @@ void define_systems_tunks(ecs* world) {
         [out] biomes.BiomeLink,
         [none] tunks.Tunk
     );
-
     zox_system(
         BiomeLinkSystem,
         EcsOnUpdate,
@@ -116,7 +106,6 @@ void define_systems_tunks(ecs* world) {
         [out] biomes.BiomeLink,
         [none] streaming.Streamer
     );
-
     /*zox_system_1(
         TunkDebugSystem,
         [in] voxes.VoxLink,

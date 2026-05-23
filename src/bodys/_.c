@@ -29,7 +29,7 @@
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Bodys)
+zox_begin_module(Bodys) {
     define_components_bodys(world);
     define_systems_bodys(world);
     add_hook_spawn_prefabs(spawn_prefabs_bodys);
@@ -41,7 +41,7 @@ zox_begin_module(Bodys)
         .texture_name = "taskbar_body",
         .tooltip_text = "Body"
     });
-zox_end_module(Bodys)
+} zox_end_module(Bodys)
 
 // TODO: make use TargetChunkLod -> and load/unload depth based on that
 // TODO: set lod here instead of just applying RenderDepth only with ChunkMeshDirty -> keeps memory down

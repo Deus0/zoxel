@@ -41,11 +41,11 @@ zox_sys2(StreamEndSystem) {
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 entity chunk = pair->value;
-                if (!zox_valid(chunk) || !zox_has(chunk, GenerateChunk) || !zox_has(chunk, ChunkMeshDirty)) {
+                if (!zox_valid(chunk) || !zox_has(chunk, Generate) || !zox_has(chunk, ChunkMeshDirty)) {
                     if (!zox_valid(chunk)) {
                         zox_log_error("chunk invalid in stream end system [%lu]", chunk);
-                    } else if (!zox_has(chunk, GenerateChunk)) {
-                        zox_log_error("chunk has no GenerateChunk [%lu]", chunk);
+                    } else if (!zox_has(chunk, Generate)) {
+                        zox_log_error("chunk has no Generate [%lu]", chunk);
                     } else if (!zox_has(chunk, ChunkMeshDirty)) {
                         zox_log_error("chunk has no ChunkMeshDirty [%lu]", chunk);
                     } else {
@@ -56,7 +56,7 @@ zox_sys2(StreamEndSystem) {
                     running = 1;
                 } else if (zox_gett_value(chunk, ChunkMeshDirty)) {
                     running = 1;
-                } else if (zox_gett_value(chunk, GenerateChunk)) {
+                } else if (zox_gett_value(chunk, Generate)) {
                     running = 1;
                 }
                 if (running) {

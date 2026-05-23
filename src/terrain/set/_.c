@@ -10,7 +10,7 @@ const float end_game_delay = 0.8f;
 const float end_game_delay2 = 1.0f;
 const float end_game_delay_fade = 1;
 byte high_resolution_terain_lod = 1; // 2 | 1
-byte terrain_spawn_distance;
+// byte terrain_spawn_distance;
 byte terrain_vertical = 2;
 byte terrain_size = 0;
 // uint terrain_seed = 32666;

@@ -26,7 +26,7 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         FlatlandSystem,
         zoxp_voxels_write,
-        [in] chunks3.GenerateChunk,
+        [in] core.Generate,
         [in] chunks3.ChunkPosition,
         [in] voxes.VoxLink,
         [out] chunks.NodeDepth,
@@ -43,6 +43,7 @@ void define_systems_terrain(ecs *world) {
         [in] chunks3.VoxelNodeEdited,
         [in] voxes.VoxLink,
         [in] tunks.TunkLink,
+        [out] core.Generate,
         [out] chunks3.VoxelNode,
         [out] chunks.NodeDepth,
         [out] chunks3.VoxelNodeDirty,
@@ -55,14 +56,6 @@ void define_systems_terrain(ecs *world) {
     zox_filter(
         streamers,
         [in] streaming.StreamPoint,
-        [none] streaming.Streamer
-    );
-    zox_system_1(
-        FirstTerrainTunkSystem,
-        zoxp_mainthread,
-        [in] streaming.StreamLink,
-        [in] streaming.StreamPoint2,
-        [in] streaming.StreamDirty2,
         [none] streaming.Streamer
     );
     zox_system_1(

@@ -24,12 +24,12 @@ zox_sys2(NoiseVoxelNodeSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_out(ChunkDirty);
     zox_sys_out(VoxelNode);
-    zox_sys_out(GenerateChunk);
+    zox_sys_out(Generate);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(NodeDepth, nodeDepth);
         zox_sys_o(ChunkDirty, chunkDirty);
         zox_sys_o(VoxelNode, voxelNode);
-        zox_sys_o(GenerateChunk, generateChunk);
+        zox_sys_o(Generate, generateChunk);
         if (!generateChunk->value || chunkDirty->value) {
             continue;
         }

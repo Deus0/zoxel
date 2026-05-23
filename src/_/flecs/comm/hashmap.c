@@ -2,7 +2,7 @@
     \
     zoxc(T, key##_hashmap*); \
     \
-    void dispose_hashmap_##key(ecs *world, key##_hashmap* hashmap) {\
+    void dispose_hashmap_##T(ecs *world, key##_hashmap* hashmap) {\
         for (size_t j = 0; j < hashmap->size; j++) {\
             key##_hashmap_pair *pair = hashmap->data[j];\
             while (pair) {\
@@ -29,7 +29,7 @@
             \
             /*zox_log("Disposing of Hashmap Component %s [%s]", #T, #key);*/ \
             key##_hashmap* hashmap = component->value;\
-            dispose_hashmap_##key(world, hashmap);\
+            dispose_hashmap_##T(world, hashmap);\
             component->value = NULL;\
         }\
     }

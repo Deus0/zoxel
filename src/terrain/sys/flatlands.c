@@ -4,13 +4,13 @@ zox_sys2(FlatlandSystem) {
     byte chunk_voxel_length = powers_of_two_byte[target_depth];
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GenerateChunk);
+    zox_sys_in(Generate);
     zox_sys_in(ChunkPosition);
     zox_sys_in(VoxLink);
     zox_sys_out(VoxelNode);
     zox_sys_out(NodeDepth);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(GenerateChunk, generate);
+        zox_sys_i(Generate, generate);
         zox_sys_i(ChunkPosition, positionc);
         zox_sys_i(VoxLink, terrain);
         zox_sys_o(VoxelNode, node);
