@@ -1,5 +1,8 @@
 ### todo ###
 # Body #
+- Add Cylinder Shape for Fill Nodes
+- Add Neck Node for Headblueprint
+- Use Cylinder for Bicep / Forearm Items
 - Raycast Range should be Skill Range
 	- Change when skill is equiped - using actions
 -x Make parts attach to previous parts, not to entire body dimensions

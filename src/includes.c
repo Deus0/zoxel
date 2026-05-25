@@ -51,7 +51,7 @@
 #endif*/
 
 #ifdef flecssource
-  #include "flecs/flecs.h"
+  #include "flecs.h"
 #else
   #include <flecs.h>
 #endif

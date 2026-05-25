@@ -74,12 +74,16 @@ endif
 
 $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
-	@ mkdir -p bin
-	@ echo "-------------------"
-	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release
+	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release
 	# $(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS) $(DFLAGS)
-	@ echo " - completed -"
-	@ echo "-------------------"
+
+package: flecs
+	@ echo "> Building + Packaging [$(GAME)]"
+	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release --package
+
+package-windows: flecs
+	@ echo "> Building + Packaging [$(GAME)]"
+	@ bash bsh/windows.sh $(GAME) opengl sdl windows --release --package
 
 build: flecs $(TARGET)
 
@@ -167,7 +171,6 @@ gdbp:
 
 flecs-package:
 	cd ../flecsing && make clean && make download && make refresh
-
 
 
 # Pick

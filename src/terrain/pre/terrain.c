@@ -7,9 +7,9 @@ entity spawn_prefab_terrain(ecs *world) {
     zox_prefab_set(e, NodeDepth, { 0 });
     zox_prefab_set(e, TilemapLink, { 0 });
     // Links
-    zox_set_ptr(e, RegionLinks, (RegionLinks) { .value = create_int2_hashmap(32) });
-    zox_set_ptr(e, TunkLinks, (TunkLinks) { .value = create_int2_hashmap(32) });
-    zox_set_ptr(e, ChunkLinks, (ChunkLinks) { .value = create_int3_hashmap(32) });
+    zox_prefab_add(e, RegionLinks);
+    zox_prefab_add(e, TunkLinks);
+    zox_prefab_add(e, ChunkLinks);
     // Stream Event
     zox_prefab_set(e, EventInput, { 0 });
     zox_prefab_set(e, StreamEndEvent, { NULL });

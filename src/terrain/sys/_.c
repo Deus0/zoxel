@@ -103,5 +103,5 @@ void define_systems_terrain(ecs *world) {
         [in] games.GameState,
         [in] games.GameStateDirty,
         [none] games.Game
-    )
+    );
 }

@@ -8,13 +8,20 @@ ARC=$4          # x64
 OS="linux"
 ONARC=$(uname -m)
 sdl_source="False"
-debug="False"
-[[ " $* " == *" --debug "* ]] && debug="True"
-[[ " $* " == *" --development "* ]] && debug="True"
+package="False"
 bin_filename="${game_name}" # -${GLB}-${GFX}-${ARC}
 bin_path=bin/${bin_filename}.bin
 compiler="gcc"
+debug="False"
+sources="src/main.c inc/flecs/flecs.c"
+includes="-Iinc/flecs"
 cflags="-fPIC -O3 -flto=auto -DNDEBUG"
+dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_linux"
+libs="-lm -lpthread" # -Iinc
+
+[[ " $* " == *" --debug "* ]] && debug="True"
+[[ " $* " == *" --development "* ]] && debug="True"
+[[ " $* " == *" --package "* ]] && package="True"
 
 if [[ ${ARC} == "aarch64" ]]; then
     ARC="arm64"
@@ -47,9 +54,6 @@ if [[ ${debug} == "True" ]]; then
     bin_path="bin/${bin_filename}-dev.bin"
 fi
 
-dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_linux"
-libs="-Iinc -lm -lpthread"
-
 if [[ ${GLB} == "headless" ]]; then
     echo "+ Added [headless]"
     dflags+=" -Dzox_headless"
@@ -61,7 +65,7 @@ if [[ ${GFX} == "sdl" ]]; then
     if [[ ${sdl_source} == "True" ]]; then
         # libs+=" -Lext/sdl/build -Lext/sdl_image/build -Lext/sdl_mixer/build"
         libs+=" -static bin/libSDL2_x64.a bin/libSDL2_image_x64.a bin/libSDL2_mixer_x64.a"
-        libs+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"
+        includes+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"
         dflags+=" -Dsdlsource"
     else
         libs+=" -lSDL2 -lSDL2_image -lSDL2_mixer"
@@ -85,19 +89,21 @@ echo "  - Compiler [${compiler}]"
 echo "  - CFlags [${cflags}]"
 echo "  - DFlags [${dflags}]"
 echo "  - Libs [${libs}]"
+echo "  - Includes [${includes}]"
 echo ""
 
-${compiler} ${cflags} src/main.c inc/flecs/flecs.c -o "${bin_path}" ${dflags} ${libs}
-echo "Completed Build [${bin_path}]"
+mkdir -p bin
+${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${libs}
+echo "+ Completed Build [${bin_path}]"
 
 # ---- Packaging ----
-if [[ ${debug} != "True" ]]; then
+if [[ ${package} == "True" ]]; then
     date_str=$(date +%Y_%m_%d)
     zip_name="bin/${game_name}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}.zip"
     echo ""
-    echo "Packaging [${zip_name}]"
+    echo "> Packaging [${zip_name}]"
     rm -f ${zip_name}
-    zip -r "${zip_name}" res
+    zip -q -r "${zip_name}" res
     zip -j "${zip_name}" "${bin_path}"
-    echo "Created package [${zip_name}]"
+    echo "+ Created package [${zip_name}]"
 fi

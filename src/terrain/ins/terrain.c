@@ -27,6 +27,10 @@ entity spawn_terrain(ecs *world, entity prefab, entity tilemap, float3 position,
     zox_set(e, BlockScale, { scale });
     zox_set(e, NodeDepth, { depth });
     // zox_set(e, Scale1D, { scale })
+    // Initialize Hashmaps
+    zox_set_ptr(e, RegionLinks, (RegionLinks) { .value = create_int2_hashmap(32) });
+    zox_set_ptr(e, TunkLinks, (TunkLinks) { .value = create_int2_hashmap(32) });
+    zox_set_ptr(e, ChunkLinks, (ChunkLinks) { .value = create_int3_hashmap(32 * 32) });
     if (tilemap) {
         zox_set(e, TilemapLink, { tilemap });
         // did tilemap have a voxlink previously

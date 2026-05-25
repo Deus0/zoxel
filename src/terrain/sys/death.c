@@ -29,7 +29,6 @@ zox_sys2(Chunk3DeathSystem) {
         }
         // remove from hash - can i do this better?
         zox_muter(terrain->value, ChunkLinks, chunks);
-        // zox_geter(terrain->value, ChunkLinks, chunks);
         int3_hashmap_remove(chunks->value, position->value);
         zox_delete(e);
     }

@@ -57,6 +57,9 @@ zox_sys2(CharacterBodySpawnSystem) {
             entity hips_slot = spawn_body_slot(world, chest_slot, body_anchor_bottom);
             entity left_shoulder_slot = spawn_body_slot(world, chest_slot, body_anchor_left);
             entity right_shoulder_slot = spawn_body_slot(world, chest_slot, body_anchor_right);
+            // TODO: Base offsets on a float3 anchor of Chest data
+            zox_set(left_shoulder_slot, PartOffset, { 2, 5, 0 });
+            zox_set(right_shoulder_slot, PartOffset, { -2, 5, 0 });
             // Now add parts to those slots
             entity rhead = find_slot_type(world, ritems->value, ritems->length, zox_slot_head);
             if (rhead)
@@ -67,11 +70,36 @@ zox_sys2(CharacterBodySpawnSystem) {
             // Test slot systems
             // byte positions are limited
             // TODO: FIx Glitch when out of bounds
-            entity rhips = find_slot_type(world, ritems->value, ritems->length, zox_slot_hips);
-            if (rhips) {
-                entity e2 = spawn_user_item_body(world, e, rhips, zox_slot_hips);
+            entity realm_hips = find_slot_type(world, ritems->value, ritems->length, zox_slot_hips);
+            if (realm_hips) {
+                entity e2 = spawn_user_item_body(world, e, realm_hips, zox_slot_hips);
                 zox_set(hips_slot, DataLink, { e2 });
             }
+            entity realm_shoulder = find_slot_type(world, ritems->value, ritems->length, zox_slot_lshoulder);
+            if (realm_shoulder) {
+                {
+                    entity e2 = spawn_user_item_body(world, e, realm_shoulder, zox_slot_lshoulder);
+                    zox_set(left_shoulder_slot, DataLink, { e2 });
+                }
+                {
+                    entity e2 = spawn_user_item_body(world, e, realm_shoulder, zox_slot_rshoulder);
+                    zox_set(right_shoulder_slot, DataLink, { e2 });
+                }
+                entity left_bicep_slot = spawn_body_slot(world, left_shoulder_slot, body_anchor_bottom);
+                entity right_bicep_slot = spawn_body_slot(world, right_shoulder_slot, body_anchor_bottom);
+                entity realm_bicep = find_slot_type(world, ritems->value, ritems->length, zox_slot_lbicep);
+                if (realm_bicep) {
+                    {
+                        entity e2 = spawn_user_item_body(world, e, realm_bicep, zox_slot_lbicep);
+                        zox_set(left_bicep_slot, DataLink, { e2 });
+                    }
+                    {
+                        entity e2 = spawn_user_item_body(world, e, realm_bicep, zox_slot_rbicep);
+                        zox_set(right_bicep_slot, DataLink, { e2 });
+                    }
+                }
+            }
+            // Testing
             entity pslot1 = head_slot;
             entity pslot2 = head_slot;
             entity pslot3 = head_slot;

@@ -7,8 +7,7 @@ void build_vox_rubble(VoxelNode *voctree, byte depth, byte2 voxel_range, int rub
         position.z = rand() % length;
         for (int k = 0; k < length; k++) {
             position.y = k;
-            byte3 voctree_position = position;
-            if (get_sub_node_voxel(voctree, &voctree_position, depth) == 0) {
+            if (get_value_VoxelNode(voctree, depth, position, 0) == 0) {
                 break;
             }
         }

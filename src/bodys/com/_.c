@@ -10,6 +10,7 @@ zoxc_byte(SlotAnchor);
 zoxc_byte3(BodySize);
 zoxc_byte3(PartPosition);
 zoxc_byte3(PartSize);
+zoxc_byte3(PartOffset);
 
 void define_components_bodys(ecs* world) {
     zoxd_tag(MenuBody);
@@ -24,4 +25,5 @@ void define_components_bodys(ecs* world) {
     zoxd_byte3(BodySize);
     zoxd_byte3(PartPosition);
     zoxd_byte3(PartSize);
+    zoxd_byte3(PartOffset);
 }

@@ -7,8 +7,6 @@ byte disable_grass_placements = 0;
 // place grass if max depth
 // generates our terrain voxels
 zox_sys2(GrassyPlainsSystem) {
-    // zox_ts_begin(grassy_plains);
-    // uint seed = global_seed;  // TODO: use terrains seed
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);

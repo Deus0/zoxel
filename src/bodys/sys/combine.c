@@ -46,20 +46,19 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
     byte part_max_depth = zox_getv(part, MaxRenderDepth);
     if (part_max_depth > *max_depth) {
         *max_depth = part_max_depth;
-        zox_log("Setting Body Depth [%i]", *max_depth);
+        byte new_vlength = powers_of_two_byte[*max_depth];
+        zox_log("Setting Body Depth [%i] v[%i]", *max_depth, new_vlength);
     }
     // Get Parent Data
     entity parent_slot = zox_get_parent(world, slot);
-    // entity parent_part = (parent_slot > 0 && zox_has(parent_slot, DataLink)) ? zox_getv(parent_slot, DataLink) : 0;
-    // entity parent_vox = item_get_max_depth_vox(world, parent_part);
-    // int3 parent_size = parent_vox > 0 ? zox_getv(parent_vox, ChunkSize) : int3_zero;
     byte3 parent_position = parent_slot > 0 && zox_has(parent_slot, PartPosition) ? zox_getv(parent_slot, PartPosition) : byte3_zero;
     byte3 parent_size = parent_slot > 0 && zox_has(parent_slot, PartSize) ? zox_getv(parent_slot, PartSize) : byte3_zero;
     // Calculate Placement Position
-    byte3 part_position = byte3_zero;
     // set part position to parent
-    part_position = parent_position;
-    // part_position = byte3_add(part_position, byte3_half(parent_size));
+    byte3 offset = zox_has(slot, PartOffset) ? zox_getv(slot, PartOffset) : byte3_zero;
+    byte3 part_position = parent_position;
+    part_position = byte3_add(part_position, offset);
+    // Anchor position from parent
     if (anchor == body_anchor_core) {
         body_size->x = part_size.x;
         body_size->y = part_size.y;
@@ -81,7 +80,7 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         part_position.z += (parent_size.z - part_size.z) / 2;
     } else if (anchor == body_anchor_right) {
         // Check the placement upper bounds
-        part_position.x = parent_position.x + parent_size.x;
+        part_position.x += parent_size.x;
         int part_upper_x = part_position.x + part_size.x;
         if (part_upper_x >= max_model_length) {
             zox_log("Size outside bounds for part X [%i]", part_upper_x);
@@ -99,7 +98,7 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         part_position.y += (parent_size.y - part_size.y) / 2;
         part_position.x += (parent_size.x - part_size.x) / 2;
         // Check the placement upper bounds
-        part_position.z = parent_position.z + parent_size.z;
+        part_position.z += parent_size.z;
         int part_upper = part_position.z + part_size.z;
         if (part_upper >= max_model_length) {
             zox_log("Size outside bounds for part X [%i]", part_upper);
@@ -114,7 +113,7 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         part_position.x += (parent_size.x - part_size.x) / 2;
         part_position.z += (parent_size.z - part_size.z) / 2;
         // Calculate the Bottom slot Grid Difference
-        int part_position_y = parent_position.y - part_size.y;
+        int part_position_y = parent_position.y - part_size.y + offset.y;
         if (part_position_y >= 0) {
             part_position.y = part_position_y;
         } else {
@@ -142,7 +141,7 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         part_position.y += (parent_size.y - part_size.y) / 2;
         part_position.z += (parent_size.z - part_size.z) / 2;
         // Calculate the Left slot Grid Difference
-        int part_position_x = parent_position.x - part_size.x;
+        int part_position_x = parent_position.x - part_size.x + offset.x;
         if (part_position_x >= 0) {
             part_position.x = part_position_x;
         } else {
@@ -170,7 +169,7 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         part_position.y += (parent_size.y - part_size.y) / 2;
         part_position.x += (parent_size.x - part_size.x) / 2;
         // Calculate the Left slot Grid Difference
-        int part_position_z = parent_position.z - part_size.z;
+        int part_position_z = parent_position.z - part_size.z + offset.z;
         if (part_position_z >= 0) {
             part_position.z = part_position_z;
         } else {
@@ -265,86 +264,3 @@ zox_sys2(BodyCombineSystem) {
         }
     }
 } zox_sys_end(BodyCombineSystem);
-
-        /*byte vlength = powers_of_two_byte[max_depth];
-        // Since positions get shuffled during build, we need to set centre positions at end
-        for (uint j = 0; j < voxes->length; j++) {
-            entity slot = slots_used->data[j];
-            entity vox = voxes->value[j];
-            int3 psize = zox_getv(vox, ChunkSize);
-            byte3 centre_position = positions->value[j];
-            centre_position.x += psize.x / 2;
-            centre_position.y += psize.y / 2;
-            centre_position.z += psize.z / 2;
-            zox_set(slot, PartPosition, { centre_position });
-            if (dbg_log) {
-                zox_log("Part [%s] Vox [%s] Centre Position [%ix%ix%i]", zox_get_name(vox), zox_get_name(vox), centre_position.x, centre_position.y, centre_position.x);
-            }
-        }*/
-
-
-        /*
-        entity_array_d* slots_used = create_entity_array_d(1);
-        fetch_slots_r(world, slots, chest_slot);
-        // Clear combine data
-        bsize->value = byte3_zero;
-        resize_CombineList(voxes, 0);
-        resize_CombinePositions(positions, 0);
-        for (uint j = 0; j < slots->size; j++) {
-            entity slot = slots->data[j];
-            entity part = zox_getv(slot, DataLink);
-            if (!zox_valid(part)) {
-                continue;
-            }
-            byte anchor = zox_getv(slot, SlotAnchor);
-            entity vox = item_get_max_depth_vox(world, part);
-            int3 psize = zox_getv(vox, ChunkSize);
-            // Get Parent Data
-            entity parent_slot = zox_get_parent(world, slot);
-            entity parent_part = zox_has(parent_slot, DataLink) ? zox_gett_value(parent_slot, DataLink) : 0;
-            entity parent_vox = item_get_max_depth_vox(world, parent_part);
-            int3 parent_size = parent_vox > 0 ? zox_getv(parent_vox, ChunkSize) : int3_zero;
-            // Calculate Placement Position
-            byte3 part_position = byte3_zero;
-            if (anchor == body_anchor_core) {
-                bsize->value.x = psize.x;
-                bsize->value.y = psize.y;
-                bsize->value.z = psize.z;
-            } else if (anchor == body_anchor_top) {
-                if (bsize->value.y + psize.y >= 255) {
-                    zox_log("Size outside bounds for part [%i]", (bsize->value.y + psize.y));
-                    continue;
-                }
-                // add to topy / midxz
-                part_position.x += (bsize->value.x - psize.x) / 2;
-                part_position.z += (bsize->value.z - psize.z) / 2;
-                part_position.y += bsize->value.y;
-                bsize->value.y += psize.y;
-            } else if (anchor == body_anchor_bottom) {
-                if (bsize->value.y + psize.y >= 255) {
-                    zox_log("Size outside bounds for part [%i]", (bsize->value.y + psize.y));
-                    continue;
-                }
-                // add to bottomy / midxz
-                part_position.x += (bsize->value.x - psize.x) / 2;
-                part_position.z += (bsize->value.z - psize.z) / 2;
-                // Move all previous positions up
-                bsize->value.y += psize.y;
-                for (uint k = 0; k < positions->length; k++) {
-                    byte3 position = positions->value[k];
-                    position.y += psize.y;
-                    positions->value[k] = position;
-                }
-            }
-            if (dbg_log) {
-                zox_log("Adding Vox [%s] to position (%i)[%ix%ix%i] of size [%ix%ix%i]", zox_get_name(vox), anchor, part_position.x, part_position.y, part_position.z, psize.x, psize.y, psize.x);
-            }
-            add_to_entity_array_d(slots_used, slot);
-            add_to_CombineList(voxes, vox);
-            add_to_CombinePositions(positions, part_position);
-        }
-        byte max_depth = 0;
-        byte vlength = 0;
-        // NOTE: This sets centre positions on body parts
-        // NOTE: This sets Body Octree Depth for the placement
-        */

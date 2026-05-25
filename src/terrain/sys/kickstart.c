@@ -18,9 +18,9 @@ zox_sys2(FirstTerrainChunkSystem) {
         if (!zox_valid(terrain->value)) {
             continue;
         }
-        zox_mut_begin(terrain->value, ChunkLinks, chunks3);
+        zox_mut_begin(terrain->value, ChunkLinks, chunks);
         // No need to spawn if exists in links
-        if (int3_hashmap_has(chunks3->value, position->value)) {
+        if (int3_hashmap_has(chunks->value, position->value)) {
             continue;
         }
         if (!zox_has(terrain->value, BlockScale) || !zox_has(terrain->value, NodeDepth)) {
@@ -33,7 +33,7 @@ zox_sys2(FirstTerrainChunkSystem) {
             zox_loge("Failed to spawn chunk [%ix%ix%i] on %s", position->value.x, position->value.y, position->value.z, zox_get_name(terrain->value));
             continue;
         }
-        int3_hashmap_add(chunks3->value, position->value, chunk);
+        int3_hashmap_add(chunks->value, position->value, chunk);
         zox_mut_end(terrain->value, ChunkLinks);
     }
 } zox_sys_end(FirstTerrainChunkSystem);

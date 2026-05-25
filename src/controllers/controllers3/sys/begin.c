@@ -75,12 +75,9 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
     }
     // entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
-    zox_mut_begin(terrain, ChunkLinks, chunks);
+    zox_geter(terrain, ChunkLinks, chunks);
     TerrainPlace placer;
     placer.chunk = 0;
-    /*if (!model) {
-        zox_log_error("File [%s] Not Found.", player_vox_model);
-    }*/
     // load position for spawning
     load_character_p(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
     byte depth = terrain_depth;

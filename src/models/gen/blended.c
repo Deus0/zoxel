@@ -1,3 +1,32 @@
+
+byte get_sub_node_voxel(const VoxelNode* node, byte3* positionl, byte depth) {
+    if (!node) {
+        return 0;
+    }
+    if (depth == 0 || !has_children_VoxelNode(node)) {
+        return node->value;
+    }
+    depth--;
+    byte dividor = powers_of_two_byte[depth];
+    byte3 positionn = (byte3) {
+        positionl->x / dividor,
+        positionl->y / dividor,
+        positionl->z / dividor
+    };
+    byte i = byte3_octree_array_index(positionn);
+    if (i >= 8) {
+        zox_logw("[get_sub_node_voxel] Node Index OOB: %i - depth [%i] - positionl [%ix%ix%i] - positionn [%ix%ix%i] dividor [%i]", i, depth, positionl->x, positionl->y, positionl->z, positionn.x, positionn.y, positionn.z, dividor);
+        return node->value;
+    }
+    byte3_modulus_byte(positionl, dividor); // leftover goes here
+    VoxelNode* kids = get_children_VoxelNode(node);
+    if (!kids) {
+        zox_log_error("node kids null!");
+        return node->value;
+    }
+    return get_sub_node_voxel(&kids[i], positionl, depth);
+}
+
 void build_vox_blended(VoxelNode *voxelNode, byte node_depth,
     byte black_voxel_2, byte black_voxel_3,
     byte2 voxel_range, byte2 voxel_range_2,

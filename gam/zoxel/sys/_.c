@@ -2,7 +2,7 @@
 #include "stats.c"
 #include "skills.c"
 #include "items_blocks.c"
-#include "items_bodys.c"
+#include "body_parts.c"
 #include "items_equips.c"
 #include "quests.c"
 #include "dialogues.c"

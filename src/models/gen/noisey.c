@@ -7,8 +7,7 @@ void vnoise3(VoxelNode* voctree, byte depth, byte2 voxel_range, byte black_voxel
         for (position.y = 0; position.y < size.y; position.y++) {
             for (position.z = 0; position.z < size.z; position.z++) {
                 // skip outline parts
-                byte3 temp_position = position;
-                if (get_sub_node_voxel(voctree, &temp_position, depth) == black_voxel) {
+                if (get_value_VoxelNode(voctree, depth, position, 0) == black_voxel) {
                     continue;
                 }
                 /*const int rando = rand() % 1000;
