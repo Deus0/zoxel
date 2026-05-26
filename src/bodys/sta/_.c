@@ -12,10 +12,10 @@
 #define zox_slot_rforearm 9
 #define zox_slot_rhand 10
 
-#define zox_slot_lthigh 5
-#define zox_slot_lcalf 7
-#define zox_slot_lfoot 9
+#define zox_slot_lthigh 11
+#define zox_slot_lcalf 12
+#define zox_slot_lfoot 13
 
-#define zox_slot_rthigh 6
-#define zox_slot_rcalf 8
-#define zox_slot_rfoot 10
+#define zox_slot_rthigh 14
+#define zox_slot_rcalf 15
+#define zox_slot_rfoot 16

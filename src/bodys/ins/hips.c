@@ -8,7 +8,7 @@ entity spawn_blueprint_hips(ecs* world, byte3 nsize, byte depth) {
     return e;
 }
 
-entity spawn_blueprint_shoulder(ecs* world, byte3 nsize, byte depth) {
+entity spawn_blueprint_flesh_part(ecs* world, byte3 nsize, byte depth) {
     color skin_color = (color) { 230, 155, 133, 255 };
     entity e = spawn_node_model_colors(world, skin_color, 1);
     byte3 nposition_1 = byte3_half(nsize);

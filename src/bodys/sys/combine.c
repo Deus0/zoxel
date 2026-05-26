@@ -35,7 +35,7 @@ entity item_get_max_depth_vox(ecs* world, entity part) {
 
 // NOTE: Recursively add parts to the body
 // TODO: Get position based on previous slot
-void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions* positions, entity_array_d* slots_used, byte3* body_size, byte* max_depth) {
+void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions* positions, entity_array_d* slots_used, byte3* body_size, byte* max_depth, byte dbg_log) {
     entity part = zox_getv(slot, DataLink);
     byte anchor = zox_getv(slot, SlotAnchor);
     if (!zox_valid(part)) {
@@ -55,9 +55,8 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
     byte3 parent_size = parent_slot > 0 && zox_has(parent_slot, PartSize) ? zox_getv(parent_slot, PartSize) : byte3_zero;
     // Calculate Placement Position
     // set part position to parent
-    byte3 offset = zox_has(slot, PartOffset) ? zox_getv(slot, PartOffset) : byte3_zero;
-    byte3 part_position = parent_position;
-    part_position = byte3_add(part_position, offset);
+    int3 offset = zox_has(slot, PartOffset) ? zox_getv(slot, PartOffset) : int3_zero;
+    int3 part_position = int3_add(byte3_to_int3(parent_position), offset);
     // Anchor position from parent
     if (anchor == body_anchor_core) {
         body_size->x = part_size.x;
@@ -65,10 +64,13 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         body_size->z = part_size.z;
     } else if (anchor == body_anchor_top) {
         // Check the placement upper bounds
-        part_position.y = parent_position.y + parent_size.y;
+        part_position.y += parent_size.y;
         int part_upper_y = part_position.y + part_size.y;
         if (part_upper_y >= max_model_length) {
-            zox_log("Size outside bounds for part Y [%i]", part_upper_y);
+            zox_loge("Part [%s] OOB: Y [%i of %i]", zox_get_name(vox), part_upper_y, max_model_length);
+            zox_loge(" Parent At [%ix%ix%i]", parent_position.x, parent_position.y, parent_position.z);
+            zox_loge(" Parent Size [%ix%ix%i]", parent_size.x, parent_size.y, parent_size.z);
+            zox_loge(" Offset [%ix%ix%i]", offset.x, offset.y, offset.z);
             return;
         }
         // Increase Grid Size if needed
@@ -94,9 +96,6 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         part_position.y += (parent_size.y - part_size.y) / 2;
         part_position.z += (parent_size.z - part_size.z) / 2;
     } else if (anchor == body_anchor_forward) {
-        // Position YZ
-        part_position.y += (parent_size.y - part_size.y) / 2;
-        part_position.x += (parent_size.x - part_size.x) / 2;
         // Check the placement upper bounds
         part_position.z += parent_size.z;
         int part_upper = part_position.z + part_size.z;
@@ -108,18 +107,18 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         if (part_upper > body_size->z) {
             body_size->z = part_upper;
         }
-    } else if (anchor == body_anchor_bottom) {
-        // Position XZ
+        // PositionXY
         part_position.x += (parent_size.x - part_size.x) / 2;
-        part_position.z += (parent_size.z - part_size.z) / 2;
+        part_position.y += (parent_size.y - part_size.y) / 2;
+    } else if (anchor == body_anchor_bottom) {
         // Calculate the Bottom slot Grid Difference
-        int part_position_y = parent_position.y - part_size.y + offset.y;
+        int part_position_y = parent_position.y + offset.y - part_size.y;
         if (part_position_y >= 0) {
             part_position.y = part_position_y;
         } else {
             part_position.y = 0;
             // Increase Body Grid Size
-            int boost_y = -part_position_y;
+            int boost_y = -part_position_y; // Distance to Ground
             int new_body_size_y = body_size->y + boost_y;
             if (new_body_size_y >= max_model_length) {
                 zox_log("Body Needs resizing Past Bounds Y [%i]", new_body_size_y);
@@ -136,10 +135,10 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
                 positions->value[k] = position;
             }
         }
-    } else if (anchor == body_anchor_left) {
-        // Position YZ
-        part_position.y += (parent_size.y - part_size.y) / 2;
+        // Position XZ
+        part_position.x += (parent_size.x - part_size.x) / 2;
         part_position.z += (parent_size.z - part_size.z) / 2;
+    } else if (anchor == body_anchor_left) {
         // Calculate the Left slot Grid Difference
         int part_position_x = parent_position.x - part_size.x + offset.x;
         if (part_position_x >= 0) {
@@ -164,10 +163,10 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
                 positions->value[k] = position;
             }
         }
-    } else if (anchor == body_anchor_back) {
         // Position YZ
         part_position.y += (parent_size.y - part_size.y) / 2;
-        part_position.x += (parent_size.x - part_size.x) / 2;
+        part_position.z += (parent_size.z - part_size.z) / 2;
+    } else if (anchor == body_anchor_back) {
         // Calculate the Left slot Grid Difference
         int part_position_z = parent_position.z - part_size.z + offset.z;
         if (part_position_z >= 0) {
@@ -192,6 +191,9 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
                 positions->value[k] = position;
             }
         }
+        // Position XY
+        part_position.x += (parent_size.x - part_size.x) / 2;
+        part_position.y += (parent_size.y - part_size.y) / 2;
     }
     // uint lower_bounds_y = part_position.y;
     byte vlength = powers_of_two_byte[*max_depth];
@@ -202,20 +204,26 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
         zox_log(" - Body Size [%ix%ix%i] > Grid Size [%i]", body_size->x, body_size->y, body_size->z, vlength);
     }
     // Set position and size here
+    byte3 part_position_b3 = int3_to_byte3(part_position);
     zox_muter(slot, PartPosition, part_position_com);
     zox_muter(slot, PartSize, part_size_com);
-    part_position_com->value = part_position;
+    part_position_com->value = part_position_b3;
     part_size_com->value = part_size;
-    // store them
+    // Store them
     add_to_entity_array_d(slots_used, slot);
     add_to_CombineList(voxes, vox);
-    add_to_CombinePositions(positions, part_position);
+    add_to_CombinePositions(positions, part_position_b3);
+    if (dbg_log) {
+        zox_log("Combining Part [%s] a[%i]", zox_get_name(vox), anchor);
+        zox_log("   + [%ix%ix%i]", part_position_b3.x, part_position_b3.y, part_position_b3.z);
+        zox_log("   w [%ix%ix%i]", body_size->x, body_size->y, body_size->z);
+    }
     // Recursive add
     entity slots[zox_children_capacity];
     uint length = zox_get_children_by_id(world, slot, slots, zox_children_capacity, zox_id(Slot));
     for (uint k = 0; k < length; k++) {
         entity child_slot = slots[k];
-        build_body_r(world, child_slot, voxes, positions, slots_used, body_size, max_depth);
+        build_body_r(world, child_slot, voxes, positions, slots_used, body_size, max_depth, dbg_log);
     }
 }
 
@@ -252,7 +260,7 @@ zox_sys2(BodyCombineSystem) {
         byte max_depth = 0;
         // slots used inside it
         entity_array_d* slots_used = create_entity_array_d(1);
-        build_body_r(world, chest_slot, voxes, positions, slots_used, &body_size->value, &max_depth);
+        build_body_r(world, chest_slot, voxes, positions, slots_used, &body_size->value, &max_depth, dbg_log);
         dispose_entity_array_d(slots_used);
         // This should be calculated when we add to our vox?
         // TODO: We should make this same scale as npcs

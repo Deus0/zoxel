@@ -4,6 +4,7 @@ entity spawn_body_slot(ecs* world, entity parent, byte anchor) {
     zox_set(e, SlotAnchor, { anchor });
     zox_set(e, PartPosition, { byte3_zero });
     zox_set(e, PartSize, { byte3_zero });
+    zox_set(e, PartOffset, { int3_zero });
     return e;
 }
 

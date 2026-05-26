@@ -1,6 +1,4 @@
-#define trailoffset 0.12f
-#define trailheight 0.048f
-
+float trail_offset = 0.118f;
 #include "camera_io.c"
 #include "character_io.c"
 #include "player_save.c"

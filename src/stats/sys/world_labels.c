@@ -24,7 +24,6 @@ zox_sys2(CharacterNameLabelsSystem) {
             continue;
         }
         zox_geter_value(soul, StatValue, float, soul_value);
-        float trail_offset = trailoffset + trailheight;
         SpawnDataElement3D label3D_spawn_data = {
             .ui_holder = e,
             .prefab = prefab_label3D,

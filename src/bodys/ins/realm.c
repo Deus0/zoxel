@@ -33,8 +33,6 @@ entity2 spawn_realm_body_part(ecs* world, byte variants, byte mdepth, byte3 size
     }
     zox_set_ptr(model_group, ModelLinks, models);
     entity model = models.value[0];
-    // TODO: Generate based on model
-    // entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("taskbar_body"));
     // # # # Spawn Item Texture # # #
     entity texture = spawn_texture(world, prefab_vox_texture, byte2_to_int2(tsize));
     // zox_set_name_e(texture, "bodys_texture_head");
@@ -50,4 +48,42 @@ entity2 spawn_realm_body_part(ecs* world, byte variants, byte mdepth, byte3 size
     zox_set(e, SlotType, { slot_type });
     zox_set(e, MaxRenderDepth, { mdepth });
     return (entity2) { e, model_group };
+}
+
+entity2 spawn_realm_body_part2(ecs* world, entity realm, lint seed, byte model_depth, const char* name, byte slot_type, entity blueprint, float3 blueprint_scale, byte dbg_log) {
+    // Model Data
+    byte model_length = powers_of_two_byte[model_depth];
+    byte3 model_size = byte3_scale3f(byte3_single(model_length), blueprint_scale);
+    byte2 texture_size = byte2_single(model_length);
+    entity2 e = spawn_realm_body_part(world, 1, model_depth, model_size, blueprint, name, seed, texture_size, slot_type);
+    zox_make_prefab(e.x);
+    zox_make_prefab(e.y);
+    zox_set_parent(world, e.x, realm);
+    zox_set_parent(world, e.y, realm);
+    // add_to_ItemLinks(items, spawn.x);
+    // add_to_ModelLinks(models, spawn.y);
+    if (dbg_log) {
+        zox_log("Model [%s]:", name);
+        zox_log("   Depth [%i] Length [%i]", model_depth, model_length);
+        zox_log("   Size [%ix%ix%i]", model_size.x, model_size.y, model_size.z);
+    }
+    return e;
+}
+
+void zox_dbg_body_part(ecs* world, entity e) {
+    if (!zox_valid(e)) {
+        return;
+    }
+    entity vox = get_item_model(world, e);
+    if (!zox_valid(vox)) {
+        zox_log("Model [%s]: Invalid Vox", zox_get_name(e));
+        return;
+    }
+    int3 model_size = zox_getv(vox, ChunkSize);
+    byte model_depth = zox_getv(e, MaxRenderDepth);
+    byte model_length = powers_of_two_byte[model_depth];
+    byte slot_type = zox_getv(e, SlotType);
+    zox_log("Body Part [%s] (%i):", zox_get_name(e), slot_type);
+    zox_log("   Depth [%i] Length [%i]", model_depth, model_length);
+    zox_log("   Size [%ix%ix%i]", model_size.x, model_size.y, model_size.z);
 }
