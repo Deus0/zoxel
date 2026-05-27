@@ -33,6 +33,14 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
     entity bone = spawn_body_bone(world, prefab_bone, skeleton, parent, position, local_position, size);
     zox_set_unique_name(bone, "bbone");
     add_to_BoneLinks(bones, bone);
+    if (zox_has(part, Hand)) {
+        zox_add_tag(bone, HandBone);
+        zox_set(skeleton, HandBoneLink, { bone });
+    }
+    if (zox_has(part, Shoulder)) {
+        zox_add_tag(bone, ShoulderBone);
+        zox_set(skeleton, ShoulderBoneLink, { bone });
+    }
     if (dbg_log) {
         zox_log("+ Spawned bone for Part [%s]:", zox_get_name(part));
         zox_log("   # size  b [%ix%ix%i] f [%fx%fx%f]", vsize.x, vsize.y, vsize.z, size.x, size.y, size.z);

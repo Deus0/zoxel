@@ -32,6 +32,7 @@ void zox_define_systems_actions(ecs* world) {
         zoxp_mainthread,
         [in] actions.ActiveActionDirty,
         [in] actions.ActiveAction,
+        [in] bones.HandBoneLink,
         [none] characters.Character,
     );
 }

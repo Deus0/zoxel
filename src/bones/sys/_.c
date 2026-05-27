@@ -5,6 +5,7 @@
 #include "bone_render.c"
 #include "head_bob.c"
 #include "init.c"
+#include "shoulder_raise.c"
 
 void define_systems_bones(ecs *world) {
     zox_system_1(
@@ -67,5 +68,11 @@ void define_systems_bones(ecs *world) {
         [in] transforms3.Position3D,
         [in] bones.BoneSize,
         [none] bones.Bone
+    );
+    zox_system(
+        ShoulderRaiseSystem,
+        EcsOnUpdate,
+        [in] bones.ShoulderBoneLink,
+        [none] bones.Skeleton
     );
 }

@@ -10,6 +10,10 @@ zoxc_arrayd(BoneLinks, entity)
 zoxc_entity(SkeletonLink);
 zoxc_entity(HeadBoneLink);
 #include "bone_index.c"
+zox_tag(HandBone);
+zoxc_entity(HandBoneLink);
+zox_tag(ShoulderBone);
+zoxc_entity(ShoulderBoneLink);
 
 void define_components_bones(ecs* world) {
     zoxd_tag(Bone);
@@ -25,4 +29,8 @@ void define_components_bones(ecs* world) {
     zoxd_dest(BoneIndexGPULink);
     zoxd_entity(SkeletonLink);
     zoxd_entity(HeadBoneLink);
+    zoxd_tag(HandBone);
+    zoxd_entity(HandBoneLink);
+    zoxd_tag(ShoulderBone);
+    zoxd_entity(ShoulderBoneLink);
 }

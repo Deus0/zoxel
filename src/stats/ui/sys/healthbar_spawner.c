@@ -12,7 +12,6 @@ zox_sys2(HealthbarSpawnerSystem) {
             // destroy healthbar here
             find_array_element_with_tag(elementLinks, Healthbar, healthbar)
             if (zox_valid(healthbar)) {
-                // zox_log("destroying healthbar: %s", zox_get_name(healthbar))
                 remove_from_ElementLinks(elementLinks, healthbar);
                 zox_delete(healthbar)
             } else {

@@ -18,6 +18,7 @@ void spawn_prefabs_bodys(ecs* world) {
         // Spawn Body Slots on Character3 Skeleton
         entity body_slot = spawn_body_slot(world, prefab_character3_skeleton, body_anchor_core);
         zox_add_tag(body_slot, Body);
-
+        zox_set(prefab_character3_skeleton, HandBoneLink, { 0 });
+        zox_set(prefab_character3_skeleton, ShoulderBoneLink, { 0 });
     }
 }

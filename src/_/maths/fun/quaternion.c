@@ -235,14 +235,11 @@ static inline float float3_length_squared(const float3 v) {
 static inline float4 quaternion_from_to(float3 from, float3 to) {
     float3 f = float3_normalize(from);
     float3 t = float3_normalize(to);
-
     float dot = float3_dot(f, t);
-
     if (dot > 0.9999f) {
         // Vectors are almost the same
         return (float4){ 0, 0, 0, 1 };
     }
-
     if (dot < -0.9999f) {
         // Vectors are opposite: pick an arbitrary orthogonal axis
         float3 orthogonal = float3_cross((float3){1, 0, 0}, f);
@@ -252,11 +249,9 @@ static inline float4 quaternion_from_to(float3 from, float3 to) {
         orthogonal = float3_normalize(orthogonal);
         return (float4){ orthogonal.x, orthogonal.y, orthogonal.z, 0 };
     }
-
     float3 axis = float3_cross(f, t);
     float s = sqrtf((1.0f + dot) * 2.0f);
     float invs = 1.0f / s;
-
     return float4_normalize((float4){
         axis.x * invs,
         axis.y * invs,
@@ -274,28 +269,37 @@ static inline float3 quaternion_to_normal(float4 q) {
     q.y *= inv_len;
     q.z *= inv_len;
     q.w *= inv_len;
-
     // assume forward vector
     float3 v = {0.0f, 0.0f, 1.0f};
-
     // float3 qv = {q.x, q.y, q.z};
     float3 t;
-
     // t = 2 * cross(qv, v)
     t.x = 2.0f * (q.y * v.z - q.z * v.y);
     t.y = 2.0f * (q.z * v.x - q.x * v.z);
     t.z = 2.0f * (q.x * v.y - q.y * v.x);
-
     // v' = v + w * t + cross(qv, t)
     float3 cross_qv_t;
     cross_qv_t.x = q.y * t.z - q.z * t.y;
     cross_qv_t.y = q.z * t.x - q.x * t.z;
     cross_qv_t.z = q.x * t.y - q.y * t.x;
-
     float3 out;
     out.x = v.x + q.w * t.x + cross_qv_t.x;
     out.y = v.y + q.w * t.y + cross_qv_t.y;
     out.z = v.z + q.w * t.z + cross_qv_t.z;
-
     return out;
+}
+
+static inline float4 euler_to_quaternion(float3 euler) {
+    float cx = cosf(euler.x * 0.5f);
+    float sx = sinf(euler.x * 0.5f);
+    float cy = cosf(euler.y * 0.5f);
+    float sy = sinf(euler.y * 0.5f);
+    float cz = cosf(euler.z * 0.5f);
+    float sz = sinf(euler.z * 0.5f);
+    float4 q;
+    q.w = cx * cy * cz + sx * sy * sz;
+    q.x = sx * cy * cz - cx * sy * sz;
+    q.y = cx * sy * cz + sx * cy * sz;
+    q.z = cx * cy * sz - sx * sy * cz;
+    return q;
 }

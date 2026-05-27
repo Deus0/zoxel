@@ -1,4 +1,15 @@
 ### todo ###
+# Testing #
+- Add test function for spawning a Terrain Chunk
+- Add test function for spawning a Colored Chunk
+# UI #
+- Remove all spawn_window_users's
+# Regions #
+- destroy regions
+- region lods
+- region town/mountain links
+# Towns #
+- Spawn Towns per Region - link to Town Placecment
 # Body #
 - Add Cylinder Shape for Fill Nodes
 - Add Neck Node for Headblueprint
@@ -11,7 +22,6 @@
 	- cylinder shape at bottom+top
 - Designate a hand bone
 	- Spawn Held Item onto handbone
-- Remove all spawn_window_users's
 - Create Slots for Body / Equip
 - Footstep Sounds when walking around
 - Head bob to move faster when walking
@@ -182,11 +192,6 @@ Module [Nodes]:
 	- base on prior biomes so it stands out too
 	- primary color dirt - others based off this
 - Refactor more blocks into per biome
-Module [Terrain/Regions]:
-- region stream position / detect system
-- spawn / destroy regions
-- region lods
-- region town/mountain links
 # Tools #
 - terminal log text list
 - chunk debugger - show lods of chunks etc
@@ -368,3 +373,5 @@ Module [Rendering]:
 -x remove use of list window / list ui, just spawn elements into a listview and have system handle the rest
 -x Refactor PartLinks
 -x Refactor EquipLinks
+-x region stream position / detect system
+-x spawn regions

@@ -60,10 +60,10 @@ zox_sys2(CharacterBodySpawnSystem) {
             zox_dbg_body_part(world, realm_bicep);
             zox_dbg_body_part(world, realm_forearm);
             zox_dbg_body_part(world, realm_hand);
-            /*zox_dbg_body_part(world, realm_hips);
+            zox_dbg_body_part(world, realm_hips);
             zox_dbg_body_part(world, realm_thigh);
             zox_dbg_body_part(world, realm_calf);
-            zox_dbg_body_part(world, realm_foot);*/
+            zox_dbg_body_part(world, realm_foot);
         }
         // Get our Core Slot
         entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
@@ -87,8 +87,8 @@ zox_sys2(CharacterBodySpawnSystem) {
         // Slot Offsets
         zox_set(eslot_head, PartOffset, { 0, -1, 0 });
         zox_set(eslot_hips, PartOffset, { 0, 2, 0 });
-        zox_set(eslot_lshoulder, PartOffset, { 2, 5, 0 });
-        zox_set(eslot_rshoulder, PartOffset, { -2, 5, 0 });
+        zox_set(eslot_lshoulder, PartOffset, { 1, 5, 0 });
+        zox_set(eslot_rshoulder, PartOffset, { -1, 5, 0 });
         // Now add parts to those slots
         // NOTE: This is head branch
         if (realm_head)
@@ -140,8 +140,11 @@ zox_sys2(CharacterBodySpawnSystem) {
         // NOTE: This is Arms Branch
         if (realm_shoulder) {
             // Attach Parts
-            zox_set(eslot_lshoulder, DataLink, { spawn_user_item_body(world, e, realm_shoulder, zox_slot_lshoulder) });
-            zox_set(eslot_rshoulder, DataLink, { spawn_user_item_body(world, e, realm_shoulder, zox_slot_rshoulder) });
+            entity lshoulder = spawn_user_item_body(world, e, realm_shoulder, zox_slot_lshoulder);
+            entity rshoulder = spawn_user_item_body(world, e, realm_shoulder, zox_slot_rshoulder);
+            zox_set(eslot_lshoulder, DataLink, { lshoulder });
+            zox_set(eslot_rshoulder, DataLink, { rshoulder });
+            zox_add_tag(lshoulder, Shoulder);
             // Sub Slots [Biceps]
             entity eslot_lbicep = spawn_body_slot(world, eslot_lshoulder, body_anchor_bottom);
             entity eslot_rbicep = spawn_body_slot(world, eslot_rshoulder, body_anchor_bottom);
@@ -167,8 +170,11 @@ zox_sys2(CharacterBodySpawnSystem) {
                     zox_set(eslot_rhand, PartOffset, { 0, 1, 1 });
                     if (realm_hand) {
                         // Attach Parts
-                        zox_set(eslot_lhand, DataLink, { spawn_user_item_body(world, e, realm_hand, zox_slot_lhand) });
-                        zox_set(eslot_rhand, DataLink, { spawn_user_item_body(world, e, realm_hand, zox_slot_rhand) });
+                        entity lhand = spawn_user_item_body(world, e, realm_hand, zox_slot_lhand);
+                        zox_set(eslot_lhand, DataLink, { lhand });
+                        entity rhand = spawn_user_item_body(world, e, realm_hand, zox_slot_rhand);
+                        zox_set(eslot_rhand, DataLink, { rhand });
+                        zox_add_tag(lhand, Hand);
                     }
                 }
             }
@@ -179,8 +185,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         entity pslot3 = pslot1;
         entity pslot4 = pslot1;
         entity pslot5 = pslot1;
-        for (byte j = 0; j < zox_dbg_extraheads; j++)
-        {
+        for (byte j = 0; j < zox_dbg_extraheads; j++) {
             entity pslot;
             int slot_rand = rand_range(1, 100);
             if (slot_rand >= 80) {

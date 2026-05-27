@@ -11,6 +11,8 @@ zoxc_byte3(BodySize);
 zoxc_byte3(PartPosition);
 zoxc_byte3(PartSize);
 zoxc_int3(PartOffset); // for now
+zox_tag(Hand);
+zox_tag(Shoulder);
 
 void define_components_bodys(ecs* world) {
     zoxd_tag(MenuBody);
@@ -26,4 +28,6 @@ void define_components_bodys(ecs* world) {
     zoxd_byte3(PartPosition);
     zoxd_byte3(PartSize);
     zoxd_int3(PartOffset);
+    zoxd_tag(Hand);
+    zoxd_tag(Shoulder);
 }
