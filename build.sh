@@ -148,4 +148,4 @@ echo ""
 echo "...[$BUILD_SCRIPT ${GAME} ${GLB} ${GFX} ${ARC} --${PRF}]"
 echo ""
 
-bash "$BUILD_SCRIPT" ${GAME} ${GLB} ${GFX} ${ARC} --${PRF}
+bash "$BUILD_SCRIPT" ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --package
