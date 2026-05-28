@@ -1,4 +1,4 @@
-extern void add_debug_cube(ecs *world, const entity e, const float3 size);
+extern void add_debug_cube(ecs*, entity, float3);
 const float3 initial_bone_size = { 0.03f, 0.03f, 0.03f };
 
 entity spawn_prefab_bone(ecs *world) {
@@ -17,12 +17,10 @@ entity spawn_prefab_bone(ecs *world) {
     return e;
 }
 
-entity spawn_bone(ecs *world, entity p, entity skeleton, float3 skeleton_position, float3 local_position, float3 size) {
-    zox_instance(p);
+entity spawn_bone(ecs *world, entity prefab, entity skeleton, float3 skeleton_position, float3 local_position, float3 size) {
+    zox_instance(prefab);
     zox_set(e, SkeletonLink, { skeleton });
     zox_set(e, LocalPosition3D, { local_position });
-    // zox_set(e, Position3D, { skeleton_position });
-    // actually position within skeleton, local to root bone
     zox_set(e, BonePosition, { skeleton_position });
     zox_set(e, BoneSize, { size });
     return e;

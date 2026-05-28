@@ -33,6 +33,7 @@ void zox_define_systems_actions(ecs* world) {
         [in] actions.ActiveActionDirty,
         [in] actions.ActiveAction,
         [in] bones.HandBoneLink,
+        [out] bones.RaiseShoulder,
         [none] characters.Character,
     );
 }

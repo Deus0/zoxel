@@ -7,13 +7,15 @@ zoxc_float3(BonePosition);
 zoxc_float3(BoneSize);
 zoxc_arrayd(BoneIndexes, byte)
 zoxc_arrayd(BoneLinks, entity)
+#include "bone_index.c"
+zox_tag(HeadBone);
+zox_tag(HandBone);
+zox_tag(ShoulderBone);
 zoxc_entity(SkeletonLink);
 zoxc_entity(HeadBoneLink);
-#include "bone_index.c"
-zox_tag(HandBone);
 zoxc_entity(HandBoneLink);
-zox_tag(ShoulderBone);
 zoxc_entity(ShoulderBoneLink);
+zoxc_byte(RaiseShoulder);
 
 void define_components_bones(ecs* world) {
     zoxd_tag(Bone);
@@ -27,10 +29,12 @@ void define_components_bones(ecs* world) {
     zoxd_arrayd(BoneIndexes);
     zoxd_arrayd(BoneLinks);
     zoxd_dest(BoneIndexGPULink);
+    zoxd_tag(HeadBone);
+    zoxd_tag(HandBone);
+    zoxd_tag(ShoulderBone);
     zoxd_entity(SkeletonLink);
     zoxd_entity(HeadBoneLink);
-    zoxd_tag(HandBone);
     zoxd_entity(HandBoneLink);
-    zoxd_tag(ShoulderBone);
     zoxd_entity(ShoulderBoneLink);
+    zoxd_byte(RaiseShoulder);
 }

@@ -89,3 +89,7 @@ static inline float float2_distance(const float2 a, const float2 b) {
 static inline float2 float2_single(const float v) {
     return (float2) { v, v };
 }
+
+static inline float2 float2_mulf(float2 a, float m) {
+    return (float2) { a.x * m, a.y * m };
+}

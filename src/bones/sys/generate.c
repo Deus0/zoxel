@@ -1,6 +1,5 @@
 // todo: Shapes on bones used for setting verts, spheres of influence
 // todo: use SphereRadius float per bone for a simple radius
-
 zox_sys2(BoneIndexGenerateSystem) {
     zox_sys_world();
     zox_sys_begin();

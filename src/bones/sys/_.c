@@ -19,8 +19,7 @@ void define_systems_bones(ecs *world) {
         HeadAnimateSystem,
         EcsOnUpdate,
         [in] bones.SkeletonDirty,
-        [in] bones.BoneLinks,
-        [out] bones.HeadBoneLink,
+        [in] bones.HeadBoneLink,
         [none] bones.Skeleton
     );
     // generating bone indexes here
@@ -72,7 +71,9 @@ void define_systems_bones(ecs *world) {
     zox_system(
         ShoulderRaiseSystem,
         EcsOnUpdate,
+        [in] bones.RaiseShoulder,
         [in] bones.ShoulderBoneLink,
+        [in] bones.HeadBoneLink,
         [none] bones.Skeleton
     );
 }

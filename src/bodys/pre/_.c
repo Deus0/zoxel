@@ -15,10 +15,11 @@ void spawn_prefabs_bodys(ecs* world) {
         zox_prefab_character_add(CombineVox);
         zox_prefab_character_add(CombineList);
         zox_prefab_character_add(CombinePositions);
-        // Spawn Body Slots on Character3 Skeleton
-        entity body_slot = spawn_body_slot(world, prefab_character3_skeleton, body_anchor_core);
+    }
+    // Body is after Characters
+    if (prefab_character3_skeleton) {
+        entity e = prefab_character3_skeleton;
+        entity body_slot = spawn_body_slot(world, e, body_anchor_core);
         zox_add_tag(body_slot, Body);
-        zox_set(prefab_character3_skeleton, HandBoneLink, { 0 });
-        zox_set(prefab_character3_skeleton, ShoulderBoneLink, { 0 });
     }
 }

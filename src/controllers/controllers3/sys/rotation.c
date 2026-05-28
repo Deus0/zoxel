@@ -86,7 +86,32 @@ zox_sys2(Player3RotateSystem) {
         zox_muter(character, Rotation3D, character_rotation);
         character_euler->value.y += euler.y;
         character_rotation->value = quaternion_from_euler(character_euler->value);
-        entity camera = zox_getv(character, CameraLink);
+        // Set Rotation
+        entity head_bone = zox_getv(character, HeadBoneLink);
+        if (!zox_valid(head_bone)) {
+            continue;
+        }
+        head_bone = zox_get_child_by_id(world, head_bone, zox_id(Camera));
+        if (!zox_valid(head_bone)) {
+            continue;
+        }
+        float2 euler_limit_x = (float2) { 89, 89 };
+        euler_limit_x = float2_mulf(euler_limit_x, degrees_to_radians);
+        zox_muter(head_bone, LocalRotation3D, head_rotation);
+        float3 head_euler = quaternion_to_euler(head_rotation->value);
+        // NOTE: Positive for headbone, negative for camera
+        head_euler.x -= euler.x;
+        if (head_euler.x < -euler_limit_x.y) {
+            head_euler.x = -euler_limit_x.y;
+        } else if (head_euler.x > euler_limit_x.x)  {
+            head_euler.x = euler_limit_x.x;
+        }
+        head_rotation->value = euler_to_quaternion(head_euler);
+        // zox_log("head_euler [%f]", head_euler.x * radians_to_degrees);
+        // float3_mulf(head_euler, degrees_to_radians));
+
+        // quaternion_from_euler(float3_scale(ceuler->value, degrees_to_radians));
+        /*entity camera = zox_getv(character, CameraLink);
         if (!zox_valid(camera)) {
             zox_logw("Camera  invalid for rotation");
             continue;
@@ -95,16 +120,9 @@ zox_sys2(Player3RotateSystem) {
         zox_muter(camera, Euler, ceuler);
         ceuler->value.x -= euler.x * radians_to_degrees;
         // limit camera for player head
-        float2 camera_limit_x = (float2) { 89, 89 };
-        if (ceuler->value.x < -camera_limit_x.y) {
-            ceuler->value.x = -camera_limit_x.y;
-        }
-        else if (ceuler->value.x > camera_limit_x.x)  {
-            ceuler->value.x = camera_limit_x.x;
-        }
         // TODO: Use LocalEuler and the override for this, confusing to debug atm due to inconsistency
         zox_muter(camera, LocalRotation3D, crotation);
-        crotation->value = quaternion_from_euler(float3_scale(ceuler->value, degrees_to_radians));
+        crotation->value = quaternion_from_euler(float3_scale(ceuler->value, degrees_to_radians));*/
     }
 } zox_sys_end(Player3RotateSystem);
 

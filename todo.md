@@ -1,4 +1,7 @@
 ### todo ###
+# Refactors #
+- Refactor Chunk to Chunk + BlockMaterial + Lod Render
+- Refactor 3D UIs to use 2D UI stuff
 # Testing #
 - Add test function for spawning a Terrain Chunk
 - Add test function for spawning a Colored Chunk

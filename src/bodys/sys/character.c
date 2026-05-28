@@ -85,7 +85,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         entity eslot_rshoulder = spawn_body_slot(world, chest_slot, body_anchor_right);
         // TODO: Base offsets on a float3 anchor of Chest data
         // Slot Offsets
-        zox_set(eslot_head, PartOffset, { 0, -1, 0 });
+        zox_set(eslot_head, PartOffset, { 0, 0, 0 }); // -1
         zox_set(eslot_hips, PartOffset, { 0, 2, 0 });
         zox_set(eslot_lshoulder, PartOffset, { 1, 5, 0 });
         zox_set(eslot_rshoulder, PartOffset, { -1, 5, 0 });
@@ -93,7 +93,9 @@ zox_sys2(CharacterBodySpawnSystem) {
         // NOTE: This is head branch
         if (realm_head)
         {
-            zox_set(eslot_head, DataLink, { spawn_user_item_body(world, e, realm_head, zox_slot_head) });
+            entity head = spawn_user_item_body(world, e, realm_head, zox_slot_head);
+            zox_set(eslot_head, DataLink, { head });
+            zox_add_tag(head, Head);
         }
         // Test slot systems
         // byte positions are limited

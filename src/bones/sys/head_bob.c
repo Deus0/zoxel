@@ -4,21 +4,19 @@ zox_sys2(HeadAnimateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkeletonDirty);
-    zox_sys_in(BoneLinks);
-    zox_sys_out(HeadBoneLink);
+    zox_sys_in(HeadBoneLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(SkeletonDirty, state);
-        zox_sys_i(BoneLinks, bones);
-        zox_sys_o(HeadBoneLink, head);
-        if (state->value != zox_dirty_active || bones->length <= 1) {
+        zox_sys_i(HeadBoneLink, head);
+        if (state->value != zox_dirty_active) {
             continue;
         }
-        entity head_bone = bones->value[1];
+        entity head_bone = head->value; // bones->value[1];
         if (!zox_valid(head_bone)) {
             zox_log_error("Head bone invalid.");
             continue;
         }
-        head->value = head_bone;
+        // head->value = head_bone;
         zox_set_unique_name(head_bone, "bone_head");
         zox_geter_value(head_bone, LocalPosition3D, float3, position);
         float3 delta = (float3) { 0, randf_range(headbob_range.x, headbob_range.y), 0 };

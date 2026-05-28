@@ -14,6 +14,12 @@ zox_sys2(ActiveActionSystem) {
         if (dirty->value) {
             continue;
         }
+        // If Active Action is Dead
+        if (aaction->value && !zox_valid(aaction->value)) {
+            aaction->value = 0;
+            dirty->value = zox_dirty_trigger;
+            continue;
+        }
         entity actionbar = zox_get_child_by_id(world, e, zox_id(Actionbar));
         if (!zox_valid(actionbar)) {
             if (dbg_log) {
