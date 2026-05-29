@@ -17,5 +17,9 @@ entity spawn_prefab_block_vox(ecs *world, entity prefab) {
     zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
     zox_prefab_set(e, Bounds3Dirty, { 0 });
     prefab_add_cube_lines(world, e, color_white, 0);
+    // Chunk3
+    zox_set(e, NodeDepth, { block_vox_depth });
+    int3 size3 = int3_single(powers_of_two[block_vox_depth]);
+    zox_set(e, ChunkSize, { size3 });
     return e;
 }

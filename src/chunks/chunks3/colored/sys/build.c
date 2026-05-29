@@ -6,13 +6,34 @@ byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **ne
     edge;
 }
 
-void build_voxel_faces_c(const VoxelNode* root, const VoxelNode** noctrees, mesh_colored_build_data* mesh, color_rgb voxel_color, float scale, float3 positionf, float3 bounds_offset, byte depth, byte3 position) {
+// NOTE: Scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
+void add_voxel_face(mesh_colored_build_data* mesh, float3 position, float3 bounds_offset, float scale, const int* indiciesf, const float3* verticesf) {
+    expand_capacity_int_array_d(mesh->indicies, voxel_face_indicies_length);
+    for (int i = 0, j = mesh->indicies->size; i < voxel_face_indicies_length; i++, j++) {
+        mesh->indicies->data[j] = mesh->vertices->size + indiciesf[i];
+    }
+    mesh->indicies->size += voxel_face_indicies_length;
+    expand_capacity_float3_array_d(mesh->vertices, voxel_face_vertices_length);
+    for (int i = 0, j = mesh->vertices->size; i < voxel_face_vertices_length; i++, j++) {
+        float3 vertex = verticesf[i];
+        float3_add_float3_p(&vertex, position);
+        float3_scale_p(&vertex, scale);
+        float3_add_float3_p(&vertex, bounds_offset);
+        mesh->vertices->data[j] = vertex;
+    }
+    mesh->vertices->size += voxel_face_vertices_length;
+}
+
+
+void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees, mesh_colored_build_data* mesh, color_rgb voxel_color, float scale, float3 positionf, float3 bounds_offset, byte depth, byte3 position) {
+    if (!root) {
+        return;
+    }
     // this is for rendering neighbor face
     byte edge = 0;
     byte nsolids[6];
     for (byte direction = 0; direction < 6; direction++) {
         nsolids[direction] = is_adjacent_all_solid(NULL, edge, noctrees, root, byte3_to_int3(position), direction, depth);
-
     }
 #ifdef zox_ambient_occlusion27
     byte vlength = powers_of_two[depth];
@@ -27,12 +48,11 @@ void build_voxel_faces_c(const VoxelNode* root, const VoxelNode** noctrees, mesh
                 nposition.z = position.z + z;
                 if (x == 0 && y == 0 && z == 0) {
                     naos[i] = 0;
-                } else if (nposition.x < 0 || nposition.x >= vlength ||
-                    nposition.y < 0 || nposition.y >= vlength ||
-                    nposition.z < 0 || nposition.z >= vlength) {
+                } else if (nposition.x < 0 || nposition.x >= vlength || nposition.y < 0 || nposition.y >= vlength || nposition.z < 0 || nposition.z >= vlength) {
                     naos[i] = 0;
                 } else {
                     const VoxelNode* noctree = get_VoxelNode(root, depth, int3_to_byte3(nposition), 0);
+                    // BUG: Crashed here, maybe corrupted?
                     naos[i] = noctree ? noctree->value > 0 : edge;
                 }
                 i++;
@@ -98,7 +118,7 @@ void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voctree, const V
     }
     color_rgb voxel_color = vcolors->value[voxel];
     float3 positionf = byte3_to_float3(position);
-    build_voxel_faces_c(root, noctrees, mesh, voxel_color, scale, positionf, bounds_offset, depth, position);
+    build_voxel_faces_colored(root, noctrees, mesh, voxel_color, scale, positionf, bounds_offset, depth, position);
 }
 
 // Builds Colored Vox Meshes

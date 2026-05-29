@@ -3,9 +3,6 @@ byte is_debug_sides = block_side_none; // block_side_none | block_side_front
 const color air_vox_color = { 15, 15, 25, 88 };
 
 void generate_vox_debug_texture(color *data, const int2 size, byte side) {
-    if (is_debug_sides == block_side_none) {
-        return;
-    }
     color fill = air_vox_color;
     if (is_debug_sides == block_side_up && side == block_side_up) {
         fill = (color) { 255, 0, 0, 255 };
@@ -27,49 +24,46 @@ void generate_vox_debug_texture(color *data, const int2 size, byte side) {
     }
 }
 
-void generate_vox_texture(color *data, int2 size, const VoxelNode *chunk, const color_rgb *colors, byte side, byte max_depth, int2 toffset, int2 tclip) {
+// TODO: Take in vox_size and texture_size
+void generate_vox_texture(color *data, int2 size, const VoxelNode *chunk, const color_rgb *colors, byte side, byte depth, int2 toffset, int2 vox_texture_size, color air_vox_color) {
     if (!chunk) {
         return;
     }
-    int2 tedge = size;
-    // if using a cutout of the texture
-    if (tclip.x) tedge.x = size.x < tclip.x ? size.x : tclip.x;
-    if (tclip.y) tedge.y = size.y < tclip.y ? size.y : tclip.y;
-    int index = 0;
+    byte vlength = powers_of_two[depth];
+    int2 tedge = vox_texture_size; // size;
+    if (tedge.x > vlength || tedge.y > vlength) {
+        zox_loge("[generate_vox_texture]: Edge OOB size: [%ix%i] depth: [%i] length: [%i]", tedge.x, tedge.y, depth, vlength);
+        return;
+    }
     int d = 0;
     if (side == block_side_left || side == block_side_right) {
         if (side == block_side_right) {
             d = size.y - 1;
         }
-        for (int z = toffset.x; z < tedge.x; z++) {
-            for (int y = toffset.y; y < tedge.y; y++) {
-                // byte3 node_position = (byte3) { d, y, z };
-                // byte voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                byte voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { d, y, z }, 0);
+        for (int i = 0; i < tedge.x; i++) {
+            for (int j = 0; j < tedge.y; j++) {
+                byte voxel = get_value_VoxelNode(chunk, depth, (byte3) { d, j, i }, 0);
                 byte is_darken = 0;
                 if (!voxel) {
                     is_darken = 1;
                     if (side == block_side_left) {
                         for (int x = 0; x < size.y; x++) {
-                            // node_position = (byte3) { x, y, z };
-                            // voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                            voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { x, y, z }, 0);
+                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { x, j, i }, 0);
                             if (voxel) {
                                 break;
                             }
                         }
                     } else {
                         for (int x = size.y - 1; x >= 0; x--) {
-                            // node_position = (byte3) { x, y, z };
-                            // voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                            voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { x, y, z }, 0);
+                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { x, j, i }, 0);
                             if (voxel) {
                                 break;
                             }
                         }
                     }
                 }
-                index = int2_array_index((int2) { z, y }, size );
+                int2 pixel_position = int2_add((int2) { i, j }, toffset);
+                int index = int2_array_index(pixel_position, size);
                 if (voxel == 0) {
                     data[index] = air_vox_color;
                 } else {
@@ -84,35 +78,32 @@ void generate_vox_texture(color *data, int2 size, const VoxelNode *chunk, const 
         if (side == block_side_up) {
             d = size.y - 1;
         }
-        for (int i = toffset.x; i < tedge.x; i++) {
-            for (int j = toffset.y; j < tedge.y; j++) {
-                //byte3 node_position = (byte3) { i, d, j };
-                //byte voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                byte voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { i, d, j }, 0);
+        for (int i = 0; i < tedge.x; i++) {
+            for (int j = 0; j < tedge.y; j++) {
+                byte voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, d, j }, 0);
                 byte is_darken = 0;
                 if (voxel == 0) {
                     is_darken = 1;
                     if (side == block_side_down) {
                         for (int k = 0; k < size.y; k++) {
                             // node_position = (byte3) { i, k, j };
-                            // voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                            voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { i, k, j }, 0);
+                            // voxel = get_sub_node_voxel(chunk, &node_position, depth);
+                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, k, j }, 0);
                             if (voxel) {
                                 break;
                             }
                         }
                     } else {
                         for (int k = size.y - 1; k >= 0; k--) {
-                            //node_position = (byte3) { i, k, j };
-                            //voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                            voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { i, k, j }, 0);
+                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, k, j }, 0);
                             if (voxel) {
                                 break;
                             }
                         }
                     }
                 }
-                index = int2_array_index((int2) { i, j }, size);
+                int2 pixel_position = int2_add((int2) { i, j }, toffset);
+                int index = int2_array_index(pixel_position, size);
                 if (voxel == 0) {
                     data[index] = air_vox_color;
                 } else {
@@ -127,33 +118,30 @@ void generate_vox_texture(color *data, int2 size, const VoxelNode *chunk, const 
         if (side == block_side_front) {
             d = size.x - 1;
         }
-        for (int i = toffset.x; i < tedge.x; i++) {
-            for (int j = toffset.y; j < tedge.y; j++) {
-                //byte3 node_position = (byte3) { i, j, d };
-                //byte voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                byte voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { i, j, d }, 0);
+        for (int i = 0; i < tedge.x; i++) {
+            for (int j = 0; j < tedge.y; j++) {
+                byte voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, j, d }, 0);
                 byte is_darken = 0;
                 if (voxel == 0) {
                     is_darken = 1;
                     if (side == block_side_back) {
                         for (int k = 0; k < size.x; k++) {
-                            // node_position = (byte3) { i, j, k };
-                            // voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                            voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { i, j, k }, 0);
-                            if (voxel) break;
+                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, j, k }, 0);
+                            if (voxel) {
+                                break;
+                            }
                         }
                     } else {
                         for (int k = size.x - 1; k >= 0; k--) {
-                            //node_position = (byte3) { i, j, k };
-                            //voxel = get_sub_node_voxel(chunk, &node_position, max_depth);
-                            voxel = get_value_VoxelNode(chunk, max_depth, (byte3) { i, j, k }, 0);
+                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, j, k }, 0);
                             if (voxel) {
                                 break;
                             }
                         }
                     }
                 }
-                index = int2_array_index((int2) { i, j }, size);
+                int2 pixel_position = int2_add((int2) { i, j }, toffset);
+                int index = int2_array_index(pixel_position, size);
                 if (voxel == 0) {
                     data[index] = air_vox_color;
                 } else {
@@ -170,6 +158,9 @@ void generate_vox_texture(color *data, int2 size, const VoxelNode *chunk, const 
 
 // TODO: Offset by chunk size difference to node size
 zox_sys2(VoxTextureSystem) {
+    byte dbg_log = 0;
+    byte is_center = 1;
+    color air_color = (color) { 0, 0, 0, 0 };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureSize);
@@ -189,34 +180,51 @@ zox_sys2(VoxTextureSystem) {
         if (generate->value != zox_dirty_active) {
             continue;
         }
-        if (!zox_valid(vox->value) || !zox_has(vox->value, VoxelNode) ||
-            (zox_has(vox->value, Generate) && zox_gett_value(vox->value, Generate))) {
-
+        if (!zox_valid(vox->value) || !zox_has(vox->value, VoxelNode) || (zox_has(vox->value, Generate) && zox_gett_value(vox->value, Generate))) {
             zox_logw("Vox Cannot Generate [%s]", zox_get_name(vox->value));
             continue;
         }
         // TODO: Finish Center Feature
-        byte center = 0; // zox_has(e, CenterVoxTexture);
+        // byte is_center = zox_has(e, CenterVoxTexture);
         zox_geter(vox->value, ColorRGBs, colors);
         zox_geter(vox->value, VoxelNode, voctree);
-        zox_geter_value(vox->value, ChunkSize, int3, csize);
-        zox_geter_value(vox->value, NodeDepth, byte, ndepth);
-        int2 tsize = size->value;
+        int3 vox_size = zox_getv(vox->value, ChunkSize);
+        // max depth tho
+        byte vox_depth = zox_getv(vox->value, NodeDepth);
+        // byte target_depth = next_power_of_two_root(size->value.x);
         // we should offset texture and use a grab vox bounds
-        int2 toffset = center ? (int2) { tsize.x - csize.x, tsize.y - csize.y } : int2_zero;
-        // TODO: use csize rotated for the direction
-        int2 tclip = center ? (int2) { csize.x, csize.y } : int2_zero;
-        // int2 toffset = center ? (int2) { 4, 4 } : int2_zero;
-        // int2 tclip = center ? (int2) { 8, 8 } : int2_zero;
-        if (center) {
-            zox_log("+ e[%s] v[%s] toffsetting %ix%i - tclip [%ix%i] - tsize %ix%i - csize %ix%i", zox_get_name(e), zox_get_name(vox->value), toffset.x, toffset.y, tclip.x, tclip.y, tsize.x, tsize.y, csize.x, csize.y);
+        int2 vox_texture_size = int2_zero;
+        if (side->value == block_side_front || side->value == block_side_back) {
+            vox_texture_size = (int2) { vox_size.x, vox_size.y };
+        } else if (side->value == block_side_left || side->value == block_side_right) {
+            vox_texture_size = (int2) { vox_size.y, vox_size.z };
+        } else if (side->value == block_side_down || side->value == block_side_up) {
+            vox_texture_size = (int2) { vox_size.x, vox_size.z };
         }
-        resize_TextureData(data, tsize.x * tsize.y);
+        int2 texture_offset = int2_sub(size->value, vox_texture_size);
+        texture_offset = int2_divide_int(texture_offset, 2);
+        // int2 texture_clip = vox_texture_size; // is_center ? vox_texture_size : int2_zero;
+        // (int2) { size->value.x - vox_size.x, size->value.y - vox_size.y } : int2_zero;
+        // TODO: use vox_size rotated for the direction
+        // int2 toffset = is_center ? (int2) { 4, 4 } : int2_zero;
+        // int2 tclip = is_center ? (int2) { 8, 8 } : int2_zero;
+        if (dbg_log) {
+            zox_log("Vox Texture Debug e[%s] v[%s] offset %ix%i - vox_texture_size [%ix%i] - texture_size %ix%i - vox_size %ix%ix%i", zox_get_name(e), zox_get_name(vox->value), texture_offset.x, texture_offset.y, vox_texture_size.x, vox_texture_size.y, size->value.x, size->value.y, vox_size.x, vox_size.y, vox_size.z);
+        }
+        resize_TextureData(data, size->value.x * size->value.y);
+        if (texture_offset.x || texture_offset.y) {
+            // clear all to air first
+            for (int j = 0; j < data->length; j++) {
+                data->value[j] = air_color;
+            }
+        }
         read_lock_VoxelNode(voctree);
-        generate_vox_texture(data->value, tsize, voctree, colors->value, side->value, ndepth, toffset, tclip);
-        generate_vox_debug_texture(data->value, tsize, side->value);
-        read_unlock_VoxelNode(voctree);
+        generate_vox_texture(data->value, size->value, voctree, colors->value, side->value, vox_depth, texture_offset, vox_texture_size, air_color);
+        if (is_debug_sides != block_side_none) {
+            generate_vox_debug_texture(data->value, size->value, side->value);
+            read_unlock_VoxelNode(voctree);
+        }
         dirty->value = zox_dirty_trigger; // actually not using this for tilemap!
-        // zox_log("Generated Vox Texture [%s]: %ix%i: %ix%ix%i", zox_get_name(vox->value), texture_size.x, texture_size.y, csize.x, csize.y, csize.z);
+        // zox_log("Generated Vox Texture [%s]: %ix%i: %ix%ix%i", zox_get_name(vox->value), texture_size.x, texture_size.y, vox_size.x, vox_size.y, vox_size.z);
     }
 } zox_sys_end(VoxTextureSystem);

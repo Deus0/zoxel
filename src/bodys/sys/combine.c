@@ -8,7 +8,7 @@ entity item_get_max_depth_vox(ecs* world, entity part) {
         zox_log_error("Part has no Model Link [%s]", zox_get_name(part));
         return 0;
     }
-    zox_geter_value_non_const(part, ModelLink, entity, vox);
+    entity vox = zox_getv(part, ModelLink);
     if (!zox_valid(vox)) {
         zox_log_error("[player body]: Invalid Part %s Model", zox_get_name(part));
         return 0;
@@ -17,37 +17,49 @@ entity item_get_max_depth_vox(ecs* world, entity part) {
         zox_log_error("Part Vox Invalid Components %s Model %s", zox_get_name(part), zox_get_name(vox));
         return 0;
     }
-    zox_geter_value(vox, MaxRenderDepth, byte, max_render_depth);
-    if (zox_valid(vox) && zox_has(vox, ModelLods)) {
+    byte max_render_depth = zox_getv(part, MaxRenderDepth);
+    if (zox_has(vox, ModelLods)) {
         zox_geter(vox, ModelLods, mlods);
         entity vox_lod = mlods->value[max_render_depth];
-        if (zox_valid(vox_lod)) {
-            vox = vox_lod;
-        } else {
-            zox_log_error("[player body]: Invalid Vox Model Lod [%s] Depth [%i]", zox_get_name(vox), max_render_depth);
+        if (!zox_valid(vox_lod)) {
+            zox_logw("Part [%s] has invalid Vox Lod [%i]", zox_get_name(part), max_render_depth);
+            return 0;
         }
-    }
-    if (!zox_valid(vox)) {
-        zox_logw("Part [%s] has invalid Vox", zox_get_name(part));
+        return vox_lod;
     }
     return vox;
 }
 
 // NOTE: Recursively add parts to the body
 // TODO: Get position based on previous slot
-void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions* positions, entity_array_d* slots_used, byte3* body_size, byte* max_depth, byte dbg_log) {
+void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositions* positions, entity_array_d* slots_used, byte3* body_size, byte* max_depth, byte dbg_log) {
     entity part = zox_getv(slot, DataLink);
     byte anchor = zox_getv(slot, SlotAnchor);
     if (!zox_valid(part)) {
         return;
     }
-    entity vox = item_get_max_depth_vox(world, part);
-    byte3 part_size = int3_to_byte3(zox_getv(vox, ChunkSize));
+    if (!zox_has(part, MaxRenderDepth)) {
+        zox_loge("Part [%s] has no MaxRenderDepth", zox_get_name(part));
+        return;
+    }
     byte part_max_depth = zox_getv(part, MaxRenderDepth);
+    // Get Vox
+    entity vox = item_get_max_depth_vox(world, part);
+    if (!zox_valid(vox)) {
+        zox_loge("Part [%s] has Invalid Vox", zox_get_name(part));
+        return;
+    }
+    if (!zox_has(vox, ChunkSize)) {
+        zox_loge("Part [%s]'s Vox [%s] has no ChunkSize", zox_get_name(part), zox_get_name(vox));
+        return;
+    }
+    byte3 part_size = int3_to_byte3(zox_getv(vox, ChunkSize));
     if (part_max_depth > *max_depth) {
         *max_depth = part_max_depth;
-        byte new_vlength = powers_of_two_byte[*max_depth];
-        zox_log("Setting Body Depth [%i] v[%i]", *max_depth, new_vlength);
+        if (dbg_log) {
+            byte new_vlength = powers_of_two_byte[*max_depth];
+            zox_log("Setting Body Depth [%i] v[%i]", *max_depth, new_vlength);
+        }
     }
     // Get Parent Data
     entity parent_slot = zox_get_parent(world, slot);
@@ -200,8 +212,10 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
     if (body_size->x >= vlength || body_size->y >= vlength || body_size->z >= vlength) {
         *max_depth = *max_depth + 1;
         byte new_vlength = powers_of_two_byte[*max_depth];
-        zox_log("Expanding Body Depth [%i] v[%i]", *max_depth, new_vlength);
-        zox_log(" - Body Size [%ix%ix%i] > Grid Size [%i]", body_size->x, body_size->y, body_size->z, vlength);
+        if (dbg_log) {
+            zox_log("Expanding Body Depth [%i] v[%i]", *max_depth, new_vlength);
+            zox_log(" - Body Size [%ix%ix%i] > Grid Size [%i]", body_size->x, body_size->y, body_size->z, vlength);
+        }
     }
     // Set position and size here
     byte3 part_position_b3 = int3_to_byte3(part_position);
@@ -210,20 +224,21 @@ void build_body_r(ecs *world, entity slot, CombineList* voxes, CombinePositions*
     part_position_com->value = part_position_b3;
     part_size_com->value = part_size;
     // Store them
-    add_to_entity_array_d(slots_used, slot);
     add_to_CombineList(voxes, vox);
     add_to_CombinePositions(positions, part_position_b3);
+    add_to_entity_array_d(slots_used, slot);
     if (dbg_log) {
         zox_log("Combining Part [%s] a[%i]", zox_get_name(vox), anchor);
-        zox_log("   + [%ix%ix%i]", part_position_b3.x, part_position_b3.y, part_position_b3.z);
-        zox_log("   w [%ix%ix%i]", body_size->x, body_size->y, body_size->z);
+        zox_log("   pos [%ix%ix%i]", part_position_b3.x, part_position_b3.y, part_position_b3.z);
+        zox_log("   size [%ix%ix%i]", part_size.x, part_size.y, part_size.z);
+        zox_log("   body [%ix%ix%i]", body_size->x, body_size->y, body_size->z);
     }
     // Recursive add
     entity slots[zox_children_capacity];
     uint length = zox_get_children_by_id(world, slot, slots, zox_children_capacity, zox_id(Slot));
     for (uint k = 0; k < length; k++) {
         entity child_slot = slots[k];
-        build_body_r(world, child_slot, voxes, positions, slots_used, body_size, max_depth, dbg_log);
+        build_body_parts(world, child_slot, voxes, positions, slots_used, body_size, max_depth, dbg_log);
     }
 }
 
@@ -258,13 +273,16 @@ zox_sys2(BodyCombineSystem) {
             continue;
         }
         byte max_depth = 0;
-        // slots used inside it
+        body_size->value = byte3_zero;
+        resize_CombineList(voxes, 0);
+        resize_CombinePositions(positions, 0);
         entity_array_d* slots_used = create_entity_array_d(1);
-        build_body_r(world, chest_slot, voxes, positions, slots_used, &body_size->value, &max_depth, dbg_log);
+        build_body_parts(world, chest_slot, voxes, positions, slots_used, &body_size->value, &max_depth, dbg_log);
         dispose_entity_array_d(slots_used);
         // This should be calculated when we add to our vox?
         // TODO: We should make this same scale as npcs
         ndepth->value = max_depth;
+        // NOTE: Keep at consistent scale
         block_scale->value = 1.0f / powers_of_two_byte[block_vox_depth + 2];
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {

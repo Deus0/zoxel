@@ -4,6 +4,10 @@ extern byte stack_items(ecs*, entity, entity);
 extern byte is_action_frame(ecs*, entity);
 extern byte can_place_icon_in_skill_frame(ecs*, entity, entity);
 extern byte can_place_icon_in_item_frame(ecs*, entity, entity);
+// Equipment
+extern byte is_equip_frame(ecs*, entity);
+extern byte is_equip_data(ecs*, entity);
+extern void on_frame_updated_equipment(ecs*, entity);
 
 // NOTE: Called from the clicked icon
 zox_sys2(DataFrameClickSystem) {
@@ -44,15 +48,24 @@ zox_sys2(DataFrameClickSystem) {
         }
         // check if can place here
         entity place_in_frame = zox_get_parent(world, e);
+        byte is_mouse_equip = is_equip_data(world, mouse_data->value);
+        byte frame_equip = is_equip_frame(world, place_in_frame);
         if (!is_action_frame(world, place_in_frame)) {
-            if (!can_place_icon_in_skill_frame(world, place_in_frame, mouse_data->value)) {
+            if (frame_equip) {
+                // check if same slot held if swapping
+                // if place in or grab out we update body dirty
+                if (mouse_data->value && !is_mouse_equip) {
+                    continue;
+                }
+            }
+            else if (!can_place_icon_in_skill_frame(world, place_in_frame, mouse_data->value)) {
                 continue;
             } else if (!can_place_icon_in_item_frame(world, place_in_frame, mouse_data->value)) {
                 continue;
             }
         }
         // If One is Empty and one is exists!
-        else if (mouse_data_empty && !clicked_data_empty) {
+        if (mouse_data_empty && !clicked_data_empty) {
             if (dbg_log) {
                 zox_log("   Mouse is Empty, DataFrame has [%s]", zox_get_name(data->value));
             }
@@ -81,6 +94,9 @@ zox_sys2(DataFrameClickSystem) {
                 }
             }
         }
+        entity any_data = data->value > 0 ? data->value : mouse_data->value;
+        entity user = zox_get_parent(world, any_data);
+        // ;
         // NOTE: This Handles Swapping
         entity temp = mouse_data->value;
         mouse_data->value = data->value;
@@ -92,6 +108,9 @@ zox_sys2(DataFrameClickSystem) {
         zox_muter(slot->value, DataLink, slot_data);
         slot_data->value = data->value;
         dirty->value = zox_dirty_trigger;
+        if (frame_equip) {
+            on_frame_updated_equipment(world, user);
+        }
         // NOTE: Clears the tooltip when picked up icon
         /*if (!clicked_data_empty) {
             entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));

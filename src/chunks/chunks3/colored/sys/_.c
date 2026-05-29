@@ -1,7 +1,6 @@
 #include "build.c"
 
 void define_systems_chunks3_colored(ecs *world) {
-
     zox_system(
         ChunkColorsBuildSystem,
         zoxp_voxels_read,

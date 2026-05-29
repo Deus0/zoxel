@@ -428,6 +428,9 @@ zox_sys2(Chunk3RaycastSystem) {
         float3 ray_normal;
         if (zox_has(e, CameraLink)) {
             zox_geter_value(e, CameraLink, entity, camera);
+            if (!zox_valid(camera)) {
+                return;
+            }
             ray_origin = zox_gett_value(camera, RaycastOrigin);
             ray_normal = zox_gett_value(camera, RaycastNormal);
         } else {

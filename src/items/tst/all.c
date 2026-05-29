@@ -1,5 +1,42 @@
 byte tst_all_items = 0;
 
+void give_character_all_items(ecs* world, entity e) {
+    entity player = zox_getv(e, PlayerLink);
+    // entity game = zox_getv(e, GameLink);
+    // entity realm = zox_getv(game, RealmLink);
+    entity realm = zox_getv(e, RealmLink);
+    if (!zox_valid(realm)) {
+        return;
+    }
+    entity inventory = zox_get_child_by_id(world, e, zox_id(Inventory));
+    zox_geter(realm, ItemLinks, realm_items);
+    zox_log("Giving [%s] [%i] Items.", zox_get_name(e), realm_items->length);
+    for (int j = 0; j < realm_items->length; j++) {
+        entity realm_item = realm_items->value[j];
+        if (!zox_valid(realm_item)) {
+            zox_log_error("Item invalid [%i]", j);
+            continue;
+        }
+        entity slot = zox_get_empty_slot(world, inventory);
+        if (!zox_valid(slot)) {
+            zox_logw("[Inventory] Out of empty slots.");
+            zox_print_slots(world, inventory);
+            break;
+        }
+        byte quantity = 1;
+        entity e2 = spawn_user_item(world, e, realm_item);
+        if (zox_has(realm_item, Quantity)) {
+            quantity = rand_range(4, 16);
+            zox_set(e2, Quantity, { quantity });
+        }
+        zox_muter(slot, DataLink, slot_data);
+        zox_muter(slot, DataDirty, dirty);
+        slot_data->value = e2;
+        dirty->value = zox_dirty_trigger;
+        zox_log("   + [%s] x%i", zox_get_name(realm_item), quantity);
+    }
+}
+
 // TODO: Work Item Slots better
 void zox_tst_all_items(ecs* world, ClickEventData data) {
     if (tst_all_items) {
@@ -11,41 +48,16 @@ void zox_tst_all_items(ecs* world, ClickEventData data) {
         return;
     }
     zox_geter_value(player, CharacterLink, entity, character);
-    zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
-    if (!zox_valid(character) || !zox_valid(realm)) {
+    if (!zox_valid(character)) {
         return;
     }
     // TODO: Automatically add to slot when picking up a new item
     //      - make event for picking up item, if fails, just drops into world?
     // Get our Slots
+    // Add more slots - new grid length is 7
     entity inventory = zox_get_child_by_id(world, character, zox_id(Inventory));
-    zox_geter(realm, ItemLinks, ritems);
-    zox_log("Giving [%s] [%i] Items.", zox_get_name(character), ritems->length);
-    for (int j = 0; j < ritems->length; j++) {
-        entity ritem = ritems->value[j];
-        if (!zox_valid(ritem)) {
-            zox_log_error("Item invalid [%i]", j);
-            continue;
-        }
-        entity slot = zox_get_empty_slot(world, inventory);
-        if (!zox_valid(slot)) {
-            zox_logw("Out of empty slots.");
-            zox_print_slots(world, inventory);
-            break;
-        }
-        byte quantity = 1;
-        entity item = spawn_user_item(world, character, ritem);
-        if (zox_has(ritem, Quantity)) {
-            quantity = rand_range(1, 10);
-            zox_set(item, Quantity, { quantity });
-        }
-        zox_muter(slot, DataLink, slot_data);
-        slot_data->value = item;
-        zox_muter(slot, DataDirty, dirty);
-        dirty->value = zox_dirty_trigger;
-        zox_log("   + [%s] x%i", zox_get_name(ritem), quantity);
-    }
+    add_more_slots(world, inventory, (7 * 7) - 25);
+    delay_event(world, &give_character_all_items, character, 1.0f);
     tst_all_items = 1;
 }
 

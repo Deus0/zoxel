@@ -19,3 +19,5 @@
 #define zox_slot_rthigh 14
 #define zox_slot_rcalf 15
 #define zox_slot_rfoot 16
+
+#define zox_slot_hat 17

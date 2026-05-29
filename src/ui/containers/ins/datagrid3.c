@@ -1,13 +1,10 @@
 // NOTE: Using Slots for linking UIs to Data
-entity spawn_datagrid_slots(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity prefab_label, byte label_font_size, entity canvas, entity character, entity slots_manager, byte2 cells_size, const char* header_label, color fill, color outline, float2 position_anchor, int2 position, entity frame_id) {
+entity spawn_datagrid_slots2(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity prefab_label, byte label_font_size, entity canvas, entity character, byte2 cells_size, const char* header_label, color fill, color outline, float2 position_anchor, int2 position, entity frame_id, entity* slots, uint slots_length) {
     if (!zox_valid(character)) {
         zox_log_error("invalid character in [spawn_datagrid_slots]");
         return 0;
     }
     // TODO: Calculate Grid Rows/Height based on slots length
-    // Get our Slots
-    entity slots[layouts2_children_capacity];
-    uint slots_length = zox_get_children_by_id(world, slots_manager, slots, layouts2_children_capacity, zox_id(Slot));
     // Get our window data
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     color grid_fill = window_fill;
@@ -37,8 +34,6 @@ entity spawn_datagrid_slots(ecs* world, entity prefab, entity prefab_frame, enti
             header_font_size = 0;
         }
         byte2 header_margins = (byte2) { 4 * ui_scale, 3 * ui_scale };
-        //byte header_font_thickness_s = header_font_thickness * ui_scale;
-        //byte header_fonto_thickness_s = header_font_thickness * ui_scale;
         color header_font_fill = header_font_fill;
         color header_font_outline = header_font_outline;
         header_height = header_font_size + header_margins.y * 2;
@@ -63,11 +58,23 @@ entity spawn_datagrid_slots(ecs* world, entity prefab, entity prefab_frame, enti
     for (int j = cells_size.y - 1; j >= 0; j--) {
         for (int i = 0; i < cells_size.x; i++) {
             entity slot = slots[array_index];
-            if (!zox_valid(slot) || !zox_has(slot, DataLink)) {
-                zox_loge("Invalid [%s] Slot at [%i]", zox_get_name(slots_manager), array_index);
+            if (!zox_valid(slot)) {
+                zox_loge("[spawn_datagrid] [%s] Invalid Slot [%i]", header_label, array_index);
+                array_index++;
+                if (array_index >= slots_length) {
+                    break;
+                }
                 continue;
             }
-            entity dat = zox_gett_value(slot, DataLink);
+            if (!zox_has(slot, DataLink)) {
+                zox_loge("[spawn_datagrid] [%s] Slot [%s] has no DataLink [%i]", header_label, zox_get_name(slot), array_index);
+                array_index++;
+                if (array_index >= slots_length) {
+                    break;
+                }
+                continue;
+            }
+            entity dat = zox_getv(slot, DataLink);
             entity3 spawn = spawn_frame(world, prefab_frame, prefab_icon, prefab_label, grid, position, frame_size, icon_size, label_font_size, array_index);
             // We can just link icons now
             entity frame = spawn.x;
@@ -111,4 +118,11 @@ entity spawn_datagrid_slots(ecs* world, entity prefab, entity prefab_frame, enti
         zox_set(e, ElementHolder, { character });
     }
     return e;
+}
+
+entity spawn_datagrid_slots(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity prefab_label, byte label_font_size, entity canvas, entity character, entity slots_manager, byte2 cells_size, const char* header_label, color fill, color outline, float2 position_anchor, int2 position, entity frame_id) {
+    // Get our Slots
+    entity slots[layouts2_children_capacity];
+    uint slots_length = zox_get_children_by_id(world, slots_manager, slots, layouts2_children_capacity, zox_id(Slot));
+    return spawn_datagrid_slots2(world, prefab, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, cells_size, header_label, fill, outline, position_anchor, position, frame_id, slots, slots_length);
 }

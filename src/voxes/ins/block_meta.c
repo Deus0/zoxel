@@ -1,5 +1,6 @@
 // our main realm block spawn function
 entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
+    byte depth = block_vox_depth;
     entity e = zox_ins(data.prefab);
     // zox_set_unique_name(e, data.name);
     set_ZoxName(world, e, data.name);
@@ -24,14 +25,11 @@ entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
         zox_set(e, BlockVoxOffset, { 1 });
     }
     if (data.bake_vox) {
+        int2 vox_texture_size = int2_single(powers_of_two[depth]);
         TextureLinks textures = (TextureLinks) { 0 };
         initialize_TextureLinks(&textures, 6);
         for (byte i = 0; i < 6; i++) {
-            entity e2 = spawn_texture(
-                world,
-                data.prefab_texture,
-                int2_single(powers_of_two[block_vox_depth])
-            );
+            entity e2 = spawn_texture(world, data.prefab_texture, vox_texture_size);
             zox_set_name_e(e2, "texture_block");
             zox_set(e2, VoxLink, { data.vox });
             zox_set(e2, VoxBakeSide, { i });
@@ -39,6 +37,7 @@ entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
         }
         zox_set_ptr(e, TextureLinks, textures);
     }
+    // zox_log("Block [%s]: Vox Texture Size [%ix%i] depth [%i]", data.name, vox_texture_size.x, vox_texture_size.y, depth);
     // zox_log(" + generated block [vox] name [%s]\n", name)
     return e;
 }

@@ -11,11 +11,15 @@ void set_block_depth(ecs* world, void* value) {
         return;
     }
     int2 size = int2_single(powers_of_two[block_vox_depth]);
+    int3 size3 = int3_single(powers_of_two[block_vox_depth]);
     zox_set(prefab_texture, TextureSize, { size });
     zox_set( prefab_vox_texture, TextureSize, { size });
     zox_set(prefab_vox, NodeDepth, { block_vox_depth });
+    zox_set(prefab_vox, ChunkSize, { size3 });
     zox_set(prefab_vox_generated, NodeDepth, { block_vox_depth });
+    zox_set(prefab_vox_generated, ChunkSize, { size3 });
     zox_set(prefab_block_vox, NodeDepth, { block_vox_depth });
+    zox_set(prefab_block_vox, ChunkSize, { size3 });
 
 }
 

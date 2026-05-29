@@ -27,7 +27,7 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
         }
         entity slot = zox_get_empty_slot(world, skillbook);
         if (!zox_valid(slot)) {
-            zox_logw("Out of empty slots.");
+            zox_logw("[Skillbook] Out of empty slots.");
             zox_print_slots(world, skillbook);
             break;
         }

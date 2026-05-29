@@ -1,12 +1,5 @@
-entity spawn_body_slot(ecs* world, entity parent, byte anchor) {
-    entity e = spawn_slot(world, parent);
-    zox_set_unique_name(e, "body_slot");
-    zox_set(e, SlotAnchor, { anchor });
-    zox_set(e, PartPosition, { byte3_zero });
-    zox_set(e, PartSize, { byte3_zero });
-    zox_set(e, PartOffset, { int3_zero });
-    return e;
-}
+#include "attach_slot.c"
+#include "body_slot.c"
 
 void spawn_prefabs_bodys(ecs* world) {
     if (prefab_character3) {

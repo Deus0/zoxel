@@ -51,21 +51,25 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
         zox_log("   @ position b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", part_centre_position.x, part_centre_position.y, part_centre_position.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
     }
     // Now Recursively add parts
-    entity slots[zox_children_capacity];
-    uint slots_length = zox_get_children_by_id(world, slot, slots, zox_children_capacity, zox_id(Slot));
-    for (uint k = 0; k < slots_length; k++) {
-        entity child_slot = slots[k];
-        entity child_part = zox_getv(child_slot, DataLink);
-        entity child_bone = spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, child_slot, child_part);
-        if (child_bone) {
-            zox_set_parent(world, child_bone, bone);
+    iter it2 = zox_children(world, slot);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity e2 = it2.entities[j];
+            if (!zox_valid(e2) || !zox_has(e2, Slot)) {
+                continue;
+            }
+            entity child_part = zox_getv(e2, DataLink);
+            entity child_bone = spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part);
+            if (child_bone) {
+                zox_set_parent(world, child_bone, bone);
+            }
         }
     }
     return bone;
 }
 
 zox_sys2(CharacterBoneSpawnSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BodyDirty);
@@ -84,10 +88,18 @@ zox_sys2(CharacterBoneSpawnSystem) {
             continue;
         }
         // NOTE: Deletes old bones, and old parts
-        for (int j = 0; j < bones->length; j++) {
+        entity camera = zox_get_child_by_id_recursive(world, e, zox_id(Camera));
+        if (zox_valid(camera)) {
+            zox_set_parent(world, camera, 0);
+        }
+        entity root_bone = zox_get_child_by_id(world, e, zox_id(Bone));
+        if (zox_valid(root_bone)) {
+            zox_delete(root_bone);
+        }
+        /*for (int j = 0; j < bones->length; j++) {
             entity e2 = bones->value[j];
             zox_delete(e2);
-        }
+        }*/
         resize_BoneLinks(bones, 0);
         float3 half_bounds = float3_scale(byte3_to_float3(bsize->value), bscale->value * 0.5f);
         if (dbg_log) {
@@ -100,8 +112,9 @@ zox_sys2(CharacterBoneSpawnSystem) {
             continue;
         }
         entity chest_part = zox_getv(chest_slot, DataLink);
-        entity e2 = spawn_part_bones(world, e, bones, half_bounds, bscale->value, e, float3_zero, chest_slot, chest_part);
-        zox_set_parent(world, e2, e);
+        // entity e2 =
+        spawn_part_bones(world, e, bones, half_bounds, bscale->value, e, float3_zero, chest_slot, chest_part);
+        // zox_set_parent(world, e2, e);
         dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(CharacterBoneSpawnSystem);

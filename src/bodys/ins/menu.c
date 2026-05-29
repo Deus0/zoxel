@@ -1,4 +1,16 @@
-const color default_fill_color_frame_body = { 33, 63, 63, frame_alpha };
+color default_fill_color_frame_body = { 33, 63, 63, frame_alpha };
+
+void fetch_slots_body_parts(ecs *world, entity_array_d* entities, entity e) {
+    if (zox_has(e, BodySlot)) {
+        add_to_entity_array_d(entities, zox_getv(e, DataLink));
+    }
+    entity slots[zox_children_capacity];
+    uint length = zox_get_children_by_id(world, e, slots, zox_children_capacity, zox_id(Slot));
+    for (uint k = 0; k < length; k++) {
+        entity slot = slots[k];
+        fetch_slots_body_parts(world, entities, slot);
+    }
+}
 
 entity spawn_player_menu_body(ecs* world, entity player) {
     entity prefab = prefab_window; // prefab_menu_body
@@ -16,12 +28,17 @@ entity spawn_player_menu_body(ecs* world, entity player) {
     };
     entity_array_d* parts = create_entity_array_d(1);
     entity chest_slot = zox_get_child_by_id(world, character, zox_id(Body));
-    entity chest_part = zox_getv(chest_slot, DataLink);
-    add_to_entity_array_d(parts, chest_part);
-    fetch_slots_parts_r(world, parts, chest_slot);
+    fetch_slots_body_parts(world, parts, chest_slot);
     entity3 spawns[parts->size];
+    // Calculate grid based on slots found
+    byte grid_length = next_root(parts->size);
+    byte header_height = data.header_zext.font_size + data.header_zext.margins.y * 2;
+    data.window.grid_size = byte2_single(grid_length);
+    data.element.size = calculate_grid_window_size(data.window, header_height);
+    // Spawns our grid window
     entity e = spawn_window_users(world, data, texture, 0, spawns, parts->data, parts->size);
     zox_add_tag(e, MenuBody);
     dispose_entity_array_d(parts);
+    // zox_log("parts->size [%i]:[%i]", parts->size, grid_length);
     return e;
 }

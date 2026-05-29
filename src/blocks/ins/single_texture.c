@@ -1,5 +1,4 @@
 entity spawn_block_texture(ecs *world, byte index, char *name, char *texture_filename) {
-
     SpawnBlock spawn_data = {
         .prefab = prefab_block,
         .prefab_texture = prefab_vox_texture,
@@ -10,6 +9,5 @@ entity spawn_block_texture(ecs *world, byte index, char *name, char *texture_fil
         .name = name,
         .color = color_black,
     };
-
     return spawn_block(world, &spawn_data);
 }

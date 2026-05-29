@@ -50,7 +50,6 @@ byte zox_set_parent(ecs *world, entity child, entity parent) {
         zox_logw("Trying to set parent from invalid child");
         return 0;
     }
-
     // Special case for removing parents
     if (parent == 0) {
         if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
@@ -58,20 +57,16 @@ byte zox_set_parent(ecs *world, entity child, entity parent) {
         }
         return 1;
     }
-
     if (!ecs_is_alive(world, parent)) {
         zox_logw("Trying to set parent from invalid parent");
         return 0;
     }
-
     // Removes previous parent pair
     if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
         ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
     }
-
     // zox_log("Setting [%s] new Parent [%s]", zox_get_name(child), zox_get_name(parent));
     ecs_add_pair(world, child, EcsChildOf, parent);
-
     return 1;
 }
 
@@ -181,11 +176,30 @@ byte zox_remove_parent(ecs *world, entity child) {
         zox_logw("Trying to remove parent from invalid child");
         return 0;
     }
-
     if (!ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
         return 0; // no parent to remove
     }
-
     ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
     return 1;
+}
+
+entity zox_get_child_by_id_recursive(ecs* world, entity parent, entity id) {
+    if (!ecs_is_alive(world, parent)) {
+        zox_loge("Cannot get children from invalid parent [%s]", zox_get_name(id));
+        return 0;
+    }
+    ecs_iter_t it = ecs_children(world, parent);
+    while (ecs_children_next(&it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e = it.entities[i];
+            if (zox_has_id(e, id)) {
+                return e;
+            }
+            entity e2 = zox_get_child_by_id_recursive(world, e, id);
+            if (e2) {
+                return e2;
+            }
+        }
+    }
+    return 0;
 }

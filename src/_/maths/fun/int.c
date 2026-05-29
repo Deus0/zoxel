@@ -26,8 +26,11 @@ static inline int int_abs(int v) {
 }
 
 static inline int int_floorf(float x) {
-    // Rename to avoid clash with floor() macro or stdlib
     return (int)floorf(x);
+}
+
+static inline int int_ceilf(float x) {
+    return (int)ceilf(x);
 }
 
 static inline int int_clamp(int v, int lo, int hi) {

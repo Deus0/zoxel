@@ -12,6 +12,9 @@
 #define zoxm_bodys
 
 // #define zox_debug_head_only
+// TODO: make use TargetChunkLod -> and load/unload depth based on that
+// TODO: set lod here instead of just applying RenderDepth only with ChunkMeshDirty -> keeps memory down
+// TODO: Support for multi chunk voxes
 
 #define body_anchor_core 0
 #define body_anchor_top 1
@@ -21,12 +24,12 @@
 #define body_anchor_back 5
 #define body_anchor_forward 6
 
-// #include "set/_.c"
 #include "com/_.c"
 #include "sta/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
+#include "dbg/_.c"
 #include "sys/_.c"
 
 zox_begin_module(Bodys) {
@@ -41,11 +44,7 @@ zox_begin_module(Bodys) {
         .texture_name = "taskbar_body",
         .tooltip_text = "Body"
     });
-} zox_end_module(Bodys)
-
-// TODO: make use TargetChunkLod -> and load/unload depth based on that
-// TODO: set lod here instead of just applying RenderDepth only with ChunkMeshDirty -> keeps memory down
-// TODO: Support for multi chunk voxes
+} zox_end_module(Bodys);
 
 
 #endif

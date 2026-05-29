@@ -1,8 +1,5 @@
 // TODO: Refactor these into Biomes from Terrain
 // Blocks >> Chunks >> Biomes >> Terrain ?
-// extern entity spawn_block_soil(ecs*, byte, char*, color);
-// extern entity spawn_block_soil_grass(ecs*, byte, char*, color, color);
-
 
 void generate_colors(lint seed, Colors *colors) {
     srand((unsigned int) seed);

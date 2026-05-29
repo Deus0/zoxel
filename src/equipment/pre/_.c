@@ -1,7 +1,8 @@
-#include "menu.c"
+// #include "menu.c"
+#include "equip_slot.c"
 
 entity prefab_menu_equipment;
 
 void spawn_prefabs_equipment(ecs* world) {
-    prefab_menu_equipment = spawn_prefab_menu_equipment(world, prefab_window_users);
+    // prefab_menu_equipment = spawn_prefab_menu_equipment(world, prefab_window_users);
 }

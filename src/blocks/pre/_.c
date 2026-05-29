@@ -1,9 +1,7 @@
 #include "block.c"
 #include "texture.c"
-
 entity prefab_block;
 entity prefab_vox_texture;  // QUESTION: Should I move this to textures?
-
 extern byte block_vox_depth;
 
 void spawn_prefabs_blocks(ecs *world) {

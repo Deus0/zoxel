@@ -54,3 +54,16 @@ static inline int next_power_of_two_root(int n) {
     int log2val = (int)ceil(log2(n) / 2.0);
     return 1 << log2val;
 }
+
+static inline int next_root(int n) {
+    if (n < 0) return 0;
+
+    int root = (int)floor(sqrt((double)n));
+
+    // If already a perfect square, return current root
+    if (root * root == n)
+        return root;
+
+    // Otherwise return next root
+    return root + 1;
+}

@@ -1,9 +1,10 @@
+// NOTE: Slots are spawned once parts are attached here
 byte zox_dbg_extraheads = 0; // 16;
 
 entity find_slot_type(ecs* world, const entity* items, uint length, byte slot) {
     for (uint j = 0; j < length; j++) {
         entity e = items[j];
-        if (!zox_has(e, BodyItem)) {
+        if (!zox_has(e, SlotType)) {
             continue;
         }
         if (zox_getv(e, SlotType) != slot) {
@@ -13,11 +14,29 @@ entity find_slot_type(ecs* world, const entity* items, uint length, byte slot) {
     }
     return 0;
 }
-// TODO: Randomly find a "hat" tag equip item from realm
-// TODO: use items slot type and add that - spawn_body_item(world, rcore, e);
-// TODO: Add Shoulders, hips here
+
+entity find_slot_type_index(ecs* world, const entity* items, uint length, byte slot, byte index) {
+    uint k = 0;
+    for (uint j = 0; j < length; j++) {
+        entity e = items[j];
+        if (!zox_has(e, SlotType)) {
+            continue;
+        }
+        if (zox_getv(e, SlotType) != slot) {
+            continue;
+        }
+        if (k == index) {
+            return e;
+        }
+        k++;
+    }
+    return 0;
+}
+
 // TODO: Spawn location of head: Half chest + half head sizes, minus half head size (cornered spawn location)
-// TODO: Calculate bone positions from this
+extern void add_tag_hat_slot(ecs*, entity);
+extern entity spawn_equip_slot(ecs* world, entity parent, byte anchor);
+
 // NOTE: Spawns in body parts from Realm
 zox_sys2(CharacterBodySpawnSystem) {
     byte dbg_log = 0;
@@ -75,6 +94,8 @@ zox_sys2(CharacterBodySpawnSystem) {
         // Spawn our user body
         // Attach Core Part
         zox_set(chest_slot, DataLink, { spawn_user_item_body(world, e, realm_chest, zox_slot_core) });
+        byte chest_width = powers_of_two[block_vox_depth];
+        byte chest_height = int_floorf(0.56f * chest_width);
         // Trigger early, incase we cannot keep growing body
         dirty->value = zox_dirty_trigger;
         // Given our chest spawned, we can spawn slots now
@@ -87,8 +108,9 @@ zox_sys2(CharacterBodySpawnSystem) {
         // Slot Offsets
         zox_set(eslot_head, PartOffset, { 0, 0, 0 }); // -1
         zox_set(eslot_hips, PartOffset, { 0, 2, 0 });
-        zox_set(eslot_lshoulder, PartOffset, { 1, 5, 0 });
-        zox_set(eslot_rshoulder, PartOffset, { -1, 5, 0 });
+        byte shoulder_position_y = chest_height / 3;
+        zox_set(eslot_lshoulder, PartOffset, { 0, shoulder_position_y, 0 });
+        zox_set(eslot_rshoulder, PartOffset, { -0, shoulder_position_y, 0 });
         // Now add parts to those slots
         // NOTE: This is head branch
         if (realm_head)
@@ -96,6 +118,11 @@ zox_sys2(CharacterBodySpawnSystem) {
             entity head = spawn_user_item_body(world, e, realm_head, zox_slot_head);
             zox_set(eslot_head, DataLink, { head });
             zox_add_tag(head, Head);
+            // Sub Slots
+            byte hat_position_y = chest_width / 5;
+            entity eslot_hat = spawn_equip_slot(world, eslot_head, body_anchor_top);
+            zox_set(eslot_hat, PartOffset, { 0, -hat_position_y, 0 });
+            add_tag_hat_slot(world, eslot_hat);
         }
         // Test slot systems
         // byte positions are limited
@@ -107,8 +134,7 @@ zox_sys2(CharacterBodySpawnSystem) {
             entity eslot_lthigh = spawn_body_slot(world, eslot_hips, body_anchor_bottom);
             entity eslot_rthigh = spawn_body_slot(world, eslot_hips, body_anchor_bottom);
             // Slot Offsets
-            byte chest_size = 16;
-            byte thigh_offset = chest_size / 4;
+            byte thigh_offset = chest_width / 4;
             zox_set(eslot_lthigh, PartOffset, { thigh_offset, 1, 0 });
             zox_set(eslot_rthigh, PartOffset, { -thigh_offset, 1, 0 });
             if (realm_thigh) {

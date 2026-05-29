@@ -1,4 +1,3 @@
-
 // Macro to compute an index into the 3x3x3 neighbour array at compile time.
 #define IDX(dx,dy,dz) ((((dx) + 1) * 9) + (((dy) + 1) * 3) + ((dz) + 1))
 
@@ -56,9 +55,7 @@ static inline float compute_ao_factor_27(byte side1, byte side2, byte corner) {
     if (side1 && side2) {
         return ao_corner_darkness;
     }
-
     byte solid_count = side1 + side2 + corner;
-
     if (solid_count == 3) {
         return ao_corner_darkness;
     } if (solid_count == 2) {
@@ -71,30 +68,20 @@ static inline float compute_ao_factor_27(byte side1, byte side2, byte corner) {
 }
 
 // Add face colors using AO from the 27-byte neighbor array
-void add_voxel_face_colors_ao_27(
-    color_rgb_array_d* color_rgbs,
-    color_rgb voxel_color,
-    byte direction,          // 0..5 matching face order above
-    const byte* neighbors    // pointer to 27 bytes (0..26)
-) {
+void add_voxel_face_colors_ao_27(color_rgb_array_d* color_rgbs, color_rgb voxel_color, byte direction, const byte* neighbors) {
     for (byte a = 0; a < 4; a++) {
         color_rgb c = voxel_color;
-
         byte n1 = neighbors[ neighbor_indices_27[direction][a][0] ];
         byte n2 = neighbors[ neighbor_indices_27[direction][a][1] ];
         byte n3 = neighbors[ neighbor_indices_27[direction][a][2] ];
-
         float ao = compute_ao_factor_27(n1, n2, n3);
-
         // apply AO * multiplier and clamp to 0..255
         float fr = (float) c.r * ao * AO_MULTIPLIER;
         float fg = (float) c.g * ao * AO_MULTIPLIER;
         float fb = (float) c.b * ao * AO_MULTIPLIER;
-
         c.r = (fr > 255.0f) ? 255 : (byte)fr;
         c.g = (fg > 255.0f) ? 255 : (byte)fg;
         c.b = (fb > 255.0f) ? 255 : (byte)fb;
-
         add_to_color_rgb_array_d(color_rgbs, c);
     }
 }

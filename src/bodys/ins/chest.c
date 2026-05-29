@@ -1,7 +1,6 @@
-entity spawn_blueprint_chest(ecs* world, byte3 nsize, byte depth) {
+entity spawn_blueprint_chest(ecs* world, byte3 nsize, byte depth, color chest_color) {
     // colors node
-    color mcolor = (color) { 200, 155, 133, 255 };
-    entity e = spawn_node_model_colors(world, mcolor, 1);
+    entity e = spawn_node_model_colors(world, chest_color, 1);
     // fill node
     // first fill is a blob pillar
     byte3 nsize_1 = (byte3) {

@@ -8,3 +8,5 @@ byte dbg_log_octree_errors = 1;
 #include "setreduce.c"
 #include "reducer.c"
 #include "adjacent.c"
+#include "max_value.c"
+#include "is_in.c"

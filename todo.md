@@ -1,12 +1,39 @@
 ### todo ###
+# Bugs #
+- Segfault has been introduced when i added hat
+	- occasionally breaks during games load now
+	- its breaking when body rebuilds
+	- disable body rebuilding and see if crashes
+	- issue is it only sometimes breaks
+	- memory leak somewhere
+- Camera lock toggles when removing hat from ui
+- Higher Resolution mode is bugged for player model
+	- skinning issues
+	- max length chunk is 128, increase length..
 # Refactors #
 - Refactor Chunk to Chunk + BlockMaterial + Lod Render
 - Refactor 3D UIs to use 2D UI stuff
-# Testing #
+- Move slots module up to src from ui module
+- Remove struct use from spawn_block_vox_meta
+- Redo skinning to be cellular automata voxels around bone joints for better rotation
+- Remove Duplicate UI prefabs
+- Remove structs from UI prefab use
+- Remove spawn_window_users use
+- Refactor Header Spawning to system
+- Remove all spawn_window_users's
+# Testing #	
 - Add test function for spawning a Terrain Chunk
 - Add test function for spawning a Colored Chunk
 # UI #
-- Remove all spawn_window_users's
+- Add Slot Names to Body Parts + Equipment in tooltips
+# Cameras #
+- Shake camera when hit
+# Items #
+- Spawn Vox model items in hand
+- Spawn Vox model items in world (flowers drop)
+- Add Cookie Item
+- Right click to split items
+- Write a test function to spawn a world item to pickup
 # Regions #
 - destroy regions
 - region lods
@@ -19,7 +46,6 @@
 - Use Cylinder for Bicep / Forearm Items
 - Raycast Range should be Skill Range
 	- Change when skill is equiped - using actions
--x Make parts attach to previous parts, not to entire body dimensions
 - Retype ChunkSize as byte3
 - Add Neck to head + chest blueprints
 	- cylinder shape at bottom+top
@@ -29,32 +55,29 @@
 - Footstep Sounds when walking around
 - Head bob to move faster when walking
 - Fix Crafting and use Slots
+# Blocks #
+- Make Grass Taller, 2-3 blocks tall sometimes
+- Refactor Model Spawning out of block_vox_meta functions
+- block damage overlay effect
+- seperate block spawning more from the realm,break it into biomes and modules
+- remove use of global voxel indexes and use BlockLinks from realm
+# Placing #
+- Show a gizmo where block would be if holding block
+- Animate particles fade in when placing
 # Huds #
 - Seperate Pause UI from Game Menu
 - Pause UI to use blacked out screen, game ui to just use blur
 - Sometimes namelabel didnt load on npcs
 - Pause ui toggle not showing on spawn taskbar + pause
 - Give game uis the realm colors so feels different to the main menu
-### UI ###
-- Remove Duplicate UI prefabs
-- Remove structs from UI prefab use
-- Refactor Header Spawning to system
 # Stats #
 - Add Stats panel to the taskbar and give header / window
-# Items #
-- Right click to split items
-- Write a test function to spawn a world item to pickup
 # Editor #
 - Terminal UI
 - test key for keyboard navigation mode
 # Stats #
 - Vitality should increase health stat
 - Add base stat "Physical Damage" that punch uses, strength should increase this
-# Blocks #
-- Refactor Model Spawning out of block_vox_meta functions
-- block damage overlay effect
-- seperate block spawning more from the realm,break it into biomes and modules
-- remove use of global voxel indexes and use BlockLinks from realm
 # Refactoring #
 - Refactor texture generation to blueprints
 - upgrade the texture for the item frames
@@ -378,3 +401,5 @@ Module [Rendering]:
 -x Refactor EquipLinks
 -x region stream position / detect system
 -x spawn regions
+-x Center the vox textures, for body parts
+-x Make parts attach to previous parts, not to entire body dimensions

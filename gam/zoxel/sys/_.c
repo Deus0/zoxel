@@ -3,7 +3,7 @@
 #include "skills.c"
 #include "items_blocks.c"
 #include "body_parts.c"
-#include "items_equips.c"
+#include "equipment.c"
 #include "quests.c"
 #include "dialogues.c"
 #include "blocks.c"
@@ -58,7 +58,7 @@ void define_systems_zoxel(ecs *world) {
         EquipsRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        [in] rendering.ModelLinks,
+        [out] rendering.ModelLinks,
         [out] items.ItemLinks,
         [none] realms.Realm
     );
