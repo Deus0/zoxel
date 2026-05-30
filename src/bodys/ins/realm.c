@@ -18,10 +18,13 @@ entity spawn_texture_from_vox(ecs* world, entity vox, byte2 tsize) {
     entity texture = spawn_texture(world, prefab_vox_texture, byte2_to_int2(tsize));
     // zox_set_name_e(texture, "bodys_texture_head");
     zox_set(texture, VoxBakeSide, { direction_front });
-    zox_set(vox, TextureLink, { texture });
+    zox_set(texture, VoxLink, { vox });
+    // Do we need this??
+    /*if (zox_valid(vox)) {
+        zox_set(vox, TextureLink, { texture });
+    }*/
     // Link Model to Texture
     // zox_set_unique_name(texture_model, "bodys_chest_model_high");
-    zox_set(texture, VoxLink, { vox });
     // TODO: Spawn Texture with Model Graph
     delay_event(world, &delayed_texture_spawn, texture, 1.0f);
     return texture;

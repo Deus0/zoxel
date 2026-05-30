@@ -108,9 +108,10 @@ zox_sys2(CharacterBodySpawnSystem) {
         // Slot Offsets
         zox_set(eslot_head, PartOffset, { 0, 0, 0 }); // -1
         zox_set(eslot_hips, PartOffset, { 0, 2, 0 });
-        byte shoulder_position_y = chest_height / 3;
-        zox_set(eslot_lshoulder, PartOffset, { 0, shoulder_position_y, 0 });
-        zox_set(eslot_rshoulder, PartOffset, { -0, shoulder_position_y, 0 });
+        byte shoulder_position_y = chest_height / 4;
+        byte shoulder_dig = 2;
+        zox_set(eslot_lshoulder, PartOffset, { shoulder_dig, shoulder_position_y, 0 });
+        zox_set(eslot_rshoulder, PartOffset, { -shoulder_dig, shoulder_position_y, 0 });
         // Now add parts to those slots
         // NOTE: This is head branch
         if (realm_head)

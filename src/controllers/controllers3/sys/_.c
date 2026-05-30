@@ -23,6 +23,7 @@ void define_systems_controllers3(ecs *world) {
     zox_system(
         Player3DMoveSystem,
         EcsOnUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
         [none] players.Player
@@ -30,6 +31,7 @@ void define_systems_controllers3(ecs *world) {
     zox_system(
         PlayerFlySystem,
         EcsOnUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
@@ -38,6 +40,7 @@ void define_systems_controllers3(ecs *world) {
     zox_system(
         Player3RotateSystem,
         EcsOnUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
@@ -46,16 +49,26 @@ void define_systems_controllers3(ecs *world) {
     zox_system(
         Player3DJumpSystem,
         EcsOnUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
         [none] players.Player
     );
+    zox_system_1(
+        ActionsShortcutSystem,
+        EcsOnUpdate,
+        [in] players.PlayerState,
+        [in] inputs.DeviceLinks,
+        [none] players.Player
+    );
     zox_system(
         Player3DTriggerSystem,
         EcsPostUpdate,
+        [in] players.PlayerState,
         [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
+        [in] cameras.CameraLink,
         [none] players.Player
     );
     zox_system_1(
@@ -88,12 +101,6 @@ void define_systems_controllers3(ecs *world) {
     // more shortcuts
     zox_system(
         QolShortcutsSystem,
-        EcsOnUpdate,
-        [in] inputs.DeviceLinks,
-        [none] players.Player
-    );
-    zox_system_1(
-        ActionsShortcutSystem,
         EcsOnUpdate,
         [in] inputs.DeviceLinks,
         [none] players.Player

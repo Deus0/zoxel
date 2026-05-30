@@ -5,13 +5,18 @@ zox_sys2(Player3RotateSystem) {
     double mouse_rotate_multiplier = 0.0032; // 0.008;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(PlayerState);
     zox_sys_in(DeviceLinks);
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_i(PlayerState, state);
         zox_sys_i(CharacterLink, characterLink);
         zox_sys_i(CameraLink, cameraLink);
         zox_sys_i(DeviceLinks, devices);
+        if (state->value != zox_player_state_playing) {
+            continue;
+        }
         entity character = characterLink->value;
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;

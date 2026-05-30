@@ -1,4 +1,4 @@
-// TODO: HeadBoneLink?
+// NOTE: Sets Head animation when skeleton is updated
 zox_sys2(HeadAnimateSystem) {
     float2 headbob_range = (float2) { 0.004f, 0.006f };
     zox_sys_world();

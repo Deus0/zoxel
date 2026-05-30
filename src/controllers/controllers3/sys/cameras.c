@@ -6,11 +6,12 @@ void set_camera_free(ecs *world, entity e) {
     zox_set(e, Euler, { euler });
     // zox_set(e, ParentLink, { 0 });
     zox_set_parent(world, e, 0);
-
     if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
         zox_set(e, CameraFollowLink, { 0 })
     }
-    if (local_mouse) zox_set(local_mouse, MouseLock, { 0 });
+    if (local_mouse) {
+        zox_set(local_mouse, MouseLock, { 0 });
+    }
 }
 
 void attach_camera_to_character(ecs *world, entity e, entity character) {
@@ -18,7 +19,6 @@ void attach_camera_to_character(ecs *world, entity e, entity character) {
         zox_log_error("Invalid Character [attach_camera_to_character]");
         return;
     }
-
     // Initial Linking
     zox_set(e, CharacterLink, { character });
     zox_set(character, CameraLink, { e });
@@ -33,8 +33,9 @@ void attach_camera_to_character(ecs *world, entity e, entity character) {
     // set_camera_locked(world, e, character);
     // TODO: Add CameraDirty to Character for headbone adjustment system
     zox_set(character, SkeletonDirty, { zox_dirty_trigger });
-    if (local_mouse) zox_set(local_mouse, MouseLock, { 1 });
-
+    if (local_mouse) {
+        zox_set(local_mouse, MouseLock, { 1 });
+    }
     // zox_set(e, ParentLink, { character });
     zox_set_parent(world, e, character);
 }

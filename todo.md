@@ -1,15 +1,5 @@
 ### todo ###
-# Bugs #
-- Segfault has been introduced when i added hat
-	- occasionally breaks during games load now
-	- its breaking when body rebuilds
-	- disable body rebuilding and see if crashes
-	- issue is it only sometimes breaks
-	- memory leak somewhere
-- Camera lock toggles when removing hat from ui
-- Higher Resolution mode is bugged for player model
-	- skinning issues
-	- max length chunk is 128, increase length..
+	
 # Refactors #
 - Refactor Chunk to Chunk + BlockMaterial + Lod Render
 - Refactor 3D UIs to use 2D UI stuff
@@ -403,3 +393,4 @@ Module [Rendering]:
 -x spawn regions
 -x Center the vox textures, for body parts
 -x Make parts attach to previous parts, not to entire body dimensions
+-x Camera lock toggles when removing hat from ui

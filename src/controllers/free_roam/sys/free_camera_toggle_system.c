@@ -45,7 +45,6 @@ void FreeCameraToggleSystem(iter *it) {
         }
         if (is_triggered && mouse) {
             zox_geter_value(camera->value, Roaming, byte, roaming);
-            // zox_geter_value(camera->value, MouseLock, byte, mouse_locked);
             byte new_roaming = !roaming;
             zox_set(mouse, MouseLock, { new_roaming });
             zox_set(camera->value, Roaming, { new_roaming });

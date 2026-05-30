@@ -68,6 +68,7 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
     return bone;
 }
 
+// NOTE: We could delete only bones that are linked to updated parts here, but that is a refactor, perhaps later
 zox_sys2(CharacterBoneSpawnSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -96,10 +97,6 @@ zox_sys2(CharacterBoneSpawnSystem) {
         if (zox_valid(root_bone)) {
             zox_delete(root_bone);
         }
-        /*for (int j = 0; j < bones->length; j++) {
-            entity e2 = bones->value[j];
-            zox_delete(e2);
-        }*/
         resize_BoneLinks(bones, 0);
         float3 half_bounds = float3_scale(byte3_to_float3(bsize->value), bscale->value * 0.5f);
         if (dbg_log) {
@@ -112,9 +109,7 @@ zox_sys2(CharacterBoneSpawnSystem) {
             continue;
         }
         entity chest_part = zox_getv(chest_slot, DataLink);
-        // entity e2 =
         spawn_part_bones(world, e, bones, half_bounds, bscale->value, e, float3_zero, chest_slot, chest_part);
-        // zox_set_parent(world, e2, e);
         dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(CharacterBoneSpawnSystem);

@@ -11,20 +11,16 @@ void PlayerGame2EndSystem(iter *it) {
         zox_sys_i(PlayerState, state);
         // zox_sys_o(CameraLink, camera);
         zox_sys_o(CharacterLink, character);
-
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-
         if (state->value != zox_player_state_main_menu) {
             continue;
         }
-
         // TODO: Do this in game not in player system
         if (zox_valid(world_grid2D)) {
             zox_delete(world_grid2D);
         }
-
         zox_delete(character->value);
         character->value = 0;
         // camera->value = 0;

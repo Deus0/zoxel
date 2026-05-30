@@ -96,9 +96,8 @@ int debug_can_jump(ecs *world, entity character, char buffer[], int buffer_size,
     if (!character) {
         return buffer_index;
     }
-    byte can_jump = zox_get_value(character, Grounded)
-    int is_jump = (int) 1000.0 * zox_get_value(character, Jump)
-    // const byte movement_disabled = zox_get_value(character, DisableMovement)
+    byte can_jump = zox_getv(character, Grounded);
+    int is_jump = (int) 1000.0 * zox_getv(character, Jump);
     // buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " grounded [%i] movement_disabled [%i]", can_jump, movement_disabled);
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " grounded [%i] jump [%i ms]", can_jump, is_jump);
     return buffer_index;

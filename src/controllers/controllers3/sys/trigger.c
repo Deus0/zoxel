@@ -9,13 +9,24 @@ zox_sys2(Player3DTriggerSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(PlayerState);
     zox_sys_in(DeviceLinks);
     zox_sys_in(CharacterLink);
+    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_i(PlayerState, state);
         zox_sys_i(CharacterLink, character_link);
         zox_sys_i(DeviceLinks, devices);
+        zox_sys_i(CameraLink, camera);
+        if (state->value != zox_player_state_playing) {
+            continue;
+        }
         entity character = character_link->value;
-        if (!zox_valid(character) || !zox_has(character, Character3)) {
+        if (!zox_valid(character) || !zox_has(character, Character3) || !zox_valid(camera->value)) {
+            continue;
+        }
+        byte camera_state = zox_getv(camera->value, CameraState);
+        if (camera_state != zox_camera_state_first_person) {
             continue;
         }
         byte is_triggered_a = 0;
