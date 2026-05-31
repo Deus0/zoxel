@@ -5,9 +5,12 @@ extern byte is_action_frame(ecs*, entity);
 extern byte can_place_icon_in_skill_frame(ecs*, entity, entity);
 extern byte can_place_icon_in_item_frame(ecs*, entity, entity);
 // Equipment
-extern byte is_equip_frame(ecs*, entity);
-extern byte is_equip_data(ecs*, entity);
+extern byte is_frame_equip_item(ecs*, entity);
+extern byte is_data_equip_item(ecs*, entity);
 extern void on_frame_updated_equipment(ecs*, entity);
+// Body
+extern byte is_frame_body_part(ecs*, entity);
+extern byte is_data_body_part(ecs*, entity);
 
 // NOTE: Called from the clicked icon
 zox_sys2(DataFrameClickSystem) {
@@ -29,7 +32,6 @@ zox_sys2(DataFrameClickSystem) {
         zox_sys_i(SlotLink, slot);
         zox_sys_o(DataLink, data);
         zox_sys_o(DataDirty, dirty);
-        // zox_log("%s is data framing", zox_get_name(e));
         if (state->value != zox_click_state_clicked_this_frame) {
             continue;
         }
@@ -48,13 +50,19 @@ zox_sys2(DataFrameClickSystem) {
         }
         // check if can place here
         entity place_in_frame = zox_get_parent(world, e);
-        byte is_mouse_equip = is_equip_data(world, mouse_data->value);
-        byte frame_equip = is_equip_frame(world, place_in_frame);
+        byte is_mouse_equip = is_data_equip_item(world, mouse_data->value);
+        byte is_frame_equip2 = is_frame_equip_item(world, place_in_frame);
+        byte is_mouse_body = is_data_body_part(world, mouse_data->value);
+        byte is_frame_body2 = is_frame_body_part(world, place_in_frame);
         if (!is_action_frame(world, place_in_frame)) {
-            if (frame_equip) {
+            if (is_frame_equip2) {
                 // check if same slot held if swapping
                 // if place in or grab out we update body dirty
                 if (mouse_data->value && !is_mouse_equip) {
+                    continue;
+                }
+            } else if (is_frame_body2) {
+                if (mouse_data->value && !is_mouse_body) {
                     continue;
                 }
             }
@@ -65,16 +73,34 @@ zox_sys2(DataFrameClickSystem) {
             }
         }
         // If One is Empty and one is exists!
+        // NOTE: If Mouse picking up data!
         if (mouse_data_empty && !clicked_data_empty) {
             if (dbg_log) {
                 zox_log("   Mouse is Empty, DataFrame has [%s]", zox_get_name(data->value));
             }
-        } else if (!mouse_data_empty && clicked_data_empty) {
+            if (is_frame_body2) {
+                // continue here if child body slots all empty!
+                if (!is_slot_children_empty(world, slot->value)) {
+                    zox_log("Cannot Pickup part, children are not empty!");
+                    continue;
+                }
+            }
+        }
+        // NOTE: If Mouse placing data!
+        else if (!mouse_data_empty && clicked_data_empty) {
             if (dbg_log) {
                 zox_log("   DataFrame is Empty, Mouse has [%s]", zox_get_name(mouse_data->value));
             }
+            if (is_frame_body2) {
+                // continue here if child body slots all empty!
+                // TODO: Check Part Slot Type!
+                if (is_slot_parent_empty(world, slot->value)) {
+                    zox_log("Cannot Place Part, Parent is Partless!");
+                    continue;
+                }
+            }
         }
-        // If Both Exist
+        // NOTE: If Swapping Data!
         else {
             if (dbg_log) {
                 zox_log("   DataFrame has [%s], Mouse has [%s]", zox_get_name(data->value), zox_get_name(mouse_data->value));
@@ -108,18 +134,8 @@ zox_sys2(DataFrameClickSystem) {
         zox_muter(slot->value, DataLink, slot_data);
         slot_data->value = data->value;
         dirty->value = zox_dirty_trigger;
-        if (frame_equip) {
+        if (is_frame_equip2 || is_frame_body2) {
             on_frame_updated_equipment(world, user);
         }
-        // NOTE: Clears the tooltip when picked up icon
-        /*if (!clicked_data_empty) {
-            entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
-            if (zox_valid(canvas)) {
-                entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
-                if (zox_valid(tooltip)) {
-                    set_entity_text(world, tooltip, "");
-                }
-            }
-        }*/
     }
 } zox_sys_end(DataFrameClickSystem);

@@ -14,7 +14,7 @@ void define_systems_items_ui(ecs *world) {
         ItemIconTooltipSystem,
         EcsOnUpdate,
         [in] interaction.SelectState,
-        [in] u.i.containers.DataLink,
+        [in] slots.DataLink,
         [none] elements2.Icon
     );
 }

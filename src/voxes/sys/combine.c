@@ -68,7 +68,7 @@ zox_sys2(CombineVoxSystem) {
             if (dbg_log) {
                 zox_log("Vox [%i] max_color_index for vox [%s] [%i]", j, zox_get_name(vox), max_color_index);
             }
-            for (byte k = 0; k < max_color_index && colors->length < max_colors; k++) {
+            for (ushort k = 0; k < max_color_index && colors->length < max_colors; k++) {
                 // NOTE: Added check to make sure color is actually inside vox, for imported voxes
                 byte is_in = is_in_octree((void*) vox_octree,  sizeof(VoxelNode), offsetof(VoxelNode, value), k + 1);
                 if (!is_in) {
@@ -77,7 +77,7 @@ zox_sys2(CombineVoxSystem) {
                 color_rgb acolor = vox_colors->value[k];
                 // If not in list
                 byte already_added = 0;
-                for (byte l = 0; l < colors->length; l++) {
+                for (ushort l = 0; l < colors->length; l++) {
                     color_rgb base_color = colors->value[l];
                     if (color_rgb_equals(base_color, acolor)) {
                         already_added = 1;
@@ -93,12 +93,17 @@ zox_sys2(CombineVoxSystem) {
             // account for depth difference
             // position, size for placement into new grid?
             // combine colors too
-            byte3 lposition = byte3_zero;
+            byte3 max_placement = (byte3) {
+                vposition.x + vox_size.x < 255 ? vposition.x + vox_size.x : 255,
+                vposition.y + vox_size.y < 255 ? vposition.y + vox_size.y : 255,
+                vposition.z + vox_size.z < 255 ? vposition.z + vox_size.z : 255
+            };
+            int3 lposition = int3_zero;
             byte3 position;
-            for (lposition.x = 0, position.x = vposition.x; position.x < vposition.x + vox_size.x; position.x++, lposition.x++) {
-                for (lposition.y = 0, position.y = vposition.y; position.y < vposition.y + vox_size.y; position.y++, lposition.y++) {
-                    for (lposition.z = 0, position.z = vposition.z; position.z < vposition.z + vox_size.z; position.z++, lposition.z++) {
-                        byte place_vox_value = get_value_VoxelNode(vox_octree, vox_depth, lposition, 0);
+            for (lposition.x = 0, position.x = vposition.x; position.x < max_placement.x; position.x++, lposition.x++) {
+                for (lposition.y = 0, position.y = vposition.y; position.y < max_placement.y; position.y++, lposition.y++) {
+                    for (lposition.z = 0, position.z = vposition.z; position.z < max_placement.z; position.z++, lposition.z++) {
+                        byte place_vox_value = get_value_VoxelNode(vox_octree, vox_depth, int3_to_byte3(lposition), 0);
                         if (!place_vox_value) {
                             continue;
                         }
@@ -108,7 +113,7 @@ zox_sys2(CombineVoxSystem) {
                         // find color in place vox
                         byte value = 0;
                         // TODO: Use Colors Dictionary!
-                        for (byte k = 0; k < colors->length; k++) {
+                        for (ushort k = 0; k < colors->length; k++) {
                             color_rgb body_color = colors->value[k];
                             if (color_rgb_equals(body_color, place_vox_color)) {
                                 value = k + 1;  // + 1 for air

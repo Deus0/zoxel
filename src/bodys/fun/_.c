@@ -19,3 +19,4 @@ entity get_item_model(ecs* world, entity e) {
     zox_geter(model, ModelLods, mlods);
     return mlods->value[mdepth];
 }
+

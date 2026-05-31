@@ -38,7 +38,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, AnimationStart, { 0 });
     zox_prefab_set(e, ElementLinks, { 0 }); // uis
     // physics3
-    // physics -- too big atm to refactor
+    zox_add_tag(e, Moveable);
     zox_add_tag(e, Frictioned);
     zox_prefab_set(e, LastPosition3D, { float3_zero });
     zox_prefab_set(e, LastUnstuck3, { float3_zero });

@@ -23,7 +23,7 @@ void define_systems_stats_ui(ecs *world) {
     zox_system(
         StatIconLabelSystem,
         EcsOnUpdate,
-        [in] u.i.containers.DataLink,
+        [in] slots.DataLink,
         [out] texts.TextData,
         [out] texts.TextDirty,
         [none] elements2.Label
@@ -38,7 +38,7 @@ void define_systems_stats_ui(ecs *world) {
         StatIconTooltipSystem,
         EcsOnUpdate,
         [in] interaction.SelectState,
-        [in] u.i.containers.DataLink,
+        [in] slots.DataLink,
         [none] elements2.Icon
     );
 }

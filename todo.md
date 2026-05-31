@@ -5,7 +5,6 @@
 - Refactor 3D UIs to use 2D UI stuff
 - Move slots module up to src from ui module
 - Remove struct use from spawn_block_vox_meta
-- Redo skinning to be cellular automata voxels around bone joints for better rotation
 - Remove Duplicate UI prefabs
 - Remove structs from UI prefab use
 - Remove spawn_window_users use
@@ -16,8 +15,27 @@
 - Add test function for spawning a Colored Chunk
 # UI #
 - Add Slot Names to Body Parts + Equipment in tooltips
+- Add tooltip of slot type over empty slots
+- Show unuseable slots as grayed out or something
 # Cameras #
 - Shake camera when hit
+# Body #
+- Check body slot type before placing body items
+- Add Cylinder Shape for Fill Nodes
+- Add Neck Node for Headblueprint
+- Use Cylinder for Bicep / Forearm Items
+- Retype ChunkSize as byte3
+- Add Neck to head + chest blueprints
+	- cylinder shape at bottom+top
+- Designate a hand bone
+	- Spawn Held Item onto handbone
+- Footstep Sounds when walking around
+- Head bob to move faster when walking
+# Crafting #
+- Fix Crafting and use Slots
+# Skills #
+- Raycast Range should be Skill Range
+	- Change when skill is equiped - using actions
 # Items #
 - Spawn Vox model items in hand
 - Spawn Vox model items in world (flowers drop)
@@ -30,21 +48,6 @@
 - region town/mountain links
 # Towns #
 - Spawn Towns per Region - link to Town Placecment
-# Body #
-- Add Cylinder Shape for Fill Nodes
-- Add Neck Node for Headblueprint
-- Use Cylinder for Bicep / Forearm Items
-- Raycast Range should be Skill Range
-	- Change when skill is equiped - using actions
-- Retype ChunkSize as byte3
-- Add Neck to head + chest blueprints
-	- cylinder shape at bottom+top
-- Designate a hand bone
-	- Spawn Held Item onto handbone
-- Create Slots for Body / Equip
-- Footstep Sounds when walking around
-- Head bob to move faster when walking
-- Fix Crafting and use Slots
 # Blocks #
 - Make Grass Taller, 2-3 blocks tall sometimes
 - Refactor Model Spawning out of block_vox_meta functions
@@ -394,3 +397,4 @@ Module [Rendering]:
 -x Center the vox textures, for body parts
 -x Make parts attach to previous parts, not to entire body dimensions
 -x Camera lock toggles when removing hat from ui
+-x Create Slots for Body / Equip

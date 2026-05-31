@@ -6,13 +6,13 @@ void zox_define_systems_quests_ui(ecs* world) {
         QuestIconTooltipSystem,
         EcsOnUpdate,
         [in] interaction.SelectState,
-        [in] u.i.containers.DataLink,
+        [in] slots.DataLink,
         [none] elements2.Icon
     );
     zox_system(
         QuestIconLabelSystem,
         EcsOnUpdate,
-        [in] u.i.containers.DataLink,
+        [in] slots.DataLink,
         [out] texts.TextData,
         [out] texts.TextDirty,
         [none] elements2.Label

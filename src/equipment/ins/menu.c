@@ -1,6 +1,3 @@
-color frame_equip_fill = { 63, 43, 33, frame_alpha };
-color frame_equip_outline = { 63, 43, 33, frame_alpha };
-
 void fetch_equip_slots_parts(ecs *world, entity_array_d* entities, entity e) {
     if (zox_has(e, EquipSlot)) {
         // add_to_entity_array_d(entities, zox_getv(e, DataLink));
@@ -47,10 +44,12 @@ void fetch_equip_slots_parts(ecs *world, entity_array_d* entities, entity e) {
     return e;
 }
 */
+
 entity spawn_player_menu_equipment(ecs* world, entity player) {
+    color frame_equip_fill = { 63, 43, 33, frame_alpha };
+    color frame_equip_outline = { 63, 43, 33, frame_alpha };
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
-    // entity actionbar = zox_get_child_by_id(world, character, zox_id(Actionbar));
     byte label_font_size = 5 * ui_scale;
     int frame_size = ((default_frame_size / 4) * ui_scale);
     float2 position_anchor = float2_half;
@@ -72,11 +71,11 @@ entity spawn_player_menu_equipment(ecs* world, entity player) {
     return e;
 }
 
-byte is_equip_frame(ecs* world, entity frame) {
+byte is_frame_equip_item(ecs* world, entity frame) {
     return zox_valid(frame) && zox_has(frame, EquipFrame);
 }
 
-byte is_equip_data(ecs* world, entity data) {
+byte is_data_equip_item(ecs* world, entity data) {
     return zox_valid(data) && zox_has(data, EquipItem);
 }
 

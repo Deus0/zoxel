@@ -8,30 +8,30 @@ void zox_define_systems_ui_containers(ecs* world) {
         EcsOnUpdate,
         [in] interaction.ClickState,
         [in] slots.SlotLink,
-        [out] u.i.containers.DataLink,
-        [out] u.i.containers.DataDirty,
+        [out] slots.DataLink,
+        [out] slots.DataDirty,
         [none] u.i.containers.DataFrame
     );
     zox_system(
         SlotDataCleanSystem,
         EcsOnUpdate,
-        [out] DataLink,
-        [out] DataDirty,
+        [out] slots.DataLink,
+        [out] slots.DataDirty,
         [none] slots.Slot
     );
     zox_system(
         DataIconSystem,
         EcsOnUpdate,
         [in] slots.SlotLink,
-        [out] DataLink,
-        [out] DataDirty,
+        [out] slots.DataLink,
+        [out] slots.DataDirty,
         [none] elements2.Icon
     );
     zox_system(
         DataIconUpdateSystem,
         EcsOnUpdate,
-        [in] DataDirty,
-        [in] DataLink,
+        [in] slots.DataDirty,
+        [in] slots.DataLink,
         [none] elements2.Icon
     );
     zox_system(

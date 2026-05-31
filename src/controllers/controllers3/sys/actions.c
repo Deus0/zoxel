@@ -1,5 +1,5 @@
 #ifdef zoxm_actions
-
+// NOTE: Players keys to switch between actions
 zox_sys2(ActionsShortcutSystem) {
     zox_sys_world();
     zox_sys_begin();

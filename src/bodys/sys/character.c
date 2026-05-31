@@ -1,38 +1,6 @@
 // NOTE: Slots are spawned once parts are attached here
 byte zox_dbg_extraheads = 0; // 16;
 
-entity find_slot_type(ecs* world, const entity* items, uint length, byte slot) {
-    for (uint j = 0; j < length; j++) {
-        entity e = items[j];
-        if (!zox_has(e, SlotType)) {
-            continue;
-        }
-        if (zox_getv(e, SlotType) != slot) {
-            continue;
-        }
-        return e;
-    }
-    return 0;
-}
-
-entity find_slot_type_index(ecs* world, const entity* items, uint length, byte slot, byte index) {
-    uint k = 0;
-    for (uint j = 0; j < length; j++) {
-        entity e = items[j];
-        if (!zox_has(e, SlotType)) {
-            continue;
-        }
-        if (zox_getv(e, SlotType) != slot) {
-            continue;
-        }
-        if (k == index) {
-            return e;
-        }
-        k++;
-    }
-    return 0;
-}
-
 // TODO: Spawn location of head: Half chest + half head sizes, minus half head size (cornered spawn location)
 extern void add_tag_hat_slot(ecs*, entity);
 extern entity spawn_equip_slot(ecs* world, entity parent, byte anchor);
@@ -118,7 +86,6 @@ zox_sys2(CharacterBodySpawnSystem) {
         {
             entity head = spawn_user_item_body(world, e, realm_head, zox_slot_head);
             zox_set(eslot_head, DataLink, { head });
-            zox_add_tag(head, Head);
             // Sub Slots
             byte hat_position_y = chest_width / 5;
             entity eslot_hat = spawn_equip_slot(world, eslot_head, body_anchor_top);
@@ -173,6 +140,7 @@ zox_sys2(CharacterBodySpawnSystem) {
             entity rshoulder = spawn_user_item_body(world, e, realm_shoulder, zox_slot_rshoulder);
             zox_set(eslot_lshoulder, DataLink, { lshoulder });
             zox_set(eslot_rshoulder, DataLink, { rshoulder });
+            // NOTE: Tag this here for now as it's based on side of body
             zox_add_tag(lshoulder, Shoulder);
             // Sub Slots [Biceps]
             entity eslot_lbicep = spawn_body_slot(world, eslot_lshoulder, body_anchor_bottom);
