@@ -11,6 +11,8 @@ entity get_lodded_model(ecs* world, entity e, byte depth) {
     return mlods->value[depth];
 }
 
+// NOTE: Something disposes of Model when Realm Dies
+//  - We clone the model here otherwise it crashes on second Realm spawn (reload game)
 entity spawn_realm_model_item_filename(ecs* world, entity realm, const char* name, const char* vox_name, byte slot) {
     entity model_base = string_hashmap_get(files_hashmap_voxes, new_string_data(vox_name));
     if (!zox_valid(model_base)) {
@@ -31,9 +33,9 @@ entity spawn_realm_model_item_filename(ecs* world, entity realm, const char* nam
         return 0;
     }
     // clone model
-    // entity model = zox_ins(model_base);
-    // zox_set_parent(world, model, realm);
-    entity model = model_base;
+    entity model = zox_ins(model_base);
+    zox_set_parent(world, model, realm);
+    // entity model = model_base;
     //entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("hatty"));
     // Spawn Texture
     entity texture = spawn_texture_from_vox(world, vox, byte2_single(powers_of_two[model_depth]));
