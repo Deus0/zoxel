@@ -14,6 +14,7 @@
 #include "players/_.c"
 #include "colors/_.c"
 #include "nodes/_.c"
+#include "slots/_.c"
 // beef
 #include "cameras/_.c"
 #include "rendering/_.c"
@@ -105,6 +106,7 @@ zox_begin_module(Zox)
     zox_import_module(Players);
     zox_import_module(Triggers);
     zox_import_module(Nodes);
+    zox_import_module(Slots);
     zox_import_module(Colorz);
 
     zox_import_module(Cameras);

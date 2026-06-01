@@ -12,6 +12,7 @@ entity get_equip_slot_in_children(ecs *world, entity e, entity id) {
             return equip;
         }
     }
+    return 0;
 }
 
 zox_sys2(CharacterPlayerEquipsSystem) {

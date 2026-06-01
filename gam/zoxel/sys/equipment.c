@@ -47,16 +47,15 @@ entity spawn_realm_model_item_filename(ecs* world, entity realm, const char* nam
 }
 
 zox_sys2(EquipsRealmSpawnSystem) {
-    // return;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
-    zox_sys_out(ModelLinks);
+    // zox_sys_out(ModelLinks);
     zox_sys_out(ItemLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
-        zox_sys_o(ModelLinks, models);
+        // zox_sys_o(ModelLinks, models);
         zox_sys_o(ItemLinks, items);
         if (state->value != zox_generate_realm_items) {
             continue;

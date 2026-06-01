@@ -25,7 +25,7 @@ void raycaster_select_first_button(ecs *world, entity e, entity window) {
     if (!button) {
         return;
     }
-    zox_log("Navigation Beginning on w[%s]", zox_get_name(window), zox_get_name(button));
+    // zox_log("Navigation Beginning on w[%s]", zox_get_name(window), zox_get_name(button));
     raycaster_select_element(world, e, button);
 }
 

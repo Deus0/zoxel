@@ -70,7 +70,7 @@ pick_settings() {
   echo ""
   clear
 
-  ARC=$(select_option "Select Architecture" x64 arm64)
+  ARC=$(select_option "Select Architecture" x64 arm)
   echo ""
   clear
 

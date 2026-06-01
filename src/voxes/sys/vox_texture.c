@@ -159,7 +159,7 @@ void generate_vox_texture(color *data, int2 size, const VoxelNode *chunk, const 
 // TODO: Offset by chunk size difference to node size
 zox_sys2(VoxTextureSystem) {
     byte dbg_log = 0;
-    byte is_center = 1;
+    // byte is_center = 1;
     color air_color = (color) { 0, 0, 0, 0 };
     zox_sys_world();
     zox_sys_begin();

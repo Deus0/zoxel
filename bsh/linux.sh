@@ -24,14 +24,14 @@ libs="-lm -lpthread" # -Iinc
 [[ " $* " == *" --package "* ]] && package="True"
 
 if [[ ${ARC} == "aarch64" ]]; then
-    ARC="arm64"
+    ARC="arm"
 elif [[ ${ARC} == "x86_64" ]]; then
     ARC="x64"
 fi
 
 echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
 
-if [[ ${ONARC} == "aarch64" && ${ARC} == "arm64" ]]; then
+if [[ ${ONARC} == "aarch64" && ${ARC} == "arm" ]]; then
     cflags+=" -march=native"
 elif [[ ${ONARC} == "x86_64" && ${ARC} == "x64" ]]; then
     cflags+=" -march=native"

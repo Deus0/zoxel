@@ -12,8 +12,6 @@ static inline void zox_log_prefix(
     va_end(args);
 }
 
-
-
 static inline void zox_log_time_prefix(
     const char* prefix,
     const char* fmt,
@@ -25,11 +23,9 @@ static inline void zox_log_time_prefix(
     localtime_r(&now, &t);
     char ts[32];
     strftime(ts, sizeof(ts), "[%H:%M:%S]", &t);
-
     // prepend timestamp + prefix
     char buf[1024];
     snprintf(buf, sizeof(buf), "%s %s %s\n", ts, prefix, fmt);
-
     // forward args
     va_list args;
     va_start(args, fmt);

@@ -11,7 +11,7 @@ zox_sys2(StreamEndSystem) {
     // also checks if loaded enough chunks
     int xz_chunks = terrain_lod_near * 2 + 1;
     int y_chunks = render_distance_y * 2 + 1;
-    uint chunk_required = xz_chunks * xz_chunks; //  * y_chunks;
+    uint chunk_required = xz_chunks * xz_chunks * y_chunks;
     if (zox_tst_single_terrain_chunk) {
         chunk_required = 1;
     }

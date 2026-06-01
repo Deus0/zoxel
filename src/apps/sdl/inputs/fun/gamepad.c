@@ -126,54 +126,6 @@ byte set_gamepad_axis2(ZeviceStick *zeviceStick, SDL_Joystick *joystick, int ind
     return !(zeviceStick->value.x == previous_value.x && zeviceStick->value.y == previous_value.y);
 }
 
-byte set_gamepad_button(byte old_value, SDL_Joystick *joystick, int index) {
-    byte value = SDL_JoystickGetButton(joystick, index);
-
-    if (value) {
-        zox_log("- SDL Jostick [%i]: %i", index, value);
-    }
-
-    return process_byte(old_value, value);
-}
-
-byte sdl_gamepad_handle_disconnect(SDL_Joystick *joystick) {
-    if (joystick == NULL) return 0;
-    if (!SDL_JoystickGetAttached(joystick)) {
-        int joystick_id = SDL_JoystickInstanceID(joystick);
-        fprintf(stderr, "   > gamepad [%d] has disconnected\n", joystick_id);
-        SDL_JoystickClose(joystick);
-        joystick = NULL;
-        return 0;
-    }
-    return 1;
-}
-
-// Main Function for Gamepad
-void sdl_extract_gamepad_button(ecs *world, entity e, SDL_Joystick* joystick) {
-    if (!joystick) {
-        return;
-    }
-    joystick_axes = SDL_JoystickNumAxes(joystick);
-    zox_geter(e, RealButtonIndex, rindex);
-    if (zox_has(e, ZeviceStick)) {
-        ZeviceStick *stick = zox_get_mut(e, ZeviceStick);
-        if (set_gamepad_axis2(stick, joystick, rindex->value)) {
-            zox_modified(e, ZeviceStick);
-        }
-    } else if (zox_has(e, ZeviceButton)) {
-        zox_geter(e, ZeviceButton, button);
-        byte new_value;
-        if (is_dpad_button(rindex->value)) {
-            new_value = get_gamepad_dpad(button->value, joystick, rindex->value);
-        } else {
-            new_value = set_gamepad_button(button->value, joystick, rindex->value);
-        }
-        if (new_value != button->value) {
-            zox_set(e, ZeviceButton, { new_value });
-        }
-    }
-}
-
 void debug_button(const PhysicalButton *button, const char *button_name) {
     if (button->pressed_this_frame) {
         zox_log(" > [%s] button pushed\n", button_name)

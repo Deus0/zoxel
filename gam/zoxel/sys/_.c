@@ -58,7 +58,7 @@ void define_systems_zoxel(ecs *world) {
         EquipsRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        [out] rendering.ModelLinks,
+        // [out] rendering.ModelLinks,
         [out] items.ItemLinks,
         [none] realms.Realm
     );

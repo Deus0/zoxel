@@ -20,7 +20,7 @@ zox_sys2(BodysRealmSpawnSystem) {
         if (state->value != zox_generate_realm_items) {
             continue;
         }
-        byte variants = 1;
+        // byte variants = 1;
         byte max_part_depth = block_vox_depth + 2;
         byte blueprint_depth = nodegraph_max_depth;
         byte blueprint_length = powers_of_two[blueprint_depth];

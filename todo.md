@@ -1,5 +1,7 @@
 ### todo ###
-	
+
+- Fix controller mapping
+- Add haptic feedback rumble when hit
 # Refactors #
 - Refactor Chunk to Chunk + BlockMaterial + Lod Render
 - Refactor 3D UIs to use 2D UI stuff
@@ -46,6 +48,7 @@
 - destroy regions
 - region lods
 - region town/mountain links
+- spawn straight highways between region towns
 # Towns #
 - Spawn Towns per Region - link to Town Placecment
 # Blocks #

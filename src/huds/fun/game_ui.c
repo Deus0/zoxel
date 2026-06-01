@@ -4,6 +4,7 @@ extern void spawn_all_players_start_ui(ecs*);
 // NOTE: Runs on boot
 entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 screen_to_canvas, entity app) {
     entity canvas = spawn_canvas(world, prefab_canvas, ui_camera, dimensions, screen_to_canvas, app);
+    zox_set_unique_name(canvas, "game_canvas");
     spawn_canvas_overlay(world, prefab_canvas_overlay, canvas, dimensions);
     // Tooltip on player
     spawn_tooltip(world, prefab_tooltip, canvas);
@@ -45,7 +46,6 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     zox_set_unique_name(icon_mouse_follow, "icon_mouse");
     entity empty_texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));
     clone_texture_data(world, icon_mouse_follow, empty_texture);
-
     return canvas;
 }
 

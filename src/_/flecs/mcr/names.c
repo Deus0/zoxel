@@ -58,6 +58,9 @@ void zox_set_name_spawned(ecs *world, entity e, const char* name) {
 #endif
 }
 
+#define zox_set_unique_name(e, name)\
+    zox_set_name_spawned(world, e, name)
+
 #define zox_prefab_name2(label, label2)\
     zox_set_name_spawned(world, e, label2 label);
 
@@ -66,9 +69,6 @@ void zox_set_name_spawned(ecs *world, entity e, const char* name) {
 
 #define zox_name(label)\
     zox_set_name_spawned(world, e, label);
-
-#define zox_set_unique_name(e, name)\
-    zox_set_entity_name(world, e, name)
 
 #define zox_set_name_e(e, name)\
     zox_set_entity_name(world, e, name);

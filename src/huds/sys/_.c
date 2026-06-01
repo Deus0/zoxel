@@ -13,6 +13,12 @@
 
 void define_systems_game_ui(ecs *world) {
     zox_system(
+        RaycastCrosshairSystem,
+        EcsOnUpdate,
+        [in] vrays.RaycastVoxelData,
+        [in] players.PlayerLink
+    );
+    zox_system(
         FpsDisplaySystem,
         EcsOnUpdate,
         [out] texts.TextData,
@@ -37,14 +43,15 @@ void define_systems_game_ui(ecs *world) {
         [out] texts.TextData,
         [none] huds.GameDebugLabel
     );
+     // NOTE: must update before ??
     zox_system_1(
         DeviceModeUISystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] inputs.DeviceMode,
         [in] inputs.DeviceModeDirty,
         [in] games.GameLink,
         [in] layouts2.CanvasLink
-    ); // note: must update before
+    );
     zox_system(
         GameStartFaderSystem,
         EcsOnUpdate,
@@ -55,14 +62,14 @@ void define_systems_game_ui(ecs *world) {
     );
     zox_system_1(
         PlayerUIGameEndSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] layouts2.CanvasLink
     );
     zox_system_1(
         PlayerUIGame3EndSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] games.GameLink
@@ -70,7 +77,7 @@ void define_systems_game_ui(ecs *world) {
     // Pause UI
     zox_system_1(
         PlayerUIGamePauseSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] layouts2.CanvasLink,
@@ -79,7 +86,7 @@ void define_systems_game_ui(ecs *world) {
     );
     zox_system_1(
         PlayerResumeSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] layouts2.CanvasLink,
         [in] cameras.CameraLink,
         [out] players.PlayerState,
@@ -88,17 +95,11 @@ void define_systems_game_ui(ecs *world) {
     );
     zox_system_1(   // spawns ui
         PlayerTerminalSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] layouts2.CanvasLink,
         [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
         [in] elements.ElementLinks,
         [none] players.Player
-    );
-    zox_system(
-        RaycastCrosshairSystem,
-        EcsOnUpdate,
-        [in] vrays.RaycastVoxelData,
-        [in] players.PlayerLink
     );
 }

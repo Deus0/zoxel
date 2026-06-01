@@ -51,7 +51,7 @@ entity spawn_player_menu_equipment(ecs* world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     byte label_font_size = 5 * ui_scale;
-    int frame_size = ((default_frame_size / 4) * ui_scale);
+    // int frame_size = ((default_frame_size / 4) * ui_scale);
     float2 position_anchor = float2_half;
     int2 position = int2_zero;
     entity frame_id = zox_id(EquipFrame);

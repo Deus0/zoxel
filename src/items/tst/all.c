@@ -1,9 +1,7 @@
 byte tst_all_items = 0;
 
 void give_character_all_items(ecs* world, entity e) {
-    entity player = zox_getv(e, PlayerLink);
-    // entity game = zox_getv(e, GameLink);
-    // entity realm = zox_getv(game, RealmLink);
+    // entity player = zox_getv(e, PlayerLink);
     entity realm = zox_getv(e, RealmLink);
     if (!zox_valid(realm)) {
         return;
