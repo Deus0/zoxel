@@ -32,12 +32,14 @@ entity spawn_block_flower(ecs *world, byte index) {
     entity vox_lod = mlods->value[max_render_depth];
     // zox_set_name_e(vox_lod, "vox_lod0_flower");
     // link a texture to it
-    entity texture = spawn_texture(world, prefab_vox_texture, int2_single(powers_of_two[block_vox_depth]));
-    zox_set_name_e(texture, "texture_flower");
-    zox_set(texture, VoxLink, { vox_lod });
-    zox_set(texture, VoxBakeSide, { direction_front }); // direction_left });
-    zox_set(texture, GenerateTexture, { zox_dirty_trigger });
-    zox_set(e, TextureLink, { texture });
-    zox_add_tag(texture, CenterVoxTexture);
+    {
+        entity texture = spawn_texture(world, prefab_vox_texture, int2_single(powers_of_two[block_vox_depth]));
+        zox_set_name_e(texture, "texture_flower");
+        zox_set(texture, VoxLink, { vox_lod });
+        zox_set(texture, VoxBakeSide, { direction_front });
+        zox_set(texture, GenerateTexture, { zox_dirty_trigger });
+        zox_set(e, TextureLink, { texture });
+        zox_add_tag(texture, CenterVoxTexture);
+    }
     return e;
 }

@@ -1,4 +1,5 @@
 entity spawn_realm_block_noisey(ecs *world, entity realm, byte index, char* name, color block_color) {
+    zox_prefab_child_named(prefab_block_vox_instanced, prefab_world_block);
     entity vox;
     {
         byte mdepth = block_vox_depth_limits.y;
@@ -9,7 +10,6 @@ entity spawn_realm_block_noisey(ecs *world, entity realm, byte index, char* name
         zox_set(vox, Color, { block_color });
         zox_set(vox, RenderDepth, { block_vox_depth });
         zox_set(vox, Generate, { zox_dirty_trigger });
-        zox_prefab_child_named(prefab_block_vox_instanced, prefab_world_block);
         zox_set(prefab_world_block, InstanceLink, { vox });
     }
     SpawnBlock spawn_data = {
