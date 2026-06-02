@@ -9,7 +9,6 @@ zoxc_entities(ChunkEntities)
 zoxc_link(ChunkLink, entity, ChunkEntities)
 #define chunk_neighbors_length 6
 zoxc_array(ChunkNeighbors, entity, chunk_neighbors_length);
-zox_tag(NoiseChunk);
 zox_tag(ChunkDebugger);
 zox_tag(ColorChunk);
 zox_tag(ChunkTextured);
@@ -17,6 +16,7 @@ zox_tag(LinkChunk);
 zox_tag(DisableReverseLinkChunk);
 zoxc_float(RaycastRange);
 #include "sides.c"
+zox_tag(NoiseChunk);
 
 void define_components_chunks3(ecs* world) {
     zoxd_tag(Chunk3);
@@ -36,10 +36,10 @@ void define_components_chunks3(ecs* world) {
     zoxd(ChunkNeighbors);
     zoxd_entities(ChunkEntities);
     zox_define_links_component(ChunkLink);
-    zoxd_tag(NoiseChunk);
     zoxd_tag(ColorChunk);
     zoxd_tag(ChunkTextured);
     zoxd_tag(LinkChunk);
     zoxd_tag(DisableReverseLinkChunk);
     zoxd_tag(ChunkDebugger);
+    zoxd_tag(NoiseChunk);
 }

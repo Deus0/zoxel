@@ -1,5 +1,5 @@
-entity spawn_chunk_terrain(ecs *world, entity p, entity terrain, int3 camera_position, int3 position, byte terrain_depth, float terrain_scalev) {
-    zox_instance(p);
+entity spawn_chunk_terrain(ecs *world, entity prefab, entity terrain, int3 camera_position, int3 position, byte terrain_depth, float terrain_scalev) {
+    zox_instance(prefab);
     zox_name("chunk_terrain");
     if (terrain_mode == terrain_mode_flatlands) {
         zox_add_tag(e, FlatlandChunk);

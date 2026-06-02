@@ -1,50 +1,50 @@
-static inline byte float4_equals(const float4 a, const float4 b) {
+static inline byte float4_equals(float4 a, float4 b) {
     return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
 }
 
-static inline void print_float4(const float4 input) {
+static inline void print_float4(float4 input) {
     zox_log("    Float4 [%f %f %f %f]\n", input.x, input.y, input.z, input.w);
 }
 
-static inline float4 float4_from_float3(const float3 v, const float w) {
+static inline float4 float4_from_float3(float3 v, float w) {
     return (float4) { v.x, v.y, v.z, w };
 }
 
-static inline float4 float4_multiply_float(const float4 input, const float mul) {
+static inline float4 float4_multiply_float(float4 input, float mul) {
     return (float4) { input.x * mul, input.y * mul, input.z * mul, input.w * mul };
 }
 
-static inline float4 float4_divide_float(const float4 input, const float div) {
+static inline float4 float4_divide_float(float4 input, float div) {
     return (float4) { input.x / div, input.y / div, input.z / div, input.w / div };
 }
 
-static inline float4 float4_subtract(const float4 a, const float4 b) {
+static inline float4 float4_subtract(float4 a, float4 b) {
     return (float4) { a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w };
 }
 
-static inline float4 float4_add(const float4 a, const float4 b) {
+static inline float4 float4_add(float4 a, float4 b) {
     return (float4) { a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w };
 }
 
-static inline float4 float4_divide_float_safe(const float4 input, const float div) {
+static inline float4 float4_divide_float_safe(float4 input, float div) {
     if (div == 0) return input;
     return float4_divide_float(input, div);
 }
 
-static inline float float4_dot(const float4 a, const float4 b) {
+static inline float float4_dot(float4 a, float4 b) {
     return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
-static inline float float4_length(const float4 v) {
+static inline float float4_length(float4 v) {
     return sqrt(float4_dot(v, v));
 }
 
-static inline float4 float4_normalize(const float4 q) {
+static inline float4 float4_normalize(float4 q) {
     float length = sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
     return float4_divide_float(q, length);
 }
 
-static inline void quaternion_rotate_quaternion_p(float4 *output, const float4 q2) {
+static inline void quaternion_rotate_quaternion_p(float4 *output, float4 q2) {
     float4 q1 = *output;
     output->w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
     output->x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
@@ -52,7 +52,7 @@ static inline void quaternion_rotate_quaternion_p(float4 *output, const float4 q
     output->z = q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w;
 }
 
-static inline float4 quaternion_rotate(const float4 q1, const float4 q2) {
+static inline float4 quaternion_rotate(float4 q1, float4 q2) {
     float4 output;
     output.w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
     output.x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
@@ -98,6 +98,10 @@ static inline float3 float4_rotate_float3(float4 rotation, float3 value) {
     float3 crossB = float3_cross(rotationXYZ, t);
     float3 scaledT = float3_scale(t, rotation.w);
     return float3_add(value, float3_add(scaledT, crossB));
+}
+
+static inline float3 move_along_direction(float3 position, float4 rotation, float length) {
+    return float3_add(position, float4_rotate_float3(rotation, (float3) { 0, 0, length }));
 }
 
 static inline void float4_rotate_float3_p(float4 rotation, float3 *value) {

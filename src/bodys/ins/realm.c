@@ -7,7 +7,7 @@ entity spawn_item_body(ecs *world, entity model, entity texture, const char* nam
     return e;
 }
 
-void delayed_texture_spawn(ecs* world, entity e) {
+void delayed_texture_generate(ecs* world, entity e) {
     if (zox_valid(e)) {
         zox_set(e, GenerateTexture, { zox_dirty_trigger });
     }
@@ -26,7 +26,7 @@ entity spawn_texture_from_vox(ecs* world, entity vox, byte2 tsize) {
     // Link Model to Texture
     // zox_set_unique_name(texture_model, "bodys_chest_model_high");
     // TODO: Spawn Texture with Model Graph
-    delay_event(world, &delayed_texture_spawn, texture, 1.0f);
+    delay_event(world, &delayed_texture_generate, texture, 1.0f);
     return texture;
 }
 

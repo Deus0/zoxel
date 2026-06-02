@@ -33,4 +33,7 @@ void zox_define_prefabs_voxes(ecs *world) {
     prefab_vox_generated = spawn_prefab_vox_generated(world, prefab_vox);
     prefab_block_vox = spawn_prefab_block_vox(world, prefab_vox);
     prefab_block_vox_instanced = spawn_prefab_block_vox_instanced(world, prefab_vox_instanced);
+    if (prefab_vox_texture) {
+        zox_prefab_set(prefab_vox_texture, VoxLink, { 0 });
+    }
 }

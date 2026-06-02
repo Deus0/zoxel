@@ -1,8 +1,6 @@
 extern entity spawn_chunk_terrain(ecs*, entity, entity, int3, int3, byte, float);
-
 // NOTE: Takes in array of stream points and iterates per chunk
 // NOTE: This logic fails if all chunks dissapear
-
 zox_sys2(ChunkSpawnSystem) {
     if (zox_tst_single_terrain_chunk) {
         return;

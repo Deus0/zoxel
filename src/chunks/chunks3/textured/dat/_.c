@@ -1,6 +1,6 @@
 typedef struct {
     byte *solidity;
-    int *uvs;
+    // int *uvs;
 } chunk3_textured_builder_data;
 
 typedef struct {
@@ -18,5 +18,5 @@ typedef struct {
 
 void free_chunk3_textured_builder_data(chunk3_textured_builder_data data) {
     if (data.solidity) free(data.solidity);
-    if (data.uvs) free(data.uvs);
+    // if (data.uvs) free(data.uvs);
 }

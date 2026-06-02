@@ -2,8 +2,8 @@
 entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
     byte depth = block_vox_depth;
     entity e = zox_ins(data.prefab);
-    // zox_set_unique_name(e, data.name);
     set_ZoxName(world, e, data.name);
+    zox_set_unique_name(e, data.name);
     zox_set(e, BlockIndex, { data.index });
     zox_set(e, Color, { data.color });
     if (data.prefab_world_block) {
@@ -15,28 +15,31 @@ entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
     if (data.disable_collision) {
         zox_set(e, BlockCollider, { zox_block_air });
     }
-    if (data.model) {
-        zox_set(e, BlockModel, { data.model });
+    if (data.model_type) {
+        zox_set(e, BlockModel, { data.model_type });
     }
-    if (data.vox) {
-        zox_set(e, ModelLink, { data.vox });
+    if (data.model) {
+        zox_set(e, ModelLink, { data.model });
     }
     if (data.vox_offset) {
         zox_set(e, BlockVoxOffset, { 1 });
     }
-    if (data.bake_vox) {
-        int2 vox_texture_size = int2_single(powers_of_two[depth]);
-        TextureLinks textures = (TextureLinks) { 0 };
-        initialize_TextureLinks(&textures, 6);
-        for (byte i = 0; i < 6; i++) {
-            entity e2 = spawn_texture(world, data.prefab_texture, vox_texture_size);
-            zox_set_name_e(e2, "texture_block");
-            zox_set(e2, VoxLink, { data.vox });
-            zox_set(e2, VoxBakeSide, { i });
-            textures.value[i] = e2;
-        }
-        zox_set_ptr(e, TextureLinks, textures);
+    // if not bake
+    if (!data.bake_vox || !zox_valid(data.prefab_texture)) {
+        return e;
     }
+    int2 vox_texture_size = int2_single(powers_of_two[depth]);
+    TextureLinks textures = (TextureLinks) { 0 };
+    initialize_TextureLinks(&textures, 6);
+    for (byte i = 0; i < 6; i++) {
+        entity e2 = spawn_texture(world, data.prefab_texture, vox_texture_size);
+        zox_set_name_e(e2, "texture_block");
+        zox_set(e2, VoxBakeSide, { i });
+        zox_set(e2, VoxLink, { data.model });
+        zox_set(e2, BlockLink, { e });
+        textures.value[i] = e2;
+    }
+    zox_set_ptr(e, TextureLinks, textures);
     // zox_log("Block [%s]: Vox Texture Size [%ix%i] depth [%i]", data.name, vox_texture_size.x, vox_texture_size.y, depth);
     // zox_log(" + generated block [vox] name [%s]\n", name)
     return e;

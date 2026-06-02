@@ -11,12 +11,10 @@ zox_sys2(ChunkFindNeighborSystem) {
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_i(VoxLink, terrain);
         zox_sys_o(ChunkNeighbors, neighbors);
-
         // todo: use 255 and 254, 254 for invisible and 255 for initiated
         if (rdepth->value == render_depth_invisible || !terrain->value) {
             continue;
         }
-
         byte need_find = 0;
         for (byte j = 0; j < chunk_neighbors_length; j++) {
             if (!zox_valid(neighbors->value[j])) {
@@ -30,17 +28,11 @@ zox_sys2(ChunkFindNeighborSystem) {
         // link up neighbors if they need to be
         zox_muter(terrain->value, ChunkLinks, chunks);
         for (byte j = 0; j < chunk_neighbors_length; j++) {
-
             if (zox_valid(neighbors->value[j])) {
                 continue;
             }
-
-            int3 nposition = int3_add(
-                chunkPosition->value,
-                get_direction_int3(j));
-
+            int3 nposition = int3_add(chunkPosition->value, get_direction_int3(j));
             entity neighbor = int3_hashmap_get(chunks->value, nposition);
-
             if (zox_valid(neighbor)) {
                 neighbors->value[j] = neighbor;
             }

@@ -4,7 +4,6 @@ zox_tag(Material);
 zox_tag(SingleMaterial);
 zox_tag(RendererInstance);
 zox_tag(VoxMesh);
-
 zoxc_byte(MeshDirty);
 zoxc_state(TextureDirty);
 zoxc_state(RenderDistanceDirty);
@@ -12,7 +11,6 @@ zoxc_state(RenderDepthDirty);
 zoxc_state(MeshGenerate);    // TODO: Replace ChunkMeshDirty
 zoxc_state(MeshColorsGenerate);
 zoxc_state(MeshColorsDirty);
-
 zoxc_entity(MeshLink);
 zoxc_byte(MeshAlignment);
 zoxc_byte(RenderDepth);
@@ -27,13 +25,13 @@ zoxc_byte(ShaderSourceIndex);
 zoxc_entity(ShaderLink); // links to a shader entity
 zoxc_entity(InstanceLink); // links to a instance parent
 // zoxc_array(InstanceLinks, entity, 8)
-zoxc_arrayd(MeshIndicies, int)
+zoxc_arrayd(MeshIndicies, int);
 zoxc_uint(MeshIndiciesGpu);
-zoxc_arrayd(MeshVertices, float3)
-zoxc_arrayd(MeshVertices2D, float2)
-zoxc_arrayd(MeshUVs, float2)
-zoxc_arrayd(MeshColors, color)
-zoxc_arrayd(MeshColorRGBs, color_rgb)
+zoxc_arrayd(MeshVertices, float3);
+zoxc_arrayd(MeshVertices2D, float2);
+zoxc_arrayd(MeshUVs, float2);
+zoxc_arrayd(MeshColors, color);
+zoxc_arrayd(MeshColorRGBs, color_rgb);
 #include "material_gpu_link.c"
 #include "texture_gpu_link.c"
 #include "ubo_gpu_link.c"
@@ -59,7 +57,6 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(SingleMaterial);
     zoxd_tag(RendererInstance);
     zoxd_tag(VoxMesh);
-
     zoxd_byte(MeshDirty);
     zoxd_state(TextureDirty);
     zoxd_state(RenderDistanceDirty);
@@ -67,7 +64,6 @@ void define_components_rendering(ecs *world) {
     zoxd_state(MeshGenerate);
     zoxd_state(MeshColorsGenerate);
     zoxd_state(MeshColorsDirty);
-
     zoxd_byte(MeshAlignment);
     zoxd_entity(MeshLink);
     zoxd_byte(RenderDepth);

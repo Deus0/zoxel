@@ -12,11 +12,11 @@
 #include "dbg/_.c"
 
 // todo: rename Textures as TextureLinks, and Textures to Textures again
-zox_begin_module(Textures)
+zox_begin_module(Textures) {
     define_components_textures(world);
     define_systems_textures(world);
     add_hook_spawn_prefabs(spawn_prefabs_textures_core);
     zox_import_module(TexturesFiles);
-zox_end_module(Textures)
+} zox_end_module(Textures);
 
 #endif

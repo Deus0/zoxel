@@ -1,20 +1,24 @@
-entity spawn_realm_block_noisey(ecs *world, byte index, char* name, color block_color) {
-    byte mdepth = block_vox_depth_limits.y;
-    entity vox = spawn_vox_basic(world, prefab_vox, block_vox_depth, mdepth);
-    zox_set_unique_name(vox, "dirt_pile");
-    zox_set(vox, VoxType, { vox_type_noisey });
-    zox_set(vox, Color, { block_color });
-    zox_set(vox, Generate, { zox_dirty_trigger });
-    zox_set(vox, RenderDepth, { block_vox_depth });
-    zox_prefab_child_named(prefab_block_vox_instanced, prefab_world_block);
-    zox_set(prefab_world_block, InstanceLink, { vox });
+entity spawn_realm_block_noisey(ecs *world, entity realm, byte index, char* name, color block_color) {
+    entity vox;
+    {
+        byte mdepth = block_vox_depth_limits.y;
+        vox = spawn_vox_basic(world, prefab_vox, block_vox_depth, mdepth);
+        zox_set_unique_name(vox, "dirt_pile");
+        zox_set_parent(world, vox, realm);
+        zox_set(vox, VoxType, { vox_type_noisey });
+        zox_set(vox, Color, { block_color });
+        zox_set(vox, RenderDepth, { block_vox_depth });
+        zox_set(vox, Generate, { zox_dirty_trigger });
+        zox_prefab_child_named(prefab_block_vox_instanced, prefab_world_block);
+        zox_set(prefab_world_block, InstanceLink, { vox });
+    }
     SpawnBlock spawn_data = {
         .name = name,
         .prefab = prefab_block_vox_meta,
         .prefab_world_block = prefab_world_block,
-        .vox = vox,
+        .model = vox,
         .tag = zox_id(BlockVox),
-        .model = zox_block_vox,
+        .model_type = zox_block_vox,
         .index = index,
         .seed = generate_voxel_seed(index),
         .color = block_color,
@@ -24,6 +28,16 @@ entity spawn_realm_block_noisey(ecs *world, byte index, char* name, color block_
     entity e = spawn_block_vox_meta(world, spawn_data);
     if (disable_block_voxes) {
         return e;
+    }
+    {
+        int2 texture_size = int2_single(powers_of_two[block_vox_depth]);
+        entity texture = spawn_texture(world, prefab_vox_texture, texture_size);
+        zox_set_unique_name(texture, "block_texture");
+        zox_set_parent(world, texture, realm);
+        zox_set(texture, GenerateTexture, { zox_dirty_trigger });
+        zox_set(texture, VoxBakeSide, { direction_front }); // direction_left });
+        zox_set(texture, VoxLink, { vox });
+        zox_set(e, TextureLink, { texture });
     }
     // zox_geter(spawn_data.vox, ModelLods, modelLods);
     // entity vox_lod = modelLods->value[0];

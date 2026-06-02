@@ -4,8 +4,8 @@ void process_disabled_block_vox(ecs *world, SpawnBlock *data, byte is_unique_vox
     if (!disable_block_voxes) {
         return;
     }
-    if (data->vox && is_unique_vox) {
-        zox_delete(data->vox)
+    if (data->model && is_unique_vox) {
+        zox_delete(data->model)
     }
     if (data->prefab_world_block) {
         zox_delete(data->prefab_world_block)
@@ -15,7 +15,7 @@ void process_disabled_block_vox(ecs *world, SpawnBlock *data, byte is_unique_vox
     zox_set_unique_name(vox, "unknown");
     zox_set(vox, VoxType, { vox_type_soil })
     // settings!
-    data->vox = vox;
+    data->model = vox;
     data->prefab_texture = prefab_vox_texture;
     data->model = 0;
     data->tag = 0;

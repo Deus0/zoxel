@@ -82,14 +82,13 @@ void define_systems_voxes(ecs *world) {
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkEntities
     );
-    // Hmmm?
     zox_system(
         VoxTextureSystem,
-        EcsPreUpdate,
+        EcsPreUpdate, // EcsOnUpdate,
+        [in] textures.GenerateTexture,
         [in] rendering.TextureSize,
-        [in] voxes.VoxLink,
         [in] blocks.VoxBakeSide,
-        [out] textures.GenerateTexture,
+        [in] voxes.VoxLink,
         [out] textures.TextureData,
         [out] rendering.TextureDirty,
         [none] textures.VoxTexture

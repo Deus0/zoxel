@@ -89,7 +89,7 @@ void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, NodeDelveData
     // check if out of bounds
     byte block_index = node->value - 1;
     if (block_index >= data->blocks_length) {
-        zox_log_error("block_index out of bounds %i of %i", block_index, data->blocks_length)
+        zox_log_error("block_index out of bounds %i of %i", block_index, data->blocks_length);
         return;
     }
     // Remove and return if not a World Block
@@ -142,7 +142,6 @@ void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, NodeDelveData
         run_hook_spawned_block(world, &spawned_data);
     }
 }
-
 
 void spawn_vodes(ecs *world, entity e, entity terrain, byte render_depth, byte rdisabled, VoxelNode *chunk, byte max_depth, float3 positionf, float chunk_scalev, float tscale) {
     zox_geter_value(terrain, RealmLink, entity, realm);

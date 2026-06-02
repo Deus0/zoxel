@@ -21,10 +21,7 @@ void dispose##_##data_type##_##array_d(data_type##_##array_d* dynamic_array) {\
     free(dynamic_array);\
 }\
 \
-void add_to##_##data_type##_##array_d( \
-    data_type##_##array_d* dynamic_array, \
-    data_type array_entry \
-) {\
+void add_to_##data_type##_array_d(data_type##_##array_d* dynamic_array, data_type array_entry) {\
     if (dynamic_array->size == dynamic_array->capacity) {\
         dynamic_array->capacity *= 2;\
         dynamic_array->data = realloc(dynamic_array->data, dynamic_array->capacity * sizeof(data_type));\
@@ -32,10 +29,7 @@ void add_to##_##data_type##_##array_d( \
     dynamic_array->data[dynamic_array->size++] = array_entry;\
 }\
 \
-void expand_capacity##_##data_type##_##array_d( \
-    data_type##_##array_d* dynamic_array, \
-    int add_count \
-) {\
+void expand_capacity_##data_type##_array_d(data_type##_##array_d* dynamic_array, int add_count) {\
     size_t required_capacity = dynamic_array->size + add_count;\
     if (required_capacity > dynamic_array->capacity) {\
         dynamic_array->capacity *= 2;\
@@ -43,8 +37,8 @@ void expand_capacity##_##data_type##_##array_d( \
     }\
 }\
 \
-void add_block_to##_##data_type##_##array_d( \
-    data_type##_##array_d* dynamic_array, \
+void add_block_to_##data_type##_array_d( \
+    data_type##_array_d* dynamic_array, \
     const data_type block[], byte length \
 ) {\
     size_t required_capacity = dynamic_array->size + length; \

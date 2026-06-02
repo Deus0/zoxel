@@ -1,31 +1,29 @@
 entity zox_dbg_test_window;
-#define zox_tsts_count 16
 
  void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
      zox_tst_spawn_tilemap(world);
  }
 
  void spawn_test_list(ecs* world, int32_t keycode) {
-     if (keycode != zox_key_g) {
-         return;
-     }
-     zox_log("Testing [All]: %lu", zox_dbg_test_window);
-     if (zox_valid(zox_dbg_test_window)) {
-         zox_delete(zox_dbg_test_window);
-         zox_dbg_element = 0;
-         return;
-     }
-     entity player = dbg_player;
-     zox_geter_value(player, CanvasLink, entity, canvas);
-     if (!zox_valid(canvas)) {
-         return;
-     }
-
-     zox_log("   + spawning [zox_dbg_test_window] on player %s on canvas %s", zox_get_name(player), zox_get_name(canvas));
-
+    if (keycode != zox_key_g) {
+        return;
+    }
+    zox_log("Testing [All]: %lu", zox_dbg_test_window);
+    if (zox_valid(zox_dbg_test_window)) {
+        zox_delete(zox_dbg_test_window);
+        zox_dbg_element = 0;
+        return;
+    }
+    entity player = dbg_player;
+    zox_geter_value(player, CanvasLink, entity, canvas);
+    if (!zox_valid(canvas)) {
+        return;
+    }
+    zox_log("   + spawning [zox_dbg_test_window] on player %s on canvas %s", zox_get_name(player), zox_get_name(canvas));
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
+    byte zox_tsts_count = 17;
     SpawnListElement elements[zox_tsts_count];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
@@ -98,7 +96,10 @@ entity zox_dbg_test_window;
         .text = "Death",
         .on_click = { &zox_tst_player_character_death },
     };
-
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Chunk3",
+        .on_click = { &zox_dbg_spawn_chunk3 },
+    };
     // Test our uis
     entity spawned[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Testing", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, list_padding, spawned, elements, elements_count, visible_count);

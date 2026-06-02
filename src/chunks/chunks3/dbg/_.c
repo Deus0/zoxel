@@ -1,6 +1,7 @@
 #include "label.c"
 #include "memory.c"
 #include "lines.c"
+#include "chunk3.c"
 
 void define_systems_chunks3_debug(ecs *world) {
     // main thread

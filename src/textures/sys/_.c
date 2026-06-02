@@ -7,10 +7,8 @@
 #include "tilemap.c"
 #include "mouse.c"
 #include "icon.c"
-// zox_increment_system_with_reset(GenerateTexture, zox_generate_texture_end);
 
 void define_systems_textures(ecs *world) {
-    // zoxd_system_increment(GenerateTexture, [none] Texture)
     zox_system(
         MouseTextureSystem,
         EcsOnUpdate,
@@ -29,9 +27,6 @@ void define_systems_textures(ecs *world) {
         [out] AnimateTexture,
         [out] textures.GenerateTexture
     );
-    // zox_texture_system(NoiseTextureSystem, NoiseTexture, [in] colorz.Color)
-
-
     zox_filter(fill_texture_query, [none] FillTexture, [out] textures.GenerateTexture)
     zox_system_ctx(
         FillTextureSystem,
@@ -44,9 +39,6 @@ void define_systems_textures(ecs *world) {
         [out] rendering.TextureDirty,
         [none] FillTexture
     );
-
-    // zox_texture_generation_system2(FillTexture, FillTextureSystem, [in] colorz.Color)
-
     zox_system_ctx(
         FrameTextureSystem,
         zox_pip_texture_generation,
@@ -60,7 +52,6 @@ void define_systems_textures(ecs *world) {
         [out] rendering.TextureDirty,
         [none] FrameTexture
     );
-
     zox_system(
         IconTextureSystem,
         zox_pip_texture_generation,
@@ -74,20 +65,17 @@ void define_systems_textures(ecs *world) {
         [out] rendering.TextureDirty,
         [none] IconTexture
     );
-
     zox_system(
         TilemapGenerationSystem,
         zox_pip_texture_generation,
+        [in] textures.GenerateTexture,
         [in] textures.TilemapSize,
         [in] textures.TextureLinks,
-        [out] textures.GenerateTexture,
         [out] rendering.TextureSize,
         [out] textures.TextureData,
         [out] rendering.TextureDirty,
-        [out] TilemapUVs,
         [none] Tilemap
     );
-
     zox_system_1(
         TextureUpdateSystem,
         EcsPreStore,

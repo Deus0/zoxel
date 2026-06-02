@@ -14,7 +14,7 @@ entity spawn_block_soil(ecs *world, byte index, char* name, color block_color) {
         .prefab_texture = prefab_vox_texture,
         .name = name,
         .color = block_color,
-        .vox = vox,
+        .model = vox,
         .bake_vox = 1,
     };
     return spawn_block_vox_meta(world, data);

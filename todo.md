@@ -1,5 +1,17 @@
 ### todo ###
-
+# Regression #
+-x Grass Texture causes crash
+	- generating vox / texture conflicts?
+- Disabled decor blocks in realm gen
+-x Grass model in between others messes up indexing for block -> uvs for second biome
+	- put individual uvs on each block instead
+	- refactor tilemap uvs onto block dirty system
+	- TilemapGenerationSystem generates here - just add individual uvs here too for quick fix
+	- Chunk3TexturedBuildSystem - get the block uvs here - entitymap
+# # #
+- Refactor Blocks Hook out, used by dungeons atm
+- Refactor Model Lods -> one model, just create mesh per lod
+- Seems to be issues on frustum culling, debug terrain chunk sizes
 - Fix controller mapping
 - Add haptic feedback rumble when hit
 # Refactors #

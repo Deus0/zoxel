@@ -18,7 +18,7 @@ entity spawn_block_wood(ecs *world, byte index, char* name, color bcolor) {
         .prefab_texture = prefab_vox_texture,
         .name = name,
         .color = bcolor,
-        .vox = v,
+        .model = v,
         .bake_vox = 1,
     };
     return spawn_block_vox_meta(world, data);

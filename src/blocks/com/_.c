@@ -9,7 +9,7 @@ zoxc_byte(BlockCollider); // zox_block_air | zox_block_solid
 zoxc_state(BlocksDirty);
 zoxc_byte(VoxBakeSide);
 zoxc_byte(BlockVoxOffset);
-zoxc_byte(BlockIndex);
+zoxc_byte(BlockIndex);      // NOTE: This includes Air in the index
 zoxc_int3(VoxelPosition);
 zoxc_byte3(VoxelLocalPosition);
 zoxc_float(BlockScale);
@@ -23,6 +23,10 @@ zoxc_state(InsideBlockDirty);
 zoxc_double(InsideBlockTime);
 zox_tag(BlockSoundTrigger);
 zoxc_entity(BlockSound);        // Links Block to a Sound
+
+entity get_block_link(ecs* world, entity e) {
+    return zox_getv(e, BlockLink);
+}
 
 void define_components_blocks(ecs *world) {
     zoxd_tag(Voxel);

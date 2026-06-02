@@ -16,10 +16,10 @@ entity spawn_block_flower(ecs *world, byte index) {
         .index = index,
         .seed = generate_voxel_seed(index),
         .color = generate_random_voxel_color(),
-        .model = zox_block_vox,
+        .model_type = zox_block_vox,
         .disable_collision = 1,
         .vox_offset = 1,
-        .vox = model
+        .model = model
     };
     // our block!
     process_disabled_block_vox(world, &spawn_data, 0);
@@ -27,7 +27,7 @@ entity spawn_block_flower(ecs *world, byte index) {
     if (disable_block_voxes) {
         return e;
     }
-    zox_geter(spawn_data.vox, ModelLods, mlods);
+    zox_geter(spawn_data.model, ModelLods, mlods);
     byte max_render_depth = block_vox_depth;
     entity vox_lod = mlods->value[max_render_depth];
     // zox_set_name_e(vox_lod, "vox_lod0_flower");

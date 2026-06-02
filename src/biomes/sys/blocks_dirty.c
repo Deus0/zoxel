@@ -12,11 +12,12 @@ zox_sys2(BiomeBlocksDirtySystem) {
             continue;
         }
         zox_muter(realm->value, BlockLinks, realm_blocks);
-        byte index = realm_blocks->length;
+        byte index = realm_blocks->length + 1;  // add one for air here
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
+            zox_set(block, BlockIndex, { index });
             add_to_BlockLinks(realm_blocks, block);
-            zox_set(block, BlockIndex, { ++index });
+            index++;
             // zox_log("Block [%s] index [%i]", zox_get_name(block), index);
         }
     }
