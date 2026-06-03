@@ -16,6 +16,7 @@ entity get_equip_slot_in_children(ecs *world, entity e, entity id) {
 }
 
 zox_sys2(CharacterPlayerEquipsSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -36,7 +37,9 @@ zox_sys2(CharacterPlayerEquipsSystem) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
                 zox_muter(hat_slot, DataLink, slot_data);
                 slot_data->value = e2;
-                zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
+                if (dbg_log) {
+                    zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
+                }
             } else {
                 zox_loge("Could not find Hat in Realm");
             }
@@ -56,22 +59,12 @@ zox_sys2(CharacterPlayerEquipsSystem) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
                 zox_muter(inventory_slot, DataLink, slot_data);
                 slot_data->value = e2;
-                zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
+                if (dbg_log) {
+                    zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
+                }
             } else {
                 zox_loge("Could not find Hat in Realm");
             }
         }
     }
 } zox_sys_end(CharacterPlayerEquipsSystem);
-
-        // entity body = zox_get_child_by_id(world, e, zox_id(Body));
-        // TODO: Randomly find a "hat" tag equip item from realm
-        /*entity ritem = 0;
-        for (uint j = 0; j < realm_items->length; j++) {
-            entity item = realm_items->value[j];
-            if (zox_has(item, EquipItem)) {
-                ritem = item;
-                break;
-            }
-        }*/
-        /**/

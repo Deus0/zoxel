@@ -78,8 +78,9 @@ void zox_build_voxel_face(const mesh_uvs_build_data* mesh, const int* indicies, 
 // actually this makes sense: we are just checking what neighbor is rendering at verse what we are
 static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_data dig, const SidesOctree* sides) {
     // Dig Deeper
-    if (dig.depth < data.rdepth && !is_closed_SidesOctree(sides)) {
-        const SidesOctree* sides_kids = get_children_SidesOctree(sides);
+    if (dig.depth < data.rdepth && sides->ptr) { // !is_closed_SidesOctree(sides)) {
+        const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
+        // get_children_SidesOctree(sides);
         byte has_vkids = !is_closed_VoxelNode(dig.node);
         const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(dig.node) : NULL;
         byte child_depth = dig.depth + 1;

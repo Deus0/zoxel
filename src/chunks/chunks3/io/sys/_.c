@@ -14,13 +14,13 @@ void define_systems_chunksio(ecs* world) {
     zox_system(
         Chunk3LoadSystem,
         EcsOnLoad,
+        [in] core.EntityInitialize,
         [in] realms.RealmLink,
         [in] chunks3.ChunkPosition,
-        [out] chunks3.VoxelNodeDirty,
-        [out] chunks3.VoxelNodeEdited,
+        [out] chunks.NodeDepth,
         [out] chunks3.VoxelNodeLoaded,
         [out] chunks3.VoxelNode,
-        [out] chunks.NodeDepth,
-        [out] chunks3.VoxelNodeGenerated,
+        [out] chunks3.VoxelNodeDirty,
+        // [out] chunks3.VoxelNodeGenerated,
     );
 }

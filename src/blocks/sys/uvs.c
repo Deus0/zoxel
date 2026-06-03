@@ -13,7 +13,6 @@ zox_sys2(TilemapUVSystem) {
     zox_sys_in(RealmLink);
     zox_sys_out(TilemapUVs);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
         zox_sys_i(TextureDirty, state);
         zox_sys_i(TextureLinks, textures);
         zox_sys_i(TilemapSize, map_size);

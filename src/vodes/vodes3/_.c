@@ -13,11 +13,11 @@ void module_dispose_vodes3(ecs *world, void *ctx) {
     dispose_hook_spawned_block();
 }
 
-zox_begin_module(Vodes3)
+zox_begin_module(Vodes3) {
+    define_systems_vodes3(world);
     initialize_hook_spawned_block();
     zox_module_dispose(module_dispose_vodes3);
     // add_hook_spawned_block(&spawned_block_vox);
-    define_systems_vodes3(world);
-zox_end_module(Vodes3)
+} zox_end_module(Vodes3);
 
 #endif

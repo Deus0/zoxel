@@ -7,7 +7,7 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     zox_prefab_set(e, TunkLink, { 0 });
     zox_prefab_set(e, Generate, { zox_dirty_none });
     // zox_prefab_set(e, GenerateChunk, { zox_dirty_none });
-    zox_prefab_set(e, VoxelNodeEdited, { zox_dirty_none });
+    zox_prefab_set(e, VoxelNodeEdited, { 0 });
     zox_prefab_set(e, VoxelNodeLoaded, { zox_dirty_none });
     zox_prefab_set(e, VoxelNodeGenerated, { zox_dirty_none });
     zox_prefab_set(e, MeshColorsGenerate, { zox_dirty_none });

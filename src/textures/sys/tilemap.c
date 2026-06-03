@@ -3,7 +3,7 @@
 extern entity get_block_link(ecs*, entity);
 
 zox_sys2(TilemapGenerationSystem) {
-    byte uvs_per_tile = 4;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateTexture);
@@ -12,7 +12,6 @@ zox_sys2(TilemapGenerationSystem) {
     zox_sys_out(TextureSize);
     zox_sys_out(TextureData);
     zox_sys_out(TextureDirty);
-    // zox_sys_out(TilemapUVs);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateTexture, state);
@@ -21,7 +20,6 @@ zox_sys2(TilemapGenerationSystem) {
         zox_sys_o(TextureSize, size);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
-        // zox_sys_o(TilemapUVs, uvs);
         if (state->value != zox_dirty_active || dirty->value) {
             continue;
         }
@@ -43,13 +41,14 @@ zox_sys2(TilemapGenerationSystem) {
                 continue;
             }
             if (zox_gett_value(texture, GenerateTexture)) {
-                zox_loge("Tilemap Texture still generating [%i]", j);
+                if (dbg_log) {
+                    zox_log("Tilemap still generating... [%i]", j);
+                }
                 still_generating = 1;
                 break;
             }
         }
         if (still_generating) {
-            zox_log("Tilemap still generating...");
             zox_set(e, GenerateTexture, { zox_dirty_trigger });
             continue;
         }
@@ -114,59 +113,3 @@ zox_sys2(TilemapGenerationSystem) {
     }
 } zox_sys_end(TilemapGenerationSystem);
 
-        /*if (!textures->length) {
-            zox_loge("Tilemap has no Textures...");
-            continue;
-        }
-        // TODO: Refactor uvs into another system, needs block data
-        texture_index = 0;
-        int uv_texture_index = 0;
-        // resize_TilemapUVs(uvs, 0); // textures->length * uvs_per_tile);
-        resize_TilemapUVs(uvs, blocks->length * uvs_per_tile);
-        float unit_sizef = 1.0f / ((float) tmsize->value.x);
-        for (texture_position.y = 0; texture_position.y < tmsize->value.y; texture_position.y++) {
-            for (texture_position.x = 0; texture_position.x < tmsize->value.x; texture_position.x++) {
-                entity texture = textures->value[texture_index];
-                if (!zox_valid(texture)) {
-                    zox_loge("Texture[%i] Invalid", texture_index);
-                    texture_index++;
-                    continue;
-                }
-                // Get block linked from texture
-                entity block = get_block_link(world, texture);
-                if (!zox_valid(block) || !zox_has(block, TextureLinks)) {
-                    zox_loge("Texture [%s] Block Invalid", zox_get_name(texture));
-                    texture_index++;
-                    continue;
-                }
-                int block_textures_count = zox_gett(block, TextureLinks)->length;
-                // if only one texture
-                int2 tilemap_position = (int2) {
-                    texture_position.x * unit_size.x,
-                    texture_position.y * unit_size.y
-                };
-                float2 tile_uv = (float2) {
-                    tilemap_position.x / (float) size->value.x,
-                    tilemap_position.y / (float) size->value.y
-                };
-                // 4 uvs per face
-                // zox_log("block_textures_count [%i]", block_textures_count);
-                byte repeated = block_textures_count == 1 ? 6 : 1;  // repeat if single texture
-                for (byte k = 0; k < repeated; k++) {
-                    // expand by new face
-                    resize_TilemapUVs(uvs, uvs->length + uvs_per_tile);
-                    uvs->value[uv_texture_index * 4 + 3] = (float2) { tile_uv.x, tile_uv.y + unit_sizef };
-                    uvs->value[uv_texture_index * 4 + 2] = (float2) { tile_uv.x + unit_sizef, tile_uv.y + unit_sizef };
-                    uvs->value[uv_texture_index * 4 + 1] = (float2) { tile_uv.x + unit_sizef, tile_uv.y };
-                    uvs->value[uv_texture_index * 4 + 0] = (float2) { tile_uv.x, tile_uv.y };
-                    uv_texture_index++;
-                }
-                texture_index++;
-                if (texture_index >= textures->length) {
-                    break;
-                }
-            }
-            if (texture_index >= textures->length) {
-                break;
-            }
-        }*/

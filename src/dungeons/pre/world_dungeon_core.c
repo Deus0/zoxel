@@ -1,5 +1,5 @@
 // prefab for our world block
-entity spawn_block_world_dungeon(ecs *world) {
+entity spawn_block_world_dungeon(ecs *world, entity wall) {
     zox_prefab();
     zox_name("block_dungeon_core");
     zox_add_tag(e, BlockDungeon);
@@ -9,6 +9,6 @@ entity spawn_block_world_dungeon(ecs *world) {
     zox_prefab_set(e, TimerTime, { 0 });
     zox_prefab_set(e, ChunkLink, { 0 });
     // zox_prefab_set(e, DungeonWallType, { zox_block_dark });
-    zox_prefab_set(e, DungeonWallType, { zox_block_bricks });
+    zox_prefab_set(e, DungeonWallType, { wall });
     return e;
 }

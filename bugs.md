@@ -8,7 +8,7 @@
 	- Cellular automata voxels around bone joints for better rotation
 	- use octree data for bone indexes, so we can remember what part we placed the voxels from, then we can use this when building up the weights
 	- we can probably blend them better between as well
-- At start a terrain chunk lights didn't load
+- At start, terrain lights don't update in some chunks
 - Fix dungeon core texture issues
 - Fix DungeonCore not showing texture properly
 - Audio missing from main menu - need to spawn a realm for it

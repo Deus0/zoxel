@@ -37,11 +37,7 @@ entity spawn_chunk_terrain(ecs *world, entity prefab, entity terrain, int3 camer
     // todo: just start this as invisible and update with streaming systems
     zox_set(e, RenderDistance, { camera_distance });
     zox_set(e, RenderDistanceDirty, { zox_dirty_trigger });
-    // zox_set(e, RenderDepthMax, { terrain_depth });
     zox_set(e, RenderDepth, { render_depth });
-    if (render_depth != render_depth_invisible) {
-        // zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
-    }
     if (position.y == render_distance_y) {
         zox_add_tag(e, SunnyChunk);
     }

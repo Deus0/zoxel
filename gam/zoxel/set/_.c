@@ -66,7 +66,7 @@ void zoxel_settings_physics() {
     player_movement_power = (float2) { 14, 14 };
     max_velocity3D = (float2) { 1.3f, 1.3f };
     // run_speed = 1.36;
-    run_speed = 0.3;
+    // run_speed = 0.3;
 }
 
 void zoxel_settings_uis() {

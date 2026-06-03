@@ -1,5 +1,4 @@
-void calculate_perspective_projection_matrix2(
-    float4x4 *matrix,
+void calculate_perspective_projection_matrix2(float4x4 *matrix,
     float left,
     float right,
     float bottom,
@@ -30,8 +29,7 @@ void calculate_perspective_projection_matrix2(
     matrix->w.w = 0.0;
 }
 
-void calculate_perspective_projection_matrix(
-    float4x4 *matrix,
+void calculate_perspective_projection_matrix(float4x4 *matrix,
     const float aspect_ratio,
     const float camera_near_distance,
     const float camera_far_distance,

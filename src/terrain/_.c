@@ -37,9 +37,6 @@
 zox_begin_module(Terrain) {
     define_components_terrain(world);
     define_systems_terrain(world);
-    // NOTE: these need to be imported before core
-    initialize_hook_spawn_blocks();
-    zox_module_dispose(module_dispose_terrain);
     add_hook_terminal_command(process_arguments_terrain);
     // add_to_event_game_state((zox_game_event) { &game_state_terrain });
     add_hook_spawn_prefabs(spawn_prefabs_terrain);

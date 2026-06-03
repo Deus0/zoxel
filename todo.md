@@ -1,35 +1,33 @@
-### todo ###
-# Regression #
--x Grass Texture causes crash
-	- generating vox / texture conflicts?
-- Disabled decor blocks in realm gen
--x Grass model in between others messes up indexing for block -> uvs for second biome
-	- put individual uvs on each block instead
-	- refactor tilemap uvs onto block dirty system
-	- TilemapGenerationSystem generates here - just add individual uvs here too for quick fix
-	- Chunk3TexturedBuildSystem - get the block uvs here - entitymap
-# # #
-- Refactor Blocks Hook out, used by dungeons atm
-- Refactor Model Lods -> one model, just create mesh per lod
-- Seems to be issues on frustum culling, debug terrain chunk sizes
+### Zoxel ToDo ###
+=> GPU Constrained actually, memory barely used - 200-400mb used
+# Regressions #
+- Sometimes some blocks loaded where my grass was
+	- this might be a indexing issue where one biome loads before the realm blocks? or vice versa?
+	- looks like it, it swapped again
+- make run should check gam directory too for changes
+- Music Missing from main menu
+- Music load error on linux (somehow loads on windows)
 - Fix controller mapping
-- Add haptic feedback rumble when hit
 # Refactors #
 - Refactor Chunk to Chunk + BlockMaterial + Lod Render
+- Remove refactor Vodes spawn code
+- Replace Chunk VoxLinks with Parent calls
+- Refactor Model Lods -> one model, just create mesh per lod
 - Refactor 3D UIs to use 2D UI stuff
-- Move slots module up to src from ui module
 - Remove struct use from spawn_block_vox_meta
 - Remove Duplicate UI prefabs
 - Remove structs from UI prefab use
 - Remove spawn_window_users use
 - Refactor Header Spawning to system
 - Remove all spawn_window_users's
+- Spawn character data from biomes
 # Testing #	
 - Add test function for spawning a Terrain Chunk
 - Add test function for spawning a Colored Chunk
 # UI #
-- Add Slot Names to Body Parts + Equipment in tooltips
-- Add tooltip of slot type over empty slots
+- Body / Equip Tooltips
+	- Add Slot Names to Body Parts + Equipment in tooltips
+	- Add tooltip of slot type over empty slots
 - Show unuseable slots as grayed out or something
 # Cameras #
 - Shake camera when hit
@@ -109,6 +107,7 @@
 - Resize window grabber at corner
 - move sand/wood/stone into biome blocks
 # Unsorted #
+- Add haptic feedback rumble when hit
 - Vox Frames - different vox models we swap between
 - Spawn the test render texture in a window container
 - Use a HighlightColor - instead of just adjusting brightness
@@ -116,6 +115,12 @@
 - event for pickup we can latch onto in system
 	- trigger the body dirty if body item picked up
 - spawn item model as child of character - when switch action
+- Render Lines at chunk when action happens
+	- using an entity called ChunkBeamDebugger
+	- One when it updates the Voxels
+	- One when it updates the Lighting
+	- One when it updates the Render Depth
+- add a delete all savegames to the test window
 - Status UI
 	- Test button first
 	- Spawn render texture
@@ -222,10 +227,7 @@ Module [Nodes]:
 	- show PartLinks
 	- show AttachLinks
 # Biomes #
-- Generate unique color per biome
-	- base on prior biomes so it stands out too
-	- primary color dirt - others based off this
-- Refactor more blocks into per biome
+- base biome color on prior biomes so it stands out too
 # Tools #
 - terminal log text list
 - chunk debugger - show lods of chunks etc
@@ -247,7 +249,6 @@ Module [Realms]: (+ games)
 	- delete option w confirm
 - town layers walls
 - spawn/destroy regions per 32x32 tunks
-- spawn slime model from shapes3 data
 - use node system
 - link to ModelLinks in realm spawn system
 - shape data on a node will go through with a vox data to generate sphere for now
@@ -277,6 +278,9 @@ tools (this will help fix bugs)
 Module [Rendering]:
 - test vulkan build
 - push voxel data and generate mesh on gpu
+
+
+
 ### Done ###
 -x build linux
 -x build windows
@@ -413,3 +417,30 @@ Module [Rendering]:
 -x Make parts attach to previous parts, not to entire body dimensions
 -x Camera lock toggles when removing hat from ui
 -x Create Slots for Body / Equip
+-x Grass Texture causes crash
+	- generating vox / texture conflicts?
+-x Disabled decor blocks in realm gen
+-x Grass model in between others messes up indexing for block -> uvs for second biome
+	- put individual uvs on each block instead
+	- refactor tilemap uvs onto block dirty system
+	- TilemapGenerationSystem generates here - just add individual uvs here too for quick fix
+	- Chunk3TexturedBuildSystem - get the block uvs here - entitymap
+-x Sometimes vegetation didn't generate
+-x Fix Chunk Loading
+-x NPCs didnt spawn?
+-x Mesh isnt updating when render depth updates perfectly
+-x Obsidian not found
+-x Dungeon cores not??
+-x Popups now dont face camera
++ Made some octree component macros for non type ones
++ Fixed block index setting after they update
++ Refactored landfill out of Grasslands for better generation flow
++ SoilGrass now drops soil block
+-x Remove any global byte refs to blocks and use biome ones or tags
+-x Seems to be issues on frustum culling, debug terrain chunk sizes
+-x Refactor Blocks Hook out, used by dungeons atm
+-x Move slots module up to src from ui module
+-x spawn slime model from shapes3 data
+-x Generate unique color per biome
+-x Refactor more blocks into per biome
+-x Grass placed over town bricks, check for air for grass placement

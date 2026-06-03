@@ -16,3 +16,15 @@ entity find_closest_camera(ecs *world, float3 position) {
     }
     return output;
 }
+
+void zox_dbg_print_cameras(ecs* world) {
+    zox_log("Cameras [%i]", main_cameras_count);
+    for (byte i = 0; i < main_cameras_count; i++) {
+        entity camera = main_cameras[i];
+        if (!zox_valid(camera)) {
+            zox_log("   - [%i]: Invalid", i);
+        } else {
+            zox_log("   - [%i]: %s", i, zox_get_name(camera));
+        }
+    }
+}

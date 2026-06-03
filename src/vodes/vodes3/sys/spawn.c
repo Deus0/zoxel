@@ -1,3 +1,6 @@
+// TODO: Remove Struct use
+// TODO: Make use Queue Systems for updates on Vodes
+
 typedef struct {
     VoxelNode *chunk;
     int3 octree_position;
@@ -51,13 +54,13 @@ void spawned_block_vox(ecs *world, spawned_block_data* data) {
         return;
     }
     link_node_VoxelNode(data->node, e2);
+    // spawn_line3(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
+}
+
     /*zox_log("+ Placing Block [%s]: linked: [%i]", zox_get_name(data->block), data->node->linked)
     zox_log("   - local [%ix%ix%i] ", spawn_data.positionl.x, spawn_data.positionl.y, spawn_data.positionl.z)
     zox_log("   - global [%ix%ix%i] ", spawn_data.positionv.x, spawn_data.positionv.y, spawn_data.positionv.z)
     zox_log("   - real [%fx%fx%f] ", spawn_data.positionf.x, spawn_data.positionf.y, spawn_data.positionf.z)*/
-    // spawn_line3(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
-}
-
 
 void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, NodeDelveData *delve_data) {
     VoxelNode *node = delve_data->chunk;
@@ -89,7 +92,7 @@ void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, NodeDelveData
     // check if out of bounds
     byte block_index = node->value - 1;
     if (block_index >= data->blocks_length) {
-        zox_log_error("block_index out of bounds %i of %i", block_index, data->blocks_length);
+        zox_loge("Vode Block ID OOB [%i of %i]", block_index, data->blocks_length);
         return;
     }
     // Remove and return if not a World Block

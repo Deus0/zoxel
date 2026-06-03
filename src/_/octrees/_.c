@@ -10,3 +10,5 @@ byte dbg_log_octree_errors = 1;
 #include "adjacent.c"
 #include "max_value.c"
 #include "is_in.c"
+#include "set_clean.c"
+#include "life.c"

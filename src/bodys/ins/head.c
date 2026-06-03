@@ -34,18 +34,13 @@ entity spawn_blueprint_head(ecs* world, byte3 nsize, byte depth, color skin_colo
         eye_pos_y,
         eye_pos_z
     };
-    zox_log("Eye size[%i] L[%i] R[%i] out of [%i]... Ridge [%i]", eye_size, leye_position.x, reye_position.x, nsize.x, eye_ridge);
-    /*if (eye_place_type == zox_model_node_paint) {
-        // adjust for centered
-        leye_position.x += half_eye_size;
-        reye_position.x -= half_eye_size;
-    }*/
     entity e3 = spawn_node_model_colors(world, eye_color, 1);
     new_link_single_node(world, e2, e3);
     entity e4 = spawn_node_model_at(world, prefab_node_model, eye_place_type, leye_position, byte3_single(eye_size), 2);
     new_link_single_node(world, e3, e4);
     entity e5 = spawn_node_model_at(world, prefab_node_model, eye_place_type, reye_position, byte3_single(eye_size), 2);
     new_link_single_node(world, e4, e5);
+    // zox_log("Eye size[%i] L[%i] R[%i] out of [%i]... Ridge [%i]", eye_size, leye_position.x, reye_position.x, nsize.x, eye_ridge);
     // zox_log("=> eye - ridge [%i] size [%i] at [(L:%ixR:%i)x%ix%i] nsize[%ix%ix%i]", eye_ridge, eye_size, leye_position.x, reye_position.x, eye_pos_y, eye_pos_z, nsize.x, nsize.y, nsize.z);
     return e;
 }

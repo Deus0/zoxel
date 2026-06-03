@@ -1,5 +1,5 @@
 // TODO: Repace with set_VoxelNode
-VoxelNode* set_voxelt(VoxelNode* node, byte target, byte3 position, byte value, byte depth) {
+/*VoxelNode* set_voxelt(VoxelNode* node, byte target, byte3 position, byte value, byte depth) {
 
     byte depth_reached = depth == target;
     if (!depth_reached && is_closed_VoxelNode(node)) {
@@ -32,14 +32,12 @@ VoxelNode* set_voxelt(VoxelNode* node, byte target, byte3 position, byte value, 
         position.y / dividor,
         position.z / dividor
     };
-
     byte3_modulus_byte(&position, dividor);
     byte i = byte3_octree_array_index(node_position);
     if (i >= 8) {
         zox_log_error("[set_voxelt] node index out of bounds: %i", i);
         return node;
     }
-
     VoxelNode* kids = get_children_VoxelNode(node);
     node = &kids[i];
     depth++;
@@ -50,7 +48,7 @@ VoxelNode* set_voxelt(VoxelNode* node, byte target, byte3 position, byte value, 
         position,
         value,
         depth);
-}
+}*/
 
 /*VoxelNode* set_voxelt_override(
     VoxelNode* node,

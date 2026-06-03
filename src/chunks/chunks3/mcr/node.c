@@ -1,19 +1,13 @@
 #define zoxc_octree_fun1(T, base, default_value)\
 \
 zoxc_custom(T);\
-\
 zox_hookr(on_destroyed_##T, byte, (ecs* world, T* node), (world, node))\
 \
 static inline void create_lock_##T(T *node) { (void) node; }\
-\
 static inline void destroy_lock_##T(T *node) { (void) node; }\
-\
 static inline void write_lock_##T(const T *node) { (void) node; }\
-\
 static inline void write_unlock_##T(const T *node) { (void) node; }\
-\
 static inline void read_lock_##T(const T *node) { (void) node; }\
-\
 static inline void read_unlock_##T(const T *node) { (void) node; }\
 \
 static inline T* get_children_##T(const T *node) {\

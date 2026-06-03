@@ -1,5 +1,6 @@
 // NOTE: SPawn in regions
 zox_sys2(RegionSpawnSystem) {
+    byte dbg_log = 0;
     byte region_dividor = 16;
     byte distance = terrain_lod_far;
     zox_sys_query();
@@ -30,7 +31,9 @@ zox_sys2(RegionSpawnSystem) {
                         };
                         // zox_log("New Region [%ix%i] Stream Position [%ix%i]", region_position.x, region_position.y, position->value.x, position->value.y);
                         if (!int2_hashmap_has(regions->value, region_position)) {
-                            zox_log("New Region [%ix%i] Spawned", region_position.x, region_position.y);
+                            if (dbg_log) {
+                                zox_log("New Region [%ix%i] Spawned", region_position.x, region_position.y);
+                            }
                             entity region = spawn_region(world, prefab_region, e, region_position);
                             int2_hashmap_add(regions->value, region_position, region);
                         }

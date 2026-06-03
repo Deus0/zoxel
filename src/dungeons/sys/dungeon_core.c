@@ -7,7 +7,9 @@ typedef struct {
     entity chunk;
 } TerrainPlacePosition;
 
+// TODO: Use Structures for Placement Data
 zox_sys2(DungeonBlockSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TimerState);
@@ -30,9 +32,20 @@ zox_sys2(DungeonBlockSystem) {
         zox_geter_value(e, VoxelLocalPosition, byte3, positionl);
         // get closest grass block
         // byte3 position = (byte3) { rand() % size.x, rand() % size.y, rand() % size.z };
-        byte place_type = 0;
-        if (rand() % 100 >= 2) {
-            place_type = place->value; // zox_block_dark;
+        if (!zox_valid(place->value)) {
+            continue;
+        }
+        byte place_id = zox_getv(place->value, BlockIndex);
+        if (!place_id) {
+            zox_loge("Dungeon Wall is Empty.");
+            continue;
+        }
+        if (dbg_log) {
+            zox_log("Dungeon Wall [%s]:[%i]", zox_get_name(place->value), place_id);
+        }
+        // Random chance to dissapear
+        if (rand() % 100 <= 2) {
+            place_id = 0;
         }
         // find next z position
         byte radius = 3;
@@ -97,12 +110,12 @@ zox_sys2(DungeonBlockSystem) {
                         check_node_depth,
                         check_positionl, 0
                     );
-                    if (!check_subnode || check_subnode->value == place_type) {
+                    if (!check_subnode || check_subnode->value == place_id) {
                         continue;
                     }
                     // can only place in air
-                    if (place_type && check_subnode->value) {
-                        place_type = 0;
+                    if (place_id && check_subnode->value) {
+                        place_id = 0;
                         // continue;
                     }
                     // place_positionv = check_positionv;
@@ -125,9 +138,8 @@ zox_sys2(DungeonBlockSystem) {
         zox_muter(place_chunk, VoxelNodeQueue, queue);
         a_VoxelNodeQueue(queue,
             (VoxelNodeUpdate) {
-                .value = place_type,
+                .value = place_id,
                 .pos = place_positionl
-                // .positionv = place_positionv
             });
         /*zox_mut_begin(place_chunk, VoxelNode, place_node); // get node function
         // float3 positionf = positionv_to_real_position(voxel_position, int3_to_byte3(chunk_bounds), default_vox_scale);

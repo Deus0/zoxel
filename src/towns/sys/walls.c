@@ -22,13 +22,22 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
+        entity realm = zox_getv(terrain->value, RealmLink);
         byte is_max_depth = vdepth->value == terrain_depth;
         if (!is_max_depth) {
             continue;
         }
-        byte vlength = powers_of_two_byte[vdepth->value];
-        float3 chunk_position_float3 = float3_from_int3(cposition->value);
-        int chunk_position_y = (int) (chunk_position_float3.y * vlength);
+        entity wall = zox_get_child_by_id(world, realm, zox_id(BlockBricks));
+        if (!zox_valid(wall)) {
+            zox_loge("No wall for town..");
+            continue;
+        }
+        byte bricks_id = zox_getv(wall, BlockIndex);
+        if (!bricks_id) {
+            continue;
+        }
+        byte voctree_length = powers_of_two_byte[vdepth->value];
+        int chunk_position_y = cposition->value.y * voctree_length;
         byte3 positionl;
         int hmultiplier = 1;
         byte ccc = vdepth->value;
@@ -49,8 +58,8 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
         write_lock_VoxelNode(voctree);
-        for (positionl.x = 0; positionl.x < vlength; positionl.x++) {
-            for (positionl.z = 0; positionl.z < vlength; positionl.z++) {
+        for (positionl.x = 0; positionl.x < voctree_length; positionl.x++) {
+            for (positionl.z = 0; positionl.z < voctree_length; positionl.z++) {
                 int2 hposition = (int2) {
                     positionl.x * hmultiplier,
                     positionl.z * hmultiplier
@@ -62,8 +71,8 @@ zox_sys2(TownWallsSystem) {
                 if (town) {
                     for (int h = 1; h <= 4; h++) {
                         positionl.y = local_height_raw + h;
-                        if (positionl.y >= 0 && positionl.y < vlength) {
-                            set_voxelt(voctree, vdepth->value, positionl, zox_block_bricks, 0);
+                        if (positionl.y >= 0 && positionl.y < voctree_length) {
+                            set_clean_VoxelNode(voctree, vdepth->value, positionl, bricks_id);
                         }
                     }
                 }

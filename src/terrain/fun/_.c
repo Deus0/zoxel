@@ -6,9 +6,3 @@
 #include "terminal.c"
 #include "set.c"
 #include "game.c"
-
-void module_dispose_terrain(ecs *world, void *ctx) {
-    (void) world;
-    (void) ctx;
-    dispose_hook_spawn_blocks();
-}

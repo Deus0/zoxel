@@ -1,10 +1,10 @@
 // #define zox_debug_billboard_system
-
 #ifdef zox_debug_billboard_system
 extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
 zox_sys2(BillboardSystem) {
+    byte dbg_log = 0;
     if (!main_cameras_count) {
         return;
     }
@@ -16,15 +16,16 @@ zox_sys2(BillboardSystem) {
         // zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_o(Rotation3D, rotation);
-
         entity camera = find_closest_camera(world, position->value);
-        if (!camera || !zox_has(camera, Rotation3D)) {
+        if (!zox_valid(camera) || !zox_has(camera, Rotation3D)) {
+            zox_loge("No Cameras in [BillboardSystem]");
+            zox_dbg_print_cameras(world);
             continue;
         }
-
-        zox_geter_value(camera, Rotation3D, float4, camera_rotation);
-        rotation->value = camera_rotation;
-
+        if (dbg_log) {
+            zox_log("Closest Camera [%s]", zox_get_name(camera));
+        }
+        rotation->value = zox_getv(camera, Rotation3D);
 #ifdef zox_debug_billboard_system
         float3 normal = quaternion_to_normal(rotation->value);
         spawn_line3(world, position->value, float3_add(position->value, normal), 2, 1);

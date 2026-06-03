@@ -98,7 +98,7 @@ void define_systems_zoxel(ecs *world) {
         BlocksRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        [in] rendering.ModelLinks,
+        // [in] rendering.ModelLinks,
         [out] blocks.BlockLinks,
         [out] blocks.BlocksDirty,
         [none] realms.Realm

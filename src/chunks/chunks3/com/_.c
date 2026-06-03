@@ -25,12 +25,13 @@ void define_components_chunks3(ecs* world) {
     zoxd_int3(ChunkPosition);
     zoxd_int3(ChunkSize);
     zoxd_byte(VoxelNodeDirty);
-    zoxd_byte(VoxelNodeEdited);
+    zoxd_byte(VoxelNodeEdited); // Marks if Dirty from Users
     zoxd_byte(VoxelNodeLoaded);
     zoxd_state(VoxelNodeGenerated);
     zoxd_state(ChunkDirty);
     zoxd_state(ChunkMeshDirty);
-    zoxd_node(SidesOctree);
+    // zoxd_node(SidesOctree);
+    zoxd_octree(SidesOctree);
     zoxd_state(SidesOctreeDirty);
     zoxd_byte(BlocksSpawned);
     zoxd(ChunkNeighbors);

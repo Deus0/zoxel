@@ -114,8 +114,8 @@ zox_sys2(Player3DMoveSystem) {
                 movement.x *= run_accceleration;
                 movement.y *= run_accceleration;
             } else {
-                movement.x *= fly_run_acc;
-                movement.y *= fly_run_acc;
+                movement.x *= fly_run_acc_xz;
+                movement.y *= fly_run_acc_xz;
             }
         }
         float4 movement_rotation = float4_identity;

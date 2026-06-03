@@ -4,7 +4,7 @@
 #endif
 
 zox_sys2(AuraSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();

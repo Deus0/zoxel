@@ -1,8 +1,11 @@
 #include "tilemap.c"
 #include "spawn.c"
 #include "uvs.c"
+#include "indexes.c"
+realm_clear_system(BlockLinks);
 
 void define_systems_blocks(ecs* world) {
+    realm_clear_systemd(blocks, BlockLinks);
     zox_system(
         RealmTilemapSystem,
         EcsOnUpdate,
@@ -27,5 +30,12 @@ void define_systems_blocks(ecs* world) {
         [in] realms.RealmLink,
         [out] textures.TilemapUVs,
         [none] textures.Tilemap
+    );
+    zox_system(
+        RealmBlocksDirtySystem,
+        EcsOnUpdate,
+        [in] blocks.BlocksDirty,
+        [in] blocks.BlockLinks,
+        [none] realms.Realm
     );
 }
