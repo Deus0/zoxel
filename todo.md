@@ -38,7 +38,7 @@
 - Button Mapping
 	- Add Button Mapping Module
 	- so the player systems use those instead
-- B to close menu - shortcut
+- Game UI - LB / RB should cycle through taskbar uis
 - Navigation on UIs should also auto scroll down on the options menu
 # Testing #	
 - Add test function for spawning a Terrain Chunk
@@ -445,3 +445,4 @@ Module [Rendering]:
 -x Generate unique color per biome
 -x Refactor more blocks into per biome
 -x Grass placed over town bricks, check for air for grass placement
+-x B to close menu - shortcut

@@ -6,22 +6,6 @@ int last_clicked_index = 0;
 
 #ifdef zox_sdl
 
-float get_gamepad_axis(SDL_Joystick *joystick, const int index) {
-    if (index < 0 || index > 10) return 0; // deadzone limits
-    int raw_value = SDL_JoystickGetAxis(joystick, index);
-    raw_value = apply_joystick_deadzone(index, raw_value);
-    float axis_value = raw_value / 32768.0f;
-    if (float_abs(axis_value) <= joystick_min_cutoff) axis_value = 0.0f;
-    if (axis_value < -1.0f || axis_value > 1.0f) axis_value = 0;
-    axis_value = -axis_value;
-    return axis_value; // invert as sdl inverts it first?
-}
-
-void check_axis(SDL_Joystick *joystick, int index) {
-    float2 axis = (float2) { get_gamepad_axis(joystick, index), get_gamepad_axis(joystick, index + 1) };
-    if (float_abs(axis.x) >= 0.05f || float_abs(axis.y) >= 0.05f) last_axis_index = index;
-}
-
 entity spawn_gamepad_from_sdl(ecs *world, SDL_Joystick *joystick) {
     byte gamepad_type = get_gamepad_type(joystick);
     entity e = spawn_gamepad(world, gamepad_type);
@@ -118,13 +102,6 @@ byte get_gamepad_dpad(byte old_value, SDL_Joystick *joystick, int index) {
     return old_value;
 }
 
-byte set_gamepad_axis2(ZeviceStick *zeviceStick, SDL_Joystick *joystick, int index) {
-    float2 previous_value = zeviceStick->value;
-    zeviceStick->value.x = get_gamepad_axis(joystick, index);
-    zeviceStick->value.y = get_gamepad_axis(joystick, index + 1);
-    if (float_abs(zeviceStick->value.x) > 0.06f || float_abs(zeviceStick->value.y) > 0.06f) zox_log_input(" > stick [%fx%f]", zeviceStick->value.x, zeviceStick->value.y)
-    return !(zeviceStick->value.x == previous_value.x && zeviceStick->value.y == previous_value.y);
-}
 
 void debug_button(const PhysicalButton *button, const char *button_name) {
     if (button->pressed_this_frame) {

@@ -1,6 +1,8 @@
 #ifndef zox_sdl_inputs
 #define zox_sdl_inputs
 
+// TODO: Support for SDL_GameController
+
 #include "dat/settings.c"
 #include "dat/sdl_gamepad.c"
 #include "fun/_.c"

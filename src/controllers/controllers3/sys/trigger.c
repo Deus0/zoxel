@@ -65,12 +65,12 @@ zox_sys2(Player3DTriggerSystem) {
                 }
                 if (zox_has(e3, ZeviceButton)) {
                     zox_geter_value(e3, DeviceButtonType, byte, type);
-                    if (type == zox_device_button_x) {
+                    if (type == zox_device_button_rt) {
                         zox_geter_value(e3, ZeviceButton, byte, value);
                         if (devices_get_pressed_this_frame(value)) {
                             is_triggered_a = 1;
                         }
-                    } else if (type == zox_device_button_y) {
+                    } else if (type == zox_device_button_lt) {
                         zox_geter_value(e3, ZeviceButton, byte, value);
                         if (devices_get_pressed_this_frame(value)) {
                             is_triggered_b = 1;

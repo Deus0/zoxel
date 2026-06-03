@@ -87,7 +87,7 @@ zox_sys2(Player3DMoveSystem) {
                     }
                 }
                 if (zox_has(e3, ZeviceButton)) {
-                    if (type == zox_device_button_lb || type == zox_device_button_rb) {
+                    if (type == zox_device_button_x) {
                         zox_geter(e3, ZeviceButton, zeviceButton)
                         if (!is_running && devices_get_pressed(zeviceButton->value)) {
                             is_running = 1;

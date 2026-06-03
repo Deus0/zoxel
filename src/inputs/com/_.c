@@ -4,6 +4,7 @@ zox_tag(Gamepad);
 zox_tag(Touchscreen);
 zox_tag(Mouse);
 zox_tag(Finger);
+zox_tag(ZeviceBumper);
 zoxc_byte(DeviceDisabled);
 zoxc_byte(ZeviceDisabled);
 zoxc_byte(ZeviceButton);
@@ -35,6 +36,7 @@ void define_components_inputs(ecs *world) {
     zoxd_tag(Touchscreen);
     zoxd_tag(Finger);
     zoxd_tag(Mouse);
+    zoxd_tag(ZeviceBumper);
     zoxd(Keyboard);
     zoxd_byte(DeviceDisabled);
     zoxd_byte(ZeviceDisabled);
