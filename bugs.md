@@ -13,6 +13,10 @@
 - Fix DungeonCore not showing texture properly
 - Audio missing from main menu - need to spawn a realm for it
 - Fix music file not importing from LMM
+- Decor (SDL window edge) missing on khadas - try compile sdl together?
+	- test sdl window
+	- test wayland window
+- fix text label size when resizing - button size
 Polish:
 - Fix little teleport when loading player character
 - set the slider text block depth [5] when sliding

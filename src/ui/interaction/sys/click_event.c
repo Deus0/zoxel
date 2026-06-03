@@ -1,3 +1,4 @@
+// NOTE: Triggers Click event when released
 zox_sys2(ButtonClickEventSystem) {
     zox_sys_world();
     zox_sys_begin();

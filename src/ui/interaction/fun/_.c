@@ -2,7 +2,7 @@ void on_element_clicked(ecs *world, entity player, entity e) {
     if (!zox_valid(e) || !zox_has(e, Clickable)) {
         return;
     }
-    if (zox_has(e, ClickDisabled) && zox_gett_value(e, ClickDisabled)) {
+    if (zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled)) {
         return;
     }
     zox_set(e, ClickState, { zox_click_state_trigger_clicked });
@@ -10,10 +10,11 @@ void on_element_clicked(ecs *world, entity player, entity e) {
 }
 
 void on_element_released(ecs *world, entity player, entity e) {
-    if (zox_valid(e) && zox_has(e, Clickable)) {
-        zox_set(e, ClickState, { zox_click_state_trigger_released });
-        zox_set(e, Clicker, { player });
+    if (!zox_valid(e) || !zox_has(e, Clickable)) {
+        return;
     }
+    zox_set(e, ClickState, { zox_click_state_trigger_released });
+    zox_set(e, Clicker, { player });
 }
 
 void set_raycast_target_children(ecs *world, entity e, entity target) {

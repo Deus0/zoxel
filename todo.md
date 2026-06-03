@@ -21,6 +21,25 @@
 - Refactor Header Spawning to system
 - Remove all spawn_window_users's
 - Spawn character data from biomes
+# Refactors 2
+- refactor models to just spawn one vox model and multiple render objects as children
+- make shape type and centering part of painting as well - use fill system just with diff byte for checks
+- Make lods just use the same model, no need to create 5 models per slime
+	- just generate per each level - set with shapes per node level
+- refactor soil/blocks into nodegraphs for models
+- link nodegraphs to realm's nodegraphLinks
+- list uis should just reposition inside system when children dirty
+- chunk = chunk + renders (seperate)
+- taskbar data into entities
+- settings data into entities
+- remove sdl_image and create a seperate image import
+- remove sdl_mixer and use another simpler audio lib
+# Inputs #
+- Button Mapping
+	- Add Button Mapping Module
+	- so the player systems use those instead
+- B to close menu - shortcut
+- Navigation on UIs should also auto scroll down on the options menu
 # Testing #	
 - Add test function for spawning a Terrain Chunk
 - Add test function for spawning a Colored Chunk
@@ -157,12 +176,12 @@
 - Slider UI to snap on integer points - when integer - on release
 - Fix music importer
 - Fix import workflow - make import call
-Position Debugger:
+# Position Debugger:
 - Debug Component for Position Curve (float3 curve)
 - Position Y chart - showing fluctuations - use to stabilize physics
 - Position atm shakes when grounded
 - If unstuck disabled, it will fall through ground when loading
-Editor Delayed:
+# Editor Delayed:
 - TextureData UI in Inspector Label
 - Scrollbar horizontal
 - bar at bottom of texture to resize individual component
@@ -184,24 +203,6 @@ Editor Delayed:
 	- Block, Item, Stat, Etc
 	- Just add a list of tags for now to it
 - Slider UI - visually show points to with little up arrows
-Bugs:
-- Decor (SDL window edge) missing on khadas - try compile sdl together?
-	- test sdl window
-	- test wayland window
-- fix text label size when resizing - button size
-Refactors:
-- refactor models to just spawn one vox model and multiple render objects as children
-- make shape type and centering part of painting as well - use fill system just with diff byte for checks
-- Make lods just use the same model, no need to create 5 models per slime
-	- just generate per each level - set with shapes per node level
-- refactor soil/blocks into nodegraphs for models
-- link nodegraphs to realm's nodegraphLinks
-- list uis should just reposition inside system when children dirty
-- chunk = chunk + renders (seperate)
-- taskbar data into entities
-- settings data into entities
-- remove sdl_image and create a seperate image import
-- remove sdl_mixer and use another simpler audio lib
 Engine [Builds]:
 - windows build in zelder, make a bsh/windows.sh
 - make builder:

@@ -1,5 +1,3 @@
-byte disable_top_placements = 0;
-
 // NOTE: Fills land with Soils based on biomes
 zox_sys2(LandfillChunk3System) {
     byte dbg_log = 0;

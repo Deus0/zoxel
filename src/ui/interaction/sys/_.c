@@ -9,6 +9,7 @@
 #include "drag.c"
 #include "animate.c"
 #include "link.c"
+#include "resulter.c"
 zox_increment_system_with_reset_extra(ClickState, zox_click_state_trigger_clicked, zox_click_state_clicked_idle, zox_click_state_trigger_released, zox_click_state_idle);
 zox_increment_system_with_reset_extra(SelectState, zox_select_state_trigger_selected, zox_select_state_selected, zox_select_state_trigger_deselect, zox_select_state_deselected_idle);
 
@@ -33,15 +34,6 @@ void zox_define_systems_interaction(ecs* world) {
         [out] raycasts.RaycasterTarget,
     );
     zox_system(
-        ZeviceClickSystem,
-        EcsPostUpdate,
-        [in] inputs.DeviceLink,
-        [in] raycasts.RaycasterTarget,
-        [out] raycasts.RaycasterResult,
-        [out] interaction.ClickingEntity,
-        [none] inputs.Zevice
-    );
-    zox_system(
         DeviceClickSystem,
         EcsPostUpdate,
         [in] inputs.DeviceDisabled,
@@ -49,6 +41,15 @@ void zox_define_systems_interaction(ecs* world) {
         [in] raycasts.RaycasterTarget,
         [out] interaction.ClickingEntity,
         [none] inputs.Device
+    );
+    zox_system(
+        ZeviceClickSystem,
+        EcsPostUpdate,
+        [in] inputs.ZeviceDisabled,
+        [in] inputs.DeviceLink,
+        [in] raycasts.RaycasterTarget,
+        [out] interaction.ClickingEntity,
+        [none] inputs.Zevice
     );
     zox_system(
         KeyboardClickSystem,
@@ -116,5 +117,13 @@ void zox_define_systems_interaction(ecs* world) {
         [out] layouts2.LayoutPosition,
         [out] layouts2.LayoutPositionDirty,
         [none] elements.MouseElement
+    );
+    zox_system(
+        RaycasterResulterSystem,
+        EcsOnUpdate,
+        [in] inputs.DeviceLink,
+        [in] raycasts.RaycasterTarget,
+        [out] raycasts.RaycasterResult,
+        [none] inputs.Zevice
     );
 }

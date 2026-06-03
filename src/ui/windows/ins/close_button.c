@@ -1,11 +1,8 @@
 entity spawn_close_button(ecs *world, entity parent, entity canvas, byte size, byte padding, byte layer, ClickEvent on_click) {
-
     byte font_thickness = close_button_font_thickness * ui_scale;
     byte fonto_thickness = close_button_fonto_thickness * ui_scale;
-
     float2 anchor = (float2) { 1, 0.5f };
     byte alignment = zox_alignment_right;
-
     SpawnButton button_data = {
         .canvas = { .e = canvas },
         .parent = { .e = parent },
@@ -31,13 +28,11 @@ entity spawn_close_button(ecs *world, entity parent, entity canvas, byte size, b
             .font_outline_color = close_button_font_outline
         },
     };
-
     entity e = spawn_button(world, button_data.canvas, button_data.parent, button_data.element, button_data.zext, button_data.button);
+    zox_set_unique_name(e, "close_button");
     zox_set(e, MeshAlignment, { alignment });
-
     if (on_click.value) {
         zox_set(e, ClickEvent, { on_click.value });
     }
-
     return e;
 }

@@ -1,6 +1,7 @@
 #include "layers.c"
 #include "stack.c"
 #include "clicked.c"
+#include "cancel.c"
 
 void define_systems_windows(ecs* world) {
     zox_system(
@@ -24,5 +25,13 @@ void define_systems_windows(ecs* world) {
         WindowElementClickedSystem,
         EcsOnUpdate,
         [in] interaction.ClickState
+    );
+    zox_system(
+        CancelMenuSystem,
+        EcsPostUpdate,
+        [in] inputs.ZeviceDisabled,
+        [in] inputs.DeviceButtonType,
+        [in] inputs.ZeviceButton,
+        [none] inputs.Zevice
     );
 }
