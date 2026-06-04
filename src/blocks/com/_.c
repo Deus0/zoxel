@@ -23,6 +23,7 @@ zoxc_state(InsideBlockDirty);
 zoxc_double(InsideBlockTime);
 zox_tag(BlockSoundTrigger);
 zoxc_entity(BlockSound);        // Links Block to a Sound
+zoxc_float2(BlockHealth);
 
 entity get_block_link(ecs* world, entity e) {
     return zox_getv(e, BlockLink);
@@ -54,4 +55,5 @@ void define_components_blocks(ecs *world) {
     zoxd_double(InsideBlockTime);
     zoxd_tag(BlockSoundTrigger);
     zoxd_entity(BlockSound);
+    zoxd_float2(BlockHealth);
 }

@@ -24,16 +24,14 @@ zox_sys2(HealthbarSpawnerSystem) {
             continue;
         }
         entity health = zox_get_child_by_id(world, e, zox_id(StatHealth));
-        // find_array_element_with_tag(stats, StatHealth, health)
         if (!zox_valid(health)) {
             continue;
         }
         // zox_log("+ spawning healthbar on [%s]", zox_get_name(e))
         // spawn 3D healtbar
         SpawnDataElementbar3D spawn_data = {
-            // .percentage = health.x / health.y,
             .ui_holder = e,
-            .trail_offset = trail_offset,
+            .trail_offset = healthbar_trail_offset,
             .backbar = {
                 .prefab = prefab_statbar3D
             },

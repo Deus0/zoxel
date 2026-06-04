@@ -36,13 +36,13 @@ void define_systems_stats(ecs *world) {
     );
     zox_system_1(
         ExperienceSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] combat.Dead,
         [in] combat.LastDamager
     );
     zox_system_1(
         LevelUpSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [out] stats.StatValue,
         [out] stats.ExperienceValue,
         [out] stats.ExperienceMax,
@@ -51,20 +51,20 @@ void define_systems_stats(ecs *world) {
     );
     zox_system_1(
         CharacterStatsSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
     );
     zox_system_1(
         PlayerCharacterStatsSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [none] players.PlayerLink
     );
     zox_system_1(
         CharacterNameLabelsSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] characters.GenerateCharacter,
         [in] core.ZoxName,
         [out] elements.ElementLinks

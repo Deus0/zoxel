@@ -186,7 +186,8 @@ zox_sys2(MeleeSystem) {
             // Create new block health
             float block_health;
             if (!zox_valid(world_block) || !zox_has(world_block, StatValue)) {
-                block_health = randf_range(3, 6);
+                float2 health_start_range = zox_has(block, BlockHealth) ? zox_getv(block, BlockHealth) : (float2) { 1, 1 };
+                block_health = randf_range(health_start_range.x, health_start_range.y);
             } else {
                 block_health = zox_gett_value(world_block, StatValue);
             }

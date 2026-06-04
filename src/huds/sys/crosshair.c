@@ -6,7 +6,7 @@ void crosshair_set_type(ecs* world, entity e, byte new) {
     if (old == new) {
         return;
     }
-    float scale = 1;
+    float scale = crosshair_air_scale;
     color crosshair_fill;
     if (new == rayhit_terrain) {
         crosshair_fill = crosshair_terrain;

@@ -1,7 +1,4 @@
-float trail_offset = 0.118f;
-#include "camera_io.c"
+float healthbar_trail_offset = 0.12f;
+float name_trail_offset = 0.18f;
 #include "character_io.c"
-#include "player_save.c"
-#include "spawn_many.c"
 #include "debug.c"
-#include "name_label.c"

@@ -32,6 +32,7 @@ zox_sys2(BlocksRealmSpawnSystem) {
             zox_add_tag(e2, BlockBricks);
             zox_set_parent(world, e2, e);
             add_to_BlockLinks(blocks, e2);
+            zox_set(e2, BlockHealth, { (float2) { 10, 16 } });
         }
         // Decor Blocks
         {

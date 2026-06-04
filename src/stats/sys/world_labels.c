@@ -27,7 +27,7 @@ zox_sys2(CharacterNameLabelsSystem) {
         SpawnDataElement3D label3D_spawn_data = {
             .ui_holder = e,
             .prefab = prefab_label3D,
-            .trail_offset = trail_offset,
+            .trail_offset = name_trail_offset,
             .base_color = (color) { 0, 0, 0, 188 },
             .outline_color = (color) { 255, 255, 255, 222 }
         };

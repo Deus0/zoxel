@@ -1,6 +1,9 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+- spawn town based on region + town data
+- spawn player in town
+- block health quick cube overlay mesh
 - pause should pause the npcs too, cherrie wants dat
 - if our body is overlapping chunk edges, we shouldnt update the chunk streaming, wait until its not overlapping
 - Set UI hightlight color of buttons, and highlight outline colors
@@ -462,3 +465,4 @@ Module [Rendering]:
 -x issue is the gamepads links to players atm
 -x Increase crosshair scale when can hit NPC!
 -x hide stats panel and actionbar when dialogue
+-x give blocks different health from meta

@@ -118,6 +118,7 @@ zox_sys2(BiomeBlocksSystem) {
             zox_set_parent(world, e2, e);
             add_to_BlockLinks(blocks, e2);
             zox_add_tag(e2, BlockSoil);
+            zox_set(e2, BlockHealth, { (float2) { 3, 6 } });
         }
         {
             entity e2 = spawn_block_soil_grass(world, 0, "soil_grass", dirt_color, grass_color);
@@ -125,6 +126,7 @@ zox_sys2(BiomeBlocksSystem) {
             zox_set_parent(world, e2, e);
             add_to_BlockLinks(blocks, e2);
             zox_add_tag(e2, BlockSoilGrass);
+            zox_set(e2, BlockHealth, { (float2) { 4, 8 } });
         }
         {
             color sand_color = color_grayscale(166);
@@ -133,6 +135,7 @@ zox_sys2(BiomeBlocksSystem) {
             zox_add_tag(e2, BlockSand);
             zox_set_parent(world, e2, e);
             add_to_BlockLinks(blocks, e2);
+            zox_set(e2, BlockHealth, { (float2) { 2, 4 } });
         }
         {
             color stone_color = color_grayscale(45);
@@ -141,6 +144,7 @@ zox_sys2(BiomeBlocksSystem) {
             zox_add_tag(e2, BlockStone);
             zox_set_parent(world, e2, e);
             add_to_BlockLinks(blocks, e2);
+            zox_set(e2, BlockHealth, { (float2) { 8, 12 } });
         }
         {
             // zox_block_wood = blocks->length + 1;
@@ -149,6 +153,7 @@ zox_sys2(BiomeBlocksSystem) {
             zox_add_tag(e2, BlockWood);
             zox_set_parent(world, e2, e);
             add_to_BlockLinks(blocks, e2);
+            zox_set(e2, BlockHealth, { (float2) { 4, 8 } });
         }
         // Grass Model
         {
