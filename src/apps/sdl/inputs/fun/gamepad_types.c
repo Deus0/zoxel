@@ -1,21 +1,14 @@
-/*byte is_steamdeck_gamepad(SDL_Joystick *joystick) {
-    const char* joystickName = SDL_JoystickName(joystick);
-    return strstr(joystickName, "Steam Deck Controller") != NULL;
-}
-
-byte is_xbox_gamepad(SDL_Joystick *joystick) {
-    const char* joystickName = SDL_JoystickName(joystick);
-    return strstr(joystickName, "Xbox") != NULL || strstr(joystickName, "X360") != NULL || strstr(joystickName, "X-Box") != NULL;
-}*/
-
 byte is_steamdeck_gamepad(SDL_Joystick *gamepad) {
-    if (!gamepad) return 0;
+    if (!gamepad) {
+        return 0;
+    }
     return SDL_JoystickGetVendor(gamepad) == 0x28DE;
 }
 
 byte is_xbox_gamepad(SDL_Joystick *gamepad) {
-    if (!gamepad) return 0;
-
+    if (!gamepad) {
+        return 0;
+    }
     Uint16 vendor = SDL_JoystickGetVendor(gamepad);
     switch (vendor) {
         case 0x045E: // Microsoft

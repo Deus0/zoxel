@@ -2,6 +2,8 @@
 #include "memory.c"
 #include "lines.c"
 #include "chunk3.c"
+#include "chunk3_mass.c"
+#include "chunk3_textured.c"
 
 void define_systems_chunks3_debug(ecs *world) {
     // main thread

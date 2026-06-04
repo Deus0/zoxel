@@ -1,4 +1,4 @@
-int get_terrain_chunks_count(ecs *world) {
+/*int get_terrain_chunks_count(ecs *world) {
     return zox_count_types(TerrainChunk)
 }
 
@@ -32,4 +32,4 @@ void test_spawn_chunk_terrain(ecs *world, int32_t keycode) {
             );
         }
     }
-}
+}*/

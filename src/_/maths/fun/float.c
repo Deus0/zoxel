@@ -32,3 +32,7 @@ static inline float float_min(float a, float b) {
     if (a < b) return a;
     else return b;
 }
+
+static inline float frand_range(float a, float b) {
+    return a + ((float)rand() / (float)RAND_MAX) * (b - a);
+}

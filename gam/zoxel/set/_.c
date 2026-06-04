@@ -126,55 +126,12 @@ void zoxel_debug_keys() {
     add_hook_key_down(key_down_toggle_streaming);
     add_hook_key_down(key_down_toggle_npc_movement);
     add_hook_key_down(key_down_toggle_debug_chunks);
-    // add_hook_key_down(key_down_toggle_debug_character_bounds);
-    // add_hook_key_down(key_down_toggle_debug_voxes_bounds);
-    // add_hook_key_down(key_down_toggle_light_debug);
-    // add_hook_key_down(test_load_chunk);
-    // add_hook_key_down(toggle_sound);
-    // add_hook_key_down(toggle_life_terrain);
-    // add_hook_key_down(toggle_inspector_player);
-    // add_hook_key_down_2(zox_key_g, toggle_autoroam);
-    // Test our cube meshes
-    // add_hook_key_down(keydown_test_cubes);
-    // add_hook_key_down(debug_key_down_unstucking);
-    // add_hook_key_down(key_down_toggle_keyboard_navigation);
-    // add_hook_key_down(key_down_test_aura);
-    // add_hook_key_down(test_game_end);
-    // add_hook_key_down(test_fall_through_terrain);
-    // test function for npc spawning
-    // add_hook_key_down(key_down_test_aura);
-    // add_hook_key_down(test_spawn_chunk_terrain);
-    // add_hook_key_down(test_key_element_front2D);
-    // add_hook_key_down(key_down_update_text3D);
-    // add_hook_key_down(key_down_dbg_chunk);
 }
 
 void initialize_zoxel_settings(ecs* world) {
     float viewport_downscale = 1;
     viewport_scale = 1 / viewport_downscale;
     target_fps = 0;
-    // zox_log("is_generate_vox_outlines is now 1");
-    // is_generate_vox_outlines = 1;
-    // TODO: Fix this
-    // zox_use_post_processing = 0;
-    // zox_log_lags = 1;
-    // target_fps = 5;
-    // is_split_screen = 1;
-    // auto_player = 1;
-    // disable_npcs = 1;
-    // disable_block_voxes = 1;
-    // nosounds = 1;
-    /*disable_skill_costs = 1;
-    debug_ray_big_range = 1;*/
-    // disable until fixed
-    // disable_frustum_culling = 1;
-    // disable_bone_rendering = 1;
-    // disable_block_voxes = 1;
-    // is_debug_collisions = 1;
-    // global_music_speed = 1;
-    // app settings
-    // headless = 0;
-    // nosounds = 0;
     zoxel_set_debug();
     render_distance_y = 4;
     // art

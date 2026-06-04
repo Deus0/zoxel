@@ -23,7 +23,7 @@ entity zox_dbg_test_window;
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
-    byte zox_tsts_count = 17;
+    byte zox_tsts_count = 19;
     SpawnListElement elements[zox_tsts_count];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
@@ -97,8 +97,16 @@ entity zox_dbg_test_window;
         .on_click = { &zox_tst_player_character_death },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Chunk3",
+        .text = "Spawn Chunk3",
         .on_click = { &zox_dbg_spawn_chunk3 },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Mass Spawn Chunk3",
+        .on_click = { &zox_dbg_spawn_chunk3_mass },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Spawn Chunk3 Textured",
+        .on_click = { &zox_dbg_spawn_chunk3_textured },
     };
     // Test our uis
     entity spawned[elements_count];

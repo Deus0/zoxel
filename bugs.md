@@ -1,8 +1,16 @@
 # Bugs #
+
+# Regressions #
+- Sometimes some blocks loaded where my grass was
+	- this might be a indexing issue where one biome loads before the realm blocks? or vice versa?
+	- looks like it, it swapped again
 - Higher Resolution mode is bugged for player model
 	- skinning issues
 	- max length chunk is 128, increase length..
 	- put depth to 5
+- Music load error on linux (somehow loads on windows)
+- Music Missing from main menu as no realm then
+# Others #
 - Item in hand dissapears when updating body
 - Redo skinning, has overlapping issues if parts close atm 
 	- Cellular automata voxels around bone joints for better rotation

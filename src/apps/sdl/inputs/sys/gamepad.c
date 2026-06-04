@@ -63,7 +63,7 @@ void extract_sdl_gamepad_button(ecs* world, entity e, SDL_Joystick* joystick, by
     joystick_axes = SDL_JoystickNumAxes(joystick);
     byte rindex = zox_getv(e, RealButtonIndex);
     if (zox_has(e, ZeviceBumper)) {
-        float value = get_gamepad_bumper(joystick, rindex, dbg_log);
+        get_gamepad_bumper(joystick, rindex, dbg_log);
     } else if (zox_has(e, ZeviceStick)) {
         zox_mut_begin(e, ZeviceStick, stick);
         if (get_gamepad_axis(joystick, stick, rindex, rindex + 1, dbg_log)) {

@@ -8,10 +8,6 @@ static inline float wrap_hue(float h) {
     return h;
 }
 
-static inline float frand_range(float a, float b) {
-    return a + ((float)rand() / (float)RAND_MAX) * (b - a);
-}
-
 static inline float3 hsv_shift(float3 hsv, float dh, float ds, float dv) {
     hsv.x = wrap_hue(hsv.x + dh);
     hsv.y = clampf(hsv.y + ds, 0.0f, 100.0f);

@@ -1,15 +1,21 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
-# Regressions #
-- Sometimes some blocks loaded where my grass was
-	- this might be a indexing issue where one biome loads before the realm blocks? or vice versa?
-	- looks like it, it swapped again
-- make run should check gam directory too for changes
-- Music Missing from main menu
-- Music load error on linux (somehow loads on windows)
-- Fix controller mapping
-# Refactors #
+
+# Chunk Refactor #
+-x Spawn a Colored Chunk as a test function
+- Spawn a Terrain chunk as test function
+- Spawn a TerrainChunk with no Mesh and child Renderer
+	- fix systems to work with new terrain chunk
 - Refactor Chunk to Chunk + BlockMaterial + Lod Render
+- chunk = chunk + renders (seperate)
+- Generate sides per Chunk3Material (sub entity of Chunk3)
+- Spawn Chunk3Render entity per LOD level when RenderDepth set
+- Refactor models to just spawn one vox model and multiple render objects as children
+	- Make lods just use the same model, no need to create 5 models per slime
+	- just generate per each level - set with shapes per node level
+# Regressions #
+- make run should check gam directory too for changes
+# Refactors #
 - Remove refactor Vodes spawn code
 - Replace Chunk VoxLinks with Parent calls
 - Refactor Model Lods -> one model, just create mesh per lod
@@ -22,17 +28,13 @@
 - Remove all spawn_window_users's
 - Spawn character data from biomes
 # Refactors 2
-- refactor models to just spawn one vox model and multiple render objects as children
 - make shape type and centering part of painting as well - use fill system just with diff byte for checks
-- Make lods just use the same model, no need to create 5 models per slime
-	- just generate per each level - set with shapes per node level
 - refactor soil/blocks into nodegraphs for models
 - link nodegraphs to realm's nodegraphLinks
 - list uis should just reposition inside system when children dirty
-- chunk = chunk + renders (seperate)
 - taskbar data into entities
 - settings data into entities
-- remove sdl_image and create a seperate image import
+- remove sdl_image and use BMP imports
 - remove sdl_mixer and use another simpler audio lib
 # Inputs #
 - Button Mapping
@@ -445,4 +447,5 @@ Module [Rendering]:
 -x Generate unique color per biome
 -x Refactor more blocks into per biome
 -x Grass placed over town bricks, check for air for grass placement
--x B to close menu - shortcut
+-x B to close menu - shortcut6312
+-x Fix controller mapping
