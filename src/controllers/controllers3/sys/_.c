@@ -24,7 +24,6 @@ void define_systems_controllers3(ecs *world) {
         Player3DMoveSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
         [none] players.Player
     );
@@ -32,7 +31,6 @@ void define_systems_controllers3(ecs *world) {
         PlayerFlySystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
         [none] players.Player
@@ -41,7 +39,6 @@ void define_systems_controllers3(ecs *world) {
         Player3RotateSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
         [none] players.Player
@@ -50,7 +47,6 @@ void define_systems_controllers3(ecs *world) {
         Player3DJumpSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
         [none] players.Player
@@ -59,14 +55,12 @@ void define_systems_controllers3(ecs *world) {
         ActionsShortcutSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [none] players.Player
     );
     zox_system(
         Player3DTriggerSystem,
         EcsPostUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
         [none] players.Player
@@ -84,7 +78,6 @@ void define_systems_controllers3(ecs *world) {
         PlayerPauseSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] games.GameLink,
         [none] players.Player
     );
@@ -92,7 +85,6 @@ void define_systems_controllers3(ecs *world) {
         PlayerToggleCameraSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
         [in] layouts2.CanvasLink,
@@ -102,7 +94,6 @@ void define_systems_controllers3(ecs *world) {
     zox_system(
         QolShortcutsSystem,
         EcsOnUpdate,
-        [in] inputs.DeviceLinks,
         [none] players.Player
     );
     zox_system_1(

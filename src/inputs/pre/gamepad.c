@@ -62,6 +62,5 @@ entity spawn_gamepad(ecs *world, byte gamepad_type) {
     {
         spawn_zevice_bumper(world, e, "right_trigger", 5, zox_device_button_rt);
     }
-    gamepad_entity = e;
     return e;
 }

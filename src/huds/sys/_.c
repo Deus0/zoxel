@@ -97,7 +97,6 @@ void define_systems_game_ui(ecs *world) {
         PlayerTerminalSystem,
         zoxp_mainthread,
         [in] layouts2.CanvasLink,
-        [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
         [in] elements.ElementLinks,
         [none] players.Player

@@ -6,14 +6,13 @@ zox_sys2(Player3RotateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(DeviceLinks);
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(CharacterLink, characterLink);
         zox_sys_i(CameraLink, cameraLink);
-        zox_sys_i(DeviceLinks, devices);
         if (state->value != zox_player_state_playing) {
             continue;
         }
@@ -31,8 +30,11 @@ zox_sys2(Player3RotateSystem) {
         }
         float2 right_stick = float2_zero;
         float2 euler = float2_zero;
-        for (int j = 0; j < devices->length; j++) {
-            entity e2 = devices->value[j];
+
+        entity devices[zox_children_capacity];
+        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+        for (uint j = 0; j < length; j++) {
+            entity e2 = devices[j];
             if (!zox_valid(e2) || !zox_has(e2, DeviceDisabled)) {
                 continue;
             }

@@ -6,7 +6,6 @@ void define_systems_controllers2(ecs *world) {
     zox_system(
         Controller2MoveSystem,
         EcsOnUpdate,
-        [in] inputs.DeviceLinks,
         [in] characters.CharacterLink,
         [none] players.Player
     );

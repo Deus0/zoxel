@@ -48,9 +48,8 @@ void define_systems_input(ecs* world) {
     );
     // state changes
     zox_system(
-        DeviceModeSystem,
+        DeviceSwitchSystem,
         zoxp_inputs_update,
-        [in] DeviceLinks,
         [in] DeviceMode,
         [out] DeviceModeDirty
     );

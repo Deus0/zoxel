@@ -12,7 +12,6 @@ void define_systems_navigation(ecs* world) {
     zox_system(
         ElementNavigationSystem,
         EcsPostUpdate,
-        [in] inputs.DeviceLinks,
         [in] inputs.DeviceMode,
         [out] elements.NavigatorState,
         [out] elements.NavigatorTimer,

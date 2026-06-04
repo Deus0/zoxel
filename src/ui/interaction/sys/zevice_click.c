@@ -21,7 +21,7 @@ zox_sys2(ZeviceClickSystem) {
         if (zox_gett_value(device->value, DeviceDisabled)) {
             continue;
         }
-        entity player = zox_get_value(device->value, PlayerLink)
+        entity player = zox_get_parent(world, device->value);
         if (!player) {
             // zox_log(" ! device has null player [%lu]\n", device)
             continue;

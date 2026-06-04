@@ -44,14 +44,12 @@ zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(DeviceLinks);
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
     zox_sys_in(CanvasLink);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(DeviceLinks, devices);
         zox_sys_i(CharacterLink, character);
         zox_sys_i(CameraLink, camera);
         zox_sys_i(CanvasLink, canvas);
@@ -63,12 +61,14 @@ zox_sys2(PlayerToggleCameraSystem) {
         }
         byte is_toggle_camera = 0;
         byte is_toggle_freeroam = 0;
-        for (int j = 0; j < devices->length; j++) {
-            entity e2 = devices->value[j];
+        entity devices[zox_children_capacity];
+        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+        for (uint j = 0; j < length; j++) {
+            entity e2 = devices[j];
             if (!zox_valid(e2)) {
                 continue;
             }
-            if (!zox_has(e2, DeviceDisabled) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_has(e2, DeviceDisabled) || zox_getv(e2, DeviceDisabled)) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;

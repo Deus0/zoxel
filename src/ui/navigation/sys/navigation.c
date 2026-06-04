@@ -1,16 +1,15 @@
 // todo: fix this, RaycasterTarget moved to zevices
 zox_sys2(ElementNavigationSystem) {
+    byte dbg_log = 0;
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceLinks);
     zox_sys_in(DeviceMode);
     zox_sys_out(NavigatorState);
     zox_sys_out(NavigatorTimer);
     zox_sys_out(RaycasterTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceLinks, devices);
         zox_sys_i(DeviceMode, dmode);
         zox_sys_o(RaycasterTarget, current);
         zox_sys_o(NavigatorState, state);
@@ -29,8 +28,10 @@ zox_sys2(ElementNavigationSystem) {
         }
         // Get Input for Navigation
         float2 left_stick = float2_zero;
-        for (byte j = 0; j < devices->length; j++) {
-            entity e2 = devices->value[j];
+        entity devices[zox_children_capacity];
+        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+        for (uint j = 0; j < length; j++) {
+            entity e2 = devices[j];
             if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }
@@ -99,34 +100,34 @@ zox_sys2(ElementNavigationSystem) {
         sbyte selected_index = -1;
         entity parent = zox_get_parent(world, current->value);
         entity children[layouts2_children_capacity];
-        uint children_length = zox_get_children(world, parent, children, layouts2_children_capacity);
+        uint children_length = zox_get_children_by_id(world, parent, children, layouts2_children_capacity, zox_id(Selectable));
         for (byte k = 0; k < children_length; k++) {
             entity child = children[k];
-            if (!zox_valid(child) || !zox_has(child, Selectable)) {
-                continue;
-            }
             if (child == current->value) {
                 selected_index = k;
                 break;
             }
         }
-        if (selected_index != -1) {
-            // zox_log("Going Down Town [%i] -> %f", selected_index, left_stick.y);
-            entity target = 0;
-            if (left_stick.y >= ui_navigation_joystick_cutoff
-                && selected_index >= 1) {
-                target = children[selected_index - 1];
-            } else if (left_stick.y <= -ui_navigation_joystick_cutoff
-                && selected_index < children_length - 1) {
-                target = children[selected_index + 1];
+        if (selected_index == -1) {
+            zox_loge("Could not find child index of navigated one");
+            continue;
+        }
+        // zox_log("Going Down Town [%i] -> %f", selected_index, left_stick.y);
+        entity target = 0;
+        if (left_stick.y >= ui_navigation_joystick_cutoff && selected_index >= 1) {
+            target = children[selected_index - 1];
+        } else if (left_stick.y <= -ui_navigation_joystick_cutoff && selected_index < children_length - 1) {
+            target = children[selected_index + 1];
+        }
+        if (target && target != current->value) {
+            raycaster_select_element(world, e, target);
+            if (timer->value < -ui_navigation_timing / 2) {
+                timer->value = ui_navigation_timing;
+            } else {
+                timer->value += ui_navigation_timing;
             }
-            if (target) {
-                raycaster_select_element(world, e, target);
-                if (timer->value < -ui_navigation_timing / 2) {
-                    timer->value = ui_navigation_timing;
-                } else {
-                    timer->value += ui_navigation_timing;
-                }
+            if (dbg_log) {
+                zox_log("New Navigation Target UI [%s]", zox_get_name(target));
             }
         }
     }

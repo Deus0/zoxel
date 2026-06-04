@@ -15,9 +15,10 @@ void disable_inputs_until_release(ecs *world, entity player, byte new_device_mod
         // zox_log_error("Need to reenable this function and refactor it.")
         raycaster_select_element(world, player, 0);
     }
-    zox_geter(player, DeviceLinks, devices);
-    for (int j = 0; j < devices->length; j++) {
-        entity e2 = devices->value[j];
+    entity devices[zox_children_capacity];
+    uint length = zox_get_children_by_id(world, player, devices, zox_children_capacity, zox_id(Device));
+    for (uint j = 0; j < length; j++) {
+        entity e2 = devices[j];
         if (!zox_valid(e2)) {
             continue;
         }

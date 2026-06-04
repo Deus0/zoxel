@@ -35,7 +35,7 @@ zox_sys2(SkillsRealmSpawnSystem) {
         // Punch Skills
         {
             color ecolor = (color) { 155, 155, 155, 255 };
-            float range = 1.0f;
+            float range = 1.5f;
             float2 damage = (float2) { 1, 2 };
             entity e2 = spawn_realm_skill_melee(world, e, prefab_skill_melee, "punch", "punch", ecolor, damage.x, damage.y, range, energy, 1, 0.25f, 0.25f);
             add_to_SkillLinks(skills, e2);

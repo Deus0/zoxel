@@ -218,7 +218,9 @@ byte raycast_voxel_node(ecs *world,
             }
         }
         // Character Ray: if didnt hit voxel, use character hit
-        if (character_raycast->e && character_raycast->distance <= ray_distancef) {
+        if (character_raycast->e && character_raycast->distance <= ray_length) {
+        // NOTE: For now we just pick first character if found as it was not the best before
+        // if (character_raycast->e &&  character_raycast->distance <= ray_distancef) {
             data->chunk = character_raycast->e;
             data->hit = character_raycast->point;
             data->distance = character_raycast->distance;
@@ -311,6 +313,12 @@ byte raycast_voxel_node(ecs *world,
                 float minivox_scalev = chunk_scalev * (1.0f / (float) minivox_chunk_length);
                 float minivox_ray_length = minivox_chunk_length * 3;
                 // Recursive Raycasting to Minivox!
+                // TODO: Detect when outside of minivox during raycast and exit then
+                // NOTE: If ray length left is not much, then we simply use that
+                float ray_length_left = ray_length - ray_distancef;
+                if (ray_length_left < minivox_ray_length) {
+                    minivox_ray_length = ray_length_left;
+                }
                 result = raycast_voxel_node(world, caster, NULL, NULL, int3_zero, block_position, minivox_render_depth, minivox_chunk_size, vox, ray_point, ray_normal, hit_normal, minivox_scalev, minivox_ray_length, data, character_raycast);
                 // We hit Grass!
                 if (result == rayhit_block_vox) {

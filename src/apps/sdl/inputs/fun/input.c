@@ -11,10 +11,18 @@ void input_reset_sdl() {
     sdl_reset_mouse_wheel();
 }
 
-void input_extract_from_sdl(ecs *world, const SDL_Event event) {
+byte update_sdl_input(ecs *world, SDL_Event event) {
     sdl_extract_keyboard(world, event);
     sdl_extract_mouse_wheel(event);
     if (event.type == SDL_JOYDEVICEADDED) {
+        int device_index = event.jdevice.which;
+        zox_log("+ Joystick Connected [%i]:[%s]", device_index,  SDL_JoystickNameForIndex(device_index));
         handle_new_sdl_gamepad(world, event);
+        return 1;
+    } else if (event.type == SDL_JOYDEVICEREMOVED) {
+        int device_index = event.jdevice.which;
+        zox_log("- Joystick Disconnected [%i]:[%s]", device_index,  SDL_JoystickNameForIndex(device_index));
+        return 1;
     }
+    return 0;
 }

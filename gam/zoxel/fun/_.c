@@ -98,7 +98,7 @@ entity zox_dbg_test_window;
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Spawn Chunk3",
-        .on_click = { &zox_dbg_spawn_chunk3 },
+        .on_click = { &zox_dbg_spawn_chunk3_button },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Mass Spawn Chunk3",

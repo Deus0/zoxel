@@ -1,3 +1,4 @@
+// NOTE: This handles player dialogue state changes
 zox_sys2(PlayerDialogueSystem) {
     zox_sys_world();
     zox_sys_begin();

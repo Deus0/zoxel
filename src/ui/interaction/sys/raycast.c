@@ -17,7 +17,7 @@ zox_sys2(ElementRaycastSystem) {
         if (zox_gett_value(device->value, DeviceDisabled)) {
             continue;
         }
-        zox_geter_value(device->value, PlayerLink, entity, player);
+        entity player = zox_get_parent(world, device->value);
         if (!player) {
             continue;
         }

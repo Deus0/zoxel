@@ -1,3 +1,4 @@
+// NOTE: This destroys items when they run out!
 zox_sys2(ItemQuantityDeathSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -9,7 +10,7 @@ zox_sys2(ItemQuantityDeathSystem) {
         zox_sys_i(Quantity, quantity);
         if (dirty->value == zox_dirty_active) {
             if (quantity->value == 0) {
-                zox_log("Item ran out [%s]", zox_get_name(e));
+                // zox_log("Item ran out [%s]", zox_get_name(e));
                 zox_delete(e);
             }
         }

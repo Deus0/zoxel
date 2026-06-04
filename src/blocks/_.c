@@ -9,6 +9,8 @@
 #ifndef zoxm_blocks
 #define zoxm_blocks
 
+float block_place_range = 2;
+
 #include "com/_.c"
 #include "dat/_.c"
 #include "fun/_.c"

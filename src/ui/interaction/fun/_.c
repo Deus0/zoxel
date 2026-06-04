@@ -40,16 +40,14 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
         }
         set_raycast_target_children(world, child, target);
     }
-    if (zox_has(e, DeviceLinks)) {
-        zox_geter(e, DeviceLinks, devices);
-        for (int i = 0; i < devices->length; i++) {
-            entity child = devices->value[i];
-
-            if (!zox_valid(child)) {
-                continue;
-            }
-            set_raycast_target_children(world, child, target);
+    entity devices[zox_children_capacity];
+    uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+    for (uint j = 0; j < length; j++) {
+        entity e2 = devices[j];
+        if (!zox_valid(e2)) {
+            continue;
         }
+        set_raycast_target_children(world, e2, target);
     }
 }
 

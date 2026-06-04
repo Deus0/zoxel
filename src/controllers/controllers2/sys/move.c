@@ -3,13 +3,12 @@ zox_sys2(Controller2MoveSystem) {
     float2 max_delta_velocity = max_velocity2D;
     max_delta_velocity.x *= delta_time;
     max_delta_velocity.y *= delta_time;
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(DeviceLinks)
-    zox_sys_in(CharacterLink)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(DeviceLinks, deviceLinks)
-        zox_sys_i(CharacterLink, characterLink)
+        zox_sys_e();
+        zox_sys_i(CharacterLink, characterLink);
         entity character = characterLink->value;
         if (!zox_valid(character) || !zox_has(character, Character2D)) {
             continue;
@@ -24,8 +23,12 @@ zox_sys2(Controller2MoveSystem) {
         float2 movement = float2_zero; // { 0, 0 };
         float2 left_stick = float2_zero;
         // get the player input vector
-        for (int j = 0; j < deviceLinks->length; j++) {
-            entity e2 = deviceLinks->value[j];
+        entity devices[zox_children_capacity];
+        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+        for (uint j = 0; j < length; j++) {
+            entity e2 = devices[j];
+        //for (int j = 0; j < deviceLinks->length; j++) {
+        //    entity e2 = deviceLinks->value[j];
             if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }

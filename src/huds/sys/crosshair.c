@@ -2,31 +2,29 @@ void crosshair_set_type(ecs* world, entity e, byte new) {
     if (!zox_valid(e) || !zox_has(e, HitType)) {
         return;
     }
-    zox_geter_value(e, HitType, byte, old);
+    byte old = zox_getv(e, HitType);
     if (old == new) {
         return;
     }
-    color c;
-    if (new == rayhit_none) {
-        c = crosshair_air;
-    } else if (new == rayhit_terrain) {
-        c = crosshair_terrain;
+    float scale = 1;
+    color crosshair_fill;
+    if (new == rayhit_terrain) {
+        crosshair_fill = crosshair_terrain;
+        scale = crosshair_terrain_scale;
     } else if (new == rayhit_block_vox) {
-        c = crosshair_terrain;
+        crosshair_fill = crosshair_terrain;
+        scale = crosshair_terrain_scale;
     } else if (new == rayhit_character) {
-        c = crosshair_target;
+        crosshair_fill = crosshair_target;
+        scale = crosshair_target_scale;
     } else {
-        c = crosshair_air;
+        crosshair_fill = crosshair_air;
     }
-    /*zox_geter_value(e, CanvasLink, entity, canvas);
-    if (!zox_valid(canvas)) {
-        zox_loge("Canvas invalid");
-    }*/
-    entity crosshair = e; // zox_get_child_by_id(world, canvas, zox_id(Crosshair));
-    if (zox_valid(crosshair)) {
-        zox_set(crosshair, HitType, { new });
-        zox_set(crosshair, OutlineColor, { c });
-        zox_set(crosshair, GenerateTexture, { zox_dirty_trigger });
+    if (zox_valid(e)) {
+        zox_set(e, HitType, { new });
+        zox_set(e, OutlineColor, { crosshair_fill });
+        zox_set(e, GenerateTexture, { zox_dirty_trigger });
+        zox_set(e, Scale1D, { scale });
     }
 }
 
@@ -35,7 +33,6 @@ zox_sys2(RaycastCrosshairSystem) {
     zox_sys_begin();
     zox_sys_in(RaycastVoxelData);
     zox_sys_in(PlayerLink);
-    // [in] layouts2.CanvasLink
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RaycastVoxelData, data);
         zox_sys_i(PlayerLink, player);

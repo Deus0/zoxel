@@ -5,11 +5,10 @@ extern void engine_end(); // engine
 
 // move this to an app system function?
 void update_sdl(ecs *world) {
-    const entity e = main_app;
+    entity e = main_app;
     input_reset_sdl();
     SDL_Event event = { 0 };
     while (SDL_PollEvent(&event)) {
-        input_extract_from_sdl(world, event);
         // Quit the window
         if (event.type == SDL_QUIT) {
             engine_end();
@@ -25,7 +24,6 @@ void update_sdl(ecs *world) {
 
                 byte orientation = get_screen_orientation(monitor);
                 // zox_logv("Display [%i] Orientation [%i] Size Changed [%ix%i]", monitor, orientation, window_size.x, window_size.y);
-
                 zox_geter_value(e, ScreenOrientation, byte, old_orientation);
                 if (old_orientation != orientation) {
                     // remove flip, didnt detect
@@ -38,27 +36,22 @@ void update_sdl(ecs *world) {
                     zox_set(e, ScreenOrientation, { orientation });
                 }
                 // zox_log("SDL WINDOW SIZE %ix%i", window_size.x, window_size.y);
-
                 // Re-query drawable size after fullscreen
                 // int draw_w, draw_h;
                 // SDL_GL_GetDrawableSize(zox_gett_value(e, SDLWindow), &draw_w, &draw_h);
                 // zox_log("Fullscreen drawable size %ix%i", draw_w, draw_h);
-
                 on_window_resized(world, e, window_size);
             }
-
             else if (event.type == SDL_DISPLAYEVENT && event.display.event == SDL_DISPLAYEVENT_ORIENTATION) {
                 byte monitor = event.display.display;
                 byte orientation = get_screen_orientation(monitor);
                 zox_logw("Display [%i] Orientation Changed: %i", monitor, orientation);
                 // on_window_rotated(world, e, orientation);
-
                 /*zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
                 int2 window_size = int2_zero;
                 SDL_GetWindowSize(sdl_window, &window_size.x, &window_size.y);
                 on_window_resized(world, e, window_size);*/
             }
-
             else if (event.window.event == SDL_WINDOWEVENT_MOVED) { // handles application resizing
                 sdl_on_window_moved(world, e, (int2) { event.window.data1, event.window.data2 });
             }
@@ -76,20 +69,20 @@ void update_sdl(ecs *world) {
                 opengl_dispose_resources(world);
                 disable_time();
             }
-
             else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
                 zox_logv("App Lost Focus");
                 disable_time();
             }
-
             else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
                 zox_logv("App Gained Focus");
                 enable_time();
             }
         }
-
         else if (event.type == SDL_TEXTINPUT) {
             zox_log("SDL Text Input: %s", event.text.text);
+        }
+        else if (update_sdl_input(world, event)) {
+            // bam!
         }
     }
 }

@@ -10,11 +10,11 @@ entity prefab_element_ready;      // ready for generating textures
 entity prefab_element_textured;   // rename to textured_frame
 entity prefab_canvas_overlay;
 
-void prefabs_add_ui_to_player(ecs *world, const entity e) {
+void prefabs_add_ui_to_player(ecs *world, entity e) {
     // Player -> Devices (move this to device module)
     zox_prefab_set(e, DeviceMode, { 0 })
     zox_prefab_set(e, DeviceModeDirty, { 0 })
-    zox_prefab_set(e, DeviceLinks, { 0 });
+    // zox_prefab_set(e, DeviceLinks, { 0 });
     // Player -> UI Links
     zox_prefab_set(e, ElementLinks, { 0 });
     zox_prefab_set(e, CanvasLink, { 0 });

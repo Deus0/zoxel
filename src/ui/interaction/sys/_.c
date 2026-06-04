@@ -37,7 +37,6 @@ void zox_define_systems_interaction(ecs* world) {
         DeviceClickSystem,
         EcsPostUpdate,
         [in] inputs.DeviceDisabled,
-        [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,
         [out] interaction.ClickingEntity,
         [none] inputs.Device

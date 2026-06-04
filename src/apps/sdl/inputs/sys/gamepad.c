@@ -5,7 +5,7 @@ byte get_gamepad_button(byte old_value, SDL_Joystick *joystick, int index, byte 
     if (value && dbg_log) {
         zox_log("- SDL Jostick [%i]: %i", index, value);
     }
-    return process_byte(old_value, value);
+    return process_input_button(old_value, value);
 }
 
 float get_gamepad_axis_raw(SDL_Joystick *joystick, int index, byte dbg_log) {
@@ -37,8 +37,6 @@ byte get_gamepad_axis(SDL_Joystick *joystick, ZeviceStick *stick,  int index_x, 
     }
 }
 
-
-
 float get_gamepad_bumper(SDL_Joystick *joystick, int index, byte dbg_log) {
     int raw = SDL_JoystickGetAxis(joystick, index);
     float value = raw / 32768.0f;
@@ -50,11 +48,58 @@ float get_gamepad_bumper(SDL_Joystick *joystick, int index, byte dbg_log) {
     return value;
 }
 
-/*void check_axis(SDL_Joystick *joystick, int index) {
-    float2 axis = (float2) { get_gamepad_axis(joystick, index), get_gamepad_axis(joystick, index + 1) };
-    if (float_abs(axis.x) >= 0.05f || float_abs(axis.y) >= 0.05f) last_axis_index = index;
-}*/
-
+byte get_gamepad_dpad(byte old_value, SDL_Joystick *joystick, int index) {
+    byte is_pressed_down = 0;
+    byte is_pressed_up = 0;
+    byte is_pressed_left = 0;
+    byte is_pressed_right = 0;
+    Uint8 hatState = SDL_JoystickGetHat(joystick, 0);
+    // Check the state of the D-pad
+    switch (hatState) {
+        case SDL_HAT_UP:
+            is_pressed_up = 1;
+            break;
+        case SDL_HAT_DOWN:
+            is_pressed_down = 1;
+            break;
+        case SDL_HAT_LEFT:
+            is_pressed_left = 1;
+            break;
+        case SDL_HAT_RIGHT:
+            is_pressed_right = 1;
+            break;
+        case SDL_HAT_LEFTUP:
+            is_pressed_left = 1;
+            is_pressed_up = 1;
+            break;
+        case SDL_HAT_RIGHTUP:
+            is_pressed_right = 1;
+            is_pressed_up = 1;
+            break;
+        case SDL_HAT_LEFTDOWN:
+            is_pressed_left = 1;
+            is_pressed_down = 1;
+            break;
+        case SDL_HAT_RIGHTDOWN:
+            is_pressed_right = 1;
+            is_pressed_down = 1;
+            break;
+        case SDL_HAT_CENTERED:
+            // Handle no input
+            break;
+    }
+    if (index == zox_device_button_dpad_down) {
+        return process_input_button(old_value, is_pressed_down);
+    } else if (index == zox_device_button_dpad_up) {
+        return process_input_button(old_value, is_pressed_up);
+    } else if (index == zox_device_button_dpad_left) {
+        return process_input_button(old_value, is_pressed_left);
+    } else if (index == zox_device_button_dpad_right) {
+        return process_input_button(old_value, is_pressed_right);
+    } else {
+        return old_value;
+    }
+}
 
 void extract_sdl_gamepad_button(ecs* world, entity e, SDL_Joystick* joystick, byte dbg_log) {
     if (!joystick) {
@@ -85,12 +130,13 @@ void extract_sdl_gamepad_button(ecs* world, entity e, SDL_Joystick* joystick, by
 }
 
 byte sdl_gamepad_handle_disconnect(SDL_Joystick *joystick) {
-    if (joystick == NULL) {
+    if (!joystick) {
         return 0;
     }
     if (!SDL_JoystickGetAttached(joystick)) {
         int joystick_id = SDL_JoystickInstanceID(joystick);
-        fprintf(stderr, "   > gamepad [%d] has disconnected\n", joystick_id);
+        const char* joystick_name = SDL_JoystickNameForIndex(joystick_id);
+        zox_log("- Gamepad Disconnected [%i] [%s]", joystick_id, joystick_name);
         SDL_JoystickClose(joystick);
         joystick = NULL;
         return 0;
@@ -98,7 +144,7 @@ byte sdl_gamepad_handle_disconnect(SDL_Joystick *joystick) {
     return 1;
 }
 
-zox_sys2(GamepadExtractSystem) {
+zox_sys2(GamepadFetchSystem) {
     byte dbg_log = 0;
     byte dbg_log_all = 0;
     zox_sys_world();
@@ -111,8 +157,24 @@ zox_sys2(GamepadExtractSystem) {
             if (dbg_log) {
                 zox_log("SDL Joystick Disconnected [%s]", zox_get_name(e));
             }
+            entity player = zox_get_parent(world, e);
+            if (zox_valid(player)) {
+                zox_set(player, DeviceMode, { zox_device_mode_none });
+            } else {
+                zox_loge("No player parent of gamepad..");
+            }
+            zox_delete(e);
             continue;
         }
+        // Fetch
+        uint children_capacity = zox_children_capacity;
+        entity children[children_capacity];
+        uint children_length = zox_get_children(world, e, children, children_capacity);
+        for (uint j = 0; j < children_length; j++) {
+            entity e2 = children[j];
+            extract_sdl_gamepad_button(world, e2, gamepad->value, dbg_log);
+        }
+        // Debug new gamepads!
         if (dbg_log_all) {
             // Axes
             int axis_count = SDL_JoystickNumAxes(gamepad->value);
@@ -141,12 +203,5 @@ zox_sys2(GamepadExtractSystem) {
                 }
             }
         }
-        uint children_capacity = zox_children_capacity;
-        entity children[children_capacity];
-        uint children_length = zox_get_children(world, e, children, children_capacity);
-        for (uint j = 0; j < children_length; j++) {
-            entity e2 = children[j];
-            extract_sdl_gamepad_button(world, e2, gamepad->value, dbg_log);
-        }
     }
-} zox_sys_end(GamepadExtractSystem);
+} zox_sys_end(GamepadFetchSystem);

@@ -26,7 +26,7 @@ zoxc_entity(MouseLink);
 zoxc_entity(ZeviceLink);
 zoxc_entity(VirtualZeviceLink);
 zoxc_arrayd(DeviceButtonLinks, entity)
-zoxc_entities(DeviceLinks)
+// zoxc_entities(DeviceLinks)
 #include "keyboard.c"
 
 void define_components_inputs(ecs *world) {
@@ -58,5 +58,5 @@ void define_components_inputs(ecs *world) {
     zoxd_entity(MouseLink);
     zoxd_entity(ZeviceLink);
     zoxd_entity(VirtualZeviceLink);
-    zoxd_entities(DeviceLinks);
+    // zoxd_entities(DeviceLinks);
 }

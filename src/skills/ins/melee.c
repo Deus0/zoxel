@@ -8,6 +8,7 @@ entity spawn_realm_skill_melee(ecs* world, entity parent, entity prefab, const c
     zox_set(e, SkillResourceLink, { resource });
     zox_set(e, WarmupTime, { warmup });
     zox_set(e, CooldownTime, { cooldown });
+    zox_set(e, RaycastRange, { range });
     return e;
 }
 

@@ -1,8 +1,14 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+- pause should pause the npcs too, cherrie wants dat
+- if our body is overlapping chunk edges, we shouldnt update the chunk streaming, wait until its not overlapping
+- Set UI hightlight color of buttons, and highlight outline colors
+	- have it lerp there over time
+- consider prompts for inputs when character is less than a day old
+- Disable next button until animating dialogue finishes
+
 # Chunk Refactor #
--x Spawn a Colored Chunk as a test function
 - Spawn a Terrain chunk as test function
 - Spawn a TerrainChunk with no Mesh and child Renderer
 	- fix systems to work with new terrain chunk
@@ -27,6 +33,8 @@
 - Refactor Header Spawning to system
 - Remove all spawn_window_users's
 - Spawn character data from biomes
+- Compare raycasts based on priority
+	- Raycast Solid Blocks, Character, Non Solid Blocks (Grass)
 # Refactors 2
 - make shape type and centering part of painting as well - use fill system just with diff byte for checks
 - refactor soil/blocks into nodegraphs for models
@@ -449,3 +457,8 @@ Module [Rendering]:
 -x Grass placed over town bricks, check for air for grass placement
 -x B to close menu - shortcut6312
 -x Fix controller mapping
+-x Spawn a Colored Chunk as a test function
+-x Remove all DeviceLinks and use Children of player
+-x issue is the gamepads links to players atm
+-x Increase crosshair scale when can hit NPC!
+-x hide stats panel and actionbar when dialogue

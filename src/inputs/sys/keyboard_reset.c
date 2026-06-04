@@ -6,7 +6,6 @@ zox_sys2(KeyboardResetSystem) {
     zox_sys_out(Keyboard);
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(Keyboard, keyboard);
-
         reset_key(&keyboard->space);
         reset_key(&keyboard->escape);
         reset_key(&keyboard->enter);

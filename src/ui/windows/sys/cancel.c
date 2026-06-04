@@ -47,7 +47,7 @@ zox_sys2(CancelMenuSystem) {
                 // zox_log("No CloseButton found.");
                 continue;
             }
-            entity player = zox_getv(device, PlayerLink);
+            entity player = zox_get_parent(world, device);
             // clicked state?
             if (dbg_log) {
                 zox_log("Player [%s] Clicking [%s]", zox_get_name(player), zox_get_name(close_button), zox_get_name(menu));

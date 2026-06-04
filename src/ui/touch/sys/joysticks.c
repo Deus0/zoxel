@@ -120,7 +120,7 @@ zox_sys2(VirtualJoystickSystem) {
         if (!zox_valid(device->value)) {
             continue;
         }
-        entity player = zox_getv(device->value, PlayerLink);
+        entity player = zox_get_parent(world, device->value);
         if (!zox_valid(player)) {
             continue;
         }

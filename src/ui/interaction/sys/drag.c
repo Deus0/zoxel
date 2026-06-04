@@ -11,10 +11,11 @@ zox_sys2(DraggerEndSystem) {
         if (!dragger->value || !state->value) {
             continue;
         }
-        zox_geter(dragger->value, DeviceLinks, devices);
         byte did_drag_end = 0;
-        for (int j = 0; j < devices->length; j++) {
-            entity e2 = devices->value[j];
+        entity devices[zox_children_capacity];
+        uint length = zox_get_children_by_id(world, dragger->value, devices, zox_children_capacity, zox_id(Device));
+        for (uint j = 0; j < length; j++) {
+            entity e2 = devices[j];
             if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }
@@ -39,7 +40,6 @@ zox_sys2(DraggerEndSystem) {
             state->value = 0;
             dragger->value = 0;
             delta->value = int2_zero;
-
             if (is_log_dragging) {
                 zox_log("Dragging Ended [%f]", (float) zox_current_time);
             }

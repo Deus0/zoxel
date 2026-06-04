@@ -9,10 +9,8 @@ entity prefab_touchscreen;
 entity prefab_keyboard;
 entity prefab_mouse;
 entity prefab_gamepad;
-
 entity local_touchscreen;
 entity local_keyboard;
-entity gamepad_entity;
 entity local_mouse;
 
 #include "zevice_button.c"
@@ -23,7 +21,6 @@ entity local_mouse;
 #include "keyboard.c"
 #include "gamepad.c"
 #include "touchscreen.c"
-
 int prefabs_count_devices = 0;
 entity prefabs_devices[32];
 

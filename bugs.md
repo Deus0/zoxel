@@ -1,6 +1,7 @@
 # Bugs #
 
 # Regressions #
+- not seeing many npcs atm...
 - Sometimes some blocks loaded where my grass was
 	- this might be a indexing issue where one biome loads before the realm blocks? or vice versa?
 	- looks like it, it swapped again
@@ -11,6 +12,7 @@
 - Music load error on linux (somehow loads on windows)
 - Music Missing from main menu as no realm then
 # Others #
+- now that body is bigger, we are seeing more physics glitching
 - Item in hand dissapears when updating body
 - Redo skinning, has overlapping issues if parts close atm 
 	- Cellular automata voxels around bone joints for better rotation

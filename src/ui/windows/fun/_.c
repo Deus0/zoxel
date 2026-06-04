@@ -11,15 +11,14 @@ void raycaster_select_window_children(ecs *world, entity e, entity window) {
         }
         raycaster_select_window_children(world, child, window);
     }
-    if (zox_has(e, DeviceLinks)) {
-        zox_geter(e, DeviceLinks, children);
-        for (int i = 0; i < children->length; i++) {
-            entity child = children->value[i];
-            if (!child) {
-                continue;
-            }
-            raycaster_select_window_children(world, child, window);
+    entity devices[zox_children_capacity];
+    uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+    for (uint j = 0; j < length; j++) {
+        entity e2 = devices[j];
+        if (!e2) {
+            continue;
         }
+        raycaster_select_window_children(world, e2, window);
     }
 }
 

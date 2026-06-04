@@ -2,6 +2,7 @@
 #include "character.c"
 #include "select.c"
 #include "hold.c"
+#include "raycaster.c"
 
 void zox_define_systems_actions(ecs* world) {
     zox_system(
@@ -35,5 +36,13 @@ void zox_define_systems_actions(ecs* world) {
         [in] bones.HandBoneLink,
         [out] bones.RaiseShoulder,
         [none] characters.Character,
+    );
+    zox_system(
+        ActiveActionRangeSystem,
+        EcsOnUpdate,
+        [in] actions.ActiveActionDirty,
+        [in] actions.ActiveAction,
+        [out] vrays.RaycastRange,
+        [none] characters.Character
     );
 }

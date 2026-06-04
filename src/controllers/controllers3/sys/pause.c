@@ -3,11 +3,10 @@ zox_sys2(PlayerPauseSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(DeviceLinks);
     zox_sys_in(GameLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(DeviceLinks, devices);
         zox_sys_i(GameLink, game);
         if (state->value != zox_player_state_playing && state->value != zox_player_state_paused) {
             continue;
@@ -20,8 +19,10 @@ zox_sys2(PlayerPauseSystem) {
             continue;
         }
         byte did_toggle_pause = 0;
-        for (int j = 0; j < devices->length; j++) {
-            entity e2 = devices->value[j];
+        entity devices[zox_children_capacity];
+        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+        for (uint j = 0; j < length; j++) {
+            entity e2 = devices[j];
             if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }

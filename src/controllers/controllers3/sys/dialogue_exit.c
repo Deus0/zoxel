@@ -9,11 +9,9 @@ zox_sys2(DialogueExitSystem) {
         zox_sys_i(TriggerActionE, state);
         zox_sys_i(PlayerLink, player);
         zox_sys_o(DialogueProcessLink, run);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         zox_geter_value(player->value, PlayerState, byte, player_state);
         if (player_state == zox_player_state_dialogue_active) {
             zox_set(run->value, NodetreeEnd, { zox_dirty_trigger });

@@ -26,7 +26,7 @@ void define_systems_sdl_inputs(ecs* world) {
         [none] inputs.Touchscreen
     );
     zox_system_1(
-        GamepadExtractSystem,
+        GamepadFetchSystem,
         zoxp_sdl,
         [in] SDLGamepad,
         [none] inputs.Gamepad

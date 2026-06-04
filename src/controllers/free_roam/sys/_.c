@@ -8,7 +8,6 @@ void define_systems_free_roam(ecs* world) {
         FreeCameraMoveSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] cameras.CameraLink,
         [none] players.Player
     );
@@ -16,7 +15,6 @@ void define_systems_free_roam(ecs* world) {
         FreeCameraRotateSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] cameras.CameraLink,
         [none] players.Player
     );
@@ -24,7 +22,6 @@ void define_systems_free_roam(ecs* world) {
         FreeCameraToggleSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
-        [in] inputs.DeviceLinks,
         [in] cameras.CameraLink,
         [none] players.Player
     );

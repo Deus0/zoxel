@@ -4,18 +4,18 @@ zox_sys2(ActionsShortcutSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(DeviceLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(DeviceLinks, devices);
         if (state->value != zox_player_state_playing) {
             continue;
         }
         byte is_shift_action_left = 0;
         byte is_shift_action_right = 0;
-        for (int j = 0; j < devices->length; j++) {
-            entity e2 = devices->value[j];
+        entity devices[zox_children_capacity];
+        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+        for (uint j = 0; j < length; j++) {
+            entity e2 = devices[j];
             if (!zox_valid(e2)) {
                 continue;
             }
