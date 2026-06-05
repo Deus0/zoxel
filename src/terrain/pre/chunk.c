@@ -3,13 +3,13 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     // Terrain / Generation
     zox_add_tag(e, TerrainChunk);
     zox_add_tag(e, StreamedChunk);
+    zox_prefab_set(e, Loaded, { 0 });
     zox_prefab_set(e, BlockManagerLink, { 0 });
     zox_prefab_set(e, TunkLink, { 0 });
     zox_prefab_set(e, Generate, { zox_dirty_none });
     // zox_prefab_set(e, GenerateChunk, { zox_dirty_none });
     zox_prefab_set(e, VoxelNodeEdited, { 0 });
-    zox_prefab_set(e, VoxelNodeLoaded, { zox_dirty_none });
-    zox_prefab_set(e, VoxelNodeGenerated, { zox_dirty_none });
+    zox_prefab_set(e, GenerateLights, { zox_dirty_none });
     zox_prefab_set(e, MeshColorsGenerate, { zox_dirty_none });
     zox_prefab_set(e, MeshColorsDirty, { zox_dirty_none });
     zox_prefab_set(e, Seed, { 666 });

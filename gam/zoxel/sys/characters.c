@@ -61,12 +61,12 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             byte chance = 8;
             entity e2 = spawn_character3_meta(world, prefab_character, "character", model, chance);
+            zox_add_tag(e2, CharacterGeneric);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
             spawn_stat_level(world, e2, rsoul, 2);
             spawn_stat_state(world, e2, rhealth, 8, 8);
         }
-
         // add our skeleton prefab
         // Disabled for now
         /*{

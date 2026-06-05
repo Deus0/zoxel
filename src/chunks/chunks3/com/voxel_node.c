@@ -22,6 +22,6 @@ create_node_neighbor(VoxelNode);
 create_octree_line_debugger(VoxelNode);
 zoxc_byte(VoxelNodeDirty);
 zoxc_byte(VoxelNodeEdited);
-zoxc_byte(VoxelNodeLoaded);
-zoxc_state(VoxelNodeGenerated);
+// zoxc_byte(VoxelNodeLoaded);
+// zoxc_state(VoxelNodeGenerated);
 zoxc_queue(VoxelNodeQueue, VoxelNodeUpdate, 1);

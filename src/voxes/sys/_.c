@@ -68,7 +68,8 @@ void define_systems_voxes(ecs *world) {
         [out] chunks3.ChunkNeighbors,
         [none] chunks3.ChunkTextured    // we should just check if parent has chunk links here
     );
-    zox_system(BlockScaleSystem,
+    zox_system(
+        BlockScaleSystem,
         EcsPostLoad,
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,

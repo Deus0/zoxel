@@ -22,11 +22,6 @@ zox_sys2(WindowLayerSystem) {
         wlayer->value = nlayer->value;
         byte window_layer = wlayer->value;
         layer2D->value = window_layer * layers_per_window;
-        /*entity children[layouts2_children_capacity];
-        uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
-        for (uint j = 0; j < children_length; j++) {
-            entity child = children[j];*/
-
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {

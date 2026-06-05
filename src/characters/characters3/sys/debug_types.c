@@ -1,4 +1,4 @@
-zox_sys2(Character3TypeDebugSystem) {
+/*zox_sys2(Character3TypeDebugSystem) {
     zox_sys_begin();
     zox_sys_in(DebugCubeLines);
     zox_sys_in(Character3Type);
@@ -25,3 +25,4 @@ zox_sys2(Character3TypeDebugSystem) {
         dcolor->value = color_rgb_to_color(output);
     }
 } zox_sys_end(Character3TypeDebugSystem);
+*/

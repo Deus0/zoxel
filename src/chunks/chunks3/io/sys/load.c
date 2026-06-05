@@ -68,9 +68,9 @@ zox_sys2(Chunk3LoadSystem) {
     zox_sys_in(RealmLink);
     zox_sys_in(ChunkPosition);
     zox_sys_out(NodeDepth);
-    zox_sys_out(VoxelNodeLoaded);
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeDirty);
+    zox_sys_out(Loaded);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(EntityInitialize, state);
@@ -78,8 +78,8 @@ zox_sys2(Chunk3LoadSystem) {
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(NodeDepth, depth);
-        zox_sys_o(VoxelNodeLoaded, loaded);
         zox_sys_o(VoxelNodeDirty, voctree_dirty);
+        zox_sys_o(Loaded, loaded);
         if (state->value != zox_dirty_active) {
             continue;
         }
@@ -91,9 +91,9 @@ zox_sys2(Chunk3LoadSystem) {
             continue;
         }
         if (load_chunk(world, realm->value, position->value, node)) {
-            loaded->value = 1;
             depth->value = terrain_depth;
             voctree_dirty->value = zox_dirty_trigger;
+            loaded->value = 1;
             if (zox_getv(e, Generate)) {
                 zox_logw("Chunk Trying to Generate!");
                 zox_set(e, Generate, { 0 });

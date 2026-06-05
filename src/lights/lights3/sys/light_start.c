@@ -7,7 +7,7 @@ zox_sys2(SunlightSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxelNodeGenerated);
+    zox_sys_in(GenerateLights);
     zox_sys_in(NodeDepth);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
@@ -21,14 +21,14 @@ zox_sys2(SunlightSystem) {
     }
     fetch_first_solidity(world, it, VoxLink_, solidity);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxelNodeGenerated, dirtyv);
+        zox_sys_i(GenerateLights, state);
         zox_sys_i(NodeDepth, depthr);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNodeDirty, light_node_dirty);
-        if (dirtyv->value != zox_dirty_active) {
+        if (state->value != zox_dirty_active) {
             continue;
         }
         // we skip if already at right depth

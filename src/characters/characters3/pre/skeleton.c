@@ -13,5 +13,6 @@ entity spawn_prefab_character3_skeleton(ecs *world, entity prefab) {
     zox_prefab_set(e, HandBoneLink, { 0 });
     zox_prefab_set(e, ShoulderBoneLink, { 0 });
     zox_prefab_set(e, RaiseShoulder, { 1 });
+    // zox_add_tag(e, CharacterUnique);
     return e;
 }

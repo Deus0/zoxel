@@ -16,69 +16,52 @@ zox_sys2(ListSystem) {
         zox_sys_i(ListMargins, margins);
         zox_sys_i(ListStart, start);
         zox_sys_i(ListAlignment, alignment);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         // calculate total size first: ListUIMax - center it?
-
         int list_position_y = (int) (size->value.y / 2);
         list_position_y -= margins->value.y;
-
-        entity children[layouts2_children_capacity];
-        uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
-
         // start buffer
         if (start->value) {
-
-            int2 first_size = int2_zero;
-
-            for (uint j = 0; j < children_length; j++) {
-                entity child = children[j];
-
-                if (!zox_valid(child) || !zox_has(child, LayoutPositionDirty)) {
+            entity first_child = zox_get_child_by_id(world, e, zox_id(LayoutPositionDirty));
+            int2 first_size = zox_valid(first_child) ? zox_getv(first_child, LayoutSize) : int2_zero;
+            //for (uint j = 0; j < children_length; j++) {
+            //    entity child = children[j];
+                    /*if (!zox_valid(e2) || !zox_has(e2, LayoutPositionDirty)) {
+                        continue;
+                    }
+                    zox_geter_value(e2, LayoutSize, int2, child_size);
+                    break;
+                }
+            }*/
+            list_position_y += start->value * (first_size.y + padding->value.y);
+        }
+        uint k = 0;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++, k++) {
+                entity e2 = it2.entities[j];
+                if (!zox_valid(e2) || !zox_has(e2, LayoutPositionDirty)) {
                     continue;
                 }
-
-                zox_geter_value(child, LayoutSize, int2, child_size);
-                first_size = child_size;
-                break;
+                zox_geter_value(e2, LayoutSize, int2, child_size);
+                zox_muter(e2, LayoutPosition, position);
+                zox_muter(e2, LayoutPositionDirty, dirty);
+                if (k == 0) {
+                    list_position_y -= child_size.y / 2;
+                } else {
+                    list_position_y -= child_size.y;
+                }
+                if (alignment->value == zox_alignment_left) {
+                    position->value.x = margins->value.x - size->value.x / 2 + child_size.x / 2;
+                } else if (alignment->value == zox_alignment_right) {
+                    position->value.x = - margins->value.x + size->value.x / 2 - child_size.x / 2;
+                }
+                position->value.y = list_position_y;
+                dirty->value = zox_dirty_trigger;
+                list_position_y -= padding->value.y;
             }
-
-            list_position_y += start->value * (first_size.y + padding->value.y);
-
-        }
-
-        for (uint j = 0; j < children_length; j++) {
-            entity child = children[j];
-
-            if (!zox_valid(child) || !zox_has(child, LayoutPositionDirty)) {
-                continue;
-            }
-
-            zox_geter_value(child, LayoutSize, int2, child_size);
-            zox_muter(child, LayoutPosition, position);
-            zox_muter(child, LayoutPositionDirty, dirty);
-
-            if (j == 0) {
-                list_position_y -= child_size.y / 2;
-            } else {
-                list_position_y -= child_size.y;
-            }
-
-            if (alignment->value == zox_alignment_left) {
-                zox_geter_value(child, LayoutSize, int2, csize);
-                position->value.x = margins->value.x - size->value.x / 2 + csize.x / 2;
-            } else if (alignment->value == zox_alignment_right) {
-                zox_geter_value(child, LayoutSize, int2, csize);
-                position->value.x = - margins->value.x + size->value.x / 2 - csize.x / 2;
-            }
-
-            position->value.y = list_position_y;
-            dirty->value = zox_dirty_trigger;
-
-            list_position_y -= padding->value.y;
         }
     }
 } zox_sys_end(ListSystem);

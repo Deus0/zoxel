@@ -1,6 +1,9 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+- Arm Swing when attacking
+- Add humanoids back to npc spawning
+- improve dialogue contrast, make the dialogue ui block background
 - spawn town based on region + town data
 - spawn player in town
 - block health quick cube overlay mesh
@@ -10,6 +13,7 @@
 	- have it lerp there over time
 - consider prompts for inputs when character is less than a day old
 - Disable next button until animating dialogue finishes
+- Flag if chunk has file, then progressively load the contents per LOD level
 
 # Chunk Refactor #
 - Spawn a Terrain chunk as test function
@@ -466,3 +470,4 @@ Module [Rendering]:
 -x Increase crosshair scale when can hit NPC!
 -x hide stats panel and actionbar when dialogue
 -x give blocks different health from meta
+-x Sometimes NPCs dont spawn in chunk, debug chunk states

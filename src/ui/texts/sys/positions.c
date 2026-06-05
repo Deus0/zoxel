@@ -76,17 +76,10 @@ zox_sys2(TextsPositionSystem) {
         if (dirty->value != zox_dirty_end) {
             continue;
         }
-        //entity children[texts_children_capacity];
-        //uint length = zox_get_children(world, e, children, texts_children_capacity);
-        //if (is_log) {
-        //    zox_log("Text [%s] - %i positions", zox_get_name(e), length);
-        //}
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-        //for (uint j = 0; j < length; j++) {
-            //entity e2 = children[j];
                 if (!zox_valid(e2)) {
                     continue;
                 }

@@ -2,14 +2,15 @@ void raycaster_select_window_children(ecs *world, entity e, entity window) {
     if (zox_has(e, WindowRaycasted)) {
         zox_set(e, WindowRaycasted, { window })
     }
-    entity children[layouts2_children_capacity];
-    uint count = zox_get_children(world, e, children, layouts2_children_capacity);
-    for (uint i = 0; i < count; i++) {
-        entity child = children[i];
-        if (!zox_valid(child)) {
-            continue;
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity e2 = it2.entities[j];
+            if (!zox_valid(e2)) {
+                continue;
+            }
+            raycaster_select_window_children(world, e2, window);
         }
-        raycaster_select_window_children(world, child, window);
     }
     entity devices[zox_children_capacity];
     uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));

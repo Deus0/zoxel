@@ -19,20 +19,25 @@ zox_sys2(DraggerEndSystem) {
             if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }
-            uint children_capacity = zox_children_capacity;
+            /*uint children_capacity = zox_children_capacity;
             entity children[children_capacity];
             uint children_length = zox_get_children(world, e2, children, children_capacity);
             for (uint k = 0; k < children_length; k++) {
-                entity e3 = children[k];
-                if (!zox_valid(e3) || !zox_has(e3, ZevicePointer)) {
-                    continue;
-                }
-                zox_geter_value(e3, ZevicePointer, byte, click);
-                zox_geter_value(e3, ZevicePointerDelta, int2, zdelta);
-                if (devices_get_released_this_frame(click)) {
-                    did_drag_end = 1;
-                } else if (devices_get_pressed(click)) {
-                    delta->value = zdelta;
+                entity e3 = children[k];*/
+            iter it2 = zox_children(world, e2);
+            while (zox_children_next(it2)) {
+                for (int k = 0; k < it2.count; k++) {
+                    entity e3 = it2.entities[k];
+                    if (!zox_valid(e3) || !zox_has(e3, ZevicePointer)) {
+                        continue;
+                    }
+                    zox_geter_value(e3, ZevicePointer, byte, click);
+                    zox_geter_value(e3, ZevicePointerDelta, int2, zdelta);
+                    if (devices_get_released_this_frame(click)) {
+                        did_drag_end = 1;
+                    } else if (devices_get_pressed(click)) {
+                        delta->value = zdelta;
+                    }
                 }
             }
         }

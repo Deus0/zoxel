@@ -34,10 +34,6 @@ zox_sys2(PositionRotation3System) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
-        /*entity children[transforms3_children_capacity];
-        uint count = zox_get_children(world, e, children, transforms3_children_capacity);
-        for (uint j = 0; j < count; j++) {
-            entity e2 = children[j];*/
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {

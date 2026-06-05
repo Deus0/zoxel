@@ -7,24 +7,25 @@ zox_sys2(ListRenderDirtySystem) {
     zox_sys_in(ListStart);
     zox_sys_in(ListVisible);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(ListPositionDirty, state);
         zox_sys_i(ListStart, start);
         zox_sys_i(ListVisible, visible);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
-        zox_sys_e();
-        entity children[layouts2_children_capacity];
-        uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
-        for (uint j = 0; j < children_length; j++) {
-            entity e2 = children[j];
-            if (!zox_valid(e2)) {
-                continue;
+        uint k = 0;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                if (!zox_valid(e2)) {
+                    continue;
+                }
+                byte is_visible = k >= start->value && k < start->value + visible->value;
+                set_children_render_disabled(world, e2, !is_visible);
+                k++;
             }
-            byte is_visible = j >= start->value && j <  start->value + visible->value;
-            set_children_render_disabled(world, e2, !is_visible);
         }
     }
 } zox_sys_end(ListRenderDirtySystem);

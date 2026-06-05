@@ -167,7 +167,7 @@ static inline byte get_value_##T(const T* node, byte target_depth, byte3 pos, by
 }\
 \
 static inline byte getv_##T(const T* node, byte3 pos, byte target) { \
-    return read_octree_value((void*)node, target, pos, 0, sizeof(T), offsetof(T, value)); \
+    return read_octree_value((void*) node, target, pos, 0, sizeof(T), offsetof(T, value)); \
 }
 
 // Example usage:

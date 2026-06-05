@@ -10,11 +10,10 @@
 // TODO: Rename all NodeDepth to OctreeDepth
 
 void define_systems_lights3(ecs* world) {
-
     zox_system(
         SunlightSystem,
         zoxp_lights_write,
-        [in] chunks3.VoxelNodeGenerated,
+        [in] lights.GenerateLights,
         [in] chunks.NodeDepth,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
@@ -25,7 +24,6 @@ void define_systems_lights3(ecs* world) {
         [none] lights3.SunnyChunk,
         [none] chunks.Chunk
     );
-
     zox_system(
         LightSystem,
         zoxp_lights_write,
@@ -38,7 +36,6 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightNodeDirty,
         [none] chunks.Chunk
     );
-
     zox_system(
         DarkLightSystem,
         zoxp_lights_write,
@@ -52,7 +49,6 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightNodeDirty,
         [none] chunks.Chunk
     );
-
     // NOTE: This needs to be queue dependent
     zox_system(
         VoxelLightSystem,
@@ -67,7 +63,6 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightNodeDirty,
         [none] chunks.Chunk
     );
-
     // this kinda has issues atm hmm
     zox_system(
         LightNodeReduceSystem,
@@ -76,7 +71,6 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightNode,
         [none] chunks.Chunk
     );
-
     zox_system(
         MeshColorsTriggerSystem,
         zoxp_lights_write + 2,
@@ -89,7 +83,6 @@ void define_systems_lights3(ecs* world) {
         [out] rendering.MeshColorsGenerate,
         [none] chunks.Chunk
     );
-
     zox_system(
         Light3BuildSystem,
         zoxp_voxels_read + 2,
@@ -105,7 +98,6 @@ void define_systems_lights3(ecs* world) {
         [out] rendering.MeshColorsDirty,
         [none] chunks.Chunk
     );
-
     zox_system_1(
         LightNodeDebugSystem,
         zoxp_mainthread,

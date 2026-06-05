@@ -18,9 +18,10 @@ void define_systems_chunksio(ecs* world) {
         [in] realms.RealmLink,
         [in] chunks3.ChunkPosition,
         [out] chunks.NodeDepth,
-        [out] chunks3.VoxelNodeLoaded,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
+        [out] core.Loaded,
+        [none] chunks3.Chunk3
         // [out] chunks3.VoxelNodeGenerated,
     );
 }

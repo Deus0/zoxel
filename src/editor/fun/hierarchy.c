@@ -17,11 +17,9 @@ extern entity prefab_block;
 extern entity prefab_texture;
 
 void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
-
     if (!zox_valid(e)) {
         return;
     }
-
     char *text = malloc(hierarchy_max_line_characters);
     if (!zox_has(e, ZoxName)) {
         snprintf(text, hierarchy_max_line_characters, "%s", zox_get_name(e));
@@ -36,7 +34,6 @@ void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labe
             snprintf(text, hierarchy_max_line_characters, "[%s]", zox_get_name(e));
         }*/
     }
-
     for (int i = 0; i < tree_level; i++) {
         char *temp = strdup(text);
         if (temp) {
@@ -69,23 +66,20 @@ int get_max_characters_d(const char *header_label, text_group_dynamic_array_d* l
     return max_characters;
 }
 
-void add_entity_children_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
-
+/*void add_entity_children_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
     if (!zox_valid(e)) {
         return;
     }
-
     add_entity_to_labels(world, e, labels, entities, tree_level);
 
     tree_level++;
-
     entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint j = 0; j < children_length; j++) {
         entity e2 = children[j];
         add_entity_children_to_labels(world, e2, labels, entities, tree_level);
     }
-}
+}*/
 
 void fetch_entity_labels_children(ecs *world, entity e, text_group_dynamic_array_d* labels, entity_array_d* entities, int tree_level) {
 

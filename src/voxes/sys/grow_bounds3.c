@@ -1,12 +1,12 @@
 // NOTE: This is what sets a Vox's bounds for Physics use
 zox_sys2(Bounds3GrowSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MeshDirty);
     zox_sys_in(ChunkSize);
     zox_sys_in(BlockScale);
     zox_sys_out(Bounds3D);
-    // zox_sys_out(Position3D);
     zox_sys_out(Bounds3Dirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -14,7 +14,6 @@ zox_sys2(Bounds3GrowSystem) {
         zox_sys_i(ChunkSize, size);
         zox_sys_i(BlockScale, scale);
         zox_sys_o(Bounds3D, bounds);
-        // zox_sys_o(Position3D, position);
         zox_sys_o(Bounds3Dirty, dirty);
         if (state->value != mesh_state_end) {
             continue;
@@ -26,6 +25,9 @@ zox_sys2(Bounds3GrowSystem) {
         float3 old_bounds = bounds->value;
         bounds->value = new_bounds;
         dirty->value = zox_dirty_trigger;
+        if (dbg_log) {
+            zox_loge("+ [%s] Growing Bounds [%fx%fx%f]", zox_get_name(e), new_bounds.x, new_bounds.y, new_bounds.z);
+        }
         // Of entity is a moving one
         // NOTE: If Physics Object, we reposition based on new offset upwards!
         if (zox_has(e, Position3D) && zox_has(e, Moveable)) {

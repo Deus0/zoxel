@@ -78,18 +78,20 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         RenderDepthChunk3System,
         zoxp_voxels_write,
+        [in] core.Loaded,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDepthDirty,
-        [in] chunks3.VoxelNodeLoaded,
         [out] chunks.NodeDepth,
         [out] core.Generate,
-        [none] TerrainChunk
+        [none] terrain.TerrainChunk
     );
     zox_system(
         Chunk3GeneratedSystem,
         zoxp_voxels_write,
         [in] core.Generate,
-        [in] chunks3.VoxelNodeGenerated,
+        [in] chunks.NodeDepth,
+        [out] core.Loaded,
+        [out] lights.GenerateLights,
         [none] terrain.TerrainChunk
     );
     zox_system(

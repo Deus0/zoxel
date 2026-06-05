@@ -1,8 +1,6 @@
 uint zox_dbg_ui_hierarchy(ecs *world, entity e, char *buffer, uint size, uint index, byte dig) {
     byte estimated_line = 64;
-
     dig++;
-
     entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint j = 0; j < children_length; j++) {

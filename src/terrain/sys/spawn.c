@@ -68,7 +68,7 @@ zox_sys2(ChunkSpawnSystem) {
                     // only spawn new chunk if within stream distance
                     byte camera_distance = get_camera_chunk_distance_xz(stream_point, neighbor_position);
                     if (camera_distance <= terrain_lod_far) {
-                        neighbor = spawn_chunk_terrain(world, prefab_chunk, terrain->value, stream_point, neighbor_position, terrain_depth, terrain_scale                        );
+                        neighbor = spawn_chunk3_terrain(world, prefab_chunk, terrain->value, stream_point, neighbor_position, terrain_depth, terrain_scale                        );
                         int3_hashmap_add(chunks->value, neighbor_position, neighbor);
                         if (log_individuals) {
                             zox_log_streaming("+ streaming: new [%i]s chunk [%ix%ix%i]", spawned_chunks, neighbor_position.x, neighbor_position.y, neighbor_position.z);
