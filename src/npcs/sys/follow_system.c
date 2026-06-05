@@ -10,15 +10,12 @@ zox_sys2(FollowSystem) {
         zox_sys_i(DisableMovement, disable);
         zox_sys_i(FollowTarget, target_entity);
         zox_sys_o(TargetPosition, target_position);
-
         if (disable->value || behaviour->value != zox_behaviour_follow) {
             continue;
         }
-
         if (!zox_valid(target_entity->value)) {
             continue;
         }
-
         zox_geter_value(target_entity->value, Position3D, float3, position);
         target_position->value = position;
     }

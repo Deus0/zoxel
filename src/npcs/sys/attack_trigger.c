@@ -1,5 +1,6 @@
 // NOTE: When attacking, Select and Trigger the action
 zox_sys2(AttackTriggerSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Behaviour);
@@ -19,6 +20,8 @@ zox_sys2(AttackTriggerSystem) {
             aaction->value = zox_get_child_by_id(world, e, zox_id(Skill));
         }
         trigger->value = zox_dirty_trigger;
-        // zox_log("Triggering NPC Attack");
+        if (dbg_log) {
+            zox_log("+ NPC [%s] is Attacking! [%s]", zox_get_name(e), zox_get_name(aaction->value));
+        }
     }
 } zox_sys_end(AttackTriggerSystem);

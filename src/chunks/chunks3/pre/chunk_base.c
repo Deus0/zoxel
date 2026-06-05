@@ -7,7 +7,7 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_add_tag(e, Chunk);
     zox_add_tag(e, Chunk3);
     zox_prefab_set(e, ChunkPosition, { int3_zero });
-    zox_prefab_set(e, ChunkSize, { size });
+    zox_prefab_set(e, ChunkSize, { int3_zero }); // size });
     zox_prefab_set(e, ChunkNeighbors, { { 0 } } );
     // states
     zox_prefab_set(e, ChunkMeshDirty, { zox_dirty_none });

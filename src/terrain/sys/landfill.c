@@ -42,11 +42,10 @@ zox_sys2(LandfillChunk3System) {
         }
         byte voctree_length = powers_of_two_byte[voctree_depth->value];
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
-        // byte terrain_chunk_length = voctree_length;
         byte terrain_chunk_length = powers_of_two_byte[terrain_depth];
         // NOTE: Shouldnt this use terrain depth?? Tests failed
         byte is_bottom_chunk = cposition->value.y == -render_distance_y;
-        int chunk_position_y = cposition->value.y * terrain_chunk_length;
+        int chunk_voxel_position_y = cposition->value.y *  terrain_chunk_length;
         byte3 positionl;
         int hmultiplier = 1;
         byte ccc = voctree_depth->value;
@@ -79,9 +78,16 @@ zox_sys2(LandfillChunk3System) {
                 byte biome_id = biome_map->value[map_index];
                 byte height = height_map->value[map_index];
                 int terrain_top_position = (int) height;
-                int top_position = terrain_top_position - chunk_position_y;
+                int top_position = terrain_top_position - chunk_voxel_position_y;
                 top_position /= hmultiplier;
                 if (top_position < 0) {
+                    // NOTE: This clears above it, sometimes chunks above it keep solids when increasing depths
+                    // TODO: Think of a better way here
+                    positionl.y = 0;
+                    set_clean_VoxelNode(voctree, voctree_depth->value, positionl, 0);
+                    /*for (positionl.y = 0; positionl.y < voctree_length; positionl.y++) {
+                        set_clean_VoxelNode(voctree, voctree_depth->value, positionl, 0);
+                    }*/
                     continue;
                 }
                 top_position = int_clamp(top_position, 0, voctree_length - 1);
@@ -111,7 +117,7 @@ zox_sys2(LandfillChunk3System) {
                 }
                 // We fill the ground up here
                 for (positionl.y = 0; positionl.y <= top_position; positionl.y++) {
-                    int terrain_position_y = chunk_position_y + positionl.y;
+                    int terrain_position_y = chunk_voxel_position_y + positionl.y;
                     // top blocks
                     byte value;
                     // If Bottom Position
