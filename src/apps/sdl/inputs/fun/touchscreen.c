@@ -9,6 +9,10 @@ SDL_Finger* find_finger(int finger_id) {
         touch_fingers_count += fingers_count;
         for (int k = 0; k < fingers_count; k++) {
             SDL_Finger *finger = SDL_GetTouchFinger(touchscreen_id, k);
+            if (!finger) {
+                // zox_logw("Finger null at [%i] of [%i]", k, fingers_count);
+                continue;
+            }
             if (finger_id == (finger->id + 1)) {
                 return finger;
             }

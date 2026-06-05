@@ -48,6 +48,10 @@ SDL_Finger* find_finger_unused(ecs *world, const entity* fingers, uint length) {
         touch_fingers_count += fingers_count;
         for (uint k = 0; k < length; k++) {
             SDL_Finger* finger = SDL_GetTouchFinger(touchscreen_id, k);
+            if (!finger) {
+                // zox_logw("Finger null at [%i] of [%i]", k, fingers_count);
+                continue;
+            }
             int new_id = finger->id + 1;
             if (!touchscreen_has_id(world, new_id, fingers, length)) {
                 return finger;
@@ -60,19 +64,21 @@ SDL_Finger* find_finger_unused(ecs *world, const entity* fingers, uint length) {
 void sdl_assign_finger(ecs *world, int2 screen_size, const entity* children, uint children_length, entity e) {
     // get unused finger! find a finger that isn't used yet
     SDL_Finger* finger = find_finger_unused(world, children, children_length);
-    if (finger) {
-        int finger_id = finger->id + 1;
-        set_id(world, e, finger_id);
-        zox_muter(e, ZevicePointer, zevicePointer);
-        zox_muter(e, ZevicePointerPosition, zevicePointerPosition);
-        devices_set_pressed_this_frame(&zevicePointer->value, 1);
-        devices_set_is_pressed(&zevicePointer->value, 1);
-        int2 position = (int2) { (int) (finger->x * screen_size.x), (int) (finger->y * screen_size.y) };
-        int2_flip_y(&position, screen_size);
-        zevicePointerPosition->value = position;
-        global_any_fingers_down = 1;
-        zox_logv(" + finger touched [%lu] fingerid [%i]", e, finger_id);
+    if (!finger) {
+        // zox_logw("Finger null at [%i] of [%i]", k, fingers_count);
+        return;
     }
+    int finger_id = finger->id + 1;
+    set_id(world, e, finger_id);
+    zox_muter(e, ZevicePointer, zevicePointer);
+    zox_muter(e, ZevicePointerPosition, zevicePointerPosition);
+    devices_set_pressed_this_frame(&zevicePointer->value, 1);
+    devices_set_is_pressed(&zevicePointer->value, 1);
+    int2 position = (int2) { (int) (finger->x * screen_size.x), (int) (finger->y * screen_size.y) };
+    int2_flip_y(&position, screen_size);
+    zevicePointerPosition->value = position;
+    global_any_fingers_down = 1;
+    zox_logv(" + finger touched [%lu] fingerid [%i]", e, finger_id);
 }
 
 zox_sys2(TouchscreenExtractSystem) {
