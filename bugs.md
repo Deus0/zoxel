@@ -1,6 +1,7 @@
 # Bugs #
 
 # Regressions #
+- make run should check gam directory too for changes
 - not seeing many npcs atm...
 - Sometimes some blocks loaded where my grass was
 	- this might be a indexing issue where one biome loads before the realm blocks? or vice versa?

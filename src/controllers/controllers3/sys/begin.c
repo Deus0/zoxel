@@ -54,10 +54,6 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
         *spawned_position = float3_zero;
         return 0;
     }
-    /*entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(player_vox_model));
-    if (!model) {
-        zox_loge("File Not Found [%s]", player_vox_model);
-    }*/
     TerrainPlace placer = find_position_in_terrain(world, terrain);
     *spawned_position = placer.position;
     byte render_depth = 5;
@@ -89,23 +85,23 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
     return e;
 }
 
-void spawn_player_game_ui(ecs *world, entity player) {
-    spawn_in_game_ui(world, player);
-    spawn_menu_actions(world, player);
-}
-
+// NOTE: Player Spawns Player Character
 zox_sys2(PlayerBeginSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GameLink);
+    zox_sys_in(CharacterLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GameLink, game);
+        zox_sys_i(CharacterLink, character);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
-        if (state->value != zox_player_state_starting) {
+        // Now Spawning Character
+        if (!(state->value == zox_player_state_starting && dirty->value == zox_dirty_active)) {
             continue;
         }
         if (!zox_valid(game->value)) {
@@ -128,9 +124,20 @@ zox_sys2(PlayerBeginSystem) {
             continue;
         }
         // Wait for Terrain to load
-        byte loaded = zox_gett_value(terrain, Loaded);
+        byte loaded = zox_getv(terrain, Loaded);
         if (loaded != zox_load_done) {
-            // zox_log("   - Terrain Loaded [%i]", loaded);
+            if (dbg_log) {
+                zox_log("Terrain is still Loading [%i]", loaded);
+            }
+            // Keep active
+            dirty->value = zox_dirty_trigger;
+            // zox_set(e, PlayerStateDirty, { zox_dirty_trigger });
+            continue;
+        }
+        if (zox_valid(character->value)) {
+            zox_log("Trying to load character twice [zox_player_state_starting]");
+            state->value = zox_player_state_play_begin;
+            dirty->value = zox_dirty_trigger;
             continue;
         }
         // actually we need to do this on loaded player model for bounds
@@ -143,16 +150,17 @@ zox_sys2(PlayerBeginSystem) {
         } else {
             game_start_player_new(world, e, &spawn_position);
         }
+        if (dbg_log) {
+            zox_log("Player Character Spawned at [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z);
+        }
         spawn_arrow3D(world, spawn_position, (float3) { 0, 1, 0}, 0.2f, 6, 30);
         // Needs ui spawn after frame
         play_playlist(world, realm, 1);
-        delay_event(world, &spawn_player_game_ui, e, 1);
+        // delay_event(world, &spawn_player_game_ui, e, 1);
         if (local_mouse) {
             zox_set(local_mouse, MouseLock, { 1 });
         }
-        // TODO: Spawn game ui and let it update when ActionsDirty flagged
-        // spawn_player_game_ui(world, player);
-        state->value = zox_player_state_playing;
+        state->value = zox_player_state_play_begin;
         dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(PlayerBeginSystem);

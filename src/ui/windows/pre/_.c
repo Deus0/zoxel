@@ -15,8 +15,8 @@ void prefabs_add_windows_raycaster(ecs *world, entity e) {
 }
 
 void spawn_prefabs_windows(ecs* world) {
-    prefab_window           = spawn_prefab_window(world, prefab_element_invisible);
-    prefab_window_textured  = spawn_prefab_window_textured(world, prefab_element_textured);
+    prefab_window = spawn_prefab_window(world, prefab_element_invisible);
+    prefab_window_textured = spawn_prefab_window_textured(world, prefab_element_textured);
     prefab_header = spawn_prefab_header(world, prefab_element_textured);
     prefab_body = spawn_prefab_body(world, prefab_element_textured);
     prefab_close_button = spawn_prefab_button_close(world, prefab_button);
@@ -31,6 +31,7 @@ void spawn_prefabs_windows(ecs* world) {
         prefabs_add_windows_raycaster(world, prefab_zevice_pointer);
     }
     // Canvas Stack
+    // TODO: Remove WindowToTop - Use CanvasDirty and just find a window without a layer (or at 0 layer) and add that to top of stack
     zox_prefab_set(prefab_canvas, WindowToTop, { 0 });
     zox_prefab_set(prefab_canvas, WindowsLayers, { 0 });
     zox_prefab_set(prefab_canvas, WindowsCount, { 0 });

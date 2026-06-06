@@ -14,41 +14,17 @@ entity spawn_prefab_plot_graph(ecs *world, entity prefab) {
 }
 
 
-entity spawn_plot_graph(
-    ecs* world,
-    entity canvas,
-    entity parent,
-    int2 parent_position,
-    int2 parent_size,
-    entity prefab,
-    byte layer,
-    int2 size,
-    int points_count,
-    double start_value,
-    color text_color,
-    color line_color,
-    byte is_label,
-    byte label_line
-) {
-    const int lines_count = record_frames_count;
-    const int line_margins = 8;   // x
-    const float line_spacing = ( size.x - line_margins * 2 ) / (float) (lines_count - 1);
-    const int lines_min_height = 0;
-    const int lines_max_height = size.y;
+entity spawn_plot_graph(ecs* world, entity canvas, entity parent, int2 parent_position, int2 parent_size, entity prefab, byte layer, int2 size, int points_count, double start_value, color text_fill, color text_outline, color line_color, byte is_label, byte label_line) {
+    int lines_count = record_frames_count;
+    byte2 label_margins = (byte2) { 16, 8 };   // x
+    int line_margins = 8;   // x
+    float line_spacing = ( size.x - line_margins * 2 ) / (float) (lines_count - 1);
+    int lines_min_height = 0;
+    int lines_max_height = size.y;
+    byte label_font_size = 16;
     float2 anchor = float2_half;
     int2 position = int2_zero;
-    entity e = spawn_layout2(
-        world,
-        prefab,
-        canvas,
-        parent,
-        position,
-        size,
-        anchor,
-        layer,
-        parent_position,
-        parent_size
-    );
+    entity e = spawn_layout2(world, prefab, canvas, parent, position, size, anchor, layer, parent_position, parent_size);
     PlotDataDouble data = (PlotDataDouble) { 0 };
     initialize_PlotDataDouble(&data, points_count);
     for (int i = 0; i < points_count; i++) {
@@ -59,33 +35,31 @@ entity spawn_plot_graph(
         SpawnZext text_data = {
             .canvas = {
                 .e = canvas,
-                .size = zox_gett_value(canvas, LayoutSize)
+                // .size = zox_gett_value(canvas, LayoutSize)
             },
             .parent = {
                 .e = e,
-                .position = parent_position,
-                .size = parent_size
+                // .position = parent_position,
+                // .size = parent_size
             },
             .element = {
                 .prefab = prefab_zext,
-                .position = (int2) { 0, -28 - label_line * (14 + 4 * 2) },
-                .layer = layer,
+                .position = (int2) { 0, - label_line * (14 + 4 * 2) },
+                // .layer = layer,
                 .anchor = (float2) { 0, 1.0f },
             },
             .zext = {
-                .font_resolution = 16,
-                .font_size = 16,
-                .font_thickness = 3,
+                .font_resolution = label_font_size,
+                .font_size = label_font_size,
+                .font_thickness = 1,
                 .alignment = zox_alignment_top_left,
-                .margins = (byte2) { 16, 4 },
-                .font_fill_color = text_color,
-                .font_outline_color = text_color
+                .margins = label_margins,
+                .font_fill_color = text_fill,
+                .font_outline_color = text_outline
             }
         };
-
         entity e2 = spawn_text(world, text_data);
         zox_set_parent(world, e2, e);
-        // children.value[0] = e2;
         zox_add_tag(e2, PlotLabel);
     }
     // our plot here
@@ -93,23 +67,10 @@ entity spawn_plot_graph(
         int position_x = line_margins + i * line_spacing;
         int2 start_position = (int2) { position_x, lines_min_height };
         int2 end_position = (int2) { position_x, lines_max_height };
-        entity e2 = spawn_ui_line2_v2(
-            world,
-            canvas,
-            e,
-            start_position,
-            end_position,
-            line_color,
-            plot_line_thickness,
-            0,
-            float2_zero,
-            position,
-            layer
-        );
+        entity e2 = spawn_ui_line2_v2(world, canvas, e, start_position, end_position, line_color, plot_line_thickness, 0, float2_zero, position, layer);
         zox_set(e2, ChildIndex, { i });
         zox_set_parent(world, e2, e);
         zox_add_tag(e2, PlotLine);
     }
-
     return e;
 }

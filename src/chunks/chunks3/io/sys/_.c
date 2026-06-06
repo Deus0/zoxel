@@ -14,7 +14,7 @@ void define_systems_chunksio(ecs* world) {
     zox_system(
         Chunk3LoadSystem,
         EcsOnLoad,
-        [in] core.EntityInitialize,
+        [in] core.InitializeEntity,
         [in] realms.RealmLink,
         [in] chunks3.ChunkPosition,
         [out] chunks.NodeDepth,

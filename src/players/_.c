@@ -10,12 +10,12 @@
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Players)
+zox_begin_module(Players) {
     define_components_players(world);
-    define_systems_players(world);
+    zox_define_systems_players(world);
     add_hook_on_boot(on_boot_players);
     add_hook_spawn_prefabs(spawn_prefabs_players);
     add_to_event_game_state((zox_game_event) { &game_state_players });
-zox_end_module(Players)
+} zox_end_module(Players);
 
 #endif

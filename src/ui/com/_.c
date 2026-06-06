@@ -3,7 +3,6 @@ zox_tag(Element);
 zox_tag(Element2D);
 zox_tag(ElementRender);
 zoxc_byte(ElementLayer);
-zoxc_state(InitializeElement);
 zoxc_entity(ElementLink);
 zoxc_entities(ElementLinks)
 zoxc_child(ElementHolder, ElementLinks)
@@ -32,7 +31,6 @@ void zox_define_components_elements(ecs *world) {
     zoxd_tag(ElementRender);
     // zoxd_tag(ElementBillboard);
     zoxd_byte(ElementLayer);
-    zoxd_state(InitializeElement);
     zoxd_entity(ElementLink);
     zoxd_entities(ElementLinks);
     zoxd(UIHolderLink);

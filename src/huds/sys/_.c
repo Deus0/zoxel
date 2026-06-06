@@ -10,6 +10,7 @@
 #include "terminal.c"
 #include "menu_game.c"
 #include "crosshair.c"
+#include "respawn.c"
 
 void define_systems_game_ui(ecs *world) {
     zox_system(
@@ -29,10 +30,9 @@ void define_systems_game_ui(ecs *world) {
     zox_system(
         MenuGameBeginSystem,
         EcsOnUpdate,
-        [in] core.EntityInitialize,
+        [in] core.InitializeEntity,
         [in] layouts2.CanvasLink,
-        [out] huds.TaskbarToggleLink //,
-        // [none] MenuGame
+        [out] huds.TaskbarToggleLink
     );
     zox_system(
         DebugLabelSystem,
@@ -82,16 +82,25 @@ void define_systems_game_ui(ecs *world) {
         [in] players.PlayerState,
         [in] layouts2.CanvasLink,
         [in] cameras.CameraLink,
-        [out] players.PlayerPauseEvent
+        [none] players.Player
     );
     zox_system_1(
-        PlayerResumeSystem,
+        PlayerRespawnUISystem,
         zoxp_mainthread,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
         [in] layouts2.CanvasLink,
         [in] cameras.CameraLink,
-        [out] players.PlayerState,
-        [out] players.PlayerStateDirty,
-        [out] players.PlayerPauseEvent
+        [none] players.Player
+    );
+    zox_system_1(
+        PlayerUIResumeSystem,
+        zoxp_mainthread,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] layouts2.CanvasLink,
+        [in] cameras.CameraLink,
+        [none] players.Player
     );
     zox_system_1(   // spawns ui
         PlayerTerminalSystem,

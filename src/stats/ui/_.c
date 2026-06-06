@@ -1,23 +1,14 @@
 #ifndef zox_stats_ui
 #define zox_stats_ui
 
-zox_tag(Statbar);
-zox_tag(MenuStats);
-zox_tag(StatsLabel);
-zox_tag(Healthbar);
-zox_tag(StatIconLabel);
-
+#include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(StatsUI)
-    zoxd_tag(Statbar);
-    zoxd_tag(MenuStats);
-    zoxd_tag(StatsLabel);
-    zoxd_tag(Healthbar);
-    zoxd_tag(StatIconLabel);
+zox_begin_module(StatsUI) {
+    zox_define_components_stats_ui(world);
     define_systems_stats_ui(world);
     add_taskbar_button((hook_taskbar) {
         .index = 2,
@@ -27,6 +18,6 @@ zox_begin_module(StatsUI)
         .tooltip_text = "Status"
     });
     add_hook_spawn_prefabs(spawn_prefabs_ui_stats);
-zox_end_module(StatsUI)
+} zox_end_module(StatsUI);
 
 #endif

@@ -1,12 +1,12 @@
 zox_sys2(RenderTextureBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeElement);
+    zox_sys_in(InitializeEntity);
     zox_sys_in(TextureSize);
     zox_sys_in(CameraLink);
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(InitializeElement, initialize);
+        zox_sys_i(InitializeEntity, initialize);
         zox_sys_i(TextureSize, tsize);
         zox_sys_i(CameraLink, camera);
         zox_sys_i(TextureGPULink, gpu_link);

@@ -15,6 +15,7 @@
 #include "dialogue_exit.c"
 #include "dialogue_end.c"
 #include "begin.c"
+#include "begin_ui.c"
 #include "game_start.c"
 #include "game_end.c"
 #include "head_camera.c"
@@ -69,8 +70,8 @@ void define_systems_controllers3(ecs *world) {
         Player3RespawnSystem,
         EcsOnUpdate,
         [in] cameras.CameraLink,
+        [out] players.PlayerStateDirty,
         [out] players.PlayerState,
-        [out] players.PlayerRespawn,
         [out] characters.CharacterLink,
         [none] players.Player
     );
@@ -126,9 +127,17 @@ void define_systems_controllers3(ecs *world) {
         [out] dialogues.SpeakerLinks
     );
     zox_system_1(
+        PlayerBeginUISystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [none] players.Player3
+    );
+    zox_system_1(
         PlayerBeginSystem,
         EcsOnUpdate,
         [in] games.GameLink,
+        [in] characters.CharacterLink,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,
         [none] players.Player3

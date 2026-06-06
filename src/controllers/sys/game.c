@@ -10,17 +10,24 @@ zox_sys2(PlayerGameStateSystem) {
         zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
         zox_sys_i(CharacterLink, character);
-        if (dirty->value != zox_dirty_active) {
-            continue;
+        byte action_type = 0;
+        if (dirty->value == zox_dirty_active && state->value == zox_player_state_pause_begin) {
+            action_type = 1;
+        } else if (dirty->value == zox_dirty_active && state->value == zox_player_state_play_begin) {
+            action_type = 2;
         }
-        disable_inputs_until_release(world, e, zox_device_mode_none, 1);
-        byte mouse_lock = state->value == zox_player_state_playing;
-        if (zox_valid(local_mouse)) {
-            zox_set(local_mouse, MouseLock, { mouse_lock });
-        }
-        if (state->value == zox_player_state_paused) {
+        if (action_type) {
+            byte can_move = action_type - 1;
+            zox_log("Player State Updated [%i]", can_move);
+            disable_inputs_until_release(world, e, zox_device_mode_none, 1);
+            entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
+            if (zox_valid(mouse)) {
+                zox_set(mouse, MouseLock, { can_move });
+            } else {
+                zox_loge("No Mouse Found on player.");
+            }
             if (zox_valid(character->value)) {
-                zox_set(character->value, DisableMovement, { 1 });
+                zox_set(character->value, DisableMovement, { !can_move });
             }
         }
     }

@@ -1,6 +1,6 @@
 #include "game.c"
 
-void define_systems_controllers(ecs *world) {
+void zox_define_systems_controllers(ecs *world) {
     zox_system(
         PlayerGameStateSystem,
         EcsOnUpdate,

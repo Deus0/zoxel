@@ -1,5 +1,7 @@
-// zoxc_byte(WindowType);
 zox_tag(Window);
+zox_tag(WindowBody);
+zox_tag(Header);
+zox_tag(CloseButton);
 zox_tag(WindowRaycastTarget);
 zox_tag(IgnoreWindowLayering);
 zoxc_byte(WindowLayer);
@@ -9,14 +11,12 @@ zoxc_entity(WindowTarget);
 zoxc_byte(HeaderHeight);
 zoxc_byte(WindowsLayers);
 zoxc_byte(WindowsCount);
-// Move to Windows
-zox_tag(Header);
-zox_tag(CloseButton);
 
 void define_components_windows(ecs* world) {
     zoxd_tag(Window);
-    // zoxd_byte(WindowType);
-    // Windows
+    zoxd_tag(WindowBody);
+    zoxd_tag(Header);
+    zoxd_tag(CloseButton);
     zoxd_tag(WindowRaycastTarget);
     zoxd_tag(IgnoreWindowLayering);
     zoxd_entity(WindowRaycasted);
@@ -26,7 +26,4 @@ void define_components_windows(ecs* world) {
     zoxd_byte(HeaderHeight);
     zoxd_byte(WindowsLayers);
     zoxd_byte(WindowsCount);
-    // Move to Windows
-    zoxd_tag(Header);
-    zoxd_tag(CloseButton);
 }

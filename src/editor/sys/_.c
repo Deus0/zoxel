@@ -8,7 +8,6 @@ void define_systems_editor(ecs *world) {
         HierarchySpawnSystem,
         zoxp_mainthread,
         [in] editor.HierarchyUIDirty,
-        [in] layouts2.CanvasLink,
         [in] core.EntityTarget,
         [in] elements2.ScrollviewLink,
         [in] elements.ElementFontSize
@@ -17,7 +16,6 @@ void define_systems_editor(ecs *world) {
         InspectorSpawnSystem,
         zoxp_mainthread,
         [in] editor.InspectorDirty,
-        [in] layouts2.CanvasLink,
         [in] core.EntityTarget,
         [in] elements2.ScrollviewLink,
         [in] elements.FontSize

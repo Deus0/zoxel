@@ -18,8 +18,8 @@ zox_sys2(Elementbar2System) {
         if (!zox_valid(front_bar)) {
             continue;
         }
-        if (!zox_has(front_bar, InitializeElement)) {
-            zox_log_error("frontbar missing InitializeElement");
+        if (!zox_has(front_bar, InitializeEntity)) {
+            zox_log_error("frontbar missing InitializeEntity");
             continue;
         }
         if (!zox_has(front_bar, LayoutPosition)) {
@@ -30,7 +30,7 @@ zox_sys2(Elementbar2System) {
             zox_log_error("frontbar missing LayoutPositionDirty");
             continue;
         }
-        zox_geter(front_bar, InitializeElement, initializeElement);
+        zox_geter(front_bar, InitializeEntity, initializeElement);
         if (initializeElement->value) {
             continue; // removing this breaks it?!?!
         }

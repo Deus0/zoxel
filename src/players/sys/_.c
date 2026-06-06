@@ -1,6 +1,12 @@
-// #include "device_mode_system.c"
+#include "state.c"
 
-void define_systems_players(ecs* world) {
-    // stub
-    (void) world;
+void zox_define_systems_players(ecs* world) {
+    zox_system(
+        PlayerStateSystem,
+        EcsOnUpdate,
+        [out] players.PlayerStateDirty,
+        [out] players.PlayerState,
+        [out] players.PlayerStateTimer,
+        [none] players.Player
+    );
 }

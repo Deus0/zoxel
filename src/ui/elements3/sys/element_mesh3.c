@@ -1,13 +1,13 @@
 zox_sys2(Element3DMeshSystem) {
     zox_sys_begin();
-    zox_sys_out(InitializeElement);
+    zox_sys_out(InitializeEntity);
     zox_sys_out(MeshDirty);
     zox_sys_out(MeshGPULink);
     zox_sys_out(UvsGPULink);
     zox_sys_out(ColorsGPULink);
     zox_sys_out(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_o(InitializeElement, initializeElement);
+        zox_sys_o(InitializeEntity, initializeElement);
         zox_sys_o(MeshDirty, mesh_dirty);
         zox_sys_o(MeshGPULink, meshGPULink);
         zox_sys_o(TextureGPULink, textureGPULink);

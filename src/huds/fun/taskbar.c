@@ -43,36 +43,18 @@ byte tooltip_event_taskbar_icon(ecs *world, const TooltipEventData *data) {
 
 // nested function (GCC extension)
 void on_closed_taskbar_window(ecs *world, ClickEventData data) {
-
-    entity header = zox_get_parent(world, data.clicked);
-    /*if (!zox_has(event.clicked, ParentLink)) {
-        zox_log_error("close button parent link missing.");
-        return;
-    }
-    entity header = zox_get_parent(world, event.clicked);*/
-    // zox_geter_value(event.clicked, ParentLink, entity, header);
-
-    if (!zox_valid(header)) {
-        zox_log_error("Header Invalid");
-        return;
-    }
-
-    entity window = zox_get_parent(world, header);
-    // zox_geter_value(header, ParentLink, entity, window);
+    entity window = zox_get_parent_by_id(world, data.clicked, zox_id(Window));
     if (!zox_valid(window)) {
         return;
     }
-
     if (!zox_has(window, TaskbarToggleLink)) {
         zox_log_error("Window [%s] Missing [TaskbarToggleLink]", zox_get_name(window));
         return;
     }
-
     zox_geter_value(window, TaskbarToggleLink, entity, button);
     if (zox_valid(button)) {
         zox_set(button, ActiveState, { 0 });
         zox_set(button, ActiveStateDirty, { zox_dirty_trigger });
     }
-
     zox_delete(window);
 }

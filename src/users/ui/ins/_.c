@@ -30,7 +30,7 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     zox_instance(data.element.prefab);
     zox_set_unique_name(e, data.header_zext.text);
     initialize_element(world, e, data.parent.e, data.canvas.e, position, data.element.size, data.element.size, data.element.anchor, data.element.layer);
-    set_window_bounds_to_canvas(world, e, data.canvas.size, data.element.size, data.element.anchor);
+    // set_window_bounds_to_canvas(world, e, data.canvas.size, data.element.size, data.element.anchor);
     // int grid_elements_count = udata_length;
     if (is_header) {
         LayoutParentData e_parent_data = { .e = e };

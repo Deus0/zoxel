@@ -23,32 +23,10 @@ entity spawn_datagrid_slots2(ecs* world, entity prefab, entity prefab_frame, ent
         }
     }
     // Spawns Window here!!
-    zox_instance(prefab);
-    zox_set_unique_name(e, header_label);
-    // Spawn the header!!!
     byte header_height = 0;
-    {
-        byte is_close_button = 1;
-        byte header_font_size = 6 * ui_scale;
-        if (header_label == NULL || header_label[0] == '\0') {
-            header_font_size = 0;
-        }
-        byte2 header_margins = (byte2) { 4 * ui_scale, 3 * ui_scale };
-        color header_font_fill = header_font_fill;
-        color header_font_outline = header_font_outline;
-        header_height = header_font_size + header_margins.y * 2;
-        float2 header_anchor = (float2) { 0.5f, 1 };
-        int2 header_position = (int2) { 0, -header_height / 2 };
-        int2 header_size = (int2) { size.x, header_height };
-        spawn_header(world, e, canvas, header_position, header_size, header_anchor, header_label, header_font_size, header_margins, int2_zero, header_size, is_close_button, &on_closed_taskbar_window, canvas_size);
-    }
-    size.y += header_height;
-    initialize_element(world, e, canvas, canvas, position, size, size, position_anchor, 0);
-    set_window_bounds_to_canvas(world, e, canvas_size, size, position_anchor);
-    int2 grid_size = int2_sub(size, (int2) { 0, header_height });
-    int2 grid_position = (int2) { 0, -header_height / 2 };
-    // Spawns Grid !!!
-    entity grid = spawn_uic(world, prefab_grid, e, float2_half, grid_position, grid_size, grid_size, grid_fill, grid_outline);
+    entity2 e2 = spawn_window(world, prefab, prefab_grid, header_label, canvas, position, size, position_anchor, on_closed_taskbar_window);
+    entity e = e2.x;
+    entity grid = e2.y;
     zox_set_unique_name(grid, "window_gridg");
     zox_set(grid, GridSize, { cells_size });
     zox_set(grid, GridPadding, { grid_padding });

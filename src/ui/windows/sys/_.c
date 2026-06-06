@@ -2,6 +2,7 @@
 #include "stack.c"
 #include "clicked.c"
 #include "cancel.c"
+#include "constraints.c"
 
 void define_systems_windows(ecs* world) {
     zox_system(
@@ -16,7 +17,6 @@ void define_systems_windows(ecs* world) {
         WindowLayerSystem,
         EcsOnLoad,
         [in] SetWindowLayer,
-        [in] layouts2.CanvasLink,
         [out] WindowLayer,
         [out] layouts2.Layer2D,
         [none] Window
@@ -26,6 +26,7 @@ void define_systems_windows(ecs* world) {
         EcsOnUpdate,
         [in] interaction.ClickState
     );
+    // TODO: Add keyboard escape to this
     zox_system(
         CancelMenuSystem,
         EcsPostUpdate,
@@ -33,5 +34,14 @@ void define_systems_windows(ecs* world) {
         [in] inputs.DeviceButtonType,
         [in] inputs.ZeviceButton,
         [none] inputs.Zevice
+    );
+    zox_system(
+        CanvasBoundsSystem,
+        EcsOnUpdate,
+        [in] core.InitializeEntity,
+        [in] layouts2.LayoutSize,
+        [in] layouts2.Anchor,
+        [in] layouts2.LayoutConstraints,
+        [none] windows.Window
     );
 }

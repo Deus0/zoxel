@@ -6,12 +6,10 @@ zox_sys2(StatbarSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(StatLink, statLink);
         zox_sys_o(ElementBar, elementBar);
-
-        const entity stat = statLink->value;
+        entity stat = statLink->value;
         if (!zox_valid(stat)) {
             continue;
         }
-
         float new_value = elementBar->value;
         if (zox_has(stat, StatState)) {
             zox_geter(stat, StatValue, value)

@@ -7,7 +7,6 @@ void define_systems_line2(ecs* world) {
         Line2DElementSystem,
         zoxp_transforms,
         [in] LinePosition2,
-        [in] layouts2.CanvasLink,
         [out] LineData2D,
         [none] Line2D
     );

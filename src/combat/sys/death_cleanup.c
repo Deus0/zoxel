@@ -15,12 +15,10 @@ zox_sys2(DeathCleanSystem) {
             continue;
         }
         if (time - diedTime->value >= cleanup_time) {
-
             if (zox_has(e, CameraLink)) {
                 zox_geter_value(e, CameraLink, entity, camera);
                 zox_set_parent(world, camera, 0);
             }
-
             zox_delete(e);
         }
     }

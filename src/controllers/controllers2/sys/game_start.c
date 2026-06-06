@@ -1,14 +1,13 @@
 extern entity spawn_character2_player(ecs*, entity);
 
 void player_start_game2D_delayed(ecs *world, entity player) {
+    zox_log("Player2D Starting now");
     zox_set(player, PlayerState, { zox_player_state_starting });
     zox_set(player, PlayerStateDirty, { zox_dirty_trigger });
-
     // spawn character
     entity character = spawn_character2_player(world, prefab_game2_player);
     zox_set(character, PlayerLink, { player });
     zox_set(player, CharacterLink, { character });
-
     zox_geter_value(player, CameraLink, entity, camera);
     if (!zox_valid(camera)) {
         zox_log_error("Camera is gone from player.");
@@ -40,23 +39,13 @@ zox_sys2(PlayerGame2StartSystem) {
         zox_sys_i(PlayerState, state);
         // zox_sys_i(GameLink, game);
         // zox_sys_i(CameraLink, camera);
-
-        if (dirty->value != zox_dirty_active) {
+        if (dirty->value != zox_dirty_active && state->value != zox_player_state_loading) {
             continue;
         }
-
-        if (state->value != zox_player_state_loading) {
-            continue;
-        }
-
         // zox_geter_value(game->value, RealmLink, entity, realm);
         // zox_geter(realm, SaveGamePath, path);
-
-
         // disable_inputs_until_release(world, e, zox_device_mode_none, 1);
-
         double delay = game_load_player_delay + game_load_fade_transition_time;   // 1.4f
-
         delay_event(world, &player_start_game2D_delayed, e, delay);
     }
 } zox_sys_end(PlayerGame2StartSystem);

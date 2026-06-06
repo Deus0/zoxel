@@ -1,22 +1,23 @@
 #define zox_player_state_main_menu 0
-#define zox_player_state_loading 1
 
+// Startup Game
+#define zox_player_state_loading 1      // Stream Begins / camera set
+#define zox_player_state_starting 2     // Spawn starting character
 
-#define zox_player_state_starting 2
-#define zox_player_state_resuming 3
-#define zox_player_state_playing 4
-#define zox_player_state_paused 5
+// Entering Play
+#define zox_player_state_play_begin 4   // For Resume and Start states
+#define zox_player_state_playing 5
+
+// TODO: Use a different state in respawning
+#define zox_player_state_respawn_begin 30   // fade out
+#define zox_player_state_respawning 31
+#define zox_player_state_respawn 32
+
+// Pause
+#define zox_player_state_pause_begin 10
+#define zox_player_state_paused 11
+#define zox_player_state_resume_begin 12
 
 #define zox_player_state_dialogue_begin 21
 #define zox_player_state_dialogue_active 22
 #define zox_player_state_dialogue_end 23
-
-// TODO: Use a different state in respawning
-#define zox_player_state_respawning 30
-#define zox_player_state_respawning_end 254
-
-// These are camera stuff
-/*#define zox_player_state_first_person 0
-#define zox_player_state_third_person 1
-#define zox_player_state_top_down 2
-#define zox_player_state_ortho 3*/

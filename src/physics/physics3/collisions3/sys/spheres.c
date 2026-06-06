@@ -7,14 +7,12 @@ zox_sys2(SphereCollideSystem) {
     zox_sys_in(CollisionDisabled);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Position3D, position3D);
+        zox_sys_i(Position3D, position);
         zox_sys_i(SphereRadius, sphereRadius);
         zox_sys_i(CollisionDisabled, collisionDisabled);
-
         if (collisionDisabled->value) {
             continue;
         }
-
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
@@ -35,7 +33,7 @@ zox_sys2(SphereCollideSystem) {
                 }
                 //const Position3D *position3D2 = &position3Ds2[j];
                 //const SphereRadius *sphereRadius2 = &sphereRadiuss2[j];
-                float distance = float3_distance(position3D->value, position3D2->value);
+                float distance = float3_distance(position->value, position3D2->value);
                 byte overlaps = (distance <= sphereRadius->value + sphereRadius2->value);
                 if (overlaps) {
                     if (zox_has(e, OverlapEvent)) {
@@ -49,6 +47,6 @@ zox_sys2(SphereCollideSystem) {
                 }
             }
         }
-        zox_sys_query_end()
+        zox_sys_query_end();
     }
 } zox_sys_end(SphereCollideSystem);

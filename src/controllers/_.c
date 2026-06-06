@@ -7,11 +7,11 @@
 #include "controllers3/_.c"
 #include "free_roam/_.c"
 
-zox_begin_module(Controllers)
-    define_systems_controllers(world);
+zox_begin_module(Controllers) {
+    zox_define_systems_controllers(world);
     zox_import_module(Controllers2);
     zox_import_module(Controllers3);
     zox_import_module(FreeRoam);
-zox_end_module(Controllers)
+} zox_end_module(Controllers);
 
 #endif

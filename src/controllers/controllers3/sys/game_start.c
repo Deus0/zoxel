@@ -36,6 +36,7 @@ void enable_camera_streaming(ecs *world, entity player) {
 // 2) Triggers Camera Streaming
 // 3) Spawns Player Character
 // 4) Spawns Player UI
+// NOTE: Sets the Game Camera and starts streaming terrain
 zox_sys2(PlayerGame3StartSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -49,10 +50,7 @@ zox_sys2(PlayerGame3StartSystem) {
         zox_sys_i(PlayerState, state);
         zox_sys_i(GameLink, game);
         zox_sys_i(CameraLink, camera);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
-        if (state->value != zox_player_state_loading) {
+        if (dirty->value != zox_dirty_active && state->value != zox_player_state_loading) {
             continue;
         }
         zox_geter_value(game->value, RealmLink, entity, realm);
@@ -73,9 +71,6 @@ zox_sys2(PlayerGame3StartSystem) {
         zox_set(camera->value, Position3D, { position });
         zox_set(camera->value, Euler, { spawn_euler });
         zox_set(camera->value, Rotation3D, { spawn_rotation });
-        // Alert our player too
-        zox_set(e, PlayerState, { zox_player_state_starting });
-        zox_set(e, PlayerStateDirty, { zox_dirty_trigger });
         // waits for fadeout?
         double delay = game_load_player_delay + game_load_fade_transition_time;
         delay_event(world, &enable_camera_streaming, e, delay);

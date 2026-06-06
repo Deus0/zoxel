@@ -1,5 +1,7 @@
 // Player presses input which pauses game
+// NOTE: Must be paused or playing state to toggle pause!
 zox_sys2(PlayerPauseSystem) {
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -8,7 +10,7 @@ zox_sys2(PlayerPauseSystem) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(GameLink, game);
-        if (state->value != zox_player_state_playing && state->value != zox_player_state_paused) {
+        if (!(state->value == zox_player_state_playing || state->value == zox_player_state_paused)) {
             continue;
         }
         if (!zox_valid(game->value)) {
@@ -23,7 +25,7 @@ zox_sys2(PlayerPauseSystem) {
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_valid(e2) || zox_getv(e2, DeviceDisabled)) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;
@@ -58,8 +60,11 @@ zox_sys2(PlayerPauseSystem) {
             }
         }
         if (did_toggle_pause) {
-            byte is_paused = game_state == zox_game_paused;
+            byte is_paused = state->value == zox_player_state_paused; // game_state == zox_game_paused;
             zox_set(game->value, GameStateTarget, { is_paused ? zox_game_playing : zox_game_paused });
+            if (dbg_log) {
+                zox_log("Toggling Pause with state [%i] Game Pausing? [%i]", state->value, is_paused);
+            }
         }
     }
 

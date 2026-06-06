@@ -3,22 +3,23 @@ zox_sys2(WindowLayerSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SetWindowLayer);
-    zox_sys_in(CanvasLink);
+    // zox_sys_in(CanvasLink);
     zox_sys_out(WindowLayer);
     zox_sys_out(Layer2D);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SetWindowLayer, nlayer);
-        zox_sys_i(CanvasLink, canvasLink);
+        // zox_sys_i(CanvasLink, canvasLink);
         zox_sys_o(WindowLayer, wlayer);
         zox_sys_o(Layer2D, layer2D);
         if (wlayer->value == nlayer->value) {
             continue;
         }
-        if (!zox_valid(canvasLink->value) || !zox_has(canvasLink->value, WindowsLayers)) {
+        entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
+        if (!zox_valid(canvas) || !zox_has(canvas, WindowsLayers)) {
             continue;
         }
-        zox_geter_value(canvasLink->value, WindowsLayers, byte, layers_per_window);
+        zox_geter_value(canvas, WindowsLayers, byte, layers_per_window);
         wlayer->value = nlayer->value;
         byte window_layer = wlayer->value;
         layer2D->value = window_layer * layers_per_window;

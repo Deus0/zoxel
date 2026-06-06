@@ -11,7 +11,6 @@ void taskbar_button_click_event(ecs *world, ClickEventData event) {
         return;
     }
     hook_taskbar hook = hook_taskbars->data[index];
-
     entity window_ui = toggle_ui_with_id(world, *hook.spawn, hook.component_id, event.clicker);
     entity frame = zox_get_parent(world, event.clicked);
     // zox_geter_value(event.clicked, ParentLink, entity, frame);
@@ -28,24 +27,24 @@ void taskbar_button_click_event(ecs *world, ClickEventData event) {
 }
 
 entity spawn_taskbar(ecs *world, entity canvas) {
+    // Hmmm need to passin header height to spawn_window? Spawn non header window for just the dragger?
+    // byte header_font_size = 4 * ui_scale;
+    // byte2 header_padding = byte2_single(2 * ui_scale);
     byte taskbar_count = hook_taskbars->size;
     int frame_size = (default_frame_size / 4) * ui_scale;
     int icon_size = (default_icon_size / 4) * ui_scale;
-    byte2 padding = byte2_single(1 * ui_scale);
-    int margins = 2 * ui_scale;
-    byte header_font_size = 4 * ui_scale;
-    byte2 header_padding = byte2_single(2 * ui_scale);
-    int2 body_size = (int2) { padding.x + (frame_size + padding.x) * taskbar_count + margins * 2, frame_size + padding.y * 2 };
-    int2 window_size = (int2) { body_size.x, body_size.y + header_font_size + header_padding.y * 2 };
-    int2 position = (int2) { 0, - window_size.y / 2 };
-    float2 anchor = (float2) { 0.5f, 1 };
-    entity e = spawn_window(world, prefab_window_textured, canvas, canvas, 0, position, window_size, anchor);
-    zox_set_unique_name(e, "taskbar");
-    zox_add_tag(e, Taskbar);
-    entity header = spawn_window_header(world, canvas, e, window_size, "taskbar", header_font_size, header_padding, 2, 1, (ClickEvent) { NULL });
-    zox_set_parent(world, header, e);
     int2 fsize = int2_single(frame_size);
     int2 isize = int2_single(icon_size);
+    byte2 padding = byte2_single(1 * ui_scale);
+    int margins = 2 * ui_scale;
+    int2 size = (int2) { padding.x + (frame_size + padding.x) * taskbar_count + margins * 2, frame_size + padding.y * 2 };
+    int2 position = (int2) { 0, - size.y / 4 };
+    float2 anchor = (float2) { 0.5f, 1 };
+    entity2 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, anchor, NULL);
+    entity e = e2.x;
+    entity body = e2.y;
+    zox_set_unique_name(e, "taskbar");
+    zox_add_tag(e, Taskbar);
     for (int i = 0; i < taskbar_count; i++) {
         // hook data
         int hook_index = -1;
@@ -63,7 +62,8 @@ entity spawn_taskbar(ecs *world, entity canvas) {
         hook_taskbar hook = hook_taskbars->data[hook_index];
         int2 position = (int2) { (int) ((i - (taskbar_count / 2.0f) + 0.5f) * (frame_size + padding.x)), 0 };
         // entity frame = spawn_element(world, spawn_frame_data);
-        entity frame = spawn_uic(world, prefab_frame_taskbar, e, float2_half, position, fsize, fsize, default_fill_color_frame, default_outline_color_frame);
+        entity frame = spawn_uic(world, prefab_frame_taskbar, body, float2_half, position, fsize, fsize, default_fill_color_frame, default_outline_color_frame);
+        zox_set_parent(world, frame, body);
         zox_set_unique_name(frame, "taskbar_frame");
         // spawn_icon_data.parent.e = frame;
         // spawn_icon_data.parent.position = spawn_frame_data.element.position;
@@ -90,7 +90,6 @@ entity spawn_taskbar(ecs *world, entity canvas) {
         // texture
         char* icon_texture_name = hook.texture_name;
         clone_texture_file_to_entity(world, icon, icon_texture_name);
-        zox_set_parent(world, frame, e);
     }
     return e;
 }

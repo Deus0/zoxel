@@ -4,7 +4,7 @@ zoxc_byte(Grounded); // use for friction - todo: use bit operations to check wha
 zoxc_float3(CollisionDistance);
 zoxc_float(BasicCollider);
 zoxc_float(SphereRadius);
-zoxc_function(OverlapEvent, void, ecs*, entity, entity);
+zoxc_function(OverlapEvent, byte, ecs*, entity, entity);
 
 void define_components_collisions3(ecs* world) {
     zoxd_tag(SphereCollider);

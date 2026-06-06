@@ -29,7 +29,7 @@ void define_systems_elements3D(ecs *world) {
     zox_system_1(
         Element3DMeshSystem,
         zoxp_mainthread,
-        [out] elements.InitializeElement,
+        [out] core.InitializeEntity,
         [out] rendering.MeshDirty,
         [out] rendering.MeshGPULink,
         [out] rendering.UvsGPULink,

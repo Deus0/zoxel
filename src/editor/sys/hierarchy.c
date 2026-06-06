@@ -68,17 +68,20 @@ zox_sys2(HierarchySpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(HierarchyUIDirty);
-    zox_sys_in(CanvasLink);
     zox_sys_in(EntityTarget);
     zox_sys_in(ScrollviewLink);
     zox_sys_in(ElementFontSize);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(HierarchyUIDirty, dirty);
-        zox_sys_i(CanvasLink, canvas);
         zox_sys_i(EntityTarget, target);
         zox_sys_i(ScrollviewLink, scrollview);
         zox_sys_i(ElementFontSize, font_size);
         if (dirty->value != zox_dirty_active) {
+            continue;
+        }
+        entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
+        if (!zox_valid(canvas)) {
             continue;
         }
         if (!zox_valid(scrollview->value)) {
@@ -130,7 +133,7 @@ zox_sys2(HierarchySpawnSystem) {
             .fill = editor_color_fill,
             .outline = editor_color_fillo,
         };
-        LayoutParentData canvas_data = { .e = canvas->value };
+        LayoutParentData canvas_data = { .e = canvas };
         LayoutParentData child_parent_data = { .e = list_ui };
 
         // 4: Delete old list elements

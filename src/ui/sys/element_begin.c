@@ -1,7 +1,8 @@
+// NOTE: Initializes Entity data
 zox_sys2(ElementBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeElement);
+    zox_sys_in(InitializeEntity);
     zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshDirty);
@@ -10,7 +11,7 @@ zox_sys2(ElementBeginSystem) {
     zox_sys_out(UvsGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeElement, initialize);
+        zox_sys_i(InitializeEntity, initialize);
         zox_sys_i(LayoutSize, pixelSize);
         zox_sys_i(MeshAlignment, meshAlignment);
         zox_sys_o(MeshDirty, meshDirty);

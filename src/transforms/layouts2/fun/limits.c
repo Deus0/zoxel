@@ -1,4 +1,4 @@
-void set_window_bounds_to_canvas(ecs *world, entity e, int2 canvas_size, int2 window_size, float2 anchor) {
+/*void set_window_bounds_to_canvas(ecs *world, entity e, int2 canvas_size, int2 window_size, float2 anchor) {
     // note: can't actually use components in frame we spawn them
     float2 anchor_reverse = (float2) { 1 - anchor.x, 1 - anchor.y };
     int4 drag_limits = (int4) {
@@ -8,10 +8,10 @@ void set_window_bounds_to_canvas(ecs *world, entity e, int2 canvas_size, int2 wi
         canvas_size.y * anchor_reverse.y - window_size.y / 2
     };
     zox_set(e, LayoutConstraints, { drag_limits });
+}*/
     /*zox_log("Limiting Window [%s] [%ix%ix%ix%i]",
         zox_get_name(e),
         drag_limits.x, drag_limits.y, drag_limits.z, drag_limits.w);*/
-}
 
 void limited_element(int2* position, int4 b) {
     if (position->x < b.x) {

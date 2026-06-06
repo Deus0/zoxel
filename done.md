@@ -1,0 +1,203 @@
+### Done ###
+-x Spawn the test render texture in a window container
+-x load ui for a save game
+-x shape data on a node will go through with a vox data to generate sphere for now
+-x add eyes after using a fill node
+-x first chunk / tunk to move from controllers to stream begin systems
+-x spawn chest and head items and add to body ui
+-x spawn arm bones
+-x town layers walls
+-x spawn/destroy regions per 32x32 tunks
+-x disable pickup part if it has attached parts
+-x if pickup part - refresh body model
+-x generate head position from slot position of chest, and slot position of head
+-x handle increasing depth for > 32^3 max size
+-x Spawn bones from item slot positions
+-x NPC to hit back when combating me
+-x Spawn 2 Thighs onto character, left + right
+-x Spawn Shoulders Body Parts
+-x Spawn Biceps Body Parts
+-x Body Updates (using debug)
+	-x when parts change
+	-x remove / readd head to body
+-x detects ui pickup in system
+-x Update body when picking up head (in ui)
+-x Item [Body] Pickups - only allow to pickup shoulder if bicep is up
+-x Set body positions based on item anchor types dynamically
+-x Equipment - Vox Layers
+-x Combine vox TopHat onto body as well - Equipment layer
+-x Center the vox textures for body parts
+-x Generate better biome colors randomly - more chaos
+-x Spawn RenderCamera + Render Texture + Render UI
+-x Add test function for spawning a Colored Chunk
+-x build linux
+-x build windows
+-x ui off on khadas
+-x Generate a Chest Item for the realm bodys
+-x generate texture for the chest item
+-x create a head model / item
+-x Unique Character Tag
+-x Link the body parts together
+-x combine the two character items into one model for use
+-x add position and sizes to the combine list
+-x bug: player body still smaller during low res mode
+-x bug: hangs atm, due to paint size of eyes
+-x bug: low res mode has eye issue, just sets entire head green
+-x finish eyes on head of body
+-x bug: blockdepth not savings / loading
+-x bug: eye painting still not right
+-x bug: flower block vox scaled wrong when lower depth
+-x play sound when enter grass
+-x unstuck should perfectly reposition above nearest ground
+	-x atm if you flymode and teleport under, it moves you up randomly + 1
+-x option for transparent meshes
+-x option for painting weight
+-x Sides Generation to use new sides data
+-x Slice mesh properly for voxel faces
+-x spawn particles when hit grass
+-x Grass sound cuts off midway
+-x add option for rendering bones
+-x Render Part Position / Sizes
+-x Spawn Part Position / Sizes from Parts Vox Combining
+-X Hierarchy UI for realm and children
+-x Inspector UI
+	-x fix opening with target entity
+	-x fix refreshing buttons like hierarchy system
+-x color coding on component types
+-x update component text system
+	-x watch character position update in real-time
+-x debug key to open inspector for player
+-x Left Align Hierarchy / Inspector Buttons / List
+-x Keep hierarchy elements selected - active state
+-x Component Tooltips, e.g.:
+	-x IconType [byte] [3]
+-x Fix 'inside block' updating when on edge of block
+	- hard physics issue
+	- triggers position updates per frame
+	- for now we just fixed by moving detection point
+-x Fix bones they're half scale atm
+-x Spawn camera onto headbone
+-x Spawn Hips Body Part onto character
+-x Handle falling through terrain
+-x Fix tilemap errors
+	-x Wood Texture is off atm - debug tilemap
+-x Head position - transform - lags behind rest of body
+	-x make hierarchy update recursively from root bones - just for skeleton for now
+-x Fix free camera toggle with new parents / hierarchys
+-x System that handles parenting - reparenting
+	-x use for camera attachment
+	-x Children links are more important as transforms are recursive
+-x Transform layout data to transform so we can position the render textures
+-x Filter the camera, so it only shows the cube
+-x Test camera filter for multiple cubes
+-x make editor text use fixed font res (FixToLayout) - a bit blurry atm
+-x fixed raycasting for mesh alignments of centre
+-x Remove padding in close button - big X
+-x Try header text just black
+-x Fix Icon Label Text (cant read)
+-x Change outlines of windows to White
+-x improve contrast with their texture fills
+-x add BLUR to render texture post processor shader
+-x Fix headless mode
+	-x Move all OpenGL code to stubs for headless mode
+	-x Remove sdl completely from project - headless mode is compiling without it
+	-x linux-headless.sh
+-x Fix realm / Terrain not deleting when game ends
+	-x omg this was camera issue - didnt update it
+-x Fix ./bsh/windows-headless.sh
+-x Fix ./bsh/windows.sh
+	-x use bsh/windows.sh
+-x 3D uis are broken atm due to changes in parenting
+-x Tooltip text isnt moving
+-x Header text is missing for user uis
+-x icon text all just dissapeared
+-x tooltip doesnt dissapear when the ui dies - keep a link on it and react if it dies / becomes non selected
+-x test particles
+-x test function for character spawning
+-x Spawn a Test UI, toggle it, add function in zoxel code
+-X Find out why dialogue ui header is inside window 
+-x Move first chunk spawning into StreamSpawnSystem - so it will spawn whatever we are inside of
+	-x issue with first chunk raycasting at start
+-x Fix rest of children bugs, including skill overlays
+-x Refactor headers to window module
+-x Move first chunk spawn to stream systems - StreamKickstartSystem
+-x Fix new game UI (actionbar and stats ui) / Code cleanup
+-x Fix DeviceGizmo icon
+-x Fix NPC streaming
+    -x issues on LODs
+    -x issues on LOD Scales
+-x Use proper flecs functions for core transform childrens, so it processes them all
+-x Move camera first for respawning
+-x Refactor Skills to use Children and no Users
+-x Replace all find_random_position_on_ground with getv_VoxelNode's
+-x Remove all old chunk getters/setters and just use latest ones
+-x Fix Skillbook to use datagrid3
+-x Finish Slot Links Refactor for UI
+-x Refactor ActionLinks
+-x Test Quest Tooltips before
+-x Refactor Quests to use new parenting
+-x Fix Skill Indexing though for Skillbook
+-x Fix Item Stacking when picking up items
+-x Handle the icon dropping into other Frames
+	-x Set a Frame Tag?
+	-x Only can place Skill in Skillbook or Actions
+	-x Only can place Item in Inventory or Actions
+-x Item Stacking when dropping item onto another - combine two items of same prefab type together
+-x remove struct use spawn_datagrid spawn_datagrid3 as well
+-x Npcs spawning in lesser chunks - just disable this for now, collision broken there
+-x Slimes not adapting to block vox depths
+-o fix collisions in lesser resolution terrain chunks
+	-o test by forcing all terrain chunks at a sub res for easier testing
+-x Skills UI - harder refactor
+    -x Needs to account for UI Slot Indexes
+    -x Create a component that stores entities array on character, this can be used for the UIs itself (when ui is closed/opened)
+    -x Or we create a UI child for character, basically just keeps UI references, slots to items themselves
+-x Spawn Held Item
+-x when hit block - create entity for block health
+-x Make user data ChildOf relationships
+-x Remake Character Meta to be actual Characters
+-x remove use of list window / list ui, just spawn elements into a listview and have system handle the rest
+-x Refactor PartLinks
+-x Refactor EquipLinks
+-x region stream position / detect system
+-x spawn regions
+-x Center the vox textures, for body parts
+-x Make parts attach to previous parts, not to entire body dimensions
+-x Camera lock toggles when removing hat from ui
+-x Create Slots for Body / Equip
+-x Grass Texture causes crash
+	- generating vox / texture conflicts?
+-x Disabled decor blocks in realm gen
+-x Grass model in between others messes up indexing for block -> uvs for second biome
+	- put individual uvs on each block instead
+	- refactor tilemap uvs onto block dirty system
+	- TilemapGenerationSystem generates here - just add individual uvs here too for quick fix
+	- Chunk3TexturedBuildSystem - get the block uvs here - entitymap
+-x Sometimes vegetation didn't generate
+-x Fix Chunk Loading
+-x NPCs didnt spawn?
+-x Mesh isnt updating when render depth updates perfectly
+-x Obsidian not found
+-x Dungeon cores not??
+-x Popups now dont face camera
++ Made some octree component macros for non type ones
++ Fixed block index setting after they update
++ Refactored landfill out of Grasslands for better generation flow
++ SoilGrass now drops soil block
+-x Remove any global byte refs to blocks and use biome ones or tags
+-x Seems to be issues on frustum culling, debug terrain chunk sizes
+-x Refactor Blocks Hook out, used by dungeons atm
+-x Move slots module up to src from ui module
+-x spawn slime model from shapes3 data
+-x Generate unique color per biome
+-x Refactor more blocks into per biome
+-x Grass placed over town bricks, check for air for grass placement
+-x B to close menu - shortcut6312
+-x Fix controller mapping
+-x Spawn a Colored Chunk as a test function
+-x Remove all DeviceLinks and use Children of player
+-x issue is the gamepads links to players atm
+-x Increase crosshair scale when can hit NPC!
+-x hide stats panel and actionbar when dialogue
+-x give blocks different health from meta
+-x Sometimes NPCs dont spawn in chunk, debug chunk states

@@ -3,6 +3,7 @@
 #include "label.c"
 #include "healthbar_spawner.c"
 #include "tooltip.c"
+#include "players.c"
 
 void define_systems_stats_ui(ecs *world) {
     zox_system(
@@ -40,5 +41,21 @@ void define_systems_stats_ui(ecs *world) {
         [in] interaction.SelectState,
         [in] slots.DataLink,
         [none] elements2.Icon
+    );
+    zox_system_1(
+        StatbarsSpawnSystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] layouts2.CanvasLink,
+        [none] players.Player
+    );
+    zox_system(
+        StatbarsDestroySystem,
+        EcsOnUpdate,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] layouts2.CanvasLink,
+        [none] players.Player
     );
 }

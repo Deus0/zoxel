@@ -16,7 +16,7 @@ zox_sys2(Elementbar3DSystem) {
         if (!zox_valid(front_bar)) {
             continue;
         }
-        zox_geter(front_bar, InitializeElement, initializeElement);
+        zox_geter(front_bar, InitializeEntity, initializeElement);
         if (initializeElement->value) {
             continue; // removing this breaks it?!?!
         }

@@ -11,7 +11,7 @@ void define_systems_bones(ecs *world) {
     zox_system_1(
         BonesInitializeSystem,
         zoxp_mainthread,
-        [in] core.EntityInitialize,
+        [in] core.InitializeEntity,
         [out] bones.BoneIndexGPULink,
         [none] bones.Skeleton
     );

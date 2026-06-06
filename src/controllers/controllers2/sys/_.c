@@ -21,7 +21,6 @@ void define_systems_controllers2(ecs *world) {
         EcsOnUpdate,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        // [out] cameras.CameraLink,
         [out] characters.CharacterLink,
         [none] players.Player2
     );

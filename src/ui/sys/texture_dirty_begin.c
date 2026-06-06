@@ -1,9 +1,9 @@
 zox_sys2(TextureDirtyBeginSystem) {
     zox_sys_begin();
-    zox_sys_in(InitializeElement);
+    zox_sys_in(InitializeEntity);
     zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(InitializeElement, initialize);
+        zox_sys_i(InitializeEntity, initialize);
         zox_sys_o(TextureDirty, dirty);
         if (initialize->value != zox_dirty_active) {
             continue;

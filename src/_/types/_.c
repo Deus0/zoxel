@@ -115,7 +115,7 @@ zoxc_byte(ComponentType);
 // General
 zoxc_byte(Loaded);
 zoxc_state(Generate);
-zoxc_state(EntityInitialize);
+zoxc_state(InitializeEntity);
 zoxc_byte(GenericEvent);
 zoxc_byte(SpawnChance);
 // unsorted
@@ -143,7 +143,7 @@ void define_components_core(ecs* world) {
     // General
     zoxd_byte(Loaded);
     zoxd_state(Generate);
-    zoxd_state(EntityInitialize);
+    zoxd_state(InitializeEntity);
     zoxd_byte(GenericEvent);
     zoxd_byte(SpawnChance);
     // unsorted

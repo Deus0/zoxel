@@ -129,23 +129,3 @@ zox_sys2(Characters3SpawnSystem) {
         // ever_spawned->value = 1;
     }
 } zox_sys_end(Characters3SpawnSystem);
-
-        /*if (ever_spawned->value && state->value != zox_dirty_active) {
-            continue;
-        }*/
-        /*byte is_first_spawn = is_in_spawn_range && !ever_spawned->value;
-        // if already spawned, skip spawning, only update LODs
-        // if basically all air, no need to spawn
-        if (!is_first_spawn && state->value != zox_dirty_active) {
-            continue;
-        }*/
-        /*byte is_in_spawn_range = render_distance->value <= terrain_lod_near;
-        if (!is_in_spawn_range) {
-            // if (!is_in_spawn_range) zox_log("- out of range")
-            continue;
-        }*/
-        /*float terrain_scale = zox_getv(terrain->value, BlockScale);
-        if (terrain_scale != cscale->value) {
-            // zox_log("TScale [%f] CScale [%f]", tscale, cscale->value);
-            continue;
-        }*/

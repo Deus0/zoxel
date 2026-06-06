@@ -5,7 +5,6 @@
 #include "camera_blur.c"
 
 void define_systems_render_textures(ecs* world) {
-
     zox_system(
         ScreenRenderTextureSystem,
         EcsOnLoad,
@@ -14,17 +13,15 @@ void define_systems_render_textures(ecs* world) {
         [out] rendering.TextureSize,
         [none] render.textures.RenderTextureScreen
     );
-
     zox_system_1(
         RenderTextureBeginSystem,
         EcsPreUpdate,
-        [in] elements.InitializeElement,
+        [in] core.InitializeEntity,
         [in] rendering.TextureSize,
         [in] cameras.CameraLink,
         [in] rendering.TextureGPULink,
         [none] cameras.RenderTexture
     );
-
     zox_system(
         RenderTextureSizeSystem,
         EcsOnUpdate,
@@ -34,7 +31,6 @@ void define_systems_render_textures(ecs* world) {
         [in] cameras.CameraLink,
         [none] cameras.RenderTexture
     );
-
     zox_render2D_system(
         RenderTextureRenderSystem,
         [in] transforms.TransformMatrix,
@@ -45,7 +41,6 @@ void define_systems_render_textures(ecs* world) {
         [in] rendering.TextureGPULink,
         [none] cameras.RenderTexture
     );
-
     zox_system_1(
         CameraBlurSystem,
         EcsOnUpdate,

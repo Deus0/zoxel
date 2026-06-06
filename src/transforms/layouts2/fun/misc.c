@@ -1,15 +1,13 @@
-void initialize_layout2(ecs *world, entity e, entity parent, entity canvas, int2 pixel_position, int2 pixel_size, float2 anchor, byte layer) {
+void initialize_layout2(ecs *world, entity e, entity parent, entity canvas, int2 position, int2 size, float2 anchor, byte layer) {
+    zox_set_parent(world, e, parent);
     zox_set(e, Anchor, { anchor });
     zox_set(e, Layer2D, { layer });
-    zox_set(e, LayoutSize, { pixel_size });
-    zox_set(e, LayoutPosition, { pixel_position });
-    zox_set(e, CanvasLink, { canvas });
+    zox_set(e, LayoutSize, { size });
+    zox_set(e, LayoutPosition, { position });
+    // zox_set(e, CanvasLink, { canvas });
     // zox_set(e, ParentLink, { parent });
-    zox_set_parent(world, e, parent);
     // Where we link to canvas children
     if (canvas == parent) {
-        // zox_log("added new ui [%lu] to canvas [%lu]", e, canvas);
-        // on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }
 }

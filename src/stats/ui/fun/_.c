@@ -1,3 +1,3 @@
-#include "game_ui.c"
+#include "statbars.c"
 #include "statbar3D.c"
 #include "debug.c"
