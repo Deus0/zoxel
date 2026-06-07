@@ -3,6 +3,7 @@
 #include "prefix.c"
 
 #ifndef zox_disable_logs
+
     #ifdef zox_android
 
         #define zox_log_(msg, ...) \
@@ -38,17 +39,21 @@
 
 #endif
 
-#define zox_log(...) zox_log_prefix(">", __VA_ARGS__);
+#ifndef zox_disable_logs
+    #define zox_log(...) zox_log_prefix(">", __VA_ARGS__);
+    #define zox_logw(...) zox_log_prefix("⚠️ ", __VA_ARGS__);
+    #define zox_loge(...) zox_log_prefix("❌", __VA_ARGS__);
+#else
+    #define zox_log(...) { }
+    #define zox_logw(...)
+    #define zox_loge(...) { }
+#endif
 
 #define zox_logv(...) if (zox_verbose) zox_log_prefix("⚡️ ", __VA_ARGS__);
 
 // #define zox_log(msg, ...) zox_log_("> "msg"\n", ##__VA_ARGS__);
 
 #define zox_log_error(...) zox_log_prefix("❌", __VA_ARGS__);
-
-#define zox_loge(...) zox_log_prefix("❌", __VA_ARGS__);
-
-#define zox_logw(...) zox_log_prefix("⚠️ ", __VA_ARGS__);
 
 #define zox_logi(...) zox_log_prefix("ℹ️ ", __VA_ARGS__);
 

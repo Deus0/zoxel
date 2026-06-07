@@ -6,10 +6,10 @@
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Crafting)
-    add_hook_spawn_prefabs(spawn_prefabs_crafting);
+zox_begin_module(Crafting) {
     define_components_crafting(world);
     define_systems_crafting(world);
+    add_hook_spawn_prefabs(spawn_prefabs_crafting);
     add_taskbar_button((hook_taskbar) {
         .index = 9,
         .spawn = &spawn_player_menu_crafting,
@@ -17,6 +17,6 @@ zox_begin_module(Crafting)
         .texture_name = "taskbar_crafting",
         .tooltip_text = "Craftbench"
     });
-zox_end_module(Crafting)
+} zox_end_module(Crafting);
 
 #endif

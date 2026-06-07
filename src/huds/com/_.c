@@ -14,16 +14,16 @@ zox_tag(GameDebugLabel);
 zox_tag(Profiler);
 zox_tag(MenuNewRealm);
 zox_tag(Crosshair);
+zox_tag(RespawnUI);
 zoxc_byte(HitType);
 zoxc_int(QuadsCount);
 zoxc_double(FPSDisplayTicker);
 zoxc(DebugLabelData, DebugLabelEvent);
 // Taskbar
 zox_tag(Taskbar);
+zoxc_entity(TaskbarWindowID);
 zoxc_entity(TaskbarToggleLink);
 zoxc_entity(IconOverlayLink);
-
-// #include "debug_label_data.c"
 
 void define_components_game_ui(ecs *world) {
     zoxd_byte(MenuType);
@@ -42,6 +42,7 @@ void define_components_game_ui(ecs *world) {
     zoxd_tag(Profiler);
     zoxd_tag(MenuNewRealm);
     zoxd_tag(Crosshair);
+    zoxd_tag(RespawnUI);
     zoxd_byte(HitType);
     zoxd_int(QuadsCount);
     zoxd_double(FPSDisplayTicker);
@@ -49,5 +50,6 @@ void define_components_game_ui(ecs *world) {
     zoxd_entity(IconOverlayLink);
     // Taskbar
     zoxd_tag(Taskbar);
+    zoxd_entity(TaskbarWindowID);
     zoxd_entity(TaskbarToggleLink);
 }

@@ -1,3 +1,9 @@
+/*
+ * Module: Pickups
+ *
+ *      - Pick up stuff from the ground
+ *
+ * */
 #if !defined(zoxm_pickups) && defined(zoxm_cubes)
 #define zoxm_pickups
 
@@ -12,7 +18,7 @@ zoxc_state(PickedUp);
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Pickups)
+zox_begin_module(Pickups) {
     zoxd_tag(Pickup);
     zoxd_tag(PickUpperer);
     zoxd_state(PickedUp);
@@ -23,6 +29,6 @@ zox_begin_module(Pickups)
         [none] Pickup
     );
     add_hook_spawn_prefabs(spawn_prefabs_pickups);
-zox_end_module(Pickups)
+} zox_end_module(Pickups);
 
 #endif

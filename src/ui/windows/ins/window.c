@@ -1,3 +1,44 @@
+// NOTE: Spawns window with flat inputs and easy to edit
+entity2 spawn_window(ecs *world, entity prefab, entity prefab_body, const char* header, entity parent, int2 position, int2 size, float2 anchor, void* on_closed) {
+    color fill = window_fill;
+    color outline = window_outline;
+    zox_instance(prefab);
+    zox_set_unique_name(e, header);
+    zox_set_parent(world, e, parent);
+    byte header_height = 0;
+    {
+        byte is_close_button = 1;
+        byte header_font_size = 6 * ui_scale;
+        if (header == NULL || header[0] == '\0') {
+            header_font_size = 0;
+        }
+        byte2 header_margins = (byte2) { 4 * ui_scale, 3 * ui_scale };
+        color header_font_fill = header_font_fill;
+        color header_font_outline = header_font_outline;
+        header_height = header_font_size + header_margins.y * 2;
+        float2 header_anchor = (float2) { 0.5f, 1 };
+        int2 header_position = (int2) { 0, -header_height / 2 };
+        int2 header_size = (int2) { size.x, header_height };
+        spawn_header(world, e, header_position, header_size, header_anchor, header, header_font_size, header_margins, int2_zero, header_size, is_close_button, on_closed);
+    }
+    int2 body_size = size;
+    size.y += header_height;
+    float2 anchor_shift = float2_sub(anchor, float2_half); // -0.5 to +0.5
+    position.x -= anchor_shift.x * size.x;
+    position.y -= anchor_shift.y * size.y;
+    zox_set(e, LayoutPosition, { position });
+    zox_set(e, Anchor, { anchor });
+    zox_set(e, LayoutSize, { size });
+    // TODO: Fix WindowToTop by just checking reset WindowLayers when CanvasDirty is flagged
+    // TODO: Flag CanvasDirty when new window Initializes
+    zox_set(parent, WindowToTop, { e });
+    // Body
+    int2 body_position = (int2) { 0, -header_height / 2 };
+    entity e2 = spawn_uic(world, prefab_body, e, float2_half, body_position, body_size, body_size, fill, outline);
+    return (entity2) { e, e2 };
+}
+
+// Obsolete
 entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnWindow2 window_data, ClickEvent on_click, byte is_close_button, byte type) {
     byte header_height = window_data.header_font_size + window_data.header_padding.y * 2;
     byte header_font_thickness_s = header_font_thickness * ui_scale;
@@ -39,83 +80,3 @@ entity2 spawn_window2(ecs *world, LayoutParentData canvas_data, LayoutParentData
     // set_window_bounds_to_canvas(world, e, canvas_data.size, element_data.size, element_data.anchor);
     return (entity2) { e, header };
 }
-
-// TODO: Spawn header in HeaderSpawnSystem
-entity2 spawn_window(ecs *world, entity prefab, entity prefab_body, const char* header, entity parent, int2 position, int2 size, float2 anchor, void* on_closed) {
-    color fill = window_fill;
-    color outline = window_outline;
-    zox_instance(prefab);
-    zox_set_unique_name(e, header);
-    zox_set_parent(world, e, parent);
-    byte header_height = 0;
-    {
-        byte is_close_button = 1;
-        byte header_font_size = 6 * ui_scale;
-        if (header == NULL || header[0] == '\0') {
-            header_font_size = 0;
-        }
-        byte2 header_margins = (byte2) { 4 * ui_scale, 3 * ui_scale };
-        color header_font_fill = header_font_fill;
-        color header_font_outline = header_font_outline;
-        header_height = header_font_size + header_margins.y * 2;
-        float2 header_anchor = (float2) { 0.5f, 1 };
-        int2 header_position = (int2) { 0, -header_height / 2 };
-        int2 header_size = (int2) { size.x, header_height };
-        spawn_header(world, e, header_position, header_size, header_anchor, header, header_font_size, header_margins, int2_zero, header_size, is_close_button, &on_closed);
-    }
-    int2 body_size = size;
-    size.y += header_height;
-    float2 anchor_shift = float2_sub(anchor, float2_half); // -0.5 to +0.5
-    position.x -= anchor_shift.x * size.x;
-    position.y -= anchor_shift.y * size.y;
-    zox_set(e, LayoutPosition, { position });
-    zox_set(e, Anchor, { anchor });
-    zox_set(e, LayoutSize, { size });
-    // TODO: Fix WindowToTop by just checking reset WindowLayers when CanvasDirty is flagged
-    // TODO: Flag CanvasDirty when new window Initializes
-    zox_set(parent, WindowToTop, { e });
-    // Body
-    int2 body_position = (int2) { 0, -header_height / 2 };
-    entity e2 = spawn_uic(world, prefab_body, e, float2_half, body_position, body_size, body_size, fill, outline);
-    return (entity2) { e, e2 };
-}
-
-/*entity spawn_window_header(ecs* world, entity canvas, entity window, int2 wsize, const char* text, byte font_size, byte2 padding, byte font_thickness, byte fonto_thickness, ClickEvent on_close) {
-    byte can_close = on_close.value != NULL;
-    int2 size = (int2) { wsize.x, font_size + padding.y * 2 };
-    int2 position = (int2) { 0, size.y / 2 };
-    float2 anchor = (float2) { 0.5f, 1.0f };
-    byte font_thickness_s = font_thickness * ui_scale;
-    byte fonto_thickness_s = fonto_thickness * ui_scale;
-    // # Window Header #
-    // todo: pass more of t this in from top
-    LayoutParentData canvas_data = {
-        .e = canvas
-    };
-    LayoutParentData parent_data = {
-        .e = window,
-    };
-    ElementSpawnData edata = {
-        .prefab = prefab_header,
-        .anchor = anchor,
-        .position = position,
-        .size = size,
-    };
-    SpawnTextData tdata = {
-        .text = text,
-        .font_resolution = font_size,
-        .font_size = font_size,
-        .margins = padding,
-        .font_thickness = font_thickness_s,
-        .font_outline_thickness = fonto_thickness_s,
-        .font_fill_color = header_font_fill,
-        .font_outline_color = header_font_outline,
-    };
-    SpawnHeaderData hdata = {
-        .prefab_zext = prefab_zext,
-        .is_close_button = can_close
-    };
-    zox_set(window, HeaderHeight, { size.y });
-    // zox_log("header spawned at: %ix%i", position.x, position.y);
-    return spawn_header3(world, canvas_data, parent_data, edata, tdata, hdata, on_close);
-}*/

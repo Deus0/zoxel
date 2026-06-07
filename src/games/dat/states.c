@@ -4,9 +4,10 @@
 #define zox_game_load_fading 3
 #define zox_game_load_faded 4
 #define zox_game_loading_realm 5
-#define zox_game_playing_start 6
-#define zox_game_playing 7
-#define zox_game_paused 8
+#define zox_game_state_play_begin 6
+#define zox_game_state_playing 7
+#define zox_game_state_paused 8
+#define zox_game_state_respawn_on_pause 9
 
 /*
 #define game_state_start 0x00 // start screen when player first inputs with a device

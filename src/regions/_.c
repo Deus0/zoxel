@@ -25,10 +25,10 @@
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Regions)
+zox_begin_module(Regions) {
     zox_define_components_regions(world);
     zox_define_systems_regions(world);
     add_hook_spawn_prefabs(spawn_prefabs_regions);
-zox_end_module(Players)
+} zox_end_module(Players);
 
 #endif

@@ -10,7 +10,7 @@ zoxc_entity(PlayerLink);
 zoxc_arrayd(PlayerLinks, entity)
 zoxc_entity(PlayerPauseEvent);
 
-void define_components_players(ecs* world) {
+void zox_define_components_players(ecs* world) {
     zoxd_tag(Player);
     zoxd_tag(Player2);
     zoxd_tag(Player3);

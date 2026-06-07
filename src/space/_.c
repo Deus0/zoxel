@@ -7,12 +7,11 @@ zox_tag(Asteroid);
 zox_tag(Star);
 #include "fun/_.c"
 
-zox_begin_module(Space)
+zox_begin_module(Space) {
     zoxd_tag(Planet);
     zoxd_tag(Asteroid);
     zoxd_tag(Star);
-
-zox_end_module(Space)
+} zox_end_module(Space);
 
 // todo: when selecting pickaxe, you can destroy voxels, or with your fists
 // todo: you can only place color cubes on block voxes, which drop from enemies

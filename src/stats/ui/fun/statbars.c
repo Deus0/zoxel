@@ -1,16 +1,15 @@
 entity spawn_menu_game_stats(ecs* world, entity player) {
-    if (!player || !zox_has(player, CharacterLink) || !zox_has(player, CanvasLink)) {
+    if (!zox_valid(player) || !zox_has(player, CharacterLink) || !zox_has(player, CanvasLink)) {
         zox_loge("Invalid player in [spawn_game_ui_stats]");
         return 0;
     }
-    zox_geter_value(player, CanvasLink, entity, canvas);
-    zox_geter_value(player, CharacterLink, entity, character);
-    if (!canvas) {
+    entity canvas = zox_getv(player, CanvasLink);
+    if (!zox_valid(canvas)) {
         zox_loge("Invalid canvas in [spawn_game_ui_stats]");
         return 0;
     }
-    if (!zox_valid(character)) {
-        zox_loge("Player [%s] has no Character in [spawn_game_ui_stats]", zox_get_name(player));
+    entity character = zox_getv(player, CharacterLink);
+    if (!zox_valid(character) || zox_getv(character, Dead)) {
         return 0;
     }
     // Others

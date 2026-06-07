@@ -17,6 +17,6 @@ zox_begin_module(ActionsUI) {
         .texture_name = "taskbar_actions",
         .tooltip_text = "Actionbar"
     });
-} zox_end_module(Actions)
+} zox_end_module(Actions);
 
 #endif

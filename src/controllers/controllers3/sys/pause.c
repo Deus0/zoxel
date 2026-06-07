@@ -17,7 +17,7 @@ zox_sys2(PlayerPauseSystem) {
             continue;
         }
         zox_geter_value(game->value, GameState, byte, game_state);
-        if (!(game_state == zox_game_playing || game_state == zox_game_paused)) {
+        if (!(game_state == zox_game_state_playing || game_state == zox_game_state_paused)) {
             continue;
         }
         byte did_toggle_pause = 0;
@@ -60,8 +60,9 @@ zox_sys2(PlayerPauseSystem) {
             }
         }
         if (did_toggle_pause) {
-            byte is_paused = state->value == zox_player_state_paused; // game_state == zox_game_paused;
-            zox_set(game->value, GameStateTarget, { is_paused ? zox_game_playing : zox_game_paused });
+            byte is_paused = state->value == zox_player_state_paused; // game_state == zox_game_state_paused;
+            // byte is_paused = game_state == zox_game_state_paused;
+            zox_set(game->value, GameStateTarget, { is_paused ? zox_game_state_playing : zox_game_state_paused });
             if (dbg_log) {
                 zox_log("Toggling Pause with state [%i] Game Pausing? [%i]", state->value, is_paused);
             }

@@ -16,7 +16,7 @@ void GameStartFaderSystem(iter *it) {
 
         if (!(dirty->value == zox_dirty_active &&
             (state->value == zox_game_load_start ||
-            state->value == zox_game_playing_start)
+            state->value == zox_game_state_play_begin)
         )) {
             continue;
         }
@@ -27,7 +27,7 @@ void GameStartFaderSystem(iter *it) {
 
             if (state->value == zox_game_load_start) {
                 trigger_canvas_fade_in(world, canvas, 0, game_load_fade_transition_time);
-            } else if (state->value == zox_game_playing_start) {
+            } else if (state->value == zox_game_state_play_begin) {
                 trigger_canvas_fade_out(world, canvas, game_spawn_terrain_fade_delay, game_load_fade_transition_time);
             }
         }

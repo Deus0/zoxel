@@ -8,7 +8,8 @@
 // TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
 void zoxel_on_spawn_prefabs(ecs* world) {
     // set_prefab_debug_label(world, &zox_dbg_ui_canvas);
-    set_prefab_debug_label(world, &debug_ui_raycast_chunk3);
+    // set_prefab_debug_label(world, &debug_ui_raycast_chunk3);
+    set_prefab_debug_label(world, &debug_ui_player);
     // set_prefab_debug_label(world, &debug_ui_raycasting);
     // set_prefab_debug_label(world, &debug_ui_system_times);
     // get_debug_label_app
@@ -68,52 +69,52 @@ void zoxel_settings_physics() {
 }
 
 void zoxel_settings_uis() {
-    byte fill_alpha = 68;
-    byte text_alpha = 211;
+    byte window_fill_alpha = 166;
+    byte fill_alpha = 66;
+    byte outline_alpha = 66;
+    byte text_alpha = 122;
+    // Windows
+    window_outline = color_grayscale_a(166, outline_alpha);
+    window_fill = (color) { 13, 22, 16, window_fill_alpha };
     // Headers
-    header_fill = color_grayscale_a(188, fill_alpha);
-    header_outline = color_grayscale_a(0, fill_alpha);
-    header_font_fill = color_grayscale_a(255, text_alpha);
-    header_font_outline = color_grayscale_a(0, text_alpha);
+    header_outline = color_grayscale_a(166, outline_alpha);
+    header_fill = (color) { 26, 44, 32, window_fill_alpha };
+    header_font_outline = (color) { 158, 46, 237, text_alpha };
+    header_font_fill = (color) { 244, 33, 166, text_alpha };
+    header_fonto_thickness = 3;
     header_font_thickness = 1;
-    header_fonto_thickness = 1;
-    // Windows - Bodys
-    window_fill = color_grayscale_a(211, fill_alpha);
-    window_outline = color_grayscale_a(0, fill_alpha);
-    // Add Color
-    header_fill.r += 10;
-    header_fill.g -= 10;
-    header_fill.b -= 10;
-    window_fill.r -= 10;
-    window_fill.g += 10;
-    window_fill.b += 10;
-    // Frames
-    frame_fill = color_grayscale_a(188, fill_alpha);
-    frame_outline = color_grayscale_a(0, fill_alpha);
-    // Buttons
-    button_fill = color_grayscale_a(188, fill_alpha);
-    button_outline = color_grayscale_a(0, fill_alpha);
-    button_font_fill = color_grayscale_a(255, text_alpha);
-    button_font_outline = color_grayscale_a(0, text_alpha);
-    button_font_thickness_fill = 2;
-    button_font_thickness_outline = 2;
-    // Buttons (Close)
-    close_button_fill = color_grayscale_a(233, fill_alpha);;
-    close_button_outline = button_outline;
-    close_button_font_fill = color_grayscale_a(0, text_alpha);
-    close_button_font_outline = color_grayscale_a(0, text_alpha);
+    // Close Buttons
+    close_button_outline = color_grayscale_a(166, fill_alpha);
+    close_button_fill = color_grayscale_a(13, fill_alpha);
+    close_button_font_outline = color_grayscale_a(166, text_alpha);
+    close_button_font_fill = color_grayscale_a(166, text_alpha);
+    close_button_fonto_thickness = 2;
     close_button_font_thickness = 2;
-    close_button_fonto_thickness = 0;
+    // Frames
+    frame_outline = color_grayscale_a(0, fill_alpha);
+    frame_fill = color_grayscale_a(188, fill_alpha);
+    // Buttons
+    button_outline = color_grayscale_a(166, fill_alpha);
+    button_fill = color_grayscale_a(0, fill_alpha);
+    button_font_outline = (color) { 188, 75, 244, text_alpha };
+    button_font_fill = (color) { 226, 2, 133, text_alpha };
+    button_font_thickness_fill = 2;
+    button_font_thickness_outline = 3;
+    // ?
     default_fill_color = color_grayscale_a(2, fill_alpha);
     default_outline_color = header_outline;
+    // Tooltips
+    tooltip_fillo = button_fill; // color_grayscale_a(222, outline_alpha);
+    tooltip_fill = button_fill; // color_grayscale_a(0, fill_alpha);
+    tooltip_font_fillo = button_font_outline; // color_grayscale_a(160, outline_alpha);
+    tooltip_font_fill = color_grayscale_a(244, fill_alpha);
+    tooltip_fillo.a = 222;
+    tooltip_fill.a = 222;
+    tooltip_font_fillo.a = 222;
+    tooltip_font_fill.a = 222;
     // fades
     is_start_game_delays = 1;
     is_end_game_delays = 1;
-    // Tooltips
-    tooltip_fill = window_fill;
-    tooltip_fillo = window_outline;
-    tooltip_font_fill = button_font_fill;
-    tooltip_font_fillo = window_outline;
 }
 
 void zoxel_debug_keys() {

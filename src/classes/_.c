@@ -6,10 +6,10 @@ zox_tag(Class);
 zoxc_entity(ClassLink);
 zoxc_entitiesw(ClassLinks);
 
-zox_begin_module(Classes)
+zox_begin_module(Classes) {
     zoxd_tag(Class);
     zoxd_entity(ClassLink);
     zoxd_entitiesw(ClassLinks);
-zox_end_module(Classes)
+} zox_end_module(Classes);
 
 #endif

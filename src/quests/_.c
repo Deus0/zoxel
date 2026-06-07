@@ -18,11 +18,11 @@
 #include "sys/_.c"
 #include "ui/_.c"
 
-zox_begin_module(Quests)
+zox_begin_module(Quests) {
     define_components_quests(world);
     define_systems_quests(world);
     add_hook_spawn_prefabs(spawn_prefabs_quests);
     zox_import_module(QuestsUI);
-zox_end_module(Quests)
+} zox_end_module(Quests);
 
 #endif

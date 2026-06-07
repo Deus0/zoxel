@@ -15,7 +15,7 @@
     #include "headless/_.c"
 #endif
 
-zox_begin_module(Graphics)
+zox_begin_module(Graphics) {
 #ifdef zox_opengl
     zox_import_module(Opengl);
 #elif zox_vulkan
@@ -23,6 +23,6 @@ zox_begin_module(Graphics)
 #else
     zox_import_module(Headless);
 #endif
-zox_end_module(Headless)
+} zox_end_module(Headless);
 
 #endif

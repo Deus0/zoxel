@@ -15,7 +15,7 @@ int spawn_players(ecs *world, entity game, byte zox_game_type) {
         players = 1;
     }
     for (int i = 0; i < players; i++) {
-        entity e = spawn_player(world, prefab_player);
+        entity e = spawn_player(world, prefab_player, game);
         if (i == 0) {
             dbg_player = e;
         }
@@ -60,27 +60,4 @@ void on_boot_players(ecs *world, entity app) {
     zox_geter_value(app, GameLink, entity, game);
     spawn_connected_devices(world, app);
     players_playing = spawn_players(world, game, zox_game_type);
-}
-
-// Game now effects all players
-void game_state_players(ecs *world, entity game, byte last_state, byte state) {
-    zox_geter(game, PlayerLinks, players);
-    for (int i = 0; i < players->length; i++) {
-        entity player = players->value[i];
-        if (state == zox_game_playing_start) {
-            zox_log("Game Setting player to Loading");
-            zox_set(player, PlayerState, { zox_player_state_loading });
-        } else if (state == zox_game_start) {
-            zox_set(player, PlayerState, { zox_player_state_main_menu });
-        } else if (state == zox_game_paused) {
-            zox_log("Game Setting player to Paused");
-            zox_set(player, PlayerState, { zox_player_state_pause_begin });
-        } else if (last_state == zox_game_paused && state == zox_game_playing) {
-            zox_log("Game Setting player to Resume");
-            zox_set(player, PlayerState, { zox_player_state_resume_begin });
-        } else {
-            continue;
-        }
-        zox_set(player, PlayerStateDirty, { zox_dirty_trigger });
-    }
 }

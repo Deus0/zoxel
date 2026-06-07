@@ -42,8 +42,7 @@ void viewport_clear(ecs *world) {
     zox_gpu_clear_viewport();
 }
 
-zox_begin_module(Rendering)
-    // init
+zox_begin_module(Rendering) {
     initialize_render_loop();
     initialize_hook_load_shader();
     initialize_gpu_systems();
@@ -55,21 +54,16 @@ zox_begin_module(Rendering)
     zox_module_dispose(on_module_dispose_rendering)
     // prefab spawning
     add_hook_spawn_prefabs(spawn_prefabs_rendering_core);
-
     zox_import_module(Shaders);
     zox_import_module(Rendering2);
     zox_import_module(Rendering3);
-
     zox_import_module(RenderingCameras);
-
     add_to_update_loop(viewport_clear);
     initialize_settings_rendering(world);
-
     if (prefab_camera_game) {
         zox_prefab_set(prefab_camera_game, FrameBufferLink, { 0 });
         zox_prefab_set(prefab_camera_game, RenderBufferLink, { 0 });
     }
-
-zox_end_module(Rendering)
+} zox_end_module(Rendering);
 
 #endif

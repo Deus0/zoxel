@@ -11,9 +11,9 @@
 #include "fun/realm_achievements.c"
 #include "sys/_.c"
 
-zox_begin_module(Achievements)
+zox_begin_module(Achievements) {
     define_components_achievements(world);
     spawn_systems_achievements(world);
-zox_end_module(Achievements)
+} zox_end_module(Achievements);
 
 #endif

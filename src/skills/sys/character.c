@@ -1,4 +1,4 @@
-zox_sys2(CharacterSkillsSpawnSystem) {
+/*zox_sys2(CharacterSkillsSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -41,4 +41,4 @@ zox_sys2(CharacterSkillsSpawnSystem) {
             skills->value[place_index++] = spawn_user_skill(world, e, rskill);
         }
     }
-} zox_sys_end(CharacterSkillsSpawnSystem);
+} zox_sys_end(CharacterSkillsSpawnSystem);*/

@@ -13,3 +13,8 @@ void zox_define_components_stats_ui(ecs* world) {
     zoxd_tag(StatIconLabel);
     zoxd_tag(StatBars);
 }
+
+// quick fix for now
+entity zox_get_id_statbars(ecs* world) {
+    return zox_id(StatBars);
+}

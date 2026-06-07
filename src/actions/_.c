@@ -15,6 +15,6 @@ zox_begin_module(Actions) {
     zox_define_systems_actions(world);
     add_hook_spawn_prefabs(spawn_prefabs_actions);
     zox_import_module(ActionsUI);
-} zox_end_module(Actions)
+} zox_end_module(Actions);
 
 #endif

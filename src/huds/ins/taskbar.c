@@ -27,9 +27,6 @@ void taskbar_button_click_event(ecs *world, ClickEventData event) {
 }
 
 entity spawn_taskbar(ecs *world, entity canvas) {
-    // Hmmm need to passin header height to spawn_window? Spawn non header window for just the dragger?
-    // byte header_font_size = 4 * ui_scale;
-    // byte2 header_padding = byte2_single(2 * ui_scale);
     byte taskbar_count = hook_taskbars->size;
     int frame_size = (default_frame_size / 4) * ui_scale;
     int icon_size = (default_icon_size / 4) * ui_scale;
@@ -65,8 +62,8 @@ entity spawn_taskbar(ecs *world, entity canvas) {
         entity frame = spawn_uic(world, prefab_frame_taskbar, body, float2_half, position, fsize, fsize, default_fill_color_frame, default_outline_color_frame);
         zox_set_parent(world, frame, body);
         zox_set_unique_name(frame, "taskbar_frame");
-        // spawn_icon_data.parent.e = frame;
-        // spawn_icon_data.parent.position = spawn_frame_data.element.position;
+        // A link to the window ID
+        zox_set(frame, TaskbarWindowID, { hook.component_id });
         // Icon
         entity icon = spawn_ui(world, prefab_icon, frame, float2_half, int2_zero, isize, isize);
         // entity icon = spawn_element(world, spawn_icon_data);
@@ -76,7 +73,7 @@ entity spawn_taskbar(ecs *world, entity canvas) {
         if (zox_valid(window)) {
             zox_set(frame, ActiveState, { 1 });
             zox_set(frame, ActiveStateDirty, { zox_dirty_trigger });
-            if (window) {
+            if (zox_valid(window)) {
                 zox_set(window, TaskbarToggleLink, { frame });
             }
         }

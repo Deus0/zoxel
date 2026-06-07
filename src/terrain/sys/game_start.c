@@ -10,11 +10,9 @@ zox_sys2(TerrainGameStartSystem) {
         zox_sys_i(RealmLink, realm);
         zox_sys_i(GameState, state);
         zox_sys_i(GameStateDirty, dirty);
-
-        if (!(state->value == zox_game_playing_start && dirty->value == zox_dirty_active)) {
+        if (!(state->value == zox_game_state_play_begin && dirty->value == zox_dirty_active)) {
             continue;
         }
-
         if (zox_game_type == zox_game_mode_3D) {
             // zox_log("Game Spawning Terrain @ [%f]", zox_current_time);
             // delay_event(world, &game_start_terrain3D, game, game_spawn_terrain_delay);

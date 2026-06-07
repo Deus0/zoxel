@@ -32,7 +32,7 @@ void spawn_prefabs_colors(ecs* world) {
     }
 }
 
-zox_begin_module(Colorz)
+zox_begin_module(Colorz) {
     zoxd_color(Color);
     zoxd_color(SecondaryColor);
     zoxd_color_rgb(ColorRGB);
@@ -42,6 +42,6 @@ zox_begin_module(Colorz)
     zoxd_arrayd(Colors);
     define_systems_colors(world);
     add_hook_spawn_prefabs(spawn_prefabs_colors);
-zox_end_module(Colorz)
+} zox_end_module(Colorz);
 
 #endif

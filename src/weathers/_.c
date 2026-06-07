@@ -16,7 +16,7 @@ void spawn_shaders_weather(ecs *world) {
     shader_skybox = spawn_shader_skybox(world);
 }
 
-zox_begin_module(Weathers)
+zox_begin_module(Weathers) {
     zoxd_tag(Weather);
     zoxd_tag(Skybox);
     define_systems_weather(world);
@@ -26,6 +26,6 @@ zox_begin_module(Weathers)
     add_to_event_game_state((zox_game_event) { &game_state_weather });
     // prefabs
     spawn_prefabs_weather(world);
-zox_end_module(Weathers)
+} zox_end_module(Weathers);
 
 #endif

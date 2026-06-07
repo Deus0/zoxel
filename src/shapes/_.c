@@ -10,10 +10,8 @@
 
 #include "shapes3/_.c"
 
-zox_begin_module(Shapes)
-
+zox_begin_module(Shapes) {
     zox_import_module(Shapes3);
-
-zox_end_module(Shapes)
+} zox_end_module(Shapes);
 
 #endif

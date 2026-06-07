@@ -7,10 +7,10 @@
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Nodes)
+zox_begin_module(Nodes) {
     define_components_nodes(world);
     define_systems_nodes(world);
     add_hook_spawn_prefabs(spawn_prefabs_nodes);
-zox_end_module(Nodes)
+} zox_end_module(Nodes);
 
 #endif

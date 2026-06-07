@@ -12,9 +12,9 @@
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Vrays)
+zox_begin_module(Vrays) {
     define_components_vrays(world);
     define_systems_vrays(world);
-zox_end_module(Vrays)
+} zox_end_module(Vrays);
 
 #endif

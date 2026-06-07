@@ -1,4 +1,3 @@
-double respawn_time = 15;
 byte auto_player = 0;
 // shit remove this atm, it doubles up for coop
 double run_speed = 1.8;

@@ -3,6 +3,7 @@
 /**
  *  Zox Voxes
  *
+ *      - For grouping Chunks together!
  *      - colored vox models
  *
  * */
@@ -23,7 +24,7 @@ void dispose_voxes(ecs *world, void *ctx) {
     dispose_files_voxes(world);
 }
 
-zox_begin_module(Voxes)
+zox_begin_module(Voxes) {
     zox_module_dispose(dispose_voxes);
     define_components_voxes(world);
     define_systems_voxes(world);
@@ -31,6 +32,6 @@ zox_begin_module(Voxes)
     add_hook_terminal_command(process_arguments_voxes);
     add_hook_files_load(load_files_voxes);
     initialize_settings_voxes(world);
-zox_end_module(Voxes)
+} zox_end_module(Voxes);
 
 #endif

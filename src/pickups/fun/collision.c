@@ -53,32 +53,37 @@ byte add_item_to_slot_manager(ecs* world, entity smanager, entity user, entity b
 
 // TODO: Use System instead of Hook!
 byte on_overlap_pickup(ecs *world, entity e, entity user) {
+    if (!zox_valid(e) || !zox_valid(user)) {
+        return 0;
+    }
     if (zox_getv(e, PickedUp) || !zox_has(user, PickUpperer)) {
         return 0;
     }
     if (zox_getv(user, Dead)) {
+        zox_set(e, PickedUp, { pickup_state_none });
         return 0;
     }
     // animate + picked up state
+    lerp_to_entity(world, e, user, 0.1f, 0.6f);
     zox_set(e, PickedUp, { pickup_state_trigger });
     zox_set(e, CollisionDisabled, { 1 });
-    lerp_to_entity(world, e, user, 0.1f, 0.6f);
     zox_set(e, DestroyInTime, { 1 });
     if (!zox_has(e, ItemLink)) {
         return 0;
     }
-    zox_geter_value(e, ItemLink, entity, base_item);
+    entity base_item = zox_getv(e, ItemLink);
     if (!zox_valid(base_item)) {
         zox_loge("Pickup item is invalid");
         return 0;
     }
+    byte quantity = zox_has(e, Quantity) ? zox_getv(e, Quantity) : 1;
     // Try add to actionbar first
     entity actionbar = zox_get_child_by_id(world, user, zox_id(Actionbar));
-    if (add_item_to_slot_manager(world, actionbar, user, base_item, 1)) {
+    if (add_item_to_slot_manager(world, actionbar, user, base_item, quantity)) {
         return 1;
     }
     entity inventory = zox_get_child_by_id(world, user, zox_id(Inventory));
-    if (add_item_to_slot_manager(world, inventory, user, base_item, 1)) {
+    if (add_item_to_slot_manager(world, inventory, user, base_item, quantity)) {
         return 1;
     }
     return 0;

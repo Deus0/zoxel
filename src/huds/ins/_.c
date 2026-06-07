@@ -12,3 +12,4 @@
 #include "load_game.c"
 #include "fps_display.c"
 #include "terminal.c"
+#include "respawn.c"

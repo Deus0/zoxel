@@ -7,10 +7,10 @@
 #include "sys/_.c"
 
 // Equipment includes Gear and Body parts in one
-zox_begin_module(Equips)
-    add_hook_spawn_prefabs(spawn_prefabs_equipment);
+zox_begin_module(Equips) {
     define_components_equipment(world);
     define_systems_equipment(world);
+    add_hook_spawn_prefabs(spawn_prefabs_equipment);
     add_taskbar_button((hook_taskbar) {
         .index = 7,
         .spawn = &spawn_player_menu_equipment,
@@ -18,6 +18,6 @@ zox_begin_module(Equips)
         .texture_name = "taskbar_equipment",
         .tooltip_text = "Equipment"
     });
-zox_end_module(Equips)
+} zox_end_module(Equips);
 
 #endif

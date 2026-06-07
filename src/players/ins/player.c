@@ -1,6 +1,7 @@
-entity spawn_player(ecs *world, const entity prefab) {
+entity spawn_player(ecs *world, entity prefab, entity game) {
     zox_instance(prefab);
     zox_name("player");
+    zox_set_parent(world, e, game);
     // adds all devices created in inputs module
     if (local_keyboard) {
         zox_set_parent(world, local_keyboard, e);

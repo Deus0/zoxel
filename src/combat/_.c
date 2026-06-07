@@ -12,7 +12,7 @@ zoxc_double(DiedTime);
 #include "fun/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Combat)
+zox_begin_module(Combat) {
     zoxd_byte(Dead);
     zoxd_double(DiedTime);
     zoxd_double(LastCombatTime);
@@ -20,6 +20,6 @@ zox_begin_module(Combat)
     zoxd_entity(LastDamager);
     define_systems_combat(world);
     add_hook_spawn_prefabs(spawn_prefabs_combat);
-zox_end_module(Combat)
+} zox_end_module(Combat);
 
 #endif

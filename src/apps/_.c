@@ -21,20 +21,18 @@
 
 #include "fun/_.c"
 
-zox_begin_module(Apps)
+zox_begin_module(Apps) {
     define_components_apps(world);
     add_hook_terminal_command(process_arguments_apps);
     add_hook_files_load(load_files_settings);
     add_hook_spawn_prefabs(spawn_prefabs_apps);
     // add_hook_spawn_prefabs(initialize_settings_apps);
     initialize_settings_apps(world);
-
 #ifdef zox_sdl
     zox_import_module(Sdl);
 #elif zox_glut
     zox_import_module(Glut);
 #endif
-
-zox_end_module(Apps)
+} zox_end_module(Apps);
 
 #endif

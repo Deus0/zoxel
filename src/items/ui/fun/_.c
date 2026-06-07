@@ -7,7 +7,9 @@ byte can_place_icon_in_item_frame(ecs* world, entity frame, entity data) {
         return 1;
     } else if (!zox_valid(data)) {
         return 1;
-    } else {
+    } else if (zox_valid(data)) {
         return zox_has(data, Item);
+    } else {
+        return 1;
     }
 }

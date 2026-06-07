@@ -1,6 +1,13 @@
 // When player state changes, for player UI
-zox_sys2(PlayerUIGamePauseSystem) {
-    byte dbg_log = 1;
+
+void delayed_spawn_menu_paused(ecs* world, entity e) {
+    if (zox_valid(e)) {
+        spawn_menu_paused(world, e);
+    }
+}
+
+zox_sys2(PlayerPauseUISystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
@@ -19,16 +26,6 @@ zox_sys2(PlayerUIGamePauseSystem) {
         if (!zox_valid(canvas->value)) {
             zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
             continue;
-        }
-        if (state->value == zox_player_state_respawn_begin) {
-            entity pause_menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPaused));
-            if (zox_valid(pause_menu)) {
-                zox_delete(pause_menu);
-            }
-            entity taskbar = zox_get_child_by_id(world, canvas->value, zox_id(Taskbar));
-            if (zox_valid(taskbar)) {
-                zox_delete(taskbar);
-            }
         }
         if (state->value == zox_player_state_pause_begin) {
             if (dbg_log) {
@@ -51,10 +48,19 @@ zox_sys2(PlayerUIGamePauseSystem) {
             if (game_ui_has_taskbar) {
                 spawn_taskbar(world, canvas->value);
             }
-            spawn_menu_paused(world, e);
-        } else if (state->value == zox_player_state_respawn) {
-            // When respawn, remove the fade screen
-            trigger_canvas_half_fade(world, canvas->value, pause_fade_time, 0, 1);
+            delay_event(world, &delayed_spawn_menu_paused, e, 0.01f);
+        } else if (state->value == zox_player_state_resume_begin) {
+            entity pause_menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPaused));
+            if (zox_valid(pause_menu)) {
+                zox_delete(pause_menu);
+            }
+            entity taskbar = zox_get_child_by_id(world, canvas->value, zox_id(Taskbar));
+            if (zox_valid(taskbar)) {
+                zox_delete(taskbar);
+            }
+            trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 0);
+        } else if (state->value == zox_player_state_play_begin) {
+            zox_set(camera->value, CameraBlur, { 0 });
         }
     }
-} zox_sys_end(PlayerUIGamePauseSystem);
+} zox_sys_end(PlayerPauseUISystem);

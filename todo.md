@@ -1,10 +1,12 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
-- Fix NPC RaycastRange
+- Make ui selected use seperate colors for Active/Highlighted/Disabled etc
+- Remove DotLinks
+- Physics clip issue now that my body is bigger than one block size
+- Add Character Render Texture UI to show your character
 - Refactor OverlapEvent to Overlapped state with a system in items
--x Respawn Start should remove game uis
--x Should not be able to unpause game when we are respawning
+- NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
 
 # Chunk Refactor
 - Spawn the Vox test without renderer, and use child as render

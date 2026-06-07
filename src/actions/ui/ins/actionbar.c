@@ -1,3 +1,4 @@
+// TODO: Just spawn tthis when player character first loads, add new state for that
 entity spawn_menu_actions(ecs* world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     zox_geter_value(player, CharacterLink, entity, character);
@@ -7,6 +8,10 @@ entity spawn_menu_actions(ecs* world, entity player) {
     }
     if (!zox_valid(character)) {
         zox_loge("Character not found on player");
+        return 0;
+    }
+    entity old_menu = zox_get_child_by_id(world, canvas, zox_id(MenuActions));
+    if (zox_valid(old_menu)) {
         return 0;
     }
     entity actionbar = zox_get_child_by_id(world, character, zox_id(Actionbar));

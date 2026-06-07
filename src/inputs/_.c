@@ -29,12 +29,12 @@ void add_hook_key_down_2(int keycode, void *e) {
 
 }
 
-zox_begin_module(Inputs)
+zox_begin_module(Inputs) {
     zox_module_dispose(module_dispose_inputs);
     initialize_hook_key_down();
     define_components_inputs(world);
     define_systems_input(world);
     add_hook_spawn_prefabs(spawn_prefabs_inputs);
-zox_end_module(Inputs)
+} zox_end_module(Inputs);
 
 #endif

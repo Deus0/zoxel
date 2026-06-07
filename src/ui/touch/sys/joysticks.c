@@ -124,9 +124,10 @@ zox_sys2(VirtualJoystickSystem) {
         if (!zox_valid(player)) {
             continue;
         }
-        entity game = zox_getv(player, GameLink);
+        byte player_state = zox_getv(player, PlayerState);
+        // entity game = zox_getv(player, GameLink);
         entity canvas = zox_getv(player, CanvasLink);
-        if (!zox_valid(game) || !zox_valid(canvas)) {
+        if (!zox_valid(canvas)) {
             return;
         }
         byte click_value = pointer->value;
@@ -134,8 +135,9 @@ zox_sys2(VirtualJoystickSystem) {
         if (devices_get_pressed_this_frame(click_value) && result->value) {
             continue;
         }
-        byte game_state = zox_getv(game, GameState);
-        if (game_state == zox_game_playing) {
+        // byte game_state = zox_getv(game, GameState);
+        // if (game_state == zox_game_state_playing) {
+        if (player_state == zox_player_state_playing) {
             handle_touch_down(world, e, vzevice->value, canvas);
         }
         handle_touch_drag(world, e, vzevice->value);

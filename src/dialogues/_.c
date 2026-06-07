@@ -17,10 +17,10 @@
 #include "sys/_.c"
 #include "tst/_.c"
 
-zox_begin_module(Dialogues)
+zox_begin_module(Dialogues) {
     define_components_dialogues(world);
     define_systems_dialogues(world);
     add_hook_spawn_prefabs(spawn_prefabs_dialogues);
-zox_end_module(Dialogues)
+} zox_end_module(Dialogues)
 
 #endif

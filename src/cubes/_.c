@@ -6,8 +6,8 @@
 #include "ins/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Cubes)
+zox_begin_module(Cubes) {
     add_hook_spawn_prefabs(spawn_prefabs_cubes);
-zox_end_module(Cubes)
+} zox_end_module(Cubes);
 
 #endif

@@ -11,36 +11,27 @@
 #if !defined(zoxm_terrain) && defined(zoxm_chunks3)
 #define zoxm_terrain
 
-// TODO: Refactor Grasslands into different systems
-//      - LandFillSystem
-//      - LandPlantSystem
-//      - TownBuildSystem
-
 // Initial core
 #include "set/_.c"
 #include "com/_.c"
 #include "dat/_.c"
-
 // NOTE: these need to be imported before core
 #include "voxels/_.c"
 #include "block_voxes/_.c"
-
 // Core
 #include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
 #include "dbg/_.c"
 #include "sys/_.c"
-
 #include "collisions/_.c"
 
 zox_begin_module(Terrain) {
     define_components_terrain(world);
     define_systems_terrain(world);
     add_hook_terminal_command(process_arguments_terrain);
-    // add_to_event_game_state((zox_game_event) { &game_state_terrain });
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
     zox_import_module(TerrainCollisions);
-} zox_end_module(Terrain)
+} zox_end_module(Terrain);
 
 #endif

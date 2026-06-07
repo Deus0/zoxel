@@ -13,64 +13,56 @@ zox_sys2(GameStateSystem) {
         zox_sys_o(GameStateTarget, target);
         zox_sys_o(GameStateDirty, dirty);
         zox_sys_o(GameStateTime, time);
-
         if (dirty->value || target->value == state->value) {
             continue;
         }
-
         // handle different next conditions
         byte is_update = 0;
-        // NOTE: Waits for fade to finish
         if (target->value == zox_game_load_fading) {
+            // NOTE: Waits for fade to finish
             double time_passed = zox_current_time - time->value;
             if (zox_valid(realm->value) && time_passed >= 3) {
                 // zox_log("Time Passed [%f] -> [%f] - %f", time->value, zox_current_time, time_passed);
                 is_update = 1;
             }
-        }
-        // NOTE: Waits for GenerateRealm to finish
-        else if (target->value == zox_game_loading_realm) {
+        } else if (target->value == zox_game_loading_realm) {
+            // NOTE: Waits for GenerateRealm to finish
             if (zox_valid(realm->value) && !zox_gett_value(realm->value, GenerateRealm)) {
                 is_update = 1;
             }
-        }
-        else {
+        } else {
             is_update = 1;
         }
 
         if (!is_update) {
             continue;
         }
-
         byte old_state = state->value;
         byte new_state = target->value;
-
         state->value = new_state;
         dirty->value = zox_dirty_trigger;
         time->value = zox_current_time;
         trigger_event_game(world, e, old_state, target->value);
-
         zox_logv("[%f] Game State [%i] -> [%i]", time->value, old_state, new_state);
-
         // Start Loading Realm after faded
         if (state->value == zox_game_load_start) {
             target->value = zox_game_load_fading;
-        }
-        else if (state->value == zox_game_load_fading) {
+        } else if (state->value == zox_game_load_fading) {
             target->value = zox_game_load_faded;
-        }
-        else if (state->value == zox_game_load_faded) {
+        } else if (state->value == zox_game_load_faded) {
             target->value = zox_game_loading_realm;
             zox_set(realm->value, GenerateRealm, { zox_generate_realm_start });
         }
         // finished loading realm
         else if (state->value == zox_game_loading_realm) {
-            target->value = zox_game_playing_start;
+            target->value = zox_game_state_play_begin;
+        } else if (state->value == zox_game_state_play_begin) {
+            target->value = zox_game_state_playing;
         }
-        else if (state->value == zox_game_playing_start) {
-            target->value = zox_game_playing;
+        // special edge case
+        else if (state->value == zox_game_state_respawn_on_pause) {
+            target->value = zox_game_state_playing;
         }
-
     }
 } zox_sys_end(GameStateSystem);
 

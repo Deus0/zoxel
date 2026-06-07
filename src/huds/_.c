@@ -24,7 +24,7 @@
 // #define zox_log_camera_spawning
 
 
-zox_begin_module(Huds)
+zox_begin_module(Huds) {
     zox_module_dispose(dispose_gameui);
     add_hook_spawn_prefabs(spawn_prefabs_game_ui);
     initialize_hook_taskbar();
@@ -38,6 +38,6 @@ zox_begin_module(Huds)
         .tooltip_text = "Pause Menu"
     });
     add_hook_on_boot(on_boot_game_ui);
-zox_end_module(Huds)
+} zox_end_module(Huds);
 
 #endif

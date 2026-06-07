@@ -5,7 +5,7 @@ zox_sys2(PlayerStateSystem) {
     byte dbg_log = 1;
     double pause_time = 0.3;
     double resume_time = 0.3;
-    double respawn_time = 4;
+    double respawn_time = 16;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(PlayerStateDirty);
@@ -71,6 +71,11 @@ zox_sys2(PlayerStateSystem) {
         } else if (state->value == zox_player_state_respawn_begin) {
             state->value = zox_player_state_respawning;
             dirty->value = zox_dirty_trigger;
+            entity game = zox_get_parent(world, e);
+            byte game_state = zox_getv(game, GameState);
+            if (game_state == zox_game_state_paused) {
+                zox_set(game, GameStateTarget, { zox_game_state_respawn_on_pause });
+            }
             if (dbg_log) {
                 zox_log("Player is now [Respawning] from [RespawnBegin]");
             }
@@ -85,12 +90,12 @@ zox_sys2(PlayerStateSystem) {
         else if (state->value == zox_player_state_pause_begin) {
             timer->value = zox_current_time;
             if (dbg_log) {
-                zox_log("Player will.... Pause soon");
+                zox_log("Player will soon [Pause]");
             }
         } else if (state->value == zox_player_state_resume_begin) {
             timer->value = zox_current_time;
             if (dbg_log) {
-                zox_log("Player will.... Resume soon");
+                zox_log("Player will soon [Resume]");
             }
         } else if (state->value == zox_player_state_respawning) {
             timer->value = zox_current_time;

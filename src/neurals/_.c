@@ -9,11 +9,11 @@
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Neurals)
+zox_begin_module(Neurals) {
     define_components_neurals(world);
     define_systems_neurals(world);
     add_hook_spawn_prefabs(spawn_prefabs_neurals);
     // spawn_test_brain(world);
-zox_end_module(Neurals)
+} zox_end_module(Neurals);
 
 #endif
