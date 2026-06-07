@@ -2,7 +2,6 @@
 byte ui_scale = 4;
 byte keyboard_navigation_mode = 0;
 color active_outline = (color) { 100, 222, 150, 155 };
-
 #include "animations.c"
 #include "buttons.c"
 #include "icons.c"

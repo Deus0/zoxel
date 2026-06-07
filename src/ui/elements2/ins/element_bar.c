@@ -1,7 +1,4 @@
-entity2 spawn_elementbar2(
-    ecs *world,
-    const entity prefab,
-    const entity canvas,
+entity2 spawn_elementbar2(ecs *world, entity prefab, entity canvas,
     const entity parent,
     int2 pixel_position,
     const int2 pixel_size,
@@ -15,25 +12,14 @@ entity2 spawn_elementbar2(
     color back_color,
     color front_color
 ) {
-    // Misc
-    const color label_font_outline_color = (color) { 33, 33, 33, 255 };
-    const color label_font_fill_color = (color) { 155, 155, 155, 255 };
-    const byte front_bar_layer = layer + 1;
-    const byte zext_layer = layer + 2;
-    // const byte text_length = 11; // health [100] - 11
-
-    // Sizing characters
-    // byte font_size = pixel_size.y - text_padding.y * 2;
-    // const int zext_width = ;
-    // const byte font_size_width = zext_width / text_length;
-    /*if (font_size > font_size_width) {
-        font_size = font_size_width;
-    }*/
-    const int2 text_size = (int2) { pixel_size.x - text_padding.x * 2, font_size };
-
+    color label_font_outline_color = (color) { 33, 33, 33, 255 };
+    color label_font_fill_color = (color) { 155, 155, 155, 255 };
+    byte front_bar_layer = layer + 1;
+    byte zext_layer = layer + 2;
+    int2 text_size = (int2) { pixel_size.x - text_padding.x * 2, font_size };
     zox_instance(prefab);
     zox_name("elementbar2");
-    zox_set(e, Color, { back_color });
+    zox_set(e, FillColor, { back_color });
     initialize_element(
         world,
         e,
@@ -50,7 +36,6 @@ entity2 spawn_elementbar2(
     }
     byte frontbar_padding = 6;
     zox_set(e, ElementBarSize, { (float2) { (pixel_size.x - frontbar_padding * 2) / (float) pixel_size.x, 1 } });
-
     // frontbar
     entity front_bar = spawn_elementbar2_front(
         world,
@@ -64,16 +49,14 @@ entity2 spawn_elementbar2(
     );
     zox_set_unique_name(front_bar, "element2D_frontbar");
     zox_set_parent(world, front_bar, e);
-
     // text
     SpawnZext zextSpawnData = {
         .canvas = {
-            .e = canvas,
-            // .size = canvas_size
+            .e = canvas
         },
         .parent = {
             .e = e,
-            .size = pixel_size
+            // .size = pixel_size
         },
         .element = {
             .prefab = prefab_zext,
@@ -91,10 +74,8 @@ entity2 spawn_elementbar2(
             .font_outline_color = label_font_outline_color
         }
     };
-
     entity text = spawn_text(world, zextSpawnData);
     zox_set_parent(world, text, e);
     zox_set_unique_name(text, "element2D_text");
-
     return (entity2) { e, text };
 }

@@ -19,14 +19,13 @@ zoxc_byte(FrameCorner);
 zoxc_float(IconRadius);
 zoxc_double(AnimateTexture);
 zoxc_int2(TilemapSize);
+zoxc_color(FillColor);
 zoxc_color(OutlineColor);
 zoxc_entity(TilemapLink);
 zoxc_entity(TextureLink);
 zoxc_arrayd(TextureData, color)
 zoxc_arrayd(TilemapUVs, float2)
 zoxc_entities(TextureLinks)
-// zoxc_entities(Textures)
-
 // Voxes
 zox_tag(VoxTexture);
 zox_tag(CenterVoxTexture);
@@ -49,21 +48,19 @@ void define_components_textures(ecs* world) {
     zoxd_tag(ObsidianTexture);
     zoxd_tag(FillTexture);
     zoxd_tag(TextureAddNoise);
-
     zoxd_tag(VoxTexture);
     zoxd_tag(CenterVoxTexture);
-
     zoxd_state(GenerateTexture);
     zoxd_byte(OutlineThickness);
     zoxd_byte(FrameCorner);
     zoxd_float(IconRadius);
     zoxd_int2(TilemapSize);
     zoxd_double(AnimateTexture);
+    zoxd_color(FillColor);
     zoxd_color(OutlineColor);
     zoxd_entity(TilemapLink);
     zoxd_entity(TextureLink);
     zoxd_arrayd(TextureData);
     zoxd_arrayd(TilemapUVs);
     zoxd_entities(TextureLinks);
-    // zoxd_entities(Textures);
 }

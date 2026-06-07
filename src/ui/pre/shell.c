@@ -13,8 +13,6 @@ entity spawn_prefab_element_shell(ecs *world, entity prefab) {
     zox_add_tag(e, Texture);
     zox_prefab_set(e, TextureData, { 0 });
     zox_prefab_set(e, TextureSize, { int2_zero });
-    // zox_prefab_set(e, TextureDirty, { 0 })
-    // zox_prefab_set(e, Color, { color_white })   // do i need this here? does basic lack texture info for generation?
     // # Rendering#
     zox_add_tag(e, ElementRender);
     zox_prefab_set(e, RenderDisabled, { 0 });

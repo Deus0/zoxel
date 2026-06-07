@@ -4,7 +4,7 @@ entity2 spawn_slider(ecs *world, LayoutParentData canvas_data, LayoutParentData 
     zox_instance(element_data.prefab);
     zox_name("slider");
     zox_set(e, SliderLabel, { slider_data.name });
-    zox_set(e, Color, { fill });
+    zox_set(e, FillColor, { fill });
     zox_set(e, OutlineColor, { handle_fill });
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
     if (element_data.render_disabled) {

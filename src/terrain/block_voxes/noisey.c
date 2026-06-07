@@ -35,7 +35,7 @@ entity spawn_realm_block_noisey(ecs *world, entity realm, byte index, char* name
         zox_set_unique_name(texture, "block_texture");
         zox_set_parent(world, texture, realm);
         zox_set(texture, GenerateTexture, { zox_dirty_trigger });
-        zox_set(texture, VoxBakeSide, { direction_front }); // direction_left });
+        zox_set(texture, VoxBakeSide, { direction_front });
         zox_set(texture, VoxLink, { vox });
         zox_set(e, TextureLink, { texture });
     }

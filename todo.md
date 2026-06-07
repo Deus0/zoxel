@@ -1,7 +1,10 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
-- Make ui selected use seperate colors for Active/Highlighted/Disabled etc
+- Add outlines to VoxTextures (body parts)
+- Update frame texture outline when icon is selected!
+- Selected Text option - update the characters
+-x Make ui selected use seperate colors for Active/Highlighted/Disabled etc
 - Remove DotLinks
 - Physics clip issue now that my body is bigger than one block size
 - Add Character Render Texture UI to show your character

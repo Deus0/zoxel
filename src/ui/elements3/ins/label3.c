@@ -7,7 +7,7 @@ entity spawn_label3D(ecs *world, SpawnDataElement3D data, Text3DData text_data, 
     zox_name("label3D");
     zox_set(e, RenderDisabled, { data.render_disabled });
     if (!is_color_null(data.base_color)) {
-        zox_set(e, Color, { data.base_color });
+        zox_set(e, FillColor, { data.base_color });
     }
     if (!is_color_null(data.outline_color)) {
         zox_set(e, OutlineColor, { data.outline_color });

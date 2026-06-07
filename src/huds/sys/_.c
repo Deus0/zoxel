@@ -30,7 +30,6 @@ void define_systems_game_ui(ecs *world) {
         MenuGameBeginSystem,
         EcsOnUpdate,
         [in] core.InitializeEntity,
-        [in] layouts2.CanvasLink,
         [out] huds.TaskbarToggleLink
     );
     zox_system(
@@ -92,7 +91,7 @@ void define_systems_game_ui(ecs *world) {
         [in] cameras.CameraLink,
         [none] players.Player
     );
-    zox_system_1(   // spawns ui
+    zox_system_1(
         PlayerTerminalSystem,
         zoxp_mainthread,
         [in] layouts2.CanvasLink,

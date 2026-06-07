@@ -1,9 +1,7 @@
 entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
-
     int2 texture_size = int2_zero; // { 16, 16 };
     // zox_prefab_child(prefab)
     zox_clone(prefab);
-
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Brightness, { 1 });
@@ -15,7 +13,6 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
     add_noise_texture(world, e);
-
     zox_remove_tag(e, MeshBasic3D);
     zox_add_tag(e, TexturedMesh3D);
     zox_prefab_set(e, MaterialTextured3D, { 0 });
@@ -30,6 +27,5 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
     prefab_set_mesh_colors_rgb(world, e, (color_rgb) { 255, 255, 255 }, cube2_vertices_length);
     add_gpu_texture(world, e);
     prefab_set_mesh_uvs_float2(world, e, cube2_uvs, cube2_uvs_length);
-
     return e;
 }

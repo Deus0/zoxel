@@ -9,8 +9,7 @@ void set_prefab_window(ecs* world, entity e) {
     // text properties used for spawning list elements
     zox_prefab_set(e, ElementFontSize, { default_font_size });
     // interaction
-    zox_add_tag(e, Selectable);
-    // zox_prefab_set(e, SelectState, { zox_select_state_none });
+    // zox_add_tag(e, Selectable);
     // Layout Constraints
     zox_add_tag(e, BoundToCanvas);
     zox_prefab_set(e, LayoutConstraints, { int4_zero });
@@ -22,7 +21,7 @@ entity spawn_prefab_window_textured(ecs *world, entity prefab) {
     set_prefab_window(world, e);
     zox_add_tag(e, FixToLayout);
     zox_set(e, FrameCorner, { default_window_corner });
-    zox_set(e, Color, { window_fill });
+    zox_set(e, FillColor, { window_fill });
     zox_set(e, OutlineColor, { window_outline });
     return e;
 }

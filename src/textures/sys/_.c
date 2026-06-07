@@ -18,13 +18,13 @@ void define_systems_textures(ecs *world) {
     );
     zox_filter(
         generate_textures2,
-        [none] FrameTexture,
+        [none] textures.FrameTexture,
         [out] textures.GenerateTexture
     );
     zox_system(
         AnimateNoiseSystem,
         zox_pip_texture_generation,
-        [out] AnimateTexture,
+        [out] textures.AnimateTexture,
         [out] textures.GenerateTexture
     );
     zox_filter(fill_texture_query, [none] FillTexture, [out] textures.GenerateTexture)
@@ -33,37 +33,36 @@ void define_systems_textures(ecs *world) {
         zoxp_textures,
         fill_texture_query,
         [in] rendering.TextureSize,
-        [in] colorz.Color,
+        [in] textures.FillColor,
         [out] textures.TextureData,
         [out] textures.GenerateTexture,
         [out] rendering.TextureDirty,
-        [none] FillTexture
+        [none] textures.FillTexture
     );
-    zox_system_ctx(
+    zox_system(
         FrameTextureSystem,
         zox_pip_texture_generation,
-        generate_textures2,
         [in] rendering.TextureSize,
-        [in] colorz.Color,
+        [in] textures.FillColor,
         [in] OutlineThickness,
-        [in] FrameCorner,
+        [in] textures.FrameCorner,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [out] rendering.TextureDirty,
-        [none] FrameTexture
+        [none] textures.FrameTexture
     );
     zox_system(
         IconTextureSystem,
         zox_pip_texture_generation,
         [in] rendering.TextureSize,
-        [in] colorz.Color,
-        [in] OutlineColor,
-        [in] OutlineThickness,
-        [in] IconRadius,
+        [in] textures.FillColor,
+        [in] textures.OutlineColor,
+        [in] textures.OutlineThickness,
+        [in] textures.IconRadius,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [out] rendering.TextureDirty,
-        [none] IconTexture
+        [none] textures.IconTexture
     );
     zox_system(
         TilemapGenerationSystem,
@@ -74,7 +73,7 @@ void define_systems_textures(ecs *world) {
         [out] rendering.TextureSize,
         [out] textures.TextureData,
         [out] rendering.TextureDirty,
-        [none] Tilemap
+        [none] textures.Tilemap
     );
     zox_system_1(
         TextureUpdateSystem,
@@ -83,7 +82,7 @@ void define_systems_textures(ecs *world) {
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
-        [none] !TextureRGB
+        [none] !textures.TextureRGB
     );
     zox_system_1(
         TextureRGBUpdateSystem,
@@ -92,6 +91,6 @@ void define_systems_textures(ecs *world) {
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
-        [none] TextureRGB
+        [none] textures.TextureRGB
     );
 }

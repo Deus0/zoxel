@@ -1,6 +1,6 @@
 // just a panel with a label and a bar
 // the bar can be clicked to reposition the handle as well
-entity spawn_prefab_slider(ecs *world, const entity prefab) {
+entity spawn_prefab_slider(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("slider");
     // slider
@@ -11,7 +11,7 @@ entity spawn_prefab_slider(ecs *world, const entity prefab) {
     zox_add_tag(e, FixToLayout);
     zox_set(e, FrameCorner, { default_button_corner });
     zox_set(e, OutlineThickness, { default_button_frame_thickness });
-    zox_set(e, Color, { default_fill_color });
+    zox_set(e, FillColor, { default_fill_color });
     zox_set(e, OutlineColor, { default_outline_color });
     return e;
 }

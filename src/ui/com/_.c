@@ -8,7 +8,8 @@ zoxc_entities(ElementLinks)
 zoxc_child(ElementHolder, ElementLinks)
 zoxc_entity(UIHolderLink);
 zoxc_int2(ElementMargins);
-zoxc_color(ElementColor);
+zoxc_color(ElementFillColor);
+zoxc_color(ElementOutlineColor);
 // Canvas
 zox_tag(CanvasOverlay);
 // Navigating
@@ -36,7 +37,8 @@ void zox_define_components_elements(ecs *world) {
     zoxd(UIHolderLink);
     zoxd_child(ElementHolder);
     zoxd_int2(ElementMargins);
-    zoxd_color(ElementColor);
+    zoxd_color(ElementFillColor);
+    zoxd_color(ElementOutlineColor);
     // Navigation
     zoxd_tag(NavigationWindow);
     zoxd_tag(NavigationElement);

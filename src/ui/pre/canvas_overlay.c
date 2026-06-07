@@ -1,9 +1,7 @@
 entity spawn_prefab_canvas_overlay(ecs *world, entity p) {
-
     zox_prefab_child(p);
     zox_prefab_name("canvas_overlay");
     zox_add_tag(e, CanvasOverlay);
-
     // zox_add_tag(e, FillTexture)
     zox_prefab_set(e, AnimationState, { 0 });
     zox_prefab_set(e, AnimationStart, { 0 });
@@ -14,9 +12,7 @@ entity spawn_prefab_canvas_overlay(ecs *world, entity p) {
     zox_prefab_add(e, AnimationSequence);
     zox_prefab_add(e, AnimationTimes);
     zox_prefab_add(e, AnimationTargets);
-
     // set
-    zox_set(e, Color, { canvas_overlay_color }); // color_black });
-
+    zox_set(e, FillColor, { canvas_overlay_color }); // color_black });
     return e;
 }

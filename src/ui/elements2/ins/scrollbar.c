@@ -9,7 +9,7 @@ entity spawn_scrollbar(ecs *world, entity parent, entity canvas, int2 position, 
     zox_name("scrollbar");
     initialize_element(world, e, parent, canvas, position, size, size, anchor, layer);
     zox_set(e, BonusLayer2, { 1 }); // increment it above the body of the window
-    zox_set(e, Color, { button_fill });
+    zox_set(e, FillColor, { button_fill });
     zox_set(e, OutlineColor, { button_outline });
     zox_set(e, ElementMargins, { margins });
     zox_set(e, RenderDisabled, { !visible });

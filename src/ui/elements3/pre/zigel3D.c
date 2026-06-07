@@ -13,16 +13,13 @@ typedef struct {
     float scale;
 } Zigel3DData;
 
-entity spawn_prefab_zigel3D(
-    ecs *world,
-    const entity prefab
-) {
+entity spawn_prefab_zigel3D(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("zigel3");
     zox_add_tag(e, Zigel);
     zox_add_tag(e, FontTexture);
     zox_prefab_set(e, ZigelIndex, { 0 });
-    zox_prefab_set(e, Color, { color_white });
+    zox_prefab_set(e, FillColor, { color_white });
     zox_prefab_set(e, SecondaryColor, { color_black });
     zox_prefab_set(e, FontThickness, { 1 });
     zox_prefab_set(e, FontOutlineThickness, { 1 });

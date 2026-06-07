@@ -5,9 +5,9 @@ zox_sys2(TooltipEventSystem) {
     zox_sys_in(TooltipEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SelectState, selectState);
+        zox_sys_i(SelectState, state);
         zox_sys_i(TooltipEvent, tooltipEvent);
-        if (!(selectState->value == zox_select_state_selected_this_frame || selectState->value == zox_select_state_deselected_this_frame)) {
+        if (!(state->value == zox_state_select_active || state->value == zox_state_deselect_active)) {
             continue;
         }
         if (!tooltipEvent->value) {
@@ -22,12 +22,12 @@ zox_sys2(TooltipEventSystem) {
             zox_log("Tooltip not found in canvas");
             continue;
         }
-        if (selectState->value == zox_select_state_deselected_this_frame) {
+        if (state->value == zox_state_deselect_active) {
             set_entity_text(world, tooltip, "");
             continue;
         }
         TooltipEventData data = {
-            .event = selectState->value,
+            .event = state->value,
             .tooltip = tooltip,
             .triggered = e
         };

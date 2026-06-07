@@ -2,7 +2,7 @@ zox_sys2(IconTextureSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureSize);
-    zox_sys_in(Color);
+    zox_sys_in(FillColor);
     zox_sys_in(OutlineColor);
     zox_sys_in(OutlineThickness);
     zox_sys_in(IconRadius);
@@ -12,7 +12,7 @@ zox_sys2(IconTextureSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextureSize, size);
-        zox_sys_i(Color, color_fill);
+        zox_sys_i(FillColor, color_fill);
         zox_sys_i(OutlineColor, color_outline);
         zox_sys_i(OutlineThickness, thickness);
         zox_sys_i(IconRadius, icon_radius);

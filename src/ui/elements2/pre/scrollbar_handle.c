@@ -4,8 +4,8 @@ entity spawn_prefab_scrollbar_handle(ecs *world, entity p) {
     zox_add_tag(e, Scrollbar);
     zox_prefab_set(e, ScrollviewLink, { 0 });
     // Selection
-    zox_add_tag(e, Selectable);
-    zox_prefab_set(e, SelectState, { zox_select_state_none });
+    /*zox_add_tag(e, Selectable);
+    zox_prefab_set(e, SelectState, { 0 });
     // Clicking
     zox_add_tag(e, Clickable);
     zox_prefab_set(e, ClickState, { 0 });
@@ -19,7 +19,7 @@ entity spawn_prefab_scrollbar_handle(ecs *world, entity p) {
     zox_prefab_set(e, DraggerLink, { 0 });
     zox_prefab_set(e, DraggedLink, { 0 });
     zox_prefab_set(e, LayoutConstraints, { int4_zero });
-    zox_add_tag(e, FixToLayout);
-    // zox_set(e, Color, { scrollbar_front_color });
+    zox_add_tag(e, FixToLayout);*/
+    // zox_set(e, FillColor, { scrollbar_front_color });
     return e;
 }

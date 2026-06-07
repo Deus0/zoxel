@@ -17,7 +17,7 @@ zox_sys2(FontTextureSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateTexture);
     zox_sys_in(ZigelIndex);
-    zox_sys_in(Color);
+    zox_sys_in(FillColor);
     zox_sys_in(SecondaryColor);
     zox_sys_in(TextureSize);
     zox_sys_in(FontThickness);
@@ -28,7 +28,7 @@ zox_sys2(FontTextureSystem) {
         zox_sys_i(GenerateTexture, generate);
         zox_sys_i(ZigelIndex, zindex);
         zox_sys_i(TextureSize, size);
-        zox_sys_i(Color, color_variable);
+        zox_sys_i(FillColor, color_variable);
         zox_sys_i(SecondaryColor, secondary_color);
         zox_sys_i(FontThickness, thickness);
         zox_sys_i(FontOutlineThickness, outline_thickness);

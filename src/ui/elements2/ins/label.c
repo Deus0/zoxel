@@ -5,7 +5,7 @@ entity spawn_label_background(ecs *world, entity prefab, entity parent, entity c
     }
     entity e = spawn_text_new(world, prefab, parent, position, anchor, font_size, alignment, padding, text, font_fill, font_fillo);
     zox_name("label_background");
-    zox_set(e, Color, { fill });
+    zox_set(e, FillColor, { fill });
     zox_set(e, OutlineColor, { fillo });
     zox_set(e, RenderDisabled, { render_disabled });
     zox_set(e, Layer2D, { layer });

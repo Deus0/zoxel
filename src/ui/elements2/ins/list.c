@@ -48,7 +48,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
     zox_set(e, ListMargins, { list_data.margins });
     zox_set(e, ListPadding, { list_data.padding });
     zox_set(e, TextPadding, { list_data.button_padding });
-    zox_set(e, Color, { list_data.fill });
+    zox_set(e, FillColor, { list_data.fill });
     zox_set(e, OutlineColor, { list_data.outline });
     // now spawn elements to fit our window
     LayoutParentData child_parent_data = {
@@ -133,6 +133,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
 
         } else if (child_data.type == list_element_type_toggle) {
             // Why so many for a button...
+            child_element_data.prefab = prefab_button;
             SpawnTextData child_text_data = {
                 .text = child_data.text,
                 .font_size = list_data.font_size,
@@ -149,12 +150,10 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .outline = button_outline,
             };
             entity toggle = spawn_toggle(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data, child_data.value);
-
             if (child_data.on_toggle.value) {
                 zox_set(toggle, ToggleEvent, { child_data.on_toggle.value });
             }
             zox_set(toggle, OptionLabel, { child_data.text });
-
             child = toggle;
         }
         zox_set_parent(world, child, e);

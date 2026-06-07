@@ -13,7 +13,7 @@ entity spawn_prefab_ui_list(ecs *world, entity prefab) {
     zox_add_tag(e, FixToLayout);
     // Selection
     zox_add_tag(e, Selectable);
-    zox_prefab_set(e, SelectState, { zox_select_state_none });
+    zox_prefab_set(e, SelectState, { 0 });
     // Clicking
     zox_add_tag(e, Clickable);
     zox_prefab_set(e, ClickState, { 0 });

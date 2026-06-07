@@ -1,6 +1,9 @@
 // Selecting
 zox_tag(Selectable);
+zox_tag(SelectedBrighter);
 zoxc_byte(SelectState);
+zoxc_color(SelectedFillColor);
+zoxc_color(SelectedOutlineColor);
 zox_tag(ElementRaycaster);
 // Clicking
 zox_tag(Clickable);
@@ -48,7 +51,10 @@ zoxc_function(ClickEvent, void, ecs*, ClickEventData);
 void zox_define_components_interaction(ecs* world) {
     // Selecting
     zoxd_tag(Selectable);
+    zoxd_tag(SelectedBrighter);
     zoxd_byte(SelectState);
+    zoxd_color(SelectedFillColor);
+    zoxd_color(SelectedOutlineColor);
     zoxd_tag(ElementRaycaster);
     // Click
     zoxd_tag(Clickable);

@@ -7,8 +7,8 @@ zoxc_float2(SlideBounds);
 zoxc(SliderLabel, const char*);
 // Toggle
 zox_tag(Toggle);
-zoxc_byte(ToggleState);
-zoxc_state(ToggleStateDirty);
+// zoxc_byte(ToggleState);
+// zoxc_state(ToggleStateDirty);
 // Frames
 zox_tag(Frame);
 zox_tag(Icon);
@@ -42,8 +42,8 @@ void define_components_elements2(ecs *world) {
     zoxd_entity(ScrollviewLink);
     zoxd_entity(ListUILink);
     zoxd_tag(Toggle);
-    zoxd_byte(ToggleState);
-    zoxd_state(ToggleStateDirty);
+    //zoxd_byte(ToggleState);
+    //zoxd_state(ToggleStateDirty);
     zoxd(ToggleEvent);
     zoxd(OptionLabel);
 }

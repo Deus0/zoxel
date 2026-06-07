@@ -4,11 +4,19 @@ entity spawn_prefab_header(ecs *world, entity prefab) {
     zox_add_tag(e, Header);
     // Texture
     zox_add_tag(e, FixToLayout);
-    add_frame_texture_type(world, e, header_fill, header_outline, default_button_corner, default_button_frame_thickness);
+    zox_add_tag(e, FrameTexture);
+    zox_prefab_set(e, FrameCorner, { default_button_corner });
+    zox_prefab_set(e, OutlineThickness, { default_button_frame_thickness });
+    zox_prefab_set(e, FillColor, { header_fill });
+    zox_prefab_set(e, OutlineColor, { header_outline });
+    zox_prefab_set(e, ElementFillColor, { header_fill });
+    zox_prefab_set(e, ElementOutlineColor, { header_outline });
     // zox_add_tag(e, WindowRaycastTarget);
     // Select
     zox_add_tag(e, Selectable);
-    zox_prefab_set(e, SelectState, { zox_select_state_none });
+    zox_prefab_set(e, SelectState, { 0 });
+    zox_prefab_set(e, SelectedFillColor, { button_fill_selected });
+    zox_prefab_set(e, SelectedOutlineColor, { button_outline_selected });
     // Click
     zox_add_tag(e, Clickable);
     zox_prefab_set(e, ClickState, { 0 });

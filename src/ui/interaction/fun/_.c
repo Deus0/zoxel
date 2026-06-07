@@ -24,11 +24,13 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
     if (zox_has(e, RaycasterTarget)) {
         entity last_target = zox_get_value(e, RaycasterTarget)
         if (zox_valid(last_target)) {
-            zox_set(last_target, SelectState, { zox_select_state_trigger_deselect });
+            zox_set(last_target, SelectState, { zox_state_deselect_trigger });
+            // zox_set(last_target, SelectStateDirty, { zox_dirty_trigger });
         }
         zox_set(e, RaycasterTarget, { target });
         if (zox_valid(target)) {
-            zox_set(target, SelectState, { zox_select_state_trigger_selected });
+            zox_set(target, SelectState, { zox_state_select_trigger });
+            // zox_set(target, SelectStateDirty, { zox_dirty_trigger });
         }
     }
     entity children[layouts2_children_capacity];
@@ -67,14 +69,4 @@ void set_element_dragged(ecs *world, entity ndragger, entity e, byte drag_mode) 
             zox_log("Dragging Started [%f]", (float) zox_current_time);
         }
     }
-}
-
-void prefab_add_active_state(ecs* world, entity e, color active) {
-    zox_prefab_set(e, ActiveState, { 0 });
-    zox_prefab_set(e, ActiveStateDirty, { 0 });
-    // zox_prefab_set(e, OutlineColor, { base });
-    zox_geter_value(e, OutlineColor, color, base);
-    zox_prefab_set(e, ElementColor, { base });
-    zox_prefab_set(e, ActiveColor, { active });
-    // zox_log("Set prefab [%s] outline color [%ix%ix%ix%i]", zox_get_name(e), base.r, base.g, base.b, base.a);
 }

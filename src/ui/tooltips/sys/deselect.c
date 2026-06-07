@@ -6,7 +6,7 @@ zox_sys2(TooltipDeselectSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SelectState, state);
-        if (state->value != zox_select_state_deselected_this_frame) {
+        if (state->value != zox_state_deselect_active) {
             continue;
         }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));

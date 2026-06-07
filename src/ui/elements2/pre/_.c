@@ -41,19 +41,16 @@ void spawn_prefabs_elements2(ecs *world) {
     // icons
     prefab_icon = spawn_prefab_icon(world, prefab_element_ready);
     prefab_frame = spawn_prefab_frame(world, prefab_element_textured, default_fill_color_frame, default_outline_color_frame);
-    {
-        prefab_frame_selectable = zox_prefab_from_parent(world, prefab_frame);
-        zox_prefab_set(prefab_frame_selectable, OutlineColor, { default_outline_color_frame });
-        prefab_add_active_state(world, prefab_frame_selectable, active_outline);
-    }
+    prefab_frame_selectable = spawn_prefab_frame_toggleable(world, prefab_frame, default_outline_color_frame, button_outline_active);
+    // handles
+    prefab_handle = spawn_prefab_handle(world, prefab_button);
+    prefab_scrollbar_front = spawn_prefab_scrollbar_handle(world, prefab_handle);
+    // slider
+    prefab_slider = spawn_prefab_slider(world, prefab_element_textured);
     // scrollbars
     prefab_scrollbar = spawn_prefab_scrollbar(world, prefab_element_textured);
-    prefab_scrollbar_front = spawn_prefab_scrollbar_handle(world, prefab_element_textured);
-    // slider
-    prefab_handle = spawn_prefab_handle(world, prefab_element_textured);
-    prefab_slider = spawn_prefab_slider(world, prefab_element_textured);
     // mouse
-    prefab_icon_mouse_follow = spawn_prefab_icon_mouse_follow(world, prefab_element_shell); // prefab_element_textured);
+    prefab_icon_mouse_follow = spawn_prefab_icon_mouse_follow(world, prefab_element_shell);
     // panel
     prefab_grid = spawn_prefab_grid(world, prefab_element_textured);
     // lists

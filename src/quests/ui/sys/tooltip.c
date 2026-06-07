@@ -8,7 +8,7 @@ zox_sys2(QuestIconTooltipSystem) {
         zox_sys_e();
         zox_sys_i(SelectState, state);
         zox_sys_i(DataLink, data);
-        if (state->value != zox_select_state_selected_this_frame) {
+        if (state->value != zox_state_select_active) {
             continue;
         }
         entity e2 = data->value;

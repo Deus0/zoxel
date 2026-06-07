@@ -6,22 +6,22 @@ zox_sys2(MenuGameBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InitializeEntity);
-    zox_sys_in(CanvasLink);
     zox_sys_out(TaskbarToggleLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(InitializeEntity, state);
-        zox_sys_i(CanvasLink, canvas);
         zox_sys_o(TaskbarToggleLink, link);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        if (!zox_valid(canvas->value)) {
+        entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
+        if (!zox_valid(canvas)) {
             zox_logw("Canvas is missing from taskbar");
             continue;
         }
-        entity taskbar = zox_get_child_by_id(world, canvas->value, zox_id(Taskbar));
+        entity taskbar = zox_get_child_by_id(world, canvas, zox_id(Taskbar));
         if (!taskbar) {
-            zox_log("Taskbar not on canvas [%s]", zox_get_name(canvas->value));
+            zox_log("Taskbar not on canvas [%s]", zox_get_name(canvas));
             continue;
         }
         entity toggles[layouts2_children_capacity];

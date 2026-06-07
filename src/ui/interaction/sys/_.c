@@ -7,11 +7,11 @@
 #include "selected.c"
 #include "click_sound.c"
 #include "drag.c"
-#include "animate.c"
+#include "active.c"
 #include "link.c"
 #include "resulter.c"
 zox_increment_system_with_reset_extra(ClickState, zox_click_state_trigger_clicked, zox_click_state_clicked_idle, zox_click_state_trigger_released, zox_click_state_idle);
-zox_increment_system_with_reset_extra(SelectState, zox_select_state_trigger_selected, zox_select_state_selected, zox_select_state_trigger_deselect, zox_select_state_deselected_idle);
+zox_increment_system_with_reset_extra(SelectState, zox_state_select_trigger, zox_state_select_idle, zox_state_deselect_trigger, zox_state_deselect_idle);
 
 void zox_define_systems_interaction(ecs* world) {
     zoxd_system_increment(ClickState);
@@ -60,12 +60,47 @@ void zox_define_systems_interaction(ecs* world) {
         [out] interaction.ClickingEntity,
         [none] inputs.Device
     );
+    // Coloring Animations
     zox_system(
-        ElementSelectedSystem,
+        ElementSelectedFillColorSystem,
+        EcsOnUpdate,
+        [in] interaction.SelectState,
+        [in] elements.ElementFillColor,
+        [in] interaction.SelectedFillColor,
+        [out] textures.FillColor,
+        [out] textures.GenerateTexture,
+        [none] elements.Element
+    );
+    zox_system(
+        ElementSelectedOutlineColorSystem,
+        EcsOnUpdate,
+        [in] interaction.SelectState,
+        [in] elements.ElementOutlineColor,
+        [in] interaction.SelectedOutlineColor,
+        [out] textures.OutlineColor,
+        [out] textures.GenerateTexture,
+        [none] elements.Element
+    );
+    // Active
+    zox_system(
+        ElementActiveSystem,
+        EcsOnUpdate,
+        [in] interaction.ActiveState,
+        [in] interaction.ActiveStateDirty,
+        [in] elements.ElementOutlineColor,
+        [in] interaction.ActiveColor,
+        [out] textures.OutlineColor,
+        [out] textures.GenerateTexture,
+        [none] elements.Element
+    );
+    zox_system(
+        ElementSelectedBrighterSystem,
         EcsOnUpdate,
         [in] interaction.SelectState,
         [out] rendering.Brightness,
-        [none] elements.Element
+        [none] elements.Element,
+        [none] interaction.SelectedBrighter,
+        // [none] !interaction.SelectedFillColor
     );
     zox_system_1(
         ClickSoundSystem,
@@ -87,19 +122,6 @@ void zox_define_systems_interaction(ecs* world) {
         [out] interaction.DraggableState,
         [out] interaction.DraggerLink,
         [out] interaction.DraggingDelta
-    );
-    // Active
-    zox_system(
-        ElementActiveSystem,
-        EcsOnUpdate,
-        [in] interaction.ActiveState,
-        [in] interaction.ActiveStateDirty,
-        [in] elements.ElementColor,
-        [in] interaction.ActiveColor,
-        [out] textures.OutlineColor,
-        [out] rendering.Brightness,
-        [out] textures.GenerateTexture,
-        [none] elements.Element
     );
     zox_system(
         ElementActiveLinkSystem,

@@ -65,18 +65,19 @@ void define_systems_elements2(ecs *world) {
         [in] interaction.ClickState,
         [in] interaction.Clicker,
         [in] elements2.ToggleEvent,
-        [out] elements2.ToggleState,
-        [out] elements2.ToggleStateDirty,
-        [none] Toggle
+        [out] interaction.ActiveState,
+        [out] interaction.ActiveStateDirty,
+        [none] elements2.Toggle
     );
-    zox_system(
+    /*zox_system(
         ToggleStateSystem,
         EcsOnUpdate,
         [in] elements2.ToggleState,
         [in] elements2.ToggleStateDirty,
+        [in] elements.ElementOutlineColor,
         [out] textures.OutlineColor,
-        [out] rendering.Brightness,
+        // [out] rendering.Brightness,
         [out] textures.GenerateTexture,
         [none] Toggle
-    );
+    );*/
 }

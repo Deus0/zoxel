@@ -14,7 +14,7 @@ entity spawn_zigel3(ecs *world, Zigel3DData data) {
     zox_set(e, RenderDisabled, { data.render_disabled });
     zox_set(e, TextureSize, { int2_single(data.resolution) });
     if (!is_color_null(data.fill_color)) {
-        zox_set(e, Color, { data.fill_color });
+        zox_set(e, FillColor, { data.fill_color });
     }
     if (!is_color_null(data.outline_color)) {
         zox_set(e, SecondaryColor, { data.outline_color });

@@ -7,8 +7,10 @@ entity spawn_button(ecs *world, LayoutParentData canvas_data, LayoutParentData p
     };
     zox_instance(element_data.prefab);
     zox_name("button");
-    zox_set(e, Color, { button_data.fill });
+    zox_set(e, FillColor, { button_data.fill });
+    zox_set(e, ElementFillColor, { button_data.fill });
     zox_set(e, OutlineColor, { button_data.outline });
+    zox_set(e, ElementOutlineColor, { button_data.outline });
     set_element_spawn_data(world, e, canvas_data, parent, element_data);
     entity text = spawn_text_new(world, button_data.prefab_zext, e, int2_zero, float2_half, zext_data.font_size, zext_data.alignment, zext_data.margins, zext_data.text, zext_data.font_fill_color, zext_data.font_outline_color);
     zox_set(text, Layer2D, { element_data.layer + 1 });

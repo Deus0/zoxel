@@ -4,15 +4,15 @@ zox_sys2(ToggleEventSystem) {
     zox_sys_in(ClickState);
     zox_sys_in(Clicker);
     zox_sys_in(ToggleEvent);
-    zox_sys_out(ToggleState);
-    zox_sys_out(ToggleStateDirty);
+    zox_sys_out(ActiveState);
+    zox_sys_out(ActiveStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ClickState, cstate);
         zox_sys_i(Clicker, clicker);
         zox_sys_i(ToggleEvent, event);
-        zox_sys_o(ToggleState, tstate);
-        zox_sys_o(ToggleStateDirty, dirty);
+        zox_sys_o(ActiveState, tstate);
+        zox_sys_o(ActiveStateDirty, dirty);
 
         if (cstate->value != zox_click_state_released_this_frame) {
             continue;

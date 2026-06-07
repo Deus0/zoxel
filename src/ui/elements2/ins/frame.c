@@ -3,7 +3,7 @@ entity3 spawn_frame(ecs *world, entity prefab, entity prefab_icon, entity prefab
     color outline = frame_outline;
     entity e = spawn_uic(world, prefab, parent, float2_half, position, size, size, fill, outline);
     zox_name("frame");
-    zox_set(e, ElementColor, { outline });
+    zox_set(e, ElementFillColor, { outline });
     entity icon = spawn_icon(world, prefab_icon, e, int2_zero, icon_size, fill, outline, index).x;
     entity text = 0;
     if (zox_valid(prefab_label)) {
