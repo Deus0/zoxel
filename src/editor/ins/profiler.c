@@ -13,9 +13,9 @@ entity spawn_profiler(ecs* world, const char *header_label, entity canvas, int2 
     byte plots_count = 1;
     byte plot_layer = layer + 1;
     int font_size = 28;
-    entity2 e2 = spawn_window(world, prefab_window, prefab_body, "Profiler", canvas, position, size, anchor, NULL);
+    entity3 e2 = spawn_window(world, prefab_window, prefab_body, "Profiler", canvas, position, size, anchor, NULL);
     entity e = e2.x;
-    entity body = e2.y;
+    entity body = e2.z;
     zox_add_tag(e, EditorElement);
     zox_add_tag(e, Profiler);
     zox_set(e, PlotPaused, { 0 });

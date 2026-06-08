@@ -1,4 +1,4 @@
-entity spawn_prefab_elementbar2D_front(ecs* world, entity prefab) {
+/*entity spawn_prefab_elementbar2D_front(ecs* world, entity prefab) {
     zox_prefab_child(prefab)
     zox_prefab_name("elementbar2_bar");
     zox_prefab_set(e, LayoutSize, { int2_one });
@@ -9,3 +9,4 @@ entity spawn_prefab_elementbar2D_front(ecs* world, entity prefab) {
     zox_prefab_set(e, MeshAlignment, { zox_alignment_left });
     return e;
 }
+*/

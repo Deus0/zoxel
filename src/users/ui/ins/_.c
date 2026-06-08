@@ -17,7 +17,7 @@ void set_icon_from_user_data(ecs *world, entity frame, entity icon, entity data)
     clone_texture_data(world, icon, texture);
 }
 
-entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns, const entity* udata, uint count) {
+/*entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns, const entity* udata, uint count) {
     entity character = data.window.character;
     if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         zox_log_error("invalid character in spawn icons window.");
@@ -100,7 +100,7 @@ entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData wi
     add_to_ElementLinks(elementLinks, e);
     zox_set(e, ElementHolder, { character });
     return e;
-}
+}*/
 
 /*entity spawn_window_users_id(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns) {
     entity character = data.window.character;

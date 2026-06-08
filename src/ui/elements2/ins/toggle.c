@@ -1,5 +1,5 @@
 entity spawn_toggle(ecs *world, LayoutParentData canvas, LayoutParentData parent, ElementSpawnData element, SpawnTextData text, SpawnButtonData button, byte value) {
-    entity e = spawn_button(world, canvas, parent, element, text, button);
+    entity e = spawn_button_old(world, canvas, parent, element, text, button);
     // TODO: Toggle Prefab
     zox_add_tag(e, Toggle);
     zox_set(e, ActiveState, { value });

@@ -23,9 +23,9 @@ entity spawn_datagrid(ecs* world, entity prefab, entity prefab_frame, entity pre
     byte selected = 0;
     // Spawns Window here!!
     byte header_height = 0;
-    entity2 e2 = spawn_window(world, prefab, prefab_grid, header_label, canvas, position, size, position_anchor, on_closed_taskbar_window);
+    entity3 e2 = spawn_window(world, prefab, prefab_grid, header_label, canvas, position, size, position_anchor, on_closed_taskbar_window);
     entity e = e2.x;
-    entity grid = e2.y;
+    entity grid = e2.z;
     zox_set_unique_name(grid, "window_gridg");
     zox_set(grid, GridSize, { cells_size });
     zox_set(grid, GridPadding, { grid_padding });

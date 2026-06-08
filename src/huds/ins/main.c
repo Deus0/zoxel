@@ -37,10 +37,12 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
 #endif
     entity elements2[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { NULL }, 0, 0, 0, zox_alignment_centre, padding, elements2, elements, elements_count, elements_count);
-    zox_set_unique_name(e3.x, "main_menu");
-    zox_add_tag(e3.x, MenuMain);
-    zox_add_tag(e3.x, NavigationWindow);
-    zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
+    entity e = e3.x;
+    entity header = e3.z;
+    zox_set_unique_name(e, "main_menu");
+    zox_add_tag(e, MenuMain);
+    zox_add_tag(e, NavigationWindow);
+    zox_set(header, TooltipEvent, { &tooltip_event_zoxel_header });
     // zox_set(elements2[0], TooltipEvent, { &tooltip_event_main_menu });
-    return e3.x;
+    return e;
 }

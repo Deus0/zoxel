@@ -11,9 +11,8 @@ entity spawn_prefab_header(ecs *world, entity prefab) {
     zox_prefab_set(e, OutlineColor, { header_outline });
     zox_prefab_set(e, ElementFillColor, { header_fill });
     zox_prefab_set(e, ElementOutlineColor, { header_outline });
-    // zox_add_tag(e, WindowRaycastTarget);
     // Select
-    zox_add_tag(e, Selectable);
+    /*zox_add_tag(e, Selectable);
     zox_prefab_set(e, SelectState, { 0 });
     zox_prefab_set(e, SelectedFillColor, { button_fill_selected });
     zox_prefab_set(e, SelectedOutlineColor, { button_outline_selected });
@@ -22,7 +21,7 @@ entity spawn_prefab_header(ecs *world, entity prefab) {
     zox_prefab_set(e, ClickState, { 0 });
     zox_prefab_set(e, ClickDisabled, { 0 });
     zox_prefab_set(e, Clicker, { 0 });
-    zox_prefab_set(e, ClickEvent, { NULL });
+    zox_prefab_set(e, ClickEvent, { NULL });*/
     // Dragging
     zox_add_tag(e, Dragable);
     zox_prefab_set(e, DraggableState, { 0 });

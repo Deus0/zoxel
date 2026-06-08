@@ -6,8 +6,7 @@
 #include "handle.c"
 #include "slider.c"
 #include "elementbar2D_front.c"
-#include "elementbar2D.c"
-#include "scrollbar_handle.c"
+#include "bar.c"
 #include "scrollbar.c"
 #include "mouse_follow_icon.c"
 // Panels - TODO: Move these to containers
@@ -18,13 +17,13 @@ entity prefab_button;
 entity prefab_icon;
 entity prefab_frame;
 entity prefab_label_background;
-entity prefab_scrollbar_front;
+// entity prefab_scrollbar_front;
 entity prefab_scrollbar;
 entity prefab_list;
 entity prefab_ui_list;
 entity prefab_grid;
 entity prefab_elementbar2D;
-entity prefab_elementbar2D_front;
+// entity prefab_elementbar2D_front;
 entity prefab_icon_mouse_follow;
 entity prefab_handle;
 entity prefab_slider;
@@ -37,14 +36,14 @@ void spawn_prefabs_elements2(ecs *world) {
     prefab_button = spawn_prefab_button(world, prefab_element_textured);
     // statbars
     prefab_elementbar2D = spawn_prefab_elementbar2D(world, prefab_element_textured);
-    prefab_elementbar2D_front = spawn_prefab_elementbar2D_front(world, prefab_element_textured);
+    // prefab_elementbar2D_front = spawn_prefab_elementbar2D_front(world, prefab_element_textured);
     // icons
     prefab_icon = spawn_prefab_icon(world, prefab_element_ready);
     prefab_frame = spawn_prefab_frame(world, prefab_element_textured, default_fill_color_frame, default_outline_color_frame);
     prefab_frame_selectable = spawn_prefab_frame_toggleable(world, prefab_frame, default_outline_color_frame, button_outline_active);
     // handles
     prefab_handle = spawn_prefab_handle(world, prefab_button);
-    prefab_scrollbar_front = spawn_prefab_scrollbar_handle(world, prefab_handle);
+    // prefab_scrollbar_front = spawn_prefab_scrollbar_handle(world, prefab_handle);
     // slider
     prefab_slider = spawn_prefab_slider(world, prefab_element_textured);
     // scrollbars
@@ -54,5 +53,5 @@ void spawn_prefabs_elements2(ecs *world) {
     // panel
     prefab_grid = spawn_prefab_grid(world, prefab_element_textured);
     // lists
-    prefab_list = spawn_prefab_ui_list(world, prefab_element_textured);
+    prefab_list = spawn_prefab_ui_list(world, prefab_layout2); // prefab_element_textured
 }

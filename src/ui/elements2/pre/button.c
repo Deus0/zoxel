@@ -2,7 +2,6 @@ entity spawn_prefab_button(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("button");
     zox_add_tag(e, Button);
-    zox_add_tag(e, TextResizer);
     // texture
     zox_add_tag(e, FixToLayout);
     zox_prefab_set(e, FrameCorner, { default_button_corner });
@@ -14,6 +13,7 @@ entity spawn_prefab_button(ecs *world, entity prefab) {
     zox_prefab_set(e, ElementOutlineColor, { button_outline });
     zox_prefab_set(e, SelectedFillColor, { button_fill_selected });
     zox_prefab_set(e, SelectedOutlineColor, { button_outline_selected });
+    // zox_add_tag(e, TextResizer);
     //  Select
     zox_add_tag(e, Selectable);
     zox_prefab_set(e, SelectState, { 0 });

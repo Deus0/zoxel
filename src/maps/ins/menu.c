@@ -11,6 +11,6 @@ entity spawn_player_menu_map(ecs* world, entity player) {
         .header_padding = (byte2) { 8, 4 },
     };
     LayoutParentData canvas_data = (LayoutParentData) { .e = canvas, .size = canvas_size };
-    entity e = spawn_window2(world, canvas_data, canvas_data, data.element, window_data, (ClickEvent) { &on_closed_taskbar_window }, 1, 0).x;
+    entity e = spawn_window_old(world, canvas_data, canvas_data, data.element, window_data, (ClickEvent) { &on_closed_taskbar_window }, 1, 0).x;
     return e;
 }

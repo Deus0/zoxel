@@ -12,6 +12,7 @@ void initialize_layout2(ecs *world, entity e, entity parent, entity canvas, int2
     }
 }
 
+// OBSOLETE
 void set_element_spawn_data(ecs *world, entity e, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data) {
     // zox_set(e, ParentLink, { parent_data.e });
     zox_set_parent(world, e, parent_data.e);

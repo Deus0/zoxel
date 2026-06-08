@@ -71,9 +71,9 @@ void zoxel_settings_physics() {
 void zoxel_settings_uis() {
     byte window_fill_alpha = 166;
     byte fill_alpha = 66;
-    byte outline_alpha = 66;
     byte text_alpha = 122;
-    byte outline_value = 77;
+    byte outline_alpha = 92;
+    byte outline_value = 1;
     // Windows
     window_outline = color_grayscale_a(outline_value, outline_alpha);
     window_fill = (color) { 13, 22, 16, window_fill_alpha };

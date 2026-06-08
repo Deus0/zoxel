@@ -1,4 +1,4 @@
-entity spawn_elementbar2_front(ecs *world, entity canvas, entity parent, int2 parent_position, int2 parent_size, byte layer, byte render_disabled, color front_color) {
+/*entity spawn_elementbar2_front(ecs *world, entity canvas, entity parent, int2 parent_position, int2 parent_size, byte layer, byte render_disabled, color front_color) {
     byte margin = 3;
     int2 size = (int2) {
         parent_size.x - margin * 2,
@@ -21,4 +21,4 @@ entity spawn_elementbar2_front(ecs *world, entity canvas, entity parent, int2 pa
         layer
     );
     return e;
-}
+}*/

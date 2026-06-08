@@ -30,9 +30,9 @@ entity spawn_menu_game_stats(ecs* world, entity player) {
     // Positioning
     float2 position_anchor = float2_top_left;
     int2 position = (int2) { 8 * ui_scale, - 6 * ui_scale };
-    entity2 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, position_anchor, NULL);
+    entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, position_anchor, NULL);
     entity e = e2.x;
-    entity body = e2.y;
+    entity body = e2.z;
     zox_set_unique_name(e, "statbars");
     zox_add_tag(e, StatBars);
     // Now our bars
@@ -50,9 +50,10 @@ entity spawn_menu_game_stats(ecs* world, entity player) {
             zox_loge("Stat [%s] has no ColorRGB", zox_get_name(stat));
             continue;
         }
-        zox_geter_value(stat, ColorRGB, color_rgb, cvalue);
-        entity statbar = spawn_statbar2(world, canvas, body, (entity2) { character, stat }, cvalue, 0, float2_half, bar_size, bar_position, label_font_size);
-        zox_set_parent(world, statbar, body);
+        color_rgb fill = zox_getv(stat, ColorRGB);
+        // entity statbar = spawn_statbar2(world, canvas, body, (entity2) { character, stat }, fill, 0, float2_half, bar_size, bar_position, label_font_size);
+        spawn_statbar2(world, body, stat, bar_position, bar_size, float2_half, fill, label_font_size);
+        // zox_set_parent(world, statbar, body);
         bar_position.y -= bar_size.y + bar_padding;
     }
     return e;

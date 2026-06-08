@@ -24,7 +24,7 @@ entity spawn_menu_start(ecs* world, entity player, entity canvas) {
             .margins = margins,
         },
     };
-    entity e = spawn_button(world, (LayoutParentData) { canvas }, (LayoutParentData) { canvas }, data.element, data.zext, data.button);
+    entity e = spawn_button_old(world, (LayoutParentData) { canvas }, (LayoutParentData) { canvas }, data.element, data.zext, data.button);
     zox_name("menu_start");
     // zox_set(e, TooltipEvent, { &tooltip_event_menu_start });
     // entity e = zox_ins(prefab_button);

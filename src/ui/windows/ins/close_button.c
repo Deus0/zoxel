@@ -28,7 +28,7 @@ entity spawn_close_button(ecs *world, entity parent, entity canvas, byte size, b
             .font_outline_color = close_button_font_outline
         },
     };
-    entity e = spawn_button(world, button_data.canvas, button_data.parent, button_data.element, button_data.zext, button_data.button);
+    entity e = spawn_button_old(world, button_data.canvas, button_data.parent, button_data.element, button_data.zext, button_data.button);
     zox_set_unique_name(e, "close_button");
     zox_set(e, MeshAlignment, { alignment });
     if (on_click.value) {

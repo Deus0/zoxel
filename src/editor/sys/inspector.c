@@ -178,7 +178,7 @@ zox_sys2(InspectorSpawnSystem) {
             }
             child_element_data.render_disabled = j >= visible;
             // our spawning
-            entity e2 = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
+            entity e2 = spawn_button_old(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
             // Set tooltips
             char tooltip_text[inspector_component_size_buffer];
             sprintf(tooltip_text, "%s", child_text_data.text);

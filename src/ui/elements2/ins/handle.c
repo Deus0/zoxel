@@ -1,16 +1,25 @@
-entity spawn_handle(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, color fill, color outline) {
-    zox_instance(element_data.prefab);
+entity spawn_handle(ecs *world, entity prefab, entity parent, int2 parent_size, int2 position, int2 size, float2 position_anchor, color fill, color outline, byte direction) {
+    zox_instance(prefab);
     zox_name("handle");
-    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+    zox_set_parent(world, e, parent);
+    zox_set(e, LayoutPosition, { position });
+    zox_set(e, LayoutSize, { size });
+    zox_set(e, Anchor, { position_anchor });
     zox_set(e, FillColor, { fill });
     zox_set(e, OutlineColor, { outline });
-    if (element_data.render_disabled) {
-        zox_set(e, RenderDisabled, { element_data.render_disabled });
-    }
+    zox_set(e, ElementFillColor, { fill });
+    zox_set(e, ElementOutlineColor, { outline });
     // Constrains within slider
-    zox_set(e, LayoutConstraints, { (int4) {
-        -(parent_data.size.x / 2) + (element_data.size.x / 2),
-        (parent_data.size.x / 2) - (element_data.size.x / 2),
-        0, 0} });
+    if (!direction) {
+        int bounds = (parent_size.x / 2) - size.x / 2;
+        zox_set(e, LayoutConstraints, { (int4) { -bounds, bounds, 0, 0 } });
+    } else {
+        int bounds = (parent_size.y / 2) - size.y / 2;
+        zox_set(e, LayoutConstraints, { (int4) { 0, 0, -bounds, bounds } });
+    }
+    /*zox_set(e, LayoutConstraints, { (int4) {
+        -(parent_size.x / 2) + (size.x / 2),
+        (parent_size.x / 2) - (size.x / 2),
+        0, 0} });*/
     return e;
 }

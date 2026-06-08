@@ -55,10 +55,10 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         return 0;
     }
     zox_geter_value(realm, Seed, lint, seed);
-    int2 window_size = (int2) { 130 * ui_scale, 145  * ui_scale };
-    byte header_font_size = 8 * ui_scale;
-    byte2 header_padding = (byte2)  { 2 * ui_scale, ui_scale };
-    byte header_height = header_font_size + header_padding.y * 2;
+    int2 size = (int2) { 130 * ui_scale, 70 * ui_scale };
+    // byte header_font_size = 8 * ui_scale;
+    // byte2 header_padding = (byte2)  { 2 * ui_scale, ui_scale };
+    // byte header_height = header_font_size + header_padding.y * 2;
     byte list_font_size = 8 * ui_scale;
     byte2 list_padding = (byte2) { 18, 18 };
     // more data
@@ -69,25 +69,28 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     // # Window #
     LayoutParentData canvas_data = {
         .e = canvas,
-        .size = zox_gett_value(canvas, LayoutSize),
-    };
-    ElementSpawnData window_element_data = {
-        .prefab = prefab_window_textured,
-        .position = (int2) { 0, 0 },
-        .size = window_size,
-        .anchor = float2_half,
-        .layer = layer,
+        //.size = zox_gett_value(canvas, LayoutSize),
     };
     LayoutParentData window_parent_data = {
-        .e = canvas_data.e,
-        .size = canvas_data.size,
+        .e = canvas,
+        // .size = canvas_data.size,
     };
-    SpawnWindow2 window_data = {
+    /*ElementSpawnData window_element_data = {
+        .prefab = prefab_window, // _textured,
+        .position = int2_zero,
+        .size = size,
+        .anchor = float2_half,
+        .layer = layer,
+    };*/
+    /*SpawnWindow2 window_data = {
         .header_text = header_label,
         .header_font_size = header_font_size,
         .header_padding = header_padding,
-    };
-    entity e = spawn_window2(world, canvas_data, window_parent_data, window_element_data,window_data, (ClickEvent) { &on_cancelled_new_realm }, 1, 0).x;
+    };*/
+    // entity e = spawn_window_old(world, canvas_data, window_parent_data, window_element_data,window_data, (ClickEvent) { &on_cancelled_new_realm }, 1, 0).x;
+    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_label, canvas, int2_zero, size, float2_half, &on_cancelled_new_realm);
+    entity e = e3.x;
+    entity body = e3.z;
     zox_add_tag(e, MenuNewRealm);
     zox_add_tag(e, NavigationWindow);
     // # List #
@@ -114,19 +117,20 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     };*/
     byte visible_count = elements_count;
     LayoutParentData list_parent_data = {
-        .e = e,
-        .size = window_element_data.size,
-        .position = window_element_data.position_in_canvas,
+        .e = body,
+        // .size = size,
+        //./position = window_element_data.position_in_canvas,
     };
     ElementSpawnData list_element_data = {
         .prefab = prefab_list,
-        .position = (int2) { 0, -header_height / 2 },
-        .size = (int2) {
-            window_element_data.size.x,
-            window_element_data.size.y - header_height
-        },
+        // .position = (int2) { 0, -header_height / 2 },
+        .size = size,
         .anchor = float2_half,
-        .layer = layer + 1,
+        /*(int2) {
+            size.x,
+            size.y - header_height
+        },*/
+        // .layer = layer + 1,
     };
     SpawnList ui_list_data = (SpawnList) {
         .elements = elements,
@@ -142,7 +146,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .margins = list_padding,
     };
     entity list = spawn_list(world, canvas_data, list_parent_data, list_element_data, ui_list_data, zox_alignment_centre, NULL);
-    zox_set_parent(world, list, e);
+    // zox_set_parent(world, list, e);
     zox_muter(player, ElementLinks, pelements);
     add_to_ElementLinks(pelements, e);
     zox_set(e, ElementHolder, { player });

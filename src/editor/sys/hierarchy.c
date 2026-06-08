@@ -148,7 +148,7 @@ zox_sys2(HierarchySpawnSystem) {
         for (size_t j = 0; j < labels->size; j++) {
             child_text_data.text = labels->data[j].text;
             entity target = entities->data[j];
-            entity e2 = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
+            entity e2 = spawn_button_old(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
             zox_set(e2, ClickEvent, { on_click.value });
             zox_set(e2, EntityTarget, { target });
             zox_set_parent(world, e2, list_ui);

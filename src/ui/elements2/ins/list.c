@@ -11,9 +11,7 @@ byte calculate_list_max_characters(const SpawnList data) {
 }
 
 static inline int2 calculate_list_size(byte max_characters, SpawnList data) {
-
     int list_element_height = data.font_size + data.button_padding.y * 2;
-
     return (int2) {
         max_characters * data.font_size +
             data.button_padding.x * 2 + data.margins.x * 2,
@@ -24,7 +22,6 @@ static inline int2 calculate_list_size(byte max_characters, SpawnList data) {
 }
 
 static inline int2 calculate_header_size(byte length, byte font_size, byte2 padding) {
-
     return (int2) {
         length * font_size + padding.x * 2,
         font_size + padding.y * 2
@@ -34,42 +31,38 @@ static inline int2 calculate_header_size(byte length, byte font_size, byte2 padd
 
 // TODO: Set scrollbar visible/invisible based on list count
 // TODO: spawn list panel, and scrollbar as children of list entity
-
 entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnList list_data, byte alignment, entity* elements) {
     byte slider_handle_width = 16 * ui_scale;
     zox_instance(element_data.prefab);
     zox_name("list");
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
-    if (element_data.render_disabled) {
+    /*if (element_data.render_disabled) {
         zox_set(e, RenderDisabled, { element_data.render_disabled });
-    }
+    }*/
+    //zox_set(e, FillColor, { list_data.fill });
+    //zox_set(e, OutlineColor, { list_data.outline });
     zox_set(e, ListAlignment, { alignment });
     zox_set(e, ListVisible, { list_data.visible_count });
     zox_set(e, ListMargins, { list_data.margins });
     zox_set(e, ListPadding, { list_data.padding });
     zox_set(e, TextPadding, { list_data.button_padding });
-    zox_set(e, FillColor, { list_data.fill });
-    zox_set(e, OutlineColor, { list_data.outline });
     // now spawn elements to fit our window
     LayoutParentData child_parent_data = {
         .e = e,
-        .position = element_data.position_in_canvas,
+        // .position = element_data.position_in_canvas,
         .size = element_data.size
     };
     for (int i = 0; i < list_data.count; i++) {
         byte visible = (i >= 0 && i < list_data.visible_count);
-
         SpawnListElement child_data = list_data.elements[i];
         ElementSpawnData child_element_data = {
             .prefab = prefab_button,
-            .layer = element_data.layer + 1,
+            // .layer = element_data.layer + 1,
             .anchor = float2_half,
             .render_disabled = !visible,
         };
-
         entity child = 0;
         if (child_data.type == list_element_type_button) {
-
             SpawnTextData child_text_data = {
                 .text = child_data.text,
                 .font_size = list_data.font_size,
@@ -80,34 +73,29 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .font_thickness = button_font_thickness_fill,
                 .font_outline_thickness = button_font_thickness_outline,
             };
-
             SpawnButtonData child_button_data = {
                 .prefab_zext = prefab_zext,
                 .fill = button_fill,
                 .outline = button_outline,
             };
+            child = spawn_button(world, prefab_button, e, child_data.text, int2_zero, int2_zero, float2_half, zox_alignment_centre, list_data.font_size, list_data.button_padding, button_fill, button_outline, button_font_fill, button_font_outline);
 
-            child = spawn_button(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
-
+            // child = spawn_button_old(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
             if (child_data.on_click.value) {
                 zox_set(child, ClickEvent, { child_data.on_click.value });
             }
-
             zox_add_tag(child, ZextLabel);
             if (child_data.save_path) {
                 SaveGamePath path = { };
-
                 size_t len = strlen(child_data.save_path);
                 if (len >= 512) {
                     len = 512 - 1;
                 }
                 memcpy(path.value, child_data.save_path, len);
                 path.value[len] = '\0';
-
                 zox_set_ptr(child, SaveGamePath, path);
                 free(child_data.save_path);
             }
-
         } else if (child_data.type == list_element_type_slider) {
             // zox_log("Spawning Slider %s v[%i]", child_data.text, visible);
             child_element_data.prefab = prefab_slider;
@@ -123,14 +111,12 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .bounds = child_data.value_bounds,
                 .handle_width = slider_handle_width,
             };
-
             entity2 e2 = spawn_slider(world, canvas_data, child_parent_data, child_element_data, slider_data, button_fill, button_outline, list_data.font_size, button_font_fill, button_font_outline);
 
             if (child_data.on_slide.value) {
                 zox_set(e2.y, SlideEvent, { child_data.on_slide.value })
             }
             child = e2.x;
-
         } else if (child_data.type == list_element_type_toggle) {
             // Why so many for a button...
             child_element_data.prefab = prefab_button;

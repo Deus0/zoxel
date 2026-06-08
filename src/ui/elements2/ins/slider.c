@@ -1,62 +1,25 @@
-entity2 spawn_slider(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnSliderData slider_data, color fill, color handle_fill, byte font_size, color font_fill, color font_outline) {
+entity2 spawn_slider(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnSliderData slider_data, color fill, color outline, byte font_size, color font_fill, color font_outline) {
     byte handle_width = slider_data.handle_width; // 8 * ui_scale;
     byte font_thickness = ui_scale;
+    // spawn back part
     zox_instance(element_data.prefab);
     zox_name("slider");
     zox_set(e, SliderLabel, { slider_data.name });
+    zox_set_parent(world, e, parent_data.e);
+    zox_set(e, LayoutPosition, { element_data.position });
+    zox_set(e, LayoutSize, { element_data.size });
+    zox_set(e, Anchor, { element_data.anchor });
     zox_set(e, FillColor, { fill });
-    zox_set(e, OutlineColor, { handle_fill });
-    set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
-    if (element_data.render_disabled) {
-        zox_set(e, RenderDisabled, { element_data.render_disabled });
-    }
-    LayoutParentData new_parent_data = {
-        .e = e,
-        .size = element_data.size,
-        .position = element_data.position_in_canvas,
-    };
+    zox_set(e, OutlineColor, { outline });
     // spawn handle
     float percent = clampf(slider_data.value, 0, 1);
     int handle_position_x = - element_data.size.x / 2 + handle_width / 2 + (int) ((element_data.size.x - handle_width) * percent);
-    ElementSpawnData handle_data = (ElementSpawnData) {
-        .prefab = slider_data.prefab_handle,
-        .layer = element_data.layer + 2,
-        .position = (int2) { handle_position_x, 0 },
-        .size = (int2) { handle_width, element_data.size.y },
-        .anchor = float2_half,
-        .render_disabled = element_data.render_disabled,
-    };
-    entity handle = spawn_handle(world, canvas_data, new_parent_data, handle_data, handle_fill, fill);
+    entity prefab_handle = slider_data.prefab_handle;
+    int2 handle_position = (int2) { handle_position_x, 0 };
+    int2 handle_size =  (int2) { handle_width, element_data.size.y };
+    entity handle = spawn_handle(world, prefab_handle, e, element_data.size, handle_position, handle_size, float2_half, outline, fill, 0);
     zox_set(handle, SlideBounds, { slider_data.bounds });
     zox_set_parent(world, handle, e);
-    // # Slider Text #
-    SpawnZext text_data = {
-        .canvas = canvas_data,
-        .parent = {
-            .e = e,
-            .position = element_data.position_in_canvas,
-            .size = element_data.size,
-        },
-        .element = {
-            .prefab = prefab_zext,
-            .layer = element_data.layer + 1,
-            .anchor = (float2) { 0.5f, 0.5f },
-            .position = int2_zero,
-            .render_disabled = element_data.render_disabled,
-        },
-        .zext = {
-            .text = slider_data.name,
-            .font_size = font_size,
-            .font_resolution = font_size,
-            .font_thickness = font_thickness,
-            .font_outline_thickness = font_thickness,
-            .font_fill_color = font_fill,
-            .font_outline_color = font_outline,
-        }
-    };
-    entity text = spawn_text(world, text_data);
-    zox_set_parent(world, text, e);
-    // todo: with text label!
-    // return, include the handle
+    spawn_text_new(world, prefab_zext, e, int2_zero, float2_half, font_size, zox_alignment_centre, byte2_zero, slider_data.name, font_fill, font_outline);
     return (entity2) { e, handle };
 }

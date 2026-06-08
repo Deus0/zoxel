@@ -15,7 +15,7 @@ typedef struct {
 } WindowListSpawnData;
 
 // Returns window + list
-entity3 spawn_window_list(ecs *world, entity p, entity player, const char *header, byte header_font_size, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2, SpawnListElement* elements, byte elements_count, byte visible_count) {
+entity3 spawn_window_list(ecs *world, entity prefab, entity player, const char *header, byte header_font_size, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2, SpawnListElement* elements, byte elements_count, byte visible_count) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     if (!zox_valid(canvas)) {
         zox_logw("Invalid canvas in [spawn_window_list]");
@@ -31,23 +31,13 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     byte slider_padding = 24 * ui_scale;
     byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
     // # Window #
-    int2 canvas_size = zox_gett_value(canvas, LayoutSize);
+    // int2 canvas_size = zox_gett_value(canvas, LayoutSize);
     LayoutParentData canvas_data = {
         .e = canvas,
-        .size = canvas_size  // need for bounds
-    };
-    ElementSpawnData window_element_data = {
-        .prefab = p,
-        .anchor = float2_half,
-        .layer = window_layer,
-    };
-    SpawnWindow2 window_data = {
-        .header_text = header,
-        .header_font_size = header_font_size,
-        .header_padding = header_padding,
+        // .size = canvas_size  // need for bounds
     };
     // we need to calculate header size too
-    int2 header_size = calculate_header_size(strlen(header), window_data.header_font_size, window_data.header_padding);
+    int2 header_size = calculate_header_size(strlen(header), header_font_size, header_padding);
     int header_height = header_size.y;
     // # List #
     SpawnList list_data = (SpawnList) {
@@ -77,30 +67,24 @@ entity3 spawn_window_list(ecs *world, entity p, entity player, const char *heade
     }
     // zox_log("+ list size [%ix%i] from visible [%i] header_height [%i]", list_size.x, list_size.y, visible_count, header_height);
     // we use the bigger size out of list and header widths
-    window_element_data.size = (int2) { int_max(list_size.x, header_size.x), list_size.y + header_height };
+    int2 size = (int2) { int_max(list_size.x, header_size.x), list_size.y }; // + header_height };
     // Spawn our Window
-    entity2 e2 = spawn_window2(world, canvas_data, (LayoutParentData) { .e = canvas }, window_element_data, window_data, close_event, can_close, window_type);
+    // entity2 e2 = spawn_window_old(world, canvas_data, (LayoutParentData) { .e = canvas }, window_element_data, window_data, close_event, can_close, window_type);
+    entity3 e2 = spawn_window(world, prefab, prefab_body, header, canvas, int2_zero, size, float2_half, close_event.value);
     entity e = e2.x;
-    // Spawn Scrollview
-    ElementSpawnData scrollview_data = {
-        .prefab = prefab_element_invisible,
-        .position = (int2) { 0, -header_height / 2 },
-        .size = list_size,
-        .anchor = float2_half,
-        .layer = window_layer + 1,
-    };
+    entity body = e2.z;
     // NOTE: Scrollview Has: 1: Scrollbar, 2: ListUI
-    entity scrollview = spawn_scrollview(world, canvas_data, (LayoutParentData) { .e = e }, scrollview_data, list_data.visible_count, list_data.count);
-    zox_set_parent(world, scrollview, e);
+    entity scrollview = spawn_scrollview(world, body, int2_zero, size, float2_half, list_data.visible_count, list_data.count);
+    zox_set(e, ScrollviewLink, { scrollview });
+    // zox_set_parent(world, scrollview, e);
     // Spawn our list
     ElementSpawnData list_element_data = {
         .prefab = prefab_list,
         .size = list_size,
         .anchor = float2_half,
-        .layer = window_layer + 2,
     };
     entity list = spawn_list(world, canvas_data, (LayoutParentData) { .e = scrollview }, list_element_data, list_data, alignment, elements2);
-    zox_set_parent(world, list, scrollview);
+    // zox_set_parent(world, list, scrollview);
     // make sure to link them together
     zox_set(list, ScrollviewLink, { scrollview });
     zox_set(scrollview, ListUILink, { list });

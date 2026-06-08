@@ -21,7 +21,7 @@ entity spawn_dialogue_ui(ecs* world, entity prefab, entity canvas, entity charac
         .size = window_size,
         .anchor = position_anchor,
     };
-    entity e = spawn_window2(world, canvas_data, canvas_data, element_data, window_data, (ClickEvent) { &on_closed_dialogue_ui }, 1, 0).x;
+    entity e = spawn_window_old(world, canvas_data, canvas_data, element_data, window_data, (ClickEvent) { &on_closed_dialogue_ui }, 1, 0).x;
     // zox_add_tag(e, DialogueUI);
     entity body;
     {
@@ -74,7 +74,7 @@ entity spawn_dialogue_ui(ecs* world, entity prefab, entity canvas, entity charac
             .fill = button_fill,
             .outline = button_outline
         };
-        entity button = spawn_button(world, canvas_data, parent_data, button_data, bdata, button_data2);
+        entity button = spawn_button_old(world, canvas_data, parent_data, button_data, bdata, button_data2);
         zox_set(button, ClickEvent, { &on_click_dialogue_button });
     }
     return e;

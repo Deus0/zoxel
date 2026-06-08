@@ -8,7 +8,7 @@ zoxc_byte(WindowLayer);
 zoxc_byte(SetWindowLayer);
 zoxc_entity(WindowRaycasted);
 zoxc_entity(WindowTarget);
-zoxc_byte(HeaderHeight);
+// zoxc_byte(HeaderHeight);
 zoxc_byte(WindowsLayers);
 zoxc_byte(WindowsCount);
 
@@ -23,7 +23,7 @@ void define_components_windows(ecs* world) {
     zoxd_entity(WindowTarget);
     zoxd_byte(SetWindowLayer);
     zoxd_byte(WindowLayer);
-    zoxd_byte(HeaderHeight);
+    // zoxd_byte(HeaderHeight);
     zoxd_byte(WindowsLayers);
     zoxd_byte(WindowsCount);
 }

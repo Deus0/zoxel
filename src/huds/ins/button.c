@@ -28,7 +28,7 @@ entity spawn_button_game(ecs *world, entity canvas, entity parent, int2 canvas_s
             .outline = button_outline,
         }};
 
-    entity e = spawn_button(world, spawnButton.canvas, spawnButton.parent, spawnButton.element, spawnButton.zext, spawnButton.button);
+    entity e = spawn_button_old(world, spawnButton.canvas, spawnButton.parent, spawnButton.element, spawnButton.zext, spawnButton.button);
 
     zox_set(e, ClickEvent, { event.value });
 
