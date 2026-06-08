@@ -19,8 +19,7 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
         zox_log_error("[cursor] mouse texture not found");
     }
     byte mouse_ui_size = 8 * ui_scale;
-    entity prefab_mouse = prefab_element_shell;
-    entity e = spawn_icon_mouse_follow_canvas(world, prefab_mouse, canvas, dimensions, max_layers2D - 2, float2_zero, mouse_ui_size, mouse_pointer);
+    entity e = spawn_mouse_icon(world, prefab_element_shell, canvas, dimensions, max_layers2D - 2, float2_zero, mouse_ui_size, mouse_pointer);
     zox_set_unique_name(e, "mouse_ui");
     zox_add_tag(e, MouseElement);
     zox_set(e, MeshAlignment, { zox_alignment_top_left });
@@ -32,20 +31,13 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     if (local_mouse) {
         zox_set(local_mouse, TextureLink, { e });
     }
-    // testing from prefab
-    // zox_set(e, RenderDisabled, { 0 });
-    // zox_remove(e, GenerateTexture);
-    /*zox_add_tag(e, Icon);
-    zox_add_tag(e, IconTexture);
-    zox_prefab_set(e, IconType, { 0 });
-    zox_set(e, IconRadius, { default_icon_radius });
-    zox_set(e, RenderDisabled, { 1 });*/
-    // ### Mouse Pickup UI ###
+    // Mouse Pickup UI
     int icon_size = (default_icon_size / 4) * ui_scale;
-    icon_mouse_follow = spawn_icon_mouse_follow_canvas(world, prefab_icon_mouse_follow, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, mouse_pointer);
-    zox_set_unique_name(icon_mouse_follow, "icon_mouse");
+    entity e2 = spawn_mouse_icon(world, prefab_element_shell, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, mouse_pointer);
+    zox_set_unique_name(e2, "data_mouse");
+    zox_add_tag(e2, DataMouse);
     entity empty_texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));
-    clone_texture_data(world, icon_mouse_follow, empty_texture);
+    clone_texture_data(world, e2, empty_texture);
     return canvas;
 }
 

@@ -1,6 +1,6 @@
 entity spawn_prefab_quad_count_label(ecs *world) {
-    // const entity e = ecs_clone(world, 0, prefab_label_background, 1);
-    zox_prefab_child(prefab_label_background)
+    // const entity e = ecs_clone(world, 0, prefab_label_textured, 1);
+    zox_prefab_child(prefab_label_textured)
     zox_add_tag(e, QuadsCountLabel)
     zox_prefab_set(e, QuadsCount, { -1 })
     prefab_set_mesh2D_vertices(world, e, square_vertices_right_aligned, 4);

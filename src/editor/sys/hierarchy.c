@@ -129,7 +129,7 @@ zox_sys2(HierarchySpawnSystem) {
         };
 
         SpawnButtonData child_button_data = {
-            .prefab_zext = prefab_zext,
+            .prefab_text = prefab_text,
             .fill = editor_color_fill,
             .outline = editor_color_fillo,
         };

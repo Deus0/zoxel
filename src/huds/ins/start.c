@@ -11,7 +11,7 @@ entity spawn_menu_start(ecs* world, entity player, entity canvas) {
             .anchor = float2_half
         },
         .button = {
-            .prefab_zext = prefab_zext,
+            .prefab_text = prefab_text,
             .fill = button_fill,
             .outline = button_outline,
         },

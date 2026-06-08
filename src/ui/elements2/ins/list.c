@@ -57,7 +57,6 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
         SpawnListElement child_data = list_data.elements[i];
         ElementSpawnData child_element_data = {
             .prefab = prefab_button,
-            // .layer = element_data.layer + 1,
             .anchor = float2_half,
             .render_disabled = !visible,
         };
@@ -74,7 +73,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .font_outline_thickness = button_font_thickness_outline,
             };
             SpawnButtonData child_button_data = {
-                .prefab_zext = prefab_zext,
+                .prefab_text = prefab_text,
                 .fill = button_fill,
                 .outline = button_outline,
             };
@@ -131,7 +130,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .font_outline_thickness = button_font_thickness_outline,
             };
             SpawnButtonData child_button_data = {
-                .prefab_zext = prefab_zext,
+                .prefab_text = prefab_text,
                 .fill = button_fill,
                 .outline = button_outline,
             };

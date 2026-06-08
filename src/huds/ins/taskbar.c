@@ -26,16 +26,16 @@ void taskbar_button_click_event(ecs *world, ClickEventData event) {
     }
 }
 
-entity spawn_taskbar(ecs *world, entity canvas) {
+entity spawn_taskbar(ecs* world, entity canvas) {
     entity prefab_frame = prefab_frame_selectable;
     byte taskbar_count = hook_taskbars->size;
     int frame_size = (default_frame_size / 4) * ui_scale;
     int icon_size = (default_icon_size / 4) * ui_scale;
     int2 fsize = int2_single(frame_size);
     int2 isize = int2_single(icon_size);
-    byte2 padding = byte2_single(1 * ui_scale);
-    int margins = 2 * ui_scale;
-    int2 size = (int2) { padding.x + (frame_size + padding.x) * taskbar_count + margins * 2, frame_size + padding.y * 2 };
+    byte2 padding = byte2_single(2 * ui_scale);
+    byte2 margins = (byte2) { 8 * ui_scale, 2 * ui_scale };
+    int2 size = (int2) { padding.x + (frame_size + padding.x) * taskbar_count + margins.x * 2, frame_size + margins.y * 2 };
     int2 position = (int2) { 0, - size.y / 4 };
     float2 anchor = (float2) { 0.5f, 1 };
     entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, anchor, NULL);

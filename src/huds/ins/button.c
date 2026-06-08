@@ -23,7 +23,7 @@ entity spawn_button_game(ecs *world, entity canvas, entity parent, int2 canvas_s
             .font_outline_color = default_font_outline_color
         },
         .button = {
-            .prefab_zext = prefab_zext,
+            .prefab_text = prefab_text,
             .fill = button_fill,
             .outline = button_outline,
         }};

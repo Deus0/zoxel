@@ -76,7 +76,7 @@ zox_sys2(ElementRaycastSystem) {
                     viewport_position.y + lsize.y / 2
                 };
                 if (zox_has(e2, MeshAlignment)) {
-                    zox_geter_value(e2, MeshAlignment, byte, alignment);
+                    byte alignment = zox_getv(e2, MeshAlignment);
                     float4 scaler = alignment_to_scaler(alignment);
                     ui_bounds = (int4) {
                         viewport_position.x - lsize.x * scaler.x,

@@ -19,7 +19,7 @@ entity2 spawn_elementbar2(ecs* world, entity prefab, entity parent, int2 positio
     entity e2 = spawn_uic(world, prefab_element_textured, e, bar_anchor, int2_zero, size, size, front_color, color_black);
     zox_set_unique_name(e2, "element2_frontbar");
     zox_set(e2, MeshAlignment, { zox_alignment_left });
-    entity text = spawn_text_new(world, prefab_zext, e, int2_zero, float2_half, font_size, zox_alignment_centre, text_padding, "", font_fill, font_outline);
+    entity text = spawn_text(world, prefab_text, e, int2_zero, float2_half, font_size, zox_alignment_centre, text_padding, "", font_fill, font_outline);
     zox_set_unique_name(text, "element2_text");
     /*entity front_bar = spawn_elementbar2_front(
         world,
@@ -42,7 +42,7 @@ entity2 spawn_elementbar2(ecs* world, entity prefab, entity parent, int2 positio
             // .size = pixel_size
         },
         .element = {
-            .prefab = prefab_zext,
+            .prefab = prefab_text,
             .layer = zext_layer,
             .anchor = float2_half,
             .render_disabled = render_disabled,
@@ -57,7 +57,7 @@ entity2 spawn_elementbar2(ecs* world, entity prefab, entity parent, int2 positio
             .font_outline_color = label_font_outline_color
         }
     };
-    entity text = spawn_text(world, zextSpawnData);
+    entity text = spawn_text_old(world, zextSpawnData);
     zox_set_parent(world, text, e);*/
     return (entity2) { e, text };
 }

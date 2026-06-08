@@ -7,7 +7,7 @@
 
 // for only the button
 typedef struct {
-    entity prefab_zext;
+    entity prefab_text;
     color fill;
     color outline;
 } SpawnButtonData;
@@ -62,7 +62,7 @@ typedef struct {
 
 // for only the button
 typedef struct {
-    entity prefab_zext;
+    entity prefab_text;
     byte is_close_button;
     // byte margins;
     color color;

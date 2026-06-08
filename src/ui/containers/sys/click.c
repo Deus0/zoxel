@@ -16,11 +16,11 @@ extern byte is_data_body_part(ecs*, entity);
 zox_sys2(DataFrameClickSystem) {
     byte dbg_log = 0;
     zox_sys_world();
-    entity mouse_ui = icon_mouse_follow;
+    /*entity mouse_ui = icon_mouse_follow;
     if (!zox_valid(mouse_ui)) {
         zox_loge("mouse_ui is Invalid");
         return; // global mouse_ui for now
-    }
+    }*/
     zox_sys_begin();
     zox_sys_in(ClickState);
     zox_sys_in(SlotLink);
@@ -37,6 +37,14 @@ zox_sys2(DataFrameClickSystem) {
         }
         if (dbg_log) {
             zox_log("DataFrame is Activating [%s]", zox_get_name(e));
+        }
+        entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
+        if (!zox_valid(canvas)) {
+            continue;
+        }
+        entity mouse_ui = zox_get_child_by_id(world, canvas, zox_id(DataMouse));
+        if (!zox_valid(mouse_ui)) {
+            continue;
         }
         zox_mut_begin(mouse_ui, DataLink, mouse_data);
         byte mouse_data_empty = !zox_valid(mouse_data->value);

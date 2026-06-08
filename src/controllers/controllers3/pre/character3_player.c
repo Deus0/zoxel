@@ -42,7 +42,7 @@ entity spawn_prefab_character3_player(ecs *world, entity prefab) {
         zox_prefab_set(e, WanderDirection, { float3_zero });
     }
     // Spawn inventory slots
-    entity inventory = spawn_slots(world, e, 25);
+    entity inventory = spawn_slots(world, e, 16);
     zox_set_unique_name(inventory, "inventory");
     zox_add_tag(inventory, Inventory);
     // Spawn Actionbar slots

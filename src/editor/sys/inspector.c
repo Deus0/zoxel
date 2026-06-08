@@ -131,7 +131,7 @@ zox_sys2(InspectorSpawnSystem) {
             .font_outline_thickness = editor_fonto_thickness
         };
         SpawnButtonData child_button_data = {
-            .prefab_zext = prefab_zext,
+            .prefab_text = prefab_text,
             .fill = editor_color_fill,
             .outline = editor_color_fillo,
         };

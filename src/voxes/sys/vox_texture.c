@@ -254,6 +254,9 @@ zox_sys2(VoxTextureSystem) {
             generate_vox_debug_texture(data->value, size->value, side->value);
         }
         read_unlock_VoxelNode(voctree);
+        if (texture_offset.x || texture_offset.y) {
+            add_texture_outline(data->value, size->value, air_color, color_black);
+        }
         dirty->value = zox_dirty_trigger; // actually not using this for tilemap!
     }
 } zox_sys_end(VoxTextureSystem);

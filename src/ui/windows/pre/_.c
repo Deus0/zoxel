@@ -35,4 +35,6 @@ void spawn_prefabs_windows(ecs* world) {
     zox_prefab_set(prefab_canvas, WindowToTop, { 0 });
     zox_prefab_set(prefab_canvas, WindowsLayers, { 0 });
     zox_prefab_set(prefab_canvas, WindowsCount, { 0 });
+    // panel
+    prefab_grid = spawn_prefab_grid(world, prefab_body); // prefab_layout2);
 }

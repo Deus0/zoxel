@@ -43,7 +43,7 @@ entity spawn_plot_graph(ecs* world, entity canvas, entity parent, int2 parent_po
                 // .size = parent_size
             },
             .element = {
-                .prefab = prefab_zext,
+                .prefab = prefab_text,
                 .position = (int2) { 0, - label_line * (14 + 4 * 2) },
                 // .layer = layer,
                 .anchor = (float2) { 0, 1.0f },
@@ -58,7 +58,7 @@ entity spawn_plot_graph(ecs* world, entity canvas, entity parent, int2 parent_po
                 .font_outline_color = text_outline
             }
         };
-        entity e2 = spawn_text(world, text_data);
+        entity e2 = spawn_text_old(world, text_data);
         zox_set_parent(world, e2, e);
         zox_add_tag(e2, PlotLabel);
     }

@@ -24,6 +24,11 @@ float4 alignment_to_scaler(byte alignment) {
             0.5f,
             0.5f
         };
+    } else if (alignment == zox_alignment_bottom_right) {
+        return (float4) {
+            1, 0,
+            0, 1
+        };
     }
 
     return (float4) {

@@ -12,7 +12,7 @@ entity spawn_close_button(ecs *world, entity parent, entity canvas, byte size, b
             .anchor = anchor
         },
         .button = {
-            .prefab_zext = prefab_zext,
+            .prefab_text = prefab_text,
             .fill = close_button_fill,
             .outline = close_button_outline,
         },

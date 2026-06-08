@@ -44,7 +44,7 @@ SpawnWindowUsers get_default_spawn_window_users_data(ecs *world, entity prefab, 
             .anchor = anchor
         },
         .header = {
-            .prefab_zext = prefab_zext,
+            .prefab_text = prefab_text,
             .is_close_button = 1
         },
         .header_zext = header_text_data,

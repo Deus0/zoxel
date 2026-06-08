@@ -10,7 +10,7 @@ extern void add_to_labels_stat_links(ecs *world, entity e, text_group_dynamic_ar
 extern entity prefab_app;
 // extern entity prefab_window;
 extern entity prefab_button;
-extern entity prefab_zext;
+extern entity prefab_text;
 extern entity prefab_zigel;
 extern entity prefab_realm;
 extern entity prefab_block;

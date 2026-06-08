@@ -31,13 +31,7 @@ void generate_font_texture(
             line_color,
             point_padding
         );
-        scanline_fill_texture(
-            data,
-            size,
-            nothing_font_color,
-            line_color,
-            fill_color
-        );
+        scanline_fill_texture(data, size, nothing_font_color, line_color, fill_color);
         if (outline_thickness) {
             generate_splotches_lines(
                 data,

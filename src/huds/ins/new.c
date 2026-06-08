@@ -123,14 +123,8 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     };
     ElementSpawnData list_element_data = {
         .prefab = prefab_list,
-        // .position = (int2) { 0, -header_height / 2 },
         .size = size,
         .anchor = float2_half,
-        /*(int2) {
-            size.x,
-            size.y - header_height
-        },*/
-        // .layer = layer + 1,
     };
     SpawnList ui_list_data = (SpawnList) {
         .elements = elements,

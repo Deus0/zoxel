@@ -15,7 +15,7 @@ entity spawn_button(ecs* world, entity prefab, entity parent, const char* text, 
     zox_set(e, ElementFillColor, { fill });
     zox_set(e, OutlineColor, { outline });
     zox_set(e, ElementOutlineColor, { outline });
-    spawn_text_new(world, prefab_zext, e, int2_zero, float2_half, font_size, alignment, padding, text, font_fill, font_outline);
+    spawn_text(world, prefab_text, e, int2_zero, float2_half, font_size, alignment, padding, text, font_fill, font_outline);
     return e;
 }
 
@@ -33,7 +33,7 @@ entity spawn_button_old(ecs *world, LayoutParentData canvas_data, LayoutParentDa
     zox_set(e, OutlineColor, { button_data.outline });
     zox_set(e, ElementOutlineColor, { button_data.outline });
     set_element_spawn_data(world, e, canvas_data, parent, element_data);
-    entity text = spawn_text_new(world, button_data.prefab_zext, e, int2_zero, float2_half, zext_data.font_size, zext_data.alignment, zext_data.margins, zext_data.text, zext_data.font_fill_color, zext_data.font_outline_color);
+    entity text = spawn_text(world, button_data.prefab_text, e, int2_zero, float2_half, zext_data.font_size, zext_data.alignment, zext_data.margins, zext_data.text, zext_data.font_fill_color, zext_data.font_outline_color);
     zox_set(text, Layer2D, { element_data.layer + 1 });
     return e;
 }

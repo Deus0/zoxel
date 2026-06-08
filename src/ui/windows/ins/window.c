@@ -68,7 +68,7 @@ entity2 spawn_window_old(ecs *world, LayoutParentData canvas_data, LayoutParentD
             .layer = element_data.layer + 1,
         };
         SpawnHeaderData header_data = {
-            .prefab_zext = prefab_zext,
+            .prefab_text = prefab_text,
             .is_close_button = is_close_button
         };
         SpawnTextData header_text_data = {

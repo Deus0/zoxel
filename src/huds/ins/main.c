@@ -10,6 +10,11 @@ byte tooltip_event_zoxel_header(ecs* world, const TooltipEventData *data) {
 
 // List Menus adjust to the menu size
 entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
+    // main menu
+    char *label_continue = "Continue";     // "old blood";
+    char *label_new = "New Game";            // "fresh meat / Wander
+    char *label_options = "Options";
+    char *label_exit = "Exit";
     int elements_count = 0;
     SpawnListElement elements[4];
     byte header_font_size = 16 * ui_scale;
@@ -29,14 +34,18 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
         .text = label_options,
         .on_click = { &button_event_menu_options },
     };
-#ifndef zox_android
+/*#ifndef zox_android
     elements[elements_count++] = (SpawnListElement) {
         .text = label_exit,
         .on_click = { &button_event_exit_app },
     };
-#endif
+#endif*/
+    ClickEvent close_event = (ClickEvent) { &button_event_exit_app };
+    #ifdef zox_android
+    close_event.value = NULL;
+    #endif
     entity elements2[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { NULL }, 0, 0, 0, zox_alignment_centre, padding, elements2, elements, elements_count, elements_count);
+    entity3 e3 = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, close_event, 0, 0, 0, zox_alignment_centre, padding, elements2, elements, elements_count, elements_count);
     entity e = e3.x;
     entity header = e3.z;
     zox_set_unique_name(e, "main_menu");

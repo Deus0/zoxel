@@ -85,7 +85,7 @@ void zoxel_settings_uis() {
     header_fonto_thickness = 3;
     header_font_thickness = 1;
     // Close Buttons
-    close_button_outline = color_grayscale_a(outline_value, fill_alpha);
+    close_button_outline = color_grayscale_a(outline_value, outline_alpha);
     close_button_fill = color_grayscale_a(13, fill_alpha);
     close_button_font_outline = color_grayscale_a(166, text_alpha);
     close_button_font_fill = color_grayscale_a(166, text_alpha);
@@ -104,6 +104,9 @@ void zoxel_settings_uis() {
     button_fill_selected = (color) { 32, 88, 122, fill_alpha };
     button_outline_selected = (color) { 226, 2, 133, outline_alpha };
     button_outline_active = (color) { 100, 244, 177, text_alpha };
+    // Handles
+    handle_outline = color_grayscale_a(122, outline_alpha);
+    handle_fill = color_grayscale_a(77, fill_alpha);
     // ?
     default_fill_color = color_grayscale_a(2, fill_alpha);
     default_outline_color = header_outline;

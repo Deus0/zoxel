@@ -17,9 +17,9 @@ entity2 spawn_slider(ecs *world, LayoutParentData canvas_data, LayoutParentData 
     entity prefab_handle = slider_data.prefab_handle;
     int2 handle_position = (int2) { handle_position_x, 0 };
     int2 handle_size =  (int2) { handle_width, element_data.size.y };
-    entity handle = spawn_handle(world, prefab_handle, e, element_data.size, handle_position, handle_size, float2_half, outline, fill, 0);
+    entity handle = spawn_handle(world, prefab_handle, e, element_data.size, handle_position, handle_size, float2_half, handle_fill, handle_outline, 0);
     zox_set(handle, SlideBounds, { slider_data.bounds });
     zox_set_parent(world, handle, e);
-    spawn_text_new(world, prefab_zext, e, int2_zero, float2_half, font_size, zox_alignment_centre, byte2_zero, slider_data.name, font_fill, font_outline);
+    spawn_text(world, prefab_text, e, int2_zero, float2_half, font_size, zox_alignment_centre, byte2_zero, slider_data.name, font_fill, font_outline);
     return (entity2) { e, handle };
 }

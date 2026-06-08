@@ -3,7 +3,7 @@ entity spawn_label_background(ecs *world, entity prefab, entity parent, entity c
         zox_logw("Canvas invalid in [spawn_label_background]");
         return 0;
     }
-    entity e = spawn_text_new(world, prefab, parent, position, anchor, font_size, alignment, padding, text, font_fill, font_fillo);
+    entity e = spawn_text(world, prefab, parent, position, anchor, font_size, alignment, padding, text, font_fill, font_fillo);
     zox_name("label_background");
     zox_set(e, FillColor, { fill });
     zox_set(e, OutlineColor, { fillo });

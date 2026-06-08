@@ -18,7 +18,7 @@ entity spawn_header(ecs *world, entity parent, int2 position, int2 size, float2 
     zox_set(e, Anchor, { anchor });
     zox_set(e, DraggedLink, { parent });
     {
-        spawn_text_new(world, prefab_zext, e, text_position, text_anchor, font_size, zox_alignment_centre, padding, text, header_font_fill, header_font_outline);
+        spawn_text(world, prefab_text, e, text_position, text_anchor, font_size, zox_alignment_centre, padding, text, header_font_fill, header_font_outline);
     }
     if (is_close_button) {
         // Just do spawn_button
@@ -45,7 +45,7 @@ entity spawn_header_old(ecs *world, LayoutParentData canvas_data, LayoutParentDa
         zext_anchor.x = 0.5f;
         zext_position.x = 0;
     }
-    entity text = spawn_text_new(world, prefab_zext, e, zext_position, zext_anchor, zext.font_size, zox_alignment_centre, zext.margins, zext.text, zext.font_fill_color, zext.font_outline_color);
+    entity text = spawn_text(world, prefab_text, e, zext_position, zext_anchor, zext.font_size, zox_alignment_centre, zext.margins, zext.text, zext.font_fill_color, zext.font_outline_color);
     zox_set_unique_name(text, "header_text");
     // # Header Close Button #
     if (header.is_close_button) {
