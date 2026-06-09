@@ -24,7 +24,7 @@ zox_sys2(LodInstanceSystem) {
             continue;
         }
         if (!zox_has(model->value, ModelLods)) {
-            zox_loge("[%s] has invalid Model [%s]", zox_get_name(e), zox_get_name(model->value));
+            zox_loge("Block [%s] Model [%s] has no ModelLods", zox_get_name(e), zox_get_name(model->value));
             continue;
         }
         zox_geter(model->value, ModelLods, lods);

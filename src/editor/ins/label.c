@@ -3,6 +3,11 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
         zox_log("! [spawn_game_debug_label] error: invalid canvas, or no player found on canvas\n");
         return 0;
     }
+    zox_geter(canvas, PlayerLink, player);
+    color fill = button_fill;
+    color font_fill = button_font_fill;
+    fill.a = 222;
+    font_fill.a = 255;
     entity parent = canvas;
     int layer = 1;
     byte font_size = 16;
@@ -10,10 +15,13 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
     byte alignment = zox_alignment_top_right;
     float2 anchor = float2_one; //  { 1.0f, 1.0f };
     int2 pixel_position = (int2) { -8, -8 };
-    int2 parent_pixel_size = zox_get_value(parent, LayoutSize);
+    int2 parent_pixel_size = zox_getv(parent, LayoutSize);
     // returns the child zext
-    entity zext = spawn_label_background(world, prefab_game_debug_label, parent, canvas, pixel_position, anchor, padding, "", font_size, alignment, layer, int2_half(parent_pixel_size), parent_pixel_size, button_fill, button_outline, window_fill, window_outline, 0);
-    zox_geter(canvas, PlayerLink, playerLink);
-    zox_set(zext, PlayerLink, { playerLink->value });
-    return zext;
+    entity prefab = prefab_label_textured; // prefab_game_debug_label
+    entity e = spawn_label_background(world, prefab, parent, canvas, pixel_position, anchor, padding, "", font_size, alignment, layer, int2_half(parent_pixel_size), parent_pixel_size, fill, button_outline, font_fill, button_font_outline, 0);
+    zox_add_tag(e, EditorElement);
+    zox_add_tag(e, GameDebugLabel);
+    zox_set(e, DebugLabelData, { local_debug_label });
+    zox_set(e, PlayerLink, { player->value });
+    return e;
 }

@@ -5,3 +5,4 @@
 
 // TODO: Refactor to model_lods + blueprint for grass
 #include "grass.c"
+#include "rubble.c"

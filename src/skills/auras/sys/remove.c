@@ -1,16 +1,21 @@
 // if poisoned, remove if leaving area
 // I could do this per debuff instead of character...! if it's a area based debuff
+// NOTE: When a character has AuraDots, we check if still in range!
 zox_sys2(AuraRemoveSystem) {
     // const float damage_radius = 3.0f; // todo: grab this off skill
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);
-    zox_sys_out(DotLinks);
+    //zox_sys_out(DotLinks);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Position3D, position3D);
-        zox_sys_o(DotLinks, dotLinks);
-        for (int j = dotLinks->length - 1; j >= 0; j--) {
-            entity dot = dotLinks->value[j];
+        zox_sys_e();
+        zox_sys_i(Position3D, position);
+        //zox_sys_o(DotLinks, dotLinks);
+        entity dots[zox_children_capacity];
+        uint dots_length = zox_get_children_by_id(world, e, dots, zox_children_capacity, zox_id(AuraDot));
+        for (uint j = 0; j < dots_length; j++) {
+        // for (int j = dotLinks->length - 1; j >= 0; j--) {
+            entity dot = dots[j];
             if (!zox_valid(dot) || !zox_has(dot, SkillLink)) {
                 continue;
             }
@@ -25,7 +30,7 @@ zox_sys2(AuraRemoveSystem) {
             byte is_still_in_aura = 0;
             if (active) { // if user exists and skill is active
                 zox_geter_value(user, Position3D, float3, aura_position)
-                float distance = float3_distance(position3D->value, aura_position);
+                float distance = float3_distance(position->value, aura_position);
                 is_still_in_aura = distance <= radius;
             }
             if (!is_still_in_aura) {
@@ -34,7 +39,6 @@ zox_sys2(AuraRemoveSystem) {
                 if (zox_valid(particles)) {
                     zox_delete(particles);
                 }
-                remove_from_DotLinks(dotLinks, dot);
                 zox_delete(dot);
             }
         }

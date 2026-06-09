@@ -50,10 +50,18 @@ zox_sys2(PlayerGame3StartSystem) {
         zox_sys_i(PlayerState, state);
         zox_sys_i(GameLink, game);
         zox_sys_i(CameraLink, camera);
-        if (dirty->value != zox_dirty_active && state->value != zox_player_state_loading) {
+        if (!(dirty->value == zox_dirty_active && state->value == zox_player_state_loading)) {
             continue;
         }
-        zox_geter_value(game->value, RealmLink, entity, realm);
+        if (!zox_valid(game->value)) {
+            zox_loge("Player [%s] has invalid Game.", zox_get_name(e));
+            continue;
+        }
+        entity realm = zox_getv(game->value, RealmLink);
+        if (!zox_valid(realm)) {
+            zox_loge("Game [%s] has invalid Realm.", zox_get_name(game->value));
+            continue;
+        }
         zox_geter(realm, SaveGamePath, path);
         float3 position;
         float3 spawn_euler;

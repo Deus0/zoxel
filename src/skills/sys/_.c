@@ -20,7 +20,7 @@ void zox_define_systems_skills(ecs *world) {
         EcsOnUpdate,
         [in] skills.SpawnerLink,
         [in] skills.SkillDamage,
-        [none] skills.Poison
+        [none] skills.Dot
     );
     // TODO: split into sound, resource and damage systems
     zox_system_1(

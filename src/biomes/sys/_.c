@@ -9,7 +9,7 @@ void define_systems_biomes(ecs *world) {
         EcsPostUpdate,
         [in] core.Generate,
         [in] realms.RealmLink,
-        [in] blocks.BlockLinks,
+        // [in] blocks.BlockLinks,
         [none] biomes.Biome
     );
 }

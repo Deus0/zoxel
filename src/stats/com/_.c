@@ -2,7 +2,6 @@
 zox_tag(Stat);
 zoxc_entity(StatLink);
 zoxc_entitiesw(StatLinks);   // Used for realm atm
-zoxc_entities(DotLinks)
 // Types
 zox_tag(StatBase);
 zox_tag(StatState);
@@ -23,7 +22,6 @@ void define_components_stats(ecs *world) {
     zoxd_tag(Stat);
     zoxd_entity(StatLink);
     zoxd_entitiesw(StatLinks);
-    zoxd_entities(DotLinks);
     // Types
     zoxd_tag(StatBase);
     zoxd_tag(StatState);

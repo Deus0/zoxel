@@ -1,8 +1,6 @@
 #include "logs.c"
 #include "prefab.c"
 #include "fetch.c"
-#include "light_flood.c"
-#include "light_beam.c"
 #include "dark_flood.c"
 #include "dark_beam.c"
 

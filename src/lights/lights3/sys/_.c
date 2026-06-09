@@ -1,5 +1,5 @@
 #include "editing.c"
-#include "light_start.c"
+#include "sunlight.c"
 #include "light.c"
 #include "darkness.c"
 #include "reduce.c"
@@ -18,6 +18,7 @@ void define_systems_lights3(ecs* world) {
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [in] voxes.VoxLink,
+        [out] lights3.LightQueue,
         [out] lights3.LightNodeDepth,
         [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
@@ -25,14 +26,25 @@ void define_systems_lights3(ecs* world) {
         [none] chunks.Chunk
     );
     zox_system(
-        LightSystem,
+        LightBeamSystem,
         zoxp_lights_write,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [in] voxes.VoxLink,
-        // [out] lights3.LightNodeDepth,
-        [out] lights3.LightNode,
+        [out] lights3.SunlightQueue,
         [out] lights3.LightQueue,
+        [out] lights3.LightNode,
+        [out] lights3.LightNodeDirty,
+        [none] chunks.Chunk
+    );
+    zox_system(
+        LightFloodSystem,
+        zoxp_lights_write + 1,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.ChunkNeighbors,
+        [in] voxes.VoxLink,
+        [out] lights3.LightQueue,
+        [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
         [none] chunks.Chunk
     );
@@ -57,9 +69,10 @@ void define_systems_lights3(ecs* world) {
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkNeighbors,
         [in] voxes.VoxLink,
-        [out] lights3.LightNode,
+        [out] lights3.SunlightQueue,
         [out] lights3.LightQueue,
         [out] lights3.DarkQueue,
+        [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
         [none] chunks.Chunk
     );
@@ -88,7 +101,6 @@ void define_systems_lights3(ecs* world) {
         zoxp_voxels_read + 2,
         [in] chunks3.VoxelNodeDirty,
         [in] rendering.MeshColorsGenerate,
-        // [in] voxes.VoxLink,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [in] chunks3.SidesOctree,

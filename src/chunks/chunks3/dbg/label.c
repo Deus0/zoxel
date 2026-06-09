@@ -1,12 +1,5 @@
-uint get_label_chunk_link(
-    ecs *world,
-    const entity character,
-    char *buffer,
-    const uint size,
-    uint index
-) {
+uint get_label_chunk_link(ecs *world, entity character, char *buffer, uint size, uint index) {
     index += snprintf(buffer + index, size - index, "char [%s]\n", zox_get_name(character));
-
     // terrain
     /*zox_geter_value(character, TerrainLink, entity, terrain);
     if (!zox_valid(terrain)) {
@@ -14,15 +7,14 @@ uint get_label_chunk_link(
     } else {
         index += snprintf(buffer + index, size - index, " - is exploring [%s]\n", zox_get_name(terrain));
     }*/
-
+    // int3 voxel_position = zox_getv(character, VoxelPosition);
     // positions
-    zox_geter_value(character, Position3D, float3, position)
+    zox_geter_value(character, Position3D, float3, position);
     zox_geter_value(character, Euler, float3, euler)
     zox_geter_value(character, ChunkPosition, int3, chunk_position)
     index += snprintf(buffer + index, size - index, " - pos [%fx%fx%f]\n", position.x, position.y, position.z);
     index += snprintf(buffer + index, size - index, " - eul [%fx%fx%f]\n", euler.x, euler.y, euler.z);
     index += snprintf(buffer + index, size - index, " - in [%ix%ix%i]\n", chunk_position.x, chunk_position.y, chunk_position.z);
-
     // chunk
     zox_geter_value(character, ChunkLink, entity, chunk)
     if (!zox_valid(chunk)) {
@@ -32,7 +24,6 @@ uint get_label_chunk_link(
         zox_geter_value(chunk, ChunkPosition, int3, chunk_chunk_position)
         index += snprintf(buffer + index, size - index, " - at [%ix%ix%i]\n", chunk_chunk_position.x, chunk_chunk_position.y, chunk_chunk_position.z);
     }
-
     zox_geter_value(character, CameraLink, entity, camera)
     if (zox_valid(camera)) {
         index += snprintf(buffer + index, size - index, "cam [%s]\n", zox_get_name(camera));

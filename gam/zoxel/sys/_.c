@@ -37,6 +37,8 @@ void define_systems_zoxel(ecs *world) {
         [out] skills.SkillLinks,
         [none] realms.Realm
     );
+    // NOTE: Blocks must be set before items spawn if this is the case!
+    // TODO: Spawn Block Items when the Realm BlocksDirty is flagged
     zox_system_1(
         ItemsRealmSpawnSystem,
         zoxp_mainthread,
@@ -95,15 +97,6 @@ void define_systems_zoxel(ecs *world) {
         [none] realms.Realm
     );
     zox_system_1(
-        BlocksRealmSpawnSystem,
-        zoxp_mainthread,
-        [in] realms.GenerateRealm,
-        // [in] rendering.ModelLinks,
-        [out] blocks.BlockLinks,
-        [out] blocks.BlocksDirty,
-        [none] realms.Realm
-    );
-    zox_system_1(
         AchievementRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
@@ -119,12 +112,18 @@ void define_systems_zoxel(ecs *world) {
         [none] realms.Realm
     );
     zox_system_1(
+        BlocksRealmSpawnSystem,
+        zoxp_mainthread,
+        [in] realms.GenerateRealm,
+        [out] blocks.BlocksDirty,
+        [none] realms.Realm
+    );
+    zox_system_1(
         BiomeBlocksSystem,
         zoxp_mainthread,
         [in] core.Generate,
         [in] core.Seed,
         [out] colorz.Colors,
-        [out] blocks.BlockLinks,
         [none] biomes.Biome
     );
 }

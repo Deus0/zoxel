@@ -13,7 +13,7 @@ void PlayerUIGame3EndSystem(iter *it) {
         zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
         zox_sys_i(GameLink, game);
-        if (dirty->value != zox_dirty_active || state->value != zox_player_state_main_menu) {
+        if (!(dirty->value == zox_dirty_active && state->value == zox_player_state_main_menu)) {
             continue;
         }
         zox_geter_value(game->value, RealmLink, entity, realm);

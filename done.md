@@ -1,4 +1,13 @@
 ### Done ###
+-x not seeing many npcs atm...
+-x Sometimes some blocks loaded where my grass was
+	-x this might be a indexing issue where one biome loads before the realm blocks? or vice versa?
+	- xlooks like it, it swapped again
+-x Fix Sunlight by delaying until all chunks are spawned in that column
+-x Add Slot tooltips to body/equip item
+-x Add outlines to VoxTextures (body parts)
+-x Make ui selected use seperate colors for Active/Highlighted/Disabled etc
+-x Remove DotLinks
 -x Fix NPC RaycastRange
 -x Respawn Start should remove game uis
 -x Should not be able to unpause game when we are respawning

@@ -59,12 +59,11 @@ void add_debug_cube(ecs* world, entity e, float3 size) {
     debug_linec(world, d, h, c);
 }*/
 
-static inline void debug_cubec(ecs* world, float3 p, float3 s, color_rgb col) {
+static inline void debug_cubec(ecs* world, float3 p, float3 s, color_rgb line_color, float thickness) {
     // Half size
     const float hx = s.x * 0.5f;
     const float hy = s.y * 0.5f;
     const float hz = s.z * 0.5f;
-
     // Corner positions
     float3 v[8] = {
         { p.x - hx, p.y - hy, p.z - hz }, // 0
@@ -76,15 +75,14 @@ static inline void debug_cubec(ecs* world, float3 p, float3 s, color_rgb col) {
         { p.x + hx, p.y + hy, p.z + hz }, // 6
         { p.x - hx, p.y + hy, p.z + hz }  // 7
     };
-
     // Edge index pairs
     static const byte edges[12][2] = {
         {0,1}, {1,2}, {2,3}, {3,0}, // bottom
         {4,5}, {5,6}, {6,7}, {7,4}, // top
         {0,4}, {1,5}, {2,6}, {3,7}  // verticals
     };
-
     for (int i = 0; i < 12; i++) {
-        debug_linec(world, v[edges[i][0]], v[edges[i][1]], col);
+        // debug_linec(world, v[edges[i][0]], v[edges[i][1]], col);
+        spawn_line3_thickness(world, v[edges[i][0]], v[edges[i][1]], line_color, thickness);
     }
 }

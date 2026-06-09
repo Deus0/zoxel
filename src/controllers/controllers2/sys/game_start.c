@@ -39,7 +39,7 @@ zox_sys2(PlayerGame2StartSystem) {
         zox_sys_i(PlayerState, state);
         // zox_sys_i(GameLink, game);
         // zox_sys_i(CameraLink, camera);
-        if (dirty->value != zox_dirty_active && state->value != zox_player_state_loading) {
+        if (!(dirty->value == zox_dirty_active && state->value == zox_player_state_loading)) {
             continue;
         }
         // zox_geter_value(game->value, RealmLink, entity, realm);

@@ -9,8 +9,15 @@ typedef struct {
 
 // beams queued
 typedef struct {
+    byte light;
+    byte3 pos;
+    byte depth;
+} SunlightUpdate;
+
+// beams queued
+typedef struct {
     // 0 light - 1 dark
-    byte type;
+    // byte type;
     byte light;
     byte3 pos;
     byte depth;

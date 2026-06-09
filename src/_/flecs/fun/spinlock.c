@@ -1,3 +1,5 @@
+byte locks_enabled = 1;
+
 #ifdef zox_windows
 
     typedef SRWLOCK SpinLock;
@@ -14,24 +16,6 @@
     static inline void spin_unlock(SpinLock *lock) {
         ReleaseSRWLockExclusive(lock);
     }
-
-
-
-    /*#include <stdatomic.h>
-
-    typedef struct {
-        atomic_flag flag;
-    } SpinLock;
-
-    #define SPINLOCK_INIT (SpinLock){ .flag = ATOMIC_FLAG_INIT }
-
-    static inline void spin_lock(SpinLock *lock) {
-
-    }
-
-    static inline void spin_unlock(SpinLock *lock) {
-
-    }*/
 
 #else
 

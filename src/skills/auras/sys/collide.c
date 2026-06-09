@@ -3,7 +3,8 @@
     extern entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
 #endif
 
-zox_sys2(AuraSystem) {
+// NOTE: This adds Dots to nearby characters!
+zox_sys2(AuraDotSystem) {
     byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
@@ -22,7 +23,7 @@ zox_sys2(AuraSystem) {
         if (!zox_valid(user) || !skillActive->value || !skillDamage->value || !skillRange->value) {
             continue;
         }
-        zox_geter_value(user, Position3D, float3, position3)
+        zox_geter_value(user, Position3D, float3, position3);
         // todo: Get Chunk' Characters instead, this could potentially go through tens of thousands..
         // get nearby characters using distance formula
         // make this spherecast
@@ -31,12 +32,11 @@ zox_sys2(AuraSystem) {
             zox_sys_begin_2();
             zox_sys_in_2(Dead);
             zox_sys_in_2(Position3D);
-            zox_sys_out_2(DotLinks);
+            // zox_sys_out_2(DotLinks);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_e_2();
                 zox_sys_i_2(Position3D, position3D2)
                 zox_sys_i_2(Dead, dead);
-                zox_sys_o_2(DotLinks, dotLinks);
                 if (user == e2 || dead->value) {
                     continue;
                 }
@@ -44,8 +44,11 @@ zox_sys2(AuraSystem) {
                 entity poisoned_entity = 0;
                 // Checks if dot was already added to player!
                 // get poison, that  was initiated by this aura user
-                for (int k = 0; k < dotLinks->length; k++) {
-                    entity dot = dotLinks->value[k];
+                // for (int k = 0; k < dotLinks->length; k++) {
+                entity dots[zox_children_capacity];
+                uint dots_length = zox_get_children_by_id(world, e2, dots, zox_children_capacity, zox_id(Dot));
+                for (uint k = 0; k < dots_length; k++) {
+                    entity dot = dots[k];
                     if (!zox_has(dot, SkillLink)) {
                         continue;
                     }
@@ -62,10 +65,11 @@ zox_sys2(AuraSystem) {
                 // makes it so t two players can damage a character at once
                 if (distance <= skillRange->value) {
                     entity e3 = spawn_poison(world, e2, prefab_poison, user, e, skillDamage->value);
+                    zox_add_tag(e3, AuraDot);
+                    zox_set_parent(world, e3, e2);
                     if (dbg_log) {
-                        zox_log("Added new dot [%s] total dots [%i]", zox_get_name(e3), dotLinks->length);
+                        zox_log("Added new dot [%s]", zox_get_name(e3));
                     }
-                    add_to_DotLinks(dotLinks, e3);
                     // spawn particle system
                     float3 bounds = zox_get_value(e2, Bounds3D);
                     entity p = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
@@ -79,4 +83,4 @@ zox_sys2(AuraSystem) {
         }
         zox_sys_query_end();
     }
-} zox_sys_end(AuraSystem);
+} zox_sys_end(AuraDotSystem);

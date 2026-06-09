@@ -43,9 +43,10 @@ uint zox_dbg_ui_canvas(ecs *world, entity player, char *buffer, uint size, uint 
 
 // sets update function
 void set_prefab_debug_label(ecs *world, DebugLabelEvent value) {
-    if (!zox_valid(prefab_game_debug_label)) {
+    local_debug_label = value;
+    /*if (!zox_valid(prefab_game_debug_label)) {
         zox_log_error("prefab_game_debug_label has not spawned yet");
         return;
     }
-    zox_set(prefab_game_debug_label, DebugLabelData, { value })
+    zox_set(prefab_game_debug_label, DebugLabelData, { value })*/
 }

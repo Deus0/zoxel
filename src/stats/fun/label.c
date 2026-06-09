@@ -63,14 +63,14 @@ uint get_label_player_stats(ecs *world, entity player, char* buffer, uint size, 
             index = add_label_stat_value(world, characterLink->value, stat, buffer, size, index);
         }
     }
-    zox_geter(characterLink->value, DotLinks, dots);
+    /*zox_geter(characterLink->value, DotLinks, dots);
     for (int i = 0; i < dots->length; i++) {
         const entity dot = dots->value[i];
         if (!zox_valid(dot)) {
             continue;
         }
         index += snprintf(buffer + index, size - index, " . %s\n", zox_get_name(dot));
-    }
+    }*/
     return index;
 }
 

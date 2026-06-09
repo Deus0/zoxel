@@ -35,7 +35,7 @@ void define_systems_blocks(ecs* world) {
         RealmBlocksDirtySystem,
         EcsOnUpdate,
         [in] blocks.BlocksDirty,
-        [in] blocks.BlockLinks,
+        [out] blocks.BlockLinks,
         [none] realms.Realm
     );
 }

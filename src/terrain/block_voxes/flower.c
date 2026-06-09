@@ -1,4 +1,4 @@
-entity spawn_block_flower(ecs *world, byte index) {
+/*entity spawn_block_flower(ecs *world, entity parent, lint seed) {
     entity model = string_hashmap_get(files_hashmap_voxes, new_string_data("flower"));
     if (!model) {
         zox_log_error("[flower] model file not found");
@@ -13,8 +13,7 @@ entity spawn_block_flower(ecs *world, byte index) {
         .prefab_texture = prefab_vox_texture,
         .prefab_world_block = prefab_world_block,
         .tag = zox_id(BlockVox),
-        .index = index,
-        .seed = generate_voxel_seed(index),
+        .seed = seed, // generate_voxel_seed(index),
         .color = generate_random_voxel_color(),
         .model_type = zox_block_vox,
         .disable_collision = 1,
@@ -24,6 +23,7 @@ entity spawn_block_flower(ecs *world, byte index) {
     // our block!
     process_disabled_block_vox(world, &spawn_data, 0);
     entity e = spawn_block_vox_meta(world, spawn_data);
+    zox_set_parent(world, e, parent);
     if (disable_block_voxes) {
         return e;
     }
@@ -42,4 +42,4 @@ entity spawn_block_flower(ecs *world, byte index) {
         zox_add_tag(texture, CenterVoxTexture);
     }
     return e;
-}
+}*/

@@ -1,4 +1,5 @@
 // NOTE: Pushes Texture data into tilemap from realm
+// NOTE: Updates on dirty end state
 zox_sys2(RealmTilemapSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -10,7 +11,7 @@ zox_sys2(RealmTilemapSystem) {
         zox_sys_i(BlocksDirty, state);
         zox_sys_i(BlockLinks, blocks);
         zox_sys_i(TilemapLink, tilemap);
-        if (state->value != zox_dirty_active) {
+        if (state->value != zox_dirty_end) { // zox_dirty_active) {
             continue;
         }
         if (!zox_valid(tilemap->value)) {

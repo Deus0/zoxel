@@ -97,10 +97,8 @@ byte dark_sunbeam(
 
     // pass downward into chunk below since we survived until the end
     if (!beam_stopped && queued) {
-
         zox_log_lighting_dark(" - Dark Beam Continues [%ix%ix%i]", pos.x, length, pos.z);
-
-        spin_lock(&queued->lock);
+        if (locks_enabled) spin_lock(&queued->lock);
         a_DarkQueue(
             queued,
             (DarkUpdate) {
@@ -113,7 +111,7 @@ byte dark_sunbeam(
                 .depth = depth,
                 .light = sunlight
         });
-        spin_unlock(&queued->lock);
+        if (locks_enabled) spin_unlock(&queued->lock);
     }
 
     return dirty;

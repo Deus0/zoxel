@@ -68,7 +68,7 @@ static inline byte dark_flood_light(
 
                 DarkQueue* nqueue = n_dark_queues[dir];
                 if (nqueue) {
-                    spin_lock(&nqueue->lock);
+                    if (locks_enabled) spin_lock(&nqueue->lock);
                     a_DarkQueue(nqueue, (DarkUpdate) {
                         .type  = 0,
                         .light = old_light,
@@ -76,22 +76,22 @@ static inline byte dark_flood_light(
                         .pos   = pos,
                         .depth = depth
                     });
-                    spin_unlock(&nqueue->lock);
+                    if (locks_enabled) spin_unlock(&nqueue->lock);
                 }
 
             } else {
 
                 LightQueue* nqueue = n_light_queues[dir];
                 if (nqueue) {
-                    spin_lock(&nqueue->lock);
+                    if (locks_enabled) spin_lock(&nqueue->lock);
                     a_LightQueue(nqueue, (LightUpdate) {
-                        .type  = zox_light_type_flood,
+                        // .type  = zox_light_type_flood,
                         .light = ncurrent_light,
                         .distance = light_propogation_distance,
                         .pos   = pos,
                         .depth = depth
                     });
-                    spin_unlock(&nqueue->lock);
+                    if (locks_enabled) spin_unlock(&nqueue->lock);
                 }
 
             }
@@ -143,15 +143,15 @@ static inline byte dark_flood_light(
 
                 zox_log_lighting_dark("     + Dark Flood Light Source [%ix%ix%i] new [%i] old [%i] decayed [%i]", pos.x, pos.y, pos.z, current_light, old_light, decayed_light);
 
-                spin_lock(&light_queue->lock);
+                if (locks_enabled) spin_lock(&light_queue->lock);
                 a_LightQueue(light_queue, (LightUpdate) {
-                    .type  = zox_light_type_flood,
+                    // .type  = zox_light_type_flood,
                     .light = decayed_light,
                     .distance = light_propogation_distance,
                     .pos   = pos,
                     .depth = depth
                 });
-                spin_unlock(&light_queue->lock);
+                if (locks_enabled) spin_unlock(&light_queue->lock);
             }
         }
     }

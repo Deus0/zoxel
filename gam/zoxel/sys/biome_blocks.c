@@ -85,6 +85,7 @@ void generate_colors(lint seed, Colors *colors) {
     //terrain_frequency = biome.frequency;
 }
 
+// TODO: Generate Block Seeds off Biome Seeds
 // A biome will generate blocks
 zox_sys2(BiomeBlocksSystem) {
     zox_sys_world();
@@ -92,13 +93,13 @@ zox_sys2(BiomeBlocksSystem) {
     zox_sys_in(Generate);
     zox_sys_in(Seed);
     zox_sys_out(Colors);
-    zox_sys_out(BlockLinks);
+    // zox_sys_out(BlockLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(Seed, seed);
         zox_sys_o(Colors, colors);
-        zox_sys_o(BlockLinks, blocks);
+        // zox_sys_o(BlockLinks, blocks);
         if (generate->value != zox_dirty_active) {
             continue;
         }
@@ -109,41 +110,32 @@ zox_sys2(BiomeBlocksSystem) {
         // const color sky_color = colors->value[j++];
         color dirt_color = colors->value[j++];
         color grass_color = colors->value[j++];
-        //j++; // color sand_color = colors->value[j++];
+        color sand_color = colors->value[j++];
         //j++; // color stone_color = colors->value[j++];
         //j++; // color obsidian_color = colors->value[j++];
         {
-            entity e2 = spawn_block_soil(world, 0, "dirt", dirt_color);
+            entity e2 = spawn_block_soil(world, e, "dirt", dirt_color, 222122);
             zox_set(e2, BiomeLink, { e });
-            zox_set_parent(world, e2, e);
-            add_to_BlockLinks(blocks, e2);
             zox_add_tag(e2, BlockSoil);
             zox_set(e2, BlockHealth, { (float2) { 3, 6 } });
         }
         {
-            entity e2 = spawn_block_soil_grass(world, 0, "soil_grass", dirt_color, grass_color);
+            entity e2 = spawn_block_soil_grass(world, e, "soil_grass", dirt_color, grass_color, 662662);
             zox_set(e2, BiomeLink, { e });
-            zox_set_parent(world, e2, e);
-            add_to_BlockLinks(blocks, e2);
             zox_add_tag(e2, BlockSoilGrass);
             zox_set(e2, BlockHealth, { (float2) { 4, 8 } });
         }
         {
-            color sand_color = color_grayscale(166);
-            // zox_block_sand = blocks->length + 1;
-            entity e2 = spawn_block_soil(world, 0, "sand", sand_color);
+            // color sand_color = color_grayscale(166);
+            entity e2 = spawn_block_soil(world, e, "sand", sand_color, 515111);
             zox_add_tag(e2, BlockSand);
-            zox_set_parent(world, e2, e);
-            add_to_BlockLinks(blocks, e2);
             zox_set(e2, BlockHealth, { (float2) { 2, 4 } });
         }
         {
             color stone_color = color_grayscale(45);
-            // zox_block_stone = blocks->length + 1;
             entity e2 = spawn_block_stone(world, 0, "stone", stone_color);
             zox_add_tag(e2, BlockStone);
             zox_set_parent(world, e2, e);
-            add_to_BlockLinks(blocks, e2);
             zox_set(e2, BlockHealth, { (float2) { 8, 12 } });
         }
         {
@@ -152,16 +144,14 @@ zox_sys2(BiomeBlocksSystem) {
             entity e2 = spawn_block_wood(world, 0, "wood", wood_color);
             zox_add_tag(e2, BlockWood);
             zox_set_parent(world, e2, e);
-            add_to_BlockLinks(blocks, e2);
+            // add_to_BlockLinks(blocks, e2);
             zox_set(e2, BlockHealth, { (float2) { 4, 8 } });
         }
         // Grass Model
         {
-            // zox_block_vox_grass = blocks->length + 1;
             byte grass_color_mutation = 20;
             // Spawn Model First
             byte mdepth_vode = block_vox_depth_limits.y;
-            // color grass_color = color_grayscale(rand_range(50, 120));
             entity model = zox_new();
             zox_set_unique_name(model, "model_group_grass");
             // parent the model to the biome
@@ -179,28 +169,32 @@ zox_sys2(BiomeBlocksSystem) {
             }
             zox_set_ptr(model, ModelLinks, variants);
             // Now spawn block
-            entity e3 = spawn_block_grass(world, e, 0, grass_color, model, variant.y);
+            // entity e3 = spawn_block_grass(world, e, grass_color, model, variant.y, 12331);
+            entity e3 = spawn_realm_block_model(world, e, 12331, "grass", grass_color, 0, model, variant.y);
+            zox_prefab_set(e3, BlockSound, { 1 });
             zox_add_tag(e3, BlockGrass);
-            add_to_BlockLinks(blocks, e3);
         }
         // Dirt Pile
         {
-            // zox_block_dirt_rubble = blocks->length + 1;
-            entity e2 = spawn_realm_block_rubble(world, e, 0, "dirt debris", dirt_color, vox_type_rubble);
-            add_to_BlockLinks(blocks, e2);
+            lint seed = 322232;
+            byte max_depth = block_vox_depth_limits.y;
+            entity2 e2 = spawn_model_lods_rubble(world, e, vox_type_rubble, dirt_color, max_depth, seed);
+            spawn_realm_block_model(world, e, seed, "dirt debris", dirt_color, 0, e2.x, e2.y);
         }
         {
-            // zox_block_dirt_vox = blocks->length + 1;
-            entity e2 = spawn_realm_block_noisey(world, e, 0, "dirt decayed", dirt_color);
-            add_to_BlockLinks(blocks, e2);
+            lint seed = 291911;
+            byte max_depth = block_vox_depth_limits.y;
+            entity2 e2 = spawn_model_lods_rubble(world, e, vox_type_noisey, dirt_color, max_depth, seed);
+            spawn_realm_block_model(world, e, seed, "dirt decayed", dirt_color, 1, e2.x, e2.y);
         }
         // Biome Flora
         {
-            // zox_block_dirt_flowers = blocks->length + 1;
-            entity e2 = spawn_realm_block_rubble(world, e, 0, "flowers", dirt_color, vox_type_flowers);
-            add_to_BlockLinks(blocks, e2);
+            lint seed = 11121;
+            byte max_depth = block_vox_depth_limits.y;
+            entity2 e2 = spawn_model_lods_rubble(world, e, vox_type_flowers, dirt_color, max_depth, seed);
+            spawn_realm_block_model(world, e, seed, "flowers", dirt_color, 0,  e2.x, e2.y);
         }
-        zox_logv("+ Biome [%s] Blocks [%i]", zox_get_name(e), blocks->length);
+        zox_logv("+ Biome [%s] Blocks", zox_get_name(e));
         // add to biome as well
         // add blocks in biome to realm
         // set refresh then

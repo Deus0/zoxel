@@ -26,22 +26,18 @@ entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickness, do
 
 entity spawn_line3c(ecs *world, float3 a, float3 b, float thickness, double life_time, color_rgb c) {
     entity e = spawn_line3(world, a, b, thickness, life_time);
-
     zox_set(e, Color, { color_rgb_to_color(c) });
-
     return e;
 }
 
 entity spawn_line3_alpha(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time, color line_color) {
     entity e = spawn_line3(world, pointA, pointB, thickness, life_time);
-
     zox_set(e, Color, { line_color });
-
     return e;
 }
 
-void spawn_line3_thickness(ecs *world, float3 a, float3 b, color_rgb line_color, float thickness) {
-    spawn_line3c(world, a, b, thickness, line_frame_timing, line_color);
+entity spawn_line3_thickness(ecs *world, float3 a, float3 b, color_rgb line_color, float thickness) {
+    return spawn_line3c(world, a, b, thickness, line_frame_timing, line_color);
 }
 
 void spawn_line3_thickness_alpha(ecs *world, float3 a, float3 b, color line_color, float thickness) {

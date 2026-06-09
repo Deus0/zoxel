@@ -1,4 +1,5 @@
 zox_sys2(AuraParticlesSystem) {
+    byte aura_spawn_rate = 16;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Activate);
@@ -27,7 +28,7 @@ zox_sys2(AuraParticlesSystem) {
                 // bounds.y = range->value;
                 // bounds.x = 2 * range->value;
                 float3 bounds = float3_single(range->value);
-                link->value = spawn_particle3D_emitter(world, user, 1, bounds, colorr->value);
+                link->value = spawn_particle3D_emitter(world, user, aura_spawn_rate, bounds, colorr->value);
             }
         } else {
             // destroy them

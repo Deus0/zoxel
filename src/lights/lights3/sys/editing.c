@@ -2,7 +2,6 @@
 // for now: check above voxel, if sun, create beam
 // TODO: Convert local position to terrain position (positionv)
 // Shouuld we use VoxelNodeDepth here? since we are removing/adding at that depth
-
 zox_sys2(VoxelLightSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -10,9 +9,10 @@ zox_sys2(VoxelLightSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxLink);
-    zox_sys_out(LightNode);
+    zox_sys_out(SunlightQueue);
     zox_sys_out(LightQueue);
     zox_sys_out(DarkQueue);
+    zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
     byte solidity[255];
     for (int j = 0; j < 255; j++) solidity[j] = 1;
@@ -22,6 +22,7 @@ zox_sys2(VoxelLightSystem) {
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightNode, root_lnode);
+        zox_sys_o(SunlightQueue, sun_queue);
         zox_sys_o(LightQueue, light_queue);
         zox_sys_o(DarkQueue, dark_queue);
         zox_sys_o(LightNodeDirty, light_node_dirty);
@@ -34,23 +35,22 @@ zox_sys2(VoxelLightSystem) {
             VoxelNodeUpdate update = input_queue->ptr[j];
             // Removing Voxel - Spreads Light
             if (!update.value) {
-                const LightNode* above = get_neighbor_LightNode(
-                    root_lnode,
-                    nnodesl,
-                    direction_up,
-                    update.pos,
-                    depth->value
-                );
+                const LightNode* above = get_neighbor_LightNode(root_lnode, nnodesl, direction_up, update.pos, depth->value);
                 byte light_above = above ? above->value : 0;
                 if (light_above == sunlight) {
-                    zox_log_lighting_remove("[%s] Removed Block: + Sunbeam at [%ix%ix%i] sunlight [%i]", zox_get_name(it->entities[i]),  update.pos.x, update.pos.y, update.pos.z, sunlight);
                     // if y, we do y + 1
-                    a_LightQueue(light_queue, (LightUpdate) {
-                        .type = zox_light_type_beam,
+                    /*a_LightQueue(light_queue, (LightUpdate) {
+                        // .type = zox_light_type_beam,
+                        .pos = update.pos,
+                        .light = sunlight,
+                        .depth = depth->value
+                    });*/
+                    a_SunlightQueue(sun_queue, (SunlightUpdate) {
                         .pos = update.pos,
                         .light = sunlight,
                         .depth = depth->value
                     });
+                    zox_log_lighting_remove("[%s] Removed Block: + Sunbeam at [%ix%ix%i] sunlight [%i]", zox_get_name(it->entities[i]),  update.pos.x, update.pos.y, update.pos.z, sunlight);
                     // set dark light, as it was filled up
                     // set_LightNode(root_lnode, depth->value, update.pos, sunlight, 0);
                 } else {
@@ -76,7 +76,7 @@ zox_sys2(VoxelLightSystem) {
                     a_LightQueue(
                         light_queue,
                         (LightUpdate) {
-                            .type = zox_light_type_flood,
+                            // .type = zox_light_type_flood,
                             .pos = update.pos,
                             .depth = depth->value,
                             .light = decayed_light,

@@ -23,7 +23,7 @@ entity zox_dbg_test_window;
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
-    byte zox_tsts_count = 19;
+    byte zox_tsts_count = 20;
     SpawnListElement elements[zox_tsts_count];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
@@ -38,6 +38,10 @@ entity zox_dbg_test_window;
     elements[elements_count++] = (SpawnListElement) {
         .text = "Vode Gizmos",
         .on_click = { &zox_dbg_toggle_gizmos_vodes },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Lights Gizmos",
+        .on_click = { &zox_dbg_cycle_light_debug },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "All Items",

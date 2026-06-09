@@ -8,10 +8,10 @@ void zox_define_systems_auras(ecs* world) {
         characters,
         [in] combat.Dead,
         [in] transforms3.Position3D,
-        [out] stats.DotLinks
+        [none] characters.Character
     );
     zox_system_ctx_1(
-        AuraSystem,
+        AuraDotSystem,
         zoxp_mainthread,
         characters,
         [in] skills.SkillActive,
@@ -24,7 +24,7 @@ void zox_define_systems_auras(ecs* world) {
         AuraRemoveSystem,
         EcsOnUpdate,
         [in] transforms3.Position3D,
-        [out] stats.DotLinks
+        [none] characters.Character
     );
     zox_system_1(
         AuraParticlesSystem,

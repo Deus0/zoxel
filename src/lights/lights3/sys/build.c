@@ -108,14 +108,6 @@ static inline void zox_apply_light3(
         if (!(sides->value & (1 << (direction + 1)))) {
             continue;
         }
-        // use adjacent lights
-        /*const LightNode* adj_node = get_LightNode_neighbor(
-            root_lnode,
-            nnodesl,
-            direction,
-            position,
-            depth
-        );*/
         // TODO: Get Adjacent Depth -> based on chunk index to depth lookup - atm we just assume its render depth + 1
         const LightNode* anode = get_max_light_on_face_(
             lnode,

@@ -1,6 +1,9 @@
 entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 camera_position, int3 position, byte terrain_depth, float terrain_scalev) {
     zox_instance(prefab);
-    zox_name("chunk_terrain");
+    char name[64];
+    sprintf(name, "chunk_terrain_%ix%ix%i", position.x, position.y, position.z);
+    // zox_name("chunk_terrain");
+    zox_name(name);
     zox_set_parent(world, e, terrain);
     // convert chunk position to real
     //  - scales by length of chunk and vox scale
@@ -38,6 +41,8 @@ entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 came
     zox_set(e, RenderDepth, { render_depth });
     if (position.y == render_distance_y) {
         zox_add_tag(e, SunnyChunk);
+    } else if (position.y == -render_distance_y) {
+        zox_add_tag(e, BottomChunk);
     }
     // can move this to init systems
     //  note: keep spawn functions only for passing through sending outside information

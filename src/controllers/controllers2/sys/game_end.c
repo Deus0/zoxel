@@ -11,10 +11,7 @@ void PlayerGame2EndSystem(iter *it) {
         zox_sys_i(PlayerState, state);
         // zox_sys_o(CameraLink, camera);
         zox_sys_o(CharacterLink, character);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
-        if (state->value != zox_player_state_main_menu) {
+        if (!(dirty->value == zox_dirty_active && state->value == zox_player_state_main_menu)) {
             continue;
         }
         // TODO: Do this in game not in player system

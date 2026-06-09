@@ -1,3 +1,5 @@
+float debug_line_octree_thickness = 2;
+
 #define create_octree_line_debugger(T) \
 static void debug_octree_node_##T( \
     ecs *world, \
@@ -20,7 +22,7 @@ static void debug_octree_node_##T( \
         color_rgb col = { v, v, v }; \
         float3 size = float3_single(scale * 0.95f); /* padding */ \
         float3 center = float3_add(position, float3_half(size)); \
-        debug_cubec(world, center, size, col); \
+        debug_cubec(world, center, size, col, debug_line_octree_thickness); \
         return; \
     } \
     \

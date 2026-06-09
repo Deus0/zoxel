@@ -1,15 +1,21 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
-- Add outlines to VoxTextures (body parts)
-- Update frame texture outline when icon is selected!
-- Selected Text option - update the characters
--x Make ui selected use seperate colors for Active/Highlighted/Disabled etc
-- Remove DotLinks
+# Next
+- Add instancing to lines so we can test it easier t he lights
+- Windows no longer close taskbar toggle
 - Physics clip issue now that my body is bigger than one block size
-- Add Character Render Texture UI to show your character
-- Refactor OverlapEvent to Overlapped state with a system in items
+- Add Character Render Texture UI to show your character - mirror taskbar icon too
+
+# Low Priority
+- Update frame texture outline when icon is selected!
+- Save/Load Realm Blocks + data to future proof updates
 - NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
+- Long pause breaks physics - test big frame times
+- Refactor spawn_block_vox_meta and remove structs
+- Add Tooltips to Empty Slot Frames
+- Selected Text option - update the Zigel Colors
+- Refactor OverlapEvent to Overlapped state with a system in items
 
 # Chunk Refactor
 - Spawn the Vox test without renderer, and use child as render

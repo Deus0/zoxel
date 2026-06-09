@@ -1,5 +1,9 @@
 byte debugger_is_ignore_value = 0;
 byte debugger_is_ignore_voxel = 0;  // crashes sometimes
+float debug_octree_padding = 0.9f;
+float debug_octree_thickness = 4;
+
+// TODO: Make this generic and just use void*, Remove Macros
 
 #define create_octree_line_debugger_compare(T, T2) \
 static void debug_octree_node_compare_##T( \
@@ -26,15 +30,15 @@ static void debug_octree_node_compare_##T( \
         /* Draw cube for node at target depth */ \
         byte v = node->value; \
         color_rgb col = { v, v, v }; \
-        float3 size = float3_single(scale * 0.95f); /* padding */ \
-        float3 center = float3_add(position, float3_half(size)); \
-        debug_cubec(world, center, size, col); \
+        float3 size = float3_single(scale * debug_octree_padding); /* padding */ \
+        float3 rsize = float3_single(scale); \
+        float3 center = float3_add(position, float3_half(rsize)); \
+        debug_cubec(world, center, size, col, debug_octree_thickness); \
         return; \
     } \
     \
     const T2* child_compare = compare_node; \
     float child_scale = scale * 0.5f; \
-    \
     for (byte i = 0; i < 8; i++) { \
         const T *child = (const T*)((const char*)(*kids_ptr) + i * sizeof(T)); \
         if (!child) { \
@@ -50,8 +54,9 @@ static void debug_octree_node_compare_##T( \
         } \
         \
         /* Skip nodes with ignored value */ \
-        if (debugger_is_ignore_value && child->value == ignore_value) continue; \
-        \
+        if (debugger_is_ignore_value && child->value == ignore_value) {\
+            continue; \
+        } \
         /* Skip if compare_node indicates underground */ \
         /*if (debugger_is_ignore_voxel && child_compare && child_compare->value) continue;*/\
         \
