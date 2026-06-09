@@ -8,6 +8,7 @@
 #include "biome_average.c"
 #include "biome_link.c"
 #include "kickstart.c"
+#include "region.c"
 
 void define_systems_tunks(ecs* world) {
     zox_filter(
@@ -105,6 +106,13 @@ void define_systems_tunks(ecs* world) {
         [out] tunks.TunkLink,
         [out] biomes.BiomeLink,
         [none] streaming.Streamer
+    );
+    zox_system(
+        TunkRegionLinkSystem,
+        EcsOnUpdate,
+        [in] chunks2.Chunk2Position,
+        [out] regions.RegionLink,
+        [none] tunks.Tunk
     );
     /*zox_system_1(
         TunkDebugSystem,

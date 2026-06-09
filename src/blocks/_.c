@@ -18,10 +18,10 @@ float block_place_range = 2;
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Blocks)
-    define_components_blocks(world);
-    define_systems_blocks(world);
+zox_begin_module(Blocks) {
+    zox_define_components_blocks(world);
+    zox_define_systems_blocks(world);
     add_hook_spawn_prefabs(spawn_prefabs_blocks);
-zox_end_module(Blocks)
+} zox_end_module(Blocks);
 
 #endif

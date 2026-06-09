@@ -1,11 +1,22 @@
 #include "towns.c"
 #include "walls.c"
+#include "regions.c"
 
 void zox_define_systems_towns(ecs* world) {
+    zox_system_1(
+        RegionTownsSystem,
+        zoxp_mainthread,
+        [in] core.Generate,
+        [in] regions.RegionPosition,
+        [in] blocks.VoxelPosition,
+        [in] blocks.VoxelSize,
+        [none] regions.Region
+    );
     zox_system(
         TownMapSystem,
         EcsPreStore,
         [in] core.Generate,
+        [in] regions.RegionLink,
         [in] chunks2.Chunk2Position,
         [in] tunks.BiomeMap,
         [out] towns.TownMap,

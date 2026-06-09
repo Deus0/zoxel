@@ -1,8 +1,6 @@
 #include "logs.c"
 #include "prefab.c"
 #include "fetch.c"
-#include "dark_flood.c"
-#include "dark_beam.c"
 
 void fetch_first_solidity(ecs* world, iter* it, const VoxLink* VoxLink_, byte* solidity) {
     entity first_terrain = 0;

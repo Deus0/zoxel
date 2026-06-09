@@ -2,22 +2,22 @@
 => GPU Constrained actually, memory barely used - 200-400mb used
 
 # Next
-- Add instancing to lines so we can test it easier t he lights
+- Debug Town Gizmo
+- Debug House Gizmo
+- Player Respawn Point Gizmos
+- Spawn Player in Town
+-x Spawn Towns per Region
+-x Link Region to Tunks
+- Tunk LOD Levels
+	- So we dont generate maps for far away chunks
+- Fade in Chunks
+- Fix the flickering of chunks when I move through terrain
 - Windows no longer close taskbar toggle
 - Physics clip issue now that my body is bigger than one block size
 - Add Character Render Texture UI to show your character - mirror taskbar icon too
 
-# Low Priority
-- Update frame texture outline when icon is selected!
-- Save/Load Realm Blocks + data to future proof updates
-- NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
-- Long pause breaks physics - test big frame times
-- Refactor spawn_block_vox_meta and remove structs
-- Add Tooltips to Empty Slot Frames
-- Selected Text option - update the Zigel Colors
-- Refactor OverlapEvent to Overlapped state with a system in items
-
 # Chunk Refactor
+- Spawn Hierarchy + inspector when we spawn our Vox Test
 - Spawn the Vox test without renderer, and use child as render
 	- refactor the mesh building functions for this use
 - Switching LOD Meshes should
@@ -31,6 +31,17 @@
 - Refactor models to just spawn one vox model and multiple render objects as children
 	- Make lods just use the same model, no need to create 5 models per slime
 	- just generate per each level - set with shapes per node level
+
+# Low Priority
+- Update frame texture outline when icon is selected!
+- Save/Load Realm Blocks + data to future proof updates
+- NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
+- Long pause breaks physics - test big frame times
+- Refactor spawn_block_vox_meta and remove structs
+- Add Tooltips to Empty Slot Frames
+- Selected Text option - update the Zigel Colors
+- Refactor OverlapEvent to Overlapped state with a system in items
+- Add instancing to lines so we can test it easier t he lights
 	
 # ChunkTextured Refactor
 - Spawn a Terrain chunk as test function

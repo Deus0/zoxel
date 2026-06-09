@@ -1,6 +1,7 @@
 // NOTE: Uses terrainMap to spawn terrain blocks in chunks
 // TODO: Use a general Generate state instead of RenderDepthDirty
 zox_sys2(TownWallsSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -37,6 +38,7 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
         byte voctree_length = powers_of_two_byte[vdepth->value];
+        int3 chunk_voxel_position = (int3) { cposition->value.x * voctree_length, cposition->value.y * voctree_length, cposition->value.z * voctree_length };
         int chunk_position_y = cposition->value.y * voctree_length;
         byte3 positionl;
         int hmultiplier = 1;
@@ -69,6 +71,9 @@ zox_sys2(TownWallsSystem) {
                 int local_height_raw = global_position_y - chunk_position_y;
                 byte town = tmap->value[hindex];
                 if (town) {
+                    if (dbg_log) {
+                        zox_log("Placing Town Wall at [%ix%i]", chunk_voxel_position.x + positionl.x, chunk_voxel_position.z + positionl.z);
+                    }
                     for (int h = 1; h <= 4; h++) {
                         positionl.y = local_height_raw + h;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {

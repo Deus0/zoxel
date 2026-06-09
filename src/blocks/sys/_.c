@@ -4,7 +4,7 @@
 #include "indexes.c"
 realm_clear_system(BlockLinks);
 
-void define_systems_blocks(ecs* world) {
+void zox_define_systems_blocks(ecs* world) {
     realm_clear_systemd(blocks, BlockLinks);
     zox_system(
         RealmTilemapSystem,
