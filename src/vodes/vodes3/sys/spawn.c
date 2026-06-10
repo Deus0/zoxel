@@ -120,7 +120,7 @@ void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, NodeDelveData
         zox_geter_value(data->chunk, NodeDepth, byte, node_depth);
         int chunk_length = powers_of_two[node_depth];
         int3 chunk_dimensions = int3_single(chunk_length);
-        int3 cpositionv = get_chunk_positionv(cposition->value, chunk_dimensions);
+        int3 cpositionv = get_chunk_block_position(cposition->value, chunk_dimensions);
         int3 positionv = int3_add(positionv, cpositionv);
         // spawn node entity here!
         byte block_index = node->value - 1;

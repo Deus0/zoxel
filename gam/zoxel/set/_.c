@@ -9,8 +9,8 @@
 void zoxel_on_spawn_prefabs(ecs* world) {
     // set_prefab_debug_label(world, &zox_dbg_ui_canvas);
     // set_prefab_debug_label(world, &debug_ui_raycast_chunk3);
-    // set_prefab_debug_label(world, &debug_ui_player);
-    set_prefab_debug_label(world, &debug_label_chunk_link);
+    set_prefab_debug_label(world, &debug_ui_player);
+    // set_prefab_debug_label(world, &debug_label_chunk_link);
     // set_prefab_debug_label(world, &debug_ui_raycasting);
     // set_prefab_debug_label(world, &debug_ui_system_times);
     // get_debug_label_app

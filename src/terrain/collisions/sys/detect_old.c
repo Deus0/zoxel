@@ -16,7 +16,7 @@ static inline float3 bias_sample_by_movement(float3 sample, const byte3 movement
 // returns 1 of positionf is within a solid block
 byte check_collision_point(ecs *world, const ChunkLinks* chunks, byte terrain_depth, float terrain_scale, const byte* block_collisions, float3 position) {
     // voxel position from real
-    int3 terrain_position = positionf_to_positionv(position, terrain_scale);
+    int3 terrain_position = positionf_to_block_position(position, terrain_scale);
     // get chunk from position
     int3 chunk_position = real_position_to_chunk_position(terrain_position, powers_of_two[terrain_depth], terrain_scale);
     entity chunk = int3_hashmap_get(chunks->value, chunk_position);

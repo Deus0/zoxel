@@ -13,7 +13,6 @@ zox_sys2(VegetationMapSystem) {
     double grass_cutoff_1 = 0.62;
     double weeds_cutoff_1 = 0.74;
     double trees_cutoff_1 = 0.86;
-
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(Chunk2Position);

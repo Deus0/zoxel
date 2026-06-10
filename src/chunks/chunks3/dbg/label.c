@@ -7,7 +7,7 @@ uint get_label_chunk_link(ecs *world, entity character, char *buffer, uint size,
     } else {
         index += snprintf(buffer + index, size - index, " - is exploring [%s]\n", zox_get_name(terrain));
     }*/
-    // int3 voxel_position = zox_getv(character, VoxelPosition);
+    // int3 voxel_position = zox_getv(character, BlockPosition);
     // positions
     zox_geter_value(character, Position3D, float3, position);
     zox_geter_value(character, Euler, float3, euler)

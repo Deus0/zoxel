@@ -1,22 +1,22 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+- Debug missing town wall parts, cuttoff, do minimaps next
+- Fix chunk mesh reload glitch (flashes, basically missing for one frame)
+-x Disable movement if ouitside chunks
+-x Spawn Player in Town - pick random one in first region
+
 # Next
-- Debug Town Gizmo
-- Debug House Gizmo
+- Use Realm Seed + region positions to set Region Seeds
+- Use Region Seeds to generate mountain data
 - Player Respawn Point Gizmos
-- Spawn Player in Town
--x Spawn Towns per Region
--x Link Region to Tunks
-- Tunk LOD Levels
-	- So we dont generate maps for far away chunks
-- Fade in Chunks
+- Add Character Render Texture UI to show your character - mirror taskbar icon too
 - Fix the flickering of chunks when I move through terrain
 - Windows no longer close taskbar toggle
 - Physics clip issue now that my body is bigger than one block size
-- Add Character Render Texture UI to show your character - mirror taskbar icon too
 
 # Chunk Refactor
+- Fade in Chunks
 - Spawn Hierarchy + inspector when we spawn our Vox Test
 - Spawn the Vox test without renderer, and use child as render
 	- refactor the mesh building functions for this use
@@ -33,6 +33,9 @@
 	- just generate per each level - set with shapes per node level
 
 # Low Priority
+- Stream Level - Region only for initial game town spawning!
+- Tunk LOD Levels
+	- So we dont generate maps for far away chunks
 - Update frame texture outline when icon is selected!
 - Save/Load Realm Blocks + data to future proof updates
 - NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
@@ -42,6 +45,8 @@
 - Selected Text option - update the Zigel Colors
 - Refactor OverlapEvent to Overlapped state with a system in items
 - Add instancing to lines so we can test it easier t he lights
+- Debug Town Gizmo
+- Debug House Gizmo
 	
 # ChunkTextured Refactor
 - Spawn a Terrain chunk as test function
@@ -208,7 +213,6 @@
 - base biome color on prior biomes so it stands out too
 
 # Towns
-- Spawn Towns per Region - link to Town Placecment
 
 # Tunks
   - tunks to handle increasing resolution when needed - using the depth update

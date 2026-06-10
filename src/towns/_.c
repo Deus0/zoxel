@@ -1,11 +1,14 @@
 /*
  *  Zox Towns
  *      - A Region has Many Towns
+ *      - A town is a return point from adventures
  *
  *  Towns Have
  *      - Houses
  *      - Walls
  *      - Roads
+ *      - NPCs
+ *      - Respawn Points
  *
  * */
 #ifndef zox_towns

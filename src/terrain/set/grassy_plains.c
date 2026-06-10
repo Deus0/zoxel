@@ -1,6 +1,5 @@
 byte terrain_obsidian_height = 3;   // 1 | 2 | 3 | 4
 const int sand_height = -10;
-const int mountain_height = 20;
 const byte terrain_min_height = 8;
 const float flat_height_level = -0.56f; // 0.2f;
 // double terrain_amplifier = 64.0;

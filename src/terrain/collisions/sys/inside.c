@@ -24,9 +24,9 @@ zox_sys2(InsideBlockSystem) {
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
         float3 positionf = float3_add(position->value,
             (float3) { 0, - bounds->value.y / 4.0f, 0 });
-        int3 positionv = positionf_to_positionv(positionf, terrain_scale);
+        int3 positionv = positionf_to_block_position(positionf, terrain_scale);
         byte3 max_chunk_size = byte3_single(powers_of_two[terrain_depth]);
-        int3 positionc = positionv_to_positionc(positionv, max_chunk_size);
+        int3 positionc = block_position_to_positionc(positionv, max_chunk_size);
         // get points chunk
         entity chunk = int3_hashmap_get(chunks->value, positionc);
         // If not in terrain chunk

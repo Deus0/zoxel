@@ -7,8 +7,8 @@ entity spawn_town(ecs* world, entity prefab, entity parent, int2 position, int2 
         zox_name(name);
     }
     zox_set_parent(world, e, parent);
-    zox_set(e, VoxelPosition, { position.x, 0, position.y });
-    zox_set(e, VoxelSize, { size.x, 0, size.y });
+    zox_set(e, BlockPosition2, { position });
+    zox_set(e, BlockSize2, { size });
     // zox_set(e, RegionPosition, { position });
     // zox_set(e, RenderDistance, { rdistance });
     // zox_log("+ Tunk2 [%ix%i]", position.x, position.y);

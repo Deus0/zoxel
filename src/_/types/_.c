@@ -1,37 +1,28 @@
 #include "types.c"
 #include "keys.c"
-
 #include "zext.c"
-
 #include "byte.c"
 #include "byte2.c"
 #include "byte3.c"
-
 #include "int.c"
 #include "int2.c"
 #include "int3.c"
 #include "int4.c"
-
 #include "uint.c"
 #include "uint2.c"
 #include "lint.c"
-
 #include "float.c"
 #include "float2.c"
 #include "float3.c"
 #include "float4.c"
 #include "float6.c"
-
 #include "double.c"
-
 #include "color.c"
 #include "color_rgb.c"
-
 #include "entity.c"
 #include "entity2.c"
 #include "entity3.c"
 #include "entities.c"
-
 #include "ulong.c"
 
 #define zox_component_string(type) zox_component_string##_##type(component##_##type)
@@ -120,6 +111,9 @@ zoxc_byte(GenericEvent);
 zoxc_byte(SpawnChance);
 // unsorted
 zoxc_fixed_string(SaveGamePath, 512);
+// Measurements
+zoxc_byte(Radius);
+zoxc_byte(Height);
 
 #define zox_load_none 0
 #define zox_load_begin 1
@@ -148,4 +142,7 @@ void define_components_core(ecs* world) {
     zoxd_byte(SpawnChance);
     // unsorted
     zoxd_fixed_string(SaveGamePath);
+    // Measurements
+    zoxd_byte(Radius);
+    zoxd_byte(Height);
 }

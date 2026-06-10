@@ -14,7 +14,6 @@
 #define zox_regions
 
 byte region_dividor = 16;
-
 // Regions
 // TODO: RegionStreamerDirty Detection
 // TODO: Recalculate all the RegionLods when Dirty

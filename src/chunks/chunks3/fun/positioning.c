@@ -7,39 +7,39 @@ int3 chunk_position_fix2(float3 real_position, int3 chunk_position) {
     return chunk_position;
 }
 
-static inline int positionf_to_positionv1(float positionf, float scale) {
+static inline int positionf_to_block_position1(float positionf, float scale) {
     return (int) floor(positionf / scale);
 }
 
-static inline int3 positionf_to_positionv(float3 positionf, float scale) {
+static inline int3 positionf_to_block_position(float3 positionf, float scale) {
     return (int3) {
-        positionf_to_positionv1(positionf.x, scale),
-        positionf_to_positionv1(positionf.y, scale),
-        positionf_to_positionv1(positionf.z, scale)
+        positionf_to_block_position1(positionf.x, scale),
+        positionf_to_block_position1(positionf.y, scale),
+        positionf_to_block_position1(positionf.z, scale)
     };
 }
 
 int3 real_position_to_chunk_position(float3 positionf, byte chunk_length, float scale) {
-    int3 positionv = positionf_to_positionv(positionf, scale);
-    if (positionf.x < 0) positionv.x += 1;
-    if (positionf.y < 0) positionv.y += 1;
-    if (positionf.z < 0) positionv.z += 1;
+    int3 block_position = positionf_to_block_position(positionf, scale);
+    if (positionf.x < 0) block_position.x += 1;
+    if (positionf.y < 0) block_position.y += 1;
+    if (positionf.z < 0) block_position.z += 1;
     int3 chunk_position = (int3) {
-        positionv.x / chunk_length,
-        positionv.y / chunk_length,
-        positionv.z / chunk_length
+        block_position.x / chunk_length,
+        block_position.y / chunk_length,
+        block_position.z / chunk_length
     };
     return chunk_position_fix2(positionf, chunk_position);
 }
 
-static inline byte3 get_positionl_byte3_2(int3 positionv, byte3 chunk_size, byte3 terrain_chunk_size) {
+static inline byte3 get_positionl_byte3_2(int3 block_position, byte3 chunk_size, byte3 terrain_chunk_size) {
     byte3 positionl;
-    if (positionv.x < 0) positionl.x = chunk_size.x - 1 + ((positionv.x + 1) % terrain_chunk_size.x);
-    else positionl.x = positionv.x % terrain_chunk_size.x;
-    if (positionv.y < 0) positionl.y = chunk_size.y - 1 + ((positionv.y + 1) % terrain_chunk_size.y);
-    else positionl.y = positionv.y % terrain_chunk_size.y;
-    if (positionv.z < 0) positionl.z = chunk_size.z - 1 + ((positionv.z + 1) % terrain_chunk_size.z);
-    else positionl.z = positionv.z % terrain_chunk_size.z;
+    if (block_position.x < 0) positionl.x = chunk_size.x - 1 + ((block_position.x + 1) % terrain_chunk_size.x);
+    else positionl.x = block_position.x % terrain_chunk_size.x;
+    if (block_position.y < 0) positionl.y = chunk_size.y - 1 + ((block_position.y + 1) % terrain_chunk_size.y);
+    else positionl.y = block_position.y % terrain_chunk_size.y;
+    if (block_position.z < 0) positionl.z = chunk_size.z - 1 + ((block_position.z + 1) % terrain_chunk_size.z);
+    else positionl.z = block_position.z % terrain_chunk_size.z;
     return positionl;
 }
 
@@ -47,13 +47,13 @@ static inline int3 voxel_chunk_position_xz(int3 chunk_position, int3 chunk_size)
     return int3_multiply_int3(chunk_position, chunk_size);
 }
 
-static inline int3 get_chunk_positionv(int3 chunk_position, int3 chunk_size) {
-    int3 positionv = int3_multiply_int3(chunk_position, chunk_size);
-    return positionv;
+static inline int3 get_chunk_block_position(int3 chunk_position, int3 chunk_size) {
+    int3 block_position = int3_multiply_int3(chunk_position, chunk_size);
+    return block_position;
 }
 
-float3 voxel_to_real_position(int3 positionv, float terrain_voxel_scale, float chunk_voxel_scale) {
-    float3 positionf = int3_to_float3(positionv);
+float3 voxel_to_real_position(int3 block_position, float terrain_voxel_scale, float chunk_voxel_scale) {
+    float3 positionf = int3_to_float3(block_position);
     float3_scale_p(&positionf, terrain_voxel_scale);
     // get middle of voxel position
     return float3_add(positionf, float3_scale(float3_halff, chunk_voxel_scale));
@@ -73,47 +73,41 @@ float3 local_to_real_position_character(byte3 in_chunk_position, int3 chunk_grid
     return position;
 }
 
-static inline float positionv_to_positionf1(int positionv, float scale) {
-    return positionv * scale;
+static inline float block_position_to_real_position1(int block_position, float scale) {
+    return block_position * scale;
 }
 
 // Obsolete, this doesnt handle local depth differences
-static inline byte3 get_positionl_byte3(int3 positionv, byte3 chunk_size) {
+static inline byte3 get_positionl_byte3(int3 block_position, byte3 chunk_size) {
     byte3 positionl;
-    if (positionv.x < 0) {
-        positionl.x = chunk_size.x - 1 + ((positionv.x + 1) % chunk_size.x);
+    if (block_position.x < 0) {
+        positionl.x = chunk_size.x - 1 + ((block_position.x + 1) % chunk_size.x);
     } else {
-        positionl.x = positionv.x % chunk_size.x;
+        positionl.x = block_position.x % chunk_size.x;
     }
-    if (positionv.y < 0) {
-        positionl.y = chunk_size.y - 1 + ((positionv.y + 1) % chunk_size.y);
+    if (block_position.y < 0) {
+        positionl.y = chunk_size.y - 1 + ((block_position.y + 1) % chunk_size.y);
     } else {
-        positionl.y = positionv.y % chunk_size.y;
+        positionl.y = block_position.y % chunk_size.y;
     }
-    if (positionv.z < 0) {
-        positionl.z = chunk_size.z - 1 + ((positionv.z + 1) % chunk_size.z);
+    if (block_position.z < 0) {
+        positionl.z = chunk_size.z - 1 + ((block_position.z + 1) % chunk_size.z);
     } else {
-        positionl.z = positionv.z % chunk_size.z;
+        positionl.z = block_position.z % chunk_size.z;
     }
     return positionl;
 }
 
-// Map local-in-chunk coords (positionl) to world-voxel coords (positionv),
+// Map local-in-chunk coords (positionl) to world-voxel coords (block_position),
 // scaling from the terrain's local basis (terrain_chunk_size) to this chunk's voxel size (chunk_size).
 // Handles negative chunks the same way your get_positionl_* does: negative axes anchor to the
 // high end of the chunk window.
 //
 // Assumes: 0 < terrain_chunk_size.{x,y,z} <= chunk_size.{x,y,z}
-static inline int3 positionl_to_positionv(
-    const byte3 positionl,        // local coords (could be in terrain basis or tail-window form)
-const int3  chunk_position,   // chunk grid coordinate (sign matters)
-const int3  chunk_size,       // voxel size of *this* chunk (may vary by depth)
-const byte3 terrain_chunk_size// terrain basis used to compute positionl
-) {
+static inline int3 positionl_to_block_position(byte3 positionl, int3  chunk_position, int3  chunk_size, byte3 terrain_chunk_size) {
     // World-space origin (voxel coords) of this chunk.
     // If your X/Z sizes vary too, pass a precalculated origin instead of this multiply.
     const int3 base = int3_multiply_int3(chunk_position, chunk_size);
-
     // Safeguard (avoid div-by-zero). Terrain sizes should never be 0.
     const int tx = terrain_chunk_size.x ? terrain_chunk_size.x : 1;
     const int ty = terrain_chunk_size.y ? terrain_chunk_size.y : 1;
@@ -176,34 +170,34 @@ const byte3 terrain_chunk_size// terrain basis used to compute positionl
     return int3_add(base, local);
 }
 
-static inline float3 positionv_to_positionf(int3 positionv, float scale) {
+static inline float3 block_position_to_real_position(int3 block_position, float scale) {
     return (float3) {
-        positionv_to_positionf1(positionv.x, scale),
-        positionv_to_positionf1(positionv.y, scale),
-        positionv_to_positionf1(positionv.z, scale)
+        block_position_to_real_position1(block_position.x, scale),
+        block_position_to_real_position1(block_position.y, scale),
+        block_position_to_real_position1(block_position.z, scale)
     };
 }
 
-int3 positionv_to_chunk_position(int3 positionv, int3 chunk_size) {
-    int3 positionv2 = positionv;
-    if (positionv.x < 0) positionv2.x += 1;
-    if (positionv.y < 0) positionv2.y += 1;
-    if (positionv.z < 0) positionv2.z += 1;
-    int3 chunk_position = int3_div(positionv2, chunk_size);
-    // (int3) { positionv.x / chunk_size.x, positionv.y / chunk_size.y, positionv.z / chunk_size.z };
+int3 block_position_to_chunk_position(int3 block_position, int3 chunk_size) {
+    int3 block_position2 = block_position;
+    if (block_position.x < 0) block_position2.x += 1;
+    if (block_position.y < 0) block_position2.y += 1;
+    if (block_position.z < 0) block_position2.z += 1;
+    int3 chunk_position = int3_div(block_position2, chunk_size);
+    // (int3) { block_position.x / chunk_size.x, block_position.y / chunk_size.y, block_position.z / chunk_size.z };
     // because for example -10 / 16 is 0 as an integer, but  coordinates we need a negative chunk position
-    if (positionv.x < 0) chunk_position.x -= 1;
-    if (positionv.y < 0) chunk_position.y -= 1;
-    if (positionv.z < 0) chunk_position.z -= 1;
+    if (block_position.x < 0) chunk_position.x -= 1;
+    if (block_position.y < 0) chunk_position.y -= 1;
+    if (block_position.z < 0) chunk_position.z -= 1;
     return chunk_position;
-    // return (int3) { positionv.x / chunk_size.x, positionv.y / chunk_size.y, positionv.z / chunk_size.z };
+    // return (int3) { block_position.x / chunk_size.x, block_position.y / chunk_size.y, block_position.z / chunk_size.z };
 }
 
-// Convert voxel-space coords (positionv) to local-in-chunk coords (positionl),
+// Convert voxel-space coords (block_position) to local-in-chunk coords (positionl),
 // scaling from this chunk's voxel size (chunk_size) to the terrain's local basis (terrain_chunk_size).
 // Handles negative chunk positions with tail-window semantics (matches get_positionl_byte3_2).
-static inline byte3 positionv_to_positionl(
-    const int3  positionv,        // world voxel-space coords
+static inline byte3 block_position_to_positionl(
+    const int3  block_position,        // world voxel-space coords
     const int3  chunk_position,   // chunk grid coordinate
     const int3  chunk_size,       // voxel size of *this* chunk
     const byte3 terrain_chunk_size// terrain basis to scale to
@@ -212,7 +206,7 @@ static inline byte3 positionv_to_positionl(
     const int3 base = int3_multiply_int3(chunk_position, chunk_size);
 
     // Offset inside the chunk in current chunk_size basis
-    int3 local = int3_sub(positionv, base);
+    int3 local = int3_sub(block_position, base);
 
     // Wrap inside chunk bounds (0..chunk_size-1)
     // This is needed if you get weird offsets from rounding or neighbor fetches.
@@ -259,13 +253,13 @@ static inline byte3 positionv_to_positionl(
 
     return positionl;
 }
-// Convert terrain-scale voxel coords (positionv) into terrain chunk coords (positionc)
+// Convert terrain-scale voxel coords (block_position) into terrain chunk coords (positionc)
 // using terrain_chunk_size (NOT local chunk size).
-static inline int3 positionv_to_positionc(
-    const int3 positionv,         // voxel coords in terrain scale
+static inline int3 block_position_to_positionc(
+    const int3 block_position,         // voxel coords in terrain scale
     const byte3 terrain_chunk_size// voxel dimensions of a terrain chunk
 ) {
-    int3 pos = positionv;
+    int3 pos = block_position;
 
     // Offset negatives before division so integer truncation works properly
     if (pos.x < 0) pos.x += 1;
@@ -280,9 +274,9 @@ static inline int3 positionv_to_positionc(
     };
 
     // Adjust for negatives so that they map to the correct chunk
-    if (positionv.x < 0) chunk_position.x -= 1;
-    if (positionv.y < 0) chunk_position.y -= 1;
-    if (positionv.z < 0) chunk_position.z -= 1;
+    if (block_position.x < 0) chunk_position.x -= 1;
+    if (block_position.y < 0) chunk_position.y -= 1;
+    if (block_position.z < 0) chunk_position.z -= 1;
 
     return chunk_position;
 }

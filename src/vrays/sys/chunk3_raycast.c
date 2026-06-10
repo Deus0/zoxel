@@ -154,7 +154,7 @@ byte raycast_voxel_node(ecs *world,
     // zero for terrain raycasting
     float3 local_ray_origin = float3_subtract(ray_origin, chunk_positionf);
     // Convert Ray Origin to Terrain Local Voxel Position
-    positionv = positionf_to_positionv(local_ray_origin, terrain_scalev);
+    positionv = positionf_to_block_position(local_ray_origin, terrain_scalev);
     float3 ray_origin_scaled = float3_scale(local_ray_origin, 1.0f / terrain_scalev); // get float voxel position
     // NOTE: As positionv is terrain local, we need to increase our steps by chunk node reduction
     // Prepare stepping vectors for DDA traversal along the ray direction
@@ -187,7 +187,7 @@ byte raycast_voxel_node(ecs *world,
     while (ray_distancef <= ray_length && checks < safety_checks_raycasting) {
         // Terrain!
         if (raycasting_terrain) {
-            int3 new_chunk_position = positionv_to_chunk_position(positionv, max_chunk_size);
+            int3 new_chunk_position = block_position_to_chunk_position(positionv, max_chunk_size);
             // Steps through chunks in our terrain!
             if (!has_fetched || !int3_equals(chunk_position, new_chunk_position)) {
                 has_fetched = 1;

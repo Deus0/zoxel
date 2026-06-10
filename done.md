@@ -1,4 +1,7 @@
 ### Done ###
+-x Spawn Towns per Region - link to Town Placecment
+-x Spawn Towns per Region
+-x Link Region to Tunks
 -x not seeing many npcs atm...
 -x Sometimes some blocks loaded where my grass was
 	-x this might be a indexing issue where one biome loads before the realm blocks? or vice versa?

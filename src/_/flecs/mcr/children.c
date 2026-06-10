@@ -82,6 +82,23 @@ uint zox_get_children_count(ecs* world, entity parent) {
     return count;
 }
 
+uint zox_get_children_count_by_id(ecs* world, entity parent, entity id) {
+    if (!ecs_is_alive(world, parent)) {
+        return 0;
+    }
+    uint count = 0;
+    ecs_iter_t it = ecs_children(world, parent);
+    while (ecs_children_next(&it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e2 = it.entities[i];
+            if (zox_has_id(e2, id)) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
 // Fills the buffer with the found children from the flecs query
 uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity) {
     if (!ecs_is_alive(world, parent)) {

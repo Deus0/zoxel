@@ -53,12 +53,7 @@ zox_sys2(DungeonBlockSystem) {
         // chunk stuff
         zox_geter_value(chunk, ChunkSize, int3, chunk_size);
         zox_geter_value(chunk, ChunkPosition, int3, chunk_position);
-        int3 positionv = positionl_to_positionv(
-            positionl,
-            chunk_position,
-            chunk_size,
-            terrain_sizec
-        );
+        int3 positionv = positionl_to_block_position(positionl, chunk_position, chunk_size, terrain_sizec);
         entity place_chunk;
         byte3 place_positionl;
         int3 place_positionc;
@@ -85,7 +80,7 @@ zox_sys2(DungeonBlockSystem) {
                     }
                     // now we have positionv:
                     //  get chunk positionc
-                    int3 check_positionc = positionv_to_positionc(
+                    int3 check_positionc = block_position_to_positionc(
                         check_positionv,
                         terrain_sizec
                     );
@@ -95,12 +90,7 @@ zox_sys2(DungeonBlockSystem) {
                     }
                     zox_geter_value(check_chunk, ChunkSize, int3, check_sizec);
                     zox_geter_value(check_chunk, NodeDepth, byte, check_node_depth);
-                    byte3 check_positionl = positionv_to_positionl(
-                        check_positionv,
-                        check_positionc,
-                        check_sizec,
-                        terrain_sizec
-                    );
+                    byte3 check_positionl = block_position_to_positionl(check_positionv, check_positionc, check_sizec, terrain_sizec);
                     if (!byte3_in_bounds(check_positionl, int3_to_byte3(check_sizec))) {
                         continue;
                     }

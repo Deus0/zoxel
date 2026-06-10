@@ -32,11 +32,11 @@ zox_sys2(UnstuckSystem) {
         // float3 unstuck_push = (float3) { 0, terrain_scale, 0 };
         float3 poffset = (float3) { 0, - bounds->value.y / 2.0f, 0 };
         float3 pointf = float3_add(position->value, poffset);
-        int3 pointv = positionf_to_positionv(pointf, terrain_scale);
+        int3 pointv = positionf_to_block_position(pointf, terrain_scale);
         byte3 max_chunk_size = byte3_single(powers_of_two[terrain_depth]);
-        int3 pointc = positionv_to_positionc(pointv, max_chunk_size);
+        int3 pointc = block_position_to_positionc(pointv, max_chunk_size);
         // float3 lastf = float3_add(last->value, (float3) { 0, bounds->value.y / 2.0f, 0 });
-        // int3 lastv = positionf_to_positionv(lastf, terrain_scale);
+        // int3 lastv = positionf_to_block_position(lastf, terrain_scale);
         entity chunk = int3_hashmap_get(chunks->value, pointc);
         if (!zox_valid(chunk)) {
             // zox_sys_e();
@@ -60,7 +60,7 @@ zox_sys2(UnstuckSystem) {
         zox_geter_value(chunk, NodeDepth, byte, cdepth);
         // const byte3 chunk_size = byte3_single(powers_of_two[node_depth]);
         // positions
-        //const int3 pointv = positionf_to_positionv(pointf, terrain_scale);
+        //const int3 pointv = positionf_to_block_position(pointf, terrain_scale);
         //byte3 pointl = get_positionl_byte3(pointv, chunk_size);
         byte3 chunk_size = byte3_single(powers_of_two[cdepth]);
         byte3 pointl = get_positionl_byte3(pointv, chunk_size);
@@ -96,10 +96,10 @@ zox_sys2(UnstuckSystem) {
 #endif
         // position->value = float3_add(last->value, unstuck_push);
         // Set new position is above ground
-        int positionv = positionf_to_positionv1(position->value.y + poffset.y, terrain_scale);
+        int positionv = positionf_to_block_position1(position->value.y + poffset.y, terrain_scale);
         // positionv.y ++; // move up / - gravity direction
-        float distance_to_above_ground = positionv_to_positionf1(positionv + 1, terrain_scale) - (position->value.y + poffset.y);
-        // position->value.y = positionv_to_positionf1(positionv, terrain_scale).y;
+        float distance_to_above_ground = block_position_to_real_position1(positionv + 1, terrain_scale) - (position->value.y + poffset.y);
+        // position->value.y = block_position_to_real_position1(positionv, terrain_scale).y;
         float buffer_up = 0.01f;
         position->value.y += distance_to_above_ground + buffer_up;
         // reverse vel down

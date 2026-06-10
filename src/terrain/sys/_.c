@@ -21,6 +21,7 @@ void define_systems_terrain(ecs *world) {
         [in] transforms3.Position3D,
         [out] chunks3.ChunkPosition,
         [out] chunks3.ChunkLink,
+        [out] physics.DisableMovement,
         [none] chunks3.LinkChunk
     );
     // Streaming Terrain Chunks

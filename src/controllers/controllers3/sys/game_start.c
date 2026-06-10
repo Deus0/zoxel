@@ -68,9 +68,13 @@ zox_sys2(PlayerGame3StartSystem) {
         float4 spawn_rotation;
         byte is_new_game = !has_save_game_file(path->value, "player.dat");
         if (is_new_game) {
+            // NOTE: Loads first regions in terrain
             position = (float3) { 8, 8.5f, 8 };
             spawn_euler = float3_zero;
             spawn_rotation = quaternion_identity;
+            // state->value =
+            zox_set(e, PlayerState, { zox_player_state_new });
+            zox_set(e, PlayerStateDirty, { zox_dirty_trigger });
         } else {
             // If has save game
             load_character_p(world, realm, e, &position, &spawn_euler, &spawn_rotation);
@@ -80,7 +84,8 @@ zox_sys2(PlayerGame3StartSystem) {
         zox_set(camera->value, Euler, { spawn_euler });
         zox_set(camera->value, Rotation3D, { spawn_rotation });
         // waits for fadeout?
-        double delay = game_load_player_delay + game_load_fade_transition_time;
-        delay_event(world, &enable_camera_streaming, e, delay);
+        // double delay = game_load_player_delay + game_load_fade_transition_time;
+        // delay_event(world, &enable_camera_streaming, e, delay);
+        enable_camera_streaming(world, e);
     }
 } zox_sys_end(PlayerGame3StartSystem);

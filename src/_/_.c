@@ -82,7 +82,7 @@ byte initialize_pathing(const char* game_name) {
     return pathing_success;
 }
 
-zox_begin_module(Core)
+zox_begin_module(Core) {
     // hmm
     clear_logs();
     init_zems();
@@ -100,7 +100,6 @@ zox_begin_module(Core)
 
     // Headless UI
     // add_to_post_update_loop(iterate_terminal);
-
     zox_module_dispose(module_dispose_core);
 #if zox_web
     add_to_update_loop(update_web_canvas);
@@ -110,6 +109,6 @@ zox_begin_module(Core)
     // sub modules
     zox_import_module(Timing);
     zox_import_module(Settings);
-zox_end_module(Core)
+} zox_end_module(Core);
 
 #endif

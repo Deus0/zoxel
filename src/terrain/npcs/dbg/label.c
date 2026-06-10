@@ -24,8 +24,8 @@ uint debug_ui_character_position(
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
     zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
     const byte3 max_chunk_size = byte3_single(powers_of_two[terrain_depth]);
-    const int3 positionv = positionf_to_positionv(position, terrain_scale);
-    const int3 positionc = positionv_to_positionc(positionv, max_chunk_size);
+    const int3 positionv = positionf_to_block_position(position, terrain_scale);
+    const int3 positionc = block_position_to_positionc(positionv, max_chunk_size);
 
     index += snprintf(buffer + index, size - index, "Position Voxel [%ix%ix%i]\n", positionv.x, positionv.y, positionv.z);
     index += snprintf(buffer + index, size - index, "Position Chunk [%ix%ix%i]\n", positionc.x, positionc.y, positionc.z);

@@ -39,20 +39,20 @@ byte place_new_town(int2 region_position, int2 region_size, int2 minimum_size, i
 // NOTE: Spawns X Towns per region
 zox_sys2(RegionTownsSystem) {
     byte dbg_log = 0;
-    int2 min_size = (int2) { 32, 32 };
-    int2 max_size = (int2) { 180, 180 };
+    int2 min_size = (int2) { 40, 40 };
+    int2 max_size = (int2) { 120, 120 };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(RegionPosition);
-    zox_sys_in(VoxelPosition);
-    zox_sys_in(VoxelSize);
+    zox_sys_in(BlockPosition);
+    zox_sys_in(BlockSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(RegionPosition, position);
-        zox_sys_i(VoxelPosition, voxel_position);
-        zox_sys_i(VoxelSize, size);
+        zox_sys_i(BlockPosition, voxel_position);
+        zox_sys_i(BlockSize, size);
         if (generate->value != zox_dirty_active) {
             continue;
         }

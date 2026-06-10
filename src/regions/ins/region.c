@@ -8,8 +8,8 @@ entity spawn_region(ecs* world, entity prefab, entity parent, int2 position, int
         zox_name(name);
     }
     int3 voxel_position = (int3) { position.x * region_size.x, 0, position.y * region_size.y };
-    zox_set(e, VoxelPosition, { voxel_position });
-    zox_set(e, VoxelSize, { (int3) { region_size.x, 0, region_size.y } });
+    zox_set(e, BlockPosition, { voxel_position });
+    zox_set(e, BlockSize, { (int3) { region_size.x, 0, region_size.y } });
     // zox_set(e, RenderDistance, { rdistance });
     // zox_log("+ Tunk2 [%ix%i]", position.x, position.y);
     return e;

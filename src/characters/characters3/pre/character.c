@@ -18,7 +18,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_add_tag(e, LinkChunk);
     zox_prefab_set(e, ChunkLink, { 0 });
     zox_prefab_set(e, ChunkPosition, { int3_chaos });
-    zox_prefab_set(e, VoxelPosition, { int3_zero });
+    zox_prefab_set(e, BlockPosition, { int3_zero });
     zox_prefab_set(e, Position3DBounds, { float6_zero });
     // Block Inside
     zox_prefab_set(e, InsideBlock, { 0 });

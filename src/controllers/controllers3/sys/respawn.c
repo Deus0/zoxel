@@ -1,9 +1,9 @@
-extern entity game_start_player_new(ecs*, entity, float3* spawned);
+extern entity game_start_player_new(ecs*, entity, float3*, byte);
 
 // NOTE: Detects character death and respawns when needed
 // TODO: Move spawning player out and use states instead
 zox_sys2(Player3RespawnSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CameraLink);
@@ -50,16 +50,12 @@ zox_sys2(Player3RespawnSystem) {
                 state->value = zox_player_state_play_begin;
                 dirty->value = zox_dirty_trigger;
                 float3 spawned;
-                character->value = game_start_player_new(world, e, &spawned);
+                character->value = game_start_player_new(world, e, &spawned, dbg_log);
                 spawn_arrow3D(world, spawned, (float3) { 0, 1, 0}, 0.2f, 6, 15);
                 if (dbg_log) {
                     zox_log("Player Respawned at [%fx%fx%f]", spawned.x, spawned.y, spawned.z);
                 }
             }
-            /*delay_event(world, &spawn_player_game_ui, e, 1.5);
-            if (local_mouse) {
-                zox_set(local_mouse, MouseLock, { 1 });
-            }*/
         }
     }
 } zox_sys_end(Player3RespawnSystem);

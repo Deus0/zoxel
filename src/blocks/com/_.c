@@ -10,8 +10,10 @@ zoxc_state(BlocksDirty);
 zoxc_byte(VoxBakeSide);
 zoxc_byte(BlockVoxOffset);
 zoxc_byte(BlockIndex);      // NOTE: This includes Air in the index
-zoxc_int3(VoxelPosition);
-zoxc_int3(VoxelSize);
+zoxc_int3(BlockPosition);
+zoxc_int3(BlockSize);
+zoxc_int2(BlockPosition2);
+zoxc_int2(BlockSize2);
 zoxc_byte3(VoxelLocalPosition);
 zoxc_float(BlockScale);
 zoxc_entity(BlockLink);
@@ -43,8 +45,10 @@ void zox_define_components_blocks(ecs *world) {
     zoxd_byte(VoxBakeSide);
     zoxd_byte(BlockVoxOffset);
     zoxd_byte(BlockIndex);
-    zoxd_int3(VoxelPosition);
-    zoxd_int3(VoxelSize);
+    zoxd_int3(BlockPosition);
+    zoxd_int3(BlockSize);
+    zoxd_int2(BlockPosition2);
+    zoxd_int2(BlockSize2);
     zoxd_byte3(VoxelLocalPosition);
     zoxd_float(BlockScale);
     zoxd_entity(BlockLink);

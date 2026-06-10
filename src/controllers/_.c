@@ -1,3 +1,13 @@
+/*
+ *  Zox Controllers
+ *      - A player that can control the character
+ *
+ *  Controllers Use
+ *      - Characters
+ *      - Cameras
+ *      - UIs
+ *
+ * */
 #if !defined(zoxm_controllers) && defined(zoxm_characters) && defined(zoxm_inputs) && defined(zoxm_physics)
 #define zoxm_controllers
 
