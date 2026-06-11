@@ -21,6 +21,9 @@ zox_sys2(BiomesRealmSpawnSystem) {
             entity e2 = spawn_biome(world, prefab_biome, e, "desert", seed->value + 2);
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
+            zox_set(e2, GrassChance, { 0.8f });
+            zox_set(e2, WeedsChance, { 0.98f });
+            zox_set(e2, TreeChance, { 0.99f });
         }
         zox_logv("At [%f] Realm [Biomes] [%i] spawned.", zox_current_time, biomes->length);
     }

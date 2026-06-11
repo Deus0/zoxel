@@ -40,7 +40,8 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             // can choose here properties for spawning
             byte chance = chances[j];
-            entity e2 = spawn_character3_meta(world, prefab_character, name, model, chance);
+            lint character_seed = rand_range(0, 10000);
+            entity e2 = spawn_character3_meta(world, prefab_character, character_seed, name, model, chance);
             zox_set_name(e2, name); // assuming name is unique to the ecs world
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
@@ -60,7 +61,8 @@ zox_sys2(Character3RealmSpawnSystem) {
                 continue;
             }
             byte chance = 8;
-            entity e2 = spawn_character3_meta(world, prefab_character, "character", model, chance);
+            lint character_seed = rand_range(0, 10000);
+            entity e2 = spawn_character3_meta(world, prefab_character, character_seed, "character", model, chance);
             zox_add_tag(e2, CharacterGeneric);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;

@@ -77,7 +77,8 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
     TerrainPlace placer = find_position_in_terrain(world, terrain, town_position);
     *spawned_position = placer.position;
     byte render_depth = 5;
-    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, 0, render_depth, 0, placer.position, quaternion_identity, "Bob", player);
+    lint character_seed = rand_range(0, 10000);
+    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, "Bobby", player);
     return e;
 }
 
@@ -93,14 +94,16 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
     zox_geter(terrain, ChunkLinks, chunks);
     TerrainPlace placer;
     placer.chunk = 0;
+    // TODO: Load Character Seed
+    lint character_seed = rand_range(0, 10000);
     // load position for spawning
     load_character_p(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
     byte depth = terrain_depth;
     int3 cposition = real_position_to_chunk_position(placer.position, powers_of_two[depth], terrain_scale);
     placer.chunk = int3_hashmap_get(chunks->value, cposition);
-    *spawned_position = placer.position; // load_character_transform(world, realm, e);
+    *spawned_position = placer.position;
     byte render_depth = 5;
-    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, 0, render_depth, 0, placer.position, quaternion_identity, "Bob", player);
+    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, "Bob", player);
     return e;
 }
 

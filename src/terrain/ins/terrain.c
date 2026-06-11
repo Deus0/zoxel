@@ -20,13 +20,25 @@ int get_chunk_index_3(int3 position, int rows, int vertical) {
     return position.x * (rows + rows + 1) + position.y  * (rows + rows + 1) * (rows + rows + 1) + position.z;
 }
 
-entity spawn_terrain(ecs *world, entity prefab, entity tilemap, float3 position, byte depth, float scale) {
+entity spawn_terrain(ecs *world, entity prefab, entity realm, lint seed) {
+    if (!zox_valid(realm) || !zox_has(realm, TilemapLink)) {
+        zox_loge("Realm has no TilemapLink [%lu]", realm);
+        return 0;
+    }
+    zox_geter_value(realm, TilemapLink, entity, tilemap);
+    byte depth = terrain_depth;
+    float3 position = float3_zero;
+    float scale = 0.5f; // 0.5f | 1
     zox_instance(prefab);
     zox_name("terrain");
+    zox_set_parent(world, e, realm);
+    // Link them link this for now
+    zox_set(e, RealmLink, { realm });
+    zox_set(realm, TerrainLink, { e });
+    zox_set(e, Seed, { seed });
     zox_set(e, Position3D, { position });
     zox_set(e, BlockScale, { scale });
     zox_set(e, NodeDepth, { depth });
-    // zox_set(e, Scale1D, { scale })
     // Initialize Hashmaps
     zox_set_ptr(e, RegionLinks, (RegionLinks) { .value = create_int2_hashmap(32) });
     zox_set_ptr(e, TunkLinks, (TunkLinks) { .value = create_int2_hashmap(32) });
@@ -38,20 +50,4 @@ entity spawn_terrain(ecs *world, entity prefab, entity tilemap, float3 position,
     }
     local_terrain = e;
     return e;
-}
-
-// todo: pass in through struct
-entity spawn_terrain_streaming(ecs *world, entity realm, entity prefab) {
-    if (!zox_has(realm, TilemapLink)) {
-        zox_log_error("! realm has no TilemapLink [%lu]", realm);
-        return 0;
-    }
-    zox_geter_value(realm, TilemapLink, entity, tilemap)
-    if (zox_valid(tilemap) && zox_has(tilemap, RealmLink)) {
-        zox_set(tilemap, RealmLink, { realm })
-    } else {
-        zox_log_error("invalid tilemap: %lu", tilemap);
-    }
-    float terrain_scale = 0.5f; // 0.5f | 1
-    return spawn_terrain(world, prefab, tilemap, float3_zero, terrain_depth, terrain_scale);
 }

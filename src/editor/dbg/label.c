@@ -35,10 +35,14 @@ uint zox_dbg_ui_canvas(ecs *world, entity player, char *buffer, uint size, uint 
         index += snprintf(buffer + index, size - index, "Invalid player\n");
         return index;
     }
-
-    zox_geter_value(player, CanvasLink, entity, canvas);
-
-    return zox_dbg_ui_hierarchy(world, canvas, buffer, size, index, 0);
+    entity canvas = zox_getv(player, CanvasLink);
+    if (zox_valid(canvas)) {
+        index += snprintf(buffer + index, size - index, "Player [%s Canvas [%s]\n", zox_get_name(player), zox_get_name(canvas));
+        return zox_dbg_ui_hierarchy(world, canvas, buffer, size, index, 0);
+    } else {
+        index += snprintf(buffer + index, size - index, "Invalid Player Canvas\n");
+        return index;
+    }
 }
 
 // sets update function

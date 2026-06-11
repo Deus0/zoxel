@@ -24,7 +24,7 @@ entity spawn_plot_graph(ecs* world, entity canvas, entity parent, int2 parent_po
     byte label_font_size = 16;
     float2 anchor = float2_half;
     int2 position = int2_zero;
-    entity e = spawn_layout2(world, prefab, canvas, parent, position, size, anchor, layer, parent_position, parent_size);
+    entity e = spawn_layout2(world, prefab, parent, position, size, anchor, layer);
     PlotDataDouble data = (PlotDataDouble) { 0 };
     initialize_PlotDataDouble(&data, points_count);
     for (int i = 0; i < points_count; i++) {

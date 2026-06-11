@@ -30,7 +30,6 @@ void spawn_prefabs_elements2(ecs *world) {
     // elements
     prefab_label = spawn_prefab_label(world, prefab_text);
     prefab_label_textured = spawn_prefab_label(world, prefab_text_textured);
-    // prefab_label_textured = spawn_prefab_label_textured(world, prefab_text_textured);
     prefab_button = spawn_prefab_button(world, prefab_element_textured);
     // statbars
     {
@@ -45,8 +44,6 @@ void spawn_prefabs_elements2(ecs *world) {
     prefab_handle = spawn_prefab_handle(world, prefab_button);
     prefab_slider = spawn_prefab_slider(world, prefab_element_textured);
     prefab_scrollbar = spawn_prefab_scrollbar(world, prefab_element_textured);
-    // panel
-    // prefab_grid = spawn_prefab_grid(world, prefab_layout2);
     // lists
     prefab_list = spawn_prefab_list(world, prefab_layout2);
 }

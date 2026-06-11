@@ -9,5 +9,8 @@ entity spawn_prefab_biome(ecs* world) {
     zox_prefab_set(e, ModelLinks, { 0 });
     zox_prefab_set(e, BlockLinks, { 0 });
     zox_prefab_set(e, Generate, { zox_dirty_trigger });
+    zox_prefab_set(e, GrassChance, { 0.34f });
+    zox_prefab_set(e, WeedsChance, { 0.6f });
+    zox_prefab_set(e, TreeChance, { 0.78f });
     return e;
 }

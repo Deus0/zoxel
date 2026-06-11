@@ -30,10 +30,6 @@ entity test_spawn_realm(ecs *world, const int seed) {
     return realm;
 }
 
-void test_spawn_terrain(ecs *world) {
-
-}
-
 byte test_terrain_spawn(ecs *world) {
     uint lagged_frames = 0;
     const int test_seed = 666;
@@ -57,12 +53,7 @@ byte test_terrain_spawn(ecs *world) {
     zox_log("### ### ### ### ###")
     zox_log("! [S]:spawned terrain at frame [%i] time [%f]", ecs_run_count - 1, current_time_in_seconds())
     const entity streamer = spawn_streamer(world, prefab_streamer, int3_zero);
-    const entity terrain = spawn_terrain_streaming(
-        world,
-        realm,
-        prefab_terrain,
-        prefab_chunk_terrain
-    );
+    entity terrain = spawn_terrain(world, prefab_terrain, realm);
     zox_set(terrain, RealmLink, { realm });
     zox_set(realm, TerrainLink, { terrain }); // link terrain to realm too
     local_terrain = terrain;

@@ -35,6 +35,7 @@ byte get_gamepad_axis(SDL_Joystick *joystick, ZeviceStick *stick,  int index_x, 
         }
         return !(stick->value.x == previous_value.x && stick->value.y == previous_value.y);
     }
+    return 0;
 }
 
 float get_gamepad_bumper(SDL_Joystick *joystick, int index, byte dbg_log) {

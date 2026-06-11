@@ -18,6 +18,13 @@ void initialize_element(ecs *world, entity e, entity parent, entity canvas, int2
         zox_loge("Invalid e in [initialize_element]");
         return;
     }
-    initialize_layout2(world, e, parent, canvas, position, size, anchor, layer);
+    zox_set_parent(world, e, parent);
+    zox_set(e, LayoutPosition, { position });
+    zox_set(e, Anchor, { anchor });
+    zox_set(e, LayoutSize, { size });
+    zox_set(e, Layer2D, { layer });
+    if (canvas == parent) {
+        zox_set(canvas, WindowToTop, { e });
+    }
     zox_set(e, TextureSize, { tsize });
 }

@@ -7,9 +7,11 @@ zox_sys2(RegionSpawnSystem) {
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(Seed);
     zox_sys_out(RegionLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(Seed, seed);
         zox_sys_o(RegionLinks, regions);
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
@@ -35,7 +37,9 @@ zox_sys2(RegionSpawnSystem) {
                             if (dbg_log) {
                                 zox_log("New Region [%ix%i] Spawned", region_position.x, region_position.y);
                             }
-                            entity region = spawn_region(world, prefab_region, e, region_position, region_size);
+                            // Generate Seed from Terrain Seed
+                            lint region_seed = seed->value;
+                            entity region = spawn_region(world, prefab_region, e, region_seed, region_position, region_size);
                             int2_hashmap_add(regions->value, region_position, region);
                         }
                     }

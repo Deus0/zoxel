@@ -104,13 +104,14 @@ zox_sys2(Characters3SpawnSystem) {
                 // zox_loge("Failed find Position for NPC at [%ix%ix%i]:%i", cposition->value.x, cposition->value.y, cposition->value.z, j);
                 break;
             }
+            lint npc_seed = rand_range(0, 10000);
             float3 position = byte3_to_float3(in_chunk_position);
             float3_scale_p(&position, cscale->value);
             float3_add_float3_p(&position, positionf->value); // chunk
             float3_add_float3_p(&position, float3_single(cscale->value * 0.5f));
             float4 rotation = quaternion_from_euler((float3) { 0, (rand() % 361) * degreesToRadians, 0 });
             char* name = generate_name();
-            entity e2 = spawn_character3_npc(world, meta, realm, terrain, model, character_depth, render_disabled->value, position, rotation, name);
+            entity e2 = spawn_character3_npc(world, meta, realm, terrain, npc_seed, model, character_depth, render_disabled->value, position, rotation, name);
             if (!zox_valid(e2)) {
                 zox_loge("spawn_character3 failed");
                 continue;

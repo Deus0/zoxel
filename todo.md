@@ -1,15 +1,20 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+- Make Towns not close to Region Borders
+- Aim down when speaking to slime/chicken etc
+- Make mountains more stone, less dirty
+- Make Towns less Grassy, more Rough Dirt + dirt
+	- Make Road from middle of town to gate
+- Make Town Gates more overhanggy
+- Make Walls Thicker
+- Fix OOB errors
 - Debug missing town wall parts, cuttoff, do minimaps next
 - Fix chunk mesh reload glitch (flashes, basically missing for one frame)
--x Disable movement if ouitside chunks
--x Spawn Player in Town - pick random one in first region
 
 # Next
 - Use Realm Seed + region positions to set Region Seeds
-- Use Region Seeds to generate mountain data
-- Player Respawn Point Gizmos
+- Use Region Seeds to generate mountain dat
 - Add Character Render Texture UI to show your character - mirror taskbar icon too
 - Fix the flickering of chunks when I move through terrain
 - Windows no longer close taskbar toggle
@@ -31,32 +36,11 @@
 - Refactor models to just spawn one vox model and multiple render objects as children
 	- Make lods just use the same model, no need to create 5 models per slime
 	- just generate per each level - set with shapes per node level
-
-# Low Priority
-- Stream Level - Region only for initial game town spawning!
-- Tunk LOD Levels
-	- So we dont generate maps for far away chunks
-- Update frame texture outline when icon is selected!
-- Save/Load Realm Blocks + data to future proof updates
-- NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
-- Long pause breaks physics - test big frame times
-- Refactor spawn_block_vox_meta and remove structs
-- Add Tooltips to Empty Slot Frames
-- Selected Text option - update the Zigel Colors
-- Refactor OverlapEvent to Overlapped state with a system in items
-- Add instancing to lines so we can test it easier t he lights
-- Debug Town Gizmo
-- Debug House Gizmo
 	
 # ChunkTextured Refactor
 - Spawn a Terrain chunk as test function
 - Spawn a TerrainChunk with no Mesh and child Renderer
 	- fix systems to work with new terrain chunk
-	
-# 3D UI Refactor
-- Create a simple Canvas with Elements in each corner
-- Use same data but pass through layout3Ds, that use 3D rendering and transform data
-- Test will render the canvas in front of camera at different distances and rotations
 
 # Next
 - Arm Swing when attacking

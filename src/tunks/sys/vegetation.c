@@ -7,18 +7,14 @@ zox_sys2(VegetationMapSystem) {
     double veggie_frequency = 0.6;
     double veggie_amplitude = 1.0;
     byte veggie_octaves = 12;
-    double grass_cutoff_0 = 0.52;
-    double weeds_cutoff_0 = 0.59;
-    double trees_cutoff_0 = 0.73;
-    double grass_cutoff_1 = 0.62;
-    double weeds_cutoff_1 = 0.74;
-    double trees_cutoff_1 = 0.86;
+    zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(Chunk2Position);
     zox_sys_in(BiomeMap);
     zox_sys_out(VegetationMap);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(Chunk2Position, cposition);
         zox_sys_i(BiomeMap, bmap);
@@ -28,6 +24,16 @@ zox_sys2(VegetationMapSystem) {
         }
         if (!bmap->length) {
             zox_logw("[vmap] bmap map wasn't generated in time");
+            continue;
+        }
+        entity terrain = zox_get_parent(world, e);
+        zox_geter_value(terrain, RealmLink, entity, realm);
+        if (!zox_valid(realm)) {
+            continue;
+        }
+        zox_geter(realm, BiomeLinks, realm_biomes);
+        if (!realm_biomes->length) {
+            zox_log_error("No Biomes on Realm");
             continue;
         }
         // now generate heights
@@ -41,30 +47,44 @@ zox_sys2(VegetationMapSystem) {
             cposition->value.x * hsize.x,
             cposition->value.y * hsize.y
         };
+        entity biome;
+        float grass_chance;
+        float weeds_chance;
+        float tree_chance;
         int2 gposition = gposition_start;
         for (lposition.x = 0; lposition.x < hsize.x; lposition.x++, gposition.x++) {
             gposition.y = gposition_start.y;
             for (lposition.y = 0; lposition.y < hsize.y; lposition.y++, gposition.y++) {
                 int index = int2_array_index(lposition, hsize);
                 // Get Biome Data
-                byte biome = bmap->value[index];
-                double frequency = biome == 0 ? veggie_frequency * 2 : veggie_frequency;
-                double grass_cutoff = biome == 0 ? grass_cutoff_0 : grass_cutoff_1;
-                double weeds_cutoff = biome == 0 ? weeds_cutoff_0 : weeds_cutoff_1;
-                double trees_cutoff = biome == 0 ? trees_cutoff_0 : trees_cutoff_1;
-                double pvalue = veggie_amplitude * perlin_octaves(
+                byte biome_id = bmap->value[index];
+                if (biome_id >= realm_biomes->length) {
+                    zox_loge("Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
+                    continue;
+                }
+                entity new_biome = realm_biomes->value[biome_id];
+                if (!zox_valid(new_biome)) {
+                    zox_loge("Biome is invalid [%i]", biome_id);
+                    continue;
+                }
+                // NOTE: Updates our cache of our biome
+                if (biome != new_biome) {
+                    biome = new_biome;
+                    grass_chance = zox_getv(biome, GrassChance);
+                    weeds_chance = zox_getv(biome, WeedsChance);
+                    tree_chance = zox_getv(biome, TreeChance);
+                }
+                double perlin_value = veggie_amplitude * perlin_octaves(
                     noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
                     noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
-                    frequency,
-                    seed,
-                    veggie_octaves
-                );
+                    veggie_frequency,
+                    seed, veggie_octaves);
                 byte value;
-                if (pvalue >= trees_cutoff) {
+                if (perlin_value >= tree_chance) {
                     value = 3;  // Trees
-                } else if (pvalue >= weeds_cutoff) {
+                } else if (perlin_value >= weeds_chance) {
                     value = 2;  // Weeds
-                } else if (pvalue >= grass_cutoff) {
+                } else if (perlin_value >= grass_chance) {
                     value = 1;  // Grass
                 } else {
                     value = 0;  // dirt

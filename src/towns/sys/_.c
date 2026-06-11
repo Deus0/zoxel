@@ -8,8 +8,8 @@ void zox_define_systems_towns(ecs* world) {
         zoxp_mainthread,
         [in] core.Generate,
         [in] regions.RegionPosition,
-        [in] blocks.BlockPosition,
-        [in] blocks.BlockSize,
+        [in] blocks.BlockPosition2,
+        [in] blocks.BlockSize2,
         [none] regions.Region
     );
     zox_system(

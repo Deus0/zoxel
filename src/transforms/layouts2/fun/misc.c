@@ -1,16 +1,4 @@
-void initialize_layout2(ecs *world, entity e, entity parent, entity canvas, int2 position, int2 size, float2 anchor, byte layer) {
-    zox_set_parent(world, e, parent);
-    zox_set(e, Anchor, { anchor });
-    zox_set(e, Layer2D, { layer });
-    zox_set(e, LayoutSize, { size });
-    zox_set(e, LayoutPosition, { position });
-    // zox_set(e, CanvasLink, { canvas });
-    // zox_set(e, ParentLink, { parent });
-    // Where we link to canvas children
-    if (canvas == parent) {
-        zox_set(canvas, WindowToTop, { e });
-    }
-}
+
 
 // OBSOLETE
 void set_element_spawn_data(ecs *world, entity e, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data) {

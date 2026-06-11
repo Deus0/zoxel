@@ -34,13 +34,15 @@ void zox_tst_spawn_character3_npc(ecs *world, ClickEventData data) {
     zox_geter_value(pcharacter, Rotation3D, float4, srotation);
     zox_geter_value(pcharacter, RenderDepth, byte, render_depth);
     zox_geter(realm, CharacterLinks, rcharacters);
+    lint seed = rand_range(0, 10000);
     uint mindex = rand_range(0, rcharacters->length - 1);
     entity meta = rcharacters->value[mindex];
     entity model = zox_gett_value(meta, ModelLink);
-    const char* name = "TS-G391";
+    char name[64]; // = "TS-G391";
+    sprintf(name, "TS-G%lu", seed);
     // char* name = generate_name();
-    zox_log("+ Test [zox_tst_character3_npc] Meta [%s:%i]", zox_get_name(meta), mindex);
-    entity e = spawn_character3(world, prefab, realm, terrain, model, render_depth, 0, sposition, srotation, name);
+    zox_log("+ Test [zox_tst_character3_npc] Meta [%s:%i]:[%lu]", zox_get_name(meta), mindex, seed);
+    entity e = spawn_character3(world, prefab, realm, terrain, seed, model, render_depth, 0, sposition, srotation, name);
     zox_tst_character3_npc = e;
     zox_geter_value(player, CanvasLink, entity, canvas);
     spawn_inspector(world, canvas, player, e);

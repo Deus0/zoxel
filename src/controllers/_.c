@@ -16,6 +16,7 @@
 #include "controllers2/_.c"
 #include "controllers3/_.c"
 #include "free_roam/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Controllers) {
     zox_define_systems_controllers(world);

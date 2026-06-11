@@ -1,9 +1,9 @@
 // NOTE: Spawns slots that link to datas
 // NOTE: Spawns slots that link to datas
-
 entity spawn_slot(ecs* world, entity parent) {
     entity e = zox_ins(prefab_slot);
     zox_set_parent(world, e, parent);
+    zox_name("slot");
     return e;
 }
 

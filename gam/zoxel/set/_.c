@@ -4,31 +4,26 @@
 // #define zox_enable_log_input
 // #define zox_enable_log_ui
 // #define zox_enable_log_shader
-
-// TODO: Just add these in systems onto the DEBUG UI hook - TOggle Between key
-void zoxel_on_spawn_prefabs(ecs* world) {
-    // set_prefab_debug_label(world, &zox_dbg_ui_canvas);
-    // set_prefab_debug_label(world, &debug_ui_raycast_chunk3);
-    set_prefab_debug_label(world, &debug_ui_player);
-    // set_prefab_debug_label(world, &debug_label_chunk_link);
-    // set_prefab_debug_label(world, &debug_ui_raycasting);
-    // set_prefab_debug_label(world, &debug_ui_system_times);
-    // get_debug_label_app
-    // set_prefab_debug_label(world, &debug_ui_memory);
-    // set_prefab_debug_label(world, &get_label_realm_colors);
-    // set_prefab_debug_label(world, &get_label_player_element_links);
-    // set_prefab_debug_label(world, &get_label_player_stats);
-    // set_prefab_debug_label(world, &get_label_player_items);
-    // set_prefab_debug_label(world, &get_label_player_skills);
-    // set_prefab_debug_label(world, &get_label_player_actions);
-    // set_prefab_debug_label(world, &get_label_player_quests);
-    // set_prefab_debug_label(world, &debug_label_lods);
-    // set_prefab_debug_label(world, &debug_label_collisions);
-    // set_prefab_debug_label(world, &debug_label_app);
-    // set_prefab_debug_label(world, &debug_ui_raycasted_light);
-    // set_prefab_debug_label(world, &debug_ui_single_npc);
-}
-
+// set_prefab_debug_label(world, &zox_dbg_ui_canvas);
+// set_prefab_debug_label(world, &debug_ui_raycast_chunk3);
+// set_prefab_debug_label(world, &debug_ui_player);
+// set_prefab_debug_label(world, &debug_label_chunk_link);
+// set_prefab_debug_label(world, &debug_ui_raycasting);
+// set_prefab_debug_label(world, &debug_ui_system_times);
+// get_debug_label_app
+// set_prefab_debug_label(world, &debug_ui_memory);
+// set_prefab_debug_label(world, &get_label_realm_colors);
+// set_prefab_debug_label(world, &get_label_player_element_links);
+// set_prefab_debug_label(world, &get_label_player_stats);
+// set_prefab_debug_label(world, &get_label_player_items);
+// set_prefab_debug_label(world, &get_label_player_skills);
+// set_prefab_debug_label(world, &get_label_player_actions);
+// set_prefab_debug_label(world, &get_label_player_quests);
+// set_prefab_debug_label(world, &debug_label_lods);
+// set_prefab_debug_label(world, &debug_label_collisions);
+// set_prefab_debug_label(world, &debug_label_app);
+// set_prefab_debug_label(world, &debug_ui_raycasted_light);
+// set_prefab_debug_label(world, &debug_ui_single_npc);
 
 void zoxel_set_debug() {
     profiler_state = zox_profile_light_propogate;
@@ -124,7 +119,30 @@ void zoxel_settings_uis() {
     is_end_game_delays = 1;
 }
 
-void zoxel_debug_keys() {
+void initialize_zoxel_settings(ecs* world) {
+    float viewport_downscale = 1;
+    viewport_scale = 1 / viewport_downscale;
+    target_fps = 0;
+    zoxel_set_debug();
+    render_distance_y = 4;
+    menu_sky_color = color_rgb_grayscale(33);
+    menu_sky_bottom_color = color_rgb_grayscale(11);
+    // art
+    grayscale_mode = 0; // todo: make a grayscale biome
+    // game
+    zox_game_type = zox_game_mode_3D;
+    game_rule_attach_to_character = 1;
+    zox_experience_max_start = 10;
+    // graphs
+    zox_visualize_sounds = 0;
+    // logs
+    is_log_gpu_restore = 0;
+    // regen_rate = 10;
+    // zox_camera_state_free | zox_camera_state_first_person | zox_camera_state_third_person | zox_camera_state_ortho | zox_camera_state_topdown | zox_camera_state_2D
+    zox_game_camera_mode = zox_camera_state_first_person;
+    zoxel_settings_npcs();
+    zoxel_settings_physics();
+    zoxel_settings_uis();
     add_hook_key_down(toggle_fps_viewer);
     add_hook_key_down(toggle_flymode);
     add_hook_key_down(toggle_inspector);
@@ -132,31 +150,6 @@ void zoxel_debug_keys() {
     add_hook_key_down(key_down_toggle_streaming);
     add_hook_key_down(key_down_toggle_npc_movement);
     add_hook_key_down(key_down_toggle_debug_chunks);
-}
-
-void initialize_zoxel_settings(ecs* world) {
-    float viewport_downscale = 1;
-    viewport_scale = 1 / viewport_downscale;
-    target_fps = 0;
-    zoxel_set_debug();
-    render_distance_y = 4;
-    // art
-    grayscale_mode = 0; // todo: make a grayscale biome
-    // game
-    zox_game_type = zox_game_mode_3D;
-    game_rule_attach_to_character = 1;
-    zox_experience_max_start = 10;
-    // regen_rate = 10;
-    // zox_camera_state_free | zox_camera_state_first_person | zox_camera_state_third_person | zox_camera_state_ortho | zox_camera_state_topdown | zox_camera_state_2D
-    zox_game_camera_mode = zox_camera_state_first_person;
-    zoxel_settings_npcs();
-    zoxel_settings_physics();
-    zoxel_settings_uis();
-    zoxel_debug_keys();
-    // graphs
-    zox_visualize_sounds = 0;
-    // logs
-    is_log_gpu_restore = 0;
     // Gameplay
     // hit_terrain_color = (color) { 2, 2, 2, 255 };
     hit_character_color = (color) { 155, 45, 45, 255 };
@@ -164,8 +157,6 @@ void initialize_zoxel_settings(ecs* world) {
     // world gen
     // terrain_frequency = 0.062216;
     // block_spawn_chance_grass = 1600; //  512 | 1024 | 2048 | 3000
-    menu_sky_color = color_rgb_grayscale(111);
-    menu_sky_bottom_color = color_rgb_grayscale(66);
     // set_camera_fog_color(world, menu_sky_color);
     // viewport_clear_color = menu_sky_color;
     block_vox_render_at_lod = 0; // now using lod minimum

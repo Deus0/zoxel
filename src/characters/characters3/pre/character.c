@@ -11,7 +11,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, InitializeEntity, { zox_dirty_trigger });
     zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
     // generation
-    zox_prefab_set(prefab, Seed, { 999 });
+    zox_prefab_set(e, Seed, { 0 });
     // name
     zox_prefab_set(e, ZoxName, { 0 });
     // In Terrain

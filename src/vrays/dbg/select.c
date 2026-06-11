@@ -45,7 +45,7 @@ void refresh_dbg_chunk2(ecs* world) {
     zox_log("Triggered ChunkMeshDirty [%s]", zox_get_name(dbg_chunk));
 }
 
-void key_down_dbg_chunk(ecs *world, int32_t keycode) {
+/*void key_down_dbg_chunk(ecs *world, int32_t keycode) {
     if (keycode == zox_key_f) {
         select_dbg_chunk(world);
     }
@@ -55,4 +55,4 @@ void key_down_dbg_chunk(ecs *world, int32_t keycode) {
     if (keycode == zox_key_h) {
         refresh_dbg_chunk2(world);
     }
-}
+}*/

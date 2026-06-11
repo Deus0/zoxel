@@ -1,4 +1,9 @@
 ### Done ###
+-x Fix Vegetation map for lower Lods
+-x Seed Debug UI - to see all seeds available: Realm, Region, Player Character, Towns, etc
+-x Set Debugger UI from a list (TestUI List)
+-x Disable movement if ouitside chunks
+-x Spawn Player in Town - pick random one in first region
 -x Spawn Towns per Region - link to Town Placecment
 -x Spawn Towns per Region
 -x Link Region to Tunks

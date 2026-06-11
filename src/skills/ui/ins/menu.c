@@ -15,7 +15,7 @@ entity spawn_player_menu_skills(ecs* world, entity player) {
     float2 position_anchor = float2_half;
     int2 position = int2_zero;
     entity frame_id = zox_id(SkillFrame);
-    entity e = spawn_datagrid_slots(world, prefab_window, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, skillbook, cells_size, "Skillbook", default_fill_color_frame_skill, default_fill_color_frame_skill, position_anchor, position, frame_id);
+    entity e = spawn_datagrid_slots(world, prefab_window, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, skillbook, cells_size, "Skills", default_fill_color_frame_skill, default_fill_color_frame_skill, position_anchor, position, frame_id);
     zox_add_tag(e, MenuSkills);
     return e;
 }

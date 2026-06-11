@@ -1,9 +1,6 @@
 extern entity dbg_player;
 
-void test_game_end(ecs *world, int32_t keycode) {
-    if (keycode != zox_key_g) {
-        return;
-    }
+void test_game_end(ecs *world) {
     zox_geter_value(dbg_player, GameLink, entity, game);
     if (!zox_valid(game)) {
         return;

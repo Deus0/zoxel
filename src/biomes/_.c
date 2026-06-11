@@ -25,9 +25,9 @@ byte zox_biome_override = 0;    // stick to earthy for now
 //      - BiomeLink and set it for camera system - BiomeInsideSystem
 
 zox_begin_module(Biomes) {
-    add_hook_spawn_prefabs(spawn_prefabs_biomes);
     define_components_biomes(world);
     define_systems_biomes(world);
+    add_hook_spawn_prefabs(spawn_prefabs_biomes);
 } zox_end_module(Biomes);
 
 #endif

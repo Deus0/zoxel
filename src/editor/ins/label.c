@@ -18,7 +18,7 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
     int2 parent_pixel_size = zox_getv(parent, LayoutSize);
     // returns the child zext
     entity prefab = prefab_label_textured; // prefab_game_debug_label
-    entity e = spawn_label_background(world, prefab, parent, canvas, pixel_position, anchor, padding, "", font_size, alignment, layer, int2_half(parent_pixel_size), parent_pixel_size, fill, button_outline, font_fill, button_font_outline, 0);
+    entity e = spawn_label(world, prefab, parent, pixel_position, anchor, padding, "", font_size, alignment, layer, fill, button_outline, font_fill, button_font_outline);
     zox_add_tag(e, EditorElement);
     zox_add_tag(e, GameDebugLabel);
     zox_set(e, DebugLabelData, { local_debug_label });

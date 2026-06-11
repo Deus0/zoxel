@@ -43,6 +43,7 @@ zox_sys2(LandfillChunk3System) {
         byte voctree_length = powers_of_two_byte[voctree_depth->value];
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
         byte terrain_chunk_length = powers_of_two_byte[terrain_depth];
+        int2 map_size = int2_single(terrain_chunk_length);
         // NOTE: Shouldnt this use terrain depth?? Tests failed
         byte is_bottom_chunk = cposition->value.y == -render_distance_y;
         int chunk_voxel_position_y = cposition->value.y *  terrain_chunk_length;
@@ -53,7 +54,6 @@ zox_sys2(LandfillChunk3System) {
             hmultiplier *= 2;
             ccc++;
         }
-        int2 hsize = int2_single(terrain_chunk_length);
         // Debug only at center point
         if (dbg_log && !cposition->value.x && !cposition->value.z) {
             zox_log("Filling Land [%ix%ix%i] -> Depth [%i]", cposition->value.x, cposition->value.y, cposition->value.z, voctree_depth->value);
@@ -74,9 +74,10 @@ zox_sys2(LandfillChunk3System) {
             for (positionl.z = 0; positionl.z < voctree_length; positionl.z++) {
                 // NOTE: This converts a 2D map to a chunk value by scaling
                 int2 map_position = (int2) { positionl.x * hmultiplier, positionl.z * hmultiplier };
-                int map_index = int2_array_index(map_position, hsize);
+                int map_index = int2_array_index(map_position, map_size);
                 byte biome_id = biome_map->value[map_index];
                 byte height = height_map->value[map_index];
+                // Get Top Positions from Height Map
                 int terrain_top_position = (int) height;
                 int top_position = terrain_top_position - chunk_voxel_position_y;
                 top_position /= hmultiplier;
@@ -117,16 +118,22 @@ zox_sys2(LandfillChunk3System) {
                 }
                 // We fill the ground up here
                 for (positionl.y = 0; positionl.y <= top_position; positionl.y++) {
-                    int terrain_position_y = chunk_voxel_position_y + positionl.y;
+                    int terrain_position_y = chunk_voxel_position_y + positionl.y * hmultiplier;
                     // top blocks
                     byte value;
                     // If Bottom Position
                     if (is_bottom_chunk && positionl.y == 0) {
                         value = obsidian_id > 0 ? obsidian_id : soil_id;
-                    } else if (terrain_position_y >= terrain_top_position - 2) {
-                        value = terrain_position_y > sand_height ? soil_id : sand_id;
                     } else {
-                        value = stone_id;
+                        if (terrain_position_y >= terrain_top_position - 2) {
+                            if (terrain_position_y > sand_height) {
+                                value = soil_id;
+                            } else {
+                                value = sand_id;
+                            }
+                        } else {
+                            value = stone_id;
+                        }
                     }
                     set_clean_VoxelNode(voctree, voctree_depth->value, positionl, value);
                 }

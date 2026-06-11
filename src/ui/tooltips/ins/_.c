@@ -1,4 +1,4 @@
-extern entity spawn_label_background(ecs *world, entity prefab, entity parent, entity canvas, int2 position, float2 anchor, byte2 padding, const char* text, byte font_size, byte alignment, byte layer, int2 parent_position, int2 parent_size, color fill, color fillo, color font_fill, color font_fillo, byte render_disabled);
+extern entity spawn_label(ecs *world, entity prefab, entity parent, int2 position, float2 anchor, byte2 padding, const char* text, byte font_size, byte alignment, byte layer, color fill, color fillo, color font_fill, color font_fillo);
 
 color tooltip_fill = color_white;
 color tooltip_fillo = color_black;
@@ -17,8 +17,9 @@ entity spawn_tooltip(ecs *world, entity prefab, entity canvas) {
     float2 anchor = float2_one;
     zox_geter_value(parent, LayoutSize, int2, parent_size);
     // le spawn
-    entity e = spawn_label_background(world, prefab, parent, canvas, position, anchor, padding, "", font_size, alignment, layer, int2_half(parent_size), parent_size, tooltip_fill, tooltip_fillo, tooltip_font_fill,tooltip_font_fillo,  1);
+    entity e = spawn_label(world, prefab, parent, position, anchor, padding, "", font_size, alignment, layer, tooltip_fill, tooltip_fillo, tooltip_font_fill,tooltip_font_fillo);
     zox_name("tooltip");
+    zox_set(e, RenderDisabled, { 1 });
     if (local_mouse) {
         entity pointer = zox_get_child_by_id(world, local_mouse, zox_id(ZevicePointer));
         if (zox_valid(pointer)) {

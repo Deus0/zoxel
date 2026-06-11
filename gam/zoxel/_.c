@@ -7,14 +7,16 @@
 #include "set/_.c"
 #include "sys/_.c"
 
-zox_begin_module(ZoxGame)
+zox_begin_module(ZoxGame) {
     game_name = "zoxel";
-    initialize_zoxel_settings(world);
     define_systems_zoxel(world);
-    add_hook_spawn_prefabs(zoxel_on_spawn_prefabs);
+    initialize_zoxel_settings(world);
     add_hook_on_boot(spawn_weather);
-    // our test window
-    add_hook_key_down(spawn_test_list);
-zox_end_module(ZoxGame)
+    // Debug UIs
+    add_hook_key_down(zox_dbg_ui_tests);
+    add_hook_key_down(zox_dbg_ui_gizmos);
+    add_hook_key_down(zox_dbg_ui_cheats);
+    add_hook_key_down(zox_dbg_ui_overlays);
+} zox_end_module(ZoxGame);
 
 #endif

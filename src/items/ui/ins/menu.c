@@ -14,7 +14,7 @@ entity spawn_menu_inventory(ecs* world, entity player) {
     }
     byte2 cells_size = byte2_single(grid_length);
     // Spawn our window
-    entity e = spawn_datagrid_slots(world, prefab_window, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, inventory, cells_size, "Inventory", default_fill_color_frame_item, default_fill_color_frame_item, position_anchor, position, frame_id);
+    entity e = spawn_datagrid_slots(world, prefab_window, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, inventory, cells_size, "Items", default_fill_color_frame_item, default_fill_color_frame_item, position_anchor, position, frame_id);
     zox_add_tag(e, MenuItems);
     return e;
 }

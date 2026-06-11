@@ -43,14 +43,14 @@ zox_sys2(RegionMountainSystem) {
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(RegionPosition);
-    zox_sys_in(BlockPosition);
-    zox_sys_in(BlockSize);
+    zox_sys_in(BlockPosition2);
+    zox_sys_in(BlockSize2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(RegionPosition, position);
-        zox_sys_i(BlockPosition, voxel_position);
-        zox_sys_i(BlockSize, size);
+        zox_sys_i(BlockPosition2, block_position);
+        zox_sys_i(BlockSize2, block_size);
         if (generate->value != zox_dirty_active) {
             continue;
         }
@@ -58,12 +58,10 @@ zox_sys2(RegionMountainSystem) {
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Mountains", zox_get_name(e), spawn_count);
         }
-        int2 region_voxel_position = (int2) { voxel_position->value.x, voxel_position->value.z };
-        int2 region_voxel_size = (int2) { size->value.x, size->value.z };
         int2 positions[spawn_count];
         byte sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
-            if (!find_position_in_bounds(region_voxel_position, region_voxel_size, min_size, max_size, positions, sizes, j)) {
+            if (!find_position_in_bounds(block_position->value, block_size->value, min_size, max_size, positions, sizes, j)) {
                 continue;
             }
             int2 spawn_position = positions[j];

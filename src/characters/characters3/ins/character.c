@@ -1,5 +1,5 @@
 // Also supports no models, for skeleton body gen
-entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain, entity model, byte render_depth, byte render_disabled, float3 position, float4 rotation, const char* name) {
+entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain, lint seed, entity model, byte render_depth, byte render_disabled, float3 position, float4 rotation, const char* name) {
     byte dbg_log = 0;
     // If Model, get the Vox (its lodded)
     entity vox = 0;
@@ -45,6 +45,7 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
     zox_set(e, TerrainLink, { terrain });
     zox_name("character3");
     set_ZoxName(world, e, name);
+    zox_set(e, Seed, { seed });
     zox_set(e, Position3D, { position });
     zox_set(e, Rotation3D, { rotation });
     zox_set(e, LastPosition3D, { position });

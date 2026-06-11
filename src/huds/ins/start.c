@@ -1,38 +1,26 @@
 // Spawn a games Start / Title Menu
 entity spawn_menu_start(ecs* world, entity player, entity canvas) {
-    byte layer = 3;
+    byte layer = game_overlay_layer + 1;
     byte font_size = 32 * ui_scale;
     byte font_thickness = ui_scale;
-    byte2 margins = (byte2) { 8 * ui_scale, 4 * ui_scale };
-    SpawnButton data = {
-        .element = {
-            .prefab = prefab_button,
-            .layer = layer,
-            .anchor = float2_half
-        },
-        .button = {
-            .prefab_text = prefab_text,
-            .fill = button_fill,
-            .outline = button_outline,
-        },
-        .zext = {
-            .text = label_start,
-            .font_fill_color = button_font_fill,
-            .font_outline_color = button_font_outline,
-            .font_size = font_size,
-            .font_thickness = font_thickness,
-            .margins = margins,
-        },
-    };
-    entity e = spawn_button_old(world, (LayoutParentData) { canvas }, (LayoutParentData) { canvas }, data.element, data.zext, data.button);
+    byte2 padding = (byte2) { 8 * ui_scale, 4 * ui_scale };
+    color fill = button_fill;
+    fill.a = 177;
+    entity e = spawn_layout2(world, prefab_layout2, canvas, int2_zero, int2_zero, float2_half, layer);
     zox_name("menu_start");
-    // zox_set(e, TooltipEvent, { &tooltip_event_menu_start });
-    // entity e = zox_ins(prefab_button);
     zox_add_tag(e, MenuStart);
     zox_set(e, PlayerLink, { player });
-    zox_set(e, ClickEvent, { &button_event_menu_start });
-    entity menu_cube = zox_dbg_spawn_chunk3(world, 0);
-    zox_set_parent(world, menu_cube, e);
+    {
+        spawn_label(world, prefab_label_textured, e, int2_zero, float2_half, padding, label_start, font_size, zox_alignment_centre, layer, fill, button_outline, button_font_fill, button_font_outline);
+        // zox_set_parent(world, e2, e);
+    }
+    {
+        entity e2 = zox_dbg_spawn_chunk3(world, 0);
+        zox_set_parent(world, e2, e);
+    }
+    // zox_set(e, TooltipEvent, { &tooltip_event_menu_start });
+    // entity e = zox_ins(prefab_button);
+    // zox_set(e, ClickEvent, { &button_event_menu_start });
     return e;
 }
 

@@ -60,7 +60,6 @@ zox_sys2(TextsPositionSystem) {
     byte is_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    // TextSizeDirty
     zox_sys_in(TextDirty);
     zox_sys_in(TextData);
     zox_sys_in(TextFontSize);
@@ -83,11 +82,16 @@ zox_sys2(TextsPositionSystem) {
                 if (!zox_valid(e2)) {
                     continue;
                 }
+                if (!zox_has(e2, LayoutPosition) || !zox_has(e2, LayoutPositionDirty)) {
+                    zox_logw("Zigel [%s] is missing Layout Component/s", zox_get_name(e2));
+                    continue;
+                }
                 uint index = calculate_zigel_data_index(text_data->value, text_data->length, j);
                 int2 position = calculate_position(text_data->value, text_data->length, index, size->value, alignment->value, padding->value, default_line_padding);
                 zox_mut_begin(e2, LayoutPosition, lposition);
                 zox_mut_begin(e2, LayoutPositionDirty, ldirty);
-                //if (!int2_equals(lposition->value, position)) {
+                //if (!int2_equals(lposition->value, position))
+                {
                     lposition->value = position;
                     ldirty->value = zox_dirty_trigger;
                     zox_mut_end(e2, LayoutPosition);
@@ -95,7 +99,7 @@ zox_sys2(TextsPositionSystem) {
                     if (is_log) {
                         zox_log("   + [%s]:[%i] at [%ix%i]", zox_get_name(e2), j, position.x, position.y);
                     }
-                // }
+                }
             }
         }
     }
