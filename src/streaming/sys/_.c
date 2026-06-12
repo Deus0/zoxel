@@ -68,7 +68,7 @@ void define_systems_streaming(ecs* world) {
         [none] streaming.Streamer
     );
     zox_system_ctx(
-        Chunk2LodSystem,
+        TunkLodSystem,
         zoxp_update,
         streamers2,
         [in] chunks2.Chunk2Position,

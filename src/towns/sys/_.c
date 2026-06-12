@@ -14,7 +14,7 @@ void zox_define_systems_towns(ecs* world) {
     );
     zox_system(
         TownMapSystem,
-        EcsPreStore,
+        EcsOnUpdate,
         [in] core.Generate,
         [in] regions.RegionLink,
         [in] chunks2.Chunk2Position,

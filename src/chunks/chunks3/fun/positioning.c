@@ -7,20 +7,20 @@ int3 chunk_position_fix2(float3 real_position, int3 chunk_position) {
     return chunk_position;
 }
 
-static inline int positionf_to_block_position1(float positionf, float scale) {
+static inline int real_position_to_block_position1(float positionf, float scale) {
     return (int) floor(positionf / scale);
 }
 
-static inline int3 positionf_to_block_position(float3 positionf, float scale) {
+static inline int3 real_position_to_block_position(float3 positionf, float scale) {
     return (int3) {
-        positionf_to_block_position1(positionf.x, scale),
-        positionf_to_block_position1(positionf.y, scale),
-        positionf_to_block_position1(positionf.z, scale)
+        real_position_to_block_position1(positionf.x, scale),
+        real_position_to_block_position1(positionf.y, scale),
+        real_position_to_block_position1(positionf.z, scale)
     };
 }
 
 int3 real_position_to_chunk_position(float3 positionf, byte chunk_length, float scale) {
-    int3 block_position = positionf_to_block_position(positionf, scale);
+    int3 block_position = real_position_to_block_position(positionf, scale);
     if (positionf.x < 0) block_position.x += 1;
     if (positionf.y < 0) block_position.y += 1;
     if (positionf.z < 0) block_position.z += 1;

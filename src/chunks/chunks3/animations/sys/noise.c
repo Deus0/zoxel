@@ -38,7 +38,9 @@ zox_sys2(NoiseVoxelNodeSystem) {
         for (int j = 0; j < 2; j++) {
             colors->value[j] = (color_rgb) { rand_range(0, 255), rand_range(0, 255), rand_range(0, 255) };
         }
+        write_lock_VoxelNode(voctree);
         random_fill_octree(voctree, 1, depth->value);
+        write_unlock_VoxelNode(voctree);
         dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(NoiseVoxelNodeSystem);

@@ -50,7 +50,9 @@ fi
 
 if [[ ${debug} == "True" ]]; then
     echo "+ Added [debug]"
-    cflags="-fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug"
+    # cflags="-fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug"
+    cflags="-fPIC -O2 -g3 -Wall -ggdb3 -Dzox_debug"
+    # cflags="-O2 -g"
     bin_path="bin/${bin_filename}-dev.bin"
 fi
 

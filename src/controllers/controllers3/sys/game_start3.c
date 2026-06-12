@@ -57,28 +57,17 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
         *spawned_position = float3_zero;
         return 0;
     }
-    int3 town_position = int3_zero;
-    entity regions[zox_children_capacity];
-    uint regions_length = zox_get_children_by_id(world, terrain, regions, zox_children_capacity, zox_id(Region));
-    if (regions_length) {
-        entity region = regions[rand_range(0, regions_length)];
-        entity towns[zox_children_capacity];
-        uint towns_length = zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town));
-        if (towns_length) {
-            entity town = towns[rand_range(0, towns_length)];
-            int2 town_position2 = zox_getv(town, BlockPosition2);
-            town_position.x = town_position2.x;
-            town_position.z = town_position2.y;
-            if (dbg_log) {
-                zox_log("Town [%s] Position at [%ix%i]", zox_get_name(town), town_position2.x, town_position2.y);
-            }
-        }
-    }
-    TerrainPlace placer = find_position_in_terrain(world, terrain, town_position);
+    float terrain_scale = zox_getv(terrain, BlockScale);
+    float3 camera_position = zox_getv(camera, Position3D);
+    int3 camera_block_position = real_position_to_block_position(camera_position, terrain_scale);
+    lint realm_seed = zox_getv(realm, Seed);
+    lint character_seed = seed_rand(realm_seed); // , 0, 100000);
+    TerrainPlace placer = find_position_in_terrain(world, terrain, camera_block_position);
     *spawned_position = placer.position;
     byte render_depth = 5;
-    lint character_seed = rand_range(0, 10000);
-    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, "Bobby", player);
+    char* name = generate_name(character_seed);
+    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, name, player);
+    free(name);
     return e;
 }
 
@@ -90,12 +79,13 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
         *spawned_position = float3_zero;
         return 0;
     }
+    // TODO: Load Character Seed
+    lint realm_seed = zox_getv(realm, Seed);
+    lint character_seed = seed_rand(realm_seed); // , 0, 100000);
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
     zox_geter(terrain, ChunkLinks, chunks);
     TerrainPlace placer;
     placer.chunk = 0;
-    // TODO: Load Character Seed
-    lint character_seed = rand_range(0, 10000);
     // load position for spawning
     load_character_p(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
     byte depth = terrain_depth;
@@ -103,7 +93,9 @@ entity game_start_player_load(ecs *world, entity player, float3* spawned_positio
     placer.chunk = int3_hashmap_get(chunks->value, cposition);
     *spawned_position = placer.position;
     byte render_depth = 5;
-    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, "Bob", player);
+    char* name = generate_name(character_seed);
+    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, name, player);
+    free(name);
     return e;
 }
 
@@ -112,13 +104,11 @@ zox_sys2(PlayerBeginSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GameLink);
     zox_sys_in(CharacterLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(GameLink, game);
         zox_sys_i(CharacterLink, character);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
@@ -126,12 +116,13 @@ zox_sys2(PlayerBeginSystem) {
         if (!(state->value == zox_player_state_starting && dirty->value == zox_dirty_active)) {
             continue;
         }
-        if (!zox_valid(game->value)) {
-            zox_loge("No Game on Player.");
+        entity game = zox_get_parent(world, e);
+        if (!zox_valid(game)) {
+            zox_loge("Invalid game on Player");
             continue;
         }
         // Checks if terrain is done loading
-        zox_geter_value(game->value, RealmLink, entity, realm);
+        zox_geter_value(game, RealmLink, entity, realm);
         if (!zox_valid(realm)) {
             zox_loge("No Realm on Game");
             continue;
@@ -153,7 +144,6 @@ zox_sys2(PlayerBeginSystem) {
             }
             // Keep active
             dirty->value = zox_dirty_trigger;
-            // zox_set(e, PlayerStateDirty, { zox_dirty_trigger });
             continue;
         }
         if (zox_valid(character->value)) {
@@ -173,12 +163,11 @@ zox_sys2(PlayerBeginSystem) {
             game_start_player_new(world, e, &spawn_position, dbg_log);
         }
         if (dbg_log) {
-            zox_log("Player Character Spawned at [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z);
+            zox_log("[%s] Player Character Spawned at [%fx%fx%f]", is_new_game ? "New" : "Load", spawn_position.x, spawn_position.y, spawn_position.z);
         }
         spawn_arrow3D(world, spawn_position, (float3) { 0, 1, 0}, 0.2f, 6, 30);
         // Needs ui spawn after frame
         play_playlist(world, realm, 1);
-        // delay_event(world, &spawn_player_game_ui, e, 1);
         entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
         if (mouse) {
             zox_set(mouse, MouseLock, { 1 });

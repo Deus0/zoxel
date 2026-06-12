@@ -26,3 +26,4 @@
 #include "randf.c"
 #include "fmod.c"
 #include "pow.c"
+#include "seed.c"

@@ -1,17 +1,7 @@
 const uint max_safety_checks_hashmap = 1024;
-#ifndef zox_windows
-    const byte hashmap_safety_locks = 1;
-    const byte nodes_w_safety_locks = 1;
-    const byte nodes_r_safety_locks = 1;
-#else
-    const byte hashmap_safety_locks = 1;
-    const byte nodes_w_safety_locks = 1;
-    const byte nodes_r_safety_locks = 1;
-#endif
-
+const byte hashmap_safety_locks = 1;
 
 #ifdef zox_windows
-
     typedef SRWLOCK zox_lock;
     #define ZOX_LOCK_INIT SRWLOCK_INIT
 

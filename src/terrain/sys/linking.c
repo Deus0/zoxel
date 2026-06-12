@@ -13,7 +13,7 @@ void zox_log_chunk_added(ecs *world, entity e, entity e2) {
 
 byte set_entity_chunk(ecs* world, entity e, ChunkLink* link, entity new_chunk, byte dbg_log) {
     entity old_chunk = link->value;
-    if (!zox_valid(new_chunk) || old_chunk == new_chunk || !can_have_characters(world, new_chunk)) {
+    if (!zox_valid(new_chunk) || !zox_has(new_chunk, ChunkEntities) || old_chunk == new_chunk || !can_have_characters(world, new_chunk)) {
         return 0;
     }
     // remove entity from old chunk
@@ -25,7 +25,7 @@ byte set_entity_chunk(ecs* world, entity e, ChunkLink* link, entity new_chunk, b
         }
     }
     // add entity to new chunk
-    zox_mut_begin(new_chunk, ChunkEntities, entites)
+    zox_mut_begin(new_chunk, ChunkEntities, entites);
     if (add_to_ChunkEntities(entites, e)) {
         zox_mut_end(new_chunk, ChunkEntities)
         if (dbg_log) {

@@ -5,22 +5,22 @@ zox_sys2(VegetationChunk3System) {
     zox_sys_in(Generate);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkPosition);
-    zox_sys_in(VoxLink);
     zox_sys_in(TunkLink);
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Generate, state);
         zox_sys_i(NodeDepth, voctree_depth);
         zox_sys_i(ChunkPosition, cposition);
-        zox_sys_i(VoxLink, terrain);
         zox_sys_i(TunkLink, tunk);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(VoxelNodeDirty, dirty);
         if (state->value != zox_dirty_end) { // zox_dirty_active) {
             continue;
         }
-        zox_geter_value(terrain->value, RealmLink, entity, realm);
+        entity terrain = zox_get_parent(world, e);
+        zox_geter_value(terrain, RealmLink, entity, realm);
         if (!zox_valid(realm)) {
             continue;
         }
@@ -29,7 +29,7 @@ zox_sys2(VegetationChunk3System) {
             zox_log_error("No Biomes on Realm");
             continue;
         }
-        zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
+        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
         byte is_max_depth = voctree_depth->value == terrain_depth;
         byte voctree_length = powers_of_two_byte[voctree_depth->value];
         // int chunk_voxel_position_y = cposition->value.y * voctree_length;
@@ -51,7 +51,7 @@ zox_sys2(VegetationChunk3System) {
         zox_geter(tunk->value, BiomeMap, biome_map);
         zox_geter(tunk->value, VegetationMap, vegetation_map);
         if (!vegetation_map->length) {
-            zox_log_error("Invalid [Tunk] [Maps] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
+            zox_log_error("Invalid [Tunk] [vegetation_map] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
             continue;
         }
         entity biome = 0;

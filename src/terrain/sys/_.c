@@ -99,10 +99,9 @@ void define_systems_terrain(ecs *world) {
         LandfillChunk3System,
         zoxp_voxels_write,
         [in] core.Generate,
-        [in] chunks.NodeDepth,
-        [in] chunks3.ChunkPosition,
-        [in] voxes.VoxLink,
         [in] tunks.TunkLink,
+        [in] chunks3.ChunkPosition,
+        [in] chunks.NodeDepth,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
         [none] terrain.TerrainChunk
@@ -113,22 +112,9 @@ void define_systems_terrain(ecs *world) {
         [in] core.Generate,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
-        [in] voxes.VoxLink,
         [in] tunks.TunkLink,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
         [none] terrain.TerrainChunk
     );
 }
-    // generate terrain
-    /*zox_system(
-        FlatlandSystem,
-        zoxp_voxels_write,
-        [in] core.Generate,
-        [in] chunks3.ChunkPosition,
-        [in] voxes.VoxLink,
-        [out] chunks.NodeDepth,
-        [out] chunks3.VoxelNode,
-        [none] TerrainChunk,
-        [none] FlatlandChunk
-    );*/

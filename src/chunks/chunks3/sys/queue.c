@@ -10,16 +10,18 @@ zox_sys2(VoxelNodeQueueSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(VoxelNodeQueue, queue);
-        zox_sys_o(VoxelNode, node);
+        zox_sys_o(VoxelNode, voctree);
         zox_sys_o(VoxelNodeDirty, vdirty);
         zox_sys_o(VoxelNodeEdited, edited);
         byte updated = 0;
         for (size_t i = 0; i < queue->count; i++) {
             VoxelNodeUpdate update = queue->ptr[i];
-            if (set_VoxelNode(node, depth->value, update.pos, update.value, 0)) {
+            write_lock_VoxelNode(voctree);
+            if (set_VoxelNode(voctree, depth->value, update.pos, update.value, 0)) {
                 updated = 1;
                 // zox_log("edited voxel: %ix%ix%i", update.positionl.x, update.positionl.y, update.positionl.z);
             }
+            write_unlock_VoxelNode(voctree);
         }
         if (updated) {
             vdirty->value = zox_dirty_trigger;

@@ -5,7 +5,6 @@
 #include "trigger.c"
 #include "respawn.c"
 #include "flying.c"
-// TODO: shortcuts - move to hotkeys or something
 #include "pause.c"
 #include "cameras.c"
 #include "shortcuts.c"
@@ -14,12 +13,12 @@
 #include "dialogue_player.c"
 #include "dialogue_exit.c"
 #include "dialogue_end.c"
-#include "begin.c"
-#include "begin_ui.c"
 #include "game_start.c"
+#include "game_start2.c"
+#include "game_start3.c"
+#include "game_start_ui.c"
 #include "game_end.c"
 #include "head_camera.c"
-#include "new_game.c"
 
 void define_systems_controllers3(ecs *world) {
     zox_system(
@@ -127,40 +126,6 @@ void define_systems_controllers3(ecs *world) {
         [in] dialogues.DialogueUILink,
         [out] dialogues.SpeakerLinks
     );
-    zox_system_1(
-        PlayerBeginUISystem,
-        EcsOnUpdate,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerBeginSystem,
-        EcsOnUpdate,
-        [in] games.GameLink,
-        [in] characters.CharacterLink,
-        [out] players.PlayerState,
-        [out] players.PlayerStateDirty,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerGame3StartSystem,
-        EcsOnUpdate,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [in] games.GameLink,
-        [in] cameras.CameraLink,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerGame3EndSystem,
-        EcsOnUpdate,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [in] cameras.CameraLink,
-        [in] characters.CharacterLink,
-        [none] players.Player3
-    );
     zox_system(
         HeadCameraSystem,
         EcsPostUpdate,
@@ -170,12 +135,44 @@ void define_systems_controllers3(ecs *world) {
         [in] blocks.BlockScale,
         [none] bones.Skeleton
     );
-    zox_system(
-        PlayerCharacterNewSystem,
+    zox_system_1(
+        PlayerBeginUISystem,
+        EcsOnUpdate,
+        [in] players.PlayerState,
+        [in] players.PlayerStateDirty,
+        [none] players.Player3
+    );
+    zox_system_1(
+        GameStartStreamerSystem,
         EcsOnUpdate,
         [in] cameras.CameraLink,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,
+        [none] players.Player3
+    );
+    zox_system(
+        PlayerTownFinderSystem,
+        EcsOnUpdate,
+        [in] cameras.CameraLink,
+        [out] players.PlayerState,
+        [out] players.PlayerStateDirty,
+        [none] players.Player3
+    );
+    zox_system_1(
+        PlayerBeginSystem,
+        EcsOnUpdate,
+        [in] characters.CharacterLink,
+        [out] players.PlayerState,
+        [out] players.PlayerStateDirty,
+        [none] players.Player3
+    );
+    zox_system_1(
+        PlayerGame3EndSystem,
+        EcsOnUpdate,
+        [in] players.PlayerState,
+        [in] players.PlayerStateDirty,
+        [in] cameras.CameraLink,
+        [in] characters.CharacterLink,
         [none] players.Player3
     );
 }

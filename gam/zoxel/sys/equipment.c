@@ -48,6 +48,7 @@ entity spawn_realm_model_item_filename(ecs* world, entity realm, const char* nam
     return e2;
 }
 
+// NOTE: Spawns Gear from different vox files
 zox_sys2(EquipsRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();

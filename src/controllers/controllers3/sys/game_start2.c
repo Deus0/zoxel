@@ -1,5 +1,5 @@
 // NOTE: For new placement of characters, we wait for region/towns to spawn, then we find a position in one of the towns
-zox_sys2(PlayerCharacterNewSystem) {
+zox_sys2(PlayerTownFinderSystem) {
     byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
@@ -19,54 +19,70 @@ zox_sys2(PlayerCharacterNewSystem) {
             continue;
         }
         entity game = zox_get_parent(world, e);
+        if (!zox_valid(game)) {
+            zox_loge("Invalid game on Player");
+            continue;
+        }
         entity realm = zox_getv(game, RealmLink);
+        if (!zox_valid(realm)) {
+            zox_loge("Invalid realm on Player");
+            continue;
+        }
         entity terrain = zox_getv(realm, TerrainLink);
         if (!zox_valid(terrain)) {
             zox_loge("Invalid Terrain on Player");
             continue;
         }
-        // Wait for Terrain to load
-        // Keep active
-        /*byte loaded = zox_getv(terrain->value, Loaded);
+        /*byte loaded = zox_getv(terrain, Loaded);
         if (loaded != zox_load_done) {
             if (dbg_log) {
-                zox_log("PlayerCharacterNewSystem: Terrain Loading [%i]", loaded);
+                zox_log("Terrain Loading Chunks... (PlayerTownFinderSystem)");
             }
-            dirty->value = zox_dirty_trigger;
-            continue;
         }*/
-        // float3 spawn_position = find_new_town_place(world, e, terrain->value, dbg_log);
-        int3 town_position = int3_zero;
         entity regions[zox_children_capacity];
         uint regions_length = zox_get_children_by_id(world, terrain, regions, zox_children_capacity, zox_id(Region));
         if (!regions_length) {
             if (dbg_log) {
-                zox_log("PlayerCharacterNewSystem: Terrain Loading Regions...");
+                zox_log("PlayerTownFinderSystem: Terrain Loading Regions...");
             }
             continue;
         }
         entity region = regions[rand_range(0, regions_length)];
-        entity towns[zox_children_capacity];
-        uint towns_length = zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town));
-        if (!towns_length) {
+        if (!zox_valid(region)) {
+            continue;
+        }
+        if (zox_getv(region, Generate)) {
             if (dbg_log) {
-                zox_log("PlayerCharacterNewSystem: Terrain Loading Towns...");
+                zox_log("Terrain Loading Regions... (PlayerTownFinderSystem)");
             }
             continue;
         }
-        entity town = towns[rand_range(0, towns_length)];
-        int2 town_position2 = zox_getv(town, BlockPosition2);
-        town_position.x = town_position2.x;
-        town_position.z = town_position2.y;
+        int3 town_position = int3_zero;
+        town_position.y = 8;
+        entity town = 0;
+        entity towns[zox_children_capacity];
+        uint towns_length = zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town));
+        if (towns_length) {
+            town = towns[rand_range(0, towns_length)];
+            int2 town_position2 = zox_getv(town, BlockPosition2);
+            town_position.x = town_position2.x;
+            town_position.z = town_position2.y;
+        } else {
+            if (dbg_log) {
+                zox_log("PlayerTownFinderSystem: Terrain Region [%s] has no Towns", zox_get_name(region));
+            }
+        }
         float terrain_block_scale = zox_getv(terrain, BlockScale);
         float3 spawn_position = block_position_to_real_position(town_position, terrain_block_scale);
         zox_set(camera->value, Position3D, { spawn_position });
+        // zox_set(terrain, Loaded, { zox_load_begin });
         state->value = zox_player_state_starting;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {
+            byte2 town_size2 = town ? zox_getv(town, TownSize) : byte2_zero;
             zox_log("Player Now State: [Starting]");
-            zox_log("   - Town [%s] Position [%ix%i]", zox_get_name(town), town_position2.x, town_position2.y);
+            zox_log("   - Town [%s] Position [%ix%i] Size [%ix%i]", zox_get_name(town), town_position.x, town_position.z, town_size2.x, town_size2.y);
             zox_log("   - Player Spawn Position [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z);
         }
     }
-} zox_sys_end(PlayerCharacterNewSystem);
+} zox_sys_end(PlayerTownFinderSystem);

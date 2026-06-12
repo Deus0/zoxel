@@ -50,12 +50,6 @@ zox_sys2(ModelsRealmSpawnSystem) {
             }
             zox_set_ptr(model_group, ModelLinks, variants);
         }
-        // Top Hat
-        {
-            // spawn a model
-            // then spawn the node tree
-            // spawn a node process for every variant we spawn too with different seeds
-        }
         zox_logv("At [%f] Realm [models] [%i] spawned.", zox_current_time, models->length);
     }
 } zox_sys_end(ModelsRealmSpawnSystem);

@@ -2,14 +2,14 @@
 zox_sys2(PlayerGame3EndSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerStateDirty);
     zox_sys_in(PlayerState);
+    zox_sys_in(PlayerStateDirty);
     zox_sys_in(CameraLink);
     zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
+        zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(CameraLink, camera);
         zox_sys_i(CharacterLink, character);
         if (dirty->value != zox_dirty_active || state->value != zox_player_state_main_menu) {

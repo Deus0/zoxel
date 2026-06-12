@@ -1,15 +1,15 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
-- Make Towns not close to Region Borders
-- Aim down when speaking to slime/chicken etc
 - Make mountains more stone, less dirty
 - Make Towns less Grassy, more Rough Dirt + dirt
 	- Make Road from middle of town to gate
-- Make Town Gates more overhanggy
 - Make Walls Thicker
-- Fix OOB errors
+- Make Town Gates more overhanggy
+- Aim down when speaking to slime/chicken etc
 - Debug missing town wall parts, cuttoff, do minimaps next
+-x Make Towns not close to Region Borders
+- Fix OOB errors
 - Fix chunk mesh reload glitch (flashes, basically missing for one frame)
 
 # Next

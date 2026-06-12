@@ -9,7 +9,8 @@ zox_sys2(Characters3SpawnSystem) {
     // float3 bounds = (float3) { 0.22f, 0.44f, 0.22f };
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CharacterSpawnZone);
+    zox_sys_in(NpcSpawnZoneDirty);
+    zox_sys_in(NpcSpawnZone);
     zox_sys_in(VoxelNode);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
@@ -22,7 +23,8 @@ zox_sys2(Characters3SpawnSystem) {
     zox_sys_out(ChunkEntities);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CharacterSpawnZone, active);
+        zox_sys_i(NpcSpawnZoneDirty, dirty);
+        zox_sys_i(NpcSpawnZone, active);
         zox_sys_i(VoxelNode, voctree);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -34,7 +36,7 @@ zox_sys2(Characters3SpawnSystem) {
         zox_sys_o(CharactersSpawned, spawned);
         zox_sys_o(ChunkEntities, entities);
         // Only spawn if fully loaded
-        if (!active->value) {
+        if (!active->value || dirty->value) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
@@ -110,8 +112,13 @@ zox_sys2(Characters3SpawnSystem) {
             float3_add_float3_p(&position, positionf->value); // chunk
             float3_add_float3_p(&position, float3_single(cscale->value * 0.5f));
             float4 rotation = quaternion_from_euler((float3) { 0, (rand() % 361) * degreesToRadians, 0 });
-            char* name = generate_name();
+            char* name = generate_name(npc_seed);
             entity e2 = spawn_character3_npc(world, meta, realm, terrain, npc_seed, model, character_depth, render_disabled->value, position, rotation, name);
+            if (name) {
+                free(name);
+            } else {
+                zox_loge("NPC Name generation Failed");
+            }
             if (!zox_valid(e2)) {
                 zox_loge("spawn_character3 failed");
                 continue;

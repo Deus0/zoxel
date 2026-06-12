@@ -4,15 +4,20 @@ zox_sys2(Characters3SpawnZoneSystem) {
     zox_sys_in(Loaded);
     zox_sys_in(RenderDepth);
     zox_sys_in(RenderDistance);
-    zox_sys_out(CharacterSpawnZone);
+    zox_sys_out(NpcSpawnZone);
+    zox_sys_out(NpcSpawnZoneDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Loaded, loaded);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(RenderDistance, distance);
-        zox_sys_o(CharacterSpawnZone, active);
+        zox_sys_o(NpcSpawnZone, active);
+        zox_sys_o(NpcSpawnZoneDirty, dirty);
         if (!loaded->value) {
             active->value = 0;
+            continue;
+        }
+        if (dirty->value) {
             continue;
         }
         // Max Depth Checks
@@ -27,5 +32,6 @@ zox_sys2(Characters3SpawnZoneSystem) {
             continue;
         }
         active->value = distance->value <= terrain_lod_near;
+        dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(Characters3SpawnZoneSystem);

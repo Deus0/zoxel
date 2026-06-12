@@ -1,7 +1,7 @@
 // If Streamer2 is Dirty:
 //  - Update Render Distances
 //  - Update Render Depths
-zox_sys2(Chunk2LodSystem) {
+zox_sys2(TunkLodSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -58,4 +58,4 @@ zox_sys2(Chunk2LodSystem) {
             }
         }
     }
-} zox_sys_end(Chunk2LodSystem);
+} zox_sys_end(TunkLodSystem);

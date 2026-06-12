@@ -12,7 +12,6 @@ void zox_define_systems_regions(ecs* world) {
         zoxp_mainthread,
         streamers,
         [in] core.Seed,
-        [out] regions.RegionLinks,
-        // [none] terrains.terrain
+        [out] regions.RegionLinks
     );
 }

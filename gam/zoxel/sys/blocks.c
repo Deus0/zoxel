@@ -8,7 +8,6 @@ zox_sys2(BlocksRealmSpawnSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
-        // zox_sys_o(BlockLinks, blocks);
         zox_sys_o(BlocksDirty, dirty);
         if (state->value != zox_generate_realm_blocks) {
             continue;
@@ -21,7 +20,6 @@ zox_sys2(BlocksRealmSpawnSystem) {
             zox_add_tag(e2, BlockObsidian);
             zox_add_tag(e2, BlockInvinsible);
             zox_set_parent(world, e2, e);
-            // add_to_BlockLinks(blocks, e2);
         }
         // Crafted Items
         {

@@ -93,13 +93,11 @@ zox_sys2(BiomeBlocksSystem) {
     zox_sys_in(Generate);
     zox_sys_in(Seed);
     zox_sys_out(Colors);
-    // zox_sys_out(BlockLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(Seed, seed);
         zox_sys_o(Colors, colors);
-        // zox_sys_o(BlockLinks, blocks);
         if (generate->value != zox_dirty_active) {
             continue;
         }
@@ -144,7 +142,6 @@ zox_sys2(BiomeBlocksSystem) {
             entity e2 = spawn_block_wood(world, 0, "wood", wood_color);
             zox_add_tag(e2, BlockWood);
             zox_set_parent(world, e2, e);
-            // add_to_BlockLinks(blocks, e2);
             zox_set(e2, BlockHealth, { (float2) { 4, 8 } });
         }
         // Grass Model
@@ -174,13 +171,14 @@ zox_sys2(BiomeBlocksSystem) {
             zox_prefab_set(e3, BlockSound, { 1 });
             zox_add_tag(e3, BlockGrass);
         }
-        // Dirt Pile
+        // Dirt Piles on ground
         {
             lint seed = 322232;
             byte max_depth = block_vox_depth_limits.y;
             entity2 e2 = spawn_model_lods_rubble(world, e, vox_type_rubble, dirt_color, max_depth, seed);
             spawn_realm_block_model(world, e, seed, "dirt debris", dirt_color, 0, e2.x, e2.y);
         }
+        // A noisey block
         {
             lint seed = 291911;
             byte max_depth = block_vox_depth_limits.y;

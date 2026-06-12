@@ -4,24 +4,24 @@ zox_sys2(LandfillChunk3System) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
-    zox_sys_in(NodeDepth);
-    zox_sys_in(ChunkPosition);
-    zox_sys_in(VoxLink);
     zox_sys_in(TunkLink);
+    zox_sys_in(ChunkPosition);
+    zox_sys_in(NodeDepth);
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Generate, state);
-        zox_sys_i(NodeDepth, voctree_depth);
-        zox_sys_i(ChunkPosition, cposition);
-        zox_sys_i(VoxLink, terrain);
         zox_sys_i(TunkLink, tunk);
+        zox_sys_i(ChunkPosition, cposition);
+        zox_sys_i(NodeDepth, voctree_depth);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(VoxelNodeDirty, dirty);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        zox_geter_value(terrain->value, RealmLink, entity, realm);
+        entity terrain = zox_get_parent(world, e);
+        zox_geter_value(terrain, RealmLink, entity, realm);
         if (!zox_valid(realm)) {
             continue;
         }
@@ -34,14 +34,18 @@ zox_sys2(LandfillChunk3System) {
             zox_log_error("Invalid [Tunk] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
             continue;
         }
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
+        /*if (zox_getv(tunk->value, Generate)) {
+            zox_log_error("[Tunk] at [%ix%ix%i] still Generating...", cposition->value.x, cposition->value.y, cposition->value.z);
+            continue;
+        }*/
         zox_geter(tunk->value, BiomeMap, biome_map);
         zox_geter(tunk->value, HeightMap, height_map);
         if (!height_map->length) {
-            zox_log_error("Invalid [Tunk] [Maps] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
+            zox_log_error("Invalid [Tunk] [height_map] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
             continue;
         }
         byte voctree_length = powers_of_two_byte[voctree_depth->value];
-        zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
         byte terrain_chunk_length = powers_of_two_byte[terrain_depth];
         int2 map_size = int2_single(terrain_chunk_length);
         // NOTE: Shouldnt this use terrain depth?? Tests failed
@@ -85,10 +89,10 @@ zox_sys2(LandfillChunk3System) {
                     // NOTE: This clears above it, sometimes chunks above it keep solids when increasing depths
                     // TODO: Think of a better way here
                     positionl.y = 0;
-                    set_clean_VoxelNode(voctree, voctree_depth->value, positionl, 0);
-                    /*for (positionl.y = 0; positionl.y < voctree_length; positionl.y++) {
+                    // set_clean_VoxelNode(voctree, voctree_depth->value, positionl, 0);
+                    for (positionl.y = 0; positionl.y < voctree_length; positionl.y++) {
                         set_clean_VoxelNode(voctree, voctree_depth->value, positionl, 0);
-                    }*/
+                    }
                     continue;
                 }
                 top_position = int_clamp(top_position, 0, voctree_length - 1);
@@ -99,14 +103,14 @@ zox_sys2(LandfillChunk3System) {
                     zox_loge("Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
                     continue;
                 }
-                entity target_biome = realm_biomes->value[biome_id];
-                if (!zox_valid(target_biome)) {
+                entity new_biome = realm_biomes->value[biome_id];
+                if (!zox_valid(new_biome)) {
                     zox_loge("Biome is invalid [%i]", biome_id);
                     continue;
                 }
                 // NOTE: Updates our cache of our biome
-                if (biome != target_biome) {
-                    biome = target_biome;
+                if (biome != new_biome) {
+                    biome = new_biome;
                     // Get our biome vegetation blocks
                     entity soil = zox_get_child_by_id(world, biome, zox_id(BlockSoil));
                     entity sand = zox_get_child_by_id(world, biome, zox_id(BlockSand));
@@ -121,7 +125,6 @@ zox_sys2(LandfillChunk3System) {
                     int terrain_position_y = chunk_voxel_position_y + positionl.y * hmultiplier;
                     // top blocks
                     byte value;
-                    // If Bottom Position
                     if (is_bottom_chunk && positionl.y == 0) {
                         value = obsidian_id > 0 ? obsidian_id : soil_id;
                     } else {

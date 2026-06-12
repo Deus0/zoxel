@@ -1,8 +1,8 @@
 // NOTE: Returns 1 if successfully added a new position/size
-byte place_new_town(int2 region_position, int2 region_size, byte2 padding, int2 minimum_size, int2 maximum_size, int2* positions, int2* sizes, byte added) {
-    const int max_attempts = 100;
+byte place_new_town(int2 region_position, int2 region_size, byte2 padding, byte2 minimum_size, byte2 maximum_size, int2* positions, byte2* sizes, byte added) {
+    int max_attempts = 100;
     for (int attempt = 0; attempt < max_attempts; attempt++) {
-        int2 new_size = {
+        byte2 new_size = {
             rand_range(minimum_size.x, maximum_size.x),
             rand_range(minimum_size.y, maximum_size.y)
         };
@@ -17,7 +17,7 @@ byte place_new_town(int2 region_position, int2 region_size, byte2 padding, int2 
         byte valid = 1;
         for (int i = 0; i < added; i++) {
             int2 p = positions[i];
-            int2 s = sizes[i];
+            byte2 s = sizes[i];
             if (new_position.x - new_size.x / 2 < p.x + s.x / 2 &&
                 new_position.x + new_size.x / 2 > p.x - s.x / 2 &&
                 new_position.y - new_size.y / 2 < p.y + s.y / 2 &&
@@ -39,8 +39,9 @@ byte place_new_town(int2 region_position, int2 region_size, byte2 padding, int2 
 // NOTE: Spawns X Towns per region
 zox_sys2(RegionTownsSystem) {
     byte dbg_log = 0;
-    int2 min_size = (int2) { 22, 22 };
-    int2 max_size = (int2) { 64, 64 };
+    byte2 min_size = (byte2) { 22, 22 };
+    byte2 max_size = (byte2) { 42, 42 };
+    byte2 wall_height_range = (byte2) { 2, 6 };
     byte2 padding = byte2_single(8);
     zox_sys_world();
     zox_sys_begin();
@@ -62,14 +63,15 @@ zox_sys2(RegionTownsSystem) {
             zox_log("[%s] Is Spawning [%i] Towns", zox_get_name(e), spawn_count);
         };
         int2 positions[spawn_count];
-        int2 sizes[spawn_count];
+        byte2 sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
             if (!place_new_town(block_position->value, block_size->value, padding, min_size, max_size, positions, sizes, j)) {
                 continue;
             }
             int2 spawn_position = positions[j];
-            int2 spawn_size = positions[j];
-            spawn_town(world, prefab_town, e, spawn_position, spawn_size);
+            byte2 spawn_size = sizes[j];
+            byte wall_height = rand_range(wall_height_range.x, wall_height_range.y);
+            spawn_town(world, prefab_town, e, spawn_position, spawn_size, wall_height);
             if (dbg_log) {
                 zox_log("   + New Town [%ix%i] Size [%ix%i]", spawn_position.x, spawn_position.y, spawn_size.x, spawn_size.y);
             }

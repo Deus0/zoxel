@@ -52,7 +52,7 @@ zox_sys2(TownMapSystem) {
         for (int j = 0; j < towns_length; j++) {
             entity town = towns[j];
             int2 town_position = zox_getv(town, BlockPosition2);
-            int2 town_size = zox_getv(town, BlockSize2);
+            byte2 town_size = zox_getv(town, TownSize);
             int2 lposition = int2_zero;
             int2 gposition_start = (int2) {
                 cposition->value.x * hsize.x,
@@ -80,7 +80,14 @@ zox_sys2(TownMapSystem) {
                     int index = int2_array_index(lposition, hsize);
                     // Get Biome Data
                     // byte biome = bmap->value[index];
-                    byte value = 0;
+                    if (!(gposition.x >= town_position.x - town_size.x / 2 &&
+                        gposition.x <= town_position.x + town_size.x / 2 &&
+                        gposition.y >= town_position.y - town_size.y / 2 &&
+                        gposition.y <= town_position.y + town_size.y / 2)) {
+                        tmap->value[index] = 0;
+                        continue;
+                    }
+                    byte value = 1;
                     byte town_in_x = (gposition.x >= town_position.x - town_size.x / 2 && gposition.x <= town_position.x + town_size.x / 2);
                     byte town_in_y = (gposition.y >= town_position.y - town_size.y / 2 && gposition.y <= town_position.y + town_size.y / 2);
                     byte left_wall = gposition.x == town_position.x - town_size.x / 2 && town_in_y;
@@ -91,13 +98,11 @@ zox_sys2(TownMapSystem) {
                     byte front_gate = gposition.y == town_position.y + town_size.y / 2 && town_gate_in_x;
                     byte front_wall = gposition.y == town_position.y + town_size.y / 2 && town_in_x && !front_gate;
                     if (back_wall || front_wall || left_wall || right_wall) {
-                        value = 1;
+                        value = 2;
                     }
-                    if (value) {
-                        tmap->value[index] = value;
-                        if (dbg_log) {
-                            zox_log(" + Town Wall [%i] at [%ix%i]", value, gposition.x, gposition.y);
-                        }
+                    tmap->value[index] = value;
+                    if (dbg_log) {
+                        zox_log(" + Town Wall [%i] at [%ix%i]", value, gposition.x, gposition.y);
                     }
                 }
             }

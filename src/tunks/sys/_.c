@@ -41,35 +41,7 @@ void define_systems_tunks(ecs* world) {
         [in] voxes.VoxLink,
         [in] chunks2.Chunk2Position,
         [in] rendering.RenderDistance,
-        // [in] rendering.RenderDepth,
         [none] streaming.StreamedChunk,
-        [none] tunks.Tunk
-    );
-    zox_system(
-        BiomeMapSystem,
-        EcsPostLoad,
-        [in] core.Generate,
-        [in] chunks2.Chunk2Position,
-        [out] tunks.BiomeMap,
-        [none] tunks.Tunk
-    );
-    // TODO: Pass in BiomeMap and use biome data
-    zox_system(
-        HeightMapSystem,
-        EcsOnUpdate,
-        [in] core.Generate,
-        [in] chunks2.Chunk2Position,
-        [in] tunks.BiomeMap,
-        [out] tunks.HeightMap,
-        [none] tunks.Tunk
-    );
-    zox_system(
-        VegetationMapSystem,
-        EcsPreStore,
-        [in] core.Generate,
-        [in] chunks2.Chunk2Position,
-        [in] tunks.BiomeMap,
-        [out] tunks.VegetationMap,
         [none] tunks.Tunk
     );
     zox_system(
@@ -89,25 +61,6 @@ void define_systems_tunks(ecs* world) {
         [none] tunks.Tunk
     );
     zox_system(
-        BiomeMapAvgSystem,
-        EcsOnUpdate,
-        [in] core.Generate,
-        [in] voxes.VoxLink,
-        [in] tunks.BiomeMap,
-        [out] biomes.BiomeLink,
-        [none] tunks.Tunk
-    );
-    zox_system(
-        BiomeLinkSystem,
-        EcsOnUpdate,
-        // [in] streaming.StreamDirty2,
-        [in] streaming.StreamPoint2,
-        [in] streaming.StreamLink,
-        [out] tunks.TunkLink,
-        [out] biomes.BiomeLink,
-        [none] streaming.Streamer
-    );
-    zox_system(
         TunkRegionLinkSystem,
         EcsOnUpdate,
         [in] chunks2.Chunk2Position,
@@ -121,4 +74,53 @@ void define_systems_tunks(ecs* world) {
         [in] rendering.RenderDistance,
         [out] chunks2.Chunk2Neighbors,
     );*/
+    // Move to Biomes
+    // NOTE: Generates biome map before height maps
+    zox_system(
+        BiomeMapSystem,
+        EcsPostLoad,
+        [in] core.Generate,
+        [in] chunks2.Chunk2Position,
+        [out] tunks.BiomeMap,
+        [none] tunks.Tunk
+    );
+    zox_system(
+        BiomeMapAvgSystem,
+        EcsOnUpdate,
+        [in] core.Generate,
+        [in] voxes.VoxLink,
+        [in] tunks.BiomeMap,
+        [out] biomes.BiomeLink,
+        [none] tunks.Tunk
+    );
+    zox_system(
+        BiomeLinkSystem,
+        EcsOnUpdate,
+        [in] streaming.StreamPoint2,
+        [in] streaming.StreamLink,
+        [out] tunks.TunkLink,
+        [out] biomes.BiomeLink,
+        [none] streaming.Streamer
+    );
+    // TODO: Move to other modules
+    // TODO: Pass in BiomeMap and use biome data
+    zox_system(
+        HeightMapSystem,
+        EcsOnUpdate,
+        [in] core.Generate,
+        [in] chunks2.Chunk2Position,
+        [in] tunks.BiomeMap,
+        [out] tunks.HeightMap,
+        [none] tunks.Tunk
+    );
+    // NOTE: Vegetation maps need biomes and temperature maps
+    zox_system(
+        VegetationMapSystem,
+        EcsPreStore,
+        [in] core.Generate,
+        [in] chunks2.Chunk2Position,
+        [in] tunks.BiomeMap,
+        [out] tunks.VegetationMap,
+        [none] tunks.Tunk
+    );
 }

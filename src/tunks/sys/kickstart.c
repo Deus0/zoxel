@@ -14,7 +14,7 @@ zox_sys2(FirstTerrainTunkSystem) {
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        if (!zox_valid(terrain->value)) {
+        if (!zox_valid(terrain->value) || !zox_has(terrain->value, TunkLinks)) {
             continue;
         }
         zox_mut_begin(terrain->value, TunkLinks, tunks);

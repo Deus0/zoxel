@@ -24,7 +24,7 @@ uint debug_ui_character_position(
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
     zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
     const byte3 max_chunk_size = byte3_single(powers_of_two[terrain_depth]);
-    const int3 positionv = positionf_to_block_position(position, terrain_scale);
+    const int3 positionv = real_position_to_block_position(position, terrain_scale);
     const int3 positionc = block_position_to_positionc(positionv, max_chunk_size);
 
     index += snprintf(buffer + index, size - index, "Position Voxel [%ix%ix%i]\n", positionv.x, positionv.y, positionv.z);
@@ -43,8 +43,7 @@ uint debug_ui_single_npc(
     const uint size,
     uint index
 ) {
-    index += snprintf(buffer + index, size - index, "NPCs [%li]\n", zox_stats_characters);
-
+    // index += snprintf(buffer + index, size - index, "NPCs [%li]\n", zox_stats_characters);
     index += snprintf(buffer + index, size - index, "NPC:\n");
     index = debug_ui_character_position(world, single_npc, buffer, size, index);
 

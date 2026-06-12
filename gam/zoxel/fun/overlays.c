@@ -5,7 +5,7 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
         index += snprintf(buffer + index, size - index, "Invalid Player\n");
         return index;
     }
-    index += snprintf(buffer + index, size - index, "Seed Debugger\n");
+    index += snprintf(buffer + index, size - index, "Seeds Debugger\n");
     index += snprintf(buffer + index, size - index, " - Player [%s]\n", zox_get_name(e));
     entity game = zox_getv(e, GameLink);
     entity realm = zox_getv(game, RealmLink);
@@ -16,7 +16,8 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
     entity character = zox_getv(e, CharacterLink);
     if (zox_valid(character)) {
         lint character_seed = zox_getv(character, Seed);
-        index += snprintf(buffer + index, size - index, " - Character [%s] [%lu]\n", zox_get_name(character), character_seed);
+        const char* character_name = zox_has(character, ZoxName) ? zox_getv(character, ZoxName) : "None";
+        index += snprintf(buffer + index, size - index, " - Character [%s]-[%s]: [%lu]\n", zox_get_name(character), character_name, character_seed);
     }
     if (zox_valid(realm)) {
         entity terrain = zox_getv(realm, TerrainLink);

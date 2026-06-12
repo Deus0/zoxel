@@ -53,7 +53,7 @@ zox_sys2(VoxGenerationSystem) {
         // generates random colors based on primary color
         for (int j = 0; j < unique_colors; j++) {
             colors->value[j] = color_rgb_2;
-            const float m = randf_range(color_r.x, color_r.y);
+            float m = randf_range(color_r.x, color_r.y);
             color_rgb_multiply_float(&colors->value[j], m);
         }
         if (is_generate_vox_outlines) {
@@ -68,23 +68,18 @@ zox_sys2(VoxGenerationSystem) {
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
-            build_vox_soil(
-                node,
-                node_depth,
-                vrange,
-                black_voxel_3,
-                vregions);
+            build_vox_soil(node, node_depth, vrange, black_voxel_3, vregions);
         } else if (gentype->value == vox_type_blended) {
             // Colors
             zox_geter_value(e, SecondaryColor, color, under_color);
             // generates random colors based on secondary color
             for (int j = colors_count; j < colors_count + unique_colors; j++) {
                 color_rgb new_color = color_to_color_rgb(under_color);
-                const float m = randf_range(color_r.x, color_r.y);
+                float m = randf_range(color_r.x, color_r.y);
                 color_rgb_multiply_float(&new_color, m);
                 add_to_ColorRGBs(colors, new_color);
             }
-            const byte2 vrange_2 = (byte2) {
+            byte2 vrange_2 = (byte2) {
                 colors_count + 1,
                 colors_count + unique_colors
 
@@ -101,16 +96,7 @@ zox_sys2(VoxGenerationSystem) {
             add_to_ColorRGBs(colors, new_color);
             byte black_voxel_2 = colors->length;
             // put indexes here
-            build_vox_blended(
-                node,
-                node_depth,
-                black_voxel_2,
-                black_voxel_3,
-                vrange,
-                vrange_2,
-                range_blend_1,
-                range_blend_2,
-                vregions);
+            build_vox_blended(node, node_depth, black_voxel_2, black_voxel_3, vrange, vrange_2, range_blend_1, range_blend_2, vregions);
         } else if (gentype->value == vox_type_rubble) {
             byte rubble_height = 4;
             if (zox_has(e, RubbleHeight)) {
@@ -120,63 +106,19 @@ zox_sys2(VoxGenerationSystem) {
             if (zox_has(e, RubbleCount)) {
                 rubble_count = zox_get_value(e, RubbleCount)
             }
-            build_vox_rubble(node,
-                node_depth,
-                vrange,
-                rubble_count,
-                rubble_height);
+            build_vox_rubble(node, node_depth, vrange, rubble_count, rubble_height);
         } else if (gentype->value == vox_type_noisey) {
             color_rgb dirt_dark_voxel = color_to_color_rgb(color2->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
-            vnoise3(
-                node,
-                node_depth,
-                vrange,
-                black_voxel_3
-            );
-            byte penetration = 4;
-            vnoise3_spray_side(
-                node,
-                node_depth,
-                0,
-                2,
-                penetration,
-                direction_up
-            );
-            vnoise3_spray_side(
-                node,
-                node_depth,
-                0,
-                1,
-                penetration,
-                direction_left
-            );
-            vnoise3_spray_side(
-                node,
-                node_depth,
-                0,
-                1,
-                penetration,
-                direction_right
-            );
-            vnoise3_spray_side(
-                node,
-                node_depth,
-                0,
-                1,
-                penetration,
-                direction_front
-            );
-            vnoise3_spray_side(
-                node,
-                node_depth,
-                0,
-                1,
-                penetration,
-                direction_back
-            );
+            vnoise3(node, node_depth, vrange, black_voxel_3);
+            byte2 penetrations = (byte2) { 1, 5 };
+            vnoise3_spray_side(node, node_depth, 0, penetrations, direction_up);
+            vnoise3_spray_side(node, node_depth, 0, penetrations, direction_left);
+            vnoise3_spray_side(node, node_depth, 0, penetrations, direction_right);
+            vnoise3_spray_side(node, node_depth, 0, penetrations, direction_front);
+            vnoise3_spray_side(node, node_depth, 0, penetrations, direction_back);
         } else if (gentype->value == vox_type_bricks) {
             color_rgb dirt_dark_voxel = color_to_color_rgb(color2->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
@@ -206,20 +148,11 @@ zox_sys2(VoxGenerationSystem) {
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
             byte black_voxel_3 = colors->length;
-            byte2 stem_range = (byte2) {
-                vrange.x,
+            byte2 stem_range = (byte2) { vrange.x,
                 vrange.x + (vrange.y - vrange.x) / 2
             };
-            byte2 petal_range = (byte2) {
-                stem_range.y,
-                vrange.y
-            };
-            build_vox_flower_patch(
-                node,
-                node_depth,
-                stem_range,
-                petal_range,
-                black_voxel_3);
+            byte2 petal_range = (byte2) { stem_range.y, vrange.y };
+            build_vox_flower_patch(node, node_depth, stem_range, petal_range, black_voxel_3);
         } else {
             zox_log_error("unknown vox type [%s]", zox_get_name(e));
             write_unlock_VoxelNode(node);

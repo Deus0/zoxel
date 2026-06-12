@@ -1,5 +1,4 @@
-
-zox_sys2(MountainMapSystem) {
+/*zox_sys2(MountainMapSystem) {
     uint seed = global_seed;
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -58,4 +57,4 @@ zox_sys2(MountainMapSystem) {
             }
         }
     }
-} zox_sys_end(MountainMapSystem);
+} zox_sys_end(MountainMapSystem);*/

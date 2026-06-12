@@ -1,5 +1,4 @@
 byte disable_npcs = 0;
-ulong zox_stats_characters = 0;
 byte is_characters_instanced = 0;
 
 void process_arguments_characters(ecs *world, char* args[], int count) {

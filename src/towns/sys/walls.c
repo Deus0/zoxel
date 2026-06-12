@@ -54,9 +54,9 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
         zox_geter(tunk->value, HeightMap, hmap);
-        zox_geter(tunk->value, TownMap, tmap);
-        if (!tmap->length) {
-            zox_log_error("Invalid [Tunk] [Maps] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
+        zox_geter(tunk->value, TownMap, town_map);
+        if (!town_map->length) {
+            zox_log_error("Invalid [Tunk] [town_map] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
             continue;
         }
         write_lock_VoxelNode(voctree);
@@ -69,11 +69,15 @@ zox_sys2(TownWallsSystem) {
                 int hindex = int2_array_index(hposition, hsize);
                 int global_position_y = (int) (hmap->value[hindex]);
                 int local_height_raw = global_position_y - chunk_position_y;
-                byte town = tmap->value[hindex];
-                if (town) {
-                    if (dbg_log) {
-                        zox_log("Placing Town Wall at [%ix%i]", chunk_voxel_position.x + positionl.x, chunk_voxel_position.z + positionl.z);
-                    }
+                byte town_value = town_map->value[hindex];
+                if (!town_value) {
+                    continue;
+                }
+                if (dbg_log) {
+                    zox_log("Placing Town Wall at [%ix%i]", chunk_voxel_position.x + positionl.x, chunk_voxel_position.z + positionl.z);
+                }
+                // byte wall_height = zox_getv(town, Height);
+                if (town_value == 2) {
                     for (int h = 1; h <= 4; h++) {
                         positionl.y = local_height_raw + h;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {

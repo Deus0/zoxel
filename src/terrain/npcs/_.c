@@ -9,10 +9,10 @@
 #include "dbg/_.c"
 #include "sys/_.c"
 
-zox_begin_module(TerrainNpcs)
+zox_begin_module(TerrainNpcs) {
     define_components_characters3_terrain(world);
     define_systems_characters3_terrain(world);
     add_hook_spawn_prefabs(spawn_prefabs_characters3_terrain);
-zox_end_module(TerrainNpcs)
+} zox_end_module(TerrainNpcs);
 
 #endif
