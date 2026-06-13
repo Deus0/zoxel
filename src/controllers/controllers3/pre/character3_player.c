@@ -14,12 +14,11 @@ entity spawn_prefab_character3_player(ecs *world, entity prefab) {
     // Raycasting
     zox_prefab_set(e, GizmoLink, { 0 });
     // Input Triggers
-    // zox_prefab_set(e, TriggerActionA, { 0 });
     zox_prefab_set(e, TriggerActionB, { 0 });
     zox_prefab_set(e, TriggerActionE, { 0 });
-    // IO
-    zox_add_tag(e, SaveCharacter);
-    zox_prefab_set(e, CharacterSaveHash, { 0 });
+    // Saves
+    zox_add_tag(e, Saver);
+    zox_prefab_set(e, SaveHash, { 0 });
     // Pickups
 #ifdef zoxm_pickups
     const float pickup_radius = 1.5f; // 0.16f

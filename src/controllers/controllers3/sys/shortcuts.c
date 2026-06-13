@@ -2,7 +2,7 @@ zox_sys2(QolShortcutsSystem) {
     byte toggle_fullscreen = 0;
     byte toggle_maximized = 0;
     zox_sys_world();
-    zox_sys_begin();
+    // zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity devices[zox_children_capacity];

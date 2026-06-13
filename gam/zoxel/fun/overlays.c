@@ -1,11 +1,42 @@
 entity dbg_ui_overlays;
 
+// NOTE: General overview of games data
+uint zox_dbg_ui_statistics(ecs *world, entity e, char *buffer, uint size, uint index) {
+    index += snprintf(buffer + index, size - index, "Statistics\n");
+    index += snprintf(buffer + index, size - index, " - Systems [%i]\n", zox_count_ids(EcsSystem));
+    index += snprintf(buffer + index, size - index, " - Components [%i]\n", zox_count_ids(zox_id(EcsComponent)));
+    index += snprintf(buffer + index, size - index, "Realm\n");
+    index += snprintf(buffer + index, size - index, " - Blocks [%i]\n", zox_count_ids(Block));
+    index += snprintf(buffer + index, size - index, " - Stats [%i]\n", zox_count_ids(RealmStat));
+    index += snprintf(buffer + index, size - index, " - Items [%i]\n", zox_count_ids(Item));
+    index += snprintf(buffer + index, size - index, " - Skills [%i]\n", zox_count_ids(Skill));
+    index += snprintf(buffer + index, size - index, " - Dialogues [%i]\n", zox_count_ids(Dialogue));
+    index += snprintf(buffer + index, size - index, " - Quests [%i]\n", zox_count_ids(Quest));
+    index += snprintf(buffer + index, size - index, " - Characters [%i]\n", zox_count_ids(RealmCharacter));
+    index += snprintf(buffer + index, size - index, "World\n");
+    index += snprintf(buffer + index, size - index, " - Regions [%i]\n", zox_count_ids(Region));
+    index += snprintf(buffer + index, size - index, " - Tunks [%i]\n", zox_count_ids(Tunk));
+    index += snprintf(buffer + index, size - index, " - Terrain Chunks [%i]\n", zox_count_ids(TerrainChunk));
+    index += snprintf(buffer + index, size - index, " - Colored Chunks [%i]\n", zox_count_ids(ColorChunk));
+    index += snprintf(buffer + index, size - index, " - Total Stats [%i]\n", zox_count_ids(Stat));
+    index += snprintf(buffer + index, size - index, "Characters\n");
+    index += snprintf(buffer + index, size - index, " - Player Characters [%i]\n", zox_count_ids(PlayerCharacter));
+    index += snprintf(buffer + index, size - index, " - Npcs [%i]\n", zox_count_ids(Npc));
+    index += snprintf(buffer + index, size - index, "Primitives\n");
+    index += snprintf(buffer + index, size - index, " - Lines [%i]\n", zox_count_ids(Cube));
+    index += snprintf(buffer + index, size - index, " - Cubes [%i]\n", zox_count_ids(Line));
+    index += snprintf(buffer + index, size - index, " - Particles [%i]\n", zox_count_ids(Particle));
+    index += snprintf(buffer + index, size - index, "UIs\n");
+    index += snprintf(buffer + index, size - index, " - Total [%i]\n", zox_count_ids(Element));
+    return index;
+}
+
 uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
     if (!e) {
         index += snprintf(buffer + index, size - index, "Invalid Player\n");
         return index;
     }
-    index += snprintf(buffer + index, size - index, "Seeds Debugger\n");
+    index += snprintf(buffer + index, size - index, "Seeds\n");
     index += snprintf(buffer + index, size - index, " - Player [%s]\n", zox_get_name(e));
     entity game = zox_getv(e, GameLink);
     entity realm = zox_getv(game, RealmLink);
@@ -37,36 +68,63 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
     return index;
 }
 
+void refresh_debug_label(ecs* world) {
+    entity canvas = zox_getv(dbg_player, CanvasLink);
+    entity label = zox_get_child_by_id(world, canvas, zox_id(GameDebugLabel));
+    if (label) {
+        zox_delete(label);
+    }
+    spawn_game_debug_label(world, canvas);
+    // canvas_toggle_ui(world, canvas->value, label, spawn_game_debug_label);
+}
+
+void zox_dbg_activate_ui_statistics(ecs* world, ClickEventData data) {
+    set_prefab_debug_label(world, &zox_dbg_ui_statistics);
+    refresh_debug_label(world);
+}
+
+void zox_dbg_activate_ui_filepaths(ecs* world, ClickEventData data) {
+    set_prefab_debug_label(world, &zox_dbg_ui_filepaths);
+    refresh_debug_label(world);
+}
+
 void zox_dbg_activate_seed_ui(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &debug_ui_seeds);
+    refresh_debug_label(world);
 }
 
 void zox_dbg_activate_player_state_ui(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &debug_ui_player);
+    refresh_debug_label(world);
 }
 
 void zox_dbg_activate_ui_raycasting(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &debug_ui_raycasting);
+    refresh_debug_label(world);
 }
 
 void zox_dbg_activate_ui_chunk_link(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &debug_label_chunk_link);
+    refresh_debug_label(world);
 }
 
 void zox_dbg_activate_ui_system_times(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &debug_ui_system_times);
+    refresh_debug_label(world);
 }
 
 void zox_dbg_activate_ui_canvas(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &zox_dbg_ui_canvas);
+    refresh_debug_label(world);
 }
 
 void zox_dbg_activate_ui_player_character(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &zox_dbg_ui_player_character);
+    refresh_debug_label(world);
 }
 
 void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
-    byte zox_tsts_count = 7;
+    byte zox_tsts_count = 9;
     if (keycode != zox_key_v) {
         return;
     }
@@ -93,8 +151,16 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UIs
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Statistics",
+        .on_click = { &zox_dbg_activate_ui_statistics },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "System Times",
         .on_click = { &zox_dbg_activate_ui_system_times },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "File Paths",
+        .on_click = { &zox_dbg_activate_ui_filepaths },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Seeds",

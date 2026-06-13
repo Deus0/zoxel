@@ -1,7 +1,5 @@
 // List Menus adjust to the menu size
-
-// TODO: Pass in struct data
-
+// TODO: Remove all structs
 typedef struct {
     entity player;
     const char *header;
@@ -15,10 +13,10 @@ typedef struct {
 } WindowListSpawnData;
 
 // Returns window + list
-entity3 spawn_window_list(ecs *world, entity prefab, entity player, const char *header, byte header_font_size, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2, SpawnListElement* elements, byte elements_count, byte visible_count) {
-    zox_geter_value(player, CanvasLink, entity, canvas);
+entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *header, byte header_font_size, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2, SpawnListElement* elements, byte elements_count, byte visible_count) {
+    entity canvas = zox_getv(player, CanvasLink);
     if (!zox_valid(canvas)) {
-        zox_logw("Invalid canvas in [spawn_window_list]");
+        zox_loge("Invalid canvas in [spawn_window_list]");
         return (entity3) { 0, 0, 0 };
     }
     // Sizing
@@ -32,10 +30,7 @@ entity3 spawn_window_list(ecs *world, entity prefab, entity player, const char *
     byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
     // # Window #
     // int2 canvas_size = zox_gett_value(canvas, LayoutSize);
-    LayoutParentData canvas_data = {
-        .e = canvas,
-        // .size = canvas_size  // need for bounds
-    };
+    LayoutParentData canvas_data = { .e = canvas };
     // we need to calculate header size too
     int2 header_size = calculate_header_size(strlen(header), header_font_size, header_padding);
     int header_height = header_size.y;

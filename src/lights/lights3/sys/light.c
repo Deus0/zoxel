@@ -79,7 +79,7 @@ static inline byte flood_light(const VoxelNode* root_vnode, LightNode* root_lnod
         if (decayed_light <= current_light) {
             continue;
         }
-        zox_log_lighting_light("     + Light Flooded [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, decayed_light, distance);
+        zox_logv("     + Light Flooded [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, decayed_light, distance);
         set_LightNode(root_lnode, depth, pos, decayed_light, 0);
         dirty = 1;
         flood_light(root_vnode, root_lnode, n_root_vnodes, n_root_lnodes, n_queues, depth, pos, decayed_light, distance - 1, min_light, air_decay, solidity);

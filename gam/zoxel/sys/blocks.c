@@ -1,6 +1,6 @@
-// TODO: Remove [spawn_blocks_data] Hooks and just use systems
 // NOTE: Spawns Realm Specific Blocks (Global ones)
 zox_sys2(BlocksRealmSpawnSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -12,7 +12,6 @@ zox_sys2(BlocksRealmSpawnSystem) {
         if (state->value != zox_generate_realm_blocks) {
             continue;
         }
-        zox_log(" + [%f] Realm [blocks] [%i] spawning", zox_current_time);
         // Bottom of Realm
         {
             color obsidian_color = color_grayscale(rand_range(15, 35));
@@ -43,6 +42,8 @@ zox_sys2(BlocksRealmSpawnSystem) {
         }
         spawn_dungeon_blocks(world, e);
         dirty->value = zox_dirty_trigger;
-        zox_log(" + [%f] Realm [blocks] spawned", zox_current_time);
+        if (dbg_log) {
+            zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));
+        }
     }
 } zox_sys_end(BlocksRealmSpawnSystem);

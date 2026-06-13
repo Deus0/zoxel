@@ -1,3 +1,7 @@
+int get_characters_count(ecs *world) {
+    return zox_count_types(Character3);
+}
+
 uint debug_label_chunk_link(ecs *world, entity player, char *buffer, uint size, uint index) {
     // index += snprintf(buffer + index, size - index, "characters [%lu]\n", zox_stats_characters);
     // index = get_debug_label_app(world, player, buffer, size, index);

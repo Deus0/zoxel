@@ -31,7 +31,7 @@ byte load_chunk(ecs *world, entity savegame, int3 position, VoxelNode* node) {
     char filename[128];
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
-    zox_geter(savegame, SaveGamePath, game_path);
+    zox_geter(savegame, FolderPath, game_path);
     char* path = join_path(game_path->value, filename);
     // char path[io_path_size];
     // get_save_filepath(game_name, filename, path, sizeof(path));

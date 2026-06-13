@@ -21,7 +21,7 @@ byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, Lig
             break;
         }
         // set light in LightNode
-        zox_log_lighting_light("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
+        zox_logv("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
         set_LightNode(root_lnode, depth, pos, light, 0);
         dirty = 1;
         if (y == 0) {
@@ -29,10 +29,10 @@ byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, Lig
         }
         flood_start = pos.y;
     }
-    zox_log_lighting_light(" * light beam y: [%i] to [%i]", flood_start, (flood_end));
+    zox_logv(" * light beam y: [%i] to [%i]", flood_start, (flood_end));
     for (byte y = flood_start; y <= flood_end; y++) {
         pos.y = y;
-        zox_log_lighting_light(" - Light Beam Spreads [%ix%ix%i]", pos.x, pos.y, pos.z);
+        zox_logv(" - Light Beam Spreads [%ix%ix%i]", pos.x, pos.y, pos.z);
         // TODO: when we change light, we can save light to array, and reuse here
         // Simpler to just add to queue here for flood lighting?
         /*byte floodlight_dirty = flood_light(root_vnode, root_lnode, n_root_vnodes, n_root_lnodes, n_light_queues, depth, pos, light, light_propogation_distance, darklight, light_air_decay, solidity);

@@ -1,5 +1,6 @@
 #include "cleanup.c"
 #include "mesh_trigger.c"
+#include "neighbor_trigger.c"
 #include "queue.c"
 #include "clear.c"
 #include "sides.c"
@@ -19,7 +20,8 @@ void define_systems_chunks3(ecs *world) {
         EcsOnUpdate,
         [in] chunks3.ChunkNeighbors,
         [out] chunks3.ChunkMeshDirty,
-        [none] chunks3.Chunk3
+        [none] chunks3.Chunk3,
+        [none] chunks3.ChunkTextured    // only terrain for now
     );
     zox_system(VoxelNodeQueueSystem,
         zoxp_queue_process1,

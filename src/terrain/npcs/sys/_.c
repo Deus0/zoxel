@@ -6,7 +6,7 @@ void define_systems_characters3_terrain(ecs* world) {
     zox_system(
         Characters3SpawnZoneSystem,
         EcsOnUpdate,
-        [in] core.Loaded,
+        [in] saves.Loaded,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDistance,
         [out] terrain.npcs.NpcSpawnZone,

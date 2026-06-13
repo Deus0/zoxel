@@ -30,17 +30,18 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
     if (dbg_log) {
         zox_log("Character [%s] At [%fx%fx%f]", zox_get_name(prefab), position.x, position.y, position.z);
         if (zox_valid(model)) {
-            zox_log("+ Model [%s]", zox_get_name(model));
+            zox_log("Model [%s]", zox_get_name(model));
         } else {
-            zox_log("+ No Model");
+            zox_log("No Model");
         }
         if (zox_valid(vox)) {
-            zox_log("+ Vox [%s]", zox_get_name(vox));
+            zox_log("Vox [%s]", zox_get_name(vox));
         } else {
-            zox_log("+ No Vox");
+            zox_log(" No Vox");
         }
     }
     zox_instance(prefab);
+    zox_remove_tag(e, RealmCharacter);
     zox_set(e, RealmLink, { realm });
     zox_set(e, TerrainLink, { terrain });
     zox_name("character3");
@@ -64,7 +65,7 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
             zox_set(e, BlockScale, { bscale });
             zox_set(e, Bounds3D, { bounds });
             if (dbg_log) {
-                zox_log("+ Bounds Generated [%fx%fx%f]", bounds.x, bounds.y, bounds.z);
+                zox_log("Bounds Generated [%fx%fx%f]", bounds.x, bounds.y, bounds.z);
             }
         } else if (zox_valid(vox)) {
             zox_loge("Model has no BlockScale [%s]", zox_get_name(vox));
@@ -79,10 +80,10 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
         spawn_gpu_mesh(world, e);
         spawn_gpu_colors(world, e);
         if (dbg_log) {
-            zox_log("+ Unique Character");
+            zox_log("Unique Character");
         }
-    } else {
+    } /*else {
         zox_loge("Unknown Character Prefab Render Type [%s]", zox_get_name(prefab));
-    }
+    }*/
     return e;
 }

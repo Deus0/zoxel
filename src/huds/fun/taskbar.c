@@ -59,6 +59,7 @@ void on_closed_taskbar_window(ecs *world, ClickEventData data) {
 // NOTE: window has just spawned, we can only use set with it
 // TODO: Move to a system for TaskbarWindow or regular window..!
 void link_window_to_taskbar(ecs *world, entity window, entity canvas, entity window_id) {
+    byte dbg_log = 0;
     if (!zox_valid(window)) {
         zox_loge("[on_spawned_taskbar_window] Invalid Window");
         return;
@@ -88,7 +89,9 @@ void link_window_to_taskbar(ecs *world, entity window, entity canvas, entity win
             continue;
         }
         entity id = zox_getv(e2, TaskbarWindowID);
-        zox_log("Frame [%s] had ID [%s] =? [%s]", zox_get_name(e2), zox_get_name(id), zox_get_name(window_id));
+        if (dbg_log) {
+            zox_log("Frame [%s] had ID [%s] =? [%s]", zox_get_name(e2), zox_get_name(id), zox_get_name(window_id));
+        }
         if (window_id == id) { // zox_has_id(window, id)) {
             toggle = e2;
             break;

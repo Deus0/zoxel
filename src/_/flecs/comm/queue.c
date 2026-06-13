@@ -39,18 +39,6 @@ static T2 r_##T(T* q) { \
     return q->ptr[--q->count]; \
 } \
 \
-static void remove_at_##T(T* q, size_t index) { \
-    if (index >= q->count) return; \
-    \
-    if (index < q->count - 1) { \
-        memmove(&q->ptr[index], \
-        &q->ptr[index + 1], \
-        (q->count - index - 1) * sizeof(T2)); \
-    } \
-    \
-    q->count--; \
-} \
-\
 ECS_CTOR(T, ptr, { i_##T(ptr); }) \
 ECS_DTOR(T, ptr, { d_##T(ptr); }) \
 ECS_MOVE(T, dst, src, { \
@@ -76,3 +64,15 @@ ECS_COPY(T, dst, src, { \
 #define zoxd_queue(T)\
     zoxd(T);\
     zox_define_hooks(T);
+
+/*static void remove_at_##T(T* q, size_t index) { \
+    if (index >= q->count) return; \
+    \
+    if (index < q->count - 1) { \
+        memmove(&q->ptr[index], \
+        &q->ptr[index + 1], \
+        (q->count - index - 1) * sizeof(T2)); \
+    } \
+    \
+    q->count--; \
+}*/

@@ -154,7 +154,7 @@ zox_sys2(PlayerBeginSystem) {
         }
         // actually we need to do this on loaded player model for bounds
         // if character
-        zox_geter(realm, SaveGamePath, path);
+        zox_geter(realm, FolderPath, path);
         byte is_new_game = !has_save_game_file(path->value, "player.dat");
         float3 spawn_position;
         if (!is_new_game) {

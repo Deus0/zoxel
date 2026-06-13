@@ -73,18 +73,18 @@ int delete_directory_contents(const char *path) {
 // 1 success
 byte delete_dir(const char* path) {
     if (has_path_directory(path)) {
-        zox_log_io(" + deleting directory [%s]", path)
+        zox_logv(" + deleting directory [%s]", path);
         if (delete_directory_contents(path) == 0) {
 #ifdef _WIN32
             if (RemoveDirectory(path)) {
-                zox_log_io(" > directory [%s] deleted", path);
+                zox_logv(" > directory [%s] deleted", path);
                 return 1;
             } else {
                 perror("Error deleting directory");
             }
 #else
             if (rmdir(path) == 0) {
-                zox_log_io(" > directory [%s] deleted", path);
+                zox_logv(" > directory [%s] deleted", path);
                 return 1;
             } else {
                 perror("Error deleting directory");

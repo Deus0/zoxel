@@ -85,14 +85,14 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
             }
             zox_add_tag(child, ZextLabel);
             if (child_data.save_path) {
-                SaveGamePath path = { };
+                FolderPath path = { };
                 size_t len = strlen(child_data.save_path);
                 if (len >= 512) {
                     len = 512 - 1;
                 }
                 memcpy(path.value, child_data.save_path, len);
                 path.value[len] = '\0';
-                zox_set_ptr(child, SaveGamePath, path);
+                zox_set_ptr(child, FolderPath, path);
                 free(child_data.save_path);
             }
         } else if (child_data.type == list_element_type_slider) {

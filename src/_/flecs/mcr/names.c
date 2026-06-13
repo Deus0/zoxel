@@ -10,15 +10,12 @@
 
 #else
 
-
-    #define zox_get_name(e)\
-        ecs_get_name(world, e)
-
-    #define zox_sys_e_name\
-        ecs_get_name(it->world, it->entities[i])
-
+    #define zox_get_name(e) ecs_get_name(world, e)
+    #define zox_sys_e_name() ecs_get_name(it->world, it->entities[i])
 
 #endif
+
+#define zox_sys_name() ecs_get_name(it->world, it->system)
 
 #define zox_set_name(e, name)\
     ecs_set_name(world, e, name);

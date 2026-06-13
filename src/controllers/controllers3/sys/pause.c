@@ -1,7 +1,7 @@
 // Player presses input which pauses game
 // NOTE: Must be paused or playing state to toggle pause!
 zox_sys2(PlayerPauseSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);

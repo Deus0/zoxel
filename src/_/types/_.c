@@ -104,13 +104,10 @@ zoxc_entity(EntityTarget);
 zoxc_entity(ComponentTarget);
 zoxc_byte(ComponentType);
 // General
-zoxc_byte(Loaded);
 zoxc_state(Generate);
 zoxc_state(InitializeEntity);
 zoxc_byte(GenericEvent);
 zoxc_byte(SpawnChance);
-// unsorted
-zoxc_fixed_string(SaveGamePath, 512);
 // Measurements
 zoxc_byte(Radius);
 zoxc_byte(Height);
@@ -135,13 +132,10 @@ void define_components_core(ecs* world) {
     zoxd_entity(ComponentTarget);
     zoxd_byte(ComponentType);
     // General
-    zoxd_byte(Loaded);
     zoxd_state(Generate);
     zoxd_state(InitializeEntity);
     zoxd_byte(GenericEvent);
     zoxd_byte(SpawnChance);
-    // unsorted
-    zoxd_fixed_string(SaveGamePath);
     // Measurements
     zoxd_byte(Radius);
     zoxd_byte(Height);

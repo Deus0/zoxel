@@ -25,7 +25,7 @@ entity spawn_menu_start(ecs* world, entity player, entity canvas) {
 }
 
 void spawn_all_players_start_ui(ecs *world) {
-    zox_logv("Spawning Player Start Menus [%i]", players_playing)
+    zox_logv("Spawning Player Start Menus [%i]", players_playing);
     for (int i = 0; i < players_playing; i++) {
         entity player = zox_players[i];
         zox_geter_value(player, CanvasLink, entity, canvas);

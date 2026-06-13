@@ -25,7 +25,7 @@ void set_character3_npc(ecs* world, entity c, byte npc) {
 }
 
 int count_entities_npc(ecs *world) {
-    return zox_count_types(Npc)
+    return zox_count_types(Npc);
 }
 
 void follow_target(

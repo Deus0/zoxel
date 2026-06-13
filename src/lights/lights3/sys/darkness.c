@@ -94,7 +94,7 @@ static inline byte dark_flood_light(
             continue;   // omg this wasn't here
         }
         if (current_light < old_light) {
-            zox_log_lighting_dark("     - Light Banished at [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, old_light, distance);
+            zox_logv("     - Light Banished at [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, old_light, distance);
             // extinguish here and continue removing
             set_LightNode(root_lnode, depth, pos, min_light, 0);
             dirty = 1;
@@ -118,7 +118,7 @@ static inline byte dark_flood_light(
         } else {
             if (light_queue) {
                 byte decayed_light = (current_light > light_air_decay) ? (byte) (current_light - light_air_decay) : darklight;
-                zox_log_lighting_dark("     + Dark Flood Light Source [%ix%ix%i] new [%i] old [%i] decayed [%i]", pos.x, pos.y, pos.z, current_light, old_light, decayed_light);
+                zox_logv("     + Dark Flood Light Source [%ix%ix%i] new [%i] old [%i] decayed [%i]", pos.x, pos.y, pos.z, current_light, old_light, decayed_light);
                 if (locks_enabled) spin_lock(&light_queue->lock);
                 a_LightQueue(light_queue, (LightUpdate) {
                     // .type  = zox_light_type_flood,
@@ -164,7 +164,7 @@ byte dark_sunbeam(DarkQueue* queued, const VoxelNode* root_vnode, LightNode* roo
             beam_stopped = 1;
             break;
         }
-        zox_log_lighting_dark("     - Light Banished at [%ix%ix%i] l[%i]", pos.x, pos.y, pos.z, current_light);
+        zox_logv("     - Light Banished at [%ix%ix%i] l[%i]", pos.x, pos.y, pos.z, current_light);
         set_LightNode(root_lnode, depth, pos, min_light, 0);
         dirty = 1;
         if (y == 0) {
@@ -175,17 +175,17 @@ byte dark_sunbeam(DarkQueue* queued, const VoxelNode* root_vnode, LightNode* roo
     // flood after, otherwise is refills with sunlight
     // QUESTION: Dark DarkFlood use neighbor.. Probably?!?!
     //      can we delay these until its gone? test sunlight between chunks, sunlight comes through chunk + check it dissapears
-    zox_log_lighting_dark(" * dark beam y: [%i] to [%i]", flood_start, flood_end);
+    zox_logv(" * dark beam y: [%i] to [%i]", flood_start, flood_end);
     for (byte y = flood_start; y <= flood_end; y++) {
         pos.y = y;
-        zox_log_lighting_dark(" - Dark Beam Spreads [%ix%ix%i]", pos.x,  pos.y, pos.z);
+        zox_logv(" - Dark Beam Spreads [%ix%ix%i]", pos.x,  pos.y, pos.z);
         if (dark_flood_light(root_vnode, root_lnode, n_root_vnodes, n_root_lnodes, n_light_queues, light_queue, n_dark_queues, dark_queue, depth, pos, sunlight - air_decay + 1, darklight_propogation_distance, min_light, air_decay, solidity)) {
             dirty = 1;
         }
     }
     // pass downward into chunk below since we survived until the end
     if (!beam_stopped && queued) {
-        zox_log_lighting_dark(" - Dark Beam Continues [%ix%ix%i]", pos.x, length, pos.z);
+        zox_logv(" - Dark Beam Continues [%ix%ix%i]", pos.x, length, pos.z);
         if (locks_enabled) spin_lock(&queued->lock);
         a_DarkQueue(queued,
             (DarkUpdate) {
@@ -250,7 +250,7 @@ zox_sys2(DarkLightSystem) {
             }
             // if (depthl->value != update.depth) continue;   // for now
             if (update.type == zox_light_type_flood) {
-                zox_log_lighting_dark("[%s] Begin Dark Flooding [%ix%ix%i] l[%i] distance [%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, update.distance, dark_queue->count)
+                zox_logv("[%s] Begin Dark Flooding [%ix%ix%i] l[%i] distance [%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, update.distance, dark_queue->count);
                 byte current_light = get_value_LightNode(root_lnode, depthl->value, update.pos, 0);
                 if (current_light > darklight) {
                     set_LightNode(root_lnode, depthl->value, update.pos, darklight, 0);
@@ -260,7 +260,7 @@ zox_sys2(DarkLightSystem) {
                     dirty = 1;
                 }
             } else if (update.type == zox_light_type_beam_start || update.type == zox_light_type_beam) {
-                zox_log_lighting_dark("[%s] Begin Darkbeam [%ix%ix%i] l[%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, dark_queue->count);
+                zox_logv("[%s] Begin Darkbeam [%ix%ix%i] l[%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, dark_queue->count);
                 if (dark_sunbeam(dark_queued, root_vnode, root_lnode, nnodesv, nnodesl, n_light_queues, light_queue, n_dark_queues, dark_queue, depthl->value, update.pos, sunlight, darklight, light_air_decay, update.type, solidity)) {
                     dirty = 1;
                 }

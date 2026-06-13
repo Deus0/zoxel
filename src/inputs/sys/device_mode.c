@@ -125,7 +125,7 @@ zox_sys2(DeviceSwitchSystem) {
             }
         }
         if (dbg_log && dirty->value && old_device_mode != dirty->value) {
-            // zox_log_input(" + device mode switched to [%i] from [%i]", dirty->value, deviceMode->value)
+            // zox_logv(" + device mode switched to [%i] from [%i]", dirty->value, deviceMode->value)
             if (dirty->value == zox_device_mode_keyboardmouse) {
                 zox_log("> device mode changed to [keyboardmouse]")
             } else if (dirty->value == zox_device_mode_touchscreen) {

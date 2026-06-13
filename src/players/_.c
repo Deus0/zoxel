@@ -13,19 +13,26 @@
 
 // Game now effects all players
 void game_state_players(ecs *world, entity game, byte last_state, byte state) {
+    byte dbg_log = 0;
     zox_geter(game, PlayerLinks, players);
     for (int i = 0; i < players->length; i++) {
         entity player = players->value[i];
         if (state == zox_game_state_play_begin) {
-            zox_log("Game Setting player to Loading");
+            if (dbg_log) {
+                zox_log("Game Setting player to Loading");
+            }
             zox_set(player, PlayerState, { zox_player_state_loading });
         } else if (state == zox_game_start) {
             zox_set(player, PlayerState, { zox_player_state_main_menu });
         } else if (state == zox_game_state_paused) {
-            zox_log("Game Setting player to Paused");
+            if (dbg_log) {
+                zox_log("Game Setting player to Paused");
+            }
             zox_set(player, PlayerState, { zox_player_state_pause_begin });
         } else if (last_state == zox_game_state_paused && state == zox_game_state_playing) {
-            zox_log("Game Setting player to Resume");
+            if (dbg_log) {
+                zox_log("Game Setting player to Resume");
+            }
             zox_set(player, PlayerState, { zox_player_state_resume_begin });
         } else {
             continue;

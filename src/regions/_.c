@@ -15,7 +15,6 @@
 
 byte region_dividor = 16;
 // Regions
-// TODO: RegionStreamerDirty Detection
 // TODO: Recalculate all the RegionLods when Dirty
 // NOTE: Kickstart System exists in terrain atm, move those to Tunk/Regions
 // Region Sub Spawns:
@@ -30,6 +29,6 @@ zox_begin_module(Regions) {
     zox_define_components_regions(world);
     zox_define_systems_regions(world);
     add_hook_spawn_prefabs(spawn_prefabs_regions);
-} zox_end_module(Players);
+} zox_end_module(Regions);
 
 #endif

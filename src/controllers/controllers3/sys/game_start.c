@@ -24,7 +24,7 @@ zox_sys2(GameStartStreamerSystem) {
             continue;
         }
         entity realm = zox_getv(game, RealmLink);
-        if (!zox_valid(realm) || !zox_has(realm, SaveGamePath) || !zox_has(realm, TerrainLink)) {
+        if (!zox_valid(realm) || !zox_has(realm, FolderPath) || !zox_has(realm, TerrainLink)) {
             zox_loge("Game [%s] has invalid Realm.", zox_get_name(game));
             continue;
         }
@@ -36,7 +36,7 @@ zox_sys2(GameStartStreamerSystem) {
             zox_loge("Player has no Camera");
             continue;
         }
-        zox_geter(realm, SaveGamePath, path);
+        zox_geter(realm, FolderPath, path);
         float3 position;
         float3 spawn_euler;
         float4 spawn_rotation;

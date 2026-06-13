@@ -8,21 +8,6 @@
 #ifndef zoxm_core
 #define zoxm_core
 
-#ifndef zox_game
-    #define zox_game zoxel
-#endif
-#define str_macro(x) #x
-#define inc_nexus_game(x) str_macro(../gam/x/_.c)
-#define zox_nexus_game inc_nexus_game(zox_game)
-#define zox_glitch_fix_hierarchy_labels
-#define zox_set_camera_firstperson
-#define zoxel_time_main_loop_cutoff 33.33f
-// release defines
-#ifndef zox_debug
-    // #define zox_disable_names
-    // #define zox_disable_logs
-#endif
-
 #include "logs/_.c"
 #include "collections/_.c"
 #include "maths/_.c"
@@ -59,13 +44,13 @@ void process_arguments_core(ecs *world, char* args[], int count) {
         if (!strcmp(args[i], "--fps")) {
             target_fps = (byte) (atoi(args[i + 1]));
             i++;
-            zox_logi("Target FPS [%i]", target_fps);
+            zox_logv("Target FPS [%i]", target_fps);
         } else if (!strcmp(args[i], "--singlethread")) {
             is_multithreading = 0;
-            zox_logi("Threading Disabled");
+            zox_logv("Threading Disabled");
         } else if (!strcmp(args[i], "-p") || !strcmp(args[i], "--profiler")) {
             profiler = 1;
-            zox_logi("Profiler Enabled");
+            zox_logv("Profiler Enabled");
         }
     }
 }

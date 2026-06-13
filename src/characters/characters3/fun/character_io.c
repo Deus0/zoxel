@@ -1,5 +1,5 @@
 void load_character_p(ecs *world, entity realm, entity e, float3 *position, float3 *euler, float4 *rotation) {
-    zox_geter(realm, SaveGamePath, path);
+    zox_geter(realm, FolderPath, path);
     SaveDataCharacter save;
     load2_player(path->value, "player.dat", &save);
     *position = save.position;
@@ -11,7 +11,7 @@ float3 load_character_transform(ecs *world, entity realm, entity e) {
     if (!zox_valid(realm) || !zox_valid(e)) {
         return float3_zero;
     }
-    zox_geter(realm, SaveGamePath, path);
+    zox_geter(realm, FolderPath, path);
     SaveDataCharacter save;
     load2_player(path->value, "player.dat", &save);
     float3 position = save.position;
@@ -27,9 +27,7 @@ float3 load_character_transform(ecs *world, entity realm, entity e) {
 
 float3 load_player_position(ecs *world, entity e) {
     zox_geter(e, SaveGamePath, path);
-
     SaveDataCharacter save;
     load2_player(path->value, "player.dat", &save);
-
     return save.position;
 }

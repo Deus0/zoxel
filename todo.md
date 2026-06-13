@@ -1,6 +1,22 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+# Important
+- Swing Arms
+- Add Minimap
+- Dialogue speed should be per character and not per animation line
+- disable next button until dialogue animation finished
+- SaveLoad Items - using new Saves Module for better workflow
+- Use SDLGamepad instead of Joystick for better Compatibility
+- Add Statistics Overlay
+	- SHow counts for many things
+- Remove Debug options and just put in Gizmos
+	- Transparent Meshes
+	- Render Bones
+	- Paint Bone Weights
+	- Disable NPCs
+- SaveTransformSystem using States
+
 - Make mountains more stone, less dirty
 - Make Towns less Grassy, more Rough Dirt + dirt
 	- Make Road from middle of town to gate

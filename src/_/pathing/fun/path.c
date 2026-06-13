@@ -166,7 +166,7 @@ byte initialize_pathing_native(const char* game_name) {
         if (resources_dir) {
             closedir(resources_dir);
             resources_path = check_path2;
-            zox_logi("[Live] Resources Path [%s]", resources_path);
+            zox_logv("[Live] Resources Path [%s]", resources_path);
             return EXIT_SUCCESS;
         } else {
             zox_log_error("Resources Path did not exist [%s]", check_path2);

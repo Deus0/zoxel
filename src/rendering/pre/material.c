@@ -23,13 +23,13 @@ entity spawn_material(ecs *world, entity shader, uint *material) {
     if (!*material) {
         zox_geter(shader, ShaderSourceIndex, index);
 
-        zox_logi("### [%s] ###", zox_get_name(shader));
+        zox_logv("### [%s] ###", zox_get_name(shader));
 
-        zox_logi("   .vert\n%s", shader_verts[index->value]);
+        zox_logv("   .vert\n%s", shader_verts[index->value]);
 
-        zox_logi("   .frag\n%s", shader_frags[index->value]);
+        zox_logv("   .frag\n%s", shader_frags[index->value]);
 
-         zox_logi("### ### ### ### ###");
+         zox_logv("### ### ### ### ###");
     }
 
     return e;

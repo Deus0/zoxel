@@ -7,13 +7,13 @@ void load_files_textures(ecs *world) {
     files_count_textures = files.count;
     files_textures = malloc(sizeof(entity) * files.count);
     files_hashmap_textures = create_string_hashmap(files.count);
-    zox_log_io(" + io loaded [textures] [%i]", files.count);
+    zox_logv(" + io loaded [textures] [%i]", files.count);
 
     for (int i = 0; i < files.count; i++) {
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
 
-        zox_log_io("   - [%i] [texture] [%s]", i, filepath);
+        zox_logv("   - [%i] [texture] [%s]", i, filepath);
 
         entity e = spawn_texture_filepath(world, prefab_texture, filepath);
 
@@ -31,7 +31,7 @@ void dispose_textures_files(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
 
-    zox_log_io(" > disposing [%i] [textures]", files_hashmap_textures->size);
+    zox_logv(" > disposing [%i] [textures]", files_hashmap_textures->size);
 
     string_hashmap_dispose(files_hashmap_textures);
     free(files_textures);

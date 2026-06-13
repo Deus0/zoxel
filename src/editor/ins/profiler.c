@@ -12,7 +12,7 @@ entity spawn_profiler(ecs* world, const char *header_label, entity canvas, int2 
     byte layer = game_overlay_layer + 3; // 3;
     byte plots_count = 1;
     byte plot_layer = layer + 1;
-    int font_size = 28;
+    // int font_size = 28;
     entity3 e2 = spawn_window(world, prefab_window, prefab_body, "Profiler", canvas, position, size, anchor, NULL);
     entity e = e2.x;
     entity body = e2.z;

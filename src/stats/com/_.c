@@ -1,5 +1,5 @@
-//zoxc_userdata(Stat);
 zox_tag(Stat);
+zox_tag(RealmStat);
 zoxc_entity(StatLink);
 zoxc_entitiesw(StatLinks);   // Used for realm atm
 // Types
@@ -20,6 +20,7 @@ zox_tag(StatSoul);
 
 void define_components_stats(ecs *world) {
     zoxd_tag(Stat);
+    zoxd_tag(RealmStat);
     zoxd_entity(StatLink);
     zoxd_entitiesw(StatLinks);
     // Types

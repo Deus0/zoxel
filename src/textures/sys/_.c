@@ -16,11 +16,11 @@ void define_systems_textures(ecs *world) {
         [in] textures.TextureLink,
         [in] inputs.DeviceDisabled
     );
-    zox_filter(
+    /*zox_filter(
         generate_textures2,
         [none] textures.FrameTexture,
         [out] textures.GenerateTexture
-    );
+    );*/
     zox_system(
         AnimateNoiseSystem,
         zox_pip_texture_generation,

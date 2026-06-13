@@ -70,7 +70,7 @@ void save_settings() {
     const char* filepath = get_settings_file(app_name);
     FILE* f = fopen(filepath, "w");
     if (!f) {
-        zox_log_error("failed to open settings file [%s]: %s", filepath, strerror(errno))
+        zox_log_error("failed to open settings file [%s]: %s", filepath, strerror(errno));
         return;
     }
     zox_logv("Saving Settings to [%s]", filepath);
@@ -80,20 +80,19 @@ void save_settings() {
             case zox_data_type_byte:
                 fprintf(f, "%s:byte:%u\n", s.name, s.value_byte);
                 if (is_log_save_settings) {
-                    zox_logv("+ saved byte [%s] [%i]", s.name, s.value_byte)
+                    zox_logv("+ saved byte [%s] [%i]", s.name, s.value_byte);
                 }
                 break;
             case zox_data_type_int:
                 fprintf(f, "%s:int:%d\n",  s.name, s.value_int);
-                if (is_log_save_settings)
-                {
-                    zox_logv("+ saved float [%s] [%i]", s.name, s.value_int)
+                if (is_log_save_settings) {
+                    zox_logv("+ saved float [%s] [%i]", s.name, s.value_int);
                 }
                 break;
             case zox_data_type_float:
                 fprintf(f, "%s:float:%f\n",s.name, s.value_float);
                 if (is_log_save_settings) {
-                    zox_logv("+ saved float [%s] [%f]", s.name, s.value_float)
+                    zox_logv("+ saved float [%s] [%f]", s.name, s.value_float);
                 }
                 break;
             case zox_data_type_string:
@@ -104,6 +103,6 @@ void save_settings() {
     }
     fclose(f);
     if (is_log_settings_io) {
-        zox_log("> saved %u settings to %s", settings_count, filepath)
+        zox_log("> saved %u settings to %s", settings_count, filepath);
     }
 }

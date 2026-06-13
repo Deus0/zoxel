@@ -1,40 +1,32 @@
 // File implementation for Sounds
-
 void load_files_sounds(ecs *world) {
     if (nosounds) {
         zox_logv("Sounds are disabled: No Loading Sounds.");
         return;
     }
-
     char* load_directory = concat_file_path(resources_path, directory_sounds);
     zox_logv("  - Loading Files Sounds [%s]", load_directory);
     FileList files = get_files(load_directory, 0);
     sound_files_count = files.count;
     files_sounds = malloc(sizeof(entity) * files.count);
     files_hashmap_sounds = create_string_hashmap(files.count);
-    zox_log_io(" + io loaded [sounds] [%i]", files.count)
-    zox_log_sounds(" + io loaded [sounds] [%i]", files.count)
+    zox_logv(" + io loaded [sounds] [%i]", files.count);
     for (int i = 0; i < files.count; i++) {
 #ifdef zox_sdl_mixer
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
-        zox_log_io("   - [%i] [sound] [%s]", i, filepath);
+        zox_logv("   - [%i] [sound] [%s]", i, filepath);
         Mix_Chunk *mix_chunk = Mix_LoadWAV(filepath);
         if (!mix_chunk) {
-            zox_log_error("sound file failed to load [%s] due to [%s]", filepath, Mix_GetError())
+            zox_log_error("sound file failed to load [%s] due to [%s]", filepath, Mix_GetError());
             files_sounds[i] = 0;
             continue;
         }
-        const float sound_length = get_mix_chunk_sound_length(mix_chunk);
+        float sound_length = get_mix_chunk_sound_length(mix_chunk);
         float* value = zox_mix_chunk_samples(mix_chunk);
         int length = zox_mix_chunk_length(mix_chunk);
-        const entity e = spawn_sound_filepath(
-            world,
-            prefab_sound_filepath,
-            value,
-            length,
-            sound_length);
-        zox_log_sounds("   - [%i] [sound] [%s] - length [%f]", i, filepath, sound_length)
+        entity e = spawn_sound_filepath(world, prefab_sound_filepath, value, length, sound_length);
+        zox_logv("   - [%i] [sound] [%s] - length [%f]", i, filepath, sound_length);
         files_sounds[i] = e;
         string_hashmap_add(files_hashmap_sounds, new_string_data_clone(filename), e);
 #else
@@ -48,8 +40,7 @@ void dispose_files_sounds() {
     if (!files_hashmap_sounds) {
         zox_log_error("cannot dispose null files_hashmap_sounds")
     } else {
-        zox_log_io(" > disposing [%i] [sounds]", files_hashmap_sounds->size)
-        zox_log_sounds(" > disposing [%i] [sounds]", files_hashmap_sounds->size)
+        zox_logv(" > disposing [%i] [sounds]", files_hashmap_sounds->size);
         string_hashmap_dispose(files_hashmap_sounds);
         files_hashmap_sounds = NULL;
         free(files_sounds);

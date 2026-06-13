@@ -6,13 +6,11 @@ byte save_voxel_node(FILE* out, const VoxelNode* node) {
         zox_log_error("[save_voxel_node:1] Failed to write node value.");
         return 1;
     }
-
     byte has_children = has_children_VoxelNode(node);
     if (fwrite(&has_children, sizeof(byte), 1, out) != 1) {
         zox_log_error("[save_voxel_node:2] Failed to write has_children.");
         return 1;
     }
-
     byte result = 0;
     if (has_children) {
         if (!node->ptr) {
@@ -50,18 +48,10 @@ zox_sys2(Chunk3SaveSystem) {
         // later add id/int3 there
         char filename[128];
         get_chunk_filename(filename, position->value);
-        // sprintf(filename, "chunk_%i_%i_%i.dat", position->value.x, position->value.y, position->value.z);
-        //char path[io_path_size];
-        //get_save_filepath(game_name, filename, path, sizeof(path));
-        // zox_log("Saving chunk to file: %s", path);
-        /*if (!zox_valid(terrain->value)) {
-            continue;
-        }*/
-        // zox_geter_value(terrain->value, RealmLink, entitiy, savegame);
         if (!zox_valid(realm->value)) {
             continue;
         }
-        zox_geter(realm->value, SaveGamePath, game_path);
+        zox_geter(realm->value, FolderPath, game_path);
         char* path = join_path(game_path->value, filename);
         FILE* file = fopen(path, "wb");
         if (file == NULL) {

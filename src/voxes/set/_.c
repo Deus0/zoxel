@@ -20,10 +20,10 @@ void process_arguments_voxes(ecs *world, char* args[], int count) {
         if (strcmp(args[i], "--disableoutlines") == 0) {
             is_generate_vox_outlines = 0;
         } else if (strcmp(args[i], "--enableoutlines") == 0) {
-            zox_log("+ enabling block outlines")
+            zox_log("Enabling Block Outlines");
             is_generate_vox_outlines = 1;
         } else if (strcmp(args[i], "--noblockvoxes") == 0 || strcmp(args[i], "--nominivoxes") == 0) {
-            zox_log("+ disabling block voxes")
+            zox_log("Disabling Block Voxes");
             disable_block_voxes = 1;
         }
     }

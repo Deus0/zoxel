@@ -14,11 +14,10 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
     byte2 padding = (byte2) { 12, 8 };
     byte alignment = zox_alignment_top_right;
     float2 anchor = float2_one; //  { 1.0f, 1.0f };
-    int2 pixel_position = (int2) { -8, -8 };
-    int2 parent_pixel_size = zox_getv(parent, LayoutSize);
+    int2 position = (int2) { -8, -8 };
     // returns the child zext
     entity prefab = prefab_label_textured; // prefab_game_debug_label
-    entity e = spawn_label(world, prefab, parent, pixel_position, anchor, padding, "", font_size, alignment, layer, fill, button_outline, font_fill, button_font_outline);
+    entity e = spawn_label(world, prefab, parent, position, anchor, padding, "", font_size, alignment, layer, fill, button_outline, font_fill, button_font_outline);
     zox_add_tag(e, EditorElement);
     zox_add_tag(e, GameDebugLabel);
     zox_set(e, DebugLabelData, { local_debug_label });

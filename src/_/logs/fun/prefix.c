@@ -1,34 +1,29 @@
-static inline void zox_log_prefix(
-    const char* prefix,
-    const char* fmt,
-    ...
-) {
-    va_list args;
-    va_start(args, fmt);
-    // prepend prefix to fmt
-    char buf[1024];
-    snprintf(buf, sizeof(buf), "%s %s\n", prefix, fmt);
-    vprintf(buf, args);  // or your zox_log_ implementation
-    va_end(args);
-}
-
-static inline void zox_log_time_prefix(
-    const char* prefix,
-    const char* fmt,
-    ...
-) {
+static inline void zox_log_prefix(const char* color, const char* prefix, const char* format, ...) {
     // build timestamp
-    time_t now = time(NULL);
-    struct tm t;
-    localtime_r(&now, &t);
-    char ts[32];
-    strftime(ts, sizeof(ts), "[%H:%M:%S]", &t);
+    char timestamp[32];
+    if (is_time_log_prefixes) {
+        time_t now = time(NULL);
+        struct tm t;
+        localtime_r(&now, &t);
+        strftime(timestamp, sizeof(timestamp), "[%H:%M:%S]", &t);
+    }
     // prepend timestamp + prefix
-    char buf[1024];
-    snprintf(buf, sizeof(buf), "%s %s %s\n", ts, prefix, fmt);
-    // forward args
+    int index = 0;
+    char buffer[zox_log_lengths];
+    if (zox_logs_is_colors && color) {
+        index+= snprintf(buffer + index, sizeof(buffer) - index, "%s", color);
+    }
+    if (is_time_log_prefixes) {
+        index += snprintf(buffer + index, sizeof(buffer) - index, "%s ", timestamp);
+    }
+    index += snprintf(buffer + index, sizeof(buffer) - index, "%s", prefix);
     va_list args;
-    va_start(args, fmt);
-    vprintf(buf, args); // swap with zox_log_ if needed
+    va_start(args, format);
+    index += vsnprintf(buffer + index, sizeof(buffer) - index, format, args);
     va_end(args);
+    if (zox_logs_is_colors && color) {
+        index += snprintf(buffer + index, sizeof(buffer) - index, "%s", zox_log_colors_reset);
+    }
+    snprintf(buffer + index, sizeof(buffer) - index, "\n");
+    fputs(buffer, stdout);
 }

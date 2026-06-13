@@ -37,7 +37,7 @@ zox_sys2(EditorInputSystem) {
         }
         else if (keyboard->c.pressed_this_frame) {
             entity label = zox_get_child_by_id(world, canvas->value, zox_id(GameDebugLabel));
-            canvas_toggle_ui(world, canvas->value,  label, spawn_game_debug_label);
+            canvas_toggle_ui(world, canvas->value, label, spawn_game_debug_label);
         }
                 /*else if (keyboard->v.pressed_this_frame) {
                     entity profiler = zox_get_child_by_id(world, canvas->value, zox_id(Profiler));

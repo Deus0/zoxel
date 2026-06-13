@@ -42,7 +42,8 @@ void zox_tst_spawn_character3_npc(ecs *world, ClickEventData data) {
     // csprintf(name, "TS-G%lu", seed);
     // char* name = generate_name();
     char* name = generate_name(seed);
-    zox_log("+ Test [zox_tst_character3_npc] Meta [%s:%i]:[%lu]", zox_get_name(meta), mindex, seed);
+    zox_log("Running Test: Spawn [character3_npc]");
+    zox_log("   - Meta [%s:%i]:[%lu]", zox_get_name(meta), mindex, seed);
     entity e = spawn_character3(world, prefab, realm, terrain, seed, model, render_depth, 0, sposition, srotation, name);
     free(name);
     zox_tst_character3_npc = e;

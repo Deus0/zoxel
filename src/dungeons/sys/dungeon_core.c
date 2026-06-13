@@ -56,7 +56,7 @@ zox_sys2(DungeonBlockSystem) {
         int3 positionv = positionl_to_block_position(positionl, chunk_position, chunk_size, terrain_sizec);
         entity place_chunk;
         byte3 place_positionl;
-        int3 place_positionc;
+        // int3 place_positionc;
         // placing
         byte find = 0;
         int3 check_positionv;
@@ -110,7 +110,7 @@ zox_sys2(DungeonBlockSystem) {
                     }
                     // place_positionv = check_positionv;
                     place_positionl = check_positionl;
-                    place_positionc = check_positionc;
+                    // place_positionc = check_positionc;
                     place_chunk = check_chunk;
                     find = 1;
                 }
@@ -120,8 +120,7 @@ zox_sys2(DungeonBlockSystem) {
             continue;
         }
         if (!place_chunk || !zox_has(place_chunk, VoxelNodeQueue)) {
-            zox_log_error("Cannot place: Invalid VoxelNodeQueue [%ix%ix%i]",
-                place_positionc.x, place_positionc.y, place_positionc.z);
+            zox_log_error("Cannot place: Invalid VoxelNodeQueue [%ix%ix%i]", place_positionl.x, place_positionl.y, place_positionl.z);
             continue;
         }
         // add to queue

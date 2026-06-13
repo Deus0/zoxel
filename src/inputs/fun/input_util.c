@@ -53,7 +53,7 @@ void disable_inputs_until_release(ecs *world, entity player, byte new_device_mod
                 zeviceDisabled->value = 1;
                 zox_mut_end(e3, ZeviceDisabled);
                 zox_modified(e3, ZeviceDisabled);
-                zox_log_input("  = button disabled [%lu] at %f", zevice_entity, zox_current_time);
+                zox_logv("  = button disabled [%lu] at %f", e3, zox_current_time);
             }
         }
     }

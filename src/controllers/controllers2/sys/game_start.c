@@ -43,7 +43,7 @@ zox_sys2(PlayerGame2StartSystem) {
             continue;
         }
         // zox_geter_value(game->value, RealmLink, entity, realm);
-        // zox_geter(realm, SaveGamePath, path);
+        // zox_geter(realm, FolderPath, path);
         // disable_inputs_until_release(world, e, zox_device_mode_none, 1);
         double delay = game_load_player_delay + game_load_fade_transition_time;   // 1.4f
         delay_event(world, &player_start_game2D_delayed, e, delay);

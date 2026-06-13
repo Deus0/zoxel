@@ -60,7 +60,6 @@ void define_systems_zoxel(ecs *world) {
         EquipsRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        // [out] rendering.ModelLinks,
         [out] items.ItemLinks,
         [none] realms.Realm
     );
@@ -76,7 +75,6 @@ void define_systems_zoxel(ecs *world) {
         DialogueRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        // [in] blocks.BlockLinks,
         [out] dialogues.DialoguetreeLinks,
         [none] realms.Realm
     );

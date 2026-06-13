@@ -20,27 +20,22 @@ void delay_spawn_menu_realm(ecs* world, entity player) {
 }
 
 void button_event_load_confirm(ecs *world, ClickEventData event) {
-
     entity player = event.clicker;
     entity clicked = event.clicked;
-
     zox_geter(player, ElementLinks, elements);
     zox_geter_value(player, GameLink, entity, game);
-    zox_geter(clicked, SaveGamePath, path);
-
+    zox_geter(clicked, FolderPath, path);
     find_array_element_with_tag(elements, MenuLoad, menu);
     if (!menu) {
         zox_log_error("main menu not found");
         return;
     }
-
     zox_delete(menu);
     zox_logv("Save Realm Path [%s]", path->value);
-
     // TODO: Spawn a realm here and window for it
     entity realm = spawn_realm(world, prefab_realm);
     zox_set(game, RealmLink, { realm });
-    zox_set_ptr(realm, SaveGamePath, path->value);
+    zox_set_ptr(realm, FolderPath, path->value);
     load2_realm(path->value, "seed.dat", &realm_save);
     set_noise_seed(realm_save.seed);
     zox_set(realm, Seed, { realm_save.seed });
@@ -48,11 +43,9 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
 }
 
 entity spawn_menu_load(ecs *world, entity player) {
-
     // Sizing
     int header_font_size = 16* ui_scale;
     byte list_font_size = 8 * ui_scale;
-
     // more data
     const char* header_label = "Load";
     int elements_count = 0;
@@ -60,31 +53,22 @@ entity spawn_menu_load(ecs *world, entity player) {
     SpawnListElement elements[max_settings + 1];
     char **save_dirs;
     byte saves_count;
-
-
     // TODO: Load folder names here
     if (!get_save_games(game_name, &save_dirs, &saves_count)) {
         for (byte i = 0; i < saves_count; i++) {
-
             char* folder = get_folder_name(save_dirs[i]);
-
             elements[elements_count++] = (SpawnListElement) {
                 .text = folder,
                 .save_path = save_dirs[i],
                 .on_click = { &button_event_load_confirm },
             };
-
             zox_logv("Save Dir: %s - folder %s", save_dirs[i], folder);
         }
         free(save_dirs);
     }
-
-
     entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_load_cancel }, 1, 0, 0, zox_alignment_centre, byte2_single(4), NULL, elements, elements_count, visible_count).x;
     zox_name("menu_load");
-
     zox_add_tag(e, MenuLoad);
     zox_add_tag(e, NavigationWindow);
-
     return e;
 }

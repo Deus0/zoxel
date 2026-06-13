@@ -105,12 +105,9 @@ zox_sys2(BiomeBlocksSystem) {
         generate_colors(seed->value, (colors));
         zox_logv("Generating blocks for biome [%s]", zox_get_name(e));
         byte j = 1;   // skip sky
-        // const color sky_color = colors->value[j++];
         color dirt_color = colors->value[j++];
         color grass_color = colors->value[j++];
         color sand_color = colors->value[j++];
-        //j++; // color stone_color = colors->value[j++];
-        //j++; // color obsidian_color = colors->value[j++];
         {
             entity e2 = spawn_block_soil(world, e, "dirt", dirt_color, 222122);
             zox_set(e2, BiomeLink, { e });

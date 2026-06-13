@@ -1,6 +1,6 @@
 // NOTE: For new placement of characters, we wait for region/towns to spawn, then we find a position in one of the towns
 zox_sys2(PlayerTownFinderSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CameraLink);
@@ -33,12 +33,6 @@ zox_sys2(PlayerTownFinderSystem) {
             zox_loge("Invalid Terrain on Player");
             continue;
         }
-        /*byte loaded = zox_getv(terrain, Loaded);
-        if (loaded != zox_load_done) {
-            if (dbg_log) {
-                zox_log("Terrain Loading Chunks... (PlayerTownFinderSystem)");
-            }
-        }*/
         entity regions[zox_children_capacity];
         uint regions_length = zox_get_children_by_id(world, terrain, regions, zox_children_capacity, zox_id(Region));
         if (!regions_length) {

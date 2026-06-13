@@ -4,11 +4,11 @@ extern entity spawn_inspector(ecs*, entity, entity, entity);
 
 entity zox_dbg_spawn_chunk3(ecs* world, byte dbg_inspector) {
     if (zox_valid(dbg_chunk3)) {
-        zox_log("+ Deleting [Test Chunk3]");
+        zox_log("Deleting Test: Spawn [Chunk3]");
         zox_delete(dbg_chunk3);
         return 0;
     }
-    zox_log("+ Test [Spawn Chunk3]");
+    zox_log("Running Test: Spawn [Chunk3]");
     entity player = dbg_player;
     entity canvas = zox_getv(player, CanvasLink);
     entity camera = zox_getv(player, CameraLink);

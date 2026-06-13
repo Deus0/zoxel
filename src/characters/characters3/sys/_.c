@@ -8,27 +8,28 @@ realm_clear_system(CharacterLinks);
 void define_systems_characters3(ecs *world) {
     realm_clear_systemd(characters, CharacterLinks);
     zox_system(
-        CharacterSaveSystem,
-        EcsOnStore,
-        [in] realms.RealmLink,
-        [in] transforms3.Position3D,
-        [in] transforms3.Euler,
-        [out] characters3.CharacterSaveHash,
-        [none] characters3.SaveCharacter
-    );
-    zox_system(
         CharacterRenderDepthSystem,
         EcsOnUpdate,
         [in] rendering.RenderDepthDirty,
         [out] chunks3.ChunkMeshDirty,
         [none] Character3
     );
-    /*zox_system(
-        Character3TypeDebugSystem,
-        EcsOnUpdate,
-        [in] lines3.DebugCubeLines,
-        [in] characters3.Character3Type,
-        [out] colorz.Color,
-        [none] Character3
-    );*/
+    zox_system(
+        CharacterSaveSystem,
+        EcsOnStore,
+        [in] realms.RealmLink,
+        [in] transforms3.Position3D,
+        [in] transforms3.Euler,
+        [out] saves.SaveHash,
+        [none] saves.Saver
+    );
 }
+
+/*zox_system(
+    Character3TypeDebugSystem,
+    EcsOnUpdate,
+    [in] lines3.DebugCubeLines,
+    [in] characters3.Character3Type,
+    [out] colorz.Color,
+    [none] Character3
+);*/

@@ -29,37 +29,24 @@ void add_system_log_components(ecs* world) {
 }
 
 uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, uint index) {
-
+    int display_count = 16;
     ecs_query_t *q = ecs_query(world, {
         .terms = {
             { .id = ecs_id(SystemDeltaCache) }
         }
     });
-
     int count = 0;
-
     /* First pass: count */
     ecs_iter_t it = ecs_query_iter(world, q);
     while (ecs_query_next(&it)) {
         count += it.count;
     }
-
-    index += snprintf(
-        buffer + index,
-        size - index,
-        "Systems (%i) [%fms]\n",
-        count,
-        zox_delta_time * 1000
-    );
-
+    index += snprintf(buffer + index, size - index, "Systems [%i] [%fms]\n", count, zox_delta_time * 1000);
     if (count == 0) {
         // ecs_query_fini(q);
         return index;
     }
-
-    system_delta_entry *entries =
-        malloc(sizeof(system_delta_entry) * count);
-
+    system_delta_entry *entries = malloc(sizeof(system_delta_entry) * count);
     /* Second pass: collect */
     int idx = 0;
     it = ecs_query_iter(world, q);
@@ -71,13 +58,10 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
             idx++;
         }
     }
-
     qsort(entries, count, sizeof(system_delta_entry), cmp_system_delta_desc);
-
-    int top = count < 10 ? count : 10;
+    int top = int_min(count, display_count); // count < display_count ? count : display_count;
     for (int i = 0; i < top; i++) {
         entity e =  entries[i].e;
-
         index += snprintf(
             buffer + index,
             size - index,
@@ -86,7 +70,6 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
             zox_get_name(e),
             entries[i].value
         );
-
         // Add process data
         if (zox_has(e, SystemProcessedCache)) {
             zox_geter_value(e, SystemProcessedCache, int, process_count);
@@ -97,14 +80,11 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
                 process_count
             );
         }
-
         index += snprintf(buffer + index, size - index,            "\n"
         );
     }
-
     free(entries);
     // ecs_query_fini(q);
-
     return index;
 }
 
@@ -122,23 +102,17 @@ zox_sys2(SystemDeltaLogSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SystemDeltaCache, delta);
-
         total += delta->value;
-
         double cutoff = zox_lag_cutoff;
-
         if (zox_has(e, SystemDeltaMax)) {
             cutoff = zox_gett_value(e, SystemDeltaMax);
         }
-
         if (delta->value < cutoff) {
             continue;
         }
-
         if (zox_log_lags) {
             zox_logw("Lag Detected -> %s: [%fms]", zox_get_name(e), delta->value);
         }
-
         did_lag = 1;
     }
     if (did_lag && is_log_totals) {

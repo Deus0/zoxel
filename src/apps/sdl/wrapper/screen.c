@@ -16,23 +16,19 @@ int2 get_sdl_screen_size() {
 }
 
 void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
-    const byte flag = fullscreen ? sdl_fullscreen_byte : 0;
+    byte flag = fullscreen ? sdl_fullscreen_byte : 0;
     // zox_log("# fullscreen flag [%i]", flag)
     if (fullscreen) {
-
         int display_count = SDL_GetNumVideoDisplays();
         if (monitor >= display_count) {
             zox_log_error("Invalid monitor index %i, using primary (0)", monitor);
             monitor = 0;
         }
-
-
         int monitor_current = SDL_GetWindowDisplayIndex(window);
         if (monitor_current >= 0 && monitor != monitor_current) {
             zox_log("Window moved monitors [%i] => [%i]", monitor, monitor_current);
             monitor = monitor_current;
         }
-
         SDL_DisplayMode display_mode;
         if (SDL_GetCurrentDisplayMode(monitor, &display_mode)) {
             zox_log_error("Failed getting display mode in [zox_app_set_fullscreen]");
@@ -40,7 +36,6 @@ void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
             SDL_SetWindowDisplayMode(window, &display_mode);
         }
     }
-
     SDL_SetWindowFullscreen(window, flag);
 }
 
@@ -54,23 +49,20 @@ void zox_app_set_maximized(SDL_Window* window, byte maximized) {
 
 void on_sdl_window_restored(ecs *world, entity e) {
     if (!zox_has(e, WindowSize)) {
-        zox_log_error("invalid app [%lu]", e)
+        zox_loge("invalid app [%lu]", e);
         return;
     }
     zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
     zox_geter_value_non_const(e, WindowSizeRestore, int2, size);
     zox_geter_value_non_const(e, WindowPositionRestore, int2, position);
-
     if (size.x == 0 && size.y == 0) {
         int2 screen_size = get_screen_size();
         size.x = screen_size.x / 2;
         size.y = screen_size.y / 2;
     }
-
     SDL_SetWindowSize(sdl_window, size.x, size.y);
     SDL_SetWindowPosition(sdl_window, position.x, position.y);
-
     zox_set(e, WindowSize, { size })
     zox_set(e, WindowSizeDirty, { zox_dirty_trigger })
-    zox_log_ui(" > setting to window: position [%ix%i] size [%ix%i]", position.x, position.y, size.x, size.y)
+    zox_logv(" > setting to window: position [%ix%i] size [%ix%i]", position.x, position.y, size.x, size.y);
 }

@@ -82,24 +82,24 @@ void get_save_directory(
 
 byte create_new_directory(const char* path) {
     if (!has_path_directory(path)) {
-        zox_log_io(" + creating new save directory [%s]", path)
+        zox_logv(" + creating new save directory [%s]", path);
 #ifdef zox_windows
         if (mkdir(path) == 0) {
             return 1;
         } else {
-            zox_log_error("Error creating directory");
+            zox_loge("Error creating directory");
             return 0;
         }
 #else
         if (mkdir(path, 0700) == 0) {
             return 1;
         } else {
-            zox_log_error("Error creating directory");
+            zox_loge("Error creating directory");
             return 0;
         }
 #endif
     } else {
-        zox_log("Directory existed [%s]", path);
+        zox_logv("Directory existed [%s]", path);
         return 1;
     }
 }

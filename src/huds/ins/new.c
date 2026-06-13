@@ -7,29 +7,30 @@ void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     }
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
-    zox_geter_value(realm, Seed, long int, seed);
+    zox_geter_value(realm, Seed, lint, seed);
     char home_path[max_path_characters];
     get_home_directory(home_path, sizeof(home_path));
     char* game_path = join_paths(home_path, game_name);
-    zox_log("game_path [%s]", game_path);
     create_new_directory(game_path);
     char text[64];
     sprintf(text, "%lu", (seed));
     char* save_dir = join_paths(game_path, text);
-    free(game_path);
-    zox_log("new realm save_dir [%s]", save_dir);
     create_new_directory(save_dir);
-    SaveGamePath save_game_path = { };
+    FolderPath save_game_path = { };
     size_t len = strlen(save_dir);
     if (len >= 512) len = 512 - 1;
     memcpy(save_game_path.value, save_dir, len);
     save_game_path.value[len] = '\0';
-    zox_set_ptr(realm, SaveGamePath, save_game_path); // ->value
-    zox_log("confirm new realm [%s] [%lu]", game_name, seed);
+    zox_set_ptr(realm, FolderPath, save_game_path); // ->value
+    zox_set(game, GameStateTarget, { zox_game_load_start });
+    // zox_logv("game_path [%s]", game_path);
+    // zox_log("confirm new realm [%s] [%lu]", game_name, seed);
     realm_save.seed = seed;
     save2_realm(save_dir, "seed.dat", &realm_save);
+    // Verbose Log
+    zox_logv("Created new Saves Directory [%s]", save_dir);
+    free(game_path);
     free(save_dir);
-    zox_set(game, GameStateTarget, { zox_game_load_start });
 }
 
 void on_cancelled_new_realm(ecs *world, ClickEventData event) {

@@ -1,23 +1,18 @@
 static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const char* path) {
-
     char* source = zox_read_shader(path);
     if (!source) {
         return 0;
     }
-
     int ubo_size = zox_get_safe_ubo_size();
-
     // zox_log("+ shader processing with ver [%i] es [%s] ubo_size [%i]", shader_opengl_version, (shader_include_es ? "es" : ""), ubo_size);
     // zox_log(" - source [%s]\n%s", path, source)
     // zox_log("-------------------------------")
-
     char* source_precision = append_shader_precision(source, shader_precision_level);
     free(source);
     if (!source_precision) {
         zox_log_error("[sourcep] is invalid");
         return 0;
     }
-
     // Example: #version 320 es
     char* source2 = append_shader_version(source_precision, shader_opengl_version, is_shaders_es);
     free(source_precision);
@@ -25,7 +20,6 @@ static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const 
         zox_log_error("[source2] is invalid");
         return 0;
     }
-
     char* source3 = source2;
     if (shader_opengl_version == 100) {
         source3 = convert_to_gles2_shader(source2);
@@ -35,7 +29,6 @@ static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const 
             return 0;
         }
     }
-
     char* source4 = process_ubo_max_define(source3, ubo_size);
     free(source3);
     if (!source4) {
@@ -43,7 +36,7 @@ static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const 
         return 0;
     }
     if (is_log_shaders) {
-        zox_log("final source [%s]\n%s", path, source4)
+        zox_log("final source [%s]\n%s", path, source4);
         zox_log("-------------------------------");
     }
     return spawn_file_shader(world, prefab, source4);
@@ -55,12 +48,12 @@ void load_files_shaders(ecs *world) {
     FileList files = get_files(load_directory, 1);
     files_shaders = malloc(sizeof(entity) * files.count);
     files_hashmap_shaders = create_string_hashmap(files.count);
-    zox_log_io(" + io loaded [shaders] [%i]", files.count)
+    zox_logv(" + io loaded [shaders] [%i]", files.count);
     for (int i = 0; i < files.count; i++) {
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
-        zox_log_io("   - [%i] [shader] [%s]", i, filepath)
-        const entity e = spawn_file_shader_at_path(world, prefab_file_shader, filepath);
+        zox_logv("   - [%i] [shader] [%s]", i, filepath);
+        entity e = spawn_file_shader_at_path(world, prefab_file_shader, filepath);
         if (e) {
             string_hashmap_add(files_hashmap_shaders, new_string_data_clone(filename), e);
         }
@@ -71,7 +64,7 @@ void load_files_shaders(ecs *world) {
 }
 
 void dispose_files_shaders() {
-    zox_log_io(" > disposing [%i] [shaders]", files_hashmap_shaders->size)
+    zox_logv(" > disposing [%i] [shaders]", files_hashmap_shaders->size);
     string_hashmap_dispose(files_hashmap_shaders);
     files_hashmap_shaders = NULL;
     free(files_shaders);
