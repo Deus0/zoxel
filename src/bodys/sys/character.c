@@ -107,8 +107,12 @@ zox_sys2(CharacterBodySpawnSystem) {
             zox_set(eslot_rthigh, PartOffset, {{ -thigh_offset, 1, 0 }});
             if (realm_thigh) {
                 // Attach Parts [Thighs]
-                zox_set(eslot_lthigh, DataLink, { spawn_user_item_body(world, e, realm_thigh, zox_slot_lthigh) });
-                zox_set(eslot_rthigh, DataLink, { spawn_user_item_body(world, e, realm_thigh, zox_slot_rthigh) });
+                entity lthigh = spawn_user_item_body(world, e, realm_thigh, zox_slot_lthigh);
+                entity rthigh = spawn_user_item_body(world, e, realm_thigh, zox_slot_rthigh);
+                zox_set(eslot_lthigh, DataLink, { lthigh });
+                zox_set(eslot_rthigh, DataLink, { rthigh });
+                zox_add_tag(lthigh, Thigh);
+                zox_add_tag(rthigh, Thigh);
                 // Sub Slots [Calfs]
                 entity eslot_lcalf = spawn_body_slot(world, eslot_lthigh, body_anchor_bottom);
                 entity eslot_rcalf = spawn_body_slot(world, eslot_rthigh, body_anchor_bottom);
@@ -142,6 +146,7 @@ zox_sys2(CharacterBodySpawnSystem) {
             zox_set(eslot_rshoulder, DataLink, { rshoulder });
             // NOTE: Tag this here for now as it's based on side of body
             zox_add_tag(lshoulder, Shoulder);
+            zox_add_tag(rshoulder, Shoulder);
             // Sub Slots [Biceps]
             entity eslot_lbicep = spawn_body_slot(world, eslot_lshoulder, body_anchor_bottom);
             entity eslot_rbicep = spawn_body_slot(world, eslot_rshoulder, body_anchor_bottom);
@@ -168,10 +173,11 @@ zox_sys2(CharacterBodySpawnSystem) {
                     if (realm_hand) {
                         // Attach Parts
                         entity lhand = spawn_user_item_body(world, e, realm_hand, zox_slot_lhand);
-                        zox_set(eslot_lhand, DataLink, { lhand });
                         entity rhand = spawn_user_item_body(world, e, realm_hand, zox_slot_rhand);
+                        zox_set(eslot_lhand, DataLink, { lhand });
                         zox_set(eslot_rhand, DataLink, { rhand });
                         zox_add_tag(lhand, Hand);
+                        zox_add_tag(rhand, Hand);
                     }
                 }
             }

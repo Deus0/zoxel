@@ -1,4 +1,9 @@
 ### Done ###
+-x Swing Arms for walking
+-x Raise arm more when attacking
+-x Base arm swing speed on walk state
+-x RaiseTime - for arm rotation to swing up more
+-x Start Animation when activating punch
 -x Fix Vegetation map for lower Lods
 -x Seed Debug UI - to see all seeds available: Realm, Region, Player Character, Towns, etc
 -x Set Debugger UI from a list (TestUI List)

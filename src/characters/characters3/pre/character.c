@@ -1,13 +1,8 @@
 entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
-    if (!prefab) {
-        return 0;
-    }
     zox_prefab_child(prefab);
     zox_prefab_name("character3");
     zox_add_tag(e, Character);
     zox_add_tag(e, Character3);
-    // zox_prefab_set(e, Character3Type, { type });
-    //  zox_prefab_set(e, CharacterMetaLink, { 0 });
     zox_prefab_set(e, InitializeEntity, { zox_dirty_trigger });
     zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
     // generation

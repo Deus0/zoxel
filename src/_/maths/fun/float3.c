@@ -115,11 +115,11 @@ static inline float3 float3_divide_float(float3 input, float div) {
     return (float3) { input.x / div, input.y / div, input.z / div };
 }
 
-static inline float3 float3_abs(const float3 input) {
+static inline float3 float3_abs(float3 input) {
     return (float3) { float_abs(input.x), float_abs(input.y), float_abs(input.z) };
 }
 
-static inline float3 float3_normalize(const float3 input) {
+static inline float3 float3_normalize(float3 input) {
     float length = sqrt(input.x * input.x + input.y * input.y + input.z * input.z);
     if (float_abs(length) <= 0.00001f) {
         return input;
@@ -129,19 +129,19 @@ static inline float3 float3_normalize(const float3 input) {
 }
 
 //! Fixed from https://www.mathsisfun.com/algebra/vectors-cross-product.html
-static inline float3 float3_cross(const float3 a, const float3 b) {
+static inline float3 float3_cross(float3 a, float3 b) {
     return (float3) { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
 }
 
-static inline float float3_dot(const float3 a, const float3 b) {
+static inline float float3_dot(float3 a, float3 b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-static inline float float3_length(const float3 v) {
+static inline float float3_length(float3 v) {
     return sqrt(float3_dot(v, v));
 }
 
-static inline float float3_magnitude(const float3 value) {
+static inline float float3_magnitude(float3 value) {
     return sqrt(value.x * value.x + value.y * value.y + value.z * value.z);
 }
 
@@ -149,11 +149,7 @@ static inline float3 float3_sign(const float3 value) {
     return (float3) { float_sign(value.x), float_sign(value.y), float_sign(value.z) };
 }
 
-static inline float3 float3_lerp(
-    const float3 a,
-    const float3 b,
-    const float t
-) {
+static inline float3 float3_lerp(float3 a, float3 b, float t) {
     return (float3) {
         a.x + t * (b.x - a.x),
         a.y + t * (b.y - a.y),
@@ -161,7 +157,7 @@ static inline float3 float3_lerp(
     };
 }
 
-static inline float float3_sign2(const float3 value) {
+static inline float float3_sign2(float3 value) {
     float abs_x = float_abs(value.x);
     float abs_y = float_abs(value.y);
     float abs_z = float_abs(value.z);

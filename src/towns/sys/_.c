@@ -1,4 +1,4 @@
-#include "towns.c"
+#include "maps.c"
 #include "walls.c"
 #include "regions.c"
 
@@ -14,11 +14,12 @@ void zox_define_systems_towns(ecs* world) {
     );
     zox_system(
         TownMapSystem,
-        EcsOnUpdate,
+        EcsPreStore,
         [in] core.Generate,
         [in] regions.RegionLink,
         [in] chunks2.Chunk2Position,
         [in] tunks.BiomeMap,
+        [out] tunks.VegetationMap,
         [out] towns.TownMap,
         [none] tunks.Tunk
     );

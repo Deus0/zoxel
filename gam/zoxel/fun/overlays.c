@@ -28,6 +28,8 @@ uint zox_dbg_ui_statistics(ecs *world, entity e, char *buffer, uint size, uint i
     index += snprintf(buffer + index, size - index, " - Particles [%i]\n", zox_count_ids(Particle));
     index += snprintf(buffer + index, size - index, "UIs\n");
     index += snprintf(buffer + index, size - index, " - Total [%i]\n", zox_count_ids(Element));
+    index += snprintf(buffer + index, size - index, "Other\n");
+    index += snprintf(buffer + index, size - index, " - Bone [%i]\n", zox_count_ids(Bone));
     return index;
 }
 

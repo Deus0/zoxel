@@ -19,6 +19,7 @@
 #include "game_start_ui.c"
 #include "game_end.c"
 #include "head_camera.c"
+#include "walk.c"
 
 void define_systems_controllers3(ecs *world) {
     zox_system(
@@ -174,5 +175,12 @@ void define_systems_controllers3(ecs *world) {
         [in] cameras.CameraLink,
         [in] characters.CharacterLink,
         [none] players.Player3
+    );
+    zox_system(
+        WalkStateSystem,
+        EcsOnUpdate,
+        [in] physics3.Velocity3D,
+        [out] bones.WalkState,
+        [none] bones.Skeleton
     );
 }

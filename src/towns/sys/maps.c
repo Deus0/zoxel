@@ -14,13 +14,15 @@ zox_sys2(TownMapSystem) {
     zox_sys_in(RegionLink);
     zox_sys_in(Chunk2Position);
     zox_sys_in(BiomeMap);
+    zox_sys_out(VegetationMap);
     zox_sys_out(TownMap);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Generate, generate);
         zox_sys_i(RegionLink, region);
         zox_sys_i(Chunk2Position, cposition);
         zox_sys_i(BiomeMap, bmap);
-        zox_sys_o(TownMap, tmap);
+        zox_sys_o(VegetationMap, vegetation_map);
+        zox_sys_o(TownMap, town_map);
         if (generate->value != zox_dirty_active) {
             continue;
         }
@@ -35,10 +37,10 @@ zox_sys2(TownMapSystem) {
         // Generate Town Maps
         int max_chunk_length = powers_of_two[terrain_depth];
         int2 hsize = int2_single(max_chunk_length);
-        if (!tmap->value) {
-            initialize_TownMap(tmap, hsize.x * hsize.y);
-            for (int j = 0; j < tmap->length; j++) {
-                tmap->value[j] = 0;
+        if (!town_map->value) {
+            initialize_TownMap(town_map, hsize.x * hsize.y);
+            for (int j = 0; j < town_map->length; j++) {
+                town_map->value[j] = 0;
             }
         }
         entity towns[zox_children_capacity];
@@ -46,13 +48,15 @@ zox_sys2(TownMapSystem) {
         if (dbg_log >= 2) {
             zox_log("Towns found in Tunk [%ix%i]: [%i]", cposition->value.x, cposition->value.y, towns_length);
         }
-        if (!towns_length) {
+        if (!towns_length || !vegetation_map->length) {
+            zox_logw("Invalid maps in TownMapSystem");
             continue;
         }
         for (int j = 0; j < towns_length; j++) {
             entity town = towns[j];
             int2 town_position = zox_getv(town, BlockPosition2);
             byte2 town_size = zox_getv(town, TownSize);
+            byte wall_thickness = zox_getv(town, WallThickness);
             int2 lposition = int2_zero;
             int2 gposition_start = (int2) {
                 cposition->value.x * hsize.x,
@@ -84,23 +88,28 @@ zox_sys2(TownMapSystem) {
                         gposition.x <= town_position.x + town_size.x / 2 &&
                         gposition.y >= town_position.y - town_size.y / 2 &&
                         gposition.y <= town_position.y + town_size.y / 2)) {
-                        tmap->value[index] = 0;
+                        town_map->value[index] = 0;
                         continue;
                     }
+                    // NOTE: 1 is inside town!
                     byte value = 1;
                     byte town_in_x = (gposition.x >= town_position.x - town_size.x / 2 && gposition.x <= town_position.x + town_size.x / 2);
                     byte town_in_y = (gposition.y >= town_position.y - town_size.y / 2 && gposition.y <= town_position.y + town_size.y / 2);
-                    byte left_wall = gposition.x == town_position.x - town_size.x / 2 && town_in_y;
-                    byte right_wall = gposition.x == town_position.x + town_size.x / 2 && town_in_y;
-                    byte back_wall = gposition.y == town_position.y - town_size.y / 2 && town_in_x;
+                    byte left_wall = gposition.x >= town_position.x - town_size.x / 2 && gposition.x <= town_position.x - town_size.x / 2 + wall_thickness && town_in_y;
+                    byte right_wall = gposition.x >= town_position.x + town_size.x / 2 - wall_thickness && gposition.x <= town_position.x + town_size.x / 2 && town_in_y;
+                    byte back_wall = gposition.y >= town_position.y - town_size.y / 2 && gposition.y <= town_position.y - town_size.y / 2 + wall_thickness && town_in_x;
                     // Gate is excluded from front wall
                     byte town_gate_in_x = (gposition.x >= town_position.x - gate_width / 2 && gposition.x <= town_position.x + gate_width / 2);
-                    byte front_gate = gposition.y == town_position.y + town_size.y / 2 && town_gate_in_x;
-                    byte front_wall = gposition.y == town_position.y + town_size.y / 2 && town_in_x && !front_gate;
+                    byte front_wall = gposition.y >= town_position.y + town_size.y / 2 - wall_thickness && gposition.y <= town_position.y + town_size.y / 2 && town_in_x;
+                    byte front_gate = front_wall && town_gate_in_x;
+                    front_wall &= !front_gate;
                     if (back_wall || front_wall || left_wall || right_wall) {
                         value = 2;
+                    } else if (front_gate) {
+                        value = 3;
                     }
-                    tmap->value[index] = value;
+                    town_map->value[index] = value;
+                    vegetation_map->value[index] = 0;
                     if (dbg_log) {
                         zox_log(" + Town Wall [%i] at [%ix%i]", value, gposition.x, gposition.y);
                     }

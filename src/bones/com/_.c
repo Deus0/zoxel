@@ -11,11 +11,18 @@ zoxc_arrayd(BoneLinks, entity)
 zox_tag(HeadBone);
 zox_tag(HandBone);
 zox_tag(ShoulderBone);
+zox_tag(ThighBone);
 zoxc_entity(SkeletonLink);
 zoxc_entity(HeadBoneLink);
 zoxc_entity(HandBoneLink);
 zoxc_entity(ShoulderBoneLink);
+zoxc_byte(SwingState);
+zoxc_byte(SwingAngle);
 zoxc_byte(RaiseShoulder);
+zoxc_byte(WalkState);
+zoxc_byte(WalkSpeed);
+zoxc_double(SwingStart);
+zoxc_float(SwingSpeed);
 
 void define_components_bones(ecs* world) {
     zoxd_tag(Bone);
@@ -32,9 +39,16 @@ void define_components_bones(ecs* world) {
     zoxd_tag(HeadBone);
     zoxd_tag(HandBone);
     zoxd_tag(ShoulderBone);
+    zoxd_tag(ThighBone);
     zoxd_entity(SkeletonLink);
     zoxd_entity(HeadBoneLink);
     zoxd_entity(HandBoneLink);
     zoxd_entity(ShoulderBoneLink);
+    zoxd_byte(SwingState);
+    zoxd_byte(SwingAngle);
+    zoxd_double(SwingStart);
+    zoxd_float(SwingSpeed);
     zoxd_byte(RaiseShoulder);
+    zoxd_byte(WalkState);
+    zoxd_byte(WalkSpeed);
 }

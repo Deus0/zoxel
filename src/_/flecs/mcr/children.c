@@ -220,3 +220,33 @@ entity zox_get_child_by_id_recursive(ecs* world, entity parent, entity id) {
     }
     return 0;
 }
+
+// Fills the buffer with the found children from the flecs query
+uint zox_get_children_by_id_recursive(ecs* world, entity parent, entity* entities, uint capacity, entity id, uint count) {
+    if (!zox_alive(parent)) {
+        return 0;
+    }
+    if (!entities || capacity <= 0) {
+        zox_logw("[%s]'s No Capacity [zox_get_children_by_id]", zox_get_name(parent));
+        return 0;
+    }
+    iter it = zox_children(world, parent);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e2 = it.entities[i];
+            // If Buffer is Full
+            if (count >= capacity) {
+                if (is_warn_capacity) {
+                    zox_logw("[%s]'s Exceeded Capacity [%i] [zox_get_children_by_id]", zox_get_name(parent), capacity);
+                }
+            } else {
+                if (zox_has_id(e2, id)) {
+                    entities[count] = e2;
+                    count++;
+                }
+                count = zox_get_children_by_id_recursive(world, e2, entities, capacity, id, count);
+            }
+        }
+    }
+    return count;
+}

@@ -78,7 +78,7 @@ void define_systems_tunks(ecs* world) {
     // NOTE: Generates biome map before height maps
     zox_system(
         BiomeMapSystem,
-        EcsPostLoad,
+        EcsOnLoad,
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
         [out] tunks.BiomeMap,
@@ -106,7 +106,7 @@ void define_systems_tunks(ecs* world) {
     // TODO: Pass in BiomeMap and use biome data
     zox_system(
         HeightMapSystem,
-        EcsOnUpdate,
+        EcsPreUpdate,
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
         [in] tunks.BiomeMap,
@@ -116,7 +116,7 @@ void define_systems_tunks(ecs* world) {
     // NOTE: Vegetation maps need biomes and temperature maps
     zox_system(
         VegetationMapSystem,
-        EcsPreStore,
+        EcsOnUpdate,
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
         [in] tunks.BiomeMap,

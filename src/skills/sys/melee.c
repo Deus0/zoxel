@@ -88,6 +88,12 @@ zox_sys2(MeleeSystem) {
                 zox_log("User [%s] Skill Cost Subtracted [%f]", zox_get_name(user), lresource);
             }
         }
+        // Temporary for now place here
+        if (zox_has(user, SwingStart)) {
+            float swing_time = zox_getv(e, WarmupTime) + zox_getv(e, CooldownTime);
+            zox_set(user, SwingStart, { zox_current_time });
+            zox_set(user, SwingSpeed, { swing_time });
+        }
         // Ray didn't hit anything
         entity hit = raycast->chunk;
         if (!zox_valid(hit)) {

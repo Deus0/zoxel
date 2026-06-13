@@ -77,8 +77,16 @@ zox_sys2(TownWallsSystem) {
                     zox_log("Placing Town Wall at [%ix%i]", chunk_voxel_position.x + positionl.x, chunk_voxel_position.z + positionl.z);
                 }
                 // byte wall_height = zox_getv(town, Height);
+                byte wall_height = 5;
                 if (town_value == 2) {
-                    for (int h = 1; h <= 4; h++) {
+                    for (int h = 1; h <= wall_height; h++) {
+                        positionl.y = local_height_raw + h;
+                        if (positionl.y >= 0 && positionl.y < voctree_length) {
+                            set_clean_VoxelNode(voctree, vdepth->value, positionl, bricks_id);
+                        }
+                    }
+                } else if (town_value == 3) {
+                    for (int h = 4; h <= wall_height; h++) {
                         positionl.y = local_height_raw + h;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {
                             set_clean_VoxelNode(voctree, vdepth->value, positionl, bricks_id);

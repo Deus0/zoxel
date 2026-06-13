@@ -9,6 +9,7 @@ zox_tag(BodySlot);
 zox_tag(Head);
 zox_tag(Hand);
 zox_tag(Shoulder);
+zox_tag(Thigh);
 zoxc_state(BodyDirty);
 zoxc_byte3(BodySize);
 zoxc_byte3(PartPosition);
@@ -27,6 +28,7 @@ void define_components_bodys(ecs* world) {
     zoxd_tag(Head);
     zoxd_tag(Hand);
     zoxd_tag(Shoulder);
+    zoxd_tag(Thigh);
     zoxd_state(BodyDirty);
     zoxd_byte3(BodySize);
     zoxd_byte3(PartPosition);

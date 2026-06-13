@@ -1,8 +1,5 @@
 // NOTE: Adds height to the heightmap using region mountains
 zox_sys2(MountainMapSystem) {
-    // int2 mountain_position = (int2) { 0, 100 };
-    // double mountain_radius = 80;
-    // double mountain_height = 8;
     uint seed = global_seed;
     byte dbg_log = 0;
     zox_sys_world();
@@ -10,18 +7,24 @@ zox_sys2(MountainMapSystem) {
     zox_sys_in(Generate);
     zox_sys_in(RegionLink);
     zox_sys_in(Chunk2Position);
+    zox_sys_out(VegetationMap);
     zox_sys_out(HeightMap);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Generate, generate);
         zox_sys_i(RegionLink, region);
         zox_sys_i(Chunk2Position, tunk_position);
+        zox_sys_o(VegetationMap, vegetation_map);
         zox_sys_o(HeightMap, height_map);
         // NOTE: Runs after heights system
         if (generate->value != zox_dirty_end) {
             continue;
         }
         if (!height_map->length) {
-            zox_logw("[height_map] biome map wasn't generated in time");
+            zox_logw("Invalid [height_map] in MountainMapSystem");
+            continue;
+        }
+        if (!vegetation_map->length) {
+            zox_logw("Invalid [vegetation_map] in MountainMapSystem");
             continue;
         }
         if (!zox_valid(region->value)) {
@@ -59,6 +62,10 @@ zox_sys2(MountainMapSystem) {
                     int value = height_map->value[index];
                     value *= mountain_multiplier;
                     height_map->value[index] = int_clamp(value, 0, render_distance_y * max_chunk_length - 1);
+                    // Clear Vegetation for middle of mountains
+                    if (mountain_distance < 2 / (mountain_radius * 3)) {
+                        vegetation_map->value[index] = 0;
+                    }
                 }
             }
         }

@@ -11,28 +11,3 @@ entity spawn_realm_skill_melee(ecs* world, entity parent, entity prefab, const c
     zox_set(e, RaycastRange, { range });
     return e;
 }
-
-/*entity spawn_skill_melee_t(ecs *world,
-    char* name,
-    const float value,
-    const float value_max,
-    const float range,
-    const entity resource,
-    const float cost,
-    char *texture_name,
-    const float warmup,
-    const float cooldown
-) {
-    const entity e = spawn_skill_melee(
-        world,
-        prefab_skill_melee,
-        name,
-        value,
-        value_max,
-        range,
-        resource,
-        cost);
-    zox_set(e, TextureLink, { string_hashmap_get(files_hashmap_textures, new_string_data(texture_name)) });
-    return e;
-}
-*/

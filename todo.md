@@ -2,9 +2,24 @@
 => GPU Constrained actually, memory barely used - 200-400mb used
 
 # Important
-- Swing Arms
 - Add Minimap
+- Block Damage Overlay
+- Block Health Regens
 - Dialogue speed should be per character and not per animation line
+- Town Placement should avoid mountains
+- Town Heightmap should average out more, smooth the whole thing based on average
+
+# Animations
+- Disable Switching Action when one is active
+- Global Cooldown When Switching
+- When place last block, dont release arm raise until after animation is done
+- Base Speed of swing off walk speed and state - WalkSpeed (byte based on max speed)
+
+# Block Health
+- Add simple transparent cube where damage is
+- set alpha based on health for WorldBlock entities
+- Use prefab with health + regen children stats for blocks
+
 - disable next button until dialogue animation finished
 - SaveLoad Items - using new Saves Module for better workflow
 - Use SDLGamepad instead of Joystick for better Compatibility
@@ -17,9 +32,9 @@
 	- Disable NPCs
 - SaveTransformSystem using States
 
-- Make mountains more stone, less dirty
-- Make Towns less Grassy, more Rough Dirt + dirt
-	- Make Road from middle of town to gate
+-x Make mountains more stone, less dirty
+-x Make Towns less Grassy, more Rough Dirt + dirt
+- Make Road from middle of town to gate
 - Make Walls Thicker
 - Make Town Gates more overhanggy
 - Aim down when speaking to slime/chicken etc

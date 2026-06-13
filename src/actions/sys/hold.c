@@ -23,10 +23,11 @@ zox_sys2(ActiveActionHoldSystem) {
         raise->value = zox_valid(aaction->value); // raise arm if proper action
         byte spawn_held = zox_valid(aaction->value) && zox_has(aaction->value, Item);
         entity bone_parent;
-        if (hand_bone->value) {
+        if (zox_valid(hand_bone->value)) {
             bone_parent = hand_bone->value;
         } else {
             bone_parent = e;
+            zox_logw("Character [%s] Missing Hand", zox_get_name(e));
         }
         entity e2 = zox_get_child_by_id(world, bone_parent, zox_id(HeldAction));
         if (zox_valid(e2)) {

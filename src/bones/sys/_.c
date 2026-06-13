@@ -5,7 +5,9 @@
 #include "bone_render.c"
 #include "head_bob.c"
 #include "init.c"
-#include "shoulder_raise.c"
+#include "arm_control.c"
+#include "arm_swing.c"
+#include "arm_raise.c"
 
 void define_systems_bones(ecs *world) {
     zox_system_1(
@@ -69,8 +71,32 @@ void define_systems_bones(ecs *world) {
         [none] bones.Bone
     );
     zox_system(
-        ShoulderRaiseSystem,
+        ArmControlSystem,
         EcsOnUpdate,
+        [in] bones.WalkState,
+        [none] bones.Skeleton
+    );
+    zox_system(
+        ArmSwingSystem,
+        EcsOnUpdate,
+        [in] bones.SwingState,
+        [in] bones.SwingAngle,
+        [in] transforms3.LocalPosition3D,
+        [out] transforms3.LocalRotation3D,
+        [none] bones.ShoulderBone
+    );
+    zox_system(
+        LegSwingSystem,
+        EcsOnUpdate,
+        [in] bones.SwingState,
+        [in] bones.SwingAngle,
+        [in] transforms3.LocalPosition3D,
+        [out] transforms3.LocalRotation3D,
+        [none] bones.ThighBone
+    );
+    zox_system(
+        ShoulderRaiseSystem,
+        EcsPostUpdate,
         [in] bones.RaiseShoulder,
         [in] bones.ShoulderBoneLink,
         [in] bones.HeadBoneLink,

@@ -10,8 +10,8 @@ entity spawn_block_item(ecs *world, entity block) {
     entity e = spawn_realm_item2(world, prefab_item_active, voxel_name->value);
     zox_name("block_item");
     zox_prefab_addc_user_timings(world, e);
-    zox_set(e, WarmupTime, { 0.5f });
-    zox_set(e, CooldownTime, { 0.5f });
+    zox_set(e, WarmupTime, { 0.25f });
+    zox_set(e, CooldownTime, { 0.25f });
     entity texture = 0;
     if (zox_has(block, TextureLinks)) {
         zox_geter(block, TextureLinks, textures);

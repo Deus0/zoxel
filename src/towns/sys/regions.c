@@ -42,6 +42,7 @@ zox_sys2(RegionTownsSystem) {
     byte2 min_size = (byte2) { 22, 22 };
     byte2 max_size = (byte2) { 42, 42 };
     byte2 wall_height_range = (byte2) { 2, 6 };
+    byte2 wall_thickness_range = (byte2) { 1, 4 };
     byte2 padding = byte2_single(8);
     zox_sys_world();
     zox_sys_begin();
@@ -71,7 +72,8 @@ zox_sys2(RegionTownsSystem) {
             int2 spawn_position = positions[j];
             byte2 spawn_size = sizes[j];
             byte wall_height = rand_range(wall_height_range.x, wall_height_range.y);
-            spawn_town(world, prefab_town, e, spawn_position, spawn_size, wall_height);
+            byte wall_thickness = rand_range(wall_thickness_range.x, wall_thickness_range.y);
+            spawn_town(world, prefab_town, e, spawn_position, spawn_size, wall_height, wall_thickness);
             if (dbg_log) {
                 zox_log("   + New Town [%ix%i] Size [%ix%i]", spawn_position.x, spawn_position.y, spawn_size.x, spawn_size.y);
             }
