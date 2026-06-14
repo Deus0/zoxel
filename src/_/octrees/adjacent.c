@@ -13,8 +13,12 @@ static inline const void* octree_get_adjacent_leaf(
     byte depth,                 // leaf depth (levels)
     size_t stride              // node size (sizeof T)
 ) {
-    if (!root_node) return NULL;
-    if (dir > 5) return NULL;
+    if (!root_node) {
+        return NULL;
+    }
+    if (dir > 5) {
+        return NULL;
+    }
     uint size = 1u << depth;
     uint max_idx = size - 1u;
     // Compute axis and polarity for compact boundary/adjacency logic
@@ -25,16 +29,18 @@ static inline const void* octree_get_adjacent_leaf(
     byte at_boundary = is_pos ? (coord == max_idx) : (coord == 0);
     if (at_boundary) {
         // Fetch from neighbor root if it exists
-        if (!neighbors) return NULL;
+        if (!neighbors) {
+            return NULL;
+        }
         const void* neighbor_root = neighbors[dir];
-        if (!neighbor_root) return NULL;
-
+        if (!neighbor_root) {
+            return NULL;
+        }
         // Map pos into neighbor coordinates
         byte3 neighbor_pos = pos;
         if (axis == 0) neighbor_pos.x = is_pos ? 0 : max_idx;
         else if (axis == 1) neighbor_pos.y = is_pos ? 0 : max_idx;
         else neighbor_pos.z = is_pos ? 0 : max_idx;
-
         // Descend safely inside neighbor
         return get_octree(neighbor_root, depth, neighbor_pos, 0, stride);
     }
@@ -48,13 +54,7 @@ static inline const void* octree_get_adjacent_leaf(
 
 // Type-safe macro for root-first neighbor fetchers
 #define create_node_neighbor(T) \
-static inline const T* get_neighbor_##T( \
-    const T* root_node, \
-    const T** neighbors, \
-    byte dir, \
-    byte3 pos, \
-    byte depth\
-) { \
+static inline const T* get_neighbor_##T(const T* root_node, const T** neighbors, byte dir, byte3 pos, byte depth) { \
     return (const T*)octree_get_adjacent_leaf( \
         (const void*) root_node, \
         (const void**) neighbors, \

@@ -157,7 +157,7 @@ byte* blocks_fetch_solids(iter* it) {
             solids[i] = 1;
             continue;
         }
-        solids[i] = zox_gett_value(block, BlockModel) == zox_block_solid;
+        solids[i] = zox_getv(block, BlockModel) == zox_block_solid;
     }
     return solids;
 }

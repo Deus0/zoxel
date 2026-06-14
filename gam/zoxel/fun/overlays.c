@@ -105,6 +105,11 @@ void zox_dbg_activate_ui_raycasting(ecs* world, ClickEventData data) {
     refresh_debug_label(world);
 }
 
+void zox_dbg_activate_ui_raycast_lights(ecs* world, ClickEventData data) {
+    set_prefab_debug_label(world, &debug_ui_raycasted_light);
+    refresh_debug_label(world);
+}
+
 void zox_dbg_activate_ui_chunk_link(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &debug_label_chunk_link);
     refresh_debug_label(world);
@@ -126,7 +131,7 @@ void zox_dbg_activate_ui_player_character(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
-    byte zox_tsts_count = 9;
+    byte zox_tsts_count = 10;
     if (keycode != zox_key_v) {
         return;
     }
@@ -181,8 +186,12 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_activate_player_state_ui },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Raycaster",
+        .text = "Raycast Voxels",
         .on_click = { &zox_dbg_activate_ui_raycasting },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Raycast Lights",
+        .on_click = { &zox_dbg_activate_ui_raycast_lights },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Chunk Link",

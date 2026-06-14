@@ -1,6 +1,7 @@
 #include "render.c"
 #include "sides.c"
 #include "build.c"
+#include "wait.c"
 
 void define_systems_chunks3_textured(ecs *world) {
     // move this into chunk3, for chunk3_textured
@@ -46,4 +47,11 @@ void define_systems_chunks3_textured(ecs *world) {
     );
     // Custom Debug
     zox_set(zox_id(Chunk3TexturedRenderSystem), SystemDeltaMax, {  zox_lag_cutoff * 2 });
+    zox_system(
+        ChunkMeshSlowSystem,
+        EcsOnUpdate,
+        [in] chunks3.ChunkNeighbors,
+        [out] rendering.MeshDirty,
+        [none] chunks3.ChunkTextured
+    );
 }

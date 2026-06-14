@@ -9,9 +9,9 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(ChunkMeshDirty, mesh_dirty);
-        if (mesh_dirty->value) {
+        /*if (mesh_dirty->value) {
             continue;
-        }
+        }*/
         for (byte j = 0; j < chunk_neighbors_length; j++) {
             entity neighbor = neighbors->value[j];
             if (!zox_valid(neighbor) || !zox_has(neighbor, VoxelNodeDirty)) {

@@ -1,12 +1,6 @@
 // NOTE: This builds out Simple Town Data into 2D Maps!
 zox_sys2(TownMapSystem) {
     byte dbg_log = 0;
-    // TODO: use terrains seed
-    // TODO: use height frequency from biome maps
-    // uint seed = global_seed;
-    // TODO: Get these from Region Data
-    // int2 town_position = (int2) { 0, - 80 };
-    // int2 town_size = (int2) { 52, 52 };
     int gate_width = 4;
     zox_sys_world();
     zox_sys_begin();

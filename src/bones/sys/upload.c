@@ -5,10 +5,10 @@ zox_sys2(BoneIndexUploadSystem) {
     zox_sys_in(BoneIndexes);
     zox_sys_out(BoneIndexGPULink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MeshDirty, mdirty);
+        zox_sys_i(MeshDirty, mesh_dirty);
         zox_sys_i(BoneIndexes, weights);
         zox_sys_o(BoneIndexGPULink, gpu);
-        if (mdirty->value != mesh_state_upload) {
+        if (mesh_dirty->value != mesh_state_upload) {
             continue;
         }
         if (weights->length == 0) {

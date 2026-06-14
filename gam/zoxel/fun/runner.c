@@ -4,7 +4,22 @@ void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
     zox_tst_spawn_tilemap(world);
 }
 
+void zox_tst_toggle_low_fps(ecs* world, ClickEventData data) {
+    if (!target_fps) {
+        target_fps = 30;
+    }  else if (target_fps == 30) {
+        target_fps = 6;
+    } else {
+        target_fps = 0;
+    }
+    // NOTE: Had to use real_world
+    ecs* real_world = (ecs*) ecs_get_world(world);
+    ecs_set_target_fps(real_world, target_fps);
+    zox_log("Set Target FPS to [%i]", target_fps);
+}
+
 void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
+    byte zox_tsts_count = 19;
     if (keycode != zox_key_h) {
         return;
     }
@@ -21,7 +36,6 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
     }
     zox_log("   + spawning [dbg_ui_tests] on player %s on canvas %s", zox_get_name(player), zox_get_name(canvas));
     // # List #
-    byte zox_tsts_count = 19;
     int elements_count = 0;
     byte visible_count = 6;
     SpawnListElement elements[zox_tsts_count];
@@ -31,6 +45,10 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UI
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Low FPS",
+        .on_click = { &zox_tst_toggle_low_fps },
+    };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Canvas",
         .on_click = { &zox_dbg_spawn_canvas },
@@ -97,17 +115,21 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_spawn_chunk3_textured },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Rebuild Terrain Meshes",
-        .on_click = { &zox_dbg_terrain_refresh },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Refresh Sunlights",
-        .on_click = { &zox_dbg_lights3_refresh_sunlight },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Big Frame Drop",
+        .text = "Frame Drop",
         .on_click = { &zox_dbg_test_big_frame },
     };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "RefreshTerrain",
+        .on_click = { &zox_dbg_terrain_refresh },
+    };
+    /*elements[elements_count++] = (SpawnListElement) {
+        .text = "Refresh Sunlights",
+        .on_click = { &zox_dbg_lights3_refresh_sunlight },
+    };*/
+    /*elements[elements_count++] = (SpawnListElement) {
+        .text = "Rebuild Terrain Mesh Colors",
+        .on_click = { &zox_dbg_terrain_refresh_mesh_colors },
+    };*/
     // Test our uis
     entity spawned[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, list_padding, spawned, elements, elements_count, visible_count);

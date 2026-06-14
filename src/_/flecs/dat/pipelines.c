@@ -27,7 +27,6 @@
 #define zoxp_voxels_write EcsPostLoad
 #define zoxp_lights_write EcsPreUpdate
 #define zoxp_textures EcsOnUpdate           // EcsPostUpdate
-#define zoxp_voxels_read EcsOnUpdate
 #define zoxp_text EcsOnUpdate
 
 // (VoxelNode) Queue

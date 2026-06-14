@@ -1,16 +1,20 @@
-#include "biomes.c"
-#include "heights.c"
-#include "vegetation.c"
-#include "link.c"
-#include "end.c"
-#include "biome_average.c"
-#include "biome_link.c"
+// Link
 #include "region.c"
 // Streaming
 #include "stream_start.c"
 #include "stream_grow.c"
 #include "stream_shrink.c"
 #include "stream_lod.c"
+// Stack
+#include "stack_link.c"
+#include "stack_trigger.c"
+// Biomes
+#include "biomes.c"
+#include "biome_average.c"
+#include "biome_link.c"
+// More Maps
+#include "heights.c"
+#include "vegetation.c"
 
 void define_systems_tunks(ecs* world) {
     zox_system(
@@ -25,7 +29,6 @@ void define_systems_tunks(ecs* world) {
         EcsPreUpdate,
         [in] core.Generate,
         [in] chunks2.Chunk2Position,
-        [in] voxes.VoxLink,
         [out] tunks.Chunk3Stack,
         [none] tunks.Tunk
     );

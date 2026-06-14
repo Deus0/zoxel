@@ -18,9 +18,9 @@ byte zox_dbg_render_all_sides = 0;
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Chunks3Textured)
+zox_begin_module(Chunks3Textured) {
     define_systems_chunks3_textured(world);
     initialize_settings_chunks3_textured(world);
-zox_end_module(Chunks3Textured)
+} zox_end_module(Chunks3Textured);
 
 #endif

@@ -1,59 +1,64 @@
 // hmmm issue seems to be about faces
 // maybe we redo our mesh builder system
 
-// converts face to octree indexes
-static const byte face_children[6][4] = {
-    {1, 3, 5, 7}, // +X
-    {0, 2, 4, 6}, // -X
-    {2, 3, 6, 7}, // +Y
-    {0, 1, 4, 5}, // -Y
-    {4, 5, 6, 7}, // +Z
-    {0, 1, 2, 3}  // -Z
-};
-
-static inline const LightNode* get_max_light_on_face(const LightNode* node, byte face, byte depth, byte target) {
+// NOTE: We only use one sub layer now
+static inline const LightNode* get_max_light_on_face(const LightNode* node, byte face) {
     if (!node) {
         return NULL;
     }
     const LightNode* best_node = node;
     byte max_value = node->value;
-    if (depth < target && node->ptr) {
+    if (node->ptr) {
         const LightNode* kids = (const LightNode*) node->ptr;
-        const byte* idxs = face_children[face];
+        const byte* indexes = octree_face_children[face];
         for (byte i = 0; i < 4; i++) {
-            const LightNode* kid = &kids[idxs[i]];
-            const LightNode* candidate = get_max_light_on_face(kid, face, depth + 1, target);
-            if (candidate && candidate->value > max_value) {
-                max_value = candidate->value;
-                best_node = candidate;
+            const LightNode* kid = &kids[indexes[i]];
+            // NOTE: Recursively uses highest light on adjacent faces
+            //const LightNode* candidate = get_max_light_on_face(kid, face);
+            //if (candidate && candidate->value > max_value) {
+            //    max_value = candidate->value;
+            if (kid->value > max_value) {
+                max_value = kid->value;
+                best_node = kid;
             }
         }
     }
-
     return best_node;
 }
 
-static inline const LightNode* get_max_light_on_face_(const LightNode* root_node, const LightNode** nnodes, byte face, byte3 position, byte depth, byte target) {
-    const LightNode* node = get_neighbor_LightNode(root_node, nnodes, face, position, depth);
-    return get_max_light_on_face(node, face, depth, target);
+static inline const LightNode* get_max_light_on_face_start(const LightNode* root_light_octree, const LightNode** neighbor_light_octrees, byte3 position, byte depth, byte face) {
+    const LightNode* adjacent_light = get_neighbor_LightNode(root_light_octree, neighbor_light_octrees, face, position, depth);
+    return get_max_light_on_face(adjacent_light, face);
+    /*if (!adjacent_light) {
+        return NULL;
+    }
+    byte max_value = adjacent_light->value;
+    const LightNode* max_light = adjacent_light;
+    if (adjacent_light->ptr) {
+        const LightNode* children = (const LightNode*) adjacent_light->ptr;
+        for (int i = 0; i < 8; i++) {
+            const LightNode* kid = &children[i];
+            if (kid->value > max_value) {
+                max_value = kid->value;
+                max_light = kid;
+            }
+        }
+    }
+    return max_light;*/
 }
 
-static inline void zox_apply_light3(const LightNode** nnodesl, const VoxelNode* voctree, const SidesOctree* sides, const LightNode* lnode, const MeshColorRGBs* colors, byte3 position, uint* ccount, byte rdepth, byte depth) {
+static inline void zox_apply_light3(const LightNode* root_light_octree, const LightNode** neighbor_light_octrees, const VoxelNode* voctree, const SidesOctree* sides, const MeshColorRGBs* colors, byte3 position, uint* ccount, byte render_depth, byte depth) {
     // Dig Deeper
-    if (depth < rdepth && sides->ptr) { // !is_closed_SidesOctree(sides)) {
+    if (depth < render_depth && sides->ptr) {
         const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
-        // const SidesOctree* sides_kids = get_children_SidesOctree(sides);
         byte has_vkids = !is_closed_VoxelNode(voctree);
         const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voctree) : NULL;
         byte3_multiply_byte(&position, 2);
         depth++;
         for (byte i = 0; i < 8; i++) {
-            /*if (!kids[i].value) {
-                continue;
-            }*/
             const VoxelNode* cvoctree = has_vkids ? &vkids[i] : voctree;
-            byte3 cposition = byte3_add(position, octree_positions_b[i]);
-            zox_apply_light3(nnodesl, cvoctree, &sides_kids[i], lnode, colors, cposition, ccount, rdepth, depth);
+            byte3 child_position = byte3_add(position, octree_positions_b[i]);
+            zox_apply_light3(root_light_octree, neighbor_light_octrees, cvoctree, &sides_kids[i], colors, child_position, ccount, render_depth, depth);
         }
         return;
     }
@@ -68,9 +73,10 @@ static inline void zox_apply_light3(const LightNode** nnodesl, const VoxelNode* 
             continue;
         }
         // TODO: Get Adjacent Depth -> based on chunk index to depth lookup - atm we just assume its render depth + 1
-        const LightNode* anode = get_max_light_on_face_(lnode, nnodesl, direction, position, depth, rdepth);
-        byte light = anode ? anode->value : 0; // sunlight;
-        /*if (zox_disable_low_res_lights && rdepth != terrain_depth) {
+        const LightNode* adjacent_max_light = get_max_light_on_face_start(root_light_octree, neighbor_light_octrees, position, depth, direction);
+        byte light = adjacent_max_light ? adjacent_max_light->value : 0;
+        // sunlight;
+        /*if (zox_disable_low_res_lights && render_depth != terrain_depth) {
             light = sunlight;
         }*/
         // Set lights of our Quads, 4 Verts each
@@ -86,7 +92,7 @@ static inline void zox_apply_light3(const LightNode** nnodesl, const VoxelNode* 
     }
 }
 
-
+// NOTE: Rebuilds Lights only when MeshColorsGenerate is dirty
 zox_sys2(Light3BuildSystem) {
     if (disable_lights) {
         return;
@@ -124,9 +130,9 @@ zox_sys2(Light3BuildSystem) {
             }
         }
         // Failsafe for when its updating again, no need to double up work
-        if (voxel_octree_dirty->value == zox_dirty_trigger || voxel_octree_dirty->value == zox_dirty_active) {
+        /*if (voxel_octree_dirty->value == zox_dirty_trigger || voxel_octree_dirty->value == zox_dirty_active) {
             continue;
-        }
+        }*/
         // No Mesh Sides were found
         if (!sides_octree->value) {
             continue;
@@ -134,7 +140,7 @@ zox_sys2(Light3BuildSystem) {
         const LightNode *nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         uint ccount = 0;
-        zox_apply_light3(nnodesl, voxel_octree, sides_octree, light_octree, colors, byte3_zero, &ccount, render_depth->value, 0);
+        zox_apply_light3(light_octree, nnodesl, voxel_octree, sides_octree, colors, byte3_zero, &ccount, render_depth->value, 0);
         if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }

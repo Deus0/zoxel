@@ -154,14 +154,11 @@ zox_sys2(ChunkColorsBuildSystem) {
             continue;
         }
         if (!vcolors->length) {
-            // zox_sys_e();
-            // zox_logw("Vox has no colors [%s:%lu]", zox_get_name(e), e);
             continue;
         }
-        // removes mesh when 255
         clear_mesh(indicies, vertices, colors);
         if (rdepth->value >= render_depth_spawning) {
-            mdirty->value = mesh_state_trigger_slow;
+            mdirty->value = mesh_state_trigger;
             continue;
         }
         // fetch neighbor depths and nodes
@@ -192,6 +189,6 @@ zox_sys2(ChunkColorsBuildSystem) {
         indicies->value = zinalize_int_array_d(mesh.indicies);
         vertices->value = zinalize_float3_array_d(mesh.vertices);
         colors->value = zinalize_color_rgb_array_d(mesh.colors);
-        mdirty->value = mesh_state_trigger_slow;
+        mdirty->value = mesh_state_skeleton_trigger;
     }
 } zox_sys_end(ChunkColorsBuildSystem);

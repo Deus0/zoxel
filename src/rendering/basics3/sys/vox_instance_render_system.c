@@ -35,21 +35,21 @@ zox_sys2(VoxInstanceRenderSystem) {
     zox_geter(material_vox_instance, MaterialVoxInstance, material_attributes);
     InstanceRenderCommand_array_d* commands = create_InstanceRenderCommand_array_d(max_meshes);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDisabled, rdisabled);
-        zox_sys_i(InstanceLink, instanceLink);
+        zox_sys_i(RenderDisabled, disabled);
+        zox_sys_i(InstanceLink, instance);
         zox_sys_i(TransformMatrix, matrix);
-        if (!zox_valid(instanceLink->value) || rdisabled->value) {
+        if (!zox_valid(instance->value) || disabled->value) {
             continue;
         }
         camera_filtering_check();
         int index = 0;
-        if (has_mesh(commands, instanceLink->value, &index)) {
+        if (has_mesh(commands, instance->value, &index)) {
             InstanceRenderCommand command = commands->data[index];
             add_to_float4x4_array_d(command.transforms, matrix->value);
             commands->data[index] = command;
         } else {
             InstanceRenderCommand command = {
-                .mesh = instanceLink->value,
+                .mesh = instance->value,
                 .transforms = create_float4x4_array_d(max_transforms)
             };
             if (!command.transforms) {

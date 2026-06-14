@@ -25,7 +25,7 @@ void define_systems_vodes3(ecs* world) {
     );
     zox_system(
         VodesLodSystem,
-        zoxp_voxels_read,
+        EcsOnUpdate,
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
         [in] chunks3.VoxelNode,

@@ -136,10 +136,8 @@ static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_
 
 // TODO: Move terrain cache into functions
 // TODO: Cache all managers found, not just single
+// NOTE: Rebuilds Chunk when ChunkMeshDirty is dirty
 zox_sys2(Chunk3TexturedBuildSystem) {
-    if (zox_chunk3t_mode == zox_chunk3t_mode_new) {
-        return;
-    }
     zox_sys_world();
     zox_sys_begin_at(1);
     zox_sys_in(TilemapLink);
@@ -172,7 +170,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
     // Our Loop
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(TilemapLink, tilemap);
-        zox_sys_i(ChunkMeshDirty, cdirty);
+        zox_sys_i(ChunkMeshDirty, chunk_mesh_dirty);
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_i(BlockScale, bscale);
         zox_sys_i(VoxelNode, voctree);
@@ -181,31 +179,25 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
-        zox_sys_o(MeshDirty, mdirty);
-        if (cdirty->value != zox_dirty_active) {
+        zox_sys_o(MeshDirty, mesh_dirty);
+        if (chunk_mesh_dirty->value != zox_dirty_active) {
             continue;
         }
-        // We have 3 modes, old, new, and hybrid
-        if (zox_chunk3t_mode == zox_chunk3t_mode_mix &&
-            rdepth->value == terrain_depth) {
-            continue;
-        }
-        // No Mesh Sides were found
-        if (!sides->value) {
-            clear_mesh_uvs(indicies, verts, colors, uvs);
-        mdirty->value = mesh_state_trigger_slow;
-            continue;
-        }
-        // const entity tilemap = zox_get_value(manager, TilemapLink);
         if (!zox_valid(tilemap->value) || !zox_has(tilemap->value, TilemapUVs)) {
             zox_sys_e();
-            zox_log_error("Tilemap not found on Chunk Terrain [%s]", zox_get_name(e));
+            zox_loge("Tilemap not found on Chunk Terrain [%s]", zox_get_name(e));
             continue;
         }
         zox_geter(tilemap->value, TilemapUVs, tilemap_uvs);
         if (!tilemap_uvs->value || !tilemap_uvs->length) {
             zox_sys_e();
-            zox_log_error("Tilemap has no TilemapUVs on Chunk Terrain [%s]", zox_get_name(e));
+            zox_loge("Tilemap has no TilemapUVs on Chunk Terrain [%s]", zox_get_name(e));
+            continue;
+        }
+        // No Mesh Sides were found
+        if (!sides->value) {
+            clear_mesh_uvs(indicies, verts, colors, uvs);
+            mesh_dirty->value = mesh_state_trigger_terrain;
             continue;
         }
         byte vlength = powers_of_two[rdepth->value];
@@ -218,12 +210,9 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         };
         // build out mesh data
         terrain_build_data data = {
-            // vox data
             .tilemap_uvs = tilemap_uvs,
             .voxel_solidity = build_data.solidity,
-            // .voxel_uv_indexes = build_data.uvs,
             .mesh_data = &mesh_data,
-            // chunk data
             .root = voctree,
             .rdepth = rdepth->value,
         };
@@ -246,8 +235,8 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         colors->value = zinalize_color_rgb_array_d(mesh_data.color_rgbs);
         uvs->value = zinalize_float2_array_d(mesh_data.uvs);
         // dirty
-        mdirty->value = mesh_state_trigger_slow;
-        // mesh_state_trigger_slow mesh_state_trigger
+        mesh_dirty->value = mesh_state_trigger_terrain;
+        // mesh_dirty->value = mesh_state_trigger;
         // zox_log("Building Terrain Chunk! Verts [%i] Scale [%f] Depth [%i]", verts->length, cscale, rdepth);
     }
     free_chunk3_textured_builder_data(build_data);

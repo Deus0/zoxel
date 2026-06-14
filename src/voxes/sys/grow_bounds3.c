@@ -15,18 +15,18 @@ zox_sys2(Bounds3GrowSystem) {
         zox_sys_i(BlockScale, scale);
         zox_sys_o(Bounds3D, bounds);
         zox_sys_o(Bounds3Dirty, dirty);
-        if (state->value != mesh_state_end) {
-            continue;
-        }
-        float3 new_bounds = calculate_vox_bounds(size->value, scale->value);
-        if (float3_equals(bounds->value, new_bounds)) {
+        if (state->value != mesh_state_upload) {
             continue;
         }
         float3 old_bounds = bounds->value;
+        float3 new_bounds = calculate_vox_bounds(size->value, scale->value);
+        if (float3_equals(old_bounds, new_bounds)) {
+            continue;
+        }
         bounds->value = new_bounds;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {
-            zox_loge("+ [%s] Growing Bounds [%fx%fx%f]", zox_get_name(e), new_bounds.x, new_bounds.y, new_bounds.z);
+            zox_log("[%s] Growing Bounds [%fx%fx%f]", zox_get_name(e), new_bounds.x, new_bounds.y, new_bounds.z);
         }
         // Of entity is a moving one
         // NOTE: If Physics Object, we reposition based on new offset upwards!

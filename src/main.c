@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     byte cores = get_cpu_count();    // gets our cpu core count
     set_cpu_tier2(cores);
     zox_logv("Initializing Flecs");
-    ecs *world = initialize_ecs(argc, argv);
+    ecs* world = initialize_ecs(argc, argv);
     if (!world) {
         zox_log_error("[initialize_ecs] failed");
         return EXIT_FAILURE;

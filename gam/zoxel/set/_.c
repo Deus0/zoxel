@@ -22,7 +22,6 @@
 // set_prefab_debug_label(world, &debug_label_lods);
 // set_prefab_debug_label(world, &debug_label_collisions);
 // set_prefab_debug_label(world, &debug_label_app);
-// set_prefab_debug_label(world, &debug_ui_raycasted_light);
 // set_prefab_debug_label(world, &debug_ui_single_npc);
 
 void zoxel_set_debug() {

@@ -45,12 +45,4 @@ void define_systems_chunks3(ecs *world) {
         [out] VoxelNodeQueue,
         [none] chunks3.Chunk3
     );
-    // Reduce our air
-    /*zox_system(
-        SidesOctreeDirtySystem,
-        EcsOnStore,
-        [in] chunks3.SidesOctreeDirty,
-        [out] chunks3.SidesOctree,
-        [none] chunks.Chunk
-    );*/
 }

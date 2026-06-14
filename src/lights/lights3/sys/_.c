@@ -4,10 +4,9 @@
 #include "darkness.c"
 #include "reduce.c"
 #include "trigger.c"
+#include "trigger_neighbor.c"
 #include "build.c"
-
-// TODO: Rename NodeDepth to VoxelNodeDepth
-// TODO: Rename all NodeDepth to OctreeDepth
+// TODO: Rename NodeDepth to OctreeDepth
 
 void define_systems_lights3(ecs* world) {
     zox_system(
@@ -87,17 +86,21 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         MeshColorsTriggerSystem,
         zoxp_lights_write + 2,
-        [in] lights3.LightQueue,
-        [in] lights3.DarkQueue,
-        [in] chunks3.VoxelNodeDirty,
         [in] chunks3.ChunkMeshDirty,
         [in] lights3.LightNodeDirty,
         [out] rendering.MeshColorsGenerate,
         [none] chunks.Chunk
     );
     zox_system(
+        ChunkNeighborLightTriggerSystem,
+        zoxp_lights_write + 2,
+        [in] chunks3.ChunkNeighbors,
+        [out] rendering.MeshColorsGenerate,
+        [none] chunks.Chunk
+    );
+    zox_system(
         Light3BuildSystem,
-        zoxp_voxels_read + 2,
+        EcsOnUpdate + 2,
         [in] chunks3.VoxelNodeDirty,
         [in] rendering.MeshColorsGenerate,
         [in] chunks3.ChunkNeighbors,

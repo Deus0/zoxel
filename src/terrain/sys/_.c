@@ -92,8 +92,6 @@ void define_systems_terrain(ecs *world) {
         Chunk3GeneratedSystem,
         EcsOnUpdate,
         [in] core.Generate,
-        // [in] chunks.NodeDepth,
-        // [out] saves.Loaded,
         [out] lights.GenerateLights,
         [none] terrain.TerrainChunk,
         [none] lights3.SunnyChunk

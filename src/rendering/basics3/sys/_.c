@@ -70,8 +70,8 @@ void define_systems_basics3D(ecs* world) {
         [none] !rendering.MeshColorRGBs
     );
     zox_system_1(
-        Mesh3DTexturedUploadSystem,
-        zoxp_mainthread,
+        TexturedMeshUploadSystem,
+        EcsPreStore, // zoxp_mainthread,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
         [in] rendering.MeshUVs,
@@ -97,7 +97,7 @@ void define_systems_basics3D(ecs* world) {
     );
     zox_system_1(
         MeshColorsGpuSystem,
-        zoxp_mainthread,
+        EcsPreStore, // zoxp_mainthread,
         [in] rendering.MeshColorsDirty,
         [in] rendering.MeshColorRGBs,
         [in] rendering.ColorsGPULink,

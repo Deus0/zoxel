@@ -7,7 +7,7 @@ entity spawn_prefab_cube(ecs *world) {
     zox_prefab_set(e, Scale1D, { 0.125f });
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, Brightness, { 0.6f });
-    zox_prefab_set(e, MeshDirty, { mesh_state_trigger_slow });
+    zox_prefab_set(e, MeshDirty, { mesh_state_trigger });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_add_tag(e, MeshBasic3D);
     zox_prefab_set(e, MeshIndicies, { 0 });

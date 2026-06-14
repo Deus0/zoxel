@@ -22,7 +22,6 @@ static const byte3 octree_positions_b[] = {
     { 1, 1, 1}
 };
 
-
 const float octree_scales[] = {
     1.0f,
     0.5f,
@@ -140,4 +139,15 @@ const byte node_index_with_right[] = {
     -1,
     -1,
     -1
+};
+
+// NOTE: For some reason my octree faces are different axis
+// converts face to octree indexes
+static const byte octree_face_children[6][4] = {
+    {4, 5, 6, 7}, // +X
+    {0, 1, 2, 3}, // -X
+    {2, 3, 6, 7}, // +Y
+    {0, 1, 4, 5}, // -Y
+    {1, 3, 5, 7}, // +Z
+    {0, 2, 4, 6}, // -Z
 };

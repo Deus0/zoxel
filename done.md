@@ -1,4 +1,7 @@
 ### Done ###
+-x Why isnt light passing through grass?
+-x Fix lighting again, now that ihave gate its easy to see it doesnt always light properly
+-x Bigger octrees to use brightest neighbor for lighting
 -x Fix multiple stream points working
 -x Swing Arms for walking
 -x Raise arm more when attacking

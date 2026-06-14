@@ -1,5 +1,7 @@
 // NOTE: Fills land with Soils based on biomes
 zox_sys2(LandfillChunk3System) {
+    int sand_height = 4;
+    int stone_height = 18;
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -129,7 +131,9 @@ zox_sys2(LandfillChunk3System) {
                         value = obsidian_id > 0 ? obsidian_id : soil_id;
                     } else {
                         if (terrain_position_y >= terrain_top_position - 2) {
-                            if (terrain_position_y > sand_height) {
+                            if (terrain_position_y > stone_height) {
+                                value = stone_id;
+                            } else if (terrain_position_y > sand_height) {
                                 value = soil_id;
                             } else {
                                 value = sand_id;

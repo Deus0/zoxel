@@ -6,7 +6,6 @@ typedef struct {
     // byte type;
 } SidesOctree;
 zoxc_octree(SidesOctree, byte, 0);
-// zoxc_octree_fun1(SidesOctree, byte, 0);
 new_octree_function_set(SidesOctree);
 create_node_getter(SidesOctree);
 create_octree_reducer(SidesOctree);
