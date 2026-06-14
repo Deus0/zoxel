@@ -5,19 +5,22 @@
 zox_sys2(VoxelLightSystem) {
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(BlockManagerLink);
     zox_sys_in(VoxelNodeQueue);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
-    zox_sys_in(VoxLink);
     zox_sys_out(SunlightQueue);
     zox_sys_out(LightQueue);
     zox_sys_out(DarkQueue);
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
+    entity realm = 0;
     byte solidity[255];
-    for (int j = 0; j < 255; j++) solidity[j] = 1;
-    fetch_first_solidity(world, it, VoxLink_, solidity);
+    for (int j = 0; j < 255; j++) {
+        solidity[j] = 1;
+    }
     for (int i = 0; i < it->count; i++) {
+        zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(VoxelNodeQueue, input_queue);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -29,6 +32,15 @@ zox_sys2(VoxelLightSystem) {
         if (!input_queue->count) {
             continue;
         }
+        // NOTE: Check Blocks Caches
+        if (realm != manager->value) {
+            realm = manager->value;
+            zox_geter(realm, BlockLinks, blocks);
+            for (int j = 0; j < blocks->length; j++) {
+                entity block = blocks->value[j];
+                solidity[j] = zox_valid(block) && zox_has(block, BlockLightPass) ? !zox_getv(block, BlockLightPass) : 1;
+            }
+        }
         const LightNode* nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         for (size_t j = 0; j < input_queue->count; j++) {
@@ -39,12 +51,6 @@ zox_sys2(VoxelLightSystem) {
                 byte light_above = above ? above->value : 0;
                 if (light_above == sunlight) {
                     // if y, we do y + 1
-                    /*a_LightQueue(light_queue, (LightUpdate) {
-                        // .type = zox_light_type_beam,
-                        .pos = update.pos,
-                        .light = sunlight,
-                        .depth = depth->value
-                    });*/
                     a_SunlightQueue(sun_queue, (SunlightUpdate) {
                         .pos = update.pos,
                         .light = sunlight,

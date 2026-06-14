@@ -5,6 +5,7 @@ entity spawn_prefab_mountain(ecs* world) {
     zox_set(e, BlockPosition2, { int2_zero });
     zox_set(e, Radius, { 0 });
     zox_set(e, Height, { 0 });
+    zox_set(e, Seed, { 0 });
     return e;
 }
 

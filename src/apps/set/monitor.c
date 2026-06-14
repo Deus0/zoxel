@@ -8,7 +8,7 @@ void zox_set_monitor(ecs *world, byte value) {
     zoxs_set_byte(world, "monitor", value);
 }
 
-void zox_set_monitor_silently(ecs *world, const entity e, byte value) {
+void zox_set_monitor_silently(ecs *world, entity e, byte value) {
     monitor = value;
     zoxs_set_byte_silently(world, "monitor", value);
     zox_set(e, WindowMonitor, { value })

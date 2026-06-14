@@ -81,17 +81,15 @@ zox_sys2(ChunkLinkSystem) {
         zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
         zox_geter_value(terrain->value, NodeDepth, byte, node_depth);
         int3 new_chunk_position = real_position_to_chunk_position(position->value, powers_of_two[node_depth], terrain_scale);
-        byte is_set = !link->value || (!int3_equals(new_chunk_position, chunk_position->value));
+        byte is_set = !zox_valid(link->value) || (!int3_equals(new_chunk_position, chunk_position->value));
         if (!is_set) {
             continue;
         }
         chunk_position->value = new_chunk_position;
         zox_geter(terrain->value, ChunkLinks, chunks);
         entity chunk = int3_hashmap_get(chunks->value, new_chunk_position);
-        if (set_entity_chunk(world, e, link, chunk, dbg_log)) {
-            disable->value = 0;
-        } else {
-            disable->value = 1;
-        }
+        // NOTE: Disables if not set
+        set_entity_chunk(world, e, link, chunk, dbg_log);
+        disable->value = !zox_valid(link->value);
     }
 } zox_sys_end(ChunkLinkSystem);

@@ -37,7 +37,8 @@ zox_sys2(BlocksRealmSpawnSystem) {
                 zox_geter(model, ModelLods, lods);
                 byte max_render_depth = block_vox_depth;
                 entity vox = lods->value[max_render_depth];
-                spawn_realm_block_model(world, e, 123361, "rose", color_red, 0, model, vox);
+                entity e2 = spawn_realm_block_model(world, e, 123361, "rose", color_red, 0, model, vox);
+                zox_set(e2, BlockLightPass, { 1 });
             }
         }
         spawn_dungeon_blocks(world, e);

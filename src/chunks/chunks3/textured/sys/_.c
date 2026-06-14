@@ -34,7 +34,6 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] textures.TilemapLink,
         [in] chunks3.ChunkMeshDirty,
         [in] rendering.RenderDepth,
-        // [in] chunks3.ChunkNeighbors,
         [in] blocks.BlockScale,
         [in] chunks3.VoxelNode,
         [in] chunks3.SidesOctree,

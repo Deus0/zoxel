@@ -69,6 +69,9 @@
 #define zox_sys_begin_2()\
     byte fi2 = 0;
 
+#define zox_sys_begin_2_at(a)\
+    byte fi2 = a;
+
 #ifdef zox_flecs_4
 
     #define zox_sys_in_2(name)\
@@ -92,3 +95,7 @@
 
 #define zox_sys_o_2(name, variable_name)\
     name *variable_name = &name##s_2[j];
+
+
+#define zox_sys_i_2i(name, variable_name, a)\
+    const name *variable_name = &name##s_2[a];

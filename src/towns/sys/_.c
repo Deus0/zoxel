@@ -7,6 +7,7 @@ void zox_define_systems_towns(ecs* world) {
         RegionTownsSystem,
         zoxp_mainthread,
         [in] core.Generate,
+        [in] core.Seed,
         [in] regions.RegionPosition,
         [in] blocks.BlockPosition2,
         [in] blocks.BlockSize2,

@@ -1,11 +1,17 @@
 // #include "printer.c"
 #include "lines.c"
 // #include "sides.c"
+#include "refresh.c"
 
 void zox_dbg_cycle_light_debug(ecs *world, ClickEventData data) {
     // zox_debug_lights = !zox_debug_lights;
-    zox_debug_lights++;
+    /*zox_debug_lights++;
     if (zox_debug_lights > terrain_depth + 1) {
+        zox_debug_lights = 0;
+    }*/
+    if (!zox_debug_lights) {
+        zox_debug_lights = terrain_depth + 1;
+    } else {
         zox_debug_lights = 0;
     }
     if (!zox_debug_lights) {

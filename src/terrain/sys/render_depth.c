@@ -21,28 +21,22 @@ zox_sys2(RenderDepthChunk3System) {
         if (render_depth_dirty->value != zox_dirty_active) {
             continue;
         }
-        byte old_depth = octree_depth->value;
-        // Rebuilds Mesh Whenever Render Depth is Dirty
-        zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
-        /*if (loaded->value) {
-            zox_set(e, VoxelNodeGenerated, { zox_dirty_trigger });
-        }*/
         // NOTE: This just updates the mesh
         // TODO: This is where we should set the chunk render LOD mesh
-        if (loaded->value) {
-            continue;
-        }
-        if (render_depth->value > old_depth) {
+        if (render_depth->value > octree_depth->value) {
             // Set New Depth
             octree_depth->value = render_depth->value;
             if (dbg_log) {
                 zox_log("Chunk [%s] Depth Increased -> %i", zox_get_name(e), render_depth->value);
             }
-            // kicks off lighting if loaded
+            // Set to Generate as Depth Increased
             if (!loaded->value) {
-                // Set to Generate as Depth Increased
                 generate->value = zox_dirty_trigger;
             }
+        }
+        // NOTE: Rebuilds Mesh Whenever Render Depth is Dirty, unless generating
+        if (!generate->value) {
+            zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
         }
     }
 } zox_sys_end(RenderDepthChunk3System);

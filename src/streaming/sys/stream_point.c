@@ -3,6 +3,7 @@ zox_sys2(StreamPointSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StreamLink);
@@ -37,6 +38,8 @@ zox_sys2(StreamPointSystem) {
             point2->value = npoint2;
             dirty2->value = zox_dirty_trigger;
         }
-        // zox_log("Streaming Dirty: %ix%ix%i", npoint.x, npoint.y, npoint.z);
+        if (dbg_log) {
+            zox_log("Streaming Dirty: %ix%ix%i", npoint.x, npoint.y, npoint.z);
+        }
     }
 } zox_sys_end(StreamPointSystem);

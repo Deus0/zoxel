@@ -1,5 +1,7 @@
 # Bugs #
 
+- Fix light face on bigger lods, needs tojust pick brightest if at a lower division
+
 # Regressions #
 - now that body is bigger, we are seeing more physics glitching
 - make run should check gam directory too for changes

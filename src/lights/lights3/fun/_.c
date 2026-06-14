@@ -2,7 +2,7 @@
 #include "prefab.c"
 #include "fetch.c"
 
-void fetch_first_solidity(ecs* world, iter* it, const VoxLink* VoxLink_, byte* solidity) {
+/*void fetch_first_solidity(ecs* world, iter* it, const VoxLink* VoxLink_, byte* solidity) {
     entity first_terrain = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxLink, parent);
@@ -35,4 +35,4 @@ void fetch_first_solidity(ecs* world, iter* it, const VoxLink* VoxLink_, byte* s
             solidity[i] = zox_gett_value(block, BlockCollider) == zox_block_solid;
         }
     }
-}
+}*/

@@ -54,34 +54,23 @@ const T* get_adjacent_##T(\
 }\
 \
 \
-const T* get_adjacentn_##T(\
-    const T** neighbors, \
-    const T* vnode,\
-    int3 position, \
-    byte depth, \
-    byte direction \
-) {\
+const T* get_adjacentn_##T(const T** neighbors, const T* vnode, int3 position, byte depth, byte direction) {\
     if (!vnode) { \
         return NULL; \
     } \
-    \
     position = move_position(position, direction); \
     byte vlength = powers_of_two[depth];\
-    \
     if (position.x < 0 || position.x >= vlength || \
         position.y < 0 || position.y >= vlength || \
         position.z < 0 || position.z >= vlength) { \
-        \
         position = reverse_position(position, direction, vlength); \
         vnode = neighbors[direction];\
-        \
         if (!vnode) { \
             return NULL; \
         } \
     }\
     \
-    const T* v = get_##T(vnode, depth, int3_to_byte3(position), 0);\
-    return v; \
+    return get_##T(vnode, depth, int3_to_byte3(position), 0);\
 }
 
 byte is_on_edge_octree(byte depth, int3 position, byte direction) {

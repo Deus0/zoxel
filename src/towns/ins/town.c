@@ -1,5 +1,5 @@
 // TODO: Add quadtree data and chunk2 tag
-entity spawn_town(ecs* world, entity prefab, entity parent, int2 position, byte2 size, byte wall_height, byte wall_thickness) {
+entity spawn_town(ecs* world, entity prefab, entity parent, lint seed, int2 position, byte2 size, byte wall_height, byte wall_thickness) {
     zox_instance(prefab);
     {
         char name[64];
@@ -7,6 +7,7 @@ entity spawn_town(ecs* world, entity prefab, entity parent, int2 position, byte2
         zox_name(name);
     }
     zox_set_parent(world, e, parent);
+    zox_set(e, Seed, { seed });
     zox_set(e, BlockPosition2, { position });
     zox_set(e, TownSize, { size });
     zox_set(e, WallHeight, { wall_height });

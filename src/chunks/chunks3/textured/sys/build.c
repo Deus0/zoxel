@@ -9,14 +9,13 @@ byte zox_disable_node_face_subdivision = 1;
 // static data
 typedef struct {
     // chunk data
-    const VoxelNode *root;
+    const VoxelNode* root;
     const byte rdepth;
-    const mesh_uvs_build_data *mesh_data;
+    const mesh_uvs_build_data* mesh_data;
     byte edge_voxel;
     // voxels
-    const TilemapUVs *tilemap_uvs;
-    const byte *voxel_solidity;
-    // const int *voxel_uv_indexes;
+    const TilemapUVs* tilemap_uvs;
+    const byte* voxel_solidity;
 } terrain_build_data;
 
 // changing data

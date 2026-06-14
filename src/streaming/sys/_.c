@@ -1,9 +1,6 @@
 #include "stream_point.c"
-#include "lod2.c"
-#include "lod3.c"
 #include "frustum.c"
 #include "stream_end.c"
-// #include "sync.c"
 
 void define_systems_streaming(ecs* world) {
     zox_system(
@@ -17,26 +14,16 @@ void define_systems_streaming(ecs* world) {
         [out] streaming.StreamDirty2,
         [none] streaming.Streamer
     );
-    // Set streamer from terrain
-    /*zox_system(
-        StreamPointSyncSystem,
-        EcsOnUpdate,
-        [in] streaming.StreamLink,
-        [out] blocks.BlockScale,
-        [out] chunks.NodeDepth,
-        [none] streaming.Streamer
-    );*/
     zox_filter(
-        filter_cameras,
+        frustum_cameras,
         [in] transforms3.Position3DBounds,
         [in] cameras.CameraPlanes,
-        // [none] cameras.Camera3D
         [none] streaming.Streamer
     );
     zox_system_ctx(
         ChunkFrustumSystem,
         zoxp_voxels_read,
-        filter_cameras,
+        frustum_cameras,
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
         [in] chunks3.ChunkEntities,
@@ -46,38 +33,6 @@ void define_systems_streaming(ecs* world) {
     );
     zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, {  zox_lag_cutoff * 2 });
     add_system_process_counter(world, zox_id(ChunkFrustumSystem));
-    zox_filter(streamers3,
-        [in] streaming.StreamPoint,
-        [in] streaming.StreamDirty,
-        [none] streaming.Streamer
-    );
-    zox_system_ctx(
-        ChunkLodSystem,
-        zoxp_update,
-        streamers3,
-        [in] chunks3.ChunkPosition,
-        [out] rendering.RenderDepth,
-        [out] rendering.RenderDistance,
-        [out] rendering.RenderDepthDirty,
-        [out] rendering.RenderDistanceDirty,
-        [none] streaming.StreamedChunk
-    );
-    zox_filter(streamers2,
-        [in] streaming.StreamPoint2,
-        [in] streaming.StreamDirty2,
-        [none] streaming.Streamer
-    );
-    zox_system_ctx(
-        TunkLodSystem,
-        zoxp_update,
-        streamers2,
-        [in] chunks2.Chunk2Position,
-        [out] rendering.RenderDistance,
-        [out] rendering.RenderDepth,
-        [out] rendering.RenderDistanceDirty,
-        [out] rendering.RenderDepthDirty,
-        [none] streaming.StreamedChunk
-    );
     // streams
     // main thread
     zox_system_1(

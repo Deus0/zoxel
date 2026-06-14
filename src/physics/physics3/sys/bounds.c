@@ -9,7 +9,6 @@ zox_sys2(Position3DBoundsSystem) {
         zox_sys_i(Position3DBounds, position3DBounds);
         zox_sys_i(Bounds3D, bounds3D);
         zox_sys_o(Position3D, position3D);
-
         const float6 bounds = position3DBounds->value;
         if (bounds.x == 0 && bounds.y == 0 && bounds.z == 0 && bounds.w == 0 && bounds.u == 0 && bounds.v == 0) {
             continue; // disabled

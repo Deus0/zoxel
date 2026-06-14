@@ -1,4 +1,9 @@
-// TODO: Spawn entity that handles disabling its parent until the terrain chunks load at the position and around it
-entity spawn_character_stream_loader(ecs* world) {
-    return 0;
+entity spawn_streamer(ecs *world, entity prefab, entity terrain, float3 position){
+    zox_instance(prefab);
+    zox_name("streamer");
+    zox_set(e, StreamLink, { terrain });
+    zox_set(e, Position3D, { position });
+    // zox_set(e, StreamPoint, { point });
+    // zox_set(e, StreamPoint2, { { point.x, point.z } });
+    return e;
 }

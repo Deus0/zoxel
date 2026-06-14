@@ -7,9 +7,6 @@
 #ifndef zoxm_lighting3
 #define zoxm_lighting3
 
-byte zox_disable_low_res_lights = 1;
-byte zox_disable_flood_fill = 0;
-
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"

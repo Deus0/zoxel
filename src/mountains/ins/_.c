@@ -1,4 +1,4 @@
-entity spawn_mountain(ecs* world, entity prefab, entity parent, int2 position, byte size, byte height) {
+entity spawn_mountain(ecs* world, entity prefab, entity parent, lint seed, int2 position, byte size, byte height) {
     zox_instance(prefab);
     {
         char name[64];
@@ -9,5 +9,6 @@ entity spawn_mountain(ecs* world, entity prefab, entity parent, int2 position, b
     zox_set(e, BlockPosition2, { position });
     zox_set(e, Radius, { size });
     zox_set(e, Height, { height });
+    zox_set(e, Seed, { seed });
     return e;
 }

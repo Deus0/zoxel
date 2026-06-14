@@ -47,8 +47,12 @@ byte get_node_sides_all_solid(const byte* solidity, const VoxelNode* node, byte 
 }
 
 // this function accounts for size of drawing voxels
+// NOTE: Returns 1 to build the side
 static inline byte build_voxel_sides(const byte* solids, const VoxelNode* rvoctree, const VoxelNode** noctrees, const byte* ndepths, const VoxelNode* voctree, SidesOctree* sides, byte depth, byte3 position, byte direction) {
     const VoxelNode* anode = get_adjacentn_VoxelNode(noctrees, rvoctree,  byte3_to_int3(position), depth, direction);
+    if (!anode) {
+        return 0;
+    }
     // Accounts for Dig vs Render Difference
     byte adepth = get_adjacent_depth(depth, ndepths, byte3_to_int3(position), direction);
     byte asolid;
@@ -125,7 +129,39 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* rvoctree
     return ssides;
 }
 
-// DECIDE: Should I collapse sides octree nodes here?
+// Make sure BlockManagerLink is first one
+byte* blocks_fetch_solids(iter* it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(BlockManagerLink);
+    entity manager = 0;
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(BlockManagerLink, blocker);
+        if (!zox_valid(blocker->value)) {
+            continue;
+        }
+        manager = blocker->value;
+        break;
+    }
+    if (!manager) {
+        return NULL;
+    }
+    zox_geter(manager, BlockLinks, blocks);
+    if (!blocks->length) {
+        return NULL;
+    }
+    byte* solids = malloc(blocks->length * sizeof(byte));
+    for (int i = 0; i < blocks->length; i++) {
+        entity block = blocks->value[i];
+        if (!zox_valid(block) || !zox_has(block, BlockModel)) {
+            solids[i] = 1;
+            continue;
+        }
+        solids[i] = zox_gett_value(block, BlockModel) == zox_block_solid;
+    }
+    return solids;
+}
+
 zox_sys2(Chunk3SidesSystem) {
     // zox_sys_in(BlockManagerLink);
     byte* solids = blocks_fetch_solids(it);

@@ -8,6 +8,7 @@ extern byte zox_tst_single_terrain_chunk;   // from terrain
 
 // A state checker for stream loading
 zox_sys2(StreamEndSystem) {
+    byte dbg_log = 1;
     // also checks if loaded enough chunks
     int xz_chunks = terrain_lod_near * 2 + 1;
     int y_chunks = render_distance_y * 2 + 1;
@@ -51,11 +52,11 @@ zox_sys2(StreamEndSystem) {
                         zox_log_error("chunk invalid not sure why[%lu]", chunk);
                     }
                     running = 1;
-                } else if (zox_gett_value(chunk, RenderDepth) == render_depth_spawning) {
+                }/* else if (zox_getv(chunk, RenderDepth) == render_depth_spawning) {
                     running = 1;
-                } else if (zox_gett_value(chunk, ChunkMeshDirty)) {
+                } */else if (zox_getv(chunk, ChunkMeshDirty)) {
                     running = 1;
-                } else if (zox_gett_value(chunk, Generate)) {
+                } else if (zox_getv(chunk, Generate)) {
                     running = 1;
                 }
                 if (running) {
@@ -78,7 +79,9 @@ zox_sys2(StreamEndSystem) {
             }
             // now loaded
             loaded->value = zox_load_done;
-            // zox_log("Terrain Loaded: @ [%f] - chunks: [%i]", zox_current_time, chunks_loaded);
+            if (dbg_log) {
+                zox_log("Terrain Loaded: chunks: [%i]", chunks_loaded);
+            }
         }
     }
 } zox_sys_end(StreamEndSystem);

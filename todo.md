@@ -1,8 +1,15 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+# ASAP Bugs
+- The crash is back?? OR NOT??!?!
+- Physics Clip issue for big body
+-x Why isnt light passing through grass?
+-x Fix lighting again, now that ihave gate its easy to see it doesnt always light properly
+
 # Important
 - Add Minimap
+	- debug entire region at once
 - Block Damage Overlay
 - Block Health Regens
 - Dialogue speed should be per character and not per animation line
@@ -20,6 +27,7 @@
 - set alpha based on health for WorldBlock entities
 - Use prefab with health + regen children stats for blocks
 
+- Refactor Settings to Entities
 - disable next button until dialogue animation finished
 - SaveLoad Items - using new Saves Module for better workflow
 - Use SDLGamepad instead of Joystick for better Compatibility

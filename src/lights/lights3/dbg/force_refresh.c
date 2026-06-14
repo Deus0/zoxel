@@ -1,1 +1,0 @@
-// TODO: Force a refresh for sunlight and see if it helps

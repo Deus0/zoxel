@@ -4,6 +4,7 @@ zox_tag(BlockVox);
 zox_tag(BlockDungeon);
 zox_tag(BlockInvinsible);
 zox_tag(BlockCanGroup);
+zoxc_byte(BlockLightPass);
 zoxc_byte(BlockModel);
 zoxc_byte(BlockCollider); // zox_block_air | zox_block_solid
 zoxc_state(BlocksDirty);
@@ -39,6 +40,7 @@ void zox_define_components_blocks(ecs *world) {
     zoxd_tag(BlockDungeon);
     zoxd_tag(BlockInvinsible);
     zoxd_tag(BlockCanGroup);
+    zoxd_byte(BlockLightPass);
     zoxd_byte(BlockModel);
     zoxd_byte(BlockCollider);
     zoxd_state(BlocksDirty);

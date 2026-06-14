@@ -74,58 +74,65 @@ zox_sys2(SunlightSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(BlockManagerLink);
     zox_sys_in(GenerateLights);
     zox_sys_in(NodeDepth);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
-    zox_sys_in(VoxLink);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
+    entity realm = 0;
     byte solidity[255];
     for (int j = 0; j < 255; j++) {
         solidity[j] = 1;
     }
-    fetch_first_solidity(world, it, VoxLink_, solidity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(GenerateLights, state);
-        zox_sys_i(NodeDepth, depthr);
+        zox_sys_i(NodeDepth, depth);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightQueue, floodlight_queue);
         zox_sys_o(LightNode, lnode);
-        zox_sys_o(LightNodeDepth, depthl);
+        zox_sys_o(LightNodeDepth, light_depth);
         zox_sys_o(LightNodeDirty, dirty);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        // we skip if already at right depth
-        if (depthl->value >= depthr->value) {
-            // zox_logw("Skip Updating lights, light depth already updated");
-            continue;
-        }
         entity chunkd = neighbors->value[direction_down];
         // For now we skip unless bottom chunk - due to loading timing
-        if (!zox_valid(chunkd)) {
-            // Delay a frame!
-            if (!zox_has(e, BottomChunk)) {
-                zox_set(e, GenerateLights, { zox_dirty_trigger });
+        if (!zox_valid(chunkd)) { //|| zox_getv(chunkd, Generate) || zox_getv(chunkd, VoxelNodeDirty)) {
+            // NOTE: Delays Sunlight a frame!
+            zox_set(e, GenerateLights, { zox_dirty_trigger });
+            if (dbg_log) {
+                zox_log("Delaying Topmost Chunk [%s] as below chunk not valid", zox_get_name(e));
             }
             continue;
+            /*if (!zox_has(e, BottomChunk)) {
+                zox_set(e, GenerateLights, { zox_dirty_trigger });
+            }*/
+        }
+        // NOTE: Check Blocks Caches
+        if (realm != manager->value) {
+            realm = manager->value;
+            zox_geter(realm, BlockLinks, blocks);
+            for (int j = 0; j < blocks->length; j++) {
+                entity block = blocks->value[j];
+                solidity[j] = zox_valid(block) && zox_has(block, BlockLightPass) ? !zox_getv(block, BlockLightPass) : 1;
+            }
         }
         SunlightQueue* chunk_below_sunlight_queue = zox_gett_mut(chunkd, SunlightQueue);
-        depthl->value = depthr->value;
-        byte length = powers_of_two[depthl->value];
+        light_depth->value = depth->value;
+        byte length = powers_of_two[depth->value];
         const VoxelNode* n_root_vnodes[6];
         fetch_neightbor_voxel_nodes(world, neighbors, n_root_vnodes);
         const LightNode* n_root_lnodes[6];
         fetch_neightbor_light_nodes(world, neighbors, n_root_lnodes);
-        //SunlightQueue* neighbor_sunlight_queues[6];
-        //fetch_neighbors_sunlight_queues(world, neighbors->value, neighbor_sunlight_queues);
         if (dbg_log) {
-            zox_log("[%s] Topmost Sunbeams l[%i] d[%i]", zox_get_name(e), sunlight, depthl->value);
+            zox_log("[%s] Topmost Sunbeams Light [%i] Depth [%i]", zox_get_name(e), sunlight, depth->value);
         }
         // now for all XZ places we go through
         byte3 pos;
@@ -135,7 +142,7 @@ zox_sys2(SunlightSystem) {
                 if (dbg_log >= 2) {
                     zox_log("   - [%s] Begin Topmost Sunbeam [%ix%ix%i] l[%i]", zox_get_name(e), pos.x, pos.y, pos.z, sunlight);
                 }
-                if (sunbeam(floodlight_queue, chunk_below_sunlight_queue, lnode, vnode, depthl->value, pos, sunlight, n_root_vnodes, n_root_lnodes, darklight, light_air_decay, solidity)) {
+                if (sunbeam(floodlight_queue, chunk_below_sunlight_queue, lnode, vnode, depth->value, pos, sunlight, n_root_vnodes, n_root_lnodes, darklight, light_air_decay, solidity)) {
                     dirty->value = zox_dirty_trigger;
                 }
             }
@@ -149,20 +156,21 @@ zox_sys2(LightBeamSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(BlockManagerLink);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
-    zox_sys_in(VoxLink);
     zox_sys_out(SunlightQueue);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
+    entity realm = 0;
     byte solidity[255];
     for (int j = 0; j < 255; j++) {
         solidity[j] = 1;
     }
-    fetch_first_solidity(world, it, VoxLink_, solidity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(SunlightQueue, sunlight_queue);
@@ -173,10 +181,23 @@ zox_sys2(LightBeamSystem) {
             continue;
         }
         entity chunkd = neighbors->value[direction_down];
-        // For now we skip for bottom chunk - due to loading timing
-        if (!zox_valid(chunkd) && !zox_has(e, BottomChunk)) {
-            // NOTE: We wait for below chunk to load
-            continue;
+        if (!zox_has(e, BottomChunk)) {
+            if (!zox_valid(chunkd)) { // || zox_getv(chunkd, Generate) || zox_getv(chunkd, VoxelNodeDirty)) {
+                // NOTE: We wait for below chunk to load
+                if (dbg_log) {
+                    zox_log("Delaying Chunk [%s] as below chunk not valid", zox_get_name(e));
+                }
+                continue;
+            }
+        }
+        // NOTE: Check Blocks Caches
+        if (realm != manager->value) {
+            realm = manager->value;
+            zox_geter(realm, BlockLinks, blocks);
+            for (int j = 0; j < blocks->length; j++) {
+                entity block = blocks->value[j];
+                solidity[j] = zox_valid(block) && zox_has(block, BlockLightPass) ? !zox_getv(block, BlockLightPass) : 1;
+            }
         }
         SunlightQueue* chunk_below_sunlight_queue = zox_valid(chunkd) ? zox_gett_mut(chunkd, SunlightQueue) : NULL;
         const VoxelNode* n_root_vnodes[6];
@@ -195,15 +216,13 @@ zox_sys2(LightBeamSystem) {
                 //  zox_log_error("[r_LightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
                 continue;
             }
-            // TODO: Add type for light/dark beams
-            // TODO: we should probably make this byte3, with y, since we are gonna be used that now
             if (dbg_log >= 2) {
                 zox_log(" - Beaming [%ix%ix%i] l[%i] q [%i]", update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count);
             }
             if (sunbeam(floodlight_queue, chunk_below_sunlight_queue, root_lnode, root_vnode, update.depth, update.pos, update.light, n_root_vnodes, n_root_lnodes, darklight, light_air_decay, solidity)) {
                 if (!dirty->value) {
                     if (dbg_log) {
-                        zox_log("[%s] Chunk Now Dirty at [%ix%ix%i] l[%i] q [%i]", zox_get_name(e) , update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count);
+                        zox_log("[%s] ChunkLights Updated at [%ix%ix%i] l[%i] q [%i] Depth [%i]", zox_get_name(e) , update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count, update.depth);
                     }
                 }
                 dirty->value = zox_dirty_trigger;

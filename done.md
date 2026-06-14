@@ -1,4 +1,5 @@
 ### Done ###
+-x Fix multiple stream points working
 -x Swing Arms for walking
 -x Raise arm more when attacking
 -x Base arm swing speed on walk state

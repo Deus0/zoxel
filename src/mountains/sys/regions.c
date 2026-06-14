@@ -1,15 +1,16 @@
 // NOTE: Returns 1 if successfully added a new position/radius
-byte find_position_in_bounds(int2 region_position, int2 region_size, byte minimum_radius, byte maximum_radius, int2* positions, byte* radii, byte added) {
+byte find_position_in_bounds(lint seed, int2 region_position, int2 region_size, byte minimum_radius, byte maximum_radius, int2* positions, byte* radii, byte added) {
     const int max_attempts = 100;
     for (int attempt = 0; attempt < max_attempts; attempt++) {
-        byte new_radius = rand_range(minimum_radius, maximum_radius);
+        lint seed2 = seed + attempt * 100;
+        byte new_radius = seed_range(seed2 + 0, minimum_radius, maximum_radius);
         int2 new_position = {
-            rand_range(
+            seed_range(seed2 + 1,
                 region_position.x + new_radius,
                 region_position.x + region_size.x - new_radius),
-                rand_range(
-                    region_position.y + new_radius,
-                    region_position.y + region_size.y - new_radius)
+            seed_range(seed2 + 2,
+                region_position.y + new_radius,
+                region_position.y + region_size.y - new_radius)
         };
         byte valid = 1;
         for (int i = 0; i < added; i++) {
@@ -42,12 +43,14 @@ zox_sys2(RegionMountainSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
+    zox_sys_in(Seed);
     zox_sys_in(RegionPosition);
     zox_sys_in(BlockPosition2);
     zox_sys_in(BlockSize2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, generate);
+        zox_sys_i(Seed, seed);
         zox_sys_i(RegionPosition, position);
         zox_sys_i(BlockPosition2, block_position);
         zox_sys_i(BlockSize2, block_size);
@@ -61,13 +64,14 @@ zox_sys2(RegionMountainSystem) {
         int2 positions[spawn_count];
         byte sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
-            if (!find_position_in_bounds(block_position->value, block_size->value, min_size, max_size, positions, sizes, j)) {
+            if (!find_position_in_bounds(seed->value, block_position->value, block_size->value, min_size, max_size, positions, sizes, j)) {
                 continue;
             }
             int2 spawn_position = positions[j];
             byte radius = sizes[j];
-            byte height = rand_range(min_height, max_height);
-            spawn_mountain(world, prefab_mountain, e, spawn_position, radius, height);
+            byte height = seed_range(seed->value + j, min_height, max_height);
+            lint mountain_seed = position_seed2(seed->value, spawn_position);
+            spawn_mountain(world, prefab_mountain, e, mountain_seed, spawn_position, radius, height);
             if (dbg_log) {
                 zox_log("   ++ Mountain [%ix%i]", spawn_position.x, spawn_position.y);
             }

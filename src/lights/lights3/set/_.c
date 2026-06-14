@@ -12,3 +12,5 @@ byte zox_is_log_lighting_light = 0;
 byte zox_is_log_lighting_remove = 0;
 byte zox_is_log_lighting_dark = 0;
 byte zox_is_log_lighting_place = 0;
+byte zox_disable_low_res_lights = 0;
+byte zox_disable_flood_fill = 0;

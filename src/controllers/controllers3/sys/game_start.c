@@ -48,9 +48,12 @@ zox_sys2(GameStartStreamerSystem) {
             spawn_rotation = quaternion_identity;
             state->value = zox_player_state_new;
             dirty->value = zox_dirty_trigger;
+            // Regions / Towns only
+            zox_set(camera->value, StreamerLevel, { 0 });
         } else {
             // If has save game
             load_character_p(world, realm, e, &position, &spawn_euler, &spawn_rotation);
+            zox_set(camera->value, StreamerLevel, { 1 });
         }
         {
             // Attach to our terrain's event

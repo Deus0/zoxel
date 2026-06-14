@@ -1,3 +1,4 @@
+// NOTE: Handles stat labels!
 zox_sys2(StatTextSystem) {
     int label_text_count = 256;
     zox_sys_world();
@@ -11,8 +12,13 @@ zox_sys2(StatTextSystem) {
         zox_sys_o(TextDirty, dirty);
         entity stat = stat_link->value;
         if (!zox_valid(stat)) {
-            zox_sys_e();
-            zox_log_error("[%s] has invalid stat linked", zox_get_name(e));
+            // zox_sys_e();
+            // zox_loge("[%s] has invalid stat linked", zox_get_name(e));
+            const char* text = "-";
+            if (!is_zext(data, text)) {
+                set_zext(data, text);
+                dirty->value = zox_dirty_trigger;
+            }
             continue;
         }
         if (!zox_has(stat, ZoxName) || !zox_has(stat, StatValue)) {

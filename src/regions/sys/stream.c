@@ -38,7 +38,7 @@ zox_sys2(RegionSpawnSystem) {
                                 zox_log("New Region [%ix%i] Spawned", region_position.x, region_position.y);
                             }
                             // Generate Seed from Terrain Seed
-                            lint region_seed = seed->value;
+                            lint region_seed = position_seed2(seed->value, region_position);
                             entity region = spawn_region(world, prefab_region, e, region_seed, region_position, region_size);
                             int2_hashmap_add(regions->value, region_position, region);
                         }

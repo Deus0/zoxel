@@ -21,9 +21,9 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
     }
     zox_log("   + spawning [dbg_ui_tests] on player %s on canvas %s", zox_get_name(player), zox_get_name(canvas));
     // # List #
+    byte zox_tsts_count = 19;
     int elements_count = 0;
     byte visible_count = 6;
-    byte zox_tsts_count = 16;
     SpawnListElement elements[zox_tsts_count];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
@@ -77,6 +77,10 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
         .on_click = { &zox_tst_spawn_tilemap2 },
     };
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Streamer",
+        .on_click = { &zox_dbg_spawn_streamer },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Death",
         .on_click = { &zox_tst_player_character_death },
     };
@@ -95,6 +99,14 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Rebuild Terrain Meshes",
         .on_click = { &zox_dbg_terrain_refresh },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Refresh Sunlights",
+        .on_click = { &zox_dbg_lights3_refresh_sunlight },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Big Frame Drop",
+        .on_click = { &zox_dbg_test_big_frame },
     };
     // Test our uis
     entity spawned[elements_count];
