@@ -11,7 +11,7 @@ bsh/libs-compile.sh
 game_name=$1
 bin_path="bin/${game_name}.exe"
 OS="windows"
-ARC="x86"
+ARC="x64"
 GLB="opengl"
 GFX="sdl"
 debug="False"

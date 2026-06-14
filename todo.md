@@ -2,6 +2,9 @@
 => GPU Constrained actually, memory barely used - 200-400mb used
 
 # Next Again
+- Use a floodfill algorithm to build a list of chunks that are conneected and updating and use this to check
+    - is ChunkGroup still updating?
+    - This is better than entire terrain as it allows faster updates
 - Make MeshColorsDirty do similar check to MeshDirty states
     - fix it up in Light3BuildSystem
 + I could just put a queue for updates and reduce it when theyre done - wayy to track when i should allow them all to update
