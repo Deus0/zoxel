@@ -7,6 +7,7 @@ zox_sys2(ChunkNeighborLightTriggerSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(MeshColorsGenerate, generate);
+        // if (!is_chunk_busy(world, it->entities[i])) continue;
         for (byte j = 0; j < chunk_neighbors_length; j++) {
             entity neighbor = neighbors->value[j];
             if (!zox_valid(neighbor) || !zox_has(neighbor, LightNodeDirty)) {

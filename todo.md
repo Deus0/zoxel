@@ -2,14 +2,16 @@
 => GPU Constrained actually, memory barely used - 200-400mb used
 
 # Next Again
+- Make MeshColorsDirty do similar check to MeshDirty states
+    - fix it up in Light3BuildSystem
 + I could just put a queue for updates and reduce it when theyre done - wayy to track when i should allow them all to update
 -x Somehow the Town dissapeared
 -x The Humanoid Mesh dissapeared
 + Added slow fps mode to debug this flashing mesh
 + It is mostly fixed hacky fix that checks neighbor loading and slows it
-- Fix flashing chunks when they update mesh
+-x Fix flashing chunks when they update mesh
     -x The issue is when bigger chunks dissapear, it will leave them empty, but the ones
-- Fix Lights Flashing Dark too!
+-x Fix Lights Flashing Dark too!
 
  behind them havn't updated yet!
 - Use SDLGamepad instead of Joystick for better compatibility

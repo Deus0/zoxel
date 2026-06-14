@@ -40,7 +40,6 @@ void zox_apply_debug_colors(const byte* solidity,
     }
 }
 
-
 zox_sys2(Light3BuildSystem) {
     zox_sys_world();
     zox_sys_begin();
