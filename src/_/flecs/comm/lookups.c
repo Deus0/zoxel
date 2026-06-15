@@ -10,7 +10,7 @@
     }\
     \
     byte is_component_type_##T(entity id) {\
-        return is_in_entity_array_d(component_ids_##T, id);\
+        return entity_array_d_has(component_ids_##T, id);\
     } \
     \
     zoxc(stub_##T, T); \

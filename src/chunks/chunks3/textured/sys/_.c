@@ -42,7 +42,8 @@ void define_systems_chunks3_textured(ecs *world) {
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,
         [out] rendering.MeshColorRGBs,
-        [out] rendering.MeshDirty,
+        [out] rendering.MeshReady,
+        [out] core.Busy,
         [none] chunks3.ChunkTextured
     );
     // Custom Debug
@@ -50,7 +51,7 @@ void define_systems_chunks3_textured(ecs *world) {
     zox_system(
         ChunkMeshSlowSystem,
         EcsOnUpdate,
-        [in] chunks3.ChunkNeighbors,
+        [out] rendering.MeshReady,
         [out] rendering.MeshDirty,
         [none] chunks3.ChunkTextured
     );

@@ -12,11 +12,11 @@ void dispose_gpu_systems() {
 }
 
 void add_to_gpu_dispose_systems(long int id) {
-    add_to_int_array_d(gpu_dispose_systems, id);
+    int_array_d_add(gpu_dispose_systems, id);
 }
 
 void add_to_gpu_restore_systems(long int id) {
-    add_to_int_array_d(gpu_restore_systems, id);
+    int_array_d_add(gpu_restore_systems, id);
 }
 
 void run_gpu_dispose_systems(ecs *world) {

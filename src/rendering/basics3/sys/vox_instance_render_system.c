@@ -45,7 +45,7 @@ zox_sys2(VoxInstanceRenderSystem) {
         int index = 0;
         if (has_mesh(commands, instance->value, &index)) {
             InstanceRenderCommand command = commands->data[index];
-            add_to_float4x4_array_d(command.transforms, matrix->value);
+            float4x4_array_d_add(command.transforms, matrix->value);
             commands->data[index] = command;
         } else {
             InstanceRenderCommand command = {
@@ -56,8 +56,8 @@ zox_sys2(VoxInstanceRenderSystem) {
                 // errored out
                 break;
             }
-            add_to_float4x4_array_d(command.transforms, matrix->value);
-            add_to_InstanceRenderCommand_array_d(commands, command);
+            float4x4_array_d_add(command.transforms, matrix->value);
+            InstanceRenderCommand_array_d_add(commands, command);
         }
     }
     zox_gpu_material(material_link);

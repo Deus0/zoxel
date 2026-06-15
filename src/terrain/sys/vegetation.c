@@ -32,7 +32,6 @@ zox_sys2(VegetationChunk3System) {
         zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
         byte is_max_depth = voctree_depth->value == terrain_depth;
         byte voctree_length = powers_of_two_byte[voctree_depth->value];
-        // int chunk_voxel_position_y = cposition->value.y * voctree_length;
         int terrain_chunk_length = powers_of_two[terrain_depth];
         int chunk_voxel_position_y = cposition->value.y *  terrain_chunk_length;
         int2 map_size = int2_single(terrain_chunk_length);
@@ -67,10 +66,14 @@ zox_sys2(VegetationChunk3System) {
                 byte veggie = vegetation_map->value[map_index];
                 byte height = height_map->value[map_index];
                 // Get Top Positions from Height Map
-                int terrain_top_position = (int) height;
-                int top_position = terrain_top_position - chunk_voxel_position_y;
+                int top_position = height - chunk_voxel_position_y;
                 top_position /= hmultiplier;
                 if (top_position < 0 || top_position >= voctree_length) {
+                    continue;
+                }
+                // NOTE: No need for vegetation under the sea
+                //  (maybe some sea weed later)
+                if (height <= grass_height || height >= stone_height) {
                     continue;
                 }
                 // NOTE: Checks if outer bounds to determine if on top of world

@@ -30,10 +30,11 @@
 // Dynamic Array Definitions
 zoxel_dynamic_array(byte)
 zoxel_dynamic_array(int)
-create_is_in_array_d(int)
+create_array_d_has(int)
 zoxel_dynamic_array(float3)
 zoxel_dynamic_array(float2)
 zoxel_dynamic_array(float4x4)
+zoxel_dynamic_array(int3)
 
 void initialize_component_ids() {
     initialize_component_ids_text();
@@ -108,6 +109,8 @@ zoxc_state(Generate);
 zoxc_state(InitializeEntity);
 zoxc_byte(GenericEvent);
 zoxc_byte(SpawnChance);
+zoxc_byte(Busy);
+zoxc_byte(Ready);
 // Measurements
 zoxc_byte(Radius);
 zoxc_byte(Height);
@@ -136,6 +139,8 @@ void define_components_core(ecs* world) {
     zoxd_state(InitializeEntity);
     zoxd_byte(GenericEvent);
     zoxd_byte(SpawnChance);
+    zoxd_byte(Busy);
+    zoxd_byte(Ready);
     // Measurements
     zoxd_byte(Radius);
     zoxd_byte(Height);

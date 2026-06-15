@@ -32,7 +32,7 @@ void define_systems_cameras(ecs *world) {
         [out] transforms3.Position3DBounds,
         [out] CameraPlanes,
         [none] Camera,
-        [none] Camera3D
+        [none] Camera3
     );
     zox_system(
         ViewportResizeSystem,
@@ -42,17 +42,23 @@ void define_systems_cameras(ecs *world) {
         [in] CameraLinks,
         [none] apps.App
     );
-    zox_system_1(
+    zox_filter(
+        billboard_cameras,
+        [in] transforms3.Position3D,
+        [none] transforms3.Rotation3D,
+        [none] cameras.Camera3
+    );
+    zox_system_ctx(
         BillboardSystem,
         EcsOnUpdate,
+        billboard_cameras,
         [in] transforms3.Position3D,
         [out] transforms3.Rotation3D,
         [none] ElementBillboard
     );
-
     #ifdef zox_draw_frustum
-    //zox_system_1(CameraPlanesDrawSystem, zoxp_mainthread, [in] CameraPlanes, [none] Camera3D)
-    //zox_system_1(FrustumDrawSystem, zoxp_mainthread, [in] FrustumCorners, [none] Camera3D)
+    //zox_system_1(CameraPlanesDrawSystem, zoxp_mainthread, [in] CameraPlanes, [none] Camera3)
+    //zox_system_1(FrustumDrawSystem, zoxp_mainthread, [in] FrustumCorners, [none] Camera3)
     #endif
     #ifdef zox_debug_camera_frustum
     // zox_system_1(CameraDebugSystem, zoxp_mainthread, [in] CameraPlanes, [none] Camera)

@@ -129,10 +129,6 @@ zox_sys2(Light3BuildSystem) {
                continue;
             }
         }
-        // Failsafe for when its updating again, no need to double up work
-        /*if (voxel_octree_dirty->value == zox_dirty_trigger || voxel_octree_dirty->value == zox_dirty_active) {
-            continue;
-        }*/
         // No Mesh Sides were found
         if (!sides_octree->value) {
             continue;
@@ -144,7 +140,9 @@ zox_sys2(Light3BuildSystem) {
         if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }
+        // NOTE: The same issue appeared here... needed to be synced
         // mesh_colors_dirty->value = zox_dirty_trigger;
-        zox_set(e, MeshDirty, { mesh_state_trigger_terrain });
+        // zox_set(e, MeshDirty, { mesh_state_trigger_terrain });
+        zox_set(e, MeshReady, { 1 });
     }
 } zox_sys_end(Light3BuildSystem);

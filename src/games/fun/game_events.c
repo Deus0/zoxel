@@ -11,7 +11,7 @@ void dispose_events_games() {
 
 // TODO: Remove this
 void add_to_event_game_state(zox_game_event funn) {
-    add_to_zox_game_event_array_d(game_state_event, funn);
+    zox_game_event_array_d_add(game_state_event, funn);
 }
 
 void trigger_event_game(ecs* world, entity game, byte old_game_state, byte new_game_state) {

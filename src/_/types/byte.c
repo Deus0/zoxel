@@ -7,5 +7,5 @@ zox_base_type(byte)
 
 #define zoxd_byte(name)\
     zoxd(name)\
-    add_to_entity_array_d(component_ids_byte, ecs_id(name));
+    entity_array_d_add(component_ids_byte, ecs_id(name));
 

@@ -11,6 +11,7 @@ zox_sys2(RenderDepthChunk3System) {
     zox_sys_in(RenderDepthDirty);
     zox_sys_out(NodeDepth);
     zox_sys_out(Generate);
+    zox_sys_out(Busy);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Loaded, loaded);
@@ -18,9 +19,11 @@ zox_sys2(RenderDepthChunk3System) {
         zox_sys_i(RenderDepthDirty, render_depth_dirty);
         zox_sys_o(NodeDepth, octree_depth);
         zox_sys_o(Generate, generate);
+        zox_sys_o(Busy, busy);
         if (render_depth_dirty->value != zox_dirty_active) {
             continue;
         }
+        busy->value = 1;
         // NOTE: This just updates the mesh
         // TODO: This is where we should set the chunk render LOD mesh
         if (render_depth->value > octree_depth->value) {

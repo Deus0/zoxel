@@ -1,6 +1,6 @@
 void fetch_equip_slots_parts(ecs *world, entity_array_d* entities, entity e) {
     if (zox_has(e, EquipSlot)) {
-        add_to_entity_array_d(entities, e);
+        entity_array_d_add(entities, e);
     }
     entity slots[zox_children_capacity];
     uint length = zox_get_children_by_id(world, e, slots, zox_children_capacity, zox_id(Slot));

@@ -23,7 +23,7 @@ void dispose_hook_taskbar() {
 }
 
 void add_taskbar_button(const hook_taskbar data) {
-    add_to_hook_taskbar_array_d(hook_taskbars, data);
+    hook_taskbar_array_d_add(hook_taskbars, data);
 }
 
 // todo: make tooltip function just return a string

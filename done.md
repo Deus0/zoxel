@@ -1,4 +1,16 @@
 ### Done ###
+-x Mountains to be more stone and less dirty
+-x Use a floodfill algorithm to build a list of chunks that are conneected and updating and use this to check
+    -x is ChunkGroup still updating?
+    -x This is better than entire terrain as it allows faster updates
+-x Somehow the Town dissapeared
+-x The Humanoid Mesh dissapeared
++ Added slow fps mode to debug this flashing mesh
++ It is mostly fixed hacky fix that checks neighbor loading and slows it
++ I could just put a queue for updates and reduce it when theyre done - wayy to track when i should allow them all to update
+-x Fix flashing chunks when they update mesh
+    -x The issue is when bigger chunks dissapear, it will leave them empty, but the ones
+-x Fix Lights Flashing Dark too!
 -x Why isnt light passing through grass?
 -x Fix lighting again, now that ihave gate its easy to see it doesnt always light properly
 -x Bigger octrees to use brightest neighbor for lighting

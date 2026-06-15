@@ -1,7 +1,9 @@
+int sand_height = 6;
+int grass_height = 8;
+int stone_height = 18;
+
 // NOTE: Fills land with Soils based on biomes
 zox_sys2(LandfillChunk3System) {
-    int sand_height = 4;
-    int stone_height = 18;
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -37,10 +39,6 @@ zox_sys2(LandfillChunk3System) {
             continue;
         }
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        /*if (zox_getv(tunk->value, Generate)) {
-            zox_log_error("[Tunk] at [%ix%ix%i] still Generating...", cposition->value.x, cposition->value.y, cposition->value.z);
-            continue;
-        }*/
         zox_geter(tunk->value, BiomeMap, biome_map);
         zox_geter(tunk->value, HeightMap, height_map);
         if (!height_map->length) {

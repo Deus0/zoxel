@@ -3,7 +3,7 @@
 
 #define zoxd_byte2(name)\
     zoxd(name)\
-    add_to_entity_array_d(component_ids_byte2, ecs_id(name));
+    entity_array_d_add(component_ids_byte2, ecs_id(name));
 
 #define zox_component_string_byte2(c) \
     " b2 [%ix%i]", c->value.x, c->value.y

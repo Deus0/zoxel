@@ -3,7 +3,7 @@
 
 #define zoxd_text(T)\
     zoxd_arrayd(T)\
-    add_to_entity_array_d(component_ids_text, ecs_id(T));
+    entity_array_d_add(component_ids_text, ecs_id(T));
 
 extern char* convert_zext_to_text(const byte *zext, byte length);
 

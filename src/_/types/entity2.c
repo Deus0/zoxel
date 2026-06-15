@@ -7,7 +7,7 @@ typedef struct {
 
 #define zoxd_entity2(name)\
     zoxd(name);\
-    add_to_entity_array_d(component_ids_entity2, ecs_id(name));
+    entity_array_d_add(component_ids_entity2, ecs_id(name));
 
 #define zox_component_string_entity2(c) \
     " e [%s : %s]",\

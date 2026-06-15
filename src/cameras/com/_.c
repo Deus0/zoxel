@@ -1,6 +1,6 @@
 zox_tag(Camera);
 zox_tag(Camera2D);
-zox_tag(Camera3D);
+zox_tag(Camera3);
 // zox_tag(FirstPersonCamera);
 zox_tag(CameraUI);
 zox_tag(ElementBillboard);
@@ -41,7 +41,7 @@ zoxc_float(CameraBlur);
 void define_components_cameras(ecs *world) {
     zoxd_tag(Camera);
     zoxd_tag(Camera2D);
-    zoxd_tag(Camera3D);
+    zoxd_tag(Camera3);
     zoxd_tag(CameraUI);
     zoxd_tag(ElementBillboard);
     zoxd_byte(CameraState);

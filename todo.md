@@ -2,30 +2,15 @@
 => GPU Constrained actually, memory barely used - 200-400mb used
 
 # Next Again
-- Use a floodfill algorithm to build a list of chunks that are conneected and updating and use this to check
-    - is ChunkGroup still updating?
-    - This is better than entire terrain as it allows faster updates
-- Make MeshColorsDirty do similar check to MeshDirty states
-    - fix it up in Light3BuildSystem
-+ I could just put a queue for updates and reduce it when theyre done - wayy to track when i should allow them all to update
--x Somehow the Town dissapeared
--x The Humanoid Mesh dissapeared
-+ Added slow fps mode to debug this flashing mesh
-+ It is mostly fixed hacky fix that checks neighbor loading and slows it
--x Fix flashing chunks when they update mesh
-    -x The issue is when bigger chunks dissapear, it will leave them empty, but the ones
--x Fix Lights Flashing Dark too!
-
- behind them havn't updated yet!
 - Use SDLGamepad instead of Joystick for better compatibility
 - Towns to avoid Mountains
-- Mountains to be more stone and less dirty
-- The crash is back?? OR NOT??!?!
-- Physics Clip issue for big body
-
-# Important
 - Add Minimap
 	- debug entire region at once
+- The crash is back?? OR NOT??!?!
+- Physics Clip issue for big body
+- Redo the near RenderDistance and add a second option for it
+
+# Important
 - Block Damage Overlay
 - Block Health Regens
 - Dialogue speed should be per character and not per animation line

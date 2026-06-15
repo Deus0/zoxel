@@ -44,8 +44,8 @@ void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labe
         }
     }
     // zox_log("%s made label [%s]", zox_get_name(e), text)
-    add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { text = text });
-    add_to_entity_array_d(entities, e);
+    text_group_dynamic_array_d_add(labels, (text_group_dynamic) { text = text });
+    entity_array_d_add(entities, e);
 }
 
 int get_max_characters_d(const char *header_label, text_group_dynamic_array_d* labels) {

@@ -55,6 +55,7 @@ void define_systems_terrain(ecs *world) {
         [in] games.GameStateDirty,
         [none] games.Game
     );
+    // Starts Building
     zox_system(
         RenderDepthChunk3System,
         zoxp_voxels_write,
@@ -63,6 +64,7 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepthDirty,
         [out] chunks.NodeDepth,
         [out] core.Generate,
+        [out] core.Busy,
         [none] terrain.TerrainChunk
     );
     zox_system(

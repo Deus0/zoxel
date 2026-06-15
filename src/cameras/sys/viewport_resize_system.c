@@ -27,7 +27,7 @@ zox_sys2(ViewportResizeSystem) {
             int2 size = screen_to_canvas_size(wsize->value, screen_to_canvas);
             int2 position = screen_to_canvas_position(wsize->value, screen_to_canvas);
 
-            if (zox_has(camera, Camera3D)) {
+            if (zox_has(camera, Camera3)) {
                 size = scale_viewport(size);
             }
             /*  if (!zox_has(camera, RenderCamera)) {  }*/

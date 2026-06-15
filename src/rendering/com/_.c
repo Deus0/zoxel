@@ -5,6 +5,7 @@ zox_tag(SingleMaterial);
 zox_tag(RendererInstance);
 zox_tag(VoxMesh);
 zoxc_byte(MeshDirty);
+zoxc_byte(MeshReady);
 zoxc_state(TextureDirty);
 zoxc_state(RenderDistanceDirty);
 zoxc_state(RenderDepthDirty);
@@ -58,6 +59,7 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(RendererInstance);
     zoxd_tag(VoxMesh);
     zoxd_byte(MeshDirty);
+    zoxd_byte(MeshReady);
     zoxd_state(TextureDirty);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);

@@ -82,7 +82,7 @@ void add_voxel_face_colors_ao_27(color_rgb_array_d* color_rgbs, color_rgb voxel_
         c.r = (fr > 255.0f) ? 255 : (byte)fr;
         c.g = (fg > 255.0f) ? 255 : (byte)fg;
         c.b = (fb > 255.0f) ? 255 : (byte)fb;
-        add_to_color_rgb_array_d(color_rgbs, c);
+        color_rgb_array_d_add(color_rgbs, c);
     }
 }
 

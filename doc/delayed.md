@@ -6,6 +6,8 @@
 - Test will render the canvas in front of camera at different distances and rotations
 
 # Low Priority
+- Make MeshColorsDirty do similar check to MeshReady - MeshColorsReady
+    - fix it up in Light3BuildSystem
 - Player Respawn Point Gizmos
 - Stream Level - Region only for initial game town spawning!
 - Tunk LOD Levels

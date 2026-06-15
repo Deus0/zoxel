@@ -58,29 +58,19 @@ float compute_ao_factor(byte neighbor1, byte neighbor2) {
 }
 
 
-void add_voxel_face_colors_ao6(
-    color_rgb_array_d* color_rgbs,
-    color_rgb voxel_color,
-    byte direction,
-    const byte* naos
-) {
+void add_voxel_face_colors_ao6(color_rgb_array_d* color_rgbs, color_rgb voxel_color, byte direction, const byte* naos) {
     // 4 points for a voxel cube side
     for (byte a = 0; a < voxel_face_vertices_length; a++) {
         color_rgb c = voxel_color;
-
         // Compute AO using neighbor states
         byte n1 = naos[neighbor_indices[direction][a][0]];
         byte n2 = naos[neighbor_indices[direction][a][1]];
-
         float ao_factor = compute_ao_factor(n1, n2);
-
         c.r = c.r * ao_factor * AO_MULTIPLIER > 255 ? 255 : c.r * ao_factor * AO_MULTIPLIER;
         c.g = c.g * ao_factor * AO_MULTIPLIER > 255 ? 255 : c.g * ao_factor * AO_MULTIPLIER;
         c.b = c.b * ao_factor * AO_MULTIPLIER > 255 ? 255 : c.b * ao_factor * AO_MULTIPLIER;
-
         // color_rgb_multiply_float(&c, light_intensity * 2.0f);
         // color_rgb_multiply_float(&c, ao_factor * AO_MULTIPLIER);
-
-        add_to_color_rgb_array_d(color_rgbs, c);
+        color_rgb_array_d_add(color_rgbs, c);
     }
 }

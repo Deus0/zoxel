@@ -1,2 +1,2 @@
 zoxel_dynamic_array(entity)
-create_is_in_array_d(entity)
+create_array_d_has(entity)

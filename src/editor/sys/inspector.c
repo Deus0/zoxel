@@ -3,16 +3,16 @@ void fetch_entity_components(ecs* world, entity_array_d* entity_ids, entity_arra
         return;
     }
     // Add name first
-    add_to_entity_array_d(component_ids, 0);
-    add_to_byte_array_d(types, zox_type_name);
+    entity_array_d_add(component_ids, 0);
+    byte_array_d_add(types, zox_type_name);
     add_entity_to_labels(world, target, labels, entity_ids, 0);
     // Add parent if exists
-    add_to_entity_array_d(component_ids, 0);
-    add_to_byte_array_d(types, zox_type_parent);
+    entity_array_d_add(component_ids, 0);
+    byte_array_d_add(types, zox_type_parent);
     entity parent = zox_get_parent(world, target);
     // Get parent name if exists
     const char* parent_name = !zox_valid(parent) ? "None" : zox_get_name(parent);
-    add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { .text = zox_copy_string(parent_name) });
+    text_group_dynamic_array_d_add(labels, (text_group_dynamic) { .text = zox_copy_string(parent_name) });
     // add_entity_to_labels(world, target, labels, entity_ids, 0);
     // Add children if they exist:
     /*iter it2 = zox_children(world, e);
@@ -24,19 +24,19 @@ void fetch_entity_components(ecs* world, entity_array_d* entity_ids, entity_arra
     uint children_length = zox_get_children_count(world, target);
     char children_label[TooltipText_length];
     sprintf(children_label, "children [%i]",children_length);
-    add_to_entity_array_d(component_ids, 0);
-    add_to_byte_array_d(types, zox_type_children);
-    add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { .text = zox_copy_string(children_label) });
+    entity_array_d_add(component_ids, 0);
+    byte_array_d_add(types, zox_type_children);
+    text_group_dynamic_array_d_add(labels, (text_group_dynamic) { .text = zox_copy_string(children_label) });
     const ecs_type_t* type = ecs_get_type(world, target);
     for (int i = 0; i < type->count; i++) {
         ecs_id_t component_id = type->array[i];
         // NOTE: Can set this tto null and see button size failing to resize
         char* text = fetch_compoent_label(world, target, component_id);
         byte type = fetch_component_type(world, target, component_id);
-        add_to_text_group_dynamic_array_d(labels, (text_group_dynamic) { text = text });
-        add_to_entity_array_d(entity_ids, target);
-        add_to_entity_array_d(component_ids, component_id);
-        add_to_byte_array_d(types, type);
+        text_group_dynamic_array_d_add(labels, (text_group_dynamic) { text = text });
+        entity_array_d_add(entity_ids, target);
+        entity_array_d_add(component_ids, component_id);
+        byte_array_d_add(types, type);
     }
 }
 

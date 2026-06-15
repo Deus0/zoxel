@@ -6,22 +6,22 @@ typedef struct {\
     data_type *data;\
     size_t capacity;\
     size_t size;\
-} data_type##_##array_d;\
+} data_type##_array_d;\
 \
-data_type##_##array_d* create##_##data_type##_##array_d(int initial_dynamic_array_size_) {\
+data_type##_##array_d* create_##data_type##_array_d(size_t initial_capacity) {\
     data_type##_##array_d* dynamic_array = malloc(sizeof(data_type##_##array_d));\
-    dynamic_array->data = malloc(initial_dynamic_array_size_ * sizeof(data_type));\
-    dynamic_array->capacity = initial_dynamic_array_size_;\
+    dynamic_array->data = malloc(initial_capacity * sizeof(data_type));\
+    dynamic_array->capacity = initial_capacity;\
     dynamic_array->size = 0;\
     return dynamic_array;\
 }\
 \
-void dispose##_##data_type##_##array_d(data_type##_##array_d* dynamic_array) {\
+void dispose_##data_type##_array_d(data_type##_array_d* dynamic_array) {\
     free(dynamic_array->data);\
     free(dynamic_array);\
 }\
 \
-void add_to_##data_type##_array_d(data_type##_##array_d* dynamic_array, data_type array_entry) {\
+void data_type##_array_d_add(data_type##_array_d* dynamic_array, data_type array_entry) {\
     if (dynamic_array->size == dynamic_array->capacity) {\
         dynamic_array->capacity *= 2;\
         dynamic_array->data = realloc(dynamic_array->data, dynamic_array->capacity * sizeof(data_type));\
@@ -37,10 +37,7 @@ void expand_capacity_##data_type##_array_d(data_type##_##array_d* dynamic_array,
     }\
 }\
 \
-void add_block_to_##data_type##_array_d( \
-    data_type##_array_d* dynamic_array, \
-    const data_type block[], byte length \
-) {\
+void add_block_to_##data_type##_array_d(data_type##_array_d* dynamic_array, const data_type block[], byte length) {\
     size_t required_capacity = dynamic_array->size + length; \
     if (required_capacity > dynamic_array->capacity) { \
         dynamic_array->capacity *= 2;\
@@ -50,10 +47,7 @@ void add_block_to_##data_type##_array_d( \
     dynamic_array->size += length; \
 }\
 \
-void add_block_to##_##data_type##_##array_d2( \
-    data_type##_##array_d* dynamic_array, \
-    const data_type block[], byte length \
-) { \
+void add_block_to##_##data_type##_##array_d2(data_type##_##array_d* dynamic_array, const data_type block[], byte length) { \
     size_t required_capacity = dynamic_array->size + length;\
     if (required_capacity > dynamic_array->capacity) {\
         dynamic_array->capacity *= 2;\
@@ -79,7 +73,6 @@ data_type* finalize_##data_type##_##array_d(data_type##_##array_d* dynamic_array
     }\
 }\
 \
-\
 data_type* zinalize_##data_type##_##array_d(data_type##_##array_d* dynamic_array) {\
     if (!dynamic_array->size) {\
         dispose##_##data_type##_##array_d(dynamic_array);\
@@ -92,16 +85,22 @@ data_type* zinalize_##data_type##_##array_d(data_type##_##array_d* dynamic_array
     }\
 }
 
-#define create_is_in_array_d(data_type)\
+#define create_array_d_has(data_type)\
 \
-byte is_in##_##data_type##_##array_d( \
-    data_type##_##array_d* dynamic_array, \
-    const data_type value) \
-{\
+byte data_type##_array_d_has(data_type##_array_d* dynamic_array, data_type value) {\
     for (size_t i = 0; i < dynamic_array->size; i++) {\
         if (dynamic_array->data[i] == value) {\
             return 1;\
         }\
     }\
     return 0;\
+} \
+\
+int data_type##_array_d_index(data_type##_##array_d* dynamic_array, data_type value) {\
+    for (size_t i = 0; i < dynamic_array->size; i++) {\
+        if (dynamic_array->data[i] == value) {\
+            return i;\
+        }\
+    }\
+    return -1;\
 }

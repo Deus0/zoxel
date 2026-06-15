@@ -4,6 +4,13 @@ void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
     zox_tst_spawn_tilemap(world);
 }
 
+
+void zox_tst_toggle_red_sky(ecs* world, ClickEventData data) {
+    override_sky = !override_sky;
+    zox_log("Set override_sky to [%i]", override_sky);
+    refresh_weather(world);
+}
+
 void zox_tst_toggle_low_fps(ecs* world, ClickEventData data) {
     if (!target_fps) {
         target_fps = 30;
@@ -48,6 +55,10 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Low FPS",
         .on_click = { &zox_tst_toggle_low_fps },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Red Sky",
+        .on_click = { &zox_tst_toggle_red_sky },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Canvas",

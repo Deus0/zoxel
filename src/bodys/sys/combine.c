@@ -295,7 +295,7 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
     // Store them
     add_to_CombineList(voxes, vox);
     add_to_CombinePositions(positions, part_position_b3);
-    add_to_entity_array_d(slots_used, slot);
+    entity_array_d_add(slots_used, slot);
     if (dbg_log) {
         zox_log("Combining Part [%s] a[%i]", zox_get_name(vox), anchor);
         zox_log("   Place Position [%ix%ix%i]", part_position_b3.x, part_position_b3.y, part_position_b3.z);

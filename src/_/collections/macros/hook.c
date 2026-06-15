@@ -28,7 +28,7 @@
             zox_log_error("hook [%s] not initialized yet", #name)\
         } else {\
             hook_##name fun_event = (hook_##name) { event }; \
-            add_to_hook_##name##_array_d(functions_##name, fun_event); \
+            hook_##name##_array_d_add(functions_##name, fun_event); \
         }\
     }\
     \

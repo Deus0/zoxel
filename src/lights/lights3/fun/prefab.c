@@ -11,9 +11,9 @@ void prefab_add_lights3(ecs* world, entity e, byte depth) {
 }
 
 byte is_chunk_lights_busy(ecs* world, entity e) {
-    if (!zox_valid(e)) {
-        return 0;
-    }
-    return zox_getv(e, GenerateLights) ||
-        zox_getv(e, LightNodeDirty);
+    return zox_getv(e, LightNodeDirty);
+}
+
+byte is_chunk_generating_sunlights(ecs* world, entity e) {
+    return zox_getv(e, GenerateLights);
 }

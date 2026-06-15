@@ -137,6 +137,7 @@ zox_sys2(ChunkColorsBuildSystem) {
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshColorRGBs);
     zox_sys_out(MeshDirty);
+    // zox_sys_out(Busy);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkMeshDirty, dirty);
         zox_sys_i(VoxelNode, voctree);
@@ -146,21 +147,22 @@ zox_sys2(ChunkColorsBuildSystem) {
         zox_sys_i(ColorRGBs, vcolors);
         zox_sys_i(ChunkSize, csize);
         zox_sys_i(BlockScale, scale);
-        zox_sys_o(MeshDirty, mdirty);
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
         zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(MeshDirty, mesh_dirty);
+        // zox_sys_o(Busy, busy);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
         if (!vcolors->length) {
             continue;
         }
-        clear_mesh(indicies, vertices, colors);
         if (rdepth->value >= render_depth_spawning) {
-            mdirty->value = mesh_state_trigger;
+            mesh_dirty->value = mesh_state_trigger;
             continue;
         }
+        clear_mesh(indicies, vertices, colors);
         // fetch neighbor depths and nodes
         const VoxelNode* noctrees[6];
         byte nrdepths[6];
@@ -182,13 +184,13 @@ zox_sys2(ChunkColorsBuildSystem) {
         read_lock_VoxelNode(voctree);
         build_voxel_mesh_c(voctree, voctree, noctrees, nrdepths, vcolors, &mesh, rdepth->value, 0, byte3_zero, position, cscale);
         read_unlock_VoxelNode(voctree);
-        clear_mesh(indicies, vertices, colors);
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;
         colors->length = mesh.colors->size;
         indicies->value = zinalize_int_array_d(mesh.indicies);
         vertices->value = zinalize_float3_array_d(mesh.vertices);
         colors->value = zinalize_color_rgb_array_d(mesh.colors);
-        mdirty->value = mesh_state_skeleton_trigger;
+        mesh_dirty->value = mesh_state_skeleton_trigger;
+        // busy->value = 0;
     }
 } zox_sys_end(ChunkColorsBuildSystem);

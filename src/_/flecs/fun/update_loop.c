@@ -10,7 +10,7 @@ void dispose_update_loop() {
 
 void add_to_update_loop(void (*event)(ecs *)) {
     general_fun fun_event = (general_fun) { event };
-    add_to_general_fun_array_d(update_functions, fun_event);
+    general_fun_array_d_add(update_functions, fun_event);
 }
 
 void run_update_loop(ecs *world) {
