@@ -85,7 +85,7 @@ zox_sys2(PlayerToggleCameraSystem) {
                 }
                 if (zox_has(e3, ZeviceButton)) {
                     zox_geter(e3, DeviceButtonType, type);
-                    if (type->value == zox_device_button_right_stick_push) {
+                    if (type->value == zox_btn_right_stick_push) {
                         zox_geter_value(e3, ZeviceButton, byte, button);
                         if (devices_get_pressed_this_frame(button)) {
                             is_toggle_camera = 1;

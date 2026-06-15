@@ -13,6 +13,7 @@ entity spawn_prefab_device_stick(ecs *world) {
 entity spawn_zevice_stick(ecs *world, entity device, byte type, byte index) {
     zox_instance(prefab_zevice_stick);
     zox_name("zevice_stick");
+    zox_set_parent(world, e, device);
     zox_set(e, DeviceLink, { device });
     zox_set(e, DeviceButtonType, { type });
     zox_set(e, RealButtonIndex, { index });

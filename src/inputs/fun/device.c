@@ -48,8 +48,8 @@ byte gamepad_is_any_input(ecs *world, entity e) {
     for (uint i = 0; i < children_length; i++) {
         entity e2 = children[i];
         if (zox_has(e2, ZeviceButton)) {
-            zox_geter(e2, ZeviceButton, zeviceButton)
-            if (devices_get_pressed_this_frame(zeviceButton->value)) {
+            byte button = zox_getv(e2, ZeviceButton);
+            if (devices_get_pressed_this_frame(button)) {
                 return 1;
             }
         }

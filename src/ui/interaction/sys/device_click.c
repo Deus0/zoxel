@@ -38,7 +38,7 @@ zox_sys2(DeviceClickSystem) {
                 continue;
             }
             byte button_type = zox_get_value(e2, DeviceButtonType);
-            if (button_type == zox_device_button_a) {
+            if (button_type == zox_btn_a) {
                 byte disabled = zox_get_value(e2, ZeviceDisabled);
                 if (!disabled) {
                     zox_geter_value(e2, ZeviceButton, byte, value);

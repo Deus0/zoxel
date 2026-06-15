@@ -1,9 +1,10 @@
-#include "gamepad.c"
 #include "touchscreen.c"
 #include "mouse.c"
 #include "mouse_constrain.c"
+// #include "joystick.c"
+#include "controller.c"
 
-void define_systems_sdl_inputs(ecs* world) {
+void zox_define_systems_sdl_inputs(ecs* world) {
     zox_system_1(
         MouseExtractSystem,
         zoxp_sdl,
@@ -25,10 +26,16 @@ void define_systems_sdl_inputs(ecs* world) {
         [out] screens.ScreenDimensions,
         [none] inputs.Touchscreen
     );
-    zox_system_1(
-        GamepadFetchSystem,
+    /*zox_system_1(
+        SdlJoystickFetchSystem,
         zoxp_sdl,
-        [in] SDLGamepad,
+        [in] SdlJoystick,
+        [none] inputs.Gamepad
+    );*/
+    zox_system_1(
+        SdlControllerFetchSystem,
+        zoxp_sdl,
+        [in] SdlGameController,
         [none] inputs.Gamepad
     );
 }

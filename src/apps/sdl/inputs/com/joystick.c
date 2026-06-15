@@ -1,14 +1,14 @@
 #ifdef zox_sdl
 
-zoxc(SDLGamepad, SDL_Joystick*);
+zoxc(SdlJoystick, SDL_Joystick*);
 
-void free_sdl_gamepad(SDLGamepad *ptr) {
+void free_sdl_gamepad(SdlJoystick *ptr) {
     if (ptr->value) {
         SDL_JoystickClose(ptr->value);
     }
 }
 
-ECS_DTOR(SDLGamepad, ptr, {
+ECS_DTOR(SdlJoystick, ptr, {
     free_sdl_gamepad(ptr);
 })
 

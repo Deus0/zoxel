@@ -11,18 +11,41 @@ void input_reset_sdl() {
     sdl_reset_mouse_wheel();
 }
 
-byte update_sdl_input(ecs *world, SDL_Event event) {
+byte update_sdl_input(ecs *world, entity app, SDL_Event event) {
     sdl_extract_keyboard(world, event);
     sdl_extract_mouse_wheel(event);
-    if (event.type == SDL_JOYDEVICEADDED) {
-        int device_index = event.jdevice.which;
-        zox_log("Joystick Connected [%i]:[%s]", device_index,  SDL_JoystickNameForIndex(device_index));
-        handle_new_sdl_gamepad(world, event);
-        return 1;
-    } else if (event.type == SDL_JOYDEVICEREMOVED) {
-        int device_index = event.jdevice.which;
-        zox_log("Joystick Disconnected [%i]:[%s]", device_index,  SDL_JoystickNameForIndex(device_index));
-        return 1;
+    if (using_sdl_gamecontrollers) {
+        if (event.type == SDL_CONTROLLERDEVICEADDED) {
+            int device_index = event.cdevice.which;
+            SDL_GameController* controller = SDL_GameControllerOpen(device_index);
+            zox_log("Controller Connected [%i]:[%s]", device_index, SDL_GameControllerName(controller));
+            spawn_gamepad_sdl_controller(world, app, controller);
+            return 1;
+        } else if (event.type == SDL_CONTROLLERDEVICEREMOVED) {
+            SDL_JoystickID id = event.cdevice.which;
+            zox_log("Controller Disconnected [%i]", id);
+            return 1;
+        } else if (event.type == SDL_CONTROLLERDEVICEREMAPPED) {
+            zox_log("Controller Remapped");
+            return 1;
+        }
+    } else {
+        if (event.type == SDL_JOYDEVICEADDED) {
+            int device_index = event.jdevice.which;
+            zox_log("Joystick Connected [%i]:[%s]", device_index,  SDL_JoystickNameForIndex(device_index));
+            SDL_Joystick* joystick = SDL_JoystickOpen(event.jdevice.which);
+            if (!joystick) {
+                fprintf(stderr, "Joystick Error: %s\n", SDL_GetError());
+                return 0;
+            }
+            zox_log("New Gamepad [%d]", SDL_JoystickInstanceID(joystick));
+            spawn_gamepad_sdl_joystick(world, app, joystick);
+            return 1;
+        } else if (event.type == SDL_JOYDEVICEREMOVED) {
+            int device_index = event.jdevice.which;
+            zox_log("Joystick Disconnected [%i]:[%s]", device_index,  SDL_JoystickNameForIndex(device_index));
+            return 1;
+        }
     }
     return 0;
 }

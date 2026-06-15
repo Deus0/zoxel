@@ -1,7 +1,7 @@
 // NOTE: System responsible for device switching for a DeviceUser
 // TODO: Grab not used devices from DeviceManager instead of local ones
 zox_sys2(DeviceSwitchSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     zox_sys_world();
     if (!auto_switch_device) {
         return;
@@ -55,6 +55,9 @@ zox_sys2(DeviceSwitchSystem) {
             }
         }
         if (using_current_inputs) {
+            if (dbg_log) {
+                zox_log("Using Current Device");
+            }
             continue;
         }
         byte old_device_mode = state->value;

@@ -38,7 +38,7 @@ zox_sys2(ZeviceClickSystem) {
         }
         if (zox_has(e, ZeviceButton)) {
             zox_geter(e, DeviceButtonType, deviceButtonType);
-            if (deviceButtonType->value == zox_device_button_a) {
+            if (deviceButtonType->value == zox_btn_a) {
                 byte click_value = zox_getv(e, ZeviceButton);
                 if (devices_get_pressed_this_frame(click_value)) {
                     click_type = 1;

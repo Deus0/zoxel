@@ -1,7 +1,7 @@
 // NOTE: Player cancel the menu!
 zox_sys2(CancelMenuSystem) {
     byte dbg_log = 0;
-    byte cancel_type = zox_device_button_b;
+    byte cancel_type = zox_btn_b;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZeviceDisabled);

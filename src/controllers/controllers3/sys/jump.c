@@ -56,7 +56,7 @@ zox_sys2(Player3DJumpSystem) {
                 }
                 if (zox_has(e3, ZeviceButton)) {
                     zox_geter_value(e3, DeviceButtonType, byte, type)
-                    if (type == zox_device_button_a) {
+                    if (type == zox_btn_a) {
                         zox_geter(e3, ZeviceButton, zeviceButton)
                         if (devices_get_pressed(zeviceButton->value)) {
                             is_jump_triggered = 1;

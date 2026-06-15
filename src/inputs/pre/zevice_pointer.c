@@ -14,9 +14,10 @@ entity spawn_prefab_zevice_pointer(ecs *world) {
     return e;
 }
 
-entity spawn_zevice_pointer(ecs *world, const entity device, byte type, byte index) {
+entity spawn_zevice_pointer(ecs *world, entity device, byte type, byte index) {
     zox_instance(prefab_zevice_pointer)
     zox_name("zevice_pointer")
+    zox_set_parent(world, e, device);
     zox_set(e, DeviceLink, { device })
     zox_set(e, DeviceButtonType, { type })
     zox_set(e, RealButtonIndex, { index })

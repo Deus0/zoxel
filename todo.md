@@ -3,7 +3,7 @@
 
 # Next Again
 - Add smooth lights for terrain faces, so the corners are darkened
-- Use SDLGamepad instead of Joystick for better compatibility
+- Use SdlJoystick instead of Joystick for better compatibility
 - Towns to avoid Mountains
 - Add Minimap
 	- debug entire region at once
@@ -32,7 +32,7 @@
 - Refactor Settings to Entities
 - disable next button until dialogue animation finished
 - SaveLoad Items - using new Saves Module for better workflow
-- Use SDLGamepad instead of Joystick for better Compatibility
+- Use SdlJoystick instead of Joystick for better Compatibility
 - Add Statistics Overlay
 	- SHow counts for many things
 - Remove Debug options and just put in Gizmos

@@ -34,21 +34,21 @@ zox_sys2(ActionsShortcutSystem) {
                     }
                     byte device_button_type = zox_get_value(e3, DeviceButtonType)
                     byte zevice_button = zox_get_value(e3, ZeviceButton)
-                    if (device_button_type == zox_device_button_lb) {
+                    if (device_button_type == zox_btn_lb) {
                         if (devices_get_pressed_this_frame(zevice_button)) {
                             is_shift_action_left = 1;
                         }
-                    } else if (device_button_type == zox_device_button_rb) {
+                    } else if (device_button_type == zox_btn_rb) {
                         if (devices_get_pressed_this_frame(zevice_button)) {
                             is_shift_action_right = 1;
                         }
                     }
                     byte real_button_index = zox_get_value(e3, RealButtonIndex)
-                    if (real_button_index == zox_device_button_dpad_left) {
+                    if (real_button_index == zox_btn_dpad_left) {
                         if (devices_get_pressed_this_frame(zevice_button)) {
                             is_shift_action_left = 1;
                         }
-                    } else if (real_button_index == zox_device_button_dpad_right) {
+                    } else if (real_button_index == zox_btn_dpad_right) {
                         if (devices_get_pressed_this_frame(zevice_button)) {
                             is_shift_action_right = 1;
                         }

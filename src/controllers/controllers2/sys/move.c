@@ -53,7 +53,7 @@ zox_sys2(Controller2MoveSystem) {
                 }
                 if (zox_has(e3, ZeviceButton)) {
                     zox_geter_value(e3, DeviceButtonType, byte, type);
-                    if (type == zox_device_button_lb || type == zox_device_button_rb) {
+                    if (type == zox_btn_lb || type == zox_btn_rb) {
                         zox_geter_value(e3, ZeviceButton, byte, value);
                         if (!is_running && devices_get_pressed(value)) {
                             is_running = 1;

@@ -2,7 +2,6 @@
 #include "keyboard.c"
 #include "mouse.c"
 #include "touchscreen.c"
-#include "gamepad_types.c"
 #include "gamepad.c"
 #include "input.c"
 #include "cursor.c"

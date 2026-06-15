@@ -81,7 +81,7 @@ void update_sdl(ecs *world) {
         else if (event.type == SDL_TEXTINPUT) {
             zox_log("SDL Text Input: %s", event.text.text);
         }
-        else if (update_sdl_input(world, event)) {
+        else if (update_sdl_input(world, e, event)) {
             // bam!
         }
     }

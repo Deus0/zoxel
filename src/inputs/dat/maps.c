@@ -7,16 +7,16 @@
 #define zox_gamepad_dpad_count 4
 
 static const byte gamepad_map_8bitdo[zox_gamepad_button_count] = {
-    1,  // A
-    0,  // B
-    4,  // X
+    0,  // A
+    1,  // B
+    2,  // X
     3,  // Y
-    6,  // LB
-    7,  // RB
+    9,  // LB
+    10, // RB
     8,  // LT
     9,  // RT
-    10, // Select
-    11, // Start
+    4, // Select
+    6, // Start
     13, // LS Push
     14, // RS Push
     12, // Logo Button
@@ -47,8 +47,8 @@ static const byte steamdeck_button_map[zox_gamepad_button_count] = {
 static const byte steamdeck_stick_map[zox_gamepad_stick_count] = { 0, 3 };
 
 static const byte generic_dpad_map[zox_gamepad_dpad_count] = {
-    zox_device_button_dpad_down,
-    zox_device_button_dpad_up,
-    zox_device_button_dpad_left,
-    zox_device_button_dpad_right
+    zox_btn_dpad_down,
+    zox_btn_dpad_up,
+    zox_btn_dpad_left,
+    zox_btn_dpad_right
 };

@@ -5,31 +5,6 @@ int last_clicked_index = 0;
 
 #ifdef zox_sdl
 
-extern entity dbg_player;
-
-entity spawn_sdl_gamepad(ecs* world, SDL_Joystick* joystick) {
-    byte gamepad_type = get_gamepad_type(joystick);
-    entity e = spawn_gamepad(world, gamepad_type);
-    zox_set(e, SDLGamepad, { joystick });
-    zox_logv("   + gamepad [%s]", SDL_JoystickName(joystick));
-    if (zox_valid(dbg_player)) {
-        zox_set_parent(world, e, dbg_player);
-    } else {
-        zox_loge("No dbg_player in [spawn_sdl_gamepad]");
-    }
-    return e;
-}
-
-void handle_new_sdl_gamepad(ecs *world, SDL_Event event) {
-    SDL_Joystick* joystick = SDL_JoystickOpen(event.jdevice.which);
-    if (!joystick) {
-        fprintf(stderr, "Joystick Error: %s\n", SDL_GetError());
-        return;
-    }
-    zox_log("New Gamepad [%d]", SDL_JoystickInstanceID(joystick));
-    spawn_sdl_gamepad(world, joystick);
-}
-
 void initialize_sdl_gamepads(ecs *world, entity app) {
     // SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
     joysticks_count = SDL_NumJoysticks();
@@ -38,11 +13,23 @@ void initialize_sdl_gamepads(ecs *world, entity app) {
     }
     zox_logv("Gamepads Connected [%d]", joysticks_count);
     for (int i = 0; i < joysticks_count; i++) {
-        SDL_Joystick *joystick = SDL_JoystickOpen(i);
-        if (!joystick) {
-            fprintf(stderr, "Joystick Error: %s\n", SDL_GetError());
+        if (using_sdl_gamecontrollers) {
+            if (SDL_IsGameController(i)) {
+                SDL_GameController* controller = SDL_GameControllerOpen(i);
+                if (!controller) {
+                    fprintf(stderr, "Joystick Error: %s\n", SDL_GetError());
+                    continue;
+                }
+                zox_log("Controller Was Connected: %s", SDL_GameControllerName(controller));
+                spawn_gamepad_sdl_controller(world, app, controller);
+            }
         } else {
-            spawn_sdl_gamepad(world, joystick);
+            SDL_Joystick *joystick = SDL_JoystickOpen(i);
+            if (!joystick) {
+                fprintf(stderr, "Joystick Error: %s\n", SDL_GetError());
+                continue;
+            }
+            spawn_gamepad_sdl_joystick(world, app, joystick);
         }
     }
 }
@@ -90,7 +77,5 @@ void debug_stick(const PhysicalStick *physical_stick, const char *button_name) {
 #else
 
 void initialize_sdl_gamepads(ecs *world, entity app) { }
-
-void handle_new_sdl_gamepad(ecs *world, const SDL_Event event) { }
 
 #endif

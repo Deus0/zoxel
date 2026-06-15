@@ -9,9 +9,10 @@ entity spawn_prefab_device_button(ecs *world) {
     return e;
 }
 
-entity spawn_device_button(ecs *world, entity p, byte index, byte rindex) {
-    zox_instance(p);
+entity spawn_device_button(ecs *world, entity prefab, entity device, byte index, byte rindex) {
+    zox_instance(prefab);
     zox_name("zevice_button");
+    zox_set_parent(world, e, device);
     zox_set(e, DeviceButtonType, { index });
     zox_set(e, RealButtonIndex, { rindex });
     return e;
