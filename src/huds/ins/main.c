@@ -11,10 +11,10 @@ byte tooltip_event_zoxel_header(ecs* world, const TooltipEventData *data) {
 // List Menus adjust to the menu size
 entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
     // main menu
-    char *label_continue = "Continue";     // "old blood";
-    char *label_new = "New Game";            // "fresh meat / Wander
-    char *label_options = "Options";
-    char *label_exit = "Exit";
+    char *label_continue = "Old Blood";     // "old blood";
+    char *label_new = "Fresh Meat";            // "fresh meat / Wander
+    char *label_options = "Beep-Boops";
+    char *label_exit = "Escape";
     int elements_count = 0;
     SpawnListElement elements[4];
     byte header_font_size = 16 * ui_scale;
@@ -34,12 +34,12 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
         .text = label_options,
         .on_click = { &button_event_menu_options },
     };
-/*#ifndef zox_android
+#ifndef zox_android
     elements[elements_count++] = (SpawnListElement) {
         .text = label_exit,
         .on_click = { &button_event_exit_app },
     };
-#endif*/
+#endif
     ClickEvent close_event = (ClickEvent) { &button_event_exit_app };
     #ifdef zox_android
     close_event.value = NULL;

@@ -3,16 +3,22 @@ set -euo pipefail
 
 APP="zoxel"
 VERSION="1.0"
-BINARY_PATH="./bin/${APP}"
+BINARY_PATH="./bin/${APP}.bin"
 RES_DIR="./res"
+install_path="/usr/local/games"
+install_game_path="${install_path}/${APP}"
+install_res_path="${install_game_path}/res"
+# ICON_REL="gam/${APP}/res/game.png"
 ICON_REL="res/textures/game.png"
 ICON_PATH="./${ICON_REL}"
-bin_install_dir="/usr/bin"
-res_install_dir="/usr/share/${APP}"
+# bin_install_dir="/usr/bin"
+# res_install_dir="/usr/share/${APP}"
 shortcut_install_dir="/usr/share/applications"
 shortcut_path="pkg/${APP}.desktop"
 url_path="https://codeberg.org/deus/zoxel"
 staging_dir="pkg"
+
+echo "Installing [${APP}] to [${install_game_path}]"
 
 # Validate inputs
 if [[ ! -x "${BINARY_PATH}" ]]; then
@@ -47,12 +53,13 @@ fi
 DESKTOP_CONTENT=$(cat <<EOF
 [Desktop Entry]
 Name=$APP
-Exec=$APP
+Comment=Voxel Game
+Exec=/usr/local/games/$APP/$APP.bin
 Icon=$APP
-Type=Application
-Categories=Game;Utility;
 Terminal=false
-StartupWMClass=$APP
+Type=Application
+Categories=Game;
+StartupWMClass=zoxel
 EOF
 )
 
@@ -61,21 +68,20 @@ EOF
 ##############################
 build_deb() {
     mkdir -p "${staging_dir}/DEBIAN" \
-             "${staging_dir}${bin_install_dir}" \
-             "${staging_dir}${res_install_dir}" \
-             "${staging_dir}${res_install_dir}/res" \
              "${staging_dir}${shortcut_install_dir}" \
              "${staging_dir}/usr/share/icons/hicolor/256x256/apps"
+             #"${staging_dir}${bin_install_dir}" \
+             #"${staging_dir}${res_install_dir}" \
+             #"${staging_dir}${res_install_dir}/res" \
+
+    mkdir -p "${staging_dir}${install_res_path}"
 
     # Copy binary
-    install -Dm755 "${BINARY_PATH}" "${staging_dir}${bin_install_dir}/${APP}"
-
+    install -Dm755 "${BINARY_PATH}" "${staging_dir}${install_game_path}/${APP}.bin"
     # Copy resources
-    cp -a "${RES_DIR}/." "${staging_dir}${res_install_dir}/res/"
-
+    cp -a "${RES_DIR}/." "${staging_dir}${install_res_path}"
     # Copy the Iccns
     install -Dm644 "${ICON_PATH}" "${staging_dir}/usr/share/icons/hicolor/256x256/apps/${APP}.png"
-
     # Desktop entry
     install -Dm644 "${shortcut_path}" "${staging_dir}${shortcut_install_dir}/${APP}.desktop"
 
@@ -88,11 +94,12 @@ Priority: optional
 Architecture: ${ARCH}
 Depends: libsdl2-2.0-0, libsdl2-image-2.0-0, libsdl2-mixer-2.0-0
 Maintainer: Packager <root>
-Description: A voxel game ${APP}
+Description: A Voxel Game ${APP}
 EOF
 
     # Build and install
-    dpkg-deb --build "$staging_dir"
+    # dpkg-deb --build "$staging_dir"
+    dpkg-deb --root-owner-group --build "$staging_dir"
     echo "Built ${staging_dir}.deb"
     sudo dpkg -i "${staging_dir}.deb"
 }

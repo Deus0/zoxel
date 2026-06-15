@@ -42,6 +42,7 @@ SDL_Window* create_sdl_window(int2 position, int2 size, const char *name, byte f
         zox_log_error(" CreateWindowError [%s] - flags [%i]]\n", SDL_GetError(), flags);
         return NULL;
     }
+    zox_logv("Created SDL Window [%s]", name);
     SDL_SetWindowResizable(window, window_resizeable);
     return window;
 }

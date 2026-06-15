@@ -2,6 +2,7 @@
 => GPU Constrained actually, memory barely used - 200-400mb used
 
 # Next Again
+- Add smooth lights for terrain faces, so the corners are darkened
 - Use SDLGamepad instead of Joystick for better compatibility
 - Towns to avoid Mountains
 - Add Minimap

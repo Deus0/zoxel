@@ -76,12 +76,13 @@ int main(int argc, char* argv[]) {
             return EXIT_FAILURE;
         }
         zox_set(app, GameLink, { game });
-        zox_logv("Setting App Icon [game.png]");
-        spawn_window_icon(world, app, "game.png");
         zox_logv("Setting VSync");
         on_set_vsync(vsync);
         zox_logv("Initializing Rendering");
         initialize_rendering(render_backend);
+        zox_logv("Setting App Icon [game.png]");
+        // spawn_window_icon(world, app, "game.png");
+        spawn_window_icon(world, app, "game.bmp");
         // FIX: Actually load shaders -> spawns materials...
         zox_logv("Loading (Processing) Shaders");
         load_files_shaders(world);
@@ -89,7 +90,6 @@ int main(int argc, char* argv[]) {
     }
 #else
     entity app = 0;
-    (void) game;
 #endif
     // Resource Loading
     run_hook_files_load(world);
