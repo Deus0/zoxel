@@ -76,7 +76,7 @@ void sdl_controller_extract_button(ecs* world, entity e, SDL_GameController* con
         if (button_value != button->value) {
             button->value = button_value;
             if (dbg_log) {
-                zox_log("SDL Bumper Button [%i]: %f  %i", rindex, value button_value);
+                zox_log("SDL Bumper Button [%i]: %f  %i", rindex, value, button_value);
             }
             zox_mut_end(e, ZeviceButton);
         }
