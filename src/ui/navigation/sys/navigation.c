@@ -1,6 +1,6 @@
 // todo: fix this, RaycasterTarget moved to zevices
 zox_sys2(ElementNavigationSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();
@@ -98,9 +98,22 @@ zox_sys2(ElementNavigationSystem) {
         // TODO: Move up to window, grab all navigation elements, then find one below?
         // Get Selected Index TODO: Make this a generic parent function
         sbyte selected_index = -1;
-        entity parent = zox_get_parent(world, current->value);
-        entity children[layouts2_children_capacity];
-        uint children_length = zox_get_children_by_id(world, parent, children, layouts2_children_capacity, zox_id(Selectable));
+        entity window = zox_get_parent_by_id(world, current->value, zox_id(Window));
+        // entity parent = zox_get_parent(world, current->value);
+        entity children[zox_children_capacity];
+        // uint children_length = 0;
+        // uint children_length = zox_get_children_by_id(world, parent, children, layouts2_children_capacity, zox_id(Selectable));
+        uint children_length = zox_get_children_by_id_recursive(world, window, children, zox_children_capacity, zox_id(NavigationElement), 0);
+        /*iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count && children_length < zox_children_capacity; j++) {
+                entity e2 = it2.entities[j];
+                if (zox_valid(e2) && zox_has(e2, Button) && zox_has(e2, Header)) {
+                    children[children_length] = e2;
+                    children_length++;
+                }
+            }
+        }*/
         for (byte k = 0; k < children_length; k++) {
             entity child = children[k];
             if (child == current->value) {
@@ -109,8 +122,9 @@ zox_sys2(ElementNavigationSystem) {
             }
         }
         if (selected_index == -1) {
-            zox_loge("Could not find child index of navigated one");
-            continue;
+            zox_loge("Could not find child index of navigated one [%s]", zox_get_name(current->value));
+            // continue;
+            selected_index = 0;
         }
         // zox_log("Going Down Town [%i] -> %f", selected_index, left_stick.y);
         entity target = 0;

@@ -26,7 +26,7 @@ float get_gamepad_axis_raw(SDL_GameController *controller, SDL_GameControllerAxi
 
 byte get_gamepad_axis(SDL_GameController* controller, ZeviceStick *stick, SDL_GameControllerAxis axis_x, SDL_GameControllerAxis axis_y, byte dbg_log) {
     float2 previous_value = stick->value;
-    stick->value.x = get_gamepad_axis_raw(controller, axis_x, dbg_log);
+    stick->value.x = -get_gamepad_axis_raw(controller, axis_x, dbg_log);
     stick->value.y = -get_gamepad_axis_raw(controller, axis_y, dbg_log);
     if (float_abs(stick->value.x) > stick_cutoff ||
         float_abs(stick->value.y) > stick_cutoff) {
@@ -61,22 +61,13 @@ void sdl_controller_extract_button(ecs* world, entity e, SDL_GameController* con
             trigger = SDL_CONTROLLER_AXIS_TRIGGERRIGHT;
         }
         float value = get_gamepad_trigger(controller, trigger, dbg_log);
-        /*if (value) {
-            byte old_value = zox_getv(e, DeviceButton);
-            // convert bumper to button value
-            byte new_value = process_input_button(old_value, value >= 0.9f);
-            // zox_muter(e, ZeviceBumper, bumper);
-            bumper->value = value;
-            if (dbg_log) {
-                zox_log("Bumper [%i] [%f]", trigger, value);
-            }
-        }*/
-        zox_mut_begin(e, ZeviceButton, button);
         byte button_value = value >= 0.9f;
-        if (button_value != button->value) {
-            button->value = button_value;
+        zox_mut_begin(e, ZeviceButton, button);
+        byte new_value = process_input_button(button->value, button_value);
+        if (button->value != new_value) {
+            button->value = new_value;
             if (dbg_log) {
-                zox_log("SDL Bumper Button [%i]: %f  %i", rindex, value, button_value);
+                zox_log("SDL Bumper Button [%i]: %f  %i", rindex, value, new_value);
             }
             zox_mut_end(e, ZeviceButton);
         }
@@ -96,7 +87,7 @@ void sdl_controller_extract_button(ecs* world, entity e, SDL_GameController* con
         }
     } else if (zox_has(e, ZeviceButton)) {
         zox_mut_begin(e, ZeviceButton, button);
-        byte value = get_controller_button(button->value, controller, (SDL_GameControllerButton)rindex, dbg_log);
+        byte value = get_controller_button(button->value, controller, (SDL_GameControllerButton) rindex, dbg_log);
         if (value != button->value) {
             button->value = value;
             if (value && dbg_log) {
@@ -109,7 +100,7 @@ void sdl_controller_extract_button(ecs* world, entity e, SDL_GameController* con
 
 
 zox_sys2(SdlControllerFetchSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(SdlGameController);

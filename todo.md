@@ -3,7 +3,8 @@
 
 # Next Again
 - Add smooth lights for terrain faces, so the corners are darkened
-- Use SdlJoystick instead of Joystick for better compatibility
+- Add GameMenu RB and LB to switch between UIs
+-x Use SdlJoystick instead of Joystick for better compatibility
 - Towns to avoid Mountains
 - Add Minimap
 	- debug entire region at once

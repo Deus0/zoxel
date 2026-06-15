@@ -39,7 +39,6 @@ zox_sys2(DeviceModeUISystem) {
         } else */
         if (dmode_new->value == zox_device_mode_keyboardmouse) {
             raycaster_select_element(world, e, 0);
-
 #ifdef zox_sdl
             SDL_ShowCursor(SDL_DISABLE);
 #endif

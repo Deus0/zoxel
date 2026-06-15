@@ -174,11 +174,33 @@ entity zox_get_child_by_id(ecs* world, entity parent, entity id) {
     return 0;
 }
 
+entity zox_get_child_by_index(ecs* world, entity parent, uint index) {
+    if (!ecs_is_alive(world, parent)) {
+        zox_loge("Cannot get children from invalid parent of index [%i]", index);
+        return 0;
+    }
+    uint count = 0;
+    ecs_iter_t it = ecs_children(world, parent);
+    while (ecs_children_next(&it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e = it.entities[i];
+            if (count == index) {
+                return e;
+            }
+            count++;
+        }
+    }
+    return 0;
+}
+
 entity zox_get_parent_by_id(ecs* world, entity e, entity id) {
     if (!ecs_is_alive(world, e)) {
         return 0;
     }
     entity parent = zox_get_parent(world, e);
+    if (!parent || !ecs_is_alive(world, parent)) {
+        return 0;
+    }
     if (zox_has_id(parent, id)) {
         return parent;
     } else {

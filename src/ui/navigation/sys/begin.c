@@ -21,11 +21,13 @@ entity find_child_with_mtag_rec(ecs* world, entity e, entity tag, entity mtag, e
 }
 
 void raycaster_select_first_button(ecs *world, entity e, entity window) {
-    entity button = find_child_with_mtag_rec(world, window, zox_id(Button), zox_id(Header), zox_id(CloseButton));
+    // entity button = find_child_with_mtag_rec(world, window, zox_id(NavigationElement), zox_id(Header), zox_id(CloseButton));
+    entity button = zox_get_child_by_id_recursive(world, window, zox_id(NavigationElement));
     if (!button) {
+        zox_loge("Window has no NavigationElements [%s]", zox_get_name(window));
         return;
     }
-    // zox_log("Navigation Beginning on w[%s]", zox_get_name(window), zox_get_name(button));
+    zox_log("Navigation Beginning on Window [%s] element [%s]", zox_get_name(window), zox_get_name(button));
     raycaster_select_element(world, e, button);
 }
 

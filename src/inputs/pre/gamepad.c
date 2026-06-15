@@ -101,7 +101,7 @@ entity spawn_gamepad_new(ecs* world, entity parent) {
     }
     // Triggers
     for (byte i = 0; i < 2; i++) {
-        spawn_zevice_bumper(world, e, "trigger", i, i);
+        spawn_zevice_bumper(world, e, "trigger", i, zox_btn_lt + i);
     }
     return e;
 }

@@ -19,9 +19,6 @@ entity spawn_menu_start(ecs* world, entity player, entity canvas) {
         entity e2 = zox_dbg_spawn_chunk3(world, 0);
         zox_set_parent(world, e2, e);
     }
-    // zox_set(e, TooltipEvent, { &tooltip_event_menu_start });
-    // entity e = zox_ins(prefab_button);
-    // zox_set(e, ClickEvent, { &button_event_menu_start });
     return e;
 }
 

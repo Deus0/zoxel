@@ -12,6 +12,9 @@
 #ifndef zoxm_inputs
 #define zoxm_inputs
 
+// TODO: If Device Disabled, just detect Start/Connect inputs in another system
+// - Use that state to connect a new device to a player
+
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"

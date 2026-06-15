@@ -1,16 +1,19 @@
 extern entity dbg_player;
 
-entity spawn_gamepad_sdl_controller(ecs* world, entity parent, SDL_GameController* controller) {
+entity spawn_gamepad_sdl_controller(ecs* world, entity app, SDL_GameController* controller) {
+    //entity game = zox_get_child_by_id(world, parent, zox_id(Game));
+    //entity player = zox_get_child_by_id(world, game, zox_id(Player));
+    // entity game = zox_get_child_by_index(world, app, 0);
+    // entity player = zox_get_child_by_index(world, game, 0);
     const char* name = SDL_GameControllerName(controller);
-    entity e = spawn_gamepad_new(world, dbg_player);
+    entity e = spawn_gamepad_new(world, app);
     zox_name(name);
-    // zox_set_parent(world, e, parent);
-    zox_set_parent(world, e, dbg_player);
+    // zox_set_parent(world, e, player);
     zox_set(e, SdlGameController, { controller });
-    zox_log("New Gamepad [%s]", name);
+    zox_log("New Gamepad [%s] added to [%s]", name, zox_get_name(app));
+    // zox_set_parent(world, e, parent);
     return e;
 }
-
 
 byte is_steamdeck_gamepad(SDL_Joystick *gamepad) {
     if (!gamepad) {
@@ -50,9 +53,9 @@ byte get_gamepad_type(SDL_Joystick *joystick) {
 entity spawn_gamepad_sdl_joystick(ecs* world, entity parent, SDL_Joystick* joystick) {
     byte gamepad_type = get_gamepad_type(joystick);
     entity e = spawn_gamepad(world, gamepad_type);
-    // zox_set_parent(world, e, parent);
-    zox_set_parent(world, e, dbg_player);
+    zox_set_parent(world, e, parent);
+    // zox_set_parent(world, e, dbg_player);
     zox_set(e, SdlJoystick, { joystick });
-    zox_logv("   + gamepad [%s]", SDL_JoystickName(joystick));
+    zox_logv("   + gamepad [%s] on parent [%s]", SDL_JoystickName(joystick), zox_get_name(parent));
     return e;
 }

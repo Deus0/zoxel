@@ -38,7 +38,7 @@ byte update_sdl_input(ecs *world, entity app, SDL_Event event) {
                 fprintf(stderr, "Joystick Error: %s\n", SDL_GetError());
                 return 0;
             }
-            zox_log("New Gamepad [%d]", SDL_JoystickInstanceID(joystick));
+            zox_log("New Joystick [%d]", SDL_JoystickInstanceID(joystick));
             spawn_gamepad_sdl_joystick(world, app, joystick);
             return 1;
         } else if (event.type == SDL_JOYDEVICEREMOVED) {

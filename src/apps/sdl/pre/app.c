@@ -9,13 +9,11 @@ entity spawn_prefab_app_sdl(ecs *world) {
 }
 
 entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximized, byte monitor) {
-
     byte max_monitors = zox_get_max_monitors();
     if (monitor >= max_monitors) {
         zox_logw("Monitor [%i] was over max [%i]", monitor, max_monitors);
         monitor = 0;
     }
-
     byte screen_orientation = get_screen_orientation(monitor);
     int2 screen_size = get_screen_size_monitor(monitor);
     int2 size_restore = int2_scalef(screen_size, 0.6f);
@@ -23,7 +21,6 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     int2 size = fullscreen ? screen_size : size_restore;
     // calculate position
     int2 position = calculate_monitor_position(monitor, 1, size_restore);
-
     byte flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
     if (fullscreen) {
         if (is_on_phosh()) {
@@ -39,17 +36,14 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     if (fullscreen && maximized) {
         flags = flags | SDL_WINDOW_MAXIMIZED;
     }
-
     SDL_Window* sdl_window = create_sdl_window(position, size, name, flags);
     if (!sdl_window) {
         zox_log_error(" opengl did not create sdl_window, exiting zoxel")
         return 0;
     }
-
     if (!fullscreen && maximized) {
         zox_app_set_maximized(sdl_window, maximized);
     }
-
     zox_instance(prefab_app_sdl);
     zox_name("app_sdl");
     zox_set(e, SDLWindow, { sdl_window });
@@ -64,7 +58,6 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     zox_set(e, WindowMaximized, { maximized });
     zox_set(e, WindowMonitor, { monitor });
     zox_set(e, ScreenOrientation, { screen_orientation });
-
     // debugs
     zox_logv("+ spawned window !");
     zox_logv("   - position [%ix%i]", position.x, position.y);
@@ -73,6 +66,5 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     zox_logv("   - maximized [%i]", maximized);
     zox_logv("   - monitor [%i]", monitor);
     zox_logv("   - screen orientation [%i]", screen_orientation);
-
     return e;
 }

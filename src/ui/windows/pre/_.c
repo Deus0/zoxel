@@ -17,9 +17,9 @@ void prefabs_add_windows_raycaster(ecs *world, entity e) {
 void spawn_prefabs_windows(ecs* world) {
     prefab_window = spawn_prefab_window(world, prefab_element_invisible);
     prefab_window_textured = spawn_prefab_window_textured(world, prefab_element_textured);
-    prefab_header = spawn_prefab_header(world, prefab_button); // element_textured);
+    prefab_header = spawn_prefab_header(world, prefab_clickable);
     prefab_body = spawn_prefab_body(world, prefab_element_textured);
-    prefab_close_button = spawn_prefab_button_close(world, prefab_button);
+    prefab_close_button = spawn_prefab_button_close(world, prefab_clickable);
     // linking
     if (prefab_player) {
         prefabs_add_windows_raycaster(world, prefab_player);

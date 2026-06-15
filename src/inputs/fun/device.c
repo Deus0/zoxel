@@ -38,8 +38,9 @@ byte mouse_is_any_input(ecs *world, entity e) {
     return 0;
 }
 
-byte gamepad_is_any_input(ecs *world, entity e) {
+byte gamepad_is_any_input(ecs* world, entity e) {
     if (!e || !zox_valid(e)) {
+        zox_loge("Invalid Gamepad in AnyInput");
         return 0;
     }
     uint children_capacity = zox_children_capacity;
@@ -50,6 +51,7 @@ byte gamepad_is_any_input(ecs *world, entity e) {
         if (zox_has(e2, ZeviceButton)) {
             byte button = zox_getv(e2, ZeviceButton);
             if (devices_get_pressed_this_frame(button)) {
+                zox_log("Gamepad Button Clicked");
                 return 1;
             }
         }

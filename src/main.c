@@ -75,6 +75,7 @@ int main(int argc, char* argv[]) {
             zox_log_error("[initialize_rendering] failed at [zox_init_glew]");
             return EXIT_FAILURE;
         }
+        zox_set_parent(world, game, app);
         zox_set(app, GameLink, { game });
         zox_logv("Setting VSync");
         on_set_vsync(vsync);
