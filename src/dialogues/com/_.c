@@ -2,6 +2,8 @@ zox_tag(Dialogue);
 zox_tag(DialogueNode);
 zox_tag(DialogueRun);
 zox_tag(DialogueUI);
+zox_tag(DialogueLabel);
+zox_tag(DialogueButton);
 zoxc_entity(DialogueUILink);
 zoxc_entity(DialogueProcessLink);
 zoxc_entity(DialoguetreeLink);
@@ -16,12 +18,15 @@ zoxc_double(AnimateTextBegin);
 zoxc_float(AnimateTextTime);
 zoxc_float2(AnimateTextTimeLimits);
 zoxc_state(ZigelSpawnedDirty);
+zoxc_state(AnimateTextEnded);
 
 void define_components_dialogues(ecs* world) {
     zoxd_tag(DialogueNode);
     zoxd_tag(Dialogue);
     zoxd_tag(DialogueRun);
     zoxd_tag(DialogueUI);
+    zoxd_tag(DialogueLabel);
+    zoxd_tag(DialogueButton);
     zoxd_entity(DialogueUILink);
     zoxd_entity(DialogueProcessLink);
     zoxd_entity(DialoguetreeLink);
@@ -35,4 +40,5 @@ void define_components_dialogues(ecs* world) {
     zoxd_float(AnimateTextTime);
     zoxd_float2(AnimateTextTimeLimits);
     zoxd_state(ZigelSpawnedDirty);
+    zoxd_state(AnimateTextEnded);
 }

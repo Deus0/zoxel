@@ -37,6 +37,9 @@ zox_sys2(GameStartStreamerSystem) {
             continue;
         }
         zox_geter(realm, FolderPath, path);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
+        byte terrain_chunk_length = powers_of_two[terrain_depth];
+        zox_geter_value(terrain, BlockScale, float, terrain_scale);
         float3 position;
         float3 spawn_euler;
         float4 spawn_rotation;
@@ -53,6 +56,11 @@ zox_sys2(GameStartStreamerSystem) {
         } else {
             // If has save game
             load_character_p(world, realm, e, &position, &spawn_euler, &spawn_rotation);
+            int chunk_position_y = real_position_to_chunk_position1(position.y, terrain_chunk_length, terrain_scale);
+            if (!(chunk_position_y >= -render_distance_y && chunk_position_y <= render_distance_y)) {
+                zox_logw("Player was out of Terrain Bounds on load");
+                position.y = chunk_position_to_real_position1((render_distance_y - 1), terrain_chunk_length, terrain_scale);
+            }
             zox_set(camera->value, StreamerLevel, { 1 });
         }
         {
@@ -61,10 +69,7 @@ zox_sys2(GameStartStreamerSystem) {
             zox_set(terrain, Loaded, { zox_load_begin });
         }
         {
-            // byte depth = terrain_depth;
-            byte depth = zox_getv(terrain, NodeDepth);
-            zox_geter_value(terrain, BlockScale, float, terrain_scale);
-            int3 terrain_position = real_position_to_chunk_position(position, powers_of_two[depth], terrain_scale);
+            int3 terrain_position = real_position_to_chunk_position(position, terrain_chunk_length, terrain_scale);
             int2 terrain_position2 = (int2) { terrain_position.x, terrain_position.z };
             entity e2 = camera->value;
             zox_set(e2, Position3D, { position });

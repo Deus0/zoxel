@@ -15,25 +15,65 @@ uint zox_dbg_ui_camera(ecs *world, entity e, char *buffer, uint size, uint index
     float3 camera_euler = quaternion_to_euler(camera_rotation);
     index += snprintf(buffer + index, size - index, " - Position [%fx%fx%f]\n", camera_position.x, camera_position.y, camera_position.z);
     index += snprintf(buffer + index, size - index, " - Euler [%fx%fx%f]\n", camera_euler.x, camera_euler.y, camera_euler.z);
+    if (!zox_has(camera, Streamer)) {
+        index += snprintf(buffer + index, size - index, " - No Streaming\n");
+        return index;
+    }
     byte streamer_level = zox_getv(camera, StreamerLevel);
+    entity stream_terrain = zox_getv(camera, StreamLink);
+    int3 stream_position = zox_getv(camera, StreamPoint);
+    int2 stream_position2 = zox_getv(camera, StreamPoint2);
     index += snprintf(buffer + index, size - index, " - Streamer Level [%i]\n", streamer_level);
+    index += snprintf(buffer + index, size - index, " - Terrain [%s]\n", zox_get_name(stream_terrain));
+    index += snprintf(buffer + index, size - index, " - Position [%ix%ix%i]\n", stream_position.x, stream_position.y, stream_position.z);
+    index += snprintf(buffer + index, size - index, " - Position2 [%ix%i]\n", stream_position2.x, stream_position2.y);
     return index;
 }
 
-uint zox_dbg_ui_terrain(ecs *world, entity e, char *buffer, uint size, uint index) {
-    if (!zox_valid(e) || !zox_has(e, TerrainLink)) {
-        index += snprintf(buffer + index, size - index, "Player [%s] has no Terrain\n", zox_get_name(e));
-        return index;
-    }
-    entity terrain = zox_getv(e, TerrainLink);
-    index += snprintf(buffer + index, size - index, "Player [%s] Terrain [%s]\n", zox_get_name(e), zox_get_name(terrain));
+// TODO: Add Chunk UIs based on closest ones to camera
+uint zox_dbg_ui_chunk_busy(ecs* world, entity e, char *buffer, uint size, uint index) {
+    byte busy = zox_getv(e, Busy);
+    byte render_distance = zox_getv(e, RenderDistance);
+    byte render_depth = zox_getv(e, RenderDepth);
+    index += snprintf(buffer + index, size - index, "- [%s]\n   -[%s] Dist [%i] Depth [%i]\n", zox_get_name(e), busy ? "Busy" : "Done", render_distance, render_depth);
+    return index;
+}
+
+uint zox_dbg_ui_terrain(ecs* world, entity e, char *buffer, uint size, uint index) {
     if (!zox_valid(e)) {
         return index;
     }
+    entity game = zox_get_parent(world, e);
+    if (!zox_valid(game) || !zox_has(game, RealmLink)) {
+        index += snprintf(buffer + index, size - index, "Player [%s]'s Invalid Game\n", zox_get_name(e));
+        return index;
+    }
+    entity realm = zox_getv(game, RealmLink);
+    if (!zox_valid(realm)) {
+        index += snprintf(buffer + index, size - index, "Player [%s] has no Realm\n", zox_get_name(e));
+        return index;
+    }
+    entity terrain = zox_get_child_by_id(world, realm, zox_id(Terrain));
+    index += snprintf(buffer + index, size - index, "Player [%s] Terrain [%s]\n", zox_get_name(e), zox_get_name(terrain));
+    if (!zox_valid(terrain)) {
+        return index;
+    }
     uint children_count = zox_get_children_count(world, terrain);
+    uint chunks_count = zox_get_children_count_by_id(world, terrain, zox_id(Chunk3));
     byte loaded = zox_getv(terrain, Loaded);
-    index += snprintf(buffer + index, size - index, " - Children [%i]\n", children_count);
+    byte depth = zox_getv(terrain, NodeDepth);
+    float block_scale = zox_getv(terrain, BlockScale);
+    index += snprintf(buffer + index, size - index, " - Children [%i of %i]\n", chunks_count, children_count);
     index += snprintf(buffer + index, size - index, " - Loaded [%i]\n", loaded);
+    index += snprintf(buffer + index, size - index, " - Depth [%i]\n", depth);
+    index += snprintf(buffer + index, size - index, " - Block Scale [%f]\n", block_scale);
+    index += snprintf(buffer + index, size - index, " - Lod Distances [%i:%i]\n", terrain_lod_near, terrain_lod_far);
+    entity chunks[8];
+    uint length = zox_get_children_by_id(world, terrain, chunks, 8, zox_id(Chunk3));
+    for (int i = 0; i < length; i++) {
+        entity e2 = chunks[i];
+        index = zox_dbg_ui_chunk_busy(world, e2, buffer, size, index);
+    }
     return index;
 }
 

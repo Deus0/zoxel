@@ -1,14 +1,26 @@
 const byte max_position_checks = 255;
 
+static inline int real_position_to_block_position1(float positionf, float scale) {
+    return (int) floor(positionf / scale);
+}
+
+// NOTE: For Negative real, we move chunk position away from 0
+int chunk_position_fix1(float real_position, int chunk_position) {
+    return real_position >= 0 ? chunk_position : chunk_position - 1;
+}
+
+int real_position_to_chunk_position1(float positionf, byte chunk_length, float scale) {
+    int block_position = real_position_to_block_position1(positionf, scale);
+    if (positionf < 0) block_position += 1;
+    int chunk_position = block_position / chunk_length;
+    return chunk_position_fix1(positionf, chunk_position);
+}
+
 int3 chunk_position_fix2(float3 real_position, int3 chunk_position) {
     if (real_position.x < 0) chunk_position.x -= 1;
     if (real_position.y < 0) chunk_position.y -= 1;
     if (real_position.z < 0) chunk_position.z -= 1;
     return chunk_position;
-}
-
-static inline int real_position_to_block_position1(float positionf, float scale) {
-    return (int) floor(positionf / scale);
 }
 
 static inline int3 real_position_to_block_position(float3 positionf, float scale) {
@@ -71,6 +83,10 @@ float3 local_to_real_position_character(byte3 in_chunk_position, int3 chunk_grid
     position.y += bounds.y / 2.0f;
     position.y += 0.05f; // extra
     return position;
+}
+
+static inline float chunk_position_to_real_position1(int block_position, byte chunk_length, float scale) {
+    return block_position * chunk_length * scale;
 }
 
 static inline float block_position_to_real_position1(int block_position, float scale) {

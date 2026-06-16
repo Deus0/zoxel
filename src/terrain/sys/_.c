@@ -108,7 +108,7 @@ void define_systems_terrain(ecs *world) {
         [none] streaming.Streamer
     );
     zox_filter(
-        streamers,
+        streamers_grow,
         [in] streaming.StreamerLevel,
         [in] streaming.StreamLink,
         [in] streaming.StreamPoint,
@@ -117,7 +117,7 @@ void define_systems_terrain(ecs *world) {
     zox_system_ctx_1(
         ChunkSpawnSystem,
         zoxp_mainthread,
-        streamers,
+        streamers_grow,
         [in] chunks3.ChunkPosition,
         [in] rendering.RenderDistance,
         [out] chunks3.ChunkNeighbors,

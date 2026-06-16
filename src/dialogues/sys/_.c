@@ -1,6 +1,8 @@
 #include "character.c"
 #include "ui.c"
 #include "animate.c"
+#include "animate_end.c"
+#include "sound.c"
 realm_clear_system(DialoguetreeLinks);
 
 void define_systems_dialogues(ecs* world) {
@@ -10,18 +12,25 @@ void define_systems_dialogues(ecs* world) {
         EcsOnUpdate,
         [in] nodes.NodeBegin,
         [in] nodes.NodeLink,
-        [in] DialogueUILink
+        [in] dialogues.DialogueUILink
     );
     zox_system(
         AnimateTextSystem,
         EcsOnUpdate,
-        [in] AnimateTextTimeLimits,
         [in] TargetText,
+        [in] AnimateTextTimeLimits,
         [out] AnimateTextBegin,
         [out] AnimateTextTime,
         [out] texts.TextData,
         [out] texts.TextDirty,
-        [out] ZigelSpawnedDirty
+        [out] ZigelSpawnedDirty,
+        [out] AnimateTextEnded
+    );
+    zox_system(
+        AnimateTextEndSystem,
+        EcsOnUpdate,
+        [in] AnimateTextEnded,
+        [none] dialogues.DialogueLabel
     );
     zox_system(
         CharacterDialogueSystem,
@@ -29,5 +38,12 @@ void define_systems_dialogues(ecs* world) {
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [out] dialogues.DialoguetreeLink
+    );
+    zox_system_1(
+        DialogueSoundSystem,
+        zoxp_mainthread,
+        [in] ZigelSpawnedDirty,
+        [in] AnimateTextEnded,
+        [none] dialogues.DialogueLabel
     );
 }

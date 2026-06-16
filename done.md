@@ -1,4 +1,9 @@
 ### Done ###
+-x Sound on new character, chanced
+	-x Add Sound chance to each new animated zigel
+-x Disable Next button until it finishes
+-x Dialogue speed should be per character and not per animation line
+-x Use SdlJoystick instead of Joystick for better compatibility
 -x Mountains to be more stone and less dirty
 -x Use a floodfill algorithm to build a list of chunks that are conneected and updating and use this to check
     -x is ChunkGroup still updating?

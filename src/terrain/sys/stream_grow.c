@@ -3,7 +3,7 @@
 zox_sys2(ChunkSpawnSystem) {
     byte dbg_log = 0;
     uint spawned_chunks = 0;
-    entity prefab_chunk = prefab_chunk_terrain;
+    // byte had_any_streamers = 0;
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
@@ -13,19 +13,25 @@ zox_sys2(ChunkSpawnSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkPosition, cposition);
-        zox_sys_i(RenderDistance, rdistance);
+        zox_sys_i(RenderDistance, render_distance);
         zox_sys_o(ChunkNeighbors, neighbors);
         // Pass if loading chunk
-        if (rdistance->value == 255) {
+        if (render_distance->value == 255) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
         if (!zox_valid(terrain)) {
+            if (dbg_log >= 2) {
+                zox_log("Invalid Terrain on Chunk", zox_get_name(e));
+            }
             continue;
         }
         float terrain_scale = zox_getv(terrain, BlockScale);
-        byte stream_zone = rdistance->value < terrain_lod_far;
+        byte stream_zone = render_distance->value < terrain_lod_far;
         if (!stream_zone) {
+            if (dbg_log >= 2) {
+                zox_log("Out of Stream Zone: Camera Distance: [%i] Render Distance [%i]", render_distance->value, terrain_lod_far);
+            }
             continue;
         }
         for (byte j = 0; j < 6; j++) {
@@ -38,6 +44,9 @@ zox_sys2(ChunkSpawnSystem) {
             int3 direction = get_direction_int3(j);
             int3 neighbor_position = int3_add(cposition->value, direction);
             if (!(neighbor_position.y >= -render_distance_y && neighbor_position.y <= render_distance_y)) {
+                if (!(cposition->value.y >= -render_distance_y && cposition->value.y <= render_distance_y)) {
+                    zox_loge("Spawned Chunk out of Range of Y", neighbor_position.y);
+                }
                 continue;
             }
             zox_geter(terrain, ChunkLinks, chunks);
@@ -48,7 +57,6 @@ zox_sys2(ChunkSpawnSystem) {
                 continue;
             }
             // NOTE: Uses Query Directly
-            // int3 stream_point = find_closest_point(stream_points, stream_points_length, neighbor_position);
             byte had_streamer = 0;
             int3 closest_point;
             float closest_distance = 9999;
@@ -62,6 +70,7 @@ zox_sys2(ChunkSpawnSystem) {
                     zox_sys_i_2i(StreamerLevel, level, k);
                     zox_sys_i_2i(StreamLink, stream_terrain, k);
                     zox_sys_i_2i(StreamPoint, stream_point, k);
+                    // had_any_streamers = 1;
                     if (level->value < 1) {
                         continue;
                     }
@@ -83,35 +92,24 @@ zox_sys2(ChunkSpawnSystem) {
             // only spawn new chunk if within stream distance
             byte camera_distance = get_camera_chunk_distance_xz(closest_point, neighbor_position);
             if (camera_distance <= terrain_lod_far) {
-                neighbor = spawn_chunk3_terrain(world, prefab_chunk, terrain, closest_point, neighbor_position, terrain_depth, terrain_scale                        );
+                neighbor = spawn_chunk3_terrain(world, prefab_chunk_terrain, terrain, closest_point, neighbor_position, terrain_depth, terrain_scale                        );
                 int3_hashmap_add(chunks->value, neighbor_position, neighbor);
                 neighbors->value[j] = neighbor;
                 if (dbg_log >= 2) {
                     zox_log("Streaming: new [%i]s chunk [%ix%ix%i]", spawned_chunks, neighbor_position.x, neighbor_position.y, neighbor_position.z);
                 }
                 spawned_chunks++;
+            } else {
+                if (dbg_log >= 2) {
+                    zox_log("Distance out of range, Camera Distance: [%i] Render Distance [%i]", camera_distance, terrain_lod_far);
+                }
             }
         }
     }
+    /*if (!had_any_streamers) {
+        zox_logw("ChunkSpawnSystem had no streamers!");
+    }*/
     if (dbg_log && spawned_chunks > 0) {
         zox_log("ChunkSpawnSystem [%i] Spawned [%i]", ecs_run_count, spawned_chunks);
     }
 } zox_sys_end(ChunkSpawnSystem);
-
-    // int3 *stream_points = NULL;
-    // int stream_points_length = 0;
-    // byte iterated = 0;
-    /*zox_sys_query_begin();
-    while (zox_sys_query_loop()) {
-        if (!iterated) {
-            iterated = 1;
-            zox_sys_begin_2();
-            zox_sys_in_2(StreamPoint);
-            stream_points = (int3*) StreamPoints_2;
-            stream_points_length = it2.count;
-        }
-    }
-    zox_sys_query_end();
-    if (stream_points_length == 0) {
-        return;
-    }*/

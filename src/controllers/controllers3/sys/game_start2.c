@@ -70,6 +70,8 @@ zox_sys2(PlayerTownFinderSystem) {
         float3 spawn_position = block_position_to_real_position(town_position, terrain_block_scale);
         zox_set(camera->value, Position3D, { spawn_position });
         zox_set(camera->value, StreamerLevel, { 1 });
+        // NOTE: Make sure it updates even if position the same
+        zox_set(camera->value, StreamDirty, { zox_dirty_trigger });
         // zox_set(terrain, Loaded, { zox_load_begin });
         state->value = zox_player_state_starting;
         dirty->value = zox_dirty_trigger;

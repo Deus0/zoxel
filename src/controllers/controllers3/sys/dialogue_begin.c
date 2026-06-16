@@ -54,7 +54,7 @@ zox_sys2(DialogueBeginSystem) {
         }
         // entity dialogue = dialogues->value[0];
         run->value = spawn_process_dialogue(world, prefab_process_dialogue, tree, e, npc);
-        entity dialogue_ui = spawn_dialogue_ui(world, prefab_dialogue_ui, canvas, character, npc);
+        entity dialogue_ui = spawn_dialogue_ui(world, canvas, character, npc);
         link_dialogue_run_to_ui(world, run->value, dialogue_ui);
         zox_set(player->value, PlayerState, { zox_player_state_dialogue_begin });
         follow_target(world, npc, e);

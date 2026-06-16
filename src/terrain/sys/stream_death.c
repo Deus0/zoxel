@@ -1,3 +1,5 @@
+// NOTE: On chunk death we remove it from the hashmap of parent
+// NOTE: We are lucky they die by stream so there is a single point for their deaths
 zox_sys2(Chunk3DeathSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -13,7 +15,7 @@ zox_sys2(Chunk3DeathSystem) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
-        if (!zox_valid(terrain->value)) {
+        if (!zox_valid(terrain)) {
             zox_delete(e)
             continue;
         }

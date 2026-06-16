@@ -3,6 +3,7 @@ zox_sys2(FirstTerrainChunkSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
+    byte dbg_warn = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StreamerLevel);
@@ -24,6 +25,12 @@ zox_sys2(FirstTerrainChunkSystem) {
             continue;
         }
         zox_mut_begin(terrain->value, ChunkLinks, chunks);
+        if (!(position->value.y >= -render_distance_y && position->value.y <= render_distance_y)) {
+            if (dbg_warn) {
+                zox_logw("Position of Camera out of Terrain Y Bounds [%i]", position->value.y);
+            }
+            continue;
+        }
         // No need to spawn if exists in links
         if (int3_hashmap_has(chunks->value, position->value)) {
             continue;

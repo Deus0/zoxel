@@ -5,19 +5,25 @@
 + I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
 + Remove more VoxLink use if its from chunk/tunk/region / use parents
 
+# Dialogue Polish
+- Change music track when dialogue starts too
+- Add little vox model above npc if you can talk to them - little cube that animates
+	- Animate it more when talking to the npc
+- Fade it in when you get closer to them, like within a chunk distance
+- Reduce ai's dialogue distance a little
+- Aim head at the npc when talking to them
+	- making sure the dialogue is above them
+- Black bars to animate from top and bottom when dialogue mode is dirty (remove the fade effect)
+
 # Next Again
-- Atm it just breaks when loading at player state 3
+-x Atm it just breaks when loading at player state 3
 - Add smooth lights for terrain faces, so the corners are darkened
-- Dialogue speed should be per character and not per animation line
-- Add Sound chance to each new animated zigel
-- Add little vox model above npc if you can talk to them
 - Add Minimap
 	- debug entire region at once
 - Block Damage Overlay
 - Block Health Regens
 - Redo the near RenderDistance and add a second option for it
 - Add GameMenu RB and LB to switch between UIs
--x Use SdlJoystick instead of Joystick for better compatibility
 - Towns to avoid Mountains
 - The crash is back?? OR NOT??!?!
 - Physics Clip issue for big body

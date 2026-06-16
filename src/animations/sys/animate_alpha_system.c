@@ -18,7 +18,6 @@ zox_sys2(AnimateAlphaSystem) {
         zox_sys_i(AnimateSourceFloat, animateSourceFloat);
         zox_sys_i(AnimateTargetFloat, animateTargetFloat);
         zox_sys_o(Alpha, alpha);
-
         if (animationType->value != zox_animate_alpha) {
             continue;
         }

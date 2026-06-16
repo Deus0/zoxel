@@ -1,13 +1,14 @@
 void prefab_add_streamer(ecs* world, entity e) {
     zox_add_tag(e, Streamer);
+    zox_prefab_set(e, StreamLink, { 0 });
     zox_prefab_set(e, StreamerLevel, { 0 });
     zox_prefab_set(e, StreamPoint, { int3_zero });
+    zox_prefab_set(e, StreamDirty, { 0 });
     zox_prefab_set(e, StreamPoint2, { int2_zero });
+    zox_prefab_set(e, StreamDirty2, { 0 });
     zox_prefab_set(e, BlockScale, { 0 });
     zox_prefab_set(e, NodeDepth, { 0 });
     // NOTE: Camera didnt have these initially before
-    zox_prefab_set(e, StreamDirty, { 0 });
-    zox_prefab_set(e, StreamDirty2, { 0 });
 }
 
 entity spawn_prefab_streamer(ecs *world) {
