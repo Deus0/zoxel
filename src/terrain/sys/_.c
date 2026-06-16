@@ -20,7 +20,7 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         ChunkLinkSystem,
         EcsOnUpdate,
-        [in] terrain.TerrainLink,
+        [in] terrains.TerrainLink,
         [in] transforms3.Position3D,
         [out] chunks3.ChunkPosition,
         [out] chunks3.ChunkLink,
@@ -30,7 +30,6 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         Chunk3DeathSystem,
         zoxp_destroy,
-        [in] voxes.VoxLink,
         [in] chunks3.ChunkPosition,
         [in] rendering.RenderDistance,
         [in] rendering.RenderDepth,
@@ -44,7 +43,7 @@ void define_systems_terrain(ecs *world) {
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
         [in] rendering.RenderDisabled,
-        [none] terrain.TerrainChunk
+        [none] terrains.TerrainChunk
     );
 #endif
     zox_system_1(
@@ -65,7 +64,7 @@ void define_systems_terrain(ecs *world) {
         [out] chunks.NodeDepth,
         [out] core.Generate,
         [out] core.Busy,
-        [none] terrain.TerrainChunk
+        [none] terrains.TerrainChunk
     );
     zox_system(
         LandfillChunk3System,
@@ -76,7 +75,7 @@ void define_systems_terrain(ecs *world) {
         [in] chunks.NodeDepth,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
-        [none] terrain.TerrainChunk
+        [none] terrains.TerrainChunk
     );
     zox_system(
         VegetationChunk3System,
@@ -87,7 +86,7 @@ void define_systems_terrain(ecs *world) {
         [in] tunks.TunkLink,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
-        [none] terrain.TerrainChunk
+        [none] terrains.TerrainChunk
     );
     // Lighting
     zox_system(
@@ -95,7 +94,7 @@ void define_systems_terrain(ecs *world) {
         EcsOnUpdate,
         [in] core.Generate,
         [out] lights.GenerateLights,
-        [none] terrain.TerrainChunk,
+        [none] terrains.TerrainChunk,
         [none] lights3.SunnyChunk
     );
     // Streaming Terrain Chunks
@@ -141,6 +140,7 @@ void define_systems_terrain(ecs *world) {
         [out] rendering.RenderDistance,
         [out] rendering.RenderDepthDirty,
         [out] rendering.RenderDistanceDirty,
+        [out] core.Busy,
         [none] streaming.StreamedChunk
     );
 }

@@ -7,7 +7,7 @@ void define_systems_terrain_collisions(ecs* world) {
     zox_system(
         CollisionDetectSystem,
         zoxp_physics,
-        [in] terrain.TerrainLink,
+        [in] terrains.TerrainLink,
         [in] transforms3.Bounds3D,
         [in] transforms3.Position3D,
         [in] physics3.LastPosition3D,
@@ -33,7 +33,7 @@ void define_systems_terrain_collisions(ecs* world) {
 #endif
         UnstuckSystem,
         zoxp_physics + 1,
-        [in] terrain.TerrainLink,
+        [in] terrains.TerrainLink,
         [in] transforms3.Bounds3D,
         [out] physics3.LastUnstuck3,
         [out] transforms3.Position3D
@@ -41,7 +41,7 @@ void define_systems_terrain_collisions(ecs* world) {
     zox_system(
         InsideBlockSystem,
         EcsOnStore,
-        [in] terrain.TerrainLink,
+        [in] terrains.TerrainLink,
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
         [out] blocks.InsideBlock,
@@ -51,7 +51,7 @@ void define_systems_terrain_collisions(ecs* world) {
     zox_system_1(
         InsideBlockSoundSystem,
         EcsOnUpdate,
-        [in] terrain.TerrainLink,
+        [in] terrains.TerrainLink,
         [in] blocks.InsideBlockDirty,
         [in] blocks.InsideBlock,
         [in] transforms3.Position3D,

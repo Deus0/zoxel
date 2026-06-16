@@ -1,21 +1,37 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+# Notes
++ I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
++ Remove more VoxLink use if its from chunk/tunk/region / use parents
+
 # Next Again
+- Atm it just breaks when loading at player state 3
 - Add smooth lights for terrain faces, so the corners are darkened
+- Dialogue speed should be per character and not per animation line
+- Add Sound chance to each new animated zigel
+- Add little vox model above npc if you can talk to them
+- Add Minimap
+	- debug entire region at once
+- Block Damage Overlay
+- Block Health Regens
+- Redo the near RenderDistance and add a second option for it
 - Add GameMenu RB and LB to switch between UIs
 -x Use SdlJoystick instead of Joystick for better compatibility
 - Towns to avoid Mountains
-- Add Minimap
-	- debug entire region at once
 - The crash is back?? OR NOT??!?!
 - Physics Clip issue for big body
-- Redo the near RenderDistance and add a second option for it
+
+# Engine
+- Look into compiling parts modularly so it compiles faster - important for development speed
+- Android Build - Fix on x86 machine
+
+# Editor
+- Line Instancing for tools
+- Blue Canvas Edge lines for Editor Mode
+- Model Inspector for Blocks, Characters, Items
 
 # Important
-- Block Damage Overlay
-- Block Health Regens
-- Dialogue speed should be per character and not per animation line
 - Town Placement should avoid mountains
 - Town Heightmap should average out more, smooth the whole thing based on average
 

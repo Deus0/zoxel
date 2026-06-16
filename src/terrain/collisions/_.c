@@ -6,8 +6,8 @@
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(TerrainCollisions)
+zox_begin_module(TerrainsCollisions) {
     define_systems_terrain_collisions(world);
-zox_end_module(TerrainCollisions)
+} zox_end_module(TerrainsCollisions);
 
 #endif

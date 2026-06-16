@@ -158,7 +158,7 @@ zox_sys2(ChunkColorsBuildSystem) {
         if (!vcolors->length) {
             continue;
         }
-        if (rdepth->value >= render_depth_spawning) {
+        if (rdepth->value >= render_depth_uninitialized) {
             mesh_dirty->value = mesh_state_trigger;
             continue;
         }

@@ -140,7 +140,7 @@ zox_begin_module(Zox) {
     zox_import_module(Tunks);
     zox_import_module(Particles);
     zox_import_module(Weathers);
-    zox_import_module(Terrain);
+    zox_import_module(Terrains);
     zox_import_module(Mountains);
     zox_import_module(Towns);
     zox_import_module(Vrays);
@@ -166,7 +166,7 @@ zox_begin_module(Zox) {
     zox_import_module(Lores);
     zox_import_module(Achievements);
     // Placement
-    zox_import_module(TerrainNpcs);
+    zox_import_module(TerrainsNpcs);
     // Gameplay
     zox_import_module(Pickups);
     zox_import_module(Crafting);

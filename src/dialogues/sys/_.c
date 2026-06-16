@@ -5,7 +5,6 @@ realm_clear_system(DialoguetreeLinks);
 
 void define_systems_dialogues(ecs* world) {
     realm_clear_systemd(dialogues, DialoguetreeLinks);
-
     zox_system(
         DialogueSpeechSystem,
         EcsOnUpdate,
@@ -13,17 +12,17 @@ void define_systems_dialogues(ecs* world) {
         [in] nodes.NodeLink,
         [in] DialogueUILink
     );
-
     zox_system(
-        AnimateText2System,
+        AnimateTextSystem,
         EcsOnUpdate,
-        [in] AnimateTextBegin,
-        [in] AnimateTextTime,
+        [in] AnimateTextTimeLimits,
         [in] TargetText,
+        [out] AnimateTextBegin,
+        [out] AnimateTextTime,
         [out] texts.TextData,
-        [out] texts.TextDirty
+        [out] texts.TextDirty,
+        [out] ZigelSpawnedDirty
     );
-
     zox_system(
         CharacterDialogueSystem,
         EcsOnUpdate,

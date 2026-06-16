@@ -47,7 +47,8 @@ zox_sys2(RenderDepthColorSystem) {
                 output = (color_rgb) { 155, 155, 0 };
             }
         } else if (mode->value == zox_cubeline_debug_render_depths) {
-            if (rdepth->value == render_depth_spawning || rdepth->value == render_depth_invisible) {
+            if (rdepth->value == render_depth_uninitialized) {
+                // || rdepth->value == render_depth_invisible) {
                 output = color_render_depths_invisible;
             } else if (rdepth->value < 6) {
                 output = color_render_depths[rdepth->value];

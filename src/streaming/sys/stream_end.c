@@ -4,18 +4,9 @@
 //          - everytime it finishes, decrease
 //  A simple way to make sure its done
 
-extern byte zox_tst_single_terrain_chunk;   // from terrain
-
 // A state checker for stream loading
 zox_sys2(StreamEndSystem) {
     byte dbg_log = 1;
-    // also checks if loaded enough chunks
-    int xz_chunks = terrain_lod_near * 2 + 1;
-    int y_chunks = render_distance_y * 2 + 1;
-    uint chunk_required = xz_chunks * xz_chunks * y_chunks;
-    if (zox_tst_single_terrain_chunk) {
-        chunk_required = 1;
-    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(EventInput);
@@ -23,8 +14,9 @@ zox_sys2(StreamEndSystem) {
     zox_sys_out(Loaded);
     zox_sys_out(StreamEndEvent);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(ChunkLinks, chunks);
-        zox_sys_i(EventInput, eventInput);
+        zox_sys_i(EventInput, input);
         zox_sys_o(Loaded, loaded);
         zox_sys_o(StreamEndEvent, event);
         if (loaded->value != zox_load_begin) {
@@ -33,48 +25,28 @@ zox_sys2(StreamEndSystem) {
         if (!chunks->value || !chunks->value->size) {
             continue;
         }
-        // check all chunks chunks if chunks are dirty]
         uint chunks_loaded = 0;
         byte running = 0;
-        for (size_t j = 0; j < chunks->value->size; j++) {
-            int3_hashmap_pair* pair = chunks->value->data[j];
-            uint checks = 0;
-            while (pair != NULL && checks < max_safety_checks_hashmap) {
-                entity chunk = pair->value;
-                if (!zox_valid(chunk) || !zox_has(chunk, Generate) || !zox_has(chunk, ChunkMeshDirty)) {
-                    if (!zox_valid(chunk)) {
-                        zox_log_error("chunk invalid in stream end system [%lu]", chunk);
-                    } else if (!zox_has(chunk, Generate)) {
-                        zox_log_error("chunk has no Generate [%lu]", chunk);
-                    } else if (!zox_has(chunk, ChunkMeshDirty)) {
-                        zox_log_error("chunk has no ChunkMeshDirty [%lu]", chunk);
-                    } else {
-                        zox_log_error("chunk invalid not sure why[%lu]", chunk);
-                    }
-                    running = 1;
-                }/* else if (zox_getv(chunk, RenderDepth) == render_depth_spawning) {
-                    running = 1;
-                } */else if (zox_getv(chunk, ChunkMeshDirty)) {
-                    running = 1;
-                } else if (zox_getv(chunk, Generate)) {
-                    running = 1;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count && !running; j++) {
+                entity e2 = it2.entities[j];
+                if (!zox_has(e2, Chunk3)) {
+                    continue;
                 }
-                if (running) {
+                if (zox_getv(e2, Busy)) {
+                    running = 1;
                     break;
                 }
-                int3_hashmap_pair* next_pair = pair->next;
-                pair = next_pair;
                 chunks_loaded++;
-                checks++;
-            }
-            if (running) {
-                break;
             }
         }
+        // NOTE: Can we get render distance from the chunks here?
+        uint chunk_required = terrain_lod_far * terrain_lod_far;
         if (!running && chunks_loaded >= chunk_required) {
             // we should check if all chunks have finished here
             if (event->value) {
-                (*event->value)(world, eventInput->value);
+                (*event->value)(world, input->value);
                 event->value = NULL;
             }
             // now loaded
@@ -85,3 +57,33 @@ zox_sys2(StreamEndSystem) {
         }
     }
 } zox_sys_end(StreamEndSystem);
+
+
+        /*for (size_t j = 0; j < chunks->value->size; j++) {
+            int3_hashmap_pair* pair = chunks->value->data[j];
+            uint checks = 0;
+            while (pair != NULL && checks < max_safety_checks_hashmap) {
+                entity chunk = pair->value;*/
+                /*if (!zox_valid(e2) || !zox_has(e2, Generate) || !zox_has(e2, ChunkMeshDirty)) {
+                    if (!zox_valid(chunk)) {
+                        zox_log_error("chunk invalid in stream end system [%lu]", chunk);
+                    } else if (!zox_has(e2, Generate)) {
+                        zox_log_error("chunk has no Generate [%lu]", e2);
+                    } else if (!zox_has(e2, ChunkMeshDirty)) {
+                        zox_log_error("chunk has no ChunkMeshDirty [%lu]", chunk);
+                    } else {
+                        zox_log_error("chunk invalid not sure why[%lu]", chunk);
+                    }
+                    running = 1;
+                }*/
+                /* else if (zox_getv(chunk, RenderDepth) == render_depth_uninitialized) {
+                    running = 1;
+                } */
+                /*int3_hashmap_pair* next_pair = pair->next;
+                pair = next_pair;
+                chunks_loaded++;
+                checks++;
+            }
+            if (running) {
+                break;
+            }*/

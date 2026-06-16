@@ -49,18 +49,18 @@ TerrainPlace find_position_in_terrain(ecs* world, entity terrain, int3 block_pos
 }
 
 // NOTE: Here we spawn our new player character
-entity game_start_player_new(ecs *world, entity player, float3* spawned_position, byte dbg_log) {
-    entity realm;
+entity game_start_player_new(ecs *world, entity player, entity realm, entity terrain, entity camera, float3* spawned_position, byte dbg_log) {
+    /*entity realm;
     entity terrain;
     entity camera;
     if (!get_player_linked_things(world, player, &realm, &terrain, &camera)) {
         *spawned_position = float3_zero;
         return 0;
-    }
+    }*/
+    lint realm_seed = zox_getv(realm, Seed);
     float terrain_scale = zox_getv(terrain, BlockScale);
     float3 camera_position = zox_getv(camera, Position3D);
     int3 camera_block_position = real_position_to_block_position(camera_position, terrain_scale);
-    lint realm_seed = zox_getv(realm, Seed);
     lint character_seed = seed_rand(realm_seed); // , 0, 100000);
     TerrainPlace placer = find_position_in_terrain(world, terrain, camera_block_position);
     *spawned_position = placer.position;
@@ -71,14 +71,14 @@ entity game_start_player_new(ecs *world, entity player, float3* spawned_position
     return e;
 }
 
-entity game_start_player_load(ecs *world, entity player, float3* spawned_position) {
-    entity realm;
+entity game_start_player_load(ecs *world, entity player, entity realm, entity terrain, float3* spawned_position) {
+    /*entity realm;
     entity terrain;
     entity camera;
     if (!get_player_linked_things(world, player, &realm, &terrain, &camera)) {
         *spawned_position = float3_zero;
         return 0;
-    }
+    }*/
     // TODO: Load Character Seed
     lint realm_seed = zox_getv(realm, Seed);
     lint character_seed = seed_rand(realm_seed); // , 0, 100000);
@@ -104,36 +104,30 @@ zox_sys2(PlayerBeginSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(RealmLink);
+    zox_sys_in(CameraLink);
     zox_sys_in(CharacterLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(RealmLink, realm);
+        zox_sys_i(CameraLink, camera);
         zox_sys_i(CharacterLink, character);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
         // Now Spawning Character
-        if (!(state->value == zox_player_state_starting && dirty->value == zox_dirty_active)) {
+        //  && dirty->value == zox_dirty_active
+        if (!(state->value == zox_player_state_starting)) {
             continue;
         }
-        entity game = zox_get_parent(world, e);
-        if (!zox_valid(game)) {
-            zox_loge("Invalid game on Player");
+        if (!zox_valid(realm->value)) {
+            zox_loge("Player has Invalid Realm");
             continue;
         }
-        // Checks if terrain is done loading
-        zox_geter_value(game, RealmLink, entity, realm);
-        if (!zox_valid(realm)) {
-            zox_loge("No Realm on Game");
-            continue;
-        }
-        if (!zox_has(realm, TerrainLink)) {
-            zox_loge("Realm [%s] has no Terrain Link", zox_get_name(realm));
-            continue;
-        }
-        zox_geter_value(realm, TerrainLink, entity, terrain);
+        entity terrain = zox_get_child_by_id(world, realm->value, zox_id(Terrain));
         if (!zox_valid(terrain)) {
-            zox_loge("Invalid Terrain on Realm");
+            zox_loge("Player has Invalid Terrain");
             continue;
         }
         // Wait for Terrain to load
@@ -147,27 +141,27 @@ zox_sys2(PlayerBeginSystem) {
             continue;
         }
         if (zox_valid(character->value)) {
-            zox_log("Trying to load character twice [zox_player_state_starting]");
+            zox_loge("Trying to load character twice [zox_player_state_starting]");
             state->value = zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
             continue;
         }
         // actually we need to do this on loaded player model for bounds
         // if character
-        zox_geter(realm, FolderPath, path);
+        zox_geter(realm->value, FolderPath, path);
         byte is_new_game = !has_save_game_file(path->value, "player.dat");
         float3 spawn_position;
         if (!is_new_game) {
-            game_start_player_load(world, e, &spawn_position);
+            game_start_player_load(world, e, realm->value, terrain, &spawn_position);
         } else {
-            game_start_player_new(world, e, &spawn_position, dbg_log);
+            game_start_player_new(world, e, realm->value, terrain, camera->value, &spawn_position, dbg_log);
         }
         if (dbg_log) {
             zox_log("[%s] Player Character Spawned at [%fx%fx%f]", is_new_game ? "New" : "Load", spawn_position.x, spawn_position.y, spawn_position.z);
         }
         spawn_arrow3D(world, spawn_position, (float3) { 0, 1, 0}, 0.2f, 6, 30);
         // Needs ui spawn after frame
-        play_playlist(world, realm, 1);
+        play_playlist(world, realm->value, 1);
         entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
         if (mouse) {
             zox_set(mouse, MouseLock, { 1 });

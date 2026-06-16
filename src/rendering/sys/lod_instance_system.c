@@ -15,7 +15,7 @@ zox_sys2(LodInstanceSystem) {
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        if (rdepth->value == render_depth_spawning || rdepth->value == render_depth_invisible) {
+        if (rdepth->value == render_depth_uninitialized) { //  || rdepth->value == render_depth_invisible) {
             instance->value = 0;
             continue;
         }

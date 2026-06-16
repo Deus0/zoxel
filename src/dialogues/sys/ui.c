@@ -9,26 +9,21 @@ zox_sys2(DialogueSpeechSystem) {
         zox_sys_i(NodeBegin, state);
         zox_sys_i(NodeLink, node);
         zox_sys_i(DialogueUILink, ui);
-
         if (state->value != zox_dirty_active) {
             continue;
         }
-
         if (!zox_valid(ui->value) || !zox_has(ui->value, DialogueTextLink)) {
             continue;
         }
-
         zox_geter_value(ui->value, DialogueTextLink, entity, e2);
-
         if (!zox_valid(e2)) {
             continue;
         }
-
         zox_geter(node->value, DialogueText, text);
         set_TargetText(world, e2, text->value);
         zox_set(e2, AnimateTextBegin, { zox_current_time });
-        zox_set(e2, AnimateTextTime, { 3 });
-
+        zox_set(e2, AnimateTextTime, { 0.1f });
+        zox_set(e2, AnimateTextTimeLimits, { 0.1f, 0.2f });
         // zox_log("Node [%s]: Target Speech [%s]", zox_get_name(node->value), text->value);
     }
 } zox_sys_end(DialogueSpeechSystem);

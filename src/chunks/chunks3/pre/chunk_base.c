@@ -7,8 +7,8 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_prefab_set(e, ChunkPosition, { int3_zero });
     zox_prefab_set(e, ChunkSize, { int3_zero });
     zox_prefab_set(e, ChunkNeighbors, { { 0 } } );
-    zox_prefab_set(e, RenderDistance, { render_depth_spawning });
-    zox_prefab_set(e, RenderDepth, { render_depth_spawning });
+    zox_prefab_set(e, RenderDistance, { render_depth_uninitialized });
+    zox_prefab_set(e, RenderDepth, { render_depth_uninitialized });
     // allocations
     zox_prefab_set(e, NodeDepth, { 0 });
     zox_prefab_set(e, VoxelNode, { 0 });

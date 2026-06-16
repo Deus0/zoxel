@@ -63,7 +63,6 @@ void define_systems_voxes(ecs *world) {
         ChunkFindNeighborSystem,
         EcsOnLoad,
         [in] chunks3.ChunkPosition,
-        [in] voxes.VoxLink,
         [in] rendering.RenderDepth,
         [out] chunks3.ChunkNeighbors,
         [none] chunks3.ChunkTextured    // we should just check if parent has chunk links here

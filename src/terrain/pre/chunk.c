@@ -18,21 +18,6 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     // Debug
     zox_add_tag(e, ChunkDebugger);
     prefab_add_cube_lines_shrink(world, e, color_white, 0, 0.95f);
-    // Moved to Chunks_Textured
-    // zox_prefab_set(e, Loaded, { 0 });
-    // zox_prefab_set(e, VoxelNodeEdited, { 0 });
-    // zox_set(e, RenderDisabled, { 1 });
-    // GPU
-    /*zox_prefab_set(e, MeshUVs, { 0 });
-    zox_prefab_set(e, MeshColorRGBs, { 0 });
-    add_gpu_uvs(world, e);
-    add_gpu_texture(world, e);
-    add_gpu_colors(world, e);*/
-    // zox_prefab_set(e, BlockManagerLink, { 0 });
-    // zox_prefab_set(e, ChunkNeighbors, { { 0, 0, 0, 0, 0, 0 } });
-    // Queues
-    // zox_prefab_set(e, VoxelNodeQueue, { 0 });
-    // Dirty States
-    // zox_prefab_set(e, Generate, { zox_dirty_none });
+    // zox_set(e, Busy, { 1 });
     return e;
 }

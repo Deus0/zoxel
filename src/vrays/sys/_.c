@@ -5,7 +5,7 @@ void define_systems_vrays(ecs* world) {
     zox_system(
         Chunk3RaycastSystem,
         EcsOnUpdate,
-        [in] terrain.TerrainLink,
+        [in] terrains.TerrainLink,
         [in] vrays.RaycastRange,
         [out] vrays.RaycastVoxelData
     );

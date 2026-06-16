@@ -3,16 +3,17 @@ zox_sys2(ChunkFindNeighborSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
-    zox_sys_in(VoxLink);
     zox_sys_in(RenderDepth);
     zox_sys_out(ChunkNeighbors);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(ChunkPosition, chunkPosition);
         zox_sys_i(RenderDepth, rdepth);
-        zox_sys_i(VoxLink, terrain);
         zox_sys_o(ChunkNeighbors, neighbors);
+        entity terrain = zox_get_parent(world, e);
         // todo: use 255 and 254, 254 for invisible and 255 for initiated
-        if (rdepth->value == render_depth_invisible || !terrain->value) {
+        // rdepth->value == render_depth_invisible ||
+        if (!terrain) {
             continue;
         }
         byte need_find = 0;
@@ -26,7 +27,7 @@ zox_sys2(ChunkFindNeighborSystem) {
             continue;
         }
         // link up neighbors if they need to be
-        zox_muter(terrain->value, ChunkLinks, chunks);
+        zox_muter(terrain, ChunkLinks, chunks);
         for (byte j = 0; j < chunk_neighbors_length; j++) {
             if (zox_valid(neighbors->value[j])) {
                 continue;

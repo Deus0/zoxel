@@ -186,7 +186,8 @@ zox_sys2(Chunk3SidesSystem) {
         if (cdirty->value != zox_dirty_active) {
             continue;
         }
-        if (rdepth->value == render_depth_invisible || rdepth->value == render_depth_spawning) {
+        // rdepth->value == render_depth_invisible ||
+        if (rdepth->value == render_depth_uninitialized) {
             sides->value = 0;
             continue;
         }

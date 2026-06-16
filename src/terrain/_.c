@@ -26,12 +26,12 @@
 #include "sys/_.c"
 #include "collisions/_.c"
 
-zox_begin_module(Terrain) {
+zox_begin_module(Terrains) {
     define_components_terrain(world);
     define_systems_terrain(world);
     add_hook_terminal_command(process_arguments_terrain);
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
-    zox_import_module(TerrainCollisions);
-} zox_end_module(Terrain);
+    zox_import_module(TerrainsCollisions);
+} zox_end_module(Terrains);
 
 #endif

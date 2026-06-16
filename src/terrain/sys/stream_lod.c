@@ -44,6 +44,7 @@ zox_sys2(ChunkLodSystem) {
     zox_sys_out(RenderDistance);
     zox_sys_out(RenderDepthDirty);
     zox_sys_out(RenderDistanceDirty);
+    zox_sys_out(Busy);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkPosition, position);
@@ -51,6 +52,7 @@ zox_sys2(ChunkLodSystem) {
         zox_sys_o(RenderDistance, distance);
         zox_sys_o(RenderDepthDirty, depth_dirty);
         zox_sys_o(RenderDistanceDirty, distance_dirty);
+        zox_sys_o(Busy, busy);
         entity terrain = zox_get_parent(world, e);
         if (!zox_valid(terrain)) {
             continue;
@@ -97,9 +99,8 @@ zox_sys2(ChunkLodSystem) {
             byte new_render_depth = camera_distance_to_terrain_render_depth(distance->value);
             if (render_depth->value != new_render_depth) {
                 render_depth->value = new_render_depth;
-                if (new_render_depth != render_depth_invisible) {
-                    depth_dirty->value = zox_dirty_trigger;
-                }
+                depth_dirty->value = zox_dirty_trigger;
+                busy->value = 1;
             }
         }
     }

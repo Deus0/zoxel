@@ -8,7 +8,7 @@ static inline byte camera_distance_to_render_depth(byte distance, byte depth, by
     // vanish beyond the horizon
     if (distance > farf) {
         // zox_log_error(" lod finder out of range: dist [%i] range [%i-%i] depth [%i]", distance, near, far, depth)
-        return render_depth_invisible;
+        return 0; // render_depth_invisible;
     }
     // carve the remaining range (render_distance–init_lod) into max_lod+1 equal slices
     // then find which slice “distance” lives in
@@ -24,7 +24,7 @@ static inline byte camera_distance_to_render_depth(byte distance, byte depth, by
     }
     zox_log_error(" fallback lod finder: dist [%i] range [%i-%i] depth [%i] slice [%i]", distance, nearf, farf, depth, slice);
     // fallback (shouldn’t hit, but safe)
-    return render_depth_invisible;
+    return 0; // render_depth_invisible;
 }
 
 // Used for Lodding the Terrain Chunks

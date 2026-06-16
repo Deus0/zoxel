@@ -44,7 +44,6 @@ zox_sys2(TunkLodSystem) {
         if (!zox_valid(terrain)) {
             continue;
         }
-        //int2 stream_point = find_closest_point2(streamers, streamers_count, position->value);
         int2 closest_point;
         byte had_streamer = 0;
         float closest_distance = 9999;
@@ -83,9 +82,7 @@ zox_sys2(TunkLodSystem) {
             byte rdepth = camera_distance_to_terrain_render_depth(distance->value);
             if (depth->value != rdepth) {
                 depth->value = rdepth;
-                if (rdepth != render_depth_invisible) {
-                    depth_dirty->value = zox_dirty_trigger;
-                }
+                depth_dirty->value = zox_dirty_trigger;
             }
         }
     }

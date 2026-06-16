@@ -11,8 +11,8 @@ byte can_render_ui(ecs* world, entity e) {
                 // TODO: Use a UIVisible flag
                 zox_geter_value(uiHolderLink->value, MaxRenderDepth, byte, max_render_depth);
                 byte render_depth_valid =
-                    render_depth != render_depth_spawning &&
-                    render_depth != render_depth_invisible &&
+                    render_depth != render_depth_uninitialized &&
+                    // render_depth != render_depth_invisible &&
                     render_depth >= max_render_depth - 2;
                 if (!render_depth_valid) {
                     return 0;

@@ -34,6 +34,6 @@ void zox_define_systems_towns(ecs* world) {
         [in] tunks.TunkLink,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
-        [none] terrain.TerrainChunk
+        [none] terrains.TerrainChunk
     );
 }

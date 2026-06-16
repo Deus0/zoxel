@@ -70,6 +70,7 @@ void define_systems_controllers3(ecs *world) {
     zox_system_1(
         Player3RespawnSystem,
         EcsOnUpdate,
+        [in] realms.RealmLink,
         [in] cameras.CameraLink,
         [out] players.PlayerStateDirty,
         [out] players.PlayerState,
@@ -162,6 +163,8 @@ void define_systems_controllers3(ecs *world) {
     zox_system_1(
         PlayerBeginSystem,
         EcsOnUpdate,
+        [in] realms.RealmLink,
+        [in] cameras.CameraLink,
         [in] characters.CharacterLink,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,

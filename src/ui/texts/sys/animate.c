@@ -1,14 +1,14 @@
-zox_sys2(AnimateTextSystem) {
+/*zox_sys2(AnimateTextSystem) {
     init_delta_time()
     zox_sys_begin()
-    zox_sys_out(AnimateZext)
-    zox_sys_out(TextDirty)
-    zox_sys_out(TextData)
+    zox_sys_out(AnimateZext);
+    zox_sys_out(TextDirty);
+    zox_sys_out(TextData);
     byte changed = 0;
     for (int i = 0; i < it->count; i++) {
-        zox_sys_o(AnimateZext, animateZext)
-        zox_sys_o(TextDirty, zextDirty)
-        zox_sys_o(TextData, textData)
+        zox_sys_o(AnimateZext, animateZext);
+        zox_sys_o(TextDirty, zextDirty);
+        zox_sys_o(TextData, textData);
         animateZext->value -= delta_time;
         if (animateZext->value <= 0.0) {
             animateZext->value += zext_animation_speed;
@@ -27,4 +27,4 @@ zox_sys2(AnimateTextSystem) {
         }
     }
     if (!changed) zox_skip()
-} zox_sys_end(AnimateTextSystem);
+} zox_sys_end(AnimateTextSystem);*/

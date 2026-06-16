@@ -5,9 +5,9 @@ entity spawn_prefab_block_vox(ecs *world, entity prefab) {
     zox_add_tag(e, VoxMesh);
     zox_prefab_set(e, CloneVox, { 0});
     zox_prefab_set(e, CloneVoxLink, { 0 });
-    zox_prefab_set(e, ChunkLod, { render_depth_spawning });
+    zox_prefab_set(e, ChunkLod, { render_depth_uninitialized });
     zox_prefab_set(e, BlockIndex, { 0 });
-    zox_prefab_set(e, RenderDepth, { render_depth_spawning });
+    zox_prefab_set(e, RenderDepth, { render_depth_uninitialized });
     zox_prefab_set(e, RenderDepthDirty, { zox_dirty_none });
     // BlockLink to original voxel meta data
     zox_prefab_set(e, Position3D, { float3_zero });

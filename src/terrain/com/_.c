@@ -1,3 +1,4 @@
+zox_tag(Terrain);
 zox_tag(FlatTerrain);
 zox_tag(FlatlandChunk);
 zox_tag(TerrainWorld);
@@ -19,6 +20,7 @@ entity get_linked_terrain(ecs* world, entity e) {
 }
 
 void define_components_terrain(ecs *world) {
+    zoxd_tag(Terrain);
     zoxd_tag(FlatTerrain);
     zoxd_tag(FlatlandChunk);
     zoxd_tag(TerrainWorld);

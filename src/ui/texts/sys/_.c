@@ -6,13 +6,14 @@
 #include "positions.c"
 
 void define_systems_texts(ecs *world) {
-    zox_system(
+    // TODO: Move Dialogue one here
+    /*zox_system(
         AnimateTextSystem,
         zox_pipelines_zext_textures,
         [out] texts.AnimateZext,
         [out] texts.TextDirty,
         [out] texts.TextData
-    );
+    );*/
     zox_system(
         TextParentBackgroundSystem,
         zox_pipelines_zext_backgrounds,

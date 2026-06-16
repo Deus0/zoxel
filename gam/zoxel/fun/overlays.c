@@ -1,5 +1,42 @@
 entity dbg_ui_overlays;
 
+// TODO: Include post processing, streaming and any other data
+uint zox_dbg_ui_camera(ecs *world, entity e, char *buffer, uint size, uint index) {
+    if (!zox_valid(e) || !zox_has(e, CameraLink)) {
+        return index;
+    }
+    entity camera = zox_getv(e, CameraLink);
+    index += snprintf(buffer + index, size - index, "Player [%s] Camera [%s]\n", zox_get_name(e), zox_get_name(camera));
+    if (!zox_valid(e)) {
+        return index;
+    }
+    float3 camera_position = zox_getv(camera, Position3D);
+    float4 camera_rotation = zox_getv(camera, Rotation3D);
+    float3 camera_euler = quaternion_to_euler(camera_rotation);
+    index += snprintf(buffer + index, size - index, " - Position [%fx%fx%f]\n", camera_position.x, camera_position.y, camera_position.z);
+    index += snprintf(buffer + index, size - index, " - Euler [%fx%fx%f]\n", camera_euler.x, camera_euler.y, camera_euler.z);
+    byte streamer_level = zox_getv(camera, StreamerLevel);
+    index += snprintf(buffer + index, size - index, " - Streamer Level [%i]\n", streamer_level);
+    return index;
+}
+
+uint zox_dbg_ui_terrain(ecs *world, entity e, char *buffer, uint size, uint index) {
+    if (!zox_valid(e) || !zox_has(e, TerrainLink)) {
+        index += snprintf(buffer + index, size - index, "Player [%s] has no Terrain\n", zox_get_name(e));
+        return index;
+    }
+    entity terrain = zox_getv(e, TerrainLink);
+    index += snprintf(buffer + index, size - index, "Player [%s] Terrain [%s]\n", zox_get_name(e), zox_get_name(terrain));
+    if (!zox_valid(e)) {
+        return index;
+    }
+    uint children_count = zox_get_children_count(world, terrain);
+    byte loaded = zox_getv(terrain, Loaded);
+    index += snprintf(buffer + index, size - index, " - Children [%i]\n", children_count);
+    index += snprintf(buffer + index, size - index, " - Loaded [%i]\n", loaded);
+    return index;
+}
+
 // NOTE: General overview of games data
 uint zox_dbg_ui_statistics(ecs *world, entity e, char *buffer, uint size, uint index) {
     index += snprintf(buffer + index, size - index, "Statistics\n");
@@ -85,6 +122,17 @@ void zox_dbg_activate_ui_statistics(ecs* world, ClickEventData data) {
     refresh_debug_label(world);
 }
 
+void zox_dbg_activate_ui_cameras(ecs* world, ClickEventData data) {
+    set_prefab_debug_label(world, &zox_dbg_ui_camera);
+    refresh_debug_label(world);
+}
+
+void zox_dbg_activate_ui_terrains(ecs* world, ClickEventData data) {
+    set_prefab_debug_label(world, &zox_dbg_ui_terrain);
+    refresh_debug_label(world);
+}
+
+
 void zox_dbg_activate_ui_filepaths(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &zox_dbg_ui_filepaths);
     refresh_debug_label(world);
@@ -131,7 +179,7 @@ void zox_dbg_activate_ui_player_character(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
-    byte zox_tsts_count = 10;
+    byte zox_tsts_count = 12;
     if (keycode != zox_key_v) {
         return;
     }
@@ -174,16 +222,24 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_activate_seed_ui },
     };
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Player States",
+        .on_click = { &zox_dbg_activate_player_state_ui },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Player Cameras",
+        .on_click = { &zox_dbg_activate_ui_cameras },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Player Terrains",
+        .on_click = { &zox_dbg_activate_ui_terrains },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Player Character",
         .on_click = { &zox_dbg_activate_ui_player_character },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Canvas",
         .on_click = { &zox_dbg_activate_ui_canvas },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Player States",
-        .on_click = { &zox_dbg_activate_player_state_ui },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Raycast Voxels",
