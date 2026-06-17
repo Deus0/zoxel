@@ -13,7 +13,7 @@ void zox_log_chunk_added(ecs *world, entity e, entity e2) {
 
 byte set_entity_chunk(ecs* world, entity e, ChunkLink* link, entity new_chunk, byte dbg_log) {
     entity old_chunk = link->value;
-    if (!zox_valid(new_chunk) || !zox_has(new_chunk, ChunkEntities) || old_chunk == new_chunk || !can_have_characters(world, new_chunk)) {
+    if (!zox_valid(new_chunk) || !zox_has(new_chunk, ChunkEntities) || old_chunk == new_chunk) { // || !can_have_characters(world, new_chunk)) {
         return 0;
     }
     // remove entity from old chunk
@@ -76,18 +76,24 @@ zox_sys2(ChunkLinkSystem) {
         zox_sys_o(ChunkLink, link);
         zox_sys_o(DisableMovement, disable);
         if (!zox_valid(terrain->value)) {
+            if (dbg_log) {
+                zox_loge("Character [%s] has no Terrain linked", zox_get_name(e));
+            }
             continue; // these shouldn't be here
         }
         zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
         zox_geter_value(terrain->value, NodeDepth, byte, node_depth);
         int3 new_chunk_position = real_position_to_chunk_position(position->value, powers_of_two[node_depth], terrain_scale);
-        byte is_set = !zox_valid(link->value) || (!int3_equals(new_chunk_position, chunk_position->value));
-        if (!is_set) {
+        // If already set and position has not changed
+        if (zox_valid(link->value) && int3_equals(new_chunk_position, chunk_position->value)) {
             continue;
         }
         chunk_position->value = new_chunk_position;
         zox_geter(terrain->value, ChunkLinks, chunks);
         entity chunk = int3_hashmap_get(chunks->value, new_chunk_position);
+        if (dbg_log) {
+            zox_log("Character [%s] Linking Chunk [%ix%ix%i]:[%s]", zox_get_name(e), new_chunk_position.x, new_chunk_position.y, new_chunk_position.z, zox_get_name(chunk));
+        }
         // NOTE: Disables if not set
         set_entity_chunk(world, e, link, chunk, dbg_log);
         disable->value = !zox_valid(link->value);

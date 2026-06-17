@@ -18,10 +18,10 @@ void define_systems_chunks3(ecs *world) {
     zox_system(
         Chunk3NeighborsMeshTriggerSystem,
         EcsOnUpdate,
+        [in] chunks3.VoxelNodeDirty,
         [in] chunks3.ChunkNeighbors,
-        [out] chunks3.ChunkMeshDirty,
-        [none] chunks3.Chunk3,
-        [none] chunks3.ChunkTextured    // only terrain for now
+        // [out] chunks3.ChunkMeshDirty,
+        [none] chunks3.ChunkTextured
     );
     zox_system(VoxelNodeQueueSystem,
         zoxp_queue_process1,

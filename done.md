@@ -1,4 +1,16 @@
 ### Done ###
++ Chunks at 15000 gives 10ms ish per chunk system:
++ Chunk3TexturedRenderSystem, ChunkFrustumSystem, ChunkNeighborLightTriggerSystem, Chunk3NeighborMeshTriggerSystem, ChunkSpawnSystem, ChunkFindNeighborSystem, Chunk3DeathSystem, Characters3SpawnZoneSystem
++ Make sure if chunk isn't doing anything that it sleeps, i.e. just a quick Dirty check, don't do anything else like zox_getv etc
+-x I can make it so FindNeighborSystem works on chunk init, and it also sets neighbors to them as well, this eliminates per frame calls
+-x TunkLinkSystem was taking 3ms... now 0.3ms
+-x Make Towns not close to Region Borders
+-x Make mountains more stone, less dirty
+-x Make Towns less Grassy, more Rough Dirt + dirt
+-x Add Minimap
+-x Atm it just breaks when loading at player state 3
+-x map UI - show tunk heightmap for now
+-x map icons - and character ones - show player arrow overlay
 -x refactor: towns tunk and chunk3 systems into its own module, self contained addons
 -x Spawn Minimap
 -x Convert Chunk to MapTexture

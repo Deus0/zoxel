@@ -1,6 +1,6 @@
 // todo: fix this, RaycasterTarget moved to zevices
 zox_sys2(ElementNavigationSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();

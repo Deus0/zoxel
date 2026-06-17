@@ -16,7 +16,7 @@ zox_sys2(UnstuckSystem) {
     // cache voxels and colliders for speed
     const BlockLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
     if (!voxels) {
-        zox_log_error("UnstuckSystem: No BlockLinks");
+        zox_log_error("UnstuckSystem: No BlockLinks on Realm");
         return;
     }
     byte colliders[voxels->length + 1];
@@ -26,6 +26,9 @@ zox_sys2(UnstuckSystem) {
         zox_sys_i(Bounds3D, bounds);
         zox_sys_o(LastUnstuck3, last);
         zox_sys_o(Position3D, position);
+        if (!zox_valid(link->value) || !zox_has(link->value, ChunkLinks)) {
+            continue;
+        }
         zox_geter(link->value, ChunkLinks, chunks);
         zox_geter_value(link->value, BlockScale, float, terrain_scale);
         zox_geter_value(link->value, NodeDepth, byte, terrain_depth);

@@ -14,5 +14,6 @@ uint debug_label_chunk_link(ecs *world, entity player, char *buffer, uint size, 
         index += snprintf(buffer + index, size - index, "[%s] has no Character\n", zox_get_name(player));
         return index;
     }
-    return get_label_chunk_link(world, characterLink->value, buffer, size, index);
+    index = get_label_chunk_link(world, characterLink->value, buffer, size, index);
+    return index;
 }

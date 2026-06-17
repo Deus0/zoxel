@@ -11,11 +11,12 @@ entity spawn_minimap(ecs* world, entity canvas, entity player, entity terrain) {
     float2 position_anchor = (float2) { 1, 1 };
     entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, position, size, position_anchor, &on_closed_taskbar_window);
     entity e = e3.x;
-    //zox_add_tag(e, Minimap);
-    //entity body = e3.y;
+    zox_add_tag(e, Map);
     zox_add_tag(e, Minimap);
     zox_set(e, PlayerLink, { player });
     zox_set(e, TerrainLink, { terrain });
     zox_set(e, MapPosition, { tunk_position });
+    zox_set(e, MapZoom, { minimap_zoom });
+    zox_set(e, Alpha, { minimap_alpha });
     return e;
 }

@@ -2,6 +2,7 @@
 #include "spawn.c"
 #include "update.c"
 #include "arrow.c"
+#include "move.c"
 
 void zox_define_systems_maps(ecs* world) {
     zox_system_1(
@@ -16,10 +17,12 @@ void zox_define_systems_maps(ecs* world) {
         MapInitializeSystem,
         EcsOnUpdate,
         [in] core.InitializeEntity,
+        [in] maps.MapZoom,
+        [in] rendering.Alpha,
         [in] players.PlayerLink,
         [in] terrains.TerrainLink,
         [in] maps.MapPosition,
-        [none] maps.Minimap
+        [none] maps.Map
     );
     zox_system_1(
         MapPositionSystem,
@@ -27,7 +30,8 @@ void zox_define_systems_maps(ecs* world) {
         [in] players.PlayerLink,
         [in] terrains.TerrainLink,
         [out] maps.MapPosition,
-        [none] maps.Minimap
+        [none] maps.Map
+        // [none] maps.Minimap
     );
     zox_system(
         MapArrowSystem,

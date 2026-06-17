@@ -4,18 +4,21 @@
 // NOTE: Adds/Removes Minimap to Game UI
 zox_sys2(MapInitializeSystem) {
     byte dbg_log = 0;
-    byte zoom = map_zoom;  // for now
     int2 arrow_size = int2_single(8 * ui_scale);
-    float map_alpha = 0.6f;
+    // float map_alpha = 0.2f;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InitializeEntity);
+    zox_sys_in(MapZoom);
+    zox_sys_in(Alpha);
     zox_sys_in(PlayerLink);
     zox_sys_in(TerrainLink);
     zox_sys_in(MapPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(InitializeEntity, state);
+        zox_sys_i(MapZoom, zoom);
+        zox_sys_i(Alpha, alpha);
         zox_sys_i(PlayerLink, player);
         zox_sys_i(TerrainLink, terrain);
         zox_sys_i(MapPosition, position);
@@ -23,7 +26,7 @@ zox_sys2(MapInitializeSystem) {
             continue;
         }
         if (dbg_log) {
-            zox_log("Map Initialized. Terrain [%s]. Center [%ix%i]. Zoom [%i].", zox_get_name(terrain->value), position->value.x, position->value.y, zoom);
+            zox_log("Map Initialized. Terrain [%s]. Center [%ix%i]. Zoom [%i].", zox_get_name(terrain->value), position->value.x, position->value.y, zoom->value);
         }
         entity body = zox_get_child_by_id(world, e, zox_id(WindowBody));
         if (!zox_valid(body)) {
@@ -36,9 +39,9 @@ zox_sys2(MapInitializeSystem) {
         zox_geter(terrain->value, TunkLinks, tunks);
         int2 margin_size = int2_single(4 * ui_scale);
         int2 used_size = int2_subtract(size, int2_multiply1(margin_size, 2));
-        int2 piece_size = int2_divide1(used_size, 1 + zoom * 2);
-        for (int x = -zoom; x <= zoom; x++) {
-            for (int y = -zoom; y <= zoom; y++) {
+        int2 piece_size = int2_divide1(used_size, 1 + zoom->value * 2);
+        for (int x = -zoom->value; x <= zoom->value; x++) {
+            for (int y = -zoom->value; y <= zoom->value; y++) {
                 int2 grid_position = (int2) { x, y };
                 int2 tunk_position = int2_add(position->value, grid_position);
                 entity tunk = int2_hashmap_get(tunks->value, tunk_position);
@@ -56,7 +59,7 @@ zox_sys2(MapInitializeSystem) {
                     zox_log("   - Piece [%ix%i], Tunk [%ix%i]: %s", grid_position.x, grid_position.y, tunk_position.x, tunk_position.y, zox_valid(tunk) ? "Valid" : "Invalid");
                 }
                 zox_set(e2, Layer2D, { layer + 1 });
-                zox_set(e2, Alpha, { map_alpha });
+                zox_set(e2, Alpha, { alpha->value });
             }
         }
         // NOTE: Spawns a simple arrow for player direction

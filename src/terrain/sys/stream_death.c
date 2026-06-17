@@ -3,22 +3,22 @@
 zox_sys2(Chunk3DeathSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ChunkPosition);
+    zox_sys_in(RenderDistanceDirty);
     zox_sys_in(RenderDistance);
     zox_sys_in(RenderDepth);
+    zox_sys_in(ChunkPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(RenderDistanceDirty, dirty);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(RenderDistance, distance);
         zox_sys_i(ChunkPosition, position);
-        if (depth->value == render_depth_uninitialized) {
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
-        entity terrain = zox_get_parent(world, e);
-        if (!zox_valid(terrain)) {
-            zox_delete(e)
+        /*if (depth->value == render_depth_uninitialized) {
             continue;
-        }
+        }*/
         // Pass if loading chunk
         if (distance->value == 255) {
             continue;
@@ -26,6 +26,11 @@ zox_sys2(Chunk3DeathSystem) {
         // Pass if lod changing
         byte is_kill = distance->value > terrain_lod_far;
         if (!is_kill) {
+            continue;
+        }
+        entity terrain = zox_get_parent(world, e);
+        if (!zox_valid(terrain)) {
+            zox_delete(e)
             continue;
         }
         // remove from hash - can i do this better?

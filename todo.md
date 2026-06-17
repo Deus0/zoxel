@@ -1,9 +1,27 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+# Left Systems to optimize
++ ChunkFrustumSystem last one (11ms)
++ ChunkTexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
+
 # Next
+- Add the Highest timing system on Profiler labels - Min/Max/System(SystemName) 13ms - for the last mintute there
 - Simple Health Damage Overlay Cube - Transparent Mesh
 - Smooth Lighting for terrain lights - smoothed edges
+- Physics Clip issue for big body
+- Add standard ground dust particles
+
+# Next Again
+- Add smooth lights for terrain faces, so the corners are darkened
+- Block Damage Overlay
+- Block Health Regens
+- Redo the near RenderDistance Option and add a second option for it, Near Distance
+
+# Towns
+- Towns to avoid Mountains
+- Town Placement should avoid mountains
+- Town Heightmap should average out more, smooth the whole thing based on average
 
 # Notes
 + I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
@@ -21,31 +39,12 @@
 	- making sure the dialogue is above them
 - Black bars to animate from top and bottom when dialogue mode is dirty (remove the fade effect)
 
-# Next Again
--x Atm it just breaks when loading at player state 3
-- Add smooth lights for terrain faces, so the corners are darkened
-- Add Minimap
-	- debug entire region at once
-- Block Damage Overlay
-- Block Health Regens
-- Redo the near RenderDistance and add a second option for it
+# Gamepads
 - Add GameMenu RB and LB to switch between UIs
-- Towns to avoid Mountains
-- The crash is back?? OR NOT??!?!
-- Physics Clip issue for big body
 
 # Engine
 - Look into compiling parts modularly so it compiles faster - important for development speed
 - Android Build - Fix on x86 machine
-
-# Editor
-- Line Instancing for tools
-- Blue Canvas Edge lines for Editor Mode
-- Model Inspector for Blocks, Characters, Items
-
-# Important
-- Town Placement should avoid mountains
-- Town Heightmap should average out more, smooth the whole thing based on average
 
 # Animations
 - Disable Switching Action when one is active
@@ -57,7 +56,6 @@
 - Add simple transparent cube where damage is
 - set alpha based on health for WorldBlock entities
 - Use prefab with health + regen children stats for blocks
-
 - disable next button until dialogue animation finished
 - SaveLoad Items - using new Saves Module for better workflow
 - Use SdlJoystick instead of Joystick for better Compatibility
@@ -69,15 +67,11 @@
 	- Paint Bone Weights
 	- Disable NPCs
 - SaveTransformSystem using States
-
--x Make mountains more stone, less dirty
--x Make Towns less Grassy, more Rough Dirt + dirt
 - Make Road from middle of town to gate
 - Make Walls Thicker
 - Make Town Gates more overhanggy
 - Aim down when speaking to slime/chicken etc
 - Debug missing town wall parts, cuttoff, do minimaps next
--x Make Towns not close to Region Borders
 - Fix OOB errors
 - Fix chunk mesh reload glitch (flashes, basically missing for one frame)
 
@@ -212,12 +206,9 @@
 # Biomes
 - base biome color on prior biomes so it stands out too
 
-# Towns
-
 # Tunks
-  - tunks to handle increasing resolution when needed - using the depth update
+- Tunks to use Quadtrees and LODing
 
-## UI
 
 # Huds
 - Seperate Pause UI from Game Menu
@@ -225,10 +216,6 @@
 - Sometimes namelabel didnt load on npcs
 - Pause ui toggle not showing on spawn taskbar + pause
 - Give game uis the realm colors so feels different to the main menu
-
-# Editor #
-- Terminal UI
-- test key for keyboard navigation mode
 
 # Unsorted #
 - Vox Frames - different vox models we swap between
@@ -258,53 +245,6 @@
 - Fix music importer
 - Fix import workflow - make import call
 
-# Position Debugger
-- Debug Component for Position Curve (float3 curve)
-- Position Y chart - showing fluctuations - use to stabilize physics
-- Position atm shakes when grounded
-- If unstuck disabled, it will fall through ground when loading
-
-# Editor Delayed
-- TextureData UI in Inspector Label
-- Scrollbar horizontal
-- bar at bottom of texture to resize individual component
-- Component Element for a list (MeshIndicies, etc)
-	- using folded button group
-- Resizable Windows
-	- add corner button to bottom right
-	- debug when release + hold system for the dragging
-- Editor Style function that sets:
-	- window_color
-	- font_size
-	- element_font_color + outline
-	- header_font_size
-	+ header_font_color + outline
-- dock hierarchy/window on left of window
-	- left drag to edge and release
-	- add a button on header to restore from docked
-- tag filter dropdown on header of hierarchy
-	- Block, Item, Stat, Etc
-	- Just add a list of tags for now to it
-- Slider UI - visually show points to with little up arrows
-Engine [Builds]:
-- windows build in zelder, make a bsh/windows.sh
-- make builder:
-	- build android
-	- push to itch io
-- move import modules into a new module - which will only be included when building zengine workflow (with another define)
-- prefabs should spawn children too
-Module [Nodes]:
-- create generic variables for our nodes
-- our head blueprint needs a l_eye_size r_eye_size
-- set these variables on process
-- for eye size, its a paint sphere, we can hook a input node up to the fill node
-
-
-# Tools #
-- terminal log text list
-- chunk debugger - show lods of chunks etc
-- character debugger - show number per tunk2D of npcs
-
 # Realms
 - fix end game fade out, really bad atm
 - remove all realm macros and just use state in their own systems (RealmItemsSpawnSystem, ClearSystem, etc) - wait clear can be a macro tho
@@ -312,11 +252,4 @@ Module [Nodes]:
 - delete option Confirm Screen
 - use node system
 
-# Nodes
-- Nodegraph UI - show a node graph full of nodes and connections
-- simple print blueprint function that logs a blueprint nodes
-
-# Maps
-- map UI - show tunk heightmap for now
-- map icons - and character ones - show player arrow overlay
 - drop item button

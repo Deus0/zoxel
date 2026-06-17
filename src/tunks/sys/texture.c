@@ -1,6 +1,7 @@
 // NOTE: Simply creates a height texture from tunks
 zox_sys2(TunkTextureSystem) {
     byte dbg_log = 0;
+    byte map_type = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -20,7 +21,10 @@ zox_sys2(TunkTextureSystem) {
         }
         // NOTE: Validate Tunks
         if (!zox_valid(tunk->value) || !zox_has(tunk->value, Generate) || !zox_has(tunk->value, HeightMap)) {
-            zox_loge("Invalid [Tunk] for Texture [%s]", zox_get_name(e));
+            // zox_loge("Invalid [Tunk] for Texture [%s]", zox_get_name(e));
+            size->value = int2_single(0);
+            resize_TextureData(data, size->value.x * size->value.y);
+            dirty->value = zox_dirty_trigger;
             continue;
         }
         entity terrain = zox_get_parent(world, tunk->value);

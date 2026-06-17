@@ -97,6 +97,7 @@ zox_sys2(Light3BuildSystem) {
     if (disable_lights) {
         return;
     }
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
@@ -120,6 +121,14 @@ zox_sys2(Light3BuildSystem) {
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshColorsDirty, mesh_colors_dirty);
         if (trigger->value != zox_dirty_active) {
+            continue;
+        }
+        if (zox_getv(e, ChunkMeshDirty)) {
+            // if still building, it will update the verts again
+            zox_set(e, MeshColorsGenerate, { zox_dirty_trigger });
+            if (dbg_log) {
+                zox_log("Chunk is still Generating new Mesh, while building Lights [%s]", zox_get_name(e));
+            }
             continue;
         }
         if (zox_disable_low_res_lights) {

@@ -1,2 +1,2 @@
-#include "menu.c"
+#include "map.c"
 #include "minimap.c"

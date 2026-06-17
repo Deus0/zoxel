@@ -66,6 +66,7 @@ void zoxel_settings_uis() {
     byte window_fill_alpha = 166;
     byte fill_alpha = 66;
     byte text_alpha = 122;
+    byte text_outline_alpha = 222;
     byte outline_alpha = 92;
     byte outline_value = 1;
     // Windows
@@ -74,14 +75,14 @@ void zoxel_settings_uis() {
     // Headers
     header_outline = color_grayscale_a(outline_value, outline_alpha);
     header_fill = (color) { 26, 44, 32, window_fill_alpha };
-    header_font_outline = (color) { 158, 46, 237, text_alpha };
+    header_font_outline = (color) { 158, 46, 237, text_outline_alpha };
     header_font_fill = (color) { 244, 33, 166, text_alpha };
     header_fonto_thickness = 3;
     header_font_thickness = 1;
     // Close Buttons
     close_button_outline = color_grayscale_a(outline_value, outline_alpha);
     close_button_fill = color_grayscale_a(13, fill_alpha);
-    close_button_font_outline = color_grayscale_a(166, text_alpha);
+    close_button_font_outline = color_grayscale_a(166, text_outline_alpha);
     close_button_font_fill = color_grayscale_a(166, text_alpha);
     close_button_fonto_thickness = 2;
     close_button_font_thickness = 2;
@@ -91,7 +92,7 @@ void zoxel_settings_uis() {
     // Buttons
     button_outline = color_grayscale_a(outline_value, fill_alpha);
     button_fill = color_grayscale_a(0, fill_alpha);
-    button_font_outline = (color) { 188, 75, 244, text_alpha };
+    button_font_outline = (color) { 88, 25, 124, text_outline_alpha };
     button_font_fill = (color) { 226, 2, 133, text_alpha };
     button_font_thickness_fill = 2;
     button_font_thickness_outline = 3;

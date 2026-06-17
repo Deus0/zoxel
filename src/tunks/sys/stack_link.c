@@ -1,5 +1,6 @@
 // Signals Terrain Chunks to Generate -> After Tunk (2D maps) finishes generating
 // Terrain Chunk <-> Tunks
+// NOTE: Links Tunks to Chunks
 zox_sys2(TunkLinkSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -11,17 +12,23 @@ zox_sys2(TunkLinkSystem) {
         zox_sys_i(Generate, generate);
         zox_sys_i(TunkPosition, cposition);
         zox_sys_o(Chunk3Stack, stack);
-        entity terrain = zox_get_parent(world, e);
-        if (!zox_valid(terrain)) {
-            continue;
-        }
-        zox_geter(terrain, ChunkLinks, chunks3);
+        entity terrain = 0;
+        const ChunkLinks* chunks3 = NULL;
         for (int j = -render_distance_y, k = 0; j <= render_distance_y; j++, k++) {
             entity chunk3 = stack->value[k];
             if (zox_valid(chunk3)) {
                 continue;
             }
             int3 cposition3 = (int3) { cposition->value.x, j, cposition->value.y };
+            if (!terrain) {
+                terrain = zox_get_parent(world, e);
+            }
+            if (!zox_valid(terrain)) {
+                continue;
+            }
+            if (chunks3 == NULL) {
+                chunks3 = zox_get(terrain, ChunkLinks);
+            }
             chunk3 = int3_hashmap_get(chunks3->value, cposition3);
             if (chunk3) {
                 stack->value[k] = chunk3;

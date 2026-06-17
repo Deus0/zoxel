@@ -8,7 +8,7 @@ const BlockLinks* get_first_terrain_voxels(ecs *world, const TerrainLink* Terrai
         realm = zox_get_value(link->value, RealmLink);
         break;
     }
-    if (!zox_valid(realm)) {
+    if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {
         return NULL;
     }
     zox_geter(realm, BlockLinks, voxels);

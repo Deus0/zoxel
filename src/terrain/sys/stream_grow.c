@@ -3,18 +3,22 @@
 zox_sys2(ChunkSpawnSystem) {
     byte dbg_log = 0;
     uint spawned_chunks = 0;
-    // byte had_any_streamers = 0;
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ChunkPosition);
+    zox_sys_in(RenderDistanceDirty);
     zox_sys_in(RenderDistance);
+    zox_sys_in(ChunkPosition);
     zox_sys_out(ChunkNeighbors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ChunkPosition, cposition);
+        zox_sys_i(RenderDistanceDirty, dirty);
         zox_sys_i(RenderDistance, render_distance);
+        zox_sys_i(ChunkPosition, chunk_position);
         zox_sys_o(ChunkNeighbors, neighbors);
+        if (dirty->value != zox_dirty_active) {
+            continue;
+        }
         // Pass if loading chunk
         if (render_distance->value == 255) {
             continue;
@@ -42,9 +46,9 @@ zox_sys2(ChunkSpawnSystem) {
             }
             // get position of neighbor and check terrain for it
             int3 direction = get_direction_int3(j);
-            int3 neighbor_position = int3_add(cposition->value, direction);
+            int3 neighbor_position = int3_add(chunk_position->value, direction);
             if (!(neighbor_position.y >= -render_distance_y && neighbor_position.y <= render_distance_y)) {
-                if (!(cposition->value.y >= -render_distance_y && cposition->value.y <= render_distance_y)) {
+                if (!(chunk_position->value.y >= -render_distance_y && chunk_position->value.y <= render_distance_y)) {
                     zox_loge("Spawned Chunk out of Range of Y", neighbor_position.y);
                 }
                 continue;
@@ -106,9 +110,6 @@ zox_sys2(ChunkSpawnSystem) {
             }
         }
     }
-    /*if (!had_any_streamers) {
-        zox_logw("ChunkSpawnSystem had no streamers!");
-    }*/
     if (dbg_log && spawned_chunks > 0) {
         zox_log("ChunkSpawnSystem [%i] Spawned [%i]", ecs_run_count, spawned_chunks);
     }

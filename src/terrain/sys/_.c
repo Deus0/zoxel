@@ -27,14 +27,6 @@ void define_systems_terrain(ecs *world) {
         [out] physics.DisableMovement,
         [none] chunks3.LinkChunk
     );
-    zox_system(
-        Chunk3DeathSystem,
-        zoxp_destroy,
-        [in] chunks3.ChunkPosition,
-        [in] rendering.RenderDistance,
-        [in] rendering.RenderDepth,
-        [none] streaming.StreamedChunk
-    );
     // Debug Terrains
 #ifdef zox_debug_chunk_bounds
     zox_system_1(
@@ -118,8 +110,9 @@ void define_systems_terrain(ecs *world) {
         ChunkSpawnSystem,
         zoxp_mainthread,
         streamers_grow,
-        [in] chunks3.ChunkPosition,
+        [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
+        [in] chunks3.ChunkPosition,
         [out] chunks3.ChunkNeighbors,
         [none] streaming.StreamedChunk
     );
@@ -141,6 +134,15 @@ void define_systems_terrain(ecs *world) {
         [out] rendering.RenderDepthDirty,
         [out] rendering.RenderDistanceDirty,
         [out] core.Busy,
+        [none] streaming.StreamedChunk
+    );
+    zox_system(
+        Chunk3DeathSystem,
+        zoxp_destroy,
+        [in] rendering.RenderDistanceDirty,
+        [in] rendering.RenderDistance,
+        [in] rendering.RenderDepth,
+        [in] chunks3.ChunkPosition,
         [none] streaming.StreamedChunk
     );
 }

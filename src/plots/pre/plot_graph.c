@@ -33,19 +33,11 @@ entity spawn_plot_graph(ecs* world, entity canvas, entity parent, int2 parent_po
     zox_set_ptr(e, PlotDataDouble, data);
     if (is_label) {
         SpawnZext text_data = {
-            .canvas = {
-                .e = canvas,
-                // .size = zox_gett_value(canvas, LayoutSize)
-            },
-            .parent = {
-                .e = e,
-                // .position = parent_position,
-                // .size = parent_size
-            },
+            .canvas = { .e = canvas },
+            .parent = { .e = e },
             .element = {
                 .prefab = prefab_text,
                 .position = (int2) { 0, - label_line * (14 + 4 * 2) },
-                // .layer = layer,
                 .anchor = (float2) { 0, 1.0f },
             },
             .zext = {

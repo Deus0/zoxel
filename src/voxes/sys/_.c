@@ -62,8 +62,8 @@ void define_systems_voxes(ecs *world) {
     zox_system(
         ChunkFindNeighborSystem,
         EcsOnLoad,
+        [in] core.InitializeEntity,
         [in] chunks3.ChunkPosition,
-        [in] rendering.RenderDepth,
         [out] chunks3.ChunkNeighbors,
         [none] chunks3.ChunkTextured    // we should just check if parent has chunk links here
     );

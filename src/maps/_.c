@@ -3,7 +3,10 @@
 
 // TODO: Just Destroy/Spawn map pieces instead
 // TODO: we can even downsize the pieces?
-byte map_zoom = 2;
+byte bigmap_zoom = 16;
+float bigmap_alpha = 0.8f;
+byte minimap_zoom = 2;
+float minimap_alpha = 0.36f;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
