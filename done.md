@@ -1,4 +1,7 @@
 ### Done ###
+-x refactor: towns tunk and chunk3 systems into its own module, self contained addons
+-x Spawn Minimap
+-x Convert Chunk to MapTexture
 -x Sound on new character, chanced
 	-x Add Sound chance to each new animated zigel
 -x Disable Next button until it finishes

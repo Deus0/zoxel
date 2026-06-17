@@ -2,8 +2,6 @@
 => GPU Constrained actually, memory barely used - 200-400mb used
 
 # Next
--x Spawn Minimap
--x Convert Chunk to MapTexture
 - Simple Health Damage Overlay Cube - Transparent Mesh
 - Smooth Lighting for terrain lights - smoothed edges
 
@@ -60,7 +58,6 @@
 - set alpha based on health for WorldBlock entities
 - Use prefab with health + regen children stats for blocks
 
-- Refactor Settings to Entities
 - disable next button until dialogue animation finished
 - SaveLoad Items - using new Saves Module for better workflow
 - Use SdlJoystick instead of Joystick for better Compatibility
@@ -92,28 +89,6 @@
 - Windows no longer close taskbar toggle
 - Physics clip issue now that my body is bigger than one block size
 
-# Chunk Refactor
-- Fade in Chunks
-- Spawn Hierarchy + inspector when we spawn our Vox Test
-- Spawn the Vox test without renderer, and use child as render
-	- refactor the mesh building functions for this use
-- Switching LOD Meshes should
-	- fade in and out the switch
-	- when fadeout completely they get disabled
-	- when fading in, they get enabled (entity enabling)
-- Refactor Chunk to Chunk + BlockMaterial + Lod Render
-- chunk = chunk + renders (seperate)
-- Generate sides per Chunk3Material (sub entity of Chunk3)
-- Spawn Chunk3Render entity per LOD level when RenderDepth set
-- Refactor models to just spawn one vox model and multiple render objects as children
-	- Make lods just use the same model, no need to create 5 models per slime
-	- just generate per each level - set with shapes per node level
-	
-# ChunkTextured Refactor
-- Spawn a Terrain chunk as test function
-- Spawn a TerrainChunk with no Mesh and child Renderer
-	- fix systems to work with new terrain chunk
-
 # Next
 - Arm Swing when attacking
 - Add humanoids back to npc spawning
@@ -128,35 +103,6 @@
 - consider prompts for inputs when character is less than a day old
 - Disable next button until animating dialogue finishes
 - Flag if chunk has file, then progressively load the contents per LOD level
-
-# Refactors
-- Remove refactor Vodes spawn code
-- Replace Chunk VoxLinks with Parent calls
-- Refactor Model Lods -> one model, just create mesh per lod
-- Refactor 3D UIs to use 2D UI stuff
-- Remove struct use from spawn_block_vox_meta
-- Remove Duplicate UI prefabs
-- Remove structs from UI prefab use
-- Remove spawn_window_users use
-- Refactor Header Spawning to system
-- Remove all spawn_window_users's
-- Spawn character data from biomes
-- Compare raycasts based on priority
-	- Raycast Solid Blocks, Character, Non Solid Blocks (Grass)
-- make shape type and centering part of painting as well - use fill system just with diff byte for checks
-- refactor soil/blocks into nodegraphs for models
-- link nodegraphs to realm's nodegraphLinks
-- list uis should just reposition inside system when children dirty
-- taskbar data into entities
-- settings data into entities
-- remove sdl_image and use BMP imports
-- remove sdl_mixer and use another simpler audio lib
-- Refactor texture generation to blueprints
-- upgrade the texture for the item frames
-- Terrain loading and finishing should be overseen by GameState and not Player events
-- Move character/block name generation to system under new module Names
-- Remove any random delays, and make the state changes timed instead
-- Add a tooltip that just stores a string - no need for event every time
 
 # Inputs
 - Button Mapping
@@ -240,7 +186,6 @@
 - use functions like spawn_window, or spawn_user_grid inside those uis
 - Spawn label top left above stats - show block / npc selected
 - Generate a mouse texture - arrow
-- Refactor Texture Generation into Nodegraphs
 - Maximize a window - button on map header
 - Resize window grabber at corner
 - move sand/wood/stone into biome blocks
@@ -255,7 +200,6 @@
 
 # Blocks
 - Make Grass Taller, 2-3 blocks tall sometimes
-- Refactor Model Spawning out of block_vox_meta functions
 - seperate block spawning more from the realm,break it into biomes and modules
 - remove use of global voxel indexes and use BlockLinks from realm
 
@@ -272,7 +216,6 @@
 
 # Tunks
   - tunks to handle increasing resolution when needed - using the depth update
-  - refactor: towns tunk and chunk3 systems into its own module, self contained addons
 
 ## UI
 
@@ -302,7 +245,6 @@
 - add a delete all savegames to the test window
 - Make layout positions recursive too - so it updates in a single frame
 - Make all ui shaders use transforms like render texture does
-	- need to refactor the shaders and element render system
 - Handle player death by removing camera on death state
 - F6 key to toggle bone render debugs
 - Use realm colors for UI
@@ -362,12 +304,6 @@ Module [Nodes]:
 - terminal log text list
 - chunk debugger - show lods of chunks etc
 - character debugger - show number per tunk2D of npcs
-
-# Chunks
-- seperate Chunk into Chunk + Render
-- after chunk3 refactor, use a render per lod, instead of regenerating everytime
-- add local chunk lookups for block indexes
-	- Prevents Updates messing up Chunk Save Data
 
 # Realms
 - fix end game fade out, really bad atm
