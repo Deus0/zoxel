@@ -5,11 +5,11 @@ zox_sys2(BiomeMapSystem) {
     byte biome_octaves = 2;
     zox_sys_begin();
     zox_sys_in(Generate);
-    zox_sys_in(Chunk2Position);
+    zox_sys_in(TunkPosition);
     zox_sys_out(BiomeMap);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Generate, generate);
-        zox_sys_i(Chunk2Position, cposition);
+        zox_sys_i(TunkPosition, cposition);
         zox_sys_o(BiomeMap, biomes);
         if (generate->value != zox_dirty_active) {
             continue;

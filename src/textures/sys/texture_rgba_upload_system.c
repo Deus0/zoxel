@@ -37,7 +37,7 @@ zox_sys2(TextureUpdateSystem) {
         else if (data->length) {
             zox_gpu_set_texture_color_rgba(gpu_link->value, size->value, data->value);
             if (dbg_log) {
-                zox_logw("Texture RGBA Uploaded [%s] Size [%ix%i] GPU [%i]", zox_get_name(e), size->value.x, size->value.y, gpu_link->value);
+                zox_log("Texture Uploaded [%s] Size [%ix%i] GPULink [%i]", zox_get_name(e), size->value.x, size->value.y, gpu_link->value);
             }
         }
     }

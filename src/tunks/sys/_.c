@@ -15,6 +15,7 @@
 // More Maps
 #include "heights.c"
 #include "vegetation.c"
+#include "texture.c"
 
 void define_systems_tunks(ecs* world) {
     zox_system(
@@ -28,21 +29,21 @@ void define_systems_tunks(ecs* world) {
         TunkLinkSystem,
         EcsPreUpdate,
         [in] core.Generate,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [out] tunks.Chunk3Stack,
         [none] tunks.Tunk
     );
     zox_system(
         TunkRegionLinkSystem,
         EcsOnUpdate,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [out] regions.RegionLink,
         [none] tunks.Tunk
     );
     /*zox_system_1(
         TunkDebugSystem,
         [in] voxes.VoxLink,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [in] rendering.RenderDistance,
         [out] chunks2.Chunk2Neighbors,
     );*/
@@ -52,7 +53,7 @@ void define_systems_tunks(ecs* world) {
         BiomeMapSystem,
         EcsOnLoad,
         [in] core.Generate,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [out] tunks.BiomeMap,
         [none] tunks.Tunk
     );
@@ -68,7 +69,7 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         BiomeLinkSystem,
         EcsOnUpdate,
-        [in] streaming.StreamPoint2,
+        [in] streaming.StreamPosition2,
         [in] streaming.StreamLink,
         [out] tunks.TunkLink,
         [out] biomes.BiomeLink,
@@ -80,7 +81,7 @@ void define_systems_tunks(ecs* world) {
         HeightMapSystem,
         EcsPreUpdate,
         [in] core.Generate,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.HeightMap,
         [none] tunks.Tunk
@@ -90,7 +91,7 @@ void define_systems_tunks(ecs* world) {
         VegetationMapSystem,
         EcsOnUpdate,
         [in] core.Generate,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.VegetationMap,
         [none] tunks.Tunk
@@ -100,7 +101,7 @@ void define_systems_tunks(ecs* world) {
         FirstTerrainTunkSystem,
         zoxp_mainthread,
         [in] streaming.StreamLink,
-        [in] streaming.StreamPoint2,
+        [in] streaming.StreamPosition2,
         [in] streaming.StreamDirty2,
         [none] streaming.Streamer
     );
@@ -108,14 +109,14 @@ void define_systems_tunks(ecs* world) {
         streamers,
         [in] streaming.StreamerLevel,
         [in] streaming.StreamLink,
-        [in] streaming.StreamPoint2,
+        [in] streaming.StreamPosition2,
         [none] streaming.Streamer
     );
     zox_system_ctx_1(
         TunksSpawnSystem,
         zoxp_mainthread,
         streamers,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [in] rendering.RenderDistance,
         [out] chunks2.Chunk2Neighbors,
         [none] streaming.StreamedChunk,
@@ -125,7 +126,7 @@ void define_systems_tunks(ecs* world) {
         Tunk2DeathSystem,
         zoxp_destroy,
         [in] voxes.VoxLink,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [in] rendering.RenderDistance,
         [none] streaming.StreamedChunk,
         [none] tunks.Tunk
@@ -135,18 +136,29 @@ void define_systems_tunks(ecs* world) {
         [in] streaming.StreamDirty2,
         [in] streaming.StreamerLevel,
         [in] streaming.StreamLink,
-        [in] streaming.StreamPoint2,
+        [in] streaming.StreamPosition2,
         [none] streaming.Streamer
     );
     zox_system_ctx(
         TunkLodSystem,
         zoxp_update,
         streamers_lod,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [out] rendering.RenderDistance,
         [out] rendering.RenderDepth,
         [out] rendering.RenderDistanceDirty,
         [out] rendering.RenderDepthDirty,
         [none] streaming.StreamedChunk
+    );
+    // Texture
+    zox_system(
+        TunkTextureSystem,
+        EcsOnUpdate,
+        [in] core.Generate,
+        [in] tunks.TunkLink,
+        [out] textures.TextureData,
+        [out] rendering.TextureSize,
+        [out] rendering.TextureDirty,
+        [none] tunks.TunkTexture
     );
 }

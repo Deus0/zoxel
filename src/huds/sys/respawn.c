@@ -44,18 +44,18 @@ zox_sys2(PlayerRespawnUISystem) {
             if (zox_valid(taskbar)) {
                 zox_delete(taskbar);
             }
-            entity menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPlay));
+            /*entity menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPlay));
             if (zox_valid(menu)) {
                 zox_delete(menu)
-            }
-            entity statbars = zox_get_child_by_id(world, canvas->value, zox_get_id_statbars(world)); // zox_id(StatBars));
+            }*/
+            /*entity statbars = zox_get_child_by_id(world, canvas->value, zox_get_id_statbars(world)); // zox_id(StatBars));
             if (zox_valid(statbars)) {
                 zox_delete(statbars);
-            }
-            entity crosshair = zox_get_child_by_id(world, canvas->value, zox_id(Crosshair));
+            }*/
+            /*entity crosshair = zox_get_child_by_id(world, canvas->value, zox_id(Crosshair));
             if (zox_valid(crosshair)) {
                 zox_delete(crosshair);
-            }
+            }*/
             dispose_menu_game_touch(world, e);
         } else if (state->value == zox_player_state_respawn) {
             // When respawn, remove the fade screen

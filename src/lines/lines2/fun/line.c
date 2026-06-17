@@ -42,11 +42,11 @@ int2 get_line_element_mid_point(
     if (zox_has(e, LineLocalPosition2)) {
         const LineLocalPosition2 *lineLocalPosition2 = ecs_get(world, e, LineLocalPosition2);
         const int2 xy_line = int4_xy(lineLocalPosition2->value);
-        int2 pixel_position = int4_zw(lineLocalPosition2->value);
-        int2_subtract(&pixel_position, xy_line);
-        int2_divide_int_p(&pixel_position, 2);
-        int2_add_p(&pixel_position, xy_line);
-        return pixel_position;
+        int2 position = int4_zw(lineLocalPosition2->value);
+        position = int2_subtract(position, xy_line);
+        int2_divide_int_p(&position, 2);
+        int2_add_p(&position, xy_line);
+        return position;
     }
     return int2_zero;
 }

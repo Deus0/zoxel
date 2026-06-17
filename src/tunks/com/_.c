@@ -1,5 +1,7 @@
 zox_tag(Tunk);
+zox_tag(TunkTexture);
 zoxc_entity(TunkLink);
+zoxc_int2(TunkPosition);
 zoxc_arrayd(BiomeMap, byte)
 zoxc_arrayd(HeightMap, byte)
 zoxc_arrayd(VegetationMap, byte)
@@ -11,7 +13,9 @@ zoxc_array(Chunk3Stack, entity, chunk3_stack_length);
 
 void define_components_tunks(ecs *world) {
     zoxd_tag(Tunk);
+    zoxd_tag(TunkTexture);
     zoxd_entity(TunkLink);
+    zoxd_int2(TunkPosition);
     zoxd_arrayd(BiomeMap);
     zoxd_arrayd(HeightMap);
     zoxd_arrayd(VegetationMap);

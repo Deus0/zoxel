@@ -21,8 +21,8 @@ uint zox_dbg_ui_camera(ecs *world, entity e, char *buffer, uint size, uint index
     }
     byte streamer_level = zox_getv(camera, StreamerLevel);
     entity stream_terrain = zox_getv(camera, StreamLink);
-    int3 stream_position = zox_getv(camera, StreamPoint);
-    int2 stream_position2 = zox_getv(camera, StreamPoint2);
+    int3 stream_position = zox_getv(camera, StreamPosition);
+    int2 stream_position2 = zox_getv(camera, StreamPosition2);
     index += snprintf(buffer + index, size - index, " - Streamer Level [%i]\n", streamer_level);
     index += snprintf(buffer + index, size - index, " - Terrain [%s]\n", zox_get_name(stream_terrain));
     index += snprintf(buffer + index, size - index, " - Position [%ix%ix%i]\n", stream_position.x, stream_position.y, stream_position.z);

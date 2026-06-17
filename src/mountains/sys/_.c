@@ -17,7 +17,7 @@ void zox_define_systems_mountains(ecs* world) {
         EcsPostUpdate,
         [in] core.Generate,
         [in] regions.RegionLink,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [out] tunks.VegetationMap,
         [out] tunks.HeightMap,
         [none] tunks.Tunk

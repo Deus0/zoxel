@@ -17,11 +17,11 @@ zox_sys2(RegionSpawnSystem) {
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
             zox_sys_in_2(StreamDirty2);
-            zox_sys_in_2(StreamPoint2);
+            zox_sys_in_2(StreamPosition2);
             for (int j = 0; j < it2.count; j++) {
                 // zox_sys_e_2();
                 zox_sys_i_2(StreamDirty2, dirty)
-                zox_sys_i_2(StreamPoint2, position);
+                zox_sys_i_2(StreamPosition2, position);
                 if (dirty->value != zox_dirty_active) {
                     continue;
                 }

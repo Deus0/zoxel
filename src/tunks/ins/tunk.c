@@ -8,7 +8,7 @@ entity spawn_tunk(ecs* world, entity prefab, entity parent, int2 position, byte 
     }
     zox_set_parent(world, e, parent);
     zox_set(e, VoxLink, { parent });
-    zox_set(e, Chunk2Position, { position });
+    zox_set(e, TunkPosition, { position });
     zox_set(e, RenderDistance, { rdistance });
     // zox_log("+ Tunk2 [%ix%i]", position.x, position.y);
     return e;

@@ -17,7 +17,7 @@ entity spawn_button_icon(ecs *world, entity p, entity texture, entity canvas, en
     zox_set(e, OutlineColor, { coutline });
     zox_set(e, ClickEvent, { onclick.value });
     // spawn texture ui image here
-    entity image = spawn_image(world, prefab_element_ready, texture, canvas, e, int2_zero, (int2) { size.x - padding, size.y - padding }, float2_half, layer + 1, rdisabled);
+    entity image = spawn_image(world, prefab_element_ready, e, canvas, int2_zero, (int2) { size.x - padding, size.y - padding }, float2_half, layer + 1, rdisabled, texture);
     zox_set_parent(world, image, e);
     return e;
 }

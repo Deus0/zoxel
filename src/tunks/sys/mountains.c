@@ -3,12 +3,12 @@
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(RegionLink);
-    zox_sys_in(Chunk2Position);
+    zox_sys_in(TunkPosition);
     zox_sys_out(HeightMap);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Generate, generate);
         zox_sys_i(RegionLink, region);
-        zox_sys_i(Chunk2Position, tunk_position);
+        zox_sys_i(TunkPosition, tunk_position);
         zox_sys_o(HeightMap, height_map);
         // NOTE: Runs after heights system
         if (generate->value != zox_dirty_end) {

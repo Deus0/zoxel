@@ -2,7 +2,7 @@
 extern entity prefab_chunk_terrain;
 extern entity get_linked_terrain(ecs*, entity);
 
-void toggle_debug_bounds_terrain(ecs* world) {
+void zox_dbg_toggle_gizmos_terrain(ecs* world, ClickEventData data) {
     entity terrain = local_terrain;
     if (!zox_valid(terrain)) {
         return;
@@ -22,11 +22,5 @@ void toggle_debug_bounds_terrain(ecs* world) {
             pair = pair->next;
             checks++;
         }
-    }
-}
-
-void key_down_toggle_debug_chunks(ecs* world, int32_t keycode) {
-    if (keycode == zox_key_F4) {
-        toggle_debug_bounds_terrain(world);
     }
 }

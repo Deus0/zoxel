@@ -76,8 +76,8 @@ zox_sys2(GameStartStreamerSystem) {
             zox_set(e2, Euler, { spawn_euler });
             zox_set(e2, Rotation3D, { spawn_rotation });
             zox_set(e2, StreamLink, { terrain });
-            zox_set(e2, StreamPoint, { terrain_position });
-            zox_set(e2, StreamPoint2, { terrain_position2 });
+            zox_set(e2, StreamPosition, { terrain_position });
+            zox_set(e2, StreamPosition2, { terrain_position2 });
             zox_set(e2, StreamDirty, { zox_dirty_trigger });
             zox_set(e2, StreamDirty2, { zox_dirty_trigger });
         }

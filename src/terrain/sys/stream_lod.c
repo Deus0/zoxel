@@ -64,11 +64,11 @@ zox_sys2(ChunkLodSystem) {
             zox_sys_begin_2_at(1);
             zox_sys_in_2(StreamerLevel);
             zox_sys_in_2(StreamLink);
-            zox_sys_in_2(StreamPoint);
+            zox_sys_in_2(StreamPosition);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(StreamerLevel, level);
                 zox_sys_i_2(StreamLink, stream_terrain);
-                zox_sys_i_2(StreamPoint, stream_point);
+                zox_sys_i_2(StreamPosition, stream_point);
                 if (level->value < 1) {
                     continue;
                 }

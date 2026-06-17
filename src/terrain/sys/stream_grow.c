@@ -65,11 +65,11 @@ zox_sys2(ChunkSpawnSystem) {
                 zox_sys_begin_2();
                 zox_sys_in_2(StreamerLevel);
                 zox_sys_in_2(StreamLink);
-                zox_sys_in_2(StreamPoint);
+                zox_sys_in_2(StreamPosition);
                 for (int k = 0; k < it2.count; k++) {
                     zox_sys_i_2i(StreamerLevel, level, k);
                     zox_sys_i_2i(StreamLink, stream_terrain, k);
-                    zox_sys_i_2i(StreamPoint, stream_point, k);
+                    zox_sys_i_2i(StreamPosition, stream_point, k);
                     // had_any_streamers = 1;
                     if (level->value < 1) {
                         continue;

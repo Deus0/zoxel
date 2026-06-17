@@ -1,14 +1,22 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+# Next
+-x Spawn Minimap
+-x Convert Chunk to MapTexture
+- Simple Health Damage Overlay Cube - Transparent Mesh
+- Smooth Lighting for terrain lights - smoothed edges
+
 # Notes
 + I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
 + Remove more VoxLink use if its from chunk/tunk/region / use parents
 
-# Dialogue Polish
-- Change music track when dialogue starts too
+# Emojis
 - Add little vox model above npc if you can talk to them - little cube that animates
 	- Animate it more when talking to the npc
+
+# Dialogue Polish
+- Change music track when dialogue starts too
 - Fade it in when you get closer to them, like within a chunk distance
 - Reduce ai's dialogue distance a little
 - Aim head at the npc when talking to them

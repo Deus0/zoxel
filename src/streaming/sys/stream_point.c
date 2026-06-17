@@ -1,5 +1,5 @@
 // Streamer components added to cameras
-zox_sys2(StreamPointSystem) {
+zox_sys2(StreamPositionSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -8,15 +8,15 @@ zox_sys2(StreamPointSystem) {
     zox_sys_begin();
     zox_sys_in(StreamLink);
     zox_sys_in(Position3D);
-    zox_sys_out(StreamPoint);
-    zox_sys_out(StreamPoint2);
+    zox_sys_out(StreamPosition);
+    zox_sys_out(StreamPosition2);
     zox_sys_out(StreamDirty);
     zox_sys_out(StreamDirty2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(StreamLink, terrain);
         zox_sys_i(Position3D, position);
-        zox_sys_o(StreamPoint, point3);
-        zox_sys_o(StreamPoint2, point2);
+        zox_sys_o(StreamPosition, point3);
+        zox_sys_o(StreamPosition2, point2);
         zox_sys_o(StreamDirty, dirty);
         zox_sys_o(StreamDirty2, dirty2);
         if (dirty->value) {
@@ -42,4 +42,4 @@ zox_sys2(StreamPointSystem) {
             zox_log("Streaming Dirty: %ix%ix%i", npoint.x, npoint.y, npoint.z);
         }
     }
-} zox_sys_end(StreamPointSystem);
+} zox_sys_end(StreamPositionSystem);

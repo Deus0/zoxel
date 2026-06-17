@@ -31,16 +31,16 @@ zox_sys2(PlayerPauseUISystem) {
             if (dbg_log) {
                 zox_log("[%s] Begin: Disposing Game UIs", state->value == zox_player_state_pause_begin ? "PauseBegin" : "RespawnBegin");
             }
-            entity menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPlay));
+            /*entity menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPlay));
             if (zox_valid(menu)) {
                 zox_delete(menu)
-            }
-            entity crosshair = zox_get_child_by_id(world, canvas->value, zox_id(Crosshair));
+            }*/
+            /*entity crosshair = zox_get_child_by_id(world, canvas->value, zox_id(Crosshair));
             if (zox_valid(crosshair)) {
                 zox_delete(crosshair);
             } else {
                 zox_loge("Crosshair not found on canvas.");
-            }
+            }*/
             dispose_menu_game_touch(world, e);
             zox_set(camera->value, CameraBlur, { pause_blur });
             trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 1);

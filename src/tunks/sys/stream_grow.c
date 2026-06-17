@@ -14,8 +14,8 @@ zox_sys2(TunksSpawnSystem) {
         }
         iterated = 1;
         zox_sys_begin_2();
-        zox_sys_in_2(StreamPoint2);
-        streamers = (int2*) StreamPoint2s_2;
+        zox_sys_in_2(StreamPosition2);
+        streamers = (int2*) StreamPosition2s_2;
         streamers_count = it2.count;
     }
     zox_sys_query_end();
@@ -23,13 +23,13 @@ zox_sys2(TunksSpawnSystem) {
         return;
     }*/
     zox_sys_begin();
-    zox_sys_in(Chunk2Position);
+    zox_sys_in(TunkPosition);
     zox_sys_in(RenderDistance);
     zox_sys_out(Chunk2Neighbors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDistance, rdistance);
-        zox_sys_i(Chunk2Position, cposition);
+        zox_sys_i(TunkPosition, cposition);
         zox_sys_o(Chunk2Neighbors, neighbors);
         entity terrain = zox_get_parent(world, e);
         if (!zox_valid(terrain)) {
@@ -74,11 +74,11 @@ zox_sys2(TunksSpawnSystem) {
                 zox_sys_begin_2();
                 zox_sys_in_2(StreamerLevel);
                 zox_sys_in_2(StreamLink);
-                zox_sys_in_2(StreamPoint2);
+                zox_sys_in_2(StreamPosition2);
                 for (int k = 0; k < it2.count; k++) {
                     zox_sys_i_2i(StreamerLevel, level, k);
                     zox_sys_i_2i(StreamLink, stream_terrain, k);
-                    zox_sys_i_2i(StreamPoint2, stream_point, k);
+                    zox_sys_i_2i(StreamPosition2, stream_point, k);
                     if (level->value < 0) {
                         continue;
                     }

@@ -8,12 +8,12 @@ zox_sys2(FirstTerrainChunkSystem) {
     zox_sys_begin();
     zox_sys_in(StreamerLevel);
     zox_sys_in(StreamLink);
-    zox_sys_in(StreamPoint);
+    zox_sys_in(StreamPosition);
     zox_sys_in(StreamDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(StreamerLevel, level);
         zox_sys_i(StreamLink, terrain);
-        zox_sys_i(StreamPoint, position);
+        zox_sys_i(StreamPosition, position);
         zox_sys_i(StreamDirty, dirty);
         if (dirty->value != zox_dirty_active) {
             continue;

@@ -8,12 +8,12 @@ zox_sys2(BiomeLinkSystem) {
     // double height_frequency = terrain_frequency;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(StreamPoint2);
+    zox_sys_in(StreamPosition2);
     zox_sys_in(StreamLink);
     zox_sys_out(TunkLink);
     zox_sys_out(BiomeLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(StreamPoint2, position);
+        zox_sys_i(StreamPosition2, position);
         zox_sys_i(StreamLink, terrain);
         zox_sys_o(TunkLink, tlink);
         zox_sys_o(BiomeLink, blink);
@@ -23,8 +23,8 @@ zox_sys2(BiomeLinkSystem) {
         if (!zox_valid(terrain->value) || !zox_has(terrain->value, TunkLinks)) {
             continue;
         }
-        zox_geter(terrain->value, TunkLinks, chunks);
-        entity tunk = int2_hashmap_get(chunks->value, position->value);
+        zox_geter(terrain->value, TunkLinks, tunks);
+        entity tunk = int2_hashmap_get(tunks->value, position->value);
         if (!zox_valid(tunk) || !zox_has(tunk, BiomeLink)) {
             continue;
         }

@@ -103,7 +103,7 @@ void define_systems_terrain(ecs *world) {
         zoxp_mainthread,
         [in] streaming.StreamerLevel,
         [in] streaming.StreamLink,
-        [in] streaming.StreamPoint,
+        [in] streaming.StreamPosition,
         [in] streaming.StreamDirty,
         [none] streaming.Streamer
     );
@@ -111,7 +111,7 @@ void define_systems_terrain(ecs *world) {
         streamers_grow,
         [in] streaming.StreamerLevel,
         [in] streaming.StreamLink,
-        [in] streaming.StreamPoint,
+        [in] streaming.StreamPosition,
         [none] streaming.Streamer
     );
     zox_system_ctx_1(
@@ -128,7 +128,7 @@ void define_systems_terrain(ecs *world) {
         [in] streaming.StreamDirty,
         [in] streaming.StreamerLevel,
         [in] streaming.StreamLink,
-        [in] streaming.StreamPoint,
+        [in] streaming.StreamPosition,
         [none] streaming.Streamer
     );
     zox_system_ctx(

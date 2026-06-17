@@ -4,7 +4,7 @@ void zox_define_systems_regions(ecs* world) {
     zox_filter(
         streamers,
         [in] streaming.StreamDirty2,
-        [in] streaming.StreamPoint2,
+        [in] streaming.StreamPosition2,
         [none] streaming.Streamer
     );
     zox_system_ctx_1(

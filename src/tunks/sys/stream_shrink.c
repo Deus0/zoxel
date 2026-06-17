@@ -2,12 +2,12 @@ zox_sys2(Tunk2DeathSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxLink);
-    zox_sys_in(Chunk2Position);
+    zox_sys_in(TunkPosition);
     zox_sys_in(RenderDistance);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxLink, terrain);
-        zox_sys_i(Chunk2Position, position);
+        zox_sys_i(TunkPosition, position);
         zox_sys_i(RenderDistance, distance);
         if (!zox_valid(terrain->value) || !zox_has(terrain->value, TunkLinks)) {
             zox_delete(e)

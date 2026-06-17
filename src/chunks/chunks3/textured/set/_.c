@@ -6,5 +6,7 @@ void set_chunk_split(ecs* world, void* value) {
 }
 
 void initialize_settings_chunks3_textured(ecs *world) {
+#ifndef zox_debug
     zoxs_new_byte("chunk split", set_chunk_split, zox_split_textured_quads);
+#endif
 }

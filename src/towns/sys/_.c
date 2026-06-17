@@ -18,7 +18,7 @@ void zox_define_systems_towns(ecs* world) {
         EcsPreStore,
         [in] core.Generate,
         [in] regions.RegionLink,
-        [in] chunks2.Chunk2Position,
+        [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.VegetationMap,
         [out] towns.TownMap,

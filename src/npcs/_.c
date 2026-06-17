@@ -16,7 +16,9 @@ void set_disable_npcs(ecs* world, void* value) {
 }
 
 void initialize_settings_npcs(ecs* world) {
-    zoxs_new_byte("disable npcs", set_disable_npcs, 0)
+    #ifndef zox_debug
+    zoxs_new_byte("disable npcs", set_disable_npcs, 0);
+#endif
 }
 
 zox_begin_module(Npcs) {

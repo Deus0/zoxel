@@ -15,8 +15,8 @@
         if (!iterated) {
             iterated = 1;
             zox_sys_begin_2();
-            zox_sys_in_2(StreamPoint);
-            stream_points = (int3*) StreamPoints_2;
+            zox_sys_in_2(StreamPosition);
+            stream_points = (int3*) StreamPositions_2;
             stream_points_length = it2.count;
         }
     }

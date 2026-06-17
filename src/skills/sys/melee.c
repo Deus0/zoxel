@@ -189,13 +189,14 @@ zox_sys2(MeleeSystem) {
             if (linked) {
                 world_block = get_entity_VoxelNode(leaf);
             }
+            // TODO: Refactor this damage into a damage system against blocks
             // Create new block health
             float block_health;
             if (!zox_valid(world_block) || !zox_has(world_block, StatValue)) {
                 float2 health_start_range = zox_has(block, BlockHealth) ? zox_getv(block, BlockHealth) : (float2) { 1, 1 };
                 block_health = randf_range(health_start_range.x, health_start_range.y);
             } else {
-                block_health = zox_gett_value(world_block, StatValue);
+                block_health = zox_getv(world_block, StatValue);
             }
             block_health -= block_damage;
             if (block_health <= 0) {

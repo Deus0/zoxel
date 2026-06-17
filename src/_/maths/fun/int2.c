@@ -43,8 +43,19 @@ static inline int2 int2_multiply_float(int2 input, float mult) {
     return (int2) { (int) ((float) input.x * mult), (int) ((float) input.y * mult) };
 }
 
-static inline int2 int2_multiply_int(int2 input, int mul) {
+static inline int2 int2_multiply(int2 input, int2 b) {
+    return (int2) { input.x * b.x, input.y * b.y };
+}
+
+static inline int2 int2_multiply1(int2 input, int mul) {
     return (int2) { input.x * mul, input.y * mul };
+}
+
+int2 int2_divide1(int2 input, int div) {
+    if (!div) {
+        return input;
+    }
+    return (int2) { input.x / div, input.y / div };
 }
 
 int2 int2_divide_int(int2 input, int div) {
@@ -67,9 +78,8 @@ static inline void int2_add_p(int2 *a, int2 b) {
     a->y += b.y;
 }
 
-static inline void int2_subtract(int2 *a, int2 b) {
-    a->x -= b.x;
-    a->y -= b.y;
+static inline int2 int2_subtract(int2 a, int2 b) {
+    return (int2) { a.x - b.x, a.y - b.y };
 }
 
 static inline void int2_divide_int_p(int2 *a, int div) {

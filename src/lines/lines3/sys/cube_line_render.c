@@ -30,9 +30,7 @@ zox_sys2(CubeLineRenderSystem) {
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
     zox_sys_in(Bounds3D);
-
     camera_filtering_begin();
-
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DebugCubeLines, dmode);
@@ -41,28 +39,21 @@ zox_sys2(CubeLineRenderSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Bounds3D, bounds);
-
         if (!dmode->value) {
             continue;
         }
-
         camera_filtering_check();
-
         float3 b = bounds->value;
         if (zox_has(e, DebugCubeShrink)) {
             zox_geter_value(e, DebugCubeShrink, float, shrink);
             b = float3_scale(b, shrink);
         }
-
         float3 p = position->value;
-
         if (zox_has(e, DebugCubeCorner)) {
             p = float3_add(p, (bounds->value));
         }
-
         zox_gpu_line_thickness(thickness->value * viewport_scale);
         color_rgb lines_color = color_to_color_rgb(colorr->value);
-
         if (dmode->value == zox_cubeline_debug_transforms) {
             // up axis
             // zox_render_line_attr(p, (float3) { p.x, p.y + cube_lines_length, p.z });
@@ -117,23 +108,19 @@ zox_sys2(CubeLineRenderSystem) {
             zox_render_line_attr(top_left2, top_right2);
             zox_render_line_attr(top_left, top_left2);
             zox_render_line_attr(top_right, top_right2);
-
             // bottom
             zox_render_line_attr(bottom_left, bottom_right);
             zox_render_line_attr(bottom_left2, bottom_right2);
             zox_render_line_attr(bottom_left, bottom_left2);
             zox_render_line_attr(bottom_right, bottom_right2);
-
             // vertical
             zox_render_line_attr(bottom_right, top_right);
             zox_render_line_attr(bottom_left, top_left);
             zox_render_line_attr(bottom_right2, top_right2);
             zox_render_line_attr(bottom_left2, top_left2);
         }
-
         zox_sys_increment();
     }
-
     zox_gpu_disable_attribute(line3D_position_location);
     zox_disable_material();
 

@@ -1,7 +1,6 @@
 entity dbg_ui_gizmos;
 
 void zox_dbg_ui_gizmos(ecs* world, int32_t keycode) {
-    byte zox_tsts_count = 3;
     if (keycode != zox_key_g) {
         return;
     }
@@ -23,13 +22,18 @@ void zox_dbg_ui_gizmos(ecs* world, int32_t keycode) {
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
-    SpawnListElement elements[zox_tsts_count];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
     byte header_font_size = 6 * ui_scale;
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UI
+    byte zox_tsts_count = 4;
+    SpawnListElement elements[zox_tsts_count];
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Terrain Gizmos",
+        .on_click = { &zox_dbg_toggle_gizmos_terrain },
+    };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Character Gizmos",
         .on_click = { &zox_dbg_toggle_gizmos_characters },

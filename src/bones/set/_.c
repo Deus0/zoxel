@@ -23,7 +23,9 @@ void spawn_settings_bones(ecs* world) {
 
 // Temp use old way
 void initialize_settings_bones(ecs* world) {
-    zoxs_new_byte("transparent meshes", on_set_transparent_mesh, transparent_meshes)
-    zoxs_new_byte("render bones", on_set_bone_rendering, render_bones)
-    zoxs_new_byte("paint bone weights", on_set_paint_bone_weights, paint_bone_weights)
+#ifndef zox_debug
+    zoxs_new_byte("transparent meshes", on_set_transparent_mesh, transparent_meshes);
+    zoxs_new_byte("render bones", on_set_bone_rendering, render_bones);
+    zoxs_new_byte("paint bone weights", on_set_paint_bone_weights, paint_bone_weights);
+#endif
 }

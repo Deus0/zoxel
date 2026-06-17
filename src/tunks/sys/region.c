@@ -3,11 +3,11 @@ zox_sys2(TunkRegionLinkSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Chunk2Position);
+    zox_sys_in(TunkPosition);
     zox_sys_out(RegionLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Chunk2Position, position);
+        zox_sys_i(TunkPosition, position);
         zox_sys_o(RegionLink, region);
         if (zox_valid(region->value)) {
             continue;

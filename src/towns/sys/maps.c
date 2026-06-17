@@ -6,14 +6,14 @@ zox_sys2(TownMapSystem) {
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(RegionLink);
-    zox_sys_in(Chunk2Position);
+    zox_sys_in(TunkPosition);
     zox_sys_in(BiomeMap);
     zox_sys_out(VegetationMap);
     zox_sys_out(TownMap);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Generate, generate);
         zox_sys_i(RegionLink, region);
-        zox_sys_i(Chunk2Position, cposition);
+        zox_sys_i(TunkPosition, cposition);
         zox_sys_i(BiomeMap, bmap);
         zox_sys_o(VegetationMap, vegetation_map);
         zox_sys_o(TownMap, town_map);

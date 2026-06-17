@@ -28,14 +28,14 @@ zox_sys2(TunkLodSystem) {
         return;
     }
     zox_sys_begin();
-    zox_sys_in(Chunk2Position);
+    zox_sys_in(TunkPosition);
     zox_sys_out(RenderDistance);
     zox_sys_out(RenderDepth);
     zox_sys_out(RenderDistanceDirty);
     zox_sys_out(RenderDepthDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Chunk2Position, position);
+        zox_sys_i(TunkPosition, position);
         zox_sys_o(RenderDistance, distance);
         zox_sys_o(RenderDepth, depth);
         zox_sys_o(RenderDistanceDirty, distance_dirty);
@@ -52,11 +52,11 @@ zox_sys2(TunkLodSystem) {
             zox_sys_begin_2_at(1);
             zox_sys_in_2(StreamerLevel);
             zox_sys_in_2(StreamLink);
-            zox_sys_in_2(StreamPoint2);
+            zox_sys_in_2(StreamPosition2);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(StreamerLevel, level);
                 zox_sys_i_2(StreamLink, stream_terrain);
-                zox_sys_i_2(StreamPoint2, stream_point);
+                zox_sys_i_2(StreamPosition2, stream_point);
                 if (level->value < 1) {
                     continue;
                 }
