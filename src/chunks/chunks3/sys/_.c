@@ -20,7 +20,6 @@ void define_systems_chunks3(ecs *world) {
         EcsOnUpdate,
         [in] chunks3.VoxelNodeDirty,
         [in] chunks3.ChunkNeighbors,
-        // [out] chunks3.ChunkMeshDirty,
         [none] chunks3.ChunkTextured
     );
     zox_system(VoxelNodeQueueSystem,

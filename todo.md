@@ -4,13 +4,19 @@
 # Left Systems to optimize
 + ChunkFrustumSystem last one (11ms)
 + ChunkTexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
+- Can we hide behind mountains to improve culling?
 
 # Next
+- Add dictionary to chunk data, so it maps the blocks to the block ids, and then make the block ids generate from realm ids so it stays consistent after changes
+- Add auto jump option - for touch
 - Add the Highest timing system on Profiler labels - Min/Max/System(SystemName) 13ms - for the last mintute there
 - Simple Health Damage Overlay Cube - Transparent Mesh
 - Smooth Lighting for terrain lights - smoothed edges
 - Physics Clip issue for big body
 - Add standard ground dust particles
+- Dust Particles for jumping and landing
+- Footstep Sounds
+- Footstep Prints on ground
 
 # Next Again
 - Add smooth lights for terrain faces, so the corners are darkened

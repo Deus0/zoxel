@@ -29,7 +29,7 @@ zox_sys2(ChunkNeighborLightTriggerSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LightNodeDirty, dirty);
         zox_sys_i(ChunkNeighbors, neighbors);
-        if (dirty->value != zox_dirty_trigger) {
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
         for (byte j = 0; j < chunk_neighbors_length; j++) {
