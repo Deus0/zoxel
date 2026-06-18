@@ -47,7 +47,7 @@ entity spawn_menu_load(ecs *world, entity player) {
     int header_font_size = 16* ui_scale;
     byte list_font_size = 8 * ui_scale;
     // more data
-    const char* header_label = "Load";
+    const char* header_label = "Which";
     int elements_count = 0;
     byte visible_count = 4;
     SpawnListElement elements[max_settings + 1];

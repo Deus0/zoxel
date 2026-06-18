@@ -1,6 +1,7 @@
 #include "stream_point.c"
 #include "frustum.c"
 #include "stream_end.c"
+#include "settings.c"
 
 void define_systems_streaming(ecs* world) {
     zox_system(
@@ -42,5 +43,19 @@ void define_systems_streaming(ecs* world) {
         [in] voxes.ChunkLinks,
         [out] saves.Loaded,
         [out] StreamEndEvent
+    );
+    // Settings
+    zox_system_1(
+        StreamingSettingsSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [none] apps.App
+    );
+    zox_system_1(
+        StreamingSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
     );
 }

@@ -1,10 +1,8 @@
 void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
-
     if (!zox_valid(e) || !zox_has(e, WindowFullscreen)) {
         zox_log_error("invalid app in [zox_set_app_fullscreen]");
         return;
     }
-
     zox_set(e, WindowFullscreen, { fullscreen });
     zox_geter(e, SDLWindow, window);
     zox_geter_value(e, WindowMonitor, byte, monitor);

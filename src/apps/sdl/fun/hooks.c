@@ -8,8 +8,9 @@ void sdl_on_window_moved(ecs *world, entity e, int2 position) {
     zox_geter_value(e, WindowMonitor, byte, old_monitor_index);
     byte monitor_index = zox_app_get_monitor(world, e);
     if (old_monitor_index != monitor_index) {
-        zox_set(e, WindowMonitor, { monitor_index })
-        zox_set_monitor_silently(world, e, monitor_index);
+        zox_set(e, WindowMonitor, { monitor_index });
+        zox_log("TODO: Set monitor setting here");
+        // zox_set_monitor_silently(world, e, monitor_index);
         if (is_log_monitors) {
             zox_log("+ window moved to monitor [%i]", monitor_index);
         }
@@ -54,12 +55,12 @@ void on_window_resized(ecs *world, entity e, int2 size) {
 
 void on_window_maximized(ecs *world, entity e, int2 size) {
     // zox_set_maximized(world, 1);
-    zox_set_maximized_silently(world, e, 1);
+    // zox_set_maximized_silently(world, e, 1);
     zox_log_sdl("+ window maximized [%ix%i]", size.x, size.y);
 }
 
 void on_window_restored(ecs *world, entity e, int2 size) {
     // zox_set_maximized(world, 0);
-    zox_set_maximized_silently(world, e, 0);
+    // zox_set_maximized_silently(world, e, 0);
     zox_log_sdl("+ window restored [%ix%i]", size.x, size.y);
 }

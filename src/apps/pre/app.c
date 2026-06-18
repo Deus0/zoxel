@@ -1,9 +1,10 @@
-entity spawn_prefab_app(ecs *world, const int2 window_position, const int2 window_size) {
+entity spawn_prefab_app(ecs* world, int2 position, int2 size) {
     zox_prefab();
     zox_prefab_name("app");
     zox_add_tag(e, App);
-    zox_prefab_set(e, WindowPosition, { window_position });
-    zox_prefab_set(e, WindowSize, { window_size });
+    zox_prefab_set(e, InitializeEntity, { zox_dirty_trigger });
+    zox_prefab_set(e, WindowPosition, { position });
+    zox_prefab_set(e, WindowSize, { size });
     zox_prefab_set(e, WindowFullscreen, { 0 });
     zox_prefab_set(e, WindowMaximized, { 0 });
     zox_prefab_set(e, WindowSizeRestore, { int2_zero });

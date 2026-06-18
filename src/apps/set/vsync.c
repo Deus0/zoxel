@@ -1,6 +1,4 @@
-byte vsync = 1;
-
-extern void on_set_vsync(byte);
+/*extern void on_set_vsync(byte);
 
 // when setting is set
 void set_app_vsync(ecs* world, void* value) {
@@ -11,3 +9,4 @@ void set_app_vsync(ecs* world, void* value) {
         on_set_vsync(vsync);
     }
 }
+*/

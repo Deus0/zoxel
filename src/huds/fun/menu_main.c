@@ -1,22 +1,19 @@
 extern entity spawn_menu_options(ecs*, entity, entity, int2, float2);
 
 void button_event_menu_options(ecs *world, ClickEventData event) {
-    zox_geter_value(event.clicker, CanvasLink, entity, canvas);
+    entity canvas = zox_getv(event.clicker, CanvasLink);
     if (!zox_valid(canvas)) {
         return;
     }
     entity main_menu = zox_get_child_by_id(world, canvas, zox_id(MenuMain));
-    if (!zox_valid(main_menu)) {
-        zox_loge("No MenuMain found on canvas");
-    } else {
+    if (zox_valid(main_menu)) {
+        close_ui_related_tooltip(world, main_menu);
         zox_delete(main_menu);
     }
     spawn_menu_options(world, event.clicker, canvas, int2_zero, float2_half);
 }
 
-void engine_end_delayed(ecs* world, const entity e) {
-    (void) world;
-    (void) e;
+void engine_end_delayed(ecs* world, entity e) {
     engine_end();
 }
 
@@ -31,9 +28,10 @@ void button_event_exit_app(ecs *world, ClickEventData event) {
         if (!zox_valid(canvas)) {
             continue;
         }
-        entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuMain));
-        if (menu) {
-            zox_delete(menu);
+        entity main_menu = zox_get_child_by_id(world, canvas, zox_id(MenuMain));
+        if (main_menu) {
+            close_ui_related_tooltip(world, main_menu);
+            zox_delete(main_menu);
         }
         trigger_canvas_fade_in(world, canvas, 0, 0.4f);
     }

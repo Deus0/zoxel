@@ -1,8 +1,5 @@
 // todo: add raycast position here, and character position
 
-// #define zox_log_mouse
-#define zox_debug_label_system_times
-
 int debug_newline_zext(char buffer[], int buffer_size, int buffer_index) {
     buffer_index += snprintf(buffer + buffer_index, buffer_size, "Day 1.\nToday is a very sunny day.\nHi jerry.");
     return buffer_index;

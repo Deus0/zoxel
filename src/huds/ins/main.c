@@ -8,9 +8,30 @@ byte tooltip_event_zoxel_header(ecs* world, const TooltipEventData *data) {
     return 1;
 }
 
+byte tooltip_event_main_menu_1(ecs* world, const TooltipEventData *data) {
+    set_entity_text(world, data->tooltip, "Load Game");
+    return 1;
+}
+byte tooltip_event_main_menu_2(ecs* world, const TooltipEventData *data) {
+    set_entity_text(world, data->tooltip, "New Game");
+    return 1;
+}
+byte tooltip_event_main_menu_3(ecs* world, const TooltipEventData *data) {
+    set_entity_text(world, data->tooltip, "Options");
+    return 1;
+}
+byte tooltip_event_main_menu_4(ecs* world, const TooltipEventData *data) {
+    set_entity_text(world, data->tooltip, "Exit Game");
+    return 1;
+}
+
 // List Menus adjust to the menu size
-entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
+entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     // main menu
+    char header[128];
+    strncpy(header, base_header, sizeof(base_header) - 1);
+    header[sizeof(base_header) - 1] = '\0';
+    header[0] = ascii_to_upper(base_header[0]);
     char *label_continue = "Old Blood";     // "old blood";
     char *label_new = "Fresh Meat";            // "fresh meat / Wander
     char *label_options = "Beep-Boops";
@@ -20,7 +41,12 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
     byte header_font_size = 16 * ui_scale;
     byte list_font_size = 10 * ui_scale;
     byte2 padding = byte2_single(4 * ui_scale);
-    if (has_save_game_directory(game_name)) {
+    byte can_load = has_save_game_directory(game_name);
+    byte can_exit = 1;
+#ifdef zox_android
+    can_exit = 0;
+#endif
+    if (can_load) {
         elements[elements_count++] = (SpawnListElement) {
             .text = label_continue,
             .on_click = { &button_event_continue_game },
@@ -34,24 +60,37 @@ entity spawn_main_menu(ecs *world, entity player, const char *header_label) {
         .text = label_options,
         .on_click = { &button_event_menu_options },
     };
-#ifndef zox_android
-    elements[elements_count++] = (SpawnListElement) {
-        .text = label_exit,
-        .on_click = { &button_event_exit_app },
-    };
-#endif
-    ClickEvent close_event = (ClickEvent) { &button_event_exit_app };
-    #ifdef zox_android
+    if (can_exit) {
+        elements[elements_count++] = (SpawnListElement) {
+            .text = label_exit,
+            .on_click = { &button_event_exit_app },
+        };
+    }
+    /*ClickEvent close_event = (ClickEvent) { &button_event_exit_app };
+#ifdef zox_android
     close_event.value = NULL;
-    #endif
-    entity elements2[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, close_event, 0, 0, 0, zox_alignment_centre, padding, elements2, elements, elements_count, elements_count);
+#endif*/
+    ClickEvent close_event = { NULL };
+    entity spawned[elements_count];
+    entity3 e3 = spawn_window_list(world, prefab_window, player, header, header_font_size, list_font_size, close_event, 0, 0, 0, zox_alignment_centre, padding, spawned, elements, elements_count, elements_count);
     entity e = e3.x;
-    entity header = e3.z;
     zox_set_unique_name(e, "main_menu");
     zox_add_tag(e, MenuMain);
     zox_add_tag(e, NavigationWindow);
-    zox_set(header, TooltipEvent, { &tooltip_event_zoxel_header });
-    // zox_set(elements2[0], TooltipEvent, { &tooltip_event_main_menu });
+    zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
+    // NOTE: For some reason it was throwing errors if i didnt check the outputs here? for entities....
+    int j = 0;
+    if (can_load) {
+        entity b = spawned[j++];
+        if (b) zox_set(b, TooltipEvent, { &tooltip_event_main_menu_1 });
+    }
+    entity b2 = spawned[j++];
+    entity b3 = spawned[j++];
+    if (b2) zox_set(b2, TooltipEvent, { &tooltip_event_main_menu_2 });
+    if (b3) zox_set(b3, TooltipEvent, { &tooltip_event_main_menu_3 });
+    if (can_exit) {
+        entity b = spawned[j++];
+        if (b) zox_set(b, TooltipEvent, { &tooltip_event_main_menu_4 });
+    }
     return e;
 }

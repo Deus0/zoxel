@@ -1,3 +1,4 @@
+#include "settings.c"
 #include "generate.c"
 #include "upload.c"
 #include "paint.c"
@@ -10,6 +11,19 @@
 #include "arm_raise.c"
 
 void define_systems_bones(ecs *world) {
+    zox_system_1(
+        BonesSettingsSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [none] apps.App
+    );
+    zox_system_1(
+        BonesSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
+    );
     zox_system_1(
         BonesInitializeSystem,
         zoxp_mainthread,

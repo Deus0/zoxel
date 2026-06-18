@@ -4,7 +4,6 @@
 #include "dispose_texture_system.c"
 #include "dispose_shader_system.c"
 #include "dispose_material_system.c"
-
 #include "restore_mesh_system.c"
 #include "restore_colors_system.c"
 #include "restore_uvs_system.c"
@@ -12,15 +11,13 @@
 #include "restore_shader_system.c"
 #include "restore_materials_system.c"
 #include "restore_meshdirty_system.c"
-
 // other
 #include "lod_instance_system.c"
-
+#include "settings.c"
 zox_increment_system_with_reset(MeshDirty, mesh_state_end);
 
 void define_systems_rendering(ecs *world) {
     zoxd_system_increment(MeshDirty);
-
     // dispose
     zox_gpu_dispose_system(MeshGPUDisposeSystem, [in] MeshGPULink);
     zox_gpu_dispose_system(MeshUvsGPUDisposeSystem, [in] rendering.UvsGPULink);
@@ -45,5 +42,18 @@ void define_systems_rendering(ecs *world) {
         [in] rendering.RenderDepth,
         [in] rendering.ModelLink,
         [out] rendering.InstanceLink
+    );
+    zox_system_1(
+        RenderingSettingsSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [none] apps.App
+    );
+    zox_system_1(
+        RenderingSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
     );
 }

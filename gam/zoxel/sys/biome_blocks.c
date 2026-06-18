@@ -2,26 +2,26 @@
 // Blocks >> Chunks >> Biomes >> Terrain ?
 
 void generate_colors(lint seed, Colors *colors) {
-    srand((unsigned int) seed);
+    srand((uint) seed);
     // One random seed color, then the rest are related off it.
     float3 dirt_hsv = (float3) {
         frand_range(0, 360),
-        frand_range(14, 48),
-        frand_range(10, 42)
+        frand_range(18, 48),
+        frand_range(10, 36)
     };
     // Grass: same family, more alive.
     float3 grass_hsv = hsv_shift(
         dirt_hsv,
-        frand_range(55.0f, 105.0f),
+        frand_range(115.0f, 235.0f),
         frand_range(8.0f, 25.0f),
-        frand_range(4.0f, 18.0f)
+        frand_range(18.0f, 42.0f)
     );
     // Sand: dirt warmed and bleached a bit.
     float3 sand_hsv = hsv_shift(
         dirt_hsv,
-        frand_range(-12.0f, 18.0f),
-        frand_range(-18.0f, -4.0f),
-        frand_range(18.0f, 35.0f)
+        frand_range(-64.0f, 64.0f),
+        frand_range(-12.0f, 16.0f),
+        frand_range(8.0f, 24.0f)
     );
     // Stone: the same note, stripped down and quiet.
     float3 stone_hsv = hsv_shift(

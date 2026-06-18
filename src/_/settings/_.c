@@ -23,8 +23,7 @@ setting settings[max_settings];
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Settings)
+zox_begin_module(Settings) {
+    zox_define_components_settings(world);
     add_hook_spawn_prefabs(spawn_prefabs_settings);
-    define_components_settings(world);
-    spawn_settings_manager(world);
-zox_end_module(Settings)
+} zox_end_module(Settings);

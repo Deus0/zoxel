@@ -1,7 +1,7 @@
 const uint safety_checks_drawline = 1000;
 
 int2 font_point_to_pixel(const byte2 point, const int2 size, const float2 pad) {
-    float2 pointf = byte2_to_float2(point);
+    float2 pointf = float2_divide1(byte2_to_float2(point), 255.0f);
     pointf.x = pad.x + (1.0f - pad.x * 2) * pointf.x;
     pointf.y = pad.y + (1.0f - pad.y * 2) * pointf.y;
     return (int2) {

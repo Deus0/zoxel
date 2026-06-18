@@ -98,7 +98,6 @@ void sdl_controller_extract_button(ecs* world, entity e, SDL_GameController* con
     }
 }
 
-
 zox_sys2(SdlControllerFetchSystem) {
     byte dbg_log = 0;
     zox_sys_world();

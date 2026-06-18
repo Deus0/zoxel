@@ -40,6 +40,9 @@ zox_sys2(BoneIndexGenerateSystem) {
             float3 position = verts->value[j];
             // default weight
             weights->value[j] = 0;
+            if (disable_bones) {
+                continue;
+            }
             for (int k = bones->length - 1; k >= 0; k--) {
                 float3 lower = bones_bounds_lower[k];
                 float3 upper = bones_bounds_upper[k];

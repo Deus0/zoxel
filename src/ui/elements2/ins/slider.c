@@ -1,4 +1,4 @@
-entity2 spawn_slider(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnSliderData slider_data, color fill, color outline, byte font_size, color font_fill, color font_outline) {
+entity2 spawn_slider(ecs* world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnSliderData slider_data, color fill, color outline, byte font_size, color font_fill, color font_outline) {
     byte handle_width = slider_data.handle_width; // 8 * ui_scale;
     byte font_thickness = ui_scale;
     // spawn back part
@@ -12,7 +12,9 @@ entity2 spawn_slider(ecs *world, LayoutParentData canvas_data, LayoutParentData 
     zox_set(e, FillColor, { fill });
     zox_set(e, OutlineColor, { outline });
     // spawn handle
-    float percent = clampf(slider_data.value, 0, 1);
+    float slider_length = slider_data.bounds.y - slider_data.bounds.x;
+    float percent = clampf((slider_data.value - slider_data.bounds.x) / slider_length, 0, 1);
+    // float percent = clampf(slider_data.value, 0, 1);
     int handle_position_x = - element_data.size.x / 2 + handle_width / 2 + (int) ((element_data.size.x - handle_width) * percent);
     entity prefab_handle = slider_data.prefab_handle;
     int2 handle_position = (int2) { handle_position_x, 0 };

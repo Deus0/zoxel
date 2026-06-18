@@ -1,7 +1,10 @@
 // render distances
 byte vox_lod_near = 1;
-byte terrain_lod_near = 3;      // also character far
+byte terrain_lod_near = 1;      // also character far
+byte terrain_lod_near_min = 1;
+byte terrain_lod_near_max = 3;
 byte terrain_lod_far = 8;       // 1 | 2 | 4 | 8 | 16
+byte terrain_lod_far_max = 24;  // options, min + percentage*max
 byte render_distance_y = 1;     // vertical
 
 // TODO: Fix these, block_vox_depth is broken
@@ -9,10 +12,7 @@ byte render_distance_y = 1;     // vertical
 
 // options
 byte terrain_lod_far_buffer = 2;    // buffer the near to far - adds a minimum low lods
-byte terrain_lod_near_min = 1;
-byte terrain_lod_near_max = 3;
 float settings_terrain_lod_start = 0.25f;
-byte terrain_lod_far_max = 24;  // options, min + percentage*max
 
 extern int get_characters_count(ecs *world);
 extern int count_entities_npc(ecs *world);

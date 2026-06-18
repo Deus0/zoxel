@@ -33,6 +33,5 @@ setting zoxs_get(const char *name) {
 #include "float.c"
 #include "int.c"
 #include "string.c"
-
 #include "save.c"
 #include "load.c"

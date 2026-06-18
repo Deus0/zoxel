@@ -27,7 +27,7 @@ static inline int2 byte2_to_int2(byte2 input) {
 }
 
 static inline float2 byte2_to_float2(byte2 v) {
-    return (float2) { v.x / 255.0f, v.y / 255.0f };
+    return (float2) { v.x, v.y };
 }
 
 static inline float3 float3_from_byte3(const byte3 input) {

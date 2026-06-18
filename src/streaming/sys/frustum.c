@@ -74,6 +74,7 @@ byte aabb_in_frustum_fast(const plane *planes, bounds b, float eps) {
     return 1; // intersects/inside
 }
 
+// TODO: Optimize this, perhaps with MegaChunks? Need to reduce the overall calls for >= 10k chunks
 // this sets RenderDisabled for chunks and their children
 zox_sys2(ChunkFrustumSystem) {
     byte dbg_log = 0;

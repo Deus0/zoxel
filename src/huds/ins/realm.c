@@ -63,7 +63,7 @@ entity spawn_menu_realm(ecs *world, entity player) {
     int header_font_size = 16* ui_scale;
     byte list_font_size = 8 * ui_scale;
     // more data
-    const char* header_label = "Realm";
+    const char* header_label = "Come";
     int elements_count = 0;
     byte visible_count = 4;
     SpawnListElement elements[max_settings + 1];
@@ -80,12 +80,12 @@ entity spawn_menu_realm(ecs *world, entity player) {
     };
     elements[elements_count++] = (SpawnListElement) {
         .type = list_element_type_button,
-        .text = "Delete",
+        .text = "Forget",
         .on_click = { &button_event_menu_realm_delete },
     };
     elements[elements_count++] = (SpawnListElement) {
         .type = list_element_type_button,
-        .text = "Confirm",
+        .text = "Enter",
         .on_click = { &button_event_menu_realm_confirm },
     };
     entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_realm_cancel }, 1, 0, 0, zox_alignment_centre, byte2_single(4), NULL, elements, elements_count, visible_count).x;

@@ -1,12 +1,21 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
+- Add Text [float] to settings slider labels
+- Increase Options padding
+- Add tooltip for new game?
+- Refactor Options
+- Queue for BlockDamage
+- Transparent Cube for Block Damage
+
 # Left Systems to optimize
 + ChunkFrustumSystem last one (11ms)
 + ChunkTexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
 - Can we hide behind mountains to improve culling?
 
 # Next
+- We can even raycast check against chunks to further reduce whats rendered...? - fade them in and out?
+- We could have MegaChunks again, 4x4 chunks, and then cull them first with the Frustum + bounds checks (this is just a quicker sweep)
 - Add dictionary to chunk data, so it maps the blocks to the block ids, and then make the block ids generate from realm ids so it stays consistent after changes
 - Add auto jump option - for touch
 - Add the Highest timing system on Profiler labels - Min/Max/System(SystemName) 13ms - for the last mintute there

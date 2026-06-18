@@ -34,6 +34,14 @@ static inline float2 float2_multiply_float(const float2 input, const float mul) 
     return (float2) { input.x * mul, input.y * mul };
 }
 
+static inline float2 float2_divide1(float2 input, float div) {
+    if (!div) {
+        return input;
+    } else {
+        return (float2) { input.x / div, input.y / div };
+    }
+}
+
 static inline float2 float2_divide(float2 input, float div) {
     if (!div) {
         return input;

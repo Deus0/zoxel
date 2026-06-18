@@ -12,7 +12,7 @@
 zox_begin_module(Streaming) {
     define_components_streaming(world);
     define_systems_streaming(world);
-    initialize_settings_streaming(world);
+    // initialize_settings_streaming(world);
     add_hook_spawn_prefabs(zox_define_prefabs_streaming);
 } zox_end_module(Streaming);
 

@@ -56,8 +56,7 @@ void on_boot_players(ecs *world, entity app) {
         zox_logw("Players are not present.");
         return;
     }
-
-    zox_geter_value(app, GameLink, entity, game);
+    entity game = zox_getv(app, GameLink);
     spawn_connected_devices(world, app);
     players_playing = spawn_players(world, game, zox_game_type);
 }

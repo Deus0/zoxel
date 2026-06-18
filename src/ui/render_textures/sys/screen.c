@@ -7,11 +7,9 @@ zox_sys2(ScreenRenderTextureSystem) {
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(LayoutSize, lsize);
         zox_sys_o(TextureSize, tsize);
-
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-
         tsize->value = scale_viewport(lsize->value);
     }
 } zox_sys_end(ScreenRenderTextureSystem);

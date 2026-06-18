@@ -27,6 +27,23 @@ byte is_chunk_busy(ecs* world, entity e) {
 // NOTE: Just checks entire terrain chunk, makes them all update at same time
 zox_sys2(ChunkMeshSlowSystem) {
     byte dbg_log = 0;
+    byte dbg_skip = 1;
+    if (dbg_skip) {
+        zox_sys_world();
+        zox_sys_begin();
+        zox_sys_out(MeshReady);
+        zox_sys_out(MeshDirty);
+        for (int i = 0; i < it->count; i++) {
+            zox_sys_e();
+            zox_sys_o(MeshReady, mesh_ready);
+            zox_sys_o(MeshDirty, mesh_dirty);
+            if (mesh_ready->value) {
+                mesh_dirty->value = mesh_state_trigger;
+                mesh_ready->value = 0;
+            }
+        }
+        return;
+    }
     // Group by Terrain
     byte still_updating = 0;
     byte vox_count = 0;

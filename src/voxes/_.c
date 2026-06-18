@@ -20,7 +20,6 @@
 #include "tst/_.c"
 
 void dispose_voxes(ecs *world, void *ctx) {
-    (void) ctx;
     dispose_files_voxes(world);
 }
 
@@ -31,7 +30,6 @@ zox_begin_module(Voxes) {
     add_hook_spawn_prefabs(zox_define_prefabs_voxes);
     add_hook_terminal_command(process_arguments_voxes);
     add_hook_files_load(load_files_voxes);
-    initialize_settings_voxes(world);
 } zox_end_module(Voxes);
 
 #endif

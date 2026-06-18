@@ -1,5 +1,3 @@
-
-
 double get_ram_use() {
     double ram_use = 0; // RAM use in bytes
     // Open /proc/self/statm to get memory information of the current process

@@ -10,7 +10,7 @@ entity3 spawn_window(ecs* world, entity prefab, entity prefab_body, const char* 
     byte header_height = 0;
     // NOTE: Header Anchored to top of window
     {
-        byte is_close_button = 1;
+        byte is_close_button = on_closed != NULL;
         color header_font_fill = header_font_fill;
         color header_font_outline = header_font_outline;
         byte header_font_size = 8 * ui_scale;

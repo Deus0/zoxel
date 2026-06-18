@@ -21,7 +21,6 @@ byte zox_dbg_render_all_sides = 0;
 
 zox_begin_module(Chunks3Textured) {
     define_systems_chunks3_textured(world);
-    initialize_settings_chunks3_textured(world);
     add_hook_spawn_prefabs(spawn_prefabs_chunks_textured);
 } zox_end_module(Chunks3Textured);
 

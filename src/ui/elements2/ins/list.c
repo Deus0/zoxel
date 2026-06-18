@@ -47,10 +47,8 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
     zox_set(e, ListPadding, { list_data.padding });
     zox_set(e, TextPadding, { list_data.button_padding });
     // now spawn elements to fit our window
-    LayoutParentData child_parent_data = {
-        .e = e,
-        // .position = element_data.position_in_canvas,
-        .size = element_data.size
+    LayoutParentData child_parent_data = { .e = e,
+         //.size = element_data.size
     };
     for (int i = 0; i < list_data.count; i++) {
         byte visible = (i >= 0 && i < list_data.visible_count);
@@ -78,8 +76,6 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .outline = button_outline,
             };
             child = spawn_button(world, prefab_button, e, child_data.text, int2_zero, int2_zero, float2_half, zox_alignment_centre, list_data.font_size, list_data.button_padding, button_fill, button_outline, button_font_fill, button_font_outline);
-
-            // child = spawn_button_old(world, canvas_data, child_parent_data, child_element_data, child_text_data, child_button_data);
             if (child_data.on_click.value) {
                 zox_set(child, ClickEvent, { child_data.on_click.value });
             }
@@ -111,7 +107,6 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .handle_width = slider_handle_width,
             };
             entity2 e2 = spawn_slider(world, canvas_data, child_parent_data, child_element_data, slider_data, button_fill, button_outline, list_data.font_size, button_font_fill, button_font_outline);
-
             if (child_data.on_slide.value) {
                 zox_set(e2.y, SlideEvent, { child_data.on_slide.value })
             }

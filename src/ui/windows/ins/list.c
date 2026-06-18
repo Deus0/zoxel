@@ -20,7 +20,7 @@ entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *
         return (entity3) { 0, 0, 0 };
     }
     // Sizing
-    byte2 list_padding = (byte2) { padding.x, padding.y  };
+    // byte2 list_padding = (byte2) { padding.x, padding.y  };
     // Scale all ones that are created locally
     byte2 header_padding = (byte2) { 6 * ui_scale, 2 * ui_scale };
     byte2 button_padding = (byte2) { 8 * ui_scale, 4 * ui_scale };
@@ -43,7 +43,7 @@ entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *
         .fill = window_fill,
         .outline = window_outline,
         .button_padding = button_padding,
-        .padding = list_padding,
+        .padding = padding,
         .margins = list_margins,
         .slider_height = slider_height,
         .slider_padding = slider_padding,

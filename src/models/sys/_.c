@@ -5,13 +5,11 @@
 #include "body.c"
 #include "merge.c"
 #include "blocks.c"
-
+#include "settings.c"
 realm_clear_system(ModelLinks);
 
 void define_systems_models(ecs* world) {
-
     realm_clear_systemd(rendering, ModelLinks);
-
     // NOTE: Writes to VoxelNode
     zox_system(
         VoxGenerationSystem,
@@ -24,7 +22,6 @@ void define_systems_models(ecs* world) {
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
-
     zox_system(
         FillModelNodeSystem,
         zoxp_voxels_write,
@@ -33,7 +30,6 @@ void define_systems_models(ecs* world) {
         [in] rendering.ModelLink,
         [out] nodes.NodeEnd
     );
-
     zox_system(
         ColorsModelNodeSystem,
         zoxp_voxels_write,
@@ -42,7 +38,6 @@ void define_systems_models(ecs* world) {
         [in] rendering.ModelLink,
         [out] nodes.NodeEnd
     );
-
     zox_system(
         PaintModelNodeSystem,
         zoxp_voxels_write,
@@ -50,5 +45,18 @@ void define_systems_models(ecs* world) {
         [in] nodes.NodeLink,
         [in] rendering.ModelLink,
         [out] nodes.NodeEnd
+    );
+    zox_system_1(
+        ModelsSettingsSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [none] apps.App
+    );
+    zox_system_1(
+        ModelsSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
     );
 }

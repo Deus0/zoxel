@@ -50,14 +50,11 @@ entity spawn_engine_app(ecs* world) {
     window_name = "unknown";
 #endif
     entity app = spawn_app_sdl_opengl(world, window_name, fullscreen, maximized, monitor);
-
     if (!app) {
         zox_log_error("[engine_spawn_window] failed");
         return 0;
     }
-
     // Link to a global
     main_app = app;
-
     return app;
 }
