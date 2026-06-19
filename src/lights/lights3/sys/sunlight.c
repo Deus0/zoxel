@@ -208,7 +208,7 @@ zox_sys2(LightBeamSystem) {
             zox_log("[%s] Extended Sunbeams l[%i]", zox_get_name(e), sunlight);
         }
         while (sunlight_queue->count) {
-            SunlightUpdate update = r_SunlightQueue(sunlight_queue);
+            SunlightUpdate update = remove_SunlightQueue(sunlight_queue);
             // NOTE: For bottom chunk we just remove queue for beaming to bottom of earth
             byte3 pos = update.pos;
             byte length = powers_of_two[update.depth];

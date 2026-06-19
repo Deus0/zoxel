@@ -1,12 +1,15 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
-- Add Text [float] to settings slider labels
-- Increase Options padding
-- Add tooltip for new game?
-- Refactor Options
-- Queue for BlockDamage
+-x Add Text [float] to settings slider labels
+-x Increase Options padding
+-x Add tooltip for new game?
+-x Refactor Options
+-x Queue for BlockDamage
 - Transparent Cube for Block Damage
+- Use prefab for block_health
+- Regen health and destroy after for block health
+- Move block health to vodes module
 
 # Left Systems to optimize
 + ChunkFrustumSystem last one (11ms)

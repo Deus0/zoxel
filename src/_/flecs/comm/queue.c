@@ -31,7 +31,7 @@ static void a_##T(T* q, T2 item) { \
     q->ptr[q->count++] = item; \
 } \
 \
-static T2 r_##T(T* q) { \
+static T2 remove_##T(T* q) { \
     if (q->count == 0) { \
         T2 empty = {0}; \
         return empty; \

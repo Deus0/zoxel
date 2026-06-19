@@ -70,6 +70,15 @@ float3 voxel_to_real_position(int3 block_position, float terrain_voxel_scale, fl
     // get middle of voxel position
     return float3_add(positionf, float3_scale(float3_halff, chunk_voxel_scale));
 }
+float3 local_block_position_to_real_position(byte3 local_position, int3 chunk_position, byte depth, float block_scale) {
+    int3 chunk_block_position = get_chunk_block_position(chunk_position, int3_single(powers_of_two[depth]));
+    int3 block_position = int3_add(chunk_block_position, byte3_to_int3(local_position));
+    float3 positionf = int3_to_float3(block_position);
+    float3_scale_p(&positionf, block_scale);
+    // NOTE: Add half block
+    positionf = float3_add(positionf, float3_single(block_scale / 2.0f));
+    return positionf;
+}
 
 // NOTE: this doesn't account for local chunk depth difference to terrain grid
 float3 local_to_real_position_character(byte3 in_chunk_position, int3 chunk_grid_position, float3 bounds, float scale) {

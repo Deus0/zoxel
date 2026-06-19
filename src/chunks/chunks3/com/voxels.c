@@ -3,12 +3,6 @@ typedef struct {
     byte value;
     byte type;          // 0 closed - 1 open - 2 node link
 } VoxelNode;
-
-typedef struct {
-    byte value;
-    byte3 pos;
-} VoxelNodeUpdate;
-
 new_octree_function_set(VoxelNode);
 new_octree_function_set_clean(VoxelNode);
 create_node_getter(VoxelNode);
@@ -22,6 +16,3 @@ create_node_neighbor(VoxelNode);
 create_octree_line_debugger(VoxelNode);
 zoxc_byte(VoxelNodeDirty);
 zoxc_byte(VoxelNodeEdited);
-// zoxc_byte(VoxelNodeLoaded);
-// zoxc_state(VoxelNodeGenerated);
-zoxc_queue(VoxelNodeQueue, VoxelNodeUpdate, 1);

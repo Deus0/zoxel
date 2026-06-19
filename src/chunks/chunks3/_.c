@@ -1,13 +1,13 @@
-#ifndef zoxm_chunks3
-#define zoxm_chunks3
 /**
- *  Zox Chunks3(D)
+ *  Module Chunks3
  *
  *      - core voxel code
  *      - octree node, goes down n levels
  *      - can be rendered as cubes and optimized triangles
  *
  * */
+#ifndef zoxm_chunks3
+#define zoxm_chunks3
 
 byte zox_dbg_npc_all_max_depth = 0;
 #include "set/_.c"

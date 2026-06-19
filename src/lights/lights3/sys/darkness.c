@@ -254,7 +254,7 @@ zox_sys2(DarkLightSystem) {
         entity chunkd = neighbors->value[direction_down];
         DarkQueue* dark_queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, DarkQueue) : NULL;
         while (dark_queue->count) {
-            DarkUpdate update = r_DarkQueue(dark_queue);
+            DarkUpdate update = remove_DarkQueue(dark_queue);
             if (depthl->value < update.depth) {
                 depthl->value = update.depth;
             }

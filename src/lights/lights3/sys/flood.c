@@ -124,7 +124,7 @@ zox_sys2(LightFloodSystem) {
         byte dirty = 0;
         byte voxel_octree_depth = zox_getv(e, NodeDepth);
         while (light_queue->count) {
-            LightUpdate update = r_LightQueue(light_queue);
+            LightUpdate update = remove_LightQueue(light_queue);
             if (zox_disable_flood_fill) {
                 continue;
             }

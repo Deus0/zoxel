@@ -1,11 +1,9 @@
 entity spawn_prefab_chunk_textured(ecs* world, entity prefab) {
     entity e = zox_prefab_from_parent(world, prefab);
     zox_add_tag(e, ChunkTextured);
-    // Bounds, used for Frustum Culling
-    zox_prefab_set(e, Bounds3D, { float3_single(1) });
-    zox_prefab_set(e, Bounds3Dirty, { zox_dirty_none });
     // Links
     zox_prefab_set(e, BlockManagerLink, { 0 });
+    zox_prefab_set(e, ChunkNeighbors, { 0 }); // 0, 0, 0, 0, 0, 0
     // GPU
     zox_set(e, RenderDisabled, { 1 });
     zox_prefab_set(e, MeshUVs, { 0 });
@@ -19,12 +17,11 @@ entity spawn_prefab_chunk_textured(ecs* world, entity prefab) {
     zox_prefab_set(e, Loaded, { 0 });
     zox_prefab_set(e, Busy, { 0 });         // NOTE: Busy Updating stuff
     zox_prefab_set(e, Ready, { 0 });        // NOTE: Ready to upload to gpu
+    // Bounds, used for Frustum Culling
+    zox_prefab_set(e, Bounds3D, { float3_single(1) });
+    zox_prefab_set(e, Bounds3Dirty, { zox_dirty_none });
     // Neighbors and Updates
     zox_prefab_set(e, VoxelNodeQueue, { 0 });
-    zox_prefab_set(e, ChunkNeighbors, { { 0, 0, 0, 0, 0, 0 } });
-    // Lights
-    // zox_prefab_set(e, MeshColorsDirty, { zox_dirty_none });
-    // zox_prefab_set(e, MeshColorsGenerate, { zox_dirty_none });
-    // prefab_add_lights3(world, e, 0);
+    zox_prefab_set(e, BlockDamageQueue, { 0 });
     return e;
 }

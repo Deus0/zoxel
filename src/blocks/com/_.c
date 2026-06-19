@@ -28,6 +28,7 @@ zoxc_double(InsideBlockTime);
 zox_tag(BlockSoundTrigger);
 zoxc_entity(BlockSound);        // Links Block to a Sound
 zoxc_float2(BlockHealth);
+#include "queue.c"
 
 entity get_block_link(ecs* world, entity e) {
     return zox_getv(e, BlockLink);
@@ -40,28 +41,29 @@ void zox_define_components_blocks(ecs *world) {
     zoxd_tag(BlockDungeon);
     zoxd_tag(BlockInvinsible);
     zoxd_tag(BlockCanGroup);
+    zoxd_tag(BlockSoundTrigger);
     zoxd_byte(BlockLightPass);
     zoxd_byte(BlockModel);
     zoxd_byte(BlockCollider);
-    zoxd_state(BlocksDirty);
     zoxd_byte(VoxBakeSide);
     zoxd_byte(BlockVoxOffset);
     zoxd_byte(BlockIndex);
-    zoxd_int3(BlockPosition);
-    zoxd_int3(BlockSize);
+    zoxd_byte(InsideBlock);
+    zoxd_byte3(VoxelLocalPosition);
     zoxd_int2(BlockPosition2);
     zoxd_int2(BlockSize2);
-    zoxd_byte3(VoxelLocalPosition);
+    zoxd_int3(BlockPosition);
+    zoxd_int3(BlockSize);
+    zoxd_int3(InsideBlockPosition);
     zoxd_float(BlockScale);
+    zoxd_double(InsideBlockTime);
+    zoxd_float2(BlockHealth);
     zoxd_entity(BlockLink);
     zoxd_entity(BlockPrefabLink);
-    zoxd_entities(BlockLinks);
     zoxd_entity(BlockManagerLink);
-    zoxd_byte(InsideBlock);
-    zoxd_int3(InsideBlockPosition);
-    zoxd_state(InsideBlockDirty);
-    zoxd_double(InsideBlockTime);
-    zoxd_tag(BlockSoundTrigger);
     zoxd_entity(BlockSound);
-    zoxd_float2(BlockHealth);
+    zoxd_state(BlocksDirty);
+    zoxd_state(InsideBlockDirty);
+    zoxd_entities(BlockLinks);
+    zoxd_queue(BlockDamageQueue);
 }

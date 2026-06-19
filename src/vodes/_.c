@@ -1,4 +1,12 @@
-// TODO: Refactor vodes2 + 3 here
+/*
+ *  Module Vodes
+ *
+ *      - Basically World Blocks
+ *      - Chests, Doors, Grass, etc
+ *      - Block Health too
+ *      - Anything that uses entities on top of chunks for Voxels
+ *
+ * */
 #ifndef zoxm_vodes
 #define zoxm_vodes
 

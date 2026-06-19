@@ -166,6 +166,16 @@ zox_sys2(MeleeSystem) {
                 zox_loge("TerrainChunk is valid but block is not.");
                 continue;
             }
+            float block_damage = randf_range(1, 3);
+            BlockDamageUpdate update = {
+                .meta = block,
+                .position = raycast->positionl,
+                .damage = block_damage
+            };
+            zox_muter(raycast->chunk, BlockDamageQueue, damage_queue);
+            a_BlockDamageQueue(damage_queue, update);
+            continue;
+
             // Hit Bedrock!
             if (zox_has(block, BlockInvinsible)) {
                 // cannot destroy voxel sound
@@ -175,7 +185,6 @@ zox_sys2(MeleeSystem) {
             // effect our terrain here
             byte3 positionl = raycast->positionl;
             entity chunk = raycast->chunk;
-            float block_damage = randf_range(1, 3);
             // First check Vode:
             zox_mut_begin(chunk, VoxelNode, root);
             VoxelNode* leaf = open_at_VoxelNode(root, raycast->depth, positionl, 0); //  getm
