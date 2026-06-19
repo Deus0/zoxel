@@ -1,4 +1,13 @@
 ### Done ###
+-x Add Text [float] to settings slider labels
+-x Increase Options padding
+-x Add tooltip for new game?
+-x Refactor Options
+-x Queue for BlockDamage
+-x Transparent Cube for Block Damage
+-x Use prefab for block_health
+-x Move block health to vodes module
+-x Fade out death for block health overlay (instead of instant)
 + Chunks at 15000 gives 10ms ish per chunk system:
 + Chunk3TexturedRenderSystem, ChunkFrustumSystem, ChunkNeighborLightTriggerSystem, Chunk3NeighborMeshTriggerSystem, ChunkSpawnSystem, ChunkFindNeighborSystem, Chunk3DeathSystem, Characters3SpawnZoneSystem
 + Make sure if chunk isn't doing anything that it sleeps, i.e. just a quick Dirty check, don't do anything else like zox_getv etc

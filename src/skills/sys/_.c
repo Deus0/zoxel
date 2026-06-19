@@ -3,7 +3,6 @@
 #include "activate.c"
 #include "toggle.c"
 #include "character.c"
-#include "block_damage.c"
 realm_clear_system(SkillLinks);
 // TODO: DotLinks just parent them instead
 
@@ -43,13 +42,4 @@ void zox_define_systems_skills(ecs *world) {
         [out] skills.SkillLinks
         // [none] !players.PlayerLink
     );*/
-    zox_system_1(
-        BlockDamageQueueSystem,
-        zoxp_mainthread,
-        [in] chunks3.ChunkPosition,
-        [in] chunks.NodeDepth,
-        [out] blocks.BlockDamageQueue,
-        [none] chunks3.Chunk3
-    );
-
 }

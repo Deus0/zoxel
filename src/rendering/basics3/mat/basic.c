@@ -6,17 +6,19 @@ typedef struct {
     uint transform_matrix;
     uint camera_matrix;
     uint fog_data;
-    uint brightness;
+    uint color;
+    // uint brightness;
 } MaterialBasic3D;
 zoxc_custom(MaterialBasic3D);
 
 MaterialBasic3D create_MaterialBasic3D(const uint material) {
     return (MaterialBasic3D) {
-        zox_gpu_get_material_attribute(material, "vertex_position"),
-        zox_gpu_get_material_property(material, "transform_matrix"),
-        zox_gpu_get_material_property(material, "camera_matrix"),
-        zox_gpu_get_material_property(material, "fog_data"),
-        zox_gpu_get_material_property(material, "brightness")
+        .vertex_position = zox_gpu_get_material_attribute(material, "vertex_position"),
+        .transform_matrix = zox_gpu_get_material_property(material, "transform_matrix"),
+        .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
+        .color = zox_gpu_get_material_property(material, "color"),
+        // .brightness = zox_gpu_get_material_property(material, "brightness"),
+        .fog_data = zox_gpu_get_material_property(material, "fog_data")
     };
 }
 
@@ -28,23 +30,20 @@ entity spawn_shader_basic3D(ecs *world) {
     shader_frags[shader_index] = frag;
     const entity e = spawn_shader(world, shader_index);
     if (!e) {
-        zox_log_error("[shader_basic3D] failed to spawn")
+        zox_log_error("[shader_basic3D] failed to spawn");
         return 0;
     }
-    zox_name("shader_basic3D")
+    zox_name("shader_basic3D");
     return e;
 }
 
 entity spawn_material_basic3D(ecs *world) {
-    /*if (load_shader3D_basic(world)) {
-        zox_log("    ! error loading [shader3D_basic]\n");
-    }*/
-    const entity shader = spawn_shader_basic3D(world);
+    entity shader = spawn_shader_basic3D(world);
     if (!shader) {
         return 0;
     }
     uint material;
-    const entity e = spawn_material(world, shader, &material);
+    entity e = spawn_material(world, shader, &material);
     zox_name("material_basic3D")
     zox_set(e, ShaderLink, { shader })
     const MaterialBasic3D attributes = create_MaterialBasic3D(material);

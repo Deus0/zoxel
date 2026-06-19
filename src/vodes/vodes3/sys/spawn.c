@@ -1,12 +1,12 @@
 // TODO: Remove Struct use
 // TODO: Make use Queue Systems for updates on Vodes
 
-typedef struct {
+/*typedef struct {
     VoxelNode *chunk;
     int3 octree_position;
     byte depth;
     byte max_depth;
-} NodeDelveData;
+} NodeDelveData;*/
 
 typedef struct {
     entity chunk;
@@ -17,7 +17,7 @@ typedef struct {
     byte blocks_length;
     float3 chunk_positionf;
     float chunk_scalev;
-    float tscale;
+    float terrain_block_scale;
     byte render_disabled;
     byte render_depth;
 } UpdateBlockEntities;
@@ -27,8 +27,8 @@ void spawned_block_vox(ecs *world, spawned_block_data* data) {
     if (!zox_has(data->block, BlockPrefabLink)) {
         return;
     }
-    if (!data->node) {
-        zox_log_error("null node in [spawned_block_vox]")
+    if (!data->octree) {
+        zox_log_error("null voxel_octree in [spawned_block_vox]")
         return;
     }
     // gett block data
@@ -53,44 +53,40 @@ void spawned_block_vox(ecs *world, spawned_block_data* data) {
     } else {
         return;
     }
-    link_node_VoxelNode(data->node, e2);
+    link_node_VoxelNode(data->octree, e2);
     // spawn_line3(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
 }
 
-    /*zox_log("+ Placing Block [%s]: linked: [%i]", zox_get_name(data->block), data->node->linked)
-    zox_log("   - local [%ix%ix%i] ", spawn_data.positionl.x, spawn_data.positionl.y, spawn_data.positionl.z)
-    zox_log("   - global [%ix%ix%i] ", spawn_data.positionv.x, spawn_data.positionv.y, spawn_data.positionv.z)
-    zox_log("   - real [%fx%fx%f] ", spawn_data.positionf.x, spawn_data.positionf.y, spawn_data.positionf.z)*/
+/*zox_log("+ Placing Block [%s]: linked: [%i]", zox_get_name(data->block), data->voxel_octree->linked)
+zox_log("   - local [%ix%ix%i] ", spawn_data.positionl.x, spawn_data.positionl.y, spawn_data.positionl.z)
+zox_log("   - global [%ix%ix%i] ", spawn_data.positionv.x, spawn_data.positionv.y, spawn_data.positionv.z)
+zox_log("   - real [%fx%fx%f] ", spawn_data.positionf.x, spawn_data.positionf.y, spawn_data.positionf.z)*/
 
-void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, NodeDelveData *delve_data) {
-    VoxelNode *node = delve_data->chunk;
-    if (!node) {
+void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, VoxelNode* voxel_octree, int3 position, byte depth, byte max_depth) {
+    // NodeDelveData *delve_data) {
+    // VoxelNode *voxel_octree = delve_data->chunk;
+    if (!voxel_octree) {
         return;
     }
-    if (delve_data->depth != delve_data->max_depth) {
-        // did more
-        int3 octree_position = delve_data->octree_position;
-        int3_multiply_int_p(&octree_position, 2);
-        if (has_children_VoxelNode(node)) {
-            VoxelNode* kids = get_children_VoxelNode(node);
+    // Dig more
+    if (depth != max_depth) {
+        depth++;
+        int3_multiply_int_p(&position, 2);
+        if (has_children_VoxelNode(voxel_octree)) {
+            VoxelNode* kids = get_children_VoxelNode(voxel_octree);
             for (byte i = 0; i < octree_length; i++) {
-                NodeDelveData delve_data_child = {
-                    .chunk = &kids[i],
-                    .octree_position = int3_add(octree_position, octree_positions[i]),
-                    .depth = delve_data->depth + 1,
-                    .max_depth = delve_data->max_depth
-                };
-                spawn_vodes_dive(world, data, &delve_data_child);
+                int3 child_position = int3_add(position, octree_positions[i]);
+                spawn_vodes_dive(world, data, &kids[i], child_position, depth, max_depth);
             }
         }
         return;
     }
     // air returns!
-    if (!node->value) {
+    if (!voxel_octree->value) {
         return;
     }
     // check if out of bounds
-    byte block_index = node->value - 1;
+    byte block_index = voxel_octree->value - 1;
     if (block_index >= data->blocks_length) {
         zox_loge("Vode Block ID OOB [%i of %i]", block_index, data->blocks_length);
         return;
@@ -104,34 +100,34 @@ void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, NodeDelveData
     // if exists already, shouldn't we check if is the same block vox type?
     // if exists, and is same type, return!
     // read lock here?
-    if (is_linked_VoxelNode(node)) {
+    if (is_linked_VoxelNode(voxel_octree)) {
         return;
     }
     float mesh_scale = data->chunk_scalev;
     // TODO: If loaded vox model, we need to scale based on the mesh we are using
-    byte3 positionl = int3_to_byte3(delve_data->octree_position);
-    int3 positionv = delve_data->octree_position;
+    byte3 positionl = int3_to_byte3(position);
+    int3 positionv = position;
     float3 positionf = float3_from_int3(positionv);
-    float3_scale_p(&positionf, data->tscale);
+    float3_scale_p(&positionf, data->terrain_block_scale);
     float3_add_float3_p(&positionf, data->chunk_positionf);
     float3_add_float3_p(&positionf, float3_single(-mesh_scale * 0.5f));
-    if (node->value && !is_linked_VoxelNode(node)) {
+    if (voxel_octree->value && !is_linked_VoxelNode(voxel_octree)) {
         zox_geter(data->chunk, ChunkPosition, cposition);
-        zox_geter_value(data->chunk, NodeDepth, byte, node_depth);
-        int chunk_length = powers_of_two[node_depth];
+        zox_geter_value(data->chunk, NodeDepth, byte, voxel_octree_depth);
+        int chunk_length = powers_of_two[voxel_octree_depth];
         int3 chunk_dimensions = int3_single(chunk_length);
         int3 cpositionv = get_chunk_block_position(cposition->value, chunk_dimensions);
         int3 positionv = int3_add(positionv, cpositionv);
-        // spawn node entity here!
-        byte block_index = node->value - 1;
+        // spawn voxel_octree entity here!
+        byte block_index = voxel_octree->value - 1;
         if (block_index >= data->blocks_length) {
             zox_log_error("voxel [%i] is out of range [%i]", block_index, data->blocks_length)
             return;
         }
         entity block = data->blocks[block_index];
         spawned_block_data spawned_data = (spawned_block_data) {
+            .octree = voxel_octree,
             .chunk = data->chunk,
-            .node = node,
             .block_index = block_index,
             .block = block,
             .positionl = positionl,
@@ -146,7 +142,7 @@ void spawn_vodes_dive(ecs *world, const UpdateBlockEntities *data, NodeDelveData
     }
 }
 
-void spawn_vodes(ecs *world, entity e, entity terrain, byte render_depth, byte rdisabled, VoxelNode *chunk, byte max_depth, float3 positionf, float chunk_scalev, float tscale) {
+void spawn_vodes(ecs* world, entity e, entity terrain, byte render_depth, byte render_disabled, VoxelNode* octree, byte max_depth, float3 positionf, float chunk_scalev, float terrain_block_scale) {
     zox_geter_value(terrain, RealmLink, entity, realm);
     if (!zox_valid(realm)) {
         return;
@@ -180,10 +176,10 @@ void spawn_vodes(ecs *world, entity e, entity terrain, byte render_depth, byte r
         }
     }
     // why we do this?
-    positionf = float3_add(positionf, float3_single(tscale));
+    positionf = float3_add(positionf, float3_single(terrain_block_scale));
     UpdateBlockEntities data = {
         .chunk_scalev = chunk_scalev,
-        .tscale = tscale,
+        .terrain_block_scale = terrain_block_scale,
         .chunk = e,
         .blocks_length = blocks_length,
         .blocks = blocksarr, // metas
@@ -192,14 +188,9 @@ void spawn_vodes(ecs *world, entity e, entity terrain, byte render_depth, byte r
         .block_vox_offsets = block_vox_offsets,
         .chunk_positionf = positionf,
         .render_depth = render_depth,
-        .render_disabled = rdisabled,
+        .render_disabled = render_disabled,
     };
-    NodeDelveData delve_data = {
-        .chunk = chunk,
-        .depth = 0,
-        .max_depth = max_depth
-    };
-    spawn_vodes_dive(world, &data, &delve_data);
+    spawn_vodes_dive(world, &data, octree, int3_zero, 0, max_depth); //, &delve_data);
 }
 
 // Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
@@ -219,34 +210,34 @@ zox_sys2(VodesSpawnSystem) {
     zox_sys_out(BlocksSpawned);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxelNodeDirty, voxelNodeDirty);
-        zox_sys_i(RenderDistanceDirty, renderDistanceDirty);
+        zox_sys_i(VoxelNodeDirty, voxel_octree_dirty);
+        zox_sys_i(RenderDistanceDirty, render_distance_dirty);
         zox_sys_i(VoxLink, terrain);
-        zox_sys_i(NodeDepth, nodeDepth);
-        zox_sys_i(RenderDisabled, rdisabled);
-        zox_sys_i(RenderDepth, renderDepth);
-        zox_sys_i(RenderDistance, renderDistance);
+        zox_sys_i(NodeDepth, depth);
+        zox_sys_i(RenderDisabled, render_disabled);
+        zox_sys_i(RenderDepth, render_depth);
+        zox_sys_i(RenderDistance, render_distance);
         zox_sys_i(Position3D, position);
         zox_sys_i(BlockScale, scale);
-        zox_sys_o(VoxelNode, node);
+        zox_sys_o(VoxelNode, voxel_octree);
         zox_sys_o(BlocksSpawned, spawned);
-        // either voxel node is dirty, or we are spawning for first time based on distance changes
-        byte is_first_time = voxelNodeDirty->value == zox_dirty_active;
-        byte is_dirty = (!spawned->value && renderDistanceDirty->value == zox_dirty_active);
+        // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
+        byte is_first_time = voxel_octree_dirty->value == zox_dirty_active;
+        byte is_dirty = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
         if (!is_first_time && !is_dirty) {
             continue;
         }
         //  base off render distance
-        zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
-        zox_geter_value(terrain->value, BlockScale, float, tscale);
-        byte can_spawn_vodes = renderDepth->value == terrain_depth;
+        byte terrain_depth = zox_getv(terrain->value, NodeDepth);
+        float terrain_block_scale = zox_getv(terrain->value, BlockScale);
+        byte can_spawn_vodes = render_depth->value == terrain_depth;
         if (!can_spawn_vodes) {
             continue;
         }
-        byte rdepth = camera_distance_to_block_vox_depth(renderDistance->value);
-        write_lock_VoxelNode(node);
-        spawn_vodes(world, e, terrain->value, rdepth, rdisabled->value, node, nodeDepth->value, position->value, scale->value, tscale);
-        write_unlock_VoxelNode(node);
+        byte rdepth = camera_distance_to_block_vox_depth(render_distance->value);
+        write_lock_VoxelNode(voxel_octree);
+        spawn_vodes(world, e, terrain->value, rdepth, render_disabled->value, voxel_octree, depth->value, position->value, scale->value, terrain_block_scale);
+        write_unlock_VoxelNode(voxel_octree);
         spawned->value = 1;
     }
 } zox_sys_end(VodesSpawnSystem);

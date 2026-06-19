@@ -1,11 +1,12 @@
 out vec3 frag_color;
 in vec3 mesh_pos;
 in float fog_level;
-uniform float brightness;
+// uniform float brightness;
+uniform vec4 color;
+uniform vec4 fog_data;
+uniform float time;
 uniform vec3 sky_top_color;
 uniform vec3 sky_bottom_color;
-uniform float time;
-uniform vec4 fog_data;
 
 float rand(vec2 co) {
     return fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453);
@@ -32,7 +33,11 @@ vec3 sky_gradient(vec3 color) {
 void main() {
     vec3 sky_top_color2 = sky_top_color;
     float gradient = clamp((mesh_pos.y + 0.0) * 1.0, 0.0, 1.0);
-    frag_color = vec3(mix(sky_bottom_color, sky_top_color2, gradient)) * brightness;
+    frag_color = vec3(mix(sky_bottom_color, sky_top_color2, gradient));
+    frag_color.x = frag_color.x * color.x;
+    frag_color.z = frag_color.y * color.y;
+    frag_color.z = frag_color.x * color.z;
+    // * brightness;
     frag_color = sky_gradient(frag_color);
     frag_color -= vec3(1) * 0.05;
     float noise = rand(time * mesh_pos.xy);

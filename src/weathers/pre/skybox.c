@@ -7,11 +7,12 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_prefab_set(e, Rotation3D, { float4_identity });
     zox_prefab_set(e, Scale1D, { 1 });
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
-    // zox_prefab_set(e, ShadowLink, { 0 });
     // Render
-    zox_prefab_add(e, ColorRGB);
+    zox_prefab_set(e, Color, { color_white });
+    zox_prefab_set(e, ColorRGB, { color_rgb_white });
     zox_prefab_add(e, SecondaryColorRGB);
     zox_prefab_set(e, Brightness, { 1 });
+    zox_prefab_set(e, Alpha, { 1 });
     zox_prefab_set(e, MeshDirty, { mesh_state_trigger });
     {
         zox_prefab_add(e, MeshIndicies);
@@ -22,12 +23,9 @@ entity spawn_prefab_skybox(ecs *world) {
         prefab_set_mesh_indicies(world, e, cube_indicies_inverted, cube_indicies_length);
         prefab_set_mesh_vertices_float(world, e, cube_vertices_inverted, cube_vertices_f_length);
     }
-    prefab_skybox = e;
     return e;
 }
 
-byte override_sky = 0;
-color_rgb override_sky_fill = color_rgb_red;
 void set_skybox_colors(ecs *world, color_rgb top_color, color_rgb bottom_color) {
     if (!skybox) {
         return;
@@ -48,7 +46,7 @@ entity spawn_skybox(ecs *world, entity camera, entity shader) {
     zox_set(e, Scale1D, { skybox_size });
     zox_set_parent(world, e, camera);
     // zox_set(e, ShadowLink, { camera });
-    if (render_backend == zox_render_backend_opengl && shader) {
+    if (shader) {
         zox_add_tag(e, MeshBasic3D);
         spawn_gpu_mesh(world, e);
         zox_set(e, ShaderLink, { shader });

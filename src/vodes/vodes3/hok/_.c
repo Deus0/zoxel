@@ -1,5 +1,5 @@
 typedef struct {
-    VoxelNode *node;
+    VoxelNode* octree;
     const entity chunk;
     const byte block_index;
     const entity block;

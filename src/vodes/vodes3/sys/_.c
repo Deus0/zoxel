@@ -2,6 +2,8 @@
 #include "despawn.c"
 #include "spawn.c"
 #include "lods.c"
+#include "block_damage.c"
+#include "block_health_overlay.c"
 
 void define_systems_vodes3(ecs* world) {
     // NOTE: Writes to VoxelNode
@@ -45,5 +47,22 @@ void define_systems_vodes3(ecs* world) {
         [in] blocks.BlockScale,
         [out] chunks3.VoxelNode,
         [out] chunks3.BlocksSpawned
+    );
+    zox_system_1(
+        BlockDamageQueueSystem,
+        zoxp_mainthread,
+        [in] chunks3.ChunkPosition,
+        [in] chunks3.VoxelNode,
+        [in] chunks.NodeDepth,
+        [in] blocks.BlockManagerLink,
+        [out] blocks.BlockDamageQueue,
+        [none] chunks3.Chunk3
+    );
+    zox_system(
+        BlockHealthOverlaySystem,
+        EcsOnUpdate,
+        [in] stats.StatValue,
+        [in] stats.StatValueMax,
+        [none] vodes3.WorldBlock
     );
 }

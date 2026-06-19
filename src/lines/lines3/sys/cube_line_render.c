@@ -102,7 +102,6 @@ zox_sys2(CubeLineRenderSystem) {
             float3_add_float3_p(&bottom_left, p);
             float3_add_float3_p(&bottom_right2, p);
             float3_add_float3_p(&bottom_left2, p);
-
             // top
             zox_render_line_attr(top_left, top_right);
             zox_render_line_attr(top_left2, top_right2);

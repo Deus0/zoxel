@@ -39,7 +39,6 @@
 #include "chunks/_.c"
 #include "physics/_.c"
 #include "voxes/_.c"
-#include "vodes/_.c"
 #include "lights/_.c"
 #include "models/_.c"
 #include "biomes/_.c"
@@ -54,7 +53,6 @@
 #include "vrays/_.c"
 #include "characters/_.c"
 #include "pets/_.c"
-#include "dungeons/_.c"
 #include "huds/_.c"
 #include "space/_.c"
 // user data
@@ -84,6 +82,8 @@
 #include "maps/_.c"
 #include "npcs/_.c"
 // Placement
+#include "vodes/_.c"
+#include "dungeons/_.c"
 #include "terrain/npcs/_.c"
 // on top
 #include "controllers/_.c"
@@ -131,7 +131,6 @@ zox_begin_module(Zox) {
     zox_import_module(Chunks);
     zox_import_module(Physics);
     zox_import_module(Voxes);
-    zox_import_module(Vodes);
     zox_import_module(Lights);
     zox_import_module(Models);
     zox_import_module(Biomes);
@@ -145,7 +144,6 @@ zox_begin_module(Zox) {
     zox_import_module(Towns);
     zox_import_module(Vrays);
     zox_import_module(Characters);
-    zox_import_module(Dungeons);
     zox_import_module(Huds);
     zox_import_module(Space);
     // user data
@@ -166,6 +164,8 @@ zox_begin_module(Zox) {
     zox_import_module(Lores);
     zox_import_module(Achievements);
     // Placement
+    zox_import_module(Vodes);
+    zox_import_module(Dungeons);
     zox_import_module(TerrainsNpcs);
     // Gameplay
     zox_import_module(Pickups);

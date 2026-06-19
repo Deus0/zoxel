@@ -2,7 +2,7 @@ void spawn_world_dungeon_core(ecs *world, spawned_block_data *data) {
     if (!zox_has(data->block, BlockPrefabLink)) {
         return;
     }
-    if (!data->node) {
+    if (!data->octree) {
         // zox_log_error("null node in [spawned_block_vox]")
         return;
     }
@@ -16,5 +16,5 @@ void spawn_world_dungeon_core(ecs *world, spawned_block_data *data) {
     zox_set(e, VoxelLocalPosition, { data->positionl });
     // zox_set(e2, Scale1D, { data->spawn_data->scale })
     // zox_set(e2, Position3D, { positionf })
-    link_node_VoxelNode(data->node, e);
+    link_node_VoxelNode(data->octree, e);
 }

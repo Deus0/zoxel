@@ -57,7 +57,7 @@ void define_systems_animations(ecs* world) {
     zox_system(
         FadeoutSystem,
         EcsOnUpdate,
-        [in] FadeOutEvent,
+        [in] FadeOutTime,
         [in] AnimationStart,
         [out] rendering.Alpha
     );

@@ -1,15 +1,13 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
--x Add Text [float] to settings slider labels
--x Increase Options padding
--x Add tooltip for new game?
--x Refactor Options
--x Queue for BlockDamage
-- Transparent Cube for Block Damage
-- Use prefab for block_health
+- Make Raycast Block Overlay cover all sides of the selected block
+- If you are placing, show a preview placement block
 - Regen health and destroy after for block health
-- Move block health to vodes module
+- Make it easier to add a custom material / shader
+	- dynamically gets/adds components per shader file?
+- Add a Post Processor Noise option - Slider - we can reduce it or turn off
+- Add a Post Processor Vignette option - Slider - we can reduce it or turn off
 
 # Left Systems to optimize
 + ChunkFrustumSystem last one (11ms)

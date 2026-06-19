@@ -5,6 +5,7 @@ extern entity spawn_pickup_block(ecs*, float3, entity);
 zox_sys2(MeleeSystem) {
     byte dbg_log = 0;
     byte dbg_log_block = 0;
+    float npc_nerf_multiplier = 0.7f;
     color popup_color = (color) { 255, 0, 0, 255 };
     float popup_spawn_y = 0.18f;
     double volume = get_volume_sfx();
@@ -118,7 +119,7 @@ zox_sys2(MeleeSystem) {
             skill_damage += strength_damage_multiplier * zox_gett_value(strength, StatValue);
         }
         if (!zox_has(user, PlayerLink)) {
-            skill_damage *= 0.4f; // EASY MODE
+            skill_damage *= npc_nerf_multiplier; // EASY MODE
         }
         // Hitting NPC
         if (zox_has(hit, Character3)) {
@@ -168,16 +169,14 @@ zox_sys2(MeleeSystem) {
             }
             float block_damage = randf_range(1, 3);
             BlockDamageUpdate update = {
-                .meta = block,
+                // .meta = block,
                 .position = raycast->positionl,
                 .damage = block_damage
             };
             zox_muter(raycast->chunk, BlockDamageQueue, damage_queue);
             a_BlockDamageQueue(damage_queue, update);
-            continue;
-
             // Hit Bedrock!
-            if (zox_has(block, BlockInvinsible)) {
+            /*if (zox_has(block, BlockInvinsible)) {
                 // cannot destroy voxel sound
                 spawn_sound_generated(world, prefab_sound_generated,  instrument_violin, note_frequencies[42 + rand() % 6], 0.26, 1.4f * get_volume_sfx());
                 continue;
@@ -261,7 +260,7 @@ zox_sys2(MeleeSystem) {
             spawn_popup3_easy(world, popup_text, popup_color, popup_position, 2.5f, randf_range(4, 8));
             if (dbg_log) {
                 zox_log("User [%s] hit block at []", zox_get_name(user));
-            }
+            }*/
         }
     }
 } zox_sys_end(MeleeSystem);

@@ -1,6 +1,6 @@
 // a simple alpha animation
 /*void zox_prefab_add_animation_event(ecs *world, entity e, float length) {
-    zox_prefab_set(e, FadeOutEvent, { length });
+    zox_prefab_set(e, FadeOutTime, { length });
     zox_prefab_set(e, Alpha, { 1 });
     zox_prefab_set(e, AnimationStart, { 0 });
 }*/
@@ -8,14 +8,13 @@
 zox_sys2(FadeoutSystem) {
     double time = zox_current_time;
     zox_sys_begin();
-    zox_sys_in(FadeOutEvent);
+    zox_sys_in(FadeOutTime);
     zox_sys_in(AnimationStart);
     zox_sys_out(Alpha);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(FadeOutEvent, fadeOutEvent);
+        zox_sys_i(FadeOutTime, fadeOutEvent);
         zox_sys_i(AnimationStart, animationStart);
         zox_sys_o(Alpha, alpha);
-
         double animation_time = (time - (animationStart->value)) / fadeOutEvent->value;
         if (animation_time < 0) {
             animation_time = 0;

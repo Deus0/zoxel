@@ -15,6 +15,8 @@ void define_systems_basics3D(ecs* world) {
     zox_render3D_plus_system(
         Basic3RenderSystem,
         [in] transforms.TransformMatrix,
+        [in] colorz.Color,
+        [in] rendering.Alpha,
         [in] rendering.Brightness,
         [in] rendering.MeshGPULink,
         [in] rendering.MeshIndicies,

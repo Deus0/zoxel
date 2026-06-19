@@ -13,12 +13,12 @@ zoxc_custom(MaterialColored3D);
 
 MaterialColored3D create_MaterialColored3D(const uint material) {
     return (MaterialColored3D) {
-        zox_gpu_get_material_attribute(material, "vertex_position"),
-        zox_gpu_get_material_attribute(material, "vertex_color"),
-        zox_gpu_get_material_property(material, "transform_matrix"),
-        zox_gpu_get_material_property(material, "camera_matrix"),
-        zox_gpu_get_material_property(material, "brightness"),
-        zox_gpu_get_material_property(material, "fog_data")
+        .vertex_position = zox_gpu_get_material_attribute(material, "vertex_position"),
+        .vertex_color = zox_gpu_get_material_attribute(material, "vertex_color"),
+        .transform_matrix = zox_gpu_get_material_property(material, "transform_matrix"),
+        .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
+        .brightness = zox_gpu_get_material_property(material, "brightness"),
+        .fog_data = zox_gpu_get_material_property(material, "fog_data")
     };
 }
 

@@ -8,7 +8,7 @@ zoxc_double(AnimationDelay);
 zoxc_float4(EternalRotation);
 zoxc_float(AnimateSourceFloat);
 zoxc_float(AnimateTargetFloat);
-zoxc_float(FadeOutEvent);
+zoxc_float(FadeOutTime);
 zoxc_float3(AnimationPositionStart);
 zoxc_float3(AnimationPositionEnd);
 zoxc_entity(LerpToTarget);
@@ -38,7 +38,7 @@ void define_components_animations(ecs* world) {
     zoxd_arrayd(AnimationTimes);
     zoxd_arrayd(AnimationTargets);
     // defined events
-    zoxd_float(FadeOutEvent);
+    zoxd_float(FadeOutTime);
     // seperating animations
     zoxd_arrayd(AnimationLinks);
     // lerp to

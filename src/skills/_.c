@@ -18,6 +18,6 @@ zox_begin_module(Skills) {
     add_hook_spawn_prefabs(spawn_prefabs_skills);
     zox_import_module(UISkills);
     zox_import_module(Auras);
-} zox_end_module(Skills)
+} zox_end_module(Skills);
 
 #endif

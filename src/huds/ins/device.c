@@ -15,7 +15,7 @@ entity spawn_device_gizmo(ecs* world, entity canvas, byte device_type) {
     zox_set(e, Layer2D, { layer });
     zox_set(e, Alpha, { 1 });
     zox_set(e, AnimationStart, { zox_current_time });
-    zox_set(e, FadeOutEvent, { device_gizmo_fade_time });
+    zox_set(e, FadeOutTime, { device_gizmo_fade_time });
     zox_set(e, DestroyInTime, { device_gizmo_fade_time });
     char* texture_name;
     if (device_type == zox_device_mode_gamepad) {

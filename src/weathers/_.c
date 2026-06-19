@@ -1,6 +1,8 @@
 #ifndef zoxm_weathers
 #define zoxm_weathers
 
+byte override_sky = 0;
+color_rgb override_sky_fill = color_rgb_red;
 entity prefab_skybox;
 entity shader_skybox; // shaders global
 entity skybox; // remove this, link to realm/game
