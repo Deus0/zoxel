@@ -26,7 +26,8 @@ void define_systems_basics2D(ecs *world) {
         [out] rendering.MeshDirty
     );
     // 2D or 3D pipeline?
-    zox_render3D_system(
+    zox_render3_system(
+        0,
         RenderMaterial2DSystem,
         [in] transforms2.Position2,
         [in] transforms2.Rotation2D,

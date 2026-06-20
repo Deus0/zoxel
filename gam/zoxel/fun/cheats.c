@@ -1,5 +1,22 @@
 entity dbg_ui_cheats;
 
+void zox_dbg_add_no_clip(ecs* world, ClickEventData data) {
+    entity player = dbg_player;
+    if (!zox_valid(player)) {
+        return;
+    }
+    entity character = zox_getv(player, CharacterLink);
+    if (!zox_valid(character)) {
+        return;
+    }
+    zox_log("Adding No Clip: %s", zox_get_name(character));
+    if (zox_has(character, NoClip)) {
+        zox_remove_tag(character, NoClip);
+    } else {
+        zox_add_tag(character, NoClip);
+    }
+}
+
 void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
     if (keycode != zox_key_j) {
         return;
@@ -18,7 +35,7 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
-    byte zox_tsts_count = 2;
+    byte zox_tsts_count = 3;
     SpawnListElement elements[zox_tsts_count];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
@@ -33,6 +50,10 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "All Skills",
         .on_click = { &zox_tst_all_skills },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "No Clip",
+        .on_click = { &zox_dbg_add_no_clip },
     };
     // Test our uis
     entity spawned[elements_count];

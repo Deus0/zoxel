@@ -43,6 +43,7 @@ void zox_define_systems_actions(ecs* world) {
         [in] actions.ActiveActionDirty,
         [in] actions.ActiveAction,
         [out] vrays.RaycastRange,
+        [out] vrays.RaycastType,
         [none] characters.Character
     );
 }

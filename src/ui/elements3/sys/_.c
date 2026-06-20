@@ -37,7 +37,8 @@ void define_systems_elements3D(ecs *world) {
         [out] rendering.TextureGPULink,
         [none] Element3D
     );
-    zox_render3D_plus_system(
+    zox_render3_system(
+        2,
         Element3DRenderSystem,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,

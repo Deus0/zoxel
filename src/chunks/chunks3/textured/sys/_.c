@@ -5,7 +5,8 @@
 
 void define_systems_chunks3_textured(ecs *world) {
     // move this into chunk3, for chunk3_textured
-    zox_render3D_system(
+    zox_render3_system(
+        0,
         Chunk3TexturedRenderSystem,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,

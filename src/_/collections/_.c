@@ -9,6 +9,7 @@
 #define zoxm_collections
 
 #include "data/_.c"
+#include "fun/_.c"
 #include "../memory/_.c"    // uses types: uint
 #include "settings/_.c"
 #include "macros/_.c"

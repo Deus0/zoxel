@@ -31,6 +31,7 @@ entity spawn_block_item(ecs *world, entity block) {
     zox_add_tag(e, ItemBlock);
     zox_set(e, BlockLink, { block });
     zox_set(e, RaycastRange, { block_place_range });
+    zox_set(e, RaycastType, { 1 });
     // actually for grass we want to set itemLink differently
     zox_set(block, ItemLink, { e });
     // zox_set_name(item, zox_get_name(block));

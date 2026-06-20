@@ -9,9 +9,9 @@
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Collisions3)
+zox_begin_module(Collisions3) {
     define_components_collisions3(world);
     define_systems_collisions3(world);
-zox_end_module(Collisions3)
+} zox_end_module(Collisions3);
 
 #endif

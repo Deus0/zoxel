@@ -100,14 +100,34 @@ static inline float3 float4_rotate_float3(float4 rotation, float3 value) {
     return float3_add(value, float3_add(scaledT, crossB));
 }
 
-static inline float3 move_along_direction(float3 position, float4 rotation, float length) {
-    return float3_add(position, float4_rotate_float3(rotation, (float3) { 0, 0, length }));
-}
-
 static inline void float4_rotate_float3_p(float4 rotation, float3 *value) {
     float3 rotationXYZ = float4_xyz(rotation);
     float3 t = float3_scale(float3_cross(rotationXYZ, (float3) { value->x, value->y, value->z }), 2.0f);
     float3 crossB = float3_cross(rotationXYZ, t);
     float3 scaledT = float3_scale(t, rotation.w);
     float3_add_float3_p(value, float3_add(scaledT, crossB));
+}
+
+static inline float3 move_along_direction(float3 position, float4 rotation, float length) {
+    return float3_add(position, float4_rotate_float3(rotation, (float3) { 0, 0, length }));
+}
+
+static inline float3 float4_rotate_bounds(float4 rotation, float3 extents) {
+    float3 xAxis = (float3){1.0f, 0.0f, 0.0f};
+    float3 yAxis = (float3){0.0f, 1.0f, 0.0f};
+    float3 zAxis = (float3){0.0f, 0.0f, 1.0f};
+    float3 rx = float4_rotate_float3(rotation, xAxis);
+    float3 ry = float4_rotate_float3(rotation, yAxis);
+    float3 rz = float4_rotate_float3(rotation, zAxis);
+    // Project extents onto rotated axes
+    float3 abs_rx = float3_abs(rx);
+    float3 abs_ry = float3_abs(ry);
+    float3 abs_rz = float3_abs(rz);
+    return float3_add(
+        float3_add(
+            float3_scale(abs_rx, extents.x),
+            float3_scale(abs_ry, extents.y)
+        ),
+        float3_scale(abs_rz, extents.z)
+    );
 }

@@ -4,6 +4,8 @@ zox_tag(Material);
 zox_tag(SingleMaterial);
 zox_tag(RendererInstance);
 zox_tag(VoxMesh);
+zox_tag(DisableDepthTest);
+zoxc_byte(RenderOrder);
 zoxc_byte(MeshDirty);
 zoxc_byte(MeshReady);
 zoxc_state(TextureDirty);
@@ -58,6 +60,8 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(SingleMaterial);
     zoxd_tag(RendererInstance);
     zoxd_tag(VoxMesh);
+    zoxd_tag(DisableDepthTest);
+    zoxd_byte(RenderOrder);
     zoxd_byte(MeshDirty);
     zoxd_byte(MeshReady);
     zoxd_state(TextureDirty);

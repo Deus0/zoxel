@@ -44,6 +44,19 @@ int3 real_position_to_chunk_position(float3 positionf, byte chunk_length, float 
     return chunk_position_fix2(positionf, chunk_position);
 }
 
+static inline byte3 block_position_to_local_position(int3 block_position, byte terrain_depth, byte chunk_depth) {
+    int3 chunk_size = int3_single(powers_of_two[chunk_depth]);
+    int3 terrain_chunk_size = int3_single(powers_of_two[terrain_depth]);
+    byte3 positionl;
+    if (block_position.x < 0) positionl.x = chunk_size.x - 1 + ((block_position.x + 1) % terrain_chunk_size.x);
+    else positionl.x = block_position.x % terrain_chunk_size.x;
+    if (block_position.y < 0) positionl.y = chunk_size.y - 1 + ((block_position.y + 1) % terrain_chunk_size.y);
+    else positionl.y = block_position.y % terrain_chunk_size.y;
+    if (block_position.z < 0) positionl.z = chunk_size.z - 1 + ((block_position.z + 1) % terrain_chunk_size.z);
+    else positionl.z = block_position.z % terrain_chunk_size.z;
+    return positionl;
+}
+
 static inline byte3 get_positionl_byte3_2(int3 block_position, byte3 chunk_size, byte3 terrain_chunk_size) {
     byte3 positionl;
     if (block_position.x < 0) positionl.x = chunk_size.x - 1 + ((block_position.x + 1) % terrain_chunk_size.x);
@@ -70,6 +83,7 @@ float3 voxel_to_real_position(int3 block_position, float terrain_voxel_scale, fl
     // get middle of voxel position
     return float3_add(positionf, float3_scale(float3_halff, chunk_voxel_scale));
 }
+
 float3 local_block_position_to_real_position(byte3 local_position, int3 chunk_position, byte depth, float block_scale) {
     int3 chunk_block_position = get_chunk_block_position(chunk_position, int3_single(powers_of_two[depth]));
     int3 block_position = int3_add(chunk_block_position, byte3_to_int3(local_position));
@@ -100,6 +114,14 @@ static inline float chunk_position_to_real_position1(int block_position, byte ch
 
 static inline float block_position_to_real_position1(int block_position, float scale) {
     return block_position * scale;
+}
+
+static inline float3 block_position_to_real_position(int3 block_position, float scale) {
+    return (float3) {
+        block_position_to_real_position1(block_position.x, scale),
+        block_position_to_real_position1(block_position.y, scale),
+        block_position_to_real_position1(block_position.z, scale)
+    };
 }
 
 // Obsolete, this doesnt handle local depth differences
@@ -195,20 +217,12 @@ static inline int3 positionl_to_block_position(byte3 positionl, int3  chunk_posi
     return int3_add(base, local);
 }
 
-static inline float3 block_position_to_real_position(int3 block_position, float scale) {
-    return (float3) {
-        block_position_to_real_position1(block_position.x, scale),
-        block_position_to_real_position1(block_position.y, scale),
-        block_position_to_real_position1(block_position.z, scale)
-    };
-}
-
-int3 block_position_to_chunk_position(int3 block_position, int3 chunk_size) {
+int3 block_position_to_chunk_position(int3 block_position, byte chunk_depth) {
     int3 block_position2 = block_position;
     if (block_position.x < 0) block_position2.x += 1;
     if (block_position.y < 0) block_position2.y += 1;
     if (block_position.z < 0) block_position2.z += 1;
-    int3 chunk_position = int3_div(block_position2, chunk_size);
+    int3 chunk_position = int3_div1(block_position2, powers_of_two[chunk_depth]);
     // (int3) { block_position.x / chunk_size.x, block_position.y / chunk_size.y, block_position.z / chunk_size.z };
     // because for example -10 / 16 is 0 as an integer, but  coordinates we need a negative chunk position
     if (block_position.x < 0) chunk_position.x -= 1;

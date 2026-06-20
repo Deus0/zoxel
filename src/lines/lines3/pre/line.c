@@ -10,17 +10,13 @@ entity spawn_prefab_line3D(ecs *world) {
 }
 
 entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickness, double lifetime) {
-
     entity prefab = lifetime ? prefab_temporary_line3D : prefab_line3D;
-
     zox_instance(prefab);
     zox_set(e, LineData3D, { { pointA.x, pointA.y, pointA.z, pointB.x, pointB.y, pointB.z } });
     zox_set(e, LineThickness, { thickness });
-
     if (lifetime) {
         zox_set(e, DestroyInTime, { lifetime });
     }
-
     return e;
 }
 

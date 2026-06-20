@@ -19,6 +19,6 @@ zox_sys2(BoneRenderSystem) {
         // zox_log("Rendering Bone");
         // spawn_line3(world, float3_add(sposition, position->value), float3_add(sposition, pposition), 1, 15);
         spawn_line3c(world, position->value, pposition, 4, 0.01, color_rgb_gray);
-        spawn_cube_lines(world, position->value, float3_scale(size->value, 1), 2, 0.01, color_rgb_black);
+        spawn_cube_lines(world, position->value, float3_scale(size->value, 1), 2, color_rgb_black, 0.01);
     }
 } zox_sys_end(BoneRenderSystem);

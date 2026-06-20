@@ -26,7 +26,7 @@ zox_sys2(ChunkBoundsDrawSystem) {
         // zox_log("chunk_bounds %fx%fx%f - %fx%fx%f\n", chunk_bounds.center.x, chunk_bounds.center.y, chunk_bounds.center.z, chunk_bounds.extents.x, chunk_bounds.extents.y, chunk_bounds.extents.z)
         color_rgb line_color = up_color;
         //if (renderDisabled->value) line_color = up_color_disabled;
-        spawn_cube_lines(world, chunk_bounds.center, chunk_bounds.extents, 1, 1, line_color);
+        spawn_cube_lines(world, chunk_bounds.center, chunk_bounds.extents, 1, line_color, 1);
         // spawn_line3t(world, chunk_bounds.center, float3_add(chunk_bounds.center, float3_up), line_color);
         spawn_line3t(world, float3_add(chunk_bounds.center, float3_down), float3_add(chunk_bounds.center, float3_up), line_color);
         spawn_line3t(world, float3_add(chunk_bounds.center, float3_left), float3_add(chunk_bounds.center, float3_right), line_color);

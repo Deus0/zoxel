@@ -187,7 +187,7 @@ byte raycast_voxel_node(ecs *world,
     while (ray_distancef <= ray_length && checks < safety_checks_raycasting) {
         // Terrain!
         if (raycasting_terrain) {
-            int3 new_chunk_position = block_position_to_chunk_position(positionv, max_chunk_size);
+            int3 new_chunk_position = block_position_to_chunk_position(positionv, terrain_depth);
             // Steps through chunks in our terrain!
             if (!has_fetched || !int3_equals(chunk_position, new_chunk_position)) {
                 has_fetched = 1;

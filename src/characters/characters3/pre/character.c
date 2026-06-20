@@ -53,6 +53,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, Jump, { 0 });
     // Triggers
     zox_prefab_set(e, RaycastVoxelData, { 0 });
+    zox_prefab_set(e, RaycastType, { 0 });
     zox_prefab_set(e, RaycastRange, { 1 });
     zox_prefab_set(e, TriggerActionA, { 0 });
     // Debug

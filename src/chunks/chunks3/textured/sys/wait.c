@@ -27,7 +27,7 @@ byte is_chunk_busy(ecs* world, entity e) {
 // NOTE: Just checks entire terrain chunk, makes them all update at same time
 zox_sys2(ChunkMeshSlowSystem) {
     byte dbg_log = 0;
-    byte dbg_skip = 1;
+    byte dbg_skip = 0;
     if (dbg_skip) {
         zox_sys_world();
         zox_sys_begin();

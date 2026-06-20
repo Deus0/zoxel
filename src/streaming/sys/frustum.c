@@ -84,16 +84,24 @@ zox_sys2(ChunkFrustumSystem) {
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Bounds3D);
-    zox_sys_in(ChunkEntities);
     zox_sys_in(VoxelNode);
+    zox_sys_in(ChunkEntities);
     zox_sys_out(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Bounds3D, bounds3);
-        zox_sys_i(ChunkEntities, entities);
         zox_sys_i(VoxelNode, voctree);
+        zox_sys_i(ChunkEntities, entities);
         zox_sys_o(RenderDisabled, render_disabled);
+        // NOTE: Some quick skips for largest voctrees
+        if (!voctree->value && !voctree->ptr) {
+            continue;
+        }
+        if (voctree->value && !voctree->ptr) {
+            render_disabled->value = 0;
+            continue;
+        }
         // our bounds3D isn't centred, terrain chunks corner offset!
         bounds chunk_bounds = {
             .center = float3_add(position->value, bounds3->value),

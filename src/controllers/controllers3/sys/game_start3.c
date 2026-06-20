@@ -1,7 +1,7 @@
 TerrainPlace find_position_in_terrain(ecs* world, entity terrain, int3 block_position) {
     byte terrain_depth = zox_getv(terrain, NodeDepth);
     int3 chunk_size = int3_single(powers_of_two[terrain_depth]);
-    int3 chunk_position = block_position_to_chunk_position(block_position, chunk_size);
+    int3 chunk_position = block_position_to_chunk_position(block_position, terrain_depth);
     zox_geter(terrain, ChunkLinks, chunks);
     entity chunk;
     const VoxelNode *voxel_node_above = NULL;

@@ -13,6 +13,7 @@ void define_systems_vrays(ecs* world) {
         RaycastGizmoSystem,
         EcsPreStore,
         [in] vrays.RaycastVoxelData,
+        [in] vrays.RaycastType,
         [out] vrays.GizmoLink
     );
 }

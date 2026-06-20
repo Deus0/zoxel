@@ -20,7 +20,6 @@ typedef struct {
     int3 positionv_last;
     float3 positionf_last;
 } RaycastVoxelData;
-zoxc_custom(RaycastVoxelData);
 
 void clear_raycast_data(RaycastVoxelData* data) {
     data->chunk = 0;

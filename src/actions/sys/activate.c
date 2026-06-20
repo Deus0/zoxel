@@ -17,13 +17,13 @@ zox_sys2(ActionActivateSystem) {
         if (!zox_valid(e2)) {
             continue;
         }
-        byte is_activate = zox_has(e2, Activate) ? zox_gett_value(e2, Activate) : 0;
-        byte is_activate_begin = zox_has(e2, ActivateBegin) ? zox_gett_value(e2, ActivateBegin) : 0;
-        byte warmup_state = zox_has(e2, WarmupState) ? zox_gett_value(e2, WarmupState) : 0;
-        double warmup_at = zox_has(e2, WarmupAt) ? zox_gett_value(e2, WarmupAt) : 0;
+        byte is_activate = zox_has(e2, Activate) ? zox_getv(e2, Activate) : 0;
+        byte is_activate_begin = zox_has(e2, ActivateBegin) ? zox_getv(e2, ActivateBegin) : 0;
+        byte warmup_state = zox_has(e2, WarmupState) ? zox_getv(e2, WarmupState) : 0;
+        double warmup_at = zox_has(e2, WarmupAt) ? zox_getv(e2, WarmupAt) : 0;
         byte is_warmup = warmup_state || warmup_at;
-        byte cooldown_state = zox_has(e2, CooldownState) ? zox_gett_value(e2, CooldownState) : 0;
-        double cooldown_at = zox_has(e2, CooldownAt) ? zox_gett_value(e2, CooldownAt) : 0;
+        byte cooldown_state = zox_has(e2, CooldownState) ? zox_getv(e2, CooldownState) : 0;
+        double cooldown_at = zox_has(e2, CooldownAt) ? zox_getv(e2, CooldownAt) : 0;
         byte is_cooldown = cooldown_state || cooldown_at;
         if (is_activate || is_activate_begin || is_warmup || is_cooldown) {
             continue;

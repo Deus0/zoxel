@@ -70,7 +70,7 @@ zox_sys2(CameraDebugSystem) {
             if (is_in_frustum(cameraPlanes->value, test_bounds[j], 1)) {
                 cube_color = hit_color;
             }
-            spawn_cube_lines(world, test_bounds[j].center, test_bounds[j].extents, 12, spawn_life_time, cube_color);
+            spawn_cube_lines(world, test_bounds[j].center, test_bounds[j].extents, 12, cube_color, spawn_life_time);
         }
     }
 } zox_sys_end(CameraDebugSystem);

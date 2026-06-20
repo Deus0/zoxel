@@ -55,6 +55,14 @@ static inline float3 float3_mul(float3 a, float3 b) {
     return (float3) { a.x * b.x, a.y * b.y, a.z * b.z };
 }
 
+static inline float3 float3_multiply(float3 a, float3 b) {
+    return (float3) { a.x * b.x, a.y * b.y, a.z * b.z };
+}
+
+static inline float3 float3_multiply1(float3 a, float b) {
+    return (float3) { a.x * b, a.y * b, a.z * b };
+}
+
 // depreciated!
 static inline float3 float3_scale3(const float3 a, const float3 b) {
     return (float3) { a.x * b.x, a.y * b.y, a.z * b.z };

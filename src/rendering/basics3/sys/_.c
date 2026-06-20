@@ -12,7 +12,8 @@
 
 void define_systems_basics3D(ecs* world) {
     // skybox
-    zox_render3D_plus_system(
+    zox_render3_system(
+        1,
         Basic3RenderSystem,
         [in] transforms.TransformMatrix,
         [in] colorz.Color,
@@ -24,7 +25,8 @@ void define_systems_basics3D(ecs* world) {
         [none] MeshBasic3D
     );
     // unique textured meshes - items
-    zox_render3D_plus_system(
+    zox_render3_system(
+        1,
         TexturedRenderSystem,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
@@ -38,7 +40,8 @@ void define_systems_basics3D(ecs* world) {
         [none] TexturedMesh3D
     );
     // characters
-    zox_render3D_plus_system(
+    zox_render3_system(
+        1,
         Characters3RenderSystem,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,
@@ -51,7 +54,8 @@ void define_systems_basics3D(ecs* world) {
         [none] !rendering3.SkeletonMesh
     );
 #ifndef zox_disable_rendering_instances
-    zox_render3D_plus_system(
+    zox_render3_system(
+        1,
         VoxInstanceRenderSystem,
         [in] transforms.TransformMatrix,
         [in] rendering.InstanceLink,

@@ -34,19 +34,14 @@ void calculate_frustum_bounds_f3(const float3 *corners, float6 *bounds) {
 void frustum_to_planes_f3(float3* frustum, plane* planes) {
     // Left (swap 3 and 4)
     planes[0] = calculate_plane_from_points_f3(frustum[0], frustum[4], frustum[3]);
-
     // Right (swap 2 and 1)
     planes[1] = calculate_plane_from_points_f3(frustum[5], frustum[1], frustum[2]);
-
     // Bottom (swap 1 and 0)
     planes[2] = calculate_plane_from_points_f3(frustum[4], frustum[0], frustum[1]);
-
     // Top (swap 6 and 7)
     planes[3] = calculate_plane_from_points_f3(frustum[3], frustum[7], frustum[6]);
-
     // Near (swap 2 and 3)
     planes[4] = calculate_plane_from_points_f3(frustum[1], frustum[3], frustum[2]);
-
     // Far (swap 6 and 5)
     planes[5] = calculate_plane_from_points_f3(frustum[7], frustum[5], frustum[6]);
 }
@@ -67,7 +62,6 @@ zox_sys2(CameraFrustumSystem) {
         zox_sys_o(CameraPlanes, planes);
         zox_sys_o(FrustumCorners, corners);
         zox_sys_o(Position3DBounds, bounds);
-
         calculate_frustum_corners_f3(vp_matrix->value, corners->value);
         calculate_frustum_bounds_f3(corners->value, &bounds->value);
         frustum_to_planes_f3(corners->value, planes->value);

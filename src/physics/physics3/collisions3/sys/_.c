@@ -26,7 +26,6 @@ void define_systems_collisions3(ecs *world) {
         [in] physics.CollisionDisabled,
         [none] SphereCollider
     );
-
     zox_system_1(
         CollisionDebugSystem,
         zoxp_physics,
@@ -35,7 +34,6 @@ void define_systems_collisions3(ecs *world) {
         [in] collisions3.Collision,
         [in] transforms3.Bounds3D,
     );
-
     /*zox_system(
         CollisionResponseSystem,
         zoxp_physics,
@@ -46,7 +44,6 @@ void define_systems_collisions3(ecs *world) {
         [out] collisions3.Collision,
         [out] collisions3.Grounded
     );*/
-
     zox_system(
         Friction3DSystem,
         zoxp_physics,
@@ -54,7 +51,6 @@ void define_systems_collisions3(ecs *world) {
         [out] physics3.Velocity3D,
         [none] physics.Frictioned
     );
-
     // TODO: split up between response and detect
     zox_system_ctx_1(
         SphereCollideSystem,

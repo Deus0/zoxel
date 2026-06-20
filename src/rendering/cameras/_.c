@@ -6,10 +6,10 @@
 #include "fun/render_camera.c"
 #include "sys/_.c"
 
-zox_begin_module(RenderingCameras)
+zox_begin_module(RenderingCameras) {
     zoxd_dest(RenderBufferLink);
     zoxd_dest(FrameBufferLink);
     define_systems_rendering_cameras(world);
-zox_end_module(RenderingCameras)
+} zox_end_module(RenderingCameras);
 
 #endif

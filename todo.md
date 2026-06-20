@@ -1,18 +1,22 @@
 ### Zoxel ToDo ###
 => GPU Constrained actually, memory barely used - 200-400mb used
 
-- Make Raycast Block Overlay cover all sides of the selected block
-- If you are placing, show a preview placement block
-- Regen health and destroy after for block health
+- Sometimes body is dissapearing - culling? idk
+- Clearly unstuck isnt working properly
+- Fix collisions
+	- make better code, simpler
+	- work with rotations
+- Line Instancing
+- Regen Health and destroy after for block health
 - Make it easier to add a custom material / shader
 	- dynamically gets/adds components per shader file?
 - Add a Post Processor Noise option - Slider - we can reduce it or turn off
 - Add a Post Processor Vignette option - Slider - we can reduce it or turn off
 
-# Left Systems to optimize
-+ ChunkFrustumSystem last one (11ms)
+# Optimize
 + ChunkTexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
 - Can we hide behind mountains to improve culling?
+- Streaming has a spike, make sure to display the biggest system spike per graph
 
 # Next
 - We can even raycast check against chunks to further reduce whats rendered...? - fade them in and out?

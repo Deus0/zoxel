@@ -1,7 +1,6 @@
 // Handles AABB to Voxel Chunk Collisions
 // todo: support multiple realms - use a hashmap for realms, and cache their data per terrain here
 
-
 // Function for 3-dimensional collision detection
 void collide_with_chunk_d3(
     ecs *world,
@@ -59,7 +58,7 @@ void collide_with_chunk_d3(
     int3_set_d(&voxel_position, axis_d2, position_vox_d2);
     int3_set_d(&voxel_position, axis_d3, position_vox_d3);
     // Convert real to voxel grid space and check voxel
-    const int3 chunk_position = block_position_to_chunk_position(voxel_position, chunk_dimensions);
+    const int3 chunk_position = block_position_to_chunk_position(voxel_position, terrain_depth);
     const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk))  {
         return;
@@ -147,7 +146,7 @@ void collide_with_chunk_d2(
 
     int3_set_d(&voxel_position, axis_d1, position_vox_d1);
     int3_set_d(&voxel_position, axis_d2, position_vox_d2);
-    const int3 chunk_position = block_position_to_chunk_position(voxel_position, chunk_dimensions);
+    const int3 chunk_position = block_position_to_chunk_position(voxel_position, terrain_depth);
     const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk)) {
         return;
@@ -243,20 +242,19 @@ void collide_with_chunk_d2(
         is_negative2);
 
 
-void collide_with_chunk(
-    ecs *world,
-    const ChunkLinks *chunks,
-    const byte terrain_depth,
-    const float terrain_scale,
+void collide_with_chunk(ecs* world,
+    const ChunkLinks* chunks,
+    byte terrain_depth,
+    float terrain_scale,
     const byte *block_collisions,
     int3 voxel_position,
-    const byte axis_d,
+    byte axis_d,
     float position_d,
     float position_last_d,
-    const float offset_d,
+    float offset_d,
     byte *collided_d,
     float *distance_d,
-    const byte is_negative
+    byte is_negative
 ) {
     if (*collided_d) {
         return;
@@ -264,18 +262,17 @@ void collide_with_chunk(
     // firstt  we get our intersection line! (two points)
     position_last_d += offset_d;
     position_d += offset_d;
-    const int position_vox_last_d = real_position_to_block_position1(position_last_d, terrain_scale);
-    const int position_vox_d = real_position_to_block_position1(position_d, terrain_scale);
+    int position_vox_last_d = real_position_to_block_position1(position_last_d, terrain_scale);
+    int position_vox_d = real_position_to_block_position1(position_d, terrain_scale);
     if (position_vox_d == position_vox_last_d) {
         return;
     }
-    const int3 max_chunk_size = int3_single(powers_of_two[terrain_depth]);
-    // const byte3 chunk_dimensions_b3 = byte3_single(powers_of_two[terrain_depth]);
+    int3 max_chunk_size = int3_single(powers_of_two[terrain_depth]);
     // set dimensional variables to newer point
     int3_set_d(&voxel_position, axis_d, position_vox_d);
     // next convert real to voxel grid space and check voxel
-    const int3 chunk_position = block_position_to_chunk_position(voxel_position, max_chunk_size);
-    const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
+    int3 chunk_position = block_position_to_chunk_position(voxel_position, terrain_depth);
+    entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk)) {
         return;
     }
@@ -295,22 +292,12 @@ void collide_with_chunk(
     if (!byte3_in_bounds(voxel_positionl, chunk_size)) {
         return;
     }
-
-    /*byte3 voxel_positionl = get_positionl_byte3(voxel_position, chunk_dimensions_b3);
-    if (!byte3_in_bounds(voxel_positionl, chunk_dimensions_b3)) {
-        return;
-    }*/
-    // const byte voxel = get_sub_node_voxel_locked(node, &voxel_positionl, chunk_depth);
     byte voxel = get_value_VoxelNode(node, terrain_depth, voxel_positionl, 0);
     if (block_collisions[voxel]) {
         *collided_d = 1 + is_negative;
-
         // todo: fix for more depth
         float chunk_scale = terrain_scale / ((float) ddepth);
-        *distance_d = get_distance_to_voxel_grid(
-            position_d,
-            *collided_d,
-            chunk_scale);
+        *distance_d = get_distance_to_voxel_grid(position_d, *collided_d, chunk_scale);
         // zox_log_error("hitting chunk position [%ix%ix%i] - %f", chunk_position.x, chunk_position.y, chunk_position.z, position_d);
     }
 }
@@ -340,17 +327,14 @@ zox_sys2(CollisionDetectSystem) {
     zox_sys_in(LastPosition3D);
     zox_sys_out(Collision);
     zox_sys_out(CollisionDistance);
-
     // find realm first
     const BlockLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
     if (!voxels) {
         zox_logw("No Terrain Detected");
         return;
     }
-
     byte block_collisions[voxels->length + 1];
     get_block_collisions(world, voxels, block_collisions);
-
     // now do collisions
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(TerrainLink, link);
@@ -359,43 +343,42 @@ zox_sys2(CollisionDetectSystem) {
         zox_sys_i(LastPosition3D, lastPosition3D);
         zox_sys_o(Collision, collision);
         zox_sys_o(CollisionDistance, collisionDistance);
-
         if (!zox_valid(link->value)) {
             zox_logw("Terrain Invalid");
             continue; // these shouldn't be here
         }
-
         zox_geter(link->value, ChunkLinks, chunks);
         zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
         zox_geter_value(link->value, BlockScale, float, terrain_scale);
-
         if (!chunks || collision->value) {
             continue;
         }
-
-        const float3 collision_point_real = position3D->value;
-        const float3 position_last = lastPosition3D->value;
+        float3 collision_point_real = position3D->value;
+        float3 position_last = lastPosition3D->value;
         float3 b = bounds3D->value;
         // const int3 collision_point_real = real_position_to_block_position(positionf, terrain_scale);
-        const int3 vpos_last = real_position_to_block_position(position_last, terrain_scale);
+        int3 vpos_last = real_position_to_block_position(position_last, terrain_scale);
         // normalize xz for now, until rotations
-        // if (b.x > b.z) b.z = b.x;
-        // else b.x = b.z;
-        const float3 bounds_left = float3_scale(b, -1);
-        const float3 bounds_right = b;
-
+        float3 bounds_left = float3_scale(b, -1);
+        float3 bounds_right = b;
         // new detection
         byte3 did_collide = byte3_zero;
         float3 collision_distance;
-
         /* single axis collision, two sides per axis*/
-        handle_collision_axis(x, bounds_left, 1)
-        handle_collision_axis(x, bounds_right, 0)
-        handle_collision_axis(y, bounds_left, 1)
-        handle_collision_axis(y, bounds_right, 0)
-        handle_collision_axis(z, bounds_left, 1)
-        handle_collision_axis(z, bounds_right, 0)
-
+        handle_collision_axis(x, bounds_left, 1);
+        handle_collision_axis(x, bounds_right, 0);
+        handle_collision_axis(y, bounds_left, 1);
+        handle_collision_axis(y, bounds_right, 0);
+        handle_collision_axis(z, bounds_left, 1);
+        handle_collision_axis(z, bounds_right, 0);
+        handle_collision_axis(x, bounds_left, 1);
+        // half checks
+        handle_collision_axis(x, float3_multiply1(bounds_left, 0.5f), 1);
+        handle_collision_axis(x, float3_multiply1(bounds_right, 0.5f), 0);
+        handle_collision_axis(y, float3_multiply1(bounds_left, 0.5f), 1);
+        handle_collision_axis(y, float3_multiply1(bounds_right, 0.5f), 0);
+        handle_collision_axis(z, float3_multiply1(bounds_left, 0.5f), 1);
+        handle_collision_axis(z, float3_multiply1(bounds_right, 0.5f), 0);
         // double axis collision, fours sides per two axis
         handle_collision_axis_d2(x, z, bounds_left.x, bounds_left.z, 1, 1)
         handle_collision_axis_d2(x, z, bounds_right.x, bounds_left.z, 0, 1)
@@ -409,7 +392,6 @@ zox_sys2(CollisionDetectSystem) {
         handle_collision_axis_d2(y, z, bounds_right.y, bounds_left.z, 0, 1)
         handle_collision_axis_d2(y, z, bounds_left.y, bounds_right.z, 1, 0)
         handle_collision_axis_d2(y, z, bounds_right.y, bounds_right.z, 0, 0)
-
         // three axis collision
         handle_collision_axis_d3(x, y, z, bounds_left.x, bounds_left.y, bounds_left.z, 1, 1, 1);
         handle_collision_axis_d3(x, y, z, bounds_right.x, bounds_left.y, bounds_left.z, 0, 1, 1);
@@ -419,68 +401,10 @@ zox_sys2(CollisionDetectSystem) {
         handle_collision_axis_d3(x, y, z, bounds_right.x, bounds_left.y, bounds_right.z, 0, 1, 0);
         handle_collision_axis_d3(x, y, z, bounds_left.x, bounds_right.y, bounds_right.z, 1, 0, 0);
         handle_collision_axis_d3(x, y, z, bounds_right.x, bounds_right.y, bounds_right.z, 0, 0, 0);
-
         // pack the collision
         if (did_collide.x || did_collide.y || did_collide.z) {
             collisionDistance->value = collision_distance;
             collision->value = ( did_collide.x & 0x3) << 0 | (did_collide.y & 0x3) << 2  | (did_collide.z & 0x3) << 4;
         }
-
     }
 } zox_sys_end(CollisionDetectSystem);
-
-
-
-
-
-
-/*#ifdef zoxel_debug_basic_collision3D_system
-        if (voxelPosition->value.x >= default_chunk_length || voxelPosition->value.y >= default_chunk_length || voxelPosition->value.z >= default_chunk_length) {
-            zox_log(" !!! voxel position set out of bounds !!!\n");
-            zox_log(" !> chunk_position [%ix%ix%i]\n", chunk_position.x, chunk_position.y, chunk_position.z);
-            zox_log("     !+ global voxel position [%ix%ix%i]\n", global_voxel_position.x, global_voxel_position.y, global_voxel_position.z);
-            zox_log("     !+ local voxel position [%ix%ix%i]\n", new_position.x, new_position.y, new_position.z);
-            zox_log("     !+ real position [%fx%fx%f]\n", collision_point_real.x, collision_point_real.y, collision_point_real.z);
-        } else {
-            // zox_log(" > chunk_position [%ix%ix%i]\n", chunkPosition->value.x, chunkPosition->value.y, chunkPosition->value.z);
-            zox_log("     + voxel position updated [%ix%ix%i]\n", new_position.x, new_position.y, new_position.z);
-            zox_log("     + global voxel position [%ix%ix%i]\n", global_voxel_position.x, global_voxel_position.y, global_voxel_position.z);
-            zox_log("     + real position was [%fx%fx%f]\n", collision_point_real.x, collision_point_real.y, collision_point_real.z);
-        }
-#endif*/
-
-
-
-
-/*#ifdef zoxel_debug_basic_collision3D_system
-        if (did_collide_y && voxelPosition->value.x >= default_chunk_length || voxelPosition->value.y >= default_chunk_length || voxelPosition->value.z >= default_chunk_length) {
-            zox_log(" !!! voxel position set out of bounds\n");
-            zox_log(" ! > chunk_position [%ix%ix%i]\n", chunkPosition->value.x, chunkPosition->value.y, chunkPosition->value.z);
-            zox_log("     ! + voxel position updated [%ix%ix%i]\n", new_position.x, new_position.y, new_position.z);
-            zox_log("     ! + real position was [%fx%fx%f]\n", collision_point_real.x, collision_point_real.y, collision_point_real.z);
-        }
-#endif*/
-
-/*
- * 3D Collision Detection System
- *
- *      This system handles collision detection in a 3D voxel-based environment. The main goal is to determine
- *  if an object moving within the voxel grid has collided with any solid voxels (obstacles) in the environment.
- *
- *  General Theory:
- *
- *      1. **Single Axis Collision**: Detect collisions along a single axis (x, y, or z) by checking both sides of the axis.
- *
- *      2. **Double Axis Collision**: Detect collisions along two axes simultaneously (e.g., x-z, x-y, z-y) to handle cases where movement occurs in a plane.
- *
- *      3. **Triple Axis Collision**: Detect collisions along all three axes (x, y, and z) simultaneously to handle full 3D movement and ensure no corner cases are missed.
- *
- * The process involves:
- *      - Updating the position of the object based on its movement and checking the new position against the voxel grid.
- *      - Converting real-world positions to voxel positions to determine which voxels the object occupies.
- *      - Checking the voxel grid to see if the new positions contain solid chunks3.
- *      - If a collision is detected, updating the collision status and adjusting the object's position and velocity accordingly.
- *
- * Macros are used to handle different collision scenarios efficiently by expanding the necessary function calls with appropriate parameters for single, double, and triple axis collisions.
- *
- */

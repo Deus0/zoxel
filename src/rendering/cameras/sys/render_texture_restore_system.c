@@ -8,7 +8,6 @@ zox_sys2(RenderTextureRestoreSystem) {
         zox_sys_i(TextureGPULink, textureGPULink);
         zox_sys_i(TextureSize, textureSize);
         zox_sys_i(CameraLink, cameraLink);
-
         entity camera = cameraLink->value;
         if (zox_has(camera, FrameBufferLink)) {
             // Refresh Render Camera
@@ -17,7 +16,6 @@ zox_sys2(RenderTextureRestoreSystem) {
             if (fbo && rbo) {
                 connect_render_buffer_to_fbo(fbo, rbo);
             }
-
             // Refresh Texture
             set_render_texture_gpu(textureGPULink->value, textureSize->value);
             connect_render_texture_to_fbo(fbo, textureGPULink->value);

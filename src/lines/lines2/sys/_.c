@@ -18,7 +18,8 @@ void define_systems_line2(ecs* world) {
         [in] layouts2.LayoutSize
     );
     // zox_render3D_plus_system(
-    zox_render3D_system(
+    zox_render3_system(
+        0,
         Line2DRenderSystem,
         [in] LineData2D,
         [in] lines.LineThickness,

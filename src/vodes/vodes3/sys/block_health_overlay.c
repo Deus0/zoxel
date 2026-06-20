@@ -5,7 +5,6 @@ zox_sys2(BlockHealthOverlaySystem) {
     zox_sys_begin();
     zox_sys_in(StatValue);
     zox_sys_in(StatValueMax);
-    // zox_sys_out(Alpha);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(StatValue, value);
@@ -22,10 +21,6 @@ zox_sys2(BlockHealthOverlaySystem) {
             continue;
         }
         zox_muter(overlay, Alpha, alpha);
-        // zox_sys_o(Alpha, alpha);
-        /*if (alpha->value >= 1) {
-            continue;
-        }*/
         float new_alpha = (max->value - value->value) / max->value;
         if (alpha->value != new_alpha) {
             alpha->value = new_alpha;

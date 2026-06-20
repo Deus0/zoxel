@@ -41,24 +41,20 @@ zox_sys2(CollisionResponseSystem) {
         zox_sys_o(LastPosition3D, lastPosition3D);
         zox_sys_o(Collision, collision);
         zox_sys_o(Grounded, grounded);
-
         if (!collision->value) {
             grounded->value = 0;
             lastPosition3D->value = position3D->value;
             continue;
         }
-
         float3 collision_distance = collisionDistance->value;
         // Unpacking:
         byte did_collide_x = (collision->value >> 0) & 0x3;
         byte did_collide_y = (collision->value >> 2) & 0x3;
         byte did_collide_z = (collision->value >> 4) & 0x3;
         byte is_falling = velocity3D->value.y < 0;
-
         respond_collision_pen(x);
         respond_collision_pen(y);
         respond_collision_pen(z);
-
         // keeps grounded for an additional frame
         if (did_collide_y && is_falling) {
             grounded->value = 1;
@@ -71,7 +67,6 @@ zox_sys2(CollisionResponseSystem) {
         }
         lastPosition3D->value = position3D->value;
         collision->value = 0;
-
         // debugs
         /*zox_log("is_falling: %i", is_falling);
         zox_log("did_collide_y: %i", did_collide_y);

@@ -27,8 +27,8 @@ void define_systems_streaming(ecs* world) {
         frustum_cameras,
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
-        [in] chunks3.ChunkEntities,
         [in] chunks3.VoxelNode,
+        [in] chunks3.ChunkEntities,
         [out] rendering.RenderDisabled,
         [none] streaming.StreamedChunk
     );

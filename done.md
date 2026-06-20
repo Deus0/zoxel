@@ -1,4 +1,7 @@
 ### Done ###
+-x ChunkFrustumSystem last one (11ms)
+-x If you are placing, show a preview placement block - change GizmoMode in Actions
+-x Make Raycast Block Overlay cover all sides of the selected block
 -x Add Text [float] to settings slider labels
 -x Increase Options padding
 -x Add tooltip for new game?

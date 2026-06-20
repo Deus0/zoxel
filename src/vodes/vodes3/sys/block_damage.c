@@ -2,7 +2,7 @@
 // TODO: Refactor Health to remove from chunk instead of here
 zox_sys2(BlockDamageQueueSystem) {
     byte dbg_log = 0;
-    float overlay_buffer = 0.03f;
+    float overlay_buffer = 1.04f;
     color popup_color = (color) { 255, 0, 0, 255 };
     zox_sys_world();
     zox_sys_begin();
@@ -110,7 +110,7 @@ zox_sys2(BlockDamageQueueSystem) {
                     zox_set(world_block, StatValueMax, { start_health });
                     // world_block = zox_new();
                     // zox_set_unique_name(world_block, "block_health");
-                    entity overlay = spawn_cube(world, prefab_cube, positionf, terrain_block_scale + overlay_buffer);
+                    entity overlay = spawn_cube(world, prefab_cube, positionf, terrain_block_scale * overlay_buffer);
                     zox_set_parent(world, overlay, world_block);
                     // TODO: Get this to work
                     // zox_set(overlay, Alpha, { 0.3f });
