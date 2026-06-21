@@ -4,7 +4,7 @@ zox_sys2(MeshColorsTriggerSystem) {
     if (disable_lights) {
         return;
     }
-    zox_sys_world();
+    // zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkMeshDirty);
     zox_sys_in(LightNodeDirty);

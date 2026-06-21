@@ -124,7 +124,7 @@ byte raycast_voxel_node(ecs *world,
     }
     // setup voxel data
     byte raycasting_terrain = voxels && voxels->length && chunk_links;
-    byte3 max_chunk_sizeb3 = int3_to_byte3(max_chunk_size);
+    // byte3 max_chunk_sizeb3 = int3_to_byte3(max_chunk_size);
     const VoxelNode* root_voctree = NULL;
     VoxelNode* node_voxel = NULL;
     byte chunk_depth;

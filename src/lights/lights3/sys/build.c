@@ -100,7 +100,6 @@ zox_sys2(Light3BuildSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxelNodeDirty);
     zox_sys_in(MeshColorsGenerate);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
@@ -108,10 +107,9 @@ zox_sys2(Light3BuildSystem) {
     zox_sys_in(LightNode);
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
-    zox_sys_out(MeshColorsDirty);
+    zox_sys_out(MeshReady);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxelNodeDirty, voxel_octree_dirty);
         zox_sys_i(MeshColorsGenerate, trigger);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, voxel_octree);
@@ -119,7 +117,7 @@ zox_sys2(Light3BuildSystem) {
         zox_sys_i(LightNode, light_octree);
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(MeshColorsDirty, mesh_colors_dirty);
+        zox_sys_o(MeshReady, ready);
         if (trigger->value != zox_dirty_active) {
             continue;
         }
@@ -152,6 +150,7 @@ zox_sys2(Light3BuildSystem) {
         // NOTE: The same issue appeared here... needed to be synced
         // mesh_colors_dirty->value = zox_dirty_trigger;
         // zox_set(e, MeshDirty, { mesh_state_trigger_terrain });
-        zox_set(e, MeshReady, { 1 });
+        // zox_set(e, MeshReady, { 1 });
+        ready->value = 1;
     }
 } zox_sys_end(Light3BuildSystem);

@@ -3,25 +3,6 @@
 zox_sys2(TunksSpawnSystem) {
     zox_sys_query();
     zox_sys_world();
-    int2 *streamers = NULL;
-    int streamers_count = 0;
-    byte iterated = 0;
-    //  TODO: We should add these not just use first array
-    /*zox_sys_query_begin();
-    while (zox_sys_query_loop()) {
-        if (iterated) {
-            continue;
-        }
-        iterated = 1;
-        zox_sys_begin_2();
-        zox_sys_in_2(StreamPosition2);
-        streamers = (int2*) StreamPosition2s_2;
-        streamers_count = it2.count;
-    }
-    zox_sys_query_end();
-    if (!streamers_count) {
-        return;
-    }*/
     zox_sys_begin();
     zox_sys_in(TunkPosition);
     zox_sys_in(RenderDistance);

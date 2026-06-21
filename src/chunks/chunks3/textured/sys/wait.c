@@ -29,12 +29,10 @@ zox_sys2(ChunkMeshSlowSystem) {
     byte dbg_log = 0;
     byte dbg_skip = 0;
     if (dbg_skip) {
-        zox_sys_world();
         zox_sys_begin();
         zox_sys_out(MeshReady);
         zox_sys_out(MeshDirty);
         for (int i = 0; i < it->count; i++) {
-            zox_sys_e();
             zox_sys_o(MeshReady, mesh_ready);
             zox_sys_o(MeshDirty, mesh_dirty);
             if (mesh_ready->value) {
@@ -55,7 +53,7 @@ zox_sys2(ChunkMeshSlowSystem) {
     zox_sys_out(MeshReady);
     zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_o(MeshReady, mesh_ready);
         zox_sys_o(MeshDirty, mesh_dirty);
         if (!mesh_ready->value) {

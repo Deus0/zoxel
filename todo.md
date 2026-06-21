@@ -2,6 +2,7 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- FIX: Set CubeLines Faces based on VoxelSides thats generated, then make sure it Renders Over Top of the overlays - disabled depth
 - FIX: Main issue with collisions is how it decides on which face we collided with, using a distance check, so you can teleport a little if its the wrong face, best to use velocity to determine face, last position
 - FIX: Make arms never snap, just lerp the rotation over time
 - FIX: Create a new Unstuck system just incase

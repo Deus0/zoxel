@@ -67,7 +67,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     byte layer = 1;
     // # Window #
     LayoutParentData canvas_data = { .e = canvas };
-    LayoutParentData window_parent_data = { .e = canvas };
+    // LayoutParentData window_parent_data = { .e = canvas };
     entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_label, canvas, int2_zero, size, float2_half, &on_cancelled_new_realm);
     entity e = e3.x;
     entity body = e3.z;

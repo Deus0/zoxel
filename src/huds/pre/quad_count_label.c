@@ -8,15 +8,13 @@ entity spawn_prefab_quad_count_label(ecs *world) {
 }
 
 entity spawn_quad_count_label(ecs *world, entity canvas) {
-
     entity parent = canvas;
     byte font_size = 24;
     byte2 padding = (byte2) { 12, 8 };
     float2 anchor = { 1, 0 };
     int2 pixel_position = (int2) { -8, 8 };
     int layer = 1;
-    int2 parent_pixel_size = zox_get_value(parent, LayoutSize)
+    // int2 parent_pixel_size = zox_get_value(parent, LayoutSize)
     entity e = spawn_label(world, prefab_quad_count_label, parent, pixel_position, anchor, padding, "", font_size, zox_alignment_bottom_right, layer, button_fill, button_outline, default_label_font_fill_color, default_label_font_outline_color);
-
     return e;
 }
