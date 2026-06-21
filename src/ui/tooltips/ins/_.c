@@ -15,7 +15,7 @@ entity spawn_tooltip(ecs *world, entity prefab, entity canvas) {
     int layer = max_layers2D - 2;
     byte alignment = zox_alignment_top_right;
     float2 anchor = float2_one;
-    zox_geter_value(parent, LayoutSize, int2, parent_size);
+    // zox_geter_value(parent, LayoutSize, int2, parent_size);
     // le spawn
     entity e = spawn_label(world, prefab, parent, position, anchor, padding, "", font_size, alignment, layer, tooltip_fill, tooltip_fillo, tooltip_font_fill,tooltip_font_fillo);
     zox_name("tooltip");

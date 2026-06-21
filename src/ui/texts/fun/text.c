@@ -32,14 +32,15 @@ byte is_zext(TextData* zext, const char* text) {
 }
 
 void set_zext(TextData* text, const char* ntext) {
-    int length = ntext != NULL ? strlen(ntext) : 0;
-
+    if (!ntext) {
+        resize_TextData(text, 0);
+        return;
+    }
+    int length = strlen(ntext);
     if (text->length != length) {
         resize_TextData(text, length);
-        // resize_memory_component(TextData, text, byte, text_length);
     }
-
-    for (int i = 0; i < length; i++) {
+    for (uint i = 0; i < length; i++) {
         text->value[i] = convert_ascii(ntext[i]);
     }
 }

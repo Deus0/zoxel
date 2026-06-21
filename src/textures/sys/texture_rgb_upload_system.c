@@ -29,7 +29,9 @@ zox_sys2(TextureRGBUpdateSystem) {
         } else {
             const byte* values = (byte[]) { 0, 0, 0 };  // RGBA all zero
             zox_gpu_set_texture_color_rgb(gpu_link->value, int2_one,values);
-            // zox_log("+ [%s] cleared texture", zox_get_name(e));
+            if (dbg_log) {
+                zox_log("+ [%s] cleared texture", zox_get_name(e));
+            }
         }
     }
 } zox_sys_end(TextureRGBUpdateSystem);

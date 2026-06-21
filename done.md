@@ -1,4 +1,14 @@
 ### Done ###
+-x When you walk into corner block you can push yourself through by turning - nvm it stopped when i turned up resolution of increments
+-x Remove WallJump ability
+-x When hitting block, it will teleport you to side
+-x Check Collision Face is it facing the air, adjacent voxel checks
+-x Sometimes body is dissapearing - culling? idk
+	- RenderDisabled issue for AirChunk's
+-x Clearly unstuck isnt working properly
+-x Fix collisions
+	-x make better code, simpler
+	-x work with rotations
 -x ChunkFrustumSystem last one (11ms)
 -x If you are placing, show a preview placement block - change GizmoMode in Actions
 -x Make Raycast Block Overlay cover all sides of the selected block

@@ -36,11 +36,6 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
     zox_instance(element_data.prefab);
     zox_name("list");
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
-    /*if (element_data.render_disabled) {
-        zox_set(e, RenderDisabled, { element_data.render_disabled });
-    }*/
-    //zox_set(e, FillColor, { list_data.fill });
-    //zox_set(e, OutlineColor, { list_data.outline });
     zox_set(e, ListAlignment, { alignment });
     zox_set(e, ListVisible, { list_data.visible_count });
     zox_set(e, ListMargins, { list_data.margins });
@@ -60,7 +55,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
         };
         entity child = 0;
         if (child_data.type == list_element_type_button) {
-            SpawnTextData child_text_data = {
+            /*SpawnTextData child_text_data = {
                 .text = child_data.text,
                 .font_size = list_data.font_size,
                 .font_resolution = list_data.font_size,
@@ -69,12 +64,12 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
                 .font_outline_color = button_font_outline,
                 .font_thickness = button_font_thickness_fill,
                 .font_outline_thickness = button_font_thickness_outline,
-            };
-            SpawnButtonData child_button_data = {
+            };*/
+            /*SpawnButtonData child_button_data = {
                 .prefab_text = prefab_text,
                 .fill = button_fill,
                 .outline = button_outline,
-            };
+            };*/
             child = spawn_button(world, prefab_button, e, child_data.text, int2_zero, int2_zero, float2_half, zox_alignment_centre, list_data.font_size, list_data.button_padding, button_fill, button_outline, button_font_fill, button_font_outline);
             if (child_data.on_click.value) {
                 zox_set(child, ClickEvent, { child_data.on_click.value });
@@ -136,7 +131,11 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
             zox_set(toggle, OptionLabel, { child_data.text });
             child = toggle;
         }
-        zox_set_parent(world, child, e);
+        if (child) {
+            zox_set_parent(world, child, e);
+        } else {
+            zox_loge("No child at [%i] in spawn_list", i);
+        }
         if (elements) {
             elements[i] = child;
         }

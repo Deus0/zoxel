@@ -1,18 +1,7 @@
-static inline float get_distance_to_voxel_grid(float v, float direction, float scale) {
-    float face = v;
-    if (direction == 1) {
-        face = floorf(v / scale) * scale;
-    } else if (direction == 2) {
-        face = ceilf(v / scale) * scale;
-    }
-    return absf(face - v);
-}
-
 #include "response.c"
 #include "spheres.c"
 #include "spheres_debug.c"
 #include "friction.c"
-
 #include "collision_debug.c"
 
 void define_systems_collisions3(ecs *world) {

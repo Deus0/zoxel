@@ -19,7 +19,7 @@ zox_sys2(PlayerStatspanelSystem) {
             continue;
         }
         entity statbars = zox_get_child_by_id(world, canvas->value, zox_id(StatBars));
-        if (state->value == zox_player_state_pause_begin || state->value == state->value == zox_player_state_respawn_begin) {
+        if (state->value == zox_player_state_pause_begin || state->value == zox_player_state_respawn_begin) {
             if (zox_valid(statbars)) {
                 if (dbg_log) {
                     zox_log("- Destroying Stats Panel [%s] for Player [%s]", zox_get_name(statbars), zox_get_name(e));

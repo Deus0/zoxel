@@ -17,25 +17,6 @@ byte reverse_direction(byte d) {
     }
 }
 
-static inline byte normal_to_direction(float3 normal) {
-    if (float3_equals(normal, float3_left)) {
-        return direction_left;
-    } else if (float3_equals(normal, float3_right)) {
-        return direction_right;
-    } else if (float3_equals(normal, float3_down)) {
-        return direction_down;
-    } else if (float3_equals(normal, float3_up)) {
-        return direction_up;
-    } else if (float3_equals(normal, float3_backward)) {
-        return direction_back;
-    } else if (float3_equals(normal, float3_forward)) {
-        return direction_front;
-    } else {
-        return 0;
-    }
-}
-
-
 static inline int3 reverse_position(int3 position, byte d, byte length) {
     if (d == direction_left) {
         position.x = length - 1;
@@ -69,3 +50,41 @@ static inline int3 move_position(int3 position, byte dir) {
     }
     return position;
 }
+
+static inline byte normal_to_direction(float3 normal) {
+    if (float3_equals(normal, float3_left)) {
+        return direction_left;
+    } else if (float3_equals(normal, float3_right)) {
+        return direction_right;
+    } else if (float3_equals(normal, float3_down)) {
+        return direction_down;
+    } else if (float3_equals(normal, float3_up)) {
+        return direction_up;
+    } else if (float3_equals(normal, float3_backward)) {
+        return direction_back;
+    } else if (float3_equals(normal, float3_forward)) {
+        return direction_front;
+    } else {
+        return 0;
+    }
+}
+
+
+static inline float3 direction_to_normal(byte direction) {
+    if (direction == direction_left) {
+        return float3_left ;
+    } else if (direction == direction_right) {
+        return float3_right;
+    } else if (direction == direction_down) {
+        return float3_down;
+    } else if (direction == direction_up) {
+        return float3_up;
+    } else if (direction == direction_back) {
+        return float3_backward;
+    } else if (direction == direction_front) {
+        return float3_forward;
+    } else {
+        return float3_zero;
+    }
+}
+

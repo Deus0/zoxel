@@ -4,7 +4,7 @@ extern entity spawn_pickup_block(ecs*, float3, entity);
 // TODO: Move resource use out of this System
 zox_sys2(MeleeSystem) {
     byte dbg_log = 0;
-    byte dbg_log_block = 0;
+    // byte dbg_log_block = 0;
     float npc_nerf_multiplier = 0.7f;
     color popup_color = (color) { 255, 0, 0, 255 };
     float popup_spawn_y = 0.18f;

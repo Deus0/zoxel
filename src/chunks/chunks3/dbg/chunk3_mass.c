@@ -7,7 +7,7 @@ void zox_dbg_spawn_chunk3_mass(ecs* world, ClickEventData data) {
         zox_delete(dbg_chunk3_mass);
         return;
     }
-    byte dbg_inspector = 1;
+    // byte dbg_inspector = 1;
     zox_log("Running Test: Mass Spawn [Chunk3]");
     entity player = dbg_player;
     // entity canvas = zox_getv(player, CanvasLink);

@@ -1,6 +1,16 @@
 // Handles AABB to Voxel Chunk Collisions
 // todo: support multiple realms - use a hashmap for realms, and cache their data per terrain here
 
+static inline float get_distance_to_voxel_grid(float v, float direction, float scale) {
+    float face = v;
+    if (direction == 1) {
+        face = floorf(v / scale) * scale;
+    } else if (direction == 2) {
+        face = ceilf(v / scale) * scale;
+    }
+    return absf(face - v);
+}
+
 // Function for 3-dimensional collision detection
 void collide_with_chunk_d3(
     ecs *world,

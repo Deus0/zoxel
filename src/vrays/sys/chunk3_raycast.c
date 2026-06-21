@@ -195,9 +195,10 @@ byte raycast_voxel_node(ecs *world,
                 update_chunk_for_raycast(world, &chunk, &root_voctree, chunk_links, new_chunk_position, terrain_depth, terrain_scalev, &chunk_depth, &chunk_depth_reduction, &chunk_size, &chunk_scalev, character_raycast, ray_origin, ray_normal, caster);
                 chunk_position = new_chunk_position;
             }
-            positionl = get_positionl_byte3(positionv, max_chunk_sizeb3);
+            positionl = block_position_to_local_position(positionv, terrain_depth, chunk_depth);
+            // positionl = get_positionl_byte3(positionv, max_chunk_sizeb3);
             // NOTE: This fixes it for sub chunk nodes
-            positionl = byte3_inverse_scale(positionl, (int) powers_of_two[chunk_depth_reduction]);
+            // positionl = byte3_inverse_scale(positionl, (int) powers_of_two[chunk_depth_reduction]);
         }
         // Function Inside Minivoxes - Sub Entity Nodes
         else {
@@ -234,7 +235,7 @@ byte raycast_voxel_node(ecs *world,
         byte is_in_bounds = byte3_in_bounds(positionl, chunk_size);
         if (is_in_bounds) {
             // byte3 positionl_temp = positionl;
-            VoxelNode* sub_octree = getm_VoxelNode((VoxelNode*)root_voctree, chunk_depth, positionl, 0);
+            VoxelNode* sub_octree = getm_VoxelNode((VoxelNode*)root_voctree, positionl, chunk_depth);
             hit_voxel = sub_octree ? sub_octree->value : 0;
             node_voxel = sub_octree;
             // node_voxel = get_voxel_node_at_depth(&hit_voxel, root_voctree, &positionl_temp, chunk_depth);

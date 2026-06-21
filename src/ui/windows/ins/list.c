@@ -27,13 +27,13 @@ entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *
     byte2 list_margins =  (byte2) { 16 * ui_scale, 8 * ui_scale };
     byte slider_height = 16 * ui_scale;
     byte slider_padding = 24 * ui_scale;
-    byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
+    // byte window_layer = 3;    // does tihs matter? should get sorted after anyway?
     // # Window #
     // int2 canvas_size = zox_gett_value(canvas, LayoutSize);
     LayoutParentData canvas_data = { .e = canvas };
     // we need to calculate header size too
     int2 header_size = calculate_header_size(strlen(header), header_font_size, header_padding);
-    int header_height = header_size.y;
+    // int header_height = header_size.y;
     // # List #
     SpawnList list_data = (SpawnList) {
         .visible_count = visible_count,

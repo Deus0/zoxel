@@ -2,14 +2,14 @@ void simple_swing_system(iter* it, byte limb) {
     float idle_speed = 0.1f;
     float idle_angle = 12;
     float walk_speed = 1.8f;
-    zox_sys_world();
+    // zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SwingState);
     zox_sys_in(SwingAngle);
     zox_sys_in(LocalPosition3D);
     zox_sys_out(LocalRotation3D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(SwingState, state);
         zox_sys_i(SwingAngle, swing_angle);
         zox_sys_i(LocalPosition3D, position);

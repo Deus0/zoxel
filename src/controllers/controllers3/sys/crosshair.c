@@ -19,7 +19,7 @@ zox_sys2(PlayerCrosshairSystem) {
             continue;
         }
         entity crosshair = zox_get_child_by_id(world, canvas->value, zox_id(Crosshair));
-        if (state->value == zox_player_state_pause_begin || state->value == state->value == zox_player_state_respawn_begin) {
+        if (state->value == zox_player_state_pause_begin || state->value == zox_player_state_respawn_begin) {
             if (zox_valid(crosshair)) {
                 if (dbg_log) {
                     zox_log("- Destroying [Crosshair] [%s] for Player [%s]", zox_get_name(crosshair), zox_get_name(e));

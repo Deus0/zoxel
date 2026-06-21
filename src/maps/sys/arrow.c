@@ -1,11 +1,11 @@
 zox_sys2(MapArrowSystem) {
-    byte dbg_log = 0;
+    // byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerLink);
     zox_sys_out(Rotation2D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(PlayerLink, player);
         zox_sys_o(Rotation2D, rotation);
         if (!zox_valid(player->value)) {

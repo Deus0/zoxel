@@ -1,7 +1,7 @@
 // NOTE: Vertical Scrollbar!
 entity spawn_scrollbar(ecs *world, entity parent, int2 position, int2 size, int scrollbar_margins, int visible_elements, int total_elements, byte visible, entity scrollview) {
-    color fill = button_fill;
-    color outline = button_outline;
+    // color fill = button_fill;
+    // color outline = button_outline;
     float2 position_anchor = (float2) { 1.0f, 0.5f };
     // int2 size = (int2) { width, parent_size.y };
     int2 margins = (int2) { scrollbar_margins, 0 };

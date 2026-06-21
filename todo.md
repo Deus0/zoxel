@@ -1,24 +1,19 @@
 ### Zoxel ToDo ###
-=> GPU Constrained actually, memory barely used - 200-400mb used
+=> GPU Constrained actually, memory barely 
+used - 200-400mb used
 
-- Sometimes body is dissapearing - culling? idk
-- Clearly unstuck isnt working properly
-- Fix collisions
-	- make better code, simpler
-	- work with rotations
-- Line Instancing
-- Regen Health and destroy after for block health
-- Make it easier to add a custom material / shader
+- FIX: Main issue with collisions is how it decides on which face we collided with, using a distance check, so you can teleport a little if its the wrong face, best to use velocity to determine face, last position
+- FIX: Make arms never snap, just lerp the rotation over time
+- FIX: Create a new Unstuck system just incase
+- BUG: Lower depth chunks have issues with npcs atm
+- Remove the OOB warnings in octree, print the stack maybe?
+- Collisions: When going underneath a block, itll detect the collision of DOWN face first before the proper face - Use velocity to decide face? - can calculate last position from velocity	
+- Lines: Line Instancing
+- Vodes: Regen Health and destroy after for block health
+- Rendering: Make it easier to add a custom material / shader
 	- dynamically gets/adds components per shader file?
-- Add a Post Processor Noise option - Slider - we can reduce it or turn off
-- Add a Post Processor Vignette option - Slider - we can reduce it or turn off
-
-# Optimize
-+ ChunkTexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
-- Can we hide behind mountains to improve culling?
-- Streaming has a spike, make sure to display the biggest system spike per graph
-
-# Next
+- PostProcessing: Add a Post Processor Noise option - Slider - we can reduce it or turn off
+- PostProcessing: Add a Post Processor Vignette option - Slider - we can reduce it or turn off
 - We can even raycast check against chunks to further reduce whats rendered...? - fade them in and out?
 - We could have MegaChunks again, 4x4 chunks, and then cull them first with the Frustum + bounds checks (this is just a quicker sweep)
 - Add dictionary to chunk data, so it maps the blocks to the block ids, and then make the block ids generate from realm ids so it stays consistent after changes

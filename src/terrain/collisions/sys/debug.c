@@ -1,21 +1,29 @@
-// NOTE: Detects intersections with voxel chunks
-zox_sys2(TerrainIntersectSystem) {
-    // TODO: First just make a list of voxels intersecting with
+byte zox_dbg_intersect = 0;
+
+void toggle_dbg_intersect(ecs* world, ClickEventData data) {
+    zox_dbg_intersect = !zox_dbg_intersect;
+    zox_log("Debugging Intersects [%s]", zox_dbg_intersect ? "Enabled" : "Disabled");
+}
+
+// NOTE:Purely show the intersections
+zox_sys2(TerrainIntersectDebugSystem) {
+    if (!zox_dbg_intersect) {
+        return;
+    }
+    // NOTE: Remember to put system on mainthread if debugging
+    color dbg_color_air = (color) { 0, 255, 255, 125 };
+    color dbg_color_solid = (color) { 155, 25, 25, 125 };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TerrainLink);
+    zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
     zox_sys_in(Bounds3D);
-    zox_sys_out(Position3D);
-    zox_sys_out(Velocity3D);
-    zox_sys_out(Grounded);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(TerrainLink, terrain);
+        zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Bounds3D, bounds);
-        zox_sys_o(Position3D, position);
-        zox_sys_o(Velocity3D, velocity);
-        zox_sys_o(Grounded, grounded);
         if (!zox_valid(terrain->value) || !zox_has(terrain->value, ChunkLinks) || !zox_has(terrain->value, BlockScale)) {
             zox_logw("Terrain Invalid");
             continue; // these shouldn't be here
@@ -43,6 +51,8 @@ zox_sys2(TerrainIntersectSystem) {
         byte hit_axis_y = 0;
         byte hit_axis_z = 0;
         int3 last_block_position;
+        // NOTE: Show Bounds
+        spawn_cube_lines_rgba(world, position->value, bounds_rotated, 4, color_white, 0.01);
         // NOTE: From Lower to Upper bounds, but including Upper Bounds
         float3 point;
         float add = terrain_block_scale;
@@ -56,8 +66,6 @@ zox_sys2(TerrainIntersectSystem) {
                     last_block_position = block_position;
                     float3 block_positionf = block_position_to_real_position(block_position, terrain_block_scale);
                     block_positionf = float3_add(block_positionf, float3_single(terrain_block_scale / 2));
-                    // Now check if intersected is solid
-                    // NOTE: Assume for now
                     int3 chunk_position = block_position_to_chunk_position(block_position, terrain_depth);
                     entity chunk = int3_hashmap_get(chunks->value, chunk_position);
                     if (!zox_valid(chunk)) {
@@ -68,11 +76,12 @@ zox_sys2(TerrainIntersectSystem) {
                     byte3 local_position = block_position_to_local_position(block_position, terrain_depth, chunk_depth);
                     byte voxel = getv_VoxelNode(voxel_octree, local_position, chunk_depth);
                     byte solid = voxel ? zox_getv(blocks->value[voxel - 1], BlockCollider) != zox_block_air : 0;
+                    color fill = solid ? dbg_color_solid : dbg_color_air;
+                    // NOTE: Shows Voxel Info of Intersections
+                    spawn_cube_lines_rgba(world, block_positionf, block_size, 2, fill, 0.01);
                     if (!solid) {
                         continue;
                     }
-                    // Get Block Face Centre
-                    // NOTE: Get the closest voxel face out of 3 potential axis ones
                     float3 block_position_face_x = block_positionf;
                     if (position->value.x >= block_positionf.x) {
                         block_position_face_x.x += terrain_block_scale / 2;
@@ -91,6 +100,7 @@ zox_sys2(TerrainIntersectSystem) {
                     } else {
                         block_position_face_z.z -= terrain_block_scale / 2;
                     }
+                    spawn_cube_lines_rgba(world, block_positionf, block_size, 2, fill, 0.01);
                     // TODO: Work out a better way to check closest face
                     // Gets closest face XYZ
                     float block_face_dist_x = float3_distance(position->value, block_position_face_x);
@@ -119,12 +129,13 @@ zox_sys2(TerrainIntersectSystem) {
                             face_direction = direction_back;
                         }
                     }
-                    // TODO: Check if direction adjacent node is solid
+                    // NOTE: Get Adjacent voxel, if solid we skip this collision
+                    // face direction
                     zox_geter(chunk, ChunkNeighbors, neighbors);
                     const VoxelNode* neighbor_voxel_octrees[6];
                     for (int a = 0; a < 6; a++) {
                         entity neighbor = neighbors->value[a];
-                        if (!zox_valid(neighbor) || !zox_has(neighbor, VoxelNode)) {
+                        if (!neighbor) {
                             neighbor_voxel_octrees[a] = NULL;
                         } else {
                             neighbor_voxel_octrees[a] = zox_get(neighbor, VoxelNode);
@@ -138,10 +149,15 @@ zox_sys2(TerrainIntersectSystem) {
                             adjacent_solid = !zox_has(block, BlockCollider) || zox_getv(block, BlockCollider) != zox_block_air;
                         }
                     }
+                    // NOTE: Shows Block Face with adjacent direction
+                    color face_color = adjacent_solid ? color_red : color_green;
+                    float3 face_end_point = float3_add(block_position_face, float3_scale(direction_to_normal(face_direction), terrain_block_scale / 3));
+                    spawn_cube_lines_rgba(world, block_position_face, float3_single(0.01f), 2, face_color, 0.016);
+                    spawn_line3_alpha(world, block_position_face, face_end_point, 4, 0.01, face_color);
+                    spawn_cube_lines_rgba(world, face_end_point, float3_single(0.01f), 2, face_color, 0.01);
                     if (adjacent_solid) {
                         continue;
                     }
-                    // NOTE: Calculate correction for moving away from blocks
                     float3 penetration = float3_subtract(block_position_face, point);
                     if (block_axis == 0 && float_abs(penetration.x) > float_abs(correction.x)) {
                         correction.x = penetration.x;
@@ -152,6 +168,9 @@ zox_sys2(TerrainIntersectSystem) {
                     if (block_axis == 2 && float_abs(penetration.z) > float_abs(correction.z)) {
                         correction.z = penetration.z;
                     }
+                    if (block_axis == 1 && position->value.y > block_position_face.y) {
+                        hit_ground = 1;
+                    }
                     if (block_axis == 0) {
                         hit_axis_x = 1;
                     }
@@ -161,25 +180,18 @@ zox_sys2(TerrainIntersectSystem) {
                     if (block_axis == 2) {
                         hit_axis_z = 1;
                     }
-                    if (block_axis == 1 && position->value.y > block_position_face.y) {
-                        hit_ground = 1;
-                    }
+                    // NOTE: Shows Bounds Pointi to the Block Face that it intersects
+                    spawn_cube_lines_rgba(world, point, float3_single(0.03f), 2, color_white, 0.01);
+                    spawn_line3_alpha(world, point, block_position_face, 4, 0.01, color_gray);
+                    spawn_cube_lines_rgba(world, block_position_face, float3_single(0.03f), 2, color_gray, 0.01);
                 }
             }
         }
-        grounded->value = hit_ground;
-        if (hit_axis_x) {
-            velocity->value.x *= -bounce_lost_force;
-        }
-        if (hit_axis_y) {
-            velocity->value.y *= -bounce_lost_force;
-        }
-        if (hit_axis_z) {
-            velocity->value.z *= -bounce_lost_force;
-        }
         // show correction vector
         if (!float3_equals(correction, float3_zero)) {
-            position->value = float3_add(position->value, correction);
+            float3 above = float3_add(position->value, (float3) { 0, bounds->value.y, 0 });
+            spawn_line3_alpha(world, above, float3_add(above, correction), 4, 0.01, dbg_color_solid);
+            spawn_cube_lines_rgba(world, float3_add(above, correction), float3_single(0.03f), 2, dbg_color_solid, 0.01);
         }
     }
-} zox_sys_end(TerrainIntersectSystem);
+} zox_sys_end(TerrainIntersectDebugSystem);

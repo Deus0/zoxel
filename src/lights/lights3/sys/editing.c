@@ -103,15 +103,14 @@ zox_sys2(VoxelLightSystem) {
                 byte removed_light = removed_lnode ? removed_lnode->value : 0;
                 if (removed_light > darklight) {
                     zox_logv("[%s] Placed Block: + Dark Flood at [%ix%ix%i] removed light [%i]", zox_get_name(it->entities[i]),  update.pos.x, update.pos.y, update.pos.z, removed_light);
-                    a_DarkQueue(
-                        dark_queue,
+                    a_DarkQueue(dark_queue,
                         (DarkUpdate) {
                             .type = zox_light_type_flood,
                             .pos = update.pos,
                             .depth = depth->value,
                             .light = removed_light,
                             .distance = darklight_propogation_distance
-                    });
+                        });
                 }
                 // NOTE: DarkBeam needs to Process first (so we add last), otherwise its stomped by nearby sun? idk but it works!
                 const LightNode* above = get_neighbor_LightNode(
@@ -125,14 +124,13 @@ zox_sys2(VoxelLightSystem) {
                 if (light_above == sunlight) {
                     // if y, we do y + 1
                     zox_logv("[%s] Placed Block: + Darkbeam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]),  update.pos.x, update.pos.y, update.pos.z, darklight);
-                    a_DarkQueue(
-                        dark_queue,
+                    a_DarkQueue(dark_queue,
                         (DarkUpdate) {
                             .type = zox_light_type_beam_start,
                             .pos = update.pos,
                             .depth = depth->value,
                             .light = light_above
-                    });
+                        });
                 }
                 // set dark light, as it was filled up
                 set_LightNode(root_lnode, depth->value, update.pos, darklight, 0);

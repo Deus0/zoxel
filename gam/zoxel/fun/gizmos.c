@@ -1,6 +1,7 @@
 entity dbg_ui_gizmos;
 
 void zox_dbg_ui_gizmos(ecs* world, int32_t keycode) {
+    byte zox_tsts_count = 5;
     if (keycode != zox_key_g) {
         return;
     }
@@ -28,7 +29,6 @@ void zox_dbg_ui_gizmos(ecs* world, int32_t keycode) {
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UI
-    byte zox_tsts_count = 4;
     SpawnListElement elements[zox_tsts_count];
     elements[elements_count++] = (SpawnListElement) {
         .text = "Terrain Gizmos",
@@ -45,6 +45,10 @@ void zox_dbg_ui_gizmos(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Lights Gizmos",
         .on_click = { &zox_dbg_cycle_light_debug },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Intersects",
+        .on_click = { &toggle_dbg_intersect },
     };
     // Test our uis
     entity spawned[elements_count];

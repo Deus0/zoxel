@@ -45,15 +45,30 @@ int3 real_position_to_chunk_position(float3 positionf, byte chunk_length, float 
 }
 
 static inline byte3 block_position_to_local_position(int3 block_position, byte terrain_depth, byte chunk_depth) {
-    int3 chunk_size = int3_single(powers_of_two[chunk_depth]);
+    // int3 chunk_size = int3_single(powers_of_two[chunk_depth]);
     int3 terrain_chunk_size = int3_single(powers_of_two[terrain_depth]);
     byte3 positionl;
-    if (block_position.x < 0) positionl.x = chunk_size.x - 1 + ((block_position.x + 1) % terrain_chunk_size.x);
-    else positionl.x = block_position.x % terrain_chunk_size.x;
-    if (block_position.y < 0) positionl.y = chunk_size.y - 1 + ((block_position.y + 1) % terrain_chunk_size.y);
-    else positionl.y = block_position.y % terrain_chunk_size.y;
-    if (block_position.z < 0) positionl.z = chunk_size.z - 1 + ((block_position.z + 1) % terrain_chunk_size.z);
-    else positionl.z = block_position.z % terrain_chunk_size.z;
+    if (block_position.x < 0) {
+        positionl.x = terrain_chunk_size.x - 1 + ((block_position.x + 1) % terrain_chunk_size.x);
+    } else {
+        positionl.x = block_position.x % terrain_chunk_size.x;
+    }
+    if (block_position.y < 0) {
+        positionl.y = terrain_chunk_size.y - 1 + ((block_position.y + 1) % terrain_chunk_size.y);
+    } else {
+        positionl.y = block_position.y % terrain_chunk_size.y;
+    }
+    if (block_position.z < 0) {
+        positionl.z = terrain_chunk_size.z - 1 + ((block_position.z + 1) % terrain_chunk_size.z);
+    } else {
+        positionl.z = block_position.z % terrain_chunk_size.z;
+    }
+    // NOTE: THis divides to account for differences of depth!
+    for (int i = chunk_depth; i < terrain_depth; i++) {
+        positionl.x /= 2;
+        positionl.y /= 2;
+        positionl.z /= 2;
+    }
     return positionl;
 }
 

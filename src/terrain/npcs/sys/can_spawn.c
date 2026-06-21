@@ -5,7 +5,7 @@ zox_sys2(Characters3SpawnZoneSystem) {
     zox_sys_in(RenderDepthDirty);
     zox_sys_in(RenderDepth);
     zox_sys_in(Generate);
-    zox_sys_in(Loaded);
+    // zox_sys_in(Loaded);
     zox_sys_out(NpcSpawnZone);
     zox_sys_out(NpcSpawnZoneDirty);
     for (int i = 0; i < it->count; i++) {
@@ -13,7 +13,7 @@ zox_sys2(Characters3SpawnZoneSystem) {
         zox_sys_i(RenderDepthDirty, state);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(Generate, generate);
-        zox_sys_i(Loaded, loaded);
+        // zox_sys_i(Loaded, loaded);
         zox_sys_o(NpcSpawnZone, active);
         zox_sys_o(NpcSpawnZoneDirty, dirty);
         // or loading

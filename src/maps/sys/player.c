@@ -19,7 +19,7 @@ zox_sys2(PlayerMinimapSystem) {
             continue;
         }
         entity minimap = zox_get_child_by_id(world, canvas->value, zox_id(Minimap));
-        if (state->value == zox_player_state_pause_begin || state->value == state->value == zox_player_state_respawn_begin) {
+        if (state->value == zox_player_state_pause_begin || state->value == zox_player_state_respawn_begin) {
             if (zox_valid(minimap)) {
                 if (dbg_log) {
                     zox_log("Destroying Player UI [%s]: [Minimap]:[%s]", zox_get_name(e), zox_get_name(minimap));

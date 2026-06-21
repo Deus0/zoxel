@@ -6,9 +6,9 @@ entity spawn_datagrid_slots2(ecs* world, entity prefab, entity prefab_frame, ent
     }
     // TODO: Calculate Grid Rows/Height based on slots length
     // Get our window data
-    zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-    color grid_fill = window_fill;
-    color grid_outline = window_outline;
+    // zox_geter_value(canvas, LayoutSize, int2, canvas_size);
+    // color grid_fill = window_fill;
+    // color grid_outline = window_outline;
     byte2 grid_padding = byte2_single(2 * ui_scale);
     byte2 grid_margins = byte2_single(4 * ui_scale);
     int2 icon_size = int2_single((default_icon_size / 4) * ui_scale);
@@ -23,7 +23,7 @@ entity spawn_datagrid_slots2(ecs* world, entity prefab, entity prefab_frame, ent
         }
     }
     // Spawns Window here!!
-    byte header_height = 0;
+    // byte header_height = 0;
     entity3 e2 = spawn_window(world, prefab, prefab_grid, header_label, canvas, position, size, position_anchor, on_closed_taskbar_window);
     entity e = e2.x;
     entity grid = e2.z;

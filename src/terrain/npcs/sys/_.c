@@ -9,7 +9,7 @@ void define_systems_characters3_terrain(ecs* world) {
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
         [in] core.Generate,
-        [in] saves.Loaded,
+        // [in] saves.Loaded,
         [out] terrains.npcs.NpcSpawnZone,
         [out] terrains.npcs.NpcSpawnZoneDirty,
         [none] terrains.TerrainChunk

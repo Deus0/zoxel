@@ -53,8 +53,12 @@ if [[ ${debug} == "True" ]]; then
     # cflags="-fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug"
     # cflags="-fPIC -O2 -g3 -Wall -ggdb3 -Dzox_debug"
     # cflags="-O2 -g -Dzox_debug"
-    cflags="-fPIC -O3 -g3 -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
+    # For Regular Runs
+    # cflags="-fPIC -O3 -g3 -Dzox_debug"
+    # For Full Debug
+    cflags="-fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug -fno-omit-frame-pointer"
+    #  -fsanitize=address
     bin_path="bin/${bin_filename}-dev.bin"
 fi
 

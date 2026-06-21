@@ -73,7 +73,7 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* rvoctree
     // if air we stop here at any branch node
     if (!voctree->value) {
         // collapse sub node and set to 0
-        SidesOctree* csides = getm_SidesOctree(sides, depth, position, 0);
+        SidesOctree* csides = getm_SidesOctree(sides, position, depth);
         if (csides) {
             csides->value = 0;
             collapse_SidesOctree(csides);
@@ -103,7 +103,7 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* rvoctree
     }
     // If a non block, we stop here at leaf node
     if (solids && !solids[voctree->value - 1]) {
-        SidesOctree* csides = getm_SidesOctree(sides, depth, position, 0);
+        SidesOctree* csides = getm_SidesOctree(sides, position, depth);
         if (csides) {
             csides->value = 0;
             collapse_SidesOctree(csides);
@@ -120,7 +120,7 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* rvoctree
         set_SidesOctree(sides, depth, position, ssides, 0);
     } else {
         // collapse sub node and set to 0
-        SidesOctree* csides = getm_SidesOctree(sides, depth, position, 0);
+        SidesOctree* csides = getm_SidesOctree(sides, position, depth);
         if (csides) {
             csides->value = 0;
             collapse_SidesOctree(csides);

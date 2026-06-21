@@ -85,16 +85,10 @@ entity spawn_gamepad_new(ecs* world, entity parent) {
     zox_instance(prefab_gamepad);
     zox_name("gamepad");
     zox_set_parent(world, e, parent);
-    byte i = 0;
     // Buttons
     for (byte i = 0; i < 15; i++) {
         spawn_device_button(world, prefab_zevice_button, e, i, i);
     }
-    // The DPAD
-    /*for (byte j = 0; j < zox_gamepad_dpad_count; j++, i++) {
-        entity e2 = spawn_device_button(world, prefab_zevice_button, i, dpad_map[j]);
-        zox_set_parent(world, e2, e);
-    }*/
     // Sticks
     for (byte i = 0; i < 2; i++) {
         spawn_zevice_stick(world, e, i, i);

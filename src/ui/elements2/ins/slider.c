@@ -1,6 +1,6 @@
 entity2 spawn_slider(ecs* world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnSliderData slider_data, color fill, color outline, byte font_size, color font_fill, color font_outline) {
     byte handle_width = slider_data.handle_width; // 8 * ui_scale;
-    byte font_thickness = ui_scale;
+    // byte font_thickness = ui_scale;
     // spawn back part
     zox_instance(element_data.prefab);
     zox_name("slider");
