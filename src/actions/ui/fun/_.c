@@ -5,7 +5,13 @@ void set_character_action(ecs *world, entity character, byte index) {
     zox_set(character, ActionIndex, { index });
     spawn_sound_from_file_name(world, prefab_sound, "swap_action", 0, get_volume_sfx());
     zox_geter(character, ElementLinks, elements);
-    find_array_element_with_tag(elements, MenuActions, actionbar);
+    ////find_array_element_with_tag(elements, MenuActions, actionbar);
+    entity player = zox_getv(character, PlayerLink);
+    if (!zox_valid(player)) {
+        return;
+    }
+    entity canvas = zox_getv(player, CanvasLink);
+    entity actionbar = zox_get_child_by_id(world, canvas, zox_id(MenuActions));
     if (!actionbar) {
         return;
     }

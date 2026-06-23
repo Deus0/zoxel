@@ -3,15 +3,12 @@ extern void button_event_jump(ecs *world, const ClickEventData event);
 extern void button_event_attack(ecs *world, const ClickEventData event);
 
 entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas) {
-
     byte layer = 1;
     byte button_size = 36 * ui_scale;
     byte bpadding = 6 * ui_scale;
     byte2 screen_margins = (byte2) { button_size / 4, button_size / 4 };
-
     int2 canvas_size = zox_get_value(canvas, LayoutSize);
     int2 bsize = int2_single(button_size);
-
     entity e = spawn_layout2_on_canvas(world, p, canvas, int2_zero, canvas_size, float2_half);
     zox_name("menu_game_touch");
 #ifndef zox_disable_touch_buttons
@@ -20,7 +17,6 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
         screen_margins.y + button_size / 2
     };
     byte blayer = layer + 1;
-
     color cfill = (color) { 15, 15, 15, 80 };
     color coutline = (color) { 40, 40, 40, 130 };
     char* tnames[] = {
@@ -46,12 +42,9 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
         (int2) { bposition.x, bposition.y },
         (int2) { -bposition.x, bposition.y },
     };
-
     for (byte i = 0; i < 4; i++) {
         entity texture = string_hashmap_get(files_hashmap_textures, new_string_data(tnames[i]));
-        entity b = spawn_button_icon(
-            world,
-            prefab_button,
+        entity b = spawn_button_icon(world, prefab_button,
             texture,
             canvas,
             e,
@@ -67,13 +60,12 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
         );
         zox_set_parent(world, b, e);
     }
-
 #endif
     // link to character
-    zox_geter(player, CharacterLink, characterLink);
+    /*zox_geter(player, CharacterLink, characterLink);
     zox_muter(characterLink->value, ElementLinks, elementLinks);
     add_to_ElementLinks(elementLinks, e);
-    zox_set(e, ElementHolder, { characterLink->value });
+    zox_set(e, ElementHolder, { characterLink->value });*/
     return e;
 }
 

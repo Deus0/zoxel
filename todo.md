@@ -2,6 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Add Projectiles Damaging Terrain
+- Add Projects Damaging NPCs
+- Fix Town/Moutnains spawning in other Regions - Debug Regions more
+- Vodes: Regen Health and destroy after for block health
+- Refactor: Stream Terrain Chunks from terrain, not chunks, just spawn there
+	- Keep setting the lods in chunk systems though as can be multithreaded
 - FIX: Set CubeLines Faces based on VoxelSides thats generated, then make sure it Renders Over Top of the overlays - disabled depth
 - FIX: Main issue with collisions is how it decides on which face we collided with, using a distance check, so you can teleport a little if its the wrong face, best to use velocity to determine face, last position
 - FIX: Make arms never snap, just lerp the rotation over time
@@ -10,7 +16,6 @@ used - 200-400mb used
 - Remove the OOB warnings in octree, print the stack maybe?
 - Collisions: When going underneath a block, itll detect the collision of DOWN face first before the proper face - Use velocity to decide face? - can calculate last position from velocity	
 - Lines: Line Instancing
-- Vodes: Regen Health and destroy after for block health
 - Rendering: Make it easier to add a custom material / shader
 	- dynamically gets/adds components per shader file?
 - PostProcessing: Add a Post Processor Noise option - Slider - we can reduce it or turn off

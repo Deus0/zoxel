@@ -1,8 +1,9 @@
-#include "melee.c"
 #include "dots.c"
 #include "activate.c"
 #include "toggle.c"
 #include "character.c"
+#include "melee.c"
+#include "shoot.c"
 realm_clear_system(SkillLinks);
 // TODO: DotLinks just parent them instead
 
@@ -25,14 +26,25 @@ void zox_define_systems_skills(ecs *world) {
     // TODO: split into sound, resource and damage systems
     zox_system_1(
         MeleeSystem,
-        zoxp_queue_add,
+        EcsOnUpdate,
+        [in] skills.SkillResourceLink,
+        [in] skills.SkillCost,
         [in] skills.SkillDamage,
         [in] skills.SkillDamageMax,
         [in] skills.SkillRange,
-        [in] skills.SkillResourceLink,
-        [in] skills.SkillCost,
         [in] timers.Activate,
         [none] skills.Melee
+    );
+    zox_system_1(
+        ShootSystem,
+        EcsOnUpdate,
+        [in] skills.SkillResourceLink,
+        [in] skills.SkillCost,
+        [in] skills.SkillDamage,
+        [in] skills.SkillDamageMax,
+        [in] skills.SkillRange,
+        [in] timers.Activate,
+        [none] skills.Shoot
     );
     /*zox_system_1(
         CharacterSkillsSpawnSystem,

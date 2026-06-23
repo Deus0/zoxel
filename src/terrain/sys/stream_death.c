@@ -5,24 +5,19 @@ zox_sys2(Chunk3DeathSystem) {
     zox_sys_begin();
     zox_sys_in(RenderDistanceDirty);
     zox_sys_in(RenderDistance);
-    zox_sys_in(RenderDepth);
     zox_sys_in(ChunkPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDistanceDirty, dirty);
-        zox_sys_i(RenderDepth, depth);
         zox_sys_i(RenderDistance, distance);
         zox_sys_i(ChunkPosition, position);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        /*if (depth->value == render_depth_uninitialized) {
+        // Pass if loading chunk
+        /*if (distance->value == 255) {
             continue;
         }*/
-        // Pass if loading chunk
-        if (distance->value == 255) {
-            continue;
-        }
         // Pass if lod changing
         byte is_kill = distance->value > terrain_lod_far;
         if (!is_kill) {

@@ -37,6 +37,7 @@ byte place_new_town(lint seed, int2 region_position, int2 region_size, byte2 pad
     return 0;
 }
 
+// TODO: Add Region Position to Town Positions
 // NOTE: Spawns X Towns per region
 zox_sys2(RegionTownsSystem) {
     byte dbg_log = 0;
@@ -66,6 +67,15 @@ zox_sys2(RegionTownsSystem) {
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Towns", zox_get_name(e), spawn_count);
         };
+        entity terrain = zox_get_parent(world, e);
+        if (!zox_valid(terrain)) {
+            continue;
+        }
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
+        int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
+        if (dbg_log) {
+            zox_log("   - Region Position [%ix%i]", region_block_position.x, region_block_position.y);
+        };
         int2 positions[spawn_count];
         byte2 sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
@@ -76,6 +86,7 @@ zox_sys2(RegionTownsSystem) {
             byte2 spawn_size = sizes[j];
             byte wall_height = seed_range(seed->value, wall_height_range.x, wall_height_range.y);
             byte wall_thickness = rand_range(wall_thickness_range.x, wall_thickness_range.y);
+            spawn_position = int2_add(region_block_position, spawn_position);
             lint town_seed = position_seed2(seed->value, spawn_position);
             spawn_town(world, prefab_town, e, town_seed, spawn_position, spawn_size, wall_height, wall_thickness);
             if (dbg_log) {

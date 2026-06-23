@@ -1,8 +1,9 @@
 zox_tag(Skill);
 zox_tag(SkillToggleable);
 zox_tag(Skillbook);
-zox_tag(Melee);
 zox_tag(Dot);
+zox_tag(Melee);
+zox_tag(Shoot);
 zox_tag(AuraDot);
 zox_tag(Poison);
 zoxc_byte(SkillActive);
@@ -17,12 +18,13 @@ zoxc_entitiesw(SkillLinks);   // Used for realm atm
 
 void zox_define_components_skills(ecs* world) {
     zoxd_tag(Skill);
+    zoxd_tag(Dot);
+    zoxd_tag(Poison);
     zoxd_tag(SkillToggleable);
     zoxd_tag(Skillbook);
     zoxd_tag(Melee);
-    zoxd_tag(Dot);
+    zoxd_tag(Shoot);
     zoxd_tag(AuraDot);
-    zoxd_tag(Poison);
     zoxd_float(SkillDamage);
     zoxd_float(SkillDamageMax);
     zoxd_float(SkillRange);

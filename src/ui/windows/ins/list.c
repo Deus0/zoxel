@@ -83,8 +83,8 @@ entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *
     // make sure to link them together
     zox_set(list, ScrollviewLink, { scrollview });
     zox_set(scrollview, ListUILink, { list });
-    zox_muter(player, ElementLinks, pelements);
-    add_to_ElementLinks(pelements, e);
+    //zox_muter(player, ElementLinks, pelements);
+    //add_to_ElementLinks(pelements, e);
     zox_set(e, ElementHolder, { player });
     return (entity3) { e, list, e2.y };
 }

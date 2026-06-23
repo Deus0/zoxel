@@ -1,7 +1,9 @@
 void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    zox_geter(player, ElementLinks, elements);
-    find_array_element_with_tag(elements, MenuNewRealm, menu);
+    //zox_geter(player, ElementLinks, elements);
+    //find_array_element_with_tag(elements, MenuNewRealm, menu);
+    entity canvas = zox_getv(player, CanvasLink);
+    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
     if (menu) {
         zox_delete(menu);
     }
@@ -35,8 +37,10 @@ void on_confirmed_new_realm(ecs *world, ClickEventData event) {
 
 void on_cancelled_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    zox_geter(player, ElementLinks, elements);
-    find_array_element_with_tag(elements, MenuNewRealm, menu);
+    //zox_geter(player, ElementLinks, elements);
+    //find_array_element_with_tag(elements, MenuNewRealm, menu);
+    entity canvas = zox_getv(player, CanvasLink);
+    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
     if (menu) {
         zox_delete(menu);
     }
@@ -111,11 +115,11 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .padding = list_padding,
         .margins = list_padding,
     };
-    entity list = spawn_list(world, canvas_data, list_parent_data, list_element_data, ui_list_data, zox_alignment_centre, NULL);
+    spawn_list(world, canvas_data, list_parent_data, list_element_data, ui_list_data, zox_alignment_centre, NULL);
     // zox_set_parent(world, list, e);
-    zox_muter(player, ElementLinks, pelements);
+    /*zox_muter(player, ElementLinks, pelements);
     add_to_ElementLinks(pelements, e);
-    zox_set(e, ElementHolder, { player });
+    zox_set(e, ElementHolder, { player });*/
     return e;
 }
 

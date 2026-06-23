@@ -28,14 +28,14 @@ zox_sys2(TerrainIntersectSystem) {
         const BlockLinks* blocks = zox_get(realm, BlockLinks);
         byte terrain_depth = zox_getv(terrain->value, NodeDepth);
         float terrain_block_scale = zox_getv(terrain->value, BlockScale);
-        float3 block_size = float3_single(terrain_block_scale * 0.5f);
+        // float3 block_size = float3_single(terrain_block_scale * 0.5f);
         zox_geter(terrain->value, ChunkLinks, chunks);
         // For each block position in bounds, check if collides with chunk
         float3 bounds_rotated = float4_rotate_bounds(rotation->value, bounds->value);
         float3 lower_bounds = float3_subtract(position->value, bounds_rotated);
         float3 upper_bounds = float3_add(position->value, bounds_rotated);
-        int3 lower_bounds_block_position = real_position_to_block_position(lower_bounds, terrain_block_scale);
-        int3 upper_bounds_block_position = real_position_to_block_position(upper_bounds, terrain_block_scale);
+        // int3 lower_bounds_block_position = real_position_to_block_position(lower_bounds, terrain_block_scale);
+        // int3 upper_bounds_block_position = real_position_to_block_position(upper_bounds, terrain_block_scale);
         float3 correction = float3_zero;
         // we just need add + terrain_block_scale and final one too
         byte hit_ground = 0;

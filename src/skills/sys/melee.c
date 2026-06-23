@@ -13,19 +13,19 @@ zox_sys2(MeleeSystem) {
     float knockback_max = 1.5f;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(SkillResourceLink);
+    zox_sys_in(SkillCost);
     zox_sys_in(SkillDamage);
     zox_sys_in(SkillDamageMax);
     zox_sys_in(SkillRange);
-    zox_sys_in(SkillResourceLink);
-    zox_sys_in(SkillCost);
     zox_sys_in(Activate);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
+        zox_sys_i(SkillResourceLink, rresource);
+        zox_sys_i(SkillCost, cost);
         zox_sys_i(SkillDamage, skillDamage);
         zox_sys_i(SkillDamageMax, skillDamageMax);
         zox_sys_i(SkillRange, range);
-        zox_sys_i(SkillResourceLink, rresource);
-        zox_sys_i(SkillCost, cost);
         zox_sys_i(Activate, active);
         if (active->value != zox_dirty_active) {
             continue;

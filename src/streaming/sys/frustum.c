@@ -22,6 +22,7 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
         return;
     }
     zox_set(e, RenderDisabled, { disabled });
+    // NOTE: for 3D UIs
     if (zox_has(e, ElementLinks)) {
         zox_geter(e, ElementLinks, elements);
         for (int k = 0; k < elements->length; k++) {

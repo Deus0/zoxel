@@ -1,6 +1,6 @@
 // NOTE: Adds height to the heightmap using region mountains
 zox_sys2(MountainMapSystem) {
-    uint seed = global_seed;
+    // uint seed = global_seed;
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();

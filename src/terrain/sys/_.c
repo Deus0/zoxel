@@ -141,7 +141,6 @@ void define_systems_terrain(ecs *world) {
         zoxp_destroy,
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
-        [in] rendering.RenderDepth,
         [in] chunks3.ChunkPosition,
         [none] streaming.StreamedChunk
     );

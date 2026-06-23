@@ -55,6 +55,7 @@
 #include "pets/_.c"
 #include "huds/_.c"
 #include "space/_.c"
+#include "projectiles/_.c"
 // user data
 #include "users/_.c"
 #include "combat/_.c"
@@ -146,6 +147,7 @@ zox_begin_module(Zox) {
     zox_import_module(Characters);
     zox_import_module(Huds);
     zox_import_module(Space);
+    zox_import_module(Projectiles);
     // user data
     zox_import_module(Users);
     zox_import_module(Combat);

@@ -277,7 +277,7 @@ void collide_with_chunk(ecs* world,
     if (position_vox_d == position_vox_last_d) {
         return;
     }
-    int3 max_chunk_size = int3_single(powers_of_two[terrain_depth]);
+    // int3 max_chunk_size = int3_single(powers_of_two[terrain_depth]);
     // set dimensional variables to newer point
     int3_set_d(&voxel_position, axis_d, position_vox_d);
     // next convert real to voxel grid space and check voxel

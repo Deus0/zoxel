@@ -1,7 +1,7 @@
 // NOTE: Simply creates a height texture from tunks
 zox_sys2(TunkTextureSystem) {
     byte dbg_log = 0;
-    byte map_type = 1;
+    // byte map_type = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);

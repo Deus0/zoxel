@@ -42,14 +42,14 @@ zox_sys2(TerrainIntersectDebugSystem) {
         float3 bounds_rotated = float4_rotate_bounds(rotation->value, bounds->value);
         float3 lower_bounds = float3_subtract(position->value, bounds_rotated);
         float3 upper_bounds = float3_add(position->value, bounds_rotated);
-        int3 lower_bounds_block_position = real_position_to_block_position(lower_bounds, terrain_block_scale);
-        int3 upper_bounds_block_position = real_position_to_block_position(upper_bounds, terrain_block_scale);
+        // int3 lower_bounds_block_position = real_position_to_block_position(lower_bounds, terrain_block_scale);
+        // int3 upper_bounds_block_position = real_position_to_block_position(upper_bounds, terrain_block_scale);
         float3 correction = float3_zero;
         // we just need add + terrain_block_scale and final one too
-        byte hit_ground = 0;
-        byte hit_axis_x = 0;
-        byte hit_axis_y = 0;
-        byte hit_axis_z = 0;
+        // byte hit_ground = 0;
+        //byte hit_axis_x = 0;
+        //byte hit_axis_y = 0;
+        //byte hit_axis_z = 0;
         int3 last_block_position;
         // NOTE: Show Bounds
         spawn_cube_lines_rgba(world, position->value, bounds_rotated, 4, color_white, 0.01);
@@ -168,7 +168,7 @@ zox_sys2(TerrainIntersectDebugSystem) {
                     if (block_axis == 2 && float_abs(penetration.z) > float_abs(correction.z)) {
                         correction.z = penetration.z;
                     }
-                    if (block_axis == 1 && position->value.y > block_position_face.y) {
+                    /*if (block_axis == 1 && position->value.y > block_position_face.y) {
                         hit_ground = 1;
                     }
                     if (block_axis == 0) {
@@ -179,7 +179,7 @@ zox_sys2(TerrainIntersectDebugSystem) {
                     }
                     if (block_axis == 2) {
                         hit_axis_z = 1;
-                    }
+                    }*/
                     // NOTE: Shows Bounds Pointi to the Block Face that it intersects
                     spawn_cube_lines_rgba(world, point, float3_single(0.03f), 2, color_white, 0.01);
                     spawn_line3_alpha(world, point, block_position_face, 4, 0.01, color_gray);

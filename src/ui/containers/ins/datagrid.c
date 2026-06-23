@@ -60,10 +60,10 @@ entity spawn_datagrid(ecs* world, entity prefab, entity prefab_frame, entity pre
         }
     }
     // add to characters element links and link to character
-    if (zox_has(character, ElementLinks)) {
+    /*if (zox_has(character, ElementLinks)) {
         zox_muter(character, ElementLinks, elementLinks);
         add_to_ElementLinks(elementLinks, e);
         zox_set(e, ElementHolder, { character });
-    }
+    }*/
     return e;
 }

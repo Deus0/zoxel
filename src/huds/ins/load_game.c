@@ -1,15 +1,14 @@
 void button_event_load_cancel(ecs *world, ClickEventData event) {
-
     entity player = event.clicker;
-
-    zox_geter(player, ElementLinks, elements);
-    find_array_element_with_tag(elements, MenuLoad, load_menu);
-    if (!load_menu) {
+    //zox_geter(player, ElementLinks, elements);
+    //find_array_element_with_tag(elements, MenuLoad, load_menu);
+    entity canvas = zox_getv(player, CanvasLink);
+    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
+    if (!menu) {
         zox_logw("MenuLoad menu not found");
     } else {
-        zox_delete(load_menu);
+        zox_delete(menu);
     }
-
     spawn_main_menu(world, player, game_name);
 }
 
@@ -22,12 +21,14 @@ void delay_spawn_menu_realm(ecs* world, entity player) {
 void button_event_load_confirm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
     entity clicked = event.clicked;
-    zox_geter(player, ElementLinks, elements);
     zox_geter_value(player, GameLink, entity, game);
     zox_geter(clicked, FolderPath, path);
-    find_array_element_with_tag(elements, MenuLoad, menu);
+    // zox_geter(player, ElementLinks, elements);
+    // find_array_element_with_tag(elements, MenuLoad, menu);
+    entity canvas = zox_getv(player, CanvasLink);
+    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
     if (!menu) {
-        zox_log_error("main menu not found");
+        zox_log_error("UI [MenuLoad] Not Found");
         return;
     }
     zox_delete(menu);

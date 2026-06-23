@@ -22,12 +22,7 @@ zox_begin_module(Pickups) {
     zoxd_tag(Pickup);
     zoxd_tag(PickUpperer);
     zoxd_state(PickedUp);
-    zox_system_1(
-        PickupSoundSystem,
-        zoxp_mainthread,
-        [in] PickedUp,
-        [none] Pickup
-    );
+    zox_define_systems_pickups(world);
     add_hook_spawn_prefabs(spawn_prefabs_pickups);
 } zox_end_module(Pickups);
 

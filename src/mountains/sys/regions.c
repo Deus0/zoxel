@@ -37,8 +37,8 @@ byte find_position_in_bounds(lint seed, int2 region_position, int2 region_size, 
 zox_sys2(RegionMountainSystem) {
     byte dbg_log = 0;
     byte min_size = 24;
-    byte max_size = 99;
-    byte min_height = 4;
+    byte max_size = 128;
+    byte min_height = 3;
     byte max_height = 16;
     zox_sys_world();
     zox_sys_begin();
@@ -61,6 +61,15 @@ zox_sys2(RegionMountainSystem) {
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Mountains", zox_get_name(e), spawn_count);
         }
+        entity terrain = zox_get_parent(world, e);
+        if (!zox_valid(terrain)) {
+            continue;
+        }
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
+        int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
+        if (dbg_log) {
+            zox_log("   - Region Position [%ix%i]", region_block_position.x, region_block_position.y);
+        };
         int2 positions[spawn_count];
         byte sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
@@ -70,10 +79,11 @@ zox_sys2(RegionMountainSystem) {
             int2 spawn_position = positions[j];
             byte radius = sizes[j];
             byte height = seed_range(seed->value + j, min_height, max_height);
+            spawn_position = int2_add(region_block_position, spawn_position);
             lint mountain_seed = position_seed2(seed->value, spawn_position);
             spawn_mountain(world, prefab_mountain, e, mountain_seed, spawn_position, radius, height);
             if (dbg_log) {
-                zox_log("   ++ Mountain [%ix%i]", spawn_position.x, spawn_position.y);
+                zox_log("   ++ Mountain [%ix%i] H [%i] R [%i]", spawn_position.x, spawn_position.y, height, radius);
             }
         }
     }
