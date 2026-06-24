@@ -1,4 +1,5 @@
 // RGBA Colors (0-255)
+static const color color_clear       = {   0,   0,   0,   0 };
 static const color color_null       = {   0,   0,   0,   0 };
 static const color color_white      = { 255, 255, 255, 255 };
 static const color color_gray       = { 125, 125, 125, 255 };

@@ -7,7 +7,6 @@ void zox_define_systems_mountains(ecs* world) {
         zoxp_mainthread,
         [in] core.Generate,
         [in] core.Seed,
-        [in] regions.RegionPosition,
         [in] blocks.BlockPosition2,
         [in] blocks.BlockSize2,
         [none] regions.Region

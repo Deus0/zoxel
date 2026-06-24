@@ -3,6 +3,7 @@ zoxc_arrayd(TownMap, byte)
 zoxc_byte(WallThickness);
 zoxc_byte(WallHeight);
 zoxc_byte2(TownSize);
+zox_tag(TownTexture);
 
 void zox_define_components_towns(ecs* world) {
     zoxd_tag(Town);
@@ -10,4 +11,5 @@ void zox_define_components_towns(ecs* world) {
     zoxd_byte(WallThickness);
     zoxd_byte(WallHeight);
     zoxd_byte2(TownSize);
+    zoxd_tag(TownTexture);
 }

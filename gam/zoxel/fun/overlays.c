@@ -199,7 +199,7 @@ void zox_dbg_activate_ui_raycast_lights(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_activate_ui_chunk_link(ecs* world, ClickEventData data) {
-    set_prefab_debug_label(world, &debug_label_chunk_link);
+    set_prefab_debug_label(world, &zox_dbg_label_character_links);
     refresh_debug_label(world);
 }
 
@@ -290,7 +290,7 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_activate_ui_raycast_lights },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Chunk Link",
+        .text = "Where is Character",
         .on_click = { &zox_dbg_activate_ui_chunk_link },
     };
     // Test our uis

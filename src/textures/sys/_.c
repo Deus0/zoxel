@@ -7,8 +7,21 @@
 #include "tilemap.c"
 #include "mouse.c"
 #include "icon.c"
+#include "arrow.c"
 
 void define_systems_textures(ecs *world) {
+    zox_system(
+        ArrowTextureSystem,
+        EcsOnUpdate,
+        [in] core.Generate,
+        [in] rendering.TextureSize,
+        [in] textures.FillColor,
+        [in] textures.OutlineColor,
+        [in] textures.OutlineThickness,
+        [out] textures.TextureData,
+        [out] rendering.TextureDirty,
+        [none] textures.ArrowTexture
+    );
     zox_system(
         MouseTextureSystem,
         EcsOnUpdate,

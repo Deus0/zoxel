@@ -41,8 +41,8 @@ byte place_new_town(lint seed, int2 region_position, int2 region_size, byte2 pad
 // NOTE: Spawns X Towns per region
 zox_sys2(RegionTownsSystem) {
     byte dbg_log = 0;
-    byte2 min_size = (byte2) { 22, 22 };
-    byte2 max_size = (byte2) { 42, 42 };
+    byte2 min_size = (byte2) { 32, 32 };
+    byte2 max_size = (byte2) { 96, 96 };
     byte2 wall_height_range = (byte2) { 2, 6 };
     byte2 wall_thickness_range = (byte2) { 1, 4 };
     byte2 padding = byte2_single(8);
@@ -50,14 +50,12 @@ zox_sys2(RegionTownsSystem) {
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(Seed);
-    zox_sys_in(RegionPosition);
     zox_sys_in(BlockPosition2);
     zox_sys_in(BlockSize2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(Seed, seed);
-        zox_sys_i(RegionPosition, position);
         zox_sys_i(BlockPosition2, block_position);
         zox_sys_i(BlockSize2, block_size);
         if (generate->value != zox_dirty_active) {
@@ -72,9 +70,9 @@ zox_sys2(RegionTownsSystem) {
             continue;
         }
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
+        // int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
         if (dbg_log) {
-            zox_log("   - Region Position [%ix%i]", region_block_position.x, region_block_position.y);
+            zox_log("   - Region Position [%ix%i]", block_position->value.x, block_position->value.y);
         };
         int2 positions[spawn_count];
         byte2 sizes[spawn_count];
@@ -82,15 +80,15 @@ zox_sys2(RegionTownsSystem) {
             if (!place_new_town(seed->value, block_position->value, block_size->value, padding, min_size, max_size, positions, sizes, j)) {
                 continue;
             }
-            int2 spawn_position = positions[j];
+            int2 town_position = positions[j];
             byte2 spawn_size = sizes[j];
             byte wall_height = seed_range(seed->value, wall_height_range.x, wall_height_range.y);
             byte wall_thickness = rand_range(wall_thickness_range.x, wall_thickness_range.y);
-            spawn_position = int2_add(region_block_position, spawn_position);
-            lint town_seed = position_seed2(seed->value, spawn_position);
-            spawn_town(world, prefab_town, e, town_seed, spawn_position, spawn_size, wall_height, wall_thickness);
+            // town_position = int2_add(region_block_position, town_position);
+            lint town_seed = position_seed2(seed->value, town_position);
+            spawn_town(world, prefab_town, e, town_seed, town_position, spawn_size, wall_height, wall_thickness);
             if (dbg_log) {
-                zox_log("   + New Town [%ix%i] Size [%ix%i]", spawn_position.x, spawn_position.y, spawn_size.x, spawn_size.y);
+                zox_log(" + Town [%ix%i] Size [%ix%i]", town_position.x, town_position.y, spawn_size.x, spawn_size.y);
             }
         }
     }

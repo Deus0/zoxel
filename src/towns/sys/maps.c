@@ -11,21 +11,22 @@ zox_sys2(TownMapSystem) {
     zox_sys_out(VegetationMap);
     zox_sys_out(TownMap);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(RegionLink, region);
-        zox_sys_i(TunkPosition, cposition);
-        zox_sys_i(BiomeMap, bmap);
+        zox_sys_i(TunkPosition, position);
+        zox_sys_i(BiomeMap, biome_map);
         zox_sys_o(VegetationMap, vegetation_map);
         zox_sys_o(TownMap, town_map);
         if (generate->value != zox_dirty_active) {
             continue;
         }
         if (!zox_valid(region->value)) {
-            zox_loge("Tunk has invalid region at [%ix%i]", cposition->value.x, cposition->value.y);
+            zox_loge("[%s] Tunk has invalid region at [%ix%i]", zox_get_name(e), position->value.x, position->value.y);
             continue;
         }
-        if (!bmap->length) {
-            zox_logw("[vmap] bmap map wasn't generated in time");
+        if (!biome_map->length) {
+            zox_logw("[%s]'s TownMap: [BiomeMap] Invalid", zox_get_name(e));
             continue;
         }
         // Generate Town Maps
@@ -40,7 +41,7 @@ zox_sys2(TownMapSystem) {
         entity towns[zox_children_capacity];
         uint towns_length = zox_get_children_by_id(world, region->value, towns, zox_children_capacity, zox_id(Town));
         if (dbg_log >= 2) {
-            zox_log("Towns found in Tunk [%ix%i]: [%i]", cposition->value.x, cposition->value.y, towns_length);
+            zox_log("Towns found in Tunk [%ix%i]: [%i]", position->value.x, position->value.y, towns_length);
         }
         if (!towns_length || !vegetation_map->length) {
             zox_logw("Invalid maps in TownMapSystem");
@@ -53,8 +54,8 @@ zox_sys2(TownMapSystem) {
             byte wall_thickness = zox_getv(town, WallThickness);
             int2 lposition = int2_zero;
             int2 gposition_start = (int2) {
-                cposition->value.x * hsize.x,
-                cposition->value.y * hsize.y
+                position->value.x * hsize.x,
+                position->value.y * hsize.y
             };
             // NOTE: Checks if Tunk is within Town Bounds
             int town_left_side = town_position.x - town_size.x;
@@ -69,7 +70,7 @@ zox_sys2(TownMapSystem) {
                 continue;
             }
             if (dbg_log) {
-                zox_log("Town [%i] found in Tunk [%ix%i]: [%i]", j, cposition->value.x, cposition->value.y, towns_length);
+                zox_log("Town [%i] found in Tunk [%ix%i]: [%i]", j, position->value.x, position->value.y, towns_length);
             }
             int2 gposition = gposition_start;
             for (lposition.x = 0; lposition.x < hsize.x; lposition.x++, gposition.x++) {
@@ -77,12 +78,12 @@ zox_sys2(TownMapSystem) {
                 for (lposition.y = 0; lposition.y < hsize.y; lposition.y++, gposition.y++) {
                     int index = int2_array_index(lposition, hsize);
                     // Get Biome Data
-                    // byte biome = bmap->value[index];
+                    // byte biome = biome_map->value[index];
                     if (!(gposition.x >= town_position.x - town_size.x / 2 &&
                         gposition.x <= town_position.x + town_size.x / 2 &&
                         gposition.y >= town_position.y - town_size.y / 2 &&
                         gposition.y <= town_position.y + town_size.y / 2)) {
-                        town_map->value[index] = 0;
+                        // town_map->value[index] = 0;
                         continue;
                     }
                     // NOTE: 1 is inside town!

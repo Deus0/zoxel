@@ -2,9 +2,15 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Generate Town Names
+- Toast UI when you enter Town
+- Fix Towns at lower res
+- Add Monster spawn zones for types - remove around towns
+- Selected Block Gizmo - is flickering - only when attached to character, if detatch is stops...
+- Add Sine Scale on chest for breathing animation
+- Sine Bob + rotate the World Items
 - Add Projectiles Damaging Terrain
 - Add Projects Damaging NPCs
-- Fix Town/Moutnains spawning in other Regions - Debug Regions more
 - Vodes: Regen Health and destroy after for block health
 - Refactor: Stream Terrain Chunks from terrain, not chunks, just spawn there
 	- Keep setting the lods in chunk systems though as can be multithreaded

@@ -1,4 +1,8 @@
 ### Done ###
+-x Fix Town/Moutnains spawning in other Regions - Debug Regions more
+-x Test towns in other regions
+-x Debug Region Features
+-x Region Position < 0 needs to account better
 -x When you walk into corner block you can push yourself through by turning - nvm it stopped when i turned up resolution of increments
 -x Remove WallJump ability
 -x When hitting block, it will teleport you to side

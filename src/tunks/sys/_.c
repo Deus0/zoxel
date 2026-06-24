@@ -1,5 +1,5 @@
 // Link
-#include "region.c"
+#include "region_link.c"
 // Streaming
 #include "stream_start.c"
 #include "stream_grow.c"
@@ -9,9 +9,9 @@
 #include "stack_link.c"
 #include "stack_trigger.c"
 // Biomes
+#include "biome_link.c"
 #include "biomes.c"
 #include "biome_average.c"
-#include "biome_link.c"
 // More Maps
 #include "heights.c"
 #include "vegetation.c"

@@ -4,7 +4,10 @@
 // NOTE: Adds/Removes Minimap to Game UI
 zox_sys2(MapInitializeSystem) {
     byte dbg_log = 0;
-    int2 arrow_size = int2_single(8 * ui_scale);
+    int2 arrow_size = int2_single(16 * ui_scale);
+    byte arrow_thickness = 1 * ui_scale;
+    color arrow_fill = (color) { 155, 0, 0, 185 };
+    color arrow_outline = (color) { 22, 188, 188, 233 };
     // float map_alpha = 0.2f;
     zox_sys_world();
     zox_sys_begin();
@@ -50,7 +53,6 @@ zox_sys2(MapInitializeSystem) {
                 // Spawn our map piece
                 entity e2 = spawn_ui(world, prefab_element_shell, body, float2_half, piece_position, piece_size, int2_zero);
                 zox_set_unique_name(e2, "map_piece");
-                zox_add_tag(e2, TunkTexture);
                 zox_set(e2, TunkLink, { tunk });
                 zox_set(e2, TextureDirty, { zox_dirty_none });
                 zox_set(e2, Generate, { zox_dirty_trigger });
@@ -60,14 +62,20 @@ zox_sys2(MapInitializeSystem) {
                 }
                 zox_set(e2, Layer2D, { layer + 1 });
                 zox_set(e2, Alpha, { alpha->value });
+                zox_add_tag(e2, TunkTexture);
+                // zox_add_tag(e2, RegionTexture);
+                // zox_add_tag(e2, TownTexture);
             }
         }
         // NOTE: Spawns a simple arrow for player direction
-        entity e3 = spawn_ui(world, prefab_element_textured, body, float2_half, int2_zero, arrow_size, arrow_size);
+        entity e3 = spawn_uic(world, prefab_element_ready, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
         zox_set_unique_name(e3, "map_player");
         zox_set(e3, Layer2D, { layer + 2 });
         zox_set(e3, PlayerLink, { player->value });
         zox_add_tag(e3, MapArrow);
-        zox_set(e3, FrameCorner, { arrow_size.x / 2 });
+        // Texture
+        zox_add_tag(e3, ArrowTexture);
+        zox_set(e3, Generate, { zox_dirty_trigger });
+        zox_set(e3, OutlineThickness, { arrow_thickness });
     }
 } zox_sys_end(MapInitializeSystem);

@@ -2,10 +2,8 @@
 #define zoxm_debug
 
 // TODO: Remove this module, just use module dbg folders
-
-#include "fun/amd.c"
-#include "fun/system.c"
-#include "sys/game_debug_label_system.c"
+#include "fun/_.c"
+#include "sys/_.c"
 
 void dispose_debug(ecs* world, void* ctx) {
     dispose_amd();

@@ -38,3 +38,12 @@ static inline int int_clamp(int v, int lo, int hi) {
     : v > hi ? hi
     : v;
 }
+
+// Accounts for negative axis's
+static inline int floor_div(int x, int d) {
+    if (x >= 0) {
+        return x / d;
+    } else {
+        return (x - d + 1) / d;
+    }
+}

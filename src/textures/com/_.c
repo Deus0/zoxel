@@ -13,6 +13,7 @@ zox_tag(ObsidianTexture);
 zox_tag(FillTexture);
 zox_tag(TextureAddNoise);
 zox_tag(TextureRGB);
+zox_tag(ArrowTexture);
 zoxc_state(GenerateTexture);
 zoxc_byte(OutlineThickness);
 zoxc_byte(FrameCorner);
@@ -50,6 +51,7 @@ void define_components_textures(ecs* world) {
     zoxd_tag(TextureAddNoise);
     zoxd_tag(VoxTexture);
     zoxd_tag(CenterVoxTexture);
+    zoxd_tag(ArrowTexture);
     zoxd_state(GenerateTexture);
     zoxd_byte(OutlineThickness);
     zoxd_byte(FrameCorner);

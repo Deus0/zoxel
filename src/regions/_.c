@@ -13,7 +13,7 @@
 #ifndef zox_regions
 #define zox_regions
 
-byte region_dividor = 16;
+byte region_dividor = 32;
 // Regions
 // TODO: Recalculate all the RegionLods when Dirty
 // NOTE: Kickstart System exists in terrain atm, move those to Tunk/Regions
@@ -23,6 +23,7 @@ byte region_dividor = 16;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 
 zox_begin_module(Regions) {

@@ -44,14 +44,12 @@ zox_sys2(RegionMountainSystem) {
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(Seed);
-    zox_sys_in(RegionPosition);
     zox_sys_in(BlockPosition2);
     zox_sys_in(BlockSize2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(Seed, seed);
-        zox_sys_i(RegionPosition, position);
         zox_sys_i(BlockPosition2, block_position);
         zox_sys_i(BlockSize2, block_size);
         if (generate->value != zox_dirty_active) {
@@ -66,9 +64,9 @@ zox_sys2(RegionMountainSystem) {
             continue;
         }
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
+        // int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
         if (dbg_log) {
-            zox_log("   - Region Position [%ix%i]", region_block_position.x, region_block_position.y);
+            zox_log("   - Region Position [%ix%i]", block_position->value.x, block_position->value.y);
         };
         int2 positions[spawn_count];
         byte sizes[spawn_count];
@@ -76,14 +74,14 @@ zox_sys2(RegionMountainSystem) {
             if (!find_position_in_bounds(seed->value, block_position->value, block_size->value, min_size, max_size, positions, sizes, j)) {
                 continue;
             }
-            int2 spawn_position = positions[j];
+            int2 mountain_position = positions[j];
             byte radius = sizes[j];
             byte height = seed_range(seed->value + j, min_height, max_height);
-            spawn_position = int2_add(region_block_position, spawn_position);
-            lint mountain_seed = position_seed2(seed->value, spawn_position);
-            spawn_mountain(world, prefab_mountain, e, mountain_seed, spawn_position, radius, height);
+            // mountain_position = int2_add(mountain_position, spawn_position);
+            lint mountain_seed = position_seed2(seed->value, mountain_position);
+            spawn_mountain(world, prefab_mountain, e, mountain_seed, mountain_position, radius, height);
             if (dbg_log) {
-                zox_log("   ++ Mountain [%ix%i] H [%i] R [%i]", spawn_position.x, spawn_position.y, height, radius);
+                zox_log("   ++ Mountain [%ix%i] H [%i] R [%i]", mountain_position.x, mountain_position.y, height, radius);
             }
         }
     }

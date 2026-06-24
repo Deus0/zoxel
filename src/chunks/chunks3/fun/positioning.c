@@ -232,18 +232,24 @@ static inline int3 positionl_to_block_position(byte3 positionl, int3  chunk_posi
     return int3_add(base, local);
 }
 
-int3 block_position_to_chunk_position(int3 block_position, byte chunk_depth) {
+int3 block_position_to_chunk_position(int3 position, byte chunk_depth) {
+    byte length = powers_of_two[chunk_depth];
+    position.x = floor_div(position.x, length);
+    position.y = floor_div(position.y, length);
+    position.z = floor_div(position.z, length);
+    return position;
+    /*floor_div
     int3 block_position2 = block_position;
     if (block_position.x < 0) block_position2.x += 1;
     if (block_position.y < 0) block_position2.y += 1;
     if (block_position.z < 0) block_position2.z += 1;
-    int3 chunk_position = int3_div1(block_position2, powers_of_two[chunk_depth]);
+    int3 chunk_position = int3_div1(block_position2, powers_of_two[chunk_depth]);*/
     // (int3) { block_position.x / chunk_size.x, block_position.y / chunk_size.y, block_position.z / chunk_size.z };
     // because for example -10 / 16 is 0 as an integer, but  coordinates we need a negative chunk position
-    if (block_position.x < 0) chunk_position.x -= 1;
+    /*if (block_position.x < 0) chunk_position.x -= 1;
     if (block_position.y < 0) chunk_position.y -= 1;
     if (block_position.z < 0) chunk_position.z -= 1;
-    return chunk_position;
+    return chunk_position;*/
     // return (int3) { block_position.x / chunk_size.x, block_position.y / chunk_size.y, block_position.z / chunk_size.z };
 }
 
