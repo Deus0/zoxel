@@ -15,19 +15,6 @@ static int cmp_system_delta_desc(const void *a, const void *b) {
     return 0;
 }
 
-// When defining system
-void add_system_log_components(ecs* world) {
-    for (int i = 0; i < zox_systems_count; i++) {
-        entity system = zox_systems[i];
-        if (!zox_valid(system)) {
-            zox_log_error("System invalid at [%i]", i);
-            continue;
-        }
-        zox_set(system, SystemDelta, { 0 });
-        zox_set(system, SystemDeltaCache, { 0 });
-    }
-}
-
 uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, uint index) {
     int display_count = 16;
     ecs_query_t *q = ecs_query(world, {
@@ -87,8 +74,6 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
     // ecs_query_fini(q);
     return index;
 }
-
-
 
 // NOTE: zox_delta_time is on main thread
 //      These system deltas are max for any thread

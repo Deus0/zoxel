@@ -2,6 +2,7 @@
 #include "timers.c"
 #include "destroy_in_frame.c"
 #include "timed_event.c"
+#include "system_time.c"
 
 void define_systems_timing(ecs* world) {
     zox_system(

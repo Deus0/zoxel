@@ -9,7 +9,7 @@ void define_systems_plots(ecs* world) {
         // [in] hierarchys.ParentLink,
         [in] hierarchys.ChildIndex,
         [out] lines2.d.LineLocalPosition2,
-        [none] PlotLine
+        [none] plots.PlotLine
     );
     zox_system(
         PlotLabelSystem,
@@ -17,14 +17,14 @@ void define_systems_plots(ecs* world) {
         // [in] hierarchys.ParentLink,
         [out] texts.TextDirty,
         [out] texts.TextData,
-        [none] PlotLabel
+        [none] plots.PlotLabel
     );
     zox_system(
         PlotLimitSystem,
         EcsOnUpdate,
-        [in] PlotDataDouble,
-        [out] PlotMin,
-        [out] PlotMax,
-        [none] Plot
+        [in] core.DataDouble,
+        [out] plots.PlotMin,
+        [out] plots.PlotMax,
+        [none] plots.Plot
     );
 }

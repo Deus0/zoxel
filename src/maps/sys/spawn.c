@@ -4,7 +4,7 @@
 // NOTE: Adds/Removes Minimap to Game UI
 zox_sys2(MapInitializeSystem) {
     byte dbg_log = 0;
-    int2 arrow_size = int2_single(16 * ui_scale);
+    int2 arrow_size = int2_single(8 * ui_scale);
     byte arrow_thickness = 1 * ui_scale;
     color arrow_fill = (color) { 155, 0, 0, 185 };
     color arrow_outline = (color) { 22, 188, 188, 233 };

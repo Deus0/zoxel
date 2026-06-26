@@ -2,10 +2,14 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Sometimes map arrow is off
+- Spawn Houses using Town Place Types
+- Add Monster spawn zones for types - remove around towns
+- Engine: Compile modules seperately into .o and then combine, during debug builds - developing
+- BUG: Crashed on start a few times randomly.. then stopped
+- BUG: Mesh didn't show on NPC randomly
 - Generate Town Names
 - Toast UI when you enter Town
-- Fix Towns at lower res
-- Add Monster spawn zones for types - remove around towns
 - Selected Block Gizmo - is flickering - only when attached to character, if detatch is stops...
 - Add Sine Scale on chest for breathing animation
 - Sine Bob + rotate the World Items

@@ -12,3 +12,7 @@ int get_thread_index() {
     }
     return local_thread_index;
 }*/
+
+void zox_define_systems_core(ecs* world) {
+
+}

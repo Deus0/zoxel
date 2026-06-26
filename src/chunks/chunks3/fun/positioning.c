@@ -232,6 +232,14 @@ static inline int3 positionl_to_block_position(byte3 positionl, int3  chunk_posi
     return int3_add(base, local);
 }
 
+int3 chunk_position_to_block_position(int3 position, byte depth) {
+    byte length = powers_of_two[depth];
+    position.x = position.x * length;
+    position.y = position.y * length;
+    position.z = position.z * length;
+    return position;
+}
+
 int3 block_position_to_chunk_position(int3 position, byte chunk_depth) {
     byte length = powers_of_two[chunk_depth];
     position.x = floor_div(position.x, length);

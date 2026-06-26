@@ -1,4 +1,5 @@
 zox_sys2(PlayerUIGameEndSystem) {
+    byte dbg_log = 1;
     byte delay_end = is_end_game_delays;
     zox_sys_world();
     zox_sys_begin();
@@ -20,15 +21,25 @@ zox_sys2(PlayerUIGameEndSystem) {
             zox_logw("Canvas is missing from Player [PlayerUIGameEndSystem]");
             continue;
         }
+        // Remove any uis
+        entity uis[zox_children_capacity];
+        uint length = zox_get_children_by_id(world, canvas->value, uis, zox_children_capacity, zox_id(Window));
+        for (uint j = 0; j < length; j++) {
+            entity e2 = uis[j];
+            if (dbg_log) {
+                zox_log("Destroying UI [%s]", zox_get_name(e2));
+            }
+            zox_delete(e2); // for second player
+        }
         // Remove UIs
-        entity pause_menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPaused));
+        /*entity pause_menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPaused));
         if (zox_valid(pause_menu)) {
             zox_delete(pause_menu); // for second player
         }
         entity taskbar = zox_get_child_by_id(world, canvas->value, zox_id(Taskbar));
         if (zox_valid(taskbar)) {
             zox_delete(taskbar);
-        }
+        }*/
         // FadeOut
         if (delay_end) {
             trigger_canvas_fade_transition(world, canvas->value, end_game_delay_fade, 0.8);

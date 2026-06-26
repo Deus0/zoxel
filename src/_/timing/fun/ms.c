@@ -6,15 +6,12 @@
 double current_time_in_seconds() {
     static LARGE_INTEGER freq;
     static int init = 0;
-
     if (!init) {
         QueryPerformanceFrequency(&freq);
         init = 1;
     }
-
     LARGE_INTEGER now;
     QueryPerformanceCounter(&now);
-
     return (double)now.QuadPart / (double)freq.QuadPart;
 }
 

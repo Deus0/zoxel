@@ -1,4 +1,5 @@
 ### Done ###
+-x Fix Towns at lower res
 -x Fix Town/Moutnains spawning in other Regions - Debug Regions more
 -x Test towns in other regions
 -x Debug Region Features

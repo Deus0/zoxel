@@ -34,7 +34,6 @@ void iterate_time(ecs *world) {
     if (max_zox_delta_time&& zox_delta_time > max_zox_delta_time) {
         zox_delta_time = max_zox_delta_time;
     }
-
     // for (int i = 0; i < record_frames_count - 1; i++) zox_delta_times[i] = zox_delta_times[i + 1];
     // zox_delta_times[record_frames_count - 1] = zox_delta_time;
 #ifdef zox_check_current_time

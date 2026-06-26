@@ -18,7 +18,7 @@ zox_sys2(LandfillChunk3System) {
         zox_sys_i(Generate, state);
         zox_sys_i(TunkLink, tunk);
         zox_sys_i(ChunkPosition, cposition);
-        zox_sys_i(NodeDepth, voctree_depth);
+        zox_sys_i(NodeDepth, depth);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(VoxelNodeDirty, dirty);
         if (state->value != zox_dirty_active) {
@@ -45,22 +45,25 @@ zox_sys2(LandfillChunk3System) {
             zox_log_error("Invalid [Tunk] [height_map] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
             continue;
         }
-        byte voctree_length = powers_of_two_byte[voctree_depth->value];
+        byte voctree_length = powers_of_two_byte[depth->value];
+        int3 chunk_block_position = chunk_position_to_block_position(cposition->value, terrain_depth); // depth->value);
         byte terrain_chunk_length = powers_of_two_byte[terrain_depth];
         int2 map_size = int2_single(terrain_chunk_length);
         // NOTE: Shouldnt this use terrain depth?? Tests failed
         byte is_bottom_chunk = cposition->value.y == -render_distance_y;
-        int chunk_voxel_position_y = cposition->value.y *  terrain_chunk_length;
+        // int chunk_voxel_position_y = cposition->value.y *  terrain_chunk_length;
         byte3 positionl;
-        int hmultiplier = 1;
-        byte ccc = voctree_depth->value;
+        byte hmultiplier = powers_of_two[terrain_depth - depth->value];
+        byte stone_dig = 4 / hmultiplier;
+        /*int hmultiplier = 1;
+        byte ccc = depth->value;
         while (ccc != terrain_depth) {
             hmultiplier *= 2;
             ccc++;
-        }
+        }*/
         // Debug only at center point
         if (dbg_log && !cposition->value.x && !cposition->value.z) {
-            zox_log("Filling Land [%ix%ix%i] -> Depth [%i]", cposition->value.x, cposition->value.y, cposition->value.z, voctree_depth->value);
+            zox_log("Filling Land [%ix%ix%i] -> Depth [%i]", cposition->value.x, cposition->value.y, cposition->value.z, depth->value);
         }
         // Get realm blocks first
         entity obsidian = zox_get_child_by_id(world, realm, zox_id(BlockObsidian));
@@ -83,15 +86,15 @@ zox_sys2(LandfillChunk3System) {
                 byte height = height_map->value[map_index];
                 // Get Top Positions from Height Map
                 int terrain_top_position = (int) height;
-                int top_position = terrain_top_position - chunk_voxel_position_y;
+                int top_position = terrain_top_position - chunk_block_position.y;
                 top_position /= hmultiplier;
                 if (top_position < 0) {
                     // NOTE: This clears above it, sometimes chunks above it keep solids when increasing depths
                     // TODO: Think of a better way here
                     positionl.y = 0;
-                    // set_clean_VoxelNode(voctree, voctree_depth->value, positionl, 0);
+                    // set_clean_VoxelNode(voctree, depth->value, positionl, 0);
                     for (positionl.y = 0; positionl.y < voctree_length; positionl.y++) {
-                        set_clean_VoxelNode(voctree, voctree_depth->value, positionl, 0);
+                        set_clean_VoxelNode(voctree, depth->value, positionl, 0);
                     }
                     continue;
                 }
@@ -122,25 +125,25 @@ zox_sys2(LandfillChunk3System) {
                 }
                 // We fill the ground up here
                 for (positionl.y = 0; positionl.y <= top_position; positionl.y++) {
-                    int terrain_position_y = chunk_voxel_position_y + positionl.y * hmultiplier;
+                    int terrain_position_y = chunk_block_position.y + positionl.y * hmultiplier;
                     // top blocks
                     byte value;
+                    // if (terrain_position_y <= 1) {
                     if (is_bottom_chunk && positionl.y == 0) {
                         value = obsidian_id > 0 ? obsidian_id : soil_id;
+                    } else if (terrain_position_y <= height - stone_dig) {
+                        value = stone_id;
                     } else {
-                        if (terrain_position_y >= terrain_top_position - 2) {
-                            if (terrain_position_y > stone_height) {
-                                value = stone_id;
-                            } else if (terrain_position_y > sand_height) {
-                                value = soil_id;
-                            } else {
-                                value = sand_id;
-                            }
-                        } else {
+                        // NOTE: Top blocks in fill map
+                        if (height >= stone_height) {
                             value = stone_id;
+                        } else if (height >= sand_height) {
+                            value = soil_id;
+                        } else {
+                            value = sand_id;
                         }
                     }
-                    set_clean_VoxelNode(voctree, voctree_depth->value, positionl, value);
+                    set_clean_VoxelNode(voctree, depth->value, positionl, value);
                 }
             }
         }

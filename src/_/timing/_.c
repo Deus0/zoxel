@@ -9,7 +9,7 @@
 #include "dbg/_.c"
 #include "timers/_.c"
 
-zox_begin_module(Timing)
+zox_begin_module(Timing) {
     define_components_timing(world);
     define_systems_timing(world);
     initialize_time();
@@ -20,6 +20,10 @@ zox_begin_module(Timing)
     // add_to_post_update_loop(log_lagging_systems);
     define_systems_timing_debug(world);
     zox_import_module(Timers);
-zox_end_module(Timing)
+    // Add debugging to this module
+    entity module = zox_id(Timing);
+    zox_add_tag(module, TrackMaxSystem);
+    zox_add(module, SystemLink);
+} zox_end_module(Timing);
 
 #endif

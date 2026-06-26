@@ -1,5 +1,8 @@
 #include "delta_log.c"
-#include "reset.c"
+#include "delta.c"
+#include "count.c"
+#include "time.c"
+#include "max.c"
 
 void add_system_process_counter(ecs* world, entity e) {
     zox_add(e, SystemProcessed);
@@ -23,5 +26,23 @@ void define_systems_timing_debug(ecs* world) {
         SystemDeltaLogSystem,
         EcsOnStore,
         [in] timing.SystemDeltaCache
+    );
+    zox_system(
+        SustemTimePlotSystem,
+        EcsOnLoad,
+        [in] timing.SystemDeltaCache,
+        [out] core.DataDouble
+    );
+    zox_system(
+        MaxSystemSystem,
+        EcsOnUpdate,
+        [out] core.SystemLink,
+        [none] timing.TrackMaxSystem
+    );
+    zox_system(
+        MaxDataSystem,
+        EcsOnUpdate,
+        [in] core.DataDouble,
+        [out] core.MaxDoubleData,
     );
 }

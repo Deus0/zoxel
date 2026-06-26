@@ -1,7 +1,7 @@
 // Sides System will generate our chunk sides before rendering
 // TODO: Let Colored use this too
 
-byte is_node_solid(const byte* solidity, const VoxelNode* node) {
+static inline byte is_node_solid(const byte* solidity, const VoxelNode* node) {
     if (!node || !node->value) {
         return 0;
     } else {
@@ -194,10 +194,7 @@ zox_sys2(Chunk3SidesSystem) {
         const VoxelNode *noctrees[6];
         byte ndepths[6];
         fetch_neightbor_chunk_data(world, neighbors, noctrees, ndepths);
-        // write_lock_SidesOctree(sides);
-        // sides->value = 0;
         sides->value = build_sides_dig(solids, voctree, noctrees, ndepths, voctree, sides, rdepth->value, 0, byte3_zero);
-        // write_unlock_SidesOctree(sides);
         sdirty->value = zox_dirty_trigger;
     }
     free(solids);

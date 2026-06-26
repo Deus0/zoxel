@@ -1,7 +1,7 @@
 /*
  *  Zox Core
  *
- *      > Maths, Generics, App, Rendering, Files, Etc
+ *      - Maths, Generics, Etc
  *
  *  The Lowest of the Lows
  */
@@ -14,7 +14,6 @@
 #include "flecs/_.c"
 #include "platforms/defines.c"
 #include "platforms/_.c"
-#include "sys/_.c"
 #include "terminals/_.c"
 #include "pathing/_.c"
 #include "sta/_.c"
@@ -23,12 +22,12 @@
 #include "types/_.c"
 #include "octrees/_.c"
 #include "strings/_.c"
+#include "com/_.c"
+#include "sys/_.c"
 #include "timing/_.c"
 #include "settings/_.c"
 
 void module_dispose_core(ecs *world, void *ctx) {
-    (void) world;
-    (void) ctx;
     dispose_hook_terminal_command();
     dispose_game_store();
     dispose_hook_files_load();
@@ -82,7 +81,6 @@ zox_begin_module(Core) {
     add_hook_terminal_command(process_arguments_core);
     add_hook_on_boot(on_boot_game_store);
     set_noise_seed(get_unique_time_seed());
-
     // Headless UI
     // add_to_post_update_loop(iterate_terminal);
     zox_module_dispose(module_dispose_core);
@@ -90,7 +88,8 @@ zox_begin_module(Core) {
     add_to_update_loop(update_web_canvas);
 #endif
     // components
-    define_components_core(world);
+    zox_define_components_core(world);
+    zox_define_systems_core(world);
     // sub modules
     zox_import_module(Timing);
     zox_import_module(Settings);

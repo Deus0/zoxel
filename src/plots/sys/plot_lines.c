@@ -11,11 +11,11 @@ zox_sys2(PlotLineSystem) {
         zox_sys_i(ChildIndex, index);
         zox_sys_o(LineLocalPosition2, position);
         entity parent = zox_get_parent(world, e);
-        if (!parent || !zox_has(parent, PlotDataDouble)) {
-            zox_log_error("No PlotDataDouble found on parent");
+        if (!parent || !zox_has(parent, DataDouble)) {
+            zox_log_error("No DataDouble found on parent");
             continue;
         }
-        zox_geter(parent, PlotDataDouble, data);
+        zox_geter(parent, DataDouble, data);
         zox_geter_value(parent, PlotMin, double, min);
         zox_geter_value(parent, PlotMax, double, max);
         zox_geter_value(parent, LayoutSize, int2, parent_size);

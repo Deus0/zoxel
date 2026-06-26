@@ -19,33 +19,34 @@ zox_sys2(MapPositionSystem) {
             continue;
         }
         int2 new_position = zox_getv(camera, StreamPosition2);
-        if (!int2_equals(position->value, new_position)) {
-            position->value = new_position;
-            if (dbg_log) {
-                zox_log("Map Position Updated [%ix%i]", new_position.x, new_position.y);
-            }
-            zox_geter(terrain->value, TunkLinks, tunks);
-            // for all textures
-            entity body = zox_get_child_by_id(world, e, zox_id(WindowBody));
-            if (!zox_valid(body)) {
-                zox_loge("No body on Minimap");
-                continue;
-            }
-            iter it2 = zox_children(world, body);
-            while (zox_children_next(it2)) {
-                for (int j = 0; j < it2.count; j++) {
-                    entity e2 = it2.entities[j];
-                    if (!zox_valid(e2) || !zox_has(e2, MapPiecePosition)) {
-                        continue;
-                    }
-                    int2 grid_postion = zox_getv(e2, MapPiecePosition);
-                    int2 tunk_position = int2_add(position->value, grid_postion);
-                    entity tunk = int2_hashmap_get(tunks->value, tunk_position);
-                    zox_set(e2, TunkLink, { tunk });
-                    zox_set(e2, Generate, { zox_dirty_trigger });
-                    if (dbg_log >= 2) {
-                        zox_log(" - Map Piece [%ix%i] Updated [%ix%i]", grid_postion.x, grid_postion.y, tunk_position.x, tunk_position.y);
-                    }
+        if (int2_equals(position->value, new_position)) {
+            continue;
+        }
+        position->value = new_position;
+        if (dbg_log) {
+            zox_log("Map Position Updated [%ix%i]", new_position.x, new_position.y);
+        }
+        zox_geter(terrain->value, TunkLinks, tunks);
+        // for all textures
+        entity body = zox_get_child_by_id(world, e, zox_id(WindowBody));
+        if (!zox_valid(body)) {
+            zox_loge("No body on Minimap");
+            continue;
+        }
+        iter it2 = zox_children(world, body);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                if (!zox_valid(e2) || !zox_has(e2, MapPiecePosition)) {
+                    continue;
+                }
+                int2 grid_postion = zox_getv(e2, MapPiecePosition);
+                int2 tunk_position = int2_add(position->value, grid_postion);
+                entity tunk = int2_hashmap_get(tunks->value, tunk_position);
+                zox_set(e2, TunkLink, { tunk });
+                zox_set(e2, Generate, { zox_dirty_trigger });
+                if (dbg_log >= 2) {
+                    zox_log(" - Map Piece [%ix%i] Updated [%ix%i]", grid_postion.x, grid_postion.y, tunk_position.x, tunk_position.y);
                 }
             }
         }

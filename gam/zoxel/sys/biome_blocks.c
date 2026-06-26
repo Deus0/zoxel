@@ -3,7 +3,7 @@
 
 void generate_colors(lint seed, Colors *colors) {
     srand((uint) seed);
-    // One random seed color, then the rest are related off it.
+    // One random seed color, then the rest are related off it
     float3 dirt_hsv = (float3) {
         frand_range(0, 360),
         frand_range(18, 48),
@@ -12,21 +12,22 @@ void generate_colors(lint seed, Colors *colors) {
     // Grass: same family, more alive.
     float3 grass_hsv = hsv_shift(
         dirt_hsv,
-        frand_range(115.0f, 235.0f),
+        rand_range(0, 100) >= 50 ? frand_range(160, 200) : frand_range(-200, -160),
+        // frand_range(115.0f, 235.0f),
         frand_range(8.0f, 25.0f),
         frand_range(18.0f, 42.0f)
     );
     // Sand: dirt warmed and bleached a bit.
     float3 sand_hsv = hsv_shift(
         dirt_hsv,
-        frand_range(-64.0f, 64.0f),
+        rand_range(0, 100) >= 50 ? frand_range(140.0f, 220.0f) : frand_range(-220, -140),
         frand_range(-12.0f, 16.0f),
         frand_range(8.0f, 24.0f)
     );
     // Stone: the same note, stripped down and quiet.
     float3 stone_hsv = hsv_shift(
         dirt_hsv,
-        frand_range(-10.0f, 10.0f),
+        frand_range(-35, 35),
         frand_range(-55.0f, -25.0f),
         frand_range(8.0f, 22.0f)
     );
@@ -53,7 +54,7 @@ void generate_colors(lint seed, Colors *colors) {
     );
     // Limit our value within a visually safe range
     // NOTE: too dark and we cannot see
-    float vmin = 15;
+    float vmin = 10;
     float vmax = 90;
     dirt_hsv.z = clampf(dirt_hsv.z, vmin, vmax);
     grass_hsv.z = clampf(grass_hsv.z, vmin, vmax);
