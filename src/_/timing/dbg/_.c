@@ -3,6 +3,7 @@
 #include "count.c"
 #include "time.c"
 #include "max.c"
+#include "max_data.c"
 
 void add_system_process_counter(ecs* world, entity e) {
     zox_add(e, SystemProcessed);

@@ -1,28 +1,25 @@
 // #define zox_debug_modules
 
-#define zox_module(name)\
-    ECS_MODULE(world, name);
+// #define zoxd_module(T) ECS_COMPONENT_DECLARE(T)
+#define zoxd_module(T) ECS_DECLARE(T)
 
-#define zox_import_module(name)\
-    ECS_IMPORT(world, name)
+#define zox_module(T) ECS_MODULE(world, T)
 
-#define zox_module_dispose(function)\
-    ecs_atfini(world, function, NULL);
+#define zox_import_module(T) ECS_IMPORT(world, T)
 
-#define zox_begin_module(name)\
-    void name##Import(ecs *world) {\
-        zox_module(name)\
+#define zox_module_dispose(function) ecs_atfini(world, function, NULL);
+
+#define zox_begin_module(T)\
+    void T##Import(ecs* world) {\
+        zox_module(T);\
         zox_statistics_modules++;\
-        zox_debug_module(world, #name, ecs_id(name));
+        zox_debug_module(world, #T, zox_id(T));
 
-#define zox_end_module(name)\
+#define zox_end_module(T)\
     /* end timings here */\
 }
 
-void zox_debug_module(ecs *world,
-    const char *name,
-    const entity module_type)
-{
+void zox_debug_module(ecs *world, const char *name, entity module_type) {
 #ifdef zox_debug_modules
     zox_log(" + module [%s] > [%s]\n", name, zox_get_name(module_type))
 #else
@@ -36,5 +33,4 @@ void zox_debug_module2(ecs *world, const char *name, const entity module_type) {
     zox_log(" + module [%s] > [%s]\n", name, zox_get_name(module_type))
 }
 
-#define zox_debug_single_module(name)\
-    zox_debug_module2(world, #name, ecs_id(name));
+#define zox_debug_single_module(T) zox_debug_module2(world, #T, zox_id(T));

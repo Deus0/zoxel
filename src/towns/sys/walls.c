@@ -36,21 +36,18 @@ zox_sys2(TownWallsSystem) {
         if (!bricks_id) {
             continue;
         }
+        // Home Placeholders
+        byte home_wall_id = bricks_id;
+        byte home_floor_id = bricks_id;
+        byte home_roof_id = bricks_id;
         byte voctree_length = powers_of_two_byte[depth->value];
-        // int3 chunk_block_position = chunk_position_to_block_position(cposition->value, depth->value);
         int3 chunk_block_position = chunk_position_to_block_position(cposition->value, terrain_depth); // voctree_depth->value);
-        // int3 chunk_block_position = (int3) { cposition->value.x * voctree_length, cposition->value.y * voctree_length, cposition->value.z * voctree_length };
-        int chunk_position_y = chunk_block_position.y; // cposition->value.y * voctree_length;
+        int chunk_position_y = chunk_block_position.y;
         byte3 positionl;
-        byte wall_height = 6; // rand_range(4, 8);
+        byte gate_height = 6; // rand_range(4, 8);
+        byte wall_height = 8; // rand_range(4, 8);
+        byte home_height = 6; // rand_range(4, 8);
         byte hmultiplier = powers_of_two[terrain_depth - depth->value];
-        /*int hmultiplier = 1;
-        byte ccc = depth->value;
-        while (ccc != terrain_depth) {
-            hmultiplier *= 2;
-            // wall_height /= 2;
-            ccc++;
-        }*/
         int max_chunk_length = powers_of_two[terrain_depth];
         int2 map_size = int2_single(max_chunk_length);
         if (!zox_valid(tunk->value)) {
@@ -77,7 +74,7 @@ zox_sys2(TownWallsSystem) {
                     zox_log("Placing Town Wall at [%ix%i]", chunk_block_position.x + positionl.x, chunk_block_position.z + positionl.z);
                 }
                 // byte wall_height = zox_getv(town, Height);
-                if (town_value == 2) {
+                if (town_value == zox_town_type_wall) {
                     for (int h = 1; h <= wall_height; h++) {
                         int global_y = height + h;
                         positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
@@ -87,13 +84,49 @@ zox_sys2(TownWallsSystem) {
                     }
                 }
                 // NOTE: Town Gate! has a gap!
-                else if (town_value == 3) {
-                    for (int h = 4; h <= wall_height; h++) {
+                else if (town_value == zox_town_type_gate) {
+                    for (int h = gate_height; h <= wall_height; h++) {
                         int global_y = height + h;
                         positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {
                             set_clean_VoxelNode(voctree, depth->value, positionl, bricks_id);
                         }
+                    }
+                }
+                // Home Walls
+                else if (town_value == zox_town_type_home_wall) {
+                    for (int h = 2; h < home_height; h++) {
+                        int global_y = height + h;
+                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                        if (positionl.y >= 0 && positionl.y < voctree_length) {
+                            set_clean_VoxelNode(voctree, depth->value, positionl, home_wall_id);
+                        }
+                    }
+                }
+                // Home Door Wall Overhang
+                else if (town_value == zox_town_type_home_door) {
+                    for (int h = home_height - 1; h < home_height; h++) {
+                        int global_y = height + h;
+                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                        if (positionl.y >= 0 && positionl.y < voctree_length) {
+                            set_clean_VoxelNode(voctree, depth->value, positionl, home_wall_id);
+                        }
+                    }
+                }
+                // Roofs
+                if (town_value == zox_town_type_home || town_value == zox_town_type_home_door || town_value == zox_town_type_home_wall) {
+                    int global_y = height + home_height;
+                    positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                    if (positionl.y >= 0 && positionl.y < voctree_length) {
+                        set_clean_VoxelNode(voctree, depth->value, positionl, home_roof_id);
+                    }
+                }
+                // Floors
+                if (town_value == zox_town_type_home || town_value == zox_town_type_home_door || town_value == zox_town_type_home_wall) {
+                    int global_y = height + 1;
+                    positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                    if (positionl.y >= 0 && positionl.y < voctree_length) {
+                        set_clean_VoxelNode(voctree, depth->value, positionl, home_floor_id);
                     }
                 }
             }

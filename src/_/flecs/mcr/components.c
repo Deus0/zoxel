@@ -1,5 +1,4 @@
-#define zoxc_custom(name)\
-    ECS_COMPONENT_DECLARE(name)
+#define zoxc_custom(name) ECS_COMPONENT_DECLARE(name)
 
 #define zoxc(name, type)\
     typedef struct {\

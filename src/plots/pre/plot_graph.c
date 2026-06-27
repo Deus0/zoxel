@@ -13,7 +13,8 @@ entity spawn_prefab_plot_graph(ecs *world, entity prefab) {
     return e;
 }
 
-entity spawn_plot_graph(ecs* world, entity parent, entity prefab, int2 size, int points_count, double start_value, color text_fill, color text_outline, color line_color, byte is_label, byte label_line) {
+// , byte is_label, byte label_line color text_fill, color text_outline,
+entity spawn_plot_graph(ecs* world, entity parent, entity prefab, int2 size, int points_count, double start_value, color line_color) {
     int lines_count = record_frames_count;
     int line_margins = 8;   // x
     float line_spacing = ( size.x - line_margins * 2 ) / (float) (lines_count - 1);
@@ -24,21 +25,13 @@ entity spawn_plot_graph(ecs* world, entity parent, entity prefab, int2 size, int
     float2 anchor = float2_half;
     int2 position = int2_zero;
     entity e = spawn_layout2(world, prefab, parent, position, size, anchor, 0);
+    // Initialize the Curve Data
     DataDouble data = (DataDouble) { 0 };
     initialize_DataDouble(&data, points_count);
     for (int i = 0; i < points_count; i++) {
         data.value[i] = start_value;
     }
     zox_set_ptr(e, DataDouble, data);
-    if (is_label) {
-        int2 position = (int2) { 0, - label_line * (14 + 4 * 2) };
-        float2 position_anchor = (float2) { 0, 1.0f };
-        entity e2 = spawn_text(world, prefab_text, e, position, position_anchor, label_font_size, zox_alignment_top_left, label_margins, "", text_fill, text_outline);
-        // entity e2 = spawn_text_old(world, text_data);
-        // zox_set_parent(world, e2, e);
-        zox_add_tag(e2, PlotLabel);
-    }
-    // our plot here
     for (int i = 0; i < lines_count; i++) {
         int position_x = line_margins + i * line_spacing;
         int2 start_position = (int2) { position_x, lines_min_height };
@@ -50,3 +43,12 @@ entity spawn_plot_graph(ecs* world, entity parent, entity prefab, int2 size, int
     }
     return e;
 }
+
+    /*if (is_label) {
+        int2 position = (int2) { 0, - label_line * (14 + 4 * 2) };
+        float2 position_anchor = (float2) { 0, 1.0f };
+        entity e2 = spawn_text(world, prefab_text, e, position, position_anchor, label_font_size, zox_alignment_top_left, label_margins, "", text_fill, text_outline);
+        // entity e2 = spawn_text_old(world, text_data);
+        // zox_set_parent(world, e2, e);
+        zox_add_tag(e2, PlotLabel);
+    }*/

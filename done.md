@@ -1,4 +1,24 @@
-### Done ###
+# Done
+
+-x Towns: Spawn Houses using Town Place Types
+-x Towns: Town Heightmap should average out more, smooth the whole thing based on average
+-x Slider UI to show Text of Number
+-x Disable next button until animating dialogue finishes
+-x spawn town based on region + town data
+-x spawn player in town
+-x Simple Health Damage Overlay Cube - Transparent Mesh
+-x Raycast Range should be Skill Range
+	-x Change when skill is equiped - using actions
+-x Simple Block Overlay Effect - alpha from health
+-x Arm Swing when attackingblock
+-x Add the Highest timing system on Profiler labels - Min/Max/System(SystemName) 13ms - for the last mintute there
+-x BUG: Lower depth chunks have issues with npcs atm
+-x Add simple transparent cube where damage is
+-x set alpha based on health for WorldBlock entities
+-x disable next button until dialogue animation finished
+-x Use SdlJoystick instead of Joystick for better Compatibility
+-x Block Damage Overlay
+-x Redo the near RenderDistance Option and add a second option for it, Near Distance
 -x Fix Towns at lower res
 -x Fix Town/Moutnains spawning in other Regions - Debug Regions more
 -x Test towns in other regions

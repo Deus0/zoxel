@@ -31,15 +31,6 @@ zox_sys2(PlayerUIGameEndSystem) {
             }
             zox_delete(e2); // for second player
         }
-        // Remove UIs
-        /*entity pause_menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuPaused));
-        if (zox_valid(pause_menu)) {
-            zox_delete(pause_menu); // for second player
-        }
-        entity taskbar = zox_get_child_by_id(world, canvas->value, zox_id(Taskbar));
-        if (zox_valid(taskbar)) {
-            zox_delete(taskbar);
-        }*/
         // FadeOut
         if (delay_end) {
             trigger_canvas_fade_transition(world, canvas->value, end_game_delay_fade, 0.8);

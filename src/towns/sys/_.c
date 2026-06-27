@@ -19,6 +19,7 @@ void zox_define_systems_towns(ecs* world) {
         [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
+        [out] tunks.HeightMap,
         [out] tunks.VegetationMap,
         [out] towns.TownMap,
         [none] tunks.Tunk

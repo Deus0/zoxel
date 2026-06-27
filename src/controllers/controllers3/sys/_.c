@@ -3,9 +3,7 @@
 #include "rotation.c"
 #include "jump.c"
 #include "trigger.c"
-#include "respawn.c"
 #include "flying.c"
-#include "pause.c"
 #include "cameras.c"
 #include "shortcuts.c"
 #include "actions.c"
@@ -13,15 +11,8 @@
 #include "dialogue_player.c"
 #include "dialogue_exit.c"
 #include "dialogue_end.c"
-#include "game_start.c"
-#include "game_start2.c"
-#include "game_start3.c"
-#include "game_end.c"
 #include "head_camera.c"
 #include "walk.c"
-#include "actionbar.c"
-#include "crosshair.c"
-#include "touchui.c"
 
 void define_systems_controllers3(ecs *world) {
     zox_system(
@@ -70,22 +61,6 @@ void define_systems_controllers3(ecs *world) {
         [none] players.Player
     );
     zox_system_1(
-        Player3RespawnSystem,
-        EcsOnUpdate,
-        [in] cameras.CameraLink,
-        [out] players.PlayerStateDirty,
-        [out] players.PlayerState,
-        [out] characters.CharacterLink,
-        [none] players.Player
-    );
-    zox_system(
-        PlayerPauseSystem,
-        EcsOnUpdate,
-        [in] players.PlayerState,
-        [in] games.GameLink,
-        [none] players.Player
-    );
-    zox_system_1(
         PlayerToggleCameraSystem,
         EcsOnUpdate,
         [in] players.PlayerState,
@@ -94,12 +69,22 @@ void define_systems_controllers3(ecs *world) {
         [in] layouts2.CanvasLink,
         [none] players.Player
     );
-    // more shortcuts
+    zox_system(
+        HeadCameraSystem,
+        EcsPostUpdate,
+        [in] bones.SkeletonDirty,
+        [in] bones.HeadBoneLink,
+        [in] cameras.CameraLink,
+        [in] blocks.BlockScale,
+        [none] bones.Skeleton
+    );
+    // Shortcuts
     zox_system(
         QolShortcutsSystem,
         EcsOnUpdate,
         [none] players.Player
     );
+    // Dialogue
     zox_system_1(
         DialogueBeginSystem,
         EcsOnUpdate,
@@ -128,79 +113,5 @@ void define_systems_controllers3(ecs *world) {
         [in] nodes.NodetreeEnd,
         [in] dialogues.DialogueUILink,
         [out] dialogues.SpeakerLinks
-    );
-    zox_system(
-        HeadCameraSystem,
-        EcsPostUpdate,
-        [in] bones.SkeletonDirty,
-        [in] bones.HeadBoneLink,
-        [in] cameras.CameraLink,
-        [in] blocks.BlockScale,
-        [none] bones.Skeleton
-    );
-    zox_system_1(
-        PlayerCrosshairSystem,
-        EcsOnUpdate,
-        [in] players.PlayerState,
-        [in] players.PlayerStateDirty,
-        [in] layouts2.CanvasLink,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerActionbarSystem,
-        EcsOnUpdate,
-        [in] players.PlayerState,
-        [in] players.PlayerStateDirty,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerTouchUISystem,
-        EcsOnUpdate,
-        [in] players.PlayerState,
-        [in] players.PlayerStateDirty,
-        [in] layouts2.CanvasLink,
-        [in] inputs.DeviceMode,
-        [none] players.Player
-    );
-    zox_system_1(
-        GameStartStreamerSystem,
-        EcsOnUpdate,
-        [in] cameras.CameraLink,
-        [out] players.PlayerState,
-        [out] players.PlayerStateDirty,
-        [none] players.Player3
-    );
-    zox_system(
-        PlayerTownFinderSystem,
-        EcsOnUpdate,
-        [in] cameras.CameraLink,
-        [out] players.PlayerState,
-        [out] players.PlayerStateDirty,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerBeginSystem,
-        EcsOnUpdate,
-        [in] cameras.CameraLink,
-        [in] characters.CharacterLink,
-        [out] players.PlayerState,
-        [out] players.PlayerStateDirty,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerGame3EndSystem,
-        EcsOnUpdate,
-        [in] players.PlayerState,
-        [in] players.PlayerStateDirty,
-        [in] cameras.CameraLink,
-        [in] characters.CharacterLink,
-        [none] players.Player3
-    );
-    zox_system(
-        WalkStateSystem,
-        EcsOnUpdate,
-        [in] physics3.Velocity3D,
-        [out] bones.WalkState,
-        [none] bones.Skeleton
     );
 }

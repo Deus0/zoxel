@@ -132,8 +132,8 @@ zox_sys2(InspectorSpawnSystem) {
         };
         SpawnButtonData child_button_data = {
             .prefab_text = prefab_text,
-            .fill = editor_color_fill,
-            .outline = editor_color_fillo,
+            .fill = editor_window_fill,
+            .outline = editor_window_outline,
         };
         LayoutParentData canvas_data = { .e = canvas };
         LayoutParentData child_parent_data = { .e = list_ui };

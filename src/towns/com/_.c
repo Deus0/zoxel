@@ -4,6 +4,10 @@ zoxc_byte(WallThickness);
 zoxc_byte(WallHeight);
 zoxc_byte2(TownSize);
 zox_tag(TownTexture);
+zox_tag(Home);
+zoxc_byte2(HomeSize);
+zoxc_byte(HomeHeight);
+#include "types.c"
 
 void zox_define_components_towns(ecs* world) {
     zoxd_tag(Town);
@@ -12,4 +16,7 @@ void zox_define_components_towns(ecs* world) {
     zoxd_byte(WallHeight);
     zoxd_byte2(TownSize);
     zoxd_tag(TownTexture);
+    zoxd_tag(Home);
+    zoxd_byte2(HomeSize);
+    zoxd_byte(HomeHeight);
 }

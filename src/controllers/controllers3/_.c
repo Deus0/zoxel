@@ -7,11 +7,13 @@
 #include "fun/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "game/_.c"
 #include "dbg/_.c"
 
 zox_begin_module(Controllers3) {
     define_components_controllers3D(world);
     define_systems_controllers3(world);
+    zox_define_systems_controllers3_game(world);
     add_hook_spawn_prefabs(spawn_prefabs_controllers3D);
 } zox_end_module(Controllers3);
 

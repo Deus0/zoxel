@@ -1,6 +1,8 @@
 #ifndef zoxm_time
 #define zoxm_time
 
+// zoxd_module(Timing);
+entity timing_module;
 #include "set/_.c"
 #include "com/_.c"
 #include "mcr/_.c"
@@ -24,6 +26,7 @@ zox_begin_module(Timing) {
     entity module = zox_id(Timing);
     zox_add_tag(module, TrackMaxSystem);
     zox_add(module, SystemLink);
+    timing_module = module;
 } zox_end_module(Timing);
 
 #endif

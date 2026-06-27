@@ -2,6 +2,7 @@
 #include "inspector.c"
 #include "input.c"
 #include "inspector_label.c"
+#include "max_system_time.c"
 
 void define_systems_editor(ecs *world) {
     zox_system_1(
@@ -34,5 +35,12 @@ void define_systems_editor(ecs *world) {
         [in] core.EntityTarget,
         [in] core.ComponentTarget,
         [none] editor.InspectorLabel
+    );
+    zox_system(
+        MaxSystemTimeLabelSystem,
+        EcsOnUpdate,
+        [out] texts.TextData,
+        [out] texts.TextDirty,
+        [none] editor.MaxSystemTimeLabel
     );
 }

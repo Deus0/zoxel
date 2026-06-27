@@ -34,10 +34,7 @@ zox_sys2(MountainMapSystem) {
         // now generate height_map
         int max_chunk_length = powers_of_two[terrain_depth];
         int2 map_size = int2_single(max_chunk_length);
-        int2 position_start = (int2) {
-            tunk_position->value.x * map_size.x,
-            tunk_position->value.y * map_size.y
-        };
+        int2 position_start = (int2) { tunk_position->value.x * map_size.x,  tunk_position->value.y * map_size.y };
         entity mountains[zox_children_capacity];
         uint mountains_length = zox_get_children_by_id(world, region->value, mountains, zox_children_capacity, zox_id(Mountain));
         if (dbg_log >= 2) {
