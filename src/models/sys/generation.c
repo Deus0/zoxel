@@ -37,14 +37,14 @@ zox_sys2(VoxGenerationSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_gett_value(e, VoxUniqueColors) : default_unique_colors;
-        byte vregions = zox_has(e, VRegions) ? zox_gett_value(e, VRegions) :  16;
-        float color_rr = zox_has(e, VoxColorRange) ? zox_gett_value(e, VoxColorRange) : default_color_range;
+        byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_getv(e, VoxUniqueColors) : default_unique_colors;
+        byte vregions = zox_has(e, VRegions) ? zox_getv(e, VRegions) :  16;
+        float color_rr = zox_has(e, VoxColorRange) ? zox_getv(e, VoxColorRange) : default_color_range;
         float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
         byte node_depth = depth->value;
         // depth->value = node_depth;
         byte colors_count = unique_colors + is_generate_vox_outlines;
-        initialize_ColorRGBs(colors, colors_count);
+        resize_ColorRGBs(colors, colors_count);
         color_rgb color_rgb_2 = color_to_color_rgb(fill->value);
         // black color
         byte black_voxel = unique_colors + 1;

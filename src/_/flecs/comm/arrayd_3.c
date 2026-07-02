@@ -49,9 +49,9 @@ void dispose_##T##_const(const T *ptr) {\
 \
 void initialize_##T(T* ptr, int length) {\
     if (length > 0) {\
-        type *new_memory = zalloc(length * sizeof(type));\
+        type *new_memory = malloc(length * sizeof(type));\
         if (!new_memory) {\
-            zox_log_error("zalloc failure " #T);\
+            zox_log_error("malloc failure " #T);\
         } else {\
             ptr->value = new_memory;\
             ptr->length = length;\
@@ -67,7 +67,7 @@ void resize_##T(T* ptr, int length) {\
         } else if (!ptr->value) {\
             initialize_##T(ptr, length);\
         } else {\
-            type* new_memory = rezalloc(ptr->value, length * sizeof(type));\
+            type* new_memory = realloc(ptr->value, length * sizeof(type));\
             if (!new_memory) {\
                 zox_log_error("Failure with realloc");\
             } else {\
@@ -85,10 +85,10 @@ byte add_to_##T(T *ptr, const type data) { \
         zox_stats_arrayds_mallocs++; \
     } \
     type* new_value = ptr->value \
-        ? rezalloc(ptr->value, new_length * sizeof(type)) \
-        : zalloc(new_length * sizeof(type)); \
+        ? realloc(ptr->value, new_length * sizeof(type)) \
+        : malloc(new_length * sizeof(type)); \
     if (!new_value) { \
-        zox_log_error("zalloc failed in add_to_" #T); \
+        zox_log_error("malloc failed in add_to_" #T); \
         spin_unlock(&ptr->lock); \
         return 0; \
     } \
@@ -114,7 +114,7 @@ byte remove_at_##T(T *ptr, int index) {\
         ptr->value = NULL;\
         zox_stats_arrayds_mallocs--; \
     } else {\
-        ptr->value = rezalloc(ptr->value, ptr->length * sizeof(type));\
+        ptr->value = realloc(ptr->value, ptr->length * sizeof(type));\
     }\
     spin_unlock(&ptr->lock); \
     return 1;\
@@ -128,9 +128,9 @@ void clone_##T(T* dst, const T* src) {\
     }\
     if (src->value) {\
         int memory_length = src->length * sizeof(type);\
-        type *value = zalloc(memory_length);\
+        type *value = malloc(memory_length);\
         if (!value) {\
-            zox_log_error("zalloc failed clone_" #T);\
+            zox_log_error("malloc failed clone_" #T);\
             return;\
         }\
         memcpy(value, src->value, memory_length);\

@@ -45,7 +45,9 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
     zox_set(e, RealmLink, { realm });
     zox_set(e, TerrainLink, { terrain });
     zox_name("character3");
-    set_ZoxName(world, e, name);
+    if (name) {
+        set_ZoxName(world, e, name);
+    }
     zox_set(e, Seed, { seed });
     zox_set(e, Position3D, { position });
     zox_set(e, Rotation3D, { rotation });

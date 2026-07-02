@@ -1,5 +1,3 @@
-
-
 // NOTE: From Module, go through all systems and find biggest
 zox_sys2(MaxDataSystem) {
     zox_sys_world();
@@ -11,6 +9,10 @@ zox_sys2(MaxDataSystem) {
         zox_sys_i(DataDouble, data);
         zox_sys_o(MaxDoubleData, max);
         max->value = 0;
+        if (!data->value || !data->length) {
+            zox_logw("DataDouble not intiialized for [%s]", zox_get_name(e));
+            continue;
+        }
         for (int j = 0; j < data->length; j++) {
             if (data->value[j] > max->value) {
                 max->value = data->value[j];

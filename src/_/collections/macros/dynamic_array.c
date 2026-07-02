@@ -78,7 +78,7 @@ data_type* zinalize_##data_type##_##array_d(data_type##_##array_d* dynamic_array
         dispose##_##data_type##_##array_d(dynamic_array);\
         return NULL;\
     } else {\
-        data_type* data = zalloc(dynamic_array->size * sizeof(data_type)); \
+        data_type* data = malloc(dynamic_array->size * sizeof(data_type)); \
         memcpy(data, dynamic_array->data, dynamic_array->size * sizeof(data_type)); \
         dispose##_##data_type##_##array_d(dynamic_array);\
         return data;\

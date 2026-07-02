@@ -7,6 +7,7 @@
 #include "inputs/_.c"
 #include "graphics/_.c"
 #include "apps/_.c"
+#include "names/_.c"
 #include "saves/_.c"
 // basic b locks
 #include "assets/_.c" // uses sdl path function atm
@@ -101,6 +102,7 @@ zox_begin_module(Zox) {
     zox_import_module(Screens);
     zox_import_module(Inputs);
     zox_import_module(Apps);
+    zox_import_module(Names);
     zox_import_module(Saves);
     zox_import_module(Graphics);
     zox_import_module(Assets);

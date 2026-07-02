@@ -12,6 +12,5 @@ entity spawn_respawn_ui(ecs* world, entity player, entity canvas) {
     zox_set_unique_name(e, "respawn_ui");
     zox_add_tag(e, RespawnUI);
     zox_set(e, Layer2D, { game_overlay_layer + 1 });
-    zox_log("SPAWNED RESPAWN UI");
     return e;
 }

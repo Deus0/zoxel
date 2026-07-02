@@ -1,5 +1,5 @@
+#include "spawn.c"
 #include "maps.c"
-#include "regions.c"
 
 void zox_define_systems_mountains(ecs* world) {
     zox_system_1(

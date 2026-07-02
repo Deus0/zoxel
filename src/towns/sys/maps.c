@@ -1,6 +1,7 @@
 // NOTE: This builds out Simple Town Data into 2D Maps!
 zox_sys2(TownMapSystem) {
     byte dbg_log = 0;
+    byte is_effect_heights = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -140,7 +141,9 @@ zox_sys2(TownMapSystem) {
                     int distance = int2_distance(gposition, town_position);
                     float distancef = distance / (float) min_dim;
                     // lerp the value based off distance
-                    height_map->value[index] = (distancef) * height_map->value[index] + (1 - distancef) * town_height_target;
+                    if (is_effect_heights) {
+                        height_map->value[index] = (distancef) * height_map->value[index] + (1 - distancef) * town_height_target;
+                    }
                 }
             }
             entity homes[zox_children_capacity];
@@ -192,7 +195,9 @@ zox_sys2(TownMapSystem) {
                             value = zox_town_type_home;
                         }
                         town_map->value[index] = value;
-                        height_map->value[index] = town_height_target;
+                        if (is_effect_heights) {
+                            height_map->value[index] = town_height_target;
+                        }
                     }
                 }
             }

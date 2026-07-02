@@ -1,11 +1,11 @@
+#include "spawn.c"
 #include "maps.c"
 #include "walls.c"
-#include "regions.c"
 
 void zox_define_systems_towns(ecs* world) {
     zox_system_1(
         RegionTownsSystem,
-        zoxp_mainthread,
+        zoxp_mainthread + 1,
         [in] core.Generate,
         [in] core.Seed,
         [in] blocks.BlockPosition2,

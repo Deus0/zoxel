@@ -14,6 +14,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
         EcsOnUpdate,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
+        [in] layouts2.CanvasLink,
         [none] players.Player3
     );
     zox_system_1(
@@ -53,7 +54,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
         PlayerBeginSystem,
         EcsOnUpdate,
         [in] cameras.CameraLink,
-        [in] characters.CharacterLink,
+        [out] characters.CharacterLink,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,
         [none] players.Player3

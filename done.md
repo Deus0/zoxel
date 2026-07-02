@@ -1,5 +1,10 @@
 # Done
 
+-x Body: Arms not moving anymore - Debug WalkState
+-x Towns: Generate Town Names - use generic name generation system, tag with GeneratedName, itll use Seed
+-x Towns: Town Placement should avoid mountains
+-x Towns: Place more Homes in each Town, use a position allocator for home spawning
+-o Generate: Make Region Generation multiple frames state?
 -x Towns: Spawn Houses using Town Place Types
 -x Towns: Town Heightmap should average out more, smooth the whole thing based on average
 -x Slider UI to show Text of Number

@@ -112,13 +112,7 @@ zox_sys2(Characters3SpawnSystem) {
             float3_add_float3_p(&position, positionf->value); // chunk
             float3_add_float3_p(&position, float3_single(cscale->value * 0.5f));
             float4 rotation = quaternion_from_euler((float3) { 0, (rand() % 361) * degreesToRadians, 0 });
-            char* name = generate_name(npc_seed);
-            entity e2 = spawn_character3_npc(world, meta, realm, terrain, npc_seed, model, character_depth, render_disabled->value, position, rotation, name);
-            if (name) {
-                free(name);
-            } else {
-                zox_loge("NPC Name generation Failed");
-            }
+            entity e2 = spawn_character3_npc(world, meta, realm, terrain, npc_seed, model, character_depth, render_disabled->value, position, rotation, NULL);
             if (!zox_valid(e2)) {
                 zox_loge("spawn_character3 failed");
                 continue;
@@ -134,6 +128,5 @@ zox_sys2(Characters3SpawnSystem) {
             }
         }
         spawned->value = 1;
-        // ever_spawned->value = 1;
     }
 } zox_sys_end(Characters3SpawnSystem);

@@ -111,7 +111,6 @@ flecs:
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
 	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --debug
-	# $(CC) $(cflags_dev) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
 dev: $(TARGET_DEV)
 
@@ -162,7 +161,11 @@ gdbv: dev
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV) --verbose -su
 
 val: dev
-	valgrind ./$(TARGET_DEV)
+	valgrind --track-origins=yes ./$(TARGET_DEV)
+
+# Track memory leaks
+valt: dev
+	valgrind --track-origins=yes ./$(TARGET_DEV)
 
 gdbp:
 	$(MAKE) pick ACTION=gdb

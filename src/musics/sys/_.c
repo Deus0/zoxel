@@ -1,11 +1,9 @@
 #include "play.c"
 #include "generate.c"
-
 realm_clear_system(PlaylistLinks);
 
 void define_systems_music(ecs* world) {
     realm_clear_systemd(musics, PlaylistLinks);
-
     zox_system_1(
         MusicGenerateSystem,
         zoxp_mainthread,
@@ -15,7 +13,6 @@ void define_systems_music(ecs* world) {
         [out] musics.NoteLinks,
         [none] musics.Music
     );
-
     zox_system_1(
         MusicPlaySystem,
         zoxp_mainthread,

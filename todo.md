@@ -2,12 +2,22 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Bug: Fix music on Main Menu
+- Bug: Fix music loading properly
+- Bug: Realm Generation: Memory leak somewhere, breaks during VoxGenerationSystem - color spawning - test with valgrind on x86 later
+- Bug: Map Arrow pointing wrong way
+- Bug: Character shakes - smooth the physics - put to sleep when not moving
+- Bug: lines of selecetd block should render over destruction overlay
+- Bug: died holding block, stuck to model?
+
+- Refactor: load files on boot and not per realm
+
+# Misc
+- Show max system time's graph, in red, overlay over the regular graph
+
 # Towns
-- Towns: Avoid Mountains
+- TownLinkSystem for Characters - Log when entering a town
 - Towns: Average out heights between chunk neighbors
-- Towns: Place more Homes in each Town, use a position allocator for home spawning
-- Towns: Generate Town Names - use generic name generation system, tag with GeneratedName, itll use Seed
-- Towns: Town Placement should avoid mountains
 - Towns: Spawn roads between houses - simple entity, road, start and end points, thickness
 - Towns: Place Roads during Maps based on Roads Children of Towns
 - Towns: Spawn Highways between towns
@@ -35,7 +45,7 @@ used - 200-400mb used
 - Add quantity label as child of icon - for mouse pickup too
 
 # Lights
-	- One when it updates the Render Depth
+- One when it updates the Render Depth
 - Make layout positions recursive too - so it updates
 - Lights: Add smooth lights for terrain faces, so the corners are darkened
 

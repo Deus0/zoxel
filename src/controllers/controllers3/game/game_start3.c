@@ -1,6 +1,5 @@
 TerrainPlace find_position_in_terrain(ecs* world, entity terrain, int3 block_position) {
     byte terrain_depth = zox_getv(terrain, NodeDepth);
-    // int3 chunk_size = int3_single(powers_of_two[terrain_depth]);
     int3 chunk_position = block_position_to_chunk_position(block_position, terrain_depth);
     zox_geter(terrain, ChunkLinks, chunks);
     entity chunk;
@@ -50,13 +49,6 @@ TerrainPlace find_position_in_terrain(ecs* world, entity terrain, int3 block_pos
 
 // NOTE: Here we spawn our new player character
 entity game_start_player_new(ecs *world, entity player, entity realm, entity terrain, entity camera, float3* spawned_position, byte dbg_log) {
-    /*entity realm;
-    entity terrain;
-    entity camera;
-    if (!get_player_linked_things(world, player, &realm, &terrain, &camera)) {
-        *spawned_position = float3_zero;
-        return 0;
-    }*/
     lint realm_seed = zox_getv(realm, Seed);
     float terrain_scale = zox_getv(terrain, BlockScale);
     float3 camera_position = zox_getv(camera, Position3D);
@@ -65,20 +57,11 @@ entity game_start_player_new(ecs *world, entity player, entity realm, entity ter
     TerrainPlace placer = find_position_in_terrain(world, terrain, camera_block_position);
     *spawned_position = placer.position;
     byte render_depth = 5;
-    char* name = generate_name(character_seed);
-    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, name, player);
-    free(name);
+    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, NULL, player);
     return e;
 }
 
 entity game_start_player_load(ecs *world, entity player, entity realm, entity terrain, float3* spawned_position) {
-    /*entity realm;
-    entity terrain;
-    entity camera;
-    if (!get_player_linked_things(world, player, &realm, &terrain, &camera)) {
-        *spawned_position = float3_zero;
-        return 0;
-    }*/
     // TODO: Load Character Seed
     lint realm_seed = zox_getv(realm, Seed);
     lint character_seed = seed_rand(realm_seed); // , 0, 100000);
@@ -93,9 +76,7 @@ entity game_start_player_load(ecs *world, entity player, entity realm, entity te
     placer.chunk = int3_hashmap_get(chunks->value, cposition);
     *spawned_position = placer.position;
     byte render_depth = 5;
-    char* name = generate_name(character_seed);
-    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, name, player);
-    free(name);
+    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, NULL, player);
     return e;
 }
 
@@ -105,18 +86,18 @@ zox_sys2(PlayerBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CameraLink);
-    zox_sys_in(CharacterLink);
+    zox_sys_out(CharacterLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(CameraLink, camera);
-        zox_sys_i(CharacterLink, character);
+        zox_sys_o(CharacterLink, character);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
         // Now Spawning Character
         //  && dirty->value == zox_dirty_active
-        if (!(state->value == zox_player_state_starting)) {
+        if (state->value != zox_player_state_starting) {
             continue;
         }
         entity game = zox_get_parent(world, e);
@@ -152,9 +133,9 @@ zox_sys2(PlayerBeginSystem) {
         byte is_new_game = !has_save_game_file(path->value, "player.dat");
         float3 spawn_position;
         if (!is_new_game) {
-            game_start_player_load(world, e, realm, terrain, &spawn_position);
+            character->value = game_start_player_load(world, e, realm, terrain, &spawn_position);
         } else {
-            game_start_player_new(world, e, realm, terrain, camera->value, &spawn_position, dbg_log);
+            character->value = game_start_player_new(world, e, realm, terrain, camera->value, &spawn_position, dbg_log);
         }
         if (dbg_log) {
             zox_log("[%s] Player Character Spawned at [%fx%fx%f]", is_new_game ? "New" : "Load", spawn_position.x, spawn_position.y, spawn_position.z);

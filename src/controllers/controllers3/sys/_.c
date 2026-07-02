@@ -114,4 +114,12 @@ void define_systems_controllers3(ecs *world) {
         [in] dialogues.DialogueUILink,
         [out] dialogues.SpeakerLinks
     );
+    zox_system(
+        WalkStateSystem,
+        EcsOnUpdate,
+        [in] physics3.Velocity3D,
+        [out] bones.WalkState,
+        [none] bones.Skeleton
+    );
+
 }

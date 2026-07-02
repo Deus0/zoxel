@@ -23,7 +23,7 @@ byte sdl_play_sound(SDLMixChunk* chunk, const float* data, int length, float vol
     }
 
     if (!chunk->value) {
-        chunk->value = zalloc(sizeof(Mix_Chunk));
+        chunk->value = malloc(sizeof(Mix_Chunk));
     }
 
     if (!chunk->value) {
