@@ -22,9 +22,6 @@ void process_disabled_block_vox(ecs *world, SpawnBlock *data, byte is_unique_vox
 }
 
 entity spawn_realm_block_model(ecs *world, entity parent, lint seed, char* name, color block_color, byte  is_collision, entity vox, entity texture_vox) {
-    // For Instancing?
-    // zox_prefab_child_named(prefab_block_vox_instanced, prefab_world_block);
-    // zox_set(prefab_world_block, InstanceLink, { vox });
     // Spawn our model block
     SpawnBlock spawn_data = {
         .seed = seed,
@@ -33,7 +30,7 @@ entity spawn_realm_block_model(ecs *world, entity parent, lint seed, char* name,
         .color = block_color,
         .disable_collision = !is_collision,
         .prefab = prefab_block_vox_meta,
-        .prefab_world_block = prefab_block_vox_instanced, // prefab_world_block,
+        .prefab_world_block = prefab_block_vox_instanced,
         .tag = zox_id(BlockVox),
         .model_type = zox_block_vox,
     };

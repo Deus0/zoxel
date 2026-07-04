@@ -139,12 +139,18 @@ zox_sys2(BiomeBlocksSystem) {
             zox_set(e2, BlockHealth, { (float2) { 2, 4 } });
         }
         {
-            entity e2 = spawn_block_stone(world, e, 222111, "stone", stone_color);
+            // entity e2 = spawn_block_stone(world, e, 222111, "stone", stone_color);
+            lint seed = 222155;
+            entity model = spawn_model_stone(world, e, seed, stone_color);
+            entity e2 = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "stone", stone_color, model);
             zox_add_tag(e2, BlockStone);
             zox_set(e2, BlockHealth, { (float2) { 8, 12 } });
         }
         {
-            entity e2 = spawn_block_wood(world, e, 113321, "wood", wood_color);
+            lint seed = 113321;
+            entity model = spawn_model_wood(world, e, seed, wood_color);
+            entity e2 = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "wood", wood_color, model);
+            // entity e2 = spawn_block_wood(world, e, 113321, "wood", wood_color);
             zox_add_tag(e2, BlockWood);
             zox_set(e2, BlockHealth, { (float2) { 4, 8 } });
         }

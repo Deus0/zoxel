@@ -1,4 +1,4 @@
-entity spawn_block_wood(ecs *world, entity parent, lint seed, char* name, color block_color) {
+/*entity spawn_block_wood(ecs *world, entity parent, lint seed, char* name, color block_color) {
     entity model;
     {
         model = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
@@ -30,4 +30,4 @@ entity spawn_block_bricks(ecs *world, entity parent, char* name, color block_col
         zox_set(model, VoxType, { vox_type_bricks });
     }
     return spawn_realm_block_solid(world, prefab_block_vox_meta, parent, seed, name, block_color, model);
-}
+}*/

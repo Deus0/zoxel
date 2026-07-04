@@ -15,7 +15,10 @@ zox_sys2(BlocksRealmSpawnSystem) {
         // Bottom of Realm
         {
             color obsidian_color = color_grayscale(rand_range(15, 35));
-            entity e2 = spawn_block_stone(world, e, 226661, "obsidian", obsidian_color);
+            // entity e2 = spawn_block_stone(world, e, 226661, "obsidian", obsidian_color);
+            lint seed = 1166611;
+            entity model = spawn_model_stone(world, e, seed, obsidian_color);
+            entity e2 = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "obsidian", obsidian_color, model);
             zox_add_tag(e2, BlockObsidian);
             zox_add_tag(e2, BlockInvinsible);
         }
@@ -23,7 +26,10 @@ zox_sys2(BlocksRealmSpawnSystem) {
         {
             // Bricks for Homes
             color bricks_color = color_grayscale(rand_range(50, 90));
-            entity e2 = spawn_block_bricks(world, e, "bricks", bricks_color, 232323);
+            lint seed = 232323;
+            entity model = spawn_model_bricks(world, e, seed, bricks_color);
+            entity e2 = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "bricks", bricks_color, model);
+            // entity e2 = spawn_block_bricks(world, e, "bricks", bricks_color, 232323);
             zox_add_tag(e2, BlockBricks);
             zox_set(e2, BlockHealth, { (float2) { 10, 16 } });
         }

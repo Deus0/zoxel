@@ -90,7 +90,6 @@ void initialize_zoxel_settings(ecs* world) {
     {
         friction3D = 9; // 560;
         air_friction3D = 1; // 40;
-        // bounce_lost_force = 0.12f;
         zox_jump_power = 4;
         run_accceleration = 2.2;
         backwards_multiplier = 0.7f;

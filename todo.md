@@ -2,7 +2,11 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Refactor rest of block functions to model + block function
+- Fix lighting - houses it bugged - LOD difference in light propogations?
+- Towns are spawning differently every load...
+- Spawn based on spawn maps in tunks
+- Fix Slemz eyes - missing
+- Move npc dialogue distance back 1 units
 - Refactor Models to nodegraphs for soil, stone, etc
 - Finish removning all spawn_block_vox
 - Bug: Fix music on Main Menu
