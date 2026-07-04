@@ -164,7 +164,7 @@ zox_sys2(VoxTextureSystem) {
     zox_sys_in(GenerateTexture);
     zox_sys_in(TextureSize);
     zox_sys_in(VoxBakeSide);
-    zox_sys_in(VoxLink);
+    zox_sys_in(ModelLink);
     zox_sys_out(TextureData);
     zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
@@ -172,7 +172,7 @@ zox_sys2(VoxTextureSystem) {
         zox_sys_i(GenerateTexture, state);
         zox_sys_i(TextureSize, size);
         zox_sys_i(VoxBakeSide, side);
-        zox_sys_i(VoxLink, vox);
+        zox_sys_i(ModelLink, vox);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
         if (state->value != zox_dirty_active) {

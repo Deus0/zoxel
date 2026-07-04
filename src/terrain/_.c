@@ -15,9 +15,6 @@
 #include "set/_.c"
 #include "com/_.c"
 #include "dat/_.c"
-// NOTE: these need to be imported before core
-#include "voxels/_.c"
-#include "block_voxes/_.c"
 // Core
 #include "pre/_.c"
 #include "ins/_.c"

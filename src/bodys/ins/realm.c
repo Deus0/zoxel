@@ -18,7 +18,7 @@ entity spawn_texture_from_vox(ecs* world, entity vox, byte2 tsize) {
     entity texture = spawn_texture(world, prefab_vox_texture, byte2_to_int2(tsize));
     // zox_set_name_e(texture, "bodys_texture_head");
     zox_set(texture, VoxBakeSide, { direction_front });
-    zox_set(texture, VoxLink, { vox });
+    zox_set(texture, ModelLink, { vox });
     // Do we need this??
     /*if (zox_valid(vox)) {
         zox_set(vox, TextureLink, { texture });

@@ -35,7 +35,7 @@ entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
         entity e2 = spawn_texture(world, data.prefab_texture, vox_texture_size);
         zox_set_name_e(e2, "texture_block");
         zox_set(e2, VoxBakeSide, { i });
-        zox_set(e2, VoxLink, { data.model });
+        zox_set(e2, ModelLink, { data.model });
         zox_set(e2, BlockLink, { e });
         textures.value[i] = e2;
     }

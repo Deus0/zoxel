@@ -22,7 +22,7 @@ const float penetration_amplifier = 1.0f; // 1.01f
         byte negative = did_collide_##d == 2; \
         float penetration = negative ? -collision_distance.d : collision_distance.d; \
         position3D->value.d -= penetration * penetration_amplifier;\
-        velocity3D->value.d *= -bounce_lost_force; \
+        velocity3D->value.d *= -bounce_lost_force.d; \
     }
 
 zox_sys2(CollisionResponseSystem) {

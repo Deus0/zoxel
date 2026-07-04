@@ -169,13 +169,13 @@ zox_sys2(TerrainIntersectSystem) {
         }
         grounded->value = hit_ground;
         if (hit_axis_x) {
-            velocity->value.x *= -bounce_lost_force;
+            velocity->value.x *= -bounce_lost_force.x;
         }
         if (hit_axis_y) {
-            velocity->value.y *= -bounce_lost_force;
+            velocity->value.y *= -bounce_lost_force.y;
         }
         if (hit_axis_z) {
-            velocity->value.z *= -bounce_lost_force;
+            velocity->value.z *= -bounce_lost_force.z;
         }
         // show correction vector
         if (!float3_equals(correction, float3_zero)) {

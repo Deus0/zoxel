@@ -1,6 +1,8 @@
 zox_sys2(RaycastGizmoSystem) {
+    byte dbg_log = 0;
     byte gizmo_type = 1;
     byte disable_depth = 0;
+    float3 hide_position = (float3) { 0, -666, 0 };
     float extrude = 0.001f;
     float shrink = 0.96f;
     float raycaster_quad_thickness = 6;
@@ -37,10 +39,18 @@ zox_sys2(RaycastGizmoSystem) {
                     if (disable_depth) {
                         zox_add_tag(link->value, DisableDepthTest);
                     }
+                    if (dbg_log) {
+                        zox_log("Spawned Gizmo");
+                    }
                 }
             } else {
                 zox_muter(link->value, Position3D, position3);
-                position3->value = position;
+                if (!float3_equals(position3->value, position)) {
+                    position3->value = position;
+                    if (dbg_log) {
+                        zox_log("Placing Gizmo [%.01fx%.01fx%.01f]", position.x, position.y, position.z);
+                    }
+                }
                 if (gizmo_type == 0) {
                     zox_muter(link->value, Rotation3D, rotation);
                     rotation->value = quad_rotation;
@@ -65,10 +75,13 @@ zox_sys2(RaycastGizmoSystem) {
         }
         if (ray_hit != rayhit_terrain) {
             if (zox_valid(link->value)) {
-                // zox_log("hiding gizmo");
-                float3 hide_position = (float3) { 0, -666, 0 };
                 zox_muter(link->value, Position3D, position);
-                position->value = hide_position;
+                if (!float3_equals(position->value, hide_position)) {
+                    position->value = hide_position;
+                    if (dbg_log) {
+                        zox_log("Hiding Gizmo");
+                    }
+                }
             }
         }
     }

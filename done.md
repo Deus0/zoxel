@@ -1,5 +1,7 @@
 # Done
 
+-x Refactor spawn_block_vox - spawn model seperately
+	-x remove the struct use
 -x Body: Arms not moving anymore - Debug WalkState
 -x Towns: Generate Town Names - use generic name generation system, tag with GeneratedName, itll use Seed
 -x Towns: Town Placement should avoid mountains

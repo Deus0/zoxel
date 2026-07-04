@@ -1,4 +1,27 @@
-entity spawn_realm_block_model(ecs *world, entity parent, lint seed, char* name, color block_color, byte collision, entity vox, entity texture_vox) {
+void process_disabled_block_vox(ecs *world, SpawnBlock *data, byte is_unique_vox) {
+    if (!disable_block_voxes) {
+        return;
+    }
+    if (data->model && is_unique_vox) {
+        zox_delete(data->model)
+    }
+    if (data->prefab_world_block) {
+        zox_delete(data->prefab_world_block)
+        data->prefab_world_block = 0;
+    }
+    entity vox = spawn_vox_generated_invisible(world, prefab_vox_generated, color_gray);
+    zox_set_unique_name(vox, "unknown");
+    zox_set(vox, VoxType, { vox_type_soil })
+    // settings!
+    data->model = vox;
+    data->prefab_texture = prefab_vox_texture;
+    data->model = 0;
+    data->tag = 0;
+    data->bake_vox = 1;
+    data->color = color_gray;
+}
+
+entity spawn_realm_block_model(ecs *world, entity parent, lint seed, char* name, color block_color, byte  is_collision, entity vox, entity texture_vox) {
     // For Instancing?
     // zox_prefab_child_named(prefab_block_vox_instanced, prefab_world_block);
     // zox_set(prefab_world_block, InstanceLink, { vox });
@@ -8,7 +31,7 @@ entity spawn_realm_block_model(ecs *world, entity parent, lint seed, char* name,
         .name = name,
         .model = vox,
         .color = block_color,
-        .disable_collision = !collision,
+        .disable_collision = !is_collision,
         .prefab = prefab_block_vox_meta,
         .prefab_world_block = prefab_block_vox_instanced, // prefab_world_block,
         .tag = zox_id(BlockVox),
@@ -29,7 +52,7 @@ entity spawn_realm_block_model(ecs *world, entity parent, lint seed, char* name,
         zox_set_parent(world, texture, parent);
         zox_set(texture, GenerateTexture, { zox_dirty_trigger });
         zox_set(texture, VoxBakeSide, { direction_front });
-        zox_set(texture, VoxLink, { texture_vox });
+        zox_set(texture, ModelLink, { texture_vox });
         zox_set(e, TextureLink, { texture });
     }
     return e;

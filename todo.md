@@ -2,18 +2,23 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Refactor rest of block functions to model + block function
+- Refactor Models to nodegraphs for soil, stone, etc
+- Finish removning all spawn_block_vox
 - Bug: Fix music on Main Menu
+- Bug: Fix Grass placement on outer chunks, it places + 1 but using lower depth so goes too high
+
+# Misc
+- Bug: Sometimes towns spawn inside one another?? weird af
+- Tool: Make a region debugger, show the region bounds with a cross through each corner (X) A big X
+- Show max system time's graph, in red, overlay over the regular graph
+- Bug: lines of selected block should render over destruction overlay
+- Bug: died holding block, stuck to model?
 - Bug: Fix music loading properly
 - Bug: Realm Generation: Memory leak somewhere, breaks during VoxGenerationSystem - color spawning - test with valgrind on x86 later
 - Bug: Map Arrow pointing wrong way
 - Bug: Character shakes - smooth the physics - put to sleep when not moving
-- Bug: lines of selecetd block should render over destruction overlay
-- Bug: died holding block, stuck to model?
-
 - Refactor: load files on boot and not per realm
-
-# Misc
-- Show max system time's graph, in red, overlay over the regular graph
 
 # Towns
 - TownLinkSystem for Characters - Log when entering a town

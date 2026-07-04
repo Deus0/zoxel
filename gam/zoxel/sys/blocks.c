@@ -15,10 +15,9 @@ zox_sys2(BlocksRealmSpawnSystem) {
         // Bottom of Realm
         {
             color obsidian_color = color_grayscale(rand_range(15, 35));
-            entity e2 = spawn_block_stone(world, 0, "obsidian", obsidian_color);
+            entity e2 = spawn_block_stone(world, e, 226661, "obsidian", obsidian_color);
             zox_add_tag(e2, BlockObsidian);
             zox_add_tag(e2, BlockInvinsible);
-            zox_set_parent(world, e2, e);
         }
         // Crafted Items
         {
@@ -26,7 +25,6 @@ zox_sys2(BlocksRealmSpawnSystem) {
             color bricks_color = color_grayscale(rand_range(50, 90));
             entity e2 = spawn_block_bricks(world, e, "bricks", bricks_color, 232323);
             zox_add_tag(e2, BlockBricks);
-            zox_set_parent(world, e2, e);
             zox_set(e2, BlockHealth, { (float2) { 10, 16 } });
         }
         // Decor Blocks
