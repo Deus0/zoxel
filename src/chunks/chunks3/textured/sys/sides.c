@@ -196,6 +196,7 @@ zox_sys2(Chunk3SidesSystem) {
         fetch_neightbor_chunk_data(world, neighbors, noctrees, ndepths);
         sides->value = build_sides_dig(solids, voctree, noctrees, ndepths, voctree, sides, rdepth->value, 0, byte3_zero);
         sdirty->value = zox_dirty_trigger;
+        zox_sys_increment();
     }
     free(solids);
 } zox_sys_end(Chunk3SidesSystem);

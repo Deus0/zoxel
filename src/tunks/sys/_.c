@@ -42,7 +42,6 @@ void define_systems_tunks(ecs* world) {
     );
     /*zox_system_1(
         TunkDebugSystem,
-        [in] voxes.VoxLink,
         [in] tunks.TunkPosition,
         [in] rendering.RenderDistance,
         [out] chunks2.Chunk2Neighbors,
@@ -61,7 +60,6 @@ void define_systems_tunks(ecs* world) {
         BiomeMapAvgSystem,
         EcsOnUpdate,
         [in] core.Generate,
-        [in] voxes.VoxLink,
         [in] tunks.BiomeMap,
         [out] biomes.BiomeLink,
         [none] tunks.Tunk
@@ -125,7 +123,6 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         Tunk2DeathSystem,
         zoxp_destroy,
-        [in] voxes.VoxLink,
         [in] tunks.TunkPosition,
         [in] rendering.RenderDistance,
         [none] streaming.StreamedChunk,

@@ -47,6 +47,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         opengl_enable_uv_buffer(attributes->vertex_uv, gpu_uvs->value);
         opengl_enable_color_buffer(attributes->vertex_color, gpu_colors->value);
         zox_gpu_render(count->value);
+        zox_sys_increment();
     }
     if (!init) {
         return;

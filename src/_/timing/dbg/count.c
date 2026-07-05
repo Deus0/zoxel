@@ -1,5 +1,3 @@
-
-
 // Reset our deltas
 zox_sys2(SystemProcessedResetSystem) {
     zox_sys_begin();

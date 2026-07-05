@@ -1,14 +1,8 @@
 #include "projection_matrix_system.c"
 #include "view_matrix_system.c"
-#include "billboard_system.c"
 #include "viewport_resize_system.c"
-
 #include "frustum_d3.c"
 #include "frustum_f3.c"
-
-// #include "camera_debug_system.c"
-// #include "camera_draw_frustum_system.c"
-// #include "camera_planes_draw_system.c"
 
 void define_systems_cameras(ecs *world) {
     zox_system(
@@ -19,11 +13,13 @@ void define_systems_cameras(ecs *world) {
         [out] ViewMatrix
     );
     zox_system(
-        ProjectionMatrixSystem, zoxp_cameras,
+        ProjectionMatrixSystem,
+        zoxp_cameras,
         [in] screens.ScreenDimensions,
         [in] FieldOfView,
         [in] CameraNearDistance,
-        [out] ProjectionMatrix);
+        [out] ProjectionMatrix
+    );
     zox_system(
         CameraFrustumSystem,
         zoxp_cameras,
@@ -42,25 +38,4 @@ void define_systems_cameras(ecs *world) {
         [in] CameraLinks,
         [none] apps.App
     );
-    zox_filter(
-        billboard_cameras,
-        [in] transforms3.Position3D,
-        [none] transforms3.Rotation3D,
-        [none] cameras.Camera3
-    );
-    zox_system_ctx(
-        BillboardSystem,
-        EcsOnUpdate,
-        billboard_cameras,
-        [in] transforms3.Position3D,
-        [out] transforms3.Rotation3D,
-        [none] ElementBillboard
-    );
-    #ifdef zox_draw_frustum
-    //zox_system_1(CameraPlanesDrawSystem, zoxp_mainthread, [in] CameraPlanes, [none] Camera3)
-    //zox_system_1(FrustumDrawSystem, zoxp_mainthread, [in] FrustumCorners, [none] Camera3)
-    #endif
-    #ifdef zox_debug_camera_frustum
-    // zox_system_1(CameraDebugSystem, zoxp_mainthread, [in] CameraPlanes, [none] Camera)
-    #endif
 }

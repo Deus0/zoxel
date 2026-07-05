@@ -4,21 +4,24 @@ zox_sys2(TerrainItemDropSystem) {
     zox_sys_begin();
     zox_sys_in(VoxelNodeQueue);
     zox_sys_in(VoxelNode);
-    zox_sys_in(VoxLink);
     zox_sys_in(NodeDepth);
     zox_sys_in(Position3D);
     zox_sys_in(BlockScale);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(VoxelNodeQueue, queue);
         zox_sys_i(VoxelNode, node);
-        zox_sys_i(VoxLink, link);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(Position3D, position);
         zox_sys_i(BlockScale, scale);
         if (!queue->count) {
             continue;
         }
-        zox_geter_value(link->value, RealmLink, entity, realm);
+        entity terrain = zox_get_parent(world, e);
+        if (!zox_valid(terrain)) {
+            continue;
+        }
+        zox_geter_value(terrain, RealmLink, entity, realm);
         if (!zox_valid(realm)) {
             continue;
         }

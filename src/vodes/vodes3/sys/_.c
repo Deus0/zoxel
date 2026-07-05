@@ -13,7 +13,6 @@ void define_systems_vodes3(ecs* world) {
         [in] chunks3.VoxelNodeDirty,
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDepth,
-        [in] voxes.VoxLink,
         [out] chunks3.VoxelNode,
         [out] chunks3.BlocksSpawned
     );
@@ -38,7 +37,6 @@ void define_systems_vodes3(ecs* world) {
         zoxp_voxels_write,
         [in] chunks3.VoxelNodeDirty,
         [in] rendering.RenderDistanceDirty,
-        [in] voxes.VoxLink,
         [in] chunks.NodeDepth,
         [in] rendering.RenderDisabled,
         [in] rendering.RenderDepth,

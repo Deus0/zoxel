@@ -5,22 +5,22 @@ zox_sys2(BiomeMapAvgSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
-    zox_sys_in(VoxLink);
     zox_sys_in(BiomeMap);
     zox_sys_out(BiomeLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Generate, generate);
-        zox_sys_i(VoxLink, terrain);
         zox_sys_i(BiomeMap, bmap);
         zox_sys_o(BiomeLink, link);
         if (generate->value != zox_dirty_end) {
             continue;
         }
-        if (!zox_valid(terrain->value) || !zox_has(terrain->value, RealmLink)) {
-            zox_logw("Invalid [Terrain] in Tunks [%s]", zox_get_name(terrain->value));
+        entity terrain = zox_get_parent(world, e);
+        if (!zox_valid(terrain) || !zox_has(terrain, RealmLink)) {
+            zox_logw("Invalid [Terrain] in Tunks [%s]", zox_get_name(terrain));
             continue;
         }
-        zox_geter_value(terrain->value, RealmLink, entity, realm);
+        zox_geter_value(terrain, RealmLink, entity, realm);
         if (!zox_valid(realm) || !zox_has(realm, BiomeLinks)) {
             zox_logw("Invalid [Realm] in Tunks");
             continue;

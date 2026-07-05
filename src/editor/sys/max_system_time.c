@@ -14,10 +14,11 @@ zox_sys2(MaxSystemTimeLabelSystem) {
         zox_loge("No Max System linked to Timing Module");
         return;
     }
+    uint processes = zox_has(max_system, SystemProcessed) ? zox_getv(max_system, SystemProcessed) : 0;
     double max_delta = zox_getv(max_system, MaxDoubleData);
     char output[1024];
     output[0] = '\0';
-    sprintf(output, "%s\nDelta Time [%0.01fms]", zox_get_name(max_system), max_delta);
+    sprintf(output, "%s [%i]\nDelta Time [%0.01fms]", zox_get_name(max_system), processes, max_delta);
     uint text_length = strlen(output);
     zox_sys_begin();
     zox_sys_out(TextData);

@@ -1,6 +1,6 @@
 // todo: alter frequency over time during sound
 zox_sys2(SoundGenerateSystem) {
-    if (nosounds) {
+    if (nosounds || !master_volume) {
         return;
     }
     float sound_bounds = 1.0f;
@@ -63,11 +63,9 @@ zox_sys2(SoundGenerateSystem) {
             } else {
                 break;
             }
-
             if (noise) {
                 value += noise * ((rand() / (float) RAND_MAX) * 2.0f - 1.0f);
             }
-
             value *= envelope(time, sound_time_length, attack, dampen);
             value *= volume;
             value = clampf(value, -sound_bounds, sound_bounds);
@@ -75,5 +73,6 @@ zox_sys2(SoundGenerateSystem) {
         }
         triggerSound->value = zox_dirty_trigger;
         zox_logv("+ generated [%s] (%f)", zox_sys_e_name, volume);
+        zox_sys_increment();
     }
 } zox_sys_end(SoundGenerateSystem);

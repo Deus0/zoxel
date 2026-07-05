@@ -37,7 +37,6 @@ void define_systems_sounds(ecs *world) {
         [in] TriggerSound,
         [none] Sound
     );
-
 #ifdef zox_sdl_mixer
     zox_system(
         SoundPlaySystem,
@@ -56,7 +55,7 @@ void define_systems_sounds(ecs *world) {
         [none] Sound
     );
 #endif
-
     // Sound gen takes longer
+    add_system_process_counter(world, zox_id(SoundGenerateSystem));
     zox_set(zox_id(SoundGenerateSystem), SystemDeltaMax, { zox_lag_cutoff * 2 });
 }

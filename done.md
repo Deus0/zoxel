@@ -1,5 +1,6 @@
 # Done
 
+-x Refactor rest of block functions to model + block function
 -x Refactor spawn_block_vox - spawn model seperately
 	-x remove the struct use
 -x Body: Arms not moving anymore - Debug WalkState

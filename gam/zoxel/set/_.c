@@ -1,4 +1,3 @@
-
 void zoxel_settings_uis() {
     byte window_fill_alpha = 166;
     byte fill_alpha = 66;
@@ -64,7 +63,6 @@ void initialize_zoxel_settings(ecs* world) {
     block_vox_render_at_lod = 0; // now using lod minimum
     fog_density = 0.034f;
     // profiler_state = zox_profile_light_propogate;
-    render_distance_y = 4;
     menu_sky_color = color_rgb_grayscale(33);
     menu_sky_bottom_color = color_rgb_grayscale(11);
     // art

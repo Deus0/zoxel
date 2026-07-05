@@ -29,7 +29,6 @@ void define_systems_items(ecs* world) {
         EcsOnUpdate,
         [in] chunks3.VoxelNodeQueue,
         [in] chunks3.VoxelNode,
-        [in] voxes.VoxLink,
         [in] chunks.NodeDepth,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,

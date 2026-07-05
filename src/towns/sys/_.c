@@ -30,7 +30,6 @@ void zox_define_systems_towns(ecs* world) {
         [in] core.Generate,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
-        [in] voxes.VoxLink,
         [in] tunks.TunkLink,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,

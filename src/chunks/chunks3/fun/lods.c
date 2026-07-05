@@ -27,22 +27,6 @@ static inline byte camera_distance_to_render_depth(byte distance, byte depth, by
     return 0; // render_depth_invisible;
 }
 
-// Used for Lodding the Terrain Chunks
-static inline byte camera_distance_to_terrain_render_depth(byte distance) {
-    return camera_distance_to_render_depth(distance, terrain_depth, terrain_lod_near, terrain_lod_far);
-}
-
-static inline byte camera_distance_to_npc_render_depth(byte distance, byte mdepth) {
-    if (zox_dbg_npc_all_max_depth) {
-        return mdepth;
-    }
-    if (block_vox_depth < mdepth) {
-        byte ddepth = (block_vox_depth_limits.y - block_vox_depth);
-        mdepth = mdepth - ddepth < 0 ? 0 : mdepth - ddepth;
-    }
-    return camera_distance_to_render_depth(distance, mdepth, vox_lod_near, terrain_lod_near);
-}
-
 // returns simple camera distance for chunks
 static inline byte get_camera_chunk_distance(int3 camera_position, int3 chunk_position) {
     return (byte) int3_max(chunk_position, camera_position);
@@ -60,6 +44,29 @@ static inline byte get_camera_chunk2_distance(int2 a, int2 b) {
     return (byte) int2_max2(b, a);
 }
 
+
+// Used for Lodding the Terrain Chunks
+static inline byte camera_distance_to_terrain_render_depth(byte distance) {
+    if (disable_terrain_lods) {
+        return terrain_depth;
+    }
+    return camera_distance_to_render_depth(distance, terrain_depth, terrain_lod_near, terrain_lod_far);
+}
+
+static inline byte camera_distance_to_npc_render_depth(byte distance, byte mdepth) {
+    if (zox_dbg_npc_all_max_depth) {
+        return mdepth;
+    }
+    if (block_vox_depth < mdepth) {
+        byte ddepth = (block_vox_depth_limits.y - block_vox_depth);
+        mdepth = mdepth - ddepth < 0 ? 0 : mdepth - ddepth;
+    }
+    return camera_distance_to_render_depth(distance, mdepth, vox_lod_near, terrain_lod_near);
+}
+
 static inline byte camera_distance_to_block_vox_depth(byte distance) {
+    if (disable_terrain_lods) {
+        return block_vox_depth;
+    }
     return camera_distance_to_render_depth(distance, block_vox_depth, vox_lod_near, terrain_lod_near);
 }

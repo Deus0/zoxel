@@ -67,12 +67,12 @@ void define_systems_voxes(ecs *world) {
         [out] chunks3.ChunkNeighbors,
         [none] chunks3.ChunkTextured    // we should just check if parent has chunk links here
     );
+    // NOTE: Syncs Terrain Chunk Scales
     zox_system(
         BlockScaleSystem,
         EcsPostLoad,
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
-        [out] voxes.VoxLink,
         [out] blocks.BlockScale
     );
     zox_system(

@@ -144,6 +144,9 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
                 continue;
             }
             const ZoxName* name = zox_get(e2, ZoxName);
+            if (disable_terrain_lods && !strcmp(name->value, "Near Distance")) {
+                continue;
+            }
             options[options_count] = e2;
             char* label = options_labels[options_count];
             if (zox_has(e2, SettingByte) && zox_has(e2, SettingSlider)) {

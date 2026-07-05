@@ -76,7 +76,11 @@ static inline float3 float3_mid(const float3 a, const float3 b) {
     return (float3) { a.x + (b.x - a.x) * 0.5f, a.y + (b.y - a.y) * 0.5f, a.z + (b.z - a.z) * 0.5f };
 }
 
-static inline float float3_distance(const float3 a, const float3 b) {
+static inline float float3_distance_squared(float3 a, float3 b) {
+    return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z);
+}
+
+static inline float float3_distance(float3 a,float3 b) {
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z));
 }
 

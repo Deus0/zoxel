@@ -86,6 +86,7 @@ zox_sys2(ChunkFrustumSystem) {
     zox_sys_in(Position3D);
     zox_sys_in(Bounds3D);
     zox_sys_in(VoxelNode);
+    zox_sys_in(BlocksSpawned);
     zox_sys_in(ChunkEntities);
     zox_sys_out(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
@@ -93,6 +94,7 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Bounds3D, bounds3);
         zox_sys_i(VoxelNode, voctree);
+        zox_sys_i(BlocksSpawned, spawned);
         zox_sys_i(ChunkEntities, entities);
         zox_sys_o(RenderDisabled, render_disabled);
         // NOTE: Some quick skips for largest voctrees
@@ -124,9 +126,7 @@ zox_sys2(ChunkFrustumSystem) {
                 zox_sys_i_2(CameraPlanes, planes);
                 // our normals appear to be flipped
                 byte inside_sphere = is_sphere_in_frustum(planes->value, chunk_bounds.center, float3_length(chunk_bounds.extents));
-                is_viewed = inside_sphere &&
-                    is_bounds_in_position_bounds(frustum_bounds->value, chunk_bounds) &&
-                    is_in_frustum(planes->value, chunk_bounds, frustum_inwards);
+                is_viewed = inside_sphere &&  is_bounds_in_position_bounds(frustum_bounds->value, chunk_bounds) &&  is_in_frustum(planes->value, chunk_bounds, frustum_inwards);
                 if (dbg_log >= 2) {
                     zox_log("Checking for Camera [%s]", zox_get_name(it2.entities[j]));
                 }
@@ -139,11 +139,12 @@ zox_sys2(ChunkFrustumSystem) {
                 zox_log("Chunk [%s] now Visible? [%s]", zox_get_name(e), is_viewed ? "Visible" : "Invisible");
             }
             // Also set objects inside our terrain chunks!
-            // -=- Block Spawns -=-
-            if (zox_getv(e, BlocksSpawned)) {
+            // -=- World Blocks -=-
+            if (spawned->value) {
                 set_chunk_block_spawns_render_disabled(world, voctree, render_disabled->value);
             }
             // -=- -=- -=- -=- -=- -=-
+            // NOTE: For characters
             for (int j = 0; j < entities->length; j++) {
                 entity e2 = entities->value[j];
                 set_entity_render_disabled(world, e2, render_disabled->value);

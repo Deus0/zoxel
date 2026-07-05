@@ -74,6 +74,7 @@ zox_sys2(ElementRenderSystem) {
         if (is_log) {
             zox_log("Rendering [%s] at L[%i]", zox_get_name(e), renderer_layer);
         }
+        zox_sys_increment();
     }
     if (!init) {
         return;

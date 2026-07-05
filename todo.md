@@ -2,6 +2,9 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunk
+- Fix Android Build - on arm pcs
+- SoundGenerateSystem - uses too much still
 - Fix lighting - houses it bugged - LOD difference in light propogations?
 - Towns are spawning differently every load...
 - Spawn based on spawn maps in tunks

@@ -31,10 +31,11 @@
 zoxel_dynamic_array(byte)
 zoxel_dynamic_array(int)
 create_array_d_has(int)
-zoxel_dynamic_array(float3)
-zoxel_dynamic_array(float2)
-zoxel_dynamic_array(float4x4)
 zoxel_dynamic_array(int3)
+zoxel_dynamic_array(float2)
+zoxel_dynamic_array(float3)
+zoxel_dynamic_array(float4)
+zoxel_dynamic_array(float4x4)
 
 void initialize_component_ids() {
     initialize_component_ids_text();

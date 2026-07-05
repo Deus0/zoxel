@@ -1,19 +1,18 @@
-// render distances
+// TODO: Move to streaming modules
 byte vox_lod_near = 1;
-byte terrain_lod_near = 1;      // also character far
+byte terrain_lod_near = 4;      // also character far
+byte terrain_lod_far = 16;       // 1 | 2 | 4 | 8 | 16
+byte render_distance_y = 4;     // vertical
+byte disable_terrain_lods = 0;
 byte terrain_lod_near_min = 1;
-byte terrain_lod_near_max = 3;
-byte terrain_lod_far = 8;       // 1 | 2 | 4 | 8 | 16
-byte terrain_lod_far_max = 24;  // options, min + percentage*max
-byte render_distance_y = 1;     // vertical
-
+byte terrain_lod_near_max = 16;
+byte terrain_lod_far_min = 1;
+byte terrain_lod_far_max = 48;  // options, min + percentage*max
 // TODO: Fix these, block_vox_depth is broken
 // Sub Divisions - 4 | 5
-
 // options
 byte terrain_lod_far_buffer = 2;    // buffer the near to far - adds a minimum low lods
 float settings_terrain_lod_start = 0.25f;
-
 extern int get_characters_count(ecs *world);
 extern int count_entities_npc(ecs *world);
 

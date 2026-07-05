@@ -41,5 +41,6 @@ zox_sys2(PositionRotation3System) {
                 set_position_rotation_recursive(world, e2, position->value, rotation->value);
             }
         }
+        zox_sys_increment();
     }
 } zox_sys_end(PositionRotation3System);

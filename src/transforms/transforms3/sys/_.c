@@ -30,7 +30,6 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] EulerLimitZ,
         [out] Euler
     );
-
     // Transform our euler to quaternion
     zox_system(
         EulerOverrideSystem,
@@ -39,7 +38,6 @@ void zox_define_systems_transforms3(ecs *world) {
         [out] Rotation3D,
         [none] EulerOverride
     );
-
     zox_system(
         TransformMatrixSystem,
         zox_transforms_stage,
@@ -48,7 +46,6 @@ void zox_define_systems_transforms3(ecs *world) {
         [out] transforms.TransformMatrix,
         [none] !transforms.Scale1D
     );
-
     zox_system(
         TransformMatrixScaleSystem,
         zox_transforms_stage,
@@ -57,7 +54,6 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] transforms.Scale1D,
         [out] transforms.TransformMatrix
     );
-
     // TODO: Add Lerp Slower Follow
     zox_system(
         ShadowPositionSystem,
@@ -65,4 +61,5 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] transforms3.ShadowLink,
         [out] transforms3.Position3D
     );
+    add_system_process_counter(world, zox_id(PositionRotation3System));
 }

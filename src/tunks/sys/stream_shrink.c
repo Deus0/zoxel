@@ -1,16 +1,16 @@
 zox_sys2(Tunk2DeathSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxLink);
     zox_sys_in(TunkPosition);
     zox_sys_in(RenderDistance);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxLink, terrain);
         zox_sys_i(TunkPosition, position);
         zox_sys_i(RenderDistance, distance);
-        if (!zox_valid(terrain->value) || !zox_has(terrain->value, TunkLinks)) {
-            zox_delete(e)
+        entity terrain = zox_get_parent(world, e);
+        if (!zox_valid(terrain) || !zox_has(terrain, TunkLinks)) {
+            zox_logw("Tunk has no Parent Terrain [%s]", zox_get_name(e));
+            zox_delete(e);
             continue;
         }
         // Pass if loading chunk
@@ -23,7 +23,7 @@ zox_sys2(Tunk2DeathSystem) {
             continue;
         }
         // remove from hash - can i do this better?
-        zox_muter(terrain->value, TunkLinks, tunks);
+        zox_muter(terrain, TunkLinks, tunks);
         int2_hashmap_remove(tunks->value, position->value);
         zox_delete(e);
         // zox_log("Deleted Tunk2 [%ix%i]", position->value.x, position->value.y);

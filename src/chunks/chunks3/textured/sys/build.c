@@ -310,6 +310,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         if (dbg_log) {
             zox_log("Built [%s]! Verts [%i] Scale [%f] Depth [%i]", zox_get_name(e), verts->length, cscale, rdepth);
         }
+        zox_sys_increment();
     }
     if (build_data.solidity) {
         free(build_data.solidity);

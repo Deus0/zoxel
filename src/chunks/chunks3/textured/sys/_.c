@@ -56,4 +56,7 @@ void define_systems_chunks3_textured(ecs *world) {
         [out] rendering.MeshDirty,
         [none] chunks3.ChunkTextured
     );
+    add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
+    add_system_process_counter(world, zox_id(Chunk3SidesSystem));
+    add_system_process_counter(world, zox_id(Chunk3TexturedBuildSystem));
 }

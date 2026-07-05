@@ -6,23 +6,23 @@ zox_sys2(TownWallsSystem) {
     zox_sys_in(Generate);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkPosition);
-    zox_sys_in(VoxLink);
     zox_sys_in(TunkLink);
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Generate, state);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkPosition, cposition);
-        zox_sys_i(VoxLink, terrain);
         zox_sys_i(TunkLink, tunk);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(VoxelNodeDirty, dirty);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
-        entity realm = zox_getv(terrain->value, RealmLink);
+        entity terrain = zox_get_parent(world, e);
+        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
+        entity realm = zox_getv(terrain, RealmLink);
         byte is_max_depth = depth->value == terrain_depth;
         /*if (!is_max_depth) {
             continue;
