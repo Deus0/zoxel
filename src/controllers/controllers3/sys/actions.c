@@ -63,7 +63,6 @@ zox_sys2(ActionsShortcutSystem) {
                     }
                 }
             }
-
             if (zox_has(e2, Keyboard)) {
                 zox_geter(e2, Keyboard, keyboard);
                 if (keyboard->_1.pressed_this_frame) {

@@ -209,7 +209,7 @@ zox_sys2(VodesSpawnSystem) {
     zox_sys_out(BlocksSpawned);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxelNodeDirty, voxel_octree_dirty);
+        zox_sys_i(VoxelNodeDirty, voxels_dirty);
         zox_sys_i(RenderDistanceDirty, render_distance_dirty);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(RenderDisabled, render_disabled);
@@ -220,9 +220,9 @@ zox_sys2(VodesSpawnSystem) {
         zox_sys_o(VoxelNode, voxel_octree);
         zox_sys_o(BlocksSpawned, spawned);
         // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
-        byte is_first_time = voxel_octree_dirty->value == zox_dirty_active;
-        byte is_dirty = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
-        if (!is_first_time && !is_dirty) {
+        byte is_dirty = voxels_dirty->value == zox_dirty_active;
+        byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
+        if (!is_dirty && !generated) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
@@ -233,9 +233,9 @@ zox_sys2(VodesSpawnSystem) {
         if (!can_spawn_vodes) {
             continue;
         }
-        byte rdepth = camera_distance_to_block_vox_depth(render_distance->value);
+        byte block_depth = camera_distance_to_block_vox_depth(render_distance->value);
         write_lock_VoxelNode(voxel_octree);
-        spawn_vodes(world, e, terrain, rdepth, render_disabled->value, voxel_octree, depth->value, position->value, scale->value, terrain_block_scale);
+        spawn_vodes(world, e, terrain, block_depth, render_disabled->value, voxel_octree, depth->value, position->value, scale->value, terrain_block_scale);
         write_unlock_VoxelNode(voxel_octree);
         spawned->value = 1;
     }

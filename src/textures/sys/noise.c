@@ -7,17 +7,15 @@ zox_sys2(NoiseTextureSystem) {
     zox_field_out(TextureDirty, textureDirtys, 3);
     zox_field_out(TextureData, textureDatas, 4);
     for (int i = 0; i < it->count; i++) {
-        zox_field_e()
+        zox_sys_e();
         zox_field_i(TextureSize, textureSizes, textureSize)
         zox_field_i(Color, colors, fill_color)
         zox_field_o(TextureDirty, textureDirtys, textureDirty)
         zox_field_o(TextureData, textureDatas, textureData)
         zox_field_o(GenerateTexture, generateTextures, generateTexture)
-
         if (generateTexture->value != zox_dirty_active) {
             continue;
         }
-
         byte texture_type = zox_texture_none;
         if (texture_mode == zox_texture_mode_graybox) {
             texture_type = zox_texture_graybox;

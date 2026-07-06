@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
         zox_log_error("Pathing Setup Failed.");
         return EXIT_FAILURE;
     }
-    zox_logv("Initializing ECS Settings: FPS [%i]", (int) target_fps);
+    zox_logv("Initializing ECS Settings: FPS [%i]", target_fps);
     initialize_ecs_settings(world, target_fps, cores); // sets ecs threads
 #ifdef zox_sdl
     zox_logv("Initializing Video");

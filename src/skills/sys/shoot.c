@@ -4,20 +4,20 @@ zox_sys2(ShootSystem) {
     float default_power = 64;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SkillResourceLink);
-    zox_sys_in(SkillCost);
+    // zox_sys_in(SkillResourceLink);
+    // zox_sys_in(SkillCost);
+    zox_sys_in(Activate);
+    zox_sys_in(SkillRange);
     zox_sys_in(SkillDamage);
     zox_sys_in(SkillDamageMax);
-    zox_sys_in(SkillRange);
-    zox_sys_in(Activate);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        zox_sys_i(SkillResourceLink, rresource);
-        zox_sys_i(SkillCost, cost);
-        zox_sys_i(SkillDamage, skillDamage);
-        zox_sys_i(SkillDamageMax, skillDamageMax);
-        zox_sys_i(SkillRange, range);
+        // zox_sys_i(SkillResourceLink, rresource);
+        // zox_sys_i(SkillCost, cost);
         zox_sys_i(Activate, active);
+        zox_sys_i(SkillRange, range);
+        zox_sys_i(SkillDamage, damage_min);
+        zox_sys_i(SkillDamageMax, damage_max);
         if (active->value != zox_dirty_active) {
             continue;
         }
@@ -57,7 +57,7 @@ zox_sys2(ShootSystem) {
             position = zox_getv(user, Position3D);
             rotation = zox_getv(user, Rotation3D);
         }
-        spawn_projectile(world, prefab_projectile, position, rotation, 0.1f, default_power);
-        // etc
+        float damage = randf_range(damage_min->value, damage_max->value);
+        spawn_projectile(world, prefab_projectile, position, rotation, 0.1f, default_power * range->value, damage);
     }
 } zox_sys_end(ShootSystem);

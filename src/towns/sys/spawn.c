@@ -108,7 +108,7 @@ zox_sys2(RegionTownsSystem) {
         if (!zox_valid(terrain)) {
             continue;
         }
-        byte terrain_depth = zox_getv(terrain, NodeDepth);
+        // byte terrain_depth = zox_getv(terrain, NodeDepth);
         // int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
         if (dbg_log) {
             zox_log("   - Region Position [%ix%i]", block_position->value.x, block_position->value.y);

@@ -14,6 +14,7 @@
 #include "biome_blocks.c"
 
 void define_systems_zoxel(ecs *world) {
+    // TODO: Move this towards end content
     zox_system_1(
         ModelsRealmSpawnSystem,
         zoxp_mainthread,
@@ -22,6 +23,11 @@ void define_systems_zoxel(ecs *world) {
         [out] nodes.NodegraphLinks,
         [none] realms.Realm
     );
+    // NOTE: Didnt work for Module Detection
+    /*if (!ecs_lookup(world, "Stats")) {
+        zox_logw("NO Stats Module");
+        return;
+    }*/
     zox_system_1(
         StatsRealmSpawnSystem,
         zoxp_mainthread,
@@ -86,19 +92,20 @@ void define_systems_zoxel(ecs *world) {
         [none] realms.Realm
     );
     zox_system_1(
+        AchievementRealmSpawnSystem,
+        zoxp_mainthread,
+        [in] realms.GenerateRealm,
+        [out] achievements.AchievementLinks,
+        [none] realms.Realm
+    );
+    // Worlds
+    zox_system_1(
         Character3RealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
         [in] rendering.ModelLinks,
         [out] characters.CharacterLinks,
         [out] characters3.CharactersChanceMax,
-        [none] realms.Realm
-    );
-    zox_system_1(
-        AchievementRealmSpawnSystem,
-        zoxp_mainthread,
-        [in] realms.GenerateRealm,
-        [out] achievements.AchievementLinks,
         [none] realms.Realm
     );
     zox_system_1(

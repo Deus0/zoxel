@@ -46,11 +46,7 @@ zox_sys2(TerrainIntersectDebugSystem) {
         // int3 upper_bounds_block_position = real_position_to_block_position(upper_bounds, terrain_block_scale);
         float3 correction = float3_zero;
         // we just need add + terrain_block_scale and final one too
-        // byte hit_ground = 0;
-        //byte hit_axis_x = 0;
-        //byte hit_axis_y = 0;
-        //byte hit_axis_z = 0;
-        int3 last_block_position;
+        int3 last_block_position = (int3) { 0, -10000, 0 };
         // NOTE: Show Bounds
         spawn_cube_lines_rgba(world, position->value, bounds_rotated, 4, color_white, 0.01);
         // NOTE: From Lower to Upper bounds, but including Upper Bounds

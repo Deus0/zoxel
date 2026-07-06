@@ -10,8 +10,8 @@ void initialize_threads(ecs* world, byte cores) {
 
 ecs* real_world;
 
-void initialize_ecs_settings(ecs *world, float fps, byte cores) {
+void initialize_ecs_settings(ecs *world, byte fps, byte cores) {
     real_world = world;
     initialize_threads(world, cores);
-    ecs_set_target_fps(world, fps);
+    ecs_set_target_fps(world, (float) fps);
 }

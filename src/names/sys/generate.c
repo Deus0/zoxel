@@ -36,7 +36,7 @@ char* generate_name(uint seed, char* name) {
     if (name == NULL) {
         return NULL;
     }
-    byte max_syllable_length = 4;
+    // byte max_syllable_length = 4;
     byte count = seed_range(seed, 2, 5);
     name[0] = '\0';
     for (byte i = 0; i < count; i++) {

@@ -35,15 +35,14 @@ void zox_define_systems_skills(ecs *world) {
         [in] timers.Activate,
         [none] skills.Melee
     );
+    // TODO: Make skill activate use resource
     zox_system_1(
         ShootSystem,
         EcsOnUpdate,
-        [in] skills.SkillResourceLink,
-        [in] skills.SkillCost,
+        [in] timers.Activate,
+        [in] skills.SkillRange,
         [in] skills.SkillDamage,
         [in] skills.SkillDamageMax,
-        [in] skills.SkillRange,
-        [in] timers.Activate,
         [none] skills.Shoot
     );
     /*zox_system_1(

@@ -38,6 +38,7 @@ zox_sys2(RegionTextureSystem) {
             zox_loge("Invalid [Region] for Texture [%s]", zox_get_name(e));
             continue;
         }
+        // lint region_seed = zox_getv(region, Seed);
         // NOTE: Generation Delay for Tunks
         if (zox_getv(tunk->value, Generate)) {
             if (dbg_log) {
@@ -57,8 +58,7 @@ zox_sys2(RegionTextureSystem) {
         if (dbg_log) {
             zox_log("Generating Tunk Texture [%ix%i]", size->value.x, size->value.y);
         }
-        lint region_seed = zox_getv(region, Seed);
-        color fill = color_grayscale(seed_range(region_seed, 0, 255));
+        // color fill = color_grayscale(seed_range(region_seed, 0, 255));
         resize_TextureData(data, size->value.x * size->value.y);
         for (byte x = 0; x < map_length; x++) {
             for (byte y = 0; y < map_length; y++) {

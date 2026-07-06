@@ -53,6 +53,7 @@ void on_set_vsync(byte value) {
     } else {
         zox_logv("VSync [%s]", vsync ? "Enabled" : "Disabled");
     }
+    // zox_log("SDL_GL_SwapInterval: %d", SDL_GL_GetSwapInterval());
 }
 
 /*if (screen_index == 1) {

@@ -2,6 +2,14 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Refactor Streaming to be simpler - TerrainStreamSystem
+	- position xz detected
+	- Update existing Lods
+	- Spawn new Region
+	- Spawn new Tunks
+	- Spawn new Chunks
+	- Link while spawning
+	- Add a queue for spawning new positions, do like 256 checks per frame for terrain for spawning, so its delayed a bit? only if still lagging with new stream systems
 - Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunk
 - Fix Android Build - on arm pcs
 - SoundGenerateSystem - uses too much still

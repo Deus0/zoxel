@@ -13,7 +13,7 @@ zox_sys2(NeuronRenderSystem) {
     zox_field_world()
     zox_field_in(Position2, position2s, 1)
     for (int i = 0; i < it->count; i++) {
-        zox_field_e()
+        zox_sys_e();
         zox_field_i(Position2, position2s, position2)
         float scale = neuron_size; //  * weight->value;
         if (zox_has(it->entities[i], InputNeuron)) scale *= 2.0f;

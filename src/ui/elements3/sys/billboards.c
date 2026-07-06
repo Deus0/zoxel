@@ -17,7 +17,7 @@ zox_sys2(BillboardSystem) {
         zox_sys_in_2(Position3D);
         zox_sys_in_2(Rotation3D);
         for (int j = 0; j < it2.count; j++) {
-            zox_sys_e_2();
+            // zox_sys_e_2();
             zox_sys_i_2(Position3D, camera_position);
             zox_sys_i_2(Rotation3D, camera_rotation);
             float3_array_d_add(camera_postiions, camera_position->value);
@@ -41,7 +41,7 @@ zox_sys2(BillboardSystem) {
             continue;
         }
         // entity closest_camera = 0;
-        byte found_camera = 0;
+        // byte found_camera = 0;
         float4 closest_rotation = quaternion_identity;
         float closest_distance = -1;
         uint total_cameras = 0;
@@ -52,7 +52,7 @@ zox_sys2(BillboardSystem) {
             if (closest_distance == -1 || distance < closest_distance) {
                 closest_distance = distance;
                 closest_rotation = camera_rotation;
-                found_camera = 1;
+                // found_camera = 1;
                 // closest_camera = e2;
             }
         }

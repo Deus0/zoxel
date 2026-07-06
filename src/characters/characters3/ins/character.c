@@ -42,6 +42,7 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
     }
     zox_instance(prefab);
     zox_remove_tag(e, RealmCharacter);
+    zox_set_parent(world, e, realm);
     zox_set(e, RealmLink, { realm });
     zox_set(e, TerrainLink, { terrain });
     zox_name("character3");

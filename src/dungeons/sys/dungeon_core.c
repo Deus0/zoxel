@@ -54,9 +54,8 @@ zox_sys2(DungeonBlockSystem) {
         zox_geter_value(chunk, ChunkSize, int3, chunk_size);
         zox_geter_value(chunk, ChunkPosition, int3, chunk_position);
         int3 positionv = positionl_to_block_position(positionl, chunk_position, chunk_size, terrain_sizec);
-        entity place_chunk;
+        entity place_chunk = 0;
         byte3 place_positionl;
-        // int3 place_positionc;
         // placing
         byte find = 0;
         int3 check_positionv;

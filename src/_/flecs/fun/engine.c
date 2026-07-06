@@ -1,3 +1,10 @@
+#ifdef zox_web
+void update_ecs_web() {
+    update_ecs(local_world);
+}
+#endif
+
+
 void engine_end() {
     running = 0;
 #ifdef zox_web
@@ -20,7 +27,7 @@ void handle_terminal_close(int sig) {
 // handles loop with special check on web builds
 void main_loop(ecs *world) {
 #ifdef zox_web
-    emscripten_set_main_loop(&update_ecs_local, -1, 1); // old - 60, 1);
+    emscripten_set_main_loop(&update_ecs_web, -1, 1); // old - 60, 1);
 #else
     signal(SIGINT, handle_terminal_close);     // Handles closing from control + c
     signal(SIGSEGV, handle_segfault);

@@ -56,10 +56,10 @@
 #include "pets/_.c"
 #include "huds/_.c"
 #include "space/_.c"
-#include "projectiles/_.c"
 // user data
 #include "users/_.c"
 #include "combat/_.c"
+#include "projectiles/_.c"
 #include "stats/_.c"
 #include "skills/_.c"
 #include "items/_.c"
@@ -95,6 +95,7 @@
 
 // engine imports, besides sub modules, it's core is flecs
 zox_begin_module(Zox) {
+    byte dbg_disable = 0;
     zox_import_module(Core);
     zox_import_module(Events);
     zox_import_module(Transforms);
@@ -124,7 +125,7 @@ zox_begin_module(Zox) {
     zox_import_module(Animations);
     zox_import_module(Bones);
     zox_import_module(Elements);
-    zox_import_module(Lines2D);
+    zox_import_module(Lines2);
     zox_import_module(Plots);
     zox_import_module(Genetics);
     zox_import_module(Neurals);
@@ -149,43 +150,42 @@ zox_begin_module(Zox) {
     zox_import_module(Characters);
     zox_import_module(Huds);
     zox_import_module(Space);
-    zox_import_module(Projectiles);
-    // user data
-    zox_import_module(Users);
-    zox_import_module(Combat);
-    zox_import_module(Stats);
-    zox_import_module(Skills);
-    zox_import_module(Items);
-    zox_import_module(Bodys);
-    zox_import_module(Equips);
-    zox_import_module(Actions);
-    zox_import_module(Dialogues);
-    zox_import_module(Quests);
-    zox_import_module(Classes);
-    zox_import_module(Jobs);
-    zox_import_module(Races);
-    zox_import_module(Clans);
-    zox_import_module(Lores);
-    zox_import_module(Achievements);
-    // Placement
-    zox_import_module(Vodes);
-    zox_import_module(Dungeons);
-    zox_import_module(TerrainsNpcs);
-    // Gameplay
-    zox_import_module(Pickups);
-    zox_import_module(Crafting);
-    zox_import_module(Farming);
-    zox_import_module(Turrets);
-    zox_import_module(Maps);
-    zox_import_module(Npcs);
-    zox_import_module(Pets);
+    if (!dbg_disable) {
+        // TODO: Remove Users
+        zox_import_module(Users);
+        // user data
+        zox_import_module(Combat);
+        zox_import_module(Projectiles);
+        zox_import_module(Stats);
+        zox_import_module(Skills);
+        zox_import_module(Items);
+        zox_import_module(Bodys);
+        zox_import_module(Equips);
+        zox_import_module(Actions);
+        zox_import_module(Dialogues);
+        zox_import_module(Quests);
+        zox_import_module(Classes);
+        zox_import_module(Jobs);
+        zox_import_module(Races);
+        zox_import_module(Clans);
+        zox_import_module(Lores);
+        zox_import_module(Achievements);
+        // Placement
+        zox_import_module(Vodes);
+        zox_import_module(Dungeons);
+        zox_import_module(TerrainsNpcs);
+        // Gameplay
+        zox_import_module(Pickups);
+        zox_import_module(Crafting);
+        zox_import_module(Farming);
+        zox_import_module(Turrets);
+        zox_import_module(Maps);
+        zox_import_module(Npcs);
+        zox_import_module(Pets);
+        zox_import_module(Controllers);
+        // TODO: Remove Debug
+        zox_import_module(Debug);
+    }
     zox_import_module(Imports);
     zox_import_module(Editor);
-    // space
-#if defined(zoxm_players)
-    zox_import_module(Controllers);
-#endif
-#if defined(zoxm_debug)
-    zox_import_module(Debug);
-#endif
 } zox_end_module(Zox);

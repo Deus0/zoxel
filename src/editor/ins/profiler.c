@@ -4,7 +4,7 @@ color plot_colors[] = {
     (color) { 163, 163, 163, 255 },
 };
 
-entity spawn_profiler(ecs* world, entity canvas, const char *header_label, int2 position, int2 size, float2 anchor) {
+entity spawn_profiler(ecs* world, entity canvas, const char* header_label, int2 position, int2 size, float2 anchor) {
     if (!zox_valid(canvas)) {
         zox_loge("Invalid Canvas");
         return 0;

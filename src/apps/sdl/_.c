@@ -18,7 +18,6 @@ void initialize_sounds() {
     if (nosounds) {
         return;
     }
-
     if (initialize_sdl_mixer(channel_sample_rate, channels_count) == EXIT_SUCCESS) {
         audio_enabled = 1;
     } else {
@@ -26,11 +25,10 @@ void initialize_sounds() {
     }
 }
 
-zox_begin_module(Sdl)
+zox_begin_module(Sdl) {
     // disable_virtual_keyboard();
     define_components_sdl(world);
     define_systems_sdl(world);
-
     // hooks
     zox_module_dispose(dispose_apps_sdl);
     add_to_update_loop(update_sdl);
@@ -38,14 +36,10 @@ zox_begin_module(Sdl)
     add_hook_terminal_command(process_terminal_sdl);
     add_hook_spawn_prefabs(spawn_prefabs_sdl);
     zox_import_module(SdlInputs);
-
     initialize_sounds();
-
     // Sdl settings
     SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-
     zox_logv("Virtual Keyboard Support? %i", can_virtual_keyboard());
-
-zox_end_module(Sdl)
+} zox_end_module(Sdl);
 
 #endif

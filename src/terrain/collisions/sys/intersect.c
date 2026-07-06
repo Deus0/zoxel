@@ -42,7 +42,7 @@ zox_sys2(TerrainIntersectSystem) {
         byte hit_axis_x = 0;
         byte hit_axis_y = 0;
         byte hit_axis_z = 0;
-        int3 last_block_position;
+        int3 last_block_position = (int3) { 0, -10000, 0 };
         // NOTE: From Lower to Upper bounds, but including Upper Bounds
         float3 point;
         float add = terrain_block_scale;

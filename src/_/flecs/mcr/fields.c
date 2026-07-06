@@ -19,16 +19,13 @@
 #define zox_field_o(component_name, field_name, variable_name)\
     component_name *variable_name = &field_name[i];
 
-#define zox_field_e()\
-    const entity e = it->entities[i];
-
 // new
 
 #define zox_sys_world()\
     ecs *world = it->world;
 
 #define zox_sys_e()\
-    const entity e = it->entities[i];
+    entity e = it->entities[i];
 
 #define zox_sys_begin()\
     byte fi = 0;

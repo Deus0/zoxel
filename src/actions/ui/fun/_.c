@@ -4,8 +4,6 @@ void set_character_action(ecs *world, entity character, byte index) {
     }
     zox_set(character, ActionIndex, { index });
     spawn_sound_from_file_name(world, prefab_sound, "swap_action", 0, get_volume_sfx());
-    zox_geter(character, ElementLinks, elements);
-    ////find_array_element_with_tag(elements, MenuActions, actionbar);
     entity player = zox_getv(character, PlayerLink);
     if (!zox_valid(player)) {
         return;

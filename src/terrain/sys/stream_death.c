@@ -25,7 +25,7 @@ zox_sys2(Chunk3DeathSystem) {
         }
         entity terrain = zox_get_parent(world, e);
         if (!zox_valid(terrain)) {
-            zox_delete(e)
+            zox_delete(e);
             continue;
         }
         // remove from hash - can i do this better?

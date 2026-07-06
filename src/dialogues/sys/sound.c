@@ -25,7 +25,7 @@ zox_sys2(DialogueSoundSystem) {
         if (rand() % 100 >= 94) {
             spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[38], length, volume);
         } else {
-            int frequency = rand_range(frequency_range.x, frequency_range.y); // (int)(22 + 8 * (rand() % 101) / 100.0);
+            int frequency = rand_range(frequency_range.x, frequency_range.y);
             spawn_sound_generated(world, prefab_sound_generated, instrument, note_frequencies[frequency], length, volume);
         }
     }

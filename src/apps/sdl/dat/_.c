@@ -1,8 +1,5 @@
 // SDL_WINDOW_FULLSCREEN - fullscreen (exclusive)
 // SDL_WINDOW_FULLSCREEN_DESKTOP - borderless windowed
-const byte sdl_fullscreen_byte = (byte) SDL_WINDOW_FULLSCREEN_DESKTOP;
+// byte sdl_fullscreen_byte = (byte) SDL_WINDOW_FULLSCREEN_DESKTOP;
+byte sdl_fullscreen_byte = (byte) SDL_WINDOW_FULLSCREEN;
 #include "opengl_states.c"
-
-byte is_log_sdl = 0;
-
-#define zox_log_sdl(...) if (is_log_sdl) { zox_log(__VA_ARGS__) }

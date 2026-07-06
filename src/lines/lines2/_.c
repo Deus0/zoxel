@@ -10,11 +10,11 @@
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Lines2D)
+zox_begin_module(Lines2) {
     add_hook_load_shader(&spawn_shader_line2D);
     add_hook_spawn_prefabs(spawn_prefabs_lines2D);
     define_components_lines2(world);
     define_systems_line2(world);
-zox_end_module(Lines2D)
+} zox_end_module(Lines2);
 
 #endif

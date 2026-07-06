@@ -5,6 +5,7 @@ entity spawn_prefab_ui_line2D(ecs* world) {
     zox_add_tag(e, ElementLine2D);
     zox_prefab_set(e, LineData2D, { float4_zero });
     zox_prefab_set(e, LineLocalPosition2, { int4_zero });
+    zox_prefab_set(e, LineLocalPositionDirty, { 0 });
     zox_prefab_set(e, LinePosition2, { int4_zero });
     zox_prefab_set(e, LineAnchor, { float4_zero });
     zox_prefab_set(e, LineThickness, { 1 });

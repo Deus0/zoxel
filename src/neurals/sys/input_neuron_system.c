@@ -8,7 +8,7 @@
     // zox_field_out(Signal, signals, 2)
     // zox_field_out(Transfer, transfers, 3)
     for (int i = 0; i < it->count; i++) {
-        zox_field_e()
+        zox_sys_e()
         // zox_field_o(Signal, signals, signal)
         // zox_field_o(Transfer, transfers, transfer)
         // signal->value = 1;

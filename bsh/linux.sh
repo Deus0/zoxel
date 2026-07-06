@@ -50,17 +50,18 @@ fi
 
 if [[ ${debug} == "True" ]]; then
     echo "+ Added [debug]"
+    cflags="-fPIC -Dzox_debug"
+    cflags+=" -g3 -Wall -ggdb3"
     # cflags="-fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug"
     # cflags="-fPIC -O2 -g3 -Wall -ggdb3 -Dzox_debug"
     # cflags="-O2 -g -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs
-    cflags="-O3 -g3"
-    # For Full Debug
-    # cflags="-fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug -fno-omit-frame-pointer"
+    cflags+=" -O3"
     # Memory Leaks
-    # cflags="-O0 -g3" #  -fsanitize=address"
-    cflags+=" -fPIC -Dzox_debug"
+    # cflags+=" -O0" #  -fsanitize=address"
+    # For Full Debug
+    # cflags="-O0 -fno-omit-frame-pointer"
     #  -fsanitize=address
     bin_path="bin/${bin_filename}-dev.bin"
 fi

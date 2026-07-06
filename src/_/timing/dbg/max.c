@@ -22,7 +22,7 @@ zox_sys2(MaxSystemSystem) {
     zox_sys_begin();
     zox_sys_out(SystemLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_o(SystemLink, max);
         max->value = max_system;
     }

@@ -24,7 +24,7 @@ zox_sys2(MaxSystemTimeLabelSystem) {
     zox_sys_out(TextData);
     zox_sys_out(TextDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, dirty);
         if (!is_zext_cut(data, output, text_length)) {

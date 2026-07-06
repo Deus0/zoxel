@@ -96,7 +96,6 @@ void define_systems_game_ui(ecs *world) {
         zoxp_mainthread,
         [in] layouts2.CanvasLink,
         [in] inputs.DeviceMode,
-        [in] elements.ElementLinks,
         [none] players.Player
     );
 }

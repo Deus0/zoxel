@@ -14,13 +14,15 @@ void skip_time_to_current() {
     // zox_log(" > restoring time to [%d]\n", zox_current_time)
 }
 
-void clear_system_times() {
-    // for (int i = 0; i < record_frames_count; i++) system_times[i] = 0;
+// main loop
+extern void add_plot_data_time_system(ecs*, double);
+
+void iterate_time_system(ecs *world) {
+    add_plot_data_time_system(world, zox_delta_time_system);
+    zox_delta_time_system = 0;
 }
-// todo: find a better way to grab time data in a new module
 
 void iterate_time(ecs *world) {
-    clear_system_times();
     double last_time = zox_current_time;
     zox_current_time = current_time_in_seconds() - time_begin;
     if (!updating_time) {
@@ -56,6 +58,7 @@ void iterate_time(ecs *world) {
 #ifdef zox_log_frame_ms
     zox_log(" > frame time [%fms]\n", (float) (zox_delta_time * 1000.0f))
 #endif
+    iterate_time_system(world);
 }
 
 float get_total_time_seconds() {

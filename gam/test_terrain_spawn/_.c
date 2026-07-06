@@ -162,7 +162,6 @@ byte test_terrain_spawn(ecs *world) {
         }
     }
     zox_log("### ### ### ### ###")
-
     zox_log("> ended [%s]", game_name)
     if (lagged_frames > 10) {
         zox_log("### TEST FAILED ###")
@@ -183,29 +182,23 @@ zox_begin_module(ZoxGame)
     headless = 0; // 0 | 1
     // terrain_mode = terrain_mode_flatlands;
     // zox_log_terrain_generation = 1;
-
     // scaling
     // real_chunk_scale = 8.0f; // 4 | 8 | 16 | 32 etc
     terrain_depth = 4;
-
     // render distance
     terrain_lod_far = 16; // 2 | 4 | 8 | 16 | 32
     render_distance_y = 3; // 1 | 2 | 8 | 16
     initial_terrain_lod = 2; // 3 | 2
-
     // block voes
     block_vox_depth = 5;
     disable_block_vox_generation = 1;
     disable_block_voxes = 1;
-
     // npcs
     vox_model_scale = 1 / 32.0f;
     disable_npcs = 1;
 }
 
 #endif
-
-
 
 #ifdef zox_test_streaming_01
     // #define zox_is_flatlands

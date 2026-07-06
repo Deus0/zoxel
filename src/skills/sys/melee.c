@@ -23,8 +23,8 @@ zox_sys2(MeleeSystem) {
         zox_sys_e()
         zox_sys_i(SkillResourceLink, rresource);
         zox_sys_i(SkillCost, cost);
-        zox_sys_i(SkillDamage, skillDamage);
-        zox_sys_i(SkillDamageMax, skillDamageMax);
+        zox_sys_i(SkillDamage, damage);
+        zox_sys_i(SkillDamageMax, damage_max);
         zox_sys_i(SkillRange, range);
         zox_sys_i(Activate, active);
         if (active->value != zox_dirty_active) {
@@ -114,7 +114,7 @@ zox_sys2(MeleeSystem) {
             continue;
         }
         // todo: reduce energy stat value using SkillCost, check if has enough energy
-        float skill_damage = randf_range(skillDamage->value, skillDamageMax->value);
+        float skill_damage = randf_range(damage->value, damage_max->value);
         if (strength) {
             skill_damage += strength_damage_multiplier * zox_gett_value(strength, StatValue);
         }

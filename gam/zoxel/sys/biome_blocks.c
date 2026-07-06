@@ -172,7 +172,7 @@ zox_sys2(BiomeBlocksSystem) {
             // parent the model to the biome
             zox_set_parent(world, model, e);
             ModelLinks variants = (ModelLinks) { 0 };
-            entity2 variant;
+            entity2 variant = (entity2) { 0, 0 };
             for (int j = 0; j < grass_variants; j++) {
                 lint seed = 369 * j;
                 color variant_color = grass_color;

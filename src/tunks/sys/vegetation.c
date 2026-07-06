@@ -47,10 +47,10 @@ zox_sys2(VegetationMapSystem) {
             cposition->value.x * hsize.x,
             cposition->value.y * hsize.y
         };
-        entity biome;
-        float grass_chance;
-        float weeds_chance;
-        float tree_chance;
+        entity biome = 0;
+        float grass_chance = 0;
+        float weeds_chance = 0;
+        float tree_chance = 0;
         int2 gposition = gposition_start;
         for (lposition.x = 0; lposition.x < hsize.x; lposition.x++, gposition.x++) {
             gposition.y = gposition_start.y;

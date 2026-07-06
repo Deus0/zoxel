@@ -15,20 +15,26 @@ static int cmp_system_delta_desc(const void *a, const void *b) {
     return 0;
 }
 
+int system_debug_start = -1;
+
+// NOTE: Now we use MaxDoubleData, the max delta over the time period
 uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, uint index) {
-    int display_count = 16;
+    int display_count = 10;
+    // MaxDoubleData vs SystemDeltaCache
+    // - SystemDeltaCache is per Frame
+    // - MaxDoubleData is per Graph
     ecs_query_t *q = ecs_query(world, {
         .terms = {
-            { .id = ecs_id(SystemDeltaCache) }
+            { .id = zox_id(MaxDoubleData) } // ecs_id(SystemDeltaCache) }
         }
     });
     int count = 0;
-    /* First pass: count */
+    // First pass: count
     ecs_iter_t it = ecs_query_iter(world, q);
     while (ecs_query_next(&it)) {
         count += it.count;
     }
-    index += snprintf(buffer + index, size - index, "Systems [%i] [%fms]\n", count, zox_delta_time * 1000);
+    index += snprintf(buffer + index, size - index, "System Times [%i] [%fms]\n", count, zox_delta_time * 1000);
     if (count == 0) {
         // ecs_query_fini(q);
         return index;
@@ -45,17 +51,19 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
             idx++;
         }
     }
+    uint start = system_debug_start * 10;
     qsort(entries, count, sizeof(system_delta_entry), cmp_system_delta_desc);
-    int top = int_min(count, display_count); // count < display_count ? count : display_count;
-    for (int i = 0; i < top; i++) {
-        entity e =  entries[i].e;
+    int top = int_min(count, start + display_count); // count < display_count ? count : display_count;
+    for (int i = start; i < top; i++) {
+        system_delta_entry entry = entries[i];
+        entity e =  entry.e;
         index += snprintf(
             buffer + index,
             size - index,
             "  %2d. %-32s %8.3f ms",
             i + 1,
             zox_get_name(e),
-            entries[i].value
+            entry.value
         );
         // Add process data
         if (zox_has(e, SystemProcessedCache)) {
@@ -67,8 +75,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
                 process_count
             );
         }
-        index += snprintf(buffer + index, size - index,            "\n"
-        );
+        index += snprintf(buffer + index, size - index, "\n");
     }
     free(entries);
     // ecs_query_fini(q);

@@ -20,8 +20,8 @@ entity spawn_plot_graph(ecs* world, entity parent, entity prefab, int2 size, int
     float line_spacing = ( size.x - line_margins * 2 ) / (float) (lines_count - 1);
     int lines_min_height = 0;
     int lines_max_height = size.y;
-    byte2 label_margins = (byte2) { 8 * ui_scale, 4 * ui_scale };   // x
-    byte label_font_size = 8 * ui_scale;
+    // byte2 label_margins = (byte2) { 8 * ui_scale, 4 * ui_scale };   // x
+    // byte label_font_size = 8 * ui_scale;
     float2 anchor = float2_half;
     int2 position = int2_zero;
     entity e = spawn_layout2(world, prefab, parent, position, size, anchor, 0);

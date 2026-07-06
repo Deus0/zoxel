@@ -24,6 +24,6 @@ void add_plot_data_time(ecs *world, double value_s) {
     add_plot_data_double(world, plot_time, value_s * 1000);
 }
 
-void add_plot_data_time_system(ecs *world, double value_ms) {
+void add_plot_data_time_system(ecs* world, double value_ms) {
     add_plot_data_double(world, plot_time_system, value_ms);
 }

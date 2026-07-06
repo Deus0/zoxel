@@ -4,7 +4,6 @@ zox_sys2(SustemTimePlotSystem) {
     zox_sys_in(SystemDeltaCache);
     zox_sys_out(DataDouble);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
         zox_sys_i(SystemDeltaCache, time);
         zox_sys_o(DataDouble, data);
         if (!data->length || !data->value) {

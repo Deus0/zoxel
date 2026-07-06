@@ -13,9 +13,10 @@ void define_systems_line2(ecs* world) {
     zox_system(
         Line2PositionSystem,
         zoxp_transforms,
-        [in] layouts2.LayoutPositionDirty,
-        [in] layouts2.CanvasPosition,
-        [in] layouts2.LayoutSize
+        [in] lines2.LineLocalPositionDirty,
+        [in] lines2.LineAnchor,
+        [in] lines2.LineLocalPosition2,
+        [out] lines2.LinePosition2
     );
     // zox_render3D_plus_system(
     zox_render3_system(

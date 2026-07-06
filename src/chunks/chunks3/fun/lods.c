@@ -65,8 +65,5 @@ static inline byte camera_distance_to_npc_render_depth(byte distance, byte mdept
 }
 
 static inline byte camera_distance_to_block_vox_depth(byte distance) {
-    if (disable_terrain_lods) {
-        return block_vox_depth;
-    }
     return camera_distance_to_render_depth(distance, block_vox_depth, vox_lod_near, terrain_lod_near);
 }

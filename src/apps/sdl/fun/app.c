@@ -7,7 +7,6 @@ void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
     zox_geter(e, SDLWindow, window);
     zox_geter_value(e, WindowMonitor, byte, monitor);
     zox_app_set_fullscreen(window->value, monitor, fullscreen);
-    // zox_log("Setting Viewport [%s]", fullscreen ? "fullscreen" : "windowed");
 }
 
 // sdl implementation for maximized state
@@ -24,14 +23,14 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
         if (maximized) {
             size = get_maximized_size(world, e);
             // position = int2_half(get_screen_size());
-            zox_log_sdl("+ maximizing app [%ix%i]", size.x, size.y)
+            zox_logv("+ maximizing app [%ix%i]", size.x, size.y);
             zox_app_set_size(world, e, size);
         } else {
             zox_geter_value(e, WindowSizeRestore, int2, restore_size);
             zox_geter_value(e, WindowPositionRestore, int2, restore_position);
             size = restore_size;
             position = restore_position;
-            zox_log_sdl("+ restoring app [%ix%i] at [%ix%i]", size.x, size.y, position.x, position.y);
+            zox_logv("+ restoring app [%ix%i] at [%ix%i]", size.x, size.y, position.x, position.y);
             zox_app_set_size(world, e, size);
             zox_app_set_position(world, e, position);
         }

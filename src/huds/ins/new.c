@@ -1,7 +1,5 @@
 void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    //zox_geter(player, ElementLinks, elements);
-    //find_array_element_with_tag(elements, MenuNewRealm, menu);
     entity canvas = zox_getv(player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
     if (menu) {
@@ -68,7 +66,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     const char* header_label = "Where"; // "New Realm";
     int max_labels = max_settings;
-    byte layer = 1;
+    // byte layer = 1;
     // # Window #
     LayoutParentData canvas_data = { .e = canvas };
     // LayoutParentData window_parent_data = { .e = canvas };
@@ -116,10 +114,6 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
         .margins = list_padding,
     };
     spawn_list(world, canvas_data, list_parent_data, list_element_data, ui_list_data, zox_alignment_centre, NULL);
-    // zox_set_parent(world, list, e);
-    /*zox_muter(player, ElementLinks, pelements);
-    add_to_ElementLinks(pelements, e);
-    zox_set(e, ElementHolder, { player });*/
     return e;
 }
 

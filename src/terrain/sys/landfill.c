@@ -55,12 +55,6 @@ zox_sys2(LandfillChunk3System) {
         byte3 positionl;
         byte hmultiplier = powers_of_two[terrain_depth - depth->value];
         byte stone_dig = 4 / hmultiplier;
-        /*int hmultiplier = 1;
-        byte ccc = depth->value;
-        while (ccc != terrain_depth) {
-            hmultiplier *= 2;
-            ccc++;
-        }*/
         // Debug only at center point
         if (dbg_log && !cposition->value.x && !cposition->value.z) {
             zox_log("Filling Land [%ix%ix%i] -> Depth [%i]", cposition->value.x, cposition->value.y, cposition->value.z, depth->value);

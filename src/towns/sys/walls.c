@@ -21,9 +21,9 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
-        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
         entity realm = zox_getv(terrain, RealmLink);
-        byte is_max_depth = depth->value == terrain_depth;
+        // byte is_max_depth = depth->value == terrain_depth;
         /*if (!is_max_depth) {
             continue;
         }*/
@@ -42,7 +42,7 @@ zox_sys2(TownWallsSystem) {
         byte home_roof_id = bricks_id;
         byte voctree_length = powers_of_two_byte[depth->value];
         int3 chunk_block_position = chunk_position_to_block_position(cposition->value, terrain_depth); // voctree_depth->value);
-        int chunk_position_y = chunk_block_position.y;
+        // int chunk_position_y = chunk_block_position.y;
         byte3 positionl;
         byte gate_height = 6; // rand_range(4, 8);
         byte wall_height = 8; // rand_range(4, 8);

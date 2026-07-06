@@ -1,6 +1,4 @@
 // Function to get current time in milliseconds
-
-
 #ifdef zox_windows
 
 double current_time_in_seconds() {
@@ -22,10 +20,8 @@ double get_time_ms() {
 #else
 
 double current_time_in_seconds() {
-
     struct timespec current_time;
     clock_gettime(CLOCK_REALTIME, &current_time);
-
     return current_time.tv_sec + (double) current_time.tv_nsec / 1000000000.0;
 }
 

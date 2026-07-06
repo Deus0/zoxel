@@ -1,7 +1,7 @@
 void zoxel_settings_uis() {
     byte window_fill_alpha = 166;
     byte fill_alpha = 66;
-    byte text_alpha = 122;
+    byte text_alpha = 172;
     byte text_outline_alpha = 222;
     byte outline_alpha = 92;
     byte outline_value = 1;
@@ -29,7 +29,7 @@ void zoxel_settings_uis() {
     button_outline = color_grayscale_a(outline_value, fill_alpha);
     button_fill = color_grayscale_a(0, fill_alpha);
     button_font_outline = (color) { 88, 25, 124, text_outline_alpha };
-    button_font_fill = (color) { 226, 2, 133, text_alpha };
+    button_font_fill = (color) { 246, 2, 199, text_alpha };
     button_font_thickness_fill = 2;
     button_font_thickness_outline = 3;
     button_fill_selected = (color) { 32, 88, 122, fill_alpha };

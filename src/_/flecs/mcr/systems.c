@@ -27,14 +27,18 @@ void zox_system_on_new(ecs* world, entity system) {
     if (ecs_has(it->world, it->system, SystemDelta)) { \
         double current_delta = ecs_get(it->world, it->system, SystemDelta)->value; \
         if (system_delta_time > current_delta) { \
-            ecs_set(it->world, it->system, SystemDelta, { system_delta_time }); \
+            SystemDelta* system_delta = ecs_get_mut(it->world, it->system, SystemDelta); \
+            system_delta->value = system_delta_time; \
+            /* ecs_set(it->world, it->system, SystemDelta, { system_delta_time });*/ \
         } \
     } \
     \
     if (is_count_process && process_count) { \
         int current = ecs_get(it->world, it->system, SystemProcessed)->value;\
         if (process_count > current) {\
-            ecs_set(it->world, it->system, SystemProcessed, { process_count }); \
+            SystemProcessed* system_processed = ecs_get_mut(it->world, it->system, SystemProcessed); \
+            system_processed->value = process_count; \
+            /* ecs_set(it->world, it->system, SystemProcessed, { process_count }); */ \
         }\
     } \
 } ECS_SYSTEM_DECLARE(T)

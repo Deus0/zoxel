@@ -8,7 +8,8 @@ void define_systems_plots(ecs* world) {
         EcsOnUpdate,
         // [in] hierarchys.ParentLink,
         [in] hierarchys.ChildIndex,
-        [out] lines2.d.LineLocalPosition2,
+        [out] lines2.LineLocalPosition2,
+        [out] lines2.LineLocalPositionDirty,
         [none] plots.PlotLine
     );
     zox_system(

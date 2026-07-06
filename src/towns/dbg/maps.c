@@ -57,8 +57,8 @@ zox_sys2(TownTextureSystem) {
         if (dbg_log) {
             zox_log("Generating Tunk Texture [%ix%i]", size->value.x, size->value.y);
         }
-        lint region_seed = zox_getv(region, Seed);
-        color fill = color_grayscale(seed_range(region_seed, 0, 255));
+        // lint region_seed = zox_getv(region, Seed);
+        // color fill = color_grayscale(seed_range(region_seed, 0, 255));
         resize_TextureData(data, size->value.x * size->value.y);
         for (byte x = 0; x < map_length; x++) {
             for (byte y = 0; y < map_length; y++) {

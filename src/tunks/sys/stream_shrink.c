@@ -7,12 +7,6 @@ zox_sys2(Tunk2DeathSystem) {
         zox_sys_e();
         zox_sys_i(TunkPosition, position);
         zox_sys_i(RenderDistance, distance);
-        entity terrain = zox_get_parent(world, e);
-        if (!zox_valid(terrain) || !zox_has(terrain, TunkLinks)) {
-            zox_logw("Tunk has no Parent Terrain [%s]", zox_get_name(e));
-            zox_delete(e);
-            continue;
-        }
         // Pass if loading chunk
         if (distance->value == 255) {
             continue;
@@ -20,6 +14,12 @@ zox_sys2(Tunk2DeathSystem) {
         // Pass if lod changing
         byte is_kill = distance->value > terrain_lod_far;
         if (!is_kill) {
+            continue;
+        }
+        entity terrain = zox_get_parent(world, e);
+        if (!zox_valid(terrain) || !zox_has(terrain, TunkLinks)) {
+            zox_logw("Tunk has no Parent Terrain [%s]", zox_get_name(e));
+            zox_delete(e);
             continue;
         }
         // remove from hash - can i do this better?

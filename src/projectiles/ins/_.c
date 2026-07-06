@@ -1,4 +1,4 @@
-entity spawn_projectile(ecs* world, entity prefab, float3 position, float4 rotation, float scale, float power) {
+entity spawn_projectile(ecs* world, entity prefab, float3 position, float4 rotation, float scale, float power, float damage) {
     // entity e = zox_ins(prefab);
     entity e = spawn_cube(world, prefab, position, scale);
     // set transform
@@ -7,5 +7,6 @@ entity spawn_projectile(ecs* world, entity prefab, float3 position, float4 rotat
     // set force here
     float3 force = float4_rotate_float3(rotation, (float3) { 0, 0, -power });
     zox_set(e, Acceleration3D, { force });
+    zox_set(e, Damage, { damage });
     return e;
 }

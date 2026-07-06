@@ -51,7 +51,7 @@ zox_sys2(BlockDamageQueueSystem) {
                 continue;
             }
             byte linked = is_linked_VoxelNode(leaf);
-            entity world_block;
+            entity world_block = 0;
             if (linked) {
                 world_block = get_entity_VoxelNode(leaf);
             }
@@ -64,7 +64,7 @@ zox_sys2(BlockDamageQueueSystem) {
             byte did_destroy_block = 0;
             // Create new block health
             float block_health;
-            float start_health;
+            float start_health = 0;
             if (!zox_valid(world_block) || !zox_has(world_block, StatValue)) {
                 float2 health_start_range = zox_has(meta, BlockHealth) ? zox_getv(meta, BlockHealth) : (float2) { 1, 1 };
                 start_health = randf_range(health_start_range.x, health_start_range.y);

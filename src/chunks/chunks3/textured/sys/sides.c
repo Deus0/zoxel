@@ -49,84 +49,83 @@ byte get_node_sides_all_solid(const byte* solidity, const VoxelNode* node, byte 
 // this function accounts for size of drawing voxels
 // NOTE: Returns 1 to build the side
 static inline byte build_voxel_sides(const byte* solids, const VoxelNode* rvoctree, const VoxelNode** noctrees, const byte* ndepths, const VoxelNode* voctree, SidesOctree* sides, byte depth, byte3 position, byte direction) {
-    const VoxelNode* anode = get_adjacentn_VoxelNode(noctrees, rvoctree,  byte3_to_int3(position), depth, direction);
-    if (!anode) {
+    int3 positioni = byte3_to_int3(position);
+    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(noctrees, rvoctree,  positioni, depth, direction);
+    if (!adjacent_node) {
         return 0;
     }
     // Accounts for Dig vs Render Difference
-    byte adepth = get_adjacent_depth(depth, ndepths, byte3_to_int3(position), direction);
-    byte asolid;
-    if (adepth > depth) {
-        asolid = anode && get_node_sides_all_solid(solids, anode, reverse_direction(direction), adepth - depth);
+    byte adjacent_solid;
+    byte adjacent_depth = get_adjacent_depth(depth, ndepths, positioni, direction);
+    if (adjacent_depth > depth) {
+        adjacent_solid = adjacent_node && get_node_sides_all_solid(solids, adjacent_node, reverse_direction(direction), adjacent_depth - depth);
     } else {
-        asolid = anode && anode->value &&
         // Accounts for null solids
-        (!solids || (solids && solids[anode->value - 1]));
+        adjacent_solid = adjacent_node && adjacent_node->value && (!solids || (solids && solids[adjacent_node->value - 1]));
     }
     // Debug These
-    // if (asolid && adepth != depth) asolid = 0;
-    // if (asolid && is_on_edge_VoxelNode(depth, position, direction)) asolid = 0;
-    return !asolid || zox_dbg_render_all_sides;
+    return !adjacent_solid || zox_dbg_render_all_sides;
 }
 
-static inline byte build_sides_dig(const byte* solids, const VoxelNode* rvoctree, const VoxelNode** noctrees, const byte* ndepths, const VoxelNode* voctree, SidesOctree* sides, byte rdepth, byte depth, byte3 position) {
+static inline byte build_sides_dig(const byte* solids, const VoxelNode* rvoctree, const VoxelNode** noctrees, const byte* ndepths, const VoxelNode* voctree, SidesOctree* sides, byte render_depth, byte depth, byte3 position) {
+    /*if (!sides) {
+        zox_loge("Sides null at [%ix%ix%i:%i]", position.x, position.y, position.z, depth);
+        return 0;
+    }*/
     // if air we stop here at any branch node
     if (!voctree->value) {
         // collapse sub node and set to 0
-        SidesOctree* csides = getm_SidesOctree(sides, position, depth);
-        if (csides) {
-            csides->value = 0;
-            collapse_SidesOctree(csides);
+        // SidesOctree* child_sides = sides;
+        sides->value = 0;
+        if (sides->ptr) {
+            collapse_SidesOctree(sides);
         }
         return 0;
     }
     // We should keep digging even when it's closed
     // keep digging
     byte has_vkids = !is_closed_VoxelNode(voctree);
-    if (depth < rdepth && (zox_split_textured_quads || (!zox_split_textured_quads && has_vkids))) {
+    if (depth < render_depth && (zox_split_textured_quads || (!zox_split_textured_quads && has_vkids))) {
         byte3 cposition = position;
         byte3_multiply_byte(&cposition, 2);
+        if (!sides->ptr) {
+            open_SidesOctree(sides);
+            // NOTE: If fails malloc
+            if (!sides->ptr) {
+                return 0;
+            }
+        }
+        SidesOctree* sides_kids = (SidesOctree*) sides->ptr;
         const VoxelNode* kids = has_vkids ? get_children_VoxelNode(voctree) : NULL;
         byte did_build = 0;
         for (byte i = 0; i < 8; i++) {
-            const VoxelNode* cvoctree = has_vkids ? &kids[i] : voctree;
+            SidesOctree* sides_kid = &sides_kids[i];
+            const VoxelNode* child_voxel = has_vkids ? &kids[i] : voctree;
             byte3 nposition = byte3_add(cposition, octree_positions_b[i]);
-            if (build_sides_dig(solids, rvoctree, noctrees, ndepths, cvoctree, sides, rdepth, depth + 1, nposition)) {
+            if (build_sides_dig(solids, rvoctree, noctrees, ndepths, child_voxel, sides_kid, render_depth, depth + 1, nposition)) {
                 did_build = 1;
             }
         }
         // set 1 if built for Branch Nodes
         if (did_build) {
-            set_SidesOctree(sides, depth, position, did_build, 0);
+            sides->value = did_build;
         }
         return did_build;
     }
-    // If a non block, we stop here at leaf node
-    if (solids && !solids[voctree->value - 1]) {
-        SidesOctree* csides = getm_SidesOctree(sides, position, depth);
-        if (csides) {
-            csides->value = 0;
-            collapse_SidesOctree(csides);
-        }
-        return 0;
-    }
-    byte ssides = 0;
-    for (byte direction = 0; direction < 6; direction++) {
-        if (build_voxel_sides(solids, rvoctree, noctrees, ndepths, voctree, sides, depth, position, direction)) {
-            ssides |= (1 << (direction + 1));
+    byte sides_value = 0;
+    // NOTE: if solid, check all sides, Set side 1 if Air
+    if (!solids || solids[voctree->value - 1]) {
+        for (byte direction = 0; direction < 6; direction++) {
+            if (build_voxel_sides(solids, rvoctree, noctrees, ndepths, voctree, sides, depth, position, direction)) {
+                sides_value |= (1 << (direction + 1));
+            }
         }
     }
-    if (ssides) {
-        set_SidesOctree(sides, depth, position, ssides, 0);
-    } else {
-        // collapse sub node and set to 0
-        SidesOctree* csides = getm_SidesOctree(sides, position, depth);
-        if (csides) {
-            csides->value = 0;
-            collapse_SidesOctree(csides);
-        }
+    sides->value = sides_value;
+    if (!sides_value) {
+        collapse_SidesOctree(sides);
     }
-    return ssides;
+    return sides_value;
 }
 
 // Make sure BlockManagerLink is first one
@@ -163,7 +162,6 @@ byte* blocks_fetch_solids(iter* it) {
 }
 
 zox_sys2(Chunk3SidesSystem) {
-    // zox_sys_in(BlockManagerLink);
     byte* solids = blocks_fetch_solids(it);
     if (!solids) {
         return;
@@ -178,7 +176,7 @@ zox_sys2(Chunk3SidesSystem) {
     zox_sys_out(SidesOctreeDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkMeshDirty, cdirty);
-        zox_sys_i(RenderDepth, rdepth);
+        zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, voctree);
         zox_sys_o(SidesOctree, sides);
@@ -186,15 +184,14 @@ zox_sys2(Chunk3SidesSystem) {
         if (cdirty->value != zox_dirty_active) {
             continue;
         }
-        // rdepth->value == render_depth_invisible ||
-        if (rdepth->value == render_depth_uninitialized) {
+        if (render_depth->value == render_depth_uninitialized) {
             sides->value = 0;
             continue;
         }
         const VoxelNode *noctrees[6];
         byte ndepths[6];
         fetch_neightbor_chunk_data(world, neighbors, noctrees, ndepths);
-        sides->value = build_sides_dig(solids, voctree, noctrees, ndepths, voctree, sides, rdepth->value, 0, byte3_zero);
+        sides->value = build_sides_dig(solids, voctree, noctrees, ndepths, voctree, sides, render_depth->value, 0, byte3_zero);
         sdirty->value = zox_dirty_trigger;
         zox_sys_increment();
     }

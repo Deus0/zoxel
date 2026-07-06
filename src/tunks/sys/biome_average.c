@@ -1,7 +1,5 @@
 // Counts the biomes used in the map, and sets to highest used
 zox_sys2(BiomeMapAvgSystem) {
-    // const uint seed = global_seed;
-    // double height_frequency = terrain_frequency;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -26,8 +24,12 @@ zox_sys2(BiomeMapAvgSystem) {
             continue;
         }
         zox_geter(realm, BiomeLinks, biomes);
+        if (biomes->length < 2) {
+            zox_loge("No biomes on realm");
+            continue;
+        }
         // TODO: Calculate most popular in bmp generically
-      //   uint counts[biomes->length];
+        //   uint counts[biomes->length];
         uint used_0 = 0;
         uint used_1 = 0;
         for (int j = 0; j < bmap->length; j++) {
@@ -38,6 +40,7 @@ zox_sys2(BiomeMapAvgSystem) {
                 used_1++;
             }
         }
+        // NOTE: Links a chunk to a biome
         byte popular_biome = used_0 > used_1 ? 0 : 1;
         link->value = biomes->value[popular_biome];
         // zox_log("popular_biome is [%i] [%s]", popular_biome, zox_get_name(link->value));

@@ -154,7 +154,6 @@ void refresh_debug_label(ecs* world) {
         zox_delete(label);
     }
     spawn_game_debug_label(world, canvas);
-    // canvas_toggle_ui(world, canvas->value, label, spawn_game_debug_label);
 }
 
 void zox_dbg_activate_ui_statistics(ecs* world, ClickEventData data) {
@@ -204,6 +203,8 @@ void zox_dbg_activate_ui_chunk_link(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_activate_ui_system_times(ecs* world, ClickEventData data) {
+    system_debug_start++;
+    if (system_debug_start >= 5) system_debug_start = 0;
     set_prefab_debug_label(world, &debug_ui_system_times);
     refresh_debug_label(world);
 }

@@ -62,8 +62,6 @@ const float octree_scales3[] = {
 const byte octree_node_size = 2;
 #define octree_node_size3 (int3) { 2, 2, 2 }
 
-
-
 const int3 octree_positions[] = {
     { 0, 0, 0},
     { 0, 0, 1},

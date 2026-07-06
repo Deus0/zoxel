@@ -6,7 +6,7 @@ zox_sys2(QolShortcutsSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity devices[zox_children_capacity];
-        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Keyboard));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
             if (!zox_valid(e2) || !zox_has(e2, Keyboard)) {

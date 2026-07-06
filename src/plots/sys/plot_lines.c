@@ -6,10 +6,15 @@ zox_sys2(PlotLineSystem) {
     zox_sys_begin();
     zox_sys_in(ChildIndex);
     zox_sys_out(LineLocalPosition2);
+    zox_sys_out(LineLocalPositionDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChildIndex, index);
         zox_sys_o(LineLocalPosition2, position);
+        zox_sys_o(LineLocalPositionDirty, dirty);
+        if (dirty->value) {
+            continue;
+        }
         entity parent = zox_get_parent(world, e);
         if (!parent || !zox_has(parent, DataDouble)) {
             zox_log_error("No DataDouble found on parent");
@@ -31,5 +36,6 @@ zox_sys2(PlotLineSystem) {
         double value = data->value[index->value];
         value /= line_max;
         position->value.w = (int) (value * parent_size.y);
+        dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(PlotLineSystem);

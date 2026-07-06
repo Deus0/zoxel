@@ -32,19 +32,19 @@ void print_supported_renderers() {
 }
 
 void print_sdl() {
-    zox_log(" > sdl")
-    zox_log("     + platform:     %s", SDL_GetPlatform())
-    zox_log("     + cpu count:    %d", SDL_GetCPUCount())
-    zox_log("     + ram:          %d MB", SDL_GetSystemRAM())
-    zox_log("     + sse:          %s", (SDL_HasSSE() ? "true" : "false"));
-    zox_log("     + sse2:         %s", (SDL_HasSSE2() ? "true" : "false"));
-    zox_log("     + sse3:         %s", (SDL_HasSSE3() ? "true" : "false"));
-    zox_log("     + sse4.1:       %s", (SDL_HasSSE41() ? "true" : "false"));
-    zox_log("     + sse4.2:       %s", (SDL_HasSSE42() ? "true" : "false"));
+    zox_logv("> sdl");
+    zox_logv("     + platform:     %s", SDL_GetPlatform());
+    zox_logv("     + cpu count:    %d", SDL_GetCPUCount());
+    zox_logv("     + ram:          %d MB", SDL_GetSystemRAM());
+    zox_logv("     + sse:          %s", (SDL_HasSSE() ? "true" : "false"));
+    zox_logv("     + sse2:         %s", (SDL_HasSSE2() ? "true" : "false"));
+    zox_logv("     + sse3:         %s", (SDL_HasSSE3() ? "true" : "false"));
+    zox_logv("     + sse4.1:       %s", (SDL_HasSSE41() ? "true" : "false"));
+    zox_logv("     + sse4.2:       %s", (SDL_HasSSE42() ? "true" : "false"));
     SDL_version compiled;
     SDL_version linked;
     SDL_VERSION(&compiled);
     SDL_GetVersion(&linked);
-    zox_log("     + compiled SDL version [%d.%d.%d]", compiled.major, compiled.minor, compiled.patch)
-    zox_log("     + linking SDL version [%d.%d.%d]", linked.major, linked.minor, linked.patch)
+    zox_logv("     + compiled SDL version   [%d.%d.%d]", compiled.major, compiled.minor, compiled.patch);
+    zox_logv("     + linking SDL version    [%d.%d.%d]", linked.major, linked.minor, linked.patch);
 }
