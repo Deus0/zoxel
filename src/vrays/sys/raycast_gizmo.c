@@ -1,12 +1,12 @@
 zox_sys2(RaycastGizmoSystem) {
     byte dbg_log = 0;
     byte gizmo_type = 1;
-    byte disable_depth = 0;
+    byte disable_depth = 1;
     float3 hide_position = (float3) { 0, -666, 0 };
-    float extrude = 0.02f;
-    float shrink = 0.96f;
+    float extrude = 0.0001f;
+    float shrink = 0.999f;
     float raycaster_quad_thickness = 6;
-    color hit_terrain_color = { 255, 255, 255, 66 };
+    color hit_terrain_color = { 255, 255, 255, 33 };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RaycastVoxelData);
@@ -27,6 +27,10 @@ zox_sys2(RaycastGizmoSystem) {
                     position = float3_add(position, float3_scale(data->normal, data->voxel_scale));
                 }
             }
+            byte sides = get_raycast_sides(world, data);
+            if (rtype->value == 1) {
+                sides = 255; // all sides
+            }
             float4 quad_rotation = quaternion_from_to(float3_up, data->normal);
             float quad_scale = data->voxel_scale * (0.5f - quad_depth_buffer);
             if (!zox_valid(link->value)) {
@@ -36,6 +40,7 @@ zox_sys2(RaycastGizmoSystem) {
                     link->value = spawn_cube_lines_rgba(world, data->positionf, float3_single(0.5f * data->voxel_scale), raycaster_quad_thickness, hit_terrain_color, 0);
                     zox_set(link->value, CubeLineShrink, { shrink });
                     zox_set(link->value, CubeLineExtrude, { extrude });
+                    zox_set(link->value, CubeLineSides, { sides });
                     if (disable_depth) {
                         zox_add_tag(link->value, DisableDepthTest);
                     }
@@ -56,6 +61,9 @@ zox_sys2(RaycastGizmoSystem) {
                     rotation->value = quad_rotation;
                     zox_muter(link->value, QuadLineSize, scale);
                     scale->value = quad_scale;
+                } else {
+                    // CubeLineSides
+                    zox_set(link->value, CubeLineSides, { sides });
                 }
             }
             // Debug Line

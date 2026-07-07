@@ -1,4 +1,4 @@
-byte disable_lights = 1;
+byte disable_lights = 0;
 
 void on_set_disable_lights(ecs* world, void* value) {
     (void) world;

@@ -35,10 +35,8 @@ entity prefab_label3D;
 entity prefab_popup3D;
 
 void spawn_prefabs_elements3D(ecs *world) {
-
     prefab_canvas3 = spawn_prefab_canvas3(world);
     prefab_canvas3_textured = spawn_prefab_canvas3_textured(world, prefab_canvas3);
-
     prefab_element3D_child = spawn_prefab_element3D_child(world);
     prefab_element3D_invisible = spawn_prefab_element3D_invisible(world);
     prefab_elementbar3D = spawn_prefab_elementbar3D(world, prefab_canvas3_textured);

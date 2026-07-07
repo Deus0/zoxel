@@ -9,7 +9,7 @@ typedef struct {
     float3 positionf;
     float voxel_scale;
     entity chunk;
-    VoxelNode *node;
+    VoxelNode* node;
     float3 hit;
     float3 normal;
     float distance;
@@ -20,6 +20,11 @@ typedef struct {
     int3 positionv_last;
     float3 positionf_last;
 } RaycastVoxelData;
+
+static inline byte get_raycast_sides(ecs* world, const RaycastVoxelData* data) {
+    zox_geter(data->chunk, SidesOctree, sides);
+    return getv_SidesOctree(sides, data->positionl, data->depth);
+}
 
 void clear_raycast_data(RaycastVoxelData* data) {
     data->chunk = 0;

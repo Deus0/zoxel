@@ -2,7 +2,7 @@
 // TODO: Refactor Health to remove from chunk instead of here
 zox_sys2(BlockDamageQueueSystem) {
     byte dbg_log = 0;
-    float overlay_buffer = 1.04f;
+    float overlay_buffer = 1.08f;
     color popup_color = (color) { 255, 0, 0, 255 };
     zox_sys_world();
     zox_sys_begin();

@@ -8,6 +8,7 @@ zox_tag(QuadLines);
 zoxc_float(QuadLineSize);
 zoxc_float(CubeLineExtrude);
 zoxc_float(CubeLineShrink);
+zoxc_byte(CubeLineSides);
 
 void define_components_lines3(ecs* world) {
     zoxd_tag(Line3D);
@@ -20,4 +21,5 @@ void define_components_lines3(ecs* world) {
     zoxd_float(QuadLineSize);
     zoxd_float(CubeLineExtrude);
     zoxd_float(CubeLineShrink);
+    zoxd_byte(CubeLineSides);
 }
