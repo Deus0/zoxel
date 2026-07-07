@@ -155,7 +155,7 @@ byte* blocks_fetch_solids(iter* it) {
 }
 
 zox_sys2(Chunk3SidesSystem) {
-    byte max_process = 8;
+    byte max_process = 6;
     byte* solids = blocks_fetch_solids(it);
     if (!solids) {
         return;

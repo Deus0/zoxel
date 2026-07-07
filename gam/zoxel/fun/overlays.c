@@ -1,3 +1,4 @@
+byte zox_tsts_count = 14;
 entity dbg_ui_overlays;
 
 // TODO: Include post processing, streaming and any other data
@@ -202,6 +203,11 @@ void zox_dbg_activate_ui_chunk_link(ecs* world, ClickEventData data) {
     refresh_debug_label(world);
 }
 
+void zox_dbg_activate_ui_towns(ecs* world, ClickEventData data) {
+    set_prefab_debug_label(world, &zox_dbg_label_towns);
+    refresh_debug_label(world);
+}
+
 void zox_dbg_activate_ui_inside_chunk(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &zox_dbg_label_inside_chunk);
     refresh_debug_label(world);
@@ -225,7 +231,6 @@ void zox_dbg_activate_ui_player_character(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
-    byte zox_tsts_count = 13;
     if (keycode != zox_key_v) {
         return;
     }
@@ -302,6 +307,10 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Inside Chunk",
         .on_click = { &zox_dbg_activate_ui_inside_chunk },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Towns",
+        .on_click = { &zox_dbg_activate_ui_towns },
     };
     // Test our uis
     entity spawned[elements_count];

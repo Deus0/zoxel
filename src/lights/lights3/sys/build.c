@@ -26,6 +26,19 @@ static inline const LightNode* get_max_light_on_face(const LightNode* node, byte
     return best_node;
 }
 
+static inline byte get_max_light_on_facei(const LightNode* root_light_octree, const LightNode** neighbor_light_octrees, int3 position, byte depth, byte face) {
+    // TODO: Make function for position int3
+    if (position.x < 0 || position.y < 0 || position.z < 0) {
+        return 255;
+    }
+    if (position.x < 0) position.x = 0;
+    if (position.y < 0) position.y = 0;
+    if (position.z < 0) position.z = 0;
+    const LightNode* adjacent_light = get_neighbor_LightNode(root_light_octree, neighbor_light_octrees, face, int3_to_byte3(position), depth);
+    const LightNode* light = get_max_light_on_face(adjacent_light, face);
+    return light ? light->value : 0;
+}
+
 static inline const LightNode* get_max_light_on_face_start(const LightNode* root_light_octree, const LightNode** neighbor_light_octrees, byte3 position, byte depth, byte face) {
     const LightNode* adjacent_light = get_neighbor_LightNode(root_light_octree, neighbor_light_octrees, face, position, depth);
     return get_max_light_on_face(adjacent_light, face);
@@ -67,27 +80,74 @@ static inline void zox_apply_light3(const LightNode* root_light_octree, const Li
         return;
     }
     // for each face that is visible according to node->sides
+    // byte** lights = ..
     for (byte direction = 0; direction < 6; direction++) {
         // skip hidden face
         if (!(sides->value & (1 << (direction + 1)))) {
             continue;
         }
         // TODO: Get Adjacent Depth -> based on chunk index to depth lookup - atm we just assume its render depth + 1
-        const LightNode* adjacent_max_light = get_max_light_on_face_start(root_light_octree, neighbor_light_octrees, position, depth, direction);
-        byte light = adjacent_max_light ? adjacent_max_light->value : 0;
-        // sunlight;
-        /*if (zox_disable_low_res_lights && render_depth != terrain_depth) {
-            light = sunlight;
-        }*/
-        // Set lights of our Quads, 4 Verts each
-        for (byte v = 0; v < voxel_face_vertices_length; v++) {
-            if (*ccount < colors->length) {
+        // If Not Smooth Lighting
+        const LightNode* adjacent_light = get_max_light_on_face_start(root_light_octree, neighbor_light_octrees, position, depth, direction);
+        if (!zox_smooth_lighting || direction != direction_up) {
+            byte light = adjacent_light ? adjacent_light->value : 0;
+            for (byte v = 0; v < voxel_face_vertices_length; v++) {
+                if (*ccount < colors->length) {
+                    color_rgb* c = &colors->value[*ccount];
+                    c->r = light;
+                    c->g = light;
+                    c->b = light;
+                };
+                (*ccount)++;
+            }
+        } else {
+            // Else if smooth lighting, each point gets different lights
+            int3 positioni = byte3_to_int3(position);
+            // Complicated because lights need to be the ones touching the vertex, this algorithm didn't account for corners
+            // First direct adjacent tops           2
+            byte light_n1_0 = get_max_light_on_facei(root_light_octree, neighbor_light_octrees, int3_add(positioni, (int3) { -1, 0, 0 }), depth, direction);
+            byte light_1_0 = get_max_light_on_facei(root_light_octree, neighbor_light_octrees, int3_add(positioni, (int3) { 1, 0, 0 }), depth, direction);
+            byte light_0_n1 = get_max_light_on_facei(root_light_octree, neighbor_light_octrees, int3_add(positioni, (int3) { 0, 0, 1 }), depth, direction);
+            byte light_0_1 = get_max_light_on_facei(root_light_octree, neighbor_light_octrees, int3_add(positioni, (int3) { 0, 0, 1 }), depth, direction);
+            // Now corners
+            byte light_n1_n1 = get_max_light_on_facei(root_light_octree, neighbor_light_octrees, int3_add(positioni, (int3) { -1, 0, -1 }), depth, direction);
+            byte light_1_1 = get_max_light_on_facei(root_light_octree, neighbor_light_octrees, int3_add(positioni, (int3) { 1, 0, 1 }), depth, direction);
+            byte light_n1_1 = get_max_light_on_facei(root_light_octree, neighbor_light_octrees, int3_add(positioni, (int3) { -1, 0, 1 }), depth, direction);
+            byte light_1_n1 = get_max_light_on_facei(root_light_octree, neighbor_light_octrees, int3_add(positioni, (int3) { 1, 0, -1 }), depth, direction);
+            for (byte v = 0; v < voxel_face_vertices_length; v++) {
+                // Get other lights per vertex
+                uint total_light = adjacent_light ? adjacent_light->value : 0;
+                if (v == 0) {
+                    // Negative
+                    total_light += light_0_n1;
+                    total_light += light_n1_0;
+                    total_light += light_n1_n1;
+                } else if (v == 1) {
+                    // Negative Positive
+                    total_light += light_0_1;
+                    total_light += light_n1_0;
+                    total_light += light_n1_1;
+                } else if (v == 2) {
+                    // Positive
+                    total_light += light_1_0;
+                    total_light += light_0_1;
+                    total_light += light_1_1;
+                } else if (v == 3) {
+                    // Positive Negative
+                    total_light += light_0_n1;
+                    total_light += light_1_0;
+                    total_light += light_1_n1;
+                }
+                byte light = total_light / 4;
                 color_rgb* c = &colors->value[*ccount];
                 c->r = light;
                 c->g = light;
                 c->b = light;
-            };
-            (*ccount)++;
+                (*ccount)++;
+                if (*ccount >= colors->length) {
+                    break;
+                }
+            }
         }
     }
 }

@@ -73,7 +73,7 @@ byte get_place_position(lint seed, int2 region_position, int2 region_size, byte2
 zox_sys2(RegionTownsSystem) {
     byte dbg_log = 0;
     uint max_attempts = 100;
-    byte max_towns_count = 9;
+    byte2 towns_count = (byte2) { 1, 9 };
     byte min_homes_count = 2;
     byte max_homes_count = 4;
     byte2 min_size = (byte2) { 48, 48 };
@@ -100,7 +100,7 @@ zox_sys2(RegionTownsSystem) {
         if (generate->value != zox_dirty_active) {
             continue;
         }
-        byte spawn_count = rand_range(1, max_towns_count);
+        byte spawn_count = seed_range(seed->value, towns_count.x, towns_count.y);
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Towns", zox_get_name(e), spawn_count);
         };

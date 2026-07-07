@@ -64,3 +64,47 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     index += snprintf(buffer + index, size - index, " - generate2 [%i]\n", generate2);
     return index;
 }
+
+uint zox_dbg_label_towns(ecs *world, entity player, char *buffer, uint size, uint index) {
+    entity character = zox_getv(player, CharacterLink);
+    if (!zox_valid(character)) {
+        return index;
+    }
+    entity chunk = zox_getv(character, ChunkLink);
+    if (!zox_valid(chunk)) {
+        return index;
+    }
+    entity tunk = zox_valid(chunk) ? zox_getv(chunk, TunkLink) : 0;
+    entity region = zox_valid(tunk) ? zox_getv(tunk, RegionLink) : 0;
+    entity terrain = zox_get_parent(world, chunk);
+    // Character
+    float3 position = zox_getv(character, Position3D);
+    float terrain_scale = zox_getv(terrain, BlockScale);
+    int3 block_position = real_position_to_block_position(position, terrain_scale);
+    index += snprintf(buffer + index, size - index, " - Position [%.1fx%.1fx%.1f]\n", position.x, position.y, position.z);
+    index += snprintf(buffer + index, size - index, " - Block Position [%ix%ix%i]\n", block_position.x, block_position.y, block_position.z);
+    // index += snprintf(buffer + index, size - index, "Character [%s]\n", zox_get_name(character));
+    index += snprintf(buffer + index, size - index, "Region [%s]\n", zox_get_name(region));
+    if (!zox_valid(region)) {
+        return index;
+    }
+    entity towns[zox_children_capacity];
+    uint towns_length = zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town));
+    index += snprintf(buffer + index, size - index, "Total Towns [%i]\n", towns_length);
+    for (uint i = 0; i < towns_length; i++) {
+        entity town = towns[i];
+        zox_geter(town, ZoxName, name);
+        lint seed = zox_getv(town, Seed);
+        int2 position = zox_getv(town, BlockPosition2);
+        byte2 size2 = zox_getv(town, TownSize);
+        index += snprintf(buffer + index, size - index, " Town [%s]\n", zox_get_name(town));
+        index += snprintf(buffer + index, size - index, " - Name [%s]\n", name->value);
+        index += snprintf(buffer + index, size - index, " - Seed [%lu]\n", seed);
+        index += snprintf(buffer + index, size - index, " - Position [%ix%i]\n", position.x, position.y);
+        index += snprintf(buffer + index, size - index, " - Size [%ix%i]\n", size2.x, size2.y);
+        // TODO: Get Homes list too
+        // zox_set(e, WallHeight, { wall_height });
+        // zox_set(e, WallThickness, { wall_thickness });
+    }
+    return index;
+}

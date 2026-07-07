@@ -29,8 +29,9 @@ int is_declared(const char* source, const char* type, const char* var) {
 
 // TODO: Work on this
 char* convert_to_gles2_shader(const char* source) {
-    if (!source) return NULL;
-
+    if (!source) {
+        return NULL;
+    }
     size_t len = strlen(source);
     size_t new_len = len * 3 + 128;
     char* buffer = malloc(new_len);
@@ -38,25 +39,21 @@ char* convert_to_gles2_shader(const char* source) {
 
     size_t offset = 0;
     const char* p = source;
-
     // Copy #version line first (if exists)
     if (strncmp(p, "#version", 8) == 0) {
         while (*p && *p != '\n') buffer[offset++] = *p++;
         if (*p == '\n') buffer[offset++] = *p++;
     }
-
     // Inject only if used and not declared
-    if (strstr(source, "vertex_position") && !is_declared(source, "vec2", "vertex_position"))
+    if (strstr(source, "vertex_position") && !is_declared(source, "vec2", "vertex_position")) {
         offset += snprintf(buffer + offset, new_len - offset, "attribute vec2 vertex_position;\n");
-
-    if (strstr(source, "vertex_uv") && !is_declared(source, "vec2", "vertex_uv"))
+    }
+    if (strstr(source, "vertex_uv") && !is_declared(source, "vec2", "vertex_uv")) {
         offset += snprintf(buffer + offset, new_len - offset, "attribute vec2 vertex_uv;\n");
-
-
+    }
     // Main replacement loop
     while (*p) {
         if (isspace(*p)) { buffer[offset++] = *p++; continue; }
-
         // Remove layout(location=...) entirely
         if (strncmp(p, "layout(location", 15) == 0) {
             while (*p && *p != ';') p++;
@@ -119,7 +116,6 @@ char* convert_to_gles2_shader(const char* source) {
         }
         else buffer[offset++] = *p++;
     }
-
     buffer[offset] = '\0';
     return buffer;
 }

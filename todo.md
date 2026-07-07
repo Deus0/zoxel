@@ -5,14 +5,7 @@ used - 200-400mb used
 - ChunkNeighborSystem
     - On Init - add to neighbor directly from the init chunk
     - On Spawn - grab directly there from dictionary on terrain
--x Refactor Streaming to be simpler - TerrainStreamSystem
-	-x position xz detected
-	-x Update existing Lods
-	- Spawn new Region
-	-x Spawn new Tunks
-	-x Spawn new Chunks
-	- Link while spawning
-	- Add a queue for spawning new positions, do like 256 checks per frame for terrain for spawning, so its delayed a bit? only if still lagging with new stream systems
+- Add a queue for spawning new positions, do like 256 checks per frame for terrain for spawning, so its delayed a bit? only if still lagging with new stream systems
 - Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunk
 - Fix Android Build - on arm pcs
 - SoundGenerateSystem - uses too much still

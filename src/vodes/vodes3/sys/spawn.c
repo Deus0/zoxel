@@ -1,13 +1,3 @@
-// TODO: Remove Struct use
-// TODO: Make use Queue Systems for updates on Vodes
-
-/*typedef struct {
-    VoxelNode *chunk;
-    int3 octree_position;
-    byte depth;
-    byte max_depth;
-} NodeDelveData;*/
-
 typedef struct {
     entity chunk;
     const entity *blocks;
@@ -198,7 +188,7 @@ zox_sys2(VodesSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
-    zox_sys_in(RenderDistanceDirty);
+    // zox_sys_in(RenderDistanceDirty);
     zox_sys_in(NodeDepth);
     zox_sys_in(RenderDisabled);
     zox_sys_in(RenderDepth);
@@ -210,7 +200,7 @@ zox_sys2(VodesSpawnSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNodeDirty, voxels_dirty);
-        zox_sys_i(RenderDistanceDirty, render_distance_dirty);
+        // zox_sys_i(RenderDistanceDirty, render_distance_dirty);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(RenderDisabled, render_disabled);
         zox_sys_i(RenderDepth, render_depth);
@@ -221,8 +211,8 @@ zox_sys2(VodesSpawnSystem) {
         zox_sys_o(BlocksSpawned, spawned);
         // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
         byte is_dirty = voxels_dirty->value == zox_dirty_active;
-        byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
-        if (!is_dirty && !generated) {
+        // byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
+        if (!is_dirty) { // && !generated) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);

@@ -1,5 +1,12 @@
 # Done
 
+-x Refactor Streaming to be simpler - TerrainStreamSystem
+	-x position xz detected
+	-x Update existing Lods
+	- Spawn new Region
+	-x Spawn new Tunks
+	-x Spawn new Chunks
+	-x Link while spawning
 -x Refactor rest of block functions to model + block function
 -x Refactor spawn_block_vox - spawn model seperately
 	-x remove the struct use

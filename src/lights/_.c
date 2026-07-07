@@ -2,6 +2,7 @@
 #ifndef zoxm_lights
 #define zoxm_lights
 
+byte zox_smooth_lighting = 1;
 zoxc_state(GenerateLights);
 #include "lights3/_.c"
 
