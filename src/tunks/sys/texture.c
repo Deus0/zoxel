@@ -20,7 +20,7 @@ zox_sys2(TunkTextureSystem) {
             continue;
         }
         // NOTE: Validate Tunks
-        if (!zox_valid(tunk->value) || !zox_has(tunk->value, Generate) || !zox_has(tunk->value, HeightMap)) {
+        if (!zox_valid(tunk->value) || !zox_has(tunk->value, GenerateTunk) || !zox_has(tunk->value, HeightMap)) {
             // zox_loge("Invalid [Tunk] for Texture [%s]", zox_get_name(e));
             size->value = int2_single(0);
             resize_TextureData(data, size->value.x * size->value.y);
@@ -34,7 +34,7 @@ zox_sys2(TunkTextureSystem) {
             continue;
         }
         // NOTE: Generation Delay for Tunks
-        if (zox_getv(tunk->value, Generate)) {
+        if (zox_getv(tunk->value, GenerateTunk)) {
             if (dbg_log) {
                 zox_logw("Tunk Still Generating [%s]", zox_get_name(tunk->value));
             }

@@ -3,30 +3,24 @@ zox_sys2(TownWallsSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkPosition);
     zox_sys_in(TunkLink);
+    zox_sys_out(GenerateChunk);
     zox_sys_out(VoxelNode);
-    zox_sys_out(VoxelNodeDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Generate, state);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkPosition, cposition);
         zox_sys_i(TunkLink, tunk);
+        zox_sys_o(GenerateChunk, generate);
         zox_sys_o(VoxelNode, voctree);
-        zox_sys_o(VoxelNodeDirty, dirty);
-        if (state->value != zox_dirty_active) {
+        if (generate->value != zox_generate_tchunk_towns) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         entity realm = zox_getv(terrain, RealmLink);
-        // byte is_max_depth = depth->value == terrain_depth;
-        /*if (!is_max_depth) {
-            continue;
-        }*/
         entity wall = zox_get_child_by_id(world, realm, zox_id(BlockBricks));
         if (!zox_valid(wall)) {
             zox_loge("No wall for town..");
@@ -51,7 +45,7 @@ zox_sys2(TownWallsSystem) {
         int max_chunk_length = powers_of_two[terrain_depth];
         int2 map_size = int2_single(max_chunk_length);
         if (!zox_valid(tunk->value)) {
-            zox_log_error("Invalid [Tunk] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
+            zox_log_error("[Towns] Invalid [Tunk] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
             continue;
         }
         zox_geter(tunk->value, HeightMap, height_map);
@@ -65,7 +59,7 @@ zox_sys2(TownWallsSystem) {
             for (positionl.z = 0; positionl.z < voctree_length; positionl.z++) {
                 int2 map_position = (int2) { positionl.x * hmultiplier, positionl.z * hmultiplier };
                 int map_index = int2_array_index(map_position, map_size);
-                int height = (int) height_map->value[map_index];
+                int height = height_map->value[map_index];
                 byte town_value = town_map->value[map_index];
                 if (!town_value) {
                     continue;
@@ -77,6 +71,9 @@ zox_sys2(TownWallsSystem) {
                 if (town_value == zox_town_type_wall) {
                     for (int h = 1; h <= wall_height; h++) {
                         int global_y = height + h;
+                        if (global_y < chunk_block_position.y) {
+                            break;
+                        }
                         positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {
                             set_clean_VoxelNode(voctree, depth->value, positionl, bricks_id);
@@ -87,6 +84,9 @@ zox_sys2(TownWallsSystem) {
                 else if (town_value == zox_town_type_gate) {
                     for (int h = gate_height; h <= wall_height; h++) {
                         int global_y = height + h;
+                        if (global_y < chunk_block_position.y) {
+                            break;
+                        }
                         positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {
                             set_clean_VoxelNode(voctree, depth->value, positionl, bricks_id);
@@ -97,6 +97,9 @@ zox_sys2(TownWallsSystem) {
                 else if (town_value == zox_town_type_home_wall) {
                     for (int h = 2; h < home_height; h++) {
                         int global_y = height + h;
+                        if (global_y < chunk_block_position.y) {
+                            break;
+                        }
                         positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {
                             set_clean_VoxelNode(voctree, depth->value, positionl, home_wall_id);
@@ -107,6 +110,9 @@ zox_sys2(TownWallsSystem) {
                 else if (town_value == zox_town_type_home_door) {
                     for (int h = home_height - 1; h < home_height; h++) {
                         int global_y = height + h;
+                        if (global_y < chunk_block_position.y) {
+                            break;
+                        }
                         positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {
                             set_clean_VoxelNode(voctree, depth->value, positionl, home_wall_id);
@@ -116,22 +122,26 @@ zox_sys2(TownWallsSystem) {
                 // Roofs
                 if (town_value == zox_town_type_home || town_value == zox_town_type_home_door || town_value == zox_town_type_home_wall) {
                     int global_y = height + home_height;
-                    positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                    if (positionl.y >= 0 && positionl.y < voctree_length) {
-                        set_clean_VoxelNode(voctree, depth->value, positionl, home_roof_id);
+                    if (global_y >= chunk_block_position.y) {
+                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                        if (positionl.y >= 0 && positionl.y < voctree_length) {
+                            set_clean_VoxelNode(voctree, depth->value, positionl, home_roof_id);
+                        }
                     }
                 }
                 // Floors
                 if (town_value == zox_town_type_home || town_value == zox_town_type_home_door || town_value == zox_town_type_home_wall) {
                     int global_y = height + 1;
-                    positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                    if (positionl.y >= 0 && positionl.y < voctree_length) {
-                        set_clean_VoxelNode(voctree, depth->value, positionl, home_floor_id);
+                    if (global_y >= chunk_block_position.y) {
+                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                        if (positionl.y >= 0 && positionl.y < voctree_length) {
+                            set_clean_VoxelNode(voctree, depth->value, positionl, home_floor_id);
+                        }
                     }
                 }
             }
         }
         write_unlock_VoxelNode(voctree);
-        dirty->value = zox_dirty_trigger;
+        generate->value = zox_generate_tchunk_end;
     }
 } zox_sys_end(TownWallsSystem);

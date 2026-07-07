@@ -4,19 +4,19 @@ zox_sys2(MountainMapSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(RegionLink);
     zox_sys_in(TunkPosition);
+    zox_sys_out(GenerateTunk);
     zox_sys_out(VegetationMap);
     zox_sys_out(HeightMap);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Generate, generate);
         zox_sys_i(RegionLink, region);
         zox_sys_i(TunkPosition, tunk_position);
+        zox_sys_o(GenerateTunk, generate);
         zox_sys_o(VegetationMap, vegetation_map);
         zox_sys_o(HeightMap, height_map);
         // NOTE: Runs after heights system
-        if (generate->value != zox_dirty_end) {
+        if (generate->value != zox_generate_tunk_mountains) {
             continue;
         }
         if (!height_map->length) {
@@ -66,5 +66,6 @@ zox_sys2(MountainMapSystem) {
                 }
             }
         }
+        generate->value = zox_generate_tunk_towns;
     }
 } zox_sys_end(MountainMapSystem);

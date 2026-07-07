@@ -13,7 +13,7 @@ void zox_dbg_terrain_refresh(ecs* world, ClickEventData data) {
             if (zox_valid(e2) && zox_has(e2, Chunk3)) {
                 // zox_set(e2, VoxelNodeDirty, { zox_dirty_trigger });
                 // zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
-                // zox_set(e2, ChunkMeshDirty, { zox_dirty_trigger });
+                // zox_set(e2, BuildChunkMesh, { zox_dirty_trigger });
                 zox_set(e2, MeshDirty, { mesh_state_trigger });
             }
         }

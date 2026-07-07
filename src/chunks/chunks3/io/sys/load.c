@@ -95,10 +95,6 @@ zox_sys2(Chunk3LoadSystem) {
             depth->value = terrain_depth;
             voctree_dirty->value = zox_dirty_trigger;
             loaded->value = 1;
-            if (zox_getv(e, Generate)) {
-                zox_logw("Chunk Trying to Generate!");
-                zox_set(e, Generate, { 0 });
-            }
             if (dbg_log) {
                 zox_log("Loaded Chunk [%s] with Depth [%i]", zox_get_name(e), depth->value);
             }

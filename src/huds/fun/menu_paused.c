@@ -13,7 +13,7 @@ void button_event_end_game(ecs *world, ClickEventData event) {
         zox_loge("Realm Invalid in end game");
         return;
     }
-    for (byte i = 0; i < players->length; i++) {
+    /*for (byte i = 0; i < players->length; i++) {
         entity e = players->value[i];
         // Remove game uis
         zox_geter_value(e, CanvasLink, entity, canvas);
@@ -28,11 +28,11 @@ void button_event_end_game(ecs *world, ClickEventData event) {
         if (taskbar) {
             zox_delete(taskbar);
         }
-    }
+    }*/
     // Detatch Camera and Deblur
     for (byte i = 0; i < players->length; i++) {
         entity e = players->value[i];
-        zox_geter_value(e, CameraLink, entity, camera);
+        entity camera = zox_getv(e, CameraLink);
         if (!zox_valid(camera)) {
             continue;
         }
@@ -40,17 +40,17 @@ void button_event_end_game(ecs *world, ClickEventData event) {
         zox_set(camera, CameraBlur, { 0 });
     }
     // TODO: destroy realm in system when stats is zox_game_end
-    zox_geter_value(realm, TilemapLink, entity, tilemap);
+    /*zox_geter_value(realm, TilemapLink, entity, tilemap);
     if (zox_valid(tilemap)) {
         zox_delete(tilemap);
-    }
-    zox_geter_value(realm, TerrainLink, entity, terrain);
+    }*/
+    /*zox_geter_value(realm, TerrainLink, entity, terrain);
     if (zox_valid(terrain)) {
         // zox_loge("Disposing Terrain [%s]", zox_get_name(terrain));
         zox_delete(terrain);
     } else {
         zox_loge("Terrain missing when ending game.");
-    }
+    }*/
     zox_delete(realm);
     local_terrain = 0;
 }

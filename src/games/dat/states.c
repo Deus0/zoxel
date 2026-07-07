@@ -8,3 +8,4 @@
 #define zox_game_state_playing 7
 #define zox_game_state_paused 8
 #define zox_game_state_respawn_on_pause 9
+#define zox_game_end 10

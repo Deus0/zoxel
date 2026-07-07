@@ -44,18 +44,18 @@ void zox_system_on_new(ecs* world, entity system) {
 } ECS_SYSTEM_DECLARE(T)
 
 // TODO: Add it up for each thread! reset at start of frames
-#define zox_sys_increment()\
-    if (is_count_process) process_count++\
+#define zox_sys_increment() process_count++\
 
 #else
 
 #define zox_sys2(T)\
-    void T(iter *it) {
+    void T(iter *it) { \
+        uint process_count = 0;
 
 #define zox_sys_end(T)\
     } ECS_SYSTEM_DECLARE(T)
 
-#define zox_sys_increment();
+#define zox_sys_increment() process_count++
 
 #endif
 

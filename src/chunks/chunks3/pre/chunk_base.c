@@ -14,7 +14,7 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_prefab_set(e, VoxelNode, { 0 });
     zox_prefab_set(e, SidesOctree, { 0 });
     // Dirty State
-    zox_prefab_set(e, ChunkMeshDirty, { zox_dirty_none });
+    zox_prefab_set(e, BuildChunkMesh, { zox_dirty_none });
     zox_prefab_set(e, VoxelNodeDirty, { zox_dirty_none });
     zox_prefab_set(e, SidesOctreeDirty, { zox_dirty_none });
     zox_prefab_set(e, RenderDistanceDirty, { zox_dirty_none });

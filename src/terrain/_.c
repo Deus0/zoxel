@@ -11,6 +11,13 @@
 #if !defined(zoxm_terrain) && defined(zoxm_chunks3)
 #define zoxm_terrain
 
+// Chunk States
+#define zox_generate_tchunk_start 1
+#define zox_generate_tchunk_landfill 1
+#define zox_generate_tchunk_vegetation 2
+#define zox_generate_tchunk_towns 3
+#define zox_generate_tchunk_end 4
+
 // Initial core
 #include "set/_.c"
 #include "com/_.c"

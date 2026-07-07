@@ -11,11 +11,9 @@ zox_sys2(ChunkBoundsDrawSystem) {
         zox_sys_i(RenderDisabled, renderDisabled);
         zox_sys_i(Position3D, position3D);
         zox_sys_i(Bounds3D, extents);
-
         if (renderDisabled->value) {
             continue;
         }
-
         const bounds chunk_bounds = {
             .center = float3_add(position3D->value, extents->value),
             .extents = extents->value
@@ -30,7 +28,6 @@ zox_sys2(ChunkBoundsDrawSystem) {
         // spawn_line3t(world, chunk_bounds.center, float3_add(chunk_bounds.center, float3_up), line_color);
         spawn_line3t(world, float3_add(chunk_bounds.center, float3_down), float3_add(chunk_bounds.center, float3_up), line_color);
         spawn_line3t(world, float3_add(chunk_bounds.center, float3_left), float3_add(chunk_bounds.center, float3_right), line_color);
-
         spawn_line3t(world, float3_add(chunk_bounds.center, (float3) { 0, 0, -chunk_bounds.extents.z}), float3_add(chunk_bounds.center, (float3) { 0, 0, chunk_bounds.extents.z}), line_color);
         spawn_line3t(world, float3_add(chunk_bounds.center, (float3) { -chunk_bounds.extents.x, 0, 0 }), float3_add(chunk_bounds.center, (float3) { chunk_bounds.extents.x, 0, 0 }), line_color);
 

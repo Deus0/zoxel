@@ -1,0 +1,108 @@
+// NOTE: Just spawns chunks from here
+// TODO: Queue New Chunks
+// TODO: Support for multiple streamers
+zox_sys2(TerrainStreamSystem) {
+    // NOTE: render
+    // byte dbg_log = 0;
+    zox_sys_query();
+    zox_sys_world();
+    // First Cache Streamers (like Billboard System)
+    // Next
+    zox_sys_begin();
+    zox_sys_in(BlockScale);
+    zox_sys_in(NodeDepth);
+    zox_sys_out(TunkLinks);
+    zox_sys_out(ChunkLinks);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(BlockScale, block_scale);
+        zox_sys_i(NodeDepth, depth);
+        zox_sys_o(TunkLinks, tunks);
+        zox_sys_o(ChunkLinks, chunks);
+        // NOTE: For all streamers, check chunks exist for their stream sizes
+        // TODO: Add a list here of new positions then spawn them after streamers check, keep closest distance, due to multiple stream points
+        zox_sys_query_begin();
+        while (zox_sys_query_loop()) {
+            zox_sys_begin_2();
+            zox_sys_in_2(StreamDirty);
+            zox_sys_in_2(StreamerLevel);
+            zox_sys_in_2(StreamLink);
+            zox_sys_in_2(StreamPosition);
+            for (int j = 0; j < it2.count; j++) {
+                zox_sys_i_2(StreamDirty, dirty);
+                zox_sys_i_2(StreamerLevel, level);
+                zox_sys_i_2(StreamLink, stream_terrain);
+                zox_sys_i_2(StreamPosition, stream_position);
+                if (dirty->value != zox_dirty_active || level->value < 1 || stream_terrain->value != e) {
+                    continue;
+                }
+                int2 stream_position2 = (int2) { stream_position->value.x, stream_position->value.z };
+                int3 size = (int3) { terrain_lod_far, render_distance_y, terrain_lod_far };
+                int3 position = int3_zero;
+                for (position.x = stream_position->value.x - size.x; position.x <= stream_position->value.x + size.x; position.x++) {
+                    for (position.z = stream_position->value.z - size.z; position.z <= stream_position->value.z + size.z; position.z++) {
+                        // TODO: Spawn Regions here too!
+                        int2 position2 = (int2) { position.x, position.z };
+                        int distance2 = int2_distance(stream_position2, position2);
+                        entity tunk = int2_hashmap_get(tunks->value, position2);
+                        // NOTE: If tunk doesnt exist, spawn new terrain pillar here!
+                        if (!zox_valid(tunk)) {
+                            tunk = spawn_tunk(world, prefab_tunk2, e, position2, distance2);
+                            int2_hashmap_add(tunks->value, position2, tunk);
+                            // Spawn chunks per Tunk, if new!
+                            Chunk3Stack stack = (Chunk3Stack) { 0 };
+                            byte stack_i = 0;
+                            for (position.y = stream_position->value.y - size.y; position.y <= stream_position->value.y + size.y; position.y++, stack_i++) {
+                                entity chunk = int3_hashmap_get(chunks->value, position);
+                                if (!zox_valid(chunk)) {
+                                    chunk = spawn_chunk3_terrain(world, prefab_chunk_terrain, e, stream_position->value, position, depth->value, block_scale->value);
+                                    int3_hashmap_add(chunks->value, position, chunk);
+                                    zox_set(chunk, TunkLink, { tunk });
+                                }
+                                stack.value[stack_i] = chunk;
+                            }
+                            zox_set_ptr(tunk, Chunk3Stack, stack);
+                        } else {
+                            // NOTE: If already exist, update lods!
+                            // NOTE: Sets Tunk Render Distance too!
+                            byte old_distance2 = zox_getv(tunk, RenderDistance);
+                            if (old_distance2 == distance2) {
+                                continue;
+                            }
+                            zox_set(tunk, RenderDistance, { distance2 });
+                            zox_set(tunk, RenderDistanceDirty, { zox_dirty_trigger });
+                            zox_geter(tunk, Chunk3Stack, stack);
+                            byte stack_i = 0;
+                            for (position.y = stream_position->value.y - size.y; position.y <= stream_position->value.y + size.y; position.y++, stack_i++) {
+                                entity chunk = stack->value[stack_i];
+                                if (!zox_valid(chunk)) {
+                                    zox_logw("Chunk missing at [%ix%ix%i]", position.x, position.y, position.z);
+                                    continue;
+                                }
+                                byte old_distance3 = zox_getv(chunk, RenderDistance);
+                                if (old_distance3 == distance2) {
+                                    continue;
+                                }
+                                zox_set(chunk, RenderDistance, { distance2 });
+                                zox_set(chunk, RenderDistanceDirty, { zox_dirty_trigger });
+                                if (disable_chunk_loding) {
+                                    continue;
+                                }
+                                byte old_depth = zox_getv(chunk, RenderDepth);
+                                byte new_depth = camera_distance_to_terrain_render_depth(distance2);
+                                if (old_depth == new_depth) {
+                                    continue;
+                                }
+                                zox_set(chunk, RenderDepth, { new_depth });
+                                zox_set(chunk, RenderDepthDirty, { zox_dirty_trigger });
+                                // NOTE: Started to be busy! TODO: Move this to generate starts
+                                zox_set(chunk, Busy, { 1 });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        zox_sys_query_end();
+    }
+} zox_sys_end(TerrainStreamSystem);

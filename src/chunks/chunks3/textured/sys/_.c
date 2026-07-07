@@ -20,10 +20,10 @@ void define_systems_chunks3_textured(ecs *world) {
         Chunk3SidesSystem,
         EcsPreUpdate,
         [in] blocks.BlockManagerLink,
-        [in] chunks3.ChunkMeshDirty,
         [in] rendering.RenderDepth,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
+        [out] chunks3.BuildChunkMesh,
         [out] chunks3.SidesOctree,
         [out] chunks3.SidesOctreeDirty,
         [none] chunks3.ChunkTextured
@@ -34,7 +34,6 @@ void define_systems_chunks3_textured(ecs *world) {
         EcsOnUpdate,
         [in] blocks.BlockManagerLink,
         [in] textures.TilemapLink,
-        [in] chunks3.ChunkMeshDirty,
         [in] rendering.RenderDepth,
         [in] blocks.BlockScale,
         [in] chunks3.VoxelNode,
@@ -43,6 +42,7 @@ void define_systems_chunks3_textured(ecs *world) {
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,
         [out] rendering.MeshColorRGBs,
+        [out] chunks3.BuildChunkMesh,
         [out] rendering.MeshReady,
         [out] core.Busy,
         [none] chunks3.ChunkTextured
@@ -56,7 +56,7 @@ void define_systems_chunks3_textured(ecs *world) {
         [out] rendering.MeshDirty,
         [none] chunks3.ChunkTextured
     );
-    add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
     add_system_process_counter(world, zox_id(Chunk3SidesSystem));
     add_system_process_counter(world, zox_id(Chunk3TexturedBuildSystem));
+    add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
 }

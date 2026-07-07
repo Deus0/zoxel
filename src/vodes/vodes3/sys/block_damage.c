@@ -82,10 +82,14 @@ zox_sys2(BlockDamageQueueSystem) {
                     }
                     // Detatch overlay first and fadeout destroy
                     entity overlay = zox_get_child_by_id(world, world_block, zox_id(Cube));
-                    zox_set_parent(world, overlay, 0);
-                    zox_set(overlay, AnimationStart, { zox_current_time });
-                    zox_set(overlay, FadeOutTime, { 1 });
-                    zox_set(overlay, DestroyInTime, { 1 });
+                    if (zox_valid(overlay)) {
+                        zox_set_parent(world, overlay, 0);
+                        zox_set(overlay, AnimationStart, { zox_current_time });
+                        zox_set(overlay, FadeOutTime, { 1 });
+                        zox_set(overlay, DestroyInTime, { 1 });
+                    } else {
+                        zox_loge("Overlay was missing from world block [%s]", zox_get_name(world_block));
+                    }
                     // Now destroy our health block
                     zox_delete(world_block);
                     dispose_node_link_VoxelNode(leaf);

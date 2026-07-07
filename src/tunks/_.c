@@ -12,6 +12,15 @@
 #ifndef zoxm_tunks
 #define zoxm_tunks
 
+// Tunk States
+#define zox_generate_tunk_start 1
+#define zox_generate_tunk_biomes 1
+#define zox_generate_tunk_heights 2
+#define zox_generate_tunk_vegetation 3
+#define zox_generate_tunk_mountains 4
+#define zox_generate_tunk_towns 5
+#define zox_generate_tunk_end 6
+
 // TODO: Vegetation Map for Grass  / trees etc
 // TODO: Maps Update based on LODs??
 // TODO: Quadtrees for map data?

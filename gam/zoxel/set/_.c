@@ -82,7 +82,6 @@ void initialize_zoxel_settings(ecs* world) {
     // NPCs
     is_characters_instanced = 1;
     disable_npc_hooks = 0;
-    disable_npc_uis = 0;
     disable_npc_positioner = 0;
     // Physics
     {

@@ -33,7 +33,6 @@ zox_sys2(GameStateSystem) {
         } else {
             is_update = 1;
         }
-
         if (!is_update) {
             continue;
         }

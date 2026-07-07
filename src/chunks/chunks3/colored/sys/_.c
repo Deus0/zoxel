@@ -4,7 +4,6 @@ void define_systems_chunks3_colored(ecs *world) {
     zox_system(
         ChunkColorsBuildSystem,
         EcsOnUpdate,
-        [in] chunks3.ChunkMeshDirty,
         [in] chunks3.VoxelNode,
         [in] chunks.NodeDepth,
         [in] rendering.RenderDepth,
@@ -15,6 +14,7 @@ void define_systems_chunks3_colored(ecs *world) {
         [out] rendering.MeshIndicies,
         [out] rendering.MeshVertices,
         [out] rendering.MeshColorRGBs,
+        [out] chunks3.BuildChunkMesh,
         [out] rendering.MeshDirty,
         // [out] core.Busy,
         [none] chunks3.ColorChunk

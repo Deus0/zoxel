@@ -4,14 +4,14 @@ zox_sys2(BiomeMapSystem) {
     double biome_frequency = 0.04;
     byte biome_octaves = 2;
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(TunkPosition);
+    zox_sys_out(GenerateTunk);
     zox_sys_out(BiomeMap);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Generate, generate);
         zox_sys_i(TunkPosition, cposition);
+        zox_sys_o(GenerateTunk, generate);
         zox_sys_o(BiomeMap, biomes);
-        if (generate->value != zox_dirty_active) {
+        if (generate->value != zox_generate_tunk_biomes) {
             continue;
         }
         // now generate heights
@@ -48,5 +48,6 @@ zox_sys2(BiomeMapSystem) {
                 // zox_log("biome value [%i]", value);
             }
         }
+        generate->value = zox_generate_tunk_heights;
     }
 } zox_sys_end(BiomeMapSystem);

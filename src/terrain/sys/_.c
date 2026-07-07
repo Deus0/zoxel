@@ -10,10 +10,12 @@
 #include "stream_grow.c"
 #include "stream_lod.c"
 #include "stream_death.c"
+#include "stream.c"
 // generation
 #include "render_depth.c"
 #include "landfill.c"
 #include "vegetation.c"
+byte dbg_use_new_streaming = 1;
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void define_systems_terrain(ecs *world) {
@@ -54,94 +56,123 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepth,
         [in] rendering.RenderDepthDirty,
         [out] chunks.NodeDepth,
-        [out] core.Generate,
+        [out] chunks3.GenerateChunk,
         [out] core.Busy,
         [none] terrains.TerrainChunk
     );
     zox_system(
         LandfillChunk3System,
         zoxp_voxels_write,
-        [in] core.Generate,
         [in] tunks.TunkLink,
         [in] chunks3.ChunkPosition,
         [in] chunks.NodeDepth,
+        [out] chunks3.GenerateChunk,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [none] terrains.TerrainChunk
     );
     zox_system(
         VegetationChunk3System,
         zoxp_voxels_write,
-        [in] core.Generate,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [in] tunks.TunkLink,
+        [out] chunks3.GenerateChunk,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [none] terrains.TerrainChunk
     );
     // Lighting
     zox_system(
-        Chunk3GeneratedSystem,
-        EcsOnUpdate,
-        [in] core.Generate,
+        SunnyChunkGeneratedSystem,
+        EcsPreUpdate,
+        [in] chunks3.GenerateChunk,
         [out] lights.GenerateLights,
         [none] terrains.TerrainChunk,
         [none] lights3.SunnyChunk
     );
-    // Streaming Terrain Chunks
-    zox_system_1(
-        FirstTerrainChunkSystem,
-        zoxp_mainthread,
-        [in] streaming.StreamerLevel,
-        [in] streaming.StreamLink,
-        [in] streaming.StreamPosition,
-        [in] streaming.StreamDirty,
-        [none] streaming.Streamer
-    );
-    zox_filter(
-        streamers_grow,
-        [in] streaming.StreamerLevel,
-        [in] streaming.StreamLink,
-        [in] streaming.StreamPosition,
-        [none] streaming.Streamer
-    );
-    zox_system_ctx_1(
-        ChunkSpawnSystem,
-        zoxp_mainthread,
-        streamers_grow,
-        [in] rendering.RenderDistanceDirty,
-        [in] rendering.RenderDistance,
-        [in] chunks3.ChunkPosition,
-        [out] chunks3.ChunkNeighbors,
-        [none] streaming.StreamedChunk
-    );
-    zox_filter(
-        streamers_lod,
-        [in] streaming.StreamDirty,
-        [in] streaming.StreamerLevel,
-        [in] streaming.StreamLink,
-        [in] streaming.StreamPosition,
-        [none] streaming.Streamer
-    );
-    zox_system_ctx(
-        ChunkLodSystem,
-        zoxp_update,
-        streamers_lod,
-        [in] chunks3.ChunkPosition,
-        [out] rendering.RenderDepth,
-        [out] rendering.RenderDistance,
-        [out] rendering.RenderDepthDirty,
-        [out] rendering.RenderDistanceDirty,
-        [out] core.Busy,
-        [none] streaming.StreamedChunk
-    );
     zox_system(
-        Chunk3DeathSystem,
-        zoxp_destroy,
-        [in] rendering.RenderDistanceDirty,
-        [in] rendering.RenderDistance,
-        [in] chunks3.ChunkPosition,
-        [none] streaming.StreamedChunk
+        ChunkGeneratedSystem,
+        EcsOnUpdate,
+        [out] chunks3.GenerateChunk,
+        [out] chunks3.VoxelNodeDirty,
+        [none] terrains.TerrainChunk
     );
+    // NOTE: Dies when out of range
+    // Streaming Terrain Chunks
+    if (dbg_use_new_streaming) {
+        zox_filter(
+            streamers,
+            [in] streaming.StreamDirty,
+            [in] streaming.StreamerLevel,
+            [in] streaming.StreamLink,
+            [in] streaming.StreamPosition,
+            [none] streaming.Streamer
+        );
+        zox_system_ctx_1(
+            TerrainStreamSystem,
+            zoxp_mainthread,
+            streamers,
+            [in] blocks.BlockScale,
+            [in] chunks.NodeDepth,
+            [out] tunks.TunkLinks,
+            [out] voxes.ChunkLinks,
+            [none] terrains.Terrain
+        );
+    } else {
+        zox_system_1(
+            FirstTerrainChunkSystem,
+            zoxp_mainthread,
+            [in] streaming.StreamerLevel,
+            [in] streaming.StreamLink,
+            [in] streaming.StreamPosition,
+            [in] streaming.StreamDirty,
+            [none] streaming.Streamer
+        );
+        zox_filter(
+            streamers_grow,
+            [in] streaming.StreamerLevel,
+            [in] streaming.StreamLink,
+            [in] streaming.StreamPosition,
+            [none] streaming.Streamer
+        );
+        zox_system_ctx_1(
+            ChunkSpawnSystem,
+            zoxp_mainthread,
+            streamers_grow,
+            [in] rendering.RenderDistanceDirty,
+            [in] rendering.RenderDistance,
+            [in] chunks3.ChunkPosition,
+            [out] chunks3.ChunkNeighbors,
+            [none] streaming.StreamedChunk
+        );
+        zox_filter(
+            streamers_lod,
+            [in] streaming.StreamDirty,
+            [in] streaming.StreamerLevel,
+            [in] streaming.StreamLink,
+            [in] streaming.StreamPosition,
+            [none] streaming.Streamer
+        );
+        zox_system_ctx(
+            ChunkLodSystem,
+            zoxp_update,
+            streamers_lod,
+            [in] chunks3.ChunkPosition,
+            [out] rendering.RenderDepth,
+            [out] rendering.RenderDistance,
+            [out] rendering.RenderDepthDirty,
+            [out] rendering.RenderDistanceDirty,
+            [out] core.Busy,
+            [none] streaming.StreamedChunk
+        );
+        zox_system(
+            Chunk3DeathSystem,
+            zoxp_destroy,
+            [in] rendering.RenderDistanceDirty,
+            [in] rendering.RenderDistance,
+            [in] chunks3.ChunkPosition,
+            [none] streaming.StreamedChunk
+        );
+    }
+    add_system_process_counter(world, zox_id(LandfillChunk3System));
+    add_system_process_counter(world, zox_id(VegetationChunk3System));
 }

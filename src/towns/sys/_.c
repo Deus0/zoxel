@@ -15,24 +15,24 @@ void zox_define_systems_towns(ecs* world) {
     zox_system(
         TownMapSystem,
         EcsPreStore,
-        [in] core.Generate,
         [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
+        [out] tunks.GenerateTunk,
         [out] tunks.HeightMap,
         [out] tunks.VegetationMap,
         [out] towns.TownMap,
         [none] tunks.Tunk
     );
+    // NOTE: Before vegetation atm
     zox_system(
         TownWallsSystem,
         zoxp_voxels_write,
-        [in] core.Generate,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [in] tunks.TunkLink,
+        [out] chunks3.GenerateChunk,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [none] terrains.TerrainChunk
     );
 }

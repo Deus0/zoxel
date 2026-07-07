@@ -10,7 +10,7 @@ zox_sys2(RenderDepthChunk3System) {
     zox_sys_in(RenderDepth);
     zox_sys_in(RenderDepthDirty);
     zox_sys_out(NodeDepth);
-    zox_sys_out(Generate);
+    zox_sys_out(GenerateChunk);
     zox_sys_out(Busy);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -18,7 +18,7 @@ zox_sys2(RenderDepthChunk3System) {
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(RenderDepthDirty, render_depth_dirty);
         zox_sys_o(NodeDepth, octree_depth);
-        zox_sys_o(Generate, generate);
+        zox_sys_o(GenerateChunk, generate);
         zox_sys_o(Busy, busy);
         if (render_depth_dirty->value != zox_dirty_active) {
             continue;
@@ -34,7 +34,7 @@ zox_sys2(RenderDepthChunk3System) {
             }
             // Set to Generate as Depth Increased
             if (!loaded->value) {
-                generate->value = zox_dirty_trigger;
+                generate->value = zox_generate_tchunk_start;
             }
         }
         // NOTE: Rebuilds Mesh Whenever Render Depth is Dirty, unless generating

@@ -159,7 +159,7 @@ static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_
         return;
     }
     if (!dig.node->value) {
-        zox_log_error("Sides error, air cannot render.");
+        // zox_log_error("Sides error, air cannot render.");
         return;
     }
     dig.voxel = dig.node->value;
@@ -196,13 +196,12 @@ void clear_mesh_uvs(MeshIndicies *meshIndicies, MeshVertices *meshVertices, Mesh
 
 // TODO: Move terrain cache into functions
 // TODO: Cache all managers found, not just single
-// NOTE: Rebuilds Chunk when ChunkMeshDirty is dirty
+// NOTE: Rebuilds Chunk when BuildChunkMesh is dirty
 zox_sys2(Chunk3TexturedBuildSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin_at(1);
     zox_sys_in(TilemapLink);
-    zox_sys_in(ChunkMeshDirty);
     zox_sys_in(RenderDepth);
     zox_sys_in(BlockScale);
     zox_sys_in(VoxelNode);
@@ -211,13 +210,14 @@ zox_sys2(Chunk3TexturedBuildSystem) {
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
     zox_sys_out(MeshColorRGBs);
+    zox_sys_out(BuildChunkMesh);
     zox_sys_out(MeshReady);
     zox_sys_out(Busy);
     // Does a sweep of states first
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkMeshDirty, cdirty)
-        if (cdirty->value == zox_dirty_active) {
+        zox_sys_o(BuildChunkMesh, build)
+        if (build->value == zox_dirty_end) {
             any_dirty = 1;
             break;
         }
@@ -229,11 +229,9 @@ zox_sys2(Chunk3TexturedBuildSystem) {
     if (!cache_blocks_data(it, &build_data)) {
         return;
     }
-    // Our Loop
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TilemapLink, tilemap);
-        zox_sys_i(ChunkMeshDirty, chunk_mesh_dirty);
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_i(BlockScale, bscale);
         zox_sys_i(VoxelNode, voctree);
@@ -242,9 +240,10 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
+        zox_sys_o(BuildChunkMesh, build);
         zox_sys_o(MeshReady, mesh_ready);
         zox_sys_o(Busy, busy);
-        if (chunk_mesh_dirty->value != zox_dirty_active) {
+        if (build->value != zox_dirty_end) {
             continue;
         }
         if (!zox_valid(tilemap->value) || !zox_has(tilemap->value, TilemapUVs)) {
@@ -261,13 +260,13 @@ zox_sys2(Chunk3TexturedBuildSystem) {
             continue;
         }
         // No Mesh Sides were found
-        if (!sides->value) {
+        /*if (!sides->value) {
             clear_mesh_uvs(indicies, verts, colors, uvs);
-            // mesh_dirty->value = mesh_state_trigger_terrain;
+            build->value = 0;
             mesh_ready->value = 1;
             busy->value = 0;
             continue;
-        }
+        }*/
         byte vlength = powers_of_two[rdepth->value];
         float cscale = bscale->value * vlength;
         mesh_uvs_build_data mesh_data = {
@@ -303,10 +302,9 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         colors->value = zinalize_color_rgb_array_d(mesh_data.color_rgbs);
         uvs->value = zinalize_float2_array_d(mesh_data.uvs);
         // dirty
-        // mesh_dirty->value = mesh_state_trigger_terrain;
         mesh_ready->value = 1;
+        build->value = 0;
         busy->value = 0;
-        // mesh_dirty->value = mesh_state_trigger;
         if (dbg_log) {
             zox_log("Built [%s]! Verts [%i] Scale [%f] Depth [%i]", zox_get_name(e), verts->length, cscale, rdepth);
         }

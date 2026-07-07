@@ -24,14 +24,14 @@ zox_sys2(NoiseVoxelNodeSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_out(VoxelNode);
     zox_sys_out(ColorRGBs);
-    zox_sys_out(ChunkMeshDirty);
+    zox_sys_out(BuildChunkMesh);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Generate, state);
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(ColorRGBs, colors);
-        zox_sys_o(ChunkMeshDirty, dirty);
-        if (state->value != zox_dirty_active || dirty->value) {
+        zox_sys_o(BuildChunkMesh, build_mesh);
+        if (state->value != zox_dirty_active || build_mesh->value) {
             continue;
         }
         resize_ColorRGBs(colors, 2);
@@ -41,6 +41,6 @@ zox_sys2(NoiseVoxelNodeSystem) {
         write_lock_VoxelNode(voctree);
         random_fill_octree(voctree, 1, depth->value);
         write_unlock_VoxelNode(voctree);
-        dirty->value = zox_dirty_trigger;
+        build_mesh->value = zox_dirty_trigger;
     }
 } zox_sys_end(NoiseVoxelNodeSystem);

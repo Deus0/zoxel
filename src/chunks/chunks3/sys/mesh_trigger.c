@@ -4,13 +4,13 @@
 zox_sys2(Chunk3MeshTriggerSystem) {
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
-    zox_sys_out(ChunkMeshDirty);
+    zox_sys_out(BuildChunkMesh);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxelNodeDirty, vdirty);
-        zox_sys_o(ChunkMeshDirty, cdirty);
+        zox_sys_o(BuildChunkMesh, build_mesh);
         // if node dirty, or for now, if node depth dirty... wait we dont want to double up
         if (vdirty->value == zox_dirty_active) {
-            cdirty->value = zox_dirty_trigger;
+            build_mesh->value = zox_dirty_trigger;
         }
     }
 } zox_sys_end(Chunk3MeshTriggerSystem);

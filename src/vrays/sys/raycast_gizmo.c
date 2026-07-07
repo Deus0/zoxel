@@ -3,7 +3,7 @@ zox_sys2(RaycastGizmoSystem) {
     byte gizmo_type = 1;
     byte disable_depth = 0;
     float3 hide_position = (float3) { 0, -666, 0 };
-    float extrude = 0.001f;
+    float extrude = 0.02f;
     float shrink = 0.96f;
     float raycaster_quad_thickness = 6;
     color hit_terrain_color = { 255, 255, 255, 66 };

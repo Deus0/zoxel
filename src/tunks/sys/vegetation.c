@@ -9,17 +9,17 @@ zox_sys2(VegetationMapSystem) {
     byte veggie_octaves = 12;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(TunkPosition);
     zox_sys_in(BiomeMap);
+    zox_sys_out(GenerateTunk);
     zox_sys_out(VegetationMap);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Generate, generate);
         zox_sys_i(TunkPosition, cposition);
         zox_sys_i(BiomeMap, bmap);
+        zox_sys_o(GenerateTunk, generate);
         zox_sys_o(VegetationMap, vmap);
-        if (generate->value != zox_dirty_active) {
+        if (generate->value != zox_generate_tunk_vegetation) {
             continue;
         }
         if (!bmap->length) {
@@ -93,5 +93,6 @@ zox_sys2(VegetationMapSystem) {
                 // zox_log("value veggie: %f", value);
             }
         }
+        generate->value = zox_generate_tunk_mountains;
     }
 } zox_sys_end(VegetationMapSystem);

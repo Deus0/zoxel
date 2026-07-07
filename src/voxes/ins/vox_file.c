@@ -110,7 +110,7 @@ entity spawn_vox_file(ecs *world, entity prefab, const vox_file* data, const cha
         bscale *= powers_of_two[mdepth - rdepth];
         zox_instance(prefab);
         set_vox_file(world, e, data, reducer, bscale);
-        zox_set(e, ChunkMeshDirty, { zox_dirty_trigger });
+        zox_set(e, BuildChunkMesh, { zox_dirty_trigger });
         zox_set(e, RenderDepth, { rdepth });
         zox_set(e, MaxRenderDepth, { mdepth });
         model_lods.value[rdepth] = e;

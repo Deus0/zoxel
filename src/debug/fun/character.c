@@ -31,3 +31,36 @@ uint zox_dbg_label_character_links(ecs *world, entity player, char *buffer, uint
     // index += snprintf(buffer + index, size - index, " - at [%ix%ix%i]\n", chunk_chunk_position.x, chunk_chunk_position.y, chunk_chunk_position.z);
     return index;
 }
+
+uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint size, uint index) {
+    entity e = zox_getv(player, CharacterLink);
+    if (!zox_valid(e)) {
+        return index;
+    }
+    entity chunk = zox_getv(e, ChunkLink);
+    entity tunk = zox_valid(chunk) ? zox_getv(chunk, TunkLink) : 0;
+    entity region = zox_valid(tunk) ? zox_getv(tunk, RegionLink) : 0;
+    // Character
+    index += snprintf(buffer + index, size - index, "Character [%s]\n", zox_get_name(e));
+    index += snprintf(buffer + index, size - index, " - Region [%s]\n", zox_get_name(region));
+    if (!zox_valid(chunk)) {
+        return index;
+    }
+    // chunk
+    index += snprintf(buffer + index, size - index, " - Chunk [%s]\n", zox_get_name(chunk));
+    byte busy = zox_getv(chunk, Busy);
+    byte build = zox_getv(chunk, BuildChunkMesh);
+    byte generate = zox_getv(chunk, GenerateChunk);
+    int3 position = zox_getv(chunk, ChunkPosition);
+    index += snprintf(buffer + index, size - index, " - busy [%i]\n", busy);
+    index += snprintf(buffer + index, size - index, " - generate [%i]\n", generate);
+    index += snprintf(buffer + index, size - index, " - build [%i]\n", build);
+    index += snprintf(buffer + index, size - index, " - at [%ix%ix%i]\n", position.x, position.y, position.z);
+    if (!zox_valid(tunk)) {
+        return index;
+    }
+    index += snprintf(buffer + index, size - index, " - Tunk [%s]\n", zox_get_name(tunk));
+    byte generate2 = zox_getv(tunk, GenerateTunk);
+    index += snprintf(buffer + index, size - index, " - generate2 [%i]\n", generate2);
+    return index;
+}

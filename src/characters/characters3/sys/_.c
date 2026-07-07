@@ -2,7 +2,6 @@
 #include "render_depth.c"
 #include "debug_types.c"
 #include "realm.c"
-
 realm_clear_system(CharacterLinks);
 
 void define_systems_characters3(ecs *world) {
@@ -11,7 +10,7 @@ void define_systems_characters3(ecs *world) {
         CharacterRenderDepthSystem,
         EcsOnUpdate,
         [in] rendering.RenderDepthDirty,
-        [out] chunks3.ChunkMeshDirty,
+        [out] chunks3.BuildChunkMesh,
         [none] Character3
     );
     zox_system(

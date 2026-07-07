@@ -5,17 +5,17 @@ zox_sys2(HeightMapSystem) {
     double height_frequency = 0.3; // terrain_frequency * 10;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(TunkPosition);
     zox_sys_in(BiomeMap);
+    zox_sys_out(GenerateTunk);
     zox_sys_out(HeightMap);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Generate, generate);
         zox_sys_i(TunkPosition, tunk_position);
         zox_sys_i(BiomeMap, biome_map);
+        zox_sys_o(GenerateTunk, generate);
         zox_sys_o(HeightMap, height_map);
-        if (generate->value != zox_dirty_end) { // != zox_dirty_active) {
+        if (generate->value != zox_generate_tunk_heights) {
             continue;
         }
         if (!biome_map->length || !biome_map->value) {
@@ -61,5 +61,6 @@ zox_sys2(HeightMapSystem) {
                 height_map->value[index] = int_clamp(value, 0, max_height);
             }
         }
+        generate->value = zox_generate_tunk_vegetation;
     }
 } zox_sys_end(HeightMapSystem);

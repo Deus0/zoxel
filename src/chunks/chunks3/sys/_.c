@@ -12,7 +12,7 @@ void define_systems_chunks3(ecs *world) {
         Chunk3MeshTriggerSystem,
         EcsOnUpdate,
         [in] chunks3.VoxelNodeDirty,
-        [out] chunks3.ChunkMeshDirty,
+        [out] chunks3.BuildChunkMesh,
         [none] chunks3.Chunk3
     );
     zox_system(

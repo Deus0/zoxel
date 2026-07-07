@@ -11,7 +11,7 @@ zoxc_byte(MeshReady);
 zoxc_state(TextureDirty);
 zoxc_state(RenderDistanceDirty);
 zoxc_state(RenderDepthDirty);
-zoxc_state(MeshGenerate);    // TODO: Replace ChunkMeshDirty
+zoxc_state(MeshGenerate);    // TODO: Replace BuildChunkMesh
 zoxc_state(MeshColorsGenerate);
 zoxc_state(MeshColorsDirty);
 zoxc_entity(MeshLink);

@@ -6,14 +6,14 @@ zox_sys2(MeshColorsTriggerSystem) {
     }
     // zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ChunkMeshDirty);
+    zox_sys_in(BuildChunkMesh);
     zox_sys_in(LightNodeDirty);
     zox_sys_out(MeshColorsGenerate);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkMeshDirty, chunk_dirty);
+        zox_sys_i(BuildChunkMesh, build);
         zox_sys_i(LightNodeDirty, lights_dirty);
         zox_sys_o(MeshColorsGenerate, generate);
-        if (lights_dirty->value == zox_dirty_active || chunk_dirty->value == zox_dirty_active) {
+        if (lights_dirty->value == zox_dirty_active || build->value == zox_dirty_active) {
            generate->value = zox_dirty_trigger;
         }
     }

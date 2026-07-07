@@ -57,33 +57,3 @@ zox_sys2(StreamEndSystem) {
         }
     }
 } zox_sys_end(StreamEndSystem);
-
-
-        /*for (size_t j = 0; j < chunks->value->size; j++) {
-            int3_hashmap_pair* pair = chunks->value->data[j];
-            uint checks = 0;
-            while (pair != NULL && checks < max_safety_checks_hashmap) {
-                entity chunk = pair->value;*/
-                /*if (!zox_valid(e2) || !zox_has(e2, Generate) || !zox_has(e2, ChunkMeshDirty)) {
-                    if (!zox_valid(chunk)) {
-                        zox_log_error("chunk invalid in stream end system [%lu]", chunk);
-                    } else if (!zox_has(e2, Generate)) {
-                        zox_log_error("chunk has no Generate [%lu]", e2);
-                    } else if (!zox_has(e2, ChunkMeshDirty)) {
-                        zox_log_error("chunk has no ChunkMeshDirty [%lu]", chunk);
-                    } else {
-                        zox_log_error("chunk invalid not sure why[%lu]", chunk);
-                    }
-                    running = 1;
-                }*/
-                /* else if (zox_getv(chunk, RenderDepth) == render_depth_uninitialized) {
-                    running = 1;
-                } */
-                /*int3_hashmap_pair* next_pair = pair->next;
-                pair = next_pair;
-                chunks_loaded++;
-                checks++;
-            }
-            if (running) {
-                break;
-            }*/

@@ -13,7 +13,6 @@
 
 // #define zox_debug_head_only
 // TODO: make use TargetChunkLod -> and load/unload depth based on that
-// TODO: set lod here instead of just applying RenderDepth only with ChunkMeshDirty -> keeps memory down
 // TODO: Support for multi chunk voxes
 
 #define body_anchor_core 0

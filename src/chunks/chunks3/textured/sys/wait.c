@@ -12,7 +12,7 @@ byte is_chunk_busy(ecs* world, entity e) {
     }
     return zox_getv(e, Busy) || is_chunk_lights_busy(world, e);
         // || zox_getv(e, Generate)
-        // || zox_getv(e, ChunkMeshDirty)
+        // || zox_getv(e, BuildChunkMesh)
         // || zox_getv(e, VoxelNodeDirty)
         // || zox_getv(e, RenderDepthDirty)
         // || zox_getv(e, SidesOctreeDirty)
@@ -27,7 +27,7 @@ byte is_chunk_busy(ecs* world, entity e) {
 // NOTE: Just checks entire terrain chunk, makes them all update at same time
 zox_sys2(ChunkMeshSlowSystem) {
     byte dbg_log = 0;
-    byte dbg_skip = 1;
+    byte dbg_skip = !zox_is_slow_updates;
     if (dbg_skip) {
         zox_sys_begin();
         zox_sys_out(MeshReady);

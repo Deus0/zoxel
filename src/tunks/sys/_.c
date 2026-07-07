@@ -16,21 +16,14 @@
 #include "heights.c"
 #include "vegetation.c"
 #include "texture.c"
+extern byte dbg_use_new_streaming;
 
 void define_systems_tunks(ecs* world) {
     zox_system(
         TunkEndSystem,
         EcsOnUpdate,
-        [in] core.Generate,
         [in] tunks.Chunk3Stack,
-        [none] tunks.Tunk
-    );
-    zox_system(
-        TunkLinkSystem,
-        EcsPreUpdate,
-        [in] core.Generate,
-        [in] tunks.TunkPosition,
-        [out] tunks.Chunk3Stack,
+        [out] tunks.GenerateTunk,
         [none] tunks.Tunk
     );
     zox_system(
@@ -50,16 +43,16 @@ void define_systems_tunks(ecs* world) {
     // NOTE: Generates biome map before height maps
     zox_system(
         BiomeMapSystem,
-        EcsOnLoad,
-        [in] core.Generate,
+        EcsOnUpdate,
         [in] tunks.TunkPosition,
+        [out] tunks.GenerateTunk,
         [out] tunks.BiomeMap,
         [none] tunks.Tunk
     );
     zox_system(
         BiomeMapAvgSystem,
-        EcsOnUpdate,
-        [in] core.Generate,
+        EcsPostUpdate,
+        [in] tunks.GenerateTunk,
         [in] tunks.BiomeMap,
         [out] biomes.BiomeLink,
         [none] tunks.Tunk
@@ -67,6 +60,7 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         BiomeLinkSystem,
         EcsOnUpdate,
+        [in] streaming.StreamDirty2,
         [in] streaming.StreamPosition2,
         [in] streaming.StreamLink,
         [out] tunks.TunkLink,
@@ -78,9 +72,9 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         HeightMapSystem,
         EcsPreUpdate,
-        [in] core.Generate,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
+        [out] tunks.GenerateTunk,
         [out] tunks.HeightMap,
         [none] tunks.Tunk
     );
@@ -88,46 +82,60 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         VegetationMapSystem,
         EcsOnUpdate,
-        [in] core.Generate,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
+        [out] tunks.GenerateTunk,
         [out] tunks.VegetationMap,
-        [none] tunks.Tunk
-    );
-    // Streaming!
-    zox_system_1(
-        FirstTerrainTunkSystem,
-        zoxp_mainthread,
-        [in] streaming.StreamLink,
-        [in] streaming.StreamPosition2,
-        [in] streaming.StreamDirty2,
-        [none] streaming.Streamer
-    );
-    zox_filter(
-        streamers,
-        [in] streaming.StreamerLevel,
-        [in] streaming.StreamLink,
-        [in] streaming.StreamPosition2,
-        [none] streaming.Streamer
-    );
-    zox_system_ctx_1(
-        TunksSpawnSystem,
-        zoxp_mainthread,
-        streamers,
-        [in] tunks.TunkPosition,
-        [in] rendering.RenderDistance,
-        [out] chunks2.Chunk2Neighbors,
-        [none] streaming.StreamedChunk,
         [none] tunks.Tunk
     );
     zox_system(
         Tunk2DeathSystem,
         zoxp_destroy,
-        [in] tunks.TunkPosition,
+        [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
+        [in] tunks.TunkPosition,
+        [in] tunks.Chunk3Stack,
         [none] streaming.StreamedChunk,
         [none] tunks.Tunk
     );
+    // Streaming!
+    if (!dbg_use_new_streaming) {
+        zox_system_1(
+            FirstTerrainTunkSystem,
+            zoxp_mainthread,
+            [in] streaming.StreamLink,
+            [in] streaming.StreamPosition2,
+            [in] streaming.StreamDirty2,
+            [none] streaming.Streamer
+        );
+        zox_filter(
+            streamers,
+            [in] streaming.StreamerLevel,
+            [in] streaming.StreamLink,
+            [in] streaming.StreamPosition2,
+            [none] streaming.Streamer
+        );
+        zox_system_ctx_1(
+            TunksSpawnSystem,
+            zoxp_mainthread,
+            streamers,
+            [in] tunks.TunkPosition,
+            [in] rendering.RenderDistance,
+            [out] chunks2.Chunk2Neighbors,
+            [none] streaming.StreamedChunk,
+            [none] tunks.Tunk
+        );
+        zox_system(
+            TunkLinkSystem,
+            EcsPreUpdate,
+            [in] core.Generate,
+            [in] tunks.TunkPosition,
+            [out] tunks.Chunk3Stack,
+            [out] tunks.Chunk3Stacked,
+            [none] tunks.Tunk
+        );
+    }
+    // For now leave here
     zox_filter(
         streamers_lod,
         [in] streaming.StreamDirty2,

@@ -3,23 +3,26 @@
 // TODO: Store BiomeLink -> Biome on Tunk after we generate the map
 extern void set_skybox_colors(ecs*, color_rgb, color_rgb);
 // A Streamer will Link to a Biome based on the Tunk's BiomeLink
+// NOTE: Links Biome to Chunk using Tunk
 zox_sys2(BiomeLinkSystem) {
     // const uint seed = global_seed;
     // double height_frequency = terrain_frequency;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(StreamDirty2);
     zox_sys_in(StreamPosition2);
     zox_sys_in(StreamLink);
     zox_sys_out(TunkLink);
     zox_sys_out(BiomeLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_i(StreamDirty2, dirty);
         zox_sys_i(StreamPosition2, position);
         zox_sys_i(StreamLink, terrain);
         zox_sys_o(TunkLink, tlink);
         zox_sys_o(BiomeLink, blink);
-        /*if (state->value != zox_dirty_active) {
+        if (dirty->value != zox_dirty_active && zox_valid(tlink->value)) {
             continue;
-        }*/
+        }
         if (!zox_valid(terrain->value) || !zox_has(terrain->value, TunkLinks)) {
             continue;
         }

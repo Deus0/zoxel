@@ -1,5 +1,4 @@
 // game
-
 byte last_weather_state;
 
 void game_state_weather(ecs *world, entity game, byte old, byte new) {

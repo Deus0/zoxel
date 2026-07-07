@@ -1,9 +1,13 @@
 byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **neighbors, const VoxelNode *node, int3 position, byte direction, byte depth) {
-    const VoxelNode* anode = get_adjacentn_VoxelNode(neighbors, node, position, depth, direction);
-    byte rdirection = reverse_direction(direction);
-    return anode ?
-    get_node_sides_all_solid(solidity, anode, rdirection, depth) :
-    edge;
+    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(neighbors, node, position, depth, direction);
+    if (!adjacent_node) {
+        return edge;
+    }
+    byte reversed = reverse_direction(direction);
+    byte axis = reversed >> 1;  // 0=x, 1=y, 2=z
+    byte side = reversed & 1;   // 0=negative side, 1=positive side
+    // zox_log("axis [%i] side [%i] from direction [%i]", axis, side, reversed);
+    return get_node_sides_all_solid(solidity, adjacent_node, axis, side, depth);
 }
 
 // NOTE: Scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
@@ -125,7 +129,6 @@ void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voctree, const V
 zox_sys2(ChunkColorsBuildSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ChunkMeshDirty);
     zox_sys_in(VoxelNode);
     zox_sys_in(NodeDepth);
     zox_sys_in(RenderDepth);
@@ -136,10 +139,9 @@ zox_sys2(ChunkColorsBuildSystem) {
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshColorRGBs);
+    zox_sys_out(BuildChunkMesh);
     zox_sys_out(MeshDirty);
-    // zox_sys_out(Busy);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ChunkMeshDirty, dirty);
         zox_sys_i(VoxelNode, voctree);
         zox_sys_i(NodeDepth, ndepth);
         zox_sys_i(RenderDepth, rdepth);
@@ -150,16 +152,23 @@ zox_sys2(ChunkColorsBuildSystem) {
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
         zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(BuildChunkMesh, build);
         zox_sys_o(MeshDirty, mesh_dirty);
-        // zox_sys_o(Busy, busy);
-        if (dirty->value != zox_dirty_active) {
+        if (build->value == zox_dirty_trigger) {
+            build->value = zox_dirty_active;
+            continue;
+        }
+        if (build->value == zox_dirty_active) {
+            build->value = zox_dirty_end;
+            continue;
+        }
+        if (build->value != zox_dirty_end) {
             continue;
         }
         if (!vcolors->length) {
             continue;
         }
         if (rdepth->value >= render_depth_uninitialized) {
-            mesh_dirty->value = mesh_state_trigger;
             continue;
         }
         clear_mesh(indicies, vertices, colors);
@@ -190,7 +199,7 @@ zox_sys2(ChunkColorsBuildSystem) {
         indicies->value = zinalize_int_array_d(mesh.indicies);
         vertices->value = zinalize_float3_array_d(mesh.vertices);
         colors->value = zinalize_color_rgb_array_d(mesh.colors);
+        build->value = 0;
         mesh_dirty->value = mesh_state_skeleton_trigger;
-        // busy->value = 0;
     }
 } zox_sys_end(ChunkColorsBuildSystem);

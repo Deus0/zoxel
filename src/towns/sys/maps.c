@@ -4,24 +4,24 @@ zox_sys2(TownMapSystem) {
     byte is_effect_heights = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(RegionLink);
     zox_sys_in(TunkPosition);
     zox_sys_in(BiomeMap);
+    zox_sys_out(GenerateTunk);
     zox_sys_out(HeightMap);
     zox_sys_out(VegetationMap);
     zox_sys_out(TownMap);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Generate, generate);
         zox_sys_i(RegionLink, region);
         zox_sys_i(TunkPosition, position);
         zox_sys_i(BiomeMap, biome_map);
+        zox_sys_o(GenerateTunk, generate);
         zox_sys_o(HeightMap, height_map);
         zox_sys_o(VegetationMap, vegetation_map);
         zox_sys_o(TownMap, town_map);
         // NOTE: Runs after heights system
-        if (generate->value != zox_dirty_end) {
+        if (generate->value != zox_generate_tunk_towns) {
             continue;
         }
         if (!zox_valid(region->value)) {
@@ -202,5 +202,6 @@ zox_sys2(TownMapSystem) {
                 }
             }
         }
+        generate->value = zox_generate_tunk_end;
     }
 } zox_sys_end(TownMapSystem);

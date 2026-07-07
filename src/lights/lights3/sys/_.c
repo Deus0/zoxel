@@ -86,7 +86,7 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         MeshColorsTriggerSystem,
         EcsOnUpdate, // + 2,
-        [in] chunks3.ChunkMeshDirty,
+        [in] chunks3.BuildChunkMesh,
         [in] lights3.LightNodeDirty,
         [out] rendering.MeshColorsGenerate,
         [none] chunks.Chunk

@@ -5,7 +5,7 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     zox_add_tag(e, StreamedChunk);
     // Generation
     zox_prefab_set(e, Seed, { 666 });
-    zox_prefab_set(e, Generate, { zox_dirty_none });
+    zox_prefab_set(e, GenerateChunk, { 0 });
     // Tunks
     zox_prefab_set(e, TunkLink, { 0 });
     // Vodes

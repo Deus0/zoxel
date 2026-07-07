@@ -121,7 +121,7 @@ zox_sys2(Light3BuildSystem) {
         if (trigger->value != zox_dirty_active) {
             continue;
         }
-        if (zox_getv(e, ChunkMeshDirty)) {
+        if (zox_getv(e, BuildChunkMesh)) {
             // if still building, it will update the verts again
             zox_set(e, MeshColorsGenerate, { zox_dirty_trigger });
             if (dbg_log) {
