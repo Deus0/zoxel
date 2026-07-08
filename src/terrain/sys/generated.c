@@ -5,10 +5,10 @@ zox_sys2(SunnyChunkGeneratedSystem) {
     zox_sys_in(GenerateChunk);
     zox_sys_out(GenerateLights);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(GenerateChunk, generate);
-        zox_sys_o(GenerateLights, dirty);
-        if (generate->value == zox_generate_tchunk_end) {
-            dirty->value = zox_dirty_trigger;
+        zox_sys_i(GenerateChunk, generate_chunk);
+        zox_sys_o(GenerateLights, generate_lights);
+        if (generate_chunk->value == zox_generate_tchunk_end) {
+            generate_lights->value = zox_generate_lights_start;
         }
     }
 } zox_sys_end(SunnyChunkGeneratedSystem);

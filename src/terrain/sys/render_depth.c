@@ -1,7 +1,4 @@
-// NOTE: Needs to use voxelt atm as it sets with air as default
-// #define disable_newheightmap_gen
-// place grass if max depth
-// generates our terrain voxels
+// NOTE: When Depth Increases, we set to GenerateChunk
 zox_sys2(RenderDepthChunk3System) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -35,10 +32,17 @@ zox_sys2(RenderDepthChunk3System) {
             // Set to Generate as Depth Increased
             if (!loaded->value) {
                 generate->value = zox_generate_tchunk_start;
+                // When Depth Increases, Clear Lights
+                // NOTE: When clears, it would need to reflood the side lights, if sunlight rebeaming them
+                /*zox_muter(e, LightNode, lights);
+                lights->value = 0;
+                collapse_LightNode(lights);*/
+            } else {
+                // Skips Generation
+                generate->value = zox_generate_tchunk_end;
             }
-        }
-        // NOTE: Rebuilds Mesh Whenever Render Depth is Dirty, unless generating
-        if (!generate->value) {
+        } else {
+            // NOTE: Rebuilds Mesh Whenever Render Depth is Dirty, unless generating
             zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
         }
     }

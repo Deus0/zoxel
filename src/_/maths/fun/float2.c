@@ -30,6 +30,10 @@ static inline void float2_add_float2_p(float2 *input, const float2 add) {
     input->y += add.y;
 }
 
+static inline float2 float2_mul1(float2 input, float mul) {
+    return (float2) { input.x * mul, input.y * mul };
+}
+
 static inline float2 float2_multiply_float(const float2 input, const float mul) {
     return (float2) { input.x * mul, input.y * mul };
 }

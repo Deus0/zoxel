@@ -50,15 +50,15 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
         // later we can get all lights nearby
         const LightNode* adjacent_light = get_neighbor_LightNode(hit_light_octree, neighbor_light_octrees, face, data->positionl, depth_hit);
         byte adjacent_light_value = adjacent_light ? adjacent_light->value : 0;
-        const LightNode* adjacent_max_light = get_max_light_on_face_start(hit_light_octree, neighbor_light_octrees, data->positionl, depth_hit, face);
-        byte max_light = adjacent_max_light ? adjacent_max_light->value : 0;
+        // const LightNode* adjacent_max_light = get_max_light_on_face_start(hit_light_octree, neighbor_light_octrees, data->positionl, depth_hit, face);
+        // byte max_light = adjacent_max_light ? adjacent_max_light->value : 0;
         // Now print
         index += snprintf(buffer + index, size - index, "Hit Chunk [%s]\n", zox_get_name(data->chunk));
         index += snprintf(buffer + index, size - index, " - Depth [%i]\n", depth_hit);
         index += snprintf(buffer + index, size - index, " - Position [%ix%ix%i]\n", data->positionl.x, data->positionl.y, data->positionl.z);
         index += snprintf(buffer + index, size - index, " - Face [%i]\n", face);
         index += snprintf(buffer + index, size - index, " - Light [%i]\n", adjacent_light_value);
-        index += snprintf(buffer + index, size - index, " - Max Light [%i]\n", max_light);
+        // index += snprintf(buffer + index, size - index, " - Max Light [%i]\n", max_light);
         if (adjacent_light) {
             // print children
             if (adjacent_light->ptr) {

@@ -1,7 +1,4 @@
-// =======================================
-// zox_node_optimizer.h
-// Octree Optimizer (sets parent value to most common child value)
-// =======================================
+// NOTE: Optimizes octree by picking most popular value
 static inline void optimize_octree_node(void* node, size_t stride, size_t value_offset, size_t type_offset) {
     if (!node) {
         return;

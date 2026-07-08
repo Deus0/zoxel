@@ -106,6 +106,9 @@ zox_sys2(LightFloodSystem) {
         if (!light_queue->count) {
             continue;
         }
+        if (zox_getv(e, Busy)) {
+            continue;
+        }
         // NOTE: Check Blocks Caches
         if (realm != manager->value) {
             realm = manager->value;

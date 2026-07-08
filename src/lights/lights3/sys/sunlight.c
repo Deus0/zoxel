@@ -75,10 +75,10 @@ zox_sys2(SunlightSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);
-    zox_sys_in(GenerateLights);
     zox_sys_in(NodeDepth);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
+    zox_sys_out(GenerateLights);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
@@ -91,29 +91,24 @@ zox_sys2(SunlightSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BlockManagerLink, manager);
-        zox_sys_i(GenerateLights, state);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_o(GenerateLights, generate);
         zox_sys_o(LightQueue, floodlight_queue);
         zox_sys_o(LightNode, lnode);
         zox_sys_o(LightNodeDepth, light_depth);
         zox_sys_o(LightNodeDirty, dirty);
-        if (state->value != zox_dirty_active) {
+        if (generate->value != zox_generate_lights_sunlight) {
             continue;
         }
         entity chunkd = neighbors->value[direction_down];
         // For now we skip unless bottom chunk - due to loading timing
-        if (!zox_valid(chunkd)) { //|| zox_getv(chunkd, Generate) || zox_getv(chunkd, VoxelNodeDirty)) {
-            // NOTE: Delays Sunlight a frame!
-            zox_set(e, GenerateLights, { zox_dirty_trigger });
+        if (!zox_valid(chunkd)) {
             if (dbg_log) {
                 zox_log("Delaying Topmost Chunk [%s] as below chunk not valid", zox_get_name(e));
             }
             continue;
-            /*if (!zox_has(e, BottomChunk)) {
-                zox_set(e, GenerateLights, { zox_dirty_trigger });
-            }*/
         }
         // NOTE: Check Blocks Caches
         if (realm != manager->value) {
@@ -148,6 +143,7 @@ zox_sys2(SunlightSystem) {
             }
         }
         zox_mut_end(chunkd, LightQueue);
+        generate->value = 0;
     }
 } zox_sys_end(SunlightSystem);
 
@@ -180,9 +176,12 @@ zox_sys2(LightBeamSystem) {
         if (!sunlight_queue->count) {
             continue;
         }
+        if (zox_getv(e, Busy)) {
+            continue;
+        }
         entity chunkd = neighbors->value[direction_down];
         if (!zox_has(e, BottomChunk)) {
-            if (!zox_valid(chunkd)) { // || zox_getv(chunkd, Generate) || zox_getv(chunkd, VoxelNodeDirty)) {
+            if (!zox_valid(chunkd)) {
                 // NOTE: We wait for below chunk to load
                 if (dbg_log) {
                     zox_log("Delaying Chunk [%s] as below chunk not valid", zox_get_name(e));

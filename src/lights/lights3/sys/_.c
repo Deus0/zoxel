@@ -6,17 +6,31 @@
 #include "trigger.c"
 #include "trigger_neighbor.c"
 #include "build.c"
+#include "build_smooth.c"
+#include "refresh.c"
+#include "settings.c"
 // TODO: Rename NodeDepth to OctreeDepth
 
 void define_systems_lights3(ecs* world) {
     zox_system(
+        RefreshLightsSystem,
+        zoxp_lights_write,
+        [in] blocks.BlockManagerLink,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.ChunkNeighbors,
+        [out] lights3.RefreshLights,
+        [out] lights3.LightNode,
+        [out] lights3.LightNodeDirty,
+        [none] chunks.Chunk
+    );
+    zox_system(
         SunlightSystem,
         zoxp_lights_write,
         [in] blocks.BlockManagerLink,
-        [in] lights.GenerateLights,
         [in] chunks.NodeDepth,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
+        [out] lights.GenerateLights,
         [out] lights3.LightQueue,
         [out] lights3.LightNodeDepth,
         [out] lights3.LightNode,
@@ -99,7 +113,20 @@ void define_systems_lights3(ecs* world) {
         [none] chunks.Chunk
     );
     zox_system(
-        Light3BuildSystem,
+        SmoothLightsBuildSystem,
+        EcsOnUpdate,
+        [in] rendering.MeshColorsGenerate,
+        [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.SidesOctree,
+        [in] lights3.LightNode,
+        [in] rendering.RenderDepth,
+        [in] rendering.MeshColorRGBs,
+        [out] rendering.MeshReady,
+        [none] chunks.Chunk
+    );
+    zox_system(
+        BasicLightsBuildSystem,
         EcsOnUpdate,
         [in] rendering.MeshColorsGenerate,
         [in] chunks3.ChunkNeighbors,
@@ -122,5 +149,19 @@ void define_systems_lights3(ecs* world) {
         [in] lights3.LightNode,
         [in] rendering.RenderDepth,
         [none] chunks.Chunk
+    );
+    // Settings
+    zox_system_1(
+        LightsSettingsSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [none] apps.App
+    );
+    zox_system_1(
+        LightsSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
     );
 }

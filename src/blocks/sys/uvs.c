@@ -1,3 +1,4 @@
+
 // uses terrain's texture links to generate a tilemap
 // todo: support for multiple sizes, would have to place them in? or something
 zox_sys2(TilemapUVSystem) {
@@ -75,13 +76,30 @@ zox_sys2(TilemapUVSystem) {
                 if (dbg_log && block_index == 1) {
                     zox_log("   - Block [%i], Face [%i], UV Index [%i]", block_index, face_index, uv_index);
                 }
+                // NOTE: This is for single texture blocks
                 byte repeated = block_textures->length == 1 ? faces_per_block : 1;
                 for (byte k = 0; k < repeated; k++) {
+                    uvs->value[uv_index + 0] = float2_add(tile_uv, float2_mul1(voxel_face_uvs[face_index][0], unit_sizef));
+                    uvs->value[uv_index + 1] = float2_add(tile_uv, float2_mul1(voxel_face_uvs[face_index][1], unit_sizef));
+                    uvs->value[uv_index + 2] = float2_add(tile_uv, float2_mul1(voxel_face_uvs[face_index][2], unit_sizef));
+                    uvs->value[uv_index + 3] = float2_add(tile_uv, float2_mul1(voxel_face_uvs[face_index][3], unit_sizef));
                     // expand by new face
-                    uvs->value[uv_index + 3] = (float2) { tile_uv.x, tile_uv.y + unit_sizef };
-                    uvs->value[uv_index + 2] = (float2) { tile_uv.x + unit_sizef, tile_uv.y + unit_sizef };
-                    uvs->value[uv_index + 1] = (float2) { tile_uv.x + unit_sizef, tile_uv.y };
-                    uvs->value[uv_index + 0] = (float2) { tile_uv.x, tile_uv.y };
+                    /*uvs->value[uv_index + 3] = (float2) {
+                        tile_uv.x,
+                        tile_uv.y + unit_sizef
+                    };
+                    uvs->value[uv_index + 2] = (float2) {
+                        tile_uv.x + unit_sizef,
+                        tile_uv.y + unit_sizef
+                    };
+                    uvs->value[uv_index + 1] = (float2) {
+                        tile_uv.x + unit_sizef,
+                        tile_uv.y
+                    };
+                    uvs->value[uv_index + 0] = (float2) {
+                        tile_uv.x,
+                        tile_uv.y
+                    };*/
                     uv_index += uvs_per_face;
                 }
                 texture_index++;

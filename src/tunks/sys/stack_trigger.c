@@ -1,4 +1,5 @@
 // Signals Terrain Chunks to Generate -> After Tunk (2D maps) finishes generating
+// TODO: Just Generate here instead of the roundabout way to update chunks
 zox_sys2(TunkEndSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -17,8 +18,6 @@ zox_sys2(TunkEndSystem) {
                 continue;
             }
             zox_set(chunk3, RenderDepthDirty, { zox_dirty_trigger });
-            // zox_set(chunk3, Busy, { 1 });
-            // zox_set(chunk3, GenerateChunk, { zox_dirty_trigger });
         }
         generate->value = 0;
     }

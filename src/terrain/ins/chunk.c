@@ -39,13 +39,14 @@ entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 came
     zox_set(e, RenderDistance, { camera_distance });
     zox_set(e, RenderDistanceDirty, { zox_dirty_trigger });
     zox_set(e, RenderDepth, { render_depth });
-    if (position.y == render_distance_y) {
+    /*if (position.y == render_distance_y) {
         zox_add_tag(e, SunnyChunk);
     } else if (position.y == -render_distance_y) {
         zox_add_tag(e, BottomChunk);
-    }
+    }*/
     // can move this to init systems
     //  note: keep spawn functions only for passing through sending outside information
+    // NOTE: Move this to a system - in Rendering - initialize render
     spawn_gpu_mesh(world, e);
     spawn_gpu_uvs(world, e);
     spawn_gpu_colors(world, e);

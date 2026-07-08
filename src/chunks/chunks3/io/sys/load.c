@@ -76,9 +76,9 @@ zox_sys2(Chunk3LoadSystem) {
         zox_sys_i(InitializeEntity, state);
         zox_sys_i(RealmLink, realm);
         zox_sys_i(ChunkPosition, position);
-        zox_sys_o(VoxelNode, voctree);
+        zox_sys_o(VoxelNode, voxels);
         zox_sys_o(NodeDepth, depth);
-        zox_sys_o(VoxelNodeDirty, voctree_dirty);
+        zox_sys_o(VoxelNodeDirty, voxels_dirty);
         zox_sys_o(Loaded, loaded);
         if (state->value != zox_dirty_active) {
             continue;
@@ -90,15 +90,13 @@ zox_sys2(Chunk3LoadSystem) {
             zox_logw("Realm Invalid for loading chunk");
             continue;
         }
-        write_lock_VoxelNode(voctree);
-        if (load_chunk(world, realm->value, position->value, voctree)) {
+        if (load_chunk(world, realm->value, position->value, voxels)) {
             depth->value = terrain_depth;
-            voctree_dirty->value = zox_dirty_trigger;
+            voxels_dirty->value = zox_dirty_trigger;
             loaded->value = 1;
             if (dbg_log) {
                 zox_log("Loaded Chunk [%s] with Depth [%i]", zox_get_name(e), depth->value);
             }
         }
-        write_unlock_VoxelNode(voctree);
     }
 } zox_sys_end(Chunk3LoadSystem);

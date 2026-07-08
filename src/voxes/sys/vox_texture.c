@@ -82,7 +82,7 @@ void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const 
             for (int j = 0; j < tedge.y; j++) {
                 byte voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, d, j }, 0);
                 byte is_darken = 0;
-                if (voxel == 0) {
+                if (!voxel) {
                     is_darken = 1;
                     if (side == block_side_down) {
                         for (int k = 0; k < size.y; k++) {
@@ -120,7 +120,7 @@ void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const 
             for (int j = 0; j < tedge.y; j++) {
                 byte voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, j, d }, 0);
                 byte is_darken = 0;
-                if (voxel == 0) {
+                if (!voxel) {
                     is_darken = 1;
                     if (side == block_side_back) {
                         for (int k = 0; k < size.x; k++) {

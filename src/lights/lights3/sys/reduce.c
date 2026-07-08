@@ -5,10 +5,10 @@ zox_sys2(LightNodeReduceSystem) {
     zox_sys_out(LightNode);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LightNodeDirty, dirty);
-        zox_sys_o(LightNode, lnode);
+        zox_sys_o(LightNode, lights);
         if (dirty->value == zox_dirty_active) {
-            optimize_LightNode(lnode);
-            reduce_LightNode(lnode);
+            optimize_by_max_LightNode(lights);
+            reduce_LightNode(lights);
         }
     }
 } zox_sys_end(LightNodeReduceSystem);

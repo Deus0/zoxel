@@ -1,9 +1,9 @@
+byte zox_tsts_count = 20;
 entity dbg_ui_tests;
 
 void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
     zox_tst_spawn_tilemap(world);
 }
-
 
 void zox_tst_toggle_red_sky(ecs* world, ClickEventData data) {
     override_sky = !override_sky;
@@ -30,7 +30,6 @@ void zox_tst_toggle_low_fps(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
-    byte zox_tsts_count = 19;
     if (keycode != zox_key_h) {
         return;
     }
@@ -137,10 +136,10 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
         .text = "RefreshTerrain",
         .on_click = { &zox_dbg_terrain_refresh },
     };
-    /*elements[elements_count++] = (SpawnListElement) {
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Refresh Sunlights",
         .on_click = { &zox_dbg_lights3_refresh_sunlight },
-    };*/
+    };
     /*elements[elements_count++] = (SpawnListElement) {
         .text = "Rebuild Terrain Mesh Colors",
         .on_click = { &zox_dbg_terrain_refresh_mesh_colors },

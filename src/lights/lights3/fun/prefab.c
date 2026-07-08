@@ -2,7 +2,8 @@ void prefab_add_lights3(ecs* world, entity e, byte depth) {
     zox_prefab_set(e, LightNode, { .value = darklight });
     zox_prefab_set(e, LightNodeDepth, { depth });
     // States
-    zox_prefab_set(e, GenerateLights, { zox_dirty_none });
+    zox_prefab_set(e, GenerateLights, { 0 });
+    zox_prefab_set(e, RefreshLights, { 0 });
     zox_prefab_set(e, LightNodeDirty, { zox_dirty_none });
     // Queues
     zox_prefab_set(e, SunlightQueue, { 0 });

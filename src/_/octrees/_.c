@@ -12,3 +12,4 @@ byte dbg_log_octree_errors = 1;
 #include "is_in.c"
 #include "set_clean.c"
 #include "life.c"
+#include "optimize_max.c"

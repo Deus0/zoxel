@@ -52,12 +52,17 @@ zox_sys2(TerrainStreamSystem) {
                             // Spawn chunks per Tunk, if new!
                             Chunk3Stack stack = (Chunk3Stack) { 0 };
                             byte stack_i = 0;
-                            for (position.y = stream_position->value.y - size.y; position.y <= stream_position->value.y + size.y; position.y++, stack_i++) {
+                            for (position.y = - size.y; position.y <= size.y; position.y++, stack_i++) {
                                 entity chunk = int3_hashmap_get(chunks->value, position);
                                 if (!zox_valid(chunk)) {
                                     chunk = spawn_chunk3_terrain(world, prefab_chunk_terrain, e, stream_position->value, position, depth->value, block_scale->value);
                                     int3_hashmap_add(chunks->value, position, chunk);
                                     zox_set(chunk, TunkLink, { tunk });
+                                    if (position.y == render_distance_y) {
+                                        zox_add_tag(chunk, SunnyChunk);
+                                    } else if (position.y == -render_distance_y) {
+                                        zox_add_tag(chunk, BottomChunk);
+                                    }
                                 }
                                 stack.value[stack_i] = chunk;
                             }
@@ -73,7 +78,7 @@ zox_sys2(TerrainStreamSystem) {
                             zox_set(tunk, RenderDistanceDirty, { zox_dirty_trigger });
                             zox_geter(tunk, Chunk3Stack, stack);
                             byte stack_i = 0;
-                            for (position.y = stream_position->value.y - size.y; position.y <= stream_position->value.y + size.y; position.y++, stack_i++) {
+                            for (position.y = - size.y; position.y <= size.y; position.y++, stack_i++) {
                                 entity chunk = stack->value[stack_i];
                                 if (!zox_valid(chunk)) {
                                     zox_logw("Chunk missing at [%ix%ix%i]", position.x, position.y, position.z);
@@ -85,9 +90,6 @@ zox_sys2(TerrainStreamSystem) {
                                 }
                                 zox_set(chunk, RenderDistance, { distance2 });
                                 zox_set(chunk, RenderDistanceDirty, { zox_dirty_trigger });
-                                if (disable_chunk_loding) {
-                                    continue;
-                                }
                                 byte old_depth = zox_getv(chunk, RenderDepth);
                                 byte new_depth = camera_distance_to_terrain_render_depth(distance2);
                                 if (old_depth == new_depth) {
@@ -97,6 +99,19 @@ zox_sys2(TerrainStreamSystem) {
                                 zox_set(chunk, RenderDepthDirty, { zox_dirty_trigger });
                                 // NOTE: Started to be busy! TODO: Move this to generate starts
                                 zox_set(chunk, Busy, { 1 });
+                                byte node_depth = zox_getv(chunk, NodeDepth);
+                                if (new_depth > node_depth) {
+                                    // NOTE: Clears the light if depth is set to increase
+                                    zox_muter(chunk, LightNode, lights);
+                                    lights->value = darklight;
+                                    collapse_LightNode(lights);
+                                    if (position.y == render_distance_y) {
+                                        zox_set(chunk, GenerateLights, { zox_generate_lights_sunlight });
+                                    }
+                                    // TODO: Check all configurations on different issues this might bring... if it comes up
+                                    // NOTE: No need atm for extra flooding, seems that it's just working as  sunlights just readds the floodfill as it fills
+                                    // zox_set(chunk, RefreshLights, { zox_refresh_lights });
+                                }
                             }
                         }
                     }

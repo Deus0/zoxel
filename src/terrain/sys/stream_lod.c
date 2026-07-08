@@ -1,7 +1,5 @@
 // this passes cameras into chunks
 // each chunk will calculate distance to nearest camera and based LOD off this distance
-const byte disable_chunk_loding = 0;
-
 // If Streamer is Dirty:
 //  - Update Render Distances
 //  - Update Render Depths
@@ -92,10 +90,6 @@ zox_sys2(ChunkLodSystem) {
         if (distance->value != closest_distance) {
             distance->value = closest_distance;
             distance_dirty->value = zox_dirty_trigger;
-            // Our Terrain Chunks Update Here:
-            if (disable_chunk_loding) {
-                continue;
-            }
             byte new_render_depth = camera_distance_to_terrain_render_depth(distance->value);
             if (render_depth->value != new_render_depth) {
                 render_depth->value = new_render_depth;

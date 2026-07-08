@@ -28,7 +28,7 @@ zox_sys2(StreamingSettingsDirtySystem) {
             continue;
         }
         if (zox_has(e, SettingByte)) {
-            float value = zox_getv(e, SettingByte);
+            byte value = zox_getv(e, SettingByte);
             if (dbg_log) {
                 zox_log("Float Setting [%s] Set [%f]", name->value, value);
             }

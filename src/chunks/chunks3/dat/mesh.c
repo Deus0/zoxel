@@ -3,63 +3,6 @@
 #define get_voxel_indicies_1 &voxel_face_indicies_p[0]
 #define get_voxel_indicies_0 &voxel_face_indicies_p[6]
 
-// left
-static const float3 voxel_face_vertices_0[] = {
-    { 0, 0, 0 },    //4
-    { 0, 0, 1 },    //0
-    { 0, 1, 1 },    //2
-    { 0, 1, 0 },    //6
-};
-
-// right
-static const float3 voxel_face_vertices_1[] = {
-    { 1, 0, 0 },   //5
-    { 1, 0, 1 },   //1
-    { 1, 1, 1 },   //3
-    { 1, 1, 0 }    //7
-};
-
-// down
-static const float3 voxel_face_vertices_2[] = {
-    { 0, 0, 0 },   //4
-    { 0, 0, 1 },   //0
-    { 1, 0, 1 },   //1
-    { 1, 0, 0 },   //5
-};
-
-// up
-static const float3 voxel_face_vertices_3[] = {
-    { 0, 1, 0 },   //2
-    { 0, 1, 1 },   //0
-    { 1, 1, 1 },   //1
-    { 1, 1, 0}     //3
-};
-
-// back
-static const float3 voxel_face_vertices_4[] = {
-    { 1, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 1, 0 },
-    { 1, 1, 0 }
-};
-
-// front
-static const float3 voxel_face_vertices_5[] = {
-    { 1, 0, 1 },
-    { 0, 0, 1 },
-    { 0, 1, 1 },
-    { 1, 1, 1 }
-};
-
-static const float3* voxel_face_vertices_n[] = {
-    voxel_face_vertices_0,
-    voxel_face_vertices_1,
-    voxel_face_vertices_2,
-    voxel_face_vertices_3,
-    voxel_face_vertices_4,
-    voxel_face_vertices_5
-};
-
 // back
 static const float3 voxel_face_vertices_4_v2[] = {
     // before
@@ -86,20 +29,6 @@ static const float3* voxel_face_vertices_v2[] = {
     voxel_face_vertices_3,
     voxel_face_vertices_4_v2,
     voxel_face_vertices_5_v2
-};
-
-static const int voxel_face_indicies_n[] = {
-    // X
-    0, 1, 2, 2, 3, 0,   // normal
-    2, 1, 0, 0, 3, 2,   // reversed
-
-    // Y
-    2, 1, 0, 0, 3, 2,   // reversed
-    0, 1, 2, 2, 3, 0,   // normal
-
-    // Z
-    0, 1, 2, 2, 3, 0,   // normal
-    2, 1, 0, 0, 3, 2,   // reversed
 };
 
 const int voxel_face_indicies_p[] = {

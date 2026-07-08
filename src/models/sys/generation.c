@@ -2,6 +2,8 @@
 // todo: split processes up to nodes
 // todo: add unique colors as a property too
 zox_sys2(VoxGenerationSystem) {
+    byte dbg_orientation = 0;
+    byte dbg_whitebox = 0;
     zox_ts_begin(vox_generation);
     zox_sys_world();
     zox_sys_begin();
@@ -15,7 +17,6 @@ zox_sys2(VoxGenerationSystem) {
     byte any_dirty = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Generate, generateVox);
-
         if (generateVox->value == zox_dirty_active) {
             any_dirty = 1;
             break;
@@ -38,6 +39,9 @@ zox_sys2(VoxGenerationSystem) {
             continue;
         }
         byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_getv(e, VoxUniqueColors) : default_unique_colors;
+        if (dbg_orientation) {
+            unique_colors = 16;
+        }
         byte vregions = zox_has(e, VRegions) ? zox_getv(e, VRegions) :  16;
         float color_rr = zox_has(e, VoxColorRange) ? zox_getv(e, VoxColorRange) : default_color_range;
         float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
@@ -56,13 +60,29 @@ zox_sys2(VoxGenerationSystem) {
             float m = randf_range(color_r.x, color_r.y);
             color_rgb_multiply_float(&colors->value[j], m);
         }
+        if (dbg_orientation) {
+            colors->value[0] = color_rgb_black;
+            colors->value[1] = color_rgb_green;
+            colors->value[2] = color_rgb_yellow;
+            colors->value[3] = color_rgb_red;
+            colors->value[4] = color_rgb_purple;
+            colors->value[5] = color_rgb_blue;
+            colors->value[6] = color_rgb_cyan;
+        }
         if (is_generate_vox_outlines) {
             colors->value[unique_colors] = (color_rgb) { 0, 0, 0 };
+        }
+        if (dbg_whitebox) {
+            colors->value[0] = color_rgb_white;
         }
         // Write Locks node
         write_lock_VoxelNode(node);
         // byte3 size = byte3_single(chunk_voxel_length);
-        if (gentype->value == vox_type_soil) {
+        if (dbg_whitebox) {
+            fill_octree(node, 1, node_depth);
+        } else if (dbg_orientation) {
+            build_vox_orientation_test(node, node_depth, 1, 2, 3, 4, 5, 6, 7);
+        } else if (gentype->value == vox_type_soil) {
             // colors
             color_rgb dirt_dark_voxel = color_to_color_rgb(fill->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);

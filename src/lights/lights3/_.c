@@ -17,7 +17,7 @@
 zox_begin_module(Lights3) {
     define_components_lights3(world);
     define_systems_lights3(world);
-    initialize_settings_lights3(world);
+    // initialize_settings_lights3(world);
 } zox_end_module(Lights3);
 
 // ATM: Refactoring queues, so i can make sure not to spread light if darkbeam or darklight exists

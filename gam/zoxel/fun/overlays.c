@@ -1,4 +1,4 @@
-byte zox_tsts_count = 14;
+byte zox_dbg_overlays_count = 14;
 entity dbg_ui_overlays;
 
 // TODO: Include post processing, streaming and any other data
@@ -249,7 +249,7 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
-    SpawnListElement elements[zox_tsts_count];
+    SpawnListElement elements[zox_dbg_overlays_count];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
     byte header_font_size = 6 * ui_scale;
