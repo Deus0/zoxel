@@ -13,12 +13,12 @@ zox_sys2(SoundPlaySystem) {
     zox_sys_out(SDLMixChunk)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(TriggerSound, triggerSound)
-        zox_sys_i(SoundData, soundData)
+        zox_sys_i(SoundData, data)
         zox_sys_o(SDLMixChunk, chunk)
         if (triggerSound->value == zox_dirty_active) {
-            if (soundData->value) {
+            if (data->value) {
                 zox_logv("+ playing [%s] (%i:%f)", zox_sys_e_name, channel, mixer_audio_volume);
-                sdl_play_sound(chunk, soundData->value, soundData->length, mixer_audio_volume, channel);
+                sdl_play_sound(chunk, data->value, data->length, mixer_audio_volume, channel);
             } else {
                 zox_log_error("Invalid SoundData, triggered.");
             }

@@ -1,47 +1,7 @@
 // hmmm issue seems to be about faces
 // maybe we redo our mesh builder system
 
-// NOTE: We only use one sub layer now
-/*static inline const LightNode* get_max_light_on_face(const LightNode* node, byte face) {
-    if (!node) {
-        return NULL;
-    }
-    const LightNode* best_node = node;
-    byte max_value = node->value;
-    if (node->ptr) {
-        const LightNode* kids = (const LightNode*) node->ptr;
-        const byte* indexes = octree_face_children[face];
-        for (byte i = 0; i < 4; i++) {
-            const LightNode* kid = &kids[indexes[i]];
-            // NOTE: Recursively uses highest light on adjacent faces
-            //const LightNode* candidate = get_max_light_on_face(kid, face);
-            //if (candidate && candidate->value > max_value) {
-            //    max_value = candidate->value;
-            if (kid->value > max_value) {
-                max_value = kid->value;
-                best_node = kid;
-            }
-        }
-    }
-    return best_node;
-}
-
-static inline const LightNode* get_max_light_on_face_start(const LightNode* root_light_octree, const LightNode** neighbor_lights, byte3 position, byte depth, byte face) {
-    const LightNode* adjacent_light = get_neighbor_LightNode(root_light_octree, neighbor_lights, face, position, depth);
-    return get_max_light_on_face(adjacent_light, face);
-}*/
-
-static inline byte get_light_on_face_int3(const LightNode* lights, const LightNode** neighbor_lights, int3 position, byte depth, byte direction) {
-    // TODO: Make function for position int3
-    byte length = powers_of_two[depth];
-    if (position.x < 0 || position.y < 0 || position.z < 0 || position.x >= length || position.y >= length || position.z >= length) {
-        return 255;
-    }
-    const LightNode* adjacent_light = get_neighbor_LightNode(lights, neighbor_lights, direction, int3_to_byte3(position), depth);
-    return adjacent_light ? adjacent_light->value : 0;
-}
-
-static inline void zox_apply_smooth_lights(const LightNode* lights, const LightNode** neighbor_lights, const VoxelNode* voctree, const SidesOctree* sides, const MeshColorRGBs* colors, byte3 position, uint* ccount, byte render_depth, byte depth) {
+static inline void zox_apply_smooth_lights(const LightNode** lights, const VoxelNode* voctree, const SidesOctree* sides, const MeshColorRGBs* colors, byte3 position, uint* ccount, byte render_depth, byte depth) {
     // Dig Deeper
     if (depth < render_depth && sides->ptr) {
         const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
@@ -52,7 +12,7 @@ static inline void zox_apply_smooth_lights(const LightNode* lights, const LightN
         for (byte i = 0; i < 8; i++) {
             const VoxelNode* cvoctree = has_vkids ? &vkids[i] : voctree;
             byte3 child_position = byte3_add(position, octree_positions_b[i]);
-            zox_apply_smooth_lights(lights, neighbor_lights, cvoctree, &sides_kids[i], colors, child_position, ccount, render_depth, depth);
+            zox_apply_smooth_lights(lights, cvoctree, &sides_kids[i], colors, child_position, ccount, render_depth, depth);
             if (*ccount >= colors->length) {
                 break;
             }
@@ -72,28 +32,43 @@ static inline void zox_apply_smooth_lights(const LightNode* lights, const LightN
             continue;
         }
         // TODO: Get Adjacent Depth -> based on chunk index to depth lookup - atm we just assume its render depth + 1
-        // If Not Smooth Lighting
-        // const LightNode* adjacent_light = get_max_light_on_face_start(lights, neighbor_lights, position, depth, direction);
-        const LightNode* adjacent_light = get_neighbor_LightNode(lights, neighbor_lights, direction, position, depth);
+        // const LightNode* adjacent_light = get_neighbor_LightNode(lights, neighbor_lights, direction, position, depth);
         // NOTE: We are basing this off the verts mesh.c voxel_face_vertices_n
         // Else if smooth lighting, each point gets different lights
         // Complicated because lights need to be the ones touching the vertex, this algorithm didn't account for corners
         // First direct adjacent tops 2
-        int3 positioni = byte3_to_int3(position);
+        // int3 positioni = byte3_to_int3(position);
+        byte adjacent_light = getv_nearby_LightNode(lights, position, depth,  neighbor_offsets[direction]);
+        byte light_n1_0 = 0;
+        byte light_1_0 = 0;
+        byte light_0_n1 = 0;
+        byte light_0_1 = 0;
+        byte light_n1_n1 = 0;
+        byte light_1_1 = 0;
+        byte light_n1_1 = 0;
+        byte light_1_n1 = 0;
         if (direction == direction_down || direction == direction_up) {
             // Adjacents
-            byte light_n1_0 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { -1, 0, 0 }), depth, direction);
-            byte light_1_0 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 1, 0, 0 }), depth, direction);
-            byte light_0_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, 0, -1 }), depth, direction);
-            byte light_0_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, 0, 1 }), depth, direction);
+            light_n1_0 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, 0 }));
+            light_1_0 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, 0 }));
+            light_0_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, -1 }));
+            light_0_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, 1 }));
             // Corners
-            byte light_n1_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { -1, 0, -1 }), depth, direction);
-            byte light_1_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 1, 0, 1 }), depth, direction);
-            byte light_n1_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { -1, 0, 1 }), depth, direction);
-            byte light_1_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 1, 0, -1 }), depth, direction);
-            for (byte v = 0; v < voxel_face_vertices_length; v++) {
+            light_n1_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, -1 }));
+            light_1_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, 1 }));
+            light_n1_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, 1 }));
+            light_1_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, -1 }));
+            /*for (byte v = 0; v < voxel_face_vertices_length; v++) {
                 // Get other lights per vertex
-                uint total_light = adjacent_light ? adjacent_light->value : 0;
+                uint total_light = adjacent_light;
                 if (v == 0) {
                     // Negative Negative
                     total_light += light_0_n1 + light_n1_0 + light_n1_n1;
@@ -116,21 +91,29 @@ static inline void zox_apply_smooth_lights(const LightNode* lights, const LightN
                 if (*ccount >= colors->length) {
                     return;
                 }
-            }
+            }*/
         } else if (direction == direction_front || direction == direction_back) {
             // Adjacents
-            byte light_n1_0 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { -1, 0, 0 }), depth, direction);
-            byte light_1_0 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 1, 0, 0 }), depth, direction);
-            byte light_0_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, -1, 0 }), depth, direction);
-            byte light_0_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, 1, 0 }), depth, direction);
+            light_n1_0 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, 0 }));
+            light_1_0 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, 0 }));
+            light_0_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 0 }));
+            light_0_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 0 }));
             // Corners
-            byte light_n1_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { -1, -1, 0 }), depth, direction);
-            byte light_1_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 1, 1, 0 }), depth, direction);
-            byte light_n1_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { -1, 1, 0 }), depth, direction);
-            byte light_1_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 1, -1, 0 }), depth, direction);
-            for (byte v = 0; v < voxel_face_vertices_length; v++) {
+            light_n1_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, -1, 0 }));
+            light_1_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 1, 0 }));
+            light_n1_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 1, 0 }));
+            light_1_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, -1, 0 }));
+            /*for (byte v = 0; v < voxel_face_vertices_length; v++) {
                 // Get other lights per vertex
-                uint total_light = adjacent_light ? adjacent_light->value : 0;
+                uint total_light = adjacent_light;
                 if (v == 0) {
                     // Negative Negative
                     total_light += light_0_n1 + light_n1_0 + light_n1_n1;
@@ -153,46 +136,53 @@ static inline void zox_apply_smooth_lights(const LightNode* lights, const LightN
                 if (*ccount >= colors->length) {
                     return;
                 }
-            }
+            }*/
         } else if (direction == direction_left || direction == direction_right) {
             // Adjacents
-            byte light_n1_0 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, -1, 0 }), depth, direction);
-            byte light_1_0 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, 1, 0 }), depth, direction);
-            byte light_0_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, 0, -1 }), depth, direction);
-            byte light_0_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, 0, 1 }), depth, direction);
+            light_n1_0 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 0 }));
+            light_1_0 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 0 }));
+            light_0_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, -1 }));
+            light_0_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, 1 }));
             // Corners
-            byte light_n1_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, -1, -1 }), depth, direction);
-            byte light_1_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, 1, 1 }), depth, direction);
-            byte light_n1_1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, -1, 1 }), depth, direction);
-            byte light_1_n1 = get_light_on_face_int3(lights, neighbor_lights, int3_add(positioni, (int3) { 0, 1, -1 }), depth, direction);
-            for (byte v = 0; v < voxel_face_vertices_length; v++) {
-                // Get other lights per vertex
-                uint total_light = adjacent_light ? adjacent_light->value : 0;
-                if (v == 0) {
-                    // Negative Negative
-                    total_light += light_0_n1 + light_n1_0 + light_n1_n1;
-                } else if (v == 1) {
-                    // Negative Positive
-                    total_light += light_0_1 + light_n1_0 + light_n1_1;
-                } else if (v == 2) {
-                    // Positive Positive
-                    total_light += light_1_0 + light_0_1 + light_1_1;
-                } else if (v == 3) {
-                    // Positive Negative
-                    total_light += light_0_n1 + light_1_0 + light_1_n1;
-                }
-                byte light = total_light / 4;
-                color_rgb* c = &colors->value[*ccount];
-                c->r = light;
-                c->g = light;
-                c->b = light;
-                (*ccount)++;
-                if (*ccount >= colors->length) {
-                    return;
-                }
+            light_n1_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, -1 }));
+            light_1_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 1 }));
+            light_n1_1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 1 }));
+            light_1_n1 = getv_nearby_LightNode(lights, position, depth,
+                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, -1 }));
+        }
+        for (byte v = 0; v < voxel_face_vertices_length; v++) {
+            // Get other lights per vertex
+            uint total_light = adjacent_light;
+            if (v == 0) {
+                // Negative Negative
+                total_light += light_0_n1 + light_n1_0 + light_n1_n1;
+            } else if (v == 1) {
+                // Negative Positive
+                total_light += light_0_1 + light_n1_0 + light_n1_1;
+            } else if (v == 2) {
+                // Positive Positive
+                total_light += light_1_0 + light_0_1 + light_1_1;
+            } else if (v == 3) {
+                // Positive Negative
+                total_light += light_0_n1 + light_1_0 + light_1_n1;
+            }
+            byte light = total_light / 4;
+            color_rgb* c = &colors->value[*ccount];
+            c->r = light;
+            c->g = light;
+            c->b = light;
+            (*ccount)++;
+            if (*ccount >= colors->length) {
+                return;
             }
         }
-        //}
     }
 }
 
@@ -247,10 +237,14 @@ zox_sys2(SmoothLightsBuildSystem) {
         if (!sides_octree->value) {
             continue;
         }
-        const LightNode *nnodesl[6];
-        fetch_neightbor_light_nodes(world, neighbors, nnodesl);
+        entity nearby_chunks[27];
+        const LightNode* nearby_lights[27];
+        fetch_nearby_chunks(world, e, neighbors->value, nearby_chunks);
+        fetch_nearby_lights(world, light_octree, nearby_chunks, nearby_lights);
+        //const LightNode *nnodesl[6];
+        //fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         uint ccount = 0;
-        zox_apply_smooth_lights(light_octree, nnodesl, voxel_octree, sides_octree, colors, byte3_zero, &ccount, render_depth->value, 0);
+        zox_apply_smooth_lights(nearby_lights, voxel_octree, sides_octree, colors, byte3_zero, &ccount, render_depth->value, 0);
         if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }

@@ -1,6 +1,7 @@
 #include "byte.c"
 #include "byte2.c"
 #include "byte3.c"
+#include "sbyte3.c"
 #include "double.c"
 #include "double3.c"
 #include "float.c"

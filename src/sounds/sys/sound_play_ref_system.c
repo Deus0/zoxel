@@ -18,12 +18,7 @@ zox_sys2(SoundPlayRefSystem) {
         if (triggerSound->value == zox_dirty_active) {
             if (soundDataRef->value) {
                 // zox_log("+ playing sound ref")
-                sdl_play_sound(
-                    chunk,
-                    soundDataRef->value,
-                    soundDataRef->length,
-                    mixer_audio_volume,
-                    channel);
+                sdl_play_sound(chunk, soundDataRef->value, soundDataRef->length, mixer_audio_volume, channel);
             }
         }
     }

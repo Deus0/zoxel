@@ -1,15 +1,16 @@
 #include "state.c"
 
-void define_systems_games(ecs* world) {
+void zox_define_systems_games(ecs* world) {
     // NOTE: MainThread because triggers event
-    zox_system_1(
+    zox_system(
         GameStateSystem,
-        EcsOnUpdate,
+        EcsPostUpdate,
         [in] realms.RealmLink,
-        [out] GameState,
-        [out] GameStateTarget,
-        [out] GameStateDirty,
-        [out] GameStateTime,
-        [none] Game
+        [out] games.GameState,
+        [out] games.GameStateTarget,
+        [out] games.LastGameState,
+        [out] games.GameStateDirty,
+        [out] games.GameStateTime,
+        [none] games.Game
     );
 }

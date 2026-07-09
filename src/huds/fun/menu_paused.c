@@ -55,6 +55,18 @@ void button_event_end_game(ecs *world, ClickEventData event) {
     local_terrain = 0;
 }
 
+void pause_resume(ecs *world, const entity player) {
+    entity game = zox_get_value(player, GameLink);
+    byte game_state = zox_get_value(game, GameState);
+    if (!(game_state == zox_game_state_playing || game_state == zox_game_state_paused)) {
+        return;
+    }
+    byte is_paused = game_state == zox_game_state_paused;
+    if (is_paused) {
+        zox_set(game, GameStateTarget, { zox_game_state_playing });
+    }
+}
+
 void button_event_return_to_game(ecs *world, ClickEventData event) {
     pause_resume(world, event.clicker);
 }

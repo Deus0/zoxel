@@ -22,6 +22,14 @@ typedef void (*event_pointer)(void*);
 // base type, watch out for name conflicts tho
 
 typedef struct {
+    sbyte x, y;
+} sbyte2;
+
+typedef struct {
+    sbyte x, y, z;
+} sbyte3;
+
+typedef struct {
     byte x, y;
 } byte2;
 

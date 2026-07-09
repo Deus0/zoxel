@@ -137,10 +137,10 @@ zox_sys2(BasicLightsBuildSystem) {
         if (!sides_octree->value) {
             continue;
         }
-        const LightNode *nnodesl[6];
-        fetch_neightbor_light_nodes(world, neighbors, nnodesl);
+        const LightNode* adjacent_lights[6];
+        fetch_neightbor_light_nodes(world, neighbors, adjacent_lights);
         uint ccount = 0;
-        zox_apply_basic_lights(light_octree, nnodesl, voxel_octree, sides_octree, colors, byte3_zero, &ccount, render_depth->value, 0);
+        zox_apply_basic_lights(light_octree, adjacent_lights, voxel_octree, sides_octree, colors, byte3_zero, &ccount, render_depth->value, 0);
         if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }

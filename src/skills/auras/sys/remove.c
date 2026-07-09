@@ -6,11 +6,9 @@ zox_sys2(AuraRemoveSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);
-    //zox_sys_out(DotLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
-        //zox_sys_o(DotLinks, dotLinks);
         entity dots[zox_children_capacity];
         uint dots_length = zox_get_children_by_id(world, e, dots, zox_children_capacity, zox_id(AuraDot));
         for (uint j = 0; j < dots_length; j++) {

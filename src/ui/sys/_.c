@@ -61,7 +61,7 @@ void zox_define_systems_elements(ecs *world) {
     // NOTE: Mainthread due to gpu components
     zox_system_1(
         ElementBeginSystem,
-        EcsPostLoad,
+        zoxp_mainthread,
         [in] core.InitializeEntity,
         [in] layouts2.LayoutSize,
         [in] rendering.MeshAlignment,
@@ -73,13 +73,13 @@ void zox_define_systems_elements(ecs *world) {
     );
     zox_system_1(
         TextureDirtyBeginSystem,
-        EcsPostLoad,
+        zoxp_mainthread,
         [in] core.InitializeEntity,
         [out] rendering.TextureDirty
     );
     zox_system_1(
         TextureGpuBeginSystem,
-        EcsPostLoad,
+        zoxp_mainthread,
         [in] core.InitializeEntity,
         [out] rendering.TextureGPULink
     );

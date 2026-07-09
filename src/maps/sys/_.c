@@ -7,7 +7,7 @@
 void zox_define_systems_maps(ecs* world) {
     zox_system_1(
         PlayerMinimapSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] layouts2.CanvasLink,
@@ -15,7 +15,7 @@ void zox_define_systems_maps(ecs* world) {
     );
     zox_system_1(
         MapInitializeSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] core.InitializeEntity,
         [in] maps.MapZoom,
         [in] rendering.Alpha,
@@ -26,7 +26,7 @@ void zox_define_systems_maps(ecs* world) {
     );
     zox_system_1(
         MapPositionSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] players.PlayerLink,
         [in] terrains.TerrainLink,
         [out] maps.MapPosition,

@@ -23,7 +23,7 @@ void define_systems_chunks3(ecs *world) {
         [none] chunks3.ChunkTextured
     );
     zox_system(VoxelNodeQueueSystem,
-        zoxp_queue_process1,
+        zoxp_queue_pre_clear,
         [in] chunks.NodeDepth,
         [in] chunks3.VoxelNodeQueue,
         [out] chunks3.VoxelNode,

@@ -1,7 +1,15 @@
 #include "skybox_restore_system.c"
 #include "skybox_set_time_system.c"
+#include "game.c"
 
 void define_systems_weather(ecs* world) {
+    zox_system(
+        WeatherGameStateSystem,
+        EcsOnUpdate,
+        [in] games.GameStateDirty,
+        [in] games.GameState,
+        [none] games.Game
+    );
     zox_gpu_restore_system(
         SkyboxRestoreSystem,
         [in] rendering.MaterialGPULink,
@@ -11,7 +19,7 @@ void define_systems_weather(ecs* world) {
     );
     zox_system_1(
         SkyboxSetTimeSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] rendering.MaterialGPULink,
         [none] Skybox
     );

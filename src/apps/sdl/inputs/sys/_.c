@@ -26,12 +26,6 @@ void zox_define_systems_sdl_inputs(ecs* world) {
         [out] screens.ScreenDimensions,
         [none] inputs.Touchscreen
     );
-    /*zox_system_1(
-        SdlJoystickFetchSystem,
-        zoxp_sdl,
-        [in] SdlJoystick,
-        [none] inputs.Gamepad
-    );*/
     zox_system_1(
         SdlControllerFetchSystem,
         zoxp_sdl,

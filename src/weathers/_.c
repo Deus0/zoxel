@@ -25,7 +25,7 @@ zox_begin_module(Weathers) {
     // hooks
     add_hook_load_shader(&spawn_shaders_weather);
     // add_hook_on_boot(spawn_weather);
-    add_to_event_game_state((zox_game_event) { &game_state_weather });
+    // add_to_event_game_state((zox_game_event) { &game_state_weather });
     // prefabs
     spawn_prefabs_weather(world);
 } zox_end_module(Weathers);

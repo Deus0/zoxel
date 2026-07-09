@@ -23,7 +23,7 @@ void define_systems_editor(ecs *world) {
     );
     zox_system_1(
         EditorInputSystem,
-        EcsPreStore,
+        zoxp_mainthread,
         [in] layouts2.CanvasLink,
         [none] players.Player
     );

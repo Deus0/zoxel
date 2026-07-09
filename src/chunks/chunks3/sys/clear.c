@@ -7,6 +7,8 @@ zox_sys2(VoxelNodeQueueClearSystem) {
         while (queue->count) {
             remove_VoxelNodeQueue(queue);
         }
-        if (locks_enabled) spin_unlock(&queue->lock);
+        if (locks_enabled) {
+            spin_unlock(&queue->lock);
+        }
     }
 } zox_sys_end(VoxelNodeQueueClearSystem);

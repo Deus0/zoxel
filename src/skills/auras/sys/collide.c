@@ -15,15 +15,18 @@ zox_sys2(AuraDotSystem) {
     zox_sys_in(Color);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SkillActive, skillActive);
-        zox_sys_i(SkillDamage, skillDamage);
-        zox_sys_i(SkillRange, skillRange);
+        zox_sys_i(SkillActive, active);
+        zox_sys_i(SkillDamage, damage);
+        zox_sys_i(SkillRange, range);
         zox_sys_i(Color, colorr);
-        entity user = zox_get_parent(world, e);
-        if (!zox_valid(user) || !skillActive->value || !skillDamage->value || !skillRange->value) {
+        if (!active->value || !damage->value || !range->value) {
             continue;
         }
-        zox_geter_value(user, Position3D, float3, position3);
+        entity user = zox_get_parent(world, e);
+        if (!zox_valid(user)) {
+            continue;
+        }
+        float3 position = zox_getv(user, Position3D);
         // todo: Get Chunk' Characters instead, this could potentially go through tens of thousands..
         // get nearby characters using distance formula
         // make this spherecast
@@ -32,39 +35,36 @@ zox_sys2(AuraDotSystem) {
             zox_sys_begin_2();
             zox_sys_in_2(Dead);
             zox_sys_in_2(Position3D);
-            // zox_sys_out_2(DotLinks);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_e_2();
-                zox_sys_i_2(Position3D, position3D2)
+                zox_sys_i_2(Position3D, position2);
                 zox_sys_i_2(Dead, dead);
-                if (user == e2 || dead->value) {
+                if (dead->value || user == e2) {
                     continue;
                 }
-                float distance = float3_distance(position3, position3D2->value);
-                entity poisoned_entity = 0;
-                // Checks if dot was already added to player!
-                // get poison, that  was initiated by this aura user
-                // for (int k = 0; k < dotLinks->length; k++) {
+                float distance = float3_distance(position, position2->value);
+                // NOTE: Checks if dot was already added to character!
                 entity dots[zox_children_capacity];
                 uint dots_length = zox_get_children_by_id(world, e2, dots, zox_children_capacity, zox_id(Dot));
+                byte was_poisoned = 0;
                 for (uint k = 0; k < dots_length; k++) {
                     entity dot = dots[k];
                     if (!zox_has(dot, SkillLink)) {
                         continue;
                     }
-                    zox_geter_value(dot, SkillLink, entity, skill_spawner);
-                    if (skill_spawner == e) {
-                        poisoned_entity = dot;
+                    entity spawner = zox_getv(dot, SkillLink);
+                    if (spawner == e) {
+                        was_poisoned = 1;
                         break;
                     }
                 }
-                if (poisoned_entity) {
+                if (was_poisoned) {
                     continue;
                 }
                 // makes sure to check the debuff is linked to same character
                 // makes it so t two players can damage a character at once
-                if (distance <= skillRange->value) {
-                    entity e3 = spawn_poison(world, e2, prefab_poison, user, e, skillDamage->value);
+                if (distance <= range->value) {
+                    entity e3 = spawn_poison(world, e2, prefab_poison, user, e, damage->value);
                     zox_add_tag(e3, AuraDot);
                     zox_set_parent(world, e3, e2);
                     if (dbg_log) {
@@ -72,9 +72,9 @@ zox_sys2(AuraDotSystem) {
                     }
                     // spawn particle system
                     float3 bounds = zox_get_value(e2, Bounds3D);
-                    entity p = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
-                    zox_set(p, SkillLink, { e });
-                    zox_set(e3, ParticlesEmitterLink, { p });
+                    entity particles = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
+                    zox_set(particles, SkillLink, { e });
+                    zox_set(e3, ParticlesEmitterLink, { particles });
 #ifdef zox_debug_aoe_damage_system
                     spawn_line3(world, position3, position3D2->value, 0.5f, 0.1);
 #endif

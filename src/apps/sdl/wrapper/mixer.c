@@ -1,5 +1,35 @@
 // this is our sdl mixer wrapper!
 // todo: move to sdl module
+
+byte use_sdl_audio = 0;
+static SDL_AudioDeviceID audio_device = 0;
+
+byte sdl_audio_play_sound(const float *data, int length, byte channels) {
+    if (!data || length <= 0) {
+        return 0;
+    }
+    if (!audio_device) {
+        SDL_AudioSpec want = {
+            .freq = 48000,
+            .format = AUDIO_F32SYS,
+            .channels = channels,
+            .samples = 1024,
+        };
+        audio_device = SDL_OpenAudioDevice(NULL, 0, &want, NULL, 0);
+        if (!audio_device)
+        {
+            zox_log_error("SDL_OpenAudioDevice: %s", SDL_GetError());
+            return 0;
+        }
+        SDL_PauseAudioDevice(audio_device, 0);
+    }
+    if (SDL_QueueAudio(audio_device, data, length * sizeof(float)) < 0) {
+        zox_log_error("SDL_QueueAudio: %s", SDL_GetError());
+        return 0;
+    }
+    return 1;
+}
+
 #ifdef zox_sdl_mixer
 
 byte initialize_sdl_mixer(ulong sample_rate, byte channels_count) {
@@ -17,31 +47,28 @@ int get_channels_count() {
 }
 
 byte sdl_play_sound(SDLMixChunk* chunk, const float* data, int length, float volume, int channel) {
-
+    if (use_sdl_audio) {
+        return sdl_audio_play_sound(data, length, 2);
+    }
     if (!length || !volume || !data) {
         return 0;
     }
-
     if (!chunk->value) {
         chunk->value = malloc(sizeof(Mix_Chunk));
     }
-
     if (!chunk->value) {
         return 0;
     }
-
     *chunk->value = (Mix_Chunk) {
         .allocated = 0,
         .volume = (Uint8)(volume * 128.f),
         .alen = length * sizeof(float),
         .abuf = (void*) data,
     };
-
     if (Mix_PlayChannel(channel, chunk->value, 0) == -1) {
-        zox_log_error("Failed to play sound: %s", Mix_GetError());
+        zox_loge("Failed to play sound: %s", Mix_GetError());
         return 0;
     }
-
     return 1;
 }
 

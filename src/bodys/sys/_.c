@@ -4,24 +4,6 @@
 #include "tooltip.c"
 
 void define_systems_bodys(ecs* world) {
-    zox_system_1(
-        CharacterBodySpawnSystem,
-        EcsOnUpdate,
-        [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
-        [out] bodys.BodyDirty,
-        [none] players.PlayerCharacter
-    );
-    zox_system_1(
-        CharacterBoneSpawnSystem,
-        EcsOnUpdate,
-        [in] bodys.BodyDirty,
-        [in] bodys.BodySize,
-        [in] blocks.BlockScale,
-        [out] bones.BoneLinks,
-        [out] bones.SkeletonDirty,
-        [none] bones.Skeleton
-    );
     zox_system(
         BodyCombineSystem,
         EcsOnUpdate,
@@ -41,5 +23,23 @@ void define_systems_bodys(ecs* world) {
         [in] slots.DataLink,
         [in] slots.SlotLink,
         [none] elements2.Icon
+    );
+    zox_system_1(
+        CharacterBodySpawnSystem,
+        zoxp_mainthread,
+        [in] characters.GenerateCharacter,
+        [in] realms.RealmLink,
+        [out] bodys.BodyDirty,
+        [none] players.PlayerCharacter
+    );
+    zox_system_1(
+        CharacterBoneSpawnSystem,
+        zoxp_mainthread,
+        [in] bodys.BodyDirty,
+        [in] bodys.BodySize,
+        [in] blocks.BlockScale,
+        [out] bones.BoneLinks,
+        [out] bones.SkeletonDirty,
+        [none] bones.Skeleton
     );
 }

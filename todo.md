@@ -2,15 +2,13 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Fix the rotation make sure all faces align
-- Do i need to rotate around top face uvs?
-- Get Nearby Octree Value - using 27 chunks (for neighbors)
--x Reduce Lights based on brightest child node
--x Add Smooth Light to Options
--x Fix Sunlight not working when you approach town from afar after loading - does it generate lights there?
--x Improve lighting states for generation, make sure set in those systems
-    - also add back the color uploads for chunk meshes
--x Fix lighting - houses it bugged - LOD difference in light propogations?
+- Bug: Fix music on Main Menu
+- Fix Slemz eyes - missing at 4 resolution depth
+- Bug: Fix SoilGrassBlock placement on outer chunks, it places + 1 but using lower depth so goes too high
+- Fix Game Load / Unload Fader
+- Add Frame Colors for Item Rarity
+- Finish removning all spawn_block_vox
+- Refactor Models to nodegraphs for soil, stone, etc
 - ChunkNeighborSystem
     - On Init - add to neighbor directly from the init chunk
     - On Spawn - grab directly there from dictionary on terrain
@@ -18,14 +16,9 @@ used - 200-400mb used
 - Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunk
 - Fix Android Build - on arm pcs
 - SoundGenerateSystem - uses too much still
-- Towns are spawning differently every load...
 - Spawn based on spawn maps in tunks
-- Fix Slemz eyes - missing
-- Move NPC dialogue distance back 1 units
-- Refactor Models to nodegraphs for soil, stone, etc
-- Finish removning all spawn_block_vox
-- Bug: Fix music on Main Menu
-- Bug: Fix Grass placement on outer chunks, it places + 1 but using lower depth so goes too high
+- Move NPC dialogue distance back 1 units (their position closeness to you)
+- Replace SDLMixer just using SDLAudio simpler dependencies..
 
 # Misc
 - Bug: Sometimes towns spawn inside one another?? weird af

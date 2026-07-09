@@ -48,7 +48,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system_1(
         ActionsShortcutSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] players.PlayerState,
         [none] players.Player
     );
@@ -62,7 +62,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system_1(
         PlayerToggleCameraSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
@@ -87,7 +87,7 @@ void define_systems_controllers3(ecs *world) {
     // Dialogue
     zox_system_1(
         DialogueBeginSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] triggers.TriggerActionB,
         [in] vrays.RaycastVoxelData,
         [in] players.PlayerLink,

@@ -1,5 +1,7 @@
 // SpawnS a pickup when removed
+// TODO: This has 17ms try optimize it?
 zox_sys2(TerrainItemDropSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeQueue);
@@ -19,17 +21,22 @@ zox_sys2(TerrainItemDropSystem) {
         }
         entity terrain = zox_get_parent(world, e);
         if (!zox_valid(terrain)) {
+            zox_loge("Terrain Invalid [TerrainItemDropSystem]");
             continue;
         }
         zox_geter_value(terrain, RealmLink, entity, realm);
         if (!zox_valid(realm)) {
+            zox_loge("Realm Invalid [TerrainItemDropSystem]");
             continue;
         }
         zox_geter(realm, BlockLinks, blocks);
         for (size_t j = 0; j < queue->count; j++) {
             VoxelNodeUpdate update = queue->ptr[j];
-            byte voxel = get_value_VoxelNode(node, depth->value, update.pos, 0);
+            byte voxel = getv_VoxelNode(node, update.pos, depth->value);
             if (!voxel) {
+                if (dbg_log) {
+                    zox_log("Voxel Dropped is Air at [%ix%ix%i]", update.pos.x, update.pos.y, update.pos.z);
+                }
                 continue;
             }
             entity block = blocks->value[voxel - 1];
@@ -45,7 +52,9 @@ zox_sys2(TerrainItemDropSystem) {
             float3_scale_p(&positionf, scale->value);
             float3_add_float3_p(&positionf, position->value); // chunk
             float3_add_float3_p(&positionf, float3_single(scale->value * 0.5f));
-            // zox_log("Spawned block pickup at [%fx%fx%f] scale [%f]", positionf.x, positionf.y, positionf.z, scale->value);
+            if (dbg_log) {
+                zox_log("Spawned block pickup at [%fx%fx%f] scale [%f]", positionf.x, positionf.y, positionf.z, scale->value);
+            }
             // get positionf from local position and depth
             entity pickup = spawn_pickup_block(world, positionf, block);
             if (pickup) {

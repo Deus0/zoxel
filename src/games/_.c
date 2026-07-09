@@ -21,11 +21,11 @@
 
 zox_begin_module(Games) {
     define_components_games(world);
-    define_systems_games(world);
-    zox_module_dispose(dispose_games);
+    zox_define_systems_games(world);
     add_hook_terminal_command(process_arguments_games);
     add_hook_spawn_prefabs(spawn_prefabs_games);
-    initialize_events_games();
+    // zox_module_dispose(dispose_games);
+    // initialize_events_games();
 } zox_end_module(Games);
 
 #endif

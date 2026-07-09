@@ -32,9 +32,16 @@ void define_systems_vodes3(ecs* world) {
         [in] chunks3.VoxelNode,
         [in] chunks3.BlocksSpawned
     );
+    zox_system(
+        BlockHealthOverlaySystem,
+        EcsOnUpdate,
+        [in] stats.StatValue,
+        [in] stats.StatValueMax,
+        [none] vodes3.WorldBlock
+    );
     zox_system_1(
         VodesSpawnSystem,
-        zoxp_voxels_write,
+        zoxp_mainthread,
         [in] chunks3.VoxelNodeDirty,
         // [in] rendering.RenderDistanceDirty,
         [in] chunks.NodeDepth,
@@ -48,19 +55,12 @@ void define_systems_vodes3(ecs* world) {
     );
     zox_system_1(
         BlockDamageQueueSystem,
-        zoxp_mainthread,
+        zoxp_queue_add,
         [in] chunks3.ChunkPosition,
         [in] chunks3.VoxelNode,
         [in] chunks.NodeDepth,
         [in] blocks.BlockManagerLink,
         [out] blocks.BlockDamageQueue,
         [none] chunks3.Chunk3
-    );
-    zox_system(
-        BlockHealthOverlaySystem,
-        EcsOnUpdate,
-        [in] stats.StatValue,
-        [in] stats.StatValueMax,
-        [none] vodes3.WorldBlock
     );
 }

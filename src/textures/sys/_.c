@@ -29,11 +29,6 @@ void define_systems_textures(ecs *world) {
         [in] textures.TextureLink,
         [in] inputs.DeviceDisabled
     );
-    /*zox_filter(
-        generate_textures2,
-        [none] textures.FrameTexture,
-        [out] textures.GenerateTexture
-    );*/
     zox_system(
         AnimateNoiseSystem,
         zox_pip_texture_generation,
@@ -89,21 +84,21 @@ void define_systems_textures(ecs *world) {
         [none] textures.Tilemap
     );
     zox_system_1(
-        TextureUpdateSystem,
-        EcsPreStore,
-        [in] rendering.TextureDirty,
-        [in] textures.TextureData,
-        [in] rendering.TextureSize,
-        [in] rendering.TextureGPULink,
-        [none] !textures.TextureRGB
-    );
-    zox_system_1(
         TextureRGBUpdateSystem,
-        EcsPreStore,
+        zoxp_mainthread,
         [in] rendering.TextureDirty,
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
         [none] textures.TextureRGB
+    );
+    zox_system_1(
+        TextureRGBAUpdateSystem,
+        zoxp_mainthread,
+        [in] rendering.TextureDirty,
+        [in] textures.TextureData,
+        [in] rendering.TextureSize,
+        [in] rendering.TextureGPULink,
+        [none] !textures.TextureRGB
     );
 }

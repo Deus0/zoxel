@@ -30,9 +30,9 @@
 #define zoxp_text EcsOnUpdate
 
 // (VoxelNode) Queue
-#define zoxp_queue_add EcsPreUpdate
-#define zoxp_queue_process1 EcsOnValidate
-#define zoxp_queue_process2 EcsPostUpdate
+#define zoxp_queue_add EcsPostLoad
+#define zoxp_queue_process EcsOnUpdate
+#define zoxp_queue_pre_clear EcsPreStore
 #define zoxp_queue_clear EcsOnStore
 
 

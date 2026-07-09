@@ -77,7 +77,7 @@ void define_systems_lights3(ecs* world) {
     // NOTE: This needs to be queue dependent
     zox_system(
         VoxelLightSystem,
-        zoxp_queue_process2,
+        zoxp_queue_process,
         [in] blocks.BlockManagerLink,
         [in] chunks3.VoxelNodeQueue,
         [in] chunks.NodeDepth,
@@ -87,7 +87,7 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.DarkQueue,
         [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
-        [none] chunks.Chunk
+        [none] chunks3.Chunk3
     );
     // this kinda has issues atm hmm
     zox_system(

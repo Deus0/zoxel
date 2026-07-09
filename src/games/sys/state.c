@@ -1,16 +1,19 @@
 zox_sys2(GameStateSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RealmLink);
     zox_sys_out(GameState);
     zox_sys_out(GameStateTarget);
+    zox_sys_out(LastGameState);
     zox_sys_out(GameStateDirty);
     zox_sys_out(GameStateTime);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(RealmLink, realm);
         zox_sys_o(GameState, state);
         zox_sys_o(GameStateTarget, target);
+        zox_sys_o(LastGameState, last);
         zox_sys_o(GameStateDirty, dirty);
         zox_sys_o(GameStateTime, time);
         if (dirty->value || target->value == state->value) {
@@ -27,7 +30,7 @@ zox_sys2(GameStateSystem) {
             }
         } else if (target->value == zox_game_loading_realm) {
             // NOTE: Waits for GenerateRealm to finish
-            if (zox_valid(realm->value) && !zox_gett_value(realm->value, GenerateRealm)) {
+            if (zox_valid(realm->value) && !zox_getv(realm->value, GenerateRealm)) {
                 is_update = 1;
             }
         } else {
@@ -38,11 +41,14 @@ zox_sys2(GameStateSystem) {
         }
         byte old_state = state->value;
         byte new_state = target->value;
+        last->value = state->value;
         state->value = new_state;
         dirty->value = zox_dirty_trigger;
         time->value = zox_current_time;
-        trigger_event_game(world, e, old_state, target->value);
-        zox_logv("[%f] Game State [%i] -> [%i]", time->value, old_state, new_state);
+        // trigger_event_game(world, e, old_state, target->value);
+        if (dbg_log) {
+            zox_log("[%f] Game State [%i] -> [%i]", time->value, old_state, new_state);
+        }
         // Start Loading Realm after faded
         if (state->value == zox_game_load_start) {
             target->value = zox_game_load_fading;
@@ -51,26 +57,14 @@ zox_sys2(GameStateSystem) {
         } else if (state->value == zox_game_load_faded) {
             target->value = zox_game_loading_realm;
             zox_set(realm->value, GenerateRealm, { zox_generate_realm_start });
-        }
-        // finished loading realm
-        else if (state->value == zox_game_loading_realm) {
+        } else if (state->value == zox_game_loading_realm) {
+            // finished loading realm
             target->value = zox_game_state_play_begin;
         } else if (state->value == zox_game_state_play_begin) {
             target->value = zox_game_state_playing;
-        }
-        // special edge case
-        else if (state->value == zox_game_state_respawn_on_pause) {
+        } else if (state->value == zox_game_state_respawn_on_pause) {
+            // special edge case
             target->value = zox_game_state_playing;
         }
     }
 } zox_sys_end(GameStateSystem);
-
-// when state changes, we can do events here
-//      game has children which includes all players
-//      game_state_start > game_state_menu = load main menu for player 1
-//      game_state_menu > pre play = unload main menu, load a countdown / load ui
-//      game_state_pre_play > play = load game, load player characters
-//      game_state_play > game_state_paused = pause entities in game
-//      game_state_paused > game_state_play = unpause entities
-//      game_state_play | game_state_paused > game_state_end = go to exit ui
-//      game_state_end > game_state_menu = return to main menu scene + ui

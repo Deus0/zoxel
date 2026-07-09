@@ -4,6 +4,7 @@ zoxc_byte(RefreshLights);
 zoxc_octree(LightNode, byte, 0);
 new_octree_function_set(LightNode);
 create_node_getter(LightNode);
+create_octree_get_nearby(LightNode);
 create_octree_reducer(LightNode);
 create_octree_optimizer(LightNode);
 create_optimize_by_max(LightNode);

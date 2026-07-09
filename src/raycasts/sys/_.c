@@ -19,14 +19,16 @@ void zox_define_systems_raycasts(ecs* world) {
     );
     #else
     zox_system_1(
-        CameraRaySystem, zoxp_mainthread,
+        CameraRaySystem,
+        zoxp_mainthread,
         [out] raycasts.RaycastOrigin,
         [out] raycasts.RaycastNormal
     );
     #endif
     #ifdef zox_debug_rays
     zox_system_1(
-        RayDebugSystem, zoxp_mainthread,
+        RayDebugSystem,
+        zoxp_mainthread,
         [in] raycasts.RaycastOrigin,
         [in] raycasts.RaycastNormal
     );

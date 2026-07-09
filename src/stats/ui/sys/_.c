@@ -31,7 +31,7 @@ void define_systems_stats_ui(ecs *world) {
     );
     zox_system_1(
         HealthbarSpawnerSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] combat.CombatState,
         [out] elements.ElementLinks
     );
@@ -44,7 +44,7 @@ void define_systems_stats_ui(ecs *world) {
     );
     zox_system_1(
         PlayerStatspanelSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] layouts2.CanvasLink,

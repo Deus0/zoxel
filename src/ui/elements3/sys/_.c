@@ -15,7 +15,7 @@ void define_systems_elements3D(ecs *world) {
     );
     zox_system_1(
         Text3DResizeSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] texts.TextDirty,
         [in] texts.TextData,
         [in] zigels.FontOutlineColor,

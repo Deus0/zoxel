@@ -43,7 +43,7 @@ void define_systems_texts(ecs *world) {
     );
     zox_system_1(
         ZigelSpawnSystem,
-        EcsOnUpdate,
+        zoxp_mainthread,
         [in] texts.TextDirty,
         [in] texts.TextData,
         [in] texts.TextFontSize,

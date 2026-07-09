@@ -1,5 +1,5 @@
 // When player state changes, for player
-zox_sys2(PlayerGameStateSystem) {
+zox_sys2(ControllerPlayerStateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
@@ -31,4 +31,4 @@ zox_sys2(PlayerGameStateSystem) {
             }
         }
     }
-} zox_sys_end(PlayerGameStateSystem);
+} zox_sys_end(ControllerPlayerStateSystem);

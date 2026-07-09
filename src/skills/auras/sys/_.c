@@ -1,5 +1,6 @@
 #include "collide.c"
-#include "remove.c"
+// #include "remove.c"
+#include "dots_remove.c"
 #include "particles.c"
 #include "sounds.c"
 
@@ -21,10 +22,12 @@ void zox_define_systems_auras(ecs* world) {
         [none] auras.Aura
     );
     zox_system(
-        AuraRemoveSystem,
+        AuraDotRemoveSystem,
         EcsOnUpdate,
-        [in] transforms3.Position3D,
-        [none] characters.Character
+        [in] skills.SkillLink,
+        [in] skills.SpawnerLink,
+        [in] particles.ParticlesEmitterLink,
+        [none] skills.AuraDot
     );
     zox_system_1(
         AuraParticlesSystem,

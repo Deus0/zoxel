@@ -11,26 +11,6 @@
 #include "arm_raise.c"
 
 void define_systems_bones(ecs *world) {
-    zox_system_1(
-        BonesSettingsSystem,
-        zoxp_mainthread,
-        [in] core.InitializeEntity,
-        [none] apps.App
-    );
-    zox_system_1(
-        BonesSettingsDirtySystem,
-        zoxp_mainthread,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
-    zox_system_1(
-        BonesInitializeSystem,
-        zoxp_mainthread,
-        [in] core.InitializeEntity,
-        [out] bones.BoneIndexGPULink,
-        [none] bones.Skeleton
-    );
     zox_system(
         HeadAnimateSystem,
         EcsOnUpdate,
@@ -71,20 +51,6 @@ void define_systems_bones(ecs *world) {
         [out] rendering.MeshColorRGBs,
         [none] bones.Skeleton
     );
-    zox_system_1(
-        BoneIndexUploadSystem,
-        zoxp_mainthread,
-        [in] rendering.MeshDirty,
-        [in] bones.BoneIndexes,
-        [out] bones.BoneIndexGPULink
-    );
-    zox_system_1(
-        BoneRenderSystem,
-        zoxp_mainthread,
-        [in] transforms3.Position3D,
-        [in] bones.BoneSize,
-        [none] bones.Bone
-    );
     zox_system(
         ArmControlSystem,
         EcsOnUpdate,
@@ -116,5 +82,39 @@ void define_systems_bones(ecs *world) {
         [in] bones.ShoulderBoneLink,
         [in] bones.HeadBoneLink,
         [none] bones.Skeleton
+    );
+    zox_system_1(
+        BonesSettingsSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [none] apps.App
+    );
+    zox_system_1(
+        BonesSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
+    );
+    zox_system_1(
+        BonesInitializeSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [out] bones.BoneIndexGPULink,
+        [none] bones.Skeleton
+    );
+    zox_system_1(
+        BoneIndexUploadSystem,
+        zoxp_mainthread,
+        [in] rendering.MeshDirty,
+        [in] bones.BoneIndexes,
+        [out] bones.BoneIndexGPULink
+    );
+    zox_system_1(
+        BoneRenderSystem,
+        zoxp_mainthread,
+        [in] transforms3.Position3D,
+        [in] bones.BoneSize,
+        [none] bones.Bone
     );
 }

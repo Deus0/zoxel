@@ -100,7 +100,10 @@ zox_sys2(BlockDamageQueueSystem) {
                 }
                 // finally remove from chunk
                 zox_muter(chunk, VoxelNodeQueue, queue);
-                a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = 0, .pos = position });
+                a_VoxelNodeQueue(queue, (VoxelNodeUpdate) {
+                    .value = 0,
+                    .pos = position
+                });
                 did_destroy_block = 1;
             } else {
                 if (!zox_valid(world_block)) {
