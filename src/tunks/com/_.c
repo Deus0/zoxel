@@ -1,6 +1,7 @@
 zox_tag(Tunk);
 zox_tag(TunkTexture);
 zox_tag(RegionTexture);
+zox_tag(HeightmapTexture);
 zoxc_byte(GenerateTunk);
 zoxc_entity(TunkLink);
 zoxc_int2(TunkPosition);
@@ -17,6 +18,7 @@ void define_components_tunks(ecs *world) {
     zoxd_tag(Tunk);
     zoxd_tag(TunkTexture);
     zoxd_tag(RegionTexture);
+    zoxd_tag(HeightmapTexture);
     zoxd_byte(GenerateTunk);
     zoxd_entity(TunkLink);
     zoxd_int2(TunkPosition);

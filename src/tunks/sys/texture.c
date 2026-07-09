@@ -1,7 +1,6 @@
 // NOTE: Simply creates a height texture from tunks
 zox_sys2(TunkTextureSystem) {
     byte dbg_log = 0;
-    // byte map_type = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -41,26 +40,62 @@ zox_sys2(TunkTextureSystem) {
             zox_set(e, Generate, { zox_dirty_trigger });
             continue;
         }
+        entity realm = zox_get_parent(world, terrain);
+        const BlockLinks* blocks = zox_get(realm, BlockLinks);
+        color block_colors[blocks->length];
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        int map_length = powers_of_two[terrain_depth];
-        size->value = int2_single(map_length);
-        const HeightMap* height_map = zox_get(tunk->value, HeightMap);
-        if (map_length * map_length != height_map->length) {
-            zox_loge("Invalid [Tunk] [Heightmap] for Texture [%s]", zox_get_name(e));
-            continue;
+        const Chunk3Stack* stack = zox_get(tunk->value, Chunk3Stack);
+        const VoxelNode* stackv[render_distance_y * 2 + 1];
+        byte chunk_depth = terrain_depth;
+        // NOTE: Fetch block colors when terrain changes
+        for (byte k = 0; k < blocks->length; k++) {
+            entity block = blocks->value[k];
+            if (zox_valid(block)) {
+                block_colors[k] = zox_getv(block, Color);
+            } else {
+                block_colors[k] = color_black;
+            }
         }
+        // NOTE: Fetch Chunk VoxelNode's
+        for (sbyte k = render_distance_y * 2; k >= 0; k--) {
+            entity chunk = stack->value[k];
+            if (!zox_valid(chunk)) {
+                stackv[k] = NULL;
+            } else {
+                stackv[k] = zox_get(chunk, VoxelNode);
+                chunk_depth = zox_getv(chunk, NodeDepth);
+            }
+        }
+        int map_length = powers_of_two[chunk_depth];
+        size->value = int2_single(map_length);
+        resize_TextureData(data, size->value.x * size->value.y);
         if (dbg_log) {
             zox_log("Generating Tunk Texture [%ix%i]", size->value.x, size->value.y);
         }
-        resize_TextureData(data, size->value.x * size->value.y);
-        for (byte x = 0; x < map_length; x++) {
-            for (byte y = 0; y < map_length; y++) {
-                int index = int2_array_index((int2) { x, y }, size->value);
-                byte value = height_map->value[index];
-                value = int_clamp(32 + value * 10, 0, 255);
-                data->value[index] = color_grayscale(value);
-                if (dbg_log >= 2) {
-                    zox_log(" - [%ix%i]%i: %i", x, y, index, value);
+        byte3 position = byte3_zero;
+        for (position.x = 0; position.x < map_length; position.x++) {
+            for (position.z = 0; position.z < map_length; position.z++) {
+                int index = int2_array_index((int2) { position.x, position.z }, size->value);
+                // NOTE: From top of world, we cast down to find first block
+                byte set_color = 0;
+                for (sbyte k = render_distance_y * 2; k >= 0; k--) {
+                    const VoxelNode* voxels = stackv[k];
+                    if (!(voxels)) {
+                        continue;
+                    }
+                    for (sbyte y = map_length - 1; y >= 0; y--) {
+                        position.y = y;
+                        byte voxel = getv_VoxelNode(voxels, position, chunk_depth);
+                        if (!voxel) {
+                            continue;
+                        }
+                        data->value[index] = block_colors[voxel - 1];
+                        set_color = 1;
+                        break;
+                    }
+                    if (set_color) {
+                        break;
+                    }
                 }
             }
         }

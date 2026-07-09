@@ -1,19 +1,25 @@
 void generate_texture_arrow(color* data, int2 size, color fill, color outline, byte thickness) {
     const color empty = color_clear;
-    int index = 0;
     // Pass 1: generate arrow shape
+    int center = size.x / 2;
+    int half_height = size.y / 2;
+    int shaft_width = size.x / 3;
+    int index = 0;
     for (int y = 0; y < size.y; y++) {
         for (int x = 0; x < size.x; x++) {
-            int center = size.x / 2;
             // Arrow head occupies upper half
             byte in_head = 0;
-            if (y < size.y / 2) {
-                int half_width = y;
-                in_head = (x >= center - half_width && x <= center + half_width);
+            if (y >= half_height) {
+                int head_y = size.y - 1 - y;
+                int half_width = (head_y * center) / (half_height - 1);
+                in_head = (x >= center - half_width &&
+                           x <= center + half_width);
             }
             // Arrow shaft occupies lower half
-            int shaft_width = size.x / 3;
-            byte in_shaft = (y >= size.y / 2) && (x >= center - shaft_width / 2) && (x <= center + shaft_width / 2);
+            byte in_shaft =
+                (y < half_height) &&
+                (x >= center - shaft_width / 2) &&
+                (x <= center + shaft_width / 2);
             data[index++] = (in_head || in_shaft) ? fill : empty;
         }
     }

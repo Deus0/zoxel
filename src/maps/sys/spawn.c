@@ -5,9 +5,9 @@
 zox_sys2(MapInitializeSystem) {
     byte dbg_log = 0;
     int2 arrow_size = int2_single(8 * ui_scale);
-    byte arrow_thickness = 1 * ui_scale;
-    color arrow_fill = (color) { 155, 0, 0, 185 };
-    color arrow_outline = (color) { 22, 188, 188, 233 };
+    byte arrow_thickness = 0.5f * ui_scale;
+    color arrow_fill = (color) { 33, 255, 177, 185 };
+    color arrow_outline = (color) { 44, 166, 66, 233 };
     // float map_alpha = 0.2f;
     zox_sys_world();
     zox_sys_begin();

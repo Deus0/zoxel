@@ -16,6 +16,7 @@
 #include "heights.c"
 #include "vegetation.c"
 #include "texture.c"
+#include "texture_heights.c"
 extern byte dbg_use_new_streaming;
 
 void define_systems_tunks(ecs* world) {
@@ -165,5 +166,15 @@ void define_systems_tunks(ecs* world) {
         [out] rendering.TextureSize,
         [out] rendering.TextureDirty,
         [none] tunks.TunkTexture
+    );
+    zox_system(
+        HeightmapTextureSystem,
+        EcsOnUpdate,
+        [in] core.Generate,
+        [in] tunks.TunkLink,
+        [out] textures.TextureData,
+        [out] rendering.TextureSize,
+        [out] rendering.TextureDirty,
+        [none] tunks.HeightmapTexture
     );
 }
