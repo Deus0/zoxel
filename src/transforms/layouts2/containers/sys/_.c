@@ -5,7 +5,7 @@
 void define_systems_containers(ecs* world) {
     zox_system(
         ListSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] layouts2.LayoutSize,
         [in] containers.ListPositionDirty,
         [in] containers.ListPadding,
@@ -15,7 +15,7 @@ void define_systems_containers(ecs* world) {
     );
     zox_system(
         GridSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] layouts2.LayoutSize,
         [in] containers.GridDirty,
         [in] containers.GridSize,
@@ -25,7 +25,7 @@ void define_systems_containers(ecs* world) {
     // TODO: We should really tag these? ListElement
     zox_system(
         ListElementPositionSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] layouts2.LayoutSize,
         [in] layouts2.LayoutSizeDirty,
         [out] layouts2.LayoutPosition,

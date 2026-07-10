@@ -1,4 +1,4 @@
-void ZeviceFingerResetSystem(iter *it) {
+zox_sys2(ZeviceFingerResetSystem) {
     zox_sys_begin();
     zox_sys_in(ZevicePointerOld);
     zox_sys_out(ZevicePointerPosition);
@@ -12,4 +12,4 @@ void ZeviceFingerResetSystem(iter *it) {
             zevicePointerDelta->value = int2_zero;
         }
     }
-} zoxd_system2(ZeviceFingerResetSystem);
+} zox_sys_end(ZeviceFingerResetSystem);

@@ -9,7 +9,7 @@
 void define_systems_terrain_collisions(ecs* world) {
     zox_system(
         InsideBlockSystem,
-        EcsOnStore,
+        zoxp_update,
         [in] terrains.TerrainLink,
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,

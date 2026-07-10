@@ -1,4 +1,4 @@
-void ZeviceStickEnableSystem(iter *it) {
+zox_sys2(ZeviceStickEnableSystem) {
     zox_sys_begin()
     zox_sys_in(ZeviceStick)
     zox_sys_out(ZeviceDisabled)
@@ -13,4 +13,4 @@ void ZeviceStickEnableSystem(iter *it) {
             zeviceDisabled->value = 0;
         }
     }
-} zoxd_system(ZeviceStickEnableSystem)
+} zox_sys_end(ZeviceStickEnableSystem);

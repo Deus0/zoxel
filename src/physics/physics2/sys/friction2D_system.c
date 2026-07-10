@@ -1,4 +1,4 @@
-void Friction2DSystem(iter *it) {
+zox_sys2(Friction2DSystem) {
     const float frictionValue = 8.0f;  // 0.002
     zox_sys_begin()
     zox_sys_in(Velocity2D)
@@ -9,4 +9,4 @@ void Friction2DSystem(iter *it) {
         acceleration2D->value.x -= velocity2D->value.x * frictionValue;
         acceleration2D->value.y -= velocity2D->value.y * frictionValue;
     }
-} zoxd_system(Friction2DSystem)
+} zox_sys_end(Friction2DSystem);

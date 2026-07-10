@@ -3,7 +3,7 @@
 void zox_define_systems_towns_debug(ecs* world) {
     zox_system(
         TownTextureSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.Generate,
         [in] tunks.TunkLink,
         [out] textures.TextureData,

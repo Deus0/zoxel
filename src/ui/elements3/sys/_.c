@@ -8,7 +8,7 @@
 void define_systems_elements3D(ecs *world) {
     zox_system(
         Elementbar3DSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] elements.ElementBar,
         [in] elements.ElementBarSize,
         [none] rendering.MeshVertices
@@ -52,7 +52,7 @@ void define_systems_elements3D(ecs *world) {
     );
     zox_system(
         UITrailSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] elements.UIHolderLink,
         [in] UITrail,
         [out] transforms3.Position3D
@@ -65,7 +65,7 @@ void define_systems_elements3D(ecs *world) {
     );
     zox_system_ctx(
         BillboardSystem,
-        EcsOnUpdate,
+        zoxp_update,
         billboard_cameras,
         [in] rendering.RenderDisabled,
         [in] transforms3.Position3D,

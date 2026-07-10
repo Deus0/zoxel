@@ -4,5 +4,5 @@
 #include "node_colors.c"
 // TODO: Refactor to model_lods + blueprint for grass
 #include "grass.c"
-#include "rubble.c"
+#include "generated.c"
 #include "blocks_solids.c"

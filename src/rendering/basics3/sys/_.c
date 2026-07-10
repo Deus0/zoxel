@@ -103,7 +103,7 @@ void define_systems_basics3D(ecs* world) {
     );
     zox_system_1(
         MeshColorsGpuSystem,
-        EcsPreStore, // zoxp_mainthread,
+        zoxp_mainthread, // EcsPreStore, // zoxp_mainthread,
         [in] rendering.MeshColorsDirty,
         [in] rendering.MeshColorRGBs,
         [in] rendering.ColorsGPULink,

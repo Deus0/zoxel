@@ -26,7 +26,7 @@ zox_sys2(T##RealmClearSystem) {\
 #define realm_clear_systemd(M, T)\
 zox_system(\
     T##RealmClearSystem,\
-    EcsOnLoad,\
+    zoxp_reset,\
     [in] realms.GenerateRealm,\
     [out] M.T,\
     [none] realms.Realm\

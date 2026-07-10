@@ -5,7 +5,7 @@
 void define_systems_weather(ecs* world) {
     zox_system(
         WeatherGameStateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] games.GameStateDirty,
         [in] games.GameState,
         [none] games.Game

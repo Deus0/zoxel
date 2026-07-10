@@ -32,7 +32,7 @@ void define_systems_cameras(ecs *world) {
     );
     zox_system(
         ViewportResizeSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] apps.WindowSizeDirty,
         [in] apps.WindowSize,
         [in] CameraLinks,

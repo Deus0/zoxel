@@ -12,7 +12,7 @@
 void define_systems_textures(ecs *world) {
     zox_system(
         ArrowTextureSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.Generate,
         [in] rendering.TextureSize,
         [in] textures.FillColor,
@@ -24,21 +24,21 @@ void define_systems_textures(ecs *world) {
     );
     zox_system(
         MouseTextureSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] inputs.MouseLock,
         [in] textures.TextureLink,
         [in] inputs.DeviceDisabled
     );
-    zox_system(
+    /*zox_system(
         AnimateNoiseSystem,
-        zox_pip_texture_generation,
+        zoxp_update,
         [out] textures.AnimateTexture,
         [out] textures.GenerateTexture
-    );
+    );*/
     zox_filter(fill_texture_query, [none] FillTexture, [out] textures.GenerateTexture)
     zox_system_ctx(
         FillTextureSystem,
-        zoxp_textures,
+        zoxp_update,
         fill_texture_query,
         [in] rendering.TextureSize,
         [in] textures.FillColor,
@@ -49,7 +49,7 @@ void define_systems_textures(ecs *world) {
     );
     zox_system(
         FrameTextureSystem,
-        zox_pip_texture_generation,
+        zoxp_update,
         [in] rendering.TextureSize,
         [in] textures.FillColor,
         [in] OutlineThickness,
@@ -61,7 +61,7 @@ void define_systems_textures(ecs *world) {
     );
     zox_system(
         IconTextureSystem,
-        zox_pip_texture_generation,
+        zoxp_update,
         [in] rendering.TextureSize,
         [in] textures.FillColor,
         [in] textures.OutlineColor,
@@ -74,7 +74,7 @@ void define_systems_textures(ecs *world) {
     );
     zox_system(
         TilemapGenerationSystem,
-        zox_pip_texture_generation,
+        zoxp_update,
         [in] textures.GenerateTexture,
         [in] textures.TilemapSize,
         [in] textures.TextureLinks,

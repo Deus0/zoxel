@@ -7,7 +7,7 @@
 void define_systems_windows(ecs* world) {
     zox_system(
         CanvasStackSystem,
-        EcsOnLoad,
+        zoxp_update, // EcsOnLoad,
         [out] layouts2.WindowToTop,
         [out] WindowsLayers,
         [out] WindowsCount,
@@ -15,7 +15,7 @@ void define_systems_windows(ecs* world) {
     );
     zox_system(
         WindowLayerSystem,
-        EcsOnLoad,
+        zoxp_update, // EcsOnLoad,
         [in] SetWindowLayer,
         [out] WindowLayer,
         [out] layouts2.Layer2D,
@@ -23,13 +23,13 @@ void define_systems_windows(ecs* world) {
     );
     zox_system(
         WindowElementClickedSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.ClickState
     );
     // TODO: Add keyboard escape to this
     zox_system(
         CancelMenuSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] inputs.ZeviceDisabled,
         [in] inputs.DeviceButtonType,
         [in] inputs.ZeviceButton,
@@ -37,7 +37,7 @@ void define_systems_windows(ecs* world) {
     );
     zox_system(
         CanvasBoundsSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.InitializeEntity,
         [in] layouts2.LayoutSize,
         [in] layouts2.Anchor,

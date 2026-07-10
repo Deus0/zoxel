@@ -10,7 +10,7 @@ void define_systems_items(ecs* world) {
     realm_clear_systemd(items, ItemLinks);
     zox_system(
         ItemQuantityDeathSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] items.QuantityDirty,
         [in] items.Quantity,
         [none] items.Item

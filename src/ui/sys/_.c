@@ -10,7 +10,7 @@
 void zox_define_systems_elements(ecs *world) {
     zox_system(
         CanvasResizeSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] cameras.ScreenToCanvas,
         [in] apps.AppLink,
         [out] layouts2.LayoutPosition,
@@ -21,7 +21,7 @@ void zox_define_systems_elements(ecs *world) {
     );
     zox_system(
         TextureSizeSystem,
-        EcsPreUpdate,
+        zoxp_update, // EcsPreUpdate,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.LayoutSize,
         [out] rendering.TextureSize,
@@ -29,13 +29,13 @@ void zox_define_systems_elements(ecs *world) {
     );
     zox_system(
         TextureSizeGenerateSystem,
-        EcsPreUpdate,
+        zoxp_update, // EcsPreUpdate,
         [in] layouts2.LayoutSizeDirty,
         [out] textures.GenerateTexture
     );
     zox_system(
         LayoutMeshSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.LayoutSize,
         [in] rendering.MeshAlignment,

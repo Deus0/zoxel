@@ -4,6 +4,12 @@ realm_clear_system(QuestLinks);
 
 void define_systems_quests(ecs* world) {
     realm_clear_systemd(quests, QuestLinks);
+    zox_system(
+        SlaySystem,
+        zoxp_update,
+        [in] combat.Dead,
+        [in] combat.LastDamager
+    );
     zox_system_1(
         CharacterPlayerQuestsSystem,
         zoxp_mainthread,
@@ -11,11 +17,5 @@ void define_systems_quests(ecs* world) {
         [in] realms.RealmLink,
         [none] characters.Character,
         [none] players.PlayerLink
-    );
-    zox_system(
-        SlaySystem,
-        EcsOnUpdate,
-        [in] combat.Dead,
-        [in] combat.LastDamager
     );
 }

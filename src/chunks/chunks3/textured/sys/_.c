@@ -18,7 +18,7 @@ void define_systems_chunks3_textured(ecs *world) {
     );
     zox_system(
         Chunk3SidesSystem,
-        EcsPreUpdate,
+        zoxp_update, // EcsPreUpdate,
         [in] blocks.BlockManagerLink,
         [in] rendering.RenderDepth,
         [in] chunks3.ChunkNeighbors,
@@ -31,7 +31,7 @@ void define_systems_chunks3_textured(ecs *world) {
     // move this into chunk3, for chunk3_textured
     zox_system(
         Chunk3TexturedBuildSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] blocks.BlockManagerLink,
         [in] textures.TilemapLink,
         [in] rendering.RenderDepth,
@@ -51,7 +51,7 @@ void define_systems_chunks3_textured(ecs *world) {
     zox_set(zox_id(Chunk3TexturedRenderSystem), SystemDeltaMax, {  zox_lag_cutoff * 2 });
     zox_system(
         ChunkMeshSlowSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [out] rendering.MeshReady,
         [out] rendering.MeshDirty,
         [none] chunks3.ChunkTextured

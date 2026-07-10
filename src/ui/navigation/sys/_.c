@@ -4,14 +4,14 @@
 void define_systems_navigation(ecs* world) {
     zox_system(
         ElementNavigationBeginSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] inputs.DeviceMode,
         [in] layouts2.CanvasLink,
         [out] raycasts.RaycasterTarget
     );
     zox_system(
         ElementNavigationSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] inputs.DeviceMode,
         [out] elements.NavigatorState,
         [out] elements.NavigatorTimer,

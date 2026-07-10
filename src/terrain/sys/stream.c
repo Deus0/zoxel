@@ -33,9 +33,12 @@ zox_sys2(TerrainStreamSystem) {
                 zox_sys_i_2(StreamLink, terrain);
                 zox_sys_i_2(StreamPosition, stream_position);
                 // NOTE: For some reason this was failing for StreamDirty flags
-                if (!dirty->value) { // != zox_dirty_end) {
+                if (!dirty->value) {
+                // if (dirty->value != zox_dirty_active) {
                     continue;
                 }
+                // Shows 1, 2, 3
+                // zox_log("dirty->value: %i", dirty->value);
                 if (level->value < 1 || terrain->value != e) {
                     continue;
                 }

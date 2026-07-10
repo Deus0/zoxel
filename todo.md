@@ -3,12 +3,16 @@
 used - 200-400mb used
 
 Regressions:
-- Bug: Free Roam not working with f1 + right click
-- Bug: Item Text still there after we pickup item
-- Bug: Hat dissapears when Swapping
+- Bug: Some VoxTextures not created - Debris, Flowers, Decayed (theyre generated but not uploaded?? idk)
+- [02:12:59] [WARNING] [character3_player_9369]'s Exceeded Capacity [64] [zox_get_children] 
+- [02:13:07] [WARNING] [taskbar_icon_4294977265] Invalid GPU Link [0]
 
-More:
-- Opt: HeightMapSystem lagging, use LODing for HeightMaps / Tunk Generation
+- Add dust particles when we jump
+- Make GenerateTexture a byte again - so we set per system
+- Spawn Regions in stream system - link it to tunk there
+- Opt: HeightMapSystem lagging, use LODin g for HeightMaps / Tunk Generation
+
+- Ref: Make models just use one vox with multiple Renders Underneath, atm it spawns 5 models and regenerates everytime
 - Opt: SoundGenerateSystem by using preset sound data + mods
 - Bug: Edge of map UI is glitchy
 - Bug: Taskbar toggle not deactivated when window closes

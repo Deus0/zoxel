@@ -1,4 +1,4 @@
-void Acceleration2DSystem(iter *it) {
+zox_sys2(Acceleration2DSystem) {
     init_delta_time()
     zox_sys_begin()
     zox_sys_out(Velocity2D)
@@ -10,4 +10,4 @@ void Acceleration2DSystem(iter *it) {
         velocity2D->value.y += acceleration2D->value.y * delta_time;
         float2_make_zero(&acceleration2D->value);
     }
-} zoxd_system(Acceleration2DSystem)
+} zox_sys_end(Acceleration2DSystem);

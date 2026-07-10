@@ -1,5 +1,5 @@
 #define zoxd_system_increment(component, ...)\
-    zox_system(component##IncrementSystem, EcsOnLoad, [out] component, __VA_ARGS__)
+    zox_system(component##IncrementSystem, zoxp_state, [out] component, __VA_ARGS__)
 
 #define zoxd_system_increment_pip(component, p, ...)\
     zox_system(component##IncrementSystem, p, [out] component, __VA_ARGS__)

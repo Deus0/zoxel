@@ -52,7 +52,8 @@ zox_sys2(TownMapSystem) {
             zox_log("Towns found in Tunk [%ix%i]: [%i]", position->value.x, position->value.y, towns_length);
         }
         if (!towns_length || !vegetation_map->length) {
-            zox_logw("Invalid maps in TownMapSystem");
+            // NOTE: Just needs to wait a frame
+            // zox_logw("Invalid maps in TownMapSystem at [%s]", zox_get_name(e));
             continue;
         }
         for (int j = 0; j < towns_length; j++) {

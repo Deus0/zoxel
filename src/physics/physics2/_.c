@@ -8,12 +8,12 @@ zoxc_float2(Bounds2D);       //! Bounding box of a 2D Entity
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Physics2)
+zox_begin_module(Physics2) {
     zoxd(Velocity2D);
     zoxd(Torque2D);
     zoxd(Acceleration2D);
     zoxd(Bounds2D);
     define_systems_physics2(world);
-zox_end_module(Physics2D)
+} zox_end_module(Physics2D);
 
 #endif

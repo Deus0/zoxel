@@ -1,4 +1,4 @@
-void TextureGPUDisposeSystem(iter *it) {
+zox_sys2(TextureGPUDisposeSystem) {
     zox_sys_begin();
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
@@ -10,4 +10,4 @@ void TextureGPUDisposeSystem(iter *it) {
 
         // texture->value = 0;
     }
-} zoxd_system(TextureGPUDisposeSystem)
+} zox_sys_end(TextureGPUDisposeSystem);

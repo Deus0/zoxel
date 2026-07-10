@@ -68,10 +68,6 @@ void zox_print_slots(ecs* world, entity slots_manager) {
 }
 
 entity zox_get_empty_slot(ecs* world, entity e) {
-    /*entity slots[layouts2_children_capacity];
-     *    uint slots_length = zox_get_children_by_id(world, e, slots, layouts2_children_capacity, zox_id(Slot));
-     *    for (uint k = 0; k < slots_length; k++) {
-     *        entity slot = slots[k];*/
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {

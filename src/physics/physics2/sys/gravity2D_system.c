@@ -1,5 +1,5 @@
 //! Each entity will impact all other entities.
-void Gravity2DSystem(iter *it) {
+zox_sys2(Gravity2DSystem) {
     // NearbyEntities component instead of everything.
     double delta_time = (double) it->delta_time;
     Position2 *position2s = ecs_field(it, Position2, 1);
@@ -11,4 +11,4 @@ void Gravity2DSystem(iter *it) {
         position2->value.x += velocity2D->value.x * delta_time;
         position2->value.y += velocity2D->value.y * delta_time;
     }
-}
+} zox_sys_end(Gravity2DSystem);

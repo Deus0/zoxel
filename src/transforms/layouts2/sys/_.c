@@ -9,14 +9,14 @@
 void define_systems_layouts2(ecs* world) {
     zox_system(
         AnchorSizeSystem,
-        EcsOnLoad,
+        zoxp_update, // EcsOnLoad,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.AnchorSize,
         [out] layouts2.LayoutSize
     );
     zox_system(
         LocalLayoutSystem,
-        EcsOnLoad,
+        zoxp_update, //  EcsOnLoad,
         [in] LayoutPositionDirty,
         [in] LayoutPosition,
         [in] LayoutSize,
@@ -25,7 +25,7 @@ void define_systems_layouts2(ecs* world) {
     );
     zox_system(
         LayoutToCanvasSystem,
-        EcsOnLoad,
+        zoxp_update, // EcsOnLoad,
         [in] layouts2.LayoutPositionDirty,
         [in] layouts2.CanvasPosition,
         [out] transforms2.Position2
@@ -33,7 +33,7 @@ void define_systems_layouts2(ecs* world) {
     // Transform Layouts to Real Space
     zox_system(
         LayoutTransform2System,
-        EcsOnUpdate,
+        zoxp_update,
         [in] layouts2.LayoutPositionDirty,
         [in] transforms2.Position2,
         [in] transforms.Scale1D,
@@ -41,7 +41,7 @@ void define_systems_layouts2(ecs* world) {
     );
     zox_system(
         CanvasLinkSystem,
-        EcsOnLoad,
+        zoxp_update, // EcsOnLoad,
         [out] layouts2.CanvasLink,
         [none] layouts2.Layout
     );

@@ -7,19 +7,19 @@
 void define_systems_timing(ecs* world) {
     zox_system(
         TimerSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] TimerRate,
         [out] TimerState,
         [out] TimerTime
     );
-    zox_system( // _1
+    zox_system(
         DestroyInTimeSystem,
         zoxp_destroy,
         [out] timing.DestroyInTime
     );
     zox_system(
         DestroyInFrameSystem,
-        EcsOnStore,
+        zoxp_destroy,
         [none] core.DestroyInFrame
     );
     zox_system_1(

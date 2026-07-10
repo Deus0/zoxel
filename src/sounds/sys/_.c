@@ -10,7 +10,7 @@
 void define_systems_sounds(ecs *world) {
     zox_system(
         SoundProcessSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] ProcessSound,
         [in] SoundData,
         [in] SoundVolume,
@@ -20,7 +20,7 @@ void define_systems_sounds(ecs *world) {
     );
     zox_system(
         SoundGenerateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] InstrumentType,
         [in] SoundLength,
         [in] SoundFrequency,
@@ -40,7 +40,7 @@ void define_systems_sounds(ecs *world) {
 #ifdef zox_sdl_mixer
     zox_system(
         SoundPlaySystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] TriggerSound,
         [in] SoundData,
         [out] sdl.SDLMixChunk,
@@ -48,7 +48,7 @@ void define_systems_sounds(ecs *world) {
     );
     zox_system(
         SoundPlayRefSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] TriggerSound,
         [in] SoundDataRef,
         [out] sdl.SDLMixChunk,

@@ -7,7 +7,7 @@
 void define_systems_render_textures(ecs* world) {
     zox_system(
         ScreenRenderTextureSystem,
-        EcsOnLoad,
+        zoxp_update, // EcsOnLoad,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.LayoutSize,
         [out] rendering.TextureSize,
@@ -24,7 +24,7 @@ void define_systems_render_textures(ecs* world) {
     );
     zox_system(
         RenderTextureSizeSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] layouts2.LayoutSizeDirty,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,

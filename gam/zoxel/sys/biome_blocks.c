@@ -184,7 +184,8 @@ zox_sys2(BiomeBlocksSystem) {
             }
             zox_set_ptr(model, ModelLinks, variants);
             // Now spawn block
-            entity e3 = spawn_realm_block_model(world, e, 12331, "grass", grass_color, 0, model, variant.y);
+            entity texture_vox = variant.y;
+            entity e3 = spawn_realm_block_model(world, e, 12331, "grass", grass_color, 0, model, texture_vox, direction_front);
             zox_prefab_set(e3, BlockSound, { 1 });
             zox_add_tag(e3, BlockGrass);
             zox_set(e3, BlockLightPass, { 1 });
@@ -193,23 +194,26 @@ zox_sys2(BiomeBlocksSystem) {
         {
             lint seed = 322232;
             byte max_depth = block_vox_depth_limits.y;
-            entity2 e2 = spawn_model_lods_rubble(world, e, vox_type_rubble, dirt_color, max_depth, seed);
-            entity e3 = spawn_realm_block_model(world, e, seed, "dirt debris", dirt_color, 0, e2.x, e2.y);
+            entity2 e2 = spawn_model_lods_generated(world, e, vox_type_rubble, dirt_color, max_depth, seed);
+            entity texture_vox = e2.y;
+            entity e3 = spawn_realm_block_model(world, e, seed, "debris", dirt_color, 0, e2.x, texture_vox, direction_up);
             zox_set(e3, BlockLightPass, { 1 });
         }
         // A noisey block
         {
             lint seed = 291911;
             byte max_depth = block_vox_depth_limits.y;
-            entity2 e2 = spawn_model_lods_rubble(world, e, vox_type_noisey, dirt_color, max_depth, seed);
-            spawn_realm_block_model(world, e, seed, "dirt decayed", dirt_color, 1, e2.x, e2.y);
+            entity2 e2 = spawn_model_lods_generated(world, e, vox_type_noisey, dirt_color, max_depth, seed);
+            entity texture_vox = e2.y;
+            spawn_realm_block_model(world, e, seed, "decayed", dirt_color, 1, e2.x, texture_vox, direction_front);
         }
         // Biome Flora
         {
             lint seed = 11121;
             byte max_depth = block_vox_depth_limits.y;
-            entity2 e2 = spawn_model_lods_rubble(world, e, vox_type_flowers, dirt_color, max_depth, seed);
-            entity e3 = spawn_realm_block_model(world, e, seed, "flowers", dirt_color, 0,  e2.x, e2.y);
+            entity2 e2 = spawn_model_lods_generated(world, e, vox_type_flowers, dirt_color, max_depth, seed);
+            entity texture_vox = e2.y;
+            entity e3 = spawn_realm_block_model(world, e, seed, "flowers", dirt_color, 0,  e2.x, texture_vox, direction_up);
             zox_set(e3, BlockLightPass, { 1 });
         }
         if (dbg_log) {

@@ -342,7 +342,7 @@ zox_sys2(BodyCombineSystem) {
         zox_sys_o(CombineVox, dirty);
         zox_sys_o(NodeDepth, ndepth);
         zox_sys_o(BlockScale, block_scale);
-        if (state->value != zox_dirty_active) {
+        if (state->value != zox_dirty_end) { // active) {
             continue;
         }
         entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));

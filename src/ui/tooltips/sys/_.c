@@ -4,13 +4,13 @@
 void zox_define_systems_tooltips(ecs* world) {
     zox_system(
         TooltipDeselectSystem,
-        EcsPreUpdate,
+        zoxp_update, // EcsPreUpdate,
         [in] interaction.SelectState,
         [none] tooltips.Tooltipper
     );
     zox_system(
         TooltipEventSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] interaction.SelectState,
         [in] tooltips.TooltipEvent
     );

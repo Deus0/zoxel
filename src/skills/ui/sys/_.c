@@ -4,13 +4,13 @@
 void zox_define_systems_skills_ui(ecs *world) {
     zox_system(
         SkillOverlaySystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] slots.DataLink,
         [none] elements2.Icon
     );
     zox_system(
         SkillIconTooltipSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.SelectState,
         [in] slots.DataLink,
         [none] elements2.Icon

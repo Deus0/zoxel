@@ -1,11 +1,12 @@
 #include "click.c"
 #include "icon.c"
 #include "label.c"
+#include "clear.c"
 
 void zox_define_systems_ui_containers(ecs* world) {
     zox_system(
         DataFrameClickSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.ClickState,
         [in] slots.SlotLink,
         [out] slots.DataLink,
@@ -14,14 +15,14 @@ void zox_define_systems_ui_containers(ecs* world) {
     );
     zox_system(
         SlotDataCleanSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [out] slots.DataLink,
         [out] slots.DataDirty,
         [none] slots.Slot
     );
     zox_system(
         DataIconSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] slots.SlotLink,
         [out] slots.DataLink,
         [out] slots.DataDirty,
@@ -29,14 +30,15 @@ void zox_define_systems_ui_containers(ecs* world) {
     );
     zox_system(
         DataIconUpdateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] slots.DataDirty,
         [in] slots.DataLink,
         [none] elements2.Icon
     );
     zox_system(
-        DataFrameLabelSystem,
-        EcsOnUpdate,
+        IconLabelClearSystem,
+        zoxp_update,
+        [in] slots.DataDirty,
         [in] slots.SlotLink,
         [out] texts.TextData,
         [out] texts.TextDirty,

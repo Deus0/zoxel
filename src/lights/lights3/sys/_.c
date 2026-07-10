@@ -99,7 +99,7 @@ void define_systems_lights3(ecs* world) {
     );
     zox_system(
         MeshColorsTriggerSystem,
-        EcsOnUpdate, // + 2,
+        zoxp_update, // + 2,
         [in] chunks3.BuildChunkMesh,
         [in] lights3.LightNodeDirty,
         [out] rendering.MeshColorsGenerate,
@@ -107,14 +107,14 @@ void define_systems_lights3(ecs* world) {
     );
     zox_system(
         ChunkNeighborLightTriggerSystem,
-        EcsOnUpdate, // zoxp_lights_write + 2,
+        zoxp_update, // zoxp_lights_write + 2,
         [in] lights3.LightNodeDirty,
         [in] chunks3.ChunkNeighbors,
         [none] chunks.Chunk
     );
     zox_system(
         SmoothLightsBuildSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] rendering.MeshColorsGenerate,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
@@ -127,7 +127,7 @@ void define_systems_lights3(ecs* world) {
     );
     zox_system(
         BasicLightsBuildSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] rendering.MeshColorsGenerate,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,

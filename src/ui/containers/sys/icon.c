@@ -42,6 +42,7 @@ zox_sys2(DataIconSystem) {
 } zox_sys_end(DataIconSystem);
 
 // NOTE: Updates icon texture when dirty
+// NOTE: Also updates the Tooltip to clear it
 zox_sys2(DataIconUpdateSystem) {
     zox_sys_world();
     zox_sys_begin();

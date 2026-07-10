@@ -3,12 +3,12 @@
 void define_systems_sdl(ecs* world) {
     zox_system(
         HideVirtualKeyboardSystem,
-        EcsOnStore,
+        zoxp_update,
         [in] SDLWindow
     );
     zox_system(
         ToggleVirtualKeyboardSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] inputs.Keyboard
     );
 }

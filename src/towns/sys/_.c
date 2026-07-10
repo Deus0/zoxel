@@ -14,7 +14,7 @@ void zox_define_systems_towns(ecs* world) {
     );
     zox_system(
         TownMapSystem,
-        EcsPreStore,
+        zoxp_update, // EcsPreStore,
         [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,

@@ -13,29 +13,14 @@
 void define_systems_bones(ecs *world) {
     zox_system(
         HeadAnimateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] bones.SkeletonDirty,
         [in] bones.HeadBoneLink,
         [none] bones.Skeleton
     );
-    // generating bone indexes here
-    zox_render3_system(
-        2,
-        Skeleton3RenderSystem,
-        [in] rendering.MeshIndicies,
-        [in] rendering.MeshGPULink,
-        [in] rendering.ColorsGPULink,
-        [in] bones.BoneIndexGPULink,
-        [in] transforms.TransformMatrix,
-        [in] rendering.RenderDisabled,
-        [in] bones.BoneLinks,
-        [none] rendering3.SkeletonMesh,
-        [none] rendering.MeshColorRGBs,
-        [none] !rendering.UvsGPULink
-    );
     zox_system(
         BoneIndexGenerateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] bones.SkeletonDirty,
         [in] rendering.MeshDirty,
         [in] rendering.MeshVertices,
@@ -45,7 +30,7 @@ void define_systems_bones(ecs *world) {
     );
     zox_system(
         BonePaintSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] rendering.MeshDirty,
         [in] bones.BoneIndexes,
         [out] rendering.MeshColorRGBs,
@@ -53,13 +38,13 @@ void define_systems_bones(ecs *world) {
     );
     zox_system(
         ArmControlSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] bones.WalkState,
         [none] bones.Skeleton
     );
     zox_system(
         ArmSwingSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] bones.SwingState,
         [in] bones.SwingAngle,
         [in] transforms3.LocalPosition3D,
@@ -68,7 +53,7 @@ void define_systems_bones(ecs *world) {
     );
     zox_system(
         LegSwingSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] bones.SwingState,
         [in] bones.SwingAngle,
         [in] transforms3.LocalPosition3D,
@@ -77,7 +62,7 @@ void define_systems_bones(ecs *world) {
     );
     zox_system(
         ShoulderRaiseSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] bones.RaiseShoulder,
         [in] bones.ShoulderBoneLink,
         [in] bones.HeadBoneLink,
@@ -116,5 +101,20 @@ void define_systems_bones(ecs *world) {
         [in] transforms3.Position3D,
         [in] bones.BoneSize,
         [none] bones.Bone
+    );
+    // generating bone indexes here
+    zox_render3_system(
+        2,
+        Skeleton3RenderSystem,
+        [in] rendering.MeshIndicies,
+        [in] rendering.MeshGPULink,
+        [in] rendering.ColorsGPULink,
+        [in] bones.BoneIndexGPULink,
+        [in] transforms.TransformMatrix,
+        [in] rendering.RenderDisabled,
+        [in] bones.BoneLinks,
+        [none] rendering3.SkeletonMesh,
+        [none] rendering.MeshColorRGBs,
+        [none] !rendering.UvsGPULink
     );
 }

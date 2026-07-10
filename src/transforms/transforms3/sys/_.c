@@ -13,34 +13,34 @@ void zox_define_systems_transforms3(ecs *world) {
     // NOTE: So normal EcsOnUpdate can set position/rotations without worrying about children
     zox_system(
         PositionRotation3System,
-        zox_transforms_stage - 1,
+        zoxp_transforms - 1,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D
     );
     // TODO: Merge these limits, EulerLimits float4
     zox_system(
         EulerLimitXSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] EulerLimitX,
         [out] Euler
     );
     zox_system(
         EulerLimitZSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] EulerLimitZ,
         [out] Euler
     );
     // Transform our euler to quaternion
     zox_system(
         EulerOverrideSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] Euler,
         [out] Rotation3D,
         [none] EulerOverride
     );
     zox_system(
         TransformMatrixSystem,
-        zox_transforms_stage,
+        zoxp_transforms,
         [in] Position3D,
         [in] Rotation3D,
         [out] transforms.TransformMatrix,
@@ -48,7 +48,7 @@ void zox_define_systems_transforms3(ecs *world) {
     );
     zox_system(
         TransformMatrixScaleSystem,
-        zox_transforms_stage,
+        zoxp_transforms,
         [in] Position3D,
         [in] Rotation3D,
         [in] transforms.Scale1D,
@@ -57,7 +57,7 @@ void zox_define_systems_transforms3(ecs *world) {
     // TODO: Add Lerp Slower Follow
     zox_system(
         ShadowPositionSystem,
-        zox_transforms_stage,
+        zoxp_transforms,
         [in] transforms3.ShadowLink,
         [out] transforms3.Position3D
     );

@@ -22,14 +22,14 @@ extern byte dbg_use_new_streaming;
 void define_systems_tunks(ecs* world) {
     zox_system(
         TunkEndSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] tunks.Chunk3Stack,
         [out] tunks.GenerateTunk,
         [none] tunks.Tunk
     );
     zox_system(
         TunkRegionLinkSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] tunks.TunkPosition,
         [out] regions.RegionLink,
         [none] tunks.Tunk
@@ -44,7 +44,7 @@ void define_systems_tunks(ecs* world) {
     // NOTE: Generates biome map before height maps
     zox_system(
         BiomeMapSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] tunks.TunkPosition,
         [out] tunks.GenerateTunk,
         [out] tunks.BiomeMap,
@@ -52,7 +52,7 @@ void define_systems_tunks(ecs* world) {
     );
     zox_system(
         BiomeMapAvgSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] tunks.GenerateTunk,
         [in] tunks.BiomeMap,
         [out] biomes.BiomeLink,
@@ -60,7 +60,7 @@ void define_systems_tunks(ecs* world) {
     );
     zox_system(
         BiomeLinkSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] streaming.StreamDirty2,
         [in] streaming.StreamPosition2,
         [in] streaming.StreamLink,
@@ -72,7 +72,7 @@ void define_systems_tunks(ecs* world) {
     // TODO: Pass in BiomeMap and use biome data
     zox_system(
         HeightMapSystem,
-        EcsPreUpdate,
+        zoxp_update, // EcsPreUpdate,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.GenerateTunk,
@@ -82,7 +82,7 @@ void define_systems_tunks(ecs* world) {
     // NOTE: Vegetation maps need biomes and temperature maps
     zox_system(
         VegetationMapSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.GenerateTunk,
@@ -128,7 +128,7 @@ void define_systems_tunks(ecs* world) {
         );
         zox_system(
             TunkLinkSystem,
-            EcsPreUpdate,
+            zoxp_update, // EcsPreUpdate,
             [in] core.Generate,
             [in] tunks.TunkPosition,
             [out] tunks.Chunk3Stack,
@@ -159,7 +159,7 @@ void define_systems_tunks(ecs* world) {
     // Texture
     zox_system(
         TunkTextureSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.Generate,
         [in] tunks.TunkLink,
         [out] textures.TextureData,
@@ -169,7 +169,7 @@ void define_systems_tunks(ecs* world) {
     );
     zox_system(
         HeightmapTextureSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.Generate,
         [in] tunks.TunkLink,
         [out] textures.TextureData,

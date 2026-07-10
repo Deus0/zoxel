@@ -1,5 +1,5 @@
 void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) {
-    byte vlength = powers_of_two_byte[depth];
+    byte vlength = octree_size(depth); // powers_of_two_byte[depth];
     if (vlength == 1) {
         set_VoxelNode(voctree, depth, byte3_zero, black, 0);
         return;

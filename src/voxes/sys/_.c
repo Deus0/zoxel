@@ -12,7 +12,7 @@ void define_systems_voxes(ecs *world) {
     // NOTE: timing specific, fucks up if changes position
     zox_system(
         Bounds3GrowSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] rendering.MeshDirty,
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
@@ -21,7 +21,7 @@ void define_systems_voxes(ecs *world) {
     );
     zox_system(
         Bounds3EnableSystem,
-        EcsOnUpdate,
+        zoxp_update,
         transforms3.Bounds3Dirty,
         [out] physics.DisableMovement,
         [out] physics.DisableGravity
@@ -54,14 +54,14 @@ void define_systems_voxes(ecs *world) {
     );
     zox_system(
         BakeVoxSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] rendering.ModelLink,
         [in] textures.TextureLinks
     );
     // Move to Voxes Module
     zox_system(
         ChunkFindNeighborSystem,
-        EcsOnLoad,
+        zoxp_update, // EcsOnLoad,
         [in] core.InitializeEntity,
         [in] chunks3.ChunkPosition,
         [out] chunks3.ChunkNeighbors,
@@ -70,21 +70,21 @@ void define_systems_voxes(ecs *world) {
     // NOTE: Syncs Terrain Chunk Scales
     zox_system(
         BlockScaleSystem,
-        EcsPostLoad,
+        zoxp_update, // EcsPostLoad,
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
         [out] blocks.BlockScale
     );
     zox_system(
         ChunkEntitiesLodSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkEntities
     );
     zox_system(
         VoxTextureSystem,
-        EcsPreUpdate, // EcsOnUpdate,
+        zoxp_update, // EcsPreUpdate
         [in] textures.GenerateTexture,
         [in] rendering.TextureSize,
         [in] blocks.VoxBakeSide,

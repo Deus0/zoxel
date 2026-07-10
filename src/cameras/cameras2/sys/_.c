@@ -3,7 +3,7 @@
 void define_systems_cameras2(ecs *world) {
     zox_system(
         Camera2FollowSystem,
-        EcsPostUpdate,
+        zoxp_update,
         [in] cameras.Roaming,
         [in] cameras.CameraTarget,
         [out] transforms3.Position3D,

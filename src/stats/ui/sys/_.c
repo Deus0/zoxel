@@ -8,14 +8,14 @@
 void define_systems_stats_ui(ecs *world) {
     zox_system(
         StatbarSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] StatLink,
         [out] elements.ElementBar,
         [none] Statbar
     );
     zox_system(
         StatTextSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] StatLink,
         [out] texts.TextData,
         [out] texts.TextDirty,
@@ -23,24 +23,24 @@ void define_systems_stats_ui(ecs *world) {
     );
     zox_system(
         StatIconLabelSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] slots.DataLink,
         [out] texts.TextData,
         [out] texts.TextDirty,
         [none] elements2.Label
+    );
+    zox_system(
+        StatIconTooltipSystem,
+        zoxp_update,
+        [in] interaction.SelectState,
+        [in] slots.DataLink,
+        [none] elements2.Icon
     );
     zox_system_1(
         HealthbarSpawnerSystem,
         zoxp_mainthread,
         [in] combat.CombatState,
         [out] elements.ElementLinks
-    );
-    zox_system(
-        StatIconTooltipSystem,
-        EcsOnUpdate,
-        [in] interaction.SelectState,
-        [in] slots.DataLink,
-        [none] elements2.Icon
     );
     zox_system_1(
         PlayerStatspanelSystem,

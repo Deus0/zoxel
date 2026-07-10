@@ -7,16 +7,9 @@
 
 void define_systems_texts(ecs *world) {
     // TODO: Move Dialogue one here
-    /*zox_system(
-        AnimateTextSystem,
-        zox_pipelines_zext_textures,
-        [out] texts.AnimateZext,
-        [out] texts.TextDirty,
-        [out] texts.TextData
-    );*/
     zox_system(
         TextParentBackgroundSystem,
-        zox_pipelines_zext_backgrounds,
+        zoxp_update,
         [in] texts.TextDirty,
         [in] texts.TextData,
         [in] texts.TextFontSize,
@@ -25,7 +18,7 @@ void define_systems_texts(ecs *world) {
     );
     zox_system(
         TextBackgroundSystem,
-        zox_pipelines_zext_backgrounds,
+        zoxp_update,
         [in] texts.TextDirty,
         [in] texts.TextData,
         [in] texts.TextFontSize,
@@ -36,9 +29,19 @@ void define_systems_texts(ecs *world) {
     );
     zox_system(
         TextUpdateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] texts.TextDirty,
         [in] texts.TextData,
+        [none] texts.Zext
+    );
+    zox_system(
+        TextsPositionSystem,
+        zoxp_update,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [in] texts.TextFontSize,
+        [in] texts.TextAlignment,
+        [in] texts.TextPadding,
         [none] texts.Zext
     );
     zox_system_1(
@@ -56,15 +59,5 @@ void define_systems_texts(ecs *world) {
         [out] rendering.RenderDisabled,
         [none] texts.Zext,
         [none] texts.Text2D
-    );
-    zox_system(
-        TextsPositionSystem,
-        EcsOnUpdate,
-        [in] texts.TextDirty,
-        [in] texts.TextData,
-        [in] texts.TextFontSize,
-        [in] texts.TextAlignment,
-        [in] texts.TextPadding,
-        [none] texts.Zext
     );
 }

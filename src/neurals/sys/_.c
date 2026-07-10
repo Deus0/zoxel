@@ -8,7 +8,7 @@ void define_systems_neurals(ecs* world) {
     // zox_system(NeuronInputSystem, EcsOnUpdate, [none] InputNeuron) //  [out] Transfer,
     zox_system(
         LinkFeedForwardSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] ConnectionData,
         [out] Weight,
         [out] Signal,
@@ -17,7 +17,7 @@ void define_systems_neurals(ecs* world) {
     );
     zox_system(
         NeuronFeedForwardSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [out] Signal,
         [none] Neuron,
         [none] !OutputNeuron

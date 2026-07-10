@@ -4,7 +4,7 @@
 void zox_define_systems_chunks3_noise(ecs* world) {
     zox_system(
         NoiseVoxelNodeSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.Generate,
         [in] chunks.NodeDepth,
         [out] chunks3.VoxelNode,

@@ -11,10 +11,6 @@ void set_position_rotation_recursive(ecs* world, entity e, float3 pposition, flo
     float4_rotate_float3_p(nrotation->value, &nposition->value);
     float3_add_float3_p(&nposition->value, pposition);
     quaternion_rotate_quaternion_p(&nrotation->value, localr);
-    /*entity children[transforms3_children_capacity];
-    uint count = zox_get_children(world, e, children, transforms3_children_capacity);
-    for (uint j = 0; j < count; j++) {
-        entity e2 = children[j];*/
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {

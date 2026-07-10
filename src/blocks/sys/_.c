@@ -8,7 +8,7 @@ void zox_define_systems_blocks(ecs* world) {
     realm_clear_systemd(blocks, BlockLinks);
     zox_system(
         RealmTilemapSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] blocks.BlocksDirty,
         [in] blocks.BlockLinks,
         [in] textures.TilemapLink,
@@ -22,7 +22,7 @@ void zox_define_systems_blocks(ecs* world) {
     );
     zox_system(
         TilemapUVSystem,
-        zox_pip_texture_generation,
+        zoxp_update,
         [in] rendering.TextureDirty,
         [in] textures.TextureLinks,
         [in] textures.TilemapSize,
@@ -33,7 +33,7 @@ void zox_define_systems_blocks(ecs* world) {
     );
     zox_system(
         RealmBlocksDirtySystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] blocks.BlocksDirty,
         [out] blocks.BlockLinks,
         [none] realms.Realm

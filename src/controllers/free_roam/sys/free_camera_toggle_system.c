@@ -1,4 +1,4 @@
-void FreeCameraToggleSystem(iter *it) {
+zox_sys2(FreeCameraToggleSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -20,7 +20,7 @@ void FreeCameraToggleSystem(iter *it) {
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_valid(e2) || zox_getv(e2, DeviceDisabled)) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;
@@ -51,4 +51,4 @@ void FreeCameraToggleSystem(iter *it) {
             zox_set(camera->value, Roaming, { new_roaming });
         }
     }
-} zoxd_system2(FreeCameraToggleSystem);
+} zox_sys_end(FreeCameraToggleSystem);

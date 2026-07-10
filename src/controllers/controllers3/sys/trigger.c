@@ -56,15 +56,15 @@ zox_sys2(Player3DTriggerSystem) {
                     if (devices_get_pressed(click)) {
                         is_triggered_a = 1;
                     }
-                }
-                if (zox_has(e3, ZevicePointerRight)) {
-                    zox_geter_value(e3, ZevicePointerRight, byte, click);
-                    // if (devices_get_pressed_this_frame(click)) {
-                    if (devices_get_pressed_this_frame(click)) {
-                        is_triggered_b = 1;
+                    // Mouse Pointer has this also
+                    if (zox_has(e3, ZevicePointerRight)) {
+                        zox_geter_value(e3, ZevicePointerRight, byte, click);
+                        // if (devices_get_pressed_this_frame(click)) {
+                        if (devices_get_pressed_this_frame(click)) {
+                            is_triggered_b = 1;
+                        }
                     }
-                }
-                if (zox_has(e3, ZeviceButton)) {
+                } else if (zox_has(e3, ZeviceButton)) {
                     zox_geter_value(e3, DeviceButtonType, byte, type);
                     if (type == zox_btn_rt) {
                         zox_geter_value(e3, ZeviceButton, byte, value);

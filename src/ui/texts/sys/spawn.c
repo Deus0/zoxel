@@ -1,7 +1,8 @@
-//! Dynamically updates zext by spawning/destroying zigels and updating remaining
+// NOTE: Spawns / Destroys Zigels of the Text
 // #define zoxel_debug_zext_updates
 // Dynamically keeps the text characters the right length using entities
 zox_sys2(ZigelSpawnSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);
@@ -31,7 +32,7 @@ zox_sys2(ZigelSpawnSystem) {
         }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {
-            zox_logw("no canvas found on Text");
+            zox_logw("Canvas found on Text");
             continue;
         }
         uint new_length = (uint) calculate_total_zigels(tdata->value, tdata->length);
@@ -45,28 +46,46 @@ zox_sys2(ZigelSpawnSystem) {
         byte othickness = fontOutlineThickness->value;
         color fill = fontFillColor->value;
         color outline = fontOutlineColor->value;
-        uint old_length = zox_get_children_count(world, e);
+        uint old_length = zox_get_children_count_by_id(world, e, zox_id(Zigel));
+        if (dbg_log) {
+            zox_log("Updating Text [%s] [%i -> %i]", zox_get_name(e), old_length, new_length);
+        }
         if (new_length < old_length) {
+            if (dbg_log) {
+                zox_log(" - Shrinking Text!");
+            }
+            // NOTE: Shrinks the children zigels
             iter it2 = zox_children(world, e);
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
                     if (old_length == new_length) {
                         continue;
                     }
+                    entity e2 = it2.entities[j];
+                    if (!zox_has(e2, Zigel)) {
+                        continue;
+                    }
+                    if (dbg_log) {
+                        zox_log("   - Del Zigel [%s]", zox_get_name(e2));
+                    }
                     // keep deleting until we arrive at new length;
                     old_length--;
-                    entity e2 = it2.entities[j];
                     zox_delete(e2);
                 }
             }
-        }
-        else if (new_length > old_length) {
+        } else if (new_length > old_length) {
+            if (dbg_log) {
+                zox_log(" + Growing Text!");
+            }
             for (uint j = old_length; j < new_length; j++) {
                 byte index = calculate_zigel_index(tdata->value, tdata->length, j);
                 entity e2 = spawn_zigel(world, prefab_zigel, e, position_anchor, size, texture_size, index, thickness, othickness, fill, outline);
                 zox_set(e2, RenderDisabled, { render_disabled->value });
                 zox_set(e2, Layer2D, { layer->value + 1 });
-                // zox_log("zigel [%i] is invisible [%i]", i, data.element.render_disabled);
+                if (dbg_log) {
+                    zox_log("   + Spawn Zigel [%i]", index);
+                    // zox_log("zigel [%i] is invisible [%i]", i, data.element.render_disabled);
+                }
             }
         }
     }

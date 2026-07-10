@@ -26,7 +26,7 @@ void define_systems_vodes3(ecs* world) {
     );
     zox_system(
         VodesLodSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
         [in] chunks3.VoxelNode,
@@ -34,7 +34,7 @@ void define_systems_vodes3(ecs* world) {
     );
     zox_system(
         BlockHealthOverlaySystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] stats.StatValue,
         [in] stats.StatValueMax,
         [none] vodes3.WorldBlock

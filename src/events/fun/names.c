@@ -22,7 +22,7 @@ byte* convert_text_to_zext(const char* text) {
     return zext;
 }
 
-void convert_zext_to_text_non_malloc(const byte *zext, int length, char* text, int max_text) {
+/*void convert_zext_to_text_non_malloc(const byte *zext, int length, char* text, int max_text) {
     if (!zext || length == 0) {
         return;
     }
@@ -34,7 +34,7 @@ void convert_zext_to_text_non_malloc(const byte *zext, int length, char* text, i
         // zox_log("zchar [%i] became [%c:%i]", zext[i], text[i], text[i]);
     }
     text[length] = '\0'; // last ascii string char
-}
+}*/
 
 char* convert_zext_to_text(const byte *zext, byte length) {
     if (!zext || !length) {

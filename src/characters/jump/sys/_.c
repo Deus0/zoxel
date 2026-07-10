@@ -13,7 +13,7 @@ void define_systems_jump(ecs* world) {
     // move these to Jump module? under Characters
     zox_system(
         CanJumpSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] collisions3.Grounded,
         [in] jumps.JumpState,
         [out] jumps.CanJump,
@@ -21,7 +21,7 @@ void define_systems_jump(ecs* world) {
      );
     zox_system(
         JumpBeginSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] jumps.JumpState,
         [out] jumps.Jump
     );

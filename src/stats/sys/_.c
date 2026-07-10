@@ -13,13 +13,13 @@ void define_systems_stats(ecs *world) {
     // debuff system here, skills will add debuffs
     zox_system(
         DeathSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] stats.StatValue,
         [none] stats.StatHealth
     );
     zox_system(
         StatRegenSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] stats.StatValueMax,
         [out] stats.StatValue,
         [out] stats.StatDirty,
@@ -27,7 +27,7 @@ void define_systems_stats(ecs *world) {
     );
     zox_system(
         DeathAnimationSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] combat.Dead,
         [out] combat.DiedTime,
         [out] physics.DisableMovement,

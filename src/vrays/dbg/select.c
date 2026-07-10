@@ -40,7 +40,6 @@ void refresh_dbg_chunk2(ecs* world) {
     if (!zox_valid(dbg_chunk)) {
         return;
     }
-
     zox_set(dbg_chunk, BuildChunkMesh, { zox_dirty_trigger });
     zox_log("Triggered BuildChunkMesh [%s]", zox_get_name(dbg_chunk));
 }

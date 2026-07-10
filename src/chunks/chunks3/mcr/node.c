@@ -121,10 +121,7 @@ byte open_##T(T* node) { \
     return ptr != NULL; \
 } \
 \
-void clone_##T(\
-    T* dst,\
-    const T* src \
-) {\
+void clone_##T(T* dst, const T* src) {\
     dst->value = src->value;\
     dst->type = src->type;\
     if (src->type == node_type_instance) {\

@@ -13,7 +13,7 @@ void zox_define_systems_mountains(ecs* world) {
     );
     zox_system(
         MountainMapSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [out] tunks.GenerateTunk,

@@ -37,7 +37,7 @@ void define_systems_rendering(ecs *world) {
     // other
     zox_system(
         LodInstanceSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
         [in] rendering.ModelLink,

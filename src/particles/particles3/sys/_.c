@@ -4,7 +4,7 @@
 void define_systems_particles3(ecs* world) {
     zox_system_1(
         Particle3DEmitSystem,
-        EcsPreStore,
+        zoxp_mainthread, //  EcsPreStore,
         [in] transforms3.Position3D,
         [in] particles.ParticleEmitRate,
         [in] transforms3.Bounds3D,

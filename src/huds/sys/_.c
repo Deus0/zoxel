@@ -14,13 +14,13 @@
 void define_systems_game_ui(ecs *world) {
     zox_system(
         RaycastCrosshairSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] vrays.RaycastVoxelData,
         [in] players.PlayerLink
     );
     zox_system(
         FpsDisplaySystem,
-        EcsOnUpdate,
+        zoxp_update,
         [out] texts.TextData,
         [out] texts.TextDirty,
         [out] FPSDisplayTicker,
@@ -28,13 +28,13 @@ void define_systems_game_ui(ecs *world) {
     );
     zox_system(
         MenuGameBeginSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.InitializeEntity,
         [out] huds.TaskbarToggleLink
     );
     zox_system(
         DebugLabelSystem,
-        EcsOnStore,
+        zoxp_update,
         [in] players.PlayerLink,
         [in] DebugLabelData,
         [out] texts.TextDirty,
@@ -43,7 +43,7 @@ void define_systems_game_ui(ecs *world) {
     );
     zox_system(
         GameStartFaderSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] games.GameStateDirty,
         [in] games.GameState,
         [in] players.PlayerLinks,

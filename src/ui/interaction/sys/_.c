@@ -27,7 +27,7 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system_ctx(
         ElementRaycastSystem,
-        EcsOnUpdate,
+        zoxp_update,
         raycast_query,
         [in] raycasts.Raycaster,
         [in] inputs.DeviceLink,
@@ -35,7 +35,7 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system(
         DeviceClickSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] inputs.DeviceDisabled,
         [in] raycasts.RaycasterTarget,
         [out] interaction.ClickingEntity,
@@ -43,7 +43,7 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system(
         ZeviceClickSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] inputs.ZeviceDisabled,
         [in] inputs.DeviceLink,
         [in] raycasts.RaycasterTarget,
@@ -52,7 +52,7 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system(
         KeyboardClickSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,
@@ -63,7 +63,7 @@ void zox_define_systems_interaction(ecs* world) {
     // Coloring Animations
     zox_system(
         ElementSelectedFillColorSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.SelectState,
         [in] elements.ElementFillColor,
         [in] interaction.SelectedFillColor,
@@ -73,7 +73,7 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system(
         ElementSelectedOutlineColorSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.SelectState,
         [in] elements.ElementOutlineColor,
         [in] interaction.SelectedOutlineColor,
@@ -84,7 +84,7 @@ void zox_define_systems_interaction(ecs* world) {
     // Active
     zox_system(
         ElementActiveSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.ActiveState,
         [in] interaction.ActiveStateDirty,
         [in] elements.ElementOutlineColor,
@@ -95,7 +95,7 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system(
         ElementSelectedBrighterSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.SelectState,
         [out] rendering.Brightness,
         [none] elements.Element,
@@ -125,14 +125,14 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system(
         ElementActiveLinkSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.ActiveState,
         [in] interaction.ActiveStateDirty,
         [none] elements.Element
     );
     zox_system(
         MouseElementSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] inputs.ZeviceLink,
         [in] layouts2.Anchor,
         [out] layouts2.LayoutPosition,
@@ -141,7 +141,7 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system(
         RaycasterResulterSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] inputs.DeviceLink,
         [in] raycasts.RaycasterTarget,
         [out] raycasts.RaycasterResult,

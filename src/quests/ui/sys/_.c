@@ -4,14 +4,14 @@
 void zox_define_systems_quests_ui(ecs* world) {
     zox_system(
         QuestIconTooltipSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.SelectState,
         [in] slots.DataLink,
         [none] elements2.Icon
     );
     zox_system(
         QuestIconLabelSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] slots.DataLink,
         [out] texts.TextData,
         [out] texts.TextDirty,

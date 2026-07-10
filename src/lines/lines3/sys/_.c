@@ -37,7 +37,7 @@ void define_systems_lines3(ecs* world) {
     add_system_process_counter(world, zox_id(CubeLineRenderSystem));
     zox_system(
         RenderDepthColorSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] DebugCubeLines,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDisabled,

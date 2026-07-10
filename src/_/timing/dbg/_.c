@@ -13,37 +13,41 @@ void add_system_process_counter(ecs* world, entity e) {
 void define_systems_timing_debug(ecs* world) {
     zox_system(
         SystemProcessedResetSystem,
-        EcsOnLoad,
+        zoxp_reset,
         [out] timing.SystemProcessed,
         [out] timing.SystemProcessedCache
     );
+    zox_system_1(
+        SystemDeltaLogSystem,
+        zoxp_mainthread,
+        [in] timing.SystemDeltaCache
+    );
+    // Sets our SystemDeltaCache (at end of frame)
     zox_system(
         SystemDeltaLogResetSystem,
-        EcsOnLoad,
+        zoxp_reset,
         [out] timing.SystemDelta,
         [out] timing.SystemDeltaCache
     );
-    zox_system_1(
-        SystemDeltaLogSystem,
-        EcsOnStore,
-        [in] timing.SystemDeltaCache
-    );
+    // Adds SystemDeltaCache to Curve
     zox_system(
         SustemTimePlotSystem,
-        EcsOnLoad,
+        zoxp_update - 1,
         [in] timing.SystemDeltaCache,
         [out] core.DataDouble
     );
-    zox_system(
-        MaxSystemSystem,
-        EcsOnUpdate,
-        [out] core.SystemLink,
-        [none] timing.TrackMaxSystem
-    );
+    // Gets Curve's Max
     zox_system(
         MaxDataSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.DataDouble,
         [out] core.MaxDoubleData,
+    );
+    // Tracks the Max System from their MaxDoubleData
+    zox_system(
+        MaxSystemSystem,
+        zoxp_update + 1,
+        [out] core.SystemLink,
+        [none] timing.TrackMaxSystem
     );
 }

@@ -3,7 +3,7 @@
 void zox_define_systems_tunks_debug(ecs* world) {
     zox_system(
         TunkTextureSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] core.Generate,
         [in] tunks.TunkLink,
         [out] textures.TextureData,

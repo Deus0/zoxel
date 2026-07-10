@@ -51,18 +51,15 @@ byte get_camera_state_fov(byte mode) {
 }
 
 void set_camera_mode(ecs *world, entity e, byte mode) {
-
     // remove 2 camera modes for now
     if (mode == zox_camera_state_free) {
         mode = zox_camera_state_first_person;
     }
     byte old_camera_follow_mode = camera_follow_mode;
     byte camera_fov = get_camera_state_fov(mode);
-
     camera_follow_mode = get_camera_preset(mode).follow_mode;
     zox_set(e, CameraState, { mode });
     zox_set(e, FieldOfView, { camera_fov });
-
     // camera_follow_mode is more complicated, involves how camera is attached to character
     entity target = 0;
     if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
@@ -70,7 +67,6 @@ void set_camera_mode(ecs *world, entity e, byte mode) {
     } else {
         target = zox_get_value(e, CameraFollowLink);
     }
-
     if (old_camera_follow_mode != camera_follow_mode) {
         // remove old link
         if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
@@ -87,43 +83,7 @@ void set_camera_mode(ecs *world, entity e, byte mode) {
             zox_set(e, CameraFollowLink, { target });
         }
     }
-
     // set up local positions and rotations
     // use a helper function so attach does the same thing
     set_camera_transform(world, e, target, mode);
 }
-
-byte toggle_camera_mode(ecs *world, entity camera) {
-    zox_geter_value_non_const(camera, CameraState, byte, mode);
-    if (mode == zox_camera_state_first_person) {
-        mode = zox_camera_state_third_person;
-    } else if (mode == zox_camera_state_third_person) {
-        mode = zox_camera_state_topdown;
-    } else {
-        mode = zox_camera_state_first_person;
-    }
-    set_camera_mode(world, camera, mode);
-    return mode;
-}
-
-// sets camera to main menu location
-
-/*void set_camera_transform_to_main_menu(float3 *camera_position, float4 *camera_rotation, byte terrain_depth) {
-
-    float overall_voxel_scale = powers_of_two[terrain_depth]; //  32.0f;
-    camera_position->x = 0.25f * overall_voxel_scale;
-    camera_position->y = 0.1f * overall_voxel_scale;
-    camera_position->z = 0.25f * overall_voxel_scale;
-    camera_rotation->x = 0;
-    camera_rotation->y = 0;
-    camera_rotation->z = 0;
-    camera_rotation->w = 1;
-
-    float rot_x = -0.2f;
-    float rot_y = -M_PI_2 + M_PI * (rand() % 101) / 100.0f;
-    float4 camera_rotation2 = quaternion_from_euler((float3) { rot_x, rot_y, 0 });
-    camera_rotation->x = camera_rotation2.x;
-    camera_rotation->y = camera_rotation2.y;
-    camera_rotation->z = camera_rotation2.z;
-    camera_rotation->w = camera_rotation2.w;
-}*/

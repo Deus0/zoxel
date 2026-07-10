@@ -21,7 +21,7 @@ byte is_debug_attack = 0;
 void define_systems_npcs(ecs *world) {
     zox_system(
         BehaviourSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] combat.CombatState,
         [in] npcs.DefaultBehaviour,
         [out] npcs.Behaviour,
@@ -114,10 +114,9 @@ void define_systems_npcs(ecs *world) {
         [out] jumps.JumpState,
         [none] npcs.Jumper
     );
-
     zox_system(
         FollowSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] Behaviour,
         [in] physics.DisableMovement,
         [in] FollowTarget,

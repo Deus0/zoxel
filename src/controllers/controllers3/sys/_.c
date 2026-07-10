@@ -13,18 +13,19 @@
 #include "dialogue_end.c"
 #include "head_camera.c"
 #include "walk.c"
+#include "freeroam.c"
 
 void define_systems_controllers3(ecs *world) {
     zox_system(
         Player3DMoveSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system(
         PlayerFlySystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] players.PlayerState,
         [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
@@ -32,7 +33,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system(
         Player3RotateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
@@ -40,7 +41,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system(
         Player3DJumpSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] players.PlayerState,
         [in] inputs.DeviceMode,
         [in] characters.CharacterLink,
@@ -54,7 +55,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system(
         Player3DTriggerSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
@@ -69,9 +70,17 @@ void define_systems_controllers3(ecs *world) {
         [in] layouts2.CanvasLink,
         [none] players.Player
     );
+    zox_system_1(
+        FreeRoamToggleSystem,
+        zoxp_mainthread,
+        [in] players.PlayerState,
+        [in] characters.CharacterLink,
+        [in] cameras.CameraLink,
+        [none] players.Player
+    );
     zox_system(
         HeadCameraSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] bones.SkeletonDirty,
         [in] bones.HeadBoneLink,
         [in] cameras.CameraLink,
@@ -81,7 +90,7 @@ void define_systems_controllers3(ecs *world) {
     // Shortcuts
     zox_system(
         QolShortcutsSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [none] players.Player
     );
     // Dialogue
@@ -95,28 +104,28 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system(
         PlayerDialogueSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] characters.CharacterLink,
         [in] layouts2.CanvasLink,
         [out] players.PlayerState
     );
     zox_system(
         DialogueExitSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] triggers.TriggerActionE,
         [in] players.PlayerLink,
         [out] dialogues.DialogueProcessLink
     );
     zox_system(
         DialogueEndSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] nodes.NodetreeEnd,
         [in] dialogues.DialogueUILink,
         [out] dialogues.SpeakerLinks
     );
     zox_system(
         WalkStateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] physics3.Velocity3D,
         [out] bones.WalkState,
         [none] bones.Skeleton

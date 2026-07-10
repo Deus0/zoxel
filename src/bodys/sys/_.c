@@ -6,7 +6,7 @@
 void define_systems_bodys(ecs* world) {
     zox_system(
         BodyCombineSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] bodys.BodyDirty,
         [out] bodys.BodySize,
         [out] voxes.CombineList,
@@ -18,7 +18,7 @@ void define_systems_bodys(ecs* world) {
     );
     zox_system(
         SlotItemTooltipSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.SelectState,
         [in] slots.DataLink,
         [in] slots.SlotLink,

@@ -7,7 +7,7 @@ byte get_sub_node_voxel(const VoxelNode* node, byte3* positionl, byte depth) {
         return node->value;
     }
     depth--;
-    byte dividor = powers_of_two_byte[depth];
+    byte dividor = octree_size(depth); // powers_of_two_byte[depth];
     byte3 positionn = (byte3) {
         positionl->x / dividor,
         positionl->y / dividor,

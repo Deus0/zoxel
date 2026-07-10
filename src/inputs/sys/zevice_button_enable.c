@@ -1,4 +1,4 @@
-void ZeviceButtonEnableSystem(iter *it) {
+zox_sys2(ZeviceButtonEnableSystem) {
     zox_sys_begin()
     zox_sys_in(ZeviceButton)
     zox_sys_out(ZeviceDisabled)
@@ -13,4 +13,4 @@ void ZeviceButtonEnableSystem(iter *it) {
             zeviceDisabled->value = 0;
         }
     }
-} zoxd_system(ZeviceButtonEnableSystem)
+} zox_sys_end(ZeviceButtonEnableSystem);

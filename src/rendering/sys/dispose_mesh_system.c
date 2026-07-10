@@ -1,4 +1,4 @@
-void MeshGPUDisposeSystem(iter *it) {
+zox_sys2(MeshGPUDisposeSystem) {
     zox_sys_begin()
     zox_sys_in(MeshGPULink)
     for (int i = 0; i < it->count; i++) {
@@ -7,4 +7,4 @@ void MeshGPUDisposeSystem(iter *it) {
         zox_gpu_dispose_buffer(meshGPULink->value.x);
         zox_gpu_dispose_buffer(meshGPULink->value.y);
     }
-} zoxd_system(MeshGPUDisposeSystem)
+} zox_sys_end(MeshGPUDisposeSystem);

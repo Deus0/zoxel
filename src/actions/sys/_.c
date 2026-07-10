@@ -7,7 +7,7 @@
 void zox_define_systems_actions(ecs* world) {
     zox_system(
         ActiveActionSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] actions.ActionIndex,
         [out] actions.ActiveAction,
         [out] actions.ActiveActionDirty,
@@ -15,10 +15,19 @@ void zox_define_systems_actions(ecs* world) {
     );
     zox_system(
         ActionActivateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] triggers.TriggerActionA,
         [in] actions.ActiveAction,
         [none] characters.Character,
+    );
+    zox_system(
+        ActiveActionRangeSystem,
+        zoxp_update,
+        [in] actions.ActiveActionDirty,
+        [in] actions.ActiveAction,
+        [out] vrays.RaycastRange,
+        [out] vrays.RaycastType,
+        [none] characters.Character
     );
     zox_system_1(
         CharacterActionsSpawnSystem,
@@ -36,14 +45,5 @@ void zox_define_systems_actions(ecs* world) {
         [in] bones.HandBoneLink,
         [out] bones.RaiseShoulder,
         [none] characters.Character,
-    );
-    zox_system(
-        ActiveActionRangeSystem,
-        EcsOnUpdate,
-        [in] actions.ActiveActionDirty,
-        [in] actions.ActiveAction,
-        [out] vrays.RaycastRange,
-        [out] vrays.RaycastType,
-        [none] characters.Character
     );
 }

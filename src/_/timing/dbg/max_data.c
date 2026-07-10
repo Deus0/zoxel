@@ -1,4 +1,4 @@
-// NOTE: From Module, go through all systems and find biggest
+// NOTE: Goes through all Doubles on array and find biggest
 zox_sys2(MaxDataSystem) {
     zox_sys_world();
     zox_sys_begin();

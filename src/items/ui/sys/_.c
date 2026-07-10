@@ -3,18 +3,19 @@
 
 void define_systems_items_ui(ecs *world) {
     zox_system(
+        ItemIconTooltipSystem,
+        zoxp_update,
+        [in] interaction.SelectState,
+        [in] slots.DataLink,
+        [none] elements2.Icon
+    );
+    zox_system(
         ItemIconLabelSystem,
-        EcsOnUpdate,
+        zoxp_update,
+        [in] slots.DataDirty,
         [in] slots.SlotLink,
         [out] texts.TextData,
         [out] texts.TextDirty,
         [none] elements2.Label
-    );
-    zox_system(
-        ItemIconTooltipSystem,
-        EcsOnUpdate,
-        [in] interaction.SelectState,
-        [in] slots.DataLink,
-        [none] elements2.Icon
     );
 }

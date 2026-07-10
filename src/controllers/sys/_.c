@@ -3,7 +3,7 @@
 void zox_define_systems_controllers(ecs *world) {
     zox_system(
         ControllerPlayerStateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] characters.CharacterLink,

@@ -5,33 +5,33 @@
 void zox_define_systems_timers(ecs* world) {
     zox_system(
         WarmupSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] timers.ActivateBegin,
         [in] timers.CooldownAt,
         [out] timers.WarmupAt
     );
     zox_system(
         WarmupStateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] timers.WarmupTime,
         [out] timers.WarmupAt,
         [out] timers.WarmupState
     );
     zox_system(
         ActivateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] timers.WarmupState,
         [out] timers.Activate
     );
     zox_system(
         CooldownSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] timers.WarmupState,
         [out] timers.CooldownAt
     );
     zox_system(
         CooldownStateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] timers.CooldownTime,
         [out] timers.CooldownAt,
         [out] timers.CooldownState

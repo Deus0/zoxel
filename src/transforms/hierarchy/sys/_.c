@@ -3,7 +3,7 @@
 void define_systems_hierarchy(ecs* world) {
     /*zox_system(
         ReparentSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] hierarchys.ParentLink,
         [out] hierarchys.OldParentLink
     );*/

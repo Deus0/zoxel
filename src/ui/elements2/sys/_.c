@@ -10,14 +10,14 @@
 void define_systems_elements2(ecs *world) {
     zox_system(
         ElementDragSystem,
-        EcsPostLoad,
+        zoxp_update, // EcsPostLoad,
         [in] interaction.DraggableState,
         [in] interaction.DraggingDelta,
         [in] interaction.DraggedLink
     );
     zox_system(
         ScrollbarSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] interaction.DraggableState,
         [in] layouts2.LayoutPosition,
         [in] layouts2.LayoutSize,
@@ -27,7 +27,7 @@ void define_systems_elements2(ecs *world) {
     // make elements visible/invisible within list
     zox_system(
         ListRenderDirtySystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] containers.ListPositionDirty,
         [in] containers.ListStart,
         [in] containers.ListVisible
@@ -35,14 +35,14 @@ void define_systems_elements2(ecs *world) {
     // resize handle when list dirty
     zox_system(
         ScrollbarHandleSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] containers.ListDirty,
         [in] containers.ListVisible,
         [in] elements2.ScrollviewLink
     );
     zox_system(
         Elementbar2System,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] elements.ElementBar,
         [in] elements.ElementBarSize,
         [in] layouts2.LayoutSize,
@@ -50,7 +50,7 @@ void define_systems_elements2(ecs *world) {
     );
     zox_system(
         SlideEventSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] interaction.SlideEvent,
         [in] elements2.SlideBounds,
         [in] interaction.DraggableState,
@@ -71,7 +71,7 @@ void define_systems_elements2(ecs *world) {
     );
     /*zox_system(
         ToggleStateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] elements2.ToggleState,
         [in] elements2.ToggleStateDirty,
         [in] elements.ElementOutlineColor,

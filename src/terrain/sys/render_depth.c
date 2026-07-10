@@ -38,8 +38,8 @@ zox_sys2(RenderDepthChunk3System) {
                 zox_log("Chunk [%s] Depth Decreased -> %i", zox_get_name(e), render_depth->value);
             }
             // NOTE: Rebuilds Mesh Whenever Render Depth is Dirty, unless generating
-            // zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
-            zox_set(e, BuildChunkMesh, { zox_dirty_trigger });
+            zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
+            // zox_set(e, BuildChunkMesh, { zox_dirty_trigger });
         }
     }
 } zox_sys_end(RenderDepthChunk3System);

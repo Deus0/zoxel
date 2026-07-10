@@ -23,7 +23,7 @@ void define_systems_streaming(ecs* world) {
     );
     zox_system_ctx(
         ChunkFrustumSystem,
-        EcsOnUpdate,
+        zoxp_update,
         frustum_cameras,
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,

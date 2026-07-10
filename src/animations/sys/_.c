@@ -13,27 +13,27 @@
 void define_systems_animations(ecs* world) {
     zox_system(
         EternalRotationSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] EternalRotation,
         [out] transforms3.Rotation3D
     );
     zox_system(
         ShrinkSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
         [out] transforms.Scale1D
     );
     zox_system(
         IdleSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
         [out] transforms.Scale1D
     );
     zox_system(
         AnimationSequenceSystem,
-        EcsPostUpdate,
+        zoxp_update, // EcsPostUpdate,
         [in] AnimationSequence,
         [in] AnimationTimes,
         [in] AnimationTargets,
@@ -45,7 +45,7 @@ void define_systems_animations(ecs* world) {
     );
     zox_system(
         AnimateAlphaSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
         [in] AnimationLength,
@@ -56,23 +56,22 @@ void define_systems_animations(ecs* world) {
     );
     zox_system(
         FadeoutSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] FadeOutTime,
         [in] AnimationStart,
         [out] rendering.Alpha
     );
     zox_system(
         OscillateSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] OscillateStartPosition3D,
         [in] OscillateDeltaPosition3D,
         [out] transforms3.LocalPosition3D,
         [none] OscillatePosition3D
     );
-
     zox_system(
         LerpToEntitySystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] AnimationState,
         [in] AnimationPositionStart,
         [in] LerpToTarget,
@@ -81,10 +80,9 @@ void define_systems_animations(ecs* world) {
         [in] AnimationLength,
         [out] transforms3.Position3D
     );
-
     zox_system(
         LerpToPositionSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] AnimationState,
         [in] AnimationPositionStart,
         [in] AnimationPositionEnd,

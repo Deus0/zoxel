@@ -58,11 +58,13 @@ zox_sys2(MouseExtractSystem) {
                 if (dbg_log && clicker->value) {
                     zox_log("Mouse Left Clicked [%ix%i]", clicker->value);
                 }
-            } else if (zox_has(e2, ZevicePointerRight)) {
-                zox_muter(e2, ZevicePointerRight, clicker);
-                clicker->value = get_button_click_state(clicker->value, button_pressed_right);
-                if (dbg_log && clicker->value) {
-                    zox_log("Mouse Right Clicked [%ix%i]", clicker->value);
+                // Mouse Pointer also has this
+                if (zox_has(e2, ZevicePointerRight)) {
+                    zox_muter(e2, ZevicePointerRight, clicker);
+                    clicker->value = get_button_click_state(clicker->value, button_pressed_right);
+                    if (dbg_log && clicker->value) {
+                        zox_log("Mouse Right Clicked [%ix%i]", clicker->value);
+                    }
                 }
             } else if (zox_has(e2, ZeviceWheel)) {
                 zox_muter(e2, ZeviceWheel, wheel);

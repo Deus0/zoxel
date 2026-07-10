@@ -10,7 +10,7 @@ void define_systems_chunks3_debug(ecs *world) {
     // main thread
     /*zox_system_1(
         ChunkDebugSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] lines3.DebugCubeLines,
         [in] blocks.BlockScale,
         [in] transforms3.Position3D,

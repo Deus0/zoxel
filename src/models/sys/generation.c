@@ -161,7 +161,6 @@ zox_sys2(VoxGenerationSystem) {
             }
             build_vox_wood(node, node_depth, wood, bark);
         } else if (gentype->value == vox_type_flowers) {
-            continue;
             for (int j = vrange.x; j <= vrange.y / 2; j++) {
                 colors->value[j] = color_rgb_flip(colors->value[j]);
             }

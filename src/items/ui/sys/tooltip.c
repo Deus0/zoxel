@@ -24,8 +24,8 @@ zox_sys2(ItemIconTooltipSystem) {
             zox_loge("Tooltip not found in canvas");
             continue;
         }
-        const char* name = zox_has(e2, ZoxName) ? zox_gett_value(e2, ZoxName) : zox_get_name(e2);
-        byte quantity = zox_has(e2, Quantity) ? zox_gett_value(e2, Quantity) : 1;
+        const char* name = zox_has(e2, ZoxName) ? zox_getv(e2, ZoxName) : zox_get_name(e2);
+        byte quantity = zox_has(e2, Quantity) ? zox_getv(e2, Quantity) : 1;
         char result[128];
         sprintf(result, "[%s] x%i\n", name, quantity);
         set_entity_text(world, tooltip, result);

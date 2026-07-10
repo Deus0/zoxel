@@ -21,11 +21,13 @@ zox_sys2(CharacterPlayerEquipsSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
     zox_sys_in(RealmLink);
+    zox_sys_out(BodyDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
-        if (state->value != zox_dirty_active) {
+        zox_sys_o(BodyDirty, dirty);
+        if (state->value != zox_dirty_end) { // active) {
             continue;
         }
         zox_geter(realm->value, ItemLinks, realm_items);
@@ -53,12 +55,13 @@ zox_sys2(CharacterPlayerEquipsSystem) {
             continue;
         }
         entity inventory_slot = zox_get_empty_slot(world, inventory);
-        if (zox_valid(inventory_slot)) {
+        if (!zox_valid(inventory_slot)) {
             entity realm_hat = find_slot_type_index(world, realm_items->value, realm_items->length, zox_slot_hat, 1);
             if (zox_valid(realm_hat)) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
                 zox_muter(inventory_slot, DataLink, slot_data);
                 slot_data->value = e2;
+                dirty->value = zox_dirty_trigger;
                 if (dbg_log) {
                     zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
                 }

@@ -5,13 +5,13 @@
 void define_systems_networking(ecs* world) {
     zox_system(
         PacketRecieveSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] SocketLink,
         [none] PacketReciever
     );
     zox_system(
         PacketSendSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] SocketLink,
         [in] TargetNetAddress,
         [in] TargetNetPort,
@@ -19,7 +19,7 @@ void define_systems_networking(ecs* world) {
     );
     zox_system(
         SocketSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] NetPort,
         [out] SocketLink
     );

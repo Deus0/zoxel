@@ -1,4 +1,4 @@
-// NOTE: Gets the max system frame time and add it to the plot data
+// NOTE: Adds the System Delta to the Curve
 zox_sys2(SustemTimePlotSystem) {
     zox_sys_begin();
     zox_sys_in(SystemDeltaCache);

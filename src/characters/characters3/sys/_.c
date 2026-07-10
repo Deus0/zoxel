@@ -8,14 +8,14 @@ void define_systems_characters3(ecs *world) {
     realm_clear_systemd(characters, CharacterLinks);
     zox_system(
         CharacterRenderDepthSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] rendering.RenderDepthDirty,
         [out] chunks3.BuildChunkMesh,
         [none] Character3
     );
     zox_system(
         CharacterSaveSystem,
-        EcsOnStore,
+        zoxp_update, // EcsOnStore,
         [in] realms.RealmLink,
         [in] transforms3.Position3D,
         [in] transforms3.Euler,

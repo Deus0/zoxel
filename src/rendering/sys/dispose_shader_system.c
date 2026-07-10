@@ -1,4 +1,4 @@
-void ShaderDisposeSystem(iter *it) {
+zox_sys2(ShaderDisposeSystem) {
     zox_sys_begin()
     zox_sys_in(ShaderGPULink)
     for (int i = 0; i < it->count; i++) {
@@ -9,4 +9,4 @@ void ShaderDisposeSystem(iter *it) {
         zox_gpu_dispose_shader(shaderGPULink->value.x);
         zox_gpu_dispose_shader(shaderGPULink->value.y);
     }
-} zoxd_system(ShaderDisposeSystem)
+} zox_sys_end(ShaderDisposeSystem);

@@ -1,5 +1,9 @@
 # Done
 
+-x Bug: Item Text still there after we pickup item
+-x Bug: Free Roam not working with f1 + right click
+-x Bug: Hat dissapears when Swapping
+    - x sometimes just doesnt appear??
 -x Fix Map - make it use colors of voxels - raycast downwards in chunk
 -x Fix Map Arrow Rotations
 -x Fix the rotation make sure all faces align

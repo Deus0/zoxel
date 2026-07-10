@@ -4,7 +4,7 @@
 void zox_define_systems_saves(ecs* world) {
     zox_system(
         SaveBeginSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] saves.SaveDirty,
         [in] saves.FolderPathLink,
         [in] saves.SaveGamePath,

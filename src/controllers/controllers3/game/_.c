@@ -11,7 +11,7 @@
 void zox_define_systems_controllers3_game(ecs *world) {
     zox_system(
         PlayerTownFinderSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] cameras.CameraLink,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,
@@ -19,7 +19,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
     );
     zox_system(
         PlayerPauseSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] players.PlayerState,
         [in] games.GameLink,
         [none] players.Player

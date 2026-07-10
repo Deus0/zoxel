@@ -1,3 +1,4 @@
+// TODO: Remove Externs, make use System States
 // For Stacking Icons
 extern byte can_stack_items(ecs*, entity, entity);
 extern byte stack_items(ecs*, entity, entity);
@@ -16,11 +17,6 @@ extern byte is_data_body_part(ecs*, entity);
 zox_sys2(DataFrameClickSystem) {
     byte dbg_log = 0;
     zox_sys_world();
-    /*entity mouse_ui = icon_mouse_follow;
-    if (!zox_valid(mouse_ui)) {
-        zox_loge("mouse_ui is Invalid");
-        return; // global mouse_ui for now
-    }*/
     zox_sys_begin();
     zox_sys_in(ClickState);
     zox_sys_in(SlotLink);
@@ -130,7 +126,6 @@ zox_sys2(DataFrameClickSystem) {
         }
         entity any_data = data->value > 0 ? data->value : mouse_data->value;
         entity user = zox_get_parent(world, any_data);
-        // ;
         // NOTE: This Handles Swapping
         entity temp = mouse_data->value;
         mouse_data->value = data->value;
@@ -140,7 +135,9 @@ zox_sys2(DataFrameClickSystem) {
         // we should just set DataDirty here
         swap_textures(world, e, mouse_ui);
         zox_muter(slot->value, DataLink, slot_data);
+        zox_muter(slot->value, DataDirty, dirty2);
         slot_data->value = data->value;
+        dirty2->value = zox_dirty_trigger;
         dirty->value = zox_dirty_trigger;
         if (is_frame_equip2 || is_frame_body2) {
             on_frame_updated_equipment(world, user);

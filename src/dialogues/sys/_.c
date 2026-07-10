@@ -9,14 +9,14 @@ void define_systems_dialogues(ecs* world) {
     realm_clear_systemd(dialogues, DialoguetreeLinks);
     zox_system(
         DialogueSpeechSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] nodes.NodeBegin,
         [in] nodes.NodeLink,
         [in] dialogues.DialogueUILink
     );
     zox_system(
         AnimateTextSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] TargetText,
         [in] AnimateTextTimeLimits,
         [out] AnimateTextBegin,
@@ -28,13 +28,13 @@ void define_systems_dialogues(ecs* world) {
     );
     zox_system(
         AnimateTextEndSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] AnimateTextEnded,
         [none] dialogues.DialogueLabel
     );
     zox_system(
         CharacterDialogueSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [out] dialogues.DialoguetreeLink

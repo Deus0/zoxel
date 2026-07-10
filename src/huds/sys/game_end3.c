@@ -2,7 +2,7 @@ void main_menu_event_delay(ecs *world, entity e) {
     spawn_main_menu(world, e, game_name);
 }
 
-void PlayerUIGame3EndSystem(iter *it) {
+zox_sys2(PlayerUIGame3EndSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
@@ -24,4 +24,4 @@ void PlayerUIGame3EndSystem(iter *it) {
         delay_event(world, &main_menu_event_delay, e, 2);
         // spawn_main_menu(world, e, game_name);
     }
-} zoxd_system2(PlayerUIGame3EndSystem);
+} zox_sys_end(PlayerUIGame3EndSystem);

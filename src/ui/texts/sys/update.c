@@ -1,5 +1,6 @@
-// just updates previous zigels to new data
+// NOTE: Updates previous zigels to new data
 zox_sys2(TextUpdateSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);
@@ -25,11 +26,13 @@ zox_sys2(TextUpdateSystem) {
                 zox_mut_begin(e2, ZigelIndex, index);
                 byte new_index = calculate_zigel_index(text->value, text->length, j);
                 if (index->value != new_index) {
-                    zox_muter(e2, GenerateTexture, generate);
+                    if (dbg_log) {
+                        zox_log("+ Text [%s]:[%i] New [%i] Old [%i]", zox_get_name(e), j, new_index, index->value);
+                    }
                     index->value = new_index;
+                    zox_muter(e2, GenerateTexture, generate);
                     generate->value = zox_dirty_trigger;
                     zox_mut_end(e2, ZigelIndex);
-                    // zox_log("+ Text [%s]:[%i] New [%i] Old [%i]", zox_get_name(e), j, new_index, old_index);
                 }
             }
         }
