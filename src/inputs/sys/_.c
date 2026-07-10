@@ -43,22 +43,24 @@ void define_systems_input(ecs* world) {
     );
     zox_system(
         KeyboardResetSystem,
-        EcsOnStore, // zoxp_inputs_reset | EcsOnStore,
+        zoxp_inputs_reset,
         [out] Keyboard
     );
     // state changes
     zox_system(
         DeviceSwitchSystem,
         zoxp_inputs_update,
-        [in] DeviceMode,
-        [out] DeviceModeDirty
-    );
-    zox_system(
-        DeviceModeDirtySystem,
-        zoxp_inputs_enable,
+        [out] DeviceModeDirty,
         [out] DeviceMode,
-        [out] DeviceModeDirty
+        [out] LastDeviceMode
     );
+    /*zox_system(
+        DeviceModeDirtySystem,
+        zoxp_inputs_update,
+        [out] DeviceModeDirty
+        [out] DeviceMode,
+        [out] LastDeviceMode
+    );*/
     zox_system(
         ZeviceButtonEnableSystem,
         zoxp_inputs_enable,

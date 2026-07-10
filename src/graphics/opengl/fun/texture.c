@@ -16,6 +16,14 @@ static inline void zox_gpu_set_texture_color_rgba(uint id, int2 size, const void
     zox_gpu_bind_texture(0);
 }
 
+static inline void zox_gpu_clear_texture_rgba(uint id) {
+    // byte clear[4] = { 0, 0, 0, 0 }; // RGBA
+    // glClearTexImage(id, 0, GL_RGBA, GL_UNSIGNED_BYTE, clear);
+    zox_gpu_bind_texture(id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    zox_gpu_bind_texture(0);
+}
+
 static inline void zox_gpu_dispose_texture(uint id) {
     if (id) glDeleteTextures(1, &id);
 }

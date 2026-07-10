@@ -2,18 +2,21 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Fix Map - make it use colors of voxels - raycast downwards in chunk
-- Fix Map Arrow Rotations
-- Fix the rotation make sure all faces align
-- Do i need to rotate around top face uvs?
-- Get Nearby Octree Value - using 27 chunks (for neighbors)
--x Reduce Lights based on brightest child node
--x Add Smooth Light to Options
--x Fix Sunlight not working when you approach town from afar after loading - does it generate lights there?
--x Improve lighting states for generation, make sure set in those systems
-    - also add back the color uploads for chunk meshes
--x Fix lighting - houses it bugged - LOD difference in light propogations?
-- ChunkNeighborSystem
+Regressions:
+- Bug: Free Roam not working with f1 + right click
+- Bug: Item Text still there after we pickup item
+- Bug: Hat dissapears when Swapping
+
+More:
+- Opt: HeightMapSystem lagging, use LODing for HeightMaps / Tunk Generation
+- Opt: SoundGenerateSystem by using preset sound data + mods
+- Bug: Edge of map UI is glitchy
+- Bug: Taskbar toggle not deactivated when window closes
+- Ref: Remake RenderDepthDirty for TerrainChunks, setting per system instead of zoxc_state
+
+- Opt: Spawn Sound Samples on Realm Start, then use this data in generated sounds - optimized sound generation
+- Opt: also add back the color uploads for chunk meshes - MeshColorsDirty
+- Opt: ChunkNeighborSystem
     - On Init - add to neighbor directly from the init chunk
     - On Spawn - grab directly there from dictionary on terrain
 - Add a queue for spawning new positions, do like 256 checks per frame for terrain for spawning, so its delayed a bit? only if still lagging with new stream systems

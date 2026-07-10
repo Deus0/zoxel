@@ -3,38 +3,43 @@
 //  > makes it easier to organize
 // breaks visuals if i put on store
 
-#define zox_pip_a EcsOnLoad
+/*#define zox_pip_a EcsOnLoad
 #define zox_pip_b EcsPostLoad
 #define zox_pip_c EcsPreUpdate
 #define zox_pip_d EcsOnUpdate
 #define zox_pip_e EcsOnValidate
 #define zox_pip_f EcsPostUpdate
 #define zox_pip_g EcsPreStore
-#define zox_pip_h EcsOnStore
+#define zox_pip_h EcsOnStore*/
 
-#define zoxp_update EcsOnUpdate             // normal business here
-#define zoxp_mainthread EcsOnLoad         // EcsPreStore | EcsOnStore
+#define zoxp_mainthread EcsOnStore      // EcsOnLoad | EcsPreStore | EcsOnStore
+#define zoxp_update EcsOnUpdate         // normal business here
+#define zoxp_state_reset EcsPreStore    // EcsPostUpdate
+#define zoxp_destroy EcsPreStore
 
 #define zoxp_inputs_reset EcsOnLoad
-#define zoxp_sdl EcsPostLoad
-#define zoxp_inputs_enable EcsPreUpdate
-#define zoxp_inputs_update EcsOnUpdate
-#define zoxp_state_reset EcsPostUpdate
+#define zoxp_inputs_extract EcsPostLoad
+#define zoxp_inputs_enable EcsPostLoad
+#define zoxp_inputs_update zoxp_update
 
+#define zoxp_physics EcsPreUpdate // EcsPostUpdate
+#define zoxp_transforms zoxp_physics + 1    // Transforms
+#define zoxp_cameras zoxp_transforms + 1    // CameraPlanes/Matrix
+// this is EcsOnStore actually
+// doesnt seem to mind if its in same frame as zoxp_cameras
+#define zoxp_rendering zoxp_cameras + 1
 
 // Data Pipelines
-#define zoxp_destroy EcsOnLoad
-#define zoxp_voxels_write EcsPostLoad
-#define zoxp_lights_write EcsPreUpdate
-#define zoxp_textures EcsOnUpdate           // EcsPostUpdate
-#define zoxp_text EcsOnUpdate
+#define zoxp_voxels_write EcsOnUpdate //EcsPostLoad
+#define zoxp_lights_write EcsOnUpdate // EcsPreUpdate
+#define zoxp_textures zoxp_update           // EcsPostUpdate
+#define zoxp_text zoxp_update
 
 // (VoxelNode) Queue
 #define zoxp_queue_add EcsPostLoad
-#define zoxp_queue_process EcsOnUpdate
+#define zoxp_queue_process zoxp_update
 #define zoxp_queue_pre_clear EcsPreStore
-#define zoxp_queue_clear EcsOnStore
-
+#define zoxp_queue_clear EcsOnLoad // EcsOnStore
 
 // Rendering Pipelines
 // Also breaks if transforms isnt after physics pipeline
@@ -42,21 +47,3 @@
 // builds our camera planes, also camera transforms get updated, needs to be post transforms
 // NOTE: Bugs out of we dont update AFTER zoxp_transforms
 // #define zoxp_pre_render EcsPreStore         // culls renderers basedon those
-
-#define zoxp_physics EcsPostUpdate          // Core
-#define zoxp_transforms zoxp_physics + 1    // Transforms
-#define zoxp_cameras zoxp_transforms + 1    // CameraPlanes/Matrix
-// this is EcsOnStore actually
-#define zoxp_rendering zoxp_cameras + 1     // doesnt seem to mind if its in same frame as zoxp_cameras
-
-
-// the idea is to move the element before the ui is raycasted
-// mouse exact - outside loop before it
-// mouse drag - DraggerEndSystem - EcsOnLoad
-// ElementDragSystem - EcsPostLoad
-// position ui children - ElementPositionSystem - EcsPreUpdate
-// raycast new positioned ones - ElementRaycastSystem - EcsOnUpdate
-// respond to raycasting ui - EcsOnValidate
-// respond to click events - WindowCloseSystem - EcsPostUpdate
-//! Used to respond to first level events.
-// #define zoxel_event_respond_system_main_thread(system_name, tag_name, event_component_name) zox_system_1(system_name, EcsPreStore, [out] tag_name, [in] event_component_name);

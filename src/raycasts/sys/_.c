@@ -6,14 +6,14 @@
 void zox_define_systems_raycasts(ecs* world) {
     zox_system(
         ZeviceRaycasterSystem,
-        zoxp_inputs_update,
+        zoxp_update,
         [in] inputs.ZevicePointerPosition,
         [out] raycasts.Raycaster
     );
     #ifndef zox_debug_camera_rays
     zox_system(
         CameraRaySystem,
-        zoxp_inputs_update,
+        zoxp_update,
         [out] raycasts.RaycastOrigin,
         [out] raycasts.RaycastNormal
     );

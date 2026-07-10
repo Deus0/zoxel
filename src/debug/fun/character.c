@@ -52,6 +52,10 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     byte build = zox_getv(chunk, BuildChunkMesh);
     byte generate = zox_getv(chunk, GenerateChunk);
     int3 position = zox_getv(chunk, ChunkPosition);
+    byte depth = zox_getv(chunk, NodeDepth);
+    byte render_depth = zox_getv(chunk, RenderDepth);
+    index += snprintf(buffer + index, size - index, " - Octree Depth [%i]\n", depth);
+    index += snprintf(buffer + index, size - index, " - Render Depth [%i]\n", render_depth);
     index += snprintf(buffer + index, size - index, " - busy [%i]\n", busy);
     index += snprintf(buffer + index, size - index, " - generate [%i]\n", generate);
     index += snprintf(buffer + index, size - index, " - build [%i]\n", build);

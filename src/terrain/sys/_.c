@@ -21,7 +21,7 @@ byte dbg_use_new_streaming = 1;
 void define_systems_terrain(ecs *world) {
     zox_system(
         ChunkLinkSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] terrains.TerrainLink,
         [in] transforms3.Position3D,
         [out] chunks3.ChunkPosition,
@@ -29,35 +29,16 @@ void define_systems_terrain(ecs *world) {
         [out] physics.DisableMovement,
         [none] chunks3.LinkChunk
     );
-    // Debug Terrains
-#ifdef zox_debug_chunk_bounds
-    zox_system_1(
-        ChunkBoundsDrawSystem,
-        zoxp_mainthread,
-        [in] transforms3.Position3D,
-        [in] transforms3.Bounds3D,
-        [in] rendering.RenderDisabled,
-        [none] terrains.TerrainChunk
-    );
-#endif
-    zox_system_1(
-        TerrainGameStartSystem,
-        zoxp_mainthread,
-        [in] realms.RealmLink,
-        [in] games.GameState,
-        [in] games.GameStateDirty,
-        [none] games.Game
-    );
     // Starts Building
     zox_system(
         RenderDepthChunk3System,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] saves.Loaded,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDepthDirty,
         [out] chunks.NodeDepth,
         [out] chunks3.GenerateChunk,
-        [out] core.Busy,
+        // [out] core.Busy,
         [none] terrains.TerrainChunk
     );
     zox_system(
@@ -83,7 +64,7 @@ void define_systems_terrain(ecs *world) {
     // Lighting
     zox_system(
         SunnyChunkGeneratedSystem,
-        EcsPreUpdate,
+        zoxp_update, // EcsPreUpdate,
         [in] chunks3.GenerateChunk,
         [out] lights.GenerateLights,
         [none] terrains.TerrainChunk,
@@ -91,7 +72,7 @@ void define_systems_terrain(ecs *world) {
     );
     zox_system(
         ChunkGeneratedSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [out] chunks3.GenerateChunk,
         [out] chunks3.VoxelNodeDirty,
         [none] terrains.TerrainChunk
@@ -173,6 +154,25 @@ void define_systems_terrain(ecs *world) {
             [none] streaming.StreamedChunk
         );
     }
+    zox_system_1(
+        TerrainGameStartSystem,
+        zoxp_mainthread,
+        [in] realms.RealmLink,
+        [in] games.GameState,
+        [in] games.GameStateDirty,
+        [none] games.Game
+    );
+    // Debug Terrains
+    #ifdef zox_debug_chunk_bounds
+    zox_system_1(
+        ChunkBoundsDrawSystem,
+        zoxp_mainthread,
+        [in] transforms3.Position3D,
+        [in] transforms3.Bounds3D,
+        [in] rendering.RenderDisabled,
+        [none] terrains.TerrainChunk
+    );
+    #endif
     add_system_process_counter(world, zox_id(LandfillChunk3System));
     add_system_process_counter(world, zox_id(VegetationChunk3System));
 }

@@ -30,11 +30,9 @@ zox_sys2(EditorInputSystem) {
         if (keyboard->x.pressed_this_frame) {
             entity profiler = zox_get_child_by_id(world, canvas->value, zox_id(Profiler));
             canvas_toggle_ui(world, canvas->value, profiler, spawn_profiler_canvas);
-        }
-        else if (keyboard->c.pressed_this_frame) {
+        } else if (keyboard->c.pressed_this_frame) {
             entity label = zox_get_child_by_id(world, canvas->value, zox_id(GameDebugLabel));
             canvas_toggle_ui(world, canvas->value, label, spawn_game_debug_label);
         }
-            //}
     }
 } zox_sys_end(EditorInputSystem);

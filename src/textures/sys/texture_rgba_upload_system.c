@@ -20,8 +20,9 @@ zox_sys2(TextureRGBAUpdateSystem) {
             continue;
         }
         if (!data->length) {
-            const byte* values = (byte[]) { 0, 0, 0, 0 };  // RGBA all zero
-            zox_gpu_set_texture_color_rgba(gpu_link->value, int2_one, values);
+            //const byte* values = (byte[]) { 0, 0, 0, 0 };  // RGBA all zero
+            //zox_gpu_set_texture_color_rgba(gpu_link->value, int2_one, values);
+            zox_gpu_clear_texture_rgba(gpu_link->value);
             if (dbg_log) {
                 zox_log("Texture RGBA Uploaded [%s] [Cleared] GPU [%i]", zox_get_name(e), gpu_link->value);
             }

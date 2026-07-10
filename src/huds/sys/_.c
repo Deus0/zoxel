@@ -53,8 +53,9 @@ void define_systems_game_ui(ecs *world) {
     zox_system_1(
         DeviceModeUISystem,
         zoxp_mainthread,
-        [in] inputs.DeviceMode,
         [in] inputs.DeviceModeDirty,
+        [in] inputs.LastDeviceMode,
+        [in] inputs.DeviceMode,
         [in] games.GameLink,
         [in] layouts2.CanvasLink
     );

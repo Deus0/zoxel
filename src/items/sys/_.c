@@ -16,15 +16,6 @@ void define_systems_items(ecs* world) {
         [none] items.Item
     );
     zox_system_1(
-        ItemActivateSystem,
-        zoxp_mainthread,
-        [in] timers.Activate,
-        [in] blocks.BlockLink,
-        [out] items.Quantity,
-        [out] items.QuantityDirty,
-        [none] ItemBlock
-    );
-    zox_system_1(
         ItemDropSystem,
         zoxp_mainthread,
         [in] combat.Dead,
@@ -47,6 +38,15 @@ void define_systems_items(ecs* world) {
         [none] players.PlayerLink
     );
     // NOTE: Timing issues due to Queue Clearing
+    zox_system_1(
+        ItemActivateSystem,
+        zoxp_queue_add,
+        [in] timers.Activate,
+        [in] blocks.BlockLink,
+        [out] items.Quantity,
+        [out] items.QuantityDirty,
+        [none] ItemBlock
+    );
     zox_system_1(
         TerrainItemDropSystem,
         zoxp_queue_process,

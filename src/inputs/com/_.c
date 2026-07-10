@@ -16,6 +16,7 @@ zoxc_byte(RealButtonIndex);
 zoxc_byte(DeviceLayout);
 zoxc_byte(MouseLock);
 zoxc_byte(DeviceMode);
+zoxc_byte(LastDeviceMode);
 zoxc_byte(DeviceModeDirty);
 zoxc_float2(ZeviceStick);
 zoxc_int2(ZevicePointerPosition);
@@ -49,6 +50,7 @@ void define_components_inputs(ecs *world) {
     zoxd_byte(DeviceLayout);
     zoxd_byte(MouseLock);
     zoxd_byte(DeviceMode);
+    zoxd_byte(LastDeviceMode);
     zoxd_byte(DeviceModeDirty);
     zoxd_int2(ZevicePointerPosition);
     zoxd_int2(ZevicePointerDelta);

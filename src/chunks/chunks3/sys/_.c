@@ -10,14 +10,14 @@ void define_systems_chunks3(ecs *world) {
     zoxd_system_increment(VoxelNodeDirty);
     zox_system(
         Chunk3MeshTriggerSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] chunks3.VoxelNodeDirty,
         [out] chunks3.BuildChunkMesh,
         [none] chunks3.Chunk3
     );
     zox_system(
         Chunk3NeighborsMeshTriggerSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] chunks3.VoxelNodeDirty,
         [in] chunks3.ChunkNeighbors,
         [none] chunks3.ChunkTextured

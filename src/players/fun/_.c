@@ -30,10 +30,11 @@ int spawn_players(ecs *world, entity game, byte zox_game_type) {
         zox_players[i] = e;
         if (players == 2) {
             if (i == 0) {
-                zox_set(e, DeviceModeDirty, { zox_device_mode_keyboardmouse });
+                zox_set(e, DeviceMode, { zox_device_mode_keyboardmouse });
             } else if (i == 1) {
-                zox_set(e, DeviceModeDirty, { zox_device_mode_gamepad });
+                zox_set(e, DeviceMode, { zox_device_mode_gamepad });
             }
+            zox_set(e, DeviceModeDirty, { 1 });
         }
     }
     return players;

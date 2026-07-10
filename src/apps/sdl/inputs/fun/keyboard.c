@@ -1,17 +1,13 @@
 void set_sdl_key(ecs *world, PhysicalButton *key, SDL_Keycode keycode, SDL_EventType event_type) {
-
     byte key_down = event_type == SDL_KEYDOWN;
     byte key_released = event_type == SDL_KEYUP;
-
     if (!key->is_pressed && key_down) {
         key->pressed_this_frame = 1;
         run_hook_key_down(world, (int32_t) keycode);
     }
-
     if (key->is_pressed && key_released) {
         key->released_this_frame = 1;
     }
-
     key->is_pressed = key_down;
 }
 
@@ -21,17 +17,12 @@ void set_sdl_key(ecs *world, PhysicalButton *key, SDL_Keycode keycode, SDL_Event
         break
 
 void sdl_extract_keyboard(ecs* world, SDL_Event event) {
-
     entity e = local_keyboard;
-
     if (!zox_valid(e)) {
         return;
     }
-
     if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
-
         zox_muter(e, Keyboard, keyboard);
-
         SDL_Keycode key = event.key.keysym.sym;
         switch (key) {
             sdl_key_case(SDLK_SPACE, &keyboard->space);

@@ -19,7 +19,7 @@ zox_sys2(ControllerPlayerStateSystem) {
         if (action_type) {
             byte can_move = action_type - 1;
             // zox_log("Player State Updated [%i]", can_move);
-            disable_inputs_until_release(world, e, zox_device_mode_none, 1);
+            disable_inputs_until_release(world, e, zox_device_mode_gamepad);
             entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
             if (zox_valid(mouse)) {
                 zox_set(mouse, MouseLock, { can_move });

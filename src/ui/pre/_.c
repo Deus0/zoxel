@@ -12,8 +12,9 @@ entity prefab_canvas_overlay;
 
 void prefabs_add_ui_to_player(ecs *world, entity e) {
     // Player -> Devices (move this to device module)
-    zox_prefab_set(e, DeviceMode, { 0 })
-    zox_prefab_set(e, DeviceModeDirty, { 0 })
+    zox_prefab_set(e, DeviceMode, { 0 });
+    zox_prefab_set(e, LastDeviceMode, { 0 });
+    zox_prefab_set(e, DeviceModeDirty, { 0 });
     // zox_prefab_set(e, DeviceLinks, { 0 });
     // Player -> UI Links
     zox_prefab_set(e, ElementLinks, { 0 });

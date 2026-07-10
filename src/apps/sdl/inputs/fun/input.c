@@ -7,13 +7,10 @@ void initialize_sdl_input() {
     if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0) fprintf(stderr, "Failed SDL joystick subsystem: %s\n", SDL_GetError());
 }
 
-void input_reset_sdl() {
-    sdl_reset_mouse_wheel();
-}
-
 byte update_sdl_input(ecs *world, entity app, SDL_Event event) {
-    sdl_extract_keyboard(world, event);
+    // sdl_extract_keyboard(world, event);
     sdl_extract_mouse_wheel(event);
+    // Handle Added Controllers
     if (using_sdl_gamecontrollers) {
         if (event.type == SDL_CONTROLLERDEVICEADDED) {
             int device_index = event.cdevice.which;

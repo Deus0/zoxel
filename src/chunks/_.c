@@ -7,7 +7,7 @@
 #ifndef zoxm_chunks
 #define zoxm_chunks
 
-byte zox_is_slow_updates = 1;
+byte zox_is_slow_updates = 0;
 #include "com/_.c"
 #include "chunks2/_.c"
 #include "chunks3/_.c"

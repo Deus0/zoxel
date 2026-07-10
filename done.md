@@ -1,5 +1,15 @@
 # Done
 
+-x Fix Map - make it use colors of voxels - raycast downwards in chunk
+-x Fix Map Arrow Rotations
+-x Fix the rotation make sure all faces align
+-x Do i need to rotate around top face uvs?
+-x Get Nearby Octree Value - using 27 chunks (for neighbors)
+-x Reduce Lights based on brightest child node
+-x Add Smooth Light to Options
+-x Fix Sunlight not working when you approach town from afar after loading - does it generate lights there?
+-x Improve lighting states for generation, make sure set in those systems
+-x Fix lighting - houses it bugged - LOD difference in light propogations?
 -x Towns are spawning differently every load...
 -x Fix the rotation make sure all faces align
 -x Do i need to rotate around top face uvs?

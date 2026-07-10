@@ -5,6 +5,22 @@
 #include "max_system_time.c"
 
 void define_systems_editor(ecs *world) {
+    zox_system(
+        InspectorLabelSystem,
+        zoxp_update,
+        [in] rendering.RenderDisabled,
+        [in] core.ComponentType,
+        [in] core.EntityTarget,
+        [in] core.ComponentTarget,
+        [none] editor.InspectorLabel
+    );
+    zox_system(
+        MaxSystemTimeLabelSystem,
+        zoxp_update,
+        [out] texts.TextData,
+        [out] texts.TextDirty,
+        [none] editor.MaxSystemTimeLabel
+    );
     zox_system_1(
         HierarchySpawnSystem,
         zoxp_mainthread,
@@ -26,21 +42,5 @@ void define_systems_editor(ecs *world) {
         zoxp_mainthread,
         [in] layouts2.CanvasLink,
         [none] players.Player
-    );
-    zox_system(
-        InspectorLabelSystem,
-        EcsOnUpdate,
-        [in] rendering.RenderDisabled,
-        [in] core.ComponentType,
-        [in] core.EntityTarget,
-        [in] core.ComponentTarget,
-        [none] editor.InspectorLabel
-    );
-    zox_system(
-        MaxSystemTimeLabelSystem,
-        EcsOnUpdate,
-        [out] texts.TextData,
-        [out] texts.TextDirty,
-        [none] editor.MaxSystemTimeLabel
     );
 }

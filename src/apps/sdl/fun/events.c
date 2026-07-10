@@ -5,8 +5,9 @@ extern void engine_end(); // engine
 
 // move this to an app system function?
 void update_sdl(ecs *world) {
+    SDL_PumpEvents();
+    sdl_reset_mouse_wheel();
     entity e = main_app;
-    input_reset_sdl();
     SDL_Event event = { 0 };
     while (SDL_PollEvent(&event)) {
         // Quit the window

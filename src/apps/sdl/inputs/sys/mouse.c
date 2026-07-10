@@ -1,7 +1,8 @@
+// NOTE: SDL doesn't do multiple mouses
+// NOTE: This flips mouse position to match our engine
 zox_sys2(MouseExtractSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
-    // NOTE: SDL doesn't do multiple mouses
-    // NOTE: This flips mouse position to match our engine
     zox_geter_value_non_const(main_app, WindowSize, int2, screen_size);
     if (screen_size.x % 2 != 0) {
         screen_size.x--;
@@ -24,7 +25,7 @@ zox_sys2(MouseExtractSystem) {
     zox_sys_in(AppLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(AppLink, appLink);
+        zox_sys_i(AppLink, app);
         // using button_pressed_left
         uint children_capacity = zox_children_capacity;
         entity children[children_capacity];
@@ -39,7 +40,7 @@ zox_sys2(MouseExtractSystem) {
                     zox_geter(e2, ZevicePointerPosition, position)
                     int2 position2 = position->value;
                     int2_flip_y(&position2, screen_size);
-                    SDL_Window* sdl_window = zox_get_value(appLink->value, SDLWindow)
+                    SDL_Window* sdl_window = zox_get_value(app->value, SDLWindow);
                     SDL_WarpMouseInWindow(sdl_window, position2.x, position2.y);
                 } else {
                     zox_muter(e2, ZevicePointerPosition, position)
@@ -54,14 +55,23 @@ zox_sys2(MouseExtractSystem) {
             if (zox_has(e2, ZevicePointer)) {
                 zox_muter(e2, ZevicePointer, clicker)
                 clicker->value = get_button_click_state(clicker->value, button_pressed_left);
-            }
-            if (zox_has(e2, ZevicePointerRight)) {
-                zox_muter(e2, ZevicePointerRight, clicker)
+                if (dbg_log && clicker->value) {
+                    zox_log("Mouse Left Clicked [%ix%i]", clicker->value);
+                }
+            } else if (zox_has(e2, ZevicePointerRight)) {
+                zox_muter(e2, ZevicePointerRight, clicker);
                 clicker->value = get_button_click_state(clicker->value, button_pressed_right);
-            }
-            if (zox_has(e2, ZeviceWheel)) {
-                zox_muter(e2, ZeviceWheel, wheel)
-                wheel->value = static_mouse_wheel;
+                if (dbg_log && clicker->value) {
+                    zox_log("Mouse Right Clicked [%ix%i]", clicker->value);
+                }
+            } else if (zox_has(e2, ZeviceWheel)) {
+                zox_muter(e2, ZeviceWheel, wheel);
+                if (!int2_equals(static_mouse_wheel, wheel->value)) {
+                    wheel->value = static_mouse_wheel;
+                    if (dbg_log) {
+                        zox_log("Mouse Wheel [%ix%i]", wheel->value.x, wheel->value.y);
+                    }
+                }
             }
         }
     }
