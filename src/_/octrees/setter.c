@@ -64,8 +64,8 @@ static inline void* set_octree_value(void* node, byte tdepth, byte3 pos, byte va
 
 // Macro wrapper: type-safe setter
 #define new_octree_function_set(T) \
-static inline T* set_##T(T* node, byte target_depth, byte3 pos, byte value, byte start_depth) { \
-    return (T*) set_octree_value((void*) node, target_depth, pos, value, start_depth, sizeof(T), offsetof(T, value)); \
+static inline T* set_##T(T* node, byte depth, byte3 position, byte value) { \
+    return (T*) set_octree_value((void*) node, depth, position, value, 0, sizeof(T), offsetof(T, value)); \
 }
 
 // Example usage:

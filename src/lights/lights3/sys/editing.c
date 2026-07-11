@@ -99,7 +99,7 @@ zox_sys2(VoxelLightSystem) {
                 //          - It needs to call dark floodfill on all points along
                 // NOTE: no matter what we need to dark flood surroundings - for example on corner parts
                 // Dark Flood
-                const LightNode* removed_lnode = get_LightNode(root_lnode, depth->value, update.pos, 0);
+                const LightNode* removed_lnode = get_LightNode(root_lnode, depth->value, update.pos);
                 byte removed_light = removed_lnode ? removed_lnode->value : 0;
                 if (removed_light > darklight) {
                     zox_logv("[%s] Placed Block: + Dark Flood at [%ix%ix%i] removed light [%i]", zox_get_name(it->entities[i]),  update.pos.x, update.pos.y, update.pos.z, removed_light);
@@ -133,7 +133,7 @@ zox_sys2(VoxelLightSystem) {
                         });
                 }
                 // set dark light, as it was filled up
-                set_LightNode(root_lnode, depth->value, update.pos, darklight, 0);
+                set_LightNode(root_lnode, depth->value, update.pos, darklight);
                 light_node_dirty->value = zox_dirty_trigger;
             }
         }

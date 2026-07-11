@@ -33,9 +33,7 @@ void zox_define_systems_actions(ecs* world) {
         CharacterActionsSpawnSystem,
         zoxp_mainthread,
         [in] characters.GenerateCharacter,
-        [none] characters.Character,
-        // [in] realms.RealmLink,
-        // [out] actions.ActionLinks
+        [none] characters.Character
     );
     zox_system_1(
         ActiveActionHoldSystem,

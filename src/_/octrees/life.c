@@ -31,7 +31,7 @@ void collapse_##T(T *node) {\
     node->ptr = NULL; \
 }\
 \
-byte open_##T(T* node) { \
+byte zopen_##T(T* node) { \
     void* ptr = (void*) malloc(sizeof(T) * octree_length);\
     if (ptr) { \
         node->ptr = ptr; \
@@ -46,7 +46,7 @@ byte open_##T(T* node) { \
 void clone_##T(T* dst, const T* src) {\
     dst->value = src->value;\
     if (src->ptr) {\
-        open_##T(dst);\
+        zopen_##T(dst);\
         T* kids_dst = (T*) dst->ptr;\
         T* kids_src =  (T*) src->ptr;\
         for (byte i = 0; i < octree_length; i++) {\

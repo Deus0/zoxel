@@ -26,7 +26,7 @@ zox_sys2(BlockDamageQueueSystem) {
         zox_geter(manager->value, BlockLinks, blocks);
         while (queue->count) {
             BlockDamageUpdate update = remove_BlockDamageQueue(queue);
-            byte index = getv_VoxelNode(voxel_octree, update.position, depth->value);
+            byte index = getv_VoxelNode(voxel_octree, depth->value, update.position);
             if (!index || index - 1 >= blocks->length) {
                 continue;
             }
@@ -43,7 +43,7 @@ zox_sys2(BlockDamageQueueSystem) {
             entity chunk = e;
             // First check Vode:
             zox_mut_begin(chunk, VoxelNode, root);
-            VoxelNode* leaf = open_at_VoxelNode(root, depth->value, position, 0); //  getm
+            VoxelNode* leaf = open_VoxelNode(root, depth->value, position); //  getm
             // TODO: Subdivide Octree if not lowest level! we need it at lowest level for destruction
             if (!leaf) {
                 zox_loge("Leaf is null in melee system");

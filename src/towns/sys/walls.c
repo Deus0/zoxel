@@ -1,5 +1,7 @@
 // NOTE: Uses Height Map + Town Map to spawn Town Walls in chunks
 zox_sys2(TownWallsSystem) {
+    // TODO: Link the Chunk to Town and use hte town data
+    // TODO: get the Home from the Town based on position
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -84,12 +86,11 @@ zox_sys2(TownWallsSystem) {
                 else if (town_value == zox_town_type_gate) {
                     for (int h = gate_height; h <= wall_height; h++) {
                         int global_y = height + h;
-                        if (global_y < chunk_block_position.y) {
-                            break;
-                        }
-                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                        if (positionl.y >= 0 && positionl.y < voctree_length) {
-                            set_clean_VoxelNode(voctree, depth->value, positionl, bricks_id);
+                        if (global_y >= chunk_block_position.y) {
+                            positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                            if (positionl.y >= 0 && positionl.y < voctree_length) {
+                                set_clean_VoxelNode(voctree, depth->value, positionl, bricks_id);
+                            }
                         }
                     }
                 }
@@ -97,12 +98,11 @@ zox_sys2(TownWallsSystem) {
                 else if (town_value == zox_town_type_home_wall) {
                     for (int h = 2; h < home_height; h++) {
                         int global_y = height + h;
-                        if (global_y < chunk_block_position.y) {
-                            break;
-                        }
-                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                        if (positionl.y >= 0 && positionl.y < voctree_length) {
-                            set_clean_VoxelNode(voctree, depth->value, positionl, home_wall_id);
+                        if (global_y >= chunk_block_position.y) {
+                            positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                            if (positionl.y >= 0 && positionl.y < voctree_length) {
+                                set_clean_VoxelNode(voctree, depth->value, positionl, home_wall_id);
+                            }
                         }
                     }
                 }
@@ -110,12 +110,11 @@ zox_sys2(TownWallsSystem) {
                 else if (town_value == zox_town_type_home_door) {
                     for (int h = home_height - 1; h < home_height; h++) {
                         int global_y = height + h;
-                        if (global_y < chunk_block_position.y) {
-                            break;
-                        }
-                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                        if (positionl.y >= 0 && positionl.y < voctree_length) {
-                            set_clean_VoxelNode(voctree, depth->value, positionl, home_wall_id);
+                        if (global_y >= chunk_block_position.y) {
+                            positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                            if (positionl.y >= 0 && positionl.y < voctree_length) {
+                                set_clean_VoxelNode(voctree, depth->value, positionl, home_wall_id);
+                            }
                         }
                     }
                 }

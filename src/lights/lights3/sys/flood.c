@@ -31,7 +31,7 @@ static inline byte flood_light(const VoxelNode* root_vnode, LightNode* root_lnod
             const LightNode* nlight_root= n_root_lnodes[dir];
             // solid → no propagation
             if (nvox_root) {
-                byte nvoxel = get_value_VoxelNode(nvox_root, depth, pos, 0);
+                byte nvoxel = getv_VoxelNode(nvox_root, depth, pos);
                 if (nvoxel && solidity[nvoxel - 1]) {
                     continue; // solid: hard stop
                 }
@@ -42,7 +42,7 @@ static inline byte flood_light(const VoxelNode* root_vnode, LightNode* root_lnod
                 continue;
             }
             // only queue if it improves neighbor
-            byte current_light = nlight_root ? get_value_LightNode(nlight_root, depth, pos, 0) : 0;
+            byte current_light = nlight_root ? getv_LightNode(nlight_root, depth, pos) : 0;
             if (decayed_light <= current_light) {
                 continue;
             }
@@ -63,17 +63,17 @@ static inline byte flood_light(const VoxelNode* root_vnode, LightNode* root_lnod
             continue;
         }
         // --- In-chunk: READ voxel, WRITE light in our own chunk only. ---
-        byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
+        byte voxel = getv_VoxelNode(root_vnode, depth, pos);
         if (voxel && solidity[voxel - 1]) {
             continue;
         }
         byte decayed_light = (light > air_decay) ? (byte) (light - air_decay) : min_light;
-        byte current_light = get_value_LightNode(root_lnode, depth, pos, 0);
+        byte current_light = getv_LightNode(root_lnode, depth, pos);
         if (decayed_light <= current_light) {
             continue;
         }
         zox_logv("     + Light Flooded [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, decayed_light, distance);
-        set_LightNode(root_lnode, depth, pos, decayed_light, 0);
+        set_LightNode(root_lnode, depth, pos, decayed_light);
         dirty = 1;
         flood_light(root_vnode, root_lnode, n_root_vnodes, n_root_lnodes, n_queues, depth, pos, decayed_light, distance - 1, min_light, air_decay, solidity);
     }
@@ -141,14 +141,14 @@ zox_sys2(LightFloodSystem) {
                 //  zox_log_error("[r_LightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
                 continue;
             }
-            byte voxel = get_value_VoxelNode(root_vnode, update.depth, update.pos, 0);
+            byte voxel = getv_VoxelNode(root_vnode, update.depth, update.pos);
             if (voxel && solidity[voxel - 1]) {
                 if (dbg_log) {
                     zox_log("[%s]: Light Flood Canceled at [%ix%ix%i] l[%i] q [%i]", zox_get_name(e), update.pos.x, update.pos.y, update.pos.z, update.light,  light_queue->count);
                 }
                 continue;
             }
-            byte current_light = get_value_LightNode(root_lnode, update.depth, update.pos, 0);
+            byte current_light = getv_LightNode(root_lnode, update.depth, update.pos);
             byte spread_light = update.light;
             if (dbg_log) {
                 zox_log("[%s]: [%s] ^ Light Flooding at [%ix%ix%i] l[%i] spread [%i] q [%i]", current_light > spread_light ? "Skip" : "Run", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, current_light, spread_light, light_queue->count);
@@ -156,7 +156,7 @@ zox_sys2(LightFloodSystem) {
             if (current_light > spread_light) {
                 spread_light = current_light;
             } else if (current_light < spread_light) {
-                set_LightNode(root_lnode, update.depth, update.pos, spread_light, 0);
+                set_LightNode(root_lnode, update.depth, update.pos, spread_light);
                 dirty = 1;
             }
             if (flood_light(root_vnode, root_lnode, n_root_vnodes, n_root_lnodes, n_light_queues, update.depth, update.pos, spread_light, update.distance, darklight, light_air_decay, solidity)) {

@@ -7,7 +7,7 @@ void build_vox_rubble(VoxelNode *voctree, byte depth, byte2 voxel_range, int rub
         position.z = rand() % length;
         for (int k = 0; k < length; k++) {
             position.y = k;
-            if (get_value_VoxelNode(voctree, depth, position, 0) == 0) {
+            if (getv_VoxelNode(voctree, depth, position) == 0) {
                 break;
             }
         }
@@ -15,6 +15,6 @@ void build_vox_rubble(VoxelNode *voctree, byte depth, byte2 voxel_range, int rub
             continue;
         }
         byte value = voxel_range.x + rand() % (voxel_range.y - voxel_range.x);
-        set_VoxelNode(voctree, depth, position, value, 0);
+        set_VoxelNode(voctree, depth, position, value);
     }
 }

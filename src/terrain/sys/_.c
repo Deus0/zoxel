@@ -92,8 +92,10 @@ void define_systems_terrain(ecs *world) {
             TerrainStreamSystem,
             zoxp_mainthread,
             streamers,
+            [in] core.Seed,
             [in] blocks.BlockScale,
             [in] chunks.NodeDepth,
+            [out] regions.RegionLinks,
             [out] tunks.TunkLinks,
             [out] voxes.ChunkLinks,
             [none] terrains.Terrain

@@ -32,7 +32,7 @@ zox_sys2(TerrainItemDropSystem) {
         zox_geter(realm, BlockLinks, blocks);
         for (size_t j = 0; j < queue->count; j++) {
             VoxelNodeUpdate update = queue->ptr[j];
-            byte voxel = getv_VoxelNode(node, update.pos, depth->value);
+            byte voxel = getv_VoxelNode(node, depth->value, update.pos);
             if (!voxel) {
                 if (dbg_log) {
                     zox_log("Voxel Dropped is Air at [%ix%ix%i]", update.pos.x, update.pos.y, update.pos.z);

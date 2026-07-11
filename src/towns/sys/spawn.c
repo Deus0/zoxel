@@ -87,17 +87,22 @@ zox_sys2(RegionTownsSystem) {
     byte2 home_padding = byte2_single(4);
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(Seed);
     zox_sys_in(BlockPosition2);
     zox_sys_in(BlockSize2);
+    zox_sys_out(GenerateRegion);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Generate, generate);
         zox_sys_i(Seed, seed);
         zox_sys_i(BlockPosition2, block_position);
         zox_sys_i(BlockSize2, block_size);
-        if (generate->value != zox_dirty_active) {
+        zox_sys_o(GenerateRegion, generate);
+        // Waits a frame for parent to set on mountains
+        if (generate->value == zox_generate_region_towns_trigger) {
+            generate->value = zox_generate_region_towns;
+            continue;
+        }
+        if (generate->value != zox_generate_region_towns) {
             continue;
         }
         byte spawn_count = seed_range(seed->value, towns_count.x, towns_count.y);
@@ -108,19 +113,23 @@ zox_sys2(RegionTownsSystem) {
         if (!zox_valid(terrain)) {
             continue;
         }
-        // byte terrain_depth = zox_getv(terrain, NodeDepth);
-        // int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
         if (dbg_log) {
             zox_log("   - Region Position [%ix%i]", block_position->value.x, block_position->value.y);
         };
         entity mountains[zox_children_capacity];
         uint mountains_length = zox_get_children_by_id(world, e, mountains, zox_children_capacity, zox_id(Radius));
+        if (dbg_log) {
+            zox_log("Region has [%i] Mountains", mountains_length);
+        }
         int2 mountain_positions[mountains_length];
         byte mountain_radii[mountains_length];
         for (int j = 0; j < mountains_length; j++) {
             entity e2 = mountains[j];
             mountain_positions[j] = zox_getv(e2, BlockPosition2);
             mountain_radii[j] = zox_getv(e2, Radius);
+            if (dbg_log) {
+                zox_log(" - Mountain [%ix%i] Size [%i]", mountain_positions[j].x, mountain_positions[j].y, mountain_radii[j]);
+            }
         }
         int2 positions[spawn_count];
         byte2 sizes[spawn_count];
@@ -158,5 +167,6 @@ zox_sys2(RegionTownsSystem) {
                 }
             }
         }
+        generate->value = 0;
     }
 } zox_sys_end(RegionTownsSystem);

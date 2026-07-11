@@ -5,10 +5,10 @@ void zox_define_systems_mountains(ecs* world) {
     zox_system_1(
         RegionMountainSystem,
         zoxp_mainthread,
-        [in] core.Generate,
         [in] core.Seed,
         [in] blocks.BlockPosition2,
         [in] blocks.BlockSize2,
+        [out] regions.GenerateRegion,
         [none] regions.Region
     );
     zox_system(

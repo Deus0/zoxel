@@ -98,6 +98,7 @@ static inline void* get_octree_mut(void* node, byte target_depth, byte3 pos, byt
 static inline void* open_octree_node(void* node, byte target_depth, byte3 pos, byte depth, size_t stride, size_t value_offset) {
     while (node && depth < target_depth) {
         uintptr_t p = (uintptr_t) node;
+        // NOTE: Error checking nodes for corruption
         if (p == 0 || (p & 0x7) != 0) {
             return NULL;
         }
@@ -152,29 +153,29 @@ static inline byte read_octree_value(const void* node, byte target_depth, byte3 
 // Macro wrapper: generates type-safe getters
 #define create_node_getter(T) \
 \
-static inline const T* get_##T(const T* node, byte target_depth, byte3 pos, byte depth) { \
-    return (T*)get_octree((const void*)node, target_depth, pos, depth, sizeof(T)); \
+static inline const T* get_##T(const T* node, byte depth, byte3 position) { \
+    return (T*)get_octree((const void*)node, depth, position, 0, sizeof(T)); \
 }\
 \
-static inline T* getm_##T(T* node, byte3 position, byte target_depth) { \
-    return (T*) get_octree_mut((void*) node, target_depth, position, 0, sizeof(T)); \
+static inline byte getv_##T(const T* node, byte depth, byte3 position) { \
+    return read_octree_value((void*) node, depth, position, 0, sizeof(T), offsetof(T, value)); \
+} \
+\
+static inline T* getm_##T(T* node, byte3 position, byte depth) { \
+    return (T*) get_octree_mut((void*) node, depth, position, 0, sizeof(T)); \
 }\
 \
-static inline T* open_at_##T(T* node, byte target_depth, byte3 pos, byte depth) { \
-    return (T*) open_octree_node((void*) node, target_depth, pos, depth, sizeof(T), offsetof(T, value)); \
+static inline T* open_##T(T* node, byte depth, byte3 position) { \
+    return (T*) open_octree_node((void*) node, depth, position, 0, sizeof(T), offsetof(T, value)); \
 }\
 \
-static inline byte get_value_##T(const T* node, byte target_depth, byte3 pos, byte depth) { \
-    return read_octree_value((void*)node, target_depth, pos, depth, sizeof(T), offsetof(T, value)); \
-}\
-\
-static inline byte getv_##T(const T* node, byte3 pos, byte target) { \
-    return read_octree_value((void*) node, target, pos, 0, sizeof(T), offsetof(T, value)); \
+static inline T* open_one_##T(T* node) { \
+    return (T*) open_octree_node((void*) node, 1, byte3_zero, 0, sizeof(T), offsetof(T, value)); \
 }
 
 // Example usage:
 // create_node_getter(VoxelNode)
 // create_node_getter(LightNode)
-// VoxelNode* n = get_VoxelNode(root, target_depth, (byte3){x,y,z}, 0);
-// byte v = get_value_VoxelNode(root, target_depth, (byte3){x,y,z}, 0);
+// VoxelNode* n = get_VoxelNode(root, target_depth, (byte3){x,y,z});
+// byte v = getv_VoxelNode(root, target_depth, (byte3){x,y,z});
 

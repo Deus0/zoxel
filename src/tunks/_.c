@@ -21,6 +21,12 @@
 #define zox_generate_tunk_towns 5
 #define zox_generate_tunk_end 6
 
+#define zox_vegetation_dirt 0
+#define zox_vegetation_grass 1
+#define zox_vegetation_weeds 2
+#define zox_vegetation_trees 3
+#define zox_vegetation_flowers 4
+
 // TODO: Vegetation Map for Grass  / trees etc
 // TODO: Maps Update based on LODs??
 // TODO: Quadtrees for map data?

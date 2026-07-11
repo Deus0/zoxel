@@ -28,34 +28,26 @@ static inline byte chunk_voxel_solid(
 ) {
     const int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
     const int3 chunk_position = block_position_to_chunk_position(voxel_position, terrain_depth);
-
     const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk)) {
         return 0;
     }
-
     zox_geter(chunk, VoxelNode, node)
     if (!node) {
         return 0;
     }
-
     zox_geter_value(chunk, NodeDepth, byte, chunk_depth)
-
     const byte ddepth = terrain_depth - chunk_depth + 1;
     const int3 voxel_position2 = int3_div1(voxel_position, (int)ddepth);
     const byte3 chunk_size = byte3_single(powers_of_two[chunk_depth]);
     const byte3 voxel_positionl = get_positionl_byte3(voxel_position2, chunk_size);
-
     if (!byte3_in_bounds(voxel_positionl, chunk_size)) {
         return 0;
     }
-
-    const byte voxel = get_value_VoxelNode(node, terrain_depth, voxel_positionl, 0);
-
+    const byte voxel = getv_VoxelNode(node, terrain_depth, voxel_positionl);
     if (chunk_scale_out) {
         *chunk_scale_out = terrain_scale / ((float)ddepth);
     }
-
     return block_collisions[voxel] != 0;
 }
 
@@ -74,7 +66,6 @@ static inline void collide_axis_face(
     if (*collided_d) {
         return;
     }
-
     const float p = get_axis_f3(position, axis);
     const float lp = get_axis_f3(last_position, axis);
     const float delta = p - lp;

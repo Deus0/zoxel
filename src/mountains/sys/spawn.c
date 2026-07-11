@@ -42,17 +42,17 @@ zox_sys2(RegionMountainSystem) {
     byte max_height = 16;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(Seed);
     zox_sys_in(BlockPosition2);
     zox_sys_in(BlockSize2);
+    zox_sys_out(GenerateRegion);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Generate, generate);
         zox_sys_i(Seed, seed);
         zox_sys_i(BlockPosition2, block_position);
         zox_sys_i(BlockSize2, block_size);
-        if (generate->value != zox_dirty_active) {
+        zox_sys_o(GenerateRegion, generate);
+        if (generate->value != zox_generate_region_mountains) {
             continue;
         }
         byte spawn_count = rand_range(1, 9);
@@ -63,11 +63,6 @@ zox_sys2(RegionMountainSystem) {
         if (!zox_valid(terrain)) {
             continue;
         }
-        // byte terrain_depth = zox_getv(terrain, NodeDepth);
-        // int2 region_block_position = region_position_to_block_position2(position->value, terrain_depth);
-        if (dbg_log) {
-            zox_log("   - Region Position [%ix%i]", block_position->value.x, block_position->value.y);
-        };
         int2 positions[spawn_count];
         byte sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
@@ -84,5 +79,6 @@ zox_sys2(RegionMountainSystem) {
                 zox_log("   ++ Mountain [%ix%i] H [%i] R [%i]", mountain_position.x, mountain_position.y, height, radius);
             }
         }
+        generate->value = zox_generate_region_towns_trigger;
     }
 } zox_sys_end(RegionMountainSystem);

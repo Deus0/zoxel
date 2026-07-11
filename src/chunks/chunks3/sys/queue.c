@@ -17,7 +17,7 @@ zox_sys2(VoxelNodeQueueSystem) {
         for (size_t i = 0; i < queue->count; i++) {
             VoxelNodeUpdate update = queue->ptr[i];
             write_lock_VoxelNode(voctree);
-            if (set_VoxelNode(voctree, depth->value, update.pos, update.value, 0)) {
+            if (set_VoxelNode(voctree, depth->value, update.pos, update.value)) {
                 updated = 1;
                 // zox_log("edited voxel: %ix%ix%i", update.positionl.x, update.positionl.y, update.positionl.z);
             }

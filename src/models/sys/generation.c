@@ -162,7 +162,15 @@ zox_sys2(VoxGenerationSystem) {
             build_vox_wood(node, node_depth, wood, bark);
         } else if (gentype->value == vox_type_flowers) {
             for (int j = vrange.x; j <= vrange.y / 2; j++) {
-                colors->value[j] = color_rgb_flip(colors->value[j]);
+                float3 hsv = color_rgb_to_hsv(colors->value[j]);
+                hsv = hsv_shift(
+                    hsv,
+                    rand_range(0, 100) >= 50 ? frand_range(160, 200) : frand_range(-200, -160),
+                    frand_range(-16, 16),
+                    frand_range(16, 32)
+                );
+                colors->value[j] = hsv_to_color_rgb(hsv);
+                // colors->value[j] = color_rgb_flip(colors->value[j]);
             }
             color_rgb dirt_dark_voxel = color_to_color_rgb(fill->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);

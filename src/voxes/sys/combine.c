@@ -103,7 +103,7 @@ zox_sys2(CombineVoxSystem) {
             for (lposition.x = 0, position.x = vposition.x; position.x < max_placement.x; position.x++, lposition.x++) {
                 for (lposition.y = 0, position.y = vposition.y; position.y < max_placement.y; position.y++, lposition.y++) {
                     for (lposition.z = 0, position.z = vposition.z; position.z < max_placement.z; position.z++, lposition.z++) {
-                        byte place_vox_value = get_value_VoxelNode(vox_octree, vox_depth, int3_to_byte3(lposition), 0);
+                        byte place_vox_value = getv_VoxelNode(vox_octree, vox_depth, int3_to_byte3(lposition));
                         if (!place_vox_value) {
                             continue;
                         }
@@ -124,7 +124,7 @@ zox_sys2(CombineVoxSystem) {
                         if (!value) {
                             continue;
                         }
-                        set_VoxelNode(voctree, ndepth->value, position, value, 0);
+                        set_VoxelNode(voctree, ndepth->value, position, value);
                         // Expands the size of our vox
                         if (position.x >= new_csize.x) {
                             new_csize.x = position.x;

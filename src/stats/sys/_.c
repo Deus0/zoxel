@@ -54,6 +54,7 @@ void define_systems_stats(ecs *world) {
         zoxp_mainthread,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
+        [none] !players.PlayerLink
     );
     zox_system_1(
         PlayerCharacterStatsSystem,

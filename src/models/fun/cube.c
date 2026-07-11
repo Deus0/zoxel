@@ -7,7 +7,7 @@ void voctree_fill_cube(VoxelNode* voctree, byte ndepth, byte value, byte3 positi
                 if (pos.x >= tsize.x || pos.y >= tsize.y || pos.z >= tsize.z) {
                     continue;
                 }
-                set_VoxelNode(voctree, ndepth, pos, value, 0);
+                set_VoxelNode(voctree, ndepth, pos, value);
             }
         }
     }

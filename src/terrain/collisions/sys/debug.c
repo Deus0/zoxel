@@ -70,7 +70,7 @@ zox_sys2(TerrainIntersectDebugSystem) {
                     const VoxelNode* voxel_octree = zox_get(chunk, VoxelNode);
                     byte chunk_depth = zox_getv(chunk, NodeDepth);
                     byte3 local_position = block_position_to_local_position(block_position, terrain_depth, chunk_depth);
-                    byte voxel = getv_VoxelNode(voxel_octree, local_position, chunk_depth);
+                    byte voxel = getv_VoxelNode(voxel_octree, chunk_depth, local_position);
                     byte solid = voxel ? zox_getv(blocks->value[voxel - 1], BlockCollider) != zox_block_air : 0;
                     color fill = solid ? dbg_color_solid : dbg_color_air;
                     // NOTE: Shows Voxel Info of Intersections

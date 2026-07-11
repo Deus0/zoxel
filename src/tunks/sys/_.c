@@ -27,13 +27,6 @@ void define_systems_tunks(ecs* world) {
         [out] tunks.GenerateTunk,
         [none] tunks.Tunk
     );
-    zox_system(
-        TunkRegionLinkSystem,
-        zoxp_update,
-        [in] tunks.TunkPosition,
-        [out] regions.RegionLink,
-        [none] tunks.Tunk
-    );
     /*zox_system_1(
         TunkDebugSystem,
         [in] tunks.TunkPosition,
@@ -101,6 +94,13 @@ void define_systems_tunks(ecs* world) {
     );
     // Streaming!
     if (!dbg_use_new_streaming) {
+        zox_system(
+            TunkRegionLinkSystem,
+            zoxp_update,
+            [in] tunks.TunkPosition,
+            [out] regions.RegionLink,
+            [none] tunks.Tunk
+        );
         zox_system_1(
             FirstTerrainTunkSystem,
             zoxp_mainthread,

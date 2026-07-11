@@ -14,7 +14,7 @@ byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, Lig
     byte beam_stopped = 0;
     for (byte y = 0; y <= max_y; y++) {
         pos.y = max_y - y;
-        byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
+        byte voxel = getv_VoxelNode(root_vnode, depth, pos);
         if (voxel && solidity[voxel - 1]) {
             // zox_log("sunbeam stopped v at [%ix%ix%i] v[%i]",  pos.x, pos.y, pos.z, voxel);
             beam_stopped = 1;
@@ -22,7 +22,7 @@ byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, Lig
         }
         // set light in LightNode
         zox_logv("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
-        set_LightNode(root_lnode, depth, pos, light, 0);
+        set_LightNode(root_lnode, depth, pos, light);
         dirty = 1;
         if (y == 0) {
             flood_end = pos.y;

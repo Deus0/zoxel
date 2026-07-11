@@ -1,6 +1,24 @@
 // TODO: use terrains seed
 // TODO: use height frequency from biome maps
 // TODO: Check Sand Height in this system
+typedef struct {
+    float perlin;
+    byte value;
+} place_chance;
+
+// NOTE: Uses nearest algorithm for the vegetation maps
+static inline byte choose_place(const place_chance *places, byte count, double perlin_value) {
+    byte best = places[0].value;
+    double best_dist = fabs(perlin_value - places[0].perlin);
+    for (size_t i = 1; i < count; ++i) {
+        double dist = fabs(perlin_value - places[i].perlin);
+        if (dist < best_dist) {
+            best_dist = dist;
+            best = places[i].value;
+        }
+    }
+    return best;
+}
 
 zox_sys2(VegetationMapSystem) {
     uint seed = global_seed;
@@ -37,7 +55,7 @@ zox_sys2(VegetationMapSystem) {
             continue;
         }
         // now generate heights
-        int max_chunk_length = powers_of_two[terrain_depth];
+        int max_chunk_length = octree_size(terrain_depth);
         int2 hsize = int2_single(max_chunk_length);
         int2 lposition = int2_zero;
         if (!vmap->value) {
@@ -48,9 +66,14 @@ zox_sys2(VegetationMapSystem) {
             cposition->value.y * hsize.y
         };
         entity biome = 0;
-        float grass_chance = 0;
-        float weeds_chance = 0;
-        float tree_chance = 0;
+        byte places_count = 5;
+        place_chance places[places_count];
+        memset(places, 0, sizeof(places));
+        places[0].value = zox_vegetation_dirt;
+        places[1].value = zox_vegetation_grass;
+        places[2].value = zox_vegetation_weeds;
+        places[3].value = zox_vegetation_trees;
+        places[4].value = zox_vegetation_flowers;
         int2 gposition = gposition_start;
         for (lposition.x = 0; lposition.x < hsize.x; lposition.x++, gposition.x++) {
             gposition.y = gposition_start.y;
@@ -70,29 +93,36 @@ zox_sys2(VegetationMapSystem) {
                 // NOTE: Updates our cache of our biome
                 if (biome != new_biome) {
                     biome = new_biome;
-                    grass_chance = zox_getv(biome, GrassChance);
-                    weeds_chance = zox_getv(biome, WeedsChance);
-                    tree_chance = zox_getv(biome, TreeChance);
+                    // grass_chance
+                    places[0].perlin = zox_getv(biome, DirtChance);
+                    places[1].perlin = zox_getv(biome, GrassChance);
+                    places[2].perlin = zox_getv(biome, WeedsChance);
+                    places[3].perlin = zox_getv(biome, TreeChance);
+                    places[4].perlin = zox_getv(biome, FlowerChance);
                 }
                 double perlin_value = veggie_amplitude * perlin_octaves(
                     noise_positiver2 + (gposition.x / ((float) max_chunk_length)),
                     noise_positiver2 + (gposition.y / ((float) max_chunk_length)),
                     veggie_frequency,
                     seed, veggie_octaves);
-                byte value;
-                if (perlin_value >= tree_chance) {
-                    value = 3;  // Trees
-                } else if (perlin_value >= weeds_chance) {
-                    value = 2;  // Weeds
-                } else if (perlin_value >= grass_chance) {
-                    value = 1;  // Grass
-                } else {
-                    value = 0;  // dirt
-                }
-                vmap->value[index] = value;
+                vmap->value[index] = choose_place(places, places_count, perlin_value);
                 // zox_log("value veggie: %f", value);
             }
         }
         generate->value = zox_generate_tunk_mountains;
     }
 } zox_sys_end(VegetationMapSystem);
+
+/*byte value;
+if (perlin_value >= flower_chance) {
+    value = 4;  // Flowers
+} else if (perlin_value >= tree_chance) {
+    value = 3;  // Trees
+} else if (perlin_value >= weeds_chance) {
+    value = 2;  // Weeds
+} else if (perlin_value >= grass_chance) {
+    value = 1;  // Grass
+} else {
+    value = 0;  // dirt
+}
+vmap->value[index] = value;*/

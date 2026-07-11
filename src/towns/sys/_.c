@@ -3,18 +3,9 @@
 #include "walls.c"
 
 void zox_define_systems_towns(ecs* world) {
-    zox_system_1(
-        RegionTownsSystem,
-        zoxp_mainthread + 1,
-        [in] core.Generate,
-        [in] core.Seed,
-        [in] blocks.BlockPosition2,
-        [in] blocks.BlockSize2,
-        [none] regions.Region
-    );
     zox_system(
         TownMapSystem,
-        zoxp_update, // EcsPreStore,
+        zoxp_update,
         [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
@@ -34,5 +25,14 @@ void zox_define_systems_towns(ecs* world) {
         [out] chunks3.GenerateChunk,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk
+    );
+    zox_system_1(
+        RegionTownsSystem,
+        zoxp_mainthread,
+        [in] core.Seed,
+        [in] blocks.BlockPosition2,
+        [in] blocks.BlockSize2,
+        [out] regions.GenerateRegion,
+        [none] regions.Region
     );
 }

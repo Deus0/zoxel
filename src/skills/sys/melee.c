@@ -186,7 +186,7 @@ zox_sys2(MeleeSystem) {
             entity chunk = raycast->chunk;
             // First check Vode:
             zox_mut_begin(chunk, VoxelNode, root);
-            VoxelNode* leaf = open_at_VoxelNode(root, raycast->depth, positionl, 0); //  getm
+            VoxelNode* leaf = open_VoxelNode(root, raycast->depth, positionl, 0); //  getm
             // TODO: Subdivide Octree if not lowest level! we need it at lowest level for destruction
             if (!leaf) {
                 zox_loge("Leaf is null in melee system");

@@ -1,15 +1,15 @@
 // NOTE: When light resolution increases, we need to reflood lights from nearby chunks
 byte try_flood_light(const byte* solidity, const VoxelNode* voxels, LightNode* lights, byte depth, byte3 position, const VoxelNode* neighbor_voxels, const LightNode* neighbor_lights, byte3 neighbor_position, const VoxelNode** nvoxels, const LightNode** nlights, LightQueue** nqueues) {
     // first check this chunks voxel
-    byte voxel = get_value_VoxelNode(voxels, depth, position, 0);
+    byte voxel = getv_VoxelNode(voxels, depth, position);
     if (voxel && solidity[voxel - 1]) {
         return 0;
     }
-    byte neighbor_voxel = get_value_VoxelNode(neighbor_voxels, depth, neighbor_position, 0);
+    byte neighbor_voxel = getv_VoxelNode(neighbor_voxels, depth, neighbor_position);
     if (neighbor_voxel && solidity[neighbor_voxel - 1]) {
         return 0;
     }
-    byte neighbor_light = get_value_LightNode(neighbor_lights, depth, neighbor_position, 0);
+    byte neighbor_light = getv_LightNode(neighbor_lights, depth, neighbor_position);
     neighbor_light -= light_air_decay;
     return flood_light(voxels, lights, nvoxels, nlights, nqueues, depth, position, neighbor_light, light_propogation_distance, darklight, light_air_decay, solidity);
 }

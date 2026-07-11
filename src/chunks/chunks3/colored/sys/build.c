@@ -55,7 +55,7 @@ void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees
                 } else if (nposition.x < 0 || nposition.x >= vlength || nposition.y < 0 || nposition.y >= vlength || nposition.z < 0 || nposition.z >= vlength) {
                     naos[i] = 0;
                 } else {
-                    const VoxelNode* noctree = get_VoxelNode(root, depth, int3_to_byte3(nposition), 0);
+                    const VoxelNode* noctree = get_VoxelNode(root, depth, int3_to_byte3(nposition));
                     // BUG: Crashed here, maybe corrupted?
                     naos[i] = noctree ? noctree->value > 0 : edge;
                 }

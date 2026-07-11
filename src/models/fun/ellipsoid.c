@@ -27,7 +27,7 @@ void voctree_fill_ellipsoid(VoxelNode* voctree, byte ndepth, byte value, byte3 c
                 if (lhs > rhs) {
                     continue;
                 }
-                set_VoxelNode(voctree, ndepth, pposition, value, 0);
+                set_VoxelNode(voctree, ndepth, pposition, value);
             }
         }
     }

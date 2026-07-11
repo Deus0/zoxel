@@ -108,7 +108,7 @@ void dispose_system_##T(iter *it) {\
     }\
 } \
 \
-byte open_##T(T* node) { \
+byte zopen_##T(T* node) { \
     void* ptr = (void*) malloc(sizeof(T) * octree_length);\
     if (ptr) { \
         node->ptr = ptr; \
@@ -127,7 +127,7 @@ void clone_##T(T* dst, const T* src) {\
     if (src->type == node_type_instance) {\
         dst->ptr = src->ptr;\
     } else if (src->ptr) {\
-        open_##T(dst);\
+        zopen_##T(dst);\
         T* kids_dst = get_children_##T(dst);\
         T* kids_src = get_children_##T(src);\
         for (byte i = 0; i < octree_length; i++) {\

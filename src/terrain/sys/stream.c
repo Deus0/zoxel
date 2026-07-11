@@ -8,18 +8,23 @@ zox_sys2(TerrainStreamSystem) {
     // First Cache Streamers (like Billboard System)
     // Next
     zox_sys_begin();
+    zox_sys_in(Seed);
     zox_sys_in(BlockScale);
     zox_sys_in(NodeDepth);
+    zox_sys_out(RegionLinks);
     zox_sys_out(TunkLinks);
     zox_sys_out(ChunkLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(Seed, seed);
         zox_sys_i(BlockScale, block_scale);
         zox_sys_i(NodeDepth, depth);
+        zox_sys_o(RegionLinks, regions);
         zox_sys_o(TunkLinks, tunks);
         zox_sys_o(ChunkLinks, chunks);
         // NOTE: For all streamers, check chunks exist for their stream sizes
         // TODO: Add a list here of new positions then spawn them after streamers check, keep closest distance, due to multiple stream points
+        byte chunk_length = octree_size(depth->value);
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
@@ -47,14 +52,27 @@ zox_sys2(TerrainStreamSystem) {
                 int3 position = int3_zero;
                 for (position.x = stream_position->value.x - size.x; position.x <= stream_position->value.x + size.x; position.x++) {
                     for (position.z = stream_position->value.z - size.z; position.z <= stream_position->value.z + size.z; position.z++) {
-                        // TODO: Spawn Regions here too!
-                        int2 position2 = (int2) { position.x, position.z };
-                        int new_distance = int2_distance(stream_position2, position2);
-                        entity tunk = int2_hashmap_get(tunks->value, position2);
+                        int2 tunk_position = (int2) { position.x, position.z };
+                        int2 region_position = tunk_position_to_region_position(tunk_position);
+                        // NOTE: Spawn our region if it doesn't exist!
+                        entity region = int2_hashmap_get(regions->value, region_position);
+                        if (!zox_valid(region)) {
+                            // Generate Seed from Terrain Seed
+                            lint region_seed = position_seed2(seed->value, region_position);
+                            int2 block_position = region_position_to_block_position(region_position, depth->value);
+                            int2 block_size = (int2) { region_dividor * chunk_length, region_dividor * chunk_length };
+                            region = spawn_region(world, prefab_region, e, region_seed, region_position, int2_one, block_position, block_size);
+                            int2_hashmap_add(regions->value, region_position, region);
+                            if (dbg_log) {
+                                zox_log("New Region [%ix%i] Spawned", region_position.x, region_position.y);
+                            }
+                        }
+                        int new_distance = int2_distance(stream_position2, tunk_position);
+                        entity tunk = int2_hashmap_get(tunks->value, tunk_position);
                         // NOTE: If tunk doesnt exist, spawn new terrain pillar here!
                         if (!zox_valid(tunk)) {
-                            tunk = spawn_tunk(world, prefab_tunk2, e, position2, new_distance);
-                            int2_hashmap_add(tunks->value, position2, tunk);
+                            tunk = spawn_tunk(world, prefab_tunk2, e, region, tunk_position, new_distance);
+                            int2_hashmap_add(tunks->value, tunk_position, tunk);
                             // Spawn chunks per Tunk, if new!
                             Chunk3Stack stack = (Chunk3Stack) { 0 };
                             byte stack_i = 0;

@@ -72,16 +72,7 @@ zox_sys2(UnstuckSystem) {
             continue;
         }
         // voxel
-        byte voxel = get_value_VoxelNode(voctree, cdepth, pointl, 0);
-        // byte voxel = get_sub_node_voxel_locked(voctree, &pointl, cdepth);
-        /*if (inside->value != voxel) {
-            inside->value = voxel;
-            idirty->value = zox_dirty_trigger;
-            // zox_log("Inside new block [%i]", voxel);
-        } else if (!int3_equals(pointv, lastv)) {
-            // Compares voxel position and triggers when moving into same block type
-            idirty->value = zox_dirty_trigger;
-        }*/
+        byte voxel = getv_VoxelNode(voctree, cdepth, pointl);
         // If in air, we just cache inside position
         if (!voxel || !colliders[voxel]) {
             last->value = position->value;

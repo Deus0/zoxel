@@ -42,12 +42,12 @@ static inline byte dark_flood_light(
                 continue;
             }
             if (n_root_vnode) {
-                byte voxel = get_value_VoxelNode(n_root_vnode, depth, pos, 0);
+                byte voxel = getv_VoxelNode(n_root_vnode, depth, pos);
                 if (voxel && solidity[voxel - 1]) {
                     continue; // solid wall
                 }
             }
-            byte ncurrent_light = get_value_LightNode(n_root_lnode, depth, pos, 0);
+            byte ncurrent_light = getv_LightNode(n_root_lnode, depth, pos);
             if (ncurrent_light <= min_light) {
                 continue;   // omg this wasn't here
             }
@@ -85,18 +85,18 @@ static inline byte dark_flood_light(
             continue;
         }
         // --- in-chunk ---
-        byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
+        byte voxel = getv_VoxelNode(root_vnode, depth, pos);
         if (voxel) {
             continue; // solid → stop
         }
-        byte current_light = get_value_LightNode(root_lnode, depth, pos, 0);
+        byte current_light = getv_LightNode(root_lnode, depth, pos);
         if (current_light <= min_light) {
             continue;   // omg this wasn't here
         }
         if (current_light < old_light) {
             zox_logv("     - Light Banished at [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, old_light, distance);
             // extinguish here and continue removing
-            set_LightNode(root_lnode, depth, pos, min_light, 0);
+            set_LightNode(root_lnode, depth, pos, min_light);
             dirty = 1;
             dark_flood_light(
                 root_vnode,
@@ -151,21 +151,21 @@ byte dark_sunbeam(DarkQueue* queued, const VoxelNode* root_vnode, LightNode* roo
             flood_end = pos.y;
             continue;
         }
-        byte voxel = get_value_VoxelNode(root_vnode, depth, pos, 0);
+        byte voxel = getv_VoxelNode(root_vnode, depth, pos);
         if (voxel && solidity[voxel - 1]) {
             // zox_log("sunbeam stopped v at [%ix%ix%i] v[%i]",  pos.x, pos.y, pos.z, voxel);
             beam_stopped = 1;
             break;
         }
         // extinguish sunlight here
-        byte current_light = get_value_LightNode(root_lnode, depth, pos, 0);
+        byte current_light = getv_LightNode(root_lnode, depth, pos);
         if (current_light != sunlight) {
             // zox_log("sunbeam stopped l at %i", pos.y);
             beam_stopped = 1;
             break;
         }
         zox_logv("     - Light Banished at [%ix%ix%i] l[%i]", pos.x, pos.y, pos.z, current_light);
-        set_LightNode(root_lnode, depth, pos, min_light, 0);
+        set_LightNode(root_lnode, depth, pos, min_light);
         dirty = 1;
         if (y == 0) {
             flood_end = pos.y;
@@ -261,9 +261,9 @@ zox_sys2(DarkLightSystem) {
             // if (depthl->value != update.depth) continue;   // for now
             if (update.type == zox_light_type_flood) {
                 zox_logv("[%s] Begin Dark Flooding [%ix%ix%i] l[%i] distance [%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, update.distance, dark_queue->count);
-                byte current_light = get_value_LightNode(root_lnode, depthl->value, update.pos, 0);
+                byte current_light = getv_LightNode(root_lnode, depthl->value, update.pos);
                 if (current_light > darklight) {
-                    set_LightNode(root_lnode, depthl->value, update.pos, darklight, 0);
+                    set_LightNode(root_lnode, depthl->value, update.pos, darklight);
                     dirty = 1;
                 }
                 if (dark_flood_light(root_vnode, root_lnode, nnodesv, nnodesl, n_light_queues, light_queue, n_dark_queues, dark_queue, depthl->value, update.pos, update.light, update.distance, darklight, light_air_decay, solidity)) {

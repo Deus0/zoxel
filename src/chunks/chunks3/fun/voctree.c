@@ -10,7 +10,7 @@ void fill_octree(VoxelNode* voctree, byte voxel, byte depth) {
         return;
     }
     depth--;
-    open_VoxelNode(voctree);
+    open_one_VoxelNode(voctree);
     VoxelNode* kids = get_children_VoxelNode(voctree);
     for (byte i = 0; i < octree_length; i++) {
         fill_octree(&kids[i], voxel, depth);

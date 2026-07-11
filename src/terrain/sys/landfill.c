@@ -1,6 +1,6 @@
-int sand_height = 6;
-int grass_height = 8;
-int stone_height = 18;
+short sand_height = 2;
+short grass_height = 4;
+short stone_height = 18;
 
 // NOTE: Fills land with Soils based on biomes
 zox_sys2(LandfillChunk3System) {

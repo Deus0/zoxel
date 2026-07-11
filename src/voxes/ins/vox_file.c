@@ -82,7 +82,7 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
                     continue;
                 }
                 byte3 ppos = position;
-                set_VoxelNode(node, node_depth, ppos, voxels[vox_index], 0);
+                set_VoxelNode(node, node_depth, ppos, voxels[vox_index]);
             }
         }
     }

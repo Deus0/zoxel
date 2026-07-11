@@ -85,7 +85,7 @@ zox_sys2(TunkTextureSystem) {
                     }
                     for (sbyte y = map_length - 1; y >= 0; y--) {
                         position.y = y;
-                        byte voxel = getv_VoxelNode(voxels, position, chunk_depth);
+                        byte voxel = getv_VoxelNode(voxels, chunk_depth, position);
                         if (!voxel) {
                             continue;
                         }

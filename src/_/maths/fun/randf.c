@@ -6,11 +6,18 @@ float randf() {
     return (float) rand() / max;
 }*/
 
+// NOTE: Upper bound max is Exclusive
 int rand_range(int min, int max) {
+    if (max <= min) {
+        return min;
+    }
     return min + rand() % (max - min);
 }
 
 float randf_range(float min, float max) {
+    if (max <= min) {
+        return min;
+    }
     return min + (max - min) * randf();
 }
 

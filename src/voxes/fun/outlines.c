@@ -12,10 +12,10 @@ void vox_outlines(VoxelNode *chunk, byte node_depth, byte black_voxel) {
                     /*if (get_sub_node_voxel(chunk, &temp_position_2, node_depth) == 0) {
                         continue;
                     }*/
-                    if (get_value_VoxelNode(chunk, node_depth, voxel_position, 0) == 0) {
+                    if (getv_VoxelNode(chunk, node_depth, voxel_position) == 0) {
                         continue;
                     }
-                    if (!set_VoxelNode(chunk, node_depth, voxel_position, black_voxel, 0)) {
+                    if (!set_VoxelNode(chunk, node_depth, voxel_position, black_voxel)) {
                         zox_logw("Set Voxel Failure [%ix%ix%i]", voxel_position.x, voxel_position.x, voxel_position.z);
                     }
                     //byte2 set_voxel = (byte2) { black_voxel, node_depth };

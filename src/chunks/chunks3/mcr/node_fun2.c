@@ -3,7 +3,7 @@
 void clone_at_depth_##T(T* dst, const T* src, byte target_depth, byte depth) {\
     if (target_depth > 0 && depth == target_depth - 1) {\
         if (src->ptr) {\
-            open_##T(dst);\
+            open_one_##T(dst);\
         }\
     }\
     \
@@ -25,14 +25,7 @@ void clone_at_depth_##T(T* dst, const T* src, byte target_depth, byte depth) {\
 \
 \
 /* maybe make below function use this if it isn't in the non root node */\
-const T* get_adjacent_##T(\
-    const T** neighbors,\
-    const T* root,\
-    int3 position,\
-    byte depth,\
-    byte dir,\
-    byte *chunk_index \
-) {\
+const T* get_adjacent_##T(const T** neighbors, const T* root, int3 position, byte depth, byte dir, byte *chunk_index) {\
     if (depth >= 8) {\
         return NULL;\
     }\
@@ -41,14 +34,14 @@ const T* get_adjacent_##T(\
     if (position.x >= 0 && position.x < b && \
         position.y >= 0 && position.y < b && \
         position.z >= 0 && position.z < b) { \
-        return get_##T(root, depth, int3_to_byte3(position), 0); \
+        return get_##T(root, depth, int3_to_byte3(position)); \
         /*return gett_##T(node, position, depth);*/\
     } else {\
         /* special case for adjacent ptr, flips position and crosses to neighbor chunk */\
         *chunk_index = dir + 1;\
         const T* n = neighbors[dir]; \
         position = reverse_position(position, dir, b); \
-        return get_##T(n, depth, int3_to_byte3(position), 0); \
+        return get_##T(n, depth, int3_to_byte3(position)); \
         /*return gett_##T(n, position, depth); */\
     }\
 }\
@@ -70,7 +63,7 @@ const T* get_adjacentn_##T(const T** neighbors, const T* vnode, int3 position, b
         } \
     }\
     \
-    return get_##T(vnode, depth, int3_to_byte3(position), 0);\
+    return get_##T(vnode, depth, int3_to_byte3(position));\
 }
 
 byte is_on_edge_octree(byte depth, int3 position, byte direction) {
@@ -88,85 +81,3 @@ byte get_adjacent_depth(byte depth,const byte* ndepths, int3 position, byte dire
         return depth;
     }
 }
-
-/* if depth finish or if closed node, return node early */
-/*
- base find_node_value_##T(\
- const T* node,\
- int3 position,\
- byte depth)\
- if (depth == 0 || node->ptr == NULL) {\
- {\
-     return node->value;\
- }\
- depth--;\
- byte dividor = powers_of_two[depth];\
- int3 local_position = (int3) {\
-     position.x / dividor,\
-     position.y / dividor,\
-     position.z / dividor\
- };\
- int3 child_octree_position = (int3) {\
-     position.x % dividor,\
-     position.y % dividor,\
-     position.z % dividor\
- };\
- T* kids = get_children_##T(node);\
- return find_node_value_##T(&kids[int3_to_node_index(local_position)], child_octree_position, depth);\
- }\
-\
-const T* gett_##T(\
-    const T* node,\
-    int3 position,\
-    byte depth \
-) {\
-    if (!node || depth >= 8) { \
-        zox_log_error("invalid node or depth: in get_# T"); \
-        return NULL; \
-    } \
-    if (!depth || !has_children_##T(node)) {\
-        return node;\
-    }\
-    depth--;\
-    byte dividor = powers_of_two[depth];\
-    int3 node_position = (int3) { \
-        position.x / dividor,\
-        position.y / dividor,\
-        position.z / dividor\
-    }; \
-    int i = int3_to_node_index(node_position); \
-    int3 child_position = (int3) {\
-        position.x % dividor,\
-        position.y % dividor,\
-        position.z % dividor\
-    };\
-    T* kids = get_children_##T(node); \
-    return gett_##T( \
-        &kids[i], \
-        child_position, \
-        depth); \
-}\
-
-
-\
-void clone_depth_##T(\
-    T* dst,\
-    const T* src,\
-    const byte max_depth,\
-    byte depth \
-) {\
-    dst->value = src->value;\
-    dst->type = src->type;\
-    depth++;\
-    if (src->ptr && depth <= max_depth) {\
-        open_##T(dst);\
-        T* kids_dst = get_children_##T(dst);\
-        T* kids_src = get_children_##T(src);\
-        for (byte i = 0; i < octree_length; i++) {\
-            clone_depth_##T(&kids_dst[i], &kids_src[i], max_depth, depth);\
-        }\
-    } else {\
-        dst->ptr = src->ptr;\
-    }\
-} \
- */

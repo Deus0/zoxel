@@ -20,13 +20,13 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
     if (zox_valid(chunk_last)) {
         zox_geter_value(chunk_last, RenderDepth, byte, depth_last);
         zox_geter(chunk_last, LightNode, light_node_last);
-        byte light_last = get_value_LightNode(light_node_last, depth_last, data->positionl_last, 0);
+        byte light_last = getv_LightNode(light_node_last, depth_last, data->positionl_last);
         index += snprintf(buffer + index, size - index, "Last Chunk [%s]\n", zox_get_name(chunk_last));
         index += snprintf(buffer + index, size - index, " - Depth [%i]\n", depth_last);
         index += snprintf(buffer + index, size - index, " - Position [%ix%ix%i]\n", data->positionl_last.x, data->positionl_last.y, data->positionl_last.z);
         index += snprintf(buffer + index, size - index, " - Light Air [%i]\n", light_last);
         /*if (depth_last) {
-            byte light_air_upper = get_value_LightNode(light_node_last, depth_last - 1, data->positionl_last, 0);
+            byte light_air_upper = getv_LightNode(light_node_last, depth_last - 1, data->positionl_last);
             index += snprintf(buffer + index, size - index, " - Light Air (+1 depth) [%i]\n", light_air_upper);
         }*/
     } else {
@@ -80,10 +80,10 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
     /*entity chunk_hit = data->chunk;
     zox_geter_value(chunk_hit, RenderDepth, byte, depth_hit);
     zox_geter(chunk_hit, LightNode, light_node_hit);
-    byte light_hit = get_value_LightNode(light_node_hit, depth_hit, data->positionl, 0);
+    byte light_hit = getv_LightNode(light_node_hit, depth_hit, data->positionl);
     index += snprintf(buffer + index, size - index, "   + Light Inside [%i]\n", light_hit);
     if (depth_hit) {
-        byte light_hit_upper = get_value_LightNode(light_node_hit, depth_hit - 1, data->positionl, 0);
+        byte light_hit_upper = getv_LightNode(light_node_hit, depth_hit - 1, data->positionl);
         index += snprintf(buffer + index, size - index, "   + Light Inside (+1 depth) [%i]\n", light_hit_upper);
     }
     index += snprintf(buffer + index, size - index, "   + positionl[L] [%ix%ix%i]\n",
@@ -105,7 +105,7 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
         }
     }
     index += snprintf(buffer + index, size - index, "]\n");
-    byte light = get_value_LightNode(light_node_hit, depth_hit, data->positionl, 0);
+    byte light = getv_LightNode(light_node_hit, depth_hit, data->positionl);
     index += snprintf(buffer + index, size - index, "   + inside light [%i]\n", light);*/
     return index;
 }

@@ -9,13 +9,14 @@ zox_sys2(PlayerCharacterStatsSystem) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
-        if (state->value != zox_dirty_end) {
+        if (state->value != zox_dirty_active) {
             continue;
         }
-        zox_geter(realm->value, StatLinks, rstats);
+        zox_geter(realm->value, StatLinks, stats);
+        spawn_base_stats(world, e, stats);
         // add all attributes as 0
-        for (int j = 0; j < rstats->length; j++) {
-            entity rstat = rstats->value[j];
+        for (int j = 0; j < stats->length; j++) {
+            entity rstat = stats->value[j];
             if (!zox_valid(rstat)) {
                 continue;
             }

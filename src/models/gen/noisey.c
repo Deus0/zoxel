@@ -6,11 +6,11 @@ void vnoise3(VoxelNode* voctree, byte depth, byte2 voxel_range, byte black_voxel
         for (position.y = 0; position.y < size.y; position.y++) {
             for (position.z = 0; position.z < size.z; position.z++) {
                 // skip outline parts
-                if (get_value_VoxelNode(voctree, depth, position, 0) == black_voxel) {
+                if (getv_VoxelNode(voctree, depth, position) == black_voxel) {
                     continue;
                 }
                 byte value = voxel_range.x + rand() % (voxel_range.y - voxel_range.x);
-                set_VoxelNode(voctree, depth, position, value, 0);
+                set_VoxelNode(voctree, depth, position, value);
             }
         }
     }
@@ -40,7 +40,7 @@ void vnoise3_spray_side(VoxelNode* voctree, byte depth, byte value, byte2 penetr
                     if (rando > 600) {
                         break;
                     }
-                    set_VoxelNode(voctree, depth, position, value, 0);
+                    set_VoxelNode(voctree, depth, position, value);
                 }
             }
         }
@@ -58,7 +58,7 @@ void vnoise3_spray_side(VoxelNode* voctree, byte depth, byte value, byte2 penetr
                     if (rando > 300) {
                         break;
                     }
-                    set_VoxelNode(voctree, depth, position, value, 0);
+                    set_VoxelNode(voctree, depth, position, value);
                 }
             }
         }
@@ -76,7 +76,7 @@ void vnoise3_spray_side(VoxelNode* voctree, byte depth, byte value, byte2 penetr
                     if (rando > 300) {
                         break;
                     }
-                    set_VoxelNode(voctree, depth, position, value, 0);
+                    set_VoxelNode(voctree, depth, position, value);
                 }
             }
         }

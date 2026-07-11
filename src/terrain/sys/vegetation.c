@@ -55,6 +55,7 @@ zox_sys2(VegetationChunk3System) {
         byte soil_grass_id = 0;
         byte grass_id = 0;
         byte wood_id = 0;
+        byte flower_id = 0;
         write_lock_VoxelNode(voctree);
         for (positionl.x = 0; positionl.x < voctree_length; positionl.x++) {
             for (positionl.z = 0; positionl.z < voctree_length; positionl.z++) {
@@ -65,15 +66,12 @@ zox_sys2(VegetationChunk3System) {
                 byte height = height_map->value[map_index];
                 // NOTE: No need for vegetation under the sea
                 //  (maybe some sea weed later)
+                if (veggie == zox_vegetation_dirt) {
+                    continue;
+                }
                 if (height <= grass_height || height >= stone_height) {
                     continue;
                 }
-                // Get Top Positions from Height Map
-                /* int top_position = height - chunk_block_position.y;
-                top_position /= hmultiplier;
-                if (top_position < 0 || top_position >= voctree_length) {
-                    continue;
-                }*/
                 // NOTE: Checks if outer bounds to determine if on top of world
                 if (biome_id >= realm_biomes->length) {
                     zox_loge("Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
@@ -91,19 +89,21 @@ zox_sys2(VegetationChunk3System) {
                     entity soil_grass = zox_get_child_by_id(world, biome, zox_id(BlockSoilGrass));
                     entity grass = zox_get_child_by_id(world, biome, zox_id(BlockGrass));
                     entity wood = zox_get_child_by_id(world, biome, zox_id(BlockWood));
+                    entity flower = zox_get_child_by_id(world, biome, zox_id(BlockFlower));
                     // Get IDs from Entitites
                     soil_grass_id = zox_valid(soil_grass) ? zox_getv(soil_grass, BlockIndex) : 0;
                     grass_id = zox_valid(grass) ? zox_getv(grass, BlockIndex) : 0;
                     wood_id = zox_valid(wood) ? zox_getv(wood, BlockIndex) : 0;
+                    flower_id = zox_valid(flower) ? zox_getv(flower, BlockIndex) : 0;
                 }
-                if (veggie >= 1) {
-                    // NOTE: Make dirt Soil Grass
+                // NOTE: All Vegetation has grass underneath except wood
+                if (veggie != zox_vegetation_trees) {
                     int global_y = height;
                     if (global_y >= chunk_block_position.y) {
                         positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {
                             if (height >= chunk_block_position.y && height < chunk_block_position.y + voctree_length) {
-                                set_VoxelNode(voctree, depth->value, positionl, soil_grass_id, 0);
+                                set_VoxelNode(voctree, depth->value, positionl, soil_grass_id);
                             }
                         }
                     }
@@ -112,20 +112,19 @@ zox_sys2(VegetationChunk3System) {
                 if (!is_max_depth) {
                     continue;
                 }
-                if (veggie == 2) {
-                    // Place Grass on tops
+                if (veggie == zox_vegetation_weeds) {
                     if (grass_id) {
                         int global_y = height + 1;
                         if (global_y >= chunk_block_position.y) {
                             positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
                             if (positionl.y >= 0 && positionl.y < voctree_length) {
-                                if (!getv_VoxelNode(voctree, positionl, depth->value)) {
-                                    set_VoxelNode(voctree, depth->value, positionl, grass_id, 0);
+                                if (!getv_VoxelNode(voctree, depth->value, positionl)) {
+                                    set_VoxelNode(voctree, depth->value, positionl, grass_id);
                                 }
                             }
                         }
                     }
-                } else if (veggie == 3) {
+                } else if (veggie == zox_vegetation_trees) {
                     // TODO: Grow through chunks neighbors
                     // Trees
                     for (int h = 1; h <= 2 + rand() % 4; h++) {
@@ -135,7 +134,19 @@ zox_sys2(VegetationChunk3System) {
                         }
                         positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (positionl.y >= 0 && positionl.y < voctree_length) {
-                            set_VoxelNode(voctree, depth->value, positionl, wood_id, 0);
+                            set_VoxelNode(voctree, depth->value, positionl, wood_id);
+                        }
+                    }
+                } else if (veggie == zox_vegetation_flowers) {
+                    if (flower_id) {
+                        int global_y = height + 1;
+                        if (global_y >= chunk_block_position.y) {
+                            positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
+                            if (positionl.y >= 0 && positionl.y < voctree_length) {
+                                if (!getv_VoxelNode(voctree, depth->value, positionl)) {
+                                    set_VoxelNode(voctree, depth->value, positionl, flower_id);
+                                }
+                            }
                         }
                     }
                 }

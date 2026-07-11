@@ -4,8 +4,9 @@
 #define zox_player_state_new 2      // Stream Begins / camera set
 #define zox_player_state_starting 3     // Spawn starting character
 // Entering Play
-#define zox_player_state_play_begin 4   // For Resume and Start states
-#define zox_player_state_playing 5
+#define zox_player_state_play_begin_trigger 4
+#define zox_player_state_play_begin 5   // For Resume and Start states
+#define zox_player_state_playing 6
 // TODO: Use a different state in respawning
 #define zox_player_state_respawn_begin 30   // fade out
 #define zox_player_state_respawning 31

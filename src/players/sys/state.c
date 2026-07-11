@@ -62,6 +62,10 @@ zox_sys2(PlayerStateSystem) {
             if (dbg_log) {
                 zox_log("Player is now starting from load.");
             }
+        } else if (state->value == zox_player_state_play_begin_trigger) {
+            // Enter state for between spawning character, use for UI Spawning delay
+            state->value = zox_player_state_play_begin;
+            dirty->value = zox_dirty_trigger;
         } else if (state->value == zox_player_state_play_begin) {
             state->value = zox_player_state_playing;
             dirty->value = zox_dirty_trigger;

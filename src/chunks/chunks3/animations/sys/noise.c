@@ -2,7 +2,7 @@ void random_fill_octree(VoxelNode* node, byte voxel, byte depth) {
     node->value = voxel;
     if (depth > 0) {
         depth--;
-        open_VoxelNode(node);
+        open_one_VoxelNode(node);
         VoxelNode* kids = get_children_VoxelNode(node);
         for (int i = 0; i < octree_length; i++) {
             random_fill_octree(&kids[i], voxel, depth);

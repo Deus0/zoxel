@@ -23,7 +23,7 @@ typedef struct {
 
 static inline byte get_raycast_sides(ecs* world, const RaycastVoxelData* data) {
     zox_geter(data->chunk, SidesOctree, sides);
-    return getv_SidesOctree(sides, data->positionl, data->depth);
+    return getv_SidesOctree(sides, data->depth, data->positionl);
 }
 
 void clear_raycast_data(RaycastVoxelData* data) {

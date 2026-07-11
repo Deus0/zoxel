@@ -1,3 +1,5 @@
+float fog_settings_mul = 1.0f / 0.048f;
+
 zox_sys2(RenderingSettingsSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -9,7 +11,7 @@ zox_sys2(RenderingSettingsSystem) {
             continue;
         }
         spawn_setting_byte_slider(world, e, "Downscale", viewport_downscale, (byte2) { 1, 8 });
-        spawn_setting_float(world, e, "Fog", fog_density / 0.068f, (float2) { 0, 1 });
+        spawn_setting_float(world, e, "Fog", fog_density / fog_settings_mul, (float2) { 0, 1 });
     }
 } zox_sys_end(RenderingSettingsSystem);
 
@@ -32,7 +34,7 @@ zox_sys2(RenderingSettingsDirtySystem) {
                 zox_log("Float Setting [%s] Set [%f]", name->value, value);
             }
             if (!strcmp(name->value, "Fog")) {
-                fog_density = 0.068f * value;
+                fog_density = fog_settings_mul * value;
             }
         } else if (zox_has(e, SettingByte)) {
             byte value = zox_getv(e, SettingByte);

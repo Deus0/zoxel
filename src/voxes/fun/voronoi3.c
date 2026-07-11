@@ -149,7 +149,7 @@ void voronoi3(VoxelNode *node, byte depth, byte2 voxel_range, byte black_voxel, 
                 if (region_voxel != vregions) {
                     value = voxel_range.x + (region_voxel % (voxel_range.y - voxel_range.x));
                 }
-                set_VoxelNode(node, depth, position, value, 0);
+                set_VoxelNode(node, depth, position, value);
             }
         }
     }

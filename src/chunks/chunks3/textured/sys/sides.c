@@ -82,7 +82,7 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* root, co
         byte3 cposition = position;
         byte3_multiply_byte(&cposition, 2);
         if (!sides->ptr) {
-            open_SidesOctree(sides);
+            open_one_SidesOctree(sides);
             // NOTE: If fails malloc
             if (!sides->ptr) {
                 return 0;

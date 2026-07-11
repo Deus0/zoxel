@@ -1,10 +1,10 @@
-float color_rgb_to_hue(const color_rgb value) {
-    const float red = (int) value.r / 255.0f;
-    const float green = (int) value.g / 255.0f;
-    const float blue = (int) value.b / 255.0f;
-    const float max = float_max(red, float_max(green, blue));
-    const float min = float_min(red, float_min(green, blue));
-    const float delta = (max - min);
+float color_rgb_to_hue(color_rgb value) {
+    float red = (int) value.r / 255.0f;
+    float green = (int) value.g / 255.0f;
+    float blue = (int) value.b / 255.0f;
+    float max = float_max(red, float_max(green, blue));
+    float min = float_min(red, float_min(green, blue));
+    float delta = (max - min);
     int multi = 60; // 42; // 60
     float hue = 0; // (int) ceil
     if (red == max) {
@@ -20,13 +20,13 @@ float color_rgb_to_hue(const color_rgb value) {
     return hue;
 }
 
-float color_rgb_to_saturation(const color_rgb value) {
-    const float red = (int) value.r / 255.0f;
-    const float green = (int) value.g / 255.0f;
-    const float blue = (int) value.b / 255.0f;
-    const float max = float_max(red, float_max(green, blue));
-    const float min = float_min(red, float_min(green, blue));
-    const float delta = (max - min);
+static inline float color_rgb_to_saturation(color_rgb value) {
+    float red = (int) value.r / 255.0f;
+    float green = (int) value.g / 255.0f;
+    float blue = (int) value.b / 255.0f;
+    float max = float_max(red, float_max(green, blue));
+    float min = float_min(red, float_min(green, blue));
+    float delta = (max - min);
     if (max == 0) {
         return 0;
     } else {
@@ -34,15 +34,15 @@ float color_rgb_to_saturation(const color_rgb value) {
     }
 }
 
-float color_rgb_to_value(const color_rgb value) {
-    const float red = (int) value.r / 255.0f;
-    const float green = (int) value.g / 255.0f;
-    const float blue = (int) value.b / 255.0f;
-    const float max = float_max(red, float_max(green, blue));
+static inline float color_rgb_to_value(color_rgb value) {
+    float red = (int) value.r / 255.0f;
+    float green = (int) value.g / 255.0f;
+    float blue = (int) value.b / 255.0f;
+    float max = float_max(red, float_max(green, blue));
     return max * 100;
 }
 
-float3 color_rgb_to_hsv(const color_rgb value) {
+static inline float3 color_rgb_to_hsv(color_rgb value) {
     return (float3) {
         color_rgb_to_hue(value),
         color_rgb_to_saturation(value),
@@ -50,9 +50,9 @@ float3 color_rgb_to_hsv(const color_rgb value) {
     };
 }
 
-color_rgb hsv_to_color_rgb(const float3 hsv) {
-    const float hue = hsv.x;
-    const float saturation = hsv.y / 100.0f;
+color_rgb hsv_to_color_rgb(float3 hsv) {
+    float hue = hsv.x;
+    float saturation = hsv.y / 100.0f;
     const float value = hsv.z / 100.0f;
     float chroma = value * saturation;
     float hue_ = fmod(hue / 60.0f, 6.0f); // zox_fmod

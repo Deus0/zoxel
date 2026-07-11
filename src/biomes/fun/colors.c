@@ -2,19 +2,6 @@ extern double terrain_frequency;
 
 byte realm_colors_count = 8;
 
-static inline float wrap_hue(float h) {
-    while (h < 0.0f) h += 360.0f;
-    while (h >= 360.0f) h -= 360.0f;
-    return h;
-}
-
-static inline float3 hsv_shift(float3 hsv, float dh, float ds, float dv) {
-    hsv.x = wrap_hue(hsv.x + dh);
-    hsv.y = clampf(hsv.y + ds, 0.0f, 100.0f);
-    hsv.z = clampf(hsv.z + dv, 0.0f, 100.0f);
-    return hsv;
-}
-
 /*void generate_colors_old(lint seed, Colors *colors) {
 
     srand((unsigned int) seed);

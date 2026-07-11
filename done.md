@@ -1,5 +1,11 @@
 # Done
 
+-x Bug: Map Arrow pointing wrong way
+-x Towns are spawning differently every load...
+-x Bug: Sometimes towns spawn inside one another?? weird af
+-x StatsBars sometimes missing at start!
+-x Bug: Some VoxTextures not created - Debris, Flowers, Decayed (theyre generated but not uploaded?? idk)
+-x Spawn Regions in stream system - link it to tunk there
 -x Bug: Item Text still there after we pickup item
 -x Bug: Free Roam not working with f1 + right click
 -x Bug: Hat dissapears when Swapping

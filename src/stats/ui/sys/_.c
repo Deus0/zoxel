@@ -47,6 +47,7 @@ void define_systems_stats_ui(ecs *world) {
         zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
+        [in] characters.CharacterLink,
         [in] layouts2.CanvasLink,
         [none] players.Player
     );

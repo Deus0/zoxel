@@ -94,11 +94,7 @@ zox_sys2(DungeonBlockSystem) {
                         continue;
                     }
                     zox_geter(check_chunk, VoxelNode, check_node);
-                    const VoxelNode* check_subnode = get_VoxelNode(
-                        (VoxelNode*) check_node,
-                        check_node_depth,
-                        check_positionl, 0
-                    );
+                    const VoxelNode* check_subnode = get_VoxelNode((VoxelNode*) check_node, check_node_depth, check_positionl);
                     if (!check_subnode || check_subnode->value == place_id) {
                         continue;
                     }

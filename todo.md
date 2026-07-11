@@ -2,49 +2,58 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-Regressions:
-- Bug: Some VoxTextures not created - Debris, Flowers, Decayed (theyre generated but not uploaded?? idk)
-- [02:12:59] [WARNING] [character3_player_9369]'s Exceeded Capacity [64] [zox_get_children] 
-- [02:13:07] [WARNING] [taskbar_icon_4294977265] Invalid GPU Link [0]
-
+New:
+- When Level up + 3 stat points
+- When you have stat points, add + button on Attributes
+- When attributes go up, increase base stats too!
+- When equiping gear, add particles buff around character
 - Add dust particles when we jump
-- Make GenerateTexture a byte again - so we set per system
-- Spawn Regions in stream system - link it to tunk there
+- Spawn NPCs based on spawn maps in tunks
+
+Fixes:
+- Move NPC dialogue distance back 1 units
+
+Optimize:
 - Opt: HeightMapSystem lagging, use LODin g for HeightMaps / Tunk Generation
-
-- Ref: Make models just use one vox with multiple Renders Underneath, atm it spawns 5 models and regenerates everytime
 - Opt: SoundGenerateSystem by using preset sound data + mods
-- Bug: Edge of map UI is glitchy
-- Bug: Taskbar toggle not deactivated when window closes
-- Ref: Remake RenderDepthDirty for TerrainChunks, setting per system instead of zoxc_state
-
 - Opt: Spawn Sound Samples on Realm Start, then use this data in generated sounds - optimized sound generation
 - Opt: also add back the color uploads for chunk meshes - MeshColorsDirty
 - Opt: ChunkNeighborSystem
     - On Init - add to neighbor directly from the init chunk
     - On Spawn - grab directly there from dictionary on terrain
 - Add a queue for spawning new positions, do like 256 checks per frame for terrain for spawning, so its delayed a bit? only if still lagging with new stream systems
-- Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunk
-- Fix Android Build - on arm pcs
 - SoundGenerateSystem - uses too much still
-- Towns are spawning differently every load...
-- Spawn based on spawn maps in tunks
-- Fix Slemz eyes - missing
-- Move NPC dialogue distance back 1 units
-- Refactor Models to nodegraphs for soil, stone, etc
+
+Refactor:
+- Make GenerateTexture a byte again - so we set per system
+- Ref: Make models just use one vox with multiple Renders Underneath, atm it spawns 5 models and regenerates everytime
+- Rft: Make GenerateCharacter states and byte type
+- Ref: Remake RenderDepthDirty for TerrainChunks, setting per system instead of zoxc_state
 - Finish removning all spawn_block_vox
+- Refactor Models to nodegraphs for soil, stone, etc
+
+Regressions:
 - Bug: Fix music on Main Menu
+- Bug: Fix music loading properly
+- [02:12:59] [WARNING] [character3_player_9369]'s Exceeded Capacity [64] [zox_get_children] 
+- [02:13:07] [WARNING] [taskbar_icon_4294977265] Invalid GPU Link [0]
+- Fix Android Build - on arm pcs
+- Fix Slemz eyes - missing
+
+Bugs:
+- Bug: Edge of map UI is glitchy
+- Bug: Taskbar toggle not deactivated when window closes
+- Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunk
+- Bug: The 3D uis are flickering due to depth fighting atm
+- Bug: Sometimes when streaming, chunks will flicker randomly
 - Bug: Fix Grass placement on outer chunks, it places + 1 but using lower depth so goes too high
+- Bug: died holding block, stuck to model?
 
 # Misc
-- Bug: Sometimes towns spawn inside one another?? weird af
 - Tool: Make a region debugger, show the region bounds with a cross through each corner (X) A big X
 - Show max system time's graph, in red, overlay over the regular graph
 - Bug: lines of selected block should render over destruction overlay
-- Bug: died holding block, stuck to model?
-- Bug: Fix music loading properly
 - Bug: Realm Generation: Memory leak somewhere, breaks during VoxGenerationSystem - color spawning - test with valgrind on x86 later
-- Bug: Map Arrow pointing wrong way
 - Bug: Character shakes - smooth the physics - put to sleep when not moving
 - Refactor: load files on boot and not per realm
 

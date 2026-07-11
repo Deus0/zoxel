@@ -147,7 +147,7 @@ zox_sys2(PlayerBeginSystem) {
         if (mouse) {
             zox_set(mouse, MouseLock, { 1 });
         }
-        state->value = zox_player_state_play_begin;
+        state->value = zox_player_state_play_begin_trigger;
         dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(PlayerBeginSystem);

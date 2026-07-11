@@ -1,7 +1,7 @@
 void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) {
-    byte vlength = octree_size(depth); // powers_of_two_byte[depth];
+    byte vlength = octree_size(depth);
     if (vlength == 1) {
-        set_VoxelNode(voctree, depth, byte3_zero, black, 0);
+        set_VoxelNode(voctree, depth, byte3_zero, black);
         return;
     }
     byte3 size = byte3_single(vlength);
@@ -40,14 +40,14 @@ void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) 
                         (pos.z % (brick_d + mortar) >= brick_d-1)
                     );
                     if (chip) {
-                        set_VoxelNode(voctree, depth, pos, black, 0);
+                        set_VoxelNode(voctree, depth, pos, black);
                     } else {
                         byte voxel = voxels.x + rand() % (voxels.y - voxels.x);
-                        set_VoxelNode(voctree, depth, pos, voxel, 0);
+                        set_VoxelNode(voctree, depth, pos, voxel);
                     }
                 } else {
                     // mortar
-                    set_VoxelNode(voctree, depth, pos, black, 0);
+                    set_VoxelNode(voctree, depth, pos, black);
                 }
             }
         }

@@ -10,6 +10,7 @@ zox_sys2(MountainMapSystem) {
     zox_sys_out(VegetationMap);
     zox_sys_out(HeightMap);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(RegionLink, region);
         zox_sys_i(TunkPosition, tunk_position);
         zox_sys_o(GenerateTunk, generate);
@@ -19,16 +20,20 @@ zox_sys2(MountainMapSystem) {
         if (generate->value != zox_generate_tunk_mountains) {
             continue;
         }
+        if (!zox_valid(region->value)) {
+            zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in MountainMaps", zox_get_name(e), tunk_position->value.x, tunk_position->value.y, region->value);
+            continue;
+        }
+        // NOTE: Skip if still Generating Region
+        if (zox_getv(region->value, GenerateRegion)) {
+            continue;
+        }
         if (!height_map->length) {
             zox_logw("Invalid [height_map] in MountainMapSystem");
             continue;
         }
         if (!vegetation_map->length) {
             zox_logw("Invalid [vegetation_map] in MountainMapSystem");
-            continue;
-        }
-        if (!zox_valid(region->value)) {
-            zox_loge("Tunk has invalid region at [%ix%i]", tunk_position->value.x, tunk_position->value.y);
             continue;
         }
         // now generate height_map

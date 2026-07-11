@@ -46,7 +46,7 @@ zox_sys2(InsideBlockSystem) {
             continue;
         }
         // voxel
-        byte voxel = get_value_VoxelNode(voctree, cdepth, positionl, 0);
+        byte voxel = getv_VoxelNode(voctree, cdepth, positionl);
         // byte voxel = get_sub_node_voxel_locked(voctree, &positionl, cdepth);
         if (inside->value != voxel) {
             inside->value = voxel;

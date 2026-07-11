@@ -42,20 +42,20 @@ void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const 
         }
         for (int i = 0; i < tedge.x; i++) {
             for (int j = 0; j < tedge.y; j++) {
-                byte voxel = get_value_VoxelNode(chunk, depth, (byte3) { d, j, i }, 0);
+                byte voxel = getv_VoxelNode(chunk, depth, (byte3) { d, j, i });
                 byte is_darken = 0;
                 if (!voxel) {
                     is_darken = 1;
                     if (side == block_side_left) {
                         for (int x = 0; x < size.y; x++) {
-                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { x, j, i }, 0);
+                            voxel = getv_VoxelNode(chunk, depth, (byte3) { x, j, i });
                             if (voxel) {
                                 break;
                             }
                         }
                     } else {
                         for (int x = size.y - 1; x >= 0; x--) {
-                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { x, j, i }, 0);
+                            voxel = getv_VoxelNode(chunk, depth, (byte3) { x, j, i });
                             if (voxel) {
                                 break;
                             }
@@ -80,20 +80,20 @@ void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const 
         }
         for (int i = 0; i < tedge.x; i++) {
             for (int j = 0; j < tedge.y; j++) {
-                byte voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, d, j }, 0);
+                byte voxel = getv_VoxelNode(chunk, depth, (byte3) { i, d, j });
                 byte is_darken = 0;
                 if (!voxel) {
                     is_darken = 1;
                     if (side == block_side_down) {
                         for (int k = 0; k < size.y; k++) {
-                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, k, j }, 0);
+                            voxel = getv_VoxelNode(chunk, depth, (byte3) { i, k, j });
                             if (voxel) {
                                 break;
                             }
                         }
                     } else {
                         for (int k = size.y - 1; k >= 0; k--) {
-                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, k, j }, 0);
+                            voxel = getv_VoxelNode(chunk, depth, (byte3) { i, k, j });
                             if (voxel) {
                                 break;
                             }
@@ -118,20 +118,20 @@ void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const 
         }
         for (int i = 0; i < tedge.x; i++) {
             for (int j = 0; j < tedge.y; j++) {
-                byte voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, j, d }, 0);
+                byte voxel = getv_VoxelNode(chunk, depth, (byte3) { i, j, d });
                 byte is_darken = 0;
                 if (!voxel) {
                     is_darken = 1;
                     if (side == block_side_back) {
                         for (int k = 0; k < size.x; k++) {
-                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, j, k }, 0);
+                            voxel = getv_VoxelNode(chunk, depth, (byte3) { i, j, k });
                             if (voxel) {
                                 break;
                             }
                         }
                     } else {
                         for (int k = size.x - 1; k >= 0; k--) {
-                            voxel = get_value_VoxelNode(chunk, depth, (byte3) { i, j, k }, 0);
+                            voxel = getv_VoxelNode(chunk, depth, (byte3) { i, j, k });
                             if (voxel) {
                                 break;
                             }
@@ -175,7 +175,8 @@ zox_sys2(VoxTextureSystem) {
         zox_sys_i(ModelLink, vox);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
-        if (state->value != zox_dirty_active) {
+        // NOTE: It had to be delayed one frame due to the Generating Vox Time
+        if (state->value != zox_dirty_end) { // zox_dirty_active) {
             continue;
         }
         if (!zox_valid(vox->value) || !zox_has(vox->value, VoxelNode) || !zox_has(vox->value, ColorRGBs)  || !zox_has(vox->value, ChunkSize) || !zox_has(vox->value, NodeDepth)) {
@@ -223,12 +224,6 @@ zox_sys2(VoxTextureSystem) {
             zox_loge("Vox Texture e[%s] v[%s] Size (still) too large [%ix%i] > [%ix%i]", zox_get_name(e), zox_get_name(vox->value), vox_texture_size.x, vox_texture_size.y,  size->value.x,  size->value.y);
             continue;
         }
-        /*while (vox_texture_size.x > size->value.x) {
-            vox_texture_size.x /= 2;
-        }
-        while (vox_texture_size.y > size->value.y) {
-            vox_texture_size.y /= 2;
-        }*/
         int2 texture_offset = int2_sub(size->value, vox_texture_size);
         texture_offset = int2_divide_int(texture_offset, 2);
         int new_size = size->value.x * size->value.y;
