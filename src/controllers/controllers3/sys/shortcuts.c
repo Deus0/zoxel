@@ -9,9 +9,6 @@ zox_sys2(QolShortcutsSystem) {
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Keyboard));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2) || !zox_has(e2, Keyboard)) {
-                continue;
-            }
             zox_geter(e2, Keyboard, keyboard);
             if (keyboard->f11.pressed_this_frame) {
                 toggle_fullscreen = 1;

@@ -11,7 +11,6 @@ zox_sys2(AppsSettingsSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        // Disable Bones?
         spawn_setting_byte(world, e, "Fullscreen", fullscreen);
         spawn_setting_byte(world, e, "VSync", vsync);
     }
@@ -51,6 +50,9 @@ zox_sys2(AppsSettingsDirtySystem) {
 void zox_toggle_fullscreen(ecs *world) {
     fullscreen = !fullscreen;
     zox_log("TODO: Set Fullscreen Setting here.");
+    if (zox_valid(main_app)) {
+        zox_set_app_fullscreen(world, main_app, fullscreen);
+    }
 }
 
 void zox_toggle_maximized(ecs *world) {
