@@ -45,7 +45,11 @@ zox_sys2(PlayerTownFinderSystem) {
         if (!zox_valid(region)) {
             continue;
         }
-        if (zox_getv(region, Generate)) {
+        if (!zox_has(region, GenerateRegion)) {
+            zox_loge("Region Missing GenerateRegion");
+            continue;
+        }
+        if (zox_getv(region, GenerateRegion)) {
             if (dbg_log) {
                 zox_log("Terrain Loading Regions... (PlayerTownFinderSystem)");
             }

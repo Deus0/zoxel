@@ -42,11 +42,11 @@ zox_sys2(TerrainStreamSystem) {
                 // if (dirty->value != zox_dirty_active) {
                     continue;
                 }
-                // Shows 1, 2, 3
-                // zox_log("dirty->value: %i", dirty->value);
-                if (level->value < 1 || terrain->value != e) {
+                if (terrain->value != e) {
                     continue;
                 }
+                // Shows 1, 2, 3
+                // zox_log("dirty->value: %i", dirty->value);
                 int2 stream_position2 = (int2) { stream_position->value.x, stream_position->value.z };
                 int3 size = (int3) { terrain_lod_far, render_distance_y, terrain_lod_far };
                 int3 position = int3_zero;
@@ -66,6 +66,9 @@ zox_sys2(TerrainStreamSystem) {
                             if (dbg_log) {
                                 zox_log("New Region [%ix%i] Spawned", region_position.x, region_position.y);
                             }
+                        }
+                        if (level->value < 1) {
+                            continue;
                         }
                         int new_distance = int2_distance(stream_position2, tunk_position);
                         entity tunk = int2_hashmap_get(tunks->value, tunk_position);

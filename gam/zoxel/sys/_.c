@@ -4,6 +4,7 @@
 #include "items_blocks.c"
 #include "body_parts.c"
 #include "equipment.c"
+#include "food.c"
 #include "quests.c"
 #include "dialogues.c"
 #include "blocks.c"
@@ -33,6 +34,12 @@ void define_systems_zoxel(ecs *world) {
         zoxp_mainthread,
         [in] realms.GenerateRealm,
         [out] stats.StatLinks,
+        [none] realms.Realm
+    );
+    zox_system_1(
+        FoodRealmSpawnSystem,
+        zoxp_mainthread,
+        [in] realms.GenerateRealm,
         [none] realms.Realm
     );
     zox_system_1(

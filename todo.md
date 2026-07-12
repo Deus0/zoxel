@@ -25,6 +25,7 @@ Optimize:
 - SoundGenerateSystem - uses too much still
 
 Refactor:
+- Remove Realm Links components, just use Children
 - Make GenerateTexture a byte again - so we set per system
 - Ref: Make models just use one vox with multiple Renders Underneath, atm it spawns 5 models and regenerates everytime
 - Rft: Make GenerateCharacter states and byte type
