@@ -3,7 +3,7 @@
 // todo: add unique colors as a property too
 zox_sys2(VoxGenerationSystem) {
     byte dbg_log = 0;
-    byte max_process = 0;   // TODO: Make work without breaking
+    byte max_process = 2;   // TODO: Make work without breaking
     byte dbg_orientation = 0;
     byte dbg_whitebox = 0;
     zox_sys_world();

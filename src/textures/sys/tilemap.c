@@ -75,9 +75,6 @@ zox_sys2(TilemapGenerationSystem) {
         int2 texture_position = int2_zero;
         int texture_index = 0;
         memset(data->value, 255, data->length * sizeof(color));
-        /*for (int j = 0; j < data->length; j++) {
-            data->value[j] = color_white;
-        }*/
         for (texture_position.y = 0; texture_position.y < tmsize->value.y && texture_index < textures->length; texture_position.y++) {
             for (texture_position.x = 0; texture_position.x < tmsize->value.x && texture_index < textures->length; texture_position.x++) {
                 entity texture = textures->value[texture_index];

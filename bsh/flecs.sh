@@ -3,7 +3,7 @@ set -euo pipefail
 # Shell to download Flecs
 
 # Requirements: curl
-version=4.1.5
+version=4.1.6
 url=https://raw.githubusercontent.com/SanderMertens/flecs/v${version}/distr
 
 if test -f inc/flecs/flecs.c && test -f inc/flecs/flecs.h; then
