@@ -14,7 +14,7 @@ zox_tag(FillTexture);
 zox_tag(TextureAddNoise);
 zox_tag(TextureRGB);
 zox_tag(ArrowTexture);
-zoxc_state(GenerateTexture);
+zoxc_byte(GenerateTexture);
 zoxc_byte(OutlineThickness);
 zoxc_byte(FrameCorner);
 zoxc_float(IconRadius);
@@ -52,7 +52,7 @@ void define_components_textures(ecs* world) {
     zoxd_tag(VoxTexture);
     zoxd_tag(CenterVoxTexture);
     zoxd_tag(ArrowTexture);
-    zoxd_state(GenerateTexture);
+    zoxd_byte(GenerateTexture);
     zoxd_byte(OutlineThickness);
     zoxd_byte(FrameCorner);
     zoxd_float(IconRadius);

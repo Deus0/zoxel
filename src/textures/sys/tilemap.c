@@ -6,25 +6,25 @@ zox_sys2(TilemapGenerationSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GenerateTexture);
     zox_sys_in(TilemapSize);
     zox_sys_in(TextureLinks);
+    zox_sys_out(GenerateTexture);
     zox_sys_out(TextureSize);
     zox_sys_out(TextureData);
     zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(GenerateTexture, state);
         zox_sys_i(TilemapSize, tmsize);
         zox_sys_i(TextureLinks, textures);
+        zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureSize, size);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
-        if (state->value != zox_dirty_active || dirty->value) {
+        if (generate->value != zox_generate_texture_run || dirty->value) {
             continue;
         }
         if (!textures->length || !tmsize->value.x) {
-            zox_log_error("Invalid Textures for Tilemap");
+            zox_loge("Invalid Textures for Tilemap");
             continue;
         }
         byte still_generating = 0;
@@ -36,26 +36,33 @@ zox_sys2(TilemapGenerationSystem) {
             }
             // NOTE: THese are the texture_file entities
             if (!zox_has(texture, GenerateTexture)) {
-                // entity block = get_block_link(world, texture);
-                // zox_loge("Tilemap Texture (of block [%s]) has no GenerateTexture [%i]", zox_get_name(block), j);
                 continue;
             }
-            if (zox_gett_value(texture, GenerateTexture)) {
+            if (zox_getv(texture, GenerateTexture)) {
                 if (dbg_log) {
                     zox_log("Tilemap still generating... [%i]", j);
                 }
                 still_generating = 1;
                 break;
             }
+            if (zox_has(texture, Busy) && zox_getv(texture, Busy)) {
+                if (dbg_log) {
+                    zox_log("Tilemap Texture Busy... [%s] [%i]", zox_get_name(texture), j);
+                }
+                // still_generating = 1;
+                break;
+            }
         }
         if (still_generating) {
-            zox_set(e, GenerateTexture, { zox_dirty_trigger });
+            if (dbg_log) {
+                zox_log("Tilemap Still Generating");
+            }
             continue;
         }
         // generate size based on TilemapSize
         entity first_texture = textures->value[0];
         if (!zox_valid(first_texture)) {
-            zox_log_error("Invalid First Texture for Tilemap");
+            zox_loge("Invalid First Texture for Tilemap");
             continue;
         }
         int2 unit_size = zox_getv(first_texture, TextureSize);
@@ -66,20 +73,21 @@ zox_sys2(TilemapGenerationSystem) {
         resize_TextureData(data, size->value.x * size->value.y);
         int2 texture_position = int2_zero;
         int texture_index = 0;
-        for (int j = 0; j < data->length; j++) {
+        memset(data->value, 255, data->length * sizeof(color));
+        /*for (int j = 0; j < data->length; j++) {
             data->value[j] = color_white;
-        }
+        }*/
         for (texture_position.y = 0; texture_position.y < tmsize->value.y && texture_index < textures->length; texture_position.y++) {
             for (texture_position.x = 0; texture_position.x < tmsize->value.x && texture_index < textures->length; texture_position.x++) {
                 entity texture = textures->value[texture_index];
                 if (!zox_valid(texture) || !zox_has(texture, TextureData)) {
-                    zox_log_error("invalid texture [%s] index [%i]", zox_get_name(texture), texture_index)
+                    zox_loge("invalid texture [%s] index [%i]", zox_get_name(texture), texture_index)
                     texture_index++;
                     continue;
                 }
                 zox_geter(texture, TextureData, texture_data);
                 if (!texture_data->value) {
-                    zox_log_error("invalid texture data [%s] index [%i]", zox_get_name(texture), texture_index);
+                    zox_loge("Invalid texture data [%s] index [%i]", zox_get_name(texture), texture_index);
                     texture_index++;
                     continue;
                 }
@@ -108,8 +116,11 @@ zox_sys2(TilemapGenerationSystem) {
                 texture_index++;
             }
         }
-        // Set dirty here
         dirty->value = zox_dirty_trigger;
+        generate->value = zox_generate_texture_end;
+        if (dbg_log) {
+            zox_log("Tilemap Generated!");
+        }
     }
 } zox_sys_end(TilemapGenerationSystem);
 

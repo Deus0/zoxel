@@ -2,10 +2,10 @@
 zox_sys2(SustemTimePlotSystem) {
     zox_sys_begin();
     zox_sys_in(SystemDeltaCache);
-    zox_sys_out(DataDouble);
+    zox_sys_out(DoubleData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(SystemDeltaCache, time);
-        zox_sys_o(DataDouble, data);
+        zox_sys_o(DoubleData, data);
         if (!data->length || !data->value) {
             continue;
         }

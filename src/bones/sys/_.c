@@ -30,7 +30,7 @@ void define_systems_bones(ecs *world) {
     );
     zox_system(
         BonePaintSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] rendering.MeshDirty,
         [in] bones.BoneIndexes,
         [out] rendering.MeshColorRGBs,

@@ -9,7 +9,7 @@ entity spawn_zigel_prefab(ecs *world, entity prefab) {
     zox_prefab_set(e, SecondaryColor, { color_white });
     zox_prefab_set(e, FontThickness, { 1 });
     zox_prefab_set(e, FontOutlineThickness, { 2 });
-    zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
+    zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     // Layouts2
     // zox_add_tag(e, FixToLayout);
     zox_set(e, LayoutPositionDirty, { 0 });

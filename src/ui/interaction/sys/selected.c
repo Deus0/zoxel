@@ -64,7 +64,7 @@ zox_sys2(ElementSelectedFillColorSystem) {
         if (state->value == zox_state_select_active) {
             if (!color_equals(fill->value, selected_color->value)) {
                 fill->value = selected_color->value;
-                generate->value = zox_dirty_trigger;
+                generate->value = zox_generate_texture_run;
                 if (dbg_log) {
                     zox_log("New Fill Color (Selected) [%s] is [%ix%ix%ix%i]", zox_get_name(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a);
                 }
@@ -72,7 +72,7 @@ zox_sys2(ElementSelectedFillColorSystem) {
         } else if (state->value == zox_state_deselect_active) {
             if (!color_equals(fill->value, idle_color->value)) {
                 fill->value = idle_color->value;
-                generate->value = zox_dirty_trigger;
+                generate->value = zox_generate_texture_run;
                 if (dbg_log) {
                     zox_log("New Fill Color (Idle) [%s] is [%ix%ix%ix%i]", zox_get_name(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a);
                 }
@@ -107,7 +107,7 @@ zox_sys2(ElementSelectedOutlineColorSystem) {
         if (state->value == zox_state_select_active) {
             if (!color_equals(outline->value, selected_color->value)) {
                 outline->value = selected_color->value;
-                generate->value = zox_dirty_trigger;
+                generate->value = zox_generate_texture_run;
                 if (dbg_log) {
                     zox_log("New Outline Color (Selected) [%s] is [%ix%ix%ix%i]", zox_get_name(e), outline->value.r, outline->value.g, outline->value.b, outline->value.a);
                 }
@@ -115,7 +115,7 @@ zox_sys2(ElementSelectedOutlineColorSystem) {
         } else if (state->value == zox_state_deselect_active) {
             if (!color_equals(outline->value, idle_color->value)) {
                 outline->value = idle_color->value;
-                generate->value = zox_dirty_trigger;
+                generate->value = zox_generate_texture_run;
                 if (dbg_log) {
                     zox_log("New Outline Color (Idle) [%s] is [%ix%ix%ix%i]", zox_get_name(e), outline->value.r, outline->value.g,  outline->value.b, outline->value.a);
                 }

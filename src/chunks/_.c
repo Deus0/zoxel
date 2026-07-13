@@ -7,7 +7,11 @@
 #ifndef zoxm_chunks
 #define zoxm_chunks
 
-byte zox_is_slow_updates = 0;
+#define zox_generate_model_run 1
+#define zox_generate_model_bake 2
+#define zox_generate_model_end 0
+
+byte zox_is_slow_updates = 1;
 #include "com/_.c"
 #include "chunks2/_.c"
 #include "chunks3/_.c"

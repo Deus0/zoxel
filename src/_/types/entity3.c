@@ -1,6 +1,9 @@
 typedef struct {
     entity x, y, z;
 } entity3;
+typedef struct {
+    entity x, y, z, w;
+} entity4;
 
 #define zoxc_entity3(name)\
     zoxc(name, entity3)

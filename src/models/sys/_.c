@@ -14,9 +14,9 @@ void define_systems_models(ecs* world) {
     zox_system(
         VoxGenerationSystem,
         zoxp_voxels_write,
-        [in] core.Generate,
         [in] colorz.Color,
         [in] voxes.VoxType,
+        [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,

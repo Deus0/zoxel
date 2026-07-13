@@ -38,7 +38,9 @@ entity spawn_taskbar(ecs* world, entity canvas) {
     int2 size = (int2) { padding.x + (frame_size + padding.x) * taskbar_count + margins.x * 2, frame_size + margins.y * 2 };
     int2 position = (int2) { 0, - size.y / 4 };
     float2 anchor = (float2) { 0.5f, 1 };
-    entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, anchor, NULL);
+    byte header_font_size = 8 * ui_scale;
+    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
+    entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, anchor, header_font_size, header_padding, NULL);
     entity e = e2.x;
     entity body = e2.z;
     zox_set_unique_name(e, "taskbar");

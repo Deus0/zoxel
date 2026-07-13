@@ -4,7 +4,7 @@
 // TODO: spawn list panel, and scrollbar as children of list entity
 
 // NOTE: Set children on scrollview after spawning
-entity spawn_scrollview(ecs *world, entity parent, int2 position, int2 size, float2 anchor, int visible, int max) {
+entity spawn_scrollview(ecs *world, entity parent, int2 position, int2 size, float2 anchor, byte scrollbar_width, int visible, int max) {
     zox_instance(prefab_element_invisible);
     zox_name("scrollview");
     zox_set_parent(world, e, parent);
@@ -13,7 +13,7 @@ entity spawn_scrollview(ecs *world, entity parent, int2 position, int2 size, flo
     zox_set(e, Anchor, { anchor });
     // spawn scrollbar
     {
-        int scrollbar_width = 10 * ui_scale;
+        scrollbar_width *= ui_scale;
         int scrollbar_margins = 0;
         int2 scrollbar_position = (int2) { -(scrollbar_width / 2) - scrollbar_margins, 0 };
         int2 scrollbar_size = (int2) { scrollbar_width, size.y };

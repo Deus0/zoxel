@@ -19,8 +19,6 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
     entity clicked = event.clicked;
     zox_geter_value(player, GameLink, entity, game);
     zox_geter(clicked, FolderPath, path);
-    // zox_geter(player, ElementLinks, elements);
-    // find_array_element_with_tag(elements, MenuLoad, menu);
     entity canvas = zox_getv(player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
     if (!menu) {
@@ -33,7 +31,8 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
     entity realm = spawn_realm(world, prefab_realm);
     zox_set(game, RealmLink, { realm });
     zox_set_ptr(realm, FolderPath, path->value);
-    load2_realm(path->value, "seed.dat", &realm_save);
+    SaveRealm realm_save;
+    load_file_struct(path->value, "seed.dat", &realm_save, sizeof(SaveRealm));
     set_noise_seed(realm_save.seed);
     zox_set(realm, Seed, { realm_save.seed });
     delay_event(world, &delay_spawn_menu_realm, player, 0.01);

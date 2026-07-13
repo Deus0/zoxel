@@ -18,7 +18,7 @@ zox_sys2(MaxSystemTimeLabelSystem) {
     double max_delta = zox_getv(max_system, MaxDoubleData);
     char output[1024];
     output[0] = '\0';
-    sprintf(output, "Frame Time [%0.01fms]\nSystem [%0.01fms]\n%s x%i", (zox_delta_time * 1000), max_delta, zox_get_name(max_system), processes);
+    sprintf(output, "Frame Time [%0.01fms]\n%s\n[%0.01fms] x%i", (zox_delta_time * 1000), zox_get_name(max_system), max_delta, processes);
     uint text_length = strlen(output);
     zox_sys_begin();
     zox_sys_out(TextData);

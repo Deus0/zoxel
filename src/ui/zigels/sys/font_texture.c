@@ -7,6 +7,7 @@ zox_sys2(FontTextureSystem) {
     if (!zox_font_style) {
         return;
     }
+    uint font_children_capacity = 256;
     entity fchildren[font_children_capacity];
     uint fchildren_length = zox_get_children(world, zox_font_style, fchildren, font_children_capacity);
     if (!fchildren_length) {
@@ -15,26 +16,26 @@ zox_sys2(FontTextureSystem) {
     }
     byte is_use_shapes = zox_has(zox_font_style, TTFFontStyle);
     zox_sys_begin();
-    zox_sys_in(GenerateTexture);
     zox_sys_in(ZigelIndex);
     zox_sys_in(FillColor);
     zox_sys_in(SecondaryColor);
     zox_sys_in(TextureSize);
     zox_sys_in(FontThickness);
     zox_sys_in(FontOutlineThickness);
+    zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(GenerateTexture, generate);
         zox_sys_i(ZigelIndex, zindex);
         zox_sys_i(TextureSize, size);
         zox_sys_i(FillColor, color_variable);
         zox_sys_i(SecondaryColor, secondary_color);
         zox_sys_i(FontThickness, thickness);
         zox_sys_i(FontOutlineThickness, outline_thickness);
+        zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureDirty, dirty);
         zox_sys_o(TextureData, data);
-        if (generate->value != zox_dirty_active) {
+        if (generate->value != zox_generate_texture_run) {
             continue;
         }
         if (zindex->value >= fchildren_length) {
@@ -53,6 +54,7 @@ zox_sys2(FontTextureSystem) {
         resize_TextureData(data, length);
         generate_font_texture(data->value, size->value, fontData, secondary_color->value, color_variable->value, is_use_shapes, thickness->value, outline_thickness->value, point_padding);
         dirty->value = zox_dirty_trigger;
+        generate->value = zox_generate_texture_end;
 #ifdef zoxel_debug_zigel_updates
         zox_log("Zigel font is updating [%lu]\n", it->entities[i])
 #endif

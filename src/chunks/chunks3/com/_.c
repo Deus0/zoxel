@@ -9,7 +9,6 @@ zoxc_int3(ChunkSize);
 zoxc_state(ChunkDirty);
 zoxc_byte(BuildChunkMesh);
 zoxc_byte(BlocksSpawned);
-zoxc_byte(GenerateChunk);
 zoxc_entities(ChunkEntities)
 zoxc_link(ChunkLink, entity, ChunkEntities)
 #define chunk_neighbors_length 6
@@ -33,7 +32,6 @@ void define_components_chunks3(ecs* world) {
     zoxd_byte(VoxelNodeEdited); // Marks if Dirty from Users
     zoxd_byte(BlocksSpawned);
     zoxd_byte(BuildChunkMesh);
-    zoxd_byte(GenerateChunk);
     zoxd_state(ChunkDirty);
     zoxd_state(SidesOctreeDirty);
     zoxd_int3(ChunkPosition);

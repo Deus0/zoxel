@@ -27,18 +27,23 @@ void toggle_inspector_target(ecs* world, entity player, entity target) {
         return;
     }
     entity e = 0;   // target inspector
-    entity children[layouts2_children_capacity];
+    /*entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, canvas, children, layouts2_children_capacity);
     for (uint j = 0; j < children_length; j++) {
-        entity e2 = children[j];
-        if (!zox_valid(e2) || !zox_has(e2, InspectorUI)) {
-            continue;
-        }
-        // check target
-        zox_geter_value(e2, EntityTarget, entity, otarget);
-        if (otarget == target) {
-            e = e2;
-            break;
+        entity e2 = children[j];*/
+    iter it2 = zox_children(world, canvas);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity e2 = it2.entities[j];
+            if (!zox_valid(e2) || !zox_has(e2, InspectorUI)) {
+                continue;
+            }
+            // check target
+            entity otarget = zox_getv(e2, EntityTarget);
+            if (otarget == target) {
+                e = e2;
+                break;
+            }
         }
     }
     if (e) {

@@ -161,22 +161,22 @@ zox_sys2(VoxTextureSystem) {
     color debug_color = (color) { 15, 155, 15, 255 };
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GenerateTexture);
     zox_sys_in(TextureSize);
     zox_sys_in(VoxBakeSide);
     zox_sys_in(ModelLink);
+    zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(GenerateTexture, state);
         zox_sys_i(TextureSize, size);
         zox_sys_i(VoxBakeSide, side);
         zox_sys_i(ModelLink, vox);
+        zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
         // NOTE: It had to be delayed one frame due to the Generating Vox Time
-        if (state->value != zox_dirty_end) { // zox_dirty_active) {
+        if (generate->value != zox_generate_texture_run) {
             continue;
         }
         if (!zox_valid(vox->value) || !zox_has(vox->value, VoxelNode) || !zox_has(vox->value, ColorRGBs)  || !zox_has(vox->value, ChunkSize) || !zox_has(vox->value, NodeDepth)) {
@@ -184,16 +184,11 @@ zox_sys2(VoxTextureSystem) {
             continue;
         }
         // NOTE: Delays the texture until its done
-        if (zox_has(vox->value, Generate) && zox_getv(vox->value, Generate)) {
+        if (zox_has(vox->value, GenerateModel) && zox_getv(vox->value, GenerateModel)) {
             // zox_logw("Vox is Generating [%s]", zox_get_name(vox->value));
-            zox_set(e, GenerateTexture, { zox_dirty_trigger });
+            // zox_set(e, GenerateTexture, { zox_dirty_trigger });
             continue;
         }
-        /*if (zox_has(vox->value, GenerateVox) && zox_getv(vox->value, GenerateVox)) {
-            // zox_logw("Vox is Generating [%s]", zox_get_name(vox->value));
-            zox_set(e, GenerateTexture, { zox_dirty_trigger });
-            continue;
-        }*/
         byte bake_depth = next_power_of_two_root(int_max(size->value.x, size->value.y));
         // byte is_center = zox_has(e, CenterVoxTexture);
         zox_geter(vox->value, VoxelNode, voctree);
@@ -258,6 +253,10 @@ zox_sys2(VoxTextureSystem) {
             add_texture_outline(data->value, size->value, air_color, color_black);
         }
         dirty->value = zox_dirty_trigger; // actually not using this for tilemap!
+        generate->value = zox_generate_texture_end;
+        if (zox_has(e, Busy)) {
+            zox_set(e, Busy, { 0 });
+        }
         if (dbg_log) {
             zox_log("Generated Vox Texture e[%s] v[%s] offset %ix%i - vox_texture_size [%ix%i] - texture_size %ix%i - vox_size %ix%ix%i - pixels length [%i]", zox_get_name(e), zox_get_name(vox->value), texture_offset.x, texture_offset.y, vox_texture_size.x, vox_texture_size.y, size->value.x, size->value.y, vox_size.x, vox_size.y, vox_size.z, new_size);
         }

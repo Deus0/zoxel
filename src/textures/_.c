@@ -2,7 +2,8 @@
 #define zoxm_textures
 
 // TODO: Move font texture functions into textures
-
+#define zox_generate_texture_run 1
+#define zox_generate_texture_end 0
 #include "dat/_.c"
 #include "com/_.c"
 #include "gen/_.c"

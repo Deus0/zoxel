@@ -19,16 +19,12 @@ zox_sys2(IconTextureSystem) {
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
         zox_sys_o(GenerateTexture, generate);
-
-        if (generate->value != zox_dirty_active) {
+        if (generate->value != zox_generate_texture_run) {
             continue;
         }
-
         resize_TextureData(data, size->value.x * size->value.y);
-
         const byte add_noise = zox_has(e, TextureAddNoise);
         const byte radius = (byte) (size->value.y * icon_radius->value);
-
         generate_texture_icon(
             data->value,
             size->value,
@@ -39,8 +35,7 @@ zox_sys2(IconTextureSystem) {
             add_noise
         );
         dirty->value = 1;
-
+        generate->value = zox_generate_texture_end;
         // zox_log(" > [%s] radius [%i] size [%ix%i]\n", zox_get_name(it->entities[i]), radius, textureSize->value.x, textureSize->value.y)
-
     }
 } zox_sys_end(IconTextureSystem);

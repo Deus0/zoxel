@@ -83,23 +83,6 @@ zox_sys2(TilemapUVSystem) {
                     uvs->value[uv_index + 1] = float2_add(tile_uv, float2_mul1(voxel_face_uvs[face_index][1], unit_sizef));
                     uvs->value[uv_index + 2] = float2_add(tile_uv, float2_mul1(voxel_face_uvs[face_index][2], unit_sizef));
                     uvs->value[uv_index + 3] = float2_add(tile_uv, float2_mul1(voxel_face_uvs[face_index][3], unit_sizef));
-                    // expand by new face
-                    /*uvs->value[uv_index + 3] = (float2) {
-                        tile_uv.x,
-                        tile_uv.y + unit_sizef
-                    };
-                    uvs->value[uv_index + 2] = (float2) {
-                        tile_uv.x + unit_sizef,
-                        tile_uv.y + unit_sizef
-                    };
-                    uvs->value[uv_index + 1] = (float2) {
-                        tile_uv.x + unit_sizef,
-                        tile_uv.y
-                    };
-                    uvs->value[uv_index + 0] = (float2) {
-                        tile_uv.x,
-                        tile_uv.y
-                    };*/
                     uv_index += uvs_per_face;
                 }
                 texture_index++;

@@ -28,8 +28,7 @@ entity spawn_chunk3(ecs *world, entity prefab, float3 position, float scale, byt
     zox_set(e, RenderDepth, { depth });
     spawn_gpu_mesh(world, e);
     spawn_gpu_colors(world, e);
+    // As this is test function!
     zox_add_tag(e, NoiseChunk);
-    zox_set(e, Generate, { zox_dirty_trigger });
-    // zox_set(e, VoxLink, { terrain });
     return e;
 }

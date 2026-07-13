@@ -5,6 +5,20 @@
 #include "camera_render_ui_system.c"
 
 void define_systems_rendering_cameras(ecs *world) {
+    // restore
+    zox_gpu_restore_system(
+        RenderBufferRestoreSystem,
+        [in] screens.ScreenDimensions,
+        [out] FrameBufferLink,
+        [out] RenderBufferLink
+    );
+    zox_gpu_restore_system(
+        RenderTextureRestoreSystem,
+        [in] rendering.TextureGPULink,
+        [in] rendering.TextureSize,
+        [in] cameras.CameraLink,
+        [none] cameras.RenderTexture
+    );
     // rendering
     zox_system_1(
         CameraRender3DSystem,
@@ -27,19 +41,5 @@ void define_systems_rendering_cameras(ecs *world) {
         [in] screens.ScreenDimensions,
         [in] colorz.FogColor,
         [none] cameras.CameraUI
-    );
-    // restore
-    zox_gpu_restore_system(
-        RenderBufferRestoreSystem,
-        [in] screens.ScreenDimensions,
-        [out] FrameBufferLink,
-        [out] RenderBufferLink
-    );
-    zox_gpu_restore_system(
-        RenderTextureRestoreSystem,
-        [in] rendering.TextureGPULink,
-        [in] rendering.TextureSize,
-        [in] cameras.CameraLink,
-        [none] cameras.RenderTexture
     );
 }

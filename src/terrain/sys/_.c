@@ -37,7 +37,7 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepth,
         [in] rendering.RenderDepthDirty,
         [out] chunks.NodeDepth,
-        [out] chunks3.GenerateChunk,
+        [out] chunks.GenerateChunk,
         // [out] core.Busy,
         [none] terrains.TerrainChunk
     );
@@ -47,7 +47,7 @@ void define_systems_terrain(ecs *world) {
         [in] tunks.TunkLink,
         [in] chunks3.ChunkPosition,
         [in] chunks.NodeDepth,
-        [out] chunks3.GenerateChunk,
+        [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk
     );
@@ -57,7 +57,7 @@ void define_systems_terrain(ecs *world) {
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [in] tunks.TunkLink,
-        [out] chunks3.GenerateChunk,
+        [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk
     );
@@ -65,7 +65,7 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         SunnyChunkGeneratedSystem,
         zoxp_update, // EcsPreUpdate,
-        [in] chunks3.GenerateChunk,
+        [in] chunks.GenerateChunk,
         [out] lights.GenerateLights,
         [none] terrains.TerrainChunk,
         [none] lights3.SunnyChunk
@@ -73,7 +73,7 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         ChunkGeneratedSystem,
         zoxp_update,
-        [out] chunks3.GenerateChunk,
+        [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNodeDirty,
         [none] terrains.TerrainChunk
     );

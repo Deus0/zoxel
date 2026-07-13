@@ -61,7 +61,7 @@ void define_systems_voxes(ecs *world) {
     // Move to Voxes Module
     zox_system(
         ChunkFindNeighborSystem,
-        zoxp_update, // EcsOnLoad,
+        zoxp_update,
         [in] core.InitializeEntity,
         [in] chunks3.ChunkPosition,
         [out] chunks3.ChunkNeighbors,
@@ -70,7 +70,7 @@ void define_systems_voxes(ecs *world) {
     // NOTE: Syncs Terrain Chunk Scales
     zox_system(
         BlockScaleSystem,
-        zoxp_update, // EcsPostLoad,
+        zoxp_update,
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
         [out] blocks.BlockScale
@@ -84,11 +84,11 @@ void define_systems_voxes(ecs *world) {
     );
     zox_system(
         VoxTextureSystem,
-        zoxp_update, // EcsPreUpdate
-        [in] textures.GenerateTexture,
+        zoxp_update,
         [in] rendering.TextureSize,
         [in] blocks.VoxBakeSide,
         [in] rendering.ModelLink,
+        [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [out] rendering.TextureDirty,
         [none] textures.VoxTexture

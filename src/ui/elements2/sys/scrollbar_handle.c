@@ -49,6 +49,5 @@ zox_sys2(ScrollbarHandleSystem) {
         //zox_log("Resizing Scrollbar Handle [%s]:", zox_get_name(handle));
         //zox_log("   + new height [%i] scrollbar height [%i]", handle_height, scrollbar_size.y );
         //zox_log("   visible [%i] existing [%i]", visible->value, list_children_length);
-
     }
 } zox_sys_end(ScrollbarHandleSystem);

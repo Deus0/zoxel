@@ -7,7 +7,7 @@ void add_debug_cube(ecs* world, entity e, float3 size) {
     zox_prefab_set(e, RenderDepth, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, MeshIndicies, { 0 });
-    zox_prefab_set(e, MeshIndiciesGpu, { 0 });
+    zox_prefab_set(e, MesnRenderCount, { 0 });
 }
 
 /*void debug_cubec(

@@ -55,7 +55,7 @@ zox_sys2(GameStartStreamerSystem) {
             zox_set(camera->value, StreamerLevel, { 0 });
         } else {
             // If has save game
-            load_character_p(world, realm, e, &position, &spawn_euler, &spawn_rotation);
+            load_character_player(world, realm, e, &position, &spawn_euler, &spawn_rotation);
             int chunk_position_y = real_position_to_chunk_position1(position.y, terrain_chunk_length, terrain_scale);
             if (!(chunk_position_y >= -render_distance_y && chunk_position_y <= render_distance_y)) {
                 zox_logw("Player was out of Terrain Bounds on load");

@@ -28,6 +28,7 @@ byte is_chunk_busy(ecs* world, entity e) {
 zox_sys2(ChunkMeshSlowSystem) {
     byte dbg_log = 0;
     byte dbg_skip = !zox_is_slow_updates;
+    zox_sys_world();
     if (dbg_skip) {
         zox_sys_begin();
         zox_sys_out(MeshReady);
@@ -48,7 +49,6 @@ zox_sys2(ChunkMeshSlowSystem) {
     entity_array_d* voxes = create_entity_array_d(1);
     byte_array_d* voxes_busy = create_byte_array_d(1);
     // ecs
-    zox_sys_world();
     zox_sys_begin();
     zox_sys_out(MeshReady);
     zox_sys_out(MeshDirty);

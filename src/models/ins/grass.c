@@ -18,7 +18,7 @@ entity2 spawn_model_grass(ecs* world, lint seed, byte max_depth, color vox_color
         zox_set_unique_name(e2, "model_lod_grass");
         zox_set(e2, Seed, { seed });
         zox_set(e2, VoxType, { vox_type_rubble });
-        zox_set(e2, Generate, { zox_dirty_trigger });
+        zox_set(e2, GenerateModel, { zox_generate_model_run });
         zox_set(e2, Color, { vox_color });
         zox_set(e2, RubbleCount, { place_count });
         zox_set(e2, RubbleHeight, { node_length - 1 });

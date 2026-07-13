@@ -21,7 +21,6 @@
 #define inc_nexus_game(x) str_macro(../gam/x/_.c)
 #define zox_nexus_game inc_nexus_game(zox_game)
 // Random
-#define zox_glitch_fix_hierarchy_labels
 #define zox_set_camera_firstperson
 #define zoxel_time_main_loop_cutoff 33.33f
 // Release

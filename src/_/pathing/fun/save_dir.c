@@ -1,7 +1,4 @@
-
-void get_home_directory(
-    char *path, size_t size
-) {
+void get_home_directory(char *path, size_t size) {
 #ifdef zox_windows
     const char *home_directory = getenv("USERPROFILE");
     if (home_directory) {

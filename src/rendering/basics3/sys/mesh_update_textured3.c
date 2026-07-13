@@ -1,4 +1,4 @@
-// Uplaods Terrain Chunks
+// NOTE: Uplaods Terrain Chunks
 zox_sys2(TexturedMeshUploadSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -11,7 +11,7 @@ zox_sys2(TexturedMeshUploadSystem) {
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(MeshDirty);
-    zox_sys_out(MeshIndiciesGpu);
+    zox_sys_out(MesnRenderCount);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(MeshDirty, mesh_dirty);
@@ -22,7 +22,7 @@ zox_sys2(TexturedMeshUploadSystem) {
         zox_sys_i(MeshVertices, verts);
         zox_sys_i(MeshUVs, uvs);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(MeshIndiciesGpu, count);
+        zox_sys_o(MesnRenderCount, count);
         if (mesh_dirty->value != mesh_state_upload) {
             continue;
         }

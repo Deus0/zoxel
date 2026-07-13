@@ -70,7 +70,7 @@ entity game_start_player_load(ecs *world, entity player, entity realm, entity te
     TerrainPlace placer;
     placer.chunk = 0;
     // load position for spawning
-    load_character_p(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
+    load_character_player(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
     byte depth = terrain_depth;
     int3 cposition = real_position_to_chunk_position(placer.position, powers_of_two[depth], terrain_scale);
     placer.chunk = int3_hashmap_get(chunks->value, cposition);

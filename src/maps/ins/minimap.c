@@ -9,7 +9,9 @@ entity spawn_minimap(ecs* world, entity canvas, entity player, entity terrain) {
     // Margin from canvas corner
     int2 position = (int2) { -16, -16 };
     float2 position_anchor = (float2) { 1, 1 };
-    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, position, size, position_anchor, &on_closed_taskbar_window);
+    byte header_font_size = 8 * ui_scale;
+    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
+    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, position, size, position_anchor, header_font_size, header_padding, &on_closed_taskbar_window);
     entity e = e3.x;
     zox_add_tag(e, Map);
     zox_add_tag(e, Minimap);

@@ -36,18 +36,25 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
             set_entity_render_disabled(world, e2, disabled);
         }
     }
-    entity children[layouts2_children_capacity];
+
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity e2 = it2.entities[j];
+    /*entity children[layouts2_children_capacity];
     uint children_length = zox_get_children(world, e, children, transforms3_children_capacity);
     for (uint l = 0; l < children_length; l++) {
-        entity e2 = children[l];
-        if (!zox_valid(e2)) {
-            continue;
+        entity e2 = children[l];*/
+            if (!zox_valid(e2)) {
+                continue;
+            }
+            if (zox_has(e2, RenderDisabled)) {
+                zox_set(e2, RenderDisabled, { disabled });
+            }
+            set_entity_render_disabled(world, e2, disabled);
         }
-        if (zox_has(e2, RenderDisabled)) {
-            zox_set(e2, RenderDisabled, { disabled });
-        }
-        set_entity_render_disabled(world, e2, disabled);
     }
+
 }
 
 byte is_sphere_in_frustum(const plane* planes, float3 center, float radius) {

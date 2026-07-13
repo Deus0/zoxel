@@ -12,8 +12,7 @@
 
 void define_systems_basics3D(ecs* world) {
     // skybox
-    zox_render3_system(
-        1,
+    zox_render3_system(1,
         Basic3RenderSystem,
         [in] transforms.TransformMatrix,
         [in] colorz.Color,
@@ -25,8 +24,7 @@ void define_systems_basics3D(ecs* world) {
         [none] MeshBasic3D
     );
     // unique textured meshes - items
-    zox_render3_system(
-        1,
+    zox_render3_system(1,
         TexturedRenderSystem,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
@@ -40,8 +38,7 @@ void define_systems_basics3D(ecs* world) {
         [none] TexturedMesh3D
     );
     // characters
-    zox_render3_system(
-        1,
+    zox_render3_system(1,
         Characters3RenderSystem,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,
@@ -54,8 +51,7 @@ void define_systems_basics3D(ecs* world) {
         [none] !rendering3.SkeletonMesh
     );
 #ifndef zox_disable_rendering_instances
-    zox_render3_system(
-        1,
+    zox_render3_system(1,
         VoxInstanceRenderSystem,
         [in] transforms.TransformMatrix,
         [in] rendering.InstanceLink,
@@ -71,13 +67,12 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
         [in] rendering.MeshGPULink,
-        // [in] rendering.MaterialGPULink,
         [none] !rendering.MeshUVs,
         [none] !rendering.MeshColorRGBs
     );
     zox_system_1(
         TexturedMeshUploadSystem,
-        zoxp_mainthread, // zoxp_mainthread,
+        zoxp_mainthread,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
         [in] rendering.MeshUVs,
@@ -86,7 +81,7 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshDirty,
-        [out] rendering.MeshIndiciesGpu
+        [out] rendering.MesnRenderCount
     );
     zox_system_1(
         MeshUpdateCharacters3DSystem,
@@ -97,13 +92,13 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshDirty,
         [out] rendering.MeshGPULink,
         [out] rendering.ColorsGPULink,
-        [out] rendering.MeshIndiciesGpu,
+        [out] rendering.MesnRenderCount,
         [none] rendering.MeshColorRGBs,
         [none] !rendering.MeshUVs
     );
     zox_system_1(
         MeshColorsGpuSystem,
-        zoxp_mainthread, // EcsPreStore, // zoxp_mainthread,
+        zoxp_mainthread,
         [in] rendering.MeshColorsDirty,
         [in] rendering.MeshColorRGBs,
         [in] rendering.ColorsGPULink,

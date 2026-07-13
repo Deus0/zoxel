@@ -255,7 +255,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         zox_geter(tilemap->value, TilemapUVs, tilemap_uvs);
         if (!tilemap_uvs->value || !tilemap_uvs->length) {
             zox_sys_e();
-            zox_loge("Tilemap has no TilemapUVs on Chunk Terrain [%s]", zox_get_name(e));
+            zox_loge("Tilemap TilemapUVs on Chunk Terrain [%s] has not generated", zox_get_name(e));
             busy->value = 0;
             continue;
         }

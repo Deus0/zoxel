@@ -4,10 +4,9 @@ entity spawn_dialogue_ui(ecs* world, entity canvas, entity character, entity tar
     int2 size = (int2) { 740, 160 };
     float2 position_anchor = (float2) { 0.5f, 0.74f };
     const char* header_text = zox_valid(target) ? zox_getv(target, ZoxName) : zox_getv(character, ZoxName);
-    // byte header_font_size = 7 * ui_scale;
-    // byte2 header_padding = byte2_single(4 * ui_scale);
-    // int2 header_size = calculate_header_size(strlen(header_text), header_font_size, header_padding);
-    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, int2_zero, size, position_anchor, &on_closed_dialogue_ui);
+    byte header_font_size = 8 * ui_scale;
+    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
+    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, int2_zero, size, position_anchor, header_font_size, header_padding, &on_closed_dialogue_ui);
     entity e = e3.x;
     entity body = e3.z;
     zox_add_tag(e, DialogueUI);
@@ -42,10 +41,10 @@ entity spawn_dialogue_ui(ecs* world, entity canvas, entity character, entity tar
         byte font_size = 6 * ui_scale;
         byte2 button_padding = byte2_single(4 * ui_scale);
         float2 position_anchor = (float2) { 1, 0 };
-        entity e2 = spawn_button(world, prefab_button, parent, "Next", int2_zero, int2_zero, position_anchor, zox_alignment_bottom_right, font_size, button_padding, button_fill, button_outline, button_font_fill, button_font_outline);
-        zox_set(e2, MeshAlignment, { zox_alignment_bottom_right });
-        zox_set(e2, ClickEvent, { &on_click_dialogue_button });
-        zox_add_tag(e2, DialogueButton);
+        entity2 e2 = spawn_button(world, prefab_button, parent, "Next", int2_zero, int2_zero, position_anchor, zox_alignment_bottom_right, font_size, button_padding, button_fill, button_outline, button_font_fill, button_font_outline);
+        zox_set(e2.x, MeshAlignment, { zox_alignment_bottom_right });
+        zox_set(e2.x, ClickEvent, { &on_click_dialogue_button });
+        zox_add_tag(e2.x, DialogueButton);
     }
     return e;
 }

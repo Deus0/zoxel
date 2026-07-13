@@ -34,13 +34,13 @@ void define_systems_timing_debug(ecs* world) {
         SustemTimePlotSystem,
         zoxp_update - 1,
         [in] timing.SystemDeltaCache,
-        [out] core.DataDouble
+        [out] core.DoubleData
     );
     // Gets Curve's Max
     zox_system(
         MaxDataSystem,
         zoxp_update,
-        [in] core.DataDouble,
+        [in] core.DoubleData,
         [out] core.MaxDoubleData,
     );
     // Tracks the Max System from their MaxDoubleData

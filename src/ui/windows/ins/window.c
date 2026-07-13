@@ -1,5 +1,5 @@
 // NOTE: Spawns window with flat inputs and easy to edit
-entity3 spawn_window(ecs* world, entity prefab, entity prefab_body, const char* header, entity parent, int2 position, int2 body_size, float2 anchor, void* on_closed) {
+entity3 spawn_window(ecs* world, entity prefab, entity prefab_body, const char* header, entity parent, int2 position, int2 body_size, float2 anchor, byte header_font_size, byte2 header_padding, void* on_closed) {
     entity3 output;
     color fill = window_fill;
     color outline = window_outline;
@@ -13,8 +13,6 @@ entity3 spawn_window(ecs* world, entity prefab, entity prefab_body, const char* 
         byte is_close_button = on_closed != NULL;
         color header_font_fill = header_font_fill;
         color header_font_outline = header_font_outline;
-        byte header_font_size = 8 * ui_scale;
-        byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
         if (header == NULL || header[0] == '\0') {
             header_font_size = 0;
         }

@@ -1,4 +1,4 @@
-#define create_load_and_save_functions(T, name)\
+/*#define create_load_and_save_functions(T, name)\
 \
 void save_##name(const char *game, const char *filename, T *data) {\
     char path[io_path_size];\
@@ -11,7 +11,6 @@ void save_##name(const char *game, const char *filename, T *data) {\
     }\
     fwrite(data, sizeof(T), 1, file);\
     fclose(file);\
-    /*zox_log(" > saved to [%s]\n", path)*/\
 }\
 \
 byte load_##name(const char *game, const char *filename, T *data) {\
@@ -40,7 +39,6 @@ void save2_##name(const char *game_path, const char *filename, T *data) {\
     fwrite(data, sizeof(T), 1, file);\
     fclose(file);\
     free(path); \
-    /*zox_log(" > saved to [%s]\n", path)*/\
 }\
 \
 byte load2_##name(const char *game_path, const char *filename, T *data) {\
@@ -56,5 +54,4 @@ byte load2_##name(const char *game_path, const char *filename, T *data) {\
     zox_logv("Loaded from [%s]", path);\
     free(path); \
     return filesize > 0;\
-}
-
+}*/

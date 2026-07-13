@@ -31,7 +31,7 @@ zox_sys2(TextUpdateSystem) {
                     }
                     index->value = new_index;
                     zox_muter(e2, GenerateTexture, generate);
-                    generate->value = zox_dirty_trigger;
+                    generate->value = zox_generate_texture_run;
                     zox_mut_end(e2, ZigelIndex);
                 }
             }

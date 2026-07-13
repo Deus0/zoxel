@@ -2,6 +2,38 @@ static inline float float_to_precision(const float v, const float precision) {
     return (float) ( (int) (v * precision) ) / precision;
 }
 
+/*byte save_player_character(const char *game_path, const char *filename, SaveDataCharacter* data) {
+    char * path = join_path(game_path, filename);
+    if (!path) {
+        zox_loge("[save_player_character] failed to build path");
+        return 0;
+    }
+    FILE* file = fopen(path, "wb");
+    if (file == NULL) {
+        zox_log_error("[save2] error saving [%s]", path)
+        perror("Error opening file for writing");
+        free(path);
+        return 0;
+    }
+    size_t written = fwrite(data, sizeof(SaveDataCharacter), 1, file);
+    if (written != 1) {
+        zox_loge("[save_player_character] failed writing save file [%s]", path);
+        perror("fwrite");
+        fclose(file);
+        free(path);
+        return 0;
+    }
+    if (fclose(file) != 0) {
+        zox_loge("[save_player_character] failed closing file [%s]", path);
+        perror("fclose");
+        free(path);
+        return 0;
+    }
+    free(path);
+    return 1;
+}*/
+
+// NOTE: Saves Character to file!
 zox_sys2(CharacterSaveSystem) {
     float precision_level = 100.0f;    // 100
     zox_sys_world();
@@ -11,7 +43,6 @@ zox_sys2(CharacterSaveSystem) {
     zox_sys_in(Euler);
     zox_sys_out(SaveHash);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
         zox_sys_i(RealmLink, realm);
         zox_sys_i(Position3D, position);
         zox_sys_i(Euler, euler);
@@ -37,8 +68,9 @@ zox_sys2(CharacterSaveSystem) {
             continue;
         }
         zox_geter(realm->value, FolderPath, path);
-        save2_player(path->value, "player.dat", &data);
+        if (save_file_struct(path->value, "player.dat", &data, sizeof(SaveDataCharacter))) {
+            hash->value = new_hash;
+        }
         // zox_log("+ new hash detected at [%fx%fx%f] - %lu", position->value.x, position->value.y, position->value.z, hash)
-        hash->value = new_hash;
     }
 } zox_sys_end(CharacterSaveSystem);

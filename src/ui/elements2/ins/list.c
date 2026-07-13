@@ -28,7 +28,6 @@ static inline int2 calculate_header_size(byte length, byte font_size, byte2 padd
     };
 }
 
-
 // TODO: Set scrollbar visible/invisible based on list count
 // TODO: spawn list panel, and scrollbar as children of list entity
 entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnList list_data, byte alignment, entity* elements) {
@@ -42,9 +41,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
     zox_set(e, ListPadding, { list_data.padding });
     zox_set(e, TextPadding, { list_data.button_padding });
     // now spawn elements to fit our window
-    LayoutParentData child_parent_data = { .e = e,
-         //.size = element_data.size
-    };
+    LayoutParentData child_parent_data = { .e = e };
     for (int i = 0; i < list_data.count; i++) {
         byte visible = (i >= 0 && i < list_data.visible_count);
         SpawnListElement child_data = list_data.elements[i];
@@ -55,22 +52,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
         };
         entity child = 0;
         if (child_data.type == list_element_type_button) {
-            /*SpawnTextData child_text_data = {
-                .text = child_data.text,
-                .font_size = list_data.font_size,
-                .font_resolution = list_data.font_size,
-                .margins = list_data.button_padding,
-                .font_fill_color = button_font_fill,
-                .font_outline_color = button_font_outline,
-                .font_thickness = button_font_thickness_fill,
-                .font_outline_thickness = button_font_thickness_outline,
-            };*/
-            /*SpawnButtonData child_button_data = {
-                .prefab_text = prefab_text,
-                .fill = button_fill,
-                .outline = button_outline,
-            };*/
-            child = spawn_button(world, prefab_button, e, child_data.text, int2_zero, int2_zero, float2_half, zox_alignment_centre, list_data.font_size, list_data.button_padding, button_fill, button_outline, button_font_fill, button_font_outline);
+            child = spawn_button(world, prefab_button, e, child_data.text, int2_zero, int2_zero, float2_half, zox_alignment_centre, list_data.font_size, list_data.button_padding, button_fill, button_outline, button_font_fill, button_font_outline).x;
             if (child_data.on_click.value) {
                 zox_set(child, ClickEvent, { child_data.on_click.value });
             }

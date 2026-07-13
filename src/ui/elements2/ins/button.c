@@ -1,4 +1,4 @@
-entity spawn_button(ecs* world, entity prefab, entity parent, const char* text, int2 position, int2 size, float2 position_anchor, byte alignment, byte font_size, byte2 padding, color fill, color outline, color font_fill, color font_outline) {
+entity2 spawn_button(ecs* world, entity prefab, entity parent, const char* text, int2 position, int2 size, float2 position_anchor, byte alignment, byte font_size, byte2 padding, color fill, color outline, color font_fill, color font_outline) {
     int text_length = text != NULL ? strlen(text) : 0;
     if (!size.x || !size.y) {
         size = (int2) {font_size * text_length, font_size };
@@ -15,8 +15,8 @@ entity spawn_button(ecs* world, entity prefab, entity parent, const char* text, 
     zox_set(e, ElementFillColor, { fill });
     zox_set(e, OutlineColor, { outline });
     zox_set(e, ElementOutlineColor, { outline });
-    spawn_text(world, prefab_text, e, int2_zero, float2_half, font_size, alignment, padding, text, font_fill, font_outline);
-    return e;
+    entity e2 = spawn_text(world, prefab_text, e, int2_zero, alignment_to_anchor(alignment), font_size, alignment, padding, text, font_fill, font_outline);
+    return (entity2) { e, e2 };
 }
 
 entity spawn_button_old(ecs *world, LayoutParentData canvas_data, LayoutParentData parent, ElementSpawnData element_data, SpawnTextData zext_data, SpawnButtonData button_data) {

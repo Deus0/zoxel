@@ -22,7 +22,7 @@ void zox_define_systems_towns(ecs* world) {
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [in] tunks.TunkLink,
-        [out] chunks3.GenerateChunk,
+        [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk
     );

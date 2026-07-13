@@ -6,7 +6,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
-    zox_sys_in(MeshIndiciesGpu);
+    zox_sys_in(MesnRenderCount);
     zox_sys_in(TilemapLink);
     zox_sys_in(RenderDisabled);
     byte init = 0;
@@ -17,7 +17,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
-        zox_sys_i(MeshIndiciesGpu, count);
+        zox_sys_i(MesnRenderCount, count);
         zox_sys_i(TilemapLink, tilemap);
         zox_sys_i(RenderDisabled, disabled);
         if (disabled->value || !count || !mesh->value.x) {

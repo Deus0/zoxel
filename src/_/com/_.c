@@ -18,7 +18,7 @@ zoxc_byte(Radius);
 zoxc_byte(Height);
 // Arrays
 zoxc_double(MaxDoubleData);
-zoxc_arrayd(DataDouble, double)
+zoxc_arrayd(DoubleData, double)
 // General
 zoxc_state(Generate);
 zoxc_state(InitializeEntity);
@@ -30,6 +30,25 @@ zoxc_entity(SystemLink);
 #define zox_load_none 0
 #define zox_load_begin 1
 #define zox_load_done 2
+
+// Adds the latest time onto system and moves rest of list up
+void add_double_to_samples(ecs *world, entity e, double value) {
+    if (!zox_valid(e) || !zox_has(e, DoubleData)) {
+        return;
+    }
+    /*if (zox_has(e, PlotPaused) && zox_getv(e, PlotPaused)) {
+        zox_log("plot [%lu] is paused.", e);
+        return;
+    }*/
+    zox_muter(e, DoubleData, data);
+    if (!data || !data->length || !data->value) {
+        return;
+    }
+    for (int i = 0; i < data->length - 1; i++) {
+        data->value[i] = data->value[i + 1];
+    }
+    data->value[data->length - 1] = value;
+}
 
 void zox_define_components_core(ecs* world) {
     // ids
@@ -51,7 +70,7 @@ void zox_define_components_core(ecs* world) {
     zoxd_byte(Height);
     // Arrays
     zoxd_double(MaxDoubleData);
-    zoxd_arrayd(DataDouble);
+    zoxd_arrayd(DoubleData);
     // General
     zoxd_state(Generate);
     zoxd_state(InitializeEntity);

@@ -31,7 +31,8 @@ zox_sys2(StreamEndSystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count && !running; j++) {
                 entity e2 = it2.entities[j];
-                if (!zox_has(e2, Chunk3)) {
+                // if (!zox_has(e2, Chunk3)) {
+                if (!zox_has(e2, Busy)) {
                     continue;
                 }
                 if (zox_getv(e2, Busy)) {

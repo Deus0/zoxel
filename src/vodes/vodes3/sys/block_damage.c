@@ -111,7 +111,7 @@ zox_sys2(BlockDamageQueueSystem) {
                     // TODO: Spawn a simple cube here as child
                     // create health entity
                     // TODO: Get health off meta or use prefab
-                    world_block = zox_ins(prefab_block_health);
+                    world_block = zox_ins(world, prefab_block_health);
                     zox_set(world_block, StatValue, { block_health });
                     zox_set(world_block, StatValueMax, { start_health });
                     // world_block = zox_new();

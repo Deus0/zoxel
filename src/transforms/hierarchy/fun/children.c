@@ -1,4 +1,4 @@
-#define find_child_with_id(e, id, child_name)\
+/*#define find_child_with_id(e, id, child_name)\
     entity child_name = 0;\
     entity children[hierarhys_children_capacity];\
     uint children_length = zox_get_children(world, e, children, hierarhys_children_capacity);\
@@ -21,4 +21,4 @@
             break;\
         }\
     }\
-    if (child_##tag)
+    if (child_##tag)*/

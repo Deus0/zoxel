@@ -13,7 +13,7 @@ entity spawn_prefab_vox(ecs *world, entity prefab, byte depth) {
     zox_set(e, NodeDepth, { depth }); // block_vox_depth });
     add_components_mesh_colored(world, e);
     // This is for Generation tho
-    zox_set(e, Generate, { 0 });
-    zox_prefab_set(e, VoxType, { vox_type_soil });
+    // zox_set(e, Generate, { 0 });
+    // zox_prefab_set(e, VoxType, { vox_type_soil });
     return e;
 }

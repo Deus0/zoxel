@@ -1,9 +1,6 @@
 #define init_delta_time()\
     double delta_time = zox_delta_time;
 
-extern void add_plot_data_time(ecs *world, double value);
-
-
 void initialize_time() {
     time_begin = current_time_in_seconds();
 }
@@ -15,11 +12,12 @@ void skip_time_to_current() {
 }
 
 // main loop
-extern void add_plot_data_time_system(ecs*, double);
+// extern void add_plot_data_time(ecs *world, double value);
+// extern void add_plot_data_time_system(ecs*, double);
 
 void iterate_time_system(ecs *world) {
-    add_plot_data_time_system(world, zox_delta_time_system);
-    zox_delta_time_system = 0;
+    // add_double_to_samples(world, frame_times_samples, zox_delta_time_system * 1000);
+    // add_plot_data_time_system(world, zox_delta_time_system);
 }
 
 void iterate_time(ecs *world) {
@@ -31,7 +29,8 @@ void iterate_time(ecs *world) {
     }
     zox_delta_time = zox_current_time - last_time;
     zox_current_time_check += zox_delta_time;
-    add_plot_data_time(world, zox_delta_time);
+    // add_plot_data_time(world, zox_delta_time);
+    add_double_to_samples(world, frame_times_samples, zox_delta_time * 1000);
     // todo: use a seperate physics time float? fixed_time?
     if (max_zox_delta_time&& zox_delta_time > max_zox_delta_time) {
         zox_delta_time = max_zox_delta_time;
@@ -58,7 +57,8 @@ void iterate_time(ecs *world) {
 #ifdef zox_log_frame_ms
     zox_log(" > frame time [%fms]\n", (float) (zox_delta_time * 1000.0f))
 #endif
-    iterate_time_system(world);
+    // iterate_time_system(world);
+    zox_delta_time_system = 0;
 }
 
 float get_total_time_seconds() {

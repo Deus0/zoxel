@@ -61,7 +61,7 @@ char* fetch_compoent_label(ecs *world, entity target, entity component) {
     uint tlength = inspector_component_size_buffer;
     char* buffer = malloc(tlength);
     if (!zox_valid(target)) {
-        zox_logw("Invalid [Entity] in [fetch_compoent_label]");
+        // zox_logw("Invalid target [Entity] in [fetch_compoent_label]");
         snprintf(buffer, tlength, "Invalid Entity");
         return buffer;
     }

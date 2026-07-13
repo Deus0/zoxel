@@ -1,6 +1,10 @@
-entity spawn_model_soil(ecs* world, entity parent, lint seed, color block_color, float noise) {
+entity spawn_model_soil(ecs* world, const char* name, entity parent, lint seed, color block_color, float noise) {
     entity e = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
-    zox_set_unique_name(e, "model_soil");
+    {
+        char name2[64];
+        sprintf(name2, "model_%s", name);
+        zox_name(name2);
+    }
     zox_set_parent(world, e, parent);
     zox_set(e, Seed, { seed });
     zox_set(e, VoxType, { vox_type_soil });

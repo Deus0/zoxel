@@ -17,6 +17,7 @@ entity spawn_menu_start(ecs* world, entity player, entity canvas) {
     }
     {
         entity e2 = zox_dbg_spawn_chunk3(world, 0);
+        zox_set(e2, GenerateModel, { zox_generate_model_run });
         zox_set_parent(world, e2, e);
     }
     return e;

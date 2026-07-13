@@ -16,7 +16,7 @@ zox_sys2(ElementActiveSystem) {
         zox_sys_o(GenerateTexture, generate);
         if (dirty->value == zox_dirty_active) {
             outline->value = state->value ? acolor->value : idle_outline->value;
-            generate->value = zox_dirty_trigger;
+            generate->value = zox_generate_texture_run;
         }
     }
 } zox_sys_end(ElementActiveSystem);

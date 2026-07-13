@@ -1,7 +1,7 @@
 // our main realm block spawn function
 entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
     byte depth = block_vox_depth;
-    entity e = zox_ins(data.prefab);
+    entity e = zox_ins(world, data.prefab);
     set_ZoxName(world, e, data.name);
     zox_set_unique_name(e, data.name);
     zox_set(e, BlockIndex, { data.index });

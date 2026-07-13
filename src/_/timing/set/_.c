@@ -6,7 +6,7 @@ const double max_zox_delta_time = 1.0 / 10.0;
 byte last_updated_time = 0;
 byte updating_time = 1;
 byte time_pause_disabled = 0;
-#define record_frames_count 300 // 120
+#define record_frames_count 500
 byte zox_log_lags = 0;
 
 // NOTE: Time Pausing Disabled because it Line Renders

@@ -31,36 +31,39 @@ entity spawn_texture_from_vox(ecs* world, entity vox, byte2 tsize) {
 }
 
 entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mdepth, byte3 size, entity blueprint, const char* name, lint seed, byte2 tsize, byte slot_type) {
-    entity e2 = zox_new();
-    // zox_make_neww(model_group);
-    zox_make_prefab(e2);
-    zox_set_parent(world, e2, parent);
+    // entity e2 = zox_prefab_from_parent(world, prefab_model_group);
+    entity e = zox_ins(world, prefab_model_group);
+    // zox_make_prefab(e);
+    zox_set_parent(world, e, parent);
+    zox_add_tag(e, BodyModel);
+    zox_set_unique_name(e, name);
     // zox_set_unique_name(model_group, name);
-    zox_add_tag(e2, BodyModel);
     entity max_depth_vox = 0;
     ModelLinks models = (ModelLinks) { 0 };
     for (byte j = 0; j < variants; j++) {
         lint vseed = seed + j * 1209;
         color vcolor = (color) { 200, 200, 155, 255 };
         ModelLods mlods2 = (ModelLods) { };
-        entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth, size, name, &mlods2);
+        entity model_lods = spawn_model_lods(world, vcolor, vseed, mdepth, size, name, &mlods2);
+        zox_set_parent(world, model_lods, e);
         // zox_set_unique_name(mlods, "bodys_mlods_head");
-        add_to_ModelLinks(&models, mlods);
+        add_to_ModelLinks(&models, model_lods);
         if (j == 0) {
             max_depth_vox = mlods2.value[mdepth];
         }
-        spawn_process_model(world, prefab_process_model, blueprint, mlods);
+        spawn_process_model(world, prefab_process_model, blueprint, model_lods);
     }
-    zox_set_ptr(e2, ModelLinks, models);
+    zox_set_ptr(e, ModelLinks, models);
+    // NOTE: Uses first model and highest depth one
     entity model = models.value[0];
     entity texture = spawn_texture_from_vox(world, max_depth_vox, tsize);
     // # # # Spawn Item from model and texture # # #
-    entity e = spawn_item_body(world, model, texture, name);
-    zox_make_prefab(e);
-    zox_set(e, SlotType, { slot_type });
-    zox_set(e, MaxRenderDepth, { mdepth });
-    zox_set_parent(world, e, parent);
-    return (entity2) { e, e2 };
+    entity e2 = spawn_item_body(world, model, texture, name);
+    // zox_make_prefab(e2);
+    zox_set(e2, SlotType, { slot_type });
+    zox_set(e2, MaxRenderDepth, { mdepth });
+    zox_set_parent(world, e2, parent);
+    return (entity2) { e2, e };
 }
 
 entity2 spawn_realm_body_part2(ecs* world, entity realm, lint seed, byte model_depth, const char* name, byte slot_type, entity blueprint, float3 blueprint_scale, byte dbg_log) {

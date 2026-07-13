@@ -1,4 +1,4 @@
-// Repositions list elementswhen ListPositionDirty is active
+// NOTE: Repositions list elementswhen ListPositionDirty is active
 zox_sys2(ListSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -19,6 +19,7 @@ zox_sys2(ListSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
+        byte indent_size = size->value.x / 12;
         // calculate total size first: ListUIMax - center it?
         int list_position_y = (int) (size->value.y / 2);
         list_position_y -= margins->value.y;
@@ -26,15 +27,6 @@ zox_sys2(ListSystem) {
         if (start->value) {
             entity first_child = zox_get_child_by_id(world, e, zox_id(LayoutPositionDirty));
             int2 first_size = zox_valid(first_child) ? zox_getv(first_child, LayoutSize) : int2_zero;
-            //for (uint j = 0; j < children_length; j++) {
-            //    entity child = children[j];
-                    /*if (!zox_valid(e2) || !zox_has(e2, LayoutPositionDirty)) {
-                        continue;
-                    }
-                    zox_geter_value(e2, LayoutSize, int2, child_size);
-                    break;
-                }
-            }*/
             list_position_y += start->value * (first_size.y + padding->value.y);
         }
         uint k = 0;
@@ -53,12 +45,16 @@ zox_sys2(ListSystem) {
                 } else {
                     list_position_y -= child_size.y;
                 }
+                position->value.y = list_position_y;
                 if (alignment->value == zox_alignment_left) {
                     position->value.x = margins->value.x - size->value.x / 2 + child_size.x / 2;
                 } else if (alignment->value == zox_alignment_right) {
                     position->value.x = - margins->value.x + size->value.x / 2 - child_size.x / 2;
                 }
-                position->value.y = list_position_y;
+                if (zox_has(e2, ListIndent)) {
+                    byte indent = zox_getv(e2, ListIndent);
+                    position->value.x += indent * indent_size;
+                }
                 dirty->value = zox_dirty_trigger;
                 list_position_y -= padding->value.y;
             }

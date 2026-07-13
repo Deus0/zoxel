@@ -2,7 +2,7 @@ entity spawn_mountain(ecs* world, entity prefab, entity parent, lint seed, int2 
     zox_instance(prefab);
     {
         char name[64];
-        sprintf(name, "town_%ix%i", position.x, position.y);
+        sprintf(name, "mountain_%ix%i", position.x, position.y);
         zox_name(name);
     }
     zox_set_parent(world, e, parent);

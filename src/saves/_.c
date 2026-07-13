@@ -16,6 +16,7 @@
 //      - Otherwise we set Generate flag
 
 #include "com/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 

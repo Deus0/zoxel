@@ -5,20 +5,19 @@
 
 void define_systems_chunks3_textured(ecs *world) {
     // move this into chunk3, for chunk3_textured
-    zox_render3_system(
-        0,
+    zox_render3_system(0,
         Chunk3TexturedRenderSystem,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,
-        [in] rendering.MeshIndiciesGpu,
+        [in] rendering.MesnRenderCount,
         [in] textures.TilemapLink,
         [in] rendering.RenderDisabled
     );
     zox_system(
         Chunk3SidesSystem,
-        zoxp_update, // EcsPreUpdate,
+        zoxp_update,
         [in] blocks.BlockManagerLink,
         [in] rendering.RenderDepth,
         [in] chunks3.ChunkNeighbors,

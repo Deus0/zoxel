@@ -26,7 +26,9 @@ entity spawn_menu_game_stats(ecs* world, entity canvas, entity character) {
     // Positioning
     float2 position_anchor = float2_top_left;
     int2 position = (int2) { 8 * ui_scale, - 6 * ui_scale };
-    entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, position_anchor, NULL);
+    byte header_font_size = 8 * ui_scale;
+    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
+    entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, position_anchor, header_font_size, header_padding, NULL);
     entity e = e2.x;
     entity body = e2.z;
     zox_set_unique_name(e, "statbars");

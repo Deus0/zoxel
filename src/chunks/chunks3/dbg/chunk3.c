@@ -28,6 +28,7 @@ entity zox_dbg_spawn_chunk3(ecs* world, byte dbg_inspector) {
     float3 spawn_position = move_along_direction(position, rotation, -distance);
     // spawn chunk3s
     entity e = spawn_chunk3(world, prefab, spawn_position, scale, depth, block_scale, size);
+    zox_set(e, GenerateModel, { zox_generate_model_run });
     zox_add_tag(e, VoxMesh);
     add_eternal_euler(world, e, euler);
     zox_set_unique_name(e, "dbg_chunk3");

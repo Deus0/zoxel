@@ -2,40 +2,36 @@
 // todo: split processes up to nodes
 // todo: add unique colors as a property too
 zox_sys2(VoxGenerationSystem) {
+    byte dbg_log = 0;
+    byte max_process = 0;   // TODO: Make work without breaking
     byte dbg_orientation = 0;
     byte dbg_whitebox = 0;
-    zox_ts_begin(vox_generation);
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Generate);
     zox_sys_in(Color);
     zox_sys_in(VoxType);
+    zox_sys_out(GenerateModel);
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeDirty);
     zox_sys_out(NodeDepth);
     zox_sys_out(ColorRGBs);
-    byte any_dirty = 0;
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_i(Generate, generateVox);
-        if (generateVox->value == zox_dirty_active) {
-            any_dirty = 1;
-            break;
-        }
-    }
-    if (!any_dirty) {
-        zox_ts_end(vox_generation, 3, zox_profile_system_vox_generation);
-        return;
-    }
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Color, fill);
         zox_sys_i(VoxType, gentype);
-        zox_sys_i(Generate, state);
+        zox_sys_o(GenerateModel, generate);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(VoxelNodeDirty, voxel_octree_dirty);
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(ColorRGBs, colors);
-        if (state->value != zox_dirty_active) {
+        if (generate->value == zox_generate_model_bake) {
+            generate->value = zox_generate_model_end;
+            continue;
+        }
+        if (generate->value != zox_generate_model_run) {
+            continue;
+        }
+        if (max_process && process_count > max_process) {
             continue;
         }
         byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_getv(e, VoxUniqueColors) : default_unique_colors;
@@ -191,6 +187,14 @@ zox_sys2(VoxGenerationSystem) {
         }
         // Unlocks the node
         write_unlock_VoxelNode(node);
+        generate->value = zox_generate_model_bake;
         voxel_octree_dirty->value = zox_dirty_trigger;
+        if (zox_has(e, Busy)) {
+            zox_set(e, Busy, { 0 });
+        }
+        if (dbg_log) {
+            zox_log("Generated Vox [%s]:%i", zox_get_name(e), gentype->value);
+        }
+        zox_sys_increment();
     }
 } zox_sys_end(VoxGenerationSystem);

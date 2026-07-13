@@ -29,12 +29,6 @@ void define_systems_textures(ecs *world) {
         [in] textures.TextureLink,
         [in] inputs.DeviceDisabled
     );
-    /*zox_system(
-        AnimateNoiseSystem,
-        zoxp_update,
-        [out] textures.AnimateTexture,
-        [out] textures.GenerateTexture
-    );*/
     zox_filter(fill_texture_query, [none] FillTexture, [out] textures.GenerateTexture)
     zox_system_ctx(
         FillTextureSystem,
@@ -75,9 +69,9 @@ void define_systems_textures(ecs *world) {
     zox_system(
         TilemapGenerationSystem,
         zoxp_update,
-        [in] textures.GenerateTexture,
         [in] textures.TilemapSize,
         [in] textures.TextureLinks,
+        [out] textures.GenerateTexture,
         [out] rendering.TextureSize,
         [out] textures.TextureData,
         [out] rendering.TextureDirty,

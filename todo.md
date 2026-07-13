@@ -2,6 +2,27 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Refactor BlocksDirty to non state
+- Refactor Statbar3D to use Element2D data, merge the ui code
+    - we simply translate the layout2D information into the 3D transform space
+- Add WindowTitle property and spawn Header of window in system
+    - decouples the header code from spawning
+    - keeps spawning purely for data setting!
+- Refactor: Tunk Generation should have lodding as it currently lags
+    - if still lag at per system limitations
+- Map Arrow is backwards, but its pointing right way, when we move right in character, the map ui goes left... So rotation is flipped of map and arrow
+- CharacterLoadSystem - Just load character from system using load state
+    - streaming should just work seperately to character positioning
+
+Editor:
+- Add a Toggle when entity has children in hierarchy, toggle will remove/add their children uis
+- Add mask on ScrollArea, so it hides off buttons when they overflow
+- Let mouse scrollwheel work on the scrollbar
+- Indent the buttons instead of adding "-" to them
+- For Edit mode - remove main menu
+    - add canvas lines to show
+- Dock window - inspector on right, hierarchy on left of canvas
+
 New:
 - When Level up + 3 stat points
 - When you have stat points, add + button on Attributes

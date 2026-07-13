@@ -11,7 +11,7 @@ zox_sys2(RealmTilemapSystem) {
         zox_sys_i(BlocksDirty, state);
         zox_sys_i(BlockLinks, blocks);
         zox_sys_i(TilemapLink, tilemap);
-        if (state->value != zox_dirty_end) { // zox_dirty_active) {
+        if (state->value != zox_dirty_end) {
             continue;
         }
         if (!zox_valid(tilemap->value)) {
@@ -34,7 +34,7 @@ zox_sys2(RealmTilemapSystem) {
                     zox_logw("invalid block texture [%s:%i]", zox_get_name(block), k);
                     continue;
                 }
-                if (zox_has(texture, GenerateTexture) && zox_gett_value(texture, GenerateTexture)) {
+                if (zox_has(texture, GenerateTexture) && zox_getv(texture, GenerateTexture)) {
                     // zox_logw("Block [%s:%i]'s Texture [%s] still generating...", zox_get_name(block), j, zox_get_name(texture));
                     generating = 1;
                     break;

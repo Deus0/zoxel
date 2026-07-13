@@ -33,7 +33,7 @@ entity spawn_realm_model_item_filename(ecs* world, entity realm, const char* nam
         return 0;
     }
     // clone model
-    entity model = zox_ins(model_base);
+    entity model = zox_ins(world, model_base);
     zox_set_parent(world, model, realm);
     // entity model = model_base;
     //entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("hatty"));

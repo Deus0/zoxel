@@ -125,16 +125,15 @@ zox_sys2(BiomeBlocksSystem) {
         color wood_color = colors->value[j++];
         {
             lint seed = 222122;
-            entity model = spawn_model_soil(world, e, seed, dirt_color, 0.44f);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "dirt", dirt_color, model);
+            entity model = spawn_model_soil(world, "dirt", e, seed, dirt_color, 0.44f);
+            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "dirt", dirt_color, model);
             zox_add_tag(block, BlockSoil);
             zox_set(block, BlockHealth, { (float2) { 3, 6 } });
-            // zox_set(block, BiomeLink, { e });
         }
         {
             lint seed = 515111;
-            entity model = spawn_model_soil(world, e, seed, sand_color, 0.14f);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "sand", sand_color, model);
+            entity model = spawn_model_soil(world, "sand", e, seed, sand_color, 0.14f);
+            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "sand", sand_color, model);
             zox_add_tag(block, BlockSand);
             zox_set(block, BlockHealth, { (float2) { 2, 4 } });
         }
@@ -142,7 +141,7 @@ zox_sys2(BiomeBlocksSystem) {
             // entity e2 = spawn_block_stone(world, e, 222111, "stone", stone_color);
             lint seed = 222155;
             entity model = spawn_model_stone(world, e, seed, stone_color);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "stone", stone_color, model);
+            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "stone", stone_color, model);
             zox_add_tag(block, BlockStone);
             zox_set(block, BlockHealth, { (float2) { 8, 12 } });
         }

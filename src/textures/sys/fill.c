@@ -10,13 +10,14 @@ zox_sys2(FillTextureSystem) {
         zox_sys_i(TextureSize, size);
         zox_sys_i(FillColor, c);
         zox_sys_o(TextureData, data);
-        zox_sys_o(GenerateTexture, state);
+        zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureDirty, dirty);
-        if (state->value != zox_dirty_active) {
+        if (generate->value != zox_generate_texture_run) {
             continue;
         }
         resize_TextureData(data, size->value.x * size->value.y);
         generate_texture_fill(data->value, size->value, c->value);
         dirty->value = 1; // actually this only gets uploaded if has GPUTextureLink!
+        generate->value = zox_generate_texture_end;
     }
 } zox_sys_end(FillTextureSystem);

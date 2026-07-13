@@ -13,8 +13,9 @@ entity player_toggle_ui_id(ecs *world, entity player, const ElementLinks* elemen
 }
 
 entity toggle_ui_with_id(ecs *world, entity (*spawn_ui)(ecs*, entity), entity id, entity player) {
-    entity canvas = zox_get_value(player, CanvasLink)
-    find_child_with_id(canvas, id, ui)
+    entity canvas = zox_get_value(player, CanvasLink);
+    entity ui = zox_get_child_by_id(world, canvas, id);
+    // find_child_with_id(canvas, id, ui)
     return player_toggle_ui(world, player, ui, spawn_ui);
 }
 

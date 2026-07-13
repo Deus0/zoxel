@@ -23,7 +23,3 @@ int needs_save(const SaveDataCharacter* current, ulong* prev_hash) {
     }
     return 0; // No changes
 }
-
-// SaveDataCharacter player_save;
-
-create_load_and_save_functions(SaveDataCharacter, player)

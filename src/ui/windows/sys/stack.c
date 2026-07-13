@@ -69,12 +69,7 @@ zox_sys2(CanvasStackSystem) {
             continue;
         }
         byte old_layer = zox_get_value(add_window->value, WindowLayer);
-        // entity childrens[layouts2_children_capacity];
-        // uint children_length = zox_get_children(world, e, childrens, layouts2_children_capacity);
-        // byte2 counter = count_windows_in_stack(world, childrens, children_length);
         uint windows_count = zox_get_children_count(world, e);
-        // byte windows_count = counter.x; // maybe count windows first
-        // byte layers_per_window = counter.y;
         byte layers_per_window = get_highest_window_layer(world, e);
         // gett previous window layer of moving to top window
         // skip if: same window clicked as already on top
