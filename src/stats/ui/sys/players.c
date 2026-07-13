@@ -59,7 +59,7 @@ entity spawn_menu_game_stats(ecs* world, entity canvas, entity character) {
 
 // NOTE: When Game Starts or Resumes we spawn the stats panel
 zox_sys2(PlayerStatspanelSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);

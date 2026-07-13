@@ -28,6 +28,24 @@ zox_sys2(PlayerTownFinderSystem) {
             zox_loge("Invalid realm on Player");
             continue;
         }
+        // TODO: Just make a Realm Generating flag
+        byte realm_busy = 0;
+        entity textures[zox_children_capacity];
+        uint textures_length = zox_get_children_by_id(world, realm, textures, zox_children_capacity, zox_id(Texture));
+        for (int j = 0; j < textures_length; j++) {
+            entity texture = textures[j];
+            if (zox_has(texture, Busy) && zox_getv(texture, Busy)) {
+                zox_log("Realm texture Still Loading [%s]", zox_get_name(texture));
+                realm_busy = 1;
+                break;
+            }
+        }
+        if (realm_busy) {
+            if (dbg_log) {
+                zox_log("Realm Still Loading");
+            }
+            continue;
+        }
         entity terrain = zox_getv(realm, TerrainLink);
         if (!zox_valid(terrain)) {
             zox_loge("Invalid Terrain on Player");

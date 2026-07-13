@@ -20,6 +20,7 @@ zox_sys2(BakeVoxSystem) {
         if (generate != zox_generate_model_bake) {
             continue;
         }
+        zox_set(model->value, GenerateModel, { zox_generate_model_end });
         if (dbg_log) {
             zox_log("Block is Generating: %s %i", zox_get_name(e), textures->length);
         }

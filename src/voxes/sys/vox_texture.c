@@ -185,6 +185,9 @@ zox_sys2(VoxTextureSystem) {
         }
         // NOTE: Delays the texture until its done
         if (zox_has(vox->value, GenerateModel) && zox_getv(vox->value, GenerateModel)) {
+            if (dbg_log) {
+                zox_log("Texture [%s] waiting on model to generate [%s]", zox_get_name(e), zox_get_name(vox->value));
+            }
             // zox_logw("Vox is Generating [%s]", zox_get_name(vox->value));
             // zox_set(e, GenerateTexture, { zox_dirty_trigger });
             continue;
@@ -229,6 +232,7 @@ zox_sys2(VoxTextureSystem) {
             for (int j = 0; j < data->length; j++) {
                 data->value[j] = debug_color;
             }
+            zox_loge("No Size on Texture!!!");
             continue;
         }
         resize_TextureData(data, new_size);
@@ -258,7 +262,7 @@ zox_sys2(VoxTextureSystem) {
             zox_set(e, Busy, { 0 });
         }
         if (dbg_log) {
-            zox_log("Generated Vox Texture e[%s] v[%s] offset %ix%i - vox_texture_size [%ix%i] - texture_size %ix%i - vox_size %ix%ix%i - pixels length [%i]", zox_get_name(e), zox_get_name(vox->value), texture_offset.x, texture_offset.y, vox_texture_size.x, vox_texture_size.y, size->value.x, size->value.y, vox_size.x, vox_size.y, vox_size.z, new_size);
+            zox_log("Generated Vox Texture [%s] from [%s]: offset %ix%i - vox_texture_size [%ix%i] - texture_size %ix%i - vox_size %ix%ix%i - pixels length [%i]", zox_get_name(e), zox_get_name(vox->value), texture_offset.x, texture_offset.y, vox_texture_size.x, vox_texture_size.y, size->value.x, size->value.y, vox_size.x, vox_size.y, vox_size.z, new_size);
         }
     }
 } zox_sys_end(VoxTextureSystem);

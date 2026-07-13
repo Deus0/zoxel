@@ -1,5 +1,5 @@
 zox_sys2(PlayerUIGameEndSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     byte delay_end = is_end_game_delays;
     zox_sys_world();
     zox_sys_begin();

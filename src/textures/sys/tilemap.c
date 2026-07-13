@@ -47,9 +47,10 @@ zox_sys2(TilemapGenerationSystem) {
             }
             if (zox_has(texture, Busy) && zox_getv(texture, Busy)) {
                 if (dbg_log) {
-                    zox_log("Tilemap Texture Busy... [%s] [%i]", zox_get_name(texture), j);
+                    entity vox = zox_getv(texture, ModelLink);
+                    zox_log("Tilemap Texture Busy... [%s] [%i] from [%s]", zox_get_name(texture), j, zox_get_name(vox));
                 }
-                // still_generating = 1;
+                still_generating = 1;
                 break;
             }
         }

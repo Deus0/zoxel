@@ -1,7 +1,7 @@
 // DotsSystem - skill applies damage to a users health
 zox_sys2(DotsSystem) {
     // const float damage_rate = 1.0f; // add this property to dot entity
-    // byte dbg_log = 1;
+    // byte dbg_log = 0;
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();

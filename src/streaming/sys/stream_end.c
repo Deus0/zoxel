@@ -31,7 +31,6 @@ zox_sys2(StreamEndSystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count && !running; j++) {
                 entity e2 = it2.entities[j];
-                // if (!zox_has(e2, Chunk3)) {
                 if (!zox_has(e2, Busy)) {
                     continue;
                 }
@@ -39,7 +38,9 @@ zox_sys2(StreamEndSystem) {
                     running = 1;
                     break;
                 }
-                chunks_loaded++;
+                if (zox_has(e2, Chunk3)) {
+                    chunks_loaded++;
+                }
             }
         }
         // NOTE: Can we get render distance from the chunks here?

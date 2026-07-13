@@ -24,10 +24,10 @@ zox_sys2(VoxGenerationSystem) {
         zox_sys_o(VoxelNodeDirty, voxel_octree_dirty);
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(ColorRGBs, colors);
-        if (generate->value == zox_generate_model_bake) {
+        /*if (generate->value == zox_generate_model_bake) {
             generate->value = zox_generate_model_end;
             continue;
-        }
+        }*/
         if (generate->value != zox_generate_model_run) {
             continue;
         }
@@ -187,7 +187,11 @@ zox_sys2(VoxGenerationSystem) {
         }
         // Unlocks the node
         write_unlock_VoxelNode(node);
-        generate->value = zox_generate_model_bake;
+        if (zox_has(e, BakeModel)) {
+            generate->value = zox_generate_model_bake;
+        } else {
+            generate->value = zox_generate_model_end;
+        }
         voxel_octree_dirty->value = zox_dirty_trigger;
         if (zox_has(e, Busy)) {
             zox_set(e, Busy, { 0 });

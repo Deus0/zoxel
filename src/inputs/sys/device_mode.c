@@ -4,7 +4,7 @@ zox_sys2(DeviceSwitchSystem) {
     if (!auto_switch_device) {
         return;
     }
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(DeviceModeDirty);
