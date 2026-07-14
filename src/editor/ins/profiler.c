@@ -55,6 +55,6 @@ entity spawn_profiler(ecs* world, entity canvas, const char* header_label, int2 
 entity spawn_profiler_canvas(ecs* world, entity canvas) {
     int2 position = { 0, 0 }; // - size.x / 2 - size.y / 2 };
     int2 size = { 420, 280 };
-    float2 anchor = { 1.0f, 1.0f };
+    float2 anchor = { 1.0f, 0.0f };
     return spawn_profiler(world, canvas, "Profiler", position, size, anchor);
 }

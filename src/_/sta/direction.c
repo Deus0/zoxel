@@ -4,6 +4,7 @@
 #define direction_up 3
 #define direction_back 4
 #define direction_front 5
+#define direction_none 6
 
 byte reverse_direction(byte d) {
     switch (d) {

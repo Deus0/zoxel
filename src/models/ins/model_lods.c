@@ -30,6 +30,7 @@ entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize
         entity e2 = spawn_model(world, prefab_vox, mdepth, rdepth, rsized);
         zox_set_parent(world, e2, e);
         zox_set_unique_name(e2, label);
+        // zox_set(e2, GenerateModel, { zox_generate_model_run });
         zox_set(e2, RenderDepth, { rdepth });  // move this to prefab
         zox_set(e2, Seed, { seed });
         zox_set(e2, Color, { c });

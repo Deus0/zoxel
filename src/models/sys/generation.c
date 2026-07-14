@@ -3,11 +3,12 @@
 // todo: add unique colors as a property too
 zox_sys2(VoxGenerationSystem) {
     byte dbg_log = 0;
-    byte max_process = 2;   // TODO: Make work without breaking
+    byte max_process = 1;   // No rush mate
     byte dbg_orientation = 0;
     byte dbg_whitebox = 0;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(Seed);
     zox_sys_in(Color);
     zox_sys_in(VoxType);
     zox_sys_out(GenerateModel);
@@ -17,23 +18,24 @@ zox_sys2(VoxGenerationSystem) {
     zox_sys_out(ColorRGBs);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(Seed, seed);
         zox_sys_i(Color, fill);
         zox_sys_i(VoxType, gentype);
         zox_sys_o(GenerateModel, generate);
         zox_sys_o(VoxelNode, node);
-        zox_sys_o(VoxelNodeDirty, voxel_octree_dirty);
+        zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(ColorRGBs, colors);
-        /*if (generate->value == zox_generate_model_bake) {
-            generate->value = zox_generate_model_end;
-            continue;
-        }*/
         if (generate->value != zox_generate_model_run) {
             continue;
         }
         if (max_process && process_count > max_process) {
             continue;
         }
+        if (gentype->value != vox_type_blended && gentype->value != vox_type_rubble && gentype->value != vox_type_noisey && gentype->value != vox_type_bricks && gentype->value != vox_type_wood && gentype->value != vox_type_flowers) {
+            continue;
+        }
+        srand(seed->value);
         byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_getv(e, VoxUniqueColors) : default_unique_colors;
         if (dbg_orientation) {
             unique_colors = 16;
@@ -78,28 +80,15 @@ zox_sys2(VoxGenerationSystem) {
             fill_octree(node, 1, node_depth);
         } else if (dbg_orientation) {
             build_vox_orientation_test(node, node_depth, 1, 2, 3, 4, 5, 6, 7);
-        } else if (gentype->value == vox_type_soil) {
-            // colors
-            color_rgb dirt_dark_voxel = color_to_color_rgb(fill->value);
-            color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
-            add_to_ColorRGBs(colors, dirt_dark_voxel);
-            byte black_voxel_3 = colors->length;
-            build_vox_soil(node, node_depth, vrange, black_voxel_3, vregions);
         } else if (gentype->value == vox_type_blended) {
-            // Colors
             zox_geter_value(e, SecondaryColor, color, under_color);
-            // generates random colors based on secondary color
             for (int j = colors_count; j < colors_count + unique_colors; j++) {
                 color_rgb new_color = color_to_color_rgb(under_color);
                 float m = randf_range(color_r.x, color_r.y);
                 color_rgb_multiply_float(&new_color, m);
                 add_to_ColorRGBs(colors, new_color);
             }
-            byte2 vrange_2 = (byte2) {
-                colors_count + 1,
-                colors_count + unique_colors
-
-            };
+            byte2 vrange_2 = (byte2) { colors_count + 1, colors_count + unique_colors };
             color_rgb dirt_dark_voxel = color_to_color_rgb(under_color);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
             add_to_ColorRGBs(colors, dirt_dark_voxel);
@@ -113,16 +102,6 @@ zox_sys2(VoxGenerationSystem) {
             byte black_voxel_2 = colors->length;
             // put indexes here
             build_vox_blended(node, node_depth, black_voxel_2, black_voxel_3, vrange, vrange_2, range_blend_1, range_blend_2, vregions);
-        } else if (gentype->value == vox_type_rubble) {
-            byte rubble_height = 4;
-            if (zox_has(e, RubbleHeight)) {
-                rubble_height = zox_get_value(e, RubbleHeight)
-            }
-            int rubble_count = 200;
-            if (zox_has(e, RubbleCount)) {
-                rubble_count = zox_get_value(e, RubbleCount)
-            }
-            build_vox_rubble(node, node_depth, vrange, rubble_count, rubble_height);
         } else if (gentype->value == vox_type_noisey) {
             color_rgb dirt_dark_voxel = color_to_color_rgb(fill->value);
             color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
@@ -176,28 +155,32 @@ zox_sys2(VoxGenerationSystem) {
                 vrange.x + (vrange.y - vrange.x) / 2
             };
             byte2 petal_range = (byte2) { stem_range.y, vrange.y };
-            build_vox_flower_patch(node, node_depth, stem_range, petal_range, black_voxel_3);
+            build_vox_flowers(node, node_depth, stem_range, petal_range, black_voxel_3);
+        }  else if (gentype->value == vox_type_rubble) {
+            byte max_height = zox_has(e, RubbleHeight) ? zox_getv(e, RubbleHeight) : 4;
+            // build_vox_heights(node, node_depth, vrange, max_height);
+            uint count = zox_has(e, RubbleCount) ? zox_getv(e, RubbleCount) : 200;
+            build_vox_scatter(node, node_depth, vrange, max_height, count);
         } else {
-            zox_log_error("unknown vox type [%s]", zox_get_name(e));
+            // zox_log_error("unknown vox type [%s]", zox_get_name(e));
             write_unlock_VoxelNode(node);
             continue;
         }
         if (is_generate_vox_outlines) {
             vox_outlines(node, node_depth, black_voxel);
         }
-        // Unlocks the node
         write_unlock_VoxelNode(node);
         if (zox_has(e, BakeModel)) {
             generate->value = zox_generate_model_bake;
         } else {
             generate->value = zox_generate_model_end;
         }
-        voxel_octree_dirty->value = zox_dirty_trigger;
+        dirty->value = zox_dirty_trigger;
         if (zox_has(e, Busy)) {
             zox_set(e, Busy, { 0 });
         }
         if (dbg_log) {
-            zox_log("Generated Vox [%s]:%i", zox_get_name(e), gentype->value);
+            zox_log("Generated Vox [%s] Type [%i] Depth [%i]", zox_get_name(e), gentype->value, depth->value);
         }
         zox_sys_increment();
     }

@@ -6,10 +6,9 @@ void define_systems_biomes(ecs *world) {
     realm_clear_systemd(biomes, BiomeLinks);
     zox_system(
         BiomeBlocksDirtySystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] core.Generate,
         [in] realms.RealmLink,
-        // [in] blocks.BlockLinks,
         [none] biomes.Biome
     );
 }

@@ -46,7 +46,7 @@ zox_sys2(BlocksRealmSpawnSystem) {
             }
         }
         spawn_dungeon_blocks(world, e);
-        dirty->value = zox_dirty_trigger;
+        dirty->value = zox_blocks_dirty_start;
         if (dbg_log) {
             zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));
         }

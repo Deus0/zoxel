@@ -1,17 +1,15 @@
 // Spawns a item from a block! Can place these and throw them at your enemies
-entity spawn_block_item(ecs *world, entity block) {
+entity spawn_block_item(ecs *world, entity block, byte dbg_log) {
     if (!zox_valid(block) || !zox_has(block, ZoxName)) {
-        zox_log_error("Block components name? [%i]\n", zox_has(block, ZoxName))
+        zox_loge("Block components name? [%i]\n", zox_has(block, ZoxName));
         return 0;
     }
-    // get block data
     zox_geter(block, ZoxName, voxel_name);
-    // spawn item
     entity e = spawn_realm_item2(world, prefab_item_active, voxel_name->value);
-    zox_name("block_item");
+    zox_set_unique_name(e, voxel_name->value); // "block_item");
     zox_prefab_addc_user_timings(world, e);
-    zox_set(e, WarmupTime, { 0.25f });
-    zox_set(e, CooldownTime, { 0.25f });
+    zox_set(e, WarmupTime, { 0.125f });
+    zox_set(e, CooldownTime, { 0.125f });
     entity texture = 0;
     if (zox_has(block, TextureLinks)) {
         zox_geter(block, TextureLinks, textures);
@@ -20,12 +18,11 @@ entity spawn_block_item(ecs *world, entity block) {
         }
     }
     if (!texture && zox_has(block, TextureLink)) {
-        texture = zox_get_value(block, TextureLink);
+        texture = zox_getv(block, TextureLink);
     }
-    if (!texture) {
-        // zox_log("! warning: [todo] implement vox item textures [%s]", zox_get_name(block))
+    if (!zox_valid(texture)) {
+        zox_logw("Block Missing Texture [%s]", zox_get_name(block));
         texture = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));
-        // zox_log(" ! block [%s] had no textures [%i]\n",  convert_zext_to_text(voxel_name->value, voxel_name->length), textures->length);
     }
     zox_set(e, TextureLink, { texture });
     zox_add_tag(e, ItemBlock);
@@ -37,7 +34,10 @@ entity spawn_block_item(ecs *world, entity block) {
     // zox_set_name(item, zox_get_name(block));
     const char* meta_name = zox_get_name(block);
     zox_set_unique_name(e, meta_name);
+    if (dbg_log) {
+        zox_log("+ New Block Item [%s] Texture [%s] Meta [%s]", voxel_name->value, zox_get_name(texture), meta_name);
+        // convert_zext_to_text(voxel_name->value, voxel_name->length), textures->length)
+    }
     // zox_log(" + block item [%s] [%s]\n", zox_get_name(block), zox_get_name(e))
-    // zox_log(" + spawning item for block [%s] textures [%i]\n", convert_zext_to_text(voxel_name->value, voxel_name->length), textures->length)
     return e;
 }

@@ -17,6 +17,6 @@ zox_sys2(BiomeBlocksDirtySystem) {
             uint biome_blocks = zox_get_children_count_by_id(world, e, zox_id(Block));
             zox_log("Biome Blocks Dirty [%s]:[%i] with Realm Blocks [%i]", zox_get_name(e), biome_blocks, realm_blocks);
         }
-        zox_set(realm->value, BlocksDirty, { zox_dirty_trigger });
+        zox_set(realm->value, BlocksDirty, { zox_blocks_dirty_start });
     }
 } zox_sys_end(BiomeBlocksDirtySystem);

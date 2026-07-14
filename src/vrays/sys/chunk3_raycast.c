@@ -84,7 +84,8 @@ byte update_chunk_for_raycast(
         read_lock_VoxelNode(*root_voctree);
     }
     *chunk_depth = zox_get_value(*chunk, RenderDepth);
-    *chunk_size = byte3_single(powers_of_two[*chunk_depth]);
+    byte length = octree_size(*chunk_depth);
+    *chunk_size = byte3_single(length);
     *chunk_scalev = get_chunk_scale(*chunk_depth, terrain_depth, terrain_scalev);
     *chunk_depth_reduction = terrain_depth - *chunk_depth;
     // NOTE: Raycast Character per Terrain Chunk - Only do so when we havn't hit Character yet
@@ -309,7 +310,7 @@ byte raycast_voxel_node(ecs *world,
                     return rayhit_none;
                 }
                 zox_geter_value(vox, RenderDepth, byte, minivox_render_depth);
-                int minivox_chunk_length = powers_of_two[minivox_render_depth];
+                byte minivox_chunk_length = octree_size(minivox_render_depth);
                 int3 minivox_chunk_size = int3_single(minivox_chunk_length);
                 float minivox_scalev = chunk_scalev * (1.0f / (float) minivox_chunk_length);
                 float minivox_ray_length = minivox_chunk_length * 3;
@@ -386,12 +387,14 @@ byte raycast_voxel_node(ecs *world,
         data->hit = float3_add(ray_origin, float3_scale(ray_normal, data->distance));
         // used for quad position, position of voxel hit
         if (chunk_depth_reduction) {
-            int3 chunk_positionv = int3_scale(chunk_position, powers_of_two[terrain_depth]);
+            byte length = octree_size(terrain_depth);
+            byte length2 = octree_size(chunk_depth_reduction);
+            int3 chunk_positionv = int3_scale(chunk_position, length);
             // we remove chunkpositionv off positionv
             int3 positionl2 = int3_sub(positionv, chunk_positionv);
-            positionl2 = int3_div1(positionl2, (int) powers_of_two[chunk_depth_reduction]);
+            positionl2 = int3_div1(positionl2, length2);
             // now we convert back to positionv, scale back, add to chunk voxel position
-            positionv = int3_add(chunk_positionv, int3_scale(positionl2, powers_of_two[chunk_depth_reduction]));
+            positionv = int3_add(chunk_positionv, int3_scale(positionl2, length2));
         }
         data->positionf = voxel_to_real_position(positionv, terrain_scalev, chunk_scalev);
         data->positionl = positionl;
@@ -454,7 +457,8 @@ zox_sys2(Chunk3RaycastSystem) {
         zox_geter(realm, BlockLinks, voxels);
         zox_geter_value(terrain->value, BlockScale, float, terrain_scalev);
         zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
-        int3 chunk_dimensions = int3_single(powers_of_two[terrain_depth]);
+        byte length = octree_size(terrain_depth);
+        int3 chunk_dimensions = int3_single(length);
         zox_geter(terrain->value, ChunkLinks, chunks);
         CharacterRaycast character_raycast = { 0 };
         float range = !debug_ray_big_range ? raycast_range->value : 128;

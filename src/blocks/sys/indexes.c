@@ -22,13 +22,13 @@ zox_sys2(RealmBlocksDirtySystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(BlocksDirty);
+    zox_sys_out(BlocksDirty);
     zox_sys_out(BlockLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(BlocksDirty, state);
+        zox_sys_o(BlocksDirty, dirty);
         zox_sys_o(BlockLinks, blocks);
-        if (state->value != zox_dirty_active) {
+        if (dirty->value != zox_blocks_dirty_indexes) {
             continue;
         }
         resize_BlockLinks(blocks, 0);
@@ -43,5 +43,6 @@ zox_sys2(RealmBlocksDirtySystem) {
                 zox_log(" - Realm Block [%s]:[%i]", zox_get_name(block), j + 1);
             }
         }
+        dirty->value = zox_blocks_dirty_tilemaps;
     }
 } zox_sys_end(RealmBlocksDirtySystem);

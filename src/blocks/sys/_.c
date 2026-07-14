@@ -9,9 +9,9 @@ void zox_define_systems_blocks(ecs* world) {
     zox_system(
         RealmTilemapSystem,
         zoxp_update,
-        [in] blocks.BlocksDirty,
         [in] blocks.BlockLinks,
         [in] textures.TilemapLink,
+        [out] blocks.BlocksDirty,
         [none] realms.Realm
     );
     zox_system_1(
@@ -34,7 +34,7 @@ void zox_define_systems_blocks(ecs* world) {
     zox_system(
         RealmBlocksDirtySystem,
         zoxp_update,
-        [in] blocks.BlocksDirty,
+        [out] blocks.BlocksDirty,
         [out] blocks.BlockLinks,
         [none] realms.Realm
     );

@@ -7,7 +7,7 @@ zox_tag(BlockCanGroup);
 zoxc_byte(BlockLightPass);
 zoxc_byte(BlockModel);
 zoxc_byte(BlockCollider); // zox_block_air | zox_block_solid
-zoxc_state(BlocksDirty);
+zoxc_byte(BlocksDirty);
 zoxc_byte(VoxBakeSide);
 zoxc_byte(BlockVoxOffset);
 zoxc_byte(BlockIndex);      // NOTE: This includes Air in the index
@@ -49,6 +49,7 @@ void zox_define_components_blocks(ecs *world) {
     zoxd_byte(BlockVoxOffset);
     zoxd_byte(BlockIndex);
     zoxd_byte(InsideBlock);
+    zoxd_byte(BlocksDirty);
     zoxd_byte3(VoxelLocalPosition);
     zoxd_int2(BlockPosition2);
     zoxd_int2(BlockSize2);
@@ -62,7 +63,6 @@ void zox_define_components_blocks(ecs *world) {
     zoxd_entity(BlockPrefabLink);
     zoxd_entity(BlockManagerLink);
     zoxd_entity(BlockSound);
-    zoxd_state(BlocksDirty);
     zoxd_state(InsideBlockDirty);
     zoxd_entities(BlockLinks);
     zoxd_queue(BlockDamageQueue);

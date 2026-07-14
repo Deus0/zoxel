@@ -1,4 +1,5 @@
 zox_sys2(ItemsRealmSpawnSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -12,8 +13,11 @@ zox_sys2(ItemsRealmSpawnSystem) {
             continue;
         }
         if (!blocks->length) {
-            zox_log_error("No blocks to spawn items from")
+            zox_loge("No blocks to spawn items from")
             continue;
+        }
+        if (dbg_log) {
+            zox_log("Spawning [%i] Block Items on Realm", blocks->length);
         }
         entity soil_item = 0;
         for (int j = 0; j < blocks->length; j++) {
@@ -22,7 +26,7 @@ zox_sys2(ItemsRealmSpawnSystem) {
                 zox_log_error("Block Invalid at Realm [%i] - e [%lu] %s", j, block, zox_get_name(block));
                 continue;
             }
-            entity item = spawn_block_item(world, block);
+            entity item = spawn_block_item(world, block, dbg_log);
             add_to_ItemLinks(items, item);
             // NOTE: If soil grass, just use last soil item in list (should be before it)
             if (zox_has(block, BlockSoil)) {

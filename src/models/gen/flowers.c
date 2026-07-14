@@ -11,16 +11,15 @@ static inline void set_voxel_safe(VoxelNode *tree, byte3 p, byte depth, byte v) 
     }
 }
 
-void build_vox_flower_patch(VoxelNode* voctree, byte depth, byte2 stem_range, byte2 petal_range, byte black_voxel) {
+void build_vox_flowers(VoxelNode* voctree, byte depth, byte2 stem_range, byte2 petal_range, byte black_voxel) {
     if (depth == 0) {
         set_VoxelNode(voctree, depth, byte3_zero, black_voxel);
         return;
     }
     byte is_stalks_only = depth <= 2;
-    float stem_max_height = 0.8f;
     byte size = octree_size(depth);
     byte spawn_count = rand_range(1 + (size * size) / 64, 1 + (size * size) / 16);
-    byte2 stem_heights = (byte2) { size / 6, (byte) (size * stem_max_height) };
+    byte2 stem_heights = (byte2) { size / 2, size };
     byte margins = size / 8;
     if (!is_stalks_only && margins == 0) {
         margins = 1;

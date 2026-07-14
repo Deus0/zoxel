@@ -28,10 +28,10 @@ entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 came
     float chunk_scalev = get_chunk_scale(render_depth, terrain_depth, terrain_scalev);
     zox_set(e, BlockScale, { chunk_scalev });    // set from parent
     // we should just pass in positionf - local position of parent!
-    byte terrain_length = powers_of_two[terrain_depth];
-    float3 positionf = float3_scale(float3_from_int3(position), terrain_length * terrain_scalev);
-    zox_set(e, ChunkSize, { int3_single(terrain_length) });
-    // zox_log("placing: chunk_scale [%f] voxscale [%f] terrain_length [%i]", chunk_scale, scale, terrain_length);
+    byte length = octree_size(terrain_depth);
+    float3 positionf = float3_scale(float3_from_int3(position), length * terrain_scalev);
+    zox_set(e, ChunkSize, { int3_single(length) });
+    // zox_log("placing: chunk_scale [%f] voxscale [%f] length [%i]", chunk_scale, scale, length);
     zox_set(e, Position3D, { positionf });
     zox_set(e, TransformMatrix, { float4x4_position(positionf) });
     // lod update here

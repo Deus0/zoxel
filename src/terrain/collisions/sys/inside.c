@@ -25,7 +25,8 @@ zox_sys2(InsideBlockSystem) {
         float3 positionf = float3_add(position->value,
             (float3) { 0, - bounds->value.y / 4.0f, 0 });
         int3 positionv = real_position_to_block_position(positionf, terrain_scale);
-        byte3 max_chunk_size = byte3_single(powers_of_two[terrain_depth]);
+        byte length = octree_size(terrain_depth);
+        byte3 max_chunk_size = byte3_single(length);
         int3 positionc = block_position_to_positionc(positionv, max_chunk_size);
         // get points chunk
         entity chunk = int3_hashmap_get(chunks->value, positionc);
@@ -39,7 +40,8 @@ zox_sys2(InsideBlockSystem) {
         }
         zox_geter(chunk, VoxelNode, voctree);
         zox_geter_value(chunk, NodeDepth, byte, cdepth);
-        byte3 csize = byte3_single(powers_of_two[cdepth]);
+        byte length2 = octree_size(cdepth);
+        byte3 csize = byte3_single(length2);
         byte3 positionl = get_positionl_byte3(positionv, csize);
         if (!byte3_in_bounds(positionl, csize)) {
             zox_log_error("Voxel OOB: [%ix%ix%i] :: %i", positionl.x, positionl.y, positionl.z, csize.x);

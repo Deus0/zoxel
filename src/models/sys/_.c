@@ -1,4 +1,5 @@
 #include "generation.c"
+#include "soil.c"
 #include "colors.c"
 #include "fill.c"
 #include "paint.c"
@@ -13,6 +14,18 @@ void define_systems_models(ecs* world) {
     // NOTE: Writes to VoxelNode
     zox_system(
         VoxGenerationSystem,
+        zoxp_voxels_write,
+        [in] core.Seed,
+        [in] colorz.Color,
+        [in] voxes.VoxType,
+        [out] chunks.GenerateModel,
+        [out] chunks3.VoxelNode,
+        [out] chunks3.VoxelNodeDirty,
+        [out] chunks.NodeDepth,
+        [out] colorz.ColorRGBs
+    );
+    zox_system(
+        SoilGenerationSystem,
         zoxp_voxels_write,
         [in] colorz.Color,
         [in] voxes.VoxType,

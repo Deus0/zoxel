@@ -40,11 +40,12 @@ entity spawn_realm_block_model(ecs *world, entity parent, lint seed, char* name,
     zox_set_parent(world, e, parent);
     // NOTE: Spawns a VoxTexture for the Items!
     {
-        int2 texture_size = int2_single(powers_of_two[block_vox_depth]);
+        byte length = octree_size(block_vox_depth);
+        int2 texture_size = int2_single(length);
         entity texture = spawn_texture(world, prefab_vox_texture, texture_size);
-        zox_set_unique_name(texture, name); // "block_texture");
+        zox_set_unique_name(texture, name);
         zox_set_parent(world, texture, parent);
-        zox_set(texture, GenerateTexture, { zox_dirty_trigger });
+        zox_set(texture, GenerateTexture, { zox_generate_texture_run });
         zox_set(texture, VoxBakeSide, { texture_direction });
         zox_set(texture, ModelLink, { texture_vox });
         zox_set(e, TextureLink, { texture });

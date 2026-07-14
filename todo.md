@@ -2,6 +2,25 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+# Map
+- Zoom in / out buttons / scroll wheel
+- Keep track of chunks player has explored - fog of war
+- Show percentage explored of Region - name the region
+- When you open map, fade it in from player, one piece at a time
+- show name label over town on map
+- Blend in heights with voxel colors to give more of a mappy feel
+- Add a compass symbol to show north etc
+
+-----
+
+- Improve Dirt Model
+- Improve Wood Model
+- Add Town Dirt Model - more like stone ish, rounded pebbles
+- Make compile shell work per module!
+- Refactor the sdl mixer into audio - using my own mixer code
+- Test WaveFunctionCollapse
+
+# log: 
 - Refactor BlocksDirty to non state
 - Refactor Statbar3D to use Element2D data, merge the ui code
     - we simply translate the layout2D information into the 3D transform space

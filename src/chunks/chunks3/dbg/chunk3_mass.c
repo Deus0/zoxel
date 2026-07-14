@@ -36,6 +36,7 @@ void zox_dbg_spawn_chunk3_mass(ecs* world, ClickEventData data) {
         e2_position.y += frand_range(-test_range, test_range);
         e2_position.z += frand_range(-test_range, test_range);
         entity e2 = spawn_chunk3(world, prefab, e2_position, scale, depth, block_scale, size);
+        zox_set(e, Seed, { i * 10000 });
         zox_set(e2, GenerateModel, { zox_generate_model_run });
         zox_add_tag(e2, VoxMesh);
         add_eternal_euler(world, e2, (float3) { 25, 25, 0 });

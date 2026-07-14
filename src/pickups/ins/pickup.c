@@ -16,7 +16,7 @@ entity spawn_pickup_block(ecs *world, float3 position, entity block) {
                 if (textures->length == 1) {
                     texture = textures->value[0];
                 } else {
-                    texture = textures->value[block_side_down];
+                    texture = textures->value[direction_down];
                 }
             }
         }
