@@ -2,6 +2,16 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- make some npcs attack you
+- Finish Towns lod refactor
+- Queue new chunks - so it doesnt lag
+    - TerrainStreamSystem is basically just spawning new chunks
+    # Tunks Lod updates happen elsewhere in threads
+-x finish maps reworks
+    -x mountains
+- optimize npcs
+    - just spawn closer to player, so not as many for now
+
 # Map
 - Zoom in / out buttons / scroll wheel
 - Keep track of chunks player has explored - fog of war

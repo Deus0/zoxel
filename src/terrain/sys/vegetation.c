@@ -18,49 +18,68 @@ zox_sys2(VegetationChunk3System) {
         if (generate->value != zox_generate_tchunk_vegetation) {
             continue;
         }
+        if (zox_disable_vegetation) {
+            generate->value = zox_generate_tchunk_towns;
+            continue;
+        }
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
-        zox_geter_value(terrain, RealmLink, entity, realm);
+        entity realm = zox_get_parent(world, terrain);
+#ifdef zox_safety_checks
         if (!zox_valid(realm)) {
             continue;
         }
+#endif
         zox_geter(realm, BiomeLinks, realm_biomes);
+#ifdef zox_safety_checks
         if (!realm_biomes->length) {
             zox_log_error("No Biomes on Realm");
             continue;
         }
+#endif
         zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
         byte is_max_depth = depth->value == terrain_depth;
-        byte voctree_length = powers_of_two_byte[depth->value];
-        int terrain_chunk_length = powers_of_two[terrain_depth];
+        byte length = octree_size(depth->value);
+        // int terrain_chunk_length = powers_of_two[terrain_depth];
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth); // depth->value);
-        int2 map_size = int2_single(terrain_chunk_length);
-        byte3 positionl;
+        int2 map_size = int2_single(length);
         byte hmultiplier = powers_of_two[terrain_depth - depth->value];
+#ifdef zox_safety_checks
         if (!zox_valid(tunk->value)) {
-            zox_log_error("[Vegetation] Invalid [Tunk] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
+            zox_loge("[Vegetation] Invalid [Tunk] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
             continue;
         }
+#endif
         zox_geter(tunk->value, HeightMap, height_map);
         zox_geter(tunk->value, BiomeMap, biome_map);
         zox_geter(tunk->value, VegetationMap, vegetation_map);
+#ifdef zox_safety_checks
         if (!vegetation_map->length) {
-            zox_log_error("Invalid [Tunk] [vegetation_map] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
+            zox_loge("Invalid [Tunk] [vegetation_map] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
             continue;
         }
+#endif
         entity biome = 0;
         byte soil_grass_id = 0;
         byte grass_id = 0;
         byte wood_id = 0;
         byte flower_id = 0;
         write_lock_VoxelNode(voctree);
-        for (positionl.x = 0; positionl.x < voctree_length; positionl.x++) {
-            for (positionl.z = 0; positionl.z < voctree_length; positionl.z++) {
-                int2 map_position = (int2) { positionl.x * hmultiplier, positionl.z * hmultiplier };
+        byte3 position;
+        for (position.x = 0; position.x < length; position.x++) {
+            for (position.z = 0; position.z < length; position.z++) {
+                // int2 map_position = (int2) { position.x * hmultiplier, position.z * hmultiplier };
+                int2 map_position = (int2) { position.x, position.z };
                 int map_index = int2_array_index(map_position, map_size);
+#ifdef zox_safety_checks
+                if (map_index >= biome_map->length) {
+                    zox_loge("Vegetation: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", map_index, biome_map->length, map_position.x, map_position.y, map_size.x, map_size.y);
+                    continue;
+                }
+#endif
                 byte biome_id = biome_map->value[map_index];
                 byte veggie = vegetation_map->value[map_index];
                 byte height = height_map->value[map_index];
@@ -78,10 +97,12 @@ zox_sys2(VegetationChunk3System) {
                     continue;
                 }
                 entity target_biome = realm_biomes->value[biome_id];
+#ifdef zox_safety_checks
                 if (!zox_valid(target_biome)) {
                     zox_loge("Biome is invalid [%i]", biome_id);
                     continue;
                 }
+#endif
                 // NOTE: Updates our cache of our biome
                 if (biome != target_biome) {
                     biome = target_biome;
@@ -100,10 +121,10 @@ zox_sys2(VegetationChunk3System) {
                 if (veggie != zox_vegetation_trees) {
                     int global_y = height;
                     if (global_y >= chunk_block_position.y) {
-                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                        if (positionl.y >= 0 && positionl.y < voctree_length) {
-                            if (height >= chunk_block_position.y && height < chunk_block_position.y + voctree_length) {
-                                set_VoxelNode(voctree, depth->value, positionl, soil_grass_id);
+                        position.y = (global_y - chunk_block_position.y) / hmultiplier;
+                        if (position.y >= 0 && position.y < length) {
+                            if (height >= chunk_block_position.y && height < chunk_block_position.y + length) {
+                                set_VoxelNode(voctree, depth->value, position, soil_grass_id);
                             }
                         }
                     }
@@ -116,10 +137,10 @@ zox_sys2(VegetationChunk3System) {
                     if (grass_id) {
                         int global_y = height + 1;
                         if (global_y >= chunk_block_position.y) {
-                            positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                            if (positionl.y >= 0 && positionl.y < voctree_length) {
-                                if (!getv_VoxelNode(voctree, depth->value, positionl)) {
-                                    set_VoxelNode(voctree, depth->value, positionl, grass_id);
+                            position.y = (global_y - chunk_block_position.y) / hmultiplier;
+                            if (position.y >= 0 && position.y < length) {
+                                if (!getv_VoxelNode(voctree, depth->value, position)) {
+                                    set_VoxelNode(voctree, depth->value, position, grass_id);
                                 }
                             }
                         }
@@ -132,19 +153,19 @@ zox_sys2(VegetationChunk3System) {
                         if (global_y < chunk_block_position.y) {
                             break;
                         }
-                        positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                        if (positionl.y >= 0 && positionl.y < voctree_length) {
-                            set_VoxelNode(voctree, depth->value, positionl, wood_id);
+                        position.y = (global_y - chunk_block_position.y) / hmultiplier;
+                        if (position.y >= 0 && position.y < length) {
+                            set_VoxelNode(voctree, depth->value, position, wood_id);
                         }
                     }
                 } else if (veggie == zox_vegetation_flowers) {
                     if (flower_id) {
                         int global_y = height + 1;
                         if (global_y >= chunk_block_position.y) {
-                            positionl.y = (global_y - chunk_block_position.y) / hmultiplier;
-                            if (positionl.y >= 0 && positionl.y < voctree_length) {
-                                if (!getv_VoxelNode(voctree, depth->value, positionl)) {
-                                    set_VoxelNode(voctree, depth->value, positionl, flower_id);
+                            position.y = (global_y - chunk_block_position.y) / hmultiplier;
+                            if (position.y >= 0 && position.y < length) {
+                                if (!getv_VoxelNode(voctree, depth->value, position)) {
+                                    set_VoxelNode(voctree, depth->value, position, flower_id);
                                 }
                             }
                         }

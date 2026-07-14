@@ -21,7 +21,9 @@ zox_sys2(FirstTerrainTunkSystem) {
         if (int2_hashmap_has(tunks->value, position->value)) {
             continue;
         }
-        entity tunk = spawn_tunk(world, prefab_tunk2, terrain->value, 0, position->value, 0);
+        // TODO: Calculate Lods!
+        byte lod = camera_distance_to_terrain_render_depth(0);
+        entity tunk = spawn_tunk(world, prefab_tunk2, terrain->value, 0, position->value, 0, lod);
         if (!zox_valid(tunk)) {
             zox_loge("Failed to spawn Tunk [%ix%i] on %s", position->value.x, position->value.y, zox_get_name(terrain->value));
             continue;

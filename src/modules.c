@@ -50,6 +50,7 @@
 #include "weathers/_.c"
 #include "terrain/_.c"
 #include "mountains/_.c"
+#include "vegetation/_.c"
 #include "towns/_.c"
 #include "vrays/_.c"
 #include "characters/_.c"
@@ -145,6 +146,7 @@ zox_begin_module(Zox) {
     zox_import_module(Weathers);
     zox_import_module(Terrains);
     zox_import_module(Mountains);
+    zox_import_module(Vegetation);
     zox_import_module(Towns);
     zox_import_module(Vrays);
     zox_import_module(Characters);

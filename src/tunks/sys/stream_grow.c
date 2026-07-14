@@ -83,7 +83,8 @@ zox_sys2(TunksSpawnSystem) {
             byte streamer_distance = get_camera_chunk2_distance(closest_point, neighbor_position);
             // zox_log("Streaming - nposition [%ix%i] rdistance [%i] streamer [%ix%i]", nposition.x, nposition.y, rdistance, stream_point.x, stream_point.y);
             if (streamer_distance <= terrain_lod_far) {
-                entity tunk = spawn_tunk(world, prefab_tunk2, terrain, 0, neighbor_position, streamer_distance);
+                byte lod = camera_distance_to_terrain_render_depth(streamer_distance);
+                entity tunk = spawn_tunk(world, prefab_tunk2, terrain, 0, neighbor_position, streamer_distance, lod);
                 int2_hashmap_add(chunks->value, neighbor_position, tunk);
                 neighbors->value[j] = neighbor;
                 // zox_log("+  New Tunk at [%ix%i]", nposition.x, nposition.y);

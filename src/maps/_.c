@@ -1,6 +1,7 @@
 #ifndef zoxm_maps
 #define zoxm_maps
 
+byte zox_dbg_towns = 0;
 // TODO: Just Destroy/Spawn map pieces instead
 // TODO: we can even downsize the pieces?
 byte bigmap_zoom = 16;

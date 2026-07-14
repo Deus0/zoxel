@@ -62,9 +62,12 @@ zox_sys2(MapInitializeSystem) {
                 }
                 zox_set(e2, Layer2D, { layer + 1 });
                 zox_set(e2, Alpha, { alpha->value });
-                zox_add_tag(e2, TunkTexture);
                 // zox_add_tag(e2, RegionTexture);
-                // zox_add_tag(e2, TownTexture);
+                if (zox_dbg_towns) {
+                    zox_add_tag(e2, TownTexture);
+                } else {
+                    zox_add_tag(e2, TunkTexture);
+                }
             }
         }
         // NOTE: Spawns a simple arrow for player direction

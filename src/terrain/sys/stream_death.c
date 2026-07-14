@@ -14,20 +14,18 @@ zox_sys2(Chunk3DeathSystem) {
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        // Pass if loading chunk
-        /*if (distance->value == 255) {
-            continue;
-        }*/
         // Pass if lod changing
         byte is_kill = distance->value > terrain_lod_far;
         if (!is_kill) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
+#ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_delete(e);
             continue;
         }
+#endif
         // remove from hash - can i do this better?
         zox_muter(terrain, ChunkLinks, chunks);
         int3_hashmap_remove(chunks->value, position->value);

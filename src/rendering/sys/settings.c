@@ -1,4 +1,4 @@
-float fog_settings_mul = 1.0f / 0.048f;
+float fog_settings_mul = 0.048f;
 
 zox_sys2(RenderingSettingsSystem) {
     zox_sys_world();
@@ -34,7 +34,7 @@ zox_sys2(RenderingSettingsDirtySystem) {
                 zox_log("Float Setting [%s] Set [%f]", name->value, value);
             }
             if (!strcmp(name->value, "Fog")) {
-                fog_density = fog_settings_mul * value;
+                fog_density = value * fog_settings_mul;
             }
         } else if (zox_has(e, SettingByte)) {
             byte value = zox_getv(e, SettingByte);

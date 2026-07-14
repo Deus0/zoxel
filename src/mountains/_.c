@@ -21,6 +21,7 @@
 #ifndef zox_mountains
 #define zox_mountains
 
+byte zox_disable_mountains = 0;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

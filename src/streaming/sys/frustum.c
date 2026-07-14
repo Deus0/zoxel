@@ -6,9 +6,12 @@ void set_chunk_block_spawns_render_disabled(ecs *world, const VoxelNode *node, b
         return;
     } else if (is_linked_VoxelNode(node)) {
         entity e = get_entity_VoxelNode(node);
-        if (zox_valid(e)) {
-            zox_set(e, RenderDisabled, { state });
+#ifdef zox_safety_checks
+        if (!zox_valid(e)) {
+            return;
         }
+#endif
+        zox_set(e, RenderDisabled, { state });
     } else if (has_children_VoxelNode(node)) {
         VoxelNode* kids = get_children_VoxelNode(node);
         for (int i = 0; i < octree_length; i++) {
@@ -27,27 +30,26 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
         zox_geter(e, ElementLinks, elements);
         for (int k = 0; k < elements->length; k++) {
             entity e2 = elements->value[k];
+#ifdef zox_safety_checks
             if (!zox_valid(e2)) {
                 continue;
             }
+#endif
             if (zox_has(e2, RenderDisabled)) {
                 zox_set(e2, RenderDisabled, { disabled });
             }
             set_entity_render_disabled(world, e2, disabled);
         }
     }
-
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             entity e2 = it2.entities[j];
-    /*entity children[layouts2_children_capacity];
-    uint children_length = zox_get_children(world, e, children, transforms3_children_capacity);
-    for (uint l = 0; l < children_length; l++) {
-        entity e2 = children[l];*/
+#ifdef zox_safety_checks
             if (!zox_valid(e2)) {
                 continue;
             }
+#endif
             if (zox_has(e2, RenderDisabled)) {
                 zox_set(e2, RenderDisabled, { disabled });
             }

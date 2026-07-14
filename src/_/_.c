@@ -8,6 +8,10 @@
 #ifndef zoxm_core
 #define zoxm_core
 
+#ifdef zox_debug
+    #define zox_safety_checks
+#endif
+
 #include "logs/_.c"
 #include "collections/_.c"
 #include "maths/_.c"

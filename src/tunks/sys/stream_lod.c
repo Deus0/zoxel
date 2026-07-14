@@ -2,6 +2,7 @@
 //  - Update Render Distances
 //  - Update Render Depths
 zox_sys2(TunkLodSystem) {
+    byte dbg_log = 0;
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -29,17 +30,19 @@ zox_sys2(TunkLodSystem) {
     }
     zox_sys_begin();
     zox_sys_in(TunkPosition);
+    zox_sys_in(Chunk3Stack);
     zox_sys_out(RenderDistance);
-    zox_sys_out(RenderDepth);
     zox_sys_out(RenderDistanceDirty);
-    zox_sys_out(RenderDepthDirty);
+    zox_sys_out(TunkLod);
+    zox_sys_out(GenerateTunk);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TunkPosition, position);
+        zox_sys_i(Chunk3Stack, stack);
         zox_sys_o(RenderDistance, distance);
-        zox_sys_o(RenderDepth, depth);
         zox_sys_o(RenderDistanceDirty, distance_dirty);
-        zox_sys_o(RenderDepthDirty, depth_dirty);
+        zox_sys_o(TunkLod, lod);
+        zox_sys_o(GenerateTunk, generate);
         entity terrain = zox_get_parent(world, e);
         if (!zox_valid(terrain)) {
             continue;
@@ -63,10 +66,10 @@ zox_sys2(TunkLodSystem) {
                 if (stream_terrain->value != terrain) {
                     continue;
                 }
-                float distance = int2_distance(stream_point->value, position->value);
-                if (distance < closest_distance) {
+                float streamer_distance = int2_distance(stream_point->value, position->value);
+                if (streamer_distance < closest_distance) {
                     had_streamer = 1;
-                    closest_distance = distance;
+                    closest_distance = streamer_distance;
                     closest_point = stream_point->value;
                 }
             }
@@ -75,15 +78,53 @@ zox_sys2(TunkLodSystem) {
         if (!had_streamer) {
             continue;
         }
-        byte streamer_distance = get_camera_chunk2_distance(closest_point, position->value);
-        if (distance->value != streamer_distance) {
-            distance->value = streamer_distance;
-            distance_dirty->value = zox_dirty_trigger;
-            byte rdepth = camera_distance_to_terrain_render_depth(distance->value);
-            if (depth->value != rdepth) {
-                depth->value = rdepth;
-                depth_dirty->value = zox_dirty_trigger;
+        byte new_distance = get_camera_chunk2_distance(closest_point, position->value);
+        if (distance->value == new_distance) {
+            continue;
+        }
+        distance->value = new_distance;
+        distance_dirty->value = zox_dirty_trigger;
+        byte new_depth = camera_distance_to_terrain_render_depth(new_distance);
+        if (new_depth > lod->value) {
+            lod->value = new_depth;
+            generate->value = zox_generate_tunk_start;
+        }
+        byte stack_i = 0;
+        for (short y = - render_distance_y; y <= render_distance_y; y++, stack_i++) {
+            entity chunk = stack->value[stack_i];
+#ifdef zox_safety_checks
+            if (!zox_valid(chunk)) {
+                zox_logw("Chunk missing at [%ix%ix%i]", position->value.x, y, position->value.y);
+                continue;
+            }
+#endif
+            byte old_distance3 = zox_getv(chunk, RenderDistance);
+            if (old_distance3 == new_distance) {
+                continue;
+            }
+            zox_setm(chunk, RenderDistance, new_distance);
+            zox_setm(chunk, RenderDistanceDirty, zox_dirty_trigger);
+            byte old_depth = zox_getv(chunk, RenderDepth);
+            if (old_depth == new_depth) {
+                continue;
+            }
+            zox_setm(chunk, RenderDepth, new_depth);
+            zox_setm(chunk, RenderDepthDirty, zox_dirty_trigger);
+            zox_setm(chunk, Busy, 1);
+            if (dbg_log) {
+                zox_log("Chunk Depth Updated [%s]:[%i]", zox_get_name(chunk), new_depth);
+            }
+            // NOTE: Clears the light if depth is set to increase
+            byte node_depth = zox_getv(chunk, NodeDepth);
+            if (new_depth > node_depth) {
+                zox_muter(chunk, LightNode, lights);
+                lights->value = darklight;
+                collapse_LightNode(lights);
+                if (y == render_distance_y) {
+                    zox_set(chunk, GenerateLights, { zox_generate_lights_sunlight });
+                }
             }
         }
     }
 } zox_sys_end(TunkLodSystem);
+

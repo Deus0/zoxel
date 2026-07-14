@@ -1,12 +1,11 @@
 // NOTE: Just spawns chunks from here
-// TODO: Queue New Chunks
-// TODO: Support for multiple streamers
 zox_sys2(TerrainStreamSystem) {
+    // TODO: Queue Position Checks to work over frames
+    // TODO: Support for multiple streamers
+    // TODO: Cache Streamers (like Billboard System)
     byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
-    // First Cache Streamers (like Billboard System)
-    // Next
     zox_sys_begin();
     zox_sys_in(Seed);
     zox_sys_in(BlockScale);
@@ -38,8 +37,8 @@ zox_sys2(TerrainStreamSystem) {
                 zox_sys_i_2(StreamLink, terrain);
                 zox_sys_i_2(StreamPosition, stream_position);
                 // NOTE: For some reason this was failing for StreamDirty flags
-                if (!dirty->value) {
                 // if (dirty->value != zox_dirty_active) {
+                if (!dirty->value) {
                     continue;
                 }
                 if (terrain->value != e) {
@@ -74,7 +73,8 @@ zox_sys2(TerrainStreamSystem) {
                         entity tunk = int2_hashmap_get(tunks->value, tunk_position);
                         // NOTE: If tunk doesnt exist, spawn new terrain pillar here!
                         if (!zox_valid(tunk)) {
-                            tunk = spawn_tunk(world, prefab_tunk2, e, region, tunk_position, new_distance);
+                            byte new_depth = camera_distance_to_terrain_render_depth(new_distance);
+                            tunk = spawn_tunk(world, prefab_tunk2, e, region, tunk_position, new_distance, new_depth);
                             int2_hashmap_add(tunks->value, tunk_position, tunk);
                             // Spawn chunks per Tunk, if new!
                             Chunk3Stack stack = (Chunk3Stack) { 0 };
@@ -82,8 +82,7 @@ zox_sys2(TerrainStreamSystem) {
                             for (position.y = - size.y; position.y <= size.y; position.y++, stack_i++) {
                                 entity chunk = int3_hashmap_get(chunks->value, position);
                                 if (!zox_valid(chunk)) {
-                                    // byte depth = camera_distance_to_terrain_render_depth(new_distance);
-                                    chunk = spawn_chunk3_terrain(world, prefab_chunk_terrain, e, stream_position->value, position, depth->value, block_scale->value);
+                                    chunk = spawn_chunk3_terrain(world, prefab_chunk_terrain, e, position, depth->value, block_scale->value, new_distance, new_depth);
                                     int3_hashmap_add(chunks->value, position, chunk);
                                     zox_set(chunk, TunkLink, { tunk });
                                     if (position.y == render_distance_y) {
@@ -99,38 +98,55 @@ zox_sys2(TerrainStreamSystem) {
                             }
                             zox_set_ptr(tunk, Chunk3Stack, stack);
                         } else {
+                            // NOTE: Handled by tunk loding
+                            if (zox_tunk_lod_system) {
+                                continue;
+                            }
+                            // Test lag issues
+                            // continue;
                             // NOTE: If already exist, update lods!
                             // NOTE: Sets Tunk Render Distance too!
                             byte old_distance2 = zox_getv(tunk, RenderDistance);
                             if (old_distance2 == new_distance) {
                                 continue;
                             }
-                            zox_set(tunk, RenderDistance, { new_distance });
-                            zox_set(tunk, RenderDistanceDirty, { zox_dirty_trigger });
+                            zox_setm(tunk, RenderDistance, new_distance);
+                            zox_setm(tunk, RenderDistanceDirty, zox_dirty_trigger);
+                            byte old_tunk_lod = zox_getv(tunk, TunkLod);
+                            // NOTE: If LOD Increases, we Regenerate Tunk! Only uses Lod, no RenderLods since no Renders!
+                            byte new_depth = terrain_depth; //  camera_distance_to_terrain_render_depth(new_distance);
+                            if (new_depth > old_tunk_lod) {
+                                zox_setm(tunk, TunkLod, new_depth);
+                                zox_setm(tunk, GenerateTunk, zox_generate_tunk_start);
+                            }
+                            if (zox_terrain_chunk_lod_system) {
+                                continue;
+                            }
                             zox_geter(tunk, Chunk3Stack, stack);
                             byte stack_i = 0;
                             for (position.y = - size.y; position.y <= size.y; position.y++, stack_i++) {
                                 entity chunk = stack->value[stack_i];
+#ifdef zox_safety_checks
                                 if (!zox_valid(chunk)) {
                                     zox_logw("Chunk missing at [%ix%ix%i]", position.x, position.y, position.z);
                                     continue;
                                 }
+#endif
                                 byte old_distance3 = zox_getv(chunk, RenderDistance);
                                 if (old_distance3 == new_distance) {
                                     continue;
                                 }
-                                zox_set(chunk, RenderDistance, { new_distance });
-                                zox_set(chunk, RenderDistanceDirty, { zox_dirty_trigger });
+                                zox_setm(chunk, RenderDistance, new_distance);
+                                zox_setm(chunk, RenderDistanceDirty, zox_dirty_trigger);
                                 byte old_depth = zox_getv(chunk, RenderDepth);
-                                byte new_depth = camera_distance_to_terrain_render_depth(new_distance);
                                 if (old_depth == new_depth) {
                                     continue;
                                 }
-                                zox_set(chunk, RenderDepth, { new_depth });
-                                zox_set(chunk, RenderDepthDirty, { zox_dirty_trigger });
-                                zox_set(chunk, Busy, { 1 });
+                                zox_setm(chunk, RenderDepth, new_depth);
+                                zox_setm(chunk, RenderDepthDirty, zox_dirty_trigger);
+                                zox_setm(chunk, Busy, 1);
                                 if (dbg_log) {
-                                    zox_log("Chunk Depth Updated [%s]:[%i]", zox_get_name(chunk), new_depth);
+                                    zox_log("[Stream] Chunk Depth Updated [%s]:[%i]", zox_get_name(chunk), new_depth);
                                 }
                                 // NOTE: Started to be busy! TODO: Move this to generate starts
                                 byte node_depth = zox_getv(chunk, NodeDepth);
@@ -142,9 +158,6 @@ zox_sys2(TerrainStreamSystem) {
                                     if (position.y == render_distance_y) {
                                         zox_set(chunk, GenerateLights, { zox_generate_lights_sunlight });
                                     }
-                                    // TODO: Check all configurations on different issues this might bring... if it comes up
-                                    // NOTE: No need atm for extra flooding, seems that it's just working as  sunlights just readds the floodfill as it fills
-                                    // zox_set(chunk, RefreshLights, { zox_refresh_lights });
                                 }
                             }
                         }
@@ -155,3 +168,7 @@ zox_sys2(TerrainStreamSystem) {
         zox_sys_query_end();
     }
 } zox_sys_end(TerrainStreamSystem);
+
+// TODO: Check all configurations on different issues this might bring... if it comes up
+// NOTE: No need atm for extra flooding, seems that it's just working as  sunlights just readds the floodfill as it fills
+// zox_set(chunk, RefreshLights, { zox_refresh_lights });

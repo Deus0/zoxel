@@ -127,6 +127,16 @@ void define_systems_terrain(ecs *world) {
             [out] chunks3.ChunkNeighbors,
             [none] streaming.StreamedChunk
         );
+        zox_system(
+            Chunk3DeathSystem,
+            zoxp_destroy,
+            [in] rendering.RenderDistanceDirty,
+            [in] rendering.RenderDistance,
+            [in] chunks3.ChunkPosition,
+            [none] streaming.StreamedChunk
+        );
+    }
+    if (zox_terrain_chunk_lod_system) {
         zox_filter(
             streamers_lod,
             [in] streaming.StreamDirty,
@@ -136,7 +146,7 @@ void define_systems_terrain(ecs *world) {
             [none] streaming.Streamer
         );
         zox_system_ctx(
-            ChunkLodSystem,
+            TerrainChunkLodSystem,
             zoxp_update,
             streamers_lod,
             [in] chunks3.ChunkPosition,
@@ -145,14 +155,6 @@ void define_systems_terrain(ecs *world) {
             [out] rendering.RenderDepthDirty,
             [out] rendering.RenderDistanceDirty,
             [out] core.Busy,
-            [none] streaming.StreamedChunk
-        );
-        zox_system(
-            Chunk3DeathSystem,
-            zoxp_destroy,
-            [in] rendering.RenderDistanceDirty,
-            [in] rendering.RenderDistance,
-            [in] chunks3.ChunkPosition,
             [none] streaming.StreamedChunk
         );
     }

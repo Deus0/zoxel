@@ -3,11 +3,12 @@ zox_tag(TunkTexture);
 zox_tag(RegionTexture);
 zox_tag(HeightmapTexture);
 zoxc_byte(GenerateTunk);
+zoxc_byte(TunkLod);
 zoxc_entity(TunkLink);
 zoxc_int2(TunkPosition);
-zoxc_arrayd(BiomeMap, byte)
-zoxc_arrayd(HeightMap, byte)
-zoxc_arrayd(VegetationMap, byte)
+zoxc_arrayd(BiomeMap, byte);
+zoxc_arrayd(HeightMap, byte);
+zoxc_arrayd(VegetationMap, byte);
 zoxc_hashmap(TunkLinks, int2);
 // NOTE: this has to be used with render_distance_y
 #define chunk3_stack_length 4 * 2 + 1
@@ -20,6 +21,7 @@ void define_components_tunks(ecs *world) {
     zoxd_tag(RegionTexture);
     zoxd_tag(HeightmapTexture);
     zoxd_byte(GenerateTunk);
+    zoxd_byte(TunkLod);
     zoxd_entity(TunkLink);
     zoxd_int2(TunkPosition);
     zoxd_arrayd(BiomeMap);

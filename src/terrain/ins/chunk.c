@@ -1,4 +1,6 @@
-entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 camera_position, int3 position, byte terrain_depth, float terrain_scalev) {
+entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 position, byte terrain_depth, float terrain_scalev, byte render_distance, byte render_depth) {
+    // byte camera_distance = get_camera_chunk_distance_xz(camera_position, position);
+    // byte render_depth = camera_distance_to_terrain_render_depth(camera_distance);
     zox_instance(prefab);
     char name[64];
     sprintf(name, "chunk_terrain_%ix%ix%i", position.x, position.y, position.z);
@@ -23,8 +25,6 @@ entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 came
         zox_set(e, BlockManagerLink, { realm });
     }
     // scale needs to be based on chunk itself
-    byte camera_distance = get_camera_chunk_distance_xz(camera_position, position);
-    byte render_depth = camera_distance_to_terrain_render_depth(camera_distance);
     float chunk_scalev = get_chunk_scale(render_depth, terrain_depth, terrain_scalev);
     zox_set(e, BlockScale, { chunk_scalev });    // set from parent
     // we should just pass in positionf - local position of parent!
@@ -36,7 +36,7 @@ entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 came
     zox_set(e, TransformMatrix, { float4x4_position(positionf) });
     // lod update here
     // todo: just start this as invisible and update with streaming systems
-    zox_set(e, RenderDistance, { camera_distance });
+    zox_set(e, RenderDistance, { render_distance });
     zox_set(e, RenderDistanceDirty, { zox_dirty_trigger });
     zox_set(e, RenderDepth, { render_depth });
     /*if (position.y == render_distance_y) {

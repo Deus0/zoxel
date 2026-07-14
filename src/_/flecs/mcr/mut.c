@@ -7,7 +7,6 @@
 #define zox_mut(e, T)\
     ecs_get_mut(world, e, T)
 
-
 #define zox_get_mut(e, T)\
     ecs_get_mut(world, e, T);
 
@@ -29,5 +28,13 @@
     if (component->value != valuer) {\
         component->value = valuer;\
         zox_modified(e, T)\
+    }\
+}
+
+#define zox_setm(e, T, v) {\
+    T* component = zox_get_mut(e, T);\
+    if (component->value != v) {\
+        component->value = v;\
+        zox_modified(e, T);\
     }\
 }

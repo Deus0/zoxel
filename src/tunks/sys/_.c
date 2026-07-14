@@ -38,6 +38,7 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         BiomeMapSystem,
         zoxp_update,
+        [in] tunks.TunkLod,
         [in] tunks.TunkPosition,
         [out] tunks.GenerateTunk,
         [out] tunks.BiomeMap,
@@ -45,7 +46,7 @@ void define_systems_tunks(ecs* world) {
     );
     zox_system(
         BiomeMapAvgSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] tunks.GenerateTunk,
         [in] tunks.BiomeMap,
         [out] biomes.BiomeLink,
@@ -65,7 +66,8 @@ void define_systems_tunks(ecs* world) {
     // TODO: Pass in BiomeMap and use biome data
     zox_system(
         HeightMapSystem,
-        zoxp_update, // EcsPreUpdate,
+        zoxp_update,
+        [in] tunks.TunkLod,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.GenerateTunk,
@@ -76,6 +78,7 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         VegetationMapSystem,
         zoxp_update,
+        [in] tunks.TunkLod,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.GenerateTunk,
@@ -137,25 +140,28 @@ void define_systems_tunks(ecs* world) {
         );
     }
     // For now leave here
-    zox_filter(
-        streamers_lod,
-        [in] streaming.StreamDirty2,
-        [in] streaming.StreamerLevel,
-        [in] streaming.StreamLink,
-        [in] streaming.StreamPosition2,
-        [none] streaming.Streamer
-    );
-    zox_system_ctx(
-        TunkLodSystem,
-        zoxp_update,
-        streamers_lod,
-        [in] tunks.TunkPosition,
-        [out] rendering.RenderDistance,
-        [out] rendering.RenderDepth,
-        [out] rendering.RenderDistanceDirty,
-        [out] rendering.RenderDepthDirty,
-        [none] streaming.StreamedChunk
-    );
+    if (zox_tunk_lod_system) {
+        zox_filter(
+            streamers_lod,
+            [in] streaming.StreamDirty2,
+            [in] streaming.StreamerLevel,
+            [in] streaming.StreamLink,
+            [in] streaming.StreamPosition2,
+            [none] streaming.Streamer
+        );
+        zox_system_ctx(
+            TunkLodSystem,
+            zoxp_update,
+            streamers_lod,
+            [in] tunks.TunkPosition,
+            [in] tunks.Chunk3Stack,
+            [out] rendering.RenderDistance,
+            [out] rendering.RenderDistanceDirty,
+            [out] tunks.TunkLod,
+            [out] tunks.GenerateTunk,
+            [none] streaming.StreamedChunk
+        );
+    }
     // Texture
     zox_system(
         TunkTextureSystem,

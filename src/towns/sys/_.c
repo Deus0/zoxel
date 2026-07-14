@@ -6,6 +6,7 @@ void zox_define_systems_towns(ecs* world) {
     zox_system(
         TownMapSystem,
         zoxp_update,
+        [in] tunks.TunkLod,
         [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,

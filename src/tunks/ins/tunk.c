@@ -1,5 +1,5 @@
 // TODO: Add quadtree data and chunk2 tag
-entity spawn_tunk(ecs* world, entity prefab, entity terrain, entity region, int2 position, byte render_distance) {
+entity spawn_tunk(ecs* world, entity prefab, entity terrain, entity region, int2 position, byte distance, byte lod) {
     zox_instance(prefab);
     {
         char name[32];
@@ -7,10 +7,9 @@ entity spawn_tunk(ecs* world, entity prefab, entity terrain, entity region, int2
         zox_name(name);
     }
     zox_set_parent(world, e, terrain);
-    // zox_set(e, VoxLink, { terrain });
-    zox_set(e, TunkPosition, { position });
-    zox_set(e, RenderDistance, { render_distance });
     zox_set(e, RegionLink, { region });
-    // zox_log("+ Tunk2 [%ix%i]", position.x, position.y);
+    zox_set(e, TunkPosition, { position });
+    zox_set(e, RenderDistance, { distance });
+    zox_set(e, TunkLod, { lod });
     return e;
 }
