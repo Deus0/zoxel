@@ -13,15 +13,11 @@ void on_remove_##T(iter *it) {\
     for (int i = 0; i < it->count; i++) {\
         zox_sys_e();\
         zox_sys_i(T, parent);\
-        \
         if (!zox_valid(parent->value) || !zox_has(parent->value, parent_T)) {\
             continue;\
         }\
-        \
         zox_mut_begin(parent->value, parent_T, links);\
         if (remove_from_##parent_T(links, e)) {\
-            /*zox_log("! removed [%s] from [%s]\n", zox_get_name(e), zox_get_name(parent->value))*/\
-            \
             zox_modified(parent->value, parent_T);\
         }\
     }\
@@ -34,15 +30,11 @@ void on_set_##T(iter *it) {\
     for (int i = 0; i < it->count; i++) {\
         zox_sys_e();\
         zox_sys_i(T, parent);\
-        \
         if (!zox_valid(parent->value) || !zox_has(parent->value, parent_T)) {\
             continue;\
         }\
-        \
         zox_mut_begin(parent->value, parent_T, links);\
         if (!is_in_##parent_T(links, e) && add_to_##parent_T(links, e)) {\
-            /*zox_log("+ new parent [%s] to [%s]", zox_get_name(e), zox_get_name(parent->value));*/\
-            \
             zox_modified(parent->value, parent_T);\
         }\
     }\

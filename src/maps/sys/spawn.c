@@ -54,16 +54,19 @@ zox_sys2(MapInitializeSystem) {
                 entity e2 = spawn_ui(world, prefab_element_shell, body, float2_half, piece_position, piece_size, int2_zero);
                 zox_set_unique_name(e2, "map_piece");
                 zox_set(e2, TunkLink, { tunk });
-                zox_set(e2, TextureDirty, { zox_dirty_none });
-                zox_set(e2, Generate, { zox_dirty_trigger });
+                zox_set(e2, TextureDirty, { 0 });
+                zox_set(e2, GenerateTexture, { zox_generate_texture_run });
                 zox_set(e2, MapPiecePosition, { grid_position });
                 if (dbg_log) {
                     zox_log("   - Piece [%ix%i], Tunk [%ix%i]: %s", grid_position.x, grid_position.y, tunk_position.x, tunk_position.y, zox_valid(tunk) ? "Valid" : "Invalid");
                 }
                 zox_set(e2, Layer2D, { layer + 1 });
                 zox_set(e2, Alpha, { alpha->value });
-                // zox_add_tag(e2, RegionTexture);
-                if (zox_dbg_towns) {
+                if (zox_dbg_maps == zox_dbg_maps_regions) {
+                    zox_add_tag(e2, RegionTexture);
+                } else if (zox_dbg_maps == zox_dbg_maps_heights) {
+                    zox_add_tag(e2, HeightsTexture);
+                } else if (zox_dbg_maps == zox_dbg_maps_towns) {
                     zox_add_tag(e2, TownTexture);
                 } else {
                     zox_add_tag(e2, TunkTexture);
@@ -71,14 +74,19 @@ zox_sys2(MapInitializeSystem) {
             }
         }
         // NOTE: Spawns a simple arrow for player direction
-        entity e3 = spawn_uic(world, prefab_element_ready, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
-        zox_set_unique_name(e3, "map_player");
-        zox_set(e3, Layer2D, { layer + 2 });
-        zox_set(e3, PlayerLink, { player->value });
-        zox_add_tag(e3, MapArrow);
-        // Texture
-        zox_add_tag(e3, ArrowTexture);
-        zox_set(e3, Generate, { zox_dirty_trigger });
-        zox_set(e3, OutlineThickness, { arrow_thickness });
+        {
+            entity e3 = spawn_uic(world, prefab_element_ready, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
+            zox_set_unique_name(e3, "map_player");
+            zox_set(e3, Layer2D, { layer + 2 });
+            zox_set(e3, PlayerLink, { player->value });
+            zox_add_tag(e3, MapArrow);
+            // Texture
+            zox_add_tag(e3, ArrowTexture);
+            zox_set(e3, Generate, { zox_dirty_trigger });
+            zox_set(e3, OutlineThickness, { arrow_thickness });
+            // Hmm
+            //zox_add(e3, TransformMatrix);
+            //zox_set(e3, Scale2D, { (float2) { -1, 1 } });
+        }
     }
 } zox_sys_end(MapInitializeSystem);

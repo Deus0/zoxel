@@ -1,7 +1,6 @@
 // #define zox_debug_spawning
 
 #ifdef zox_debug
-
     #define zox_get_name(e)\
         (zox_valid(e) && zox_alive(e)) ? ecs_get_name(world, e) : (zox_valid(e) ? "Dead" : "Invalid")
 
@@ -9,11 +8,12 @@
         (ecs_is_valid(it->world, it->entities[i]) && ecs_is_alive(it->world, it->entities[i])) ? ecs_get_name(it->world, it->entities[i]) : "Invalid"
 
 #else
-
     #define zox_get_name(e) ecs_get_name(world, e)
     #define zox_sys_e_name() ecs_get_name(it->world, it->entities[i])
-
 #endif
+
+#define zox_getn(e)\
+    (zox_valid(e) ? ecs_get_name(world, e) : "Invalid")
 
 #define zox_sys_name() ecs_get_name(it->world, it->system)
 
@@ -29,9 +29,6 @@
 
 
 // -- ? --
-
-
-
 
 void zox_set_entity_name(ecs *world, entity e, const char* name) {
     if (!e || !name) return;

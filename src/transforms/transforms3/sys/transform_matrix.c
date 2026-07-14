@@ -8,7 +8,6 @@ zox_sys2(TransformMatrixSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_o(TransformMatrix, matrix);
-
         matrix->value = float4x4_transform(position->value, rotation->value);
     }
 } zox_sys_end(TransformMatrixSystem);

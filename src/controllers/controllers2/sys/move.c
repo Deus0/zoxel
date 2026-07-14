@@ -27,8 +27,6 @@ zox_sys2(Controller2MoveSystem) {
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-        //for (int j = 0; j < deviceLinks->length; j++) {
-        //    entity e2 = deviceLinks->value[j];
             if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
                 continue;
             }
@@ -87,17 +85,13 @@ zox_sys2(Controller2MoveSystem) {
         }
         zox_geter(character, Velocity2D, velocity2D)
         zox_muter(character, Acceleration2D, acceleration2D);
-        // const float2 check_velocity = velocity2D->value;
-
         float2 max_speed = max_velocity2D;
         if (is_running) {
             max_speed.x *= run_speed2D;
             max_speed.y *= run_speed2D;
         }
-
         float2 potential_velocity_left = { velocity2D->value.x + (acceleration2D->value.x + movement.x) * delta_time, 0 };
         float2 potential_velocity_up = { 0, velocity2D->value.y + (acceleration2D->value.y + movement.y) * delta_time };
-
         if (float_abs(potential_velocity_left.x) < max_speed.x) {
             acceleration2D->value.x += movement.x;
         }

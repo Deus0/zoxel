@@ -28,14 +28,19 @@ zox_sys2(TownWallsSystem) {
         entity realm = zox_get_parent(world, terrain);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         entity wall = zox_get_child_by_id(world, realm, zox_id(BlockBricks));
+#ifdef zox_safety_checks
         if (!zox_valid(wall)) {
             zox_loge("No wall for town..");
             continue;
         }
+#endif
         byte bricks_id = zox_getv(wall, BlockIndex);
+#ifdef zox_safety_checks
         if (!bricks_id) {
+            zox_loge("Bricks ID Invalid");
             continue;
         }
+#endif
         // Home Placeholders
         byte home_wall_id = bricks_id;
         byte home_floor_id = bricks_id;
@@ -79,14 +84,13 @@ zox_sys2(TownWallsSystem) {
                 }
                 // byte wall_height = zox_getv(town, Height);
                 if (town_value == zox_town_type_wall) {
-                    for (int h = 1; h <= wall_height; h++) {
+                    for (byte h = 1; h <= wall_height; h++) {
                         int global_y = height + h;
-                        if (global_y < chunk_block_position.y) {
-                            break;
-                        }
-                        position.y = (global_y - chunk_block_position.y) / hmultiplier;
-                        if (position.y >= 0 && position.y < length) {
-                            set_clean_VoxelNode(voctree, depth->value, position, bricks_id);
+                        if (global_y >= chunk_block_position.y) {
+                            position.y = (global_y - chunk_block_position.y) / hmultiplier;
+                            if (position.y >= 0 && position.y < length) {
+                                set_clean_VoxelNode(voctree, depth->value, position, bricks_id);
+                            }
                         }
                     }
                 }

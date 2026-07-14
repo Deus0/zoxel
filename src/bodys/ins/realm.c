@@ -9,7 +9,7 @@ entity spawn_item_body(ecs *world, entity model, entity texture, const char* nam
 
 void delayed_texture_generate(ecs* world, entity e) {
     if (zox_valid(e)) {
-        zox_set(e, GenerateTexture, { zox_dirty_trigger });
+        zox_set(e, GenerateTexture, { zox_generate_texture_run });
     }
 }
 

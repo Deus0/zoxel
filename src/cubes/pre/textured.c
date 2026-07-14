@@ -11,7 +11,7 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
     zox_prefab_set(e, TextureSize, { texture_size });
     zox_prefab_set(e, TextureDirty, { 0 });
     zox_prefab_set(e, Seed, { 666 });
-    zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
+    zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     add_noise_texture(world, e);
     zox_remove_tag(e, MeshBasic3D);
     zox_add_tag(e, TexturedMesh3D);

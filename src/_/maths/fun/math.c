@@ -68,11 +68,26 @@ static inline float4x4 float4x4_position(const float3 position) {
     return matrix;
 }
 
-static inline float4x4 float4x4_scale(const float scale) {
+static inline float4x4 float4x4_scale(float scale) {
     float4x4 m = float4x4_identity;
     m.x.x = scale;
     m.y.y = scale;
     m.z.z = scale;
+    return m;
+}
+
+static inline float4x4 float4x4_scale2(float2 scale) {
+    float4x4 m = float4x4_identity;
+    m.x.x = scale.x;
+    m.y.y = scale.y;
+    return m;
+}
+
+static inline float4x4 float4x4_scale3D(float3 scale) {
+    float4x4 m = float4x4_identity;
+    m.x.x = scale.x;
+    m.y.y = scale.y;
+    m.z.z = scale.z;
     return m;
 }
 
@@ -84,14 +99,6 @@ static inline float4x4 float4x4_position_scale(float3 position, float scale) {
     m.x.x = scale;
     m.y.y = scale;
     m.z.z = scale;
-    return m;
-}
-
-static inline float4x4 float4x4_scale3D(const float3 scale) {
-    float4x4 m = float4x4_identity;
-    m.x.x = scale.x;
-    m.y.y = scale.y;
-    m.z.z = scale.z;
     return m;
 }
 
@@ -127,11 +134,9 @@ static inline float4x4 float4x4_transform(float3 position,float4 rotation) {
 }
 
 static inline float4x4 float4x4_transform_scale(float3 position, float4 rotation, float scale) {
-
     float4x4 position_m = float4x4_position(position);
     float4x4 rotation_m = float4x4_rotation(rotation);
     float4x4 scale_m = float4x4_scale(scale);
-
     return float4x4_multiply(scale_m, float4x4_multiply(rotation_m, position_m));
 }
 
@@ -172,7 +177,6 @@ static inline float4x4 float4x4_view_matrix(float3 position, float3 forward, flo
     matrix.x.z = -forward.x;
     matrix.y.z = -forward.y;
     matrix.z.z = -forward.z;
-
     return matrix;
 }
 
@@ -207,7 +211,6 @@ static inline float3 float4x4_multiply_float3(float4x4 mat, float3 point) {
     result.x = mat.x.x * point.x + mat.y.x * point.y + mat.z.x * point.z + mat.w.x;
     result.y = mat.x.y * point.x + mat.y.y * point.y + mat.z.y * point.z + mat.w.y;
     result.z = mat.x.z * point.x + mat.y.z * point.y + mat.z.z * point.z + mat.w.z;
-
     return result;
 }
 
@@ -217,16 +220,21 @@ static inline float4 float4x4_multiply_float4(float4x4 mat, float4 point) {
     result.y = mat.x.y * point.x + mat.y.y * point.y + mat.z.y * point.z + mat.w.y * point.w;
     result.z = mat.x.z * point.x + mat.y.z * point.y + mat.z.z * point.z + mat.w.z * point.w;
     result.w = mat.x.w * point.x + mat.y.w * point.y + mat.z.w * point.z + mat.w.w * point.w;
-
     return result;
 }
 
 static inline float3 float4x4_multiply_float3_without_translation(float4x4 mat, float3 point) {
-
     float3 result;
     result.x = mat.x.x * point.x + mat.y.x * point.y + mat.z.x * point.z;
     result.y = mat.x.y * point.x + mat.y.y * point.y + mat.z.y * point.z;
     result.z = mat.x.z * point.x + mat.y.z * point.y + mat.z.z * point.z;
-
     return result;
+}
+
+
+static inline float4x4 float4x4_transform_scale2(float3 position, float4 rotation, float2 scale) {
+    float4x4 position_m = float4x4_position(position);
+    float4x4 rotation_m = float4x4_rotation(rotation);
+    float4x4 scale_m = float4x4_scale2(scale);
+    return float4x4_multiply(scale_m, float4x4_multiply(rotation_m, position_m));
 }

@@ -7,10 +7,16 @@ extern byte is_chunk_generating_sunlights(ecs*, entity);
 
 // NOTE: Waits until neighbors are done building before pushing to GPU
 byte is_chunk_busy(ecs* world, entity e) {
+#ifdef zox_safety_checks
     if (!zox_valid(e)) {
         return 0;
     }
-    return zox_getv(e, Busy) || is_chunk_lights_busy(world, e);
+#endif
+    if (zox_is_slow_updates >= 2) {
+        return zox_getv(e, Busy);
+    } else {
+        return zox_getv(e, Busy) || is_chunk_lights_busy(world, e);
+    }
         // || zox_getv(e, Generate)
         // || zox_getv(e, BuildChunkMesh)
         // || zox_getv(e, VoxelNodeDirty)
@@ -70,7 +76,12 @@ zox_sys2(ChunkMeshSlowSystem) {
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count && !still_updating; j++) {
                     entity e2 = it2.entities[j];
-                    if (!zox_valid(e2) || !zox_has(e2, Chunk3)) {
+#ifdef zox_safety_checks
+                    if (!zox_valid(e2)) {
+                        continue;
+                    }
+#endif
+                    if (!zox_has(e2, Chunk3)) {
                         continue;
                     }
                     if (is_chunk_busy(world, e2)) {

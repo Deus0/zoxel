@@ -1,4 +1,4 @@
-byte zox_tsts_count = 20;
+byte zox_tsts_count = 21;
 entity dbg_ui_tests;
 
 void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
@@ -70,6 +70,10 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Element2",
         .on_click = { &zox_dbg_spawn_element },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Elements Transforms",
+        .on_click = { &zox_dbg_spawn_element_transforms },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Text",

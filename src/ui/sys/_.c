@@ -6,6 +6,7 @@
 #include "texture_dirty_begin.c"
 #include "texture_gpu_begin.c"
 #include "element_renderer.c"
+#include "render_transform.c"
 
 void zox_define_systems_elements(ecs *world) {
     zox_system(
@@ -21,7 +22,7 @@ void zox_define_systems_elements(ecs *world) {
     );
     zox_system(
         TextureSizeSystem,
-        zoxp_update, // EcsPreUpdate,
+        zoxp_update,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.LayoutSize,
         [out] rendering.TextureSize,
@@ -29,13 +30,13 @@ void zox_define_systems_elements(ecs *world) {
     );
     zox_system(
         TextureSizeGenerateSystem,
-        zoxp_update, // EcsPreUpdate,
+        zoxp_update,
         [in] layouts2.LayoutSizeDirty,
         [out] textures.GenerateTexture
     );
     zox_system(
         LayoutMeshSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.LayoutSize,
         [in] rendering.MeshAlignment,
@@ -48,6 +49,21 @@ void zox_define_systems_elements(ecs *world) {
         [in] transforms2.Position2,
         [in] transforms2.Rotation2D,
         [in] transforms.Scale1D,
+        [in] layouts2.Layer2D,
+        [in] rendering.RenderDisabled,
+        [in] rendering.Brightness,
+        [in] rendering.Alpha,
+        [in] rendering.MeshGPULink,
+        [in] rendering.UvsGPULink,
+        [in] rendering.TextureGPULink,
+        [none] ElementRender,
+        [none] !cameras.RenderTexture,
+        [none] !transforms.TransformMatrix
+    );
+    // Render using Matrix instead of Position2 etc
+    zox_render2D_system(
+        ElementRenderMatrixSystem,
+        [in] transforms.TransformMatrix,
         [in] layouts2.Layer2D,
         [in] rendering.RenderDisabled,
         [in] rendering.Brightness,

@@ -23,10 +23,15 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         if (disabled->value || !count || !mesh->value.x) {
             continue;
         }
+#ifdef zox_safety_checks
         if (!zox_valid(tilemap->value)) {
+            zox_sys_e();
+            zox_loge("Tilemap Invalid for Chunk %s", zox_getn(e));
             continue;
         }
+#endif
         camera_filtering_check();
+        // TODO: Swapping / Grouping Tilemaps
         if (!init) {
             zox_geter_value(tilemap->value, MaterialGPULink, uint, material);
             zox_geter_value(tilemap->value, TextureGPULink, uint, texture);

@@ -22,11 +22,11 @@ zox_sys2(TownMapSystem) {
         zox_sys_o(HeightMap, height_map);
         zox_sys_o(VegetationMap, vegetation_map);
         zox_sys_o(TownMap, town_map);
-        // NOTE: Runs after heights system
         if (generate->value != zox_generate_tunk_towns) {
             continue;
         }
-        if (zox_disable_towns) {
+        // not disabled for 2, thats maps only
+        if (zox_disable_towns == 1) {
             generate->value = zox_generate_tunk_end;
             continue;
         }
@@ -36,40 +36,31 @@ zox_sys2(TownMapSystem) {
             continue;
         }
         if (!biome_map->length) {
-            zox_logw("[%s]'s TownMap: [BiomeMap] Invalid", zox_get_name(e));
+            zox_loge("[%s]'s TownMap: [BiomeMap] Invalid", zox_get_name(e));
             continue;
         }
         if (!height_map->length) {
-            zox_logw("[%s]'s TownMap: [HeightMap] Invalid", zox_get_name(e));
+            zox_loge("[%s]'s TownMap: [HeightMap] Invalid", zox_get_name(e));
             continue;
         }
         if (!vegetation_map->length) {
-            // NOTE: Just needs to wait a frame
-            // zox_logw("Invalid maps in TownMapSystem at [%s]", zox_get_name(e));
+            zox_loge("[%s]'s TownMap: [VegetationMap] Invalid", zox_get_name(e));
             continue;
         }
 #endif
         // Generate Town Maps
         entity terrain = zox_get_parent(world, e);
-        byte terrain_depth = zox_getv(terrain, NodeDepth);
-        byte terrain_length = octree_size(terrain_depth);
         byte length = octree_size(lod->value);
         int2 map_size = int2_single(length);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
+        byte terrain_length = octree_size(terrain_depth);
         byte depth_difference = octree_size(terrain_depth - lod->value);
         int2 global_position_start = (int2) {
             tunk_position->value.x * terrain_length,
             tunk_position->value.y * terrain_length
         };
         resize_TownMap(town_map, length * length);
-        /*int max_chunk_length = powers_of_two[terrain_depth];
-        int2 map_size = int2_single(max_chunk_length);
-        int2 global_position_start = (int2) { tunk_position->value.x * map_size.x, tunk_position->value.y * map_size.y };
-        if (!town_map->value) {
-            initialize_TownMap(town_map, map_size.x * map_size.y);
-            for (int j = 0; j < town_map->length; j++) {
-                town_map->value[j] = 0;
-            }
-        }*/
+        memset(town_map->value, 0, length * length);
         entity towns[zox_children_capacity];
         uint towns_length = zox_get_children_by_id(world, region->value, towns, zox_children_capacity, zox_id(Town));
         if (dbg_log >= 2) {
@@ -186,6 +177,7 @@ zox_sys2(TownMapSystem) {
                 // home_height = ; byte wall_thickness = zox_getv(town, WallThickness);
                 // NOTE: For each position in chunk, XZ, we check if inside Home
                 int2 position;
+                global_position = global_position_start;
                 for (position.x = 0; position.x < length; position.x++, global_position.x += depth_difference) {
                     global_position.y = global_position_start.y;
                     for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {

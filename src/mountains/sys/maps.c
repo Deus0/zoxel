@@ -17,7 +17,6 @@ zox_sys2(MountainMapSystem) {
         zox_sys_o(GenerateTunk, generate);
         zox_sys_o(VegetationMap, vegetation_map);
         zox_sys_o(HeightMap, height_map);
-        // NOTE: Runs after heights system
         if (generate->value != zox_generate_tunk_mountains) {
             continue;
         }
@@ -46,7 +45,6 @@ zox_sys2(MountainMapSystem) {
         }
 #endif
         entity terrain = zox_get_parent(world, e);
-        // lint seed = zox_getv(terrain, Seed);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte terrain_length = octree_size(terrain_depth);
         byte length = octree_size(lod->value);
@@ -56,12 +54,6 @@ zox_sys2(MountainMapSystem) {
             tunk_position->value.x * terrain_length,
             tunk_position->value.y * terrain_length
         };
-        // int2 global_position = global_position_start;
-        // int2 position = int2_zero;
-        // now generate height_map
-        //int max_chunk_length = powers_of_two[terrain_depth];
-        //int2 map_size = int2_single(max_chunk_length);
-        // int2 position_start = (int2) { tunk_position->value.x * map_size.x,  tunk_position->value.y * map_size.y };
         entity mountains[zox_children_capacity];
         uint mountains_length = zox_get_children_by_id(world, region->value, mountains, zox_children_capacity, zox_id(Mountain));
         if (dbg_log >= 2) {

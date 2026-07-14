@@ -257,12 +257,12 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UIs
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Statistics",
-        .on_click = { &zox_dbg_activate_ui_statistics },
+        .text = "Systems",
+        .on_click = { &zox_dbg_activate_ui_system_times },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "System Times",
-        .on_click = { &zox_dbg_activate_ui_system_times },
+        .text = "Statistics",
+        .on_click = { &zox_dbg_activate_ui_statistics },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "File Paths",

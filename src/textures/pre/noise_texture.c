@@ -15,7 +15,7 @@ entity spawn_prefab_texture_noise(ecs *world, int2 texture_size) {
     zox_prefab_set(e, TextureSize, { texture_size });
     zox_prefab_set(e, TextureDirty, { 0 });
     zox_prefab_set(e, Seed, { 666 });
-    zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger });
+    zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     add_noise_texture(world, e);
     zox_prefab_set(e, FillColor, { color_red })
     return e;

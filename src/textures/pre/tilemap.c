@@ -9,8 +9,7 @@ entity spawn_prefab_tilemap(ecs *world) {
     zox_prefab_set(e, TextureSize, { int2_zero });
     zox_prefab_set(e, TextureDirty, { 0 });
     zox_prefab_set(e, Seed, { 666 });
-    // zox_remove(e, GenerateTexture);
-    zox_prefab_set(e, GenerateTexture, { zox_dirty_none });
+    zox_prefab_set(e, GenerateTexture, { 0 });
     add_gpu_texture(world, e);
     add_gpu_material(world, e);
     zox_prefab_set(e, TextureLinks, { 0 });

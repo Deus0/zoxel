@@ -5,7 +5,7 @@
 #include "transform_matrix_scale.c"
 #include "camera_transform_matrix.c"
 #include "shadow.c"
-#include "children_new.c"
+#include "children.c"
 
 void zox_define_systems_transforms3(ecs *world) {
     // New hieerarchys using flecs
@@ -13,7 +13,7 @@ void zox_define_systems_transforms3(ecs *world) {
     // NOTE: So normal EcsOnUpdate can set position/rotations without worrying about children
     zox_system(
         PositionRotation3System,
-        zoxp_transforms - 1,
+        zoxp_transforms, //- 1,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D
     );

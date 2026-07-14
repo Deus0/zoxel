@@ -46,6 +46,7 @@ void define_systems_textures(ecs *world) {
         zoxp_update,
         [in] rendering.TextureSize,
         [in] textures.FillColor,
+        [in] textures.OutlineColor,
         [in] OutlineThickness,
         [in] textures.FrameCorner,
         [out] textures.GenerateTexture,
@@ -53,6 +54,7 @@ void define_systems_textures(ecs *world) {
         [out] rendering.TextureDirty,
         [none] textures.FrameTexture
     );
+    add_system_process_counter(world, zox_id(FrameTextureSystem));
     zox_system(
         IconTextureSystem,
         zoxp_update,

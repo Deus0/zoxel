@@ -44,7 +44,7 @@ zox_sys2(MapPositionSystem) {
                 int2 tunk_position = int2_add(position->value, grid_postion);
                 entity tunk = int2_hashmap_get(tunks->value, tunk_position);
                 zox_set(e2, TunkLink, { tunk });
-                zox_set(e2, Generate, { zox_dirty_trigger });
+                zox_set(e2, GenerateTexture, { zox_generate_texture_run });
                 if (dbg_log >= 2) {
                     zox_log(" - Map Piece [%ix%i] Updated [%ix%i]", grid_postion.x, grid_postion.y, tunk_position.x, tunk_position.y);
                 }

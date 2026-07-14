@@ -1,7 +1,7 @@
 # Refactoring #
 
 # Optimize
-+ ChunkTexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
++ Chunk3TexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
 - Can we hide behind mountains to improve culling?
 - Streaming has a spike, make sure to display the biggest system spike per graph
 

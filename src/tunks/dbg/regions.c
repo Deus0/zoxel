@@ -1,0 +1,55 @@
+// NOTE: Simply creates a height texture from tunks
+zox_sys2(RegionTextureSystem) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TunkLink);
+    zox_sys_out(GenerateTexture);
+    zox_sys_out(TextureData);
+    zox_sys_out(TextureSize);
+    zox_sys_out(TextureDirty);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(TunkLink, tunk);
+        zox_sys_o(GenerateTexture, generate);
+        zox_sys_o(TextureData, data);
+        zox_sys_o(TextureSize, size);
+        zox_sys_o(TextureDirty, dirty);
+        if (generate->value != zox_generate_texture_run) {
+            continue;
+        }
+#ifdef zox_safety_checks
+        if (!zox_valid(tunk->value) || !zox_has(tunk->value, GenerateTunk) || !zox_has(tunk->value, RegionLink)) {
+            zox_loge("Invalid Tunk in Region Maps");
+            size->value = int2_single(0);
+            resize_TextureData(data, size->value.x * size->value.y);
+            dirty->value = zox_dirty_trigger;
+            continue;
+        }
+#endif
+        entity region = zox_getv(tunk->value, RegionLink);
+#ifdef zox_safety_checks
+        if (!zox_valid(region) || !zox_has(region, Seed)) {
+            zox_loge("Invalid [Region] for Texture [%s]", zox_get_name(e));
+            continue;
+        }
+#endif
+        byte lod = zox_getv(tunk->value, TunkLod);
+        byte length = octree_size(lod);
+        size->value = int2_single(length);
+        lint region_seed = zox_getv(region, Seed);
+        color region_color = color_grayscale(seed_range(region_seed, 0, 255));
+        resize_TextureData(data, size->value.x * size->value.y);
+        if (dbg_log) {
+            zox_log("Generating Regions Texture [%ix%i] Seed [%i]", size->value.x, size->value.y, region_seed);
+        }
+        for (byte x = 0; x < length; x++) {
+            for (byte y = 0; y < length; y++) {
+                int index = int2_array_index((int2) { x, y }, size->value);
+                data->value[index] = region_color;
+            }
+        }
+        generate->value = 0;
+        dirty->value = zox_dirty_trigger;
+    }
+} zox_sys_end(RegionTextureSystem);

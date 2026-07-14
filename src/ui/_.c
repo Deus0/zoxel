@@ -27,8 +27,14 @@ byte is_log_dragging = 0;
 #include "render_textures/_.c"
 #include "containers/_.c"
 #include "dbg/_.c"
+#include "tst/_.c"
+
+void spawn_materials_elements(ecs *world) {
+    spawn_material_matrixui(world);
+}
 
 zox_begin_module(Elements) {
+    add_hook_load_shader(&spawn_materials_elements);
     zox_define_components_elements(world);
     zox_define_systems_elements(world);
     add_hook_terminal_command(arguments_ui);

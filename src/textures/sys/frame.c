@@ -66,6 +66,7 @@ zox_sys2(FrameTextureSystem) {
     zox_sys_begin();
     zox_sys_in(TextureSize);
     zox_sys_in(FillColor);
+    zox_sys_in(OutlineColor);
     zox_sys_in(OutlineThickness);
     zox_sys_in(FrameCorner);
     zox_sys_out(GenerateTexture);
@@ -75,6 +76,7 @@ zox_sys2(FrameTextureSystem) {
         zox_sys_e();
         zox_sys_i(TextureSize, size);
         zox_sys_i(FillColor, fill);
+        zox_sys_i(OutlineColor, outline);
         zox_sys_i(OutlineThickness, thickness);
         zox_sys_i(FrameCorner, edge);
         zox_sys_o(TextureData, data);
@@ -85,19 +87,13 @@ zox_sys2(FrameTextureSystem) {
         }
         resize_TextureData(data, size->value.x * size->value.y);
         byte add_noise = zox_has(e, TextureAddNoise);
-        color fill_color = fill->value;
-        color outline_color;
-        if (zox_has(e, OutlineColor)) {
-            outline_color = zox_getv(e, OutlineColor);
-        } else {
-            outline_color = fill_color;
-        }
-        generate_texture_frame(data->value, size->value, fill_color, outline_color, thickness->value, edge->value, add_noise);
+        generate_texture_frame(data->value, size->value, fill->value, outline->value, thickness->value, edge->value, add_noise);
         dirty->value = zox_dirty_trigger;
         generate->value = zox_generate_texture_end;
         // voronoi2D(textureData->value, textureSize->value, color_gray, color_gray_dark, 0.7f);
         if (dbg_log) {
             zox_log("Frame Texture generated [%s] at [%f] fill [%ix%ix%ix%i]", zox_get_name(e), zox_current_time, fill->value.r, fill->value.g, fill->value.b, fill->value.a);
         }
+        zox_sys_increment();
     }
 } zox_sys_end(FrameTextureSystem);

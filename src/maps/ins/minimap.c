@@ -20,5 +20,7 @@ entity spawn_minimap(ecs* world, entity canvas, entity player, entity terrain) {
     zox_set(e, MapPosition, { tunk_position });
     zox_set(e, MapZoom, { minimap_zoom });
     zox_set(e, Alpha, { minimap_alpha });
+    // Hmm
+    // zox_set(e, Scale2D, { (float2) { -1, 1 } });
     return e;
 }
