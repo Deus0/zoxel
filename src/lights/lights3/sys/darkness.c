@@ -137,7 +137,7 @@ static inline byte dark_flood_light(
 
 byte dark_sunbeam(DarkQueue* queued, const VoxelNode* root_vnode, LightNode* root_lnode, const VoxelNode* n_root_vnodes[6], const LightNode* n_root_lnodes[6], LightQueue* n_light_queues[6], LightQueue* light_queue, DarkQueue* n_dark_queues[6], DarkQueue* dark_queue, byte depth, byte3 pos, byte sunlight, byte min_light, byte air_decay, byte type, const byte* solidity) {
     byte dirty = 0;
-    byte length = powers_of_two[depth];
+    short length = octree_size(depth);
     if (pos.y > length) {
         return dirty;
     }

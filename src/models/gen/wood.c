@@ -1,5 +1,5 @@
 void build_vox_wood(VoxelNode *voctree, byte depth, byte2 wood, byte2 bark) {
-    byte vlength = powers_of_two_byte[depth];
+    short vlength = octree_size(depth);
     byte3 size = byte3_single(vlength);
     byte3 pos;
     byte bark_thickness = vlength > 16 ? 2 : 1;

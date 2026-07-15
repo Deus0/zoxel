@@ -43,7 +43,6 @@ zox_sys2(VegetationChunk3System) {
         zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
         byte is_max_depth = depth->value == terrain_depth;
         byte length = octree_size(depth->value);
-        // int terrain_chunk_length = powers_of_two[terrain_depth];
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth); // depth->value);
         int2 map_size = int2_single(length);
         byte hmultiplier = powers_of_two[terrain_depth - depth->value];

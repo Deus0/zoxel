@@ -136,7 +136,7 @@ zox_sys2(LightFloodSystem) {
                 continue;
             }
             byte3 pos = update.pos;
-            byte length = powers_of_two[update.depth];
+            short length = octree_size(update.depth);
             if (pos.x >= length || pos.z >= length || pos.y >= length) {
                 //  zox_log_error("[r_LightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
                 continue;

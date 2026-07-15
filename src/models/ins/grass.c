@@ -9,7 +9,7 @@ entity2 spawn_model_grass(ecs* world, lint seed, byte max_depth, color vox_color
     zox_set(e, MaxRenderDepth, { max_depth });
     ModelLods lods;
     for (byte rdepth = 0; rdepth <= max_depth; rdepth++) {
-        byte node_length = powers_of_two[rdepth];
+        short node_length = octree_size(rdepth);
         byte ddepth = max_depth - rdepth;
         entity e2 = spawn_vox_basic(world, prefab_vox, rdepth, max_depth);
         zox_set_unique_name(e2, "model_lod_grass");

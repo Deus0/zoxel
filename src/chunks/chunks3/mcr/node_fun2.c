@@ -30,17 +30,17 @@ const T* get_adjacent_##T(const T** neighbors, const T* root, int3 position, byt
         return NULL;\
     }\
     position = move_position(position, dir); \
-    byte b = powers_of_two[depth];\
-    if (position.x >= 0 && position.x < b && \
-        position.y >= 0 && position.y < b && \
-        position.z >= 0 && position.z < b) { \
+    short length = octree_size(depth); \
+    if (position.x >= 0 && position.x < length && \
+        position.y >= 0 && position.y < length && \
+        position.z >= 0 && position.z < length) { \
         return get_##T(root, depth, int3_to_byte3(position)); \
         /*return gett_##T(node, position, depth);*/\
     } else {\
         /* special case for adjacent ptr, flips position and crosses to neighbor chunk */\
         *chunk_index = dir + 1;\
         const T* n = neighbors[dir]; \
-        position = reverse_position(position, dir, b); \
+        position = reverse_position(position, dir, length); \
         return get_##T(n, depth, int3_to_byte3(position)); \
         /*return gett_##T(n, position, depth); */\
     }\
@@ -51,12 +51,12 @@ const T* get_adjacentn_##T(const T** neighbors, const T* vnode, int3 position, b
     if (!vnode) { \
         return NULL; \
     } \
+    short length = octree_size(depth); \
     position = move_position(position, direction); \
-    byte vlength = powers_of_two[depth];\
-    if (position.x < 0 || position.x >= vlength || \
-        position.y < 0 || position.y >= vlength || \
-        position.z < 0 || position.z >= vlength) { \
-        position = reverse_position(position, direction, vlength); \
+    if (position.x < 0 || position.x >= length || \
+        position.y < 0 || position.y >= length || \
+        position.z < 0 || position.z >= length) { \
+        position = reverse_position(position, direction, length); \
         vnode = neighbors[direction];\
         if (!vnode) { \
             return NULL; \
@@ -70,8 +70,9 @@ byte is_on_edge_octree(byte depth, int3 position, byte direction) {
     if (depth >= 8) {
         return 0;
     }
+    short length = octree_size(depth);
     position = move_position(position, direction);
-    return !(position.x >= 0 && position.x < powers_of_two[depth] && position.y >= 0 && position.y < powers_of_two[depth] &&  position.z >= 0 && position.z < powers_of_two[depth]);
+    return !(position.x >= 0 && position.x < length && position.y >= 0 && position.y < length &&  position.z >= 0 && position.z < length);
 }
 
 byte get_adjacent_depth(byte depth,const byte* ndepths, int3 position, byte direction) {

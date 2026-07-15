@@ -7,7 +7,7 @@ static inline const void* octree_get_nearby(const void** octrees, byte3 position
         zox_logw("Depth out of bounds [%i]", depth);
         return NULL;
     }
-    byte size = (byte) octree_size(depth);
+    short size = octree_size(depth);
     sbyte nx = position.x + offset.x;
     sbyte ny = position.y + offset.y;
     sbyte nz = position.z + offset.z;

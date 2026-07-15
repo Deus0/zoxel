@@ -27,7 +27,8 @@ zox_sys2(StreamPositionSystem) {
         }
         zox_geter_value(terrain->value, BlockScale, float, tscale);
         zox_geter_value(terrain->value, NodeDepth, byte, ndepth);
-        int3 npoint = real_position_to_chunk_position(position->value, powers_of_two[ndepth], tscale);
+        short length = octree_size(ndepth);
+        int3 npoint = real_position_to_chunk_position(position->value, length, tscale);
         if (int3_equals(npoint, point3->value)) {
             continue;
         }

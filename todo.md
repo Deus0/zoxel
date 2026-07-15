@@ -2,6 +2,8 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+-x Body appears to have visible facesi nside it
+-x Refactor BodyDirty
 - Fix game fade in, needs to do it after terrain loaded
 - Fix arm, needs to not instantly rotate
 - Prioritize Chunks higher lod first
@@ -22,7 +24,7 @@ used - 200-400mb used
 - make some npcs attack you
 - Queue new chunks - so it doesnt lag
     - TerrainStreamSystem is basically just spawning new chunks
-    # Tunks Lod updates happen elsewhere in threads
+    # Tunks Lod updates happen elsewhere in threads-=
 - optimize npcs
     - just spawn closer to player, so not as many for now
 

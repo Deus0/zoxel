@@ -77,9 +77,8 @@ zox_sys2(LandfillChunk3System) {
         }
 #endif
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        byte length = powers_of_two_byte[depth->value];
+        short length = octree_size(depth->value);
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth);
-        // byte terrain_length = powers_of_two_byte[terrain_depth];
         int2 map_size = int2_single(length);
         // NOTE: Shouldnt this use terrain depth?? Tests failed
         byte is_bottom_chunk = chunk_position->value.y == -render_distance_y;

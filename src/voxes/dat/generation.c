@@ -6,3 +6,4 @@
 #define vox_type_wood 5
 #define vox_type_flowers 6
 #define vox_type_road 7
+#define vox_type_sand 8

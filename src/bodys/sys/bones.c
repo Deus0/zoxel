@@ -90,19 +90,19 @@ zox_sys2(CharacterBoneSpawnSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(BodyDirty);
     zox_sys_in(BodySize);
     zox_sys_in(BlockScale);
+    zox_sys_out(BodyDirty);
     zox_sys_out(BoneLinks);
     zox_sys_out(SkeletonDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(BodyDirty, state);
         zox_sys_i(BodySize, bsize);
         zox_sys_i(BlockScale, bscale);
+        zox_sys_o(BodyDirty, body_dirty);
         zox_sys_o(BoneLinks, bones);
         zox_sys_o(SkeletonDirty, dirty);
-        if (state->value != zox_dirty_end) { // zox_dirty_active) {
+        if (body_dirty->value != zox_generate_body_bones) {
             continue;
         }
         // NOTE: Deletes old bones, and old parts
@@ -128,5 +128,6 @@ zox_sys2(CharacterBoneSpawnSystem) {
         entity chest_part = zox_getv(chest_slot, DataLink);
         spawn_part_bones(world, e, bones, half_bounds, bscale->value, e, float3_zero, chest_slot, chest_part);
         dirty->value = zox_dirty_trigger;
+        body_dirty->value = zox_generate_body_end;
     }
 } zox_sys_end(CharacterBoneSpawnSystem);

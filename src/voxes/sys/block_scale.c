@@ -6,7 +6,8 @@ static inline float get_chunk_scale(byte ndepth, byte tdepth, float tscale) {
         return tscale;
     }
     byte ddepth = tdepth - ndepth;
-    return tscale * powers_of_two[ddepth];  // we multiply by the depth difference power - if 2 = 2*2 = 4, 0.5 becomes 2 in size
+    short length = octree_size(ddepth);
+    return tscale * length;  // we multiply by the depth difference power - if 2 = 2*2 = 4, 0.5 becomes 2 in size
 }
 
 // Sync Block Scale to the Terrain Chunks from the Vox

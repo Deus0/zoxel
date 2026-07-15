@@ -1,5 +1,5 @@
 void vox_outlines(VoxelNode *chunk, byte node_depth, byte black_voxel) {
-    byte length = powers_of_two_byte[node_depth];
+    short length = octree_size(node_depth);
     byte3 size = byte3_single(length);
     byte3 voxel_position;
     for (voxel_position.x = 0; voxel_position.x < size.x; voxel_position.x++) {

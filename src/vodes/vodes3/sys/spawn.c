@@ -117,7 +117,7 @@ void spawn_vodes_dive(ecs *world,
     float3_scale_p(&positionf, data->terrain_block_scale);
     positionf = float3_add(positionf, data->chunk_positionf);
     positionf = float3_add(positionf, float3_single(-mesh_scale * 0.5f));
-    int chunk_length = powers_of_two[voxel_octree_depth];
+    short chunk_length = octree_size(voxel_octree_depth);
     int3 chunk_dimensions = int3_single(chunk_length);
     int3 cpositionv = get_chunk_block_position(chunk_position, chunk_dimensions);
     int3 positionv = int3_add(byte3_to_int3(position), cpositionv);

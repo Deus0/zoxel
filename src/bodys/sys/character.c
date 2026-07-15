@@ -17,7 +17,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
-        zox_sys_o(BodyDirty, dirty);
+        zox_sys_o(BodyDirty, body_dirty);
         if (state->value != zox_dirty_active) {
             continue;
         }
@@ -62,10 +62,11 @@ zox_sys2(CharacterBodySpawnSystem) {
         // Spawn our user body
         // Attach Core Part
         zox_set(chest_slot, DataLink, { spawn_user_item_body(world, e, realm_chest, zox_slot_core) });
-        byte chest_width = powers_of_two[block_vox_depth];
+        short chest_width = octree_size(block_vox_depth);
         byte chest_height = int_floorf(0.56f * chest_width);
         // Trigger early, incase we cannot keep growing body
-        dirty->value = zox_dirty_trigger;
+        // dirty->value = zox_dirty_trigger;
+        body_dirty->value = zox_generate_body_start;
         // Given our chest spawned, we can spawn slots now
         // Sub Slots
         entity eslot_head = spawn_body_slot(world, chest_slot, body_anchor_top);

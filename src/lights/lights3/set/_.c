@@ -3,10 +3,10 @@ byte disable_lights = 0;
 // #include "lights.c"
 byte sunlight = 255;        // full sunlight
 byte zox_debug_lights = 0;
-byte darklight = 32;        // min light
+byte darklight = 16;        // min light
 // NOTE: Hello Darkness my old friend!
-byte light_air_decay = 48; // 32;
-byte light_propogation_distance = 8;
+byte light_air_decay = 32; // 32;
+byte light_propogation_distance = 12;
 byte darklight_propogation_distance = 64;  // just keep going?
 byte zox_is_log_lighting = 0;
 byte zox_is_log_lighting_light = 0;

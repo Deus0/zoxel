@@ -53,7 +53,6 @@ zox_sys2(Characters3RenderSystem) {
         catch_basic3D_errors("! Characters3RenderSystem");
         zox_statistics_characters_rendered++;
     }
-
     if (has_set_material) {
         zox_gpu_disable_attribute(material_attributes->vertex_color);
         zox_gpu_disable_attribute(material_attributes->vertex_position);

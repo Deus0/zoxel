@@ -54,7 +54,7 @@ static inline void* setreduce_octree_value(
         collapse_octree_branch(node, stride, value_offset);
         return node;
     }
-    byte div = powers_of_two_byte[target_depth - depth - 1];
+    short div = octree_size(target_depth - depth - 1);
     if (div == 0) {
         return node;
     }

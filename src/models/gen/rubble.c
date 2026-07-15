@@ -1,5 +1,5 @@
 void build_vox_heights(VoxelNode* voxels, byte depth, byte2 range, byte max_height) {
-    byte length = octree_size(depth); // powers_of_two_byte[depth];
+    short length = octree_size(depth);
     byte3 position;
     for (position.x = 0; position.x < length; position.x++) {
         for (position.z = 0; position.z < length; position.z++) {

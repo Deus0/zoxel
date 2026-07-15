@@ -46,6 +46,6 @@ byte is_data_equip_item(ecs* world, entity data) {
 
 void on_frame_updated_equipment(ecs* world, entity body) {
     if (zox_valid(body)) {
-       zox_set(body, BodyDirty, { zox_dirty_trigger });
+       zox_set(body, BodyDirty, { zox_generate_body_start });
     }
 }

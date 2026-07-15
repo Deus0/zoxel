@@ -87,7 +87,8 @@ zox_sys2(ChunkLinkSystem) {
         }
         zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
         zox_geter_value(terrain->value, NodeDepth, byte, node_depth);
-        int3 new_chunk_position = real_position_to_chunk_position(position->value, powers_of_two[node_depth], terrain_scale);
+        short length = octree_size(node_depth);
+        int3 new_chunk_position = real_position_to_chunk_position(position->value, length, terrain_scale);
         // If already set and position has not changed
         if (zox_valid(link->value) && int3_equals(new_chunk_position, chunk_position->value)) {
             continue;

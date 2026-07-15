@@ -30,6 +30,14 @@ typedef struct {
 } sbyte3;
 
 typedef struct {
+    ushort x, y;
+} ushort2;
+
+typedef struct {
+    ushort x, y, z;
+} ushort3;
+
+typedef struct {
     byte x, y;
 } byte2;
 

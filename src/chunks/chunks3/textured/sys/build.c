@@ -259,15 +259,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
             busy->value = 0;
             continue;
         }
-        // No Mesh Sides were found
-        /*if (!sides->value) {
-            clear_mesh_uvs(indicies, verts, colors, uvs);
-            build->value = 0;
-            mesh_ready->value = 1;
-            busy->value = 0;
-            continue;
-        }*/
-        byte vlength = powers_of_two[rdepth->value];
+        short vlength = octree_size(rdepth->value);
         float cscale = bscale->value * vlength;
         mesh_uvs_build_data mesh_data = {
             .indicies = create_int_array_d(initial_dynamic_array_size),

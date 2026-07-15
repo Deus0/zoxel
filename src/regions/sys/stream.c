@@ -13,7 +13,7 @@ zox_sys2(RegionSpawnSystem) {
         zox_sys_i(Seed, seed);
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(RegionLinks, regions);
-        byte chunk_length = powers_of_two[depth->value];
+        short chunk_length = octree_size(depth->value);
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();

@@ -29,12 +29,10 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
         fill_type = 1;
     }
     zox_muter(v, VoxelNode, voctree);
-    // zox_log("Vox [%s] has Valid components. size [%ix%ix%i] - vlength [%i]", zox_get_name(v), size.x, size.y, size.z, vlength);
-    // byte vregions = zox_has(v, VRegions) ? zox_gett_value(v, VRegions) : 16;
     // Change transform for vlength difference
     // zox_log("[%s] OG Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", zox_get_name(v), ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
     // NOTE: Scales node sizing to the Vox Size
-    byte vlength = powers_of_two[ndepth];
+    short vlength = octree_size(ndepth);
     float max_vlength = (float) powers_of_two[ndepth_max]; // nodegraph_max_depth];
     float3 positionf = (float3) {
         position.x / max_vlength,

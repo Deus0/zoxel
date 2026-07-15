@@ -20,7 +20,7 @@ zox_sys2(ModelsRealmSpawnSystem) {
             // TODO: Unique per variant size
             // TODO: Shift Properties from Blueprint to Variant (with seed) - i.e. use Node Process Data
             byte nodegraph_depth = nodegraph_max_depth; // - 1;
-            byte nodegraph_length = powers_of_two[nodegraph_depth];
+            short nodegraph_length = octree_size(nodegraph_depth);
             float squash = randf_range(0.7f, 0.9f);
             float3 ratio = (float3) { squash, 1.0f, squash };
             byte3 vsize_max = byte3_scale3f(byte3_single(nodegraph_length), ratio);
@@ -40,7 +40,7 @@ zox_sys2(ModelsRealmSpawnSystem) {
             for (byte j = 0; j < grass_variants; j++) {
                 lint vseed = mseed + j * 1209;
                 color vcolor = color_grayscale(rand_range(80, 180));
-                byte vlength = powers_of_two[mdepth_character];
+                short vlength = octree_size(mdepth_character);
                 byte3 vsize = byte3_scale3f(byte3_single(vlength), ratio);
                 ModelLods mlods2 = (ModelLods) { };
                 entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth_character, vsize, "rslime", &mlods2);

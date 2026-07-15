@@ -9,7 +9,7 @@ byte dbg_log_errors_get_octree_mut = 1;
 static inline const void* get_octree(const void* node, byte target_depth, byte3 pos, byte depth, size_t stride) {
     if (depth == 0) {
         // check bounds
-        byte length = powers_of_two[target_depth];
+        short length = octree_size(target_depth);
         if (pos.x >= length || pos.y >= length || pos.z >= length) {
             if (dbg_log_octree_errors) {
                 zox_logw("OOB [get_octree] [%ix%ix%i] depth [%i] vlength [%i]", pos.x, pos.y, pos.z, target_depth, length);
@@ -28,7 +28,7 @@ static inline const void* get_octree(const void* node, byte target_depth, byte3 
         if (!kids_ptr) {
             return node;
         }
-        byte div = powers_of_two_byte[target_depth - depth - 1];
+        short div = octree_size(target_depth - depth - 1);
         if (div == 0) {
             break;
         }
@@ -54,7 +54,7 @@ static inline const void* get_octree(const void* node, byte target_depth, byte3 
 static inline void* get_octree_mut(void* node, byte target_depth, byte3 pos, byte depth, size_t stride) {
     if (depth == 0) {
         // check bounds
-        byte length = powers_of_two[target_depth];
+        short length = octree_size(target_depth);
         if (pos.x >= length || pos.y >= length || pos.z >= length) {
             if (dbg_log_errors_get_octree_mut) {
                 zox_logw("OOB [get_octree_mut] [%ix%ix%i] depth [%i] vlength [%i]", pos.x, pos.y, pos.z, target_depth, length);
@@ -73,7 +73,7 @@ static inline void* get_octree_mut(void* node, byte target_depth, byte3 pos, byt
         if (!kids_ptr) {
             return node;
         }
-        byte div = powers_of_two_byte[target_depth - depth - 1];
+        short div = octree_size(target_depth - depth - 1);
         if (div == 0) {
             break;
         }
@@ -120,7 +120,7 @@ static inline void* open_octree_node(void* node, byte target_depth, byte3 pos, b
                 *(byte*)((char*)child + value_offset) = parent_value;
             }
         }
-        byte div = powers_of_two_byte[target_depth - depth - 1];
+        short div = octree_size(target_depth - depth - 1);
         if (div == 0) {
             break;
         }

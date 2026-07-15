@@ -1,4 +1,4 @@
-byte max_model_length = 128;
+ushort max_model_length = 256;
 
 entity item_get_max_depth_vox(ecs* world, entity part) {
     if (!zox_valid(part)) {
@@ -57,8 +57,8 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
     if (part_max_depth > *max_depth) {
         *max_depth = part_max_depth;
         if (dbg_log) {
-            byte new_vlength = powers_of_two_byte[*max_depth];
-            zox_log("Setting Body Depth [%i] v[%i]", *max_depth, new_vlength);
+            short length = octree_size(*max_depth);
+            zox_log("Setting Body Depth [%i] v[%i]", *max_depth, length);
         }
     }
     // Get Parent Data
@@ -126,99 +126,19 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
         part_position.x += (parent_size.x - part_size.x) / 2;
         part_position.y = parent_position.y + offset.y - part_size.y;
         part_position.z += (parent_size.z - part_size.z) / 2;
-        /*int part_position_y = parent_position.y + offset.y - part_size.y;
-        if (part_position_y >= 0) {
-            part_position.y = part_position_y;
-        } else {
-            part_position.y = 0;
-            // Increase Body Grid Size
-            int boost_y = -part_position_y; // Distance to Ground
-            if (boost_y < 0) {
-                zox_loge("boost_y < 0 [%i]", boost_y);
-                return;
-            }
-            int new_body_size_y = body_size->y + boost_y;
-            if (new_body_size_y >= max_model_length) {
-                zox_log("Body Needs resizing Past Bounds Y [%i]", new_body_size_y);
-                return;
-            }
-            body_size->y = new_body_size_y;
-            // Move all previous positions up
-            for (uint k = 0; k < positions->length; k++) {
-                byte3 position = positions->value[k];
-                entity slot_used = slots_used->data[k];
-                zox_muter(slot_used, PartPosition, slot_used_position);
-                position.y += boost_y;
-                slot_used_position->value.y += boost_y;
-                positions->value[k] = position;
-            }
-        }*/
     } else if (anchor == body_anchor_left) {
         part_position.x = parent_position.x + offset.x - part_size.x;
         part_position.y += (parent_size.y - part_size.y) / 2;
         part_position.z += (parent_size.z - part_size.z) / 2;
-        // Calculate the Left slot Grid Difference
-        /*int part_position_x = parent_position.x - part_size.x + offset.x;
-        if (part_position_x >= 0) {
-            part_position.x = part_position_x;
-        } else {
-            part_position.x = 0;
-            // Increase Body Grid Size
-            int boost_x = -part_position_x;
-            if (boost_x < 0) {
-                zox_loge("boost_x < 0 [%i]", boost_x);
-                return;
-            }
-            int new_body_size_x = body_size->x + boost_x;
-            if (new_body_size_x >= max_model_length) {
-                zox_log("Body X Past Bounds Y [%i] > 128", new_body_size_x);
-                return;
-            }
-            body_size->x = new_body_size_x;
-            // Move all previous positions up
-            for (uint k = 0; k < positions->length; k++) {
-                byte3 position = positions->value[k];
-                entity slot_used = slots_used->data[k];
-                zox_muter(slot_used, PartPosition, slot_used_position);
-                position.x += boost_x;
-                slot_used_position->value.x += boost_x;
-                positions->value[k] = position;
-            }
-        }*/
     } else if (anchor == body_anchor_back) {
         part_position.x += (parent_size.x - part_size.x) / 2;
         part_position.z = parent_position.z + offset.z - part_size.z;
         part_position.y += (parent_size.y - part_size.y) / 2;
-        // Calculate the Left slot Grid Difference
-        /*int part_position_z = parent_position.z - part_size.z + offset.z;
-        if (part_position_z >= 0) {
-            part_position.z = part_position_z;
-        } else {
-            part_position.z = 0;
-            // Increase Body Grid Size
-            int boost = -part_position_z;
-            int new_body_size_z = body_size->z + boost;
-            if (new_body_size_z >= max_model_length) {
-                zox_log("Body Z Past Bounds Z [%i] > 128", new_body_size_z);
-                return;
-            }
-            body_size->z = new_body_size_z;
-            // Move all previous positions up
-            for (uint k = 0; k < positions->length; k++) {
-                byte3 position = positions->value[k];
-                entity slot_used = slots_used->data[k];
-                zox_muter(slot_used, PartPosition, slot_used_position);
-                position.z += boost;
-                slot_used_position->value.z += boost;
-                positions->value[k] = position;
-            }
-        }*/
     }
-    // uint lower_bounds_y = part_position.y;
-    byte vlength = powers_of_two_byte[*max_depth];
+    short vlength = octree_size(*max_depth);
     if (body_size->x >= vlength || body_size->y >= vlength || body_size->z >= vlength) {
         *max_depth = *max_depth + 1;
-        byte new_vlength = powers_of_two_byte[*max_depth];
+        short new_vlength = octree_size(*max_depth);
         if (dbg_log) {
             zox_log("Expanding Body Depth [%i] v[%i]", *max_depth, new_vlength);
             zox_log(" - Body Size [%ix%ix%i] > Grid Size [%i]", body_size->x, body_size->y, body_size->z, vlength);
@@ -251,7 +171,7 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
         // Increase Body Grid Size
         int new_dimension = body_size->x + boost;
         if (new_dimension >= max_model_length) {
-            zox_log("[X] Body Past Bounds [%i] > 128", new_dimension);
+            zox_logw("[X] Body Past Bounds [%i] > 128", new_dimension);
             return;
         }
         body_size->x = new_dimension;
@@ -271,7 +191,7 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
         // Increase Body Grid Size
         int new_dimension = body_size->z + boost;
         if (new_dimension >= max_model_length) {
-            zox_log("[Z] Body Past Bounds [%i] > 128", new_dimension);
+            zox_logw("[Z] Body Past Bounds [%i] > 128", new_dimension);
             return;
         }
         body_size->z = new_dimension;
@@ -335,14 +255,14 @@ zox_sys2(BodyCombineSystem) {
     zox_sys_out(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(BodyDirty, state);
+        zox_sys_o(BodyDirty, body_dirty);
         zox_sys_o(BodySize, body_size);
         zox_sys_o(CombineList, voxes);
         zox_sys_o(CombinePositions, positions);
         zox_sys_o(CombineVox, dirty);
         zox_sys_o(NodeDepth, ndepth);
         zox_sys_o(BlockScale, block_scale);
-        if (state->value != zox_dirty_end) { // active) {
+        if (body_dirty->value != zox_generate_body_combine) {
             continue;
         }
         entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
@@ -360,7 +280,9 @@ zox_sys2(BodyCombineSystem) {
         // TODO: We should make this same scale as npcs
         ndepth->value = max_depth;
         // NOTE: Keep at consistent scale
-        block_scale->value = 1.0f / powers_of_two_byte[block_vox_depth + 2];
+        short length2 = octree_size(block_vox_depth + 2);
+        block_scale->value = 1.0f / length2;
+        body_dirty->value = zox_generate_body_bones;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {
             zox_log("Body [%s] Depth [%i] Scale [%f]", zox_get_name(e), max_depth, block_scale->value);

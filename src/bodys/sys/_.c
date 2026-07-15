@@ -7,7 +7,7 @@ void define_systems_bodys(ecs* world) {
     zox_system(
         BodyCombineSystem,
         zoxp_update,
-        [in] bodys.BodyDirty,
+        [out] bodys.BodyDirty,
         [out] bodys.BodySize,
         [out] voxes.CombineList,
         [out] voxes.CombinePositions,
@@ -35,9 +35,9 @@ void define_systems_bodys(ecs* world) {
     zox_system_1(
         CharacterBoneSpawnSystem,
         zoxp_mainthread,
-        [in] bodys.BodyDirty,
         [in] bodys.BodySize,
         [in] blocks.BlockScale,
+        [out] bodys.BodyDirty,
         [out] bones.BoneLinks,
         [out] bones.SkeletonDirty,
         [none] bones.Skeleton

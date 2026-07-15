@@ -1,4 +1,4 @@
-void build_vox_road(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb primary, byte unique_colors) {
+/*void build_vox_road(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb primary, byte unique_colors) {
     float2 mul_range = (float2) { 0.5f, 1.0f };
     for (int j = 0; j < unique_colors; j++) {
         color_rgb new_color = primary;
@@ -18,11 +18,11 @@ void build_vox_road(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb
     for (pos.y = 0; pos.y < size.y; pos.y++) {
         for (pos.x = 0; pos.x < size.x; pos.x++) {
             for (pos.z = 0; pos.z < size.z; pos.z++) {
-                /* bark on XZ perimeter */
+                // bark on XZ perimeter
                 if (pos.x < bark_thickness || pos.x >= size.x - bark_thickness ||
                     pos.z < bark_thickness || pos.z >= size.z - bark_thickness) {
                     byte v = rand_range(color_ids.x, color_ids.y);
-                    /* vertical streaking */
+                    // vertical streaking
                     if ((pos.y + rand()) & 1) {
                         if (v > color_ids.x) {
                             v--;
@@ -31,21 +31,21 @@ void build_vox_road(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb
                     set_VoxelNode(voctree, depth, pos, v);
                     continue;
                 }
-                /* radial distance squared */
+                // radial distance squared
                 sbyte dx = (sbyte)pos.x - cx;
                 sbyte dz = (sbyte)pos.z - cz;
                 byte r2 = (byte)(dx*dx + dz*dz);
-                /* ring phase (density modulation, not hard bands) */
+                // ring phase (density modulation, not hard bands)
                 byte ring = (r2 / ring_period) & 1;
-                /* base wood color (always varied) */
+                // base wood color (always varied)
                 byte v = rand_range(color_ids.x, color_ids.y);
-                /* ring density bias */
+                // ring density bias
                 if (ring) {
                     if (v > color_ids.x) v--;
                 } else {
                     if (v < color_ids.y) v++;
                 }
-                /* vertical grain noise */
+                // vertical grain noise
                 if ((pos.y + rand()) & 1) {
                     if (v > color_ids.x) v--;
                 }
@@ -53,7 +53,7 @@ void build_vox_road(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb
             }
         }
     }
-}
+}*/
 
 static inline uint32_t road_hash_u32(uint32_t x)
 {
@@ -84,11 +84,7 @@ static inline int positive_mod(int a, int b)
 //       Tiling, cracks and chips now look good on positive AND negative sides.
 // NOTE: Tiled road/stone in all directions. Fully supports negative coordinates.
 
-
-
-void build_vox_road2(ColorRGBs* colors, VoxelNode *voctree, byte depth,
-                     color_rgb primary, byte unique_colors)
-{
+void build_vox_road2(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb primary, byte unique_colors) {
     if (unique_colors < 1) unique_colors = 1;
 
     byte first = colors->length + 1;
@@ -246,9 +242,217 @@ void build_vox_road2(ColorRGBs* colors, VoxelNode *voctree, byte depth,
     }
 }
 
+void build_vox_cobblestone(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb primary)
+{
+    if (colors == NULL || voctree == NULL) return;
 
+    byte unique_stone   = 8;
+    byte unique_mortar  = 3;
+    byte unique_wear    = 3;
+    byte unique_grass   = 2;   // subtle moss / grass in cracks
 
+    byte first = colors->length + 1;
 
+    // ====================== COLOR PALETTE ======================
+    // Stone variations (rich, slightly warm/cool gray-brown stones)
+    for (byte i = 0; i < unique_stone; i++)
+    {
+        color_rgb c = primary;
+        float t = (unique_stone > 1) ? (float)i / (unique_stone - 1) : 0.0f;
+
+        float brightness = 0.65f + t * 0.75f;
+        brightness += frand_range(-0.09f, 0.09f);
+
+        color_rgb_multiply_float(&c, brightness);
+
+        // Slight hue variation for natural stone feel
+        if (i % 3 == 0)      c.r = (byte)(c.r * 1.08f);      // warmer
+        else if (i % 3 == 1) c.b = (byte)(c.b * 1.06f);      // cooler
+
+        add_to_ColorRGBs(colors, c);
+    }
+
+    byte stone_start = first;
+
+    // Mortar (dark, slightly purple-gray)
+    color_rgb mortar_base = {38, 35, 42};
+    for (byte i = 0; i < unique_mortar; i++)
+    {
+        color_rgb c = mortar_base;
+        color_rgb_multiply_float(&c, 0.85f + i * 0.12f);
+        add_to_ColorRGBs(colors, c);
+    }
+    byte mortar_start = stone_start + unique_stone;
+
+    // Worn / chipped stone highlights
+    for (byte i = 0; i < unique_wear; i++)
+    {
+        color_rgb c = primary;
+        color_rgb_multiply_float(&c, 1.15f + i * 0.08f);
+        add_to_ColorRGBs(colors, c);
+    }
+    byte wear_start = mortar_start + unique_mortar;
+
+    // Subtle moss/grass in cracks
+    color_rgb moss_base = {42, 68, 35};
+    for (byte i = 0; i < unique_grass; i++)
+    {
+        color_rgb c = moss_base;
+        color_rgb_multiply_float(&c, 0.9f + i * 0.25f);
+        add_to_ColorRGBs(colors, c);
+    }
+    byte moss_start = wear_start + unique_wear;
+
+    // ====================== GEOMETRY ======================
+    byte vlength = powers_of_two_byte[depth];
+    byte3 size = byte3_single(vlength);
+    byte3 pos;
+
+    int tile = vlength / 6;          // cobblestone size
+    if (tile < 5) tile = 5;
+
+    sbyte cx = size.x / 2;
+    sbyte cz = size.z / 2;
+
+    for (pos.y = 0; pos.y < size.y; pos.y++)
+    for (pos.x = 0; pos.x < size.x; pos.x++)
+    for (pos.z = 0; pos.z < size.z; pos.z++)
+    {
+        // Base layer
+        if (pos.y < vlength / 3)
+        {
+            byte v = stone_start + ((pos.x + pos.z * 7) % (unique_stone / 2));
+            set_VoxelNode(voctree, depth, pos, v);
+            continue;
+        }
+
+        int tx = floor_div(pos.x, tile);
+        int tz = floor_div(pos.z, tile);
+
+        int lx = positive_mod(pos.x, tile);
+        int lz = positive_mod(pos.z, tile);
+
+        uint32_t tile_hash = road_hash3(tx * 31 + tz * 37, tz * 17, tx ^ tz);
+
+        // Determine if this voxel is inside a cobblestone or in mortar
+        int stone_radius = (tile * 3) / 5;                    // irregular stone size
+        int dx = lx - tile/2;
+        int dz = lz - tile/2;
+        int dist2 = dx*dx + dz*dz;
+
+        bool is_mortar = dist2 > stone_radius * stone_radius +
+                        ((tile_hash & 7) - 3);   // organic variation
+
+        byte color;
+
+        if (is_mortar)
+        {
+            color = mortar_start + (tile_hash % unique_mortar);
+
+            // Occasional moss in deep cracks
+            if (((pos.x ^ pos.z) & 15) == 0 && (tile_hash & 31) < 12)
+                color = moss_start + ((pos.x + pos.z) % unique_grass);
+        }
+        else
+        {
+            // Main stone
+            color = stone_start + (tile_hash % unique_stone);
+
+            // Surface wear / chips
+            uint32_t wear = road_hash3(pos.x * 13 + pos.z * 11, pos.y, 0xC0B3);
+            if ((wear & 63) == 0)
+                color = wear_start + (wear % unique_wear);
+
+            // Rounded top edge (gives classic cobblestone look)
+            if (pos.y == vlength - 1)
+            {
+                if (dist2 > stone_radius * stone_radius * 9 / 10)
+                    color = mortar_start;   // slight bevel
+            }
+        }
+
+        // Subtle vertical dirt / aging
+        if (pos.y < vlength - 2 && (road_hash3(pos.x, pos.y * 3, pos.z) & 127) == 0)
+        {
+            if (color >= stone_start && color < mortar_start)
+                color = (byte)int_max(stone_start, color - 1);
+        }
+
+        set_VoxelNode(voctree, depth, pos, color);
+    }
+}
+
+void build_vox_stoned(ColorRGBs *colors, VoxelNode *vox, byte depth, color_rgb primary) {
+    const byte unique_colors = 9;
+    const byte first = colors->length + 1;
+
+    // Grey stone palette
+    for (byte i = 0; i < unique_colors; i++) {
+        float t = (float)i / (unique_colors - 1);
+
+        color_rgb c = primary;
+
+        float brightness = 0.60f + t * 0.55f;
+        brightness += frand_range(-0.03f, 0.03f);
+
+        color_rgb_multiply_float(&c, brightness);
+
+        // Cool shadows
+        c.b = byte_min(255, c.b + (byte)((1.0f - t) * 8));
+
+        // Warm highlights
+        c.r = byte_min(255, c.r + (byte)(t * 4));
+
+        add_to_ColorRGBs(colors, c);
+    }
+
+    byte size = powers_of_two_byte[depth];
+
+    byte3 pos;
+
+    for (pos.x = 0; pos.x < size; pos.x++)
+    for (pos.y = 0; pos.y < size; pos.y++)
+    for (pos.z = 0; pos.z < size; pos.z++) {
+
+        // Large stone blocks
+        int bx = pos.x / 4;
+        int by = pos.y / 4;
+        int bz = pos.z / 4;
+
+        uint h =
+            bx * 73856093u ^
+            by * 19349663u ^
+            bz * 83492791u;
+
+        h ^= h >> 13;
+        h *= 1274126177u;
+
+        float block = (h & 255) / 255.0f;
+
+        // Small hand-cut texture
+        float chip =
+            sinf(pos.x * 1.6f) * 0.08f +
+            cosf(pos.y * 1.9f) * 0.07f +
+            sinf(pos.z * 1.4f) * 0.08f;
+
+        // Horizontal quarry layers
+        float strata =
+            0.12f * sinf(pos.y * 0.45f);
+
+        float f =
+            block * 0.75f +
+            chip +
+            strata;
+
+        if (f < 0.0f) f = 0.0f;
+        if (f > 1.0f) f = 1.0f;
+
+        byte color =
+            first + (byte)(f * (unique_colors - 1));
+
+        set_VoxelNode(vox, depth, pos, color);
+    }
+}
 
 // NOTE: Generates a road block for towns
 zox_sys2(RoadModelGenerationSystem) {
@@ -286,9 +490,8 @@ zox_sys2(RoadModelGenerationSystem) {
         // Generate Vox
         write_lock_VoxelNode(node);
         // Build Road Vox
-        byte unique_colors = 16;
         color_rgb primary_rgb = color_to_color_rgb(fill->value);
-        build_vox_road2(colors, node, depth->value, primary_rgb, unique_colors);
+        build_vox_stoned(colors, node, depth->value, primary_rgb);
         // Outlines
         if (is_generate_vox_outlines) {
             byte black_voxel = colors->length + 1;

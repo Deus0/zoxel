@@ -10,11 +10,16 @@ zox_tag(Head);
 zox_tag(Hand);
 zox_tag(Shoulder);
 zox_tag(Thigh);
-zoxc_state(BodyDirty);
+zoxc_byte(BodyDirty);
 zoxc_byte3(BodySize);
 zoxc_byte3(PartPosition);
 zoxc_byte3(PartSize);
 zoxc_int3(PartOffset); // for now
+
+#define zox_generate_body_start 1
+#define zox_generate_body_combine 1
+#define zox_generate_body_bones 2
+#define zox_generate_body_end 0
 
 void define_components_bodys(ecs* world) {
     zoxd_tag(MenuBody);
@@ -29,7 +34,7 @@ void define_components_bodys(ecs* world) {
     zoxd_tag(Hand);
     zoxd_tag(Shoulder);
     zoxd_tag(Thigh);
-    zoxd_state(BodyDirty);
+    zoxd_byte(BodyDirty);
     zoxd_byte3(BodySize);
     zoxd_byte3(PartPosition);
     zoxd_byte3(PartSize);

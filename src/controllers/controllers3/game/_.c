@@ -7,6 +7,7 @@
 #include "touchui.c"
 #include "actionbar.c"
 #include "crosshair.c"
+#include "fader.c"
 
 void zox_define_systems_controllers3_game(ecs *world) {
     zox_system(
@@ -22,6 +23,14 @@ void zox_define_systems_controllers3_game(ecs *world) {
         zoxp_update,
         [in] players.PlayerState,
         [in] games.GameLink,
+        [none] players.Player
+    );
+    zox_system(
+        PlayerScreenFadeSystem,
+        zoxp_update,
+        [in] players.PlayerStateDirty,
+        [in] players.PlayerState,
+        [in] layouts2.CanvasLink,
         [none] players.Player
     );
     zox_system_1(

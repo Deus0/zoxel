@@ -15,6 +15,7 @@
 #include "int2.c"
 #include "int3.c"
 #include "int4.c"
+#include "ushort3.c"
 #include "noise.c"
 #include "noise_2.c"
 #include "unique_seed.c"

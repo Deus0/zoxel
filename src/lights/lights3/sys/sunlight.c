@@ -3,7 +3,7 @@
 byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, LightNode* root_lnode, const VoxelNode* root_vnode, byte depth, byte3 pos, byte light, const VoxelNode* n_root_vnodes[6], const LightNode* n_root_lnodes[6], byte min_light, byte air_decay, const byte* solidity) {
     // hmm
     byte dirty = 0;
-    byte length = powers_of_two[depth];
+    short length = octree_size(depth);
     if (pos.y >= length) {
         zox_logw("position too high [%i]", pos.y);
         return dirty;
@@ -121,7 +121,7 @@ zox_sys2(SunlightSystem) {
         }
         SunlightQueue* chunk_below_sunlight_queue = zox_gett_mut(chunkd, SunlightQueue);
         light_depth->value = depth->value;
-        byte length = powers_of_two[depth->value];
+        short length = octree_size(depth->value);
         const VoxelNode* n_root_vnodes[6];
         fetch_neightbor_voxel_nodes(world, neighbors, n_root_vnodes);
         const LightNode* n_root_lnodes[6];
@@ -210,7 +210,7 @@ zox_sys2(LightBeamSystem) {
             SunlightUpdate update = remove_SunlightQueue(sunlight_queue);
             // NOTE: For bottom chunk we just remove queue for beaming to bottom of earth
             byte3 pos = update.pos;
-            byte length = powers_of_two[update.depth];
+            short length = octree_size(update.depth);
             if (pos.x >= length || pos.z >= length || pos.y >= length) {
                 //  zox_log_error("[r_LightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
                 continue;

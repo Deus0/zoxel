@@ -125,14 +125,14 @@ zox_sys2(BiomeBlocksSystem) {
         color wood_color = colors->value[j++];
         {
             lint seed = 222122;
-            entity model = spawn_model_soil(world, "dirt", e, seed, dirt_color, 0.44f);
+            entity model = spawn_model_soil(world, "dirt", e, seed, dirt_color, 0.44f, vox_type_soil);
             entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "dirt", dirt_color, model, dbg_log);
             zox_add_tag(block, BlockSoil);
             zox_set(block, BlockHealth, { (float2) { 3, 6 } });
         }
         {
             lint seed = 515111;
-            entity model = spawn_model_soil(world, "sand", e, seed, sand_color, 0.14f);
+            entity model = spawn_model_soil(world, "sand", e, seed, sand_color, 0.14f, vox_type_sand);
             entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "sand", sand_color, model, dbg_log);
             zox_add_tag(block, BlockSand);
             zox_set(block, BlockHealth, { (float2) { 2, 4 } });

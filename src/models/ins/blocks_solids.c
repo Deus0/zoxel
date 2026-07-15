@@ -1,4 +1,4 @@
-entity spawn_model_soil(ecs* world, const char* name, entity parent, lint seed, color block_color, float noise) {
+entity spawn_model_soil(ecs* world, const char* name, entity parent, lint seed, color block_color, float noise, byte voxtype) {
     entity e = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
     {
         char name2[64];
@@ -8,7 +8,7 @@ entity spawn_model_soil(ecs* world, const char* name, entity parent, lint seed, 
     zox_set_parent(world, e, parent);
     zox_add_tag(e, BakeModel);
     zox_set(e, Seed, { seed });
-    zox_set(e, VoxType, { vox_type_soil });
+    zox_set(e, VoxType, { voxtype });
     zox_set(e, VoxUniqueColors, { 8 });
     zox_set(e, VoxColorRange, { 0.34f });
     zox_set(e, VRegions, { 0 });    // TODO: Remove property

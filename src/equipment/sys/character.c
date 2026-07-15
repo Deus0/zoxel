@@ -61,7 +61,7 @@ zox_sys2(CharacterPlayerEquipsSystem) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
                 zox_muter(inventory_slot, DataLink, slot_data);
                 slot_data->value = e2;
-                dirty->value = zox_dirty_trigger;
+                dirty->value = zox_generate_body_start;
                 if (dbg_log) {
                     zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
                 }

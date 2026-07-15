@@ -38,8 +38,9 @@ entity spawn_realm_model_item_filename(ecs* world, entity realm, const char* nam
     // entity model = model_base;
     //entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("hatty"));
     // Spawn Texture
-    entity texture = spawn_texture_from_vox(world, vox, byte2_single(powers_of_two[model_depth]));
-    zox_set_unique_name(texture, vox_name); // "texture_hatty");
+    short length = octree_size(model_depth);
+    entity texture = spawn_texture_from_vox(world, vox, byte2_single(length));
+    zox_set_unique_name(texture, vox_name);
     zox_set_parent(world, texture, realm);
     // Spawn Item
     entity e2 = spawn_realm_item_equip(world, realm, model, texture, name, slot);

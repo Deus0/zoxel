@@ -15,3 +15,11 @@ static inline byte byte_divf(byte v, float d) {
     }
     return byte_floorf(v / d);
 }
+
+static inline byte byte_min(byte a, byte b) {
+    return a < b ? a : b;
+}
+
+static inline byte byte_max(byte a, byte b) {
+    return a > b ? a : b;
+}

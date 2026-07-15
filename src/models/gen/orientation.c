@@ -1,5 +1,5 @@
 void build_vox_orientation_test(VoxelNode *voctree, byte depth, byte inside, byte neg_x, byte pos_x, byte neg_y, byte pos_y, byte neg_z, byte pos_z) {
-    byte vlength = powers_of_two_byte[depth];
+    short vlength = octree_size(depth);
     if (vlength == 1) {
         set_VoxelNode(voctree, depth, byte3_zero, inside);
         return;

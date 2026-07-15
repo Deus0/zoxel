@@ -10,7 +10,7 @@ static inline byte set_octree_value_clean(void* node, byte tdepth, byte3 pos, by
     }
     if (depth == 0) {
         // check bounds
-        byte length = powers_of_two[tdepth];
+        short length = octree_size(tdepth);
         if (pos.x >= length || pos.y >= length || pos.z >= length) {
             if (dbg_log_octree_errors) {
                 zox_logw("OOB [set_octree_value_clean] [%ix%ix%i] depth [%i] vlength [%i]", pos.x, pos.y, pos.z, tdepth, length);
@@ -45,7 +45,7 @@ static inline byte set_octree_value_clean(void* node, byte tdepth, byte3 pos, by
         return 1;
     }
     // Dive into correct child
-    byte div = powers_of_two_byte[tdepth - depth - 1];
+    short div = octree_size(tdepth - depth - 1);
     if (!div) {
         return 0;
     }

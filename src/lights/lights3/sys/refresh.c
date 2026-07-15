@@ -60,7 +60,7 @@ zox_sys2(RefreshLightsSystem) {
         fetch_neightbor_propogation_queues(world, neighbors, nqueues);
         byte dirty = 0;
         byte depth = zox_getv(e, NodeDepth);
-        byte length = powers_of_two[depth];
+        short length = octree_size(depth);
         // First flood in from back chunk
         entity neighbor = neighbors->value[direction_back];
         if (zox_valid(neighbor) && zox_getv(neighbor, NodeDepth) == depth) {

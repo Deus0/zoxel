@@ -23,7 +23,7 @@ zox_sys2(BodysRealmSpawnSystem) {
         // byte variants = 1;
         byte max_part_depth = block_vox_depth + 2;
         byte blueprint_depth = nodegraph_max_depth;
-        byte blueprint_length = powers_of_two[blueprint_depth];
+        short blueprint_length = octree_size(blueprint_depth);
         if (max_part_depth >= model_lods_max_length) {
             zox_logw("[BodysRealmSpawnSystem] Does not support depth [%i] max is [%i]", max_part_depth, model_lods_max_length);
             continue;

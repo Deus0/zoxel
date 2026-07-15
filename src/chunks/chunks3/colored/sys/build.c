@@ -40,7 +40,7 @@ void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees
         nsolids[direction] = is_adjacent_all_solid(NULL, edge, noctrees, root, byte3_to_int3(position), direction, depth);
     }
 #ifdef zox_ambient_occlusion27
-    byte vlength = powers_of_two[depth];
+    short vlength = octree_size(depth);
     byte naos[27];
     byte i = 0;
     int3 nposition = byte3_to_int3(position);
@@ -182,7 +182,7 @@ zox_sys2(ChunkColorsBuildSystem) {
         }
         float3 b = calculate_vox_bounds(csize->value, scale->value);
         float3 position = float3_scale(b, -1);
-        byte vlength = powers_of_two[ndepth->value];
+        short vlength = octree_size(ndepth->value);
         float cscale = scale->value * vlength;
         // initialize our mesh data
         mesh_colored_build_data mesh = {

@@ -68,7 +68,7 @@ entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mde
 
 entity2 spawn_realm_body_part2(ecs* world, entity realm, lint seed, byte model_depth, const char* name, byte slot_type, entity blueprint, float3 blueprint_scale, byte dbg_log) {
     // Model Data
-    byte model_length = powers_of_two_byte[model_depth];
+    short model_length = octree_size(model_depth);
     byte3 model_size = byte3_scale3f(byte3_single(model_length), blueprint_scale);
     byte2 texture_size = byte2_single(model_length);
     entity2 e = spawn_realm_body_part(world, realm, 1, model_depth, model_size, blueprint, name, seed, texture_size, slot_type);

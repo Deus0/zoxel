@@ -1,6 +1,6 @@
 zox_sys2(CombineVoxSystem) {
     byte dbg_log = 0;
-    byte max_colors = 254;
+    ushort max_colors = 255;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CombineVox);
@@ -26,7 +26,7 @@ zox_sys2(CombineVoxSystem) {
             continue;
         }
         if (voxes->length != positions->length) {
-            zox_log_error("Vox and Positions out of Sync, cannot combine.");
+            zox_loge("Vox and Positions out of Sync, cannot combine.");
             continue;
         }
         // zox_log("Combining Voxes [%i]", voxes->length);
@@ -93,17 +93,17 @@ zox_sys2(CombineVoxSystem) {
             // account for depth difference
             // position, size for placement into new grid?
             // combine colors too
-            byte3 max_placement = (byte3) {
-                vposition.x + vox_size.x < 255 ? vposition.x + vox_size.x : 255,
-                vposition.y + vox_size.y < 255 ? vposition.y + vox_size.y : 255,
-                vposition.z + vox_size.z < 255 ? vposition.z + vox_size.z : 255
+            ushort3 max_placement = (ushort3) {
+                vposition.x + vox_size.x,
+                vposition.y + vox_size.y,
+                vposition.z + vox_size.z
             };
-            int3 lposition = int3_zero;
-            byte3 position;
+            ushort3 lposition = ushort3_zero;
+            ushort3 position;
             for (lposition.x = 0, position.x = vposition.x; position.x < max_placement.x; position.x++, lposition.x++) {
                 for (lposition.y = 0, position.y = vposition.y; position.y < max_placement.y; position.y++, lposition.y++) {
                     for (lposition.z = 0, position.z = vposition.z; position.z < max_placement.z; position.z++, lposition.z++) {
-                        byte place_vox_value = getv_VoxelNode(vox_octree, vox_depth, int3_to_byte3(lposition));
+                        byte place_vox_value = getv_VoxelNode(vox_octree, vox_depth, ushort3_to_byte3(lposition));
                         if (!place_vox_value) {
                             continue;
                         }
@@ -124,7 +124,8 @@ zox_sys2(CombineVoxSystem) {
                         if (!value) {
                             continue;
                         }
-                        set_VoxelNode(voctree, ndepth->value, position, value);
+                        byte3 positionb = ushort3_to_byte3(position);
+                        set_VoxelNode(voctree, ndepth->value, positionb, value);
                         // Expands the size of our vox
                         if (position.x >= new_csize.x) {
                             new_csize.x = position.x;
