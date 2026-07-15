@@ -7,6 +7,7 @@
 #include "merge.c"
 #include "blocks.c"
 #include "settings.c"
+#include "road.c"
 realm_clear_system(ModelLinks);
 
 void define_systems_models(ecs* world) {
@@ -26,6 +27,17 @@ void define_systems_models(ecs* world) {
     );
     zox_system(
         SoilGenerationSystem,
+        zoxp_voxels_write,
+        [in] colorz.Color,
+        [in] voxes.VoxType,
+        [out] chunks.GenerateModel,
+        [out] chunks3.VoxelNode,
+        [out] chunks3.VoxelNodeDirty,
+        [out] chunks.NodeDepth,
+        [out] colorz.ColorRGBs
+    );
+    zox_system(
+        RoadModelGenerationSystem,
         zoxp_voxels_write,
         [in] colorz.Color,
         [in] voxes.VoxType,

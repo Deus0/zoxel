@@ -10,7 +10,7 @@ const float fracture_dark_multiplier = 0.6f; // 0.13f
 const float grass_blend_dark_multiplier = 0.8f; // 0.13f
 byte disable_block_voxes = 0;
 byte disable_block_vox_generation = 0;
-byte is_generate_vox_outlines = 1;
+byte is_generate_vox_outlines = 0;
 
 #include "outlines.c"
 

@@ -55,3 +55,13 @@ entity spawn_model_bricks(ecs *world, entity parent, lint seed, color block_colo
     zox_set(e, VoxType, { vox_type_bricks });
     return e;
 }
+
+entity spawn_model_road(ecs *world, entity parent, lint seed, color block_color) {
+    entity e = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
+    zox_set_unique_name(e, "model_wood");
+    zox_add_tag(e, BakeModel);
+    zox_set(e, VoxType, { vox_type_road });
+    zox_set(e, VoxUniqueColors, { 8 });
+    zox_set(e, VoxColorRange, { 0.24f });
+    return e;
+}

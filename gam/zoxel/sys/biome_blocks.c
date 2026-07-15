@@ -152,6 +152,13 @@ zox_sys2(BiomeBlocksSystem) {
             zox_set(block, BlockHealth, { (float2) { 4, 8 } });
         }
         {
+            lint seed = 623326;
+            entity model = spawn_model_road(world, e, seed, dirt_color);
+            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "road", dirt_color, model, dbg_log);
+            zox_add_tag(block, BlockRoad);
+            zox_set(block, BlockHealth, { (float2) { 6, 10 } });
+        }
+        {
             lint seed = 662662;
             entity model = spawn_model_soil_grass(world, e, seed, dirt_color, grass_color, 0.44f);
             entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "soil_grass", dirt_color, model, dbg_log);

@@ -15,6 +15,7 @@ zox_tag(BlockSand);
 zox_tag(BlockObsidian);
 zox_tag(BlockBricks);
 zox_tag(BlockFlower);
+zox_tag(BlockRoad);
 
 entity get_linked_terrain(ecs* world, entity e) {
     return zox_valid(e) && zox_has(e, TerrainLink) ? zox_gett_value(e, TerrainLink) : 0;
@@ -38,4 +39,5 @@ void define_components_terrain(ecs *world) {
     zoxd_tag(BlockObsidian);
     zoxd_tag(BlockBricks);
     zoxd_tag(BlockFlower);
+    zoxd_tag(BlockRoad);
 }

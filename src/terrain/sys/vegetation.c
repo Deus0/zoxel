@@ -53,8 +53,8 @@ zox_sys2(VegetationChunk3System) {
             continue;
         }
 #endif
-        zox_geter(tunk->value, HeightMap, height_map);
         zox_geter(tunk->value, BiomeMap, biome_map);
+        zox_geter(tunk->value, HeightMap, height_map);
         zox_geter(tunk->value, VegetationMap, vegetation_map);
 #ifdef zox_safety_checks
         if (!vegetation_map->length) {
@@ -92,10 +92,12 @@ zox_sys2(VegetationChunk3System) {
                     continue;
                 }
                 // NOTE: Checks if outer bounds to determine if on top of world
+#ifdef zox_safety_checks
                 if (biome_id >= realm_biomes->length) {
                     zox_loge("Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
                     continue;
                 }
+#endif
                 entity target_biome = realm_biomes->value[biome_id];
 #ifdef zox_safety_checks
                 if (!zox_valid(target_biome)) {

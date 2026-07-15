@@ -1,5 +1,8 @@
 # Done
 
+-x finish maps reworks
+    -x mountains
+-x Finish Towns lod refactor
 -x Bug: Map Arrow pointing wrong way
 -x Towns are spawning differently every load...
 -x Bug: Sometimes towns spawn inside one another?? weird af

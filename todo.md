@@ -2,21 +2,18 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Fix game fade in, needs to do it after terrain loaded
+- Fix arm, needs to not instantly rotate
 - Prioritize Chunks higher lod first
 - Also process double if the lod is less, per depth
     - use a point system for counting processing based on depth levels
-
 - Make the statspanel text brighter so it stands out better
     - Make the bars dissapear when not used
-
 - When chunk updating, create an update group
     - first check neighbrs, if it has an update group
     - if any do, we use that instead
     - When pushing update, just check the group if all chunks on are done
     - This basically keeps them updating in groups without the need to check entire terrains Chunks
-
-- Finish Towns lod refactor
-
 - Fix Unstuck system
 - Refactor Layouts by using LocalPosition2 instead of CanvasLayout
 - Fix Scale2 working on UIs'
@@ -26,8 +23,6 @@ used - 200-400mb used
 - Queue new chunks - so it doesnt lag
     - TerrainStreamSystem is basically just spawning new chunks
     # Tunks Lod updates happen elsewhere in threads
--x finish maps reworks
-    -x mountains
 - optimize npcs
     - just spawn closer to player, so not as many for now
 
