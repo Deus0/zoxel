@@ -246,7 +246,7 @@ zox_sys2(BodyCombineSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(BodyDirty);
+    zox_sys_out(BodyDirty);
     zox_sys_out(BodySize);
     zox_sys_out(CombineList);
     zox_sys_out(CombinePositions);
