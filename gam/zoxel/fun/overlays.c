@@ -1,5 +1,7 @@
-byte zox_dbg_overlays_count = 14;
+byte zox_dbg_overlays_count = 15;
 entity dbg_ui_overlays;
+
+
 
 // TODO: Include post processing, streaming and any other data
 uint zox_dbg_ui_camera(ecs *world, entity e, char *buffer, uint size, uint index) {
@@ -157,6 +159,10 @@ void refresh_debug_label(ecs* world) {
     spawn_game_debug_label(world, canvas);
 }
 
+void zox_dbg_map_cycle_ui(ecs* world, ClickEventData data) {
+    zox_dbg_map_cycle();
+}
+
 void zox_dbg_activate_ui_statistics(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &zox_dbg_ui_statistics);
     refresh_debug_label(world);
@@ -311,6 +317,10 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Towns",
         .on_click = { &zox_dbg_activate_ui_towns },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Map Mode",
+        .on_click = { &zox_dbg_map_cycle_ui },
     };
     // Test our uis
     entity spawned[elements_count];

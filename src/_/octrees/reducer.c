@@ -23,7 +23,7 @@ static inline byte reduce_octree_node(void* node, size_t stride, size_t value_of
         reduce_octree_node((char*) kids + i * stride, stride, value_offset, type_offset);
     }
     // Check uniformity
-    byte first_val = *(byte*)((char*)kids + value_offset);
+    byte first_val = *(byte*)((char*) kids + value_offset);
     bool uniform = true;
     for (byte i = 0; i < 8; i++) {
         void* child = (char*) kids + i * stride;
@@ -35,7 +35,7 @@ static inline byte reduce_octree_node(void* node, size_t stride, size_t value_of
                 break;
             }
         }
-        byte val = *(byte*)((char*)child + value_offset);
+        byte val = *(byte*)((char*) child + value_offset);
         void* subkids = *(void**) child;
         if (val != first_val || subkids != NULL) {
             uniform = 0;

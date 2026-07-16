@@ -1,3 +1,6 @@
+extern byte zox_maps_flip_x;
+extern byte zox_maps_flip_z;
+
 // NOTE: Simply creates a height texture from tunks
 zox_sys2(HeightsTextureSystem) {
     byte dbg_log = 0;
@@ -58,6 +61,7 @@ zox_sys2(HeightsTextureSystem) {
                 int index = int2_array_index((int2) { x, y }, size->value);
                 byte value = height_map->value[index];
                 value = int_clamp(32 + value * 10, 0, 255);
+                index = int2_array_index((int2) { zox_maps_flip_x ? length - 1 - x : x, zox_maps_flip_z ? length - 1 - y : y }, size->value);
                 data->value[index] = color_grayscale(value);
             }
         }

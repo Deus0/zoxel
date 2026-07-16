@@ -5,6 +5,7 @@
 #include "com/_.c"
 #include "pre/_.c"
 #include "fun/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
 
 void spawn_prefabs_dungeons(ecs* world) {

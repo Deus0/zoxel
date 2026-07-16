@@ -17,8 +17,11 @@ zox_sys2(MapArrowSystem) {
         }
         float4 rotation3 = zox_getv(character, Rotation3D);
         float3 euler = quaternion_to_euler(rotation3);
-        // rotation->value = -euler.y + 180 * degrees_to_radians;
-        // rotation->value = -euler.y + 180 * degrees_to_radians;
+        if (zox_maps_flip_z) {
+            //  euler.x = 180 * degrees_to_radians;
+            // euler.y += 90 * degrees_to_radians;
+            euler.y = - euler.y + 180 * degrees_to_radians;
+        }
         rotation->value = euler.y; //  + 180 * degrees_to_radians;
     }
 } zox_sys_end(MapArrowSystem);

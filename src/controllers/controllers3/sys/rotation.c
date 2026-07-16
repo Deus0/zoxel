@@ -1,7 +1,6 @@
 zox_sys2(Player3RotateSystem) {
     double gamepad_rotate_multiplier_x = 0.04;
     double gamepad_rotate_multiplier_y = 0.03;
-    // float touchscreen_rotate_multiplier = 0.6f;
     double mouse_rotate_multiplier = 0.0032; // 0.008;
     zox_sys_world();
     zox_sys_begin();
@@ -30,7 +29,6 @@ zox_sys2(Player3RotateSystem) {
         }
         float2 right_stick = float2_zero;
         float2 euler = float2_zero;
-
         entity devices[zox_children_capacity];
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
@@ -56,15 +54,15 @@ zox_sys2(Player3RotateSystem) {
                 }
                 if (zox_has(e3, ZevicePointerDelta) && !zox_dbg_touch_with_mouse) {
                     float2 delta = int2_to_float2(zox_getv(e3, ZevicePointerDelta));
-                    euler.x = - delta.y * mouse_rotate_multiplier;
-                    euler.y = - delta.x * mouse_rotate_multiplier;
+                    euler.x = delta.y * mouse_rotate_multiplier;
+                    euler.y = -delta.x * mouse_rotate_multiplier;
                 }
                 byte type = zox_getv(e3, DeviceButtonType);
                 if (zox_has(e3, ZeviceStick)) {
                     if (type == zox_device_stick_right) {
                         float2 stick = zox_getv(e3, ZeviceStick);
                         right_stick.x += stick.x;
-                        right_stick.y -= stick.y;
+                        right_stick.y += stick.y;
                     }
                 }
             }
@@ -107,7 +105,7 @@ zox_sys2(Player3RotateSystem) {
         zox_muter(head_bone, LocalRotation3D, head_rotation);
         float3 head_euler = quaternion_to_euler(head_rotation->value);
         // NOTE: Positive for headbone, negative for camera
-        head_euler.x -= euler.x;
+        head_euler.x += euler.x;
         if (head_euler.x < -euler_limit_x.y) {
             head_euler.x = -euler_limit_x.y;
         } else if (head_euler.x > euler_limit_x.x)  {
@@ -116,7 +114,6 @@ zox_sys2(Player3RotateSystem) {
         head_rotation->value = euler_to_quaternion(head_euler);
         // zox_log("head_euler [%f]", head_euler.x * radians_to_degrees);
         // float3_mulf(head_euler, degrees_to_radians));
-
         // quaternion_from_euler(float3_scale(ceuler->value, degrees_to_radians));
         /*entity camera = zox_getv(character, CameraLink);
         if (!zox_valid(camera)) {

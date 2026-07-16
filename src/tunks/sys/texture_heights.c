@@ -1,5 +1,5 @@
 // NOTE: Simply creates a height texture from tunks
-zox_sys2(HeightmapTextureSystem) {
+/*zox_sys2(HeightmapTextureSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -65,4 +65,4 @@ zox_sys2(HeightmapTextureSystem) {
         }
         dirty->value = zox_dirty_trigger;
     }
-} zox_sys_end(HeightmapTextureSystem);
+} zox_sys_end(HeightmapTextureSystem);*/

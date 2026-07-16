@@ -102,38 +102,20 @@ byte update_chunk_for_raycast(
 // - Compares character raycast hit vs terrain voxel hit and returns closest
 // - Maintains chunk locking state for thread safety during voxel reads
 // - Returns rayhit_* constants for type of hit or none
-byte raycast_voxel_node(ecs *world,
-    entity caster,
-    const BlockLinks* voxels,
-    const ChunkLinks* chunk_links,
-    int3 chunk_position,
-    float3 chunk_positionf,
-    byte terrain_depth,
-    int3 max_chunk_size,
-    entity chunk,
-    float3 ray_origin,
-    float3 ray_normal,
-    int3 hit_normal,
-    float terrain_scalev,
-    float ray_length,
-    RaycastVoxelData* data,
-    CharacterRaycast* character_raycast
-) {
+byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, const ChunkLinks* chunk_links, int3 chunk_position, float3 chunk_positionf, byte terrain_depth, int3 max_chunk_size, entity chunk, float3 ray_origin, float3 ray_normal, int3 hit_normal, float terrain_scalev, float ray_length, RaycastVoxelData* data, CharacterRaycast* character_raycast) {
     if (!terrain_scalev) {
         zox_logw("terrain_scalev is 0, cannot divide by this");
         return 0;
     }
     // setup voxel data
     byte raycasting_terrain = voxels && voxels->length && chunk_links;
-    // byte3 max_chunk_sizeb3 = int3_to_byte3(max_chunk_size);
     const VoxelNode* root_voctree = NULL;
     VoxelNode* node_voxel = NULL;
-    byte chunk_depth;
-    byte chunk_depth_reduction; // terrain_depth - chunk_depth
-    byte3 chunk_size;
-    float chunk_scalev;
+    byte chunk_depth = 0;
+    byte chunk_depth_reduction = 0; // terrain_depth - chunk_depth
+    byte3 chunk_size = byte3_zero;
+    float chunk_scalev = 0;
     float ray_distancef = 0;         // this is distance in voxel space
-    // int3 hit_normal = int3_zero;
     byte result = 0;
     uint checks = 0;
     byte was_hitting = 0;
@@ -197,9 +179,6 @@ byte raycast_voxel_node(ecs *world,
                 chunk_position = new_chunk_position;
             }
             positionl = block_position_to_local_position(positionv, terrain_depth, chunk_depth);
-            // positionl = get_positionl_byte3(positionv, max_chunk_sizeb3);
-            // NOTE: This fixes it for sub chunk nodes
-            // positionl = byte3_inverse_scale(positionl, (int) powers_of_two[chunk_depth_reduction]);
         }
         // Function Inside Minivoxes - Sub Entity Nodes
         else {
@@ -235,11 +214,9 @@ byte raycast_voxel_node(ecs *world,
         byte hit_voxel = 0;
         byte is_in_bounds = byte3_in_bounds(positionl, chunk_size);
         if (is_in_bounds) {
-            // byte3 positionl_temp = positionl;
-            VoxelNode* sub_octree = getm_VoxelNode((VoxelNode*)root_voctree, positionl, chunk_depth);
+            VoxelNode* sub_octree = getm_VoxelNode((VoxelNode*) root_voctree, positionl, chunk_depth);
             hit_voxel = sub_octree ? sub_octree->value : 0;
             node_voxel = sub_octree;
-            // node_voxel = get_voxel_node_at_depth(&hit_voxel, root_voctree, &positionl_temp, chunk_depth);
         }
         if (is_in_bounds && hit_voxel) {
             byte block_index = hit_voxel - 1;

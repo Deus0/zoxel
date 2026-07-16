@@ -1,11 +1,23 @@
 #ifndef zoxm_maps
 #define zoxm_maps
 
+byte zox_maps_flip_x = 0;
+byte zox_maps_flip_z = 1;
 #define zox_dbg_maps_regions 1
 #define zox_dbg_maps_heights 2
 #define zox_dbg_maps_vegetation 3
 #define zox_dbg_maps_towns 4
+#define zox_dbg_maps_end 5
 byte zox_dbg_maps = 0;
+
+void zox_dbg_map_cycle() {
+    zox_dbg_maps++;
+    if (zox_dbg_maps == zox_dbg_maps_end) {
+        zox_dbg_maps = 0;
+    }
+    zox_log("[zox_dbg_maps] Set to [%i]", zox_dbg_maps);
+}
+
 // TODO: Just Destroy/Spawn map pieces instead
 // TODO: we can even downsize the pieces?
 byte bigmap_zoom = 16;

@@ -1,6 +1,8 @@
 #ifndef zoxm_controllers3
 #define zoxm_controllers3
 
+// TODO: Make player just alter a MovementInput float2, then in Character, it grabs that, this seperates the control scheme from the movement itself
+
 #include "set/_.c"
 #include "com/_.c"
 #include "pre/_.c"

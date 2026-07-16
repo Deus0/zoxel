@@ -1,5 +1,8 @@
 # Done
 
+-x Fix game fade in, needs to do it after terrain loaded
+-x Body appears to have visible facesi nside it
+-x Refactor BodyDirty
 -x finish maps reworks
     -x mountains
 -x Finish Towns lod refactor

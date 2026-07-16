@@ -8,6 +8,8 @@ ARC=$4          # x64
 OS="linux"
 ONARC=$(uname -m)
 sdl_source="False"
+sdl_images="False"
+sdl_mixer="False"
 package="False"
 bin_filename="${game_name}" # -${GLB}-${GFX}-${ARC}
 bin_path=bin/${bin_filename}.bin
@@ -57,11 +59,11 @@ if [[ ${debug} == "True" ]]; then
     # cflags="-O2 -g -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs
-    cflags+=" -O3"
+    # cflags+=" -O3"
     # Memory Leaks
     # cflags+=" -O0" #  -fsanitize=address"
     # For Full Debug
-    # cflags="-O0 -fno-omit-frame-pointer"
+    cflags+=" -O0 -fno-omit-frame-pointer"
     #  -fsanitize=address
     bin_path="bin/${bin_filename}-dev.bin"
 fi
@@ -73,14 +75,26 @@ fi
 
 if [[ ${GFX} == "sdl" ]]; then
     echo "+ Added [sdl]"
-    dflags+=" -Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images"
+    dflags+=" -Dzox_sdl"
+    if [[ ${sdl_images} == "True" ]]; then
+        dflags+=" -Dzox_sdl_images"
+    fi
+    if [[ ${sdl_mixer} == "True" ]]; then
+        dflags+=" -Dzox_sdl_mixer"
+    fi
     if [[ ${sdl_source} == "True" ]]; then
         # libs+=" -Lext/sdl/build -Lext/sdl_image/build -Lext/sdl_mixer/build"
         libs+=" -static bin/libSDL2_x64.a bin/libSDL2_image_x64.a bin/libSDL2_mixer_x64.a"
         includes+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"
         dflags+=" -Dsdlsource"
     else
-        libs+=" -lSDL2 -lSDL2_image -lSDL2_mixer"
+        libs+=" -lSDL2"
+        if [[ ${sdl_images} == "True" ]]; then
+            libs+="  -lSDL2_image"
+        fi
+        if [[ ${sdl_mixer} == "True" ]]; then
+            libs+=" -lSDL2_mixer"
+        fi
     fi
 fi
 

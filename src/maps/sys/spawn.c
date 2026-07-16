@@ -50,6 +50,12 @@ zox_sys2(MapInitializeSystem) {
                 entity tunk = int2_hashmap_get(tunks->value, tunk_position);
                 // TODO: Calculate the map position here
                 int2 piece_position = int2_multiply(grid_position, piece_size);
+                if (zox_maps_flip_x) {
+                    piece_position.x *= -1;
+                }
+                if (zox_maps_flip_z) {
+                    piece_position.y *= -1;
+                }
                 // Spawn our map piece
                 entity e2 = spawn_ui(world, prefab_element_shell, body, float2_half, piece_position, piece_size, int2_zero);
                 zox_set_unique_name(e2, "map_piece");

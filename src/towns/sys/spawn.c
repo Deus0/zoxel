@@ -167,6 +167,6 @@ zox_sys2(RegionTownsSystem) {
                 }
             }
         }
-        generate->value = 0;
+        generate->value = zox_generate_region_dungeons;
     }
 } zox_sys_end(RegionTownsSystem);

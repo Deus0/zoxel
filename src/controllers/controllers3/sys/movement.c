@@ -42,7 +42,6 @@ zox_sys2(Player3DMoveSystem) {
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
-
         zox_geter_value(character, DisableMovement, byte, disabled);
         if (disabled) {
             continue;
@@ -52,14 +51,12 @@ zox_sys2(Player3DMoveSystem) {
         if (camera_mode == zox_camera_state_free) {
             continue;
         }
-        float2 left_stick = float2_zero;
         byte is_running = 0;
+        float2 left_stick = float2_zero;
         entity devices[zox_children_capacity];
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-        //for (int j = 0; j < devices->length; j++) {
-        //    entity e2 = devices->value[j];
             if (!zox_valid(e2) || !zox_has(e2, DeviceDisabled)) {
                 continue;
             }
@@ -98,20 +95,24 @@ zox_sys2(Player3DMoveSystem) {
             }
             if (zox_has(e2, Keyboard) && !zox_dbg_touch_with_mouse) {
                 zox_geter(e2, Keyboard, keyboard);
+                if (keyboard->s.is_pressed) left_stick.y += -1;
                 if (keyboard->w.is_pressed) left_stick.y += 1;
-                if (keyboard->s.is_pressed) left_stick.y -= 1;
-                if (keyboard->a.is_pressed) left_stick.x += 1;
-                if (keyboard->d.is_pressed) left_stick.x += -1;
+                if (keyboard->a.is_pressed) left_stick.x += -1;
+                if (keyboard->d.is_pressed) left_stick.x += 1;
                 if (keyboard->left_shift.is_pressed) is_running = 1;
-                // float2_normalize_p(&left_stick);
             }
         }
         if (left_stick.x == 0 && left_stick.y == 0) {
             continue;
         }
-        float3 movement = { left_stick.x * player_movement_power.x, 0, left_stick.y * player_movement_power.y };
+        // NOTE: Z axis is negative forward
+        float3 movement = { left_stick.x * player_movement_power.x, 0, -left_stick.y * player_movement_power.y };
+        if (is_camera_positive_z) {
+            movement.x *= -1;
+            movement.z *= -1;
+        }
         if (is_running) {
-            if (!zox_gett_value(character, FlyMode)) {
+            if (!zox_getv(character, FlyMode)) {
                 movement.x *= run_accceleration;
                 movement.y *= run_accceleration;
             } else {
@@ -120,23 +121,26 @@ zox_sys2(Player3DMoveSystem) {
             }
         }
         float4 movement_rotation = float4_identity;
-        zox_geter(character, Rotation3D, rotation3D)
-        zox_geter(character, Velocity3D, velocity3D)
-        zox_muter(character, Acceleration3D, acceleration3D)
+        float4 character_rotation = zox_getv(character, Rotation3D);
+        zox_geter(character, Velocity3D, velocity3D);
+        zox_muter(character, Acceleration3D, acceleration);
         if (camera_mode == zox_camera_state_topdown || camera_mode == zox_camera_state_ortho) {
             if (zox_has(character, CameraLink)) {
                 if (camera) {
-                    zox_geter(camera, Rotation3D, camera_rotation)
-                    const float4 camera_rotation2 = quaternion_from_euler((float3) { 0, -quaternion_to_euler_y(camera_rotation->value), 0 });
+                    float4 camera_rotation = zox_getv(camera, Rotation3D);
+                    float3 camera_euler = quaternion_to_euler(camera_rotation);
+                    camera_euler.x = 0;
+                    camera_euler.z = 0;
+                    movement_rotation = euler_to_quaternion(camera_euler);
+                    // Align Character to new move rotation!
+                    zox_muter(character, Rotation3D, character_rotation_mut);
+                    character_rotation_mut->value = movement_rotation;
+                    /*const float4 camera_rotation2 = quaternion_from_euler((float3) { 0, -quaternion_to_euler_y(camera_rotation->value), 0 });
                     if (movement.z == -movement.x) {
                         movement.x *= 0.999f; // this hack fixes the rotation
                     }
                     movement_rotation = camera_rotation2;
-                    float4 face_direction = quaternion_from_between_vectors(float3_forward, movement);
-                    // test rotation
-                    Rotation3D *rotation3D2 = zox_get_mut(character, Rotation3D)
-                    rotation3D2->value = face_direction;
-                    zox_modified(character, Rotation3D);
+                    float4 face_direction = quaternion_from_between_vectors(float3_forward, movement);*/
 #ifdef zox_debug_player_movement_direction
                     const Position3D *position3D = zox_get(character, Position3D)
                     spawn_line3(world, position3D->value, float3_add(position3D->value, movement), debug_thickness, 34.0);
@@ -147,14 +151,14 @@ zox_sys2(Player3DMoveSystem) {
                 }
             }
         } else {
-            movement_rotation = rotation3D->value;
+            movement_rotation = character_rotation;
         }
         // here we use two vectors for movement directions so we can limit them
         // we also use a potential velocity based on a calculated new velocity
         // (although we dont know delta_time next frame)
         float2 max_speed = max_velocity3D;
         if (is_running) {
-            if (!zox_gett_value(character, FlyMode)) {
+            if (!zox_getv(character, FlyMode)) {
                 max_speed.x *= run_speed;
                 max_speed.y *= run_speed;
             } else {
@@ -166,16 +170,17 @@ zox_sys2(Player3DMoveSystem) {
         movement_real_z.y = 0;
         float3 movement_real_x = float4_rotate_float3(movement_rotation, (float3) { movement.x, 0, 0 });
         movement_real_x.y = 0;
-        float4 inverse_rotation = float4_inverse(rotation3D->value);
+        // NOTE: We use inverse to get the XZ velocity, local movement velocity aligned to character
+        float4 inverse_rotation = float4_inverse(character_rotation);
         float3 velocity_local = float4_rotate_float3(inverse_rotation, velocity3D->value);
-        float3 acceleration_local = float4_rotate_float3(inverse_rotation, acceleration3D->value);
+        float3 acceleration_local = float4_rotate_float3(inverse_rotation, acceleration->value);
         float3 potential_velocity_forward = { 0, 0, velocity_local.z + (acceleration_local.z + movement.y) * delta_time };
         float3 potential_velocity_left = { velocity_local.x + (acceleration_local.x + movement.x) * delta_time, 0, 0 };
         if (float_abs(potential_velocity_forward.z) < max_speed.y) {
-            float3_add_float3_p(&acceleration3D->value, movement_real_z);
+            acceleration->value = float3_add(acceleration->value, movement_real_z);
         }
         if (float_abs(potential_velocity_left.x) < max_speed.x) {
-            float3_add_float3_p(&acceleration3D->value, movement_real_x);
+            acceleration->value = float3_add(acceleration->value, movement_real_x);
         }
 #ifdef zox_debug_player_speed_limits
         if (float_abs(potential_velocity_left.x) < max_speed.x) zox_log(" > under maximum velocity x: %f\n", potential_velocity_left.x)

@@ -1,3 +1,6 @@
+extern byte zox_maps_flip_x;
+extern byte zox_maps_flip_z;
+
 // NOTE: Simply creates a height texture from tunks
 zox_sys2(TunkTextureSystem) {
     byte dbg_log = 0;
@@ -85,7 +88,15 @@ zox_sys2(TunkTextureSystem) {
                     }
                     for (sbyte y = map_length - 1; y >= 0; y--) {
                         position.y = y;
-                        byte voxel = getv_VoxelNode(voxels, chunk_depth, position);
+                        byte voxel;
+                        if (zox_maps_flip_x || zox_maps_flip_z) {
+                            voxel = getv_VoxelNode(voxels, chunk_depth, (byte3) {
+                                zox_maps_flip_x ? map_length - 1 - position.x : position.x,
+                                position.y,
+                                zox_maps_flip_z ? map_length - 1 - position.z : position.z });
+                        } else {
+                            voxel = getv_VoxelNode(voxels, chunk_depth, position);
+                        }
                         if (!voxel) {
                             continue;
                         }

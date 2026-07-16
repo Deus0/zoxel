@@ -3,6 +3,7 @@
 
 // TODO: If Camera Distance > 500, use double precision for planes - it still flickers so we need to use for now
 #define frustumdouble
+byte is_camera_positive_z = 1;
 
 #include "sta/_.c"
 #include "dat/_.c"

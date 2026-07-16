@@ -2,10 +2,11 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
--x Body appears to have visible facesi nside it
--x Refactor BodyDirty
-- Fix game fade in, needs to do it after terrain loaded
+- Add option in tests to cycle through map debug modes
+- Make Camera Z + and remove maps ui FLIP hacks code
 - Fix arm, needs to not instantly rotate
+- Fix Unstuck system
+- Save Options to disk from a system - OptionsDirty
 - Prioritize Chunks higher lod first
 - Also process double if the lod is less, per depth
     - use a point system for counting processing based on depth levels
@@ -16,11 +17,9 @@ used - 200-400mb used
     - if any do, we use that instead
     - When pushing update, just check the group if all chunks on are done
     - This basically keeps them updating in groups without the need to check entire terrains Chunks
-- Fix Unstuck system
 - Refactor Layouts by using LocalPosition2 instead of CanvasLayout
-- Fix Scale2 working on UIs'
+- Fix Scale2 working on UIs
 - Make a better slow chunk system - perhaps a queue to terrain, when theyre done just remove them from it, to track
-- Flip Map scale x
 - make some npcs attack you
 - Queue new chunks - so it doesnt lag
     - TerrainStreamSystem is basically just spawning new chunks
