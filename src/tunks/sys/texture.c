@@ -60,7 +60,7 @@ zox_sys2(TunkTextureSystem) {
             }
         }
         // NOTE: Fetch Chunk VoxelNode's
-        for (sbyte k = render_distance_y * 2; k >= 0; k--) {
+        for (int k = render_distance_y * 2; k >= 0; k--) {
             entity chunk = stack->value[k];
             if (!zox_valid(chunk)) {
                 stackv[k] = NULL;
@@ -81,7 +81,7 @@ zox_sys2(TunkTextureSystem) {
                 int index = int2_array_index((int2) { position.x, position.z }, size->value);
                 // NOTE: From top of world, we cast down to find first block
                 byte set_color = 0;
-                for (sbyte k = render_distance_y * 2; k >= 0; k--) {
+                for (int k = render_distance_y * 2; k >= 0; k--) {
                     const VoxelNode* voxels = stackv[k];
                     if (!(voxels)) {
                         continue;

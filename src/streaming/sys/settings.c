@@ -11,6 +11,7 @@ zox_sys2(StreamingSettingsSystem) {
         spawn_setting_byte(world, e, "Disable Lods", disable_terrain_lods);
         spawn_setting_byte_slider(world, e, "Near Distance", terrain_lod_near, (byte2) { terrain_lod_near_min, terrain_lod_near_max });
         spawn_setting_byte_slider(world, e, "Far Distance", terrain_lod_far, (byte2) { terrain_lod_far_min, terrain_lod_far_max });
+        spawn_setting_byte_slider(world, e, "Vertical Distance", render_distance_y, (byte2) { render_distance_y_min, render_distance_y_max });
     }
 } zox_sys_end(StreamingSettingsSystem);
 
@@ -44,6 +45,8 @@ zox_sys2(StreamingSettingsDirtySystem) {
                 if (terrain_lod_far < terrain_lod_near) {
                     terrain_lod_near = terrain_lod_far;
                 }
+            } else if (!strcmp(name->value, "Vertical Distance")) {
+                render_distance_y = value;
             }
         }
     }

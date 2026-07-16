@@ -11,7 +11,7 @@ zoxc_arrayd(HeightMap, byte);
 zoxc_arrayd(VegetationMap, byte);
 zoxc_hashmap(TunkLinks, int2);
 // NOTE: this has to be used with render_distance_y
-#define chunk3_stack_length 4 * 2 + 1
+#define chunk3_stack_length render_distance_y_max * 2 + 1
 zoxc_array(Chunk3Stack, entity, chunk3_stack_length);
 zoxc_byte(Chunk3Stacked);
 
