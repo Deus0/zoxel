@@ -2,25 +2,57 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+Current Terrain Chunk Refactor:
+-x Spawn Chunk Mesh when VoxelNodeDirty 
+-x Build Mesh from ChunkMesh
+- Move spawn gpu stuff to initialize mesh systems
+-x Busy Tracks the chunk update from Generate to mesh building?
+- Frustum should account for sub meshes
+- We should set bounds of chunk sepertate to mesh
+
+Bugs:
+- Mesh flickers off and on when rebuilds
+- Position  - transform updates lagging - add a dirty flag for this
+-x Spawning Player before the chunks are generated, underneath map too
+- Landfill not scaling well looks like
+
+Next:
+- Add extra stage for Sides - ChunkMaterial
+- Add second block with lava material for test
+
+Systems
+	- GenerateChunk
+	- GenerateSides
+	- Generate Mesh (children)
+	
+New Systems:
+	- ChunkMeshSpawnSystem
+	- Chunk3MeshTrigger2System
+	- Chunk3TexturedBuild2System
+	- Chunk3Sides2System
+	- ChunkMeshSlow2System
+	
+Hard:
+- Refactor Layouts by using LocalPosition2 instead of CanvasLayout
+- Fix P hysics collision bug, by choosing collision side based on previous position
+- Refactor 3D UI to use layouts
+- Refactor Terrain Chunks to use LOD mesh entities instead of singular chunk
+
+- Save Options to disk from a system - OptionsDirty
 - Fix arm, needs to not instantly rotate
 - Pause NPCs when press escape
 - Fix physics bug
--x Remove corners and outlines from windows + headers so they are more blocky
--x Add option in tests to cycle through map debug modes
-- Make Camera Z + and remove maps ui FLIP hacks code
 - Fix Unstuck system
-- Save Options to disk from a system - OptionsDirty
+- Make Camera Z + and remove maps ui FLIP hacks code
 - Prioritize Chunks higher lod first
 - Also process double if the lod is less, per depth
     - use a point system for counting processing based on depth levels
-- Make the statspanel text brighter so it stands out better
-    - Make the bars dissapear when not used
+- Make the bars dissapear when not used
 - When chunk updating, create an update group
     - first check neighbrs, if it has an update group
     - if any do, we use that instead
     - When pushing update, just check the group if all chunks on are done
     - This basically keeps them updating in groups without the need to check entire terrains Chunks
-- Refactor Layouts by using LocalPosition2 instead of CanvasLayout
 - Fix Scale2 working on UIs
 - Make a better slow chunk system - perhaps a queue to terrain, when theyre done just remove them from it, to track
 - make some npcs attack you

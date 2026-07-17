@@ -13,11 +13,11 @@
 
 byte zox_terrain_chunk_lod_system = 0;
 // Chunk States
-#define zox_generate_tchunk_start 1
-#define zox_generate_tchunk_landfill 1
-#define zox_generate_tchunk_vegetation 2
-#define zox_generate_tchunk_towns 3
-#define zox_generate_tchunk_end 4
+#define zox_generate_terrain_start 1
+#define zox_generate_terrain_landfill 1
+#define zox_generate_terrain_vegetation 2
+#define zox_generate_terrain_towns 3
+#define zox_generate_terrain_end 4
 // Initial core
 #include "set/_.c"
 #include "com/_.c"

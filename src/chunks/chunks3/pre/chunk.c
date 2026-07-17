@@ -11,13 +11,15 @@ entity spawn_prefab_chunk(ecs *world, entity prefab) {
     zox_prefab_set(e, Brightness, { 1.0f });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, MeshDirty, { 0 });
-    prefab_add_mesh_basic(world, e);
+    zox_prefab_set(e, MeshIndicies, { 0 });
+    zox_prefab_set(e, MesnRenderCount, { 0 });
+    zox_prefab_set(e, MeshVertices, { 0 });
+    zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
     return e;
 }
 
 // A simple colored vox at position
 entity spawn_chunk3(ecs *world, entity prefab, float3 position, float scale, byte depth, float block_scale, int3 size) {
-    // Spawn
     zox_instance(prefab);
     zox_name("chunk3")
     zox_set(e, Position3D, { position });

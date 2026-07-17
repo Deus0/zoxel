@@ -25,7 +25,7 @@ typedef ecs_iter_t iter;
 #include "query.c"
 #include "hooks.c"
 #include "children.c"
-
+#include "disable.c"
 
 entity zox_ins_named(ecs* world, entity prefab) {
     entity e = zox_ins(world, prefab);

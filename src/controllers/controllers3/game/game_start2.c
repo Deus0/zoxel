@@ -1,6 +1,6 @@
 // NOTE: For new placement of characters, we wait for region/towns to spawn, then we find a position in one of the towns
 zox_sys2(PlayerTownFinderSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CameraLink);
@@ -14,20 +14,26 @@ zox_sys2(PlayerTownFinderSystem) {
         if (state->value != zox_player_state_new) {
             continue;
         }
+#ifdef zox_safety_checks
         if (!zox_valid(camera->value)) {
             zox_loge("Invalid Terrain on Realm");
             continue;
         }
+#endif
         entity game = zox_get_parent(world, e);
+#ifdef zox_safety_checks
         if (!zox_valid(game)) {
             zox_loge("Invalid game on Player");
             continue;
         }
+#endif
         entity realm = zox_getv(game, RealmLink);
+#ifdef zox_safety_checks
         if (!zox_valid(realm)) {
             zox_loge("Invalid realm on Player");
             continue;
         }
+#endif
         // TODO: Just make a Realm Generating flag
         byte realm_busy = 0;
         entity textures[zox_children_capacity];
@@ -35,7 +41,9 @@ zox_sys2(PlayerTownFinderSystem) {
         for (int j = 0; j < textures_length; j++) {
             entity texture = textures[j];
             if (zox_has(texture, Busy) && zox_getv(texture, Busy)) {
-                zox_log("Realm texture Still Loading [%s]", zox_get_name(texture));
+                if (dbg_log) {
+                    zox_log("Realm texture Still Loading [%s]", zox_get_name(texture));
+                }
                 realm_busy = 1;
                 break;
             }
@@ -47,10 +55,12 @@ zox_sys2(PlayerTownFinderSystem) {
             continue;
         }
         entity terrain = zox_getv(realm, TerrainLink);
+#ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_loge("Invalid Terrain on Player");
             continue;
         }
+#endif
         entity regions[zox_children_capacity];
         uint regions_length = zox_get_children_by_id(world, terrain, regions, zox_children_capacity, zox_id(Region));
         if (!regions_length) {
@@ -60,6 +70,7 @@ zox_sys2(PlayerTownFinderSystem) {
             continue;
         }
         entity region = regions[rand_range(0, regions_length)];
+#ifdef zox_safety_checks
         if (!zox_valid(region)) {
             continue;
         }
@@ -67,6 +78,7 @@ zox_sys2(PlayerTownFinderSystem) {
             zox_loge("Region Missing GenerateRegion");
             continue;
         }
+#endif
         if (zox_getv(region, GenerateRegion)) {
             if (dbg_log) {
                 zox_log("Terrain Loading Regions... (PlayerTownFinderSystem)");
@@ -90,13 +102,13 @@ zox_sys2(PlayerTownFinderSystem) {
         }
         float terrain_block_scale = zox_getv(terrain, BlockScale);
         float3 spawn_position = block_position_to_real_position(town_position, terrain_block_scale);
-        zox_set(camera->value, Position3D, { spawn_position });
-        zox_set(camera->value, StreamerLevel, { 1 });
         // NOTE: Make sure it updates even if position the same
-        zox_set(camera->value, StreamDirty, { zox_dirty_trigger });
-        // zox_set(terrain, Loaded, { zox_load_begin });
         state->value = zox_player_state_starting;
         dirty->value = zox_dirty_trigger;
+        zox_set(camera->value, Position3D, { spawn_position });
+        zox_set(camera->value, StreamDirty, { zox_dirty_trigger });
+        zox_set(camera->value, StreamerLevel, { 1 });
+        // zox_set(terrain, Loaded, { zox_load_begin });
         if (dbg_log) {
             byte2 town_size2 = town ? zox_getv(town, TownSize) : byte2_zero;
             zox_log("Player Now State: [Starting]");

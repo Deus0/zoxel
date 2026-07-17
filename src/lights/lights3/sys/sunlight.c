@@ -176,7 +176,7 @@ zox_sys2(LightBeamSystem) {
         if (!sunlight_queue->count) {
             continue;
         }
-        if (zox_getv(e, Busy)) {
+        if (zox_getv(e, GenerateChunk)) {
             continue;
         }
         entity chunkd = neighbors->value[direction_down];

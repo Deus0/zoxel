@@ -24,9 +24,7 @@ zox_sys2(GameStartFaderSystem) {
             zox_geter_value(player, CanvasLink, entity, canvas);
             if (state->value == zox_game_load_start) {
                 trigger_canvas_fade_in(world, canvas, 0, game_load_fade_transition_time);
-            } /*else if (state->value == zox_game_state_play_begin) {
-                trigger_canvas_fade_out(world, canvas, game_spawn_terrain_fade_delay, game_load_fade_transition_time);
-            }*/
+            }
         }
     }
 } zox_sys_end(GameStartFaderSystem);

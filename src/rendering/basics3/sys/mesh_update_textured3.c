@@ -47,7 +47,7 @@ zox_sys2(TexturedMeshUploadSystem) {
         zox_gpu_array_buffer(gpu_colors->value, verts->length, sizeof(color_rgb), colors->value);
         count->value = indicies->length;
         if (dbg_log) {
-            zox_log("Uploaded Chunk Mesh [%s]", zox_get_name(e));
+            zox_log("Uploaded Chunk Mesh [%s] Tris [%i]", zox_get_name(e), indicies->length);
         }
     }
 } zox_sys_end(TexturedMeshUploadSystem);

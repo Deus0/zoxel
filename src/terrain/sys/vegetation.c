@@ -15,11 +15,11 @@ zox_sys2(VegetationChunk3System) {
         zox_sys_i(TunkLink, tunk);
         zox_sys_o(GenerateChunk, generate);
         zox_sys_o(VoxelNode, voctree);
-        if (generate->value != zox_generate_tchunk_vegetation) {
+        if (generate->value != zox_generate_terrain_vegetation) {
             continue;
         }
         if (zox_disable_vegetation) {
-            generate->value = zox_generate_tchunk_towns;
+            generate->value = zox_generate_terrain_towns;
             continue;
         }
         // NOTE: Delay if past limit [max_process]
@@ -175,7 +175,7 @@ zox_sys2(VegetationChunk3System) {
             }
         }
         write_unlock_VoxelNode(voctree);
-        generate->value = zox_generate_tchunk_towns;
+        generate->value = zox_generate_terrain_towns;
         zox_sys_increment();
     }
 } zox_sys_end(VegetationChunk3System);

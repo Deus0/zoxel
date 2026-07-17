@@ -6,9 +6,9 @@
 byte zox_disable_node_face_subdivision = 1;
 // remember: vertex position is just node position / voxel position
 
-typedef struct {
+/*ypedef struct {
     byte *solidity;
-} chunk3_textured_builder_data;
+} chunk3_textured_builder_data;*/
 
 typedef struct {
     int_array_d *indicies;
@@ -51,7 +51,7 @@ typedef struct {
     byte3 local_position;
 } octree_dig_data;
 
-byte cache_blocks_data(iter* it, chunk3_textured_builder_data* data) {
+byte cache_blocks_data(iter* it, byte* solidity) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);
@@ -71,18 +71,18 @@ byte cache_blocks_data(iter* it, chunk3_textured_builder_data* data) {
     if (!blocks->length) {
         return 0; // if failed to find terrain parents
     }
-    data->solidity = malloc(blocks->length * sizeof(byte));
+    solidity = malloc(blocks->length * sizeof(byte));
     for (int i = 0; i < blocks->length; i++) {
         entity block = blocks->value[i];
         if (!zox_valid(block)) {
-            data->solidity[i] = 1;
+            solidity[i] = 1;
             continue;
         }
         // solidity
         if (!zox_has(block, BlockModel)) {
-            data->solidity[i] = 1;
+            solidity[i] = 1;
         } else {
-            data->solidity[i] = zox_gett_value(block, BlockModel) == zox_block_solid;
+            solidity[i] = zox_gett_value(block, BlockModel) == zox_block_solid;
         }
     }
     return 1;
@@ -197,7 +197,7 @@ void clear_mesh_uvs(MeshIndicies *meshIndicies, MeshVertices *meshVertices, Mesh
 // TODO: Move terrain cache into functions
 // TODO: Cache all managers found, not just single
 // NOTE: Rebuilds Chunk when BuildChunkMesh is dirty
-zox_sys2(Chunk3TexturedBuildSystem) {
+/*zox_sys2(Chunk3TexturedBuildSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin_at(1);
@@ -225,8 +225,8 @@ zox_sys2(Chunk3TexturedBuildSystem) {
     if (!any_dirty) {
         return;
     }
-    chunk3_textured_builder_data build_data;
-    if (!cache_blocks_data(it, &build_data)) {
+    byte *solidity = NULL;
+    if (!cache_blocks_data(it, solidity)) {
         return;
     }
     for (int i = 0; i < it->count; i++) {
@@ -270,7 +270,7 @@ zox_sys2(Chunk3TexturedBuildSystem) {
         // build out mesh data
         terrain_build_data data = {
             .tilemap_uvs = tilemap_uvs,
-            .voxel_solidity = build_data.solidity,
+            .voxel_solidity = solidity,
             .mesh_data = &mesh_data,
             .root = voctree,
             .rdepth = rdepth->value,
@@ -305,4 +305,136 @@ zox_sys2(Chunk3TexturedBuildSystem) {
     if (build_data.solidity) {
         free(build_data.solidity);
     }
-} zox_sys_end(Chunk3TexturedBuildSystem);
+} zox_sys_end(Chunk3TexturedBuildSystem);*/
+
+
+// TODO: DIsable when not selected LOD Mesh
+zox_sys2(Chunk3TexturedBuild2System) {
+    byte dbg_log = 0;
+    byte* solidity = NULL;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(RenderDisabled);
+    zox_sys_in(RenderDepth);
+    zox_sys_out(BuildChunkMesh);
+    zox_sys_out(MeshIndicies);
+    zox_sys_out(MeshVertices);
+    zox_sys_out(MeshUVs);
+    zox_sys_out(MeshColorRGBs);
+    zox_sys_out(MeshReady);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(RenderDisabled, disabled);
+        zox_sys_i(RenderDepth, depth);
+        zox_sys_o(BuildChunkMesh, build);
+        zox_sys_o(MeshIndicies, indicies);
+        zox_sys_o(MeshVertices, verts);
+        zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(MeshUVs, uvs);
+        zox_sys_o(MeshReady, mesh_ready);
+        if (disabled->value) {
+            continue;
+        }
+        if (!build->value) {
+            continue;
+        }
+        // Get chunk data
+        entity chunk = zox_get_parent(world, e);
+#ifdef zox_safety_checks
+        if (!zox_valid(chunk)) {
+            zox_loge("Chunk Invalid");
+            continue;
+        }
+#endif
+        // if generating we wait
+        if (zox_getv(chunk, GenerateChunk) || zox_getv(chunk, BuildChunkSides)) {
+            if (dbg_log) {
+                zox_log("Waiting on Chunk to Build [%s]", zox_getn(chunk));
+            }
+            continue;
+        }
+        entity tilemap = zox_getv(chunk, TilemapLink);
+#ifdef zox_safety_checks
+        if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapUVs)) {
+            zox_sys_e();
+            zox_loge("Tilemap not found on Chunk Terrain [%s]", zox_get_name(e));
+            continue;
+        }
+#endif
+        zox_geter(tilemap, TilemapUVs, tilemap_uvs);
+        if (!tilemap_uvs->value || !tilemap_uvs->length) {
+            zox_loge("Tilemap TilemapUVs on Chunk Terrain [%s] has not generated", zox_get_name(e));
+            continue;
+        }
+        if (!solidity) {
+            entity manager = zox_getv(chunk, BlockManagerLink);
+            if (!manager) {
+                zox_loge("Failed to find BlockManagerLink on Chunk from ChunkMeshes");
+                continue;
+            }
+            zox_geter(manager, BlockLinks, blocks);
+            if (!blocks->length) {
+                continue; // if failed to find terrain parents
+            }
+            solidity = malloc(blocks->length * sizeof(byte));
+            memset(solidity, 1, blocks->length);
+            for (int j = 0; j < blocks->length; j++) {
+                entity block = blocks->value[j];
+                if (!zox_valid(block)) {
+                    continue;
+                }
+                // solidity
+                if (zox_has(block, BlockModel)) {
+                    solidity[j] = zox_getv(block, BlockModel) == zox_block_solid;
+                }
+            }
+        }
+        const VoxelNode* voxels = zox_get(chunk, VoxelNode);
+        const SidesOctree* sides = zox_get(chunk, SidesOctree);
+        float block_scale = zox_getv(chunk, BlockScale);
+        short vlength = octree_size(depth->value);
+        float cscale = block_scale * vlength;
+        mesh_uvs_build_data mesh_data = {
+            .indicies = create_int_array_d(initial_dynamic_array_size),
+            .vertices = create_float3_array_d(initial_dynamic_array_size),
+            .uvs = create_float2_array_d(initial_dynamic_array_size),
+            .color_rgbs = create_color_rgb_array_d(initial_dynamic_array_size)
+        };
+        // build out mesh data
+        terrain_build_data data = {
+            .tilemap_uvs = tilemap_uvs,
+            .voxel_solidity = solidity,
+            .mesh_data = &mesh_data,
+            .root = voxels,
+            .rdepth = depth->value,
+        };
+        octree_dig_data dig = {
+            .parent = NULL,
+            .node = voxels,
+            .scale = cscale,
+        };
+        read_lock_VoxelNode(voxels);
+        zox_terrain_building_dig(data, dig, sides);
+        read_unlock_VoxelNode(voxels);
+        // sizes
+        indicies->length = mesh_data.indicies->size;
+        verts->length = mesh_data.vertices->size;
+        uvs->length = mesh_data.uvs->size;
+        colors->length = mesh_data.color_rgbs->size;
+        // data
+        indicies->value = zinalize_int_array_d(mesh_data.indicies);
+        verts->value = zinalize_float3_array_d(mesh_data.vertices);
+        colors->value = zinalize_color_rgb_array_d(mesh_data.color_rgbs);
+        uvs->value = zinalize_float2_array_d(mesh_data.uvs);
+        // dirty
+        build->value = 0;
+        mesh_ready->value = 1;
+        if (dbg_log) {
+            zox_log("Built [%s]! Verts [%i] Scale [%f] Depth [%i]", zox_getn(e), verts->length, cscale, depth->value);
+        }
+        zox_sys_increment();
+    }
+    if (solidity) {
+        free(solidity);
+    }
+} zox_sys_end(Chunk3TexturedBuild2System);

@@ -203,5 +203,73 @@ zox_sys2(Chunk3SidesSystem) {
         build->value = zox_dirty_end;
         zox_sys_increment();
     }
-    free(solids);
+    if (solids) {
+        free(solids);
+    }
 } zox_sys_end(Chunk3SidesSystem);
+
+// For each ChunkMaterial we generate sides data for meshes
+zox_sys2(Chunk3Sides2System) {
+    byte dbg_log = 0;
+    byte max_process = 0;
+    byte* solids = NULL;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(RenderDepth);
+    zox_sys_in(ChunkNeighbors);
+    zox_sys_in(VoxelNode);
+    zox_sys_out(BuildChunkSides);
+    zox_sys_out(SidesOctree);
+    zox_sys_out(SidesOctreeDirty);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(RenderDepth, depth);
+        zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_i(VoxelNode, voxels);
+        zox_sys_o(BuildChunkSides, state);
+        zox_sys_o(SidesOctree, sides);
+        zox_sys_o(SidesOctreeDirty, sides_dirty);
+        // NOTE: Process when Active state
+        if (!state->value) {
+            continue;
+        }
+        // NOTE: Delay if past limit [max_process]
+        if (max_process && process_count > max_process) {
+            continue;
+        }
+        if (depth->value == render_depth_uninitialized) {
+            continue;
+        }
+        // fetch here instead
+        if (!solids) {
+            // entity chunk = zox_get_parent(world, e);
+            entity manager = zox_getv(e, BlockManagerLink);
+            zox_geter(manager, BlockLinks, blocks);
+            solids = malloc(blocks->length * sizeof(byte));
+            for (int i = 0; i < blocks->length; i++) {
+                entity block = blocks->value[i];
+                if (!zox_valid(block) || !zox_has(block, BlockModel)) {
+                    solids[i] = 1;
+                    continue;
+                }
+                solids[i] = zox_getv(block, BlockModel) == zox_block_solid;
+            }
+        }
+        if (!solids) {
+            return;
+        }
+        const VoxelNode* noctrees[6];
+        byte ndepths[6];
+        fetch_neightbor_chunk_data(world, neighbors, noctrees, ndepths);
+        sides->value = build_sides_dig(solids, voxels, noctrees, ndepths, voxels, sides, depth->value, 0, byte3_zero);
+        sides_dirty->value = zox_dirty_trigger;
+        state->value = 0;
+        if (dbg_log) {
+            zox_log("Chunk Built Sides [%s]", zox_getn(e));
+        }
+        zox_sys_increment();
+    }
+    if (solids) {
+        free(solids);
+    }
+} zox_sys_end(Chunk3Sides2System);

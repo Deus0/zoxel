@@ -144,6 +144,15 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_query_end();
         if (render_disabled->value != !is_viewed) {
             render_disabled->value = !is_viewed;
+            iter it2 = zox_children(world, e);
+            while (zox_children_next(it2)) {
+                for (int j = 0; j < it2.count; j++) {
+                    entity e3 = it2.entities[j];
+                    if (zox_has(e3, ChunkMesh)) {
+                        zox_setm(e3, RenderDisabled, render_disabled->value);
+                    }
+                }
+            }
             if (dbg_log >= 2) {
                 zox_log("Chunk [%s] now Visible? [%s]", zox_get_name(e), is_viewed ? "Visible" : "Invisible");
             }

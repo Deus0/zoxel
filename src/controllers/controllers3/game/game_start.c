@@ -5,6 +5,7 @@
 // 4) Spawns Player UI
 // NOTE: Sets the Game Camera and starts streaming terrain
 zox_sys2(GameStartStreamerSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CameraLink);
@@ -19,16 +20,25 @@ zox_sys2(GameStartStreamerSystem) {
             continue;
         }
         entity game = zox_get_parent(world, e);
+#ifdef zox_safety_checks
         if (!zox_valid(game)) {
             zox_loge("Player [%s] has invalid Game.", zox_get_name(e));
             continue;
         }
+#endif
         entity realm = zox_getv(game, RealmLink);
-        if (!zox_valid(realm) || !zox_has(realm, FolderPath) || !zox_has(realm, TerrainLink)) {
+#ifdef zox_safety_checks
+        if (!zox_valid(realm)) {
             zox_loge("Game [%s] has invalid Realm.", zox_get_name(game));
             continue;
         }
+        if (!zox_has(realm, FolderPath) || !zox_has(realm, TerrainLink)) {
+            zox_loge("Realm [%s] has invalid Components.", zox_get_name(realm));
+            continue;
+        }
+#endif
         entity terrain = zox_getv(realm, TerrainLink);
+#ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             continue;
         }
@@ -36,6 +46,7 @@ zox_sys2(GameStartStreamerSystem) {
             zox_loge("Player has no Camera");
             continue;
         }
+#endif
         zox_geter(realm, FolderPath, path);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte terrain_chunk_length = powers_of_two[terrain_depth];
@@ -81,8 +92,8 @@ zox_sys2(GameStartStreamerSystem) {
             zox_set(e2, StreamDirty, { zox_dirty_trigger });
             zox_set(e2, StreamDirty2, { zox_dirty_trigger });
         }
-        if (is_log_streaming) {
-            zox_log("+ terrain spawning started at [%f]", zox_current_time);
+        if (dbg_log) {
+            zox_log("zox_player_state_new: [%s] on [%s] - new game [%i]", zox_getn(e), zox_getn(terrain), is_new_game);
         }
     }
 } zox_sys_end(GameStartStreamerSystem);

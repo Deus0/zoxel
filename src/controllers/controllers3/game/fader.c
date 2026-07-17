@@ -1,7 +1,6 @@
 zox_sys2(PlayerScreenFadeSystem) {
     const double game_spawn_terrain_delay = 0.1;
     const double game_load_player_delay = 0.2; // 1.1;
-
     double game_load_fade_transition_time = 0.5;
     double game_spawn_terrain_fade_delay = 1.4;
     byte dbg_log = 0;
@@ -18,9 +17,6 @@ zox_sys2(PlayerScreenFadeSystem) {
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        /*if (state->value == zox_game_load_start) {
-            trigger_canvas_fade_in(world, canvas->value, 0, game_load_fade_transition_time);
-        } else */
         if (state->value == zox_player_state_starting) {
             trigger_canvas_fade_out(world, canvas->value, game_spawn_terrain_fade_delay, game_load_fade_transition_time);
         }

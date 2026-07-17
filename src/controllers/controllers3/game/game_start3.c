@@ -1,4 +1,4 @@
-TerrainPlace find_position_in_terrain(ecs* world, entity terrain, int3 block_position) {
+byte find_position_in_terrain(ecs* world, entity terrain, int3 block_position, TerrainPlace* output) {
     byte terrain_depth = zox_getv(terrain, NodeDepth);
     int3 chunk_position = block_position_to_chunk_position(block_position, terrain_depth);
     zox_geter(terrain, ChunkLinks, chunks);
@@ -11,8 +11,16 @@ TerrainPlace find_position_in_terrain(ecs* world, entity terrain, int3 block_pos
         chunk_position.y = i;
         chunk = int3_hashmap_get(chunks->value, chunk_position);
         if (!zox_valid(chunk)) {
-            zox_logw("Chunk Missing at [0x%ix0]", i);
+            zox_loge("Chunk Missing at [0x%ix0]", i);
             continue;
+        }
+        if (!zox_has(chunk, GenerateChunk)) {
+            zox_loge("Chunk Missing GenerateChunk at [0x%ix0]", i);
+            return 0;
+        }
+        // If generating, we wait until done
+        if (zox_getv(chunk, GenerateChunk)) {
+            return 0;
         }
         zox_geter(chunk, VoxelNode, chunkd);
         node_depth = zox_get_value(chunk, NodeDepth);
@@ -29,6 +37,7 @@ TerrainPlace find_position_in_terrain(ecs* world, entity terrain, int3 block_pos
         if (!count) {
             zox_loge(" -> ? No chunks!");
         }
+        return 0;
     }
     zox_geter_value(terrain, BlockScale, float, block_scale);
     float3 positionf = byte3_to_float3(in_chunk_position);
@@ -39,12 +48,11 @@ TerrainPlace find_position_in_terrain(ecs* world, entity terrain, int3 block_pos
     }
     float3_add_float3_p(&positionf, float3_single(block_scale * 0.5f));
     float4 rotation = quaternion_from_euler( (float3) { 0, (rand() % 361) * degreesToRadians, 0 });
-    return (TerrainPlace) {
-        .chunk = chunk,
-        .chunk_position = chunk_position,
-        .position = positionf,
-        .rotation = rotation,
-    };
+    output->chunk = chunk;
+    output->chunk_position = chunk_position;
+    output->position = positionf;
+    output->rotation = rotation;
+    return 1;
 }
 
 // NOTE: Here we spawn our new player character
@@ -54,7 +62,10 @@ entity game_start_player_new(ecs *world, entity player, entity realm, entity ter
     float3 camera_position = zox_getv(camera, Position3D);
     int3 camera_block_position = real_position_to_block_position(camera_position, terrain_scale);
     lint character_seed = seed_rand(realm_seed); // , 0, 100000);
-    TerrainPlace placer = find_position_in_terrain(world, terrain, camera_block_position);
+    TerrainPlace placer;
+    if (!find_position_in_terrain(world, terrain, camera_block_position, &placer)) {
+        return 0;
+    }
     *spawned_position = placer.position;
     byte render_depth = 5;
     entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, NULL, player);
@@ -96,7 +107,6 @@ zox_sys2(PlayerBeginSystem) {
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
         // Now Spawning Character
-        //  && dirty->value == zox_dirty_active
         if (state->value != zox_player_state_starting) {
             continue;
         }
@@ -136,6 +146,12 @@ zox_sys2(PlayerBeginSystem) {
             character->value = game_start_player_load(world, e, realm, terrain, &spawn_position);
         } else {
             character->value = game_start_player_new(world, e, realm, terrain, camera->value, &spawn_position, dbg_log);
+            if (!character->value) {
+                if (dbg_log) {
+                    zox_log("[%s] Terrain Position not found for new game", zox_getn(e));
+                }
+                continue;
+            }
         }
         if (dbg_log) {
             zox_log("[%s] Player Character Spawned at [%fx%fx%f]", is_new_game ? "New" : "Load", spawn_position.x, spawn_position.y, spawn_position.z);

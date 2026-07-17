@@ -116,6 +116,20 @@ zox_sys2(ChunkMeshSlowSystem) {
     dispose_byte_array_d(voxes_busy);
 } zox_sys_end(ChunkMeshSlowSystem);
 
+zox_sys2(ChunkMeshSlow2System) {
+    zox_sys_begin();
+    zox_sys_out(MeshReady);
+    zox_sys_out(MeshDirty);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(MeshReady, mesh_ready);
+        zox_sys_o(MeshDirty, mesh_dirty);
+        if (mesh_ready->value) {
+            mesh_dirty->value = mesh_state_trigger;
+            mesh_ready->value = 0;
+        }
+    }
+} zox_sys_end(ChunkMeshSlow2System);
+
 // NOTE: I like the idea of Floodfill Busy checks, because npcs might edit parts of the map at once
 
     // Group by Neighbor Floodfill

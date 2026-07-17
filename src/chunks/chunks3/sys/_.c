@@ -8,19 +8,13 @@ zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 
 void define_systems_chunks3(ecs *world) {
     zoxd_system_increment(VoxelNodeDirty);
+    // ColoredChunk
     zox_system(
         Chunk3MeshTriggerSystem,
         zoxp_update,
         [in] chunks3.VoxelNodeDirty,
         [out] chunks3.BuildChunkMesh,
         [none] chunks3.Chunk3
-    );
-    zox_system(
-        Chunk3NeighborsMeshTriggerSystem,
-        zoxp_update,
-        [in] chunks3.VoxelNodeDirty,
-        [in] chunks3.ChunkNeighbors,
-        [none] chunks3.ChunkTextured
     );
     zox_system(VoxelNodeQueueSystem,
         zoxp_queue_pre_clear,

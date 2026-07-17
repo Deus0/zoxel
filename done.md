@@ -1,5 +1,8 @@
 # Done
 
+-x Make the statspanel text brighter so it stands out better
+-x Remove corners and outlines from windows + headers so they are more blocky
+-x Add option in tests to cycle through map debug modes
 -x Fix game fade in, needs to do it after terrain loaded
 -x Body appears to have visible facesi nside it
 -x Refactor BodyDirty

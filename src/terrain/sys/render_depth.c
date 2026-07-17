@@ -28,10 +28,10 @@ zox_sys2(RenderDepthChunk3System) {
             }
             // Set to Generate as Depth Increased
             if (!loaded->value) {
-                generate->value = zox_generate_tchunk_start;
+                generate->value = zox_generate_terrain_start;
             } else {
                 // Skips Generation
-                generate->value = zox_generate_tchunk_end;
+                generate->value = zox_generate_terrain_end;
             }
         } else {
             if (dbg_log) {

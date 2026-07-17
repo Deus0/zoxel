@@ -20,7 +20,7 @@ zox_sys2(LandfillChunk3System) {
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(GenerateChunk, generate);
         zox_sys_o(VoxelNode, voctree);
-        if (generate->value != zox_generate_tchunk_landfill) {
+        if (generate->value != zox_generate_terrain_landfill) {
             continue;
         }
         // NOTE: Delay if past limit [max_process]
@@ -172,7 +172,7 @@ zox_sys2(LandfillChunk3System) {
         }
         write_unlock_VoxelNode(voctree);
         // Completed
-        generate->value = zox_generate_tchunk_vegetation;
+        generate->value = zox_generate_terrain_vegetation;
         zox_sys_increment();
     }
 } zox_sys_end(LandfillChunk3System);

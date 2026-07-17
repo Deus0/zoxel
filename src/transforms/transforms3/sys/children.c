@@ -1,9 +1,14 @@
 void set_position_rotation_recursive(ecs* world, entity e, float3 pposition, float4 protation) {
-    if (!zox_valid(e) || !zox_has(e, Position3D) || !zox_has(e, Rotation3D)) {
+#ifdef zox_safety_checks
+    if (!zox_valid(e)) {
         return;
     }
-    float3 localp = zox_has(e, LocalPosition3D) ? zox_gett_value(e, LocalPosition3D) : float3_zero;
-    float4 localr = zox_has(e, LocalRotation3D) ? zox_gett_value(e, LocalRotation3D) : quaternion_identity;
+#endif
+    if (!zox_has(e, Position3D) || !zox_has(e, Rotation3D)) {
+        return;
+    }
+    float3 localp = zox_has(e, LocalPosition3D) ? zox_getv(e, LocalPosition3D) : float3_zero;
+    float4 localr = zox_has(e, LocalRotation3D) ? zox_getv(e, LocalRotation3D) : quaternion_identity;
     zox_muter(e, Position3D, nposition);
     zox_muter(e, Rotation3D, nrotation);
     nrotation->value = protation;

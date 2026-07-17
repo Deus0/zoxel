@@ -5,7 +5,6 @@ zox_sys2(Characters3SpawnZoneSystem) {
     zox_sys_in(RenderDepthDirty);
     zox_sys_in(RenderDepth);
     zox_sys_in(GenerateChunk);
-    // zox_sys_in(Loaded);
     zox_sys_out(NpcSpawnZone);
     zox_sys_out(NpcSpawnZoneDirty);
     for (int i = 0; i < it->count; i++) {
@@ -15,16 +14,12 @@ zox_sys2(Characters3SpawnZoneSystem) {
         zox_sys_i(GenerateChunk, generate);
         zox_sys_o(NpcSpawnZone, active);
         zox_sys_o(NpcSpawnZoneDirty, dirty);
-        // or loading
-        /*if (dirty->value) {
-            continue;
-        }*/
         // Ignore if generating
-        if (generate->value && generate->value < zox_generate_tchunk_end) {
+        if (generate->value) {
             continue;
         }
         // If
-        if (!(state->value == zox_dirty_active || generate->value == zox_generate_tchunk_end)) {
+        if (state->value != zox_dirty_active) {
             continue;
         }
         // Max Depth Checks

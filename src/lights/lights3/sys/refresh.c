@@ -40,7 +40,7 @@ zox_sys2(RefreshLightsSystem) {
         if (refresh->value != zox_refresh_lights) {
             continue;
         }
-        if (zox_getv(e, Busy)) {
+        if (zox_getv(e, GenerateChunk)) {
             continue;
         }
         // NOTE: Check Blocks Caches
