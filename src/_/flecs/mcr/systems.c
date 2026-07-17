@@ -22,8 +22,10 @@ void zox_system_on_new(ecs* world, entity system) {
         byte is_count_process = ecs_has(it->world, it->system, SystemProcessed); \
         uint process_count = 0;
 
+#define calculate_sys_delta() get_time_ms() - system_time_begin
+
 #define zox_sys_end(T)\
-    double system_delta_time = get_time_ms() - system_time_begin;\
+    double system_delta_time = calculate_sys_delta();\
     if (ecs_has(it->world, it->system, SystemDelta)) { \
         double current_delta = ecs_get(it->world, it->system, SystemDelta)->value; \
         if (system_delta_time > current_delta) { \

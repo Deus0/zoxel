@@ -1,3 +1,28 @@
+static inline byte check_texture(color *data, int2 size, int2 pixel_position, color find_color, int distance) {
+    if (!int2_in_bounds(pixel_position, size)) {
+        return 0;
+    }
+    if (color_equal(find_color, data[int2_array_index(pixel_position, size)])) {
+        return 1;
+    }
+    if (distance >= 0) {
+        distance--;
+        if (check_texture(data, size, int2_down(pixel_position), find_color, distance)) {
+            return 1;
+        }
+        if (check_texture(data, size, int2_up(pixel_position), find_color, distance)) {
+            return 1;
+        }
+        if (check_texture(data, size, int2_left(pixel_position), find_color, distance)) {
+            return 1;
+        }
+        if (check_texture(data, size, int2_right(pixel_position), find_color, distance)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void generate_texture_frame(color* data, int2 size, color fill_color, color outline_color, byte frame_thickness, byte corner_size, byte is_noise) {
     int index = 0;
     int2 pixel_position = int2_zero;
@@ -60,6 +85,54 @@ void generate_texture_frame(color* data, int2 size, color fill_color, color outl
     }
 }
 
+void generate_texture_frame2(color* data, int2 size, color fill_color, color outline_color, byte frame_thickness, byte corner_size, byte is_noise) {
+    const int width = size.x;
+    const int height = size.y;
+    const int fill_noise_addition = 55;
+    const int outline_noise_addition = 25;
+    int index = 0;
+    for (int y = 0; y < height; y++) {
+        int by = height - 1 - y;
+        for (int x = 0; x < width; x++, index++) {
+            int rx = width - 1 - x;
+            int d0 = x + y;
+            int d1 = rx + y;
+            int d2 = rx + by;
+            int d3 = x + by;
+            int corner_distance = d0;
+            if (d1 < corner_distance) corner_distance = d1;
+            if (d2 < corner_distance) corner_distance = d2;
+            if (d3 < corner_distance) corner_distance = d3;
+            color c;
+            if (corner_distance < corner_size) {
+                // Cut corners
+                c = empty_color;
+            } else if (x < frame_thickness || y < frame_thickness || x >= width - frame_thickness || y >= height - frame_thickness) {
+                // Outer border
+                c = outline_color;
+            } else if (corner_distance < corner_size + frame_thickness) {
+                // Outline around cut corners
+                c = outline_color;
+            } else {
+                c = fill_color;
+            }
+            if (is_noise) {
+                if (color_equal(c, fill_color)) {
+                    c.r += rand() % fill_noise_addition;
+                    c.g += rand() % fill_noise_addition;
+                    c.b += rand() % fill_noise_addition;
+                }
+                else if (color_equal(c, outline_color)) {
+                    c.r += rand() % outline_noise_addition;
+                    c.g += rand() % outline_noise_addition;
+                    c.b += rand() % outline_noise_addition;
+                }
+            }
+            data[index] = c;
+        }
+    }
+}
+
 zox_sys2(FrameTextureSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -85,15 +158,17 @@ zox_sys2(FrameTextureSystem) {
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
-        resize_TextureData(data, size->value.x * size->value.y);
         byte add_noise = zox_has(e, TextureAddNoise);
-        generate_texture_frame(data->value, size->value, fill->value, outline->value, thickness->value, edge->value, add_noise);
-        dirty->value = zox_dirty_trigger;
+        resize_TextureData(data, size->value.x * size->value.y);
+        generate_texture_frame2(data->value, size->value, fill->value, outline->value, thickness->value, edge->value, add_noise);
         generate->value = zox_generate_texture_end;
-        // voronoi2D(textureData->value, textureSize->value, color_gray, color_gray_dark, 0.7f);
-        if (dbg_log) {
-            zox_log("Frame Texture generated [%s] at [%f] fill [%ix%ix%ix%i]", zox_get_name(e), zox_current_time, fill->value.r, fill->value.g, fill->value.b, fill->value.a);
+        dirty->value = zox_dirty_trigger;
+        if (dbg_log >= 2) {
+            zox_log("Frame Texture generated [%s] at [%f] fill [%ix%ix%ix%i] AT [%ix%i]", zox_get_name(e), zox_current_time, fill->value.r, fill->value.g, fill->value.b, fill->value.a, size->value.x, size->value.y);
         }
         zox_sys_increment();
+    }
+    if (dbg_log && process_count) {
+        zox_log("Frame Textures Generated [%i]:[%f]", process_count, calculate_sys_delta());
     }
 } zox_sys_end(FrameTextureSystem);

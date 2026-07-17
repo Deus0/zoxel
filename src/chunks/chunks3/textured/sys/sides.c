@@ -156,10 +156,7 @@ byte* blocks_fetch_solids(iter* it) {
 
 zox_sys2(Chunk3SidesSystem) {
     byte max_process = 4;
-    byte* solids = blocks_fetch_solids(it);
-    if (!solids) {
-        return;
-    }
+    byte* solids = NULL;
     zox_sys_world();
     zox_sys_begin_at(1);
     zox_sys_in(RenderDepth);
@@ -190,6 +187,13 @@ zox_sys2(Chunk3SidesSystem) {
         }
         if (depth->value == render_depth_uninitialized) {
             continue;
+        }
+        // fetch here instead
+        if (!solids) {
+            solids = blocks_fetch_solids(it);
+        }
+        if (!solids) {
+            return;
         }
         const VoxelNode* noctrees[6];
         byte ndepths[6];

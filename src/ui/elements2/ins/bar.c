@@ -1,6 +1,6 @@
 entity2 spawn_elementbar2(ecs* world, entity prefab, entity parent, int2 position, int2 size, float2 position_anchor, byte font_size, byte2 text_padding, color back_color, color front_color) {
-    color font_outline = (color) { 33, 33, 33, 255 };
-    color font_fill = (color) { 155, 155, 155, 255 };
+    color font_outline = (color) { 11, 11, 11, 222 };
+    color font_fill = (color) { 225, 225, 225, 255 };
     // int2 text_size = (int2) { pixel_size.x - text_padding.x * 2, font_size };
     // Spawn our Element
     zox_instance(prefab);

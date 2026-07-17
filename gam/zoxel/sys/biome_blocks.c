@@ -152,22 +152,24 @@ zox_sys2(BiomeBlocksSystem) {
             zox_set(block, BlockHealth, { (float2) { 4, 8 } });
         }
         {
+            color road_color = color_mix(dirt_color, stone_color, 0.4f);
             lint seed = 623326;
-            entity model = spawn_model_road(world, e, seed, dirt_color);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "road", dirt_color, model, dbg_log);
+            entity model = spawn_model_road(world, e, seed, road_color);
+            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "road", road_color, model, dbg_log);
             zox_add_tag(block, BlockRoad);
             zox_set(block, BlockHealth, { (float2) { 6, 10 } });
         }
         {
             lint seed = 662662;
             entity model = spawn_model_soil_grass(world, e, seed, dirt_color, grass_color, 0.44f);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "soil_grass", dirt_color, model, dbg_log);
+            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "soil_grass", grass_color, model, dbg_log);
             zox_add_tag(block, BlockSoilGrass);
             zox_set(block, BlockHealth, { (float2) { 4, 8 } });
         }
         // Grass Model
         {
-            byte grass_color_mutation = 20;
+            color weed_color = color_mix(grass_color, stone_color, 0.8f);
+            byte grass_color_mutation = 15;
             byte mdepth_vode = block_vox_depth_limits.y;
             entity model = zox_new();
             zox_set_unique_name(model, "model_group_grass");
@@ -176,7 +178,7 @@ zox_sys2(BiomeBlocksSystem) {
             entity2 variant = (entity2) { 0 };
             for (int j = 0; j < grass_variants; j++) {
                 lint seed = 369 * j;
-                color variant_color = grass_color;
+                color variant_color = weed_color;
                 srand(seed);
                 variant_color = color_mutate(variant_color, grass_color_mutation);
                 entity2 e3 = spawn_model_grass(world, seed, mdepth_vode, variant_color);
@@ -185,7 +187,7 @@ zox_sys2(BiomeBlocksSystem) {
             }
             zox_set_ptr(model, ModelLinks, variants);
             entity texture_vox = variant.y;
-            entity block = spawn_realm_block_model(world, e, 12331, "grass", grass_color, 0, model, texture_vox, direction_front);
+            entity block = spawn_realm_block_model(world, e, 12331, "grass", weed_color, 0, model, texture_vox, direction_front);
             zox_add_tag(block, BlockGrass);
             zox_set(block, BlockLightPass, { 1 });
             zox_set(block, BlockSound, { 1 });

@@ -15,13 +15,26 @@ static inline float4 color_to_float4(const color input) {
     };
 }
 
-static inline void color_multiply_float(color *input, const float multiplier) {
-    int r = (int)(input->r * multiplier);
-    int g = (int)(input->g * multiplier);
-    int b = (int)(input->b * multiplier);
-    input->r = (byte)(r > 255 ? 255 : (r < 0 ? 0 : r));
-    input->g = (byte)(g > 255 ? 255 : (g < 0 ? 0 : g));
-    input->b = (byte)(b > 255 ? 255 : (b < 0 ? 0 : b));
+static inline color color_mix(color a, color b, float m) {
+    int r = (int)(a.r * m + b.r * (1 - m));
+    int g = (int)(a.g * m + b.g * (1 - m));
+    int b2 = (int)(a.b * m + b.b * (1 - m));
+    int a2 = (int)(a.a * m + b.a * (1 - m));
+    return (color) {
+        (byte)(r > 255 ? 255 : (r < 0 ? 0 : r)),
+        (byte)(g > 255 ? 255 : (g < 0 ? 0 : g)),
+        (byte)(b2 > 255 ? 255 : (b2 < 0 ? 0 : b2)),
+        (byte)(a2 > 255 ? 255 : (a2 < 0 ? 0 : a2)) };
+}
+
+static inline color color_multiply_float(color v, float multiplier) {
+    int r = (int)(v.r * multiplier);
+    int g = (int)(v.g * multiplier);
+    int b = (int)(v.b * multiplier);
+    v.r = (byte)(r > 255 ? 255 : (r < 0 ? 0 : r));
+    v.g = (byte)(g > 255 ? 255 : (g < 0 ? 0 : g));
+    v.b = (byte)(b > 255 ? 255 : (b < 0 ? 0 : b));
+    return v;
 }
 
 static inline color color_grayscale(byte value) {

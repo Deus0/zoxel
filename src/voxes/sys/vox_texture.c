@@ -70,7 +70,7 @@ void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const 
                     data[index] = color_rgb_to_color(colors[voxel - 1]);
                 }
                 if (is_darken) {
-                    color_multiply_float(&data[index], 0.8f);
+                    data[index] = color_multiply_float(data[index], 0.8f);
                 }
             }
         }
@@ -108,7 +108,7 @@ void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const 
                     data[index] = color_rgb_to_color(colors[voxel - 1]);
                 }
                 if (is_darken) {
-                    color_multiply_float(&data[index], 0.8f);
+                    data[index] = color_multiply_float(data[index], 0.8f);
                 }
             }
         }
@@ -146,7 +146,7 @@ void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const 
                     data[index] = color_rgb_to_color(colors[voxel - 1]);
                 }
                 if (is_darken) {
-                    color_multiply_float(&data[index], 0.8f);
+                    data[index] = color_multiply_float(data[index], 0.8f);
                 }
             }
         }

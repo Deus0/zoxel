@@ -1,6 +1,10 @@
 #ifndef zoxm_maps
 #define zoxm_maps
 
+// TODO: Fix updating of maps
+    // - black textures appear
+    // - need to not regenerate them all, reuse them
+
 byte zox_maps_flip_x = 0;
 byte zox_maps_flip_z = 1;
 #define zox_dbg_maps_regions 1
@@ -22,8 +26,8 @@ void zox_dbg_map_cycle() {
 // TODO: we can even downsize the pieces?
 byte bigmap_zoom = 16;
 float bigmap_alpha = 0.8f;
-byte minimap_zoom = 4;
-float minimap_alpha = 0.36f;
+byte minimap_zoom = 5;
+float minimap_alpha = 0.46f;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

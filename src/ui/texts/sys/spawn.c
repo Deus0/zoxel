@@ -18,7 +18,7 @@ zox_sys2(ZigelSpawnSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
-        zox_sys_i(TextData, tdata);
+        zox_sys_i(TextData, text_data);
         zox_sys_i(TextFontSize, textSize);
         zox_sys_i(FontOutlineColor, fontOutlineColor);
         zox_sys_i(FontFillColor, fontFillColor);
@@ -31,11 +31,13 @@ zox_sys2(ZigelSpawnSystem) {
             continue;
         }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
+#ifdef zox_safety_checks
         if (!zox_valid(canvas)) {
             zox_logw("Canvas found on Text");
             continue;
         }
-        uint new_length = (uint) calculate_total_zigels(tdata->value, tdata->length);
+#endif
+        uint new_length = (uint) calculate_total_zigels(text_data->value, text_data->length);
         if (zox_has(e, ZextRenderEnabler)) {
             render_disabled->value = new_length == 0;
         }
@@ -62,9 +64,12 @@ zox_sys2(ZigelSpawnSystem) {
                         continue;
                     }
                     entity e2 = it2.entities[j];
+#ifdef zox_safety_checks
                     if (!zox_has(e2, Zigel)) {
+                        zox_loge("Zigel [%s] is not zigel", zox_get_name(e2));
                         continue;
                     }
+#endif
                     if (dbg_log) {
                         zox_log("   - Del Zigel [%s]", zox_get_name(e2));
                     }
@@ -77,14 +82,15 @@ zox_sys2(ZigelSpawnSystem) {
             if (dbg_log) {
                 zox_log(" + Growing Text!");
             }
+            // NOTE: Zigel Data Index just removes new lines out of the data
             for (uint j = old_length; j < new_length; j++) {
-                byte index = calculate_zigel_index(tdata->value, tdata->length, j);
-                entity e2 = spawn_zigel(world, prefab_zigel, e, position_anchor, size, texture_size, index, thickness, othickness, fill, outline);
+                byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, j);
+                uint data_index = calculate_zigel_data_index(text_data->value, text_data->length, j);
+                entity e2 = spawn_zigel(world, prefab_zigel, e, zigel_index, data_index, position_anchor, size, texture_size,  thickness, othickness, fill, outline);
                 zox_set(e2, RenderDisabled, { render_disabled->value });
                 zox_set(e2, Layer2D, { layer->value + 1 });
                 if (dbg_log) {
-                    zox_log("   + Spawn Zigel [%i]", index);
-                    // zox_log("zigel [%i] is invisible [%i]", i, data.element.render_disabled);
+                    zox_log("   + Spawn Zigel [%i]", zigel_index);
                 }
             }
         }

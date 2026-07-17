@@ -49,7 +49,6 @@ entity spawn_menu_game_stats(ecs* world, entity canvas, entity character) {
             continue;
         }
         color_rgb fill = zox_getv(stat, ColorRGB);
-        // entity statbar = spawn_statbar2(world, canvas, body, (entity2) { character, stat }, fill, 0, float2_half, bar_size, bar_position, label_font_size);
         spawn_statbar2(world, body, stat, bar_position, bar_size, float2_half, fill, label_font_size);
         // zox_set_parent(world, statbar, body);
         bar_position.y -= bar_size.y + bar_padding;

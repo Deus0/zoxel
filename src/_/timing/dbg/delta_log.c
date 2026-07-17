@@ -19,7 +19,7 @@ int system_debug_start = -1;
 
 // NOTE: Now we use MaxDoubleData, the max delta over the time period
 uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, uint index) {
-    int display_count = 10;
+    int display_count = 16;
     // MaxDoubleData vs SystemDeltaCache
     // - SystemDeltaCache is per Frame
     // - MaxDoubleData is per Graph

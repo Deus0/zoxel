@@ -2,9 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Add option in tests to cycle through map debug modes
-- Make Camera Z + and remove maps ui FLIP hacks code
 - Fix arm, needs to not instantly rotate
+- Pause NPCs when press escape
+- Fix physics bug
+-x Remove corners and outlines from windows + headers so they are more blocky
+-x Add option in tests to cycle through map debug modes
+- Make Camera Z + and remove maps ui FLIP hacks code
 - Fix Unstuck system
 - Save Options to disk from a system - OptionsDirty
 - Prioritize Chunks higher lod first

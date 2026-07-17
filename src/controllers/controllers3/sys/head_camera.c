@@ -25,7 +25,7 @@ zox_sys2(HeadCameraSystem) {
             continue;
         }
         zox_geter_value(head->value, BoneSize, float3, head_size);
-        float3 camera_offset = (float3) { 0, 0, - head_size.z + bscale->value };
+        float3 camera_offset = (float3) { 0, 0, - (head_size.z + bscale->value * 1.5f) };
         float3 euler = (float3) { 0, 0, 0 };    // 180
         if (is_camera_positive_z) {
             euler.y = 180;

@@ -6,6 +6,7 @@ zox_tag(Zigel);
 zoxc_byte(FontThickness);
 zoxc_byte(FontOutlineThickness);
 zoxc_byte(ZigelIndex);
+zoxc_ushort(DataIndex);
 zoxc_color(FontFillColor);
 zoxc_color(FontOutlineColor);
 zoxc_entity(FontLink);
@@ -20,6 +21,7 @@ void zox_define_components_zigels(ecs *world) {
     zoxd_byte(FontThickness);
     zoxd_byte(FontOutlineThickness);
     zoxd_byte(ZigelIndex);
+    zoxd_ushort(DataIndex);
     zoxd_color(FontFillColor);
     zoxd_color(FontOutlineColor);
     zoxd_arrayd(FontData);

@@ -5,8 +5,8 @@ entity spawn_prefab_body(ecs *world, entity prefab) {
     // Texture
     zox_add_tag(e, FixToLayout);
     zox_add_tag(e, FrameTexture);
-    zox_prefab_set(e, FrameCorner, { default_button_corner });
-    zox_prefab_set(e, OutlineThickness, { default_button_frame_thickness });
+    zox_prefab_set(e, FrameCorner, { window_corner_size });
+    zox_prefab_set(e, OutlineThickness, { window_outline_size });
     zox_prefab_set(e, FillColor, { window_fill });
     zox_prefab_set(e, OutlineColor, { window_outline });
     // Selection

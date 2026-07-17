@@ -5,8 +5,8 @@ entity spawn_prefab_header(ecs *world, entity prefab) {
     // Texture
     zox_add_tag(e, FixToLayout);
     zox_add_tag(e, FrameTexture);
-    zox_prefab_set(e, FrameCorner, { default_button_corner });
-    zox_prefab_set(e, OutlineThickness, { default_button_frame_thickness });
+    zox_prefab_set(e, FrameCorner, { header_corner_size });
+    zox_prefab_set(e, OutlineThickness, { header_outline_size });
     zox_prefab_set(e, FillColor, { header_fill });
     zox_prefab_set(e, OutlineColor, { header_outline });
     zox_prefab_set(e, ElementFillColor, { header_fill });

@@ -40,10 +40,7 @@ int get_zext_y(const byte *data, int length, int data_index) {
     return y;
 }
 
-int calculate_total_zigels(
-    const byte *data,
-    const int length
-) {
+int calculate_total_zigels(const byte *data, int length) {
     int count = 0;
     for (int i = 0; i < length; i++) {
         if (data[i] != zox_char_newline) count++;
@@ -52,11 +49,13 @@ int calculate_total_zigels(
 }
 
 // from a zigel (child?) index, get the data char code
-byte calculate_zigel_index(const byte *data, int length, int spawn_index) {
+byte calculate_zigel_index(const byte *data, int length, int child_index) {
     int j = 0;
     for (int i = 0; i < length; i++) {
         if (data[i] != zox_char_newline) {
-            if (j == spawn_index) return data[i];
+            if (j == child_index) {
+                return data[i];
+            }
             j++;
         }
     }

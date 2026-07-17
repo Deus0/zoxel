@@ -1,11 +1,12 @@
-entity spawn_zigel(ecs* world, entity prefab, entity parent, float2 position_anchor, int2 size, int2 tsize, byte index, byte thickness, byte othickness, color fill, color outline) {
+entity spawn_zigel(ecs* world, entity prefab, entity parent, byte zigel_index, ushort data_index, float2 position_anchor, int2 size, int2 texture_size, byte thickness, byte othickness, color fill, color outline) {
     zox_instance(prefab);
     zox_name("zigel");
     zox_set_parent(world, e, parent);
+    zox_set(e, ZigelIndex, { zigel_index });
+    zox_set(e, DataIndex, { data_index });
     zox_set(e, Anchor, { position_anchor });
     zox_set(e, LayoutSize, { size });
-    zox_set(e, TextureSize, { tsize });
-    zox_set(e, ZigelIndex, { index });
+    zox_set(e, TextureSize, { texture_size });
     zox_set(e, FontThickness, { thickness });
     zox_set(e, FontOutlineThickness, { othickness });
     zox_set(e, FillColor, { fill });

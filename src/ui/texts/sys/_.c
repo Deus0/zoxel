@@ -34,7 +34,7 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextData,
         [none] texts.Zext
     );
-    zox_system(
+    /*zox_system(
         TextsPositionSystem,
         zoxp_update,
         [in] texts.TextDirty,
@@ -43,6 +43,15 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextAlignment,
         [in] texts.TextPadding,
         [none] texts.Zext
+    );*/
+    zox_system(
+        ZigelPositionSystem,
+        zoxp_update,
+        [in] zigels.ZigelIndex,
+        [in] zigels.DataIndex,
+        [in] layouts2.LayoutPosition,
+        [in] layouts2.LayoutPositionDirty,
+        [none] zigels.Zigel
     );
     zox_system_1(
         ZigelSpawnSystem,

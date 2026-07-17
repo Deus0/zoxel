@@ -23,6 +23,7 @@
 #include "entity2.c"
 #include "entity3.c"
 #include "entities.c"
+#include "ushort.c"
 #include "ulong.c"
 
 #define zox_component_string(type) zox_component_string##_##type(component##_##type)
@@ -62,6 +63,7 @@ void initialize_component_ids() {
     initialize_component_ids_color();
     initialize_component_ids_color_rgb();
     initialize_component_ids_ulong();
+    initialize_component_ids_ushort();
 }
 
 void dispose_component_ids() {
@@ -89,4 +91,5 @@ void dispose_component_ids() {
     dispose_component_ids_color();
     dispose_component_ids_color_rgb();
     dispose_component_ids_ulong();
+    dispose_component_ids_ushort();
 }

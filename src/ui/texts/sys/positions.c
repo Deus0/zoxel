@@ -1,19 +1,10 @@
-// calculates the child index, takes out ascii like new line that have no zigel spawns
-uint calculate_zigel_data_index(const byte *data, uint length, int spawn_index) {
-    uint j = 0;
-    for (uint i = 0; i < length; i++) {
-        if (data[i] != zox_char_newline) {
-            if (j == spawn_index) {
-                return i;
-            }
-            j++;
-        }
-    }
-    zox_log_error("calculate_zigel_data_index: j [%i] spawn_index [%i] length [%i]", j, spawn_index, length);
-    return 0;
-}
+
 
 int2 calculate_position(const byte *data, int length, int data_index, byte font_size, byte text_alignment, byte2 padding, byte line_padding) {
+    if (data_index >= length) {
+        zox_loge("DataIndex greater than length [%i] > [%i]", data_index, length);
+        return int2_zero;
+    }
     int x = get_zext_x(data, data_index);
     int y = get_zext_y(data, length, data_index);
     int2 size = calculate_zext_size(data, length, font_size, padding, line_padding);
@@ -104,3 +95,48 @@ zox_sys2(TextsPositionSystem) {
         }
     }
 } zox_sys_end(TextsPositionSystem);
+
+
+// Centralized position setting for text zigels
+zox_sys2(ZigelPositionSystem) {
+    byte is_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(ZigelIndex);
+    zox_sys_in(DataIndex);
+    zox_sys_out(LayoutPosition);
+    zox_sys_out(LayoutPositionDirty);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(ZigelIndex, index);
+        zox_sys_i(DataIndex, data_index);
+        zox_sys_o(LayoutPosition, position);
+        zox_sys_o(LayoutPositionDirty, dirty);
+        entity parent = zox_get_parent(world, e);
+#ifdef zox_safety_checks
+        if (!zox_valid(parent)) {
+            zox_loge("Zigel has no parent [%s]", zox_get_name(e));
+            continue;
+        }
+#endif
+        byte text_dirty = zox_getv(parent, TextDirty);
+        if (text_dirty != zox_dirty_end) {
+            continue;
+        }
+        const TextData* text_data = zox_get(parent, TextData);
+        byte font_size = zox_getv(parent, TextFontSize);
+        byte alignment = zox_getv(parent, TextAlignment);
+        byte2 padding = zox_getv(parent, TextPadding);
+        // uint indexd = calculate_zigel_data_index(text_data->value, text_data->length, index->value);
+        int2 new_position = calculate_position(text_data->value, text_data->length, data_index->value, font_size, alignment, padding, default_line_padding);
+        if (!int2_equals(position->value, new_position))
+        {
+            position->value = new_position;
+            dirty->value = zox_dirty_trigger;
+            if (is_log) {
+                zox_log("Positioned Zigel: [%s]:[%i] at [%ix%i]", zox_get_name(e), index->value, new_position.x, new_position.y);
+            }
+        }
+    }
+} zox_sys_end(ZigelPositionSystem);
+
