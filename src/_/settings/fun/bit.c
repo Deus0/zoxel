@@ -1,5 +1,5 @@
 //  TODO: This, make it on or off instead
-
+/*
 // get
 static inline byte zoxs_get_bit(const setting s) {
     return s.value_byte;
@@ -51,3 +51,4 @@ byte zoxs_set_bit(ecs *world, const char *name, byte value) {
     zoxs_set(name, zox_data_type_bit, function);\
     zoxs_set_bit(world, name, value);\
 }
+*/

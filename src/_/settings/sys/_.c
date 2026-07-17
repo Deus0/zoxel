@@ -7,5 +7,4 @@ void define_systems_settings(ecs* world) {
         [in] settings.SettingDirty,
         [none] settings.Setting
     );
-
 }

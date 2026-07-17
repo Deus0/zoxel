@@ -1,7 +1,7 @@
 #include "sound_process_system.c"
 #include "sound_generate_system.c"
 #include "sound_debug_system.c"
-
+#include "settings.c"
 #ifdef zox_sdl_mixer
     #include "sound_play_system.c"
     #include "sound_play_ref_system.c"
@@ -58,4 +58,17 @@ void define_systems_sounds(ecs *world) {
     // Sound gen takes longer
     add_system_process_counter(world, zox_id(SoundGenerateSystem));
     zox_set(zox_id(SoundGenerateSystem), SystemDeltaMax, { zox_lag_cutoff * 2 });
+    zox_system_1(
+        SoundsSettingsSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [none] apps.App
+    );
+    zox_system_1(
+        SoundsSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
+    );
 }

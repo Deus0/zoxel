@@ -190,7 +190,7 @@ zox_begin_module(ZoxGame)
     render_distance_y = 3; // 1 | 2 | 8 | 16
     initial_terrain_lod = 2; // 3 | 2
     // block voes
-    block_vox_depth = 5;
+    block_vox_depth = 4;
     disable_block_vox_generation = 1;
     disable_block_voxes = 1;
     // npcs

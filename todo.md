@@ -2,6 +2,18 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+Regressions:
+- Lag with transforms due to new meshes
+- Mesh flickers off and on when rebuilds
+- Position  - transform updates lagging - add a dirty flag for this
+-x Spawning Player before the chunks are generated, underneath map too
+- Landfill not scaling well looks like
+- Make it so it only spawns ChunkMesh if there is voxels... if there is ChunkSides!
+
+- Fix Loading of settings
+	- make load in system
+	- if spawning, check if exists or not yet
+	- Add state for Settings Load, and Settings Spawn, for Initializing app settings
 Current Terrain Chunk Refactor:
 -x Spawn Chunk Mesh when VoxelNodeDirty 
 -x Build Mesh from ChunkMesh
@@ -9,12 +21,6 @@ Current Terrain Chunk Refactor:
 -x Busy Tracks the chunk update from Generate to mesh building?
 - Frustum should account for sub meshes
 - We should set bounds of chunk sepertate to mesh
-
-Bugs:
-- Mesh flickers off and on when rebuilds
-- Position  - transform updates lagging - add a dirty flag for this
--x Spawning Player before the chunks are generated, underneath map too
-- Landfill not scaling well looks like
 
 Next:
 - Add extra stage for Sides - ChunkMaterial

@@ -97,6 +97,7 @@ uint zox_dbg_ui_statistics(ecs *world, entity e, char *buffer, uint size, uint i
     index += snprintf(buffer + index, size - index, " - Regions [%i]\n", zox_count_ids(Region));
     index += snprintf(buffer + index, size - index, " - Tunks [%i]\n", zox_count_ids(Tunk));
     index += snprintf(buffer + index, size - index, " - Terrain Chunks [%i]\n", zox_count_ids(TerrainChunk));
+    index += snprintf(buffer + index, size - index, " - Terrain Chunk Meshes [%i]\n", zox_count_ids(ChunkMesh));
     index += snprintf(buffer + index, size - index, " - Colored Chunks [%i]\n", zox_count_ids(ColorChunk));
     index += snprintf(buffer + index, size - index, " - Total Stats [%i]\n", zox_count_ids(Stat));
     index += snprintf(buffer + index, size - index, "Characters\n");

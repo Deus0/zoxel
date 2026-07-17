@@ -33,7 +33,6 @@ static const char* get_settings_file(const char *app_name) {
     }
     mkdir(base_path, 0755);
 #endif
-
     snprintf(final_path, sizeof(final_path), "%s%csettings.cfg", base_path, char_slash);
     return final_path;
 }
@@ -61,7 +60,7 @@ static const char* get_settings_file(const char *app_name) {
 }*/
 
 // Save all settings to disk as simple "name:type:value\n"
-void save_settings() {
+/*void save_settings() {
     if (!has_loaded) {
         // zox_log_warning("Cannot save before loaded...")
         return;
@@ -105,4 +104,4 @@ void save_settings() {
     if (is_log_settings_io) {
         zox_log("> saved %u settings to %s", settings_count, filepath);
     }
-}
+}*/

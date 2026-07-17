@@ -3,11 +3,6 @@ entity spawn_setting(ecs *world, entity prefab, entity parent, const char* name)
     zox_name("setting");
     zox_set_parent(world, e, parent);
     set_ZoxName(world, e, name);
-    // add to manager
-    /*if (zox_valid(settings_manager)) {
-        zox_muter(settings_manager, SettingLinks, settings);
-        add_to_SettingLinks(settings, e);
-    }*/
     return e;
 }
 

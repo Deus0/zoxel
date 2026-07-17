@@ -12,17 +12,13 @@
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Sounds)
-    // ecs defines
+zox_begin_module(Sounds) {
     define_components_sounds(world);
     define_systems_sounds(world);
-    // init
-    initialize_settings_sounds(world);
-    // hooks
     zox_module_dispose(dispose_sounds)
     add_hook_terminal_command(process_arguments_sounds);
     add_hook_files_load(load_files_sounds);
     add_hook_spawn_prefabs(spawn_prefabs_sounds);
-zox_end_module(Sounds)
+} zox_end_module(Sounds);
 
 #endif

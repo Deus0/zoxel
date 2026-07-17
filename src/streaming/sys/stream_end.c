@@ -37,9 +37,6 @@ zox_sys2(StreamEndSystem) {
                     continue;
                 }
                 if (zox_getv(e2, GenerateChunk)) {
-                    // || zox_getv(e2, MeshReady)
-                    // || zox_getv(e2, MeshDirty)
-                    // || zox_getv(e2, MeshColorsGenerate)) {
                     running = 1;
                     break;
                 }

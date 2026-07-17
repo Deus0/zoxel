@@ -1,4 +1,4 @@
-void on_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
+/*void on_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
     if (!zox_valid(data->e)) {
         zox_log_error("Invalid [e]");
         return;
@@ -11,27 +11,31 @@ void on_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
     zox_geter_value(toggle, OptionLabel, const char*, name);
     zoxs_set_byte(world, name, data->value);
     // zox_log("Toggle Option [%s] set to [%i]", name, data->value);
-}
+}*/
 
-void on_settings_slider_slid_float(ecs* world, const SlideEventData* data) {
+/*void on_settings_slider_slid_float(ecs* world, const SlideEventData* data) {
     entity slider = zox_get_parent(world, data->dragged);
     zox_geter_value(slider, SliderLabel, const char*, slider_name)
     zoxs_set_float(world, slider_name, data->value);
-}
+}*/
 
-void on_settings_slider_slid_int(ecs* world, const SlideEventData* data) {
+/*void on_settings_slider_slid_int(ecs* world, const SlideEventData* data) {
     entity slider = zox_get_parent(world, data->dragged);
     zox_geter_value(slider, SliderLabel, const char*, slider_name);
     // zox_log("Slider %s Value %i", slider_name, data->value);
     zoxs_set_int(world, slider_name, (int) round(data->value));
-}
+}*/
 
 void on_new_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
     if (!zox_valid(data->e)) {
-        zox_log_error("Invalid [e]");
+        zox_log_error("Invalid [e] on_new_settings_toggle_toggled");
         return;
     }
     entity e2 = zox_getv(data->e, SettingLink);
+    if (!zox_valid(e2)) {
+        zox_loge("UI Setting Linked to Invalid [%s]", zox_getn(e2));
+        return;
+    }
     zox_set(e2, SettingByte, { data->value });
     zox_set(e2, SettingDirty, { zox_dirty_trigger });
     // zoxs_set_byte(world, name, data->value);
@@ -79,14 +83,14 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
     byte dbg_log = 0;
     // more data
     const char* header_label = "Ponder";
-    SpawnListElement elements[max_settings + 1];
+    SpawnListElement elements[max_settings];
     int elements_count = 0;
     byte visible_count = 6;
     byte header_font_size = 18 * ui_scale;
     byte list_font_size = 6 * ui_scale;
     byte2 padding = byte2_single(6 * ui_scale);
     // Sizing
-    for (uint i = 0; i < settings_count; i++) {
+    /*for (uint i = 0; i < settings_count; i++) {
         setting s = settings[i];
         if (!s.name) {
             zox_log_error("Setting Null: [%i] / [%i], Type %i", i, max_settings, s.type);
@@ -124,7 +128,7 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
             };
             // zox_logv("New Int Option %s %i %i:%i - f%f", s.name, s.value_int, s.min_int, s.max_int, slider_value);
         }
-    }
+    }*/
     entity game = zox_get_parent(world, player);
     entity app = zox_get_parent(world, game);
     uint options_count = 0;
@@ -197,13 +201,9 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
     zox_name("menu_options");
     zox_add_tag(e, MenuOptions);
     zox_add_tag(e, NavigationWindow);
-    for (int i = 0; i < elements_count; i++) {
-        if (i < settings_count) {
-            continue;
-        }
-        int j = i - settings_count;
+    for (int i = 0; i < options_count; i++) {
         entity e2 = spawned_elements[i];
-        entity setting = options[j];
+        entity setting = options[i];
         zox_set(e2, SettingLink, { setting });
     }
     return e;

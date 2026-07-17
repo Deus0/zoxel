@@ -1,4 +1,4 @@
-static inline int zoxs_get_int(const setting s) {
+/*static inline int zoxs_get_int(const setting s) {
     return s.value_int;
 }
 
@@ -51,17 +51,4 @@ byte zoxs_set_int(ecs *world, const char *name, int value) {
     }
     zox_log_error("Missing [int] setting [%s]", name)
     return 0;
-}
-
-// creates a new setting of integer
-#define zoxs_new_int(name, function, value) {\
-   zoxs_set(name, zox_data_type_int, function);\
-   zoxs_set_int(world, name, value);\
-}
-
-// creates a new setting of integer with a limit
-#define zoxs_new_int_lim(name, function, value, min, max) {\
-    zoxs_set(name, zox_data_type_int, function);\
-    zoxs_set_int(world, name, value);\
-    zoxs_limit_int(world, name, min, max);\
-}
+}*/

@@ -83,8 +83,12 @@ entity game_start_player_load(ecs *world, entity player, entity realm, entity te
     // load position for spawning
     load_character_player(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
     byte depth = terrain_depth;
-    int3 cposition = real_position_to_chunk_position(placer.position, powers_of_two[depth], terrain_scale);
-    placer.chunk = int3_hashmap_get(chunks->value, cposition);
+    int3 chunk_position = real_position_to_chunk_position(placer.position, powers_of_two[depth], terrain_scale);
+    placer.chunk = int3_hashmap_get(chunks->value, chunk_position);
+    // Still loading
+    if (!zox_valid(placer.chunk) || zox_getv(placer.chunk, GenerateChunk)) {
+        return 0;
+    }
     *spawned_position = placer.position;
     byte render_depth = 5;
     entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, NULL, player);
@@ -144,6 +148,12 @@ zox_sys2(PlayerBeginSystem) {
         float3 spawn_position;
         if (!is_new_game) {
             character->value = game_start_player_load(world, e, realm, terrain, &spawn_position);
+            if (!character->value) {
+                if (dbg_log) {
+                    zox_log("[%s] Terrain Position not ready for load game", zox_getn(e));
+                }
+                continue;
+            }
         } else {
             character->value = game_start_player_new(world, e, realm, terrain, camera->value, &spawn_position, dbg_log);
             if (!character->value) {

@@ -1,4 +1,4 @@
-static inline const char* zoxs_get_string(const setting s) {
+/*static inline const char* zoxs_get_string(const setting s) {
     return s.value_string;
 }
 
@@ -18,3 +18,4 @@ byte zoxs_set_string(ecs *world, const char *name, const char* value) {
     zox_log_error("missing [string] setting [%s]", name)
     return 0;
 }
+*/

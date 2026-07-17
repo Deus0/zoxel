@@ -1,5 +1,5 @@
 // get
-static inline float zoxs_get_float(const setting s) {
+/*static inline float zoxs_get_float(const setting s) {
     return s.value_float;
 }
 
@@ -50,15 +50,4 @@ byte zoxs_set_float(ecs *world, const char *name, float value) {
     }
     zox_log_error("missing [float] setting [%s]", name)
     return 0;
-}
-
-#define zoxs_new_float_lim(name, function, value, min, max) {\
-    zoxs_set(name, zox_data_type_float, function);\
-    zoxs_set_float(world, name, value);\
-    zoxs_limit_float(world, name, min, max);\
-}
-
-#define zoxs_new_float(name, function, value) {\
-    zoxs_set(name, zox_data_type_float, function);\
-    zoxs_set_float(world, name, value);\
-}
+}*/
