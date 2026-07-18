@@ -39,7 +39,7 @@ void define_systems_dungeons(ecs* world) {
     // NOTE: Before vegetation atm
     zox_system(
         TownWallsSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [in] tunks.TunkLink,

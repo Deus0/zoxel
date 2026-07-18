@@ -2,7 +2,6 @@
 #define zoxm_ai
 
 float default_npc_follow_distance = 0.45f;
-
 // TODO: a threat level - if you are higher level than npc they should have higher chance to flee!
 #include "com/_.c"
 #include "sta/_.c"
@@ -11,21 +10,10 @@ float default_npc_follow_distance = 0.45f;
 #include "sys/_.c"
 #include "fun/_.c"
 
-void set_disable_npcs(ecs* world, void* value) {
-    disable_npcs = *(byte*) value;
-}
-
-void initialize_settings_npcs(ecs* world) {
-#ifdef zox_debug
-    zoxs_new_byte("disable npcs", set_disable_npcs, 0);
-#endif
-}
-
 zox_begin_module(Npcs) {
     define_components_npcs(world);
     define_systems_npcs(world);
     add_hook_spawn_prefabs(spawn_prefabs_npcs);
-    initialize_settings_npcs(world);
 } zox_end_module(Npcs);
 
 #endif

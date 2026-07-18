@@ -80,8 +80,8 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,
-        [in] rendering.MeshDirty,
-        [out] rendering.MesnRenderCount
+        [out] rendering.TexturedMeshDirty,
+        [out] rendering.MeshRenderCount
     );
     zox_system_1(
         MeshUpdateCharacters3DSystem,
@@ -92,17 +92,17 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshDirty,
         [out] rendering.MeshGPULink,
         [out] rendering.ColorsGPULink,
-        [out] rendering.MesnRenderCount,
+        [out] rendering.MeshRenderCount,
         [none] rendering.MeshColorRGBs,
         [none] !rendering.MeshUVs
     );
     zox_system_1(
         MeshColorsGpuSystem,
         zoxp_mainthread,
-        [in] rendering.MeshColorsDirty,
         [in] rendering.MeshColorRGBs,
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshVertices,
+        [out] rendering.MeshColorsDirty,
         [none] rendering.MeshColorRGBs
     );
 }

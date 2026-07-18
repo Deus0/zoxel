@@ -197,149 +197,37 @@ void clear_mesh_uvs(MeshIndicies *meshIndicies, MeshVertices *meshVertices, Mesh
 // TODO: Move terrain cache into functions
 // TODO: Cache all managers found, not just single
 // NOTE: Rebuilds Chunk when BuildChunkMesh is dirty
-/*zox_sys2(Chunk3TexturedBuildSystem) {
-    byte dbg_log = 0;
-    zox_sys_world();
-    zox_sys_begin_at(1);
-    zox_sys_in(TilemapLink);
-    zox_sys_in(RenderDepth);
-    zox_sys_in(BlockScale);
-    zox_sys_in(VoxelNode);
-    zox_sys_in(SidesOctree);
-    zox_sys_out(MeshIndicies);
-    zox_sys_out(MeshVertices);
-    zox_sys_out(MeshUVs);
-    zox_sys_out(MeshColorRGBs);
-    zox_sys_out(BuildChunkMesh);
-    zox_sys_out(MeshReady);
-    zox_sys_out(Busy);
-    // Does a sweep of states first
-    byte any_dirty = 0;
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_o(BuildChunkMesh, build)
-        if (build->value == zox_dirty_end) {
-            any_dirty = 1;
-            break;
-        }
-    }
-    if (!any_dirty) {
-        return;
-    }
-    byte *solidity = NULL;
-    if (!cache_blocks_data(it, solidity)) {
-        return;
-    }
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(TilemapLink, tilemap);
-        zox_sys_i(RenderDepth, rdepth);
-        zox_sys_i(BlockScale, bscale);
-        zox_sys_i(VoxelNode, voctree);
-        zox_sys_i(SidesOctree, sides);
-        zox_sys_o(MeshIndicies, indicies);
-        zox_sys_o(MeshVertices, verts);
-        zox_sys_o(MeshColorRGBs, colors);
-        zox_sys_o(MeshUVs, uvs);
-        zox_sys_o(BuildChunkMesh, build);
-        zox_sys_o(MeshReady, mesh_ready);
-        zox_sys_o(Busy, busy);
-        if (build->value != zox_dirty_end) {
-            continue;
-        }
-        if (!zox_valid(tilemap->value) || !zox_has(tilemap->value, TilemapUVs)) {
-            zox_sys_e();
-            zox_loge("Tilemap not found on Chunk Terrain [%s]", zox_get_name(e));
-            busy->value = 0;
-            continue;
-        }
-        zox_geter(tilemap->value, TilemapUVs, tilemap_uvs);
-        if (!tilemap_uvs->value || !tilemap_uvs->length) {
-            zox_sys_e();
-            zox_loge("Tilemap TilemapUVs on Chunk Terrain [%s] has not generated", zox_get_name(e));
-            busy->value = 0;
-            continue;
-        }
-        short vlength = octree_size(rdepth->value);
-        float cscale = bscale->value * vlength;
-        mesh_uvs_build_data mesh_data = {
-            .indicies = create_int_array_d(initial_dynamic_array_size),
-            .vertices = create_float3_array_d(initial_dynamic_array_size),
-            .uvs = create_float2_array_d(initial_dynamic_array_size),
-            .color_rgbs = create_color_rgb_array_d(initial_dynamic_array_size)
-        };
-        // build out mesh data
-        terrain_build_data data = {
-            .tilemap_uvs = tilemap_uvs,
-            .voxel_solidity = solidity,
-            .mesh_data = &mesh_data,
-            .root = voctree,
-            .rdepth = rdepth->value,
-        };
-        octree_dig_data dig = {
-            .parent = NULL,
-            .node = voctree,
-            .scale = cscale,
-        };
-        read_lock_VoxelNode(voctree);
-        zox_terrain_building_dig(data, dig, sides);
-        read_unlock_VoxelNode(voctree);
-        // sizes
-        indicies->length = mesh_data.indicies->size;
-        verts->length = mesh_data.vertices->size;
-        uvs->length = mesh_data.uvs->size;
-        colors->length = mesh_data.color_rgbs->size;
-        // data
-        indicies->value = zinalize_int_array_d(mesh_data.indicies);
-        verts->value = zinalize_float3_array_d(mesh_data.vertices);
-        colors->value = zinalize_color_rgb_array_d(mesh_data.color_rgbs);
-        uvs->value = zinalize_float2_array_d(mesh_data.uvs);
-        // dirty
-        mesh_ready->value = 1;
-        build->value = 0;
-        busy->value = 0;
-        if (dbg_log) {
-            zox_log("Built [%s]! Verts [%i] Scale [%f] Depth [%i]", zox_get_name(e), verts->length, cscale, rdepth);
-        }
-        zox_sys_increment();
-    }
-    if (build_data.solidity) {
-        free(build_data.solidity);
-    }
-} zox_sys_end(Chunk3TexturedBuildSystem);*/
-
 
 // TODO: DIsable when not selected LOD Mesh
-zox_sys2(Chunk3TexturedBuild2System) {
+zox_sys2(ChunkTexturedBuildSystem) {
     byte dbg_log = 0;
     byte* solidity = NULL;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(RenderDisabled);
     zox_sys_in(RenderDepth);
     zox_sys_out(BuildChunkMesh);
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
     zox_sys_out(MeshColorRGBs);
-    zox_sys_out(MeshReady);
+    zox_sys_out(TexturedMeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(RenderDepth, depth);
         zox_sys_o(BuildChunkMesh, build);
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
-        zox_sys_o(MeshReady, mesh_ready);
-        if (disabled->value) {
-            continue;
-        }
-        if (!build->value) {
+        zox_sys_o(TexturedMeshDirty, upload);
+        if (!build->value || upload->value) {
             continue;
         }
         // Get chunk data
         entity chunk = zox_get_parent(world, e);
+        if (zox_combine_chunk_mode) {
+            chunk = e;
+        }
 #ifdef zox_safety_checks
         if (!zox_valid(chunk)) {
             zox_loge("Chunk Invalid");
@@ -428,7 +316,7 @@ zox_sys2(Chunk3TexturedBuild2System) {
         uvs->value = zinalize_float2_array_d(mesh_data.uvs);
         // dirty
         build->value = 0;
-        mesh_ready->value = 1;
+        upload->value = 1;
         if (dbg_log) {
             zox_log("Built [%s]! Verts [%i] Scale [%f] Depth [%i]", zox_getn(e), verts->length, cscale, depth->value);
         }
@@ -437,4 +325,4 @@ zox_sys2(Chunk3TexturedBuild2System) {
     if (solidity) {
         free(solidity);
     }
-} zox_sys_end(Chunk3TexturedBuild2System);
+} zox_sys_end(ChunkTexturedBuildSystem);

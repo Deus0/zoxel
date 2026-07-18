@@ -1,4 +1,4 @@
-byte zox_tsts_count = 21;
+byte zox_tsts_count = 22;
 entity dbg_ui_tests;
 
 void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
@@ -137,17 +137,17 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_test_big_frame },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "RefreshTerrain",
+        .text = "Refresh Terrain",
         .on_click = { &zox_dbg_terrain_refresh },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Refresh Sunlights",
         .on_click = { &zox_dbg_lights3_refresh_sunlight },
     };
-    /*elements[elements_count++] = (SpawnListElement) {
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Rebuild Terrain Mesh Colors",
         .on_click = { &zox_dbg_terrain_refresh_mesh_colors },
-    };*/
+    };
     // Test our uis
     entity spawned[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, list_padding, spawned, elements, elements_count, visible_count);

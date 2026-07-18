@@ -1,4 +1,5 @@
 zox_sys2(Element3DMeshSystem) {
+    byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(InitializeEntity);
     zox_sys_out(MeshDirty);
@@ -13,18 +14,17 @@ zox_sys2(Element3DMeshSystem) {
         zox_sys_o(TextureGPULink, textureGPULink);
         zox_sys_o(UvsGPULink, uvsGPULink);
         zox_sys_o(ColorsGPULink, colorsGPULink);
-
         if (!initializeElement->value || mesh_dirty->value) {
             continue;
         }
-
         meshGPULink->value = spawn_gpu_mesh_buffers();
         textureGPULink->value = spawn_gpu_texture_buffer();
         uvsGPULink->value = zox_gpu_create_buffer();
         colorsGPULink->value = zox_gpu_create_buffer();
-
         mesh_dirty->value = mesh_state_trigger;
         initializeElement->value = 0;
-        zox_log_elements3D("+ updated mesh for element3D [%lu]", it->entities[i]);
+        if (dbg_log) {
+            zox_log("+ updated mesh for element3D [%lu]", it->entities[i]);
+        }
     }
 } zox_sys_end(Element3DMeshSystem);

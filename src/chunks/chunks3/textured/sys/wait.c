@@ -123,7 +123,7 @@ zox_sys2(ChunkMeshSlow2System) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(MeshReady, mesh_ready);
         zox_sys_o(MeshDirty, mesh_dirty);
-        if (mesh_ready->value) {
+        if (mesh_ready->value && !mesh_dirty->value) {
             mesh_dirty->value = mesh_state_trigger;
             mesh_ready->value = 0;
         }

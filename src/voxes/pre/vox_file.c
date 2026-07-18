@@ -18,7 +18,7 @@ entity spawn_prefab_vox_file(ecs *world, entity prefab) {
     zox_prefab_set(e, RenderDisabled, { 1 });
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, MeshIndicies, { 0 });
-    zox_prefab_set(e, MesnRenderCount, { 0 });
+    zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
     add_components_mesh_colored(world, e);

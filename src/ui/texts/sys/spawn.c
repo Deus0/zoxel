@@ -17,7 +17,7 @@ zox_sys2(ZigelSpawnSystem) {
     zox_sys_out(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TextDirty, dirty);
+        zox_sys_i(TextDirty, text_dirty);
         zox_sys_i(TextData, text_data);
         zox_sys_i(TextFontSize, textSize);
         zox_sys_i(FontOutlineColor, fontOutlineColor);
@@ -27,7 +27,7 @@ zox_sys2(ZigelSpawnSystem) {
         zox_sys_i(TextResolution, textResolution);
         zox_sys_i(Layer2D, layer);
         zox_sys_o(RenderDisabled, render_disabled);
-        if (dirty->value != zox_dirty_active) {
+        if (text_dirty->value != zox_dirty_active) {
             continue;
         }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
@@ -57,25 +57,30 @@ zox_sys2(ZigelSpawnSystem) {
                 zox_log(" - Shrinking Text!");
             }
             // NOTE: Shrinks the children zigels
+            int children_count = old_length;
             iter it2 = zox_children(world, e);
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
-                    if (old_length == new_length) {
+                    entity e2 = it2.entities[j];
+                    // NOTE: When shrinking the children we need to adjust the child indexes
+                    if (children_count <= new_length) {
+                        // here we can set child indexes
+                        children_count--;
+                        zox_setm(e2, ChildIndex, children_count);
                         continue;
                     }
-                    entity e2 = it2.entities[j];
 #ifdef zox_safety_checks
                     if (!zox_has(e2, Zigel)) {
-                        zox_loge("Zigel [%s] is not zigel", zox_get_name(e2));
+                        zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
                         continue;
                     }
 #endif
                     if (dbg_log) {
-                        zox_log("   - Del Zigel [%s]", zox_get_name(e2));
+                        zox_log("   - Deleted Zigel [%s]", zox_get_name(e2));
                     }
                     // keep deleting until we arrive at new length;
-                    old_length--;
                     zox_delete(e2);
+                    children_count--;
                 }
             }
         } else if (new_length > old_length) {
@@ -85,8 +90,8 @@ zox_sys2(ZigelSpawnSystem) {
             // NOTE: Zigel Data Index just removes new lines out of the data
             for (uint j = old_length; j < new_length; j++) {
                 byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, j);
-                uint data_index = calculate_zigel_data_index(text_data->value, text_data->length, j);
-                entity e2 = spawn_zigel(world, prefab_zigel, e, zigel_index, data_index, position_anchor, size, texture_size,  thickness, othickness, fill, outline);
+                uint child_index = j;
+                entity e2 = spawn_zigel(world, prefab_zigel, e, position_anchor, size, texture_size,  thickness, othickness, fill, outline, zigel_index, child_index);
                 zox_set(e2, RenderDisabled, { render_disabled->value });
                 zox_set(e2, Layer2D, { layer->value + 1 });
                 if (dbg_log) {

@@ -40,7 +40,7 @@ void save_texture_as_png(const color *data, const int2 size, const char *filepat
     SDL_Surface* surface = SDL_CreateRGBSurfaceFrom((void*) data, size.x, size.y, depth, pitch, rmask, gmask, bmask, amask);
     if(IMG_SavePNG(surface, filepath) != 0) {
         // Error saving bitmap
-        zox_log(" ! failed with [IMG_SavePNG]: %s\n", SDL_GetError())
+        zox_log(" ! failed with [IMG_SavePNG]: %s\n", SDL_GetError());
     }
     SDL_FreeSurface(surface);
 }
@@ -48,7 +48,7 @@ void save_texture_as_png(const color *data, const int2 size, const char *filepat
 #else
 
 byte load_texture_from_png(const char *filepath, TextureData* data, int2 *size) {
-    zox_log("PNG Images Disabled");
+    zox_log("PNG Images Disabled [%s]", filepath);
     return 1;
 }
 

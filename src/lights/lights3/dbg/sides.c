@@ -43,24 +43,24 @@ void zox_apply_debug_colors(const byte* solidity,
 zox_sys2(Light3BuildSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(MeshColorsGenerate);
     zox_sys_in(VoxLink);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_in(LightNode);
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
+    zox_sys_out(MeshColorsGenerate);
     zox_sys_out(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MeshColorsGenerate, trigger);
         zox_sys_i(VoxLink, vox_link);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, nodev);
         zox_sys_i(LightNode, nodel);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(MeshColorsDirty, updated);
-        if (trigger->value != zox_dirty_active) {
+        zox_sys_o(MeshColorsGenerate, generate);
+        zox_sys_o(MeshColorsDirty, upload);
+        if (generate->value != zox_dirty_active && !upload->value) {
             continue;
         }
         const LightNode *nnodesl[6];
@@ -74,6 +74,6 @@ zox_sys2(Light3BuildSystem) {
         }
         int color_index = 0;
         zox_apply_debug_colors(solidity, nodev, colors, &color_index, depth->value, 0);
-        updated->value = zox_dirty_trigger;
+        upload->value = 1;
     }
 } zox_sys_end(Light3BuildSystem);

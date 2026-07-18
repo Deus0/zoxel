@@ -25,7 +25,9 @@
 #define zoxel_time_main_loop_cutoff 33.33f
 // Release
 #ifndef zox_debug
-    #define zox_disable_system_timings
     #define zox_disable_names
     #define zox_disable_logs
+#else
+    #define zox_time_systems
 #endif
+

@@ -1,4 +1,3 @@
-const double zox_lag_cutoff = 8;
 const byte is_log_totals = 0;
 
 // used to sort times in ui
@@ -19,7 +18,7 @@ int system_debug_start = -1;
 
 // NOTE: Now we use MaxDoubleData, the max delta over the time period
 uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, uint index) {
-    int display_count = 16;
+    uint display_count = system_times_display_count;
     // MaxDoubleData vs SystemDeltaCache
     // - SystemDeltaCache is per Frame
     // - MaxDoubleData is per Graph
@@ -68,12 +67,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
         // Add process data
         if (zox_has(e, SystemProcessedCache)) {
             zox_geter_value(e, SystemProcessedCache, int, process_count);
-            index += snprintf(
-                buffer + index,
-                size - index,
-                "  p [%i]",
-                process_count
-            );
+            index += snprintf(buffer + index, size - index,"  p [%i]", process_count);
         }
         index += snprintf(buffer + index, size - index, "\n");
     }
@@ -97,14 +91,16 @@ zox_sys2(SystemDeltaLogSystem) {
         total += delta->value;
         double cutoff = zox_lag_cutoff;
         if (zox_has(e, SystemDeltaMax)) {
-            cutoff = zox_gett_value(e, SystemDeltaMax);
+            cutoff = zox_getv(e, SystemDeltaMax);
         }
         if (delta->value < cutoff) {
             continue;
         }
+#ifdef zox_debug
         if (zox_log_lags) {
             zox_logw("Lag Detected -> %s: [%fms]", zox_get_name(e), delta->value);
         }
+#endif
         did_lag = 1;
     }
     if (did_lag && is_log_totals) {

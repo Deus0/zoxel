@@ -6,6 +6,7 @@ entity spawn_prefab_terrain(ecs *world) {
     zox_prefab_set(e, BlockScale, { default_vox_scale });
     zox_prefab_set(e, NodeDepth, { 0 });
     zox_prefab_set(e, TilemapLink, { 0 });
+    // Should we add transform late?
     // Links
     zox_prefab_add(e, RegionLinks);
     zox_prefab_add(e, TunkLinks);

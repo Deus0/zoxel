@@ -9,9 +9,8 @@ zox_sys2(BonesSettingsSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        // Disable Bones?
-        spawn_setting_byte(world, e, "Disable Bones", disable_bones);
 #ifdef zox_debug
+        spawn_setting_byte(world, e, "Disable Bones", disable_bones);
         spawn_setting_byte(world, e, "Transparent Mesh", transparent_meshes);
         spawn_setting_byte(world, e, "Bone Gizmos", render_bones);
         spawn_setting_byte(world, e, "Paint Weights", paint_bone_weights);

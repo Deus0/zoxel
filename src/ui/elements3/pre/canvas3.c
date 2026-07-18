@@ -38,7 +38,7 @@ void add_ui_components_world(ecs *world, entity e, float2 mesh_scale) {
     zox_prefab_add(e, MeshUVs);
     zox_prefab_add(e, MeshColorRGBs);
     prefab_set_mesh_indicies(world, e, square_indicies, 6);
-    zox_prefab_set(e, MesnRenderCount, { 6 });
+    zox_prefab_set(e, MeshRenderCount, { 6 });
     prefab_set_mesh3D_vertices(world, e, square_vertices, 4, mesh_scale);
     prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
     prefab_set_mesh_colors_rgb(world, e, (color_rgb) { 255, 255, 255 }, 4);

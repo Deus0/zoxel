@@ -1,7 +1,5 @@
-byte zox_dbg_overlays_count = 15;
+byte zox_dbg_overlays_count = 16;
 entity dbg_ui_overlays;
-
-
 
 // TODO: Include post processing, streaming and any other data
 uint zox_dbg_ui_camera(ecs *world, entity e, char *buffer, uint size, uint index) {
@@ -76,6 +74,55 @@ uint zox_dbg_ui_terrain(ecs* world, entity e, char *buffer, uint size, uint inde
     for (int i = 0; i < length; i++) {
         entity e2 = chunks[i];
         index = zox_dbg_ui_chunk_busy(world, e2, buffer, size, index);
+    }
+    return index;
+}
+
+uint zox_dbg_ui_meshes(ecs* world, entity e, char* buffer, uint size, uint index) {
+    if (!zox_valid(e)) {
+        return index;
+    }
+    entity game = zox_get_parent(world, e);
+    if (!zox_valid(game) || !zox_has(game, RealmLink)) {
+        index += snprintf(buffer + index, size - index, "Player [%s]'s Invalid Game\n", zox_get_name(e));
+        return index;
+    }
+    entity realm = zox_getv(game, RealmLink);
+    if (!zox_valid(realm)) {
+        index += snprintf(buffer + index, size - index, "Player [%s] has no Realm\n", zox_get_name(e));
+        return index;
+    }
+    entity terrain = zox_get_child_by_id(world, realm, zox_id(Terrain));
+    if (!zox_valid(terrain)) {
+        return index;
+    }
+    index += snprintf(buffer + index, size - index, "Debug Meshes\n");
+    index += snprintf(buffer + index, size - index, "Terrain Chunks [%i]\n", zox_count_ids(TerrainChunk));
+    index += snprintf(buffer + index, size - index, "Terrain Chunk Meshes [%i]\n", zox_count_ids(ChunkMesh));
+    // entity chunks[8];
+    //uint length = zox_get_children_by_id(world, terrain, chunks, 8, zox_id(Chunk3));
+    byte display_meshes = 0;
+    iter it2 = zox_children(world, terrain);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count && display_meshes < 10; j++) {
+            entity e2 = it2.entities[j];
+            if (!zox_has(e2, Chunk3)) {
+                continue;
+            }
+            entity meshes[8];
+            uint meshes_length = zox_get_children_by_id(world, e2, meshes, 8, zox_id(ChunkMesh));
+            if (!meshes_length) {
+                continue;
+            }
+            index += snprintf(buffer + index, size - index, "Chunk %s\n", zox_getn(e2));
+            for (int k = 0; k < meshes_length; k++) {
+                entity e3 = meshes[k];
+                byte depth = zox_getv(e3, RenderDepth);
+                byte disabled = zox_is_disabled(e3);
+                index += snprintf(buffer + index, size - index, " - Mesh [%s]D [%i] Disabled [%i]\n", zox_getn(e3), depth, disabled);
+            }
+            display_meshes++;
+        }
     }
     return index;
 }
@@ -166,6 +213,11 @@ void zox_dbg_map_cycle_ui(ecs* world, ClickEventData data) {
 
 void zox_dbg_activate_ui_statistics(ecs* world, ClickEventData data) {
     set_prefab_debug_label(world, &zox_dbg_ui_statistics);
+    refresh_debug_label(world);
+}
+
+void zox_dbg_activate_ui_meshes(ecs* world, ClickEventData data) {
+    set_prefab_debug_label(world, &zox_dbg_ui_meshes);
     refresh_debug_label(world);
 }
 
@@ -266,6 +318,10 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Systems",
         .on_click = { &zox_dbg_activate_ui_system_times },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Terrain Meshes",
+        .on_click = { &zox_dbg_activate_ui_meshes },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Statistics",

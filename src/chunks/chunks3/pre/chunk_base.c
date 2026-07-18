@@ -7,17 +7,18 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_prefab_set(e, ChunkPosition, { int3_zero });
     zox_prefab_set(e, ChunkSize, { int3_zero });
     zox_prefab_set(e, ChunkNeighbors, { { 0 } } );
-    zox_prefab_set(e, RenderDistance, { render_depth_uninitialized });
-    zox_prefab_set(e, RenderDepth, { render_depth_uninitialized });
+    // render_depth_uninitialized
+    zox_prefab_set(e, RenderDistance, { 0 });
+    zox_prefab_set(e, RenderDepth, { 0 });
     // allocations
     zox_prefab_set(e, NodeDepth, { 0 });
     zox_prefab_set(e, VoxelNode, { 0 });
     zox_prefab_set(e, SidesOctree, { 0 });
     // Dirty State
-    zox_prefab_set(e, BuildChunkMesh, { zox_dirty_none });
-    zox_prefab_set(e, VoxelNodeDirty, { zox_dirty_none });
-    zox_prefab_set(e, SidesOctreeDirty, { zox_dirty_none });
-    zox_prefab_set(e, RenderDistanceDirty, { zox_dirty_none });
-    zox_prefab_set(e, RenderDepthDirty, { zox_dirty_none });
+    zox_prefab_set(e, VoxelNodeDirty, { 0 });
+    zox_prefab_set(e, SidesOctreeDirty, { 0 });
+    zox_prefab_set(e, RenderDistanceDirty, { 0 });
+    zox_prefab_set(e, RenderDepthDirty, { 0 });
+    zox_prefab_set(e, BuildChunkMesh, { 0 });
     return e;
 }

@@ -161,9 +161,7 @@ zox_sys2(LightBeamSystem) {
     zox_sys_out(LightNodeDirty);
     entity realm = 0;
     byte solidity[255];
-    for (int j = 0; j < 255; j++) {
-        solidity[j] = 1;
-    }
+    memset(solidity, 1, 255);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BlockManagerLink, manager);

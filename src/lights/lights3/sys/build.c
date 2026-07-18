@@ -144,10 +144,6 @@ zox_sys2(BasicLightsBuildSystem) {
         if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }
-        // NOTE: The same issue appeared here... needed to be synced
-        // mesh_colors_dirty->value = zox_dirty_trigger;
-        // zox_set(e, MeshDirty, { mesh_state_trigger_terrain });
-        // zox_set(e, MeshReady, { 1 });
         ready->value = 1;
     }
 } zox_sys_end(BasicLightsBuildSystem);

@@ -8,7 +8,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
-    zox_sys_in(MesnRenderCount);
+    zox_sys_in(MeshRenderCount);
     byte init = 0;
     const MaterialTextured3D *attributes = NULL;
     camera_filtering_begin();
@@ -19,7 +19,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
-        zox_sys_i(MesnRenderCount, count);
+        zox_sys_i(MeshRenderCount, count);
         if (disabled->value || !count->value || !mesh->value.x) {
             continue;
         }

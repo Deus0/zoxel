@@ -4,6 +4,7 @@
 #ifndef zoxm_chunks3_textured
 #define zoxm_chunks3_textured
 
+byte zox_combine_chunk_mode = 0;
 byte zox_split_textured_quads = 1;
 byte zox_dbg_render_all_sides = 0;
 

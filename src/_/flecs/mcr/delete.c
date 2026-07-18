@@ -1,6 +1,7 @@
 #ifdef zox_debug
 
     #define zox_delete(e) {\
+        if (!zox_valid(e)) zox_loge("Invalid E in zox_delete [%s]", zox_getn(e)); \
         assert(zox_valid(e) && zox_alive(e)); \
         ecs_delete(world, e); \
     }

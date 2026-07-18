@@ -1,5 +1,3 @@
-
-
 int2 calculate_position(const byte *data, int length, int data_index, byte font_size, byte text_alignment, byte2 padding, byte line_padding) {
     if (data_index >= length) {
         zox_loge("DataIndex greater than length [%i] > [%i]", data_index, length);
@@ -77,7 +75,7 @@ zox_sys2(TextsPositionSystem) {
                     zox_logw("Zigel [%s] is missing Layout Component/s", zox_get_name(e2));
                     continue;
                 }
-                uint index = calculate_zigel_data_index(text_data->value, text_data->length, j);
+                uint index = child_index_to_text_array_index(text_data->value, text_data->length, j);
                 int2 position = calculate_position(text_data->value, text_data->length, index, size->value, alignment->value, padding->value, default_line_padding);
                 zox_mut_begin(e2, LayoutPosition, lposition);
                 zox_mut_begin(e2, LayoutPositionDirty, ldirty);
@@ -102,14 +100,12 @@ zox_sys2(ZigelPositionSystem) {
     byte is_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ZigelIndex);
-    zox_sys_in(DataIndex);
+    zox_sys_in(ChildIndex);
     zox_sys_out(LayoutPosition);
     zox_sys_out(LayoutPositionDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ZigelIndex, index);
-        zox_sys_i(DataIndex, data_index);
+        zox_sys_i(ChildIndex, child_index);
         zox_sys_o(LayoutPosition, position);
         zox_sys_o(LayoutPositionDirty, dirty);
         entity parent = zox_get_parent(world, e);
@@ -127,14 +123,17 @@ zox_sys2(ZigelPositionSystem) {
         byte font_size = zox_getv(parent, TextFontSize);
         byte alignment = zox_getv(parent, TextAlignment);
         byte2 padding = zox_getv(parent, TextPadding);
-        // uint indexd = calculate_zigel_data_index(text_data->value, text_data->length, index->value);
-        int2 new_position = calculate_position(text_data->value, text_data->length, data_index->value, font_size, alignment, padding, default_line_padding);
+        uint array_index = child_index_to_text_array_index(text_data->value, text_data->length, child_index->value);
+        if (array_index >= text_data->length) {
+            continue;
+        }
+        int2 new_position = calculate_position(text_data->value, text_data->length, array_index, font_size, alignment, padding, default_line_padding);
         if (!int2_equals(position->value, new_position))
         {
             position->value = new_position;
             dirty->value = zox_dirty_trigger;
             if (is_log) {
-                zox_log("Positioned Zigel: [%s]:[%i] at [%ix%i]", zox_get_name(e), index->value, new_position.x, new_position.y);
+                zox_log("Positioned Zigel: [%s]:[%i] at [%ix%i]", zox_get_name(e), child_index->value, new_position.x, new_position.y);
             }
         }
     }

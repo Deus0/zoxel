@@ -24,7 +24,9 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
     if (!zox_valid(e)) {
         return;
     }
-    zox_set(e, RenderDisabled, { disabled });
+    if (zox_has(e, RenderDisabled)) {
+        zox_setm(e, RenderDisabled, disabled);
+    }
     // NOTE: for 3D UIs
     if (zox_has(e, ElementLinks)) {
         zox_geter(e, ElementLinks, elements);
@@ -35,9 +37,6 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
                 continue;
             }
 #endif
-            if (zox_has(e2, RenderDisabled)) {
-                zox_set(e2, RenderDisabled, { disabled });
-            }
             set_entity_render_disabled(world, e2, disabled);
         }
     }
@@ -50,9 +49,6 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
                 continue;
             }
 #endif
-            if (zox_has(e2, RenderDisabled)) {
-                zox_set(e2, RenderDisabled, { disabled });
-            }
             set_entity_render_disabled(world, e2, disabled);
         }
     }
@@ -144,12 +140,15 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_query_end();
         if (render_disabled->value != !is_viewed) {
             render_disabled->value = !is_viewed;
-            iter it2 = zox_children(world, e);
-            while (zox_children_next(it2)) {
-                for (int j = 0; j < it2.count; j++) {
-                    entity e3 = it2.entities[j];
-                    if (zox_has(e3, ChunkMesh)) {
-                        zox_setm(e3, RenderDisabled, render_disabled->value);
+            // -=- Chunk Meshes -=-
+            if (!zox_dbg_disable_chunk_mesh) {
+                iter it2 = zox_children(world, e);
+                while (zox_children_next(it2)) {
+                    for (int j = 0; j < it2.count; j++) {
+                        entity e3 = it2.entities[j];
+                        if (zox_has(e3, ChunkMesh)) {
+                            zox_setm(e3, RenderDisabled, render_disabled->value);
+                        }
                     }
                 }
             }

@@ -9,6 +9,7 @@
 #ifndef zoxm_chunks3
 #define zoxm_chunks3
 
+byte zox_dbg_disable_chunk_mesh = 0;
 byte zox_dbg_npc_all_max_depth = 0;
 #include "set/_.c"
 #include "mcr/_.c"

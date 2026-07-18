@@ -5,8 +5,8 @@ entity spawn_prefab_chunk_textured(ecs* world, entity prefab) {
     zox_prefab_set(e, BlockManagerLink, { 0 });
     // Byte Properties
     zox_prefab_set(e, VoxelNodeEdited, { 0 });
-    zox_prefab_set(e, Busy, { 0 }); //  });         // NOTE: Busy Updating stuff
-    zox_prefab_set(e, Ready, { 0 });        // NOTE: Ready to upload to gpu
+    zox_prefab_set(e, Busy, { 0 });
+    zox_prefab_set(e, Ready, { 0 });
     // Neighbors and Updates
     zox_prefab_set(e, VoxelNodeQueue, { 0 });
     zox_prefab_set(e, BlockDamageQueue, { 0 });

@@ -4,7 +4,7 @@
 void define_systems_chunksio(ecs* world) {
     zox_system(
         Chunk3SaveSystem,
-        zoxp_update, // EcsPreStore,
+        zoxp_update,
         [in] realms.RealmLink,
         [in] chunks3.VoxelNodeEdited,
         [in] chunks3.VoxelNodeDirty,
@@ -13,7 +13,7 @@ void define_systems_chunksio(ecs* world) {
     );
     zox_system(
         Chunk3LoadSystem,
-        zoxp_update, // EcsOnLoad,
+        zoxp_update,
         [in] core.InitializeEntity,
         [in] realms.RealmLink,
         [in] chunks3.ChunkPosition,

@@ -7,7 +7,8 @@ byte last_updated_time = 0;
 byte updating_time = 1;
 byte time_pause_disabled = 0;
 #define record_frames_count 500
-byte zox_log_lags = 0;
+byte zox_log_lags = 1;
+const double zox_lag_cutoff = 4;
 
 // NOTE: Time Pausing Disabled because it Line Renders
 //          Will keep spawning and not die

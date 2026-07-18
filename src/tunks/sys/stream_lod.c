@@ -109,8 +109,9 @@ zox_sys2(TunkLodSystem) {
                 continue;
             }
             zox_setm(chunk, RenderDepth, new_depth);
-            zox_setm(chunk, RenderDepthDirty, zox_dirty_trigger);
-            zox_setm(chunk, Busy, 1);
+            // zox_setm(chunk, RenderDepthDirty, zox_dirty_trigger);
+            zox_setm(chunk, ChunkLodDirty, 1);
+            // zox_setm(chunk, Busy, 1);
             if (dbg_log) {
                 zox_log("Chunk Depth Updated [%s]:[%i]", zox_get_name(chunk), new_depth);
             }

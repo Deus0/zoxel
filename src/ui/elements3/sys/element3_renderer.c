@@ -5,7 +5,8 @@ zox_sys2(Element3DRenderSystem) {
     if (!material_textured3D) {
         return;
     }
-    zox_sys_world()
+    byte dbg_log = 0;
+    zox_sys_world();
     byte has_set_material = 0;
     const uint material_link = zox_get_value(material_textured3D, MaterialGPULink)
     const MaterialTextured3D *material_attributes = zox_get(material_textured3D, MaterialTextured3D)
@@ -26,7 +27,6 @@ zox_sys2(Element3DRenderSystem) {
         zox_sys_i(UvsGPULink, uvsGPULink);
         zox_sys_i(ColorsGPULink, colorsGPULink);
         zox_sys_i(TextureGPULink, textureGPULink);
-
         if (renderDisabled->value) {
             continue;
         }
@@ -54,13 +54,9 @@ zox_sys2(Element3DRenderSystem) {
         opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
         opengl_bind_texture(textureGPULink->value);
         zox_gpu_render(meshIndicies->length);
-        zox_log_elements3D("+ rendered element3D [%lu]", it->entities[i])
-#ifdef zoxel_catch_opengl_errors
-        if (check_opengl_error_unlogged()) {
-            zox_log(" > failed to render element3D [%i]: [%i] - [%ix%i:%i]\n", i, meshIndicies->length, meshGPULink->value.x, meshGPULink->value.y, uvsGPULink->value)
-            break;
+        if (dbg_log) {
+            zox_log("+ rendered element3D [%lu]", it->entities[i]);
         }
-#endif
     }
     if (has_set_material) {
         zox_gpu_disable_blend();

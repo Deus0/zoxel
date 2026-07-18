@@ -17,6 +17,7 @@ byte is_debug_attack = 0;
 #include "attack_trigger.c"
 #include "stay_upright_system.c"
 #include "random_jumping.c"
+#include "settings.c"
 
 void define_systems_npcs(ecs *world) {
     zox_system(
@@ -122,5 +123,19 @@ void define_systems_npcs(ecs *world) {
         [in] FollowTarget,
         [out] npcs.TargetPosition,
         [none] npcs.Npc
+    );
+    // Sound gen takes longer;
+    zox_system_1(
+        NpcsSettingsSystem,
+        zoxp_mainthread,
+        [in] core.InitializeEntity,
+        [none] apps.App
+    );
+    zox_system_1(
+        NpcsSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
     );
 }

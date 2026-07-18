@@ -1,4 +1,4 @@
-zox_sys2(TextureRGBAUpdateSystem) {
+zox_sys2(TextureUploadSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -38,4 +38,4 @@ zox_sys2(TextureRGBAUpdateSystem) {
             }
         }
     }
-} zox_sys_end(TextureRGBAUpdateSystem);
+} zox_sys_end(TextureUploadSystem);

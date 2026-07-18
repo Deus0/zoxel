@@ -1,6 +1,6 @@
 void prefab_add_mesh_basic(ecs *world, entity e) {
     zox_prefab_set(e, MeshIndicies, { 0 });
-    zox_prefab_set(e, MesnRenderCount, { 0 });
+    zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
 }

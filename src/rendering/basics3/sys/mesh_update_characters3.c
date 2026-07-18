@@ -17,7 +17,7 @@ zox_sys2(MeshUpdateCharacters3DSystem) {
     zox_sys_in(MeshDirty);
     zox_sys_out(MeshGPULink);
     zox_sys_out(ColorsGPULink);
-    zox_sys_out(MesnRenderCount);
+    zox_sys_out(MeshRenderCount);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(MeshDirty, dirty);
         zox_sys_i(MeshIndicies, indicies);
@@ -25,7 +25,7 @@ zox_sys2(MeshUpdateCharacters3DSystem) {
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshGPULink, gpu_mesh);
         zox_sys_o(ColorsGPULink, gpu_colors);
-        zox_sys_o(MesnRenderCount, count);
+        zox_sys_o(MeshRenderCount, count);
         if (dirty->value != mesh_state_upload) {
             continue;
         }

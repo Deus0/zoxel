@@ -9,7 +9,7 @@ void define_systems_vodes3(ecs* world) {
     // NOTE: Writes to VoxelNode
     zox_system(
         VodesDespawnSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] chunks3.VoxelNodeDirty,
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDepth,
@@ -19,7 +19,7 @@ void define_systems_vodes3(ecs* world) {
     // NOTE: Writes to VoxelNode
     zox_system(
         VodesRemoveSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] chunks3.VoxelNodeDirty,
         [in] chunks3.BlocksSpawned,
         [out] chunks3.VoxelNode

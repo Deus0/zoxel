@@ -80,7 +80,7 @@ void define_systems_textures(ecs *world) {
         [none] textures.Tilemap
     );
     zox_system_1(
-        TextureRGBUpdateSystem,
+        TextureRgbUploadSystem,
         zoxp_mainthread,
         [in] rendering.TextureDirty,
         [in] textures.TextureData,
@@ -89,7 +89,7 @@ void define_systems_textures(ecs *world) {
         [none] textures.TextureRGB
     );
     zox_system_1(
-        TextureRGBAUpdateSystem,
+        TextureUploadSystem,
         zoxp_mainthread,
         [in] rendering.TextureDirty,
         [in] textures.TextureData,

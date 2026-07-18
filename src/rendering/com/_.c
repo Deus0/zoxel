@@ -7,13 +7,14 @@ zox_tag(VoxMesh);
 zox_tag(DisableDepthTest);
 zoxc_byte(RenderOrder);
 zoxc_byte(MeshDirty);
+zoxc_byte(TexturedMeshDirty);
 zoxc_byte(MeshReady);
 zoxc_state(TextureDirty);
 zoxc_state(RenderDistanceDirty);
 zoxc_state(RenderDepthDirty);
 zoxc_state(MeshGenerate);    // TODO: Replace BuildChunkMesh
-zoxc_state(MeshColorsGenerate);
-zoxc_state(MeshColorsDirty);
+zoxc_byte(MeshColorsGenerate);
+zoxc_byte(MeshColorsDirty);
 zoxc_entity(MeshLink);
 zoxc_byte(MeshAlignment);
 zoxc_byte(RenderDepth);
@@ -29,7 +30,7 @@ zoxc_entity(ShaderLink); // links to a shader entity
 zoxc_entity(InstanceLink); // links to a instance parent
 // zoxc_array(InstanceLinks, entity, 8)
 zoxc_arrayd(MeshIndicies, int);
-zoxc_uint(MesnRenderCount);
+zoxc_uint(MeshRenderCount);
 zoxc_arrayd(MeshVertices, float3);
 zoxc_arrayd(MeshVertices2D, float2);
 zoxc_arrayd(MeshUVs, float2);
@@ -63,13 +64,14 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(DisableDepthTest);
     zoxd_byte(RenderOrder);
     zoxd_byte(MeshDirty);
+    zoxd_byte(TexturedMeshDirty);
     zoxd_byte(MeshReady);
     zoxd_state(TextureDirty);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);
     zoxd_state(MeshGenerate);
-    zoxd_state(MeshColorsGenerate);
-    zoxd_state(MeshColorsDirty);
+    zoxd_byte(MeshColorsGenerate);
+    zoxd_byte(MeshColorsDirty);
     zoxd_byte(MeshAlignment);
     zoxd_entity(MeshLink);
     zoxd_byte(RenderDepth);
@@ -93,7 +95,7 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(ShaderSourceIndex);
     zoxd_entity(ShaderLink);
     zoxd_arrayd(MeshIndicies);
-    zoxd_uint(MesnRenderCount);
+    zoxd_uint(MeshRenderCount);
     zoxd_arrayd(MeshVertices);
     zoxd_arrayd(MeshVertices2D);
     zoxd_arrayd(MeshUVs);

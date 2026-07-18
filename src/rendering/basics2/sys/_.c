@@ -11,7 +11,6 @@ void define_systems_basics2D(ecs *world) {
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices2D,
         [in] rendering.MeshGPULink,
-        // [in] rendering.MaterialGPULink,
         [none] !rendering.MeshUVs,
         [none] !rendering.MeshColorRGBs
     );

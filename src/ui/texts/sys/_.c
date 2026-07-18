@@ -27,6 +27,7 @@ void define_systems_texts(ecs *world) {
         [out] layouts2.LayoutSizeDirty,
         [none] texts.Zext
     );
+    /*
     zox_system(
         TextUpdateSystem,
         zoxp_update,
@@ -34,7 +35,7 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextData,
         [none] texts.Zext
     );
-    /*zox_system(
+    zox_system(
         TextsPositionSystem,
         zoxp_update,
         [in] texts.TextDirty,
@@ -45,10 +46,17 @@ void define_systems_texts(ecs *world) {
         [none] texts.Zext
     );*/
     zox_system(
+        ZigelUpdateSystem,
+        zoxp_update,
+        [in] hierarchys.ChildIndex,
+        [out] zigels.ZigelIndex,
+        [out] textures.GenerateTexture,
+        [none] zigels.Zigel
+    );
+    zox_system(
         ZigelPositionSystem,
         zoxp_update,
-        [in] zigels.ZigelIndex,
-        [in] zigels.DataIndex,
+        [in] hierarchys.ChildIndex,
         [in] layouts2.LayoutPosition,
         [in] layouts2.LayoutPositionDirty,
         [none] zigels.Zigel

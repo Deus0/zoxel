@@ -29,7 +29,7 @@ void define_systems_voxes(ecs *world) {
     // NOTE: Writes to VoxelNode
     zox_system(
         CloneVoxSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] CloneVoxLink,
         [out] CloneVox,
         [out] chunks3.VoxelNode,
@@ -41,7 +41,7 @@ void define_systems_voxes(ecs *world) {
     );
     zox_system(
         CombineVoxSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] voxes.CombineVox,
         [in] voxes.CombineList,
         [in] voxes.CombinePositions,

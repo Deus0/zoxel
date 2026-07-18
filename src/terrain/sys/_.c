@@ -43,7 +43,7 @@ void define_systems_terrain(ecs *world) {
     );
     zox_system(
         LandfillChunk3System,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] tunks.TunkLink,
         [in] chunks3.ChunkPosition,
         [in] chunks.NodeDepth,
@@ -53,7 +53,7 @@ void define_systems_terrain(ecs *world) {
     );
     zox_system(
         VegetationChunk3System,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [in] tunks.TunkLink,

@@ -1,3 +1,33 @@
+// NOTE: Sets Mesh Children to build when Voxels are dirty
+zox_sys2(Chunk3MeshTrigger2System) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(VoxelNodeDirty);
+    zox_sys_out(BuildChunkSides);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(VoxelNodeDirty, dirty);
+        zox_sys_o(BuildChunkSides, build);
+        if (dirty->value != zox_dirty_active) {
+            continue;
+        }
+        build->value = 1;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                if (zox_has(e2, ChunkMesh)) {
+                    zox_setm(e2, BuildChunkMesh, zox_dirty_trigger);
+                    if (dbg_log) {
+                        zox_log("Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(e2));
+                    }
+                }
+            }
+        }
+    }
+} zox_sys_end(Chunk3MeshTrigger2System);
+
 // should i grab neighbor states instead, or should i create setters?
 //  probably grab them, its faster to write in my systems
 zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
@@ -21,15 +51,16 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
                 }
                 continue;
             }
-            //zox_muter(neighbor, BuildChunkMesh, mesh_dirty);
-            //mesh_dirty->value = zox_dirty_trigger;
             zox_setm(neighbor, BuildChunkSides, 1);
             iter it2 = zox_children(world, neighbor);
             while (zox_children_next(it2)) {
                 for (int k = 0; k < it2.count; k++) {
                     entity e3 = it2.entities[k];
                     if (zox_has(e3, ChunkMesh)) {
-                        zox_set(e3, BuildChunkMesh, { zox_dirty_trigger });
+                        zox_setm(e3, BuildChunkMesh, zox_dirty_trigger);
+                        if (dbg_log) {
+                            zox_log("Neighbor Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(neighbor), zox_getn(e3));
+                        }
                     }
                 }
             }

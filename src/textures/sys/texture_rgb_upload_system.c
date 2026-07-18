@@ -1,5 +1,5 @@
 // TextureRGB's
-zox_sys2(TextureRGBUpdateSystem) {
+zox_sys2(TextureRgbUploadSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -34,4 +34,4 @@ zox_sys2(TextureRGBUpdateSystem) {
             }
         }
     }
-} zox_sys_end(TextureRGBUpdateSystem);
+} zox_sys_end(TextureRgbUploadSystem);

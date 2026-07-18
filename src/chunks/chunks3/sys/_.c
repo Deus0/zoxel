@@ -1,6 +1,5 @@
 #include "cleanup.c"
 #include "mesh_trigger.c"
-#include "neighbor_trigger.c"
 #include "queue.c"
 #include "clear.c"
 #include "sides.c"
@@ -10,13 +9,14 @@ void define_systems_chunks3(ecs *world) {
     zoxd_system_increment(VoxelNodeDirty);
     // ColoredChunk
     zox_system(
-        Chunk3MeshTriggerSystem,
+        ColoredChunkMeshTriggerSystem,
         zoxp_update,
         [in] chunks3.VoxelNodeDirty,
         [out] chunks3.BuildChunkMesh,
-        [none] chunks3.Chunk3
+        [none] chunks3.ColorChunk
     );
-    zox_system(VoxelNodeQueueSystem,
+    zox_system(
+        VoxelNodeQueueSystem,
         zoxp_queue_pre_clear,
         [in] chunks.NodeDepth,
         [in] chunks3.VoxelNodeQueue,
@@ -27,7 +27,7 @@ void define_systems_chunks3(ecs *world) {
     );
     zox_system(
         VoxelOctreeCleanupSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] chunks3.VoxelNodeDirty,
         [out] chunks3.VoxelNode,
         [none] chunks3.Chunk3

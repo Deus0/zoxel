@@ -3,10 +3,12 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     // Terrain / Generation
     zox_add_tag(e, TerrainChunk);
     zox_add_tag(e, StreamedChunk);
+    zox_add_tag(e, DisableTransform);
     // Generation
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateChunk, { 0 });
     zox_prefab_set(e, Loaded, { 0 });
+    zox_prefab_set(e, ChunkLodDirty, { 1 });
     // Tunks
     zox_prefab_set(e, TunkLink, { 0 });
     // Vodes

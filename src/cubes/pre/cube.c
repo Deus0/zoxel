@@ -13,7 +13,7 @@ entity spawn_prefab_cube(ecs *world) {
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_add_tag(e, MeshBasic3D);
     zox_prefab_set(e, MeshIndicies, { 0 });
-    zox_prefab_set(e, MesnRenderCount, { 0 });
+    zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, ShaderLink, { 0 });
     add_gpu_mesh(world, e);

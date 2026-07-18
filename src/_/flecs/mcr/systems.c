@@ -14,50 +14,50 @@ void zox_system_on_new(ecs* world, entity system) {
     // zox_statistics_systems++;
 }
 
-#ifndef zox_disable_system_timings
+#ifdef zox_time_systems
 
-#define zox_sys2(T)\
-    void T(iter *it) {\
-        double system_time_begin = get_time_ms(); \
-        byte is_count_process = ecs_has(it->world, it->system, SystemProcessed); \
-        uint process_count = 0;
+    #define zox_sys2(T)\
+        void T(iter *it) {\
+            double system_time_begin = get_time_ms(); \
+            byte is_count_process = ecs_has(it->world, it->system, SystemProcessed); \
+            uint process_count = 0;
 
-#define calculate_sys_delta() get_time_ms() - system_time_begin
+    #define calculate_sys_delta() get_time_ms() - system_time_begin
 
-#define zox_sys_end(T)\
-    double system_delta_time = calculate_sys_delta();\
-    if (ecs_has(it->world, it->system, SystemDelta)) { \
-        double current_delta = ecs_get(it->world, it->system, SystemDelta)->value; \
-        if (system_delta_time > current_delta) { \
-            SystemDelta* system_delta = ecs_get_mut(it->world, it->system, SystemDelta); \
-            system_delta->value = system_delta_time; \
-            /* ecs_set(it->world, it->system, SystemDelta, { system_delta_time });*/ \
+    #define zox_sys_end(T)\
+        double system_delta_time = calculate_sys_delta();\
+        if (ecs_has(it->world, it->system, SystemDelta)) { \
+            double current_delta = ecs_get(it->world, it->system, SystemDelta)->value; \
+            if (system_delta_time > current_delta) { \
+                SystemDelta* system_delta = ecs_get_mut(it->world, it->system, SystemDelta); \
+                system_delta->value = system_delta_time; \
+                /* ecs_set(it->world, it->system, SystemDelta, { system_delta_time });*/ \
+            } \
         } \
-    } \
-    \
-    if (is_count_process && process_count) { \
-        int current = ecs_get(it->world, it->system, SystemProcessed)->value;\
-        if (process_count > current) {\
-            SystemProcessed* system_processed = ecs_get_mut(it->world, it->system, SystemProcessed); \
-            system_processed->value = process_count; \
-            /* ecs_set(it->world, it->system, SystemProcessed, { process_count }); */ \
-        }\
-    } \
-} ECS_SYSTEM_DECLARE(T)
+        \
+        if (is_count_process && process_count) { \
+            int current = ecs_get(it->world, it->system, SystemProcessed)->value;\
+            if (process_count > current) {\
+                SystemProcessed* system_processed = ecs_get_mut(it->world, it->system, SystemProcessed); \
+                system_processed->value = process_count; \
+                /* ecs_set(it->world, it->system, SystemProcessed, { process_count }); */ \
+            }\
+        } \
+    } ECS_SYSTEM_DECLARE(T)
 
-// TODO: Add it up for each thread! reset at start of frames
-#define zox_sys_increment() process_count++\
+    // TODO: Add it up for each thread! reset at start of frames
+    #define zox_sys_increment() process_count++\
 
 #else
 
-#define zox_sys2(T)\
-    void T(iter *it) { \
-        uint process_count = 0;
+    #define zox_sys2(T)\
+        void T(iter *it) { \
+            uint process_count = 0;
 
-#define zox_sys_end(T)\
-    } ECS_SYSTEM_DECLARE(T)
+    #define zox_sys_end(T)\
+        } ECS_SYSTEM_DECLARE(T)
 
-#define zox_sys_increment() process_count++
+    #define zox_sys_increment() process_count++
 
 #endif
 

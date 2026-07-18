@@ -1,6 +1,8 @@
 #if !defined(zoxm_transforms) && defined(zoxm_maths)
 #define zoxm_transforms
 
+zox_tag(DisableTransform);
+zox_tag(StaticTransform);
 zoxc_float(Scale1D);
 zoxc(TransformMatrix, float4x4);
 #include "hierarchy/_.c"
@@ -9,6 +11,8 @@ zoxc(TransformMatrix, float4x4);
 #include "layouts2/_.c"
 
 zox_begin_module(Transforms) {
+    zoxd_tag(DisableTransform);
+    zoxd_tag(StaticTransform);
     zoxd_float(Scale1D);
     zoxd(TransformMatrix);
     zox_import_module(Hierarchys);

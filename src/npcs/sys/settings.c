@@ -1,4 +1,5 @@
-zox_sys2(LightsSettingsSystem) {
+// NOTE: Add bone settings to our App!
+zox_sys2(NpcsSettingsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InitializeEntity);
@@ -8,12 +9,13 @@ zox_sys2(LightsSettingsSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        spawn_setting_byte(world, e, "Disable Lights", disable_terrain_lods);
-        // spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
+#ifdef zox_debug
+        spawn_setting_byte(world, e, "Disable Npcs", disable_npcs);
+#endif
     }
-} zox_sys_end(LightsSettingsSystem);
+} zox_sys_end(NpcsSettingsSystem);
 
-zox_sys2(LightsSettingsDirtySystem) {
+zox_sys2(NpcsSettingsDirtySystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -29,13 +31,12 @@ zox_sys2(LightsSettingsDirtySystem) {
         if (zox_has(e, SettingByte)) {
             byte value = zox_getv(e, SettingByte);
             if (dbg_log) {
-                zox_log("Float Setting [%s] Set [%f]", name->value, value);
+                zox_log("SettingByte [%s] Set [%f]", name->value, value);
             }
-            if (!strcmp(name->value, "Disable Lights")) {
-                disable_lights = value;
-            } else if (!strcmp(name->value, "Smooth Lighting")) {
-                zox_smooth_lighting = value;
+            if (!strcmp(name->value, "Disable Npcs")) {
+                disable_npcs = value;
             }
         }
+
     }
-} zox_sys_end(LightsSettingsDirtySystem);
+} zox_sys_end(NpcsSettingsDirtySystem);

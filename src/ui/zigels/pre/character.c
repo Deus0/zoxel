@@ -2,6 +2,7 @@ entity spawn_zigel_prefab(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("zigel");
     zox_add_tag(e, Zigel);
+    zox_prefab_set(e, ChildIndex, { 0 });
     // Used for Data lookup when updated text data
     zox_prefab_set(e, DataIndex, { 0 });
     // Stores the ASCII byte

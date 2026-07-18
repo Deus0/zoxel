@@ -16,7 +16,7 @@ void define_systems_models(ecs* world) {
     // NOTE: Writes to VoxelNode
     zox_system(
         VoxGenerationSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] core.Seed,
         [in] colorz.Color,
         [in] voxes.VoxType,
@@ -28,7 +28,7 @@ void define_systems_models(ecs* world) {
     );
     zox_system(
         SoilGenerationSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] colorz.Color,
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
@@ -39,7 +39,7 @@ void define_systems_models(ecs* world) {
     );
     zox_system(
         RoadModelGenerationSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] colorz.Color,
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
@@ -50,7 +50,7 @@ void define_systems_models(ecs* world) {
     );
     zox_system(
         SandModelGenerationSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] colorz.Color,
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
@@ -61,7 +61,7 @@ void define_systems_models(ecs* world) {
     );
     zox_system(
         FillModelNodeSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] nodes.NodeBegin,
         [in] nodes.NodeLink,
         [in] rendering.ModelLink,
@@ -69,7 +69,7 @@ void define_systems_models(ecs* world) {
     );
     zox_system(
         ColorsModelNodeSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] nodes.NodeBegin,
         [in] nodes.NodeLink,
         [in] rendering.ModelLink,
@@ -77,7 +77,7 @@ void define_systems_models(ecs* world) {
     );
     zox_system(
         PaintModelNodeSystem,
-        zoxp_voxels_write,
+        zoxp_update,
         [in] nodes.NodeBegin,
         [in] nodes.NodeLink,
         [in] rendering.ModelLink,

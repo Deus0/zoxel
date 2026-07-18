@@ -3,7 +3,7 @@
 #include "scale.c"
 #include "lod.c"
 byte character_depth = 5;
-byte block_vox_depth = 4;
+byte block_vox_depth = 5;
 byte terrain_depth = 4;
 byte2 block_vox_depth_limits = (byte2) { 2, 5 };
 int fill_octree_random_rate = 50;

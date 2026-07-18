@@ -2,13 +2,33 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- when I turn off toggling, it doesnt break
+- Also when i disable lods
+- It still glitches though, when mesh built, it shows at wrong place
+    - only on new chunks though
+-
+
+-x Make all chunk states bytes and set explictly
+
 Regressions:
-- Lag with transforms due to new meshes
+- LAG - 150 ms before now 50...
+- Dissapearing chunk meshes
+- Crashes Sometimes
+- Meshes that randomly render
 - Mesh flickers off and on when rebuilds
-- Position  - transform updates lagging - add a dirty flag for this
+    - it shouldn't need to rebuild only when depth updates
+    - Maybe make a swap lod mesh state that waits for the enabled chunk to finish loading
+    
+    
+- Pretty sure loading chunks was removed - test IO
+- Landfill not scaling well looks like - tested with low map render distance
+-o Lag with transforms due to new meshes?
+    -x Disable ChunkMesh and just set Transform + position data
+    -x same for chunk
+    -o Position - transform updates lagging - add a dirty flag for this
+-x Lighting wasn't accounted for
 -x Spawning Player before the chunks are generated, underneath map too
-- Landfill not scaling well looks like
-- Make it so it only spawns ChunkMesh if there is voxels... if there is ChunkSides!
+-x Make it so it only spawns ChunkMesh if there is voxels... if there is ChunkSides!
 
 - Fix Loading of settings
 	- make load in system
