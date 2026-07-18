@@ -15,7 +15,7 @@ zox_sys2(system_name) {\
 #define zox_define_reset_system_pip(component_name, pip)    zox_system(component_name##ResetSystem, pip, [out] component_name)
 
 #define zox_define_reset_system(component_name) \
-    zox_define_reset_system_pip(component_name, zoxp_state_reset)
+    zox_define_reset_system_pip(component_name, zoxp_reset)
 
 #define zox_define_reset_system_pip2(system_name, component_name, pip) \
     zox_system(system_name, pip, [out] component_name)

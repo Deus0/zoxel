@@ -63,18 +63,19 @@ zox_sys2(GenerateNameSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GenerateName);
     zox_sys_in(Seed);
+    zox_sys_out(GenerateName);
     zox_sys_out(ZoxName);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(GenerateName, generate);
         zox_sys_i(Seed, seed);
+        zox_sys_o(GenerateName, generate);
         zox_sys_o(ZoxName, name);
-        if (generate->value != zox_dirty_active) {
+        if (!generate->value) {
             continue;
         }
         generate_name(seed->value, name->value);
+        generate->value = 0;
         if (dbg_log) {
             zox_log("+ [%s] Generated Name [%lu]:[%s]", zox_get_name(e), seed->value, name->value);
         }

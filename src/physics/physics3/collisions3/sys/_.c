@@ -8,31 +8,14 @@ void define_systems_collisions3(ecs *world) {
     // todo: reset collision on detection - so we can use it anywhere in our cycle
     //      maybe we keep last_collision state? and we response based on it?? idk
     //      idk how the systems might overlap so its hard
-    zox_filter(
-        sphere_colliders,
-        [in] transforms3.Position3D,
-        [in] SphereRadius,
-        [in] physics.CollisionDisabled,
-        [none] SphereCollider
-    );
     zox_system_1(
         CollisionDebugSystem,
-        zoxp_physics,
+        zoxp_mainthread,
         [in] collisions3.CollisionDistance,
         [in] transforms3.Position3D,
         [in] collisions3.Collision,
         [in] transforms3.Bounds3D,
     );
-    /*zox_system(
-        CollisionResponseSystem,
-        zoxp_physics,
-        [in] collisions3.CollisionDistance,
-        [out] transforms3.Position3D,
-        [out] physics3.Velocity3D,
-        [out] physics3.LastPosition3D,
-        [out] collisions3.Collision,
-        [out] collisions3.Grounded
-    );*/
     zox_system(
         Friction3DSystem,
         zoxp_physics,
@@ -41,9 +24,16 @@ void define_systems_collisions3(ecs *world) {
         [none] physics.Frictioned
     );
     // TODO: split up between response and detect
+    zox_filter(
+        sphere_colliders,
+        [in] transforms3.Position3D,
+        [in] SphereRadius,
+        [in] physics.CollisionDisabled,
+        [none] SphereCollider
+    );
     zox_system_ctx_1(
         SphereCollideSystem,
-        zoxp_physics,
+        zoxp_mainthread,
         sphere_colliders,
         [in] transforms3.Position3D,
         [in] SphereRadius,

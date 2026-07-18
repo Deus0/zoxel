@@ -40,16 +40,18 @@ void define_systems_items(ecs* world) {
     // NOTE: Timing issues due to Queue Clearing
     zox_system_1(
         ItemActivateSystem,
-        zoxp_queue_add,
+        zoxp_mainthread, // zoxp_queue_add,
         [in] timers.Activate,
         [in] blocks.BlockLink,
         [out] items.Quantity,
         [out] items.QuantityDirty,
         [none] ItemBlock
     );
+    // TODO: Fix using a secondary queue for item drops
     zox_system_1(
         TerrainItemDropSystem,
-        zoxp_queue_process,
+        zoxp_mainthread,
+        // zoxp_queue_process,
         [in] chunks3.VoxelNodeQueue,
         [in] chunks3.VoxelNode,
         [in] chunks.NodeDepth,

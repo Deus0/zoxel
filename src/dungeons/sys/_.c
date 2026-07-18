@@ -5,8 +5,9 @@
 
 void define_systems_dungeons(ecs* world) {
     // Spawns new blocks
-    zox_system_1(DungeonBlockSystem,
-        zoxp_queue_add,
+    zox_system_1(
+        DungeonBlockSystem,
+        zoxp_mainthread, // zoxp_queue_add,
         [in] timing.TimerState,
         [in] chunks3.ChunkLink,
         [in] DungeonWallType,

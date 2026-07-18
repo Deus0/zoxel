@@ -1,5 +1,8 @@
 // When defining system
 void add_system_log_components(ecs* world) {
+    #ifndef zox_time_systems
+    return;
+    #endif
     for (int i = 0; i < zox_systems_count; i++) {
         entity system = zox_systems[i];
         if (!zox_valid(system)) {
@@ -13,9 +16,6 @@ void add_system_log_components(ecs* world) {
         uint length = sizeof(double) * record_frames_count;
         double* values = malloc(length);
         memset(values, 0, length);
-        /*for (ushort i = 0; i < record_frames_count; i++) {
-            values[i] = 0;
-        }*/
         zox_set(system, DoubleData, { .value = values, .length = record_frames_count });
     }
 }

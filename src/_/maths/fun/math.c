@@ -10,10 +10,8 @@ static inline float3 float3_reverse(const float3 value) {
 
 float4x4 float4x4_inverse(const float4x4 matrix) {
     float4x4 inv = float4x4_identity;
-
     float* inv_ptr = (float*)&inv;
     float* matrix_ptr = (float*)&matrix;
-
     for (int i = 0; i < 4; i++) {
         int pivot_row = i;
         float max_val = fabsf(matrix_ptr[i * 4 + i]);
@@ -24,7 +22,6 @@ float4x4 float4x4_inverse(const float4x4 matrix) {
                 pivot_row = j;
             }
         }
-
         if (pivot_row != i) {
             // Swap rows in both the matrix and the result matrix
             for (int k = 0; k < 4; k++) {
@@ -37,14 +34,12 @@ float4x4 float4x4_inverse(const float4x4 matrix) {
                 inv_ptr[pivot_row * 4 + k] = temp;
             }
         }
-
         // Divide the pivot row by the pivot element
         float pivot_element = matrix_ptr[i * 4 + i];
         for (int k = 0; k < 4; k++) {
             matrix_ptr[i * 4 + k] /= pivot_element;
             inv_ptr[i * 4 + k] /= pivot_element;
         }
-
         // Subtract multiples of the pivot row from other rows
         for (int j = 0; j < 4; j++) {
             if (j != i) {
@@ -56,7 +51,6 @@ float4x4 float4x4_inverse(const float4x4 matrix) {
             }
         }
     }
-
     return inv;
 }
 
@@ -126,10 +120,8 @@ static inline float4x4 float4x4_rotation(const float4 rotation) {
 }
 
 static inline float4x4 float4x4_transform(float3 position,float4 rotation) {
-
     float4x4 position_matrix = float4x4_position(position);
     float4x4 rotation_matrix = float4x4_rotation(float4_normalize(rotation));
-
     return float4x4_multiply(rotation_matrix, position_matrix);
 }
 

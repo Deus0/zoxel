@@ -2,11 +2,13 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Fix item drop from terrain, so it works in same pipeline as others (sync point reduction)
+-x test zox_time_systems later as might of broke it during pipeline changes
+
 - when I turn off toggling, it doesnt break
 - Also when i disable lods
 - It still glitches though, when mesh built, it shows at wrong place
     - only on new chunks though
--
 
 -x Make all chunk states bytes and set explictly
 

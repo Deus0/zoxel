@@ -5,9 +5,6 @@ zox_sys2(ChunkMeshSpawnSystem) {
     if (zox_dbg_disable_chunk_mesh) {
         return;
     }
-    if (zox_combine_chunk_mode) {
-        return;
-    }
     // TODO: Only spawn mesh if sides exist!
     byte dbg_log = 0;
     zox_sys_world();
@@ -28,17 +25,17 @@ zox_sys2(ChunkMeshSpawnSystem) {
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(VoxelNode, voxels);
         zox_sys_o(ChunkLodDirty, dirty);
-        if (dirty->value != 1) {
+        if (dirty->value != 1 && voxels_dirty->value != zox_dirty_end) {
             continue;
         }
         dirty->value = 2;
         /*if (!(render_depth_dirty->value == zox_dirty_active || voxels_dirty->value == zox_dirty_end)) {
             continue;
-        }
+        }*/
         // check any solids
         if (!voxels->value) {
             continue;
-        }*/
+        }
         entity lod_mesh = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
@@ -80,9 +77,6 @@ zox_sys2(ChunkMeshSpawnSystem) {
 
 // NOTE: Toggles the meshes beased on render depth
 zox_sys2(ChunkMeshToggleSystem) {
-    if (zox_combine_chunk_mode) {
-        return;
-    }
     // TODO: Only spawn mesh if sides exist!
     byte dbg_log = 0;
     zox_sys_world();
@@ -96,8 +90,6 @@ zox_sys2(ChunkMeshToggleSystem) {
         if (dirty->value != 2) {
             continue;
         }
-        dirty->value = 0;
-        continue;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -106,9 +98,10 @@ zox_sys2(ChunkMeshToggleSystem) {
                     continue;
                 }
                 if (zox_getv(mesh, RenderDepth) != depth->value) {
-                    zox_disable(mesh);
+                    // zox_disable(mesh);
+                    // zox_delete(mesh);
                 } else {
-                    zox_enable(mesh);
+                    // zox_enable(mesh);
                 }
             }
         }

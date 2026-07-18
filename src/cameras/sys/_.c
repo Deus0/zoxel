@@ -6,19 +6,27 @@
 
 void define_systems_cameras(ecs *world) {
     zox_system(
+        ViewportResizeSystem,
+        zoxp_update,
+        [in] apps.WindowSizeDirty,
+        [in] apps.WindowSize,
+        [in] CameraLinks,
+        [none] apps.App
+    );
+    zox_system(
+        ProjectionMatrixSystem,
+        zoxp_update, // zoxp_cameras,
+        [in] screens.ScreenDimensions,
+        [in] FieldOfView,
+        [in] CameraNearDistance,
+        [out] ProjectionMatrix
+    );
+    zox_system(
         ViewMatrixSystem,
         zoxp_cameras,
         [in] transforms.TransformMatrix,
         [in] ProjectionMatrix,
         [out] ViewMatrix
-    );
-    zox_system(
-        ProjectionMatrixSystem,
-        zoxp_cameras,
-        [in] screens.ScreenDimensions,
-        [in] FieldOfView,
-        [in] CameraNearDistance,
-        [out] ProjectionMatrix
     );
     zox_system(
         CameraFrustumSystem,
@@ -27,15 +35,6 @@ void define_systems_cameras(ecs *world) {
         [out] FrustumCorners,
         [out] transforms3.Position3DBounds,
         [out] CameraPlanes,
-        [none] Camera,
-        [none] Camera3
-    );
-    zox_system(
-        ViewportResizeSystem,
-        zoxp_update,
-        [in] apps.WindowSizeDirty,
-        [in] apps.WindowSize,
-        [in] CameraLinks,
-        [none] apps.App
+        [none] Camera
     );
 }

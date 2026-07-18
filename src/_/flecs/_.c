@@ -1,8 +1,8 @@
 // zox_flecs_3 | zox_flecs_4
 #define zox_flecs_4
-// #define zox_enable_log_new_system
 
 byte running = 1;
+uint ecs_run_count = 0;
 #include "fun/spinlock.c"
 #include "mcr/_.c"
 #include "dat/_.c"
@@ -22,5 +22,3 @@ ecs* initialize_ecs(int argc, char* argv[]) {
     local_world = new_world;
     return new_world;
 }
-
-// NOTE: zox_get_prefab(e, name); to get the prefab parent

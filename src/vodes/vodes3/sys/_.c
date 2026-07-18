@@ -55,7 +55,7 @@ void define_systems_vodes3(ecs* world) {
     );
     zox_system_1(
         BlockDamageQueueSystem,
-        zoxp_queue_add,
+        zoxp_mainthread, // zoxp_queue_add,
         [in] chunks3.ChunkPosition,
         [in] chunks3.VoxelNode,
         [in] chunks.NodeDepth,

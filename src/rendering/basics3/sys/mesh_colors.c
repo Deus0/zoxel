@@ -1,6 +1,6 @@
 zox_sys2(MeshColorsGpuSystem) {
     byte dbg_log = 0;
-            zox_sys_world();
+    zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MeshColorRGBs);
     zox_sys_in(ColorsGPULink);
@@ -16,12 +16,12 @@ zox_sys2(MeshColorsGpuSystem) {
         if (!upload->value) {
             continue;
         }
-        if (!link->value || !colors->value) {
+        if (!link->value) {
             zox_loge("GPU Links Invalid on Chunk Mesh [%s]", zox_getn(e));
             continue;
         }
         // Skip if invalid buffer or missing data
-        if (!verts->length) {
+        if (!verts->length || !colors->value) {
             if (dbg_log) {
                 zox_log("Mesh had no verts colors %s", zox_get_name(e));
             }

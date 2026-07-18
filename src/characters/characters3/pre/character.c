@@ -9,7 +9,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, Seed, { 0 });
     // name
     zox_prefab_set(e, ZoxName, { 0 });
-    zox_prefab_set(e, GenerateName, { zox_dirty_trigger });
+    zox_prefab_set(e, GenerateName, { 1 });
     // In Terrain
     zox_add_tag(e, LinkChunk);
     zox_prefab_set(e, ChunkLink, { 0 });

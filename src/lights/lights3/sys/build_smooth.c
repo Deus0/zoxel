@@ -121,21 +121,22 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
                 total_light += light_0_n1 + light_1_0 + light_1_n1;
             }
             byte light = total_light / 4;
-#ifdef zox_safety_checks
+//#ifdef zox_safety_checks
             if (*ccount >= colors->length) {
-                zox_loge("Count [%i] is greater than colors [%i] in Light Builder", *ccount, colors->length);
-                return;
+                // zox_loge("Count [%i] is greater than colors [%i] in Light Builder", *ccount, colors->length);
+                (*ccount)++;
+                continue;
             }
-#endif
+//#endif
             color_rgb* c = &colors->value[*ccount];
             c->r = light;
             c->g = light;
             c->b = light;
             (*ccount)++;
-            if (*ccount >= colors->length) {
+            /*if (*ccount >= colors->length) {
                 zox_loge("2) Count [%i] is greater than colors [%i] in Light Builder", *ccount, colors->length);
                 return;
-            }
+            }*/
         }
     }
 }

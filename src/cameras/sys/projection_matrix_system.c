@@ -1,11 +1,5 @@
 // This should only update when either ScreenDimensions or FieldOfView changes
 zox_sys2(ProjectionMatrixSystem) {
-#ifdef main_thread_projection_matrix_system
-    // zox_skip_if_unchanged(1)
-#endif
-/*
-    if (!ecs_query_changed(NULL, it)) return;
-*/
 #ifdef zox_use_orthographic_projection
     zox_sys_world();
 #endif
@@ -19,28 +13,16 @@ zox_sys2(ProjectionMatrixSystem) {
         zox_sys_i(FieldOfView, fieldOfView);
         zox_sys_i(CameraNearDistance, cameraNearDistance);
         zox_sys_o(ProjectionMatrix, projectionMatrix);
-
         if(screenDimensions->value.y <= 0) {
             continue;
         }
-
-        const float aspect_ratio = ((float) screenDimensions->value.x) / ((float) screenDimensions->value.y);
+        float aspect_ratio = ((float) screenDimensions->value.x) / ((float) screenDimensions->value.y);
 #ifndef zox_use_orthographic_projection
-        calculate_perspective_projection_matrix(
-            &projectionMatrix->value,
-            aspect_ratio,
-            cameraNearDistance->value,
-            camera_far_distance,
-            fieldOfView->value);
+        calculate_perspective_projection_matrix(&projectionMatrix->value, aspect_ratio, cameraNearDistance->value, camera_far_distance, fieldOfView->value);
 #else
         zox_sys_e()
         if (zox_has(e, Camera2D)) {
-            calculate_perspective_projection_matrix(
-                &projectionMatrix->value,
-                aspect_ratio,
-                cameraNearDistance->value,
-                camera_far_distance,
-                fieldOfView->value);
+            calculate_perspective_projection_matrix(&projectionMatrix->value,  aspect_ratio, cameraNearDistance->value, camera_far_distance, fieldOfView->value);
         } else {
             /*znear = 6;
             const float zfar = camera_far_distance;

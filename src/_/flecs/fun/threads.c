@@ -14,4 +14,12 @@ void initialize_ecs_settings(ecs *world, byte fps, byte cores) {
     real_world = world;
     initialize_threads(world, cores);
     ecs_set_target_fps(world, (float) fps);
+#ifdef FLECS_STATS
+    zox_log("Enabled FLECS stats");
+    ecs_measure_frame_time(world, 1);
+    ecs_measure_system_time(world, 1);
+#endif
+#ifdef FLECS_PROFILER
+    ecs_set_trace(world, debug_profiler_begin, debug_profiler_end);
+#endif
 }

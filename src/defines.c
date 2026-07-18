@@ -13,6 +13,10 @@
 #define FLECS_MODULE
 #define FLECS_SYSTEM
 #define FLECS_PIPELINE
+#ifdef zox_debug
+    // #define FLECS_STATS
+    // #define FLECS_PROFILER
+#endif
 // Game
 #ifndef zox_game
     #define zox_game zoxel

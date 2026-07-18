@@ -6,18 +6,17 @@ extern entity spawn_line3(ecs*, float3, float3, float, double);
 // NOTE: Makes UIs look at the cameras
 zox_sys2(BillboardSystem) {
     byte dbg_log = 0;
-    zox_sys_query();
     zox_sys_world();
     // cache camera positions first
     float3_array_d* camera_postiions = create_float3_array_d(1);
     float4_array_d* camera_rotations = create_float4_array_d(1);
+    zox_sys_query();
     zox_sys_query_begin();
     while (zox_sys_query_loop()) {
         zox_sys_begin_2();
         zox_sys_in_2(Position3D);
         zox_sys_in_2(Rotation3D);
         for (int j = 0; j < it2.count; j++) {
-            // zox_sys_e_2();
             zox_sys_i_2(Position3D, camera_position);
             zox_sys_i_2(Rotation3D, camera_rotation);
             float3_array_d_add(camera_postiions, camera_position->value);
@@ -40,8 +39,6 @@ zox_sys2(BillboardSystem) {
         if (disabled->value) {
             continue;
         }
-        // entity closest_camera = 0;
-        // byte found_camera = 0;
         float4 closest_rotation = quaternion_identity;
         float closest_distance = -1;
         uint total_cameras = 0;

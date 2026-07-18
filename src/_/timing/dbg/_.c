@@ -17,11 +17,6 @@ void define_systems_timing_debug(ecs* world) {
         [out] timing.SystemProcessed,
         [out] timing.SystemProcessedCache
     );
-    zox_system_1(
-        SystemDeltaLogSystem,
-        zoxp_mainthread,
-        [in] timing.SystemDeltaCache
-    );
     // Sets our SystemDeltaCache (at end of frame)
     zox_system(
         SystemDeltaLogResetSystem,
@@ -49,5 +44,10 @@ void define_systems_timing_debug(ecs* world) {
         zoxp_update + 1,
         [out] core.SystemLink,
         [none] timing.TrackMaxSystem
+    );
+    zox_system_1(
+        SystemDeltaLogSystem,
+        zoxp_mainthread,
+        [in] timing.SystemDeltaCache
     );
 }

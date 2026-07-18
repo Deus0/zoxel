@@ -102,23 +102,9 @@ void zox_define_systems_interaction(ecs* world) {
         [none] interaction.SelectedBrighter,
         // [none] !interaction.SelectedFillColor
     );
-    zox_system_1(
-        ClickSoundSystem,
-        zoxp_mainthread,
-        [in] interaction.ClickState,
-        [none] interaction.ClickMakeSound
-    );
-    zox_system_1(
-        ButtonClickEventSystem,
-        zoxp_mainthread,
-        [in] interaction.ClickEvent,
-        [in] interaction.ClickState,
-        [out] interaction.Clicker,
-        [none] elements.Element
-    );
     zox_system(
         DraggerEndSystem,
-        EcsPostLoad,
+        zoxp_update,
         [out] interaction.DraggableState,
         [out] interaction.DraggerLink,
         [out] interaction.DraggingDelta
@@ -146,5 +132,19 @@ void zox_define_systems_interaction(ecs* world) {
         [in] raycasts.RaycasterTarget,
         [out] raycasts.RaycasterResult,
         [none] inputs.Zevice
+    );
+    zox_system_1(
+        ClickSoundSystem,
+        zoxp_mainthread,
+        [in] interaction.ClickState,
+        [none] interaction.ClickMakeSound
+    );
+    zox_system_1(
+        ButtonClickEventSystem,
+        zoxp_mainthread,
+        [in] interaction.ClickEvent,
+        [in] interaction.ClickState,
+        [out] interaction.Clicker,
+        [none] elements.Element
     );
 }
