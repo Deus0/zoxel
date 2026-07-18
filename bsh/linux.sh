@@ -59,9 +59,9 @@ if [[ ${debug} == "True" ]]; then
     # cflags="-O2 -g -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs
-    cflags+=" -O3"
+    # cflags+=" -O3"
     # Memory Leaks
-    # cflags+=" -O0" #  -fsanitize=address"
+    cflags+=" -O0" #  -fsanitize=address"
     # For Full Debug
     # flags+=" -O0 -fno-omit-frame-pointer"
     #  -fsanitize=address

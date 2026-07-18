@@ -141,12 +141,12 @@ void zox_dbg_ui_tests(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_terrain_refresh },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Refresh Sunlights",
-        .on_click = { &zox_dbg_lights3_refresh_sunlight },
+        .text = "Rebuild Terrain Colors",
+        .on_click = { &zox_dbg_terrain_refresh_mesh_colors },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Rebuild Terrain Mesh Colors",
-        .on_click = { &zox_dbg_terrain_refresh_mesh_colors },
+        .text = "Refresh Sunlights",
+        .on_click = { &zox_dbg_lights3_refresh_sunlight },
     };
     // Test our uis
     entity spawned[elements_count];

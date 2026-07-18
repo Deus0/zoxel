@@ -104,12 +104,13 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_o(RenderDisabled, render_disabled);
         // NOTE: Some quick skips for largest voctrees
         if (!voctree->value && !voctree->ptr) {
+            // render_disabled->value = 0;
             continue;
         }
-        if (voctree->value && !voctree->ptr) {
+        /*if (voctree->value && !voctree->ptr) {
             render_disabled->value = 0;
             continue;
-        }
+        }*/
         // our bounds3D isn't centred, terrain chunks corner offset!
         bounds chunk_bounds = {
             .center = float3_add(position->value, bounds3->value),
@@ -141,14 +142,12 @@ zox_sys2(ChunkFrustumSystem) {
         if (render_disabled->value != !is_viewed) {
             render_disabled->value = !is_viewed;
             // -=- Chunk Meshes -=-
-            if (!zox_dbg_disable_chunk_mesh) {
-                iter it2 = zox_children(world, e);
-                while (zox_children_next(it2)) {
-                    for (int j = 0; j < it2.count; j++) {
-                        entity e3 = it2.entities[j];
-                        if (zox_has(e3, ChunkMesh)) {
-                            zox_setm(e3, RenderDisabled, render_disabled->value);
-                        }
+            iter it2 = zox_children(world, e);
+            while (zox_children_next(it2)) {
+                for (int j = 0; j < it2.count; j++) {
+                    entity e3 = it2.entities[j];
+                    if (zox_has(e3, ChunkMesh)) {
+                        zox_setm(e3, RenderDisabled, render_disabled->value);
                     }
                 }
             }

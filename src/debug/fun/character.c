@@ -69,12 +69,10 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
         byte depth = zox_getv(e3, RenderDepth);
         byte visible = !zox_getv(e3, RenderDisabled);
         byte build = zox_getv(e3, BuildChunkMesh);
-        byte ready = zox_getv(e3, MeshReady);
-       //byte dirty = zox_getv(e3, MeshDirty);
         byte tdirty = zox_getv(e3, TexturedMeshDirty);
         byte cdirty = zox_getv(e3, MeshColorsDirty);
         uint count = zox_getv(e3, MeshRenderCount);
-        index += snprintf(buffer + index, size - index, "   - Mesh Dis [%i] Vis [%i] Depth [%i] B [%i] R [%i] D [%i] cD [%i] x[%i]\n", disabled, visible, depth, build, ready, tdirty, cdirty, count);
+        index += snprintf(buffer + index, size - index, "   - Mesh Dis [%i] Vis [%i] Depth [%i] B [%i] R [%i] D [%i] cD [%i] x[%i]\n", disabled, visible, depth, build, tdirty, cdirty, count);
     }
     if (!zox_valid(tunk)) {
         return index;

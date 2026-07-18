@@ -36,11 +36,10 @@ entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 posi
     zox_set(e, Bounds3D, { bounds });
     // zox_log("placing: chunk_scale [%f] voxscale [%f] length [%i]", chunk_scale, scale, length);
     zox_set(e, Position3D, { positionf });
-    // zox_set(e, TransformMatrix, { float4x4_position(positionf) });
+    zox_set(e, TransformMatrix, { float4x4_position(positionf) });
     // zox_set(e, TransformMatrix, { float4x4_position_scale(positionf, 1) });
     // zox_set(e, TransformMatrix, { float4x4_transform_scale(positionf, quaternion_identity, 1) });
-    zox_set(e, TransformMatrix, { float4x4_transform(positionf, quaternion_identity) });
-
+    // zox_set(e, TransformMatrix, { float4x4_transform(positionf, quaternion_identity) });
     // lod update here
     // todo: just start this as invisible and update with streaming systems
     zox_set(e, RenderDistance, { render_distance });
