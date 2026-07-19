@@ -3,6 +3,8 @@
 
 byte running = 1;
 uint ecs_run_count = 0;
+byte zox_log_system_stats = 0;
+byte zox_log_pipelines = 0;
 #include "fun/spinlock.c"
 #include "mcr/_.c"
 #include "dat/_.c"

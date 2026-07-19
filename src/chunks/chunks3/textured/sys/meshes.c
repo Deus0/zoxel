@@ -23,11 +23,11 @@ zox_sys2(ChunkMeshSpawnSystem) {
         zox_sys_i(VoxelNode, voxels);
         zox_sys_i(VoxelNodeDirty, voxels_dirty);
         zox_sys_o(ChunkLodDirty, dirty);
-        if (dirty->value != 2 && voxels_dirty->value != zox_dirty_end) {
+        if (dirty->value != zox_chunk_lod_dirty_spawn && voxels_dirty->value != zox_dirty_end) {
             continue;
         }
-        if (dirty->value == 2) {
-            dirty->value = 0;
+        if (dirty->value == zox_chunk_lod_dirty_spawn) {
+            dirty->value = zox_chunk_lod_dirty_octree;
         }
         // check any solids
         if (!voxels->value) {

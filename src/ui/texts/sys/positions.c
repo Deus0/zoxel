@@ -45,7 +45,7 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
 }
 
 // Centralized position setting for text zigels
-zox_sys2(TextsPositionSystem) {
+/*zox_sys2(TextsPositionSystem) {
     byte is_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -92,8 +92,7 @@ zox_sys2(TextsPositionSystem) {
             }
         }
     }
-} zox_sys_end(TextsPositionSystem);
-
+} zox_sys_end(TextsPositionSystem);*/
 
 // Centralized position setting for text zigels
 zox_sys2(ZigelPositionSystem) {
@@ -125,6 +124,7 @@ zox_sys2(ZigelPositionSystem) {
         byte2 padding = zox_getv(parent, TextPadding);
         uint array_index = child_index_to_text_array_index(text_data->value, text_data->length, child_index->value);
         if (array_index >= text_data->length) {
+            zox_loge("array_index oob [%i] >= [%i]", array_index, text_data->length);
             continue;
         }
         int2 new_position = calculate_position(text_data->value, text_data->length, array_index, font_size, alignment, padding, default_line_padding);

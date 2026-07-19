@@ -2,6 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Zigel Positions not always set atm for UIs
+-x BuildChunkMesh caused font textures to break
+- Disabling seemed to fix lag: Npcs
+
+- InitializeEntity - make byte from state - removing Increment systems
+
 - Fix item drop from terrain, so it works in same pipeline as others (sync point reduction)
 -x test zox_time_systems later as might of broke it during pipeline changes
 

@@ -1,5 +1,6 @@
 entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
+    // zox_set(e, RenderDisabled, { 0 });
     // Terrain / Generation
     zox_add_tag(e, TerrainChunk);
     zox_add_tag(e, StreamedChunk);
@@ -8,7 +9,8 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateChunk, { 0 });
     zox_prefab_set(e, Loaded, { 0 });
-    zox_prefab_set(e, ChunkLodDirty, { 1 });
+    zox_prefab_set(e, ChunkLodDirty, { zox_chunk_lod_dirty_start });
+    zox_prefab_set(e, RenderDistanceDirty, { zox_dirty_trigger });
     // Tunks
     zox_prefab_set(e, TunkLink, { 0 });
     // Vodes

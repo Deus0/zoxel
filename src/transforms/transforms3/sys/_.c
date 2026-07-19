@@ -8,14 +8,13 @@
 #include "children.c"
 
 void zox_define_systems_transforms3(ecs *world) {
-    // New hieerarchys using flecs
-    // NOTE: Moved before transforms_stage so matricies can update after we have processed position/rotatios
-    // NOTE: So normal EcsOnUpdate can set position/rotations without worrying about children
     zox_system(
         TransformChildrenSystem,
         zoxp_transforms,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
+        [none] !transforms3.LocalPosition3D,
+        [none] !transforms3.LocalRotation3D,
         [none] !transforms.DisableTransform
     );
     add_system_process_counter(world, zox_id(TransformChildrenSystem));
@@ -61,10 +60,10 @@ void zox_define_systems_transforms3(ecs *world) {
         [none] !transforms.DisableTransform
     );
     // TODO: Add Lerp Slower Follow
-    zox_system(
+    /*zox_system(
         ShadowPositionSystem,
         zoxp_transforms,
         [in] transforms3.ShadowLink,
         [out] transforms3.Position3D
-    );
+    );*/
 }

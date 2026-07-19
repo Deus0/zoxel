@@ -97,10 +97,12 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
 // TODO: Convert vox_file to VoxNode, and clone to depth to ModelLods
 //      atm we rebuild everytime the same
 entity spawn_vox_file(ecs *world, entity prefab, const vox_file* data, const char* filename) {
-    zox_make_neww(model);
-    char name[128];
-    sprintf(name, "vox_file_%s", filename);
-    zox_set_unique_name(model, name);
+    entity model = zox_new();
+    {
+        char name[128];
+        sprintf(name, "vox_file_%s", filename);
+        zox_set_unique_name(model, name);
+    }
     byte mdepth = pick_node_depth(data->chunks[0].size.xyz);
     zox_set(model, MaxRenderDepth, { mdepth });
     ModelLods model_lods;
@@ -108,12 +110,17 @@ entity spawn_vox_file(ecs *world, entity prefab, const vox_file* data, const cha
         byte reducer = mdepth - rdepth;
         float bscale = (1 / 64.0f);
         bscale *= powers_of_two[mdepth - rdepth];
-        zox_instance(prefab);
-        set_vox_file(world, e, data, reducer, bscale);
-        zox_set(e, BuildChunkMesh, { zox_dirty_trigger });
-        zox_set(e, RenderDepth, { rdepth });
-        zox_set(e, MaxRenderDepth, { mdepth });
-        model_lods.value[rdepth] = e;
+        entity e2 = zox_ins(world, prefab);
+        {
+            char name[128];
+            sprintf(name, "vox_file_lod_%s", filename);
+            zox_set_unique_name(e2, name);
+        }
+        set_vox_file(world, e2, data, reducer, bscale);
+        zox_set(e2, BuildChunkMesh, { zox_dirty_trigger });
+        zox_set(e2, RenderDepth, { rdepth });
+        zox_set(e2, MaxRenderDepth, { mdepth });
+        model_lods.value[rdepth] = e2;
     }
     zox_set_ptr(model, ModelLods, model_lods);
     return model;

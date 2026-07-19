@@ -168,7 +168,9 @@ zox_sys2(FrameTextureSystem) {
         }
         zox_sys_increment();
     }
+#ifdef zox_time_systems
     if (dbg_log && process_count) {
         zox_log("Frame Textures Generated [%i]:[%f]", process_count, calculate_sys_delta());
     }
+#endif
 } zox_sys_end(FrameTextureSystem);

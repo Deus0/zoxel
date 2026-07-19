@@ -6,10 +6,6 @@
 byte zox_disable_node_face_subdivision = 1;
 // remember: vertex position is just node position / voxel position
 
-/*ypedef struct {
-    byte *solidity;
-} chunk3_textured_builder_data;*/
-
 typedef struct {
     int_array_d *indicies;
     float3_array_d* vertices;
@@ -51,7 +47,7 @@ typedef struct {
     byte3 local_position;
 } octree_dig_data;
 
-byte cache_blocks_data(iter* it, byte* solidity) {
+/*byte cache_blocks_data(iter* it, byte* solidity) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);
@@ -86,40 +82,28 @@ byte cache_blocks_data(iter* it, byte* solidity) {
         }
     }
     return 1;
-}
+}*/
 
 // this takes 14ms on a 24core cpu, 6ms though during streaming
 // scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
-void zox_build_voxel_face(const mesh_uvs_build_data* mesh, const int* indicies, const float3* verts, const float2* uvs, float3 position, float3 scale3) {
-    if (!uvs) { // TODO: If we dont generate realm blocks  it goes out of index, we should account for this
+void zox_build_voxel_face(const mesh_uvs_build_data* mesh, const int* face_indicies, const float3* face_verts, const float2* face_uvs, float3 position, float3 scale3) {
+#ifdef zox_safety_checks
+    if (!face_uvs) { // TODO: If we dont generate realm blocks  it goes out of index, we should account for this
+        zox_loge("face_uvs is null in zox_build_voxel_face");
         return;
     }
-    // indicies
-    expand_capacity_int_array_d(mesh->indicies, voxel_face_indicies_length);
+#endif
     for (byte i = 0; i < 6; i++) {
-        int j = mesh->indicies->size + i;
-        mesh->indicies->data[j] = mesh->vertices->size + indicies[i];
+        int index = mesh->vertices->size + face_indicies[i];
+        int_array_d_add(mesh->indicies, index);
     }
-    mesh->indicies->size += voxel_face_indicies_length;
-    // verts
-    expand_capacity_float3_array_d(mesh->vertices, voxel_face_vertices_length);
     for (byte i = 0; i < voxel_face_vertices_length; i++) {
-        int j = mesh->vertices->size + i;
-        float3 vert = verts[i];
+        // int j = mesh->vertices->size + i;
+        float3 vert = face_verts[i];
         float3_scale3p(&vert, scale3);
         float3_add_float3_p(&vert, position);
-        mesh->vertices->data[j] = vert;
-    }
-    mesh->vertices->size += voxel_face_vertices_length;
-    // uvs
-    expand_capacity_float2_array_d(mesh->uvs, voxel_face_vertices_length);
-    for (byte i = 0; i < 4; i++) {
-        int j = mesh->uvs->size + i;
-        mesh->uvs->data[j] = uvs[i];
-    }
-    mesh->uvs->size += voxel_face_vertices_length;
-    // White for now, alter in other systems
-    for (byte a = 0; a < voxel_face_vertices_length; a++) {
+        float3_array_d_add(mesh->vertices, vert);
+        float2_array_d_add(mesh->uvs, face_uvs[i]);
         color_rgb_array_d_add(mesh->color_rgbs, color_rgb_white);
     }
 }
@@ -188,11 +172,11 @@ static inline void zox_terrain_building_dig(terrain_build_data data, octree_dig_
     }
 }
 
-void clear_mesh_uvs(MeshIndicies *meshIndicies, MeshVertices *meshVertices, MeshColorRGBs *meshColorRGBs, MeshUVs *meshUVs) {
+/*void clear_mesh_uvs(MeshIndicies *meshIndicies, MeshVertices *meshVertices, MeshColorRGBs *meshColorRGBs, MeshUVs *meshUVs) {
     // zox_log("Clearing Chunk Mesh");
     clear_mesh(meshIndicies, meshVertices, meshColorRGBs);
     dispose_MeshUVs(meshUVs);
-}
+}*/
 
 // TODO: Move terrain cache into functions
 // TODO: Cache all managers found, not just single
@@ -264,7 +248,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
             if (!blocks->length) {
                 continue; // if failed to find terrain parents
             }
-            solidity = malloc(blocks->length * sizeof(byte));
+            solidity = malloc(blocks->length);
             memset(solidity, 1, blocks->length);
             for (int j = 0; j < blocks->length; j++) {
                 entity block = blocks->value[j];

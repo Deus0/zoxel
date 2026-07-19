@@ -1,5 +1,5 @@
 entity spawn_model_generated(ecs* world, entity parent, const char* name, lint seed, byte vox_type, color fill, byte depth, byte max_depth) {
-    entity e = spawn_vox_basic(world, prefab_vox, depth, max_depth);
+    entity e = spawn_vox_basic(world, prefab_invisible_vox, depth, max_depth);
     {
         char name2[64];
         sprintf(name2, "model_%s", name);

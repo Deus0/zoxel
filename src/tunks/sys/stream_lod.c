@@ -84,9 +84,9 @@ zox_sys2(TunkLodSystem) {
         }
         distance->value = new_distance;
         distance_dirty->value = zox_dirty_trigger;
-        byte new_depth = camera_distance_to_terrain_render_depth(new_distance);
-        if (new_depth > lod->value) {
-            lod->value = new_depth;
+        byte tunk_render_depth = camera_distance_to_terrain_render_depth(new_distance);
+        if (tunk_render_depth > lod->value) {
+            lod->value = tunk_render_depth;
             generate->value = zox_generate_tunk_start;
         }
         byte stack_i = 0;
@@ -105,19 +105,19 @@ zox_sys2(TunkLodSystem) {
             zox_setm(chunk, RenderDistance, new_distance);
             zox_setm(chunk, RenderDistanceDirty, zox_dirty_trigger);
             byte old_depth = zox_getv(chunk, RenderDepth);
-            if (old_depth == new_depth) {
+            if (old_depth == tunk_render_depth) {
                 continue;
             }
-            zox_setm(chunk, RenderDepth, new_depth);
+            zox_setm(chunk, RenderDepth, tunk_render_depth);
             // zox_setm(chunk, RenderDepthDirty, zox_dirty_trigger);
-            zox_setm(chunk, ChunkLodDirty, 1);
+            zox_setm(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
             // zox_setm(chunk, Busy, 1);
             if (dbg_log) {
-                zox_log("Chunk Depth Updated [%s]:[%i]", zox_get_name(chunk), new_depth);
+                zox_log("Chunk Depth Updated [%s]:[%i]", zox_get_name(chunk), tunk_render_depth);
             }
             // NOTE: Clears the light if depth is set to increase
             byte node_depth = zox_getv(chunk, NodeDepth);
-            if (new_depth > node_depth) {
+            if (tunk_render_depth > node_depth) {
                 zox_muter(chunk, LightNode, lights);
                 lights->value = darklight;
                 collapse_LightNode(lights);

@@ -9,11 +9,11 @@ entity spawn_prefab_chunk2(ecs *world) {
     zox_prefab_set(e, Chunk2Neighbors, { { 0, 0, 0, 0 } });
     // allocations
     zox_prefab_set(e, NodeDepth, { 0 });
-
-    zox_prefab_set(e, RenderDistance, { render_depth_uninitialized });
-    zox_prefab_set(e, RenderDistanceDirty, { zox_dirty_none });
-    zox_prefab_set(e, RenderDepth, { render_depth_uninitialized });
-    zox_prefab_set(e, RenderDepthDirty, { zox_dirty_none });
+    // render_depth_uninitialized
+    zox_prefab_set(e, RenderDistance, { 0 });
+    zox_prefab_set(e, RenderDistanceDirty, { 0 });
+    zox_prefab_set(e, RenderDepth, { 0 });
+    zox_prefab_set(e, RenderDepthDirty, { 0 });
 
     return e;
 }

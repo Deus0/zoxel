@@ -1,5 +1,4 @@
 #ifdef FLECS_STATS
-static byte debug_print_pipeline_order = 1;
 
 typedef struct {
     const char *name;
@@ -25,7 +24,7 @@ static double metric_max_ms(ecs_metric_t m, int32_t t)
     return m.gauge.max[t] * 1000.0;
 }
 
-void debug_ecs_sync_points(ecs_world_t *world)
+void log_pipelines(ecs_world_t *world)
 {
     ecs_entity_t pipeline_id = ecs_get_pipeline(world);
     ecs_pipeline_stats_t p = {0};
@@ -91,7 +90,7 @@ static int compare_profile(const void *a, const void *b) {
     return 0;
 }
 
-void debug_ecs_stats(ecs *world, double pre_ms, double ecs_ms, double post_ms) {
+void log_system_stats(ecs* world) {
     ecs_entity_t pipeline_id = ecs_get_pipeline(world);
     ecs_pipeline_stats_t p = {0};
     if (!pipeline_id || !ecs_pipeline_stats_get(world, pipeline_id, &p)) {
@@ -123,22 +122,17 @@ void debug_ecs_stats(ecs *world, double pre_ms, double ecs_ms, double post_ms) {
     printf("\n============================================================\n");
     printf("Frame %u\n", ecs_run_count);
     printf("------------------------------------------------------------\n");
-    printf("Pre Update : %7.3f ms\n", pre_ms);
-    printf("ECS        : %7.3f ms\n", ecs_ms);
-    printf("Post Update: %7.3f ms\n", post_ms);
-    printf("Total      : %7.3f ms\n", pre_ms + ecs_ms + post_ms);
+    //printf("Pre Update : %7.3f ms\n", pre_ms);
+    //printf("ECS        : %7.3f ms\n", ecs_ms);
+    //printf("Post Update: %7.3f ms\n", post_ms);
+    // printf("Total      : %7.3f ms\n", pre_ms + ecs_ms + post_ms);
     printf("\nPipeline\n");
     printf("Systems: %d  Active: %d  Sync Points: %d\n",
            p.system_count,
            p.active_system_count,
            ecs_vec_count(&p.sync_points));
     printf("\nTop Systems\n");
-    printf("%-36s %8s %8s %8s %8s\n",
-           "System",
-           "Avg",
-           "Min",
-           "Max",
-           "Match");
+    printf("%-36s %8s %8s %8s %8s\n", "System", "Avg", "Min",  "Max", "Match");
     int max_print = entry_count < 15 ? entry_count : 15;
     for (int i = 0; i < max_print; i++) {
         printf("%-36.36s %8.3f %8.3f %8.3f %8d%s\n",
@@ -151,8 +145,14 @@ void debug_ecs_stats(ecs *world, double pre_ms, double ecs_ms, double post_ms) {
     }
     free(entries);
     ecs_pipeline_stats_fini(&p);
-    if (debug_print_pipeline_order) {
-        debug_ecs_sync_points(world);
+}
+
+void debug_ecs_stats(ecs *world) {
+    if (zox_log_system_stats) {
+        log_system_stats(world);
+    }
+    if (zox_log_pipelines) {
+        log_pipelines(world);
     }
 }
 

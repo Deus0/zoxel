@@ -84,6 +84,7 @@ byte aabb_in_frustum_fast(const plane *planes, bounds b, float eps) {
 // this sets RenderDisabled for chunks and their children
 zox_sys2(ChunkFrustumSystem) {
     byte dbg_log = 0;
+    byte ignore_low_lods = 1;
     byte frustum_inwards = 1; // we just using this for safety
     zox_sys_query();
     zox_sys_world();
@@ -107,10 +108,6 @@ zox_sys2(ChunkFrustumSystem) {
             // render_disabled->value = 0;
             continue;
         }
-        /*if (voctree->value && !voctree->ptr) {
-            render_disabled->value = 0;
-            continue;
-        }*/
         // our bounds3D isn't centred, terrain chunks corner offset!
         bounds chunk_bounds = {
             .center = float3_add(position->value, bounds3->value),
@@ -119,6 +116,9 @@ zox_sys2(ChunkFrustumSystem) {
         float3_scale_p(&chunk_bounds.extents, fudge_frustum_extents);
         zox_sys_query_begin();
         byte is_viewed = disable_frustum_culling;
+        if (ignore_low_lods && voctree->value && !voctree->ptr) {
+            is_viewed = 1;
+        }
         // For each Camera
         while (zox_sys_query_loop()) {
             if (is_viewed) {

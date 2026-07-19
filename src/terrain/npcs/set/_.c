@@ -1,8 +1,6 @@
-// #define zox_enable_log_spawning
-// byte character_spawn_distance = 2;   // not used yet
-byte character_spawn_rate_min = 0; // 0 | 1 | 4 | 8 | 16 | 64
-byte character_spawn_rate_max = 2;
-
+byte character_spawn_distance = 2;   // not used yet
+byte character_spawn_rate_min = 0;
+byte character_spawn_rate_max = 8; // set higher
 byte disable_npc_movement = 0;
 
 void key_down_toggle_npc_movement(ecs* world, int32_t keycode) {

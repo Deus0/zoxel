@@ -15,7 +15,7 @@ void define_systems_characters3(ecs *world) {
     );
     zox_system(
         CharacterSaveSystem,
-        zoxp_update, // EcsOnStore,
+        zoxp_update,
         [in] realms.RealmLink,
         [in] transforms3.Position3D,
         [in] transforms3.Euler,

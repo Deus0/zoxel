@@ -35,8 +35,7 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
     // # List #
     int elements_count = 0;
     byte visible_count = 6;
-    byte zox_tsts_count = 3;
-    SpawnListElement elements[zox_tsts_count];
+    SpawnListElement elements[zox_max_test_uis];
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
     byte header_font_size = 6 * ui_scale;

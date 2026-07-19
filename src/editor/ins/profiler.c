@@ -29,7 +29,7 @@ entity spawn_profiler(ecs* world, entity canvas, const char* header_label, int2 
     zox_add_tag(e, Profiler);
     zox_set(e, PlotPaused, { 0 });
     zox_set(e, DoubleData, { 0 });
-    entity data_entity = frame_times_samples; // timing_module;
+    entity data_entity = frame_times_samples;
     int2 plot_size = size;
     for (int i = 0; i < plots_count; i++) {
         entity e2 = spawn_plot_graph(world, body, prefab_plot_graph, data_entity, plot_size, lines_count, start_value, plot_colors[i]);

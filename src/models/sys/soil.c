@@ -3,7 +3,7 @@
 // todo: add unique colors as a property too
 zox_sys2(SoilGenerationSystem) {
     byte dbg_log = 0;
-    byte max_process = 2;   // TODO: Make work without breaking
+    byte max_process = 1;   // TODO: Make work without breaking
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Color);

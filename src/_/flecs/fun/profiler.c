@@ -3,8 +3,6 @@ void initialize_flecs_profiler(ecs* world) {
 /*#ifdef zox_use_flecs_profiler
         zox_log("Flecs Profiler Enabled");
         zox_import_module(FlecsStats);
-        ecs_measure_system_time(world, 1);
-        ecs_measure_frame_time(world, 1);
 
         //ECS_IMPORT(world, FlecsMonitor);
         // ecs_tracing_enable(1);
@@ -16,13 +14,13 @@ void initialize_flecs_profiler(ecs* world) {
 
 #ifdef FLECS_PROFILER
 
+#define DEBUG_MAX_SYSTEMS 4096
+
 typedef struct {
     ecs_entity_t system;
-    uint64_t start;
+    ecs_time_t start;
     double ms;
 } ecs_debug_profile_entry_t;
-
-#define DEBUG_MAX_SYSTEMS 4096
 
 static ecs_debug_profile_entry_t debug_profile[DEBUG_MAX_SYSTEMS];
 static int32_t debug_profile_count = 0;
@@ -44,42 +42,44 @@ static ecs_debug_profile_entry_t *debug_find_system(ecs_entity_t sys)
     &debug_profile[debug_profile_count++];
 
     e->system = sys;
-    e->start = 0;
+    e->start = (ecs_time_t){0};
     e->ms = 0;
 
     return e;
 }
 
-
 static void debug_profiler_begin(
     ecs_world_t *world,
     ecs_entity_t system)
 {
-    ecs_debug_profile_entry_t *e =
-    debug_find_system(system);
+    (void)world;
+
+    ecs_debug_profile_entry_t *e = debug_find_system(system);
 
     if (e) {
-        e->start = ecs_os_get_time();
+        ecs_os_get_time(&e->start);
     }
 }
-
 
 static void debug_profiler_end(
     ecs_world_t *world,
     ecs_entity_t system)
 {
-    ecs_debug_profile_entry_t *e =
-    debug_find_system(system);
+    (void)world;
 
-    if (e && e->start) {
+    ecs_debug_profile_entry_t *e = debug_find_system(system);
 
-        uint64_t end = ecs_os_get_time();
-
-        e->ms =
-        (double)(end - e->start) *
-        1000.0 /
-        (double)ecs_os_get_time_resolution();
+    if (!e) {
+        return;
     }
+
+    ecs_time_t end;
+    ecs_os_get_time(&end);
+
+    e->ms =
+        (ecs_time_to_double(end) -
+         ecs_time_to_double(e->start))
+        * 1000.0;
 }
 
 

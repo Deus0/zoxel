@@ -14,13 +14,6 @@ void define_systems_editor(ecs *world) {
         [in] core.ComponentTarget,
         [none] editor.InspectorLabel
     );
-    zox_system(
-        MaxSystemTimeLabelSystem,
-        zoxp_update,
-        [out] texts.TextData,
-        [out] texts.TextDirty,
-        [none] editor.MaxSystemTimeLabel
-    );
     zox_system_1(
         HierarchySpawnSystem,
         zoxp_mainthread,
@@ -43,4 +36,13 @@ void define_systems_editor(ecs *world) {
         [in] layouts2.CanvasLink,
         [none] players.Player
     );
+#ifdef zox_time_systems
+    zox_system(
+        MaxSystemTimeLabelSystem,
+        zoxp_update,
+        [out] texts.TextData,
+        [out] texts.TextDirty,
+        [none] editor.MaxSystemTimeLabel
+    );
+#endif
 }

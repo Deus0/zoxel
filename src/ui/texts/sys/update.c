@@ -1,6 +1,6 @@
 // NOTE: Updates previous zigels to new data
 // TODO: Can we move this to Zigels instead of working at Text
-zox_sys2(TextUpdateSystem) {
+/*zox_sys2(TextUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -47,7 +47,7 @@ zox_sys2(TextUpdateSystem) {
         }
         // zox_log("+ updating text [%s]", zox_get_name(e))
     }
-} zox_sys_end(TextUpdateSystem);
+} zox_sys_end(TextUpdateSystem);*/
 
 zox_sys2(ZigelUpdateSystem) {
     byte dbg_log = 0;
@@ -73,11 +73,6 @@ zox_sys2(ZigelUpdateSystem) {
             continue;
         }
         const TextData* text = zox_get(parent, TextData);
-        // uint array_index = child_index_to_text_array_index(text->value, text->length, data_index->value);
-        /*if (data_index->value != new_data_index) {
-            data_index->value = new_data_index;
-            zox_mut_end(e2, DataIndex);
-        }*/
         byte new_zigel_index = calculate_zigel_index(text->value, text->length, child_index->value);
         if (zigel_index->value != new_zigel_index) {
             zigel_index->value = new_zigel_index;

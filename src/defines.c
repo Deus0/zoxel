@@ -8,15 +8,6 @@
 #endif
 // OpenGL
 #define GL_GLEXT_PROTOTYPES
-// Flecs
-#define FLECS_CUSTOM_BUILD
-#define FLECS_MODULE
-#define FLECS_SYSTEM
-#define FLECS_PIPELINE
-#ifdef zox_debug
-    // #define FLECS_STATS
-    // #define FLECS_PROFILER
-#endif
 // Game
 #ifndef zox_game
     #define zox_game zoxel
@@ -24,14 +15,23 @@
 #define str_macro(x) #x
 #define inc_nexus_game(x) str_macro(../gam/x/_.c)
 #define zox_nexus_game inc_nexus_game(zox_game)
-// Random
-#define zox_set_camera_firstperson
-#define zoxel_time_main_loop_cutoff 33.33f
 // Release
 #ifndef zox_debug
     #define zox_disable_names
     #define zox_disable_logs
 #else
-    #define zox_time_systems
+    // #define zox_time_systems
 #endif
 
+// Flecs
+#define FLECS_CUSTOM_BUILD
+#define FLECS_MODULE
+#define FLECS_SYSTEM
+#define FLECS_PIPELINE
+#ifdef zox_debug
+    // #define FLECS_PROFILER
+    #define FLECS_STATS
+    #define FLECS_REST
+    #define FLECS_HTTP
+    #define FLECS_METRICS
+#endif

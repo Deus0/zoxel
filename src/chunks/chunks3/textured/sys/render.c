@@ -23,15 +23,14 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         if (disabled->value || !count->value || !mesh->value.x) {
             continue;
         }
-        camera_filtering_check();
         // chunk generating validation step
-        if (zox_getv(e, BuildChunkMesh) || zox_getv(e, TexturedMeshDirty)) {
+        /*if (zox_getv(e, BuildChunkMesh) || zox_getv(e, TexturedMeshDirty)) {
             continue;
         }
         entity c = zox_get_parent(world, e);
         if (zox_getv(c, GenerateChunk) || zox_getv(c, BuildChunkSides)) {
             continue;
-        }
+        }*/
         // TODO: Swapping / Grouping Tilemaps
         if (!init) {
             entity chunk = zox_get_parent(world, e);

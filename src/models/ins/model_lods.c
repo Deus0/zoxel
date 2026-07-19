@@ -15,6 +15,7 @@ entity spawn_model(ecs *world, entity prefab, byte mdepth, byte ndepth, byte3 rs
 
 // TODO: Remove Model Lods and just use Models with children Render Meshes
 entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize, const char* label, ModelLods* mlods) {
+    entity prefab_lod = prefab_invisible_vox;
     srand(seed);
     c = color_mutate(c, 40);
     zox_make_new();
@@ -28,7 +29,7 @@ entity spawn_model_lods(ecs* world, color c, lint seed, byte mdepth, byte3 rsize
         rsized.x /= ddepth;
         rsized.y /= ddepth;
         rsized.z /= ddepth;
-        entity e2 = spawn_model(world, prefab_vox, mdepth, rdepth, rsized);
+        entity e2 = spawn_model(world, prefab_lod, mdepth, rdepth, rsized);
         zox_set_parent(world, e2, e);
         zox_set_unique_name(e2, label);
         // zox_set(e2, GenerateModel, { zox_generate_model_run });

@@ -1,8 +1,5 @@
 // When defining system
 void add_system_log_components(ecs* world) {
-    #ifndef zox_time_systems
-    return;
-    #endif
     for (int i = 0; i < zox_systems_count; i++) {
         entity system = zox_systems[i];
         if (!zox_valid(system)) {

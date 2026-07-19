@@ -133,10 +133,6 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
             c->g = light;
             c->b = light;
             (*ccount)++;
-            /*if (*ccount >= colors->length) {
-                zox_loge("2) Count [%i] is greater than colors [%i] in Light Builder", *ccount, colors->length);
-                return;
-            }*/
         }
     }
 }
@@ -144,9 +140,9 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
 // NOTE: Rebuilds Lights only when MeshColorsGenerate is dirty
 zox_sys2(SmoothLightsBuildSystem) {
     byte dbg_log = 0;
-    if (disable_lights) {
+    /*if (disable_lights) {
         return;
-    }
+    }*/
     if (!zox_smooth_lighting) {
         return;
     }

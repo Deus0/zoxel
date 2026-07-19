@@ -80,9 +80,10 @@ zox_sys2(TerrainStreamSystem) {
                             Chunk3Stack stack = (Chunk3Stack) { 0 };
                             byte stack_i = 0;
                             for (position.y = - size.y; position.y <= size.y; position.y++, stack_i++) {
-                                entity chunk = int3_hashmap_get(chunks->value, position);
-                                if (!zox_valid(chunk)) {
-                                    chunk = spawn_chunk3_terrain(world, prefab_chunk_terrain, e, position, depth->value, block_scale->value, new_distance, new_depth);
+                                entity chunk; // = int3_hashmap_get(chunks->value, position);
+                                //if (!zox_valid(chunk))
+                                {
+                                    chunk = spawn_terrain_chunk(world, prefab_chunk_terrain, e, position, depth->value, block_scale->value, new_distance, new_depth);
                                     int3_hashmap_add(chunks->value, position, chunk);
                                     zox_set(chunk, TunkLink, { tunk });
                                     if (position.y == render_distance_y) {

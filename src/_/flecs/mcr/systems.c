@@ -55,6 +55,7 @@ void zox_system_on_new(ecs* world, entity system) {
             uint process_count = 0;
 
     #define zox_sys_end(T)\
+        (void) process_count; \
         } ECS_SYSTEM_DECLARE(T)
 
     #define zox_sys_increment() process_count++

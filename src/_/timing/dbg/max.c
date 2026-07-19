@@ -1,8 +1,5 @@
 // NOTE: From Module, go through all systems and find biggest
 zox_sys2(MaxSystemSystem) {
-#ifndef zox_time_systems
-    return;
-#endif
     byte dbg_log = 0;
     zox_sys_world();
     entity max_system = 0;

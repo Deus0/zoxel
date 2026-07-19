@@ -10,7 +10,7 @@ zox_sys2(ChunkMeshToggleSystem) {
         zox_sys_e();
         zox_sys_i(RenderDepth, depth);
         zox_sys_o(ChunkLodDirty, dirty);
-        if (dirty->value != 1) {
+        if (dirty->value != zox_chunk_lod_dirty_toggle) {
             continue;
         }
         iter it2 = zox_children(world, e);
@@ -20,13 +20,9 @@ zox_sys2(ChunkMeshToggleSystem) {
                 if (!zox_has(mesh, ChunkMesh)) {
                     continue;
                 }
-                if (zox_getv(mesh, RenderDepth) != depth->value) {
-                    zox_disable(mesh);
-                } else {
-                    zox_enable(mesh);
-                }
+                zox_set_enabled(mesh, zox_getv(mesh, RenderDepth) == depth->value);
             }
         }
-        dirty->value = 2;
+        dirty->value = zox_chunk_lod_dirty_spawn;
     }
 } zox_sys_end(ChunkMeshToggleSystem);

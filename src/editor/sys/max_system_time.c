@@ -2,14 +2,12 @@
 zox_sys2(MaxSystemTimeLabelSystem) {
     // Get the output
     zox_sys_world();
-    // NOTE: For some reason we could not get the ID here, ecs namespacing?
-    entity module = timing_module;
-    // entity module = zox_id(Timing);
-    if (!zox_valid(module)) {
+    entity maxe = max_systems_data;
+    if (!zox_valid(maxe)) {
         zox_loge("Timing Module not valid.");
         return;
     }
-    entity max_system = zox_getv(module, SystemLink);
+    entity max_system = zox_getv(maxe, SystemLink);
     if (!zox_valid(max_system)) {
         zox_loge("No Max System linked to Timing Module");
         return;

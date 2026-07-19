@@ -1,12 +1,14 @@
 extern void on_spawned_character3_npc(ecs*, entity);
+uint total_spawned_npcs_count = 0;
+
 // we need to check if chunk has generated yet - is there a component for this?
 zox_sys2(Characters3SpawnSystem) {
+    byte dbg_log = 0;
     float dbg_length = 0;
     if (disable_npcs || !character_spawn_rate_max) {
         return;
     }
-    // TODO: Use Bounds to place into terrain
-    // float3 bounds = (float3) { 0.22f, 0.44f, 0.22f };
+    uint spawned_count = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NpcSpawnZoneDirty);
@@ -30,7 +32,7 @@ zox_sys2(Characters3SpawnSystem) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(RenderDistance, render_distance);
         zox_sys_i(RenderDisabled, render_disabled);
-        zox_sys_i(ChunkPosition, cposition);
+        zox_sys_i(ChunkPosition, chunk_position);
         zox_sys_i(Position3D, positionf);
         zox_sys_i(BlockScale, cscale);
         zox_sys_o(CharactersSpawned, spawned);
@@ -40,10 +42,20 @@ zox_sys2(Characters3SpawnSystem) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
+#ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_loge("Terrain missing on chunk3_terrain");
             continue;
         }
+#endif
+        // getters
+        entity realm = zox_get_parent(world, terrain);
+#ifdef zox_safety_checks
+        if (!zox_valid(realm)) {
+            zox_loge("Terrain missing on chunk3_terrain");
+            continue;
+        }
+#endif
         if (spawned->value) {
             // if (spawned->value) zox_log("- already_spawned [%i]", entities->length)
             continue;
@@ -52,21 +64,22 @@ zox_sys2(Characters3SpawnSystem) {
         if (!has_children_VoxelNode(voctree) || !voctree->value) {
             continue;
         }
-        // getters
-        zox_geter_value(terrain, RealmLink, entity, realm);
-        if (!zox_valid(realm)) {
-            continue;
-        }
         zox_geter(realm, CharacterLinks, characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voctree_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
         // calcs
-        // byte character_spawn_rate = character_spawn_rate_min + rand() % (character_spawn_rate_max - character_spawn_rate_min + 1);
         byte character_spawn_rate = rand_range(character_spawn_rate_min, character_spawn_rate_max);
         for (byte j = 0; j < character_spawn_rate; j++) {
-            // 1) Find a npc to place
-            // find random from realm characters
+            // Find Position First
+            byte3 in_chunk_position;
+            if (!find_random_position_on_ground(voctree, voctree_above, depth->value, 32, &in_chunk_position)) {
+                if (dbg_log) {
+                    zox_log("Failed find Position for NPC at [%ix%ix%i]:%i", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z, j);
+                }
+                break;
+            }
+            // Use a random character type
             byte chance_current = 0;
             byte chance_rolled = rand() % max_chance;
             entity meta = 0;
@@ -80,12 +93,12 @@ zox_sys2(Characters3SpawnSystem) {
                 }
             }
             if (!meta) {
-                zox_log_error("failed to find a spawn character_meta");
+                zox_loge("failed to find a spawn character_meta");
                 continue;
             }
             zox_geter_value_non_const(meta, ModelLink, entity, model);
             if (!model || !meta) {
-                zox_log_error("failed to find a spawn character_meta");
+                zox_loge("failed to find a spawn character_meta");
                 continue;
             }
             // if model group
@@ -96,16 +109,11 @@ zox_sys2(Characters3SpawnSystem) {
                 }
             }
             if (!zox_valid(model) || !zox_has(model, MaxRenderDepth)) {
-                zox_log_error("Model Invalid [%s]", zox_get_name(model));
+                zox_loge("Model Invalid [%s]", zox_get_name(model));
                 continue;
             }
             zox_geter_value(model, MaxRenderDepth, byte, mdepth);
             byte character_depth = camera_distance_to_npc_render_depth(render_distance->value, mdepth);
-            byte3 in_chunk_position;
-            if (!find_random_position_on_ground(voctree, voctree_above, depth->value, 32, &in_chunk_position)) {
-                // zox_loge("Failed find Position for NPC at [%ix%ix%i]:%i", cposition->value.x, cposition->value.y, cposition->value.z, j);
-                break;
-            }
             lint npc_seed = rand_range(0, 10000);
             float3 position = byte3_to_float3(in_chunk_position);
             float3_scale_p(&position, cscale->value);
@@ -113,12 +121,13 @@ zox_sys2(Characters3SpawnSystem) {
             float3_add_float3_p(&position, float3_single(cscale->value * 0.5f));
             float4 rotation = quaternion_from_euler((float3) { 0, (rand() % 361) * degreesToRadians, 0 });
             entity e2 = spawn_character3_npc(world, meta, realm, terrain, npc_seed, model, character_depth, render_disabled->value, position, rotation, NULL);
-            if (!zox_valid(e2)) {
-                zox_loge("spawn_character3 failed");
+            if (!e2) {
+                zox_loge("Spawning NPC Failed");
                 continue;
             }
+            zox_set(e2, ChunkPosition, { chunk_position->value });
+            // Link together
             zox_set(e2, ChunkLink, { e });
-            zox_set(e2, ChunkPosition, { cposition->value });
             add_to_ChunkEntities(entities, e2);
             if (disable_npc_movement) {
                 zox_set(e2, DisableMovement, { 1 });
@@ -126,6 +135,11 @@ zox_sys2(Characters3SpawnSystem) {
             if (dbg_length) {
                 spawn_arrow3D(world, position, (float3) { 0, cscale->value * dbg_length, 0 }, 0.1f, 6, 20);
             }
+            if (dbg_log) {
+                zox_log("Chunk %s Spawned NPC [%i / %i] at [%fx%fx%f]", zox_getn(e), spawned_count, total_spawned_npcs_count, position.x, position.y, position.z);
+            }
+            spawned_count++;
+            total_spawned_npcs_count++;
         }
         spawned->value = 1;
     }

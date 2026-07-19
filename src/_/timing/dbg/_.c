@@ -17,37 +17,40 @@ void define_systems_timing_debug(ecs* world) {
         [out] timing.SystemProcessed,
         [out] timing.SystemProcessedCache
     );
-    // Sets our SystemDeltaCache (at end of frame)
-    zox_system(
-        SystemDeltaLogResetSystem,
-        zoxp_reset,
-        [out] timing.SystemDelta,
-        [out] timing.SystemDeltaCache
-    );
-    // Adds SystemDeltaCache to Curve
-    zox_system(
-        SustemTimePlotSystem,
-        zoxp_update - 1,
-        [in] timing.SystemDeltaCache,
-        [out] core.DoubleData
-    );
-    // Gets Curve's Max
+    // Gets Curve's Max - TODO: Move to Data module
     zox_system(
         MaxDataSystem,
         zoxp_update,
         [in] core.DoubleData,
         [out] core.MaxDoubleData,
     );
-    // Tracks the Max System from their MaxDoubleData
+#ifdef zox_time_systems
+    // Grabs highest MaxDoubleData from all systems
     zox_system(
         MaxSystemSystem,
-        zoxp_update + 1,
+        zoxp_update,
         [out] core.SystemLink,
         [none] timing.TrackMaxSystem
     );
+    // Logs if SystemDeltaCache is too high
     zox_system_1(
         SystemDeltaLogSystem,
         zoxp_mainthread,
         [in] timing.SystemDeltaCache
     );
+    // Sets our SystemDeltaCache (at end of frame)
+    zox_system_1(
+        SystemDeltaCacheSystem,
+        zoxp_end,
+        [out] timing.SystemDelta,
+        [out] timing.SystemDeltaCache
+    );
+    // Adds SystemDeltaCache to Curve
+    zox_system_1(
+        SystemTimeAddSystem,
+        zoxp_end,
+        [in] timing.SystemDeltaCache,
+        [out] core.DoubleData
+    );
+#endif
 }

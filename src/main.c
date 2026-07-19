@@ -33,9 +33,6 @@ int main(int argc, char* argv[]) {
         zox_log_error("[initialize_ecs] failed");
         return EXIT_FAILURE;
     }
-#ifdef FLECS_PROFILER
-    initialize_flecs_profiler(world);
-#endif
     zox_logv("Initializing Zox Engine");
     zox_import_module(Zox);
     zox_logv("Initializing Game");

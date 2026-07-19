@@ -41,7 +41,7 @@ zox_sys2(FirstTerrainChunkSystem) {
         zox_geter_value(terrain->value, BlockScale, float, tscale);
         zox_geter_value(terrain->value, NodeDepth, byte, tdepth);
         byte render_depth = camera_distance_to_terrain_render_depth(0);
-        entity chunk = spawn_chunk3_terrain(world, prefab_chunk_terrain, terrain->value, position->value, tdepth, tscale, 0, render_depth);
+        entity chunk = spawn_terrain_chunk(world, prefab_chunk_terrain, terrain->value, position->value, tdepth, tscale, 0, render_depth);
         if (!zox_valid(chunk)) {
             zox_loge("Failed to spawn chunk [%ix%ix%i] on %s", position->value.x, position->value.y, position->value.z, zox_get_name(terrain->value));
             continue;

@@ -20,11 +20,7 @@ void update_ecs(ecs *world) {
     ecs_run_count++;
 #ifdef FLECS_STATS
     if ((ecs_run_count % 60) == 0) {
-        debug_ecs_stats(
-            world,
-            time_1 * 1000.0,
-            time_2 * 1000.0,
-            time_3 * 1000.0);
+        debug_ecs_stats(world);
     }
 #endif
 #ifdef FLECS_PROFILER

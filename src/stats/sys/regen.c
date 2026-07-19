@@ -16,7 +16,7 @@ zox_sys2(StatRegenSystem) {
         if (!user || !zox_has(user, Dead)) {
             continue;
         }
-        zox_geter_value(user, Dead, byte, dead);
+        byte dead = zox_getv(user, Dead);
         if (dead) {
             continue;
         }

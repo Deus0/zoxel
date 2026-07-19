@@ -20,6 +20,12 @@ zoxc_float(RaycastRange);
 #include "queue.c"
 #include "damage.c"
 
+#define zox_chunk_lod_dirty_start 1
+#define zox_chunk_lod_dirty_toggle 1
+#define zox_chunk_lod_dirty_spawn 2
+#define zox_chunk_lod_dirty_octree 3
+#define zox_chunk_lod_dirty_end 0
+
 void define_components_chunks3(ecs* world) {
     zoxd_tag(Chunk3);
     zoxd_tag(ColorChunk);

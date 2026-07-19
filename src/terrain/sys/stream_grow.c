@@ -97,7 +97,7 @@ zox_sys2(ChunkSpawnSystem) {
             byte camera_distance = get_camera_chunk_distance_xz(closest_point, neighbor_position);
             if (camera_distance <= terrain_lod_far) {
                 byte render_depth = camera_distance_to_terrain_render_depth(camera_distance);
-                neighbor = spawn_chunk3_terrain(world, prefab_chunk_terrain, terrain, neighbor_position, terrain_depth, terrain_scale, camera_distance, render_depth);
+                neighbor = spawn_terrain_chunk(world, prefab_chunk_terrain, terrain, neighbor_position, terrain_depth, terrain_scale, camera_distance, render_depth);
                 int3_hashmap_add(chunks->value, neighbor_position, neighbor);
                 neighbors->value[j] = neighbor;
                 if (dbg_log >= 2) {

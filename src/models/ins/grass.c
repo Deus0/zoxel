@@ -1,4 +1,5 @@
 entity2 spawn_model_grass(ecs* world, lint seed, byte max_depth, color vox_color) {
+    entity prefab_lod = prefab_invisible_vox;
     byte dbg_log = 0;
     entity vox_lod = 0;
     byte length = octree_size(max_depth);
@@ -11,7 +12,7 @@ entity2 spawn_model_grass(ecs* world, lint seed, byte max_depth, color vox_color
     for (byte rdepth = 0; rdepth <= max_depth; rdepth++) {
         short node_length = octree_size(rdepth);
         byte ddepth = max_depth - rdepth;
-        entity e2 = spawn_vox_basic(world, prefab_vox, rdepth, max_depth);
+        entity e2 = spawn_vox_basic(world, prefab_lod, rdepth, max_depth);
         zox_set_unique_name(e2, "model_lod_grass");
         zox_set(e2, Seed, { seed });
         zox_set(e2, VoxType, { vox_type_rubble });

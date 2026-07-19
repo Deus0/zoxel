@@ -16,9 +16,23 @@ zox_sys2(Player3RotateSystem) {
             continue;
         }
         entity character = characterLink->value;
-        if (!zox_valid(character) || !zox_has(character, Character3)) {
+        if (!zox_valid(character)) {
             continue;
         }
+#ifdef zox_safety_checks
+        if (!zox_has(character, Character3)) {
+            zox_loge("Character [%s] Invalid Type");
+            continue;
+        }
+        if (!zox_has(character, Euler)) {
+            zox_loge("Character [%s] has no Euler");
+            continue;
+        }
+        if (!zox_has(character, Rotation3D)) {
+            zox_loge("Character [%s] has no Euler");
+            continue;
+        }
+#endif
         byte mdisabled = zox_getv(character, DisableMovement);
         if (mdisabled) {
             continue;
@@ -112,30 +126,5 @@ zox_sys2(Player3RotateSystem) {
             head_euler.x = euler_limit_x.x;
         }
         head_rotation->value = euler_to_quaternion(head_euler);
-        // zox_log("head_euler [%f]", head_euler.x * radians_to_degrees);
-        // float3_mulf(head_euler, degrees_to_radians));
-        // quaternion_from_euler(float3_scale(ceuler->value, degrees_to_radians));
-        /*entity camera = zox_getv(character, CameraLink);
-        if (!zox_valid(camera)) {
-            zox_logw("Camera  invalid for rotation");
-            continue;
-        }
-        // add mouse/device input (Y INPUT)
-        zox_muter(camera, Euler, ceuler);
-        ceuler->value.x -= euler.x * radians_to_degrees;
-        // limit camera for player head
-        // TODO: Use LocalEuler and the override for this, confusing to debug atm due to inconsistency
-        zox_muter(camera, LocalRotation3D, crotation);
-        crotation->value = quaternion_from_euler(float3_scale(ceuler->value, degrees_to_radians));*/
     }
 } zox_sys_end(Player3RotateSystem);
-
-
-/*if (zox_has(e3, ZeviceStick)) {
-    byte joystick_type = zox_get_value(e3, DeviceButtonType)
-    if (joystick_type == zox_device_stick_right) {
-        zox_geter(e3, ZeviceStick, zeviceStick)
-        right_stick.x -= zeviceStick->value.x * touchscreen_rotate_multiplier;
-        right_stick.y -= zeviceStick->value.y * touchscreen_rotate_multiplier;
-    }
-}*/

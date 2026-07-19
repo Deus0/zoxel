@@ -11,8 +11,6 @@ entity spawn_prefab_block_vox(ecs *world, entity prefab) {
     zox_prefab_set(e, RenderDepth, { render_depth_uninitialized });
     zox_prefab_set(e, RenderDepthDirty, { zox_dirty_none });
     // BlockLink to original voxel meta data
-    zox_prefab_set(e, Position3D, { float3_zero });
-    zox_prefab_set(e, Rotation3D, { float4_identity });
     zox_prefab_set(e, BlockScale, { vox_model_scale });
     // for debug
     zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
@@ -21,5 +19,8 @@ entity spawn_prefab_block_vox(ecs *world, entity prefab) {
     // Chunk3
     zox_set(e, NodeDepth, { block_vox_depth });
     zox_set(e, ChunkSize, { int3_single(length) });
+    // Transforms
+    // zox_prefab_set(e, Position3D, { float3_zero });
+    // zox_prefab_set(e, Rotation3D, { float4_identity });
     return e;
 }

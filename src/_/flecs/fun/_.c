@@ -6,6 +6,6 @@
 #include "update.c"
 #include "id.c"
 #include "systems.c"
-#include "threads.c"
+#include "init.c"
 #include "engine.c"
 #include "find.c"

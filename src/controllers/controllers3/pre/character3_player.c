@@ -2,6 +2,8 @@ entity spawn_prefab_character3_player(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("character3_player");
     zox_add_tag(e, PlayerCharacter);
+    // Transform
+    zox_prefab_set(e, Euler, { float3_zero });
     // disable until loaded terrain
     zox_set(e, DisableGravity, { 1 });
     zox_set(e, DisableMovement, { 1 });

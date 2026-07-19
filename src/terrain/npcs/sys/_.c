@@ -6,8 +6,9 @@ void define_systems_characters3_terrain(ecs* world) {
     zox_system(
         Characters3SpawnZoneSystem,
         zoxp_update,
-        [in] rendering.RenderDepthDirty,
+        [in] chunks3.ChunkLodDirty,
         [in] rendering.RenderDepth,
+        [in] rendering.RenderDistance,
         [in] chunks.GenerateChunk,
         [out] terrains.npcs.NpcSpawnZone,
         [out] terrains.npcs.NpcSpawnZoneDirty,

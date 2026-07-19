@@ -1,4 +1,4 @@
-entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 position, byte terrain_depth, float terrain_scalev, byte render_distance, byte render_depth) {
+entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, int3 position, byte terrain_depth, float terrain_scalev, byte render_distance, byte render_depth) {
     entity e = zox_ins(world, prefab);
     {
         char name[64];
@@ -43,7 +43,6 @@ entity spawn_chunk3_terrain(ecs* world, entity prefab, entity terrain, int3 posi
     // lod update here
     // todo: just start this as invisible and update with streaming systems
     zox_set(e, RenderDistance, { render_distance });
-    zox_set(e, RenderDistanceDirty, { zox_dirty_trigger });
     zox_set(e, RenderDepth, { render_depth });
     // can move this to init systems
     //  note: keep spawn functions only for passing through sending outside information

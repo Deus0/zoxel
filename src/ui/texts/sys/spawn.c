@@ -62,6 +62,12 @@ zox_sys2(ZigelSpawnSystem) {
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
                     entity e2 = it2.entities[j];
+#ifdef zox_safety_checks
+                    if (!zox_has(e2, Zigel)) {
+                        zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
+                        continue;
+                    }
+#endif
                     // NOTE: When shrinking the children we need to adjust the child indexes
                     if (children_count <= new_length) {
                         // here we can set child indexes
@@ -69,12 +75,6 @@ zox_sys2(ZigelSpawnSystem) {
                         zox_setm(e2, ChildIndex, children_count);
                         continue;
                     }
-#ifdef zox_safety_checks
-                    if (!zox_has(e2, Zigel)) {
-                        zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
-                        continue;
-                    }
-#endif
                     if (dbg_log) {
                         zox_log("   - Deleted Zigel [%s]", zox_get_name(e2));
                     }

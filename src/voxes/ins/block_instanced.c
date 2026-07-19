@@ -35,19 +35,15 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
     zox_name("block_vox_instanced");
     zox_set(e, BlockIndex, { data.block_index });
     zox_set(e, BlockScale, { data.scale });
-    zox_set(e, Position3D, { data.positionf });
     zox_set(e, ModelLink, { model });
     zox_set(e, MaxRenderDepth, { mdepth });
     zox_set(e, RenderDepth, { data.render_depth });
     zox_set(e, RenderDisabled, { data.render_disabled });
+    zox_set(e, Position3D, { data.positionf });
     zox_set(e, Scale1D, { scale });
-    /* if (data.block_index != 9)
-    {
-        zox_log("+ Block vox instance [%fx%fx%f] s[%f] rs[%f] md[%i] rd[%i] i[%i]",
-            data.positionf.x, data.positionf.y, data.positionf.z,
-            data.scale, scale,
-            mdepth, data.render_depth,
-            data.block_index);
-    }*/
+    zox_set(e, TransformMatrix, { float4x4_position_scale(data.positionf, scale) });
+    //zox_set(e, TransformMatrix, { float4x4_position(positionf) });
+    // zox_set(e, TransformMatrix, { float4x4_transform_scale(positionf, quaternion_identity, 1) });
+    // zox_set(e, TransformMatrix, { float4x4_transform(positionf, quaternion_identity) });
     return e;
 }
