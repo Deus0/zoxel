@@ -315,6 +315,10 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UIs
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Inside Chunk",
+        .on_click = { &zox_dbg_activate_ui_inside_chunk },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Systems",
         .on_click = { &zox_dbg_activate_ui_system_times },
     };
@@ -365,10 +369,6 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Where is Character",
         .on_click = { &zox_dbg_activate_ui_chunk_link },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Inside Chunk",
-        .on_click = { &zox_dbg_activate_ui_inside_chunk },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Towns",

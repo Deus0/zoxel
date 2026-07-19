@@ -32,13 +32,38 @@ uint zox_dbg_label_character_links(ecs *world, entity player, char *buffer, uint
     return index;
 }
 
+
+entity real_position_to_chunk(ecs* world, entity terrain, float3 position) {
+    zox_geter_value(terrain, BlockScale, float, terrain_scale);
+    zox_geter_value(terrain, NodeDepth, byte, node_depth);
+    short length = octree_size(node_depth);
+    int3 chunk_position = real_position_to_chunk_position(position, length, terrain_scale);
+    zox_geter(terrain, ChunkLinks, chunks);
+    return int3_hashmap_get(chunks->value, chunk_position);
+}
+
 uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint size, uint index) {
-    entity e = zox_getv(player, CharacterLink);
+    /*entity e = zox_getv(player, CharacterLink);
     if (!zox_valid(e)) {
         return index;
     }
     index += snprintf(buffer + index, size - index, "Inside Chunk\n");
-    entity chunk = zox_getv(e, ChunkLink);
+    entity chunk = zox_getv(e, ChunkLink);*/
+    entity game = zox_get_parent(world, player);
+    entity realm = zox_getv(game, RealmLink);
+    if (!zox_valid(realm)) {
+        return index;
+    }
+    entity terrain = zox_getv(realm, TerrainLink);
+    if (!zox_valid(terrain)) {
+        return index;
+    }
+    entity camera = zox_getv(player, CameraLink);
+    if (!zox_valid(camera)) {
+        return index;
+    }
+    float3 camera_position = zox_getv(camera, Position3D);
+    entity chunk = real_position_to_chunk(world, terrain, camera_position);
     entity tunk = zox_valid(chunk) ? zox_getv(chunk, TunkLink) : 0;
     entity region = zox_valid(tunk) ? zox_getv(tunk, RegionLink) : 0;
     index += snprintf(buffer + index, size - index, "Region [%s]\n", zox_get_name(region));

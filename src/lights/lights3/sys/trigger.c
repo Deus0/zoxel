@@ -19,7 +19,6 @@ zox_sys2(ChunkColorsTriggerSystem) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
                 if (zox_has(e2, ChunkMesh)) {
-                    // zox_setm(e2, MeshColorsGenerate, 1);
                     zox_set(e2, MeshColorsGenerate, { 1 });
                     if (dbg_log) {
                         zox_log("Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(e2));
@@ -30,6 +29,7 @@ zox_sys2(ChunkColorsTriggerSystem) {
     }
 } zox_sys_end(ChunkColorsTriggerSystem);
 
+// TODO: There is no delay so it might get skipped
 zox_sys2(ChunkMeshColorsTriggerSystem) {
     if (disable_lights) {
         return;
@@ -40,7 +40,7 @@ zox_sys2(ChunkMeshColorsTriggerSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(BuildChunkMesh, build);
         zox_sys_o(MeshColorsGenerate, generate);
-        if (build->value == zox_dirty_active) {
+        if (build->value) {
             generate->value = zox_dirty_trigger;
         }
     }

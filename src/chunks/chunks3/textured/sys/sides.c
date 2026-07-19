@@ -85,6 +85,7 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* root, co
             open_one_SidesOctree(sides);
             // NOTE: If fails malloc
             if (!sides->ptr) {
+                zox_loge("Sides Malloc Failed");
                 return 0;
             }
         }
@@ -189,20 +190,6 @@ zox_sys2(ChunkSidesSystem) {
             }
             continue;
         }
-        /*byte meshes_busy = 0;
-        iter it2 = zox_children(world, e);
-        while (zox_children_next(it2)) {
-            for (int k = 0; k < it2.count; k++) {
-                entity e2 = it2.entities[k];
-                if (zox_has(e2, ChunkMesh) && !zox_is_disabled(e2) && zox_getv(e2, BuildChunkMesh)) {
-                    meshes_busy = 1;
-                    break;
-                }
-            }
-        }
-        if (meshes_busy) {
-            continue;
-        }*/
         // fetch here instead
         if (!solids) {
             // entity chunk = zox_get_parent(world, e);

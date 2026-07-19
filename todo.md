@@ -2,6 +2,11 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Fix chunk bounds debug visuals
+
+- Make close button smaller square with a circle pattern
+    - the X is ugly there need icon
+
 - After it works, lets fade between the lod meshes
 	- handle interupts so it can fade the other direction again
 	- also switch chunk depth to 5 + double scale so its 32x32x32
