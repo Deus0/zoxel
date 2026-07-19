@@ -196,9 +196,9 @@ zox_sys2(ChunkColorsBuildSystem) {
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;
         colors->length = mesh.colors->size;
-        indicies->value = zinalize_int_array_d(mesh.indicies);
-        vertices->value = zinalize_float3_array_d(mesh.vertices);
-        colors->value = zinalize_color_rgb_array_d(mesh.colors);
+        indicies->value = finalize_arrayd_int(mesh.indicies);
+        vertices->value = finalize_arrayd_float3(mesh.vertices);
+        colors->value = finalize_arrayd_color_rgb(mesh.colors);
         build->value = 0;
         mesh_dirty->value = mesh_state_skeleton_trigger;
     }

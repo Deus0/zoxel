@@ -1,6 +1,6 @@
-extern uint spawn_gpu_texture_buffer();
+extern guint spawn_gpu_texture_buffer();
 
-zoxc_uint(TextureGPULink);
+zoxc_guint(TextureGPULink);
 
 void add_gpu_texture(ecs *world, entity e) {
     zox_prefab_set(e, TextureGPULink, { 0 });

@@ -4,11 +4,12 @@
  *      - This just adds our data types together in mathematical ways
  *      - pure util functions
  *      - todo: put data and fun into util sub folder
+ *
+ *      - NOTE: Zox uses Column Major Matrix (as opposed to Row Major)
+ *
  * */
 #ifndef zoxm_maths
 #define zoxm_maths
-
-// NOTE: we use Column Major Matrix (as opposed to Row Major);
 
 #include "dat/constants.c"
 #include "dat/_.c"

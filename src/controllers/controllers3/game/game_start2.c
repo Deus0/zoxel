@@ -1,6 +1,6 @@
 // NOTE: For new placement of characters, we wait for region/towns to spawn, then we find a position in one of the towns
 zox_sys2(PlayerTownFinderSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CameraLink);

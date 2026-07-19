@@ -1,7 +1,11 @@
 // TODO: For each chunk render, we use linked tilemap GPU data
 zox_sys2(Chunk3TexturedRenderSystem) {
     byte dbg_log = 0;
+    byte dbg_gl = 0;
+    byte initialized_material = 0;
+    const MaterialTextured3D* attributes = NULL;
     zox_sys_world();
+    camera_filtering_begin();
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
     zox_sys_in(TransformMatrix);
@@ -9,9 +13,6 @@ zox_sys2(Chunk3TexturedRenderSystem) {
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(MeshRenderCount);
-    byte init = 0;
-    const MaterialTextured3D *attributes = NULL;
-    camera_filtering_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDisabled, disabled);
@@ -20,19 +21,26 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
         zox_sys_i(MeshRenderCount, count);
-        if (disabled->value || !count->value || !mesh->value.x) {
+        if (disabled->value || !count->value) {
             continue;
         }
-        // chunk generating validation step
-        /*if (zox_getv(e, BuildChunkMesh) || zox_getv(e, TexturedMeshDirty)) {
+#ifdef zox_safety_checks
+        if (!mesh->value.x || !mesh->value.y) {
+            zox_loge("Mesh Invalid [%s]", zox_getn(e));
             continue;
         }
-        entity c = zox_get_parent(world, e);
-        if (zox_getv(c, GenerateChunk) || zox_getv(c, BuildChunkSides)) {
+        if (!gpu_uvs->value) {
+            zox_loge("Chunk Mesh UVs Invalid [%s]", zox_getn(e));
             continue;
-        }*/
+        }
+        if (!gpu_colors->value) {
+            zox_loge("Chunk Mesh Colors Invalid [%s]", zox_getn(e));
+            continue;
+        }
+#endif
+        camera_filtering_check();
         // TODO: Swapping / Grouping Tilemaps
-        if (!init) {
+        if (!initialized_material) {
             entity chunk = zox_get_parent(world, e);
 #ifdef zox_safety_checks
             if (!zox_valid(chunk)) {
@@ -58,10 +66,11 @@ zox_sys2(Chunk3TexturedRenderSystem) {
                 continue;
             }
 #endif
-            zox_geter_value(tilemap, MaterialGPULink, uint, material);
-            zox_geter_value(tilemap, TextureGPULink, uint, texture);
+            guint material = zox_getv(tilemap, MaterialGPULink);
+            guint texture = zox_getv(tilemap, TextureGPULink);
             attributes = zox_get(tilemap, MaterialTextured3D);
             if (!material || !texture || !attributes) {
+                zox_loge("Invalid Tilemap [%s] in Terrain Renderer", zox_getn(tilemap));
                 continue;
             }
             zox_gpu_material(material);
@@ -69,7 +78,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(attributes->fog_data, get_fog_value());
             zox_gpu_float(attributes->brightness, 1);
-            init = 1;
+            initialized_material = 1;
         }
         zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
@@ -77,19 +86,28 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         opengl_enable_uv_buffer(attributes->vertex_uv, gpu_uvs->value);
         opengl_enable_color_buffer(attributes->vertex_color, gpu_colors->value);
         zox_gpu_render(count->value);
-        zox_sys_increment();
-        if (dbg_log) {
-            float3 position = zox_getv(e, Position3D);
-            zox_log("Rendering Chunk [%s] Tris [%i] at [%fx%fx%f]", zox_getn(e), count->value, position.x, position.y, position.z);
+        if (dbg_gl) {
+            if (check_opengl_error_unlogged()) {
+                zox_loge("Chunk3TexturedRenderSystem");
+            }
+            /*if (check_opengl_error("opengl_upload_shader2D_textured")) {
+                zox_log("     > [%ix%i:%i]\n", mesh_buffer.x, mesh_buffer.y, uv_buffer);
+            }*/
         }
+        if (dbg_log) {
+            entity chunk = zox_get_parent(world, e);
+            float3 position = matrix_to_position(matrix->value);
+            float3 scale = matrix_to_scale(matrix->value);
+            zox_log("Rendering Chunk [%s] Mesh [%s] Tris [%i] at [%fx%fx%f] Scale [%fx%fx%f]", zox_getn(chunk), zox_getn(e), count->value, position.x, position.y, position.z, scale.x, scale.y, scale.z);
+        }
+        zox_sys_increment();
     }
-    if (!init) {
-        return;
+    if (initialized_material) {
+        zox_gpu_disable_attribute(attributes->vertex_color);
+        zox_gpu_disable_attribute(attributes->vertex_uv);
+        zox_gpu_disable_attribute(attributes->vertex_position);
+        opengl_reset_texture();
+        zox_gpu_reset_mesh();
+        zox_disable_material();
     }
-    zox_gpu_disable_attribute(attributes->vertex_color);
-    zox_gpu_disable_attribute(attributes->vertex_uv);
-    zox_gpu_disable_attribute(attributes->vertex_position);
-    zox_gpu_reset_mesh();
-    opengl_reset_texture();
-    zox_disable_material();
 } zox_sys_end(Chunk3TexturedRenderSystem);

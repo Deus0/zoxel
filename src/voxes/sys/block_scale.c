@@ -1,15 +1,3 @@
-// NOTE: Assumes node depth is lower than terrain (max depth)
-static inline float get_chunk_scale(byte ndepth, byte tdepth, float tscale) {
-    if (tdepth < ndepth) {
-        // if invisible depth is 254/255 tho
-        // zox_log_error("terrain < node: %i < %i", tdepth, ndepth);
-        return tscale;
-    }
-    byte ddepth = tdepth - ndepth;
-    short length = octree_size(ddepth);
-    return tscale * length;  // we multiply by the depth difference power - if 2 = 2*2 = 4, 0.5 becomes 2 in size
-}
-
 // Sync Block Scale to the Terrain Chunks from the Vox
 zox_sys2(BlockScaleSystem) {
     zox_sys_world();

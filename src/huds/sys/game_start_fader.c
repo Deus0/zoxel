@@ -1,6 +1,5 @@
 const double game_spawn_terrain_delay = 0.1;
 const double game_spawn_terrain_fade_delay = 1.4;
-const double game_load_player_delay = 0.2; // 1.1;
 const double game_load_fade_transition_time = 0.5;
 
 zox_sys2(GameStartFaderSystem) {

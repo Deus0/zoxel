@@ -61,12 +61,12 @@ zox_sys2(ChunkMeshSpawnSystem) {
             entity e2 = zox_ins(world, prefab_chunk_mesh_textured);
             zox_set_unique_name(e2, "chunk_mesh");
             zox_set_parent(world, e2, e);
-            zox_set(e2, TransformMatrix, { matrix->value });
             zox_set(e2, RenderDepth, { depth->value });
             zox_set(e2, RenderDisabled, { render_disabled->value });
-            spawn_gpu_mesh(world, e2);
-            spawn_gpu_uvs(world, e2);
-            spawn_gpu_colors(world, e2);
+            zox_set(e2, TransformMatrix, { matrix->value });
+            zox_set(e2, MeshGPULink, { spawn_gpu_mesh_buffers() });
+            zox_set(e2, UvsGPULink, { zox_gpu_create_buffer() });
+            zox_set(e2, ColorsGPULink, { zox_gpu_create_buffer() });
             if (dbg_log) {
                 zox_log("Spawned new Chunk Mesh for [%s] at depth [%i]", zox_getn(e), depth->value);
             }

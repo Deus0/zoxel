@@ -13,7 +13,7 @@ zox_sys2(TilemapGenerationSystem) {
     zox_sys_out(TextureData);
     zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(TilemapSize, tmsize);
         zox_sys_i(TextureLinks, textures);
         zox_sys_o(GenerateTexture, generate);

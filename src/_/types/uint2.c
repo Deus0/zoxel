@@ -1,5 +1,4 @@
-#define zoxc_uint2(name) \
-    zoxc(name, uint2)
+#define zoxc_uint2(name) zoxc(name, uint2)
 
 #define zoxd_uint2(name)\
     zoxd(name)\

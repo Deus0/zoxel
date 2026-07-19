@@ -1,4 +1,4 @@
-zoxc_uint(UboGPULink);
+zoxc_guint(UboGPULink);
 
 void add_gpu_ubo(ecs *world, entity e) {
     zox_prefab_set(e, UboGPULink, { 0 });

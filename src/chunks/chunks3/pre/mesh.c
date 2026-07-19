@@ -3,10 +3,9 @@ entity spawn_prefab_chunk_mesh(ecs *world) {
     zox_prefab();
     zox_prefab_name("chunk_mesh");
     zox_add_tag(e, ChunkMesh);
+    zox_prefab_set(e, BuildChunkMesh, { 1 });
     // Transforms
     zox_add_tag(e, DisableTransform);
-    // zox_prefab_set(e, Position3D, { float3_zero });
-    // zox_prefab_set(e, Rotation3D, { float4_identity });
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     // Render Data
     zox_prefab_set(e, RenderDisabled, { 0 });
@@ -17,6 +16,5 @@ entity spawn_prefab_chunk_mesh(ecs *world) {
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
     zox_prefab_set(e, MeshRenderCount, { 0 });
     // zox_prefab_set(e, MeshDirty, { 0 });
-    zox_prefab_set(e, BuildChunkMesh, { 1 });
     return e;
 }

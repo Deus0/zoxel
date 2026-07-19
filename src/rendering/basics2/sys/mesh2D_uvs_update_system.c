@@ -1,4 +1,4 @@
-void opengl_upload_shader2D_textured(uint2 mesh_buffer, uint uv_buffer, const int *indicies, int indicies_length, const float2 *verts, const float2 *uvs, int verts_length) {
+void opengl_upload_shader2D_textured(guint2 mesh_buffer, guint uv_buffer, const int *indicies, int indicies_length, const float2 *verts, const float2 *uvs, int verts_length) {
     zox_gpu_bind_buffer_element(mesh_buffer.x);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies_length * sizeof(int), indicies, GL_STATIC_DRAW);
     zox_gpu_set_buffer_element(indicies, indicies_length * sizeof(int));

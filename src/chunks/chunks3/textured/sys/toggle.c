@@ -1,6 +1,5 @@
 // NOTE: Toggles the meshes beased on render depth
 zox_sys2(ChunkMeshToggleSystem) {
-    // TODO: Only spawn mesh if sides exist!
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -20,7 +19,16 @@ zox_sys2(ChunkMeshToggleSystem) {
                 if (!zox_has(mesh, ChunkMesh)) {
                     continue;
                 }
-                zox_set_enabled(mesh, zox_getv(mesh, RenderDepth) == depth->value);
+                // Keep high on for now to test
+                byte active = zox_getv(mesh, RenderDepth) == depth->value;
+                zox_set_enabled(mesh, active);
+                /*if (active) {
+                    // For first time mesh?
+                    zox_set(mesh, BuildChunkMesh, { 1 });
+                }*/
+                if (dbg_log) {
+                    zox_log("Chunk [%s] Set Mesh [%s] to Active [%i]", zox_getn(e), zox_getn(mesh), active);
+                }
             }
         }
         dirty->value = zox_chunk_lod_dirty_spawn;

@@ -2,30 +2,84 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- After it works, lets fade between the lod meshes
+	- handle interupts so it can fade the other direction again
+	- also switch chunk depth to 5 + double scale so its 32x32x32
+	
+Bug!
+- Lesser chunks dissapear
+- UVs get messed up when flying around on chunks
+
+Causes
+- Maybe it uploads before it's done generating?
+
+Solution:
+- Inside Chunk to work on camera instead of player character
+- fly around to outer chunks to debug them
+- display more data
+- render lines over mesh on chunk - as a debug method to show mesh itself - tests whether its mesh issue, or the renderer itself
+
+Lets assume
+- Lod Updates
+- Spawns Mesh
+- Mesh updated
+- Somehow not rendering
+
+Setting all chunks to build sides again
+- it rebuilds and shows mesh
+- then neighbor updates
+- then it dissapears
+
+Disabling Lods means:
+- Chunk Mesh spawns once
+- No need to spawn new mesh links
+
+- Issue must be, sides is created per lod level - so if new sides is made and chunk generates, at wrong depth, it will create these issues?
+	- but the data was the same so it doesnt support this - mesh was still there at full depth
+
+- Test Method:
+	- fly around until chunk dissapears
+	- fly into it
+	- note the position
+	- check debug logs for system processes
+	- didnt seem to be rendering?
+10x1x-3
+
+- Issue occurs only when switching LODs
+	- spawning a new one didn't appear to work..
+	- it disabled last, spawned a new one butt...
+
+-x Change all opengl data to gint and gint2 and guint and guint2
+	- this might be issue
+
+- Okay its probaly race conditions with Side updates, mesh updates, etc
+- Make a toggle for disabling .. etc
+- Sides issues
+- Arm swing brokens
+- Sometimes chunk didnt update until we destroyed a block from it
+
+- When i spawn new chunk meshes, it breaks the old ones...!
+- New Test: Spawns MeshViewer ui based on inside chunk data
+
+- Shrink Game Viewport and put Editor Buttons as icon buttons around side, like gizmos - docked
+
+- For soil vox addition, while it digs down, use a random chance to alter the color?
 - Zigel Positions not always set atm for UIs
--x BuildChunkMesh caused font textures to break
-- Disabling seemed to fix lag: Npcs
-
-- InitializeEntity - make byte from state - removing Increment systems
-
-- Fix item drop from terrain, so it works in same pipeline as others (sync point reduction)
--x test zox_time_systems later as might of broke it during pipeline changes
-
+-x InitializeEntity - make byte from state - removing Increment systems
 - when I turn off toggling, it doesnt break
 - Also when i disable lods
 - It still glitches though, when mesh built, it shows at wrong place
     - only on new chunks though
 
--x Make all chunk states bytes and set explictly
-
 Regressions:
-- LAG - 150 ms before now 50...
+- Fix item drop from terrain, so it works in same pipeline as others (sync point reduction)
+-x LAG - 150 ms before now 50...
 - Dissapearing chunk meshes
-- Crashes Sometimes
 - Meshes that randomly render
 - Mesh flickers off and on when rebuilds
     - it shouldn't need to rebuild only when depth updates
     - Maybe make a swap lod mesh state that waits for the enabled chunk to finish loading
+-x Crashes Sometimes
     
     
 - Pretty sure loading chunks was removed - test IO
@@ -34,19 +88,13 @@ Regressions:
     -x Disable ChunkMesh and just set Transform + position data
     -x same for chunk
     -o Position - transform updates lagging - add a dirty flag for this
--x Lighting wasn't accounted for
--x Spawning Player before the chunks are generated, underneath map too
--x Make it so it only spawns ChunkMesh if there is voxels... if there is ChunkSides!
 
 - Fix Loading of settings
 	- make load in system
 	- if spawning, check if exists or not yet
 	- Add state for Settings Load, and Settings Spawn, for Initializing app settings
 Current Terrain Chunk Refactor:
--x Spawn Chunk Mesh when VoxelNodeDirty 
--x Build Mesh from ChunkMesh
 - Move spawn gpu stuff to initialize mesh systems
--x Busy Tracks the chunk update from Generate to mesh building?
 - Frustum should account for sub meshes
 - We should set bounds of chunk sepertate to mesh
 

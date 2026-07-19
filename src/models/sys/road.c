@@ -245,35 +245,26 @@ void build_vox_road2(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rg
 void build_vox_cobblestone(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb primary)
 {
     if (colors == NULL || voctree == NULL) return;
-
     byte unique_stone   = 8;
     byte unique_mortar  = 3;
     byte unique_wear    = 3;
     byte unique_grass   = 2;   // subtle moss / grass in cracks
-
     byte first = colors->length + 1;
-
     // ====================== COLOR PALETTE ======================
     // Stone variations (rich, slightly warm/cool gray-brown stones)
     for (byte i = 0; i < unique_stone; i++)
     {
         color_rgb c = primary;
         float t = (unique_stone > 1) ? (float)i / (unique_stone - 1) : 0.0f;
-
         float brightness = 0.65f + t * 0.75f;
         brightness += frand_range(-0.09f, 0.09f);
-
         color_rgb_multiply_float(&c, brightness);
-
         // Slight hue variation for natural stone feel
         if (i % 3 == 0)      c.r = (byte)(c.r * 1.08f);      // warmer
         else if (i % 3 == 1) c.b = (byte)(c.b * 1.06f);      // cooler
-
         add_to_ColorRGBs(colors, c);
     }
-
     byte stone_start = first;
-
     // Mortar (dark, slightly purple-gray)
     color_rgb mortar_base = {38, 35, 42};
     for (byte i = 0; i < unique_mortar; i++)
@@ -283,7 +274,6 @@ void build_vox_cobblestone(ColorRGBs* colors, VoxelNode *voctree, byte depth, co
         add_to_ColorRGBs(colors, c);
     }
     byte mortar_start = stone_start + unique_stone;
-
     // Worn / chipped stone highlights
     for (byte i = 0; i < unique_wear; i++)
     {
@@ -292,7 +282,6 @@ void build_vox_cobblestone(ColorRGBs* colors, VoxelNode *voctree, byte depth, co
         add_to_ColorRGBs(colors, c);
     }
     byte wear_start = mortar_start + unique_mortar;
-
     // Subtle moss/grass in cracks
     color_rgb moss_base = {42, 68, 35};
     for (byte i = 0; i < unique_grass; i++)
@@ -302,18 +291,14 @@ void build_vox_cobblestone(ColorRGBs* colors, VoxelNode *voctree, byte depth, co
         add_to_ColorRGBs(colors, c);
     }
     byte moss_start = wear_start + unique_wear;
-
     // ====================== GEOMETRY ======================
     byte vlength = powers_of_two_byte[depth];
     byte3 size = byte3_single(vlength);
     byte3 pos;
-
     int tile = vlength / 6;          // cobblestone size
     if (tile < 5) tile = 5;
-
-    sbyte cx = size.x / 2;
-    sbyte cz = size.z / 2;
-
+    //sbyte cx = size.x / 2;
+    //sbyte cz = size.z / 2;
     for (pos.y = 0; pos.y < size.y; pos.y++)
     for (pos.x = 0; pos.x < size.x; pos.x++)
     for (pos.z = 0; pos.z < size.z; pos.z++)
@@ -325,30 +310,22 @@ void build_vox_cobblestone(ColorRGBs* colors, VoxelNode *voctree, byte depth, co
             set_VoxelNode(voctree, depth, pos, v);
             continue;
         }
-
         int tx = floor_div(pos.x, tile);
         int tz = floor_div(pos.z, tile);
-
         int lx = positive_mod(pos.x, tile);
         int lz = positive_mod(pos.z, tile);
-
         uint32_t tile_hash = road_hash3(tx * 31 + tz * 37, tz * 17, tx ^ tz);
-
         // Determine if this voxel is inside a cobblestone or in mortar
         int stone_radius = (tile * 3) / 5;                    // irregular stone size
         int dx = lx - tile/2;
         int dz = lz - tile/2;
         int dist2 = dx*dx + dz*dz;
-
-        bool is_mortar = dist2 > stone_radius * stone_radius +
-                        ((tile_hash & 7) - 3);   // organic variation
-
+        byte is_mortar = dist2 > stone_radius * stone_radius +
+            ((tile_hash & 7) - 3);   // organic variation
         byte color;
-
         if (is_mortar)
         {
             color = mortar_start + (tile_hash % unique_mortar);
-
             // Occasional moss in deep cracks
             if (((pos.x ^ pos.z) & 15) == 0 && (tile_hash & 31) < 12)
                 color = moss_start + ((pos.x + pos.z) % unique_grass);
@@ -370,14 +347,12 @@ void build_vox_cobblestone(ColorRGBs* colors, VoxelNode *voctree, byte depth, co
                     color = mortar_start;   // slight bevel
             }
         }
-
         // Subtle vertical dirt / aging
         if (pos.y < vlength - 2 && (road_hash3(pos.x, pos.y * 3, pos.z) & 127) == 0)
         {
             if (color >= stone_start && color < mortar_start)
                 color = (byte)int_max(stone_start, color - 1);
         }
-
         set_VoxelNode(voctree, depth, pos, color);
     }
 }

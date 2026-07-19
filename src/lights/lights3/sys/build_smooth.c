@@ -169,12 +169,9 @@ zox_sys2(SmoothLightsBuildSystem) {
         }
         // Get chunk data
         entity chunk = zox_get_parent(world, e);
-        if (zox_combine_chunk_mode) {
-            chunk = e;
-        }
 #ifdef zox_safety_checks
         if (!zox_valid(chunk)) {
-            zox_loge("Chunk Invalid");
+            zox_loge("Chunk Parent Invalid for [%s]", zox_getn(e));
             continue;
         }
 #endif
@@ -206,7 +203,7 @@ zox_sys2(SmoothLightsBuildSystem) {
         }
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);
         const LightNode* lights = zox_get(chunk, LightNode);
-        float block_scale = zox_getv(chunk, BlockScale);
+        // float block_scale = zox_getv(chunk, BlockScale);
         entity nearby_chunks[27];
         const LightNode* nearby_lights[27];
         fetch_nearby_chunks(world, e, neighbors->value, nearby_chunks);

@@ -15,12 +15,15 @@
 #define str_macro(x) #x
 #define inc_nexus_game(x) str_macro(../gam/x/_.c)
 #define zox_nexus_game inc_nexus_game(zox_game)
+
 // Release
 #ifndef zox_debug
     #define zox_disable_names
     #define zox_disable_logs
-#else
-    // #define zox_time_systems
+#endif
+
+#ifdef zox_profiler
+    #define zox_time_systems
 #endif
 
 // Flecs
@@ -28,8 +31,8 @@
 #define FLECS_MODULE
 #define FLECS_SYSTEM
 #define FLECS_PIPELINE
-#ifdef zox_debug
-    // #define FLECS_PROFILER
+// #define FLECS_PROFILER
+#ifdef zox_profiler
     #define FLECS_STATS
     #define FLECS_REST
     #define FLECS_HTTP

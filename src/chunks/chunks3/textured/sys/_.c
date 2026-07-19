@@ -29,7 +29,7 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] chunks3.VoxelNode,
         [out] chunks.BuildChunkSides,
         [out] chunks3.SidesOctree,
-        [out] chunks3.SidesOctreeDirty,
+        // [out] chunks3.SidesOctreeDirty,
         [none] chunks3.ChunkTextured
     );
     // Refactor Chunk Mesh
@@ -63,8 +63,7 @@ void define_systems_chunks3_textured(ecs *world) {
         [out] chunks3.ChunkLodDirty,
         [none] chunks3.ChunkTextured
     );
-    zox_render3_system(
-        0,
+    zox_render3_system(0,
         Chunk3TexturedRenderSystem,
         [in] rendering.RenderDisabled,
         [in] transforms.TransformMatrix,
@@ -74,13 +73,6 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] rendering.MeshRenderCount,
         [none] chunks.ChunkMesh
     );
-    zox_set(zox_id(Chunk3TexturedRenderSystem), SystemDeltaMax, { zox_lag_cutoff * 2 });
+    // zox_set(zox_id(Chunk3TexturedRenderSystem), SystemDeltaMax, { zox_lag_cutoff * 2 });
     add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
-    /*zox_system(
-        ChunkMeshSlowSystem,
-        zoxp_update,
-        [out] rendering.MeshReady,
-        [out] rendering.TexturedMeshDirty,
-        [none] chunks3.ChunkTextured
-    );*/
 }

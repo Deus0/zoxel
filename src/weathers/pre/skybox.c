@@ -41,6 +41,8 @@ void set_skybox_colors(ecs *world, color_rgb top_color, color_rgb bottom_color) 
 }
 
 entity spawn_skybox(ecs *world, entity camera, entity shader) {
+    // TODO: Make dynamic size
+    float skybox_size = 766; // 1024;    // camera_far_distance * 0.95 roughly
     zox_instance(prefab_skybox);
     zox_name("skybox");
     zox_set(e, Scale1D, { skybox_size });
@@ -50,8 +52,8 @@ entity spawn_skybox(ecs *world, entity camera, entity shader) {
         zox_add_tag(e, MeshBasic3D);
         spawn_gpu_mesh(world, e);
         zox_set(e, ShaderLink, { shader });
-        uint2 shader_skybox_value = get_shader_value(world, shader);
-        uint material = spawn_gpu_material(world, e, shader_skybox_value);
+        guint2 shader_skybox_value = get_shader_value(world, shader);
+        guint material = spawn_gpu_material(world, e, shader_skybox_value);
         if (!material) {
             zox_log("[spawn_skybox] Failed");
             zox_delete(e);

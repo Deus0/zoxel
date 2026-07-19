@@ -41,23 +41,24 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     entity chunk = zox_getv(e, ChunkLink);
     entity tunk = zox_valid(chunk) ? zox_getv(chunk, TunkLink) : 0;
     entity region = zox_valid(tunk) ? zox_getv(tunk, RegionLink) : 0;
-    // Character
-    index += snprintf(buffer + index, size - index, "Character [%s]\n", zox_get_name(e));
-    index += snprintf(buffer + index, size - index, " - Region [%s]\n", zox_get_name(region));
+    index += snprintf(buffer + index, size - index, "Region [%s]\n", zox_get_name(region));
     if (!zox_valid(chunk)) {
         return index;
     }
     // chunk
-    index += snprintf(buffer + index, size - index, " - Chunk [%s]\n", zox_get_name(chunk));
+    index += snprintf(buffer + index, size - index, "Chunk [%s]\n", zox_getn(chunk));
     byte busy = zox_getv(chunk, Busy);
-    // byte build = zox_getv(chunk, BuildChunkMesh);
+    byte build = zox_getv(chunk, BuildChunkSides);
     byte generate = zox_getv(chunk, GenerateChunk);
     int3 position = zox_getv(chunk, ChunkPosition);
     byte depth = zox_getv(chunk, NodeDepth);
     byte render_depth = zox_getv(chunk, RenderDepth);
+    const SidesOctree* sides = zox_get(chunk, SidesOctree);
+    index += snprintf(buffer + index, size - index, " - busy [%i]\n", busy);
+    index += snprintf(buffer + index, size - index, " - Build [%i]\n", build);
     index += snprintf(buffer + index, size - index, " - Octree Depth [%i]\n", depth);
     index += snprintf(buffer + index, size - index, " - Render Depth [%i]\n", render_depth);
-    index += snprintf(buffer + index, size - index, " - busy [%i]\n", busy);
+    index += snprintf(buffer + index, size - index, " - Sides [%i]\n", sides->value);
     index += snprintf(buffer + index, size - index, " - generate [%i]\n", generate);
     index += snprintf(buffer + index, size - index, " - at [%ix%ix%i]\n", position.x, position.y, position.z);
     // Chunk Meshes
@@ -71,8 +72,21 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
         byte build = zox_getv(e3, BuildChunkMesh);
         byte tdirty = zox_getv(e3, TexturedMeshDirty);
         byte cdirty = zox_getv(e3, MeshColorsDirty);
+        index += snprintf(buffer + index, size - index, "Mesh [%s] Visible [%i] Enabled [%i]\n", zox_getn(e3), visible, !disabled);
+        index += snprintf(buffer + index, size - index, "   - Depth [%i] Build [%i] Dirty [%i:%i]\n", depth, build, tdirty, cdirty);
+        if (disabled) {
+            // continue;
+        }
         uint count = zox_getv(e3, MeshRenderCount);
-        index += snprintf(buffer + index, size - index, "   - Mesh Dis [%i] Vis [%i] Depth [%i] B [%i] R [%i] D [%i] cD [%i] x[%i]\n", disabled, visible, depth, build, tdirty, cdirty, count);
+        uint indicies_count = zox_gett(e3, MeshIndicies)->length;
+        uint verts_count = zox_gett(e3, MeshVertices)->length;
+        uint uvs_count = zox_gett(e3, MeshUVs)->length;
+        uint colors_count = zox_gett(e3, MeshColorRGBs)->length;
+        index += snprintf(buffer + index, size - index, "       - x[%u] Ind [%i] Verts [%i] UVs [%i] Colors [%i]\n", count, indicies_count, verts_count, uvs_count, colors_count);
+        guint2 mesh = zox_getv(e3, MeshGPULink);
+        guint uvs = zox_getv(e3, UvsGPULink);
+        guint colors = zox_getv(e3, ColorsGPULink);
+        index += snprintf(buffer + index, size - index, "       - Mesh [%ix%i] UVs [%i] Colors [%i]\n", mesh.x, mesh.y, uvs, colors);
     }
     if (!zox_valid(tunk)) {
         return index;
@@ -101,7 +115,6 @@ uint zox_dbg_label_towns(ecs *world, entity player, char *buffer, uint size, uin
     int3 block_position = real_position_to_block_position(position, terrain_scale);
     index += snprintf(buffer + index, size - index, " - Position [%.1fx%.1fx%.1f]\n", position.x, position.y, position.z);
     index += snprintf(buffer + index, size - index, " - Block Position [%ix%ix%i]\n", block_position.x, block_position.y, block_position.z);
-    // index += snprintf(buffer + index, size - index, "Character [%s]\n", zox_get_name(character));
     index += snprintf(buffer + index, size - index, "Region [%s]\n", zox_get_name(region));
     if (!zox_valid(region)) {
         return index;

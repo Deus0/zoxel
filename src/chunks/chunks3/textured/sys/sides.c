@@ -157,7 +157,7 @@ byte* blocks_fetch_solids(iter* it) {
 // For each ChunkMaterial we generate sides data for meshes
 zox_sys2(ChunkSidesSystem) {
     byte dbg_log = 0;
-    byte max_process = 4;
+    byte max_process = 16;
     byte* solids = NULL;
     zox_sys_world();
     zox_sys_begin();
@@ -166,7 +166,7 @@ zox_sys2(ChunkSidesSystem) {
     zox_sys_in(VoxelNode);
     zox_sys_out(BuildChunkSides);
     zox_sys_out(SidesOctree);
-    zox_sys_out(SidesOctreeDirty);
+    //zox_sys_out(SidesOctreeDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepth, depth);
@@ -174,7 +174,7 @@ zox_sys2(ChunkSidesSystem) {
         zox_sys_i(VoxelNode, voxels);
         zox_sys_o(BuildChunkSides, build);
         zox_sys_o(SidesOctree, sides);
-        zox_sys_o(SidesOctreeDirty, sides_dirty);
+        //zox_sys_o(SidesOctreeDirty, sides_dirty);
         // NOTE: Process when Active state
         if (!build->value) {
             continue;
@@ -183,6 +183,26 @@ zox_sys2(ChunkSidesSystem) {
         if (max_process && process_count > max_process) {
             continue;
         }
+        if (zox_getv(e, GenerateChunk) || zox_getv(e, VoxelNodeDirty) || zox_getv(e, ChunkLodDirty)) {
+            if (dbg_log) {
+                zox_log("Waiting on Self to Build [%s]", zox_getn(e));
+            }
+            continue;
+        }
+        /*byte meshes_busy = 0;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int k = 0; k < it2.count; k++) {
+                entity e2 = it2.entities[k];
+                if (zox_has(e2, ChunkMesh) && !zox_is_disabled(e2) && zox_getv(e2, BuildChunkMesh)) {
+                    meshes_busy = 1;
+                    break;
+                }
+            }
+        }
+        if (meshes_busy) {
+            continue;
+        }*/
         // fetch here instead
         if (!solids) {
             // entity chunk = zox_get_parent(world, e);
@@ -199,17 +219,32 @@ zox_sys2(ChunkSidesSystem) {
             }
         }
         if (!solids) {
+            zox_loge("No block solids");
             return;
         }
         const VoxelNode* noctrees[6];
         byte ndepths[6];
         fetch_neightbor_chunk_data(world, neighbors, noctrees, ndepths);
         sides->value = build_sides_dig(solids, voxels, noctrees, ndepths, voxels, sides, depth->value, 0, byte3_zero);
-        sides_dirty->value = zox_dirty_trigger;
+        // sides_dirty->value = zox_dirty_trigger;
         build->value = 0;
         if (dbg_log) {
             zox_log("Chunk Built Sides [%s]", zox_getn(e));
         }
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                if (zox_has(e2, ChunkMesh)) {
+                    // zox_setm(e2, BuildChunkMesh, 1);
+                    zox_set(e2, BuildChunkMesh, { 1 });
+                    if (dbg_log) {
+                        zox_log("Chunk Triggered Build [%s]:[%s]", zox_getn(e), zox_getn(e2));
+                    }
+                }
+            }
+        }
+        // Should we set chunks to build here?
         zox_sys_increment();
     }
     if (solids) {

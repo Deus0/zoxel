@@ -4,17 +4,17 @@ entity material_textured2D = 0;
 typedef struct {
     gint vertex_position;
     gint vertex_uv;
-    uint position;
-    uint angle;
-    uint scale;
-    uint camera_matrix;
-    uint texture;
-    uint brightness;
-    uint alpha;
+    guint position;
+    guint angle;
+    guint scale;
+    guint camera_matrix;
+    guint texture;
+    guint brightness;
+    guint alpha;
 } MaterialTextured2D;
 zoxc_custom(MaterialTextured2D);
 
-MaterialTextured2D create_MaterialTextured2D(uint material) {
+MaterialTextured2D create_MaterialTextured2D(guint material) {
     return (MaterialTextured2D) {
         zox_gpu_get_material_attribute(material, "vertex_position"),
         zox_gpu_get_material_attribute(material, "vertex_uv"),

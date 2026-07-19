@@ -11,13 +11,29 @@ typedef signed char sbyte;
 // Used for graphics
 #ifdef zox_sdl
     typedef GLint gint;
+    typedef GLuint guint;
     typedef GLchar gchar;
+    typedef GLsizeiptr gsize;   // buffer sizes
+    typedef GLsizei gsizei;   // regular sizes
 #else
     typedef int gint;
+    typedef uint guint;
     typedef char gchar;
+    typedef uint gsize;
+    typedef uint gsizei;
 #endif
 
 typedef void (*event_pointer)(void*);
+
+typedef struct {
+    gint x, y;
+} gint2;
+
+typedef struct {
+    guint x, y;
+} guint2;
+
+const guint2 guint2_zero = (guint2) { 0, 0 };
 
 // base type, watch out for name conflicts tho
 

@@ -42,7 +42,7 @@ zox_sys2(ElementRenderMatrixSystem) {
         return;
     }
     byte init = 0;
-    float position_z = 0;
+    // float position_z = 0;
     zox_geter(material_matrixui, attributes_matrixui, attributes);
     zox_sys_begin();
     zox_sys_in(TransformMatrix);

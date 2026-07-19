@@ -5,7 +5,7 @@ entity spawn_prefab_chunk_invisible(ecs *world) {
     zox_add_tag(e, Chunk);
     zox_add_tag(e, Chunk3);
     // load fast?
-    zox_prefab_set(e, InitializeEntity, { 1 });
+    // zox_prefab_set(e, InitializeEntity, { 1 });
     zox_prefab_set(e, ChunkPosition, { int3_zero });
     zox_prefab_set(e, ChunkSize, { int3_zero });
     zox_prefab_set(e, BlockScale, { default_vox_scale });
@@ -17,7 +17,7 @@ entity spawn_prefab_chunk_invisible(ecs *world) {
     zox_prefab_set(e, BuildChunkSides, { 0 });
     // Render Data
     zox_prefab_set(e, SidesOctree, { 0 });
-    zox_prefab_set(e, SidesOctreeDirty, { 0 });
+    // zox_prefab_set(e, SidesOctreeDirty, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });   // used for frustum culling and general
     zox_prefab_set(e, RenderDistance, { 0 });
     zox_prefab_set(e, RenderDistanceDirty, { 0 });

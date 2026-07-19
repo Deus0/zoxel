@@ -62,12 +62,25 @@ static inline float4x4 float4x4_position(const float3 position) {
     return matrix;
 }
 
+static inline float3 matrix_to_position(float4x4 m) {
+    return (float3) { m.w.x, m.w.y, m.w.z };
+}
+
 static inline float4x4 float4x4_scale(float scale) {
     float4x4 m = float4x4_identity;
     m.x.x = scale;
     m.y.y = scale;
     m.z.z = scale;
     return m;
+}
+
+// Assuming Column Major matrix
+static inline float3 matrix_to_scale(float4x4 m) {
+    return (float3) {
+        sqrtf(m.x.x * m.x.x + m.x.y * m.x.y + m.x.z * m.x.z),
+        sqrtf(m.y.x * m.y.x + m.y.y * m.y.y + m.y.z * m.y.z),
+        sqrtf(m.z.x * m.z.x + m.z.y * m.z.y + m.z.z * m.z.z)
+    };
 }
 
 static inline float4x4 float4x4_scale2(float2 scale) {
@@ -172,7 +185,7 @@ static inline float4x4 float4x4_view_matrix(float3 position, float3 forward, flo
     return matrix;
 }
 
-static inline void float4x4_rotate(float4x4 *matrix, float4 rotation) {
+/*static inline void float4x4_rotate(float4x4 *matrix, float4 rotation) {
     matrix->x.x *= rotation.x;
     matrix->y.x *= rotation.x;
     matrix->z.x *= rotation.x;
@@ -189,7 +202,7 @@ static inline void float4x4_rotate(float4x4 *matrix, float4 rotation) {
     matrix->y.w *= rotation.w;
     matrix->z.w *= rotation.w;
     matrix->w.w *= rotation.w;
-}
+}*/
 
 static inline void float4_divide(float4 *input, float division) {
     input->x /= division;

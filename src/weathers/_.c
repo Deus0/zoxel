@@ -6,9 +6,7 @@ color_rgb override_sky_fill = color_rgb_red;
 entity prefab_skybox;
 entity shader_skybox; // shaders global
 entity skybox; // remove this, link to realm/game
-#include "dat/settings.c"
-zox_tag(Weather);
-zox_tag(Skybox);
+#include "com/_.c"
 #include "shd/skybox.c"
 #include "pre/_.c"
 #include "fun/_.c"
@@ -19,8 +17,7 @@ void spawn_shaders_weather(ecs *world) {
 }
 
 zox_begin_module(Weathers) {
-    zoxd_tag(Weather);
-    zoxd_tag(Skybox);
+    zox_define_components_weather(world);
     define_systems_weather(world);
     // hooks
     add_hook_load_shader(&spawn_shaders_weather);

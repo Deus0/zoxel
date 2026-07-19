@@ -102,16 +102,14 @@ zox_sys2(TunkLodSystem) {
             if (old_distance3 == new_distance) {
                 continue;
             }
-            zox_setm(chunk, RenderDistance, new_distance);
-            zox_setm(chunk, RenderDistanceDirty, zox_dirty_trigger);
+            zox_set(chunk, RenderDistance, { new_distance });
+            zox_set(chunk, RenderDistanceDirty, { zox_dirty_trigger });
             byte old_depth = zox_getv(chunk, RenderDepth);
             if (old_depth == tunk_render_depth) {
                 continue;
             }
-            zox_setm(chunk, RenderDepth, tunk_render_depth);
-            // zox_setm(chunk, RenderDepthDirty, zox_dirty_trigger);
-            zox_setm(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
-            // zox_setm(chunk, Busy, 1);
+            zox_set(chunk, RenderDepth, { tunk_render_depth });
+            zox_set(chunk, ChunkLodDirty, { zox_chunk_lod_dirty_start });
             if (dbg_log) {
                 zox_log("Chunk Depth Updated [%s]:[%i]", zox_get_name(chunk), tunk_render_depth);
             }

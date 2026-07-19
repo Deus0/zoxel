@@ -1,7 +1,7 @@
-uint2 shader2D_basic;
-uint square2DMaterial;
+guint2 shader2D_basic;
+guint square2DMaterial;
 Material2D material2D;
-uint2 squareMesh;
+guint2 squareMesh;
 
 void dispose_shader2D_instance_material() {
     zox_gpu_dispose_shader(shader2D_basic.x);
@@ -12,7 +12,7 @@ void dispose_shader2D_instance_material() {
 }
 
 void initialize_mesh() {
-    squareMesh = (uint2) { zox_gpu_create_buffer(), zox_gpu_create_buffer() };
+    squareMesh = (guint2) { zox_gpu_create_buffer(), zox_gpu_create_buffer() };
     //glGenBuffers(1, &squareMesh.x);
     //glGenBuffers(1, &squareMesh.y);
 
@@ -38,12 +38,12 @@ int load_instance2D_material(ecs *world) {
     char* frag = get_shader_source(world, "basic2.frag");
     shader2D_basic = zox_gpu_compile_shader(vert, frag);
 
-    if (uint2_equals(shader2D_basic, uint2_zero)) {
+    if (guint2_equals(shader2D_basic, guint2_zero)) {
         zox_log_error("shader2D_basic has failed")
         return EXIT_FAILURE;
     }
 
-    square2DMaterial = spawn_gpu_material_program((const uint2) { shader2D_basic.x, shader2D_basic.y });
+    square2DMaterial = spawn_gpu_material_program((guint2) { shader2D_basic.x, shader2D_basic.y });
     if (!square2DMaterial) {
         zox_log_error("=> [load_instance2D_material] Failed:\nVert Shader:\n%s\nFrag Shader:\n%s", vert, frag);
         return EXIT_FAILURE;

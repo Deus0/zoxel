@@ -4,6 +4,6 @@ static inline void zox_gpu_line_thickness(float thickness) {
     glLineWidth(thickness);
 }
 
-static inline void zox_gpu_render_lines(uint length) {
+static inline void zox_gpu_render_lines(gsizei length) {
     glDrawArrays(GL_LINES, 0, length);
 }

@@ -27,6 +27,7 @@ void player_start_game2D_delayed(ecs *world, entity player) {
 }
 
 zox_sys2(PlayerGame2StartSystem) {
+    double game_load_player_delay = 0.2; // 1.1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);

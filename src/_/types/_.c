@@ -10,6 +10,8 @@
 #include "int4.c"
 #include "uint.c"
 #include "uint2.c"
+#include "guint.c"
+#include "guint2.c"
 #include "lint.c"
 #include "float.c"
 #include "float2.c"
@@ -51,6 +53,8 @@ void initialize_component_ids() {
     initialize_component_ids_int4();
     initialize_component_ids_uint();
     initialize_component_ids_uint2();
+    initialize_component_ids_guint();
+    initialize_component_ids_guint2();
     initialize_component_ids_float();
     initialize_component_ids_float2();
     initialize_component_ids_float3();
@@ -79,6 +83,8 @@ void dispose_component_ids() {
     dispose_component_ids_int4();
     dispose_component_ids_uint();
     dispose_component_ids_uint2();
+    dispose_component_ids_guint();
+    dispose_component_ids_guint2();
     dispose_component_ids_float();
     dispose_component_ids_float2();
     dispose_component_ids_float3();

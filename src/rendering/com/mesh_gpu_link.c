@@ -1,6 +1,6 @@
-extern uint2 spawn_gpu_mesh_buffers();
+extern guint2 spawn_gpu_mesh_buffers();
 
-zoxc_uint2(MeshGPULink); // x is for indicies and verts
+zoxc_guint2(MeshGPULink); // x is for indicies and verts
 
 void add_gpu_mesh(ecs *world, entity e) {
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });

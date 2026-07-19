@@ -1,5 +1,6 @@
 entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
+    zox_set(e, FindNeighbors, { 1 });
     // zox_set(e, RenderDisabled, { 0 });
     // Terrain / Generation
     zox_add_tag(e, TerrainChunk);

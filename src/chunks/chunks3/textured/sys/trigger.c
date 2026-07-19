@@ -13,18 +13,22 @@ zox_sys2(ChunkMeshTriggerSystem) {
             continue;
         }
         build->value = 1;
-        iter it2 = zox_children(world, e);
+        if (dbg_log) {
+            zox_log("Chunk Triggered Build Sides + Mesh [%s]", zox_getn(e));
+        }
+        /*iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
                 if (zox_has(e2, ChunkMesh)) {
-                    zox_setm(e2, BuildChunkMesh, zox_dirty_trigger);
+                    // zox_setm(e2, BuildChunkMesh, 1);
+                    zox_set(e2, BuildChunkMesh, { 1 });
                     if (dbg_log) {
-                        zox_log("Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(e2));
+                        zox_log("Chunk Triggered Build [%s]:[%s]", zox_getn(e), zox_getn(e2));
                     }
                 }
             }
-        }
+        }*/
     }
 } zox_sys_end(ChunkMeshTriggerSystem);
 
@@ -40,7 +44,7 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
         zox_sys_e();
         zox_sys_i(VoxelNodeDirty, dirty);
         zox_sys_i(ChunkNeighbors, neighbors);
-        if (dirty->value != zox_dirty_active) {
+        if (dirty->value != zox_dirty_end) {
             continue;
         }
         for (byte j = 0; j < chunk_neighbors_length; j++) {
@@ -51,19 +55,21 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
                 }
                 continue;
             }
-            zox_setm(neighbor, BuildChunkSides, 1);
-            iter it2 = zox_children(world, neighbor);
+            // zox_setm(neighbor, BuildChunkSides, 1);
+            zox_set(neighbor, BuildChunkSides, { 1 });
+            /*iter it2 = zox_children(world, neighbor);
             while (zox_children_next(it2)) {
                 for (int k = 0; k < it2.count; k++) {
                     entity e3 = it2.entities[k];
                     if (zox_has(e3, ChunkMesh)) {
-                        zox_setm(e3, BuildChunkMesh, zox_dirty_trigger);
+                        // zox_setm(e3, BuildChunkMesh, zox_dirty_trigger);
+                        zox_set(e3, BuildChunkMesh, { 1 });
                         if (dbg_log) {
                             zox_log("Neighbor Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(neighbor), zox_getn(e3));
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 } zox_sys_end(Chunk3NeighborsMeshTriggerSystem);

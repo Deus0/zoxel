@@ -5,15 +5,15 @@ typedef struct {
     gint vertex_position;
     gint vertex_uv;
     gint vertex_color;
-    uint transform_matrix;
-    uint camera_matrix;
-    uint texture;
-    uint fog_data;
-    uint brightness;
+    guint transform_matrix;
+    guint camera_matrix;
+    guint texture;
+    guint fog_data;
+    guint brightness;
 } MaterialTextured3D;
 zoxc_custom(MaterialTextured3D);
 
-MaterialTextured3D create_MaterialTextured3D(const uint material) {
+MaterialTextured3D create_MaterialTextured3D(guint material) {
     return (MaterialTextured3D) {
         zox_gpu_get_material_attribute(material, "vertex_position"),
         zox_gpu_get_material_attribute(material, "vertex_uv"),
@@ -41,14 +41,14 @@ entity spawn_shader_textured3D(ecs *world) {
 }
 
 entity spawn_material_textured3D(ecs *world) {
-    const entity shader = spawn_shader_textured3D(world);
+    entity shader = spawn_shader_textured3D(world);
     if (!shader) {
         return 0;
     }
-    uint material;
-    const entity e = spawn_material(world, shader, &material);
+    guint material;
+    entity e = spawn_material(world, shader, &material);
     zox_set(e, ShaderLink, { shader })
-    const MaterialTextured3D attributes = create_MaterialTextured3D(material);
+    MaterialTextured3D attributes = create_MaterialTextured3D(material);
     zox_set_data(e, MaterialTextured3D, attributes)
     material_textured3D = e;
     shader_textured3D = shader;

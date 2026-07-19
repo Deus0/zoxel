@@ -1,6 +1,6 @@
 // NOTE: Our Zixel Mesh - Character2Ds
-uint2 global_mesh2;
-uint global_mesh_uvs;
+guint2 global_mesh2;
+guint global_mesh_uvs;
 
 // TODO: Refactor global mesh by linking the entity to one instead
 
@@ -51,7 +51,7 @@ void dispose_square_mesh() {
 }
 
 void initialize_square_mesh_textured() {
-    global_mesh2 = (uint2) { zox_gpu_create_buffer(), zox_gpu_create_buffer() };
+    global_mesh2 = (guint2) { zox_gpu_create_buffer(), zox_gpu_create_buffer() };
     global_mesh_uvs = zox_gpu_create_buffer();
 
     // set indicies

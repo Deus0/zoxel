@@ -2,18 +2,11 @@
 zox_sys2(DungeonsSpawnSystem) {
     byte dbg_log = 0;
     uint max_attempts = 100;
-    byte2 towns_count = (byte2) { 1, 9 };
-    byte min_homes_count = 2;
-    byte max_homes_count = 4;
+    byte2 spawn_counts = (byte2) { 1, 9 };
     byte2 min_size = (byte2) { 48, 48 };
     byte2 max_size = (byte2) { 128, 128 };
-    byte2 wall_height_range = (byte2) { 2, 6 };
-    byte2 wall_thickness_range = (byte2) { 1, 4 };
-    byte2 region_padding = byte2_single(8);
-    byte2 town_padding = byte2_single(12);
-    byte2 home_min_size = (byte2) { 5, 5 };
-    byte2 home_max_size = (byte2) { 12, 12 };
-    byte2 home_padding = byte2_single(4);
+    byte2 margins = byte2_single(8);
+    byte2 padding = byte2_single(12);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Seed);
@@ -29,7 +22,7 @@ zox_sys2(DungeonsSpawnSystem) {
         if (generate->value != zox_generate_region_dungeons) {
             continue;
         }
-        byte spawn_count = seed_range(seed->value, towns_count.x, towns_count.y);
+        byte spawn_count = seed_range(seed->value, spawn_counts.x, spawn_counts.y);
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Towns", zox_get_name(e), spawn_count);
         };
@@ -58,7 +51,7 @@ zox_sys2(DungeonsSpawnSystem) {
         int2 positions[spawn_count];
         byte2 sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
-            if (!get_place_position(seed->value, block_position->value, block_size->value, region_padding, min_size, max_size, town_padding, positions, sizes, j, mountain_positions, mountain_radii, mountains_length, max_attempts)) {
+            if (!get_place_position(seed->value, block_position->value, block_size->value, margins, min_size, max_size, padding, positions, sizes, j, mountain_positions, mountain_radii, mountains_length, max_attempts)) {
                 continue;
             }
             int2 position = positions[j];

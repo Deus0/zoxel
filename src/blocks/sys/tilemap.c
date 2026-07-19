@@ -7,7 +7,7 @@ zox_sys2(RealmTilemapSystem) {
     zox_sys_in(TilemapLink);
     zox_sys_out(BlocksDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_i(BlockLinks, blocks);
         zox_sys_i(TilemapLink, tilemap);
         zox_sys_o(BlocksDirty, dirty);

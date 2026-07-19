@@ -1,5 +1,15 @@
 # Done
 
+-x Spawn Chunk Mesh when VoxelNodeDirty 
+-x Build Mesh from ChunkMesh
+-x Busy Tracks the chunk update from Generate to mesh building?
+-x Lighting wasn't accounted for
+-x Spawning Player before the chunks are generated, underneath map too
+-x Make it so it only spawns ChunkMesh if there is voxels... if there is ChunkSides!
+-x Make all chunk states bytes and set explictly
+-x test zox_time_systems later as might of broke it during pipeline changes
+-x BuildChunkMesh caused font textures to break
+-x Disabling seemed to fix lag: Npcs
 -x Make the statspanel text brighter so it stands out better
 -x Remove corners and outlines from windows + headers so they are more blocky
 -x Add option in tests to cycle through map debug modes

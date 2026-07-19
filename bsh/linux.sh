@@ -7,6 +7,7 @@ GFX=$3          # sdl, glut
 ARC=$4          # x64
 OS="linux"
 ONARC=$(uname -m)
+is_profiler="False"
 sdl_source="False"
 sdl_images="False"
 sdl_mixer="True"
@@ -66,6 +67,11 @@ if [[ ${debug} == "True" ]]; then
     # flags+=" -O0 -fno-omit-frame-pointer"
     #  -fsanitize=address
     bin_path="bin/${bin_filename}-dev.bin"
+fi
+
+if [[ ${is_profiler} == "True" ]]; then
+    echo "+ Added [profiler]"
+    dflags+=" -Dzox_profiler"
 fi
 
 if [[ ${GLB} == "headless" ]]; then

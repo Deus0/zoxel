@@ -12,7 +12,7 @@ zox_sys2(MaterialRestoreSystem) {
         if (!shaderLink->value) {
             continue;
         }
-        uint2 shader = zox_get_value(shaderLink->value, ShaderGPULink);
+        guint2 shader = zox_getv(shaderLink->value, ShaderGPULink);
 #ifdef zox_log_gpu_management
         zox_log(" > restoring [%s] - shader [%ix%i]\n", zox_get_name(it->entities[i]), shader.x, shader.y)
 #endif

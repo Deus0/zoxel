@@ -1,4 +1,4 @@
-zoxc_uint(UvsGPULink);
+zoxc_guint(UvsGPULink);
 
 void add_gpu_uvs(ecs *world, entity e) {
     zox_prefab_set(e, UvsGPULink, { 0 })

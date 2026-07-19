@@ -2,8 +2,7 @@ entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, int3 posit
     entity e = zox_ins(world, prefab);
     {
         char name[64];
-        sprintf(name, "chunk_terrain_%ix%ix%i", position.x, position.y, position.z);
-        // zox_name("chunk_terrain");
+        sprintf(name, "terrain_chunk_%ix%ix%i", position.x, position.y, position.z);
         zox_name(name);
     }
     zox_set_parent(world, e, terrain);
@@ -35,22 +34,26 @@ entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, int3 posit
     zox_set(e, ChunkSize, { size });
     zox_set(e, Bounds3D, { bounds });
     // zox_log("placing: chunk_scale [%f] voxscale [%f] length [%i]", chunk_scale, scale, length);
+    // NOTE: Used in ChunkFrustumCulling for now
     zox_set(e, Position3D, { positionf });
+    // Used for Rendering
     zox_set(e, TransformMatrix, { float4x4_position(positionf) });
-    // zox_set(e, TransformMatrix, { float4x4_position_scale(positionf, 1) });
     // zox_set(e, TransformMatrix, { float4x4_transform_scale(positionf, quaternion_identity, 1) });
-    // zox_set(e, TransformMatrix, { float4x4_transform(positionf, quaternion_identity) });
     // lod update here
     // todo: just start this as invisible and update with streaming systems
     zox_set(e, RenderDistance, { render_distance });
     zox_set(e, RenderDepth, { render_depth });
-    // can move this to init systems
-    //  note: keep spawn functions only for passing through sending outside information
-    // NOTE: Move this to a system - in Rendering - initialize render
-    if (zox_has(prefab, MeshIndicies)) {
-        spawn_gpu_mesh(world, e);
-        spawn_gpu_uvs(world, e);
-        spawn_gpu_colors(world, e);
-    }
     return e;
 }
+
+// can move this to init systems
+//  note: keep spawn functions only for passing through sending outside information
+// NOTE: Move this to a system - in Rendering - initialize render
+/*if (zox_has(prefab, MeshIndicies)) {
+ * spawn_gpu_mesh(world, e);
+ * spawn_gpu_uvs(world, e);
+ * spawn_gpu_colors(world, e);
+ } */
+// zox_set(e, TransformMatrix, { float4x4_position_scale(positionf, 1) });
+// zox_set(e, TransformMatrix, { float4x4_transform_scale(positionf, quaternion_identity, 1) });
+// zox_set(e, TransformMatrix, { float4x4_transform(positionf, quaternion_identity) });

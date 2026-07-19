@@ -1,5 +1,8 @@
 // NOTE: Generates lights again when the neighbor lights update
 zox_sys2(ChunkNeighborLightTriggerSystem) {
+    if (disable_lights) {
+        return;
+    }
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -17,8 +20,6 @@ zox_sys2(ChunkNeighborLightTriggerSystem) {
             if (!zox_valid(neighbor) || !zox_has(neighbor, MeshColorsGenerate)) {
                 continue;
             }
-            //zox_muter(neighbor, MeshColorsGenerate, mesh_dirty);
-            //mesh_dirty->value = zox_dirty_trigger;
             iter it2 = zox_children(world, neighbor);
             while (zox_children_next(it2)) {
                 for (int k = 0; k < it2.count; k++) {
@@ -26,7 +27,7 @@ zox_sys2(ChunkNeighborLightTriggerSystem) {
                     if (!zox_has(e3, ChunkMesh)) {
                         continue;
                     }
-                    zox_setm(e3, MeshColorsGenerate, 1);
+                    zox_set(e3, MeshColorsGenerate, { 1 });
                     if (dbg_log) {
                         zox_log("Neighbor Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(neighbor), zox_getn(e3));
                     }

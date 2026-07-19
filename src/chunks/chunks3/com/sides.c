@@ -5,7 +5,7 @@ typedef struct {
     byte value;
 } SidesOctree;
 zoxc_octree(SidesOctree, byte, 0);
-zoxc_state(SidesOctreeDirty);
+// zoxc_state(SidesOctreeDirty);
 
 new_octree_function_set(SidesOctree);
 create_node_getter(SidesOctree);

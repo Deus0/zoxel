@@ -3,15 +3,15 @@ entity material_basic3D;
 
 typedef struct {
     gint vertex_position;
-    uint transform_matrix;
-    uint camera_matrix;
-    uint fog_data;
-    uint color;
+    guint transform_matrix;
+    guint camera_matrix;
+    guint fog_data;
+    guint color;
     // uint brightness;
 } MaterialBasic3D;
 zoxc_custom(MaterialBasic3D);
 
-MaterialBasic3D create_MaterialBasic3D(const uint material) {
+MaterialBasic3D create_MaterialBasic3D(guint material) {
     return (MaterialBasic3D) {
         .vertex_position = zox_gpu_get_material_attribute(material, "vertex_position"),
         .transform_matrix = zox_gpu_get_material_property(material, "transform_matrix"),
@@ -42,7 +42,7 @@ entity spawn_material_basic3D(ecs *world) {
     if (!shader) {
         return 0;
     }
-    uint material;
+    guint material;
     entity e = spawn_material(world, shader, &material);
     zox_name("material_basic3D")
     zox_set(e, ShaderLink, { shader })

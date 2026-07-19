@@ -1,11 +1,11 @@
 // UBOs
 
-static inline void zox_gpu_ubo_set_matricies(uint id, uint length, const void* ptr) {
+static inline void zox_gpu_ubo_set_matricies(guint id, gsizei length, const void* ptr) {
     glBindBuffer(GL_UNIFORM_BUFFER, id);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, length * sizeof(float4x4), ptr);
 }
 
-static inline void zox_gpu_ubo_initialize_matricies(uint id, uint binding_point, uint length) {
+static inline void zox_gpu_ubo_initialize_matricies(guint id, guint binding_point, gsizei length) {
     glBindBuffer(GL_UNIFORM_BUFFER, id);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(float4x4) * length, NULL, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, id);

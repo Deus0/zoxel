@@ -41,7 +41,7 @@ void define_components_chunks3(ecs* world) {
     zoxd_byte(BlocksSpawned);
     zoxd_byte(BuildChunkMesh);
     zoxd_state(ChunkDirty);
-    zoxd_state(SidesOctreeDirty);
+    // zoxd_state(SidesOctreeDirty);
     zoxd_int3(ChunkPosition);
     zoxd_int3(ChunkSize);
     zoxd(ChunkNeighbors);

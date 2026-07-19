@@ -3,3 +3,7 @@
 static inline byte uint2_equals(const uint2 a, const uint2 b) {
     return a.x == b.x && a.y == b.y;
 }
+
+static inline byte guint2_equals(const guint2 a, const guint2 b) {
+    return a.x == b.x && a.y == b.y;
+}

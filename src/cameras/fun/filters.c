@@ -1,5 +1,4 @@
-#define camera_filtering_begin()\
-    byte filtering = zox_has(renderer_camera, CameraFilter)
+#define camera_filtering_begin() byte filtering = zox_has(renderer_camera, CameraFilter)
 
 #define camera_filtering_check()\
     entity fe = it->entities[i];\

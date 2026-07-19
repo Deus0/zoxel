@@ -7,6 +7,7 @@ zox_sys2(Characters3DespawnSystem) {
     zox_sys_out(CharactersSpawned);
     zox_sys_out(ChunkEntities);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(NpcSpawnZoneDirty, dirty);
         zox_sys_i(NpcSpawnZone, active);
         zox_sys_o(CharactersSpawned, spawned);
