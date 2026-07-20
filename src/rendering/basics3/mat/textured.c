@@ -22,16 +22,17 @@ MaterialTextured3D create_MaterialTextured3D(guint material) {
         zox_gpu_get_material_property(material, "camera_matrix"),
         zox_gpu_get_material_property(material, "tex"),
         zox_gpu_get_material_property(material, "fog_data"),
-        zox_gpu_get_material_property(material, "brightness") };
+        zox_gpu_get_material_property(material, "brightness")
+    };
 }
 
 entity spawn_shader_textured3D(ecs *world) {
-    const byte shader_index = get_new_shader_source_index();
+    byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "textured3D.vert");
     char* frag = get_shader_source(world, "textured3D.frag");
     shader_verts[shader_index] = vert;
     shader_frags[shader_index] = frag;
-    const entity e = spawn_shader(world, shader_index);
+    entity e = spawn_shader(world, shader_index);
     if (!e) {
         zox_log_error("[shader_textured3D] failed to spawn")
         return 0;

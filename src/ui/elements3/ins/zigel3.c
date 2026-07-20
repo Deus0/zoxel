@@ -4,7 +4,7 @@ entity spawn_zigel3(ecs *world, Zigel3DData data) {
         return 0;
     }
     zox_instance(data.prefab);
-    // zox_name("zigel3")
+    zox_set_unique_name(e, "zigel3");
     zox_set_parent(world, e, data.parent);
     // zox_set(e, ParentLink, { data.parent });
     zox_set(e, ZigelIndex, { data.zigel_index });

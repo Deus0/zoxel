@@ -1,10 +1,10 @@
 entity spawn_label3D(ecs *world, SpawnDataElement3D data, Text3DData text_data, Zigel3DData zigel_data) {
     if (!text_data.prefab) {
-        zox_log("invalid text_data prefab in spawn_label3D\n")
+        zox_loge("invalid text_data prefab in spawn_label3D\n")
         return 0;
     }
     zox_instance(data.prefab);
-    zox_name("label3D");
+    zox_set_unique_name(e, "label3");
     zox_set(e, RenderDisabled, { data.render_disabled });
     if (!is_color_null(data.base_color)) {
         zox_set(e, FillColor, { data.base_color });
@@ -21,6 +21,8 @@ entity spawn_label3D(ecs *world, SpawnDataElement3D data, Text3DData text_data, 
     if (data.ui_holder) {
         zox_set(e, UIHolderLink, { data.ui_holder });
         zox_set(e, UITrail, { { 0, data.trail_offset, 0 } });
+    } else {
+        zox_loge("No UIHolder for UI");
     }
     return e;
 }

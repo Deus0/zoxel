@@ -1,4 +1,4 @@
-byte character_spawn_distance = 2;   // not used yet
+byte character_spawn_distance = 1;   // not used yet
 byte character_spawn_rate_min = 0;
 byte character_spawn_rate_max = 3; // set higher
 byte disable_npc_movement = 0;

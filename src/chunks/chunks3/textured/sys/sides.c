@@ -196,7 +196,7 @@ void fetch_neightbor_chunk_data(ecs* world, const ChunkNeighbors* chunk_neighbor
 // NOTE: Calculates the solid sides of a voxel octree per material
 zox_sys2(ChunkSidesSystem) {
     byte dbg_log = 0;
-    byte max_process = 0; // 16;
+    byte max_process = 4;
     byte* solids = NULL;
     zox_sys_world();
     zox_sys_begin();
@@ -260,8 +260,8 @@ zox_sys2(ChunkSidesSystem) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
                 if (zox_has(e2, ChunkMesh)) {
-                    // zox_setm(e2, BuildChunkMesh, 1);
-                    zox_set(e2, BuildChunkMesh, { 1 });
+                    zox_setm(e2, BuildChunkMesh, zox_build_chunk_mesh_run);
+                    // zox_set(e2, BuildChunkMesh, { zox_build_chunk_mesh_run });
                     if (dbg_log) {
                         zox_log("Chunk Triggered Build [%s]:[%s]", zox_getn(e), zox_getn(e2));
                     }

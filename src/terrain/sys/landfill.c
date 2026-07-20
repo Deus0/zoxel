@@ -1,11 +1,11 @@
-short sand_height = 2;
-short grass_height = 4;
-short stone_height = 18;
+short sand_height = 4;
+short grass_height = 7;
+short stone_height = 22;
 
 // NOTE: Fills land with Soils based on biomes
-zox_sys2(LandfillChunk3System) {
-    byte max_process = 0; // 32;
-    // byte dbg_log = 0;
+zox_sys2(LandfillChunkSystem) {
+    byte dbg_log = 0;
+    byte max_process = 32;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLink);
@@ -118,10 +118,7 @@ zox_sys2(LandfillChunk3System) {
                 if (height < chunk_block_position.y) {
                     continue;
                 }
-                int terrain_top_position = height;
-                int top_position = terrain_top_position - chunk_block_position.y;
-                top_position /= hmultiplier;
-                top_position = int_clamp(top_position, 0, length - 1);
+                byte local_height = int_clamp((height - chunk_block_position.y) / hmultiplier, 0, length - 1);
 #ifdef zox_safety_checks
                 if (biome_id >= realm_biomes->length) {
                     zox_loge("[Landfill] Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
@@ -148,7 +145,7 @@ zox_sys2(LandfillChunk3System) {
                     stone_id = zox_valid(stone) ? zox_getv(stone, BlockIndex) : 0;
                 }
                 // We fill the ground up here
-                for (position.y = 0; position.y <= top_position; position.y++) {
+                for (position.y = 0; position.y <= local_height; position.y++) {
                     int terrain_position_y = chunk_block_position.y + position.y * hmultiplier;
                     // top blocks
                     byte value;
@@ -168,6 +165,9 @@ zox_sys2(LandfillChunk3System) {
                     }
                     set_clean_VoxelNode(voctree, depth->value, position, value);
                 }
+                if (dbg_log) {
+                    zox_log("[%s]:Landfill [%ix%i] -> H [%i] : GH [%i] L [%i]", zox_getn(e), position.x, position.z, local_height, height, length);
+                }
             }
         }
         write_unlock_VoxelNode(voctree);
@@ -175,4 +175,4 @@ zox_sys2(LandfillChunk3System) {
         generate->value = zox_generate_terrain_vegetation;
         zox_sys_increment();
     }
-} zox_sys_end(LandfillChunk3System);
+} zox_sys_end(LandfillChunkSystem);

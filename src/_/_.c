@@ -27,8 +27,8 @@
 #include "octrees/_.c"
 #include "strings/_.c"
 #include "com/_.c"
-#include "sys/_.c"
 #include "timing/_.c"
+#include "sys/_.c"
 #include "settings/_.c"
 
 void module_dispose_core(ecs *world, void *ctx) {

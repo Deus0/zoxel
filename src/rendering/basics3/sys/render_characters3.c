@@ -50,8 +50,8 @@ zox_sys2(Characters3RenderSystem) {
         opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
         zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
         zox_gpu_render(meshIndicies->length);
-        catch_basic3D_errors("! Characters3RenderSystem");
-        zox_statistics_characters_rendered++;
+        // catch_basic3D_errors("! Characters3RenderSystem");
+        // zox_statistics_characters_rendered++;
     }
     if (has_set_material) {
         zox_gpu_disable_attribute(material_attributes->vertex_color);

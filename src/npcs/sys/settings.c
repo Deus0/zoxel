@@ -9,9 +9,9 @@ zox_sys2(NpcsSettingsSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-//#ifdef zox_debug
+#ifdef zox_debug_settings
         spawn_setting_byte(world, e, "Disable Npcs", disable_npcs);
-//#endif
+#endif
     }
 } zox_sys_end(NpcsSettingsSystem);
 

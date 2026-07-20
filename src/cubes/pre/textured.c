@@ -2,7 +2,6 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
     int2 texture_size = int2_zero; // { 16, 16 };
     // zox_prefab_child(prefab)
     zox_clone(prefab);
-    zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Brightness, { 1 });
     zox_prefab_set(e, Color, { color_red });

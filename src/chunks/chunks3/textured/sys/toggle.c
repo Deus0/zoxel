@@ -1,6 +1,7 @@
 // NOTE: Toggles the meshes beased on render depth
 zox_sys2(ChunkMeshToggleSystem) {
     byte dbg_log = 0;
+    double deactivate_delay = 2.5;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepth);
@@ -28,6 +29,15 @@ zox_sys2(ChunkMeshToggleSystem) {
                 }
             }
         }
+        // Enable to make sure it starts updating!
+        if (new_mesh) {
+            zox_setm(new_mesh, Active, 1);
+            // NOTE: Incase its still Deactivating
+            zox_setm(new_mesh, DeactivateDelay, 0);
+            if (dbg_log) {
+                zox_log("Chunk [%s] Set Mesh [%s] to Active [%i]", zox_getn(e), zox_getn(new_mesh), 1);
+            }
+        }
         byte busy = new_mesh && (zox_getv(new_mesh, BuildChunkMesh) || zox_getv(new_mesh, TexturedMeshDirty));
         if (busy) {
             continue;
@@ -35,18 +45,10 @@ zox_sys2(ChunkMeshToggleSystem) {
         // can we just set another flag, then fade it
         if (old_mesh) {
             // zox_setm(old_mesh, Active, 0);
-            ushort delay_one_second = 0.5 / zox_delta_time;
+            ushort delay_one_second = deactivate_delay / zox_delta_time;
             zox_setm(old_mesh, DeactivateDelay, delay_one_second);
             if (dbg_log) {
                 zox_log("Chunk [%s] Set Mesh [%s] to Active [%i] [%i]", zox_getn(e), zox_getn(old_mesh), 0, delay_one_second);
-            }
-        }
-        if (new_mesh) {
-            zox_setm(new_mesh, Active, 1);
-            // NOTE: Incase its still Deactivating
-            zox_setm(new_mesh, DeactivateDelay, 0);
-            if (dbg_log) {
-                zox_log("Chunk [%s] Set Mesh [%s] to Active [%i]", zox_getn(e), zox_getn(new_mesh), 1);
             }
         }
         dirty->value = zox_chunk_lod_dirty_end;

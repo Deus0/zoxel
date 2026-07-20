@@ -4,7 +4,6 @@
 #include "darkness.c"
 #include "reduce.c"
 #include "trigger.c"
-#include "trigger_neighbor.c"
 #include "build.c"
 #include "build_smooth.c"
 #include "refresh.c"
@@ -106,7 +105,7 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         ChunkMeshColorsTriggerSystem,
         zoxp_update,
-        [in] chunks3.BuildChunkMesh,
+        [out] chunks3.BuildChunkMesh,
         [out] rendering.MeshColorsGenerate,
         [none] chunks.ChunkMesh
     );

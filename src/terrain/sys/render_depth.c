@@ -1,5 +1,5 @@
 // NOTE: When Depth Increases -> Generate our Chunks
-zox_sys2(RenderDepthChunk3System) {
+zox_sys2(ChunkLodSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -15,6 +15,13 @@ zox_sys2(RenderDepthChunk3System) {
         zox_sys_o(ChunkLodDirty, render_depth_dirty);
         zox_sys_o(NodeDepth, octree_depth);
         zox_sys_o(GenerateChunk, generate);
+        // Delays our lod changes until generation finishes
+        if (render_depth_dirty->value == zox_chunk_lod_dirty_generating) {
+            if (!generate->value) {
+                render_depth_dirty->value = zox_chunk_lod_dirty_spawn;
+            }
+            continue;
+        }
         if (render_depth_dirty->value != zox_chunk_lod_dirty_octree) {
             continue;
         }
@@ -42,6 +49,6 @@ zox_sys2(RenderDepthChunk3System) {
             // zox_set(e, BuildChunkMesh, { zox_dirty_trigger });
             // NOTE: This tells to build the new side, we can do this during LODDirty step instead
         }
-        render_depth_dirty->value = zox_chunk_lod_dirty_spawn;
+        render_depth_dirty->value = zox_chunk_lod_dirty_generating;
     }
-} zox_sys_end(RenderDepthChunk3System);
+} zox_sys_end(ChunkLodSystem);

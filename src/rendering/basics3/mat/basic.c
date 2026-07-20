@@ -7,7 +7,6 @@ typedef struct {
     guint camera_matrix;
     guint fog_data;
     guint color;
-    // uint brightness;
 } MaterialBasic3D;
 zoxc_custom(MaterialBasic3D);
 
@@ -28,7 +27,7 @@ entity spawn_shader_basic3D(ecs *world) {
     char* frag = get_shader_source(world, "basic3D.frag");
     shader_verts[shader_index] = vert;
     shader_frags[shader_index] = frag;
-    const entity e = spawn_shader(world, shader_index);
+    entity e = spawn_shader(world, shader_index);
     if (!e) {
         zox_log_error("[shader_basic3D] failed to spawn");
         return 0;

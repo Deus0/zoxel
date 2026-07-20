@@ -22,9 +22,11 @@
     #define zox_disable_logs
 #endif
 
-//#ifdef zox_profiler
+// Release
+#ifdef zox_debug
+    #define zox_debug_settings
     //#define zox_time_systems
-//#endif
+#endif
 
 // Flecs
 #define FLECS_CUSTOM_BUILD
@@ -38,3 +40,6 @@
     #define FLECS_HTTP
     #define FLECS_METRICS
 #endif
+
+// Testing atm
+// #define zox_debug_settings

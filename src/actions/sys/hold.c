@@ -53,7 +53,7 @@ zox_sys2(ActiveActionHoldSystem) {
         } else {
             item_position = body_position;
         }
-        entity texture = zox_gett_value(aaction->value, TextureLink);
+        entity texture = zox_getv(aaction->value, TextureLink);
         if (zox_valid(texture)) {
             e2 = spawn_cube_textured(world, prefab_cube_textured, texture, float3_zero, scale);
         } else {

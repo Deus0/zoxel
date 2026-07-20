@@ -5,7 +5,7 @@ entity spawn_prefab_chunk_mesh(ecs *world) {
     zox_add_tag(e, ChunkMesh);
     zox_prefab_set(e, Active, { 1 });
     zox_prefab_set(e, DeactivateDelay, { 0 });
-    zox_prefab_set(e, BuildChunkMesh, { 1 });
+    zox_prefab_set(e, BuildChunkMesh, { zox_build_chunk_mesh_run });
     // Transforms
     zox_add_tag(e, DisableTransform);
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });

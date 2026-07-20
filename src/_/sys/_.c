@@ -1,6 +1,15 @@
 // NOTE: pthread is linux only
 #include "deactivate.c"
 
+void zox_define_systems_core(ecs* world) {
+    zox_system(
+        DeactivateDelaySystem,
+        zoxp_post_update,
+        [out] core.Active,
+        [out] core.DeactivateDelay
+    );
+}
+
 /*static __thread int local_thread_index = -1;
 
 int get_thread_index() {
@@ -13,12 +22,3 @@ int get_thread_index() {
     }
     return local_thread_index;
 }*/
-
-void zox_define_systems_core(ecs* world) {
-    zox_system(
-        DeactivateDelaySystem,
-        zoxp_post_update,
-        [out] core.Active,
-        [out] core.DeactivateDelay
-    );
-}

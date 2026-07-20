@@ -11,7 +11,7 @@ float3 calculate_zigel3D_position(float2 zigel3D_size, int data_index, int zigel
 
 entity spawn_text3D(ecs *world, Text3DData data, Zigel3DData zigel_data) {
     zox_instance(data.prefab);
-    zox_name("text3D");
+    zox_set_unique_name(e, "text3");
     zox_set(e, LocalPosition3D, { data.position });
     zox_set(e, TextPadding, { data.padding });
     zox_set(e, MeshAlignment, { data.alignment });

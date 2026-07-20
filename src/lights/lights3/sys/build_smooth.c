@@ -179,15 +179,15 @@ zox_sys2(SmoothLightsBuildSystem) {
             }
             continue;
         }
-        /*if (zox_getv(chunk, GenerateChunk) || zox_getv(chunk, BuildChunkSides)) {
+        if (zox_getv(chunk, GenerateChunk) || zox_getv(chunk, BuildChunkSides)) {
             if (dbg_log) {
                 zox_log("Chunk is still Generating new Mesh, while building Lights [%s]", zox_get_name(e));
             }
             continue;
-        }*/
+        }
         const SidesOctree* sides = zox_get(chunk, SidesOctree);
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
-        byte neighbors_busy = 0;
+        /*byte neighbors_busy = 0;
         for (int j = 0; j < 6; j++) {
             entity e2 = neighbors->value[j];
             if (!zox_valid(e2)) {
@@ -201,7 +201,7 @@ zox_sys2(SmoothLightsBuildSystem) {
         }
         if (neighbors_busy) {
             continue;
-        }
+        }*/
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);
         const LightNode* lights = zox_get(chunk, LightNode);
         // float block_scale = zox_getv(chunk, BlockScale);

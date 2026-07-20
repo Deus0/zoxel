@@ -16,15 +16,17 @@ static inline void set_position_rotation_recursive(ecs* world, entity e, float3 
     float3_add_float3_p(&new_position, parent_position);
     quaternion_rotate_quaternion_p(&new_rotation, local_rotation);
     zox_mut_begin(e, Position3D, old_position);
-    if (!float3_equals(new_position, old_position->value)) {
+    // if (!float3_equals(new_position, old_position->value))
+    {
         old_position->value = new_position;
-        zox_mut_end(e, Position3D);
+        // zox_mut_end(e, Position3D);
         updated = 1;
     }
     zox_mut_begin(e, Rotation3D, old_rotation);
-    if (!float4_equals(new_rotation, old_rotation->value)) {
+    // if (!float4_equals(new_rotation, old_rotation->value))
+    {
         old_rotation->value = new_rotation;
-        zox_mut_end(e, Rotation3D);
+        // zox_mut_end(e, Rotation3D);
         updated = 1;
     }
     if (!updated) {

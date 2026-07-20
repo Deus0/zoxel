@@ -120,7 +120,7 @@ zox_sys2(BasicLightsBuildSystem) {
         }
         if (zox_getv(e, BuildChunkMesh)) {
             // if still building, it will update the verts again
-            zox_set(e, MeshColorsGenerate, { zox_dirty_trigger });
+            zox_set(e, MeshColorsGenerate, { 1 });
             if (dbg_log) {
                 zox_log("Chunk is still Generating new Mesh, while building Lights [%s]", zox_get_name(e));
             }

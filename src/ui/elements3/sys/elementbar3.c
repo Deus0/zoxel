@@ -20,9 +20,15 @@ zox_sys2(Elementbar3DSystem) {
         if (initializeElement->value) {
             continue; // removing this breaks it?!?!
         }
-        if (!can_render_ui(world, e)) {
-            continue; // disabled for now causes issues
+        entity ui_holder = zox_get_parent_by_id(world, e, zox_id(UIHolderLink));
+        if (zox_valid(ui_holder)) {
+            if (zox_getv(ui_holder, RenderDisabled)) {
+                continue;
+            }
         }
+        // if (!can_render_ui(world, e)) {
+        //     continue; // disabled for now causes issues
+        //}
         float percentage = bar->value;
         float2 scale = size->value;
         float left_offset = - scale.x * (1.0f - percentage) * 0.5f;

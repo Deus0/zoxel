@@ -6,6 +6,7 @@ zox_sys2(CharacterNameLabelsSystem) {
     if (disable_npc_uis) {
         return;
     }
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -49,7 +50,11 @@ zox_sys2(CharacterNameLabelsSystem) {
             .outline_color = label3D_font_color_outline
         };
         entity e2 = spawn_label3D(world, label3D_spawn_data, label3D_text_data, label3D_zigel_data);
+        zox_set_unique_name(e2, "name_label3");
         zox_set(e2, ElementHolder, { e });
         add_to_ElementLinks(elements, e2);
+        if (dbg_log) {
+            zox_log("Spawned Name Label on [%s]: %s", zox_getn(e), result);
+        }
     }
 } zox_sys_end(CharacterNameLabelsSystem);

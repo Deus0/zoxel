@@ -2,88 +2,55 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Main issue is when resolution of chunk increases, it changes compared to before
-    - we need better functions for increasing depth
+Regressions
+- 3D UIs / items broken
+	- NameLabels
+	- Healtbars
+	- Popups are gone
+	- Item in hand is missing too
+- When place block - sometimes doesnt update
+	- I think this was for air - just try build towers to test
+	- After some testing, appears to just randomly miss the updates
+	- Probably due to trigger not hitting - state miss
+- Load Game Borked ,,, or not idk
+- Block's Items not dropping, fix queues
+- Test Pipeline sync points before i finish
+- NPCs cant seem to find them from spawn -they arnt spawning when i wander
+- Lighting broken between lods, state issue? used to rely on pipelines before
+  
+Fixes (older bugs)
+- Hat doesnt spawn on heads
+- Jumps should work independent of time delta
+- Npcs be falling through ground
 
-- Lighting seems missing - check triggers
-    - in some chunks only
-    - seems to be a Sunlight issue
-
+New:
+- Spawn / Respawn point should be in a Home - facing outward
 - Add Terrain Depth to options - debug options
 - Draw X inside chunk after it builds sides - to debug  this
-
-- Test entity table issues by adding tag to chunk im in and seeing if it breaks their rendering... weird but might be why meshes dissapearing
-
-- Fix chunk bounds debug visuals - the lines debugger
-- for some reason when it lods lod again it will rebuild mesh
-
 - Make close button smaller square with a circle pattern
     - the X is ugly there need icon
-
+- Add material + system for Fading chunks in
+	- Tag then Remove tag after faded for TransparentRendering
 - After it works, lets fade between the lod meshes
 	- handle interupts so it can fade the other direction again
 - also switch chunk depth to 5 + double scale so its 32x32x32
+- Create a fullscreen ui scroll view, render textures, of spinning vox models
+	- each one will be a part of a population
+	- population breeds based on rules
+	- the final population becomes the biome blocks
+
+-o Test entity table issues by adding tag to chunk im in and seeing if it breaks their rendering... weird but might be why meshes dissapearing
+- Fix chunk bounds debug visuals - the lines debugger
+- for some reason when it lods lod again it will rebuild mesh
+
 	
-Bug!
-- Lesser chunks dissapear
-- UVs get messed up when flying around on chunks
-
-Causes
-- Maybe it uploads before it's done generating?
-
-Solution:
-- Inside Chunk to work on camera instead of player character
-- fly around to outer chunks to debug them
-- display more data
-- render lines over mesh on chunk - as a debug method to show mesh itself - tests whether its mesh issue, or the renderer itself
-
-Lets assume
-- Lod Updates
-- Spawns Mesh
-- Mesh updated
-- Somehow not rendering
-
-Setting all chunks to build sides again
-- it rebuilds and shows mesh
-- then neighbor updates
-- then it dissapears
-
-Disabling Lods means:
-- Chunk Mesh spawns once
-- No need to spawn new mesh links
-
-- Issue must be, sides is created per lod level - so if new sides is made and chunk generates, at wrong depth, it will create these issues?
-	- but the data was the same so it doesnt support this - mesh was still there at full depth
-
-- Test Method:
-	- fly around until chunk dissapears
-	- fly into it
-	- note the position
-	- check debug logs for system processes
-	- didnt seem to be rendering?
-10x1x-3
-
-- Issue occurs only when switching LODs
-	- spawning a new one didn't appear to work..
-	- it disabled last, spawned a new one butt...
-
--x Change all opengl data to gint and gint2 and guint and guint2
-	- this might be issue
-
-- Okay its probaly race conditions with Side updates, mesh updates, etc
-- Make a toggle for disabling .. etc
-- Sides issues
-- Arm swing brokens
 - Sometimes chunk didnt update until we destroyed a block from it
 
 - When i spawn new chunk meshes, it breaks the old ones...!
 - New Test: Spawns MeshViewer ui based on inside chunk data
 
 - Shrink Game Viewport and put Editor Buttons as icon buttons around side, like gizmos - docked
-
 - For soil vox addition, while it digs down, use a random chance to alter the color?
-- Zigel Positions not always set atm for UIs
--x InitializeEntity - make byte from state - removing Increment systems
 - when I turn off toggling, it doesnt break
 - Also when i disable lods
 - It still glitches though, when mesh built, it shows at wrong place

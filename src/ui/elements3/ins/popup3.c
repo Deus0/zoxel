@@ -8,7 +8,7 @@ entity spawn_popup3(ecs *world, SpawnDataElement3D data, Text3DData text_data, Z
     }
     float3 depth_position = (float3) { 0, 0, element3D_depth_difference };
     zox_instance(data.prefab);
-    zox_name("popup3D");
+    zox_set_unique_name(e, "popup3");
     zox_set(e, FillColor, { data.base_color });
     if (popup_data.lifetime) {
         zox_set(e, DestroyInTime, { popup_data.lifetime });

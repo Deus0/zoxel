@@ -9,7 +9,9 @@ zox_sys2(LightsSettingsSystem) {
             continue;
         }
         spawn_setting_byte(world, e, "Disable Lights", disable_terrain_lods);
-        // spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
+#ifdef zox_debug_settings
+        spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
+#endif
     }
 } zox_sys_end(LightsSettingsSystem);
 

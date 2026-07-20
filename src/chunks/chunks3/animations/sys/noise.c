@@ -41,7 +41,7 @@ zox_sys2(NoiseVoxelNodeSystem) {
         write_lock_VoxelNode(voctree);
         random_fill_octree(voctree, 1, depth->value);
         write_unlock_VoxelNode(voctree);
-        build_mesh->value = zox_dirty_trigger;
+        build_mesh->value = zox_build_chunk_mesh_run;
         generate->value = 0;
     }
 } zox_sys_end(NoiseVoxelNodeSystem);

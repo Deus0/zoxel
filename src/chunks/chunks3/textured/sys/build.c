@@ -147,7 +147,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
         zox_sys_o(TexturedMeshDirty, upload);
-        if (!build->value || !active->value) {
+        if (build->value != zox_build_chunk_mesh_run || !active->value) {
             continue;
         }
         if (zox_getv(e, RenderDisabled)) {
@@ -168,7 +168,6 @@ zox_sys2(ChunkTexturedBuildSystem) {
             continue;
         }
 #endif
-        // if (zox_getv(chunk, RenderDepth) != depth->value) {
         byte chunk_depth = zox_getv(chunk, NodeDepth);
         if (depth->value > chunk_depth) {
             if (dbg_log) {
@@ -251,7 +250,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
         colors->value = finalize_arrayd_color_rgb(mesh_data.color_rgbs);
         uvs->value = finalize_arrayd_float2(mesh_data.uvs);
         // dirty
-        build->value = 0;
+        build->value = zox_build_chunk_mesh_lights;
         upload->value = 1;
         if (dbg_log) {
             zox_log("Built Mesh [%s]:[%s] Verts [%i] Scale [%f] Depth [%i]", zox_getn(e), zox_getn(chunk), verts->length, chunk_scale, depth->value);

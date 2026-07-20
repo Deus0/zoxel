@@ -9,7 +9,10 @@ zox_sys2(ModelsSettingsSystem) {
             continue;
         }
         spawn_setting_byte(world, e, "Outlines", is_generate_vox_outlines);
-        spawn_setting_byte_slider(world, e, "Resolution", block_vox_depth, (byte2) { 1, 5 });
+        spawn_setting_byte_slider(world, e, "Resolution", block_vox_depth, block_vox_depth_limits);
+#ifdef zox_debug_settings
+        spawn_setting_byte_slider(world, e, "Terrain Depth", block_vox_depth, terrain_depth_limits);
+#endif
     }
 } zox_sys_end(ModelsSettingsSystem);
 
@@ -45,6 +48,8 @@ zox_sys2(ModelsSettingsDirtySystem) {
                 zox_set(prefab_vox_generated, ChunkSize, { size3 });
                 zox_set(prefab_block_vox, NodeDepth, { block_vox_depth });
                 zox_set(prefab_block_vox, ChunkSize, { size3 });
+            } else if (!strcmp(name->value, "Terrain Depth")) {
+                terrain_depth = value;
             }
         }
     }

@@ -1,5 +1,56 @@
 # Done
 
+-x Zigel Positions not always set atm for UIs
+-x For Lights pass, add a BuildChunkMesh state to trigger light colors
+	1 needs to update (ChunkLodDirty 4)
+	2 cannot because it is waiting on build
+	3 cannot build as its waiting to update..
+-x Arm swing brokens - Probably transform changes
+-x Landfill isn't the same for low - high depth
+-x Landfill isn't the same for low - high depth
+    -x we need better functions for increasing depth
+    -x High res and low res should produce same results at scale
+-x Lighting doesnt update after mesh does
+    -x in some chunks only
+    -x seems to be a Sunlight issue
+-x InitializeEntity - make byte from state - removing Increment systems
+Bug!
+-x Lesser chunks dissapear
+-x UVs get messed up when flying around on chunks
+-x Maybe it uploads before it's done generating?
+	- Was Sides issues
+-o Inside Chunk to work on camera instead of player character
+-x fly around to outer chunks to debug them
+-x display more data
+-o render lines over mesh on chunk - as a debug method to show mesh itself - tests whether its mesh issue, or the renderer itself
+Lets assume
+-o Lod Updates
+-o Spawns Mesh
+-o Mesh updated
+-o Somehow not rendering
+Setting all chunks to build sides again
+-x it rebuilds and shows mesh
+-x then neighbor updates
+-x then it dissapears
+Disabling Lods means:
+-x Chunk Mesh spawns once
+-x No need to spawn new mesh links
+-x Issue must be, sides is created per lod level - so if new sides is made and chunk generates, at wrong depth, it will create these issues?
+	- but the data was the same so it doesnt support this - mesh was still there at full depth
+-x Test Method:
+	- fly around until chunk dissapears
+	- fly into it
+	- note the position
+	- check debug logs for system processes
+	- didnt seem to be rendering?
+-x Issue occurs only when switching LODs
+	-x spawning a new one didn't appear to work..
+	-x it disabled last, spawned a new one butt...
+-x Change all opengl data to gint and gint2 and guint and guint2
+	- this might be issue
+-x Okay its probaly race conditions with Side updates, mesh updates, etc
+-x Make a toggle for disabling .. etc
+-x Sides issues
 -x Spawn Chunk Mesh when VoxelNodeDirty 
 -x Build Mesh from ChunkMesh
 -x Busy Tracks the chunk update from Generate to mesh building?

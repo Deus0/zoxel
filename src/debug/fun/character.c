@@ -98,7 +98,6 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
         byte build = zox_getv(e3, BuildChunkMesh);
         byte build_colors = zox_getv(e3, MeshColorsGenerate);
         byte mesh_dirty  = zox_getv(e3, TexturedMeshDirty);
-
         byte colors_dirty = zox_getv(e3, MeshColorsDirty);
         index += snprintf(buffer + index, size - index, "Mesh [%s] Visible [%i] Enabled [%i]\n", zox_getn(e3), visible, active);
         index += snprintf(buffer + index, size - index, "   - Depth [%i] Mesh Dirty [%i] Dirty [%i]\n", depth, mesh_dirty, colors_dirty);

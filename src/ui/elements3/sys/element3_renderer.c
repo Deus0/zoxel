@@ -1,15 +1,14 @@
-extern byte can_render_ui(ecs *world, entity e);
-// #define zox_time_render3D_textured_system
-
+// extern byte can_render_ui(ecs *world, entity e);
 zox_sys2(Element3DRenderSystem) {
+    byte dbg_log = 0;
     if (!material_textured3D) {
+        zox_loge("[material_textured3D] missing in Element3DRenderSystem.");
         return;
     }
-    byte dbg_log = 0;
     zox_sys_world();
     byte has_set_material = 0;
-    const uint material_link = zox_get_value(material_textured3D, MaterialGPULink)
-    const MaterialTextured3D *material_attributes = zox_get(material_textured3D, MaterialTextured3D)
+    guint material_link = zox_getv(material_textured3D, MaterialGPULink);
+    const MaterialTextured3D* material_attributes = zox_get(material_textured3D, MaterialTextured3D);
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
     zox_sys_in(MeshGPULink);
@@ -20,25 +19,28 @@ zox_sys2(Element3DRenderSystem) {
     zox_sys_in(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(RenderDisabled, renderDisabled);
-        zox_sys_i(MeshIndicies, meshIndicies);
-        zox_sys_i(MeshGPULink, meshGPULink);
-        zox_sys_i(TransformMatrix, transformMatrix);
+        zox_sys_i(RenderDisabled, disabled);
+        zox_sys_i(MeshIndicies, indicies);
+        zox_sys_i(MeshGPULink, mesh);
+        zox_sys_i(TransformMatrix, matrix);
         zox_sys_i(UvsGPULink, uvsGPULink);
         zox_sys_i(ColorsGPULink, colorsGPULink);
         zox_sys_i(TextureGPULink, textureGPULink);
-        if (renderDisabled->value) {
+        if (disabled->value || !indicies->length) {
             continue;
         }
-        if (!can_render_ui(world, e)) {
+        entity ui_holder = zox_get_parent_by_id(world, e, zox_id(UIHolderLink));
+        if (zox_valid(ui_holder)) {
+            if (zox_getv(ui_holder, RenderDisabled)) {
+                continue;
+            }
+        }
+#ifdef zox_safety_checks
+        if (!mesh->value.x || !mesh->value.y) {
+            zox_loge("Gpu links [mesh] broken on Element3D [%s]", zox_getn(e));
             continue;
         }
-        if (!meshIndicies->length) {
-            continue;
-        }
-        if (!meshGPULink->value.x || !meshGPULink->value.y) {
-            continue;
-        }
+#endif
         if (!has_set_material) {
             has_set_material = 1;
             zox_gpu_enable_blend();
@@ -47,15 +49,16 @@ zox_sys2(Element3DRenderSystem) {
             zox_gpu_float4(material_attributes->fog_data, get_fog_value());
             zox_gpu_float(material_attributes->brightness, 1);
         }
-        zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
-        zox_gpu_bind_buffer_element(meshGPULink->value.x);
-        opengl_enable_vertex_buffer(material_attributes->vertex_position, meshGPULink->value.y);
+        zox_gpu_float4x4(material_attributes->transform_matrix, matrix->value);
+        zox_gpu_bind_buffer_element(mesh->value.x);
+        opengl_enable_vertex_buffer(material_attributes->vertex_position, mesh->value.y);
         opengl_enable_uv_buffer(material_attributes->vertex_uv, uvsGPULink->value);
         opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
         opengl_bind_texture(textureGPULink->value);
-        zox_gpu_render(meshIndicies->length);
+        zox_gpu_render(indicies->length);
+        catch_basic3D_errors("Element3DRenderSystem");
         if (dbg_log) {
-            zox_log("+ rendered element3D [%lu]", it->entities[i]);
+            zox_log("Rendered Element3D [%s] Tris [%i]", zox_getn(e), indicies->length);
         }
     }
     if (has_set_material) {

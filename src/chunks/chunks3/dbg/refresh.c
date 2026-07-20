@@ -41,10 +41,10 @@ void zox_dbg_terrain_refresh_mesh_colors(ecs* world, ClickEventData data) {
                 uint meshes_length = zox_get_children_by_id(world, e2, meshes, 8, zox_id(ChunkMesh));
                 for (int k = 0; k < meshes_length; k++) {
                     entity e3 = meshes[k];
+                    zox_set(e3, MeshColorsGenerate, { zox_dirty_trigger });
                     // zox_set(e3, BuildChunkMesh, { 1 });
                     // zox_set(e3, TransformMatrix, { matrix });
                     // zox_set(e2, TexturedMeshDirty, { 1 });
-                    zox_set(e2, MeshColorsGenerate, { zox_dirty_trigger });
                     // zox_set(e2, MeshColorsDirty, { zox_dirty_trigger });
                 }
             }

@@ -35,7 +35,7 @@ zox_sys2(HeightMapSystem) {
         byte length = octree_size(lod->value);
         int2 map_size = int2_single(length);
         byte depth_difference = octree_size(terrain_depth - lod->value);
-        byte max_height = int_min(render_distance_y * length - 1, 255);
+        byte max_height = int_min(render_distance_y * (terrain_length - 1), 255);
 #ifdef zox_safety_checks
         if (biome_map->length != length * length) {
             zox_logw("[biome_map] invalid size");
@@ -53,6 +53,10 @@ zox_sys2(HeightMapSystem) {
             global_position.y = global_position_start.y;
             for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
                 int index = int2_array_index(position, map_size);
+                if (zox_flatlands) {
+                    height_map->value[index] = max_height / 2;
+                    continue;
+                }
                 byte biome_id = biome_map->value[index];
                 // TODO: Use biome frequency
                 // TODO: Blend frequency amongst several nearby ones

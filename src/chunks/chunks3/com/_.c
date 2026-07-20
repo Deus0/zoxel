@@ -20,13 +20,18 @@ zoxc_float(RaycastRange);
 #include "queue.c"
 #include "damage.c"
 
+// ChunkLodDirty
 #define zox_chunk_lod_dirty_start 1
 #define zox_chunk_lod_dirty_octree 1
 #define zox_chunk_lod_dirty_spawn 2
-#define zox_chunk_lod_dirty_toggle 3
-#define zox_chunk_lod_dirty_enable 3
-#define zox_chunk_lod_dirty_disable 4
+#define zox_chunk_lod_dirty_generating 3
+#define zox_chunk_lod_dirty_toggle 4
 #define zox_chunk_lod_dirty_end 0
+
+// BuildChunkMesh
+#define zox_build_chunk_mesh_run 1
+#define zox_build_chunk_mesh_lights 2
+#define zox_build_chunk_mesh_end 0
 
 void define_components_chunks3(ecs* world) {
     zoxd_tag(Chunk3);

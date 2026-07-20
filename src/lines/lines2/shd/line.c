@@ -1,7 +1,7 @@
 guint2 line2D_shader;
 guint line2D_shader_frag;
 guint line2D_material;
-guint line2D_position_location;
+gint line2D_position_location;
 guint line2D_color_location;
 guint line2D_depth_location;
 guint line2D_camera_matrix_location;

@@ -2,10 +2,10 @@
 typedef struct {
     gint vertex_position;
     gint vertex_uv;
-    uint camera_matrix;
-    uint transform_matrix;
-    uint texture;
-    uint blur_strength;
+    guint camera_matrix;
+    guint transform_matrix;
+    guint texture;
+    guint blur_strength;
 } MaterialAttributesRenderTexture;
 zoxc_custom(MaterialAttributesRenderTexture);
 

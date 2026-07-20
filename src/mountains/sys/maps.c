@@ -20,7 +20,7 @@ zox_sys2(MountainMapSystem) {
         if (generate->value != zox_generate_tunk_mountains) {
             continue;
         }
-        if (zox_disable_vegetation || zox_disable_mountains) {
+        if (zox_disable_mountains || zox_flatlands) {
             generate->value = zox_generate_tunk_towns;
             continue;
         }
@@ -39,7 +39,7 @@ zox_sys2(MountainMapSystem) {
             zox_logw("Invalid [height_map] in MountainMapSystem");
             continue;
         }
-        if (!vegetation_map->length) {
+        if (!zox_disable_vegetation && !vegetation_map->length) {
             zox_logw("Invalid [vegetation_map] in MountainMapSystem");
             continue;
         }
@@ -79,7 +79,7 @@ zox_sys2(MountainMapSystem) {
                     value *= mountain_multiplier;
                     height_map->value[index] = int_clamp(value, 0, render_distance_y * terrain_length - 1);
                     // Clear Vegetation for middle of mountains
-                    if (mountain_distance < 2 / (mountain_radius * 3)) {
+                    if (!zox_disable_vegetation && mountain_distance < 2 / (mountain_radius * 3)) {
                         vegetation_map->value[index] = 0;
                     }
                 }

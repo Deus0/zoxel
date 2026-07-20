@@ -10,7 +10,7 @@ zox_sys2(ColoredChunkMeshTriggerSystem) {
         zox_sys_o(BuildChunkMesh, build_mesh);
         // if node dirty, or for now, if node depth dirty... wait we dont want to double up
         if (dirty->value == zox_dirty_active) {
-            build_mesh->value = zox_dirty_trigger;
+            build_mesh->value = zox_build_chunk_mesh_run;
         }
     }
 } zox_sys_end(ColoredChunkMeshTriggerSystem);
