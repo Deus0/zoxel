@@ -1,6 +1,6 @@
 // NOTE: Places vegetation, only in top chunks
 zox_sys2(VegetationChunk3System) {
-    byte max_process = 16;
+    byte max_process = 0; // 16;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeDepth);

@@ -2,9 +2,9 @@ zox_sys2(MeshColorsGpuSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(MeshColorRGBs);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(MeshVertices);
+    zox_sys_in(MeshColorRGBs);
     zox_sys_out(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();

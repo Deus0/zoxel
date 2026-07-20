@@ -140,28 +140,26 @@ void define_systems_tunks(ecs* world) {
         );
     }
     // For now leave here
-    if (zox_tunk_lod_system) {
-        zox_filter(
-            streamers_lod,
-            [in] streaming.StreamDirty2,
-            [in] streaming.StreamerLevel,
-            [in] streaming.StreamLink,
-            [in] streaming.StreamPosition2,
-            [none] streaming.Streamer
-        );
-        zox_system_ctx(
-            TunkLodSystem,
-            zoxp_update,
-            streamers_lod,
-            [in] tunks.TunkPosition,
-            [in] tunks.Chunk3Stack,
-            [out] rendering.RenderDistance,
-            [out] rendering.RenderDistanceDirty,
-            [out] tunks.TunkLod,
-            [out] tunks.GenerateTunk,
-            [none] streaming.StreamedChunk
-        );
-    }
+    zox_filter(
+        streamers_lod,
+        [in] streaming.StreamDirty2,
+        [in] streaming.StreamerLevel,
+        [in] streaming.StreamLink,
+        [in] streaming.StreamPosition2,
+        [none] streaming.Streamer
+    );
+    zox_system_ctx(
+        TunkLodSystem,
+        zoxp_update,
+        streamers_lod,
+        [in] tunks.TunkPosition,
+        [in] tunks.Chunk3Stack,
+        [out] rendering.RenderDistance,
+        [out] rendering.RenderDistanceDirty,
+        [out] tunks.TunkLod,
+        [out] tunks.GenerateTunk,
+        [none] streaming.StreamedChunk
+    );
     // Texture
     zox_system(
         TunkTextureSystem,

@@ -71,7 +71,6 @@ byte initialize_pathing(const char* game_name) {
 }
 
 zox_begin_module(Core) {
-    // hmm
     clear_logs();
     init_zems();
     initialize_update_loop();

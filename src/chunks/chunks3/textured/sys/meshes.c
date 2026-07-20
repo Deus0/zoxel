@@ -23,16 +23,22 @@ zox_sys2(ChunkMeshSpawnSystem) {
         zox_sys_i(VoxelNode, voxels);
         zox_sys_i(VoxelNodeDirty, voxels_dirty);
         zox_sys_o(ChunkLodDirty, dirty);
-        if (dirty->value != zox_chunk_lod_dirty_spawn && voxels_dirty->value != zox_dirty_end) {
+        /*if (dirty->value != zox_chunk_lod_dirty_spawn && voxels_dirty->value != zox_dirty_active) {
             continue;
-        }
-        if (dirty->value == zox_chunk_lod_dirty_spawn) {
-            dirty->value = zox_chunk_lod_dirty_octree;
+        }*/
+        // TODO: Use sides instead ?
+        // If voxels changed, we need to spawn mesh for it
+        // TODO: Keep a list of materials per chunk
+        byte did_voxels_appear = voxels_dirty->value == zox_dirty_active && voxels->value;
+        if (dirty->value != zox_chunk_lod_dirty_spawn && !did_voxels_appear) {
+            continue;
         }
         // check any solids
-        if (!voxels->value) {
+        /*if (!voxels->value) {
+            if (dirty->value == zox_chunk_lod_dirty_spawn)
+                dirty->value = zox_chunk_lod_dirty_toggle;
             continue;
-        }
+        }*/
         entity lod_mesh = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
@@ -51,6 +57,9 @@ zox_sys2(ChunkMeshSpawnSystem) {
             }
         }
         if (lod_mesh) {
+            if (dirty->value == zox_chunk_lod_dirty_spawn) {
+                dirty->value = zox_chunk_lod_dirty_toggle;
+            }
             if (dbg_log) {
                 zox_log("Chunk Mesh Existed for [%s] at depth [%i]", zox_getn(e), depth->value);
             }
@@ -67,9 +76,12 @@ zox_sys2(ChunkMeshSpawnSystem) {
             zox_set(e2, MeshGPULink, { spawn_gpu_mesh_buffers() });
             zox_set(e2, UvsGPULink, { zox_gpu_create_buffer() });
             zox_set(e2, ColorsGPULink, { zox_gpu_create_buffer() });
-            if (dbg_log) {
-                zox_log("Spawned new Chunk Mesh for [%s] at depth [%i]", zox_getn(e), depth->value);
-            }
+        }
+        if (dirty->value == zox_chunk_lod_dirty_spawn) {
+            dirty->value = zox_chunk_lod_dirty_toggle;
+        }
+        if (dbg_log) {
+            zox_log("Spawned Chunk Mesh on [%s] Depth [%i]", zox_getn(e), depth->value);
         }
     }
 } zox_sys_end(ChunkMeshSpawnSystem);

@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# debug options
+is_time_systems="0"
+is_profiler="0"
+# bash inputs
 game_name=$1    # zoxel
 GLB=$2          # headless, opengl or vulkan
 GFX=$3          # sdl, glut
 ARC=$4          # x64
 OS="linux"
 ONARC=$(uname -m)
-is_profiler="False"
 sdl_source="False"
 sdl_images="False"
 sdl_mixer="True"
@@ -69,9 +72,14 @@ if [[ ${debug} == "True" ]]; then
     bin_path="bin/${bin_filename}-dev.bin"
 fi
 
-if [[ ${is_profiler} == "True" ]]; then
-    echo "+ Added [profiler]"
+if [[ ${is_profiler} == "1" ]]; then
+    echo "+ Added zox_profiler"
     dflags+=" -Dzox_profiler"
+fi
+
+if [[ ${is_time_systems} == "1" ]]; then
+    echo "+ Added [zox_time_systems]"
+    dflags+=" -Dzox_time_systems"
 fi
 
 if [[ ${GLB} == "headless" ]]; then

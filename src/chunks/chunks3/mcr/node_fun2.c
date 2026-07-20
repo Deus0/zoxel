@@ -74,11 +74,3 @@ byte is_on_edge_octree(byte depth, int3 position, byte direction) {
     position = move_position(position, direction);
     return !(position.x >= 0 && position.x < length && position.y >= 0 && position.y < length &&  position.z >= 0 && position.z < length);
 }
-
-byte get_adjacent_depth(byte depth,const byte* ndepths, int3 position, byte direction) {
-    if (is_on_edge_octree(depth, position, direction)) {
-        return ndepths[direction];
-    } else {
-        return depth;
-    }
-}

@@ -4,7 +4,7 @@ short stone_height = 18;
 
 // NOTE: Fills land with Soils based on biomes
 zox_sys2(LandfillChunk3System) {
-    byte max_process = 32;
+    byte max_process = 0; // 32;
     // byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();

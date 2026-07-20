@@ -22,9 +22,9 @@
     #define zox_disable_logs
 #endif
 
-#ifdef zox_profiler
-    #define zox_time_systems
-#endif
+//#ifdef zox_profiler
+    //#define zox_time_systems
+//#endif
 
 // Flecs
 #define FLECS_CUSTOM_BUILD

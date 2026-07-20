@@ -2,14 +2,27 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Fix chunk bounds debug visuals
+- Main issue is when resolution of chunk increases, it changes compared to before
+    - we need better functions for increasing depth
+
+- Lighting seems missing - check triggers
+    - in some chunks only
+    - seems to be a Sunlight issue
+
+- Add Terrain Depth to options - debug options
+- Draw X inside chunk after it builds sides - to debug  this
+
+- Test entity table issues by adding tag to chunk im in and seeing if it breaks their rendering... weird but might be why meshes dissapearing
+
+- Fix chunk bounds debug visuals - the lines debugger
+- for some reason when it lods lod again it will rebuild mesh
 
 - Make close button smaller square with a circle pattern
     - the X is ugly there need icon
 
 - After it works, lets fade between the lod meshes
 	- handle interupts so it can fade the other direction again
-	- also switch chunk depth to 5 + double scale so its 32x32x32
+- also switch chunk depth to 5 + double scale so its 32x32x32
 	
 Bug!
 - Lesser chunks dissapear

@@ -64,7 +64,7 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         SunnyChunkGeneratedSystem,
         zoxp_update, // EcsPreUpdate,
-        [in] chunks.GenerateChunk,
+        [out] chunks.GenerateChunk,
         [out] lights.GenerateLights,
         [none] terrains.TerrainChunk,
         [none] lights3.SunnyChunk

@@ -1,4 +1,4 @@
-// NOTE: When Depth Increases, we set to GenerateChunk
+// NOTE: When Depth Increases -> Generate our Chunks
 zox_sys2(RenderDepthChunk3System) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -31,7 +31,7 @@ zox_sys2(RenderDepthChunk3System) {
                 generate->value = zox_generate_terrain_start;
             } else {
                 // Skips Generation
-                generate->value = zox_generate_terrain_end;
+                generate->value = zox_generate_terrain_sunlight;
             }
         } else {
             if (dbg_log) {
@@ -42,6 +42,6 @@ zox_sys2(RenderDepthChunk3System) {
             // zox_set(e, BuildChunkMesh, { zox_dirty_trigger });
             // NOTE: This tells to build the new side, we can do this during LODDirty step instead
         }
-        render_depth_dirty->value = zox_chunk_lod_dirty_end;
+        render_depth_dirty->value = zox_chunk_lod_dirty_spawn;
     }
 } zox_sys_end(RenderDepthChunk3System);

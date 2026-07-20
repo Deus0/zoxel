@@ -13,12 +13,14 @@ void zox_tst_toggle_red_sky(ecs* world, ClickEventData data) {
 void zox_tst_toggle_low_fps(ecs* world, ClickEventData data) {
     if (!target_fps) {
         target_fps = 120;
-    }  else if (target_fps == 120) {
+    } else if (target_fps == 120) {
         target_fps = 60;
-    }  else if (target_fps == 60) {
+    } else if (target_fps == 60) {
         target_fps = 30;
-    }  else if (target_fps == 30) {
-        target_fps = 6;
+    } else if (target_fps == 30) {
+        target_fps = 12;
+    } else if (target_fps == 12) {
+        target_fps = 5;
     } else {
         target_fps = 0;
     }

@@ -99,9 +99,9 @@ void define_systems_basics3D(ecs* world) {
     zox_system_1(
         MeshColorsGpuSystem,
         zoxp_mainthread,
-        [in] rendering.MeshColorRGBs,
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshVertices,
+        [in] rendering.MeshColorRGBs,
         [out] rendering.MeshColorsDirty,
         [none] rendering.MeshColorRGBs
     );

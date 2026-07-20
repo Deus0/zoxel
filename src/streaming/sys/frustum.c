@@ -84,7 +84,7 @@ byte aabb_in_frustum_fast(const plane *planes, bounds b, float eps) {
 // this sets RenderDisabled for chunks and their children
 zox_sys2(ChunkFrustumSystem) {
     byte dbg_log = 0;
-    byte ignore_low_lods = 1;
+    byte ignore_low_lods = 0;
     byte frustum_inwards = 1; // we just using this for safety
     zox_sys_query();
     zox_sys_world();
@@ -99,15 +99,15 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Bounds3D, bounds3);
-        zox_sys_i(VoxelNode, voctree);
+        zox_sys_i(VoxelNode, voxels);
         zox_sys_i(BlocksSpawned, spawned);
         zox_sys_i(ChunkEntities, entities);
         zox_sys_o(RenderDisabled, render_disabled);
-        // NOTE: Some quick skips for largest voctrees
-        if (!voctree->value && !voctree->ptr) {
+        // NOTE: Some quick skips for largest voxelss
+        /*if (!voxels->value && !voxels->ptr) {
             // render_disabled->value = 0;
             continue;
-        }
+        }*/
         // our bounds3D isn't centred, terrain chunks corner offset!
         bounds chunk_bounds = {
             .center = float3_add(position->value, bounds3->value),
@@ -116,7 +116,7 @@ zox_sys2(ChunkFrustumSystem) {
         float3_scale_p(&chunk_bounds.extents, fudge_frustum_extents);
         zox_sys_query_begin();
         byte is_viewed = disable_frustum_culling;
-        if (ignore_low_lods && voctree->value && !voctree->ptr) {
+        if (ignore_low_lods && voxels->value && !voxels->ptr) {
             is_viewed = 1;
         }
         // For each Camera
@@ -157,7 +157,7 @@ zox_sys2(ChunkFrustumSystem) {
             // Also set objects inside our terrain chunks!
             // -=- World Blocks -=-
             if (spawned->value) {
-                set_chunk_block_spawns_render_disabled(world, voctree, render_disabled->value);
+                set_chunk_block_spawns_render_disabled(world, voxels, render_disabled->value);
             }
             // -=- -=- -=- -=- -=- -=-
             // NOTE: For characters

@@ -1,4 +1,14 @@
 // NOTE: Core components for entire engine!
+// General
+zoxc_byte(Active);
+zoxc_ushort(DeactivateDelay);
+zoxc_byte(GenericEvent);
+zoxc_byte(SpawnChance);
+zoxc_byte(Busy);
+zoxc_byte(Ready);
+zoxc_entity(SystemLink);
+zoxc_state(Generate);
+zoxc_state(InitializeEntity);
 // identitys
 zoxc_int(ID);
 zoxc_lint(Seed);
@@ -19,14 +29,6 @@ zoxc_byte(Height);
 // Arrays
 zoxc_double(MaxDoubleData);
 zoxc_arrayd(DoubleData, double)
-// General
-zoxc_state(Generate);
-zoxc_state(InitializeEntity);
-zoxc_byte(GenericEvent);
-zoxc_byte(SpawnChance);
-zoxc_byte(Busy);
-zoxc_byte(Ready);
-zoxc_entity(SystemLink);
 #define zox_load_none 0
 #define zox_load_begin 1
 #define zox_load_done 2
@@ -51,6 +53,16 @@ void add_double_to_samples(ecs *world, entity e, double value) {
 }
 
 void zox_define_components_core(ecs* world) {
+    // General
+    zoxd_byte(Active);
+    zoxd_ushort(DeactivateDelay);
+    zoxd_byte(GenericEvent);
+    zoxd_byte(SpawnChance);
+    zoxd_byte(Busy);
+    zoxd_byte(Ready);
+    zoxd_state(Generate);
+    zoxd_state(InitializeEntity);
+    zoxd_entity(SystemLink);
     // ids
     zoxd_int(ID);
     zoxd_lint(Seed);
@@ -71,12 +83,4 @@ void zox_define_components_core(ecs* world) {
     // Arrays
     zoxd_double(MaxDoubleData);
     zoxd_arrayd(DoubleData);
-    // General
-    zoxd_state(Generate);
-    zoxd_state(InitializeEntity);
-    zoxd_byte(GenericEvent);
-    zoxd_byte(SpawnChance);
-    zoxd_byte(Busy);
-    zoxd_byte(Ready);
-    zoxd_entity(SystemLink);
 }

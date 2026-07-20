@@ -57,7 +57,7 @@ static inline void zox_build_voxel_face(const mesh_uvs_build_data* mesh, const i
 // NOTE: For some reason I had to add 1 here, but is fine in other system, the main diff is the dig depth vs render depth
 // What we really need is adjacent node depth vs dig depth, not render depth differences
 // actually this makes sense: we are just checking what neighbor is rendering at verse what we are
-static inline void zox_terrain_building_dig(terrain_build_data data, const SidesOctree* sides, const VoxelNode* voxels, byte3 position, float scale, byte target_depth, byte depth) {
+static inline void zox_terrain_building_dig(terrain_build_data data, const SidesOctree* sides, const VoxelNode* voxels, byte3 position, float scale, byte target_depth, byte depth, byte dbg_log) {
     // Dig Deeper
     if (depth < target_depth && sides->ptr) {
         depth++;
@@ -70,10 +70,15 @@ static inline void zox_terrain_building_dig(terrain_build_data data, const Sides
             const SidesOctree* child_sides = &sides_kids[i];
             const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
             byte3 child_position = byte3_add(position, octree_positions_b[i]);
-            zox_terrain_building_dig(data, child_sides, child_voxels, child_position, scale, target_depth, depth);
+            zox_terrain_building_dig(data, child_sides, child_voxels, child_position, scale, target_depth, depth, dbg_log);
         }
         return;
     }
+    // This is our target depth
+    /*if (depth != target_depth) {
+        return;
+    }*/
+    // NOTE: Skips if no faces to draw
     if (!sides->value) {
         return;
     }
@@ -83,6 +88,9 @@ static inline void zox_terrain_building_dig(terrain_build_data data, const Sides
         return;
     }
 //#endif
+    if (dbg_log >= 2) {
+        zox_log("Adding Chunk Textured Faces at [%ix%ix%i]", position.x, position.y, position.z);
+    }
     float3 positionf = byte3_to_float3(position);
     float3_scale_p(&positionf, scale);
     // NOTE: UVIndex is calculated by block index * 6 for faces
@@ -105,14 +113,13 @@ static inline void zox_terrain_building_dig(terrain_build_data data, const Sides
 // NOTE: Assumes node depth is lower than terrain (max depth)
 static inline float get_chunk_scale(byte chunk_depth, byte terrain_depth, float terrain_scale) {
     if (terrain_depth < chunk_depth) {
-        // if invisible depth is 254/255 tho
-        // zox_log_error("terrain < node: %i < %i", tdepth, ndepth);
         return terrain_scale;
+    } else {
+        // we multiply by the depth difference power
+        // - if 2 = 2*2 = 4, 0.5 becomes 2 in size
+        byte ddepth = terrain_depth - chunk_depth;
+        return terrain_scale * octree_size(ddepth);
     }
-    byte ddepth = terrain_depth - chunk_depth;
-    return terrain_scale * octree_size(ddepth);
-    // we multiply by the depth difference power
-    // - if 2 = 2*2 = 4, 0.5 becomes 2 in size
 }
 
 // TODO: Cache Multiple Voxel Managers, not just single
@@ -122,6 +129,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
     byte* solidity = NULL;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(Active);
     zox_sys_in(RenderDepth);
     zox_sys_out(BuildChunkMesh);
     zox_sys_out(MeshIndicies);
@@ -131,6 +139,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
     zox_sys_out(TexturedMeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(Active, active);
         zox_sys_i(RenderDepth, depth);
         zox_sys_o(BuildChunkMesh, build);
         zox_sys_o(MeshIndicies, indicies);
@@ -138,7 +147,10 @@ zox_sys2(ChunkTexturedBuildSystem) {
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
         zox_sys_o(TexturedMeshDirty, upload);
-        if (!build->value || upload->value) {
+        if (!build->value || !active->value) {
+            continue;
+        }
+        if (zox_getv(e, RenderDisabled)) {
             continue;
         }
         // Get chunk data
@@ -156,16 +168,11 @@ zox_sys2(ChunkTexturedBuildSystem) {
             continue;
         }
 #endif
-        // if generating we wait
-        /*if (zox_getv(chunk, GenerateChunk) || zox_getv(chunk, VoxelNodeDirty) || zox_getv(chunk, BuildChunkSides) || zox_getv(chunk, SidesOctreeDirty) || zox_getv(chunk, ChunkLodDirty)) {
+        // if (zox_getv(chunk, RenderDepth) != depth->value) {
+        byte chunk_depth = zox_getv(chunk, NodeDepth);
+        if (depth->value > chunk_depth) {
             if (dbg_log) {
-                zox_log("Waiting on Chunk to Build [%s]", zox_getn(chunk));
-            }
-            continue;
-        }*/
-        if (zox_getv(chunk, RenderDepth) != depth->value) {
-            if (dbg_log) {
-                zox_log("Chunk Depth is wrong for Build [%s]", zox_getn(chunk));
+                zox_log("ChunkMesh Render Depth Higher than Chunks [%s] [%i] > [%i]", zox_getn(chunk), depth->value, chunk_depth);
             }
             continue;
         }
@@ -232,7 +239,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
             .mesh_data = &mesh_data,
         };
         read_lock_VoxelNode(voxels);
-        zox_terrain_building_dig(data, sides, voxels, byte3_zero, chunk_scale, depth->value, 0);
+        zox_terrain_building_dig(data, sides, voxels, byte3_zero, chunk_scale, depth->value, 0, dbg_log);
         read_unlock_VoxelNode(voxels);
         // Set Entity data from Dynamic Arrays
         indicies->length = mesh_data.indicies->size;
@@ -247,7 +254,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
         build->value = 0;
         upload->value = 1;
         if (dbg_log) {
-            zox_log("Built [%s]:[%s] Verts [%i] Scale [%f] Depth [%i]", zox_getn(e), zox_getn(chunk), verts->length, chunk_scale, depth->value);
+            zox_log("Built Mesh [%s]:[%s] Verts [%i] Scale [%f] Depth [%i]", zox_getn(e), zox_getn(chunk), verts->length, chunk_scale, depth->value);
         }
         zox_sys_increment();
     }

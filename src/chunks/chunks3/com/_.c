@@ -21,9 +21,11 @@ zoxc_float(RaycastRange);
 #include "damage.c"
 
 #define zox_chunk_lod_dirty_start 1
-#define zox_chunk_lod_dirty_toggle 1
+#define zox_chunk_lod_dirty_octree 1
 #define zox_chunk_lod_dirty_spawn 2
-#define zox_chunk_lod_dirty_octree 3
+#define zox_chunk_lod_dirty_toggle 3
+#define zox_chunk_lod_dirty_enable 3
+#define zox_chunk_lod_dirty_disable 4
 #define zox_chunk_lod_dirty_end 0
 
 void define_components_chunks3(ecs* world) {

@@ -47,8 +47,8 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     if (!zox_valid(e)) {
         return index;
     }
-    index += snprintf(buffer + index, size - index, "Inside Chunk\n");
     entity chunk = zox_getv(e, ChunkLink);*/
+    index += snprintf(buffer + index, size - index, "Inside Chunk\n");
     entity game = zox_get_parent(world, player);
     entity realm = zox_getv(game, RealmLink);
     if (!zox_valid(realm)) {
@@ -72,14 +72,14 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     }
     // chunk
     index += snprintf(buffer + index, size - index, "Chunk [%s]\n", zox_getn(chunk));
-    byte busy = zox_getv(chunk, Busy);
+    byte lod_dirty = zox_getv(chunk, ChunkLodDirty);
     byte build = zox_getv(chunk, BuildChunkSides);
     byte generate = zox_getv(chunk, GenerateChunk);
     int3 position = zox_getv(chunk, ChunkPosition);
     byte depth = zox_getv(chunk, NodeDepth);
     byte render_depth = zox_getv(chunk, RenderDepth);
     const SidesOctree* sides = zox_get(chunk, SidesOctree);
-    index += snprintf(buffer + index, size - index, " - busy [%i]\n", busy);
+    index += snprintf(buffer + index, size - index, " - Lod Dirty [%i]\n", lod_dirty);
     index += snprintf(buffer + index, size - index, " - Build [%i]\n", build);
     index += snprintf(buffer + index, size - index, " - Octree Depth [%i]\n", depth);
     index += snprintf(buffer + index, size - index, " - Render Depth [%i]\n", render_depth);
@@ -91,17 +91,18 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     uint meshes_length = zox_get_children_by_id(world, chunk, meshes, 8, zox_id(ChunkMesh));
     for (int k = 0; k < meshes_length; k++) {
         entity e3 = meshes[k];
-        byte disabled = zox_is_disabled(e3);
+        // byte disabled = zox_is_disabled(e3);
+        byte active = zox_getv(e3, Active);
         byte depth = zox_getv(e3, RenderDepth);
         byte visible = !zox_getv(e3, RenderDisabled);
         byte build = zox_getv(e3, BuildChunkMesh);
-        byte tdirty = zox_getv(e3, TexturedMeshDirty);
-        byte cdirty = zox_getv(e3, MeshColorsDirty);
-        index += snprintf(buffer + index, size - index, "Mesh [%s] Visible [%i] Enabled [%i]\n", zox_getn(e3), visible, !disabled);
-        index += snprintf(buffer + index, size - index, "   - Depth [%i] Build [%i] Dirty [%i:%i]\n", depth, build, tdirty, cdirty);
-        if (disabled) {
-            // continue;
-        }
+        byte build_colors = zox_getv(e3, MeshColorsGenerate);
+        byte mesh_dirty  = zox_getv(e3, TexturedMeshDirty);
+
+        byte colors_dirty = zox_getv(e3, MeshColorsDirty);
+        index += snprintf(buffer + index, size - index, "Mesh [%s] Visible [%i] Enabled [%i]\n", zox_getn(e3), visible, active);
+        index += snprintf(buffer + index, size - index, "   - Depth [%i] Mesh Dirty [%i] Dirty [%i]\n", depth, mesh_dirty, colors_dirty);
+        index += snprintf(buffer + index, size - index, "   - Build  Mesh [%i] Build Colors [%i]\n", build, build_colors);
         uint count = zox_getv(e3, MeshRenderCount);
         uint indicies_count = zox_gett(e3, MeshIndicies)->length;
         uint verts_count = zox_gett(e3, MeshVertices)->length;

@@ -43,7 +43,7 @@ zox_sys2(TownMapSystem) {
             zox_loge("[%s]'s TownMap: [HeightMap] Invalid", zox_get_name(e));
             continue;
         }
-        if (!vegetation_map->length) {
+        if (!zox_disable_vegetation && !vegetation_map->length) {
             zox_loge("[%s]'s TownMap: [VegetationMap] Invalid", zox_get_name(e));
             continue;
         }
@@ -90,8 +90,8 @@ zox_sys2(TownMapSystem) {
             if (dbg_log) {
                 zox_log("Town [%i] found in Tunk [%ix%i]: [%i]", j, tunk_position->value.x, tunk_position->value.y, towns_length);
             }
-            uint town_heights_total = 0;
-            uint town_blocks_count = 0;
+            //uint town_heights_total = 0;
+            // uint town_blocks_count = 0;
             int2 global_position = global_position_start;
             int2 position;
             for (position.x = 0; position.x < length; position.x++, global_position.x += depth_difference) {
@@ -126,9 +126,11 @@ zox_sys2(TownMapSystem) {
                     }
                     town_map->value[index] = value;
                     // NOTE: Towns remove all vegetation!
-                    vegetation_map->value[index] = 0;
-                    town_heights_total += height_map->value[index];
-                    town_blocks_count++;
+                    if (!zox_disable_vegetation) {
+                        vegetation_map->value[index] = 0;
+                    }
+                    // town_heights_total += height_map->value[index];
+                    // town_blocks_count++;
                     if (dbg_log) {
                         zox_log(" + Town Wall [%i] at [%ix%i]", value, global_position.x, global_position.y);
                     }

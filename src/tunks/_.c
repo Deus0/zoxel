@@ -13,7 +13,6 @@
 #define zoxm_tunks
 
 byte zox_disable_vegetation = 0;
-byte zox_tunk_lod_system = 1;
 
 // Tunk States
 #define zox_generate_tunk_start 1

@@ -21,7 +21,7 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
         if (zox_disable_towns) {
-            generate->value = zox_generate_terrain_end;
+            generate->value = zox_generate_terrain_sunlight;
             continue;
         }
         entity terrain = zox_get_parent(world, e);
@@ -202,6 +202,6 @@ zox_sys2(TownWallsSystem) {
             }
         }
         write_unlock_VoxelNode(voctree);
-        generate->value = zox_generate_terrain_end;
+        generate->value = zox_generate_terrain_sunlight;
     }
 } zox_sys_end(TownWallsSystem);

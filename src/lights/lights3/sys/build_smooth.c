@@ -140,9 +140,6 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
 // NOTE: Rebuilds Lights only when MeshColorsGenerate is dirty
 zox_sys2(SmoothLightsBuildSystem) {
     byte dbg_log = 0;
-    /*if (disable_lights) {
-        return;
-    }*/
     if (!zox_smooth_lighting) {
         return;
     }
@@ -156,7 +153,7 @@ zox_sys2(SmoothLightsBuildSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BuildChunkMesh, build);
-        zox_sys_i(RenderDepth, render_depth);
+        zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshColorsGenerate, generate);
         zox_sys_o(MeshColorsDirty, upload);
@@ -175,16 +172,20 @@ zox_sys2(SmoothLightsBuildSystem) {
             continue;
         }
 #endif
-        if (zox_getv(chunk, GenerateChunk) || zox_getv(chunk, BuildChunkSides)) {
+        byte chunk_depth = zox_getv(chunk, NodeDepth);
+        if (depth->value > chunk_depth) {
+            if (dbg_log) {
+                zox_log("Chunk Depth is wrong for Light Build [%s]", zox_getn(chunk));
+            }
+            continue;
+        }
+        /*if (zox_getv(chunk, GenerateChunk) || zox_getv(chunk, BuildChunkSides)) {
             if (dbg_log) {
                 zox_log("Chunk is still Generating new Mesh, while building Lights [%s]", zox_get_name(e));
             }
             continue;
-        }
+        }*/
         const SidesOctree* sides = zox_get(chunk, SidesOctree);
-        if (!sides->value) {
-            continue;
-        }
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         byte neighbors_busy = 0;
         for (int j = 0; j < 6; j++) {
@@ -209,7 +210,7 @@ zox_sys2(SmoothLightsBuildSystem) {
         fetch_nearby_chunks(world, e, neighbors->value, nearby_chunks);
         fetch_nearby_lights(world, lights, nearby_chunks, nearby_lights);
         uint ccount = 0;
-        zox_apply_smooth_lights(nearby_lights, voxels, sides, colors, byte3_zero, &ccount, render_depth->value, 0);
+        zox_apply_smooth_lights(nearby_lights, voxels, sides, colors, byte3_zero, &ccount, depth->value, 0);
         generate->value = 0;
         upload->value = 1;
         if (ccount > colors->length) {

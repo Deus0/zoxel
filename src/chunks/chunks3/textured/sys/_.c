@@ -24,18 +24,18 @@ void define_systems_chunks3_textured(ecs *world) {
     zox_system(
         ChunkSidesSystem,
         zoxp_update,
-        [in] rendering.RenderDepth,
+        [in] chunks.NodeDepth,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [out] chunks.BuildChunkSides,
         [out] chunks3.SidesOctree,
-        // [out] chunks3.SidesOctreeDirty,
         [none] chunks3.ChunkTextured
     );
     // Refactor Chunk Mesh
     zox_system(
         ChunkTexturedBuildSystem,
         zoxp_update,
+        [in] core.Active,
         [in] rendering.RenderDepth,
         [out] chunks3.BuildChunkMesh,
         [out] rendering.MeshIndicies,
@@ -65,6 +65,7 @@ void define_systems_chunks3_textured(ecs *world) {
     );
     zox_render3_system(0,
         Chunk3TexturedRenderSystem,
+        [in] core.Active,
         [in] rendering.RenderDisabled,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,

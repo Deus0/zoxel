@@ -9,13 +9,13 @@ zox_sys2(DotsSystem) {
     zox_sys_in(SkillDamage);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SkillDamage, skillDamage);
+        zox_sys_i(SkillDamage, damage);
         zox_sys_i(SpawnerLink, spawner);
         entity defender = zox_get_parent(world, e);
-        if (!zox_valid(defender) || zox_gett_value(defender, Dead) || !skillDamage->value) {
+        if (!zox_valid(defender) || zox_gett_value(defender, Dead) || !damage->value) {
             continue;
         }
-        float damage = skillDamage->value;
+        float apply_damage = damage->value;
         // Modify Damage by Attackers Buffs
         // TODO: We should apply this when adding Debuffs
         entity attacker = spawner->value;
@@ -30,8 +30,8 @@ zox_sys2(DotsSystem) {
                 if (zox_has(stat, StatAttribute)) {
                     k++;
                     if (k == 3) {
-                        float value = zox_get_value(stat, StatValue);
-                        damage += value;
+                        float value = zox_getv(stat, StatValue);
+                        apply_damage += value;
                         break;
                     }
                 }
@@ -45,12 +45,12 @@ zox_sys2(DotsSystem) {
         }
         // const entity health_stat = statLinks->value[0];
         float stat_value_max = zox_get_value(health_stat, StatValueMax);
-        zox_muter(health_stat, StatValue, statValue);
-        statValue->value += delta_time * skillDamage->value;
-        if (statValue->value < 0) {
-            statValue->value = 0;
-        } else if (statValue->value > stat_value_max) {
-            statValue->value = stat_value_max;
+        zox_muter(health_stat, StatValue, stat);
+        stat->value += delta_time * apply_damage;
+        if (stat->value < 0) {
+            stat->value = 0;
+        } else if (stat->value > stat_value_max) {
+            stat->value = stat_value_max;
         }
         // rememer last to give xp - wait this tick rate - warlocks will always get xp lmao
         combat_on_hit(world, defender, attacker);

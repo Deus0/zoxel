@@ -42,7 +42,7 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
                 }
                 continue;
             }
-            zox_set(neighbor, BuildChunkSides, { 1 });
+            zox_setm(neighbor, BuildChunkSides, 1);
         }
     }
 } zox_sys_end(Chunk3NeighborsMeshTriggerSystem);
