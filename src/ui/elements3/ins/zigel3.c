@@ -9,12 +9,8 @@ entity spawn_zigel3(ecs *world, entity prefab, entity parent, uint child_index, 
     zox_set(e, FontOutlineThickness, { outline_thickness });
     zox_set(e, RenderDisabled, { render_disabled });
     zox_set(e, TextureSize, { int2_single(resolution) });
-    if (!is_color_null(fill)) {
-        zox_set(e, FillColor, { fill });
-    }
-    if (!is_color_null(outline)) {
-        zox_set(e, SecondaryColor, { outline });
-    }
+    zox_set(e, FillColor, { fill });
+    zox_set(e, OutlineColor, { outline });
     if (scale) {
         zox_set(e, Scale1D, { scale });
     }

@@ -3,12 +3,10 @@ zox_sys2(CharacterPlayerQuestsSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
     zox_sys_in(RealmLink);
-    // zox_sys_out(QuestLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
-        // zox_sys_o(QuestLinks, quests);
         if (state->value != zox_dirty_active) {
             continue;
         }

@@ -1,4 +1,4 @@
-#if !defined(zoxm_lores) && defined(zoxm_users)
+#if !defined(zoxm_lores)
 #define zoxm_lores
 
 zox_begin_module(Lores)

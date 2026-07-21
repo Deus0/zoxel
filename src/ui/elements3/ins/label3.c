@@ -1,4 +1,4 @@
-entity spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, Zigel3DData zigel_data) {
+entity spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, Zigel3DData zigel_data, float3 trail_offset) {
     if (!text_data.prefab) {
         zox_loge("invalid text_data prefab in spawn_label3D\n")
         return 0;
@@ -6,12 +6,8 @@ entity spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, Z
     zox_instance(data.prefab);
     zox_set_unique_name(e, "label3");
     zox_set(e, RenderDisabled, { data.render_disabled });
-    if (!is_color_null(data.base_color)) {
-        zox_set(e, FillColor, { data.base_color });
-    }
-    if (!is_color_null(data.outline_color)) {
-        zox_set(e, OutlineColor, { data.outline_color });
-    }
+    zox_set(e, FillColor, { data.base_color });
+    zox_set(e, OutlineColor, { data.outline_color });
     // sub text
     text_data.position = (float3) { 0, 0, element3D_depth_difference };
     zigel_data.position = text_data.position;
@@ -20,7 +16,7 @@ entity spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, Z
     zox_set_parent(world, text, e);
     if (data.ui_holder) {
         zox_set(e, UIHolderLink, { data.ui_holder });
-        zox_set(e, UITrail, { { 0, data.trail_offset, 0 } });
+        zox_set(e, UITrail, { trail_offset });
     } else {
         zox_loge("No UIHolder for UI");
     }

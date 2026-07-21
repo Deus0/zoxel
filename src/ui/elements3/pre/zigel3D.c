@@ -22,7 +22,7 @@ entity spawn_prefab_zigel3D(ecs *world, entity prefab) {
     zox_prefab_set(e, DataIndex, { 0 }); // Position in TextData of parent
     zox_prefab_set(e, ZigelIndex, { 0 }); // Stores the ASCII byte
     zox_prefab_set(e, FillColor, { color_white });
-    zox_prefab_set(e, SecondaryColor, { color_black });
+    zox_prefab_set(e, OutlineColor, { color_black });
     zox_prefab_set(e, FontThickness, { 1 });
     zox_prefab_set(e, FontOutlineThickness, { 1 });
     prefab_set_mesh3D_vertices(world, e, square_vertices, 4, zigel3D_size);

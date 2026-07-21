@@ -9,6 +9,7 @@ zox_sys2(Text3DResizeSystem) {
     zox_sys_in(FontOutlineColor);
     zox_sys_in(FontFillColor);
     zox_sys_in(FontThickness);
+    zox_sys_in(FontOutlineThickness);
     zox_sys_in(RenderDisabled);
     zox_sys_in(Text3DScale);
     zox_sys_in(TextFontSize);
@@ -16,6 +17,7 @@ zox_sys2(Text3DResizeSystem) {
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
         zox_sys_i(FontThickness, thickness);
+        zox_sys_i(FontOutlineThickness, outline_thickness);
         zox_sys_i(FontFillColor, fill);
         zox_sys_i(FontOutlineColor, outline);
         zox_sys_i(RenderDisabled, render_disabled);
@@ -103,7 +105,7 @@ zox_sys2(Text3DResizeSystem) {
                     scale->value,
                     render_disabled->value,
                     thickness->value,
-                    thickness->value,
+                    outline_thickness->value,
                     resolution->value,
                     fill->value,
                     outline->value);

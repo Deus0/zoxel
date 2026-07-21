@@ -21,6 +21,7 @@ void define_systems_elements3D(ecs *world) {
         [in] zigels.FontOutlineColor,
         [in] zigels.FontFillColor,
         [in] zigels.FontThickness,
+        [in] zigels.FontOutlineThickness,
         [in] rendering.RenderDisabled,
         [in] Text3DScale,
         [in] texts.TextFontSize,

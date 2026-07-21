@@ -6,7 +6,7 @@
 *       - Node can also be a reward, given by system or by the npc on return
 *
 */
-#if !defined(zoxm_quests) && defined(zoxm_users)
+#if !defined(zoxm_quests)
 #define zoxm_quests
 
 // TODO: Quest Objective: Find NPC named Bob

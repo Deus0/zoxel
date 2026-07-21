@@ -11,7 +11,7 @@ entity spawn_zigel(ecs* world, entity prefab, entity parent, float2 position_anc
     zox_set(e, FontThickness, { thickness });
     zox_set(e, FontOutlineThickness, { othickness });
     zox_set(e, FillColor, { fill });
-    zox_set(e, SecondaryColor, { outline });
+    zox_set(e, OutlineColor, { outline });
     zox_set(e, Layer2D, { 3 });
     return e;
 }

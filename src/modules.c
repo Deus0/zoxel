@@ -85,6 +85,7 @@
 #include "maps/_.c"
 #include "npcs/_.c"
 // Placement
+#include "markers/_.c"
 #include "vodes/_.c"
 #include "dungeons/_.c"
 #include "terrain/npcs/_.c"
@@ -173,6 +174,7 @@ zox_begin_module(Zox) {
         zox_import_module(Lores);
         zox_import_module(Achievements);
         // Placement
+        zox_import_module(Markers);
         zox_import_module(Vodes);
         zox_import_module(Dungeons);
         zox_import_module(TerrainsNpcs);

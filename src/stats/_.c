@@ -7,7 +7,7 @@
  *  - Attributes
  *
  * */
-#if !defined(zoxm_stats) && defined(zoxm_users)
+#if !defined(zoxm_stats)
 #define zoxm_stats
 
 uint stats_children_capacity = 64;

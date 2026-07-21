@@ -1,4 +1,4 @@
-#if !defined(zoxm_skills) && defined(zoxm_users)
+#if !defined(zoxm_skills)
 #define zoxm_skills
 
 #include "set/_.c"

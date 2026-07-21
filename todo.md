@@ -2,6 +2,14 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Give npc in town a quest
+- Give option of dialogue to give user a quest
+- Quest accept UI shows between dialogue
+- Escape key should exit dialogue
+- Finish converting icons to bmp
+- Add mirror UI for viewing player model
+
+- Remove crafting users reference and use normal item ui for craft ui
 - placing still broken every 2nd place
 
 - Generated slime colors should be the same every time loads

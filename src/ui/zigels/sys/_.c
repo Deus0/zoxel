@@ -12,7 +12,7 @@ void zox_define_systems_zigels(ecs* world) {
         fonts,
         [in] ZigelIndex,
         [in] textures.FillColor,
-        [in] colorz.SecondaryColor,
+        [in] textures.OutlineColor,
         [in] rendering.TextureSize,
         [in] zigels.FontThickness,
         [in] zigels.FontOutlineThickness,

@@ -1,4 +1,4 @@
-extern entity prefab_window_users;
+/*extern entity prefab_window_users;
 
 SpawnWindowUsers get_default_spawn_window_users_data(ecs *world, entity prefab, entity character, entity canvas, int2 canvas_size) {
     // Sizing
@@ -80,3 +80,4 @@ SpawnWindowUsers get_default_spawn_window_users_data(ecs *world, entity prefab, 
     );
     return data;
 }
+*/

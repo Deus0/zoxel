@@ -1,5 +1,5 @@
 // TODO: Rename/Refactor to WindowIcons
-void set_icon_from_user_data(ecs *world, entity frame, entity icon, entity data) {
+/*void set_icon_from_user_data(ecs *world, entity frame, entity icon, entity data) {
     if (!zox_valid(frame) || !zox_valid(icon)) {
         zox_log_error("invalid frame or e in icon setting")
         return;
@@ -15,7 +15,7 @@ void set_icon_from_user_data(ecs *world, entity frame, entity icon, entity data)
         }
     }
     clone_texture_data(world, icon, texture);
-}
+}*/
 
 /*entity spawn_window_users(ecs *world, SpawnWindowUsers data, FrameTextureData window_texture, byte selected, entity3* spawns, const entity* udata, uint count) {
     entity character = data.window.character;

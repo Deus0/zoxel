@@ -1,7 +1,9 @@
 // TODO: link each zigel to fontstyle's font
 
 zox_sys2(FontTextureSystem) {
+    byte dbg_log = 0;
     zox_change_check();
+    color clear_color = nothing_font_color;
     float2 point_padding = font_point_padding;
     entity zox_font_style;
     byte is_use_shapes;
@@ -12,7 +14,7 @@ zox_sys2(FontTextureSystem) {
     zox_sys_begin();
     zox_sys_in(ZigelIndex);
     zox_sys_in(FillColor);
-    zox_sys_in(SecondaryColor);
+    zox_sys_in(OutlineColor);
     zox_sys_in(TextureSize);
     zox_sys_in(FontThickness);
     zox_sys_in(FontOutlineThickness);
@@ -20,10 +22,11 @@ zox_sys2(FontTextureSystem) {
     zox_sys_out(TextureData);
     zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(ZigelIndex, zindex);
         zox_sys_i(TextureSize, size);
-        zox_sys_i(FillColor, color_variable);
-        zox_sys_i(SecondaryColor, secondary_color);
+        zox_sys_i(FillColor, fill);
+        zox_sys_i(OutlineColor, outline);
         zox_sys_i(FontThickness, thickness);
         zox_sys_i(FontOutlineThickness, outline_thickness);
         zox_sys_o(GenerateTexture, generate);
@@ -60,11 +63,11 @@ zox_sys2(FontTextureSystem) {
         }
         zox_geter(font, FontData, fontData);
         resize_TextureData(data, length);
-        generate_font_texture(data->value, size->value, fontData, secondary_color->value, color_variable->value, is_use_shapes, thickness->value, outline_thickness->value, point_padding);
+        generate_font_texture(data->value, size->value, fontData, outline->value, fill->value, is_use_shapes, thickness->value, outline_thickness->value, point_padding, clear_color);
         generate->value = zox_generate_texture_end;
         upload->value = 1;
-#ifdef zoxel_debug_zigel_updates
-        zox_log("Zigel font is updating [%lu]\n", it->entities[i])
-#endif
+        if (dbg_log) {
+            zox_log("[%s] Generated Zigel Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i]", zox_getn(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a, outline->value.r, outline->value.b, outline->value.g, outline->value.a)
+        }
     }
 } zox_sys_end(FontTextureSystem);

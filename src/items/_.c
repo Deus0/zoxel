@@ -4,7 +4,7 @@
  *      - Useful things!
  *
  * */
-#if !defined(zoxm_items) && defined(zoxm_users)
+#if !defined(zoxm_items)
 #define zoxm_items
 
 byte max_stack_quantity = 255;

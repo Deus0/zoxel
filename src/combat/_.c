@@ -1,4 +1,4 @@
-#if !defined(zoxm_combat) && defined(zoxm_users)
+#if !defined(zoxm_combat)
 #define zoxm_combat
 
 zoxc_byte(CombatState);

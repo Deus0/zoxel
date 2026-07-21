@@ -1,4 +1,4 @@
-#if !defined(zoxm_achievements) && defined(zoxm_users)
+#if !defined(zoxm_achievements)
 #define zoxm_achievements
 
 // Realm Contains all Achievements

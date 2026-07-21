@@ -1,8 +1,8 @@
-void clear_texture(color* data, const int2 size) {
+void clear_texture(color* data, int2 size, color clear) {
     int index = 0;
     for (int k = 0; k < size.y; k++) {
         for (int j = 0; j < size.x; j++) {
-            data[index] = nothing_font_color;
+            data[index] = clear;
             index++;
         }
     }
@@ -10,28 +10,23 @@ void clear_texture(color* data, const int2 size) {
 
 void generate_font_texture(
     color* data,
-    const int2 size,
+    int2 size,
     const FontData *font_data,
-    const color line_color,
-    const color fill_color,
-    const byte is_shapes,
+    color line_color,
+    color fill_color,
+    byte is_shapes,
     byte fill_thickness,
     byte outline_thickness,
-    float2 point_padding
+    float2 point_padding,
+    color clear_color
 ) {
-    clear_texture(data, size);
+    clear_texture(data, size, clear_color);
     if (!font_data->length) {
         return;
     }
     if (is_shapes) {
-        generate_font_lines(
-            data,
-            size,
-            font_data,
-            line_color,
-            point_padding
-        );
-        scanline_fill_texture(data, size, nothing_font_color, line_color, fill_color);
+        generate_font_lines(data, size, font_data, line_color, point_padding);
+        scanline_fill_texture(data, size, clear_color, line_color, fill_color);
         if (outline_thickness) {
             generate_splotches_lines(
                 data,

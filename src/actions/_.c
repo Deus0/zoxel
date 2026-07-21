@@ -1,4 +1,4 @@
-#if !defined(zoxm_actions) && defined(zoxm_users) && defined(zoxm_items) && defined(zoxm_skills)
+#if !defined(zoxm_actions) && defined(zoxm_items) && defined(zoxm_skills)
 #define zoxm_actions
 
 byte test_actions_blocks = 0;

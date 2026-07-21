@@ -1,4 +1,4 @@
-#if !defined(zoxm_classes) && defined(zoxm_users)
+#if !defined(zoxm_classes)
 #define zoxm_classes
 
 // zoxc_userdata(Class);

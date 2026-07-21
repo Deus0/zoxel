@@ -1,4 +1,4 @@
-#if !defined(zoxm_races) && defined(zoxm_users)
+#if !defined(zoxm_races)
 #define zoxm_races
 
 zox_begin_module(Races) {
