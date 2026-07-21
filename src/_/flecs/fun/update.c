@@ -5,8 +5,8 @@ void update_ecs(ecs *world) {
     double pre_1 = current_time_in_seconds();
     run_update_loop(world);
     double time_1 = current_time_in_seconds() - pre_1;
-    if (debug_pipelines) {
-        ecs_log_set_level(1);
+    if (flecs_log_level) {
+        ecs_log_set_level(flecs_log_level);
     }
     double pre_2 = current_time_in_seconds();
     ecs_progress(world, 0);

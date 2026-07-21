@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# NOTE: I had to manually download these, fix curl later
+
 # TODO: Download source to ext directory
 glew_url="https://github.com/nigels-com/glew/releases/download/glew-2.3.1/glew-2.3.1.zip"
 sdl_url="https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.32.8.zip"

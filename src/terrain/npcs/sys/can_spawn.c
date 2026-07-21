@@ -16,8 +16,9 @@ zox_sys2(Characters3SpawnZoneSystem) {
         zox_sys_i(GenerateChunk, generate);
         zox_sys_o(NpcSpawnZone, active);
         zox_sys_o(NpcSpawnZoneDirty, dirty);
+        // NOTE: Lod Dirty is a short state so it wont catch it now
         if (!lod_dirty->value) {
-            continue;
+            // continue;
         }
         // Max Depth Checks
         entity terrain = zox_get_parent(world, e);

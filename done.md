@@ -1,5 +1,16 @@
 # Done
 
+-x VoxelNodeQueue VoxelDamageQueue VoxelDropQueue (add this)
+    -x Block's Items not dropping, fix queues
+    -x When place block - sometimes doesnt update
+	    -x I think this was for air - just try build towers to test
+	    -x After some testing, appears to just randomly miss the updates
+	    -x Probably due to trigger not hitting - state miss
+-x Map Textures for pieces are off - when no tunks
+-x NPCs arnt spawning past initial - state issue with spawning npcs
+-x I think its just not uploading mesh, debug that
+-x Lighting broken between lods, state issue? used to rely on pipelines before
+-x Load Game Borked ,,, or not idk
 -x 3D bars arn't lerping size
 -x 3D UIs / items broken
 	-x NameLabels

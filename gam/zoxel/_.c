@@ -1,10 +1,8 @@
 #if !defined(zoxm_game)
 #define zoxm_game
 
-byte mrpenguin_mode = 1;
-
+byte mrpenguin_mode = 0;
 // TODO: Generate Block + Model + Colors in Biomes themselves (single point of edit)
-
 #include "fun/_.c"
 #include "set/_.c"
 #include "sys/_.c"

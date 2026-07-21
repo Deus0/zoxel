@@ -32,5 +32,5 @@
 // TODO: Process Queue for Octree in frame a fter, perhaps a second stack?
 #define zoxp_queue_add zoxp_start
 #define zoxp_queue_process zoxp_update
-#define zoxp_queue_clear zoxp_reset
-#define zoxp_queue_pre_clear zoxp_queue_clear - 1
+#define zoxp_queue_pre_clear zoxp_queue_process + 1
+#define zoxp_queue_clear zoxp_queue_pre_clear + 1

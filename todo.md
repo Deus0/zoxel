@@ -2,23 +2,18 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-Regressions
-- Load Game Borked ,,, or not idk
-- Block's Items not dropping, fix queues
-- When place block - sometimes doesnt update
-	- I think this was for air - just try build towers to test
-	- After some testing, appears to just randomly miss the updates
-	- Probably due to trigger not hitting - state miss
-- NPCs arnt spawning past initial -state issue with spawning npcs
-  
 Fixes (older bugs)
+- Chunk Mesh failed deactivating
+- Third Person Camera a bit buggy
 - Hat doesnt spawn on heads
 - Jumps should work independent of time delta
 - Npcs be falling through ground
-- Lighting broken between lods, state issue? used to rely on pipelines before
-- Text font just scrambled positions again
-
-- I think its just not uploading mesh, debug that
+- Text font just scrambled positions again - maybe it repositions before child index is set
+- Towns seem to spawn overlapping sometimes
+- Occasional Crashes
+- Map UI slightly off still - the flipping part
+    - wait i think its just lods updating stuff
+    - Vegetation seems off, when moving between LODs
 
 Opptimize
 - ChunkFrustumSystem [20ms]
@@ -26,8 +21,7 @@ Opptimize
 - Test Pipeline sync points before i finish
 
 - Add a loading screen - for bigger loads
-- for ui we should keep a Size2 property - real float
-- this is for the mesh resizing
+- for ui we should keep a Size2 property - real float - this is for the mesh resizing
 
 Improve
 - Chunk meshes should only be spawning if materials per side > 0

@@ -1,6 +1,6 @@
 byte character_spawn_distance = 1;   // not used yet
 byte character_spawn_rate_min = 0;
-byte character_spawn_rate_max = 3; // set higher
+byte character_spawn_rate_max = 4; // set higher
 byte disable_npc_movement = 0;
 
 void key_down_toggle_npc_movement(ecs* world, int32_t keycode) {

@@ -51,7 +51,7 @@ if [[ ! -f bin/SDL2_mixer.dll ]]; then
         -DSDL2MIXER_MIDI_FLUIDSYNTH=OFF \
         -DSDL2MIXER_WAVPACK=OFF \
         -DSDL2MIXER_OPUS=OFF \
-        -DSDL2MIXER_BUILD_TESTS=OFF
+        -DSDL2MIXER_SAMPLES=OFF
     cmake --build ext/sdl_mixer/build
     cp ext/sdl_mixer/build/SDL2_mixer.dll bin/SDL2_mixer.dll
 else

@@ -72,7 +72,7 @@ entity game_start_player_new(ecs *world, entity player, entity realm, entity ter
     return e;
 }
 
-entity game_start_player_load(ecs *world, entity player, entity realm, entity terrain, float3* spawned_position) {
+entity game_start_player_load(ecs *world, entity player, entity realm, entity terrain, float3* spawned_position, byte dbg_log) {
     // TODO: Load Character Seed
     lint realm_seed = zox_getv(realm, Seed);
     lint character_seed = seed_rand(realm_seed); // , 0, 100000);
@@ -84,9 +84,26 @@ entity game_start_player_load(ecs *world, entity player, entity realm, entity te
     load_character_player(world, realm, player, &placer.position, &placer.euler, &placer.rotation);
     byte depth = terrain_depth;
     int3 chunk_position = real_position_to_chunk_position(placer.position, powers_of_two[depth], terrain_scale);
+    if (chunk_position.y < -render_distance_y) {
+        zox_log("Load Position Y out of Bounds [%i] of [%i]", chunk_position.y, render_distance_y);
+        chunk_position.y = render_distance_y - 1;
+    }
+    if (chunk_position.y > render_distance_y) {
+        zox_log("Load Position Y out of Bounds [%i] of [%i]", chunk_position.y, render_distance_y);
+        chunk_position.y = render_distance_y - 1;
+    }
     placer.chunk = int3_hashmap_get(chunks->value, chunk_position);
     // Still loading
-    if (!zox_valid(placer.chunk) || zox_getv(placer.chunk, GenerateChunk)) {
+    if (!zox_valid(placer.chunk)) {
+        if (dbg_log) {
+            zox_log("   - Chunk Invalid at [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z);
+        }
+        return 0;
+    }
+    if (zox_getv(placer.chunk, GenerateChunk)) {
+        if (dbg_log) {
+            zox_log("   - Chunk is Generating at [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z);
+        }
         return 0;
     }
     *spawned_position = placer.position;
@@ -116,15 +133,19 @@ zox_sys2(PlayerBeginSystem) {
         }
         entity game = zox_get_parent(world, e);
         entity realm = zox_getv(game, RealmLink);
+#ifdef zox_safety_checks
         if (!zox_valid(realm)) {
             zox_loge("Player has Invalid Realm");
             continue;
         }
+#endif
         entity terrain = zox_get_child_by_id(world, realm, zox_id(Terrain));
+#ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_loge("Player has Invalid Terrain");
             continue;
         }
+#endif
         // Wait for Terrain to load
         byte loaded = zox_getv(terrain, Loaded);
         if (loaded != zox_load_done) {
@@ -147,7 +168,7 @@ zox_sys2(PlayerBeginSystem) {
         byte is_new_game = !has_save_game_file(path->value, "player.dat");
         float3 spawn_position;
         if (!is_new_game) {
-            character->value = game_start_player_load(world, e, realm, terrain, &spawn_position);
+            character->value = game_start_player_load(world, e, realm, terrain, &spawn_position, dbg_log);
             if (!character->value) {
                 if (dbg_log) {
                     zox_log("[%s] Terrain Position not ready for load game", zox_getn(e));

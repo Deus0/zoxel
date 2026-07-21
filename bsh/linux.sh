@@ -2,8 +2,9 @@
 set -euo pipefail
 
 # debug options
+is_safety_checks="1"
 is_time_systems="0"
-is_profiler="1"     # https://www.flecs.dev/explorer/?host=localhost
+is_profiler="0"     # https://www.flecs.dev/explorer/?host=localhost
 # bash inputs
 game_name=$1    # zoxel
 GLB=$2          # headless, opengl or vulkan
@@ -75,6 +76,11 @@ fi
 if [[ ${is_profiler} == "1" ]]; then
     echo "+ Added zox_profiler"
     dflags+=" -Dzox_profiler"
+fi
+
+if [[ ${is_safety_checks} == "1" ]]; then
+    echo "+ Added zox_safety_checks"
+    dflags+=" -Dzox_safety_checks"
 fi
 
 if [[ ${is_time_systems} == "1" ]]; then

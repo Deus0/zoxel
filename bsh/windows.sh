@@ -8,6 +8,9 @@ set -euo pipefail
 bsh/libs-download.sh
 bsh/libs-compile.sh
 
+# Debug Options
+is_safety_checks="1"
+# bash inputs
 game_name=$1
 bin_path="bin/${game_name}.exe"
 OS="windows"
@@ -34,6 +37,12 @@ if [[ ${debug} == "True" ]]; then
 else
     cflags+=" -O3 -flto=auto -DNDEBUG"
 fi
+
+if [[ ${is_safety_checks} == "1" ]]; then
+    echo "+ Added zox_safety_checks"
+    dflags+=" -Dzox_safety_checks"
+fi
+
 
 if [[ ${IS_GLEW} == "True" ]]; then
     echo "+ Added Glew"

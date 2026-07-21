@@ -98,7 +98,8 @@ zox_sys2(TunkTextureSystem) {
             for (position.z = 0; position.z < map_length; position.z++) {
                 int index = int2_array_index((int2) { position.x, position.z }, size->value);
                 // NOTE: From top of world, we cast down to find first block
-                byte set_color = 0;
+                byte lowest_voxel = 0;
+                byte lowest_height = 255;
                 for (int k = render_distance_y * 2; k >= 0; k--) {
                     const VoxelNode* voxels = stackv[k];
                     if (!(voxels)) {
@@ -109,26 +110,29 @@ zox_sys2(TunkTextureSystem) {
                         byte global_height = k * map_length + y;
                         byte voxel;
                         if (zox_maps_flip_x || zox_maps_flip_z) {
-                            voxel = getv_VoxelNode(voxels, chunk_depth, (byte3) {
+                            byte3 flipped_position = (byte3) {
                                 zox_maps_flip_x ? map_length - 1 - position.x : position.x,
                                 position.y,
-                                zox_maps_flip_z ? map_length - 1 - position.z : position.z });
+                                zox_maps_flip_z ? map_length - 1 - position.z : position.z
+                            };
+                            voxel = getv_VoxelNode(voxels, chunk_depth, flipped_position);
                         } else {
                             voxel = getv_VoxelNode(voxels, chunk_depth, position);
                         }
                         if (!voxel) {
                             continue;
                         }
-                        color block_color = block_colors[voxel - 1];
-                        float height_mul = (float) global_height / height_div;;
-                        data->value[index] = color_multiply_float(block_color, height_mul + color_boost);;
-                        set_color = 1;
+                        lowest_voxel = voxel;
+                        lowest_height = global_height;
                         break;
                     }
-                    if (set_color) {
+                    if (lowest_voxel) {
                         break;
                     }
                 }
+                color block_color = lowest_voxel ? block_colors[lowest_voxel - 1] : color_black;
+                float height_mul = (float) lowest_height / height_div;;
+                data->value[index] = color_multiply_float(block_color, height_mul + color_boost);
             }
         }
         generate->value = 0;
