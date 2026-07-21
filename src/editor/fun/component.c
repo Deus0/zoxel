@@ -44,6 +44,10 @@ byte fetch_component_type(ecs* world, entity target, entity component) {
     fetch_component_type_i(color)
     fetch_component_type_i(color_rgb)
     fetch_component_type_i(text)
+    fetch_component_type_i(ulong)
+    fetch_component_type_i(gint)
+    fetch_component_type_i(guint)
+    fetch_component_type_i(guint2)
     else {
         const EcsComponent* component = (EcsComponent*) ecs_get(world, id, EcsComponent);
         uint component_size = component != NULL ? component->size : 0;
@@ -98,6 +102,7 @@ char* fetch_compoent_label(ecs *world, entity target, entity component) {
             index = get_type_label_##T(world, target, id, buffer, tlength, index); \
         }
 
+    // TODO: Make this dynamically use all types
     if (is_component_type_byte(id)) {
         index = get_type_label_byte(world, target, id, buffer, tlength, index);
     }
@@ -123,6 +128,9 @@ char* fetch_compoent_label(ecs *world, entity target, entity component) {
     add_component_label(color)
     add_component_label(color_rgb)
     add_component_label(text)
+    add_component_label(gint)
+    add_component_label(guint)
+    add_component_label(guint2)
     else {
         const EcsComponent* component = (EcsComponent*) ecs_get(world, id, EcsComponent);
         uint component_size = component !=  NULL ? component->size : 0;

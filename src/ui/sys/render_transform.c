@@ -88,7 +88,7 @@ zox_sys2(ElementRenderMatrixSystem) {
         }
         // per mesh data
         zox_gpu_bind_buffer_element(mesh->value.x);
-        opengl_bind_texture(texture->value);
+        zox_gpu_bind_texture(texture->value);
         zox_gpu_bind_buffer_array(mesh->value.y);
         zox_gpu_enable_attribute_float2(attributes->vertex_position);
         zox_gpu_bind_buffer_array(uvs->value);
@@ -111,6 +111,6 @@ zox_sys2(ElementRenderMatrixSystem) {
     zox_gpu_disable_blend();
     zox_gpu_reset_mesh();
     zox_gpu_disable_blend();
-    opengl_reset_texture();
+    zox_gpu_reset_texture();
     zox_disable_material();
 } zox_sys_end(ElementRenderMatrixSystem);

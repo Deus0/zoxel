@@ -3,25 +3,35 @@
 used - 200-400mb used
 
 Regressions
-- 3D UIs / items broken
-	- NameLabels
-	- Healtbars
-	- Popups are gone
-	- Item in hand is missing too
+- Load Game Borked ,,, or not idk
+- Block's Items not dropping, fix queues
 - When place block - sometimes doesnt update
 	- I think this was for air - just try build towers to test
 	- After some testing, appears to just randomly miss the updates
 	- Probably due to trigger not hitting - state miss
-- Load Game Borked ,,, or not idk
-- Block's Items not dropping, fix queues
-- Test Pipeline sync points before i finish
-- NPCs cant seem to find them from spawn -they arnt spawning when i wander
-- Lighting broken between lods, state issue? used to rely on pipelines before
+- NPCs arnt spawning past initial -state issue with spawning npcs
   
 Fixes (older bugs)
 - Hat doesnt spawn on heads
 - Jumps should work independent of time delta
 - Npcs be falling through ground
+- Lighting broken between lods, state issue? used to rely on pipelines before
+- Text font just scrambled positions again
+
+- I think its just not uploading mesh, debug that
+
+Opptimize
+- ChunkFrustumSystem [20ms]
+- ChunkColoredBuildSystem [
+- Test Pipeline sync points before i finish
+
+- Add a loading screen - for bigger loads
+- for ui we should keep a Size2 property - real float
+- this is for the mesh resizing
+
+Improve
+- Chunk meshes should only be spawning if materials per side > 0
+    - Ignore spawn mesh if air or if no visible edges
 
 New:
 - Spawn / Respawn point should be in a Home - facing outward

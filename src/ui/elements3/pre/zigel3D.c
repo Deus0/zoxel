@@ -18,7 +18,9 @@ entity spawn_prefab_zigel3D(ecs *world, entity prefab) {
     zox_prefab_name("zigel3");
     zox_add_tag(e, Zigel);
     zox_add_tag(e, FontTexture);
-    zox_prefab_set(e, ZigelIndex, { 0 });
+    zox_prefab_set(e, ChildIndex, { 0 });
+    zox_prefab_set(e, DataIndex, { 0 }); // Position in TextData of parent
+    zox_prefab_set(e, ZigelIndex, { 0 }); // Stores the ASCII byte
     zox_prefab_set(e, FillColor, { color_white });
     zox_prefab_set(e, SecondaryColor, { color_black });
     zox_prefab_set(e, FontThickness, { 1 });

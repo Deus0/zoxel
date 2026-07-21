@@ -1,3 +1,5 @@
+#include "element3.c"
+#include "canvas3.c"
 #include "zigel3.c"
 #include "text3.c"
 #include "label3.c"

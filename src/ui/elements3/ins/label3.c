@@ -1,4 +1,4 @@
-entity spawn_label3D(ecs *world, SpawnDataElement3D data, Text3DData text_data, Zigel3DData zigel_data) {
+entity spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, Zigel3DData zigel_data) {
     if (!text_data.prefab) {
         zox_loge("invalid text_data prefab in spawn_label3D\n")
         return 0;

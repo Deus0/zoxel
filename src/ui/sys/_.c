@@ -3,8 +3,6 @@
 #include "mesh.c"
 #include "canvas_resize.c"
 #include "element_begin.c"
-#include "texture_dirty_begin.c"
-#include "texture_gpu_begin.c"
 #include "element_renderer.c"
 #include "render_transform.c"
 
@@ -60,6 +58,7 @@ void zox_define_systems_elements(ecs *world) {
         [none] !cameras.RenderTexture,
         [none] !transforms.TransformMatrix
     );
+    add_system_process_counter(world, zox_id(ElementRenderSystem));
     // Render using Matrix instead of Position2 etc
     zox_render2D_system(
         ElementRenderMatrixSystem,
@@ -75,19 +74,17 @@ void zox_define_systems_elements(ecs *world) {
         [none] !cameras.RenderTexture
     );
     // NOTE: Mainthread due to gpu components
-    zox_system_1(
+    /*zox_system_1(
         ElementBeginSystem,
         zoxp_mainthread,
         [in] core.InitializeEntity,
         [in] layouts2.LayoutSize,
         [in] rendering.MeshAlignment,
-        [out] rendering.MeshDirty,
         [out] rendering.MeshVertices2D,
-        [out] rendering.MeshGPULink,
-        [out] rendering.UvsGPULink,
+        [out] rendering.MeshDirty,
         [none] Element
-    );
-    zox_system_1(
+    );*/
+    /*zox_system_1(
         TextureDirtyBeginSystem,
         zoxp_mainthread,
         [in] core.InitializeEntity,
@@ -98,6 +95,5 @@ void zox_define_systems_elements(ecs *world) {
         zoxp_mainthread,
         [in] core.InitializeEntity,
         [out] rendering.TextureGPULink
-    );
-    add_system_process_counter(world, zox_id(ElementRenderSystem));
+    );*/
 }

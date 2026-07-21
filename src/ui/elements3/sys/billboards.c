@@ -8,6 +8,7 @@ zox_sys2(BillboardSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     // cache camera positions first
+    entity_array_d* cameras = create_entity_array_d(1);
     float3_array_d* camera_postiions = create_float3_array_d(1);
     float4_array_d* camera_rotations = create_float4_array_d(1);
     zox_sys_query();
@@ -17,8 +18,10 @@ zox_sys2(BillboardSystem) {
         zox_sys_in_2(Position3D);
         zox_sys_in_2(Rotation3D);
         for (int j = 0; j < it2.count; j++) {
+            zox_sys_e_2();
             zox_sys_i_2(Position3D, camera_position);
             zox_sys_i_2(Rotation3D, camera_rotation);
+            entity_array_d_add(cameras, e2);
             float3_array_d_add(camera_postiions, camera_position->value);
             float4_array_d_add(camera_rotations, camera_rotation->value);
         }
@@ -41,7 +44,7 @@ zox_sys2(BillboardSystem) {
         }
         float4 closest_rotation = quaternion_identity;
         float closest_distance = -1;
-        uint total_cameras = 0;
+        entity closest_camera = 0;
         for (size_t j = 0; j < camera_postiions->size; j++) {
             float3 camera_position = camera_postiions->data[j];
             float4 camera_rotation = camera_rotations->data[j];
@@ -49,10 +52,25 @@ zox_sys2(BillboardSystem) {
             if (closest_distance == -1 || distance < closest_distance) {
                 closest_distance = distance;
                 closest_rotation = camera_rotation;
-                // found_camera = 1;
-                // closest_camera = e2;
+                closest_camera = cameras->data[j];
             }
         }
+        rotation->value = closest_rotation;
+        zox_sys_increment();
+        if (dbg_log) {
+            zox_sys_e();
+            zox_log("[%s]'s Closest Camera [%s] of total: [%i]", zox_get_name(e), zox_getn(closest_camera), camera_postiions->size);
+        }
+#ifdef zox_debug_billboard_system
+        float3 normal = quaternion_to_normal(rotation->value);
+        spawn_line3(world, position->value, float3_add(position->value, normal), 2, 1);
+#endif
+    }
+    dispose_entity_array_d(cameras);
+    dispose_float3_array_d(camera_postiions);
+    dispose_float4_array_d(camera_rotations);
+} zox_sys_end(BillboardSystem);
+
         /*zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
@@ -72,17 +90,3 @@ zox_sys2(BillboardSystem) {
             total_cameras += it2.count;
         }
         zox_sys_query_end();*/
-        rotation->value = closest_rotation;
-        zox_sys_increment();
-        if (dbg_log) {
-            zox_sys_e();
-            zox_log("[%s]'s Closest Camera of total: [%i]", zox_get_name(e), total_cameras);
-        }
-#ifdef zox_debug_billboard_system
-        float3 normal = quaternion_to_normal(rotation->value);
-        spawn_line3(world, position->value, float3_add(position->value, normal), 2, 1);
-#endif
-    }
-    dispose_float3_array_d(camera_postiions);
-    dispose_float4_array_d(camera_rotations);
-} zox_sys_end(BillboardSystem);

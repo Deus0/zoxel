@@ -37,7 +37,7 @@ entity spawn_shader_textured3D(ecs *world) {
         zox_log_error("[shader_textured3D] failed to spawn")
         return 0;
     }
-    zox_name("shader_textured3D")
+    zox_name("shader_textured3");
     return e;
 }
 
@@ -48,6 +48,7 @@ entity spawn_material_textured3D(ecs *world) {
     }
     guint material;
     entity e = spawn_material(world, shader, &material);
+    zox_set_unique_name(e, "material_textured3");
     zox_set(e, ShaderLink, { shader })
     MaterialTextured3D attributes = create_MaterialTextured3D(material);
     zox_set_data(e, MaterialTextured3D, attributes)

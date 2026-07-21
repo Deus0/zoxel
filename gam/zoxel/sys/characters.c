@@ -31,6 +31,10 @@ zox_sys2(Character3RealmSpawnSystem) {
         byte chances[] = { 30, 30, 8, 8, 3 };
         byte souls[] = { 1, 1, 2, 1, 3 };
         byte healths[] = { 6, 4, 8, 6, 12 };
+        if (mrpenguin_mode) {
+            for (int j = 0; j < 5; j++) chances[j] = 0;
+            chances[4] = 100;
+        }
         entity prefab_character = is_characters_instanced ? prefab_character3_instanced_npc : prefab_character3_npc;
         for (int j = 0; j < count; j++) {
             const char* name = vox_names[j];

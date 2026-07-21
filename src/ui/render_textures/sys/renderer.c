@@ -55,7 +55,7 @@ zox_sys2(RenderTextureRenderSystem) {
         zox_gpu_enable_attribute_float2(attributes->vertex_position);
         zox_gpu_bind_buffer_array(uvs->value);
         zox_gpu_enable_attribute_float2(attributes->vertex_uv);
-        opengl_bind_texture(texture->value);
+        zox_gpu_bind_texture(texture->value);
         zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
         // Call our render of our quad
         zox_gpu_render(6);
@@ -67,6 +67,6 @@ zox_sys2(RenderTextureRenderSystem) {
     zox_gpu_disable_attribute(attributes->vertex_position);
     zox_gpu_reset_mesh();
     zox_gpu_disable_blend();
-    opengl_reset_texture();
+    zox_gpu_reset_texture();
     zox_disable_material();
 } zox_sys_end(RenderTextureRenderSystem);

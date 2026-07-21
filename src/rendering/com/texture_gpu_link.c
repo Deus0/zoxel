@@ -1,5 +1,4 @@
-extern guint spawn_gpu_texture_buffer();
-
+// extern guint spawn_gpu_texture_buffer();
 zoxc_guint(TextureGPULink);
 
 void add_gpu_texture(ecs *world, entity e) {

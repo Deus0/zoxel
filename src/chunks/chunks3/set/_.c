@@ -2,6 +2,7 @@
 #include "raycast.c"
 #include "scale.c"
 #include "lod.c"
+// issue is the character depth is set by blockvox depth atm
 byte character_depth = 5;
 byte block_vox_depth = 4;
 byte2 block_vox_depth_limits = (byte2) { 1, 5 };

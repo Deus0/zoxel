@@ -1,14 +1,14 @@
 #include "ui_trail.c"
-#include "element_mesh3.c"
-#include "element3_renderer.c"
+#include "render.c"
 #include "elementbar3.c"
-#include "resize.c"
+#include "spawn_text.c"
 #include "billboards.c"
 
 void define_systems_elements3D(ecs *world) {
     zox_system(
         Elementbar3DSystem,
         zoxp_update,
+        [in] rendering.RenderDisabled,
         [in] elements.ElementBar,
         [in] elements.ElementBarSize,
         [none] rendering.MeshVertices
@@ -27,27 +27,16 @@ void define_systems_elements3D(ecs *world) {
         [none] texts.Zext,
         [none] Text3D
     );
-    zox_system_1(
-        Element3DMeshSystem,
-        zoxp_mainthread,
-        [out] core.InitializeEntity,
-        [out] rendering.MeshDirty,
-        [out] rendering.MeshGPULink,
-        [out] rendering.UvsGPULink,
-        [out] rendering.ColorsGPULink,
-        [out] rendering.TextureGPULink,
-        [none] Element3D
-    );
     zox_render3_system(
         2,
-        Element3DRenderSystem,
+        Element3RenderSystem,
+        [in] rendering.RenderDisabled,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,
-        [in] rendering.MeshIndicies,
         [in] rendering.TextureGPULink,
-        [in] rendering.RenderDisabled,
+        [in] rendering.MeshIndicies,
         [none] rendering.SingleMaterial
     );
     zox_system(

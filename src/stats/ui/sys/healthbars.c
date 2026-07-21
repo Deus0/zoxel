@@ -51,11 +51,11 @@ zox_sys2(HealthbarSpawnerSystem) {
             .outline_color = statbar3D_font_color_outline
         };
         entity2 healthbar = spawn_elementbar3(world, &spawn_data, statbar_text_data, statbar_zigel_data);
-        zox_set(healthbar.x, StatLink, { health })
-        zox_set(healthbar.y, StatLink, { health })
-        zox_set(healthbar.x, ElementHolder, { e })
-        zox_add_tag(healthbar.y, StatsLabel)
-        zox_add_tag(healthbar.x, Healthbar)
+        zox_set(healthbar.x, StatLink, { health });
+        zox_set(healthbar.y, StatLink, { health });
+        zox_set(healthbar.x, ElementHolder, { e });
+        zox_add_tag(healthbar.x, Healthbar);
+        zox_add_tag(healthbar.y, StatsLabel);
         add_to_ElementLinks(elementLinks, healthbar.x);
     }
 } zox_sys_end(HealthbarSpawnerSystem);

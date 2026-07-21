@@ -27,7 +27,6 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     zox_set(e, LayoutSize, { int2_single(mouse_ui_size) });
     zox_set(e, LayoutSizeDirty, { zox_dirty_trigger });
     zox_set(e, LayoutPositionDirty, { zox_dirty_trigger });
-    spawn_gpu_texture(world, e);
     if (local_mouse) {
         zox_set(local_mouse, TextureLink, { e });
     }

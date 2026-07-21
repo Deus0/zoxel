@@ -14,14 +14,14 @@ byte inspector_label_tooltip(ecs *world, const TooltipEventData *data) {
 
     zox_geter_value(label, ComponentType, byte, ctype);
 
-    if (ctype < zox_type_labels_length) {
+    if (ctype < zox_type_end) {
         zox_geter_value(label, EntityTarget, entity, e);
         zox_geter_value(label, ComponentTarget, entity, cid);
 
         uint index = 0;
         char text[TooltipText_length];
         index += sprintf(text, "%s [%s]",
-            zox_valid(cid) ? zox_get_name(cid) : (zox_valid(e) ? zox_get_name(e) : "Invalid"), ctype < zox_types_length ? zox_type_labels[ctype] : "invalid");
+            zox_valid(cid) ? zox_get_name(cid) : (zox_valid(e) ? zox_get_name(e) : "Invalid"), ctype < zox_type_end ? zox_type_labels[ctype] : "invalid");
 
         if (ctype == zox_type_children) {
             entity children[hierarhys_children_capacity];

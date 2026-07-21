@@ -60,8 +60,20 @@ static inline void zox_gpu_dispose_shader(guint id) {
 
 // Triangles
 
+static inline void zox_gpu_render3(gsizei length) {
+    if (zox_lines_mode) {
+        glDrawElements(GL_LINES, length, GL_UNSIGNED_INT, 0);
+    } else {
+        glDrawElements(GL_TRIANGLES, length, GL_UNSIGNED_INT, 0); // NULL);
+    }
+}
+
 static inline void zox_gpu_render(gsizei length) {
-    glDrawElements(GL_TRIANGLES, length, GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, length, GL_UNSIGNED_INT, 0);
+}
+
+static inline void zox_gpu_render_as_lines(gsizei length) {
+    glDrawElements(GL_LINES, length, GL_UNSIGNED_INT, 0);
 }
 
 static inline void zox_gpu_render_triangles_instanced(gsizei indicies, gsizei length) {

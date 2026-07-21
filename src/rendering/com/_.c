@@ -9,6 +9,7 @@ zoxc_byte(RenderOrder);
 zoxc_byte(MeshDirty);
 zoxc_byte(TexturedMeshDirty);
 zoxc_byte(MeshReady);
+zoxc_state(InitializeMesh);
 zoxc_state(TextureDirty);
 zoxc_state(RenderDistanceDirty);
 zoxc_state(RenderDepthDirty);
@@ -66,6 +67,7 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(MeshDirty);
     zoxd_byte(TexturedMeshDirty);
     zoxd_byte(MeshReady);
+    zoxd_state(InitializeMesh);
     zoxd_state(TextureDirty);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);

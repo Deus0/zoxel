@@ -1,5 +1,11 @@
 # Done
 
+-x 3D bars arn't lerping size
+-x 3D UIs / items broken
+	-x NameLabels
+	-x Healtbars
+	-x Popups are gone
+	-x Item in hand is missing too
 -x Zigel Positions not always set atm for UIs
 -x For Lights pass, add a BuildChunkMesh state to trigger light colors
 	1 needs to update (ChunkLodDirty 4)

@@ -76,7 +76,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
                 continue;
             }
             zox_gpu_material(material);
-            opengl_bind_texture(texture);
+            zox_gpu_bind_texture(texture);
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(attributes->fog_data, get_fog_value());
             zox_gpu_float(attributes->brightness, 1);
@@ -87,14 +87,12 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
         opengl_enable_uv_buffer(attributes->vertex_uv, gpu_uvs->value);
         opengl_enable_color_buffer(attributes->vertex_color, gpu_colors->value);
-        zox_gpu_render(count->value);
+        // Rendering!
+        zox_gpu_render3(count->value);
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
                 zox_loge("Chunk3TexturedRenderSystem");
             }
-            /*if (check_opengl_error("opengl_upload_shader2D_textured")) {
-                zox_log("     > [%ix%i:%i]\n", mesh_buffer.x, mesh_buffer.y, uv_buffer);
-            }*/
         }
         if (dbg_log) {
             entity chunk = zox_get_parent(world, e);
@@ -108,7 +106,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         zox_gpu_disable_attribute(attributes->vertex_color);
         zox_gpu_disable_attribute(attributes->vertex_uv);
         zox_gpu_disable_attribute(attributes->vertex_position);
-        opengl_reset_texture();
+        zox_gpu_reset_texture();
         zox_gpu_reset_mesh();
         zox_disable_material();
     }

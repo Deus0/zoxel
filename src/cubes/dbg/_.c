@@ -1,6 +1,9 @@
-entity dbg_cube = 0;
+#include "cube.c"
+#include "cube_textured.c"
 
-extern void add_eternal_euler(ecs*, entity, float3);
+// entity dbg_cube = 0;
+
+/*extern void add_eternal_euler(ecs*, entity, float3);
 
 void keydown_test_cubes(ecs *world, int32_t keycode) {
     char* tname = "block_dungeon_core";
@@ -31,4 +34,4 @@ void keydown_test_cubes(ecs *world, int32_t keycode) {
             zox_log("- Texture [%s] ? [%s]", tname, texture ? zox_get_name(texture) : "Not Found");
         }
     }
-}
+}*/

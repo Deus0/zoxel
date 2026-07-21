@@ -20,17 +20,18 @@ entity spawn_prefab_tilemap(ecs *world) {
 entity spawn_tilemap(ecs *world, entity prefab) {
     zox_instance(prefab);
     zox_name("tilemap");
-    if (shader_textured3D) {
-        spawn_gpu_texture(world, e);
-        guint2 shader = zox_get_value(shader_textured3D, ShaderGPULink);
-        guint material = spawn_gpu_material(world, e, shader);
-        if (material) {
-            MaterialTextured3D attributes = create_MaterialTextured3D(material);
-            zox_set(e, ShaderLink, { shader_textured3D });
-            zox_set_data(e, MaterialTextured3D, attributes);
-        } else {
-            zox_log_error("tilemap material failed  to initialize");
-        }
+    if (!shader_textured3D) {
+        return e;
     }
+    spawn_gpu_texture(world, e);
+    guint2 shader = zox_getv(shader_textured3D, ShaderGPULink);
+    zox_set(e, ShaderLink, { shader_textured3D });
+    guint material = spawn_gpu_material(world, e, shader);
+    if (!material) {
+        zox_loge("tilemap material failed  to initialize");
+        return e;
+    }
+    MaterialTextured3D attributes = create_MaterialTextured3D(material);
+    zox_set_data(e, MaterialTextured3D, attributes);
     return e;
 }

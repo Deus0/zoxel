@@ -21,6 +21,7 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshGPULink,
         [in] rendering.MeshIndicies,
         [in] rendering.MaterialGPULink,
+        [in] rendering3.MaterialBasic3D,
         [none] MeshBasic3D
     );
     // unique textured meshes - items

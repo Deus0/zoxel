@@ -6,7 +6,6 @@ byte is_log_opengl = 0;
 
 #define zox_log_opengl(...) if (is_log_opengl) { zox_log(__VA_ARGS__); }
 
-
 #ifdef zox_gles2
     #define zox_disable_instancing
     #define zox_disable_ubos

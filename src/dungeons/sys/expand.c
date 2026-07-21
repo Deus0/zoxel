@@ -24,7 +24,19 @@ zox_sys2(DungeonBlockSystem) {
             continue;
         }
         entity chunk = chunkLink->value;
-        zox_geter_value(chunk, VoxLink, entity, terrain);
+#ifdef zox_safety_checks
+        if (!zox_valid(chunk)) {
+            zox_loge("Chunk invalid in dungeon chunklink [%s]", zox_getn(e));
+            continue;
+        }
+#endif
+        entity terrain = zox_get_parent(world, chunk);
+#ifdef zox_safety_checks
+        if (!zox_valid(terrain)) {
+            zox_loge("Invalid [terrain] in dungeon chunklink [%s]", zox_getn(e));
+            continue;
+        }
+#endif
         zox_geter(terrain, ChunkLinks, chunks);
         zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
         byte3 terrain_sizec = byte3_single(powers_of_two[terrain_depth]);

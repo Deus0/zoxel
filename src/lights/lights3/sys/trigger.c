@@ -31,6 +31,8 @@ zox_sys2(ChunkColorsTriggerSystem) {
 
 // TODO: There is no delay so it might get skipped
 zox_sys2(ChunkMeshColorsTriggerSystem) {
+    byte dbg_log = 0;
+    zox_sys_world();
     zox_sys_begin();
     zox_sys_out(BuildChunkMesh);
     zox_sys_out(MeshColorsGenerate);
@@ -41,6 +43,9 @@ zox_sys2(ChunkMeshColorsTriggerSystem) {
             build->value = zox_build_chunk_mesh_end;
             if (!disable_lights) {
                 generate->value = zox_dirty_trigger;
+            }
+            if (dbg_log) {
+                zox_log("Chunk [%s] is [zox_build_chunk_mesh_lights]", zox_getn(it->entities[i]));
             }
         }
     }

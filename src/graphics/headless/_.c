@@ -35,6 +35,8 @@ void zox_gpu_dispose_shader(uint id) { }
 // Triangles
 
 static inline void zox_gpu_render(uint length) { }
+static inline void zox_gpu_render3(uint length) { }
+static inline void zox_gpu_render_as_lines(uint length) { }
 static inline void zox_gpu_render_triangles_instanced(uint indicies, uint length) { }
 
 byte zox_init_glew() { return EXIT_SUCCESS; }

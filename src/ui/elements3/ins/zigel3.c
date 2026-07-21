@@ -1,26 +1,22 @@
-entity spawn_zigel3(ecs *world, Zigel3DData data) {
-    if (!zox_valid(data.prefab)) {
-        zox_log_error("prefab_zigel3 is invalid")
-        return 0;
-    }
-    zox_instance(data.prefab);
+entity spawn_zigel3(ecs *world, entity prefab, entity parent, uint child_index, byte zigel_index, float3 position, float scale, byte render_disabled, byte thickness, byte outline_thickness, byte resolution, color fill, color outline) {
+    zox_instance(prefab);
     zox_set_unique_name(e, "zigel3");
-    zox_set_parent(world, e, data.parent);
-    // zox_set(e, ParentLink, { data.parent });
-    zox_set(e, ZigelIndex, { data.zigel_index });
-    zox_set(e, FontThickness, { data.font_thickness });
-    zox_set(e, FontOutlineThickness, { data.font_outline });
-    zox_set(e, LocalPosition3D, { data.position });
-    zox_set(e, RenderDisabled, { data.render_disabled });
-    zox_set(e, TextureSize, { int2_single(data.resolution) });
-    if (!is_color_null(data.fill_color)) {
-        zox_set(e, FillColor, { data.fill_color });
+    zox_set_parent(world, e, parent);
+    zox_set(e, LocalPosition3D, { position });
+    zox_set(e, ChildIndex, { child_index });
+    zox_set(e, ZigelIndex, { zigel_index });
+    zox_set(e, FontThickness, { thickness });
+    zox_set(e, FontOutlineThickness, { outline_thickness });
+    zox_set(e, RenderDisabled, { render_disabled });
+    zox_set(e, TextureSize, { int2_single(resolution) });
+    if (!is_color_null(fill)) {
+        zox_set(e, FillColor, { fill });
     }
-    if (!is_color_null(data.outline_color)) {
-        zox_set(e, SecondaryColor, { data.outline_color });
+    if (!is_color_null(outline)) {
+        zox_set(e, SecondaryColor, { outline });
     }
-    if (data.scale) {
-        zox_set(e, Scale1D, { data.scale });
+    if (scale) {
+        zox_set(e, Scale1D, { scale });
     }
     return e;
 }

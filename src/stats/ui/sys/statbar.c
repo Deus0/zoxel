@@ -4,24 +4,22 @@ zox_sys2(StatbarSystem) {
     zox_sys_in(StatLink);
     zox_sys_out(ElementBar);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(StatLink, statLink);
-        zox_sys_o(ElementBar, elementBar);
-        entity stat = statLink->value;
-        if (!zox_valid(stat)) {
-            continue;
-        }
-        float new_value = elementBar->value;
-        if (zox_has(stat, StatState)) {
-            zox_geter(stat, StatValue, value)
-            zox_geter(stat, StatValueMax, max)
+        zox_sys_i(StatLink, stat);
+        zox_sys_o(ElementBar, bar);
+        float new_value = bar->value;
+        if (!zox_valid(stat->value)) {
+            new_value = 0;
+        } else if (zox_has(stat->value, StatState)) {
+            zox_geter(stat->value, StatValue, value)
+            zox_geter(stat->value, StatValueMax, max)
             new_value = value->value / max->value;
-        } else if (zox_has(stat, StatLevel)) {
-            zox_geter(stat, ExperienceValue, value)
-            zox_geter(stat, ExperienceMax, max)
+        } else if (zox_has(stat->value, StatLevel)) {
+            zox_geter(stat->value, ExperienceValue, value)
+            zox_geter(stat->value, ExperienceMax, max)
             new_value = value->value / max->value;
         }
-        if (elementBar->value != new_value) {
-            elementBar->value = new_value;
+        if (bar->value != new_value) {
+            bar->value = new_value;
         }
     }
 } zox_sys_end(StatbarSystem);

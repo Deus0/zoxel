@@ -1,6 +1,8 @@
-// World Items
+// World Items / cube textured
+// NOTE: For Unique Materials on a Mesh
 zox_sys2(TexturedRenderSystem) {
     byte dbg_log = 0;
+    byte dbg_gl = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
@@ -16,42 +18,73 @@ zox_sys2(TexturedRenderSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDisabled, disabled);
-        zox_sys_i(MeshIndicies, indicies);
-        zox_sys_i(MeshGPULink, meshGPULink);
-        zox_sys_i(MaterialGPULink, materialGPULink);
-        zox_sys_i(TextureGPULink, textureGPULink);
         zox_sys_i(TransformMatrix, matrix);
-        zox_sys_i(UvsGPULink, uvsGPULink);
-        zox_sys_i(ColorsGPULink, colorsGPULink);
-        zox_sys_i(MaterialTextured3D, material_attributes);
-        if (disabled->value) continue;
-        if (!indicies->length) continue;
-        if (!meshGPULink->value.x) continue;
-        if (!materialGPULink->value) continue;
-        if (!textureGPULink->value) continue;
+        zox_sys_i(MeshIndicies, indicies);
+        zox_sys_i(MeshGPULink, mesh);
+        zox_sys_i(MaterialGPULink, material);
+        zox_sys_i(TextureGPULink, texture);
+        zox_sys_i(UvsGPULink, uvs);
+        zox_sys_i(ColorsGPULink, colors);
+        zox_sys_i(MaterialTextured3D, attributes);
+        if (disabled->value || !indicies->length) {
+            if (dbg_log >= 2) {
+                zox_log("Invisible Mesh [%s]", zox_getn(e));
+            }
+            continue;
+        }
+#ifdef zox_safety_checks
+        if (!material->value) {
+            zox_loge("Gpu Link [material] broken [%s]", zox_getn(e));
+            continue;
+        }
+        if (!texture->value) {
+            zox_loge("Gpu Link [texture] broken [%s]", zox_getn(e));
+            continue;
+        }
+        if (!mesh->value.x || !mesh->value.y) {
+            zox_loge("Gpu links [mesh] broken [%s]", zox_getn(e));
+            continue;
+        }
+        if (!uvs->value) {
+            zox_loge("Gpu Link [uvs] broken [%s]", zox_getn(e));
+            continue;
+        }
+        if (!colors->value) {
+            zox_loge("Gpu Link [colors] broken [%s]", zox_getn(e));
+            continue;
+        }
+#endif
         camera_filtering_check();
-        zox_gpu_material(materialGPULink->value);
-        opengl_bind_texture(textureGPULink->value);
-        zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
-        zox_gpu_float4(material_attributes->fog_data, get_fog_value());
-        zox_gpu_float(material_attributes->brightness, 1);
-        zox_gpu_float4x4(material_attributes->transform_matrix, matrix->value);
-        zox_gpu_bind_buffer_element(meshGPULink->value.x);
-        opengl_enable_vertex_buffer(material_attributes->vertex_position, meshGPULink->value.y);
-        opengl_enable_uv_buffer(material_attributes->vertex_uv, uvsGPULink->value);
-        opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
-        zox_gpu_render(indicies->length);
+        zox_gpu_material(material->value);
+        zox_gpu_bind_texture(texture->value);
+        // glActiveTexture(GL_TEXTURE0);
+        zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
+        zox_gpu_float4(attributes->fog_data, get_fog_value());
+        zox_gpu_float(attributes->brightness, 1);
+        zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
+        zox_gpu_bind_buffer_element(mesh->value.x);
+        opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
+        opengl_enable_uv_buffer(attributes->vertex_uv, uvs->value);
+        opengl_enable_color_buffer(attributes->vertex_color, colors->value);
+        // Render!
+        zox_gpu_render3(indicies->length);
         // disabling
-        zox_gpu_disable_attribute(material_attributes->vertex_color);
-        zox_gpu_disable_attribute(material_attributes->vertex_uv);
-        zox_gpu_disable_attribute(material_attributes->vertex_position);
+        zox_gpu_disable_attribute(attributes->vertex_color);
+        zox_gpu_disable_attribute(attributes->vertex_uv);
+        zox_gpu_disable_attribute(attributes->vertex_position);
         zox_gpu_reset_mesh();
-        opengl_reset_texture();
+        zox_gpu_reset_texture();
         zox_disable_material();
+        if (dbg_gl) {
+            if (check_opengl_error_unlogged()) {
+                zox_loge("TexturedRenderSystem");
+            }
+        }
         if (dbg_log) {
             float3 position = matrix_to_position(matrix->value);
-            zox_log("Rendering Cube [%s] at [%fx%fx%f] - Triangles [%i]", zox_getn(e), position.x, position.y, position.z, indicies->length);
+            zox_log("Rendering Mesh [%s] at [%fx%fx%f] - Triangles [%i]", zox_getn(e), position.x, position.y, position.z, indicies->length);
+            zox_log("   - GPU: Mesh [%ix%i] UVs [%i] Colors [%i] Texture [%i]", mesh->value.x, mesh->value.y, uvs->value, colors->value, texture->value);
+            zox_log("   - Attributes: %i %i %i", attributes->vertex_position, attributes->vertex_uv, attributes->vertex_color);
         }
-        // catch_basic3D_errors("! TexturedRenderSystem");
     }
 } zox_sys_end(TexturedRenderSystem);

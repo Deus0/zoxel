@@ -69,7 +69,7 @@ zox_sys2(Skeleton3RenderSystem) {
         opengl_enable_vertex_buffer(material_attributes->vertex_position, mesh->value.y);
         opengl_enable_color_buffer(material_attributes->vertex_color, colors->value);
         zox_gpu_float4x4(material_attributes->transform_matrix, matrix->value);
-        zox_gpu_render(indicies->length);
+        zox_gpu_render3(indicies->length);
     }
     if (has_set_material) {
         zox_gpu_disable_attribute(material_attributes->vertex_color);

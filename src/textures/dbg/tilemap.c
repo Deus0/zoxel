@@ -23,7 +23,6 @@ void zox_tst_spawn_tilemap(ecs *world) {
     }
     entity canvas = get_linked_canvas(world, player);
     zox_geter_value(terrain, TilemapLink, entity, tilemap);
-    entity p = prefab_element_shell;
     int2 size = int2_single(512);
     int2 position = int2_single(0);
     float2 anchor = float2_half;
@@ -33,15 +32,13 @@ void zox_tst_spawn_tilemap(ecs *world) {
     // texture = string_hashmap_get(files_hashmap_textures, new_string_data("cursor_01"));
     // our logic stuff
     zox_log("+ spawning tilemap ui [%s] on canvas [%s]", zox_get_name(tilemap), zox_get_name(canvas));
-    // entity e = spawn_element_texture(world, p, canvas, texture, position, size);
-    entity e = spawn_element_texture(world, p, canvas, parent, position, size, anchor, layer, texture);
+    // entity e = spawn_element_texture(world, prefab_element_shell, canvas, texture, position, size);
+    entity e = spawn_element_texture(world, prefab_element_shell, canvas, parent, position, size, anchor, layer, texture);
     zox_set(e, RenderDisabled, { 0 });
     zox_set(e, MeshAlignment, { 0 });
     zox_set(e, LayoutSize, { size });
     zox_set(e, LayoutSizeDirty, { zox_dirty_trigger });
     zox_set(e, LayoutPositionDirty, { zox_dirty_trigger });
-    spawn_gpu_texture(world, e);
-    // spawn_inspector(world, canvas, player, e);
     spawn_sound_from_file_index(world, prefab_sound, 0);
     dbg_tilemap = e;
 }

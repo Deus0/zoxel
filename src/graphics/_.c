@@ -7,6 +7,8 @@
 #ifndef zoxm_graphics
 #define zoxm_graphics
 
+byte zox_lines_mode = 0;
+
 #ifdef zox_opengl
     #include "opengl/_.c"
 #elif zox_vulkan

@@ -1,6 +1,6 @@
 // NOTE: Updates previous zigels to new data
 // TODO: Can we move this to Zigels instead of working at Text
-/*zox_sys2(TextUpdateSystem) {
+zox_sys2(TextUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -25,6 +25,10 @@
                     zox_loge("Zigel [%s] does not have [ZigelIndex]", zox_get_name(e2));
                     continue;
                 }
+                if (!zox_has(e2, DataIndex)) {
+                    zox_loge("Zigel [%s] does not have [DataIndex]", zox_get_name(e2));
+                    continue;
+                }
 #endif
                 zox_mut_begin(e2, DataIndex, data_index);
                 uint new_data_index = child_index_to_text_array_index(text->value, text->length, j);
@@ -47,7 +51,7 @@
         }
         // zox_log("+ updating text [%s]", zox_get_name(e))
     }
-} zox_sys_end(TextUpdateSystem);*/
+} zox_sys_end(TextUpdateSystem);
 
 zox_sys2(ZigelUpdateSystem) {
     byte dbg_log = 0;

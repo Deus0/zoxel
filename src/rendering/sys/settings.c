@@ -45,9 +45,25 @@ zox_sys2(RenderingSettingsDirtySystem) {
                 viewport_downscale = value;
                 viewport_scale = 1 / (float) viewport_downscale;
                 // TODO: Apply to actual viewport??
-                zox_set(main_app, WindowSizeDirty, { zox_dirty_trigger });
-                entity canvas = zox_get_child_by_id(world, main_app, zox_id(Canvas));
+                entity app = zox_get_parent(world, e);
+#ifdef zox_safety_checks
+                if (!zox_valid(app)) {
+                    zox_loge("App invalid in RenderSettings");
+                    continue;
+                }
+#endif
+                zox_set(app, WindowSizeDirty, { zox_dirty_trigger });
+                entity canvas = zox_getv(app, CanvasLink);
+                // entity canvas = zox_get_child_by_id(world, app, zox_id(Canvas));
+                if (!zox_valid(canvas)) {
+                    zox_loge("App Canvas Invalid in RenderSettings");
+                    continue;
+                }
                 entity render_texture = zox_get_child_by_id(world, canvas, zox_id(RenderTexture));
+                if (!zox_valid(render_texture)) {
+                    zox_loge("App Canvas RenderTexture Invalid in RenderSettings");
+                    continue;
+                }
                 zox_set(render_texture, LayoutSizeDirty, { zox_dirty_trigger });
             }
         }

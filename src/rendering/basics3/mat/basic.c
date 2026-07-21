@@ -16,13 +16,12 @@ MaterialBasic3D create_MaterialBasic3D(guint material) {
         .transform_matrix = zox_gpu_get_material_property(material, "transform_matrix"),
         .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
         .color = zox_gpu_get_material_property(material, "color"),
-        // .brightness = zox_gpu_get_material_property(material, "brightness"),
         .fog_data = zox_gpu_get_material_property(material, "fog_data")
     };
 }
 
 entity spawn_shader_basic3D(ecs *world) {
-    const byte shader_index = get_new_shader_source_index();
+    byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "basic3D.vert");
     char* frag = get_shader_source(world, "basic3D.frag");
     shader_verts[shader_index] = vert;
@@ -43,10 +42,10 @@ entity spawn_material_basic3D(ecs *world) {
     }
     guint material;
     entity e = spawn_material(world, shader, &material);
-    zox_name("material_basic3D")
-    zox_set(e, ShaderLink, { shader })
-    const MaterialBasic3D attributes = create_MaterialBasic3D(material);
-    zox_set_data(e, MaterialBasic3D, attributes)
+    zox_name("material_basic3D");
+    zox_set(e, ShaderLink, { shader });
+    MaterialBasic3D attributes = create_MaterialBasic3D(material);
+    zox_set_data(e, MaterialBasic3D, attributes);
     shader_basic3D = shader;
     material_basic3D = e;
     return e;

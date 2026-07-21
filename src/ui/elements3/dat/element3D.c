@@ -5,7 +5,7 @@ typedef struct {
     int2 size;
     // float2 anchor;
     // byte layer;
-} Element3DData;
+} Element3Data;
 
 typedef struct {
     float trail_offset;
@@ -14,13 +14,13 @@ typedef struct {
     byte render_disabled;
     color base_color;
     color outline_color;
-} SpawnDataElement3D;
+} SpawnDataElement3;
 
 typedef struct {
     float percentage;
     entity ui_holder;
-    Element3DData backbar;
-    Element3DData frontbar;
+    Element3Data backbar;
+    Element3Data frontbar;
     float trail_offset;
 } SpawnDataElementbar3D;
 

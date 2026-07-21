@@ -57,7 +57,7 @@ zox_sys2(ZigelSpawnSystem) {
                 zox_log(" - Shrinking Text!");
             }
             // NOTE: Shrinks the children zigels
-            int children_count = old_length;
+            int child_index = old_length - 1;
             iter it2 = zox_children(world, e);
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
@@ -69,10 +69,10 @@ zox_sys2(ZigelSpawnSystem) {
                     }
 #endif
                     // NOTE: When shrinking the children we need to adjust the child indexes
-                    if (children_count <= new_length) {
+                    if (child_index <= new_length) {
                         // here we can set child indexes
-                        children_count--;
-                        zox_setm(e2, ChildIndex, children_count);
+                        zox_setm(e2, ChildIndex, child_index);
+                        child_index--;
                         continue;
                     }
                     if (dbg_log) {
@@ -80,7 +80,6 @@ zox_sys2(ZigelSpawnSystem) {
                     }
                     // keep deleting until we arrive at new length;
                     zox_delete(e2);
-                    children_count--;
                 }
             }
         } else if (new_length > old_length) {

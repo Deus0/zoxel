@@ -3,7 +3,7 @@ set -euo pipefail
 
 # debug options
 is_time_systems="0"
-is_profiler="0"     # https://www.flecs.dev/explorer/?host=localhost
+is_profiler="1"     # https://www.flecs.dev/explorer/?host=localhost
 # bash inputs
 game_name=$1    # zoxel
 GLB=$2          # headless, opengl or vulkan
