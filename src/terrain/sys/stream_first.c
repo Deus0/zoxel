@@ -1,5 +1,5 @@
 // Streamer components added to cameras
-zox_sys2(FirstTerrainChunkSystem) {
+/*zox_sys2(FirstTerrainChunkSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -49,4 +49,4 @@ zox_sys2(FirstTerrainChunkSystem) {
         int3_hashmap_add(chunks->value, position->value, chunk);
         zox_mut_end(terrain->value, ChunkLinks);
     }
-} zox_sys_end(FirstTerrainChunkSystem);
+} zox_sys_end(FirstTerrainChunkSystem);*/

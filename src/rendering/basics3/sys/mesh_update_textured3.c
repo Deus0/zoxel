@@ -26,6 +26,11 @@ zox_sys2(TexturedMeshUploadSystem) {
         if (!upload->value) {
             continue;
         }
+        if (zox_has(e, InitializeMesh)) {
+            if (zox_getv(e, InitializeMesh)) {
+                continue;
+            }
+        }
 #ifdef zox_safety_checks
         if (!gpu_mesh->value.x || !gpu_mesh->value.y || !gpu_uvs->value || !gpu_colors->value) {
             zox_loge("[%s] Missing GPU Link", zox_get_name(e));

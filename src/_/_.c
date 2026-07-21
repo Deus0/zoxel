@@ -9,7 +9,9 @@
 #define zoxm_core
 
 #ifdef zox_debug
-    #define zox_safety_checks
+    #ifndef zox_safety_checks
+        #define zox_safety_checks
+    #endif
 #endif
 
 #include "logs/_.c"

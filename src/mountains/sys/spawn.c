@@ -55,7 +55,7 @@ zox_sys2(RegionMountainSystem) {
         if (generate->value != zox_generate_region_mountains) {
             continue;
         }
-        byte spawn_count = rand_range(1, 9);
+        byte spawn_count = seed_range(seed->value, 1, 9);
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Mountains", zox_get_name(e), spawn_count);
         }

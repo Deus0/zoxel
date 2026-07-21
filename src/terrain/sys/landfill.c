@@ -103,7 +103,6 @@ zox_sys2(LandfillChunkSystem) {
         for (position.x = 0; position.x < length; position.x++) {
             for (position.z = 0; position.z < length; position.z++) {
                 // NOTE: This converts a 2D map to a chunk value by scaling
-                // int2 map_position = (int2) { position.x * hmultiplier, position.z * hmultiplier };
                 int2 map_position = (int2) { position.x, position.z };
                 int map_index = int2_array_index(map_position, map_size);
 #ifdef zox_safety_checks
@@ -112,12 +111,13 @@ zox_sys2(LandfillChunkSystem) {
                     continue;
                 }
 #endif
-                byte biome_id = biome_map->value[map_index];
                 byte height = height_map->value[map_index];
-                // Get Top Positions from Height Map
+                // Ignore fill if too high
                 if (height < chunk_block_position.y) {
                     continue;
                 }
+                byte biome_id = biome_map->value[map_index];
+                // Get Top Positions from Height Map
                 byte local_height = int_clamp((height - chunk_block_position.y) / hmultiplier, 0, length - 1);
 #ifdef zox_safety_checks
                 if (biome_id >= realm_biomes->length) {

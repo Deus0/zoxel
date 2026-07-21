@@ -1,6 +1,6 @@
 // extern entity spawn_chunk_terrain(ecs*, entity, entity, int3, int3, byte, float);
 // NOTE: Spawns chunks from other chunks with ChunkNeighbors!
-zox_sys2(ChunkSpawnSystem) {
+/*zox_sys2(ChunkSpawnSystem) {
     byte dbg_log = 0;
     uint spawned_chunks = 0;
     zox_sys_query();
@@ -114,4 +114,4 @@ zox_sys2(ChunkSpawnSystem) {
     if (dbg_log && spawned_chunks > 0) {
         zox_log("ChunkSpawnSystem [%i] Spawned [%i]", ecs_run_count, spawned_chunks);
     }
-} zox_sys_end(ChunkSpawnSystem);
+} zox_sys_end(ChunkSpawnSystem);*/

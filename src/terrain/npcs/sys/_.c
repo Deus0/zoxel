@@ -29,6 +29,7 @@ void define_systems_characters3_terrain(ecs* world) {
         zoxp_mainthread,
         [in] terrains.npcs.NpcSpawnZoneDirty,
         [in] terrains.npcs.NpcSpawnZone,
+        [in] core.Seed,
         [in] chunks3.VoxelNode,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkNeighbors,

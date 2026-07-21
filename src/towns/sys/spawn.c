@@ -74,17 +74,12 @@ zox_sys2(RegionTownsSystem) {
     byte dbg_log = 0;
     uint max_attempts = 100;
     byte2 towns_count = (byte2) { 1, 9 };
-    byte min_homes_count = 2;
-    byte max_homes_count = 4;
     byte2 min_size = (byte2) { 48, 48 };
     byte2 max_size = (byte2) { 128, 128 };
     byte2 wall_height_range = (byte2) { 2, 6 };
     byte2 wall_thickness_range = (byte2) { 1, 4 };
     byte2 region_padding = byte2_single(8);
     byte2 town_padding = byte2_single(12);
-    byte2 home_min_size = (byte2) { 5, 5 };
-    byte2 home_max_size = (byte2) { 12, 12 };
-    byte2 home_padding = byte2_single(4);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Seed);
@@ -100,6 +95,10 @@ zox_sys2(RegionTownsSystem) {
         // Waits a frame for parent to set on mountains
         if (generate->value == zox_generate_region_towns_trigger) {
             generate->value = zox_generate_region_towns;
+            continue;
+        }
+        if (generate->value == zox_generate_region_towns_homes) {
+            generate->value = zox_generate_region_dungeons;
             continue;
         }
         if (generate->value != zox_generate_region_towns) {
@@ -141,32 +140,12 @@ zox_sys2(RegionTownsSystem) {
             byte2 town_size = sizes[j];
             byte wall_height = seed_range(seed->value, wall_height_range.x, wall_height_range.y);
             byte wall_thickness = rand_range(wall_thickness_range.x, wall_thickness_range.y);
-            // town_position = int2_add(region_block_position, town_position);
             lint town_seed = position_seed2(seed->value, town_position);
-            entity town = spawn_town(world, prefab_town, e, town_seed, town_position, town_size, wall_height, wall_thickness);
+            spawn_town(world, prefab_town, e, town_seed, town_position, town_size, wall_height, wall_thickness);
             if (dbg_log) {
                 zox_log(" + Town [%ix%i] Size [%ix%i]", town_position.x, town_position.y, town_size.x, town_size.y);
             }
-            // Spawn Homes
-            // Have to corner the position for our finder function
-            int2 town_size2 = byte2_to_int2(town_size);
-            int2 town_position2 = int2_sub(town_position, int2_half(town_size2));
-            byte homes_count = rand_range(min_homes_count, max_homes_count);
-            int2 home_positions[homes_count];
-            byte2 home_sizes[homes_count];
-            for (int k = 0; k < spawn_count; k++) {
-                if (!get_place_position(town_seed, town_position2, town_size2, region_padding, home_min_size, home_max_size, home_padding, home_positions, home_sizes, k, NULL, NULL, 0, max_attempts)) {
-                    continue;
-                }
-                int2 home_position = home_positions[k];
-                byte2 home_size = home_sizes[k];
-                lint home_seed = position_seed2(seed->value, home_position);
-                spawn_home(world, prefab_home, town, home_seed, home_position, home_size, 4);
-                if (dbg_log) {
-                    zox_log("   + Home [%ix%i] Size [%ix%i]", home_position.x, home_position.y, home_size.x, home_size.y);
-                }
-            }
         }
-        generate->value = zox_generate_region_dungeons;
+        generate->value = zox_generate_region_towns_homes;
     }
 } zox_sys_end(RegionTownsSystem);

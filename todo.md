@@ -2,14 +2,18 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Can we give each chunk a seed
+	- then use seed for spawning npcs so it spawns the same every time
+
+Fix Faster
+- Hat doesnt spawn on heads - just doesnt get updated with mesh fast enough
+
 Fixes (older bugs)
 - Chunk Mesh failed deactivating
 - Third Person Camera a bit buggy
-- Hat doesnt spawn on heads
 - Jumps should work independent of time delta
 - Npcs be falling through ground
 - Text font just scrambled positions again - maybe it repositions before child index is set
-- Towns seem to spawn overlapping sometimes
 - Occasional Crashes
 - Map UI slightly off still - the flipping part
     - wait i think its just lods updating stuff

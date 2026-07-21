@@ -1,6 +1,7 @@
 // NOTE: Places vegetation, only in top chunks
 zox_sys2(VegetationChunk3System) {
     byte max_process = 0; // 16;
+    byte max_veggie_height = 16;    // max tree height / veggies
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeDepth);
@@ -70,7 +71,6 @@ zox_sys2(VegetationChunk3System) {
         byte3 position;
         for (position.x = 0; position.x < length; position.x++) {
             for (position.z = 0; position.z < length; position.z++) {
-                // int2 map_position = (int2) { position.x * hmultiplier, position.z * hmultiplier };
                 int2 map_position = (int2) { position.x, position.z };
                 int map_index = int2_array_index(map_position, map_size);
 #ifdef zox_safety_checks
@@ -79,9 +79,13 @@ zox_sys2(VegetationChunk3System) {
                     continue;
                 }
 #endif
+                // Ignore fill if too high
+                byte height = height_map->value[map_index];
+                if (height + max_veggie_height < chunk_block_position.y) {
+                    continue;
+                }
                 byte biome_id = biome_map->value[map_index];
                 byte veggie = vegetation_map->value[map_index];
-                byte height = height_map->value[map_index];
                 // NOTE: No need for vegetation under the sea
                 //  (maybe some sea weed later)
                 if (veggie == zox_vegetation_dirt) {
@@ -121,7 +125,7 @@ zox_sys2(VegetationChunk3System) {
                 // NOTE: All Vegetation has grass underneath except wood
                 if (veggie != zox_vegetation_trees) {
                     int global_y = height;
-                    if (global_y >= chunk_block_position.y) {
+                    if (height >= chunk_block_position.y) {
                         position.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (position.y >= 0 && position.y < length) {
                             if (height >= chunk_block_position.y && height < chunk_block_position.y + length) {

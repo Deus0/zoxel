@@ -43,11 +43,15 @@ zox_sys2(StatTextSystem) {
             int max_value = ceil(max->value);
             snprintf(text, label_text_count, "%s [%i/%i]", stat_name->value, value_floored, max_value);
         } else if (zox_has(stat->value, StatLevel)) {
-            zox_geter(stat->value, ExperienceValue, experience)
-            zox_geter(stat->value, ExperienceMax, experience_max)
-            int experience_i = ceil(experience->value);
-            int experience_max_i = ceil(experience_max->value);
-            snprintf(text, label_text_count, "%s Lvl %i [%i/%i]", stat_name->value, value_floored, experience_i, experience_max_i);
+            if (level_label_show_experience) {
+                zox_geter(stat->value, ExperienceValue, experience);
+                zox_geter(stat->value, ExperienceMax, experience_max);
+                int experience_i = ceil(experience->value);
+                int experience_max_i = ceil(experience_max->value);
+                snprintf(text, label_text_count, "%s Lvl %i [%i/%i]", stat_name->value, value_floored, experience_i, experience_max_i);
+            } else {
+                snprintf(text, label_text_count, "%s Lvl %i", stat_name->value, value_floored);
+            }
         } else {
             snprintf(text, label_text_count, "%s [%i]", stat_name->value, value_floored);
         }

@@ -13,6 +13,7 @@ zox_sys2(Characters3SpawnSystem) {
     zox_sys_begin();
     zox_sys_in(NpcSpawnZoneDirty);
     zox_sys_in(NpcSpawnZone);
+    zox_sys_in(Seed);
     zox_sys_in(VoxelNode);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
@@ -27,6 +28,7 @@ zox_sys2(Characters3SpawnSystem) {
         zox_sys_e();
         zox_sys_i(NpcSpawnZoneDirty, dirty);
         zox_sys_i(NpcSpawnZone, active);
+        zox_sys_i(Seed, seed);
         zox_sys_i(VoxelNode, voctree);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -69,7 +71,8 @@ zox_sys2(Characters3SpawnSystem) {
         entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voctree_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
         // calcs
-        byte character_spawn_rate = rand_range(character_spawn_rate_min, character_spawn_rate_max);
+        byte character_spawn_rate = seed_range(seed->value, character_spawn_rate_min, character_spawn_rate_max);
+        srand(seed->value);
         for (byte j = 0; j < character_spawn_rate; j++) {
             // Find Position First
             byte3 in_chunk_position;

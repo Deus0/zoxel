@@ -21,7 +21,7 @@ static inline byte choose_place(const place_chance *places, byte count, double p
 }
 
 zox_sys2(VegetationMapSystem) {
-    uint seed = global_seed;
+    // uint seed = global_seed;
     double veggie_frequency = 0.6;
     double veggie_amplitude = 1.0;
     byte veggie_octaves = 12;
@@ -53,6 +53,12 @@ zox_sys2(VegetationMapSystem) {
         }
 #endif
         entity terrain = zox_get_parent(world, e);
+#ifdef zox_safety_checks
+        if (!zox_valid(terrain)) {
+            zox_loge("Invalid terrain");
+            continue;
+        }
+#endif
         entity realm = zox_get_parent(world, terrain);
 #ifdef zox_safety_checks
         if (!zox_valid(realm)) {
@@ -67,6 +73,7 @@ zox_sys2(VegetationMapSystem) {
             continue;
         }
 #endif
+        lint seed = zox_getv(terrain, Seed);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte terrain_length = octree_size(terrain_depth);
         byte depth_difference = octree_size(terrain_depth - lod->value);
@@ -118,11 +125,9 @@ zox_sys2(VegetationMapSystem) {
                     places[3].perlin = zox_getv(biome, TreeChance);
                     places[4].perlin = zox_getv(biome, FlowerChance);
                 }
-                double perlin_value = veggie_amplitude * perlin_octaves(
-                    noise_positiver2 + (global_position.x / ((float) terrain_length)),
-                    noise_positiver2 + (global_position.y / ((float) terrain_length)),
-                    veggie_frequency,
-                    seed, veggie_octaves);
+                double perlin_x = noise_positiver2 + (global_position.x / ((float) terrain_length));
+                double perlin_y = noise_positiver2 + (global_position.y / ((float) terrain_length));
+                double perlin_value = veggie_amplitude * perlin_octaves(perlin_x, perlin_y, veggie_frequency, seed, veggie_octaves);
                 vegetation_map->value[index] = choose_place(places, places_count, perlin_value);
                 // zox_log("value veggie: %f", value);
             }

@@ -1,6 +1,8 @@
 #ifndef zox_stats_ui
 #define zox_stats_ui
 
+byte level_label_show_experience = 0;
+
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

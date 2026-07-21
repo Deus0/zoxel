@@ -7,7 +7,7 @@ entity spawn_prefab_chunk_terrain(ecs *world, entity prefab) {
     zox_add_tag(e, StreamedChunk);
     zox_add_tag(e, DisableTransform);
     // Generation
-    zox_prefab_set(e, Seed, { 666 });
+    zox_prefab_set(e, Seed, { 0 });
     zox_prefab_set(e, GenerateChunk, { 0 });
     zox_prefab_set(e, Loaded, { 0 });
     zox_prefab_set(e, ChunkLodDirty, { zox_chunk_lod_dirty_start });

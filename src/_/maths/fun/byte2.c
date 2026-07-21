@@ -15,5 +15,13 @@ static inline byte2 byte2_single(const byte a) {
 }
 
 static inline byte2 byte2_add(byte2 a, byte2 b) {
-    return (byte2) { a.x + b.x, a.y + b.y };
+#ifdef zox_safety_checks
+    if (a.x + b.x > 255 || a.y + b.y > 255) {
+        zox_loge("byte2_add adding more");
+    }
+#endif
+    return (byte2) {
+        byte_clamp(a.x + b.x, 0, 255),
+        byte_clamp(a.y + b.y, 0, 255)
+    };
 }

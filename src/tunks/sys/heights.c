@@ -1,8 +1,6 @@
 zox_sys2(HeightMapSystem) {
-    // TODO: use terrains seed
     // TODO: use height frequency from biome maps
     byte terrain_height_multiplier = 2;
-    // const uint seed = global_seed;
     double height_frequency = 0.3; // terrain_frequency * 10;
     zox_sys_world();
     zox_sys_begin();
@@ -28,6 +26,12 @@ zox_sys2(HeightMapSystem) {
         }
 #endif
         entity terrain = zox_get_parent(world, e);
+#ifdef zox_safety_checks
+        if (!zox_valid(terrain)) {
+            zox_loge("Invalid terrain");
+            continue;
+        }
+#endif
         lint seed = zox_getv(terrain, Seed);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte terrain_length = octree_size(terrain_depth);

@@ -23,3 +23,9 @@ static inline byte byte_min(byte a, byte b) {
 static inline byte byte_max(byte a, byte b) {
     return a > b ? a : b;
 }
+
+static inline byte byte_clamp(int a, byte low, byte high) {
+    if (a < low) return low;
+    else if (a > high) return high;
+    else return a;
+}

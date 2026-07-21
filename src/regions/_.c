@@ -17,7 +17,8 @@
 #define zox_generate_region_mountains 1
 #define zox_generate_region_towns_trigger 2
 #define zox_generate_region_towns 3
-#define zox_generate_region_dungeons 4
+#define zox_generate_region_towns_homes 4
+#define zox_generate_region_dungeons 5
 #define zox_generate_region_end 0
 
 byte region_dividor = 32;

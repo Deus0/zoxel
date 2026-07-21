@@ -100,7 +100,7 @@ void define_systems_terrain(ecs *world) {
             [out] voxes.ChunkLinks,
             [none] terrains.Terrain
         );
-    } else {
+    } /*else {
         zox_system_1(
             FirstTerrainChunkSystem,
             zoxp_mainthread,
@@ -135,7 +135,7 @@ void define_systems_terrain(ecs *world) {
             [in] chunks3.ChunkPosition,
             [none] streaming.StreamedChunk
         );
-    }
+    }*/
     if (zox_terrain_chunk_lod_system) {
         zox_filter(
             streamers_lod,

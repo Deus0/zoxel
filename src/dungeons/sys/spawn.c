@@ -57,7 +57,7 @@ zox_sys2(DungeonsSpawnSystem) {
             int2 position = positions[j];
             byte2 size = sizes[j];
             lint dungeon_seed = position_seed2(seed->value, position);
-            spawn_dungeon(world, prefab_town, e, dungeon_seed, position, size);
+            spawn_dungeon(world, prefab_dungeon, e, dungeon_seed, position, size);
             if (dbg_log) {
                 zox_log(" + Dungeon [%ix%i] Size [%ix%i]", position.x, position.y, size.x, size.y);
             }

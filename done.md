@@ -1,5 +1,6 @@
 # Done
 
+-x Towns seem to spawn overlapping sometimes
 -x VoxelNodeQueue VoxelDamageQueue VoxelDropQueue (add this)
     -x Block's Items not dropping, fix queues
     -x When place block - sometimes doesnt update

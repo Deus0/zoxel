@@ -1,6 +1,7 @@
 #include "spawn.c"
 #include "maps.c"
 #include "walls.c"
+#include "homes.c"
 
 void zox_define_systems_towns(ecs* world) {
     zox_system(
@@ -35,5 +36,14 @@ void zox_define_systems_towns(ecs* world) {
         [in] blocks.BlockSize2,
         [out] regions.GenerateRegion,
         [none] regions.Region
+    );
+    zox_system_1(
+        HomesSpawnSystem,
+        zoxp_mainthread,
+        [in] core.Seed,
+        [in] blocks.BlockPosition2,
+        [in] towns.TownSize,
+        [out] towns.GenerateTown,
+        [none] towns.Town
     );
 }

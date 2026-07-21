@@ -1,4 +1,4 @@
-entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, int3 position, byte terrain_depth, float terrain_scalev, byte render_distance, byte render_depth) {
+entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, lint terrain_seed, int3 position, byte terrain_depth, float terrain_scalev, byte render_distance, byte render_depth) {
     entity e = zox_ins(world, prefab);
     {
         char name[64];
@@ -9,6 +9,8 @@ entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, int3 posit
     // convert chunk position to real
     //  - scales by length of chunk and vox scale
     // zox_set(e, VoxLink, { terrain });
+    lint seed = position_seed(terrain_seed, position);
+    zox_set(e, Seed, { seed });
     zox_set(e, ChunkPosition, { position });
     zox_geter_value(terrain, TilemapLink, entity, tilemap);
     if (!tilemap) {
