@@ -5,6 +5,7 @@ zox_sys2(ChunkMeshSpawnSystem) {
     if (zox_dbg_disable_chunk_mesh) {
         return;
     }
+    byte is_cull_air = 1;
     // TODO: Only spawn mesh if sides exist!
     byte dbg_log = 0;
     zox_sys_world();
@@ -23,22 +24,19 @@ zox_sys2(ChunkMeshSpawnSystem) {
         zox_sys_i(VoxelNode, voxels);
         zox_sys_i(VoxelNodeDirty, voxels_dirty);
         zox_sys_o(ChunkLodDirty, dirty);
-        /*if (dirty->value != zox_chunk_lod_dirty_spawn && voxels_dirty->value != zox_dirty_active) {
-            continue;
-        }*/
         // TODO: Use sides instead ?
         // If voxels changed, we need to spawn mesh for it
         // TODO: Keep a list of materials per chunk
-        byte did_voxels_appear = voxels_dirty->value == zox_dirty_active && voxels->value;
-        if (dirty->value != zox_chunk_lod_dirty_spawn && !did_voxels_appear) {
+        if (dirty->value != zox_chunk_lod_dirty_spawn && voxels_dirty->value != zox_dirty_active) {
             continue;
         }
         // check any solids
-        /*if (!voxels->value) {
-            if (dirty->value == zox_chunk_lod_dirty_spawn)
+        if (is_cull_air && !voxels->value) {
+            if (dirty->value == zox_chunk_lod_dirty_spawn) {
                 dirty->value = zox_chunk_lod_dirty_toggle;
+            }
             continue;
-        }*/
+        }
         entity lod_mesh = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {

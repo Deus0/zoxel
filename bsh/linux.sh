@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # debug options
-is_safety_checks="1"
+is_safety_checks="0"
 is_time_systems="0"
 is_profiler="0"     # https://www.flecs.dev/explorer/?host=localhost
 # bash inputs

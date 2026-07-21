@@ -22,9 +22,9 @@ zoxc_float(RaycastRange);
 
 // ChunkLodDirty
 #define zox_chunk_lod_dirty_start 1
-#define zox_chunk_lod_dirty_octree 1
-#define zox_chunk_lod_dirty_spawn 2
-#define zox_chunk_lod_dirty_generating 3
+#define zox_chunk_lod_dirty_generate 1
+#define zox_chunk_lod_dirty_generating 2
+#define zox_chunk_lod_dirty_spawn 3
 #define zox_chunk_lod_dirty_toggle 4
 #define zox_chunk_lod_dirty_end 0
 

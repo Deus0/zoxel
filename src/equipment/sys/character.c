@@ -15,6 +15,7 @@ entity get_equip_slot_in_children(ecs *world, entity e, entity id) {
     return 0;
 }
 
+// NOTE: Has to run after body parts spawn for slots attachment
 zox_sys2(CharacterPlayerEquipsSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -27,9 +28,10 @@ zox_sys2(CharacterPlayerEquipsSystem) {
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RealmLink, realm);
         zox_sys_o(BodyDirty, dirty);
-        if (state->value != zox_dirty_end) { // active) {
+        if (state->value != zox_dirty_end) {
             continue;
         }
+        byte body_updated = 0;
         zox_geter(realm->value, ItemLinks, realm_items);
         entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
         entity hat_slot = get_equip_slot_in_children(world, chest_slot, zox_id(HatSlot));
@@ -39,6 +41,7 @@ zox_sys2(CharacterPlayerEquipsSystem) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
                 zox_muter(hat_slot, DataLink, slot_data);
                 slot_data->value = e2;
+                body_updated = 1;
                 if (dbg_log) {
                     zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
                 }
@@ -48,12 +51,16 @@ zox_sys2(CharacterPlayerEquipsSystem) {
         } else {
             zox_loge("Could not find Hat Slot on Character [%s]", zox_get_name(e));
         }
+        if (body_updated) {
+            dirty->value = zox_generate_body_start;
+        }
         // TODO: Add Shirt
         // Add Second Hand to inventory
         entity inventory = zox_get_child_by_id(world, e, zox_id(Inventory));
         if (!zox_valid(inventory)) {
             continue;
         }
+        // NOTE: Adds second hat into inventory for fun
         entity inventory_slot = zox_get_empty_slot(world, inventory);
         if (!zox_valid(inventory_slot)) {
             entity realm_hat = find_slot_type_index(world, realm_items->value, realm_items->length, zox_slot_hat, 1);
@@ -61,7 +68,7 @@ zox_sys2(CharacterPlayerEquipsSystem) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
                 zox_muter(inventory_slot, DataLink, slot_data);
                 slot_data->value = e2;
-                dirty->value = zox_generate_body_start;
+                // dirty->value = zox_generate_body_start;
                 if (dbg_log) {
                     zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
                 }

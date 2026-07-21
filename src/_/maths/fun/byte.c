@@ -29,3 +29,7 @@ static inline byte byte_clamp(int a, byte low, byte high) {
     else if (a > high) return high;
     else return a;
 }
+
+static inline byte is_odd(int value) {
+    return (byte)(value & 1);
+}

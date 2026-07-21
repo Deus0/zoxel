@@ -17,12 +17,12 @@ zox_sys2(ChunkLodSystem) {
         zox_sys_o(GenerateChunk, generate);
         // Delays our lod changes until generation finishes
         if (render_depth_dirty->value == zox_chunk_lod_dirty_generating) {
-            if (!generate->value) {
+            if (!generate->value && !zox_getv(e, VoxelNodeDirty)) {
                 render_depth_dirty->value = zox_chunk_lod_dirty_spawn;
             }
             continue;
         }
-        if (render_depth_dirty->value != zox_chunk_lod_dirty_octree) {
+        if (render_depth_dirty->value != zox_chunk_lod_dirty_generate) {
             continue;
         }
         // NOTE: This just updates the mesh

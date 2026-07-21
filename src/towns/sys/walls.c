@@ -132,8 +132,10 @@ zox_sys2(TownWallsSystem) {
                             set_clean_VoxelNode(voctree, depth->value, position, road_id);
                         }
                     }
-                } else if (town_value == zox_town_type_wall) {
-                    for (byte h = 1; h <= wall_height; h++) {
+                } else if (town_value == zox_town_type_wall || town_value == zox_town_type_wall_edge || town_value == zox_town_type_wall_spike) {
+                    byte is_spike = town_value == zox_town_type_wall_spike;
+                    byte is_edge = town_value == zox_town_type_wall_edge;
+                    for (byte h = 1; h <= wall_height + is_edge + is_spike * 2; h++) {
                         int global_y = height + h;
                         if (global_y >= chunk_block_position.y) {
                             position.y = (global_y - chunk_block_position.y) / hmultiplier;

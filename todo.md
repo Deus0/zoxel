@@ -2,11 +2,13 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- placing still broken every 2nd place
+
+- Generated slime colors should be the same every time loads
+- Begin animating arm when attack starts
+	- atm it is delayed until mid attack
 - Can we give each chunk a seed
 	- then use seed for spawning npcs so it spawns the same every time
-
-Fix Faster
-- Hat doesnt spawn on heads - just doesnt get updated with mesh fast enough
 
 Fixes (older bugs)
 - Chunk Mesh failed deactivating

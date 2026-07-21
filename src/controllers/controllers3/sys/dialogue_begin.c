@@ -1,5 +1,6 @@
 // left click - destroy
 zox_sys2(DialogueBeginSystem) {
+    float dialogue_follow_distance = 0.9f;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TriggerActionB);
@@ -57,7 +58,7 @@ zox_sys2(DialogueBeginSystem) {
         entity dialogue_ui = spawn_dialogue_ui(world, canvas, character, npc);
         link_dialogue_run_to_ui(world, run->value, dialogue_ui);
         zox_set(player->value, PlayerState, { zox_player_state_dialogue_begin });
-        follow_target(world, npc, e);
+        follow_target(world, npc, e, dialogue_follow_distance);
         // zox_log("Character [%s] spawned dialogue_run [%lu]", zox_get_name(e), run->value);
 
     }

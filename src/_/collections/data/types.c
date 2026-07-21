@@ -4,9 +4,11 @@ typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef long int lint;
 typedef signed char sbyte;
-// typedef long int entity;
-// typedef uint32_t uint;
-// typedef uint64_t ulong;
+#ifndef bool
+    typedef unsigned char bool;
+    #define true 1
+    #define false 0
+#endif
 
 // Used for graphics
 #ifdef zox_sdl

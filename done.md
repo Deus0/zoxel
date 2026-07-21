@@ -1,5 +1,6 @@
 # Done
 
+-x Hat doesnt spawn on heads - just doesnt get updated with mesh fast enough
 -x Towns seem to spawn overlapping sometimes
 -x VoxelNodeQueue VoxelDamageQueue VoxelDropQueue (add this)
     -x Block's Items not dropping, fix queues
