@@ -5,7 +5,6 @@ layout(location=1) in vec2 vertex_uv;
 out vec2 uv;
 
 void main() {
-    vec4 pos = vec4(vertex_position, 0.0, 1.0);
-    gl_Position = camera_matrix * matrix * pos;
+    gl_Position = camera_matrix * matrix * vec4(vertex_position, 0.0, 1.0);
     uv = vertex_uv;
 }

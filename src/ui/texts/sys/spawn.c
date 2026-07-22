@@ -86,15 +86,15 @@ zox_sys2(ZigelSpawnSystem) {
             if (dbg_log) {
                 zox_log(" + Growing Text!");
             }
+            byte zigel_layer = layer->value + 1;
             // NOTE: Zigel Data Index just removes new lines out of the data
             for (uint j = old_length; j < new_length; j++) {
                 byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, j);
                 uint child_index = j;
-                entity e2 = spawn_zigel(world, prefab_zigel, e, position_anchor, size, texture_size,  thickness, othickness, fill, outline, zigel_index, child_index);
+                entity e2 = spawn_zigel(world, prefab_zigel, e, position_anchor, size, texture_size,  thickness, othickness, fill, outline, zigel_index, child_index, zigel_layer);
                 zox_set(e2, RenderDisabled, { render_disabled->value });
-                zox_set(e2, Layer2D, { layer->value + 1 });
                 if (dbg_log) {
-                    zox_log("   + Spawn Zigel [%i]", zigel_index);
+                    zox_log("   + Spawn Zigel [%i] - Layer [%i]", zigel_index, zigel_layer);
                 }
             }
         }

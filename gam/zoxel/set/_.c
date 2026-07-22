@@ -61,10 +61,10 @@ void initialize_zoxel_settings(ecs* world) {
     terrain_depth = 4;
     game_ui_has_taskbar = 1;
     block_vox_render_at_lod = 0; // now using lod minimum
-    fog_density = 0.034f;
+    // fog_density = 0.034f;
     // profiler_state = zox_profile_light_propogate;
-    menu_sky_color = color_rgb_grayscale(33);
-    menu_sky_bottom_color = color_rgb_grayscale(11);
+    menu_sky_color = color_rgb_grayscale(36);
+    menu_sky_bottom_color = color_rgb_grayscale(63);
     // art
     grayscale_mode = 0; // todo: make a grayscale biome
     // game

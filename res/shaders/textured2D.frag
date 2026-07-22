@@ -8,5 +8,4 @@ void main() {
     color = texture(tex, uv);
     color.rgb *= brightness;
     color.a *= alpha;
-    // if (alpha < -0.99) color.a = 1.0;
 }

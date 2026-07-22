@@ -10,6 +10,8 @@
 #ifndef zoxm_vodes
 #define zoxm_vodes
 
+// TODO: Use better states for spawning / updating Vodes
+
 #include "vodes3/_.c"
 
 zox_begin_module(Vodes) {

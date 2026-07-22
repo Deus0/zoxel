@@ -9,6 +9,8 @@
 #ifndef zoxm_huds
 #define zoxm_huds
 
+byte zox_disable_screen_fader = 0;
+
 // TODO: spawn unique canvas per viewport, viewports per player
 // TODO: use a byte index instead for menu type
 // TODO: find a way to add game modules onto game menu - add stats ui on etc

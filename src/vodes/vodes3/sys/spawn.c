@@ -146,6 +146,7 @@ void spawn_vodes_dive(ecs *world,
 
 // Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
 zox_sys2(VodesSpawnSystem) {
+    // byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
@@ -154,7 +155,6 @@ zox_sys2(VodesSpawnSystem) {
     zox_sys_in(RenderDepth);
     zox_sys_in(RenderDistance);
     zox_sys_in(Position3D);
-    zox_sys_in(BlockScale);
     zox_sys_out(VoxelNode);
     zox_sys_out(BlocksSpawned);
     for (int i = 0; i < it->count; i++) {
@@ -165,29 +165,30 @@ zox_sys2(VodesSpawnSystem) {
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(RenderDistance, render_distance);
         zox_sys_i(Position3D, position);
-        zox_sys_i(BlockScale, scale);
         zox_sys_o(VoxelNode, voxel_octree);
         zox_sys_o(BlocksSpawned, spawned);
         // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
         byte is_dirty = voxels_dirty->value == zox_dirty_active;
         // byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
-        if (!is_dirty) { // && !generated) {
+        byte is_lod_dirty = zox_getv(e, ChunkLodDirty);
+        if (!is_dirty && !is_lod_dirty) { // && !generated) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
+        entity realm = zox_get_parent(world, terrain);
+        if (!zox_valid(realm)) {
+            continue;
+        }
         //  base off render distance
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        float terrain_block_scale = zox_getv(terrain, BlockScale);
+        float terrain_scale = zox_getv(terrain, BlockScale);
         byte can_spawn_vodes = render_depth->value == terrain_depth;
         if (!can_spawn_vodes) {
             continue;
         }
         byte block_depth = camera_distance_to_block_vox_depth(render_distance->value);
         write_lock_VoxelNode(voxel_octree);
-        zox_geter_value(terrain, RealmLink, entity, realm);
-        if (!zox_valid(realm)) {
-            continue;
-        }
+        // TODO: Cache these
         zox_geter(realm, BlockLinks, blocks);
         if (!blocks->length) {
             continue;
@@ -218,11 +219,12 @@ zox_sys2(VodesSpawnSystem) {
                 block_prefabs[j] = zox_getv(block, BlockPrefabLink);
             }*/
         }
+        float block_scale = get_chunk_scale(depth->value, terrain_depth, terrain_scale);
         // why we do this?
-        float3 positionf = float3_add(position->value, float3_single(terrain_block_scale));
+        float3 positionf = float3_add(position->value, float3_single(terrain_scale));
         UpdateBlockEntities data = {
-            .chunk_scalev = scale->value,
-            .terrain_block_scale = terrain_block_scale,
+            .chunk_scalev = block_scale,
+            .terrain_block_scale = terrain_scale,
             .chunk_positionf = positionf,
             .render_depth = block_depth,
             .render_disabled = render_disabled->value,

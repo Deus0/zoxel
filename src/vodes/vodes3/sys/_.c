@@ -43,13 +43,11 @@ void define_systems_vodes3(ecs* world) {
         VodesSpawnSystem,
         zoxp_mainthread,
         [in] chunks3.VoxelNodeDirty,
-        // [in] rendering.RenderDistanceDirty,
         [in] chunks.NodeDepth,
         [in] rendering.RenderDisabled,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDistance,
         [in] transforms3.Position3D,
-        [in] blocks.BlockScale,
         [out] chunks3.VoxelNode,
         [out] chunks3.BlocksSpawned
     );

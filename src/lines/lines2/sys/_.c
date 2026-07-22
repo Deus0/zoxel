@@ -19,7 +19,7 @@ void define_systems_line2(ecs* world) {
         [out] lines2.LinePosition2
     );
     // zox_render3D_plus_system(
-    zox_render3_system(
+    /*zox_render3_system(
         0,
         Line2DRenderSystem,
         [in] LineData2D,
@@ -28,7 +28,7 @@ void define_systems_line2(ecs* world) {
         [in] layouts2.Layer2D,
         [none] Line2D,
         [none] !ElementLine2D
-    );
+    );*/
     zox_render2D_system(
         ElementLine2DRenderSystem,
         [in] LineData2D,

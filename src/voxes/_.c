@@ -1,5 +1,3 @@
-#ifndef zoxm_voxes
-#define zoxm_voxes
 /**
  *  Zox Voxes
  *
@@ -7,6 +5,10 @@
  *      - colored vox models
  *
  * */
+#ifndef zoxm_voxes
+#define zoxm_voxes
+
+byte is_generate_vox_outlines = 0;
 
 #include "dat/_.c"
 #include "com/_.c"

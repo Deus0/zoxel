@@ -130,6 +130,15 @@ devmem: $(SRCS)
 gdbmem: devmem
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)
 
+# Run with windows (and debug)
+runw:
+	echo "Remember to enter continue"
+	wine bin/$(GAME).exe
+
+rundw:
+	echo "Remember to enter continue"
+	winedbg --gdb bin/$(GAME)-dev.exe
+
 # Run
 
 run: build

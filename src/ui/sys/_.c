@@ -55,7 +55,6 @@ void zox_define_systems_elements(ecs *world) {
         [in] rendering.UvsGPULink,
         [in] rendering.TextureGPULink,
         [none] ElementRender,
-        [none] !cameras.RenderTexture,
         [none] !transforms.TransformMatrix
     );
     add_system_process_counter(world, zox_id(ElementRenderSystem));
@@ -70,8 +69,7 @@ void zox_define_systems_elements(ecs *world) {
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.TextureGPULink,
-        [none] ElementRender,
-        [none] !cameras.RenderTexture
+        [none] ElementRender
     );
     // NOTE: Mainthread due to gpu components
     /*zox_system_1(

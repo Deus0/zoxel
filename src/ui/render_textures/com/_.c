@@ -5,7 +5,7 @@ typedef struct {
     guint camera_matrix;
     guint transform_matrix;
     guint texture;
-    guint blur_strength;
+    // guint blur_strength;
 } MaterialAttributesRenderTexture;
 zoxc_custom(MaterialAttributesRenderTexture);
 

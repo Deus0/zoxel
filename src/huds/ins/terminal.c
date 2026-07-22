@@ -3,7 +3,7 @@ entity spawn_menu_terminal(ecs *world, entity canvas) {
         zox_log_error("Invalid Canvas");
         return 0;
     }
-    byte layer = game_overlay_layer + 1; // 1;
+    byte layer = get_game_overlay_layer();
     byte font_size = 32;
     byte2 padding = (byte2) { 12, 8 };
     float2 anchor = { 1.0f, 1.0f };

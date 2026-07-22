@@ -84,6 +84,7 @@ zox_sys2(MapInitializeSystem) {
             entity e3 = spawn_uic(world, prefab_element_ready, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
             zox_set_unique_name(e3, "map_player");
             zox_set(e3, Layer2D, { layer + 2 });
+            zox_set(e3, BonusLayer2, { 1 });
             zox_set(e3, PlayerLink, { player->value });
             zox_add_tag(e3, MapArrow);
             // Texture

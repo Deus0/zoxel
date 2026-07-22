@@ -8,13 +8,13 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
         zox_loge("prefab invalid in [spawn_game_debug_label]");
         return 0;
     }
+    int layer = editor_overlay_layer;
     zox_geter(canvas, PlayerLink, player);
     color fill = button_fill;
     color font_fill = button_font_fill;
     fill.a = 222;
     font_fill.a = 255;
     entity parent = canvas;
-    int layer = 1;
     byte font_size = 16;
     byte2 padding = (byte2) { 12, 8 };
     byte alignment = zox_alignment_top_right;
@@ -22,6 +22,7 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
     int2 position = (int2) { -8, -8 };
     // returns the child zext
     entity e = spawn_label(world, prefab, parent, position, anchor, padding, "", font_size, alignment, layer, fill, button_outline, font_fill, button_font_outline);
+    zox_set_unique_name(e, "debug_label");
     zox_add_tag(e, EditorElement);
     zox_add_tag(e, GameDebugLabel);
     zox_set(e, DebugLabelData, { local_debug_label });

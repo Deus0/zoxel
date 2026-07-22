@@ -16,16 +16,14 @@
 #define inc_nexus_game(x) str_macro(../gam/x/_.c)
 #define zox_nexus_game inc_nexus_game(zox_game)
 
-// Release
 #ifndef zox_debug
+    // Release
     #define zox_disable_names
     #define zox_disable_logs
-#endif
-
-// Release
-#ifdef zox_debug
+#else
+    // Debug
     #define zox_debug_settings
-    //#define zox_time_systems
+    #define zox_time_systems
 #endif
 
 // Flecs
@@ -40,6 +38,3 @@
     #define FLECS_HTTP
     #define FLECS_METRICS
 #endif
-
-// Testing atm
-// #define zox_debug_settings

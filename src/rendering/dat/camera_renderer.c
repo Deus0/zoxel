@@ -3,7 +3,7 @@ entity renderer_camera;
 float4x4 render_camera_matrix;
 float3 render_camera_position;
 color_rgb renderer_fog_color;
-byte renderer_layer;
+byte renderer_layer = 0;
 byte render_camera_fov;
 
 // fog

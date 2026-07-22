@@ -1,5 +1,14 @@
 # Done
 
+-# Maybe it was grabbing the Voxels of side chunks that were generating?
+    -x Landfill delay was cause of crash on windows
+-# If i turn max_process on for Sides, i get weird missing chunk meshes again...
+-x Fix Crash
+    -x octree race conditions
+    -x check octree locks
+-x Mabybe just use another lock as component for such use of octree daym
+    -x shit i had removed that
+-x Switch UI camera to use orthographic project matrix
 -x Hat doesnt spawn on heads - just doesnt get updated with mesh fast enough
 -x Towns seem to spawn overlapping sometimes
 -x VoxelNodeQueue VoxelDamageQueue VoxelDropQueue (add this)

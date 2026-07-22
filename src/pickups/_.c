@@ -7,6 +7,8 @@
 #if !defined(zoxm_pickups) && defined(zoxm_cubes)
 #define zoxm_pickups
 
+byte zox_disable_textured_items = 0;
+float item_pickup_scale = 0.125f * 1.5f;
 // #define zox_prefabs_non_textured
 #define pickup_rotaion_speed 40
 zox_tag(Pickup);

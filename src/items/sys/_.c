@@ -51,10 +51,9 @@ void define_systems_items(ecs* world) {
     zox_system_1(
         TerrainItemDropSystem,
         // zoxp_mainthread,
-        zoxp_queue_process,
-        [in] chunks3.VoxelNodeQueue,
-        [in] chunks3.VoxelNode,
-        [in] chunks.NodeDepth,
+        // NOTE: as voxels gets added at zoxp_queue_pre_post_clear
+        zoxp_queue_pre_post_clear,
+        [in] chunks3.VoxelDropQueue,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
         [none] chunks3.Chunk3

@@ -1,7 +1,6 @@
 // This renders Character2Ds and any other 2D assets
 // This is called in Render3D due to transform needed
 zox_sys2(RenderMaterial2DSystem) {
-
     if (!global_mesh2.x || !global_mesh2.y) {
         if (!global_mesh2.x) {
             zox_log_error("global_mesh2.x 0")
@@ -17,7 +16,6 @@ zox_sys2(RenderMaterial2DSystem) {
     zox_gpu_enable_blend();
     // zox_gpu_disable_depth_test();
     // zox_gpu_disable_culling();
-
     zox_sys_begin();
     zox_sys_in(Position2);
     zox_sys_in(Rotation2D);

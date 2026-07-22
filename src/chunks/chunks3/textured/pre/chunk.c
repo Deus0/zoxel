@@ -9,6 +9,7 @@ entity spawn_prefab_chunk_textured(ecs* world, entity prefab) {
     zox_prefab_set(e, Ready, { 0 });
     // Neighbors and Updates
     zox_prefab_set(e, VoxelNodeQueue, { 0 });
+    zox_prefab_set(e, VoxelDropQueue, { 0 });
     zox_prefab_set(e, BlockDamageQueue, { 0 });
     // Bounds, used for Frustum Culling
     zox_prefab_set(e, Bounds3D, { float3_single(1) });

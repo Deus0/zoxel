@@ -1,7 +1,7 @@
 // TODO: Move to streaming modules
 byte vox_lod_near = 1;
 byte terrain_lod_near = 3;      // also character far
-byte terrain_lod_far = 8;       // 1 | 2 | 4 | 8 | 16
+byte terrain_lod_far = 16;       // 1 | 2 | 4 | 8 | 16
 byte render_distance_y = 3;     // vertical
 // const byte render_distance_y_max = 12;
 #define render_distance_y_max 8

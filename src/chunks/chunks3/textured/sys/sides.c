@@ -57,6 +57,9 @@ static inline byte build_voxel_sides(const byte* solids, const VoxelNode* root, 
     if (!adjacent_node) {
         return 0;
     }
+    if (zox_dbg_render_all_sides) {
+        return 1;
+    }
     // Accounts for Dig vs Render Difference
     byte adjacent_solid;
     byte adjacent_depth = get_adjacent_depth(depth, neighbor_depths, positioni, direction);
@@ -67,11 +70,14 @@ static inline byte build_voxel_sides(const byte* solids, const VoxelNode* root, 
         byte side = reversed & 1;   // 0=negative side, 1=positive side
         adjacent_solid = get_node_sides_all_solid(solids, adjacent_node, axis, side, dist);
     } else {
-        // Accounts for null solids
+    // Accounts for null solids
         adjacent_solid = adjacent_node && adjacent_node->value && (!solids || (solids && solids[adjacent_node->value - 1]));
+        // Accounts for null solids
+        // byte adjacent_value = adjacent_node && adjacent_node->value;
+        // adjacent_solid = adjacent_value && (!solids || (solids && solids[adjacent_value - 1]));
     }
     // Debug These
-    return !adjacent_solid || zox_dbg_render_all_sides;
+    return !adjacent_solid;
 }
 
 static inline byte build_sides_dig(const byte* solids, const VoxelNode* root, const VoxelNode** neighbor_voxels, const byte* neighbor_depths, const VoxelNode* voxels, SidesOctree* sides, byte target_depth, byte depth, byte3 position, byte dbg_log) {
@@ -196,7 +202,7 @@ void fetch_neightbor_chunk_data(ecs* world, const ChunkNeighbors* chunk_neighbor
 // NOTE: Calculates the solid sides of a voxel octree per material
 zox_sys2(ChunkSidesSystem) {
     byte dbg_log = 0;
-    byte max_process = 4;
+    byte max_process = 2; // 2;
     byte* solids = NULL;
     zox_sys_world();
     zox_sys_begin();
@@ -220,12 +226,13 @@ zox_sys2(ChunkSidesSystem) {
         if (max_process && process_count > max_process) {
             continue;
         }
-        /*if (zox_getv(e, GenerateChunk) || zox_getv(e, VoxelNodeDirty) || zox_getv(e, ChunkLodDirty)) {
+        // HMmm
+        if (zox_getv(e, GenerateChunk) || zox_getv(e, VoxelNodeDirty) || zox_getv(e, ChunkLodDirty)) {
             if (dbg_log) {
                 zox_log("Waiting on Self to Build [%s]", zox_getn(e));
             }
             continue;
-        }*/
+        }
         // fetch here instead
         if (!solids) {
             // entity chunk = zox_get_parent(world, e);
@@ -248,9 +255,11 @@ zox_sys2(ChunkSidesSystem) {
         const VoxelNode* neighbor_voxels[6];
         byte neighbor_depths[6];
         fetch_neightbor_chunk_data(world, neighbors, neighbor_voxels, neighbor_depths);
-        // sides->value =
+        // write_lock_SidesOctree(sides);
+        // read_lock_VoxelNode(voxels);
         build_sides_dig(solids, voxels, neighbor_voxels, neighbor_depths, voxels, sides, depth->value, 0, byte3_zero, dbg_log);
-        // sides_dirty->value = zox_dirty_trigger;
+        // read_unlock_VoxelNode(voxels);
+        // write_unlock_SidesOctree(sides);
         build->value = 0;
         if (dbg_log) {
             zox_log("Built Sides [%s]", zox_getn(e));

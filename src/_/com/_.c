@@ -1,7 +1,7 @@
 // NOTE: Core components for entire engine!
 // General
 zoxc_byte(Active);
-zoxc_ushort(DeactivateDelay);
+zoxc_double(DeactivateDelay);
 zoxc_byte(GenericEvent);
 zoxc_byte(SpawnChance);
 zoxc_byte(Busy);
@@ -32,6 +32,7 @@ zoxc_arrayd(DoubleData, double)
 #define zox_load_none 0
 #define zox_load_begin 1
 #define zox_load_done 2
+byte zox_tst_remove_deactivates = 0;
 
 // Adds the latest time onto system and moves rest of list up
 void add_double_to_samples(ecs *world, entity e, double value) {
@@ -55,7 +56,10 @@ void add_double_to_samples(ecs *world, entity e, double value) {
 void zox_define_components_core(ecs* world) {
     // General
     zoxd_byte(Active);
-    zoxd_ushort(DeactivateDelay);
+    zoxd_double(DeactivateDelay);
+    if (zox_tst_remove_deactivates) {
+        zox_add_id(zox_id(DeactivateDelay), EcsDontFragment);
+    }
     zoxd_byte(GenericEvent);
     zoxd_byte(SpawnChance);
     zoxd_byte(Busy);

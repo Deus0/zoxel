@@ -1,7 +1,7 @@
 // based off cube prefab
 entity spawn_prefab_pickup(ecs *world, entity prefab) {
     float pickup_radius = 0.15f;
-    float4 rotation_speed = quaternion_from_euler( (float3) { 0, pickup_rotaion_speed * degreesToRadians, 0 });
+    float4 rotation_speed = quaternion_from_euler( (float3) { 0, pickup_rotaion_speed * degrees_to_radians, 0 });
     zox_prefab_child(prefab);
     zox_prefab_name("pickup");
     zox_add_tag(e, Pickup);

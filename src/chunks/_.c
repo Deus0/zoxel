@@ -11,6 +11,7 @@
 #define zox_generate_model_bake 2
 #define zox_generate_model_end 0
 byte zox_is_slow_updates = 1;
+double chunk_mesh_deactivate_delay = 0.5;
 #include "com/_.c"
 #include "chunks2/_.c"
 #include "chunks3/_.c"

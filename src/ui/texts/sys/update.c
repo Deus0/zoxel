@@ -34,13 +34,11 @@ zox_sys2(TextUpdateSystem) {
                 uint new_data_index = child_index_to_text_array_index(text->value, text->length, j);
                 if (data_index->value != new_data_index) {
                     data_index->value = new_data_index;
-                    zox_mut_end(e2, DataIndex);
                 }
                 zox_mut_begin(e2, ZigelIndex, zigel_index);
                 byte new_index = calculate_zigel_index(text->value, text->length, j);
                 if (zigel_index->value != new_index) {
                     zigel_index->value = new_index;
-                    zox_mut_end(e2, ZigelIndex);
                     zox_muter(e2, GenerateTexture, generate);
                     generate->value = zox_generate_texture_run;
                     if (dbg_log) {

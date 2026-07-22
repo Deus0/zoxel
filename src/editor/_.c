@@ -2,7 +2,7 @@
 #define zoxm_editor
 
 DebugLabelEvent local_debug_label;
-
+byte editor_overlay_layer = 232;
 #include "set/_.c"
 #include "com/_.c"
 #include "pre/_.c"

@@ -1,5 +1,6 @@
 // [none] Melee
-extern entity spawn_pickup_block(ecs*, float3, entity);
+// extern entity spawn_pickup_block(ecs*, float3, entity);
+
 // TODO: Check Resource Cost before warming up!
 // TODO: Move resource use out of this System
 zox_sys2(MeleeSystem) {

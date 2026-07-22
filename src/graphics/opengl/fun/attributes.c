@@ -15,6 +15,10 @@ static inline void zox_gpu_enable_attribute_float2(guint id) {
     glVertexAttribPointer(id, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 }
 
+static inline void zox_gpu_set_attribute_floatx(guint id, const void* ptr, byte length) {
+    glVertexAttribPointer(id, length, GL_FLOAT, GL_FALSE, 0, ptr);
+}
+
 static inline void zox_gpu_set_attribute_float2(guint id, const void* ptr) {
     glVertexAttribPointer(id, 2, GL_FLOAT, GL_FALSE, 0, ptr);
 }

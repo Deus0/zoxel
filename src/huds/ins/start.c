@@ -1,7 +1,7 @@
 // Spawn a games Start / Title Menu
 entity spawn_menu_start(ecs* world, entity player, entity canvas) {
     char* label_start = "Cube is End"; // "Start";
-    byte layer = game_overlay_layer + 1;
+    byte layer = 1;
     byte font_size = 16 * ui_scale;
     // byte font_thickness = ui_scale;
     byte2 padding = (byte2) { 8 * ui_scale, 4 * ui_scale };

@@ -1,6 +1,9 @@
 #ifndef zoxm_rendering
 #define zoxm_rendering
 
+byte zox_new_ui_renderer = 0;
+ushort max_layers2D = 254;
+
 #include "com/_.c"
 #include "dat/_.c"
 #include "set/_.c"
@@ -9,7 +12,6 @@
 #include "sys/_.c"
 #include "shd/_.c"
 #include "dbg/_.c"
-
 #include "basics2/_.c"
 #include "basics3/_.c"
 #include "cameras/_.c"
@@ -37,7 +39,6 @@ byte initialize_rendering(byte render_backend) {
 }
 
 void viewport_clear(ecs *world) {
-    (void) world;
     zox_gpu_set_clear_color(color_rgb_to_float3(viewport_clear_color));
     zox_gpu_clear_viewport();
 }

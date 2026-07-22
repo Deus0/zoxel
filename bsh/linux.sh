@@ -2,9 +2,10 @@
 set -euo pipefail
 
 # debug options
-is_safety_checks="0"
+is_safety_checks="0"    # lets stay safe for now
 is_time_systems="0"
-is_profiler="0"     # https://www.flecs.dev/explorer/?host=localhost
+is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
+is_desktop_gl="1"
 # bash inputs
 game_name=$1    # zoxel
 GLB=$2          # headless, opengl or vulkan
@@ -22,7 +23,7 @@ compiler="gcc"
 debug="False"
 sources="src/main.c inc/flecs/flecs.c"
 includes="-Iinc/flecs"
-cflags="-fPIC -O3 -flto=auto -DNDEBUG"
+cflags="-std=gnu99 -fPIC"
 dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_linux"
 libs="-lm -lpthread" # -Iinc
 
@@ -40,6 +41,7 @@ echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
 
 if [[ ${ONARC} == "aarch64" && ${ARC} == "arm" ]]; then
     cflags+=" -march=native"
+    is_desktop_gl="0"
 elif [[ ${ONARC} == "x86_64" && ${ARC} == "x64" ]]; then
     cflags+=" -march=native"
 elif [[ ${ONARC} == "aarch64" && ${ARC} == "x64" ]]; then
@@ -57,7 +59,8 @@ fi
 
 if [[ ${debug} == "True" ]]; then
     echo "+ Added [debug]"
-    cflags="-fPIC -Dzox_debug"
+    bin_path="bin/${bin_filename}-dev.bin"
+    dflags+=" -Dzox_debug"
     cflags+=" -g3 -Wall -ggdb3"
     # cflags="-fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug"
     # cflags="-fPIC -O2 -g3 -Wall -ggdb3 -Dzox_debug"
@@ -65,12 +68,13 @@ if [[ ${debug} == "True" ]]; then
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs
     # cflags+=" -O3"
-    # Memory Leaks
-    cflags+=" -O0" #  -fsanitize=address"
-    # For Full Debug
-    # flags+=" -O0 -fno-omit-frame-pointer"
-    #  -fsanitize=address
-    bin_path="bin/${bin_filename}-dev.bin"
+    cflags+=" -O0"
+    # Memory Leaks Full Debug
+    # cflags+=" -fno-omit-frame-pointer""
+    # cflags+=" -fsanitize=address"
+else
+    # Release Builds
+    cflags+=" -O3 -flto=auto -DNDEBUG"
 fi
 
 if [[ ${is_profiler} == "1" ]]; then
@@ -125,7 +129,11 @@ if [[ ${GLB} == "opengl" ]]; then
         echo "Cannot get Cross Compiler working with OpenGL [-lEGL -lGLESv2] yet.."
         exit
     else
-        libs+=" -lEGL -lGLESv2"
+        if [[ ${is_desktop_gl} == "1" ]]; then
+            libs+=" -lGL"
+        else
+            libs+=" -lEGL -lGLESv2"
+        fi
     fi
 fi
 

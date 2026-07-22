@@ -5,7 +5,9 @@ extern void spawn_all_players_start_ui(ecs*);
 entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 screen_to_canvas, entity app) {
     entity canvas = spawn_canvas(world, prefab_canvas, ui_camera, dimensions, screen_to_canvas, app);
     zox_set_unique_name(canvas, "game_canvas");
-    spawn_canvas_overlay(world, prefab_canvas_overlay, canvas, dimensions);
+    if (!zox_disable_screen_fader) {
+        spawn_canvas_overlay(world, prefab_canvas_overlay, canvas, dimensions);
+    }
     // Tooltip on player
     spawn_tooltip(world, prefab_tooltip, canvas);
     // custom cursor

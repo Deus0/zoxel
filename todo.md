@@ -2,6 +2,10 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+Gameplay
+- Add countdown timer on respawn
+- Add a timer for new items to be picked up
+- Spawn NPC - Humanoid -Test
 - Give npc in town a quest
 - Give option of dialogue to give user a quest
 - Quest accept UI shows between dialogue
@@ -9,6 +13,44 @@ used - 200-400mb used
 - Finish converting icons to bmp
 - Add mirror UI for viewing player model
 
+Fixes
+- Add delays to queue so its frame timing independent 
+- if building a tower up - shows invisible face
+    - Its when its next to a chunk with no chunk meshes - it doesnt build the edge
+- Jumps should work independent of time delta
+- Third Person Camera a bit buggy
+- Fix Vegation not building at same scale
+- Npcs fall through ground durin load..
+- Fix jumps working same at diff time deltas
+    - physics, we just need to give it the same accelaration juice
+- Fix Lighting Seems between Chunks, only sometimes??
+- Wait is grass missing now??
+    - it didnt spawn in time
+- Sometimes still crashes - fix that
+- Font sometimes scrambled on ui
+- Chunk Mesh failed deactivating... ? Keep eye on them
+- Npcs be falling through ground
+- Text font just scrambled positions again - maybe it repositions before child index is set
+- Occasional Crashes
+- Map UI slightly off still - the flipping part
+    - wait i think its just lods updating stuff
+    - Vegetation seems off, when moving between LODs
+
+Optimize
+- ChunkTexturedBuildSystem - 28ms idle??
+    - should we be removing states after?
+- Maybe we create entities for events, this will save the idle times?
+- Remove DeactivateDelay on chunk meshes and build new system for this
+
+Crashes:
+- crashes when destroying grass - only in run
+- put more entity component checks everywhere
+- crashed randommly on block place
+
+Ideas
+- Add chunks on edge that are Simulation only? for map? idk
+
+Refactors
 - Remove crafting users reference and use normal item ui for craft ui
 - placing still broken every 2nd place
 
@@ -19,15 +61,6 @@ used - 200-400mb used
 	- then use seed for spawning npcs so it spawns the same every time
 
 Fixes (older bugs)
-- Chunk Mesh failed deactivating
-- Third Person Camera a bit buggy
-- Jumps should work independent of time delta
-- Npcs be falling through ground
-- Text font just scrambled positions again - maybe it repositions before child index is set
-- Occasional Crashes
-- Map UI slightly off still - the flipping part
-    - wait i think its just lods updating stuff
-    - Vegetation seems off, when moving between LODs
 
 Opptimize
 - ChunkFrustumSystem [20ms]

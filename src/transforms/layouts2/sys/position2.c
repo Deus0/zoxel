@@ -1,5 +1,5 @@
 // This converts our layout position to our canvas real position
-float2 get_element_position(int2 position, float2 canvas_sizef, float aspect_ratio) {
+static inline float2 get_element_position(int2 position, float2 canvas_sizef, float aspect_ratio) {
     float2 positionf = int2_to_float2(position);
     // Gets [0,1] Values
     float2_divide_float2(&positionf, canvas_sizef);
@@ -11,7 +11,7 @@ float2 get_element_position(int2 position, float2 canvas_sizef, float aspect_rat
     return positionf;
 }
 
-void set_layout_child_position_recursively_new(ecs* world, entity e, float2 canvas_sizef, float aspect_ratio) {
+static inline void set_layout_child_position_recursively_new(ecs* world, entity e, float2 canvas_sizef, float aspect_ratio) {
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
@@ -20,7 +20,7 @@ void set_layout_child_position_recursively_new(ecs* world, entity e, float2 canv
                 continue;
             }
             zox_geter_value(e2, CanvasPosition, int2, position);
-            zox_muter(e2, Position2, positionf);
+            zox_mut_begin(e2, Position2, positionf);
             positionf->value = get_element_position(position, canvas_sizef, aspect_ratio);
             set_layout_child_position_recursively_new(world, e2, canvas_sizef, aspect_ratio);
         }

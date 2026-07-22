@@ -2,7 +2,6 @@
 
 static inline void zox_gpu_enable_culling() {
     glEnable(GL_CULL_FACE);
-    glDepthFunc(GL_LESS);
 }
 
 static inline void zox_gpu_disable_culling() {
@@ -11,6 +10,7 @@ static inline void zox_gpu_disable_culling() {
 
 static inline void zox_gpu_enable_depth_test() {
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 }
 
 static inline void zox_gpu_disable_depth_test() {
@@ -25,9 +25,6 @@ static inline void zox_gpu_enable_blend() {
 static inline void zox_gpu_enable_blend2() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glDepthMask(GL_FALSE);
-    // glDepthFunc(GL_LEQUAL);
-    // glDepthMask(GL_FALSE);
 }
 
 static inline void zox_gpu_disable_blend() {

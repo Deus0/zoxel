@@ -74,6 +74,6 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] rendering.MeshRenderCount,
         [none] chunks.ChunkMesh
     );
-    // zox_set(zox_id(Chunk3TexturedRenderSystem), SystemDeltaMax, { zox_lag_cutoff * 2 });
     add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
+    // zox_set(zox_id(Chunk3TexturedRenderSystem), SystemDeltaMax, { zox_lag_cutoff * 2 });
 }

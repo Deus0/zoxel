@@ -32,6 +32,9 @@ zox_sys2(TexturedRenderSystem) {
             }
             continue;
         }
+        if (zox_has(e, InitializeMesh) && zox_getv(e, InitializeMesh)) {
+            continue;
+        }
 #ifdef zox_safety_checks
         if (!material->value) {
             zox_loge("Gpu Link [material] broken [%s]", zox_getn(e));

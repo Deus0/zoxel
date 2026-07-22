@@ -26,6 +26,7 @@ zoxc_byte(ElementFontSize);
 zox_tag(MouseElement);
 // Materials
 #include "matrixui.c"
+zoxc_guint(MaterialBlur);
 
 void zox_define_components_elements(ecs *world) {
     // Core Elements
@@ -56,4 +57,5 @@ void zox_define_components_elements(ecs *world) {
     zoxd_tag(CanvasOverlay);
     // Materials
     zoxd(attributes_matrixui);
+    zoxd_guint(MaterialBlur);
 }

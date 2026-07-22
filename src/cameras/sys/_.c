@@ -3,6 +3,7 @@
 #include "viewport_resize_system.c"
 #include "frustum_d3.c"
 #include "frustum_f3.c"
+#include "orthographic.c"
 
 void define_systems_cameras(ecs *world) {
     zox_system(
@@ -19,7 +20,17 @@ void define_systems_cameras(ecs *world) {
         [in] screens.ScreenDimensions,
         [in] FieldOfView,
         [in] CameraNearDistance,
-        [out] ProjectionMatrix
+        [out] ProjectionMatrix,
+        [none] Perspective
+    );
+    zox_system(
+        OrthographicMatrixSystem,
+        zoxp_update,
+        [in] screens.ScreenDimensions,
+        //[in] FieldOfView,
+        //[in] CameraNearDistance,
+        [out] ProjectionMatrix,
+        [none] Orthographic
     );
     zox_system(
         ViewMatrixSystem,

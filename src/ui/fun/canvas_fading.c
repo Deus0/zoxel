@@ -46,13 +46,12 @@ void trigger_canvas_fade_in(ecs *world, entity canvas, float delay, float length
 }
 
 void trigger_canvas_fade_transition(ecs* world, entity canvas, double fade_time, double delay_time) {
-
     entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
     if (!e) {
         zox_log_error("Failed to find canvas_overlay on canvas");
         return;
     }
-    zox_set(e, Layer2D, { game_overlay_layer });
+    zox_set(e, Layer2D, { get_game_overlay_layer() });
     zox_set(e, AnimationIndex, { 0 });
     zox_set(e, AnimationDelay, { 0 });
     zox_set(e, RenderDisabled, { 0 });

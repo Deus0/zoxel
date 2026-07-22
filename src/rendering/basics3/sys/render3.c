@@ -25,6 +25,9 @@ zox_sys2(Basic3RenderSystem) {
             continue;
         }
         camera_filtering_check();
+        if (zox_has(e, InitializeMesh) && zox_getv(e, InitializeMesh)) {
+            continue;
+        }
 #ifdef zox_safety_checks
         if (!material->value) {
             zox_loge("(Basic3) Gpu Link [material] broken [%s]", zox_getn(e));

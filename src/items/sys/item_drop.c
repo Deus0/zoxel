@@ -1,5 +1,8 @@
 extern entity spawn_pickup_basic(ecs*, float3);
-extern entity spawn_pickup_block(ecs*, float3, entity);
+extern float item_pickup_scale;
+extern entity spawn_pickup_block(ecs*, float3, entity, float);
+
+// TODO: Move this over to Pickups
 
 // NOTE: For now we just drop BlockItems!
 // we should drop from actions too!
@@ -33,7 +36,7 @@ zox_sys2(ItemDropSystem) {
             entity e2;
             if (zox_has(user_item, BlockLink)) {
                 zox_geter_value(user_item, BlockLink, entity, block)
-                e2 = spawn_pickup_block(world, position->value, block);
+                e2 = spawn_pickup_block(world, position->value, block, item_pickup_scale);
             } else {
                 e2 = spawn_pickup_basic(world, position->value);
             }

@@ -15,7 +15,10 @@ CharacterRaycast raycast_character(ecs *world, float3 ray_origin, float3 ray_nor
     }
     for (int i = 0; i < entities->length; i++) {
         entity e = entities->value[i];
-        if (!zox_valid(e) || caster == e || !zox_has(e, Position3D) || !zox_has(e, Bounds3D)) {
+        if (!zox_valid(e) || caster == e) {
+            continue;
+        }
+        if (!zox_has(e, Position3D) || !zox_has(e, Rotation3D) || !zox_has(e, Bounds3D)) {
             continue;
         }
         zox_geter_value(e, Position3D, float3, position3);
@@ -76,6 +79,10 @@ byte update_chunk_for_raycast(
     if (!zox_valid(*chunk)) {
         return 0;
     }
+    if (!zox_has(*chunk, VoxelNode) || !zox_has(*chunk, RenderDepth)) {
+        zox_loge("Chunk has invalid components [%s]", zox_getn(*chunk));
+        return 0;
+    }
     *root_voctree = zox_get(*chunk, VoxelNode);
     if (!*root_voctree) {
         return 0;
@@ -90,6 +97,10 @@ byte update_chunk_for_raycast(
     *chunk_depth_reduction = terrain_depth - *chunk_depth;
     // NOTE: Raycast Character per Terrain Chunk - Only do so when we havn't hit Character yet
     if (chunk_links && !character_raycast->e) {
+        if (!zox_has(*chunk, ChunkEntities)) {
+            zox_loge("Chunk has invalid components [%s]", zox_getn(*chunk));
+            return 0;
+        }
         zox_geter(*chunk, ChunkEntities, entities);
         *character_raycast = raycast_character(world, ray_origin, ray_normal, caster, entities);
     }
@@ -122,7 +133,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
     // NOTE: This is called from Minivoxes
     if (zox_valid(chunk)) {
         if (!update_chunk_for_raycast(world, &chunk, &root_voctree, chunk_links, chunk_position, terrain_depth, terrain_scalev, &chunk_depth, &chunk_depth_reduction, &chunk_size, &chunk_scalev, character_raycast, ray_origin, ray_normal, caster)) {
-            zox_log_error("Minivox Invalid Node");
+            // zox_loge("Minivox Invalid Node");
             return 0;
         }
     }
@@ -258,10 +269,10 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                 byte block_type = 0;
                 if (zox_has(block_spawn, InstanceLink)) {
                     block_type = 1;
-                    vox = zox_gett_value(block_spawn, InstanceLink);
+                    vox = zox_getv(block_spawn, InstanceLink);
                 } else if (zox_has(hit_block, ModelLink)) {
                     block_type = 2;
-                    vox = zox_gett_value(hit_block, ModelLink);
+                    vox = zox_getv(hit_block, ModelLink);
                 } else {
                     vox = chunk;
                 }

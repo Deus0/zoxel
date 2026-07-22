@@ -55,4 +55,5 @@ void define_components_chunks3(ecs* world) {
     zoxd_entities(ChunkEntities);
     zoxd_links(ChunkLink);
     zoxd_queue(VoxelNodeQueue);
+    zoxd_queue(VoxelDropQueue);
 }

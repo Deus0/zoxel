@@ -22,7 +22,7 @@ zox_sys2(Line3DRenderSystem) {
         zox_gpu_line_thickness((thickness->value / distance) * viewport_scale);
         // float4 colorf = color_to_float4(c->value);
         zox_gpu_set_attribute_float3(line3D_position_location, &data->value);
-       //  zox_gpu_float4(line3D_color_location, colorf);
+        //  zox_gpu_float4(line3D_color_location, colorf);
         zox_gpu_color(line3D_color_location, fill->value);
         zox_gpu_render_lines(2);
     }

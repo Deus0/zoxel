@@ -187,21 +187,6 @@ zox_sys2(SmoothLightsBuildSystem) {
         }
         const SidesOctree* sides = zox_get(chunk, SidesOctree);
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
-        /*byte neighbors_busy = 0;
-        for (int j = 0; j < 6; j++) {
-            entity e2 = neighbors->value[j];
-            if (!zox_valid(e2)) {
-                neighbors_busy = 1;
-                break;
-            }
-            if (zox_getv(e2, GenerateChunk) || zox_getv(e2, BuildChunkSides)) {
-                neighbors_busy = 1;
-                break;
-            }
-        }
-        if (neighbors_busy) {
-            continue;
-        }*/
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);
         const LightNode* lights = zox_get(chunk, LightNode);
         // float block_scale = zox_getv(chunk, BlockScale);

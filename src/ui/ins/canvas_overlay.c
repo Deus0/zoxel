@@ -3,9 +3,8 @@ float app_fade_in_delay_time = 0.25;
 float app_fade_in_time = 1.0;
 
 entity spawn_canvas_overlay(ecs *world, entity p, entity canvas, int2 canvas_size) {
-
     entity parent = canvas;
-    byte layer = game_overlay_layer;
+    byte layer = get_game_overlay_layer();
     int2 pixel_position = int2_zero;
     float2 anchor = float2_half;
     int2 pixel_size = (int2) { 4096, 4096 }; //  canvas_size;
