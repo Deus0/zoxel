@@ -19,11 +19,11 @@ void define_systems_chunks3(ecs *world) {
         VoxelNodeQueueSystem,
         zoxp_queue_pre_clear,
         [in] chunks.NodeDepth,
-        [in] chunks3.VoxelNodeQueue,
+        [out] chunks3.VoxelNodeQueue,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeDirty,
         [out] chunks3.VoxelNodeEdited,
-        [out] chunks3.VoxelDropQueue,
+        // [out] chunks3.VoxelDropQueue,
         [none] chunks3.Chunk3
     );
     zox_system(
@@ -33,7 +33,7 @@ void define_systems_chunks3(ecs *world) {
         [out] chunks3.VoxelNode,
         [none] chunks3.Chunk3
     );
-    zox_system(
+    /*zox_system(
         VoxelNodeQueueClearSystem,
         zoxp_queue_clear,
         [out] VoxelNodeQueue,
@@ -44,5 +44,5 @@ void define_systems_chunks3(ecs *world) {
         zoxp_queue_clear,
         [out] VoxelDropQueue,
         [none] chunks3.Chunk3
-    );
+    );*/
 }

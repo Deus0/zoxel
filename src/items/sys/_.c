@@ -53,7 +53,7 @@ void define_systems_items(ecs* world) {
         // zoxp_mainthread,
         // NOTE: as voxels gets added at zoxp_queue_pre_post_clear
         zoxp_queue_pre_post_clear,
-        [in] chunks3.VoxelDropQueue,
+        [in] chunks3.VoxelNodeQueue,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
         [none] chunks3.Chunk3

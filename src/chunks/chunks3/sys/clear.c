@@ -13,7 +13,7 @@ zox_sys2(VoxelNodeQueueClearSystem) {
     }
 } zox_sys_end(VoxelNodeQueueClearSystem);
 
-zox_sys2(VoxelDropQueueClearSystem) {
+/*zox_sys2(VoxelDropQueueClearSystem) {
     zox_sys_begin();
     zox_sys_out(VoxelDropQueue);
     for (int i = 0; i < it->count; i++) {
@@ -26,5 +26,5 @@ zox_sys2(VoxelDropQueueClearSystem) {
             spin_unlock(&queue->lock);
         }
     }
-} zox_sys_end(VoxelDropQueueClearSystem);
+} zox_sys_end(VoxelDropQueueClearSystem);*/
 

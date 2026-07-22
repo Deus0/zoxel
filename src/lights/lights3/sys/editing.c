@@ -47,18 +47,18 @@ zox_sys2(VoxelLightSystem) {
             VoxelNodeUpdate update = input_queue->ptr[j];
             // Removing Voxel - Spreads Light
             if (!update.value) {
-                const LightNode* above = get_neighbor_LightNode(root_lnode, nnodesl, direction_up, update.pos, depth->value);
+                const LightNode* above = get_neighbor_LightNode(root_lnode, nnodesl, direction_up, update.position, depth->value);
                 byte light_above = above ? above->value : 0;
                 if (light_above == sunlight) {
                     // if y, we do y + 1
                     a_SunlightQueue(sun_queue, (SunlightUpdate) {
-                        .pos = update.pos,
+                        .pos = update.position,
                         .light = sunlight,
                         .depth = depth->value
                     });
-                    zox_logv("[%s] Removed Block: + Sunbeam at [%ix%ix%i] sunlight [%i]", zox_get_name(it->entities[i]),  update.pos.x, update.pos.y, update.pos.z, sunlight);
+                    zox_logv("[%s] Removed Block: + Sunbeam at [%ix%ix%i] sunlight [%i]", zox_get_name(it->entities[i]),  update.position.x, update.position.y, update.position.z, sunlight);
                     // set dark light, as it was filled up
-                    // set_LightNode(root_lnode, depth->value, update.pos, sunlight, 0);
+                    // set_LightNode(root_lnode, depth->value, update.position, sunlight, 0);
                 } else {
                     byte max_nlight = light_above;
                     for (byte dir = 0; dir < 6; dir++) {
@@ -69,7 +69,7 @@ zox_sys2(VoxelLightSystem) {
                             root_lnode,
                             nnodesl,
                             dir,
-                            update.pos,
+                            update.position,
                             depth->value
                         );
                         byte nlight = lnnode ? lnnode->value : 0;
@@ -78,12 +78,12 @@ zox_sys2(VoxelLightSystem) {
                         }
                     }
                     byte decayed_light = (max_nlight > light_air_decay) ? (byte) (max_nlight - light_air_decay) : darklight;
-                    zox_logv("[%s] Removed Block: + Light Flood at [%ix%ix%i] max nlight [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, max_nlight);
+                    zox_logv("[%s] Removed Block: + Light Flood at [%ix%ix%i] max nlight [%i]", zox_get_name(it->entities[i]), update.position.x, update.position.y, update.position.z, max_nlight);
                     a_LightQueue(
                         light_queue,
                         (LightUpdate) {
                             // .type = zox_light_type_flood,
-                            .pos = update.pos,
+                            .pos = update.position,
                             .depth = depth->value,
                             .light = decayed_light,
                             .distance = light_propogation_distance
@@ -99,14 +99,14 @@ zox_sys2(VoxelLightSystem) {
                 //          - It needs to call dark floodfill on all points along
                 // NOTE: no matter what we need to dark flood surroundings - for example on corner parts
                 // Dark Flood
-                const LightNode* removed_lnode = get_LightNode(root_lnode, depth->value, update.pos);
+                const LightNode* removed_lnode = get_LightNode(root_lnode, depth->value, update.position);
                 byte removed_light = removed_lnode ? removed_lnode->value : 0;
                 if (removed_light > darklight) {
-                    zox_logv("[%s] Placed Block: + Dark Flood at [%ix%ix%i] removed light [%i]", zox_get_name(it->entities[i]),  update.pos.x, update.pos.y, update.pos.z, removed_light);
+                    zox_logv("[%s] Placed Block: + Dark Flood at [%ix%ix%i] removed light [%i]", zox_get_name(it->entities[i]),  update.position.x, update.position.y, update.position.z, removed_light);
                     a_DarkQueue(dark_queue,
                         (DarkUpdate) {
                             .type = zox_light_type_flood,
-                            .pos = update.pos,
+                            .pos = update.position,
                             .depth = depth->value,
                             .light = removed_light,
                             .distance = darklight_propogation_distance
@@ -117,23 +117,23 @@ zox_sys2(VoxelLightSystem) {
                     root_lnode,
                     nnodesl,
                     direction_up,
-                    update.pos,
+                    update.position,
                     depth->value
                 );
                 byte light_above = above ? above->value : 0;
                 if (light_above == sunlight) {
                     // if y, we do y + 1
-                    zox_logv("[%s] Placed Block: + Darkbeam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]),  update.pos.x, update.pos.y, update.pos.z, darklight);
+                    zox_logv("[%s] Placed Block: + Darkbeam [%ix%ix%i] l[%i]", zox_get_name(it->entities[i]),  update.position.x, update.position.y, update.position.z, darklight);
                     a_DarkQueue(dark_queue,
                         (DarkUpdate) {
                             .type = zox_light_type_beam_start,
-                            .pos = update.pos,
+                            .pos = update.position,
                             .depth = depth->value,
                             .light = light_above
                         });
                 }
                 // set dark light, as it was filled up
-                set_LightNode(root_lnode, depth->value, update.pos, darklight);
+                set_LightNode(root_lnode, depth->value, update.position, darklight);
                 light_node_dirty->value = zox_dirty_trigger;
             }
         }

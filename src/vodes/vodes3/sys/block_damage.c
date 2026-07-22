@@ -102,7 +102,7 @@ zox_sys2(BlockDamageQueueSystem) {
                 zox_muter(chunk, VoxelNodeQueue, queue);
                 a_VoxelNodeQueue(queue, (VoxelNodeUpdate) {
                     .value = 0,
-                    .pos = position
+                    .position = position
                 });
                 did_destroy_block = 1;
             } else {

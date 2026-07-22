@@ -135,7 +135,7 @@ zox_sys2(DungeonBlockSystem) {
         a_VoxelNodeQueue(queue,
             (VoxelNodeUpdate) {
                 .value = place_id,
-                .pos = place_positionl
+                .position = place_positionl
             });
         /*zox_mut_begin(place_chunk, VoxelNode, place_node); // get node function
         // float3 positionf = positionv_to_real_position(voxel_position, int3_to_byte3(chunk_bounds), default_vox_scale);

@@ -59,13 +59,9 @@ ECS_COPY(T, dst, src, { \
         dst->count = 0; \
         dst->capacity = 0; \
     } \
-})
-
-#define zoxd_queue(T)\
-    zoxd(T);\
-    zox_define_hooks(T);
-
-/*static void remove_at_##T(T* q, size_t index) { \
+}) \
+\
+static void remove_at_##T(T* q, size_t index) { \
     if (index >= q->count) return; \
     \
     if (index < q->count - 1) { \
@@ -75,4 +71,9 @@ ECS_COPY(T, dst, src, { \
     } \
     \
     q->count--; \
-}*/
+}
+
+
+#define zoxd_queue(T)\
+    zoxd(T);\
+    zox_define_hooks(T);

@@ -4,12 +4,12 @@ zox_sys2(TerrainItemDropSystem) {
     byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxelDropQueue);
+    zox_sys_in(VoxelNodeQueue);
     zox_sys_in(Position3D);
     zox_sys_in(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxelDropQueue, drops);
+        zox_sys_i(VoxelNodeQueue, drops);
         zox_sys_i(Position3D, position);
         zox_sys_i(BlockScale, scale);
         if (!drops->count) {
@@ -36,11 +36,14 @@ zox_sys2(TerrainItemDropSystem) {
         }
 #endif
         const BlockLinks* blocks = zox_get(realm, BlockLinks);
-        for (size_t j = 0; j < drops->count; j++) {
-            VoxelDropElement update = drops->ptr[j];
-            byte voxel = update.value;
+        for (int j = drops->count - 1; j >= 0; j--) {
+            VoxelNodeUpdate update = drops->ptr[j];
+            if (update.state != zox_voxel_queue_post) {
+                continue;
+            }
+            byte voxel = update.old_value;
             if (!voxel) {
-                zox_loge("Voxel Dropped is Air at [%ix%ix%i]", update.pos.x, update.pos.y, update.pos.z);
+                // zox_loge("Voxel Dropped is Air at [%ix%ix%i]", update.position.x, update.position.y, update.position.z);
                 continue;
             }
             entity block = blocks->value[voxel - 1];
@@ -56,7 +59,7 @@ zox_sys2(TerrainItemDropSystem) {
             if (!zox_valid(block_item)) {
                 zox_log_error("block [%s] has no valid item", zox_get_name(block));
             }
-            float3 positionf = byte3_to_float3(update.pos);
+            float3 positionf = byte3_to_float3(update.position);
             float3_scale_p(&positionf, scale->value);
             float3_add_float3_p(&positionf, position->value); // chunk
             float3_add_float3_p(&positionf, float3_single(scale->value * 0.5f));
