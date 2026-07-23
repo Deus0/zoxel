@@ -1,5 +1,6 @@
 # Done
 
+-x Do 3+ biomes instead of two that we have
 -# Maybe it was grabbing the Voxels of side chunks that were generating?
     -x Landfill delay was cause of crash on windows
 -# If i turn max_process on for Sides, i get weird missing chunk meshes again...

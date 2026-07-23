@@ -2,6 +2,23 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Bug: IconLabel on dirt pickup didnt update
+
+- Add lookouts around map - just big ole scary towers
+    - make system so all new region placers will a void prior ones
+- Add different rarity on items and frame them differently
+- Make homes built with different materials
+- Add strange names for blocks
+    - just show label as Soil type of block
+- Create a biomemap at the region level that helps coordinate
+
+Refactors
+- Make 3D ui use layouts
+    - test the canvas
+    - layout to local position
+    - Position2 on prefab stack gets shifted to Position3
+    - TextSpawnSystem just uses a ZigelPrefabLink instead, handling both types
+
 Gameplay
 - Add countdown timer on respawn
 - Add a timer for new items to be picked up
@@ -14,6 +31,7 @@ Gameplay
 - Add mirror UI for viewing player model
 
 Fixes
+- Add text/font option tocenter the shape points in the grid (use for Markers)
 - Add delays to queue so its frame timing independent 
 - if building a tower up - shows invisible face
     - Its when its next to a chunk with no chunk meshes - it doesnt build the edge

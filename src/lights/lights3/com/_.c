@@ -14,9 +14,13 @@ create_octree_line_debugger(LightNode);
 create_octree_line_debugger_compare(LightNode, VoxelNode);
 zoxc_byte(LightNodeDepth);
 zoxc_state(LightNodeDirty);
-zoxc_queue(SunlightQueue, SunlightUpdate, 1)
-zoxc_queue(LightQueue, LightUpdate, 1)
-zoxc_queue(DarkQueue, DarkUpdate, 1)
+
+zoxc_queue(SunlightQueue, SunlightUpdate, 1);
+zoxc_queue(LightQueue, LightUpdate, 1);
+zoxc_queue(DarkQueue, DarkUpdate, 1);
+zoxc_queue_remove(SunlightQueue, SunlightUpdate);
+zoxc_queue_remove(LightQueue, LightUpdate);
+zoxc_queue_remove(DarkQueue, DarkUpdate);
 
 void define_components_lights3(ecs *world) {
     zoxd_tag(SunnyChunk);

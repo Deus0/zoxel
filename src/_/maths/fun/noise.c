@@ -3,7 +3,6 @@ const float sqrtofthree = 1.73205080757f;   // sqrt(3.0f)
 const float trianglesToSquares = (sqrtofthree - 1.0f) / 2.0f;
 const float squaresToTriangles = (3.0f - sqrtofthree) / 6.0f;
 #define noise_positiver2 32000
-const int terrain_octaves = 12;
 
 float simplex_fun_int_1D(float3 point, int ix) {
     float x = point.x - ix;

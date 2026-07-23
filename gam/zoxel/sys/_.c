@@ -16,14 +16,14 @@
 
 void define_systems_zoxel(ecs *world) {
     // TODO: Move this towards end content
-    zox_system_1(
+    /*zox_system_1(
         ModelsRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
         [out] rendering.ModelLinks,
         [out] nodes.NodegraphLinks,
         [none] realms.Realm
-    );
+    );*/
     // NOTE: Didnt work for Module Detection
     /*if (!ecs_lookup(world, "Stats")) {
         zox_logw("NO Stats Module");
@@ -110,7 +110,7 @@ void define_systems_zoxel(ecs *world) {
         Character3RealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        [in] rendering.ModelLinks,
+        [in] core.Seed,
         [out] characters.CharacterLinks,
         [out] characters3.CharactersChanceMax,
         [none] realms.Realm
@@ -127,6 +127,7 @@ void define_systems_zoxel(ecs *world) {
         BlocksRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
+        [in] core.Seed,
         [out] blocks.BlocksDirty,
         [none] realms.Realm
     );
@@ -135,7 +136,7 @@ void define_systems_zoxel(ecs *world) {
         zoxp_mainthread,
         [in] core.Generate,
         [in] core.Seed,
-        [out] colorz.Colors,
+        [out] biomes.BiomeSkyColor,
         [none] biomes.Biome
     );
 }

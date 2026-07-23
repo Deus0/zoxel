@@ -1,24 +1,25 @@
 // TODO: Just use base mesh instead
-entity spawn_prefab_chunk_mesh(ecs *world) {
+entity spawn_prefab_chunk_mesh(ecs* world) {
     zox_prefab();
     zox_prefab_name("chunk_mesh");
+    // Chunk Data
     zox_add_tag(e, ChunkMesh);
-    zox_prefab_set(e, Active, { 1 });
-    if (!zox_tst_remove_deactivates) {
-        zox_prefab_set(e, DeactivateDelay, { 0 });
-    }
-    zox_prefab_set(e, BuildChunkMesh, { zox_build_chunk_mesh_run });
+    zox_prefab_set(e, RenderDepth, { 0 });
     // Transforms
-    zox_add_tag(e, DisableTransform);
+    // zox_add_tag(e, DisableTransform);
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
-    // Render Data
-    zox_prefab_set(e, RenderDisabled, { 1 });
-    zox_prefab_set(e, RenderDepth, { 0 });  // used to tell which depth the mesh is at
-    // Nesh Data
+    // Mesh Data
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
+    zox_prefab_set(e, MeshColorRGBs, { 0 });
+    // Gpu Links
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
+    zox_prefab_set(e, ColorsGPULink, { 0 });
     zox_prefab_set(e, MeshRenderCount, { 0 });
-    // zox_prefab_set(e, MeshDirty, { 0 });
+    // States
+    zox_prefab_set(e, Active, { 1 });
+    zox_prefab_set(e, RenderDisabled, { 0 });
+    // Events
+    zox_prefab_set(e, BuildChunkMesh, { zox_build_chunk_mesh_run });
     return e;
 }

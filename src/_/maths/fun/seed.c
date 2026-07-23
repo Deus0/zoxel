@@ -9,6 +9,12 @@ static inline uint seed_rand(uint seed) {
 
 // NOTE: Max is Exclusive (node including max)
 static inline int seed_range(uint seed, int min, int max) {
+#ifdef zox_safety_checks
+    if (min >= max) {
+        zox_loge("Invalid seed range [%i:%i]", min, max);
+        return 0;
+    }
+#endif
     return min + (seed_rand(seed) % (max - min));
 }
 

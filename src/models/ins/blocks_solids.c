@@ -48,11 +48,12 @@ entity spawn_model_stone(ecs *world, entity parent, lint seed, color block_color
     return e;
 }
 
-entity spawn_model_bricks(ecs *world, entity parent, lint seed, color block_color) {
+entity spawn_model_bricks(ecs *world, entity parent, lint seed, color block_color, color cracks_color) {
     entity e = spawn_vox_generated_invisible(world, prefab_vox_generated, block_color);
     zox_set_unique_name(e, "model_bricks");
     zox_add_tag(e, BakeModel);
     zox_set(e, VoxType, { vox_type_bricks });
+    zox_set(e, SecondaryColor, { cracks_color });
     return e;
 }
 

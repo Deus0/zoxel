@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+is_desktop_gl="1"       # Use GL libs instead of EGL on desktop
 # debug options
 is_safety_checks="0"    # lets stay safe for now
 is_time_systems="0"
 is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
-is_desktop_gl="1"
+is_fast_dev="0"         # -O3
 # bash inputs
 game_name=$1    # zoxel
 GLB=$2          # headless, opengl or vulkan
@@ -61,14 +62,15 @@ if [[ ${debug} == "True" ]]; then
     echo "+ Added [debug]"
     bin_path="bin/${bin_filename}-dev.bin"
     dflags+=" -Dzox_debug"
-    cflags+=" -g3 -Wall -ggdb3"
-    # cflags="-fPIC -O0 -g3 -Wall -ggdb3 -Dzox_debug"
-    # cflags="-fPIC -O2 -g3 -Wall -ggdb3 -Dzox_debug"
+    cflags+=" -Wall -ggdb3"
     # cflags="-O2 -g -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs
-    # cflags+=" -O3"
-    cflags+=" -O0"
+    if [[ ${is_fast_dev} == "1" ]]; then
+        cflags+=" -O3 -g"
+    else
+        cflags+=" -O0 -g3"
+    fi
     # Memory Leaks Full Debug
     # cflags+=" -fno-omit-frame-pointer""
     # cflags+=" -fsanitize=address"

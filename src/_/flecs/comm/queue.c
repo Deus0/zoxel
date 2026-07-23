@@ -31,14 +31,6 @@ static void a_##T(T* q, T2 item) { \
     q->ptr[q->count++] = item; \
 } \
 \
-static T2 remove_##T(T* q) { \
-    if (q->count == 0) { \
-        T2 empty = {0}; \
-        return empty; \
-    } \
-    return q->ptr[--q->count]; \
-} \
-\
 ECS_CTOR(T, ptr, { i_##T(ptr); }) \
 ECS_DTOR(T, ptr, { d_##T(ptr); }) \
 ECS_MOVE(T, dst, src, { \
@@ -59,8 +51,18 @@ ECS_COPY(T, dst, src, { \
         dst->count = 0; \
         dst->capacity = 0; \
     } \
-}) \
-\
+})
+
+#define zoxc_queue_remove(T, T2) \
+static T2 remove_##T(T* q) { \
+    if (q->count == 0) { \
+        T2 empty = {0}; \
+        return empty; \
+    } \
+    return q->ptr[--q->count]; \
+}
+
+#define zoxc_queue_remove_at(T, T2) \
 static void remove_at_##T(T* q, size_t index) { \
     if (index >= q->count) return; \
     \

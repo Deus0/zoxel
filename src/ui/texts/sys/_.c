@@ -42,14 +42,16 @@ void define_systems_texts(ecs *world) {
         ZigelPositionSystem,
         zoxp_update,
         [in] hierarchys.ChildIndex,
-        [in] layouts2.LayoutPosition,
-        [in] layouts2.LayoutPositionDirty,
+        [out] zigels.ZigelDirty,
+        [out] layouts2.LayoutPosition,
+        [out] layouts2.LayoutPositionDirty,
         [none] zigels.Zigel
     );
     zox_system(
         ZigelUpdateSystem,
         zoxp_update,
         [in] hierarchys.ChildIndex,
+        [out] zigels.ZigelDirty,
         [out] zigels.ZigelIndex,
         [out] textures.GenerateTexture,
         [none] zigels.Zigel

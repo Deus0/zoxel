@@ -3,7 +3,7 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
     byte dbg_log = 0;
     // If Model, get the Vox (its lodded)
     entity vox = 0;
-    byte mdepth = render_depth;
+    byte max_depth = render_depth;
     if (zox_valid(model)) {
         // If a ModelGroup, pick a random sub model
         if (zox_has(model, ModelLinks)) {
@@ -14,9 +14,9 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
             }
         }
         if (zox_has(model, MaxRenderDepth)) {
-            mdepth = zox_getv(model, MaxRenderDepth);
-            if (render_depth > mdepth) {
-                render_depth = mdepth;
+            max_depth = zox_getv(model, MaxRenderDepth);
+            if (render_depth > max_depth) {
+                render_depth = max_depth;
             }
         }
         if (zox_has(model, ModelLods)) {
@@ -57,14 +57,17 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
     if (zox_valid(model)) {
         zox_set(e, ModelLink, { model });
         zox_set(e, RenderDepth, { render_depth });
-        zox_set(e, MaxRenderDepth, { mdepth });
+        zox_set(e, MaxRenderDepth, { max_depth });
+        // zox_log("Render Depth of character set to [%i] of [%i]", render_depth, max_depth);
     }
     if (zox_has(prefab, CharacterGeneric)) {
+        if (zox_valid(vox)) {
+            zox_set(e, InstanceLink, { vox });
+        }
         if (zox_valid(vox) && zox_has(vox, BlockScale)) {
             zox_geter_value(vox, BlockScale, float, bscale);
             zox_geter_value(vox, ChunkSize, int3, csize);
             float3 bounds = calculate_vox_bounds(csize, bscale);
-            zox_set(e, InstanceLink, { vox });
             zox_set(e, BlockScale, { bscale });
             zox_set(e, Bounds3D, { bounds });
             if (dbg_log) {
@@ -85,8 +88,6 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
         if (dbg_log) {
             zox_log("Unique Character");
         }
-    } /*else {
-        zox_loge("Unknown Character Prefab Render Type [%s]", zox_get_name(prefab));
-    }*/
+    }
     return e;
 }

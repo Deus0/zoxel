@@ -41,10 +41,10 @@ float3 color_to_hsv(const color value) {
     };
 }
 // hsv is 0 to 360, 0 to 100, 0 to 100, hue, saturation and value
-color hsv_to_color(const float3 hsv) {
-    const float hue = hsv.x;
-    const float saturation = hsv.y / 100.0f;
-    const float value = hsv.z / 100.0f;
+color hsv_to_color(float3 hsv) {
+    float hue = hsv.x;
+    float saturation = hsv.y / 100.0f;
+    float value = hsv.z / 100.0f;
     float chroma = value * saturation;
     float hue_ = zox_fmod(hue / 60.0f, 6.0f);
     float x = chroma * (1 - fabs(zox_fmod(hue_, 2.0f) - 1));
@@ -84,11 +84,7 @@ color hsv_to_color(const float3 hsv) {
     return (color) { (byte) r, (byte) g, (byte) b, 255 };
 }
 
-float3 generate_hsv_v_s(
-    const float2 hue_limits,
-    const float2 value_limits,
-    const float2 saturation_limits
-) {
+float3 generate_hsv_v_s(float2 hue_limits, float2 value_limits, float2 saturation_limits) {
     return (float3) {
         hue_limits.x + (hue_limits.y - hue_limits.x) * (rand() % 100) * 0.01f,
         saturation_limits.x + (saturation_limits.y - saturation_limits.x) * (rand() % 100) * 0.01f,
@@ -111,4 +107,11 @@ static inline float3 hsv_shift(float3 hsv, float dh, float ds, float dv) {
     hsv.y = clampf(hsv.y + ds, 0.0f, 100.0f);
     hsv.z = clampf(hsv.z + dv, 0.0f, 100.0f);
     return hsv;
+}
+
+static inline float3 seed_to_hsv(lint seed, float2 hue, float2 value, float2 saturation) {
+    return (float3) {
+        seed_range(seed, hue.x, hue.y),
+        seed_range(seed, value.x, value.y),
+        seed_range(seed, saturation.x, saturation.y) };
 }

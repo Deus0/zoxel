@@ -31,13 +31,12 @@ byte save_voxel_node(FILE* out, const VoxelNode* node) {
 zox_sys2(Chunk3SaveSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(RealmLink);
     zox_sys_in(VoxelNodeEdited);
     zox_sys_in(VoxelNodeDirty);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkPosition);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RealmLink, realm);
+        zox_sys_e();
         zox_sys_i(VoxelNodeEdited, edited);
         zox_sys_i(VoxelNodeDirty, dirty);
         zox_sys_i(VoxelNode, node);
@@ -46,12 +45,23 @@ zox_sys2(Chunk3SaveSystem) {
             continue; // these shouldn't be here
         }
         // later add id/int3 there
-        char filename[128];
-        get_chunk_filename(filename, position->value);
-        if (!zox_valid(realm->value)) {
+        entity terrain = zox_get_parent(world, e);
+#ifdef zox_safety_checks
+        if (!zox_valid(terrain)) {
+            zox_loge("[Chunk3SaveSystem] Invalid Terrain");
             continue;
         }
-        zox_geter(realm->value, FolderPath, game_path);
+#endif
+        entity realm = zox_get_parent(world, terrain);
+#ifdef zox_safety_checks
+        if (!zox_valid(realm)) {
+            zox_loge("[Chunk3SaveSystem] Invalid Realm");
+            continue;
+        }
+#endif
+        char filename[128];
+        get_chunk_filename(filename, position->value);
+        zox_geter(realm, FolderPath, game_path);
         char* path = join_path(game_path->value, filename);
         FILE* file = fopen(path, "wb");
         if (file == NULL) {

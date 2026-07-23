@@ -3,15 +3,9 @@
 zox_sys2(HomesSpawnSystem) {
     byte dbg_log = 0;
     uint max_attempts = 100;
-    // byte2 towns_count = (byte2) { 1, 9 };
-    byte min_homes_count = 2;
-    byte max_homes_count = 6;
-    // byte2 min_size = (byte2) { 48, 48 };
-    // byte2 max_size = (byte2) { 128, 128 };
-    // byte2 wall_height_range = (byte2) { 2, 6 };
-    // byte2 wall_thickness_range = (byte2) { 1, 4 };
+    byte min_homes_count = 1;
+    byte max_homes_count = 12;
     byte2 padding = byte2_single(8);
-    // byte2 town_padding = byte2_single(12);
     byte2 home_min_size = (byte2) { 5, 5 };
     byte2 home_max_size = (byte2) { 12, 12 };
     byte2 home_padding = byte2_single(4);

@@ -1,5 +1,5 @@
 // TODO: Pass in CanGroup block byte tags, so we dont group some blocks like Grass
-zox_sys2(VoxelOctreeCleanupSystem) {
+zox_sys2(VoxelOctreeOptimizeSystem) {
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
     zox_sys_out(VoxelNode);
@@ -13,4 +13,4 @@ zox_sys2(VoxelOctreeCleanupSystem) {
             write_unlock_VoxelNode(voctree);
         }
     }
-} zox_sys_end(VoxelOctreeCleanupSystem);
+} zox_sys_end(VoxelOctreeOptimizeSystem);

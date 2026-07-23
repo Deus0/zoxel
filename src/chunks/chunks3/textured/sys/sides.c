@@ -226,13 +226,20 @@ zox_sys2(ChunkSidesSystem) {
         if (max_process && process_count > max_process) {
             continue;
         }
-        // HMmm
-        if (zox_getv(e, GenerateChunk) || zox_getv(e, VoxelNodeDirty) || zox_getv(e, ChunkLodDirty)) {
+        // HMmm zox_getv(e, GenerateChunk) ||
+        if (zox_getv(e, VoxelNodeDirty)) {
             if (dbg_log) {
-                zox_log("Waiting on Self to Build [%s]", zox_getn(e));
+                zox_log("[%s] [%s]: Delayed due to [VoxelNodeDirty]", zox_getn(it->system), zox_getn(e));
             }
             continue;
         }
+        /*byte chunk_lod_dirty = zox_getv(e, ChunkLodDirty);
+        if (chunk_lod_dirty) {
+            if (dbg_log) {
+                zox_log("[%s] [%s]: Delayed due to [ChunkLodDirty] is [%i]", zox_getn(it->system), zox_getn(e), chunk_lod_dirty);
+            }
+            continue;
+        }*/
         // fetch here instead
         if (!solids) {
             // entity chunk = zox_get_parent(world, e);

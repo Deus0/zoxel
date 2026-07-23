@@ -8,8 +8,8 @@ zox_sys2(ModelsSettingsSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        spawn_setting_byte(world, e, "Outlines", is_generate_vox_outlines);
         spawn_setting_byte_slider(world, e, "Resolution", block_vox_depth, block_vox_depth_limits);
+        spawn_setting_byte(world, e, "Outlines", is_generate_vox_outlines);
 #ifdef zox_debug_settings
         spawn_setting_byte_slider(world, e, "Terrain Depth", block_vox_depth, terrain_depth_limits);
 #endif

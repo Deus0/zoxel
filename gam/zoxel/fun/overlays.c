@@ -157,8 +157,8 @@ uint zox_dbg_ui_statistics(ecs *world, entity e, char *buffer, uint size, uint i
     index += snprintf(buffer + index, size - index, " - Total [%i]\n", zox_count_ids(Element));
     index += snprintf(buffer + index, size - index, "Other\n");
     index += snprintf(buffer + index, size - index, " - Bone [%i]\n", zox_count_ids(Bone));
-    index += snprintf(buffer + index, size - index, "Testing\n");
-    index += snprintf(buffer + index, size - index, " - DeactivateDelay [%i]\n", zox_count_ids(zox_id(DeactivateDelay)));
+    // index += snprintf(buffer + index, size - index, "Testing\n");
+    // index += snprintf(buffer + index, size - index, " - DeactivateDelay [%i]\n", zox_count_ids(zox_id(DeactivateDelay)));
     return index;
 }
 
@@ -317,6 +317,14 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UIs
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Statistics",
+        .on_click = { &zox_dbg_activate_ui_statistics },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Where is Character",
+        .on_click = { &zox_dbg_activate_ui_chunk_link },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Inside Chunk",
         .on_click = { &zox_dbg_activate_ui_inside_chunk },
     };
@@ -327,10 +335,6 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Terrain Meshes",
         .on_click = { &zox_dbg_activate_ui_meshes },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Statistics",
-        .on_click = { &zox_dbg_activate_ui_statistics },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "File Paths",
@@ -367,10 +371,6 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Raycast Lights",
         .on_click = { &zox_dbg_activate_ui_raycast_lights },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Where is Character",
-        .on_click = { &zox_dbg_activate_ui_chunk_link },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Towns",

@@ -51,6 +51,7 @@ zox_sys2(Text3DResizeSystem) {
                     if (child_index < new_length) {
                         // here we can set child indexes
                         zox_setm(e2, ChildIndex, child_index);
+                        zox_setm(e2, ZigelDirty, 1);
                         // Reposition as no system for this atm
                         uint index = child_index_to_text_array_index(text->value, text->length, child_index);
                         float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);

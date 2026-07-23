@@ -4,35 +4,43 @@ zox_sys2(BlocksRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
+    zox_sys_in(Seed);
     zox_sys_out(BlocksDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
+        zox_sys_i(Seed, seed);
         zox_sys_o(BlocksDirty, dirty);
         if (state->value != zox_generate_realm_blocks) {
             continue;
         }
+        uint seed_shift = 3690;
+        uint seed_offset = seed_shift * 100; // make sure different to biome seeds
         // Bottom of Realm
         {
-            color obsidian_color = color_grayscale(rand_range(15, 35));
+            lint block_seed = seed->value + (seed_offset+=seed_shift);
+            color block_color = color_rgb_to_color(seed_to_color_rgb_range(block_seed, (float2) { 0, 360 }, (float2) { 25, 50 }, (float2) { 10, 40 }));
+            // color obsidian_color = color_grayscale(rand_range(15, 35));
             // entity e2 = spawn_block_stone(world, e, 226661, "obsidian", obsidian_color);
-            lint seed = 1166611;
-            entity model = spawn_model_stone(world, e, seed, obsidian_color);
-            entity e2 = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed,  "obsidian", obsidian_color, model, dbg_log);
+            entity model = spawn_model_stone(world, e, block_seed, block_color);
+            entity e2 = spawn_realm_block_solid(world, prefab_block_vox_meta, e, block_seed,  "obsidian", block_color, model, dbg_log);
             zox_add_tag(e2, BlockObsidian);
             zox_add_tag(e2, BlockInvinsible);
         }
         // Crafted Items
         {
             // Bricks for Homes
-            color bricks_color = color_grayscale(rand_range(50, 90));
-            lint seed = 232323;
-            entity model = spawn_model_bricks(world, e, seed, bricks_color);
-            entity e2 = spawn_realm_block_solid(world, prefab_block_vox_meta, e, seed, "bricks", bricks_color, model, dbg_log);
+            lint block_seed = seed->value + (seed_offset+=seed_shift);
+            color bricks_color = color_rgb_to_color(seed_to_color_rgb_range(block_seed, (float2) { 0, 360 }, (float2) { 30, 70 }, (float2) { 25, 45 }));
+            color cracks_color = color_rgb_to_color(seed_to_color_rgb_range(block_seed + 100, (float2) { 0, 360 }, (float2) { 0, 100 }, (float2) { 5, 15 }));
+            // color bricks_color = color_grayscale(rand_range(50, 90));
+            entity model = spawn_model_bricks(world, e, block_seed, bricks_color, cracks_color);
+            entity e2 = spawn_realm_block_solid(world, prefab_block_vox_meta, e, block_seed, "bricks", bricks_color, model, dbg_log);
             // entity e2 = spawn_block_bricks(world, e, "bricks", bricks_color, 232323);
             zox_add_tag(e2, BlockBricks);
             zox_set(e2, BlockHealth, { (float2) { 10, 16 } });
         }
+        // === File Blocks ===
         // Decor Blocks
         {
             // Flowers for Gardens

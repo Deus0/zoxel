@@ -7,7 +7,9 @@ typedef struct {
     byte old_value;
     byte state;
 } VoxelNodeUpdate;
+
 zoxc_queue(VoxelNodeQueue, VoxelNodeUpdate, 1);
+zoxc_queue_remove_at(VoxelNodeQueue, VoxelNodeUpdate);
 
 /*typedef struct {
     byte value;

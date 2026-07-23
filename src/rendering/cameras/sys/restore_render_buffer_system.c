@@ -8,7 +8,6 @@ zox_sys2(RenderBufferRestoreSystem) {
         zox_sys_i(ScreenDimensions, screenDimensions);
         zox_sys_o(FrameBufferLink, frameBufferLink);
         zox_sys_o(RenderBufferLink, renderBufferLink);
-
         frameBufferLink->value = gpu_spawn_frame_buffer_object();
         renderBufferLink->value = gpu_spawn_render_buffer(screenDimensions->value);
         if (frameBufferLink->value && renderBufferLink->value) {

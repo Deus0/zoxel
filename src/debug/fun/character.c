@@ -67,15 +67,17 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     index += snprintf(buffer + index, size - index, "Region [%s]\n", zox_get_name(region));
     // chunk
     index += snprintf(buffer + index, size - index, "Chunk [%s]\n", zox_getn(chunk));
-    byte lod_dirty = zox_getv(chunk, ChunkLodDirty);
-    byte build = zox_getv(chunk, BuildChunkSides);
-    byte generate = zox_getv(chunk, GenerateChunk);
     int3 position = zox_getv(chunk, ChunkPosition);
     byte depth = zox_getv(chunk, NodeDepth);
     byte render_depth = zox_getv(chunk, RenderDepth);
     const VoxelNode* voxels = zox_get(chunk, VoxelNode);
     const SidesOctree* sides = zox_get(chunk, SidesOctree);
-    index += snprintf(buffer + index, size - index, " - Lod Dirty [%i]\n", lod_dirty);
+    // Sides Delay
+    byte lod_dirty = zox_getv(chunk, ChunkLodDirty);
+    byte generate = zox_getv(chunk, GenerateChunk);
+    byte voxels_dirty = zox_getv(chunk, VoxelNodeDirty);
+    byte build = zox_getv(chunk, BuildChunkSides);
+    index += snprintf(buffer + index, size - index, " - Lod Dirty [%i] Voxels Dirty [%i]\n", lod_dirty, voxels_dirty);
     index += snprintf(buffer + index, size - index, " - Build [%i]\n", build);
     index += snprintf(buffer + index, size - index, " - Octree Depth [%i]\n", depth);
     index += snprintf(buffer + index, size - index, " - Render Depth [%i]\n", render_depth);

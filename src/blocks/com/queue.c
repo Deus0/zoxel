@@ -3,4 +3,6 @@ typedef struct {
     byte3 position;
     float damage;
 } BlockDamageUpdate;
+
 zoxc_queue(BlockDamageQueue, BlockDamageUpdate, 1);
+zoxc_queue_remove(BlockDamageQueue, BlockDamageUpdate);

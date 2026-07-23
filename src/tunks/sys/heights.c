@@ -1,7 +1,8 @@
 zox_sys2(HeightMapSystem) {
     // TODO: use height frequency from biome maps
-    byte terrain_height_multiplier = 2;
-    double height_frequency = 0.3; // terrain_frequency * 10;
+    byte terrain_height_multiplier = 3;
+    int terrain_octaves = 8; // 12;
+    // double height_frequency = 0.1; // terrain_frequency * 10;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);
@@ -15,7 +16,7 @@ zox_sys2(HeightMapSystem) {
         zox_sys_i(TunkPosition, tunk_position);
         zox_sys_i(BiomeMap, biome_map);
         zox_sys_o(GenerateTunk, generate);
-        zox_sys_o(HeightMap, height_map);
+        zox_sys_o(HeightMap, heightmap);
         if (generate->value != zox_generate_tunk_heights) {
             continue;
         }
@@ -32,10 +33,24 @@ zox_sys2(HeightMapSystem) {
             continue;
         }
 #endif
+        entity realm = zox_get_parent(world, terrain);
+#ifdef zox_safety_checks
+        if (!zox_valid(realm)) {
+            zox_loge("Invalid realm");
+            continue;
+        }
+#endif
+        zox_geter(realm, BiomeLinks, realm_biomes);
+#ifdef zox_safety_checks
+        if (!realm_biomes->length) {
+            zox_loge("No Biomes on Realm");
+            continue;
+        }
+#endif
         lint seed = zox_getv(terrain, Seed);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte terrain_length = octree_size(terrain_depth);
-        // now generate height_map
+        // now generate heightmap
         byte length = octree_size(lod->value);
         int2 map_size = int2_single(length);
         byte depth_difference = octree_size(terrain_depth - lod->value);
@@ -50,27 +65,46 @@ zox_sys2(HeightMapSystem) {
             tunk_position->value.x * terrain_length,
             tunk_position->value.y * terrain_length
         };
+        entity biome = 0;
+        float frequency = 0;
         int2 global_position = global_position_start;
         int2 position = int2_zero;
-        resize_HeightMap(height_map, length * length);
+        resize_HeightMap(heightmap, length * length);
         for (position.x = 0; position.x < length; position.x++, global_position.x += depth_difference) {
             global_position.y = global_position_start.y;
             for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
                 int index = int2_array_index(position, map_size);
                 if (zox_flatlands) {
-                    height_map->value[index] = max_height / 2;
+                    heightmap->value[index] = max_height / 2;
                     continue;
                 }
                 byte biome_id = biome_map->value[index];
-                // TODO: Use biome frequency
+#ifdef zox_safety_checks
+                if (biome_id >= realm_biomes->length) {
+                    zox_loge("Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
+                    continue;
+                }
+#endif
                 // TODO: Blend frequency amongst several nearby ones
-                double frequency = biome_id == 0 ? height_frequency : height_frequency * 2;
+                // double frequency = biome_id == 0 ? height_frequency : height_frequency * 2;
+                entity new_biome = realm_biomes->value[biome_id];
+#ifdef zox_safety_checks
+                if (!zox_valid(new_biome)) {
+                    zox_loge("Biome is invalid [%i]", biome_id);
+                    continue;
+                }
+#endif
+                // NOTE: Updates our cache of our biome
+                if (biome != new_biome) {
+                    biome = new_biome;
+                    frequency = zox_getv(biome, BiomeHeightFrequency);
+                }
                 //  double frequency = height_frequency;
                 double perlin_x = noise_positiver2 + (global_position.x / ((float) terrain_length));
                 double perlin_y = noise_positiver2 + (global_position.y / ((float) terrain_length));
                 double perlin_value = perlin_octaves(perlin_x, perlin_y, frequency, seed, terrain_octaves);
                 int value = int_floorf(perlin_value * terrain_length * terrain_height_multiplier);
-                height_map->value[index] = int_clamp(value, 0, max_height);
+                heightmap->value[index] = int_clamp(value, 0, max_height);
             }
         }
         generate->value = zox_generate_tunk_vegetation;

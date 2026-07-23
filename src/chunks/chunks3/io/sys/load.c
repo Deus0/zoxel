@@ -65,7 +65,6 @@ zox_sys2(Chunk3LoadSystem) {
     zox_sys_world();    // used when closing possible nodes
     zox_sys_begin();
     zox_sys_in(InitializeEntity);
-    zox_sys_in(RealmLink);
     zox_sys_in(ChunkPosition);
     zox_sys_out(NodeDepth);
     zox_sys_out(VoxelNode);
@@ -74,7 +73,6 @@ zox_sys2(Chunk3LoadSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(InitializeEntity, state);
-        zox_sys_i(RealmLink, realm);
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNode, voxels);
         zox_sys_o(NodeDepth, depth);
@@ -84,13 +82,24 @@ zox_sys2(Chunk3LoadSystem) {
             continue;
         }
         if (loaded->value) {
+            zox_loge("Chunk somehow loaded before load");
             continue;
         }
-        if (!zox_valid(realm->value)) {
-            zox_logw("Realm Invalid for loading chunk");
+        entity terrain = zox_get_parent(world, e);
+#ifdef zox_safety_checks
+        if (!zox_valid(terrain)) {
+            zox_loge("[Chunk3SaveSystem] Invalid Terrain");
             continue;
         }
-        if (load_chunk(world, realm->value, position->value, voxels)) {
+#endif
+        entity realm = zox_get_parent(world, terrain);
+#ifdef zox_safety_checks
+        if (!zox_valid(realm)) {
+            zox_loge("[Chunk3SaveSystem] Invalid Realm");
+            continue;
+        }
+#endif
+        if (load_chunk(world, realm, position->value, voxels)) {
             depth->value = terrain_depth;
             voxels_dirty->value = zox_dirty_trigger;
             loaded->value = 1;

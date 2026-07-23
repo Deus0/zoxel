@@ -72,6 +72,7 @@ zox_sys2(ZigelSpawnSystem) {
                     if (child_index <= new_length) {
                         // here we can set child indexes
                         zox_setm(e2, ChildIndex, child_index);
+                        zox_setm(e2, ZigelDirty, 1);
                         child_index--;
                         continue;
                     }

@@ -10,7 +10,13 @@ zoxc_ushort(DataIndex);
 zoxc_color(FontFillColor);
 zoxc_color(FontOutlineColor);
 zoxc_entity(FontLink);
-zoxc_arrayd(FontData, byte2)
+zoxc_arrayd(FontData, byte2);
+// States
+zoxc_byte(ZigelDirty);
+
+#define zox_zigel_dirty_position 1
+#define zox_zigel_dirty_update 2
+#define zox_zigel_dirty_end 0
 
 void zox_define_components_zigels(ecs *world) {
     zoxd_tag(FontStyle);
@@ -26,4 +32,6 @@ void zox_define_components_zigels(ecs *world) {
     zoxd_color(FontOutlineColor);
     zoxd_arrayd(FontData);
     zoxd_entity(FontLink);
+    // States
+    zoxd_byte(ZigelDirty);
 }

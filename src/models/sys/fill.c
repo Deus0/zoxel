@@ -19,6 +19,7 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
     zox_geter_value(n, Shape3Position, byte3, position);
     zox_geter_value(n, Shape3Size, byte3, size);
     zox_geter_value(v, NodeDepth, byte, ndepth);
+    // zox_log("Node Depth [%i] - Max [%i]", ndepth, ndepth_max);
     zox_geter(v, ColorRGBs, colors);
     if (!colors->length) {
         zox_log_error("vox [%s] has no colors", zox_get_name(v));

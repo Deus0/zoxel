@@ -25,7 +25,10 @@ entity spawn_prefab_zigel3D(ecs *world, entity prefab) {
     zox_prefab_set(e, OutlineColor, { color_black });
     zox_prefab_set(e, FontThickness, { 1 });
     zox_prefab_set(e, FontOutlineThickness, { 1 });
+    // OH this is why scales were weirdaf
     prefab_set_mesh3D_vertices(world, e, square_vertices, 4, zigel3D_size);
     zox_set(e, TextureSize, { int2_single(2) });
+    // States
+    zox_prefab_set(e, ZigelDirty, { zox_zigel_dirty_position });
     return e;
 }

@@ -104,3 +104,29 @@ color_rgb color_rgb_darken(color_rgb in, float mul) {
     hsv.z *= mul;
     return hsv_to_color_rgb(hsv);
 }
+
+static inline float2 float2_to_limits(float2 v) {
+    if (v.x > v.y) {
+        return (float2) { v.y, v.x };
+    } else if (v.x == v.y) {
+        return (float2) { v.x, v.y + 1 };
+    }else {
+        return v;
+    }
+}
+
+static inline color_rgb seed_to_color_rgb_range(lint seed, float2 hue, float2 value, float2 saturation) {
+    float3 hsv = seed_to_hsv(seed, hue, value, saturation);
+    return hsv_to_color_rgb(hsv);
+    // return hsv_to_color_rgb(seed, hue, value, saturation);
+}
+
+static inline color_rgb seed_to_color_rgb(lint seed) {
+    float2 hue = (float2) { seed_range(seed, 0, 360), seed_range(seed, 0, 360) };
+    float2 value = (float2) { seed_range(seed, 0, 100), seed_range(seed, 0, 100) };
+    float2 saturation = (float2) { seed_range(seed, 0, 100), seed_range(seed, 0, 100) };
+    hue = float2_to_limits(hue);
+    value = float2_to_limits(value);
+    saturation = float2_to_limits(saturation);
+    return seed_to_color_rgb_range(seed, hue, value, saturation);
+}

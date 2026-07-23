@@ -6,6 +6,8 @@ zoxc_float(GrassChance);
 zoxc_float(WeedsChance);
 zoxc_float(TreeChance);
 zoxc_float(FlowerChance);
+zoxc_float(BiomeHeightFrequency);
+zoxc_color_rgb(BiomeSkyColor);
 
 void define_components_biomes(ecs *world) {
     zoxd_tag(Biome);
@@ -16,4 +18,6 @@ void define_components_biomes(ecs *world) {
     zoxd_float(WeedsChance);
     zoxd_float(TreeChance);
     zoxd_float(FlowerChance);
+    zoxd_float(BiomeHeightFrequency);
+    zoxd_color_rgb(BiomeSkyColor);
 }

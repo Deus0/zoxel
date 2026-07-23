@@ -74,10 +74,10 @@ zox_sys2(RegionTownsSystem) {
     byte dbg_log = 0;
     uint max_attempts = 100;
     byte2 towns_count = (byte2) { 1, 9 };
-    byte2 min_size = (byte2) { 48, 48 };
-    byte2 max_size = (byte2) { 128, 128 };
-    byte2 wall_height_range = (byte2) { 3, 8 };
-    byte2 wall_thickness_range = (byte2) { 3, 7 };
+    byte2 min_size = (byte2) { 64, 64 };
+    byte2 max_size = (byte2) { 160, 160 };
+    byte2 wall_height_range = (byte2) { 5, 12 };
+    byte2 wall_thickness_range = (byte2) { 5, 12 };
     byte2 region_padding = byte2_single(8);
     byte2 town_padding = byte2_single(12);
     zox_sys_world();

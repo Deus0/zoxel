@@ -6,11 +6,13 @@ zox_tag(ChunkTextured);
 zox_tag(LinkChunk);
 zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
-zoxc_state(ChunkDirty);
 zoxc_byte(ChunkLodDirty);
 zoxc_byte(BuildChunkMesh);
 zoxc_byte(BlocksSpawned);
-zoxc_entities(ChunkEntities)
+zoxc_byte(VoxelNodeEdited);
+zoxc_state(ChunkDirty);
+zoxc_state(VoxelNodeDirty);
+zoxc_entities(ChunkEntities);
 zoxc_link(ChunkLink, entity, ChunkEntities)
 #define chunk_neighbors_length 6
 zoxc_array(ChunkNeighbors, entity, chunk_neighbors_length);
@@ -43,10 +45,10 @@ void define_components_chunks3(ecs* world) {
     zoxd_node(VoxelNode);
     zoxd_octree(SidesOctree);
     zoxd_byte(ChunkLodDirty);
-    zoxd_byte(VoxelNodeDirty);
     zoxd_byte(VoxelNodeEdited); // Marks if Dirty from Users
     zoxd_byte(BlocksSpawned);
     zoxd_byte(BuildChunkMesh);
+    zoxd_state(VoxelNodeDirty);
     zoxd_state(ChunkDirty);
     // zoxd_state(SidesOctreeDirty);
     zoxd_int3(ChunkPosition);

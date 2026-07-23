@@ -11,9 +11,8 @@ entity spawn_zigel_prefab(ecs *world, entity prefab) {
     zox_prefab_set(e, OutlineColor, { color_white });
     zox_prefab_set(e, FontThickness, { 1 });
     zox_prefab_set(e, FontOutlineThickness, { 2 });
+    // Events
+    zox_prefab_set(e, ZigelDirty, { zox_zigel_dirty_position });
     zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
-    // Layouts2
-    // zox_add_tag(e, FixToLayout);
-    // zox_set(e, LayoutPositionDirty, { 0 });
     return e;
 }
