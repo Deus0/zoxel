@@ -27,19 +27,31 @@ byte tooltip_event_main_menu_4(ecs* world, const TooltipEventData *data) {
 
 // List Menus adjust to the menu size
 entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
-    // main menu
+    byte header_font_size = 24 * ui_scale;
+    byte list_font_size = 18 * ui_scale;
     char header[128];
-    strncpy(header, base_header, sizeof(base_header) - 1);
-    header[sizeof(base_header) - 1] = '\0';
-    header[0] = ascii_to_upper(base_header[0]);
-    char *label_continue = "Old Blood";     // "old blood";
-    char *label_new = "Fresh Meat";            // "fresh meat / Wander
-    char *label_options = "Beep-Boops";
-    char *label_exit = "Escape";
+    {
+        strncpy(header, base_header, sizeof(base_header) - 1);
+        header[sizeof(base_header) - 1] = '\0';
+        header[0] = ascii_to_upper(base_header[0]);
+    }
+    char *label_continue;     // "old blood";
+    char *label_new;            // "fresh meat / Wander
+    char *label_options;
+    char *label_exit;
+    if (rand() % 100 >= 90) {
+        label_continue = "Old blood";     // "old blood";
+        label_new = "Fresh meat";            // "fresh meat / Wander
+        label_options = "Beep boops";
+        label_exit = "Escape..";
+    } else {
+        label_continue = "Continue";     // "old blood";
+        label_new = "New Game";            // "fresh meat / Wander
+        label_options = "Options";
+        label_exit = "Exit";
+    }
     int elements_count = 0;
     SpawnListElement elements[4];
-    byte header_font_size = 16 * ui_scale;
-    byte list_font_size = 10 * ui_scale;
     byte2 padding = byte2_single(4 * ui_scale);
     byte can_load = has_save_game_directory(game_name);
     byte can_exit = 1;
@@ -66,13 +78,9 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
             .on_click = { &button_event_exit_app },
         };
     }
-    /*ClickEvent close_event = (ClickEvent) { &button_event_exit_app };
-#ifdef zox_android
-    close_event.value = NULL;
-#endif*/
     ClickEvent close_event = { NULL };
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, header, header_font_size, list_font_size, close_event, 0, 0, 0, zox_alignment_centre, padding, spawned, elements, elements_count, elements_count);
+    entity3 e3 = spawn_window_list(world, prefab_window, player, header, header_font_size, list_font_size, close_event, 0, 0, 0, zox_alignment_centre, float2_top_left, padding, spawned, elements, elements_count, elements_count);
     entity e = e3.x;
     zox_set_unique_name(e, "main_menu");
     zox_add_tag(e, MenuMain);

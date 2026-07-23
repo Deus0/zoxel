@@ -8,6 +8,11 @@ zoxc_int(SettingInt);
 zoxc_float(SettingFloat);
 zoxc_float2(SettingFloatBounds);
 zoxc_entity(SettingLink);
+zoxc_byte(LoadSettings);
+#define zox_load_settings_start 1
+#define zox_load_settings_spawn 2
+#define zox_load_settings_run 3
+#define zox_load_settings_end 0
 
 void zox_define_components_settings(ecs* world) {
     zoxd_tag(Setting);
@@ -20,4 +25,5 @@ void zox_define_components_settings(ecs* world) {
     zoxd_float(SettingFloat);
     zoxd_float2(SettingFloatBounds);
     zoxd_entity(SettingLink);
+    zoxd_byte(LoadSettings);
 }

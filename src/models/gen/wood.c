@@ -24,7 +24,7 @@ void build_vox_wood(VoxelNode *voctree, byte depth, byte2 wood, byte2 bark) {
                             v--;
                         }
                     }
-                    set_VoxelNode(voctree, depth, pos, v);
+                    set_voxel_safe(voctree, depth, pos, v);
                     continue;
                 }
                 /* radial distance squared */
@@ -45,7 +45,7 @@ void build_vox_wood(VoxelNode *voctree, byte depth, byte2 wood, byte2 bark) {
                 if ((pos.y + rand()) & 1) {
                     if (v > wood.x) v--;
                 }
-                set_VoxelNode(voctree, depth, pos, v);
+                set_voxel_safe(voctree, depth, pos, v);
             }
         }
     }

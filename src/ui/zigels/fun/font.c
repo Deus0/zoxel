@@ -11,7 +11,8 @@ void clear_texture(color* data, int2 size, color clear) {
 void generate_font_texture(
     color* data,
     int2 size,
-    const FontData *font_data,
+    const byte2* points,
+    int points_length,
     color line_color,
     color fill_color,
     byte is_shapes,
@@ -21,17 +22,17 @@ void generate_font_texture(
     color clear_color
 ) {
     clear_texture(data, size, clear_color);
-    if (!font_data->length) {
+    if (!points_length) {
         return;
     }
     if (is_shapes) {
-        generate_font_lines(data, size, font_data, line_color, point_padding);
+        generate_font_lines(data, size, points, points_length, line_color, point_padding);
         scanline_fill_texture(data, size, clear_color, line_color, fill_color);
         if (outline_thickness) {
             generate_splotches_lines(
                 data,
                 size,
-                font_data,
+                points, points_length,
                 line_color,
                 outline_thickness,
                 point_padding
@@ -42,7 +43,7 @@ void generate_font_texture(
         generate_splotches_lines(
             data,
             size,
-            font_data,
+            points, points_length,
             line_color,
             fill_thickness,
             point_padding

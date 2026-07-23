@@ -59,6 +59,9 @@ zox_sys2(VoxGenerationSystem) {
             color_rgb_multiply_float(&new_color, m);
             add_to_ColorRGBs(colors, new_color);
         }
+        if (is_generate_vox_outlines) {
+            add_to_ColorRGBs(colors, color_rgb_black);
+        }
         if (dbg_orientation) {
             colors->value[0] = color_rgb_black;
             colors->value[1] = color_rgb_green;
@@ -67,9 +70,6 @@ zox_sys2(VoxGenerationSystem) {
             colors->value[4] = color_rgb_purple;
             colors->value[5] = color_rgb_blue;
             colors->value[6] = color_rgb_cyan;
-        }
-        if (is_generate_vox_outlines) {
-            colors->value[unique_colors] = (color_rgb) { 0, 0, 0 };
         }
         if (dbg_whitebox) {
             colors->value[0] = color_rgb_white;
@@ -83,7 +83,6 @@ zox_sys2(VoxGenerationSystem) {
             build_vox_orientation_test(node, node_depth, 1, 2, 3, 4, 5, 6, 7);
         } else if (gentype->value == vox_type_blended) {
             zox_geter_value(e, SecondaryColor, color, under_color);
-            // int length = colors->length;
             int index_start = colors->length;
             for (int j = 0; j < unique_colors; j++) {
                 color_rgb new_color = color_to_color_rgb(under_color);

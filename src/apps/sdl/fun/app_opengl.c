@@ -35,21 +35,20 @@ entity spawn_app_sdl_opengl(ecs *world, const char* name, byte fullscreen, byte 
     return e;
 }
 
+
+/*#ifdef zox_game
+extern const char* game_name;
+#endif*/
+
 // uses modules: App, SDL, Rendering
-entity spawn_engine_app(ecs* world) {
+entity spawn_engine_app(ecs* world, const char* name) {
     if (headless) {
         zox_logw("Headless should not reach here.");
         return 0;
     }
     // Window creates and binds OpenGL Context too!
-    zox_logv("Spawning SDL Window");
-    const char* window_name;
-#ifdef zox_game
-    window_name = game_name;
-#else
-    window_name = "unknown";
-#endif
-    entity app = spawn_app_sdl_opengl(world, window_name, fullscreen, maximized, monitor);
+    zox_logv("Spawning SDL Window [%s]", name);
+    entity app = spawn_app_sdl_opengl(world, name, fullscreen, maximized, monitor);
     if (!app) {
         zox_log_error("[engine_spawn_window] failed");
         return 0;

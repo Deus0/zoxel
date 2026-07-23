@@ -57,9 +57,9 @@ void zox_define_components_core(ecs* world) {
     // General
     zoxd_byte(Active);
     zoxd_double(DeactivateDelay);
-    if (zox_tst_remove_deactivates) {
+    /*if (zox_tst_remove_deactivates) {
         zox_add_id(zox_id(DeactivateDelay), EcsDontFragment);
-    }
+    }*/
     zoxd_byte(GenericEvent);
     zoxd_byte(SpawnChance);
     zoxd_byte(Busy);

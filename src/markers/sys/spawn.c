@@ -3,9 +3,9 @@ zox_sys2(MarkerSpawnSystem) {
     // TODO: Use texture quad instead - simpler
     byte dbg_log = 0;
     byte resolution = 64;
-    byte outline_thickness = 2 * 4;
+    byte outline_thickness = 6;
     byte scale = 10;
-    float offset_x = 0.046f;
+    float offset_x = 0; // 0.046f;
     color fill = color_yellow;
     color outline = color_black;
     color background = color_null;
@@ -44,10 +44,12 @@ zox_sys2(MarkerSpawnSystem) {
             .base_color = background,
             .outline_color = background
         };
-        entity e2 = spawn_label3D(world, label3D_spawn_data, label3D_text_data, label3D_zigel_data, (float3) { offset_x, name_trail_offset * 2, 0 });
-        zox_set_unique_name(e2, "marker");
-        zox_set(e2, ElementHolder, { e });
-        add_to_ElementLinks(elements, e2);
+        entity2 e2 = spawn_label3D(world, label3D_spawn_data, label3D_text_data, label3D_zigel_data, (float3) { offset_x, name_trail_offset * 2, 0 });
+        zox_set_unique_name(e2.x, "marker");
+        zox_set(e2.x, ElementHolder, { e });
+        add_to_ElementLinks(elements, e2.x);
+        // Text
+        zox_add_tag(e2.y, CentredZigel);
         if (dbg_log) {
             zox_log("Spawned Marker Label on [%s]: %s", zox_getn(e), result);
         }

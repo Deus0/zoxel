@@ -22,7 +22,6 @@ zox_begin_module(Apps) {
     define_components_apps(world);
     zox_define_systems_apps(world);
     add_hook_terminal_command(process_arguments_apps);
-    add_hook_files_load(load_files_settings);
     add_hook_spawn_prefabs(spawn_prefabs_apps);
     if (is_on_phosh()) {
         zox_log("Phosh Detected. Disabling Decor.");

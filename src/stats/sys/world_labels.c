@@ -50,10 +50,10 @@ zox_sys2(CharacterNameLabelsSystem) {
             .fill_color = label3D_font_color_fill,
             .outline_color = label3D_font_color_outline
         };
-        entity e2 = spawn_label3D(world, label3D_spawn_data, label3D_text_data, label3D_zigel_data, (float3) { 0, name_trail_offset, 0 });
-        zox_set_unique_name(e2, "name_label3");
-        zox_set(e2, ElementHolder, { e });
-        add_to_ElementLinks(elements, e2);
+        entity2 e2 = spawn_label3D(world, label3D_spawn_data, label3D_text_data, label3D_zigel_data, (float3) { 0, name_trail_offset, 0 });
+        zox_set_unique_name(e2.x, "name_label3");
+        zox_set(e2.x, ElementHolder, { e });
+        add_to_ElementLinks(elements, e2.x);
         if (dbg_log) {
             zox_log("Spawned Name Label on [%s]: %s", zox_getn(e), result);
         }

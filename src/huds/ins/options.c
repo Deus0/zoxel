@@ -1,30 +1,4 @@
-/*void on_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
-    if (!zox_valid(data->e)) {
-        zox_log_error("Invalid [e]");
-        return;
-    }
-    entity toggle = data->e;
-    if (!zox_valid(toggle) || !zox_has(toggle, OptionLabel)) {
-        zox_log_error("Invalid [toggle]");
-        return;
-    }
-    zox_geter_value(toggle, OptionLabel, const char*, name);
-    zoxs_set_byte(world, name, data->value);
-    // zox_log("Toggle Option [%s] set to [%i]", name, data->value);
-}*/
 
-/*void on_settings_slider_slid_float(ecs* world, const SlideEventData* data) {
-    entity slider = zox_get_parent(world, data->dragged);
-    zox_geter_value(slider, SliderLabel, const char*, slider_name)
-    zoxs_set_float(world, slider_name, data->value);
-}*/
-
-/*void on_settings_slider_slid_int(ecs* world, const SlideEventData* data) {
-    entity slider = zox_get_parent(world, data->dragged);
-    zox_geter_value(slider, SliderLabel, const char*, slider_name);
-    // zox_log("Slider %s Value %i", slider_name, data->value);
-    zoxs_set_int(world, slider_name, (int) round(data->value));
-}*/
 
 void on_new_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
     if (!zox_valid(data->e)) {
@@ -71,8 +45,9 @@ void on_settings_slide(ecs* world, const SlideEventData* data) {
     zox_muter(text, TextData, text_data);
     if (!is_zext(text_data, new_text)) {
         set_zext(text_data, new_text);
-        zox_muter(text, TextDirty, dirty);
-        dirty->value = zox_dirty_trigger;
+        zox_setm(text, TextDirty, zox_dirty_trigger);
+        // zox_muter(text, TextDirty, dirty);
+        // dirty->value = zox_dirty_trigger;
     }
     // zox_log("Slider [%s] and Setting [%s]: %f", zox_get_name(slider), zox_get_name(e2), data->value);
 }
@@ -81,54 +56,13 @@ void on_settings_slide(ecs* world, const SlideEventData* data) {
 // Options uses a set size that has elements adjust
 entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 position, float2 anchor) {
     byte dbg_log = 0;
-    // more data
+    byte header_font_size = 18 * ui_scale;
+    byte list_font_size = 10 * ui_scale;
+    byte2 padding = byte2_single(6 * ui_scale);
+    byte visible_count = 6;
     const char* header_label = "Ponder";
     SpawnListElement elements[max_settings];
     int elements_count = 0;
-    byte visible_count = 6;
-    byte header_font_size = 18 * ui_scale;
-    byte list_font_size = 6 * ui_scale;
-    byte2 padding = byte2_single(6 * ui_scale);
-    // Sizing
-    /*for (uint i = 0; i < settings_count; i++) {
-        setting s = settings[i];
-        if (!s.name) {
-            zox_log_error("Setting Null: [%i] / [%i], Type %i", i, max_settings, s.type);
-            break;
-        }
-        // zox_log("spawning setting %s [%i]", s.name, s.type);
-        // zox_log("spawning setting %s [%f] [%fx%f]", s.name, s.value_float, s.min_float, s.max_float)
-        // Toggle
-        if (s.type == zox_data_type_byte) {
-            elements[elements_count++] = (SpawnListElement) {
-                .type = list_element_type_toggle,
-                .text = s.name,
-                .on_toggle = { &on_settings_toggle_toggled },
-                .value = s.value_byte,
-            };
-        }
-        // Slider
-        else if (s.type == zox_data_type_float) {
-            elements[elements_count++] = (SpawnListElement) {
-                .type = list_element_type_slider,
-                .text = s.name,
-                .on_slide = { &on_settings_slider_slid_float },
-                .value = s.value_float,
-                .value_bounds = (float2) { s.min_float, s.max_float },
-            };
-        }
-        else if (s.type == zox_data_type_int) {
-            float slider_value = (float) (s.value_int - s.min_int) / (s.max_int - s.min_int);
-            elements[elements_count++] = (SpawnListElement) {
-                .type = list_element_type_slider,
-                .text = s.name,
-                .on_slide = { &on_settings_slider_slid_int },
-                .value =  slider_value,
-                .value_bounds = (float2) { (float) s.min_int, (float) s.max_int },
-            };
-            // zox_logv("New Int Option %s %i %i:%i - f%f", s.name, s.value_int, s.min_int, s.max_int, slider_value);
-        }
-    }*/
     entity game = zox_get_parent(world, player);
     entity app = zox_get_parent(world, game);
     uint options_count = 0;
@@ -197,7 +131,7 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
         }
     }
     entity spawned_elements[elements_count];
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_main }, 1, 0, 0, zox_alignment_centre, padding, spawned_elements, elements, elements_count, visible_count).x;
+    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_main }, 1, 0, 0, zox_alignment_centre, float2_bottom_left, padding, spawned_elements, elements, elements_count, visible_count).x;
     zox_name("menu_options");
     zox_add_tag(e, MenuOptions);
     zox_add_tag(e, NavigationWindow);

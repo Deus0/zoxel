@@ -13,7 +13,7 @@ typedef struct {
 } WindowListSpawnData;
 
 // Returns window + list
-entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *header, byte header_font_size, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, byte2 padding, entity* elements2, SpawnListElement* elements, byte elements_count, byte visible_count) {
+entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *header, byte header_font_size, byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment, float2 position_anchor, byte2 padding, entity* elements2, SpawnListElement* elements, byte elements_count, byte visible_count) {
     entity canvas = zox_getv(player, CanvasLink);
     if (!zox_valid(canvas)) {
         zox_loge("Invalid canvas in [spawn_window_list]");
@@ -60,7 +60,7 @@ entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *
     // we use the bigger size out of list and header widths
     int2 size = (int2) { int_max(list_size.x, header_size.x), list_size.y };
     // Spawn our Window
-    entity3 e2 = spawn_window(world, prefab, prefab_body, header, canvas, int2_zero, size, float2_half, header_font_size, header_padding, close_event.value);
+    entity3 e2 = spawn_window(world, prefab, prefab_body, header, canvas, int2_zero, size, position_anchor, header_font_size, header_padding, close_event.value);
     entity e = e2.x;
     entity body = e2.z;
     // NOTE: Scrollview Has: 1: Scrollbar, 2: ListUI
@@ -81,7 +81,7 @@ entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *
 }
 
 // NOTE: This is for size position set window lists
-entity4 spawn_window_list_at(ecs* world, entity prefab, entity canvas, int2 position, int2 size, byte alignment, const char *header, byte header_font_size, byte list_font_size, byte2 padding, byte scrollbar_width, byte can_close, ClickEvent close_event) {
+entity4 spawn_window_list_at(ecs* world, entity prefab, entity canvas, int2 position, int2 size, byte alignment, float2 anchor, const char *header, byte header_font_size, byte list_font_size, byte2 padding, byte scrollbar_width, byte can_close, ClickEvent close_event) {
     // Scale all ones that are created locally
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     int2 header_size = calculate_header_size(strlen(header), header_font_size, header_padding);
@@ -103,7 +103,7 @@ entity4 spawn_window_list_at(ecs* world, entity prefab, entity canvas, int2 posi
     // NOTE: Calculates visible count from size itself
     list_data.visible_count = (list_size.y - list_margins.y * 2) / (list_font_size + button_padding.y * 2 + padding.y);
     // Spawn our Window
-    entity3 e2 = spawn_window(world, prefab, prefab_body, header, canvas, position, body_size, float2_half, header_font_size, header_padding, close_event.value);
+    entity3 e2 = spawn_window(world, prefab, prefab_body, header, canvas, position, body_size, anchor, header_font_size, header_padding, close_event.value);
     entity e = e2.x;
     entity body = e2.z;
     // NOTE: Scrollview Has: 1: Scrollbar, 2: ListUI

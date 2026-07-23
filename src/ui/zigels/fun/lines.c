@@ -1,6 +1,6 @@
 const uint safety_checks_drawline = 1000;
 
-int2 font_point_to_pixel(const byte2 point, const int2 size, const float2 pad) {
+int2 font_point_to_pixel(byte2 point, int2 size, float2 pad) {
     float2 pointf = float2_divide1(byte2_to_float2(point), 255.0f);
     pointf.x = pad.x + (1.0f - pad.x * 2) * pointf.x;
     pointf.y = pad.y + (1.0f - pad.y * 2) * pointf.y;
@@ -42,20 +42,13 @@ void draw_texture_line(color* data, const int2 size, const int2 point_a, const i
     }
 }
 
-void generate_splotches_lines(color* data, const int2 size, const FontData *fontData, const color line_color, const byte splotch_size, const float2 padding) {
+void generate_splotches_lines(color* data, const int2 size, const byte2* points, int points_length, const color line_color, const byte splotch_size, const float2 padding) {
     if (splotch_size == 0) {
         return;
     }
-    for (int i = 0; i < fontData->length; i += 2) {
-        int2 pointA = font_point_to_pixel(fontData->value[i], size, padding);
-        int2 pointB = font_point_to_pixel(fontData->value[i + 1], size, padding);
-        /*int2 pointA = byte2_to_int2(fontData->value[i]);
-        int2 pointB = byte2_to_int2(fontData->value[i + 1]);
-        // scale points to texture size
-        pointA.x = (int) ((pointA.x / 255.0f) * size.x);
-        pointA.y = (int) ((pointA.y / 255.0f) * size.y);
-        pointB.x = (int) ((pointB.x / 255.0f) * size.x);
-        pointB.y = (int) ((pointB.y / 255.0f) * size.y);*/
+    for (int i = 0; i < points_length; i += 2) {
+        int2 pointA = font_point_to_pixel(points[i], size, padding);
+        int2 pointB = font_point_to_pixel(points[i + 1], size, padding);
         int distance = int2_distance(pointA, pointB);
         float2 direction = float2_normalize(float2_sub(int2_to_float2(pointB), int2_to_float2(pointA)));
         #ifdef debug_font_texture
@@ -85,11 +78,11 @@ void generate_splotches_lines(color* data, const int2 size, const FontData *font
     }
 }
 
-void generate_font_lines(color* data, const int2 size, const FontData *fontData, const color line_color, const float2 padding) {
+void generate_font_lines(color* data, const int2 size, const byte2* points, int points_length, const color line_color, const float2 padding) {
     // point A to B - use FontData byte2 data.
-    for (int i = 0; i < fontData->length; i += 2) {
-        int2 pointA = font_point_to_pixel(fontData->value[i], size, padding);
-        int2 pointB = font_point_to_pixel(fontData->value[i + 1], size, padding);
+    for (int i = 0; i < points_length; i += 2) {
+        int2 pointA = font_point_to_pixel(points[i], size, padding);
+        int2 pointB = font_point_to_pixel(points[i + 1], size, padding);
         draw_texture_line(data, size, pointA, pointB, line_color);
 #ifdef debug_font_texture
         zox_log("-> fonting: %i %ix%i > %ix%i", i, pointA.x, pointA.y, pointB.x, pointB.y);

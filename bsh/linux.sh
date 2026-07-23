@@ -61,14 +61,14 @@ fi
 if [[ ${debug} == "True" ]]; then
     echo "+ Added [debug]"
     bin_path="bin/${bin_filename}-dev.bin"
-    dflags+=" -Dzox_debug"
-    cflags+=" -Wall -ggdb3"
     # cflags="-O2 -g -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs
     if [[ ${is_fast_dev} == "1" ]]; then
         cflags+=" -O3 -g"
     else
+        dflags+=" -Dzox_debug"
+        cflags+=" -Wall -ggdb3"
         cflags+=" -O0 -g3"
     fi
     # Memory Leaks Full Debug

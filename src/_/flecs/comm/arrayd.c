@@ -112,22 +112,18 @@ byte add_to_##T(T *ptr, type data) { \
     type* new_value = ptr->value \
         ? realloc(ptr->value, new_length * sizeof(type)) \
         : malloc(new_length * sizeof(type)); \
-    \
     if (!new_value) { \
         zox_log_error("malloc failed in add_to_" #T); \
         spin_unlock(&ptr->lock); \
         return 0; \
     } \
-    \
     if (!ptr->value) { \
         zox_stats_arrayds_mallocs++; \
     } \
-    \
     ptr->value = new_value; \
     ptr->value[ptr->length] = data; \
     ptr->length++; \
     spin_unlock(&ptr->lock); \
-    \
     return 1; \
 } \
 \

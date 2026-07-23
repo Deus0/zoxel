@@ -29,6 +29,21 @@ zox_sys2(Text3DResizeSystem) {
         }
         int new_length = calculate_total_zigels(text->value, text->length);
         uint old_length = zox_get_children_count_by_id(world, e, zox_id(Zigel));
+        int child_index = 0;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count && child_index < new_length; j++, child_index++) {
+                entity e2 = it2.entities[j];
+#ifdef zox_safety_checks
+                if (!zox_has(e2, Zigel)) {
+                    zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
+                    continue;
+                }
+#endif
+                // zox_log("Set Zigel3D to dirty! %s:%i", zox_getn(e), child_index);
+                zox_setm(e2, ZigelDirty, zox_zigel_dirty_update);
+            }
+        }
         if (old_length == new_length) {
             continue;
         }
@@ -51,7 +66,6 @@ zox_sys2(Text3DResizeSystem) {
                     if (child_index < new_length) {
                         // here we can set child indexes
                         zox_setm(e2, ChildIndex, child_index);
-                        zox_setm(e2, ZigelDirty, 1);
                         // Reposition as no system for this atm
                         uint index = child_index_to_text_array_index(text->value, text->length, child_index);
                         float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);
@@ -97,19 +111,15 @@ zox_sys2(Text3DResizeSystem) {
                 uint index = child_index_to_text_array_index(text->value, text->length, child_index);
                 byte zigel_index = calculate_zigel_index(text->value, text->length, j);
                 float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);
-                entity e2 = spawn_zigel3(world,
-                    prefab_zigel3D,
-                    e,
-                    child_index,
-                    zigel_index,
-                    position,
-                    scale->value,
-                    render_disabled->value,
+                entity e2 = spawn_zigel3(world, prefab_zigel3D, e, child_index, zigel_index, position, scale->value, render_disabled->value,
                     thickness->value,
                     outline_thickness->value,
                     resolution->value,
                     fill->value,
                     outline->value);
+                if (zox_has(e, CentredZigel)) {
+                    zox_add_tag(e2, CentredZigel);
+                }
                 if (dbg_log) {
                     zox_log("[%s] Spawned [%i] zigel3 [%lu] child_index[%i] index [%i] zigel [%i]", zox_getn(e), i, (e2), child_index, index, zigel_index);
                 }

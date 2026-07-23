@@ -1,5 +1,5 @@
 // Grab all the settings and add to a single user file
-
+// TODO: Do this per app, its so weird seeing this monstrosity
 zox_sys2(SettingSaveSystem) {
     byte dbg_log = 0;
     zox_sys_world();

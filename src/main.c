@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
     // spawn app (creates our opengl context too)
     zox_logv("Spawning App");
 #ifdef zox_sdl
-    entity app = spawn_engine_app(world);
+    entity app = spawn_engine_app(world, game_name);
     if (app) {
         zox_logv("Initializing Glew");
         if (zox_init_glew() == EXIT_FAILURE) {

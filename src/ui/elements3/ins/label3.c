@@ -1,7 +1,7 @@
-entity spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, Zigel3DData zigel_data, float3 trail_offset) {
+entity2 spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, Zigel3DData zigel_data, float3 trail_offset) {
     if (!text_data.prefab) {
         zox_loge("invalid text_data prefab in spawn_label3D\n")
-        return 0;
+        return (entity2) { };
     }
     zox_instance(data.prefab);
     zox_set_unique_name(e, "label3");
@@ -20,5 +20,5 @@ entity spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, Z
     } else {
         zox_loge("No UIHolder for UI");
     }
-    return e;
+    return (entity2) { e, text };
 }

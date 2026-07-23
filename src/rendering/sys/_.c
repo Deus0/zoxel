@@ -71,8 +71,7 @@ void define_systems_rendering(ecs *world) {
     zox_system_1(
         RenderingSettingsSystem,
         zoxp_mainthread,
-        [in] core.InitializeEntity,
-        [none] apps.App
+        [in] settings.LoadSettings,
     );
     zox_system_1(
         RenderingSettingsDirtySystem,

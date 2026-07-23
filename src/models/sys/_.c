@@ -86,8 +86,7 @@ void define_systems_models(ecs* world) {
     zox_system_1(
         ModelsSettingsSystem,
         zoxp_mainthread,
-        [in] core.InitializeEntity,
-        [none] apps.App
+        [in] settings.LoadSettings,
     );
     zox_system_1(
         ModelsSettingsDirtySystem,

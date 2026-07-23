@@ -52,13 +52,31 @@ zox_sys2(ZigelSpawnSystem) {
         if (dbg_log) {
             zox_log("Updating Text [%s] [%i -> %i]", zox_get_name(e), old_length, new_length);
         }
+        int child_index = 0;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+#ifdef zox_safety_checks
+                if (!zox_has(e2, Zigel)) {
+                    zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
+                    continue;
+                }
+#endif
+                // NOTE: When shrinking the children we need to adjust the child indexes
+                if (child_index < new_length) {
+                    zox_setm(e2, ZigelDirty, 1);
+                    child_index++;
+                }
+            }
+        }
         if (new_length < old_length) {
             if (dbg_log) {
                 zox_log(" - Shrinking Text!");
             }
             // NOTE: Shrinks the children zigels
             int child_index = old_length - 1;
-            iter it2 = zox_children(world, e);
+            it2 = zox_children(world, e);
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
                     entity e2 = it2.entities[j];
@@ -69,10 +87,10 @@ zox_sys2(ZigelSpawnSystem) {
                     }
 #endif
                     // NOTE: When shrinking the children we need to adjust the child indexes
-                    if (child_index <= new_length) {
+                    if (child_index < new_length) {
                         // here we can set child indexes
                         zox_setm(e2, ChildIndex, child_index);
-                        zox_setm(e2, ZigelDirty, 1);
+                        // zox_setm(e2, ZigelDirty, 1);
                         child_index--;
                         continue;
                     }

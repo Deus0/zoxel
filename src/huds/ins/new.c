@@ -67,12 +67,13 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     zox_geter_value(player, CanvasLink, entity, canvas);
     const char* header_label = "Where"; // "New Realm";
     int max_labels = max_settings;
+    float2 anchor = float2_top_right;
     // byte layer = 1;
     // # Window #
     LayoutParentData canvas_data = { .e = canvas };
     byte header_font_size = 8 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
-    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_label, canvas, int2_zero, size, float2_half, header_font_size, header_padding, &on_cancelled_new_realm);
+    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_label, canvas, int2_zero, size, anchor, header_font_size, header_padding, &on_cancelled_new_realm);
     entity e = e3.x;
     entity body = e3.z;
     zox_add_tag(e, MenuNewRealm);

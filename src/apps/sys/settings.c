@@ -4,11 +4,11 @@ extern entity main_app;
 zox_sys2(AppsSettingsSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeEntity);
+    zox_sys_in(LoadSettings);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeEntity, state);
-        if (state->value != zox_dirty_active) {
+        zox_sys_i(LoadSettings, load);
+        if (load->value != zox_load_settings_spawn) {
             continue;
         }
         spawn_setting_byte(world, e, "Fullscreen", fullscreen);

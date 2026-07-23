@@ -47,8 +47,7 @@ void define_systems_streaming(ecs* world) {
     zox_system_1(
         StreamingSettingsSystem,
         zoxp_mainthread,
-        [in] core.InitializeEntity,
-        [none] apps.App
+        [in] settings.LoadSettings
     );
     zox_system_1(
         StreamingSettingsDirtySystem,

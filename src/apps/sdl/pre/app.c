@@ -46,6 +46,7 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     }
     zox_instance(prefab_app_sdl);
     zox_name("app_sdl");
+    set_ZoxName(world, e, name);
     zox_set(e, SDLWindow, { sdl_window });
     // current transform data
     zox_set(e, WindowPosition, { position });

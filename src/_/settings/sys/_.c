@@ -1,4 +1,5 @@
 #include "save.c"
+#include "load.c"
 
 void define_systems_settings(ecs* world) {
     zox_system(
@@ -6,5 +7,12 @@ void define_systems_settings(ecs* world) {
         zoxp_update,
         [in] settings.SettingDirty,
         [none] settings.Setting
+    );
+    // Can we take in game name from App??
+    zox_system(
+        SettingsLoadSystem,
+        zoxp_update,
+        [in] core.ZoxName,
+        [out] settings.LoadSettings
     );
 }

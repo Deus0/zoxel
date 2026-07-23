@@ -2,7 +2,6 @@ entity spawn_prefab_app(ecs* world, int2 position, int2 size) {
     zox_prefab();
     zox_prefab_name("app");
     zox_add_tag(e, App);
-    zox_prefab_set(e, InitializeEntity, { zox_dirty_trigger });
     zox_prefab_set(e, WindowPosition, { position });
     zox_prefab_set(e, WindowSize, { size });
     zox_prefab_set(e, WindowFullscreen, { 0 });
@@ -11,5 +10,9 @@ entity spawn_prefab_app(ecs* world, int2 position, int2 size) {
     zox_prefab_set(e, WindowPositionRestore, { int2_zero });
     zox_prefab_set(e, WindowMonitor, { 0 });
     zox_prefab_add(e, WindowSizeDirty);
+    // Settings
+    zox_prefab_set(e, ZoxName, { });
+    zox_prefab_set(e, InitializeEntity, { zox_dirty_trigger });
+    zox_prefab_set(e, LoadSettings, { zox_load_settings_start });
     return e;
 }

@@ -71,8 +71,7 @@ void define_systems_bones(ecs *world) {
     zox_system_1(
         BonesSettingsSystem,
         zoxp_mainthread,
-        [in] core.InitializeEntity,
-        [none] apps.App
+        [in] settings.LoadSettings,
     );
     zox_system_1(
         BonesSettingsDirtySystem,

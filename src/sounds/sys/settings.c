@@ -2,16 +2,16 @@
 zox_sys2(SoundsSettingsSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeEntity);
+    zox_sys_in(LoadSettings);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeEntity, state);
-        if (state->value != zox_dirty_active) {
+        zox_sys_i(LoadSettings, load);
+        if (load->value != zox_load_settings_spawn) {
             continue;
         }
-        spawn_setting_float(world, e, "Master Volume", master_volume, (float2) { 0, 1 });
-        spawn_setting_float(world, e, "Music Volume", volume_music, (float2) { 0, 1 });
-        spawn_setting_float(world, e, "SFX Volume", volume_sfx, (float2) { 0, 1 });
+        spawn_setting_float(world, e, "Volume", master_volume, (float2) { 0, 1 });
+        spawn_setting_float(world, e, "Music", volume_music, (float2) { 0, 1 });
+        spawn_setting_float(world, e, "SFX", volume_sfx, (float2) { 0, 1 });
     }
 } zox_sys_end(SoundsSettingsSystem);
 
@@ -33,11 +33,11 @@ zox_sys2(SoundsSettingsDirtySystem) {
             if (dbg_log) {
                 zox_log("SettingFloat [%s] Set [%f]", name->value, value);
             }
-            if (!strcmp(name->value, "Master Volume")) {
+            if (!strcmp(name->value, "Volume")) {
                 master_volume = value;
-            } else if (!strcmp(name->value, "Music Volume")) {
+            } else if (!strcmp(name->value, "Music")) {
                 volume_music = value;
-            } else if (!strcmp(name->value, "SFX Volume")) {
+            } else if (!strcmp(name->value, "SFX")) {
                 volume_sfx  = value;
             }
         }

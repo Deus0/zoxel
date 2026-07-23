@@ -2,7 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Bug: IconLabel on dirt pickup didnt update
+- placing still broken every 2nd place
+- Remove crafting users reference and use normal item ui for craft ui
+- Fix taskbars again properly linking to windows
+- sort load games by latest played
+- Crashing on windows still
+	- implement loading screen to make it easier to see why breaks
 
 - Add lookouts around map - just big ole scary towers
     - make system so all new region placers will a void prior ones
@@ -10,7 +15,6 @@ used - 200-400mb used
 - Make homes built with different materials
 - Add strange names for blocks
     - just show label as Soil type of block
-- Create a biomemap at the region level that helps coordinate
 
 Refactors
 - Make 3D ui use layouts
@@ -31,7 +35,6 @@ Gameplay
 - Add mirror UI for viewing player model
 
 Fixes
-- Add text/font option tocenter the shape points in the grid (use for Markers)
 - Add delays to queue so its frame timing independent 
 - if building a tower up - shows invisible face
     - Its when its next to a chunk with no chunk meshes - it doesnt build the edge
@@ -67,10 +70,7 @@ Crashes:
 
 Ideas
 - Add chunks on edge that are Simulation only? for map? idk
-
-Refactors
-- Remove crafting users reference and use normal item ui for craft ui
-- placing still broken every 2nd place
+- Create a biomemap at the region level that helps coordinate
 
 - Generated slime colors should be the same every time loads
 - Begin animating arm when attack starts

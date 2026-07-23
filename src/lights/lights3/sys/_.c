@@ -155,8 +155,7 @@ void define_systems_lights3(ecs* world) {
     zox_system_1(
         LightsSettingsSystem,
         zoxp_mainthread,
-        [in] core.InitializeEntity,
-        [none] apps.App
+        [in] settings.LoadSettings
     );
     zox_system_1(
         LightsSettingsDirtySystem,

@@ -59,11 +59,11 @@ entity spawn_model_slime(ecs* world, entity parent, lint seed, byte depth, byte 
     ModelLinks variants = (ModelLinks) { 0 };
     for (byte j = 0; j < grass_variants; j++) {
         lint vseed = seed + j * 1209;
-        color vcolor = color_grayscale(rand_range(80, 180));
-        short vlength = octree_size(mdepth_character);
-        byte3 vsize = byte3_scale3f(byte3_single(vlength), ratio);
+        color vcolor = color_red; // color_grayscale(rand_range(80, 180));
+        // short vlength = octree_size(depth);
+        byte3 vsize = byte3_scale3f(size, ratio);
         ModelLods mlods2 = (ModelLods) { };
-        entity mlods = spawn_model_lods(world, vcolor, vseed, mdepth_character, vsize, "rslime", &mlods2);
+        entity mlods = spawn_model_lods(world, vcolor, vseed, depth, vsize, "rslime", &mlods2);
         zox_set_unique_name(mlods, "mslime");
         add_to_ModelLinks(&variants, mlods);
         spawn_process_model(world, prefab_process_model, nodegraph, mlods);

@@ -1,5 +1,8 @@
 # Done
 
+-x Add text/font option tocenter the shape points in the grid (use for Markers)
+-x slider text didnt update
+-x Bug: IconLabel on dirt pickup didnt update
 -x Do 3+ biomes instead of two that we have
 -# Maybe it was grabbing the Voxels of side chunks that were generating?
     -x Landfill delay was cause of crash on windows

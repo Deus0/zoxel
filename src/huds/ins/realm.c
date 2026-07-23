@@ -62,8 +62,9 @@ entity spawn_menu_realm(ecs *world, entity player) {
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
     // Sizing
-    int header_font_size = 16* ui_scale;
-    byte list_font_size = 8 * ui_scale;
+    int header_font_size = 18 * ui_scale;
+    byte list_font_size = 14 * ui_scale;
+    float2 anchor = float2_bottom_right;
     // more data
     const char* header_label = "Come";
     int elements_count = 0;
@@ -71,7 +72,7 @@ entity spawn_menu_realm(ecs *world, entity player) {
     SpawnListElement elements[max_settings + 1];
     elements[elements_count++] = (SpawnListElement) {
         .type = list_element_type_label,
-        .text = "Seed", // zox_get_name(realm),
+        .text = "Seed",
     };
     zox_geter_value(realm, Seed, double, seed);
     char sseed[32];
@@ -90,7 +91,7 @@ entity spawn_menu_realm(ecs *world, entity player) {
         .text = "Enter",
         .on_click = { &button_event_menu_realm_confirm },
     };
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_realm_cancel }, 1, 0, 0, zox_alignment_centre, byte2_single(4), NULL, elements, elements_count, visible_count).x;
+    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_realm_cancel }, 1, 0, 0, zox_alignment_centre, anchor, byte2_single(4), NULL, elements, elements_count, visible_count).x;
     zox_name("menu_realm");
     zox_add_tag(e, MenuRealm);
     zox_add_tag(e, NavigationWindow);

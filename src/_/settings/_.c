@@ -1,17 +1,6 @@
 // Zox settings
-//
-// void on_set_float(ecs*world, void* value) {
-//     float valuef = *(float*) value;
-//     zox_log("> brightness was set to %f", valuef)
-// }
-//
-// zox_begin_module(ModuleName)
-//     zoxs_set("brightness", zox_data_type_float, &on_brightness_set);
-//     zoxs_set_float("brightness", 0.75f);
-//     setting s = zoxs_get("brightness");
-//     zox_log("Current brightness: %f\n", zoxs_get_float(s));
-// zox_end_module(ModuleName)
-//
+
+// TODO: Mark settings as dirty but not for saving, so the load can trigger the effects
 #include "dat/_.c"
 #define max_settings 256
 uint settings_count = 0;

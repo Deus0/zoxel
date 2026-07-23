@@ -29,7 +29,7 @@ typedef struct {
 
 // this takes 14ms on a 24core cpu, 6ms though during streaming
 // scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
-static inline void zox_build_voxel_face(const mesh_uvs_build_data* mesh, const int* face_indicies, const float3* face_verts, const float2* face_uvs, float3 position, float3 scale3) {
+static inline void zox_build_voxel_face(const mesh_uvs_build_data* mesh, const int* face_indicies, const float3* face_verts, const float2* face_uvs, float3 position, float3 scale) {
 #ifdef zox_safety_checks
     if (!face_uvs) { // TODO: If we dont generate realm blocks  it goes out of index, we should account for this
         zox_loge("face_uvs is null in zox_build_voxel_face");
@@ -42,9 +42,9 @@ static inline void zox_build_voxel_face(const mesh_uvs_build_data* mesh, const i
         int_array_d_add(mesh->indicies, index);
     }
     // NOTE: Add our face vertex data
-    for (byte i = 0; i < voxel_face_vertices_length; i++) {
+    for (byte i = 0; i < 4; i++) {
         float3 vert = face_verts[i];
-        float3_scale3p(&vert, scale3);
+        float3_scale3p(&vert, scale);
         float3_add_float3_p(&vert, position);
         float3_array_d_add(mesh->vertices, vert);
         float2_array_d_add(mesh->uvs, face_uvs[i]);
