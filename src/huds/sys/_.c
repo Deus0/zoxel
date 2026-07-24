@@ -1,7 +1,4 @@
-#include "fps_display.c"
-#include "quads_display.c"
 #include "device_mode_ui.c"
-#include "debug_label.c"
 #include "game_start_fader.c"
 #include "game_end.c"
 #include "game_end3.c"
@@ -19,27 +16,10 @@ void define_systems_game_ui(ecs *world) {
         [in] players.PlayerLink
     );
     zox_system(
-        FpsDisplaySystem,
-        zoxp_update,
-        [out] texts.TextData,
-        [out] texts.TextDirty,
-        [out] FPSDisplayTicker,
-        [none] FPSDisplay
-    );
-    zox_system(
         MenuGameBeginSystem,
         zoxp_update,
         [in] core.InitializeEntity,
         [out] huds.TaskbarToggleLink
-    );
-    zox_system(
-        DebugLabelSystem,
-        zoxp_update,
-        [in] players.PlayerLink,
-        [in] DebugLabelData,
-        [out] texts.TextDirty,
-        [out] texts.TextData,
-        [none] huds.GameDebugLabel
     );
     zox_system(
         GameStartFaderSystem,

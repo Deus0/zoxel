@@ -61,14 +61,13 @@ entity game_start_player_new(ecs *world, entity player, entity realm, entity ter
     float terrain_scale = zox_getv(terrain, BlockScale);
     float3 camera_position = zox_getv(camera, Position3D);
     int3 camera_block_position = real_position_to_block_position(camera_position, terrain_scale);
-    lint character_seed = seed_rand(realm_seed); // , 0, 100000);
+    lint character_seed = seed_rand(realm_seed);
     TerrainPlace placer;
     if (!find_position_in_terrain(world, terrain, camera_block_position, &placer)) {
         return 0;
     }
     *spawned_position = placer.position;
-    byte render_depth = 5;
-    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, NULL, player);
+    entity e = spawn_character3_player(world, prefab_character3_player, player, realm, terrain, character_seed, placer.position, quaternion_identity, NULL);
     return e;
 }
 
@@ -107,8 +106,7 @@ entity game_start_player_load(ecs *world, entity player, entity realm, entity te
         return 0;
     }
     *spawned_position = placer.position;
-    byte render_depth = 5;
-    entity e = spawn_character3_player(world, prefab_character3_player, realm, terrain, character_seed, 0, render_depth, 0, placer.position, quaternion_identity, NULL, player);
+    entity e = spawn_character3_player(world, prefab_character3_player, player, realm, terrain, character_seed, placer.position, quaternion_identity, NULL);
     return e;
 }
 

@@ -27,17 +27,6 @@ void define_systems_texts(ecs *world) {
         [out] layouts2.LayoutSizeDirty,
         [none] texts.Zext
     );
-    /*
-    zox_system(
-        TextsPositionSystem,
-        zoxp_update,
-        [in] texts.TextDirty,
-        [in] texts.TextData,
-        [in] texts.TextFontSize,
-        [in] texts.TextAlignment,
-        [in] texts.TextPadding,
-        [none] texts.Zext
-    );*/
     zox_system(
         ZigelPositionSystem,
         zoxp_update,
@@ -56,18 +45,12 @@ void define_systems_texts(ecs *world) {
         [out] textures.GenerateTexture,
         [none] zigels.Zigel
     );
-    /*zox_system(
-        TextUpdateSystem,
-        zoxp_update,
-        [in] texts.TextDirty,
-        [in] texts.TextData,
-        [none] texts.Zext
-    );*/
     zox_system_1(
         ZigelSpawnSystem,
         zoxp_mainthread,
         [in] texts.TextDirty,
         [in] texts.TextData,
+        [in] texts.ZigelPrefab,
         [in] texts.TextFontSize,
         [in] zigels.FontOutlineColor,
         [in] zigels.FontFillColor,
@@ -80,3 +63,22 @@ void define_systems_texts(ecs *world) {
         [none] texts.Text2D
     );
 }
+
+    /*
+    zox_system(
+        TextsPositionSystem,
+        zoxp_update,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [in] texts.TextFontSize,
+        [in] texts.TextAlignment,
+        [in] texts.TextPadding,
+        [none] texts.Zext
+    );*/
+    /*zox_system(
+        TextUpdateSystem,
+        zoxp_update,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [none] texts.Zext
+    );*/

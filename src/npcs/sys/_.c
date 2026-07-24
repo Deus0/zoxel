@@ -89,10 +89,10 @@ void define_systems_npcs(ecs *world) {
         [in] npcs.Behaviour,
         [in] physics.DisableMovement,
         [out] actions.ActiveAction,
+        [out] actions.ActiveActionDirty,
         [out] triggers.TriggerActionA,
         [none] npcs.Npc
     );
-
     zox_system_m(
         FleeSystem,
         !is_debug_flee,

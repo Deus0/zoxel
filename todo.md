@@ -2,7 +2,28 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- placing still broken every 2nd place
+- Fix Skinning issues of humanoids at max depth
+- Fix the layering of the 3D UIs, text and such has depth issues
+- Fix npcs falling through map
+- Fix colors missmatch on lighting
+- Make the ui use the Uploaded count of mesh, maybe thats why it flickers
+- Fix chunk meshes being active at once
+
+- Refactor Vegetation to its module
+
+- Fix occassionally text zigels not rendering
+	- this was debugged that they all stopped rendering for several frames
+	- visible when it dissapears too
+- SkeletonMesh accidently dissapeared whoops, check changing states
+
+- Spawn Humanoid NPC test function
+
+- debug label - the font will dissapear sometimes and reappear
+	- Looks like a memory issue causing the mashes to dissapear? when streaming
+
+-x Remember to disable max_process' skips when windows chunks
+- List ui calculating wrong cause sliders different heights then buttons!
+- block placing still broken every 2nd place
 - Remove crafting users reference and use normal item ui for craft ui
 - Fix taskbars again properly linking to windows
 - sort load games by latest played
@@ -12,7 +33,7 @@ used - 200-400mb used
 - Add lookouts around map - just big ole scary towers
     - make system so all new region placers will a void prior ones
 - Add different rarity on items and frame them differently
-- Make homes built with different materials
+- Make homes built with different materials / Blocks
 - Add strange names for blocks
     - just show label as Soil type of block
 

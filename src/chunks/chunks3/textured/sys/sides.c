@@ -202,7 +202,7 @@ void fetch_neightbor_chunk_data(ecs* world, const ChunkNeighbors* chunk_neighbor
 // NOTE: Calculates the solid sides of a voxel octree per material
 zox_sys2(ChunkSidesSystem) {
     byte dbg_log = 0;
-    byte max_process = 2; // 2;
+    byte max_process = !zox_disable_process_skips ? 1 : 0;
     byte* solids = NULL;
     zox_sys_world();
     zox_sys_begin();
@@ -226,20 +226,13 @@ zox_sys2(ChunkSidesSystem) {
         if (max_process && process_count > max_process) {
             continue;
         }
-        // HMmm zox_getv(e, GenerateChunk) ||
+        // HMmm
         if (zox_getv(e, VoxelNodeDirty)) {
             if (dbg_log) {
                 zox_log("[%s] [%s]: Delayed due to [VoxelNodeDirty]", zox_getn(it->system), zox_getn(e));
             }
             continue;
         }
-        /*byte chunk_lod_dirty = zox_getv(e, ChunkLodDirty);
-        if (chunk_lod_dirty) {
-            if (dbg_log) {
-                zox_log("[%s] [%s]: Delayed due to [ChunkLodDirty] is [%i]", zox_getn(it->system), zox_getn(e), chunk_lod_dirty);
-            }
-            continue;
-        }*/
         // fetch here instead
         if (!solids) {
             // entity chunk = zox_get_parent(world, e);
@@ -276,8 +269,7 @@ zox_sys2(ChunkSidesSystem) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
                 if (zox_has(e2, ChunkMesh)) {
-                    zox_setm(e2, BuildChunkMesh, zox_build_chunk_mesh_run);
-                    // zox_set(e2, BuildChunkMesh, { zox_build_chunk_mesh_run });
+                    zox_setv(e2, BuildChunkMesh, zox_build_chunk_mesh_run);
                     if (dbg_log) {
                         zox_log("Chunk Triggered Build [%s]:[%s]", zox_getn(e), zox_getn(e2));
                     }

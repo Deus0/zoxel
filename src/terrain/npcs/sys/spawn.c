@@ -99,8 +99,8 @@ zox_sys2(Characters3SpawnSystem) {
                 zox_loge("failed to find a spawn character_meta");
                 continue;
             }
-            zox_geter_value_non_const(meta, ModelLink, entity, model);
-            if (!model || !meta) {
+            // entity model = zox_getv(meta, ModelLink);
+            /*if (!model || !meta) {
                 zox_loge("failed to find a spawn character_meta");
                 continue;
             }
@@ -114,16 +114,16 @@ zox_sys2(Characters3SpawnSystem) {
             if (!zox_valid(model) || !zox_has(model, MaxRenderDepth)) {
                 zox_loge("Model Invalid [%s]", zox_get_name(model));
                 continue;
-            }
-            zox_geter_value(model, MaxRenderDepth, byte, mdepth);
-            byte character_depth = camera_distance_to_npc_render_depth(render_distance->value, mdepth);
+            }*/
+            // byte max_depth = zox_valid(model) && zox_has(model, MaxRenderDepth) ? zox_getv(model, MaxRenderDepth) : 0;
+            // byte render_depth = camera_distance_to_npc_render_depth(render_distance->value, max_depth);
             lint npc_seed = rand_range(0, 10000);
             float3 position = byte3_to_float3(in_chunk_position);
             float3_scale_p(&position, cscale->value);
             float3_add_float3_p(&position, positionf->value); // chunk
             float3_add_float3_p(&position, float3_single(cscale->value * 0.5f));
             float4 rotation = quaternion_from_euler((float3) { 0, (rand() % 361) * degreesToRadians, 0 });
-            entity e2 = spawn_character3_npc(world, meta, realm, terrain, npc_seed, model, character_depth, render_disabled->value, position, rotation, NULL);
+            entity e2 = spawn_character3_npc(world, meta, realm, terrain, npc_seed, render_distance->value, render_disabled->value, position, rotation, NULL);
             if (!e2) {
                 zox_loge("Spawning NPC Failed");
                 continue;

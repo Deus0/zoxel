@@ -14,7 +14,8 @@ void define_systems_bodys(ecs* world) {
         [out] voxes.CombineVox,
         [out] chunks.NodeDepth,
         [out] blocks.BlockScale,
-        [none] players.PlayerCharacter
+        [none] bones.Skeleton
+        // [none] players.PlayerCharacter
     );
     zox_system(
         SlotItemTooltipSystem,
@@ -30,7 +31,7 @@ void define_systems_bodys(ecs* world) {
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [out] bodys.BodyDirty,
-        [none] players.PlayerCharacter
+        [none] bones.Skeleton
     );
     zox_system_1(
         CharacterBoneSpawnSystem,

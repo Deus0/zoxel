@@ -12,6 +12,8 @@
 
 #endif
 
+#define zox_setv(e, T, v) zox_set(e, T, { v })
+
 #define zox_set_ptr(e, T, c) ecs_set_ptr(world, e, T, &c);
 
 #define zox_remove(e, T) ecs_remove(world, e, T);

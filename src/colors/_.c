@@ -15,17 +15,6 @@ zoxc_arrayd(ColorRGBs, color_rgb)
 #include "dat/_.c"
 #include "sys/_.c"
 
-/*#define zox_biome_grassland 0
-#define zox_biome_desert 1
-#define zox_biome_savanna 2
-#define zox_biome_forest 3
-#define zox_biome_swamp 4
-#define zox_biome_mountain 5
-#define zox_biome_end 6*/
-
-// hmm figure this out later
-// extern void set_prefab_debug_label(ecs *world, DebugLabelEvent value);
-
 void spawn_prefabs_colors(ecs* world) {
     if (prefab_realm) {
         zox_prefab_add(prefab_realm, Colors)

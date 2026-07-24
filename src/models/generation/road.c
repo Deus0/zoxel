@@ -432,9 +432,9 @@ void build_vox_stoned(ColorRGBs *colors, VoxelNode *vox, byte depth, color_rgb p
 // NOTE: Generates a road block for towns
 zox_sys2(RoadModelGenerationSystem) {
     byte dbg_log = 0;
-    byte max_process = 2;   // TODO: Make work without breaking
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(Seed);
     zox_sys_in(Color);
     zox_sys_in(VoxType);
     zox_sys_out(GenerateModel);
@@ -444,6 +444,7 @@ zox_sys2(RoadModelGenerationSystem) {
     zox_sys_out(ColorRGBs);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(Seed, seed);
         zox_sys_i(Color, fill);
         zox_sys_i(VoxType, gentype);
         zox_sys_o(GenerateModel, generate);
@@ -454,38 +455,27 @@ zox_sys2(RoadModelGenerationSystem) {
         if (generate->value != zox_generate_model_run) {
             continue;
         }
-        if (max_process && process_count > max_process) {
-            continue;
-        }
         if (gentype->value != vox_type_road) {
             continue;
         }
         // Reset Data
         resize_ColorRGBs(colors, 0);
-        // Generate Vox
-        write_lock_VoxelNode(node);
-        // Build Road Vox
         color_rgb primary_rgb = color_to_color_rgb(fill->value);
+        // Generate Vox
+        srand(seed->value);
+        write_lock_VoxelNode(node);
         build_vox_stoned(colors, node, depth->value, primary_rgb);
         // Outlines
         if (is_generate_vox_outlines) {
-            byte black_voxel = colors->length + 1;
             add_to_ColorRGBs(colors, color_rgb_black);
+            byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
         write_unlock_VoxelNode(node);
-        if (zox_has(e, BakeModel)) {
-            generate->value = zox_generate_model_bake;
-        } else {
-            generate->value = zox_generate_model_end;
-        }
+        generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         dirty->value = zox_dirty_trigger;
-        if (zox_has(e, Busy)) {
-            zox_set(e, Busy, { 0 });
-        }
         if (dbg_log) {
             zox_log("Generated Road Vox [%s]:%i", zox_get_name(e), gentype->value);
         }
-        zox_sys_increment();
     }
 } zox_sys_end(RoadModelGenerationSystem);

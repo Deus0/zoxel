@@ -15,6 +15,9 @@ zox_sys2(ShoulderRaiseSystem) {
         zox_sys_i(ShoulderBoneLink, shoulder);
         zox_sys_i(HeadBoneLink, head);
         if (!zox_valid(shoulder->value)) {
+            if (dbg_log) {
+                zox_logw("Should is invalid on [%s]", zox_getn(e));
+            }
             continue;
         }
         zox_muter(shoulder->value, LocalRotation3D, rotation);
@@ -30,9 +33,9 @@ zox_sys2(ShoulderRaiseSystem) {
         if (!zox_valid(head_bone)) {
             continue;
         }
-        head_bone = zox_get_child_by_id(world, head->value, zox_id(Camera));
-        if (!zox_valid(head_bone)) {
-            continue;
+        entity camera = zox_get_child_by_id(world, head->value, zox_id(Camera));
+        if (zox_valid(camera)) {
+            head_bone = camera;
         }
         float4 head_rotation = zox_getv(head_bone, LocalRotation3D);
         float3 euler = quaternion_to_euler(head_rotation);

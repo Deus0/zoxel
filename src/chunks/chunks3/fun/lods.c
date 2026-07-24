@@ -22,7 +22,7 @@ static inline byte camera_distance_to_render_depth(byte distance, byte depth, by
             return depth - i;
         }
     }
-    zox_log_error(" fallback lod finder: dist [%i] range [%i-%i] depth [%i] slice [%i]", distance, nearf, farf, depth, slice);
+    zox_loge(" fallback lod finder: dist [%i] range [%i-%i] depth [%i] slice [%i]", distance, nearf, farf, depth, slice);
     // fallback (shouldn’t hit, but safe)
     return 0; // render_depth_invisible;
 }
@@ -53,15 +53,15 @@ static inline byte camera_distance_to_terrain_render_depth(byte distance) {
     return camera_distance_to_render_depth(distance, terrain_depth, terrain_lod_near, terrain_lod_far);
 }
 
-static inline byte camera_distance_to_npc_render_depth(byte distance, byte mdepth) {
+static inline byte camera_distance_to_npc_render_depth(byte distance, byte max_depth) {
     if (zox_dbg_npc_all_max_depth) {
-        return mdepth;
+        return max_depth;
     }
-    if (block_vox_depth < mdepth) {
+    /*if (block_vox_depth < max_depth) {
         byte ddepth = (block_vox_depth_limits.y - block_vox_depth);
-        mdepth = mdepth - ddepth < 0 ? 0 : mdepth - ddepth;
-    }
-    return camera_distance_to_render_depth(distance, mdepth, vox_lod_near, terrain_lod_near);
+        max_depth = max_depth - ddepth < 0 ? 0 : max_depth - ddepth;
+    }*/
+    return camera_distance_to_render_depth(distance, max_depth, vox_lod_near, terrain_lod_near);
 }
 
 static inline byte camera_distance_to_block_vox_depth(byte distance) {

@@ -18,12 +18,12 @@ zox_sys2(ChunkEntitiesLodSystem) {
             if (!(zox_valid(e2) && zox_has(e2, RenderDepth) && zox_has(e2, MaxRenderDepth))) {
                 continue;
             }
-            zox_geter_value(e2, MaxRenderDepth, byte, mdepth);
-            byte rdepth = camera_distance_to_npc_render_depth(distance->value, mdepth);
-            zox_geter_value(e2, RenderDepth, byte, old);
-            if (old != rdepth) {
-                zox_set(e2, RenderDepth, { rdepth });
-                zox_set(e2, RenderDepthDirty, { zox_dirty_trigger });
+            byte max_depth = zox_getv(e2, MaxRenderDepth);
+            byte new_render_depth = camera_distance_to_npc_render_depth(distance->value, max_depth);
+            byte old_render_depth = zox_getv(e2, RenderDepth);
+            if (old_render_depth != new_render_depth) {
+                zox_setv(e2, RenderDepth, new_render_depth );
+                zox_setv(e2, RenderDepthDirty, zox_dirty_trigger);
             }
         }
     }

@@ -5,6 +5,11 @@ zoxc_state(InspectorDirty);
 zox_tag(HierarchyUI);
 zoxc_state(HierarchyUIDirty);
 zox_tag(MaxSystemTimeLabel);
+zox_tag(FPSDisplay);
+zox_tag(GameDebugLabel);
+zox_tag(Profiler);
+zoxc_double(FPSDisplayTicker);
+zoxc(DebugLabelData, DebugLabelEvent);
 
 void define_components_editor(ecs* world) {
     zoxd_tag(EditorElement);
@@ -14,4 +19,9 @@ void define_components_editor(ecs* world) {
     zoxd_state(HierarchyUIDirty);
     zoxd_state(InspectorDirty);
     zoxd_tag(MaxSystemTimeLabel);
+    zoxd_tag(FPSDisplay);
+    zoxd_tag(GameDebugLabel);
+    zoxd_tag(Profiler);
+    zoxd_double(FPSDisplayTicker);
+    zoxd(DebugLabelData);
 }

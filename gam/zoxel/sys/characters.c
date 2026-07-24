@@ -38,7 +38,7 @@ entity spawn_model_slime(ecs* world, entity parent, lint seed, byte depth, byte 
     return e;*/
     // TODO: Unique per variant size
     // TODO: Shift Properties from Blueprint to Variant (with seed) - i.e. use Node Process Data
-    byte mdepth_character = depth;
+    // byte mdepth_character = depth;
     byte nodegraph_depth = nodegraph_max_depth; // - 1;
     short nodegraph_length = octree_size(nodegraph_depth);
     float squash = randf_range(0.7f, 0.9f);
@@ -75,6 +75,7 @@ entity spawn_model_slime(ecs* world, entity parent, lint seed, byte depth, byte 
 // TODO: Just spawn characters here linked to realm, used as prefabs later
 zox_sys2(Character3RealmSpawnSystem) {
     byte character_depth = block_vox_depth_limits.y;
+    uint seed_shift = 36936;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -97,45 +98,27 @@ zox_sys2(Character3RealmSpawnSystem) {
             // spawn_state_stat(world, e2, health);
             // set model too
         }
+        uint seed_offset = seed_shift;
         byte chance_max = 0;
+        entity prefab_character = is_characters_instanced ? prefab_character3_instanced_npc : prefab_character3_npc;
         // add files
         entity rsoul = zox_get_child_by_id(world, e, zox_id(StatSoul));
         entity rhealth = zox_get_child_by_id(world, e, zox_id(StatHealth));
-        int count = 5; // count of below array
-        char* vox_names[] = { "slime", "chicken", "mrpenguin", "bob", "bigmrpenguin" };
-        // 30% are premades
-        byte chances[] = { 10, 10, 4, 4, 2 };
-        byte souls[] = { 1, 1, 2, 1, 3 };
-        byte healths[] = { 6, 4, 8, 6, 12 };
-        if (mrpenguin_mode) {
-            for (int j = 0; j < 5; j++) chances[j] = 0;
-            chances[4] = 100;
-        }
-        entity prefab_character = is_characters_instanced ? prefab_character3_instanced_npc : prefab_character3_npc;
-        for (int j = 0; j < count; j++) {
-            const char* name = vox_names[j];
-            entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(name));
-            if (!zox_valid(model)) {
-                continue;
-            }
-            // can choose here properties for spawning
-            byte chance = chances[j];
-            lint character_seed = rand_range(0, 10000);
-            entity e2 = spawn_character3_meta(world, prefab_character, character_seed, name, model, chance, 0);
-            zox_set_name(e2, name); // assuming name is unique to the ecs world
-            add_to_CharacterLinks(characters, e2);
+        // add our skeleton prefab
+        {
+            byte chance = 5;
+            lint character_seed = seed->value + (seed_offset+=seed_shift);
+            entity e2 = spawn_character3_meta(world, prefab_character3_skeleton_npc, character_seed, "Boney", chance);
+            zox_set_parent(world, e2, e);
+            spawn_stat_level(world, e2, rsoul, 5);
+            spawn_stat_state(world, e2, rhealth, 21, 21);
             chance_max += chance;
-            float soul_value = (float)(souls[j]);
-            float health = (float)(healths[j]);
-            spawn_stat_level(world, e2, rsoul, soul_value);
-            spawn_stat_state(world, e2, rhealth, health, health);
+            add_to_CharacterLinks(characters, e2);
         }
         // add model links with tag ModelCharacter
         byte slime_types = 4;
         byte variants = 1;
-        byte generated_chance = 70 / slime_types;
-        uint seed_shift = 36936;
-        uint seed_offset = seed_shift;
+        byte generated_chance = 65 / slime_types;
         for (int j = 0; j < slime_types; j++) {
             // TODO: Just spawn models here
             lint character_seed = seed->value + (seed_offset+=seed_shift);
@@ -146,27 +129,46 @@ zox_sys2(Character3RealmSpawnSystem) {
                 continue;
             }
             byte chance = generated_chance;
-            entity e2 = spawn_character3_meta(world, prefab_character, character_seed, "character", model, chance, character_depth);
+            entity e2 = spawn_character3_meta(world, prefab_character, character_seed, "character", chance);
+            zox_setv(e2, ModelLink, model);
             zox_add_tag(e2, CharacterGeneric);
-            add_to_CharacterLinks(characters, e2);
             zox_set_parent(world, e2, e);
+            add_to_CharacterLinks(characters, e2);
             chance_max += chance;
             spawn_stat_level(world, e2, rsoul, 2);
             spawn_stat_state(world, e2, rhealth, 8, 8);
         }
-        // add our skeleton prefab
-        // Disabled for now
-        /*{
-            byte chance = 5;
-            char* svox_name = "grazor";
-            entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(svox_name));
-            entity e2 = spawn_character3_meta(world, prefab_character3_meta,
- prefab_character3_skeleton_npc, svox_name, model, chance);
-            add_to_CharacterLinks(characters, e2);
+        // Spawn our Vox Files
+        int count = 5; // count of below array
+        char* vox_names[] = { "slime", "chicken", "mrpenguin", "bob", "bigmrpenguin" };
+        // 30% are premades
+        byte chances[] = { 10, 10, 4, 4, 2 };
+        byte souls[] = { 1, 1, 2, 1, 3 };
+        byte healths[] = { 6, 4, 8, 6, 12 };
+        if (mrpenguin_mode) {
+            for (int j = 0; j < 5; j++) chances[j] = 0;
+            chances[4] = 100;
+        }
+        for (int j = 0; j < count; j++) {
+            const char* name = vox_names[j];
+            entity model = string_hashmap_get(files_hashmap_voxes, new_string_data(name));
+            if (!zox_valid(model)) {
+                continue;
+            }
+            // can choose here properties for spawning
+            byte chance = chances[j];
+            lint character_seed = seed->value + (seed_offset+=seed_shift);
+            entity e2 = spawn_character3_meta(world, prefab_character, character_seed, name, chance);
+            zox_set_name(e2, name); // assuming name is unique to the ecs world
+            zox_setv(e2, ModelLink, model);
             chance_max += chance;
-        }*/
+            float soul_value = (float)(souls[j]);
+            float health = (float)(healths[j]);
+            spawn_stat_level(world, e2, rsoul, soul_value);
+            spawn_stat_state(world, e2, rhealth, health, health);
+            add_to_CharacterLinks(characters, e2);
+        }
         chance->value = chance_max;
-
         zox_logv("At [%f] Realm [characters] [%i] spawned.", zox_current_time, characters->length);
     }
 } zox_sys_end(Character3RealmSpawnSystem);

@@ -1,9 +1,10 @@
 // Also supports no models, for skeleton body gen
-entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain, lint seed, entity model, byte render_depth, byte render_disabled, float3 position, float4 rotation, const char* name) {
+entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain, lint seed, byte render_distance, byte render_disabled, float3 position, float4 rotation, const char* name) {
     byte dbg_log = 0;
     // If Model, get the Vox (its lodded)
-    entity vox = 0;
-    byte max_depth = render_depth;
+    byte max_depth = 0;
+    entity model = zox_getv(prefab, ModelLink);
+    entity vox = model;
     if (zox_valid(model)) {
         // If a ModelGroup, pick a random sub model
         if (zox_has(model, ModelLinks)) {
@@ -15,10 +16,13 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
         }
         if (zox_has(model, MaxRenderDepth)) {
             max_depth = zox_getv(model, MaxRenderDepth);
-            if (render_depth > max_depth) {
+            /*if (render_depth > max_depth) {
                 render_depth = max_depth;
-            }
+            }*/
         }
+    }
+    byte render_depth = camera_distance_to_npc_render_depth(render_distance, max_depth);
+    if (zox_valid(model)) {
         if (zox_has(model, ModelLods)) {
             zox_geter(model, ModelLods, lods);
             vox = lods->value[render_depth];

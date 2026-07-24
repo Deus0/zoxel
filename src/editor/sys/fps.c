@@ -1,7 +1,6 @@
 zox_sys2(FpsDisplaySystem) {
     byte dbg_log = 0;
     double frame_rate_update_speed = 1.0;
-    // byte number_0_start = 60;
     init_delta_time();
     zox_sys_begin();
     zox_sys_out(TextData);
@@ -33,21 +32,3 @@ zox_sys2(FpsDisplaySystem) {
         }
     }
 } zox_sys_end(FpsDisplaySystem);
-
-        /*if (frames_per_second < 10) {
-            data->value[0] = number_0_start;
-            data->value[1] = number_0_start;
-            data->value[2] = number_0_start + frames_per_second;
-        } else if (frames_per_second < 100) {
-            data->value[0] = number_0_start;
-            data->value[1] = number_0_start + (frames_per_second / 10);
-            data->value[2] = number_0_start + (frames_per_second % 10);
-        } else if (frames_per_second < 1000) {
-            data->value[0] = number_0_start + (frames_per_second / 100);
-            data->value[1] = number_0_start + (frames_per_second / 10) % 10;
-            data->value[2] = number_0_start + ((frames_per_second % 100) % 10);
-        } else {
-            data->value[0] = number_0_start;
-            data->value[1] = number_0_start;
-            data->value[2] = number_0_start;
-        }*/

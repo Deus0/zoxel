@@ -1,12 +1,14 @@
 // TODO: Multiply by the world height
-short sand_height = 16;
-short grass_height = 18;
-short stone_height = 32;
+short terrain_sand_height = 6; // 16;
+short terrain_grass_height = 7; // 18;
+short terrain_stone_height = 18; // 32;
 
 // NOTE: Fills land with Soils based on biomes
 zox_sys2(LandfillChunkSystem) {
     byte dbg_log = 0;
-    byte max_process = 0; // 8;
+    byte max_process = !zox_disable_process_skips ? 2 : 0;
+    short sand_height = terrain_sand_height * render_distance_y;
+    short stone_height = terrain_stone_height * render_distance_y;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLink);

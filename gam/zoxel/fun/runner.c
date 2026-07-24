@@ -89,11 +89,16 @@ void zox_dbg_ui_auto_tests(ecs* world, int32_t keycode) {
         .text = "Character Particles3",
         .on_click = { &tst_spawn_character3_particles },
     };
-    // Game
+    // Characters
     elements[elements_count++] = (SpawnListElement) {
         .text = "NPC",
         .on_click = { &zox_tst_spawn_character3_npc },
     };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Skeleton NPC",
+        .on_click = { &zox_tst_spawn_character3_npc_skeleton },
+    };
+    // Game
     elements[elements_count++] = (SpawnListElement) {
         .text = "Dialogue",
         .on_click = { &zox_tst_spawn_dialogue },

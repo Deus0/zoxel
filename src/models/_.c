@@ -21,7 +21,6 @@
 // TODO: Add Shape Information to fill
 // TODO: Create model size, which the octree can just divide higher for
 // TODO: Add Shape Type, Shape Size, to our Fill Nodes
-
 // TODO: Refactor: Load Vox Files into ModelLinks
 // TODO: Refactor: Vox Generation use Nodes / NodeGraphs
 // TODO: Can we Refactor ModelLinks from Rendering to here
@@ -38,10 +37,12 @@
 #include "fun/_.c"
 #include "gen/_.c"
 #include "sys/_.c"
+#include "generation/_.c"
 
 zox_begin_module(Models) {
     define_components_models(world);
     define_systems_models(world);
+    define_systems_models_generation(world);
     add_hook_spawn_prefabs(spawn_prefabs_models);
 } zox_end_module(Models);
 

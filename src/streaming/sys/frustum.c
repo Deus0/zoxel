@@ -11,7 +11,10 @@ void set_chunk_block_spawns_render_disabled(ecs *world, const VoxelNode *node, b
             return;
         }
 #endif
-        zox_set(e, RenderDisabled, { state });
+        // NOTE: Some Block Instances dont have this component
+        if (zox_has(e, RenderDisabled)) {
+            zox_setm(e, RenderDisabled, state);
+        }
     } else if (has_children_VoxelNode(node)) {
         VoxelNode* kids = get_children_VoxelNode(node);
         for (int i = 0; i < octree_length; i++) {

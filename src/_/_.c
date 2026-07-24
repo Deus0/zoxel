@@ -33,6 +33,12 @@
 #include "sys/_.c"
 #include "settings/_.c"
 
+#ifdef zox_windows
+    byte zox_disable_process_skips = 1;
+#else
+    byte zox_disable_process_skips = 0;
+#endif
+
 void module_dispose_core(ecs *world, void *ctx) {
     dispose_hook_terminal_command();
     dispose_game_store();

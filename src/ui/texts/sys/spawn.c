@@ -7,6 +7,7 @@ zox_sys2(ZigelSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(TextDirty);
     zox_sys_in(TextData);
+    zox_sys_in(ZigelPrefab);
     zox_sys_in(TextFontSize);
     zox_sys_in(FontOutlineColor);
     zox_sys_in(FontFillColor);
@@ -19,6 +20,7 @@ zox_sys2(ZigelSpawnSystem) {
         zox_sys_e();
         zox_sys_i(TextDirty, text_dirty);
         zox_sys_i(TextData, text_data);
+        zox_sys_i(ZigelPrefab, prefab);
         zox_sys_i(TextFontSize, textSize);
         zox_sys_i(FontOutlineColor, fontOutlineColor);
         zox_sys_i(FontFillColor, fontFillColor);
@@ -65,8 +67,13 @@ zox_sys2(ZigelSpawnSystem) {
 #endif
                 // NOTE: When shrinking the children we need to adjust the child indexes
                 if (child_index < new_length) {
-                    zox_setm(e2, ZigelDirty, zox_zigel_dirty_update);
-                    child_index++;
+                    if (new_length == old_length) {
+                        zox_setv(e2, ZigelDirty, zox_zigel_dirty_update);
+                    } else {
+                        zox_setv(e2, ZigelDirty, zox_zigel_dirty_position);
+                    }
+                    // zox_set(e2, ZigelDirty, { zox_zigel_dirty_position });
+                    // child_index++;
                 }
             }
         }
@@ -90,6 +97,7 @@ zox_sys2(ZigelSpawnSystem) {
                     if (child_index < new_length) {
                         // here we can set child indexes
                         zox_setm(e2, ChildIndex, child_index);
+                        // zox_set(e2, ChildIndex, { child_index });
                         // zox_setm(e2, ZigelDirty, 1);
                         child_index--;
                         continue;
@@ -110,8 +118,11 @@ zox_sys2(ZigelSpawnSystem) {
             for (uint j = old_length; j < new_length; j++) {
                 byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, j);
                 uint child_index = j;
-                entity e2 = spawn_zigel(world, prefab_zigel, e, position_anchor, size, texture_size,  thickness, othickness, fill, outline, zigel_index, child_index, zigel_layer);
+                entity e2 = spawn_zigel(world, prefab->value, e, position_anchor, size, texture_size, thickness, othickness, fill, outline, zigel_index, child_index, zigel_layer);
                 zox_set(e2, RenderDisabled, { render_disabled->value });
+                /*if (zox_has(e, DebugEntity) && j == 10) {
+                    zox_add_tag(e2, DebugEntity);
+                }*/
                 if (dbg_log) {
                     zox_log("   + Spawn Zigel [%i] - Layer [%i]", zigel_index, zigel_layer);
                 }

@@ -62,7 +62,7 @@ void define_systems_bones(ecs *world) {
     );
     zox_system(
         ShoulderRaiseSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] bones.RaiseShoulder,
         [in] bones.ShoulderBoneLink,
         [in] bones.HeadBoneLink,

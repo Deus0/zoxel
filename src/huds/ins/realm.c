@@ -5,7 +5,7 @@ void button_event_menu_realm_cancel(ecs *world, ClickEventData event) {
     entity canvas = zox_getv(player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuRealm));
     if (!menu) {
-        zox_log_error("MenuRealm not found");
+        zox_loge("MenuRealm not found");
         return;
     }
     zox_delete(menu);
@@ -62,9 +62,10 @@ entity spawn_menu_realm(ecs *world, entity player) {
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
     // Sizing
-    int header_font_size = 18 * ui_scale;
-    byte list_font_size = 14 * ui_scale;
-    float2 anchor = float2_bottom_right;
+    float2 window_anchor = zox_huds_window_anchor;
+    byte header_font_size = zox_huds_header_font_size * ui_scale;
+    byte list_font_size = zox_huds_element_font_size * ui_scale;
+    byte2 list_padding = byte2_single(zox_huds_list_padding * ui_scale);
     // more data
     const char* header_label = "Come";
     int elements_count = 0;
@@ -91,7 +92,7 @@ entity spawn_menu_realm(ecs *world, entity player) {
         .text = "Enter",
         .on_click = { &button_event_menu_realm_confirm },
     };
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_realm_cancel }, 1, 0, 0, zox_alignment_centre, anchor, byte2_single(4), NULL, elements, elements_count, visible_count).x;
+    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_realm_cancel }, 1, 0, 0, zox_alignment_centre, window_anchor, list_padding, NULL, elements, elements_count, visible_count).x;
     zox_name("menu_realm");
     zox_add_tag(e, MenuRealm);
     zox_add_tag(e, NavigationWindow);

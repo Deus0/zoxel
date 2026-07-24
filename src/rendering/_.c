@@ -3,7 +3,6 @@
 
 byte zox_new_ui_renderer = 0;
 ushort max_layers2D = 254;
-
 #include "com/_.c"
 #include "dat/_.c"
 #include "set/_.c"

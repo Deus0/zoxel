@@ -40,13 +40,13 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
 
 entity spawn_menu_load(ecs *world, entity player) {
     const char* header_label = "Which";
-    int elements_count = 0;
-    byte visible_count = 6;
-    float2 anchor = float2_top_right; // float2_half;
-    int header_font_size = 18 * ui_scale;
-    byte list_font_size = 14 * ui_scale;
-    // more data
+    byte visible_count = 4;
+    float2 window_anchor = zox_huds_window_anchor;
+    byte header_font_size = zox_huds_header_font_size * ui_scale;
+    byte list_font_size = zox_huds_element_font_size * ui_scale;
+    byte2 padding = byte2_single(zox_huds_list_padding * ui_scale);
     SpawnListElement elements[max_settings + 1];
+    int elements_count = 0;
     char **save_dirs;
     byte saves_count;
     // TODO: Load folder names here
@@ -62,7 +62,7 @@ entity spawn_menu_load(ecs *world, entity player) {
         }
         free(save_dirs);
     }
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_load_cancel }, 1, 0, 0, zox_alignment_centre, anchor, byte2_single(4), NULL, elements, elements_count, visible_count).x;
+    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_load_cancel }, 1, 0, 0, zox_alignment_centre, window_anchor, padding, NULL, elements, elements_count, visible_count).x;
     zox_name("menu_load");
     zox_add_tag(e, MenuLoad);
     zox_add_tag(e, NavigationWindow);

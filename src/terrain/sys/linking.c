@@ -52,8 +52,8 @@ byte set_entity_chunk(ecs* world, entity e, ChunkLink* link, entity new_chunk, b
     // todo: this should be used by system itself
     if (zox_has(e, RenderDepth) && zox_has(e, MaxRenderDepth)) {
         zox_geter_value(e, RenderDepth, byte, old);
-        zox_geter_value(e, MaxRenderDepth, byte, mdepth);
-        byte render_depth = camera_distance_to_npc_render_depth(chunk_render_distance, mdepth);
+        zox_geter_value(e, MaxRenderDepth, byte, max_depth);
+        byte render_depth = camera_distance_to_npc_render_depth(chunk_render_distance, max_depth);
         if (old != render_depth) {
             zox_set(e, RenderDepth, { render_depth });
             zox_set(e, RenderDepthDirty, { zox_dirty_trigger } );

@@ -41,7 +41,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, Gravity3D, { zox_default_gravity });
     zox_prefab_set(e, DisableGravity, { 0 });
     // Bounds
-    zox_prefab_set(e, Bounds3D, { float3_single(0) });
+    zox_prefab_set(e, Bounds3D, { float3_single(0.5f) });
     zox_prefab_set(e, Bounds3Dirty, { 0 });
     zox_prefab_set(e, DisableMovement, { 0 });
     zox_prefab_set(e, Grounded, { 0 });

@@ -27,8 +27,11 @@ byte tooltip_event_main_menu_4(ecs* world, const TooltipEventData *data) {
 
 // List Menus adjust to the menu size
 entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
-    byte header_font_size = 24 * ui_scale;
-    byte list_font_size = 18 * ui_scale;
+    byte window_alignment = zox_huds_window_alignment;
+    float2 window_anchor = zox_huds_window_anchor;
+    byte header_font_size = 32 * ui_scale;
+    byte list_font_size = zox_huds_element_font_size * ui_scale;
+    byte2 padding = byte2_single(8 * ui_scale);
     char header[128];
     {
         strncpy(header, base_header, sizeof(base_header) - 1);
@@ -52,7 +55,6 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     }
     int elements_count = 0;
     SpawnListElement elements[4];
-    byte2 padding = byte2_single(4 * ui_scale);
     byte can_load = has_save_game_directory(game_name);
     byte can_exit = 1;
 #ifdef zox_android
@@ -80,7 +82,7 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     }
     ClickEvent close_event = { NULL };
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, header, header_font_size, list_font_size, close_event, 0, 0, 0, zox_alignment_centre, float2_top_left, padding, spawned, elements, elements_count, elements_count);
+    entity3 e3 = spawn_window_list(world, prefab_window, player, header, header_font_size, list_font_size, close_event, 0, 0, 0, window_alignment, window_anchor, padding, spawned, elements, elements_count, elements_count);
     entity e = e3.x;
     zox_set_unique_name(e, "main_menu");
     zox_add_tag(e, MenuMain);

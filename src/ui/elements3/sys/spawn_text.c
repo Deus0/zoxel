@@ -41,7 +41,7 @@ zox_sys2(Text3DResizeSystem) {
                 }
 #endif
                 // zox_log("Set Zigel3D to dirty! %s:%i", zox_getn(e), child_index);
-                zox_setm(e2, ZigelDirty, zox_zigel_dirty_update);
+                zox_setv(e2, ZigelDirty, zox_zigel_dirty_update);
             }
         }
         if (old_length == new_length) {
@@ -65,7 +65,7 @@ zox_sys2(Text3DResizeSystem) {
                     // NOTE: When shrinking the children we need to adjust the child indexes
                     if (child_index < new_length) {
                         // here we can set child indexes
-                        zox_setm(e2, ChildIndex, child_index);
+                        zox_setv(e2, ChildIndex, child_index);
                         // Reposition as no system for this atm
                         uint index = child_index_to_text_array_index(text->value, text->length, child_index);
                         float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);
@@ -98,7 +98,7 @@ zox_sys2(Text3DResizeSystem) {
                     if (!zox_has(e2, Zigel)) {
                         continue;
                     }
-                    zox_setm(e2, ChildIndex, child_index);
+                    zox_setv(e2, ChildIndex, child_index);
                     uint index = child_index_to_text_array_index(text->value, text->length, child_index);
                     float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);
                     zox_set(e2, LocalPosition3D, { position });

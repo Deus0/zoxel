@@ -3,8 +3,27 @@
 #include "input.c"
 #include "inspector_label.c"
 #include "max_system_time.c"
+#include "fps.c"
+#include "label.c"
 
 void define_systems_editor(ecs *world) {
+    zox_system(
+        FpsDisplaySystem,
+        zoxp_update,
+        [out] texts.TextData,
+        [out] texts.TextDirty,
+        [out] editor.FPSDisplayTicker,
+        [none] editor.FPSDisplay
+    );
+    zox_system(
+        DebugLabelSystem,
+        zoxp_update,
+        [in] players.PlayerLink,
+        [in] editor.DebugLabelData,
+        [out] texts.TextDirty,
+        [out] texts.TextData,
+        [none] editor.GameDebugLabel
+    );
     zox_system(
         InspectorLabelSystem,
         zoxp_update,

@@ -39,6 +39,12 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
         zox_add_tag(bone, HeadBone);
         zox_set(skeleton, HeadBoneLink, { bone });
     }
+    if (zox_has(part, ArmPart)) {
+        zox_add_tag(bone, ArmBone);
+    }
+    if (zox_has(part, Hips)) {
+        zox_add_tag(bone, HipsBone);
+    }
     if (zox_has(part, Shoulder)) {
         zox_add_tag(bone, ShoulderBone);
         zox_set(bone, SwingState, { 1 });

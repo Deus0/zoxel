@@ -82,7 +82,7 @@ static inline byte flood_light(const VoxelNode* voxels, LightNode* lights, const
 
 zox_sys2(LightFloodSystem) {
     byte dbg_log = 0;
-    byte max_process = 0; // 4
+    byte max_process = !zox_disable_process_skips ? 1 : 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);

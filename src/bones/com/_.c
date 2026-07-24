@@ -1,7 +1,6 @@
 zox_tag(Bone);
 zox_tag(Skeleton);
 zox_tag(PaintedSkeleton);
-zox_tag(HeadBone);
 zoxc_state(SkeletonDirty);
 zoxc_float3(BonePosition);
 zoxc_float3(BoneSize);
@@ -9,6 +8,8 @@ zoxc_arrayd(BoneIndexes, byte)
 zoxc_arrayd(BoneLinks, entity)
 #include "bone_index.c"
 zox_tag(HeadBone);
+zox_tag(HipsBone);
+zox_tag(ArmBone);
 zox_tag(HandBone);
 zox_tag(ShoulderBone);
 zox_tag(ThighBone);
@@ -28,7 +29,6 @@ void define_components_bones(ecs* world) {
     zoxd_tag(Bone);
     zoxd_tag(Skeleton);
     zoxd_tag(PaintedSkeleton);
-    zoxd_tag(HeadBone);
     zoxd_state(SkeletonDirty);
     zoxd_float3(BonePosition);
     zoxd_float3(BoneSize);
@@ -37,6 +37,8 @@ void define_components_bones(ecs* world) {
     zoxd_arrayd(BoneLinks);
     zoxd_dest(BoneIndexGPULink);
     zoxd_tag(HeadBone);
+    zoxd_tag(HipsBone);
+    zoxd_tag(ArmBone);
     zoxd_tag(HandBone);
     zoxd_tag(ShoulderBone);
     zoxd_tag(ThighBone);

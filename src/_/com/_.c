@@ -1,5 +1,6 @@
 // NOTE: Core components for entire engine!
 // General
+zox_tag(DebugEntity);
 zoxc_byte(Active);
 zoxc_double(DeactivateDelay);
 zoxc_byte(GenericEvent);
@@ -55,6 +56,7 @@ void add_double_to_samples(ecs *world, entity e, double value) {
 
 void zox_define_components_core(ecs* world) {
     // General
+    zoxd_tag(DebugEntity);
     zoxd_byte(Active);
     zoxd_double(DeactivateDelay);
     /*if (zox_tst_remove_deactivates) {

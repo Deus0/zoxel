@@ -20,7 +20,13 @@ zox_sys2(ActiveActionHoldSystem) {
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        raise->value = zox_valid(aaction->value); // raise arm if proper action
+        byte new_raise = zox_valid(aaction->value);
+        if (raise->value != new_raise) {
+            raise->value = zox_valid(aaction->value); // raise arm if proper action
+            if (dbg_log) {
+                zox_log("[%s] is Raising their arm for [%s]", zox_getn(e), zox_getn(aaction->value));
+            }
+        }
         byte spawn_held = zox_valid(aaction->value) && zox_has(aaction->value, Item);
         entity bone_parent;
         if (zox_valid(hand_bone->value)) {

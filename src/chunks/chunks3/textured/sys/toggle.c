@@ -24,8 +24,8 @@ zox_sys2(ChunkMeshToggleSystem) {
                         new_mesh = mesh;
                     } else if (zox_getv(mesh, Active)) {
                         if (old_mesh) {
-                            zox_loge("[%s] has more than one Active Meshes [%s]", zox_getn(e), zox_getn(mesh));
-                            zox_setm(mesh, Active, 0);
+                            zox_loge("[%s] has more than one Active Meshes [%s] [%s]", zox_getn(e), zox_getn(mesh), zox_getn(old_mesh));
+                            zox_setv(old_mesh, Active, 0);
                         }
                         old_mesh = mesh;
                     }
@@ -34,7 +34,8 @@ zox_sys2(ChunkMeshToggleSystem) {
         }
         // Enable to make sure it starts updating!
         if (new_mesh) {
-            zox_setm(new_mesh, Active, 1);
+            zox_setv(new_mesh, Active, 1);
+            // zox_setm(new_mesh, Active, 1);
             if (dbg_log) {
                 zox_log("Chunk [%s] Set Mesh [%s] to Active [%i]", zox_getn(e), zox_getn(new_mesh), 1);
             }
@@ -45,7 +46,8 @@ zox_sys2(ChunkMeshToggleSystem) {
         }
         // can we just set another flag, then fade it
         if (old_mesh) {
-            zox_setm(old_mesh, Active, 0);
+            zox_setv(old_mesh, Active, 0);
+            // zox_setm(old_mesh, Active, 0);
             if (dbg_log) {
                 zox_log("Chunk [%s] Set Mesh [%s] to Active [%i]", zox_getn(e), zox_getn(old_mesh), 0);
             }

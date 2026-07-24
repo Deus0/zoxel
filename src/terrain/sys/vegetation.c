@@ -1,5 +1,7 @@
 // NOTE: Places vegetation, only in top chunks
 zox_sys2(VegetationChunk3System) {
+    short grass_height = terrain_grass_height * render_distance_y;
+    short stone_height = terrain_stone_height * render_distance_y;
     byte max_process = 0; // 16;
     byte max_veggie_height = 16;    // max tree height / veggies
     zox_sys_world();

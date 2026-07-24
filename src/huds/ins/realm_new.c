@@ -36,14 +36,11 @@ void on_confirmed_new_realm(ecs *world, ClickEventData event) {
 
 void on_cancelled_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    //zox_geter(player, ElementLinks, elements);
-    //find_array_element_with_tag(elements, MenuNewRealm, menu);
     entity canvas = zox_getv(player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
     if (menu) {
         zox_delete(menu);
     }
-    // zox_log("canceled new realm");
     // Delete Realm
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
@@ -60,20 +57,19 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     }
     zox_geter_value(realm, Seed, lint, seed);
     int2 size = (int2) { 128 * ui_scale, 96 * ui_scale };
-    byte list_font_size = 8 * ui_scale;
+    float2 window_anchor = zox_huds_window_anchor;
+    byte header_font_size = zox_huds_header_font_size * ui_scale;
+    byte list_font_size = zox_huds_element_font_size * ui_scale;
+    byte2 list_padding = byte2_single(zox_huds_list_padding * ui_scale);
     byte2 button_padding = (byte2) { 6 * ui_scale, 4 * ui_scale };
-    byte2 list_padding = (byte2) { 8 * ui_scale, 8 * ui_scale };
+    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     // more data
     zox_geter_value(player, CanvasLink, entity, canvas);
     const char* header_label = "Where"; // "New Realm";
     int max_labels = max_settings;
-    float2 anchor = float2_top_right;
-    // byte layer = 1;
     // # Window #
     LayoutParentData canvas_data = { .e = canvas };
-    byte header_font_size = 8 * ui_scale;
-    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
-    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_label, canvas, int2_zero, size, anchor, header_font_size, header_padding, &on_cancelled_new_realm);
+    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_label, canvas, int2_zero, size, window_anchor, header_font_size, header_padding, &on_cancelled_new_realm);
     entity e = e3.x;
     entity body = e3.z;
     zox_add_tag(e, MenuNewRealm);

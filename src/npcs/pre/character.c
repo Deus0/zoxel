@@ -15,5 +15,9 @@ entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     zox_prefab_set(e, ThreatPosition, { float3_zero });
     zox_prefab_set(e, WanderDirection, { float3_zero });
     zox_set(e, RenderDisabled, { 1 });
+    // Spawn Actionbar slots
+    /*entity actionbar = spawn_slots(world, e, 4);
+    zox_set_unique_name(actionbar, "actionbar");
+    zox_add_tag(actionbar, Actionbar);*/
     return e;
 }

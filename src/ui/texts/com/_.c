@@ -12,6 +12,7 @@ zoxc_double(AnimateZext);
 zoxc_text(TextData)
 zoxc_state(TextDirty);
 zoxc_state(TextSizeDirty);
+zoxc_entity(ZigelPrefab);
 
 void define_components_texts(ecs *world) {
     zoxd_tag(Zext);
@@ -28,4 +29,5 @@ void define_components_texts(ecs *world) {
     zoxd_text(TextData);
     zoxd_state(TextDirty);
     zoxd_state(TextSizeDirty, [none] Zext);
+    zoxd_entity(ZigelPrefab);
 }

@@ -284,6 +284,9 @@ zox_sys2(BodyCombineSystem) {
         block_scale->value = 1.0f / length2;
         body_dirty->value = zox_generate_body_bones;
         dirty->value = zox_dirty_trigger;
+        if (zox_has(e, MaxRenderDepth)) {
+            zox_setm(e, MaxRenderDepth, max_depth);
+        }
         if (dbg_log) {
             zox_log("Body [%s] Depth [%i] Scale [%f]", zox_get_name(e), max_depth, block_scale->value);
         }

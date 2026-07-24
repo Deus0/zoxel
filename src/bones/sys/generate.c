@@ -32,6 +32,9 @@ zox_sys2(BoneIndexGenerateSystem) {
             bone_positions[j] = zox_getv(bone, BonePosition);
             bone_sizes[j] = zox_getv(bone, BoneSize);
             float3 half_size = bone_sizes[j];
+            if (block_vox_depth >= 5) { // && zox_has(bone, ArmBone)) {
+                half_size = float3_multiply1(half_size, 1.2f);
+            }
             bones_bounds_lower[j] = float3_subtract(bone_positions[j], half_size);
             bones_bounds_upper[j] = float3_add(bone_positions[j], half_size);
         }

@@ -17,7 +17,7 @@ entity spawn_prefab_chunk_mesh(ecs* world) {
     zox_prefab_set(e, ColorsGPULink, { 0 });
     zox_prefab_set(e, MeshRenderCount, { 0 });
     // States
-    zox_prefab_set(e, Active, { 1 });
+    zox_prefab_set(e, Active, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     // Events
     zox_prefab_set(e, BuildChunkMesh, { zox_build_chunk_mesh_run });

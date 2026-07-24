@@ -133,6 +133,7 @@ void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voctree, const V
 
 // Builds Colored Vox Meshes
 zox_sys2(ChunkColorsBuildSystem) {
+    byte max_process = !zox_disable_process_skips ? 1 : 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNode);
@@ -160,6 +161,10 @@ zox_sys2(ChunkColorsBuildSystem) {
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(BuildChunkMesh, build);
         zox_sys_o(MeshDirty, mesh_dirty);
+        // NOTE: Delay if past limit [max_process]
+        if (max_process && process_count > max_process) {
+            continue;
+        }
         if (build->value == zox_dirty_trigger) {
             build->value = zox_dirty_active;
             continue;
@@ -207,5 +212,6 @@ zox_sys2(ChunkColorsBuildSystem) {
         colors->value = finalize_arrayd_color_rgb(mesh.colors);
         build->value = 0;
         mesh_dirty->value = mesh_state_skeleton_trigger;
+        zox_sys_increment();
     }
 } zox_sys_end(ChunkColorsBuildSystem);

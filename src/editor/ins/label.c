@@ -1,6 +1,6 @@
 entity spawn_game_debug_label(ecs *world, entity canvas) {
     if (!canvas || !zox_has(canvas, PlayerLink)) {
-        zox_log("! [spawn_game_debug_label] error: invalid canvas, or no player found on canvas\n");
+        zox_loge("[spawn_game_debug_label] error: invalid canvas, or no player found on canvas");
         return 0;
     }
     entity prefab = prefab_label_textured;
@@ -20,7 +20,6 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
     byte alignment = zox_alignment_top_right;
     float2 anchor = float2_one; //  { 1.0f, 1.0f };
     int2 position = (int2) { -8, -8 };
-    // returns the child zext
     entity e = spawn_label(world, prefab, parent, position, anchor, padding, "", font_size, alignment, layer, fill, button_outline, font_fill, button_font_outline);
     zox_set_unique_name(e, "debug_label");
     zox_add_tag(e, EditorElement);

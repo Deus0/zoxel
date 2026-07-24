@@ -3,7 +3,7 @@
 
 // NOTE: Needs to skip GPU calls for non layers since called per layer
 zox_sys2(ElementRenderSystem) {
-    byte is_log = 0;
+    byte is_log = 1;
     float depth_per_layer = 0.001f;
     float depth_begin = depth_per_layer;
     entity base_material = material_textured2D;
@@ -37,10 +37,10 @@ zox_sys2(ElementRenderSystem) {
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, uvs);
         zox_sys_i(TextureGPULink, texture);
-        if (disabled->value || !alpha->value) {
+        if (!zox_new_ui_renderer && layer->value != renderer_layer) {
             continue;
         }
-        if (!zox_new_ui_renderer && layer->value != renderer_layer) {
+        if (disabled->value || !alpha->value) {
             continue;
         }
         entity root_camera = zox_get_root_canvas_camera(world, e);
@@ -93,7 +93,9 @@ zox_sys2(ElementRenderSystem) {
         zox_gpu_float(attributes->alpha, alpha->value);
         zox_gpu_render(6);
         if (is_log) {
-            zox_log("Rendering [%s] at L[%i] Depth [%f]", zox_get_name(e), layer->value, depth);
+            if (zox_has(e, DebugEntity)) {
+                zox_log("Rendering [%s] at L[%i] At [%.01fx%.01fx%f]", zox_get_name(e), layer->value, position2->value.x, position2->value.y, depth);
+            }
         }
         zox_sys_increment();
     }

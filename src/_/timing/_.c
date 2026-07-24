@@ -1,7 +1,7 @@
 #ifndef zoxm_time
 #define zoxm_time
 
-// zoxd_module(Timing);
+byte zox_log_lags = 0;
 entity max_systems_data = 0;
 entity frame_times_samples = 0;
 double zox_delta_time_system = 0;

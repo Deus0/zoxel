@@ -18,5 +18,6 @@ entity spawn_prefab_text(ecs* world, entity prefab) {
     zox_prefab_set(e, RenderDisabled, { 0 });
     // Do we need to set them? Are font thickness used?
     zox_prefab_set(e, FontThickness, { 1 });
+    zox_prefab_set(e, ZigelPrefab, { prefab_zigel });
     return e;
 }
