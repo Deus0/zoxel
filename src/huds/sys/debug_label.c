@@ -10,7 +10,6 @@ zox_sys2(DebugLabelSystem) {
     } else {
         return;
     }
-
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerLink);
@@ -22,30 +21,25 @@ zox_sys2(DebugLabelSystem) {
         zox_sys_i(DebugLabelData, debugLabelData);
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, dirty);
-
         if (dirty->value) {
             continue;
         }
-
         entity player = playerLink->value;
         if (!player) {
             continue;
         }
-
         uint index = 0;
         uint size = max_debug_characters;
         char buffer[size];
-        index += snprintf(buffer + index, size - index, "%s [v0.0.1]\n", game_name);
-
         if (debugLabelData->value) {
             debugLabelData->value(world, player, buffer, size, index);
+        } else {
+            index += snprintf(buffer + index, size - index, "%s [v0.0.1]\n", game_name);
         }
-
         // now finish it
         if (index == 0) {
             buffer[0] = '\0';
         }
-
         if (!is_zext(data, buffer)) {
             set_zext(data, buffer);
             dirty->value = 1;

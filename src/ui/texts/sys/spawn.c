@@ -65,7 +65,7 @@ zox_sys2(ZigelSpawnSystem) {
 #endif
                 // NOTE: When shrinking the children we need to adjust the child indexes
                 if (child_index < new_length) {
-                    zox_setm(e2, ZigelDirty, 1);
+                    zox_setm(e2, ZigelDirty, zox_zigel_dirty_update);
                     child_index++;
                 }
             }

@@ -73,6 +73,7 @@ byte get_place_position(lint seed, int2 region_position, int2 region_size, byte2
 zox_sys2(RegionTownsSystem) {
     byte dbg_log = 0;
     uint max_attempts = 100;
+    int seed_shift = 369;
     byte2 towns_count = (byte2) { 1, 9 };
     byte2 min_size = (byte2) { 64, 64 };
     byte2 max_size = (byte2) { 160, 160 };
@@ -133,14 +134,14 @@ zox_sys2(RegionTownsSystem) {
         int2 positions[spawn_count];
         byte2 sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
-            if (!get_place_position(seed->value, block_position->value, block_size->value, region_padding, min_size, max_size, town_padding, positions, sizes, j, mountain_positions, mountain_radii, mountains_length, max_attempts)) {
+            if (!get_place_position(seed->value + j * seed_shift, block_position->value, block_size->value, region_padding, min_size, max_size, town_padding, positions, sizes, j, mountain_positions, mountain_radii, mountains_length, max_attempts)) {
                 continue;
             }
             int2 town_position = positions[j];
             byte2 town_size = sizes[j];
-            byte wall_height = seed_range(seed->value, wall_height_range.x, wall_height_range.y);
-            byte wall_thickness = rand_range(wall_thickness_range.x, wall_thickness_range.y);
             lint town_seed = position_seed2(seed->value, town_position);
+            byte wall_height = seed_range(town_seed + seed_shift * 2, wall_height_range.x, wall_height_range.y);
+            byte wall_thickness = seed_range(town_seed + seed_shift * 3, wall_thickness_range.x, wall_thickness_range.y);
             spawn_town(world, prefab_town, e, town_seed, town_position, town_size, wall_height, wall_thickness);
             if (dbg_log) {
                 zox_log(" + Town [%ix%i] Size [%ix%i]", town_position.x, town_position.y, town_size.x, town_size.y);
