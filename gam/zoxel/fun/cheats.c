@@ -1,5 +1,18 @@
 entity dbg_ui_cheats;
 
+void zox_dbg_toggle_fly_mode(ecs* world, ClickEventData data) {
+    entity player = dbg_player;
+    if (!zox_valid(player)) {
+        return;
+    }
+    entity character = zox_getv(player, CharacterLink);
+    if (!zox_valid(character)) {
+        return;
+    }
+    zox_log("Toggling Fly Mode: %s", zox_get_name(character));
+    zox_setv(character, FlyMode, !zox_getv(character, FlyMode));
+}
+
 void zox_dbg_add_no_clip(ecs* world, ClickEventData data) {
     entity player = dbg_player;
     if (!zox_valid(player)) {
@@ -43,16 +56,20 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UI
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Fly Mode",
+        .on_click = { &zox_dbg_toggle_fly_mode },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "No Clip",
+        .on_click = { &zox_dbg_add_no_clip },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "All Items",
         .on_click = { &zox_tst_all_items },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "All Skills",
         .on_click = { &zox_tst_all_skills },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "No Clip",
-        .on_click = { &zox_dbg_add_no_clip },
     };
     // Test our uis
     entity spawned[elements_count];

@@ -9,6 +9,14 @@
 #ifndef zoxm_chunks3
 #define zoxm_chunks3
 
+// Chunk States
+#define zox_generate_terrain_start 1
+#define zox_generate_terrain_landfill 1
+#define zox_generate_terrain_vegetation 2
+#define zox_generate_terrain_towns 3
+#define zox_generate_terrain_sunlight 4
+#define zox_generate_terrain_end2 5
+
 byte zox_dbg_disable_chunk_mesh = 0;
 byte zox_dbg_npc_all_max_depth = 0;
 #include "set/_.c"

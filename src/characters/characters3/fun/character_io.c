@@ -34,6 +34,11 @@ void load_character_player(ecs *world, entity realm, entity e, float3* position,
     if (load_file_struct(path->value, "player.dat", &save, sizeof(SaveDataCharacter))) {
         *position = save.position;
         *euler = save.euler;
+        float map_bounds_y = render_distance_y * octree_size(terrain_depth);
+        if (position->y < -map_bounds_y || position->y > map_bounds_y) {
+            zox_loge("Character was saved out of map bounds Y [%f]", position->y);
+            position->y = 42;
+        }
     } else {
         zox_logw("Character Save File Corrupted [%s]", path);
         // TODO: Handle more gracefully

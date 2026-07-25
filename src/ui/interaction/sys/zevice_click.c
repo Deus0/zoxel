@@ -14,16 +14,16 @@ zox_sys2(ZeviceClickSystem) {
         if (disabled->value) {
             continue;
         }
+        entity player = zox_get_parent(world, device->value);
+        if (!zox_valid(player)) {
+            // zox_log(" ! device has null player [%lu]\n", device)
+            continue;
+        }
         if (!zox_valid(device->value)) {
             zox_loge(" device null from zevice [%lu]", e);
             continue;
         }
-        if (zox_gett_value(device->value, DeviceDisabled)) {
-            continue;
-        }
-        entity player = zox_get_parent(world, device->value);
-        if (!player) {
-            // zox_log(" ! device has null player [%lu]\n", device)
+        if (zox_getv(device->value, DeviceDisabled)) {
             continue;
         }
         byte device_mode = zox_getv(player, DeviceMode);
@@ -53,11 +53,11 @@ zox_sys2(ZeviceClickSystem) {
         if (click_type == 0) {
             continue;
         } else if (click_type == 1) {
-            clicked->value = target->value; // clicked
+            clicked->value = zox_valid(target->value) ? target->value : 0;
             on_element_clicked(world, player, clicked->value);
         }
         if (click_type == 1) { // clicked
-            if (target->value && zox_has(target->value, Dragable)) {
+            if (zox_valid(target->value) && zox_has(target->value, Dragable)) {
                 byte drag_mode = zox_drag_mode_none;
                 if (device_mode == zox_device_mode_keyboardmouse) {
                     drag_mode = zox_drag_mode_mouse;

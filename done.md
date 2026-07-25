@@ -1,5 +1,7 @@
 # Done
 
+-x loaded chunk doesnt generate light properly
+-x store spawned characters seperately to chunk entities
 -x Fix colors missmatch on lighting
 -x Fix chunk meshes being active at once
 -x Fix occassionally text zigels not rendering

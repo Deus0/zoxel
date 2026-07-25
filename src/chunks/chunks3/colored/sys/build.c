@@ -1,15 +1,3 @@
-byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **neighbors, const VoxelNode *node, int3 position, byte direction, byte depth) {
-    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(neighbors, node, position, depth, direction);
-    if (!adjacent_node) {
-        return edge;
-    }
-    byte reversed = reverse_direction(direction);
-    byte axis = reversed >> 1;  // 0=x, 1=y, 2=z
-    byte side = reversed & 1;   // 0=negative side, 1=positive side
-    // zox_log("axis [%i] side [%i] from direction [%i]", axis, side, reversed);
-    return get_node_sides_all_solid(solidity, adjacent_node, axis, side, depth);
-}
-
 // NOTE: Scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
 void add_voxel_face(mesh_colored_build_data* mesh, float3 position, float3 offset, float scale, const int* face_indicies, const float3* face_verts) {
     for (byte i = 0; i < 6; i++) {
@@ -26,6 +14,18 @@ void add_voxel_face(mesh_colored_build_data* mesh, float3 position, float3 offse
     }
 }
 
+byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **neighbors, const VoxelNode *node, int3 position, byte direction, byte depth) {
+    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(neighbors, node, position, depth, direction);
+    if (!adjacent_node) {
+        return edge;
+    }
+    byte reversed = reverse_direction(direction);
+    byte axis = reversed >> 1;  // 0=x, 1=y, 2=z
+    byte side = reversed & 1;   // 0=negative side, 1=positive side
+    // zox_log("axis [%i] side [%i] from direction [%i]", axis, side, reversed);
+    // we need full distance here
+    return get_node_sides_all_solid(solidity, adjacent_node, axis, side, 8); // depth);
+}
 
 void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees, mesh_colored_build_data* mesh, color_rgb voxel_color, float scale, float3 positionf, float3 bounds_offset, byte depth, byte3 position) {
     if (!root) {
@@ -37,6 +37,7 @@ void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees
     for (byte direction = 0; direction < 6; direction++) {
         nsolids[direction] = is_adjacent_all_solid(NULL, edge, noctrees, root, byte3_to_int3(position), direction, depth);
     }
+    // bake our27 neighbor voxels
 #ifdef zox_ambient_occlusion27
     short vlength = octree_size(depth);
     byte naos[27];
@@ -54,7 +55,6 @@ void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees
                     naos[i] = 0;
                 } else {
                     const VoxelNode* noctree = get_VoxelNode(root, depth, int3_to_byte3(nposition));
-                    // BUG: Crashed here, maybe corrupted?
                     naos[i] = noctree ? noctree->value > 0 : edge;
                 }
                 i++;
@@ -82,29 +82,36 @@ void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees
             add_voxel_face_colors_ao6(mesh->colors, voxel_color, direction, naos);
 #endif
         } else {
-            add_voxel_face_colors(mesh->colors, voxel_color, 0); // direction);
+            add_voxel_face_colors(mesh->colors, voxel_color, direction);
         }
     }
 }
 
-void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voxels, const VoxelNode** noctrees, const byte* nrdepths, const ColorRGBs* vcolors, mesh_colored_build_data* mesh, byte node_depth, byte depth, byte3 position, float3 bounds_offset, float scale) {
+void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voxels, const VoxelNode** noctrees, const byte* nrdepths, const ColorRGBs* vcolors, mesh_colored_build_data* mesh, byte target_depth, byte depth, byte3 position, float3 bounds_offset, float scale, byte is_split) {
     // If data is null
     if (!voxels) {
         return;
     }
     // Dig Deeper
-    if (depth < node_depth && !is_closed_VoxelNode(voxels)) {
+    byte has_vkids = !is_closed_VoxelNode(voxels);
+    const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voxels) : NULL;
+    byte is_dig = depth < target_depth;
+    if (!is_split) { // || !zox_split_colored_chunks) {
+        is_dig &= has_vkids;
+    }
+    if (is_dig) { // && !is_closed_VoxelNode(voxels)) {
         depth++;
         scale *= 0.5f;
         byte3_multiply_byte(&position, 2);
-        VoxelNode* kids = get_children_VoxelNode(voxels);
+        // VoxelNode* kids = get_children_VoxelNode(voxels);
         for (byte i = 0; i < octree_length; i++) {
             // Models dont have these set??
-            if (!kids[i].value) {
+            const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
+            /*if (!kids[i].value) {
                 continue;
-            }
-            byte3 cposition = byte3_add(position, octree_positions_b[i]);
-            build_voxel_mesh_c(root, &kids[i], noctrees, nrdepths, vcolors, mesh, node_depth, depth, cposition, bounds_offset, scale);
+            }*/
+            byte3 child_position = byte3_add(position, octree_positions_b[i]);
+            build_voxel_mesh_c(root, child_voxels, noctrees, nrdepths, vcolors, mesh, target_depth, depth, child_position, bounds_offset, scale, is_split);
         }
         return;
     }
@@ -174,13 +181,14 @@ zox_sys2(ChunkColorsBuildSystem) {
             continue;
         }
         clear_mesh(indicies, vertices, colors);
+        byte is_split = !zox_has(e, NoSplitChunk);
         // fetch neighbor depths and nodes
         const VoxelNode* noctrees[6];
         byte nrdepths[6];
         for (byte j = 0; j < 6; j++) {
             entity n = neighbors->value[j];
             noctrees[j] = n ? zox_gett(neighbors->value[j], VoxelNode) : NULL;
-            nrdepths[j] = n ? zox_gett_value(n, RenderDepth) : 0;
+            nrdepths[j] = n ? zox_getv(n, RenderDepth) : 0;
         }
         float3 b = calculate_vox_bounds(csize->value, scale->value);
         float3 position = float3_scale(b, -1);
@@ -193,7 +201,7 @@ zox_sys2(ChunkColorsBuildSystem) {
             .colors = create_color_rgb_array_d(initial_dynamic_array_size)
         };
         read_lock_VoxelNode(voxels);
-        build_voxel_mesh_c(voxels, voxels, noctrees, nrdepths, vcolors, &mesh, rdepth->value, 0, byte3_zero, position, cscale);
+        build_voxel_mesh_c(voxels, voxels, noctrees, nrdepths, vcolors, &mesh, rdepth->value, 0, byte3_zero, position, cscale, is_split);
         read_unlock_VoxelNode(voxels);
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;

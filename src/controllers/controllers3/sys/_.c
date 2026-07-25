@@ -106,6 +106,7 @@ void define_systems_controllers3(ecs *world) {
         PlayerDialogueSystem,
         zoxp_update,
         [in] characters.CharacterLink,
+        [in] cameras.CameraLink,
         [in] layouts2.CanvasLink,
         [out] players.PlayerState
     );

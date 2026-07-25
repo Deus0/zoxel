@@ -78,9 +78,9 @@ zox_sys2(ZigelSpawnSystem) {
             }
         }*/
         if (new_length < old_length) {
-            //if (dbg_log) {
+            if (dbg_log) {
                 zox_log("[%s] Shrinking Text [%i] from [%i]", zox_getn(e), new_length, old_length);
-            //}
+            }
             // NOTE: Shrinks the children zigels
             // int child_index = old_length - 1;
             uint deleted_count = 0;

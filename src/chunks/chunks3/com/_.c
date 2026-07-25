@@ -50,12 +50,10 @@ void define_components_chunks3(ecs* world) {
     zoxd_byte(BuildChunkMesh);
     zoxd_state(VoxelNodeDirty);
     zoxd_state(ChunkDirty);
-    // zoxd_state(SidesOctreeDirty);
     zoxd_int3(ChunkPosition);
     zoxd_int3(ChunkSize);
     zoxd(ChunkNeighbors);
     zoxd_entities(ChunkEntities);
     zoxd_links(ChunkLink);
     zoxd_queue(VoxelNodeQueue);
-    // zoxd_queue(VoxelDropQueue);
 }

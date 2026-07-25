@@ -2,7 +2,7 @@ extern void on_spawned_character3_npc(ecs*, entity);
 uint total_spawned_npcs_count = 0;
 
 // we need to check if chunk has generated yet - is there a component for this?
-zox_sys2(Characters3SpawnSystem) {
+zox_sys2(TerrainCharactersSpawnSystem) {
     byte dbg_log = 0;
     float dbg_length = 0;
     if (disable_npcs || !character_spawn_rate_max) {
@@ -22,8 +22,8 @@ zox_sys2(Characters3SpawnSystem) {
     zox_sys_in(ChunkPosition);
     zox_sys_in(Position3D);
     zox_sys_in(BlockScale);
+    zox_sys_out(ChunkCharacters);
     zox_sys_out(CharactersSpawned);
-    zox_sys_out(ChunkEntities);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NpcSpawnZoneDirty, dirty);
@@ -37,8 +37,8 @@ zox_sys2(Characters3SpawnSystem) {
         zox_sys_i(ChunkPosition, chunk_position);
         zox_sys_i(Position3D, positionf);
         zox_sys_i(BlockScale, cscale);
+        zox_sys_o(ChunkCharacters, characters);
         zox_sys_o(CharactersSpawned, spawned);
-        zox_sys_o(ChunkEntities, entities);
         // Only spawn if fully loaded
         if (!active->value || dirty->value) {
             continue;
@@ -66,7 +66,7 @@ zox_sys2(Characters3SpawnSystem) {
         if (!has_children_VoxelNode(voctree) || !voctree->value) {
             continue;
         }
-        zox_geter(realm, CharacterLinks, characters);
+        zox_geter(realm, CharacterLinks, realm_characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voctree_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
@@ -86,8 +86,8 @@ zox_sys2(Characters3SpawnSystem) {
             byte chance_current = 0;
             byte chance_rolled = rand() % max_chance;
             entity meta = 0;
-            for (byte k = 0; k < characters->length; k++) {
-                entity e2 = characters->value[k];
+            for (byte k = 0; k < realm_characters->length; k++) {
+                entity e2 = realm_characters->value[k];
                 zox_geter_value(e2, SpawnChance, byte, chance);
                 chance_current += chance;
                 if (chance_rolled <= chance_current) {
@@ -128,10 +128,12 @@ zox_sys2(Characters3SpawnSystem) {
                 zox_loge("Spawning NPC Failed");
                 continue;
             }
-            zox_set(e2, ChunkPosition, { chunk_position->value });
+            characters->value[spawned->value] = e2;
+            spawned->value++;
+            // zox_set(e2, ChunkPosition, { chunk_position->value });
             // Link together
-            zox_set(e2, ChunkLink, { e });
-            add_to_ChunkEntities(entities, e2);
+            // zox_set(e2, ChunkLink, { e });
+            // add_to_ChunkEntities(entities, e2);
             if (disable_npc_movement) {
                 zox_set(e2, DisableMovement, { 1 });
             }
@@ -144,6 +146,5 @@ zox_sys2(Characters3SpawnSystem) {
             spawned_count++;
             total_spawned_npcs_count++;
         }
-        spawned->value = 1;
     }
-} zox_sys_end(Characters3SpawnSystem);
+} zox_sys_end(TerrainCharactersSpawnSystem);

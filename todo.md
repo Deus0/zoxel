@@ -4,7 +4,47 @@ used - 200-400mb used
 
 # Note we need to use pipelines to isolate reading from voxels / writing to
 
+
+Bugs:
+- slime npcs arnt hitting back
+
+Quick Wins
+- set Vignette on Dialogue insteaad of Blur
+- arm should only slerp rotation - no setting
+- save player character slot data
+	- items, skills, etc whatever is there
+- load player character slot data
+- add chicken head item
+- Vox Items - hold chicken head in hands
+- 10% chance for Boney npc to have a quest to give
+	- change dialogue if no quest
+- simple kill slime quest 
+	- hand in once you killed 10
+	
+- add destruction particles
+- debug npc voxel positions - porcupine style
+- particles for skeleton death
+- bleed effect
+- skybox doesnt follow to main menu?
+- "Terrain Chunk Mesh Builder: Sides is true with Air" error
+- "OOB [set_octree_value] " error with vox building
+- PNG errors
+- Eventually we need multi chunk characters, cause their updates lag
+	- max depth 4-5 for mesh build times
+
+Atm:
+- time punch animation when first click?
+	- warmup of skill first
+	- then punch begins
+	- punch swings
+	- punch hits
+	- punch winds back
+	- skill coolsdown
+- Animate ui for punch, overlay
+- fix unstuck system and test it with no clip
+
 Fix:
+- I noticed Slimes have some missing faces
 - The errors about ChunkSides
 - I think I fucked up the chunk mesh lighting
     - wait its just the camera being a bit laggy on the charcter collider
@@ -23,6 +63,10 @@ New:
 - Add slight directional light over the AO on colored voxes
 
 Refactor:
+- Big one is making Vox + terrain use same ChunkSides code
+	- make vox use chunksides
+	- refactor vox mesh outside of vox itself
+	- Seperate out UVs generation from Faces, so they both use same Mesh Building
 - Move chunk render back to rendering, and just link to material
 - Make the chunk colors use same system to build mesh
     - we can just add uvs in for textured system

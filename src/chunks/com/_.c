@@ -1,5 +1,6 @@
 zox_tag(Chunk);
 zox_tag(ChunkMesh);
+zox_tag(NoSplitChunk);
 zoxc_byte(GenerateChunk);
 zoxc_byte(GenerateModel);
 zoxc_byte(NodeDepth);
@@ -11,6 +12,7 @@ zoxc_entity(ChunkMeshPrefabLink);
 void define_components_chunks(ecs* world) {
     zoxd_tag(Chunk);
     zoxd_tag(ChunkMesh);
+    zoxd_tag(NoSplitChunk);
     zoxd_byte(GenerateChunk);
     zoxd_byte(GenerateModel);
     zoxd_byte(NodeDepth);

@@ -101,8 +101,10 @@ zox_sys2(Chunk3LoadSystem) {
 #endif
         if (load_chunk(world, realm, position->value, voxels)) {
             depth->value = terrain_depth;
+            // generate->value = ;
             voxels_dirty->value = zox_dirty_trigger;
             loaded->value = 1;
+            zox_setv(e, GenerateChunk, zox_generate_terrain_sunlight);
             if (dbg_log) {
                 zox_log("Loaded Chunk [%s] with Depth [%i]", zox_get_name(e), depth->value);
             }

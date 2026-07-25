@@ -11,15 +11,15 @@ uint zox_dbg_label_character_links(ecs *world, entity player, char *buffer, uint
     entity region = zox_valid(tunk) ? zox_getv(tunk, RegionLink) : 0;
     // Character
     index += snprintf(buffer + index, size - index, "Character [%s]\n", zox_get_name(e));
-    index += snprintf(buffer + index, size - index, " - Region [%s]\n", zox_get_name(region));
-    index += snprintf(buffer + index, size - index, " - Tunk [%s]\n", zox_get_name(tunk));
-    index += snprintf(buffer + index, size - index, " - Chunk [%s]\n", zox_get_name(chunk));
     index += snprintf(buffer + index, size - index, " - Position [%.1fx%.1fx%.1f]\n", position.x, position.y, position.z);
     index += snprintf(buffer + index, size - index, " - Euler [%.1fx%.1fx%.1f]\n", euler.x, euler.y, euler.z);
+    index += snprintf(buffer + index, size - index, " - Region [%s]\n", zox_getn(region));
+    index += snprintf(buffer + index, size - index, " - Tunk [%s]\n", zox_getn(tunk));
+    index += snprintf(buffer + index, size - index, " - Chunk [%s]\n", zox_getn(chunk));
     if (zox_valid(camera)) {
-        index += snprintf(buffer + index, size - index, "Camera [%s]\n", zox_get_name(camera));
-        zox_geter_value(camera, Position3D, float3, camera_position)
-        zox_geter_value(camera, Euler, float3, camera_euler)
+        index += snprintf(buffer + index, size - index, "Camera [%s]\n", zox_getn(camera));
+        zox_geter_value(camera, Position3D, float3, camera_position);
+        zox_geter_value(camera, Euler, float3, camera_euler);
         index += snprintf(buffer + index, size - index, " - pos [%.1fx%.1fx%.1f]\n", camera_position.x, camera_position.y, camera_position.z);
         index += snprintf(buffer + index, size - index, " - eul [%.1fx%.1fx%.1f]\n", camera_euler.x, camera_euler.y, camera_euler.z);
     }

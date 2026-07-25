@@ -13,6 +13,7 @@
 
 // TODO: Use Sides Data for building
 // TODO: Proper AO using all cube neighbors
+byte zox_split_colored_chunks = 0;
 byte zox_ambient_occlusion = 1;
 #define zox_ambient_occlusion27
 #include "dat/_.c"

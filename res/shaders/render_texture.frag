@@ -1,5 +1,6 @@
 uniform sampler2D tex;
 uniform float blur_strength;
+uniform float vignette;
 in vec2 uv;
 out vec4 color;
 
@@ -69,10 +70,14 @@ void main() {
     }
     //vec4 blurred = gaussian_blur(tex, uv, BLUR_RADIUS);
     //color = mix(base, blurred, 0.9);
-    // Vignette
-    float vignette = smoothstep(0.8, 0.2, distance(uv, vec2(0.5)));
-    color.rgb *= vignette;
+    // === vignette ===
+    float vignette_intensity = 0.7;     // change to 0.9 for dialogue
+    vec2 vignette_centre = vec2(0.5, 0.5);
+    float vignette_smoothness = 0.7;
+    float vignette_mask = smoothstep(1.0 - vignette_smoothness, 1.0, length(uv - vignette_centre));
+    color.rgb *= 1.0 - vignette_mask * (1.0 + vignette_intensity);
+
     // Noise
     float noise = random(uv);
-    color = mix(color, vec4(noise, noise, noise, 1.0), NOISE_STRENGTH);
+    // color = mix(color, vec4(noise, noise, noise, 1.0), NOISE_STRENGTH);
 }
