@@ -2,18 +2,37 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+# Note we need to use pipelines to isolate reading from voxels / writing to
+
+Fix:
+- The errors about ChunkSides
+- I think I fucked up the chunk mesh lighting
+    - wait its just the camera being a bit laggy on the charcter collider
+    - even the ui overhead will glitch a little - make it slerp to position overheads
+- Set editor text contrast alot higher, black and white
+- Make raycast from fixed position, not off moving head
+- Keep spawned Character links seperate from ChunkEntities, one for position ref, other for spawn links
 - Fix Skinning issues of humanoids at max depth
 - Fix the layering of the 3D UIs, text and such has depth issues
 - Fix npcs falling through map
-- Fix colors missmatch on lighting
 - Make the ui use the Uploaded count of mesh, maybe thats why it flickers
-- Fix chunk meshes being active at once
 
-- Refactor Vegetation to its module
+New:
+- Dialogue to use black topbottom bars instead of fade
+- move dialogue text top left
+- Add slight directional light over the AO on colored voxes
 
-- Fix occassionally text zigels not rendering
-	- this was debugged that they all stopped rendering for several frames
-	- visible when it dissapears too
+Refactor:
+- Move chunk render back to rendering, and just link to material
+- Make the chunk colors use same system to build mesh
+    - we can just add uvs in for textured system
+- MeshDirty should set for diff data - bitfield - Mesh + UVs + Colors etc
+    - and keep set in systems that upload them
+    - keep them all modular
+    - keep it all centralized in rendering so we dont have to do the same work everywhere
+
+- Spawn/Despawn npc labels when they enter near player
+
 - SkeletonMesh accidently dissapeared whoops, check changing states
 
 - Spawn Humanoid NPC test function
@@ -21,7 +40,6 @@ used - 200-400mb used
 - debug label - the font will dissapear sometimes and reappear
 	- Looks like a memory issue causing the mashes to dissapear? when streaming
 
--x Remember to disable max_process' skips when windows chunks
 - List ui calculating wrong cause sliders different heights then buttons!
 - block placing still broken every 2nd place
 - Remove crafting users reference and use normal item ui for craft ui

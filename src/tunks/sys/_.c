@@ -14,7 +14,6 @@
 #include "biome_average.c"
 // More Maps
 #include "heights.c"
-#include "vegetation.c"
 #include "texture.c"
 #include "texture_heights.c"
 extern byte dbg_use_new_streaming;
@@ -72,17 +71,6 @@ void define_systems_tunks(ecs* world) {
         [in] tunks.BiomeMap,
         [out] tunks.GenerateTunk,
         [out] tunks.HeightMap,
-        [none] tunks.Tunk
-    );
-    // NOTE: Vegetation maps need biomes and temperature maps
-    zox_system(
-        VegetationMapSystem,
-        zoxp_update,
-        [in] tunks.TunkLod,
-        [in] tunks.TunkPosition,
-        [in] tunks.BiomeMap,
-        [out] tunks.GenerateTunk,
-        [out] tunks.VegetationMap,
         [none] tunks.Tunk
     );
     zox_system(

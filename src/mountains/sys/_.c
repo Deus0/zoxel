@@ -18,7 +18,7 @@ void zox_define_systems_mountains(ecs* world) {
         [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [out] tunks.GenerateTunk,
-        [out] tunks.VegetationMap,
+        [out] vegetation.VegetationMap,
         [out] tunks.HeightMap,
         [none] tunks.Tunk
     );

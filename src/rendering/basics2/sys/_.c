@@ -1,6 +1,6 @@
-#include "mesh2D_update_system.c"
-#include "mesh2D_uvs_update_system.c"
-#include "render2D_instance_system.c"
+#include "basic_upload.c"
+#include "textured_upload.c"
+#include "render2_instance.c"
 #include "render2.c"
 
 void define_systems_basics2D(ecs *world) {
@@ -17,12 +17,12 @@ void define_systems_basics2D(ecs *world) {
     zox_system_1(
         Mesh2DUvsUpdateSystem,
         zoxp_mainthread,
+        [in] rendering.MeshDirty,
+        [in] rendering.MeshGPULink,
+        [in] rendering.UvsGPULink,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices2D,
         [in] rendering.MeshUVs,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [out] rendering.MeshDirty
     );
     // 2D or 3D pipeline?
     zox_render3_system(

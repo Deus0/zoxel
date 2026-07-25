@@ -13,7 +13,7 @@ void zox_define_systems_towns(ecs* world) {
         [in] tunks.BiomeMap,
         [out] tunks.GenerateTunk,
         [out] tunks.HeightMap,
-        [out] tunks.VegetationMap,
+        [out] vegetation.VegetationMap,
         [out] towns.TownMap,
         [none] tunks.Tunk
     );

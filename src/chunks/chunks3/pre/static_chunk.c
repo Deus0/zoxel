@@ -22,9 +22,9 @@ entity spawn_prefab_static_chunk(ecs *world) {
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, Brightness, { 1.0f });
     zox_prefab_set(e, RenderDisabled, { 0 });
+    zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, MeshIndicies, { 0 });
-    zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
     return e;

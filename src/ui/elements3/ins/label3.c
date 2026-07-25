@@ -10,7 +10,7 @@ entity2 spawn_label3D(ecs *world, SpawnDataElement3 data, Text3DData text_data, 
     zox_set(e, OutlineColor, { data.outline_color });
     // sub text
     text_data.position = (float3) { 0, 0, element3D_depth_difference };
-    zigel_data.position = text_data.position;
+    // zigel_data.position = text_data.position;
     text_data.parent = e;
     entity text = spawn_text3D(world, text_data, zigel_data);
     zox_set_parent(world, text, e);

@@ -1,21 +1,23 @@
 // hmmm issue seems to be about faces
 // maybe we redo our mesh builder system
 
-static inline void zox_apply_smooth_lights(const LightNode** lights, const VoxelNode* voctree, const SidesOctree* sides, const MeshColorRGBs* colors, byte3 position, uint* ccount, byte render_depth, byte depth) {
+static inline void zox_apply_smooth_lights(const LightNode** lights, const VoxelNode* voxels, const SidesOctree* sides, const MeshColorRGBs* colors, byte3 position, uint* ccount, byte target_depth, byte depth) {
     // Dig Deeper
-    if (depth < render_depth && sides->ptr) {
+    if (depth < target_depth && sides->ptr) {
         const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
-        byte has_vkids = !is_closed_VoxelNode(voctree);
-        const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voctree) : NULL;
+        byte has_vkids = !is_closed_VoxelNode(voxels);
+        const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voxels) : NULL;
         byte3_multiply_byte(&position, 2);
         depth++;
         for (byte i = 0; i < 8; i++) {
-            const VoxelNode* cvoctree = has_vkids ? &vkids[i] : voctree;
+            const VoxelNode* cvoxels = has_vkids ? &vkids[i] : voxels;
             byte3 child_position = byte3_add(position, octree_positions_b[i]);
-            zox_apply_smooth_lights(lights, cvoctree, &sides_kids[i], colors, child_position, ccount, render_depth, depth);
-            if (*ccount >= colors->length) {
+            zox_apply_smooth_lights(lights, cvoxels, &sides_kids[i], colors, child_position, ccount, target_depth, depth);
+//#ifdef zox_safety_checks
+            if (*ccount + voxel_face_vertices_length > colors->length) {
                 break;
             }
+// #endif
         }
         return;
     }
@@ -23,20 +25,23 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
     if (!sides->value) {
         return;
     }
-    // TODO: If two adjacent voxels solid, dont use corner light!
+    if (!voxels->value) {
+        return;
+    }
+    // TODO: Handle Corners Properly:
+    //      - If two adjacent voxels solid, dont use corner light as it will be blocked
     // for each face that is visible according to node->sides
-    // byte** lights = ..
     for (byte direction = 0; direction < 6; direction++) {
         // skip hidden face
         if (!(sides->value & (1 << (direction + 1)))) {
             continue;
         }
-        // const LightNode* adjacent_light = get_neighbor_LightNode(lights, neighbor_lights, direction, position, depth);
-        // NOTE: We are basing this off the verts mesh.c voxel_face_vertices_n
-        // Else if smooth lighting, each point gets different lights
-        // Complicated because lights need to be the ones touching the vertex, this algorithm didn't account for corners
-        // First direct adjacent tops 2
-        // int3 positioni = byte3_to_int3(position);
+//#ifdef zox_safety_checks
+        if (*ccount + voxel_face_vertices_length > colors->length) {
+            zox_loge("  - Colors Past Limits [%i] - Face [%i] at Pos [%ix%ix%i] Depth [%i] of [%i]", *ccount, direction, position.x, position.y, position.z, depth, target_depth);
+            return;
+        }
+//#endif
         byte adjacent_light = getv_nearby_LightNode(lights, position, depth, neighbor_offsets[direction]);
         byte light_n1_0 = 0;
         byte light_1_0 = 0;
@@ -121,13 +126,6 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
                 total_light += light_0_n1 + light_1_0 + light_1_n1;
             }
             byte light = total_light / 4;
-//#ifdef zox_safety_checks
-            if (*ccount >= colors->length) {
-                // zox_loge("Count [%i] is greater than colors [%i] in Light Builder", *ccount, colors->length);
-                (*ccount)++;
-                continue;
-            }
-//#endif
             color_rgb* c = &colors->value[*ccount];
             c->r = light;
             c->g = light;
@@ -157,11 +155,8 @@ zox_sys2(SmoothLightsBuildSystem) {
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshColorsGenerate, generate);
         zox_sys_o(MeshColorsDirty, upload);
-        if (!generate->value) {
-            continue;
-        }
         // Dont build when mesh is building
-        if (build->value) {
+        if (!generate->value || build->value) {
             continue;
         }
         // Get chunk data
@@ -179,9 +174,10 @@ zox_sys2(SmoothLightsBuildSystem) {
             }
             continue;
         }
-        if (zox_getv(chunk, GenerateChunk) || zox_getv(chunk, BuildChunkSides)) {
+        // If chunk building we wait
+        if (zox_getv(chunk, BuildChunkSides)) {
             if (dbg_log) {
-                zox_log("Chunk is still Generating new Mesh, while building Lights [%s]", zox_get_name(e));
+                zox_log("Chunk [%s] is still Building Sides", zox_get_name(e));
             }
             continue;
         }
@@ -189,7 +185,6 @@ zox_sys2(SmoothLightsBuildSystem) {
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);
         const LightNode* lights = zox_get(chunk, LightNode);
-        // float block_scale = zox_getv(chunk, BlockScale);
         entity nearby_chunks[27];
         const LightNode* nearby_lights[27];
         fetch_nearby_chunks(world, e, neighbors->value, nearby_chunks);
@@ -198,8 +193,8 @@ zox_sys2(SmoothLightsBuildSystem) {
         zox_apply_smooth_lights(nearby_lights, voxels, sides, colors, byte3_zero, &ccount, depth->value, 0);
         generate->value = 0;
         upload->value = 1;
-        if (ccount > colors->length) {
+        /*if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
-        }
+        }*/
     }
 } zox_sys_end(SmoothLightsBuildSystem);

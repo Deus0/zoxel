@@ -5,7 +5,7 @@
 
 // NOTE: Set children on scrollview after spawning
 entity spawn_scrollview(ecs *world, entity parent, int2 position, int2 size, float2 anchor, byte scrollbar_width, int visible, int max) {
-    zox_instance(prefab_element_invisible);
+    zox_instance(prefab_layout2);
     zox_name("scrollview");
     zox_set_parent(world, e, parent);
     zox_set(e, LayoutPosition, { position });

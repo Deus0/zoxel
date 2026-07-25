@@ -1,5 +1,4 @@
-
-zox_sys2(ZigelUpdateSystem) {
+/*zox_sys2(ZigelUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -23,10 +22,10 @@ zox_sys2(ZigelUpdateSystem) {
             continue;
         }
 #endif
-        /*byte text_dirty = zox_getv(parent, TextDirty);
+        byte text_dirty = zox_getv(parent, TextDirty);
         if (text_dirty != zox_dirty_end) {
             continue;
-        }*/
+        }
         const TextData* text = zox_get(parent, TextData);
         byte new_zigel_index = calculate_zigel_index(text->value, text->length, child_index->value);
         if (zigel_index->value != new_zigel_index) {
@@ -37,14 +36,13 @@ zox_sys2(ZigelUpdateSystem) {
             }
         }
         dirty->value = zox_zigel_dirty_end;
-        // zox_log("+ updating text [%s]", zox_get_name(e))
     }
-} zox_sys_end(ZigelUpdateSystem);
+} zox_sys_end(ZigelUpdateSystem);*/
 
 
 // NOTE: Updates previous zigels to new data
 // TODO: Can we move this to Zigels instead of working at Text
-/*zox_sys2(TextUpdateSystem) {
+zox_sys2(TextUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -57,6 +55,7 @@ zox_sys2(ZigelUpdateSystem) {
         if (dirty->value != zox_dirty_active || !text->length) {
             continue;
         }
+        uint child_index = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -75,12 +74,12 @@ zox_sys2(ZigelUpdateSystem) {
                 }
 #endif
                 zox_mut_begin(e2, DataIndex, data_index);
-                uint new_data_index = child_index_to_text_array_index(text->value, text->length, j);
+                uint new_data_index = child_index_to_text_array_index(text->value, text->length, child_index);
                 if (data_index->value != new_data_index) {
                     data_index->value = new_data_index;
                 }
                 zox_mut_begin(e2, ZigelIndex, zigel_index);
-                byte new_index = calculate_zigel_index(text->value, text->length, j);
+                byte new_index = calculate_zigel_index(text->value, text->length, child_index);
                 if (zigel_index->value != new_index) {
                     zigel_index->value = new_index;
                     zox_muter(e2, GenerateTexture, generate);
@@ -89,8 +88,9 @@ zox_sys2(ZigelUpdateSystem) {
                         zox_log("+ Text [%s]:[%i] New [%i] Old [%i]", zox_get_name(e), j, new_index, zigel_index->value);
                     }
                 }
+                child_index++;
             }
         }
         // zox_log("+ updating text [%s]", zox_get_name(e))
     }
-} zox_sys_end(TextUpdateSystem);*/
+} zox_sys_end(TextUpdateSystem);

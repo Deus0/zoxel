@@ -71,10 +71,6 @@ zox_sys2(ChunkMeshSpawnSystem) {
             zox_set(e2, RenderDepth, { depth->value });
             zox_set(e2, RenderDisabled, { render_disabled->value });
             zox_set(e2, TransformMatrix, { matrix->value });
-            // Spawn GPU Buffers
-            zox_set(e2, MeshGPULink, { spawn_gpu_mesh_buffers() });
-            zox_set(e2, UvsGPULink, { zox_gpu_create_buffer() });
-            zox_set(e2, ColorsGPULink, { zox_gpu_create_buffer() });
         }
         if (dirty->value == zox_chunk_lod_dirty_spawn) {
             dirty->value = zox_chunk_lod_dirty_toggle;

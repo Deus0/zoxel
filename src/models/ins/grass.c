@@ -4,7 +4,7 @@ entity2 spawn_model_grass(ecs* world, lint seed, byte max_depth, color vox_color
     entity vox_lod = 0;
     byte length = octree_size(max_depth);
     srand(seed);
-    uint place_count_big = rand_range((length * 0.3f) * length * length, length * length * (length * 0.8f));
+    uint place_count_big = rand_range((length * 0.2f) * length * length, length * length * (length * 0.6f));
     zox_make_new();
     zox_set_unique_name(e, "model_grass");
     zox_set(e, MaxRenderDepth, { max_depth });

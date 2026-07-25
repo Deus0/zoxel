@@ -22,30 +22,6 @@ void define_systems_chunks3_textured(ecs *world) {
         [none] chunks3.ChunkTextured
     );
     zox_system(
-        ChunkSidesSystem,
-        zoxp_update,
-        [in] chunks.NodeDepth,
-        [in] chunks3.ChunkNeighbors,
-        [in] chunks3.VoxelNode,
-        [out] chunks.BuildChunkSides,
-        [out] chunks3.SidesOctree,
-        [none] chunks3.ChunkTextured
-    );
-    // Refactor Chunk Mesh
-    zox_system(
-        ChunkTexturedBuildSystem,
-        zoxp_update,
-        [in] core.Active,
-        [in] rendering.RenderDepth,
-        [out] chunks3.BuildChunkMesh,
-        [out] rendering.MeshIndicies,
-        [out] rendering.MeshVertices,
-        [out] rendering.MeshUVs,
-        [out] rendering.MeshColorRGBs,
-        [out] rendering.TexturedMeshDirty,
-        [none] chunks.ChunkMesh
-    );
-    zox_system(
         ChunkMeshToggleSystem,
         zoxp_update,
         [in] rendering.RenderDepth,
@@ -75,5 +51,28 @@ void define_systems_chunks3_textured(ecs *world) {
         [none] chunks.ChunkMesh
     );
     add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
-    // zox_set(zox_id(Chunk3TexturedRenderSystem), SystemDeltaMax, { zox_lag_cutoff * 2 });
+    // Builds our Terrain Chunk Mesh
+    zox_system(
+        ChunkSidesSystem,
+        zoxp_voxels_sides,
+        [in] chunks.NodeDepth,
+        [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxelNode,
+        [out] chunks.BuildChunkSides,
+        [out] chunks3.SidesOctree,
+        [none] chunks3.ChunkTextured
+    );
+    zox_system(
+        ChunkTexturedBuildSystem,
+        zoxp_voxels_mesh,
+        [in] core.Active,
+        [in] rendering.RenderDepth,
+        [out] chunks3.BuildChunkMesh,
+        [out] rendering.MeshIndicies,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshUVs,
+        [out] rendering.MeshColorRGBs,
+        [out] rendering.TexturedMeshDirty,
+        [none] chunks.ChunkMesh
+    );
 }

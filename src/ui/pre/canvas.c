@@ -1,12 +1,12 @@
-entity spawn_prefab_canvas(ecs *world) {
-    zox_prefab();
+entity spawn_prefab_canvas(ecs *world, entity prefab) {
+    zox_prefab_child(prefab);
     zox_prefab_name("canvas");
     zox_add_tag(e, Canvas);
     // Layout
-    zox_prefab_set(e, LayoutPosition, { int2_zero });
+    /*zox_prefab_set(e, LayoutPosition, { int2_zero });
     zox_prefab_set(e, LayoutSize, { int2_zero });
     zox_prefab_set(e, LayoutPositionDirty, { zox_dirty_trigger });
-    zox_prefab_set(e, LayoutSizeDirty, { zox_dirty_trigger });
+    zox_prefab_set(e, LayoutSizeDirty, { zox_dirty_trigger });*/
     // Canvas Rendering
     zox_prefab_set(e, ScreenToCanvas, { float4_zero });
     // Links

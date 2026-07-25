@@ -12,12 +12,6 @@ byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **ne
 
 // NOTE: Scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
 void add_voxel_face(mesh_colored_build_data* mesh, float3 position, float3 offset, float scale, const int* face_indicies, const float3* face_verts) {
-    // expand_capacity_int_array_d(mesh->indicies, voxel_face_indicies_length);
-    // for (int i = 0, j = mesh->indicies->size; i < voxel_face_indicies_length; i++, j++) {
-    // mesh->indicies->data[j] = mesh->vertices->size + indiciesf[i];
-    // mesh->indicies->size += voxel_face_indicies_length;
-    // expand_capacity_float3_array_d(mesh->vertices, voxel_face_vertices_length);
-    //for (int i = 0, j = mesh->vertices->size; i < voxel_face_vertices_length; i++, j++) {
     for (byte i = 0; i < 6; i++) {
         int index = mesh->vertices->size + face_indicies[i];
         int_array_d_add(mesh->indicies, index);
@@ -29,9 +23,7 @@ void add_voxel_face(mesh_colored_build_data* mesh, float3 position, float3 offse
         float3_add_float3_p(&vertex, offset);
         float3_array_d_add(mesh->vertices, vertex);
         // color_rgb_array_d_add(mesh->colors, color_rgb_white);
-        // mesh->vertices->data[j] = vertex;
     }
-    // mesh->vertices->size += voxel_face_vertices_length;
 }
 
 
@@ -90,22 +82,22 @@ void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees
             add_voxel_face_colors_ao6(mesh->colors, voxel_color, direction, naos);
 #endif
         } else {
-            add_voxel_face_colors(mesh->colors, voxel_color, direction);
+            add_voxel_face_colors(mesh->colors, voxel_color, 0); // direction);
         }
     }
 }
 
-void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voctree, const VoxelNode** noctrees, const byte* nrdepths, const ColorRGBs* vcolors, mesh_colored_build_data* mesh, byte node_depth, byte depth, byte3 position, float3 bounds_offset, float scale) {
+void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voxels, const VoxelNode** noctrees, const byte* nrdepths, const ColorRGBs* vcolors, mesh_colored_build_data* mesh, byte node_depth, byte depth, byte3 position, float3 bounds_offset, float scale) {
     // If data is null
-    if (!voctree) {
+    if (!voxels) {
         return;
     }
     // Dig Deeper
-    if (depth < node_depth && !is_closed_VoxelNode(voctree)) {
+    if (depth < node_depth && !is_closed_VoxelNode(voxels)) {
         depth++;
         scale *= 0.5f;
         byte3_multiply_byte(&position, 2);
-        VoxelNode* kids = get_children_VoxelNode(voctree);
+        VoxelNode* kids = get_children_VoxelNode(voxels);
         for (byte i = 0; i < octree_length; i++) {
             // Models dont have these set??
             if (!kids[i].value) {
@@ -117,11 +109,11 @@ void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voctree, const V
         return;
     }
     // If Air we return
-    if (!voctree->value) {
+    if (!voxels->value) {
         return;
     }
     // final
-    byte voxel = voctree->value - 1;
+    byte voxel = voxels->value - 1;
     if (voxel >= vcolors->length) {
         zox_logw("Voxel Index OOB: %i >= %i", voxel, vcolors->length);
         return;
@@ -133,6 +125,7 @@ void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voctree, const V
 
 // Builds Colored Vox Meshes
 zox_sys2(ChunkColorsBuildSystem) {
+    byte dbg_log = 0;
     byte max_process = !zox_disable_process_skips ? 1 : 0;
     zox_sys_world();
     zox_sys_begin();
@@ -149,7 +142,8 @@ zox_sys2(ChunkColorsBuildSystem) {
     zox_sys_out(BuildChunkMesh);
     zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxelNode, voctree);
+        zox_sys_e();
+        zox_sys_i(VoxelNode, voxels);
         zox_sys_i(NodeDepth, ndepth);
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -161,10 +155,6 @@ zox_sys2(ChunkColorsBuildSystem) {
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(BuildChunkMesh, build);
         zox_sys_o(MeshDirty, mesh_dirty);
-        // NOTE: Delay if past limit [max_process]
-        if (max_process && process_count > max_process) {
-            continue;
-        }
         if (build->value == zox_dirty_trigger) {
             build->value = zox_dirty_active;
             continue;
@@ -179,7 +169,8 @@ zox_sys2(ChunkColorsBuildSystem) {
         if (!vcolors->length) {
             continue;
         }
-        if (rdepth->value >= render_depth_uninitialized) {
+        // NOTE: Delay if past limit [max_process]
+        if (max_process && process_count > max_process) {
             continue;
         }
         clear_mesh(indicies, vertices, colors);
@@ -201,9 +192,9 @@ zox_sys2(ChunkColorsBuildSystem) {
             .vertices = create_float3_array_d(initial_dynamic_array_size),
             .colors = create_color_rgb_array_d(initial_dynamic_array_size)
         };
-        read_lock_VoxelNode(voctree);
-        build_voxel_mesh_c(voctree, voctree, noctrees, nrdepths, vcolors, &mesh, rdepth->value, 0, byte3_zero, position, cscale);
-        read_unlock_VoxelNode(voctree);
+        read_lock_VoxelNode(voxels);
+        build_voxel_mesh_c(voxels, voxels, noctrees, nrdepths, vcolors, &mesh, rdepth->value, 0, byte3_zero, position, cscale);
+        read_unlock_VoxelNode(voxels);
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;
         colors->length = mesh.colors->size;
@@ -212,6 +203,9 @@ zox_sys2(ChunkColorsBuildSystem) {
         colors->value = finalize_arrayd_color_rgb(mesh.colors);
         build->value = 0;
         mesh_dirty->value = mesh_state_skeleton_trigger;
+        if (dbg_log) {
+            zox_log("[%s] has built a colored mesh: Tris [%i]", zox_getn(e), indicies->length / 3);
+        }
         zox_sys_increment();
     }
 } zox_sys_end(ChunkColorsBuildSystem);

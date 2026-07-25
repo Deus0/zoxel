@@ -1,11 +1,11 @@
 #include "render3.c"
 #include "render3_instance.c"
 #include "render_characters3.c"
-#include"mesh_colors.c"
 #include "mesh_update.c"
-#include "mesh_update_textured3.c"
 #include "mesh_update_characters3.c"
-#include "textured_render_system.c"
+#include "textured_upload.c"
+#include "textured_render.c"
+#include "textured_colors_upload.c"
 #ifndef zox_disable_rendering_instances
     #include "vox_instance_render_system.c"
 #endif
@@ -23,20 +23,6 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MaterialGPULink,
         [in] rendering3.MaterialBasic3D,
         [none] MeshBasic3D
-    );
-    // unique textured meshes - items
-    zox_render3_system(1,
-        TexturedRenderSystem,
-        [in] transforms.TransformMatrix,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.ColorsGPULink,
-        [in] rendering.MeshIndicies,
-        [in] rendering.RenderDisabled,
-        [in] rendering.MaterialGPULink,
-        [in] rendering.TextureGPULink,
-        [in] MaterialTextured3D,
-        [none] TexturedMesh3D
     );
     // characters
     zox_render3_system(1,
@@ -72,19 +58,6 @@ void define_systems_basics3D(ecs* world) {
         [none] !rendering.MeshColorRGBs
     );
     zox_system_1(
-        TexturedMeshUploadSystem,
-        zoxp_mainthread,
-        [in] rendering.MeshIndicies,
-        [in] rendering.MeshVertices,
-        [in] rendering.MeshUVs,
-        [in] rendering.MeshColorRGBs,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.ColorsGPULink,
-        [out] rendering.TexturedMeshDirty,
-        [out] rendering.MeshRenderCount
-    );
-    zox_system_1(
         MeshUpdateCharacters3DSystem,
         zoxp_mainthread,
         [in] rendering.MeshIndicies,
@@ -97,11 +70,39 @@ void define_systems_basics3D(ecs* world) {
         [none] rendering.MeshColorRGBs,
         [none] !rendering.MeshUVs
     );
+    // unique textured meshes - Items
+    zox_render3_system(1,
+        TexturedRenderSystem,
+        [in] transforms.TransformMatrix,
+        [in] rendering.MeshGPULink,
+        [in] rendering.UvsGPULink,
+        [in] rendering.ColorsGPULink,
+        [in] rendering.MeshIndicies,
+        [in] rendering.RenderDisabled,
+        [in] rendering.MaterialGPULink,
+        [in] rendering.TextureGPULink,
+        [in] MaterialTextured3D,
+        [none] TexturedMesh3D
+    );
+    // Uploads Terrain Chunks, Items, Skybox
+    zox_system_1(
+        TexturedMeshUploadSystem,
+        zoxp_mainthread,
+        [in] rendering.InitializeMesh,
+        [in] rendering.MeshGPULink,
+        [in] rendering.UvsGPULink,
+        [in] rendering.ColorsGPULink,
+        [out] rendering.MeshIndicies,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshUVs,
+        [in] rendering.MeshColorRGBs,
+        [out] rendering.TexturedMeshDirty,
+        [out] rendering.MeshRenderCount
+    );
     zox_system_1(
         MeshColorsGpuSystem,
         zoxp_mainthread,
         [in] rendering.ColorsGPULink,
-        [in] rendering.MeshVertices,
         [in] rendering.MeshColorRGBs,
         [out] rendering.MeshColorsDirty,
         [none] rendering.MeshColorRGBs

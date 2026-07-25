@@ -33,7 +33,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
     while (ecs_query_next(&it)) {
         count += it.count;
     }
-    index += snprintf(buffer + index, size - index, "System Times [%i] [%fms]\n", count, zox_delta_time * 1000);
+    index += snprintf(buffer + index, size - index, " [%fms] System Times [%i]\n", zox_delta_time * 1000, count);
     if (count == 0) {
         // ecs_query_fini(q);
         return index;
@@ -59,16 +59,16 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
         index += snprintf(
             buffer + index,
             size - index,
-            "  %2d. %-32s %8.3f ms",
-            i + 1,
-            zox_get_name(e),
-            entry.value
+            "%8.3f ms - %s ",
+            entry.value,
+            // i + 1,  %2d.
+            zox_get_name(e)
         );
         // Add process data
-        if (zox_has(e, SystemProcessedCache)) {
+        /*if (zox_has(e, SystemProcessedCache)) {
             zox_geter_value(e, SystemProcessedCache, int, process_count);
             index += snprintf(buffer + index, size - index,"  p [%i]", process_count);
-        }
+        }*/
         index += snprintf(buffer + index, size - index, "\n");
     }
     free(entries);

@@ -2,12 +2,12 @@
 #include "deactivate.c"
 
 void zox_define_systems_core(ecs* world) {
-    zox_system(
+    /*zox_system(
         DeactivateDelaySystem,
         zoxp_post_update,
         [out] core.Active,
         [out] core.DeactivateDelay
-    );
+    );*/
 }
 
 /*static __thread int local_thread_index = -1;

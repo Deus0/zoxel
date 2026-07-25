@@ -9,6 +9,7 @@ zox_sys2(LightsSettingsSystem) {
             continue;
         }
         spawn_setting_byte(world, e, "No Lights", disable_lights);
+        spawn_setting_byte(world, e, "No AO", !zox_ambient_occlusion);
 #ifdef zox_debug_settings
         spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
 #endif
@@ -42,6 +43,8 @@ zox_sys2(LightsSettingsDirtySystem) {
                 }
             } else if (!strcmp(name->value, "Smooth Lighting")) {
                 zox_smooth_lighting = value;
+            } else if (!strcmp(name->value, "No AO")) {
+                zox_ambient_occlusion = !value;
             }
         }
     }

@@ -11,7 +11,7 @@ entity spawn_device_gizmo(ecs* world, entity canvas, byte device_type) {
     float2 position_anchor = float2_zero;
     byte layer = max_layers2D - 2;
     // spawn it
-    entity e = spawn_ui(world, prefab_element_shell, canvas, position_anchor, position, size, size);
+    entity e = spawn_ui(world, prefab_element, canvas, position_anchor, position, size, size);
     zox_name("device_gizmo");
     zox_set(e, Layer2D, { layer });
     zox_set(e, Alpha, { 1 });

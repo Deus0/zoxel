@@ -13,7 +13,7 @@ entity2 spawn_elementbar2(ecs* world, entity prefab, entity parent, int2 positio
     zox_set(e, ElementBarSize, { (float2) { (size.x - padding * 2) / (float) size.x, 1 } });
     // frontbar
     float2 bar_anchor = (float2) { 0, 0.5f };
-    entity e2 = spawn_uic(world, prefab_element_textured, e, bar_anchor, int2_zero, size, size, front_color, color_black);
+    entity e2 = spawn_uic(world, prefab_element_frame, e, bar_anchor, int2_zero, size, size, front_color, color_black);
     zox_set_unique_name(e2, "element2_frontbar");
     zox_set(e2, MeshAlignment, { zox_alignment_left });
     entity text = spawn_text(world, prefab_text, e, int2_zero, float2_half, font_size, zox_alignment_centre, text_padding, "", font_fill, font_outline);

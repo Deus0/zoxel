@@ -10,7 +10,7 @@ entity spawn_prefab_tilemap(ecs *world) {
     zox_prefab_set(e, TextureDirty, { 0 });
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { 0 });
-    add_gpu_texture(world, e);
+    zox_prefab_set(e, TextureGPULink, { 0 });
     add_gpu_material(world, e);
     zox_prefab_set(e, TextureLinks, { 0 });
     zox_prefab_set(e, TilemapUVs, { 0 });

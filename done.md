@@ -1,5 +1,16 @@
 # Done
 
+-x Fix colors missmatch on lighting
+-x Fix chunk meshes being active at once
+-x Fix occassionally text zigels not rendering
+	-x this was debugged that they all stopped rendering for several frames
+	-x visible when it dissapears too
+-x Lighting Systems: Color Verts Missmatch warning
+-x Zigel position is off when updating
+    -x we can probably make a entity for each text line
+	-x can just skip spaces, no need for extras too
+-x Remember to disable max_process' skips when windows chunks
+-x Refactor Vegetation to its module
 -x Add text/font option tocenter the shape points in the grid (use for Markers)
 -x slider text didnt update
 -x Bug: IconLabel on dirt pickup didnt update

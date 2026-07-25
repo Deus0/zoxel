@@ -23,8 +23,9 @@ zox_sys2(ChunkMeshToggleSystem) {
                     if (mesh_depth == depth->value) {
                         new_mesh = mesh;
                     } else if (zox_getv(mesh, Active)) {
+                        // NOTE: This happens if it switches lods too fast
                         if (old_mesh) {
-                            zox_loge("[%s] has more than one Active Meshes [%s] [%s]", zox_getn(e), zox_getn(mesh), zox_getn(old_mesh));
+                            // zox_loge("[%s] has more than one Active Meshes [%s] [%s]", zox_getn(e), zox_getn(mesh), zox_getn(old_mesh));
                             zox_setv(old_mesh, Active, 0);
                         }
                         old_mesh = mesh;
@@ -32,6 +33,7 @@ zox_sys2(ChunkMeshToggleSystem) {
                 }
             }
         }
+
         // Enable to make sure it starts updating!
         if (new_mesh) {
             zox_setv(new_mesh, Active, 1);
@@ -39,10 +41,17 @@ zox_sys2(ChunkMeshToggleSystem) {
             if (dbg_log) {
                 zox_log("Chunk [%s] Set Mesh [%s] to Active [%i]", zox_getn(e), zox_getn(new_mesh), 1);
             }
-        }
-        byte busy = new_mesh && (zox_getv(new_mesh, BuildChunkMesh) || zox_getv(new_mesh, TexturedMeshDirty) || zox_getv(new_mesh, MeshColorsGenerate));
-        if (busy) {
-            continue;
+            // entity new_chunk = zox_get_parent(world, new_mesh);
+            byte busy =
+                // zox_getv(new_chunk, BuildChunkSides) ||
+                // zox_getv(new_chunk, GenerateChunk) ||
+                // zox_getv(new_chunk, VoxelNodeDirty) ||
+                zox_getv(new_mesh, BuildChunkMesh) ||
+                zox_getv(new_mesh, TexturedMeshDirty) ||
+                zox_getv(new_mesh, MeshColorsGenerate);
+            if (busy) {
+                continue;
+            }
         }
         // can we just set another flag, then fade it
         if (old_mesh) {

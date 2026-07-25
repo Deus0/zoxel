@@ -3,12 +3,13 @@ entity spawn_prefab_chunk_mesh(ecs* world) {
     zox_prefab();
     zox_prefab_name("chunk_mesh");
     // Chunk Data
-    zox_add_tag(e, ChunkMesh);
     zox_prefab_set(e, RenderDepth, { 0 });
     // Transforms
-    // zox_add_tag(e, DisableTransform);
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     // Mesh Data
+    zox_add_tag(e, ChunkMesh);
+    zox_add_tag(e, MeshClearCache);
+    zox_prefab_set(e, InitializeMesh, { 1 });
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshColorRGBs, { 0 });

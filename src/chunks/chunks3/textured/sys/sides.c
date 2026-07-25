@@ -70,7 +70,7 @@ static inline byte build_voxel_sides(const byte* solids, const VoxelNode* root, 
         byte side = reversed & 1;   // 0=negative side, 1=positive side
         adjacent_solid = get_node_sides_all_solid(solids, adjacent_node, axis, side, dist);
     } else {
-    // Accounts for null solids
+        // Accounts for null solids
         adjacent_solid = adjacent_node && adjacent_node->value && (!solids || (solids && solids[adjacent_node->value - 1]));
         // Accounts for null solids
         // byte adjacent_value = adjacent_node && adjacent_node->value;

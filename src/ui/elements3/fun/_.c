@@ -30,7 +30,7 @@ void add_ui_components_world(ecs *world, entity e, float2 mesh_scale) {
     // Generation of Frame Texture
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
-    add_gpu_texture(world, e);
+    zox_prefab_set(e, TextureGPULink, { 0 });
     add_gpu_mesh(world, e);
     add_gpu_uvs(world, e);
     add_gpu_colors(world, e);

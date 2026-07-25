@@ -28,7 +28,7 @@ zox_sys2(Element3RenderSystem) {
         zox_sys_i(ColorsGPULink, colors);
         zox_sys_i(TextureGPULink, texture);
         zox_sys_i(MeshIndicies, indicies);
-        if (disabled->value || !indicies->length) {
+        if (disabled->value) { // || !indicies->length) {
             continue;
         }
         entity ui_holder = zox_get_parent_by_id(world, e, zox_id(UIHolderLink));
@@ -68,7 +68,7 @@ zox_sys2(Element3RenderSystem) {
         opengl_enable_uv_buffer(attributes->vertex_uv, uvs->value);
         opengl_enable_color_buffer(attributes->vertex_color, colors->value);
         zox_gpu_bind_texture(texture->value);
-        zox_gpu_render3(indicies->length);
+        zox_gpu_render3(6); // indicies->length);
         catch_basic3D_errors("Element3RenderSystem");
         if (dbg_log) {
             float3 position = matrix_to_position(matrix->value);

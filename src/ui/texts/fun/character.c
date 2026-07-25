@@ -1,3 +1,8 @@
+static inline byte is_skip_zigel(byte z) {
+    return z == zox_char_newline
+        || z == zox_char_space;
+}
+
 int get_zext_max_x(const byte *data, int length) {
     int x = 0;
     int max_x = 0;
@@ -6,7 +11,9 @@ int get_zext_max_x(const byte *data, int length) {
             x = 0;
         } else {
             x++;
-            if (x > max_x) max_x = x;
+            if (x > max_x) {
+                max_x = x;
+            }
         }
     }
     if (x > max_x) {
@@ -18,7 +25,9 @@ int get_zext_max_x(const byte *data, int length) {
 int get_zext_max_y(const byte *data, int length) {
     int y = 1;
     for (int i = 0; i < length; i++) {
-        if (data[i] == zox_char_newline && i != length - 1) y++;
+        if (data[i] == zox_char_newline && i != length - 1) {
+            y++;
+        }
     }
     return y;
 }
@@ -26,8 +35,11 @@ int get_zext_max_y(const byte *data, int length) {
 int get_zext_x(const byte *data, int data_index) {
     int x = 0;
     for (int i = 0; i < data_index; i++) {
-        if (data[i] == zox_char_newline) x = 0;
-        else x++;
+        if (data[i] == zox_char_newline) {
+            x = 0;
+        } else {
+            x++;
+        }
     }
     return x;
 }
@@ -40,10 +52,14 @@ int get_zext_y(const byte *data, int length, int data_index) {
     return y;
 }
 
-int calculate_total_zigels(const byte *data, int length) {
-    int count = 0;
+uint calculate_total_zigels(const byte *data, int length) {
+    uint count = 0;
     for (int i = 0; i < length; i++) {
-        if (data[i] != zox_char_newline) count++;
+        byte zigel = data[i];
+        if (is_skip_zigel(zigel)) {
+            continue;
+        }
+        count++;
     }
     return count;
 }
@@ -52,12 +68,14 @@ int calculate_total_zigels(const byte *data, int length) {
 byte calculate_zigel_index(const byte *data, int length, int child_index) {
     int j = 0;
     for (int i = 0; i < length; i++) {
-        if (data[i] != zox_char_newline) {
-            if (j == child_index) {
-                return data[i];
-            }
-            j++;
+        byte zigel = data[i];
+        if (is_skip_zigel(zigel)) {
+            continue;
         }
+        if (j == child_index) {
+            return data[i];
+        }
+        j++;
     }
     return 0;
 }

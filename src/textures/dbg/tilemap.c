@@ -1,7 +1,7 @@
 extern entity local_terrain;
-extern entity prefab_element_shell;
+extern entity prefab_element;
 extern entity spawn_inspector(ecs*, entity, entity, entity);
-extern entity spawn_element_texture(ecs *world, entity p, entity canvas, entity parent, int2 position, int2 size, float2 anchor, byte layer, entity t);
+extern entity spawn_element_texture(ecs*, entity, entity, int2, int2, float2, byte, entity);
 
 entity dbg_tilemap = 0;
 
@@ -26,14 +26,14 @@ void zox_tst_spawn_tilemap(ecs *world) {
     int2 size = int2_single(512);
     int2 position = int2_single(0);
     float2 anchor = float2_half;
-    entity parent = canvas;
-    byte layer = 2;
+    byte layer = max_layers2D - 10;
     entity texture = tilemap;
     // texture = string_hashmap_get(files_hashmap_textures, new_string_data("cursor_01"));
     // our logic stuff
     zox_log("+ spawning tilemap ui [%s] on canvas [%s]", zox_get_name(tilemap), zox_get_name(canvas));
-    // entity e = spawn_element_texture(world, prefab_element_shell, canvas, texture, position, size);
-    entity e = spawn_element_texture(world, prefab_element_shell, canvas, parent, position, size, anchor, layer, texture);
+    // entity e = spawn_element_texture(world, prefab_element, canvas, texture, position, size);
+    entity e = spawn_element_texture(world, prefab_element, canvas, position, size, anchor, layer, texture);
+    // entity e = spawn_ui(world, entity prefab_element, canvas, anchor, position, size, int2 texture_size);
     zox_set(e, RenderDisabled, { 0 });
     zox_set(e, MeshAlignment, { 0 });
     zox_set(e, LayoutSize, { size });

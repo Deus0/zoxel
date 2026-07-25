@@ -35,3 +35,9 @@
 #define zoxp_queue_pre_clear zoxp_queue_process + 1
 #define zoxp_queue_pre_post_clear zoxp_queue_process + 1
 #define zoxp_queue_clear zoxp_queue_pre_clear + 2
+// Voxels
+#define zoxp_voxels_generate EcsOnUpdate    // Write to voxels
+#define zoxp_voxels_sides EcsOnValidate      // Write to mesh from voxels
+#define zoxp_voxels_mesh EcsPostUpdate      // Write to mesh from voxels
+#define zoxp_voxels_lights EcsPostUpdate      // Write to mesh from voxels
+

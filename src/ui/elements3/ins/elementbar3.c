@@ -22,11 +22,11 @@ entity2 spawn_elementbar3(ecs *world, SpawnDataElementbar3D *data, Text3DData te
     entity frontbar = spawn_elementbar3D_front(world, data->frontbar.prefab, e, frontbar_position, data->frontbar.render_disabled);
     zox_set_parent(world, frontbar, e);
     if (text_data.prefab) {
-        text_data.position = (float3) { 0, 0, element3D_depth_difference * 1.5f };
+        text_data.position = (float3) { 0, 0, element3D_depth_difference };
         zigel_data.position = text_data.position;
-        text_data.parent = e;
+        text_data.parent = frontbar;
         entity text = spawn_text3D(world, text_data, zigel_data);
-        zox_set_unique_name(text, "elementbar3D_text");
+        zox_set_unique_name(text, "elementbar3_text");
         zox_set_parent(world, text, e);
         output.y = text;
     }

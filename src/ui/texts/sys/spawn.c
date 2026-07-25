@@ -54,7 +54,7 @@ zox_sys2(ZigelSpawnSystem) {
         if (dbg_log) {
             zox_log("Updating Text [%s] [%i -> %i]", zox_get_name(e), old_length, new_length);
         }
-        int child_index = 0;
+        /*int child_index = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -76,16 +76,18 @@ zox_sys2(ZigelSpawnSystem) {
                     // child_index++;
                 }
             }
-        }
+        }*/
         if (new_length < old_length) {
-            if (dbg_log) {
-                zox_log(" - Shrinking Text!");
-            }
+            //if (dbg_log) {
+                zox_log("[%s] Shrinking Text [%i] from [%i]", zox_getn(e), new_length, old_length);
+            //}
             // NOTE: Shrinks the children zigels
-            int child_index = old_length - 1;
-            it2 = zox_children(world, e);
+            // int child_index = old_length - 1;
+            uint deleted_count = 0;
+            uint deleted_target = old_length - new_length;
+            iter it2 = zox_children(world, e);
             while (zox_children_next(it2)) {
-                for (int j = 0; j < it2.count; j++) {
+                for (int j = 0; j < it2.count && deleted_count < deleted_target; j++) {
                     entity e2 = it2.entities[j];
 #ifdef zox_safety_checks
                     if (!zox_has(e2, Zigel)) {
@@ -94,19 +96,18 @@ zox_sys2(ZigelSpawnSystem) {
                     }
 #endif
                     // NOTE: When shrinking the children we need to adjust the child indexes
-                    if (child_index < new_length) {
+                    /*if (child_index < new_length) {
                         // here we can set child indexes
-                        zox_setm(e2, ChildIndex, child_index);
-                        // zox_set(e2, ChildIndex, { child_index });
-                        // zox_setm(e2, ZigelDirty, 1);
-                        child_index--;
+                        // zox_setv(e2, ChildIndex, child_index);
+                        // child_index--;
                         continue;
-                    }
+                    }*/
+                    // keep deleting until we arrive at new length;
+                    zox_delete(e2);
+                    deleted_count++;
                     if (dbg_log) {
                         zox_log("   - Deleted Zigel [%s]", zox_get_name(e2));
                     }
-                    // keep deleting until we arrive at new length;
-                    zox_delete(e2);
                 }
             }
         } else if (new_length > old_length) {
@@ -119,10 +120,7 @@ zox_sys2(ZigelSpawnSystem) {
                 byte zigel_index = calculate_zigel_index(text_data->value, text_data->length, j);
                 uint child_index = j;
                 entity e2 = spawn_zigel(world, prefab->value, e, position_anchor, size, texture_size, thickness, othickness, fill, outline, zigel_index, child_index, zigel_layer);
-                zox_set(e2, RenderDisabled, { render_disabled->value });
-                /*if (zox_has(e, DebugEntity) && j == 10) {
-                    zox_add_tag(e2, DebugEntity);
-                }*/
+                zox_setv(e2, RenderDisabled, render_disabled->value);
                 if (dbg_log) {
                     zox_log("   + Spawn Zigel [%i] - Layer [%i]", zigel_index, zigel_layer);
                 }

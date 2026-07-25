@@ -1,4 +1,4 @@
-float element3D_depth_difference = 0.01f;
+float element3D_depth_difference = 0.004f;
 int text3D_resolution = 16;  // 8 | 16 | 32
 int text3D_fill_thickness = 1;   // 4
 int text3D_outline_thickness = 0;

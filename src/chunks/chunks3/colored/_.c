@@ -13,10 +13,8 @@
 
 // TODO: Use Sides Data for building
 // TODO: Proper AO using all cube neighbors
-
-#define zox_ambient_occlusion27
 byte zox_ambient_occlusion = 1;
-
+#define zox_ambient_occlusion27
 #include "dat/_.c"
 #include "com/_.c"
 #include "fun/_.c"

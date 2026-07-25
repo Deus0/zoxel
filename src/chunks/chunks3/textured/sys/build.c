@@ -74,20 +74,19 @@ static inline void zox_terrain_building_dig(terrain_build_data data, const Sides
         }
         return;
     }
-    // This is our target depth
-    /*if (depth != target_depth) {
-        return;
-    }*/
     // NOTE: Skips if no faces to draw
     if (!sides->value) {
         return;
     }
-//#ifdef zox_safety_checks
+    /*if (depth != target_depth) {
+        zox_loge("Sides didn't reach target depth [%i < %i]", depth, target_depth);
+    }*/
+// #ifdef zox_safety_checks
     if (!voxels->value) {
-        // zox_loge("Sides error, air cannot render.");
+        zox_loge("Terrain Chunk Mesh Builder: Sides is true with Air");
         return;
     }
-//#endif
+// #endif
     if (dbg_log >= 2) {
         zox_log("Adding Chunk Textured Faces at [%ix%ix%i]", position.x, position.y, position.z);
     }
@@ -150,9 +149,6 @@ zox_sys2(ChunkTexturedBuildSystem) {
         if (build->value != zox_build_chunk_mesh_run || !active->value) {
             continue;
         }
-        if (zox_getv(e, RenderDisabled)) {
-            continue;
-        }
         // Get chunk data
         entity chunk = zox_get_parent(world, e);
 #ifdef zox_safety_checks
@@ -161,6 +157,12 @@ zox_sys2(ChunkTexturedBuildSystem) {
             continue;
         }
 #endif
+        /*if (zox_getv(chunk, VoxelNodeDirty) || zox_getv(chunk, BuildChunkSides)) {
+            if (dbg_log) {
+                zox_log("Chunk [%s] is still Building Sides", zox_get_name(e));
+            }
+            continue;
+        }*/
         entity terrain = zox_get_parent(world, chunk);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {

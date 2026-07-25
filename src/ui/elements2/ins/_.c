@@ -12,3 +12,4 @@
 #include "scrollbar.c"
 #include "scrollview.c"
 #include "list.c"
+#include "overlay.c"

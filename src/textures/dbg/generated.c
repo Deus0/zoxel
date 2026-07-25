@@ -1,6 +1,6 @@
 /*entity dbg_texture_generated = 0;
 
-extern entity prefab_element_textured;
+extern entity prefab_element_frame;
 
 void spawn_dbg_texture_generated(ecs *world, int32_t keycode) {
 
@@ -32,7 +32,7 @@ void spawn_dbg_texture_generated(ecs *world, int32_t keycode) {
         color fcolor = color_cyan;
         color ocolor = color_black;
 
-        dbg_texture_generated = spawn_element2(world, prefab_element_textured, canvas, parent, position, size, tsize, anchor, layer, fcolor, ocolor);
+        dbg_texture_generated = spawn_element2(world, prefab_element_frame, canvas, parent, position, size, tsize, anchor, layer, fcolor, ocolor);
 
         zox_log("Spawned [dbg_texture_generated]");
     }

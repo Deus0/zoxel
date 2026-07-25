@@ -8,7 +8,6 @@ zoxc_entity(TunkLink);
 zoxc_int2(TunkPosition);
 zoxc_arrayd(BiomeMap, byte);
 zoxc_arrayd(HeightMap, byte);
-zoxc_arrayd(VegetationMap, byte);
 zoxc_hashmap(TunkLinks, int2);
 // NOTE: this has to be used with render_distance_y
 #define chunk3_stack_length render_distance_y_max * 2 + 1
@@ -26,7 +25,6 @@ void define_components_tunks(ecs *world) {
     zoxd_int2(TunkPosition);
     zoxd_arrayd(BiomeMap);
     zoxd_arrayd(HeightMap);
-    zoxd_arrayd(VegetationMap);
     zoxd(Chunk3Stack);
     zoxd_byte(Chunk3Stacked);
     zoxd_hashmap(TunkLinks);

@@ -21,7 +21,7 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
         zox_log_error("[cursor] mouse texture not found");
     }
     byte mouse_ui_size = 8 * ui_scale;
-    entity e = spawn_mouse_icon(world, prefab_element_shell, canvas, dimensions, max_layers2D - 2, float2_zero, mouse_ui_size, mouse_pointer);
+    entity e = spawn_mouse_icon(world, prefab_element, canvas, dimensions, max_layers2D - 2, float2_zero, mouse_ui_size, mouse_pointer);
     zox_set_unique_name(e, "mouse_ui");
     zox_add_tag(e, MouseElement);
     zox_set(e, MeshAlignment, { zox_alignment_top_left });
@@ -34,7 +34,7 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     }
     // Mouse Pickup UI
     int icon_size = (default_icon_size / 4) * ui_scale;
-    entity e2 = spawn_mouse_icon(world, prefab_element_shell, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, mouse_pointer);
+    entity e2 = spawn_mouse_icon(world, prefab_element, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, mouse_pointer);
     zox_set_unique_name(e2, "data_mouse");
     zox_add_tag(e2, DataMouse);
     entity empty_texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));

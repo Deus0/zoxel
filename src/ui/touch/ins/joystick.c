@@ -9,7 +9,7 @@ entity spawn_virtual_joystick(ecs *world, entity canvas, int2 position, entity f
     zox_name("virtual_joystick");
     entity parent = canvas;
     initialize_element(world, e, parent, canvas, position, size, size, anchor, layer);
-    entity e2 = spawn_ui(world, prefab_element_textured, e, float2_half, int2_zero, pointer_size, pointer_size);
+    entity e2 = spawn_ui(world, prefab_element_frame, e, float2_half, int2_zero, pointer_size, pointer_size);
     zox_set(e2, Layer2D, { (layer + 1) });
     // links
     zox_set(e, ZeviceLink, { virtual_joystick });

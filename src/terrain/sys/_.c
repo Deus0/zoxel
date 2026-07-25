@@ -51,16 +51,6 @@ void define_systems_terrain(ecs *world) {
         [none] terrains.TerrainChunk
     );
     add_system_process_counter(world, zox_id(LandfillChunkSystem));
-    zox_system(
-        VegetationChunk3System,
-        zoxp_update,
-        [in] chunks.NodeDepth,
-        [in] chunks3.ChunkPosition,
-        [in] tunks.TunkLink,
-        [out] chunks.GenerateChunk,
-        [out] chunks3.VoxelNode,
-        [none] terrains.TerrainChunk
-    );
     // Lighting
     zox_system(
         SunnyChunkGeneratedSystem,
@@ -177,5 +167,4 @@ void define_systems_terrain(ecs *world) {
         [none] terrains.TerrainChunk
     );
     #endif
-    add_system_process_counter(world, zox_id(VegetationChunk3System));
 }

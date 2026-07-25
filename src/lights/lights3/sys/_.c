@@ -11,6 +11,19 @@
 // TODO: Rename NodeDepth to OctreeDepth
 
 void define_systems_lights3(ecs* world) {
+    // Settings
+    zox_system_1(
+        LightsSettingsSystem,
+        zoxp_mainthread,
+        [in] settings.LoadSettings
+    );
+    zox_system_1(
+        LightsSettingsDirtySystem,
+        zoxp_mainthread,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
+    );
     zox_system(
         RefreshLightsSystem,
         zoxp_update,
@@ -116,29 +129,6 @@ void define_systems_lights3(ecs* world) {
         [in] chunks3.ChunkNeighbors,
         [none] chunks.Chunk
     );
-    zox_system(
-        SmoothLightsBuildSystem,
-        zoxp_update,
-        [in] chunks3.BuildChunkMesh,
-        [in] rendering.RenderDepth,
-        [in] rendering.MeshColorRGBs,
-        [out] rendering.MeshColorsGenerate,
-        [out] rendering.MeshColorsDirty,
-        [none] chunks.ChunkMesh
-    );
-    zox_system(
-        BasicLightsBuildSystem,
-        zoxp_update,
-        [in] rendering.MeshColorsGenerate,
-        [in] chunks3.ChunkNeighbors,
-        [in] chunks3.VoxelNode,
-        [in] chunks3.SidesOctree,
-        [in] lights3.LightNode,
-        [in] rendering.RenderDepth,
-        [in] rendering.MeshColorRGBs,
-        [out] rendering.MeshReady,
-        [none] chunks.Chunk
-    );
     zox_system_1(
         LightNodeDebugSystem,
         zoxp_mainthread,
@@ -151,17 +141,27 @@ void define_systems_lights3(ecs* world) {
         [in] rendering.RenderDepth,
         [none] chunks.Chunk
     );
-    // Settings
-    zox_system_1(
-        LightsSettingsSystem,
-        zoxp_mainthread,
-        [in] settings.LoadSettings
+    zox_system(
+        SmoothLightsBuildSystem,
+        zoxp_voxels_lights,
+        [in] chunks3.BuildChunkMesh,
+        [in] rendering.RenderDepth,
+        [in] rendering.MeshColorRGBs,
+        [out] rendering.MeshColorsGenerate,
+        [out] rendering.MeshColorsDirty,
+        [none] chunks.ChunkMesh
     );
-    zox_system_1(
-        LightsSettingsDirtySystem,
-        zoxp_mainthread,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
+    zox_system(
+        BasicLightsBuildSystem,
+        zoxp_voxels_lights,
+        [in] rendering.MeshColorsGenerate,
+        [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.SidesOctree,
+        [in] lights3.LightNode,
+        [in] rendering.RenderDepth,
+        [in] rendering.MeshColorRGBs,
+        [out] rendering.MeshReady,
+        [none] chunks.Chunk
     );
 }

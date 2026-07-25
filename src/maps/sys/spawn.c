@@ -57,7 +57,7 @@ zox_sys2(MapInitializeSystem) {
                     piece_position.y *= -1;
                 }
                 // Spawn our map piece
-                entity e2 = spawn_ui(world, prefab_element_shell, body, float2_half, piece_position, piece_size, int2_zero);
+                entity e2 = spawn_ui(world, prefab_element, body, float2_half, piece_position, piece_size, int2_zero);
                 zox_set_unique_name(e2, "map_piece");
                 zox_set(e2, TunkLink, { tunk });
                 zox_set(e2, TextureDirty, { 0 });
@@ -81,7 +81,7 @@ zox_sys2(MapInitializeSystem) {
         }
         // NOTE: Spawns a simple arrow for player direction
         {
-            entity e3 = spawn_uic(world, prefab_element_ready, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
+            entity e3 = spawn_uic(world, prefab_element, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
             zox_set_unique_name(e3, "map_player");
             zox_set(e3, Layer2D, { layer + 2 });
             zox_set(e3, BonusLayer2, { 1 });

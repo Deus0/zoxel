@@ -1,20 +1,10 @@
-/*float3 calculate_zigel3D_position(float2 zigel3D_size, int data_index, int zigels_count, float scale) {
-    if (scale == 0) {
-        scale = 1;
-    }
-    float3 position = float3_zero;
-    position.x += zigel3D_size.x * 0.5f * scale;
-    position.x -= zigel3D_size.x * 0.5f * zigels_count * scale; // centre
-    position.x += zigel3D_size.x * data_index * scale;
-    return position;
-}*/
-
 float3 calculate_zigel3D_position(float2 zigel3D_size, int data_index, int zigels_count, float scale) {
     if (scale == 0) {
         scale = 1;
     }
     float3 position = float3_zero;
     position.x = zigel3D_size.x * (data_index - (zigels_count - 1) * 0.5f) * scale;
+    position.z = element3D_depth_difference;
     return position;
 }
 
@@ -32,13 +22,14 @@ entity spawn_text3D(ecs *world, Text3DData data, Zigel3DData zigel_data) {
     zox_set(e, Text3DScale, { zigel_data.scale });
     zox_set(e, TextFontSize, { zigel_data.resolution });
     // text
-    TextData text = (TextData) { 0 };
-    int length = data.text != NULL ? strlen(data.text) : 0;
-    initialize_TextData(&text, length);
-    for (int i = 0; i < text.length; i++) {
-        text.value[i] = convert_ascii(data.text[i]);
+    TextData text_data = (TextData) { 0 };
+    uint length;
+    text_data.value = convert_text_data(data.text, &length);
+    if (length) {
+        text_data.length = length;
+        zox_set_ptr(e, TextData, text_data);
+        zox_set(e, TextDirty, { zox_dirty_trigger });
+        // zox_log("Text3D [%s]", data.text);
     }
-    zox_set_ptr(e, TextData, text);
-    zox_set(e, TextDirty, { zox_dirty_trigger });
     return e;
 }
