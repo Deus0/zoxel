@@ -64,6 +64,7 @@ void define_systems_zoxel(ecs *world) {
         BodysRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
+        [in] core.Seed,
         [out] rendering.ModelLinks,
         [out] items.ItemLinks,
         [out] nodes.NodegraphLinks,

@@ -130,13 +130,13 @@ zox_sys2(TerrainCharactersSpawnSystem) {
             }
             characters->value[spawned->value] = e2;
             spawned->value++;
-            // zox_set(e2, ChunkPosition, { chunk_position->value });
             // Link together
+            // zox_set(e2, ChunkPosition, { chunk_position->value });
             // zox_set(e2, ChunkLink, { e });
             // add_to_ChunkEntities(entities, e2);
-            if (disable_npc_movement) {
-                zox_set(e2, DisableMovement, { 1 });
-            }
+            // if (disable_npc_movement) {
+            zox_setv(e2, DisableMovement, 1);
+            // }
             if (dbg_length) {
                 spawn_arrow3D(world, position, (float3) { 0, cscale->value * dbg_length, 0 }, 0.1f, 6, 20);
             }

@@ -27,6 +27,7 @@ zox_tag(MouseElement);
 // Materials
 #include "matrixui.c"
 zoxc_guint(MaterialBlur);
+zoxc_guint(MaterialVignette);
 
 void zox_define_components_elements(ecs *world) {
     // Core Elements
@@ -58,4 +59,5 @@ void zox_define_components_elements(ecs *world) {
     // Materials
     zoxd(attributes_matrixui);
     zoxd_guint(MaterialBlur);
+    zoxd_guint(MaterialVignette);
 }

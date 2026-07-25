@@ -8,12 +8,10 @@ MaterialAttributesRenderTexture create_MaterialAttributesRenderTexture(guint mat
         .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
         .transform_matrix = zox_gpu_get_material_property(material, "matrix"),
         .texture = zox_gpu_get_material_property(material, "tex"),
-        // .blur_strength = zox_gpu_get_material_property(material, "blur_strength")
     };
 }
 
 entity spawn_shader_render_texture(ecs *world) {
-
     byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "matrixui.vert");
     char* frag = get_shader_source(world, "render_texture.frag");
@@ -41,7 +39,8 @@ entity spawn_material_render_texture(ecs* world) {
     const MaterialAttributesRenderTexture attributes = create_MaterialAttributesRenderTexture(material);
     zox_set_data(e, MaterialAttributesRenderTexture, attributes);
     zox_set(e, CameraBlur, { 0 });
-    zox_set(e, MaterialBlur, { zox_gpu_get_material_property(material, "blur_strength") });
+    zox_set(e, MaterialBlur, { zox_gpu_get_material_property(material, "blur") });
+    zox_set(e, MaterialVignette, { zox_gpu_get_material_property(material, "vignette") });
     // const MaterialTextured2D base_attributes = create_MaterialTextured2D(material);
     // zox_set_data(e, MaterialTextured2D, base_attributes);
     attributes_matrixui base_attributes = create_attributes_matrixui(material);

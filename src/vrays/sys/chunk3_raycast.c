@@ -411,6 +411,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
 // Sets up raycast parameters and executes raycast_voxel_node with proper inputs
 // Stores result in RaycastVoxelData component for consumption by gameplay logic
 zox_sys2(Chunk3RaycastSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TerrainLink);
@@ -421,12 +422,18 @@ zox_sys2(Chunk3RaycastSystem) {
         zox_sys_i(TerrainLink, terrain);
         zox_sys_i(RaycastRange, raycast_range);
         zox_sys_o(RaycastVoxelData, data);
-        if (!zox_valid(terrain->value) || !zox_has(terrain->value, RealmLink)) {
+        if (!zox_valid(terrain->value)) {
+            zox_loge("No Terrain Linked to [%s]", zox_getn(e));
+            continue;
+        }
+        entity realm = zox_get_parent(world, terrain->value);
+        if (!zox_valid(realm)) {
             continue;
         }
         float3 ray_origin;
         float3 ray_normal;
-        if (zox_has(e, CameraLink)) {
+        byte has_camera = zox_has(e, CameraLink);
+        if (has_camera) {
             zox_geter_value(e, CameraLink, entity, camera);
             if (!zox_valid(camera)) {
                 continue;
@@ -438,19 +445,27 @@ zox_sys2(Chunk3RaycastSystem) {
             float4 rotation = zox_getv(e, Rotation3D);
             ray_normal = quaternion_to_normal(rotation);
         }
-        zox_geter_value(terrain->value, RealmLink, entity, realm);
-        if(!zox_valid(realm)) {
-            continue;
-        }
         zox_geter(realm, BlockLinks, voxels);
-        zox_geter_value(terrain->value, BlockScale, float, terrain_scalev);
-        zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
+        float block_scale = zox_getv(terrain->value, BlockScale);
+        byte terrain_depth = zox_getv(terrain->value, NodeDepth);
         byte length = octree_size(terrain_depth);
-        int3 chunk_dimensions = int3_single(length);
+        int3 size = int3_single(length);
         zox_geter(terrain->value, ChunkLinks, chunks);
         CharacterRaycast character_raycast = { 0 };
         float range = !debug_ray_big_range ? raycast_range->value : 128;
-        data->result = raycast_voxel_node(world, e, voxels, chunks, int3_zero, float3_zero, terrain_depth, chunk_dimensions, 0, ray_origin, ray_normal, int3_zero, terrain_scalev, range, data, &character_raycast);
+        data->result = raycast_voxel_node(world, e, voxels, chunks, int3_zero, float3_zero, terrain_depth, size, 0, ray_origin, ray_normal, int3_zero, block_scale, range, data, &character_raycast);
         data->depth = terrain_depth;
+        if (dbg_log == 1) {
+            if (data->result) {
+                zox_log("[%s] User Raycasted, Range [%f], Result [%i]", zox_getn(e), range, data->result);
+            }
+        }
+        if (dbg_log == 2) {
+            if (!data->result) {
+                zox_log("[%s] User Raycast Missed, Range [%f] has_camera [%i]", zox_getn(e), range, has_camera);
+                zox_log(" at [%fx%fx%f]", ray_origin.x, ray_origin.y, ray_origin.z);
+                zox_log(" to [%fx%fx%f]", ray_normal.x, ray_normal.y, ray_normal.z);
+            }
+        }
     }
 } zox_sys_end(Chunk3RaycastSystem);

@@ -102,9 +102,10 @@ void define_systems_controllers3(ecs *world) {
         [in] players.PlayerLink,
         [out] dialogues.DialogueProcessLink
     );
-    zox_system(
+    // Spawns animation events
+    zox_system_1(
         PlayerDialogueSystem,
-        zoxp_update,
+        zoxp_mainthread, // zoxp_update,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
         [in] layouts2.CanvasLink,

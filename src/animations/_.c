@@ -16,12 +16,14 @@
 
 #include "dat/animation_states.c"
 #include "com/_.c"
+// #include "pre/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
 #include "fun/_.c"
 
-zox_begin_module(Animations)
+zox_begin_module(Animations) {
     define_components_animations(world);
     define_systems_animations(world);
-zox_end_module(Animations)
+} zox_end_module(Animations);
 
 #endif

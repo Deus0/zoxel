@@ -10,8 +10,7 @@
 #define zox_gett(e, T)\
     ecs_get(world, e, T)
 
-#define zox_get(e, T)\
-    ecs_get(world, e, T);
+#define zox_get(e, T) ecs_get(world, e, T);
 
 #define zox_geter(e, T, name)\
     const T *name = zox_get(e, T)

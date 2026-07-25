@@ -55,7 +55,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     // Triggers
     zox_prefab_set(e, RaycastVoxelData, { 0 });
     zox_prefab_set(e, RaycastType, { 0 });
-    zox_prefab_set(e, RaycastRange, { 1 });
+    zox_prefab_set(e, RaycastRange, { 1.5f });
     zox_prefab_set(e, TriggerActionA, { 0 });
     // Debug
     prefab_add_cube_lines(world, e, color_white, 0);

@@ -111,10 +111,17 @@ zox_sys2(ElementRenderMatrixSystem) {
             guint material_id = zox_getv(material, MaterialGPULink);
             zox_gpu_material(material_id);
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
-            if (zox_has(material, MaterialBlur)) {
-                guint blur_id = zox_getv(material, MaterialBlur);
-                float blur_strength = zox_getv(material, CameraBlur);
-                zox_gpu_float(blur_id, blur_strength);
+            if (zox_has(material, MaterialBlur) && zox_has(material, CameraBlur)) {
+                guint property_id = zox_getv(material, MaterialBlur);
+                float property_value = zox_getv(material, CameraBlur);
+                zox_gpu_float(property_id, property_value);
+                // zox_log("MaterialBlur Set [%i] to [%f]", property_id, property_value);
+            }
+            if (zox_has(material, MaterialVignette) && zox_has(material, CameraVignette)) {
+                guint property_id = zox_getv(material, MaterialVignette);
+                float property_value = zox_getv(material, CameraVignette);
+                zox_gpu_float(property_id, property_value);
+                // zox_log("Material Vignette Set [%i] to [%f]", property_id, property_value);
             }
         }
         float depth = depth_begin + layer->value * depth_per_layer;

@@ -6,10 +6,16 @@ used - 200-400mb used
 
 
 Bugs:
+- blocks placed on top of world cause no face to show
 - slime npcs arnt hitting back
+	- they cannot raycast me on top of the world at 16 height
+	- npc cant raycast me
+		- only small ones
+		- when im far away from origin
+		- super weird
 
 Quick Wins
-- set Vignette on Dialogue insteaad of Blur
+-x set Vignette on Dialogue insteaad of Blur
 - arm should only slerp rotation - no setting
 - save player character slot data
 	- items, skills, etc whatever is there

@@ -44,7 +44,8 @@ void define_systems_render_textures(ecs* world) {
     zox_system_1(
         CameraBlurSystem,
         zoxp_mainthread,
-        cameras.CameraBlur,
-        cameras.Camera
+        [in] cameras.CameraBlur,
+        [in] cameras.CameraVignette,
+        [none] cameras.Camera
     );
 }

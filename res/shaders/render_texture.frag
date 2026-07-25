@@ -1,5 +1,5 @@
 uniform sampler2D tex;
-uniform float blur_strength;
+uniform float blur;
 uniform float vignette;
 in vec2 uv;
 out vec4 color;
@@ -7,7 +7,7 @@ out vec4 color;
 // === constants ===
 const float BLUR_RADIUS = 3.0;
 const float BLUR_SCALE = 512.0;
-const float NOISE_STRENGTH = 0.15;
+const float NOISE_STRENGTH = 0.1;
 
 const float GAUSS_KERNEL[9] = float[](
     1.0, 2.0, 1.0,
@@ -62,22 +62,22 @@ vec4 gaussian_blur(sampler2D image, vec2 uv, float radius) {
 void main() {
     vec4 base = texture(tex, uv);
     // Blur
-    if (blur_strength > 0.0) {
+    if (blur > 0.0) {
         vec4 blurred = gaussian_blur(tex, uv, BLUR_RADIUS);
-        color = mix(base, blurred, blur_strength);
+        color = mix(base, blurred, blur);
     } else {
         color = base;
     }
-    //vec4 blurred = gaussian_blur(tex, uv, BLUR_RADIUS);
-    //color = mix(base, blurred, 0.9);
-    // === vignette ===
-    float vignette_intensity = 0.7;     // change to 0.9 for dialogue
-    vec2 vignette_centre = vec2(0.5, 0.5);
-    float vignette_smoothness = 0.7;
-    float vignette_mask = smoothstep(1.0 - vignette_smoothness, 1.0, length(uv - vignette_centre));
-    color.rgb *= 1.0 - vignette_mask * (1.0 + vignette_intensity);
 
     // Noise
     float noise = random(uv);
-    // color = mix(color, vec4(noise, noise, noise, 1.0), NOISE_STRENGTH);
+    color = mix(color, vec4(noise, noise, noise, 1.0), NOISE_STRENGTH);
+
+    //vec4 blurred = gaussian_blur(tex, uv, BLUR_RADIUS);
+    //color = mix(base, blurred, 0.9);
+    // === vignette ===
+    // float vignette_intensity = 0.7;     // change to 0.9 for dialogue
+    float vignette_smoothness = 0.8;
+    float vignette_mask = smoothstep(1.0 - vignette_smoothness, 1.0, length(uv - vec2(0.5, 0.5)));
+    color.rgb *= 1.0 - vignette_mask * (vignette);
 }

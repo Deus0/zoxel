@@ -5,7 +5,6 @@
 // TODO: Move resource use out of this System
 zox_sys2(MeleeSystem) {
     byte dbg_log = 0;
-    // byte dbg_log_block = 0;
     float npc_nerf_multiplier = 0.7f;
     color popup_color = (color) { 255, 0, 0, 255 };
     float popup_spawn_y = 0.18f;
@@ -33,12 +32,11 @@ zox_sys2(MeleeSystem) {
         }
         // user validation
         entity user = zox_get_parent(world, e);
-        // entity user = userLink->value;
         if (!zox_valid(user)) {
             zox_loge("Skill has Invalid User [%s]", zox_get_name(e));
             continue;
         }
-        if (zox_gett_value(user, Dead)) {
+        if (zox_getv(user, Dead)) {
             if (dbg_log) {
                 zox_logw("User [%s] is Dead, Cannot Attack.", zox_get_name(user));
             }
@@ -52,7 +50,7 @@ zox_sys2(MeleeSystem) {
         // does have resource
         entity resource = 0;
         entity strength = 0;
-        zox_geter(user, RaycastVoxelData,  raycast);
+        zox_geter(user, RaycastVoxelData, raycast);
         // zox_geter(user, StatLinks, stats);
         entity user_stats[stats_children_capacity];
         uint user_stats_length = zox_get_children(world, user, user_stats, stats_children_capacity);
@@ -71,14 +69,14 @@ zox_sys2(MeleeSystem) {
         if (!disable_skill_costs) {
             if (!zox_valid(resource) || !zox_has(resource, StatValue)) {
                 if (dbg_log) {
-                    zox_logw("User [%s] has Invalid Skill Resource", zox_get_name(user));
+                    zox_log("User [%s] has Invalid Skill Resource", zox_get_name(user));
                 }
                 continue;
             }
             float lresource = zox_get_value(resource, StatValue);
             if (lresource < cost->value) {
                 if (dbg_log) {
-                    zox_logw("User [%s] needs more [%s] [%f]", zox_get_name(user), zox_get_name(resource), lresource);
+                    zox_log("User [%s] needs more [%s] [%f]", zox_get_name(user), zox_get_name(resource), lresource);
                 }
                 spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[14], 0.6, 0.6f * get_volume_sfx());
                 continue;
@@ -91,6 +89,7 @@ zox_sys2(MeleeSystem) {
             }
         }
         // Temporary for now place here
+        // TODO: Start swinging on Warmup
         if (zox_has(user, SwingStart)) {
             float swing_time = zox_getv(e, WarmupTime) + zox_getv(e, CooldownTime);
             zox_set(user, SwingStart, { zox_current_time });
@@ -101,11 +100,14 @@ zox_sys2(MeleeSystem) {
         if (!zox_valid(hit)) {
             spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[44], 0.3, volume);
             if (dbg_log) {
-                zox_logw("User [%s] Has no Ray Target", zox_get_name(user));
+                zox_logw("User [%s] Has no Raycast Target with range [%f:%f]", zox_get_name(user), range->value, zox_getv(user, RaycastRange));
             }
             continue;
         }
         float skill_range = range->value;
+        if (!skill_range) {
+            zox_loge("User [%s]'s Skill [%s] Range is 0", zox_getn(user), zox_getn(e));
+        }
         byte in_range = debug_ray_big_range || !skill_range || raycast->distance <= skill_range;
         if (!in_range) {
             spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[47], 0.3, volume);

@@ -8,12 +8,14 @@ zox_sys2(BodysRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
+    zox_sys_in(Seed);
     zox_sys_out(ModelLinks);
     zox_sys_out(ItemLinks);
     zox_sys_out(NodegraphLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
+        zox_sys_i(Seed, seed);
         zox_sys_o(ModelLinks, models);
         zox_sys_o(ItemLinks, items);
         zox_sys_o(NodegraphLinks, graphs);
@@ -28,16 +30,20 @@ zox_sys2(BodysRealmSpawnSystem) {
             zox_logw("[BodysRealmSpawnSystem] Does not support depth [%i] max is [%i]", max_part_depth, model_lods_max_length);
             continue;
         }
-        float3 skin_hsv = (float3) {
+        lint body_seed = 666 * seed->value;
+        color_rgb skin_color_rgb = seed_to_color_rgb_range(body_seed, (float2) { 0, 360 }, (float2) { 22, 66 }, (float2) { 22, 66 });
+        float3 skin_hsv = color_rgb_to_hsv(skin_color_rgb);
+        color skin_color =  color_rgb_to_color(skin_color_rgb);
+        /*float3 skin_hsv = (float3) {
             frand_range(0, 360),
             frand_range(14, 34),
             frand_range(24, 44)
         };
-        color skin_color = hsv_to_color(skin_hsv);
+        color skin_color = hsv_to_color(skin_hsv);*/
         float3 eye_hsv = (float3) {
             ((int)skin_hsv.x + 180) % 360, // frand_range(0, 360),
             frand_range(44, 64),
-            frand_range(40, 72)
+            seed_range(body_seed * 222, 50, 88)
         };
         color eye_color = hsv_to_color(eye_hsv);
         // Chest

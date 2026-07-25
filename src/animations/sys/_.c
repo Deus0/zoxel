@@ -1,4 +1,3 @@
-
 #include "eternal_rotation_system.c"    // move this to animation module
 #include "shrink_system.c"
 #include "idle_system.c"
@@ -9,6 +8,7 @@
 #include "oscillate_system.c"
 #include "lerp_to_entity.c"
 #include "position.c"
+#include "lerp.c"
 
 void define_systems_animations(ecs* world) {
     zox_system(
@@ -90,5 +90,15 @@ void define_systems_animations(ecs* world) {
         [in] AnimationDelay,
         [in] AnimationLength,
         [out] transforms3.Position3D
+    );
+    zox_system(
+        LerpFloatSystem,
+        zoxp_update,
+        [in] AnimationTarget,
+        [in] AnimationTargetComponent,
+        [in] AnimationStartTime,
+        [in] AnimationDuration,
+        [in] LerpFloatFrom,
+        [in] LerpFloatTo
     );
 }

@@ -7,7 +7,7 @@ zox_sys2(ActionActivateSystem) {
     zox_sys_in(TriggerActionA);
     zox_sys_in(ActiveAction);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_i(TriggerActionA, trigger);
         zox_sys_i(ActiveAction, action);
         if (trigger->value != zox_dirty_active) {
@@ -15,6 +15,9 @@ zox_sys2(ActionActivateSystem) {
         }
         entity e2 = action->value;
         if (!zox_valid(e2)) {
+            if (dbg_log) {
+                zox_log("[%s]'s Active Action is empty", zox_getn(e));
+            }
             continue;
         }
         byte is_activate = zox_has(e2, Activate) ? zox_getv(e2, Activate) : 0;
@@ -30,7 +33,6 @@ zox_sys2(ActionActivateSystem) {
         }
         zox_set(e2, ActivateBegin, { zox_dirty_trigger });
         if (dbg_log) {
-            zox_sys_e();
             zox_log(" - [%s] Action [%s] Begins", zox_get_name(e), zox_get_name(e2));
         }
     }
