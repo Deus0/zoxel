@@ -5,32 +5,16 @@ used - 200-400mb used
 # Note we need to use pipelines to isolate reading from voxels / writing to
 
 Next:
-- Children Position System for Transforms2
-- Convert layouts to use LocalPosition2 
+- Crashing on windows still
+	- implement loading screen to make it easier to see why breaks
+- List ui calculating wrong cause sliders different heights then buttons!
+- Remove crafting users reference and use normal item ui for craft ui
+- Fix taskbars again properly linking to windows
 - Convert Vox Model to use ChunkMeshes
 - Refactor Character - Vox model can be underneath them
 - Refactor Vox Model so meshes can be underneath them
-
-Fix:
-- Sometimes humanoids dissapear (when talkin go them?)
-- aura particles are broken, they only spawn in same spot now
-- PNG errors - convert rest to bmp
-- 'Sides is true with Air'
-- 'child_index_to_text_array_index: index ' warning
-- 'OOB [set_octree_value] [0x2x0] depth [1] vlength [2]' warnings
-- Glitchy depth fighting on 3D UIs, and on Block Destruction Materials
-
-Later:
-- Smooth out camera at low fps - its very glitchy
-
-Top of world bugs:
-- blocks placed on top of world cause no face to show
-- slime npcs arnt hitting back
-	- they cannot raycast me on top of the world at 16 height
-	- npc cant raycast me
-		- only small ones
-		- when im far away from origin
-		- super weird
+- Move chunk render back to rendering module, and just link to material
+	- keep all rendering stuff there
 
 Quick Wins
 - set particle grass color to that of grass itself - block color
@@ -44,17 +28,37 @@ Quick Wins
 	- change dialogue if no quest
 - simple kill slime quest 
 	- hand in once you killed 10
-	
-- add destruction particles
-- debug npc voxel positions - porcupine style
-- particles for skeleton death
-- bleed effect
+
+Fix:
+- Fix Skinning issues of humanoids at max depth
+- fix unstuck system and test it with no clip
+- Sometimes humanoids dissapear (when talkin go them?)
+- aura particles are broken, they only spawn in same spot now
+- PNG errors - convert rest to bmp
+- 'Sides is true with Air'
+- 'child_index_to_text_array_index: index ' warning
+- 'OOB [set_octree_value] [0x2x0] depth [1] vlength [2]' warnings
+- Glitchy depth fighting on 3D UIs, and on Block Destruction Materials
+- Smooth out camera at low fps - its very glitchy
 - skybox doesnt follow to main menu?
 - "Terrain Chunk Mesh Builder: Sides is true with Air" error
 - "OOB [set_octree_value] " error with vox building
 - PNG errors
 - Eventually we need multi chunk characters, cause their updates lag
 	- max depth 4-5 for mesh build times
+- Top of world bugs
+	- blocks placed on top of world cause no face to show
+	- slime npcs arnt hitting back
+		- they cannot raycast me on top of the world at 16 height
+		- npc cant raycast me
+			- only small ones
+			- when im far away from origin
+			- super weird
+	
+- add destruction particles
+- debug npc voxel positions - porcupine style
+- particles for skeleton death
+- bleed effect
 
 Atm:
 - time punch animation when first click?
@@ -65,25 +69,22 @@ Atm:
 	- punch winds back
 	- skill coolsdown
 - Animate ui for punch, overlay
-- fix unstuck system and test it with no clip
 
 Fix:
-- I noticed Slimes have some missing faces
+-x I noticed Slimes have some missing faces
 - The errors about ChunkSides
-- I think I fucked up the chunk mesh lighting
-    - wait its just the camera being a bit laggy on the charcter collider
-    - even the ui overhead will glitch a little - make it slerp to position overheads
+-x I think I fucked up the chunk mesh lighting
+    -x wait its just the camera being a bit laggy on the charcter collider
+    -x even the ui overhead will glitch a little - make it slerp to position overheads
 - Set editor text contrast alot higher, black and white
 - Make raycast from fixed position, not off moving head
-- Keep spawned Character links seperate from ChunkEntities, one for position ref, other for spawn links
-- Fix Skinning issues of humanoids at max depth
+-x Keep spawned Character links seperate from ChunkEntities, one for position ref, other for spawn links
 - Fix the layering of the 3D UIs, text and such has depth issues
 - Fix npcs falling through map
-- Make the ui use the Uploaded count of mesh, maybe thats why it flickers
 
 New:
-- Dialogue to use black topbottom bars instead of fade
-- move dialogue text top left
+-x Dialogue to use black topbottom bars instead of fade
+-x move dialogue text top left
 - Add slight directional light over the AO on colored voxes
 
 Refactor:
@@ -91,7 +92,6 @@ Refactor:
 	- make vox use chunksides
 	- refactor vox mesh outside of vox itself
 	- Seperate out UVs generation from Faces, so they both use same Mesh Building
-- Move chunk render back to rendering, and just link to material
 - Make the chunk colors use same system to build mesh
     - we can just add uvs in for textured system
 - MeshDirty should set for diff data - bitfield - Mesh + UVs + Colors etc
@@ -100,21 +100,14 @@ Refactor:
     - keep it all centralized in rendering so we dont have to do the same work everywhere
 
 - Spawn/Despawn npc labels when they enter near player
-
 - SkeletonMesh accidently dissapeared whoops, check changing states
-
-- Spawn Humanoid NPC test function
-
+-x Spawn Humanoid NPC test function
 - debug label - the font will dissapear sometimes and reappear
 	- Looks like a memory issue causing the mashes to dissapear? when streaming
 
-- List ui calculating wrong cause sliders different heights then buttons!
-- block placing still broken every 2nd place
-- Remove crafting users reference and use normal item ui for craft ui
-- Fix taskbars again properly linking to windows
+
+-x block placing still broken every 2nd place
 - sort load games by latest played
-- Crashing on windows still
-	- implement loading screen to make it easier to see why breaks
 
 - Add lookouts around map - just big ole scary towers
     - make system so all new region placers will a void prior ones

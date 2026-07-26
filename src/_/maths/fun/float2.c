@@ -1,6 +1,18 @@
+static inline byte float2_equals(float2 a, float2 b) {
+    return a.x == b.x && a.y == b.y;
+}
+
 static inline void float2_make_zero(float2* value) {
     value->x = 0;
     value->y = 0;
+}
+
+static inline float2 float2_multiply(float2 a, float2 b) {
+    return (float2) { a.x * b.x, a.y * b.y };
+}
+
+static inline float2 float2_multiply1(float2 a, float b) {
+    return (float2) { a.x * b, a.y * b };
 }
 
 static inline void float2_multiply_float_p(float2 *input, const float mul) {
@@ -46,11 +58,14 @@ static inline float2 float2_divide1(float2 input, float div) {
     }
 }
 
-static inline float2 float2_divide(float2 input, float div) {
-    if (!div) {
-        return input;
+static inline float2 float2_divide(float2 input, float2 div) {
+    if (!div.x) {
+        div.x = 1;
     }
-    return (float2) { input.x / div, input.y / div };
+    if (!div.y) {
+        div.y = 1;
+    }
+    return (float2) { input.x / div.x, input.y / div.y };
 }
 
 static inline float2 float2_sub(const float2 a, const float2 b) {
@@ -80,9 +95,9 @@ static inline void float2_normalize_p(float2 *input) {
     float2_divide_p(input, length);
 }
 
-static inline float2 float2_normalize(const float2 input) {
-    const float length = sqrt(input.x * input.x + input.y * input.y);
-    return float2_divide(input, length);
+static inline float2 float2_normalize(float2 input) {
+    float length = sqrt(input.x * input.x + input.y * input.y);
+    return float2_divide1(input, length);
 }
 
 static inline float2 normalize2D(float2 input) {
@@ -94,14 +109,23 @@ static inline float2 normalize2D(float2 input) {
 }
 
 
-static inline float float2_distance(const float2 a, const float2 b) {
+static inline float float2_distance(float2 a, float2 b) {
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 
-static inline float2 float2_single(const float v) {
+static inline float2 float2_single(float v) {
     return (float2) { v, v };
 }
 
 static inline float2 float2_mulf(float2 a, float m) {
     return (float2) { a.x * m, a.y * m };
+}
+
+static inline float2 float2_rotate(float2 v, float angle) {
+    float s = sinf(angle);
+    float c = cosf(angle);
+    return (float2) {
+        v.x * c - v.y * s,
+        v.x * s + v.y * c
+    };
 }

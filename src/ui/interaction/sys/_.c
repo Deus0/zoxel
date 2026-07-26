@@ -18,8 +18,8 @@ void zox_define_systems_interaction(ecs* world) {
     zoxd_system_increment(SelectState);
     zox_filter(
         raycast_query,
-        [in] layouts2.CanvasPosition,
-        [in] layouts2.LayoutSize,
+        [in] transforms2.Position2,
+        [in] layouts2.LayoutSize,   // use Size2
         [in] layouts2.Layer2D,
         [in] rendering.RenderDisabled,
         [none] elements.Element,

@@ -7,8 +7,8 @@ void define_systems_plots(ecs* world) {
         PlotLineSystem,
         zoxp_update,
         [in] plots.PlotLineIndex,
-        [out] lines2.LineLocalPosition2,
-        [out] lines2.LineLocalPositionDirty,
+        [out] layouts2.LayoutLinePoints,
+        // [out] lines2.LineLocalPositionDirty,
         [none] plots.PlotLine
     );
     zox_system(

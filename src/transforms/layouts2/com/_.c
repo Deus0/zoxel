@@ -15,9 +15,15 @@ zoxc_float2(Anchor);            // TODO: Rename: AnchorPosition
 zoxc_int2(LayoutSize);
 zoxc_state(LayoutSizeDirty);
 zoxc_float2(AnchorSize);
-
 // Windows - Top level in canvas
 zoxc_entity(WindowToTop);
+// Lines
+zoxc_float2(LineAnchor);
+typedef struct {
+    int2 start;
+    int2 end;
+} LayoutLinePoints;
+zoxc_custom(LayoutLinePoints);
 
 void define_components_layouts2(ecs* world) {
     // Canvases
@@ -39,4 +45,7 @@ void define_components_layouts2(ecs* world) {
     zoxd_float2(AnchorSize);
     // Windows
     zoxd_entity(WindowToTop);
+    // hmm
+    zoxd_float2(LineAnchor);
+    zoxd(LayoutLinePoints);
 }

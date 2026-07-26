@@ -1,4 +1,4 @@
-void set_line2_canvas_position_direct(ecs *world, entity e, int2 parent_position, int2 parent_size) {
+/*void set_line2_canvas_position_direct(ecs *world, entity e, int2 parent_position, int2 parent_size) {
     if (!zox_valid(e)) {
         return;
     }
@@ -60,6 +60,9 @@ zox_sys2(Line2PositionSystem) {
             parent_position.x + points->value.z + parent_size.x * anchor->value.z - parent_size.x / 2,
             parent_position.y + points->value.w + parent_size.y * anchor->value.w - parent_size.y / 2
         };
+    }
+} zox_sys_end(Line2PositionSystem);
+*/
         /*iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -70,5 +73,3 @@ zox_sys2(Line2PositionSystem) {
                 set_line2_canvas_position_direct(world, e2, canvas_position->value, size->value);
             }
         }*/
-    }
-} zox_sys_end(Line2PositionSystem);

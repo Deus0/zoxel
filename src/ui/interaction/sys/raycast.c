@@ -1,5 +1,6 @@
 // For Elements of Square Shape - LayoutSize
 zox_sys2(ElementRaycastSystem) {
+    byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
@@ -34,22 +35,32 @@ zox_sys2(ElementRaycastSystem) {
         if (!zox_valid(camera)) {
             continue;
         }
+        float2 canvas_sizef = int2_to_float2(zox_getv(pcanvas, LayoutSize));
+        float aspect_ratio = canvas_sizef.x / canvas_sizef.y;
         // NOTE: Now it only works for one canvas hmmm
-        zox_geter_value(camera, ScreenPosition, int2, canvas_position);
-        zox_geter_value(camera, ScreenDimensions, int2, canvas_size);
+        int2 canvas_position = zox_getv(camera, ScreenPosition);
+        int2 canvas_size = zox_getv(camera, ScreenDimensions);
         int2 position = raycaster->value;
+        byte ray_in_viewport =
+            position.x >= canvas_position.x &&
+            position.x <= canvas_position.x + canvas_size.x &&
+            position.y >= canvas_position.y &&
+            position.y <= canvas_position.y + canvas_size.y;
+        if (!ray_in_viewport) {
+            continue;
+        }
         int ui_layer = -1;
         entity ui_selected = 0;
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
-            zox_sys_in_2(CanvasPosition);
+            zox_sys_in_2(Position2);
             zox_sys_in_2(LayoutSize);
             zox_sys_in_2(Layer2D);
             zox_sys_in_2(RenderDisabled);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(RenderDisabled, rdisabled);
-                zox_sys_i_2(CanvasPosition, canvasPosition2);
+                zox_sys_i_2(Position2, position2);
                 zox_sys_i_2(LayoutSize, lsize2);
                 zox_sys_i_2(Layer2D, layer2D);
                 if (rdisabled->value) {
@@ -61,13 +72,14 @@ zox_sys2(ElementRaycastSystem) {
                     continue;
                 }
                 int2 lsize = lsize2->value;
-                byte ray_in_viewport = position.x >= canvas_position.x && position.x <= canvas_position.x + canvas_size.x && position.y >= canvas_position.y && position.y <= canvas_position.y + canvas_size.y;
-                if (!ray_in_viewport) {
-                    continue;
-                }
-                int2 viewport_position = canvasPosition2->value;
-                viewport_position.x += canvas_position.x;
-                viewport_position.y += canvas_position.y;
+                float2 p = position2->value;
+                int2 viewport_position = {
+                    canvas_position.x + (int)((p.x / aspect_ratio + 0.5f) * canvas_size.x),
+                    canvas_position.y + (int)((p.y + 0.5f) * canvas_size.y)
+                };
+                // int2 viewport_position = canvasPosition2->value;
+                // viewport_position.x += canvas_position.x;
+                // viewport_position.y += canvas_position.y;
                 // bounds should be offset with canvas position
                 int4 ui_bounds = {
                     viewport_position.x - lsize.x / 2,
@@ -85,11 +97,23 @@ zox_sys2(ElementRaycastSystem) {
                         viewport_position.y + lsize.y * scaler.w
                     };
                 }
-                byte was_raycasted = position.x >= ui_bounds.x && position.x <= ui_bounds.y && position.y >= ui_bounds.z && position.y <= ui_bounds.w;
+                byte was_raycasted =
+                    position.x >= ui_bounds.x &&
+                    position.x <= ui_bounds.y &&
+                    position.y >= ui_bounds.z &&
+                    position.y <= ui_bounds.w;
                 if (was_raycasted) {
-                    if (layer2D->value > ui_layer) { // !window_raycasted &&
+                    if (layer2D->value > ui_layer) {
                         ui_layer = layer2D->value;
                         ui_selected = e2;
+                        if (dbg_log) {
+                            zox_log("[%s] was raycasted at [%x%ix%ix%i]",
+                                    zox_getn(e2),
+                                    ui_bounds.x,
+                                    ui_bounds.y,
+                                    ui_bounds.z,
+                                    ui_bounds.w);
+                        }
                     }
                 }
             }

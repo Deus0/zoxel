@@ -14,14 +14,14 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
     zox_gpu_float4x4(line2D_camera_matrix_location, render_camera_matrix);
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(LineData2D);
+    zox_sys_in(LinePoints2);
     zox_sys_in(LineThickness);
     zox_sys_in(Color);
     zox_sys_in(Layer2D);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Layer2D, layer);
-        zox_sys_i(LineData2D, line);
+        zox_sys_i(LinePoints2, line);
         zox_sys_i(LineThickness, thickness);
         zox_sys_i(Color, line_color);
         if (is_element_line) {
@@ -36,7 +36,9 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
         float depth = depth_begin + layer->value * depth_per_layer;
         zox_gpu_float(line2D_depth_location, depth);
         zox_gpu_line_thickness(thickness->value);
-        zox_gpu_set_attribute_float2(line2D_position_location, &line->value);
+        // zox_gpu_set_attribute_float2(line2D_position_location, &line);
+        float values[] = { line->start.x, line->start.y, line->end.x, line->end.y };
+        zox_gpu_set_attribute_float2(line2D_position_location, values);
         /*float values[] = {
             line->value.x,
             line->value.y,

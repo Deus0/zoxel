@@ -32,7 +32,7 @@ entity spawn_plot_graph(ecs* world, entity parent, entity prefab, entity data_en
         int position_x = line_margins + i * line_spacing;
         int2 start_position = (int2) { position_x, lines_min_height };
         int2 end_position = (int2) { position_x, lines_max_height };
-        entity e2 = spawn_ui_line2_v2(world, 0, e, start_position, end_position, line_color, plot_line_thickness, 0, float2_zero, position, 0);
+        entity e2 = spawn_ui_line2_v2(world, e, start_position, end_position, line_color, plot_line_thickness, 0, float2_zero, position, 0);
         zox_set(e2, PlotLineIndex, { i });
         zox_set_parent(world, e2, e);
         zox_add_tag(e2, PlotLine);

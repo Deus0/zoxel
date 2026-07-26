@@ -51,6 +51,10 @@ void zox_dbg_ui_auto_tests(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_spawn_element_transforms },
     };
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Elements Canvas",
+        .on_click = { &zox_dbg_spawn_element_canvas },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Text",
         .on_click = { &zox_tst_spawn_text2 },
     };

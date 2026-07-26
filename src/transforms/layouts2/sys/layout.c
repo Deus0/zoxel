@@ -1,4 +1,4 @@
-extern void set_line2_canvas_position(ecs*, entity);
+/*extern void set_line2_canvas_position(ecs*, entity);
 
 int2 get_element_pixel_positionv(int2 parent_position, int2 parent_size, int2 position, float2 anchor) {
     int2 output = parent_position;
@@ -86,9 +86,10 @@ zox_sys2(LocalLayoutSystem) {
         cposition->value = get_element_pixel_positionv(parent_position, parent_size, layout_position->value, anchor->value);
         if (is_log) {
             zox_log("-[%s] LPos[%ix%i] CPos [%ix%i]", zox_get_name(e), layout_position->value.x, layout_position->value.y, cposition->value.x, cposition->value.y);
-            /*zox_log("  -Anchor (%fx%f)", anchor->value.x, anchor->value.y);
-            zox_log("  -P(%s) PSize [%ix%i]", zox_get_name(parent), parent_size.x, parent_size.y);*/
         }
         set_layout_canvas_position_recursively_new(world, e, cposition->value, layout_size->value, 1);
     }
 } zox_sys_end(LocalLayoutSystem);
+*/
+            /*zox_log("  -Anchor (%fx%f)", anchor->value.x, anchor->value.y);
+            zox_log("  -P(%s) PSize [%ix%i]", zox_get_name(parent), parent_size.x, parent_size.y);*/

@@ -1,9 +1,9 @@
 
-static inline byte float3_equals(const float3 a, const float3 b) {
+static inline byte float3_equals(float3 a, float3 b) {
     return a.x == b.x && a.y == b.y && a.z == b.z;
 }
 
-static inline void float3_print(const float3 input) {
+static inline void float3_print(float3 input) {
     zox_log("    Float3 [%f %f %f]\n", input.x, input.y, input.z);
 }
 

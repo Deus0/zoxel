@@ -1,5 +1,5 @@
 // This converts our layout position to our canvas real position
-static inline float2 get_element_position(int2 position, float2 canvas_sizef, float aspect_ratio) {
+/*static inline float2 get_element_position(int2 position, float2 canvas_sizef, float aspect_ratio) {
     float2 positionf = int2_to_float2(position);
     // Gets [0,1] Values
     float2_divide_float2(&positionf, canvas_sizef);
@@ -57,3 +57,4 @@ zox_sys2(LayoutToCanvasSystem) {
         }
     }
 } zox_sys_end(LayoutToCanvasSystem);
+*/

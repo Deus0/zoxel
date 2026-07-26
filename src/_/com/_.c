@@ -27,6 +27,8 @@ zoxc_byte(ComponentType);
 // Measurements
 zoxc_byte(Radius);
 zoxc_byte(Height);
+zoxc_float2(Size2);
+zoxc_float3(Size3);
 // Arrays
 zoxc_double(MaxDoubleData);
 zoxc_arrayd(DoubleData, double)
@@ -86,6 +88,8 @@ void zox_define_components_core(ecs* world) {
     // Measurements
     zoxd_byte(Radius);
     zoxd_byte(Height);
+    zoxd_float2(Size2);
+    zoxd_float3(Size3);
     // Arrays
     zoxd_double(MaxDoubleData);
     zoxd_arrayd(DoubleData);

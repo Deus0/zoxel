@@ -21,7 +21,7 @@ void PrintBobSpawnSystem(ecs *world) {
     // Create a SpaceShip prefab with a Defense component.
     Position2 *position2s = malloc(sizeof(Position2) * bobSpawnCount);
     Velocity2D *velocity2Ds = malloc(sizeof(Velocity2D) * bobSpawnCount);
-    // Rotation2D *rotation2Ds = malloc(sizeof(Rotation2D) * bobSpawnCount);
+    // Rotation2 *rotation2Ds = malloc(sizeof(Rotation2) * bobSpawnCount);
     // Acceleration2D *acceleration2Ds = malloc(sizeof(Acceleration2D) * bobSpawnCount);
     Torque2D *torque2Ds = malloc(sizeof(Torque2D) * bobSpawnCount);
     Scale1 *scale1Ds = malloc(sizeof(Scale1) * bobSpawnCount);
@@ -85,7 +85,7 @@ void PrintBobSpawnSystem(ecs *world) {
             ecs_id(Position2),
             ecs_id(Velocity2D),
             ecs_id(Acceleration2D),
-            ecs_id(Rotation2D),
+            ecs_id(Rotation2),
             ecs_id(Torque2D),
             ecs_id(Scale1),
             ecs_id(Brightness),
@@ -98,7 +98,7 @@ void PrintBobSpawnSystem(ecs *world) {
             position2s,
             velocity2Ds,
             NULL,           // Acceleration2D
-            NULL,           // Rotation2D
+            NULL,           // Rotation2
             torque2Ds,
             scale1Ds,
             brightnesses,

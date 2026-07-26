@@ -28,7 +28,7 @@ void define_systems_physics2(ecs* world) {
     zox_system(
         Torque2DSystem,
         zoxp_physics,
-        [out] transforms2.Rotation2D,
+        [out] transforms2.Rotation2,
         [in] Torque2D
     );
     zox_system(
