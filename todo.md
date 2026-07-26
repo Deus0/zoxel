@@ -4,8 +4,26 @@ used - 200-400mb used
 
 # Note we need to use pipelines to isolate reading from voxels / writing to
 
+Next:
+- Children Position System for Transforms2
+- Convert layouts to use LocalPosition2 
+- Convert Vox Model to use ChunkMeshes
+- Refactor Character - Vox model can be underneath them
+- Refactor Vox Model so meshes can be underneath them
 
-Bugs:
+Fix:
+- Sometimes humanoids dissapear (when talkin go them?)
+- aura particles are broken, they only spawn in same spot now
+- PNG errors - convert rest to bmp
+- 'Sides is true with Air'
+- 'child_index_to_text_array_index: index ' warning
+- 'OOB [set_octree_value] [0x2x0] depth [1] vlength [2]' warnings
+- Glitchy depth fighting on 3D UIs, and on Block Destruction Materials
+
+Later:
+- Smooth out camera at low fps - its very glitchy
+
+Top of world bugs:
 - blocks placed on top of world cause no face to show
 - slime npcs arnt hitting back
 	- they cannot raycast me on top of the world at 16 height
@@ -15,12 +33,12 @@ Bugs:
 		- super weird
 
 Quick Wins
--x set Vignette on Dialogue insteaad of Blur
+- set particle grass color to that of grass itself - block color
 - arm should only slerp rotation - no setting
 - save player character slot data
 	- items, skills, etc whatever is there
 - load player character slot data
-- add chicken head item
+- Add chicken head item
 - Vox Items - hold chicken head in hands
 - 10% chance for Boney npc to have a quest to give
 	- change dialogue if no quest

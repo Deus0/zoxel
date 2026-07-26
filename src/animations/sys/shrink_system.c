@@ -4,11 +4,11 @@ zox_sys2(ShrinkSystem) {
     zox_sys_begin()
     zox_sys_in(AnimationState)
     zox_sys_in(AnimationStart)
-    zox_sys_out(Scale1D)
+    zox_sys_out(Scale1)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(AnimationState, animationType)
         zox_sys_i(AnimationStart, animationStart)
-        zox_sys_o(Scale1D, scale1D)
+        zox_sys_o(Scale1, scale1D)
         if (animationType->value != zox_animation_shrink) {
             continue;
         }

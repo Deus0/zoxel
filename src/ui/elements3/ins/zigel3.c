@@ -12,7 +12,7 @@ entity spawn_zigel3(ecs *world, entity prefab, entity parent, uint child_index, 
     zox_set(e, FillColor, { fill });
     zox_set(e, OutlineColor, { outline });
     if (scale) {
-        zox_set(e, Scale1D, { scale });
+        zox_set(e, Scale1, { scale });
     }
     return e;
 }

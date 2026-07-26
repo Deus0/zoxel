@@ -5,20 +5,9 @@
     zox_make_new()\
     zox_make_prefab(e)
 
-#ifdef zox_flecs_4
+// flecs 4 overrides by default
+#define zox_prefab_add(e, T) ecs_add(world, e, T);
 
-    // flecs 4 overrides by default
-    #define zox_prefab_add(e, T)\
-        ecs_add(world, e, T);
-
-#else
-
-    // flecs 3 inherits parent data by default
-    #define zox_prefab_add(e, T)\
-        ecs_add(world, e, T);\
-        zox_override(e, T)
-
-#endif
 
 #define zox_prefab_set(e, T, ...) {\
     zox_prefab_add(e, T) \

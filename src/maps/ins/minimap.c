@@ -4,13 +4,13 @@ entity spawn_minimap(ecs* world, entity canvas, entity player, entity terrain) {
     if (zox_valid(camera)) {
         tunk_position = zox_getv(camera, StreamPosition2);
     }
-    const char* header_text = "";
-    int2 size = int2_single(60 * ui_scale);
-    // Margin from canvas corner
-    int2 position = (int2) { -16, -16 };
-    float2 position_anchor = (float2) { 1, 1 };
-    byte header_font_size = 8 * ui_scale;
+    float2 position_anchor = float2_top_right;
+    int2 size = int2_single(100 * ui_scale);
+    int2 position = (int2) { -16 * ui_scale, -16 * ui_scale };
+    byte header_font_size = 6 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
+    const char* header_text = "";
+    // Margin from canvas corner
     entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, position, size, position_anchor, header_font_size, header_padding, &on_closed_taskbar_window);
     entity e = e3.x;
     zox_add_tag(e, Map);

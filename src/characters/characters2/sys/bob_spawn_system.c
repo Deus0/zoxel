@@ -24,7 +24,7 @@ void PrintBobSpawnSystem(ecs *world) {
     // Rotation2D *rotation2Ds = malloc(sizeof(Rotation2D) * bobSpawnCount);
     // Acceleration2D *acceleration2Ds = malloc(sizeof(Acceleration2D) * bobSpawnCount);
     Torque2D *torque2Ds = malloc(sizeof(Torque2D) * bobSpawnCount);
-    Scale1D *scale1Ds = malloc(sizeof(Scale1D) * bobSpawnCount);
+    Scale1 *scale1Ds = malloc(sizeof(Scale1) * bobSpawnCount);
     Brightness *brightnesses = malloc(sizeof(Brightness) * bobSpawnCount);
     DestroyInTime *destroyInTimes = malloc(sizeof(DestroyInTime) * bobSpawnCount);
     for (int i = 0; i < bobSpawnCount; i++)
@@ -87,7 +87,7 @@ void PrintBobSpawnSystem(ecs *world) {
             ecs_id(Acceleration2D),
             ecs_id(Rotation2D),
             ecs_id(Torque2D),
-            ecs_id(Scale1D),
+            ecs_id(Scale1),
             ecs_id(Brightness),
             ecs_id(DestroyInTime)
         },

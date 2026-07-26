@@ -24,7 +24,7 @@ void crosshair_set_type(ecs* world, entity e, byte new) {
         zox_set(e, HitType, { new });
         zox_set(e, OutlineColor, { crosshair_fill });
         zox_set(e, GenerateTexture, { zox_generate_texture_run });
-        zox_set(e, Scale1D, { scale });
+        zox_set(e, Scale1, { scale });
     }
 }
 

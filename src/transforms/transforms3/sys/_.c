@@ -46,16 +46,25 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] Position3D,
         [in] Rotation3D,
         [out] transforms.TransformMatrix,
-        [none] !transforms.Scale1D,
+        [none] !transforms.Scale1,
         [none] !transforms.DisableTransform
     );
-    // Scale1D
+    // Scale1
     zox_system(
         TransformMatrixScaleSystem,
         zoxp_transforms,
         [in] Position3D,
         [in] Rotation3D,
-        [in] transforms.Scale1D,
+        [in] transforms.Scale1,
+        [out] transforms.TransformMatrix,
+        [none] !transforms.DisableTransform
+    );
+    zox_system(
+        TransformMatrixScale3System,
+        zoxp_transforms,
+        [in] Position3D,
+        [in] Rotation3D,
+        [in] transforms3.Scale3,
         [out] transforms.TransformMatrix,
         [none] !transforms.DisableTransform
     );

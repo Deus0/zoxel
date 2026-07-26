@@ -1,8 +1,8 @@
 // Generates a Biome Map
 zox_sys2(BiomeMapSystem) {
     byte dbg_log = 0;
-    double biome_frequency = 0.04;
-    byte biome_octaves = 8;
+    double biome_frequency = 0.02;
+    byte biome_octaves = 12;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);

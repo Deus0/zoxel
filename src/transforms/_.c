@@ -3,7 +3,8 @@
 
 zox_tag(DisableTransform);
 zox_tag(StaticTransform);
-zoxc_float(Scale1D);
+zoxc_float(Scale1);
+zoxc_float(LocalScale1);
 zoxc(TransformMatrix, float4x4);
 #include "hierarchy/_.c"
 #include "transforms2/_.c"
@@ -13,7 +14,8 @@ zoxc(TransformMatrix, float4x4);
 zox_begin_module(Transforms) {
     zoxd_tag(DisableTransform);
     zoxd_tag(StaticTransform);
-    zoxd_float(Scale1D);
+    zoxd_float(Scale1);
+    zoxd_float(LocalScale1);
     zoxd(TransformMatrix);
     zox_import_module(Hierarchys);
     zox_import_module(Transforms2);

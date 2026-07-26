@@ -8,6 +8,7 @@ zox_sys2(Skeleton3RenderSystem) {
     zox_geter_value(rmaterial, MaterialGPULink, uint, material_link);
     zox_geter(rmaterial, MaterialBone, material_attributes);
     zox_sys_begin();
+    zox_sys_in(InitializeMesh);
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshGPULink);
     zox_sys_in(ColorsGPULink);
@@ -18,6 +19,7 @@ zox_sys2(Skeleton3RenderSystem) {
     camera_filtering_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(InitializeMesh, initialize);
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshGPULink, mesh);
@@ -25,9 +27,15 @@ zox_sys2(Skeleton3RenderSystem) {
         zox_sys_i(BoneIndexGPULink, bone_indicies);
         zox_sys_i(BoneLinks, bones);
         zox_sys_i(TransformMatrix, matrix);
-        if (disabled->value || !indicies->length || !mesh->value.x || !mesh->value.y || !colors->value || !bone_indicies->value || !bones->length) {
+        if (disabled->value || initialize->value || !indicies->length || !bones->length) {
             continue;
         }
+#ifdef zox_safety_checks
+        if (!mesh->value.x || !mesh->value.y || !colors->value || !bone_indicies->value) {
+            zox_loge("Skeleton Mesh invalid GPU Links [%s]", zox_getn(e));
+            continue;
+        }
+#endif
         camera_filtering_check();
         if (!has_set_material) {
             has_set_material = 1;

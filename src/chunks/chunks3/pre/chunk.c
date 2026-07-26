@@ -24,13 +24,13 @@ entity spawn_chunk3(ecs *world, entity prefab, float3 position, float scale, byt
     zox_instance(prefab);
     zox_name("chunk3")
     zox_set(e, Position3D, { position });
-    zox_set(e, Scale1D, { scale });
+    // zox_set(e, Scale1, { scale });
     zox_set(e, BlockScale, { block_scale });
     zox_set(e, ChunkSize, { size });
     zox_set(e, NodeDepth, { depth });
     zox_set(e, RenderDepth, { depth });
-    spawn_gpu_mesh(world, e);
-    spawn_gpu_colors(world, e);
+    // spawn_gpu_mesh(world, e);
+    // spawn_gpu_colors(world, e);
     // As this is test function!
     zox_add_tag(e, NoiseChunk);
     return e;

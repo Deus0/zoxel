@@ -33,7 +33,7 @@ void emit_particle3Ds(ecs *world, const float3 spawn_position, const int spawn_c
     const float2 brightnessBounds = { 0.2f, 0.8f };
     Position3D *positions = malloc(sizeof(Position3D) * spawn_count);
     Velocity3D *velocity3Ds = malloc(sizeof(Velocity3D) * spawn_count);
-    Scale1D *scale1Ds = malloc(sizeof(Scale1D) * spawn_count);
+    Scale1 *scale1Ds = malloc(sizeof(Scale1) * spawn_count);
     Brightness *brightnesses = malloc(sizeof(Brightness) * spawn_count);
     DestroyInTime *destroyInTimes = malloc(sizeof(DestroyInTime) * spawn_count);
     for (int i = 0; i < spawn_count; i++) {
@@ -67,7 +67,7 @@ void emit_particle3Ds(ecs *world, const float3 spawn_position, const int spawn_c
             ecs_pair(EcsIsA, prefab_particle3D),
             ecs_id(Position3D),
             ecs_id(Rotation3D),
-            ecs_id(Scale1D),
+            ecs_id(Scale1),
             ecs_id(Velocity3D),
             ecs_id(Acceleration3D),
             ecs_id(Brightness),

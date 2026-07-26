@@ -1,9 +1,9 @@
 void initialize_threads(ecs* world, byte cores) {
-    zox_logv("Setting Threads [%i]", cores);
-    if (cores > 1 && is_multithreading) {
+    if (cores > 1 && !zox_disable_threads) {
+        zox_logv("Enabling Threads [%i]", cores);
         ecs_set_threads(world, cores);
     } else {
-        zox_logw("Single Threads Enabled");
+        zox_logv("Single Threads Enabled");
         ecs_set_threads(world, 0);
     }
 }

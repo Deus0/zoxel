@@ -61,6 +61,7 @@ zox_sys2(MountainMapSystem) {
         }
         for (int j = 0; j < mountains_length; j++) {
             entity e2 = mountains[j];
+            byte mountain_type = zox_getv(e2, MountainType);
             int2 mountain_position = zox_getv(e2, BlockPosition2);
             byte mountain_radius = zox_getv(e2, Radius);
             byte mountain_height = zox_getv(e2, Height);
@@ -75,8 +76,15 @@ zox_sys2(MountainMapSystem) {
                     }
                     int index = int2_array_index(position, map_size);
                     int value = height_map->value[index];
-                    double mountain_multiplier = 1 + mountain_height * ((mountain_radius - mountain_distance) / (float) mountain_radius);
-                    value *= mountain_multiplier;
+                        if (mountain_type == zox_mountain_type_peak) {
+                        double mountain_multiplier = 1 + mountain_height * ((mountain_radius - mountain_distance) / (float) mountain_radius);
+                        value *= mountain_multiplier;
+                    } else {
+                        // if type is zox_mountain_type_hill
+                        float t = 1.0f - (float) mountain_distance / mountain_radius;
+                        t = t * t * (3.0f - 2.0f * t); // smoothstep
+                        value += (int)(mountain_height * t);
+                    }
                     height_map->value[index] = int_clamp(value, 0, render_distance_y * terrain_length - 1);
                     // Clear Vegetation for middle of mountains
                     if (!zox_disable_vegetation && mountain_distance < 2 / (mountain_radius * 3)) {

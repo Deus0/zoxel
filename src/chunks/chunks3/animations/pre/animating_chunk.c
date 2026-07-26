@@ -22,8 +22,6 @@ entity spawn_prefab_animating_chunk(ecs *world, entity p) {
         };
     }
     zox_set_ptr(e, ColorRGBs, colors);
-
-    add_gpu_colors(world, e);
-
+    zox_prefab_set(e, ColorsGPULink, { 0 });
     return e;
 }

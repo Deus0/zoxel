@@ -2,11 +2,11 @@
 zox_sys2(Transform2Scale1System) {
     zox_sys_begin();
     zox_sys_in(Position2);
-    zox_sys_in(Scale1D);
+    zox_sys_in(Scale1);
     zox_sys_out(TransformMatrix);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Position2, position);
-        zox_sys_i(Scale1D, scale);
+        zox_sys_i(Scale1, scale);
         zox_sys_o(TransformMatrix, matrix);
         matrix->value = float4x4_transform_scale(float2_to_float3(position->value), quaternion_identity, scale->value);
     }

@@ -69,12 +69,17 @@ zox_sys2(RegionMountainSystem) {
             if (!find_position_in_bounds(seed->value, block_position->value, block_size->value, min_size, max_size, positions, sizes, j)) {
                 continue;
             }
+            byte mountain_chance = seed_range(seed->value * 36963, 0, 100);
+            byte mountain_type = zox_mountain_type_hill;
+            if (mountain_chance >= 90) {
+                mountain_type = zox_mountain_type_peak;
+            }
             int2 mountain_position = positions[j];
             byte radius = sizes[j];
             byte height = seed_range(seed->value + j, min_height, max_height);
             // mountain_position = int2_add(mountain_position, spawn_position);
             lint mountain_seed = position_seed2(seed->value, mountain_position);
-            spawn_mountain(world, prefab_mountain, e, mountain_seed, mountain_position, radius, height);
+            spawn_mountain(world, prefab_mountain, e, mountain_seed, mountain_type, mountain_position, radius, height);
             if (dbg_log) {
                 zox_log("   ++ Mountain [%ix%i] H [%i] R [%i]", mountain_position.x, mountain_position.y, height, radius);
             }

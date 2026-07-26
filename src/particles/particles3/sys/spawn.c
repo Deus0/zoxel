@@ -11,7 +11,7 @@
     // Rotation3D *rotations = malloc(sizeof(Rotation3D) * spawnCount);
     // Acceleration *accelerations = malloc(sizeof(Acceleration) * spawnCount);
     // Torque3D *torques = malloc(sizeof(Torque3D) * spawnCount);
-    Scale1D *scale1Ds = malloc(sizeof(Scale1D) * spawnCount);
+    Scale1 *scale1Ds = malloc(sizeof(Scale1) * spawnCount);
     Brightness *brightnesses = malloc(sizeof(Brightness) * spawnCount);
     DestroyInTime *destroyInTimes = malloc(sizeof(DestroyInTime) * spawnCount);
     for (int i = 0; i < spawnCount; i++) {
@@ -61,7 +61,7 @@
             ecs_id(Acceleration3D),
             ecs_id(Rotation3D),
             // ecs_id(Torque3D),
-            ecs_id(Scale1D),
+            ecs_id(Scale1),
             ecs_id(Brightness),
             ecs_id(DestroyInTime)
         },

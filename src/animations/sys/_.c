@@ -22,18 +22,18 @@ void define_systems_animations(ecs* world) {
         zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
-        [out] transforms.Scale1D
+        [out] transforms.Scale1
     );
     zox_system(
         IdleSystem,
         zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
-        [out] transforms.Scale1D
+        [out] transforms.Scale1
     );
     zox_system(
         AnimationSequenceSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] AnimationSequence,
         [in] AnimationTimes,
         [in] AnimationTargets,

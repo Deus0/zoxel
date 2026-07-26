@@ -7,7 +7,6 @@ entity spawn_menu_game_stats(ecs* world, entity canvas, entity character) {
         zox_loge("Invalid Character in [spawn_game_ui_stats]");
         return 0;
     }
-    // Others
     entity stats[zox_children_capacity];
     uint stats_length = zox_get_children_by_id(world, character, stats, zox_children_capacity, zox_id(Stat));
     if (!stats_length) {
@@ -17,24 +16,23 @@ entity spawn_menu_game_stats(ecs* world, entity canvas, entity character) {
     }
     byte total_bars = 4; // TODO: Make dynamic
     // Sizing
-    byte panel_padding = 6 * ui_scale;
+    float2 position_anchor = float2_top_left;
     // NOTE: Font size is scaled from height of bar
-    int2 bar_size = (int2) { 75 * ui_scale, 8 * ui_scale };
+    byte label_font_size = ui_scale * 6;
+    int2 bar_size = (int2) { 100 * ui_scale, 12 * ui_scale };
     byte bar_padding = 2 * ui_scale;
     int panel_height = total_bars * (bar_size.y + bar_padding) - bar_padding;
-    int2 size = (int2) { 80 * ui_scale, panel_height + panel_padding * 2 };
-    // Positioning
-    float2 position_anchor = float2_top_left;
-    int2 position = (int2) { 8 * ui_scale, - 6 * ui_scale };
-    byte header_font_size = 8 * ui_scale;
+    byte panel_padding = 10 * ui_scale;
+    int2 size = (int2) { bar_size.x + panel_padding * 2, panel_height + panel_padding * 2 };
+    int2 position = (int2) { 16 * ui_scale, - 16 * ui_scale };
+    byte header_font_size = 6 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, position_anchor, header_font_size, header_padding, NULL);
     entity e = e2.x;
     entity body = e2.z;
     zox_set_unique_name(e, "statbars");
-    zox_add_tag(e, StatBars);
+    zox_add_tag(e,  StatBars);
     // Now our bars
-    byte label_font_size = ui_scale * 4;
     int2 bar_position = (int2) { 0, - bar_size.y / 2 + panel_height / 2 };
     for (uint i = 0; i < stats_length; i++) {
         entity stat = stats[i];

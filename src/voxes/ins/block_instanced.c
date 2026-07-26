@@ -40,7 +40,7 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
     zox_set(e, RenderDepth, { data.render_depth });
     zox_set(e, RenderDisabled, { data.render_disabled });
     zox_set(e, Position3D, { data.positionf });
-    zox_set(e, Scale1D, { scale });
+    zox_set(e, Scale1, { scale });
     zox_set(e, TransformMatrix, { float4x4_position_scale(data.positionf, scale) });
     //zox_set(e, TransformMatrix, { float4x4_position(positionf) });
     // zox_set(e, TransformMatrix, { float4x4_transform_scale(positionf, quaternion_identity, 1) });

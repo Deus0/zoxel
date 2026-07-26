@@ -1,5 +1,9 @@
 # Done
 
+-x Get skeleton to shrink
+-x set Vignette on Dialogue insteaad of Blur
+-x 'Skeleton Mesh invalid GPU Links' - use initializemesh
+-x Make scales work with parenting
 -x loaded chunk doesnt generate light properly
 -x store spawned characters seperately to chunk entities
 -x Fix colors missmatch on lighting

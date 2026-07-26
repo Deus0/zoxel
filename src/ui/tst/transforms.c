@@ -27,7 +27,7 @@ void zox_dbg_spawn_element_transforms(ecs *world, ClickEventData data) {
         int2 position = (int2) { 0, 0 };
         entity e2 = spawn_uic(world, prefab_element_frame, e, float2_half, position, int2_single(size), int2_single(size), default_fill_color_icon, default_outline_color_icon);
         zox_set(e2, Layer2D, { layer + 1 });
-        zox_set(e2, Scale1D, { 0.5f });
+        zox_set(e2, Scale1, { 0.5f });
     }
     {
         int2 position = (int2) { size * 2, 0 };
@@ -39,7 +39,7 @@ void zox_dbg_spawn_element_transforms(ecs *world, ClickEventData data) {
             int2 position = (int2) { size, 0 };
             entity e3 = spawn_uic(world, prefab_element_frame, e2, float2_half, position, int2_single(size), int2_single(size), default_fill_color_icon, default_outline_color_icon);
             zox_set(e3, Layer2D, { layer + 2 });
-            zox_set(e3, Scale1D, { 0.25f });
+            zox_set(e3, Scale1, { 0.25f });
             zox_add(e3, TransformMatrix);
         }
     }

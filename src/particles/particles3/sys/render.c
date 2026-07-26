@@ -88,7 +88,7 @@ zox_sys2(Particle3DRenderSystem) {
 
 
 // const Rotation3D *rotation3D = &rotation3Ds[i];
-// const Scale1D *scale1D = &scale1Ds[i];
+// const Scale1 *scale1D = &scale1Ds[i];
 // glVertexAttribPointer(particle3D_position_location, 3, GL_FLOAT, GL_FALSE, 0, position3D->value);
 // zox_gpu_float3(particle3D_position_location, position3D->value);
 // this keeps a consistent thickness

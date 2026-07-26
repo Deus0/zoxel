@@ -33,7 +33,7 @@ void add_ui_components_world(ecs *world, entity e, float2 mesh_scale) {
     zox_prefab_set(e, TextureGPULink, { 0 });
     add_gpu_mesh(world, e);
     add_gpu_uvs(world, e);
-    add_gpu_colors(world, e);
+    zox_prefab_set(e, ColorsGPULink, { 0 });
     zox_prefab_add(e, MeshIndicies);
     zox_prefab_add(e, MeshVertices);
     zox_prefab_add(e, MeshUVs);

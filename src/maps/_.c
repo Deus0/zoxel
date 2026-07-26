@@ -26,8 +26,8 @@ void zox_dbg_map_cycle() {
 // TODO: we can even downsize the pieces?
 byte bigmap_zoom = 16;
 float bigmap_alpha = 0.8f;
-byte minimap_zoom = 5;
-float minimap_alpha = 0.46f;
+byte minimap_zoom = 4;
+float minimap_alpha = 0.56f;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

@@ -18,9 +18,9 @@ zox_sys2(SkillOverlaySystem) {
         }
         entity data = link->value;
         if (!zox_valid(data)) {
-            zox_geter_value(overlay, Scale1D, float, old_scale);
+            zox_geter_value(overlay, Scale1, float, old_scale);
             if (old_scale) {
-                zox_set(overlay, Scale1D, { 0 });
+                zox_set(overlay, Scale1, { 0 });
             }
             continue;
         }
@@ -42,7 +42,7 @@ zox_sys2(SkillOverlaySystem) {
         float warmup_scale = warmup_at ? (zox_current_time - warmup_at) / warmup_time : (warmup_state ? 1 : 0);
         float cooldown_scale = cooldown_at ? (zox_current_time - cooldown_at) / cooldown_time : 0;
         float scale = active ? 1 : warmup_scale ? warmup_scale : (cooldown_scale ? 1 - cooldown_scale : 0);
-        zox_set(overlay, Scale1D, { scale * 1.2f });
+        zox_set(overlay, Scale1, { scale * 1.2f });
         if (debug_system) {
             zox_log("Overlay Skill System [%s] -> [%s]", zox_get_name(data), zox_get_name(overlay));
             zox_log("   - at [%f],  warmup_at: %f, cooldown_at [%f]", zox_current_time, warmup_at, cooldown_at);

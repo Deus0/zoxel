@@ -83,9 +83,8 @@ void define_systems_bones(ecs *world) {
     zox_system_1(
         BonesInitializeSystem,
         zoxp_mainthread,
-        [in] core.InitializeEntity,
-        [out] bones.BoneIndexGPULink,
-        [none] bones.Skeleton
+        [in] rendering.InitializeMesh,
+        [out] bones.BoneIndexGPULink
     );
     zox_system_1(
         BoneIndexUploadSystem,
@@ -105,6 +104,7 @@ void define_systems_bones(ecs *world) {
     zox_render3_system(
         2,
         Skeleton3RenderSystem,
+        [in] rendering.InitializeMesh,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,
         [in] rendering.ColorsGPULink,

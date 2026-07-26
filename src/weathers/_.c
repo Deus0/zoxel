@@ -10,6 +10,7 @@ entity skybox; // remove this, link to realm/game
 #include "shd/skybox.c"
 #include "pre/_.c"
 #include "fun/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
 
 void spawn_shaders_weather(ecs *world) {

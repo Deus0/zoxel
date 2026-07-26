@@ -7,7 +7,7 @@ entity spawn_prefab_character2(ecs *world) {
     zox_add_tag(e, Frictioned);
     zox_prefab_set(e, Position2, { float2_zero });
     zox_prefab_set(e, Rotation2D, { 0 });
-    zox_prefab_set(e, Scale1D, { 1 });
+    zox_prefab_set(e, Scale1, { 1 });
     zox_prefab_set(e, Rotation2D, { - 90 * degreesToRadians });
     add_physics2D(world, e, world_grid2D_size);
     // GPU

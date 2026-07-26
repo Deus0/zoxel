@@ -2,13 +2,14 @@ zox_tag(EulerOverride);
 zox_tag(CameraTransform);
 zoxc_float3(Position3D);
 zoxc_float4(Rotation3D);     // A quaternion rotation
-zoxc_float3(Scale3D);          // A Non Uniform 3D Scale
+zoxc_float3(Scale3);          // A Non Uniform 3D Scale
 zoxc(Matrix, float4x4);       // A matrix used for rendering
 zoxc_float3(Euler);          // A rotation but kept in euler form
 zoxc_float2(EulerLimitX);
 zoxc_float2(EulerLimitZ);
 zoxc_float3(LocalPosition3D);
 zoxc_float4(LocalRotation3D);
+zoxc_float3(LocalScale3);
 // used for physics
 zoxc_float3(Bounds3D);
 zoxc_state(Bounds3Dirty);
@@ -21,13 +22,14 @@ void define_components_transforms3(ecs* world) {
     zoxd_tag(CameraTransform);
     zoxd_float3(Position3D);
     zoxd_float4(Rotation3D);
-    zoxd_float3(Scale3D);
+    zoxd_float3(Scale3);
     zoxd(Matrix);
     zoxd_float3(Euler);
     zoxd_float2(EulerLimitX);
     zoxd_float2(EulerLimitZ);
     zoxd_float3(LocalPosition3D);
     zoxd_float4(LocalRotation3D);
+    zoxd_float3(LocalScale3)
     // Others
     zoxd_float3(Bounds3D);
     zoxd_state(Bounds3Dirty);

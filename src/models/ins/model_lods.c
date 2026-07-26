@@ -8,8 +8,8 @@ entity spawn_model(ecs *world, entity prefab, byte mdepth, byte ndepth, byte3 rs
     zox_set(e, BlockScale, { bscale });
     zox_set(e, ChunkSize, { byte3_to_int3(rsize) });
     // NOTE: Do instanced models need these??
-    spawn_gpu_mesh(world, e);
-    spawn_gpu_colors(world, e);
+    // spawn_gpu_mesh(world, e);
+    // spawn_gpu_colors(world, e);
     return e;
 }
 

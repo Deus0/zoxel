@@ -7,17 +7,15 @@ zox_sys2(IdleSystem) {
     zox_sys_begin();
     zox_sys_in(AnimationState);
     zox_sys_in(AnimationStart);
-    zox_sys_out(Scale1D);
+    zox_sys_out(Scale1);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(AnimationState, animationType);
-        zox_sys_i(AnimationStart, animationStart);
-        zox_sys_o(Scale1D, scale1D);
-
-        if (animationType->value != zox_animation_idle) {
+        zox_sys_i(AnimationState, type);
+        zox_sys_i(AnimationStart, start);
+        zox_sys_o(Scale1, scale);
+        if (type->value != zox_animation_idle) {
             continue;
         }
-
-        const double animation_time = time - animationStart->value;
-        scale1D->value = idle_default_scale + idle_scale_addition * sin(animation_time * idle_animation_speed);
+        double animation_time = time - start->value;
+        scale->value = idle_default_scale + idle_scale_addition * sin(animation_time * idle_animation_speed);
     }
 } zox_sys_end(IdleSystem);

@@ -83,47 +83,26 @@ void zox_system_on_new(ecs* world, entity system) {
     #define zox_log_new_system(msg, ...) { }
 #endif
 
-#ifdef zox_flecs_4
+#define zox_system_internal(id_, phase, multi_threaded_, ctx_, ...) { \
+    ecs_entity_desc_t edesc = {0}; \
+    ecs_id_t add_ids[3] = {\
+        ((phase) ? ecs_pair(EcsDependsOn, (phase)) : 0), \
+        (phase), \
+        0 \
+    };\
+    edesc.id = ecs_id(id_);\
+    edesc.name = #id_;\
+    edesc.add = add_ids;\
+    ecs_system_desc_t desc = {0}; \
+    desc.entity = ecs_entity_init(world, &edesc);\
+    desc.query.expr = #__VA_ARGS__; \
+    desc.callback = id_; \
+    desc.multi_threaded = multi_threaded_;\
+    desc.ctx = ctx_;\
+    ecs_id(id_) = ecs_system_init(world, &desc); \
+    zox_system_on_new(world, zox_id(id_));\
+};
 
-    #define zox_system_internal(id_, phase, multi_threaded_, ctx_, ...) { \
-        ecs_entity_desc_t edesc = {0}; \
-        ecs_id_t add_ids[3] = {\
-            ((phase) ? ecs_pair(EcsDependsOn, (phase)) : 0), \
-            (phase), \
-            0 \
-        };\
-        edesc.id = ecs_id(id_);\
-        edesc.name = #id_;\
-        edesc.add = add_ids;\
-        ecs_system_desc_t desc = {0}; \
-        desc.entity = ecs_entity_init(world, &edesc);\
-        desc.query.expr = #__VA_ARGS__; \
-        desc.callback = id_; \
-        desc.multi_threaded = multi_threaded_;\
-        desc.ctx = ctx_;\
-        ecs_id(id_) = ecs_system_init(world, &desc); \
-        zox_system_on_new(world, zox_id(id_));\
-    };
-
-#else
-
-    #define zox_system_internal(id_, phase, multi_threaded_, ctx_, ...) { \
-        ecs_entity_desc_t edesc = {0}; \
-        edesc.id = ecs_id(id_);\
-        edesc.name = #id_;\
-        edesc.add[0] = ((phase) ? ecs_pair(EcsDependsOn, (phase)) : 0);\
-        edesc.add[1] = (phase);\
-        ecs_system_desc_t desc = {0}; \
-        desc.entity = ecs_entity_init(world, &edesc);\
-        desc.query.filter.expr = #__VA_ARGS__; \
-        desc.callback = id_; \
-        desc.multi_threaded = multi_threaded_;\
-        desc.ctx = ctx_;\
-        ecs_id(id_) = ecs_system_init(world, &desc); \
-        zox_system_on_new(world, zox_id(id_));\
-    };
-
-#endif
 
 #define zox_system(id_, phase, ...)\
     zox_system_internal(id_, phase, 1, 0, __VA_ARGS__)

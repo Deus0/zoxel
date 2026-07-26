@@ -6,7 +6,7 @@ entity spawn_prefab_particle3D_emitter(ecs *world) {
     // attach to parent character
     zox_prefab_set(e, Position3D, { float3_zero });
     zox_prefab_set(e, Rotation3D, { quaternion_identity });
-    zox_prefab_set(e, Scale1D, { 1 });
+    zox_prefab_set(e, Scale1, { 1 });
     zox_prefab_set(e, LocalPosition3D, { float3_zero });
     zox_prefab_set(e, LocalRotation3D, { quaternion_identity });
     // zox_prefab_set(e, ParentLink, { 0 });

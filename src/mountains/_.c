@@ -22,6 +22,9 @@
 #define zox_mountains
 
 byte zox_disable_mountains = 0;
+#define zox_mountain_type_hill 0
+#define zox_mountain_type_peak 1
+#define zox_mountain_type_end 2
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

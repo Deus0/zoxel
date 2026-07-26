@@ -1,17 +1,14 @@
-// zox_flecs_3 | zox_flecs_4
-#define zox_flecs_4
-
+byte zox_disable_threads = 0;
+byte target_fps = 0;
+byte zox_log_system_stats = 0;
+byte zox_log_pipelines = 0;
+byte flecs_log_level = 0;   // 1 for debug_pipelines
+byte profiler = 1;
+byte cores_count = 1;
 #include "fun/spinlock.c"
 #include "mcr/_.c"
 byte running = 1;
-byte flecs_log_level = 0;   // 1 for debug_pipelines
 uint ecs_run_count = 0;
-byte zox_log_system_stats = 0;
-byte zox_log_pipelines = 0;
-byte profiler = 1;
-byte cores_count = 1;
-byte is_multithreading = 1;
-byte target_fps = 0;
 ecs *local_world;
 
 #include "dat/_.c"

@@ -33,11 +33,12 @@
 #include "sys/_.c"
 #include "settings/_.c"
 
-#ifdef zox_windows
+byte zox_disable_process_skips = 1;
+/*#ifdef zox_windows
     byte zox_disable_process_skips = 1;
 #else
     byte zox_disable_process_skips = 0;
-#endif
+#endif*/
 
 void module_dispose_core(ecs *world, void *ctx) {
     dispose_hook_terminal_command();
@@ -57,7 +58,7 @@ void process_arguments_core(ecs *world, char* args[], int count) {
             i++;
             zox_logv("Target FPS [%i]", target_fps);
         } else if (!strcmp(args[i], "--singlethread")) {
-            is_multithreading = 0;
+            zox_disable_threads = 1;
             zox_logv("Threading Disabled");
         } else if (!strcmp(args[i], "-p") || !strcmp(args[i], "--profiler")) {
             profiler = 1;

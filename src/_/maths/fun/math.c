@@ -90,7 +90,7 @@ static inline float4x4 float4x4_scale2(float2 scale) {
     return m;
 }
 
-static inline float4x4 float4x4_scale3D(float3 scale) {
+static inline float4x4 float4x4_scale3(float3 scale) {
     float4x4 m = float4x4_identity;
     m.x.x = scale.x;
     m.y.y = scale.y;
@@ -142,6 +142,13 @@ static inline float4x4 float4x4_transform_scale(float3 position, float4 rotation
     float4x4 position_m = float4x4_position(position);
     float4x4 rotation_m = float4x4_rotation(rotation);
     float4x4 scale_m = float4x4_scale(scale);
+    return float4x4_multiply(scale_m, float4x4_multiply(rotation_m, position_m));
+}
+
+static inline float4x4 float4x4_transform_scale3(float3 position, float4 rotation, float3 scale) {
+    float4x4 position_m = float4x4_position(position);
+    float4x4 rotation_m = float4x4_rotation(rotation);
+    float4x4 scale_m = float4x4_scale3(scale);
     return float4x4_multiply(scale_m, float4x4_multiply(rotation_m, position_m));
 }
 

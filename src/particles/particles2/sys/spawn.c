@@ -16,7 +16,7 @@ void Particle2DSpawnSystem(
     // Rotation2D *rotation2Ds = malloc(sizeof(Rotation2D) * spawnCount);
     // Acceleration2D *acceleration2Ds = malloc(sizeof(Acceleration2D) * spawnCount);
     Torque2D *torque2Ds = malloc(sizeof(Torque2D) * spawnCount);
-    Scale1D *scale1Ds = malloc(sizeof(Scale1D) * spawnCount);
+    Scale1 *scale1Ds = malloc(sizeof(Scale1) * spawnCount);
     Brightness *brightnesses = malloc(sizeof(Brightness) * spawnCount);
     DestroyInTime *destroyInTimes = malloc(sizeof(DestroyInTime) * spawnCount);
     for (int i = 0; i < spawnCount; i++) {
@@ -48,7 +48,7 @@ void Particle2DSpawnSystem(
             ecs_id(Acceleration2D),
             ecs_id(Rotation2D),
             ecs_id(Torque2D),
-            ecs_id(Scale1D),
+            ecs_id(Scale1),
             ecs_id(Brightness),
             ecs_id(DestroyInTime)
         },

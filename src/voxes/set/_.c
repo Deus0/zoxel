@@ -13,12 +13,13 @@ byte disable_block_vox_generation = 0;
 void process_arguments_voxes(ecs *world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {
-        if (strcmp(args[i], "--disableoutlines") == 0) {
+        /*if (strcmp(args[i], "--disableoutlines") == 0) {
             is_generate_vox_outlines = 0;
         } else if (strcmp(args[i], "--enableoutlines") == 0) {
             zox_log("Enabling Block Outlines");
             is_generate_vox_outlines = 1;
-        } else if (strcmp(args[i], "--noblockvoxes") == 0 || strcmp(args[i], "--nominivoxes") == 0) {
+        } else */
+        if (strcmp(args[i], "--noblockvoxes") == 0 || strcmp(args[i], "--nominivoxes") == 0) {
             zox_log("Disabling Block Voxes");
             disable_block_voxes = 1;
         }
