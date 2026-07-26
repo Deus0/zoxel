@@ -4,13 +4,15 @@ used - 200-400mb used
 
 # Note we need to use pipelines to isolate reading from voxels / writing to
 
+- use Size2 instead of LayoutSize for Raycasting UI
+
 Next:
 - Children Position System for Transforms2
 - Convert layouts to use LocalPosition2 
 - Convert Vox Model to use ChunkMeshes
 - Refactor Character - Vox model can be underneath them
 - Refactor Vox Model so meshes can be underneath them
-
+5964944oo
 Fix:
 - Sometimes humanoids dissapear (when talkin go them?)
 - aura particles are broken, they only spawn in same spot now

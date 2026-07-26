@@ -13,7 +13,7 @@ void Particle2DSpawnSystem(
     // Create a SpaceShip prefab with a Defense component.
     Position2 *position2s = malloc(sizeof(Position2) * spawnCount);
     Velocity2D *velocity2Ds = malloc(sizeof(Velocity2D) * spawnCount);
-    // Rotation2D *rotation2Ds = malloc(sizeof(Rotation2D) * spawnCount);
+    // Rotation2 *rotation2Ds = malloc(sizeof(Rotation2) * spawnCount);
     // Acceleration2D *acceleration2Ds = malloc(sizeof(Acceleration2D) * spawnCount);
     Torque2D *torque2Ds = malloc(sizeof(Torque2D) * spawnCount);
     Scale1 *scale1Ds = malloc(sizeof(Scale1) * spawnCount);
@@ -46,7 +46,7 @@ void Particle2DSpawnSystem(
             ecs_id(Position2),
             ecs_id(Velocity2D),
             ecs_id(Acceleration2D),
-            ecs_id(Rotation2D),
+            ecs_id(Rotation2),
             ecs_id(Torque2D),
             ecs_id(Scale1),
             ecs_id(Brightness),
@@ -58,7 +58,7 @@ void Particle2DSpawnSystem(
             position2s,
             velocity2Ds,
             NULL,           // Acceleration2D
-            NULL,           // Rotation2D
+            NULL,           // Rotation2
             torque2Ds,
             scale1Ds,
             brightnesses,

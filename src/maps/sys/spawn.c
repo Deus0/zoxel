@@ -93,7 +93,7 @@ zox_sys2(MapInitializeSystem) {
             zox_set(e3, OutlineThickness, { arrow_thickness });
             // Hmm
             //zox_add(e3, TransformMatrix);
-            //zox_set(e3, Scale2D, { (float2) { -1, 1 } });
+            //zox_set(e3, Scale2, { (float2) { -1, 1 } });
         }
     }
 } zox_sys_end(MapInitializeSystem);

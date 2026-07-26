@@ -7,29 +7,23 @@ void offset_line_points(int4 *points, float4 line_anchor, float2 canvas_size_f) 
 
 entity spawn_ui_line2(
     ecs *world,
-    entity canvas,
-    const entity parent,
+    entity parent,
     int2 point_a,
-    const int2 point_b,
-    const float2 anchor_a,
-    const float2 anchor_b,
-    const color line_color,
-    const float thickness,
-    const double life_time,
-    const float2 parent_positionf,
-    const int2 parent_position,
-    const byte layer
+    int2 point_b,
+    float2 anchor_a,
+    float2 anchor_b,
+    color line_color,
+    float thickness,
+    double life_time,
+    float2 parent_positionf,
+    int2 parent_position,
+    byte layer
 ) {
-    if (canvas == 0) {
-        canvas = zox_canvases[0];
-    }
     // const int2 canvas_size = zox_get_value(canvas, LayoutSize)
-
     entity e = life_time ? zox_ins(world, prefab_temporary_ui_line2D) : zox_ins(world, prefab_ui_line2D);
     zox_name("ui_line2D");
-    zox_set(e, CanvasLink, { canvas });
-
-    float4 line_anchor = (float4) {
+    // zox_set(e, CanvasLink, { canvas });
+    /*float4 line_anchor = (float4) {
         anchor_a.x,
         anchor_a.y,
         anchor_b.x,
@@ -40,26 +34,20 @@ entity spawn_ui_line2(
         point_a.y,
         point_b.x,
         point_b.y
-    };
-    zox_set(e, LineLocalPosition2, { points });
+    };*/
+    zox_set_parent(world, e, parent);
+    zox_set(e, LayoutLinePoints, { point_a, point_b });
     zox_set(e, Layer2D, { layer });
     zox_set(e, Color, { line_color });
     zox_set(e, LineThickness, { thickness });
-    zox_set(e, LineAnchor, { line_anchor });
+    zox_set(e, LineAnchor, { anchor_a });
     if (life_time) {
         zox_set(e, DestroyInTime, { life_time });
     }
-
-    // adds to canvas
-    if (parent == canvas) {
-        // on_child_added(world, canvas, e);
-    }
-
     return e;
 }
 
 entity spawn_ui_line2_v2(ecs *world,
-    const entity canvas,
     const entity parent,
     const int2 point_a,
     const int2 point_b,
@@ -72,7 +60,6 @@ entity spawn_ui_line2_v2(ecs *world,
 ) {
     return spawn_ui_line2(
         world,
-        canvas,
         parent,
         point_a,
         point_b,

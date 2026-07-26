@@ -21,7 +21,7 @@ void prefabs_add_ui_to_player(ecs *world, entity e) {
 }
 
 void spawn_prefabs_elements(ecs *world) {
-    prefab_canvas = spawn_prefab_canvas(world, prefab_layout2);
+    prefab_canvas = spawn_prefab_canvas(world, prefab_layout2_root);
     prefab_element = spawn_prefab_element(world, prefab_layout2);
     prefab_element_frame = spawn_prefab_ui_textured(world, prefab_element);
     // linking

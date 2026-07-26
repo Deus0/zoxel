@@ -3,11 +3,11 @@ zox_sys2(MapArrowSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerLink);
-    zox_sys_out(Rotation2D);
+    zox_sys_out(Rotation2);
     for (int i = 0; i < it->count; i++) {
         // zox_sys_e();
         zox_sys_i(PlayerLink, player);
-        zox_sys_o(Rotation2D, rotation);
+        zox_sys_o(Rotation2, rotation);
         if (!zox_valid(player->value)) {
             continue;
         }

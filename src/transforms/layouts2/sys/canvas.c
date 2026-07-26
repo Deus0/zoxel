@@ -1,4 +1,4 @@
-zox_sys2(CanvasLinkSystem) {
+/*zox_sys2(CanvasLinkSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(CanvasLink);
@@ -9,4 +9,4 @@ zox_sys2(CanvasLinkSystem) {
             canvas->value = zox_get_parent_by_id(world, e, zox_id(Canvas));
         }
     }
-} zox_sys_end(CanvasLinkSystem);
+} zox_sys_end(CanvasLinkSystem);*/

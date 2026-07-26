@@ -8,7 +8,7 @@ entity spawn_prefab_layout3(ecs *world) {
     zox_prefab_set(e, LayoutPosition, { int2_zero });
     zox_prefab_set(e, LayoutSize, { int2_zero });
     zox_prefab_set(e, Anchor, { float2_zero });
-    zox_prefab_set(e, CanvasPosition, { int2_zero });
+    // zox_prefab_set(e, CanvasPosition, { int2_zero });
     zox_prefab_set(e, Layer2D, { 0 });
     // zox_prefab_set(e, CanvasLink, { 0 });
     return e;

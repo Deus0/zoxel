@@ -16,7 +16,7 @@ zox_sys2(ElementRenderSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position2);
-    zox_sys_in(Rotation2D);
+    zox_sys_in(Rotation2);
     zox_sys_in(Scale1);
     zox_sys_in(Layer2D);
     zox_sys_in(RenderDisabled);
@@ -28,7 +28,7 @@ zox_sys2(ElementRenderSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position2, position2);
-        zox_sys_i(Rotation2D, rotation2D);
+        zox_sys_i(Rotation2, rotation2D);
         zox_sys_i(Scale1, scale1D);
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(Layer2D, layer);

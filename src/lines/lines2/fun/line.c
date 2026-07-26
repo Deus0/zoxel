@@ -8,21 +8,21 @@ int4 get_new_line_position(float2 real_position2, float2 canvas_size_f, float as
 
 // setting our canvas line points
 void set_line_element_real_position2(ecs *world, entity e, float2 positionf, int2 canvas_size, int2 parent_position) {
-    if (zox_has(e, LinePosition2)) {
+    /*if (zox_has(e, LinePosition2)) {
         float2 canvas_size_f = int2_to_float2(canvas_size);
         float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
         zox_geter(e, LineLocalPosition2, localPoints)
         int4 points = get_new_line_position(positionf, canvas_size_f, aspect_ratio, parent_position, localPoints->value);
         zox_muter(e, LinePosition2, linePosition2);
         linePosition2->value = points;
-    }
+    }*/
 }
 
 int2 get_line_element_mid_point(ecs *world, entity e) {
-    if (zox_has(e, LineLocalPosition2)) {
-        const LineLocalPosition2 *local_points = zox_get(e, LineLocalPosition2);
-        int2 xy_line = int4_xy(local_points->value);
-        int2 position = int4_zw(local_points->value);
+    if (zox_has(e, LayoutLinePoints)) {
+        const LayoutLinePoints *local_points = zox_get(e, LayoutLinePoints);
+        int2 xy_line = local_points->start;
+        int2 position = local_points->end;
         position = int2_subtract(position, xy_line);
         int2_divide_int_p(&position, 2);
         int2_add_p(&position, xy_line);

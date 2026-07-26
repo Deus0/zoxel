@@ -45,7 +45,7 @@ void zox_define_systems_elements(ecs *world) {
     zox_render2D_system(
         ElementRenderSystem,
         [in] transforms2.Position2,
-        [in] transforms2.Rotation2D,
+        [in] transforms2.Rotation2,
         [in] transforms.Scale1,
         [in] layouts2.Layer2D,
         [in] rendering.RenderDisabled,

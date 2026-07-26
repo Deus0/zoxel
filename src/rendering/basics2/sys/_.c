@@ -29,7 +29,7 @@ void define_systems_basics2D(ecs *world) {
         0,
         RenderMaterial2DSystem,
         [in] transforms2.Position2,
-        [in] transforms2.Rotation2D,
+        [in] transforms2.Rotation2,
         [in] transforms.Scale1,
         [in] rendering.Brightness,
         [in] rendering.MaterialGPULink,
