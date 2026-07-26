@@ -13,6 +13,7 @@ void zox_define_systems_transforms2(ecs* world) {
         [none] !transforms2.LocalRotation2,
         [none] !transforms.DisableTransform
     );
+    // TODO: Add Rottions to these
     zox_system(
         Transform2Scale1System,
         zoxp_update,

@@ -1,5 +1,8 @@
 # Done
 
+-x use Size2 instead of LayoutSize for Raycasting UI
+-x Children Position System for Transforms2
+-x Convert layouts to use LocalPosition2 
 -x Get skeleton to shrink
 -x set Vignette on Dialogue insteaad of Blur
 -x 'Skeleton Mesh invalid GPU Links' - use initializemesh
