@@ -3,12 +3,12 @@ typedef struct {
     gint vertex_position;
     gint vertex_color;
     gint bone_index;
-    guint transform_matrix;
-    guint camera_matrix;
-    guint bone_matrix;
-    guint bone_positions;
-    guint brightness;
-    guint fog_data;
+    gint transform_matrix;
+    gint camera_matrix;
+    gint bone_matrix;
+    gint bone_positions;
+    gint brightness;
+    gint fog_data;
 } MaterialBone;
 zoxc_custom(MaterialBone);
 

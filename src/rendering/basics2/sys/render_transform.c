@@ -1,18 +1,6 @@
 entity shader_matrixui = 0;
 entity material_matrixui = 0;
 
-static inline attributes_matrixui create_attributes_matrixui(guint id) {
-    return (attributes_matrixui) {
-        zox_gpu_get_material_attribute(id, "vertex_position"),
-        zox_gpu_get_material_attribute(id, "vertex_uv"),
-        zox_gpu_get_material_property(id, "matrix"),
-        zox_gpu_get_material_property(id, "camera_matrix"),
-        zox_gpu_get_material_property(id, "texture"),
-        zox_gpu_get_material_property(id, "brightness"),
-        zox_gpu_get_material_property(id, "alpha")
-    };
-}
-
 entity spawn_material_matrixui(ecs *world) {
     byte shader_index = get_new_shader_source_index();
     uint material;
@@ -55,9 +43,9 @@ zox_sys2(ElementRenderMatrixSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(RenderDisabled);
     zox_sys_in(TransformMatrix);
     zox_sys_in(Layer2D);
-    zox_sys_in(RenderDisabled);
     zox_sys_in(Brightness);
     zox_sys_in(Alpha);
     zox_sys_in(MeshGPULink);
@@ -65,8 +53,8 @@ zox_sys2(ElementRenderMatrixSystem) {
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TransformMatrix, matrix);
         zox_sys_i(RenderDisabled, disabled);
+        zox_sys_i(TransformMatrix, matrix);
         zox_sys_i(Layer2D, layer);
         zox_sys_i(Brightness, brightness);
         zox_sys_i(Alpha, alpha);
@@ -94,7 +82,7 @@ zox_sys2(ElementRenderMatrixSystem) {
         }
         entity new_material = zox_has(e, MaterialLink) ? zox_getv(e, MaterialLink) : base_material;
         if (material != new_material) {
-#ifdef zox_safety_checks
+            #ifdef zox_safety_checks
             if (!zox_valid(new_material)) {
                 zox_loge("Invalid UI Material TransformUI");
                 continue;
@@ -103,7 +91,7 @@ zox_sys2(ElementRenderMatrixSystem) {
                 zox_loge("[%s] has Invalid UI Material [%s] no [attributes_matrixui]", zox_getn(e), zox_getn(new_material));
                 continue;
             }
-#endif
+            #endif
             material = new_material;
             attributes = zox_get(material, attributes_matrixui);
             guint material_id = zox_getv(material, MaterialGPULink);

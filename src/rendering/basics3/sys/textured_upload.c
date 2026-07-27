@@ -3,7 +3,6 @@ zox_sys2(TexturedMeshUploadSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    //zox_sys_in(Initialize);
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
@@ -11,11 +10,10 @@ zox_sys2(TexturedMeshUploadSystem) {
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
     zox_sys_in(MeshColorRGBs);
-    zox_sys_out(TexturedMeshDirty);
+    zox_sys_out(MeshDirty);
     zox_sys_out(MeshRenderCount);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        //zox_sys_i(Initialize, initialize);
         zox_sys_i(MeshGPULink, gpu_mesh);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
@@ -23,9 +21,9 @@ zox_sys2(TexturedMeshUploadSystem) {
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshUVs, uvs);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(TexturedMeshDirty, upload);
+        zox_sys_o(MeshDirty, upload);
         zox_sys_o(MeshRenderCount, count);
-        if (!upload->value) { // || initialize->value) {
+        if (upload->value != mesh_state_upload) {
             continue;
         }
 #ifdef zox_safety_checks
@@ -53,7 +51,7 @@ zox_sys2(TexturedMeshUploadSystem) {
         }
         upload->value = 0;
         if (dbg_log) {
-            zox_log("Uploaded Chunk Mesh [%s] Tris [%i]", zox_get_name(e), indicies->length / 3);
+            zox_log("Uploaded Chunk Mesh [%s] Tris [%i]", zox_get_name(e), count->value / 3);
         }
     }
 } zox_sys_end(TexturedMeshUploadSystem);

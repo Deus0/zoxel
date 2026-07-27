@@ -190,7 +190,7 @@ zox_sys2(BiomeBlocksSystem) {
                 color variant_color = weed_color;
                 srand(variant_seed);
                 variant_color = color_mutate(variant_color, grass_color_mutation);
-                entity2 e3 = spawn_model_grass(world, variant_seed, mdepth_vode, variant_color);
+                entity2 e3 = spawn_model_grass(world, prefab_vox, variant_seed, mdepth_vode, variant_color);
                 add_to_ModelLinks(&variants, e3.x);
                 variant = e3;
             }
@@ -204,7 +204,7 @@ zox_sys2(BiomeBlocksSystem) {
         // Dirt Piles on ground
         {
             byte max_depth = block_vox_depth_limits.y;
-            entity2 e2 = spawn_model_lods_generated(world, e, "debris", vox_type_rubble, dirt_color, max_depth, dirt_seed);
+            entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "debris", vox_type_rubble, dirt_color, max_depth, dirt_seed);
             entity model = e2.x;
             entity texture_vox = e2.y;
             entity block = spawn_realm_block_model(world, e, dirt_seed, "debris", dirt_color, 0, model, texture_vox, direction_up);
@@ -213,7 +213,7 @@ zox_sys2(BiomeBlocksSystem) {
         // A noisey block
         {
             byte max_depth = block_vox_depth_limits.y;
-            entity2 e2 = spawn_model_lods_generated(world, e, "decayed", vox_type_noisey, dirt_color, max_depth, dirt_seed);
+            entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "decayed", vox_type_noisey, dirt_color, max_depth, dirt_seed);
             entity model = e2.x;
             entity texture_model = e2.y;
             spawn_realm_block_model(world, e, dirt_seed, "decayed", dirt_color, 1, model, texture_model, direction_front);
@@ -221,7 +221,7 @@ zox_sys2(BiomeBlocksSystem) {
         // Biome Flora
         {
             byte max_depth = block_vox_depth_limits.y;
-            entity2 e2 = spawn_model_lods_generated(world, e, "flowers", vox_type_flowers, flowers_color, max_depth, flowers_seed);
+            entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "flowers", vox_type_flowers, flowers_color, max_depth, flowers_seed);
             entity model = e2.x;
             entity texture_model = e2.y;
             entity block = spawn_realm_block_model(world, e, flowers_seed, "flowers", flowers_color, 0, model, texture_model, direction_front);

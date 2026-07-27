@@ -84,7 +84,7 @@ zox_sys2(FontTextureSystem) {
         int length = size->value.x * size->value.y;
         if (length <= 0 || !thickness->value || !zox_valid(font)) {
             resize_TextureData(data, 0);
-            upload->value = 1;
+            upload->value = zox_dirty_active;
             continue;
         }
         const FontData* raw_font_data = zox_get(font, FontData);
@@ -101,9 +101,16 @@ zox_sys2(FontTextureSystem) {
         clear_texture(data->value, size->value, clear_color);
         generate_font_texture(data->value, size->value, font_data, raw_font_data->length, outline->value, fill->value, is_use_shapes, thickness->value, outline_thickness->value, point_padding, clear_color);
         generate->value = zox_generate_texture_end;
-        upload->value = 1;
+        upload->value = zox_upload_texture;
         if (dbg_log) {
-            zox_log("[%s] Generated Zigel [%i] Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i]", zox_getn(e), zindex->value, fill->value.r, fill->value.g, fill->value.b, fill->value.a, outline->value.r, outline->value.b, outline->value.g, outline->value.a)
+            uint32_t checksum = 0;
+            for (int j = 0; j < data->length; j++) {
+                checksum += data->value[j].r;
+                checksum += data->value[j].g;
+                checksum += data->value[j].b;
+                checksum += data->value[j].a;
+            }
+            zox_log("[%s] Generated Zigel [%i] Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i] checksum=%u", zox_getn(e), zindex->value, fill->value.r, fill->value.g, fill->value.b, fill->value.a, outline->value.r, outline->value.b, outline->value.g, outline->value.a, checksum);
         }
     }
 } zox_sys_end(FontTextureSystem);

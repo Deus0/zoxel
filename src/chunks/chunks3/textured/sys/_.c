@@ -39,18 +39,6 @@ void define_systems_chunks3_textured(ecs *world) {
         [out] chunks3.ChunkLodDirty,
         [none] chunks3.ChunkTextured
     );
-    zox_render3_system(0,
-        Chunk3TexturedRenderSystem,
-        [in] core.Active,
-        [in] rendering.RenderDisabled,
-        [in] transforms.TransformMatrix,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.ColorsGPULink,
-        [in] rendering.MeshRenderCount,
-        [none] chunks.ChunkMesh
-    );
-    add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
     // Builds our Terrain Chunk Mesh
     zox_system(
         ChunkSidesSystem,
@@ -72,7 +60,20 @@ void define_systems_chunks3_textured(ecs *world) {
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,
         [out] rendering.MeshColorRGBs,
-        [out] rendering.TexturedMeshDirty,
+        [out] rendering.MeshDirty,
         [none] chunks.ChunkMesh
     );
+    zox_render3_system(
+        0,
+        Chunk3TexturedRenderSystem,
+        [in] core.Active,
+        [in] rendering.RenderDisabled,
+        [in] transforms.TransformMatrix,
+        [in] rendering.MeshGPULink,
+        [in] rendering.UvsGPULink,
+        [in] rendering.ColorsGPULink,
+        [in] rendering.MeshRenderCount,
+        [none] chunks.ChunkMesh
+    );
+    add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
 }

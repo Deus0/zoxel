@@ -13,7 +13,7 @@ void define_systems_voxes(ecs *world) {
     zox_system(
         Bounds3GrowSystem,
         zoxp_update,
-        [in] rendering.MeshDirty,
+        [in] chunks3.VoxelNodeDirty, // rendering.MeshDirty,
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
         [out] transforms3.Bounds3D,

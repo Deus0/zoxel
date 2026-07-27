@@ -31,16 +31,6 @@ void define_systems_render_textures(ecs* world) {
         [in] rendering.TextureGPULink,
         [none] cameras.RenderTexture
     );
-    /*zox_render2D_system(
-        RenderTextureRenderSystem,
-        [in] transforms.TransformMatrix,
-        [in] layouts2.Layer2D,
-        [in] rendering.RenderDisabled,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.TextureGPULink,
-        [none] cameras.RenderTexture
-    );*/
     zox_system_1(
         CameraBlurSystem,
         zoxp_mainthread,

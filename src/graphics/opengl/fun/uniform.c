@@ -1,3 +1,7 @@
+static inline void zox_gpu_int(gint index, int value) {
+    glUniform1i(index, value);
+}
+
 static inline void zox_gpu_float(gint index, float value) {
     glUniform1f(index, value);
 }

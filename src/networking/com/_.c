@@ -22,5 +22,5 @@ void define_components_networking(ecs* world) {
     zoxd_int(NetPort);
     zoxd_int(TargetNetPort);
     zoxd_arrayd(PacketData);
-    zoxd_dest(SocketLink);
+    zoxd_dest_old(SocketLink);
 }

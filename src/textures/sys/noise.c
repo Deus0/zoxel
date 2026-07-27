@@ -10,7 +10,7 @@ zox_sys2(NoiseTextureSystem) {
         zox_sys_e();
         zox_field_i(TextureSize, textureSizes, textureSize)
         zox_field_i(Color, colors, fill_color)
-        zox_field_o(TextureDirty, textureDirtys, textureDirty)
+        zox_field_o(TextureDirty, textureDirtys, dirty)
         zox_field_o(TextureData, textureDatas, textureData)
         zox_field_o(GenerateTexture, generateTextures, generate)
         if (generate->value != zox_generate_texture_run) {
@@ -33,7 +33,7 @@ zox_sys2(NoiseTextureSystem) {
         resize_TextureData(textureData, textureSize->value.x * textureSize->value.y);
         generate_texture_noise(textureData->value, textureSize->value, texture_type, terrain_texture_outline_type, fill_color->value);
         // generateTexture->value = 0;
-        textureDirty->value = 1; // remember: this only gets uploaded if has GPUTextureLink!
+        dirty->value = zox_upload_texture; // remember: this only gets uploaded if has GPUTextureLink!
         generate->value = zox_generate_texture_end;
     }
 } zox_sys_end(NoiseTextureSystem);

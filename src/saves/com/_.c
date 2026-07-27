@@ -27,5 +27,5 @@ void zox_define_components_saves(ecs* world) {
     zoxd_entity(FolderPathLink);
     zoxd_fixed_string(FolderPath);
     zoxd_fixed_string(SaveGamePath);
-    zoxd_dest(FileLink);
+    zoxd_dest_old(FileLink);
 }

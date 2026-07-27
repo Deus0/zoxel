@@ -1,16 +1,13 @@
 zox_sys2(BonePaintSystem) {
-    if (!paint_bone_weights) {
-        return;
-    }
     zox_sys_begin();
-    zox_sys_in(MeshDirty);
     zox_sys_in(BoneIndexes);
+    zox_sys_out(MeshDirty);
     zox_sys_out(MeshColorRGBs);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MeshDirty, dirty);
         zox_sys_i(BoneIndexes, boneIndexes);
+        zox_sys_o(MeshDirty, dirty);
         zox_sys_o(MeshColorRGBs, meshColorRGBs);
-        if (dirty->value != mesh_state_skeleton_generate) {
+        if (dirty->value != mesh_state_skeleton_paint) {
             continue;
         }
         for (int j = 0; j < meshColorRGBs->length; j++) {
@@ -21,5 +18,6 @@ zox_sys2(BonePaintSystem) {
             bone_color.g -= 16 * bone;
             meshColorRGBs->value[j] = bone_color;
         }
+        dirty->value = mesh_state_skeleton_end;
     }
 } zox_sys_end(BonePaintSystem);

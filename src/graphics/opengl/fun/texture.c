@@ -1,11 +1,13 @@
 // Textures
 
 static inline void zox_gpu_bind_texture(guint id) {
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
 static inline void zox_gpu_reset_texture() {
     glBindTexture(GL_TEXTURE_2D, 0);
+    // glDeactiveTexture(GL_TEXTURE0);
 }
 
 static inline void zox_gpu_set_texture_color_rgb(guint id, int2 size, const void* ptr) {
@@ -29,7 +31,9 @@ static inline void zox_gpu_clear_texture_rgba(guint id) {
 }
 
 static inline void zox_gpu_dispose_texture(guint id) {
-    if (id) glDeleteTextures(1, &id);
+    if (id) {
+        glDeleteTextures(1, &id);
+    }
 }
 
 // GL_NEAREST or GL_LINEAR

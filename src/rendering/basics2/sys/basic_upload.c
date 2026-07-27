@@ -1,14 +1,14 @@
 zox_sys2(Mesh2DUpdateSystem) {
     zox_sys_begin();
-    zox_sys_in(MeshDirty);
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshVertices2D);
     zox_sys_in(MeshGPULink);
+    zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MeshDirty, meshDirty);
         zox_sys_i(MeshGPULink, meshGPULink);
         zox_sys_i(MeshIndicies, meshIndicies);
         zox_sys_i(MeshVertices2D, meshVertices2D);
+        zox_sys_o(MeshDirty, meshDirty);
         if (meshDirty->value != mesh_state_upload) {
             continue;
         }
@@ -18,6 +18,7 @@ zox_sys2(Mesh2DUpdateSystem) {
             meshIndicies->length,
             meshVertices2D->value,
             meshVertices2D->length);
+        meshDirty->value = 0;
     }
 } zox_sys_end(Mesh2DUpdateSystem);
 

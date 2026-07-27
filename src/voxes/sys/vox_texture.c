@@ -263,10 +263,7 @@ zox_sys2(VoxTextureSystem) {
             add_texture_outline(data->value, size->value, air_color, color_black);
         }
         generate->value = zox_generate_texture_end;
-        dirty->value = zox_dirty_trigger;
-        if (zox_has(e, Busy)) {
-            zox_set(e, Busy, { 0 });
-        }
+        dirty->value = zox_upload_texture;
         if (dbg_log) {
             zox_log("Generated Vox Texture [%s]: Model [%s] Offset [%ix%i] vox_texture_size [%ix%i] texture_size [%ix%i] vox_size [%ix%ix%i] pixels length [%i]", zox_get_name(e), zox_get_name(vox->value), texture_offset.x, texture_offset.y, vox_texture_size.x, vox_texture_size.y, size->value.x, size->value.y, vox_size.x, vox_size.y, vox_size.z, new_size);
             zox_log("   - Bake Depth [%i] Side [%i] Vox Depth [%i] GenerateModel [%i]", bake_depth, side->value, vox_depth, zox_has(vox->value, GenerateModel));

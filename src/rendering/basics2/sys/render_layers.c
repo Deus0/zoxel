@@ -1,9 +1,9 @@
 // TODO: Give uis a position2 and transform and use that instead directly
 // TODO: Render layers in order instead of positioning with 3D
-
 // NOTE: Needs to skip GPU calls for non layers since called per layer
 zox_sys2(ElementRenderSystem) {
     byte dbg_log = 0;
+    byte dbg_gl = 0;
     float depth_per_layer = 0.001f;
     float depth_begin = depth_per_layer;
     entity base_material = material_textured2D;
@@ -15,11 +15,11 @@ zox_sys2(ElementRenderSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(RenderDisabled);
     zox_sys_in(Position2);
     zox_sys_in(Rotation2);
     zox_sys_in(Scale1);
     zox_sys_in(Layer2D);
-    zox_sys_in(RenderDisabled);
     zox_sys_in(Brightness);
     zox_sys_in(Alpha);
     zox_sys_in(MeshGPULink);
@@ -27,10 +27,10 @@ zox_sys2(ElementRenderSystem) {
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Position2, position2);
-        zox_sys_i(Rotation2, rotation2D);
-        zox_sys_i(Scale1, scale1D);
         zox_sys_i(RenderDisabled, disabled);
+        zox_sys_i(Position2, position);
+        zox_sys_i(Rotation2, rotation);
+        zox_sys_i(Scale1, scale);
         zox_sys_i(Layer2D, layer);
         zox_sys_i(Brightness, brightness);
         zox_sys_i(Alpha, alpha);
@@ -79,28 +79,42 @@ zox_sys2(ElementRenderSystem) {
         // per mesh data
         float depth = depth_begin + layer->value * depth_per_layer;
         zox_gpu_bind_buffer_element(mesh->value.x);
-        zox_gpu_bind_texture(texture->value);
         zox_gpu_bind_buffer_array(mesh->value.y);
         zox_gpu_enable_attribute_float2(attributes->vertex_position);
         zox_gpu_bind_buffer_array(uvs->value);
         zox_gpu_enable_attribute_float2(attributes->vertex_uv);
-        zox_gpu_float3(attributes->position, (float3) { position2->value.x, position2->value.y, depth });
-        zox_gpu_float(attributes->angle, rotation2D->value);
-        zox_gpu_float(attributes->scale, scale1D->value);
+        zox_gpu_float3(attributes->position, (float3) { position->value.x, position->value.y, depth });
+        // Enable Texture
+        zox_gpu_bind_texture(texture->value);
+        zox_gpu_int(attributes->texture, 0);
+        zox_gpu_float(attributes->angle, rotation->value);
+        zox_gpu_float(attributes->scale, scale->value);
         zox_gpu_float(attributes->brightness, brightness->value);
         zox_gpu_float(attributes->alpha, alpha->value);
         zox_gpu_render(6);
-        if (dbg_log) {
-            //if (zox_has(e, DebugEntity)) {
-            zox_log("Rendering [%s] at L[%i] At [%.01fx%.01fx%f]", zox_get_name(e), layer->value, position2->value.x, position2->value.y, depth);
-            zox_log("   - Texture [%i]", texture->value);
-            //}
+        if (dbg_gl) {
+            if (check_opengl_error_unlogged()) {
+                zox_loge("Element2RenderSystem");
+            }
+        }
+        if (dbg_log >= 2) {
+            // TODO: Move this to gpu code, debug texture - important
+            GLint w = 0;
+            GLint h = 0;
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+            zox_log("Rendering [%s] Texture %i size %ix%i", zox_get_name(e), texture->value, w, h);
+        }
+        if (dbg_log == 1) {
+            float2 local_position = zox_has(e, LocalPosition2) ? zox_getv(e, LocalPosition2) : float2_zero;
+            zox_log("Rendering [%s] at L[%i] At [%.01fx%.01fx%f]: Brightness [%f] Alpha [%f] Local [%.01fx%.01f]", zox_get_name(e), layer->value, position->value.x, position->value.y, depth, brightness->value, alpha->value, local_position.x, local_position.y);
+            zox_log("   - gpu: Mesh [%ix%i] UVs [%i] Texture [%i] Material [%s]", mesh->value.x, mesh->value.y, uvs->value, texture->value, zox_getn(material));
         }
         zox_sys_increment();
     }
     if (material) {
-        // zox_gpu_disable_attribute(attributes->vertex_uv);
-        // zox_gpu_disable_attribute(attributes->vertex_position);
+        zox_gpu_disable_attribute(attributes->vertex_uv);
+        zox_gpu_disable_attribute(attributes->vertex_position);
         zox_gpu_reset_mesh();
         zox_gpu_reset_texture();
         zox_disable_material();

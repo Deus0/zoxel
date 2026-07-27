@@ -8,10 +8,10 @@ zox_tag(DisableDepthTest);
 zox_tag(MeshClearCache);
 zoxc_byte(RenderOrder);
 zoxc_byte(MeshDirty);
-zoxc_byte(TexturedMeshDirty);
+// zoxc_byte(TexturedMeshDirty);
 zoxc_byte(MeshReady);
 // zoxc_state(InitializeMesh);
-zoxc_state(TextureDirty);
+zoxc_byte(TextureDirty);
 zoxc_state(RenderDistanceDirty);
 zoxc_state(RenderDepthDirty);
 zoxc_state(MeshGenerate);    // TODO: Replace BuildChunkMesh
@@ -67,10 +67,10 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(MeshClearCache);
     zoxd_byte(RenderOrder);
     zoxd_byte(MeshDirty);
-    zoxd_byte(TexturedMeshDirty);
+    // zoxd_byte(TexturedMeshDirty);
     zoxd_byte(MeshReady);
     // zoxd_state(InitializeMesh);
-    zoxd_state(TextureDirty);
+    zoxd_byte(TextureDirty);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);
     zoxd_state(MeshGenerate);
@@ -88,14 +88,6 @@ void define_components_rendering(ecs *world) {
     zoxd_int2(TextureSize);
     zoxd_entity(InstanceLink);
     zoxd(MaterialInstancedGPULink);
-    zoxd_guint_dest(ShaderGPULink);
-    zoxd_guint_dest(MaterialGPULink);
-    zoxd_guint_dest(TextureGPULink);
-    zoxd_guint_dest(UvsGPULink);
-    zoxd_guint_dest(ColorsGPULink);
-    zoxd_guint_dest(ComputeShaderLink);
-    zoxd_guint_dest(UboGPULink);
-    zoxd_guint2_dest(MeshGPULink);
     zoxd_byte(ShaderSourceIndex);
     zoxd_entity(ShaderLink);
     zoxd_arrayd(MeshIndicies);
@@ -109,4 +101,18 @@ void define_components_rendering(ecs *world) {
     zoxd_entities(ModelLinks);
     zoxd_entity(ModelLink);
     zox_define_component_array(ModelLods);
+    // Old
+    zoxd_guint_dest_old(ShaderGPULink);
+    zoxd_guint_dest_old(MaterialGPULink);
+    zoxd_guint_dest_old(ComputeShaderLink);
+    zoxd_guint_dest_old(UboGPULink);
+    /*zoxd_guint_dest_old(TextureGPULink);
+    zoxd_guint2_dest_old(MeshGPULink);
+    zoxd_guint_dest_old(UvsGPULink);
+    zoxd_guint_dest_old(ColorsGPULink);*/
+    // New
+    zoxd_guint_dest(TextureGPULink);
+    zoxd_guint2_dest(MeshGPULink);
+    zoxd_guint_dest(UvsGPULink);
+    zoxd_guint_dest(ColorsGPULink);
 }

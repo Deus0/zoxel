@@ -4,10 +4,10 @@ in vec3 vertex_color_frag;
 in vec2 uv;
 uniform vec4 fog_data;
 uniform float brightness;
-uniform sampler2D tex;
+uniform sampler2D zexture;
 
 void main() {
-    vec4 texture_color = texture(tex, uv);
+    vec4 texture_color = texture(zexture, uv);
     if (texture_color.a <= 0.0) {
         discard;
     }

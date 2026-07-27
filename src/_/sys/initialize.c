@@ -1,4 +1,4 @@
-
+// Increments the Initialize, then removes it
 zox_sys2(InitializeSystem) {
     byte dbg_log = 0;
     zox_sys_begin();
@@ -6,16 +6,20 @@ zox_sys2(InitializeSystem) {
     zox_sys_out(Initialize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_o(Initialize, state);
-        if (state->value == zox_dirty_end) { // zox_dirty_end) {
+        zox_sys_o(Initialize, initialize);
+        if (initialize->value < zox_dirty_end) {
+            initialize->value++;
+        } else {
+#ifndef zox_disable_initialize_removal
             zox_remove(e, Initialize);
+#endif
             if (dbg_log) {
-                zox_log("Initialize? %i", zox_has(e, Initialize));
+                zox_log("Initialize Removed [%s]", zox_getn(e));
             }
-            /*zprintf("owns=%d has=%d\n",
-                ecs_owns(world, e, Initialize),
-                ecs_has(world, e, Initialize));*/
         }
-        state->value++;
     }
 } zox_sys_end(InitializeSystem);
+
+/*zprintf("owns=%d has=%d\n",
+    ecs_owns(world, e, Initialize),
+    ecs_has(world, e, Initialize));*/

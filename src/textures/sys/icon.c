@@ -34,7 +34,7 @@ zox_sys2(IconTextureSystem) {
             radius,
             add_noise
         );
-        dirty->value = 1;
+        dirty->value = zox_upload_texture;
         generate->value = zox_generate_texture_end;
         // zox_log(" > [%s] radius [%i] size [%ix%i]\n", zox_get_name(it->entities[i]), radius, textureSize->value.x, textureSize->value.y)
     }

@@ -10,5 +10,5 @@
 zox_base_type(gint)
 
 #define zoxd_gint_dest(name)\
-    zoxd_dest(name)\
+    zoxd_dest_old(name)\
     entity_array_d_add(component_ids_gint, ecs_id(name));

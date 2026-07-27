@@ -2,12 +2,9 @@
 #define zoxel_convert_ascii(c) zoxel_convert_ascii_n(c, i) i++;
 
 byte convert_ascii(char input) {
-
     zoxel_convert_ascii_n('\n', zox_char_newline)
-
     int i = 0;
     zoxel_convert_ascii('?')
-
     // lower case
     zoxel_convert_ascii('a')
     zoxel_convert_ascii('b')

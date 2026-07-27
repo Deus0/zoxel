@@ -1,7 +1,7 @@
 // SpawnS a pickup when removed
 // TODO: This has 17ms try optimize it?
 zox_sys2(TerrainItemDropSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeQueue);

@@ -1,27 +1,28 @@
 zox_sys2(TextureUploadSystem) {
     byte dbg_log = 0;
+    byte dbg_save = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TextureDirty);
     zox_sys_in(TextureData);
     zox_sys_in(TextureSize);
     zox_sys_in(TextureGPULink);
+    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TextureDirty, dirty);
         zox_sys_i(TextureData, data);
         zox_sys_i(TextureSize, size);
         zox_sys_i(TextureGPULink, gpu_link);
-        if (dirty->value != zox_dirty_active) {
+        zox_sys_o(TextureDirty, dirty);
+        if (dirty->value != zox_upload_texture) {
             continue;
         }
+#ifdef zox_safety_checks
         if (!gpu_link->value) {
-            zox_logw("[%s] Invalid GPU Link [0]", zox_get_name(e));
+            zox_logw("Texture RGBA Invalid [%s] GPU Link [0]", zox_get_name(e));
             continue;
         }
+#endif
         if (!data->length) {
-            //const byte* values = (byte[]) { 0, 0, 0, 0 };  // RGBA all zero
-            //zox_gpu_set_texture_color_rgba(gpu_link->value, int2_one, values);
             zox_gpu_clear_texture_rgba(gpu_link->value);
             if (dbg_log) {
                 zox_log("Texture RGBA Cleared [%s] GPU [%i]", zox_get_name(e), gpu_link->value);
@@ -34,8 +35,21 @@ zox_sys2(TextureUploadSystem) {
             // if data and lengths all valid
             zox_gpu_set_texture_color_rgba(gpu_link->value, size->value, data->value);
             if (dbg_log) {
-                zox_log("Texture Uploaded [%s] Size [%ix%i] GPULink [%i]", zox_get_name(e), size->value.x, size->value.y, gpu_link->value);
+                uint32_t checksum = 0;
+                for (int j = 0; j < data->length; j++) {
+                    checksum += data->value[j].r;
+                    checksum += data->value[j].g;
+                    checksum += data->value[j].b;
+                    checksum += data->value[j].a;
+                }
+                zox_log("Uploaded Texture RGBA [%s] Size [%ix%i] TextureGPULink [%i] checksum=%u", zox_get_name(e), size->value.x, size->value.y, gpu_link->value, checksum);
+            }
+            if (dbg_save) {
+                char path[256];
+                sprintf(path, "bin/dbg/texture_%s.bmp", zox_getn(e));
+                save_texture_to_bmp(path, data, size->value);
             }
         }
+        dirty->value = 0;
     }
 } zox_sys_end(TextureUploadSystem);

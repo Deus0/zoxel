@@ -23,11 +23,11 @@ void zox_define_systems_blocks(ecs* world) {
     zox_system(
         TilemapUVSystem,
         zoxp_update,
-        [in] rendering.TextureDirty,
         [in] textures.TextureLinks,
         [in] textures.TilemapSize,
         [in] rendering.TextureSize,
         [in] realms.RealmLink,
+        [out] textures.GenerateTexture,
         [out] textures.TilemapUVs,
         [none] textures.Tilemap
     );

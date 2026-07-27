@@ -1,5 +1,13 @@
 # Done
 
+-x Fix Textures on UI, half not showing up in shader
+	-x ... Something to do with UIMesh system
+	-x Doesnt highlight ui refresh the texture?
+-x Fix Terrain Chunks not uploading
+-x .... Fix Chunks not working with UVs...
+-x Make TextureDirty a byte
+-x Remove TexturedMeshDirty
+-x Make MeshDirty a byte and clear in systems that use it
 -x use Size2 instead of LayoutSize for Raycasting UI
 -x Children Position System for Transforms2
 -x Convert layouts to use LocalPosition2 

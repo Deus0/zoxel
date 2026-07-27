@@ -1,4 +1,5 @@
 zox_sys2(MeshColorsGpuSystem) {
+    // TODO: Just use mesh colors dirty and use other flag
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -11,7 +12,7 @@ zox_sys2(MeshColorsGpuSystem) {
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshColorsDirty, upload);
         // Only update if marked dirty for upload
-        if (!upload->value) {
+        if (!upload->value) { // != mesh_state_colors_upload) {
             continue;
         }
 #ifdef zox_safety_checks

@@ -26,12 +26,10 @@ typedef struct {
 
 byte load_texture_from_bmp(const char *path, TextureData *data, int2 *size) {
     FILE *f = fopen(path, "rb");
-
     if (!f) {
         zox_loge("Error: fopen failed: %s", path);
         return 0;
     }
-
     BMPFileHeader file;
     if (fread(&file, sizeof(file), 1, f) != 1) {
         zox_loge("Error: failed to read BMP file header: %s", path);
@@ -44,59 +42,47 @@ byte load_texture_from_bmp(const char *path, TextureData *data, int2 *size) {
         fclose(f);
         return 0;
     }
-
     BMPInfoHeader info;
     if (fread(&info, sizeof(info), 1, f) != 1) {
         zox_loge("Error: failed to read BMP info header: %s", path);
         fclose(f);
         return 0;
     }
-
     if (info.biCompression != 0) {
         zox_loge("Error: compressed BMP not supported: %s", path);
         fclose(f);
         return 0;
     }
-
     if (info.biBitCount != 24 && info.biBitCount != 32) {
         zox_loge("Error: only 24/32-bit BMP supported: %s", path);
         fclose(f);
         return 0;
     }
-
     int width = info.biWidth;
     int height = info.biHeight;
-
     byte flip = 0;
     /*int flip = 1;
     if (height < 0) {
         height = -height;
         flip = 0; // already top-down
     }*/
-
     size->x = width;
     size->y = height;
-
     resize_TextureData(data, (uint)(width * height));
-
     if (fseek(f, file.bfOffBits, SEEK_SET) != 0) {
         zox_loge("Error: failed to seek to pixel data: %s", path);
         fclose(f);
         return 0;
     }
-
     int bytes_per_pixel = info.biBitCount / 8;
     int row_padded = ((width * bytes_per_pixel + 3) / 4) * 4;
-
     byte *row = (byte*) malloc(row_padded);
     if (!row) {
         zox_loge("Error: malloc failed");
         fclose(f);
         return 0;
     }
-
     // zox_log("+ Loading BMP: %s - flip [%i], bytes_per_pixel [%i]", path, flip, bytes_per_pixel);
-
     for (int y = 0; y < height; y++) {
         if (fread(row, 1, row_padded, f) != (size_t)row_padded) {
             zox_loge("Error: failed to read BMP row");
@@ -126,7 +112,6 @@ byte load_texture_from_bmp(const char *path, TextureData *data, int2 *size) {
             ((byte*)&dst[x])[3] = a;
         }
     }
-
     free(row);
     fclose(f);
     return 1;

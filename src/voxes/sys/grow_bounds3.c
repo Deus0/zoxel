@@ -3,19 +3,19 @@ zox_sys2(Bounds3GrowSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(MeshDirty);
+    zox_sys_in(VoxelNodeDirty);
     zox_sys_in(ChunkSize);
     zox_sys_in(BlockScale);
     zox_sys_out(Bounds3D);
     zox_sys_out(Bounds3Dirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(MeshDirty, state);
+        zox_sys_i(VoxelNodeDirty, state);
         zox_sys_i(ChunkSize, size);
         zox_sys_i(BlockScale, scale);
         zox_sys_o(Bounds3D, bounds);
         zox_sys_o(Bounds3Dirty, dirty);
-        if (state->value != mesh_state_upload) {
+        if (state->value != zox_dirty_active) {
             continue;
         }
         float3 old_bounds = bounds->value;

@@ -60,9 +60,9 @@ zox_sys2(RealmTilemapSystem) {
                 add_to_TextureLinks(tilemap_textures, texture);
             }
         }
-        int tilemap_length = next_power_of_two_root(tilemap_textures->length);
-        zox_set(tilemap->value, TilemapSize, { int2_single(tilemap_length) });
-        zox_set(tilemap->value, GenerateTexture, { zox_generate_texture_run });
+        int length = next_power_of_two_root(tilemap_textures->length);
         dirty->value = zox_blocks_dirty_end;
+        zox_set(tilemap->value, TilemapSize, { int2_single(length) });
+        zox_setv(tilemap->value, GenerateTexture, zox_generate_texture_run);
     }
 } zox_sys_end(RealmTilemapSystem);

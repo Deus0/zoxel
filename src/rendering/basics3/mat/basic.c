@@ -3,10 +3,10 @@ entity material_basic3D;
 
 typedef struct {
     gint vertex_position;
-    guint transform_matrix;
-    guint camera_matrix;
-    guint fog_data;
-    guint color;
+    gint transform_matrix;
+    gint camera_matrix;
+    gint fog_data;
+    gint color;
 } MaterialBasic3D;
 zoxc_custom(MaterialBasic3D);
 

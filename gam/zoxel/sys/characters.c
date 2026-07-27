@@ -63,7 +63,7 @@ entity spawn_model_slime(ecs* world, entity parent, lint seed, byte depth, byte 
         // short vlength = octree_size(depth);
         byte3 vsize = byte3_scale3f(size, ratio);
         ModelLods mlods2 = (ModelLods) { };
-        entity mlods = spawn_model_lods(world, vcolor, vseed, depth, vsize, "rslime", &mlods2);
+        entity mlods = spawn_model_lods(world, prefab_vox, vcolor, vseed, depth, vsize, "rslime", &mlods2);
         zox_set_unique_name(mlods, "mslime");
         add_to_ModelLinks(&variants, mlods);
         spawn_process_model(world, prefab_process_model, nodegraph, mlods);

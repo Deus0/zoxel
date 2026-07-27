@@ -36,8 +36,8 @@ zox_sys2(Elementbar3DSystem) {
             zox_loge("Frontbar has no [MeshVertices] [%s]", zox_getn(front_bar));
             continue;
         }
-        if (!zox_has(front_bar, TexturedMeshDirty)) {
-            zox_loge("Frontbar has no [TexturedMeshDirty] [%s]", zox_getn(front_bar));
+        if (!zox_has(front_bar, MeshDirty)) {
+            zox_loge("Frontbar has no [MeshDirty] [%s]", zox_getn(front_bar));
             continue;
         }
 #endif
@@ -52,7 +52,7 @@ zox_sys2(Elementbar3DSystem) {
             continue;
         }
         zox_mut_begin(front_bar, MeshVertices, verts);
-        zox_mut_begin(front_bar, TexturedMeshDirty, mesh_dirty);
+        zox_mut_begin(front_bar, MeshDirty, mesh_dirty);
         mesh_dirty->value = mesh_state_trigger;
         for (byte j = 0; j < 4; j++) {
             verts->value[j] = (float3) { left_offset + square_vertices[j].x * scale.x * percentage, square_vertices[j].y * scale.y, 0 };

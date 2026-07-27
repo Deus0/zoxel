@@ -17,7 +17,7 @@ zox_sys2(FillTextureSystem) {
         }
         resize_TextureData(data, size->value.x * size->value.y);
         generate_texture_fill(data->value, size->value, c->value);
-        dirty->value = 1; // actually this only gets uploaded if has GPUTextureLink!
+        dirty->value = zox_upload_texture; // actually this only gets uploaded if has GPUTextureLink!
         generate->value = zox_generate_texture_end;
     }
 } zox_sys_end(FillTextureSystem);

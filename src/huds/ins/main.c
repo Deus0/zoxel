@@ -102,5 +102,8 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
         entity b = spawned[j++];
         if (b) zox_set(b, TooltipEvent, { &tooltip_event_main_menu_4 });
     }
+    for (int i = 0; i < elements_count; i++) {
+        zox_set_unique_name(spawned[i], "main_menu_button");
+    }
     return e;
 }

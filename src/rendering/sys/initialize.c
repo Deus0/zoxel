@@ -75,7 +75,7 @@ zox_sys2(InitializeMeshTextureSystem) {
         }
         texture->value = spawn_gpu_texture_buffer();
         if (dbg_log) {
-            zox_log("Mesh Texture Initialized on GPU [%s]", zox_getn(e));
+            zox_log("Mesh Texture Initialized on GPU [%s] -> [%i]", zox_getn(e), texture->value);
         }
     }
 } zox_sys_end(InitializeMeshTextureSystem);

@@ -16,6 +16,7 @@ typedef ecs_iter_t iter;
 #include "instance.c"
 #include "observer.c"
 #include "components.c"
+#include "dest.c"
 #include "names.c"
 #include "modules.c"
 #include "systems.c"

@@ -25,10 +25,10 @@ ECS_DTOR(Context, ptr, {
 #endif
 
 void define_components_sdl(ecs *world) {
-    zoxd_dest(SDLWindow);
-    zoxd_dest(Context);
-    zoxd_dest(Renderer);
+    zoxd_dest_old(SDLWindow);
+    zoxd_dest_old(Context);
+    zoxd_dest_old(Renderer);
 #ifdef zox_sdl_mixer
-    zoxd_dest(SDLMixChunk);
+    zoxd_dest_old(SDLMixChunk);
 #endif
 }

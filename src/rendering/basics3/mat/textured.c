@@ -5,11 +5,11 @@ typedef struct {
     gint vertex_position;
     gint vertex_uv;
     gint vertex_color;
-    guint transform_matrix;
-    guint camera_matrix;
-    guint texture;
-    guint fog_data;
-    guint brightness;
+    gint transform_matrix;
+    gint camera_matrix;
+    gint texture;
+    gint fog_data;
+    gint brightness;
 } MaterialTextured3D;
 zoxc_custom(MaterialTextured3D);
 
@@ -20,7 +20,7 @@ MaterialTextured3D create_MaterialTextured3D(guint material) {
         zox_gpu_get_material_attribute(material, "vertex_color"),
         zox_gpu_get_material_property(material, "transform_matrix"),
         zox_gpu_get_material_property(material, "camera_matrix"),
-        zox_gpu_get_material_property(material, "tex"),
+        zox_gpu_get_material_property(material, "zexture"),
         zox_gpu_get_material_property(material, "fog_data"),
         zox_gpu_get_material_property(material, "brightness")
     };

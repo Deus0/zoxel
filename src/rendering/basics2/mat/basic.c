@@ -3,7 +3,6 @@ typedef struct {
     gint vertex_position;
     uint camera_matrix;
     uint position;
-    //uint positionY;
     uint angle;
     uint scale;
     uint brightness;

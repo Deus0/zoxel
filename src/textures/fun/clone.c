@@ -30,7 +30,7 @@ void clone_texture_data(ecs *world, entity e, entity src) {
     memcpy(data.value, source_data->value, bytes_length);
     zox_set_ptr(e, TextureData, data);
     zox_set(e, TextureSize, { size });
-    zox_set(e, TextureDirty, { zox_dirty_trigger });
+    zox_set(e, TextureDirty, { zox_upload_texture });
 
     // zox_log("cloned texture data %s => %s", zox_get_name(e), zox_get_name(src));
 }

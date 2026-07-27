@@ -136,6 +136,6 @@ zox_sys2(TunkTextureSystem) {
             }
         }
         generate->value = 0;
-        dirty->value = zox_dirty_trigger;
+        dirty->value = zox_upload_texture;
     }
 } zox_sys_end(TunkTextureSystem);

@@ -1,36 +1,11 @@
 entity shader_textured2D = 0;
 entity material_textured2D = 0;
 
-typedef struct {
-    gint vertex_position;
-    gint vertex_uv;
-    guint position;
-    guint angle;
-    guint scale;
-    guint camera_matrix;
-    guint texture;
-    guint brightness;
-    guint alpha;
-} MaterialTextured2D;
-zoxc_custom(MaterialTextured2D);
-
-MaterialTextured2D create_MaterialTextured2D(guint material) {
-    return (MaterialTextured2D) {
-        zox_gpu_get_material_attribute(material, "vertex_position"),
-        zox_gpu_get_material_attribute(material, "vertex_uv"),
-        zox_gpu_get_material_property(material, "position"),
-        zox_gpu_get_material_property(material, "angle"),
-        zox_gpu_get_material_property(material, "scale"),
-        zox_gpu_get_material_property(material, "camera_matrix"),
-        zox_gpu_get_material_property(material, "texture"),
-        zox_gpu_get_material_property(material, "brightness"),
-        zox_gpu_get_material_property(material, "alpha") };
-}
-
 entity spawn_shader_textured2D(ecs *world) {
     byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "textured2D.vert");
     char* frag = get_shader_source(world, "textured2D.frag");
+    // char* frag = get_shader_source(world, "uv_debug.frag");
     shader_verts[shader_index] = vert;
     shader_frags[shader_index] = frag;
     entity e = spawn_shader(world, shader_index);

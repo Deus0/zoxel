@@ -44,7 +44,7 @@ entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mde
         lint vseed = seed + j * 1209;
         color vcolor = (color) { 200, 200, 155, 255 };
         ModelLods mlods2 = (ModelLods) { };
-        entity model_lods = spawn_model_lods(world, vcolor, vseed, mdepth, size, name, &mlods2);
+        entity model_lods = spawn_model_lods(world, prefab_invisible_vox, vcolor, vseed, mdepth, size, name, &mlods2);
         zox_set_parent(world, model_lods, e);
         // zox_set_unique_name(mlods, "bodys_mlods_head");
         add_to_ModelLinks(&models, model_lods);

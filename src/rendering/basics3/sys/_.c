@@ -10,7 +10,7 @@
     #include "vox_instance_render_system.c"
 #endif
 
-void define_systems_basics3D(ecs* world) {
+void zox_define_systems_basics3(ecs* world) {
     // skybox
     zox_render3_system(1,
         Basic3RenderSystem,
@@ -23,7 +23,9 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MaterialGPULink,
         [in] rendering3.MaterialBasic3D,
         [none] MeshBasic3D,
+#ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
+#endif
     );
     // characters
     zox_render3_system(1,
@@ -37,7 +39,9 @@ void define_systems_basics3D(ecs* world) {
         [none] rendering.MeshColorRGBs,
         [none] !rendering.UvsGPULink,
         [none] !rendering3.SkeletonMesh,
+        #ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
+        #endif
     );
 #ifndef zox_disable_rendering_instances
     zox_render3_system(1,
@@ -52,13 +56,15 @@ void define_systems_basics3D(ecs* world) {
     zox_system_1(
         MeshUpdateSystem,
         zoxp_mainthread,
-        [in] rendering.MeshDirty,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
         [in] rendering.MeshGPULink,
+        [out] rendering.MeshDirty,
         [none] !rendering.MeshUVs,
         [none] !rendering.MeshColorRGBs,
+        #ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
+        #endif
     );
     zox_system_1(
         MeshUpdateCharacters3DSystem,
@@ -66,12 +72,15 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
         [in] rendering.MeshColorRGBs,
-        [in] rendering.MeshDirty,
+        [out] rendering.MeshDirty,
         [out] rendering.MeshGPULink,
         [out] rendering.ColorsGPULink,
         [out] rendering.MeshRenderCount,
         [none] rendering.MeshColorRGBs,
-        [none] !rendering.MeshUVs
+        [none] !rendering.MeshUVs,
+        #ifndef zox_disable_initialize_removal
+        [none] !core.Initialize,
+        #endif
     );
     // unique textured meshes - Items
     zox_render3_system(1,
@@ -86,7 +95,9 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.TextureGPULink,
         [in] MaterialTextured3D,
         [none] TexturedMesh3D,
+        #ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
+        #endif
     );
     // Uploads Terrain Chunks, Items, Skybox
     zox_system_1(
@@ -99,9 +110,12 @@ void define_systems_basics3D(ecs* world) {
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,
         [in] rendering.MeshColorRGBs,
-        [out] rendering.TexturedMeshDirty,
+        [out] rendering.MeshDirty,
         [out] rendering.MeshRenderCount,
+        [none] rendering3.TexturedMesh3D,
+        #ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
+        #endif
     );
     zox_system_1(
         MeshColorsGpuSystem,
@@ -109,6 +123,9 @@ void define_systems_basics3D(ecs* world) {
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshColorRGBs,
         [out] rendering.MeshColorsDirty,
-        [none] rendering.MeshColorRGBs
+        [none] rendering.MeshColorRGBs,
+        #ifndef zox_disable_initialize_removal
+        [none] !core.Initialize,
+        #endif
     );
 }

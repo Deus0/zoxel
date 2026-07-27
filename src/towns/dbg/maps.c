@@ -77,6 +77,6 @@ zox_sys2(TownTextureSystem) {
             }
         }
         generate->value = 0;
-        dirty->value = zox_dirty_trigger;
+        dirty->value = zox_upload_texture;
     }
 } zox_sys_end(TownTextureSystem);

@@ -8,6 +8,8 @@
 #ifndef zoxm_core
 #define zoxm_core
 
+// #define zox_disable_initialize_removal
+
 #ifdef zox_debug
     #ifndef zox_safety_checks
         #define zox_safety_checks
@@ -46,7 +48,6 @@ void module_dispose_core(ecs *world, void *ctx) {
     dispose_hook_files_load();
     dispose_hook_on_boot();
     dispose_hook_spawn_prefabs();
-    free_zems();
     dispose_component_ids();
 }
 
@@ -81,7 +82,6 @@ byte initialize_pathing(const char* game_name) {
 
 zox_begin_module(Core) {
     clear_logs();
-    init_zems();
     initialize_update_loop();
     initialize_post_update_loop();
     initialize_hook_terminal_command();

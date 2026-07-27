@@ -1,4 +1,4 @@
-uniform sampler2D tex;
+uniform sampler2D zexture;
 uniform float blur;
 uniform float vignette;
 in vec2 uv;
@@ -60,10 +60,10 @@ vec4 gaussian_blur(sampler2D image, vec2 uv, float radius) {
 }
 
 void main() {
-    vec4 base = texture(tex, uv);
+    vec4 base = texture(zexture, uv);
     // Blur
     if (blur > 0.0) {
-        vec4 blurred = gaussian_blur(tex, uv, BLUR_RADIUS);
+        vec4 blurred = gaussian_blur(zexture, uv, BLUR_RADIUS);
         color = mix(base, blurred, blur);
     } else {
         color = base;
@@ -73,7 +73,7 @@ void main() {
     float noise = random(uv);
     color = mix(color, vec4(noise, noise, noise, 1.0), NOISE_STRENGTH);
 
-    //vec4 blurred = gaussian_blur(tex, uv, BLUR_RADIUS);
+    //vec4 blurred = gaussian_blur(zexture, uv, BLUR_RADIUS);
     //color = mix(base, blurred, 0.9);
     // === vignette ===
     // float vignette_intensity = 0.7;     // change to 0.9 for dialogue

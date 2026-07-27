@@ -22,17 +22,17 @@ void define_systems_bones(ecs *world) {
         BoneIndexGenerateSystem,
         zoxp_update,
         [in] bones.SkeletonDirty,
-        [in] rendering.MeshDirty,
         [in] rendering.MeshVertices,
         [in] bones.BoneLinks,
+        [out] rendering.MeshDirty,
         [out] bones.BoneIndexes,
         [none] bones.Skeleton
     );
     zox_system(
         BonePaintSystem,
         zoxp_update,
-        [in] rendering.MeshDirty,
         [in] bones.BoneIndexes,
+        [out] rendering.MeshDirty,
         [out] rendering.MeshColorRGBs,
         [none] bones.Skeleton
     );
@@ -89,9 +89,12 @@ void define_systems_bones(ecs *world) {
     zox_system_1(
         BoneIndexUploadSystem,
         zoxp_mainthread,
-        [in] rendering.MeshDirty,
         [in] bones.BoneIndexes,
-        [out] bones.BoneIndexGPULink
+        [out] rendering.MeshDirty,
+        [out] bones.BoneIndexGPULink,
+        #ifndef zox_disable_initialize_removal
+        [none] !core.Initialize,
+        #endif
     );
     zox_system_1(
         BoneRenderSystem,
@@ -114,6 +117,8 @@ void define_systems_bones(ecs *world) {
         [none] rendering3.SkeletonMesh,
         [none] rendering.MeshColorRGBs,
         [none] !rendering.UvsGPULink,
+        #ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
+        #endif
     );
 }

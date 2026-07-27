@@ -1,5 +1,6 @@
-entity spawn_model_generated(ecs* world, entity parent, const char* name, lint seed, byte vox_type, color fill, byte depth, byte max_depth) {
-    entity e = spawn_vox_basic(world, prefab_invisible_vox, depth, max_depth);
+// NOTE: Assuming this model is used for instancing, we spawn as gpu mesh
+entity spawn_model_generated(ecs* world, entity prefab_lod, entity parent, const char* name, lint seed, byte vox_type, color fill, byte depth, byte max_depth) {
+    entity e = spawn_vox_basic(world, prefab_lod, depth, max_depth);
     {
         char name2[64];
         sprintf(name2, "model_%s", name);
@@ -15,7 +16,7 @@ entity spawn_model_generated(ecs* world, entity parent, const char* name, lint s
     return e;
 }
 
-entity2 spawn_model_lods_generated(ecs* world, entity parent, const char* name, byte vox_type, color fill, byte max_depth, lint seed) {
+entity2 spawn_model_lods_generated(ecs* world, entity prefab_lod, entity parent, const char* name, byte vox_type, color fill, byte max_depth, lint seed) {
     entity e = zox_new();
     {
         char name2[64];
@@ -27,7 +28,7 @@ entity2 spawn_model_lods_generated(ecs* world, entity parent, const char* name, 
     entity texture_model = 0;
     ModelLods lods;
     for (byte depth = 0; depth <= max_depth; depth++) {
-        entity e2 = spawn_model_generated(world, e, name, seed, vox_type, fill, depth, max_depth);
+        entity e2 = spawn_model_generated(world, prefab_lod, e, name, seed, vox_type, fill, depth, max_depth);
         lods.value[depth] = e2;
         if (depth == max_depth) {
             texture_model = e2;

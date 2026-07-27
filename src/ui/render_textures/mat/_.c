@@ -7,7 +7,7 @@ MaterialAttributesRenderTexture create_MaterialAttributesRenderTexture(guint mat
         .vertex_uv = zox_gpu_get_material_attribute(material, "vertex_uv"),
         .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
         .transform_matrix = zox_gpu_get_material_property(material, "matrix"),
-        .texture = zox_gpu_get_material_property(material, "tex"),
+        .texture = zox_gpu_get_material_property(material, "zexture"),
     };
 }
 

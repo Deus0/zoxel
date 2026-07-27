@@ -2,9 +2,9 @@
 
 static inline void zox_dispose_material(uint value) { }
 
-static inline guint zox_gpu_get_material_property(uint id, const char* name) { return 0; }
+static inline gint zox_gpu_get_material_property(uint id, const char* name) { return 0; }
 static inline gint zox_gpu_get_material_attribute(uint id, const char* name) { return 0; }
-static inline guint zox_gpu_get_material_uniform(uint id, const char* name) { return 0; }
+static inline gint zox_gpu_get_material_uniform(uint id, const char* name) { return 0; }
 
 static inline void zox_gpu_material(uint material) { }
 static inline void zox_disable_material() { }

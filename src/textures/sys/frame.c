@@ -152,24 +152,28 @@ zox_sys2(FrameTextureSystem) {
         zox_sys_i(OutlineColor, outline);
         zox_sys_i(OutlineThickness, thickness);
         zox_sys_i(FrameCorner, edge);
+        zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureDirty, dirty);
-        zox_sys_o(GenerateTexture, generate);
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
+        uint length = size->value.x * size->value.y;
+        if (!length) {
+            continue;
+        }
         byte add_noise = zox_has(e, TextureAddNoise);
-        resize_TextureData(data, size->value.x * size->value.y);
+        resize_TextureData(data, length);
         generate_texture_frame2(data->value, size->value, fill->value, outline->value, thickness->value, edge->value, add_noise);
         generate->value = zox_generate_texture_end;
-        dirty->value = zox_dirty_trigger;
-        if (dbg_log >= 2) {
-            zox_log("Frame Texture generated [%s] at [%f] fill [%ix%ix%ix%i] AT [%ix%i]", zox_get_name(e), zox_current_time, fill->value.r, fill->value.g, fill->value.b, fill->value.a, size->value.x, size->value.y);
-        }
+        dirty->value = zox_upload_texture;
         zox_sys_increment();
+        if (dbg_log) {
+            zox_log("Frame Texture generated [%s] fill [%ix%ix%ix%i] Size [%ix%i]", zox_get_name(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a, size->value.x, size->value.y);
+        }
     }
 #ifdef zox_time_systems
-    if (dbg_log && process_count) {
+    if (dbg_log >= 2 && process_count) {
         zox_log("Frame Textures Generated [%i]:[%f]", process_count, calculate_sys_delta());
     }
 #endif

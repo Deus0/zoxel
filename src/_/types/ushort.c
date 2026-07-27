@@ -10,5 +10,5 @@
 zox_base_type(ushort)
 
 #define zoxd_ushort_dest(name)\
-    zoxd_dest(name)\
+    zoxd_dest_old(name)\
     entity_array_d_add(component_ids_ushort, ecs_id(name));

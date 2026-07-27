@@ -15,10 +15,10 @@
 #include "initialize.c"
 #include "lod_instance_system.c"
 #include "settings.c"
-zox_increment_system_with_reset(MeshDirty, mesh_state_end);
+// zox_increment_system_with_reset(MeshDirty, mesh_state_end);
 
 void define_systems_rendering(ecs *world) {
-    zoxd_system_increment(MeshDirty);
+    // zoxd_system_increment(MeshDirty);
     // dispose
     zox_gpu_dispose_system(MeshGPUDisposeSystem, [in] MeshGPULink);
     zox_gpu_dispose_system(MeshUvsGPUDisposeSystem, [in] rendering.UvsGPULink);

@@ -3,8 +3,6 @@
 #include "mesh.c"
 #include "canvas_resize.c"
 #include "element_begin.c"
-#include "element_renderer.c"
-#include "render_transform.c"
 
 void zox_define_systems_elements(ecs *world) {
     zox_system(
@@ -33,44 +31,21 @@ void zox_define_systems_elements(ecs *world) {
         [out] textures.GenerateTexture
     );
     zox_system(
-        LayoutMeshSystem,
+        LayoutMeshBeginSystem,
+        zoxp_update,
+        [in] core.Initialize,
+        [in] layouts2.LayoutSize,
+        [in] rendering.MeshAlignment,
+        [out] rendering.MeshVertices2D,
+        [out] rendering.MeshDirty,
+    );
+    zox_system(
+        LayoutMeshUpdateSystem,
         zoxp_update,
         [in] layouts2.LayoutSizeDirty,
         [in] layouts2.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
         [out] rendering.MeshDirty
-    );
-    // all ui
-    zox_render2D_system(
-        ElementRenderSystem,
-        [in] transforms2.Position2,
-        [in] transforms2.Rotation2,
-        [in] transforms.Scale1,
-        [in] layouts2.Layer2D,
-        [in] rendering.RenderDisabled,
-        [in] rendering.Brightness,
-        [in] rendering.Alpha,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.TextureGPULink,
-        [none] ElementRender,
-        [none] !core.Initialize,
-        [none] !transforms.TransformMatrix
-    );
-    add_system_process_counter(world, zox_id(ElementRenderSystem));
-    // Render using Matrix instead of Position2 etc
-    zox_render2D_system(
-        ElementRenderMatrixSystem,
-        [in] transforms.TransformMatrix,
-        [in] layouts2.Layer2D,
-        [in] rendering.RenderDisabled,
-        [in] rendering.Brightness,
-        [in] rendering.Alpha,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.TextureGPULink,
-        [none] ElementRender,
-        [none] !core.Initialize,
     );
 }

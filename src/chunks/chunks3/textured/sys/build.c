@@ -135,7 +135,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
     zox_sys_out(MeshColorRGBs);
-    zox_sys_out(TexturedMeshDirty);
+    zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Active, active);
@@ -145,7 +145,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
-        zox_sys_o(TexturedMeshDirty, upload);
+        zox_sys_o(MeshDirty, upload);
         if (build->value != zox_build_chunk_mesh_run || !active->value) {
             continue;
         }
@@ -157,12 +157,6 @@ zox_sys2(ChunkTexturedBuildSystem) {
             continue;
         }
 #endif
-        /*if (zox_getv(chunk, VoxelNodeDirty) || zox_getv(chunk, BuildChunkSides)) {
-            if (dbg_log) {
-                zox_log("Chunk [%s] is still Building Sides", zox_get_name(e));
-            }
-            continue;
-        }*/
         entity terrain = zox_get_parent(world, chunk);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
@@ -179,12 +173,16 @@ zox_sys2(ChunkTexturedBuildSystem) {
         }
         entity tilemap = zox_getv(chunk, TilemapLink);
 #ifdef zox_safety_checks
-        if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapUVs)) {
+        if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapUVs) || !zox_has(tilemap, GenerateTexture)) {
             zox_sys_e();
             zox_loge("Tilemap not found on Chunk Terrain [%s]", zox_get_name(e));
             continue;
         }
 #endif
+        if (zox_getv(tilemap, GenerateTexture)) {
+            // zox_loge("Tilemap Still Generating [%s]: %i", zox_get_name(tilemap), zox_getv(tilemap, GenerateTexture));
+            continue;
+        }
         zox_geter(tilemap, TilemapUVs, tilemap_uvs);
 #ifdef zox_safety_checks
         if (!tilemap_uvs->value || !tilemap_uvs->length) {
@@ -253,7 +251,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
         uvs->value = finalize_arrayd_float2(mesh_data.uvs);
         // dirty
         build->value = zox_build_chunk_mesh_lights;
-        upload->value = 1;
+        upload->value = mesh_state_trigger;
         if (dbg_log) {
             zox_log("Built Mesh [%s]:[%s] Verts [%i] Scale [%f] Depth [%i]", zox_getn(e), zox_getn(chunk), verts->length, chunk_scale, depth->value);
         }

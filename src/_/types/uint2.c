@@ -10,5 +10,5 @@
 zox_base_type(uint2)
 
 #define zoxd_uint2_dest(name)\
-    zoxd_dest(name)\
+    zoxd_dest_old(name)\
     entity_array_d_add(component_ids_uint2, ecs_id(name));

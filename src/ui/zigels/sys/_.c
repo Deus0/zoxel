@@ -20,6 +20,5 @@ void zox_define_systems_zigels(ecs* world) {
         [out] textures.TextureData,
         [out] rendering.TextureDirty,
         [none] FontTexture,
-        [none] !core.Initialize,
     );
 }

@@ -1,6 +1,6 @@
 #include "animate_noise_system.c"
-#include "texture_rgb_upload_system.c"
-#include "texture_rgba_upload_system.c"
+#include "upload.c"
+#include "upload_rgb.c"
 #include "noise.c"
 #include "fill.c"
 #include "frame.c"
@@ -82,21 +82,23 @@ void define_systems_textures(ecs *world) {
     zox_system_1(
         TextureRgbUploadSystem,
         zoxp_mainthread,
-        [in] rendering.TextureDirty,
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
+        [out] rendering.TextureDirty,
         [none] textures.TextureRGB,
         [none] !core.Initialize,
     );
     zox_system_1(
         TextureUploadSystem,
         zoxp_mainthread,
-        [in] rendering.TextureDirty,
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
+        [out] rendering.TextureDirty,
         [none] !textures.TextureRGB,
-        // [none] !core.Initialize,
+#ifndef zox_disable_initialize_removal
+        [none] !core.Initialize,
+#endif
     );
 }

@@ -2,16 +2,7 @@ uint create_shader_compute() {
     return glCreateShader(GL_COMPUTE_SHADER);
 }
 
-/*uint create_shader_vertex() {
-    return glCreateShader(GL_VERTEX_SHADER);
-}
-
-uint create_shader_fragment() {
-    return glCreateShader(GL_FRAGMENT_SHADER);
-}*/
-
 byte initialize_material(guint material, guint vert_shader, guint frag_shader) {
-
     if (!vert_shader || !frag_shader) {
         zox_log_error("[initialize_materialial]: invalid shader");
         return EXIT_FAILURE;
@@ -75,7 +66,6 @@ byte check_shader_compile_status(guint shader) {
         }
         return 1;
     }
-
     return 0;
 }
 

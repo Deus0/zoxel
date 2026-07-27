@@ -7,24 +7,41 @@ zox_sys2(TilemapUVSystem) {
     byte uvs_per_face = 4;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TextureDirty);
     zox_sys_in(TextureLinks);
     zox_sys_in(TilemapSize);
     zox_sys_in(TextureSize);
     zox_sys_in(RealmLink);
+    zox_sys_out(GenerateTexture);
     zox_sys_out(TilemapUVs);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TextureDirty, state);
+        zox_sys_e();
         zox_sys_i(TextureLinks, textures);
         zox_sys_i(TilemapSize, map_size);
         zox_sys_i(TextureSize, size);
         zox_sys_i(RealmLink, realm);
+        zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TilemapUVs, uvs);
-        if (state->value != zox_dirty_active) {
+        if (generate->value != zox_generate_texture_uvs) {
             continue;
         }
         if (!textures->length || !map_size->value.x) {
             zox_loge("Invalid Textures for Tilemap");
+            continue;
+        }
+        byte generating = 0;
+        for (int j = 0; j < textures->length; j++) {
+            entity texture = textures->value[j];
+            if (!zox_valid(texture)) {
+                zox_logw("invalid Tilemap texture [%s:%i]", zox_get_name(e), j);
+                continue;
+            }
+            if (zox_has(texture, GenerateTexture) && zox_getv(texture, GenerateTexture)) {
+                // zox_logw("Block [%s:%i]'s Texture [%s] still generating...", zox_get_name(block), j, zox_get_name(texture));
+                generating = 1;
+                break;
+            }
+        }
+        if (generating) {
             continue;
         }
         entity first_texture = textures->value[0];
@@ -94,8 +111,9 @@ zox_sys2(TilemapUVSystem) {
                 break;
             }
         }
+        generate->value = 0; // zox_generate_texture_run;
         if (dbg_log) {
-            zox_log("UVs Length [%i] Blocks [%i] Textures [%i] MapSize [%ix%i]", uvs_length, blocks->length, textures->length, map_size->value.x, map_size->value.y);
+            zox_log("Tilemap UVs Generated: Unit Size [%ix%i] Blocks [%i] Textures [%i] MapSize [%ix%i]", unit_size.x, unit_size.y, blocks->length, textures->length, map_size->value.x, map_size->value.y);
         }
     }
 } zox_sys_end(TilemapUVSystem);

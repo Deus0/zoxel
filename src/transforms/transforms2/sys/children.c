@@ -27,9 +27,9 @@ static inline void set_position_rotation_scale2_recursive(
             float2_rotate(
                 float2_multiply(local_line->end, parent_scale),
                     parent_rotation));
-        // if (dbg_log) {
+        if (dbg_log) {
             zox_log("[%s] line [%fx%f] -> [%fx%f]", zox_getn(e), line->start.x, line->start.y, line->end.x, line->end.y);
-        // }
+        }
     }
     if (!zox_has(e, Position2) || !zox_has(e, Rotation2)) {
         return;

@@ -1,15 +1,13 @@
+zox_tag(RenderTextureScreen);
 // material attributes
 typedef struct {
     gint vertex_position;
     gint vertex_uv;
-    guint camera_matrix;
-    guint transform_matrix;
-    guint texture;
-    // guint blur_strength;
+    gint camera_matrix;
+    gint transform_matrix;
+    gint texture;
 } MaterialAttributesRenderTexture;
 zoxc_custom(MaterialAttributesRenderTexture);
-
-zox_tag(RenderTextureScreen);
 
 void define_components_render_textures(ecs* world) {
     zoxd_tag(RenderTextureScreen);

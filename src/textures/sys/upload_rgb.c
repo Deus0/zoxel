@@ -3,17 +3,17 @@ zox_sys2(TextureRgbUploadSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TextureDirty);
     zox_sys_in(TextureData);
     zox_sys_in(TextureSize);
     zox_sys_in(TextureGPULink);
+    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TextureDirty, dirty);
         zox_sys_i(TextureData, data);
         zox_sys_i(TextureSize, size);
         zox_sys_i(TextureGPULink, gpu_link);
-        if (dirty->value != zox_dirty_active) {
+        zox_sys_o(TextureDirty, dirty);
+        if (dirty->value != zox_upload_texture) {
             continue;
         }
         if (!gpu_link->value) {
@@ -33,5 +33,6 @@ zox_sys2(TextureRgbUploadSystem) {
                 zox_log("+ [%s] cleared texture", zox_get_name(e));
             }
         }
+        dirty->value = 0;
     }
 } zox_sys_end(TextureRgbUploadSystem);

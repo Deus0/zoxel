@@ -21,10 +21,6 @@
     } name; \
     zoxc_custom(name)
 
-#define zoxd_dest(name)\
-    zoxd(name)\
-    ecs_set_hooks(world, name, { .dtor = ecs_dtor(name) });
-
 #define zox_define_destruction(name)\
     ecs_set_hooks(world, name, { .dtor = ecs_dtor(name) });
 

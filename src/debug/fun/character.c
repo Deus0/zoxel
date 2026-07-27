@@ -97,7 +97,7 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
         byte visible = !zox_getv(e3, RenderDisabled);
         byte build = zox_getv(e3, BuildChunkMesh);
         byte build_colors = zox_getv(e3, MeshColorsGenerate);
-        byte mesh_dirty  = zox_getv(e3, TexturedMeshDirty);
+        byte mesh_dirty  = zox_getv(e3, MeshDirty);
         byte colors_dirty = zox_getv(e3, MeshColorsDirty);
         uint count = zox_getv(e3, MeshRenderCount);
         uint indicies_count = zox_gett(e3, MeshIndicies)->length;

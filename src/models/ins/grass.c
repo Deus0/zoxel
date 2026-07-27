@@ -1,5 +1,4 @@
-entity2 spawn_model_grass(ecs* world, lint seed, byte max_depth, color vox_color) {
-    entity prefab_lod = prefab_invisible_vox;
+entity2 spawn_model_grass(ecs* world, entity prefab_lod, lint seed, byte max_depth, color vox_color) {
     byte dbg_log = 0;
     entity vox_lod = 0;
     byte length = octree_size(max_depth);

@@ -1,5 +1,5 @@
 void load_files_voxes(ecs *world) {
-    entity prefab = prefab_vox_file;
+    entity prefab = prefab_vox; // prefab_vox_file;
     char* load_directory = concat_file_path(resources_path, directory_voxes);
     zox_logv("  - Loading Files Voxes [%s]", load_directory);
     FileList files = get_files(load_directory, 0);

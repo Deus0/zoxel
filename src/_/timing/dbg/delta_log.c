@@ -33,7 +33,8 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
     while (ecs_query_next(&it)) {
         count += it.count;
     }
-    index += snprintf(buffer + index, size - index, " [%fms] System Times [%i]\n", zox_delta_time * 1000, count);
+    index += snprintf(buffer + index, size - index, "System Times [%i]\n", count);
+    index += snprintf(buffer + index, size - index, "- Frame [%.2fms]\n", zox_delta_time * 1000);
     if (count == 0) {
         // ecs_query_fini(q);
         return index;
@@ -59,7 +60,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
         index += snprintf(
             buffer + index,
             size - index,
-            "%8.3f ms - %s ",
+            "  %.2fms %s",
             entry.value,
             // i + 1,  %2d.
             zox_get_name(e)

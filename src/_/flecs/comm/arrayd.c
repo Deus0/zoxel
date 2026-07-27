@@ -13,24 +13,20 @@ ECS_CTOR(T, ptr, { \
     ptr->length = 0; \
     ptr->value = NULL; \
     ptr->lock = SPINLOCK_INIT; \
-    zox_stats_arrayds_exists++; \
 }) \
 \
 ECS_DTOR(T, ptr, { \
     if (ptr->value) { \
-        zee(ptr->value); \
+        free(ptr->value); \
         ptr->value = NULL; \
-        ptr->length = 0; \
-        zox_stats_arrayds_mallocs--; \
     } \
-    zox_stats_arrayds_exists--; \
+    ptr->length = 0; \
 })\
 \
 void dispose_##T(T *ptr) { \
     if (ptr->value) { \
-        zee(ptr->value); \
+        free(ptr->value); \
         ptr->value = NULL; \
-        zox_stats_arrayds_mallocs--; \
     }\
     ptr->length = 0;\
 }\
@@ -38,8 +34,7 @@ void dispose_##T(T *ptr) { \
 /* this assumes we setting the data anyway */ \
 void dispose_##T##_const(const T *ptr) {\
     if (ptr->value) {\
-        zee(ptr->value);\
-        zox_stats_arrayds_mallocs--; \
+        free(ptr->value);\
     }\
 }\
 \
@@ -53,10 +48,11 @@ ECS_MOVE(T, dst, src, { \
 \
 void clone_##T(T* dst, const T* src) {\
     if (dst->value) { \
-        zee(dst->value); \
+        free(dst->value); \
         dst->value = NULL; \
         dst->length = 0;\
     }\
+    dst->lock = SPINLOCK_INIT; \
     if (src->value) {\
         int memory_length = src->length * sizeof(type);\
         type *value = malloc(memory_length);\
@@ -67,7 +63,6 @@ void clone_##T(T* dst, const T* src) {\
         memcpy(value, src->value, memory_length);\
         dst->value = value;\
         dst->length = src->length;\
-        zox_stats_arrayds_mallocs++; \
     }\
 }\
 \
@@ -83,7 +78,6 @@ void initialize_##T(T* ptr, int length) {\
         } else {\
             ptr->value = new_memory;\
             ptr->length = length;\
-            zox_stats_arrayds_mallocs++; \
         }\
     } \
 } \
@@ -117,9 +111,6 @@ byte add_to_##T(T *ptr, type data) { \
         spin_unlock(&ptr->lock); \
         return 0; \
     } \
-    if (!ptr->value) { \
-        zox_stats_arrayds_mallocs++; \
-    } \
     ptr->value = new_value; \
     ptr->value[ptr->length] = data; \
     ptr->length++; \
@@ -138,9 +129,8 @@ byte remove_at_##T(T *ptr, int index) {\
     }\
     ptr->length--;\
     if (!ptr->length) {\
-        zee(ptr->value);\
+        free(ptr->value);\
         ptr->value = NULL;\
-        zox_stats_arrayds_mallocs--; \
     } else {\
         ptr->value = realloc(ptr->value, ptr->length * sizeof(type));\
     }\

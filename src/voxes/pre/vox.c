@@ -4,6 +4,7 @@ entity spawn_prefab_vox(ecs *world, byte depth) {
     zox_add_tag(e, Vox);
     zox_add_tag(e, Chunk);
     zox_add_tag(e, Chunk3);
+    zox_prefab_set(e, Initialize, { 1 });
     zox_prefab_set(e, ChunkPosition, { int3_zero });
     zox_prefab_set(e, ChunkSize, { int3_zero });
     zox_prefab_set(e, ChunkNeighbors, { { 0 } } );
@@ -31,7 +32,6 @@ entity spawn_prefab_vox(ecs *world, byte depth) {
     zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
-    zox_prefab_set(e, Initialize, { 1 });
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, BuildChunkSides, { 0 });
     zox_prefab_set(e, BuildChunkMesh, { 0 });

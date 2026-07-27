@@ -2,19 +2,28 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Crashing on windows still
+	- implement loading screen to make it easier to see why breaks
+
+- Redo all my destruction hooks like MeshGPULink - remove DTOR for OBSR
+- Refactor Chunk Render systems back into Rendering module
+- Refactor Colored Vox to use same ChunkSides system
+- Convert Vox Model to use ChunkMeshes
+
 # Note we need to use pipelines to isolate reading from voxels / writing to
+
+- When dialogue animates - first fontt will flash...!
+- Make a easy way to add hotkey functionality
+	- zox_on_key_pressed(key_z, test_thingo);
 
 - Cube in hand is gone
 - item ++ shhould occur after it reaches you (the world item)
 - Fix timing of arm swing
 
 Next:
-- Crashing on windows still
-	- implement loading screen to make it easier to see why breaks
 - List ui calculating wrong cause sliders different heights then buttons!
 - Remove crafting users reference and use normal item ui for craft ui
 - Fix taskbars again properly linking to windows
-- Convert Vox Model to use ChunkMeshes
 - Refactor Character - Vox model can be underneath them
 - Refactor Vox Model so meshes can be underneath them
 - Move chunk render back to rendering module, and just link to material

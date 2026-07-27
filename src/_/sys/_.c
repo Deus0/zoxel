@@ -5,7 +5,7 @@
 void zox_define_systems_core(ecs* world) {
     zox_system(
         InitializeSystem,
-        zoxp_reset, // update,
+        zoxp_update,
         [out] core.Initialize
     );
     /*zox_system(

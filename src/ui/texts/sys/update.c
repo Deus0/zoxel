@@ -42,6 +42,7 @@
 
 // NOTE: Updates previous zigels to new data
 // TODO: Can we move this to Zigels instead of working at Text
+// NOTE: Needs to run on end, a frame after ZigelSpawnSystem shrinks the children
 zox_sys2(TextUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -52,7 +53,7 @@ zox_sys2(TextUpdateSystem) {
         zox_sys_e();
         zox_sys_i(TextDirty, dirty);
         zox_sys_i(TextData, text);
-        if (dirty->value != zox_dirty_active || !text->length) {
+        if (dirty->value != zox_dirty_end || !text->length) {
             continue;
         }
         uint child_index = 0;
@@ -75,11 +76,10 @@ zox_sys2(TextUpdateSystem) {
 #endif
                 zox_mut_begin(e2, DataIndex, data_index);
                 uint new_data_index = child_index_to_text_array_index(text->value, text->length, child_index);
-                if (data_index->value != new_data_index) {
-                    data_index->value = new_data_index;
-                }
+                data_index->value = new_data_index;
                 zox_mut_begin(e2, ZigelIndex, zigel_index);
-                byte new_index = calculate_zigel_index(text->value, text->length, child_index);
+                byte new_index = text->value[new_data_index];
+                // calculate_zigel_index(text->value, text->length, child_index);
                 if (zigel_index->value != new_index) {
                     zigel_index->value = new_index;
                     zox_muter(e2, GenerateTexture, generate);

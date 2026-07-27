@@ -2,6 +2,7 @@
 // todo: support for multiple sizes, would have to place them in? or something
 extern entity get_block_link(ecs*, entity);
 
+// NOTE: Relies on texture size
 zox_sys2(TilemapGenerationSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -41,14 +42,6 @@ zox_sys2(TilemapGenerationSystem) {
             if (zox_getv(texture, GenerateTexture)) {
                 if (dbg_log) {
                     zox_log("Tilemap still generating... [%i]", j);
-                }
-                still_generating = 1;
-                break;
-            }
-            if (zox_has(texture, Busy) && zox_getv(texture, Busy)) {
-                if (dbg_log) {
-                    entity vox = zox_getv(texture, ModelLink);
-                    zox_log("Tilemap Texture Busy... [%s] [%i] from [%s]", zox_get_name(texture), j, zox_get_name(vox));
                 }
                 still_generating = 1;
                 break;
@@ -114,8 +107,8 @@ zox_sys2(TilemapGenerationSystem) {
                 texture_index++;
             }
         }
-        dirty->value = zox_dirty_trigger;
-        generate->value = zox_generate_texture_end;
+        generate->value = zox_generate_texture_uvs;
+        dirty->value = zox_upload_texture;
         if (dbg_log) {
             zox_log("Tilemap Generated!");
         }

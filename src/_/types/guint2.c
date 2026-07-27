@@ -9,6 +9,10 @@
 
 zox_base_type(guint2)
 
+#define zoxd_guint2_dest_old(name)\
+    zoxd_dest_old(name)\
+    entity_array_d_add(component_ids_guint2, ecs_id(name));
+
 #define zoxd_guint2_dest(name)\
     zoxd_dest(name)\
     entity_array_d_add(component_ids_guint2, ecs_id(name));

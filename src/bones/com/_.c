@@ -35,7 +35,7 @@ void define_components_bones(ecs* world) {
     zoxd(MaterialBone);
     zoxd_arrayd(BoneIndexes);
     zoxd_arrayd(BoneLinks);
-    zoxd_dest(BoneIndexGPULink);
+    zoxd_dest_old(BoneIndexGPULink);
     zoxd_tag(HeadBone);
     zoxd_tag(HipsBone);
     zoxd_tag(ArmBone);

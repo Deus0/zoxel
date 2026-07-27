@@ -1,7 +1,7 @@
 // Core Elements
 zox_tag(Element);
 zox_tag(Element2D);
-zox_tag(ElementRender);
+// zox_tag(ElementRender);
 zoxc_byte(ElementLayer);
 zoxc_entity(ElementLink);
 zoxc_entities(ElementLinks)
@@ -24,16 +24,12 @@ zoxc_byte(FontSize);
 zoxc_byte(ElementFontSize);
 // Misc
 zox_tag(MouseElement);
-// Materials
-#include "matrixui.c"
-zoxc_guint(MaterialBlur);
-zoxc_guint(MaterialVignette);
 
 void zox_define_components_elements(ecs *world) {
     // Core Elements
     zoxd_tag(Element);
     zoxd_tag(Element2D);
-    zoxd_tag(ElementRender);
+    // zoxd_tag(ElementRender);
     // zoxd_tag(ElementBillboard);
     zoxd_byte(ElementLayer);
     zoxd_entity(ElementLink);
@@ -56,8 +52,4 @@ void zox_define_components_elements(ecs *world) {
     zoxd_float2(ElementBarSize);
     // Canvas
     zoxd_tag(CanvasOverlay);
-    // Materials
-    zoxd(attributes_matrixui);
-    zoxd_guint(MaterialBlur);
-    zoxd_guint(MaterialVignette);
 }

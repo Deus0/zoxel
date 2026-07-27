@@ -9,7 +9,6 @@ entity spawn_prefab_chunk_mesh(ecs* world) {
     // Mesh Data
     zox_add_tag(e, ChunkMesh);
     zox_add_tag(e, MeshClearCache);
-    zox_prefab_set(e, Initialize, { 1 });
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshColorRGBs, { 0 });
@@ -21,6 +20,8 @@ entity spawn_prefab_chunk_mesh(ecs* world) {
     zox_prefab_set(e, Active, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     // Events
+    zox_prefab_set(e, Initialize, { 1 });
+    zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, BuildChunkMesh, { zox_build_chunk_mesh_run });
     return e;
 }

@@ -16,8 +16,8 @@ void add_ui_components_world(ecs *world, entity e, float2 mesh_scale) {
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     zox_prefab_set(e, TextureGPULink, { 0 });
-    add_gpu_mesh(world, e);
-    add_gpu_uvs(world, e);
+    zox_prefab_set(e, MeshGPULink, { 0 });
+    zox_prefab_set(e, UvsGPULink, { 0 });
     zox_prefab_set(e, ColorsGPULink, { 0 });
     zox_prefab_add(e, MeshIndicies);
     zox_prefab_add(e, MeshVertices);
@@ -32,5 +32,5 @@ void add_ui_components_world(ecs *world, entity e, float2 mesh_scale) {
     // zox_prefab_set(e, MeshDirty, { 1 });
     // NOTE: Needed for Uploading Mesh Textured
     zox_prefab_set(e, MeshRenderCount, { 0 });
-    zox_prefab_set(e, TexturedMeshDirty, { 1 });
+    zox_prefab_set(e, MeshDirty, { 1 });
 }
