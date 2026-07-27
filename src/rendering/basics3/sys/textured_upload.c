@@ -3,7 +3,7 @@ zox_sys2(TexturedMeshUploadSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeMesh);
+    //zox_sys_in(Initialize);
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
@@ -15,7 +15,7 @@ zox_sys2(TexturedMeshUploadSystem) {
     zox_sys_out(MeshRenderCount);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeMesh, initialize);
+        //zox_sys_i(Initialize, initialize);
         zox_sys_i(MeshGPULink, gpu_mesh);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
@@ -25,7 +25,7 @@ zox_sys2(TexturedMeshUploadSystem) {
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(TexturedMeshDirty, upload);
         zox_sys_o(MeshRenderCount, count);
-        if (!upload->value || initialize->value) {
+        if (!upload->value) { // || initialize->value) {
             continue;
         }
 #ifdef zox_safety_checks

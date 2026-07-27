@@ -39,25 +39,25 @@ void define_systems_rendering(ecs *world) {
     zox_system_1(
         InitializeMeshSystem,
         zoxp_mainthread,
-        [in] rendering.InitializeMesh,
+        [in] core.Initialize,
         [out] rendering.MeshGPULink
     );
     zox_system_1(
         InitializeMeshUvsSystem,
         zoxp_mainthread,
-        [in] rendering.InitializeMesh,
+        [in] core.Initialize,
         [out] rendering.UvsGPULink
     );
     zox_system_1(
         InitializeMeshColorsSystem,
         zoxp_mainthread,
-        [in] rendering.InitializeMesh,
+        [in] core.Initialize,
         [out] rendering.ColorsGPULink
     );
     zox_system_1(
         InitializeMeshTextureSystem,
         zoxp_mainthread,
-        [in] rendering.InitializeMesh,
+        [in] core.Initialize,
         [out] rendering.TextureGPULink
     );
     zox_system(

@@ -5,7 +5,7 @@ entity spawn_prefab_element(ecs *world, entity prefab) {
     zox_add_tag(e, ElementRender);  // TODO: Remove this just use Element
     // Properties
     // zox_prefab_set(e, TransformMatrix, { float4x4_identity });
-    zox_prefab_set(e, InitializeEntity, { 1 });
+    zox_prefab_set(e, Initialize, { 1 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Brightness, { 1 });
     zox_prefab_set(e, Alpha, { 1 });
@@ -17,7 +17,6 @@ entity spawn_prefab_element(ecs *world, entity prefab) {
     zox_prefab_set(e, TextureSize, { int2_zero });
     zox_prefab_set(e, TextureGPULink, { 0 });
     // Mesh
-    zox_prefab_set(e, InitializeMesh, { 1 });
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_add(e, MeshIndicies);
     zox_prefab_add(e, MeshVertices2D);

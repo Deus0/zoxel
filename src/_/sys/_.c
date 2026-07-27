@@ -1,7 +1,13 @@
 // NOTE: pthread is linux only
 #include "deactivate.c"
+#include "initialize.c"
 
 void zox_define_systems_core(ecs* world) {
+    zox_system(
+        InitializeSystem,
+        zoxp_reset, // update,
+        [out] core.Initialize
+    );
     /*zox_system(
         DeactivateDelaySystem,
         zoxp_post_update,

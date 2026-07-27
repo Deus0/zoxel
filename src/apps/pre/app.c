@@ -12,7 +12,7 @@ entity spawn_prefab_app(ecs* world, int2 position, int2 size) {
     zox_prefab_add(e, WindowSizeDirty);
     // Settings
     zox_prefab_set(e, ZoxName, { });
-    zox_prefab_set(e, InitializeEntity, { zox_dirty_trigger });
+    zox_prefab_set(e, Initialize, { zox_dirty_trigger });
     zox_prefab_set(e, LoadSettings, { zox_load_settings_start });
     return e;
 }

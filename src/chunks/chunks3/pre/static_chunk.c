@@ -3,7 +3,7 @@ entity spawn_prefab_static_chunk(ecs *world) {
     zox_prefab_name("static_chunk");
     zox_add_tag(e, Chunk);
     zox_add_tag(e, Chunk3);
-    // zox_prefab_set(e, InitializeEntity, { zox_dirty_trigger });
+    // zox_prefab_set(e, Initialize, { zox_dirty_trigger });
     zox_prefab_set(e, ChunkPosition, { int3_zero });
     zox_prefab_set(e, ChunkSize, { int3_zero });
     zox_prefab_set(e, ChunkNeighbors, { { 0 } } );

@@ -11,7 +11,7 @@ zox_sys2(MapInitializeSystem) {
     // float map_alpha = 0.2f;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeEntity);
+    zox_sys_in(Initialize);
     zox_sys_in(MapZoom);
     zox_sys_in(Alpha);
     zox_sys_in(PlayerLink);
@@ -19,7 +19,7 @@ zox_sys2(MapInitializeSystem) {
     zox_sys_in(MapPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeEntity, state);
+        zox_sys_i(Initialize, state);
         zox_sys_i(MapZoom, zoom);
         zox_sys_i(Alpha, alpha);
         zox_sys_i(PlayerLink, player);

@@ -34,17 +34,18 @@ entity spawn_material_render_texture(ecs* world) {
     shader_render_texture = shader;
     guint material;
     entity e = spawn_material(world, shader, &material);
-    zox_set_unique_name(e, "render_texture2");
+    zox_set_unique_name(e, "material_render_texture");
     zox_set(e, ShaderLink, { shader });
     const MaterialAttributesRenderTexture attributes = create_MaterialAttributesRenderTexture(material);
     zox_set_data(e, MaterialAttributesRenderTexture, attributes);
     zox_set(e, CameraBlur, { 0 });
     zox_set(e, MaterialBlur, { zox_gpu_get_material_property(material, "blur") });
     zox_set(e, MaterialVignette, { zox_gpu_get_material_property(material, "vignette") });
-    // const MaterialTextured2D base_attributes = create_MaterialTextured2D(material);
-    // zox_set_data(e, MaterialTextured2D, base_attributes);
     attributes_matrixui base_attributes = create_attributes_matrixui(material);
     zox_set_data(e, attributes_matrixui, base_attributes);
+    // needs this too
+    //const MaterialTextured2D base_attributes2 = create_MaterialTextured2D(material);
+    //zox_set_data(e, MaterialTextured2D, base_attributes2);
     // attributes_matrixui base_attributes = ;
     // zox_set(e, attributes_matrixui, create_attributes_matrixui(material));
     return e;

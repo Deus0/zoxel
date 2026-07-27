@@ -3,14 +3,14 @@ zox_sys2(ElementBeginSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeEntity);
+    zox_sys_in(Initialize);
     zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshVertices2D);
     zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeEntity, initialize);
+        zox_sys_i(Initialize, initialize);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(MeshAlignment, meshAlignment);
         zox_sys_o(MeshDirty, dirty);

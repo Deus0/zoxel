@@ -5,11 +5,11 @@
 zox_sys2(MenuGameBeginSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeEntity);
+    zox_sys_in(Initialize);
     zox_sys_out(TaskbarToggleLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeEntity, state);
+        zox_sys_i(Initialize, state);
         zox_sys_o(TaskbarToggleLink, link);
         if (state->value != zox_dirty_active) {
             continue;

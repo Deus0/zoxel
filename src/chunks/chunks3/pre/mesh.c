@@ -9,7 +9,7 @@ entity spawn_prefab_chunk_mesh(ecs* world) {
     // Mesh Data
     zox_add_tag(e, ChunkMesh);
     zox_add_tag(e, MeshClearCache);
-    zox_prefab_set(e, InitializeMesh, { 1 });
+    zox_prefab_set(e, Initialize, { 1 });
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshColorRGBs, { 0 });

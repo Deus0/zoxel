@@ -18,10 +18,6 @@ zox_sys2(Elementbar2System) {
         if (!zox_valid(front_bar)) {
             continue;
         }
-        if (!zox_has(front_bar, InitializeEntity)) {
-            zox_log_error("frontbar missing InitializeEntity");
-            continue;
-        }
         if (!zox_has(front_bar, LayoutPosition)) {
             zox_log_error("frontbar missing LayoutPosition");
             continue;
@@ -30,17 +26,21 @@ zox_sys2(Elementbar2System) {
             zox_log_error("frontbar missing LayoutPositionDirty");
             continue;
         }
-        zox_geter(front_bar, InitializeEntity, initializeElement);
-        if (initializeElement->value) {
-            continue; // removing this breaks it?!?!
-        }
         if (!zox_has(front_bar, MeshVertices2D)) {
             continue;
         }
         // important
-        if (zox_gett_value(front_bar, MeshDirty) != 0) {
+        if (zox_getv(front_bar, MeshDirty) != 0) {
             continue;
         }
+        if (zox_has(front_bar, Initialize)) {
+            // zox_log_error("frontbar missing Initialize");
+            continue;
+        }
+        /*zox_geter(front_bar, Initialize, initializeElement);
+        if (initializeElement->value) {
+            continue; // removing this breaks it?!?!
+        }*/
         // # Important: Check if busy still
         zox_geter_value(front_bar, GenerateTexture, byte, generate);
         zox_geter_value(front_bar, TextureDirty, byte, tdirty);

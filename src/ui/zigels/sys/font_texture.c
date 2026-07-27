@@ -4,7 +4,6 @@ static inline void centre_font_data(const byte2 *input, int count, byte2 *output
     }
     byte min_x = 255, min_y = 255;
     byte max_x = 0, max_y = 0;
-
     for (int i = 0; i < count; i++) {
         byte2 p = input[i];
 
@@ -13,20 +12,15 @@ static inline void centre_font_data(const byte2 *input, int count, byte2 *output
         if (p.y < min_y) min_y = p.y;
         if (p.y > max_y) max_y = p.y;
     }
-
     int offset_x = 128 - ((int)min_x + (int)max_x) / 2;
     int offset_y = 128 - ((int)min_y + (int)max_y) / 2;
-
     for (int i = 0; i < count; i++) {
         int x = input[i].x + offset_x;
         int y = input[i].y + offset_y;
-
         if (x < 0) x = 0;
         else if (x > 255) x = 255;
-
         if (y < 0) y = 0;
         else if (y > 255) y = 255;
-
         output[i].x = (byte)x;
         output[i].y = (byte)y;
     }
@@ -104,11 +98,12 @@ zox_sys2(FontTextureSystem) {
         }
         // Create texture
         resize_TextureData(data, length);
+        clear_texture(data->value, size->value, clear_color);
         generate_font_texture(data->value, size->value, font_data, raw_font_data->length, outline->value, fill->value, is_use_shapes, thickness->value, outline_thickness->value, point_padding, clear_color);
         generate->value = zox_generate_texture_end;
         upload->value = 1;
         if (dbg_log) {
-            zox_log("[%s] Generated Zigel Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i]", zox_getn(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a, outline->value.r, outline->value.b, outline->value.g, outline->value.a)
+            zox_log("[%s] Generated Zigel [%i] Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i]", zox_getn(e), zindex->value, fill->value.r, fill->value.g, fill->value.b, fill->value.a, outline->value.r, outline->value.b, outline->value.g, outline->value.a)
         }
     }
 } zox_sys_end(FontTextureSystem);

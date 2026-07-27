@@ -24,7 +24,7 @@ zox_sys2(TextureUploadSystem) {
             //zox_gpu_set_texture_color_rgba(gpu_link->value, int2_one, values);
             zox_gpu_clear_texture_rgba(gpu_link->value);
             if (dbg_log) {
-                zox_log("Texture RGBA Uploaded [%s] [Cleared] GPU [%i]", zox_get_name(e), gpu_link->value);
+                zox_log("Texture RGBA Cleared [%s] GPU [%i]", zox_get_name(e), gpu_link->value);
             }
         } else if (data->length != size->value.x * size->value.y) {
             if (dbg_log) {

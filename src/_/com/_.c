@@ -9,7 +9,7 @@ zoxc_byte(Busy);
 zoxc_byte(Ready);
 zoxc_entity(SystemLink);
 zoxc_state(Generate);
-zoxc_state(InitializeEntity);
+zoxc_byte(Initialize);
 // identitys
 zoxc_int(ID);
 zoxc_lint(Seed);
@@ -69,7 +69,7 @@ void zox_define_components_core(ecs* world) {
     zoxd_byte(Busy);
     zoxd_byte(Ready);
     zoxd_state(Generate);
-    zoxd_state(InitializeEntity);
+    zoxd_byte(Initialize);
     zoxd_entity(SystemLink);
     // ids
     zoxd_int(ID);

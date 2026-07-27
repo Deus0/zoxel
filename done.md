@@ -65,7 +65,7 @@
 -x Lighting doesnt update after mesh does
     -x in some chunks only
     -x seems to be a Sunlight issue
--x InitializeEntity - make byte from state - removing Increment systems
+-x Initialize - make byte from state - removing Increment systems
 Bug!
 -x Lesser chunks dissapear
 -x UVs get messed up when flying around on chunks

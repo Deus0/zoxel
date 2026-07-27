@@ -21,7 +21,6 @@ void generate_font_texture(
     float2 point_padding,
     color clear_color
 ) {
-    clear_texture(data, size, clear_color);
     if (!points_length) {
         return;
     }

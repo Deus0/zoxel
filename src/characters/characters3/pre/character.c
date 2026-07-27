@@ -3,7 +3,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_name("character3");
     zox_add_tag(e, Character);
     zox_add_tag(e, Character3);
-    zox_prefab_set(e, InitializeEntity, { zox_dirty_trigger });
+    zox_prefab_set(e, Initialize, { zox_dirty_trigger });
     zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
     // generation
     zox_prefab_set(e, Seed, { 0 });

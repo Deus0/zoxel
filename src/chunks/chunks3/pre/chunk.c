@@ -1,7 +1,7 @@
 entity spawn_prefab_chunk(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("chunk");
-    zox_prefab_set(e, InitializeEntity, { 1 }); // load fast!
+    zox_prefab_set(e, Initialize, { 1 }); // load fast!
     zox_prefab_set(e, BuildChunkSides, { 0 });
     zox_prefab_set(e, BlockScale, { default_vox_scale });
     // Transforms

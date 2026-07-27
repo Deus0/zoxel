@@ -94,19 +94,17 @@ zox_sys2(ElementRenderMatrixSystem) {
         }
         entity new_material = zox_has(e, MaterialLink) ? zox_getv(e, MaterialLink) : base_material;
         if (material != new_material) {
-            material = new_material;
 #ifdef zox_safety_checks
-            if (!zox_valid(material)) {
+            if (!zox_valid(new_material)) {
                 zox_loge("Invalid UI Material TransformUI");
-                material = 0;
                 continue;
             }
-            if (!zox_has(material, attributes_matrixui)) {
-                zox_loge("Invalid UI Material [%s] no [attributes_matrixui]", zox_getn(material));
-                material = 0;
+            if (!zox_has(new_material, attributes_matrixui)) {
+                zox_loge("[%s] has Invalid UI Material [%s] no [attributes_matrixui]", zox_getn(e), zox_getn(new_material));
                 continue;
             }
 #endif
+            material = new_material;
             attributes = zox_get(material, attributes_matrixui);
             guint material_id = zox_getv(material, MaterialGPULink);
             zox_gpu_material(material_id);

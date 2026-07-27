@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+USE_SDL_IMAGE=0
+USE_SDL_MIXER=0
+for arg in "$@"; do
+    case "$arg" in
+        --sdl-image)
+            USE_SDL_IMAGE=1
+            ;;
+        --sdl-mixer)
+            USE_SDL_MIXER=1
+            ;;
+    esac
+done
+
 # NOTE: I had to manually download these, fix curl later
 
 # TODO: Download source to ext directory
@@ -35,17 +48,21 @@ else
 fi
 
 # SDL Image
-if [[ -f ext/sdl_image.zip ]]; then
-    echo "+ Found [ext/sdl_image.zip]"
-else
-    echo "-> Downloading [sdl_image.zip]"
-    curl -L ${sdl_image_url} -o ext/sdl_image.zip
+if [ "$USE_SDL_IMAGE" -eq 1 ]; then
+    if [[ -f ext/sdl_image.zip ]]; then
+        echo "+ Found [ext/sdl_image.zip]"
+    else
+        echo "-> Downloading [sdl_image.zip]"
+        curl -L ${sdl_image_url} -o ext/sdl_image.zip
+    fi
 fi
 
 # SDL Mixer
-if [[ -f ext/sdl_mixer.zip ]]; then
-    echo "+ Found [ext/sdl_mixer.zip]"
-else
-    echo "-> Downloading [sdl_mixer.zip]"
-    curl -L ${sdl_mixer_url} -o ext/sdl_mixer.zip
+if [ "$USE_SDL_MIXER" -eq 1 ]; then
+    if [[ -f ext/sdl_mixer.zip ]]; then
+        echo "+ Found [ext/sdl_mixer.zip]"
+    else
+        echo "-> Downloading [sdl_mixer.zip]"
+        curl -L ${sdl_mixer_url} -o ext/sdl_mixer.zip
+    fi
 fi

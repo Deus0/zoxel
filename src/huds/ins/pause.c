@@ -19,7 +19,7 @@ entity spawn_menu_paused(ecs *world, entity player) {
     zox_add_tag(e, MenuPaused);
     zox_add_tag(e, NavigationWindow);
     zox_set(e, TaskbarToggleLink, { 0 });
-    zox_set(e, InitializeEntity, { zox_dirty_trigger });
+    zox_set(e, Initialize, { zox_dirty_trigger });
     entity canvas = zox_getv(player, CanvasLink);
     link_window_to_taskbar(world, e, canvas, zox_id(MenuPaused));
     return e;

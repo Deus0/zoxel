@@ -38,7 +38,7 @@ void define_systems_windows(ecs* world) {
     zox_system(
         CanvasBoundsSystem,
         zoxp_update,
-        [in] core.InitializeEntity,
+        [in] core.Initialize,
         [in] layouts2.LayoutSize,
         [in] layouts2.Anchor,
         [in] layouts2.LayoutConstraints,

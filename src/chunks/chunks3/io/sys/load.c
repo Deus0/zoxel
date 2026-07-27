@@ -64,7 +64,7 @@ zox_sys2(Chunk3LoadSystem) {
     byte dbg_log = 0;
     zox_sys_world();    // used when closing possible nodes
     zox_sys_begin();
-    zox_sys_in(InitializeEntity);
+    zox_sys_in(Initialize);
     zox_sys_in(ChunkPosition);
     zox_sys_out(NodeDepth);
     zox_sys_out(VoxelNode);
@@ -72,7 +72,7 @@ zox_sys2(Chunk3LoadSystem) {
     zox_sys_out(Loaded);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeEntity, state);
+        zox_sys_i(Initialize, state);
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNode, voxels);
         zox_sys_o(NodeDepth, depth);

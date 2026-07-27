@@ -31,7 +31,7 @@ entity spawn_prefab_vox(ecs *world, byte depth) {
     zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
-    zox_prefab_set(e, InitializeMesh, { 1 });
+    zox_prefab_set(e, Initialize, { 1 });
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, BuildChunkSides, { 0 });
     zox_prefab_set(e, BuildChunkMesh, { 0 });

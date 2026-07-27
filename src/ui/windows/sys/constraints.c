@@ -2,13 +2,13 @@
 zox_sys2(CanvasBoundsSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InitializeEntity);
+    zox_sys_in(Initialize);
     zox_sys_in(LayoutSize);
     zox_sys_in(Anchor);
     zox_sys_out(LayoutConstraints);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InitializeEntity, initialize);
+        zox_sys_i(Initialize, initialize);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(Anchor, anchor);
         zox_sys_o(LayoutConstraints, constraints);

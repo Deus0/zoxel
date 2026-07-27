@@ -2,7 +2,7 @@
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_out(InitializeEntity);
+    zox_sys_out(Initialize);
     // zox_sys_out(MeshGPULink);
     zox_sys_out(UvsGPULink);
     zox_sys_out(ColorsGPULink);
@@ -10,7 +10,7 @@
     zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_o(InitializeEntity, initialize);
+        zox_sys_o(Initialize, initialize);
         // zox_sys_o(MeshGPULink, meshGPULink);
         zox_sys_o(UvsGPULink, uvsGPULink);
         zox_sys_o(ColorsGPULink, colorsGPULink);

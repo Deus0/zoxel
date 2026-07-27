@@ -1,6 +1,6 @@
 void set_prefab_window(ecs* world, entity e) {
     zox_add_tag(e, Element);
-    zox_prefab_set(e, InitializeEntity, { 1 });
+    zox_prefab_set(e, Initialize, { 1 });
     zox_add_tag(e, Window);
     zox_prefab_set(e, WindowLayer, { 0 });
     zox_prefab_set(e, SetWindowLayer, { 0 });

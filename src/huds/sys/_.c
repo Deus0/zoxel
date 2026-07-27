@@ -18,7 +18,7 @@ void define_systems_game_ui(ecs *world) {
     zox_system(
         MenuGameBeginSystem,
         zoxp_update,
-        [in] core.InitializeEntity,
+        [in] core.Initialize,
         [out] huds.TaskbarToggleLink
     );
     zox_system(

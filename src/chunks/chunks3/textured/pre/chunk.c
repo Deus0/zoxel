@@ -12,7 +12,7 @@ entity spawn_prefab_chunk_textured(ecs* world, entity prefab) {
     // Events
     zox_prefab_set(e, Busy, { 0 });
     zox_prefab_set(e, Ready, { 0 });
-    zox_prefab_set(e, InitializeEntity, { 1 }); // For Loading
+    zox_prefab_set(e, Initialize, { 1 }); // For Loading
     // Neighbors and Updates
     zox_prefab_set(e, VoxelNodeQueue, { 0 });
     zox_prefab_set(e, BlockDamageQueue, { 0 });

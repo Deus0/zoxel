@@ -4,6 +4,10 @@ used - 200-400mb used
 
 # Note we need to use pipelines to isolate reading from voxels / writing to
 
+- Cube in hand is gone
+- item ++ shhould occur after it reaches you (the world item)
+- Fix timing of arm swing
+
 Next:
 - Crashing on windows still
 	- implement loading screen to make it easier to see why breaks

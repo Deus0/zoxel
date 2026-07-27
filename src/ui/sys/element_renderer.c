@@ -3,7 +3,7 @@
 
 // NOTE: Needs to skip GPU calls for non layers since called per layer
 zox_sys2(ElementRenderSystem) {
-    byte is_log = 1;
+    byte dbg_log = 0;
     float depth_per_layer = 0.001f;
     float depth_begin = depth_per_layer;
     entity base_material = material_textured2D;
@@ -45,14 +45,14 @@ zox_sys2(ElementRenderSystem) {
         }
         entity root_camera = zox_get_root_canvas_camera(world, e);
         if (root_camera != renderer_camera) {
-            if (is_log) {
+            if (dbg_log) {
                 zox_logw("Not Rendering [%s] at L[%i]", zox_get_name(e), renderer_layer);
             }
             continue;
         }
 #ifdef zox_safety_checks
         if (!mesh->value.x || !mesh->value.y || !uvs->value || !texture->value) {
-            if (is_log) {
+            if (dbg_log) {
                 zox_logw("Mesh Invalid [%s] at L[%i]", zox_get_name(e), renderer_layer);
             }
             continue;
@@ -60,19 +60,17 @@ zox_sys2(ElementRenderSystem) {
 #endif
         entity new_material = zox_has(e, MaterialLink) ? zox_getv(e, MaterialLink) : base_material;
         if (material != new_material) {
-            material = new_material;
 #ifdef zox_safety_checks
-            if (!zox_valid(material)) {
+            if (!zox_valid(new_material)) {
                 zox_loge("Invalid UI Material");
-                material = 0;
                 continue;
             }
-            if (!zox_has(material, MaterialTextured2D)) {
-                zox_loge("Invalid UI Material [%s] no MaterialTextured2D", zox_getn(material));
-                material = 0;
+            if (!zox_has(new_material, MaterialTextured2D)) {
+                zox_loge("[%s]'s Material [%s] has no MaterialTextured2D", zox_getn(e), zox_getn(new_material));
                 continue;
             }
 #endif
+            material = new_material;
             attributes = zox_get(material, MaterialTextured2D);
             guint material_id = zox_getv(material, MaterialGPULink);
             zox_gpu_material(material_id);
@@ -92,10 +90,11 @@ zox_sys2(ElementRenderSystem) {
         zox_gpu_float(attributes->brightness, brightness->value);
         zox_gpu_float(attributes->alpha, alpha->value);
         zox_gpu_render(6);
-        if (is_log) {
-            if (zox_has(e, DebugEntity)) {
-                zox_log("Rendering [%s] at L[%i] At [%.01fx%.01fx%f]", zox_get_name(e), layer->value, position2->value.x, position2->value.y, depth);
-            }
+        if (dbg_log) {
+            //if (zox_has(e, DebugEntity)) {
+            zox_log("Rendering [%s] at L[%i] At [%.01fx%.01fx%f]", zox_get_name(e), layer->value, position2->value.x, position2->value.y, depth);
+            zox_log("   - Texture [%i]", texture->value);
+            //}
         }
         zox_sys_increment();
     }

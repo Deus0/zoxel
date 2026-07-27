@@ -42,7 +42,7 @@ zox_sys2(Elementbar3DSystem) {
         }
 #endif
         // removing this breaks it?!?!
-        //if (zox_getv(front_bar, InitializeMesh)) {
+        //if (zox_getv(front_bar, Initialize)) {
         //     continue;
         //}
         float percentage = bar->value;

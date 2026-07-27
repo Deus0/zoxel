@@ -25,7 +25,7 @@ void define_systems_render_textures(ecs* world) {
     zox_system_1(
         RenderTextureBeginSystem,
         zoxp_mainthread,
-        [in] core.InitializeEntity,
+        [in] core.Initialize,
         [in] rendering.TextureSize,
         [in] cameras.CameraLink,
         [in] rendering.TextureGPULink,

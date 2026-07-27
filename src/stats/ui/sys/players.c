@@ -18,14 +18,14 @@ entity spawn_menu_game_stats(ecs* world, entity canvas, entity character) {
     // Sizing
     float2 position_anchor = float2_top_left;
     // NOTE: Font size is scaled from height of bar
-    byte label_font_size = ui_scale * 6;
-    int2 bar_size = (int2) { 100 * ui_scale, 12 * ui_scale };
+    byte label_font_size = ui_scale * 5;
+    int2 bar_size = (int2) { 100 * ui_scale, 10 * ui_scale };
     byte bar_padding = 2 * ui_scale;
     int panel_height = total_bars * (bar_size.y + bar_padding) - bar_padding;
-    byte panel_padding = 10 * ui_scale;
+    byte panel_padding = 8 * ui_scale;
     int2 size = (int2) { bar_size.x + panel_padding * 2, panel_height + panel_padding * 2 };
     int2 position = (int2) { 16 * ui_scale, - 16 * ui_scale };
-    byte header_font_size = 6 * ui_scale;
+    byte header_font_size = 4 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, position_anchor, header_font_size, header_padding, NULL);
     entity e = e2.x;

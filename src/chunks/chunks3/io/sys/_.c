@@ -13,7 +13,7 @@ void define_systems_chunksio(ecs* world) {
     zox_system(
         Chunk3LoadSystem,
         zoxp_update,
-        [in] core.InitializeEntity,
+        [in] core.Initialize,
         [in] chunks3.ChunkPosition,
         [out] chunks.NodeDepth,
         [out] chunks3.VoxelNode,

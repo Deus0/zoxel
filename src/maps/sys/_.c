@@ -16,7 +16,7 @@ void zox_define_systems_maps(ecs* world) {
     zox_system_1(
         MapInitializeSystem,
         zoxp_mainthread,
-        [in] core.InitializeEntity,
+        [in] core.Initialize,
         [in] maps.MapZoom,
         [in] rendering.Alpha,
         [in] players.PlayerLink,
