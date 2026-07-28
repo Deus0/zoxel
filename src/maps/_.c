@@ -24,10 +24,11 @@ void zox_dbg_map_cycle() {
 
 // TODO: Just Destroy/Spawn map pieces instead
 // TODO: we can even downsize the pieces?
+int minimap_size = 80;
 byte bigmap_zoom = 16;
 float bigmap_alpha = 0.8f;
 byte minimap_zoom = 4;
-float minimap_alpha = 0.56f;
+float minimap_alpha = 0.46f;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

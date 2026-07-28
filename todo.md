@@ -2,6 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Make map move around player position
+- Fix 3D uis - theyre missing
+- remove GenerateTexture component
+- Replace Generate components (GenerateTexture, GenerateRealm, GenerateTunk)
+- Add GenerateProgress, and add to it when generate state begins, remove when ends
+
 - Crashing on windows still
 	- implement loading screen to make it easier to see why breaks
 

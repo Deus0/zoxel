@@ -5,9 +5,9 @@ entity spawn_minimap(ecs* world, entity canvas, entity player, entity terrain) {
         tunk_position = zox_getv(camera, StreamPosition2);
     }
     float2 position_anchor = float2_top_right;
-    int2 size = int2_single(100 * ui_scale);
-    int2 position = (int2) { -16 * ui_scale, -16 * ui_scale };
-    byte header_font_size = 6 * ui_scale;
+    int2 size = int2_single(minimap_size * ui_scale);
+    int2 position = int2_zero; //  (int2) { -16 * ui_scale, -16 * ui_scale };
+    byte header_font_size = 4 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     const char* header_text = "";
     // Margin from canvas corner

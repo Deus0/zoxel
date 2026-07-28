@@ -1,4 +1,4 @@
-entity spawn_menu_game_stats(ecs* world, entity canvas, entity character) {
+entity spawn_stats_panel(ecs* world, entity canvas, entity character) {
     if (!zox_valid(canvas)) {
         zox_loge("Invalid canvas in [spawn_game_ui_stats]");
         return 0;
@@ -18,13 +18,16 @@ entity spawn_menu_game_stats(ecs* world, entity canvas, entity character) {
     // Sizing
     float2 position_anchor = float2_top_left;
     // NOTE: Font size is scaled from height of bar
-    byte label_font_size = ui_scale * 5;
+    byte label_font_size = ui_scale * 6;
     int2 bar_size = (int2) { 100 * ui_scale, 10 * ui_scale };
-    byte bar_padding = 2 * ui_scale;
+    byte bar_padding = 6 * ui_scale;
     int panel_height = total_bars * (bar_size.y + bar_padding) - bar_padding;
-    byte panel_padding = 8 * ui_scale;
-    int2 size = (int2) { bar_size.x + panel_padding * 2, panel_height + panel_padding * 2 };
-    int2 position = (int2) { 16 * ui_scale, - 16 * ui_scale };
+    byte2 panel_padding = (byte2) { 6 * ui_scale, 4 * ui_scale };
+    int2 size = (int2) {
+        bar_size.x + panel_padding.x * 2,
+        panel_height + panel_padding.y * 2
+    };
+    int2 position = int2_zero; // (int2) { 16 * ui_scale, - 16 * ui_scale };
     byte header_font_size = 4 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, position_anchor, header_font_size, header_padding, NULL);
@@ -91,7 +94,7 @@ zox_sys2(PlayerStatspanelSystem) {
                 if (dbg_log) {
                     zox_log("+ Spawning Stats Panel for Player [%s]", zox_get_name(e));
                 }
-                spawn_menu_game_stats(world, canvas->value, character->value);
+                spawn_stats_panel(world, canvas->value, character->value);
             }
         }
     }

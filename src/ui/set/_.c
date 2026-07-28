@@ -1,5 +1,5 @@
 // TODO: Scale UI based on screen size
-byte ui_scale = 4;
+float ui_scale = 1;
 byte keyboard_navigation_mode = 0;
 color active_outline = (color) { 100, 222, 150, 155 };
 #include "animations.c"
@@ -10,20 +10,31 @@ color active_outline = (color) { 100, 222, 150, 155 };
 #include "windows.c"
 
 // Use this to set ui_scale dynamically
-byte calculate_ui_scale(int2 size) {
+/*float calculate_ui_scale(int2 size) {
     int area = size.x * size.y;
-    if (area <= 512 * 512)   return 1;
-    if (area <= 1024 * 1024) return 2;
-    if (area <= 2048 * 2048) return 3;
-    return 4;
+    if (area <= 512 * 256)   return 1;
+    if (area <= 1024 * 1024) return 1.5f;
+    if (area <= 2048 * 2048) return 2;
+    return 3;
+}*/
+
+float calculate_ui_scale(int2 size) {
+    float area = (float) size.x * (float) size.y;
+    float scale = sqrtf(area / (512.0f * 256.0f));
+
+    if (scale < 1.0f) scale = 1.0f;
+    if (scale > 3.0f) scale = 3.0f;
+
+    return scale;
 }
+
 void initialize_settings_elements(ecs* world) {
     /*if (is_on_phosh()) {
         zox_log("Phosh Detected. Small UI Enabled.");
         ui_scale = 2;
     }*/
     int2 screen_size = get_screen_size();
-    byte new_scale = calculate_ui_scale(screen_size);
+    float new_scale = calculate_ui_scale(screen_size);
     ui_scale = new_scale;
     zox_log("Screen [%ix%i] - UI Scale set to: %i", screen_size.x, screen_size.y, new_scale);
 }
