@@ -8,7 +8,6 @@ zoxc_float(SoundFrequency);     //! The frequency of the generated sound
 zoxc_float(SoundVolume);     //! The frequency of the generated sound
 zoxc_int(SoundFrequencyIndex);     //! The frequency of the generated sound
 zoxc_double(SoundLength);       //! The length of a sound
-
 #include "sound_data.c"
 #include "sound_data_ref.c"
 
@@ -22,6 +21,6 @@ void define_components_sounds(ecs* world) {
     zoxd_float(SoundFrequency);
     zoxd_float(SoundVolume);
     zoxd_int(SoundFrequencyIndex);
-    zoxd_dest_old(SoundData);
     zoxd(SoundDataRef);
+    zoxd_dest(SoundData);
 }

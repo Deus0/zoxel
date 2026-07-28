@@ -7,7 +7,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
     zox_sys_world();
     camera_filtering_begin();
     zox_sys_begin();
-    zox_sys_in(Active);
+    // zox_sys_in(Active);
     zox_sys_in(RenderDisabled);
     zox_sys_in(TransformMatrix);
     zox_sys_in(MeshGPULink);
@@ -16,14 +16,14 @@ zox_sys2(Chunk3TexturedRenderSystem) {
     zox_sys_in(MeshRenderCount);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Active, active);
+        // zox_sys_i(Active, active);
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(TransformMatrix, matrix);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
         zox_sys_i(MeshRenderCount, count);
-        if (!active->value || disabled->value || !count->value) {
+        if (disabled->value || !count->value) {
             continue;
         }
 #ifdef zox_safety_checks

@@ -18,7 +18,7 @@ entity spawn_sound_generated(ecs *world, entity prefab, byte instrument_type, fl
         length = MAX_SOUND_DATA;
     }
     SoundData data = { 0 };
-    data.value = soundpool_alloc();
+    data.value = soundpool_alloc(length);
     data.length = length;
     if (data.value == NULL) {
         zox_loge("Failed to [soundpool_alloc] inside [spawn_sound_generated]");

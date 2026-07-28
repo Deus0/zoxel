@@ -37,7 +37,6 @@ byte initialize_sdl_mixer(ulong sample_rate, byte channels_count) {
         zox_log_error("sdl audio could not initialize [%s]\n", Mix_GetError());
         return EXIT_FAILURE;
     } else {
-        // Mix_ChannelFinished(free_mix_chunk);
         return EXIT_SUCCESS;
     }
 }

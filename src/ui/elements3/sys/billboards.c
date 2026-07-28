@@ -5,6 +5,7 @@ extern entity spawn_line3(ecs*, float3, float3, float, double);
 
 // NOTE: Makes UIs look at the cameras
 zox_sys2(BillboardSystem) {
+    return;
     byte dbg_log = 0;
     zox_sys_world();
     // cache camera positions first

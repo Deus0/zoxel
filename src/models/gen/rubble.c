@@ -6,7 +6,7 @@ void build_vox_heights(VoxelNode* voxels, byte depth, byte2 range, byte max_heig
             byte height = rand_range(0, max_height);
             for (position.y = 0; position.y < height; position.y++) {
                 byte value = rand_range(range.x, range.y);
-                set_VoxelNode(voxels, depth, position, value);
+                set_voxel_safe(voxels, depth, position, value);
             }
         }
     }
@@ -31,7 +31,7 @@ void build_vox_scatter(VoxelNode* voxels, byte depth, byte2 range, byte max_heig
             byte height = heights[position.x][position.z];
             for (position.y = 0; position.y < height; position.y++) {
                 byte value = rand_range(range.x, range.y);
-                set_VoxelNode(voxels, depth, position, value);
+                set_voxel_safe(voxels, depth, position, value);
             }
         }
     }

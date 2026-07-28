@@ -2,7 +2,7 @@
 entity spawn_dialogue_ui(ecs* world, entity canvas, entity character, entity target) {
     // zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     int2 size = (int2) { 740, 160 };
-    float2 position_anchor = (float2) { 0.1f, 0.9f };
+    float2 position_anchor = (float2) { 0.5f, 0.84f };
     const char* header_text = zox_valid(target) ? zox_getv(target, ZoxName) : zox_getv(character, ZoxName);
     byte header_font_size = 8 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };

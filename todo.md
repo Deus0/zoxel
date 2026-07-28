@@ -2,19 +2,28 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Make map move around player position
+- Smooth the camera or sleep the physics cause it flickers the lighting
+- make voxel textures 2 pixels larger, one is outline, one is air
 - Fix 3D uis - theyre missing
-- remove GenerateTexture component
-- Replace Generate components (GenerateTexture, GenerateRealm, GenerateTunk)
-- Add GenerateProgress, and add to it when generate state begins, remove when ends
-
+- Statbar 2Ds - the frontbar are not appearing in front properly
+- Destruction Material Flickering
 - Crashing on windows still
 	- implement loading screen to make it easier to see why breaks
-
-- Redo all my destruction hooks like MeshGPULink - remove DTOR for OBSR
 - Refactor Chunk Render systems back into Rendering module
+
 - Refactor Colored Vox to use same ChunkSides system
 - Convert Vox Model to use ChunkMeshes
+
+- Remove build states when not building (60ms)
+    - ChunkMeshColorsTriggerSystem
+    - ChunkTexturedBuildSystem
+    - SmoothLightsBuildSystem
+    - BuildMesh
+- remove GenerateTexture after use
+- Replace Generate components (GenerateTexture, GenerateRealm, GenerateTunk)
+- Add GenerateProgress, and add to it when generate state begins, remove when ends
+- Redo all my destruction hooks like MeshGPULink - remove DTOR for OBSR
+- Make map move around player position
 
 # Note we need to use pipelines to isolate reading from voxels / writing to
 

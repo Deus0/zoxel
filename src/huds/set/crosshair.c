@@ -1,4 +1,4 @@
-byte crosshair_size = 4;
+byte crosshair_size = 16;
 const int2 crosshair_texture_size = { 8, 8 };
 const byte crosshair_thickness = 3;
 const byte crosshair_corner = 1;

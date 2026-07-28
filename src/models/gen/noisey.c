@@ -10,7 +10,7 @@ void vnoise3(VoxelNode* voctree, byte depth, byte2 voxel_range, byte black_voxel
                     continue;
                 }
                 byte value = voxel_range.x + rand() % (voxel_range.y - voxel_range.x);
-                set_VoxelNode(voctree, depth, position, value);
+                set_voxel_safe(voctree, depth, position, value);
             }
         }
     }

@@ -26,7 +26,9 @@ static inline void set_position_rotation_scale_recursive(
             float4_rotate_float3(parent_rotation,
                 float3_multiply(local_position, parent_scale)));
     float4 world_rotation = quaternion_rotate(parent_rotation, local_rotation);
-    float3 world_scale = float3_multiply(parent_scale, local_scale);
+    float3 world_scale = zox_has(e, DisableParentScale) ?
+        local_scale :
+        float3_multiply(parent_scale, local_scale);
     zox_mut_begin(e, Position3D, old_position);
     if (!float3_equals(world_position, old_position->value))
     {

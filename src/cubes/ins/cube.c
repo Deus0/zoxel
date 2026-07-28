@@ -9,12 +9,7 @@ entity spawn_cube(ecs* world, entity prefab, float3 position, float scale1) {
     zox_set(e, Scale1, { scale1 });
     zox_add_tag(e, MeshBasic3D);
     guint2 shader = zox_getv(shader_basic3D, ShaderGPULink);
-    zox_set(e, ShaderLink, { shader_basic3D });
-    /*guint material = spawn_gpu_material(world, e, shader);
-    if (!material) {
-        zox_log_error("=> [spawn_cube] Failed");
-    } else {
-    }*/
+    zox_setv(e, ShaderLink, shader_basic3D );
     guint gpu_material = spawn_gpu_material_program(shader);
     if (gpu_material) {
         zox_setv(e, MaterialGPULink, gpu_material);

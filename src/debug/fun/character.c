@@ -92,7 +92,7 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     for (int k = 0; k < meshes_length; k++) {
         entity e3 = meshes[k];
         // byte disabled = zox_is_disabled(e3);
-        byte active = zox_getv(e3, Active);
+        byte active = !zox_has(e3, Disabled);
         byte depth = zox_getv(e3, RenderDepth);
         byte visible = !zox_getv(e3, RenderDisabled);
         byte build = zox_getv(e3, BuildMesh);

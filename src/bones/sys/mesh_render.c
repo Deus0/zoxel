@@ -7,7 +7,7 @@ zox_sys2(Skeleton3RenderSystem) {
         return;
     }
     byte has_set_material = 0;
-    zox_geter_value(rmaterial, MaterialGPULink, uint, material_link);
+    guint material_link = zox_getv(rmaterial, MaterialGPULink);
     zox_geter(rmaterial, MaterialBone, material_attributes);
     zox_sys_begin();
     zox_sys_in(MeshIndicies);

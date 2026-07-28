@@ -24,7 +24,7 @@ entity spawn_sound_from_file(ecs *world, entity prefab, entity src, float freque
         return 0;
     }
     SoundData data = { 0 };
-    data.value = soundpool_alloc();
+    data.value = soundpool_alloc(src_data->length);
     data.length = src_data->length;
     if (data.value == NULL) {
         zox_loge("Failed to [soundpool_alloc] inside [spawn_sound_from_file]");

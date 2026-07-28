@@ -18,7 +18,7 @@ void voctree_paint(VoxelNode* voctree, byte ndepth, byte value, byte3 pp, byte3 
                 if (!voxel) {
                     continue;
                 }
-                set_VoxelNode(voctree, ndepth, position, value);
+                set_voxel_safe(voctree, ndepth, position, value);
             }
         }
     }

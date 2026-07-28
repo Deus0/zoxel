@@ -29,6 +29,6 @@ void define_components_sdl(ecs *world) {
     zoxd_dest_old(Context);
     zoxd_dest_old(Renderer);
 #ifdef zox_sdl_mixer
-    zoxd_dest_old(SDLMixChunk);
+    zoxd_dest(SDLMixChunk);
 #endif
 }

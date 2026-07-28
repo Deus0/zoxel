@@ -47,7 +47,7 @@ void build_vox_blended(VoxelNode *voxelNode, byte node_depth,
                 // byte2 set_voxel = (byte2) { voxel, node_depth };
                 // byte3 temp_position = voxel_position;
                 // set_octree_voxel(voxelNode, &temp_position, &set_voxel, 0);
-                set_VoxelNode(voxelNode, node_depth, voxel_position, voxel);
+                set_voxel_safe(voxelNode, node_depth, voxel_position, voxel);
             }
         }
     }
@@ -91,14 +91,14 @@ void build_vox_blended(VoxelNode *voxelNode, byte node_depth,
                     byte3 temp_position_front = byte3_front(voxel_position);
                     byte voxel_front = get_sub_node_voxel(voxelNode, &temp_position_front, node_depth);
                     if ((voxel >= range_blend_1.x && voxel <= range_blend_1.y && voxel_front >= range_blend_2.x && voxel_front <= range_blend_2.y) || (voxel >= range_blend_2.x && voxel <= range_blend_2.y && voxel_front >= range_blend_1.x && voxel_front <= range_blend_1.y)) {
-                        set_VoxelNode(voxelNode, node_depth, voxel_position, black_voxel_2);
+                        set_voxel_safe(voxelNode, node_depth, voxel_position, black_voxel_2);
                     }
                 }
                 if (voxel_position.z != 0) {
                     byte3 temp_position_back = byte3_back (voxel_position);
                     byte voxel_back  = get_sub_node_voxel(voxelNode, &temp_position_back, node_depth);
                     if ((voxel >= range_blend_1.x && voxel <= range_blend_1.y && voxel_back >= range_blend_2.x && voxel_back <= range_blend_2.y) || (voxel >= range_blend_2.x && voxel <= range_blend_2.y && voxel_back  >= range_blend_1.x && voxel_back  <= range_blend_1.y)) {
-                        set_VoxelNode(voxelNode, node_depth, voxel_position, black_voxel_2);
+                        set_voxel_safe(voxelNode, node_depth, voxel_position, black_voxel_2);
                     }
                 }
             }

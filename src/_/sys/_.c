@@ -8,12 +8,6 @@ void zox_define_systems_core(ecs* world) {
         zoxp_update,
         [out] core.Initialize
     );
-    /*zox_system(
-        DeactivateDelaySystem,
-        zoxp_post_update,
-        [out] core.Active,
-        [out] core.DeactivateDelay
-    );*/
 }
 
 /*static __thread int local_thread_index = -1;

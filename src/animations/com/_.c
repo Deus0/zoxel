@@ -1,3 +1,4 @@
+zox_tag(Idling);
 zox_tag(OscillatePosition3D);
 zoxc_float3(OscillateStartPosition3D);
 zoxc_float3(OscillateDeltaPosition3D);
@@ -28,6 +29,7 @@ zoxc_float(LerpFloatFrom);
 zoxc_float(LerpFloatTo);
 
 void define_components_animations(ecs* world) {
+    zoxd_tag(Idling);
     zoxd_tag(OscillatePosition3D);
     zoxd_float3(OscillateStartPosition3D);
     zoxd_float3(OscillateDeltaPosition3D);

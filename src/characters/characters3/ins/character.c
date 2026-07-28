@@ -79,9 +79,9 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
             }
         } else if (zox_valid(vox)) {
             zox_loge("Model has no BlockScale [%s]", zox_get_name(vox));
-        } else {
+        } /*else {
             zox_loge("Generic Character has no Vox [%s]", zox_get_name(model));
-        }
+        }*/
     } else if (zox_has(prefab, CharacterUnique)) {
         if (zox_valid(vox)) {
             zox_set(e, CloneVoxLink, { vox });

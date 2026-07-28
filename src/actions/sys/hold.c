@@ -50,14 +50,11 @@ zox_sys2(ActiveActionHoldSystem) {
             continue;
         }
         // TODO: Spawn based on hand bone
-        if (dbg_log) {
-            zox_log("Spawning Item [%s]", zox_get_name(aaction->value));
-        }
-        float3 item_position;
+        float3 position;
         if (hand_bone->value) {
-            item_position = hand_position;
+            position = hand_position;
         } else {
-            item_position = body_position;
+            position = body_position;
         }
         entity texture = zox_getv(aaction->value, TextureLink);
         if (zox_valid(texture)) {
@@ -65,8 +62,13 @@ zox_sys2(ActiveActionHoldSystem) {
         } else {
             e2 = spawn_cube(world, prefab_cube, float3_zero, scale);
         }
-        zox_add_tag(e2, HeldAction);
         zox_set_parent(world, e2, bone_parent);
-        zox_set(e2, LocalPosition3D, { item_position });
+        zox_add_tag(e2, HeldAction);
+        zox_setv(e2, LocalPosition3D, position);
+        zox_setv(e2, LocalScale1, scale);
+        zox_add_tag(e2, DisableParentScale);
+        if (dbg_log) {
+            zox_log("[%s] has Spawned Held Item [%s] at [%fx%fx%f]", zox_getn(e), zox_getn(aaction->value), position.x, position.y, position.z);
+        }
     }
 } zox_sys_end(ActiveActionHoldSystem);

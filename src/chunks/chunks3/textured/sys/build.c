@@ -128,7 +128,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
     byte* solidity = NULL;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Active);
+    // zox_sys_in(Active);
     zox_sys_in(RenderDepth);
     zox_sys_out(BuildMesh);
     zox_sys_out(MeshIndicies);
@@ -138,7 +138,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
     zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Active, active);
+        // zox_sys_i(Active, active);
         zox_sys_i(RenderDepth, depth);
         zox_sys_o(BuildMesh, build);
         zox_sys_o(MeshIndicies, indicies);
@@ -146,7 +146,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
         zox_sys_o(MeshDirty, upload);
-        if (build->value != zox_build_chunk_mesh_run || !active->value) {
+        if (build->value != zox_build_chunk_mesh_run) { //|| !active->value) {
             continue;
         }
         // Get chunk data

@@ -8,7 +8,7 @@ void voctree_fill_sphere(VoxelNode* voctree, byte ndepth, byte value, byte3 cent
                 if (distance > radius) {
                     continue;
                 }
-                set_VoxelNode(voctree, ndepth, pposition, value);
+                set_voxel_safe(voctree, ndepth, pposition, value);
             }
         }
     }

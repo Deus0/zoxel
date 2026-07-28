@@ -1,5 +1,4 @@
-
-zox_sys2(DeactivateDelaySystem) {
+/*zox_sys2(DeactivateDelaySystem) {
     //byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(Active);
@@ -23,3 +22,4 @@ zox_sys2(DeactivateDelaySystem) {
         }
     }
 } zox_sys_end(DeactivateDelaySystem);
+*/

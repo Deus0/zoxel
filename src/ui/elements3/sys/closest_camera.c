@@ -1,1 +1,0 @@
-// TODO: Refactors billboard system by taking out camera picking from it, keeping billboards leaner

@@ -1,6 +1,8 @@
 #ifndef zoxm_sounds
 #define zoxm_sounds
 
+#define zox_disable_sound_pool
+
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"

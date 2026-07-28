@@ -40,14 +40,14 @@ void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) 
                         (pos.z % (brick_d + mortar) >= brick_d-1)
                     );
                     if (chip) {
-                        set_VoxelNode(voctree, depth, pos, black);
+                        set_voxel_safe(voctree, depth, pos, black);
                     } else {
                         byte voxel = voxels.x + rand() % (voxels.y - voxels.x);
-                        set_VoxelNode(voctree, depth, pos, voxel);
+                        set_voxel_safe(voctree, depth, pos, voxel);
                     }
                 } else {
                     // mortar
-                    set_VoxelNode(voctree, depth, pos, black);
+                    set_voxel_safe(voctree, depth, pos, black);
                 }
             }
         }

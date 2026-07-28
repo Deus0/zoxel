@@ -71,7 +71,10 @@ static inline byte build_voxel_sides(const byte* solids, const VoxelNode* root, 
         adjacent_solid = get_node_sides_all_solid(solids, adjacent_node, axis, side, dist);
     } else {
         // Accounts for null solids
-        adjacent_solid = adjacent_node && adjacent_node->value && (!solids || (solids && solids[adjacent_node->value - 1]));
+        adjacent_solid =
+            adjacent_node &&
+            adjacent_node->value &&
+            (!solids || (solids && solids[adjacent_node->value - 1]));
         // Accounts for null solids
         // byte adjacent_value = adjacent_node && adjacent_node->value;
         // adjacent_solid = adjacent_value && (!solids || (solids && solids[adjacent_value - 1]));
@@ -114,15 +117,7 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* root, co
             const VoxelNode* child_voxel = has_vkids ? &kids[i] : voxels;
             byte3 nposition = byte3_add(child_position, octree_positions_b[i]);
             build_sides_dig(solids, root, neighbor_voxels, neighbor_depths, child_voxel, sides_kid, target_depth, child_depth, nposition, dbg_log);
-            //if (build_sides_dig(solids, root, neighbor_voxels, neighbor_depths, child_voxel, sides_kid, target_depth, depth + 1, nposition)) {
-            //    did_build = 1;
-            //}
         }
-        // set 1 if built for Branch Nodes
-        // if (did_build) {
-        // sides->value = did_build;
-        // }
-        //return did_build;
     }
     // Set our sides here at depth
     sides->value = 0;
@@ -134,10 +129,6 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* root, co
             }
         }
     }
-    // sides->value = sides_value;
-    //if (!sides_value) {
-    //    collapse_SidesOctree(sides);
-    //}
     if (dbg_log && sides->value) {
         zox_log("Sides was added at Depth [%i] Pos [%ix%ix%i] -> [%i]", depth, position.x, position.y, position.z, sides->value);
     }
@@ -180,7 +171,7 @@ byte* blocks_fetch_solids(iter* it) {
 void fetch_neightbor_chunk_data(ecs* world, const ChunkNeighbors* chunk_neighbors, const VoxelNode** neighbors_voxels, byte* neighbor_depths) {
     memset(neighbors_voxels, 0, 6 * sizeof(const VoxelNode*));
     memset(neighbor_depths, 0, 6 * sizeof(byte));
-    for (int i = 0; i < 6; i++) {
+    for (byte i = 0; i < 6; i++) {
         entity e = chunk_neighbors->value[i];
         if (!zox_valid(e)) {
             continue;

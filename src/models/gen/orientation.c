@@ -22,7 +22,7 @@ void build_vox_orientation_test(VoxelNode *voctree, byte depth, byte inside, byt
                     voxel = neg_z;
                 else if (pos.z == size.z - 1)
                     voxel = pos_z;
-                set_VoxelNode(voctree, depth, pos, voxel);
+                set_voxel_safe(voctree, depth, pos, voxel);
             }
         }
     }

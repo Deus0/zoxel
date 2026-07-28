@@ -3,9 +3,9 @@ set -euo pipefail
 
 is_desktop_gl="1"       # Use GL libs instead of EGL on desktop
 # debug options
+is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_safety_checks="0"    # lets stay safe for now
 is_time_systems="0"
-is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_fast_dev="0"         # -O3
 # bash inputs
 game_name=$1    # zoxel

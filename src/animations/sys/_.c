@@ -17,6 +17,7 @@ void define_systems_animations(ecs* world) {
         [in] EternalRotation,
         [out] transforms3.Rotation3D
     );
+    // Shrinking?
     zox_system(
         ShrinkSystem,
         zoxp_update,
@@ -29,7 +30,8 @@ void define_systems_animations(ecs* world) {
         zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
-        [out] transforms.Scale1
+        [out] transforms.Scale1,
+        [none] animations.Idling
     );
     zox_system(
         AnimationSequenceSystem,
