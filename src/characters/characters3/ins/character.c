@@ -87,8 +87,6 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
             zox_set(e, CloneVoxLink, { vox });
             zox_set(e, CloneVox, { 1 });
         }
-        // spawn_gpu_mesh(world, e);
-        // spawn_gpu_colors(world, e);
         if (dbg_log) {
             zox_log("Unique Character");
         }

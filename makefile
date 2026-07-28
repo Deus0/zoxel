@@ -135,7 +135,7 @@ runw:
 	echo "Remember to enter continue"
 	wine bin/$(GAME).exe
 
-rundw:
+runwd:
 	echo "Remember to enter continue"
 	winedbg --gdb bin/$(GAME)-dev.exe
 

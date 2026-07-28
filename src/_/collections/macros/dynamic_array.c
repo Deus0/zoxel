@@ -26,7 +26,11 @@ void data_type##_array_d_add(data_type##_array_d* dynamic_array, data_type array
         dynamic_array->capacity *= 2;\
         dynamic_array->data = realloc(dynamic_array->data, dynamic_array->capacity * sizeof(data_type));\
     }\
-    dynamic_array->data[dynamic_array->size++] = array_entry;\
+    if (dynamic_array->data) {\
+        dynamic_array->data[dynamic_array->size++] = array_entry;\
+    } else { \
+        zox_loge("Realloc Failed in [array_d_add]"); \
+    } \
 }\
 \
 void expand_capacity_##data_type##_array_d(data_type##_##array_d* dynamic_array, int add_count) {\

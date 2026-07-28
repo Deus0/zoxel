@@ -106,18 +106,20 @@ void define_components_rendering(ecs *world) {
     // GPU Links
     zoxd(MaterialInstancedGPULink);
     // Old
-    zoxd_guint_dest_old(ShaderGPULink);
     zoxd_guint_dest_old(ComputeShaderLink);
-    zoxd_guint_dest_old(UboGPULink);
     /*zoxd_guint_dest_old(MaterialGPULink);
     zoxd_guint_dest_old(TextureGPULink);
     zoxd_guint2_dest_old(MeshGPULink);
     zoxd_guint_dest_old(UvsGPULink);
-    zoxd_guint_dest_old(ColorsGPULink);*/
+    zoxd_guint_dest_old(ColorsGPULink);
+    zoxd_guint_dest_old(UboGPULink);
+    zoxd_guint_dest_old(ShaderGPULink);*/
     // New
     zoxd_guint_dest(MaterialGPULink);
     zoxd_guint_dest(TextureGPULink);
     zoxd_guint2_dest(MeshGPULink);
     zoxd_guint_dest(UvsGPULink);
     zoxd_guint_dest(ColorsGPULink);
+    zoxd_guint_dest(UboGPULink);
+    zoxd_guint_dest(ShaderGPULink);
 }

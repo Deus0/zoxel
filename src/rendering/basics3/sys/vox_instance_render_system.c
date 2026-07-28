@@ -23,7 +23,7 @@ zox_sys2(VoxInstanceRenderSystem) {
     zox_sys_in(InstanceLink);
     zox_sys_in(RenderDisabled);
     camera_filtering_begin();
-    zox_geter_value(material_vox_instance, MaterialGPULink, uint, material_link);
+    guint material_link = zox_getv(material_vox_instance, MaterialGPULink);
     if (!material_link) {
         return;
     }
@@ -34,6 +34,11 @@ zox_sys2(VoxInstanceRenderSystem) {
     }
     zox_geter(material_vox_instance, MaterialVoxInstance, material_attributes);
     InstanceRenderCommand_array_d* commands = create_InstanceRenderCommand_array_d(max_meshes);
+    if (!commands->data) {
+        // errored out
+        zox_loge("(VoxInstanceRenderSystem) commands->data malloc failed");
+        return;
+    }
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(InstanceLink, instance);
@@ -45,6 +50,10 @@ zox_sys2(VoxInstanceRenderSystem) {
         int index = 0;
         if (has_mesh(commands, instance->value, &index)) {
             InstanceRenderCommand command = commands->data[index];
+            if (!command.transforms) {
+                zox_loge("(VoxInstanceRenderSystem) command.transforms malloc failed");
+                break;
+            }
             float4x4_array_d_add(command.transforms, matrix->value);
             commands->data[index] = command;
         } else {
@@ -54,6 +63,7 @@ zox_sys2(VoxInstanceRenderSystem) {
             };
             if (!command.transforms) {
                 // errored out
+                zox_loge("(VoxInstanceRenderSystem) command.transforms malloc failed");
                 break;
             }
             float4x4_array_d_add(command.transforms, matrix->value);

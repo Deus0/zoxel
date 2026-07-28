@@ -29,9 +29,6 @@ entity spawn_chunk3(ecs *world, entity prefab, float3 position, float scale, byt
     zox_set(e, ChunkSize, { size });
     zox_set(e, NodeDepth, { depth });
     zox_set(e, RenderDepth, { depth });
-    // spawn_gpu_mesh(world, e);
-    // spawn_gpu_colors(world, e);
-    // As this is test function!
     zox_add_tag(e, NoiseChunk);
     return e;
 }

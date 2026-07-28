@@ -25,8 +25,3 @@ void process_arguments_voxes(ecs *world, char* args[], int count) {
         }
     }
 }
-
-/*void initialize_settings_voxes(ecs *world) {
-   // zox_log("initialize_settings_voxes %i", is_generate_vox_outlines);
-    zoxs_new_byte("outlines", set_block_outlines, is_generate_vox_outlines);
-}*/

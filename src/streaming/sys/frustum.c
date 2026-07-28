@@ -144,7 +144,7 @@ zox_sys2(ChunkFrustumSystem) {
             .extents = bounds3->value
         };
         float3_scale_p(&chunk_bounds.extents, fudge_frustum_extents);
-        zox_sys_query_begin();
+        // zox_sys_query_begin();
         byte is_viewed = disable_frustum_culling;
         if (ignore_low_lods && voxels->value && !voxels->ptr) {
             is_viewed = 1;

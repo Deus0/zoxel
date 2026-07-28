@@ -47,15 +47,3 @@ entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, lint terra
     zox_set(e, RenderDepth, { render_depth });
     return e;
 }
-
-// can move this to init systems
-//  note: keep spawn functions only for passing through sending outside information
-// NOTE: Move this to a system - in Rendering - initialize render
-/*if (zox_has(prefab, MeshIndicies)) {
- * spawn_gpu_mesh(world, e);
- * spawn_gpu_uvs(world, e);
- * spawn_gpu_colors(world, e);
- } */
-// zox_set(e, TransformMatrix, { float4x4_position_scale(positionf, 1) });
-// zox_set(e, TransformMatrix, { float4x4_transform_scale(positionf, quaternion_identity, 1) });
-// zox_set(e, TransformMatrix, { float4x4_transform(positionf, quaternion_identity) });
