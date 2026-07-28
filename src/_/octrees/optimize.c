@@ -67,18 +67,3 @@ static inline void optimize_octree_node(void* node, size_t stride, size_t value_
     // Set parent value
     *(byte*)((char*) node + value_offset) = mode_val;
 }
-
-// Macro wrapper
-#define create_octree_optimizer(T) \
-static inline void optimize_##T(T* node) { \
-    optimize_octree_node((void*) node, sizeof(T), offsetof(T, value), 0); \
-}
-
-#define create_octree_optimizer_linked(T) \
-static inline void optimize_##T(T* node) { \
-    optimize_octree_node((void*) node, sizeof(T), offsetof(T, value), offsetof(T, type)); \
-}
-
-// Usage:
-// create_node_optimizer(LightNode)
-// optimize_LightNode(lroot);

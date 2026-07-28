@@ -23,8 +23,10 @@
 #else
     // Debug
     #define zox_debug_settings
-    // #define zox_time_systems
 #endif
+
+// Temp
+// #define zox_time_systems
 
 // Flecs
 #define FLECS_CUSTOM_BUILD

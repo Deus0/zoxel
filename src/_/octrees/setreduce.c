@@ -69,13 +69,3 @@ static inline void* setreduce_octree_value(
     collapse_octree_branch(node, stride, value_offset);
     return node;
 }
-
-// Macro wrapper: type-safe setreduce
-#define create_node_setreduce(T) \
-static inline T* setreduce_##T##_ex(T* node, byte target_depth, byte3 pos, byte value, byte depth) { \
-    return (T*)setreduce_octree_value((void*)node, target_depth, pos, value, depth, sizeof(T), offsetof(T, value)); \
-}
-
-// Example usage:
-// create_node_setreduce(LightNode)
-// setreduce_LightNode(lroot, 5, (byte3){x,y,z}, 0, 0);

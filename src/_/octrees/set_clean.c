@@ -4,7 +4,7 @@
 // =======================================
 
 // NOTE: Like set_octree_value but sets new nodes to Air!
-static inline byte set_octree_value_clean(void* node, byte tdepth, byte3 pos, byte value, byte depth, size_t stride, size_t value_offset) {
+/*static inline byte set_octree_value_clean(void* node, byte tdepth, byte3 pos, byte value, byte depth, size_t stride, size_t value_offset) {
     if (!node) {
         return 0;
     }
@@ -30,12 +30,6 @@ static inline byte set_octree_value_clean(void* node, byte tdepth, byte3 pos, by
         }
         memset(kids, 0, stride * 8);    // zero-init
         *ptr = kids;
-        // --- New: set all children values ---
-        // byte parent_value = *(byte*)((char*) node + value_offset);
-        /*for (byte j = 0; j < 8; j++) {
-            void* child = (char*)(kids) + j * stride;
-            *(byte*)((char*)child + value_offset) = 0;
-        }*/
     }
     // Set value if reached depth
     if (depth_reached) {
@@ -59,13 +53,51 @@ static inline byte set_octree_value_clean(void* node, byte tdepth, byte3 pos, by
     return set_octree_value_clean((char*) kids + i * stride, tdepth, cpos, value, depth + 1, stride, value_offset);
 }
 
-// Macro wrapper: type-safe setter
-#define new_octree_function_set_clean(T) \
-\
-static inline byte set_clean_##T(T* node, byte depth, byte3 pos, byte value) { \
-    return set_octree_value_clean((void*) node, depth, pos, value, 0, sizeof(T), offsetof(T, value)); \
+static inline byte set_octree_value_clean2(void *node, byte tdepth, byte3 pos, byte value, size_t stride, size_t value_offset) {
+    if (!node) {
+        return 0;
+    }
+    short length = octree_size(tdepth);
+    if (pos.x >= length || pos.y >= length || pos.z >= length) {
+        if (dbg_log_octree_errors) {
+            zox_logw("OOB [set_octree_value_clean2] [%ix%ix%i] depth [%i] vlength [%i]",
+                     pos.x, pos.y, pos.z, tdepth, length);
+        }
+        return 0;
+    }
+    byte depth = 0;
+    while (depth < tdepth) {
+        void **ptr = (void **) node;
+        void *kids = *ptr;
+        if (!kids) {
+            kids = calloc(8, stride);
+            if (!kids) {
+                zox_loge("[set_octree_value_clean2] Allocation Failure");
+                return 0;
+            }
+            *ptr = kids;
+        }
+        byte shift = tdepth - depth - 1;
+        byte mask = (1 << shift) - 1;
+        byte3 npos = {
+            pos.x >> shift,
+            pos.y >> shift,
+            pos.z >> shift
+        };
+        byte i = byte3_octree_array_index(npos);
+#ifdef zox_safety_checks
+        if (i >= 8) {
+            zox_loge("[set_octree_value_clean2] Invalid Index [%i]", i);
+            return 0;
+        }
+#endif
+        node = (char *) kids + i * stride;
+        pos.x &= mask;
+        pos.y &= mask;
+        pos.z &= mask;
+        depth++;
+    }
+    *(byte *)((char *)node + value_offset) = value;
+    return 1;
 }
-
-// Example usage:
-// new_octree_function_set_clean(VoxelNode)
-// set_clean_VoxelNode(vroot, 5, (byte3){x,y,z}, 1, 0);
+*/

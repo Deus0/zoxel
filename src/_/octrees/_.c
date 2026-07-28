@@ -1,7 +1,11 @@
+// TODO: Make a walk_octree function that can do all the functions, making it consolidated
+
 #define node_type_closed 0
 #define node_type_children 0
 #define node_type_instance 255
 byte dbg_log_octree_errors = 1;
+#include "mut.c"
+#include "open.c"
 #include "getter.c"
 #include "setter.c"
 #include "optimize.c"
@@ -14,3 +18,4 @@ byte dbg_log_octree_errors = 1;
 #include "life.c"
 #include "optimize_max.c"
 #include "nearby.c"
+#include "macros.c"

@@ -42,25 +42,12 @@ static inline const void* octree_get_adjacent_leaf(
         else if (axis == 1) neighbor_pos.y = is_pos ? 0 : max_idx;
         else neighbor_pos.z = is_pos ? 0 : max_idx;
         // Descend safely inside neighbor
-        return get_octree(neighbor_root, depth, neighbor_pos, 0, stride);
+        return get_octree2(neighbor_root, depth, neighbor_pos, stride);
     }
     // Not at boundary: adjust pos to adjacent voxel inside the same root
     byte3 adj = pos;
     if (axis == 0) adj.x = (byte)(is_pos ? (coord + 1) : (coord - 1));
     else if (axis == 1) adj.y = (byte)(is_pos ? (coord + 1) : (coord - 1));
     else adj.z = (byte)(is_pos ? (coord + 1) : (coord - 1));
-    return get_octree(root_node, depth, adj, 0, stride);
-}
-
-// Type-safe macro for root-first neighbor fetchers
-#define create_node_neighbor(T) \
-static inline const T* get_neighbor_##T(const T* root_node, const T** neighbors, byte dir, byte3 pos, byte depth) { \
-    return (const T*)octree_get_adjacent_leaf( \
-        (const void*) root_node, \
-        (const void**) neighbors, \
-        dir, \
-        pos, \
-        depth, \
-        sizeof(T)\
-    ); \
+    return get_octree2(root_node, depth, adj, stride);
 }

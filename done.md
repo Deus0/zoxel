@@ -1,5 +1,6 @@
 # Done
 
+-x Cube in hand is gone
 -x Fix Textures on UI, half not showing up in shader
 	-x ... Something to do with UIMesh system
 	-x Doesnt highlight ui refresh the texture?

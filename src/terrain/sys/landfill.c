@@ -3,10 +3,17 @@ short terrain_sand_height = 6; // 16;
 short terrain_grass_height = 7; // 18;
 short terrain_stone_height = 18; // 32;
 
+// TODO: Refactor heightmaps into quadtrees.
+// TODO: Build terrain with recursive region fill instead of per-voxel writes.
+//       Traverse the quadtree and octree together, subdividing only where
+//       terrain or material boundaries require it.
+
 // NOTE: Fills land with Soils based on biomes
 zox_sys2(LandfillChunkSystem) {
     byte dbg_log = 0;
-    byte max_process = !zox_disable_process_skips ? 2 : 0;
+    byte disable_biome_changes = 1;
+    uint pcount = 0;
+    byte max_process = !zox_disable_process_skips ? terrain_depth : 0;
     short sand_height = terrain_sand_height * render_distance_y;
     short stone_height = terrain_stone_height * render_distance_y;
     zox_sys_world();
@@ -27,7 +34,7 @@ zox_sys2(LandfillChunkSystem) {
             continue;
         }
         // NOTE: Delay if past limit [max_process]
-        if (max_process && process_count > max_process) {
+        if (max_process && pcount > max_process) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
@@ -80,15 +87,16 @@ zox_sys2(LandfillChunkSystem) {
         }
 #endif
         byte terrain_depth = zox_getv(terrain, NodeDepth);
+        byte shift = terrain_depth - depth->value;
         short length = octree_size(depth->value);
+        byte hmultiplier = octree_size(shift);
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth);
         int2 map_size = int2_single(length);
         // NOTE: Shouldnt this use terrain depth?? Tests failed
         byte is_bottom_chunk = chunk_position->value.y == -render_distance_y;
         byte3 position;
-        byte hmultiplier = powers_of_two[terrain_depth - depth->value];
         // We using lod depths now
-        byte stone_dig = 4 / hmultiplier;
+        byte stone_dig = 4 >> shift;
         // Get realm blocks first
         entity obsidian = zox_get_child_by_id(world, realm, zox_id(BlockObsidian));
         byte obsidian_id = zox_valid(obsidian) ? zox_getv(obsidian, BlockIndex) : 0;
@@ -103,11 +111,13 @@ zox_sys2(LandfillChunkSystem) {
         byte sand_id = 0;
         byte stone_id = 0;
         write_lock_VoxelNode(voctree);
-        for (position.x = 0; position.x < length; position.x++) {
-            for (position.z = 0; position.z < length; position.z++) {
+        for (position.z = 0; position.z < length; position.z++) {
+            int row = position.z * length;
+            for (position.x = 0; position.x < length; position.x++) {
+                int map_index = row + position.x;
                 // NOTE: This converts a 2D map to a chunk value by scaling
-                int2 map_position = (int2) { position.x, position.z };
-                int map_index = int2_array_index(map_position, map_size);
+                // int2 map_position = (int2) { position.x, position.z };
+                // int map_index = int2_array_index(map_position, map_size);
 #ifdef zox_safety_checks
                 if (map_index >= biome_map->length) {
                     zox_loge("Landfill: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", map_index, biome_map->length, map_position.x, map_position.y, map_size.x, map_size.y);
@@ -121,7 +131,8 @@ zox_sys2(LandfillChunkSystem) {
                 }
                 byte biome_id = biome_map->value[map_index];
                 // Get Top Positions from Height Map
-                byte local_height = int_clamp((height - chunk_block_position.y) / hmultiplier, 0, length - 1);
+                byte local_height = (height - chunk_block_position.y) >> shift;
+                local_height = int_clamp(local_height, 0, length - 1);
 #ifdef zox_safety_checks
                 if (biome_id >= realm_biomes->length) {
                     zox_loge("[Landfill] Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
@@ -135,6 +146,10 @@ zox_sys2(LandfillChunkSystem) {
                     continue;
                 }
 #endif
+                // sticks to one biome per chunk
+                if (disable_biome_changes && biome) {
+                    new_biome = biome;
+                }
                 // NOTE: Updates our cache of our biome
                 if (biome != new_biome) {
                     biome = new_biome;
@@ -147,9 +162,49 @@ zox_sys2(LandfillChunkSystem) {
                     sand_id = zox_valid(sand) ? zox_getv(sand, BlockIndex) : 0;
                     stone_id = zox_valid(stone) ? zox_getv(stone, BlockIndex) : 0;
                 }
+                byte top_material;
+                if (height >= stone_height) {
+                    top_material = stone_id;
+                } else if (height >= sand_height) {
+                    top_material = soil_id;
+                } else {
+                    top_material = sand_id;
+                }
+                int stone_end = (height - stone_dig - chunk_block_position.y) >> shift;
+                stone_end = int_clamp(stone_end, -1, local_height);
+                position.y = 0;
+                // Bottom obsidian layer.
+                if (is_bottom_chunk) {
+                    set_clean_VoxelNode(
+                        voctree,
+                        depth->value,
+                        position,
+                        obsidian_id ? obsidian_id : soil_id
+                    );
+                    position.y = 1;
+                }
+                // Fill all stone.
+                for (; position.y <= stone_end; position.y++) {
+                    set_clean_VoxelNode(
+                        voctree,
+                        depth->value,
+                        position,
+                        stone_id
+                    );
+                }
+                // Fill top material.
+                for (; position.y <= local_height; position.y++) {
+                    set_clean_VoxelNode(
+                        voctree,
+                        depth->value,
+                        position,
+                        top_material
+                    );
+                }
                 // We fill the ground up here
+                /*int terrain_position_y = chunk_block_position.y;
                 for (position.y = 0; position.y <= local_height; position.y++) {
-                    int terrain_position_y = chunk_block_position.y + position.y * hmultiplier;
+                    terrain_position_y += hmultiplier;
                     // top blocks
                     byte value;
                     if (is_bottom_chunk && position.y == 0) {
@@ -167,7 +222,7 @@ zox_sys2(LandfillChunkSystem) {
                         }
                     }
                     set_clean_VoxelNode(voctree, depth->value, position, value);
-                }
+                }*/
                 if (dbg_log) {
                     zox_log("[%s]:Landfill [%ix%i] -> H [%i] : GH [%i] L [%i]", zox_getn(e), position.x, position.z, local_height, height, length);
                 }
@@ -176,6 +231,6 @@ zox_sys2(LandfillChunkSystem) {
         write_unlock_VoxelNode(voctree);
         // Completed
         generate->value = zox_generate_terrain_vegetation;
-        zox_sys_increment();
+        pcount += depth->value;
     }
 } zox_sys_end(LandfillChunkSystem);

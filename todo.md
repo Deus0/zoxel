@@ -2,18 +2,25 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Smooth the camera or sleep the physics cause it flickers the lighting
-- make voxel textures 2 pixels larger, one is outline, one is air
+Bugs
+- Fix head stuck in roof collision
+- Fix clipping into block when jumping from side
 - Fix 3D uis - theyre missing
 - Statbar 2Ds - the frontbar are not appearing in front properly
 - Destruction Material Flickering
 - Crashing on windows still
 	- implement loading screen to make it easier to see why breaks
-- Refactor Chunk Render systems back into Rendering module
+- List ui calculating wrong cause sliders different heights then buttons!
+- Fix taskbars again properly linking to windows
+- Fix Skinning issues of humanoids at max depth
+- fix unstuck system and test it with no clip
 
+Refactors
+- Remove crafting users reference and use normal item ui for craft ui
+- Refactor Chunk Render systems back into Rendering module
+- Replace Generate components with core one
 - Refactor Colored Vox to use same ChunkSides system
 - Convert Vox Model to use ChunkMeshes
-
 - Remove build states when not building (60ms)
     - ChunkMeshColorsTriggerSystem
     - ChunkTexturedBuildSystem
@@ -23,26 +30,23 @@ used - 200-400mb used
 - Replace Generate components (GenerateTexture, GenerateRealm, GenerateTunk)
 - Add GenerateProgress, and add to it when generate state begins, remove when ends
 - Redo all my destruction hooks like MeshGPULink - remove DTOR for OBSR
-- Make map move around player position
-
-# Note we need to use pipelines to isolate reading from voxels / writing to
-
-- When dialogue animates - first fontt will flash...!
-- Make a easy way to add hotkey functionality
-	- zox_on_key_pressed(key_z, test_thingo);
-
-- Cube in hand is gone
-- item ++ shhould occur after it reaches you (the world item)
-- Fix timing of arm swing
-
-Next:
-- List ui calculating wrong cause sliders different heights then buttons!
-- Remove crafting users reference and use normal item ui for craft ui
-- Fix taskbars again properly linking to windows
 - Refactor Character - Vox model can be underneath them
 - Refactor Vox Model so meshes can be underneath them
 - Move chunk render back to rendering module, and just link to material
 	- keep all rendering stuff there
+
+Polish
+- When dialogue animates - first fontt will flash...!
+- Smooth the camera or sleep the physics cause it flickers the lighting
+- make voxel item textures 2 pixels larger, one is outline, one is air
+- Make map move around player position
+- Fix timing of arm swing
+- item ++ shhould occur after it reaches you (the world item)
+
+# Note we need to use pipelines to isolate reading from voxels / writing to
+
+- Make a easy way to add hotkey functionality
+	- zox_on_key_pressed(key_z, test_thingo);
 
 Quick Wins
 - set particle grass color to that of grass itself - block color
@@ -58,8 +62,6 @@ Quick Wins
 	- hand in once you killed 10
 
 Fix:
-- Fix Skinning issues of humanoids at max depth
-- fix unstuck system and test it with no clip
 - Sometimes humanoids dissapear (when talkin go them?)
 - aura particles are broken, they only spawn in same spot now
 - PNG errors - convert rest to bmp

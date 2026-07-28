@@ -40,7 +40,7 @@ zox_sys2(PlayerTownFinderSystem) {
         uint textures_length = zox_get_children_by_id(world, realm, textures, zox_children_capacity, zox_id(Texture));
         for (int j = 0; j < textures_length; j++) {
             entity texture = textures[j];
-            if (zox_has(texture, Busy) && zox_getv(texture, Busy)) {
+            if (zox_has(texture, GenerateTexture) && zox_getv(texture, GenerateTexture)) {
                 if (dbg_log) {
                     zox_log("Realm texture Still Loading [%s]", zox_get_name(texture));
                 }

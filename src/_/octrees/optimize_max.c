@@ -35,13 +35,3 @@ static inline void reduce_to_max_octree_node(void* node, size_t stride, size_t v
     // Set parent value
     *(byte*)((char*) node + value_offset) = max_val;
 }
-
-// Macro wrapper
-#define create_optimize_by_max(T) \
-static inline void optimize_by_max_##T(T* node) { \
-    reduce_to_max_octree_node((void*) node, sizeof(T), offsetof(T, value), 0); \
-}
-
-// Usage:
-// create_optimize_by_max(LightNode);
-// optimize_by_max_LightNode(lroot);

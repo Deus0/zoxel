@@ -1,3 +1,12 @@
+/*
+AABB entity
+AABB voxel
+    |
+    + smallest overlap axis
+        |
+        + collision normal
+*/
+
 // NOTE: Detects intersections with voxel chunks
 zox_sys2(TerrainIntersectSystem) {
     // TODO: First just make a list of voxels intersecting with
@@ -73,7 +82,7 @@ zox_sys2(TerrainIntersectSystem) {
                     }
                     // Get Block Face Centre
                     // NOTE: Get the closest voxel face out of 3 potential axis ones
-                    float3 block_position_face_x = block_positionf;
+                    /*float3 block_position_face_x = block_positionf;
                     if (position->value.x >= block_positionf.x) {
                         block_position_face_x.x += terrain_block_scale / 2;
                     } else {
@@ -98,6 +107,7 @@ zox_sys2(TerrainIntersectSystem) {
                     float block_face_dist_z = float3_distance(position->value, block_position_face_z);
                     byte block_axis = block_face_dist_x < block_face_dist_y && block_face_dist_x < block_face_dist_z ? 0 : block_face_dist_y < block_face_dist_z ? 1 : 2;
                     float3 block_position_face = block_face_dist_x < block_face_dist_y && block_face_dist_x < block_face_dist_z ? block_position_face_x : block_face_dist_y < block_face_dist_z ? block_position_face_y : block_position_face_z;
+
                     // NOTE: Get the Face Direction as a byte
                     byte face_direction = 0;
                     if (block_axis == 0) {
@@ -119,6 +129,52 @@ zox_sys2(TerrainIntersectSystem) {
                             face_direction = direction_back;
                         }
                     }
+                    */
+
+                    // Face Selection
+                    float half_block = terrain_block_scale * 0.5f;
+
+                    // entity extents
+                    float3 entity_half = bounds_rotated;
+
+                    // voxel extents
+                    float3 voxel_half = {
+                        half_block,
+                        half_block,
+                        half_block
+                    };
+
+                    float3 delta = float3_subtract(position->value, block_positionf);
+
+                    // overlap amount on each axis
+                    float overlap_x = (entity_half.x + voxel_half.x) - float_abs(delta.x);
+                    float overlap_y = (entity_half.y + voxel_half.y) - float_abs(delta.y);
+                    float overlap_z = (entity_half.z + voxel_half.z) - float_abs(delta.z);
+
+                    // ignore if not actually intersecting
+                    if (overlap_x <= 0 || overlap_y <= 0 || overlap_z <= 0) {
+                        continue;
+                    }
+
+                    byte block_axis;
+                    byte face_direction;
+                    float3 penetration = float3_zero;
+
+                    // smallest penetration axis
+                    if (overlap_x <= overlap_y && overlap_x <= overlap_z) {
+                        block_axis = 0;
+                        penetration.x = delta.x > 0 ? overlap_x : -overlap_x;
+                        face_direction = delta.x > 0 ? direction_right : direction_left;
+                    } else if (overlap_y <= overlap_z) {
+                        block_axis = 1;
+                        penetration.y = delta.y > 0 ? overlap_y : -overlap_y;
+                        face_direction = delta.y > 0 ? direction_up : direction_down;
+                    } else {
+                        block_axis = 2;
+                        penetration.z = delta.z > 0 ? overlap_z : -overlap_z;
+                        face_direction = delta.z > 0 ? direction_front : direction_back;
+                    }
+
                     // TODO: Check if direction adjacent node is solid
                     zox_geter(chunk, ChunkNeighbors, neighbors);
                     const VoxelNode* neighbor_voxel_octrees[6];
@@ -141,8 +197,19 @@ zox_sys2(TerrainIntersectSystem) {
                     if (adjacent_solid) {
                         continue;
                     }
+
+                    /*
+                    float3 penetration = float3_zero;
+                    if (block_axis == 0) {
+                        penetration.x = block_position_face.x - point.x;
+                    } else if (block_axis == 1) {
+                        penetration.y = block_position_face.y - point.y;
+                    } else {
+                        penetration.z = block_position_face.z - point.z;
+                    }
+
                     // NOTE: Calculate correction for moving away from blocks
-                    float3 penetration = float3_subtract(block_position_face, point);
+                    // float3 penetration = float3_subtract(block_position_face, point);
                     if (block_axis == 0 && float_abs(penetration.x) > float_abs(correction.x)) {
                         correction.x = penetration.x;
                     }
@@ -151,7 +218,17 @@ zox_sys2(TerrainIntersectSystem) {
                     }
                     if (block_axis == 2 && float_abs(penetration.z) > float_abs(correction.z)) {
                         correction.z = penetration.z;
-                    }
+                    }*/
+                    if (block_axis == 0 && float_abs(penetration.x) > float_abs(correction.x))
+                        correction.x = penetration.x;
+
+                    if (block_axis == 1 && float_abs(penetration.y) > float_abs(correction.y))
+                        correction.y = penetration.y;
+
+                    if (block_axis == 2 && float_abs(penetration.z) > float_abs(correction.z))
+                        correction.z = penetration.z;
+
+
                     if (block_axis == 0) {
                         hit_axis_x = 1;
                     }
@@ -161,7 +238,7 @@ zox_sys2(TerrainIntersectSystem) {
                     if (block_axis == 2) {
                         hit_axis_z = 1;
                     }
-                    if (block_axis == 1 && position->value.y > block_position_face.y) {
+                    if (block_axis == 1 && correction.y > 0) { //  position->value.y > block_position_face.y) {
                         hit_ground = 1;
                     }
                 }

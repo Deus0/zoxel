@@ -79,7 +79,6 @@ zox_sys2(TextUpdateSystem) {
                 data_index->value = new_data_index;
                 zox_mut_begin(e2, ZigelIndex, zigel_index);
                 byte new_index = text->value[new_data_index];
-                // calculate_zigel_index(text->value, text->length, child_index);
                 if (zigel_index->value != new_index) {
                     zigel_index->value = new_index;
                     zox_muter(e2, GenerateTexture, generate);

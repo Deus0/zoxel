@@ -45,18 +45,5 @@ static inline const void* octree_get_nearby(const void** octrees, byte3 position
         (byte) ny,
         (byte) nz
     };
-    return get_octree(node, depth, pos, 0, stride);
+    return get_octree2(node, depth, pos, stride);
 }
-
-// NOTE: 27 neighbors
-#define create_octree_get_nearby(T) \
-static inline const T* get_nearby_##T(const T** octrees, byte3 position, byte depth, sbyte3 offset) { \
-    return (const T*) octree_get_nearby((const void**) octrees, position, depth, offset, sizeof(T)); \
-} \
-static inline byte getv_nearby_##T(const T** octrees, byte3 position, byte depth, sbyte3 offset) { \
-    const T* thing = (const T*) octree_get_nearby((const void**) octrees, position, depth, offset, sizeof(T)); \
-    return thing ? thing->value : 0; \
-}
-
-// TODO: Function to grab 27 neighbors from chunk + neighbors
-// TODO: remove depth from get_octree and just use target depth

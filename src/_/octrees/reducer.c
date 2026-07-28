@@ -51,18 +51,3 @@ static inline byte reduce_octree_node(void* node, size_t stride, size_t value_of
     }
     return 0;
 }
-
-// Macro wrapper: type-safe reducer
-#define create_octree_reducer(T) \
-static inline byte reduce_##T(T* node) { \
-    return reduce_octree_node((void*) node, sizeof(T), offsetof(T, value), 0); \
-}
-
-#define create_octree_reducer_linked(T) \
-static inline byte reduce_##T(T* node) { \
-    return reduce_octree_node((void*) node, sizeof(T), offsetof(T, value), offsetof(T, type)); \
-}
-
-// Usage:
-// create_node_reducer(LightNode)
-// reduce_LightNode(lroot);
