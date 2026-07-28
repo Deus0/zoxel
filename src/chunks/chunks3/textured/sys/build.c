@@ -130,7 +130,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
     zox_sys_begin();
     zox_sys_in(Active);
     zox_sys_in(RenderDepth);
-    zox_sys_out(BuildChunkMesh);
+    zox_sys_out(BuildMesh);
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
@@ -140,7 +140,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
         zox_sys_e();
         zox_sys_i(Active, active);
         zox_sys_i(RenderDepth, depth);
-        zox_sys_o(BuildChunkMesh, build);
+        zox_sys_o(BuildMesh, build);
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshColorRGBs, colors);

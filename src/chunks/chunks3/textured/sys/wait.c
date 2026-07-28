@@ -18,7 +18,7 @@ byte is_chunk_busy(ecs* world, entity e) {
         return zox_getv(e, Busy) || is_chunk_lights_busy(world, e);
     }
         // || zox_getv(e, Generate)
-        // || zox_getv(e, BuildChunkMesh)
+        // || zox_getv(e, BuildMesh)
         // || zox_getv(e, VoxelNodeDirty)
         // || zox_getv(e, RenderDepthDirty)
         // || zox_getv(e, SidesOctreeDirty)

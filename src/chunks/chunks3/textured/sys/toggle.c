@@ -46,7 +46,7 @@ zox_sys2(ChunkMeshToggleSystem) {
                 // zox_getv(new_chunk, BuildChunkSides) ||
                 // zox_getv(new_chunk, GenerateChunk) ||
                 // zox_getv(new_chunk, VoxelNodeDirty) ||
-                zox_getv(new_mesh, BuildChunkMesh) ||
+                zox_getv(new_mesh, BuildMesh) ||
                 zox_getv(new_mesh, MeshDirty) ||
                 zox_getv(new_mesh, MeshColorsGenerate);
             if (busy) {
@@ -78,7 +78,7 @@ while (zox_children_next(it2)) {
             // no need to wait though if inactive
             continue;
         }
-        if (zox_getv(mesh, BuildChunkMesh) || zox_getv(mesh, MeshDirty)) {
+        if (zox_getv(mesh, BuildMesh) || zox_getv(mesh, MeshDirty)) {
             meshes_busy = 1;
             break;
         }
@@ -100,7 +100,7 @@ for (int n = 0; n < 6 && !meshes_busy; n++) {
             if (!zox_getv(mesh, Active)) {
                 continue;
             }
-            if (zox_getv(mesh, BuildChunkMesh) || zox_getv(mesh, MeshDirty)) {
+            if (zox_getv(mesh, BuildMesh) || zox_getv(mesh, MeshDirty)) {
                 meshes_busy = 1;
                 break;
             }

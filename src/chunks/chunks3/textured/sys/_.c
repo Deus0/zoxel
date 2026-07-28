@@ -55,7 +55,7 @@ void define_systems_chunks3_textured(ecs *world) {
         zoxp_voxels_mesh,
         [in] core.Active,
         [in] rendering.RenderDepth,
-        [out] chunks3.BuildChunkMesh,
+        [out] rendering.BuildMesh,
         [out] rendering.MeshIndicies,
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,

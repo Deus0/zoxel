@@ -6,38 +6,45 @@ zox_tag(RendererInstance);
 zox_tag(VoxMesh);
 zox_tag(DisableDepthTest);
 zox_tag(MeshClearCache);
-zoxc_byte(RenderOrder);
+// Events
+zoxc_byte(BuildMesh);
 zoxc_byte(MeshDirty);
-// zoxc_byte(TexturedMeshDirty);
 zoxc_byte(MeshReady);
-// zoxc_state(InitializeMesh);
 zoxc_byte(TextureDirty);
-zoxc_state(RenderDistanceDirty);
-zoxc_state(RenderDepthDirty);
-zoxc_state(MeshGenerate);    // TODO: Replace BuildChunkMesh
 zoxc_byte(MeshColorsGenerate);
 zoxc_byte(MeshColorsDirty);
-zoxc_entity(MeshLink);
+zoxc_state(RenderDistanceDirty);
+zoxc_state(RenderDepthDirty);
+// Properties
+zoxc_int2(TextureSize);
+zoxc_float(Brightness);
+zoxc_float(Alpha);
+zoxc_byte(RenderOrder);
 zoxc_byte(MeshAlignment);
 zoxc_byte(RenderDepth);
 zoxc_byte(MaxRenderDepth);
 zoxc_byte(RenderDistance);
 zoxc_byte(RenderDisabled);
-zoxc_float(Brightness);
-zoxc_float(Alpha);
+// Links
+zoxc_entity(MeshLink);
 zoxc_entity(MaterialLink);
-zoxc_int2(TextureSize);
 zoxc_byte(ShaderSourceIndex);
 zoxc_entity(ShaderLink); // links to a shader entity
 zoxc_entity(InstanceLink); // links to a instance parent
-// zoxc_array(InstanceLinks, entity, 8)
-zoxc_arrayd(MeshIndicies, int);
+// Models
+zoxc_entities(ModelLinks)
+zoxc_entity(ModelLink);         // a render instance links to model
+#define model_lods_max_length 8
+zoxc_array(ModelLods, entity, model_lods_max_length);
+// Render Data
 zoxc_uint(MeshRenderCount);
+zoxc_arrayd(MeshIndicies, int);
 zoxc_arrayd(MeshVertices, float3);
 zoxc_arrayd(MeshVertices2D, float2);
 zoxc_arrayd(MeshUVs, float2);
 zoxc_arrayd(MeshColors, color);
 zoxc_arrayd(MeshColorRGBs, color_rgb);
+// GPU Links
 #include "material_gpu_link.c"
 #include "texture_gpu_link.c"
 #include "ubo_gpu_link.c"
@@ -46,11 +53,6 @@ zoxc_arrayd(MeshColorRGBs, color_rgb);
 #include "colors_gpu_link.c"
 #include "shader_gpu_link.c"
 #include "compute_shader.c"
-// Models
-zoxc_entities(ModelLinks)
-zoxc_entity(ModelLink);                 // a render instance links to model
-#define model_lods_max_length 8
-zoxc_array(ModelLods, entity, model_lods_max_length);       // a model has multiple models per LOD
 
 static inline int2 get_texture_size(ecs* world, entity e) {
     return zox_get_value(e, TextureSize);
@@ -66,14 +68,15 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(DisableDepthTest);
     zoxd_tag(MeshClearCache);
     zoxd_byte(RenderOrder);
+    // Events
+    zoxd_byte(BuildMesh);
     zoxd_byte(MeshDirty);
-    // zoxd_byte(TexturedMeshDirty);
     zoxd_byte(MeshReady);
-    // zoxd_state(InitializeMesh);
     zoxd_byte(TextureDirty);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);
-    zoxd_state(MeshGenerate);
+    // Properties
+    zoxd_int2(TextureSize);
     zoxd_byte(MeshColorsGenerate);
     zoxd_byte(MeshColorsDirty);
     zoxd_byte(MeshAlignment);
@@ -84,33 +87,35 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(RenderDisabled);
     zoxd_float(Brightness);
     zoxd_float(Alpha);
-    zoxd_entity(MaterialLink);
-    zoxd_int2(TextureSize);
-    zoxd_entity(InstanceLink);
-    zoxd(MaterialInstancedGPULink);
+    // Links
     zoxd_byte(ShaderSourceIndex);
+    zoxd_entity(MaterialLink);
+    zoxd_entity(InstanceLink);
     zoxd_entity(ShaderLink);
-    zoxd_arrayd(MeshIndicies);
+    zoxd_entity(ModelLink);
+    zoxd_entities(ModelLinks);
+    zox_define_component_array(ModelLods);
+    // Render Data
     zoxd_uint(MeshRenderCount);
+    zoxd_arrayd(MeshIndicies);
     zoxd_arrayd(MeshVertices);
     zoxd_arrayd(MeshVertices2D);
     zoxd_arrayd(MeshUVs);
     zoxd_arrayd(MeshColors);
     zoxd_arrayd(MeshColorRGBs);
-    // Models
-    zoxd_entities(ModelLinks);
-    zoxd_entity(ModelLink);
-    zox_define_component_array(ModelLods);
+    // GPU Links
+    zoxd(MaterialInstancedGPULink);
     // Old
     zoxd_guint_dest_old(ShaderGPULink);
-    zoxd_guint_dest_old(MaterialGPULink);
     zoxd_guint_dest_old(ComputeShaderLink);
     zoxd_guint_dest_old(UboGPULink);
-    /*zoxd_guint_dest_old(TextureGPULink);
+    /*zoxd_guint_dest_old(MaterialGPULink);
+    zoxd_guint_dest_old(TextureGPULink);
     zoxd_guint2_dest_old(MeshGPULink);
     zoxd_guint_dest_old(UvsGPULink);
     zoxd_guint_dest_old(ColorsGPULink);*/
     // New
+    zoxd_guint_dest(MaterialGPULink);
     zoxd_guint_dest(TextureGPULink);
     zoxd_guint2_dest(MeshGPULink);
     zoxd_guint_dest(UvsGPULink);

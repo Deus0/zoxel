@@ -17,7 +17,8 @@ zoxc_int2(ScreenPosition);
 zoxc_float4(ScreenToCanvas);
 zoxc(ProjectionMatrix, float4x4);
 zoxc(ViewMatrix, float4x4); // todo: rename to ViewProjectionMatrix
-zoxc_array(CameraPlanes, plane, 6);
+#define zox_camera_planes 6
+zoxc_array(CameraPlanes, plane, zox_camera_planes);
 #ifdef frustumdouble
     zoxc_array(FrustumCorners, double3, 8);
 #else

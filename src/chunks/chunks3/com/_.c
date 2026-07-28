@@ -7,7 +7,7 @@ zox_tag(LinkChunk);
 zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
 zoxc_byte(ChunkLodDirty);
-zoxc_byte(BuildChunkMesh);
+// (BuildChunkMesh);
 zoxc_byte(BlocksSpawned);
 zoxc_byte(VoxelNodeEdited);
 zoxc_state(ChunkDirty);
@@ -47,7 +47,6 @@ void define_components_chunks3(ecs* world) {
     zoxd_byte(ChunkLodDirty);
     zoxd_byte(VoxelNodeEdited); // Marks if Dirty from Users
     zoxd_byte(BlocksSpawned);
-    zoxd_byte(BuildChunkMesh);
     zoxd_state(VoxelNodeDirty);
     zoxd_state(ChunkDirty);
     zoxd_int3(ChunkPosition);

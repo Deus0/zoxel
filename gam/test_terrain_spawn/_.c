@@ -74,7 +74,7 @@ byte test_terrain_spawn(ecs *world) {
                 entity chunk = pair->value;
                 zox_geter_value(chunk, Generate, byte, generate_chunk);
                 zox_geter_value(chunk, MeshDirty, byte, mesh_dirty);
-                zox_geter_value(chunk, BuildChunkMesh, byte, chunk_mesh_dirty);
+                zox_geter_value(chunk, BuildMesh, byte, chunk_mesh_dirty);
                 if (log_chunks && generate_chunk == chunk_generate_state_end) {
                     zox_log("- f[%i] chunk generated [%f]", ecs_run_count - 1, time_since_start)
                 }
@@ -134,7 +134,7 @@ byte test_terrain_spawn(ecs *world) {
                 // zox_geter_value(chunk, ChunkLodDirty, byte, lod_dirty);
                 zox_geter_value(chunk, Generate, byte, generate_chunk);
                 zox_geter_value(chunk, MeshDirty, byte, mesh_dirty);
-                zox_geter_value(chunk, BuildChunkMesh, byte, chunk_mesh_dirty);
+                zox_geter_value(chunk, BuildMesh, byte, chunk_mesh_dirty);
                 if (log_chunks && generate_chunk == chunk_generate_state_end) {
                     zox_log("- f[%i] chunk generated [%f]", ecs_run_count - 1, time_since_start)
                 }

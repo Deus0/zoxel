@@ -13,11 +13,10 @@ entity spawn_cube_textured(ecs* world, entity prefab, entity texture, float3 pos
     }
     guint2 shader = zox_get_value(shader_textured3D, ShaderGPULink);
     zox_set(e, ShaderLink, { shader_textured3D });
-    guint material = spawn_gpu_material(world, e, shader);
-    if (!material) {
-        zox_loge("=> [spawn_cube_textured] Failed");
-    } else {
-        MaterialTextured3D attributes = create_MaterialTextured3D(material);
+    guint gpu_material = spawn_gpu_material_program(shader);
+    if (gpu_material) {
+        zox_setv(e, MaterialGPULink, gpu_material);
+        MaterialTextured3D attributes = create_MaterialTextured3D(gpu_material);
         zox_set_data(e, MaterialTextured3D, attributes);
     }
     return e;

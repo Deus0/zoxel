@@ -24,13 +24,13 @@ zox_sys2(NoiseVoxelNodeSystem) {
     zox_sys_out(GenerateModel);
     zox_sys_out(VoxelNode);
     zox_sys_out(ColorRGBs);
-    zox_sys_out(BuildChunkMesh);
+    zox_sys_out(BuildMesh);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(GenerateModel, generate);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(ColorRGBs, colors);
-        zox_sys_o(BuildChunkMesh, build_mesh);
+        zox_sys_o(BuildMesh, build_mesh);
         if (generate->value != 1 || build_mesh->value) {
             continue;
         }

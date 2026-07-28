@@ -14,7 +14,7 @@ entity spawn_prefab_static_chunk(ecs *world) {
     zox_prefab_set(e, VoxelNodeDirty, { 0 });
     zox_prefab_set(e, RenderDistanceDirty, { 0 });
     zox_prefab_set(e, RenderDepthDirty, { 0 });
-    zox_prefab_set(e, BuildChunkMesh, { 0 });
+    zox_prefab_set(e, BuildMesh, { 0 });
     zox_prefab_set(e, BuildChunkSides, { 0 });
     zox_prefab_set(e, BlockScale, { default_vox_scale });
     // Rendering

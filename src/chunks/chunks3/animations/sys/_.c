@@ -9,7 +9,7 @@ void zox_define_systems_chunks3_noise(ecs* world) {
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
         [out] colorz.ColorRGBs,
-        [out] chunks3.BuildChunkMesh,
+        [out] rendering.BuildMesh,
         [none] chunks3.NoiseChunk
     );
 }

@@ -44,7 +44,7 @@ entity spawn_profiler(ecs* world, entity canvas, const char* header_label, int2 
         byte2 label_margins = (byte2) { 2 * ui_scale, 2 * ui_scale };   // x
         byte label_font_size = 3 * ui_scale;
         // NOTE: Positions below header
-        int2 position = (int2) { 0, - 3 * (14 + 4 * 2) };
+        int2 position = (int2) { 0, - 2 * (14 + 4 * 2) };
         float2 position_anchor = (float2) { 0, 1.0f };
         entity e2 = spawn_text(world, prefab_text, e, position, position_anchor, label_font_size, zox_alignment_top_left, label_margins, "", button_font_fill, button_font_outline);
         zox_add_tag(e2, MaxSystemTimeLabel);

@@ -42,6 +42,7 @@ zoxel_dynamic_array(int3)
 zoxel_dynamic_array(float2)
 zoxel_dynamic_array(float3)
 zoxel_dynamic_array(float4)
+zoxel_dynamic_array(float6)
 zoxel_dynamic_array(float4x4)
 
 void initialize_component_ids() {

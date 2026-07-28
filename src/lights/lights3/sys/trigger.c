@@ -34,10 +34,10 @@ zox_sys2(ChunkMeshColorsTriggerSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_out(BuildChunkMesh);
+    zox_sys_out(BuildMesh);
     zox_sys_out(MeshColorsGenerate);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_o(BuildChunkMesh, build);
+        zox_sys_o(BuildMesh, build);
         zox_sys_o(MeshColorsGenerate, generate);
         if (build->value == zox_build_chunk_mesh_lights) {
             build->value = zox_build_chunk_mesh_end;

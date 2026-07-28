@@ -34,7 +34,7 @@ entity spawn_prefab_vox(ecs *world, byte depth) {
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, BuildChunkSides, { 0 });
-    zox_prefab_set(e, BuildChunkMesh, { 0 });
+    zox_prefab_set(e, BuildMesh, { 0 });
     // vox
     zox_set(e, BlockScale, { 0 }); // vox_model_scale });
     zox_set(e, NodeDepth, { 0 }); // depth

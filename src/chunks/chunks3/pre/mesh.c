@@ -22,6 +22,6 @@ entity spawn_prefab_chunk_mesh(ecs* world) {
     // Events
     zox_prefab_set(e, Initialize, { 1 });
     zox_prefab_set(e, MeshDirty, { 0 });
-    zox_prefab_set(e, BuildChunkMesh, { zox_build_chunk_mesh_run });
+    zox_prefab_set(e, BuildMesh, { zox_build_chunk_mesh_run });
     return e;
 }

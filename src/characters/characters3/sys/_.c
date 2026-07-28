@@ -10,7 +10,7 @@ void define_systems_characters3(ecs *world) {
         CharacterRenderDepthSystem,
         zoxp_update,
         [in] rendering.RenderDepthDirty,
-        [out] chunks3.BuildChunkMesh,
+        [out] rendering.BuildMesh,
         [none] Character3
     );
     zox_system(

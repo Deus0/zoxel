@@ -118,7 +118,7 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         ChunkMeshColorsTriggerSystem,
         zoxp_update,
-        [out] chunks3.BuildChunkMesh,
+        [out] rendering.BuildMesh,
         [out] rendering.MeshColorsGenerate,
         [none] chunks.ChunkMesh
     );
@@ -144,7 +144,7 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         SmoothLightsBuildSystem,
         zoxp_voxels_lights,
-        [in] chunks3.BuildChunkMesh,
+        [in] rendering.BuildMesh,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
         [out] rendering.MeshColorsGenerate,

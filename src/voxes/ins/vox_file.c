@@ -117,7 +117,7 @@ entity spawn_vox_file(ecs *world, entity prefab, const vox_file* data, const cha
             zox_set_unique_name(e2, name);
         }
         set_vox_file(world, e2, data, reducer, bscale);
-        zox_set(e2, BuildChunkMesh, { 1 });
+        zox_set(e2, BuildMesh, { 1 });
         zox_set(e2, RenderDepth, { rdepth });
         zox_set(e2, MaxRenderDepth, { mdepth });
         model_lods.value[rdepth] = e2;

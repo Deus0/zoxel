@@ -14,7 +14,7 @@ void define_systems_chunks3_colored(ecs *world) {
         [out] rendering.MeshIndicies,
         [out] rendering.MeshVertices,
         [out] rendering.MeshColorRGBs,
-        [out] chunks3.BuildChunkMesh,
+        [out] rendering.BuildMesh,
         [out] rendering.MeshDirty,
         // [out] core.Busy,
         [none] chunks3.ColorChunk

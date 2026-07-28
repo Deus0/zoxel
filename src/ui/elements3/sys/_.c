@@ -38,7 +38,8 @@ void define_systems_elements3D(ecs *world) {
         [in] rendering.ColorsGPULink,
         [in] rendering.TextureGPULink,
         [in] rendering.MeshIndicies,
-        [none] rendering.SingleMaterial
+        [none] rendering.SingleMaterial,
+        [none] !core.Initialize
     );
     zox_system(
         UITrailSystem,

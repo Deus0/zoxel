@@ -146,7 +146,7 @@ zox_sys2(ChunkColorsBuildSystem) {
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshColorRGBs);
-    zox_sys_out(BuildChunkMesh);
+    zox_sys_out(BuildMesh);
     zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -160,7 +160,7 @@ zox_sys2(ChunkColorsBuildSystem) {
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
         zox_sys_o(MeshColorRGBs, colors);
-        zox_sys_o(BuildChunkMesh, build);
+        zox_sys_o(BuildMesh, build);
         zox_sys_o(MeshDirty, mesh_dirty);
         if (build->value == zox_dirty_trigger) {
             build->value = zox_dirty_active;

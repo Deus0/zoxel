@@ -118,7 +118,7 @@ zox_sys2(BasicLightsBuildSystem) {
         if (trigger->value != zox_dirty_active) {
             continue;
         }
-        if (zox_getv(e, BuildChunkMesh)) {
+        if (zox_getv(e, BuildMesh)) {
             // if still building, it will update the verts again
             zox_set(e, MeshColorsGenerate, { 1 });
             if (dbg_log) {

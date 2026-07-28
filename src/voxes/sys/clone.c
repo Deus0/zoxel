@@ -1,5 +1,5 @@
 // todo: make use TargetChunkLod -> and load/unload depth based on that
-// todo: set lod here instead of just applying RenderDepth only with BuildChunkMesh -> keeps memory down
+// todo: set lod here instead of just applying RenderDepth only with BuildMesh -> keeps memory down
 // NOTE: This uses ChunkLod to increment the build per level
 zox_sys2(CloneVoxSystem) {
     zox_sys_world();

@@ -1,10 +1,12 @@
 zox_sys2(Skeleton3RenderSystem) {
+    // byte dbg_log = 1;
+    zox_sys_world();
     entity rmaterial = transparent_meshes ? material_bonet : material_bone;
-    if (!rmaterial) {
+    if (!zox_valid(rmaterial)) {
+        zox_loge("(Skeleton3RenderSystem) Bone Material Invalid");
         return;
     }
     byte has_set_material = 0;
-    zox_sys_world();
     zox_geter_value(rmaterial, MaterialGPULink, uint, material_link);
     zox_geter(rmaterial, MaterialBone, material_attributes);
     zox_sys_begin();

@@ -1,20 +1,23 @@
-extern guint spawn_gpu_material_program(guint2 shader);
-
 zoxc_guint(MaterialGPULink);
 zoxc_guint(MaterialInstancedGPULink);
-
-guint spawn_gpu_material(ecs *world, entity e, guint2 shader) {
-    if (!shader.x || !shader.y) {
-        zox_log_error("[spawn_gpu_material] has invalid shader");
-        return 0;
-    }
-    guint gpu_material = spawn_gpu_material_program(shader);
-    if (gpu_material) {
-        zox_set(e, MaterialGPULink, { gpu_material });
-    }
-    return gpu_material;
-}
 
 ECS_DTOR(MaterialGPULink, ptr, {
     zox_dispose_material(ptr->value);
 })
+
+void on_destroyed_MaterialGPULink(iter *it) {
+    byte dbg_log = 0;
+    zox_sys_begin();
+    zox_sys_out(MaterialGPULink);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(MaterialGPULink, component);
+        if (!component->value) {
+            continue;
+        }
+        if (dbg_log) {
+            zox_log("MaterialGPULink Destroy [%i]", component->value);
+        }
+        zox_dispose_material(component->value);
+        component->value = 0;
+    }
+}

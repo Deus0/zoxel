@@ -46,7 +46,7 @@ zox_sys2(ChunkLodSystem) {
             }
             // NOTE: Rebuilds Mesh Whenever Render Depth is Dirty, unless generating
             // zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
-            // zox_set(e, BuildChunkMesh, { zox_dirty_trigger });
+            // zox_set(e, BuildMesh, { zox_dirty_trigger });
             // NOTE: This tells to build the new side, we can do this during LODDirty step instead
         }
         render_depth_dirty->value = zox_chunk_lod_dirty_generating;

@@ -18,6 +18,6 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_prefab_set(e, VoxelNodeDirty, { 0 });
     zox_prefab_set(e, RenderDistanceDirty, { 0 });
     zox_prefab_set(e, RenderDepthDirty, { 0 });
-    zox_prefab_set(e, BuildChunkMesh, { 0 });
+    zox_prefab_set(e, BuildMesh, { 0 });
     return e;
 }

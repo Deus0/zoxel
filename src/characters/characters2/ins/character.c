@@ -1,16 +1,15 @@
 entity spawn_character2(ecs *world, entity prefab, float2 position) {
     zox_instance(prefab);
+    zox_setv(e, Initialize, 1);
     zox_set(e, Position2, { position });
     zox_set(e, Scale1, { 1 });
     zox_set(e, Brightness, { 0.8f + ((rand() % 101) / 100.0f) * 0.6f });
-    // zox_set(e, AnimateTexture, { (((rand() % 100) / 100.0f) * noise_animation_speed) })
+    clone_texture_file_to_entity(world, e, "taskbar_body");
     // TODO: Just use global material here
     guint2 shader = zox_get_value(shader_textured2D, ShaderGPULink);
-    guint material = spawn_gpu_material(world, e, shader);
-    if (!material) {
-        zox_log_error("character2D material failed to initialize");
+    guint gpu_material = spawn_gpu_material_program(shader);
+    if (gpu_material) {
+        zox_setv(e, MaterialGPULink, gpu_material);
     }
-    zox_setv(e, Initialize, 1);
-    clone_texture_file_to_entity(world, e, "taskbar_body");
     return e;
 }

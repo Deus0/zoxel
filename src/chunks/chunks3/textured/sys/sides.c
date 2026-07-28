@@ -269,7 +269,7 @@ zox_sys2(ChunkSidesSystem) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
                 if (zox_has(e2, ChunkMesh)) {
-                    zox_setv(e2, BuildChunkMesh, zox_build_chunk_mesh_run);
+                    zox_setv(e2, BuildMesh, zox_build_chunk_mesh_run);
                     if (dbg_log) {
                         zox_log("Chunk Triggered Build [%s]:[%s]", zox_getn(e), zox_getn(e2));
                     }

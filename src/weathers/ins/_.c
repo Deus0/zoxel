@@ -13,16 +13,20 @@ entity spawn_skybox(ecs *world, entity camera, entity shader) {
         zox_add_tag(e, MeshBasic3D);
         // spawn_gpu_mesh(world, e);
         zox_set(e, ShaderLink, { shader });
-        guint2 shader_skybox_value = get_shader_value(world, shader);
-        guint material = spawn_gpu_material(world, e, shader_skybox_value);
+        guint2 shader_value = get_shader_value(world, shader);
+        guint gpu_material = spawn_gpu_material_program(shader_value);
+        if (gpu_material) {
+            zox_setv(e, MaterialGPULink, gpu_material);
+            MaterialBasic3D attributes = create_MaterialBasic3D(gpu_material);
+            zox_set_ptr(e, MaterialBasic3D, attributes);
+            set_skybox_material_color(gpu_material, menu_sky_color, menu_sky_bottom_color);
+        }
+        /*guint material = spawn_gpu_material(world, e, shader_value);
         if (!material) {
             zox_log("[spawn_skybox] Failed");
             zox_delete(e);
             return 0;
-        }
-        MaterialBasic3D attributes = create_MaterialBasic3D(material);
-        zox_set_ptr(e, MaterialBasic3D, attributes);
-        set_skybox_material_color(material, menu_sky_color, menu_sky_bottom_color);
+        }*/
     }
     skybox = e;
     return e;

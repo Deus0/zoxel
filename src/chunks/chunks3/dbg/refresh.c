@@ -13,7 +13,7 @@ void zox_dbg_terrain_refresh(ecs* world, ClickEventData data) {
             if (zox_valid(e2) && zox_has(e2, Chunk3)) {
                 zox_set(e2, VoxelNodeDirty, { zox_dirty_trigger });
                 // zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
-                // zox_set(e2, BuildChunkMesh, { zox_dirty_trigger });
+                // zox_set(e2, BuildMesh, { zox_dirty_trigger });
                 // zox_set(e2, MeshDirty, { mesh_state_trigger });
             }
         }
@@ -42,7 +42,7 @@ void zox_dbg_terrain_refresh_mesh_colors(ecs* world, ClickEventData data) {
                 for (int k = 0; k < meshes_length; k++) {
                     entity e3 = meshes[k];
                     zox_set(e3, MeshColorsGenerate, { zox_dirty_trigger });
-                    // zox_set(e3, BuildChunkMesh, { 1 });
+                    // zox_set(e3, BuildMesh, { 1 });
                     // zox_set(e3, TransformMatrix, { matrix });
                     // zox_set(e2, TexturedMeshDirty, { 1 });
                     // zox_set(e2, MeshColorsDirty, { zox_dirty_trigger });
