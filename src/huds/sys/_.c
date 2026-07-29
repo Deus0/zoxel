@@ -37,14 +37,14 @@ void define_systems_game_ui(ecs *world) {
         [in] inputs.LastDeviceMode,
         [in] inputs.DeviceMode,
         [in] games.GameLink,
-        [in] layouts2.CanvasLink
+        [in] layouts.CanvasLink
     );
     zox_system_1(
         PlayerUIGameEndSystem,
         zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        [in] layouts2.CanvasLink
+        [in] layouts.CanvasLink
     );
     zox_system_1(
         PlayerUIGame3EndSystem,
@@ -59,7 +59,7 @@ void define_systems_game_ui(ecs *world) {
         zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [in] cameras.CameraLink,
         [none] players.Player
     );
@@ -68,14 +68,14 @@ void define_systems_game_ui(ecs *world) {
         zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [in] cameras.CameraLink,
         [none] players.Player
     );
     zox_system_1(
         PlayerTerminalSystem,
         zoxp_mainthread,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [in] inputs.DeviceMode,
         [none] players.Player
     );

@@ -3,7 +3,7 @@
 used - 200-400mb used
 
 Atm
-- Fix 3D uis - theyre missing
+-x Fix 3D uis - theyre missing
 - Statbar 2Ds - the frontbar are not appearing in front properly
 - Refactor taskbar as entities and add the Mirror UI there
 -x Fix lighting when rendering it through the render camera (characteer lights is off)

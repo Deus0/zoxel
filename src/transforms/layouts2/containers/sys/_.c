@@ -6,7 +6,7 @@ void define_systems_containers(ecs* world) {
     zox_system(
         ListSystem,
         zoxp_update,
-        [in] layouts2.LayoutSize,
+        [in] layouts.LayoutSize,
         [in] containers.ListPositionDirty,
         [in] containers.ListPadding,
         [in] containers.ListMargins,
@@ -16,7 +16,7 @@ void define_systems_containers(ecs* world) {
     zox_system(
         GridSystem,
         zoxp_update,
-        [in] layouts2.LayoutSize,
+        [in] layouts.LayoutSize,
         [in] containers.GridDirty,
         [in] containers.GridSize,
         [in] containers.GridPadding,
@@ -26,9 +26,9 @@ void define_systems_containers(ecs* world) {
     zox_system(
         ListElementPositionSystem,
         zoxp_update,
-        [in] layouts2.LayoutSize,
-        [in] layouts2.LayoutSizeDirty,
-        [out] layouts2.LayoutPosition,
-        [out] layouts2.LayoutPositionDirty
+        [in] layouts.LayoutSize,
+        [in] layouts.LayoutSizeDirty,
+        [out] layouts.LayoutPosition,
+        [out] layouts.LayoutPositionDirty
     );
 }

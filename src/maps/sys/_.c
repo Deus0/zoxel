@@ -10,7 +10,7 @@ void zox_define_systems_maps(ecs* world) {
         zoxp_mainthread,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [none] players.Player
     );
     zox_system_1(

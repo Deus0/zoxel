@@ -30,6 +30,7 @@ static inline void update_layout_recursive(
     if (!zox_valid(e)) {
         return;
     }
+    // LinePosition, float4s
     if (zox_has(e, LayoutLinePoints) &&
         zox_has(e, LineAnchor) &&
         zox_has(e, LocalLinePoints2))
@@ -53,7 +54,6 @@ static inline void update_layout_recursive(
             zox_log("[%s] local line [%fx%f] -> [%fx%f]", zox_getn(e), line->start.x, line->start.y, line->end.x, line->end.y);
         }
     }
-    // LinePosition, float4s
     if (zox_has(e, LayoutPosition) &&
         zox_has(e, Anchor) &&
         zox_has(e, LocalPosition2))

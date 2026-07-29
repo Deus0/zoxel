@@ -19,8 +19,8 @@ void define_systems_elements2(ecs *world) {
         ScrollbarSystem,
         zoxp_update, // EcsPostUpdate,
         [in] interaction.DraggableState,
-        [in] layouts2.LayoutPosition,
-        [in] layouts2.LayoutSize,
+        [in] layouts.LayoutPosition,
+        [in] layouts.LayoutSize,
         [in] elements2.ScrollviewLink,
         [none] elements2.ScrollbarHandle
     );
@@ -45,7 +45,7 @@ void define_systems_elements2(ecs *world) {
         zoxp_update, // EcsPostUpdate,
         [in] elements.ElementBar,
         [in] elements.ElementBarSize,
-        [in] layouts2.LayoutSize,
+        [in] layouts.LayoutSize,
         [none] Elementbar2
     );
     zox_system(
@@ -55,8 +55,8 @@ void define_systems_elements2(ecs *world) {
         [in] elements2.SlideBounds,
         [in] interaction.DraggableState,
         [in] interaction.DraggerLink,
-        [in] layouts2.LayoutConstraints,
-        [in] layouts2.LayoutPosition
+        [in] layouts.LayoutConstraints,
+        [in] layouts.LayoutPosition
     );
     // Main Thread needed due to nature of options
     zox_system_1(

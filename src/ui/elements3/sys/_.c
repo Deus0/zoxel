@@ -2,6 +2,7 @@
 #include "elementbar3.c"
 #include "spawn_text.c"
 #include "billboards.c"
+#include "mesh.c"
 
 void define_systems_elements3D(ecs *world) {
     zox_system(
@@ -52,5 +53,24 @@ void define_systems_elements3D(ecs *world) {
         [in] transforms3.Position3D,
         [out] transforms3.Rotation3D,
         [none] cameras.ElementBillboard
+    );
+    zox_system(
+        Layout3MeshBeginSystem,
+        zoxp_update,
+        [in] core.Initialize,
+        [in] layouts.LayoutSize,
+        [in] rendering.MeshAlignment,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshDirty,
+    );
+    zox_system(
+        Layout3MeshUpdateSystem,
+        zoxp_update,
+        [in] layouts.LayoutSizeDirty,
+        [in] layouts.LayoutSize,
+        [in] rendering.MeshAlignment,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshDirty,
+        [none] !core.Initialize,
     );
 }

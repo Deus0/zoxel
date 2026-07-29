@@ -30,7 +30,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
         zoxp_update,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [none] players.Player
     );
     zox_system_1(
@@ -38,7 +38,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
         zoxp_mainthread,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [none] players.Player3
     );
     zox_system_1(
@@ -46,7 +46,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
         zoxp_mainthread,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [none] players.Player3
     );
     zox_system_1(
@@ -54,7 +54,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
         zoxp_mainthread,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [in] inputs.DeviceMode,
         [none] players.Player
     );

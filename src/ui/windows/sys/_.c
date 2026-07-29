@@ -8,17 +8,17 @@ void define_systems_windows(ecs* world) {
     zox_system(
         CanvasStackSystem,
         zoxp_update,
-        [out] layouts2.WindowToTop,
+        [out] layouts.WindowToTop,
         [out] WindowsLayers,
         [out] WindowsCount,
-        [none] layouts2.Canvas
+        [none] layouts.Canvas
     );
     zox_system(
         WindowLayerSystem,
         zoxp_update,
         [in] SetWindowLayer,
         [out] WindowLayer,
-        [out] layouts2.Layer2D,
+        [out] layouts.Layer2D,
         [none] Window
     );
     zox_system(
@@ -39,9 +39,9 @@ void define_systems_windows(ecs* world) {
         CanvasBoundsSystem,
         zoxp_update,
         [in] core.Initialize,
-        [in] layouts2.LayoutSize,
-        [in] layouts2.Anchor,
-        [in] layouts2.LayoutConstraints,
+        [in] layouts.LayoutSize,
+        [in] layouts.Anchor,
+        [in] layouts.LayoutConstraints,
         [none] windows.Window
     );
 }

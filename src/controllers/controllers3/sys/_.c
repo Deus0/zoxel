@@ -67,7 +67,7 @@ void define_systems_controllers3(ecs *world) {
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [none] players.Player
     );
     zox_system_1(
@@ -108,7 +108,7 @@ void define_systems_controllers3(ecs *world) {
         zoxp_mainthread, // zoxp_update,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [out] players.PlayerState
     );
     zox_system(

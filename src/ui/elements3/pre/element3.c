@@ -8,14 +8,15 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     // Add Mesh
     zox_add_tag(e, SingleMaterial);
     zox_add_tag(e, TexturedMesh3D);
+    zox_prefab_set(e, MeshAlignment,{ zox_alignment_centre });
     zox_prefab_add(e, MeshIndicies);
     zox_prefab_add(e, MeshVertices);
     zox_prefab_add(e, MeshUVs);
     zox_prefab_add(e, MeshColorRGBs);
     prefab_set_mesh_indicies(world, e, square_indicies, 6);
-    prefab_set_mesh3D_vertices(world, e, square_vertices, 4, (float2) { 0.04f, 0.04f });
     prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
     prefab_set_mesh_colors_rgb(world, e, (color_rgb) { 255, 255, 255 }, 4);
+    // prefab_set_mesh3D_vertices(world, e, square_vertices, 4, (float2) { 0.04f, 0.04f });
     zox_prefab_set(e, TextureGPULink, { 0 });
     zox_prefab_set(e, MeshGPULink, { 0 });
     zox_prefab_set(e, UvsGPULink, { 0 });

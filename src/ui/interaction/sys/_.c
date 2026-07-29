@@ -19,8 +19,8 @@ void zox_define_systems_interaction(ecs* world) {
     zox_filter(
         raycast_query,
         [in] transforms2.Position2,
-        [in] layouts2.LayoutSize,   // use Size2
-        [in] layouts2.Layer2D,
+        [in] layouts.LayoutSize,   // use Size2
+        [in] layouts.Layer2D,
         [in] rendering.RenderDisabled,
         [none] elements.Element,
         [none] interaction.Selectable
@@ -120,9 +120,9 @@ void zox_define_systems_interaction(ecs* world) {
         MouseElementSystem,
         zoxp_update,
         [in] inputs.ZeviceLink,
-        [in] layouts2.Anchor,
-        [out] layouts2.LayoutPosition,
-        [out] layouts2.LayoutPositionDirty,
+        [in] layouts.Anchor,
+        [out] layouts.LayoutPosition,
+        [out] layouts.LayoutPositionDirty,
         [none] elements.MouseElement
     );
     zox_system(

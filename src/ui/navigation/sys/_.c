@@ -6,7 +6,7 @@ void define_systems_navigation(ecs* world) {
         ElementNavigationBeginSystem,
         zoxp_update,
         [in] inputs.DeviceMode,
-        [in] layouts2.CanvasLink,
+        [in] layouts.CanvasLink,
         [out] raycasts.RaycasterTarget
     );
     zox_system(

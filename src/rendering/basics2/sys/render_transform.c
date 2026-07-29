@@ -32,7 +32,7 @@ entity spawn_material_matrixui(ecs *world) {
 // NOTE: Needs to skip GPU calls for non layers since called per layer
 zox_sys2(ElementRenderMatrixSystem) {
     byte dbg_log = 0;
-    float depth_per_layer = 0.001f;
+    float depth_per_layer = zox_depth_per_layer;
     float depth_begin = depth_per_layer;
     const attributes_matrixui* attributes = NULL;
     entity base_material = material_matrixui;

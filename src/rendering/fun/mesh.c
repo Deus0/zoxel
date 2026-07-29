@@ -19,11 +19,9 @@ void prefab_set_mesh2D_vertices(ecs *world, entity e, const float2* vertices_, i
 }
 
 void prefab_set_mesh3D_vertices(ecs *world, entity e, const float2* vertices, int length, float2 scale) {
-
     zox_mut_begin(e, MeshVertices, verts);
     if (verts->value) {
         dispose_MeshVertices(verts);
-        zox_mut_end(e, MeshVertices);
     }
     MeshVertices meshVertices = (MeshVertices) { 0 };
     resize_MeshVertices(&meshVertices, length);

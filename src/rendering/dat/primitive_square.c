@@ -1,12 +1,5 @@
 #define squareSize 0.1f
 
-/*const float square_vertices2[] = {
-    -1, -1,
-    -1, 1,
-    1, 1,
-    1, -1
-};*/
-
 // createt cube floats
 #define global_mesh_size 0.1f
 
@@ -24,13 +17,6 @@ const float squareUVs[] = {
     1, 1,
     0, 1
 };
-
-/*const float square_mesh_verts2[] = {
-    0, 0,         0, 0,   // top right
-    0, 1,         0, 1,   // bottom right
-    1, 1,         1, 1,   // bottom left
-    1, 0,         1, 0    // top left 
-};*/
 
 const float2 square_vertices[] = {
     { -0.5f, -0.5f },

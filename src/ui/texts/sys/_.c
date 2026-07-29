@@ -23,8 +23,8 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextData,
         [in] texts.TextFontSize,
         [in] TextPadding,
-        [out] layouts2.LayoutSize,
-        [out] layouts2.LayoutSizeDirty,
+        [out] layouts.LayoutSize,
+        [out] layouts.LayoutSizeDirty,
         [none] texts.Zext
     );
     zox_system_1(
@@ -39,7 +39,7 @@ void define_systems_texts(ecs *world) {
         [in] zigels.FontThickness,
         [in] zigels.FontOutlineThickness,
         [in] texts.TextResolution,
-        [in] layouts2.Layer2D,
+        [in] layouts.Layer2D,
         [out] rendering.RenderDisabled,
         [none] texts.Zext,
         [none] texts.Text2D
@@ -50,8 +50,8 @@ void define_systems_texts(ecs *world) {
         zoxp_update,
         [in] hierarchys.ChildIndex,
         [out] zigels.ZigelDirty,
-        [out] layouts2.LayoutPosition,
-        [out] layouts2.LayoutPositionDirty,
+        [out] layouts.LayoutPosition,
+        [out] layouts.LayoutPositionDirty,
         [none] zigels.Zigel
     );
     zox_system(

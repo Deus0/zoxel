@@ -60,8 +60,12 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
     };
     // 3D UI
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Elemenet3",
+        .text = "Element3",
         .on_click = { &zox_dbg_spawn_element3 },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Elements3 Corners",
+        .on_click = { &zox_dbg_spawn_element3_corners },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Popup3",

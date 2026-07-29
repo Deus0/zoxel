@@ -8,15 +8,15 @@ void define_systems_render_textures(ecs* world) {
     zox_system(
         ScreenRenderTextureSystem,
         zoxp_update,
-        [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.LayoutSize,
+        [in] layouts.LayoutSizeDirty,
+        [in] layouts.LayoutSize,
         [out] rendering.TextureSize,
         [none] render.textures.RenderTextureScreen
     );
     zox_system(
         RenderTextureSizeSystem,
         zoxp_update,
-        [in] layouts2.LayoutSizeDirty,
+        [in] layouts.LayoutSizeDirty,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
         [in] cameras.CameraLink,

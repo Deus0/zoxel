@@ -1,7 +1,7 @@
 // cache camera?? todo: refactor!
 void line2D_render_iteration(iter *it, byte is_element_line) {
     byte dbg_log = 0;
-    float depth_per_layer = 0.001f;
+    float depth_per_layer = zox_depth_per_layer;
     float depth_begin = depth_per_layer;
     // gl settings
     zox_gpu_enable_blend();

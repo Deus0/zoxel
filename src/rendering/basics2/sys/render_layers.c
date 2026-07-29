@@ -4,7 +4,7 @@
 zox_sys2(ElementRenderSystem) {
     byte dbg_log = 0;
     byte dbg_gl = 0;
-    float depth_per_layer = 0.001f;
+    float depth_per_layer = zox_depth_per_layer;
     float depth_begin = depth_per_layer;
     entity base_material = material_textured2D;
     entity material = 0;

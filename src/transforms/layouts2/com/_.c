@@ -1,6 +1,7 @@
 // Canvases
 zox_tag(Layout);
 zox_tag(Canvas);
+zox_tag(Canvas3);
 zox_tag(BoundToCanvas);
 zoxc_entity(CanvasLink);
 zoxc_byte(Layer2D);
@@ -29,6 +30,7 @@ void define_components_layouts2(ecs* world) {
     // Canvases
     zoxd_tag(Layout);
     zoxd_tag(Canvas);
+    zoxd_tag(Canvas3);
     zoxd_tag(BoundToCanvas);
     zoxd_entity(CanvasLink);
     zoxd_byte(Layer2D);

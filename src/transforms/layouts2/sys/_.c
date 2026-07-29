@@ -1,5 +1,6 @@
 #include "anchor_size.c"
 #include "new.c"
+#include "layout3.c"
 // TODO: We probably need a frame by frame, parent to child system, atm it just pushes it all at once, creates race issues
 // NOTE: Anchor Size for stretching along canvas, must work before the positioning
 
@@ -7,15 +8,23 @@ void define_systems_layouts2(ecs* world) {
     zox_system(
         AnchorSizeSystem,
         zoxp_update,
-        [in] layouts2.LayoutSizeDirty,
-        [in] layouts2.AnchorSize,
-        [out] layouts2.LayoutSize
+        [in] layouts.LayoutSizeDirty,
+        [in] layouts.AnchorSize,
+        [out] layouts.LayoutSize
     );
     // For Canvas basically
     zox_system(
         LayoutSystem,
         zoxp_update,
-        [in] layouts2.LayoutSize,
+        [in] layouts.LayoutSize,
+        [none] layouts.Canvas,
+        [none] !transforms2.LocalPosition2
+    );
+    zox_system(
+        Layout3System,
+        zoxp_update,
+        [in] layouts.LayoutSize,
+        [none] layouts.Canvas3,
         [none] !transforms2.LocalPosition2
     );
 }
