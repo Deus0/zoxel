@@ -6,9 +6,9 @@ entity spawn_prefab_camera_ui(ecs *world, entity prefab) {
     zox_add_tag(e, CameraUI);
     zox_add_tag(e, Camera2D);
     zox_add_tag(e, Orthographic);
-    zox_set(e, FieldOfView, { ui_camera_fov });
-    zox_set(e, CameraNearDistance, { 0.01f });
-    zox_set(e, Position3D, { float3_forward });
-    zox_set(e, Rotation3D, { quaternion_identity });
+    // zox_set(e, FieldOfView, { ui_camera_fov });
+    zox_setv(e, CameraNearDistance, 0);
+    // zox_setv(e, Position3D, float3_forward);
+    // zox_setv(e, Rotation3D, quaternion_identity);
     return e;
 }

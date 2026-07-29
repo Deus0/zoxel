@@ -53,46 +53,8 @@ void zox_tst_all_items(ecs* world, ClickEventData data) {
     // Get our Slots
     // Add more slots - new grid length is 7
     entity inventory = zox_get_child_by_id(world, character, zox_id(Inventory));
-    add_more_slots(world, inventory, (7 * 7) - 25);
+    add_more_slots(world, inventory, (8 * 8) - 16);
     delay_event(world, &give_character_all_items, character, 1.0f);
     tst_all_items = 1;
 }
 
-        // find slot
-        /*uint empty_slot_index = 255;
-        for (uint k = 0; k < slots_length; k++) {
-            entity slot = slots[k];
-            entity slot_data = zox_gett_value(slot, DataLink);
-            if (!slot_data) {
-                empty_slot_index = k;
-                break;
-            }
-        }
-        if (empty_slot_index == 255) {
-            zox_logw("Out of empty slots.");
-            for (uint k = 0; k < slots_length; k++) {
-                entity slot_data = zox_gett_value(slots[k], DataLink);
-                zox_log("Slot [%i] Data: %s", k, zox_get_name(slot_data));
-            }
-            continue;
-        }
-        entity slot = slots[empty_slot_index];*/
-
-
-/*
-
-// zox_geter(realm->value, ItemLinks, realm_items);
-zox_geter(realm->value, BlockLinks, blocks);
-// give npc random voxel
-entity block = blocks->value[rand() % blocks->length];
-if (zox_valid(block) && zox_has(block, ItemLink)) {
-    zox_geter(block, ItemLink, itemLink)
-    if (zox_valid(itemLink->value)) {
-        byte quantity =  1 + rand() % 3;
-
-        entity item = spawn_user_item(world, itemLink->value, e);
-        zox_set(item, Quantity, { quantity });
-    }
-}
-
- * */

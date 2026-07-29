@@ -2,16 +2,16 @@ static inline byte color_equal(const color a, const color b) {
     return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
 }
 
-static inline byte is_color_null(const color a) {
+static inline byte is_color_null(color a) {
     return color_equal(a, color_null);
 }
 
-static inline float4 color_to_float4(const color input) {
+static inline float4 color_to_float4(color input) {
     return (float4) {
-        (int) input.r / 255.0f,
-        (int) input.g / 255.0f,
-        (int) input.b / 255.0f,
-        (int) input.a / 255.0f
+        ((int) input.r) / 255.0f,
+        ((int) input.g) / 255.0f,
+        ((int) input.b) / 255.0f,
+        ((int) input.a) / 255.0f
     };
 }
 

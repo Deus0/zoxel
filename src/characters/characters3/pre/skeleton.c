@@ -5,7 +5,6 @@ entity spawn_prefab_character3_skeleton(ecs *world, entity prefab) {
     zox_prefab_name("character3_skeleton");
     zox_add_tag(e, Skeleton);
     zox_add_tag(e, SkeletonMesh);
-    zox_add_tag(e, NoSplitChunk);
     zox_prefab_set(e, SkeletonDirty, { 0 });
     zox_prefab_set(e, BoneLinks, { 0 });
     zox_prefab_set(e, BoneIndexes, { 0 });

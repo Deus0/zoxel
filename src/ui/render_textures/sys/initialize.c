@@ -1,4 +1,5 @@
 zox_sys2(RenderTextureBeginSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Initialize);
@@ -6,19 +7,20 @@ zox_sys2(RenderTextureBeginSystem) {
     zox_sys_in(CameraLink);
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Initialize, initialize);
         zox_sys_i(TextureSize, tsize);
         zox_sys_i(CameraLink, camera);
-        zox_sys_i(TextureGPULink, gpu_link);
-        if (initialize->value != zox_dirty_active) {
+        zox_sys_i(TextureGPULink, texture);
+        if (initialize->value != zox_dirty_end) { // active) {
             continue;
         }
-        if (!gpu_link->value) {
-            zox_log_error("render_texture failed: no texture gpu link")
+        if (!texture->value) {
+            zox_loge("render_texture failed: no texture gpu link")
             continue;
         }
         if (!zox_valid(camera->value)) {
-            zox_logw("Invalid Render Camera [%lu]", camera->value);
+            zox_loge("Invalid Render Camera on [%s]", zox_getn(e));
             continue;
         }
         if (!zox_has(camera->value, FrameBufferLink)) {
@@ -26,13 +28,22 @@ zox_sys2(RenderTextureBeginSystem) {
             continue;
         }
         // one time only
-        zox_geter_value(camera->value, FrameBufferLink, uint, fbo);
-        connect_render_texture_to_fbo(fbo, gpu_link->value);
-        // set size
-        zox_geter_value(camera->value, RenderBufferLink, uint, rbo);
-        set_render_texture_gpu(gpu_link->value, tsize->value);
-        set_render_buffer_size(rbo, tsize->value);
+        guint fbo = zox_getv(camera->value, FrameBufferLink);
+        if (!fbo) {
+            zox_loge("[RenderTextureBeginSystem] FBO Invalid on camera [%s]", zox_getn(camera->value));
+            continue;
+        }
+        guint rbo = zox_getv(camera->value, RenderBufferLink);
+        if (!rbo) {
+            zox_loge("[RenderTextureBeginSystem] RBO Invalid on camera [%s]", zox_getn(camera->value));
+            continue;
+        }
+        zox_gpu_fbo_to_texture(fbo, texture->value);
+        set_render_texture_gpu(texture->value, tsize->value, zox_has(e, RenderTextureAlpha));
+        zox_gpu_set_rbo_size(rbo, tsize->value);
         // zox_sys_e();
-        // zox_log("+ [%s] RenderTexture Uploaded: %ix%i", zox_get_name(e), tsize->value.x, tsize->value.y);
+        if (dbg_log) {
+            zox_log("+ [%s] RenderTexture Uploaded: %ix%i", zox_getn(e), tsize->value.x, tsize->value.y);
+        }
     }
 } zox_sys_end(RenderTextureBeginSystem);

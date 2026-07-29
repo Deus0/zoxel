@@ -3,7 +3,7 @@
 
 // globals for now...
 byte grayscale_mode = 0;
-color_rgb viewport_clear_color = { 0, 0, 0 };
+color viewport_clear_color = { 0, 0, 0, 255 };
 zoxc_color(Color);
 zoxc_color(SecondaryColor);
 zoxc_color_rgb(ColorRGB);

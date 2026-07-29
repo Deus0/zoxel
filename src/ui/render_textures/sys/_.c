@@ -20,7 +20,8 @@ void define_systems_render_textures(ecs* world) {
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
         [in] cameras.CameraLink,
-        [none] cameras.RenderTexture
+        [none] cameras.RenderTexture,
+        [none] !core.Initialize
     );
     zox_system_1(
         RenderTextureBeginSystem,
@@ -32,8 +33,9 @@ void define_systems_render_textures(ecs* world) {
         [none] cameras.RenderTexture
     );
     zox_system_1(
-        CameraBlurSystem,
+        CameraMaterialSystem,
         zoxp_mainthread,
+        [in] rendering.MaterialLink,
         [in] cameras.CameraBlur,
         [in] cameras.CameraVignette,
         [none] cameras.Camera

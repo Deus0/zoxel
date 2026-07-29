@@ -43,7 +43,7 @@ zox_sys2(ElementRenderSystem) {
         if (disabled->value || !alpha->value) {
             continue;
         }
-        entity root_camera = zox_get_root_canvas_camera(world, e);
+        entity root_camera = zox_get_mesh2_camera(world, e);
         if (root_camera != renderer_camera) {
             if (dbg_log) {
                 zox_logw("Not Rendering [%s] at L[%i]", zox_get_name(e), renderer_layer);

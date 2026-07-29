@@ -28,7 +28,7 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
             if (!zox_new_ui_renderer && layer->value != renderer_layer) {
                 continue; // render per layer
             }
-            entity root_camera = zox_get_root_canvas_camera(world, e);
+            entity root_camera = zox_get_mesh2_camera(world, e);
             if (root_camera != renderer_camera) {
                 continue;
             }

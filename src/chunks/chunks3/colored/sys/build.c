@@ -107,9 +107,6 @@ void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voxels, const Vo
         for (byte i = 0; i < octree_length; i++) {
             // Models dont have these set??
             const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
-            /*if (!kids[i].value) {
-                continue;
-            }*/
             byte3 child_position = byte3_add(position, octree_positions_b[i]);
             build_voxel_mesh_c(root, child_voxels, noctrees, nrdepths, vcolors, mesh, target_depth, depth, child_position, bounds_offset, scale, is_split);
         }

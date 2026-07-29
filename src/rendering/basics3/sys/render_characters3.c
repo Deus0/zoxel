@@ -5,7 +5,7 @@
 int zox_statistics_characters_rendered;
 // extern int zox_statistics_characters_rendered;
 
-// for unique meshes
+// for unique meshes - not atm used
 zox_sys2(Characters3RenderSystem) {
     zox_sys_world();
     if (!zox_valid(material_colored3D)) {
@@ -25,12 +25,12 @@ zox_sys2(Characters3RenderSystem) {
     zox_sys_in(RenderDisabled);
     camera_filtering_begin();
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RenderDisabled, renderDisabled);
+        zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(MeshIndicies, meshIndicies);
         zox_sys_i(MeshGPULink, meshGPULink);
         zox_sys_i(ColorsGPULink, colorsGPULink);
         zox_sys_i(TransformMatrix, transformMatrix);
-        if (renderDisabled->value || !meshIndicies->length || !meshGPULink->value.x || !meshGPULink->value.y || !colorsGPULink->value) {
+        if (disabled->value || !meshIndicies->length || !meshGPULink->value.x || !meshGPULink->value.y || !colorsGPULink->value) {
             continue;
         }
         camera_filtering_check();
@@ -50,8 +50,6 @@ zox_sys2(Characters3RenderSystem) {
         opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
         zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
         zox_gpu_render3(meshIndicies->length);
-        // catch_basic3D_errors("! Characters3RenderSystem");
-        // zox_statistics_characters_rendered++;
     }
     if (has_set_material) {
         zox_gpu_disable_attribute(material_attributes->vertex_color);

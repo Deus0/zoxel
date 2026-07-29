@@ -18,12 +18,12 @@ entity spawn_material_matrixui(ecs *world) {
     entity e = spawn_material(world, shader, &material);
     material_matrixui = e;
     if (!e) {
+        zox_loge("Material [matrixui] Failed");
         return 0;
     }
     zox_set(e, ShaderLink, { shader });
     attributes_matrixui base_attributes = create_attributes_matrixui(material);
     zox_set_data(e, attributes_matrixui, base_attributes);
-    // zox_set_data(e, attributes_matrixui, create_attributes_matrixui(material));
     return e;
 }
 
@@ -31,7 +31,7 @@ entity spawn_material_matrixui(ecs *world) {
 // TODO: Replace the old ui system and just use this
 // NOTE: Needs to skip GPU calls for non layers since called per layer
 zox_sys2(ElementRenderMatrixSystem) {
-    byte is_log = 0;
+    byte dbg_log = 0;
     float depth_per_layer = 0.001f;
     float depth_begin = depth_per_layer;
     const attributes_matrixui* attributes = NULL;
@@ -67,22 +67,22 @@ zox_sys2(ElementRenderMatrixSystem) {
         if (!zox_new_ui_renderer && layer->value != renderer_layer) {
             continue;
         }
-        entity root_camera = zox_get_root_canvas_camera(world, e);
-        if (root_camera != renderer_camera) {
-            if (is_log) {
-                zox_logw("Not Rendering [%s] at L[%i]", zox_get_name(e), renderer_layer);
+        entity render_camera = zox_get_mesh2_camera(world, e);
+        if (render_camera != renderer_camera) {
+            if (dbg_log) {
+                zox_logw("Not Rendering [%s] at L[%i], Cameras [%s]:[%s]", zox_get_name(e), renderer_layer, zox_getn(render_camera), zox_getn(renderer_camera));
             }
             continue;
         }
         if (!mesh->value.x || !mesh->value.y || !uvs->value || !texture->value) {
-            if (is_log) {
+            if (dbg_log) {
                 zox_logw("Mesh Invalid [%s] at L[%i]", zox_get_name(e), renderer_layer);
             }
             continue;
         }
         entity new_material = zox_has(e, MaterialLink) ? zox_getv(e, MaterialLink) : base_material;
         if (material != new_material) {
-            #ifdef zox_safety_checks
+#ifdef zox_safety_checks
             if (!zox_valid(new_material)) {
                 zox_loge("Invalid UI Material TransformUI");
                 continue;
@@ -91,7 +91,7 @@ zox_sys2(ElementRenderMatrixSystem) {
                 zox_loge("[%s] has Invalid UI Material [%s] no [attributes_matrixui]", zox_getn(e), zox_getn(new_material));
                 continue;
             }
-            #endif
+#endif
             material = new_material;
             attributes = zox_get(material, attributes_matrixui);
             guint material_id = zox_getv(material, MaterialGPULink);
@@ -101,15 +101,20 @@ zox_sys2(ElementRenderMatrixSystem) {
                 guint property_id = zox_getv(material, MaterialBlur);
                 float property_value = zox_getv(material, CameraBlur);
                 zox_gpu_float(property_id, property_value);
-                // zox_log("MaterialBlur Set [%i] to [%f]", property_id, property_value);
+                if (dbg_log >= 2) {
+                    zox_log("- Set Material Blur [%i] to [%f]", property_id, property_value);
+                }
             }
             if (zox_has(material, MaterialVignette) && zox_has(material, CameraVignette)) {
                 guint property_id = zox_getv(material, MaterialVignette);
                 float property_value = zox_getv(material, CameraVignette);
                 zox_gpu_float(property_id, property_value);
-                // zox_log("Material Vignette Set [%i] to [%f]", property_id, property_value);
+                if (dbg_log >= 2) {
+                    zox_log("- Set Material Vignette [%i] to [%f]", property_id, property_value);
+                }
             }
         }
+        // set layer depth
         float depth = depth_begin + layer->value * depth_per_layer;
         float4x4 matrix2 = matrix->value;
         matrix2.w.z += depth;
@@ -124,8 +129,12 @@ zox_sys2(ElementRenderMatrixSystem) {
         zox_gpu_float(attributes->brightness, brightness->value);
         zox_gpu_float(attributes->alpha, alpha->value);
         zox_gpu_render(6);
-        if (is_log) {
-            zox_log("Rendering [%s] at L[%i]", zox_get_name(e), renderer_layer);
+        if (dbg_log) {
+            zox_log("Rendering TransformUI [%s] at L[%i] on Camera [%s]", zox_get_name(e), renderer_layer, zox_getn(render_camera));
+            if (dbg_log >= 2) {
+                zox_log("- Brightness [%f] Alpha [%f]", brightness->value, alpha->value);
+                zox_log("- GPU: Mesh [%ix%i] UVs [%i] Texture [%i]", mesh->value.x, mesh->value.y, uvs->value, texture->value);
+            }
         }
         zox_sys_increment();
     }

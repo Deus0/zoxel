@@ -1,14 +1,9 @@
-entity spawn_render_texture_canvas(ecs *world, entity prefab, entity canvas, int2 layout_size, int2 texture_size, entity camera) {
-    byte layer = 0;
-    entity parent = canvas;
-    int2 position = int2_zero;
-    float2 anchor = float2_half;
-    zox_instance(prefab);
+entity spawn_render_texture(ecs *world, entity prefab, entity parent, float2 anchor, int2 position, int2 size, int2 texture_size, byte layer, entity camera) {
+    entity e = spawn_ui(world, prefab, parent, anchor, position, size, texture_size);
     zox_name("render_texture");
-    initialize_element(world, e, parent, canvas, position, layout_size, texture_size, anchor, layer);
-    zox_set(camera, RenderTextureLink, { e });
-    zox_set(e, CameraLink, { camera });
-    zox_set(e, MaterialLink, { material_render_texture });
-    // zox_log("render texture s %ix%i ts %ix%i", layout_size.x, layout_size.y, texture_size.x, texture_size.y);
+    zox_setv(e, Layer2D, layer);
+    zox_setv(e, MaterialLink, material_render_texture);
+    zox_setv(e, CameraLink, camera);
+    zox_setv(camera, RenderTextureLink, e);
     return e;
 }

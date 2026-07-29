@@ -16,22 +16,21 @@ zox_sys2(RenderTextureSizeSystem) {
             continue;
         }
         if (!texture_gpu->value) {
-            zox_sys_e();
-            zox_logw("[%s] Failure [RenderTextureSizeSystem]", zox_get_name(e));
+            zox_loge("[RenderTextureSizeSystem] [%s] Invalid [TextureGPULink]", zox_getn(e));
             continue;
         }
         if (!zox_valid(camera->value)) {
-            zox_logw("Invalid Render Camera [%lu]", camera->value);
+            zox_loge("[RenderTextureSizeSystem] Invalid Render Camera [%lu]", camera->value);
             continue;
         }
         if (!zox_has(camera->value, RenderBufferLink)) {
-            zox_log_error("Render Camera has no RenderBufferLink [%s]", zox_get_name(camera->value));
+            zox_loge("[RenderTextureSizeSystem] Invalid Render Camera: No RenderBufferLink [%s]", zox_getn(camera->value));
             continue;
         }
-        zox_geter_value(camera->value, RenderBufferLink, uint, rbo);
+        guint rbo = zox_getv(camera->value, RenderBufferLink);
         int2 scaled_size = scale_viewport(size->value);
-        set_render_texture_gpu(texture_gpu->value, size->value);
-        set_render_buffer_size(rbo, size->value);
+        set_render_texture_gpu(texture_gpu->value, size->value, zox_has(e, RenderTextureAlpha));
+        zox_gpu_set_rbo_size(rbo, size->value);
         if (dbg_log) {
             zox_log("+ [%s] Render Scaled Size: %ix%i - og [%ix%i]", zox_get_name(e), scaled_size.x, scaled_size.y, size->value.x, size->value.y);
         }

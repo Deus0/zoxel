@@ -3,6 +3,7 @@
 #include "camera_renderer.c"
 #include "camera_render3D_system.c"
 #include "camera_render_ui_system.c"
+#include "init.c"
 
 void define_systems_rendering_cameras(ecs *world) {
     // restore
@@ -41,5 +42,14 @@ void define_systems_rendering_cameras(ecs *world) {
         [in] screens.ScreenDimensions,
         [in] colorz.FogColor,
         [none] cameras.CameraUI
+    );
+    zox_system_1(
+        RenderCameraInitializeSystem,
+        zoxp_mainthread,
+        [in] core.Initialize,
+        [in] screens.ScreenDimensions,
+        [out] rendering.cameras.FrameBufferLink,
+        [out] rendering.cameras.RenderBufferLink,
+        [none] cameras.RenderCamera
     );
 }

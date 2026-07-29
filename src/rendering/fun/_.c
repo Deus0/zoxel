@@ -7,7 +7,12 @@
 #include "terminal.c"
 #include "dispose.c"
 
-entity zox_get_root_canvas_camera(ecs *world, entity e) {
+// NOTE: Returns the render camera for a mesh (ui)
+entity zox_get_mesh2_camera(ecs *world, entity e) {
+    // This is render camera link basically
+    /*if (zox_has(e, CameraLink)) {
+        return zox_getv(e, CameraLink);
+    }*/
     entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
-    return (zox_valid(canvas) && zox_has(canvas, CameraLink)) ? zox_gett_value(canvas, CameraLink) : 0;
+    return (zox_valid(canvas) && zox_has(canvas, CameraLink)) ? zox_getv(canvas, CameraLink) : 0;
 }

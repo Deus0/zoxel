@@ -42,7 +42,9 @@ zox_sys2(Skeleton3RenderSystem) {
             if (transparent_meshes) {
                 zox_gpu_enable_blend();
                 zox_gpu_disable_culling();
-            }
+            } /*else {
+                zox_gpu_disable_blend();
+            }*/
             zox_gpu_material(material_link);
             zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(material_attributes->fog_data, get_fog_value());

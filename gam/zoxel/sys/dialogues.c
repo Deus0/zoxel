@@ -43,6 +43,25 @@ zox_sys2(DialogueRealmSpawnSystem) {
             entity e2 = spawn_dialogue_tree_texts(world, prefab_dialogue_node, e, texts, texts_count);
             add_to_DialoguetreeLinks(dialogues, e2);
         }
+        {
+            byte texts_count = 2;
+            char* texts[] = {
+                "Hail Penguin",
+                "Mr Penguin Watches you.",
+            };
+            entity e2 = spawn_dialogue_tree_texts(world, prefab_dialogue_node, e, texts, texts_count);
+            add_to_DialoguetreeLinks(dialogues, e2);
+        }
+        {
+            byte texts_count = 3;
+            char* texts[] = {
+                "I am weary of the black bird",
+                "....",
+                "We all should be",
+            };
+            entity e2 = spawn_dialogue_tree_texts(world, prefab_dialogue_node, e, texts, texts_count);
+            add_to_DialoguetreeLinks(dialogues, e2);
+        }
         // zox_set_ptr(realm, DialoguetreeLinks, trees);
         zox_logv("At [%f] Realm [dialogues] [%i] spawned.", zox_current_time, dialogues->length);
     }

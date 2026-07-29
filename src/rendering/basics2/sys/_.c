@@ -15,9 +15,7 @@ void define_systems_basics2D(ecs *world) {
         [out] rendering.MeshDirty,
         [none] !rendering.MeshUVs,
         [none] !rendering.MeshColorRGBs,
-#ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
-#endif
     );
     zox_system_1(
         MeshUVs2UploadSystem,
@@ -28,9 +26,7 @@ void define_systems_basics2D(ecs *world) {
         [in] rendering.MeshVertices2D,
         [in] rendering.MeshUVs,
         [out] rendering.MeshDirty,
-#ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
-#endif
     );
     // 2D or 3D pipeline?
     zox_render2D_system(
@@ -47,9 +43,7 @@ void define_systems_basics2D(ecs *world) {
         [in] rendering.TextureGPULink,
         [none] rendering2.TexturedMesh2,
         [none] !transforms.TransformMatrix,
-#ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
-#endif
     );
     add_system_process_counter(world, zox_id(ElementRenderSystem));
     // all ui
@@ -65,9 +59,7 @@ void define_systems_basics2D(ecs *world) {
         [in] rendering.UvsGPULink,
         [in] rendering.TextureGPULink,
         [none] rendering2.TexturedMesh2,
-#ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
-#endif
     );
     zox_render3_system(
         0,
@@ -79,8 +71,6 @@ void define_systems_basics2D(ecs *world) {
         [in] rendering.MaterialGPULink,
         [in] rendering.TextureGPULink,
         [none] !rendering.MeshGPULink,
-#ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
-#endif
     );
 }

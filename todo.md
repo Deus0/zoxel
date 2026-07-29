@@ -2,18 +2,34 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+Atm
+- Refactor taskbar as entities and add the Mirror UI there
+- Top hat is missing from all items
+- Fix lighting when rendering it through the render camera (characteer lights is off)
+- Finish Character Renderer
+    - Make it so camera can filter an object itself, instead of just the object filtering camera?
+    - Make a renderer clone that just copies another entities mesh.. somehow
+- Destroy Render Camera when the ui dies - just parent it?
+- Add BarUI Test function (spawn 3 bars diff percentage?, tween animate them)
+- Animate Text test
+- Fix UI3D Test
+- Projectiles get destroyed on hit characters (use same system as pickups)
+- Note: Atm the material is the same on all render textures
+    - we can just create a child of the ui as material if we need unique values
+
+// remove these soon
+zox_canvases[i] = canvas;
+main_cameras[i] = game_camera;
+ui_cameras[i] = spawned_cameras.y;
+        
 Bugs
-- Fix head stuck in roof collision
-- Fix clipping into block when jumping from side
+- Fix taskbars again properly linking to windows
 - Fix 3D uis - theyre missing
 - Statbar 2Ds - the frontbar are not appearing in front properly
-- Destruction Material Flickering
-- Crashing on windows still
-	- implement loading screen to make it easier to see why breaks
+- Destruction Material Flickering - increase depth until i fix it
 - List ui calculating wrong cause sliders different heights then buttons!
-- Fix taskbars again properly linking to windows
 - Fix Skinning issues of humanoids at max depth
-- fix unstuck system and test it with no clip
+- Fix unstuck system and test it with no clip
 
 Refactors
 - Remove crafting users reference and use normal item ui for craft ui
@@ -42,6 +58,7 @@ Polish
 - Make map move around player position
 - Fix timing of arm swing
 - item ++ shhould occur after it reaches you (the world item)
+- Add loading screen
 
 # Note we need to use pipelines to isolate reading from voxels / writing to
 

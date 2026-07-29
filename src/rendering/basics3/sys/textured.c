@@ -7,18 +7,18 @@ zox_sys2(Chunk3TexturedRenderSystem) {
     zox_sys_world();
     camera_filtering_begin();
     zox_sys_begin();
-    // zox_sys_in(Active);
     zox_sys_in(RenderDisabled);
     zox_sys_in(TransformMatrix);
+    zox_sys_in(MaterialLink);
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(MeshRenderCount);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(Active, active);
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(TransformMatrix, matrix);
+        zox_sys_i(MaterialLink, material);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
@@ -43,7 +43,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         camera_filtering_check();
         // TODO: Swapping / Grouping Tilemaps
         if (!initialized_material) {
-            entity chunk = zox_get_parent(world, e);
+            /*entity chunk = zox_get_parent(world, e);
 #ifdef zox_safety_checks
             if (!zox_valid(chunk)) {
                 zox_loge("Chunk Invalid for ChunkMesh %s", zox_getn(e));
@@ -61,25 +61,25 @@ zox_sys2(Chunk3TexturedRenderSystem) {
                 continue;
             }
 #endif
-            entity tilemap = zox_getv(terrain, TilemapLink);
+            entity material = zox_getv(terrain, TilemapLink);*/
 #ifdef zox_safety_checks
-            if (!zox_valid(tilemap)) {
-                zox_loge("Tilemap Invalid for Chunk %s", zox_getn(e));
+            if (!zox_valid(material->value)) {
+                zox_loge("Tilemap (material) Invalid for Chunk %s", zox_getn(e));
                 continue;
             }
 #endif
-            guint material = zox_getv(tilemap, MaterialGPULink);
-            guint texture = zox_getv(tilemap, TextureGPULink);
-            attributes = zox_get(tilemap, MaterialTextured3D);
-            if (!material || !texture || !attributes) {
-                zox_loge("Invalid Tilemap [%s] in Terrain Renderer", zox_getn(tilemap));
+            guint material_id = zox_getv(material->value, MaterialGPULink);
+            guint texture_id = zox_getv(material->value, TextureGPULink);
+            attributes = zox_get(material->value, MaterialTextured3D);
+            if (!material_id || !texture_id || !attributes) {
+                zox_loge("Invalid Tilemap [%s] in Terrain Renderer", zox_getn(material->value));
                 continue;
             }
-            zox_gpu_material(material);
+            zox_gpu_material(material_id);
+            zox_gpu_bind_texture(texture_id);
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(attributes->fog_data, get_fog_value());
             zox_gpu_float(attributes->brightness, 1);
-            zox_gpu_bind_texture(texture);
             initialized_material = 1;
         }
         zox_gpu_bind_buffer_element(mesh->value.x);

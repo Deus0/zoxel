@@ -1,4 +1,4 @@
-entity dbg_ui_tests;
+entity dbg_test_window_world;
 
 void zox_dbg_spawn_cube_ui(ecs* world, ClickEventData data) {
     zox_dbg_spawn_cube(world);
@@ -12,14 +12,14 @@ void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
     zox_tst_spawn_tilemap(world);
 }
 
-void zox_dbg_ui_auto_tests(ecs* world, int32_t keycode) {
-    if (keycode != zox_key_h) {
+void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
+    if (keycode != zox_key_j) {
         return;
     }
-    zox_log("Toggling Debug UI [Tests]: %s", dbg_ui_tests ? zox_get_name(dbg_ui_tests) : "None");
-    if (zox_valid(dbg_ui_tests)) {
-        zox_delete(dbg_ui_tests);
-        dbg_ui_tests = 0;
+    zox_log("Debug [dbg_test_window_world]: %s", dbg_test_window_world ? zox_getn(dbg_test_window_world) : "None");
+    if (zox_valid(dbg_test_window_world)) {
+        zox_delete(dbg_test_window_world);
+        dbg_test_window_world = 0;
         return;
     }
     entity player = dbg_player;
@@ -37,44 +37,6 @@ void zox_dbg_ui_auto_tests(ecs* world, int32_t keycode) {
     byte header_font_size = 6 * ui_scale;
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
-    // 2D UI
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Canvas",
-        .on_click = { &zox_dbg_spawn_canvas },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Element2",
-        .on_click = { &zox_dbg_spawn_element },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Elements Transforms",
-        .on_click = { &zox_dbg_spawn_element_transforms },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Elements Canvas",
-        .on_click = { &zox_dbg_spawn_element_canvas },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Text",
-        .on_click = { &zox_tst_spawn_text2 },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Window List",
-        .on_click = { &zox_tst_spawn_window_list },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Render Texture",
-        .on_click = { &zox_tst_render_texture },
-    };
-    // 3D UI
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Elemenet3",
-        .on_click = { &zox_dbg_spawn_element3 },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Popup3",
-        .on_click = { &zox_dbg_spawn_popup3 },
-    };
     // Geometry
     elements[elements_count++] = (SpawnListElement) {
         .text = "Cube",
@@ -130,8 +92,8 @@ void zox_dbg_ui_auto_tests(ecs* world, int32_t keycode) {
     };
     // Test our uis
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, "Auto Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
-    zox_set_unique_name(e3.x, "dbg_ui_tests");
+    entity3 e3 = spawn_window_list(world, prefab_window, player, "World Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
+    zox_set_unique_name(e3.x, "dbg_test_window_world");
     zox_add_tag(e3.x, NavigationWindow);
-    dbg_ui_tests = e3.x;
+    dbg_test_window_world = e3.x;
 }

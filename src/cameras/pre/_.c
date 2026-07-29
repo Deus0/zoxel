@@ -3,7 +3,6 @@
 #include "free.c"
 entity prefab_camera;
 entity prefab_camera_ui;
-entity prefab_camera_game;
 
 void spawn_prefabs_cameras(ecs *world) {
     viewport_scale = 1 / (float) viewport_downscale;

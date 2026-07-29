@@ -14,13 +14,13 @@
         // zox_sys_o(MeshGPULink, meshGPULink);
         zox_sys_o(UvsGPULink, uvsGPULink);
         zox_sys_o(ColorsGPULink, colorsGPULink);
-        zox_sys_o(TextureGPULink, textureGPULink);
+        zox_sys_o(TextureGPULink, texture);
         zox_sys_o(MeshDirty, mesh_dirty);
         if (initialize->value != zox_dirty_active) {
             continue;
         }
         // meshGPULink->value = spawn_gpu_mesh_buffers();
-        textureGPULink->value = spawn_gpu_texture_buffer();
+        texture->value = spawn_gpu_texture_buffer();
         uvsGPULink->value = zox_gpu_create_buffer();
         colorsGPULink->value = zox_gpu_create_buffer();
         mesh_dirty->value = mesh_state_trigger;

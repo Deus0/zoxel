@@ -6,5 +6,5 @@ color crosshair_air = { 255, 255, 255, 66 };
 color crosshair_terrain = { 33, 166, 166, 99 };
 color crosshair_target = { 122, 22, 22, 99 };
 float crosshair_air_scale = 3;
-float crosshair_terrain_scale = 4;
-float crosshair_target_scale = 4;
+float crosshair_terrain_scale = 1.5f;
+float crosshair_target_scale = 1.8f;

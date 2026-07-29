@@ -31,7 +31,7 @@ void zox_dbg_add_no_clip(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
-    if (keycode != zox_key_j) {
+    if (keycode != zox_key_k) {
         return;
     }
     zox_log("Toggling Debug UI [Cheats]: %s", dbg_ui_cheats ? zox_get_name(dbg_ui_cheats) : "None");

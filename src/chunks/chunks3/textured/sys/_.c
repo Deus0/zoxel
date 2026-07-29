@@ -1,4 +1,3 @@
-#include "render.c"
 #include "sides.c"
 #include "build.c"
 #include "wait.c"
@@ -54,7 +53,6 @@ void define_systems_chunks3_textured(ecs *world) {
     zox_system(
         ChunkTexturedBuildSystem,
         zoxp_voxels_mesh,
-        // [in] core.Active,
         [in] rendering.RenderDepth,
         [out] rendering.BuildMesh,
         [out] rendering.MeshIndicies,
@@ -65,18 +63,4 @@ void define_systems_chunks3_textured(ecs *world) {
         [none] chunks.ChunkMesh,
         [none] !core.Disabled
     );
-    zox_render3_system(
-        0,
-        Chunk3TexturedRenderSystem,
-        // [in] core.Active,
-        [in] rendering.RenderDisabled,
-        [in] transforms.TransformMatrix,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.ColorsGPULink,
-        [in] rendering.MeshRenderCount,
-        [none] chunks.ChunkMesh,
-        [none] !core.Disabled
-    );
-    add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
 }

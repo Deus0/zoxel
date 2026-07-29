@@ -40,12 +40,7 @@ void camera_render_update(iter *it, byte is_camera2D) {
         render_camera_position = position->value;
         renderer_fog_color = fog->value;
         // set render objects
-        uint fbo = 0;
-        if (!is_camera2D) {
-            if (zox_has(e, FrameBufferLink)) {
-                fbo = zox_get_value(e, FrameBufferLink)
-            }
-        }
+        uint fbo = zox_has(e, FrameBufferLink) ? zox_getv(e, FrameBufferLink) : 0;
         if (render_backend == zox_render_backend_opengl) {
             if (fbo) {
                 // rendering to texture
@@ -64,23 +59,28 @@ void camera_render_update(iter *it, byte is_camera2D) {
                 continue;
             }
 #endif
+        }
+        if (!is_camera2D) {
+            color clear_color = zox_has(e, Color) ? zox_getv(e, Color) : color_black;
+            zox_gpu_set_clear_color(color_to_float4(clear_color));
             zox_gpu_clear_viewport();
+            // zox_log("Camera [%s] Viewport Color is [%ix%ix%ix%i]", zox_getn(e), clear_color.r, clear_color.g, clear_color.b, clear_color.a);
         }
         #ifdef zox_vulkan
         // else { set vulkan viewport; }
         #endif
+        if (dbg_log) {
+            zox_log("[%s] Rendering [%s]: [%ix%i] Buffer? [%i]", is_camera2D ? "Camera2" : "Camera3", zox_getn(e), screen_size->value.x, screen_size->value.y, fbo);
+        }
         if (!is_camera2D) {
-            if (dbg_log) {
-                zox_log("Camera Rendering [%s]: [%ix%i]", zox_get_name(e), screen_size->value.x, screen_size->value.y);
-            }
             // TODO: Tag systems as Render2D systems and use tag here
             for (byte j = 0; j < max_render_loop_orders; j++) {
                 for (size_t k = 0; k < render3D_systems->size; k++) {
                     entity system = render3D_systems->data[k];
                     byte order = zox_has(system, RenderOrder) ? zox_getv(system, RenderOrder) : 0;
                     if (order == j) {
-                        if (dbg_log) {
-                            zox_log(" - %i [%s] (%i)", k, zox_get_name(system), j);
+                        if (dbg_log >= 2) {
+                            zox_log(" - %i [%s] (%i)", k, zox_getn(system), j);
                         }
                         ecs_run(world, system, 0, NULL);
                     }
@@ -96,13 +96,16 @@ void camera_render_update(iter *it, byte is_camera2D) {
                 for (renderer_layer = 0; renderer_layer < max_layers2D; renderer_layer++) {
                     for (size_t j = 0; j < render2D_systems->size; j++) {
                         entity system = render2D_systems->data[j];
+                        if (renderer_layer == 0 && dbg_log >= 2) {
+                            zox_log(" - %i [%s] (%i)", j, zox_getn(system), j);
+                        }
                         ecs_run(world, system, 0, NULL);
                     }
                 }
             }
         }
         if (fbo) {
-            zox_gpu_bind_fbo(0);
+            zox_gpu_reset_fbo();
         }
     }
 }

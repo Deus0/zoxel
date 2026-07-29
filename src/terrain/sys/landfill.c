@@ -89,7 +89,7 @@ zox_sys2(LandfillChunkSystem) {
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte shift = terrain_depth - depth->value;
         short length = octree_size(depth->value);
-        byte hmultiplier = octree_size(shift);
+        // byte hmultiplier = octree_size(shift);
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth);
         int2 map_size = int2_single(length);
         // NOTE: Shouldnt this use terrain depth?? Tests failed
@@ -120,7 +120,7 @@ zox_sys2(LandfillChunkSystem) {
                 // int map_index = int2_array_index(map_position, map_size);
 #ifdef zox_safety_checks
                 if (map_index >= biome_map->length) {
-                    zox_loge("Landfill: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", map_index, biome_map->length, map_position.x, map_position.y, map_size.x, map_size.y);
+                    zox_loge("Landfill: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", map_index, biome_map->length, position.x, position.y, map_size.x, map_size.y);
                     continue;
                 }
 #endif

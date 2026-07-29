@@ -19,32 +19,32 @@ static uint create_shader_compute() { return 0; }
 
 static inline uint zox_gpu_create_rbo() { return 0; }
 static inline uint zox_gpu_create_fbo() {return 0; }
-static inline void zox_gpu_bind_fbo(uint id) { }
-static inline void zox_gpu_link_fbo(uint fbo, uint texture) { }
-static inline void zox_gpu_link_fbo_rbo(uint fbo, uint rbo) { }
-static inline void zox_gpu_dispose_fbo(uint fbo) { }
+static inline void zox_gpu_bind_fbo(guint id) { }
+static inline void zox_gpu_fbo_to_texture(guint fbo, guint texture) { }
+static inline void zox_gpu_link_fbo_rbo(guint fbo, guint rbo) { }
+static inline void zox_gpu_dispose_fbo(guint fbo) { }
 
 // RBOs
 
-static inline void zox_gpu_set_rbo_size(uint id, int2 size) { }
-static inline void zox_gpu_dispose_rbo(uint id) { }
+static inline void zox_gpu_set_rbo_size(guint id, int2 size) { }
+static inline void zox_gpu_dispose_rbo(guint id) { }
 
 // Shaders
-void zox_gpu_dispose_shader(uint id) { }
+void zox_gpu_dispose_shader(guint id) { }
 
 // Triangles
 
-static inline void zox_gpu_render(uint length) { }
-static inline void zox_gpu_render3(uint length) { }
-static inline void zox_gpu_render_as_lines(uint length) { }
-static inline void zox_gpu_render_triangles_instanced(uint indicies, uint length) { }
+static inline void zox_gpu_render(guint length) { }
+static inline void zox_gpu_render3(guint length) { }
+static inline void zox_gpu_render_as_lines(guint length) { }
+static inline void zox_gpu_render_triangles_instanced(guint indicies, uint length) { }
 
 byte zox_init_glew() { return EXIT_SUCCESS; }
 
 #include "fun/_.c"
 
-zox_begin_module(Headless)
-
-zox_end_module(Headless)
+zox_begin_module(Headless) {
+    zox_log("Zox Headless is Enabled");
+} zox_end_module(Headless);
 
 #endif

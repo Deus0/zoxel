@@ -25,9 +25,6 @@ zox_sys2(Basic3RenderSystem) {
             continue;
         }
         camera_filtering_check();
-        /*if (zox_has(e, Initialize) && zox_getv(e, Initialize)) {
-            continue;
-        }*/
 #ifdef zox_safety_checks
         if (!material->value) {
             zox_loge("(Basic3) Gpu Link [material] broken [%s]", zox_getn(e));
@@ -41,8 +38,6 @@ zox_sys2(Basic3RenderSystem) {
         if (alpha->value < 1) {
             zox_gpu_enable_blend();
         }
-        // const MaterialBasic3D* attributes = zox_get(e, MaterialBasic3D);
-        //    create_MaterialBasic3D(material->value);
         zox_gpu_material(material->value);
         zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
         zox_gpu_float4(attributes->fog_data, get_fog_value());
@@ -59,9 +54,10 @@ zox_sys2(Basic3RenderSystem) {
         zox_gpu_render3(indicies->length);
         if (dbg_log) {
             float3 position = matrix_to_position(matrix->value);
-            zox_log("Rendering BasicMesh3D [%s] at [%fx%fx%f] - Triangles [%i]", zox_getn(e), position.x, position.y, position.z, indicies->length);
+            zox_log("Rendering BasicMesh3D [%s] - Triangles [%i] Render Camera [%s]", zox_getn(e),  indicies->length, zox_getn(renderer_camera));
+            zox_log("   - At [%fx%fx%f]", position.x, position.y, position.z);
             zox_log("   - GPU: Mesh [%ix%i]", mesh->value.x, mesh->value.y);
-            zox_log("   - Attributes: %i %i %i", attributes->vertex_position);
+            zox_log("   - Attributes: %i %i %i", attributes->vertex_position, attributes->transform_matrix, attributes->color);
             // zox_log("Rendering Basic3D Mesh [%s] [%i]: %s, Brightness [%f], Alpha [%f]", zox_get_name(e), indicies->length, alpha->value < 1 ? "Transparent" : "Opaque", brightness->value, alpha->value);
         }
         zox_gpu_disable_attribute(attributes->vertex_position);

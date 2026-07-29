@@ -63,6 +63,18 @@ zox_sys2(ChunkMeshSpawnSystem) {
             }
             continue;
         }
+        entity terrain = zox_get_parent(world, e);
+#ifdef zox_safety_checks
+        if (!zox_valid(terrain)) {
+            zox_loge("terrain Invalid for ChunkMesh %s", zox_getn(e));
+            continue;
+        }
+        if (!zox_has(terrain, TilemapLink)) {
+            zox_loge("e [%s] terrain has no TilemapLink %s", zox_getn(e), zox_getn(terrain));
+            continue;
+        }
+#endif
+        entity material = zox_getv(terrain, TilemapLink);
         // NOTE: When Depth changes or Voxels Generate, if mesh doesnt exist we spawn new
         {
             entity e2 = zox_ins(world, prefab_chunk_mesh_textured);
@@ -71,6 +83,7 @@ zox_sys2(ChunkMeshSpawnSystem) {
             zox_set(e2, RenderDepth, { depth->value });
             zox_set(e2, RenderDisabled, { render_disabled->value });
             zox_set(e2, TransformMatrix, { matrix->value });
+            zox_set(e2, MaterialLink, { material });
         }
         if (dirty->value == zox_chunk_lod_dirty_spawn) {
             dirty->value = zox_chunk_lod_dirty_toggle;

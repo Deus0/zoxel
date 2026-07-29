@@ -14,10 +14,7 @@ zox_begin_module(ZoxGame) {
     add_hook_on_boot(spawn_weather);
     // Debug UIs
     add_hook_key_down(zox_dbg_ui_gizmos);
-    add_hook_key_down(zox_dbg_ui_cheats);
     add_hook_key_down(zox_dbg_ui_overlays);
-    add_hook_key_down(zox_dbg_ui_auto_tests);
-    add_hook_key_down(zox_dbg_ui_manual_tests);
 } zox_end_module(ZoxGame);
 
 #endif

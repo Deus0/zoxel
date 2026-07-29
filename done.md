@@ -1,5 +1,12 @@
 # Done
 
+-x Add color to camera - for background (clear color)
+-x Fix Render Texture test
+-x Crashing on windows still
+-x RenderCameraInit system - with create_camera_rbo_and_fbo - Just use ScreenDimensions of camera
+-x Crashes when test render texture
+-x Fix head stuck in roof collision
+-x Fix clipping into block when jumping from side
 -x Cube in hand is gone
 -x Fix Textures on UI, half not showing up in shader
 	-x ... Something to do with UIMesh system

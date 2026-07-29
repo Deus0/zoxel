@@ -1,8 +1,10 @@
+in vec2 uv;
+out vec4 color;
+uniform float brightness;
+uniform float alpha;
 uniform sampler2D zexture;
 uniform float blur;
 uniform float vignette;
-in vec2 uv;
-out vec4 color;
 
 // === constants ===
 const float BLUR_RADIUS = 3.0;
@@ -80,4 +82,9 @@ void main() {
     float vignette_smoothness = 0.8;
     float vignette_mask = smoothstep(1.0 - vignette_smoothness, 1.0, length(uv - vec2(0.5, 0.5)));
     color.rgb *= 1.0 - vignette_mask * (vignette);
+
+    // Apply Properties
+    color.a = base.a;
+    color.rgb *= brightness;
+    color.a *= alpha;
 }

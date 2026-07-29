@@ -1,5 +1,9 @@
-uint create_shader_compute() {
+guint create_shader_compute() {
     return glCreateShader(GL_COMPUTE_SHADER);
+}
+
+static inline void zox_gpu_dispose_shader(guint id) {
+    glDeleteShader(id);
 }
 
 byte initialize_material(guint material, guint vert_shader, guint frag_shader) {

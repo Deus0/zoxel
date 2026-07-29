@@ -29,11 +29,12 @@ void zox_dbg_spawn_cube_textured(ecs *world) {
     float3 position = zox_getv(camera, Position3D);
     float4 rotation = zox_getv(camera, Rotation3D);
     float3 spawn_position = move_along_direction(position, rotation, -distance);
-    entity e = spawn_cube_textured(world, prefab_cube_textured, texture, spawn_position, scale);
-    dbg_cube_textured = e;
+    entity cube = spawn_cube_textured(world, prefab_cube_textured, texture, spawn_position, scale);
+    add_eternal_euler(world, cube, (float3) { 24, 24, 0 });
     if (dbg_inspector) {
         entity player = dbg_player;
         entity canvas = zox_getv(player, CanvasLink);
-        dbg_cube_textured_inspector = spawn_inspector(world, canvas, player, e);
+        dbg_cube_textured_inspector = spawn_inspector(world, canvas, player, cube);
     }
+    dbg_cube_textured = cube;
 }
