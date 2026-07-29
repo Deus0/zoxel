@@ -3,9 +3,10 @@
 used - 200-400mb used
 
 Atm
+- Fix 3D uis - theyre missing
+- Statbar 2Ds - the frontbar are not appearing in front properly
 - Refactor taskbar as entities and add the Mirror UI there
-- Top hat is missing from all items
-- Fix lighting when rendering it through the render camera (characteer lights is off)
+-x Fix lighting when rendering it through the render camera (characteer lights is off)
 - Finish Character Renderer
     - Make it so camera can filter an object itself, instead of just the object filtering camera?
     - Make a renderer clone that just copies another entities mesh.. somehow
@@ -24,8 +25,6 @@ ui_cameras[i] = spawned_cameras.y;
         
 Bugs
 - Fix taskbars again properly linking to windows
-- Fix 3D uis - theyre missing
-- Statbar 2Ds - the frontbar are not appearing in front properly
 - Destruction Material Flickering - increase depth until i fix it
 - List ui calculating wrong cause sliders different heights then buttons!
 - Fix Skinning issues of humanoids at max depth

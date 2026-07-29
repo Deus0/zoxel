@@ -8,7 +8,7 @@
 // Triangles
 
 static inline void zox_gpu_render3(gsizei length) {
-    if (zox_lines_mode) {
+    if (zox_render_lines) {
         glDrawElements(GL_LINES, length, GL_UNSIGNED_INT, 0);
     } else {
         glDrawElements(GL_TRIANGLES, length, GL_UNSIGNED_INT, 0); // NULL);

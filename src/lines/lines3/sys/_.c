@@ -4,16 +4,14 @@
 #include "render_depths.c"
 
 void define_systems_lines3(ecs* world) {
-    zox_render3_system(
-        2,
+    zox_render3_system(2,
         Line3DRenderSystem,
         [in] lines3.LineData3D,
         [in] lines.LineThickness,
         [in] colorz.Color,
         [none] lines3.Line3D
     );
-    zox_render3_system(
-        2,
+    zox_render3_system(2,
         QuadLineRenderSystem,
         [in] lines.LineThickness,
         [in] colorz.Color,
@@ -23,8 +21,7 @@ void define_systems_lines3(ecs* world) {
         [none] lines3.QuadLines
     );
     // todo: make overlay layer in render stack
-    zox_render3_system(
-        2,
+    zox_render3_system(2,
         CubeLineRenderSystem,
         [in] lines3.DebugCubeLines,
         [in] lines.LineThickness,

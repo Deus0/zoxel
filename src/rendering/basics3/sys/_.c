@@ -10,6 +10,7 @@
 #ifndef zox_disable_rendering_instances
     #include "vox_instance_render_system.c"
 #endif
+#include "element.c"
 
 void zox_define_systems_basics3(ecs* world) {
     // skybox
@@ -116,8 +117,7 @@ void zox_define_systems_basics3(ecs* world) {
         [none] rendering.MeshColorRGBs,
         [none] !core.Initialize,
     );
-    zox_render3_system(
-        0,
+    zox_render3_system(0,
         Chunk3TexturedRenderSystem,
         [in] rendering.RenderDisabled,
         [in] transforms.TransformMatrix,
@@ -131,4 +131,15 @@ void zox_define_systems_basics3(ecs* world) {
         [none] !core.Initialize,
     );
     add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
+    zox_render3_system(2,
+        Element3RenderSystem,
+        [in] rendering.RenderDisabled,
+        [in] transforms.TransformMatrix,
+        [in] rendering.MeshGPULink,
+        [in] rendering.UvsGPULink,
+        [in] rendering.ColorsGPULink,
+        [in] rendering.TextureGPULink,
+        [none] rendering.SingleMaterial,
+        [none] !core.Initialize
+    );
 }

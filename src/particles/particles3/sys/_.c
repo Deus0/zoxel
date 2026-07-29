@@ -12,8 +12,7 @@ void define_systems_particles3(ecs* world) {
         [none] Particle3DEmitter
     );
     // if making rotation ones, just create new systems, add [none] transforms3.Rotation3D - for this one
-    zox_render3_system(
-        1,
+    zox_render3_system(2,
         Particle3DRenderSystem,
         [in] transforms3.Position3D,
         [in] colorz.Color,

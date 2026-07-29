@@ -62,25 +62,12 @@ static inline float4x4 float4x4_position(const float3 position) {
     return matrix;
 }
 
-static inline float3 matrix_to_position(float4x4 m) {
-    return (float3) { m.w.x, m.w.y, m.w.z };
-}
-
 static inline float4x4 float4x4_scale(float scale) {
     float4x4 m = float4x4_identity;
     m.x.x = scale;
     m.y.y = scale;
     m.z.z = scale;
     return m;
-}
-
-// Assuming Column Major matrix
-static inline float3 matrix_to_scale(float4x4 m) {
-    return (float3) {
-        sqrtf(m.x.x * m.x.x + m.x.y * m.x.y + m.x.z * m.x.z),
-        sqrtf(m.y.x * m.y.x + m.y.y * m.y.y + m.y.z * m.y.z),
-        sqrtf(m.z.x * m.z.x + m.z.y * m.z.y + m.z.z * m.z.z)
-    };
 }
 
 static inline float4x4 float4x4_scale2(float2 scale) {
@@ -249,4 +236,60 @@ static inline float4x4 float4x4_transform_scale2(float3 position, float4 rotatio
     float4x4 rotation_m = float4x4_rotation(rotation);
     float4x4 scale_m = float4x4_scale2(scale);
     return float4x4_multiply(scale_m, float4x4_multiply(rotation_m, position_m));
+}
+
+static inline float3 matrix_to_position(float4x4 m) {
+    return (float3) { m.w.x, m.w.y, m.w.z };
+}
+
+// Assuming Column Major matrix
+static inline float3 matrix_to_scale(float4x4 m) {
+    return (float3) {
+        sqrtf(m.x.x * m.x.x + m.x.y * m.x.y + m.x.z * m.x.z),
+        sqrtf(m.y.x * m.y.x + m.y.y * m.y.y + m.y.z * m.y.z),
+        sqrtf(m.z.x * m.z.x + m.z.y * m.z.y + m.z.z * m.z.z)
+    };
+}
+
+// Assuming Column Major matrix (T * R * S)
+static inline float4 matrix_to_rotation(float4x4 m) {
+    float3 scale = matrix_to_scale(m);
+    // Remove scale
+    float m00 = m.x.x / scale.x;
+    float m01 = m.y.x / scale.y;
+    float m02 = m.z.x / scale.z;
+    float m10 = m.x.y / scale.x;
+    float m11 = m.y.y / scale.y;
+    float m12 = m.z.y / scale.z;
+    float m20 = m.x.z / scale.x;
+    float m21 = m.y.z / scale.y;
+    float m22 = m.z.z / scale.z;
+    float4 q;
+    float trace = m00 + m11 + m22;
+    if (trace > 0.0f) {
+        float s = sqrtf(trace + 1.0f) * 2.0f;
+        q.w = 0.25f * s;
+        q.x = (m21 - m12) / s;
+        q.y = (m02 - m20) / s;
+        q.z = (m10 - m01) / s;
+    } else if (m00 > m11 && m00 > m22) {
+        float s = sqrtf(1.0f + m00 - m11 - m22) * 2.0f;
+        q.w = (m21 - m12) / s;
+        q.x = 0.25f * s;
+        q.y = (m01 + m10) / s;
+        q.z = (m02 + m20) / s;
+    } else if (m11 > m22) {
+        float s = sqrtf(1.0f + m11 - m00 - m22) * 2.0f;
+        q.w = (m02 - m20) / s;
+        q.x = (m01 + m10) / s;
+        q.y = 0.25f * s;
+        q.z = (m12 + m21) / s;
+    } else {
+        float s = sqrtf(1.0f + m22 - m00 - m11) * 2.0f;
+        q.w = (m10 - m01) / s;
+        q.x = (m02 + m20) / s;
+        q.y = (m12 + m21) / s;
+        q.z = 0.25f * s;
+    }
+    return float4_normalize(q);
 }

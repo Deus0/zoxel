@@ -47,6 +47,7 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] Rotation3D,
         [out] transforms.TransformMatrix,
         [none] !transforms.Scale1,
+        [none] !transforms3.Scale3,
         [none] !transforms.DisableTransform
     );
     // Scale1
@@ -57,7 +58,8 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] Rotation3D,
         [in] transforms.Scale1,
         [out] transforms.TransformMatrix,
-        [none] !transforms.DisableTransform
+        [none] !transforms.DisableTransform,
+        [none] !transforms3.Scale3,
     );
     zox_system(
         TransformMatrixScale3System,

@@ -1,10 +1,15 @@
-entity spawn_prefab_canvas3(ecs *world, entity prefab) {
-    entity e = zox_prefab_from_parent(world, prefab);
+entity spawn_prefab_canvas3(ecs *world) {
+    zox_prefab();
     zox_prefab_name("canvas3");
-    zox_add_tag(e, Element3);
-    //add_element3D_transform(world, e);
-    add_ui_components_world(world, e, (float2) { 0.04f, 0.04f });
+    zox_add_tag(e, Canvas);
     zox_add_tag(e, ElementBillboard);
-    zox_prefab_set(e, CameraLink, { 0 });
+    // zox_prefab_set(e, Initialize, { 1 });
+    zox_prefab_set(e, Position3D, { float3_zero });
+    zox_prefab_set(e, Rotation3D, { float4_identity });
+    zox_prefab_set(e, Scale1, { 1 });
+    zox_prefab_set(e, TransformMatrix, { float4x4_identity });
+    zox_prefab_set(e, LayoutSize, { int2_zero });
+    zox_prefab_set(e, LayoutSizeDirty, { 1 });
+    zox_prefab_set(e, RenderDisabled, { 0 });   // used for children
     return e;
 }

@@ -1,5 +1,4 @@
 #include "ui_trail.c"
-#include "render.c"
 #include "elementbar3.c"
 #include "spawn_text.c"
 #include "billboards.c"
@@ -28,19 +27,6 @@ void define_systems_elements3D(ecs *world) {
         [none] texts.Zext,
         [none] Text3D
     );
-    zox_render3_system(
-        2,
-        Element3RenderSystem,
-        [in] rendering.RenderDisabled,
-        [in] transforms.TransformMatrix,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.ColorsGPULink,
-        [in] rendering.TextureGPULink,
-        [in] rendering.MeshIndicies,
-        [none] rendering.SingleMaterial,
-        [none] !core.Initialize
-    );
     zox_system(
         UITrailSystem,
         zoxp_update,
@@ -54,7 +40,11 @@ void define_systems_elements3D(ecs *world) {
         [in] transforms3.Rotation3D,
         [none] cameras.Camera3
     );
+#ifdef zox_debug_billboard_system
+    zox_system_ctx_1(
+#else
     zox_system_ctx(
+#endif
         BillboardSystem,
         zoxp_update,
         billboard_cameras,
@@ -63,5 +53,4 @@ void define_systems_elements3D(ecs *world) {
         [out] transforms3.Rotation3D,
         [none] cameras.ElementBillboard
     );
-    add_system_process_counter(world, zox_id(BillboardSystem));
 }

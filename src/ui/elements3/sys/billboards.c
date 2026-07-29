@@ -1,11 +1,14 @@
 // #define zox_debug_billboard_system
 #ifdef zox_debug_billboard_system
-extern entity spawn_line3(ecs*, float3, float3, float, double);
+extern entity spawn_line3_alpha(ecs*, float3, float3, float, double, color);
 #endif
 
 // NOTE: Makes UIs look at the cameras
 zox_sys2(BillboardSystem) {
     byte dbg_log = 0;
+#ifdef zox_debug_billboard_system
+    color dbg_color = color_white;
+#endif
     zox_sys_world();
     // cache camera positions first
     entity_array_d* cameras = create_entity_array_d(1);
@@ -63,30 +66,10 @@ zox_sys2(BillboardSystem) {
         }
 #ifdef zox_debug_billboard_system
         float3 normal = quaternion_to_normal(rotation->value);
-        spawn_line3(world, position->value, float3_add(position->value, normal), 2, 1);
+        spawn_line3_alpha(world, position->value, float3_add(position->value, normal), 2, 1, dbg_color);
 #endif
     }
     dispose_entity_array_d(cameras);
     dispose_float3_array_d(camera_postiions);
     dispose_float4_array_d(camera_rotations);
 } zox_sys_end(BillboardSystem);
-
-        /*zox_sys_query_begin();
-        while (zox_sys_query_loop()) {
-            zox_sys_begin_2();
-            zox_sys_in_2(Position3D);
-            zox_sys_in_2(Rotation3D);
-            for (int j = 0; j < it2.count; j++) {
-                zox_sys_e_2();
-                zox_sys_i_2(Position3D, camera_position);
-                zox_sys_i_2(Rotation3D, camera_rotation);
-                float distance = float3_distance_squared(position->value, camera_position->value);
-                if (distance < closest_distance) {
-                    closest_distance = distance;
-                    closest_camera = e2;
-                    closest_rotation = camera_rotation->value;
-                }
-            }
-            total_cameras += it2.count;
-        }
-        zox_sys_query_end();*/

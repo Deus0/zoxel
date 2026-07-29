@@ -1,6 +1,7 @@
 #ifndef zox_elements3
 #define zox_elements3
 
+// #define zox_debug_billboard_system
 zox_tag(Element3);
 zox_tag(Text3D);
 zoxc_float3(UITrail);

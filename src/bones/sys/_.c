@@ -104,8 +104,7 @@ void define_systems_bones(ecs *world) {
         [none] bones.Bone
     );
     // generating bone indexes here
-    zox_render3_system(
-        2,
+    zox_render3_system(1,
         Skeleton3RenderSystem,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,

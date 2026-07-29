@@ -61,8 +61,7 @@ void define_systems_basics2D(ecs *world) {
         [none] rendering2.TexturedMesh2,
         [none] !core.Initialize,
     );
-    zox_render3_system(
-        0,
+    zox_render3_system(0,
         RenderMaterial2DSystem,
         [in] transforms2.Position2,
         [in] transforms2.Rotation2,
