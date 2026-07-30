@@ -27,7 +27,7 @@ zox_sys2(VoxelUpdateQueueSystem) {
                 continue;
             }
             update->old_value = getv_VoxelNode(voxels, depth->value, update->position);
-            write_lock_VoxelNode(voxels);
+            // write_lock_VoxelNode(voxels);
             // TODO: Grab the value when setting instead
             if (set_VoxelNode(voxels, depth->value, update->position, update->value)) {
                 updated = 1;
@@ -36,7 +36,7 @@ zox_sys2(VoxelUpdateQueueSystem) {
                 }*/
                 // zox_log("edited voxel: %ix%ix%i", update.positionl.x, update.positionl.y, update.positionl.z);
             }
-            write_unlock_VoxelNode(voxels);
+            // write_unlock_VoxelNode(voxels);
             update->state = zox_voxel_queue_post;
         }
         if (updated) {

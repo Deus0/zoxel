@@ -15,7 +15,6 @@ entity spawn_prefab_canvas3_textured(ecs *world, entity prefab) {
     const entity ui_holder,
     const entity canvas
 ) {
-    // const entity camera = main_cameras[0]; // zox_get_value(ui_holder, CameraLink)
     const int2 pixel_size = (int2) { 32, 8 };
     zox_instance(prefab);
     zox_name("element3D");

@@ -69,7 +69,7 @@ zox_sys2(VegetationChunk3System) {
         byte grass_id = 0;
         byte wood_id = 0;
         byte flower_id = 0;
-        write_lock_VoxelNode(voctree);
+        // write_lock_VoxelNode(voctree);
         byte3 position;
         for (position.x = 0; position.x < length; position.x++) {
             for (position.z = 0; position.z < length; position.z++) {
@@ -180,7 +180,7 @@ zox_sys2(VegetationChunk3System) {
                 }
             }
         }
-        write_unlock_VoxelNode(voctree);
+        // write_unlock_VoxelNode(voctree);
         generate->value = zox_generate_terrain_towns;
         zox_sys_increment();
     }

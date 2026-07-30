@@ -33,7 +33,7 @@ void zox_apply_debug_colors(const byte* solidity,
             }
         }
     } else {
-        VoxelNode* kids = get_children_VoxelNode(node);
+        VoxelNode* kids = (VoxelNode*) node->ptr;
         for (byte i = 0; i < 8; i++) {
             zox_apply_debug_colors(solidity, &kids[i], colors, color_index, target, depth + 1);
         }

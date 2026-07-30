@@ -80,7 +80,7 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
 #endif
-        write_lock_VoxelNode(voctree);
+        // write_lock_VoxelNode(voctree);
         entity biome = 0;
         byte road_id = 0;
         byte3 position;
@@ -203,7 +203,7 @@ zox_sys2(TownWallsSystem) {
                 }
             }
         }
-        write_unlock_VoxelNode(voctree);
+        // write_unlock_VoxelNode(voctree);
         generate->value = zox_generate_terrain_sunlight;
     }
 } zox_sys_end(TownWallsSystem);

@@ -86,14 +86,14 @@ zox_sys2(SandModelGenerationSystem) {
         resize_ColorRGBs(colors, 0);
         color_rgb primary_rgb = color_to_color_rgb(fill->value);
         srand(seed->value);
-        write_lock_VoxelNode(node);
+        // write_lock_VoxelNode(node);
         build_vox_sand(colors, node, depth->value, primary_rgb);
         if (is_generate_vox_outlines) {
             byte black_voxel = colors->length + 1;
             add_to_ColorRGBs(colors, color_rgb_black);
             vox_outlines(node, depth->value, black_voxel);
         }
-        write_unlock_VoxelNode(node);
+        // write_unlock_VoxelNode(node);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {

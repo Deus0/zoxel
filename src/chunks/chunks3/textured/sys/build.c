@@ -65,11 +65,11 @@ static inline void zox_terrain_building_dig(terrain_build_data data, const Sides
         position = byte3_mul1(position, 2);
         const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
         byte has_vkids = !is_closed_VoxelNode(voxels);
-        const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voxels) : NULL;
+        const VoxelNode* vkids = has_vkids ? (const VoxelNode*) voxels->ptr : NULL;
         for (byte i = 0; i < 8; i++) {
             const SidesOctree* child_sides = &sides_kids[i];
             const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
-            byte3 child_position = byte3_add(position, octree_positions_b[i]);
+            byte3 child_position = byte3_add(position, octree_positions[i]);
             zox_terrain_building_dig(data, child_sides, child_voxels, child_position, scale, target_depth, depth, dbg_log);
         }
         return;
@@ -237,9 +237,9 @@ zox_sys2(ChunkTexturedBuildSystem) {
             .voxel_solidity = solidity,
             .mesh_data = &mesh_data,
         };
-        read_lock_VoxelNode(voxels);
+        // read_lock_VoxelNode(voxels);
         zox_terrain_building_dig(data, sides, voxels, byte3_zero, chunk_scale, depth->value, 0, dbg_log);
-        read_unlock_VoxelNode(voxels);
+        // read_unlock_VoxelNode(voxels);
         // Set Entity data from Dynamic Arrays
         indicies->length = mesh_data.indicies->size;
         verts->length = mesh_data.vertices->size;

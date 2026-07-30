@@ -50,7 +50,7 @@ zox_sys2(DecayedModelGenerationSystem) {
         byte black_voxel_3 = colors->length;
         vnoise3(node, node_depth, vrange, black_voxel_3);
         // Write Locks node
-        write_lock_VoxelNode(node);
+        // write_lock_VoxelNode(node);
         vnoise3_spray_side(node, node_depth, 0, penetrations, direction_up);
         vnoise3_spray_side(node, node_depth, 0, penetrations, direction_left);
         vnoise3_spray_side(node, node_depth, 0, penetrations, direction_right);
@@ -61,7 +61,7 @@ zox_sys2(DecayedModelGenerationSystem) {
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
-        write_unlock_VoxelNode(node);
+        // write_unlock_VoxelNode(node);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {

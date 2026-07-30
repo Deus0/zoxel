@@ -1,4 +1,4 @@
-extern entity zox_canvases[16];
+
 static inline int2 get_texture_size(ecs*, entity);
 
 /*uint debug_label_app(
@@ -31,7 +31,6 @@ static inline int2 get_texture_size(ecs*, entity);
     // canvas
     // render texture size
 
-    entity canvas = zox_canvases[0];
     zox_geter_value(canvas, LayoutSize, int2, canvas_size)
     zox_geter_value(canvas, ScreenToCanvas, float4, canvas_ratio)
     index += snprintf(buffer + index, size - index, "Canvas [%s]\n", zox_get_name(canvas));

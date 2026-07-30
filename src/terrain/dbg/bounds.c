@@ -7,7 +7,7 @@ void toggle_debug_bounds_delve(ecs *world, const VoxelNode *node, byte mode) {
             zox_set(e, DebugCubeLines, { mode })
         }
     } else if (has_children_VoxelNode(node)) {
-        VoxelNode* kids = get_children_VoxelNode(node);
+        VoxelNode* kids = (VoxelNode*) node->ptr;
         for (int i = 0; i < octree_length; i++) {
             toggle_debug_bounds_delve(world, &kids[i], mode);
         }

@@ -463,7 +463,7 @@ zox_sys2(RoadModelGenerationSystem) {
         color_rgb primary_rgb = color_to_color_rgb(fill->value);
         // Generate Vox
         srand(seed->value);
-        write_lock_VoxelNode(node);
+        // write_lock_VoxelNode(node);
         build_vox_stoned(colors, node, depth->value, primary_rgb);
         // Outlines
         if (is_generate_vox_outlines) {
@@ -471,7 +471,7 @@ zox_sys2(RoadModelGenerationSystem) {
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
-        write_unlock_VoxelNode(node);
+        // write_unlock_VoxelNode(node);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {

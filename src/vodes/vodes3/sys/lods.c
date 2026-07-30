@@ -11,7 +11,7 @@ void set_vode_lods(ecs *world, const VoxelNode *node, byte render_depth) {
             }
         }
     } else if (has_children_VoxelNode(node)) {
-        VoxelNode* kids = get_children_VoxelNode(node);
+        VoxelNode* kids = (VoxelNode*) node->ptr;
         for (byte i = 0; i < octree_length; i++) {
             set_vode_lods(world, &kids[i], render_depth);
         }

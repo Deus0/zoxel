@@ -18,10 +18,6 @@ static inline int byte3_array_indexl(byte3 input, byte length) {
     return input.z + length * (input.y + length * input.x);
 }
 
-static inline byte byte3_octree_array_index(byte3 input) {
-    return input.z + 2 * (input.y + 2 * input.x);
-}
-
 static inline byte3 byte3_add(byte3 a, byte3 b) {
     return (byte3) { a.x + b.x, a.y + b.y, a.z + b.z };
 }
@@ -31,7 +27,6 @@ static inline void byte3_add_byte3_p(byte3 *value, byte3 add) {
     value->y += add.y;
     value->z += add.z;
 }
-
 
 static inline byte3 byte3_div1(byte3 a, byte d) {
     if (d == 0) {

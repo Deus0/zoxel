@@ -53,7 +53,7 @@ zox_sys2(WoodModelGenerationSystem) {
             colors->value[k] = c;
         }
         // Write Locks node
-        write_lock_VoxelNode(node);
+        // write_lock_VoxelNode(node);
         build_vox_wood(node, depth->value, wood, bark);
         // Outlines
         if (is_generate_vox_outlines) {
@@ -61,7 +61,7 @@ zox_sys2(WoodModelGenerationSystem) {
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
-        write_unlock_VoxelNode(node);
+        // write_unlock_VoxelNode(node);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {

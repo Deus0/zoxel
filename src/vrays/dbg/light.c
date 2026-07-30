@@ -69,11 +69,11 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
                     index += snprintf(buffer + index, size - index, "  - Kid Light [%i] [%i]\n", i, kid->value);
                 }
                 index += snprintf(buffer + index, size - index, " - Adjacent Only\n");
-                const byte* indexes = octree_face_children[face];
+                /*const byte* indexes = octree_face_children[face];
                 for (byte i = 0; i < 4; i++) {
                     const LightNode* kid = &adjacent_light_children[indexes[i]];
                     index += snprintf(buffer + index, size - index, "  - Kid Light [%i] [%i]\n", indexes[i], kid->value);
-                }
+                }*/
             }
         }
     }

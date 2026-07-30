@@ -1,4 +1,3 @@
-entity zox_canvases[max_cameras];
 #include "click_states.c"
 #include "select_states.c"
 #include "canvas_spawn.c"

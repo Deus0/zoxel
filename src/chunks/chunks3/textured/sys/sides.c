@@ -10,50 +10,6 @@ byte zox_sides_only_target_depth = 0;
 #define SIDE_Z_POS      (1 << 6)
 #define SIDE_CALCULATED (1 << 7)
 
-typedef struct {
-    byte opposite;
-    byte axis;
-    byte side;
-} SideInfo;
-
-static const SideInfo side_infos[6] = {
-    {1, 0, 0}, // -x sees +x neighbor
-    {0, 0, 1}, // +x sees -x neighbor
-    {3, 1, 0}, // -y
-    {2, 1, 1}, // +y
-    {5, 2, 0}, // -z
-    {4, 2, 1}  // +z
-};
-
-static const byte3 side_offsets[6] = {
-    {-1,0,0},
-    { 1,0,0},
-    {0,-1,0},
-    {0, 1,0},
-    {0,0,-1},
-    {0,0, 1}
-};
-static byte has_side_child_indices = 0;
-static byte side_child_indices[3][2][4];
-
-void init_side_child_indices() {
-    if (has_side_child_indices) {
-        return;
-    }
-    has_side_child_indices = 1;
-    for (byte axis = 0; axis < 3; axis++) {
-        for (byte side = 0; side < 2; side++) {
-            byte index = 0;
-            for (byte i = 0; i < 8; i++) {
-                byte child_side = (i >> (2 - axis)) & 1;
-                if (child_side == side) {
-                    side_child_indices[axis][side][index++] = i;
-                }
-            }
-        }
-    }
-}
-
 // Sides System will generate our chunk sides before rendering
 // TODO: Let Colored use this too
 static inline byte is_node_solid(const byte* solidity, const VoxelNode* node) {
@@ -75,7 +31,7 @@ byte get_node_sides_all_solid(const byte* solidity, const VoxelNode* node, byte 
     if (!distance || !has_children_VoxelNode(node)) {
         return is_node_solid(solidity, node);
     }
-    VoxelNode* kids = get_children_VoxelNode(node);
+    VoxelNode* kids = (VoxelNode*) node->ptr ;
     if (!kids) {
         zox_loge("get_node_sides_all_solid: null children.");
         return 0;
@@ -194,13 +150,13 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* root, co
             position.z << 1
         };
         SidesOctree* sides_kids = (SidesOctree*) sides->ptr;
-        const VoxelNode* kids = has_vkids ? get_children_VoxelNode(voxels) : NULL;
+        const VoxelNode* kids = has_vkids ? (const VoxelNode*) voxels->ptr : NULL;
         // byte did_build = 0;
         byte child_depth = depth + 1;
         for (byte i = 0; i < 8; i++) {
             SidesOctree* sides_kid = &sides_kids[i];
             const VoxelNode* child_voxel = has_vkids ? &kids[i] : voxels;
-            byte3 nposition = byte3_add(child_position, octree_positions_b[i]);
+            byte3 nposition = byte3_add(child_position, octree_positions[i]);
             build_sides_dig(solids, root, neighbor_voxels, neighbor_depths, child_voxel, sides_kid, target_depth, child_depth, nposition, dbg_log);
         }
         if (zox_sides_only_target_depth && depth < target_depth) {

@@ -66,7 +66,7 @@ zox_sys2(FlowersModelGenerationSystem) {
         };
         byte2 petal_range = (byte2) { stem_range.y, vrange.y };
         // Write Locks node
-        write_lock_VoxelNode(node);
+        // write_lock_VoxelNode(node);
         build_vox_flowers(node, node_depth, stem_range, petal_range, black_voxel_3);
         // Outlines
         if (is_generate_vox_outlines) {
@@ -74,7 +74,7 @@ zox_sys2(FlowersModelGenerationSystem) {
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
-        write_unlock_VoxelNode(node);
+        // write_unlock_VoxelNode(node);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {

@@ -43,7 +43,7 @@ zox_sys2(RubbleModelGenerationSystem) {
         }
         byte max_height = zox_has(e, RubbleHeight) ? zox_getv(e, RubbleHeight) : 4;
         // Write Locks node
-        write_lock_VoxelNode(node);
+        // write_lock_VoxelNode(node);
         // build_vox_heights(node, node_depth, vrange, max_height);
         uint count = zox_has(e, RubbleCount) ? zox_getv(e, RubbleCount) : 200;
         build_vox_scatter(node, node_depth, vrange, max_height, count);
@@ -53,7 +53,7 @@ zox_sys2(RubbleModelGenerationSystem) {
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
-        write_unlock_VoxelNode(node);
+        // write_unlock_VoxelNode(node);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {

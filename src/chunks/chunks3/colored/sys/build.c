@@ -94,7 +94,7 @@ void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voxels, const Vo
     }
     // Dig Deeper
     byte has_vkids = !is_closed_VoxelNode(voxels);
-    const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voxels) : NULL;
+    const VoxelNode* vkids = has_vkids ? (const VoxelNode*) voxels->ptr : NULL;
     byte is_dig = depth < target_depth;
     if (!is_split) { // || !zox_split_colored_chunks) {
         is_dig &= has_vkids;
@@ -103,11 +103,10 @@ void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voxels, const Vo
         depth++;
         scale *= 0.5f;
         byte3_multiply_byte(&position, 2);
-        // VoxelNode* kids = get_children_VoxelNode(voxels);
         for (byte i = 0; i < octree_length; i++) {
             // Models dont have these set??
             const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
-            byte3 child_position = byte3_add(position, octree_positions_b[i]);
+            byte3 child_position = byte3_add(position, octree_positions[i]);
             build_voxel_mesh_c(root, child_voxels, noctrees, nrdepths, vcolors, mesh, target_depth, depth, child_position, bounds_offset, scale, is_split);
         }
         return;
@@ -197,9 +196,9 @@ zox_sys2(ChunkColorsBuildSystem) {
             .vertices = create_float3_array_d(initial_dynamic_array_size),
             .colors = create_color_rgb_array_d(initial_dynamic_array_size)
         };
-        read_lock_VoxelNode(voxels);
+        // read_lock_VoxelNode(voxels);
         build_voxel_mesh_c(voxels, voxels, noctrees, nrdepths, vcolors, &mesh, rdepth->value, 0, byte3_zero, position, cscale, is_split);
-        read_unlock_VoxelNode(voxels);
+        // read_unlock_VoxelNode(voxels);
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;
         colors->length = mesh.colors->size;

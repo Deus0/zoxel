@@ -4,13 +4,10 @@ typedef struct {
     void* ptr;
     byte value;
 } SidesOctree;
-zoxc_octree(SidesOctree, byte, 0);
-// zoxc_state(SidesOctreeDirty);
-
-new_octree_function_set(SidesOctree);
-create_node_getter(SidesOctree);
-create_octree_reducer(SidesOctree);
-create_octree_optimizer(SidesOctree);
-create_node_setreduce(SidesOctree);
+zoxc_octree_basic(SidesOctree, byte, 0);
+create_octree_setters(SidesOctree);
+create_octree_accessors(SidesOctree);
+create_octree_reducer(SidesOctree, 0);
+create_octree_optimizer(SidesOctree, 0);
 create_node_neighbor(SidesOctree);
 

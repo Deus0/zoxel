@@ -36,10 +36,10 @@ zox_sys2(CombineVoxSystem) {
         // set voctree here
         resize_ColorRGBs(colors, 0);
         // TODO: set voctree depth and set to air
-        write_lock_VoxelNode(voctree);
+        // write_lock_VoxelNode(voctree);
         // Clear octree
         voctree->value = 0;
-        close_VoxelNode(world, voctree);
+        collapse_VoxelNode(voctree);
         for (byte j = 0; j < voxes->length; j++) {
             entity vox = voxes->value[j];
             if (!zox_valid(vox)) {
@@ -142,7 +142,7 @@ zox_sys2(CombineVoxSystem) {
             }
             // zox_log(" + vox %i [%s] c[%i] at [%ix%ix%i] of s[%ix%ix%i]", j, zox_get_name(vox), acolors->length, vposition.x, vposition.y, vposition.z, vox_size.x, vox_size.y, vox_size.z);
         }
-        write_unlock_VoxelNode(voctree);
+        // write_unlock_VoxelNode(voctree);
         csize->value = new_csize;
         rdepth->value = ndepth->value;
         dirty->value = zox_dirty_trigger;

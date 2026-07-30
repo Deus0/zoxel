@@ -253,12 +253,12 @@ zox_sys2(VoxTextureSystem) {
             }
         }
         // Testing
-        read_lock_VoxelNode(voctree);
+        // read_lock_VoxelNode(voctree);
         generate_vox_texture(data->value, size->value, voctree, colors->value, side->value, bake_depth, texture_offset, vox_texture_size, air_color);
         if (is_debug_sides != direction_none) {
             generate_vox_debug_texture(data->value, size->value, side->value);
         }
-        read_unlock_VoxelNode(voctree);
+        // read_unlock_VoxelNode(voctree);
         if (texture_offset.x || texture_offset.y) {
             add_texture_outline(data->value, size->value, air_color, color_black);
         }

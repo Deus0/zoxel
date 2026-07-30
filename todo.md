@@ -2,7 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+Remove VoxelNodeDestroy hook:
+    initialize_hook_on_destroyed_VoxelNode();
+    add_hook_on_destroyed_VoxelNode(destroy_node_link_VoxelNode);
+
 Atm
+- Reduce the octree macros, theyre scary atm
 -x Fix 3D uis - theyre missing
 - Statbar 2Ds - the frontbar are not appearing in front properly
 - Refactor taskbar as entities and add the Mirror UI there
@@ -18,10 +23,12 @@ Atm
 - Note: Atm the material is the same on all render textures
     - we can just create a child of the ui as material if we need unique values
 
-// remove these soon
-zox_canvases[i] = canvas;
-main_cameras[i] = game_camera;
-ui_cameras[i] = spawned_cameras.y;
+- Remove Camera Datas - main_cameras ui_cameras
+- Remove build states when not building (60ms)
+    - ChunkMeshColorsTriggerSystem
+    - ChunkTexturedBuildSystem
+    - SmoothLightsBuildSystem
+    - BuildMesh
         
 Bugs
 - Fix taskbars again properly linking to windows
@@ -36,11 +43,6 @@ Refactors
 - Replace Generate components with core one
 - Refactor Colored Vox to use same ChunkSides system
 - Convert Vox Model to use ChunkMeshes
-- Remove build states when not building (60ms)
-    - ChunkMeshColorsTriggerSystem
-    - ChunkTexturedBuildSystem
-    - SmoothLightsBuildSystem
-    - BuildMesh
 - remove GenerateTexture after use
 - Replace Generate components (GenerateTexture, GenerateRealm, GenerateTunk)
 - Add GenerateProgress, and add to it when generate state begins, remove when ends

@@ -3,10 +3,10 @@ void destroy_vodes(ecs *world, VoxelNode *node) {
         return;
     } else if (is_linked_VoxelNode(node)) {
         if (!destroy_node_link_VoxelNode(world, node)) {
-            zox_log_error("failed to destroy voxel instance")
+            zox_loge("failed to destroy voxel instance")
         }
     } else if (has_children_VoxelNode(node)) {
-        VoxelNode* kids = get_children_VoxelNode(node);
+        VoxelNode* kids = (VoxelNode*) node->ptr;
         for (int i = 0; i < octree_length; i++) {
             destroy_vodes(world, &kids[i]);
         }
@@ -39,9 +39,9 @@ zox_sys2(VodesDespawnSystem) {
         if (in_spawn_zone) {
             continue;
         }
-        write_lock_VoxelNode(node);
+        // write_lock_VoxelNode(node);
         destroy_vodes(world, node);
-        write_unlock_VoxelNode(node);
+        // write_unlock_VoxelNode(node);
         spawned->value = 0;
     }
 } zox_sys_end(VodesDespawnSystem);

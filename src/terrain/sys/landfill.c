@@ -110,7 +110,7 @@ zox_sys2(LandfillChunkSystem) {
         byte soil_id = 0;
         byte sand_id = 0;
         byte stone_id = 0;
-        write_lock_VoxelNode(voctree);
+        // write_lock_VoxelNode(voctree);
         for (position.z = 0; position.z < length; position.z++) {
             int row = position.z * length;
             for (position.x = 0; position.x < length; position.x++) {
@@ -228,7 +228,7 @@ zox_sys2(LandfillChunkSystem) {
                 }
             }
         }
-        write_unlock_VoxelNode(voctree);
+        // write_unlock_VoxelNode(voctree);
         // Completed
         generate->value = zox_generate_terrain_vegetation;
         pcount += depth->value;

@@ -20,7 +20,8 @@ byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
         }
     } else {
         if (has_children_VoxelNode(node)) {
-            close_VoxelNode(world, node);
+            // close_VoxelNode(world, node);
+            collapse_VoxelNode(node);
         }
     }
     return 1;
@@ -47,9 +48,9 @@ byte load_chunk(ecs *world, entity savegame, int3 position, VoxelNode* node) {
         return 0;
     }
     // zox_log("Loading chunk from file: %s", path);
-    write_lock_VoxelNode(node);
+    // write_lock_VoxelNode(node);
     byte success = load_voxel_node(world, file, node);
-    write_unlock_VoxelNode(node);
+    // write_unlock_VoxelNode(node);
     if (fclose(file) != 0) {
         zox_log_error("Failed to close file: %s", path);
     }
@@ -57,6 +58,8 @@ byte load_chunk(ecs *world, entity savegame, int3 position, VoxelNode* node) {
     return success;
 }
 
+// NOTE: If Loading Chunk has linked minivoxes, this will destroy them
+// WARNING: No longer supported RELOADING due to this - Assumes empty chunk
 // TODO: Load at a LOD Level
 //      - Initialize just flags as Saved
 //      - We can then grab the file contents at higher depths when LOD updates

@@ -37,11 +37,11 @@ zox_sys2(CloneVoxSystem) {
         ndepth->value = source_voctree_depth->value;
         scale->value = src_scale;
         // Write Locks voctree
-        write_lock_VoxelNode(voctree);
+        // write_lock_VoxelNode(voctree);
         // clone_at_depth_VoxelNode(voctree, soctree, clod->value, 0);
         clone_at_depth_VoxelNode(voctree, soctree, ndepth->value, 0);
         // Write Locks voctree
-        write_unlock_VoxelNode(voctree);
+        // write_unlock_VoxelNode(voctree);
         colors->length = colors_source->length;
         int clength = sizeof(color_rgb) * colors_source->length;
         resize_ColorRGBs(colors, clength);

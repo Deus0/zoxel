@@ -49,12 +49,12 @@ static inline void zox_apply_basic_lights(const LightNode* root_light_octree, co
     if (depth < render_depth && sides->ptr) {
         const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
         byte has_vkids = !is_closed_VoxelNode(voctree);
-        const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voctree) : NULL;
+        const VoxelNode* vkids = has_vkids ? (const VoxelNode*) voctree->ptr : NULL;
         byte3_multiply_byte(&position, 2);
         depth++;
         for (byte i = 0; i < 8; i++) {
             const VoxelNode* cvoctree = has_vkids ? &vkids[i] : voctree;
-            byte3 child_position = byte3_add(position, octree_positions_b[i]);
+            byte3 child_position = byte3_add(position, octree_positions[i]);
             zox_apply_basic_lights(root_light_octree, neighbor_light_octrees, cvoctree, &sides_kids[i], colors, child_position, ccount, render_depth, depth);
         }
         return;

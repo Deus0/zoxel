@@ -3,14 +3,15 @@ typedef struct {
     byte value;
     byte type;          // 0 closed - 1 open - 2 node link
 } VoxelNode;
-new_octree_function_set(VoxelNode);
-new_octree_function_set_clean(VoxelNode);
-create_node_getter(VoxelNode);
-zoxc_octree_fun1(VoxelNode, byte, 0);
+
+zoxc_octree_linked(VoxelNode, byte, 0);
+// zoxc_octree_fun1(VoxelNode, byte, 0);
+
+create_octree_setters(VoxelNode);
+create_octree_accessors(VoxelNode);
 zoxc_octree_fun2(VoxelNode, byte);
 zox_node_add_link(VoxelNode);
-create_octree_optimizer_linked(VoxelNode);
-create_octree_reducer_linked(VoxelNode);
-create_node_setreduce(VoxelNode);
+create_octree_optimizer(VoxelNode, offsetof(VoxelNode, type));
+create_octree_reducer(VoxelNode, offsetof(VoxelNode, type));
 create_node_neighbor(VoxelNode);
 create_octree_line_debugger(VoxelNode);

@@ -61,9 +61,9 @@ void spawn_vodes_dive(ecs *world,
         position = byte3_mul1(position, 2);
         // int3_multiply_int_p(&position, 2);
         if (has_children_VoxelNode(voxel_octree)) {
-            VoxelNode* kids = get_children_VoxelNode(voxel_octree);
+            VoxelNode* kids = (VoxelNode*) voxel_octree->ptr;
             for (byte i = 0; i < octree_length; i++) {
-                byte3 child_position = byte3_add(position, octree_positions_b[i]);
+                byte3 child_position = byte3_add(position, octree_positions[i]);
                 spawn_vodes_dive(
                     world,
                     data,
@@ -187,7 +187,7 @@ zox_sys2(VodesSpawnSystem) {
             continue;
         }
         byte block_depth = camera_distance_to_block_vox_depth(render_distance->value);
-        write_lock_VoxelNode(voxel_octree);
+        // write_lock_VoxelNode(voxel_octree);
         // TODO: Cache these
         zox_geter(realm, BlockLinks, blocks);
         if (!blocks->length) {
@@ -240,7 +240,7 @@ zox_sys2(VodesSpawnSystem) {
             byte3_zero,
             0,
             depth->value);
-        write_unlock_VoxelNode(voxel_octree);
+        // write_unlock_VoxelNode(voxel_octree);
         spawned->value = 1;
     }
 } zox_sys_end(VodesSpawnSystem);

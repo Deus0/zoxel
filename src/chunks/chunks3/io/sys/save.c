@@ -69,9 +69,9 @@ zox_sys2(Chunk3SaveSystem) {
             free(path);
             continue;
         }
-        read_lock_VoxelNode(node);
+        // read_lock_VoxelNode(node);
         save_voxel_node(file, node);
-        read_unlock_VoxelNode(node);
+        // read_unlock_VoxelNode(node);
         if (fclose(file) != 0) {
             zox_log_error("Failed to close file: %s", path);
         }

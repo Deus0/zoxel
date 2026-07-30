@@ -62,7 +62,7 @@ zox_sys2(BlendedSoilGenerationSystem) {
         add_to_ColorRGBs(colors, new_color);
         byte black_voxel_2 = colors->length;
         // Write Locks node
-        write_lock_VoxelNode(node);
+        // write_lock_VoxelNode(node);
         // put indexes here
         build_vox_blended(node, node_depth, black_voxel_2, black_voxel_3, vrange, vrange_2, range_blend_1, range_blend_2, vregions);
         if (is_generate_vox_outlines) {
@@ -70,7 +70,7 @@ zox_sys2(BlendedSoilGenerationSystem) {
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
-        write_unlock_VoxelNode(node);
+        // write_unlock_VoxelNode(node);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         dirty->value = zox_dirty_trigger;
         if (dbg_log) {

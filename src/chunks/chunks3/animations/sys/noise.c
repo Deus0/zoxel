@@ -3,7 +3,7 @@ void random_fill_octree(VoxelNode* node, byte voxel, byte depth) {
     if (depth > 0) {
         depth--;
         open_one_VoxelNode(node);
-        VoxelNode* kids = get_children_VoxelNode(node);
+        VoxelNode* kids = (VoxelNode*) node->ptr;
         for (int i = 0; i < octree_length; i++) {
             random_fill_octree(&kids[i], voxel, depth);
         }
@@ -38,9 +38,9 @@ zox_sys2(NoiseVoxelNodeSystem) {
         for (int j = 0; j < 2; j++) {
             colors->value[j] = (color_rgb) { rand_range(0, 255), rand_range(0, 255), rand_range(0, 255) };
         }
-        write_lock_VoxelNode(voctree);
+        // write_lock_VoxelNode(voctree);
         random_fill_octree(voctree, 1, depth->value);
-        write_unlock_VoxelNode(voctree);
+        // write_unlock_VoxelNode(voctree);
         build_mesh->value = zox_build_chunk_mesh_run;
         generate->value = 0;
     }

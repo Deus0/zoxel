@@ -42,7 +42,7 @@ void define_components_chunks3(ecs* world) {
     zoxd_tag(LinkChunk);
     zoxd_tag(ChunkDebugger);
     zoxd_tag(NoiseChunk);
-    zoxd_node(VoxelNode);
+    zoxd_octree(VoxelNode);
     zoxd_octree(SidesOctree);
     zoxd_byte(ChunkLodDirty);
     zoxd_byte(VoxelNodeEdited); // Marks if Dirty from Users

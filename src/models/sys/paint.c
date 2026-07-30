@@ -57,9 +57,9 @@ void process_node_model_paint(ecs* world, entity n, entity v, lint seed) {
     // color_rgb vcolor = colors->value[color_index];
     // zox_log("     - Painting at [%ix%ix%i] s[%ix%ix%i] :: v%i %ix%ix%i", position.x, position.y, position.z, size.x, size.y, size.z, paint_type, vcolor.r, vcolor.g, vcolor.b);
     // Run for our fill
-    write_lock_VoxelNode(voctree);
+    // write_lock_VoxelNode(voctree);
     voctree_paint(voctree, ndepth, paint_type, position, size);
-    write_unlock_VoxelNode(voctree);
+    // write_unlock_VoxelNode(voctree);
     zox_set(v, VoxelNodeDirty, { zox_dirty_trigger });
 }
 

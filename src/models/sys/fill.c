@@ -62,12 +62,12 @@ void process_node_model_fill(ecs* world, entity n, entity v, lint seed) {
     // byte2 vrange = (byte2) { 1, colors->length - 1 };
     // byte black = colors->length;
     // Run for our fill
-    write_lock_VoxelNode(voctree);
+    // write_lock_VoxelNode(voctree);
     // zox_log("Filling Cube at [%ix%ix%i] s[%ix%ix%i]", position.x, position.y, position.z, size.x, size.y, size.z);
     // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
     // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
     voctree_fill_ellipsoid(voctree, ndepth, fill_type, position, size);
-    write_unlock_VoxelNode(voctree);
+    // write_unlock_VoxelNode(voctree);
     zox_set(v, VoxelNodeDirty, { zox_dirty_trigger });
 }
 

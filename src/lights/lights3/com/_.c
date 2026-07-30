@@ -1,14 +1,14 @@
 zox_tag(SunnyChunk);
 zox_tag(BottomChunk);
 zoxc_byte(RefreshLights);
-zoxc_octree(LightNode, byte, 0);
-new_octree_function_set(LightNode);
-create_node_getter(LightNode);
+zoxc_octree_basic(LightNode, byte, 0);
+
+create_octree_setters(LightNode);
+create_octree_accessors(LightNode);
 create_octree_get_nearby(LightNode);
-create_octree_reducer(LightNode);
-create_octree_optimizer(LightNode);
+create_octree_reducer(LightNode, 0);
+create_octree_optimizer(LightNode, 0);
 create_optimize_by_max(LightNode);
-create_node_setreduce(LightNode);
 create_node_neighbor(LightNode);
 create_octree_line_debugger(LightNode);
 create_octree_line_debugger_compare(LightNode, VoxelNode);

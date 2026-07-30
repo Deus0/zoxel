@@ -6,12 +6,12 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
     if (depth < target_depth && sides->ptr) {
         const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
         byte has_vkids = !is_closed_VoxelNode(voxels);
-        const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voxels) : NULL;
+        const VoxelNode* vkids = has_vkids ? (const VoxelNode*) voxels->ptr : NULL;
         byte3_multiply_byte(&position, 2);
         depth++;
         for (byte i = 0; i < 8; i++) {
             const VoxelNode* cvoxels = has_vkids ? &vkids[i] : voxels;
-            byte3 child_position = byte3_add(position, octree_positions_b[i]);
+            byte3 child_position = byte3_add(position, octree_positions[i]);
             zox_apply_smooth_lights(lights, cvoxels, &sides_kids[i], colors, child_position, ccount, target_depth, depth);
 //#ifdef zox_safety_checks
             if (*ccount + voxel_face_vertices_length > colors->length) {
