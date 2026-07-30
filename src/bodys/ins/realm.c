@@ -59,10 +59,10 @@ entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mde
     entity texture = spawn_texture_from_vox(world, max_depth_vox, tsize);
     // # # # Spawn Item from model and texture # # #
     entity e2 = spawn_item_body(world, model, texture, name);
+    zox_set_parent(world, e2, parent);
     // zox_make_prefab(e2);
     zox_set(e2, SlotType, { slot_type });
     zox_set(e2, MaxRenderDepth, { mdepth });
-    zox_set_parent(world, e2, parent);
     return (entity2) { e2, e };
 }
 

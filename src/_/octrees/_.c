@@ -3,4 +3,5 @@
 #include "root.c"
 #include "tree.c"
 #include "components.c"
+#include "linked.c"
 #include "macros.c"
