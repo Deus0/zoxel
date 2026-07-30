@@ -1,3 +1,7 @@
+static inline int2 int2_scale2(int2 a, float2 b) {
+    return (int2) { a.x * b.x, a.y * b.y };
+}
+
 static inline float2 get_layout_local_position(
     int2 parent_size,
     int2 layout_position,
@@ -5,18 +9,16 @@ static inline float2 get_layout_local_position(
     float2 canvas_sizef,
     float aspect_ratio
 ) {
-    int2 p;
-    p.x = -(parent_size.x / 2);
-    p.y = -(parent_size.y / 2);
-    p.x += (int)(parent_size.x * anchor.x);
-    p.y += (int)(parent_size.y * anchor.y);
+    float2 p;
+    p.x = -parent_size.x * 0.5f;
+    p.y = -parent_size.y * 0.5f;
+    p.x += parent_size.x * anchor.x;
+    p.y += parent_size.y * anchor.y;
     p.x += layout_position.x;
     p.y += layout_position.y;
-    // Convert pixel position to screen
-    float2 positionf = int2_to_float2(p);
-    positionf = float2_divide(positionf, canvas_sizef);
-    positionf.x *= aspect_ratio;
-    return positionf;
+    p = float2_divide(p, canvas_sizef);
+    p.x *= aspect_ratio;
+    return p;
 }
 
 static inline void update_layout_recursive(

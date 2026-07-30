@@ -24,13 +24,13 @@ zox_sys2(MarkerSpawnSystem) {
         if (!quests) {
             continue;
         }
-        char* result = "!";
-        Text3DData label3D_text_data = {
-            .prefab = prefab_text3D,
-            .text = result,
+        char* text = "!";
+        /*Text3DData label3D_text_data = {
+            .prefab = prefab_text3,
+            .text = text,
         };
         Zigel3DData label3D_zigel_data = {
-            .prefab = prefab_zigel3D,
+            .prefab = prefab_zigel3,
             .scale = scale,
             .font_thickness = 1,
             .font_outline = outline_thickness,
@@ -43,15 +43,16 @@ zox_sys2(MarkerSpawnSystem) {
             .prefab = prefab_label3D,
             .base_color = background,
             .outline_color = background
-        };
-        entity2 e2 = spawn_label3D(world, label3D_spawn_data, label3D_text_data, label3D_zigel_data, (float3) { offset_x, name_trail_offset * 2, 0 });
+        };*/
+        // entity2 e2 = spawn_label3(world, label3D_spawn_data, label3D_text_data, label3D_zigel_data, (float3) { offset_x, name_trail_offset * 2, 0 });
+        entity2 e2 = spawn_label3(world, text, resolution, background, background, fill, outline, e, name_trail_offset * 2);
         zox_set_unique_name(e2.x, "marker");
         zox_set(e2.x, ElementHolder, { e });
         add_to_ElementLinks(elements, e2.x);
         // Text
         zox_add_tag(e2.y, CentredZigel);
         if (dbg_log) {
-            zox_log("Spawned Marker Label on [%s]: %s", zox_getn(e), result);
+            zox_log("Spawned Marker Label on [%s]: %s", zox_getn(e), text);
         }
     }
 } zox_sys_end(MarkerSpawnSystem);

@@ -68,6 +68,10 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_spawn_element3_corners },
     };
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Label3",
+        .on_click = { &zox_dbg_spawn_label3 },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Popup3",
         .on_click = { &zox_dbg_spawn_popup3 },
     };

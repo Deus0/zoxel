@@ -31,11 +31,11 @@ entity spawn_popup3_easy(ecs *world, const char *text, color text_color, float3 
         .base_color = (color) { 0, 0, 0, 0 }, // background color
     };
     Text3DData text_data = {
-        .prefab = prefab_text3D, //popup3D,
+        .prefab = prefab_text3, //popup3D,
         .text = text,
     };
     Zigel3DData zigel_data = {
-        .prefab = prefab_zigel3D,
+        .prefab = prefab_zigel3,
         .resolution = text3D_resolution,
         .font_thickness = text3D_fill_thickness,
         .font_outline = text3D_outline_thickness,

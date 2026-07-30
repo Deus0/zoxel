@@ -119,7 +119,7 @@ zox_sys2(Text3DResizeSystem) {
                 uint index = child_index_to_text_array_index(text->value, text->length, child_index);
                 byte zigel_index = calculate_zigel_index(text->value, text->length, j);
                 float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);
-                entity e2 = spawn_zigel3(world, prefab_zigel3D, e, child_index, zigel_index, position, scale->value, render_disabled->value, thickness->value, outline_thickness->value, resolution->value, fill->value, outline->value);
+                entity e2 = spawn_zigel3(world, prefab_zigel3, e, child_index, zigel_index, position, scale->value, render_disabled->value, thickness->value, outline_thickness->value, resolution->value, fill->value, outline->value);
                 if (zox_has(e, CentredZigel)) {
                     zox_add_tag(e2, CentredZigel);
                 }

@@ -78,14 +78,15 @@ static inline void zox_terrain_building_dig(terrain_build_data data, const Sides
     if (!sides->value) {
         return;
     }
+    // NOTE: Maybe this is because it didnt build sides before mesh?
+    if (!voxels->value) {
+        // zox_loge("Terrain Chunk Mesh Builder: Sides is true with Air");
+        return;
+    }
     /*if (depth != target_depth) {
         zox_loge("Sides didn't reach target depth [%i < %i]", depth, target_depth);
     }*/
 // #ifdef zox_safety_checks
-    if (!voxels->value) {
-        zox_loge("Terrain Chunk Mesh Builder: Sides is true with Air");
-        return;
-    }
 // #endif
     if (dbg_log >= 2) {
         zox_log("Adding Chunk Textured Faces at [%ix%ix%i]", position.x, position.y, position.z);

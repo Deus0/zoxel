@@ -1,5 +1,10 @@
 # Done
 
+-x Remove VoxelNodeDestroy hook:
+    initialize_hook_on_destroyed_VoxelNode();
+    add_hook_on_destroyed_VoxelNode(destroy_node_link_VoxelNode);
+-x Reduce the octree macros, theyre scary atm
+-x Fix lighting when rendering it through the render camera (characteer lights is off)
 -x Top hat is missing from all items
 -x Add color to camera - for background (clear color)
 -x Fix Render Texture test

@@ -5,7 +5,7 @@
 // TODO: Use proper flecs for the core systems so it gets all of them
 uint layouts2_children_capacity = 64;  // for big ass text
 float zox_depth_per_layer = 0.001f;
-float zox_depth_per_layer3 = 0.1f;
+float zox_depth_per_layer3 = 0.02f;
 
 #include "com/_.c"
 #include "dat/_.c"

@@ -1,6 +1,8 @@
 #ifndef zoxm_characters
 #define zoxm_characters
 
+byte zox_no_humanoids = 0;
+
 #include "set/_.c"
 #include "com/_.c"
 #include "fun/_.c"

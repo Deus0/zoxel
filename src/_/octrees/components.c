@@ -45,16 +45,3 @@ ECS_MOVE(T, dst, src, {\
 ECS_DTOR(T, ptr, {\
     collapse_##T(ptr);\
 })
-
-/*
-void destroy_##T(ecs* world, T* node) {\
-    if (has_children_##T(node)) {\
-        T* kids = get_children_##T(node);\
-        for (byte i = 0; i < octree_length; i++) {\
-            destroy_##T(world, &kids[i]);\
-        }\
-        free(node->ptr);\
-        node->ptr = NULL;\
-    } \
-} */
-

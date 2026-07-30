@@ -6,6 +6,25 @@
 
 void define_systems_elements3D(ecs *world) {
     zox_system(
+        Layout3MeshBeginSystem,
+        zoxp_update,
+        [in] core.Initialize,
+        [in] layouts.LayoutSize,
+        [in] rendering.MeshAlignment,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshDirty,
+    );
+    zox_system(
+        Layout3MeshUpdateSystem,
+        zoxp_update,
+        [in] layouts.LayoutSizeDirty,
+        [in] layouts.LayoutSize,
+        [in] rendering.MeshAlignment,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshDirty,
+        [none] !core.Initialize,
+    );
+    zox_system(
         Elementbar3DSystem,
         zoxp_update,
         [in] rendering.RenderDisabled,
@@ -13,7 +32,7 @@ void define_systems_elements3D(ecs *world) {
         [in] elements.ElementBarSize,
         [none] rendering.MeshVertices
     );
-    zox_system_1(
+    /*zox_system_1(
         Text3DResizeSystem,
         zoxp_mainthread,
         [in] texts.TextDirty,
@@ -27,7 +46,7 @@ void define_systems_elements3D(ecs *world) {
         [in] texts.TextFontSize,
         [none] texts.Zext,
         [none] Text3D
-    );
+    );*/
     zox_system(
         UITrailSystem,
         zoxp_update,
@@ -53,24 +72,5 @@ void define_systems_elements3D(ecs *world) {
         [in] transforms3.Position3D,
         [out] transforms3.Rotation3D,
         [none] cameras.ElementBillboard
-    );
-    zox_system(
-        Layout3MeshBeginSystem,
-        zoxp_update,
-        [in] core.Initialize,
-        [in] layouts.LayoutSize,
-        [in] rendering.MeshAlignment,
-        [out] rendering.MeshVertices,
-        [out] rendering.MeshDirty,
-    );
-    zox_system(
-        Layout3MeshUpdateSystem,
-        zoxp_update,
-        [in] layouts.LayoutSizeDirty,
-        [in] layouts.LayoutSize,
-        [in] rendering.MeshAlignment,
-        [out] rendering.MeshVertices,
-        [out] rendering.MeshDirty,
-        [none] !core.Initialize,
     );
 }

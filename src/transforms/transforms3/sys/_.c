@@ -15,6 +15,8 @@ void zox_define_systems_transforms3(ecs *world) {
         [in] transforms3.Rotation3D,
         [none] !transforms3.LocalPosition3D,
         [none] !transforms3.LocalRotation3D,
+        [none] !transforms.LocalScale1,
+        [none] !transforms3.LocalScale3,
         [none] !transforms.DisableTransform
     );
     add_system_process_counter(world, zox_id(TransformChildrenSystem));

@@ -14,12 +14,17 @@ static inline void set_position_rotation_scale_recursive(
         return;
     }
     if (!zox_has(e, Position3D) || !zox_has(e, Rotation3D)) {
+        // zox_loge("Transform Components Invalid [%s]", zox_getn(e));
         return;
     }
     byte updated = 0;
     float3 local_position = zox_has(e, LocalPosition3D) ? zox_getv(e, LocalPosition3D) : float3_zero;
     float4 local_rotation = zox_has(e, LocalRotation3D) ? zox_getv(e, LocalRotation3D) : quaternion_identity;
-    float3 local_scale = zox_has(e, LocalScale3) ? zox_getv(e, LocalScale3) : (zox_has(e, LocalScale1) ? float3_single(zox_getv(e, LocalScale1)) : float3_one);
+    float3 local_scale = zox_has(e, LocalScale3) ?
+        zox_getv(e, LocalScale3) :
+            (zox_has(e, LocalScale1) ?
+                float3_single(zox_getv(e, LocalScale1)) :
+                float3_one);
     // world_position = parent_position + parent_rotation * (parent_scale * local_position)
     float3 world_position = float3_add(
         parent_position,
@@ -77,7 +82,10 @@ zox_sys2(TransformChildrenSystem) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
-        float3 world_scale = zox_has(e, Scale3) ? zox_getv(e, Scale3) : (zox_has(e, Scale1) ? float3_single(zox_getv(e, Scale1)) : float3_one);
+        float3 world_scale = zox_has(e, Scale3) ?
+            zox_getv(e, Scale3) : (zox_has(e, Scale1) ?
+                float3_single(zox_getv(e, Scale1)) :
+                float3_one);
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {

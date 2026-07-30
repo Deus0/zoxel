@@ -13,7 +13,7 @@ typedef struct {
     float scale;
 } Zigel3DData;
 
-entity spawn_prefab_zigel3D(ecs *world, entity prefab) {
+entity spawn_prefab_zigel3(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("zigel3");
     zox_add_tag(e, Zigel);
@@ -24,11 +24,11 @@ entity spawn_prefab_zigel3D(ecs *world, entity prefab) {
     zox_prefab_set(e, FillColor, { color_white });
     zox_prefab_set(e, OutlineColor, { color_black });
     zox_prefab_set(e, FontThickness, { 1 });
-    zox_prefab_set(e, FontOutlineThickness, { 1 });
+    zox_prefab_set(e, FontOutlineThickness, { 2 });
     // OH this is why scales were weirdaf
-    prefab_set_mesh3D_vertices(world, e, square_vertices, 4, zigel3D_size);
+    // prefab_set_mesh3D_vertices(world, e, square_vertices, 4, zigel3D_size);
     zox_set(e, TextureSize, { int2_single(2) });
     // States
-    zox_prefab_set(e, ZigelDirty, { zox_zigel_dirty_position });
+    // zox_prefab_set(e, ZigelDirty, { zox_zigel_dirty_position });
     return e;
 }

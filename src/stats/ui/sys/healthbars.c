@@ -40,10 +40,10 @@ zox_sys2(HealthbarSpawnerSystem) {
             },
         };
         Text3DData statbar_text_data = {
-            .prefab = prefab_text3D
+            .prefab = prefab_text3
         };
         Zigel3DData statbar_zigel_data = {
-            .prefab = prefab_zigel3D,
+            .prefab = prefab_zigel3,
             .resolution = text3D_resolution,
             .font_thickness = text3D_fill_thickness,
             .font_outline = text3D_outline_thickness,

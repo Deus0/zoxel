@@ -97,7 +97,7 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
 
 // Centralized position setting for text zigels
 zox_sys2(TextsPositionSystem) {
-    byte is_log = 0;
+    byte is_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);
@@ -131,14 +131,12 @@ zox_sys2(TextsPositionSystem) {
                 int2 position = calculate_position(text_data->value, text_data->length, index, size->value, alignment->value, padding->value, default_line_padding);
                 zox_mut_begin(e2, LayoutPosition, lposition);
                 zox_mut_begin(e2, LayoutPositionDirty, ldirty);
-                //if (!int2_equals(lposition->value, position))
+                if (!int2_equals(lposition->value, position))
                 {
                     lposition->value = position;
                     ldirty->value = zox_dirty_trigger;
-                    zox_mut_end(e2, LayoutPosition);
-                    zox_mut_end(e2, LayoutPositionDirty);
                     if (is_log) {
-                        zox_log("   + [%s]:[%i] at [%ix%i]", zox_get_name(e2), j, position.x, position.y);
+                        zox_log("Positioned [%i]  Zigel [%s]:[%i] at [%ix%i]", child_index, zox_getn(e2), j, position.x, position.y);
                     }
                 }
                 child_index++;

@@ -224,15 +224,3 @@ entity get_node_entity_##name(const name *node) {\
     const entity e = is_linked_unlocked_##name(node) ? ((OctreeLink*) node->ptr)->value : 0;\
     return e;\
 }
-
-
-/*
-
-
-\
-static inline byte is_linked_##name(const name *node) {\
-    const byte linked = node->type == node_type_instance;\
-    return linked;\
-}\
-
-*/

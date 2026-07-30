@@ -42,8 +42,26 @@ void define_systems_texts(ecs *world) {
         [in] layouts.Layer2D,
         [out] rendering.RenderDisabled,
         [none] texts.Zext,
-        [none] texts.Text2D
+        // [none] texts.Text2D
     );
+    zox_system(
+        TextUpdateSystem,
+        zoxp_update,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [none] texts.Zext,
+    );
+    zox_system(
+        TextsPositionSystem,
+        zoxp_update,
+        [in] texts.TextDirty,
+        [in] texts.TextData,
+        [in] texts.TextFontSize,
+        [in] texts.TextAlignment,
+        [in] texts.TextPadding,
+        [none] texts.Zext,
+    );
+}
     /*
     zox_system(
         ZigelPositionSystem,
@@ -63,22 +81,4 @@ void define_systems_texts(ecs *world) {
         [out] textures.GenerateTexture,
         [none] zigels.Zigel
     );*/
-    zox_system(
-        TextUpdateSystem,
-        zoxp_update,
-        [in] texts.TextDirty,
-        [in] texts.TextData,
-        [none] texts.Zext,
-    );
-    zox_system(
-        TextsPositionSystem,
-        zoxp_update,
-        [in] texts.TextDirty,
-        [in] texts.TextData,
-        [in] texts.TextFontSize,
-        [in] texts.TextAlignment,
-        [in] texts.TextPadding,
-        [none] texts.Zext,
-    );
-}
 

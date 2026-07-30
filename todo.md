@@ -2,16 +2,22 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-Remove VoxelNodeDestroy hook:
-    initialize_hook_on_destroyed_VoxelNode();
-    add_hook_on_destroyed_VoxelNode(destroy_node_link_VoxelNode);
+- Font difference - main difference is extra parenting
+- Find what overwrites the character position, so weird
+- Seems to be done  using scale though
 
 Atm
-- Reduce the octree macros, theyre scary atm
+- Fix NameLabels
+- Fix Statbars
+- Fix Popups
+
+- Crosshair will flicker siize too fast
+
+- Set ZigelPrefabLink and use same text systems
+
 -x Fix 3D uis - theyre missing
 - Statbar 2Ds - the frontbar are not appearing in front properly
 - Refactor taskbar as entities and add the Mirror UI there
--x Fix lighting when rendering it through the render camera (characteer lights is off)
 - Finish Character Renderer
     - Make it so camera can filter an object itself, instead of just the object filtering camera?
     - Make a renderer clone that just copies another entities mesh.. somehow

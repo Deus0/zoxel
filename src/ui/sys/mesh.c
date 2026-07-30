@@ -70,7 +70,7 @@ zox_sys2(LayoutMeshBeginSystem) {
         set_mesh_vertices_scale2D(verts, get_aligned_mesh2D(alignment->value), 4, size2);
         dirty->value = mesh_state_upload;
         if (dbg_log) {
-            zox_log("LayoutMeshBeginSystem Mesh Updated [%s]", zox_getn(e));
+            zox_log("LayoutMeshBeginSystem Mesh Updated [%s] Size [%fx%f]", zox_getn(e), size2.x, size2.y);
         }
     }
 } zox_sys_end(LayoutMeshBeginSystem);

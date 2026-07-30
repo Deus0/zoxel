@@ -105,6 +105,7 @@ zox_sys2(Character3RealmSpawnSystem) {
         entity rsoul = zox_get_child_by_id(world, e, zox_id(StatSoul));
         entity rhealth = zox_get_child_by_id(world, e, zox_id(StatHealth));
         // add our skeleton prefab
+        if (!zox_no_humanoids)
         {
             byte chance = 5;
             lint character_seed = seed->value + (seed_offset+=seed_shift);
