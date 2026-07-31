@@ -2,7 +2,6 @@ zox_tag(Zext);
 zox_tag(ZextLabel);
 zox_tag(TextResizer);
 zox_tag(ZextRenderEnabler);
-zox_tag(Text2D);
 zox_tag(TextInput);
 zoxc_byte(TextAlignment);
 zoxc_byte(TextResolution);
@@ -19,7 +18,6 @@ void define_components_texts(ecs *world) {
     zoxd_tag(ZextLabel);
     zoxd_tag(TextResizer);
     zoxd_tag(ZextRenderEnabler);
-    zoxd_tag(Text2D);
     zoxd_tag(TextInput);
     zoxd_byte(TextAlignment);
     zoxd_byte(TextResolution);

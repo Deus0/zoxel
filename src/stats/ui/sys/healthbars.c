@@ -1,4 +1,15 @@
 zox_sys2(HealthbarSpawnerSystem) {
+    float healthbar_trail_offset = 0.22f;
+    byte font_size = 16;
+    byte2 padding = (byte2) { 10, 8 };
+    int2 bar_size = (int2) { font_size * 12 + padding.x * 2, font_size + padding.y * 2 };
+    // Colors
+    color fill = (color) { 30, 5, 8, 130 };
+    color outline = (color) { 0, 0, 0, 220 };
+    color fill2 = (color) { 35, 150, 45, 210 };
+    color outline2 = (color) { 90, 200, 90, 170 };
+    color font_fill = (color) { 240, 220, 170, 220 };
+    color font_outline = (color) { 0, 0, 0, 240 };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CombatState);
@@ -27,35 +38,16 @@ zox_sys2(HealthbarSpawnerSystem) {
         if (!zox_valid(health)) {
             continue;
         }
-        // zox_log("+ spawning healthbar on [%s]", zox_get_name(e))
-        // spawn 3D healtbar
-        SpawnDataElementbar3D spawn_data = {
-            .ui_holder = e,
-            .trail_offset = healthbar_trail_offset,
-            .backbar = {
-                .prefab = prefab_statbar3D
-            },
-            .frontbar = {
-                .prefab = prefab_elementbar3D_front
-            },
-        };
-        Text3DData statbar_text_data = {
-            .prefab = prefab_text3
-        };
-        Zigel3DData statbar_zigel_data = {
-            .prefab = prefab_zigel3,
-            .resolution = text3D_resolution,
-            .font_thickness = text3D_fill_thickness,
-            .font_outline = text3D_outline_thickness,
-            .fill_color = statbar3D_font_color_fill,
-            .outline_color = statbar3D_font_color_outline
-        };
-        entity2 healthbar = spawn_elementbar3(world, &spawn_data, statbar_text_data, statbar_zigel_data);
-        zox_set(healthbar.x, StatLink, { health });
-        zox_set(healthbar.y, StatLink, { health });
-        zox_set(healthbar.x, ElementHolder, { e });
-        zox_add_tag(healthbar.x, Healthbar);
-        zox_add_tag(healthbar.y, StatsLabel);
-        add_to_ElementLinks(elementLinks, healthbar.x);
+        float3 spawn_position = float3_zero;
+        entity3 spawns = spawn_bar3(world, spawn_position, zox_ui_scale3, bar_size, font_size, fill, outline, fill2, outline2, font_fill, font_outline, e, healthbar_trail_offset);
+        zox_add_tag(spawns.x, Healthbar);
+        add_to_ElementLinks(elementLinks, spawns.x);
+        // Statbar stuff
+        entity bar = spawns.y;
+        zox_add_tag(bar, Statbar);
+        zox_set(bar, StatLink, { health });
+        // Text
+        zox_set(spawns.z, StatLink, { health });
+        zox_add_tag(spawns.z, StatsLabel);
     }
 } zox_sys_end(HealthbarSpawnerSystem);

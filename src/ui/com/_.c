@@ -18,7 +18,7 @@ zox_tag(NavigationElement);
 zoxc_byte(NavigatorState);
 zoxc_double(NavigatorTimer);
 // Bars
-zoxc_float(ElementBar);
+zoxc_float(BarLevel);
 zoxc_float2(ElementBarSize);
 zoxc_byte(FontSize);
 zoxc_byte(ElementFontSize);
@@ -48,7 +48,7 @@ void zox_define_components_elements(ecs *world) {
     zoxd_byte(FontSize);
     zoxd_tag(MouseElement);
     zoxd_byte(ElementFontSize);
-    zoxd_float(ElementBar);
+    zoxd_float(BarLevel);
     zoxd_float2(ElementBarSize);
     // Canvas
     zoxd_tag(CanvasOverlay);

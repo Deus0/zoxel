@@ -1,7 +1,8 @@
 // Most
 zox_tag(Label);
 zox_tag(Button);
-zox_tag(Elementbar2);
+zox_tag(Elementbar);
+zox_tag(BarFront);
 // Slider
 zoxc_float2(SlideBounds);
 zoxc(SliderLabel, const char*);
@@ -30,7 +31,8 @@ void define_components_elements2(ecs *world) {
     zoxd_tag(Icon);
     zoxd_tag(Frame);
     zoxd_tag(IconOverlay);
-    zoxd_tag(Elementbar2);
+    zoxd_tag(Elementbar);
+    zoxd_tag(BarFront);
     zoxd_byte(IconType);
     zoxd_byte(IconIndex);
     zoxd_entity(LabelPrefabLink);

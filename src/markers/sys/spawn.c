@@ -3,9 +3,10 @@ zox_sys2(MarkerSpawnSystem) {
     // TODO: Use texture quad instead - simpler
     byte dbg_log = 0;
     byte resolution = 64;
-    byte outline_thickness = 6;
-    byte scale = 10;
-    float offset_x = 0; // 0.046f;
+    // byte outline_thickness = 6;
+    // byte scale = 10;
+    float ui_scale = zox_ui_scale3 * 3;
+    // float offset_x = 0; // 0.046f;
     color fill = color_yellow;
     color outline = color_black;
     color background = color_null;
@@ -25,27 +26,7 @@ zox_sys2(MarkerSpawnSystem) {
             continue;
         }
         char* text = "!";
-        /*Text3DData label3D_text_data = {
-            .prefab = prefab_text3,
-            .text = text,
-        };
-        Zigel3DData label3D_zigel_data = {
-            .prefab = prefab_zigel3,
-            .scale = scale,
-            .font_thickness = 1,
-            .font_outline = outline_thickness,
-            .resolution = resolution,
-            .fill_color = fill,
-            .outline_color = outline
-        };
-        SpawnDataElement3 label3D_spawn_data = {
-            .ui_holder = e,
-            .prefab = prefab_label3D,
-            .base_color = background,
-            .outline_color = background
-        };*/
-        // entity2 e2 = spawn_label3(world, label3D_spawn_data, label3D_text_data, label3D_zigel_data, (float3) { offset_x, name_trail_offset * 2, 0 });
-        entity2 e2 = spawn_label3(world, text, resolution, background, background, fill, outline, e, name_trail_offset * 2);
+        entity2 e2 = spawn_label3(world, text, resolution, background, background, fill, outline, ui_scale, e, name_trail_offset * 2);
         zox_set_unique_name(e2.x, "marker");
         zox_set(e2.x, ElementHolder, { e });
         add_to_ElementLinks(elements, e2.x);

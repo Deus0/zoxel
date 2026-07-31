@@ -160,7 +160,7 @@ zox_sys2(MeleeSystem) {
             };
             char popup_text[64];
             sprintf(popup_text, "%i", (int) floor(skill_damage));
-            spawn_popup3_easy(world, popup_text, popup_color, popup_position, 2.5f, randf_range(4, 8));
+            spawn_popup3_easy(world, popup_text, popup_color, popup_position, zox_popup_scale, randf_range(4, 8));
 
         }
         // Hitting Terrain

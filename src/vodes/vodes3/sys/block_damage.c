@@ -153,7 +153,7 @@ zox_sys2(BlockDamageQueueSystem) {
             positionf.y += randf_range(terrain_block_scale / 2.0f, terrain_block_scale);
             char popup_text[64];
             sprintf(popup_text, "%i", (int) floor(update.damage));
-            spawn_popup3_easy(world, popup_text, popup_color, positionf, 2.5f, randf_range(4, 8));
+            spawn_popup3_easy(world, popup_text, popup_color, positionf, zox_popup_scale, randf_range(4, 8));
             if (dbg_log) {
                 // zox_log("User [%s] hit block at []", zox_get_name(user));
             }

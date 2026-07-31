@@ -2,7 +2,7 @@ entity dbg_element3;
 entity dbg_element3_inspector;
 
 void zox_dbg_spawn_element3(ecs *world, ClickEventData data) {
-    byte dbg_inspector = 1;
+    byte dbg_inspector = 0;
     int2 canvas_size = int2_single(64);
     float canvas_scale = 0.25f;
     // float3 canvas_scale = (float3) { 0.25f, 0.25f, 0 };
@@ -26,7 +26,7 @@ void zox_dbg_spawn_element3(ecs *world, ClickEventData data) {
     float3 spawn_position = move_along_direction(position, rotation, -1);
     entity e = spawn_canvas3(world, prefab_canvas3, spawn_position, canvas_scale, canvas_size);
     zox_set_unique_name(e, "dbg_canvas3");
-    entity e2 = spawn_element3(world, prefab_element3, e, float2_centre, int2_zero, canvas_size);
+    entity e2 = spawn_element3(world, prefab_frame3, e, float2_centre, int2_zero, canvas_size);
     zox_set_unique_name(e2, "dbg_element3");
     dbg_element3 = e;
     if (dbg_inspector) {

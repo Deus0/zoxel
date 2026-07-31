@@ -1,4 +1,4 @@
-float3 calculate_zigel3D_position(float2 zigel3D_size, int data_index, int zigels_count, float scale) {
+/*float3 calculate_zigel3D_position(float2 zigel3D_size, int data_index, int zigels_count, float scale) {
     if (scale == 0) {
         scale = 1;
     }
@@ -6,9 +6,9 @@ float3 calculate_zigel3D_position(float2 zigel3D_size, int data_index, int zigel
     position.x = zigel3D_size.x * (data_index - (zigels_count - 1) * 0.5f) * scale;
     position.z = element3D_depth_difference;
     return position;
-}
+}*/
 
-entity spawn_text3D(ecs *world, Text3DData data, Zigel3DData zigel_data) {
+/*entity spawn_text3D(ecs *world, Text3DData data, Zigel3DData zigel_data) {
     zox_instance(data.prefab);
     zox_set_unique_name(e, "text3");
     zox_set_parent(world, e, data.parent);
@@ -32,4 +32,4 @@ entity spawn_text3D(ecs *world, Text3DData data, Zigel3DData zigel_data) {
         // zox_log("Text3D [%s]", data.text);
     }
     return e;
-}
+}*/

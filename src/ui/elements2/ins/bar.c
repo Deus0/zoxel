@@ -1,7 +1,9 @@
 entity2 spawn_elementbar2(ecs* world, entity prefab, entity parent, int2 position, int2 size, float2 position_anchor, byte font_size, byte2 text_padding, color back_color, color front_color) {
+    entity2 output;
     color font_outline = (color) { 11, 11, 11, 222 };
     color font_fill = (color) { 225, 225, 225, 255 };
     zox_instance(prefab);
+    output.x = e;
     zox_name("elementbar2");
     zox_set_parent(world, e, parent);
     zox_set(e, LayoutPosition, { position });
@@ -12,11 +14,17 @@ entity2 spawn_elementbar2(ecs* world, entity prefab, entity parent, int2 positio
     byte padding = 6;
     zox_set(e, ElementBarSize, { (float2) { (size.x - padding * 2) / (float) size.x, 1 } });
     // frontbar
-    float2 bar_anchor = (float2) { 0, 0.5f };
-    entity e2 = spawn_uic(world, prefab_element_frame, e, bar_anchor, int2_zero, size, size, front_color, color_black);
-    zox_set_unique_name(e2, "element2_frontbar");
-    zox_set(e2, MeshAlignment, { zox_alignment_left });
-    entity text = spawn_text(world, prefab_text, e, int2_zero, float2_half, font_size, zox_alignment_centre, text_padding, "", font_fill, font_outline);
-    zox_set_unique_name(text, "element2_text");
-    return (entity2) { e, text };
+    {
+        float2 bar_anchor = float2_centre; // (float2) { 0, 0.5f };
+        entity e2 = spawn_uic(world, prefab_element_frame, e, bar_anchor, int2_zero, size, size, front_color, color_black);
+        zox_set_unique_name(e2, "element2_frontbar");
+        zox_add_tag(e2, BarFront);
+        // zox_set(e2, MeshAlignment, { zox_alignment_left });
+    }
+    {
+        entity e2 = spawn_text(world, prefab_text, e, int2_zero, float2_half, font_size, zox_alignment_centre, text_padding, "", font_fill, font_outline);
+        zox_set_unique_name(e2, "element2_text");
+        output.y = e2;
+    }
+    return  output;
 }

@@ -3,8 +3,6 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     zox_prefab_name("element3");
     zox_add_tag(e, Element3);
     zox_prefab_set(e, Initialize, { 1 });
-    zox_prefab_set(e, LocalPosition3D, { float3_zero });
-    zox_prefab_set(e, LocalRotation3D, { quaternion_identity });
     // Add Mesh
     zox_add_tag(e, SingleMaterial);
     zox_add_tag(e, TexturedMesh3D);
@@ -32,13 +30,5 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     zox_prefab_set(e, TextureData, { 0 });
     zox_prefab_set(e, TextureSize, { int2_zero });
     zox_prefab_set(e, TextureDirty, { 0 });
-    // More
-    zox_add_tag(e, FrameTexture);
-    zox_prefab_set(e, Seed, { 666 });
-    zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
-    zox_prefab_set(e, FrameCorner, { 1 });
-    zox_prefab_set(e, OutlineThickness, { 1 });
-    zox_prefab_set(e, FillColor, { default_fill_color });
-    zox_prefab_set(e, OutlineColor, { default_outline_color });
     return e;
 }

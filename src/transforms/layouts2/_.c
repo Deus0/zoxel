@@ -2,11 +2,9 @@
 #if !defined(zoxm_layouts2) && defined(zoxm_transforms2)
 #define zoxm_layouts2
 
-// TODO: Use proper flecs for the core systems so it gets all of them
-uint layouts2_children_capacity = 64;  // for big ass text
+float zox_depth_per_layer3 = 0.1f;
 float zox_depth_per_layer = 0.001f;
-float zox_depth_per_layer3 = 0.02f;
-
+uint layouts2_children_capacity = 64;  // for big ass text
 #include "com/_.c"
 #include "dat/_.c"
 #include "pre/_.c"
@@ -21,10 +19,5 @@ zox_begin_module(Layouts) {
     add_hook_spawn_prefabs(spawn_prefabs_layouts2);
     zox_import_module(Containers);
 } zox_end_module(Layouts);
-
-// TODO: WindowToTop -> just trigger Canvas's CanvasDirty flag instead
-// TODO: Implement BoundToCanvas - Constraints in position systems itself, instead of functions
-// TODO: Rename CanvasPosition -> just LayoutPosition
-// TODO: just use LayoutParentData instead of [LayoutParentData, CanvasSpawndata]
 
 #endif

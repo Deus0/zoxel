@@ -1,5 +1,16 @@
 # Done
 
+-x Fix Statbars
+    -x Statbar 2Ds - the frontbar are not appearing in front properly
+    -x We can just anchor bar to left, make it easier maths
+    -x Even better, we can just change the SizeAnchor instead of using bar specific stuff
+-x Set ZigelPrefabLink and use same text systems
+-x Fix Popups
+-x Fix 3D uis - theyre missing
+-x Fix NameLabels
+-x Font difference - main difference is extra parenting
+-x Find what overwrites the character position, so weird
+-x Seems to be done  using scale though
 -x Remove VoxelNodeDestroy hook:
     initialize_hook_on_destroyed_VoxelNode();
     add_hook_on_destroyed_VoxelNode(destroy_node_link_VoxelNode);

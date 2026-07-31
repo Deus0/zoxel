@@ -1,11 +1,12 @@
 zox_sys2(StatbarSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StatLink);
-    zox_sys_out(ElementBar);
+    zox_sys_out(BarLevel);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(StatLink, stat);
-        zox_sys_o(ElementBar, bar);
+        zox_sys_o(BarLevel, bar);
         float new_value = bar->value;
         if (!zox_valid(stat->value)) {
             new_value = 0;
@@ -20,6 +21,9 @@ zox_sys2(StatbarSystem) {
         }
         if (bar->value != new_value) {
             bar->value = new_value;
+            if (dbg_log) {
+                zox_log("Statbar [%s]:%f", zox_getn(stat->value), new_value);
+            }
         }
     }
 } zox_sys_end(StatbarSystem);

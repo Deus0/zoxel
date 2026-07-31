@@ -18,7 +18,7 @@ void on_new_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
 void on_settings_slide(ecs* world, const SlideEventData* data) {
     byte dbg_log = 0;
     entity slider = zox_get_parent(world, data->dragged);
-    entity text = zox_get_child_by_id(world, slider, zox_id(Text2D));
+    entity text = zox_get_child_by_id(world, slider, zox_id(Zext));
     entity e2 = zox_getv(slider, SettingLink);
     if (!zox_valid(e2) || !zox_valid(slider) || !zox_valid(text)) {
         return;

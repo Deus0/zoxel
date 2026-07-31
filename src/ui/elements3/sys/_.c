@@ -24,14 +24,14 @@ void define_systems_elements3D(ecs *world) {
         [out] rendering.MeshDirty,
         [none] !core.Initialize,
     );
-    zox_system(
+    /*zox_system(
         Elementbar3DSystem,
         zoxp_update,
         [in] rendering.RenderDisabled,
         [in] elements.ElementBar,
         [in] elements.ElementBarSize,
         [none] rendering.MeshVertices
-    );
+    );*/
     /*zox_system_1(
         Text3DResizeSystem,
         zoxp_mainthread,
@@ -49,7 +49,7 @@ void define_systems_elements3D(ecs *world) {
     );*/
     zox_system(
         UITrailSystem,
-        zoxp_update,
+        zoxp_transforms + 1,
         [in] elements.UIHolderLink,
         [in] UITrail,
         [out] transforms3.Position3D
@@ -66,7 +66,7 @@ void define_systems_elements3D(ecs *world) {
     zox_system_ctx(
 #endif
         BillboardSystem,
-        zoxp_update,
+        zoxp_transforms + 1,
         billboard_cameras,
         [in] rendering.RenderDisabled,
         [in] transforms3.Position3D,

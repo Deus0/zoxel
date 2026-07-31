@@ -2,8 +2,10 @@
 #define zox_elements3
 
 // #define zox_debug_billboard_system
+float zox_ui_scale3 = 0.05f;
+float zox_popup_scale = 0.05f;
 zox_tag(Element3);
-zox_tag(Text3D);
+// zox_tag(Text3D);
 zoxc_float3(UITrail);
 zoxc_float(Text3DScale);
 #include "dat/_.c"
@@ -16,7 +18,7 @@ zoxc_float(Text3DScale);
 
 zox_begin_module(Elements3) {
     zoxd_tag(Element3);
-    zoxd_tag(Text3D);
+    // zoxd_tag(Text3D);
     zoxd(UITrail);
     zoxd_float(Text3DScale);
     define_systems_elements3D(world);

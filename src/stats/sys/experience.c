@@ -56,7 +56,7 @@ zox_sys2(ExperienceSystem) {
         char popup_text[64];
         sprintf(popup_text, "+%i", (int) ceil(experience_gain));
         color popup_color = (color) { 255, 255, 0, 255 };
-        spawn_popup3_easy(world, popup_text, popup_color, popup_position, 5, 7 + rand() % 3);
+        spawn_popup3_easy(world, popup_text, popup_color, popup_position, zox_popup_scale * 2, 7 + rand() % 3);
 
     }
 } zox_sys_end(ExperienceSystem);

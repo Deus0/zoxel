@@ -12,3 +12,11 @@ entity spawn_prefab_layout3(ecs *world) {
     zox_prefab_set(e, LayoutSizeDirty, { 1 });
     return e;
 }
+
+entity spawn_prefab_layout3_child(ecs *world, entity prefab) {
+    entity e = zox_prefab_from_parent(world, prefab);
+    zox_prefab_name("layout3_child");
+    zox_prefab_set(e, LocalPosition3D, { float3_zero });
+    zox_prefab_set(e, LocalRotation3D, { quaternion_identity });
+    return e;
+}

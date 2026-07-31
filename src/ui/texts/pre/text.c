@@ -1,9 +1,8 @@
-entity spawn_prefab_text(ecs* world, entity prefab) {
+entity spawn_prefab_text(ecs* world, entity prefab, entity prefab_glyph) {
     zox_prefab_child(prefab);
     zox_prefab_name("text");
     // text
     zox_add_tag(e, Zext);
-    zox_add_tag(e, Text2D);
     zox_prefab_set(e, TextData, { 0 });
     zox_prefab_set(e, TextDirty, { 0 });
     zox_prefab_set(e, TextSizeDirty, { 0 });
@@ -18,6 +17,6 @@ entity spawn_prefab_text(ecs* world, entity prefab) {
     zox_prefab_set(e, RenderDisabled, { 0 });
     // Do we need to set them? Are font thickness used?
     zox_prefab_set(e, FontThickness, { 1 });
-    zox_prefab_set(e, ZigelPrefab, { prefab_zigel });
+    zox_prefab_set(e, ZigelPrefab, { prefab_glyph });
     return e;
 }

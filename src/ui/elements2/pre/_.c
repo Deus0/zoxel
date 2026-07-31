@@ -40,7 +40,7 @@ void spawn_prefabs_elements2(ecs *world) {
     // statbars
     {
         prefab_elementbar2 = spawn_prefab_elementbar(world, prefab_element_frame);
-        zox_add_tag(prefab_elementbar2, Elementbar2);
+        zox_add_tag(prefab_elementbar2, Elementbar);
     }
     // icons
     prefab_icon = spawn_prefab_icon(world, prefab_element);

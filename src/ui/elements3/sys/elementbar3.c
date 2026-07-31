@@ -1,5 +1,5 @@
 // Sets child frontbar mesh when resized
-zox_sys2(Elementbar3DSystem) {
+/*zox_sys2(Elementbar3DSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -14,12 +14,6 @@ zox_sys2(Elementbar3DSystem) {
         if (disabled->value) {
             continue;
         }
-        /*entity ui_holder = zox_get_parent_by_id(world, e, zox_id(UIHolderLink));
-        if (zox_valid(ui_holder)) {
-            if (zox_getv(ui_holder, RenderDisabled)) {
-                continue;
-            }
-        }*/
         entity children[layouts2_children_capacity];
         uint children_length = zox_get_children(world, e, children, layouts2_children_capacity);
         if (!children_length) {
@@ -61,4 +55,4 @@ zox_sys2(Elementbar3DSystem) {
             zox_log("Elementbar set to PositionX [%f] ScaleX[%f]", left_offset, scale.x);
         }
     }
-} zox_sys_end(Elementbar3DSystem);
+} zox_sys_end(Elementbar3DSystem);*/

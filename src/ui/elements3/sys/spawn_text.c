@@ -1,6 +1,6 @@
 // todo: split up into update system, and resize system
 // note: update system can be generically for 2D and 3D text
-zox_sys2(Text3DResizeSystem) {
+/*zox_sys2(Text3DResizeSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -129,6 +129,9 @@ zox_sys2(Text3DResizeSystem) {
             }
         }
         // Set old zigels
+    }
+} zox_sys_end(Text3DResizeSystem);*/
+
         /*int reuse_count = int_min(children_length, new_length);
         for (uint i = 0; i < reuse_count; i++) {     // Reposition old zigels!
             uint data_index = child_index_to_text_array_index(text->value, text->length, i);
@@ -162,5 +165,3 @@ zox_sys2(Text3DResizeSystem) {
                 zox_delete(e2);
             }
         }*/
-    }
-} zox_sys_end(Text3DResizeSystem);

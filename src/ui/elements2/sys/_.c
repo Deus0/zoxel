@@ -10,14 +10,14 @@
 void define_systems_elements2(ecs *world) {
     zox_system(
         ElementDragSystem,
-        zoxp_update, // EcsPostLoad,
+        zoxp_update,
         [in] interaction.DraggableState,
         [in] interaction.DraggingDelta,
         [in] interaction.DraggedLink
     );
     zox_system(
         ScrollbarSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] interaction.DraggableState,
         [in] layouts.LayoutPosition,
         [in] layouts.LayoutSize,
@@ -41,12 +41,11 @@ void define_systems_elements2(ecs *world) {
         [in] elements2.ScrollviewLink
     );
     zox_system(
-        Elementbar2System,
-        zoxp_update, // EcsPostUpdate,
-        [in] elements.ElementBar,
-        [in] elements.ElementBarSize,
+        ElementbarSystem,
+        zoxp_update,
         [in] layouts.LayoutSize,
-        [none] Elementbar2
+        [in] elements.BarLevel,
+        [none] Elementbar
     );
     zox_system(
         SlideEventSystem,

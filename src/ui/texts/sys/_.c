@@ -42,7 +42,6 @@ void define_systems_texts(ecs *world) {
         [in] layouts.Layer2D,
         [out] rendering.RenderDisabled,
         [none] texts.Zext,
-        // [none] texts.Text2D
     );
     zox_system(
         TextUpdateSystem,

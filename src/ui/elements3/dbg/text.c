@@ -24,7 +24,7 @@ void zox_dbg_spawn_label3(ecs *world, ClickEventData data) {
     float3 position = zox_getv(camera, Position3D);
     float4 rotation = zox_getv(camera, Rotation3D);
     float3 spawn_position = move_along_direction(position, rotation, -distance);
-    entity2 e2 = spawn_label3(world, text, font_size, fill, outline, font_fill, font_outline, 0, 0);
+    entity2 e2 = spawn_label3(world, text, font_size, fill, outline, font_fill, font_outline, zox_ui_scale3, 0, 0);
     zox_set_unique_name(e2.x, "dbg_label");
     zox_set_unique_name(e2.y, "dbg_label_text");
     zox_setv(e2.x, Position3D, spawn_position);

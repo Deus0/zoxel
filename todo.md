@@ -2,23 +2,11 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Font difference - main difference is extra parenting
-- Find what overwrites the character position, so weird
-- Seems to be done  using scale though
-
 Atm
-- Fix NameLabels
-- Fix Statbars
-- Fix Popups
-
+- healthbar didnt spawn when respawn
 - Crosshair will flicker siize too fast
-
-- Set ZigelPrefabLink and use same text systems
-
--x Fix 3D uis - theyre missing
-- Statbar 2Ds - the frontbar are not appearing in front properly
 - Refactor taskbar as entities and add the Mirror UI there
-- Finish Character Renderer
+- Finish Character Renderer - Mirror UI
     - Make it so camera can filter an object itself, instead of just the object filtering camera?
     - Make a renderer clone that just copies another entities mesh.. somehow
 - Destroy Render Camera when the ui dies - just parent it?

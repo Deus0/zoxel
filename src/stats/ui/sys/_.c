@@ -10,7 +10,7 @@ void define_systems_stats_ui(ecs *world) {
         StatbarSystem,
         zoxp_update,
         [in] StatLink,
-        [out] elements.ElementBar,
+        [out] elements.BarLevel,
         [none] Statbar
     );
     zox_system(
