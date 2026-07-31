@@ -2,6 +2,8 @@
 zox_sys2(Element3RenderSystem) {
     byte dbg_log = 0;
     byte dbg_gl = 0;
+    float depth_per_layer = 100;
+    float units_per_layer = 2000;
     entity material = material_textured3D;
     if (!material) {
         zox_loge("[material_textured3D] missing in Element3RenderSystem.");
@@ -11,8 +13,10 @@ zox_sys2(Element3RenderSystem) {
     byte has_set_material = 0;
     guint material_link = 0;
     const MaterialTextured3D* attributes = NULL;
+    glEnable(GL_POLYGON_OFFSET_FILL);
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
+    zox_sys_in(Layer2D);
     zox_sys_in(TransformMatrix);
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
@@ -21,6 +25,7 @@ zox_sys2(Element3RenderSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDisabled, disabled);
+        zox_sys_i(Layer2D, layer);
         zox_sys_i(TransformMatrix, matrix);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, uvs);
@@ -29,12 +34,6 @@ zox_sys2(Element3RenderSystem) {
         if (disabled->value) {
             continue;
         }
-        /*entity ui_holder = zox_get_parent_by_id(world, e, zox_id(UIHolderLink));
-        if (zox_valid(ui_holder)) {
-            if (zox_getv(ui_holder, RenderDisabled)) {
-                continue;
-            }
-        }*/
 #ifdef zox_safety_checks
         if (!mesh->value.x || !mesh->value.y) {
             zox_loge("Gpu links [mesh] broken on Element3 [%s]", zox_getn(e));
@@ -69,6 +68,10 @@ zox_sys2(Element3RenderSystem) {
         opengl_enable_uv_buffer(attributes->vertex_uv, uvs->value);
         opengl_enable_color_buffer(attributes->vertex_color, colors->value);
         zox_gpu_bind_texture(texture->value);
+        // Offset Depth
+        float units = units_per_layer * layer->value;
+        float depth = depth_per_layer * layer->value;
+        glPolygonOffset(-units, -depth);
         zox_gpu_render3(6);
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
@@ -95,4 +98,5 @@ zox_sys2(Element3RenderSystem) {
         zox_gpu_reset_mesh();
         zox_disable_material();
     }
+    glDisable(GL_POLYGON_OFFSET_FILL);
 } zox_sys_end(Element3RenderSystem);

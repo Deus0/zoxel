@@ -4,10 +4,7 @@
 // #define zox_debug_billboard_system
 float zox_ui_scale3 = 0.05f;
 float zox_popup_scale = 0.05f;
-zox_tag(Element3);
-// zox_tag(Text3D);
-zoxc_float3(UITrail);
-zoxc_float(Text3DScale);
+#include "com/_.c"
 #include "dat/_.c"
 #include "set/_.c"
 #include "fun/_.c"
@@ -17,10 +14,7 @@ zoxc_float(Text3DScale);
 #include "dbg/_.c"
 
 zox_begin_module(Elements3) {
-    zoxd_tag(Element3);
-    // zoxd_tag(Text3D);
-    zoxd(UITrail);
-    zoxd_float(Text3DScale);
+    zoxd_components_elemments3(world);
     define_systems_elements3D(world);
     add_hook_spawn_prefabs(spawn_prefabs_elements3D);
 } zox_end_module(Elements3);

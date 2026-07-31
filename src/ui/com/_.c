@@ -26,11 +26,8 @@ zoxc_byte(ElementFontSize);
 zox_tag(MouseElement);
 
 void zox_define_components_elements(ecs *world) {
-    // Core Elements
     zoxd_tag(Element);
     zoxd_tag(Element2D);
-    // zoxd_tag(ElementRender);
-    // zoxd_tag(ElementBillboard);
     zoxd_byte(ElementLayer);
     zoxd_entity(ElementLink);
     zoxd_entities(ElementLinks);

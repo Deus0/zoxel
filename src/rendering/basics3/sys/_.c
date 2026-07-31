@@ -3,7 +3,7 @@
 #include "render_characters3.c"
 #include "mesh_update.c"
 #include "mesh_update_characters3.c"
-#include "textured.c"
+#include "render_chunks.c"
 #include "textured_upload.c"
 #include "textured_render.c"
 #include "textured_colors_upload.c"
@@ -134,6 +134,7 @@ void zox_define_systems_basics3(ecs* world) {
     zox_render3_system(2,
         Element3RenderSystem,
         [in] rendering.RenderDisabled,
+        [in] layouts.Layer2D,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,

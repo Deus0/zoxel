@@ -1,3 +1,4 @@
+// NOTE: Rendering Skybox atm
 zox_sys2(Basic3RenderSystem) {
     byte dbg_log = 0;
     zox_sys_world();

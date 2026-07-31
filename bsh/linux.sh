@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # debug options
-is_profiler="1"         # https://www.flecs.dev/explorer/?host=localhost
+is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_safety_checks="0"    # lets stay safe for now
 is_time_systems="0"
 is_fast_dev="0"         # -O3

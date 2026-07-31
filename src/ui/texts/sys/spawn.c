@@ -86,11 +86,15 @@ zox_sys2(ZigelSpawnSystem) {
             }
             byte zigel_layer = layer->value + 1;
             // NOTE: Zigel Data Index just removes new lines out of the data
+            byte centred = zox_has(e, CentredZigel);
             for (uint j = old_length; j < new_length; j++) {
                 byte zigel = calculate_zigel_index(text_data->value, text_data->length, j);
                 uint child_index = j;
                 entity e2 = spawn_zigel(world, prefab->value, e, position_anchor, size, texture_size, thickness, othickness, fill, outline, zigel, child_index, zigel_layer);
                 zox_setv(e2, RenderDisabled, render_disabled->value);
+                if (centred) {
+                    zox_add_tag(e2, CentredZigel);
+                }
                 if (dbg_log) {
                     zox_log("Spawn Zigel [%i:%c] - Layer [%i]", zigel, convert_to_ascii(zigel), zigel_layer);
                 }

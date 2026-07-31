@@ -5,7 +5,7 @@
 #include "hierarchy/_.c"
 #include "transforms2/_.c"
 #include "transforms3/_.c"
-#include "layouts2/_.c"
+#include "layouts/_.c"
 
 zox_begin_module(Transforms) {
     zoxd_components_transforms(world);

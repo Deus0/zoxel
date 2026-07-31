@@ -10,8 +10,8 @@ static inline void zox_gpu_disable_culling() {
 
 static inline void zox_gpu_enable_depth_test() {
     glEnable(GL_DEPTH_TEST);
-    // glDepthFunc(GL_LESS);
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
+    // glDepthFunc(GL_LEQUAL);
 }
 
 static inline void zox_gpu_disable_depth_test() {

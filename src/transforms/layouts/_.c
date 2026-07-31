@@ -2,7 +2,7 @@
 #if !defined(zoxm_layouts2) && defined(zoxm_transforms2)
 #define zoxm_layouts2
 
-float zox_depth_per_layer3 = 0.1f;
+float zox_depth_per_layer3 = 0; //  0.1f;
 float zox_depth_per_layer = 0.001f;
 uint layouts2_children_capacity = 64;  // for big ass text
 #include "com/_.c"

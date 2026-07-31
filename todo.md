@@ -3,7 +3,9 @@
 used - 200-400mb used
 
 Atm
-- healthbar didnt spawn when respawn
+- arm doesnt swing when not selected
+- cant talk / raycast npcs when no action selected
+- stats panel didnt spawn when respawn
 - Crosshair will flicker siize too fast
 - Refactor taskbar as entities and add the Mirror UI there
 - Finish Character Renderer - Mirror UI
