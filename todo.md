@@ -2,25 +2,26 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Issue with ui2D is transparency sorting
-    - we can set depth per layer but will need to sort calls
-        - tue 255 calls to the same systems is not efficient...
-    - We can just throw them all into transform system and use that? less math on shaders too
-    - Then we can just sort in that single system based on layers
-
 Atm
-- arm doesnt swing when not selected
-- cant talk / raycast npcs when no action selected
-- stats panel didnt spawn when respawn
-- Crosshair will flicker siize too fast
 - Refactor taskbar as entities and add the Mirror UI there
 - Finish Character Renderer - Mirror UI
     - Make it so camera can filter an object itself, instead of just the object filtering camera?
     - Make a renderer clone that just copies another entities mesh.. somehow
 - Destroy Render Camera when the ui dies - just parent it?
+
+Later
+- Issue with ui2D is transparency sorting
+    - we can set depth per layer but will need to sort calls
+        - tue 255 calls to the same systems is not efficient...
+    - We can just throw them all into transform system and use that? less math on shaders too
+    - Then we can just sort in that single system based on layers
+- arm doesnt swing when not selected
+- cant talk / raycast npcs when no action selected
+- stats panel didnt spawn when respawn
+- Crosshair will flicker siize too fast
 - Add BarUI Test function (spawn 3 bars diff percentage?, tween animate them)
 - Animate Text test
-- Fix UI3D Test
+-x Fix UI3D Test
 - Projectiles get destroyed on hit characters (use same system as pickups)
 - Note: Atm the material is the same on all render textures
     - we can just create a child of the ui as material if we need unique values
@@ -39,7 +40,8 @@ Bugs
 - Fix Skinning issues of humanoids at max depth
 - Fix unstuck system and test it with no clip
 
-Refactors
+### Refactoring ###
+- Move particle and bone rendering systems into rendering module
 - Remove crafting users reference and use normal item ui for craft ui
 - Refactor Chunk Render systems back into Rendering module
 - Replace Generate components with core one
