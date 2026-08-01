@@ -2,7 +2,7 @@ zox_sys2(HealthbarSpawnerSystem) {
     float healthbar_trail_offset = 0.22f;
     byte font_size = 16;
     byte2 padding = (byte2) { 10, 8 };
-    int2 bar_size = (int2) { font_size * 12 + padding.x * 2, font_size + padding.y * 2 };
+    int2 bar_size = (int2) { font_size * 14 + padding.x * 2, font_size + padding.y * 2 };
     // Colors
     color fill = (color) { 30, 5, 8, 130 };
     color outline = (color) { 0, 0, 0, 220 };

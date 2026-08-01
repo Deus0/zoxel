@@ -6,22 +6,18 @@ zox_sys2(WanderSystem) {
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(Behaviour)
-    zox_sys_in(DisableMovement)
     zox_sys_in(Position3D)
     zox_sys_out(TargetPosition)
     zox_sys_out(WanderDirection)
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Behaviour, behaviour)
-        zox_sys_i(DisableMovement, disable)
         zox_sys_i(Position3D, position)
         zox_sys_o(TargetPosition, target)
         zox_sys_o(WanderDirection, wander)
-
         // only wander if in “wander” mode and not frozen
-        if (disable->value || behaviour->value != zox_behaviour_wander) {
+        if (behaviour->value != zox_behaviour_wander) {
             continue;
         }
-
         // Jittery direction vector
         float2 jitter = {
             ((rand() % 100) * 0.01f - 0.5f) * jitter_power,

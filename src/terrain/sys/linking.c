@@ -71,22 +71,20 @@ zox_sys2(ChunkLinkSystem) {
     zox_sys_out(Position3D);
     zox_sys_out(ChunkPosition);
     zox_sys_out(ChunkLink);
-    zox_sys_out(DisableMovement);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TerrainLink, terrain);
         zox_sys_i(Position3D, position);
         zox_sys_o(ChunkPosition, chunk_position);
         zox_sys_o(ChunkLink, link);
-        zox_sys_o(DisableMovement, disable);
         if (!zox_valid(terrain->value)) {
             if (dbg_log) {
                 zox_loge("Character [%s] has no Terrain linked", zox_get_name(e));
             }
             continue; // these shouldn't be here
         }
-        zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
-        zox_geter_value(terrain->value, NodeDepth, byte, node_depth);
+        float terrain_scale = zox_getv(terrain->value, BlockScale);
+        byte node_depth = zox_getv(terrain->value, NodeDepth);
         short length = octree_size(node_depth);
         int3 new_chunk_position = real_position_to_chunk_position(position->value, length, terrain_scale);
         // If already set and position has not changed
@@ -101,6 +99,10 @@ zox_sys2(ChunkLinkSystem) {
         }
         // NOTE: Disables if not set
         set_entity_chunk(world, e, link, chunk, dbg_log);
-        disable->value = !zox_valid(link->value);
+        if (zox_valid(link->value) && zox_has(e, DisableMovement)) {
+            zox_remove(e, DisableMovement);
+        } else if (!zox_valid(link->value) && !zox_has(e, DisableMovement)) {
+            zox_add(e, DisableMovement);
+        }
     }
 } zox_sys_end(ChunkLinkSystem);

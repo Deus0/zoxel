@@ -55,7 +55,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system(
         Player3DTriggerSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
@@ -80,7 +80,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system(
         HeadCameraSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] bones.SkeletonDirty,
         [in] bones.HeadBoneLink,
         [in] cameras.CameraLink,

@@ -27,5 +27,8 @@ void zox_dbg_spawn_bar3(ecs *world, ClickEventData data) {
     float3 position = zox_getv(camera, Position3D);
     float4 rotation = zox_getv(camera, Rotation3D);
     float3 spawn_position = move_along_direction(position, rotation, -distance);
-    dbg_bar3 = spawn_bar3(world, spawn_position, zox_ui_scale3, bar_size, font_size, fill, outline, fill2, outline2, font_fill, font_outline, 0, 0).x;
+    entity3 spawns = spawn_bar3(world, spawn_position, zox_ui_scale3, bar_size, font_size, fill, outline, fill2, outline2, font_fill, font_outline, 0, 0);
+    entity bar = spawns.y;
+    dbg_bar3 = spawns.x;
+    zox_lerp_float_ins(bar, BarLevel, 1, 0, 5);
 }

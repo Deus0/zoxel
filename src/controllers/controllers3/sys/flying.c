@@ -17,8 +17,7 @@ zox_sys2(PlayerFlySystem) {
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
-        zox_geter_value(character, DisableMovement, byte, disabled);
-        if (disabled) {
+        if (zox_has(character, DisableMovement)) {
             continue;
         }
         zox_geter_value(character, FlyMode, byte, flying);

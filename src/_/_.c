@@ -35,12 +35,7 @@
 #include "sys/_.c"
 #include "settings/_.c"
 
-byte zox_disable_process_skips = 1;
-/*#ifdef zox_windows
-    byte zox_disable_process_skips = 1;
-#else
-    byte zox_disable_process_skips = 0;
-#endif*/
+byte zox_disable_process_skips = 0;
 
 void module_dispose_core(ecs *world, void *ctx) {
     dispose_hook_terminal_command();

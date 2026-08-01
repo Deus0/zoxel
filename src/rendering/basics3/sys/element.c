@@ -2,8 +2,10 @@
 zox_sys2(Element3RenderSystem) {
     byte dbg_log = 0;
     byte dbg_gl = 0;
-    float depth_per_layer = 100;
-    float units_per_layer = 2000;
+    float depth_base = 0;
+    float units_base = 0;
+    float depth_per_layer = 5000;
+    float units_per_layer = 0;
     entity material = material_textured3D;
     if (!material) {
         zox_loge("[material_textured3D] missing in Element3RenderSystem.");
@@ -13,7 +15,6 @@ zox_sys2(Element3RenderSystem) {
     byte has_set_material = 0;
     guint material_link = 0;
     const MaterialTextured3D* attributes = NULL;
-    glEnable(GL_POLYGON_OFFSET_FILL);
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
     zox_sys_in(Layer2D);
@@ -52,6 +53,7 @@ zox_sys2(Element3RenderSystem) {
             has_set_material = 1;
             material_link = zox_getv(material, MaterialGPULink);
             attributes = zox_get(material, MaterialTextured3D);
+            glEnable(GL_POLYGON_OFFSET_FILL);
             zox_gpu_enable_blend();
             zox_gpu_material(material_link);
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
@@ -59,7 +61,7 @@ zox_sys2(Element3RenderSystem) {
             zox_gpu_float(attributes->brightness, 1);
             if (dbg_log >= 2) {
                 entity shader = zox_getv(material, ShaderLink);
-                zox_log("Rebderubg Element3 Material [%s]: %i - Shader [%s]", zox_getn(material), material_link, zox_getn(shader));
+                zox_log("Rendering Element3 Material [%s]: %i - Shader [%s]", zox_getn(material), material_link, zox_getn(shader));
             }
         }
         zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
@@ -69,8 +71,8 @@ zox_sys2(Element3RenderSystem) {
         opengl_enable_color_buffer(attributes->vertex_color, colors->value);
         zox_gpu_bind_texture(texture->value);
         // Offset Depth
-        float units = units_per_layer * layer->value;
-        float depth = depth_per_layer * layer->value;
+        float units = units_base + units_per_layer * layer->value;
+        float depth = depth_base + depth_per_layer * layer->value;
         glPolygonOffset(-units, -depth);
         zox_gpu_render3(6);
         if (dbg_gl) {
@@ -83,6 +85,7 @@ zox_sys2(Element3RenderSystem) {
             float4 rotation = matrix_to_rotation(matrix->value);
             float3 scale = matrix_to_scale(matrix->value);
             zox_log("Rendered Element3 [%s]", zox_getn(e));
+            zox_log(" - Depth [%f] Layer [%i]", depth, layer->value);
             zox_log(" - P [%fx%fx%f]", position.x, position.y, position.z);
             zox_log(" - R [%fx%fx%fx%f]", rotation.x, rotation.y, rotation.z, rotation.w);
             zox_log(" - S [%fx%fx%f]", scale.x, scale.y, scale.z);
@@ -97,6 +100,6 @@ zox_sys2(Element3RenderSystem) {
         zox_gpu_reset_texture();
         zox_gpu_reset_mesh();
         zox_disable_material();
+        glDisable(GL_POLYGON_OFFSET_FILL);
     }
-    glDisable(GL_POLYGON_OFFSET_FILL);
 } zox_sys_end(Element3RenderSystem);

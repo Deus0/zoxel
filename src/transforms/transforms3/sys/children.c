@@ -10,7 +10,7 @@ static inline void set_position_rotation_scale_recursive(
         return;
     }
 #endif
-    if (zox_has(e, DisableTransform)) {
+    if (zox_has(e, DisableTransform) || zox_has(e, DisableParentTransform)) {
         return;
     }
     if (!zox_has(e, Position3D) || !zox_has(e, Rotation3D)) {

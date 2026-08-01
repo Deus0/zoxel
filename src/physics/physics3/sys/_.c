@@ -45,8 +45,8 @@ void define_systems_physics3(ecs *world) {
         Gravity3DSystem,
         zoxp_physics,
         [in] physics3.Gravity3D,
-        [in] physics.DisableGravity,
-        [out] physics3.Acceleration3D
+        [out] physics3.Acceleration3D,
+        [none] !physics.DisableGravity
     );
     zox_system(
         Position3DBoundsSystem,

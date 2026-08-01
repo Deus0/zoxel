@@ -33,8 +33,7 @@ zox_sys2(Player3RotateSystem) {
             continue;
         }
 #endif
-        byte mdisabled = zox_getv(character, DisableMovement);
-        if (mdisabled) {
+        if (zox_has(character, DisableMovement)) {
             continue;
         }
         byte camera_mode = zox_valid(cameraLink->value) ? zox_getv(cameraLink->value, CameraState) : zox_camera_state_first_person;

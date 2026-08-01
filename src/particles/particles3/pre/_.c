@@ -1,7 +1,7 @@
 entity prefab_particle3D;
 entity prefab_particle3D_emitter;
-#include "particle3D.c"
-#include "particle3D_emitter.c"
+#include "particle.c"
+#include "emitter.c"
 
 
 void spawn_shaders_particles3D(ecs *world) {
@@ -11,7 +11,7 @@ void spawn_shaders_particles3D(ecs *world) {
 }
 
 void spawn_prefabs_particles3D(ecs *world) {
-    prefab_particle3D = spawn_prefab_particle3D(world);
+    prefab_particle3D = spawn_prefab_particle3(world);
     prefab_particle3D_emitter = spawn_prefab_particle3D_emitter(world);
     // spawn_particle3D_emitter(world, 0); // testing
 }

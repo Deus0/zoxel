@@ -30,7 +30,6 @@ void define_systems_stats(ecs *world) {
         zoxp_update,
         [in] combat.Dead,
         [out] combat.DiedTime,
-        [out] physics.DisableMovement,
         [out] animations.AnimationState,
         [out] animations.AnimationStart
     );

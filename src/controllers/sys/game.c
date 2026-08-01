@@ -26,9 +26,9 @@ zox_sys2(ControllerPlayerStateSystem) {
             } else {
                 zox_loge("No Mouse Found on player.");
             }
-            if (zox_valid(character->value)) {
+            /*if (zox_valid(character->value)) {
                 zox_set(character->value, DisableMovement, { !can_move });
-            }
+            }*/
         }
     }
 } zox_sys_end(ControllerPlayerStateSystem);

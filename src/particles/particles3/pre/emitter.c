@@ -7,9 +7,8 @@ entity spawn_prefab_particle3D_emitter(ecs *world) {
     zox_prefab_set(e, Position3D, { float3_zero });
     zox_prefab_set(e, Rotation3D, { quaternion_identity });
     zox_prefab_set(e, Scale1, { 1 });
-    zox_prefab_set(e, LocalPosition3D, { float3_zero });
-    zox_prefab_set(e, LocalRotation3D, { quaternion_identity });
-    // zox_prefab_set(e, ParentLink, { 0 });
+    // zox_prefab_set(e, LocalPosition3D, { float3_zero });
+    // zox_prefab_set(e, LocalRotation3D, { quaternion_identity });
     zox_prefab_set(e, Bounds3D, { 0 });
     zox_prefab_set(e, Color, { color_white });
     return e;

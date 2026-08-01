@@ -11,7 +11,7 @@ static inline void set_position_rotation_scale2_recursive(
         return;
     }
     #endif
-    if (zox_has(e, DisableTransform)) {
+    if (zox_has(e, DisableTransform) || zox_has(e, DisableParentTransform)) {
         return;
     }
     if (zox_has(e, LinePoints2) && zox_has(e, LocalLinePoints2)) {

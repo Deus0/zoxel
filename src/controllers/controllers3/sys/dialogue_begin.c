@@ -53,7 +53,6 @@ zox_sys2(DialogueBeginSystem) {
             entity window = windows[j];
             set_children_by_id_byte(world, window, zox_id(RenderDisabled), 1);
         }
-        // entity dialogue = dialogues->value[0];
         run->value = spawn_process_dialogue(world, prefab_process_dialogue, tree, e, npc);
         entity dialogue_ui = spawn_dialogue_ui(world, canvas, character, npc);
         link_dialogue_run_to_ui(world, run->value, dialogue_ui);

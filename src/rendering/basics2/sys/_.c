@@ -1,7 +1,7 @@
-#include "basic_upload.c"
-#include "textured_upload.c"
-#include "render2_instance.c"
-#include "render2.c"
+#include "upload_basic.c"
+#include "upload_textured.c"
+#include "render_basic.c"
+#include "render_instance.c"
 #include "render_layers.c"
 #include "render_transform.c"
 

@@ -14,10 +14,7 @@ zox_sys2(Controller2MoveSystem) {
             continue;
         }
         if (zox_has(character, DisableMovement)) {
-            zox_geter(character, DisableMovement, disableMovement)
-            if (disableMovement->value) {
-                continue;
-            }
+            continue;
         }
         byte is_running = 0;
         float2 movement = float2_zero; // { 0, 0 };

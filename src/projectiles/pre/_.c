@@ -7,8 +7,7 @@ entity spawn_prefab_projectile(ecs* world, entity prefab) {
     zox_add_tag(e, Moveable);
     zox_prefab_set(e, Velocity3D, { float3_zero });
     zox_prefab_set(e, Acceleration3D, { float3_zero });
-    // zox_prefab_set(e, DisableGravity, { 0 });
-    // zox_prefab_set(e, Gravity3D, { zox_default_gravity });
+    zox_prefab_set(e, Gravity3D, { float3_multiply1(zox_default_gravity, 0.2f) });
     return e;
 }
 

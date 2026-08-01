@@ -31,16 +31,13 @@ entity spawn_material_matrixui(ecs *world) {
 // TODO: Replace the old ui system and just use this
 // NOTE: Needs to skip GPU calls for non layers since called per layer
 zox_sys2(ElementRenderMatrixSystem) {
+    // TODO: Create a stack here of render data - sort by layer - then render by layers
     byte dbg_log = 0;
     float depth_per_layer = zox_depth_per_layer;
     float depth_begin = depth_per_layer;
     const attributes_matrixui* attributes = NULL;
     entity base_material = material_matrixui;
     entity material = 0;
-    zox_gpu_enable_blend();
-    if (zox_new_ui_renderer) {
-        zox_gpu_enable_depth_test();
-    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
@@ -61,10 +58,10 @@ zox_sys2(ElementRenderMatrixSystem) {
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, uvs);
         zox_sys_i(TextureGPULink, texture);
-        if (disabled->value) {
+        if (!zox_new_ui_renderer && layer->value != renderer_layer) {
             continue;
         }
-        if (!zox_new_ui_renderer && layer->value != renderer_layer) {
+        if (disabled->value) {
             continue;
         }
         entity render_camera = zox_get_mesh2_camera(world, e);
@@ -113,11 +110,15 @@ zox_sys2(ElementRenderMatrixSystem) {
                     zox_log("- Set Material Vignette [%i] to [%f]", property_id, property_value);
                 }
             }
+            zox_gpu_enable_blend();
+            if (zox_new_ui_renderer) {
+                glEnable(GL_POLYGON_OFFSET_FILL);
+                zox_gpu_enable_depth_test();
+            }
         }
         // set layer depth
-        float depth = depth_begin + layer->value * depth_per_layer;
         float4x4 matrix2 = matrix->value;
-        matrix2.w.z += depth;
+        matrix2.w.z += layer->value * depth_per_layer;
         // per mesh data
         zox_gpu_bind_buffer_element(mesh->value.x);
         zox_gpu_bind_texture(texture->value);
@@ -144,9 +145,10 @@ zox_sys2(ElementRenderMatrixSystem) {
         zox_gpu_reset_mesh();
         zox_gpu_reset_texture();
         zox_disable_material();
-    }
-    zox_gpu_disable_blend();
-    if (zox_new_ui_renderer) {
-        zox_gpu_disable_depth_test();
+        zox_gpu_disable_blend();
+        if (zox_new_ui_renderer) {
+            glDisable(GL_POLYGON_OFFSET_FILL);
+            zox_gpu_disable_depth_test();
+        }
     }
 } zox_sys_end(ElementRenderMatrixSystem);

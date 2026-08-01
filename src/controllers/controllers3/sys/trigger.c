@@ -24,6 +24,9 @@ zox_sys2(Player3DTriggerSystem) {
         if (!zox_valid(character) || !zox_has(character, Character3) || !zox_valid(camera->value)) {
             continue;
         }
+        if (zox_has(character, DisableMovement)) {
+            continue;
+        }
         byte camera_state = zox_getv(camera->value, CameraState);
         if (camera_state != zox_camera_state_first_person) {
             continue;
@@ -80,17 +83,15 @@ zox_sys2(Player3DTriggerSystem) {
                 }
             }
         }
-        if (is_triggered_e && !zox_gett_value(character, TriggerActionE)) {
+        if (is_triggered_e && !zox_getv(character, TriggerActionE)) {
             zox_set(character, TriggerActionE, { zox_dirty_trigger });
         }
-        zox_geter_value(character, DisableMovement, byte, disabled);
-        if (!disabled) {
-            if (is_triggered_a && !zox_gett_value(character, TriggerActionA)) {
-                zox_set(character, TriggerActionA, { zox_dirty_trigger });
-            }
-            if (is_triggered_b && !zox_gett_value(character, TriggerActionB)) {
-                zox_set(character, TriggerActionB, { zox_dirty_trigger });
-            }
+        // used to be here, whats trigger e? idk
+        if (is_triggered_a && !zox_gett_value(character, TriggerActionA)) {
+            zox_set(character, TriggerActionA, { zox_dirty_trigger });
+        }
+        if (is_triggered_b && !zox_gett_value(character, TriggerActionB)) {
+            zox_set(character, TriggerActionB, { zox_dirty_trigger });
         }
     }
 } zox_sys_end(Player3DTriggerSystem);

@@ -7,7 +7,6 @@ zox_sys2(MoveForwardSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MoveForwards);
-    zox_sys_in(DisableMovement);
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
     // zox_sys_in(Velocity3D)
@@ -17,7 +16,6 @@ zox_sys2(MoveForwardSystem) {
     zox_sys_out(Acceleration3D);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(MoveForwards, moveForwards);
-        zox_sys_i(DisableMovement, disable);
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         // zox_sys_i(Velocity3D, velocity)
@@ -26,7 +24,7 @@ zox_sys2(MoveForwardSystem) {
         zox_sys_i(MoveToBuffer, buffer);
         zox_sys_o(Acceleration3D, acceleration);
         // only face target when commanded to
-        if (disable->value || !moveForwards->value) {
+        if (!moveForwards->value) {
             continue;
         }
         float stop_threshold = buffer->value;

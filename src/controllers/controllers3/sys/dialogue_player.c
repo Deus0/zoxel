@@ -17,21 +17,14 @@ zox_sys2(PlayerDialogueSystem) {
         }
         if (state->value == zox_player_state_dialogue_begin) {
             state->value = zox_player_state_dialogue_active;
-            // zox_setv(camera->value, CameraVignette, dialogue_vignette);
             zox_lerp_float(camera->value, CameraVignette, dialogue_vignette, 2.5f);
             zox_lerp_float(camera->value, CameraBlur, 0.3f, 2.5f);
-            // zox_setv(camera->value, CameraBlur, 0.3f);
-            // trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 1);
             if (local_mouse) {
                 zox_setv(local_mouse, MouseLock, 0);
             }
-            zox_setv(character->value, DisableMovement, 1);
-
+            zox_add(character->value, DisableMovement);
         } else if (state->value == zox_player_state_dialogue_end) {
             state->value = zox_player_state_playing;
-            // zox_setv(camera->value, CameraBlur, 0);
-            // zox_setv(camera->value, CameraVignette, game_vignette);
-            // create a animation event here
             // lerp our component value over time to new value
             zox_lerp_float(camera->value, CameraVignette, game_vignette, 2.5f);
             zox_lerp_float(camera->value, CameraBlur, 0, 2.5f);
@@ -39,7 +32,7 @@ zox_sys2(PlayerDialogueSystem) {
             if (local_mouse) {
                 zox_setv(local_mouse, MouseLock, 1);
             }
-            zox_setv(character->value, DisableMovement, 0);
+            zox_remove(character->value, DisableMovement);
         }
     }
 } zox_sys_end(PlayerDialogueSystem);

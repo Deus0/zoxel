@@ -28,10 +28,10 @@ void define_systems_jump(ecs* world) {
     zox_system(
         Jump3AccSystem,
         zoxp_physics + 1,
-        [in] physics.DisableMovement,
         [in] physics3.Velocity3D,
         [out] physics3.Acceleration3D,
-        [out] jumps.Jump
+        [out] jumps.Jump,
+        [none] !physics.DisableMovement
     );
     zox_system_1(
         JumpSoundSystem,
@@ -48,8 +48,8 @@ void define_systems_jump(ecs* world) {
     /*zox_system(
         Jump3VelSystem,
         zoxp_physics + 1,
-        [in] physics.DisableMovement,
         [out] physics3.Velocity3D,
-        [out] jumps.Jump
-        );*/
+        [out] jumps.Jump,
+        [none] !physics.DisableMovement
+    );*/
 }

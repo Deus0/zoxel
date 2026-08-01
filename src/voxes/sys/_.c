@@ -13,7 +13,7 @@ void define_systems_voxes(ecs *world) {
     zox_system(
         Bounds3GrowSystem,
         zoxp_update,
-        [in] chunks3.VoxelNodeDirty, // rendering.MeshDirty,
+        [in] chunks3.VoxelNodeDirty,
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
         [out] transforms3.Bounds3D,
@@ -22,9 +22,8 @@ void define_systems_voxes(ecs *world) {
     zox_system(
         Bounds3EnableSystem,
         zoxp_update,
-        transforms3.Bounds3Dirty,
-        [out] physics.DisableMovement,
-        [out] physics.DisableGravity
+        [in] transforms3.Bounds3Dirty,
+        [none] physics.DisableMovement
     );
     // NOTE: Writes to VoxelNode
     zox_system(

@@ -2,6 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Issue with ui2D is transparency sorting
+    - we can set depth per layer but will need to sort calls
+        - tue 255 calls to the same systems is not efficient...
+    - We can just throw them all into transform system and use that? less math on shaders too
+    - Then we can just sort in that single system based on layers
+
 Atm
 - arm doesnt swing when not selected
 - cant talk / raycast npcs when no action selected

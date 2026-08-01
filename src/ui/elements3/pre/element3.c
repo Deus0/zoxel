@@ -28,7 +28,7 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     // Add Texture
     zox_add_tag(e, Texture);
     zox_prefab_set(e, TextureData, { 0 });
-    zox_prefab_set(e, TextureSize, { int2_zero });
+    zox_prefab_set(e, TextureSize, { 0 });
     zox_prefab_set(e, TextureDirty, { 0 });
     return e;
 }

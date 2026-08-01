@@ -42,19 +42,18 @@ void define_systems_npcs(ecs *world) {
         RotateTowardsSystem,
         !is_debug_rotate_towards,
         [in] npcs.RotateTowards,
-        [in] physics.DisableMovement,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
         [in] physics3.Omega3D,
         [in] npcs.TargetPosition,
         [out] physics3.Alpha3D,
-        [none] npcs.Npc
+        [none] npcs.Npc,
+        [none] !physics.DisableMovement,
     );
     zox_system_m(
         MoveForwardSystem,
         !is_debug_move_forwards,
         [in] npcs.MoveForwards,
-        [in] physics.DisableMovement,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
         // [in] physics3.Velocity3D,
@@ -62,46 +61,47 @@ void define_systems_npcs(ecs *world) {
         [in] npcs.MoveSpeed,
         [in] npcs.MoveToBuffer,
         [out] physics3.Acceleration3D,
-        [none] npcs.Npc
+        [none] npcs.Npc,
+        [none] !physics.DisableMovement,
     );
     zox_system_m(
         WanderSystem,
         !is_debug_wander,
         [in] npcs.Behaviour,
-        [in] physics.DisableMovement,
         [in] transforms3.Position3D,
         [out] npcs.TargetPosition,
         [out] npcs.WanderDirection,
-        [none] npcs.Npc
+        [none] npcs.Npc,
+        [none] !physics.DisableMovement,
     );
     zox_system_m(
         AttackSystem,
         !is_debug_attack,
         [in] npcs.Behaviour,
-        [in] physics.DisableMovement,
         [in] npcs.ThreatPosition,
         [out] npcs.TargetPosition,
-        [none] npcs.Npc
+        [none] npcs.Npc,
+        [none] !physics.DisableMovement,
     );
     zox_system_m(
         AttackTriggerSystem,
         !is_debug_attack,
         [in] npcs.Behaviour,
-        [in] physics.DisableMovement,
         [out] actions.ActiveAction,
         [out] actions.ActiveActionDirty,
         [out] triggers.TriggerActionA,
-        [none] npcs.Npc
+        [none] npcs.Npc,
+        [none] !physics.DisableMovement,
     );
     zox_system_m(
         FleeSystem,
         !is_debug_flee,
         [in] npcs.Behaviour,
-        [in] physics.DisableMovement,
         [in] transforms3.Position3D,
         [in] npcs.ThreatPosition,
         [out] npcs.TargetPosition,
-        [none] npcs.Npc
+        [none] npcs.Npc,
+        [none] !physics.DisableMovement,
     );
     /*zox_system(StayUprightSystem, EcsOnUpdate,
         [in] transforms3.Rotation3D,
@@ -119,10 +119,10 @@ void define_systems_npcs(ecs *world) {
         FollowSystem,
         zoxp_update,
         [in] Behaviour,
-        [in] physics.DisableMovement,
         [in] FollowTarget,
         [out] npcs.TargetPosition,
-        [none] npcs.Npc
+        [none] npcs.Npc,
+        [none] !physics.DisableMovement,
     );
     // Sound gen takes longer;
     zox_system_1(

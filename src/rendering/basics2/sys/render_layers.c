@@ -4,15 +4,13 @@
 zox_sys2(ElementRenderSystem) {
     byte dbg_log = 0;
     byte dbg_gl = 0;
-    float depth_per_layer = zox_depth_per_layer;
-    float depth_begin = depth_per_layer;
+    float depth_per_layer = 0.001f;
+    float units_per_layer = 1.0f;
+    float depth_per_layer2 = zox_depth_per_layer;
+    float depth_begin = depth_per_layer2;
     entity base_material = material_textured2D;
     entity material = 0;
     const MaterialTextured2D* attributes = NULL;
-    zox_gpu_enable_blend();
-    if (zox_new_ui_renderer) {
-        zox_gpu_enable_depth_test();
-    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
@@ -75,15 +73,24 @@ zox_sys2(ElementRenderSystem) {
             guint material_id = zox_getv(material, MaterialGPULink);
             zox_gpu_material(material_id);
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
+            zox_gpu_enable_blend();
+            if (zox_new_ui_renderer) {
+                // glEnable(GL_POLYGON_OFFSET_FILL);
+                zox_gpu_enable_depth_test();
+            }
         }
         // per mesh data
-        float depth = depth_begin + layer->value * depth_per_layer;
+        // float units = units_per_layer * layer->value;
+        // float depth = depth_per_layer * layer->value;
+        // glPolygonOffset(-units, -depth);
         zox_gpu_bind_buffer_element(mesh->value.x);
         zox_gpu_bind_buffer_array(mesh->value.y);
         zox_gpu_enable_attribute_float2(attributes->vertex_position);
         zox_gpu_bind_buffer_array(uvs->value);
         zox_gpu_enable_attribute_float2(attributes->vertex_uv);
-        zox_gpu_float3(attributes->position, (float3) { position->value.x, position->value.y, depth });
+        // depth
+        // float depth2 = layer->value * depth_per_layer2;
+        zox_gpu_float3(attributes->position, (float3) { position->value.x, position->value.y, 0 });
         // Enable Texture
         zox_gpu_bind_texture(texture->value);
         zox_gpu_int(attributes->texture, 0);
@@ -107,7 +114,7 @@ zox_sys2(ElementRenderSystem) {
         }
         if (dbg_log == 1) {
             float2 local_position = zox_has(e, LocalPosition2) ? zox_getv(e, LocalPosition2) : float2_zero;
-            zox_log("Rendering [%s] at L[%i] At [%.01fx%.01fx%f]: Brightness [%f] Alpha [%f] Local [%.01fx%.01f]", zox_get_name(e), layer->value, position->value.x, position->value.y, depth, brightness->value, alpha->value, local_position.x, local_position.y);
+            zox_log("Rendering [%s] at L[%i] At [%.01fx%.01f]: Brightness [%f] Alpha [%f] Local [%.01fx%.01f]", zox_get_name(e), layer->value, position->value.x, position->value.y, brightness->value, alpha->value, local_position.x, local_position.y);
             zox_log("   - gpu: Mesh [%ix%i] UVs [%i] Texture [%i] Material [%s]", mesh->value.x, mesh->value.y, uvs->value, texture->value, zox_getn(material));
         }
         zox_sys_increment();
@@ -118,9 +125,10 @@ zox_sys2(ElementRenderSystem) {
         zox_gpu_reset_mesh();
         zox_gpu_reset_texture();
         zox_disable_material();
-    }
-    zox_gpu_disable_blend();
-    if (zox_new_ui_renderer) {
-        zox_gpu_disable_depth_test();
+        zox_gpu_disable_blend();
+        if (zox_new_ui_renderer) {
+            // glDisable(GL_POLYGON_OFFSET_FILL);
+            zox_gpu_disable_depth_test();
+        }
     }
 } zox_sys_end(ElementRenderSystem);

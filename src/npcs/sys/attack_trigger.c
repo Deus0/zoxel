@@ -4,18 +4,16 @@ zox_sys2(AttackTriggerSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Behaviour);
-    zox_sys_in(DisableMovement);
     zox_sys_out(ActiveAction);
     zox_sys_out(ActiveActionDirty);
     zox_sys_out(TriggerActionA);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Behaviour, behaviour);
-        zox_sys_i(DisableMovement, disable);
         zox_sys_o(ActiveAction, aaction);
         zox_sys_o(ActiveActionDirty, dirty);
         zox_sys_o(TriggerActionA, trigger);
-        if (disable->value || behaviour->value != zox_behaviour_attack || trigger->value) {
+        if (behaviour->value != zox_behaviour_attack || trigger->value) {
             continue;
         }
         if (dirty->value) {

@@ -20,8 +20,7 @@ zox_sys2(Player3DJumpSystem) {
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
-        zox_geter(character, DisableMovement, disableMovement);
-        if (disableMovement->value) {
+        if (zox_has(character, DisableMovement)) {
             continue;
         }
         zox_geter_value(character, JumpState, byte, jump_state);

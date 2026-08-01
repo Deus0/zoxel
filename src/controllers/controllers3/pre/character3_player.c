@@ -5,8 +5,7 @@ entity spawn_prefab_character3_player(ecs *world, entity prefab) {
     // Transform
     zox_prefab_set(e, Euler, { float3_zero });
     // disable until loaded terrain
-    zox_set(e, DisableGravity, { 1 });
-    zox_set(e, DisableMovement, { 1 });
+    // zox_add_tag(e, DisableMovement);
     zox_prefab_set(e, FlyMode, { 0 });
     zox_add_tag(e, BlockSoundTrigger);
     // Controller

@@ -9,51 +9,41 @@ zox_sys2(Particle3DRenderSystem) {
 #ifdef zox_debug_particle3Ds
     zox_sys_world();
 #endif
-
     zox_gpu_enable_points();
     zox_gpu_enable_blend();
     zox_gpu_material(particle3D_material);
     zox_gpu_float4(particle3D_fog_data_location, get_fog_value());
     zox_gpu_float4x4(particle3D_camera_matrix_location, render_camera_matrix);
-
     float fov_fixer = 90.0f / ((float) render_camera_fov);
     zox_gpu_float(particle3D_location_thickness, fov_fixer * default_point_thickness * viewport_scale);
-
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Color);
-
 #if !defined(zox_disable_particles_gpu_instancing) && !defined(zox_disable_instancing)
-
     // position
     zox_gpu_bind_buffer_array(particle3D_instanced_position_buffer);
     zox_gpu_set_attribute_float3(particle3D_position_location, (void*) 0);
     zox_gpu_set_sub_buffer_float3(it->count, Position3D_);
     zox_gpu_enable_attribute(particle3D_position_location);
     zox_gpu_attribute_divisor(particle3D_position_location, 1);
-
     // Color Data
     zox_gpu_bind_buffer_array(particle3D_instanced_color_buffer);
     zox_gpu_set_attribute_color(particle3D_color_location, (void*) 0);
     zox_gpu_set_sub_buffer_color(it->count, Color_);
     zox_gpu_enable_attribute(particle3D_color_location);
     zox_gpu_attribute_divisor(particle3D_color_location, 1);
-
     // draw
     zox_gpu_render_points_instanced(it->count);
     // glDrawArraysInstanced(GL_POINTS, 0, 1, it->count);
-
     // resets
     zox_gpu_attribute_divisor(particle3D_color_location, 0); // Update per instance
     zox_gpu_attribute_divisor(particle3D_position_location, 0); // Update per instance
     zox_gpu_disable_attribute(particle3D_color_location);
     zox_gpu_disable_attribute(particle3D_position_location);
     zox_gpu_bind_buffer_array(0);
-
 #else
     zox_gpu_enable_attribute(particle3D_position_location);
     zox_gpu_enable_attribute(particle3D_color_location);
-
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Color, color);
@@ -67,7 +57,6 @@ zox_sys2(Particle3DRenderSystem) {
 #endif
     zox_disable_material();
     zox_gpu_disable_blend();
-
 #ifdef zox_debug_particle3Ds
     float3 debug_particle_line_addition = (float3) { 0, 0.2f, 0 };
     for (int i = 0; i < it->count; i++) {
@@ -77,7 +66,6 @@ zox_sys2(Particle3DRenderSystem) {
         spawn_line3(world, position->value, end, 0.5f, 0.03);
     }
 #endif
-
     // zox_log("Rendering Particles [%i]", it->count);
 } zox_sys_end(Particle3DRenderSystem);
 
