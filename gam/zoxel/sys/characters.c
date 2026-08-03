@@ -1,72 +1,75 @@
+entity spawn_model_nodegraph_slime(
+    ecs* world,
+    entity parent,
+    byte depth,
+    byte3 size,
+    color skin_color,
+    color eye_color)
+{
+    entity prefab = prefab_node_model;
+    float eye_spacing = 5.6f;
+    float eye_height = 2.2f;
+    byte3 core_position = byte3_half(size);
+    byte eye_ridge = byte_div(size.x, eye_spacing);
+    byte3 eye_size = byte3_single(byte_div(size.x, eye_spacing));
+    byte eye_y = byte_div(size.y, eye_height);
+    byte eye_pos_z = size.z - eye_size.z / 2;
+    byte3 leye_position = (byte3) { size.x / 2 - eye_size.x - eye_ridge / 2, eye_y, eye_pos_z };
+    byte3 reye_position = (byte3) { size.x / 2 + eye_ridge / 2, eye_y, eye_pos_z };
+    // Nodes!!
+    entity root_node = spawn_node_model_colors(world, skin_color, 1);
+    zox_set_parent(world, root_node, parent);
+    entity colors_node2 = spawn_node_model_colors(world, eye_color, 1);
+    new_link_single_node(world, root_node, colors_node2);
+    entity fill_node = spawn_node_model_at(world, prefab, zox_model_node_fill, core_position, size, 1);
+    zox_set(fill_node, NodeDepth, { depth });
+    new_link_single_node(world, colors_node2, fill_node);
+    entity left_eye_node = spawn_node_model_at(world, prefab, zox_model_node_paint, leye_position, eye_size, 2);
+    new_link_single_node(world, fill_node, left_eye_node);
+    entity right_eye_node = spawn_node_model_at(world, prefab, zox_model_node_paint, reye_position, eye_size, 2);
+    new_link_single_node(world, left_eye_node, right_eye_node);
+    return root_node;
+}
+
 entity spawn_model_slime(ecs* world, entity parent, lint seed, byte depth, byte variants_count) {
     int seed_shift = 33;
-    short length = octree_size(depth);
-    byte3 size = byte3_single(length);
-    // Spawn Slime
-    // TODO: Unique per variant size
-    // TODO: Shift Properties from Blueprint to Variant (with seed) - i.e. use Node Process Data
-    /*byte graph_depth = nodegraph_max_depth;
-    short graph_length = octree_size(graph_depth);
-    float squash = seed_range(seed, 0.7f, 0.9f);
-    float3 ratio = (float3) { squash, 1.0f, squash };
-    byte3 vsize_max = byte3_scale3f(byte3_single(graph_length), ratio);
-    // Colors - TODO: NOdegraph should use vox colors instead of nodegraph ones for this
-    color skin_color = (color) { seed_range(seed+=seed_shift, 0, 255), seed_range(seed+=seed_shift,0, 255), seed_range(seed+=seed_shift, 0, 255), 255 };
-    color eye_color = (color) { seed_range(seed+=seed_shift, 0, 255), seed_range(seed+=seed_shift,0, 255), seed_range(seed+=seed_shift, 0, 255), 255 };
-    // Create a blueprint for slime
-    entity nodegraph = spawn_model_nodegraph_slime(world, prefab_node_model, graph_depth, vsize_max, skin_color, eye_color);
-    zox_set_parent(world, nodegraph, parent);
-    // Creates a model group for our variants
-    zox_make_neww(e);
-    zox_set_unique_name(e, "modelv_slime");
-    zox_add_tag(e, ModelCharacter);
-    zox_set_parent(world, e, parent);
-    // We spawn max possible depth models
-    ModelLinks variants = (ModelLinks) { 0 };
-    for (byte j = 0; j < variants_count; j++) {
-        lint vseed = seed + j * 1209;
-        color vcolor = color_red; // color_grayscale(rand_range(80, 180));
-        byte3 vsize = byte3_scale3f(size, ratio);
-        ModelLods mlods2 = (ModelLods) { };
-        entity mlods = spawn_model_lods(world, vcolor, vseed, depth, vsize, "rslime", &mlods2);
-        zox_set_unique_name(mlods, "mslime");
-        zox_set_parent(world, mlods, e);
-        add_to_ModelLinks(&variants, mlods);
-        spawn_process_model(world, prefab_process_model, nodegraph, mlods);
-    }
-    zox_set_ptr(e, ModelLinks, variants);
-    return e;*/
-    // TODO: Unique per variant size
-    // TODO: Shift Properties from Blueprint to Variant (with seed) - i.e. use Node Process Data
-    // byte mdepth_character = depth;
-    byte nodegraph_depth = nodegraph_max_depth; // - 1;
-    short nodegraph_length = octree_size(nodegraph_depth);
+    lint variant_seed_step = 1209;
     float squash = randf_range(0.7f, 0.9f);
     float3 ratio = (float3) { squash, 1.0f, squash };
-    byte3 vsize_max = byte3_scale3f(byte3_single(nodegraph_length), ratio);
-    // Colors
-    color skin_color = (color) { seed_range(seed+=seed_shift, 0, 255), seed_range(seed+=seed_shift,0, 255), seed_range(seed+=seed_shift, 0, 255), 255 };
-    color eye_color = (color) { seed_range(seed+=seed_shift, 0, 255), seed_range(seed+=seed_shift,0, 255), seed_range(seed+=seed_shift, 0, 255), 255 };
-    // Create a blueprint for slime
-    entity nodegraph = spawn_model_nodegraph_slime(world, prefab_node_model, nodegraph_depth, vsize_max, skin_color, eye_color);
-    //add_to_NodegraphLinks(graphs, nodegraph);
-    // Creates a model group for our variants
-    zox_make_neww(model_group);
-    zox_set_unique_name(model_group, "modelv_slime");
-    zox_add_tag(model_group, ModelCharacter);
-    // add_to_ModelLinks(models, model_group);
-    // We spawn max possible depth models
-    ModelLinks variants = (ModelLinks) { 0 };
-    for (byte j = 0; j < grass_variants; j++) {
-        lint vseed = seed + j * 1209;
-        color vcolor = color_red; // color_grayscale(rand_range(80, 180));
-        // short vlength = octree_size(depth);
-        byte3 vsize = byte3_scale3f(size, ratio);
-        ModelLods mlods2 = (ModelLods) { };
-        entity mlods = spawn_model_lods(world, prefab_vox, vcolor, vseed, depth, vsize, "rslime", &mlods2);
-        zox_set_unique_name(mlods, "mslime");
-        add_to_ModelLinks(&variants, mlods);
-        spawn_process_model(world, prefab_process_model, nodegraph, mlods);
+    color skin_color = seed_color(&seed, seed_shift);
+    color eye_color = seed_color(&seed, seed_shift);
+    // Our nodegraph
+    entity nodegraph = spawn_model_nodegraph_slime(
+        world,
+        parent,
+        nodegraph_max_depth,
+        get_scaled_size(nodegraph_max_depth, ratio),
+        skin_color,
+        eye_color);
+    zox_set_parent(world, nodegraph, parent);
+    // zox_make_neww(model_group);
+    entity model_group = zox_ins(world, prefab_model_group);
+    zox_set_parent(world, model_group, parent);
+    zox_set_unique_name(model_group, "model_group_slime");
+    // Spawn variant models with the blueprint
+    ModelLinks variants = { 0 };
+    byte3 variant_size = get_scaled_size(depth, ratio);
+    for (byte i = 0; i < variants_count; ++i) {
+        lint variant_seed = seed + (lint) i * variant_seed_step;
+        ModelLods lods = { 0 };
+        entity model = spawn_model_lods(
+            world,
+            model_group,
+            prefab_vox,
+            color_red,
+            variant_seed,
+            depth,
+            variant_size,
+            "lod_slime",
+            &lods);
+        zox_set_unique_name(model, "model_slime");
+        add_to_ModelLinks(&variants, model);
+        spawn_process_model(world, prefab_process_model, nodegraph, model);
     }
     zox_set_ptr(model_group, ModelLinks, variants);
     return model_group;
@@ -76,6 +79,7 @@ entity spawn_model_slime(ecs* world, entity parent, lint seed, byte depth, byte 
 zox_sys2(Character3RealmSpawnSystem) {
     byte character_depth = block_vox_depth_limits.y;
     uint seed_shift = 36936;
+    uint inner_seed_shift = 33;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -91,14 +95,7 @@ zox_sys2(Character3RealmSpawnSystem) {
         if (state->value != zox_generate_realm_characters) {
             continue;
         }
-        // New NPCs
-        {
-            // entity e2 = spawn_character3
-            // entity health = zox_get_child_by_name(realm, "health");
-            // spawn_state_stat(world, e2, health);
-            // set model too
-        }
-        uint seed_offset = seed_shift;
+        uint character_seed = seed->value + seed_shift;
         byte chance_max = 0;
         entity prefab_character = is_characters_instanced ? prefab_character3_instanced_npc : prefab_character3_npc;
         // add files
@@ -108,27 +105,54 @@ zox_sys2(Character3RealmSpawnSystem) {
         if (!zox_no_humanoids)
         {
             byte chance = 5;
-            lint character_seed = seed->value + (seed_offset+=seed_shift);
             entity e2 = spawn_character3_meta(world, prefab_character3_skeleton_npc, character_seed, "Boney", chance);
             zox_set_parent(world, e2, e);
             spawn_stat_level(world, e2, rsoul, 5);
             spawn_stat_state(world, e2, rhealth, 21, 21);
             chance_max += chance;
             add_to_CharacterLinks(characters, e2);
+            character_seed += seed_shift;
         }
-        // add model links with tag ModelCharacter
+        // SLIMES
+        // TODO: Spawn one blueprint and just use that
         byte slime_types = 4;
         byte variants = 1;
         byte generated_chance = 65 / slime_types;
         for (int j = 0; j < slime_types; j++) {
-            // TODO: Just spawn models here
-            lint character_seed = seed->value + (seed_offset+=seed_shift);
+
+            /*lint inner_character_seed = character_seed;
+            float squash = seed_range(inner_character_seed, 0.6f, 0.9f);
+            inner_character_seed += inner_seed_shift;
+            float3 ratio = (float3) { squash, 1.0f, squash };
+            color skin_color = seed_color(&inner_character_seed, inner_seed_shift);
+            color eye_color = seed_color(&inner_character_seed, inner_seed_shift);
+            byte3 nodegraph_size = get_scaled_size(nodegraph_max_depth, ratio);
+            entity nodegraph = spawn_model_nodegraph_slime(
+                world,
+                e,
+                nodegraph_max_depth,
+                nodegraph_size,
+                skin_color,
+                eye_color);
+            byte3 model_size = get_scaled_size(character_depth, ratio);
+            entity model = spawn_blueprint_models(
+                world,
+                e,
+                nodegraph,
+                character_seed,
+                "slime",
+                character_depth,
+                model_size,
+                variants
+            );*/
+
             entity model = spawn_model_slime(world, e, character_seed, character_depth, variants);
-            //entity model = models->value[j];
+
             if (!zox_valid(model)) {
-                zox_log_error("realm has invalid model [%i]", j);
+                zox_loge("realm has invalid model [%i]", j);
                 continue;
             }
+            zox_add_tag(model, ModelCharacter);
             byte chance = generated_chance;
             entity e2 = spawn_character3_meta(world, prefab_character, character_seed, "character", chance);
             zox_setv(e2, ModelLink, model);
@@ -138,6 +162,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             chance_max += chance;
             spawn_stat_level(world, e2, rsoul, 2);
             spawn_stat_state(world, e2, rhealth, 8, 8);
+            character_seed += seed_shift;
         }
         // Spawn our Vox Files
         int count = 5; // count of below array
@@ -158,7 +183,6 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             // can choose here properties for spawning
             byte chance = chances[j];
-            lint character_seed = seed->value + (seed_offset+=seed_shift);
             entity e2 = spawn_character3_meta(world, prefab_character, character_seed, name, chance);
             zox_set_name(e2, name); // assuming name is unique to the ecs world
             zox_setv(e2, ModelLink, model);
@@ -168,6 +192,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             spawn_stat_level(world, e2, rsoul, soul_value);
             spawn_stat_state(world, e2, rhealth, health, health);
             add_to_CharacterLinks(characters, e2);
+            character_seed += seed_shift;
         }
         chance->value = chance_max;
         zox_logv("At [%f] Realm [characters] [%i] spawned.", zox_current_time, characters->length);

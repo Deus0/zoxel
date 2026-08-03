@@ -2,6 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+Cookies
+- Fix the new blueprint + slime character workflow
+- Refactor Model Blueprints to vary size based on seed - set size node
+- Refactor the model to generate all chunk meshes
+    - refactor vox color builder to use parent
+
 Atm
 - Refactor taskbar as entities and add the Mirror UI there
 - Finish Character Renderer - Mirror UI

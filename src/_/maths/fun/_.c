@@ -29,3 +29,4 @@
 #include "fmod.c"
 #include "pow.c"
 #include "seed.c"
+#include "color.c"
