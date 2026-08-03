@@ -1,8 +1,9 @@
 #ifndef zoxm_rendering
 #define zoxm_rendering
 
-byte zox_new_ui_renderer = 0;
-ushort max_layers2D = 254;
+#define max_layers2D 256
+// const ushort max_layers2D = 256;
+byte zox_new_ui_renderer = 1;
 #include "com/_.c"
 #include "dat/_.c"
 #include "set/_.c"

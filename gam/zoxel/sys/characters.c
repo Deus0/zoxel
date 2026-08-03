@@ -1,11 +1,12 @@
 entity spawn_model_nodegraph_slime(
     ecs* world,
     entity parent,
-    byte depth,
-    byte3 size,
+    float3 ratio,
     color skin_color,
     color eye_color)
 {
+    byte depth = nodegraph_max_depth;
+    byte3 size = get_scaled_size(nodegraph_max_depth, ratio);
     entity prefab = prefab_node_model;
     float eye_spacing = 5.6f;
     float eye_height = 2.2f;
@@ -29,50 +30,6 @@ entity spawn_model_nodegraph_slime(
     entity right_eye_node = spawn_node_model_at(world, prefab, zox_model_node_paint, reye_position, eye_size, 2);
     new_link_single_node(world, left_eye_node, right_eye_node);
     return root_node;
-}
-
-entity spawn_model_slime(ecs* world, entity parent, lint seed, byte depth, byte variants_count) {
-    int seed_shift = 33;
-    lint variant_seed_step = 1209;
-    float squash = randf_range(0.7f, 0.9f);
-    float3 ratio = (float3) { squash, 1.0f, squash };
-    color skin_color = seed_color(&seed, seed_shift);
-    color eye_color = seed_color(&seed, seed_shift);
-    // Our nodegraph
-    entity nodegraph = spawn_model_nodegraph_slime(
-        world,
-        parent,
-        nodegraph_max_depth,
-        get_scaled_size(nodegraph_max_depth, ratio),
-        skin_color,
-        eye_color);
-    zox_set_parent(world, nodegraph, parent);
-    // zox_make_neww(model_group);
-    entity model_group = zox_ins(world, prefab_model_group);
-    zox_set_parent(world, model_group, parent);
-    zox_set_unique_name(model_group, "model_group_slime");
-    // Spawn variant models with the blueprint
-    ModelLinks variants = { 0 };
-    byte3 variant_size = get_scaled_size(depth, ratio);
-    for (byte i = 0; i < variants_count; ++i) {
-        lint variant_seed = seed + (lint) i * variant_seed_step;
-        ModelLods lods = { 0 };
-        entity model = spawn_model_lods(
-            world,
-            model_group,
-            prefab_vox,
-            color_red,
-            variant_seed,
-            depth,
-            variant_size,
-            "lod_slime",
-            &lods);
-        zox_set_unique_name(model, "model_slime");
-        add_to_ModelLinks(&variants, model);
-        spawn_process_model(world, prefab_process_model, nodegraph, model);
-    }
-    zox_set_ptr(model_group, ModelLinks, variants);
-    return model_group;
 }
 
 // TODO: Just spawn characters here linked to realm, used as prefabs later
@@ -117,24 +74,23 @@ zox_sys2(Character3RealmSpawnSystem) {
         // TODO: Spawn one blueprint and just use that
         byte slime_types = 4;
         byte variants = 1;
-        byte generated_chance = 65 / slime_types;
+        byte generated_chance = slime_types > 0 ? 65 / slime_types : 0;
         for (int j = 0; j < slime_types; j++) {
-
-            /*lint inner_character_seed = character_seed;
-            float squash = seed_range(inner_character_seed, 0.6f, 0.9f);
+            lint inner_character_seed = character_seed;
+            // get squash ratio!
+            float squash = seed_rangef(inner_character_seed, 0.6f, 1);
             inner_character_seed += inner_seed_shift;
-            float3 ratio = (float3) { squash, 1.0f, squash };
+            float stretch = seed_rangef(inner_character_seed, 0.6f, 1);
+            inner_character_seed += inner_seed_shift;
+            float3 ratio = (float3) { squash, stretch, squash };
             color skin_color = seed_color(&inner_character_seed, inner_seed_shift);
             color eye_color = seed_color(&inner_character_seed, inner_seed_shift);
-            byte3 nodegraph_size = get_scaled_size(nodegraph_max_depth, ratio);
             entity nodegraph = spawn_model_nodegraph_slime(
                 world,
                 e,
-                nodegraph_max_depth,
-                nodegraph_size,
+                ratio,
                 skin_color,
                 eye_color);
-            byte3 model_size = get_scaled_size(character_depth, ratio);
             entity model = spawn_blueprint_models(
                 world,
                 e,
@@ -142,12 +98,8 @@ zox_sys2(Character3RealmSpawnSystem) {
                 character_seed,
                 "slime",
                 character_depth,
-                model_size,
-                variants
-            );*/
-
-            entity model = spawn_model_slime(world, e, character_seed, character_depth, variants);
-
+                get_scaled_size(character_depth, ratio),
+                variants);
             if (!zox_valid(model)) {
                 zox_loge("realm has invalid model [%i]", j);
                 continue;

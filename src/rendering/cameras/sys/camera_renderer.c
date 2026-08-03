@@ -1,3 +1,5 @@
+
+
 static inline void opengl_begin_camera(byte is_3D) {
     if (is_3D) {
         zox_gpu_enable_depth_test();        // cull for 3D things
@@ -87,12 +89,13 @@ void camera_render_update(iter *it, byte is_camera2D) {
                 }
             }
         } else {
-            if (zox_new_ui_renderer) {
-                for (size_t j = 0; j < render2D_systems->size; j++) {
-                    entity system = render2D_systems->data[j];
-                    ecs_run(world, system, 0, NULL);
-                }
-            } else {
+            clear_ui_layers();
+            for (size_t j = 0; j < render2D_systems->size; j++) {
+                entity system = render2D_systems->data[j];
+                ecs_run(world, system, 0, NULL);
+            }
+            render_uis(world, zox_ui_render_queue);
+            /*} else {
                 for (renderer_layer = 0; renderer_layer < max_layers2D; renderer_layer++) {
                     for (size_t j = 0; j < render2D_systems->size; j++) {
                         entity system = render2D_systems->data[j];
@@ -102,7 +105,7 @@ void camera_render_update(iter *it, byte is_camera2D) {
                         ecs_run(world, system, 0, NULL);
                     }
                 }
-            }
+            }*/
         }
         if (fbo) {
             zox_gpu_reset_fbo();

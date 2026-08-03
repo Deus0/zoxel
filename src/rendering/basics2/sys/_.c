@@ -29,7 +29,7 @@ void define_systems_basics2D(ecs *world) {
         [none] !core.Initialize,
     );
     // 2D or 3D pipeline?
-    zox_render2D_system(
+    /*zox_render2D_system(
         ElementRenderSystem,
         [in] rendering.RenderDisabled,
         [in] transforms2.Position2,
@@ -45,7 +45,7 @@ void define_systems_basics2D(ecs *world) {
         [none] !transforms.TransformMatrix,
         [none] !core.Initialize,
     );
-    add_system_process_counter(world, zox_id(ElementRenderSystem));
+    add_system_process_counter(world, zox_id(ElementRenderSystem));*/
     // all ui
     // Render using Matrix instead of Position2 etc
     zox_render2D_system(

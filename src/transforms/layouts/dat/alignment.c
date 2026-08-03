@@ -10,11 +10,19 @@
 
 static inline float2 alignment_to_anchor(byte alignment) {
     if (alignment == zox_alignment_left) {
-        return (float2) { 0, 0.5f };
+        return float2_left;
     } else if (alignment == zox_alignment_right) {
-        return (float2) { 1, 0.5f };
+        return float2_right;
     } else if (alignment == zox_alignment_centre) {
         return float2_half;
+    } else if (alignment == zox_alignment_bottom_right) {
+        return float2_bottom_right;
+    } else if (alignment == zox_alignment_bottom_left) {
+        return float2_bottom_left;
+    } else if (alignment == zox_alignment_top_right) {
+        return float2_top_right;
+    } else if (alignment == zox_alignment_top_left) {
+        return float2_top_left;
     } else {
         zox_logw("Alignment not added to anchor table [%i]", alignment);
         return float2_half;

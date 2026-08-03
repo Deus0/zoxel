@@ -2,8 +2,25 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Fix the destruction material
+    - use depth level and keep at same position as voxel
+- Fix the fog, make look nicer
+- Fix UI Empty textures
+    - theyre orange atm
+- Sometimes crashes still
+
+Model Refactors + NodeGraphs
+- Node (Runner) Process Entity should shift the seed its using
+- Add SetSizeNode with min max properties
+    - min max get shifted depth to the depth of the model
+    - this lets us use same blueprint for all slimes
+    - This way we wont need float3 ratio in the model spawning too
+- Add paint detail - clamp options - for tiny details
+- Once its done, get ai to spawn chickens and cookies
+- add spawn spots node that adds some variation
+
 Cookies
-- Fix the new blueprint + slime character workflow
+-x Fix the new blueprint + slime character workflow
 - Refactor Model Blueprints to vary size based on seed - set size node
 - Refactor the model to generate all chunk meshes
     - refactor vox color builder to use parent

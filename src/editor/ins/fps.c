@@ -3,7 +3,7 @@ entity spawn_fps_display(ecs *world, entity canvas) {
         zox_log_error("Invalid Canvas");
         return 0;
     }
-    byte layer = editor_overlay_layer + 10;
+    byte layer = max_layers2D - 10; // editor_overlay_layer + 10;
     byte font_size = 32;
     byte2 padding = (byte2) { 12, 8 };
     float2 anchor = { 1.0f, 1.0f };

@@ -32,3 +32,14 @@ static inline uint position_seed2(uint base_seed, int2 position) {
     seed ^= (uint)position.y * 0x85EBCA77u;
     return seed_rand(seed);
 }
+
+static inline float seed_rangef(uint seed, float min, float max) {
+#ifdef zox_safety_checks
+    if (min >= max) {
+        zox_loge("Invalid seed range [%f:%f]", min, max);
+        return 0;
+    }
+#endif
+    float t = (float) seed_rand(seed) / (float) UINT_MAX;
+    return min + t * (max - min);
+}

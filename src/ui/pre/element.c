@@ -4,7 +4,7 @@ entity spawn_prefab_element(ecs* world, entity prefab) {
     zox_add_tag(e, Element);
     zox_add_tag(e, TexturedMesh2);  // render system tag
     // Properties
-    // zox_prefab_set(e, TransformMatrix, { float4x4_identity });
+    zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Brightness, { 1 });
     zox_prefab_set(e, Alpha, { 1 });

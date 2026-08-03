@@ -15,7 +15,8 @@ entity2 spawn_button(ecs* world, entity prefab, entity parent, const char* text,
     zox_set(e, ElementFillColor, { fill });
     zox_set(e, OutlineColor, { outline });
     zox_set(e, ElementOutlineColor, { outline });
-    entity e2 = spawn_text(world, prefab_text, e, int2_zero, alignment_to_anchor(alignment), font_size, alignment, padding, text, font_fill, font_outline);
+    // alignment_to_anchor(alignment)
+    entity e2 = spawn_text(world, prefab_text, e, int2_zero, float2_centre, font_size, alignment, padding, text, font_fill, font_outline);
     return (entity2) { e, e2 };
 }
 

@@ -8,6 +8,14 @@ static inline void zox_gpu_disable_culling() {
     glDisable(GL_CULL_FACE);
 }
 
+static inline void zox_gpu_set_depth_mask(byte is_depth_mask) {
+    if (is_depth_mask) {
+        glDepthMask(GL_TRUE);
+    } else {
+        glDepthMask(GL_FALSE);
+    }
+}
+
 static inline void zox_gpu_enable_depth_test() {
     glEnable(GL_DEPTH_TEST);
     // glDepthFunc(GL_LESS);
