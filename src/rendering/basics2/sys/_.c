@@ -2,7 +2,7 @@
 #include "upload_textured.c"
 #include "render_basic.c"
 #include "render_instance.c"
-#include "render_layers.c"
+// #include "render_layers.c"
 #include "render_transform.c"
 
 void define_systems_basics2D(ecs *world) {

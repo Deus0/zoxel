@@ -95,17 +95,6 @@ void camera_render_update(iter *it, byte is_camera2D) {
                 ecs_run(world, system, 0, NULL);
             }
             render_uis(world, zox_ui_render_queue);
-            /*} else {
-                for (renderer_layer = 0; renderer_layer < max_layers2D; renderer_layer++) {
-                    for (size_t j = 0; j < render2D_systems->size; j++) {
-                        entity system = render2D_systems->data[j];
-                        if (renderer_layer == 0 && dbg_log >= 2) {
-                            zox_log(" - %i [%s] (%i)", j, zox_getn(system), j);
-                        }
-                        ecs_run(world, system, 0, NULL);
-                    }
-                }
-            }*/
         }
         if (fbo) {
             zox_gpu_reset_fbo();

@@ -224,3 +224,61 @@ static inline void reduce_to_max_octree_node(void* node, size_t stride, size_t v
     // Set parent value
     *(byte*)((char*) node + value_offset) = max_val;
 }
+
+static inline void get_octree_bounds_node(
+    const void* node,
+    size_t stride,
+    size_t value_offset,
+    byte3 position,
+    byte size,
+    byte3* bounds)
+{
+    if (!node) {
+        return;
+    }
+    byte value = *(const byte*)((const char*)node + value_offset);
+    const void* children = *(const void* const*)node;
+    // Solid leaf fills entire region
+    if (!children) {
+        if (!value) {
+            return;
+        }
+        byte3 end = byte3_add(position, byte3_single(size));
+        if (end.x > bounds->x) bounds->x = end.x;
+        if (end.y > bounds->y) bounds->y = end.y;
+        if (end.z > bounds->z) bounds->z = end.z;
+        return;
+    }
+    byte half = size >> 1;
+    for (byte i = 0; i < 8; i++) {
+        byte3 child_position = position;
+        if (i & 1) child_position.x += half;
+        if (i & 2) child_position.y += half;
+        if (i & 4) child_position.z += half;
+        const void* child = (const char*)children + i * stride;
+        get_octree_bounds_node(
+            child,
+            stride,
+            value_offset,
+            child_position,
+            half,
+            bounds);
+    }
+}
+
+static inline byte3 get_octree_bounds(
+    const void* node,
+    byte depth,
+    size_t stride,
+    size_t value_offset)
+{
+    byte3 bounds = byte3_zero;
+    get_octree_bounds_node(
+        node,
+        stride,
+        value_offset,
+        byte3_zero,
+        (byte)(1 << depth),
+        &bounds);
+    return bounds;
+}

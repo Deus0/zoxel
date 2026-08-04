@@ -2,7 +2,6 @@ entity spawn_model(ecs *world, entity prefab, byte mdepth, byte ndepth, byte3 rs
     byte ddepth = mdepth - ndepth;
     short length = octree_size(ddepth);
     float bscale = ((float) length) / 64.0f;
-    // zox_log("Model at depth [%i/%i] has ddepth [%i] and scale [%f]", ndepth, mdepth, ddepth, bscale);
     zox_instance(prefab);
     zox_set(e, NodeDepth, { ndepth });
     zox_set(e, BlockScale, { bscale });

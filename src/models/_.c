@@ -30,6 +30,8 @@ byte is_generate_vox_outlines = 0;
 #define zox_model_node_colors 1
 #define zox_model_node_fill 2
 #define zox_model_node_paint 3
+#define zox_model_node_size 4
+#define zox_model_node_end 9
 
 #include "set/_.c"
 #include "com/_.c"

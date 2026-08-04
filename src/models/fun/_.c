@@ -11,6 +11,50 @@ static inline void set_voxel_safe(VoxelNode *tree, byte depth, byte3 p, byte v) 
     set_VoxelNode(tree, depth, p, v);
 }
 
+// Shifts our node to the new blueprint size
+static inline void scale_node_transform(
+    byte3 bounds,
+    byte3* position,
+    byte3* size)
+{
+    uint blueprint_length = octree_size(nodegraph_max_depth);
+    position->x = (position->x * bounds.x) / blueprint_length;
+    position->y = (position->y * bounds.y) / blueprint_length;
+    position->z = (position->z * bounds.z) / blueprint_length;
+    size->x = (size->x * bounds.x) / blueprint_length;
+    size->y = (size->y * bounds.y) / blueprint_length;
+    size->z = (size->z * bounds.z) / blueprint_length;
+    if (!size->x) size->x = 1;
+    if (!size->y) size->y = 1;
+    if (!size->z) size->z = 1;
+}
+
+// Scales a node transform from the fixed nodegraph depth to the target model depth.
+// Since octree sizes are powers of two, this is an exact bit shift.
+static inline void shift_node_transform(byte model_depth, byte3* position, byte3* size) {
+    byte node_depth = nodegraph_max_depth;
+    int shift = (int)model_depth - (int)nodegraph_max_depth;
+    if (shift > 0) {
+        position->x <<= shift;
+        position->y <<= shift;
+        position->z <<= shift;
+        size->x <<= shift;
+        size->y <<= shift;
+        size->z <<= shift;
+    } else if (shift < 0) {
+        byte shift = node_depth - model_depth;
+        position->x >>= shift;
+        position->y >>= shift;
+        position->z >>= shift;
+        size->x >>= shift;
+        size->y >>= shift;
+        size->z >>= shift;
+    }
+    if (!size->x) size->x = 1;
+    if (!size->y) size->y = 1;
+    if (!size->z) size->z = 1;
+}
+
 // graphs
 #include "nodegraph.c"
 // nodes
@@ -19,39 +63,3 @@ static inline void set_voxel_safe(VoxelNode *tree, byte depth, byte3 p, byte v) 
 #include "sphere.c"
 #include "ellipsoid.c"
 #include "cylinder.c"
-
-entity spawn_blueprint_models(
-    ecs *world,
-    entity parent,
-    entity nodegraph,
-    lint seed,
-    const char *name,
-    byte depth,
-    byte3 size,
-    byte variants_count)
-{
-    lint variant_seed_step = 1209;
-    entity model_group = zox_ins(world, prefab_model_group);
-    zox_set_unique_name(model_group, name);
-    zox_set_parent(world, model_group, parent);
-    ModelLinks variants = { 0 };
-    for (byte i = 0; i < variants_count; i++) {
-        lint variant_seed = seed + (lint) i * variant_seed_step;
-        ModelLods lods = { 0 };
-        entity model = spawn_model_lods(
-            world,
-            model_group,
-            prefab_vox,
-            color_red,
-            variant_seed,
-            depth,
-            size,
-            name,
-            &lods);
-        zox_set_unique_name(model, name);
-        add_to_ModelLinks(&variants, model);
-        spawn_process_model(world, prefab_process_model, nodegraph, model);
-    }
-    zox_set_ptr(model_group, ModelLinks, variants);
-    return model_group;
-}

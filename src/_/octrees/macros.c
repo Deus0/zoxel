@@ -1,6 +1,3 @@
-
-
-
 // Macro wrapper: generates type-safe getters
 #define create_octree_accessors(T) \
 \

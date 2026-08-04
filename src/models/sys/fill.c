@@ -1,25 +1,8 @@
 // Uses a model node to fill with shape data
-// DialogueUILink
-// TODO: Use input nodes for shape and place color
-void process_node_model_fill(ecs* world, entity n, entity vox, lint seed) {
-    if (!zox_valid(n) || !zox_valid(vox)) {
-        return;
-    }
-    if (!zox_has(n, NodeDepth) || !zox_has(n, NodeVoxel) || !zox_has(n, Shape3Position) || !zox_has(n, Shape3Size)) {
-        zox_logw("Node [%s] has invalid components.", zox_get_name(n));
-        return;
-    }
-    if (!zox_has(vox, NodeDepth) || !zox_has(vox, ColorRGBs) || !zox_has(vox, VoxelNode)) {
-        zox_logw("Vox [%s] has invalid components.", zox_getn(vox));
-        return;
-    }
-    // zox_log("Vox [%s] has Valid components.", zox_get_name(v));
-    zox_geter_value(n, NodeDepth, byte, ndepth_max);
-    zox_geter_value(n, NodeVoxel, byte, fill_type);
-    zox_geter_value(n, Shape3Position, byte3, position);
-    zox_geter_value(n, Shape3Size, byte3, size);
-    zox_geter_value(vox, NodeDepth, byte, model_depth);
-    // zox_log("Node Depth [%i] - Max [%i]", ndepth, ndepth_max);
+void process_node_model_fill(ecs* world, entity node, entity vox, lint seed, byte3 position, byte3 size) {
+    byte fill_type = zox_getv(node, NodeVoxel);
+    // Vox
+    byte model_depth = zox_getv(vox, NodeDepth);
     zox_geter(vox, ColorRGBs, colors);
     if (!colors->length) {
         zox_loge("vox [%s] has no colors", zox_getn(vox));
@@ -29,45 +12,15 @@ void process_node_model_fill(ecs* world, entity n, entity vox, lint seed) {
         zox_loge("fill type is out of bounds [%i]", fill_type, colors->length);
         fill_type = 0; // 1;
     }
-    // Change transform for vlength difference
-    // zox_log("[%s] OG Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", zox_get_name(v), ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
-    // NOTE: Scales node sizing to the Vox Size
-    short vlength = octree_size(model_depth);
-    float max_vlength = (float) powers_of_two[ndepth_max];
-    float3 positionf = (float3) {
-        position.x / max_vlength,
-        position.y / max_vlength,
-        position.z / max_vlength
-    };
-    position = (byte3) {
-        positionf.x * vlength,
-        positionf.y * vlength,
-        positionf.z * vlength
-    };
-    float3 sizef = (float3) {
-        size.x / max_vlength,
-        size.y / max_vlength,
-        size.z / max_vlength
-    };
-    size = (byte3) {
-        sizef.x * vlength,
-        sizef.y * vlength,
-        sizef.z * vlength
-    };
-    if (size.x == 0) size.x = 1;
-    if (size.y == 0) size.y = 1;
-    if (size.z == 0) size.z = 1;
-    // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
-    // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
+    shift_node_transform(model_depth, &position, &size);
     zox_muter(vox, VoxelNode, voctree);
     voctree_fill_ellipsoid(voctree, model_depth, fill_type, position, size);
-    zox_set(vox, VoxelNodeDirty, { zox_dirty_trigger });
+    // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
+    // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
+    // zox_set(vox, VoxelNodeDirty, { zox_dirty_trigger });
     // zox_log("[%s] New Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", zox_get_name(v), ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
-    // byte2 vrange = (byte2) { 1, colors->length - 1 };
-    // byte black = colors->length;
-    // Run for our fill
-    // write_lock_VoxelNode(voctree);
     // zox_log("Filling Cube at [%ix%ix%i] s[%ix%ix%i]", position.x, position.y, position.z, size.x, size.y, size.z);
+    // zox_log("[%s] OG Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", zox_get_name(v), ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
 }
 
 // Runs from a Model Node Process
@@ -79,24 +32,44 @@ zox_sys2(FillModelNodeSystem) {
     zox_sys_in(NodeBegin);
     zox_sys_in(NodeLink);
     zox_sys_in(ModelLink);
+    zox_sys_in(ModelSize);
     zox_sys_out(NodeEnd);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(NodeBegin, state);
         zox_sys_i(NodeLink, node);
         zox_sys_i(ModelLink, model);
+        zox_sys_i(ModelSize, bounds);
         zox_sys_o(NodeEnd, end);
         if (state->value != zox_dirty_active || !zox_valid(model->value)) {
+            continue;
+        }
+        if (!zox_valid(node->value)) {
+            zox_logw("Node in Process is Invalid", zox_getn(e));
+            return;
+        }
+        if (!zox_has(node->value, NodeType)) {
+            zox_logw("Node [%s] has no Type.", zox_getn(node->value));
             continue;
         }
         byte node_type = zox_getv(node->value, NodeType);
         if (node_type != zox_model_node_fill) {
             continue;
         }
+        if (!zox_has(node->value, NodeVoxel) || !zox_has(node->value, Shape3Position) || !zox_has(node->value, Shape3Size)) {
+            zox_logw("Node [%s] has invalid components for [zox_model_node_fill].", zox_getn(node->value));
+            continue;
+        }
+        byte3 position = zox_getv(node->value, Shape3Position);
+        byte3 size = zox_getv(node->value, Shape3Size);
+        if (!byte3_equals(bounds->value, byte3_zero)) {
+            scale_node_transform(bounds->value, &position, &size);
+        }
         lint seed = zox_getv(model->value, Seed);
-        byte depth = zox_getv(node->value, NodeDepth);
+        // byte depth = zox_getv(node->value, NodeDepth);
         // for each model LOD, run shapes
         if (dbg_log) {
-            zox_log(" - Node: Model Fill [%s] Seed %i - Depth [%i]", zox_getn(model->value), seed, depth);
+            zox_log(" - Node: Model Fill [%s] Seed %i", zox_getn(model->value), seed);
         }
         if (zox_has(model->value, ModelLods)) {
             zox_geter(model->value, ModelLods, models);
@@ -106,15 +79,15 @@ zox_sys2(FillModelNodeSystem) {
                 if (!zox_valid(vox)) {
                     break;
                 }
-                if (!zox_has(vox, NodeDepth)) {
-                    zox_loge("Lod Model [%i] has no NodeDepth", j);
-                    continue;
+                if (!zox_has(vox, NodeDepth) || !zox_has(vox, ColorRGBs) || !zox_has(vox, VoxelNode)) {
+                    zox_loge("Lod Model [%s] [%i] has Invalid Components", zox_getn(vox), j);
+                    break;
                 }
                 byte model_depth = zox_getv(vox, NodeDepth);
                 if (dbg_log) {
                     zox_log("  - Lod Model [%s] Depth [%i]", zox_getn(vox), model_depth);
                 }
-                process_node_model_fill(world, node->value, vox, seed);
+                process_node_model_fill(world, node->value, vox, seed, position, size);
             }
         }  else {
             zox_logw("Node Process Entity does not have ModelLods");
