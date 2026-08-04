@@ -33,17 +33,24 @@ zox_sys2(ModelSizeNodeSystem) {
         if (node_type != zox_model_node_size) {
             continue;
         }
+        if (!zox_has(node->value, ModelRatio)) {
+            zox_loge("Node has no ModelRatio");
+            continue;
+        }
         lint model_seed = zox_getv(model->value, Seed);
         if (!seed->value) {
             seed->value = model_seed;
         }
+        float6 limits = zox_getv(node->value, ModelRatio);
         // Set our nodegraph size property here!
         // get squash ratio!
-        float squash = seed_rangef(seed->value, 0.6f, 1);
+        float x = seed_rangef(seed->value, limits.x, limits.y); // 0.6f, 1);
         seed->value += inner_seed_shift;
-        float stretch = seed_rangef(seed->value, 0.6f, 1);
+        float y = seed_rangef(seed->value, limits.z, limits.w); // 0.6f, 1);
         seed->value += inner_seed_shift;
-        float3 ratio = (float3) { squash, stretch, squash };
+        float z = seed_rangef(seed->value, limits.u, limits.v);
+        seed->value += inner_seed_shift;
+        float3 ratio = (float3) { x, y, z };
         size->value = get_scaled_size(nodegraph_max_depth, ratio);
         end->value = zox_dirty_trigger;
         if (dbg_log) {
