@@ -34,13 +34,9 @@ entity spawn_device_gizmo(ecs* world, entity canvas, byte device_type) {
 }
 
 void set_mouse_visible(byte state) {
-    #ifdef zox_sdl
-    if (state) {
-        SDL_ShowCursor(SDL_ENABLE);
-    } else {
-        SDL_ShowCursor(SDL_DISABLE);
-    }
-    #endif
+#ifdef zox_sdl
+    zox_sdl_show_cursor(state);
+#endif
 }
 zox_sys2(DeviceModeUISystem) {
     byte dbg_log = 0;

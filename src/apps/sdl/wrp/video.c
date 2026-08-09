@@ -16,8 +16,8 @@ int initialize_video() {
         const char* dname = SDL_GetVideoDriver(i);
         zox_logv("   %d: %s", i + 1, dname);
     }
-    if (SDL_Init(SDL_INIT_VIDEO)) {
-        zox_log_error("Error [SDL_INIT_VIDEO] [%s]", SDL_GetError());
+    if (!sdl_init(SDL_INIT_VIDEO)) {
+        zox_loge("[SDL_INIT_VIDEO] [%s]", SDL_GetError());
         return EXIT_FAILURE;
     }
     const char* driver = SDL_GetCurrentVideoDriver();
@@ -40,7 +40,7 @@ int initialize_video() {
     }
 #endif
     set_sdl_attributes();
-    screens_count = SDL_GetNumVideoDisplays();
+    screens_count = zox_sdl_get_num_displays();
     if (screens_count == 1) {
         screen_index = 0;
     }
@@ -48,6 +48,5 @@ int initialize_video() {
 }
 
 void close_sdl_video() {
-    SDL_VideoQuit();
-    // SDL_Quit();
+    zox_sdl_video_quit();
 }

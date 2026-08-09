@@ -7,7 +7,7 @@ SDL_Window* create_sdl_window_basic_vulkan(
 #ifdef zox_android
     flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE;
 #endif
-    SDL_Window *window = SDL_CreateWindow(name, position.x, position.y, size.x, size.y, flags);
+    SDL_Window *window = zox_sdl_create_window(name, position.x, position.y, size.x, size.y, flags);
     if (window == NULL) {
         zox_log("!!! SDL_CreateWindow failed: %s\n", SDL_GetError())
         return window;

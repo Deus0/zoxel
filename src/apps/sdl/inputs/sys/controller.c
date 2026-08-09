@@ -1,15 +1,15 @@
 float stick_cutoff = 0.06f;
 
-byte get_controller_button(byte old_value, SDL_GameController* controller, SDL_GameControllerButton btn, byte dbg_log) {
-    byte value = SDL_GameControllerGetButton(controller, btn);
+byte get_controller_button(byte old_value, zox_sdl_gamepad* controller, zox_sdl_gamepad_button btn, byte dbg_log) {
+    byte value = sdl_get_gamepad_button(controller, btn);
     /*if (value && dbg_log) {
         zox_log("SDL GameController Button [%i]: %i", btn, value);
     }*/
     return process_input_button(old_value, value);
 }
 
-float get_gamepad_axis_raw(SDL_GameController *controller, SDL_GameControllerAxis axis, byte dbg_log) {
-    Sint16 raw_value = SDL_GameControllerGetAxis(controller, axis);
+float get_gamepad_axis_raw(zox_sdl_gamepad* controller, zox_sdl_gamepad_axis axis, byte dbg_log) {
+    Sint16 raw_value = sdl_get_gamepad_axis(controller, axis);
     raw_value = apply_joystick_deadzone(axis, raw_value);
     float value = raw_value / 32768.0f;
     if (float_abs(value) <= joystick_min_cutoff) {
@@ -24,7 +24,7 @@ float get_gamepad_axis_raw(SDL_GameController *controller, SDL_GameControllerAxi
     return value;
 }
 
-byte get_gamepad_axis(SDL_GameController* controller, ZeviceStick *stick, SDL_GameControllerAxis axis_x, SDL_GameControllerAxis axis_y, byte dbg_log) {
+byte get_gamepad_axis(zox_sdl_gamepad* controller, ZeviceStick *stick, zox_sdl_gamepad_axis axis_x, zox_sdl_gamepad_axis axis_y, byte dbg_log) {
     float2 previous_value = stick->value;
     stick->value.x = -get_gamepad_axis_raw(controller, axis_x, dbg_log);
     stick->value.y = -get_gamepad_axis_raw(controller, axis_y, dbg_log);
@@ -39,8 +39,8 @@ byte get_gamepad_axis(SDL_GameController* controller, ZeviceStick *stick, SDL_Ga
     return 0;
 }
 
-float get_gamepad_trigger(SDL_GameController* controller, SDL_GameControllerAxis axis, byte dbg_log) {
-    Sint16 raw = SDL_GameControllerGetAxis(controller, axis);
+float get_gamepad_trigger(zox_sdl_gamepad* controller, zox_sdl_gamepad_axis axis, byte dbg_log) {
+    Sint16 raw = sdl_get_gamepad_axis(controller, axis);
     float value = (raw + 32768.0f) / 65535.0f;
     if (float_abs(value) <= joystick_min_cutoff) {
         value = 0.0f;
@@ -51,14 +51,14 @@ float get_gamepad_trigger(SDL_GameController* controller, SDL_GameControllerAxis
     return value;
 }
 
-void sdl_controller_extract_button(ecs* world, entity e, SDL_GameController* controller, byte dbg_log) {
+void sdl_controller_extract_button(ecs* world, entity e, zox_sdl_gamepad* controller, byte dbg_log) {
     byte rindex = zox_getv(e, RealButtonIndex);
     if (zox_has(e, ZeviceBumper)) {
-        SDL_GameControllerAxis trigger;
+        zox_sdl_gamepad_axis trigger;
         if (rindex == zox_stk_left) {
-            trigger = SDL_CONTROLLER_AXIS_TRIGGERLEFT;
+            trigger = ZOX_GAMEPAD_AXIS_LEFT_TRIGGER;
         } else {
-            trigger = SDL_CONTROLLER_AXIS_TRIGGERRIGHT;
+            trigger = ZOX_GAMEPAD_AXIS_RIGHT_TRIGGER;
         }
         float value = get_gamepad_trigger(controller, trigger, dbg_log);
         byte button_value = value >= 0.9f;
@@ -73,13 +73,13 @@ void sdl_controller_extract_button(ecs* world, entity e, SDL_GameController* con
         }
     } else if (zox_has(e, ZeviceStick)) {
         zox_mut_begin(e, ZeviceStick, stick);
-        SDL_GameControllerAxis x, y;
+        zox_sdl_gamepad_axis x, y;
         if (rindex == zox_stk_left) {
-            x = SDL_CONTROLLER_AXIS_LEFTX;
-            y = SDL_CONTROLLER_AXIS_LEFTY;
+            x = ZOX_GAMEPAD_AXIS_LEFTX;
+            y = ZOX_GAMEPAD_AXIS_LEFTY;
         } else {
-            x = SDL_CONTROLLER_AXIS_RIGHTX;
-            y = SDL_CONTROLLER_AXIS_RIGHTY;
+            x = ZOX_GAMEPAD_AXIS_RIGHTX;
+            y = ZOX_GAMEPAD_AXIS_RIGHTY;
         }
         byte changed = get_gamepad_axis(controller, stick, x, y, dbg_log);
         if (changed) {
@@ -87,7 +87,7 @@ void sdl_controller_extract_button(ecs* world, entity e, SDL_GameController* con
         }
     } else if (zox_has(e, ZeviceButton)) {
         zox_mut_begin(e, ZeviceButton, button);
-        byte value = get_controller_button(button->value, controller, (SDL_GameControllerButton) rindex, dbg_log);
+        byte value = get_controller_button(button->value, controller, (zox_sdl_gamepad_button) rindex, dbg_log);
         if (value != button->value) {
             button->value = value;
             if (value && dbg_log) {
@@ -106,8 +106,8 @@ zox_sys2(SdlControllerFetchSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(SdlGameController, controller);
-        if (!SDL_GameControllerGetAttached(controller->value)) {
-            SDL_GameControllerClose(controller->value);
+        if (!zox_sdl_gamepad_connected(controller->value)) {
+            zox_sdl_gamepad_close(controller->value);
             if (dbg_log) {
                 zox_log("SdlGameController Disconnected [%s]", zox_get_name(e));
             }

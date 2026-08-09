@@ -17,7 +17,7 @@ byte load_texture_from_png(const char *filepath, TextureData* data, int2 *size) 
     for (uint y = 0; y < size->y; ++y) {
         memcpy(data->value + (size->y - 1 - y) * size->x, source + y * pitch, size->x * sizeof(color));
     }
-    SDL_FreeSurface(surface);
+    zox_sdl_dispose_surface(surface);
     return 1;
 }
 
@@ -42,7 +42,7 @@ void save_texture_as_png(const color *data, const int2 size, const char *filepat
         // Error saving bitmap
         zox_log(" ! failed with [IMG_SavePNG]: %s\n", SDL_GetError());
     }
-    SDL_FreeSurface(surface);
+    zox_sdl_dispose_surface(surface);
 }
 
 #else

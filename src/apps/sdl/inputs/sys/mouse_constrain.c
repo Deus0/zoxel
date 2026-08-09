@@ -1,4 +1,5 @@
 zox_sys2(MouseConstrainSystem) {
+    byte dbg_log = 0;
     if (disable_mouse_lock || zox_dbg_touch_with_mouse) {
         return;
     }
@@ -15,13 +16,13 @@ zox_sys2(MouseConstrainSystem) {
         if (!zox_valid(app->value) || disabled->value) {
             continue;
         }
-        zox_geter_value_non_const(app->value, SDLWindow, SDL_Window*, sdl_window);
+        const SDLWindow* window = zox_get(app->value, SDLWindow);
         int2 lock_position = get_mouse_center_point(world, app->value);
-        SDL_SetRelativeMouseMode(lock->value);
+        zox_sdl_set_relative_mouse_mode(window->value, lock->value);
         if (!lock->value) {
             continue;
         }
-        SDL_WarpMouseInWindow(sdl_window, lock_position.x, lock_position.y);
+        sdl_warp_mouse_in_window(window->value, lock_position.x, lock_position.y);
         uint children_capacity = zox_children_capacity;
         entity children[children_capacity];
         uint children_length = zox_get_children(world, e, children, children_capacity);
@@ -31,6 +32,9 @@ zox_sys2(MouseConstrainSystem) {
                 zox_muter(e2, ZevicePointerPosition, position);
                 position->value = lock_position;
             }
+        }
+        if (dbg_log) {
+            zox_log("lock_position [%ix%i]", lock_position.x, lock_position.y);
         }
     }
 } zox_sys_end(MouseConstrainSystem);

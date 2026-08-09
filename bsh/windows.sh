@@ -12,7 +12,7 @@ is_sdl_mixer="1"
 
 # Our  Libs
 bsh/libs-download.sh --sdl-mixer
-bsh/libs-compile.sh --sdl-mixer
+bsh/libs-compile2.sh windows x86_64  --sdl-mixer
 
 # bash inputs
 game_name=$1

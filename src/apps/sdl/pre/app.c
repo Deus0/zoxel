@@ -21,21 +21,7 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     int2 size = fullscreen ? screen_size : size_restore;
     // calculate position
     int2 position = calculate_monitor_position(monitor, 1, size_restore);
-    byte flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
-    if (fullscreen) {
-        if (is_on_phosh()) {
-            flags = flags | SDL_WINDOW_MAXIMIZED;
-        } else {
-            flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP;
-        }
-#if zox_windows
-        SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
-        SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
-#endif
-    }
-    if (fullscreen && maximized) {
-        flags = flags | SDL_WINDOW_MAXIMIZED;
-    }
+    SDL_WindowFlags flags = zox_sdl_window_flags(fullscreen, maximized);
     SDL_Window* sdl_window = create_sdl_window(position, size, name, flags);
     if (!sdl_window) {
         zox_log_error(" opengl did not create sdl_window, exiting zoxel")

@@ -1,3 +1,64 @@
+void zox_app_set_position(ecs *world, entity e, int2 position) {
+    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
+    SDL_SetWindowPosition(sdl_window, position.x, position.y);
+    zox_set(e, WindowPosition, { position })
+}
+
+
+int get_sdl_window_header_size(ecs* world, entity e) {
+    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
+    int top, left, bottom, right;
+    if (!SDL_GetWindowBordersSize(sdl_window, &top, &left, &bottom, &right)) {
+        return top;
+    } else {
+        return 0;
+    }
+}
+
+int2 get_window_size_without_header(ecs* world, entity e, int2 window_size) {
+    return int2_sub(window_size, (int2) { 0, get_sdl_window_header_size(world, e) });
+}
+
+// this should... account for taskbar too?
+int2 get_maximized_size(ecs* world, entity e) {
+    return int2_sub(get_screen_size(), (int2) { 0, get_sdl_window_header_size(world, e) });
+}
+
+void zox_app_set_monitor_e(ecs *world, entity e, byte monitor) {
+    SDL_Window* sdl_window = zox_getv(e, SDLWindow);
+    zox_app_set_monitor(sdl_window, monitor, 1);
+    zox_set(e, WindowMonitor, { monitor });
+}
+
+void zox_app_set_size(ecs *world, entity e, int2 size) {
+    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
+    zox_sdl_window_size(sdl_window, size);
+    if (!int2_equals(size, zox_gett_value(e, WindowSize))) {
+        zox_set(e, WindowSize, { size })
+        zox_set(e, WindowSizeDirty, { zox_dirty_trigger })
+    }
+}
+
+void on_sdl_window_restored(ecs *world, entity e) {
+    if (!zox_has(e, WindowSize)) {
+        zox_loge("invalid app [%lu]", e);
+        return;
+    }
+    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
+    zox_geter_value_non_const(e, WindowSizeRestore, int2, size);
+    zox_geter_value_non_const(e, WindowPositionRestore, int2, position);
+    if (size.x == 0 && size.y == 0) {
+        int2 screen_size = get_screen_size();
+        size.x = screen_size.x / 2;
+        size.y = screen_size.y / 2;
+    }
+    SDL_SetWindowSize(sdl_window, size.x, size.y);
+    SDL_SetWindowPosition(sdl_window, position.x, position.y);
+    zox_set(e, WindowSize, { size })
+    zox_set(e, WindowSizeDirty, { zox_dirty_trigger })
+    zox_logv(" > setting to window: position [%ix%i] size [%ix%i]", position.x, position.y, size.x, size.y);
+}
+
 void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
     if (!zox_valid(e) || !zox_has(e, WindowFullscreen)) {
         zox_log_error("invalid app in [zox_set_app_fullscreen]");
@@ -53,7 +114,7 @@ byte load_app_icon(SDL_Window* window, const char *icon_path) {
         return 0;
     }
     SDL_SetWindowIcon(window, surface);
-    SDL_FreeSurface(surface);
+    zox_sdl_dispose_surface(surface);
     zox_log("Loaded App Icon at [%s]", icon_path);
     return 1;
 }

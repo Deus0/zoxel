@@ -13,6 +13,9 @@ DFLAGS		:= -Iinc
 # shell paths
 pkg_config = $(shell which pkg-config)
 
+# sdl3 - disabled for now
+sdl3_add = "" # " --sdl3 --static"
+
 # 🧱 Release build — for speed and glory
 # 03 breaks my sounds for now
 CFLAGS      	:= -fPIC -O3 -march=native -flto=auto -DNDEBUG -Dzox_debug -Dzox_opengl
@@ -74,7 +77,7 @@ endif
 
 $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
-	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release
+	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release ${sdl3_add}
 	# $(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
 package: flecs
@@ -110,7 +113,7 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --debug
+	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --debug ${sdl3_add}
 
 dev: $(TARGET_DEV)
 

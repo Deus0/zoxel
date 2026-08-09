@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 #ifdef zox_sdl
     zox_logv("Initializing Video");
     if (initialize_video() == EXIT_FAILURE) {
-        zox_log_error("[initialize_video] failed");
+        zox_loge("[initialize_video] failed");
         return EXIT_FAILURE;
     }
 #endif

@@ -1,9 +1,8 @@
-#include "touchscreen.c"
 #include "mouse.c"
 #include "mouse_constrain.c"
-// #include "joystick.c"
-#include "controller.c"
 #include "keyboard.c"
+#include "touchscreen.c"
+#include "controller.c"
 
 void zox_define_systems_sdl_inputs(ecs* world) {
     zox_system_1(
@@ -12,6 +11,7 @@ void zox_define_systems_sdl_inputs(ecs* world) {
         [in] apps.AppLink,
         [none] inputs.Mouse
     );
+    // NOTE: We must constrain after extracting
     zox_system_1(
         MouseConstrainSystem,
         zoxp_inputs_extract,
@@ -19,6 +19,12 @@ void zox_define_systems_sdl_inputs(ecs* world) {
         [in] inputs.MouseLock,
         [in] apps.AppLink,
         [none] inputs.Mouse
+    );
+    zox_system_1(
+        KeyboardExtractSystem,
+        zoxp_inputs_extract,
+        [out] inputs.Keyboard,
+       // [none] inputs.Keyboard
     );
     zox_system_1(
         TouchscreenExtractSystem,
@@ -32,11 +38,5 @@ void zox_define_systems_sdl_inputs(ecs* world) {
         zoxp_inputs_extract,
         [in] SdlGameController,
         [none] inputs.Gamepad
-    );
-    zox_system_1(
-        KeyboardExtractSystem,
-        zoxp_inputs_extract,
-        [out] inputs.Keyboard,
-       // [none] inputs.Keyboard
     );
 }

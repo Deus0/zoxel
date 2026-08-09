@@ -1,10 +1,4 @@
-byte zox_app_get_monitor(ecs *world, entity e) {
-    if (!zox_valid(e) || !zox_has(e, SDLWindow)) {
-        return 0;
-    }
-    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
-    return SDL_GetWindowDisplayIndex(sdl_window);
-}
+
 
 SDL_Rect get_monitor_bounds(byte index) {
     SDL_Rect b;
@@ -55,16 +49,10 @@ byte zox_app_set_monitor(SDL_Window *window, byte index, byte center_window) {
     return 1;
 }
 
-void zox_app_set_monitor_e(ecs *world, entity e, byte monitor) {
-    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
-    zox_app_set_monitor(sdl_window, monitor, 1);
-    zox_set(e, WindowMonitor, { monitor });
-}
-
 int2 get_screen_size_monitor(byte monitor) {
     SDL_DisplayMode displayMode;
-    if (SDL_GetCurrentDisplayMode(monitor, &displayMode)) {
-        zox_log_error("[SDL_GetCurrentDisplayMode] (get_screen_size_monitor) failed at %i: %s", monitor, SDL_GetError());
+    if (zox_sdl_get_current_display_mode(monitor, &displayMode)) {
+        zox_loge("[SDL_GetCurrentDisplayMode] (get_screen_size_monitor) failed at %i: %s", monitor, SDL_GetError());
         if (monitor == 0) {
             return (int2) { 480, 480 };
         } else {
@@ -76,5 +64,5 @@ int2 get_screen_size_monitor(byte monitor) {
 }
 
 byte zox_get_max_monitors() {
-    return SDL_GetNumVideoDisplays();
+    return zox_sdl_get_num_displays();
 }

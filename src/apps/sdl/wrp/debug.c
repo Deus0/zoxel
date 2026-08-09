@@ -1,4 +1,4 @@
-byte opengl_es_supported() {
+/*byte opengl_es_supported() {
     byte is_supported = 0;
     int num_render_drivers = SDL_GetNumRenderDrivers();
 #ifdef zoxel_debug_opengl
@@ -29,10 +29,10 @@ void print_supported_renderers() {
         SDL_GetRenderDriverInfo(i, &info);
         zox_log("     + render driver [%s]\n", info.name)
     }
-}
+}*/
 
 void print_sdl() {
-    zox_logv("> sdl");
+    /*zox_logv("> sdl");
     zox_logv("     + platform:     %s", SDL_GetPlatform());
     zox_logv("     + cpu count:    %d", SDL_GetCPUCount());
     zox_logv("     + ram:          %d MB", SDL_GetSystemRAM());
@@ -40,11 +40,11 @@ void print_sdl() {
     zox_logv("     + sse2:         %s", (SDL_HasSSE2() ? "true" : "false"));
     zox_logv("     + sse3:         %s", (SDL_HasSSE3() ? "true" : "false"));
     zox_logv("     + sse4.1:       %s", (SDL_HasSSE41() ? "true" : "false"));
-    zox_logv("     + sse4.2:       %s", (SDL_HasSSE42() ? "true" : "false"));
-    SDL_version compiled;
+    zox_logv("     + sse4.2:       %s", (SDL_HasSSE42() ? "true" : "false"));*/
+    /*SDL_version compiled;
     SDL_version linked;
     SDL_VERSION(&compiled);
     SDL_GetVersion(&linked);
     zox_logv("     + compiled SDL version   [%d.%d.%d]", compiled.major, compiled.minor, compiled.patch);
-    zox_logv("     + linking SDL version    [%d.%d.%d]", linked.major, linked.minor, linked.patch);
+    zox_logv("     + linking SDL version    [%d.%d.%d]", linked.major, linked.minor, linked.patch);*/
 }

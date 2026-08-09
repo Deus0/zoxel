@@ -1,5 +1,5 @@
 byte get_screen_orientation(byte screen_index) {
-    SDL_DisplayOrientation orientation = SDL_GetDisplayOrientation(screen_index);
+    SDL_DisplayOrientation orientation = zox_sdl_get_display_orientation(screen_index);
     if (orientation == SDL_ORIENTATION_LANDSCAPE) {
         return 0;
     } else if (orientation == SDL_ORIENTATION_LANDSCAPE_FLIPPED) {

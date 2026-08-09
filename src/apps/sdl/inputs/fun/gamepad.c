@@ -7,30 +7,31 @@ int last_clicked_index = 0;
 
 void initialize_sdl_gamepads(ecs *world, entity app) {
     // SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
-    joysticks_count = SDL_NumJoysticks();
+    joysticks_count = zox_num_gamepads();
     if (joysticks_count == 0) {
         return;
     }
     zox_logv("Gamepads Connected [%d]", joysticks_count);
     for (int i = 0; i < joysticks_count; i++) {
         if (using_sdl_gamecontrollers) {
-            if (SDL_IsGameController(i)) {
-                SDL_GameController* controller = SDL_GameControllerOpen(i);
+            SDL_JoystickID id = zox_get_gamepad(i);
+            if (zox_is_gamepad(id)) {
+                zox_sdl_gamepad* controller = zox_sdl_gamepad_open(i);
                 if (!controller) {
                     fprintf(stderr, "Joystick Error: %s\n", SDL_GetError());
                     continue;
                 }
-                zox_log("Controller Was Connected: %s", SDL_GameControllerName(controller));
+                zox_log("Controller Was Connected: %s", zox_sdl_gamepad_name(controller));
                 spawn_gamepad_sdl_controller(world, app, controller);
             }
-        } else {
+        } /*else {
             SDL_Joystick *joystick = SDL_JoystickOpen(i);
             if (!joystick) {
                 fprintf(stderr, "Joystick Error: %s\n", SDL_GetError());
                 continue;
             }
             spawn_gamepad_sdl_joystick(world, app, joystick);
-        }
+        }*/
     }
 }
 

@@ -1,11 +1,11 @@
 extern entity dbg_player;
 
-entity spawn_gamepad_sdl_controller(ecs* world, entity app, SDL_GameController* controller) {
+entity spawn_gamepad_sdl_controller(ecs* world, entity app, zox_sdl_gamepad* controller) {
     //entity game = zox_get_child_by_id(world, parent, zox_id(Game));
     //entity player = zox_get_child_by_id(world, game, zox_id(Player));
     // entity game = zox_get_child_by_index(world, app, 0);
     // entity player = zox_get_child_by_index(world, game, 0);
-    const char* name = SDL_GameControllerName(controller);
+    const char* name = zox_sdl_gamepad_name(controller);
     entity e = spawn_gamepad_new(world, app);
     zox_name(name);
     // zox_set_parent(world, e, player);
@@ -15,18 +15,18 @@ entity spawn_gamepad_sdl_controller(ecs* world, entity app, SDL_GameController* 
     return e;
 }
 
-byte is_steamdeck_gamepad(SDL_Joystick *gamepad) {
+/*byte is_steamdeck_gamepad(SDL_Joystick *gamepad) {
     if (!gamepad) {
         return 0;
     }
-    return SDL_JoystickGetVendor(gamepad) == 0x28DE;
+    return zox_sdl_joystick_vendor(gamepad) == 0x28DE;
 }
 
 byte is_xbox_gamepad(SDL_Joystick *gamepad) {
     if (!gamepad) {
         return 0;
     }
-    Uint16 vendor = SDL_JoystickGetVendor(gamepad);
+    Uint16 vendor = zox_sdl_joystick_vendor(gamepad);
     switch (vendor) {
         case 0x045E: // Microsoft
         case 0x0738: // Mad Catz
@@ -56,6 +56,7 @@ entity spawn_gamepad_sdl_joystick(ecs* world, entity parent, SDL_Joystick* joyst
     zox_set_parent(world, e, parent);
     // zox_set_parent(world, e, dbg_player);
     zox_set(e, SdlJoystick, { joystick });
-    zox_logv("   + gamepad [%s] on parent [%s]", SDL_JoystickName(joystick), zox_get_name(parent));
+    // zox_logv("   + gamepad [%s] on parent [%s]", SDL_JoystickName(joystick), zox_get_name(parent));
+    zox_logv("   + gamepad on [%s]", zox_get_name(parent));
     return e;
-}
+}*/

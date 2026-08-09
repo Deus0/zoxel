@@ -1,3 +1,27 @@
+// Probes core Compatibility, assumes SDL is initialized
+byte supports_opengl_version(byte major, byte minor, byte version) {
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, version);
+    SDL_Window* window = zox_sdl_create_window("probe", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 16, 16, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+    if (!window) {
+        return 0;
+    }
+    SDL_GLContext context = SDL_GL_CreateContext(window);
+    if (!context) {
+        SDL_DestroyWindow(window);
+        return 0;
+    }
+    zox_sdl_gl_delete_context(context);
+    SDL_DestroyWindow(window);
+    return 1;
+}
+
+
+byte supports_opengl_core(byte major, byte minor) {
+    return supports_opengl_version(major, minor, SDL_GL_CONTEXT_PROFILE_CORE);
+}
+
 void set_sdl_attributes2(byte minor, byte major, byte profile) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, sdl_gl_major);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, sdl_gl_minor);
@@ -42,11 +66,11 @@ SDL_GLContext create_sdl_opengl_context(SDL_Window* window) {
 
 byte set_sdl_window_context(SDL_Window* window, SDL_GLContext context) {
     if (!window || !context) {
-        zox_log_error("Window or Context is null.");
+        zox_loge("Window or Context is null.");
         return 1;
     }
-    if (SDL_GL_MakeCurrent(window, context)) {
-        zox_log_error("Failed to make OpenGL context current: %s\n", SDL_GetError());
+    if (!sdl_gl_make_current(window, context)) {
+        zox_loge("Failed to make OpenGL context current: %s\n", SDL_GetError());
         return 1;
     }
     // SDL_GL_SetSwapInterval(vsync);

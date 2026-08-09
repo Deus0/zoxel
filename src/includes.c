@@ -9,8 +9,9 @@
 #include <pthread.h>    // Threadlocks - pthread_rwlock_init
 #include <math.h>       // For Maths
 #include <time.h>       // For Time
+#include <limits.h>     // UINT_MAX
 // # Pathing #
-// for DIR, readdir, closedir etc
+// // for DIR, readdir, closedir etc
 #include <dirent.h>
 // for pathing - can we do without?
 #include <sys/stat.h>   // pathing
@@ -64,21 +65,8 @@
 #ifdef zox_vulkan
     #include <SDL2/SDL_vulkan.h>
 #endif
-#ifdef sdlsource
-    #include "SDL.h"
-#else
-    #include <SDL2/SDL.h>
-#endif
-#ifdef zox_android
-    #include <SDL2/SDL_system.h>
-#endif
-    #ifdef sdlsource
-        #include "SDL_opengl.h"
-    #else
-        #include <SDL2/SDL_opengl.h>
-    #endif
+// Glut Lib!
 #elif zox_glut
-    // Glut Lib!
     #include <GL/freeglut.h>
 #endif
 #ifdef zox_gles2
@@ -87,6 +75,21 @@
 #ifdef zox_vulkan
     #include <vulkan/vulkan.h>
     #include <vulkan/vulkan_wayland.h>
+#endif
+#ifdef zox_sdl3
+    #include <SDL3/SDL.h>
+    #include <SDL3/SDL_opengl.h>
+#else
+    #ifdef sdlsource
+        #include "SDL.h"
+        #include "SDL_opengl.h"
+    #else
+        #include <SDL2/SDL.h>
+        #include <SDL2/SDL_opengl.h>
+    #endif
+#endif
+#ifdef zox_android
+    #include <SDL2/SDL_system.h>
 #endif
 #ifdef zox_sdl_images
     #ifdef sdlsource

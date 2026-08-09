@@ -1,5 +1,9 @@
 # Done
 
+-x Added SDL3 Support
+-x Make it so slime blueprint size is set in first node, others will use this blueprint component - like anchor it
+-x add a ChunkSize setter function
+    -x a get octree size function that scans the octree
 -x Fix Statbars
     -x Statbar 2Ds - the frontbar are not appearing in front properly
     -x We can just anchor bar to left, make it easier maths

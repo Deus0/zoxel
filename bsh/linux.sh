@@ -18,20 +18,27 @@ ONARC=$(uname -m)
 sdl_source="False"
 sdl_images="False"
 sdl_mixer="True"
-package="False"
 bin_filename="${game_name}" # -${GLB}-${GFX}-${ARC}
 bin_path=bin/${bin_filename}.bin
 compiler="gcc"
-debug="False"
 sources="src/main.c inc/flecs/flecs.c"
 includes="-Iinc/flecs"
 cflags="-std=gnu99 -fPIC"
 dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_linux"
 libs="-lm -lpthread" # -Iinc
 
+debug="False"
 [[ " $* " == *" --debug "* ]] && debug="True"
 [[ " $* " == *" --development "* ]] && debug="True"
+
+package="False"
 [[ " $* " == *" --package "* ]] && package="True"
+
+is_sdl3="False"
+[[ " $* " == *" --sdl3 "* ]] && is_sdl3="True"
+
+is_static="False"
+[[ " $* " == *" --static "* ]] && is_static="True"
 
 if [[ ${ARC} == "aarch64" ]]; then
     ARC="arm"
@@ -40,6 +47,13 @@ elif [[ ${ARC} == "x86_64" ]]; then
 fi
 
 echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
+
+# Our  Libs
+if [[ ${is_static} == "True" ]]; then
+    sdl_mixer="False"
+    bsh/libs-download.sh --sdl3 # --sdl-mixer
+    bsh/libs-compile2.sh linux x86_64 --sdl3 # --sdl-mixer
+fi
 
 if [[ ${ONARC} == "aarch64" && ${ARC} == "arm" ]]; then
     cflags+=" -march=native"
@@ -109,7 +123,12 @@ if [[ ${GFX} == "sdl" ]]; then
     if [[ ${sdl_mixer} == "True" ]]; then
         dflags+=" -Dzox_sdl_mixer"
     fi
-    if [[ ${sdl_source} == "True" ]]; then
+    if [[ ${is_sdl3} == "True" ]]; then
+        echo "+ Added [sdl3]"
+        dflags+=" -Dzox_sdl3"
+        includes+=" -Iext/sdl3/include"
+        libs+=" -Lbin -lSDL3 -Wl,-rpath,'\$ORIGIN'"
+     elif [[ ${sdl_source} == "True" ]]; then
         # libs+=" -Lext/sdl/build -Lext/sdl_image/build -Lext/sdl_mixer/build"
         libs+=" -static bin/libSDL2_x64.a bin/libSDL2_image_x64.a bin/libSDL2_mixer_x64.a"
         includes+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"

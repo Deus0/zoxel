@@ -1,5 +1,6 @@
 // NOTE: SDL doesn't do multiple mouses
 // NOTE: This flips mouse position to match our engine
+
 zox_sys2(MouseExtractSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -11,14 +12,14 @@ zox_sys2(MouseExtractSystem) {
         screen_size.y--;
     }
     int2 mouse_position;
-    Uint32 buttons = SDL_GetMouseState(&mouse_position.x, &mouse_position.y);
+    uint buttons = zox_sdl_get_mouse_state(&mouse_position);
     int2_flip_y(&mouse_position, screen_size);
     byte button_pressed_left = 0;
     byte button_pressed_right = 0;
-    if (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+    if (sdl_mouse_button_pressed(buttons, SDL_BUTTON_LEFT)) {
         button_pressed_left = 1;
     }
-    if (buttons & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+    if (sdl_mouse_button_pressed(buttons, SDL_BUTTON_RIGHT)) {
         button_pressed_right = 1;
     }
     zox_sys_begin();

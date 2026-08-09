@@ -2,12 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Fix viewport not resizing
+- Make DeviceDisabled a tag - Generic Disabled
+- Get Android build working
 - Add color hsv limits like the size later to the color node
 - Color node should set a reference name
     - fill can use this instead of hard values
--x Make it so slime blueprint size is set in first node, others will use this blueprint component - like anchor it
--x add a ChunkSize setter function
-    -x a get octree size function that scans the octree
 - Fix the destruction material
     - use depth level and keep at same position as voxel
 - Fix the fog, make look nicer

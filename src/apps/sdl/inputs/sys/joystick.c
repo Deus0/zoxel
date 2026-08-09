@@ -136,9 +136,9 @@ byte sdl_gamepad_handle_disconnect(SDL_Joystick *joystick) {
     }
     if (!SDL_JoystickGetAttached(joystick)) {
         int joystick_id = SDL_JoystickInstanceID(joystick);
-        const char* joystick_name = SDL_JoystickNameForIndex(joystick_id);
-        zox_log("- Gamepad Disconnected [%i] [%s]", joystick_id, joystick_name);
-        SDL_JoystickClose(joystick);
+        // zox_log("- Gamepad Disconnected [%i] [%s]", joystick_id, SDL_JoystickNameForIndex(joystick_id));
+        zox_log("- Gamepad Disconnected [%i]", joystick_id);
+        zox_sdl_joystick_close(joystick);
         joystick = NULL;
         return 0;
     }
