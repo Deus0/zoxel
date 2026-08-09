@@ -14,7 +14,10 @@ DFLAGS		:= -Iinc
 pkg_config = $(shell which pkg-config)
 
 # sdl3 - disabled for now
-sdl3_add = "" # " --sdl3 --static"
+sdl3_add = ""
+ifneq ($(filter sdl3,$(MAKECMDGOALS)),)
+	sdl3_add = " --sdl3 --static"
+endif
 
 # 🧱 Release build — for speed and glory
 # 03 breaks my sounds for now
@@ -78,11 +81,10 @@ endif
 $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
 	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release ${sdl3_add}
-	# $(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
 package: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
-	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release --package
+	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release --package ${sdl3_add}
 
 package-windows: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
