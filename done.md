@@ -1,5 +1,6 @@
 # Done
 
+-x We should use lib folder for dll or .so files instead of bin
 -x Added SDL3 Support
 -x Make it so slime blueprint size is set in first node, others will use this blueprint component - like anchor it
 -x add a ChunkSize setter function

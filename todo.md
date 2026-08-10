@@ -2,6 +2,9 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+Windows:
+- Get sdl3 to build for windows
+
 Android Bugs:
 - Post Processing Broken
 - Button doesnt work when click first time - touch issue
@@ -12,7 +15,6 @@ Android Bugs:
 - Buttons bad and hard to tap
 - No audio when no mixer - sdl 3
 
-- We should use lib folder for dll or .so files instead of bin
 - Fix viewport not resizing
 - Make DeviceDisabled a tag - Generic Disabled
 - Get Android build working

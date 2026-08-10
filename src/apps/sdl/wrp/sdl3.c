@@ -40,8 +40,8 @@ SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
             flags = flags | SDL_WINDOW_FULLSCREEN;
         }
 #if zox_windows
-        SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
-        SDL_SetHint(SDL_HINT_VIDEO_HIGH_DPI_DISABLED, "0");
+        // SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
+        // SDL_SetHint(SDL_HINT_VIDEO_HIGH_DPI_DISABLED, "0");
 #endif
     }
     if (fullscreen && maximized) {

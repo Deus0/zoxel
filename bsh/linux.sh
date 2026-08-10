@@ -13,6 +13,13 @@ game_name=$1    # zoxel
 GLB=$2          # headless, opengl or vulkan
 GFX=$3          # sdl, glut
 ARC=$4          # x64
+
+if [[ ${ARC} == "aarch64" ]]; then
+    ARC="arm"
+elif [[ ${ARC} == "x86_64" ]]; then
+    ARC="x64"
+fi
+
 OS="linux"
 ONARC=$(uname -m)
 sdl_source="False"
@@ -27,28 +34,21 @@ cflags="-std=gnu99 -fPIC"
 dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_linux"
 libs="-lm -lpthread" # -Iinc
 package_path="zip"
+architecture="x86_64"   # base arch name
+library="lib/${OS}_${ARC}"
 
 debug="False"
+verbose="False"
+package="False"
+is_sdl3="False"
+is_static="False"
+
 [[ " $* " == *" --debug "* ]] && debug="True"
 [[ " $* " == *" --development "* ]] && debug="True"
-
-verbose="False"
 [[ " $* " == *" --verbose "* ]] && verbose="True"
-
-package="False"
 [[ " $* " == *" --package "* ]] && package="True"
-
-is_sdl3="False"
 [[ " $* " == *" --sdl3 "* ]] && is_sdl3="True"
-
-is_static="False"
 [[ " $* " == *" --static "* ]] && is_static="True"
-
-if [[ ${ARC} == "aarch64" ]]; then
-    ARC="arm"
-elif [[ ${ARC} == "x86_64" ]]; then
-    ARC="x64"
-fi
 
 echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
 
@@ -56,7 +56,7 @@ echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
 if [[ ${is_static} == "True" ]]; then
     sdl_mixer="False"
     bsh/libs-download.sh --sdl3 # --sdl-mixer
-    bsh/libs-compile2.sh linux x86_64 --sdl3 # --sdl-mixer
+    bsh/libs-compile.sh linux ${ARC} --sdl3 # --sdl-mixer
 fi
 
 if [[ ${ONARC} == "aarch64" && ${ARC} == "arm" ]]; then
@@ -64,14 +64,14 @@ if [[ ${ONARC} == "aarch64" && ${ARC} == "arm" ]]; then
     is_desktop_gl="0"
 elif [[ ${ONARC} == "x86_64" && ${ARC} == "x64" ]]; then
     cflags+=" -march=native"
-elif [[ ${ONARC} == "aarch64" && ${ARC} == "x64" ]]; then
-    echo "Cross Compiler Set"
-    echo "sudo apt install gcc-x86-64-linux-gnu"
-    compiler="x86_64-linux-gnu-gcc"
-    cflags+=" -march=x86-64"
-    sdl_source="True"
-    bsh/libs-download.sh
-    bsh/libs-compile-linux-x64.sh
+#elif [[ ${ONARC} == "aarch64" && ${ARC} == "x64" ]]; then
+#    echo "Cross Compiler Set"
+#    echo "sudo apt install gcc-x86-64-linux-gnu"
+#    compiler="x86_64-linux-gnu-gcc"
+#    cflags+=" -march=x86-64"
+#    sdl_source="True"
+#   bsh/libs-download.sh
+#   bsh/libs-compile-linux-x64.sh
 else
     echo "Running on Unsupported platform and target"
     exit
@@ -137,12 +137,13 @@ if [[ ${GFX} == "sdl" ]]; then
         dflags+=" -Dzox_sdl3"
         includes+=" -Iext/sdl3/include"
         libs+=" -Lbin -lSDL3 -Wl,-rpath,'\$ORIGIN'"
-     elif [[ ${sdl_source} == "True" ]]; then
+    elif [[ ${sdl_source} == "True" ]]; then
         # libs+=" -Lext/sdl/build -Lext/sdl_image/build -Lext/sdl_mixer/build"
         libs+=" -static bin/libSDL2_x64.a bin/libSDL2_image_x64.a bin/libSDL2_mixer_x64.a"
         includes+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"
         dflags+=" -Dsdlsource"
     else
+        echo "+ Using Systems SDL"
         libs+=" -lSDL2"
         if [[ ${sdl_images} == "True" ]]; then
             libs+="  -lSDL2_image"
@@ -183,13 +184,20 @@ echo "+ Completed Build [${bin_path}]"
 
 # ---- Packaging ----
 if [[ ${package} == "True" ]]; then
-    mkdir -p $package_path
+    mkdir -p ${package_path}
     date_str=$(date +%Y_%m_%d)
     zip_name="${package_path}/${game_name}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}.zip"
     echo ""
-    echo "> Packaging [${zip_name}]"
+    echo "> Packaging"
+    echo "  - Zip [${zip_name}]"
+    echo "  - Lib [${library}]"
+
     rm -f ${zip_name}
     zip -q -r "${zip_name}" res
     zip -j "${zip_name}" "${bin_path}"
-    echo "+ Created package [${zip_name}]"
+    if [[ ${is_static} == "True" ]]; then
+        zip -j "${zip_name}" ${library}/libSDL3.so
+    fi
+
+    echo "+ Completed Zipping"
 fi
