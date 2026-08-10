@@ -14,9 +14,12 @@ DFLAGS		:= -Iinc
 pkg_config = $(shell which pkg-config)
 
 # sdl3 - disabled for now
-sdl3_add = ""
+build_args = ""
 ifneq ($(filter sdl3,$(MAKECMDGOALS)),)
-	sdl3_add = " --sdl3 --static"
+	build_args += " --sdl3 --static"
+endif
+ifneq ($(filter verbose,$(MAKECMDGOALS)),)
+	build_args +=" --verbose"
 endif
 
 # 🧱 Release build — for speed and glory
@@ -80,20 +83,17 @@ endif
 
 $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
-	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release ${sdl3_add}
+	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release ${build_args}
 
 package: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
-	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release --package ${sdl3_add}
+	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release --package ${build_args}
 
 package-windows: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
 	@ bash bsh/windows.sh $(GAME) opengl sdl windows --release --package
 
 build: flecs $(TARGET)
-
-build-gles2: flecs
-	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LIBS) $(DFLAGS) -Dzox_gles2
 
 # Extra
 
@@ -115,14 +115,9 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --debug ${sdl3_add}
+	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --debug ${build_args}
 
 dev: $(TARGET_DEV)
-
-# flecs profiler
-devfp: $(SRCS)
-	@ mkdir -p bin
-	$(CC) $(cflags_dev) $(SRC) -o $(TARGET_DEV) $(LIBS) $(DFLAGS) -Dzox_use_flecs_profiler
 
 dever: $(SRCS)
 	@ mkdir -p bin

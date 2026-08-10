@@ -26,10 +26,14 @@ includes="-Iinc/flecs"
 cflags="-std=gnu99 -fPIC"
 dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_linux"
 libs="-lm -lpthread" # -Iinc
+package_path="zip"
 
 debug="False"
 [[ " $* " == *" --debug "* ]] && debug="True"
 [[ " $* " == *" --development "* ]] && debug="True"
+
+verbose="False"
+[[ " $* " == *" --verbose "* ]] && verbose="True"
 
 package="False"
 [[ " $* " == *" --package "* ]] && package="True"
@@ -92,6 +96,11 @@ if [[ ${debug} == "True" ]]; then
 else
     # Release Builds
     cflags+=" -O3 -flto=auto -DNDEBUG"
+fi
+
+if [[ ${verbose} == "True"  ]]; then
+    echo "+ Added [verbose]"
+    dflags+=" -Dzox_verbose"
 fi
 
 if [[ ${is_profiler} == "1" ]]; then
@@ -174,8 +183,9 @@ echo "+ Completed Build [${bin_path}]"
 
 # ---- Packaging ----
 if [[ ${package} == "True" ]]; then
+    mkdir -p $package_path
     date_str=$(date +%Y_%m_%d)
-    zip_name="bin/${game_name}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}.zip"
+    zip_name="${package_path}/${game_name}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}.zip"
     echo ""
     echo "> Packaging [${zip_name}]"
     rm -f ${zip_name}

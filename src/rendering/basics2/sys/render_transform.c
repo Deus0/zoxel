@@ -114,7 +114,10 @@ void render_uis(ecs* world, ui_render_queue* uis) {
                 zox_gpu_enable_blend();
                 zox_gpu_enable_depth_test();
                 zox_gpu_set_depth_mask(0);
-                // glEnable(GL_POLYGON_OFFSET_FILL);
+            }
+            // NOTE: Material might of not been set
+            if (!material) {
+                continue;
             }
             // Set layer depth
             float4x4 matrix2 = data.matrix;
@@ -200,6 +203,9 @@ zox_sys2(ElementRenderMatrixSystem) {
             continue;
         }
         entity material = zox_has(e, MaterialLink) ? zox_getv(e, MaterialLink) : base_material;
+        if (!zox_valid(material)) {
+            continue;
+        }
         ui_render_data data = {
             .e = e,
             .material = material,

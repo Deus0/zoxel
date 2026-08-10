@@ -1,5 +1,3 @@
-#ifdef zox_android
-
 // Reads assets.txt from Android assets and returns array of strings (dirs).
 // *out_count will be set to number of dirs read.
 // Caller must free returned array and each string inside it.
@@ -11,34 +9,30 @@ char** get_assets_dirs(
     *out_count = 0;
     AAsset* asset = AAssetManager_open(manager, assets_txt_path, AASSET_MODE_STREAMING);
     if (!asset) {
-        zox_log_error("Failed to open assets.txt at [%s]", assets_txt_path);
+        zox_loge("Failed to open assets.txt at [%s]", assets_txt_path);
         return NULL;
     }
-
     off_t size = AAsset_getLength(asset);
     if (size <= 0) {
         AAsset_close(asset);
-        zox_log_error("assets.txt is empty or invalid size");
+        zox_loge("assets.txt is empty or invalid size");
         return NULL;
     }
-
     char* buffer = malloc(size + 1);
     if (!buffer) {
         AAsset_close(asset);
-        zox_log_error("Failed to malloc buffer for assets.txt");
+        zox_loge("Failed to malloc buffer for assets.txt");
         return NULL;
     }
-
     int read_size = AAsset_read(asset, buffer, size);
     AAsset_close(asset);
     if (read_size <= 0) {
         free(buffer);
-        zox_log_error("Failed to read assets.txt content");
+        zox_loge("Failed to read assets.txt content");
         return NULL;
     }
     zox_logv("⚠️ Raw buffer from assets.txt:\n%s", buffer);
     buffer[read_size] = '\0'; // Null terminate
-
     // Count lines first
     int lines = 0;
     for (char* p = buffer; *p; p++) {
@@ -49,15 +43,13 @@ char** get_assets_dirs(
     if (read_size > 0 && buffer[read_size - 1] != '\n') {
         lines++; // last line may not have newline
     }
-    zox_log("⚠️  Line count estimate: %d", lines);
-
+    zox_log("Line count estimate: %d", lines);
     char** dirs = malloc(sizeof(char*) * lines);
     if (!dirs) {
         free(buffer);
-        zox_log_error("Failed to malloc dirs array");
+        zox_loge("Failed to malloc dirs array");
         return NULL;
     }
-
     // Split lines - supports \n, \r\n, and \r
     int idx = 0;
     char* line = buffer;
@@ -65,30 +57,43 @@ char** get_assets_dirs(
         if (*p == '\r' || *p == '\n' || *p == '\0') {
             char prev = *p;
             *p = '\0';
-
             if (*line) {
                 dirs[idx] = strdup(line);
                 if (!dirs[idx]) {
                     for (int j = 0; j < idx; j++) free(dirs[j]);
                     free(dirs);
                     free(buffer);
-                    zox_log_error("Failed strdup for dir line");
+                    zox_loge("Failed strdup for dir line");
                     return NULL;
                 }
                 idx++;
             }
-
             // Handle \r\n combo
             if (prev == '\r' && *(p + 1) == '\n') p++;
-
             line = p + 1;
             if (prev == '\0') break;
         }
     }
-
     free(buffer);
     *out_count = idx;
     return dirs;
 }
 
-#endif
+/*char* get_terminal_path_with_raw() {
+    char* cwd = getcwd(NULL, 0);  // malloc'd by glibc
+    if (!cwd) {
+        return NULL;
+    }
+    const char* suffix = "/raw/";
+    size_t cwd_len = strlen(cwd);
+    size_t suffix_len = strlen(suffix);
+    char* result = malloc(cwd_len + suffix_len + 1);
+    if (!result) {
+        free(cwd);
+        return NULL;
+    }
+    strcpy(result, cwd);
+    strcat(result, suffix);
+    free(cwd);
+    return result;
+}*/

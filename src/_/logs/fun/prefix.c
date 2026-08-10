@@ -24,6 +24,10 @@ static inline void zox_log_prefix(const char* color, const char* prefix, const c
     if (zox_logs_is_colors && color) {
         index += snprintf(buffer + index, sizeof(buffer) - index, "%s", zox_log_colors_reset);
     }
+#ifdef zox_android
+    __android_log_print(ANDROID_LOG_INFO, "SDL", "%s", buffer);
+#else
     snprintf(buffer + index, sizeof(buffer) - index, "\n");
     fputs(buffer, stdout);
+#endif
 }

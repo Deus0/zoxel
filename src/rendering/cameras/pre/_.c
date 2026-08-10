@@ -7,6 +7,8 @@ void add_prefab_render_camera(ecs* world, entity e) {
 }
 
 void spawn_prefabs_rendering_cameras(ecs *world) {
-    add_prefab_render_camera(world, prefab_camera3);
-    add_prefab_render_camera(world, prefab_camera_game);
+    if (!zox_disable_post_processing) {
+        add_prefab_render_camera(world, prefab_camera3);
+        add_prefab_render_camera(world, prefab_camera_game);
+    }
 }

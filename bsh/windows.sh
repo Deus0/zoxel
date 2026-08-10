@@ -30,6 +30,7 @@ dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_${OS}"
 libs="-lws2_32 -ldbghelp -lpthread"
 IS_GLEW="True"
 compiler="i686-w64-mingw32-gcc"
+package_path="zip"
 
 [[ " $* " == *" --package "* ]] && package="True"
 [[ " $* " == *" --debug "* ]] && debug="True"
@@ -93,8 +94,9 @@ ${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${libs} ${dflags}
 
 # ---- Packaging ----
 if [[ ${package} == "True" ]]; then
+    mkdir -p $package_path
     date_str=$(date +%Y_%m_%d)
-    zip_name="bin/${game_name}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}.zip"
+    zip_name="${package_path}/${game_name}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}.zip"
     echo ""
     echo "Packaging [${zip_name}]"
     rm -f ${zip_name}

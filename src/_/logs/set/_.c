@@ -1,7 +1,7 @@
 // settings
 #define zox_log_lengths 512
 #define APPNAME "Zoxel"
-static unsigned char zox_verbose = 0;
+static unsigned char is_verbose = 0;
 static unsigned char is_time_log_prefixes = 1;
 // NOTE: Windows colors dont work
 #ifndef zox_windows

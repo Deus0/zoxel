@@ -109,7 +109,7 @@ entity spawn_model_nodegraph_slime(ecs* world, entity parent) {
 zox_sys2(Character3RealmSpawnSystem) {
     byte character_depth = block_vox_depth_limits.y;
     uint seed_shift = 36936;
-    uint inner_seed_shift = 33;
+    // uint inner_seed_shift = 33;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -151,7 +151,7 @@ zox_sys2(Character3RealmSpawnSystem) {
         entity slime_nodegraph = spawn_model_nodegraph_slime(world, e);
         entity cookie_nodegraph = spawn_model_nodegraph_cookie(world, e);
         for (int j = 0; j < slime_types; j++) {
-            lint inner_character_seed = character_seed;
+            // lint inner_character_seed = character_seed;
             entity nodegraph;
             if (j == 0) {
                 nodegraph = cookie_nodegraph;

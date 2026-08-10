@@ -1,4 +1,4 @@
-extern void hide_virtual_keyboard();
+extern void hide_virtual_keyboard(SDL_Window*);
 
 // NOTE: Used on FLX1S because phosh keeps putting it there!
 zox_sys2(HideVirtualKeyboardSystem) {

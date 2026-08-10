@@ -63,16 +63,15 @@ void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity 
         int2 svp_size = scale_viewport(vp_size);
         entity2 spawned_cameras = spawn_player_cameras(world, app, player, zox_game_camera_mode, camera_position, camera_rotation, screen_to_canvas, viewport_position, svp_size, vp_size);
         entity game_camera = spawned_cameras.x;
-        // TODO: Just link the material to prefabs on spawn
-        zox_setv(game_camera, MaterialLink, material_render_texture);
-        // add_to_CameraLinks(&cameras, game_camera);
-        // add_to_CameraLinks(&cameras, spawned_cameras.y);
         set_camera_mode(world, game_camera, zox_game_camera_mode);
         entity canvas = spawn_game_canvas(world, spawned_cameras.y, vp_size, screen_to_canvas, app);
         zox_set(player, CanvasLink, { canvas });
         zox_set(canvas, PlayerLink, { player });
         // spawns a render texture ui and links to camera
-        spawn_render_texture(world, prefab_render_texture_screen, canvas, float2_half, int2_zero, vp_size, svp_size, 0, game_camera);
+        if (!zox_disable_post_processing) {
+            zox_setv(game_camera, MaterialLink, material_render_texture);
+            spawn_render_texture(world, prefab_render_texture_screen, canvas, float2_half, int2_zero, vp_size, svp_size, 0, game_camera);
+        }
         // remove these soon
         main_cameras[i] = game_camera;
         ui_cameras[i] = spawned_cameras.y;

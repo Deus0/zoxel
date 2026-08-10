@@ -2,6 +2,17 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+Android Bugs:
+- Post Processing Broken
+- Button doesnt work when click first time - touch issue
+- Terrain Material doesnt restore on minimize + restore
+- Rotation event not working
+- Left touchpad - X axis inverted
+- Touch uis too small when phone rotated
+- Buttons bad and hard to tap
+- No audio when no mixer - sdl 3
+
+- We should use lib folder for dll or .so files instead of bin
 - Fix viewport not resizing
 - Make DeviceDisabled a tag - Generic Disabled
 - Get Android build working

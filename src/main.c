@@ -20,17 +20,20 @@ boot_zox boot_event;
  * Initialize Rendering
 */
 int main(int argc, char* argv[]) {
+    zox_logv("+ Starting Zox Engine +");
+#ifdef zox_android
+    __android_log_print(ANDROID_LOG_INFO, "SDL", "Zoxel Android logging TEST");
+#endif
 #ifndef zoxm_game
-    zox_log_error("[zoxm_game] not defined: game cannot load");
+    zox_loge("[zoxm_game] not defined: game cannot load");
     return EXIT_FAILURE;
 #endif
-    zox_logv("Get System Info");
     byte cores = get_cpu_count();    // gets our cpu core count
     set_cpu_tier2(cores);
     zox_logv("Initializing Flecs");
     ecs* world = initialize_ecs(argc, argv);
     if (!world) {
-        zox_log_error("[initialize_ecs] failed");
+        zox_loge("[initialize_ecs] failed");
         return EXIT_FAILURE;
     }
     zox_logv("Initializing Zox Engine");
@@ -41,7 +44,7 @@ int main(int argc, char* argv[]) {
     run_hook_terminal_command(world, argv, argc);
     zox_logv("Initialize Pathing");
     if (initialize_pathing(game_name) == EXIT_FAILURE) {
-        zox_log_error("Pathing Setup Failed.");
+        zox_loge("Pathing Setup Failed.");
         return EXIT_FAILURE;
     }
     zox_logv("Initializing ECS Settings: FPS [%i]", target_fps);

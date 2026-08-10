@@ -55,13 +55,6 @@ void convert_file_path_slashes(char* path) {
     }
 }
 
-char* clone_str(const char* text) {
-    int length = strlen(text);
-    char *new_text = malloc(length);
-    memcpy(new_text, text, length);
-    return new_text;
-}
-
 char* initialize_base_path() {
 #ifdef zox_windows
     char* base_path = get_base_path_windows();
@@ -105,12 +98,10 @@ char* find_resources_path(char* base_path, const char* resources) {
             return path; // found it
         }
         free(path);
-
         // If we’re at root or empty path, stop searching
         if (strcmp(base_path, character_slash) == 0 || strlen(base_path) == 0) {
             return NULL; // Not found
         }
-
         // Strip last directory from base_path (in place)
         slash_pos = strrchr(base_path, char_slash);
         if (!slash_pos) {
@@ -138,7 +129,6 @@ byte initialize_pathing_native(const char* game_name) {
     DIR* base_dir = opendir(base_path);
     if (base_dir) {
         closedir(base_dir);
-
         char* check_path = find_resources_path(base_path, resources_folder_name);
         // zox_log("Checking Binary Path [%s] for [res] - check_path [%s]", base_path, check_path);
 
@@ -154,14 +144,12 @@ byte initialize_pathing_native(const char* game_name) {
                 free(check_path);
             }
         }
-
         char* check_path2 = malloc(256);
         if (!check_path2) {
             zox_log_error("Malloc failed in [initialize_pathing_native]");
             return EXIT_FAILURE;
         }
         snprintf(check_path2, 256, "/usr/share/%s/res", game_name);
-
         DIR* resources_dir = opendir(check_path2);
         if (resources_dir) {
             closedir(resources_dir);
@@ -172,8 +160,7 @@ byte initialize_pathing_native(const char* game_name) {
             zox_log_error("Resources Path did not exist [%s]", check_path2);
             free(check_path2);  // not found, free memory
         }
-
-        zox_log_error("Resources Path cannot open.");
+        zox_loge("Resources Path cannot open.");
         return EXIT_FAILURE;
 
     } else if (ENOENT == errno) {

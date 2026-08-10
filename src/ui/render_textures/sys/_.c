@@ -1,6 +1,5 @@
 #include "initialize.c"
 #include "resize.c"
-#include "renderer.c"
 #include "screen.c"
 #include "camera_blur.c"
 

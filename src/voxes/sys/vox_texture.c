@@ -180,8 +180,12 @@ zox_sys2(VoxTextureSystem) {
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
-        if (!zox_valid(vox->value) || !zox_has(vox->value, VoxelNode) || !zox_has(vox->value, ColorRGBs)  || !zox_has(vox->value, ChunkSize) || !zox_has(vox->value, NodeDepth)) {
-            zox_loge("Invalid Vox on Texture [%s]", zox_get_name(e));
+        if (!zox_valid(vox->value)) {
+            zox_loge("Invalid Vox on Texture [%s]", zox_getn(e));
+            continue;
+        }
+        if (!zox_has(vox->value, VoxelNode) || !zox_has(vox->value, ColorRGBs)  || !zox_has(vox->value, ChunkSize) || !zox_has(vox->value, NodeDepth)) {
+            zox_loge("Invalid Vox [%s] Components on Texture [%s]", zox_getn(vox->value), zox_getn(e));
             continue;
         }
         // NOTE: Delays the texture until its done

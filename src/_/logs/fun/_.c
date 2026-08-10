@@ -1,6 +1,7 @@
 // log implementation
 #include "prefix.c"
-#ifndef zox_disable_logs
+
+/*#ifndef zox_disable_logs
     #ifdef zox_android
         #define zox_log_(msg, ...) \
             __android_log_print(ANDROID_LOG_INFO, "SDL", "zox_log: "msg, ##__VA_ARGS__);
@@ -24,17 +25,26 @@
         return 0;
     }
 #else
-    #define zox_log_(msg, ...) { }
     int clear_logs() { return 0; }
-#endif
+    #define zox_log_(msg, ...) { }
+#endif*/
+
+int clear_logs() { return 0; }
 
 #ifndef zox_disable_logs
+
     #define zox_log(...) zox_log_prefix(NULL, "", __VA_ARGS__);
-    #define zox_logv(...) if (zox_verbose) zox_log_prefix(NULL, "[INFO] ", __VA_ARGS__)
     #define zox_logw(...) zox_log_prefix(zox_log_colors_yellow, "[WARNING] ", __VA_ARGS__);
     #define zox_loge(...) zox_log_prefix(zox_log_colors_red, "[ERROR] ", __VA_ARGS__);
     #define zox_log_error(...) zox_log_prefix(zox_log_colors_red, "[ERROR] ", __VA_ARGS__);
     #define zox_log_errno(format, ...) zox_log(format ": [%s]", __VA_ARGS__, strerror(errno))
+
+#ifdef zox_verbose
+    #define zox_logv(...) if (is_verbose) zox_log_prefix(NULL, "[INFO] ", __VA_ARGS__)
+#else
+    #define zox_logv(...) { }
+#endif
+
 #else
     #define zox_log(...) { }
     #define zox_logv(...) { }

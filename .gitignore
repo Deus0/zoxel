@@ -1,12 +1,7 @@
-bin
-dist
-lib
-include
-inc
-pkg
-ext
-*.o
-CMakeLists.txt
-.game
-.deb
-.build_settings
+# NOTE: We just ignore these folders, used for devops
+/bin
+/lib
+/inc
+/pkg
+/ext
+/and

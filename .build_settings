@@ -1,0 +1,6 @@
+GAME="zoxel"
+OS="linux"
+GLB="opengl"
+GFX="sdl"
+ARC="x64"
+PRF="release"

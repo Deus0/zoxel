@@ -9,6 +9,7 @@ GAME="${1:-}"
 CHANNEL="${2:-}"
 
 # === Settings ===
+package_path="zip"
 butler_path="${HOME}/.butler/bin"
 butler="${butler_path}/butler"
 PROFILE_SCRIPT="${HOME}/.bashrc"
@@ -66,7 +67,7 @@ if [ -z "$GAME" ] || [ -z "$CHANNEL" ]; then
 fi
 
 ZIP_NAME="$(
-    find bin -maxdepth 1 -type f -name '*.zip' -printf '%T@ %p\n' \
+    find $package_path -maxdepth 1 -type f -name '*.zip' -printf '%T@ %p\n' \
     | sort -nr \
     | head -n 1 \
     | cut -d' ' -f2-

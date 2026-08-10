@@ -8,9 +8,8 @@ void get_home_directory(char *path, size_t size) {
     }
 #elif defined(zox_android)
     // Android-specific code
-    JNIEnv* env = (JNIEnv*) SDL_AndroidGetJNIEnv();
-    jobject activity = (jobject) SDL_AndroidGetActivity();
-
+    JNIEnv* env = zox_get_android_jni_env();
+    jobject activity = zox_get_android_activity();
     jclass context_class = (*env)->GetObjectClass(env, activity);
     jmethodID get_files_dir = (*env)->GetMethodID(env, context_class, "getExternalFilesDir", "(Ljava/lang/String;)Ljava/io/File;");
 
@@ -43,29 +42,18 @@ void get_save_directory(
     } else {
         zox_log(" ! home_directory null [get_save_directory]")
     }
-    /*char home_directory[MAX_PATH];
-    if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, home_directory))) {
-        snprintf(path, size, "%s\\%s", home_directory, game);
-    } else {
-        zox_log(" ! home_directory null [get_save_directory]")
-    }*/
 #elif defined(zox_android)
     // Android-specific code
-    JNIEnv* env = (JNIEnv*) SDL_AndroidGetJNIEnv();
-    jobject activity = (jobject) SDL_AndroidGetActivity();
-
+    JNIEnv* env = zox_get_android_jni_env();
+    jobject activity = zox_get_android_activity();
     jclass context_class = (*env)->GetObjectClass(env, activity);
     jmethodID get_files_dir = (*env)->GetMethodID(env, context_class, "getExternalFilesDir", "(Ljava/lang/String;)Ljava/io/File;");
-
     jobject file = (*env)->CallObjectMethod(env, activity, get_files_dir, NULL);
     jclass file_class = (*env)->GetObjectClass(env, file);
     jmethodID get_path = (*env)->GetMethodID(env, file_class, "getPath", "()Ljava/lang/String;");
-
     jstring path_string = (jstring)(*env)->CallObjectMethod(env, file, get_path);
     const char *path_cstr = (*env)->GetStringUTFChars(env, path_string, NULL);
-
     snprintf(path, size, "%s/%s", path_cstr, game);
-
     (*env)->ReleaseStringUTFChars(env, path_string, path_cstr);
 #else
     const char *home_directory = getenv("HOME");

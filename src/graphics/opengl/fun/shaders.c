@@ -74,9 +74,13 @@ byte check_shader_compile_status(guint shader) {
 }
 
 byte compile_shader(GLenum shader_type, guint* output, const gchar* buffer) {
+    if (!buffer) {
+        zox_loge("Cannot compile null buffer [compile_shader]");
+        return 1;
+    }
     guint shader = glCreateShader(shader_type);
     if (!shader) {
-        zox_log_error("Shader not created of type [%i]", shader_type);
+        zox_loge("Shader not created of type [%i]", shader_type);
         return 1;
     }
     glShaderSource(shader, 1, (const gchar **) &buffer, NULL);
@@ -95,13 +99,13 @@ guint2 zox_gpu_compile_shader(const gchar* vert_buffer, const gchar* frag_buffer
     }
     guint2 shader = guint2_zero;
     if (compile_shader(GL_VERTEX_SHADER, &shader.x, vert_buffer)) {
-        zox_log_error("[compile_shader] vert\n\n[%s]\n", vert_buffer);
+        zox_loge("[compile_shader] vert\n\n[%s]\n", vert_buffer);
         return guint2_zero;
     }
     if (compile_shader(GL_FRAGMENT_SHADER, &shader.y, frag_buffer)) {
-        zox_log_error("[compile_shader] frag\n\n[%s]\n", frag_buffer);
+        zox_loge("[compile_shader] frag\n\n[%s]\n", frag_buffer);
         return guint2_zero;
     }
-    // zox_log("Compiled shader: %ix%i", shader.x, shader.y);
+    zox_logv("> Compiled shader: %ix%i", shader.x, shader.y);
     return shader;
 }

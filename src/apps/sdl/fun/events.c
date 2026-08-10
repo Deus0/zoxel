@@ -88,12 +88,10 @@ int2 window_size = int2_zero;
 SDL_GetWindowSize(sdl_window, &window_size.x, &window_size.y);
 on_window_resized(world, e, window_size);*/
 
-
 void update_sdl(ecs *world) {
     SDL_PumpEvents();
     entity e = main_app;
     SDL_Event event = { 0 };
-
     while (SDL_PollEvent(&event)) {
         if (sdl_event_quit(&event)) {
             engine_end();
@@ -114,7 +112,6 @@ void update_sdl(ecs *world) {
         else if (sdl_event_display_orientation(&event)) {
             byte monitor = sdl_event_display(&event);
             byte orientation = get_screen_orientation(monitor);
-
             zox_logw(
                 "Display [%i] Orientation Changed: %i",
                 monitor,

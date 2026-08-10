@@ -23,13 +23,13 @@
 #include "platforms/defines.c"
 #include "platforms/_.c"
 #include "terminals/_.c"
+#include "strings/_.c"
 #include "pathing/_.c"
+#include "types/_.c"
 #include "sta/_.c"
+#include "octrees/_.c"
 #include "hok/_.c"
 #include "windows/_.c"
-#include "types/_.c"
-#include "octrees/_.c"
-#include "strings/_.c"
 #include "com/_.c"
 #include "timing/_.c"
 #include "sys/_.c"
@@ -68,6 +68,9 @@ byte initialize_pathing(const char* game_name) {
     byte pathing_success = EXIT_FAILURE;
 #ifdef zox_android
     pathing_success = initialize_pathing_android();
+    if (pathing_success == EXIT_SUCCESS) {
+        decompress_android_resources(resources_path);
+    }
 #else
     pathing_success = initialize_pathing_native(game_name);
 #endif
