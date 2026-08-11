@@ -111,8 +111,9 @@ https://deus0.itch.io/zoxel
 
 ## Build From Source
 
-The project is actively developed and the world is still growing
+The project is being actively developed and the world is still growing
 
+Source:
 https://codeberg.org/deus/zoxel
 
 ```bash
@@ -126,6 +127,9 @@ cd zoxel
 
 Mastodon:
 https://mastodon.gamedev.place/@deus
+
+Twitter:
+https://x.com/deusxyz
 
 ---
 
