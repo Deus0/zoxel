@@ -34,10 +34,12 @@ done
 
 SYSTEM_NAME=""
 CC=""
+CXX=""
 SYSROOT=""
 PKG_CONFIG_LIBDIR=""
 
 SDL_LIB_NAME=""
+SDL_LIB_IMPORT_NAME=""
 SDL_IMAGE_LIB_NAME=""
 SDL_MIXER_LIB_NAME=""
 
@@ -68,9 +70,7 @@ case "$TARGET" in
         case "$ARCH" in
             x64) # x86_64)
                 CC="x86_64-w64-mingw32-gcc"
-                ;;
-            arm) # arm64)
-                CC="aarch64-w64-mingw32-gcc"
+                CXX="x86_64-w64-mingw32-g++"
                 ;;
             *)
                 echo "Unsupported Windows arch: $ARCH"
@@ -80,10 +80,12 @@ case "$TARGET" in
 
         if [[ "$USE_SDL3" -eq 1 ]]; then
             SDL_LIB_NAME="SDL3.dll"
+            SDL_LIB_IMPORT_NAME="libSDL3.dll.a"
             SDL_IMAGE_LIB_NAME="SDL3_image.dll"
             SDL_MIXER_LIB_NAME="SDL3_mixer.dll"
         else
             SDL_LIB_NAME="SDL2.dll"
+            SDL_LIB_IMPORT_NAME="libSDL2.dll.a"
             SDL_IMAGE_LIB_NAME="SDL2_image.dll"
             SDL_MIXER_LIB_NAME="SDL2_mixer.dll"
         fi
@@ -125,12 +127,14 @@ case "$TARGET" in
 
         if [[ "$USE_SDL3" -eq 1 ]]; then
             SDL_LIB_NAME="libSDL3.so"
-            SDL_IMAGE_LIB_NAME="libSDL3_image.so"
+            SDL_LIB_IMPORT_NAME="libSDL3.so"
             SDL_MIXER_LIB_NAME="libSDL3_mixer.so"
+            SDL_IMAGE_LIB_NAME="libSDL3_image.so"
         else
             SDL_LIB_NAME="libSDL2.so"
-            SDL_IMAGE_LIB_NAME="libSDL2_image.so"
+            SDL_LIB_IMPORT_NAME="libSDL2.so"
             SDL_MIXER_LIB_NAME="libSDL2_mixer.so"
+            SDL_IMAGE_LIB_NAME="libSDL2_image.so"
         fi
         ;;
 
@@ -158,12 +162,6 @@ else
     echo "Sysroot: native"
 fi
 
-artifact_exists() {
-    local dir="$1"
-    local pattern="$2"
-    compgen -G "$dir/$pattern" > /dev/null
-}
-
 locate_artifact() {
     local dir="$1"
     local pattern="$2"
@@ -189,7 +187,7 @@ build_if_missing() {
     local OUTPUT_GLOB="$5"
     shift 5
 
-    if artifact_exists "$library" "$OUTPUT_GLOB"; then
+    if [[ -f "$library/$OUTPUT_NAME" ]]; then
         echo "$library/$OUTPUT_NAME Found"
         return
     fi
@@ -216,6 +214,7 @@ build_if_missing() {
         cmake -S "$SRC_DIR" -B "$BUILD_DIR" \
             -DCMAKE_SYSTEM_NAME="$SYSTEM_NAME" \
             -DCMAKE_C_COMPILER="$CC" \
+            -DCMAKE_CXX_COMPILER="$CXX" \
             -DCMAKE_BUILD_TYPE=Release \
             "$@"
     fi
@@ -231,6 +230,14 @@ build_if_missing() {
     fi
 
     cp -L "$artifact" "$library/$OUTPUT_NAME"
+    if [[ -f "$artifact.0" ]]; then
+        cp -L "$artifact.0" "bin/$OUTPUT_NAME.0"
+        cp -L "$artifact.0" "$library/$OUTPUT_NAME.0"
+    else
+        cp -L "$artifact" "bin/$OUTPUT_NAME"
+        import_artifact="$(locate_artifact "$BUILD_DIR" "lib$OUTPUT_GLOB.a")"
+        cp -L "$import_artifact" "$library/lib$OUTPUT_NAME.a"
+    fi
 }
 
 # SDL
@@ -242,13 +249,61 @@ build_if_missing \
     "$SDL_LIB_NAME" \
     "${SDL_LIB_NAME%.*}*.${SDL_LIB_NAME##*.}"
 
+# SDL Mixer
+
+if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
+    echo "Compiling SDL_Mixer with Import Library [$SDL_LIB_IMPORT_NAME]"
+    if [[ "$USE_SDL3" -eq 1 ]]; then
+        # -DCMAKE_PREFIX_PATH="$SDL_SRC_DIR/build-$BUILD_SUFFIX" \
+        sdl3_lib="${library}/$SDL_LIB_NAME"
+        echo "  - sdl3 [$sdl3_lib]"
+        # -DCMAKE_PREFIX_PATH="$PWD/$SDL_SRC_DIR/build-$BUILD_SUFFIX" \
+        # -DSDL3_LIBRARY="${sdl3_lib}" \
+        # -DCMAKE_DISABLE_FIND_PACKAGE_SDL3=FALSE \
+        # -DSDL3_INCLUDE_DIR="$SDL_SRC_DIR/include" \
+        build_if_missing \
+            "SDL3_mixer" \
+            "ext/sdl3_mixer" \
+            "ext/sdl3_mixer/build-$BUILD_SUFFIX" \
+            "$SDL_MIXER_LIB_NAME" \
+            "${SDL_MIXER_LIB_NAME%.*}*.${SDL_MIXER_LIB_NAME##*.}" \
+            -DSDL3_DIR="$PWD/$SDL_SRC_DIR/build-$BUILD_SUFFIX" \
+            -DCMAKE_INSTALL_OLDINCLUDEDIR= \
+            -DSDL3MIXER_MOD=OFF \
+            -DSDL3MIXER_MIDI_FLUIDSYNTH=OFF \
+            -DSDL3MIXER_WAVPACK=OFF \
+            -DSDL3MIXER_OPUS=OFF \
+            -DSDL3MIXER_SAMPLES=OFF \
+            -DSDL3MIXER_BUILD_TESTS=OFF \
+            -DSDL3MIXER_FLAC_LIBFLAC=OFF
+    else
+        sdl2_lib="${library}/$SDL_LIB_NAME"
+        echo "  - sdl2 [$sdl2_lib]"
+        build_if_missing \
+            "SDL2_mixer" \
+            "ext/sdl_mixer" \
+            "ext/sdl_mixer/build-$BUILD_SUFFIX" \
+            "$SDL_MIXER_LIB_NAME" \
+            "${SDL_MIXER_LIB_NAME%.*}*.${SDL_MIXER_LIB_NAME##*.}" \
+            -DCMAKE_DISABLE_FIND_PACKAGE_SDL2=TRUE \
+            -DSDL2_LIBRARY="${sdl2_lib}" \
+            -DSDL2_INCLUDE_DIR="$SDL_SRC_DIR/include" \
+            -DSDL2MIXER_MOD=OFF \
+            -DSDL2MIXER_MIDI_FLUIDSYNTH=OFF \
+            -DSDL2MIXER_WAVPACK=OFF \
+            -DSDL2MIXER_OPUS=OFF \
+            -DSDL2MIXER_SAMPLES=OFF \
+            -DSDL2MIXER_BUILD_TESTS=OFF
+    fi
+fi
+
 # SDL Image
 
 if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
+    echo "Compiling SDL_Image"
     if [[ "$USE_SDL3" -eq 1 ]]; then
-        SDL3_IMAGE_LIBRARY_ARG="-DSDL3_LIBRARY=$SDL_SRC_DIR/build-$BUILD_SUFFIX/$SDL_LIB_NAME"
+        SDL3_IMAGE_LIBRARY_ARG="-DSDL3_LIBRARY=$SDL_SRC_DIR/build-$BUILD_SUFFIX/$SDL_LIB_IMPORT_NAME"
         SDL3_IMAGE_INCLUDE_ARG="-DSDL3_INCLUDE_DIR=$SDL_SRC_DIR/include"
-
         build_if_missing \
             "SDL3_image" \
             "ext/sdl_image" \
@@ -266,9 +321,8 @@ if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
             -DSDL3IMAGE_SAMPLES=OFF \
             -DSDL3IMAGE_TESTS=OFF
     else
-        SDL2_IMAGE_LIBRARY_ARG="-DSDL2_LIBRARY=$SDL_SRC_DIR/build-$BUILD_SUFFIX/$SDL_LIB_NAME"
+        SDL2_IMAGE_LIBRARY_ARG="-DSDL2_LIBRARY=$SDL_SRC_DIR/build-$BUILD_SUFFIX/$SDL_LIB_IMPORT_NAME"
         SDL2_IMAGE_INCLUDE_ARG="-DSDL2_INCLUDE_DIR=$SDL_SRC_DIR/include"
-
         build_if_missing \
             "SDL2_image" \
             "ext/sdl_image" \
@@ -285,47 +339,6 @@ if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
             -DSDL2IMAGE_BMP=OFF \
             -DSDL2IMAGE_SAMPLES=OFF \
             -DSDL2IMAGE_TESTS=OFF
-    fi
-fi
-
-# SDL Mixer
-
-if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
-    if [[ "$USE_SDL3" -eq 1 ]]; then
-        SDL3_MIXER_LIBRARY_ARG="-DSDL3_LIBRARY=$SDL_SRC_DIR/build-$BUILD_SUFFIX/$SDL_LIB_NAME"
-        SDL3_MIXER_INCLUDE_ARG="-DSDL3_INCLUDE_DIR=$SDL_SRC_DIR/include"
-        build_if_missing \
-            "SDL3_mixer" \
-            "ext/sdl_mixer" \
-            "ext/sdl_mixer/build-$BUILD_SUFFIX" \
-            "$SDL_MIXER_LIB_NAME" \
-            "${SDL_MIXER_LIB_NAME%.*}*.${SDL_MIXER_LIB_NAME##*.}" \
-            "$SDL3_MIXER_LIBRARY_ARG" \
-            "$SDL3_MIXER_INCLUDE_ARG" \
-            -DSDL3MIXER_MOD=OFF \
-            -DSDL3MIXER_MIDI_FLUIDSYNTH=OFF \
-            -DSDL3MIXER_WAVPACK=OFF \
-            -DSDL3MIXER_OPUS=OFF \
-            -DSDL3MIXER_SAMPLES=OFF \
-            -DSDL3MIXER_BUILD_TESTS=OFF
-    else
-        SDL2_MIXER_LIBRARY_ARG="-DSDL2_LIBRARY=$SDL_SRC_DIR/build-$BUILD_SUFFIX/$SDL_LIB_NAME"
-        SDL2_MIXER_INCLUDE_ARG="-DSDL2_INCLUDE_DIR=$SDL_SRC_DIR/include"
-        build_if_missing \
-            "SDL2_mixer" \
-            "ext/sdl_mixer" \
-            "ext/sdl_mixer/build-$BUILD_SUFFIX" \
-            "$SDL_MIXER_LIB_NAME" \
-            "${SDL_MIXER_LIB_NAME%.*}*.${SDL_MIXER_LIB_NAME##*.}" \
-            "$SDL2_MIXER_LIBRARY_ARG" \
-            "$SDL2_MIXER_INCLUDE_ARG" \
-            -DSDL2_INCLUDE_DIR=ext/sdl/include \
-            -DSDL2MIXER_MOD=OFF \
-            -DSDL2MIXER_MIDI_FLUIDSYNTH=OFF \
-            -DSDL2MIXER_WAVPACK=OFF \
-            -DSDL2MIXER_OPUS=OFF \
-            -DSDL2MIXER_SAMPLES=OFF \
-            -DSDL2MIXER_BUILD_TESTS=OFF
     fi
 fi
 

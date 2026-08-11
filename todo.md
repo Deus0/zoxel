@@ -2,8 +2,12 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Fix loading sounds on sdl3
+- Fix the UI scaling issues
+- Fix the rotation too 
+
 Windows:
-- Get sdl3 to build for windows
+-x Get sdl3 to build for windows
 
 Android Bugs:
 - Post Processing Broken

@@ -8,6 +8,15 @@
     #include "sdl2_input.c"
     #include "sounds.c"
 #endif
+#ifdef zox_sdl_mixer
+    #ifdef zox_sdl3
+        #include "sdl3_mixer.c"
+    #else
+        #include "sdl2_mixer.c"
+    #endif
+#else
+    #include "no_mixer.c"
+#endif
 
 #include "monitor.c"
 #include "screen.c"
@@ -15,7 +24,6 @@
 #include "opengl.c"
 #include "debug.c"
 #include "video.c"
-#include "mixer.c"
 #include "virtual_keyboard.c"
 #include "orientation.c"
 

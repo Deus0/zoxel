@@ -1,10 +1,13 @@
-#include "sound_process_system.c"
-#include "sound_generate_system.c"
-#include "sound_debug_system.c"
+#include "process.c"
+#include "generate.c"
+#include "debug.c"
 #include "settings.c"
 #ifdef zox_sdl_mixer
-    #include "sound_play_system.c"
-    #include "sound_play_ref_system.c"
+    #ifdef zox_sdl3
+        #include "play3.c"
+    #else
+        #include "play.c"
+    #endif
 #endif
 
 void define_systems_sounds(ecs *world) {
@@ -44,7 +47,9 @@ void define_systems_sounds(ecs *world) {
         zoxp_update,
         [in] TriggerSound,
         [in] SoundData,
+#ifndef zox_sdl3
         [out] sdl.SDLMixChunk,
+#endif
         [none] Sound
     );
     zox_system(
@@ -52,7 +57,9 @@ void define_systems_sounds(ecs *world) {
         zoxp_update,
         [in] TriggerSound,
         [in] SoundDataRef,
+#ifndef zox_sdl3
         [out] sdl.SDLMixChunk,
+#endif
         [none] Sound
     );
 #endif

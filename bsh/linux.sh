@@ -3,7 +3,7 @@ set -euo pipefail
 
 # debug options
 is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
-is_safety_checks="0"    # lets stay safe for now
+is_safety_checks="1"    # lets stay safe for now
 is_time_systems="0"
 is_fast_dev="0"         # -O3
 # settings
@@ -22,10 +22,10 @@ fi
 
 OS="linux"
 ONARC=$(uname -m)
-sdl_source="False"
-sdl_images="False"
-sdl_mixer="True"
-bin_filename="${game_name}" # -${GLB}-${GFX}-${ARC}
+sdl_source="0"
+sdl_images="0"
+sdl_mixer="1"
+bin_filename="${game_name}"
 bin_path=bin/${bin_filename}.bin
 compiler="gcc"
 sources="src/main.c inc/flecs/flecs.c"
@@ -37,26 +37,31 @@ package_path="zip"
 architecture="x86_64"   # base arch name
 library="lib/${OS}_${ARC}"
 
-debug="False"
-verbose="False"
-package="False"
-is_sdl3="False"
-is_static="False"
+debug="0"
+verbose="0"
+package="0"
+is_sdl3="0"
+is_static="0"
 
-[[ " $* " == *" --debug "* ]] && debug="True"
-[[ " $* " == *" --development "* ]] && debug="True"
-[[ " $* " == *" --verbose "* ]] && verbose="True"
-[[ " $* " == *" --package "* ]] && package="True"
-[[ " $* " == *" --sdl3 "* ]] && is_sdl3="True"
-[[ " $* " == *" --static "* ]] && is_static="True"
+[[ " $* " == *" --debug "* ]] && debug="1"
+[[ " $* " == *" --verbose "* ]] && verbose="1"
+[[ " $* " == *" --package "* ]] && package="1"
+[[ " $* " == *" --sdl2 "* ]] && is_sdl3="0"
+[[ " $* " == *" --sdl3 "* ]] && is_sdl3="1"
+[[ " $* " == *" --static "* ]] && is_static="1"
 
 echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
 
 # Our  Libs
-if [[ ${is_static} == "True" ]]; then
-    sdl_mixer="False"
-    bsh/libs-download.sh --sdl3 # --sdl-mixer
-    bsh/libs-compile.sh linux ${ARC} --sdl3 # --sdl-mixer
+if [[ ${is_static} == "1" ]]; then
+    lib_args=""
+    [[ ${sdl_mixer} == "1" ]] && lib_args+=" --sdl-mixer"
+    [[ ${is_sdl3} == "1" ]] && lib_args+=" --sdl3"
+    bsh/libs-download.sh ${lib_args}
+    bsh/libs-compile.sh linux ${ARC} ${lib_args}
+    # add library path to our linking
+    # Make use local lib files during runtime
+    libs+=" -Wl,-rpath,\$ORIGIN"
 fi
 
 if [[ ${ONARC} == "aarch64" && ${ARC} == "arm" ]]; then
@@ -64,20 +69,12 @@ if [[ ${ONARC} == "aarch64" && ${ARC} == "arm" ]]; then
     is_desktop_gl="0"
 elif [[ ${ONARC} == "x86_64" && ${ARC} == "x64" ]]; then
     cflags+=" -march=native"
-#elif [[ ${ONARC} == "aarch64" && ${ARC} == "x64" ]]; then
-#    echo "Cross Compiler Set"
-#    echo "sudo apt install gcc-x86-64-linux-gnu"
-#    compiler="x86_64-linux-gnu-gcc"
-#    cflags+=" -march=x86-64"
-#    sdl_source="True"
-#   bsh/libs-download.sh
-#   bsh/libs-compile-linux-x64.sh
 else
     echo "Running on Unsupported platform and target"
     exit
 fi
 
-if [[ ${debug} == "True" ]]; then
+if [[ ${debug} == "1" ]]; then
     echo "+ Added [debug]"
     bin_path="bin/${bin_filename}-dev.bin"
     # cflags="-O2 -g -Dzox_debug"
@@ -98,7 +95,7 @@ else
     cflags+=" -O3 -flto=auto -DNDEBUG"
 fi
 
-if [[ ${verbose} == "True"  ]]; then
+if [[ ${verbose} == "1"  ]]; then
     echo "+ Added [verbose]"
     dflags+=" -Dzox_verbose"
 fi
@@ -126,18 +123,26 @@ fi
 if [[ ${GFX} == "sdl" ]]; then
     echo "+ Added [sdl]"
     dflags+=" -Dzox_sdl"
-    if [[ ${sdl_images} == "True" ]]; then
+    libs+=" -L${library}" # static libs for build
+    if [[ ${sdl_images} == "1" ]]; then
         dflags+=" -Dzox_sdl_images"
     fi
-    if [[ ${sdl_mixer} == "True" ]]; then
+    if [[ ${sdl_mixer} == "1" ]]; then
         dflags+=" -Dzox_sdl_mixer"
     fi
-    if [[ ${is_sdl3} == "True" ]]; then
+    if [[ ${is_sdl3} == "1" ]]; then
         echo "+ Added [sdl3]"
         dflags+=" -Dzox_sdl3"
+        # libs+=" -lSDL3"
+        # for local / static
+        libs+=" ${library}/libSDL3.so"
         includes+=" -Iext/sdl3/include"
-        libs+=" -Lbin -lSDL3 -Wl,-rpath,'\$ORIGIN'"
-    elif [[ ${sdl_source} == "True" ]]; then
+        if [[ ${sdl_mixer} == "1" ]]; then
+            includes+=" -Iext/sdl3_mixer/include"
+            # libs+=" -lSDL3_mixer"
+            libs+=" ${library}/libSDL3_mixer.so"
+        fi
+    elif [[ ${sdl_source} == "1" ]]; then
         # libs+=" -Lext/sdl/build -Lext/sdl_image/build -Lext/sdl_mixer/build"
         libs+=" -static bin/libSDL2_x64.a bin/libSDL2_image_x64.a bin/libSDL2_mixer_x64.a"
         includes+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"
@@ -145,10 +150,10 @@ if [[ ${GFX} == "sdl" ]]; then
     else
         echo "+ Using Systems SDL"
         libs+=" -lSDL2"
-        if [[ ${sdl_images} == "True" ]]; then
+        if [[ ${sdl_images} == "1" ]]; then
             libs+="  -lSDL2_image"
         fi
-        if [[ ${sdl_mixer} == "True" ]]; then
+        if [[ ${sdl_mixer} == "1" ]]; then
             libs+=" -lSDL2_mixer"
         fi
     fi
@@ -157,7 +162,7 @@ fi
 if [[ ${GLB} == "opengl" ]]; then
     echo "+ Added [opengl]"
     dflags+=" -Dzox_opengl"
-    if [[ ${sdl_source} == "True" ]]; then
+    if [[ ${sdl_source} == "1" ]]; then
         echo "Cannot get Cross Compiler working with OpenGL [-lEGL -lGLESv2] yet.."
         exit
     else
@@ -183,7 +188,7 @@ ${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${libs}
 echo "+ Completed Build [${bin_path}]"
 
 # ---- Packaging ----
-if [[ ${package} == "True" ]]; then
+if [[ ${package} == "1" ]]; then
     mkdir -p ${package_path}
     date_str=$(date +%Y_%m_%d)
     zip_name="${package_path}/${game_name}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}.zip"
@@ -191,13 +196,27 @@ if [[ ${package} == "True" ]]; then
     echo "> Packaging"
     echo "  - Zip [${zip_name}]"
     echo "  - Lib [${library}]"
-
+    # removes old
     rm -f ${zip_name}
-    zip -q -r "${zip_name}" res
+    # create new zip and add files
     zip -j "${zip_name}" "${bin_path}"
-    if [[ ${is_static} == "True" ]]; then
-        zip -j "${zip_name}" ${library}/libSDL3.so
+    zip -q -r "${zip_name}" res
+    if [[ ${is_static} == "1" ]]; then
+        if [[ ${is_sdl3} == "1" ]]; then
+            zip -j "${zip_name}" ${library}/libSDL3.so.0
+            if [[ ${sdl_mixer} == "1" ]]; then
+                zip -j "${zip_name}" ${library}/libSDL3_mixer.so.0
+            fi
+        fi
     fi
-
     echo "+ Completed Zipping"
 fi
+
+#elif [[ ${ONARC} == "aarch64" && ${ARC} == "x64" ]]; then
+#    echo "Cross Compiler Set"
+#    echo "sudo apt install gcc-x86-64-linux-gnu"
+#    compiler="x86_64-linux-gnu-gcc"
+#    cflags+=" -march=x86-64"
+#    sdl_source="1"
+#   bsh/libs-download.sh
+#   bsh/libs-compile-linux-x64.sh

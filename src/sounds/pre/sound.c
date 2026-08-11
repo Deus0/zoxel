@@ -9,7 +9,7 @@ entity spawn_prefab_sound(ecs *world) {
     zox_prefab_set(e, ProcessSound, { zox_dirty_none });
     zox_prefab_set(e, DestroyInTime, { sound_play_death_delay });
     zox_prefab_set(e, SoundData, { 0 });
-#ifdef zox_sdl_mixer
+#if defined(zox_sdl_mixer) && !defined(zox_sdl3)
     zox_prefab_set(e, SDLMixChunk, { NULL });
 #endif
 

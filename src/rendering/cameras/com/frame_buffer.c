@@ -2,10 +2,10 @@
 zoxc_guint(FrameBufferLink);
 
 // Destructor for FrameBufferLink component
-ECS_DTOR(FrameBufferLink, ptr, {
+/*ECS_DTOR(FrameBufferLink, ptr, {
     zox_gpu_dispose_fbo(ptr->value);
     ptr->value = 0;
-})
+})*/
 
 void on_destroyed_FrameBufferLink(iter *it) {
     byte dbg_log = 0;
@@ -27,7 +27,7 @@ void on_destroyed_FrameBufferLink(iter *it) {
 // Function to spawn and attach a frame buffer object to an entity
 uint spawn_frame_buffer_object(ecs *world, entity e) {
     uint buffer = zox_gpu_create_fbo();
-    zox_set(e, FrameBufferLink, { buffer })
+    zox_set(e, FrameBufferLink, { buffer });
     return buffer;
 }
 

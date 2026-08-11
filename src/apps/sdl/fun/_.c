@@ -13,6 +13,6 @@ void dispose_apps_sdl(ecs *world, void *ctx) {
     close_sdl_video();
     // dispose_mixer_pool();
 #ifdef zox_sdl_mixer
-    Mix_Quit();
+    zox_dispose_mixer();
 #endif
 }

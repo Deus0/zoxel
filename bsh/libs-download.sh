@@ -6,6 +6,7 @@ sdl3_url="https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.4.14.zip
 sdl_url="https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.32.8.zip"
 sdl_image_url="https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-2.8.10.zip"
 sdl_mixer_url="https://github.com/libsdl-org/SDL_mixer/archive/refs/tags/release-2.8.1.zip"
+sdl3_mixer_url="https://github.com/libsdl-org/SDL_mixer/archive/refs/tags/release-3.2.4.zip"
 
 sdl_filepath="ext/sdl2.zip"
 sdl3_filepath="ext/sdl3.zip"
@@ -98,6 +99,22 @@ else
         "ext/sdl2"
 fi
 
+# SDL Mixer
+
+if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
+    if [[ "$USE_SDL3" -eq 1 ]]; then
+        download_and_extract \
+            "$sdl3_mixer_url" \
+            "ext/sdl3_mixer.zip" \
+            "ext/sdl3_mixer"
+    else
+        download_and_extract \
+            "$sdl_mixer_url" \
+            "ext/sdl_mixer.zip" \
+            "ext/sdl_mixer"
+    fi
+fi
+
 # SDL Image
 
 if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
@@ -105,13 +122,4 @@ if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
         "$sdl_image_url" \
         "ext/sdl_image.zip" \
         "ext/sdl_image"
-fi
-
-# SDL Mixer
-
-if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
-    download_and_extract \
-        "$sdl_mixer_url" \
-        "ext/sdl_mixer.zip" \
-        "ext/sdl_mixer"
 fi

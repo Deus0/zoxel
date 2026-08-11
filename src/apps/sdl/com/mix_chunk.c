@@ -17,29 +17,3 @@ void on_destroyed_SDLMixChunk(iter *it) {
         component->value = 0;
     }
 }
-
-byte sdl_play_sound(SDLMixChunk* chunk, const float* data, int length, float volume, int channel) {
-    if (use_sdl_audio) {
-        return sdl_audio_play_sound(data, length, 2);
-    }
-    if (!length || !volume || !data) {
-        return 0;
-    }
-    if (!chunk->value) {
-        chunk->value = malloc(sizeof(Mix_Chunk));
-    }
-    if (!chunk->value) {
-        return 0;
-    }
-    *chunk->value = (Mix_Chunk) {
-        .allocated = 0,
-        .volume = (Uint8)(volume * 128.f),
-        .alen = length * sizeof(float),
-        .abuf = (void*) data,
-    };
-    if (Mix_PlayChannel(channel, chunk->value, 0) == -1) {
-        zox_loge("Failed to play sound: %s", Mix_GetError());
-        return 0;
-    }
-    return 1;
-}

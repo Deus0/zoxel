@@ -8,6 +8,10 @@ entity2 spawn_icon(ecs* world, entity prefab, entity parent, int2 position, int2
     // add the overlay
     int2 icon_overlay_position = int2_zero;
     int2 icon_overlay_size = size;
-    entity icon_overlay = spawn_uic(world, prefab_element_frame, e, float2_half, icon_overlay_position, icon_overlay_size, icon_overlay_size, icon_overlay_fill, icon_overlay_outline);
-    return (entity2) { e, icon_overlay };
+    entity overlay = spawn_uic(world, prefab_element_frame, e, float2_half, icon_overlay_position, icon_overlay_size, icon_overlay_size, icon_overlay_fill, icon_overlay_outline);
+    zox_set_unique_name(overlay, "icon");
+    zox_add(overlay, IconOverlay);
+    zox_setv(overlay, Scale1, 0);
+    // zox_setv(overlay, Scale2, float2_zero);
+    return (entity2) { e, overlay };
 }

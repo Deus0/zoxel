@@ -3,6 +3,7 @@ set -euo pipefail
 
 STATE_FILE=".build_settings"
 GAME_DIR="gam"
+extra_args=" --static --package"
 big_timer=0
 
 # TODO: Rename the settings to more readable
@@ -36,6 +37,7 @@ load_settings() {
   echo "GFX=$GFX"
   echo "ARC=$ARC"
   echo "PRF=$PRF"
+  echo "SDL=$SDL"
 }
 
 # User picks new settings
@@ -74,7 +76,11 @@ pick_settings() {
   echo ""
   clear
 
-  PRF=$(select_option "Select Profile" release development)
+  PRF=$(select_option "Select Profile" release debug)
+  echo ""
+  clear
+
+  SDL=$(select_option "Select SDL" sdl3 sdl2)
   echo ""
   clear
 }
@@ -139,13 +145,14 @@ GLB="$GLB"
 GFX="$GFX"
 ARC="$ARC"
 PRF="$PRF"
+SDL="$SDL"
 EOF
 
 echo "Building..."
 echo ""
 cat "$STATE_FILE"
 echo ""
-echo "...[$BUILD_SCRIPT ${GAME} ${GLB} ${GFX} ${ARC} --${PRF}]"
+echo "...[$BUILD_SCRIPT ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}]"
 echo ""
 
-bash "$BUILD_SCRIPT" ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --package
+bash "$BUILD_SCRIPT" ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}

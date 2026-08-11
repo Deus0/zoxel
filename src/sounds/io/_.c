@@ -12,13 +12,13 @@ void load_files_sounds(ecs *world) {
     files_hashmap_sounds = create_string_hashmap(files.count);
     zox_logv(" + io loaded [sounds] [%i]", files.count);
     for (int i = 0; i < files.count; i++) {
-#ifdef zox_sdl_mixer
+#if defined(zox_sdl_mixer) && !defined(zox_sdl3)
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
         zox_logv("   - [%i] [sound] [%s]", i, filepath);
         Mix_Chunk *mix_chunk = Mix_LoadWAV(filepath);
         if (!mix_chunk) {
-            zox_log_error("sound file failed to load [%s] due to [%s]", filepath, Mix_GetError());
+            zox_loge("sound file failed to load [%s] due to [%s]", filepath, Mix_GetError());
             files_sounds[i] = 0;
             continue;
         }
@@ -38,9 +38,9 @@ void load_files_sounds(ecs *world) {
 
 void dispose_files_sounds() {
     if (!files_hashmap_sounds) {
-        zox_log_error("cannot dispose null files_hashmap_sounds")
+        zox_loge("cannot dispose null files_hashmap_sounds")
     } else {
-        zox_logv(" > disposing [%i] [sounds]", files_hashmap_sounds->size);
+        zox_logv("Disposing [%i] [sounds]", files_hashmap_sounds->size);
         string_hashmap_dispose(files_hashmap_sounds);
         files_hashmap_sounds = NULL;
         free(files_sounds);
