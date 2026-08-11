@@ -2,8 +2,20 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Redo Realm Select UI
+    - add date in tooltip
+    - Sort latest to top
+    - Add Realm Names as labels instead of seed
 - Fix body (body parts) icon didnt generate
     - check events
+- Sometimes crashes still
+
+Finish Character Mirror UI:
+- Refactor taskbar as entities and add the Mirror UI there
+    - so its easier to add the new mirror button
+- Make it so camera can filter an object itself, instead of just the object filtering camera?
+    - Make a renderer clone that just copies another entities mesh.. somehow
+- Destroy Render Camera when the ui dies - just parent it?
 
 Android Bugs:
 - Make jump button always work
@@ -29,9 +41,12 @@ Refactors:
 - Fix the destruction material
     - use depth level and keep at same position as voxel
 - Fix the fog, make look nicer
-- Fix UI Empty textures
-    - theyre orange atm
-- Sometimes crashes still
+- Remove Camera Datas - main_cameras ui_cameras
+- Remove build states when not building (60ms)
+    - ChunkMeshColorsTriggerSystem
+    - ChunkTexturedBuildSystem
+    - SmoothLightsBuildSystem
+    - BuildMesh
 
 Model Refactors + NodeGraphs
 - Node (Runner) Process Entity should shift the seed its using
@@ -48,13 +63,6 @@ Cookies
 - Refactor the model to generate all chunk meshes
     - refactor vox color builder to use parent
 
-Atm
-- Refactor taskbar as entities and add the Mirror UI there
-- Finish Character Renderer - Mirror UI
-    - Make it so camera can filter an object itself, instead of just the object filtering camera?
-    - Make a renderer clone that just copies another entities mesh.. somehow
-- Destroy Render Camera when the ui dies - just parent it?
-
 Later
 - Issue with ui2D is transparency sorting
     - we can set depth per layer but will need to sort calls
@@ -67,17 +75,9 @@ Later
 - Crosshair will flicker siize too fast
 - Add BarUI Test function (spawn 3 bars diff percentage?, tween animate them)
 - Animate Text test
--x Fix UI3D Test
 - Projectiles get destroyed on hit characters (use same system as pickups)
-- Note: Atm the material is the same on all render textures
+-x Note: Atm the material is the same on all render textures
     - we can just create a child of the ui as material if we need unique values
-
-- Remove Camera Datas - main_cameras ui_cameras
-- Remove build states when not building (60ms)
-    - ChunkMeshColorsTriggerSystem
-    - ChunkTexturedBuildSystem
-    - SmoothLightsBuildSystem
-    - BuildMesh
         
 Bugs
 - Fix taskbars again properly linking to windows

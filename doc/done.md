@@ -1,5 +1,8 @@
 # Done
 
+-x Fix UI3D Test
+-x Fix UI Empty textures
+    -x theyre orange atm
 -x Fix loading sounds in sdl3
 -x Spawn Humanoid NPC test function
 -x block placing still broken every 2nd place
