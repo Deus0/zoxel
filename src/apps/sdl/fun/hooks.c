@@ -19,8 +19,8 @@ void sdl_on_window_moved(ecs *world, entity e, int2 position) {
 
 void on_window_resized(ecs *world, entity e, int2 size) {
     // Cache the size before we resize
-    byte fullscreen = zox_gett_value(e, WindowFullscreen);
-    if (!fullscreen && !zox_gett_value(e, WindowMaximized)) {
+    byte fullscreen = zox_getv(e, WindowFullscreen);
+    if (!fullscreen && !zox_getv(e, WindowMaximized)) {
         zox_set(e, WindowSizeRestore, { size });
         // zox_log("WindowSizeRestore Set [%ix%i]", size.x, size.y);
     }

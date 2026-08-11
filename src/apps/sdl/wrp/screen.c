@@ -21,7 +21,7 @@ void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
     if (fullscreen) {
         int display_count = zox_sdl_get_num_displays();
         if (monitor >= display_count) {
-            zox_log_error("Invalid monitor index %i, using primary (0)", monitor);
+            zox_loge("Invalid monitor index %i, using primary (0)", monitor);
             monitor = 0;
         }
         int monitor_current = zox_sdl_get_window_display(window);

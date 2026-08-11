@@ -45,7 +45,9 @@ SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
 #endif
     }
     if (fullscreen && maximized) {
+#if !(defined(zox_windows) && defined(zox_sdl3))
         flags = flags | SDL_WINDOW_MAXIMIZED;
+#endif
     }
     return flags;
 }

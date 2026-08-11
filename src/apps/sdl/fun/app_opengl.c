@@ -2,18 +2,18 @@
 entity spawn_app_sdl_opengl(ecs *world, const char* name, byte fullscreen, byte maximized, byte monitor) {
     entity e = spawn_app_sdl(world, name, fullscreen, maximized, monitor);
     if (!e) {
-        zox_log_error("Failed spawning sdl window");
+        zox_loge("Failed spawning sdl window");
         return 0;
     }
     zox_geter(e, SDLWindow, sdl_window);
     SDL_GLContext context = create_sdl_opengl_context(sdl_window->value);
     if (!context) {
-        zox_log_error("OpenGL could not create a context");
+        zox_loge("OpenGL could not create a context");
         running = 0;
         return 0;
     }
     if (set_sdl_window_context(sdl_window->value, context)) {
-        zox_log_error("OpenGL could not set context to sdl window");
+        zox_loge("OpenGL could not set context to sdl window");
         running = 0;
         return 0;
     }

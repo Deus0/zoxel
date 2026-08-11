@@ -8,7 +8,7 @@ set -euo pipefail
 # Debug Options
 is_safety_checks="1"
 is_sdl_image="0"
-sdl_mixer="1"
+sdl_mixer="0"
 # bash inputs
 game_name=$1
 bin_path="bin/${game_name}.exe"

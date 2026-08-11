@@ -24,7 +24,7 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     SDL_WindowFlags flags = zox_sdl_window_flags(fullscreen, maximized);
     SDL_Window* sdl_window = create_sdl_window(position, size, name, flags);
     if (!sdl_window) {
-        zox_log_error(" opengl did not create sdl_window, exiting zoxel")
+        zox_loge(" opengl did not create sdl_window, exiting zoxel")
         return 0;
     }
     if (!fullscreen && maximized) {

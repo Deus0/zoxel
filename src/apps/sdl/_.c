@@ -36,7 +36,7 @@ zox_begin_module(Sdl) {
     zox_import_module(SdlInputs);
     add_to_update_loop(update_sdl);
     // Setting idk
-    SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+    // SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
 } zox_end_module(Sdl);
 
 #endif

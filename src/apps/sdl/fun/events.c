@@ -136,7 +136,6 @@ void update_sdl(ecs *world) {
             zox_logv("App Gained Focus + Restored");
             opengl_restore_resources(world);
             enable_time();
-
             on_window_restored(
                 world,
                 e,

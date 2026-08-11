@@ -1,5 +1,7 @@
 # Done
 
+-x Get sdl3 to build for windows
+-x Fullscreen issues
 -x We should use lib folder for dll or .so files instead of bin
 -x Added SDL3 Support
 -x Make it so slime blueprint size is set in first node, others will use this blueprint component - like anchor it

@@ -61,7 +61,7 @@ void on_sdl_window_restored(ecs *world, entity e) {
 
 void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
     if (!zox_valid(e) || !zox_has(e, WindowFullscreen)) {
-        zox_log_error("invalid app in [zox_set_app_fullscreen]");
+        zox_loge("invalid app in [zox_set_app_fullscreen]");
         return;
     }
     zox_set(e, WindowFullscreen, { fullscreen });
