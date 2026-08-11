@@ -1,4 +1,4 @@
-````text
+
     +--------+
    /        /|
   +--------+ |
@@ -106,30 +106,19 @@ Zoxel is released under the GPL.
 
 The latest playable builds can be found on itch.io:
 
-https://deus0.itch.io/zox
+https://deus0.itch.io/zoxel
 
 
 ## Build From Source
+
+Uses Flecs and SDL
 
 ```bash
 git clone https://codeberg.org/deus/zoxel
 cd zoxel
 make flecs
 make run
-````
-
-### Requirements
-
-* git
-* make
-* gcc
-* Flecs
-* OpenGL
-* SDL
-* SDL_image
-* SDL_mixer
-* pthread
-* math
+```
 
 ## Source
 
@@ -162,7 +151,4 @@ https://mastodon.gamedev.place/@deus
 The world is larger than the horizon.
 
 Go find out what is beyond it.
-
-```
-```
 
