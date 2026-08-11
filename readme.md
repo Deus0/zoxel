@@ -111,35 +111,16 @@ https://deus0.itch.io/zoxel
 
 ## Build From Source
 
-Uses Flecs and SDL
+The project is actively developed and the world is still growing
+
+https://codeberg.org/deus/zoxel
 
 ```bash
 git clone https://codeberg.org/deus/zoxel
 cd zoxel
-make flecs
-make run
+./bsh/flecs.sh
+./build.sh
 ```
-
-## Source
-
-Zoxel:
-https://codeberg.org/deus/zoxel
-
-The project is actively developed and the world is still growing.
-
-## Further Reading
-
-Development notes and the project todo list:
-
-https://codeberg.org/deus/zelder/src/branch/main/doc/tsk/todo.md
-
-Zoxelder, the project's accompanying development tools:
-
-https://codeberg.org/deus/zoxelder
-
-Flecsing, the Flecs project used by Zoxel:
-
-https://codeberg.org/deus/flecsing
 
 ## Follow Development
 
