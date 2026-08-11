@@ -5,6 +5,7 @@ set -euo pipefail
 #    bash bsh/android.sh zoxel opengl sdl --debug --install
 # Debug
 #    bash bsh/android.sh zoxel opengl sdl --debug --install --log --verbose
+
 # ============================================================
 # Zoxel Android Build
 #
@@ -36,11 +37,15 @@ cd "${root}"
 
 game_name="${1:-zoxel}"
 
+is_run="0"
+sdl_mixer="1"
 debug="False"
 install="False"
 log="False"
 verbose="False"
 
+[[ " $* " == *" --run "* ]] && is_run="1"
+[[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
 [[ " $* " == *" --debug "* ]] && debug="True"
 [[ " $* " == *" --install "* ]] && install="True"
 [[ " $* " == *" --log "* ]] && log="True"
@@ -52,17 +57,12 @@ verbose="False"
 
 android_api="35"
 android_abi="arm64-v8a"
-
 and_path="${root}/and"
-
 sdk_path="${and_path}/sdk"
 ndk_path="${and_path}/ndk"
-
 gradle_path="${and_path}/gradle"
 gradle_version="8.10.2"
-
 staging_path="${and_path}/${game_name}"
-
 apk_path="${root}/bin/${game_name}.apk"
 
 # ============================================================
@@ -182,6 +182,7 @@ src_path="${root}/src"
 gam_path="${root}/gam/${game_name}"
 flecs_path="${root}/inc/flecs"
 sdl_path="${root}/ext/sdl3"
+sdl_mixer_path="${root}/ext/sdl3_mixer"
 
 sources=(
     "${src_path}/main.c"
@@ -239,8 +240,45 @@ if [[ ! -d "${root}/res" ]]; then
     exit 1
 fi
 
+# Validate SDL_Mixer
+
+if [[ "${sdl_mixer}" -eq "1" ]]; then
+    if [[ ! -d "${sdl_mixer_path}" ]]; then
+        echo ""
+        echo "ERROR: SDL3_mixer directory not found:"
+        echo "  ${sdl_mixer_path}"
+        exit 1
+    fi
+
+    if [[ ! -f "${sdl_mixer_path}/Android.mk" ]]; then
+        echo ""
+        echo "ERROR: SDL3_mixer Android.mk not found:"
+        echo "  ${sdl_mixer_path}/Android.mk"
+        exit 1
+    fi
+
+    if [[ ! -d "${sdl_mixer_path}/include" ]]; then
+        echo ""
+        echo "ERROR: SDL3_mixer include directory not found:"
+        echo "  ${sdl_mixer_path}/include"
+        exit 1
+    fi
+fi
+
 echo "- Source tree OK"
 echo "- Game tree [gam/${game_name}] OK"
+
+# ============================================================
+# SDL3_mixer configuration
+# ============================================================
+
+sdl_mixer_flags=(
+    "SUPPORT_MOD_XMP=false"
+    "SUPPORT_WAVPACK=false"
+    "SUPPORT_OPUS=false"
+    "SUPPORT_FLAC_LIBFLAC=false"
+    "SUPPORT_FLAC_DRFLAC=true"
+)
 
 # ============================================================
 # SDL3 Android project
@@ -298,6 +336,14 @@ dflags+=" -Dzox_sdl3"
 echo "* Added [opengl]"
 dflags+=" -Dzox_opengl"
 
+if [[ "${sdl_mixer}" -eq "1" ]]; then
+    echo "* Added [sdl3_mixer]"
+    dflags+=" -Dzox_sdl_mixer"
+    includes+=" -I${sdl_mixer_path}/include"
+else
+    echo "* SDL3_mixer disabled"
+fi
+
 # ============================================================
 # Build information
 # ============================================================
@@ -339,12 +385,18 @@ echo "> Configuring SDL3 native project"
 
 jni_path="${staging_path}/app/jni"
 sdl_jni_path="${jni_path}/SDL"
-
 rm -rf "${sdl_jni_path}"
 ln -s "${sdl_path}" "${sdl_jni_path}"
-
 echo "- SDL3 linked"
 echo "  ${sdl_jni_path} -> ${sdl_path}"
+
+if [[ ${sdl_mixer} -eq "1" ]]; then
+    sdl_mixer_jni_path="${jni_path}/SDL_mixer"
+    rm -rf "${sdl_mixer_jni_path}"
+    ln -s "${sdl_mixer_path}" "${sdl_mixer_jni_path}"
+    echo "- SDL_mixer linked"
+    echo "  ${sdl_mixer_jni_path} -> ${sdl_mixer_path}"
+fi
 
 # ============================================================
 # Native source
@@ -390,7 +442,6 @@ echo "  ${jni_flecs_path}"
 
 echo ""
 echo "> Creating Android.mk"
-
 cat > "${jni_src_path}/Android.mk" <<EOF
 LOCAL_PATH := \$(call my-dir)
 
@@ -399,18 +450,37 @@ include \$(CLEAR_VARS)
 LOCAL_MODULE := main
 
 LOCAL_SRC_FILES := \\
-    main.c \\
-    ../flecs/flecs.c
+main.c \\
+../flecs/flecs.c
 
 LOCAL_C_INCLUDES := \\
-    \$(LOCAL_PATH) \\
-    \$(LOCAL_PATH)/../gam/${game_name} \\
-    \$(LOCAL_PATH)/../flecs \\
-    \$(LOCAL_PATH)/../SDL/include
+\$(LOCAL_PATH) \\
+\$(LOCAL_PATH)/../gam/${game_name} \\
+\$(LOCAL_PATH)/../flecs \\
+\$(LOCAL_PATH)/../SDL/include
+EOF
 
+if [[ "${sdl_mixer}" -eq "1" ]]; then
+cat >> "${jni_src_path}/Android.mk" <<EOF
+LOCAL_C_INCLUDES += \\
+\$(LOCAL_PATH)/../SDL_mixer/include
+
+EOF
+fi
+
+cat >> "${jni_src_path}/Android.mk" <<EOF
 LOCAL_CFLAGS := ${cflags} ${dflags}
 
 LOCAL_SHARED_LIBRARIES := SDL3
+EOF
+
+if [[ "${sdl_mixer}" -eq "1" ]]; then
+cat >> "${jni_src_path}/Android.mk" <<EOF
+LOCAL_SHARED_LIBRARIES += SDL3_mixer
+EOF
+fi
+
+cat >> "${jni_src_path}/Android.mk" <<EOF
 
 LOCAL_LDLIBS := ${libs}
 
@@ -436,6 +506,8 @@ cat > "${jni_path}/Application.mk" <<EOF
 APP_ABI := ${android_abi}
 APP_PLATFORM := android-${android_api}
 APP_STL := c++_shared
+
+$(printf '%s\n' "${sdl_mixer_flags[@]}")
 EOF
 
 echo "- Application.mk configured"
@@ -701,6 +773,33 @@ if [[ "${log}" == "True" ]]; then
 
     # adb logcat --pid="${pid}"
     adb logcat --pid="${pid}" -v threadtime "SDL:V" "*:S"
+elif [[ "${is_run}" == "1" ]]; then
+    echo ""
+    echo "============================================================"
+    echo "> Running"
+    echo "============================================================"
+    echo ""
+
+    aapt_path="${sdk_path}/build-tools/35.0.0/aapt"
+
+    if [[ -z "${aapt_path}" || ! -x "${aapt_path}" ]]; then
+        echo "ERROR: aapt not found."
+        exit 1
+    fi
+
+    package_name="$("${aapt_path}" dump badging "${apk_path}" \
+        | sed -n "s/^package: name='\([^']*\)'.*/\1/p" \
+        | head -n 1)"
+
+    if [[ -z "${package_name}" ]]; then
+        echo "ERROR: Could not determine APK package name."
+        exit 1
+    fi
+
+    echo "- Package: ${package_name}"
+
+    echo "- Starting application"
+    adb shell monkey -p "${package_name}" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1 || true
 fi
 
 # ============================================================

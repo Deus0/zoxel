@@ -16,6 +16,11 @@ void delayed_texture_generate(ecs* world, entity e) {
 entity spawn_texture_from_vox(ecs* world, entity vox, byte2 tsize) {
     // # # # Spawn Item Texture # # #
     entity texture = spawn_texture(world, prefab_vox_texture, byte2_to_int2(tsize));
+    {
+        char name2[128];
+        sprintf(name2, "texture_%s", zox_getn(vox));
+        zox_set_unique_name(texture, name2);
+    }
     // zox_set_name_e(texture, "bodys_texture_head");
     zox_set(texture, VoxBakeSide, { direction_front });
     zox_set(texture, ModelLink, { vox });

@@ -12,22 +12,22 @@ zox_sys2(SkillOverlaySystem) {
         if (!zox_valid(overlay)) {
             continue;
         }
-        if (!zox_has(overlay, Scale1)) {
-            zox_loge("Overlay has no Scale1");
+        if (!zox_has(overlay, LocalScale1)) {
+            zox_loge("Icon Overlay [%s] has no LocalScale1", zox_getn(overlay));
             continue;
         }
-        byte has_scale2 = zox_has(overlay, Scale2);
+        byte has_scale2 = zox_has(overlay, LocalScale2);
         entity data = link->value;
         if (!zox_valid(data)) {
             if (!has_scale2) {
-                float old_scale = zox_getv(overlay, Scale1);
+                float old_scale = zox_getv(overlay, LocalScale1);
                 if (old_scale) {
-                    zox_setv(overlay, Scale1, 0);
+                    zox_setv(overlay, LocalScale1, 0);
                 }
             } else {
-                float old_scale = zox_getv(overlay, Scale2).x;
+                float old_scale = zox_getv(overlay, LocalScale2).x;
                 if (old_scale) {
-                    zox_setv(overlay, Scale2, float2_zero);
+                    zox_setv(overlay, LocalScale2, float2_zero);
                 }
             }
             continue;
@@ -51,10 +51,10 @@ zox_sys2(SkillOverlaySystem) {
         float cooldown_scale = cooldown_at ? (zox_current_time - cooldown_at) / cooldown_time : 0;
         float scale = active ? 1 : warmup_scale ? warmup_scale : (cooldown_scale ? 1 - cooldown_scale : 0);
         if (!has_scale2) {
-            zox_setm(overlay, Scale1, scale * 1.2f);
+            zox_setm(overlay, LocalScale1, scale * 1.2f);
         } else {
             // we should use a setm_raw here instead
-            zox_setv(overlay, Scale2, float2_single(scale * 1.2f));
+            zox_setv(overlay, LocalScale2, float2_single(scale * 1.2f));
         }
         if (dbg_log && scale) {
             zox_log("Overlay Skill System [%s] -> [%s] - scale2 [%i]", zox_getn(data), zox_getn(overlay), has_scale2);

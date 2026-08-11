@@ -56,18 +56,11 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 #endif
-    // zox_logv("Initializing Sounds");
-    // initialize_sounds();
     zox_logv("Spawning Prefabs");
     run_hook_spawn_prefabs(world);
-    // TODO: attach Loaded Files to Realm
     zox_logv("Spawning Realm and Loading Assets");
-    // TODO: Menu Realm
-    // entity realm = spawn_realm(world, prefab_realm);
-    // run_hook_files_load(world);
     zox_logv("Spawning Game");
     entity game = spawn_game(world);
-    // spawn app (creates our opengl context too)
     zox_logv("Spawning App");
 #ifdef zox_sdl
     entity app = spawn_engine_app(world, game_name);
@@ -84,7 +77,6 @@ int main(int argc, char* argv[]) {
         zox_logv("Initializing Rendering");
         initialize_rendering(render_backend);
         zox_logv("Setting App Icon [game.png]");
-        // spawn_window_icon(world, app, "game.png");
         spawn_window_icon(world, app, "game.bmp");
         // FIX: Actually load shaders -> spawns materials...
         zox_logv("Loading (Processing) Shaders");

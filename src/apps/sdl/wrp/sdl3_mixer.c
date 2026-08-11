@@ -28,15 +28,3 @@ static inline void zox_dispose_mixer() {
 int get_channels_count() {
     return 1;
 }
-
-static inline float* zox_mix_chunk_samples(MIX_Audio *mix_audio) {
-    return NULL;
-}
-
-static inline int zox_mix_chunk_length(MIX_Audio *mix_audio) {
-    return 0;
-}
-
-static inline double get_mix_chunk_sound_length(MIX_Audio *mix_audio) {
-    return -1.0;
-}

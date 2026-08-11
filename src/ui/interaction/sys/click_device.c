@@ -1,6 +1,7 @@
 // todo: reuse parts of ZeviceClickSystem in this
 // this is now from zevice
 zox_sys2(DeviceClickSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceDisabled);
@@ -9,8 +10,8 @@ zox_sys2(DeviceClickSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DeviceDisabled, disabled);
-        zox_sys_i(RaycasterTarget, raycasterTarget);
-        zox_sys_o(ClickingEntity, clickingEntity);
+        zox_sys_i(RaycasterTarget, target);
+        zox_sys_o(ClickingEntity, clicking);
         if (disabled->value) {
             continue;
         }
@@ -18,7 +19,7 @@ zox_sys2(DeviceClickSystem) {
         if (!zox_valid(player) || !zox_has(player, CanvasLink)) {
             continue;
         }
-        entity canvas = zox_get_value(player, CanvasLink);
+        entity canvas = zox_getv(player, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }
@@ -37,53 +38,51 @@ zox_sys2(DeviceClickSystem) {
             if (!zox_has(e2, DeviceButtonType)) {
                 continue;
             }
-            byte button_type = zox_get_value(e2, DeviceButtonType);
+            byte button_type = zox_getv(e2, DeviceButtonType);
             if (button_type == zox_btn_a) {
-                byte disabled = zox_get_value(e2, ZeviceDisabled);
+                byte disabled = zox_getv(e2, ZeviceDisabled);
                 if (!disabled) {
-                    zox_geter_value(e2, ZeviceButton, byte, value);
-                    if (devices_get_pressed_this_frame(value)) {
-                        input_type = 1;
-                    } else if (devices_get_released_this_frame(value)) {
-                        input_type = 2;
-                    }
+                    continue;
+                }
+                zox_geter_value(e2, ZeviceButton, byte, value);
+                if (devices_get_pressed_this_frame(value)) {
+                    input_type = 1;
+                } else if (devices_get_released_this_frame(value)) {
+                    input_type = 2;
                 }
             }
         }
         if (!input_type) {
             continue;
         }
-        zox_geter_value(player, DeviceMode, byte, dmode);
         // used for virtual joysticks to see if a t arget was raycasted, todo: move to raycast system
-        // raycasterResult->value = raycasterTarget->value || windowRaycasted->value;
+        // raycasterResult->value = target->value || windowRaycasted->value;
         // released
+        // First Clicked
         if (input_type == 1) {
-            clickingEntity->value = raycasterTarget->value; // clicked
-            on_element_clicked(world, player, clickingEntity->value);
+            clicking->value = target->value;
+            on_element_clicked(world, player, clicking->value);
         }
         if (input_type == 1) { // clicked
-            /*if (windowRaycasted->value != windowTarget->value) {
-                windowTarget->value = windowRaycasted->value;
-                // zox_log(" > player window target [%lu]\n", windowTarget->value)
-                // todo: set it's window to top
-                // now set WindowToTop entity to windowTarget->value
-                // then next in canvas system, reset windows layers to top of window stack
-                zox_set(canvas, WindowToTop, { windowTarget->value })
-            }*/
-            if (zox_valid(raycasterTarget->value) && zox_has(raycasterTarget->value, Dragable)) {
+            if (zox_valid(target->value) && zox_has(target->value, Dragable)) {
+                byte dmode = zox_getv(player, DeviceMode);
                 byte drag_mode = zox_drag_mode_none;
                 if (dmode == zox_device_mode_keyboardmouse) {
                     drag_mode = zox_drag_mode_mouse;
                 } else if (dmode == zox_device_mode_touchscreen) {
                     drag_mode = zox_drag_mode_finger;
                 }
-                set_element_dragged(world, player, raycasterTarget->value, drag_mode);
+                set_element_dragged(world, player, target->value, drag_mode);
+                if (dbg_log) {
+                    zox_log("Dragging UI [%s] Mode [%i]", zox_getn(target->value), drag_mode);
+                }
             }
-        } else if (input_type == 2) { // released
-            if (raycasterTarget->value == clickingEntity->value) {
-                on_element_released(world, player, raycasterTarget->value);
+        } else if (input_type == 2) {
+            // released
+            if (target->value == clicking->value) {
+                on_element_released(world, player, target->value);
             }
-            clickingEntity->value = 0;
+            clicking->value = 0;
         }
     }
 } zox_sys_end(DeviceClickSystem);

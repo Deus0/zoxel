@@ -31,7 +31,7 @@ static inline void set_position_rotation_scale2_recursive(
             zox_log("[%s] line [%fx%f] -> [%fx%f]", zox_getn(e), line->start.x, line->start.y, line->end.x, line->end.y);
         }
     }
-    if (!zox_has(e, Position2) || !zox_has(e, Rotation2)) {
+    if (!zox_has(e, Position2)) {
         return;
     }
     byte updated = 0;
@@ -46,7 +46,6 @@ static inline void set_position_rotation_scale2_recursive(
     float world_rotation = parent_rotation + local_rotation;
     float2 world_scale = float2_multiply(parent_scale, local_scale);
     zox_mut_begin(e, Position2, old_position);
-    zox_mut_begin(e, Rotation2, old_rotation);
     if (!float2_equals(world_position, old_position->value))
     {
         old_position->value = world_position;
@@ -55,9 +54,12 @@ static inline void set_position_rotation_scale2_recursive(
             zox_log("New Position2 [%fx%f]", world_position.x, world_position.y);
         }
     }
-    if (world_rotation != old_rotation->value) {
-        old_rotation->value = world_rotation;
-        updated = 1;
+    if (zox_has(e, Rotation2)) {
+        zox_mut_begin(e, Rotation2, old_rotation);
+        if (world_rotation != old_rotation->value) {
+            old_rotation->value = world_rotation;
+            updated = 1;
+        }
     }
     if (zox_has(e, Scale2)) {
         zox_mut_begin(e, Scale2, scale);
@@ -90,11 +92,12 @@ zox_sys2(Transform2ChildrenSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position2);
-    zox_sys_in(Rotation2);
+    // zox_sys_in(Rotation2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position2, position);
-        zox_sys_i(Rotation2, rotation);
+        // zox_sys_i(Rotation2, rotation);
+        float rotation = zox_has(e, Rotation2) ? zox_getv(e, Rotation2) : 0;
         float2 world_scale = zox_has(e, Scale2) ? zox_getv(e, Scale2) : (zox_has(e, Scale1) ? float2_single(zox_getv(e, Scale1)) : float2_one);
         if (dbg_log) {
             zox_log("Root Position2 [%fx%f]", position->value.x, position->value.y);
@@ -103,7 +106,7 @@ zox_sys2(Transform2ChildrenSystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                set_position_rotation_scale2_recursive(world, e2, position->value, rotation->value, world_scale, dbg_log);
+                set_position_rotation_scale2_recursive(world, e2, position->value, rotation, world_scale, dbg_log);
             }
         }
         zox_sys_increment();

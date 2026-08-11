@@ -8,9 +8,9 @@ void zox_define_systems_transforms2(ecs* world) {
         Transform2ChildrenSystem,
         zoxp_transforms,
         [in] transforms2.Position2,
-        [in] transforms2.Rotation2,
+        // [in] transforms2.Rotation2,
         [none] !transforms2.LocalPosition2,
-        [none] !transforms2.LocalRotation2,
+        // [none] !transforms2.LocalRotation2,
         [none] !transforms.DisableTransform
     );
     // TODO: Add Rottions to these
@@ -18,6 +18,17 @@ void zox_define_systems_transforms2(ecs* world) {
         Transform2Scale1System,
         zoxp_update,
         [in] transforms2.Position2,
+        [in] transforms.Scale1,
+        [out] transforms.TransformMatrix,
+        [none] !transforms2.Rotation2,
+        [none] !transforms2.Scale2,
+        [none] !transforms.DisableTransform
+    );
+    zox_system(
+        Transform2Rotation2Scale1System,
+        zoxp_update,
+        [in] transforms2.Position2,
+        [in] transforms2.Rotation2,
         [in] transforms.Scale1,
         [out] transforms.TransformMatrix,
         [none] !transforms2.Scale2,
@@ -29,6 +40,7 @@ void zox_define_systems_transforms2(ecs* world) {
         [in] transforms2.Position2,
         [in] transforms2.Scale2,
         [out] transforms.TransformMatrix,
+        [none] !transforms2.Rotation2,
         [none] !transforms.DisableTransform
     );
 }

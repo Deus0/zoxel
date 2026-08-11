@@ -13,8 +13,7 @@ int initialize_video() {
     }
     zox_logv("Detected Video Drivers:");
     for (int i = 0; i < dcount; i++) {
-        const char* dname = SDL_GetVideoDriver(i);
-        zox_logv("   %d: %s", i + 1, dname);
+        zox_logv("   %d: %s", i + 1, SDL_GetVideoDriver(i));
     }
     if (!sdl_init(SDL_INIT_VIDEO)) {
         zox_loge("[SDL_INIT_VIDEO] [%s]", SDL_GetError());

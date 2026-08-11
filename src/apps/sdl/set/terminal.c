@@ -1,8 +1,4 @@
 void process_terminal_sdl(ecs *world, char* args[], int count) {
-#ifdef zox_verbose
-    is_verbose = 1;
-    zox_logv("setting enabled [verbose]");
-#endif
     for (int i = 1; i < count; i++) {
         if (!strcmp(args[i], "--opengles") || !strcmp(args[i], "--es")) {
             opengl_mode = zox_opengl_es;

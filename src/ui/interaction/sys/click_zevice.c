@@ -1,4 +1,5 @@
 zox_sys2(ZeviceClickSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZeviceDisabled);
@@ -52,11 +53,11 @@ zox_sys2(ZeviceClickSystem) {
         // released
         if (click_type == 0) {
             continue;
-        } else if (click_type == 1) {
+        }
+        if (click_type == 1) {
             clicked->value = zox_valid(target->value) ? target->value : 0;
             on_element_clicked(world, player, clicked->value);
-        }
-        if (click_type == 1) { // clicked
+            // Drag
             if (zox_valid(target->value) && zox_has(target->value, Dragable)) {
                 byte drag_mode = zox_drag_mode_none;
                 if (device_mode == zox_device_mode_keyboardmouse) {
@@ -65,10 +66,18 @@ zox_sys2(ZeviceClickSystem) {
                     drag_mode = zox_drag_mode_finger;
                 }
                 set_element_dragged(world, player, target->value, drag_mode);
+                if (dbg_log) {
+                    zox_log("Zevice Dragging UI [%s] Mode [%i]", zox_getn(target->value), drag_mode);
+                }
             }
-        } else if (click_type == 2) { // released
+        }
+        // released
+        else if (click_type == 2) {
             if (target->value == clicked->value) {
                 on_element_released(world, player, target->value);
+                if (dbg_log) {
+                    zox_log("Zevice Released UI [%s]", zox_getn(target->value));
+                }
             }
             clicked->value = 0;
         }

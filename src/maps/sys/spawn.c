@@ -82,18 +82,16 @@ zox_sys2(MapInitializeSystem) {
         // NOTE: Spawns a simple arrow for player direction
         {
             entity e3 = spawn_uic(world, prefab_element, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
-            zox_set_unique_name(e3, "map_player");
-            zox_set(e3, Layer2D, { layer + 2 });
-            zox_set(e3, BonusLayer2, { 1 });
-            zox_set(e3, PlayerLink, { player->value });
+            zox_set_unique_name(e3, "map_player_arrow");
             zox_add_tag(e3, MapArrow);
-            // Texture
             zox_add_tag(e3, ArrowTexture);
-            zox_set(e3, Generate, { zox_dirty_trigger });
-            zox_set(e3, OutlineThickness, { arrow_thickness });
-            // Hmm
-            //zox_add(e3, TransformMatrix);
-            //zox_set(e3, Scale2, { (float2) { -1, 1 } });
+            zox_setv(e3, Layer2D, layer + 2);
+            zox_setv(e3, Rotation2, 0);
+            zox_setv(e3, LocalRotation2, 0);
+            zox_setv(e3, BonusLayer2, 1);
+            zox_setv(e3, PlayerLink, player->value);
+            zox_setv(e3, Generate, zox_dirty_trigger);
+            zox_setv(e3, OutlineThickness, arrow_thickness);
         }
     }
 } zox_sys_end(MapInitializeSystem);

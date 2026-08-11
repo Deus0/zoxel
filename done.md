@@ -1,5 +1,23 @@
 # Done
 
+-x Fix loading sounds in sdl3
+-x Spawn Humanoid NPC test function
+-x block placing still broken every 2nd place
+-x Keep spawned Character links seperate from ChunkEntities, one for position ref, other for spawn links
+-x Dialogue to use black topbottom bars instead of fade
+-x move dialogue text top left
+-x I noticed Slimes have some missing faces
+-x I think I fucked up the chunk mesh lighting
+    -x wait its just the camera being a bit laggy on the charcter collider
+    -x even the ui overhead will glitch a little - make it slerp to position overheads
+-x Fix the new blueprint + slime character workflow
+-x Button doesnt work when click first time - touch issue
+-x Get Android build working
+-x Left touchpad - X axis inverted
+-x No audio when no mixer - sdl 3
+-x Fix the UI scaling issues
+-x Fix the rotation too 
+-x Fix loading sounds on sdl3
 -x Get sdl3 to build for windows
 -x Fullscreen issues
 -x We should use lib folder for dll or .so files instead of bin

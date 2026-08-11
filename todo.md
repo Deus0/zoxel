@@ -2,26 +2,27 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Fix the UI scaling issues
-- Fix the rotation too 
-- Fix loading sounds on sdl3
+- Fix body (body parts) icon didnt generate
+    - check events
+
+Android Bugs:
+- Make jump button always work
+- Make button activate while holding
+- Punch always activates when using touch buttons
+- Terrain Material doesnt restore on minimize + restore
+- Make Touch Buttons bigger
+- Post Processing Broken
+- Screen Rotation event not working
+- Touch uis too small when phone rotated
+
+Linux:
+- Fix viewport not resizing
 
 Windows:
 - SDL3Mixer not compiling for windows
 
-Android Bugs:
-- Post Processing Broken
-- Button doesnt work when click first time - touch issue
-- Terrain Material doesnt restore on minimize + restore
-- Rotation event not working
-- Left touchpad - X axis inverted
-- Touch uis too small when phone rotated
-- Buttons bad and hard to tap
-- No audio when no mixer - sdl 3
-
-- Fix viewport not resizing
+Refactors:
 - Make DeviceDisabled a tag - Generic Disabled
-- Get Android build working
 - Add color hsv limits like the size later to the color node
 - Color node should set a reference name
     - fill can use this instead of hard values
@@ -43,7 +44,6 @@ Model Refactors + NodeGraphs
 - add spawn spots node that adds some variation
 
 Cookies
--x Fix the new blueprint + slime character workflow
 - Refactor Model Blueprints to vary size based on seed - set size node
 - Refactor the model to generate all chunk meshes
     - refactor vox color builder to use parent
@@ -169,20 +169,13 @@ Atm:
 - Animate ui for punch, overlay
 
 Fix:
--x I noticed Slimes have some missing faces
 - The errors about ChunkSides
--x I think I fucked up the chunk mesh lighting
-    -x wait its just the camera being a bit laggy on the charcter collider
-    -x even the ui overhead will glitch a little - make it slerp to position overheads
 - Set editor text contrast alot higher, black and white
 - Make raycast from fixed position, not off moving head
--x Keep spawned Character links seperate from ChunkEntities, one for position ref, other for spawn links
 - Fix the layering of the 3D UIs, text and such has depth issues
 - Fix npcs falling through map
 
 New:
--x Dialogue to use black topbottom bars instead of fade
--x move dialogue text top left
 - Add slight directional light over the AO on colored voxes
 
 Refactor:
@@ -199,14 +192,9 @@ Refactor:
 
 - Spawn/Despawn npc labels when they enter near player
 - SkeletonMesh accidently dissapeared whoops, check changing states
--x Spawn Humanoid NPC test function
 - debug label - the font will dissapear sometimes and reappear
 	- Looks like a memory issue causing the mashes to dissapear? when streaming
-
-
--x block placing still broken every 2nd place
 - sort load games by latest played
-
 - Add lookouts around map - just big ole scary towers
     - make system so all new region placers will a void prior ones
 - Add different rarity on items and frame them differently
@@ -331,16 +319,12 @@ Regressions:
 - Mesh flickers off and on when rebuilds
     - it shouldn't need to rebuild only when depth updates
     - Maybe make a swap lod mesh state that waits for the enabled chunk to finish loading
--x Crashes Sometimes
-    
-    
 - Pretty sure loading chunks was removed - test IO
 - Landfill not scaling well looks like - tested with low map render distance
 -o Lag with transforms due to new meshes?
     -x Disable ChunkMesh and just set Transform + position data
     -x same for chunk
     -o Position - transform updates lagging - add a dirty flag for this
-
 - Fix Loading of settings
 	- make load in system
 	- if spawning, check if exists or not yet

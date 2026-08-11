@@ -37,7 +37,7 @@ void zox_define_systems_maps(ecs* world) {
         MapArrowSystem,
         zoxp_update,
         [in] players.PlayerLink,
-        [out] transforms2.Rotation2,
+        [out] transforms2.LocalRotation2,
         [none] maps.MapArrow
     );
 }

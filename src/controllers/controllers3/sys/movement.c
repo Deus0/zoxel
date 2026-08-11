@@ -75,12 +75,13 @@ zox_sys2(Player3DMoveSystem) {
                 if (zdisabled) {
                     continue;
                 }
-                zox_geter_value(e3, DeviceButtonType, byte, type);
+                byte type = zox_getv(e3, DeviceButtonType);
                 if (zox_has(e3, ZeviceStick)) {
                     if (type == zox_device_stick_left) {
                         float2 stick = zox_getv(e3, ZeviceStick);
-                        left_stick.x += stick.x;
                         left_stick.y += stick.y;
+                        // NOTE: We must invert our Left Stick X Axis
+                        left_stick.x += -stick.x;
                     }
                 }
                 if (zox_has(e3, ZeviceButton)) {

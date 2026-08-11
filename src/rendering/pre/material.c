@@ -16,16 +16,18 @@ entity spawn_material(ecs *world, entity shader, guint* output_material) {
     zox_set(e, ShaderLink, { shader });
     guint2 shader_value = zox_getv(shader, ShaderGPULink);
     guint gpu_material = spawn_gpu_material_program(shader_value);
-    if (!gpu_material) {
+#ifdef zox_verbose
+    if (!gpu_material && is_verbose) {
         zox_geter(shader, ShaderSourceIndex, index);
         zox_logv("### [%s] ###", zox_get_name(shader));
         zox_logv("   .vert\n%s", shader_verts[index->value]);
         zox_logv("   .frag\n%s", shader_frags[index->value]);
         zox_logv("### ### ### ### ###");
-    } else {
-        zox_setv(e, MaterialGPULink, gpu_material);
-        *output_material = gpu_material;
+        return e;
     }
+#endif
+    zox_setv(e, MaterialGPULink, gpu_material);
+    *output_material = gpu_material;
     return e;
 }
 

@@ -6,7 +6,7 @@
     // - need to not regenerate them all, reuse them
 
 byte zox_maps_flip_x = 0;
-byte zox_maps_flip_z = 1;
+byte zox_maps_flip_z = 0;
 #define zox_dbg_maps_regions 1
 #define zox_dbg_maps_heights 2
 #define zox_dbg_maps_vegetation 3

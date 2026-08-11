@@ -103,7 +103,6 @@ void define_systems_zoxel(ecs *world) {
         AchievementRealmSpawnSystem,
         zoxp_mainthread,
         [in] realms.GenerateRealm,
-        [out] achievements.AchievementLinks,
         [none] realms.Realm
     );
     // Worlds

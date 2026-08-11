@@ -40,7 +40,6 @@ void finger_released(ecs *world, entity e) {
     }
 }
 
-
 byte sdl_extract_finger(ecs *world, int2 screen_size, entity e) {
     touch_fingers_count = 0;
     touch_devices_count = sdl_get_touch_device_count();
@@ -77,7 +76,7 @@ byte touchscreen_has_id(ecs *world, int id, const entity* fingers, uint length) 
         if (!zox_has(finger, Finger)) {
             continue;
         }
-        if (id == zox_gett_value(finger, ID)) {
+        if (id == zox_getv(finger, ID)) {
             return 1;
         }
     }
@@ -104,27 +103,30 @@ SDL_Finger* find_finger_unused(ecs *world, const entity* fingers, uint length) {
     return NULL;
 }
 
-void sdl_assign_finger(ecs *world, int2 screen_size, const entity* children, uint children_length, entity e) {
+void sdl_assign_finger(ecs *world, int2 screen_size, const entity* children, uint children_length, entity e, byte dbg_log) {
     // get unused finger! find a finger that isn't used yet
     SDL_Finger* finger = find_finger_unused(world, children, children_length);
     if (!finger) {
-        // zox_logw("Finger null at [%i] of [%i]", k, fingers_count);
         return;
     }
     int finger_id = finger->id + 1;
     set_id(world, e, finger_id);
-    zox_muter(e, ZevicePointer, zevicePointer);
-    zox_muter(e, ZevicePointerPosition, zevicePointerPosition);
-    devices_set_pressed_this_frame(&zevicePointer->value, 1);
-    devices_set_is_pressed(&zevicePointer->value, 1);
-    int2 position = (int2) { (int) (finger->x * screen_size.x), (int) (finger->y * screen_size.y) };
-    int2_flip_y(&position, screen_size);
-    zevicePointerPosition->value = position;
+    zox_muter(e, ZevicePointer, click);
+    zox_muter(e, ZevicePointerPosition, position);
+    click->value = 0;
+    devices_set_pressed_this_frame(&click->value, 1);
+    devices_set_is_pressed(&click->value, 1);
+    int2 new_position = (int2) { (int) (finger->x * screen_size.x), (int) (finger->y * screen_size.y) };
+    int2_flip_y(&new_position, screen_size);
+    position->value = new_position;
     global_any_fingers_down = 1;
-    zox_logv(" + finger touched [%lu] fingerid [%i]", e, finger_id);
+    if (dbg_log) {
+        zox_log("New Finger [%s] fingerid [%i] at [%ix%i] Clicked [%i]", zox_getn(e), finger_id, new_position.x, new_position.y, click->value);
+    }
 }
 
 zox_sys2(TouchscreenExtractSystem) {
+    byte dbg_log = 0;
     global_any_fingers_down = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -132,17 +134,17 @@ zox_sys2(TouchscreenExtractSystem) {
     zox_sys_out(ScreenDimensions);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(AppLink, appLink);
-        zox_sys_o(ScreenDimensions, screenDimensions);
-        zox_geter_value(appLink->value, WindowSize, int2, screen_size);
-        screenDimensions->value = screen_size;
+        zox_sys_i(AppLink, app);
+        zox_sys_o(ScreenDimensions, screen_size);
+        zox_geter_value(app->value, WindowSize, int2, window_size);
+        screen_size->value = window_size;
         uint children_capacity = zox_children_capacity;
         entity children[children_capacity];
         uint children_length = zox_get_children(world, e, children, children_capacity);
         for (uint j = 0; j < children_length; j++) {
             entity e2 = children[j];
-            if (sdl_extract_finger(world, screen_size, e2)) {
-                sdl_assign_finger(world, screen_size, children, children_length, e2);
+            if (sdl_extract_finger(world, window_size, e2)) {
+                sdl_assign_finger(world, window_size, children, children_length, e2, dbg_log);
             }
         }
     }

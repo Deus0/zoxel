@@ -89,8 +89,8 @@ zox_sys2(Player3RotateSystem) {
                 euler.x = 0;
             }
             // multiply by our stick modifiers
-            euler.y = right_stick.x * gamepad_rotate_multiplier_x;
             euler.x = right_stick.y * gamepad_rotate_multiplier_y;
+            euler.y = right_stick.x * gamepad_rotate_multiplier_x;
         }
         if (camera_mode == zox_camera_state_third_person) {
             euler.x = 0;

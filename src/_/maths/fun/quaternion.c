@@ -303,3 +303,13 @@ static inline float4 euler_to_quaternion(float3 euler) {
     q.z = cx * cy * sz - sx * sy * cz;
     return q;
 }
+
+static inline float4 rotation2_to_quaternion(float rotation) {
+    float half = rotation * 0.5f;
+    return (float4) {
+        0.0f,
+        0.0f,
+        sinf(half),
+        cosf(half)
+    };
+}

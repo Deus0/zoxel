@@ -6,6 +6,7 @@ entity spawn_prefab_sound_filepath(ecs *world) {
     return e;
 }
 
+// NOTE: Copies the values
 entity spawn_sound_filepath(ecs *world, entity prefab, const float* value, int length, float sound_length) {
     if (!prefab) {
         zox_loge("(spawn_sound_filepath) Invalid [prefab]")

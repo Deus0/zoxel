@@ -1,7 +1,7 @@
 #include "click_event.c"
 #include "mouse_element.c"
-#include "device_click.c"
-#include "zevice_click.c"
+#include "click_zevice.c"
+#include "click_device.c"
 #include "keyboard_click.c"
 #include "raycast.c"
 #include "selected.c"
@@ -33,17 +33,18 @@ void zox_define_systems_interaction(ecs* world) {
         [in] inputs.DeviceLink,
         [out] raycasts.RaycasterTarget,
     );
-    zox_system(
+    // NOTE: Has to be after raycasting system
+    /*zox_system(
         DeviceClickSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] inputs.DeviceDisabled,
         [in] raycasts.RaycasterTarget,
         [out] interaction.ClickingEntity,
         [none] inputs.Device
-    );
+    );*/
     zox_system(
         ZeviceClickSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] inputs.ZeviceDisabled,
         [in] inputs.DeviceLink,
         [in] raycasts.RaycasterTarget,
@@ -52,7 +53,7 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system(
         KeyboardClickSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
         [in] raycasts.RaycasterTarget,

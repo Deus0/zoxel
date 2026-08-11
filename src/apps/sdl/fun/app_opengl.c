@@ -17,21 +17,24 @@ entity spawn_app_sdl_opengl(ecs *world, const char* name, byte fullscreen, byte 
         running = 0;
         return 0;
     }
-    // --- Now check if the context is ACTUALLY valid ---
-    const char* ver = (const char*)glGetString(GL_VERSION);
-    const char* ren = (const char*)glGetString(GL_RENDERER);
-    const char* ven = (const char*)glGetString(GL_VENDOR);
-    /*if (!ver || !ren || !ven) {
-        zox_log_error("OpenGL context creation failed: GL strings are NULL.");
-        SDL_GL_DeleteContext(context);
-        return EXIT_FAILURE;
-    }*/
-    zox_logv("OpenGL Context Created");
-    zox_logv("   GL_VERSION: %s", ver);
-    zox_logv("   GL_RENDERER: %s", ren);
-    zox_logv("   GL_VENDOR: %s", ven);
-    // zox_log("Created Opengl Context Success");
-    zox_set(e, Context, { context });
+    zox_setv(e, Context, context);
+#ifdef zox_verbose
+    if (is_verbose) {
+        // --- Now check if the context is ACTUALLY valid ---
+        const char* ver = (const char*)glGetString(GL_VERSION);
+        const char* ren = (const char*)glGetString(GL_RENDERER);
+        const char* ven = (const char*)glGetString(GL_VENDOR);
+        /*if (!ver || !ren || !ven) {
+            zox_log_error("OpenGL context creation failed: GL strings are NULL.");
+            SDL_GL_DeleteContext(context);
+            return EXIT_FAILURE;
+        }*/
+        zox_logv("OpenGL Context Created");
+        zox_logv("   GL_VERSION: %s", ver);
+        zox_logv("   GL_RENDERER: %s", ren);
+        zox_logv("   GL_VENDOR: %s", ven);
+    }
+#endif
     return e;
 }
 
