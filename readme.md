@@ -1,4 +1,4 @@
-
+````text
     +--------+
    /        /|
   +--------+ |
@@ -7,7 +7,7 @@
   +--------+/
 
                  ~ the world is waiting ~
-
+```
 # Zoxel
 
 A procedural voxel RPG about exploration, discovery, and the strange things
