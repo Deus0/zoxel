@@ -17,7 +17,7 @@ void sdl_on_window_moved(ecs *world, entity e, int2 position) {
     }
 }
 
-void on_window_resized(ecs *world, entity e, int2 size) {
+void on_window_resized(ecs *world, entity e, int2 size, byte dbg_log) {
     // Cache the size before we resize
     byte fullscreen = zox_getv(e, WindowFullscreen);
     if (!fullscreen && !zox_getv(e, WindowMaximized)) {
@@ -31,13 +31,15 @@ void on_window_resized(ecs *world, entity e, int2 size) {
         zox_log("Overrid shitty SDL Size to [%ix%i] on monitor [%i]", size.x, size.y, monitor);
     }*/
     // Only work if resizing our entity
-    if (int2_equals(size, zox_gett_value(e, WindowSize))) {
+    if (int2_equals(size, zox_getv(e, WindowSize))) {
         return;
     }
     // resize
     zox_set(e, WindowSize, { size });
     zox_set(e, WindowSizeDirty, { zox_dirty_trigger });
-    zox_logv("+ window viewport [%ix%i]", size.x, size.y);
+    if (dbg_log) {
+        zox_logv("+ WindowSizeDirty [%ix%i]", size.x, size.y);
+    }
 }
 
 /*void on_window_rotated(ecs* world, const entity e, byte orientation) {

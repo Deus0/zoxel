@@ -98,22 +98,25 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
     }
 }
 
-byte load_app_icon(SDL_Window* window, const char *icon_path) {
-    if (!icon_path) {
-        zox_loge("Null [icon_path] in [load_app_icon]");
-        return 0;
-    }
-    if (!window) {
-        zox_loge("Null [SDL_Window] in [load_app_icon]");
+static inline byte load_app_icon(SDL_Window* window, const char *icon_path) {
+    if (!window || !icon_path) {
+        zox_loge("Invalid arguments in [load_app_icon]");
         return 0;
     }
     SDL_Surface *surface = SDL_LoadBMP(icon_path);
     if (!surface) {
-        zox_loge("Failed to load app icon '%s': %s",
-                 icon_path, SDL_GetError());
+        zox_loge("Failed to load app icon '%s': %s", icon_path, SDL_GetError());
         return 0;
     }
+#ifdef zox_sdl3
+    if (!SDL_SetWindowIcon(window, surface)) {
+        zox_loge("SDL_SetWindowIcon failed: %s", SDL_GetError());
+        zox_sdl_dispose_surface(surface);
+        return 0;
+    }
+#else
     SDL_SetWindowIcon(window, surface);
+#endif
     zox_sdl_dispose_surface(surface);
     zox_log("Loaded App Icon at [%s]", icon_path);
     return 1;

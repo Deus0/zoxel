@@ -4,20 +4,19 @@ zox_sys2(ViewportResizeSystem) {
     zox_sys_begin();
     zox_sys_in(WindowSizeDirty);
     zox_sys_in(WindowSize);
-    zox_sys_in(CameraLinks);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(WindowSizeDirty, dirty);
         zox_sys_i(WindowSize, size);
-        zox_sys_i(CameraLinks, cameras);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
         if (dbg_log) {
-            zox_log("Viewport Dirty [%i] cameras at [%ix%i]", cameras->length, size->value.x, size->value.y);
+            zox_log("Viewport Dirty at [%ix%i]", size->value.x, size->value.y);
         }
-        // refresh viewport
-        for (int j = 0; j < cameras->length; j++) {
-            entity camera = cameras->value[j];
+        iter it2 = zox_links(e, ViewportCamera);
+        while (zox_query_next(it2)) {
+            entity camera = zox_pair_target(it2, 0);
             if (!zox_valid(camera)) {
                 continue;
             }
@@ -28,11 +27,24 @@ zox_sys2(ViewportResizeSystem) {
             if (zox_has(camera, Camera3)) {
                 new_size = scale_viewport(new_size);
             }
-            zox_set(camera, ScreenPosition, { position });
-            zox_set(camera, ScreenDimensions, { new_size });
+            zox_setv(camera, ScreenPosition, position);
+            zox_setv(camera, ScreenDimensions, new_size);
             if (dbg_log) {
                 zox_log("+ Viewport Resize [%s] size [%ix%i] render camera? %i", zox_get_name(camera), new_size.x, new_size.y, zox_has(camera, RenderCamera));
             }
         }
     }
 } zox_sys_end(ViewportResizeSystem);
+
+// iter it2 = zox_children_by_id(e, Camera);
+//while (zox_query_next(it2)) {
+//   for (int i = 0; i < it2.count; i++) {
+//       entity camera = it2.entities[i];
+
+//for (int j = 0;; j++) {
+/*    entity camera = ecs_get_target(
+        world,
+        e,
+        zox_id(ViewportCamera),
+        j
+);*/

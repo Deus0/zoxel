@@ -1,4 +1,5 @@
 zox_sys2(ScreenRenderTextureSystem) {
+    byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_in(LayoutSizeDirty);
     zox_sys_in(LayoutSize);
@@ -11,5 +12,8 @@ zox_sys2(ScreenRenderTextureSystem) {
             continue;
         }
         tsize->value = scale_viewport(lsize->value);
+        if (dbg_log) {
+            zox_log("Render Texture Updated", tsize->value.x, tsize->value.y);
+        }
     }
 } zox_sys_end(ScreenRenderTextureSystem);

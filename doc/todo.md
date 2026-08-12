@@ -2,7 +2,11 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Fix low frame rates - clip through ground - by checking deltas between intersections
+- Almost fixed, just need to link app to cameras without parenting
+    - just use relationships here! a tag that links app to camera, then query for those
+    - as game camera gets reparented to the character
+
+- Add verersion build date to main menu bottom right
 - Raycast x 4, for player, and compare results
     - so we dont get shuffling between cubes when camera shakes
     - like squarecast

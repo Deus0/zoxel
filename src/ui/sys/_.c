@@ -12,8 +12,8 @@ void zox_define_systems_elements(ecs *world) {
         [in] apps.AppLink,
         [out] layouts.LayoutPosition,
         [out] layouts.LayoutSize,
-        [out] layouts.LayoutPositionDirty,
-        [out] layouts.LayoutSizeDirty,
+        //[out] layouts.LayoutPositionDirty,
+        //[out] layouts.LayoutSizeDirty,
         [none] layouts.Canvas
     );
     zox_system(

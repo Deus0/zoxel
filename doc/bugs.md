@@ -1,6 +1,9 @@
 # Bugs #
 - Sometimes crashes still
 
+## Physics
+- Fix low frame rates - clip through ground - by checking deltas between intersections
+
 ## Next
 - cant talk / raycast npcs when no action selected
 - Fix body (body parts) icon didnt generate

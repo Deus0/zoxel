@@ -27,6 +27,27 @@
 #include "virtual_keyboard.c"
 #include "orientation.c"
 
+void set_sdl_app_settings(const char* name) {
+#ifdef sdl3
+   /*SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_NAME_STRING, name);
+    char app_id[256];
+    snprintf(app_id, sizeof(app_id), "org.zox.%s", name);
+    SDL_SetAppMetadataProperty(
+        SDL_PROP_APP_METADATA_IDENTIFIER_STRING,
+        app_id);*/
+#endif
+}
+
+byte initialize_sdl(const char* name) {
+    set_sdl_app_settings(name);
+    zox_logv("Initializing Video");
+    if (initialize_video() == EXIT_FAILURE) {
+        zox_loge("[initialize_video] failed");
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
+
 byte apps_is_extension_supported(const char* name) {
     return SDL_GL_ExtensionSupported(name);
 }

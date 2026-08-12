@@ -5,13 +5,14 @@
 // NOTE: Anchor Size for stretching along canvas, must work before the positioning
 
 void define_systems_layouts2(ecs* world) {
-    /*zox_system(
+    // NOTE: Used atm for render texture
+    zox_system(
         AnchorSizeSystem,
         zoxp_update,
         [in] layouts.LayoutSizeDirty,
         [in] layouts.AnchorSize,
         [out] layouts.LayoutSize
-    );*/
+    );
     // For Canvas basically
     zox_system(
         LayoutSystem,

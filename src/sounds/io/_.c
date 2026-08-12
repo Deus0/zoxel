@@ -2,7 +2,7 @@
 
 // File implementation for Sounds
 void load_files_sounds(ecs *world) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     if (nosounds) {
         zox_logv("Sounds are disabled: No Loading Sounds.");
         return;

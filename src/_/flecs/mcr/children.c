@@ -28,6 +28,9 @@
 #define zox_children(world, e) ecs_children(world, e)
 #define zox_children_next(it) ecs_children_next(&it)
 
+#define zox_children_by_id(e, T) ecs_query_iter(world, ecs_query(world, { .terms = { { ecs_pair(EcsChildOf, e) }, { ecs_id(T) } } }))
+#define zox_query_next(it) ecs_query_next(&it)
+
 // TODO: Make use wrapped flecs children query instead for many
 byte is_warn_capacity = 1;
 uint zox_children_capacity = 64;

@@ -7,10 +7,13 @@ entity2 spawn_player_cameras(ecs* world, entity app, entity player, byte camera_
     float fov = get_camera_state_fov(camera_mode);
     entity e = spawn_camera(world, prefab_camera_game, camera_position, camera_rotation, camera_mode, fov, vp_position, game_vpsize, screen_to_canvas);
     zox_set_parent(world, e, app);
+    zox_link(world, app, ViewportCamera, e);
     zox_set_unique_name(e, "camera_game");
     zox_set(player, CameraLink, { e });
     entity e2 = spawn_camera_ui(world, prefab_camera_ui, vp_position, ui_vpsize, screen_to_canvas);
     zox_set_parent(world, e2, app);
+    zox_link(world, app, ViewportCamera, e2);
     zox_set_unique_name(e2, "camera_game_ui");
+    zox_log("PAIR camera: %i", zox_is_linked(world, app, ViewportCamera, e));
     return (entity2) { e, e2 };
 }

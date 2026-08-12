@@ -1,7 +1,3 @@
-typedef ecs_entity_t entity;
-typedef ecs_world_t ecs;
-typedef ecs_iter_t iter;
-
 #include "new.c"
 #include "ids.c"
 #include "add.c"
@@ -27,9 +23,14 @@ typedef ecs_iter_t iter;
 #include "hooks.c"
 #include "children.c"
 #include "disable.c"
+#include "pair.c"
 
 entity zox_ins_named(ecs* world, entity prefab) {
     entity e = zox_ins(world, prefab);
     zox_set_unique_name(e, zox_get_name(prefab));
     return e;
 }
+
+
+#define zox_each(world, id) ecs_each(world, id)
+#define zox_each_next(it) ecs_each_next(&it)

@@ -1,3 +1,8 @@
+typedef ecs_entity_t entity;
+typedef ecs_world_t ecs;
+typedef ecs_iter_t iter;
+typedef ecs_query_t query;
+
 byte zox_disable_threads = 0;
 byte target_fps = 0;
 byte zox_log_system_stats = 0;

@@ -11,7 +11,6 @@ void define_systems_cameras(ecs *world) {
         zoxp_update,
         [in] apps.WindowSizeDirty,
         [in] apps.WindowSize,
-        [in] CameraLinks,
         [none] apps.App
     );
     zox_system(

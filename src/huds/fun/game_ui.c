@@ -54,7 +54,6 @@ void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity 
     float3 camera_position = main_menu_camera_position;
     float4 camera_rotation = main_menu_camera_rotation;
     zox_geter_value(app, WindowSize, int2, screen_size)
-    // CameraLinks cameras = { 0 };
     for (int i = 0; i < players_playing; i++) {
         entity player = zox_players[i];
         float4 screen_to_canvas = (float4) { 1 / (float) players_playing, 1, i / (float) players_playing, 0 };
@@ -76,7 +75,6 @@ void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity 
         main_cameras[i] = game_camera;
         ui_cameras[i] = spawned_cameras.y;
     }
-    // zox_set_ptr(app, CameraLinks, cameras);
 }
 
 void on_boot_game_ui(ecs* world, entity app) {

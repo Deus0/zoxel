@@ -2,5 +2,5 @@
 set -euo pipefail
 
 # get latest, build, then install new if updated
-git pull && make && ./install.sh
+git pull && ./build.sh && ./install.sh
 echo "[zoxel] Update has completed"

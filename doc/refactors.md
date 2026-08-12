@@ -4,6 +4,10 @@
 - Remove Camera Datas - main_cameras ui_cameras
 - Remove DeviceLink from Zevice, use parent
 - Spawn finger entity during finger down - instead of just setting
+- We can refactor all the links between enttiies as pairs instead of components
+
+## Apps
+- Move sdl/glut/glfw/headless into core as wrappers or not idk... we havnt actually wrapped yet!
 
 ## Data
 - Make DeviceDisabled a tag - Generic Disabled

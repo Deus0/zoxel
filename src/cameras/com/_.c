@@ -28,12 +28,12 @@ zoxc_state(AttachDirty);
 // Filters
 zox_tag(CameraFilter);
 zoxc_entity(CameraRenderer);
+zox_tag(ViewportCamera);
 // Render Cameras
 zox_tag(RenderCamera);
 zox_tag(RenderTexture);
 zoxc_entity(RenderTextureLink);
 zoxc_entity(RenderCameraLink);
-zoxc_entities(CameraLinks)
 zoxc_float(CameraBlur);
 zoxc_float(CameraVignette);
 
@@ -42,6 +42,7 @@ void define_components_cameras(ecs *world) {
     zoxd_tag(Camera2D);
     zoxd_tag(Camera3);
     zoxd_tag(CameraUI);
+    zoxd_tag(ViewportCamera);
     zoxd_tag(ElementBillboard);
     zoxd_tag(Perspective);
     zoxd_tag(Orthographic);
@@ -66,7 +67,6 @@ void define_components_cameras(ecs *world) {
     zoxd_tag(RenderTexture);
     zoxd_entity(RenderTextureLink);
     zoxd_entity(RenderCameraLink);
-    zoxd_entities(CameraLinks);
     zoxd_float(CameraBlur);
     zoxd_float(CameraVignette);
     // Filters

@@ -120,7 +120,7 @@ https://codeberg.org/deus/zoxel
 git clone https://codeberg.org/deus/zoxel
 cd zoxel
 ./bsh/flecs.sh
-./build.sh
+./bsh/build.sh
 ```
 
 ## Follow Development

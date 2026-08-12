@@ -50,9 +50,8 @@ int main(int argc, char* argv[]) {
     zox_logv("Initializing ECS Settings: FPS [%i]", target_fps);
     initialize_ecs_settings(world, target_fps, cores); // sets ecs threads
 #ifdef zox_sdl
-    zox_logv("Initializing Video");
-    if (initialize_video() == EXIT_FAILURE) {
-        zox_loge("[initialize_video] failed");
+    if (initialize_sdl(game_name) == EXIT_FAILURE) {
+        zox_loge("[initialize_sdl] failed");
         return EXIT_FAILURE;
     }
 #endif

@@ -1,24 +1,52 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP="zoxel"
-VERSION="1.0"
-BINARY_PATH="./bin/${APP}.bin"
+# NOTE: THe desktop file needs same name as binary
+date_str=$(date +%Y_%m_%d)
+major_version="0"
+minor_version="0"
+patch_version="1"
+VERSION=${date_str} # "${major_version}.${minor_version}.${patch_version}"
+
+game="${1:-zoxel}"
+game_name="${game^}"
+sdl_version="${2:-SDL2}" # SDL3 option too
+OS="linux"
+ARC="x64"
+GLB="opengl"
+GFX="sdl"
+package_name="${game}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}"
+CHANNEL="${OS}_${ARC}"
+lib_path="lib/${CHANNEL}"
+libsdl="lib${sdl_version}.so.0"
+libsdl_mixer="lib${sdl_version}_mixer.so.0"
+sdl_path="${lib_path}/${libsdl}"
+sdl_mixer_path="${lib_path}/${libsdl_mixer}"
+BINARY_PATH="./bin/${game}.bin"
 RES_DIR="./res"
 install_path="/usr/local/games"
-install_game_path="${install_path}/${APP}"
+install_game_path="${install_path}/${game}"
 install_res_path="${install_game_path}/res"
-# ICON_REL="gam/${APP}/res/game.png"
-ICON_REL="res/textures/game.png"
+ICON_REL="gam/${game}/res/game.png"
 ICON_PATH="./${ICON_REL}"
 # bin_install_dir="/usr/bin"
-# res_install_dir="/usr/share/${APP}"
+APP_ID="org.zox.${game}"
 shortcut_install_dir="/usr/share/applications"
-shortcut_path="pkg/${APP}.desktop"
+desktop_file="${game}.bin.desktop"
+shortcut_path="pkg/${desktop_file}"
 url_path="https://codeberg.org/deus/zoxel"
 staging_dir="pkg"
 
-echo "Installing [${APP}] to [${install_game_path}]"
+echo "Installing [${game}] to [${install_game_path}]"
+echo "  - lib_path is [${lib_path}]"
+echo "  - sdl [${sdl_version}]"
+echo "  - game name [${game_name}]"
+
+# Validate Lib path
+if [[ ! -d "${lib_path}" ]]; then
+    echo "Error: '${lib_path}' directory not found."
+    exit 1
+fi
 
 # Validate inputs
 if [[ ! -x "${BINARY_PATH}" ]]; then
@@ -52,14 +80,13 @@ fi
 
 DESKTOP_CONTENT=$(cat <<EOF
 [Desktop Entry]
-Name=$APP
+Name=${game_name}
+Icon=${game}
 Comment=Voxel Game
-Exec=/usr/local/games/$APP/$APP.bin
-Icon=$APP
+Exec=/usr/local/games/${game}/${game}.bin
 Terminal=false
 Type=Application
 Categories=Game;
-StartupWMClass=zoxel
 EOF
 )
 
@@ -77,26 +104,26 @@ build_deb() {
     mkdir -p "${staging_dir}${install_res_path}"
 
     # Copy binary
-    install -Dm755 "${BINARY_PATH}" "${staging_dir}${install_game_path}/${APP}.bin"
+    install -Dm755 "${BINARY_PATH}" "${staging_dir}${install_game_path}/${game}.bin"
     # Copy resources
     cp -a "${RES_DIR}/." "${staging_dir}${install_res_path}"
     # Copy the Iccns
-    install -Dm644 "${ICON_PATH}" "${staging_dir}/usr/share/icons/hicolor/256x256/apps/${APP}.png"
+    install -Dm644 "${ICON_PATH}" \
+    "${staging_dir}/usr/share/icons/hicolor/256x256/apps/${game}.png"
     # Desktop entry
-    install -Dm644 "${shortcut_path}" "${staging_dir}${shortcut_install_dir}/${APP}.desktop"
+    install -Dm644 "${shortcut_path}" "${staging_dir}${shortcut_install_dir}/${desktop_file}"
 
     # Control file
     cat > "$staging_dir/DEBIAN/control" <<EOF
-Package: ${APP}
-Version: ${VERSION}-1
+Package: ${game}
+Version: ${VERSION}
 Section: games
 Priority: optional
 Architecture: ${ARCH}
-Depends: libsdl2-2.0-0, libsdl2-image-2.0-0, libsdl2-mixer-2.0-0
+Depends: libsdl2-2.0-0, libsdl2-mixer-2.0-0
 Maintainer: Packager <root>
-Description: A Voxel Game ${APP}
+Description: A Voxel Game ${game}
 EOF
-
     # Build and install
     # dpkg-deb --build "$staging_dir"
     dpkg-deb --root-owner-group --build "$staging_dir"
@@ -108,35 +135,41 @@ EOF
 # Build Arch package
 ##############################
 build_arch() {
-    mkdir -p "$staging_dir"
+    mkdir -p "${staging_dir}"
     # Copy sources directly into PKGBUILD folder (makepkg expects them here)
-    cp "${BINARY_PATH}" "$staging_dir/${APP}"
-    # cp -a "${RES_DIR}/." "$staging_dir/res"
-    tar czf  "$staging_dir/res.tar.gz" -C "${RES_DIR}/.." res
+    cp "${BINARY_PATH}" "${staging_dir}/${game}"
+    cp "${sdl_path}" "${staging_dir}"
+    cp "${sdl_mixer_path}" "${staging_dir}"
+    tar czf  "${staging_dir}/res.tar.gz" -C "${RES_DIR}/.." res
+    cp "${ICON_PATH}" "${staging_dir}/game.png"
     # PKGBUILD
-    cat > "$staging_dir/PKGBUILD" <<EOF
-pkgname="${APP}"
-pkgver=1.0
-pkgrel=1
-pkgdesc="An awesome game [${APP}]"
+    cat > "${staging_dir}/PKGBUILD" <<EOF
+pkgname="${game}"
+pkgver="${VERSION}"
+pkgrel=0
+pkgdesc="An awesome game [${game}]"
 arch=('x86_64')
 url="${url_path}"
 license=('GPL3')
-source=("${APP}" "${APP}.desktop" "res.tar.gz")
-sha256sums=('SKIP' 'SKIP' 'SKIP')
-depends=('sdl2' 'sdl2_image' 'sdl2_mixer')
+source=("${game}" "${libsdl}" "${libsdl_mixer}" "${desktop_file}" "res.tar.gz")
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+depends=()
 
 package() {
-    install_bin_path="\${pkgdir}/usr/bin"
-    install_res_path="\${pkgdir}/usr/share/\${pkgname}"
+    install_game_path="\${pkgdir}/usr/local/games/\${pkgname}"
+    install_res_path="\${install_game_path}/res"
     mkdir -p "\${install_res_path}"
-    install -Dm755 "\${pkgname}" "\${install_bin_path}/\${pkgname}"
-    tar xzf "\$srcdir/res.tar.gz" -C "\${install_res_path}"
-    install -Dm644 "\$srcdir/res/textures/game.png" "\${pkgdir}/usr/share/icons/hicolor/256x256/apps/\${pkgname}.png"
-    install -Dm644 "\$srcdir/\${pkgname}.desktop" "\${pkgdir}/usr/share/applications/\${pkgname}.desktop"
+    install -Dm755 "\${pkgname}" "\${install_game_path}/\${pkgname}.bin"
+    install -Dm644 "${libsdl}" "\${install_game_path}/${libsdl}"
+    install -Dm644 "${libsdl_mixer}" "\${install_game_path}/${libsdl_mixer}"
+    tar xzf "\${srcdir}/res.tar.gz" \
+        -C "\${install_game_path}"
+    install -Dm644 "\${srcdir}/../game.png" \
+        "\${pkgdir}/usr/share/icons/hicolor/256x256/apps/\${pkgname}.png"
+        install -Dm644 "\${srcdir}/${desktop_file}" \
+    "\${pkgdir}/usr/share/applications/${desktop_file}"
 }
 EOF
-
     # Build and install Arch package
     (cd "$staging_dir" && makepkg --force --noconfirm)
     PKG_FILE=$(find "$staging_dir" -maxdepth 1 -name "*.pkg.tar.*" | head -n1)
@@ -144,8 +177,10 @@ EOF
         echo "Error: no Arch package found to install."
         exit 1
     fi
-    sudo pacman -U --noconfirm "$PKG_FILE"
-    echo "Arch package installed."
+    PACKAGE_FILE="zip/${package_name}.pkg.tar.zst"
+    mv "${PKG_FILE}" "${PACKAGE_FILE}"
+    sudo pacman -U --noconfirm "${PACKAGE_FILE}"
+    echo "Arch package installed: ${PACKAGE_FILE}"
 }
 
 ##############################

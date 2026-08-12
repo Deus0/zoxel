@@ -3,6 +3,36 @@ set -euo pipefail
 
 USERNAME="deus0"
 
+# ============================================================
+# Itch.io Package Upload
+#
+# Packages are assigned channels from their filename:
+#
+# Normal builds:
+#   <game>_<platform>_<arch>_...zip
+#   <game>_<platform>_<arch>_...apk
+#
+#   Channel:
+#     <platform>_<arch>
+#
+# Arch/Pacman packages:
+#   <game>_<platform>_<arch>_....pkg.tar.zst
+#
+#   Channel:
+#     <platform>_<arch>_arch
+#
+# Examples:
+#
+#   zoxel_linux_x64_opengl_sdl_2026_08_13.zip
+#       -> linux_x64
+#
+#   zoxel_linux_x64_opengl_sdl_2026_08_13.pkg.tar.zst
+#       -> linux_x64_arch
+#
+# The "_arch" suffix distinguishes a native Arch/Pacman package
+# from the normal Linux build on the same platform/architecture.
+# ============================================================
+
 # === Settings ===
 package_path="zip"
 butler_path="${HOME}/.butler/bin"
@@ -39,6 +69,39 @@ log() {
 error_exit() {
     echo "❌ [ERROR] $*" >&2
     exit 1
+}
+
+# ============================================================
+# Helpers
+# ============================================================
+
+get_package_name() {
+    local filename="$1"
+
+    case "$filename" in
+        *.pkg.tar.zst)
+            printf '%s' "${filename%.pkg.tar.zst}"
+            ;;
+        *)
+            printf '%s' "${filename%.*}"
+            ;;
+    esac
+}
+
+get_package_channel() {
+    local filename="$1"
+    local name
+    local game platform arch
+
+    name="$(get_package_name "$filename")"
+
+    IFS='_' read -r game platform arch _ <<< "$name"
+
+    if [[ "$filename" == *.pkg.tar.zst ]]; then
+        printf '%s_%s_arch' "$platform" "$arch"
+    else
+        printf '%s_%s' "$platform" "$arch"
+    fi
 }
 
 # === Check package directory ===
@@ -118,7 +181,7 @@ channels=()
 
 while IFS= read -r -d '' package_file; do
     filename="$(basename "$package_file")"
-    name="${filename%.*}"
+    name="$(get_package_name "$filename")"
 
     IFS='_' read -r game platform arch _ <<< "$name"
 
@@ -133,7 +196,7 @@ while IFS= read -r -d '' package_file; do
 
 done < <(
     find "$package_path" -maxdepth 1 -type f \
-        \( -name '*.zip' -o -name '*.apk' \) \
+        \( -name '*.zip' -o -name '*.apk' -o -name '*.pkg.tar.zst' \) \
         -print0
 )
 
@@ -159,7 +222,7 @@ channels=()
 
 while IFS= read -r -d '' package_file; do
     filename="$(basename "$package_file")"
-    name="${filename%.*}"
+    name="$(get_package_name "$filename")"
 
     IFS='_' read -r game platform arch _ <<< "$name"
 
@@ -167,7 +230,7 @@ while IFS= read -r -d '' package_file; do
         continue
     fi
 
-    channel="${platform}_${arch}"
+    channel="$(get_package_channel "$filename")"
 
     if [[ ! " ${channels[*]} " =~ " ${channel} " ]]; then
         channels+=("$channel")
@@ -175,7 +238,7 @@ while IFS= read -r -d '' package_file; do
 
 done < <(
     find "$package_path" -maxdepth 1 -type f \
-        \( -name '*.zip' -o -name '*.apk' \) \
+        \( -name '*.zip' -o -name '*.apk' -o -name '*.pkg.tar.zst' \) \
         -print0
 )
 
@@ -200,31 +263,57 @@ done
 # Find newest package matching game + channel
 # ============================================================
 
-platform="${CHANNEL%%_*}"
-arch="${CHANNEL#*_}"
+PACKAGE_NAME=""
 
-PACKAGE_NAME="$(
-    find "$package_path" \
-        -maxdepth 1 \
-        -type f \
-        \( \
-            -name "${GAME}_${platform}_${arch}_*.zip" \
-            -o \
-            -name "${GAME}_${platform}_${arch}_*.apk" \
-        \) \
-        -printf '%T@ %p\n' \
-        | sort -nr \
-        | head -n 1 \
-        | cut -d' ' -f2-
-)"
+while IFS= read -r -d '' package_file; do
+    filename="$(basename "$package_file")"
 
-if [ -z "${PACKAGE_NAME:-}" ]; then
+    name="$(get_package_name "$filename")"
+    IFS='_' read -r file_game platform arch _ <<< "$name"
+
+    if [[ "$file_game" != "$GAME" ]]; then
+        continue
+    fi
+
+    file_channel="$(get_package_channel "$filename")"
+
+    if [[ "$file_channel" != "$CHANNEL" ]]; then
+        continue
+    fi
+
+    if [[ -z "$PACKAGE_NAME" || "$package_file" -nt "$PACKAGE_NAME" ]]; then
+        PACKAGE_NAME="$package_file"
+    fi
+
+done < <(
+    find "$package_path" -maxdepth 1 -type f \
+        \( -name '*.zip' -o -name '*.apk' -o -name '*.pkg.tar.zst' \) \
+        -print0
+)
+
+if [[ -z "$PACKAGE_NAME" ]]; then
     error_exit "No package found for ${GAME}:${CHANNEL}"
 fi
+
+case "$PACKAGE_NAME" in
+    *.pkg.tar.zst)
+        PACKAGE_TYPE="Arch/Pacman"
+        ;;
+    *.apk)
+        PACKAGE_TYPE="Android"
+        ;;
+    *.zip)
+        PACKAGE_TYPE="Archive"
+        ;;
+    *)
+        PACKAGE_TYPE="Unknown"
+        ;;
+esac
 
 echo
 echo "🎮 Game:    ${GAME}"
 echo "📦 Channel: ${CHANNEL}"
+echo "📦 Type:    ${PACKAGE_TYPE}"
 echo "📁 Package: ${PACKAGE_NAME}"
 echo
 
