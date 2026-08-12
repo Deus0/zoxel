@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Example:
-# ./bsh/itch_latest.sh "zoxel" "linux_arm"
+# Example Call: ./bsh/itch.sh "zoxel" "linux_arm" "bin/zoxel_linux_arm_opengl_sdl_2026_06_01.zip"
 
-USERNAME="deus0"
-GAME="${1:-}"
-CHANNEL="${2:-}"
-
+USERNAME="deus0"    # Your itch.io username
+GAME="${1}"         # Your itch.io project
+CHANNEL="${2}"      # The itch io channel: zoxel-windows etc
+ZIP_NAME="${3}"     # The file to upload to itch io
 # === Settings ===
-package_path="zip"
 butler_path="${HOME}/.butler/bin"
 butler="${butler_path}/butler"
-PROFILE_SCRIPT="${HOME}/.bashrc"
+PROFILE_SCRIPT="${HOME}/.bashrc"  # or ~/.zshrc if you use zsh
+# update with url of butler
 butler_linux_x86="https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default"
 butler_linux_arm="https://broth.itch.zone/butler/linux-arm64/LATEST/archive/default"
 BUTLER_ZIP_URL="${butler_linux_arm}"
-
 # env key
 BUTLER_CONFIG_FILE="$HOME/.config/butler/env"
 mkdir -p "$(dirname "$BUTLER_CONFIG_FILE")"
@@ -43,7 +41,15 @@ else
     log "Butler installed successfully."
 fi
 
-if [ -z "${BUTLER_API_KEY-}" ]; then
+if [ -z "${butler}" ]; then
+    echo "❌ Butler is STILL not installed at [${butler}]"
+    exit 1
+fi
+
+# Setup API Key
+if [ -n "${BUTLER_API_KEY-}" ]; then
+    log "+ Found Butler API Key"
+else
     echo "Setting Butler API Key"
     echo "Paste API Key (https://itch.io/user/settings/api-key):"
     read -r INPUT_KEY
@@ -57,26 +63,18 @@ if [ -z "${BUTLER_API_KEY-}" ]; then
     fi
 fi
 
-if [ -z "${BUTLER_API_KEY-}" ]; then
-    error_exit "BUTLER_API_KEY not set."
-fi
+# === ENVIRONMENT CHECK ===
 
-if [ -z "$GAME" ] || [ -z "$CHANNEL" ]; then
-    echo "Usage: $0 <game> <channel>"
+if [ -z "${BUTLER_API_KEY-}" ]; then
+    echo "❌ BUTLER_API_KEY not set. Run: export BUTLER_API_KEY='your_api_key'"
     exit 1
 fi
 
-ZIP_NAME="$(
-    find $package_path -maxdepth 1 -type f -name '*.zip' -printf '%T@ %p\n' \
-    | sort -nr \
-    | head -n 1 \
-    | cut -d' ' -f2-
-)"
-
-if [ -z "${ZIP_NAME:-}" ]; then
-    error_exit "No zip files found in bin/"
+if [ -z "$ZIP_NAME" ]; then
+    echo "❌ No Zip [${ZIP_NAME}] Found"
+    exit
 fi
 
 echo "🚀 Uploading ${ZIP_NAME} to ${USERNAME}/${GAME}:${CHANNEL} ..."
-"${butler}" push "${ZIP_NAME}" "${USERNAME}/${GAME}:${CHANNEL}"
+${butler} push "${ZIP_NAME}" "${USERNAME}/${GAME}:${CHANNEL}"
 echo "✅ Upload complete."

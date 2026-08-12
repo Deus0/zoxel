@@ -34,8 +34,11 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${root}"
+apk_dir="${root}/zip"
+date_str=$(date +%Y_%m_%d)
 
 game_name="${1:-zoxel}"
+apk_path="${apk_dir}/${game_name}_android_arm_${date_str}.apk"
 
 is_run="0"
 sdl_mixer="1"
@@ -51,6 +54,8 @@ verbose="False"
 [[ " $* " == *" --log "* ]] && log="True"
 [[ " $* " == *" --verbose "* ]] && verbose="True"
 
+mkdir -p "${apk_dir}"
+
 # ============================================================
 # Android configuration
 # ============================================================
@@ -63,7 +68,7 @@ ndk_path="${and_path}/ndk"
 gradle_path="${and_path}/gradle"
 gradle_version="8.10.2"
 staging_path="${and_path}/${game_name}"
-apk_path="${root}/bin/${game_name}.apk"
+
 
 # ============================================================
 # JDK 17

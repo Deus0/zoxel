@@ -1,21 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Example Call: ./bsh/itch.sh "zoxel" "linux_arm" "bin/zoxel_linux_arm_opengl_sdl_2026_06_01.zip"
+USERNAME="deus0"
 
-USERNAME="deus0"    # Your itch.io username
-GAME="${1}"         # Your itch.io project
-CHANNEL="${2}"      # The itch io channel: zoxel-windows etc
-ZIP_NAME="${3}"     # The file to upload to itch io
 # === Settings ===
+package_path="zip"
 butler_path="${HOME}/.butler/bin"
 butler="${butler_path}/butler"
-PROFILE_SCRIPT="${HOME}/.bashrc"  # or ~/.zshrc if you use zsh
-# update with url of butler
 butler_linux_x86="https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default"
 butler_linux_arm="https://broth.itch.zone/butler/linux-arm64/LATEST/archive/default"
-BUTLER_ZIP_URL="${butler_linux_arm}"
-# env key
+
+# Butler binary must match the machine running this script
+case "$(uname -m)" in
+    x86_64)
+        BUTLER_ZIP_URL="$butler_linux_x86"
+        ;;
+    aarch64|arm64)
+        BUTLER_ZIP_URL="$butler_linux_arm"
+        ;;
+    *)
+        echo "❌ [ERROR] Unsupported architecture: $(uname -m)" >&2
+        exit 1
+        ;;
+esac
+
+# === Butler API key ===
 BUTLER_CONFIG_FILE="$HOME/.config/butler/env"
 mkdir -p "$(dirname "$BUTLER_CONFIG_FILE")"
 
@@ -23,58 +32,204 @@ if [ -f "$BUTLER_CONFIG_FILE" ]; then
     source "$BUTLER_CONFIG_FILE"
 fi
 
-log() { echo "🔍 [DEBUG] $*"; }
-error_exit() { echo "❌ [ERROR] $*" >&2; exit 1; }
+log() {
+    echo "🔍 [DEBUG] $*"
+}
 
-if [ -f "${butler}" ]; then
-    log "+ Found Butler Binary"
+error_exit() {
+    echo "❌ [ERROR] $*" >&2
+    exit 1
+}
+
+# === Check package directory ===
+if [ ! -d "$package_path" ]; then
+    error_exit "Package directory not found: $package_path"
+fi
+
+# === Find/install Butler ===
+if [ -f "$butler" ]; then
+    log "Found Butler Binary"
 else
     TMP_DIR=$(mktemp -d)
-    log "Downloading and installing butler"
+
+    log "Downloading and installing Butler"
+
     curl -sSLf "$BUTLER_ZIP_URL" -o "$TMP_DIR/butler.zip" \
         && unzip -q "$TMP_DIR/butler.zip" -d "$TMP_DIR" \
         && mkdir -p "$butler_path" \
-        && mv "$TMP_DIR/butler" "${butler}" \
-        && chmod +x "${butler}" \
-        || { rm -rf "$TMP_DIR"; error_exit "Butler install failed"; }
+        && mv "$TMP_DIR/butler" "$butler" \
+        && chmod +x "$butler" \
+        || {
+            rm -rf "$TMP_DIR"
+            error_exit "Butler install failed"
+        }
+
     rm -rf "$TMP_DIR"
     log "Butler installed successfully."
 fi
 
-if [ -z "${butler}" ]; then
-    echo "❌ Butler is STILL not installed at [${butler}]"
-    exit 1
-fi
-
-# Setup API Key
-if [ -n "${BUTLER_API_KEY-}" ]; then
-    log "+ Found Butler API Key"
-else
+# === Butler API key ===
+if [ -z "${BUTLER_API_KEY-}" ]; then
     echo "Setting Butler API Key"
     echo "Paste API Key (https://itch.io/user/settings/api-key):"
     read -r INPUT_KEY
+
     INPUT_KEY="${INPUT_KEY//[[:space:]]/}"
+
     if [ -n "$INPUT_KEY" ]; then
         log "Saving Butler API key to config"
+
         echo "export BUTLER_API_KEY=\"$INPUT_KEY\"" > "$BUTLER_CONFIG_FILE"
+
         export BUTLER_API_KEY="$INPUT_KEY"
     else
         error_exit "No API key entered. Exiting."
     fi
 fi
 
-# === ENVIRONMENT CHECK ===
-
 if [ -z "${BUTLER_API_KEY-}" ]; then
-    echo "❌ BUTLER_API_KEY not set. Run: export BUTLER_API_KEY='your_api_key'"
-    exit 1
+    error_exit "BUTLER_API_KEY not set."
 fi
 
-if [ -z "$ZIP_NAME" ]; then
-    echo "❌ No Zip [${ZIP_NAME}] Found"
-    exit
+# ============================================================
+# Scan packages
+#
+# Expected:
+#
+# <game>_<platform>_<arch>_others.zip
+# <game>_<platform>_<arch>_others.apk
+#
+# Channel:
+#
+# <platform>_<arch>
+#
+# Example:
+#
+# zoxel_linux_x64_opengl_sdl_2026_08_12.zip
+#       ^      ^
+#       |      |
+#    platform arch
+#
+# Channel = linux_x64
+# ============================================================
+
+games=()
+channels=()
+
+while IFS= read -r -d '' package_file; do
+    filename="$(basename "$package_file")"
+    name="${filename%.*}"
+
+    IFS='_' read -r game platform arch _ <<< "$name"
+
+    if [ -z "${game:-}" ] || [ -z "${platform:-}" ] || [ -z "${arch:-}" ]; then
+        continue
+    fi
+
+    # Add game if not already present
+    if [[ ! " ${games[*]} " =~ " ${game} " ]]; then
+        games+=("$game")
+    fi
+
+done < <(
+    find "$package_path" -maxdepth 1 -type f \
+        \( -name '*.zip' -o -name '*.apk' \) \
+        -print0
+)
+
+if [ "${#games[@]}" -eq 0 ]; then
+    error_exit "No valid packages found in $package_path"
 fi
 
-echo "🚀 Uploading ${ZIP_NAME} to ${USERNAME}/${GAME}:${CHANNEL} ..."
-${butler} push "${ZIP_NAME}" "${USERNAME}/${GAME}:${CHANNEL}"
+# === Pick game ===
+echo
+echo "🎮 Select game:"
+echo
+
+select GAME in "${games[@]}"; do
+    if [ -n "${GAME:-}" ]; then
+        break
+    fi
+
+    echo "❌ Invalid selection."
+done
+
+# === Find channels for selected game ===
+channels=()
+
+while IFS= read -r -d '' package_file; do
+    filename="$(basename "$package_file")"
+    name="${filename%.*}"
+
+    IFS='_' read -r game platform arch _ <<< "$name"
+
+    if [ "$game" != "$GAME" ]; then
+        continue
+    fi
+
+    channel="${platform}_${arch}"
+
+    if [[ ! " ${channels[*]} " =~ " ${channel} " ]]; then
+        channels+=("$channel")
+    fi
+
+done < <(
+    find "$package_path" -maxdepth 1 -type f \
+        \( -name '*.zip' -o -name '*.apk' \) \
+        -print0
+)
+
+if [ "${#channels[@]}" -eq 0 ]; then
+    error_exit "No channels found for game: $GAME"
+fi
+
+# === Pick channel ===
+echo
+echo "📦 Select channel for $GAME:"
+echo
+
+select CHANNEL in "${channels[@]}"; do
+    if [ -n "${CHANNEL:-}" ]; then
+        break
+    fi
+
+    echo "❌ Invalid selection."
+done
+
+# ============================================================
+# Find newest package matching game + channel
+# ============================================================
+
+platform="${CHANNEL%%_*}"
+arch="${CHANNEL#*_}"
+
+PACKAGE_NAME="$(
+    find "$package_path" \
+        -maxdepth 1 \
+        -type f \
+        \( \
+            -name "${GAME}_${platform}_${arch}_*.zip" \
+            -o \
+            -name "${GAME}_${platform}_${arch}_*.apk" \
+        \) \
+        -printf '%T@ %p\n' \
+        | sort -nr \
+        | head -n 1 \
+        | cut -d' ' -f2-
+)"
+
+if [ -z "${PACKAGE_NAME:-}" ]; then
+    error_exit "No package found for ${GAME}:${CHANNEL}"
+fi
+
+echo
+echo "🎮 Game:    ${GAME}"
+echo "📦 Channel: ${CHANNEL}"
+echo "📁 Package: ${PACKAGE_NAME}"
+echo
+
+echo "🚀 Uploading ${PACKAGE_NAME} to ${USERNAME}/${GAME}:${CHANNEL} ..."
+
+"${butler}" push "${PACKAGE_NAME}" "${USERNAME}/${GAME}:${CHANNEL}"
+
 echo "✅ Upload complete."
