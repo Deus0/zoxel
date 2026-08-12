@@ -15,44 +15,67 @@ void define_systems_input(ecs* world) {
     zox_system(
         ZevicePointerResetSystem,
         zoxp_inputs_reset,
-        [out] ZevicePointer,
-        [out] ZevicePointerOld
+        [out] inputs.ZevicePointer,
+        [out] inputs.ZevicePointerOld,
+        [none] !inputs.Finger
     );
     zox_system(
         ZeviceButtonResetSystem,
         zoxp_inputs_reset,
-        [out] ZeviceButton
+        [out] inputs.ZeviceButton,
+        [none] !inputs.Finger
     );
     zox_system(
+        ZeviceButtonEnableSystem,
+        zoxp_inputs_enable,
+        [in] inputs.ZeviceButton,
+        [out] inputs.ZeviceDisabled,
+        [none] !inputs.Finger
+    );
+    zox_system(
+        ZeviceStickEnableSystem,
+        zoxp_inputs_enable,
+        [in] inputs.ZeviceStick,
+        [out] inputs.ZeviceDisabled,
+        [none] !inputs.Finger
+    );
+    zox_system(
+        ZevicePointerEnableSystem,
+        zoxp_inputs_enable,
+        [in] inputs.ZevicePointer,
+        [out] inputs.ZeviceDisabled,
+        [none] !inputs.Finger
+    );
+    /*zox_system(
         ZeviceFingerResetSystem,
         zoxp_inputs_reset,
         [in] ZevicePointerOld,
         [out] ZevicePointerPosition,
         [out] ZevicePointerDelta,
         [none] Finger
-    );
+    );*/
     zox_system(
         ZevicePointerRightResetSystem,
         zoxp_inputs_reset,
-        [out] ZevicePointerRight
+        [out] inputs.ZevicePointerRight
     );
     zox_system(
         ZevicePointerDeltaResetSystem,
         zoxp_inputs_reset,
-        [out] ZevicePointerDelta
+        [out] inputs.ZevicePointerDelta
     );
     zox_system(
         KeyboardResetSystem,
         zoxp_inputs_reset,
-        [out] Keyboard
+        [out] inputs.Keyboard
     );
     // state changes
     zox_system(
         DeviceSwitchSystem,
         zoxp_inputs_update,
-        [out] DeviceModeDirty,
-        [out] DeviceMode,
-        [out] LastDeviceMode
+        [out] inputs.DeviceModeDirty,
+        [out] inputs.DeviceMode,
+        [out] inputs.LastDeviceMode
     );
     /*zox_system(
         DeviceModeDirtySystem,
@@ -61,22 +84,4 @@ void define_systems_input(ecs* world) {
         [out] DeviceMode,
         [out] LastDeviceMode
     );*/
-    zox_system(
-        ZeviceButtonEnableSystem,
-        zoxp_inputs_enable,
-        [in] ZeviceButton,
-        [out] ZeviceDisabled
-    );
-    zox_system(
-        ZeviceStickEnableSystem,
-        zoxp_inputs_enable,
-        [in] ZeviceStick,
-        [out] ZeviceDisabled
-    );
-    zox_system(
-        ZevicePointerEnableSystem,
-        zoxp_inputs_enable,
-        [in] ZevicePointer,
-        [out] ZeviceDisabled
-    );
 }

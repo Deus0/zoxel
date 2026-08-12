@@ -1,18 +1,17 @@
 #define music_file_path "music"character_slash"music.zox"
 
-entity spawn_prefab_music_file(ecs *world, entity p) {
-    zox_prefab_child(p);
+entity spawn_prefab_music_file(ecs *world, entity prefab) {
+    zox_prefab_child(prefab);
     zox_prefab_name("music_file");
     return e;
 }
 
 // TODO: Load Files for all Music
-entity load_music_file(ecs *world, entity prefab, entity prefab_note,    char* filepath) {
+entity load_music_file(ecs *world, entity prefab, entity prefab_note, char* filepath) {
     char* music_filepath = concat_file_path(resources_path, filepath);
     zox_logv("Loading Music: %s", music_filepath);
     MidiNote loaded_notes[MAX_NOTES];
     int loaded_note_count = load_notes_from_file(loaded_notes, music_filepath);
-
     /*zox_logv("Loaded %s :: %i:", music_filepath, loaded_note_count);
     zox_logv(" - Notes %s:", music_filepath);
     zox_logv(" - Length: %f", music_length);*/
@@ -40,15 +39,12 @@ entity load_music_file(ecs *world, entity prefab, entity prefab_note,    char* f
         music_length += note.length;
         // zox_log("   - %i - Frequency: %.2f : %.2f Hz, Start time: %.2f, Length: %.2f\n", i + 1, note.frequency, test_frequency, note.time, note.length)
     }
-
     entity e = spawn_music(world, prefab, music_speed);
     zox_set(e, MusicLength, { music_length });
-
     NoteLinks notes = (NoteLinks) { 0 };
     // zox_muter(e, NoteLinks, noteLinks);
     initialize_NoteLinks(&notes, loaded_note_count);
-
-    const byte instrument = music_load_instrument;
+    byte instrument = music_load_instrument;
     for (int i = 0; i < loaded_note_count; i++) {
         MidiNote note = loaded_notes[i];
         // trouble shoot
@@ -62,6 +58,5 @@ entity load_music_file(ecs *world, entity prefab, entity prefab_note,    char* f
         // zox_log("   - %i - Frequency: %.2f : %.2f Hz, Start time: %.2f, Length: %.2f\n", i + 1, note.frequency, test_frequency, note.time, note.length)
     }
     zox_set_ptr(e, NoteLinks, notes);
-
     return e;
 }

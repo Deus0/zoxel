@@ -42,10 +42,13 @@ int spawn_players(ecs *world, entity game, byte zox_game_type) {
 
 void spawn_connected_devices(ecs *world, entity e) {
     local_keyboard = spawn_keyboard(world, prefab_keyboard);
+    zox_set_parent(world, local_keyboard, e);
     local_mouse = spawn_mouse(world);
-    local_touchscreen = spawn_touchscreen(world, prefab_touchscreen);
     zox_set(local_mouse, AppLink, { e });
+    zox_set_parent(world, local_mouse, e);
+    local_touchscreen = spawn_touchscreen(world, prefab_touchscreen);
     zox_set(local_touchscreen, AppLink, { e });
+    zox_set_parent(world, local_touchscreen, e);
 }
 
 void on_boot_players(ecs *world, entity app) {

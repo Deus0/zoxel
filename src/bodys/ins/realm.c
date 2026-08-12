@@ -71,6 +71,9 @@ entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mde
     // NOTE: Uses first model and highest depth one
     entity model = models.value[0];
     entity texture = spawn_texture_from_vox(world, max_depth_vox, tsize);
+    zox_set_parent(world, texture, parent);
+    // NOTE: This has GenerateModel on it atm
+    // zox_setv(max_depth_vox, GenerateModel, 0);
     // # # # Spawn Item from model and texture # # #
     entity e2 = spawn_item_body(world, model, texture, name);
     zox_set_parent(world, e2, parent);

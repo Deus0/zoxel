@@ -17,7 +17,7 @@ zoxc_arrayd(ColorRGBs, color_rgb)
 
 void spawn_prefabs_colors(ecs* world) {
     if (prefab_realm) {
-        zox_prefab_add(prefab_realm, Colors)
+        zox_prefab_add(prefab_realm, Colors);
     }
 }
 

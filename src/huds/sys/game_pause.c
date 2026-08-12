@@ -24,7 +24,11 @@ zox_sys2(PlayerPauseUISystem) {
             continue;
         }
         if (!zox_valid(canvas->value)) {
-            zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
+            zox_loge("Canvas is missing for Player [%s]", zox_getn(e));
+            continue;
+        }
+        if (!zox_valid(camera->value)) {
+            zox_loge("Camera is missing for Player [%s]", zox_getn(e));
             continue;
         }
         if (state->value == zox_player_state_pause_begin) {

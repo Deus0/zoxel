@@ -49,7 +49,7 @@ void define_systems_terrain_collisions(ecs* world) {
             [out] physics3.Velocity3D,
             [out] physics3.LastPosition3D,
             [out] collisions3.Collision,
-            [out] collisions3.Grounded
+            [out] physics.Grounded
         );
         #ifdef zox_dbg_lines_unstuck
         zox_system_1(
@@ -73,7 +73,7 @@ void define_systems_terrain_collisions(ecs* world) {
             [in] transforms3.Bounds3D,
             [out] transforms3.Position3D,
             [out] physics3.Velocity3D,
-            [out] collisions3.Grounded,
+            [out] physics.Grounded,
             [none] !physics.NoClip
         );
         zox_system_1(

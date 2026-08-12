@@ -197,13 +197,14 @@ zox_sys2(VoxTextureSystem) {
         }
         // byte is_center = zox_has(e, CenterVoxTexture);
         zox_geter(vox->value, VoxelNode, voctree);
-        if (!voctree->value) {
+        // TODO: Find out why Body Parts didn't get Optimized (they stayed air at this level)
+        /*if (!voctree->value) {
             // TODO: Find out why Models here are Air for a frame
             if (dbg_log) {
-                zox_logw("Texture [%s] Model [%s] is Air", zox_get_name(e), zox_get_name(vox->value));
+                zox_logw("Texture [%s] Model [%s] is Air", zox_getn(e), zox_get_name(vox->value));
             }
             continue;
-        }
+        }*/
         zox_geter(vox->value, ColorRGBs, colors);
         int3 vox_size = zox_getv(vox->value, ChunkSize);
         // max depth tho

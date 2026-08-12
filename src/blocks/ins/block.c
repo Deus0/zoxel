@@ -27,6 +27,7 @@ entity spawn_block(ecs *world, SpawnBlock data) {
                 e2 = spawn_texture_dirt(world, prefab_texture_noise, data.seed + i, data.color);
                 zox_set_unique_name(e2, "block_dirt_texture");
             }
+            zox_set_parent(world, e2, e);
             zox_set(e2, BlockLink, { e });
             if (data.texture_tag) {
                 zox_add_tag_id(e2, data.texture_tag);

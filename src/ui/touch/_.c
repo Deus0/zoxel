@@ -9,10 +9,10 @@ zox_tag(JoystickUI);
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Touch)
+zox_begin_module(Touch) {
     zoxd_tag(JoystickUI);
     define_systems_touch(world);
     add_hook_spawn_prefabs(spawn_prefabs_touch);
-zox_end_module(Touch)
+} zox_end_module(Touch);
 
 #endif

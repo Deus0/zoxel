@@ -29,19 +29,10 @@ void zox_define_systems_interaction(ecs* world) {
         ElementRaycastSystem,
         zoxp_update,
         raycast_query,
-        [in] raycasts.Raycaster,
-        [in] inputs.DeviceLink,
+        [in] inputs.ZeviceDisabled,
+        [in] inputs.ZevicePointerPosition,
         [out] raycasts.RaycasterTarget,
     );
-    // NOTE: Has to be after raycasting system
-    /*zox_system(
-        DeviceClickSystem,
-        zoxp_update,
-        [in] inputs.DeviceDisabled,
-        [in] raycasts.RaycasterTarget,
-        [out] interaction.ClickingEntity,
-        [none] inputs.Device
-    );*/
     zox_system(
         ZeviceClickSystem,
         zoxp_update,
@@ -149,3 +140,14 @@ void zox_define_systems_interaction(ecs* world) {
         [none] elements.Element
     );
 }
+
+
+    // NOTE: Has to be after raycasting system
+    /*zox_system(
+        DeviceClickSystem,
+        zoxp_update,
+        [in] inputs.DeviceDisabled,
+        [in] raycasts.RaycasterTarget,
+        [out] interaction.ClickingEntity,
+        [none] inputs.Device
+    );*/

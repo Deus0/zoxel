@@ -2,6 +2,7 @@
 // TODO: Make use hotkeys instead, link hotkeys to actions
 // TODO: Refactor the DisableMovement checks for a and b
 
+// TODO: Refactor this into Zevice, Input State -> Action
 // NOTE: Player Input -> Character Triggers
 zox_sys2(Player3DTriggerSystem) {
     if (zox_dbg_touch_with_mouse) {
@@ -15,16 +16,15 @@ zox_sys2(Player3DTriggerSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(CharacterLink, character_link);
+        zox_sys_i(CharacterLink, character);
         zox_sys_i(CameraLink, camera);
         if (state->value != zox_player_state_playing) {
             continue;
         }
-        entity character = character_link->value;
-        if (!zox_valid(character) || !zox_has(character, Character3) || !zox_valid(camera->value)) {
+        if (!zox_valid(character->value) || !zox_has(character->value, Character3) || !zox_valid(camera->value)) {
             continue;
         }
-        if (zox_has(character, DisableMovement)) {
+        if (zox_has(character->value, DisableMovement)) {
             continue;
         }
         byte camera_state = zox_getv(camera->value, CameraState);
@@ -38,7 +38,7 @@ zox_sys2(Player3DTriggerSystem) {
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2) || !zox_has(e2, DeviceDisabled) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_valid(e2) || !zox_has(e2, DeviceDisabled) || zox_getv(e2, DeviceDisabled)) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;
@@ -49,8 +49,10 @@ zox_sys2(Player3DTriggerSystem) {
                 if (!zox_valid(e3)) {
                     continue;
                 }
-                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
-                if (disabled) {
+                if (zox_has(e3, Finger)) {
+                    continue;
+                }
+                if (zox_getv(e3, ZeviceDisabled)) {
                     continue;
                 }
                 if (zox_has(e3, ZevicePointer)) {
@@ -83,15 +85,15 @@ zox_sys2(Player3DTriggerSystem) {
                 }
             }
         }
-        if (is_triggered_e && !zox_getv(character, TriggerActionE)) {
-            zox_set(character, TriggerActionE, { zox_dirty_trigger });
+        if (is_triggered_e && !zox_getv(character->value, TriggerActionE)) {
+            zox_setv(character->value, TriggerActionE, 1);
         }
         // used to be here, whats trigger e? idk
-        if (is_triggered_a && !zox_gett_value(character, TriggerActionA)) {
-            zox_set(character, TriggerActionA, { zox_dirty_trigger });
+        if (is_triggered_a && !zox_getv(character->value, TriggerActionA)) {
+            zox_setv(character->value, TriggerActionA, 1);
         }
-        if (is_triggered_b && !zox_gett_value(character, TriggerActionB)) {
-            zox_set(character, TriggerActionB, { zox_dirty_trigger });
+        if (is_triggered_b && !zox_getv(character->value, TriggerActionB)) {
+            zox_setv(character->value, TriggerActionB, 1);
         }
     }
 } zox_sys_end(Player3DTriggerSystem);

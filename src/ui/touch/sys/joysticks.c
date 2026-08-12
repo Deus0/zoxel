@@ -1,25 +1,4 @@
 void handle_touch_down(ecs* world, entity finger, entity virtual_joystick, entity canvas) {
-    if (!zox_valid(finger) || !zox_has(finger, ZevicePointer) || !zox_has(finger, ZevicePointerPosition)) {
-        return;
-    }
-    byte button_type = zox_device_stick_left;
-    byte finger_state = zox_getv(finger, ZevicePointer);
-    int2 position = zox_getv(finger, ZevicePointerPosition);
-    // zox_log("Finger [%s]", zox_get_name(finger));
-    if (!devices_get_pressed_this_frame(finger_state)) {
-        return;
-    }
-    /*entity device = zox_getv(finger, DeviceLink);
-    if (!zox_valid(device)) { // || !zox_has(touchscreen, ScreenDimensions)) {
-        zox_loge("Touchscreen invalid in [handle_touch_down]");
-        return;
-    }*/
-    int2 size = zox_getv(canvas, LayoutSize);
-    if (position.x >= size.x / 2) {
-        button_type = zox_device_stick_right;
-    }
-    // zox_log("Spawning Virtual Joystick [%i]", button_type);
-    spawn_virtual_joystick(world, canvas, position, finger, virtual_joystick, button_type);
 }
 
 // When finger is held down against the screen
@@ -100,20 +79,25 @@ void handle_touch_release(ecs* world, entity finger, entity zevice) {
     stick->value = float2_zero;
 }
 
-// NOTE: This runs from a Zevice
+// NOTE: This runs from a Zevice, Creates our Virtual Joysticks
 zox_sys2(VirtualJoystickSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLink);
-    zox_sys_in(RaycasterResult);
+    zox_sys_in(RaycasterTarget);
+    zox_sys_in(ZevicePointerPosition);
     zox_sys_in(ZevicePointer);
     zox_sys_in(VirtualZeviceLink);
+    zox_sys_out(ElementLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(RaycasterResult, result);
         zox_sys_i(DeviceLink, device);
-        zox_sys_i(ZevicePointer, pointer);
-        zox_sys_i(VirtualZeviceLink, vzevice);
+        zox_sys_i(RaycasterTarget, target);
+        zox_sys_i(ZevicePointerPosition, position);
+        zox_sys_i(ZevicePointer, clicked);
+        zox_sys_i(VirtualZeviceLink, joystick);
+        zox_sys_o(ElementLink, joystick_ui);
+        // TODO: Just add finger to system filter, and add to mouse component when testing
         if (!zox_dbg_touch_with_mouse && !zox_has(e, Finger)) {
             continue;
         }
@@ -124,23 +108,36 @@ zox_sys2(VirtualJoystickSystem) {
         if (!zox_valid(player)) {
             continue;
         }
-        byte player_state = zox_getv(player, PlayerState);
         // entity game = zox_getv(player, GameLink);
         entity canvas = zox_getv(player, CanvasLink);
         if (!zox_valid(canvas)) {
-            return;
-        }
-        byte click_value = pointer->value;
-        // NOTE: Case for if we Clicked the UI element
-        if (devices_get_pressed_this_frame(click_value) && result->value) {
             continue;
         }
-        // byte game_state = zox_getv(game, GameState);
-        // if (game_state == zox_game_state_playing) {
-        if (player_state == zox_player_state_playing) {
-            handle_touch_down(world, e, vzevice->value, canvas);
+        if (zox_valid(joystick_ui->value)) {
+            handle_touch_drag(world, e, joystick->value);
+            handle_touch_release(world, e, joystick->value);
+            continue;
         }
-        handle_touch_drag(world, e, vzevice->value);
-        handle_touch_release(world, e, vzevice->value);
+        // NOTE: On first click, spawn virtual joystick
+        byte player_state = zox_getv(player, PlayerState);
+        if (player_state == zox_player_state_playing &&
+            // NOTE: We need last frame as it takes a frame to use raycasting
+            devices_get_pressed_last_frame(clicked->value)
+        ) {
+            // NOTE: Check if we Clicked the UI element
+            if (zox_valid(target->value)) {
+                continue;
+            }
+            byte button_type;
+            int2 size = zox_getv(canvas, LayoutSize);
+            if (position->value.x >= size.x / 2) {
+                button_type = zox_device_stick_right;
+            } else {
+                button_type = zox_device_stick_left;
+            }
+            joystick_ui->value = spawn_virtual_joystick(world, canvas, position->value, e, joystick->value, button_type);
+            zox_setv(e, DeviceButtonType, button_type);
+            // zox_log("Spawning Virtual Joystick [%i]", button_type);
+        }
     }
 } zox_sys_end(VirtualJoystickSystem);

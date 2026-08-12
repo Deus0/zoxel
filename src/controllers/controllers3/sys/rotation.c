@@ -58,14 +58,17 @@ zox_sys2(Player3RotateSystem) {
             uint children_length = zox_get_children(world, e2, children, children_capacity);
             for (uint k = 0; k < children_length; k++) {
                 entity e3 = children[k];
-                if (!zox_valid(e3)) {
+                // NOTE: Disabled for Fingers now
+                if (!zox_valid(e3) && !zox_has(e3, Finger)) {
                     continue;
                 }
-                byte zdisabled = zox_getv(e3, ZeviceDisabled);
-                if (zdisabled) {
+                if (zox_getv(e3, ZeviceDisabled)) {
                     continue;
                 }
-                if (zox_has(e3, ZevicePointerDelta) && !zox_dbg_touch_with_mouse) {
+                // For mouse pointer only, we rotate
+                if (zox_has(e3, ZevicePointerDelta) &&
+                    !zox_dbg_touch_with_mouse &&
+                    zox_has(e3, MousePointer)) {
                     float2 delta = int2_to_float2(zox_getv(e3, ZevicePointerDelta));
                     euler.x = delta.y * mouse_rotate_multiplier;
                     euler.y = -delta.x * mouse_rotate_multiplier;

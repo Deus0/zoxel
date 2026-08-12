@@ -16,13 +16,6 @@ void define_systems_collisions3(ecs *world) {
         [in] collisions3.Collision,
         [in] transforms3.Bounds3D,
     );
-    zox_system(
-        Friction3DSystem,
-        zoxp_physics,
-        [in] collisions3.Grounded,
-        [out] physics3.Velocity3D,
-        [none] physics.Frictioned
-    );
     // TODO: split up between response and detect
     zox_filter(
         sphere_colliders,

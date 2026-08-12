@@ -85,9 +85,9 @@ void initialize_zoxel_settings(ecs* world) {
     disable_npc_positioner = 0;
     // Physics
     {
-        friction3D = 9; // 560;
-        air_friction3D = 1; // 40;
-        zox_jump_power = 4;
+        // friction3D = 9; // 560;
+        //air_friction3D = 1; // 40;
+        // zox_jump_power = 4;
         run_accceleration = 2.2;
         backwards_multiplier = 0.7f;
         player_movement_power = (float2) { 14, 14 };

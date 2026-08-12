@@ -244,7 +244,15 @@ zox_sys2(TerrainIntersectSystem) {
                 }
             }
         }
-        grounded->value = hit_ground;
+        if (!hit_ground) {
+            if (grounded->value == ground_state_grounded) {
+                grounded->value = ground_state_leaving;
+            } else if (grounded->value == ground_state_leaving) {
+                grounded->value = ground_state_air;
+            }
+        } else {
+            grounded->value = ground_state_grounded;
+        }
         if (hit_axis_x) {
             velocity->value.x *= -bounce_lost_force.x;
         }

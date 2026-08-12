@@ -23,12 +23,11 @@ zox_sys2(Player3DJumpSystem) {
         if (zox_has(character, DisableMovement)) {
             continue;
         }
-        zox_geter_value(character, JumpState, byte, jump_state);
-        if (jump_state != zox_dirty_none) {
+        /*byte jump_state = zox_getv(character, JumpState);
+        if (jump_state) {
             continue;
-        }
-        zox_geter_value(character, CanJump, byte, can_jump);
-        if (!can_jump) { // || can_jump >= jump_cooldown_state) {
+        }*/
+        if (!zox_getv(character, CanJump)) { // || can_jump >= jump_cooldown_state) {
             continue;
         }
         byte is_jump_triggered = 0;
@@ -73,11 +72,10 @@ zox_sys2(Player3DJumpSystem) {
         if (!is_jump_triggered) {
             continue;
         }
-        if (!zox_gett_value(character, Jump)) {
-            zox_set(character, JumpState, { zox_dirty_trigger });
+        // if (!zox_getv(character, Jump)) {
+        zox_setv(character, JumpState, jump_state_trigger);
 #ifdef zox_log_jumping
-            zox_log("+ %s jumping (%f)", zox_get_name(character), zox_current_time);
+        zox_log("Triggered %s jumping", zox_getn(character));
 #endif
-        }
     }
 } zox_sys_end(Player3DJumpSystem);

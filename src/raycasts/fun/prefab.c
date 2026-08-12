@@ -13,7 +13,8 @@ void prefab_add_raycasts3D(ecs *world, const entity e) {
 
 void prefab_set_game_prefabs(ecs *world) {
     prefab_add_raycasts3D(world, prefab_camera_game);
-    prefab_add_element_raycaster(world, prefab_device);
+    // prefab_add_element_raycaster(world, prefab_device);
     prefab_add_element_raycaster(world, prefab_zevice_pointer);
-    prefab_add_element_raycaster(world, prefab_player);
+    // prefab_add_element_raycaster(world, prefab_finger);
+    // prefab_add_element_raycaster(world, prefab_player);
 }

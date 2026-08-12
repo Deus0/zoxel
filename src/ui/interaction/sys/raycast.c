@@ -1,52 +1,70 @@
 // For Elements of Square Shape - LayoutSize
+// NOTE: Casts this from the Zevice (input device child)
 zox_sys2(ElementRaycastSystem) {
     byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Raycaster);
-    zox_sys_in(DeviceLink);
+    zox_sys_in(ZeviceDisabled);
+    zox_sys_in(ZevicePointerPosition);
     zox_sys_out(RaycasterTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceLink, device);
-        zox_sys_i(Raycaster, raycaster);
+        zox_sys_i(ZeviceDisabled, disabled);
+        zox_sys_i(ZevicePointerPosition, ray_position);
         zox_sys_o(RaycasterTarget, target);
-        if (!device->value) {
+        if (disabled->value) {
+            raycaster_select_element(world, e, 0);
+            if (dbg_log >= 3) {
+                zox_log("(ElementRaycastSystem) Zevice Disabled [%s]", zox_getn(e));
+            }
             continue;
         }
-        if (zox_gett_value(device->value, DeviceDisabled)) {
+        entity device = zox_get_parent(world, e);
+        if (!zox_valid(device)) {
+            zox_loge("No Device owning Zevice [%s]", zox_getn(e));
             continue;
         }
-        entity player = zox_get_parent(world, device->value);
+        if (zox_getv(device, DeviceDisabled)) {
+            raycaster_select_element(world, e, 0);
+            if (dbg_log >= 3) {
+                zox_log("(ElementRaycastSystem) Zevice Disabled [%s]", zox_getn(e));
+            }
+            continue;
+        }
+        entity player = zox_get_parent(world, device);
         if (!player) {
+            zox_loge("No Player owning Device that was not disabled [%s]", zox_getn(device));
             continue;
         }
-        zox_geter_value(player, DeviceMode, byte, dmode);
-        byte dmode_raycaster = dmode == zox_device_mode_touchscreen || (!keyboard_navigation_mode && dmode == zox_device_mode_keyboardmouse);
-        if (!dmode_raycaster) {
+        byte dmode = zox_getv(player, DeviceMode);
+        byte raycaster_mode = dmode == zox_device_mode_touchscreen || (!keyboard_navigation_mode && dmode == zox_device_mode_keyboardmouse);
+        if (!raycaster_mode) {
             continue;
         }
-        zox_geter_value(player, CanvasLink, entity, pcanvas);
-        if (!zox_valid(pcanvas)) {
+        entity player_canvas = zox_getv(player, CanvasLink);
+        if (!zox_valid(player_canvas)) {
             continue;
         }
-        zox_geter_value(pcanvas, CameraLink, entity, camera);
+        entity camera = zox_getv(player_canvas, CameraLink);
         if (!zox_valid(camera)) {
             continue;
         }
-        float2 canvas_sizef = int2_to_float2(zox_getv(pcanvas, LayoutSize));
+        float2 canvas_sizef = int2_to_float2(zox_getv(player_canvas, LayoutSize));
         float aspect_ratio = canvas_sizef.x / canvas_sizef.y;
         // NOTE: Now it only works for one canvas hmmm
         int2 canvas_position = zox_getv(camera, ScreenPosition);
         int2 canvas_size = zox_getv(camera, ScreenDimensions);
-        int2 position = raycaster->value;
+        int2 position = ray_position->value;
         byte ray_in_viewport =
             position.x >= canvas_position.x &&
             position.x <= canvas_position.x + canvas_size.x &&
             position.y >= canvas_position.y &&
             position.y <= canvas_position.y + canvas_size.y;
         if (!ray_in_viewport) {
+            if (dbg_log >= 2) {
+                zox_log("(ElementRaycastSystem) Ray not in viewport [%s] at [%ix%i]", zox_getn(e), position.x, position.y);
+            }
             continue;
         }
         int ui_layer = -1;
@@ -59,16 +77,16 @@ zox_sys2(ElementRaycastSystem) {
             zox_sys_in_2(Layer2D);
             zox_sys_in_2(RenderDisabled);
             for (int j = 0; j < it2.count; j++) {
-                zox_sys_i_2(RenderDisabled, rdisabled);
+                zox_sys_i_2(RenderDisabled, disabled);
                 zox_sys_i_2(Position2, position2);
                 zox_sys_i_2(LayoutSize, lsize2);
-                zox_sys_i_2(Layer2D, layer2D);
-                if (rdisabled->value) {
+                zox_sys_i_2(Layer2D, layer);
+                if (disabled->value) {
                     continue;
                 }
                 entity e2 = it2.entities[j];
                 entity rcanvas = zox_get_parent_by_id(world, e2, zox_id(Canvas));
-                if (pcanvas != rcanvas) {
+                if (player_canvas != rcanvas) {
                     continue;
                 }
                 int2 lsize = lsize2->value;
@@ -103,16 +121,16 @@ zox_sys2(ElementRaycastSystem) {
                     position.y >= ui_bounds.z &&
                     position.y <= ui_bounds.w;
                 if (was_raycasted) {
-                    if (layer2D->value > ui_layer) {
-                        ui_layer = layer2D->value;
+                    if (layer->value > ui_layer) {
+                        ui_layer = layer->value;
                         ui_selected = e2;
                         if (dbg_log) {
                             zox_log("[%s] was raycasted at [%x%ix%ix%i]",
-                                    zox_getn(e2),
-                                    ui_bounds.x,
-                                    ui_bounds.y,
-                                    ui_bounds.z,
-                                    ui_bounds.w);
+                                zox_getn(e2),
+                                ui_bounds.x,
+                                ui_bounds.y,
+                                ui_bounds.z,
+                                ui_bounds.w);
                         }
                     }
                 }

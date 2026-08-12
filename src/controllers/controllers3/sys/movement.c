@@ -68,11 +68,11 @@ zox_sys2(Player3DMoveSystem) {
             uint children_length = zox_get_children(world, e2, children, children_capacity);
             for (uint k = 0; k < children_length; k++) {
                 entity e3 = children[k];
-                if (!zox_valid(e3)) {
+                // NOTE: Disabled for Fingers now
+                if (!zox_valid(e3) && !zox_has(e3, Finger)) {
                     continue;
                 }
-                byte zdisabled = zox_getv(e3, ZeviceDisabled);
-                if (zdisabled) {
+                if (zox_getv(e3, ZeviceDisabled)) {
                     continue;
                 }
                 byte type = zox_getv(e3, DeviceButtonType);

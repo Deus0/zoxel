@@ -15,7 +15,8 @@
 #define zoxp_rendering EcsPreStore // zoxp_cameras +
 #define zoxp_end EcsOnStore
 // Core
-#define zoxp_physics EcsPreUpdate
+#define zoxp_physics EcsOnUpdate
+#define zoxp_physics_apply EcsOnValidate
 #define zoxp_transforms zoxp_physics + 1
 #define zoxp_cameras zoxp_transforms + 1
 // system based

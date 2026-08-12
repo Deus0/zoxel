@@ -20,6 +20,7 @@
 #include "com/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
 
 void module_dispose_inputs(ecs *world, void *ctx) {

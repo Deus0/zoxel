@@ -1,26 +1,48 @@
 # Refactoring #
 
-# Optimize
-+ Chunk3TexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
-- Can we hide behind mountains to improve culling?
-- Streaming has a spike, make sure to display the biggest system spike per graph
+## Next
+- Remove Camera Datas - main_cameras ui_cameras
+- Remove DeviceLink from Zevice, use parent
+- Spawn finger entity during finger down - instead of just setting
 
-- Refactor the shaders and element render system
-- Refactor Block Model Spawning out of block_vox_meta functions
-- Refactor Texture Generation into Nodegraphs
+## Data
+- Make DeviceDisabled a tag - Generic Disabled
+- Remove build states when not building (60ms)
+    - ChunkMeshColorsTriggerSystem
+    - ChunkTexturedBuildSystem
+    - SmoothLightsBuildSystem
+    - BuildMesh
+
+# Refactors
+- Refactor: Stream Terrain Chunks from terrain, not chunks, just spawn there
+	- Keep setting the lods in chunk systems though as can be multithreaded
+
+## Nodes
+- Add color hsv limits like the size later to the color node
+- Color node should set a reference name
+    - fill can use this instead of hard values
+
+## UI
+- Refactor taskbar as entities and add the Mirror UI there
+    - so its easier to add the new mirror button
+
+## Skinning
+- Add BoneOctree
+- Set Bone values when we place items into body
+- Convert Bone values into weights instead of using sizes
 	
-# ChunkTextured Refactor
+## ChunkTextured Refactor
 - Spawn a Terrain chunk as test function
 - Spawn a TerrainChunk with no Mesh and child Renderer
 	- fix systems to work with new terrain chunk
 
-# Chunks
+## Chunks
 - seperate Chunk into Chunk + Render
 - after chunk3 refactor, use a render per lod, instead of regenerating everytime
 - add local chunk lookups for block indexes
 	- Prevents Updates messing up Chunk Save Data
 
-# Chunk Refactor
+## Chunk Refactor
 - Fade in Chunks
 - Spawn Hierarchy + inspector when we spawn our Vox Test
 - Spawn the Vox test without renderer, and use child as render
@@ -37,7 +59,7 @@
 	- Make lods just use the same model, no need to create 5 models per slime
 	- just generate per each level - set with shapes per node level
 	
-# Extras
+## Extras
 
 - Refactor Settings to Entities
 - Move Damage outside of MeleeSystem and add a DamageQueue onto the terrain chunk
@@ -47,7 +69,7 @@
 - Remove any Hook use and just use system states
 - Reduce systems total
 
-# Refactors
+## Refactors
 - Remove refactor Vodes spawn code
 - Replace Chunk VoxLinks with Parent calls
 - Refactor Model Lods -> one model, just create mesh per lod

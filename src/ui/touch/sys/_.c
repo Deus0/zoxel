@@ -5,9 +5,11 @@ void define_systems_touch(ecs *world) {
         VirtualJoystickSystem,
         zoxp_mainthread,
         [in] inputs.DeviceLink,
-        [in] raycasts.RaycasterResult,
+        [in] raycasts.RaycasterTarget,
+        [in] inputs.ZevicePointerPosition,
         [in] inputs.ZevicePointer,
         [in] inputs.VirtualZeviceLink,
+        [out] elements.ElementLink,
         [none] inputs.Zevice
     );
 }

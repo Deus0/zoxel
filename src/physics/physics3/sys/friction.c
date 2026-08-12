@@ -1,0 +1,42 @@
+float ground_friction3 = 6;
+float air_friction3 = 1;
+
+zox_sys2(Friction3DSystem) {
+    zox_sys_begin();
+    zox_sys_in(Grounded);
+    zox_sys_in(Velocity3D);
+    zox_sys_out(Acceleration3D);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(Grounded, grounded);
+        zox_sys_i(Velocity3D, velocity);
+        zox_sys_o(Acceleration3D, acceleration);
+        float friction_power = grounded->value ? ground_friction3 : air_friction3;
+        if (friction_power == 0) {
+            continue;
+        }
+        acceleration->value = float3_add(
+            acceleration->value,
+            float3_scale(velocity->value, -friction_power)
+        );
+    }
+} zox_sys_end(Friction3DSystem);
+
+
+/*zox_sys2(Friction3DSystem) {
+    zox_sys_begin();
+    zox_sys_in(Grounded);
+    zox_sys_out(Velocity3D);
+    // zox_sys_out(Acceleration3D);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(Grounded, grounded);
+        zox_sys_o(Velocity3D, velocity);
+        // zox_sys_o(Acceleration3D, acceleration3D)
+        float friction_power = grounded->value ? friction3D : air_friction3D;
+        // Clamp friction to prevent exponential explosion
+        //friction_power = clampf(friction_power, 0.0f, 1.0f);
+        // Dampen velocity based on delta_time
+        float friction_factor = 1.0f - (friction_power * zox_delta_time);
+        friction_factor = clampf(friction_factor, 0.0f, 1.0f); // Safety clamp
+        velocity->value = float3_scale(velocity->value, friction_factor);
+    }
+} zox_sys_end(Friction3DSystem);*/

@@ -1,54 +1,64 @@
-### Zoxel ToDo ###
+# Todo
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Fix low frame rates - clip through ground - by checking deltas between intersections
+- Raycast x 4, for player, and compare results
+    - so we dont get shuffling between cubes when camera shakes
+    - like squarecast
+- Check when spawning if we are inside blocks
+
+## Whimsy
+- Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
+- Why cant i touch and drag two windows at once???
+- Make a mushroom we can throw on ground - does disease damage once it hits an npc
+- Create jingle, a bunch of sounds that play in sequence, can be spawned from events like sounds, when a new ui opens etc
+- Stress test mode - add a multiplying slime that dies fast
+
+## Touchscreen
+-x Fix JumpState - needs to be set deterministically
+    -x Make jump button always work - the jump
+-x When we click, the virtual joystick spawns, it uses last position of finger, not good
+- Add icons to the Touch uis
+- Touch uis too small when phone rotated action should work no matter what
+- Add auto jump option - for touch
+- Make Touch Buttons bigger
+- Make button activate while holding - on clicked rather than first click
+- Punch always activates when using touch buttons
+- Tooltip should just be at top right of screen when finger is off ui
+
+- Fix taskbars again properly linking to windows
+- stats panel didnt spawn when respawn
+
+## Game UI
 - Redo Realm Select UI
     - add date in tooltip
     - Sort latest to top
     - Add Realm Names as labels instead of seed
-- Fix body (body parts) icon didnt generate
-    - check events
-- Sometimes crashes still
 
-Finish Character Mirror UI:
-- Refactor taskbar as entities and add the Mirror UI there
-    - so its easier to add the new mirror button
+## Android
+- Terrain Material doesnt restore on minimize + restore
+- Post Processing Broken
+- Screen Rotation event not working
+
+## Windows
+- SDL3Mixer not compiling for windows
+
+## Mirror UI
 - Make it so camera can filter an object itself, instead of just the object filtering camera?
     - Make a renderer clone that just copies another entities mesh.. somehow
 - Destroy Render Camera when the ui dies - just parent it?
 
-Android Bugs:
-- Make jump button always work
-- Make button activate while holding
-- Punch always activates when using touch buttons
-- Terrain Material doesnt restore on minimize + restore
-- Make Touch Buttons bigger
-- Post Processing Broken
-- Screen Rotation event not working
-- Touch uis too small when phone rotated
+## Body
+- arm doesnt swing when not selected
 
-Linux:
-- Fix viewport not resizing
-
-Windows:
-- SDL3Mixer not compiling for windows
-
-Refactors:
-- Make DeviceDisabled a tag - Generic Disabled
-- Add color hsv limits like the size later to the color node
-- Color node should set a reference name
-    - fill can use this instead of hard values
-- Fix the destruction material
-    - use depth level and keep at same position as voxel
+## Weather
 - Fix the fog, make look nicer
-- Remove Camera Datas - main_cameras ui_cameras
-- Remove build states when not building (60ms)
-    - ChunkMeshColorsTriggerSystem
-    - ChunkTexturedBuildSystem
-    - SmoothLightsBuildSystem
-    - BuildMesh
 
-Model Refactors + NodeGraphs
+## Projectiles
+- Projectiles get destroyed on hit characters (use same system as pickups)
+
+## Models
 - Node (Runner) Process Entity should shift the seed its using
 - Add SetSizeNode with min max properties
     - min max get shifted depth to the depth of the model
@@ -58,29 +68,18 @@ Model Refactors + NodeGraphs
 - Once its done, get ai to spawn chickens and cookies
 - add spawn spots node that adds some variation
 
-Cookies
+## Cookies
 - Refactor Model Blueprints to vary size based on seed - set size node
 - Refactor the model to generate all chunk meshes
     - refactor vox color builder to use parent
 
 Later
-- Issue with ui2D is transparency sorting
-    - we can set depth per layer but will need to sort calls
-        - tue 255 calls to the same systems is not efficient...
-    - We can just throw them all into transform system and use that? less math on shaders too
-    - Then we can just sort in that single system based on layers
-- arm doesnt swing when not selected
-- cant talk / raycast npcs when no action selected
-- stats panel didnt spawn when respawn
 - Crosshair will flicker siize too fast
-- Add BarUI Test function (spawn 3 bars diff percentage?, tween animate them)
 - Animate Text test
-- Projectiles get destroyed on hit characters (use same system as pickups)
--x Note: Atm the material is the same on all render textures
+- Note: Atm the material is the same on all render textures
     - we can just create a child of the ui as material if we need unique values
         
 Bugs
-- Fix taskbars again properly linking to windows
 - Destruction Material Flickering - increase depth until i fix it
 - List ui calculating wrong cause sliders different heights then buttons!
 - Fix Skinning issues of humanoids at max depth
@@ -484,12 +483,12 @@ Bugs:
 - Towns: Spawn Highways between towns
 - Towns: Set Block Links inside Homes, for Home Floor, Roof, Wall, Door blocks
 
-# Textures
+## Textures
 - Refactor texture generation to use nodegraph + nodeprocess
 - Add fancier frames to the uis
 - Use a MaskTexture in the generation data, use this to apply different materials on frames (mask just black and white array)
 
-# UI
+## UI
 - Add Glyphs for Key/Buttons on UI
 - UI: Toast UI when you enter Town
 - Add Character Render Texture UI to show your character - mirror taskbar icon too
@@ -505,12 +504,12 @@ Bugs:
 - Slider UI to snap on integer points - when integer - on release
 - Add quantity label as child of icon - for mouse pickup too
 
-# Lights
+## Lights
 - One when it updates the Render Depth
 - Make layout positions recursive too - so it updates
 - Lights: Add smooth lights for terrain faces, so the corners are darkened
 
-# Blocks
+## Blocks
 - Make Grass Taller, 2-3 blocks tall sometimes
 - seperate block spawning more from the realm,break it into biomes and modules
 - remove use of global voxel indexes and use BlockLinks from realm
@@ -518,11 +517,11 @@ Bugs:
 - Use BlockHealth prefabs with health stat as children
 - Vodes: Destroy Block Health when full for >= 3 seconds
 
-# Npcs
+## Npcs
 - Add humanoids back to npc spawning
 - Npcs: Add Monster spawn zones for types - remove around towns
 
-# Bodys
+## Bodys
 - FIX: Make arms never snap, just lerp the rotation over time
 - Animations: Add Sine Scale on chest for breathing animation
 - Animations: Sine Bob + rotate the World Items
@@ -531,18 +530,18 @@ Bugs:
 - Dust Particles for jumping and landing
 - Add standard ground dust particles
 
-# Animations
+## Animations
 - Disable Switching Action when one is active
 - Global Cooldown When Switching
 - When place last block, dont release arm raise until after animation is done
 - Base Speed of swing off walk speed and state - WalkSpeed (byte based on max speed)
 
-# Projectiles
+## Projectiles
 - Add Projectiles Damaging Terrain
 - Add Projects Damaging NPCs
 - Add Color of projectile, based on skill
 
-# Dialogue
+## Dialogue
 - improve dialogue contrast, make the dialogue ui block background
 - Aim down when speaking to slime/chicken etc
 - Change music track when dialogue starts too
@@ -552,21 +551,21 @@ Bugs:
 	- making sure the dialogue is above them
 - Black bars to animate from top and bottom when dialogue mode is dirty (remove the fade effect)
 
-# Gizmos
+## Gizmos
 - Gizmos: Selected Block Gizmo - is flickering - only when attached to character, if detatch is stops...
 - FIX: Set CubeLines Faces based on VoxelSides thats generated, then make sure it Renders Over Top of the overlays - disabled depth
 
-# Cameras
+## Cameras
 - Shake camera when hit
 
-# Rendering
+## Rendering
 - Lines: Line Instancing
 - PostProcessing: Add a Post Processor Noise option - Slider - we can reduce it or turn off
 - PostProcessing: Add a Post Processor Vignette option - Slider - we can reduce it or turn off
 - FIX: Create a new Unstuck system
 - Smooth Lighting for terrain lights - smoothed edges
 
-# Generation
+## Generation
 - Use Realm Seed + region positions to set Region Seeds
 - Use Region Seeds to generate mountain dat
 - Fix the flickering of chunks when I move through terrain
@@ -574,17 +573,17 @@ Bugs:
 - Physics clip issue now that my body is bigger than one block size
 - base biome color on prior biomes so it stands out too
 
-# Regions
+## Regions
 - destroy regions
 - Region lods
 - region town/mountain links
 - spawn straight highways between region towns
 
-# Emojis
+## Emojis
 - Add little vox model above npc if you can talk to them - little cube that animates
 	- Animate it more when talking to the npc
 
-# Saves
+## Saves
 - SaveLoad Items - using new Saves Module for better workflow
 - Add Statistics Overlay
 	- SHow counts for many things
@@ -601,20 +600,20 @@ Bugs:
 - Fix OOB errors
 - Fix chunk mesh reload glitch (flashes, basically missing for one frame)
 
-# Inputs
+## Inputs
 - Button Mapping
 	- Add Button Mapping Module
 	- so the player systems use those instead
 
-# Stats
+## Stats
 - Add Stats panel to the taskbar and give header / window
 - Vitality should increase health stat
 - Add base stat "Physical Damage" that punch uses, strength should increase this
 
-# Skills
+## Skills
 - NPC - Raycast Range should be Skill Range
 	
-# Items
+## Items
 - Drop item button
 - Spawn Vox model items in hand
 - Spawn Vox model items in world (flowers drop)
@@ -622,7 +621,7 @@ Bugs:
 - Right click to split items
 - Write a test function to spawn a world item to pickup
 
-# Body
+## Body
 - Body / Equip Tooltips
 	- Add Slot Names to Body Parts + Equipment in tooltips
 	- Add tooltip of slot type over empty slots
@@ -645,12 +644,12 @@ Bugs:
 	- show PartLinks
 	- show AttachLinks
 
-# Crafting
+## Crafting
 - Fix Crafting and use Slots for them
 - Output Craft Slot, pickup only
 - Pickup item to change after any of the other slots change, using recipe data to match
 
-# Pets
+## Pets
 - Spawn mr penguin on screen
 - Give the ability to change his hat
 - Make a penguin module
@@ -665,33 +664,33 @@ Bugs:
 - Resize window grabber at corner
 - move sand/wood/stone into biome blocks
 
-# Placing
+## Placing
 - Show a gizmo where block would be if holding block - 3D cube gizmo
 - Animate particles fade in when placing over time
 - Lock in place position from when clicked
 	- Slow rotation of camera during lock
 
-# Tunks
+## Tunks
 - Tunks to use Quadtrees and LODing
 
-# Huds
+## Huds
 - Seperate Pause UI from other Game UIs (Taskbar etc)
 - Pause UI to use blacked out screen, game ui to just use blur
 - Sometimes namelabel didnt load on npcs
 - Pause ui toggle not showing on spawn taskbar + pause
 - Give game uis the realm colors so feels different to the main menu
 
-# Realms
+## Realms
 - fix end game fade out, really bad atm
 - remove all realm macros and just use state in their own systems (RealmItemsSpawnSystem, ClearSystem, etc) - wait clear can be a macro tho
 - Shows play time on Load Game
 - delete option Confirm Screen
 - use node system
 
-# Game
+## Game
 - pause should pause the npcs too, cherrie wants dat
 
-# Unsorted
+## Unsorted
 - if our body is overlapping chunk edges, we shouldnt update the chunk streaming, wait until its not overlapping
 - Set UI hightlight color of buttons, and highlight outline colors
 	- have it lerp there over time
@@ -728,19 +727,10 @@ Bugs:
 - Add haptic feedback rumble when hit
 - Navigation on UIs should also auto scroll down on the options menu
 
-# Refactors
-- Refactor: Stream Terrain Chunks from terrain, not chunks, just spawn there
-	- Keep setting the lods in chunk systems though as can be multithreaded
-
 # Engine
-- Fix music importer
 - Fix import workflow - make import call
 - Engine: Compile modules seperately into .o and then combine, during debug builds - developing
 - Look into compiling parts modularly so it compiles faster - important for development speed
-
-# Android
-- Android Build - Fix on x86 machine
-- Add auto jump option - for touch
 
 # Tests
 - Add test function for spawning a Terrain Chunk
@@ -748,13 +738,6 @@ Bugs:
 # Experimental
 - Vox Frames - different vox models we swap between
 - We could have MegaChunks again, 4x4 chunks, and then cull them first with the Frustum + bounds checks (this is just a quicker sweep)
-
-# Bugs
-- Bug: Sometimes map arrow is off - the rotation is wrong...
-- BUG: Crashed on start a few times randomly.. then stopped
-- BUG: Mesh didn't show on NPC randomly
-- FIX: Main issue with collisions is how it decides on which face we collided with, using a distance check, so you can teleport a little if its the wrong face, best to use velocity to determine face, last position
-- Collisions: When going underneath a block, itll detect the collision of DOWN face first before the proper face - Use velocity to decide face? - can calculate last position from velocity
 
 # Notes
 + I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable

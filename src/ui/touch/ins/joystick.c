@@ -14,7 +14,6 @@ entity spawn_virtual_joystick(ecs *world, entity canvas, int2 position, entity f
     // links
     zox_set(e, ZeviceLink, { virtual_joystick });
     zox_set(virtual_joystick, ElementLink, { e });
-    zox_set(finger, DeviceButtonType, { button_type });
     zox_set(virtual_joystick, DeviceButtonType, { button_type });
     if (button_type == zox_device_stick_right) {
         zox_set(e, FillColor, { virtual_joystick_color2 });

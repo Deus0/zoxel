@@ -12,11 +12,15 @@ void zox_tst_toggle_low_fps(ecs* world, ClickEventData data) {
     } else if (target_fps == 120) {
         target_fps = 60;
     } else if (target_fps == 60) {
+        target_fps = 45;
+    }  else if (target_fps == 45) {
         target_fps = 30;
     } else if (target_fps == 30) {
+        target_fps = 20;
+    } else if (target_fps == 20) {
         target_fps = 12;
     } else if (target_fps == 12) {
-        target_fps = 5;
+        target_fps = 6;
     } else {
         target_fps = 0;
     }

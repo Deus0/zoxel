@@ -1,5 +1,37 @@
 # Done
 
+-x Fix dungeon core texture issues
+-x Fix DungeonCore not showing texture properly
+-x Sometimes map arrow is off - the rotation is wrong...
+-x Mesh didn't show on NPC randomly
+-x Main issue with collisions is how it decides on which face we collided with, using a distance check, so you can teleport a little if its the wrong face, best to use velocity to determine face, last position
+-x Collisions: When going underneath a block, itll detect the collision of DOWN face first before the proper face - Use velocity to decide face? - can calculate last position from velocity
+-x Android Build - Fix on x86 machine
+-x Add BarUI Test function
+-x Issue with ui2D is transparency sorting
+    -x we can set depth per layer but will need to sort calls
+    -x took 255 calls to the same systems is not efficient...
+    -x We can just throw them all into transform system and use that? less math on shaders too
+    -x Then we can just sort in that single system based on layers
+-x Fix set_octree_value Warnings
+-x Fix Raycast Error: Invalid Vox warning
+-x Sometimes npcs spawn in same chunk twice
+-x Sometimes character missing a mesh too
+-x Characters sometimes small - due to block depth
+-x Characters sometimes fall through map
+-x Segfault has been introduced when i added hat
+	- occasionally breaks during games load now
+	- its breaking when body rebuilds
+	- disable body rebuilding and see if crashes
+	- issue is it only sometimes breaks
+	- memory leak somewhere
+	- now it only crashes when not in gdb when re-enter game
+-x Crashes atm if any other model swaps the chest - when shoulder is added
+-x Higher Resolution mode is bugged for player model
+	-x skinning issues
+	-x max length chunk is 128, increase length..
+	-x put depth to 5
+-x now that body is bigger, we are seeing more physics glitching
 -x Fix UI3D Test
 -x Fix UI Empty textures
     -x theyre orange atm

@@ -22,12 +22,12 @@ zox_sys2(LinkFeedForwardSystem) {
         if (transfer->value < 1.0f) continue;
         transfer->value = 0;
         byte reached_end = 0;
-        zox_field_o(Weight, weights, weight)
+        zox_field_o(Weight, weights, weight);
         const entity neuron_b = connectionData->value.y;
         if (neuron_b) {
             // const float weighted_signal = sigmoid((signal->value + 0.1f) * weight->value);
             const float weighted_signal = signal->value * weight->value;
-            Signal *neuron_signal = zox_get_mut(neuron_b, Signal)
+            Signal *neuron_signal = zox_get_mut(neuron_b, Signal);
             neuron_signal->value += weighted_signal;
             zox_modified(neuron_b, Signal);
             if (zox_has(neuron_b, OutputNeuron)) reached_end = 1;

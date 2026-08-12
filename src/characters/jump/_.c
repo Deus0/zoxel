@@ -1,6 +1,17 @@
 #ifndef zoxm_jump
 #define zoxm_jump
 
+#define jump_state_none     0
+#define jump_state_trigger  1
+#define jump_state_active   2
+#define jump_state_end   3
+
+#define land_state_none 0
+#define land_state_begin 1
+#define land_state_falling 8
+#define land_state_active 9 // plays sound
+#define land_state_end 12
+
 zox_tag(SilentJumper);
 zoxc_byte(CanJump);
 zoxc_byte(JumpState);

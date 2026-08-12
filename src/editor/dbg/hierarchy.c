@@ -20,6 +20,7 @@ void toggle_hierarchy(ecs *world, int32_t keycode) {
             zox_log_error("Hierarchy Target is invalid");
             return;
         }
+        target = zox_get_parent_root(world, target);
         zox_log("Spawning Editor Hierarchy -> [%s]", zox_get_name(target));
         spawn_window_hierarchy(world, canvas, player, target);
         spawn_sound_from_file_index(world, prefab_sound, 0);
