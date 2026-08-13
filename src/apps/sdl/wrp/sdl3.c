@@ -31,27 +31,6 @@ SDL_Window *zox_sdl_create_window(
     return window;
 }
 
-SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
-    SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
-    if (fullscreen) {
-        if (is_on_phosh()) {
-            flags = flags | SDL_WINDOW_MAXIMIZED;
-        } else {
-            flags = flags | SDL_WINDOW_FULLSCREEN;
-        }
-#if zox_windows
-        // SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
-        // SDL_SetHint(SDL_HINT_VIDEO_HIGH_DPI_DISABLED, "0");
-#endif
-    }
-    if (fullscreen && maximized) {
-#if !(defined(zox_windows) && defined(zox_sdl3))
-        flags = flags | SDL_WINDOW_MAXIMIZED;
-#endif
-    }
-    return flags;
-}
-
 void zox_sdl_gl_delete_context(SDL_GLContext context)
 {
     SDL_GL_DestroyContext(context);

@@ -2,14 +2,19 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- for docker - add docker tag in linux.sh
+    - then make libs use seperate folder
+
 ## Touchscreen
 - Fix post procesing on android
 - make jump button use - ClickingEvent instead of ClickEvent
     - so we can hold jump button
     - Make button activate while holding - on clicked rather than first click
 - Tooltip should just be at top right of screen when finger is off ui
-- Add auto jump option - for touch
 
+## New
+- Add ui scale onto options
+- Add auto jump option - for touchscreen + option to disable
 - Add verersion build date to main menu bottom right
 - Raycast x 4, for player, and compare results
     - so we dont get shuffling between cubes when camera shakes

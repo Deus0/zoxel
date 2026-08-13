@@ -1,3 +1,12 @@
+// SDL_WINDOW_FULLSCREEN - fullscreen (exclusive)
+// SDL_WINDOW_FULLSCREEN_DESKTOP - borderless windowed
+// byte sdl_fullscreen_byte = (byte) SDL_WINDOW_FULLSCREEN_DESKTOP;
+#ifdef zox_sdl3
+byte sdl_fullscreen_byte = (byte) 1;
+#else
+byte sdl_fullscreen_byte = (byte) SDL_WINDOW_FULLSCREEN;
+#endif
+
 static inline int2 get_screen_size() {
 #ifdef zox_web
     return get_webasm_screen_size();
@@ -15,7 +24,34 @@ int2 get_sdl_screen_size() {
     return (int2) { displayMode.w, displayMode.h };
 }
 
+
 void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
+    SDL_SetWindowFullscreen(window, fullscreen ? sdl_fullscreen_byte : 0);
+    // This was to restore monitor position
+    if (fullscreen) {
+        int display_count = zox_sdl_get_num_displays();
+        if (monitor >= display_count) {
+            zox_loge("Invalid monitor index %i, using primary (0)", monitor);
+            monitor = 0;
+        }
+        int monitor_current = zox_sdl_get_window_display(window);
+        if (monitor_current >= 0 && monitor != monitor_current) {
+            zox_log("Window moved monitors [%i] => [%i]", monitor, monitor_current);
+            monitor = monitor_current;
+        }
+        SDL_DisplayMode display_mode;
+        if (zox_sdl_get_current_display_mode(monitor, &display_mode)) {
+            zox_loge("Failed getting display mode in [zox_app_set_fullscreen]");
+        } else {
+            zox_sdl_set_window_display_mode(window, &display_mode);
+        }
+    } else {
+        SDL_ShowWindow(window);
+        SDL_RaiseWindow(window);
+    }
+}
+
+/*void zox_app_set_fullscreen_old(SDL_Window* window, byte monitor, byte fullscreen) {
     byte flag = fullscreen ? sdl_fullscreen_byte : 0;
     // zox_log("# fullscreen flag [%i]", flag)
     if (fullscreen) {
@@ -38,11 +74,28 @@ void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
     }
     SDL_SetWindowFullscreen(window, flag);
 }
-
+*/
 void zox_app_set_maximized(SDL_Window* window, byte maximized) {
     if (maximized) {
         SDL_MaximizeWindow(window);
     } else {
         SDL_RestoreWindow(window);
     }
+}
+
+SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
+    SDL_WindowFlags flags =
+        SDL_WINDOW_OPENGL |
+        // SDL_WINDOW_SHOWN |
+        SDL_WINDOW_RESIZABLE;
+    if (fullscreen) {
+        if (is_on_phosh()) {
+            flags = flags | SDL_WINDOW_MAXIMIZED;
+        } else {
+            flags = flags | SDL_WINDOW_FULLSCREEN;
+        }
+    } else if (maximized) {
+        flags |= SDL_WINDOW_MAXIMIZED;
+    }
+    return flags;
 }

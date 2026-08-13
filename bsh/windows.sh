@@ -8,7 +8,7 @@ set -euo pipefail
 # Debug Options
 is_safety_checks="1"
 is_sdl_image="0"
-sdl_mixer="0"
+sdl_mixer="1"
 # bash inputs
 game_name=$1
 bin_path="bin/${game_name}.exe"
@@ -36,6 +36,11 @@ is_sdl3="0"
 [[ " $* " == *" --package "* ]] && package="1"
 [[ " $* " == *" --static "* ]] && is_static="1"
 [[ " $* " == *" --sdl3 "* ]] && is_sdl3="1"
+
+if [[ ${is_sdl3} == "1" ]]; then
+    echo "SDL_mixer disabled for windows sdl3 (build errors)"
+    sdl_mixer="0"
+fi
 
 # Our  Libs
 lib_args=""

@@ -148,11 +148,26 @@ PRF="$PRF"
 SDL="$SDL"
 EOF
 
+# Build arguments
+if [[ "$OS" == "linux" ]]; then
+    build_args="--${GLB} --${GFX} --${ARC} --${PRF} --${SDL} ${extra_args}"
+    build_command="bash ${BUILD_SCRIPT} ${GAME} ${build_args}"
+else
+    build_args="${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}"
+    build_command="bash ${BUILD_SCRIPT} ${GAME} ${build_args}"
+fi
+
 echo "Building..."
 echo ""
 cat "$STATE_FILE"
 echo ""
-echo "...[$BUILD_SCRIPT ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}]"
+echo "...[${build_command}]"
 echo ""
 
-bash "$BUILD_SCRIPT" ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}
+bash "$BUILD_SCRIPT" "${GAME}" ${build_args}
+
+# echo ""
+# echo "...[$BUILD_SCRIPT ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}]"
+# echo ""
+
+# bash "$BUILD_SCRIPT" ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}

@@ -64,9 +64,9 @@ void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
         zox_loge("invalid app in [zox_set_app_fullscreen]");
         return;
     }
-    zox_set(e, WindowFullscreen, { fullscreen });
-    zox_geter(e, SDLWindow, window);
-    zox_geter_value(e, WindowMonitor, byte, monitor);
+    zox_setv(e, WindowFullscreen, fullscreen);
+    byte monitor = zox_getv(e, WindowMonitor);
+    const SDLWindow* window = zox_get(e, SDLWindow);
     zox_app_set_fullscreen(window->value, monitor, fullscreen);
 }
 

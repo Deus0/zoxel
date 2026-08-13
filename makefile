@@ -5,7 +5,7 @@
 SRC_DIR 	:= src
 SRC    		:= src/main.c
 SRCS 		:= $(shell find $(SRC_DIR) -name "*.c") # Change Detection
-CC      	:= gcc
+# CC      	:= gcc
 LIBS 		:= -lm -lpthread
 GAMES_DIR	:= $(SRC_DIR)/../gam
 DFLAGS		:= -Iinc
@@ -13,10 +13,19 @@ DFLAGS		:= -Iinc
 # shell paths
 pkg_config = $(shell which pkg-config)
 
-# sdl3 - disabled for now
+# Build Args
 build_args = ""
+ifneq ($(filter system,$(MAKECMDGOALS)),)
+	build_args += " --system"
+endif
+ifneq ($(filter static,$(MAKECMDGOALS)),)
+	build_args += " --static"
+endif
+ifneq ($(filter sdl2,$(MAKECMDGOALS)),)
+	build_args += " --sdl2"
+endif
 ifneq ($(filter sdl3,$(MAKECMDGOALS)),)
-	build_args += " --sdl3 --static"
+	build_args += " --sdl3"
 endif
 ifneq ($(filter verbose,$(MAKECMDGOALS)),)
 	build_args +=" --verbose"
@@ -83,11 +92,11 @@ endif
 
 $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
-	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release ${build_args}
+	@ bash bsh/linux.sh $(GAME) ${build_args} --release
 
 package: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
-	@ bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --release --package ${build_args}
+	@ bash bsh/linux.sh $(GAME) ${build_args} --release --package
 
 package-windows: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
@@ -115,20 +124,20 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	bash bsh/linux.sh $(GAME) opengl sdl $(shell uname -m) --debug ${build_args}
+	bash bsh/linux.sh $(GAME) ${build_args} --debug
 
 dev: $(TARGET_DEV)
 
-dever: $(SRCS)
-	@ mkdir -p bin
-	$(CC) $(cflags_dever) $(SRC) -o $@ $(LIBS) $(DFLAGS)
+#dever: $(SRCS)
+#	@ mkdir -p bin
+#	$(CC) $(cflags_dever) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
-devmem: $(SRCS)
-	@ mkdir -p bin
-	$(CC) $(cflags_devmem) $(SRC) -o $@ $(LIBS) $(DFLAGS)
+#devmem: $(SRCS)
+#	@ mkdir -p bin
+#	$(CC) $(cflags_devmem) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
-gdbmem: devmem
-	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)
+#gdbmem: devmem
+#	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)
 
 # Run with windows (and debug)
 runw:
@@ -157,6 +166,7 @@ runfp: devfp
 runv: dev
 	./$(TARGET_DEV) --verbose
 
+# we can test using software rendering
 run-gles2: build-gles2
 	@LIBGL_ALWAYS_SOFTWARE=1 \
 	MESA_LOADER_DRIVER_OVERRIDE=llvmpipe \

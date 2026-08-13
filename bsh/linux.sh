@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# NOTE: Converts the shell flags into flags for our game code
+
 # debug options
+OS="linux"
 is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_safety_checks="1"    # lets stay safe for now
 is_time_systems="0"
@@ -9,22 +12,51 @@ is_fast_dev="0"         # -O3
 # settings
 is_desktop_gl="1"       # Use GL libs instead of EGL on desktop
 # bash inputs
-game_name=$1    # zoxel
-GLB=$2          # headless, opengl or vulkan
-GFX=$3          # sdl, glut
-ARC=$4          # x64
 
-if [[ ${ARC} == "aarch64" ]]; then
-    ARC="arm"
-elif [[ ${ARC} == "x86_64" ]]; then
-    ARC="x64"
-fi
-
-OS="linux"
 ONARC=$(uname -m)
+if [[ ${ONARC} == "aarch64" ]]; then
+    ONARC="arm"
+elif [[ ${ONARC} == "x86_64" ]]; then
+    ONARC="x64"
+fi
+ARC="${ONARC}"         # x64 or arm
+
 sdl_source="0"
 sdl_images="0"
 sdl_mixer="1"
+
+# BUILD ARGS #
+game_name="zoxel"
+debug="0"
+verbose="0"
+package="0"
+is_static="1"
+GLB="opengl"      # headless, opengl or vulkan
+GFX="sdl"         # sdl, glut
+is_sdl3="1"       # sdl2, sdl3
+
+if [[ $# -gt 0 && ${1} != --* ]]; then
+    game_name="$1"
+fi
+
+[[ " $* " == *" --debug "* ]] && debug="1"
+[[ " $* " == *" --verbose "* ]] && verbose="1"
+[[ " $* " == *" --package "* ]] && package="1"
+[[ " $* " == *" --system "* ]] && is_static="0"
+[[ " $* " == *" --static "* ]] && is_static="1"
+# Architecture
+[[ " $* " == *" --x64 "* ]] && ARC="x64"
+[[ " $* " == *" --arm "* ]] && ARC="arm"
+# GFX
+[[ " $* " == *" --sdl "* ]] && GFX="sdl"
+[[ " $* " == *" --glut "* ]] && GFX="glut"
+[[ " $* " == *" --sdl2 "* ]] && is_sdl3="0"
+[[ " $* " == *" --sdl3 "* ]] && is_sdl3="1"
+# Graphics Library
+[[ " $* " == *" --headless "* ]] && GLB="headless"
+[[ " $* " == *" --opengl "* ]] && GLB="opengl"
+[[ " $* " == *" --vulkan "* ]] && GLB="vulkan"
+
 bin_filename="${game_name}"
 bin_path=bin/${bin_filename}.bin
 compiler="gcc"
@@ -32,23 +64,10 @@ sources="src/main.c inc/flecs/flecs.c"
 includes="-Iinc/flecs"
 cflags="-std=gnu99 -fPIC"
 dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_linux"
-libs="-lm -lpthread" # -Iinc
+libs="-lm -lpthread -ldl"
 package_path="zip"
-architecture="x86_64"   # base arch name
+# architecture="x86_64"   # base arch name
 library="lib/${OS}_${ARC}"
-
-debug="0"
-verbose="0"
-package="0"
-is_sdl3="0"
-is_static="0"
-
-[[ " $* " == *" --debug "* ]] && debug="1"
-[[ " $* " == *" --verbose "* ]] && verbose="1"
-[[ " $* " == *" --package "* ]] && package="1"
-[[ " $* " == *" --sdl2 "* ]] && is_sdl3="0"
-[[ " $* " == *" --sdl3 "* ]] && is_sdl3="1"
-[[ " $* " == *" --static "* ]] && is_static="1"
 
 echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
 
@@ -64,10 +83,10 @@ if [[ ${is_static} == "1" ]]; then
     libs+=" -Wl,-rpath,\$ORIGIN"
 fi
 
-if [[ ${ONARC} == "aarch64" && ${ARC} == "arm" ]]; then
+if [[ ${ONARC} == "arm" && ${ARC} == "arm" ]]; then
     cflags+=" -march=native"
     is_desktop_gl="0"
-elif [[ ${ONARC} == "x86_64" && ${ARC} == "x64" ]]; then
+elif [[ ${ONARC} == "x64" && ${ARC} == "x64" ]]; then
     cflags+=" -march=native"
 else
     echo "Running on Unsupported platform and target"

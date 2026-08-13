@@ -25,8 +25,11 @@ SDL_Window *zox_sdl_create_window(
     return SDL_CreateWindow(name, x, y, w, h, flags);
 }
 
-SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
-    SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+/*SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
+    SDL_WindowFlags flags =
+        SDL_WINDOW_OPENGL |
+        SDL_WINDOW_SHOWN |
+        SDL_WINDOW_RESIZABLE;
     if (fullscreen) {
         if (is_on_phosh()) {
             flags = flags | SDL_WINDOW_MAXIMIZED;
@@ -34,15 +37,17 @@ SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
             flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP;
         }
 #if zox_windows
-        SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
-        SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
+        // SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
+        // SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
 #endif
+    } else if (maximized) {
+        flags |= SDL_WINDOW_MAXIMIZED;
     }
     if (fullscreen && maximized) {
-        flags = flags | SDL_WINDOW_MAXIMIZED;
+        // flags = flags | SDL_WINDOW_MAXIMIZED;
     }
     return flags;
-}
+}*/
 
 void zox_sdl_gl_delete_context(SDL_GLContext context)
 {
