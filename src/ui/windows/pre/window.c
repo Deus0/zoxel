@@ -10,8 +10,9 @@ void set_prefab_window(ecs* world, entity e) {
     // interaction
     // zox_add_tag(e, Selectable);
     // Layout Constraints
-    zox_add_tag(e, BoundToCanvas);
-    zox_prefab_set(e, LayoutConstraints, { int4_zero });
+    zox_add_tag(e, BoundToParent);
+    // zox_add_tag(e, BoundToCanvas);
+    // zox_prefab_set(e, LayoutConstraints, { int4_zero });
 }
 
 entity spawn_prefab_window_textured(ecs *world, entity prefab) {

@@ -13,7 +13,7 @@
         zox_get_name(e),
         drag_limits.x, drag_limits.y, drag_limits.z, drag_limits.w);*/
 
-void limited_element(int2* position, int4 b) {
+static inline void bound_position2(int2* position, int4 b) {
     if (position->x < b.x) {
         position->x = b.x;
     }
@@ -34,5 +34,5 @@ void limit_element(ecs *world, entity e) {
     }
     zox_muter(e, LayoutPosition, pixel_position);
     zox_geter_value(e, LayoutConstraints, int4, drag_bounds);
-    limited_element(&pixel_position->value, drag_bounds);
+    bound_position2(&pixel_position->value, drag_bounds);
 }

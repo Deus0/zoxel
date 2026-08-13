@@ -3,6 +3,7 @@ zox_tag(Layout);
 zox_tag(Canvas);
 zox_tag(Canvas3);
 zox_tag(BoundToCanvas);
+zox_tag(BoundToParent);
 zoxc_entity(CanvasLink);
 zoxc_byte(Layer2D);
 zoxc_byte(BonusLayer2); // for shifting things above others
@@ -32,6 +33,7 @@ void define_components_layouts2(ecs* world) {
     zoxd_tag(Canvas);
     zoxd_tag(Canvas3);
     zoxd_tag(BoundToCanvas);
+    zoxd_tag(BoundToParent);
     zoxd_entity(CanvasLink);
     zoxd_byte(Layer2D);
     zoxd_byte(BonusLayer2);
