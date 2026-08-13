@@ -11,3 +11,10 @@ void button_event_attack(ecs *world, ClickEventData event) {
         zox_setv(character, TriggerActionA, 1);
     }
 }
+
+void button_event_speak(ecs *world, ClickEventData event) {
+    entity character = zox_getv(event.clicker, CharacterLink);
+    if (character) {
+        zox_setv(character, TriggerActionB, 1);
+    }
+}

@@ -39,6 +39,7 @@ date_str=$(date +%Y_%m_%d)
 
 game_name="${1:-zoxel}"
 apk_path="${apk_dir}/${game_name}_android_arm_${date_str}.apk"
+app_name="${game_name^}"
 
 is_run="0"
 sdl_mixer="1"
@@ -68,6 +69,7 @@ ndk_path="${and_path}/ndk"
 gradle_path="${and_path}/gradle"
 gradle_version="8.10.2"
 staging_path="${and_path}/${game_name}"
+strings_path="${staging_path}/app/src/main/res/values/strings.xml"
 
 
 # ============================================================
@@ -380,6 +382,19 @@ mkdir -p "${staging_path}"
 
 cp -a "${sdl_android}/." "${staging_path}/"
 echo "- SDL Android project copied"
+
+
+# ============================================================
+# Application name
+# ============================================================
+
+
+# Edit our games name
+sed -i \
+    "s|<string name=\"app_name\">.*</string>|<string name=\"app_name\">${app_name}</string>|" \
+    "${strings_path}"
+
+echo "- App name [${app_name}]"
 
 # ============================================================
 # Configure SDL3 native project

@@ -1,5 +1,18 @@
 # Done
 
+-x Punch always activates when using touch buttons
+-x Add icons to the Touch uis
+-x Touch uis too small when phone rotated action should work no matter what
+-x Make Touch Buttons bigger
+-x Fix JumpState - needs to be set deterministically
+    -x Make jump button always work - the jump
+-x When we click, the virtual joystick spawns, it uses last position of finger, not good
+-x make /bsh/android.sh defaults so we dont need variables every time
+-x Change game name on android
+-x Fix terrain mesh not restoring
+-x Almost fixed, just need to link app to cameras without parenting
+    -x just use relationships here! a tag that links app to camera, then query for those
+    -x as game camera gets reparented to the character
 -x Fix dungeon core texture issues
 -x Fix DungeonCore not showing texture properly
 -x Sometimes map arrow is off - the rotation is wrong...

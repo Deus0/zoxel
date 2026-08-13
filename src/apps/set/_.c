@@ -10,11 +10,7 @@ byte disable_apps_decor = 0;
 byte using_gpu = 1;
 byte audio_enabled = 0;
 byte nosounds = 0;
-#ifdef zox_android
-byte window_resizeable = 0;
-#else
 byte window_resizeable = 1;
-#endif
 byte rendering = 1;
 byte is_split_screen = 0;
 byte halfscreen = 0;

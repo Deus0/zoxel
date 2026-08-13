@@ -72,3 +72,7 @@ void button_event_switch_action(ecs *world, ClickEventData event) {
     player_action_ui_move(world, event.clicker, 1);
 }
 
+void button_event_switch_action2(ecs *world, ClickEventData event) {
+    player_action_ui_move(world, event.clicker, -1);
+}
+

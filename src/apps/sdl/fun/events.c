@@ -16,13 +16,14 @@ void update_sdl(ecs *world) {
             int2 window_size = sdl_event_window_size(&event);
             byte monitor = sdl_event_display(&event);
             byte orientation = get_screen_orientation(monitor);
-
-            zox_geter_value(e, ScreenOrientation, byte, old_orientation);
-
+            byte old_orientation = zox_getv(e, ScreenOrientation);
             if (old_orientation != orientation) {
                 zox_set(e, ScreenOrientation, { orientation });
+                if (dbg_log) {
+                    zox_log("Screen Orientation Set [%i]", orientation);
+                }
             }
-
+            // NOTE: On orientation it will just change the window dimensions
             on_window_resized(world, e, window_size, dbg_log);
             if (dbg_log) {
                 zox_log("Window Resized to [%ix%i]", window_size.x, window_size.y);

@@ -2,9 +2,13 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Almost fixed, just need to link app to cameras without parenting
-    - just use relationships here! a tag that links app to camera, then query for those
-    - as game camera gets reparented to the character
+## Touchscreen
+- Fix post procesing on android
+- make jump button use - ClickingEvent instead of ClickEvent
+    - so we can hold jump button
+    - Make button activate while holding - on clicked rather than first click
+- Tooltip should just be at top right of screen when finger is off ui
+- Add auto jump option - for touch
 
 - Add verersion build date to main menu bottom right
 - Raycast x 4, for player, and compare results
@@ -19,17 +23,6 @@ used - 200-400mb used
 - Create jingle, a bunch of sounds that play in sequence, can be spawned from events like sounds, when a new ui opens etc
 - Stress test mode - add a multiplying slime that dies fast
 
-## Touchscreen
--x Fix JumpState - needs to be set deterministically
-    -x Make jump button always work - the jump
--x When we click, the virtual joystick spawns, it uses last position of finger, not good
-- Add icons to the Touch uis
-- Touch uis too small when phone rotated action should work no matter what
-- Add auto jump option - for touch
-- Make Touch Buttons bigger
-- Make button activate while holding - on clicked rather than first click
-- Punch always activates when using touch buttons
-- Tooltip should just be at top right of screen when finger is off ui
 
 - Fix taskbars again properly linking to windows
 - stats panel didnt spawn when respawn
