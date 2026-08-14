@@ -88,33 +88,26 @@ if ! getent group docker >/dev/null 2>&1; then
     sudo groupadd docker
 fi
 
-if ! id -nG "$USER" | grep -qw docker; then
+# Ensure user belongs to docker group.
+if ! getent group docker | grep -qw "$USER"; then
     echo "👤 Adding $USER to docker group..."
     sudo usermod -aG docker "$USER"
-
-    echo
-    echo "Docker access has been added."
-    echo "Run:"
-    echo
-    echo "    newgrp docker"
-    echo
-    echo "Then run this script again."
-    exit 0
 fi
 
+
+# Start Docker if necessary.
 if ! systemctl is-active --quiet docker; then
-    echo "Starting Docker..."
+    echo "🐳 Starting Docker..."
     sudo systemctl enable --now docker
 fi
 
+# Check whether this shell can access Docker.
 if ! docker info >/dev/null 2>&1; then
-    echo
-    echo "ERROR: Docker is running but this shell does not have Docker access."
-    echo "Run:"
-    echo
-    echo "    newgrp docker"
-    echo
-    exit 1
+    echo "🐳 Refreshing Docker group access..."
+
+    # If docker group membership was just added, execute the
+    # remainder of this script inside a docker-group shell.
+    exec newgrp docker <<< "$0"
 fi
 
 echo "🐳 Docker ready."

@@ -1,11 +1,17 @@
 # Bugs #
 - Sometimes crashes still
 
+## Blocks
+- SoilGrass color at bottom wrong
+
 ## Inputs
 - New gamepads turned on mid game - dont get added
 
 ## Physics
 - Fix low frame rates - clip through ground - by checking deltas between intersections
+
+## Lighting
+- When the light octree increases scale, it doesnt get blacked out? this causes bigger lights to lightup house sides
 
 ## Next
 - cant talk / raycast npcs when no action selected

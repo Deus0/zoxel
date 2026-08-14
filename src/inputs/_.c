@@ -13,7 +13,7 @@
 #define zoxm_inputs
 
 const float bumper_button_cutoff = 0.98f;
-const float joystick_min_cutoff = 0.02f;
+const float joystick_min_cutoff = 0.08f;
 // TODO: If Device Disabled, just detect Start/Connect inputs in another system
 // - Use that state to connect a new device to a player
 
