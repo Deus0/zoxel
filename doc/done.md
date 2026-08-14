@@ -1,5 +1,22 @@
 # Done
 
+
+-x Player3DTriggerSystem:
+> The log shows that sometimes doesnt get called, i.e. resets faster
+    [13:25:38] Raw Bumper [1]: [1.000000] - button [0]
+    [13:25:38] RT Pressed
+    [13:25:38] Raw Bumper [1]: [1.000000] - button [2]
+    [13:25:39] Raw Bumper [1]: [1.000000] - button [2]
+    [13:25:43] Raw Bumper [1]: [1.000000] - button [0]
+    [13:25:43] Raw Bumper [1]: [1.000000] - button [2]
+-x I put reset pipelines one pipeline greater
+-x Tooltip refactor
+    -x link to a ui
+    -x when not linked, we can close the tooltip (TooltipCloseSystem)
+-x Noticed gamepad - joining - doesnt work (turning on)
+-x Gamepad click button now broken - clicking selected
+    -x used to be DeviceClickSystem
+    -x target should of been set in zevice though - but i dont think buttons have this component - only pointers
 -x Punch always activates when using touch buttons
 -x Add icons to the Touch uis
 -x Touch uis too small when phone rotated action should work no matter what

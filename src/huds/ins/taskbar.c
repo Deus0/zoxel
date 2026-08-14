@@ -81,7 +81,7 @@ entity spawn_taskbar(ecs* world, entity canvas) {
             }
         }
         zox_set(icon, ClickEvent, { &taskbar_button_click_event });
-        zox_prefab_set(icon, TooltipEvent, { &tooltip_event_taskbar_icon });
+        zox_setv(icon, TooltipEvent, &tooltip_text_event);
         zox_set(icon, IconIndex, { hook_index });
         // Set Tooltip
         char tooltip_text[64];

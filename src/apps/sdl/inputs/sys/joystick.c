@@ -1,4 +1,4 @@
-float stick_cutoff = 0.06f;
+/*float stick_cutoff = 0.06f;
 
 byte get_gamepad_button(byte old_value, SDL_Joystick *joystick, int index, byte dbg_log) {
     byte value = SDL_JoystickGetButton(joystick, index);
@@ -111,12 +111,12 @@ void extract_sdl_gamepad_button(ecs* world, entity e, SDL_Joystick* joystick, by
     if (zox_has(e, ZeviceBumper)) {
         get_gamepad_bumper(joystick, rindex, dbg_log);
     } else if (zox_has(e, ZeviceStick)) {
-        zox_mut_begin(e, ZeviceStick, stick);
+        zox_muter(e, ZeviceStick, stick);
         if (get_gamepad_axis(joystick, stick, rindex, rindex + 1, dbg_log)) {
-            zox_modified(e, ZeviceStick);
+            // zox_log whats going on here
         }
     } else if (zox_has(e, ZeviceButton)) {
-        zox_mut_begin(e, ZeviceButton, button);
+        zox_muter(e, ZeviceButton, button);
         byte new_value;
         if (is_dpad_button(rindex)) {
             new_value = get_gamepad_dpad(button->value, joystick, rindex);
@@ -125,7 +125,6 @@ void extract_sdl_gamepad_button(ecs* world, entity e, SDL_Joystick* joystick, by
         }
         if (new_value != button->value) {
             button->value = new_value;
-            zox_mut_end(e, ZeviceButton);
         }
     }
 }
@@ -205,4 +204,4 @@ zox_sys2(SdlJoystickFetchSystem) {
             }
         }
     }
-} zox_sys_end(SdlJoystickFetchSystem);
+} zox_sys_end(SdlJoystickFetchSystem);*/

@@ -1,37 +1,27 @@
-void close_ui_related_tooltip(ecs* world, entity e) {
-    entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
-    if (!zox_valid(canvas)) {
-        return;
-    }
-    entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
-    if (!zox_valid(tooltip)) {
-        zox_loge("Tooltip not found in Canvas [%s]", zox_get_name(canvas));
-        return;
-    }
-    set_entity_text(world, tooltip, "");
-}
-
-// NOTE: Called by the UI element with a tooltip event on it
+// NOTE: The tooltip will shut down when no more uis are linked to it.
 zox_sys2(TooltipDeselectSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SelectState);
+    zox_sys_out(TextData);
+    zox_sys_out(TextDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SelectState, state);
-        if (state->value != zox_state_deselect_active) {
+        zox_sys_o(TextData, data);
+        zox_sys_o(TextDirty, dirty);
+        // NOTE: The dirty state delays the race conditions
+        if (!data->length || dirty->value) {
             continue;
         }
-        close_ui_related_tooltip(world, e);
-        /*entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
-        if (!zox_valid(canvas)) {
+        // check linked, if link found, continue
+        if (zox_is_linked_any(world, e, TooltipLink)) {
             continue;
         }
-        entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
-        if (!zox_valid(tooltip)) {
-            zox_loge("Tooltip not found in Canvas [%s]", zox_get_name(canvas));
-            continue;
+        // Clear text
+        resize_TextData(data, 0);
+        dirty->value = zox_dirty_trigger;
+        if (dbg_log) {
+            zox_log("Tooltip is shutting down [%s]", zox_getn(e));
         }
-        set_entity_text(world, tooltip, "");*/
     }
 } zox_sys_end(TooltipDeselectSystem);

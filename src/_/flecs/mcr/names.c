@@ -3,14 +3,16 @@
 #ifdef zox_debug
     #define zox_get_name(e)\
         (zox_valid(e) && zox_alive(e)) ? ecs_get_name(world, e) : (zox_valid(e) ? "Dead" : "Invalid")
-
-    #define zox_sys_e_name\
-        (ecs_is_valid(it->world, it->entities[i]) && ecs_is_alive(it->world, it->entities[i])) ? ecs_get_name(it->world, it->entities[i]) : "Invalid"
+    #define zox_sys_get_name(e) \
+        (ecs_is_valid(it->world, e) && ecs_is_alive(it->world, e)) ?\
+            ecs_get_name(it->world, e) : "Invalid"
 
 #else
     #define zox_get_name(e) ecs_get_name(world, e)
-    #define zox_sys_e_name() ecs_get_name(it->world, it->entities[i])
+    #define zox_sys_get_name(e) ecs_get_name(it->world, e)
 #endif
+
+#define zox_sys_e_name zox_sys_get_name(it->entities[i])
 
 #define zox_getn(e)\
     (zox_valid(e) ? ecs_get_name(world, e) : "Invalid")

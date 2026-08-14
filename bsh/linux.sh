@@ -71,6 +71,9 @@ library="lib/${OS}_${ARC}"
 
 echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
 
+# used to reduce instructions to a single CPU
+#  cflags+=" -march=native"
+
 # Our  Libs
 if [[ ${is_static} == "1" ]]; then
     lib_args=""
@@ -83,14 +86,14 @@ if [[ ${is_static} == "1" ]]; then
     libs+=" -Wl,-rpath,\$ORIGIN"
 fi
 
-if [[ ${ONARC} == "arm" && ${ARC} == "arm" ]]; then
-    cflags+=" -march=native"
+if [[ ${ARC} == "arm" ]]; then
+#    cflags+=" -march=native"
     is_desktop_gl="0"
-elif [[ ${ONARC} == "x64" && ${ARC} == "x64" ]]; then
-    cflags+=" -march=native"
-else
-    echo "Running on Unsupported platform and target"
-    exit
+#elif [[ ${ONARC} == "x64" && ${ARC} == "x64" ]]; then
+#    cflags+=" -march=native"
+#else
+#    echo "Running on Unsupported platform and target"
+#    exit
 fi
 
 if [[ ${debug} == "1" ]]; then

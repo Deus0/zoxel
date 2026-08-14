@@ -4,22 +4,29 @@ zox_sys2(ElementNavigationSystem) {
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceMode);
+    zox_sys_in(DeviceDisabled);
     zox_sys_out(NavigatorState);
     zox_sys_out(NavigatorTimer);
     zox_sys_out(RaycasterTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceMode, dmode);
+        zox_sys_i(DeviceDisabled, disabled);
         zox_sys_o(RaycasterTarget, current);
         zox_sys_o(NavigatorState, state);
         zox_sys_o(NavigatorTimer, timer);
         // Navigation needs a current selection
-        if (!zox_valid(current->value)) {
+        if (disabled->value || !zox_valid(current->value)) {
             continue;
         }
-        if (dmode->value != zox_device_mode_gamepad && !(keyboard_navigation_mode && dmode->value == zox_device_mode_keyboardmouse)
+        entity player = zox_get_parent(world, e);
+        if (!zox_valid(player) ||
+            !zox_has(player, DeviceMode)
         ) {
+            zox_loge("Invalid Player on [Navigator]");
+            continue;
+        }
+        byte device_mode = zox_getv(player, DeviceMode);
+        if (device_mode != zox_device_mode_gamepad && !(keyboard_navigation_mode && device_mode == zox_device_mode_keyboardmouse)) {
             if (!state->value) {
                 state->value = 1;
                 timer->value = 0;
@@ -28,43 +35,40 @@ zox_sys2(ElementNavigationSystem) {
         }
         // Get Input for Navigation
         float2 left_stick = float2_zero;
-        entity devices[zox_children_capacity];
-        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
-        for (uint j = 0; j < length; j++) {
-            entity e2 = devices[j];
-            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
+        uint children_capacity = zox_children_capacity;
+        entity zevices[children_capacity];
+        uint zevices_length = zox_get_children(world, e, zevices, children_capacity);
+        for (uint k = 0; k < zevices_length; k++) {
+            entity e3 = zevices[k];
+            if (!zox_valid(e3)) {
                 continue;
             }
-            uint children_capacity = zox_children_capacity;
-            entity children[children_capacity];
-            uint children_length = zox_get_children(world, e2, children, children_capacity);
-            for (uint k = 0; k < children_length; k++) {
-                entity e3 = children[k];
-                if (!zox_valid(e3)) {
-                    continue;
-                }
-                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
-                if (disabled) {
-                    continue;
-                }
-                if (zox_has(e3, ZeviceStick)) {
-                    zox_geter(e3, ZeviceStick, stick);
-                    left_stick.x += stick->value.x;
-                    left_stick.y += stick->value.y;
-                }
+            if (zox_getv(e3, ZeviceDisabled)) {
+                continue;
             }
-            if (zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard);
-                if (keyboard->down.is_pressed) {
-                    left_stick.y -= 1;
-                } else if (keyboard->up.is_pressed) {
-                    left_stick.y += 1;
-                } else if (keyboard->left.is_pressed) {
-                    left_stick.x -= 1;
-                } else if (keyboard->right.is_pressed) {
-                    left_stick.x += 1;
-                }
+            if (zox_has(e3, ZeviceStick)) {
+                float2 stick = zox_getv(e3, ZeviceStick);
+                left_stick.x += stick.x;
+                left_stick.y += stick.y;
             }
+        }
+        /*if (zox_has(e2, Keyboard)) {
+            zox_geter(e2, Keyboard, keyboard);
+            if (keyboard->down.is_pressed) {
+                left_stick.y -= 1;
+            } else if (keyboard->up.is_pressed) {
+                left_stick.y += 1;
+            } else if (keyboard->left.is_pressed) {
+                left_stick.x -= 1;
+            } else if (keyboard->right.is_pressed) {
+                left_stick.x += 1;
+            }
+        }*/
+        if (dbg_log >= 2) {
+            zox_log("Navigator Navigating [%s] state [%i] stick [%f] timer [%f]", zox_getn(e), state->value, left_stick.y, timer->value);
+        }
+        if (dbg_log) {
+            zox_log("Navigator Navigating [%s] state [%i] stick [%f] timer [%f]", zox_getn(e), state->value, left_stick.y, timer->value);
         }
         // If no input
         if (float_abs(left_stick.y) <= restore_joystick_cutoff) {
@@ -94,26 +98,16 @@ zox_sys2(ElementNavigationSystem) {
             }
             continue;
         }
+        if (dbg_log) {
+            zox_log("Navigator Navigating [%s]", zox_getn(e));
+        }
         // using selected window, we navigation elements of that... this could be done better
         // TODO: Move up to window, grab all navigation elements, then find one below?
         // Get Selected Index TODO: Make this a generic parent function
         sbyte selected_index = -1;
         entity window = zox_get_parent_by_id(world, current->value, zox_id(Window));
-        // entity parent = zox_get_parent(world, current->value);
         entity children[zox_children_capacity];
-        // uint children_length = 0;
-        // uint children_length = zox_get_children_by_id(world, parent, children, layouts2_children_capacity, zox_id(Selectable));
         uint children_length = zox_get_children_by_id_recursive(world, window, children, zox_children_capacity, zox_id(NavigationElement), 0);
-        /*iter it2 = zox_children(world, e);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count && children_length < zox_children_capacity; j++) {
-                entity e2 = it2.entities[j];
-                if (zox_valid(e2) && zox_has(e2, Button) && zox_has(e2, Header)) {
-                    children[children_length] = e2;
-                    children_length++;
-                }
-            }
-        }*/
         for (byte k = 0; k < children_length; k++) {
             entity child = children[k];
             if (child == current->value) {
@@ -141,7 +135,7 @@ zox_sys2(ElementNavigationSystem) {
                 timer->value += ui_navigation_timing;
             }
             if (dbg_log) {
-                zox_log("New Navigation Target UI [%s]", zox_get_name(target));
+                zox_log("New Navigation Target UI [%s]", zox_getn(target));
             }
         }
     }

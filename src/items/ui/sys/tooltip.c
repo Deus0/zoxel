@@ -28,6 +28,6 @@ zox_sys2(ItemIconTooltipSystem) {
         byte quantity = zox_has(e2, Quantity) ? zox_getv(e2, Quantity) : 1;
         char result[128];
         sprintf(result, "[%s] x%i\n", name, quantity);
-        set_entity_text(world, tooltip, result);
+        set_tooltip_text(world, e, tooltip, result);
     }
 } zox_sys_end(ItemIconTooltipSystem);

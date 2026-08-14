@@ -1,4 +1,14 @@
-# Refactoring #
+# Refactoring
+
+## Devops
+- We need docker libraries to be seperated from regular ones
+    - for docker.sh - add docker tag in linux.sh
+    - then make libs use seperate folder
+
+## Tooltips
+- Refactor Tooltips as events
+    - Make the event store multiple functions
+    # Probably the tooltips can all just be events - systems arnt needed for these
 
 ## Next
 - Remove Camera Datas - main_cameras ui_cameras

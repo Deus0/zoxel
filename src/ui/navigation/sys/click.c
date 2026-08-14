@@ -12,15 +12,15 @@ zox_sys2(DeviceClickSystem) {
         zox_sys_i(DeviceDisabled, disabled);
         zox_sys_i(RaycasterTarget, target);
         zox_sys_o(ClickingEntity, clicking);
-        if (disabled->value) {
+        if (disabled->value ||
+            !zox_valid(target->value) ||
+            !zox_has(target->value, RenderDisabled) ||
+            zox_getv(target->value, RenderDisabled)
+        ) {
             continue;
         }
         entity player = zox_get_parent(world, e);
-        if (!zox_valid(player) || !zox_has(player, CanvasLink)) {
-            continue;
-        }
-        entity canvas = zox_getv(player, CanvasLink);
-        if (!zox_valid(canvas)) {
+        if (!zox_valid(player)) {
             continue;
         }
         byte input_type = 0;
@@ -29,25 +29,18 @@ zox_sys2(DeviceClickSystem) {
         uint children_length = zox_get_children(world, e, children, children_capacity);
         for (uint j = 0; j < children_length; j++) {
             entity e2 = children[j];
-            if (!zox_valid(e2)) {
+            if (!zox_has(e2, ZeviceButton) || !zox_has(e2, DeviceButtonType)) {
                 continue;
             }
-            if (!zox_has(e2, ZeviceButton)) {
-                continue;
-            }
-            if (!zox_has(e2, DeviceButtonType)) {
+            if (zox_getv(e2, ZeviceDisabled)) {
                 continue;
             }
             byte button_type = zox_getv(e2, DeviceButtonType);
             if (button_type == zox_btn_a) {
-                byte disabled = zox_getv(e2, ZeviceDisabled);
-                if (!disabled) {
-                    continue;
-                }
-                zox_geter_value(e2, ZeviceButton, byte, value);
-                if (devices_get_pressed_this_frame(value)) {
+                byte clicked = zox_getv(e2, ZeviceButton);
+                if (devices_get_pressed_this_frame(clicked)) {
                     input_type = 1;
-                } else if (devices_get_released_this_frame(value)) {
+                } else if (devices_get_released_this_frame(clicked)) {
                     input_type = 2;
                 }
             }
@@ -62,6 +55,18 @@ zox_sys2(DeviceClickSystem) {
         if (input_type == 1) {
             clicking->value = target->value;
             on_element_clicked(world, player, clicking->value);
+            if (dbg_log) {
+                zox_log("Began Click [%s]", zox_getn(target->value));
+            }
+        } else if (input_type == 2) {
+            // released
+            if (target->value == clicking->value) {
+                on_element_released(world, player, target->value);
+            }
+            clicking->value = 0;
+            if (dbg_log) {
+                zox_log("Released Click [%s]", zox_getn(target->value));
+            }
         }
         if (input_type == 1) { // clicked
             if (zox_valid(target->value) && zox_has(target->value, Dragable)) {
@@ -77,12 +82,6 @@ zox_sys2(DeviceClickSystem) {
                     zox_log("Dragging UI [%s] Mode [%i]", zox_getn(target->value), drag_mode);
                 }
             }
-        } else if (input_type == 2) {
-            // released
-            if (target->value == clicking->value) {
-                on_element_released(world, player, target->value);
-            }
-            clicking->value = 0;
         }
     }
 } zox_sys_end(DeviceClickSystem);

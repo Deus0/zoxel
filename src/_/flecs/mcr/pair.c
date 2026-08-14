@@ -25,10 +25,32 @@ static inline byte zox_is_linked_internal(
     return ecs_has_pair(world, e, relation, target);
 }
 
-#define zox_link(world, e, T, target) zox_link_internal(world, e, zox_id(T), target)
-#define zox_unlink(world, e, T, target) zox_unlink_internal(world, e, zox_id(T), target)
-#define zox_is_linked(world, e, T, target) zox_is_linked_internal(world, e, zox_id(T), target)
+static inline entity zox_get_link_internal(
+    ecs *world,
+    entity e,
+    entity relation)
+{
+    return ecs_get_target(world, e, relation, 0);
+}
 
+static inline byte zox_is_linked_any_internal(
+    const ecs *world,
+    entity e,
+    entity relation)
+{
+    return ecs_has_pair(world, e, relation, EcsWildcard);
+}
+
+#define zox_link(world, e, T, target) \
+    zox_link_internal(world, e, zox_id(T), target)
+#define zox_unlink(world, e, T, target) \
+    zox_unlink_internal(world, e, zox_id(T), target)
+#define zox_is_linked(world, e, T, target) \
+    zox_is_linked_internal(world, e, zox_id(T), target)
+#define zox_get_link(world, e, T) \
+    zox_get_link_internal(world, e, zox_id(T))
+#define zox_is_linked_any(world, e, T) \
+    zox_is_linked_any_internal(world, e, zox_id(T))
 
 /*
  * Zox Pair Query Wrapper

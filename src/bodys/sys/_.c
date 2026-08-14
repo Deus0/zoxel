@@ -17,14 +17,6 @@ void define_systems_bodys(ecs* world) {
         [none] bones.Skeleton
         // [none] players.PlayerCharacter
     );
-    zox_system(
-        SlotItemTooltipSystem,
-        zoxp_update,
-        [in] interaction.SelectState,
-        [in] slots.DataLink,
-        [in] slots.SlotLink,
-        [none] elements2.Icon
-    );
     zox_system_1(
         CharacterBodySpawnSystem,
         zoxp_mainthread,
@@ -42,5 +34,13 @@ void define_systems_bodys(ecs* world) {
         [out] bones.BoneLinks,
         [out] bones.SkeletonDirty,
         [none] bones.Skeleton
+    );
+    zox_system(
+        SlotItemTooltipSystem,
+        zoxp_update,
+        [in] interaction.SelectState,
+        [in] slots.DataLink,
+        [in] slots.SlotLink,
+        [none] elements2.Icon
     );
 }

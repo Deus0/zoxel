@@ -14,6 +14,6 @@ entity2 spawn_player_cameras(ecs* world, entity app, entity player, byte camera_
     zox_set_parent(world, e2, app);
     zox_link(world, app, ViewportCamera, e2);
     zox_set_unique_name(e2, "camera_game_ui");
-    zox_log("PAIR camera: %i", zox_is_linked(world, app, ViewportCamera, e));
+    // zox_log("PAIR camera: %i", zox_is_linked(world, app, ViewportCamera, e));
     return (entity2) { e, e2 };
 }

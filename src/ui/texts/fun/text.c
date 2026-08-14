@@ -30,7 +30,8 @@ void set_zext(TextData* text, const char* ntext) {
         resize_TextData(text, length);
     }
     for (uint i = 0; i < length; i++) {
-        text->value[i] = convert_ascii(ntext[i]);
+        char ascii_char = ntext[i];
+        text->value[i] = convert_ascii(ascii_char);
     }
 }
 
@@ -55,15 +56,13 @@ void print_entity_zext(ecs *world, entity e) {
 
 byte set_entity_text(ecs* world, entity e, const char* text) {
     if (!zox_valid(e) || !zox_has(e, TextData) || !zox_has(e, TextDirty)) {
-        zox_log_error("invalid zext in [set_entity_text]")
+        zox_loge("invalid zext in [set_entity_text]")
         return 0;
     }
-    zox_mut_begin(e, TextData, tdata);
+    zox_muter(e, TextData, tdata);
     if (!is_zext(tdata, text)) {
         set_zext(tdata, text);
-        zox_mut_end(e, TextData);
-        zox_muter(e, TextDirty, dirty);
-        dirty->value = zox_dirty_trigger;
+        zox_setm(e, TextDirty, zox_dirty_trigger);
         return 1;
     } else {
         return 0;

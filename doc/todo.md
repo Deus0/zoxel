@@ -2,24 +2,27 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- for docker - add docker tag in linux.sh
-    - then make libs use seperate folder
+- Refactor the taskbar button to window using links
+    - Fix taskbars again properly linking to windows
+
+## Gamepads
+- Tooltip should just be at top right of screen when finger is off ui
 
 ## Touchscreen
 - Fix post procesing on android
 - make jump button use - ClickingEvent instead of ClickEvent
     - so we can hold jump button
     - Make button activate while holding - on clicked rather than first click
-- Tooltip should just be at top right of screen when finger is off ui
 
 ## New
 - Add ui scale onto options
 - Add auto jump option - for touchscreen + option to disable
-- Add verersion build date to main menu bottom right
+- Add Version of build date to main menu bottom right
 - Raycast x 4, for player, and compare results
     - so we dont get shuffling between cubes when camera shakes
     - like squarecast
 - Check when spawning if we are inside blocks
+- add controller vibration support
 
 ## Whimsy
 - Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
@@ -29,7 +32,6 @@ used - 200-400mb used
 - Stress test mode - add a multiplying slime that dies fast
 
 
-- Fix taskbars again properly linking to windows
 - stats panel didnt spawn when respawn
 
 ## Game UI

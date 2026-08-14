@@ -44,7 +44,7 @@ zox_sys2(StatIconTooltipSystem) {
         } else {
             sprintf(result, "[%s]\n", name);
         }
-        set_entity_text(world, tooltip, result);
+        set_tooltip_text(world, e, tooltip, result);
     }
 } zox_sys_end(StatIconTooltipSystem);
 

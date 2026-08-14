@@ -1,7 +1,6 @@
 #include "click_event.c"
 #include "mouse_element.c"
 #include "click_zevice.c"
-#include "click_device.c"
 #include "keyboard_click.c"
 #include "raycast.c"
 #include "selected.c"
@@ -140,14 +139,3 @@ void zox_define_systems_interaction(ecs* world) {
         [none] elements.Element
     );
 }
-
-
-    // NOTE: Has to be after raycasting system
-    /*zox_system(
-        DeviceClickSystem,
-        zoxp_update,
-        [in] inputs.DeviceDisabled,
-        [in] raycasts.RaycasterTarget,
-        [out] interaction.ClickingEntity,
-        [none] inputs.Device
-    );*/

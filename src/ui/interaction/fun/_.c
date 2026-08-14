@@ -22,8 +22,8 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
         return;
     }
     if (zox_has(e, RaycasterTarget)) {
-        entity last_target = zox_get_value(e, RaycasterTarget)
-        if (zox_valid(last_target)) {
+        entity last_target = zox_getv(e, RaycasterTarget);
+        if (zox_valid(last_target) && zox_has(last_target, SelectState)) {
             zox_setm(last_target, SelectState, zox_state_deselect_trigger);
             // zox_set(last_target, SelectStateDirty, { zox_dirty_trigger });
         }
@@ -37,12 +37,9 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
     uint count = zox_get_children(world, e, children, layouts2_children_capacity);
     for (uint i = 0; i < count; i++) {
         entity child = children[i];
-        if (!zox_valid(child)) {
-            continue;
-        }
         set_raycast_target_children(world, child, target);
     }
-    entity devices[zox_children_capacity];
+    /*entity devices[zox_children_capacity];
     uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
     for (uint j = 0; j < length; j++) {
         entity e2 = devices[j];
@@ -50,7 +47,7 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
             continue;
         }
         set_raycast_target_children(world, e2, target);
-    }
+    }*/
 }
 
 void raycaster_select_element(ecs *world, entity raycaster, entity element) {

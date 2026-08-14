@@ -31,13 +31,6 @@ void dispose_##T(T *ptr) { \
     ptr->length = 0;\
 }\
 \
-/* this assumes we setting the data anyway */ \
-void dispose_##T##_const(const T *ptr) {\
-    if (ptr->value) {\
-        free(ptr->value);\
-    }\
-}\
-\
 ECS_MOVE(T, dst, src, { \
     dst->value = src->value; \
     dst->length = src->length; \

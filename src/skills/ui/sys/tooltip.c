@@ -27,7 +27,7 @@ zox_sys2(SkillIconTooltipSystem) {
         const char* name = zox_has(e2, ZoxName) ? zox_gett_value(e2, ZoxName) : zox_get_name(e2);
         char result[128];
         sprintf(result, "[%s] lvl [1]\n", name);
-        set_entity_text(world, tooltip, result);
+        set_tooltip_text(world, e, tooltip, result);
         // zox_log("Skill Tooltip [%s]", result);
     }
 } zox_sys_end(SkillIconTooltipSystem);

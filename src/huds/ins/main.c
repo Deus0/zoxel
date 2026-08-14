@@ -1,29 +1,14 @@
-byte tooltip_event_main_menu(ecs *world, const TooltipEventData *data) {
-    set_entity_text(world, data->tooltip, "hello world");
+// TODO: Just use generic event for TooltipText and add static texts on these buttons
+
+/*byte tooltip_event_main_menu(ecs *world, const TooltipEventData *data) {
+    set_tooltip_text(world, data->ui, data->tooltip, "hello world");
     return 1;
 }
 
 byte tooltip_event_zoxel_header(ecs* world, const TooltipEventData *data) {
-    set_entity_text(world, data->tooltip, "v0.0.1");
+    set_tooltip_text(world, data->ui, data->tooltip, "v0.0.1");
     return 1;
-}
-
-byte tooltip_event_main_menu_1(ecs* world, const TooltipEventData *data) {
-    set_entity_text(world, data->tooltip, "Load Game");
-    return 1;
-}
-byte tooltip_event_main_menu_2(ecs* world, const TooltipEventData *data) {
-    set_entity_text(world, data->tooltip, "New Game");
-    return 1;
-}
-byte tooltip_event_main_menu_3(ecs* world, const TooltipEventData *data) {
-    set_entity_text(world, data->tooltip, "Options");
-    return 1;
-}
-byte tooltip_event_main_menu_4(ecs* world, const TooltipEventData *data) {
-    set_entity_text(world, data->tooltip, "Exit Game");
-    return 1;
-}
+}*/
 
 // List Menus adjust to the menu size
 entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
@@ -32,11 +17,11 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     byte header_font_size = 32 * ui_scale;
     byte list_font_size = zox_huds_element_font_size * ui_scale;
     byte2 padding = byte2_single(8 * ui_scale);
-    char header[128];
+    char header_text[128];
     {
-        strncpy(header, base_header, sizeof(base_header) - 1);
-        header[sizeof(base_header) - 1] = '\0';
-        header[0] = ascii_to_upper(base_header[0]);
+        strncpy(header_text, base_header, sizeof(base_header) - 1);
+        header_text[sizeof(base_header) - 1] = '\0';
+        header_text[0] = ascii_to_upper(base_header[0]);
     }
     char *label_continue;     // "old blood";
     char *label_new;            // "fresh meat / Wander
@@ -82,25 +67,27 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     }
     ClickEvent close_event = { NULL };
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, header, header_font_size, list_font_size, close_event, 0, 0, 0, window_alignment, window_anchor, padding, spawned, elements, elements_count, elements_count);
+    entity3 e3 = spawn_window_list(world, prefab_window, player, header_text, header_font_size, list_font_size, close_event, 0, 0, 0, window_alignment, window_anchor, padding, spawned, elements, elements_count, elements_count);
     entity e = e3.x;
     zox_set_unique_name(e, "main_menu");
     zox_add_tag(e, MenuMain);
     zox_add_tag(e, NavigationWindow);
-    zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
+    entity header = e3.z;
+    zox_add_tooltip_text(world, header, "v0.0.1");
+    // zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
     // NOTE: For some reason it was throwing errors if i didnt check the outputs here? for entities....
     int j = 0;
     if (can_load) {
-        entity b = spawned[j++];
-        if (b) zox_set(b, TooltipEvent, { &tooltip_event_main_menu_1 });
+        entity load_button = spawned[j++];
+        zox_add_tooltip_text(world, load_button, "Load Game");
     }
     entity b2 = spawned[j++];
+    zox_add_tooltip_text(world, b2, "New Game");
     entity b3 = spawned[j++];
-    if (b2) zox_set(b2, TooltipEvent, { &tooltip_event_main_menu_2 });
-    if (b3) zox_set(b3, TooltipEvent, { &tooltip_event_main_menu_3 });
+    zox_add_tooltip_text(world, b3, "Options");
     if (can_exit) {
-        entity b = spawned[j++];
-        if (b) zox_set(b, TooltipEvent, { &tooltip_event_main_menu_4 });
+        entity exit_button = spawned[j++];
+        zox_add_tooltip_text(world, exit_button, "Exit Game");
     }
     for (int i = 0; i < elements_count; i++) {
         zox_set_unique_name(spawned[i], "main_menu_button");

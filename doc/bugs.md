@@ -1,6 +1,9 @@
 # Bugs #
 - Sometimes crashes still
 
+## Inputs
+- New gamepads turned on mid game - dont get added
+
 ## Physics
 - Fix low frame rates - clip through ground - by checking deltas between intersections
 

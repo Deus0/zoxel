@@ -32,6 +32,6 @@ zox_sys2(SlotItemTooltipSystem) {
         const char* slot_name = slot_type < slot_names_length ? slot_names[slot_type] : "unknown";
         char result[128];
         sprintf(result, "[%s]\n- Slot [%s]%s\n", name, slot_name, zox_valid(body) ? "+" : "");
-        set_entity_text(world, tooltip, result);
+        set_tooltip_text(world, e, tooltip, result);
     }
 } zox_sys_end(SlotItemTooltipSystem);

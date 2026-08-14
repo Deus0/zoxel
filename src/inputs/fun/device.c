@@ -51,7 +51,7 @@ byte gamepad_is_any_input(ecs* world, entity e) {
         if (zox_has(e2, ZeviceButton)) {
             byte button = zox_getv(e2, ZeviceButton);
             if (devices_get_pressed_this_frame(button)) {
-                zox_log("Gamepad Button Clicked");
+                // zox_log("Gamepad Button Clicked");
                 return 1;
             }
         }

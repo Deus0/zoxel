@@ -3,11 +3,11 @@
 
 byte inspector_label_tooltip(ecs *world, const TooltipEventData *data) {
 
-    entity label = data->triggered;
+    entity label = data->ui;
     entity tooltip = data->tooltip;
 
     if (!zox_valid(label) || !zox_has(label, TooltipText)) {
-        zox_log_error("Invalid Tooltip UI");
+        zox_loge("Invalid Tooltip UI");
         return 0;
     }
 

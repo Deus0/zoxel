@@ -27,37 +27,48 @@ void raycaster_select_first_button(ecs *world, entity e, entity window) {
         zox_loge("Window has no NavigationElements [%s]", zox_get_name(window));
         return;
     }
-    zox_log("Navigation Beginning on Window [%s] element [%s]", zox_get_name(window), zox_get_name(button));
+    // zox_log("Navigation Beginning on Window [%s] element [%s]", zox_get_name(window), zox_get_name(button));
     raycaster_select_element(world, e, button);
 }
 
-// This system needs no selection
+// NOTE: This is for gamepads to select ui in window
 zox_sys2(ElementNavigationBeginSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceMode);
-    zox_sys_in(CanvasLink);
+    zox_sys_in(DeviceDisabled);
     zox_sys_out(RaycasterTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceMode, dmode);
-        zox_sys_i(CanvasLink, canvas);
+        zox_sys_i(DeviceDisabled, disabled);
         zox_sys_o(RaycasterTarget, current);
-        if (zox_valid(current->value)) {
+        if (disabled->value || zox_valid(current->value)) {
             continue;
         }
-        byte device_mode = dmode->value;
+        if (dbg_log >= 2) {
+            zox_log("Navigator Seeking [%s]", zox_getn(e));
+        }
+        entity player = zox_get_parent(world, e);
+        if (!zox_valid(player) ||
+            !zox_has(player, DeviceMode) ||
+            !zox_has(player, CanvasLink)
+        ) {
+            zox_loge("Invalid Player on [Navigator]");
+            continue;
+        }
+        byte device_mode = zox_getv(player, DeviceMode);
         if (keyboard_navigation_mode && device_mode == zox_device_mode_keyboardmouse) {
             device_mode = zox_device_mode_gamepad;
         }
         if (device_mode != zox_device_mode_gamepad) {
             continue;
         }
-        if (!zox_valid(canvas->value)) {
+        entity canvas = zox_getv(player, CanvasLink);
+        if (!zox_valid(canvas)) {
             zox_logw("Canvas is missing from Player");
             continue;
         }
-        entity window = zox_get_child_by_id(world, canvas->value, zox_id(NavigationWindow));
+        entity window = zox_get_child_by_id(world, canvas, zox_id(NavigationWindow));
         if (!window) {
             continue;
         }

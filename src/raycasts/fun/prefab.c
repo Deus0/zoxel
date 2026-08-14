@@ -17,4 +17,5 @@ void prefab_set_game_prefabs(ecs *world) {
     prefab_add_element_raycaster(world, prefab_zevice_pointer);
     // prefab_add_element_raycaster(world, prefab_finger);
     // prefab_add_element_raycaster(world, prefab_player);
+    zox_prefab_set(prefab_gamepad, RaycasterTarget, { 0 });
 }

@@ -21,8 +21,8 @@
 #define zoxp_cameras zoxp_transforms + 1
 // system based
 #define zoxp_state zoxp_start
-#define zoxp_reset zoxp_post_update
-#define zoxp_destroy zoxp_post_update
+#define zoxp_reset EcsPostUpdate
+#define zoxp_destroy EcsPostUpdate
 // doesnt seem to mind if its in same frame as zoxp_cameras
 // Inputs
 #define zoxp_inputs_reset zoxp_reset

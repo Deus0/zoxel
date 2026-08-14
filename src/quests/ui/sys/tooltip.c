@@ -35,6 +35,6 @@ zox_sys2(QuestIconTooltipSystem) {
         } else {
             sprintf(result, "[%s]: find ???", name);
         }
-        set_entity_text(world, tooltip, result);
+        set_tooltip_text(world, e, tooltip, result);
     }
 } zox_sys_end(QuestIconTooltipSystem);
