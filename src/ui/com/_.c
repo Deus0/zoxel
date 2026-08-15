@@ -1,8 +1,6 @@
 // Core Elements
 zox_tag(Element);
 zox_tag(Element2D);
-// zox_tag(ElementRender);
-zoxc_byte(ElementLayer);
 zoxc_entity(ElementLink);
 zoxc_entities(ElementLinks)
 zoxc_child(ElementHolder, ElementLinks)
@@ -19,7 +17,6 @@ zoxc_byte(NavigatorState);
 zoxc_double(NavigatorTimer);
 // Bars
 zoxc_float(BarLevel);
-// zoxc_float2(ElementBarSize);
 zoxc_byte(FontSize);
 zoxc_byte(ElementFontSize);
 // Misc
@@ -28,7 +25,6 @@ zox_tag(MouseElement);
 void zox_define_components_elements(ecs *world) {
     zoxd_tag(Element);
     zoxd_tag(Element2D);
-    zoxd_byte(ElementLayer);
     zoxd_entity(ElementLink);
     zoxd_entities(ElementLinks);
     zoxd(UIHolderLink);
@@ -46,7 +42,6 @@ void zox_define_components_elements(ecs *world) {
     zoxd_tag(MouseElement);
     zoxd_byte(ElementFontSize);
     zoxd_float(BarLevel);
-    // zoxd_float2(ElementBarSize);
     // Canvas
     zoxd_tag(CanvasOverlay);
 }

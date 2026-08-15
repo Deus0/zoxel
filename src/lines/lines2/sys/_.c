@@ -9,7 +9,7 @@ void define_systems_line2(ecs* world) {
         [in] transforms2.LinePoints2,
         [in] lines.LineThickness,
         [in] colorz.Color,
-        [in] layouts.Layer2D,
+        [in] layouts.Layer,
         [none] Line2D,
         [none] ElementLine2D
     );

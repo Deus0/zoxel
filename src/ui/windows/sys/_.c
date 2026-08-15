@@ -16,10 +16,11 @@ void define_systems_windows(ecs* world) {
     zox_system(
         WindowLayerSystem,
         zoxp_update,
-        [in] SetWindowLayer,
-        [out] WindowLayer,
-        [out] layouts.Layer2D,
-        [none] Window
+        // [in] SetWindowLayer,
+        [in] windows.WindowLayer,
+        [out] layouts.Layer,
+        [none] windows.Window,
+        [none] windows.WindowLayerDirty
     );
     zox_system(
         WindowElementClickedSystem,
@@ -34,6 +35,13 @@ void define_systems_windows(ecs* world) {
         [in] inputs.DeviceButtonType,
         [in] inputs.ZeviceButton,
         [none] inputs.Zevice
+    );
+    zox_system(
+        KeyboardCancelMenuSystem,
+        zoxp_update,
+        [in] inputs.DeviceDisabled,
+        [in] inputs.Keyboard,
+        [none] inputs.Device
     );
     zox_system(
         CanvasBoundsSystem,

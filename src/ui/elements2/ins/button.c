@@ -35,6 +35,6 @@ entity spawn_button_old(ecs *world, LayoutParentData canvas_data, LayoutParentDa
     zox_set(e, ElementOutlineColor, { button_data.outline });
     set_element_spawn_data(world, e, canvas_data, parent, element_data);
     entity text = spawn_text(world, button_data.prefab_text, e, int2_zero, float2_half, zext_data.font_size, zext_data.alignment, zext_data.margins, zext_data.text, zext_data.font_fill_color, zext_data.font_outline_color);
-    zox_set(text, Layer2D, { element_data.layer + 1 });
+    zox_set(text, Layer, { element_data.layer + 1 });
     return e;
 }

@@ -134,7 +134,7 @@ void zox_define_systems_basics3(ecs* world) {
     zox_render3_system(2,
         Element3RenderSystem,
         [in] rendering.RenderDisabled,
-        [in] layouts.Layer2D,
+        [in] layouts.Layer,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,

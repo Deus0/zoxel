@@ -14,11 +14,11 @@ entity2 spawn_label3(ecs *world, const char* text, byte font_size, color fill, c
     output.x = e;
     {
         entity panel = spawn_uic(world, prefab_frame3, e, float2_centre, int2_zero, canvas_size, canvas_size, fill, outline);
-        // zox_setv(panel, Layer2D, 0);
+        // zox_setv(panel, Layer, 0);
         {
             entity e2 = spawn_text(world, prefab_text3, panel, int2_zero, float2_centre, font_size, zox_alignment_centre, padding, text, font_fill, font_outline);
             zox_setv(e2, LayoutSize, canvas_size);
-            zox_setv(e2, Layer2D, 1);
+            zox_setv(e2, Layer, 1);
             output.y = e2;
         }
     }

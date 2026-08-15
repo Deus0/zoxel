@@ -22,7 +22,7 @@ void initialize_element(ecs *world, entity e, entity parent, entity canvas, int2
     zox_set(e, LayoutPosition, { position });
     zox_set(e, Anchor, { anchor });
     zox_set(e, LayoutSize, { size });
-    zox_set(e, Layer2D, { layer });
+    zox_set(e, Layer, { layer });
     if (canvas == parent) {
         zox_set(canvas, WindowToTop, { e });
     }

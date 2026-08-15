@@ -17,7 +17,7 @@ zox_sys2(Element3RenderSystem) {
     const MaterialTextured3D* attributes = NULL;
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
-    zox_sys_in(Layer2D);
+    zox_sys_in(Layer);
     zox_sys_in(TransformMatrix);
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
@@ -26,7 +26,7 @@ zox_sys2(Element3RenderSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDisabled, disabled);
-        zox_sys_i(Layer2D, layer);
+        zox_sys_i(Layer, layer);
         zox_sys_i(TransformMatrix, matrix);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, uvs);

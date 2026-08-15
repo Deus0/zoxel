@@ -6,7 +6,7 @@ entity spawn_statbar2(ecs* world, entity parent, entity stat, int2 position, int
     byte2 padding = (byte2) { 16, 8 };    // text?
     color back_color = (color) { fill.r / 2, fill.g / 2, fill.b / 2, back_bar_color.a };
     color front_color = (color) { fill.r, fill.g, fill.b, back_bar_color.a };
-    entity2 e2 = spawn_bar2(
+    entity2 e2 = spawn_ui_bar(
         world,
         prefab_statbar2,
         parent,

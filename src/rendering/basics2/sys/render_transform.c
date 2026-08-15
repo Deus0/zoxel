@@ -162,7 +162,7 @@ zox_sys2(ElementRenderMatrixSystem) {
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
     zox_sys_in(TransformMatrix);
-    zox_sys_in(Layer2D);
+    zox_sys_in(Layer);
     zox_sys_in(Brightness);
     zox_sys_in(Alpha);
     zox_sys_in(MeshGPULink);
@@ -170,7 +170,7 @@ zox_sys2(ElementRenderMatrixSystem) {
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Layer2D, layer);
+        zox_sys_i(Layer, layer);
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(Alpha, alpha);
         zox_sys_i(Brightness, brightness);

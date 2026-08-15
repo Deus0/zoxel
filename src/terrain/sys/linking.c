@@ -102,7 +102,10 @@ zox_sys2(ChunkLinkSystem) {
         if (zox_valid(link->value) && zox_has(e, DisableMovement)) {
             zox_remove(e, DisableMovement);
         } else if (!zox_valid(link->value) && !zox_has(e, DisableMovement)) {
-            zox_add(e, DisableMovement);
+            // check if in space here
+            if (new_chunk_position.y <= render_distance_y) {
+                zox_add(e, DisableMovement);
+            }
         }
     }
 } zox_sys_end(ChunkLinkSystem);

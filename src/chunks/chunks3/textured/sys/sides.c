@@ -12,7 +12,10 @@ byte zox_sides_only_target_depth = 0;
 
 // Sides System will generate our chunk sides before rendering
 // TODO: Let Colored use this too
-static inline byte is_node_solid(const byte* solidity, const VoxelNode* node) {
+static inline byte is_node_solid(
+    const byte* solidity,
+    const VoxelNode* node)
+{
     byte value = node->value;
     if (!value) {
         return 0;
@@ -22,7 +25,13 @@ static inline byte is_node_solid(const byte* solidity, const VoxelNode* node) {
 
 // delves down a voxel node, but only one one side
 // Returns 0 if any Air
-byte get_node_sides_all_solid(const byte* solidity, const VoxelNode* node, byte axis, byte side, byte distance) {
+byte get_node_sides_all_solid(
+    const byte* solidity,
+    const VoxelNode* node,
+    byte axis,
+    byte side,
+    byte distance)
+{
     if (!node) {
         // zox_log_error("get_node_sides_all_solid has invalid node.");
         return 0;
@@ -49,25 +58,18 @@ byte get_node_sides_all_solid(const byte* solidity, const VoxelNode* node, byte 
             return 0;
         }
     }
-    /*for (byte i = 0; i < octree_length; i++) {
-        const VoxelNode* child = &kids[i];
-        // NOTE: Our bytes arrays reads z, y, x for some reason
-        byte child_side = (i >> (2 - axis)) & 1;
-        if (child_side != side) {
-            continue;
-        }
-        // check underneath nodes
-        if (!get_node_sides_all_solid(solidity, child, axis, side, distance)) {
-            return 0;
-        }
-    }*/
     // NOTE: if all children pass, they are all solid
     return 1;
 }
 
-byte get_adjacent_depth(byte depth, const byte* ndepths, int3 position, byte direction) {
+byte get_adjacent_depth(
+    byte depth,
+    const byte* neighbor_depths,
+    int3 position,
+    byte direction)
+{
     if (is_on_edge_octree(depth, position, direction)) {
-        return ndepths[direction];
+        return neighbor_depths[direction];
     } else {
         return depth;
     }
@@ -89,6 +91,10 @@ static inline byte build_voxel_sides(
     int3 positioni = byte3_to_int3(position);
     const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(neighbor_voxels, root, positioni, depth, direction);
     if (!adjacent_node) {
+        // NOTE: Adds rendered facefor top of world
+        if (direction == direction_up) {
+            return 1;
+        }
         return 0;
     }
     if (zox_dbg_render_all_sides) {
@@ -96,7 +102,11 @@ static inline byte build_voxel_sides(
     }
     // Accounts for Dig vs Render Difference
     byte adjacent_solid;
-    byte adjacent_depth = get_adjacent_depth(depth, neighbor_depths, positioni, direction);
+    byte adjacent_depth = get_adjacent_depth(
+        depth,
+        neighbor_depths,
+        positioni,
+        direction);
     if (adjacent_depth > depth) {
         byte dist = adjacent_depth - depth;
         SideInfo side = side_infos[direction];
@@ -118,7 +128,18 @@ static inline byte build_voxel_sides(
 }
 
 
-static inline byte build_sides_dig(const byte* solids, const VoxelNode* root, const VoxelNode** neighbor_voxels, const byte* neighbor_depths, const VoxelNode* voxels, SidesOctree* sides, byte target_depth, byte depth, byte3 position, byte dbg_log) {
+static inline byte build_sides_dig(
+    const byte* solids,
+    const VoxelNode* root,
+    const VoxelNode** neighbor_voxels,
+    const byte* neighbor_depths,
+    const VoxelNode* voxels,
+    SidesOctree* sides,
+    byte target_depth,
+    byte depth,
+    byte3 position,
+    byte dbg_log)
+{
     // NOTE: if air we stop here at any branch node
     // NOTE: Assumes voxel octree has optimized for solid non air values first
     byte value = voxels->value;
@@ -142,8 +163,6 @@ static inline byte build_sides_dig(const byte* solids, const VoxelNode* root, co
                 return 0;
             }
         }
-        // byte3 child_position = position;
-        // child_position = byte3_mul1(child_position, 2);
         byte3 child_position = {
             position.x << 1,
             position.y << 1,

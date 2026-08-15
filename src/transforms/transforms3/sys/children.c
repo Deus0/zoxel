@@ -17,6 +17,9 @@ static inline void set_position_rotation_scale_recursive(
         // zox_loge("Transform Components Invalid [%s]", zox_getn(e));
         return;
     }
+    if (zox_has(e, IgnoreParentRotation)) {
+        parent_rotation = zox_has(e, Rotation3D) ? zox_getv(e, Rotation3D) : quaternion_identity;
+    }
     byte updated = 0;
     float3 local_position = zox_has(e, LocalPosition3D) ? zox_getv(e, LocalPosition3D) : float3_zero;
     float4 local_rotation = zox_has(e, LocalRotation3D) ? zox_getv(e, LocalRotation3D) : quaternion_identity;

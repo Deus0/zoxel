@@ -94,11 +94,11 @@ zox_sys2(InspectorSpawnSystem) {
             zox_log_error("Scrollview [%s] Invalid ListUI", zox_get_name(scrollview->value));
             continue;
         }
-        if (!zox_has(list_ui, Layer2D) || !zox_has(list_ui, ListVisible)) {
+        if (!zox_has(list_ui, Layer) || !zox_has(list_ui, ListVisible)) {
             zox_log_error("List UI [%s] Invalid Components", zox_get_name(list_ui));
             continue;
         }
-        // zox_geter_value(list_ui, Layer2D, byte, scrollview_layer);
+        // zox_geter_value(list_ui, Layer, byte, scrollview_layer);
         // 1: Fetch Target Hierarchy Data
         byte_array_d* types = create_byte_array_d(4);
         entity_array_d* entitys = create_entity_array_d(4);
@@ -137,7 +137,7 @@ zox_sys2(InspectorSpawnSystem) {
         }
         // Spawn new buttons
         byte visible = zox_getv(list_ui, ListVisible);
-        byte button_layer = zox_getv(list_ui, Layer2D) + 1;
+        byte button_layer = zox_getv(list_ui, Layer) + 1;
         byte button_text_layer = button_layer + 1;
         for (size_t j = 0; j < labels->size; j++) {
             const char* text = labels->data[j].text;
@@ -182,8 +182,8 @@ zox_sys2(InspectorSpawnSystem) {
             zox_set(e2.x, EntityTarget, { target });
             zox_set(e2.x, ComponentTarget, { component_id });
             zox_set(e2.x, ClickEvent, { on_click.value });
-            zox_set(e2.x, Layer2D, { button_layer });
-            zox_set(e2.y, Layer2D, { button_text_layer });
+            zox_set(e2.x, Layer, { button_layer });
+            zox_set(e2.y, Layer, { button_text_layer });
             // zox_set_parent(world, e2, list_ui);
             byte rendered = j < visible;
             zox_set(e2.x, RenderDisabled, { !rendered });

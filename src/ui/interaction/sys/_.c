@@ -19,7 +19,7 @@ void zox_define_systems_interaction(ecs* world) {
         raycast_query,
         [in] transforms2.Position2,
         [in] layouts.LayoutSize,   // use Size2
-        [in] layouts.Layer2D,
+        [in] layouts.Layer,
         [in] rendering.RenderDisabled,
         [none] elements.Element,
         [none] interaction.Selectable

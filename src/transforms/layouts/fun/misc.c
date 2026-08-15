@@ -7,7 +7,7 @@ void set_element_spawn_data(ecs *world, entity e, LayoutParentData canvas_data, 
     zox_set(e, LayoutPosition, { element_data.position });
     zox_set(e, LayoutSize, { element_data.size });
     zox_set(e, Anchor, { element_data.anchor });
-    zox_set(e, Layer2D, { element_data.layer });
+    zox_set(e, Layer, { element_data.layer });
     zox_set(e, CanvasLink, { canvas_data.e });
     // TODO: Canvas Dirty Flag?
     if (canvas_data.e == parent_data.e) {

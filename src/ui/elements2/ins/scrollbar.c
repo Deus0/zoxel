@@ -13,7 +13,7 @@ entity spawn_scrollbar(ecs *world, entity parent, int2 position, int2 size, int 
     zox_set(e, LayoutPosition, { position });
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { position_anchor });
-    zox_set(e, BonusLayer2, { 1 }); // increment it above the body of the window
+    zox_set(e, BonusLayer, { 1 }); // increment it above the body of the window
     zox_set(e, FillColor, { button_fill });
     zox_set(e, OutlineColor, { button_outline });
     zox_set(e, ElementMargins, { margins });

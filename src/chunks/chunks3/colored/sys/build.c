@@ -24,7 +24,12 @@ byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **ne
     byte side = reversed & 1;   // 0=negative side, 1=positive side
     // zox_log("axis [%i] side [%i] from direction [%i]", axis, side, reversed);
     // we need full distance here
-    return get_node_sides_all_solid(solidity, adjacent_node, axis, side, 8); // depth);
+    return get_node_sides_all_solid(
+        solidity,
+        adjacent_node,
+        axis,
+        side,
+        8); // depth);
 }
 
 void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees, mesh_colored_build_data* mesh, color_rgb voxel_color, float scale, float3 positionf, float3 bounds_offset, byte depth, byte3 position) {

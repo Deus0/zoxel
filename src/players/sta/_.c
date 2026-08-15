@@ -1,10 +1,11 @@
-#define zox_player_state_main_menu 0
+#define zox_player_state_main_menu_begin 0
+#define zox_player_state_main_menu 13
 // Startup Game
 #define zox_player_state_loading 1      // Stream Begins / camera set
 #define zox_player_state_new 2      // Stream Begins / camera set
 #define zox_player_state_starting 3     // Spawn starting character
 // Entering Play
-#define zox_player_state_play_begin_trigger 4
+#define zox_player_state_play_trigger 4
 #define zox_player_state_play_begin 5   // For Resume and Start states
 #define zox_player_state_playing 6
 // TODO: Use a different state in respawning

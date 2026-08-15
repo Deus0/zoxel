@@ -1,7 +1,7 @@
 void initialize_layout2(ecs *world, entity e, entity parent, int2 position, int2 size, float2 anchor, byte layer) {
     zox_set_parent(world, e, parent);
     zox_set(e, Anchor, { anchor });
-    zox_set(e, Layer2D, { layer });
+    zox_set(e, Layer, { layer });
     zox_set(e, LayoutSize, { size });
     zox_set(e, LayoutPosition, { position });
     // zox_set(e, CanvasLink, { canvas });

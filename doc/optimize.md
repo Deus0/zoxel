@@ -19,8 +19,8 @@
     - GenerateModel
     - BuildChunkSides
     - FindNeighbors
-    - Busy
-    - Ready
+    -x Busy
+    -x Ready
     -x RenderDepthDirty
     -x RenderDistanceDirty
     -x GenerateChunk

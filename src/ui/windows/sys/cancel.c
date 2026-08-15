@@ -23,23 +23,17 @@ zox_sys2(CancelMenuSystem) {
         if (!target) {
             target = zox_has(e, RaycasterTarget) ? zox_getv(e, RaycasterTarget) : 0;
         }
-        // check all zevices
-        /*iter it2 = zox_children(world, device);
-        while (zox_children_next(it2)) {
-            for (int i = 0; i < it2.count; i++) {
-                entity e2 = it2.entities[i];
-                if (zox_has(e2, RaycasterTarget)) {
-                    entity new_target = zox_getv(e2, RaycasterTarget);
-                    if (zox_valid(new_target)) {
-                        target = new_target;
-                        break;
-                    }
-                }
-            }
-        }*/
-        // zox_getv(device, RaycasterTarget);
         if (!zox_valid(target)) {
             // zox_log("No Raycast Target");
+            continue;
+        }
+        entity menu = zox_get_parent_by_id(world, target, zox_id(Window));
+        if (!zox_valid(menu)) {
+            continue;
+        }
+        entity close_button = zox_get_child_by_id_recursive(world, menu, zox_id(CloseButton));
+        if (!zox_valid(close_button)) {
+            // zox_log("No CloseButton found.");
             continue;
         }
         if (dbg_log) {
@@ -55,16 +49,7 @@ zox_sys2(CancelMenuSystem) {
         }
         // released
         if (is_cancel) {
-            entity menu = zox_get_parent_by_id(world, target, zox_id(Window));
-            if (!zox_valid(menu)) {
-                continue;
-            }
             // zox_log("Canceling Menu [%s]", zox_get_name(menu));
-            entity close_button = zox_get_child_by_id_recursive(world, menu, zox_id(CloseButton));
-            if (!zox_valid(close_button)) {
-                // zox_log("No CloseButton found.");
-                continue;
-            }
             entity player = zox_get_parent(world, device);
             // clicked state?
             if (dbg_log) {
@@ -75,3 +60,103 @@ zox_sys2(CancelMenuSystem) {
         }
     }
 } zox_sys_end(CancelMenuSystem);
+
+// NOTE: Player cancel the menu! (from keyboard)
+zox_sys2(KeyboardCancelMenuSystem) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(DeviceDisabled);
+    zox_sys_in(Keyboard);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(DeviceDisabled, disabled);
+        zox_sys_i(Keyboard, keyboard);
+        if (disabled->value) {
+            continue;
+        }
+        entity player = zox_get_parent(world, e);
+        entity target = 0;
+        /*entity target = zox_has(player, RaycasterTarget) ? zox_getv(player, RaycasterTarget) : 0;
+        if (!target) {
+            target = zox_has(e, RaycasterTarget) ? zox_getv(e, RaycasterTarget) : 0;
+        }*/
+        // NOTE: Should be on the mouse pointer
+        if (!target) {
+            iter it = zox_children(world, player);
+            while (zox_children_next(it)) {
+                for (int j = 0; j < it.count; j++) {
+                    entity device = it.entities[j];
+                    if (!zox_has(device, Device)) {
+                        continue;
+                    }
+                    if (zox_getv(device, DeviceDisabled)) {
+                        continue;
+                    }
+                    if (zox_has(device, RaycasterTarget)) {
+                        target = zox_getv(e, RaycasterTarget);
+                        if (zox_valid(target)) {
+                            break;
+                        }
+                    }
+                    iter it2 = zox_children(world, device);
+                    while (zox_children_next(it2)) {
+                        for (int k = 0; k < it2.count; k++) {
+                            entity zevice = it2.entities[k];
+                            if (!zox_has(zevice, Zevice)) {
+                                continue;
+                            }
+                            if (zox_getv(zevice, ZeviceDisabled)) {
+                                continue;
+                            }
+                            if (zox_has(zevice, RaycasterTarget)) {
+                                target = zox_getv(zevice, RaycasterTarget);
+                                if (zox_valid(target)) {
+                                    break;
+                                }
+                            }
+                        }
+                        if (zox_valid(target)) {
+                            break;
+                        }
+                    }
+                    if (zox_valid(target)) {
+                        break;
+                    }
+                }
+                if (zox_valid(target)) {
+                    break;
+                }
+            }
+        }
+        if (!zox_valid(target)) {
+            if (dbg_log) {
+                zox_log("Keyboard found no No RaycasterTarget");
+            }
+            continue;
+        }
+        entity menu = zox_get_parent_by_id(world, target, zox_id(Window));
+        if (!zox_valid(menu)) {
+            continue;
+        }
+        entity close_button = zox_get_child_by_id_recursive(world, menu, zox_id(CloseButton));
+        if (!zox_valid(close_button)) {
+            // zox_log("No CloseButton found.");
+            continue;
+        }
+        byte is_cancel = 0;
+        if (keyboard->escape.pressed_this_frame) {
+            is_cancel = 1;
+        }
+        // released
+        if (is_cancel) {
+            // clicked state?
+            if (dbg_log) {
+                zox_log("Player [%s] Clicking [%s]", zox_getn(player), zox_getn(close_button), zox_getn(menu));
+            }
+            on_element_clicked(world, player, close_button);
+            on_element_released(world, player, close_button);
+        }
+    }
+} zox_sys_end(KeyboardCancelMenuSystem);
+

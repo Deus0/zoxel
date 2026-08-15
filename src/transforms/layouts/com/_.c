@@ -5,8 +5,8 @@ zox_tag(Canvas3);
 zox_tag(BoundToCanvas);
 zox_tag(BoundToParent);
 zoxc_entity(CanvasLink);
-zoxc_byte(Layer2D);
-zoxc_byte(BonusLayer2); // for shifting things above others
+zoxc_byte(Layer);
+zoxc_byte(BonusLayer); // for shifting things above others
 // Positions
 zoxc_int2(LayoutPosition);
 zoxc_int2(CanvasPosition);
@@ -35,8 +35,8 @@ void define_components_layouts2(ecs* world) {
     zoxd_tag(BoundToCanvas);
     zoxd_tag(BoundToParent);
     zoxd_entity(CanvasLink);
-    zoxd_byte(Layer2D);
-    zoxd_byte(BonusLayer2);
+    zoxd_byte(Layer);
+    zoxd_byte(BonusLayer);
     // local positions
     zoxd_int2(LayoutPosition);
     zoxd_state(LayoutPositionDirty);

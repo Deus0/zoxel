@@ -30,7 +30,7 @@ zox_sys2(PlayerStateSystem) {
             } else if (state->value == zox_player_state_resume_begin) {
                 if (time_passed >= resume_time) {
                     timer->value = 0;
-                    state->value = zox_player_state_play_begin;
+                    state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
                     dirty->value = zox_dirty_trigger;
                     if (dbg_log) {
                         zox_log("Player is now [Play Begin]");
@@ -62,7 +62,7 @@ zox_sys2(PlayerStateSystem) {
             if (dbg_log) {
                 zox_log("Player is now starting from load.");
             }
-        } else if (state->value == zox_player_state_play_begin_trigger) {
+        } else if (state->value == zox_player_state_play_trigger) {
             // Enter state for between spawning character, use for UI Spawning delay
             state->value = zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
@@ -84,7 +84,7 @@ zox_sys2(PlayerStateSystem) {
                 zox_log("Player is now [Respawning] from [RespawnBegin]");
             }
         } else if (state->value == zox_player_state_respawn) {
-            state->value = zox_player_state_play_begin;
+            state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
             if (dbg_log) {
                 zox_log("Player is now [PlayBegin] from [Respawn]");

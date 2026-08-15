@@ -8,6 +8,6 @@ entity spawn_prefab_crosshair(ecs *world, entity prefab) {
     zox_set(e, FrameCorner, { crosshair_corner });
     zox_set(e, OutlineThickness, { crosshair_thickness });
     zox_add(e, FixToLayout);
-    zox_set(e, Layer2D, { 1 });
+    zox_set(e, Layer, { 1 });
     return e;
 }

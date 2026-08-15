@@ -13,7 +13,7 @@ entity spawn_device_gizmo(ecs* world, entity canvas, byte device_type) {
     // spawn it
     entity e = spawn_ui(world, prefab_element, canvas, position_anchor, position, size, size);
     zox_name("device_gizmo");
-    zox_set(e, Layer2D, { layer });
+    zox_set(e, Layer, { layer });
     zox_set(e, Alpha, { 1 });
     zox_set(e, AnimationStart, { zox_current_time });
     zox_set(e, FadeOutTime, { device_gizmo_fade_time });

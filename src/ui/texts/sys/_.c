@@ -39,7 +39,7 @@ void define_systems_texts(ecs *world) {
         [in] zigels.FontThickness,
         [in] zigels.FontOutlineThickness,
         [in] texts.TextResolution,
-        [in] layouts.Layer2D,
+        [in] layouts.Layer,
         [out] rendering.RenderDisabled,
         [none] texts.Zext,
     );

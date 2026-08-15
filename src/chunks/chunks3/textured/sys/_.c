@@ -36,6 +36,15 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] rendering.RenderDepth,
         [in] chunks3.VoxelNode,
         [in] chunks3.VoxelNodeDirty,
+        [none] chunks3.ChunkTextured
+    );
+    zox_system_1(
+        ChunkMeshSpawn2System,
+        zoxp_mainthread,
+        [in] transforms.TransformMatrix,
+        [in] rendering.RenderDisabled,
+        [in] rendering.RenderDepth,
+        [in] chunks3.VoxelNode,
         [out] chunks3.ChunkLodDirty,
         [none] chunks3.ChunkTextured
     );

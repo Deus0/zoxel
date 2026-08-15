@@ -17,7 +17,7 @@
     zox_sys_in(Position2);
     zox_sys_in(Rotation2);
     zox_sys_in(Scale1);
-    zox_sys_in(Layer2D);
+    zox_sys_in(Layer);
     zox_sys_in(Brightness);
     zox_sys_in(Alpha);
     zox_sys_in(MeshGPULink);
@@ -29,7 +29,7 @@
         zox_sys_i(Position2, position);
         zox_sys_i(Rotation2, rotation);
         zox_sys_i(Scale1, scale);
-        zox_sys_i(Layer2D, layer);
+        zox_sys_i(Layer, layer);
         zox_sys_i(Brightness, brightness);
         zox_sys_i(Alpha, alpha);
         zox_sys_i(MeshGPULink, mesh);

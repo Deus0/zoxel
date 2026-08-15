@@ -18,7 +18,7 @@ entity3 spawn_bar3(ecs *world, float3 position, float scale, int2 size, byte fon
             outline);
         output.y = panel;
         zox_add(panel, Elementbar);
-        zox_setv(panel, Layer2D, 0);
+        zox_setv(panel, Layer, 0);
         zox_setv(panel, BarLevel, 1);
         zox_set_unique_name(panel, "bar_panel");
         {
@@ -36,7 +36,7 @@ entity3 spawn_bar3(ecs *world, float3 position, float scale, int2 size, byte fon
                 fill2,
                 outline2);
             zox_add(e2, BarFront);
-            zox_setv(e2, Layer2D, 1);
+            zox_setv(e2, Layer, 1);
             zox_set_unique_name(e2, "frontbar");
         }
         {
@@ -54,7 +54,7 @@ entity3 spawn_bar3(ecs *world, float3 position, float scale, int2 size, byte fon
                 font_outline);
             output.z = e2;
             zox_setv(e2, LayoutSize, size);
-            zox_setv(e2, Layer2D, 2);
+            zox_setv(e2, Layer, 2);
             zox_set_unique_name(e2, "bar_label");
         }
     }

@@ -49,9 +49,9 @@ static inline void optimize_##T(T* node) { \
 static inline const T* get_nearby_##T(const T** octrees, byte3 position, byte depth, sbyte3 offset) { \
     return (const T*) octree_get_nearby((const void**) octrees, position, depth, offset, sizeof(T)); \
 } \
-static inline byte getv_nearby_##T(const T** octrees, byte3 position, byte depth, sbyte3 offset) { \
+static inline byte getv_nearby_##T(const T** octrees, byte3 position, byte depth, sbyte3 offset, byte oob_value) { \
     const T* thing = (const T*) octree_get_nearby((const void**) octrees, position, depth, offset, sizeof(T)); \
-    return thing ? thing->value : 0; \
+    return thing ? thing->value : oob_value; \
 }
 
 #define create_octree_reducer(T, type) \

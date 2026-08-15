@@ -2,12 +2,12 @@ entity spawn_prefab_player(ecs *world) {
     zox_prefab();
     zox_prefab_name("player");
     zox_add(e, Player);
-    zox_prefab_set(e, PlayerState, { zox_player_state_main_menu });
-    zox_prefab_set(e, PlayerStateDirty, { 0 });
-    zox_prefab_set(e, PlayerStateTimer, { 0 });
-    zox_prefab_set(e, PlayerRespawn, { 0 });
-    zox_prefab_set(e, PlayerPauseEvent, { 0 });
-    zox_prefab_set(e, GameLink, { 0 });
-    // zox_prefab_set(e, RealmLink, { 0 });
+    zox_setv(e, PlayerState, zox_player_state_main_menu);
+    zox_setv(e, PlayerStateDirty, 0);
+    zox_setv(e, PlayerStateTimer, 0);
+    zox_setv(e, PlayerRespawn, 0);
+    zox_setv(e, PlayerPauseEvent, 0);
+    zox_setv(e, GameLink, 0);
+    // zox_setv(e, RealmLink, { 0 });
     return e;
 }

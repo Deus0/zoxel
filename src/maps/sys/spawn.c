@@ -37,7 +37,7 @@ zox_sys2(MapInitializeSystem) {
             continue;
         }
         int2 size = zox_getv(body, LayoutSize);
-        byte layer = zox_getv(body, Layer2D);
+        byte layer = zox_getv(body, Layer);
         // NOTE: For now just set from origin or something
         zox_geter(terrain->value, TunkLinks, tunks);
         int2 margin_size = int2_single(4 * ui_scale);
@@ -66,7 +66,7 @@ zox_sys2(MapInitializeSystem) {
                 if (dbg_log) {
                     zox_log("   - Piece [%ix%i], Tunk [%ix%i]: %s", grid_position.x, grid_position.y, tunk_position.x, tunk_position.y, zox_valid(tunk) ? "Valid" : "Invalid");
                 }
-                zox_set(e2, Layer2D, { layer + 1 });
+                zox_set(e2, Layer, { layer + 1 });
                 zox_set(e2, Alpha, { alpha->value });
                 if (zox_dbg_maps == zox_dbg_maps_regions) {
                     zox_add(e2, RegionTexture);
@@ -85,10 +85,10 @@ zox_sys2(MapInitializeSystem) {
             zox_set_unique_name(e3, "map_player_arrow");
             zox_add(e3, MapArrow);
             zox_add(e3, ArrowTexture);
-            zox_setv(e3, Layer2D, layer + 2);
+            zox_setv(e3, Layer, layer + 2);
             zox_setv(e3, Rotation2, 0);
             zox_setv(e3, LocalRotation2, 0);
-            zox_setv(e3, BonusLayer2, 1);
+            zox_setv(e3, BonusLayer, 1);
             zox_setv(e3, PlayerLink, player->value);
             zox_setv(e3, Generate, zox_dirty_trigger);
             zox_setv(e3, OutlineThickness, arrow_thickness);

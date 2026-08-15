@@ -35,7 +35,7 @@ static inline void update_layout3_recursive(
         zox_has(e, Anchor) &&
         zox_has(e, LocalPosition3D))
     {
-        byte layer = zox_has(e, Layer2D) ? zox_getv(e, Layer2D) : 0;
+        byte layer = zox_has(e, Layer) ? zox_getv(e, Layer) : 0;
         int2 layout_position = zox_getv(e, LayoutPosition);
         float2 position_anchor = zox_getv(e, Anchor);
         zox_mut_begin(e, LocalPosition3D, local_position);

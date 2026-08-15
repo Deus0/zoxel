@@ -24,7 +24,7 @@ void zox_dbg_spawn_element_transforms(ecs *world, ClickEventData data) {
         zox_add(e2, Scale2);
         zox_add(e2, TransformMatrix);
         zox_set_unique_name(e2, "long_ui");
-        zox_set(e2, Layer2D, { layer + 1 });
+        zox_set(e2, Layer, { layer + 1 });
         zox_set(e2, LocalScale2, {{ -5, 1 }});
         {
             int2 position = (int2) { size / 2, 0 };
@@ -33,7 +33,7 @@ void zox_dbg_spawn_element_transforms(ecs *world, ClickEventData data) {
             zox_add(e3, Scale2);
             zox_add(e3, TransformMatrix);
             zox_set_unique_name(e3, "long_ui_marker");
-            zox_set(e3, Layer2D, { layer + 2 });
+            zox_set(e3, Layer, { layer + 2 });
             zox_set(e3, LocalScale2, {{ -0.1f, 2.0f }});
         }
     }

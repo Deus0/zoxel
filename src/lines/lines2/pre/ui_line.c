@@ -11,7 +11,7 @@ entity spawn_prefab_ui_line2D(ecs* world) {
     // zox_prefab_set(e, LineLocalPositionDirty, { 0 });
     zox_prefab_set(e, LineThickness, { 1 });
     zox_prefab_set(e, CanvasLink, { 0 });
-    zox_prefab_set(e, Layer2D, { 0 });    // use to render in order during ui render process
+    zox_prefab_set(e, Layer, { 0 });    // use to render in order during ui render process
     zox_prefab_set(e, Color, { { 255, 0, 0, 255 } });
     // zox_prefab_set(e, ChildIndex, { 0 });
     return e;

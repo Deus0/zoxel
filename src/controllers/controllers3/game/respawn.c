@@ -34,7 +34,7 @@ zox_sys2(Player3RespawnSystem) {
             byte is_character_alive = zox_valid(character->value) && !zox_getv(character->value, Dead);
             if (is_character_alive) {
                 zox_loge("Respawn [cancel] as character alive??? [%s]", zox_get_name(character->value));
-                state->value = zox_player_state_play_begin;
+                state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
                 dirty->value = zox_dirty_trigger;
             }
         }
@@ -47,7 +47,7 @@ zox_sys2(Player3RespawnSystem) {
         if (state->value == zox_player_state_respawn) {
             byte is_character_dead_or_gone = !zox_valid(character->value) || zox_getv(character->value, Dead);
             if (is_character_dead_or_gone) {
-                state->value = zox_player_state_play_begin;
+                state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
                 dirty->value = zox_dirty_trigger;
                 entity game = zox_get_parent(world, e);
                 entity realm = zox_getv(game, RealmLink);

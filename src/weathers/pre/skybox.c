@@ -2,7 +2,7 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_prefab();
     zox_prefab_name("skybox");
     zox_add(e, Skybox);
-    zox_prefab_set(e, Initialize, { 1 });
+    zox_add(e, IgnoreParentRotation);
     zox_prefab_set(e, Position3D, { float3_zero });
     zox_prefab_set(e, Rotation3D, { float4_identity });
     zox_prefab_set(e, Scale1, { 1 });
@@ -22,5 +22,6 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_prefab_set(e, Alpha, { 1 });
     prefab_set_mesh_indicies(world, e, cube_indicies_inverted, cube_indicies_length);
     prefab_set_mesh_vertices_float(world, e, cube_vertices_inverted, cube_vertices_f_length);
+    zox_prefab_set(e, Initialize, { 1 });
     return e;
 }

@@ -25,7 +25,7 @@ static void spawn_element3_tree(
         child_size,
         color_green,
         color_black);
-    zox_setv(left, Layer2D, 3);
+    zox_setv(left, Layer, 3);
     entity right = spawn_uic(
         world,
         prefab_frame3,
@@ -36,7 +36,7 @@ static void spawn_element3_tree(
         child_size,
         color_red,
         color_black);
-    zox_setv(right, Layer2D, 3);
+    zox_setv(right, Layer, 3);
     char name[64];
     snprintf(name, sizeof(name), "tree_%u_l", depth);
     zox_set_unique_name(left, name);
@@ -71,7 +71,7 @@ void zox_dbg_spawn_element3_tree(ecs *world, ClickEventData data) {
     dbg_element3_tree = e;
     {
         entity e2 = spawn_uic(world, prefab_frame3, e, float2_centre, int2_zero, canvas_size, canvas_size, (color) { 0, 155, 155, 155 }, color_black);
-        zox_setv(e2, Layer2D, 0);
+        zox_setv(e2, Layer, 0);
         zox_set_unique_name(e2, "dbg_background");
     }
     // Hierarchy Stress Test
@@ -86,7 +86,7 @@ void zox_dbg_spawn_element3_tree(ecs *world, ClickEventData data) {
             element_size,
             color_blue,
             color_black);
-        zox_setv(root, Layer2D, 3);
+        zox_setv(root, Layer, 3);
         zox_set_unique_name(root, "tree_root");
         spawn_element3_tree(
             world,

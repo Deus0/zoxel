@@ -14,7 +14,7 @@ zox_sys2(ZigelSpawnSystem) {
     zox_sys_in(FontThickness);
     zox_sys_in(FontOutlineThickness);
     zox_sys_in(TextResolution);
-    zox_sys_in(Layer2D);
+    zox_sys_in(Layer);
     zox_sys_out(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -27,7 +27,7 @@ zox_sys2(ZigelSpawnSystem) {
         zox_sys_i(FontThickness, fontThickness);
         zox_sys_i(FontOutlineThickness, fontOutlineThickness);
         zox_sys_i(TextResolution, textResolution);
-        zox_sys_i(Layer2D, layer);
+        zox_sys_i(Layer, layer);
         zox_sys_o(RenderDisabled, render_disabled);
         if (text_dirty->value != zox_dirty_active) {
             continue;

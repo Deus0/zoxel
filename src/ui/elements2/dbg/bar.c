@@ -1,6 +1,6 @@
 entity dbg_bar2;
 
-void zox_dbg_spawn_bar2(ecs *world, ClickEventData data) {
+void zox_dbg_spawn_ui_bar(ecs *world, ClickEventData data) {
     byte font_size = 16;
     byte2 padding = (byte2) { 8, 6 };
     int2 size = (int2) { font_size * 12 + padding.x * 2, font_size + padding.y * 2 };
@@ -23,7 +23,7 @@ void zox_dbg_spawn_bar2(ecs *world, ClickEventData data) {
     if (!zox_valid(camera)) {
         return;
     }
-    entity2 spawns = spawn_bar2(
+    entity2 spawns = spawn_ui_bar(
         world,
         prefab_bar2,
         canvas,

@@ -74,13 +74,13 @@ zox_sys2(ElementRaycastSystem) {
             zox_sys_begin_2();
             zox_sys_in_2(Position2);
             zox_sys_in_2(LayoutSize);
-            zox_sys_in_2(Layer2D);
+            zox_sys_in_2(Layer);
             zox_sys_in_2(RenderDisabled);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(RenderDisabled, disabled);
                 zox_sys_i_2(Position2, position2);
                 zox_sys_i_2(LayoutSize, lsize2);
-                zox_sys_i_2(Layer2D, layer);
+                zox_sys_i_2(Layer, layer);
                 if (disabled->value) {
                     continue;
                 }

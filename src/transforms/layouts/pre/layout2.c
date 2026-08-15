@@ -29,7 +29,7 @@ entity spawn_prefab_layout2(ecs *world) {
     zox_prefab_set(e, LayoutSizeDirty, { zox_dirty_trigger });
     // Canvas
     zox_prefab_set(e, Anchor, { float2_zero });
-    zox_prefab_set(e, Layer2D, { 0 });
+    zox_prefab_set(e, Layer, { 0 });
     // zox_prefab_set(e, CanvasPosition, { int2_zero });
     // zox_prefab_set(e, CanvasLink, { 0 });
     return e;

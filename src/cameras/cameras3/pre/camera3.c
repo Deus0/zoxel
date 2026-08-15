@@ -5,8 +5,8 @@ entity spawn_prefab_camera3D(ecs *world, entity prefab) {
     zox_add(e, Perspective);
     if (zox_use_post_processing) {
         zox_add(e, RenderCamera);
-        zox_prefab_set(e, CameraBlur, { 0 });
-        zox_prefab_set(e, CameraVignette, { game_vignette });
+        zox_setv(e, CameraBlur, main_menu_blur);
+        zox_setv(e, CameraVignette, main_menu_vignette);
     }
     return e;
 }

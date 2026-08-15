@@ -23,7 +23,7 @@ zox_sys2(PlayerGameStateSystem) {
                 }
                 zox_set(e2, PlayerState, { zox_player_state_loading });
             } else if (state->value == zox_game_start) {
-                zox_set(e2, PlayerState, { zox_player_state_main_menu });
+                zox_setv(e2, PlayerState, zox_player_state_main_menu_begin);
             } else if (state->value == zox_game_state_paused) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Paused", zox_get_name(e2));

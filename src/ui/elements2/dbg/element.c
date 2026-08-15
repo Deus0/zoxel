@@ -17,6 +17,6 @@ void zox_dbg_spawn_element(ecs *world, ClickEventData data) {
     int2 position = (int2) { size, size * 2 };
     entity element = spawn_uic(world, prefab_element_frame, canvas, float2_half, position, int2_single(size), int2_single(size), default_fill_color_icon, default_outline_color_icon);
     zox_set(canvas, WindowToTop, { element });
-    zox_set(element, Layer2D, { 1 });
+    zox_set(element, Layer, { 1 });
     zox_dbg_element = element;
 }

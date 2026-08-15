@@ -4,13 +4,10 @@ void set_layout_dirty_recursive(ecs* world, entity e) {
         return;
     }
     if (zox_has(e, LayoutPositionDirty)) {
-        zox_muter(e, LayoutPositionDirty, dirty);
-        dirty->value = zox_dirty_trigger;
-        // zox_log("+++ Position Dirty [%s] +++", zox_get_name(e));
+        zox_setm(e, LayoutPositionDirty, zox_dirty_trigger);
     }
     if (zox_has(e, LayoutSizeDirty)) {
-        zox_muter(e, LayoutSizeDirty, dirty);
-        dirty->value = zox_dirty_trigger;
+        zox_setm(e, LayoutSizeDirty, zox_dirty_trigger);
     }
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {
@@ -31,16 +28,12 @@ zox_sys2(CanvasResizeSystem) {
     zox_sys_in(AppLink);
     zox_sys_out(LayoutPosition);
     zox_sys_out(LayoutSize);
-    //zox_sys_out(LayoutPositionDirty);
-    //zox_sys_out(LayoutSizeDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ScreenToCanvas, ratio);
         zox_sys_i(AppLink, app);
         zox_sys_o(LayoutPosition, position);
-        // zox_sys_o(LayoutPositionDirty, pdirty);
         zox_sys_o(LayoutSize, size);
-        // zox_sys_o(LayoutSizeDirty, sdirty);
         if (!zox_valid(app->value)) {
             continue;
         }

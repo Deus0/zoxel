@@ -23,7 +23,7 @@
      {
          int2 position = (int2) { i * bounds.x, j * bounds.y };
          entity e2 = spawn_uic(world, prefab_element_frame, e, float2_half, position, int2_single(size), int2_single(size), default_fill_color_icon, default_outline_color_icon);
-         zox_set(e2, Layer2D, { layer + 1 });
+         zox_set(e2, Layer, { layer + 1 });
      }
      zox_dbg_element_canvas = e;
  }

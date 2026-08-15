@@ -22,7 +22,6 @@ typedef struct {
 // static data
 typedef struct {
     const mesh_uvs_build_data* mesh_data;
-    byte edge_voxel;
     const TilemapUVs* tilemap_uvs;
     const byte* voxel_solidity;
 } terrain_build_data;
@@ -86,8 +85,6 @@ static inline void zox_terrain_building_dig(terrain_build_data data, const Sides
     /*if (depth != target_depth) {
         zox_loge("Sides didn't reach target depth [%i < %i]", depth, target_depth);
     }*/
-// #ifdef zox_safety_checks
-// #endif
     if (dbg_log >= 2) {
         zox_log("Adding Chunk Textured Faces at [%ix%ix%i]", position.x, position.y, position.z);
     }
@@ -135,7 +132,6 @@ zox_sys2(ChunkTexturedBuildSystem) {
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
     zox_sys_out(MeshColorRGBs);
-    // zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(BuildMesh, build);
@@ -144,8 +140,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
-        // zox_sys_o(MeshDirty, upload);
-        if (build->value != zox_build_chunk_mesh_run) { //|| !active->value) {
+        if (build->value != zox_build_chunk_mesh_run) {
             continue;
         }
         // Get chunk data

@@ -48,7 +48,7 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Bar2",
-        .on_click = { &zox_dbg_spawn_bar2 },
+        .on_click = { &zox_dbg_spawn_ui_bar },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Window List",

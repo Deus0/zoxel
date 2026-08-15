@@ -3,6 +3,6 @@ entity spawn_label(ecs *world, entity prefab, entity parent, int2 position, floa
     zox_name("label");
     zox_set(e, FillColor, { fill });
     zox_set(e, OutlineColor, { fillo });
-    zox_set(e, Layer2D, { layer });
+    zox_set(e, Layer, { layer });
     return e;
 }

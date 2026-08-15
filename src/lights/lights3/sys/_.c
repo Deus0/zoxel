@@ -2,11 +2,12 @@
 #include "sunlight.c"
 #include "flood.c"
 #include "reduce.c"
-#include "trigger.c"
 #include "build.c"
 #include "build_smooth.c"
-#include "refresh.c"
+#include "trigger.c"
+#include "trigger_mesh.c"
 
+// Toggle the light systems
 void set_light_systems(ecs* world, byte is_lights) {
     zox_set_enabled(SunlightSystem, is_lights);
     zox_set_enabled(LightBeamSystem, is_lights);
@@ -14,11 +15,12 @@ void set_light_systems(ecs* world, byte is_lights) {
     zox_set_enabled(DarkLightSystem, is_lights);
     zox_set_enabled(VoxelLightSystem, is_lights);
     zox_set_enabled(ChunkColorsTriggerSystem, is_lights);
-    // zox_set_enabled(ChunkMeshColorsTriggerSystem, is_lights);
     zox_set_enabled(ChunkNeighborLightTriggerSystem, is_lights);
+    // zox_set_enabled(ChunkMeshColorsTriggerSystem, is_lights);
     // zox_set_enabled(BasicLightsBuildSystem, is_lights);
     zox_set_enabled(SmoothLightsBuildSystem, is_lights);
 }
+
 #include "settings.c"
 // TODO: Rename NodeDepth to OctreeDepth
 

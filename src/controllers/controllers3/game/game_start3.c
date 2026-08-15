@@ -156,7 +156,7 @@ zox_sys2(PlayerBeginSystem) {
         }
         if (zox_valid(character->value)) {
             zox_loge("Trying to load character twice [zox_player_state_starting]");
-            state->value = zox_player_state_play_begin;
+            state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
             continue;
         }
@@ -192,7 +192,7 @@ zox_sys2(PlayerBeginSystem) {
         if (mouse) {
             zox_set(mouse, MouseLock, { 1 });
         }
-        state->value = zox_player_state_play_begin_trigger;
+        state->value = zox_player_state_play_trigger;
         dirty->value = zox_dirty_trigger;
     }
 } zox_sys_end(PlayerBeginSystem);

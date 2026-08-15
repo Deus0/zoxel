@@ -1,10 +1,11 @@
 # Refactoring
 
+## Unsorted
 - Refactor settings spawning back to hooks
-
-## Next
+- Make Initialize a tag - dont fragment
+    - remove at end of frame
 - Make ChunkEntities use links instead of components
-- Remove DeviceLink from zevices
+- Remove DeviceLink from zevices, use parent
 - Remove Camera Datas - main_cameras ui_cameras
 - Remove DeviceLink from Zevice, use parent
 - Spawn finger entity during finger down - instead of just setting

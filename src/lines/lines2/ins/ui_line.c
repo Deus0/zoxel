@@ -37,7 +37,7 @@ entity spawn_ui_line2(
     };*/
     zox_set_parent(world, e, parent);
     zox_set(e, LayoutLinePoints, { point_a, point_b });
-    zox_set(e, Layer2D, { layer });
+    zox_set(e, Layer, { layer });
     zox_set(e, Color, { line_color });
     zox_set(e, LineThickness, { thickness });
     zox_set(e, LineAnchor, { anchor_a });

@@ -112,6 +112,13 @@ void define_systems_controllers3(ecs *world) {
         [out] players.PlayerState
     );
     zox_system(
+        CameraPlayerStateSystem,
+        zoxp_update,
+        [in] cameras.CameraLink,
+        [in] players.PlayerStateDirty,
+        [out] players.PlayerState
+    );
+    zox_system(
         DialogueExitSystem,
         zoxp_update,
         [in] triggers.TriggerActionE,

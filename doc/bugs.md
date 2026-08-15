@@ -17,6 +17,9 @@
 ## Physics
 - Fix low frame rates - clip through ground - by checking deltas between intersections
 
+## UI
+- Line2Ds are broken, need to add to new 2D render stack that sorts layers
+
 ## Next
 - cant talk / raycast npcs when no action selected
 - Fix body (body parts) icon didnt generate

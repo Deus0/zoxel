@@ -28,23 +28,29 @@ zox_sys2(ItemActivateSystem) {
         }
         entity block = block_link->value;
         if (!zox_valid(block) || !zox_has(block, BlockIndex)) {
-            zox_log_error("invalid block [%s]", zox_get_name(block));
+            zox_loge("invalid block [%s]", zox_get_name(block));
             continue;
         }
         zox_geter_value(block, BlockIndex, byte, block_index);
         // Place Block
         byte3 positionl = raycast_data->positionl_last;
         entity chunk = raycast_data->chunk_last;
+        if (!zox_valid(chunk) || !zox_has(chunk, VoxelNodeQueue)) {
+            zox_loge("Invalid rayhit chunk on user [%s]", zox_getn(user));
+            continue;
+        }
         zox_muter(chunk, VoxelNodeQueue, queue);
-        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = block_index, .position = positionl });
+        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) {
+            .value = block_index,
+            .position = positionl });
         quantity->value--;
         // place block sound
         spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[30 + rand() % 6], 0.6, 1.4f * get_volume_sfx());
         dirty->value = zox_dirty_trigger;
         if (zox_has(user, SwingStart)) {
             float swing_time = zox_getv(e, WarmupTime) + zox_getv(e, CooldownTime);
-            zox_set(user, SwingStart, { zox_current_time });
-            zox_set(user, SwingSpeed, { swing_time });
+            zox_setv(user, SwingStart, zox_current_time);
+            zox_setv(user, SwingSpeed, swing_time);
         }
     }
 } zox_sys_end(ItemActivateSystem);

@@ -2,37 +2,95 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
-- Crashes at start now.. 1 / 6 times?
--x statbar2D isnt changing now too
--x Statsbar isnt shrinking
-- Each character type - spawn dialogue there
+- When low on damage - add more downscale on the camera
+    - make it a camera property too
+
+- Vox item textures... broken again... only sometimes
+- just a simple component macro that creates an expanding number ofevents
+    - just arrayd for now?
+    
+- Add event listeners that can handle multiple events
+    - use this for game state
+    - modules can add too prefab_game's state change listener
+    - use this for special stuffs
+    - use this for options
+    - can massively reduce systems
+    
+- Refactor Punch mechanic as just the way damage is added
+- Make a AOE skill that npc can use when its low health
+    - adds particles
+
+- Flying in disabled chunk - disabled due to no voxels - causes player to be disabled
+- if npc is being baited, by the player keep running around them
+    - they can run away
+
+- Mouse scrollwheel broken for switching items
+- start game with 3 skills, so you can try the combat styles of the skill tree
+
+- When place above chunk - no mesh spawns
+
+- Add particles when you land
+- Add damage and sound if you land strongly
+- Add red screen overlay when you are hit
+
+- Test Dialogue function
+    - animate scale for each new character 0->1.2->1 (3 frames)
+    - remove the glitchy first letter - probably due to it spawning
+
+- Dialogue Generation
+    - Greetings
+    - based sentence gen on their personality types
+    - give each npc a personality type
+
+- When return to main menu - set camera back to origin
+
+- Spawn load text / ui during fade out / game event
+    - just show loading for now
+-x Add editor uis over top of canvas layer
+- Add loading screen
+    - with cancel button
+    - show loading chunks count
+    
+## Polish
+- Add ui scale onto options
 - Slider UI isnt accounted for in list ui
 - Refactor the taskbar button to window using links
     - Fix taskbars again properly linking to windows
+- Fix flickering issue of raycast
+    - maybe we should use a fixed rotation integral
 - Move map UI as player moves
     - mask the map ui
     - or just disable when goes over edge for now
-- Fix flickering issue of raycast
-    - maybe we should use a fixed rotation integral
+- Add Version of build date to main menu bottom right
+- stats panel didnt spawn when respawn
+    
+## Gameplay
+- Each character type - spawn dialogue there
+
+
+- Crashes at start now.. 1 / 6 times?
+-x statbar2D isnt changing now too
+-x Statsbar isnt shrinking
+
+## KeyboardMouse
+- We need a target window for player, whichis the last selected one
 
 ## Gamepads
 - Tooltip should just be at top right of screen when finger is off ui
+- add controller vibration support
 
 ## Touchscreen
+- Add auto jump option - for touchscreen + option to disable
 - Fix post procesing on android
 - make jump button use - ClickingEvent instead of ClickEvent
     - so we can hold jump button
     - Make button activate while holding - on clicked rather than first click
 
 ## New
-- Add ui scale onto options
-- Add auto jump option - for touchscreen + option to disable
-- Add Version of build date to main menu bottom right
 - Raycast x 4, for player, and compare results
     - so we dont get shuffling between cubes when camera shakes
     - like squarecast
 - Check when spawning if we are inside blocks
-- add controller vibration support
 
 ## Whimsy
 - Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
@@ -42,7 +100,6 @@ used - 200-400mb used
 - Stress test mode - add a multiplying slime that dies fast
 
 
-- stats panel didnt spawn when respawn
 
 ## Game UI
 - Redo Realm Select UI

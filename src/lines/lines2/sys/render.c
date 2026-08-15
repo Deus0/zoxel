@@ -17,10 +17,10 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
     zox_sys_in(LinePoints2);
     zox_sys_in(LineThickness);
     zox_sys_in(Color);
-    zox_sys_in(Layer2D);
+    zox_sys_in(Layer);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Layer2D, layer);
+        zox_sys_i(Layer, layer);
         zox_sys_i(LinePoints2, line);
         zox_sys_i(LineThickness, thickness);
         zox_sys_i(Color, line_color);
