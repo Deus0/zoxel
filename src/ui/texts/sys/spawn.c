@@ -93,7 +93,7 @@ zox_sys2(ZigelSpawnSystem) {
                 entity e2 = spawn_zigel(world, prefab->value, e, position_anchor, size, texture_size, thickness, othickness, fill, outline, zigel, child_index, zigel_layer);
                 zox_setv(e2, RenderDisabled, render_disabled->value);
                 if (centred) {
-                    zox_add_tag(e2, CentredZigel);
+                    zox_add(e2, CentredZigel);
                 }
                 if (dbg_log) {
                     zox_log("Spawn Zigel [%i:%c] - Layer [%i]", zigel, convert_to_ascii(zigel), zigel_layer);

@@ -1,5 +1,5 @@
 byte toggle_camera_mode(ecs *world, entity camera) {
-    zox_geter_value_non_const(camera, CameraState, byte, mode);
+    zox_geter_value(camera, CameraState, byte, mode);
     if (mode == zox_camera_state_first_person) {
         mode = zox_camera_state_third_person;
     } else if (mode == zox_camera_state_third_person) {

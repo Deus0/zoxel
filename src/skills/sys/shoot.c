@@ -28,7 +28,7 @@ zox_sys2(ShootSystem) {
             zox_loge("Skill has Invalid User [%s]", zox_get_name(e));
             continue;
         }
-        if (zox_gett_value(user, Dead)) {
+        if (zox_getv(user, Dead)) {
             if (dbg_log) {
                 zox_logw("User [%s] is Dead, Cannot Attack.", zox_get_name(user));
             }

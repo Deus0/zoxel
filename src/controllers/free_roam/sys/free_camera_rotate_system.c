@@ -30,7 +30,7 @@ zox_sys2(FreeCameraRotateSystem) {
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_valid(e2) || zox_getv(e2, DeviceDisabled)) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;
@@ -46,7 +46,7 @@ zox_sys2(FreeCameraRotateSystem) {
                     continue;
                 }
                 if (zox_has(e3, ZevicePointerDelta)) {
-                    float2 delta = int2_to_float2(zox_gett_value(e3, ZevicePointerDelta));
+                    float2 delta = int2_to_float2(zox_getv(e3, ZevicePointerDelta));
                     if (int_absf(delta.x) + int_absf(delta.y) >= max_mouse_delta || (delta.x == 0 &&delta.y == 0)) {
                         continue;
                     }

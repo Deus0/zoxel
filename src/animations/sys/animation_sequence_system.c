@@ -50,7 +50,7 @@ zox_sys2(AnimationSequenceSystem) {
                 animationLength->value = animationTimes->value[animationIndex->value];
                 zox_sys_e()
                 // if alpha
-                float source_float = zox_gett_value(e, Alpha);
+                float source_float = zox_getv(e, Alpha);
                 float target_float = animationTargets->value[animationIndex->value];
                 zox_set(e, AnimateSourceFloat, { source_float })
                 zox_set(e, AnimateTargetFloat, { target_float })

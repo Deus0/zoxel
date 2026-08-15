@@ -100,7 +100,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         if (realm_hips) {
             entity hips = spawn_user_item_body(world, e, realm_hips, zox_slot_hips);
             zox_set(eslot_hips, DataLink, { hips });
-            zox_add_tag(hips, Hips);
+            zox_add(hips, Hips);
             // Sub Slots
             entity eslot_lthigh = spawn_body_slot(world, eslot_hips, body_anchor_bottom);
             entity eslot_rthigh = spawn_body_slot(world, eslot_hips, body_anchor_bottom);
@@ -114,8 +114,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                 entity rthigh = spawn_user_item_body(world, e, realm_thigh, zox_slot_rthigh);
                 zox_set(eslot_lthigh, DataLink, { lthigh });
                 zox_set(eslot_rthigh, DataLink, { rthigh });
-                zox_add_tag(lthigh, Thigh);
-                zox_add_tag(rthigh, Thigh);
+                zox_add(lthigh, Thigh);
+                zox_add(rthigh, Thigh);
                 // Sub Slots [Calfs]
                 entity eslot_lcalf = spawn_body_slot(world, eslot_lthigh, body_anchor_bottom);
                 entity eslot_rcalf = spawn_body_slot(world, eslot_rthigh, body_anchor_bottom);
@@ -148,10 +148,10 @@ zox_sys2(CharacterBodySpawnSystem) {
             zox_set(eslot_lshoulder, DataLink, { lshoulder });
             zox_set(eslot_rshoulder, DataLink, { rshoulder });
             // NOTE: Tag this here for now as it's based on side of body
-            zox_add_tag(lshoulder, ArmPart);
-            zox_add_tag(rshoulder, ArmPart);
-            zox_add_tag(lshoulder, Shoulder);
-            zox_add_tag(rshoulder, Shoulder);
+            zox_add(lshoulder, ArmPart);
+            zox_add(rshoulder, ArmPart);
+            zox_add(lshoulder, Shoulder);
+            zox_add(rshoulder, Shoulder);
             // Sub Slots [Biceps]
             entity eslot_lbicep = spawn_body_slot(world, eslot_lshoulder, body_anchor_bottom);
             entity eslot_rbicep = spawn_body_slot(world, eslot_rshoulder, body_anchor_bottom);
@@ -165,8 +165,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                 zox_set(eslot_lbicep, DataLink, { lbicep });
                 zox_set(eslot_rbicep, DataLink, { rbicep });
                 // Tag Parts
-                zox_add_tag(lbicep, ArmPart);
-                zox_add_tag(rbicep, ArmPart);
+                zox_add(lbicep, ArmPart);
+                zox_add(rbicep, ArmPart);
                 // Sub Slots
                 entity eslot_lforearm = spawn_body_slot(world, eslot_lbicep, body_anchor_bottom);
                 entity eslot_rforearm = spawn_body_slot(world, eslot_rbicep, body_anchor_bottom);
@@ -176,8 +176,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                     entity rforearm = spawn_user_item_body(world, e, realm_forearm, zox_slot_rforearm);
                     zox_set(eslot_lforearm, DataLink, { lforearm });
                     zox_set(eslot_rforearm, DataLink, { rforearm });
-                    zox_add_tag(lforearm, ArmPart);
-                    zox_add_tag(rforearm, ArmPart);
+                    zox_add(lforearm, ArmPart);
+                    zox_add(rforearm, ArmPart);
                     // Sub Slots
                     entity eslot_lhand = spawn_body_slot(world, eslot_lforearm, body_anchor_bottom);
                     entity eslot_rhand = spawn_body_slot(world, eslot_rforearm, body_anchor_bottom);
@@ -190,10 +190,10 @@ zox_sys2(CharacterBodySpawnSystem) {
                         entity rhand = spawn_user_item_body(world, e, realm_hand, zox_slot_rhand);
                         zox_set(eslot_lhand, DataLink, { lhand });
                         zox_set(eslot_rhand, DataLink, { rhand });
-                        zox_add_tag(lhand, Hand);
-                        zox_add_tag(rhand, Hand);
-                        zox_add_tag(lhand, ArmPart);
-                        zox_add_tag(rhand, ArmPart);
+                        zox_add(lhand, Hand);
+                        zox_add(rhand, Hand);
+                        zox_add(lhand, ArmPart);
+                        zox_add(rhand, ArmPart);
                     }
                 }
             }

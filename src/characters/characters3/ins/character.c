@@ -8,7 +8,7 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
     if (zox_valid(model)) {
         // If a ModelGroup, pick a random sub model
         if (zox_has(model, ModelLinks)) {
-            zox_geter(model, ModelLinks, models)
+            zox_geter(model, ModelLinks, models);
             if (models->length) {
                 uint mindex = rand() % models->length;
                 model = models->value[mindex];
@@ -45,7 +45,7 @@ entity spawn_character3(ecs* world, entity prefab, entity realm, entity terrain,
         }
     }
     zox_instance(prefab);
-    zox_remove_tag(e, RealmCharacter);
+    zox_remove(e, RealmCharacter);
     zox_set_parent(world, e, realm);
     zox_set(e, RealmLink, { realm });
     zox_set(e, TerrainLink, { terrain });

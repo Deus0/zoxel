@@ -15,7 +15,7 @@ zox_sys2(ExperienceSystem) {
             continue;
         }
         // if enemy invalid or dead, continue
-        if (!zox_valid(enemy->value) || zox_gett_value(enemy->value, Dead)) {
+        if (!zox_valid(enemy->value) || zox_getv(enemy->value, Dead)) {
             continue;
         }
         entity my_soul = zox_get_child_by_id(world, e, zox_id(StatSoul));
@@ -50,8 +50,8 @@ zox_sys2(ExperienceSystem) {
         // add to victor
         experience->value += experience_gain;
         // zox_log(" + [%s] has gained [%f] xp", zox_get_name(enemy->value), experience_gain)
-        float3 bounds3D = zox_get_value(e, Bounds3D);
-        float3 position = zox_get_value(e, Position3D);
+        float3 bounds3D = zox_getv(e, Bounds3D);
+        float3 position = zox_getv(e, Position3D);
         float3 popup_position = (float3) { position.x, position.y + bounds3D.y + popup_spawn_y, position.z };
         char popup_text[64];
         sprintf(popup_text, "+%i", (int) ceil(experience_gain));

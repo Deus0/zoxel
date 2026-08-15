@@ -3,11 +3,10 @@ extern void spawn_line3(ecs *world, const float3, const float3, const color_rgb)
 #endif
 
 void calculate_new_frustum(ecs *world, entity e, float camera_far, double3 *corners) {
-
     zox_geter(e, TransformMatrix, matrix);
-    const FieldOfView *sysOfView = zox_get(e, FieldOfView)
-    const CameraNearDistance *cameraNearDistance = zox_get(e, CameraNearDistance)
-    const ScreenDimensions *screenDimensions = zox_get(e, ScreenDimensions)
+    const FieldOfView *sysOfView = zox_get(e, FieldOfView);
+    const CameraNearDistance *cameraNearDistance = zox_get(e, CameraNearDistance);
+    const ScreenDimensions *screenDimensions = zox_get(e, ScreenDimensions);
     float screen_y = (float) screenDimensions->value.y;
     if(screen_y <= 0) screen_y = 1;
     const float aspect_ratio = ((float) screenDimensions->value.x) / ((float) screen_y);

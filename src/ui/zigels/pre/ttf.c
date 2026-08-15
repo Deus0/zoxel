@@ -22,12 +22,12 @@ entity spawn_font_ttf(ecs *world, entity prefab_font, FT_Face face, float4 face_
 }
 
 entity spawn_ttf_as_font_style(ecs *world, entity prefab, FT_Face face) {
-    entity prefab_font = zox_get_value(prefab, FontLink);
+    entity prefab_font = zox_getv(prefab, FontLink);
     float4 face_bounds = get_face_bounds(face);   // bounds used to calculate points
     // enter, options, exit
     zox_instance(prefab);
     zox_name("font_style_ttf");
-    zox_add_tag(e, TTFFontStyle);
+    zox_add(e, TTFFontStyle);
     // face->num_glyphs
     for (int i = 0; i < font_styles_length; i++) {
         byte is_spawn = 1;

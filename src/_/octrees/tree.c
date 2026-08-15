@@ -62,7 +62,7 @@ static inline byte reduce_octree_node(void* node, size_t stride, size_t value_of
     // Collapse if uniform
     if (uniform) {
         *(byte*)((char*) node + value_offset) = first_val;
-        free(kids);
+        zox_free(kids);
         *ptr = NULL;
         return 1;
     }
@@ -90,7 +90,7 @@ static inline byte collapse_octree_branch(void* node, size_t stride, size_t valu
     }
     // Collapse
     *(byte*)((char*)node + value_offset) = first_val;
-    free(kids);
+    zox_free(kids);
     *ptr = NULL;
     return 1;
 }

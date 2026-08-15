@@ -13,11 +13,11 @@ void toggle_flymode(ecs *world, int32_t keycode) {
         return;
     }
 
-    zox_geter_value_non_const(character, FlyMode, byte, flying);
+    zox_geter_value(character, FlyMode, byte, flying);
     flying = !flying;
     zox_set(character, FlyMode, { flying });
     if (flying && !zox_has(character, DisableGravity)) {
-        zox_add_tag(character, DisableGravity);
+        zox_add(character, DisableGravity);
     } else if (!flying && zox_has(character, DisableGravity)) {
         zox_remove(character, DisableGravity);
     }

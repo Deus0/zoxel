@@ -35,8 +35,7 @@ zox_sys2(ItemDropSystem) {
             entity meta = zox_get_prefab(world, user_item);
             entity e2;
             if (zox_has(user_item, BlockLink)) {
-                zox_geter_value(user_item, BlockLink, entity, block)
-                e2 = spawn_pickup_block(world, position->value, block, item_pickup_scale);
+                entity block = zox_getv(user_item, BlockLink);                e2 = spawn_pickup_block(world, position->value, block, item_pickup_scale);
             } else {
                 e2 = spawn_pickup_basic(world, position->value);
             }

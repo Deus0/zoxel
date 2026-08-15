@@ -6,7 +6,7 @@ entity spawn_grid2D(ecs *world) {
     const float grid_size = 0.5f;
     const float thickness = 4.0f;
     const color_rgb grid_color = (color_rgb) { 25, 15, 15 };
-    zox_make_new()
+    entity e = zox_new();
     float2 position;
     for (position.x = -size; position.x <= size; position.x += grid_size) {
         for (position.y = -size; position.y <= size; position.y += grid_size) {

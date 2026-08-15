@@ -10,7 +10,7 @@ byte touchscreen_is_any_input(ecs *world, entity e) {
         if (!e2 || !zox_has(e2, ZevicePointer) || !zox_has(e2, Finger)) {
             continue;
         }
-        zox_geter(e2, ZevicePointer, zevicePointer)
+        zox_geter(e2, ZevicePointer, zevicePointer);
         if (zevice_pointer_has_input(zevicePointer)) {
             return 1;
         }
@@ -30,7 +30,7 @@ byte mouse_is_any_input(ecs *world, entity e) {
         if (!zox_has(e2, ZevicePointer)) {
             continue;
         }
-        zox_geter(e2, ZevicePointer, zevicePointer)
+        zox_geter(e2, ZevicePointer, zevicePointer);
         if (zevice_pointer_has_input(zevicePointer)) {
             return 1;
         }

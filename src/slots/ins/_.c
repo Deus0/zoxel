@@ -15,7 +15,7 @@ void add_more_slots(ecs* world, entity e, byte count) {
 
 entity spawn_slots(ecs* world, entity parent, byte count) {
     entity e = zox_new();
-    zox_add_tag(e, SlotManager);
+    zox_add(e, SlotManager);
     zox_set_parent(world, e, parent);
     for (byte i = 0; i < count; i++) {
         spawn_slot(world, e);

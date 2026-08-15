@@ -41,69 +41,69 @@ float2 calculate_neuron_position(const float2 position, const int neurons_length
 byte send_signals_from_neuron(ecs *world, const entity neuron, float value) {
     byte has_outputs = 0;
     // finds connection link, should use the neurons connecction link here instead of scrolling through parent
-    const entity brain = zox_get_value(neuron, ParentLink)
-    const BrainLinks *brain_links = zox_get(brain, BrainLinks)
+    const entity brain = zox_getv(neuron, ParentLink);
+    const BrainLinks *brain_links = zox_get(brain, BrainLinks);
     for (int i = 0; i < brain_links->length; i++) {
         const entity e = brain_links->value[i];
         if (!zox_valid(e)) continue;
-        const ConnectionData *connectionData = zox_get(e, ConnectionData)
+        const ConnectionData *connectionData = zox_get(e, ConnectionData);
         if (connectionData->value.x == neuron) {
             /*Signal *signal = zox_get_mut(e, Signal)
             signal->value = combine_signals(signal->value, value);
             zox_modified(e, Signal)*/
-            zox_set(e, Signal, { value })
+            zox_set(e, Signal, { value });
             has_outputs = 1;
         }
     }
     return has_outputs;
 }
 
-void reset_brain_values(ecs *world, const entity brain) {
-    const Children *children = zox_get(brain, Children)
+void reset_brain_values(ecs *world, entity brain) {
+    const Children *children = zox_get(brain, Children);
     for (int i = 0; i < children->length; i++) {
         const entity e = children->value[i];
         if (zox_has(e, InputNeuron)) continue;
-        if (zox_has(e, Neuron)) zox_set(e, Signal, { 0 })
+        if (zox_has(e, Neuron)) zox_set(e, Signal, { 0 });
     }
 }
 
-void feed_brain_random_input(ecs *world, const entity brain) {
+void feed_brain_random_input(ecs *world, entity brain) {
     reset_brain_values(world, brain);
-    const BrainInputs *brain_inputs = zox_get(brain, BrainInputs)
+    const BrainInputs *brain_inputs = zox_get(brain, BrainInputs);
     for (int i = 0; i < brain_inputs->length; i++) {
         const entity e = brain_inputs->value[i];
         float s = (rand() % 101) * 0.01f;
-        zox_set(e, Signal, { s })
+        zox_set(e, Signal, { s });
     }
 }
 
 void feed_brain_input(ecs *world, const entity brain, float input) {
     reset_brain_values(world, brain);
-    const BrainInputs *brain_inputs = zox_get(brain, BrainInputs)
+    const BrainInputs *brain_inputs = zox_get(brain, BrainInputs);
     for (int i = 0; i < brain_inputs->length; i++) {
         const entity e = brain_inputs->value[i];
-        zox_set(e, Signal, { input })
+        zox_set(e, Signal, { input });
     }
 }
 
 
 void randomize_brain_weights(ecs *world, const entity brain) {
-    const BrainLinks *links = zox_get(brain, BrainLinks)
+    const BrainLinks *links = zox_get(brain, BrainLinks);
     for (int i = 0; i < links->length; i++) {
         const entity e = links->value[i];
         float w = (rand() % 101) * 0.01f;
-        zox_set(e, Weight, { w })
+        zox_set(e, Weight, { w });
     }
 }
 
-void save_brain_as_texture(ecs *world, const entity brain) {
+void save_brain_as_texture(ecs *world, entity brain) {
     int i2 = 0;
     color colors[brain_texture_size.x * brain_texture_size.y];
-    const BrainOutputs *children = zox_get(brain, BrainOutputs)
+    const BrainOutputs *children = zox_get(brain, BrainOutputs);
     for (int i = 0; i < children->length; i++) {
         const entity e2 = children->value[i];
         // if (!zox_has(e2, OutputNeuron)) continue;
-        const float output = zox_get_value(e2, Signal)
+        const float output = zox_getv(e2, Signal);
         const int output_2 = (int) (255 * output);
         colors[i2] = (color) { output_2, output_2, output_2, 255 };
         i2++;
@@ -111,20 +111,20 @@ void save_brain_as_texture(ecs *world, const entity brain) {
     save_texture_as_png(colors, brain_texture_size, "build/brain_test.png");
 }
 
-entity spawn_brain_as_texture(ecs *world, const entity brain) {
+entity spawn_brain_as_texture(ecs *world, entity brain) {
     int i2 = 0;
     int colors_length = brain_texture_size.x * brain_texture_size.y;
     color *colors = malloc(colors_length * sizeof(color));
-    const BrainOutputs *brain_outputs = zox_get(brain, BrainOutputs)
+    const BrainOutputs *brain_outputs = zox_get(brain, BrainOutputs);
     for (int i = 0; i < brain_outputs->length; i++) {
         const entity e2 = brain_outputs->value[i];
-        const float output = zox_get_value(e2, Signal)
+        const float output = zox_getv(e2, Signal);
         const int output_2 = (int) (255 * output);
         colors[i2] = (color) { output_2, output_2, output_2, 255 };
         i2++;
     }
-    zox_make_new()
-    zox_set(e, TextureData, { colors_length, colors })
-    zox_set(e, TextureSize, { brain_texture_size })
+    entity e = zox_new();
+    zox_set(e, TextureData, { colors_length, colors });
+    zox_set(e, TextureSize, { brain_texture_size });
     return e;
 }

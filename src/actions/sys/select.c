@@ -42,7 +42,7 @@ zox_sys2(ActiveActionSystem) {
             zox_loge("Actionslot invalid");
             continue;
         }
-        entity action = zox_gett_value(action_slot, DataLink);
+        entity action = zox_getv(action_slot, DataLink);
         if (action != aaction->value) {
             aaction->value = action;
             dirty->value = zox_dirty_trigger;

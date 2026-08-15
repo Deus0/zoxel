@@ -386,6 +386,6 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
     // float2 anchor = { 1.0f, 1.0f };
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Overlays", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
     zox_set_unique_name(e3.x, "dbg_ui_overlays");
-    zox_add_tag(e3.x, NavigationWindow);
+    zox_add(e3.x, NavigationWindow);
     dbg_ui_overlays = e3.x;
 }

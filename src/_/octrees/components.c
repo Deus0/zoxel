@@ -43,5 +43,5 @@ ECS_MOVE(T, dst, src, {\
 }) \
 \
 ECS_DTOR(T, ptr, {\
-    collapse_##T(ptr);\
+    free_octree(ptr, sizeof(T));\
 })

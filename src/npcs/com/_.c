@@ -1,31 +1,14 @@
-zox_tag(Npc);
-zox_tag(Jumper);
-zox_tag(Wanderer);
-zox_tag(Coward);
-zoxc_byte(Behaviour);
-zoxc_byte(DefaultBehaviour);
-zoxc_byte(MoveForwards);
-zoxc_byte(RotateTowards);
-zoxc_float(MoveSpeed);
-zoxc_float(MoveToBuffer);
-zoxc_float3(TargetPosition);
-zoxc_float3(ThreatPosition);
-zoxc_float3(WanderDirection);
-zoxc_entity(FollowTarget);
+zoxc_byte(CharactersSpawned);
+zoxc_byte(CharactersEverSpawned);
+zoxc_byte(NpcSpawnZone);
+zoxc_state(NpcSpawnZoneDirty);
+#define chunk_characters_max 8
+zoxc_array(ChunkCharacters, entity, chunk_characters_max);
 
-void define_components_npcs(ecs* world) {
-    zoxd_tag(Npc);
-    zoxd_tag(Jumper);
-    zoxd_tag(Wanderer);
-    zoxd_tag(Coward);
-    zoxd_byte(Behaviour);
-    zoxd_byte(DefaultBehaviour);
-    zoxd_byte(MoveForwards);
-    zoxd_byte(RotateTowards);
-    zoxd_float(MoveSpeed);
-    zoxd_float(MoveToBuffer);
-    zoxd_float3(TargetPosition);
-    zoxd_float3(ThreatPosition);
-    zoxd_float3(WanderDirection);
-    zoxd_entity(FollowTarget);
+void define_components_characters3_terrain(ecs* world) {
+    zoxd_byte(CharactersSpawned);
+    zoxd_byte(CharactersEverSpawned);
+    zoxd_byte(NpcSpawnZone);
+    zoxd_state(NpcSpawnZoneDirty);
+    zoxd(ChunkCharacters);
 }

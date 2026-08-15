@@ -10,7 +10,7 @@ entity spawn_block(ecs *world, SpawnBlock data) {
         zox_set(e, BlockModel, { data.model });
     }
     if (data.tag) {
-        zox_add_tag_id(e, data.tag);
+        zox_add_id(e, data.tag);
     }
     if (data.disable_collision) {
         zox_set(e, BlockCollider, { zox_block_air });
@@ -30,7 +30,7 @@ entity spawn_block(ecs *world, SpawnBlock data) {
             zox_set_parent(world, e2, e);
             zox_set(e2, BlockLink, { e });
             if (data.texture_tag) {
-                zox_add_tag_id(e2, data.texture_tag);
+                zox_add_id(e2, data.texture_tag);
             }
             textures.value[i] = e2;
         }

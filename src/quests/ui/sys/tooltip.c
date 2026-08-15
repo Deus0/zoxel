@@ -24,7 +24,7 @@ zox_sys2(QuestIconTooltipSystem) {
             zox_loge("Tooltip not found in canvas");
             continue;
         }
-        const char* name = zox_has(e2, ZoxName) ? zox_gett_value(e2, ZoxName) : zox_get_name(e2);
+        const char* name = zox_has(e2, ZoxName) ? zox_getv(e2, ZoxName) : zox_get_name(e2);
         char result[128];
         // TODO: Get Objectives
         if (zox_has(e2, SlayQuest)) {

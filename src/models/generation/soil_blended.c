@@ -41,7 +41,7 @@ zox_sys2(BlendedSoilGenerationSystem) {
             color_rgb_multiply_float(&new_color, m);
             add_to_ColorRGBs(colors, new_color);
         }
-        zox_geter_value(e, SecondaryColor, color, under_color);
+        color under_color = zox_getv(e, SecondaryColor);
         int index_start = colors->length;
         for (int j = 0; j < unique_colors; j++) {
             color_rgb new_color = color_to_color_rgb(under_color);

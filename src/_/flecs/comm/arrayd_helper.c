@@ -23,7 +23,7 @@
         } else if (!ptr->value) {\
             initialize_##T(ptr, new_length);\
         } else {\
-            type* new_memory = realloc(ptr->value, new_length * sizeof(type));\
+            type* new_memory = zox_realloc(ptr->value, new_length * sizeof(type));\
             if (!new_memory) {\
                 zox_log_error("Failure with realloc");\
             } else {\

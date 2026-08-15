@@ -5,12 +5,12 @@ zox_sys2(MeshColorsGpuSystem) {
     zox_sys_begin();
     zox_sys_in(ColorsGPULink);
     zox_sys_in(MeshColorRGBs);
-    zox_sys_out(MeshColorsDirty);
+    zox_sys_in(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ColorsGPULink, link);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(MeshColorsDirty, upload);
+        zox_sys_i(MeshColorsDirty, upload);
         // Only update if marked dirty for upload
         if (!upload->value) { // != mesh_state_colors_upload) {
             continue;
@@ -30,7 +30,8 @@ zox_sys2(MeshColorsGpuSystem) {
         }*/
         // Upload only the color data
         zox_gpu_array_buffer(link->value, colors->length, sizeof(color_rgb), colors->value);
-        upload->value = 0;
+        // upload->value = 0;
+        zox_remove(e, MeshColorsDirty);
         if (dbg_log) {
             zox_log("updating colors %s", zox_get_name(e));
         }

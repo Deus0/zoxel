@@ -1,6 +1,6 @@
 // NOTE: Theres an issue when we optimize, the light nodes can be set by the bigger nodes, so it was hard to debug
 
-byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, LightNode* root_lnode, const VoxelNode* root_vnode, byte depth, byte3 pos, byte light, const VoxelNode* n_root_vnodes[6], const LightNode* n_root_lnodes[6], byte min_light, byte air_decay, const byte* solidity) {
+byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, LightNode* root_lights, const VoxelNode* root_vnode, byte depth, byte3 pos, byte light, const VoxelNode* n_root_vnodes[6], const LightNode* n_root_lightss[6], byte min_light, byte air_decay, const byte* solidity) {
     // hmm
     byte dirty = 0;
     short length = octree_size(depth);
@@ -11,6 +11,7 @@ byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, Lig
     byte max_y = pos.y;
     byte flood_start = 0;
     byte flood_end = 0;
+    byte beam_started = 0;
     byte beam_stopped = 0;
     for (byte y = 0; y <= max_y; y++) {
         pos.y = max_y - y;
@@ -21,22 +22,22 @@ byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, Lig
             break;
         }
         // set light in LightNode
-        zox_logv("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
-        set_LightNode(root_lnode, depth, pos, light);
+        set_LightNode(root_lights, depth, pos, light);
         dirty = 1;
+        beam_started = 1;
         if (y == 0) {
             flood_end = pos.y;
         }
         flood_start = pos.y;
+        zox_logv("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
+    }
+    if (!beam_started) {
+        return dirty;
     }
     zox_logv(" * light beam y: [%i] to [%i]", flood_start, (flood_end));
     for (byte y = flood_start; y <= flood_end; y++) {
         pos.y = y;
         zox_logv(" - Light Beam Spreads [%ix%ix%i]", pos.x, pos.y, pos.z);
-        // TODO: when we change light, we can save light to array, and reuse here
-        // Simpler to just add to queue here for flood lighting?
-        /*byte floodlight_dirty = flood_light(root_vnode, root_lnode, n_root_vnodes, n_root_lnodes, n_light_queues, depth, pos, light, light_propogation_distance, darklight, light_air_decay, solidity);
-        dirty |= floodlight_dirty;*/
         if (locks_enabled) spin_lock(&floodlight_queue->lock);
         a_LightQueue(floodlight_queue,
             (LightUpdate) {
@@ -68,9 +69,6 @@ byte sunbeam(LightQueue* floodlight_queue, SunlightQueue* chunk_below_queue, Lig
 // TODO: Optimize LightNode System - group same values
 // Triggers: VoxelNodeGenerated
 zox_sys2(SunlightSystem) {
-    if (disable_lights) {
-        return;
-    }
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -78,30 +76,23 @@ zox_sys2(SunlightSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
-    zox_sys_out(GenerateLights);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
     entity realm = 0;
     byte solidity[255];
-    for (int j = 0; j < 255; j++) {
-        solidity[j] = 1;
-    }
+    memset(solidity, 1, 255);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_o(GenerateLights, generate);
         zox_sys_o(LightQueue, floodlight_queue);
-        zox_sys_o(LightNode, lnode);
+        zox_sys_o(LightNode, lights);
         zox_sys_o(LightNodeDepth, light_depth);
         zox_sys_o(LightNodeDirty, dirty);
-        if (generate->value != zox_generate_lights_sunlight) {
-            continue;
-        }
         entity chunkd = neighbors->value[direction_down];
         // For now we skip unless bottom chunk - due to loading timing
         if (!zox_valid(chunkd)) {
@@ -124,8 +115,8 @@ zox_sys2(SunlightSystem) {
         short length = octree_size(depth->value);
         const VoxelNode* n_root_vnodes[6];
         fetch_neightbor_voxel_nodes(world, neighbors, n_root_vnodes);
-        const LightNode* n_root_lnodes[6];
-        fetch_neightbor_light_nodes(world, neighbors, n_root_lnodes);
+        const LightNode* n_root_lightss[6];
+        fetch_neightbor_light_nodes(world, neighbors, n_root_lightss);
         if (dbg_log) {
             zox_log("[%s] Topmost Sunbeams Light [%i] Depth [%i]", zox_get_name(e), sunlight, depth->value);
         }
@@ -137,13 +128,12 @@ zox_sys2(SunlightSystem) {
                 if (dbg_log >= 2) {
                     zox_log("   - [%s] Begin Topmost Sunbeam [%ix%ix%i] l[%i]", zox_get_name(e), pos.x, pos.y, pos.z, sunlight);
                 }
-                if (sunbeam(floodlight_queue, chunk_below_sunlight_queue, lnode, vnode, depth->value, pos, sunlight, n_root_vnodes, n_root_lnodes, darklight, light_air_decay, solidity)) {
+                if (sunbeam(floodlight_queue, chunk_below_sunlight_queue, lights, vnode, depth->value, pos, sunlight, n_root_vnodes, n_root_lightss, darklight, light_air_decay, solidity)) {
                     dirty->value = zox_dirty_trigger;
                 }
             }
         }
-        zox_mut_end(chunkd, LightQueue);
-        generate->value = 0;
+        zox_remove(e, GenerateSunlight);
     }
 } zox_sys_end(SunlightSystem);
 
@@ -169,12 +159,9 @@ zox_sys2(LightBeamSystem) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(SunlightQueue, sunlight_queue);
         zox_sys_o(LightQueue, floodlight_queue);
-        zox_sys_o(LightNode, root_lnode);
+        zox_sys_o(LightNode, root_lights);
         zox_sys_o(LightNodeDirty, dirty);
         if (!sunlight_queue->count) {
-            continue;
-        }
-        if (zox_getv(e, GenerateChunk)) {
             continue;
         }
         entity chunkd = neighbors->value[direction_down];
@@ -199,8 +186,8 @@ zox_sys2(LightBeamSystem) {
         SunlightQueue* chunk_below_sunlight_queue = zox_valid(chunkd) ? zox_gett_mut(chunkd, SunlightQueue) : NULL;
         const VoxelNode* n_root_vnodes[6];
         fetch_neightbor_voxel_nodes(world, neighbors, n_root_vnodes);
-        const LightNode* n_root_lnodes[6];
-        fetch_neightbor_light_nodes(world, neighbors, n_root_lnodes);
+        const LightNode* n_root_lightss[6];
+        fetch_neightbor_light_nodes(world, neighbors, n_root_lightss);
         if (dbg_log) {
             zox_log("[%s] Extended Sunbeams l[%i]", zox_get_name(e), sunlight);
         }
@@ -216,7 +203,7 @@ zox_sys2(LightBeamSystem) {
             if (dbg_log >= 2) {
                 zox_log(" - Beaming [%ix%ix%i] l[%i] q [%i]", update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count);
             }
-            if (sunbeam(floodlight_queue, chunk_below_sunlight_queue, root_lnode, root_vnode, update.depth, update.pos, update.light, n_root_vnodes, n_root_lnodes, darklight, light_air_decay, solidity)) {
+            if (sunbeam(floodlight_queue, chunk_below_sunlight_queue, root_lights, root_vnode, update.depth, update.pos, update.light, n_root_vnodes, n_root_lightss, darklight, light_air_decay, solidity)) {
                 if (!dirty->value) {
                     if (dbg_log) {
                         zox_log("[%s] ChunkLights Updated at [%ix%ix%i] l[%i] q [%i] Depth [%i]", zox_get_name(e) , update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count, update.depth);
@@ -224,9 +211,6 @@ zox_sys2(LightBeamSystem) {
                 }
                 dirty->value = zox_dirty_trigger;
             }
-        }
-        if (zox_valid(chunkd)) {
-            zox_mut_end(chunkd, LightQueue);
         }
     }
 } zox_sys_end(LightBeamSystem);

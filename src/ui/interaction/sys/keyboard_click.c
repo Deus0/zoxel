@@ -25,7 +25,7 @@ zox_sys2(KeyboardClickSystem) {
         if (!zox_valid(player->value) || !zox_has(player->value, CanvasLink)) {
             continue;
         }
-        entity canvas = zox_get_value(player->value, CanvasLink);
+        entity canvas = zox_getv(player->value, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }

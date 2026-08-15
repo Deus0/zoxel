@@ -10,17 +10,15 @@ zox_sys2(Camera2FollowSystem) {
         zox_sys_i(CameraTarget, cameraTarget);
         zox_sys_o(Position3D, position3D);
         zox_sys_o(Rotation3D, rotation3D);
-
         if (canRoam->value || !zox_valid(cameraTarget->value)) {
             continue;
         }
-
         if (zox_has(cameraTarget->value, Position2)) {
-            zox_geter_value(cameraTarget->value, Position2, float2, target_position)
+            float2 target_position = zox_getv(cameraTarget->value, Position2);
             position3D->value.x = target_position.x;
             position3D->value.y = target_position.y;
         } else if (zox_has(cameraTarget->value, Position3D)) {
-            zox_geter_value(cameraTarget->value, Position3D, float3, target_position)
+            float3 target_position = zox_getv(cameraTarget->value, Position3D);
             position3D->value.x = target_position.x;
             position3D->value.y = target_position.y;
         } else {

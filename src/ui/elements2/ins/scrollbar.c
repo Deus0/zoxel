@@ -21,7 +21,7 @@ entity spawn_scrollbar(ecs *world, entity parent, int2 position, int2 size, int 
     int2 handle_size = (int2) { size.x, handle_height };
     int2 handle_position = (int2) { 0, (size.y - handle_height) / 2 };
     entity handle = spawn_handle(world, prefab_handle, e, size, handle_position, handle_size, float2_half, handle_fill, handle_outline, 1);
-    zox_add_tag(handle, ScrollbarHandle);
+    zox_add(handle, ScrollbarHandle);
     zox_set(handle, ScrollviewLink, { scrollview });
     zox_set(handle, RenderDisabled, { !visible });
     //zox_log("- scrollbar height set to: [%i] out of [%i]", height, parent_pixel_size.y)

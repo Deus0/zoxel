@@ -18,7 +18,7 @@ byte zox_app_get_monitor(ecs *world, entity e) {
     if (!zox_valid(e) || !zox_has(e, SDLWindow)) {
         return 0;
     }
-    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
+    SDL_Window* sdl_window = zox_getv(e, SDLWindow);
     return zox_sdl_get_window_display(sdl_window);
 }
 

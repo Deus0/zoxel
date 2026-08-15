@@ -9,7 +9,7 @@ string_data new_string_data(const char *value) {
 
 string_data new_string_data_clone(char *value) {
     size_t length = strlen(value);
-    char* new_value = (char*) malloc(length + 1); // Allocate memory for the new string
+    char* new_value = (char*) zox_malloc(length + 1); // Allocate memory for the new string
     if (!new_value) {
         return (string_data) {
             .value = NULL,

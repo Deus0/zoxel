@@ -8,13 +8,13 @@ entity spawn_fps_display(ecs *world, entity canvas) {
     byte2 padding = (byte2) { 12, 8 };
     float2 anchor = { 1.0f, 1.0f };
     int2 position = (int2) { -16, -16 };
-    // int2 psize = zox_get_value(canvas, LayoutSize);
+    // int2 psize = zox_getv(canvas, LayoutSize);
     entity e = spawn_label(world, prefab_label_textured, canvas, position, anchor, padding, "", font_size, zox_alignment_top_right, layer, button_fill, button_outline, button_font_fill, button_font_outline);
     zox_set_unique_name(e, "fps_viewer");
     zox_prefab_name("fps_display");
     //zox_prefab_set(e, FontOutlineColor, {{ 200, 80, 80, 255 }});
     //zox_prefab_set(e, FontFillColor, {{ 244, 33, 33, 255 }});
-    zox_add_tag(e, FPSDisplay);
+    zox_add(e, FPSDisplay);
     zox_prefab_set(e, FPSDisplayTicker, { 0 });
     return e;
 }

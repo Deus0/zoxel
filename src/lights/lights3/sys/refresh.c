@@ -1,5 +1,5 @@
 // NOTE: When light resolution increases, we need to reflood lights from nearby chunks
-byte try_flood_light(const byte* solidity, const VoxelNode* voxels, LightNode* lights, byte depth, byte3 position, const VoxelNode* neighbor_voxels, const LightNode* neighbor_lights, byte3 neighbor_position, const VoxelNode** nvoxels, const LightNode** nlights, LightQueue** nqueues) {
+/*byte try_flood_light(const byte* solidity, const VoxelNode* voxels, LightNode* lights, byte depth, byte3 position, const VoxelNode* neighbor_voxels, const LightNode* neighbor_lights, byte3 neighbor_position, const VoxelNode** nvoxels, const LightNode** nlights, LightQueue** nqueues) {
     // first check this chunks voxel
     byte voxel = getv_VoxelNode(voxels, depth, position);
     if (voxel && solidity[voxel - 1]) {
@@ -40,7 +40,7 @@ zox_sys2(RefreshLightsSystem) {
         if (refresh->value != zox_refresh_lights) {
             continue;
         }
-        if (zox_getv(e, GenerateChunk)) {
+        if (zox_has(e, GenerateChunk)) {
             continue;
         }
         // NOTE: Check Blocks Caches
@@ -140,4 +140,4 @@ zox_sys2(RefreshLightsSystem) {
         refresh->value = 0;
     }
 } zox_sys_end(RefreshLightsSystem);
-
+*/

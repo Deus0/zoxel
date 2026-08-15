@@ -13,7 +13,7 @@ zox_sys2(BonesInitializeSystem) {
         }
         gpu->value = zox_gpu_create_buffer();
         if (is_paint_skeletons) {
-            zox_add_tag(e, PaintedSkeleton);
+            zox_add(e, PaintedSkeleton);
         }
         if (dbg_log) {
             zox_log("Mesh Initialized on GPU [%s]", zox_getn(e));

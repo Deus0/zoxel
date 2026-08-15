@@ -77,9 +77,9 @@ zox_sys2(LocalLayoutSystem) {
         zox_geter_value(parent, LayoutSize, int2, parent_size);
         int2 parent_position;
         if (zox_has(parent, Canvas) && zox_has(parent, LayoutPosition)) {
-            parent_position = zox_get_value(parent, LayoutPosition);
+            parent_position = zox_getv(parent, LayoutPosition);
         } else if (zox_has(parent, CanvasPosition)) {
-            parent_position = zox_get_value(parent, CanvasPosition);
+            parent_position = zox_getv(parent, CanvasPosition);
         } else {
             parent_position = int2_zero;
         }

@@ -10,19 +10,22 @@ zox_sys2(StatbarSystem) {
         float new_value = bar->value;
         if (!zox_valid(stat->value)) {
             new_value = 0;
+            if (dbg_log) {
+                zox_logw("Statbar Unlinked [%s]", zox_sys_e_name);
+            }
         } else if (zox_has(stat->value, StatState)) {
-            zox_geter(stat->value, StatValue, value)
-            zox_geter(stat->value, StatValueMax, max)
+            zox_geter(stat->value, StatValue, value);
+            zox_geter(stat->value, StatValueMax, max);
             new_value = value->value / max->value;
         } else if (zox_has(stat->value, StatLevel)) {
-            zox_geter(stat->value, ExperienceValue, value)
-            zox_geter(stat->value, ExperienceMax, max)
+            zox_geter(stat->value, ExperienceValue, value);
+            zox_geter(stat->value, ExperienceMax, max);
             new_value = value->value / max->value;
         }
         if (bar->value != new_value) {
             bar->value = new_value;
             if (dbg_log) {
-                zox_log("Statbar [%s]:%f", zox_getn(stat->value), new_value);
+                zox_log("[%s] Statbar [%s]:%f", zox_sys_e_name, zox_getn(stat->value), new_value);
             }
         }
     }

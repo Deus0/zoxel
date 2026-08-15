@@ -24,7 +24,7 @@
         // TODO: Spawn this when spawning Block Grass
         /*{
             color grass_color = color_grayscale(rand_range(50, 120));
-            zox_make_neww(e2);
+            entity e2 = zox_new();
             zox_set_unique_name(e2, "model_group_grass");
             ModelLinks variants = (ModelLinks) { 0 };
             for (int j = 0; j < grass_variants; j++) {

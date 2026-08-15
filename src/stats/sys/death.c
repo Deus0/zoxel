@@ -11,7 +11,7 @@ zox_sys2(DeathSystem) {
         if (!zox_valid(user) || !zox_has(user, Dead)) {
             continue;
         }
-        if (stat->value > 0 || zox_gett_value(user, Dead)) {
+        if (stat->value > 0 || zox_getv(user, Dead)) {
             continue;
         }
         // we should just set a dead state here

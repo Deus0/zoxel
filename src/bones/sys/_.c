@@ -92,9 +92,7 @@ void define_systems_bones(ecs *world) {
         [in] bones.BoneIndexes,
         [out] rendering.MeshDirty,
         [out] bones.BoneIndexGPULink,
-        #ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
-        #endif
     );
     zox_system_1(
         BoneRenderSystem,
@@ -116,8 +114,6 @@ void define_systems_bones(ecs *world) {
         [none] rendering3.SkeletonMesh,
         [none] rendering.MeshColorRGBs,
         [none] !rendering.UvsGPULink,
-        #ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
-        #endif
     );
 }

@@ -37,7 +37,7 @@ zox_sys2(Player3DJumpSystem) {
             entity e2 = devices[j];
             //for (int j = 0; j < devices->length; j++) {
             //entity e2 = devices->value[j];
-            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_valid(e2) || zox_getv(e2, DeviceDisabled)) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;
@@ -45,25 +45,21 @@ zox_sys2(Player3DJumpSystem) {
             uint children_length = zox_get_children(world, e2, children, children_capacity);
             for (uint k = 0; k < children_length; k++) {
                 entity e3 = children[k];
-                if (!zox_valid(e3)) {
-                    continue;
-                }
-                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
-                if (disabled) {
+                if (zox_getv(e3, ZeviceDisabled)) {
                     continue;
                 }
                 if (zox_has(e3, ZeviceButton)) {
-                    zox_geter_value(e3, DeviceButtonType, byte, type)
+                    byte type = zox_getv(e3, DeviceButtonType);
+                    byte clicked = zox_getv(e3, ZeviceButton);
                     if (type == zox_btn_a) {
-                        zox_geter(e3, ZeviceButton, zeviceButton)
-                        if (devices_get_pressed(zeviceButton->value)) {
+                        if (devices_get_pressed(clicked)) {
                             is_jump_triggered = 1;
                         }
                     }
                 }
             }
             if (mode->value == zox_device_mode_keyboardmouse && zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard)
+                zox_geter(e2, Keyboard, keyboard);
                 if (keyboard->space.is_pressed) {
                     is_jump_triggered = 1;
                 }

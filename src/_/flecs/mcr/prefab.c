@@ -2,7 +2,7 @@
     ecs_add_id(world, e, EcsPrefab);
 
 #define zox_prefab()\
-    zox_make_new()\
+    entity e = zox_new();\
     zox_make_prefab(e)
 
 // flecs 4 overrides by default

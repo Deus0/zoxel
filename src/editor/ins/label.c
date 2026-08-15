@@ -22,8 +22,8 @@ entity spawn_game_debug_label(ecs *world, entity canvas) {
     int2 position = (int2) { -8, -8 };
     entity e = spawn_label(world, prefab, parent, position, anchor, padding, "", font_size, alignment, layer, fill, button_outline, font_fill, button_font_outline);
     zox_set_unique_name(e, "debug_label");
-    zox_add_tag(e, EditorElement);
-    zox_add_tag(e, GameDebugLabel);
+    zox_add(e, EditorElement);
+    zox_add(e, GameDebugLabel);
     zox_set(e, DebugLabelData, { local_debug_label });
     zox_set(e, PlayerLink, { player->value });
     return e;

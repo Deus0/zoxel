@@ -1,9 +1,9 @@
 entity spawn_item_body(ecs *world, entity model, entity texture, const char* name) {
     entity e = spawn_realm_item2(world, prefab_item, name);
-    zox_add_tag(e, BodyItem);
+    zox_add(e, BodyItem);
     zox_set(e, ModelLink, { model });
     zox_set(e, TextureLink, { texture });
-    zox_add_tag(e, BodyPart);
+    zox_add(e, BodyPart);
     return e;
 }
 
@@ -40,7 +40,7 @@ entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mde
     entity e = zox_ins(world, prefab_model_group);
     // zox_make_prefab(e);
     zox_set_parent(world, e, parent);
-    zox_add_tag(e, BodyModel);
+    zox_add(e, BodyModel);
     zox_set_unique_name(e, name);
     // zox_set_unique_name(model_group, name);
     entity max_depth_vox = 0;

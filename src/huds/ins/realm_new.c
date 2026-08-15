@@ -72,8 +72,8 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_label, canvas, int2_zero, size, window_anchor, header_font_size, header_padding, &on_cancelled_new_realm);
     entity e = e3.x;
     entity body = e3.z;
-    zox_add_tag(e, MenuNewRealm);
-    zox_add_tag(e, NavigationWindow);
+    zox_add(e, MenuNewRealm);
+    zox_add(e, NavigationWindow);
     // # List #
     SpawnListElement elements[max_labels];
     int elements_count = 0;

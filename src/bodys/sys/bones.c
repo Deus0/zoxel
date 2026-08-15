@@ -36,17 +36,17 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
     // TODO: FLip models around
     byte is_right_side = position.x < 0;
     if (zox_has(part, Head)) {
-        zox_add_tag(bone, HeadBone);
+        zox_add(bone, HeadBone);
         zox_set(skeleton, HeadBoneLink, { bone });
     }
     if (zox_has(part, ArmPart)) {
-        zox_add_tag(bone, ArmBone);
+        zox_add(bone, ArmBone);
     }
     if (zox_has(part, Hips)) {
-        zox_add_tag(bone, HipsBone);
+        zox_add(bone, HipsBone);
     }
     if (zox_has(part, Shoulder)) {
-        zox_add_tag(bone, ShoulderBone);
+        zox_add(bone, ShoulderBone);
         zox_set(bone, SwingState, { 1 });
         zox_set(bone, SwingAngle, { 110 });
         // NOTE: For Right Shoulder
@@ -55,7 +55,7 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
         }
     }
     if (zox_has(part, Hand)) {
-        zox_add_tag(bone, HandBone);
+        zox_add(bone, HandBone);
         // NOTE: For Right Hand
         if (is_right_side) {
             zox_set(skeleton, HandBoneLink, { bone });
@@ -63,7 +63,7 @@ entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 ha
         }
     }
     if (zox_has(part, Thigh)) {
-        zox_add_tag(bone, ThighBone);
+        zox_add(bone, ThighBone);
         zox_set(bone, SwingState, { 1 });
         zox_set(bone, SwingAngle, { 60 });
         // zox_log("Added ThighBone to Part's Bone [%s]", zox_get_name(part));

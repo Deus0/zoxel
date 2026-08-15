@@ -1,7 +1,7 @@
 entity spawn_prefab_block_health(ecs* world) {
     zox_prefab();
     zox_prefab_name("block_health");
-    zox_add_tag(e, WorldBlock);
+    zox_add(e, WorldBlock);
     zox_prefab_set(e, StatValue, { 1 });
     zox_prefab_set(e, StatValueMax, { 1 });
     return e;

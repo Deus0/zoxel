@@ -4,7 +4,7 @@ entity spawn_prefab_vox_instanced(ecs *world, entity prefab) {
     zox_prefab_name("vox_instanced");
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, RenderDepth, { 0 });
-    zox_prefab_set(e, RenderDepthDirty, { zox_dirty_none });
+     //zox_prefab_set(e, RenderDepthDirty, { zox_dirty_none });
     zox_prefab_set(e, InstanceLink, { 0 });  // directly whats rendering
     zox_prefab_set(e, ModelLink, { 0 });     // can be a model or model group
     zox_prefab_set(e, BlockScale, { vox_model_scale });

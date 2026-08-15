@@ -1,8 +1,8 @@
 entity spawn_prefab_particle2(ecs* world) {
     zox_prefab();
     // zox_prefab_name("particle2");
-    zox_add_tag(e, Particle);
-    zox_add_tag(e, Particle2D);
+    zox_add(e, Particle);
+    zox_add(e, Particle2D);
     zox_prefab_set(e, Position2, { float2_zero });
     zox_prefab_set(e, Rotation2, { 0 });
     zox_prefab_set(e, Scale1, { 1 });

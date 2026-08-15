@@ -1,7 +1,7 @@
 entity spawn_prefab_sound(ecs *world) {
     zox_prefab();
     zox_prefab_name("sound");
-    zox_add_tag(e, Sound);
+    zox_add(e, Sound);
     zox_prefab_set(e, SoundLength, { 0 });
     zox_prefab_set(e, SoundFrequency, { 440 });
     zox_prefab_set(e, SoundVolume, { default_sound_volume });

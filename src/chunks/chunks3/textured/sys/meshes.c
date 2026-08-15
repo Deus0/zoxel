@@ -80,10 +80,10 @@ zox_sys2(ChunkMeshSpawnSystem) {
             entity e2 = zox_ins(world, prefab_chunk_mesh_textured);
             zox_set_unique_name(e2, "chunk_mesh");
             zox_set_parent(world, e2, e);
-            zox_set(e2, RenderDepth, { depth->value });
-            zox_set(e2, RenderDisabled, { render_disabled->value });
-            zox_set(e2, TransformMatrix, { matrix->value });
-            zox_set(e2, MaterialLink, { material });
+            zox_setv(e2, RenderDepth, depth->value);
+            zox_setv(e2, RenderDisabled, render_disabled->value);
+            zox_setv(e2, TransformMatrix, matrix->value);
+            zox_setv(e2, MaterialLink, material);
         }
         if (dirty->value == zox_chunk_lod_dirty_spawn) {
             dirty->value = zox_chunk_lod_dirty_toggle;

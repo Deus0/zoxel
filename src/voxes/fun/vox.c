@@ -3,7 +3,7 @@
     if (!source) {
         return;
     }
-    int3 chunk_size = zox_get_value(source, ChunkSize);
+    int3 chunk_size = zox_getv(source, ChunkSize);
     zox_set(e, ChunkSize, { chunk_size });
     zox_geter(source, VoxelNode, chunk_octree_source);
     zox_geter(source, NodeDepth, source_node_depth);

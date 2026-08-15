@@ -134,7 +134,7 @@ zox_sys2(Character3RealmSpawnSystem) {
         // add our skeleton prefab
         if (!zox_no_humanoids)
         {
-            byte chance = 5;
+            byte chance = 2;
             entity e2 = spawn_character3_meta(world, prefab_character3_skeleton_npc, character_seed, "Boney", chance);
             zox_set_parent(world, e2, e);
             spawn_stat_level(world, e2, rsoul, 5);
@@ -170,11 +170,11 @@ zox_sys2(Character3RealmSpawnSystem) {
                 zox_loge("realm has invalid model [%i]", j);
                 continue;
             }
-            zox_add_tag(model, ModelCharacter);
+            zox_add(model, ModelCharacter);
             byte chance = generated_chance;
             entity e2 = spawn_character3_meta(world, prefab_character, character_seed, "character", chance);
             zox_setv(e2, ModelLink, model);
-            zox_add_tag(e2, CharacterGeneric);
+            zox_add(e2, CharacterGeneric);
             zox_set_parent(world, e2, e);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;

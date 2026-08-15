@@ -1,7 +1,7 @@
 entity spawn_prefab_chunk_textured(ecs* world, entity prefab) {
     entity e = zox_prefab_from_parent(world, prefab);
     // Tags
-    zox_add_tag(e, ChunkTextured);
+    zox_add(e, ChunkTextured);
     // Links
     zox_prefab_set(e, BlockManagerLink, { 0 });
     // Bounds, used for Frustum Culling

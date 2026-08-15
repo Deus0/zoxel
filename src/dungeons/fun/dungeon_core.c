@@ -6,7 +6,7 @@ void spawn_world_dungeon_core(ecs *world, spawned_block_data *data) {
         // zox_log_error("null node in [spawned_block_vox]")
         return;
     }
-    zox_geter_value(data->block, BlockPrefabLink, entity, prefab)
+    entity prefab = zox_getv(data->block, BlockPrefabLink);
     if (!zox_has(prefab, DungeonCore)) {
         return;
     }

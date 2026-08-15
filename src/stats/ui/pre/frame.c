@@ -1,6 +1,6 @@
 entity spawn_prefab_frame_label_stat(ecs* world) {
     zox_prefab_child(prefab_text);
-    zox_add_tag(e, StatIconLabel);
+    zox_add(e, StatIconLabel);
     return e;
 }
 

@@ -1,7 +1,7 @@
 entity spawn_prefab_biome(ecs* world) {
     zox_prefab();
     zox_prefab_name("biome");
-    zox_add_tag(e, Biome);
+    zox_add(e, Biome);
     zox_prefab_set(e, ZoxName, { 0 });
     zox_prefab_set(e, Seed, { 0 });
     zox_prefab_set(e, RealmLink, { 0 });

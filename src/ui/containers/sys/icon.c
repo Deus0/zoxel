@@ -33,8 +33,8 @@ zox_sys2(DataIconSystem) {
         if (!zox_valid(slot->value)) {
             continue;
         }
-        if (zox_gett_value(slot->value, DataDirty) == zox_dirty_active) {
-            data->value = zox_gett_value(slot->value, DataLink);
+        if (zox_getv(slot->value, DataDirty) == zox_dirty_active) {
+            data->value = zox_getv(slot->value, DataLink);
             state->value = zox_dirty_trigger;
             // zox_log("Slot was dirty [%s]", zox_get_name(slot->value));
         }
@@ -56,7 +56,7 @@ zox_sys2(DataIconUpdateSystem) {
             continue;
         }
         // set texture of dirty
-        entity texture = zox_valid(data->value) && zox_has(data->value, TextureLink) ? zox_gett_value(data->value, TextureLink) : 0;
+        entity texture = zox_valid(data->value) && zox_has(data->value, TextureLink) ? zox_getv(data->value, TextureLink) : 0;
         if (!texture) {
             if (zox_valid(data->value)) {
                 texture = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));

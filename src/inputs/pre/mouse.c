@@ -1,7 +1,7 @@
 entity spawn_prefab_mouse(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("mouse");
-    zox_add_tag(e, Mouse);
+    zox_add(e, Mouse);
     zox_prefab_set(e, MouseLock, { 0 });
     return e;
 }

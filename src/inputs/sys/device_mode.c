@@ -30,7 +30,7 @@ zox_sys2(DeviceSwitchSystem) {
             entity e2 = devices[j];
             if (mode->value == zox_device_mode_keyboardmouse) {
                 if (zox_has(e2, Keyboard)) {
-                    zox_geter(e2, Keyboard, keyboard)
+                    zox_geter(e2, Keyboard, keyboard);
                     if (keyboard_is_any_input(keyboard)) {
                         // zox_log(" > using current keyboard\n")
                         using_current_inputs = 1;
@@ -77,7 +77,7 @@ zox_sys2(DeviceSwitchSystem) {
             }
             if (mode->value != zox_device_mode_keyboardmouse) {
                 if (zox_has(e2, Keyboard)) {
-                    zox_geter(e2, Keyboard, keyboard)
+                    zox_geter(e2, Keyboard, keyboard);
                     if (keyboard_is_any_input(keyboard)) {
                         new_mode = zox_device_mode_keyboardmouse;
                     }

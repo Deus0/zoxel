@@ -9,12 +9,12 @@ uint get_label_player_items(
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    zox_geter(player, CharacterLink, characterLink)
+    zox_geter(player, CharacterLink, characterLink);
     if (!zox_valid(characterLink->value)) {
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;
     }
-    zox_geter(characterLink->value, ItemLinks, items)
+    zox_geter(characterLink->value, ItemLinks, items);
     index += snprintf(buffer + index, size - index, "[%s] has [%i] items\n", zox_get_name(player), items->length);
     for (int i = 0; i < items->length; i++) {
         const entity action = items->value[i];

@@ -1,8 +1,8 @@
 entity spawn_prefab_character2_player(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("character2_player");
-    zox_add_tag(e, PlayerCharacter);
-    zox_add_tag(e, PlayerCharacter2);
+    zox_add(e, PlayerCharacter);
+    zox_add(e, PlayerCharacter2);
     zox_prefab_set(e, CameraLink, { 0 });
     zox_prefab_set(e, Movement2, { float2_zero });
     return e;

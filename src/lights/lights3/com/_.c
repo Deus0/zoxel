@@ -1,7 +1,6 @@
 zox_tag(SunnyChunk);
 zox_tag(BottomChunk);
-zoxc_byte(RefreshLights);
-zoxc_octree_basic(LightNode, byte, 0);
+zoxc_octree_basic(LightNode, byte, darklight);
 
 create_octree_setters(LightNode);
 create_octree_accessors(LightNode);
@@ -31,5 +30,7 @@ void define_components_lights3(ecs *world) {
     zoxd_queue(SunlightQueue);
     zoxd_queue(LightQueue);
     zoxd_queue(DarkQueue);
-    zoxd_byte(RefreshLights);
+    // zoxd_byte(RefreshLights);
+    zox_dont_fragment(SunnyChunk);
+    zox_dont_fragment(BottomChunk);
 }

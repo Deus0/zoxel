@@ -15,7 +15,7 @@ entity spawn_setting_byte(ecs* world, entity parent, const char* name, byte valu
 entity spawn_setting_byte_slider(ecs* world, entity parent, const char* name, byte value, byte2 bounds) {
     entity e = spawn_setting(world, prefab_setting, parent, name);
     zox_set(e, SettingByte, { value });
-    zox_add_tag(e, SettingSlider);
+    zox_add(e, SettingSlider);
     zox_set(e, SettingByteBounds, { bounds });
     return e;
 }

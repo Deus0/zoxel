@@ -46,7 +46,7 @@ zox_sys2(Player3DMoveSystem) {
             continue;
         }
         zox_geter_value(character, CameraLink, entity, camera);
-        byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraState) : zox_camera_state_first_person;
+        byte camera_mode = zox_valid(camera) ? zox_getv(camera, CameraState) : zox_camera_state_first_person;
         if (camera_mode == zox_camera_state_free) {
             continue;
         }
@@ -86,7 +86,7 @@ zox_sys2(Player3DMoveSystem) {
                 }
                 if (zox_has(e3, ZeviceButton)) {
                     if (type == zox_btn_x) {
-                        zox_geter(e3, ZeviceButton, zeviceButton)
+                        zox_geter(e3, ZeviceButton, zeviceButton);
                         if (!is_running && devices_get_pressed(zeviceButton->value)) {
                             is_running = 1;
                         }

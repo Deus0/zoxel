@@ -1,7 +1,7 @@
 /*entity spawn_prefab_blueprint(ecs *world, const entity prefab) {
     zox_instance(prefab)
     zox_prefab_name("blueprint")
-    zox_add_tag(e, Blueprint)
+    zox_add(e, Blueprint)
     return e;
 }
 

@@ -135,8 +135,8 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
     entity spawned_elements[elements_count];
     entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_main }, 1, 0, 0, window_alignment, window_anchor, list_padding, spawned_elements, elements, elements_count, visible_count).x;
     zox_name("menu_options");
-    zox_add_tag(e, MenuOptions);
-    zox_add_tag(e, NavigationWindow);
+    zox_add(e, MenuOptions);
+    zox_add(e, NavigationWindow);
     for (int i = 0; i < options_count; i++) {
         entity e2 = spawned_elements[i];
         entity setting = options[i];

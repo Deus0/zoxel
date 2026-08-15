@@ -1,9 +1,9 @@
 entity spawn_font_style_save_data(ecs *world, entity prefab, const SaveDataFontStyle *data) {
     zox_logv("[spawn_font_style_save_data] fonts [%i]", data->length);
-    entity prefab_font = zox_get_value(prefab, FontLink);
+    entity prefab_font = zox_getv(prefab, FontLink);
     zox_instance(prefab);
     zox_name("font_style_io");
-    zox_add_tag(e, TTFFontStyle);
+    zox_add(e, TTFFontStyle);
     for (int i = 0; i < data->length; i++) {
         if (i == zox_ascii_space) {
             // space

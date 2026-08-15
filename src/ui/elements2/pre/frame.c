@@ -3,8 +3,8 @@
 entity spawn_prefab_frame(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("frame");
-    zox_add_tag(e, FixToLayout);
-    zox_add_tag(e, Frame);
+    zox_add(e, FixToLayout);
+    zox_add(e, Frame);
     // zox_prefab_set(e, FillColor, { fill });
     // zox_prefab_set(e, OutlineColor, { outline });
     return e;

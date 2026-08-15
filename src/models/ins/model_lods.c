@@ -14,7 +14,7 @@ entity spawn_model_lods(ecs* world, entity parent, entity prefab_lod, color c, l
     // entity prefab_lod = prefab_invisible_vox;
     srand(seed);
     c = color_mutate(c, 40);
-    zox_make_new();
+    entity e = zox_new();
     zox_name("model_lods");
     zox_set_parent(world, e, parent);
     zox_set(e, Seed, { seed });

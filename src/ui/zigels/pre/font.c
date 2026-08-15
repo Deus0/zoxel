@@ -1,7 +1,7 @@
 entity spawn_font_prefab(ecs *world) {
     zox_prefab();
     zox_prefab_name("font");
-    zox_add_tag(e, Font);
+    zox_add(e, Font);
     zox_prefab_add(e, FontData);
     return e;
 }

@@ -34,7 +34,7 @@ zox_sys2(TunkLinkSystem) {
                 stack->value[k] = chunk3;
                 zox_set(chunk3, TunkLink, { e });
                 if  (!generate->value) {
-                    zox_set(chunk3, RenderDepthDirty, { zox_dirty_trigger });
+                    zox_setv(chunk3, RenderDepthDirty, zox_dirty_trigger);
                 }
             }
             if (!zox_valid(chunk3)) {

@@ -7,7 +7,7 @@ void zox_dbg_toggle_gizmos_terrain(ecs* world, ClickEventData data) {
     if (!zox_valid(terrain)) {
         return;
     }
-    byte mode = zox_get_value(prefab_chunk_terrain, DebugCubeLines);
+    byte mode = zox_getv(prefab_chunk_terrain, DebugCubeLines);
     cycle_cubeline_debug(&mode);
     zox_set(prefab_chunk_terrain, DebugCubeLines, { mode });
     zox_geter(terrain, ChunkLinks, chunks);

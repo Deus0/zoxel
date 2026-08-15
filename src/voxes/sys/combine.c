@@ -53,7 +53,7 @@ zox_sys2(CombineVoxSystem) {
                 zox_loge("Combining Vox [%s] has no [ChunkSize]", zox_get_name(vox));
                 continue;
             }
-            /*if (ndepth->value != zox_gett_value(vox, NodeDepth)) {
+            /*if (ndepth->value != zox_getv(vox, NodeDepth)) {
                 zox_logw("We don't support adding different depths yet");
                 continue;
             }*/

@@ -1,7 +1,7 @@
 /*entity spawn_prefab_elementbar3D(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("elementbar3D");
-    zox_add_tag(e, FillTexture);
+    zox_add(e, FillTexture);
     zox_prefab_set(e, BarLevel, { 1 });
     zox_prefab_set(e, ElementBarSize, { float2_zero });
     zox_prefab_set(e, LayoutSize, { int2_one });

@@ -63,7 +63,7 @@ entity spawn_datagrid_slots2(ecs* world, entity prefab, entity prefab_frame, ent
                 }
             }
             if (zox_valid(spawn.y)) {
-                zox_add_tag(spawn.y, DataFrame);
+                zox_add(spawn.y, DataFrame);
                 zox_set(spawn.y, SlotLink, { slot });
                 zox_set(spawn.y, DataLink, { dat });
                 zox_set(spawn.y, DataDirty, { zox_dirty_trigger });

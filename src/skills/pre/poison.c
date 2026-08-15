@@ -1,8 +1,8 @@
 entity spawn_prefab_poison(ecs *world) {
     zox_prefab();
     zox_prefab_name("poison");
-    zox_add_tag(e, Dot);
-    zox_add_tag(e, Poison);
+    zox_add(e, Dot);
+    zox_add(e, Poison);
     // zox_prefab_set(e, UserLink, { 0 });
     zox_prefab_set(e, SpawnerLink, { 0 });
     zox_prefab_set(e, SkillLink, { 0 });

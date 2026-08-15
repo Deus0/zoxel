@@ -3,7 +3,7 @@
 // If Streamer is Dirty:
 //  - Update Render Distances
 //  - Update Render Depths
-zox_sys2(TerrainChunkLodSystem) {
+/*zox_sys2(TerrainChunkLodSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -100,13 +100,15 @@ zox_sys2(TerrainChunkLodSystem) {
         depth_dirty->value = zox_dirty_trigger;
         busy->value = 1;
         // if new_depth > node_depth
-        if (new_depth > zox_getv(e, NodeDepth)) {
-            zox_muter(e, LightNode, lights);
-            lights->value = darklight;
-            collapse_LightNode(lights);
-            if (zox_has(e, SunnyChunk)) { // position.y == render_distance_y) {
-                zox_set(e, GenerateLights, { zox_generate_lights_sunlight });
+        if (!disable_lights) {
+            if (new_depth > zox_getv(e, NodeDepth)) {
+                zox_muter(e, LightNode, lights);
+                lights->value = darklight;
+                collapse_LightNode(lights);
+                if (zox_has(e, SunnyChunk)) {
+                    zox_add(e, GenerateSunlight);
+                }
             }
         }
     }
-} zox_sys_end(TerrainChunkLodSystem);
+} zox_sys_end(TerrainChunkLodSystem);*/

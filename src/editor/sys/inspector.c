@@ -89,7 +89,7 @@ zox_sys2(InspectorSpawnSystem) {
             continue;
         }
         // 2: Fetch our scrollview data
-        entity list_ui = zox_gett_value(scrollview->value, ListUILink);
+        entity list_ui = zox_getv(scrollview->value, ListUILink);
         if (!zox_valid(list_ui)) {
             zox_log_error("Scrollview [%s] Invalid ListUI", zox_get_name(scrollview->value));
             continue;
@@ -177,7 +177,7 @@ zox_sys2(InspectorSpawnSystem) {
             sprintf(tooltip_text, "%s", text);
             set_TooltipText(world, e2.x, tooltip_text);
             zox_set(e2.x, TooltipEvent, { &inspector_label_tooltip });
-            zox_add_tag(e2.x, InspectorLabel);
+            zox_add(e2.x, InspectorLabel);
             zox_set(e2.x, ComponentType, { type });
             zox_set(e2.x, EntityTarget, { target });
             zox_set(e2.x, ComponentTarget, { component_id });

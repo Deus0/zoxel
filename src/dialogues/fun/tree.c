@@ -19,6 +19,6 @@ entity spawn_dialogue_tree_texts(ecs* world, entity prefab, entity parent, char*
         last_node = e2;
     }
     zox_set_parent(world, e, parent);
-    zox_add_tag(e, Dialogue);
+    zox_add(e, Dialogue);
     return e;
 }

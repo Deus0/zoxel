@@ -90,7 +90,7 @@ byte update_chunk_for_raycast(
     if (raycast_locks) {
         // read_lock_VoxelNode(*root_voctree);
     }
-    *chunk_depth = zox_get_value(*chunk, RenderDepth);
+    *chunk_depth = zox_getv(*chunk, RenderDepth);
     byte length = octree_size(*chunk_depth);
     *chunk_size = byte3_single(length);
     *chunk_scalev = get_chunk_scale(*chunk_depth, terrain_depth, terrain_scalev);
@@ -260,7 +260,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
             entity block_spawn = get_node_entity_VoxelNode(node_voxel);
             if (zox_valid(block_spawn) && zox_has(block_spawn, Position3D)) {
                 // NOTE: Minivoxes are centred, so get cornered position, we offset
-                zox_geter_value_non_const(block_spawn, Position3D, float3, block_position);
+                zox_geter_value(block_spawn, Position3D, float3, block_position);
                 float3 ray_point = float3_add(ray_origin, float3_scale(ray_normal, ray_distancef));
                 float3_subtract_float3_p(&block_position, float3_single(0.5f * chunk_scalev));
                 // model itself

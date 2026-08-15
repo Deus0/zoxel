@@ -1,7 +1,7 @@
 entity spawn_prefab_cube(ecs *world) {
     zox_prefab();
     // zox_prefab_name("cube");
-    zox_add_tag(e, Cube);
+    zox_add(e, Cube);
     zox_prefab_set(e, Position3D, { float3_zero });
     zox_prefab_set(e, Rotation3D, { float4_identity });
     zox_prefab_set(e, Scale1, { 0.125f });

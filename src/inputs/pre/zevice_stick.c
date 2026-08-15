@@ -1,12 +1,12 @@
 entity spawn_prefab_device_stick(ecs *world) {
-    zox_prefab()
-    zox_prefab_name("zevice_stick")
-    zox_add_tag(e, Zevice)
-    zox_prefab_set(e, ZeviceDisabled, { 0 })
-    zox_prefab_set(e, ZeviceStick, { float2_zero })
-    zox_prefab_set(e, DeviceButtonType, { 0 })
-    zox_prefab_set(e, RealButtonIndex, { 0 })
-    zox_prefab_set(e, DeviceLink, { 0 })
+    zox_prefab();
+    zox_prefab_name("zevice_stick");
+    zox_add(e, Zevice);
+    zox_prefab_set(e, ZeviceDisabled, { 0 });
+    zox_prefab_set(e, ZeviceStick, { float2_zero });
+    zox_prefab_set(e, DeviceButtonType, { 0 });
+    zox_prefab_set(e, RealButtonIndex, { 0 });
+    zox_prefab_set(e, DeviceLink, { 0 });
     return e;
 }
 

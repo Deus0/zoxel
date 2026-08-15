@@ -2,15 +2,15 @@
 
 // todo: use iterative instance function: prefab_children
 /*void prefab_make_skeleton(ecs *world, const entity e) {
-    zox_add_tag(e, Skeleton)
-    zox_add_tag(e, SkeletonMesher)
+    zox_add(e, Skeleton)
+    zox_add(e, SkeletonMesher)
     zox_prefab_add(e, BoneLinks)
     zox_prefab_add(e, BoneIndexes)
     // add_gpu_bone_index(world, e);
     // zox_prefab_add(e, BoneLinks)
     spawn_gpu_bone_index(world, e);
 #ifdef zox_paint_skeletons
-    zox_add_tag(e, PaintedSkeleton)
+    zox_add(e, PaintedSkeleton)
 #endif
 }*/
 
@@ -31,11 +31,11 @@
 
     // = Head Bone =
     entity bone_child = spawn_body_bone(world, prefab_bone, e, bones, parent, children, bone_head_position, bone_head_position, test_bone_head_size);
-    zox_add_tag(bone_child, HeadBone);
+    zox_add(bone_child, HeadBone);
 
     // head
     // float3 test_bone_position_animating = (float3) { 0, head_delta * 2, 0 };
-    zox_add_tag(bone_child, OscillatePosition3D);
+    zox_add(bone_child, OscillatePosition3D);
     zox_set(bone_child, OscillateStartPosition3D, { float3_add(bone_head_position, delta) });
     zox_set(bone_child, OscillateDeltaPosition3D, { delta });
 

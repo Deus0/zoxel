@@ -83,12 +83,12 @@
 #include "turrets/_.c"
 #include "combat/_.c"
 #include "maps/_.c"
-#include "npcs/_.c"
+#include "ai/_.c"
 // Placement
 #include "markers/_.c"
 #include "vodes/_.c"
 #include "dungeons/_.c"
-#include "terrain/npcs/_.c"
+#include "npcs/_.c"
 // on top
 #include "controllers/_.c"
 #include "imports/_.c"
@@ -173,19 +173,19 @@ zox_begin_module(Zox) {
         zox_import_module(Clans);
         zox_import_module(Lores);
         zox_import_module(Achievements);
-        // Placement
-        zox_import_module(Markers);
-        zox_import_module(Vodes);
-        zox_import_module(Dungeons);
-        zox_import_module(TerrainsNpcs);
         // Gameplay
         zox_import_module(Pickups);
         zox_import_module(Crafting);
         zox_import_module(Farming);
         zox_import_module(Turrets);
         zox_import_module(Maps);
-        zox_import_module(Npcs);
+        zox_import_module(Ai);
         zox_import_module(Pets);
+        // Placement
+        zox_import_module(Markers);
+        zox_import_module(Vodes);
+        zox_import_module(Dungeons);
+        zox_import_module(Npcs);
         zox_import_module(Controllers);
         // TODO: Remove Debug
         zox_import_module(Debug);

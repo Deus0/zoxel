@@ -97,8 +97,6 @@ void define_systems_textures(ecs *world) {
         [in] rendering.TextureGPULink,
         [out] rendering.TextureDirty,
         [none] !textures.TextureRGB,
-#ifndef zox_disable_initialize_removal
         [none] !core.Initialize,
-#endif
     );
 }

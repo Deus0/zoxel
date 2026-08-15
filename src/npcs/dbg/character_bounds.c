@@ -5,7 +5,7 @@ void zox_dbg_toggle_gizmos_characters(ecs *world, ClickEventData data) {
     if (!zox_valid(terrain)) {
         return;
     }
-    byte mode = zox_get_value(prefab_character3, DebugCubeLines);
+    byte mode = zox_getv(prefab_character3, DebugCubeLines);
     cycle_cubeline_debug(&mode);
     zox_prefab_character_set(DebugCubeLines, { mode });
     zox_geter(terrain, ChunkLinks, chunks);
@@ -14,10 +14,10 @@ void zox_dbg_toggle_gizmos_characters(ecs *world, ClickEventData data) {
         uint checks = 0;
         while (pair != NULL && checks < max_safety_checks_hashmap) {
             entity chunk = pair->value;
-            zox_geter(chunk, ChunkEntities, entityLinks)
+            zox_geter(chunk, ChunkEntities, entityLinks);
             for (int j = 0; j < entityLinks->length; j++) {
                 entity e2 = entityLinks->value[j];
-                zox_set(e2, DebugCubeLines, { mode })
+                zox_set(e2, DebugCubeLines, { mode });
             }
             pair = pair->next;
             checks++;

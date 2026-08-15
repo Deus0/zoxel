@@ -1,8 +1,8 @@
 entity spawn_prefab_block(ecs *world) {
     zox_prefab();
     zox_prefab_name("block");
-    zox_add_tag(e, Voxel);
-    zox_add_tag(e, Block);
+    zox_add(e, Voxel);
+    zox_add(e, Block);
     zox_prefab_set(e, ZoxName, { 0 });
     zox_prefab_set(e, BlockIndex, { 0 });
     zox_prefab_set(e, Color, { color_white });

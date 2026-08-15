@@ -53,7 +53,7 @@ zox_sys2(TunkTextureSystem) {
                 zox_loge("Chunk invalid in tunk stack [%s:%i]", zox_get_name(tunk->value), k);
                 continue;
             }
-            if (zox_getv(chunk, GenerateChunk)) {
+            if (zox_has(chunk, GenerateChunk)) {
                 chunks_busy = 1;
                 break;
             }

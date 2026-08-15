@@ -2,8 +2,18 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- Crashes at start now.. 1 / 6 times?
+-x statbar2D isnt changing now too
+-x Statsbar isnt shrinking
+- Each character type - spawn dialogue there
+- Slider UI isnt accounted for in list ui
 - Refactor the taskbar button to window using links
     - Fix taskbars again properly linking to windows
+- Move map UI as player moves
+    - mask the map ui
+    - or just disable when goes over edge for now
+- Fix flickering issue of raycast
+    - maybe we should use a fixed rotation integral
 
 ## Gamepads
 - Tooltip should just be at top right of screen when finger is off ui

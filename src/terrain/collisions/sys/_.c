@@ -1,8 +1,8 @@
 #include "unstuck.c"
 #include "inside_sound.c"
 #include "inside.c"
-#include "detect_new.c"
-#include "detect1.c"
+// #include "detect_new.c"
+// #include "detect1.c"
 #include "intersect.c"
 #include "debug.c"
 
@@ -27,7 +27,26 @@ void define_systems_terrain_collisions(ecs* world) {
         [out] blocks.InsideBlockTime,
         [none] blocks.BlockSoundTrigger
     );
-    byte use_old_collisions = 0;
+    zox_system(
+        TerrainIntersectSystem,
+        zoxp_physics,
+        [in] terrains.TerrainLink,
+        [in] transforms3.Rotation3D,
+        [in] transforms3.Bounds3D,
+        [out] transforms3.Position3D,
+        [out] physics3.Velocity3D,
+        [out] physics.Grounded,
+        [none] !physics.NoClip
+    );
+    zox_system_1(
+        TerrainIntersectDebugSystem,
+        zoxp_mainthread,
+        [in] terrains.TerrainLink,
+        [in] transforms3.Position3D,
+        [in] transforms3.Rotation3D,
+        [in] transforms3.Bounds3D,
+    );
+    /*byte use_old_collisions = 0;
     if (use_old_collisions) {
         zox_system(
             CollisionDetectSystem,
@@ -64,25 +83,6 @@ void define_systems_terrain_collisions(ecs* world) {
             [out] transforms3.Position3D,
             [none] !physics.NoClip
         );
-    } else {
-        zox_system(
-            TerrainIntersectSystem,
-            zoxp_physics,
-            [in] terrains.TerrainLink,
-            [in] transforms3.Rotation3D,
-            [in] transforms3.Bounds3D,
-            [out] transforms3.Position3D,
-            [out] physics3.Velocity3D,
-            [out] physics.Grounded,
-            [none] !physics.NoClip
-        );
-        zox_system_1(
-            TerrainIntersectDebugSystem,
-            zoxp_mainthread,
-            [in] terrains.TerrainLink,
-            [in] transforms3.Position3D,
-            [in] transforms3.Rotation3D,
-            [in] transforms3.Bounds3D,
-        );
-    }
+    } else {*/
+    //}
 }

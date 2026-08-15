@@ -1,8 +1,8 @@
 entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_child(prefab);
     zox_prefab_name("character3");
-    zox_add_tag(e, Character);
-    zox_add_tag(e, Character3);
+    zox_add(e, Character);
+    zox_add(e, Character3);
     zox_prefab_set(e, Initialize, { zox_dirty_trigger });
     zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
     // generation
@@ -11,7 +11,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, ZoxName, { 0 });
     zox_prefab_set(e, GenerateName, { 1 });
     // In Terrain
-    zox_add_tag(e, LinkChunk);
+    zox_add(e, LinkChunk);
     zox_prefab_set(e, ChunkLink, { 0 });
     zox_prefab_set(e, ChunkPosition, { int3_chaos });
     zox_prefab_set(e, BlockPosition, { int3_zero });
@@ -29,8 +29,8 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, AnimationStart, { 0 });
     zox_prefab_set(e, ElementLinks, { 0 }); // uis
     // physics3
-    zox_add_tag(e, Moveable);
-    zox_add_tag(e, Frictioned);
+    zox_add(e, Moveable);
+    zox_add(e, Frictioned);
     zox_prefab_set(e, LastPosition3D, { float3_zero });
     zox_prefab_set(e, LastUnstuck3, { float3_zero });
     zox_prefab_set(e, InitializePhysics3D, { 0 });

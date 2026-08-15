@@ -1,8 +1,8 @@
 entity spawn_prefab_ui_line2D(ecs* world) {
     zox_prefab();
     zox_prefab_name("ui_line2");
-    zox_add_tag(e, Line2D);
-    zox_add_tag(e, ElementLine2D);
+    zox_add(e, Line2D);
+    zox_add(e, ElementLine2D);
     zox_prefab_set(e, LinePoints2, { 0 });
     zox_prefab_set(e, LocalLinePoints2, { 0 });
     zox_prefab_set(e, LayoutLinePoints, { 0 });

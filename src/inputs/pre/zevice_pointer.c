@@ -1,7 +1,7 @@
 entity spawn_prefab_zevice_pointer(ecs *world) {
     zox_prefab();
     zox_prefab_name("zevice_pointer");
-    zox_add_tag(e, Zevice);
+    zox_add(e, Zevice);
     // zox_prefab_set(e, ID, { 0 });
     zox_prefab_setv(e, ZeviceDisabled, 0);
     zox_prefab_set(e, ZevicePointer, { 0 });

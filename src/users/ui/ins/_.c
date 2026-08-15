@@ -6,7 +6,7 @@
     }
     zox_set(frame, DataLink, { data });
     zox_set(icon, DataLink, { data });
-    entity texture = zox_valid(data) && zox_has(data, TextureLink) ? zox_gett_value(data, TextureLink) : 0;
+    entity texture = zox_valid(data) && zox_has(data, TextureLink) ? zox_getv(data, TextureLink) : 0;
     if (!texture) {
         if (zox_valid(data)) {
             texture = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));

@@ -3,8 +3,8 @@ entity spawn_prefab_character3_skeleton(ecs *world, entity prefab) {
     entity e = spawn_prefab_character3(world, prefab, zox_character_type_skeleton);
     zox_make_prefab(e);
     zox_prefab_name("character3_skeleton");
-    zox_add_tag(e, Skeleton);
-    zox_add_tag(e, SkeletonMesh);
+    zox_add(e, Skeleton);
+    zox_add(e, SkeletonMesh);
     zox_prefab_set(e, SkeletonDirty, { 0 });
     zox_prefab_set(e, BoneLinks, { 0 });
     zox_prefab_set(e, BoneIndexes, { 0 });
@@ -16,6 +16,6 @@ entity spawn_prefab_character3_skeleton(ecs *world, entity prefab) {
     zox_prefab_set(e, WalkState, { 0 });
     zox_prefab_set(e, SwingStart, { 0 });
     zox_prefab_set(e, SwingSpeed, { 0 });
-    // zox_add_tag(e, CharacterUnique);
+    // zox_add(e, CharacterUnique);
     return e;
 }

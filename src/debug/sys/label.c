@@ -8,7 +8,7 @@ int debug_newline_zext(char buffer[], int buffer_size, int buffer_index) {
 #define get_label_generic_function(Name, name)\
 int get_label_##name(ecs *world, char buffer[], int buffer_size, int buffer_index, const entity e) {\
     if (!e || !zox_has(e, Name)) return buffer_index;\
-    const Name *children = zox_get(e, Name)\
+    const Name *children = zox_get(e, Name);\
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "[%s]'s children [%i]\n", zox_get_name(e), children->length);\
     for (int i = 0; i < children->length; i++) {\
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "  [%i] %s\n", i, zox_get_name(children->value[i]));\
@@ -30,14 +30,14 @@ get_label_generic_function(PlayerLinks, player_links)
             }
             buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " - z [%i]", j);
             if (zox_has(zevice, ZevicePointer)) {
-                    const byte click_value = zox_get_value(zevice, ZevicePointer)
+                    const byte click_value = zox_getv(zevice, ZevicePointer)
                     byte click_type = 0;
                     if (devices_get_pressed_this_frame(click_value)) click_type = 1;
                     else if (devices_get_released_this_frame(click_value)) click_type = 2;
                     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " clk [%i]", click_type);
             }
             if (zox_has(zevice, ZevicePointerPosition)) {
-                    const int2 position = zox_get_value(zevice, ZevicePointerPosition)
+                    const int2 position = zox_getv(zevice, ZevicePointerPosition)
                     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " pos [%ix%i]", position.x, position.y);
             }
             buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "\n");
@@ -71,21 +71,21 @@ get_label_generic_function(PlayerLinks, player_links)
         // zox_log("canvas; %s - %i\n", zox_get_name(canvas), zox_has(canvas, PlayerLink))
         if (!canvas || !zox_has(canvas, PlayerLink)) continue;
 
-        entity player = zox_get_value(canvas, PlayerLink)
+        entity player = zox_getv(canvas, PlayerLink)
         if (!player) continue;
-        // const entity character = zox_get_value(player, CharacterLink)
+        // const entity character = zox_getv(player, CharacterLink)
 #ifdef zox_debug_ui_device_mode
         const DeviceMode *deviceMode = zox_get(player, DeviceMode)
 #endif
 #ifdef zox_debug_ui_raycaster_target
-        const entity raycaster_target = zox_get_value(player, RaycasterTarget)
+        const entity raycaster_target = zox_getv(player, RaycasterTarget)
 #endif
         int buffer_index = 0;
         char buffer[buffer_size];
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "%s [v0.0.1]\n", game_name);
 
 #ifdef zox_debug_game_players
-        const entity game = zox_get_value(player, GameLink)
+        const entity game = zox_getv(player, GameLink)
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "player [%s]\n", zox_get_name(player));
         buffer_index = get_label_player_links(world, buffer, buffer_size, buffer_index, game);
 #endif
@@ -206,8 +206,8 @@ get_label_generic_function(PlayerLinks, player_links)
 #endif
 #ifdef zox_log_mouse
         zox_geter(local_mouse, Children, zevices)
-        const int2 mouse_position = zox_get_value(zevices->value[0], ZevicePointerPosition)
-        const int2 mouse_delta = zox_get_value(zevices->value[0], ZevicePointerDelta)
+        const int2 mouse_position = zox_getv(zevices->value[0], ZevicePointerPosition)
+        const int2 mouse_delta = zox_getv(zevices->value[0], ZevicePointerDelta)
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " mouse_position [%ix%i]", mouse_position.x, mouse_position.y);
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " mouse_delta [%ix%i]", mouse_delta.x, mouse_delta.y);
 #endif

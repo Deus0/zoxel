@@ -28,7 +28,7 @@
         zox_sys_begin();\
         zox_sys_out(T);\
         for (int i = 0; i < it->count; i++) {\
-            zox_sys_o(T, component)\
+            zox_sys_o(T, component);\
             if (component->value) {\
                 if (component->value < target) {\
                     component->value++;\
@@ -38,6 +38,24 @@
             } \
         }\
     } zox_sys_end_untimed(T##IncrementSystem);
+
+#define zox_increment_system_with_remove(T, target)\
+    zox_sys_untimed(T##IncrementSystem) {\
+        zox_sys_world(); \
+        zox_sys_begin();\
+        zox_sys_out(T);\
+        for (int i = 0; i < it->count; i++) {\
+            zox_sys_e(); \
+            zox_sys_o(T, component);\
+            if (component->value) {\
+                if (component->value < target) {\
+                    component->value++;\
+                } else if (component->value == target) {\
+                    zox_remove(e, T); \
+                } \
+            } \
+        }\
+    } zox_sys_end_untimed(T##IncrementSystem)
 
 // if non zero, moves to target state
 #define zox_increment_system_with_reset_extra( \

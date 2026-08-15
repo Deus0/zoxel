@@ -63,9 +63,9 @@ void set_camera_mode(ecs *world, entity e, byte mode) {
     // camera_follow_mode is more complicated, involves how camera is attached to character
     entity target = 0;
     if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
-        target = zox_get_parent(world, e); // zox_get_value(e, ParentLink);
+        target = zox_get_parent(world, e); // zox_getv(e, ParentLink);
     } else {
-        target = zox_get_value(e, CameraFollowLink);
+        target = zox_getv(e, CameraFollowLink);
     }
     if (old_camera_follow_mode != camera_follow_mode) {
         // remove old link

@@ -46,7 +46,7 @@ zox_sys2(LevelUpSystem) {
         // level up sound
         spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[32 + rand() % 4], 3.4, 1.4f * get_volume_sfx());
         // spawn particle system
-        float3 bounds = zox_get_value(parent, Bounds3D);
+        float3 bounds = zox_getv(parent, Bounds3D);
         // Spawns level up particles
         entity e2 = spawn_particle3D_emitter(world, parent, 10, float3_scale(bounds, 3), (color) { 255, 255, 0, 55 });
         zox_set(e2, DestroyInTime, { 3 + level->value });

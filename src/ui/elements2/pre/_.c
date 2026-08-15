@@ -21,7 +21,7 @@ entity prefab_icon;
 entity prefab_frame;
 entity prefab_frame_selectable;
 entity prefab_scrollbar;
-entity prefab_elementbar2;
+entity prefab_bar2;
 entity prefab_handle;
 entity prefab_slider;
 // Panels
@@ -36,11 +36,10 @@ void spawn_prefabs_elements2(ecs *world) {
     prefab_label_textured = spawn_prefab_label(world, prefab_text_textured);
     prefab_clickable = spawn_prefab_button(world, prefab_element_frame);
     prefab_button = spawn_prefab_button(world, prefab_element_frame);
-    zox_add_tag(prefab_button, NavigationElement);
-    // statbars
+    zox_add(prefab_button, NavigationElement);
+    // bars
     {
-        prefab_elementbar2 = spawn_prefab_elementbar(world, prefab_element_frame);
-        zox_add_tag(prefab_elementbar2, Elementbar);
+        prefab_bar2 = spawn_prefab_bar2(world, prefab_element_frame);
     }
     // icons
     prefab_icon = spawn_prefab_icon(world, prefab_element);

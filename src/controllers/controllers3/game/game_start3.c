@@ -14,16 +14,16 @@ byte find_position_in_terrain(ecs* world, entity terrain, int3 block_position, T
             zox_loge("Chunk Missing at [0x%ix0]", i);
             continue;
         }
-        if (!zox_has(chunk, GenerateChunk)) {
+        /*if (!zox_has(chunk, GenerateChunk)) {
             zox_loge("Chunk Missing GenerateChunk at [0x%ix0]", i);
             return 0;
-        }
+        }*/
         // If generating, we wait until done
-        if (zox_getv(chunk, GenerateChunk)) {
+        if (zox_has(chunk, GenerateChunk)) {
             return 0;
         }
         zox_geter(chunk, VoxelNode, chunkd);
-        node_depth = zox_get_value(chunk, NodeDepth);
+        node_depth = zox_getv(chunk, NodeDepth);
         if (find_random_position_on_ground(chunkd, voxel_node_above, node_depth, 200, &in_chunk_position)) {
             // zox_log("Found Position for Player [%i] of [%i] at [%ix%ix%i]", i, render_distance_y, in_chunk_position.x, in_chunk_position.y, in_chunk_position.z);
             found_position = 1;
@@ -99,7 +99,7 @@ entity game_start_player_load(ecs *world, entity player, entity realm, entity te
         }
         return 0;
     }
-    if (zox_getv(placer.chunk, GenerateChunk)) {
+    if (zox_has(placer.chunk, GenerateChunk)) {
         if (dbg_log) {
             zox_log("   - Chunk is Generating at [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z);
         }

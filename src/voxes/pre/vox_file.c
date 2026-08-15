@@ -1,9 +1,9 @@
 entity spawn_prefab_vox_file(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("vox_file");
-    zox_add_tag(e, Vox);
-    zox_add_tag(e, VoxMesh);
-    zox_add_tag(e, ColorChunk);
+    zox_add(e, Vox);
+    zox_add(e, VoxMesh);
+    zox_add(e, ColorChunk);
     zox_prefab_set(e, Brightness, { 1.0f });
     zox_prefab_set(e, RenderDisabled, { 1 });
     zox_prefab_set(e, MeshDirty, { 0 });

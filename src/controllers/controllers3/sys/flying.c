@@ -25,7 +25,7 @@ zox_sys2(PlayerFlySystem) {
             continue;
         }
         zox_geter_value(character, CameraLink, entity, camera);
-        byte camera_mode = zox_valid(camera) ? zox_gett_value(camera, CameraState) : zox_camera_state_first_person;
+        byte camera_mode = zox_valid(camera) ? zox_getv(camera, CameraState) : zox_camera_state_first_person;
         if (camera_mode == zox_camera_state_free) {
             continue;
         }
@@ -40,7 +40,7 @@ zox_sys2(PlayerFlySystem) {
                 continue;
             }
             if (mode->value == zox_device_mode_keyboardmouse && zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard)
+                zox_geter(e2, Keyboard, keyboard);
                 if (keyboard->q.is_pressed) input -= fly_run_acc_y;
                 if (keyboard->e.is_pressed) input += fly_run_acc_y;
             }

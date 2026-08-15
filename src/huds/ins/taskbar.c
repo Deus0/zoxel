@@ -44,7 +44,7 @@ entity spawn_taskbar(ecs* world, entity canvas) {
     entity e = e2.x;
     entity body = e2.z;
     zox_set_unique_name(e, "taskbar");
-    zox_add_tag(e, Taskbar);
+    zox_add(e, Taskbar);
     for (int i = 0; i < taskbar_count; i++) {
         // hook data
         int hook_index = -1;

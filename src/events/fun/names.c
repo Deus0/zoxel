@@ -59,6 +59,6 @@ byte get_text_length(const char* text) {
 
 #define zox_log_name(log, e) { \
     zox_geter(e, ZoxName, name); \
-    /*char *text = convert_zext_to_text(zox_get_value_(e, ZoxName), zox_get_length_(e, ZoxName));*/\
+    /*char *text = convert_zext_to_text(zox_getv(e, ZoxName), zox_getl(e, ZoxName));*/\
     zox_log(log, name->value)\
 }

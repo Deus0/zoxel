@@ -9,8 +9,8 @@ zox_sys2(MeleeSystem) {
     color popup_color = (color) { 255, 0, 0, 255 };
     float popup_spawn_y = 0.18f;
     double volume = get_volume_sfx();
-    float knockback_min = 0.5f;
-    float knockback_max = 1.5f;
+    float knockback_min = 1.5f;
+    float knockback_max = 3.5f;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkillResourceLink);
@@ -73,7 +73,7 @@ zox_sys2(MeleeSystem) {
                 }
                 continue;
             }
-            float lresource = zox_get_value(resource, StatValue);
+            float lresource = zox_getv(resource, StatValue);
             if (lresource < cost->value) {
                 if (dbg_log) {
                     zox_log("User [%s] needs more [%s] [%f]", zox_get_name(user), zox_get_name(resource), lresource);
@@ -119,7 +119,7 @@ zox_sys2(MeleeSystem) {
         // todo: reduce energy stat value using SkillCost, check if has enough energy
         float skill_damage = randf_range(damage->value, damage_max->value);
         if (strength) {
-            skill_damage += strength_damage_multiplier * zox_gett_value(strength, StatValue);
+            skill_damage += strength_damage_multiplier * zox_getv(strength, StatValue);
         }
         if (!zox_has(user, PlayerLink)) {
             skill_damage *= npc_nerf_multiplier; // EASY MODE
@@ -131,7 +131,7 @@ zox_sys2(MeleeSystem) {
                 zox_log_error("hit user had no health")
                 continue;
             } else {
-                float stat_value_max = zox_get_value(hit_health, StatValueMax);
+                float stat_value_max = zox_getv(hit_health, StatValueMax);
                 zox_muter(hit_health, StatValue, statValue);
                 statValue->value -= skill_damage;
                 if (statValue->value < 0) {

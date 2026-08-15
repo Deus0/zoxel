@@ -34,7 +34,7 @@ entity spawn_stats_panel(ecs* world, entity canvas, entity character) {
     entity e = e2.x;
     entity body = e2.z;
     zox_set_unique_name(e, "statbars");
-    zox_add_tag(e,  StatBars);
+    zox_add(e,  StatBars);
     // Now our bars
     int2 bar_position = (int2) { 0, - bar_size.y / 2 + panel_height / 2 };
     for (uint i = 0; i < stats_length; i++) {

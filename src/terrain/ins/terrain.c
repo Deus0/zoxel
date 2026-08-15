@@ -32,7 +32,7 @@ entity spawn_terrain(ecs *world, entity prefab, entity realm, lint seed) {
     zox_instance(prefab);
     zox_name("terrain");
     zox_set_parent(world, e, realm);
-    zox_add_tag(e, Terrain);
+    zox_add(e, Terrain);
     // Link them link this for now
     zox_set(e, RealmLink, { realm });
     zox_set(realm, TerrainLink, { e });

@@ -1,7 +1,7 @@
 entity spawn_prefab_node_link(ecs *world) {
     zox_prefab();
     zox_prefab_name("nodelink");
-    zox_add_tag(e, Nodelink);
+    zox_add(e, Nodelink);
     zox_prefab_add(e, NodeParent);
     zox_prefab_add(e, NodeNext);
     return e;

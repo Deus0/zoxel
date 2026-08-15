@@ -20,10 +20,10 @@ int spawn_players(ecs *world, entity game, byte zox_game_type) {
             dbg_player = e;
         }
         if (zox_game_type == zox_game_mode_3D) {
-            zox_add_tag(e, Player3);
+            zox_add(e, Player3);
             // zox_log("Added Player3 [%i]", zox_game_type);
         } else if (zox_game_type == zox_game_mode_2D) {
-            zox_add_tag(e, Player2);
+            zox_add(e, Player2);
             // zox_log("Added Player2 [%i]", zox_game_type);
         }
         add_player(world, game, e);

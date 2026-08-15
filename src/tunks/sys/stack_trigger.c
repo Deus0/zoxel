@@ -17,7 +17,7 @@ zox_sys2(TunkEndSystem) {
             if (!zox_valid(chunk3)) {
                 continue;
             }
-            zox_set(chunk3, RenderDepthDirty, { zox_dirty_trigger });
+            zox_setv(chunk3, RenderDepthDirty, zox_dirty_trigger);
         }
         generate->value = 0;
     }

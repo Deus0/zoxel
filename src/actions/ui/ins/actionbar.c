@@ -26,7 +26,7 @@ entity spawn_menu_actions(ecs* world, entity player) {
     int2 position = (int2) { 0, frame_size * 0.5f };
     entity frame_id = zox_id(ActionFrame);
     entity e = spawn_datagrid_slots(world, prefab_window, prefab_frame_selectable, prefab_icon, prefab_label, label_font_size, canvas, character, actionbar, cells_size, "", fill_color_frame_action, outline_color_frame_action, position_anchor, position, frame_id);
-    zox_add_tag(e, MenuActions);
+    zox_add(e, MenuActions);
     return e;
 }
 

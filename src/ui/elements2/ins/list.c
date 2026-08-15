@@ -56,7 +56,7 @@ entity spawn_list(ecs *world, LayoutParentData canvas_data, LayoutParentData par
             if (child_data.on_click.value) {
                 zox_set(child, ClickEvent, { child_data.on_click.value });
             }
-            zox_add_tag(child, ZextLabel);
+            zox_add(child, ZextLabel);
             if (child_data.save_path) {
                 FolderPath path = { };
                 size_t len = strlen(child_data.save_path);

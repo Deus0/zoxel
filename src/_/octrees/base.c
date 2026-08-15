@@ -4,7 +4,8 @@ static inline void octree_create(
     byte value)
 {
     memset(node,0,stride);
-    *(byte*)node = value;
+    // *(byte*)node = value;
+    *(byte*)((char*)node + sizeof(void*)) = value;
 }
 
 
@@ -16,7 +17,7 @@ static inline void octree_close(
     if (!*ptr) {
         return;
     }
-    free(*ptr);
+    zox_free(*ptr);
     byte value = *(byte*)node;
     memset(node, 0, stride);
     *(byte*)node = value;
@@ -28,7 +29,7 @@ static inline byte octree_open(
     byte value)
 {
     void** ptr = (void**)node;
-    void* kids = malloc(stride * octree_length);
+    void* kids = zox_malloc(stride * octree_length);
     if (!kids) {
         return 0;
     }
@@ -82,7 +83,7 @@ static inline void octree_collapse(
     void* node,
     size_t stride)
 {
-    void** ptr = (void**)node;
+    void** ptr = (void**) node;
     if (!*ptr) {
         return;
     }
@@ -92,7 +93,7 @@ static inline void octree_collapse(
             (char*)kids + i * stride,
             stride);
     }
-    free(kids);
+    zox_free(kids);
     *ptr = NULL;
 }
 
@@ -102,10 +103,33 @@ static inline void octree_move(
     size_t stride,
     byte default_value)
 {
-    void** dst_ptr = dst;
+    *(void**) dst = *(void**) src;
+    *(byte*)((char*) dst + sizeof(void*)) = *(byte*)((char*) src + sizeof(void*));
+    *(void**) src = NULL;
+    *(byte*)((char*) src + sizeof(void*)) = default_value;
+    /*void** dst_ptr = dst;
     void** src_ptr = src;
     *dst_ptr = *src_ptr;
     *(byte*)dst = *(byte*)src;
     *src_ptr = NULL;
-    *(byte*)src = default_value;
+    *(byte*)src = default_value;*/
+}
+
+static inline void free_octree(void* node, size_t stride) {
+    if (!node) {
+        return;
+    }
+    void** ptr = (void**) node;
+    void* kids = *ptr;
+    if (!kids) {
+        return;
+    }
+    for (byte i = 0; i < 8; i++) {
+        free_octree(
+            (char*) kids + i * stride,
+            stride
+        );
+    }
+    zox_free(kids);
+    *ptr = NULL;
 }

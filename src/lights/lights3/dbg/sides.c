@@ -70,7 +70,7 @@ zox_sys2(Light3BuildSystem) {
         byte solidity[blocks->length];
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
-            solidity[j] = zox_valid(block) && zox_has(block, BlockModel) ? ((zox_gett_value(block, BlockModel)) == zox_block_solid) : 1;
+            solidity[j] = zox_valid(block) && zox_has(block, BlockModel) ? ((zox_getv(block, BlockModel)) == zox_block_solid) : 1;
         }
         int color_index = 0;
         zox_apply_debug_colors(solidity, nodev, colors, &color_index, depth->value, 0);

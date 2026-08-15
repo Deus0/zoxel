@@ -95,4 +95,8 @@ void zox_define_components_core(ecs* world) {
     // Arrays
     zoxd_double(MaxDoubleData);
     zoxd_arrayd(DoubleData);
+    // Dont Fragment
+    // zox_dont_fragment(Initialize);
+    // zox_dont_fragment(Disabled);
+    // zox_dont_fragment(DebugEntity);
 }

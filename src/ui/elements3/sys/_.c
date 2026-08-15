@@ -21,7 +21,7 @@ void define_systems_elements3D(ecs *world) {
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices,
-        [out] rendering.MeshDirty,
+        // [out] rendering.MeshDirty,
         [none] !core.Initialize,
     );
     /*zox_system(

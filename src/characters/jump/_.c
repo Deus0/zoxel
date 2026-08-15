@@ -24,7 +24,7 @@ zoxc_byte(FlyMode);
 // TODO: Falling - FallSounds, FallDamage! Count Height
 
 static inline byte get_character_can_jump(ecs *world, entity c) {
-    return zox_valid(c) && zox_has(c, CanJump) ? zox_gett_value(c, CanJump) : 0;
+    return zox_valid(c) && zox_has(c, CanJump) ? zox_getv(c, CanJump) : 0;
 }
 
 zox_begin_module(Jumps)

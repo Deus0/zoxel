@@ -21,7 +21,7 @@ zox_sys2(ViewportResizeSystem) {
                 continue;
             }
             // TODO: Camera should have CanvasLinks and a size dirty flag!
-            float4 screen_to_canvas = zox_get_value(camera, ScreenToCanvas);
+            float4 screen_to_canvas = zox_getv(camera, ScreenToCanvas);
             int2 new_size = screen_to_canvas_size(size->value, screen_to_canvas);
             int2 position = screen_to_canvas_position(size->value, screen_to_canvas);
             if (zox_has(camera, Camera3)) {

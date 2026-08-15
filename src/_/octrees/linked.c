@@ -19,7 +19,7 @@ static inline void octree_destroy_linked(
                 type_offset,
                 destroy_link);
         }
-        free(kids);
+        zox_free(kids);
     }
     else if (type == node_type_instance) {
         destroy_link(world,node);
@@ -51,7 +51,7 @@ static inline void octree_collapse_linked(
                 stride,
                 type_offset);
         }
-        free(kids);
+        zox_free(kids);
     }
 
     *ptr = NULL;

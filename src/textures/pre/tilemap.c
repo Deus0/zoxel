@@ -1,8 +1,8 @@
 entity spawn_prefab_tilemap(ecs *world) {
     zox_prefab();
     zox_prefab_name("tilemap");
-    zox_add_tag(e, Tilemap);
-    zox_add_tag(e, Texture);
+    zox_add(e, Tilemap);
+    zox_add(e, Texture);
     zox_prefab_set(e, Initialize, { 1 });
     zox_prefab_set(e, RealmLink, { 0 });
     zox_prefab_set(e, TilemapSize, { { 1, 1 } });

@@ -6,15 +6,7 @@ zox_tag(RendererInstance);
 zox_tag(VoxMesh);
 zox_tag(DisableDepthTest);
 zox_tag(MeshClearCache);
-// Events
-zoxc_byte(BuildMesh);
-zoxc_byte(MeshDirty);
-zoxc_byte(MeshReady);
-zoxc_byte(TextureDirty);
-zoxc_byte(MeshColorsGenerate);
-zoxc_byte(MeshColorsDirty);
-zoxc_state(RenderDistanceDirty);
-zoxc_state(RenderDepthDirty);
+zox_tag(MeshBuilt);
 // Properties
 zoxc_int2(TextureSize);
 zoxc_float(Brightness);
@@ -53,9 +45,18 @@ zoxc_arrayd(MeshColorRGBs, color_rgb);
 #include "colors_gpu_link.c"
 #include "shader_gpu_link.c"
 #include "compute_shader.c"
+// Events
+zoxc_byte(BuildMesh);
+zoxc_byte(MeshDirty);
+zoxc_byte(MeshReady);
+zoxc_byte(TextureDirty);
+zoxc_byte(MeshColorsGenerate);
+zoxc_byte(MeshColorsDirty);
+zoxc_state_remove(RenderDepthDirty);
+zoxc_state_remove(RenderDistanceDirty);
 
 static inline int2 get_texture_size(ecs* world, entity e) {
-    return zox_get_value(e, TextureSize);
+    return zox_getv(e, TextureSize);
 }
 
 void define_components_rendering(ecs *world) {
@@ -68,17 +69,8 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(DisableDepthTest);
     zoxd_tag(MeshClearCache);
     zoxd_byte(RenderOrder);
-    // Events
-    zoxd_byte(BuildMesh);
-    zoxd_byte(MeshDirty);
-    zoxd_byte(MeshReady);
-    zoxd_byte(TextureDirty);
-    zoxd_state(RenderDistanceDirty);
-    zoxd_state(RenderDepthDirty);
     // Properties
     zoxd_int2(TextureSize);
-    zoxd_byte(MeshColorsGenerate);
-    zoxd_byte(MeshColorsDirty);
     zoxd_byte(MeshAlignment);
     zoxd_entity(MeshLink);
     zoxd_byte(RenderDepth);
@@ -107,13 +99,6 @@ void define_components_rendering(ecs *world) {
     zoxd(MaterialInstancedGPULink);
     // Old
     zoxd_guint_dest_old(ComputeShaderLink);
-    /*zoxd_guint_dest_old(MaterialGPULink);
-    zoxd_guint_dest_old(TextureGPULink);
-    zoxd_guint2_dest_old(MeshGPULink);
-    zoxd_guint_dest_old(UvsGPULink);
-    zoxd_guint_dest_old(ColorsGPULink);
-    zoxd_guint_dest_old(UboGPULink);
-    zoxd_guint_dest_old(ShaderGPULink);*/
     // New
     zoxd_guint_dest(MaterialGPULink);
     zoxd_guint_dest(TextureGPULink);
@@ -122,4 +107,25 @@ void define_components_rendering(ecs *world) {
     zoxd_guint_dest(ColorsGPULink);
     zoxd_guint_dest(UboGPULink);
     zoxd_guint_dest(ShaderGPULink);
+    // Events
+    zoxd_byte(BuildMesh);
+    zoxd_byte(MeshDirty);
+    zoxd_byte(MeshReady);
+    zoxd_byte(MeshColorsGenerate);
+    zoxd_byte(MeshColorsDirty);
+    zoxd_byte(TextureDirty);
+    zoxd_state(RenderDistanceDirty);
+    zoxd_state(RenderDepthDirty);
+    zoxd_tag(MeshBuilt);
+    zox_dont_fragment(MeshBuilt);
+    // Dont fragments
+    /*zox_dont_fragment(BuildMesh);
+    zox_dont_fragment(MeshDirty);
+    zox_dont_fragment(MeshReady);
+    zox_dont_fragment(MeshColorsGenerate);
+    zox_dont_fragment(MeshColorsDirty);
+    zox_dont_fragment(TextureDirty);*/
+    // TODO: Remove their state systems
+    // zox_dont_fragment(RenderDepthDirty);
+    // zox_dont_fragment(RenderDistanceDirty);
 }

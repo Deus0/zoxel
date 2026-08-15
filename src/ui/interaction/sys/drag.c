@@ -16,7 +16,7 @@ zox_sys2(DraggerEndSystem) {
         uint length = zox_get_children_by_id(world, dragger->value, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2) || zox_gett_value(e2, DeviceDisabled)) {
+            if (!zox_valid(e2) || zox_getv(e2, DeviceDisabled)) {
                 continue;
             }
             /*uint children_capacity = zox_children_capacity;

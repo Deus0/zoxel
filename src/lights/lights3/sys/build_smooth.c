@@ -143,20 +143,18 @@ zox_sys2(SmoothLightsBuildSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(BuildMesh);
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
     zox_sys_out(MeshColorsGenerate);
-    zox_sys_out(MeshColorsDirty);
+    // zox_sys_out(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(BuildMesh, build);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshColorsGenerate, generate);
-        zox_sys_o(MeshColorsDirty, upload);
+        // zox_sys_o(MeshColorsDirty, upload);
         // Dont build when mesh is building
-        if (!generate->value || build->value) {
+        if (!generate->value) {
             continue;
         }
         // Get chunk data
@@ -191,8 +189,10 @@ zox_sys2(SmoothLightsBuildSystem) {
         fetch_nearby_lights(world, lights, nearby_chunks, nearby_lights);
         uint ccount = 0;
         zox_apply_smooth_lights(nearby_lights, voxels, sides, colors, byte3_zero, &ccount, depth->value, 0);
-        generate->value = 0;
-        upload->value = 1;
+        // generate->value = 0;
+        // upload->value = 1;
+        zox_setv(e, MeshColorsDirty, 1);
+        zox_remove(e, MeshColorsGenerate);
         /*if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }*/

@@ -1,8 +1,8 @@
 entity spawn_prefab_element(ecs* world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("element");
-    zox_add_tag(e, Element);
-    zox_add_tag(e, TexturedMesh2);  // render system tag
+    zox_add(e, Element);
+    zox_add(e, TexturedMesh2);  // render system tag
     // Properties
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, RenderDisabled, { 0 });
@@ -22,7 +22,7 @@ entity spawn_prefab_element(ecs* world, entity prefab) {
     prefab_set_mesh2D_vertices(world, e, square_vertices, 4);
     // prefab_set_mesh2D_vertices(world, e, NULL, 0);
     // Texture
-    zox_add_tag(e, Texture);
+    zox_add(e, Texture);
     zox_prefab_set(e, TextureData, { 0 });
     zox_prefab_set(e, TextureDirty, { 0 });
     zox_prefab_set(e, TextureSize, { int2_zero });

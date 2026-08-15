@@ -20,4 +20,8 @@ void define_components_chunks(ecs* world) {
     zoxd_byte(FindNeighbors);
     zoxd_entity(ChunkPrefabLink);
     zoxd_entity(ChunkMeshPrefabLink);
+    zox_dont_fragment(NoSplitChunk);
+    // zox_dont_fragment(GenerateChunk);
+    // zox_dont_fragment(GenerateModel);
+    // zox_dont_fragment(BuildChunkSides);
 }

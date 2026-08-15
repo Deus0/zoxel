@@ -1,6 +1,6 @@
 entity spawn_prefab_mountain(ecs* world) {
     zox_prefab();
-    zox_add_tag(e, Mountain);
+    zox_add(e, Mountain);
     zox_prefab_set(e, MountainType, { 0 });
     zox_set(e, Generate, { zox_dirty_trigger });
     zox_set(e, BlockPosition2, { int2_zero });

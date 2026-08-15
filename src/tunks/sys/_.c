@@ -143,7 +143,7 @@ void define_systems_tunks(ecs* world) {
         [in] tunks.TunkPosition,
         [in] tunks.Chunk3Stack,
         [out] rendering.RenderDistance,
-        [out] rendering.RenderDistanceDirty,
+        // [out] rendering.RenderDistanceDirty,
         [out] tunks.TunkLod,
         [out] tunks.GenerateTunk,
         [none] streaming.StreamedChunk

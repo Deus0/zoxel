@@ -37,7 +37,7 @@ zox_sys2(RenderDepthColorSystem) {
             }
         } else if (mode->value == zox_cubeline_debug_verts) {
             if (zox_has(e, MeshIndicies)) {
-                zox_geter(e, MeshIndicies, meshIndicies)
+                zox_geter(e, MeshIndicies, meshIndicies);
                 if (meshIndicies->length == 0) {
                     output = (color_rgb) { 255, 0, 0 };
                 } else {

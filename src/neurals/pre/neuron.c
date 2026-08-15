@@ -1,7 +1,7 @@
 entity spawn_prefab_neuron(ecs *world) {
     zox_prefab();
     zox_prefab_name("neuron");
-    zox_add_tag(e, Neuron);
+    zox_add(e, Neuron);
     zox_prefab_set(e, Signal, { 0 });
     // zox_prefab_add(e, ParentLink)
     // this is only used for rendering / debugging

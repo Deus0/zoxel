@@ -1,6 +1,6 @@
 entity spawn_prefab_town(ecs* world) {
     zox_prefab();
-    zox_add_tag(e, Town);
+    zox_add(e, Town);
     zox_prefab_set(e, Seed, { 0 });
     zox_prefab_set(e, GenerateName, { 1 });
     zox_prefab_set(e, GenerateTown, { 1 });

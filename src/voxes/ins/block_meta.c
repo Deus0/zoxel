@@ -10,7 +10,7 @@ entity spawn_block_vox_meta(ecs *world, SpawnBlock data) {
         zox_prefab_set(e, BlockPrefabLink, { data.prefab_world_block });
     }
     if (data.tag) {
-        zox_add_tag_id(e, data.tag);
+        zox_add_id(e, data.tag);
     }
     if (data.disable_collision) {
         zox_set(e, BlockCollider, { zox_block_air });

@@ -84,9 +84,9 @@ zox_sys2(TerrainStreamSystem) {
                             int3_hashmap_add(chunks->value, position, chunk);
                             zox_set(chunk, TunkLink, { tunk });
                             if (position.y == render_distance_y) {
-                                zox_add_tag(chunk, SunnyChunk);
+                                zox_add(chunk, SunnyChunk);
                             } else if (position.y == -render_distance_y) {
-                                zox_add_tag(chunk, BottomChunk);
+                                zox_add(chunk, BottomChunk);
                             }
                             if (dbg_log) {
                                 zox_log("New Chunk: [%ix%ix%i] dist [%i]", position.x, position.y, position.z, new_distance);
@@ -94,7 +94,19 @@ zox_sys2(TerrainStreamSystem) {
                             stack.value[stack_i] = chunk;
                         }
                         zox_set_ptr(tunk, Chunk3Stack, stack);
-                    } /*else {
+                    }
+                }
+            }
+        }
+        zox_sys_query_end();
+    }
+} zox_sys_end(TerrainStreamSystem);
+
+// TODO: Check all configurations on different issues this might bring... if it comes up
+// NOTE: No need atm for extra flooding, seems that it's just working as  sunlights just readds the floodfill as it fills
+// zox_set(chunk, RefreshLights, { zox_refresh_lights });
+
+/*else {
                         // NOTE: Handled by tunk loding
                         if (zox_tunk_lod_system) {
                             continue;
@@ -153,18 +165,8 @@ zox_sys2(TerrainStreamSystem) {
                                 lights->value = darklight;
                                 collapse_LightNode(lights);
                                 if (position.y == render_distance_y) {
-                                    zox_set(chunk, GenerateLights, { zox_generate_lights_sunlight });
+                                    zox_set(chunk, GenerateSunlight, { zox_generate_lights_sunlight });
                                 }
                             }
                         }
                     }*/
-                }
-            }
-        }
-        zox_sys_query_end();
-    }
-} zox_sys_end(TerrainStreamSystem);
-
-// TODO: Check all configurations on different issues this might bring... if it comes up
-// NOTE: No need atm for extra flooding, seems that it's just working as  sunlights just readds the floodfill as it fills
-// zox_set(chunk, RefreshLights, { zox_refresh_lights });

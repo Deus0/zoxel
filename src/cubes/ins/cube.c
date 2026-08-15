@@ -7,7 +7,7 @@ entity spawn_cube(ecs* world, entity prefab, float3 position, float scale1) {
     zox_name("cube");
     zox_set(e, Position3D, { position });
     zox_set(e, Scale1, { scale1 });
-    zox_add_tag(e, MeshBasic3D);
+    zox_add(e, MeshBasic3D);
     guint2 shader = zox_getv(shader_basic3D, ShaderGPULink);
     zox_setv(e, ShaderLink, shader_basic3D );
     guint gpu_material = spawn_gpu_material_program(shader);

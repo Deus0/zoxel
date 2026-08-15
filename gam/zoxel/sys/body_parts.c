@@ -73,7 +73,7 @@ zox_sys2(BodysRealmSpawnSystem) {
             entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Head", zox_slot_head, blueprint, blueprint_scale, dbg_log);
             add_to_ItemLinks(items, e2.x);
             add_to_ModelLinks(models, e2.y);
-            zox_add_tag(e2.x, Head);
+            zox_add(e2.x, Head);
         }
         // Hips
         {
@@ -226,7 +226,7 @@ zox_sys2(BodysRealmSpawnSystem) {
             entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Head2", zox_slot_head, blueprint, blueprint_scale, dbg_log);
             add_to_ItemLinks(items, e2.x);
             add_to_ModelLinks(models, e2.y);
-            zox_add_tag(e2.x, Head);
+            zox_add(e2.x, Head);
         }
         zox_logv("At [%f] Realm [bodys] [%i] spawned.", zox_current_time, items->length);
     }

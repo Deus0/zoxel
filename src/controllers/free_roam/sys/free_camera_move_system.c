@@ -32,7 +32,7 @@ zox_sys2(FreeCameraMoveSystem) {
                 continue;
             }
             if (zox_has(e2, Keyboard)) {
-                const Keyboard *keyboard = zox_get(e2, Keyboard)
+                const Keyboard *keyboard = zox_get(e2, Keyboard);
                 if (keyboard->a.is_pressed) movement.x += -1;
                 if (keyboard->d.is_pressed) movement.x += 1;
                 if (keyboard->w.is_pressed) movement.z = -1;

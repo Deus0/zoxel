@@ -11,7 +11,7 @@ entity spawn_inspector(ecs *world, entity canvas, entity player, entity target) 
     entity header = e4.y;
     entity body = e4.z;
     zox_set_name_spawned(world, window, "inspector");
-    zox_add_tag(window, InspectorUI);
+    zox_add(window, InspectorUI);
     zox_set(window, FontSize, { font_size });
     zox_set(window, EntityTarget, { target });
     // Add Editor Colors

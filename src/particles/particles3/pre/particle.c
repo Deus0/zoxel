@@ -1,10 +1,10 @@
 entity spawn_prefab_particle3(ecs *world) {
     zox_prefab();
     // zox_prefab_name("particle3");
-    zox_add_tag(e, Particle);
-    zox_add_tag(e, Particle3D);
-    zox_add_tag(e, Moveable);
-    zox_add_tag(e, DisableParentTransform);
+    zox_add(e, Particle);
+    zox_add(e, Particle3D);
+    zox_add(e, Moveable);
+    zox_add(e, DisableParentTransform);
     zox_prefab_set(e, Position3D, { float3_zero });
     // zox_prefab_set(e, Rotation3D, { quaternion_identity });
     // zox_prefab_set(e, Scale1, { 1 });

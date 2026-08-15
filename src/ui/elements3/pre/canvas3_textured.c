@@ -4,6 +4,6 @@
     zox_prefab_set(e, UIHolderLink, { 0 });
     zox_prefab_set(e, UITrail, {{ 0, 0.43f, 0 }});
     zox_prefab_set(e, FillColor, {{ 0, 255, 0, 255 }});
-    zox_add_tag(e, SingleMaterial);
+    zox_add(e, SingleMaterial);
     return e;
 }*/

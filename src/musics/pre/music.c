@@ -1,7 +1,7 @@
 entity spawn_prefab_music(ecs *world) {
     zox_prefab();
     zox_prefab_name("music");
-    zox_add_tag(e, Music);
+    zox_add(e, Music);
     zox_prefab_set(e, MusicLength, { 0 });
     zox_prefab_set(e, MusicTime, { 0 });
     zox_prefab_set(e, MusicSpeed, { 1.0 });

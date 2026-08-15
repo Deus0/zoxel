@@ -1,5 +1,5 @@
 byte fullscreen = 1;
-byte vsync = 0; // 1;
+byte vsync = 1;
 byte is_log_monitors = 1;
 byte monitor = 0;
 byte maximized = 1;

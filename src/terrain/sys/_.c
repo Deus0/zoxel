@@ -36,7 +36,6 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepth,
         [out] chunks3.ChunkLodDirty,
         [out] chunks.NodeDepth,
-        [out] chunks.GenerateChunk,
         [none] terrains.TerrainChunk
     );
     zox_system(
@@ -53,18 +52,18 @@ void define_systems_terrain(ecs *world) {
     // Lighting
     zox_system(
         SunnyChunkGeneratedSystem,
-        zoxp_update, // EcsPreUpdate,
+        zoxp_update,
         [out] chunks.GenerateChunk,
-        [out] lights.GenerateLights,
         [none] terrains.TerrainChunk,
-        [none] lights3.SunnyChunk
+        [none] lights3.SunnyChunk,
+        [none] !lights.GenerateSunlight
     );
     zox_system(
         ChunkGeneratedSystem,
         zoxp_update,
         [out] chunks.GenerateChunk,
-        [out] chunks3.VoxelNodeDirty,
-        [none] terrains.TerrainChunk
+        [none] terrains.TerrainChunk,
+        [none] !lights3.SunnyChunk
     );
     // NOTE: Dies when out of range
     // Streaming Terrain Chunks
@@ -124,7 +123,7 @@ void define_systems_terrain(ecs *world) {
             [in] chunks3.ChunkPosition,
             [none] streaming.StreamedChunk
         );
-    }*/
+    }
     if (zox_terrain_chunk_lod_system) {
         zox_filter(
             streamers_lod,
@@ -146,7 +145,7 @@ void define_systems_terrain(ecs *world) {
             [out] core.Busy,
             [none] streaming.StreamedChunk
         );
-    }
+    }*/
     zox_system_1(
         TerrainGameStartSystem,
         zoxp_mainthread,

@@ -1,8 +1,8 @@
 entity spawn_prefab_node_tree(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("nodetree");
-    zox_add_tag(e, Node);
-    zox_add_tag(e, Nodetree);
+    zox_add(e, Node);
+    zox_add(e, Nodetree);
     return e;
 }
 

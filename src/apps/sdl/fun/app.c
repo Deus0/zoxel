@@ -1,12 +1,12 @@
 void zox_app_set_position(ecs *world, entity e, int2 position) {
-    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
+    SDL_Window* sdl_window = zox_getv(e, SDLWindow);
     SDL_SetWindowPosition(sdl_window, position.x, position.y);
-    zox_set(e, WindowPosition, { position })
+    zox_setv(e, WindowPosition, position);
 }
 
 
 int get_sdl_window_header_size(ecs* world, entity e) {
-    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window)
+    SDL_Window* sdl_window = zox_getv(e, SDLWindow);
     int top, left, bottom, right;
     if (!SDL_GetWindowBordersSize(sdl_window, &top, &left, &bottom, &right)) {
         return top;
@@ -31,9 +31,9 @@ void zox_app_set_monitor_e(ecs *world, entity e, byte monitor) {
 }
 
 void zox_app_set_size(ecs *world, entity e, int2 size) {
-    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
+    SDL_Window* sdl_window = zox_getv(e, SDLWindow);
     zox_sdl_window_size(sdl_window, size);
-    if (!int2_equals(size, zox_gett_value(e, WindowSize))) {
+    if (!int2_equals(size, zox_getv(e, WindowSize))) {
         zox_set(e, WindowSize, { size })
         zox_set(e, WindowSizeDirty, { zox_dirty_trigger })
     }
@@ -44,9 +44,9 @@ void on_sdl_window_restored(ecs *world, entity e) {
         zox_loge("invalid app [%lu]", e);
         return;
     }
-    zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
-    zox_geter_value_non_const(e, WindowSizeRestore, int2, size);
-    zox_geter_value_non_const(e, WindowPositionRestore, int2, position);
+    SDL_Window* sdl_window = zox_getv(e, SDLWindow);
+    int2 size = zox_getv(e, WindowSizeRestore);
+    int2 position = zox_getv(e, WindowPositionRestore);
     if (size.x == 0 && size.y == 0) {
         int2 screen_size = get_screen_size();
         size.x = screen_size.x / 2;
@@ -76,7 +76,7 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
         zox_log_error("invalid app in [zox_set_app_fullscreen]")
         return;
     }
-    zox_geter_value(e, WindowFullscreen, byte, fullscreen);
+    byte fullscreen = zox_getv(e, WindowFullscreen);
     zox_set(e, WindowMaximized, { maximized });
     if (!fullscreen) {
         int2 size;
@@ -87,8 +87,8 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
             zox_logv("+ maximizing app [%ix%i]", size.x, size.y);
             zox_app_set_size(world, e, size);
         } else {
-            zox_geter_value(e, WindowSizeRestore, int2, restore_size);
-            zox_geter_value(e, WindowPositionRestore, int2, restore_position);
+            int2 restore_size = zox_getv(e, WindowSizeRestore);
+            int2 restore_position = zox_getv(e, WindowPositionRestore);
             size = restore_size;
             position = restore_position;
             zox_logv("+ restoring app [%ix%i] at [%ix%i]", size.x, size.y, position.x, position.y);

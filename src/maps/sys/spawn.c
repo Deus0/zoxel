@@ -69,13 +69,13 @@ zox_sys2(MapInitializeSystem) {
                 zox_set(e2, Layer2D, { layer + 1 });
                 zox_set(e2, Alpha, { alpha->value });
                 if (zox_dbg_maps == zox_dbg_maps_regions) {
-                    zox_add_tag(e2, RegionTexture);
+                    zox_add(e2, RegionTexture);
                 } else if (zox_dbg_maps == zox_dbg_maps_heights) {
-                    zox_add_tag(e2, HeightsTexture);
+                    zox_add(e2, HeightsTexture);
                 } else if (zox_dbg_maps == zox_dbg_maps_towns) {
-                    zox_add_tag(e2, TownTexture);
+                    zox_add(e2, TownTexture);
                 } else {
-                    zox_add_tag(e2, TunkTexture);
+                    zox_add(e2, TunkTexture);
                 }
             }
         }
@@ -83,8 +83,8 @@ zox_sys2(MapInitializeSystem) {
         {
             entity e3 = spawn_uic(world, prefab_element, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
             zox_set_unique_name(e3, "map_player_arrow");
-            zox_add_tag(e3, MapArrow);
-            zox_add_tag(e3, ArrowTexture);
+            zox_add(e3, MapArrow);
+            zox_add(e3, ArrowTexture);
             zox_setv(e3, Layer2D, layer + 2);
             zox_setv(e3, Rotation2, 0);
             zox_setv(e3, LocalRotation2, 0);

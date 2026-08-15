@@ -55,7 +55,7 @@ zox_sys2(ChunkDebugSystem) {
         byte length = powers_of_two_byte[nodeDepth->value];
         float scale = blockScale->value;
         const entity chunk_above = chunkNeighbors->value[direction_up];
-        const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
+        const VoxelNode* voxel_node_above = zox_valid(chunk_above) ? zox_get(chunk_above, VoxelNode) : NULL;
         const float3 size = float3_single(length);
         const float3 draw_position = float3_add(position->value, float3_half(size));
         debug_cubec(world, draw_position, size, chunk_color);

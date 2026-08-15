@@ -6,11 +6,11 @@ zox_tag(EquipFrame);
 zox_tag(EquipIcon);
 
 void add_tag_equip_slot(ecs* world, entity e) {
-    zox_add_tag(e, EquipSlot);
+    zox_add(e, EquipSlot);
 }
 
 void add_tag_hat_slot(ecs* world, entity e) {
-    zox_add_tag(e, HatSlot);
+    zox_add(e, HatSlot);
 }
 
 void define_components_equipment(ecs* world) {

@@ -8,7 +8,7 @@ entity spawn_player_menu_crafting(ecs* world, entity player) {
      int2 position = int2_zero;
      entity frame_id = zox_id(ItemFrame);
      entity e = spawn_datagrid_slots(world, prefab_window, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, craftspace, cells_size, "Craft", color_white, color_white, position_anchor, position, frame_id);
-     zox_add_tag(e, MenuCrafting);
+     zox_add(e, MenuCrafting);
      return e;
  }
 

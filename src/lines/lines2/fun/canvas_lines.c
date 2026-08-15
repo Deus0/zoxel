@@ -1,5 +1,5 @@
 void spawn_canvas_edge_lines(ecs *world, entity canvas, int edge_size, color edge_color) {
-    /*int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    /*int2 canvas_size = zox_getv(canvas, LayoutSize)
     byte lines_layer = max_layers2D - 2;
     float2 canvas_size_f = { (float) canvas_size.x, (float) canvas_size.y };
     float aspect_ratio = canvas_size_f.x / canvas_size_f.y;

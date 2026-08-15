@@ -49,7 +49,9 @@ zox_sys2(TexturedMeshUploadSystem) {
             resize_MeshVertices(verts, 0);
             resize_MeshUVs(uvs, 0);
         }
-        upload->value = 0;
+        zox_remove(e, MeshDirty);
+        zox_add(e, MeshBuilt);
+        // upload->value = 0;
         if (dbg_log) {
             zox_log("Uploaded Chunk Mesh [%s] Tris [%i]", zox_get_name(e), count->value / 3);
         }

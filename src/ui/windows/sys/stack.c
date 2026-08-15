@@ -68,7 +68,7 @@ zox_sys2(CanvasStackSystem) {
         if (!zox_valid(add_window->value) || !zox_has(add_window->value, WindowLayer) || zox_has(add_window->value, IgnoreWindowLayering)) {
             continue;
         }
-        byte old_layer = zox_get_value(add_window->value, WindowLayer);
+        byte old_layer = zox_getv(add_window->value, WindowLayer);
         uint windows_count = zox_get_children_count(world, e);
         byte layers_per_window = get_highest_window_layer(world, e);
         // gett previous window layer of moving to top window
@@ -106,7 +106,7 @@ zox_sys2(CanvasStackSystem) {
                 if (add_window->value == e2) {
                     continue;
                 }
-                byte child_window_layer = zox_get_value(e2, WindowLayer);
+                byte child_window_layer = zox_getv(e2, WindowLayer);
                 // if on top
                 if (child_window_layer == 0) {
                     // if (int_hashmap_has(windows, not_assigned_index)) zox_log("   ! issue with index, possible removal\n")

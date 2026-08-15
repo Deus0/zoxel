@@ -1,7 +1,7 @@
 entity spawn_prefab_particle3D_emitter(ecs *world) {
     zox_prefab();
     zox_prefab_name("particle3D_emitter");
-    zox_add_tag(e, Particle3DEmitter);
+    zox_add(e, Particle3DEmitter);
     zox_prefab_set(e, ParticleEmitRate, { 0 });
     // attach to parent character
     zox_prefab_set(e, Position3D, { float3_zero });

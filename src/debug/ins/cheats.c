@@ -24,9 +24,9 @@ void zox_dbg_add_no_clip(ecs* world, ClickEventData data) {
     }
     zox_log("Adding No Clip: %s", zox_get_name(character));
     if (zox_has(character, NoClip)) {
-        zox_remove_tag(character, NoClip);
+        zox_remove(character, NoClip);
     } else {
-        zox_add_tag(character, NoClip);
+        zox_add(character, NoClip);
     }
 }
 
@@ -75,8 +75,8 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
     entity spawned[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Cheats", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
     zox_set_unique_name(e3.x, "dbg_ui_cheats");
-    // zox_add_tag(e3.x, MenuTest);
-    zox_add_tag(e3.x, NavigationWindow);
+    // zox_add(e3.x, MenuTest);
+    zox_add(e3.x, NavigationWindow);
     // zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
     // zox_set(spawned[0], TooltipEvent, { &tooltip_event_main_menu });
     dbg_ui_cheats = e3.x;

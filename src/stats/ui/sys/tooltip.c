@@ -25,21 +25,21 @@ zox_sys2(StatIconTooltipSystem) {
             continue;
         }
         char result[128];
-        const char *name = zox_has(e2, ZoxName) ? zox_gett_value(e2, ZoxName) : "none";
+        const char *name = zox_has(e2, ZoxName) ? zox_getv(e2, ZoxName) : "none";
         if (zox_has(e2, StatLevel)) {
-            float value = zox_get_value(e2, StatValue)
-            float experience = zox_get_value(e2, ExperienceValue)
-            float experience_max = zox_get_value(e2, ExperienceMax)
+            float value = zox_getv(e2, StatValue);
+            float experience = zox_getv(e2, ExperienceValue);
+            float experience_max = zox_getv(e2, ExperienceMax);
             sprintf(result, "[%s] lvl %i [%i/%i]\n", name, (int) value, (int) experience, (int) experience_max);
         } else if (zox_has(e2, StatState)) {
-            float value = zox_get_value(e2, StatValue)
-            float value_max = zox_get_value(e2, StatValueMax)
+            float value = zox_getv(e2, StatValue);
+            float value_max = zox_getv(e2, StatValueMax);
             sprintf(result, "[%s] [%i/%i]\n", name, (int) value, (int) value_max);
         } else if (zox_has(e2, StatRegen)) {
-            float value = zox_get_value(e2, StatValue)
+            float value = zox_getv(e2, StatValue);
             sprintf(result, "[%s] [%i]\n", name, (int) value);
         } else if (zox_has(e2, StatAttribute)) {
-            float value = zox_get_value(e2, StatValue)
+            float value = zox_getv(e2, StatValue);
             sprintf(result, "[%s] [%i]\n", name, (int) value);
         } else {
             sprintf(result, "[%s]\n", name);

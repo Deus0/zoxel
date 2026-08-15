@@ -88,13 +88,10 @@ static inline void zox_apply_basic_lights(const LightNode* root_light_octree, co
 
 // NOTE: Rebuilds Lights only when MeshColorsGenerate is dirty
 zox_sys2(BasicLightsBuildSystem) {
-    if (disable_lights) {
-        return;
-    }
+    // byte dbg_log = 0;
     if (zox_smooth_lighting) {
         return;
     }
-    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MeshColorsGenerate);
@@ -118,14 +115,14 @@ zox_sys2(BasicLightsBuildSystem) {
         if (trigger->value != zox_dirty_active) {
             continue;
         }
-        if (zox_getv(e, BuildMesh)) {
+        /*if (zox_getv(e, BuildMesh)) {
             // if still building, it will update the verts again
-            zox_set(e, MeshColorsGenerate, { 1 });
+            // zox_setv(e, MeshColorsGenerate, 1);
             if (dbg_log) {
                 zox_log("Chunk is still Generating new Mesh, while building Lights [%s]", zox_get_name(e));
             }
             continue;
-        }
+        }*/
         if (zox_disable_low_res_lights) {
             entity terrain = zox_get_parent(world, e);
             byte terrain_depth = zox_getv(terrain, NodeDepth);

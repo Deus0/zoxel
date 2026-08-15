@@ -4,7 +4,7 @@ void set_element_layers_auto(ecs *world, entity e, byte layer) {
     }
     byte new_layer = layer + 1;
     if (zox_has(e, BonusLayer2)) {
-        new_layer += zox_gett_value(e, BonusLayer2);
+        new_layer += zox_getv(e, BonusLayer2);
     }
     if (zox_has(e, Layer2D)) {
         zox_set(e, Layer2D, { new_layer })
@@ -26,7 +26,7 @@ void set_element_layers(ecs *world, entity e, byte window_layer) {
         zox_geter_value(e, ElementLayer, byte, element_layer);
         byte new_layer = window_layer + element_layer;
         if (zox_has(e, BonusLayer2)) {
-            new_layer += zox_gett_value(e, BonusLayer2);
+            new_layer += zox_getv(e, BonusLayer2);
         }
         zox_set(e, Layer2D, { new_layer });
     }

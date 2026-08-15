@@ -20,7 +20,7 @@ void engine_end_delayed(ecs* world, entity e) {
 void button_event_exit_app(ecs *world, ClickEventData event) {
     disable_time_pausing();
     // close on all players
-    entity game = zox_get_value(event.clicker, GameLink);
+    entity game = zox_getv(event.clicker, GameLink);
     zox_geter(game, PlayerLinks, players);
     for (int i = 0; i < players->length; i++) {
         entity e = players->value[i];

@@ -10,10 +10,10 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
     // zox_prefab_set(e, Seed, { 666 });
     // zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     // add_noise_texture(world, e);
-    zox_remove_tag(e, MeshBasic3D);
+    zox_remove(e, MeshBasic3D);
     zox_prefab_set(e, MaterialTextured3D, { 0 });
     // Texture
-    zox_add_tag(e, Texture);
+    zox_add(e, Texture);
     zox_prefab_set(e, TextureData, { 0 });
     zox_prefab_set(e, TextureSize, { texture_size });
     zox_prefab_set(e, TextureGPULink, { 0 });

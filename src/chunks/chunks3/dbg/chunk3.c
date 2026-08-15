@@ -19,7 +19,7 @@ entity spawn_test_vox(ecs* world, entity player) {
     float3 spawn_position = move_along_direction(position, rotation, -distance);
     // spawn chunk3s
     entity e = spawn_chunk3(world, prefab_vox, spawn_position, scale, depth, block_scale, size);
-    zox_add_tag(e, VoxMesh);
+    zox_add(e, VoxMesh);
     zox_set(e, GenerateModel, { zox_generate_model_run });
     add_eternal_euler(world, e, euler);
     return e;

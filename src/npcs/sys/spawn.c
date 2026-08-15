@@ -69,7 +69,7 @@ zox_sys2(TerrainCharactersSpawnSystem) {
         zox_geter(realm, CharacterLinks, realm_characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         entity chunk_above = neighbors->value[direction_up];
-        const VoxelNode* voctree_above = zox_valid(chunk_above) ? zox_gett(chunk_above, VoxelNode) : NULL;
+        const VoxelNode* voctree_above = zox_valid(chunk_above) ? zox_get(chunk_above, VoxelNode) : NULL;
         // calcs
         byte character_spawn_rate = seed_range(seed->value, character_spawn_rate_min, character_spawn_rate_max);
         srand(seed->value);

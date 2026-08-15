@@ -28,6 +28,8 @@ zox_sys2(StreamEndSystem) {
             continue;
         }
         uint chunks_loaded = 0;
+        uint chunks_loading = 0;
+        byte lowest_generate_state = 255;
         byte running = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
@@ -36,12 +38,24 @@ zox_sys2(StreamEndSystem) {
                 if (!zox_has(e2, Chunk3)) {
                     continue;
                 }
-                if (zox_getv(e2, GenerateChunk)) {
-                    running = 1;
-                    break;
+                if (zox_has(e2, GenerateChunk)) {
+                    //running = 1;
+                    //break;
+                    byte state = zox_getv(e2, GenerateChunk);
+                    if (state < lowest_generate_state) {
+                        lowest_generate_state = state;
+                    }
+                    chunks_loading++;
+                    continue;
                 }
                 chunks_loaded++;
             }
+        }
+        if (chunks_loading > 0) {
+            if (dbg_log) {
+                zox_log("Chunks Loading [%i] of [%i] - State [%i]", chunks_loading, chunks_loading + chunks_loaded, lowest_generate_state);
+            }
+            running = 1;
         }
         if (running && !zox_disable) {
             continue;

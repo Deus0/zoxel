@@ -112,7 +112,7 @@ void update_sdl(ecs *world) {
                 // zox_log("SDL WINDOW SIZE %ix%i", window_size.x, window_size.y);
                 // Re-query drawable size after fullscreen
                 // int draw_w, draw_h;
-                // SDL_GL_GetDrawableSize(zox_gett_value(e, SDLWindow), &draw_w, &draw_h);
+                // SDL_GL_GetDrawableSize(zox_getv(e, SDLWindow), &draw_w, &draw_h);
                 // zox_log("Fullscreen drawable size %ix%i", draw_w, draw_h);
                 on_window_resized(world, e, window_size);
             }
@@ -163,7 +163,7 @@ if (has_flipped) {
     window_size = (int2) { window_size.y, window_size.x };
     zox_logv("Display [%i] Orientation has flipped [%i]", monitor, orientation);
 }*/
-/*zox_geter_value_non_const(e, SDLWindow, SDL_Window*, sdl_window);
+/*zox_geter_value(e, SDLWindow, SDL_Window*, sdl_window);
 int2 window_size = int2_zero;
 SDL_GetWindowSize(sdl_window, &window_size.x, &window_size.y);
 on_window_resized(world, e, window_size);*/

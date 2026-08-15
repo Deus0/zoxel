@@ -4,20 +4,20 @@ zox_sys2(MusicPlaySystem) {
     }
 
     float volume_music = get_volume_music();
-    init_delta_time()
-    zox_sys_world()
-    zox_sys_begin()
-    zox_sys_in(MusicEnabled)
-    zox_sys_in(NoteLinks)
-    zox_sys_in(MusicSpeed)
-    zox_sys_out(MusicNote)
-    zox_sys_out(MusicTime)
+    init_delta_time();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(MusicEnabled);
+    zox_sys_in(NoteLinks);
+    zox_sys_in(MusicSpeed);
+    zox_sys_out(MusicNote);
+    zox_sys_out(MusicTime);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(MusicEnabled, playing)
-        zox_sys_i(NoteLinks, notes)
-        zox_sys_i(MusicSpeed, musicSpeed)
-        zox_sys_o(MusicNote, musicNote)
-        zox_sys_o(MusicTime, musicTime)
+        zox_sys_i(MusicEnabled, playing);
+        zox_sys_i(NoteLinks, notes);
+        zox_sys_i(MusicSpeed, musicSpeed);
+        zox_sys_o(MusicNote, musicNote);
+        zox_sys_o(MusicTime, musicTime);
 
         if (!playing->value || !notes->length) {
             // zox_logw("Music disabled");
@@ -41,9 +41,9 @@ zox_sys2(MusicPlaySystem) {
             }
 
             entity note = notes->value[musicNote->value];
-            zox_geter_value(note, SoundFrequencyIndex, int, music_note)
-            zox_geter_value(note, SoundVolume, float, note_volume)
-            zox_geter_value(note, SoundLength, float, note_time)
+            int music_note = zox_getv(note, SoundFrequencyIndex);
+            float note_volume = zox_getv(note, SoundVolume);
+            float note_time = zox_getv(note, SoundLength);
             // const int music_note = musicData->value[musicNote->value];
 
             if (!music_note || !note_volume || !note_time) {

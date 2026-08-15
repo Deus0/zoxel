@@ -35,7 +35,7 @@ zox_sys2(SlaySystem) {
             continue;
         }
         // if enemy invalid or dead, continue
-        if (!zox_valid(enemy->value) || zox_gett_value(enemy->value, Dead)) {
+        if (!zox_valid(enemy->value) || zox_getv(enemy->value, Dead)) {
             continue;
         }
         // add experience to soul stat

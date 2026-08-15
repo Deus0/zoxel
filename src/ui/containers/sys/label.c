@@ -11,7 +11,7 @@
         if (!zox_valid(slot->value) || !zox_has(slot->value, DataLink)) {
             continue;
         }
-        entity e2 = zox_gett_value(slot->value, DataLink);
+        entity e2 = zox_getv(slot->value, DataLink);
         if (zox_valid(e2)) {
             continue;
         }

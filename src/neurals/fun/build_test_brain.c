@@ -22,11 +22,11 @@ void build_brain_test(ecs *world, const entity e, const int2 size) {
             position = calculate_neuron_position(position, size.x, size.y);
             const entity e2 = spawn_neuron(world, prefab_neuron, e, position);
             if (x == 0) {
-                zox_add_tag(e2, InputNeuron);
+                zox_add(e2, InputNeuron);
                 brain_inputs->value[y] = e2;
             }
             else if (x == size.x - 1) {
-                zox_add_tag(e2, OutputNeuron);
+                zox_add(e2, OutputNeuron);
                 brain_outputs->value[y] = e2;
             }
             children->value[k++] = e2;

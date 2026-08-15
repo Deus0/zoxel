@@ -64,7 +64,7 @@ name* create_##name(hash_type size) {\
         zox_log("! cannot have a zero hashmap [%s]", #name)\
         return NULL;\
     }\
-    name* map = malloc(sizeof(name));\
+    name* map = zox_malloc(sizeof(name));\
     if (!map) {\
         zox_log_error("error creating hashmap [%s]\n", #name)\
         return NULL;\
@@ -83,7 +83,7 @@ void name##_add(name* map, key_type key_raw, type value) {\
     write_lock_##name(map);\
     hash_type key = convert_to_hash(key_raw);\
     hash_type index = name##_hash(key, map->size);\
-    name##_pair* pair = malloc(sizeof(name##_pair));\
+    name##_pair* pair = zox_malloc(sizeof(name##_pair));\
     pair->key = key;\
     pair->value = value;\
     pair->next = map->data[index];\
@@ -151,7 +151,7 @@ void name##_remove(name* map, key_type key_raw) {\
             } else {\
                 prev_pair->next = pair->next;\
             }\
-            free(pair);\
+            zox_free(pair);\
             break;\
         }\
         prev_pair = pair;\
@@ -171,15 +171,15 @@ void name##_dispose(name* map) {\
         uint checks = 0;\
         while (pair != NULL && checks < max_safety_checks_hashmap) {\
             name##_pair* next_pair = pair->next;\
-            free(pair);\
+            zox_free(pair);\
             pair = next_pair;\
             checks++;\
         }\
     }\
-    free(map->data);\
+    zox_free(map->data);\
     write_unlock_##name(map);\
     destroy_lock_##name(map);\
-    free(map);\
+    zox_free(map);\
 }\
 \
 int count_##name(name* map) {\

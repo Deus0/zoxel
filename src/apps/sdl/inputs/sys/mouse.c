@@ -4,7 +4,7 @@
 zox_sys2(MouseExtractSystem) {
     byte dbg_log = 0;
     zox_sys_world();
-    zox_geter_value_non_const(main_app, WindowSize, int2, screen_size);
+    zox_geter_value(main_app, WindowSize, int2, screen_size);
     if (screen_size.x % 2 != 0) {
         screen_size.x--;
     }
@@ -38,14 +38,14 @@ zox_sys2(MouseExtractSystem) {
             }
             if (zox_has(e2, ZevicePointerPosition)) {
                 if (global_any_fingers_down) {
-                    zox_geter(e2, ZevicePointerPosition, position)
+                    zox_geter(e2, ZevicePointerPosition, position);
                     int2 position2 = position->value;
                     int2_flip_y(&position2, screen_size);
-                    SDL_Window* sdl_window = zox_get_value(app->value, SDLWindow);
+                    SDL_Window* sdl_window = zox_getv(app->value, SDLWindow);
                     SDL_WarpMouseInWindow(sdl_window, position2.x, position2.y);
                 } else {
-                    zox_muter(e2, ZevicePointerPosition, position)
-                    zox_muter(e2, ZevicePointerDelta, delta)
+                    zox_muter(e2, ZevicePointerPosition, position);
+                    zox_muter(e2, ZevicePointerDelta, delta);
                     delta->value = int2_sub(mouse_position, position->value);
                     position->value = mouse_position;
                 }
@@ -54,7 +54,7 @@ zox_sys2(MouseExtractSystem) {
                 continue;  // does this break it?
             }
             if (zox_has(e2, ZevicePointer)) {
-                zox_muter(e2, ZevicePointer, clicker)
+                zox_muter(e2, ZevicePointer, clicker);
                 clicker->value = get_button_click_state(clicker->value, button_pressed_left);
                 if (dbg_log && clicker->value) {
                     zox_log("Mouse Left Clicked [%ix%i]", clicker->value);

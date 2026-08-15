@@ -14,7 +14,7 @@ void player_start_game2D_delayed(ecs *world, entity player) {
         return;
     }
     // set camera2D data
-    zox_add_tag(camera, CameraFollower2);
+    zox_add(camera, CameraFollower2);
     zox_set(camera, Position3D, { { 0, 0, 1 } });
     zox_set(camera, Rotation3D, { quaternion_from_euler((float3) { 0, 0 * degreesToRadians, 0 }) });
     zox_set(camera, Euler, { { 0, 0 * degreesToRadians, 0 } });

@@ -10,7 +10,7 @@ entity spawn_free_camera(ecs *world, float3 position, float4 rotation, int2 size
 
 #ifndef zox_test_quaternion_camera
     zox_set(e, Euler, { quaternion_to_euler(rotation) });
-    zox_add_tag(e, EulerOverride);
+    zox_add(e, EulerOverride);
     zox_prefab_set(e, EulerLimitX, { { -camera_limit_x, camera_limit_x } }); // adds a limit, - half pi to + half pi, 0.8 is around half that
 #endif
 

@@ -25,8 +25,8 @@ entity spawn_profiler(ecs* world, entity canvas, const char* header_label, int2 
     zox_set(header, OutlineColor, { editor_header_outline });
     zox_set(header, ElementFillColor, { editor_header_fill });
     zox_set(header, ElementOutlineColor, { editor_header_outline });
-    zox_add_tag(e, EditorElement);
-    zox_add_tag(e, Profiler);
+    zox_add(e, EditorElement);
+    zox_add(e, Profiler);
     zox_set(e, PlotPaused, { 0 });
     zox_set(e, DoubleData, { 0 });
     entity data_entity = frame_times_samples;
@@ -47,7 +47,7 @@ entity spawn_profiler(ecs* world, entity canvas, const char* header_label, int2 
         int2 position = (int2) { 0, - 2 * (14 + 4 * 2) };
         float2 position_anchor = (float2) { 0, 1.0f };
         entity e2 = spawn_text(world, prefab_text, e, position, position_anchor, label_font_size, zox_alignment_top_left, label_margins, "", button_font_fill, button_font_outline);
-        zox_add_tag(e2, MaxSystemTimeLabel);
+        zox_add(e2, MaxSystemTimeLabel);
     }
     return e;
 }

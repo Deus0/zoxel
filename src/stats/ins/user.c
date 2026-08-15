@@ -4,7 +4,7 @@ entity spawn_stat(ecs* world, entity parent, entity prefab) {
     if (parent) {
         zox_set_parent(world, e, parent);
     }
-    zox_remove_tag(e, RealmStat);
+    zox_remove(e, RealmStat);
     return e;
 }
 

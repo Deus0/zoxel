@@ -1,10 +1,10 @@
 entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("character3_npc");
-    zox_add_tag(e, Npc);
-    zox_add_tag(e, VoxMesh);
-    zox_add_tag(e, Jumper);
-    zox_add_tag(e, SilentJumper);   //  dont have 3d sounds yet
+    zox_add(e, Npc);
+    zox_add(e, VoxMesh);
+    zox_add(e, Jumper);
+    zox_add(e, SilentJumper);   //  dont have 3d sounds yet
     zox_prefab_set(e, Behaviour, { zox_behaviour_idle });
     zox_prefab_set(e, DefaultBehaviour, { zox_behaviour_wander });
     zox_prefab_set(e, MoveForwards, { 0 });
@@ -18,6 +18,6 @@ entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     // Spawn Actionbar slots
     /*entity actionbar = spawn_slots(world, e, 4);
     zox_set_unique_name(actionbar, "actionbar");
-    zox_add_tag(actionbar, Actionbar);*/
+    zox_add(actionbar, Actionbar);*/
     return e;
 }

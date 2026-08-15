@@ -26,7 +26,8 @@ zox_sys2(DecayedModelGenerationSystem) {
         if (generate->value != zox_generate_model_run) {
             continue;
         }
-        if (gentype->value != vox_type_blended && gentype->value != vox_type_noisey) {
+        // gentype->value != vox_type_blended &&
+        if (gentype->value != vox_type_noisey) {
             continue;
         }
         resize_ColorRGBs(colors, 0);

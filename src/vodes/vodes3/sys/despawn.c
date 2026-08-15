@@ -17,19 +17,23 @@ void destroy_vodes(ecs *world, VoxelNode *node) {
 zox_sys2(VodesDespawnSystem) {
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(VoxelNodeDirty)
     zox_sys_in(RenderDistanceDirty)
     zox_sys_in(RenderDepth)
     zox_sys_out(VoxelNode)
     zox_sys_out(BlocksSpawned)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxelNodeDirty, voxels_dirty);
         zox_sys_i(RenderDistanceDirty, distance_dirty);
         zox_sys_i(RenderDepth, depth);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(BlocksSpawned, spawned);
-        if (voxels_dirty->value != zox_dirty_active && !(spawned->value && distance_dirty->value == zox_dirty_active)) {
+        if (!spawned->value) {
+            continue;
+        }
+        /*if (voxels_dirty->value) {
+            continue;
+        }*/
+        if (distance_dirty->value != zox_dirty_active) {
             continue;
         }
         // only destroy if outside range

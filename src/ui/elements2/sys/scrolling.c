@@ -28,12 +28,12 @@ zox_sys2(ScrollbarSystem) {
         if (scrollbarsize.y == size->value.y) {
             continue;
         }
-        // entity scrollview = zox_get_value(scrollbar, ParentLink);
+        // entity scrollview = zox_getv(scrollbar, ParentLink);
         if (!zox_valid(scrollview->value)) {
             zox_log_error("ScrollView is invalid (scrollbar [%s]'s parent)", zox_get_name(scrollbar));
             continue;
         }
-        entity list_ui = zox_has(scrollview->value, ListUILink) ? zox_gett_value(scrollview->value, ListUILink) : 0;
+        entity list_ui = zox_has(scrollview->value, ListUILink) ? zox_getv(scrollview->value, ListUILink) : 0;
         if (!zox_valid(list_ui)) {
             zox_log_error("List UI: Invalid [%s]", zox_get_name(scrollview->value));
             continue;

@@ -5,7 +5,7 @@ entity spawn_character3_npc(ecs* world, entity prefab, entity realm, entity terr
         zox_set(e, DefaultBehaviour, { zox_behaviour_idle });
     }
     if (rand() % 100 <= 14) {
-        zox_add_tag(e, Coward);
+        zox_add(e, Coward);
     }
     return e;
 }

@@ -63,10 +63,10 @@ zox_sys2(ActiveActionHoldSystem) {
             e2 = spawn_cube(world, prefab_cube, float3_zero, scale);
         }
         zox_set_parent(world, e2, bone_parent);
-        zox_add_tag(e2, HeldAction);
+        zox_add(e2, HeldAction);
         zox_setv(e2, LocalPosition3D, position);
         zox_setv(e2, LocalScale1, scale);
-        zox_add_tag(e2, DisableParentScale);
+        zox_add(e2, DisableParentScale);
         if (dbg_log) {
             zox_log("[%s] has Spawned Held Item [%s] at [%fx%fx%f]", zox_getn(e), zox_getn(aaction->value), position.x, position.y, position.z);
         }

@@ -5,9 +5,9 @@ uint add_label_stat_level(ecs *world, entity character, const StatLinks *stats, 
         return index;
     }
     zox_geter(stat, ZoxName, name);
-    float level = zox_get_value(stat, StatValue)
-    float experience_value = zox_get_value(stat, ExperienceValue)
-    float experience_max = zox_get_value(stat, ExperienceMax)
+    float level = zox_getv(stat, StatValue);
+    float experience_value = zox_getv(stat, ExperienceValue);
+    float experience_max = zox_getv(stat, ExperienceMax);
     index += snprintf(buffer + index, size - index, "%s [lvl %i - %i/%i]\n", name->value, (int) level, (int) experience_value, (int) experience_max);
     return index;
 }
@@ -18,8 +18,8 @@ uint add_label_stat_state(ecs *world, entity character, entity stat, char *buffe
         return index;
     }
     zox_geter(stat, ZoxName, name);
-    float value = zox_get_value(stat, StatValue)
-    float value_max = zox_get_value(stat, StatValueMax)
+    float value = zox_getv(stat, StatValue);
+    float value_max = zox_getv(stat, StatValueMax);
     index += snprintf(buffer + index, size - index, " - %s [%i/%i]\n", name->value, (int) value, (int) value_max);
 
     return index;
@@ -31,9 +31,8 @@ uint add_label_stat_value(ecs *world, entity character, entity stat, char *buffe
         return index;
     }
     zox_geter(stat, ZoxName, name);
-    float value = zox_get_value(stat, StatValue)
+    float value = zox_getv(stat, StatValue);
     index += snprintf(buffer + index, size - index, " - %s [%i]\n", name->value, (int) value);
-
     return index;
 }
 
@@ -79,12 +78,12 @@ uint get_label_player_element_links(ecs *world, const entity player, char *buffe
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    zox_geter(player, CharacterLink, characterLink)
+    zox_geter(player, CharacterLink, characterLink);
     if (!zox_valid(characterLink->value) || !zox_has(characterLink->value, ElementLinks)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid character\n", zox_get_name(player));
         return index;
     }
-    zox_geter(characterLink->value, ElementLinks, elements)
+    zox_geter(characterLink->value, ElementLinks, elements);
     index += snprintf(buffer + index, size - index, "[%s]'s elements [%i]\n", zox_get_name(characterLink->value), elements->length);
     for (int i = 0; i < elements->length; i++) {
         index += snprintf(buffer + index, size - index, " - [%i] %s\n", i, zox_get_name(elements->value[i]));
@@ -108,9 +107,9 @@ int debug_can_jump(ecs *world, entity character, char buffer[], int buffer_size,
  *    const StatLinks *stats = zox_get(character, StatLinks)
  *    find_array_element_with_tag(stats, StatSoul, soul_stat)
  *    if (!zox_has(soul_stat, StatValue)) return buffer_index;
- *    float level = zox_get_value(soul_stat, StatValue)
- *    float experience_value = zox_get_value(soul_stat, ExperienceValue)
- *    float experience_max = zox_get_value(soul_stat, ExperienceMax)
+ *    float level = zox_getv(soul_stat, StatValue)
+ *    float experience_value = zox_getv(soul_stat, ExperienceValue)
+ *    float experience_max = zox_getv(soul_stat, ExperienceMax)
  *    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "lvl %i [%i/%i]\n", (int) level, (int) experience_value, (int) experience_max);
  *    return buffer_index;
  * }
@@ -133,8 +132,8 @@ int debug_can_jump(ecs *world, entity character, char buffer[], int buffer_size,
  *
  *        if (!zox_has(health_stat, StatValue)) return buffer_index;
  *
- *        float health_value = zox_get_value(health_stat, StatValue)
- *        float health_value_max = zox_get_value(health_stat, StatValueMax)
+ *        float health_value = zox_getv(health_stat, StatValue)
+ *        float health_value_max = zox_getv(health_stat, StatValueMax)
  *
  *        //if (!zox_has(meta_stat_health, ZoxName)) zox_log(" ! meta_stat_health has no ZoxName\n")
  *        //if (!zox_has(health_stat, ZoxName)) zox_log(" ! health_stat has no ZoxName\n")

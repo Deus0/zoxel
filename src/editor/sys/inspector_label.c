@@ -25,7 +25,7 @@ zox_sys2(InspectorLabelSystem) {
         }
         entity text = children[0];
         // if invalid or dirty, skip
-        if (!zox_valid(text) || !zox_has(text, TextData) || !zox_has(text, TextDirty) || zox_gett_value(text, TextDirty)) {
+        if (!zox_valid(text) || !zox_has(text, TextData) || !zox_has(text, TextDirty) || zox_getv(text, TextDirty)) {
             continue;
         }
         zox_mut_begin(text, TextData, text_data);

@@ -25,7 +25,7 @@
 // TODO: Refactor: Vox Generation use Nodes / NodeGraphs
 // TODO: Can we Refactor ModelLinks from Rendering to here
 
-byte is_generate_vox_outlines = 0;
+byte is_generate_vox_outlines = 1;
 #define zox_model_node_none 0
 #define zox_model_node_colors 1
 #define zox_model_node_fill 2

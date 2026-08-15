@@ -3,7 +3,7 @@ entity prefab_material;
 entity spawn_prefab_material(ecs *world) {
     zox_prefab();
     zox_prefab_name("material");
-    zox_add_tag(e, Material);
+    zox_add(e, Material);
     zox_prefab_set(e, MaterialGPULink, { 0 });
     zox_prefab_set(e, ShaderLink, { 0 });
     prefab_material = e;

@@ -8,14 +8,14 @@ typedef struct { \
 zoxc_custom(T); \
 \
 static void i_##T(T* q) { \
-    q->ptr = malloc(sizeof(T2) * (initial_capacity)); \
+    q->ptr = zox_malloc(sizeof(T2) * (initial_capacity)); \
     q->count = 0; \
     q->capacity = (initial_capacity); \
     q->lock = SPINLOCK_INIT; \
 } \
 \
 static void d_##T(T* q) { \
-    if (q->ptr) free(q->ptr); \
+    if (q->ptr) zox_free(q->ptr); \
     q->ptr = NULL; \
     q->count = 0; \
     q->capacity = 0; \
@@ -24,8 +24,8 @@ static void d_##T(T* q) { \
 static void a_##T(T* q, T2 item) { \
     if (!q->ptr || q->count == q->capacity) { \
         size_t new_cap = q->capacity ? q->capacity * 2 : 1; \
-        q->ptr = q->ptr ? realloc(q->ptr, sizeof(T2) * new_cap) \
-                        : malloc(sizeof(T2) * new_cap); \
+        q->ptr = q->ptr ? zox_realloc(q->ptr, sizeof(T2) * new_cap) \
+                        : zox_malloc(sizeof(T2) * new_cap); \
         q->capacity = new_cap; \
     } \
     q->ptr[q->count++] = item; \
@@ -40,9 +40,9 @@ ECS_MOVE(T, dst, src, { \
     src->capacity = 0; \
 }) \
 ECS_COPY(T, dst, src, { \
-    if (dst->ptr) free(dst->ptr); \
+    if (dst->ptr) zox_free(dst->ptr); \
     if (src->ptr) { \
-        dst->ptr = malloc(src->capacity * sizeof(T2)); \
+        dst->ptr = zox_malloc(src->capacity * sizeof(T2)); \
         memcpy(dst->ptr, src->ptr, src->count * sizeof(T2)); \
         dst->count = src->count; \
         dst->capacity = src->capacity; \

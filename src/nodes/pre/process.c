@@ -1,7 +1,7 @@
 entity spawn_prefab_process(ecs *world) {
     zox_prefab();
     zox_prefab_name("process");
-    zox_add_tag(e, NodeRun);
+    zox_add(e, NodeRun);
     // per tree
     zox_prefab_set(e, NodeStartLink, { 0 });
     zox_prefab_set(e, NodetreeBegin, { zox_dirty_none });

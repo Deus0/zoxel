@@ -121,7 +121,7 @@
                 float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);
                 entity e2 = spawn_zigel3(world, prefab_zigel3, e, child_index, zigel_index, position, scale->value, render_disabled->value, thickness->value, outline_thickness->value, resolution->value, fill->value, outline->value);
                 if (zox_has(e, CentredZigel)) {
-                    zox_add_tag(e2, CentredZigel);
+                    zox_add(e2, CentredZigel);
                 }
                 if (dbg_log) {
                     zox_log("[%s] Spawned [%i] zigel3 [%lu] child_index[%i] index [%i] zigel [%i] at [%fx%fx%f]", zox_getn(e), i, (e2), child_index, index, zigel_index, position.x, position.y, position.z);

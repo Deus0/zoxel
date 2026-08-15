@@ -34,7 +34,7 @@ zox_begin_module(Timing) {
     add_hook_spawn_prefabs(add_system_log_components);
     {
         max_systems_data = zox_new();
-        zox_add_tag(max_systems_data, TrackMaxSystem);
+        zox_add(max_systems_data, TrackMaxSystem);
         zox_add(max_systems_data, SystemLink);
     }
 #endif

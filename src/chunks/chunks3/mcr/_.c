@@ -52,7 +52,6 @@ static inline void debug_octree_##T( \
         world, root, 0, target_depth, root_position, root_scale, ignore_value \
     ); \
 }
-byte debugger_is_ignore_value = 0;
 byte debugger_is_ignore_voxel = 0;  // crashes sometimes
 float debug_octree_padding = 0.9f;
 float debug_octree_thickness = 4;
@@ -107,10 +106,6 @@ static void debug_octree_node_compare_##T( \
             child_compare = (const T2*)((const char*)(*compare_kids) + i * sizeof(T2)); \
         } \
         \
-        /* Skip nodes with ignored value */ \
-        if (debugger_is_ignore_value && child->value == ignore_value) {\
-            continue; \
-        } \
         /* Skip if compare_node indicates underground */ \
         /*if (debugger_is_ignore_voxel && child_compare && child_compare->value) continue;*/\
         \

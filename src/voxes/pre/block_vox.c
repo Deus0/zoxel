@@ -2,8 +2,8 @@ entity spawn_prefab_block_vox(ecs *world, entity prefab) {
     short length = octree_size(block_vox_depth);
     zox_prefab_child(prefab);
     zox_prefab_name("block_vox");
-    zox_add_tag(e, BlockVox);
-    zox_add_tag(e, VoxMesh);
+    zox_add(e, BlockVox);
+    zox_add(e, VoxMesh);
     zox_prefab_set(e, CloneVox, { 0});
     zox_prefab_set(e, CloneVoxLink, { 0 });
     zox_prefab_set(e, ChunkLod, { render_depth_uninitialized });

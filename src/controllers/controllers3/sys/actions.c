@@ -32,8 +32,8 @@ zox_sys2(ActionsShortcutSystem) {
                     if (disabled) {
                         continue;
                     }
-                    byte device_button_type = zox_get_value(e3, DeviceButtonType)
-                    byte zevice_button = zox_get_value(e3, ZeviceButton)
+                    byte device_button_type = zox_getv(e3, DeviceButtonType);
+                    byte zevice_button = zox_getv(e3, ZeviceButton);
                     if (device_button_type == zox_btn_lb) {
                         if (devices_get_pressed_this_frame(zevice_button)) {
                             is_shift_action_left = 1;
@@ -43,7 +43,7 @@ zox_sys2(ActionsShortcutSystem) {
                             is_shift_action_right = 1;
                         }
                     }
-                    byte real_button_index = zox_get_value(e3, RealButtonIndex)
+                    byte real_button_index = zox_getv(e3, RealButtonIndex);
                     if (real_button_index == zox_btn_dpad_left) {
                         if (devices_get_pressed_this_frame(zevice_button)) {
                             is_shift_action_left = 1;
@@ -55,7 +55,7 @@ zox_sys2(ActionsShortcutSystem) {
                     }
                 }
                 if (zox_has(e3, ZeviceWheel)) {
-                    int2 wheel = zox_get_value(e3, ZeviceWheel)
+                    int2 wheel = zox_getv(e3, ZeviceWheel);
                     if (wheel.y > 0) {
                         is_shift_action_right = 1;
                     } else if (wheel.y < 0) {

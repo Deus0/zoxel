@@ -2,7 +2,7 @@ entity spawn_prefab_text(ecs* world, entity prefab, entity prefab_glyph) {
     zox_prefab_child(prefab);
     zox_prefab_name("text");
     // text
-    zox_add_tag(e, Zext);
+    zox_add(e, Zext);
     zox_prefab_set(e, TextData, { 0 });
     zox_prefab_set(e, TextDirty, { 0 });
     zox_prefab_set(e, TextSizeDirty, { 0 });

@@ -24,7 +24,7 @@ zox_sys2(QuestsRealmSpawnSystem) {
         {
             entity quest = spawn_realm_quest(world, e, prefab_quest, "Slem Infestation", "taskbar_lore");
             // TODO: Objective: Slay 10 Slimes
-            zox_add_tag(quest, SlayQuest);
+            zox_add(quest, SlayQuest);
             zox_set(quest, QuestValue, { 0 });
             zox_set(quest, QuestTarget, { 10 });
             entity slime = characters->value[0];

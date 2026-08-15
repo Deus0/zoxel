@@ -12,8 +12,8 @@ entity spawn_dialogue_ui(ecs* world, entity canvas, entity character, entity tar
     entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, int2_zero, size, position_anchor, header_font_size, header_padding, &on_closed_dialogue_ui);
     entity e = e3.x;
     entity body = e3.z;
-    zox_add_tag(e, DialogueUI);
-    zox_add_tag(e, NavigationWindow);
+    zox_add(e, DialogueUI);
+    zox_add(e, NavigationWindow);
     zox_prefab_set(e, DialogueProcessLink, { 0 });
     zox_prefab_set(e, DialogueTextLink, { 0 });
     // Speech Text
@@ -45,7 +45,7 @@ entity spawn_dialogue_ui(ecs* world, entity canvas, entity character, entity tar
         entity2 e2 = spawn_button(world, prefab_button, parent, "Next", int2_zero, int2_zero, position_anchor, zox_alignment_bottom_right, button_font_size, button_padding, button_fill, button_outline, button_font_fill, button_font_outline);
         zox_set(e2.x, MeshAlignment, { zox_alignment_bottom_right });
         zox_set(e2.x, ClickEvent, { &on_click_dialogue_button });
-        zox_add_tag(e2.x, DialogueButton);
+        zox_add(e2.x, DialogueButton);
     }
     return e;
 }

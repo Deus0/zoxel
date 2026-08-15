@@ -158,15 +158,7 @@ zox_sys2(ChunkColorsBuildSystem) {
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(BuildMesh, build);
         zox_sys_o(MeshDirty, mesh_dirty);
-        if (build->value == zox_dirty_trigger) {
-            build->value = zox_dirty_active;
-            continue;
-        }
-        if (build->value == zox_dirty_active) {
-            build->value = zox_dirty_end;
-            continue;
-        }
-        if (build->value != zox_dirty_end) {
+        if (build->value != zox_build_chunk_mesh_run) {
             continue;
         }
         if (!vcolors->length) {
@@ -183,7 +175,7 @@ zox_sys2(ChunkColorsBuildSystem) {
         byte nrdepths[6];
         for (byte j = 0; j < 6; j++) {
             entity n = neighbors->value[j];
-            noctrees[j] = n ? zox_gett(neighbors->value[j], VoxelNode) : NULL;
+            noctrees[j] = n ? zox_get(neighbors->value[j], VoxelNode) : NULL;
             nrdepths[j] = n ? zox_getv(n, RenderDepth) : 0;
         }
         float3 b = calculate_vox_bounds(csize->value, scale->value);
@@ -205,7 +197,8 @@ zox_sys2(ChunkColorsBuildSystem) {
         indicies->value = finalize_arrayd_int(mesh.indicies);
         vertices->value = finalize_arrayd_float3(mesh.vertices);
         colors->value = finalize_arrayd_color_rgb(mesh.colors);
-        build->value = 0;
+        // build->value = 0;
+        zox_remove(e, BuildMesh);
         mesh_dirty->value = zox_has(e, Skeleton) ? mesh_state_skeleton_trigger : mesh_state_trigger;
         if (dbg_log) {
             zox_log("[%s] has built a colored mesh: Tris [%i]", zox_getn(e), indicies->length / 3);

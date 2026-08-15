@@ -2,7 +2,7 @@ void set_camera_free(ecs *world, entity e) {
     // zox_set(e, CharacterLink, { 0 });
     zox_geter_value(e, Rotation3D, float4, camera_rotation3D);
     float3 euler = quaternion_to_euler(camera_rotation3D);
-    zox_add_tag(e, EulerOverride);
+    zox_add(e, EulerOverride);
     zox_set(e, Euler, { euler });
     // zox_set(e, ParentLink, { 0 });
     zox_set_parent(world, e, 0);
@@ -25,7 +25,7 @@ void attach_camera_to_character(ecs *world, entity e, entity character) {
     // reset using head bone
     zox_set(e, CameraState, { zox_camera_state_first_person });
     zox_set(e, Roaming, { 0 });
-    zox_remove_tag(e, EulerOverride);
+    zox_remove(e, EulerOverride);
     float3 euler = (float3) { 0, 180, 0 };
     zox_set(e, Euler, { euler });
     zox_set(e, LocalRotation3D, { quaternion_from_euler(float3_scale(euler, degreesToRadians)) });

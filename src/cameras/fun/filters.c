@@ -2,7 +2,7 @@
 
 #define camera_filtering_check()\
     entity fe = it->entities[i];\
-    byte filtered = zox_has(fe, CameraRenderer) ? zox_gett_value(fe, CameraRenderer) != renderer_camera : 1;\
+    byte filtered = zox_has(fe, CameraRenderer) ? zox_getv(fe, CameraRenderer) != renderer_camera : 1;\
     if (filtering) {\
         if (filtered) {\
             continue;\

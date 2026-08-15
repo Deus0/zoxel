@@ -25,7 +25,7 @@ entity spawn_block_item(ecs *world, entity block, byte dbg_log) {
         texture = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));
     }
     zox_set(e, TextureLink, { texture });
-    zox_add_tag(e, ItemBlock);
+    zox_add(e, ItemBlock);
     zox_set(e, BlockLink, { block });
     zox_set(e, RaycastRange, { block_place_range });
     zox_set(e, RaycastType, { 1 });

@@ -98,7 +98,7 @@ void log_system_stats(ecs* world) {
     }
     ecs_entity_t *systems = ecs_vec_first_t(&p.systems, ecs_entity_t);
     int32_t system_count = ecs_vec_count(&p.systems);
-    profile_entry_t *entries = malloc(sizeof(profile_entry_t) * system_count);
+    profile_entry_t *entries = zox_malloc(sizeof(profile_entry_t) * system_count);
     int entry_count = 0;
     for (int32_t i = 0; i < system_count; i++) {
         ecs_entity_t sys = systems[i];

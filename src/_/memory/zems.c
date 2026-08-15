@@ -1,4 +1,4 @@
-static inline void init_zems() { }
+/*static inline void init_zems() { }
 
 static inline void free_zems() { }
 
@@ -13,3 +13,4 @@ static inline void zee(void* ptr) {
 static inline void* rezalloc(void* ptr, uint new_length) {
     return realloc(ptr, new_length);
 }
+*/

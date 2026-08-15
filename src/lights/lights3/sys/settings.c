@@ -36,11 +36,7 @@ zox_sys2(LightsSettingsDirtySystem) {
             }
             if (!strcmp(name->value, "No Lights")) {
                 disable_lights = value;
-                if (disable_lights) {
-                    zox_disable(zox_id(SmoothLightsBuildSystem));
-                } else {
-                    zox_enable(zox_id(SmoothLightsBuildSystem));
-                }
+                set_light_systems(world, !disable_lights);
             } else if (!strcmp(name->value, "Smooth Lighting")) {
                 zox_smooth_lighting = value;
             } else if (!strcmp(name->value, "No AO")) {

@@ -13,7 +13,7 @@ void test_key_element_front2D(ecs *world, int32_t keycode) {
     } else {
         const entity e = test_elementbar2D_front;
         zox_log("   - [%s] checking\n", zox_get_name(e))
-        zox_log("   - MeshDirty [%i]\n", zox_gett_value(e, MeshDirty))
+        zox_log("   - MeshDirty [%i]\n", zox_getv(e, MeshDirty))
         zox_log("   - MeshIndicies? [%i]\n", zox_has(e, MeshIndicies))
         zox_log("   - MeshVertices2D? [%i]\n", zox_has(e, MeshVertices2D))
         zox_log("   - MeshUVs? [%i]\n", zox_has(e, MeshUVs))

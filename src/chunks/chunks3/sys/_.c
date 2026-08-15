@@ -12,7 +12,6 @@ void define_systems_chunks3(ecs *world) {
         ColoredChunkMeshTriggerSystem,
         zoxp_update,
         [in] chunks3.VoxelNodeDirty,
-        [out] rendering.BuildMesh,
         [none] chunks3.ColorChunk
     );
     zox_system(

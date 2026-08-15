@@ -10,16 +10,17 @@ zox_sys2(NeuronRenderSystem) {
     // const color_rgb neuron_color_input = (color_rgb) { 255, 0, 0 };
     // const color_rgb neuron_color_hidden = (color_rgb) { 0, 0, 255 };
     // const color_rgb neuron_color_output = (color_rgb) { 0, 255, 0 };
-    zox_field_world()
-    zox_field_in(Position2, position2s, 1)
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(Position2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_field_i(Position2, position2s, position2)
+        zox_sys_i(Position2, position2);
         float scale = neuron_size; //  * weight->value;
-        if (zox_has(it->entities[i], InputNeuron)) scale *= 2.0f;
+        if (zox_has(e, InputNeuron)) scale *= 2.0f;
         float2 neuron_position = position2->value;
         neuron_position.y += neural_position.y; // offset for world rendering
-        const float output = zox_get_value(e, Signal)
+        const float output = zox_getv(e, Signal);
         int gray_value = (int) (255 * output);
         spawn_line2D_square(world, neuron_position, (float2) { scale + scale * output, scale + scale * output }, line_thickness * 2, animate_time, (color_rgb) { gray_value, gray_value, gray_value });
     }

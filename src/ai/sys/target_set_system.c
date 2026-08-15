@@ -9,12 +9,10 @@ zox_sys2(ThreatPositionSystem) {
         if (!zox_valid(lastDamager->value)) {
             continue;
         }
-
         zox_geter(lastDamager->value, Position3D, target);
         threatPosition->value = target->value;
-
         if (is_debug_target) {
-            zox_geter_value(it->entities[i], Position3D, float3, position)
+            zox_geter_value(it->entities[i], Position3D, float3, position);
             debug_linec(world, position, threatPosition->value, color_rgb_gray);
         }
     }

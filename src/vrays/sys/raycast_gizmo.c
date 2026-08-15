@@ -42,7 +42,7 @@ zox_sys2(RaycastGizmoSystem) {
                     zox_set(link->value, CubeLineExtrude, { extrude });
                     zox_set(link->value, CubeLineSides, { sides });
                     if (disable_depth) {
-                        zox_add_tag(link->value, DisableDepthTest);
+                        zox_add(link->value, DisableDepthTest);
                     }
                     if (dbg_log) {
                         zox_log("Spawned Gizmo");

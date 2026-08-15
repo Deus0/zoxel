@@ -9,8 +9,10 @@ zox_sys2(ModelsSettingsSystem) {
             continue;
         }
         spawn_setting_byte_slider(world, e, "Block Res", block_vox_depth, block_vox_depth_limits);
-        spawn_setting_byte_slider(world, e, "Terrain Res", terrain_depth, terrain_depth_limits);
         spawn_setting_byte(world, e, "Outlines", is_generate_vox_outlines);
+#ifdef zox_dev
+        spawn_setting_byte_slider(world, e, "Terrain Res", terrain_depth, terrain_depth_limits);
+#endif
     }
 } zox_sys_end(ModelsSettingsSystem);
 

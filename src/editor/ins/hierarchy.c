@@ -18,7 +18,7 @@ entity spawn_window_hierarchy(ecs *world, entity canvas, entity player, entity r
     entity body = e4.z;
     entity list = e4.w;
     zox_set_name_spawned(world, window, "hierarchy");
-    zox_add_tag(window, HierarchyUI);
+    zox_add(window, HierarchyUI);
     zox_set(window, ElementFontSize, { font_size });
     zox_set(window, EntityTarget, { root });
     // Add Editor Colors
@@ -29,7 +29,7 @@ entity spawn_window_hierarchy(ecs *world, entity canvas, entity player, entity r
     zox_set(header, ElementFillColor, { editor_header_fill });
     zox_set(header, ElementOutlineColor, { editor_header_outline });
     // Add linker to hierarchy list
-    zox_add_tag(list, ActiveSingle);
+    zox_add(list, ActiveSingle);
     zox_set(list, ActiveLink, { 0 });
     return window;
 }

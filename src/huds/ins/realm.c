@@ -94,7 +94,7 @@ entity spawn_menu_realm(ecs *world, entity player) {
     };
     entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_realm_cancel }, 1, 0, 0, zox_alignment_centre, window_anchor, list_padding, NULL, elements, elements_count, visible_count).x;
     zox_name("menu_realm");
-    zox_add_tag(e, MenuRealm);
-    zox_add_tag(e, NavigationWindow);
+    zox_add(e, MenuRealm);
+    zox_add(e, NavigationWindow);
     return e;
 }

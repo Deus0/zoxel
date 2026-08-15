@@ -31,7 +31,7 @@ entity spawn_player_menu_equipment(ecs* world, entity player) {
     byte2 cells_size = byte2_single(grid_length);
     // Spawn our window
     entity e = spawn_datagrid_slots2(world, prefab_window, prefab_frame, prefab_icon, prefab_label, label_font_size, canvas, character, cells_size, "Gear", frame_equip_fill, frame_equip_outline, position_anchor, position, frame_id, parts->data, parts->size);
-    zox_add_tag(e, MenuEquipment);
+    zox_add(e, MenuEquipment);
     dispose_entity_array_d(parts);
     return e;
 }

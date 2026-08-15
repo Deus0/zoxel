@@ -11,26 +11,26 @@ void spawn_prefabs_stats(ecs* world) {
     // Base
     {
         entity e = zox_prefab_from_parent(world, prefab_stat);
-        zox_add_tag(e, StatBase);
+        zox_add(e, StatBase);
         prefab_stat_base = e;
     }
     // States + Regen
     {
         entity e = zox_prefab_from_parent(world, prefab_stat);
-        zox_add_tag(e, StatState);
+        zox_add(e, StatState);
         zox_set(e, StatValueMax, { 0 });
         prefab_stat_state = e;
     }
     // Regens
     {
         entity e = zox_prefab_from_parent(world, prefab_stat);
-        zox_add_tag(e, StatRegen);
+        zox_add(e, StatRegen);
         prefab_stat_regen = e;
     }
     // Levels
     {
         entity e = zox_prefab_from_parent(world, prefab_stat);
-        zox_add_tag(e, StatLevel);
+        zox_add(e, StatLevel);
         zox_prefab_set(e, ExperienceValue, { 0 });
         zox_prefab_set(e, ExperienceMax, { zox_experience_max_start });
         prefab_stat_level = e;
@@ -38,7 +38,7 @@ void spawn_prefabs_stats(ecs* world) {
     // Attributes
     {
         entity e = zox_prefab_from_parent(world, prefab_stat);
-        zox_add_tag(e, StatAttribute);
+        zox_add(e, StatAttribute);
         prefab_stat_attribute = e;
     }
     // Add onto Realm, Characters

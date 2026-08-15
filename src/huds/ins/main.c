@@ -70,8 +70,8 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     entity3 e3 = spawn_window_list(world, prefab_window, player, header_text, header_font_size, list_font_size, close_event, 0, 0, 0, window_alignment, window_anchor, padding, spawned, elements, elements_count, elements_count);
     entity e = e3.x;
     zox_set_unique_name(e, "main_menu");
-    zox_add_tag(e, MenuMain);
-    zox_add_tag(e, NavigationWindow);
+    zox_add(e, MenuMain);
+    zox_add(e, NavigationWindow);
     entity header = e3.z;
     zox_add_tooltip_text(world, header, "v0.0.1");
     // zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });

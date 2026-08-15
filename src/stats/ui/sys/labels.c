@@ -39,7 +39,7 @@ zox_sys2(StatTextSystem) {
         int value_floored = floor(value->value);
         char text[label_text_count];
         if (zox_has(stat->value, StatState)) {
-            zox_geter(stat->value, StatValueMax, max)
+            zox_geter(stat->value, StatValueMax, max);
             int max_value = ceil(max->value);
             snprintf(text, label_text_count, "%s [%i/%i]", stat_name->value, value_floored, max_value);
         } else if (zox_has(stat->value, StatLevel)) {

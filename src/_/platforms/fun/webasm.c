@@ -31,7 +31,7 @@ byte update_web_canvas(ecs *world) {
     //if (!int2_equals(screen_dimensions, size)) {
         //zox_log(" > update_web_canvas: Canvas size has changed [%i x %i]\n", size.x, size.y)
         // set_viewport_size(world, (int2) { canvas_size.x, canvas_size.y });
-    if (!int2_equals(size, zox_gett_value(main_app, WindowSize)) {
+    if (!int2_equals(size, zox_getv(main_app, WindowSize)) {
         zox_set(main_app, WindowSize, { size });
         zox_set(main_app, WindowSizeDirty, { zox_dirty_trigger });
         return 1;

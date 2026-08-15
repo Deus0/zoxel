@@ -5,8 +5,8 @@ set -euo pipefail
 
 # debug options
 OS="linux"
-is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_safety_checks="1"    # lets stay safe for now
+is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_time_systems="0"
 is_fast_dev="0"         # -O3
 # settings
@@ -40,6 +40,7 @@ if [[ $# -gt 0 && ${1} != --* ]]; then
 fi
 
 [[ " $* " == *" --debug "* ]] && debug="1"
+[[ " $* " == *" --profiler "* ]] && is_profiler="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
 [[ " $* " == *" --package "* ]] && package="1"
 [[ " $* " == *" --system "* ]] && is_static="0"

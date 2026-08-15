@@ -18,7 +18,7 @@ zox_tag(BlockFlower);
 zox_tag(BlockRoad);
 
 entity get_linked_terrain(ecs* world, entity e) {
-    return zox_valid(e) && zox_has(e, TerrainLink) ? zox_gett_value(e, TerrainLink) : 0;
+    return zox_valid(e) && zox_has(e, TerrainLink) ? zox_getv(e, TerrainLink) : 0;
 }
 
 void define_components_terrain(ecs *world) {

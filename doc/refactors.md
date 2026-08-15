@@ -1,5 +1,15 @@
 # Refactoring
 
+- Refactor settings spawning back to hooks
+
+## Next
+- Make ChunkEntities use links instead of components
+- Remove DeviceLink from zevices
+- Remove Camera Datas - main_cameras ui_cameras
+- Remove DeviceLink from Zevice, use parent
+- Spawn finger entity during finger down - instead of just setting
+- We can refactor all the links between enttiies as pairs instead of components
+
 ## Devops
 - We need docker libraries to be seperated from regular ones
     - for docker.sh - add docker tag in linux.sh
@@ -9,12 +19,6 @@
 - Refactor Tooltips as events
     - Make the event store multiple functions
     # Probably the tooltips can all just be events - systems arnt needed for these
-
-## Next
-- Remove Camera Datas - main_cameras ui_cameras
-- Remove DeviceLink from Zevice, use parent
-- Spawn finger entity during finger down - instead of just setting
-- We can refactor all the links between enttiies as pairs instead of components
 
 ## Apps
 - Move sdl/glut/glfw/headless into core as wrappers or not idk... we havnt actually wrapped yet!

@@ -129,24 +129,22 @@ zox_sys2(ChunkTexturedBuildSystem) {
     byte* solidity = NULL;
     zox_sys_world();
     zox_sys_begin();
-    // zox_sys_in(Active);
-    zox_sys_in(RenderDepth);
     zox_sys_out(BuildMesh);
+    zox_sys_in(RenderDepth);
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
     zox_sys_out(MeshColorRGBs);
-    zox_sys_out(MeshDirty);
+    // zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(Active, active);
-        zox_sys_i(RenderDepth, depth);
         zox_sys_o(BuildMesh, build);
+        zox_sys_i(RenderDepth, depth);
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshColorRGBs, colors);
         zox_sys_o(MeshUVs, uvs);
-        zox_sys_o(MeshDirty, upload);
+        // zox_sys_o(MeshDirty, upload);
         if (build->value != zox_build_chunk_mesh_run) { //|| !active->value) {
             continue;
         }
@@ -252,7 +250,8 @@ zox_sys2(ChunkTexturedBuildSystem) {
         uvs->value = finalize_arrayd_float2(mesh_data.uvs);
         // dirty
         build->value = zox_build_chunk_mesh_lights;
-        upload->value = mesh_state_trigger;
+        // upload->value = mesh_state_trigger;
+        zox_setv(e, MeshDirty, mesh_state_trigger);
         if (dbg_log) {
             zox_log("Built Mesh [%s]:[%s] Verts [%i] Scale [%f] Depth [%i]", zox_getn(e), zox_getn(chunk), verts->length, chunk_scale, depth->value);
         }

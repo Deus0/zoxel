@@ -40,14 +40,14 @@ zox_sys2(HealthbarSpawnerSystem) {
         }
         float3 spawn_position = float3_zero;
         entity3 spawns = spawn_bar3(world, spawn_position, zox_ui_scale3, bar_size, font_size, fill, outline, fill2, outline2, font_fill, font_outline, e, healthbar_trail_offset);
-        zox_add_tag(spawns.x, Healthbar);
+        zox_add(spawns.x, Healthbar);
         add_to_ElementLinks(elementLinks, spawns.x);
         // Statbar stuff
         entity bar = spawns.y;
-        zox_add_tag(bar, Statbar);
+        zox_add(bar, Statbar);
         zox_set(bar, StatLink, { health });
         // Text
         zox_set(spawns.z, StatLink, { health });
-        zox_add_tag(spawns.z, StatsLabel);
+        zox_add(spawns.z, StatsLabel);
     }
 } zox_sys_end(HealthbarSpawnerSystem);

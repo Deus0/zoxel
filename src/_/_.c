@@ -8,8 +8,6 @@
 #ifndef zoxm_core
 #define zoxm_core
 
-// #define zox_disable_initialize_removal
-
 #ifdef zox_debug
     #ifndef zox_safety_checks
         #define zox_safety_checks
@@ -18,8 +16,8 @@
 
 #include "logs/_.c"
 #include "collections/_.c"
-#include "maths/_.c"
 #include "flecs/_.c"
+#include "maths/_.c"
 #include "platforms/defines.c"
 #include "platforms/_.c"
 #include "terminals/_.c"

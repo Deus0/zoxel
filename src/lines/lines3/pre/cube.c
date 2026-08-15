@@ -1,16 +1,16 @@
 void prefab_add_cube_lines_shrink(ecs* world, entity e, color c, byte active, float shrink) {
-    zox_add_tag(e, CubeLines);
+    zox_add(e, CubeLines);
     zox_prefab_set(e, DebugCubeLines, { active });
     zox_prefab_set(e, LineThickness, { 1 });
     zox_prefab_set(e, Color, { c });
     if (shrink > 0) {
         zox_prefab_set(e, DebugCubeShrink, { shrink });
-        zox_add_tag(e, DebugCubeCorner);
+        zox_add(e, DebugCubeCorner);
     }
 }
 
 void prefab_add_cube_lines(ecs *world, entity e, color c, byte active) {
-    zox_add_tag(e, CubeLines);
+    zox_add(e, CubeLines);
     zox_prefab_set(e, DebugCubeLines, { active });
     zox_prefab_set(e, LineThickness, { 1 });
     zox_prefab_set(e, Color, { c });

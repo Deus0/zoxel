@@ -10,7 +10,7 @@ entity spawn_skybox(ecs *world, entity camera, entity shader) {
     zox_set_parent(world, e, camera);
     zox_setv(e, Initialize, 1);
     if (shader) {
-        zox_add_tag(e, MeshBasic3D);
+        zox_add(e, MeshBasic3D);
         // spawn_gpu_mesh(world, e);
         zox_set(e, ShaderLink, { shader });
         guint2 shader_value = zox_getv(shader, ShaderGPULink);

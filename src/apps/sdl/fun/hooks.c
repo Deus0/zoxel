@@ -1,7 +1,7 @@
 void sdl_on_window_moved(ecs *world, entity e, int2 position) {
     zox_logv("> sdl_on_window_moved [%ix%i]", position.x, position.y);
     zox_set(e, WindowPosition, { position });
-    if (!zox_gett_value(e, WindowFullscreen) && !zox_gett_value(e, WindowMaximized)) {
+    if (!zox_getv(e, WindowFullscreen) && !zox_getv(e, WindowMaximized)) {
         zox_set(e, WindowPositionRestore, { position });
         zox_logv("+ setting window restore position to [%ix%i]", position.x, position.y);
     }

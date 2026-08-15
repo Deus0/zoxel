@@ -24,8 +24,9 @@ void define_systems_chunks3_textured(ecs *world) {
         ChunkMeshToggleSystem,
         zoxp_update,
         [in] rendering.RenderDepth,
-        [out] chunks3.ChunkLodDirty,
-        [none] chunks3.ChunkTextured
+        [in] chunks3.ChunkLodDirty,
+        [none] chunks3.ChunkTextured,
+        [none] !chunks.GenerateChunk,
     );
     zox_system_1(
         ChunkMeshSpawnSystem,
@@ -53,13 +54,12 @@ void define_systems_chunks3_textured(ecs *world) {
     zox_system(
         ChunkTexturedBuildSystem,
         zoxp_voxels_mesh,
-        [in] rendering.RenderDepth,
         [out] rendering.BuildMesh,
+        [in] rendering.RenderDepth,
         [out] rendering.MeshIndicies,
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,
         [out] rendering.MeshColorRGBs,
-        [out] rendering.MeshDirty,
         [none] chunks.ChunkMesh,
         [none] !core.Disabled
     );

@@ -170,7 +170,7 @@ zox_sys2(VodesSpawnSystem) {
         // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
         byte is_dirty = voxels_dirty->value == zox_dirty_active;
         // byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
-        byte is_lod_dirty = zox_getv(e, ChunkLodDirty);
+        byte is_lod_dirty = zox_has(e, ChunkLodDirty) && zox_getv(e, ChunkLodDirty);
         if (!is_dirty && !is_lod_dirty) { // && !generated) {
             continue;
         }
@@ -195,29 +195,12 @@ zox_sys2(VodesSpawnSystem) {
         }
         byte is_vode[blocks->length];
         zero_memory(is_vode, blocks->length, byte);
-        // entity blocksarr[blocks->length];
-        /*entity models[blocks->length];
-        entity block_prefabs[blocks->length];
-        byte block_vox_offsets[blocks->length];
-        zero_memory(models, blocks->length, entity);
-        zero_memory(block_prefabs, blocks->length, entity);
-        zero_memory(block_vox_offsets, blocks->length, byte);*/
         for (ushort j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
             if (!zox_valid(block)) {
                 continue;
             }
             is_vode[j] = zox_has(block, BlockPrefabLink) && zox_valid(zox_getv(block, BlockPrefabLink));
-            /*blocksarr[j] = block;
-            if (zox_getv(block, BlockModel) == zox_block_vox) {
-                models[j] = zox_getv(block, ModelLink);
-                if (zox_has(block, BlockVoxOffset)) {
-                    block_vox_offsets[j] = zox_getv(block, BlockVoxOffset);
-                }
-            }
-            if (zox_has(block, BlockPrefabLink)) {
-                block_prefabs[j] = zox_getv(block, BlockPrefabLink);
-            }*/
         }
         float block_scale = get_chunk_scale(depth->value, terrain_depth, terrain_scale);
         // why we do this?
@@ -229,18 +212,7 @@ zox_sys2(VodesSpawnSystem) {
             .render_depth = block_depth,
             .render_disabled = render_disabled->value,
         };
-        spawn_vodes_dive(
-            world,
-            &data,
-            e,
-            blocks->length,
-            is_vode,
-            blocks->value,
-            voxel_octree,
-            byte3_zero,
-            0,
-            depth->value);
-        // write_unlock_VoxelNode(voxel_octree);
+        spawn_vodes_dive(world, &data, e, blocks->length, is_vode, blocks->value, voxel_octree, byte3_zero, 0, depth->value);
         spawned->value = 1;
     }
 } zox_sys_end(VodesSpawnSystem);

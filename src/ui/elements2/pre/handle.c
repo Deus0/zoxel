@@ -6,7 +6,7 @@ entity spawn_prefab_handle(ecs *world, entity prefab) {
     zox_prefab_name("handle");
     // interactable
     // Drag
-    zox_add_tag(e, Dragable);
+    zox_add(e, Dragable);
     zox_prefab_set(e, DraggableState, { 0 });
     zox_prefab_set(e, DraggingDelta, { int2_zero });
     zox_prefab_set(e, DraggerLink, { 0 });
@@ -16,6 +16,6 @@ entity spawn_prefab_handle(ecs *world, entity prefab) {
     zox_prefab_set(e, SlideEvent, { 0 });
     zox_prefab_set(e, SlideBounds, { (float2) { 0, 1 }});
     // set texture data
-    zox_add_tag(e, FixToLayout);
+    zox_add(e, FixToLayout);
     return e;
 }

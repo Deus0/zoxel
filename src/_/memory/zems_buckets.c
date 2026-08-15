@@ -1,4 +1,4 @@
-#include <stdint.h>
+/*#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -184,4 +184,4 @@ void* rezalloc(void *ptr, uint new_length) {
     memcpy(new_ptr, ptr, copy_size);
     zee(ptr);
     return new_ptr;
-}
+}*/

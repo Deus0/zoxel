@@ -8,7 +8,7 @@ entity spawn_realm_stat(ecs* world, entity parent, entity prefab, const char* na
     if (parent) {
         zox_set_parent(world, e, parent);
     }
-    zox_add_tag(e, RealmStat);
+    zox_add(e, RealmStat);
     if (name) {
         zox_set_unique_name(e, name);
         set_ZoxName(world, e, name);

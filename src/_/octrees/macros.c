@@ -178,7 +178,7 @@ void link_node_##name(name* node, entity e) {\
     /*if (node->type == node_type_closed) {*/\
     if (!node->ptr) {\
         node->type = node_type_instance;\
-        node->ptr = malloc(sizeof(OctreeLink));\
+        node->ptr = zox_malloc(sizeof(OctreeLink));\
         *(OctreeLink*) node->ptr = (OctreeLink) { e };\
     }\
     /*write_unlock_##name(node);*/\
@@ -188,7 +188,7 @@ byte dispose_node_link_##name(name *node) {\
     if (!node || !is_linked_##name(node)) {\
         return 0;\
     }\
-    free(node->ptr);\
+    zox_free(node->ptr);\
     node->ptr = NULL;\
     node->type = node_type_closed;\
     return 1;\
@@ -208,7 +208,7 @@ byte destroy_node_link_##name(ecs *world, name *node) {\
             did_destroy = 1;\
         }\
         \
-        free(node->ptr);\
+        zox_free(node->ptr);\
         node->ptr = NULL;\
         node->type = node_type_closed;\
     }\

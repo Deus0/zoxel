@@ -113,7 +113,7 @@ void zox_define_systems_basics3(ecs* world) {
         zoxp_mainthread,
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshColorRGBs,
-        [out] rendering.MeshColorsDirty,
+        [in] rendering.MeshColorsDirty,
         [none] rendering.MeshColorRGBs,
         [none] !core.Initialize,
     );

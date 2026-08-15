@@ -1,11 +1,11 @@
 entity spawn_prefab_glyph(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("zigel");
-    zox_add_tag(e, Zigel);
+    zox_add(e, Zigel);
     // zox_prefab_set(e, ChildIndex, { 0 });
     zox_prefab_set(e, DataIndex, { 0 }); // Position in TextData of parent
     zox_prefab_set(e, ZigelIndex, { 0 }); // Stores the ASCII byte
-    zox_add_tag(e, FontTexture);
+    zox_add(e, FontTexture);
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     zox_prefab_set(e, FillColor, { color_white });

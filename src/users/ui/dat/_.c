@@ -20,7 +20,7 @@ SpawnWindowUsers get_default_spawn_window_users_data(ecs *world, entity prefab, 
 
     entity prefab_frame_ = prefab_frame;
     if (zox_has(prefab, FramePrefabLink)) {
-        prefab_frame_ = zox_get_value(prefab, FramePrefabLink);
+        prefab_frame_ = zox_getv(prefab, FramePrefabLink);
     } else {
         zox_log_error("prefab frame failed! %s", zox_get_name(prefab));
     }

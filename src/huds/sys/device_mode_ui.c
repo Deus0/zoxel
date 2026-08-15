@@ -60,7 +60,7 @@ zox_sys2(DeviceModeUISystem) {
         byte mouse_visible = 1;
         byte game_state = 0;
         if (game->value) {
-            game_state = zox_get_value(game->value, GameState);
+            game_state = zox_getv(game->value, GameState);
         }
         // handle previous mode
         if (old->value == zox_device_mode_touchscreen) {

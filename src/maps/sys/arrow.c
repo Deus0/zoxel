@@ -20,7 +20,9 @@ zox_sys2(MapArrowSystem) {
         if (zox_maps_flip_z) {
             // euler.x = 180 * degrees_to_radians;
             // euler.y += 90 * degrees_to_radians;
-            euler.y = - euler.y + 180 * degrees_to_radians;
+            // euler.y = - euler.y + 180 * degrees_to_radians;
+            // flip x axis
+            euler.y += 180 * degrees_to_radians;
         }
         rotation->value = euler.y; //  + 180 * degrees_to_radians;
         if (dbg_log) {

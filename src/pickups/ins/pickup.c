@@ -13,7 +13,7 @@ entity spawn_pickup_block(ecs *world, float3 position, entity block, float scale
     entity texture = 0;
     if (zox_valid(block)) {
         if (zox_has(block, TextureLinks)) {
-            zox_geter(block, TextureLinks, textures)
+            zox_geter(block, TextureLinks, textures);
             if (textures->length) {
                 if (textures->length == 1) {
                     texture = textures->value[0];

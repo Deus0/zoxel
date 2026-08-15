@@ -13,7 +13,7 @@ void zox_dbg_lights3_refresh_sunlight(ecs* world, ClickEventData data) {
         for (int j = 0; j < it2.count; j++) {
             entity e2 = it2.entities[j];
             if (zox_valid(e2) && zox_has(e2, SunnyChunk)) {
-                zox_set(e2, GenerateLights, { zox_generate_lights_start });
+                zox_add(e2, GenerateSunlight);
             }
         }
     }

@@ -4,7 +4,7 @@ void toggle_debug_bounds_delve(ecs *world, const VoxelNode *node, byte mode) {
     } else if (is_linked_VoxelNode(node)) {
         const entity e = get_entity_VoxelNode(node);
         if (zox_valid(e)) {
-            zox_set(e, DebugCubeLines, { mode })
+            zox_set(e, DebugCubeLines, { mode });
         }
     } else if (has_children_VoxelNode(node)) {
         VoxelNode* kids = (VoxelNode*) node->ptr;
@@ -18,7 +18,7 @@ void zox_dbg_toggle_gizmos_vodes(ecs *world, ClickEventData data) {
     if (!zox_valid(local_terrain) || !zox_valid(prefab_block_vox) || !zox_has(prefab_block_vox, DebugCubeLines)) {
         return;
     }
-    zox_geter_value_non_const(prefab_block_vox, DebugCubeLines, byte, mode);
+    zox_geter_value(prefab_block_vox, DebugCubeLines, byte, mode);
     cycle_cubeline_debug(&mode);
     zox_set(prefab_block_vox, DebugCubeLines, { mode });
     zox_set(prefab_block_vox_instanced, DebugCubeLines, { mode });
@@ -29,9 +29,9 @@ void zox_dbg_toggle_gizmos_vodes(ecs *world, ClickEventData data) {
         while (pair != NULL && checks < max_safety_checks_hashmap) {
             entity chunk = pair->value;
             if (zox_valid(chunk)) {
-                zox_geter_value(chunk, BlocksSpawned, byte, blocks_spawned)
+                zox_geter_value(chunk, BlocksSpawned, byte, blocks_spawned);
                 if (blocks_spawned) {
-                    zox_geter(chunk, VoxelNode, node)
+                    zox_geter(chunk, VoxelNode, node);
                     toggle_debug_bounds_delve(world, node, mode);
                 }
             }

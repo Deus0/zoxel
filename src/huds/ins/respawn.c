@@ -10,7 +10,7 @@ entity spawn_respawn_ui(ecs* world, entity player, entity canvas) {
     byte2 padding = byte2_single(1 * ui_scale);
     entity e = spawn_text(world, prefab, canvas, int2_zero, float2_half, font_size, zox_alignment_centre, padding, text, fill, outline);
     zox_set_unique_name(e, "respawn_ui");
-    zox_add_tag(e, RespawnUI);
+    zox_add(e, RespawnUI);
     zox_set(e, Layer2D, { get_game_overlay_layer() });
     return e;
 }

@@ -1,7 +1,7 @@
 entity spawn_prefab_gamepad(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("gamepad");
-    zox_add_tag(e, Gamepad);
+    zox_add(e, Gamepad);
     zox_prefab_set(e, DeviceLayout, { 0 });
     return e;
 }
@@ -10,11 +10,11 @@ entity spawn_zevice_bumper(ecs* world, entity parent, const char* name, int rind
     entity e = zox_new();
     zox_set_unique_name(e, name);
     zox_set_parent(world, e, parent);
-    zox_add_tag(e, Zevice);
+    zox_add(e, Zevice);
     zox_prefab_set(e, ZeviceDisabled, { 0 });
     zox_prefab_set(e, DeviceButtonType, { map });
     zox_prefab_set(e, RealButtonIndex, { rindex });
-    zox_add_tag(e, ZeviceBumper);
+    zox_add(e, ZeviceBumper);
     zox_prefab_set(e, ZeviceButton, { 0 });
     return e;
 }

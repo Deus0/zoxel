@@ -1,6 +1,6 @@
 entity spawn_prefab_render_texture(ecs *world, entity prefab) {
     zox_prefab_child(prefab);    // from element_basic
-    zox_add_tag(e, RenderTexture);
+    zox_add(e, RenderTexture);
     zox_prefab_set(e, CameraLink, { 0 });
     zox_prefab_set(e, MaterialLink, { 0 });
     // for now we must do this otherwise we get edge pixels

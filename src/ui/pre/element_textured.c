@@ -2,7 +2,7 @@ entity spawn_prefab_ui_textured(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("ui_textured");
     // frame texture
-    zox_add_tag(e, FrameTexture);
+    zox_add(e, FrameTexture);
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     zox_prefab_set(e, TextureDirty, { 0 });

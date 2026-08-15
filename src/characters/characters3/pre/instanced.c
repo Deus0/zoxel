@@ -6,6 +6,6 @@ entity spawn_prefab_character3_instanced(ecs *world, entity prefab) {
     zox_prefab_name("character3_instanced");
     zox_prefab_set(e, Rotation3D, { quaternion_identity });
     zox_prefab_set(e, RenderDisabled, { 0 });
-    zox_add_tag(e, CharacterGeneric);
+    zox_add(e, CharacterGeneric);
     return e;
 }

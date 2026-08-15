@@ -70,7 +70,7 @@ zox_sys2(Skeleton3RenderSystem) {
             }
             float4x4 bone_matrix = zox_getv(bone, TransformMatrix);
             transforms[j] = float4x4_multiply(bone_matrix, inverse);
-            bone_positions[j] = zox_get_value(bone, BonePosition);
+            bone_positions[j] = zox_getv(bone, BonePosition);
         }
         zox_gpu_float4x4_array(material_attributes->bone_matrix, transforms, bones->length);
         zox_gpu_float3_array(material_attributes->bone_positions, bone_positions, bones->length);

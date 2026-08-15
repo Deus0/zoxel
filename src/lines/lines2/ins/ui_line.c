@@ -19,7 +19,7 @@ entity spawn_ui_line2(
     int2 parent_position,
     byte layer
 ) {
-    // const int2 canvas_size = zox_get_value(canvas, LayoutSize)
+    // const int2 canvas_size = zox_getv(canvas, LayoutSize)
     entity e = life_time ? zox_ins(world, prefab_temporary_ui_line2D) : zox_ins(world, prefab_ui_line2D);
     zox_name("ui_line2D");
     // zox_set(e, CanvasLink, { canvas });

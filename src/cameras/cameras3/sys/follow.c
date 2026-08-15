@@ -8,19 +8,16 @@ zox_sys2(Camera3FollowSystem) {
         zox_sys_i(CameraFollowLink, cameraFollowLink);
         zox_sys_i(LocalPosition3D, localPosition3D);
         zox_sys_o(Position3D, position);
-
         if (!cameraFollowLink->value) {
             continue;
         }
-
         if (zox_has(cameraFollowLink->value, Position2)) {
-            zox_geter_value(cameraFollowLink->value, Position2, float2, target_position)
+            float2 target_position = zox_getv(cameraFollowLink->value, Position2);
             position->value.x = target_position.x;
             position->value.y = target_position.y;
             position->value.z = 0;
         } else if (zox_has(cameraFollowLink->value, Position3D)) {
-            zox_geter_value(cameraFollowLink->value, Position3D, float3, target_position);
-            position->value = target_position;
+            position->value = zox_getv(cameraFollowLink->value, Position3D);
         } else {
             continue;
         }

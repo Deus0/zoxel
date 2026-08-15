@@ -1,7 +1,7 @@
 entity spawn_prefab_renderer_instance(ecs *world) {
     zox_prefab();
     zox_prefab_name("renderer_instance");
-    zox_add_tag(e, RendererInstance);
+    zox_add(e, RendererInstance);
     zox_prefab_set(e, Brightness, { 1 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
@@ -14,7 +14,7 @@ entity spawn_prefab_renderer_instance(ecs *world) {
 entity spawn_prefab_static_instance_mesh(ecs *world) {
     zox_prefab();
     zox_prefab_name("renderer_instance");
-    zox_add_tag(e, RendererInstance);
+    zox_add(e, RendererInstance);
     zox_prefab_set(e, Brightness, { 1 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });

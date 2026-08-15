@@ -8,7 +8,7 @@ entity spawn_prefab_slider(ecs *world, entity prefab) {
     // transforms
     // zox_prefab_set(e, ParentLink, { 0 });
     // set t texture data
-    zox_add_tag(e, FixToLayout);
+    zox_add(e, FixToLayout);
     zox_set(e, FrameCorner, { default_button_corner });
     zox_set(e, OutlineThickness, { default_button_frame_thickness });
     zox_set(e, FillColor, { default_fill_color });

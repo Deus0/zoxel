@@ -65,13 +65,13 @@ zox_sys2(AuraDotSystem) {
                 // makes it so t two players can damage a character at once
                 if (distance <= range->value) {
                     entity e3 = spawn_poison(world, e2, prefab_poison, user, e, damage->value);
-                    zox_add_tag(e3, AuraDot);
+                    zox_add(e3, AuraDot);
                     zox_set_parent(world, e3, e2);
                     if (dbg_log) {
                         zox_log("Added new dot [%s]", zox_get_name(e3));
                     }
                     // spawn particle system
-                    float3 bounds = zox_get_value(e2, Bounds3D);
+                    float3 bounds = zox_getv(e2, Bounds3D);
                     entity particles = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
                     zox_set(particles, SkillLink, { e });
                     zox_set(e3, ParticlesEmitterLink, { particles });

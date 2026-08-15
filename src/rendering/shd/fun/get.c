@@ -5,7 +5,7 @@ char* get_shader_source(ecs *world, char* filename) {
         zox_log_error("[%s] not found", filename);
         return NULL;
     } else {
-        char* source = zox_get_value(e, ShaderSource);
+        char* source = zox_getv(e, ShaderSource);
         if (!source) {
             zox_log_error("missing shader [%s]", filename);
         }

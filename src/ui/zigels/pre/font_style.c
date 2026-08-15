@@ -1,13 +1,13 @@
 entity spawn_prefab_font_style(ecs *world, entity prefab_font) {
     zox_prefab();
     zox_prefab_name("font_style");
-    zox_add_tag(e, FontStyle);
+    zox_add(e, FontStyle);
     zox_prefab_set(e, FontLink, { prefab_font });
     return e;
 }
 
 entity spawn_font_style(ecs *world, entity prefab) {
-    entity prefab_font = zox_get_value(prefab, FontLink);
+    entity prefab_font = zox_getv(prefab, FontLink);
     zox_instance(prefab);
     zox_name("font_style");
     // The Unset ones

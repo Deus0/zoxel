@@ -29,7 +29,7 @@ zox_sys2(MarkerSpawnSystem) {
         zox_set(e2.x, ElementHolder, { e });
         add_to_ElementLinks(elements, e2.x);
         // Text
-        zox_add_tag(e2.y, CentredZigel);
+        zox_add(e2.y, CentredZigel);
         if (dbg_log) {
             zox_log("Spawned Marker Label on [%s]: %s", zox_getn(e), text);
         }

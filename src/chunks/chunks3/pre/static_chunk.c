@@ -1,8 +1,8 @@
 entity spawn_prefab_static_chunk(ecs *world) {
     zox_prefab();
     zox_prefab_name("static_chunk");
-    zox_add_tag(e, Chunk);
-    zox_add_tag(e, Chunk3);
+    zox_add(e, Chunk);
+    zox_add(e, Chunk3);
     zox_prefab_set(e, ChunkPosition, { int3_zero });
     zox_prefab_set(e, ChunkSize, { int3_zero });
     zox_prefab_set(e, ChunkNeighbors, { { 0 } } );
@@ -11,10 +11,6 @@ entity spawn_prefab_static_chunk(ecs *world) {
     zox_prefab_set(e, NodeDepth, { 0 });
     zox_prefab_set(e, VoxelNode, { 0 });
     zox_prefab_set(e, SidesOctree, { 0 });
-    zox_prefab_set(e, VoxelNodeDirty, { 0 });
-    zox_prefab_set(e, RenderDistanceDirty, { 0 });
-    zox_prefab_set(e, RenderDepthDirty, { 0 });
-    zox_prefab_set(e, BuildMesh, { 0 });
     zox_prefab_set(e, BuildChunkSides, { 0 });
     zox_prefab_set(e, BlockScale, { default_vox_scale });
     // Rendering
@@ -23,9 +19,6 @@ entity spawn_prefab_static_chunk(ecs *world) {
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshDirty, { 0 });
-    // zox_prefab_set(e, Initialize, { 1 });
-    // zox_prefab_set(e, RenderDisabled, { 0 });
-    // zox_prefab_set(e, MeshRenderCount, { 0 });
-    // zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
+    zox_prefab_set(e, VoxelNodeDirty, { 0 });
     return e;
 }

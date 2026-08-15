@@ -40,18 +40,18 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
     // TODO: spawn_render_camera instead
     camera = spawn_camera(world, prefab_camera3, cposition, crotation, 0, 45, int2_zero, tsize, single_screen_to_canvas);
     zox_set_unique_name(camera, "dbg_render_texture_camera");
-    zox_add_tag(camera, RenderCamera);
+    zox_add(camera, RenderCamera);
     zox_setv(camera, Color, clear);
     zox_setv(camera, CameraBlur, 0);
     zox_setv(camera, CameraVignette, 2.5f);
     dbg_render_camera = camera;
     if (is_camera_filtering) {
-        zox_add_tag(camera, CameraFilter);
+        zox_add(camera, CameraFilter);
     }
     // Create Render Texture
     entity ui = spawn_render_texture(world, prefab_render_texture, canvas, anchor, position, lsize, tsize, layer, camera);
     zox_set_unique_name(ui, "dbg_render_texture");
-    zox_add_tag(ui, RenderTextureAlpha);
+    zox_add(ui, RenderTextureAlpha);
     zox_setv(ui, Alpha, 0.8f);
     entity material = spawn_material_render_texture(world);
     zox_set_parent(world, material, ui);

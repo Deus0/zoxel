@@ -32,7 +32,7 @@ zox_sys2(TunkLodSystem) {
     zox_sys_in(TunkPosition);
     zox_sys_in(Chunk3Stack);
     zox_sys_out(RenderDistance);
-    zox_sys_out(RenderDistanceDirty);
+    // zox_sys_out(RenderDistanceDirty);
     zox_sys_out(TunkLod);
     zox_sys_out(GenerateTunk);
     for (int i = 0; i < it->count; i++) {
@@ -40,7 +40,7 @@ zox_sys2(TunkLodSystem) {
         zox_sys_i(TunkPosition, position);
         zox_sys_i(Chunk3Stack, stack);
         zox_sys_o(RenderDistance, distance);
-        zox_sys_o(RenderDistanceDirty, distance_dirty);
+        // zox_sys_o(RenderDistanceDirty, distance_dirty);
         zox_sys_o(TunkLod, lod);
         zox_sys_o(GenerateTunk, generate);
         entity terrain = zox_get_parent(world, e);
@@ -83,7 +83,8 @@ zox_sys2(TunkLodSystem) {
             continue;
         }
         distance->value = new_distance;
-        distance_dirty->value = zox_dirty_trigger;
+        zox_setv(e, RenderDistanceDirty, 1);
+        // distance_dirty->value = zox_dirty_trigger;
         byte tunk_render_depth = camera_distance_to_terrain_render_depth(new_distance);
         if (tunk_render_depth > lod->value) {
             lod->value = tunk_render_depth;
@@ -108,19 +109,21 @@ zox_sys2(TunkLodSystem) {
             if (old_depth == tunk_render_depth) {
                 continue;
             }
-            zox_set(chunk, RenderDepth, { tunk_render_depth });
-            zox_set(chunk, ChunkLodDirty, { zox_chunk_lod_dirty_start });
+            zox_setv(chunk, RenderDepth, tunk_render_depth);
+            zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
             if (dbg_log) {
                 zox_log("Chunk Depth Updated [%s]:[%i]", zox_get_name(chunk), tunk_render_depth);
             }
             // NOTE: Clears the light if depth is set to increase
-            byte node_depth = zox_getv(chunk, NodeDepth);
-            if (tunk_render_depth > node_depth) {
-                zox_muter(chunk, LightNode, lights);
-                lights->value = darklight;
-                collapse_LightNode(lights);
-                if (y == render_distance_y) {
-                    zox_set(chunk, GenerateLights, { zox_generate_lights_sunlight });
+            if (!disable_lights) {
+                byte node_depth = zox_getv(chunk, NodeDepth);
+                if (tunk_render_depth > node_depth) {
+                    zox_muter(chunk, LightNode, lights);
+                    lights->value = darklight;
+                    collapse_LightNode(lights);
+                    if (y == render_distance_y) {
+                        zox_add(e, GenerateSunlight);
+                    }
                 }
             }
         }

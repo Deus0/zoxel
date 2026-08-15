@@ -22,10 +22,10 @@ zox_sys2(StatsRealmSpawnSystem) {
         mana_c = color_rgb_darken(color_rgb_saturate(mana_c, sat), dark);
         // levels
         entity soul = spawn_realm_stat(world, e, prefab_stat_level, "soul", "soul", soul_c);
-        zox_add_tag(soul, StatSoul);
+        zox_add(soul, StatSoul);
         // states
         entity health = spawn_realm_stat(world, e, prefab_stat_state, "health", "health", health_c);
-        zox_add_tag(health, StatHealth);
+        zox_add(health, StatHealth);
         entity energy = spawn_realm_stat(world, e, prefab_stat_state, "energy", "energy", energy_c);
         entity mana = spawn_realm_stat(world, e, prefab_stat_state, "mana", "mana", mana_c);
         // Regens

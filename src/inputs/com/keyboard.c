@@ -77,7 +77,7 @@ void print_keyboard_key(const PhysicalButton *key, char* name) {
 }
 
 void print_keyboard(ecs *world, entity local_keyboard) {
-    const Keyboard *keyboard = zox_get(local_keyboard, Keyboard)
+    const Keyboard *keyboard = zox_get(local_keyboard, Keyboard);
     print_keyboard_key(&keyboard->space, "space");
     print_keyboard_key(&keyboard->p, "p");
     print_keyboard_key(&keyboard->w, "w");

@@ -73,17 +73,19 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     const VoxelNode* voxels = zox_get(chunk, VoxelNode);
     const SidesOctree* sides = zox_get(chunk, SidesOctree);
     // Sides Delay
-    byte lod_dirty = zox_getv(chunk, ChunkLodDirty);
-    byte generate = zox_getv(chunk, GenerateChunk);
-    byte voxels_dirty = zox_getv(chunk, VoxelNodeDirty);
-    byte build = zox_getv(chunk, BuildChunkSides);
-    index += snprintf(buffer + index, size - index, " - Lod Dirty [%i] Voxels Dirty [%i]\n", lod_dirty, voxels_dirty);
-    index += snprintf(buffer + index, size - index, " - Build [%i]\n", build);
     index += snprintf(buffer + index, size - index, " - Octree Depth [%i]\n", depth);
     index += snprintf(buffer + index, size - index, " - Render Depth [%i]\n", render_depth);
     index += snprintf(buffer + index, size - index, " - Voxels [%i]\n", voxels->value);
     index += snprintf(buffer + index, size - index, " - Sides [%i]\n", sides->value);
-    index += snprintf(buffer + index, size - index, " - generate [%i]\n", generate);
+    byte lod_dirty = zox_has(chunk, ChunkLodDirty) && zox_getv(chunk, ChunkLodDirty);
+    byte voxels_dirty = zox_has(chunk, VoxelNodeDirty) &&  zox_getv(chunk, VoxelNodeDirty);
+    index += snprintf(buffer + index, size - index, " - Lod Dirty [%i] Voxels Dirty [%i]\n", lod_dirty, voxels_dirty);
+    byte build = zox_getv(chunk, BuildChunkSides);
+    index += snprintf(buffer + index, size - index, " - Build [%i]\n", build);
+    if (zox_has(chunk, GenerateChunk)) {
+        byte generate = zox_getv(chunk, GenerateChunk);
+        index += snprintf(buffer + index, size - index, " - generate [%i]\n", generate);
+    }
     index += snprintf(buffer + index, size - index, " - at [%ix%ix%i]\n", position.x, position.y, position.z);
     // Chunk Meshes
     entity meshes[8];
@@ -95,15 +97,15 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
         byte active = !zox_has(e3, Disabled);
         byte depth = zox_getv(e3, RenderDepth);
         byte visible = !zox_getv(e3, RenderDisabled);
-        byte build = zox_getv(e3, BuildMesh);
-        byte build_colors = zox_getv(e3, MeshColorsGenerate);
-        byte mesh_dirty  = zox_getv(e3, MeshDirty);
-        byte colors_dirty = zox_getv(e3, MeshColorsDirty);
+        byte build = zox_has(e3, BuildMesh) && zox_getv(e3, BuildMesh);
+        byte build_colors = zox_has(e3, MeshColorsGenerate) && zox_getv(e3, MeshColorsGenerate);
+        byte mesh_dirty = zox_has(e3, MeshDirty) && zox_getv(e3, MeshDirty);
+        byte colors_dirty = zox_has(e3, MeshColorsDirty) && zox_getv(e3, MeshColorsDirty);
         uint count = zox_getv(e3, MeshRenderCount);
-        uint indicies_count = zox_gett(e3, MeshIndicies)->length;
-        uint verts_count = zox_gett(e3, MeshVertices)->length;
-        uint uvs_count = zox_gett(e3, MeshUVs)->length;
-        uint colors_count = zox_gett(e3, MeshColorRGBs)->length;
+        uint indicies_count = zox_get(e3, MeshIndicies)->length;
+        uint verts_count = zox_get(e3, MeshVertices)->length;
+        uint uvs_count = zox_get(e3, MeshUVs)->length;
+        uint colors_count = zox_get(e3, MeshColorRGBs)->length;
         guint2 mesh = zox_getv(e3, MeshGPULink);
         guint uvs = zox_getv(e3, UvsGPULink);
         guint colors = zox_getv(e3, ColorsGPULink);
