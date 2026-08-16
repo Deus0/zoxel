@@ -17,7 +17,6 @@ byte supports_opengl_version(byte major, byte minor, byte version) {
     return 1;
 }
 
-
 byte supports_opengl_core(byte major, byte minor) {
     return supports_opengl_version(major, minor, SDL_GL_CONTEXT_PROFILE_CORE);
 }
@@ -62,17 +61,4 @@ SDL_GLContext create_sdl_opengl_context(SDL_Window* window) {
         return NULL;
     }
     return context;
-}
-
-byte set_sdl_window_context(SDL_Window* window, SDL_GLContext context) {
-    if (!window || !context) {
-        zox_loge("Window or Context is null.");
-        return 1;
-    }
-    if (!sdl_gl_make_current(window, context)) {
-        zox_loge("Failed to make OpenGL context current: %s\n", SDL_GetError());
-        return 1;
-    }
-    // SDL_GL_SetSwapInterval(vsync);
-    return 0;
 }

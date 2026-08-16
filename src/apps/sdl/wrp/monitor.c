@@ -62,7 +62,3 @@ int2 get_screen_size_monitor(byte monitor) {
     // zox_logv("Monitor Screen Size [%i] [%ix%i]", monitor, displayMode.w, displayMode.h);
     return (int2) { displayMode.w, displayMode.h };
 }
-
-byte zox_get_max_monitors() {
-    return zox_sdl_get_num_displays();
-}

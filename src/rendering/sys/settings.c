@@ -1,4 +1,5 @@
 float fog_settings_mul = 0.048f;
+extern byte zox_disable_post_processing;
 
 zox_sys2(RenderingSettingsSystem) {
     zox_sys_world();
@@ -44,6 +45,9 @@ zox_sys2(RenderingSettingsDirtySystem) {
             if (!strcmp(name->value, "Downscale")) {
                 viewport_downscale = value;
                 viewport_scale = 1 / (float) viewport_downscale;
+                if (zox_disable_post_processing) {
+                    viewport_scale = 1;
+                }
                 // TODO: Apply to actual viewport??
                 entity app = zox_get_parent(world, e);
 #ifdef zox_safety_checks

@@ -1,4 +1,4 @@
-extern void zox_app_set_monitor_e(ecs*, entity, byte);
+/*extern void zox_app_set_monitor_e(ecs*, entity, byte);
 
 // use our setting
 void zox_set_monitor(ecs *world, byte value) {
@@ -18,3 +18,4 @@ void set_app_monitor(ecs* world, void* value) {
         zox_app_set_monitor_e(world, main_app, monitor);
     }
 }
+*/

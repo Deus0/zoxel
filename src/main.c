@@ -64,15 +64,13 @@ int main(int argc, char* argv[]) {
 #ifdef zox_sdl
     entity app = spawn_engine_app(world, game_name);
     if (app) {
-        zox_logv("Initializing Glew");
         if (zox_init_glew() == EXIT_FAILURE) {
-            zox_log_error("[initialize_rendering] failed at [zox_init_glew]");
             return EXIT_FAILURE;
         }
         zox_set_parent(world, game, app);
         zox_set(app, GameLink, { game });
-        zox_logv("Setting VSync");
-        on_set_vsync(vsync);
+        // zox_logv("Setting VSync");
+        // on_set_vsync(vsync);
         zox_logv("Initializing Rendering");
         initialize_rendering(render_backend);
         zox_logv("Setting App Icon [game.png]");

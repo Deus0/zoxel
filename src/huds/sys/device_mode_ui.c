@@ -75,8 +75,6 @@ zox_sys2(DeviceModeUISystem) {
         } else if (new->value == zox_device_mode_touchscreen) {
             if (game_state == zox_game_state_playing) {
                 spawn_in_game_ui_touch(world, e, canvas->value);
-            } else {
-                zox_log("Game isnt playing.");
             }
             mouse_visible = 0;
         }

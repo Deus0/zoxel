@@ -2,6 +2,13 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+- remember to remove the mandatory arguments on ./bsh/android.sh
+
+- Make sure to tag docker libs properly as release
+-x sdl2 linux broken
+    -x sdl3 window not working anymore
+    + was a libs issue
+
 - When low on damage - add more downscale on the camera
     - make it a camera property too
 

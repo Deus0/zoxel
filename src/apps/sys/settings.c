@@ -49,7 +49,6 @@ zox_sys2(AppsSettingsDirtySystem) {
 
 void zox_toggle_fullscreen(ecs *world) {
     fullscreen = !fullscreen;
-    zox_log("TODO: Set Fullscreen Setting here.");
     if (zox_valid(main_app)) {
         zox_set_app_fullscreen(world, main_app, fullscreen);
     }

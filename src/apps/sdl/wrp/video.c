@@ -3,9 +3,8 @@ int initialize_video() {
         zox_logw("Headless should not reach here.");
         return EXIT_SUCCESS;
     }
-    if (disable_apps_decor) {
-        SDL_SetHint(SDL_HINT_VIDEO_WAYLAND_ALLOW_LIBDECOR, "0");
-    }
+    zox_logv("Wayland Decor [%i]", !disable_apps_decor);
+    SDL_SetHint(SDL_HINT_VIDEO_WAYLAND_ALLOW_LIBDECOR, !disable_apps_decor ? "1" : "0");
     int dcount = SDL_GetNumVideoDrivers();
     if (dcount < 1) {
         zox_log("No video drivers available!");
@@ -19,6 +18,7 @@ int initialize_video() {
         zox_loge("[SDL_INIT_VIDEO] [%s]", SDL_GetError());
         return EXIT_FAILURE;
     }
+    set_sdl_attributes();
     const char* driver = SDL_GetCurrentVideoDriver();
     using_gpu = strstr(driver, "opengl") ||
         strstr(driver, "vulkan") ||
@@ -38,7 +38,6 @@ int initialize_video() {
         return EXIT_FAILURE;
     }
 #endif
-    set_sdl_attributes();
     screens_count = zox_sdl_get_num_displays();
     if (screens_count == 1) {
         screen_index = 0;

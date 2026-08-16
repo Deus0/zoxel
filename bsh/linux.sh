@@ -39,6 +39,7 @@ if [[ $# -gt 0 && ${1} != --* ]]; then
     game_name="$1"
 fi
 
+[[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
 [[ " $* " == *" --debug "* ]] && debug="1"
 [[ " $* " == *" --profiler "* ]] && is_profiler="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
@@ -156,28 +157,44 @@ if [[ ${GFX} == "sdl" ]]; then
     if [[ ${is_sdl3} == "1" ]]; then
         echo "+ Added [sdl3]"
         dflags+=" -Dzox_sdl3"
-        # libs+=" -lSDL3"
         # for local / static
-        libs+=" ${library}/libSDL3.so"
-        includes+=" -Iext/sdl3/include"
-        if [[ ${sdl_mixer} == "1" ]]; then
-            includes+=" -Iext/sdl3_mixer/include"
-            # libs+=" -lSDL3_mixer"
-            libs+=" ${library}/libSDL3_mixer.so"
+        if [[ ${is_static} == "0" ]]; then
+            libs+=" -lSDL3"
+            if [[ ${sdl_mixer} == "1" ]]; then
+                libs+=" -lSDL3_mixer"
+            fi
+        else
+            libs+=" ${library}/libSDL3.so"
+            includes+=" -Iext/sdl3/include"
+            if [[ ${sdl_mixer} == "1" ]]; then
+                includes+=" -Iext/sdl3_mixer/include"
+                # libs+=" -lSDL3_mixer"
+                libs+=" ${library}/libSDL3_mixer.so"
+            fi
         fi
-    elif [[ ${sdl_source} == "1" ]]; then
+    #elif [[ ${sdl_source} == "1" ]]; then
         # libs+=" -Lext/sdl/build -Lext/sdl_image/build -Lext/sdl_mixer/build"
-        libs+=" -static bin/libSDL2_x64.a bin/libSDL2_image_x64.a bin/libSDL2_mixer_x64.a"
-        includes+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"
-        dflags+=" -Dsdlsource"
+    #    libs+=" -static bin/libSDL2_x64.a bin/libSDL2_image_x64.a bin/libSDL2_mixer_x64.a"
+    #    includes+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"
+    #    dflags+=" -Dsdlsource"
     else
-        echo "+ Using Systems SDL"
-        libs+=" -lSDL2"
-        if [[ ${sdl_images} == "1" ]]; then
-            libs+="  -lSDL2_image"
-        fi
-        if [[ ${sdl_mixer} == "1" ]]; then
-            libs+=" -lSDL2_mixer"
+        if [[ ${is_static} == "0" ]]; then
+            echo "+ Using Systems SDL2"
+            libs+=" -lSDL2"
+            if [[ ${sdl_images} == "1" ]]; then
+                libs+="  -lSDL2_image"
+            fi
+            if [[ ${sdl_mixer} == "1" ]]; then
+                libs+=" -lSDL2_mixer"
+            fi
+        else
+            libs+=" ${library}/libSDL2.so"
+            includes+=" -Iext/sdl2/include"
+            if [[ ${sdl_mixer} == "1" ]]; then
+                includes+=" -Iext/sdl2_mixer/include"
+                # libs+=" -lSDL3_mixer"
+                libs+=" ${library}/libSDL2_mixer.so"
+            fi
         fi
     fi
 fi

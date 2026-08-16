@@ -1,4 +1,4 @@
-
+/*
 extern void zox_set_app_maximized(ecs* world, entity e, byte maximized);
 
 // when setting is set
@@ -23,4 +23,4 @@ void zox_set_maximized_silently(ecs *world, const entity e, byte new_maximized) 
     maximized = new_maximized;
     zoxs_set_byte_silently(world, "maximized", new_maximized);
     zox_set(e, WindowMaximized, { new_maximized })
-}
+}*/

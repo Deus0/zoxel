@@ -11,11 +11,15 @@ void update_sdl(ecs *world) {
     while (SDL_PollEvent(&event)) {
         if (sdl_event_quit(&event)) {
             engine_end();
-        }
-        else if (sdl_event_window_resized(&event)) {
-            int2 window_size = sdl_event_window_size(&event);
-            byte monitor = sdl_event_display(&event);
+        } else if (sdl_event_window_resized(&event)) {
+            sbyte monitor = sdl_event_get_monitor(&event);
+            if (monitor < 0) {
+                // NOTE: Likely transient / unowned window
+                // zox_logw("[sdl_event_window_resized] Bad monitor: [%u] windowID [%u]", event.window.windowID, event.type);
+                continue;
+            }
             byte orientation = get_screen_orientation(monitor);
+            int2 window_size = sdl_event_window_size(&event);
             byte old_orientation = zox_getv(e, ScreenOrientation);
             if (old_orientation != orientation) {
                 zox_set(e, ScreenOrientation, { orientation });
@@ -28,9 +32,12 @@ void update_sdl(ecs *world) {
             if (dbg_log) {
                 zox_log("Window Resized to [%ix%i]", window_size.x, window_size.y);
             }
-        }
-        else if (sdl_event_display_orientation(&event)) {
-            byte monitor = sdl_event_display(&event);
+        } else if (sdl_event_display_orientation(&event)) {
+            sbyte monitor = sdl_event_get_monitor(&event);
+            if (monitor < 0) {
+                zox_loge("[sdl_event_display_orientation] Bad monitor");
+                continue;
+            }
             byte orientation = get_screen_orientation(monitor);
             zox_logw(
                 "Display [%i] Orientation Changed: %i",

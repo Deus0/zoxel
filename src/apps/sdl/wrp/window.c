@@ -9,17 +9,9 @@ SDL_Window* create_sdl_window(int2 position, int2 size, const char *name, SDL_Wi
         return NULL;
     }
     zox_logv("Created SDL Window [%s]", name);
-    SDL_SetWindowResizable(window, window_resizeable);
+    // SDL_SetWindowResizable(window, window_resizeable);
+    SDL_GL_SwapWindow(window);
     return window;
-}
-
-void on_set_vsync(byte value) {
-    if (SDL_GL_SetSwapInterval(value)) {
-        zox_logw("Unable to disable VSync: %s", SDL_GetError());
-    } else {
-        zox_logv("VSync [%s]", vsync ? "Enabled" : "Disabled");
-    }
-    // zox_log("SDL_GL_SwapInterval: %d", SDL_GL_GetSwapInterval());
 }
 
 /*if (screen_index == 1) {

@@ -48,12 +48,12 @@ void save_texture_as_png(const color *data, const int2 size, const char *filepat
 #else
 
 byte load_texture_from_png(const char *filepath, TextureData* data, int2 *size) {
-    zox_log("PNG Images Disabled [%s]", filepath);
+    zox_logv("[PNG] Images Disabled [%s]", filepath);
     return 1;
 }
 
 void save_texture_as_png(const color *data, const int2 size, const char *filepath) {
-    zox_log("Image Save Disabled");
+    zox_logv("[PNG]Image Save Disabled [%s]", filepath);
 }
 
 #endif

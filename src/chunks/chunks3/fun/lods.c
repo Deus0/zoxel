@@ -5,6 +5,10 @@
 /// - far: your global max view distance
 // NOTE: near is a reserved words on windows..
 static inline byte camera_distance_to_render_depth(byte distance, byte depth, byte nearf, byte farf) {
+    if (!depth) {
+        zox_loge("Invalid Depth 0 [camera_distance_to_render_depth]");
+        return 0;
+    }
     // vanish beyond the horizon
     if (distance > farf) {
         // zox_log_error(" lod finder out of range: dist [%i] range [%i-%i] depth [%i]", distance, near, far, depth)

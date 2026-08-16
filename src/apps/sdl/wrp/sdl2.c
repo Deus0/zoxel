@@ -182,10 +182,18 @@ int2 sdl_event_window_size(SDL_Event *event) {
     };
 }
 
-byte sdl_event_display(SDL_Event *event) {
-    return (byte) event->display.display;
+sbyte sdl_event_get_monitor(SDL_Event *event) {
+    return (sbyte) event->display.display;
 }
 
 const char *sdl_event_text(SDL_Event *event) {
     return event->text.text;
+}
+
+void on_set_vsync(byte value) {
+    if (SDL_GL_SetSwapInterval(value)) {
+        zox_logw("Unable to disable VSync: [%s] - Value [%i]", SDL_GetError(), value);
+    } else {
+        zox_logv("VSync [%s]", vsync ? "Enabled" : "Disabled");
+    }
 }

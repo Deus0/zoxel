@@ -110,7 +110,8 @@ static inline byte load_app_icon(SDL_Window* window, const char *icon_path) {
     }
 #ifdef zox_sdl3
     if (!SDL_SetWindowIcon(window, surface)) {
-        zox_loge("SDL_SetWindowIcon failed: %s", SDL_GetError());
+        // NOTE: Fails on Wayland
+        zox_logw("SDL_SetWindowIcon failed: %s", SDL_GetError());
         zox_sdl_dispose_surface(surface);
         return 0;
     }

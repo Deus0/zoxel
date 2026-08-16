@@ -9,7 +9,7 @@ entity spawn_prefab_app_sdl(ecs *world) {
 }
 
 entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximized, byte monitor) {
-    byte max_monitors = zox_get_max_monitors();
+    byte max_monitors = zox_sdl_get_num_displays();
     if (monitor >= max_monitors) {
         zox_logw("Monitor [%i] was over max [%i]", monitor, max_monitors);
         monitor = 0;
@@ -33,18 +33,18 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     zox_instance(prefab_app_sdl);
     zox_name("app_sdl");
     set_ZoxName(world, e, name);
-    zox_set(e, SDLWindow, { sdl_window });
+    zox_setv(e, SDLWindow, sdl_window);
     // current transform data
-    zox_set(e, WindowPosition, { position });
-    zox_set(e, WindowSize, { size });
+    zox_setv(e, WindowPosition, position);
+    zox_setv(e, WindowSize, size);
     // window restore data
-    zox_set(e, WindowPositionRestore, { position });
-    zox_set(e, WindowSizeRestore, { size_restore });
+    zox_setv(e, WindowPositionRestore, position);
+    zox_setv(e, WindowSizeRestore, size_restore);
     // our properties
-    zox_set(e, WindowFullscreen, { fullscreen });
-    zox_set(e, WindowMaximized, { maximized });
-    zox_set(e, WindowMonitor, { monitor });
-    zox_set(e, ScreenOrientation, { screen_orientation });
+    zox_setv(e, WindowFullscreen, fullscreen);
+    zox_setv(e, WindowMaximized, maximized);
+    zox_setv(e, WindowMonitor, monitor);
+    zox_setv(e, ScreenOrientation, screen_orientation);
     // debugs
     zox_logv("+ spawned window !");
     zox_logv("   - position [%ix%i]", position.x, position.y);

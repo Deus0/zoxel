@@ -10,7 +10,7 @@ VERSION=${date_str} # "${major_version}.${minor_version}.${patch_version}"
 
 game="${1:-zoxel}"
 game_name="${game^}"
-sdl_version="${2:-SDL2}" # SDL3 option too
+sdl_version="${2:-SDL3}" # SDL3 option too
 OS="linux"
 ARC="x64"
 GLB="opengl"

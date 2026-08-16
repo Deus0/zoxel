@@ -9,6 +9,6 @@ zox_sys2(AchievementRealmSpawnSystem) {
             continue;
         }
         // TODO: This.
-        zox_logv("At [%f] Realm [achievements] [%i] spawned.", zox_current_time, achievements->length);
+        // zox_logv("At [%f] Realm [achievements] [%i] spawned.", zox_current_time, achievements->length);
     }
 } zox_sys_end(AchievementRealmSpawnSystem);

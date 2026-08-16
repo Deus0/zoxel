@@ -12,28 +12,24 @@ entity spawn_app_sdl_opengl(ecs *world, const char* name, byte fullscreen, byte 
         running = 0;
         return 0;
     }
-    if (set_sdl_window_context(sdl_window->value, context)) {
-        zox_loge("OpenGL could not set context to sdl window");
+    if (!sdl_gl_make_current(sdl_window->value, context)) {
+        zox_loge("Failed to make OpenGL context current: %s", SDL_GetError());
         running = 0;
         return 0;
     }
     zox_setv(e, Context, context);
-#ifdef zox_verbose
-    if (is_verbose) {
-        // --- Now check if the context is ACTUALLY valid ---
-        const char* ver = (const char*)glGetString(GL_VERSION);
-        const char* ren = (const char*)glGetString(GL_RENDERER);
-        const char* ven = (const char*)glGetString(GL_VENDOR);
-        /*if (!ver || !ren || !ven) {
-            zox_log_error("OpenGL context creation failed: GL strings are NULL.");
-            SDL_GL_DeleteContext(context);
-            return EXIT_FAILURE;
-        }*/
-        zox_logv("OpenGL Context Created");
-        zox_logv("   GL_VERSION: %s", ver);
-        zox_logv("   GL_RENDERER: %s", ren);
-        zox_logv("   GL_VENDOR: %s", ven);
+    zox_log("OpenGL Context Created");
+    zox_log("   GL_VERSION: %s", glGetString(GL_VERSION));
+    zox_log("   GL_RENDERER: %s", glGetString(GL_RENDERER));
+    zox_log("   GL_VENDOR: %s", glGetString(GL_VENDOR));
+    if (!is_verbose) {
+        return e;
     }
+#ifdef zox_verbose
+    zox_logv("OpenGL Context Created");
+    zox_logv("   GL_VERSION: %s", glGetString(GL_VERSION));
+    zox_logv("   GL_RENDERER: %s", glGetString(GL_RENDERER));
+    zox_logv("   GL_VENDOR: %s", glGetString(GL_VENDOR));
 #endif
     return e;
 }
@@ -54,7 +50,7 @@ entity spawn_engine_app(ecs* world, const char* name) {
     zox_logv("Spawning SDL Window [%s]", name);
     entity app = spawn_app_sdl_opengl(world, name, fullscreen, maximized, monitor);
     if (!app) {
-        zox_log_error("[engine_spawn_window] failed");
+        zox_loge("[engine_spawn_window] failed");
         return 0;
     }
     // Link to a global

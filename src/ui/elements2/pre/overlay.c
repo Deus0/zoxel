@@ -2,6 +2,7 @@ entity spawn_prefab_overlay(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("screen_overlay");
     zox_add(e, CanvasOverlay);
+    zox_setv(e, AnchorSize, float2_one);
     zox_setv(e, FrameCorner, 0);
     zox_setv(e, AnimationState, 0);
     zox_setv(e, AnimationStart, 0);
