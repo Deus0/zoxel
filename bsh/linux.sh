@@ -104,7 +104,7 @@ if [[ "${GFX}" == "sdl" && ${is_static} == "1" ]]; then
 fi
 
 if [[ ${ARC} == "arm" ]]; then
-    eccho "+ [Arm] Enabled [gles]"
+    echo "+ [Arm] Enabled [gles]"
     is_desktop_gl="0"
 fi
 
