@@ -1,5 +1,6 @@
 # Todo
 
+- Test XR with --log - instantiate
 - Add ui scale to settings
 - Im getting neighbor updates not triggering at map edges
 - Fall through map - fix unstuck - or make sure collision checks deltas

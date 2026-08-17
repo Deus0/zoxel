@@ -5,6 +5,16 @@ set -euo pipefail
 #    bash bsh/android.sh zoxel opengl sdl --debug --install
 # Debug
 #    bash bsh/android.sh zoxel opengl sdl --debug --install --log --verbose
+# Debug
+# bash bsh/android.sh zoxel --debug --install
+# Optimized release, unsigned
+# bash bsh/android.sh zoxel --release --unsigned
+# Optimized release, signed
+# bash bsh/android.sh zoxel --release --signed
+# Optimized release, signed, install
+# bash bsh/android.sh zoxel --release --signed --install
+# XR release, signed, install
+# bash bsh/android.sh zoxel --release --signed --xr --install
 
 # ============================================================
 # Zoxel Android Build
@@ -32,29 +42,57 @@ set -euo pipefail
 # The staging directory is recreated for each build.
 # ============================================================
 
+# ============================================================
+# Script Settings
+# ============================================================
+
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${root}"
-apk_dir="${root}/zip"
-date_str=$(date +%Y_%m_%d)
+apk_dir="${root}/zip"           # Output Directory
+date_str=$(date +%Y_%m_%d)      # Date tag
 
 game_name="${1:-zoxel}"
 apk_path="${apk_dir}/${game_name}_android_arm_${date_str}.apk"
-app_name="${game_name^}"
+app_name="${game_name^}"    # First letter will be capitalized
 
 is_run="0"
 sdl_mixer="1"
-debug="False"
-install="False"
-log="False"
-verbose="False"
+profile="debug"
+signed="0"
+install="0"
+log="0"
+verbose="0"
+gfx="opengl"    # opengl, vulkan, headless
+is_xr="0"
 
+# Validation
+if [[ " $* " == *" --debug "* ]] &&
+   [[ " $* " == *" --release "* ]]; then
+    echo "ERROR: --debug and --release cannot be used together."
+    exit 1
+fi
+if [[ " $* " == *" --unsigned "* ]] &&
+   [[ " $* " == *" --signed "* ]]; then
+    echo "ERROR: --signed and --unsigned cannot be used together."
+    exit 1
+fi
+
+# Parse arguments
+[[ " $* " == *" --debug "* ]] && profile="debug"
+[[ " $* " == *" --release "* ]] && profile="release"
+[[ " $* " == *" --unsigned "* ]] && signed="0"
+[[ " $* " == *" --signed "* ]] && signed="1"
+[[ " $* " == *" --install "* ]] && install="1"
 [[ " $* " == *" --run "* ]] && is_run="1"
+[[ " $* " == *" --verbose "* ]] && verbose="1"
+[[ " $* " == *" --log "* ]] && log="1"
 [[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
-[[ " $* " == *" --debug "* ]] && debug="True"
-[[ " $* " == *" --install "* ]] && install="True"
-[[ " $* " == *" --log "* ]] && log="True"
-[[ " $* " == *" --verbose "* ]] && verbose="True"
+[[ " $* " == *" --opengl "* ]] && gfx="opengl"
+[[ " $* " == *" --vulkan "* ]] && gfx="vulkan"
+[[ " $* " == *" --headless "* ]] && gfx="headless"
+[[ " $* " == *" --xr "* ]] && is_xr="1"
 
+# make our export folder
 mkdir -p "${apk_dir}"
 
 # ============================================================
@@ -70,6 +108,18 @@ gradle_path="${and_path}/gradle"
 gradle_version="8.10.2"
 staging_path="${and_path}/${game_name}"
 strings_path="${staging_path}/app/src/main/res/values/strings.xml"
+
+# ============================================================
+# SDL3_mixer configuration
+# ============================================================
+
+sdl_mixer_flags=(
+    "SUPPORT_MOD_XMP=false"
+    "SUPPORT_WAVPACK=false"
+    "SUPPORT_OPUS=false"
+    "SUPPORT_FLAC_LIBFLAC=false"
+    "SUPPORT_FLAC_DRFLAC=true"
+)
 
 
 # ============================================================
@@ -249,7 +299,7 @@ fi
 
 # Validate SDL_Mixer
 
-if [[ "${sdl_mixer}" -eq "1" ]]; then
+if [[ "${sdl_mixer}" == "1" ]]; then
     if [[ ! -d "${sdl_mixer_path}" ]]; then
         echo ""
         echo "ERROR: SDL3_mixer directory not found:"
@@ -274,18 +324,6 @@ fi
 
 echo "- Source tree OK"
 echo "- Game tree [gam/${game_name}] OK"
-
-# ============================================================
-# SDL3_mixer configuration
-# ============================================================
-
-sdl_mixer_flags=(
-    "SUPPORT_MOD_XMP=false"
-    "SUPPORT_WAVPACK=false"
-    "SUPPORT_OPUS=false"
-    "SUPPORT_FLAC_LIBFLAC=false"
-    "SUPPORT_FLAC_DRFLAC=true"
-)
 
 # ============================================================
 # SDL3 Android project
@@ -319,7 +357,7 @@ dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_android"
 libs="-llog -landroid -lm -lEGL -lGLESv3"
 includes="-I${flecs_path} -I${sdl_path}/include"
 
-if [[ "${debug}" == "True" ]]; then
+if [[ "${profile}" == "debug" ]]; then
     echo "+ Added [debug]"
     dflags+=" -Dzox_debug"
     cflags+=" -Wall -ggdb3"
@@ -329,7 +367,7 @@ else
     cflags+=" -O3 -DNDEBUG"
 fi
 
-if [[ "${verbose}" == "True" ]]; then
+if [[ "${verbose}" == "1" ]]; then
     echo "+ Added [verbose]"
     dflags+=" -Dzox_verbose"
 fi
@@ -340,15 +378,23 @@ dflags+=" -Dzox_sdl"
 echo "* Added [sdl3]"
 dflags+=" -Dzox_sdl3"
 
-echo "* Added [opengl]"
-dflags+=" -Dzox_opengl"
+if [[ "${gfx}" == "opengl" ]]; then
+    echo "* Added [opengl]"
+    dflags+=" -Dzox_opengl"
+fi
 
-if [[ "${sdl_mixer}" -eq "1" ]]; then
+if [[ "${sdl_mixer}" == "1" ]]; then
     echo "* Added [sdl3_mixer]"
     dflags+=" -Dzox_sdl_mixer"
     includes+=" -I${sdl_mixer_path}/include"
 else
     echo "* SDL3_mixer disabled"
+fi
+
+if [[ "${is_xr}" == "1" ]]; then
+    echo "* Added [xr]"
+    dflags+=" -Dzox_xr"
+    dflags+=" -DXR_USE_PLATFORM_ANDROID"
 fi
 
 # ============================================================
@@ -385,6 +431,17 @@ echo "- SDL Android project copied"
 
 
 # ============================================================
+# OpenXR
+# ============================================================
+
+if [[ "${is_xr}" == "1" ]]; then
+    echo ""
+    echo "> Preparing OpenXR"
+    bash "${root}/bsh/xr.sh" "${staging_path}"
+    echo "- OpenXR prepared"
+fi
+
+# ============================================================
 # Application name
 # ============================================================
 
@@ -410,7 +467,7 @@ ln -s "${sdl_path}" "${sdl_jni_path}"
 echo "- SDL3 linked"
 echo "  ${sdl_jni_path} -> ${sdl_path}"
 
-if [[ ${sdl_mixer} -eq "1" ]]; then
+if [[ ${sdl_mixer} == "1" ]]; then
     sdl_mixer_jni_path="${jni_path}/SDL_mixer"
     rm -rf "${sdl_mixer_jni_path}"
     ln -s "${sdl_mixer_path}" "${sdl_mixer_jni_path}"
@@ -456,12 +513,14 @@ echo "  ${jni_gam_path}"
 echo "- Flecs copied"
 echo "  ${jni_flecs_path}"
 
+
 # ============================================================
 # Native Android.mk
 # ============================================================
 
 echo ""
 echo "> Creating Android.mk"
+
 cat > "${jni_src_path}/Android.mk" <<EOF
 LOCAL_PATH := \$(call my-dir)
 
@@ -480,10 +539,18 @@ LOCAL_C_INCLUDES := \\
 \$(LOCAL_PATH)/../SDL/include
 EOF
 
-if [[ "${sdl_mixer}" -eq "1" ]]; then
+if [[ "${sdl_mixer}" == "1" ]]; then
 cat >> "${jni_src_path}/Android.mk" <<EOF
 LOCAL_C_INCLUDES += \\
 \$(LOCAL_PATH)/../SDL_mixer/include
+
+EOF
+fi
+
+if [[ "${is_xr}" == "1" ]]; then
+cat >> "${jni_src_path}/Android.mk" <<EOF
+LOCAL_C_INCLUDES += \\
+\$(LOCAL_PATH)/../xr/include
 
 EOF
 fi
@@ -494,9 +561,15 @@ LOCAL_CFLAGS := ${cflags} ${dflags}
 LOCAL_SHARED_LIBRARIES := SDL3
 EOF
 
-if [[ "${sdl_mixer}" -eq "1" ]]; then
+if [[ "${sdl_mixer}" == "1" ]]; then
 cat >> "${jni_src_path}/Android.mk" <<EOF
 LOCAL_SHARED_LIBRARIES += SDL3_mixer
+EOF
+fi
+
+if [[ "${is_xr}" == "1" ]]; then
+cat >> "${jni_src_path}/Android.mk" <<EOF
+LOCAL_SHARED_LIBRARIES += openxr_loader
 EOF
 fi
 
@@ -506,6 +579,22 @@ LOCAL_LDLIBS := ${libs}
 
 include \$(BUILD_SHARED_LIBRARY)
 EOF
+
+# ------------------------------------------------------------
+# OpenXR prebuilt loader
+# ------------------------------------------------------------
+
+if [[ "${is_xr}" == "1" ]]; then
+cat >> "${jni_src_path}/Android.mk" <<EOF
+
+include \$(CLEAR_VARS)
+
+LOCAL_MODULE := openxr_loader
+LOCAL_SRC_FILES := ../xr/android/arm64-v8a/libopenxr_loader.so
+
+include \$(PREBUILT_SHARED_LIBRARY)
+EOF
+fi
 
 echo "- Android.mk created"
 
@@ -531,6 +620,46 @@ $(printf '%s\n' "${sdl_mixer_flags[@]}")
 EOF
 
 echo "- Application.mk configured"
+
+# ============================================================
+# Android minimum SDK
+# ============================================================
+
+app_gradle="${staging_path}/app/build.gradle"
+
+if [[ "${is_xr}" == "1" ]]; then
+    android_min_api="24"
+else
+    android_min_api="21"
+fi
+
+echo "- Minimum Android API [${android_min_api}]"
+
+sed -i \
+    "s/minSdkVersion [0-9]*/minSdkVersion ${android_min_api}/" \
+    "${app_gradle}"
+
+# ============================================================
+# Application ID / namespace
+# ============================================================
+
+# package_name="org.zox.${game_name}"
+package_name="org.libsdl.app"
+
+if [[ "${profile}" == "debug" ]]; then
+    package_name="${package_name}.debug"
+fi
+
+echo "- Application ID [${package_name}]"
+
+#sed -i \
+#    "s|namespace[[:space:]]*=.*|namespace = \"${package_name}\"|" \
+#    "${app_gradle}"
+
+#sed -i \
+#    "/defaultConfig[[:space:]]*{/a\\
+#        applicationId \"${package_name}\"" \
+#    "${app_gradle}"
 
 # ============================================================
 # Resources
@@ -609,6 +738,117 @@ echo "Libraries:"
 echo "${libs}"
 
 # ============================================================
+# Release signing
+# ============================================================
+
+keystore_dir="${HOME}/.config/zox_keys"
+keystore_path="${keystore_dir}/${game_name}.keystore"
+keystore_password_file="${keystore_dir}/${game_name}.password"
+keystore_alias="${game_name}"
+
+if [[ "${profile}" == "release" && "${signed}" == "1" ]]; then
+
+    echo ""
+    echo "> Configuring release signing"
+
+    mkdir -p "${keystore_dir}"
+    chmod 700 "${keystore_dir}"
+
+    # --------------------------------------------------------
+    # Password
+    # --------------------------------------------------------
+
+    if [[ ! -f "${keystore_password_file}" ]]; then
+        echo "- Creating keystore password"
+
+        keystore_password="$(head -c 32 /dev/urandom | base64)"
+
+        printf '%s\n' "${keystore_password}" \
+            > "${keystore_password_file}"
+
+        chmod 600 "${keystore_password_file}"
+
+        echo "- Password created:"
+        echo "  ${keystore_password_file}"
+    else
+        keystore_password="$(<"${keystore_password_file}")"
+    fi
+
+    if [[ -z "${keystore_password}" ]]; then
+        echo ""
+        echo "ERROR: Keystore password file is empty:"
+        echo "  ${keystore_password_file}"
+        exit 1
+    fi
+
+    # --------------------------------------------------------
+    # Keystore
+    # --------------------------------------------------------
+
+    if [[ ! -f "${keystore_path}" ]]; then
+
+        echo ""
+        echo "- Release keystore not found"
+        echo "- Creating:"
+        echo "  ${keystore_path}"
+
+        keytool \
+            -genkeypair \
+            -v \
+            -keystore "${keystore_path}" \
+            -storepass "${keystore_password}" \
+            -keypass "${keystore_password}" \
+            -alias "${keystore_alias}" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=${app_name}"
+
+        chmod 600 "${keystore_path}"
+
+        echo "+ Release keystore created"
+
+    else
+
+        echo "- Release keystore found:"
+        echo "  ${keystore_path}"
+
+    fi
+
+    # --------------------------------------------------------
+    # Gradle signing configuration
+    # --------------------------------------------------------
+
+    app_gradle="${staging_path}/app/build.gradle"
+
+    echo "- Configuring Gradle signing"
+    echo "  ${keystore_path}"
+
+    cat >> "${app_gradle}" <<EOF
+
+android {
+    signingConfigs {
+        release {
+            storeFile file("${keystore_path}")
+            storePassword "${keystore_password}"
+            keyAlias "${keystore_alias}"
+            keyPassword "${keystore_password}"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+EOF
+
+    echo "+ Release signing configured"
+fi
+
+
+# ============================================================
 # Gradle environment
 # ============================================================
 
@@ -636,7 +876,7 @@ echo ""
 
 cd "${staging_path}"
 
-if [[ "${debug}" == "True" ]]; then
+if [[ "${profile}" == "debug" ]]; then
     echo "> Debug build"
 
     JAVA_HOME="${java17_path}" \
@@ -655,7 +895,22 @@ else
         --no-daemon \
         assembleRelease
 
-    apk_source="${staging_path}/app/build/outputs/apk/release/app-release.apk"
+    # apk_source="${staging_path}/app/build/outputs/apk/release/app-release.apk"
+
+    release_dir="${staging_path}/app/build/outputs/apk/release"
+    apk_source="${release_dir}/app-release.apk"
+
+    if [[ ! -f "${apk_source}" ]]; then
+        apk_source="${release_dir}/app-release-unsigned.apk"
+    fi
+
+    if [[ ! -f "${apk_source}" ]]; then
+        echo ""
+        echo "ERROR: Gradle completed but APK was not found:"
+        echo "  ${release_dir}"
+        find "${release_dir}" -maxdepth 1 -type f -name "*.apk" -print
+        exit 1
+    fi
 fi
 
 # ============================================================
@@ -684,7 +939,8 @@ echo "  ${apk_path}"
 # Android device
 # ============================================================
 
-if [[ "${install}" == "True" || "${log}" == "True" ]]; then
+if [[ "${install}" == "1" || "${log}" == "1" ]]; then
+
 echo ""
 echo "============================================================"
 echo "> ANDROID DEVICE"
@@ -721,7 +977,7 @@ fi
 # Install APK
 # ============================================================
 
-if [[ "${install}" == "True" ]]; then
+if [[ "${install}" == "1" ]]; then
     echo ""
     echo "> Installing APK"
     echo ""
@@ -735,7 +991,7 @@ fi
 # Logcat
 # ============================================================
 
-if [[ "${log}" == "True" ]]; then
+if [[ "${log}" == "1" ]]; then
     echo ""
     echo "============================================================"
     echo "> LOGCAT"
@@ -771,11 +1027,14 @@ if [[ "${log}" == "True" ]]; then
     adb shell monkey -p "${package_name}" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1 || true
 
     pid=""
-    for _ in $(seq 1 20); do
-        pid="$(adb shell pidof -s "${package_name}" | tr -d '\r')"
+
+    for _ in $(seq 1 60); do
+        pid="$(adb shell pidof "${package_name}" | tr -d '\r' | head -n 1)"
+
         if [[ -n "${pid}" ]]; then
             break
         fi
+
         sleep 1
     done
 
@@ -791,8 +1050,9 @@ if [[ "${log}" == "True" ]]; then
     echo "Press Ctrl+C to stop logcat."
     echo ""
 
-    # adb logcat --pid="${pid}"
-    adb logcat --pid="${pid}" -v threadtime "SDL:V" "*:S"
+    adb logcat --pid="${pid}" -v threadtime "SDL:I" "*:S"
+
+
 elif [[ "${is_run}" == "1" ]]; then
     echo ""
     echo "============================================================"

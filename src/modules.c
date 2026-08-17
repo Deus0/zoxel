@@ -9,6 +9,7 @@
 #include "apps/_.c"
 #include "names/_.c"
 #include "saves/_.c"
+#include "xr/_.c"
 // basic b locks
 #include "assets/_.c" // uses sdl path function atm
 #include "realms/_.c"
@@ -107,6 +108,9 @@ zox_begin_module(Zox) {
     zox_import_module(Apps);
     zox_import_module(Names);
     zox_import_module(Saves);
+#ifdef zox_xr
+    zox_import_module(Xr);
+#endif
     zox_import_module(Graphics);
     zox_import_module(Assets);
     zox_import_module(Realms);

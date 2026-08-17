@@ -19,13 +19,13 @@ zox_sys2(MeshUVs2UploadSystem) {
         if (upload->value != mesh_state_upload) {
             continue;
         }
-#ifdef zox_safety_checks
+// #ifdef zox_safety_checks
         if (!mesh_id->value.x || !mesh_id->value.y || !uvs_id->value) {
-            zox_loge("GPU Links Invalid for Textured2D Mesh [%s]", zox_getn(e));
-            upload->value = 0;
+            // zox_loge("GPU Links Invalid for Textured2D Mesh [%s]", zox_getn(e));
+            // upload->value = 0;
             continue;
         }
-#endif
+// #endif
         zox_gpu_bind_buffer_element(mesh_id->value.x);
         zox_gpu_set_buffer_element(indicies->value, indicies->length * sizeof(int));
         zox_gpu_bind_buffer_array(mesh_id->value.y);

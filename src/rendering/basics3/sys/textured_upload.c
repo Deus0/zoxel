@@ -26,29 +26,30 @@ zox_sys2(TexturedMeshUploadSystem) {
         if (upload->value != mesh_state_upload) {
             continue;
         }
-#ifdef zox_safety_checks
+// #ifdef zox_safety_checks
         if (!gpu_mesh->value.x || !gpu_mesh->value.y) {
-            zox_loge("Invalid [MeshGPULink] on [%s]", zox_sys_e_name);
-            count->value = 0;
+            //zox_loge("Invalid [MeshGPULink] on [%s]", zox_sys_e_name);
+            //count->value = 0;
             continue;
         }
         if (!gpu_uvs->value) {
-            zox_loge("Invalid [UvsGPULink] on [%s]", zox_sys_e_name);
-            count->value = 0;
+            //zox_loge("Invalid [UvsGPULink] on [%s]", zox_sys_e_name);
+            //count->value = 0;
             continue;
         }
         if (!gpu_colors->value) {
-            zox_loge("Invalid [ColorsGPULink] on [%s]", zox_sys_e_name);
-            count->value = 0;
+            //zox_loge("Invalid [ColorsGPULink] on [%s]", zox_sys_e_name);
+            //count->value = 0;
             continue;
         }
         if (verts->length != uvs->length) {
-            zox_sys_world();
-            zox_sys_e();
-            zox_loge("[%s] mesh verts [%i] / uvs [%i] missmatch", zox_get_name(e), verts->length, uvs->length);
+            // zox_sys_world();
+            // zox_sys_e();
+            zox_loge("[%s] mesh verts [%i] / uvs [%i] missmatch", zox_sys_e_name, verts->length, uvs->length);
+            count->value = 0;
             continue;
         }
-#endif
+// #endif
         zox_gpu_element_buffer(gpu_mesh->value.x, indicies->length, sizeof(int), indicies->value);
         zox_gpu_array_buffer(gpu_mesh->value.y, verts->length, sizeof(float3), verts->value);
         zox_gpu_array_buffer(gpu_uvs->value, verts->length, sizeof(float2), uvs->value);
@@ -56,7 +57,6 @@ zox_sys2(TexturedMeshUploadSystem) {
         count->value = indicies->length;
         zox_add(e, MeshBuilt);
         zox_remove(e, MeshDirty);
-        // upload->value = 0;
         if (dbg_log) {
             zox_log("Uploaded Chunk Mesh [%s] Tris [%i]", zox_get_name(e), count->value / 3);
         }

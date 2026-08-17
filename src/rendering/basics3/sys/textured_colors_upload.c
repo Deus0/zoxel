@@ -15,12 +15,12 @@ zox_sys2(MeshColorsGpuSystem) {
         if (!upload->value) { // != mesh_state_colors_upload) {
             continue;
         }
-#ifdef zox_safety_checks
+//#ifdef zox_safety_checks
         if (!link->value) {
-            zox_loge("Invalid [ColorsGPULink] on Chunk Mesh [%s]", zox_getn(e));
+            // zox_loge("Invalid [ColorsGPULink] on Chunk Mesh [%s]", zox_getn(e));
             continue;
         }
-#endif
+//#endif
         // Skip if invalid buffer or missing data
         /*if (!verts->length || !colors->value) {
             if (dbg_log) {

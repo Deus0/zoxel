@@ -17,8 +17,8 @@ zox_sys2(TextureRgbaUploadSystem) {
             continue;
         }
         if (!gpu_link->value) {
-            zox_loge("Invalid [TextureGPULink] (RGBA) on  [%s]", zox_sys_e_name);
-            dirty->value = 0;
+            // zox_loge("Invalid [TextureGPULink] (RGBA) on  [%s]", zox_sys_e_name);
+            // dirty->value = 0;
             continue;
         }
         if (!data->length) {
@@ -89,8 +89,8 @@ zox_sys2(TextureRgbUploadSystem) {
             continue;
         }
         if (!gpu_link->value) {
-            zox_logw("Invalid [TextureGPULink] (RGB) on [%s]", zox_get_name(e));
-            dirty->value = 0;
+            // zox_logw("Invalid [TextureGPULink] (RGB) on [%s]", zox_get_name(e));
+            // dirty->value = 0;
             continue;
         }
         if (!data->length) {
