@@ -1,6 +1,5 @@
 #include "device_mode_ui.c"
 #include "game_start_fader.c"
-#include "game_end.c"
 #include "game_end3.c"
 #include "game_pause.c"
 #include "terminal.c"
@@ -40,18 +39,11 @@ void define_systems_game_ui(ecs *world) {
         [in] layouts.CanvasLink
     );
     zox_system_1(
-        PlayerUIGameEndSystem,
-        zoxp_mainthread,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [in] layouts.CanvasLink
-    );
-    zox_system_1(
         PlayerUIGame3EndSystem,
         zoxp_mainthread,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [in] games.GameLink
+        [in] games.GameState,
+        [in] games.GameStateDirty,
+        [none] games.Game
     );
     // Pause UI
     zox_system_1(

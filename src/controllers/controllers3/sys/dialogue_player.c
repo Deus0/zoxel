@@ -20,8 +20,9 @@ zox_sys2(PlayerDialogueSystem) {
             state->value = zox_player_state_dialogue_active;
             zox_lerp_float(camera->value, CameraVignette, dialogue_vignette, 2.5f);
             zox_lerp_float(camera->value, CameraBlur, dialogue_blur, 2.5f);
-            if (local_mouse) {
-                zox_setv(local_mouse, MouseLock, 0);
+            entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
+            if (mouse) {
+                zox_setv(mouse, MouseLock, 0);
             }
             zox_add(character->value, DisableMovement);
         } else if (state->value == zox_player_state_dialogue_end) {
@@ -29,8 +30,9 @@ zox_sys2(PlayerDialogueSystem) {
             zox_setv(e, PlayerStateDirty, 1);
             // lerp our component value over time to new value
             // trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 0);
-            if (local_mouse) {
-                zox_setv(local_mouse, MouseLock, 1);
+            entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
+            if (mouse) {
+                zox_setv(mouse, MouseLock, 1);
             }
             zox_remove(character->value, DisableMovement);
         }
@@ -49,6 +51,10 @@ zox_sys2(CameraPlayerStateSystem) {
         zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_o(PlayerState, state);
         if (dirty->value != zox_dirty_active) {
+            continue;
+        }
+        if (!zox_valid(camera->value)) {
+            zox_loge("Player's camera is invalid [%s]", zox_sys_e_name);
             continue;
         }
         if (state->value == zox_player_state_pause_begin) {

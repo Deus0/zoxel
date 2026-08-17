@@ -5,6 +5,7 @@
 #include "mat/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 

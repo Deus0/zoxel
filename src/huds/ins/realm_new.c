@@ -45,7 +45,7 @@ void on_cancelled_new_realm(ecs *world, ClickEventData event) {
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
     zox_delete(realm);
-    zox_set(game, RealmLink, { 0 });
+    zox_setv(game, RealmLink, 0);
     spawn_main_menu(world, player, game_name);
 }
 
@@ -133,8 +133,7 @@ void button_event_new_game(ecs *world, ClickEventData event) {
     }
     entity game = zox_get_parent(world, player);
     // Spawn a new Realm!
-    entity realm = spawn_realm(world, prefab_realm);
-    zox_set(game, RealmLink, { realm });
+    entity realm = spawn_realm(world, prefab_realm, game);
     lint seed = get_unique_time_seed();
     set_noise_seed(seed);
     zox_set(realm, Seed, { seed });

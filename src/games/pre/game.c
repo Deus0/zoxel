@@ -2,12 +2,13 @@ entity spawn_prefab_game(ecs* world) {
     zox_prefab();
     zox_prefab_name("game");
     zox_add(e, Game);
-    zox_prefab_set(e, RealmLink, { 0 });
-    zox_prefab_set(e, GameState, { zox_game_start });
-    zox_prefab_set(e, GameStateTarget, { zox_game_start });
-    zox_prefab_set(e, LastGameState, { zox_game_start });
-    zox_prefab_set(e, GameStateDirty, { zox_dirty_none });
-    zox_prefab_set(e, GameStateTime, { 0 });
+    zox_setv(e, GameState, zox_game_start);
+    zox_setv(e, GameStateDirty, 0);
+    zox_setv(e, GameStateTime, 0);
+    zox_setv(e, RealmLink, 0);
+    // Remove these and just use dirty
+    zox_setv(e, GameStateTarget, zox_game_start);
+    zox_setv(e, LastGameState, zox_game_start);
     return e;
 }
 

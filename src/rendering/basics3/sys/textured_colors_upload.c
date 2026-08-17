@@ -17,7 +17,7 @@ zox_sys2(MeshColorsGpuSystem) {
         }
 #ifdef zox_safety_checks
         if (!link->value) {
-            zox_loge("GPU Links Invalid on Chunk Mesh [%s]", zox_getn(e));
+            zox_loge("Invalid [ColorsGPULink] on Chunk Mesh [%s]", zox_getn(e));
             continue;
         }
 #endif

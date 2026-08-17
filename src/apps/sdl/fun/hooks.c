@@ -55,14 +55,3 @@ void on_window_resized(ecs *world, entity e, int2 size, byte dbg_log) {
     // change window dimensions
 }*/
 
-void on_window_maximized(ecs *world, entity e, int2 size) {
-    // zox_set_maximized(world, 1);
-    // zox_set_maximized_silently(world, e, 1);
-    zox_logv("+ window maximized [%ix%i]", size.x, size.y);
-}
-
-void on_window_restored(ecs *world, entity e, int2 size) {
-    // zox_set_maximized(world, 0);
-    // zox_set_maximized_silently(world, e, 0);
-    zox_logv("+ window restored [%ix%i]", size.x, size.y);
-}

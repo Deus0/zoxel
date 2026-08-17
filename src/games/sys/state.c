@@ -1,3 +1,5 @@
+extern entity local_terrain;
+
 zox_sys2(GameStateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -9,7 +11,7 @@ zox_sys2(GameStateSystem) {
     zox_sys_out(GameStateDirty);
     zox_sys_out(GameStateTime);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_i(RealmLink, realm);
         zox_sys_o(GameState, state);
         zox_sys_o(GameStateTarget, target);
@@ -65,6 +67,31 @@ zox_sys2(GameStateSystem) {
         } else if (state->value == zox_game_state_respawn_on_pause) {
             // special edge case
             target->value = zox_game_state_playing;
+        }
+        // Remove realm (TODO: Move to realm event
+        else if (state->value == zox_game_state_the_end) {
+            // zox_setv(e, GameState, zox_game_state_the_clean);
+            // zox_setv(e, GameStateDirty, 1);
+            target->value = zox_game_state_the_clean;
+            if (dbg_log) {
+                zox_log("Game Set To [Clean] [%s]", zox_getn(e));
+            }
+        } else if (state->value == zox_game_state_the_clean) {
+            local_terrain = 0;
+            // zox_setv(e, GameState, zox_game_start);
+            // zox_setv(e, GameStateDirty, 1);
+            target->value = zox_game_none; // start;
+            if (dbg_log) {
+                zox_log("Game Set To [Start] [%s]", zox_getn(e));
+            }
+            entity realm = zox_get_child_by_id(world, e, zox_id(Realm));
+            zox_setv(e, RealmLink, 0);
+            if (!zox_valid(realm)) {
+                zox_loge("Realm Invalid in end game");
+            } else {
+                zox_log("Destroying The Realm [%s]", zox_getn(realm));
+                zox_delete(realm);
+            }
         }
     }
 } zox_sys_end(GameStateSystem);

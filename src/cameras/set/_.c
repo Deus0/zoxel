@@ -1,9 +1,11 @@
 byte zox_game_camera_mode = 0;
-byte zox_use_post_processing = 1;
 byte viewport_downscale = 4;
-float viewport_scale = 1;
 float3 main_menu_camera_position = (float3) { 0, 0, 3 };
 float4 main_menu_camera_rotation = (float4) { 0, 0, 0, 1 };
+
+static inline float get_viewport_scale() {
+    return !zox_disable_post_processing ? 1 / (float) viewport_downscale : 1;
+}
 // debugs
 // #define zox_draw_frustum
 // #define zox_draw_frustum_planes
@@ -35,5 +37,5 @@ const float camera_limit_x = 1.25f;
 #include "lense.c"
 
 static inline int2 scale_viewport(int2 v) {
-    return (int2) { ceil(v.x * viewport_scale), ceil(v.y * viewport_scale) };
+    return int2_scale1(v,get_viewport_scale()); //  (int2) { ceil(v.x * viewport_scale), ceil(v.y * viewport_scale) };
 }

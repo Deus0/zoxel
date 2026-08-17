@@ -16,7 +16,7 @@ entity spawn_app_sdl(ecs *world, const char* name, byte fullscreen, byte maximiz
     }
     byte screen_orientation = get_screen_orientation(monitor);
     int2 screen_size = get_screen_size_monitor(monitor);
-    int2 size_restore = int2_scalef(screen_size, 0.6f);
+    int2 size_restore = int2_scale1(screen_size, 0.6f);
     size_restore = int2_single(int_min(size_restore.x, size_restore.y));
     int2 size = fullscreen ? screen_size : size_restore;
     // calculate position

@@ -89,7 +89,7 @@ void zox_define_systems_basics3(ecs* world) {
         [in] rendering.MaterialGPULink,
         [in] rendering.TextureGPULink,
         [in] rendering3.MaterialTextured3D,
-        [none] rendering3.TexturedMesh3D,
+        [none] rendering3.TexturedMesh3,
         [none] !core.Initialize,
     );
     // Uploads Terrain Chunks, Items, Skybox
@@ -103,9 +103,9 @@ void zox_define_systems_basics3(ecs* world) {
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,
         [in] rendering.MeshColorRGBs,
-        [out] rendering.MeshDirty,
         [out] rendering.MeshRenderCount,
-        [none] rendering3.TexturedMesh3D,
+        [out] rendering.MeshDirty,
+        [none] rendering3.TexturedMesh3,
         [none] !core.Initialize,
     );
     zox_system_1(
@@ -114,7 +114,6 @@ void zox_define_systems_basics3(ecs* world) {
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshColorRGBs,
         [in] rendering.MeshColorsDirty,
-        [none] rendering.MeshColorRGBs,
         [none] !core.Initialize,
     );
     zox_render3_system(0,
@@ -126,7 +125,7 @@ void zox_define_systems_basics3(ecs* world) {
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshRenderCount,
-        [none] rendering3.TexturedMesh3D, // chunks.ChunkMesh,
+        [none] rendering3.TexturedMesh3,
         [none] !core.Disabled,
         [none] !core.Initialize,
     );

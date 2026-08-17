@@ -7,10 +7,10 @@ void set_camera_free(ecs *world, entity e) {
     // zox_set(e, ParentLink, { 0 });
     zox_set_parent(world, e, 0);
     if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
-        zox_set(e, CameraFollowLink, { 0 })
+        zox_setv(e, CameraFollowLink, 0)
     }
     if (local_mouse) {
-        zox_set(local_mouse, MouseLock, { 0 });
+        zox_setv(local_mouse, MouseLock, 0);
     }
 }
 

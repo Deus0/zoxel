@@ -15,7 +15,7 @@ const byte log_chunks = 0;
 const byte log_lods = 0;
 
 entity test_spawn_realm(ecs *world, const int seed) {
-    const entity realm = spawn_realm(world, prefab_realm);
+    const entity realm = spawn_realm(world, prefab_realm, 0);
     set_noise_seed(seed);
     zox_set(realm, GenerateRealm, { zox_generate_realm_start })
     int run_count = 0;
@@ -46,7 +46,7 @@ byte test_terrain_spawn(ecs *world) {
     initialize_networking();
     // initialize_voxes(world);
     double test_start = current_time_in_seconds();
-    const entity realm = test_spawn_realm(world, test_seed);
+    entity realm = test_spawn_realm(world, test_seed, 0);
     // const entity game = spawn_game(world, realm);
     int run_count = 0;
     double time_since_start = (current_time_in_seconds() - test_start);

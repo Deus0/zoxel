@@ -22,7 +22,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
         PlayerPauseSystem,
         zoxp_update,
         [in] players.PlayerState,
-        [in] games.GameLink,
+        [in] players.PlayerStateDirty,
         [none] players.Player
     );
     zox_system(
@@ -81,7 +81,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
         [in] cameras.CameraLink,
-        [in] characters.CharacterLink,
+        [out] characters.CharacterLink,
         [none] players.Player3
     );
     zox_system_1(

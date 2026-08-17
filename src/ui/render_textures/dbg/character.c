@@ -23,7 +23,7 @@ void zox_tst_render_texture_character(ecs *world, ClickEventData data) {
     entity canvas = get_linked_canvas(world, player);
     int padding = 40;
     int2 size = int2_single(512);
-    // int2 tsize = int2_scalef(lsize, 1 / downscale);
+    // int2 tsize = int2_scale1(lsize, 1 / downscale);
     int2 position = (int2) { -size.x / 2, -size.y / 2 };
     position.x -= padding;
     position.y -= padding;

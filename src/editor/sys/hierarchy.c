@@ -63,7 +63,7 @@ void add_entity_to_labels(ecs *world, entity e, text_group_dynamic_array_d* labe
         }
     }*/
     // zox_log("%s made label [%s]", zox_get_name(e), text)
-    text_group_dynamic_array_d_add(labels, (text_group_dynamic) { text = text });
+    text_group_dynamic_array_d_add(labels, (text_group_dynamic) { .text = text });
     entity_array_d_add(entities, e);
 }
 

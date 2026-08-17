@@ -31,7 +31,7 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
     float4 crotation = zox_getv(player_camera, Rotation3D);
     int padding = 40;
     int2 lsize = int2_single(256);
-    int2 tsize = int2_scalef(lsize, 1 / downscale);
+    int2 tsize = int2_scale1(lsize, 1 / downscale);
     int2 position = (int2) { -lsize.x / 2, -lsize.y / 2 };
     position.x -= padding;
     position.y -= padding;
@@ -48,13 +48,23 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
     if (is_camera_filtering) {
         zox_add(camera, CameraFilter);
     }
+    entity material = spawn_material_render_texture(world, 1);
     // Create Render Texture
-    entity ui = spawn_render_texture(world, prefab_render_texture, canvas, anchor, position, lsize, tsize, layer, camera);
+    entity ui = spawn_render_texture(
+        world,
+        prefab_render_texture,
+        canvas,
+        anchor,
+        position,
+        lsize,
+        tsize,
+        layer,
+        camera,
+        material);
     zox_set_unique_name(ui, "dbg_render_texture");
+    zox_set_parent(world, material, ui);
     zox_add(ui, RenderTextureAlpha);
     zox_setv(ui, Alpha, 0.8f);
-    entity material = spawn_material_render_texture(world);
-    zox_set_parent(world, material, ui);
     zox_setv(ui, MaterialLink, material);
     zox_setv(camera, MaterialLink, material);
     dbg_render_texture = ui;

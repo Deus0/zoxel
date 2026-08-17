@@ -1,6 +1,5 @@
 #include "animate_noise_system.c"
 #include "upload.c"
-#include "upload_rgb.c"
 #include "noise.c"
 #include "fill.c"
 #include "frame.c"
@@ -8,6 +7,7 @@
 #include "mouse.c"
 #include "icon.c"
 #include "arrow.c"
+#include "gpu.c"
 
 void define_systems_textures(ecs *world) {
     zox_system(
@@ -90,7 +90,7 @@ void define_systems_textures(ecs *world) {
         [none] !core.Initialize,
     );
     zox_system_1(
-        TextureUploadSystem,
+        TextureRgbaUploadSystem,
         zoxp_mainthread,
         [in] textures.TextureData,
         [in] rendering.TextureSize,
@@ -98,5 +98,10 @@ void define_systems_textures(ecs *world) {
         [out] rendering.TextureDirty,
         [none] !textures.TextureRGB,
         [none] !core.Initialize,
+    );
+    zox_gpu_restore_system(
+        TextureDataRestoreSystem,
+        [none] textures.TextureData,
+        [none] textures.Texture
     );
 }

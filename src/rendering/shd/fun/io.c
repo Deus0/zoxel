@@ -7,7 +7,7 @@ static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const 
     // zox_log("+ shader processing with ver [%i] es [%s] ubo_size [%i]", shader_opengl_version, (shader_include_es ? "es" : ""), ubo_size);
     // zox_log(" - source [%s]\n%s", path, source)
     // zox_log("-------------------------------")
-    char* source_precision = append_shader_precision(source, shader_precision_level);
+    char* source_precision = append_shader_precision(source, shader_precision);
     free(source);
     if (!source_precision) {
         zox_log_error("[sourcep] is invalid");

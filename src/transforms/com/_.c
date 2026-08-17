@@ -17,5 +17,5 @@ void zoxd_components_transforms(ecs* world) {
     zoxd_float(LocalScale1);
     zoxd(TransformMatrix);
     // As we use this for quick checks
-    zox_dont_fragment(IgnoreParentRotation);
+    // zox_dont_fragment(IgnoreParentRotation);
 }

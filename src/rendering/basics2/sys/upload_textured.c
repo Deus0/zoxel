@@ -21,7 +21,7 @@ zox_sys2(MeshUVs2UploadSystem) {
         }
 #ifdef zox_safety_checks
         if (!mesh_id->value.x || !mesh_id->value.y || !uvs_id->value) {
-            zox_loge("GPU Links Invalid for Terrain Mesh [%s]", zox_getn(e));
+            zox_loge("GPU Links Invalid for Textured2D Mesh [%s]", zox_getn(e));
             upload->value = 0;
             continue;
         }

@@ -1,10 +1,10 @@
 in vec2 uv;
-out vec4 color;
 uniform float brightness;
 uniform float alpha;
 uniform sampler2D zexture;
 uniform float blur;
 uniform float vignette;
+out vec4 frag_color;
 
 // === constants ===
 const float BLUR_RADIUS = 3.0;
@@ -38,8 +38,8 @@ vec4 box_blur(sampler2D image, vec2 uv, float radius) {
 }
 
 // Gaussian blur (9-tap)
-vec4 gaussian_blur(sampler2D image, vec2 uv, float radius) {
-    float offset = radius / 512.0; // tweak for resolution
+vec3 gaussian_blur(sampler2D image, vec2 uv, float radius) {
+    float offset = radius / BLUR_SCALE; // tweak for resolution
     vec2 offsets[9] = vec2[](
         vec2(-offset,  offset), // top-left
         vec2( 0.0,     offset), // top-center
@@ -51,10 +51,10 @@ vec4 gaussian_blur(sampler2D image, vec2 uv, float radius) {
         vec2( 0.0,    -offset), // bottom-center
         vec2( offset, -offset)  // bottom-right
     );
-    vec4 sum = vec4(0.0);
+    vec3 sum = vec3(0.0);
     float weightSum = 0.0;
     for (int i = 0; i < 9; i++) {
-        vec4 s = texture(image, uv + offsets[i]);
+        vec3 s = texture(image, uv + offsets[i]).rgb;
         sum += s * GAUSS_KERNEL[i];
         weightSum += GAUSS_KERNEL[i];
     }
@@ -65,26 +65,26 @@ void main() {
     vec4 base = texture(zexture, uv);
     // Blur
     if (blur > 0.0) {
-        vec4 blurred = gaussian_blur(zexture, uv, BLUR_RADIUS);
-        color = mix(base, blurred, blur);
+        vec3 blurred = gaussian_blur(zexture, uv, BLUR_RADIUS);
+        frag_color.rgb = mix(base.rgb, blurred, blur);
     } else {
-        color = base;
+        frag_color = base;
     }
 
     // Noise
     float noise = random(uv);
-    color = mix(color, vec4(noise, noise, noise, 1.0), NOISE_STRENGTH);
+    frag_color.rgb = mix(
+        frag_color.rgb,
+        vec3(noise),
+        NOISE_STRENGTH);
 
-    //vec4 blurred = gaussian_blur(zexture, uv, BLUR_RADIUS);
-    //color = mix(base, blurred, 0.9);
-    // === vignette ===
-    // float vignette_intensity = 0.7;     // change to 0.9 for dialogue
+    // Vignette
     float vignette_smoothness = 0.8;
     float vignette_mask = smoothstep(1.0 - vignette_smoothness, 1.0, length(uv - vec2(0.5, 0.5)));
-    color.rgb *= 1.0 - vignette_mask * (vignette);
+    frag_color.rgb *= 1.0 - vignette_mask * (vignette);
 
     // Apply Properties
-    color.a = base.a;
-    color.rgb *= brightness;
-    color.a *= alpha;
+    frag_color.rgb *= brightness;
+    frag_color.a = base.a;
+    frag_color.a *= alpha;
 }

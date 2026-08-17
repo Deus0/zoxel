@@ -5,7 +5,7 @@ byte is_log_shaders = 0;
 #define directory_shaders "shaders"
 int files_count_shaders = 0;
 // NOTE: For some reason it  breaks on lower precision than high
-byte shader_precision_level = 2;
+byte shader_precision = 2;
 entity *files_shaders;
 string_hashmap *files_hashmap_shaders;
 // zox_tag(Shader)

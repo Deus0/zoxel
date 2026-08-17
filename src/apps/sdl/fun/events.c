@@ -6,6 +6,7 @@ extern void engine_end(); // engine
 void update_sdl(ecs *world) {
     byte dbg_log = 0;
     SDL_PumpEvents();
+    //  TODO: Use event's window to fetch the entity properly
     entity e = main_app;
     SDL_Event event = { 0 };
     while (SDL_PollEvent(&event)) {
@@ -39,54 +40,54 @@ void update_sdl(ecs *world) {
                 continue;
             }
             byte orientation = get_screen_orientation(monitor);
-            zox_logw(
-                "Display [%i] Orientation Changed: %i",
-                monitor,
-                orientation
-            );
+            if (dbg_log) {
+                zox_log(
+                    "Display [%i] Orientation Changed: %i",
+                    monitor,
+                    orientation
+                );
+            }
             // on_window_rotated(world, e, orientation);
-        }
-        else if (sdl_event_window_moved(&event)) {
+        } else if (sdl_event_window_moved(&event)) {
             sdl_on_window_moved(
                 world,
                 e,
                 sdl_event_window_size(&event)
             );
-        }
-        else if (sdl_event_window_maximized(&event)) {
-            on_window_maximized(
-                world,
-                e,
-                sdl_event_window_size(&event)
-            );
-        }
-        else if (sdl_event_window_restored(&event)) {
-            zox_logv("App Gained Focus + Restored");
-            opengl_restore_resources(world);
+        } else if (sdl_event_window_maximized(&event)) {
+            // TODO: Add to app's settings here
+            if (dbg_log) {
+                zox_log("App Maximized");
+            }
+        } else if (sdl_event_text_input(&event)) {
+            if (dbg_log) {
+                zox_log("SDL Text Input: %s", sdl_event_text(&event));
+            }
+        } else if (sdl_event_window_restored(&event)) {
+            if (dbg_log) {
+                zox_log("App Restored [%s]", zox_getn(e));
+            }
             enable_time();
-            on_window_restored(
-                world,
-                e,
-                sdl_event_window_size(&event)
-            );
-        }
-        else if (sdl_event_window_minimized(&event)) {
-            zox_logv("App Lost Focus + Minimized");
+            opengl_restore_resources(world);
+        } else if (sdl_event_window_minimized(&event)) {
+            if (dbg_log) {
+                zox_log("App Minimized [%s]", zox_getn(e));
+            }
             opengl_dispose_resources(world);
             disable_time();
-        }
-        else if (sdl_event_window_focus_lost(&event)) {
-            zox_logv("App Lost Focus");
+        }  else if (sdl_event_window_focus_lost(&event)) {
+            if (dbg_log) {
+                zox_log("App Lost Focus [%s]", zox_getn(e));
+            }
             disable_time();
-        }
-        else if (sdl_event_window_focus_gained(&event)) {
-            zox_logv("App Gained Focus");
+            opengl_dispose_resources(world);
+        } else if (sdl_event_window_focus_gained(&event)) {
+            if (dbg_log) {
+                zox_log("App Gained Focus [%s]", zox_getn(e));
+            }
             enable_time();
+            opengl_restore_resources(world);
         }
-        else if (sdl_event_text_input(&event)) {
-            zox_log("SDL Text Input: %s", sdl_event_text(&event));
-        }
-        // else if (update_sdl_input(world, e, event)) { }
     }
 }
 

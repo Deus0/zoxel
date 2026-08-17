@@ -5,7 +5,7 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     zox_prefab_set(e, Initialize, { 1 });
     // Add Mesh
     zox_add(e, SingleMaterial);
-    zox_add(e, TexturedMesh3D);
+    zox_add(e, TexturedMesh3);
     zox_prefab_set(e, MeshAlignment,{ zox_alignment_centre });
     zox_prefab_add(e, MeshIndicies);
     zox_prefab_add(e, MeshVertices);

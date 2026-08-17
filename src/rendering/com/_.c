@@ -7,6 +7,7 @@ zox_tag(VoxMesh);
 zox_tag(DisableDepthTest);
 zox_tag(MeshClearCache);
 zox_tag(MeshBuilt);
+zox_tag(RenderTextureDirty);
 // Properties
 zoxc_int2(TextureSize);
 zoxc_float(Brightness);
@@ -114,6 +115,7 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(MeshColorsGenerate);
     zoxd_byte(MeshColorsDirty);
     zoxd_byte(TextureDirty);
+    zoxd_tag(RenderTextureDirty);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);
     zoxd_tag(MeshBuilt);

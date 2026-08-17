@@ -68,8 +68,26 @@ void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity 
         zox_set(canvas, PlayerLink, { player });
         // spawns a render texture ui and links to camera
         if (!zox_disable_post_processing) {
-            zox_setv(game_camera, MaterialLink, material_render_texture);
-            spawn_render_texture(world, prefab_render_texture_screen, canvas, float2_half, int2_zero, vp_size, svp_size, 0, game_camera);
+            // material_render_texture_rgba
+            byte is_alpha = 1;
+            entity material = is_alpha ?
+                material_render_texture_rgba :
+                material_render_texture_rgb;
+            zox_setv(game_camera, MaterialLink, material);
+            entity texture = spawn_render_texture(
+                world,
+                prefab_render_texture_screen,
+                canvas,
+                float2_centre,
+                int2_zero,
+                vp_size,
+                svp_size,
+                0,
+                game_camera,
+                material);
+            if (!is_alpha) {
+                zox_add(texture, TextureRGB);
+            }
         }
         // remove these soon
         main_cameras[i] = game_camera;

@@ -30,7 +30,18 @@ entity spawn_stats_panel(ecs* world, entity canvas, entity character) {
     int2 position = int2_zero; // (int2) { 16 * ui_scale, - 16 * ui_scale };
     byte header_font_size = 4 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
-    entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, position_anchor, header_font_size, header_padding, NULL);
+    entity3 e2 = spawn_window(
+        world,
+        prefab_window,
+        prefab_body,
+        "",
+        canvas,
+        position,
+        size,
+        position_anchor,
+        header_font_size,
+        header_padding,
+        NULL);
     entity e = e2.x;
     entity body = e2.z;
     zox_set_unique_name(e, "statbars");
@@ -50,7 +61,15 @@ entity spawn_stats_panel(ecs* world, entity canvas, entity character) {
             continue;
         }
         color_rgb fill = zox_getv(stat, ColorRGB);
-        spawn_statbar2(world, body, stat, bar_position, bar_size, float2_half, fill, label_font_size);
+        spawn_statbar2(
+            world,
+            body,
+            stat,
+            bar_position,
+            bar_size,
+            float2_half,
+            fill,
+            label_font_size);
         // zox_set_parent(world, statbar, body);
         bar_position.y -= bar_size.y + bar_padding;
     }

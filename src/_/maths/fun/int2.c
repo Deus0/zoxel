@@ -2,7 +2,7 @@ static inline int2 int2_half(int2 v) {
     return (int2) { v.x / 2, v.y / 2 };
 }
 
-static inline int2 int2_scalef(int2 v, float f) {
+static inline int2 int2_scale1(int2 v, float f) {
     return (int2) { (int) (v.x * f), (int) (v.y * f) };
 }
 

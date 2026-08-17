@@ -111,9 +111,10 @@ void define_systems_controllers3(ecs *world) {
         [in] layouts.CanvasLink,
         [out] players.PlayerState
     );
-    zox_system(
+    // NOTE: Spawns animation events
+    zox_system_1(
         CameraPlayerStateSystem,
-        zoxp_update,
+        zoxp_mainthread, // zoxp_update,
         [in] cameras.CameraLink,
         [in] players.PlayerStateDirty,
         [out] players.PlayerState

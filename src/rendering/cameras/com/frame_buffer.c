@@ -1,12 +1,6 @@
 // Define the FrameBufferLink component
 zoxc_guint(FrameBufferLink);
 
-// Destructor for FrameBufferLink component
-/*ECS_DTOR(FrameBufferLink, ptr, {
-    zox_gpu_dispose_fbo(ptr->value);
-    ptr->value = 0;
-})*/
-
 void on_destroyed_FrameBufferLink(iter *it) {
     byte dbg_log = 0;
     zox_sys_begin();
@@ -31,7 +25,7 @@ uint spawn_frame_buffer_object(ecs *world, entity e) {
     return buffer;
 }
 
-void set_render_texture_gpu(guint index, int2 size, byte has_alpha) {
+static inline void set_render_texture_gpu(guint index, int2 size, byte has_alpha) {
     if (has_alpha) {
         zox_gpu_set_texture_color_rgba(index, size, NULL);
     } else {

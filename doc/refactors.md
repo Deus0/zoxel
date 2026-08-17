@@ -1,6 +1,10 @@
 # Refactoring
 
 ## Unsorted
+- Move Texture tag from rendering to Textures
+    - Just wrap gpu stuff in graphics, then do it all in textures before our rendering
+- Rename Rendering: Geometry, used for meshes
+- Rename LayoutSize as PixelSize, as well as ScreenSize, add to Core (generic af)
 - Refactor settings spawning back to hooks
 - Make Initialize a tag - dont fragment
     - remove at end of frame

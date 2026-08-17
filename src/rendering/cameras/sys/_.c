@@ -1,25 +1,11 @@
-#include "restore_render_buffer_system.c"
-#include "render_texture_restore_system.c"
 #include "camera_renderer.c"
 #include "camera_render3D_system.c"
 #include "camera_render_ui_system.c"
 #include "init.c"
+#include "gpu.c"
 
 void define_systems_rendering_cameras(ecs *world) {
     // restore
-    zox_gpu_restore_system(
-        RenderBufferRestoreSystem,
-        [in] screens.ScreenDimensions,
-        [out] FrameBufferLink,
-        [out] RenderBufferLink
-    );
-    zox_gpu_restore_system(
-        RenderTextureRestoreSystem,
-        [in] rendering.TextureGPULink,
-        [in] rendering.TextureSize,
-        [in] cameras.CameraLink,
-        [none] cameras.RenderTexture
-    );
     // rendering
     zox_system_1(
         CameraRender3DSystem,
@@ -51,5 +37,29 @@ void define_systems_rendering_cameras(ecs *world) {
         [out] rendering.cameras.FrameBufferLink,
         [out] rendering.cameras.RenderBufferLink,
         [none] cameras.RenderCamera
+    );
+    // Render Camera
+    zox_gpu_restore_system(
+        RenderBufferRestoreSystem,
+        [in] screens.ScreenDimensions,
+        [out] FrameBufferLink,
+        [out] RenderBufferLink
+    );
+    zox_gpu_restore_system(
+        RenderTextureRestoreSystem,
+        [none] cameras.RenderTexture,
+        [none] !rendering.RenderTextureDirty,
+        // [in] rendering.TextureGPULink,
+        // [in] rendering.TextureSize,
+        // [in] cameras.CameraLink,
+        // [none] cameras.RenderTexture
+    );
+    zox_gpu_dispose_system(
+        FrameBufferDisposeSystem,
+        [out] FrameBufferLink
+    );
+    zox_gpu_dispose_system(
+        RenderBufferDisposeSystem,
+        [out] RenderBufferLink
     );
 }

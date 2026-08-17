@@ -1,11 +1,15 @@
-entity material_render_texture;
+entity material_render_texture_rgb;
+entity material_render_texture_rgba;
 
-entity spawn_material_render_texture(ecs* world) {
+entity spawn_material_render_texture(ecs* world, byte is_alpha) {
+    char* frag_filename = is_alpha ?
+        "render_texture_rgba.frag" :
+        "render_texture_rgb.frag";
     entity shader;
     guint2 shader_ids;
     byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "matrixui.vert");
-    char* frag = get_shader_source(world, "render_texture.frag");
+    char* frag = get_shader_source(world, frag_filename);
     shader_verts[shader_index] = vert;
     shader_frags[shader_index] = frag;
     shader = spawn_shader_new(world, shader_index, &shader_ids);
@@ -33,5 +37,6 @@ entity spawn_material_render_texture(ecs* world) {
 }
 
 void spawn_materials_render_textures(ecs* world) {
-    material_render_texture = spawn_material_render_texture(world);
+    material_render_texture_rgb = spawn_material_render_texture(world, 0);
+    material_render_texture_rgba = spawn_material_render_texture(world, 1);
 }

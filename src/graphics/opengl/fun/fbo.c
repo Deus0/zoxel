@@ -1,6 +1,38 @@
 // Function to check if glGenFramebuffers is available
 byte dbg_log_fbo = 0;
 
+static inline byte check_opengl_frame_buffer_status() {
+    // only enable when debugging
+    if (!dbg_log_fbo) {
+        return 1;
+    }
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    switch (status) {
+        case GL_FRAMEBUFFER_COMPLETE:
+            // zox_log("Framebuffer COMPLETE");
+            return 1;
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            zox_loge("Framebuffer INCOMPLETE_ATTACHMENT");
+            break;
+
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            zox_loge("Framebuffer INCOMPLETE_MISSING_ATTACHMENT");
+            break;
+
+        case GL_FRAMEBUFFER_UNSUPPORTED:
+            zox_loge("Framebuffer UNSUPPORTED");
+            break;
+
+        case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+            zox_loge("Framebuffer INCOMPLETE_MULTISAMPLE");
+            break;
+        default:
+            zox_loge("Framebuffer UNKNOWN STATUS [0x%04X]", status);
+            break;
+    }
+    return 0;
+}
+
 static inline uint zox_gpu_create_fbo() {
     guint id;
     glGenFramebuffers(1, &id);
@@ -25,10 +57,11 @@ static inline void zox_gpu_reset_fbo() {
 }
 
 static inline void zox_gpu_bind_fbo(guint id) {
-    if (dbg_log_fbo) {
+    if (dbg_log_fbo >= 2) {
         zox_log("Binding FBO [%i]", id);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, id);
+    check_opengl_frame_buffer_status();
 }
 
 static inline void zox_gpu_fbo_to_texture(guint fbo, guint texture) {
@@ -41,15 +74,16 @@ static inline void zox_gpu_fbo_to_texture(guint fbo, guint texture) {
         return;
     }
     zox_gpu_bind_fbo(fbo);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER,
+        GL_COLOR_ATTACHMENT0,
+        GL_TEXTURE_2D,
+        texture,
+        0);
     if (dbg_log_fbo) {
         zox_log("Binded FBO [%i] to Texture [%i]", fbo, texture);
     }
-#ifdef zoxel_catch_opengl_errors
-    if (check_opengl_error_unlogged()) {
-        zox_log_error(" > failed fbo to texture [%i] : [%i]\n", fbo, texture);
-    }
-#endif
+    check_opengl_frame_buffer_status();
     zox_gpu_reset_fbo();
 }
 

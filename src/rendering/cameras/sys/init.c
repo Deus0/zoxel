@@ -1,8 +1,5 @@
 zox_sys2(RenderCameraInitializeSystem) {
     byte dbg_log = 0;
-    if (!zox_use_post_processing) {
-        return;
-    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Initialize);

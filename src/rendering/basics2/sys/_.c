@@ -2,8 +2,7 @@
 #include "upload_textured.c"
 #include "render_basic.c"
 #include "render_instance.c"
-// #include "render_layers.c"
-#include "render_transform.c"
+#include "render_elements.c"
 
 void define_systems_basics2D(ecs *world) {
     zox_system_1(
@@ -28,28 +27,10 @@ void define_systems_basics2D(ecs *world) {
         [out] rendering.MeshDirty,
         [none] !core.Initialize,
     );
-    // 2D or 3D pipeline?
-    /*zox_render2D_system(
-        ElementRenderSystem,
-        [in] rendering.RenderDisabled,
-        [in] transforms2.Position2,
-        [in] transforms2.Rotation2,
-        [in] transforms.Scale1,
-        [in] layouts.Layer,
-        [in] rendering.Brightness,
-        [in] rendering.Alpha,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.TextureGPULink,
-        [none] rendering2.TexturedMesh2,
-        [none] !transforms.TransformMatrix,
-        [none] !core.Initialize,
-    );
-    add_system_process_counter(world, zox_id(ElementRenderSystem));*/
     // all ui
     // Render using Matrix instead of Position2 etc
     zox_render2D_system(
-        ElementRenderMatrixSystem,
+        ElementRenderSystem,
         [in] rendering.RenderDisabled,
         [in] transforms.TransformMatrix,
         [in] layouts.Layer,

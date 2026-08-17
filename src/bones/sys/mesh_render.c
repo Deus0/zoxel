@@ -1,5 +1,4 @@
 zox_sys2(Skeleton3RenderSystem) {
-    // byte dbg_log = 1;
     zox_sys_world();
     entity rmaterial = transparent_meshes ? material_bonet : material_bone;
     if (!zox_valid(rmaterial)) {

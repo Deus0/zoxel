@@ -1,3 +1,5 @@
+extern entity local_terrain;
+
 zox_sys2(PlayerGameStateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -17,27 +19,40 @@ zox_sys2(PlayerGameStateSystem) {
         uint players_length = zox_get_children_by_id(world, e, players, zox_children_capacity, zox_id(Player));
         for (uint j = 0; j < players_length; j++) {
             entity e2 = players[j];
-            if (state->value == zox_game_state_play_begin) {
+            if (state->value == zox_game_state_the_end) {
+                if (dbg_log) {
+                    zox_log("Game Setting player [%s] to [The End]", zox_getn(e2));
+                }
+                zox_setv(e2, PlayerState, zox_player_state_the_end);
+                // zox_set(camera, CameraBlur, { 0 });
+                /*entity character = zox_getv(e2, CharacterLink);
+                if (zox_valid(character)) {
+                    zox_delete(character);
+                }*/
+            } else if (state->value == zox_game_state_play_begin) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Loading", zox_get_name(e2));
                 }
-                zox_set(e2, PlayerState, { zox_player_state_loading });
+                zox_setv(e2, PlayerState, zox_player_state_loading);
             } else if (state->value == zox_game_start) {
                 zox_setv(e2, PlayerState, zox_player_state_main_menu_begin);
+                if (dbg_log) {
+                    zox_log("Game Setting player [%s] to [MainMenu]", zox_get_name(e2));
+                }
             } else if (state->value == zox_game_state_paused) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Paused", zox_get_name(e2));
                 }
-                zox_set(e2, PlayerState, { zox_player_state_pause_begin });
+                zox_setv(e2, PlayerState, zox_player_state_pause_begin);
             } else if (last->value == zox_game_state_paused && state->value == zox_game_state_playing) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Resume", zox_get_name(e2));
                 }
-                zox_set(e2, PlayerState, { zox_player_state_resume_begin });
+                zox_setv(e2, PlayerState, zox_player_state_resume_begin);
             } else {
                 continue;
             }
-            zox_set(e2, PlayerStateDirty, { zox_dirty_trigger });
+            zox_setv(e2, PlayerStateDirty, zox_dirty_trigger);
         }
     }
 } zox_sys_end(PlayerGameStateSystem);

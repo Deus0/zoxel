@@ -5,18 +5,22 @@ zox_sys2(PlayerPauseSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(GameLink);
+    zox_sys_in(PlayerStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(GameLink, game);
+        zox_sys_i(PlayerStateDirty, dirty);
+        if (dirty->value) {
+            continue;
+        }
         if (!(state->value == zox_player_state_playing || state->value == zox_player_state_paused)) {
             continue;
         }
-        if (!zox_valid(game->value)) {
+        entity game = zox_get_parent(world, e);
+        if (!zox_valid(game)) {
             continue;
         }
-        zox_geter_value(game->value, GameState, byte, game_state);
+        zox_geter_value(game, GameState, byte, game_state);
         if (!(game_state == zox_game_state_playing || game_state == zox_game_state_paused)) {
             continue;
         }
@@ -62,7 +66,10 @@ zox_sys2(PlayerPauseSystem) {
         if (did_toggle_pause) {
             byte is_paused = state->value == zox_player_state_paused; // game_state == zox_game_state_paused;
             // byte is_paused = game_state == zox_game_state_paused;
-            zox_set(game->value, GameStateTarget, { is_paused ? zox_game_state_playing : zox_game_state_paused });
+            zox_setv(game, GameStateTarget,
+                is_paused ?
+                    zox_game_state_playing :
+                    zox_game_state_paused);
             if (dbg_log) {
                 zox_log("Toggling Pause with state [%i] Game Pausing? [%i]", state->value, is_paused);
             }

@@ -66,6 +66,12 @@ zox_sys2(PlayerStateSystem) {
             // Enter state for between spawning character, use for UI Spawning delay
             state->value = zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
+        } else if (state->value == zox_player_state_the_end) {
+            state->value = zox_player_state_main_menu_begin; // zox_player_state_play_begin;
+            dirty->value = zox_dirty_trigger;
+            if (dbg_log) {
+                zox_log("Player is now [Ending] from [Paused]")
+            }
         } else if (state->value == zox_player_state_play_begin) {
             state->value = zox_player_state_playing;
             dirty->value = zox_dirty_trigger;

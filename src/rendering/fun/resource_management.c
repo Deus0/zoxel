@@ -21,24 +21,32 @@ void add_to_gpu_restore_systems(long int id) {
 
 void run_gpu_dispose_systems(ecs *world) {
     for (size_t i = 0; i < gpu_dispose_systems->size; i++) {
-        ecs_run(world, gpu_dispose_systems->data[i], 0, NULL);
+        entity e = gpu_dispose_systems->data[i];
+        if (!zox_valid(e)) {
+            zox_loge("Invalid Dispose System [%s]", zox_getn(e));
+            continue;
+        }
+        ecs_run(world, e, 0, NULL);
     }
 }
 
 void run_gpu_restore_systems(ecs *world) {
     for (size_t i = 0; i < gpu_restore_systems->size; i++) {
-        ecs_run(world, gpu_restore_systems->data[i], 0, NULL);
+        entity e = gpu_restore_systems->data[i];
+        if (!zox_valid(e)) {
+            zox_loge("Invalid Restore System [%s]", zox_getn(e));
+            continue;
+        }
+        ecs_run(world, e, 0, NULL);
     }
 }
 
 byte did_dispose_resources = 0;
+
 void opengl_dispose_resources(ecs *world) {
-    if (render_backend != zox_render_backend_opengl) {
-        return;
-    }
     if (!did_dispose_resources) {
         did_dispose_resources = 1;
-        zox_log(" > disposing all opengl resources");
+        // zox_log("Disposing all opengl resources");
         rendering = 0;
         minimized = 1; // move this to a system and function for app! when implement multi apps
         updating_time = 0; // timesteps a bit low atm so pause while minimizing
@@ -47,12 +55,9 @@ void opengl_dispose_resources(ecs *world) {
 }
 
 void opengl_restore_resources(ecs *world) {
-    if (render_backend != zox_render_backend_opengl) {
-        return;
-    }
     if (did_dispose_resources) {
         did_dispose_resources = 0;
-        zox_log(" > restoring all opengl resources");
+        // zox_log("Restoring all opengl resources");
         run_gpu_restore_systems(world);
         rendering = 1;
         minimized = 0;

@@ -29,7 +29,10 @@ zox_sys2(RenderTextureSizeSystem) {
         }
         guint rbo = zox_getv(camera->value, RenderBufferLink);
         int2 scaled_size = scale_viewport(size->value);
-        set_render_texture_gpu(texture_gpu->value, size->value, zox_has(e, RenderTextureAlpha));
+        set_render_texture_gpu(
+            texture_gpu->value,
+            size->value,
+            zox_has(e, RenderTextureAlpha));
         zox_gpu_set_rbo_size(rbo, size->value);
         if (dbg_log) {
             zox_log("+ [%s] Render Scaled Size: %ix%i - og [%ix%i]", zox_get_name(e), scaled_size.x, scaled_size.y, size->value.x, size->value.y);

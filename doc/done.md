@@ -1,6 +1,9 @@
 # Done
 
-
+-x Fix render texture restoring
+-x sdl2 linux broken
+    -x sdl3 window not working anymore
+    + was a libs issue
 -x Player3DTriggerSystem:
 > The log shows that sometimes doesnt get called, i.e. resets faster
     [13:25:38] Raw Bumper [1]: [1.000000] - button [0]

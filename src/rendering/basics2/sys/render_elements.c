@@ -125,6 +125,7 @@ void render_uis(ecs* world, ui_render_queue* uis) {
             // per mesh data
             zox_gpu_bind_buffer_element(data.mesh.x);
             zox_gpu_bind_texture(data.texture);
+            zox_gpu_int(attributes->texture, 0);
             zox_gpu_bind_buffer_array(data.mesh.y);
             zox_gpu_enable_attribute_float2(attributes->vertex_position);
             zox_gpu_bind_buffer_array(data.uvs);
@@ -155,7 +156,7 @@ void render_uis(ecs* world, ui_render_queue* uis) {
 }
 
 // NOTE: Collects our Render Queue for UIs
-zox_sys2(ElementRenderMatrixSystem) {
+zox_sys2(ElementRenderSystem) {
     byte dbg_log = 0;
     entity base_material = material_matrixui;
     zox_sys_world();
@@ -219,5 +220,5 @@ zox_sys2(ElementRenderMatrixSystem) {
         queue->data[queue->count] = data;
         queue->count++;
     }
-} zox_sys_end(ElementRenderMatrixSystem);
+} zox_sys_end(ElementRenderSystem);
 

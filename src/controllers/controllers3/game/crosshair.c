@@ -32,7 +32,15 @@ zox_sys2(PlayerCrosshairSystem) {
                     zox_log("+ Spawning [Crosshair] for Player [%s]", zox_get_name(e));
                 }
                 int2 size = int2_single(crosshair_size * ui_scale);
-                spawn_ui(world, prefab_crosshair, canvas->value, float2_half, int2_zero, size, size);
+                entity crosshair = spawn_ui(
+                    world,
+                    prefab_crosshair,
+                    canvas->value,
+                    float2_half,
+                    int2_zero,
+                    size,
+                    size);
+                zox_set_unique_name(crosshair, "crosshair");
             }
         }
     }

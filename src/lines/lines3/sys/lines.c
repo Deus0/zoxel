@@ -19,7 +19,7 @@ zox_sys2(Line3DRenderSystem) {
         float3 position_a = (float3) { data->value.x, data->value.y,  data->value.z };
         float3 position_b = (float3) { data->value.w, data->value.u,  data->value.v };
         float distance = float3_length(float3_sub(render_camera_position, float3_mid(position_a, position_b)));
-        zox_gpu_line_thickness((thickness->value / distance) * viewport_scale);
+        zox_gpu_line_thickness((thickness->value / distance) * get_viewport_scale());
         // float4 colorf = color_to_float4(c->value);
         zox_gpu_set_attribute_float3(line3D_position_location, &data->value);
         //  zox_gpu_float4(line3D_color_location, colorf);

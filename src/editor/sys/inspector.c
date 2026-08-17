@@ -25,7 +25,7 @@ void fetch_entity_components(ecs* world, entity_array_d* entitys, entity_array_d
         // NOTE: Can set this tto null and see button size failing to resize
         char* text = fetch_compoent_label(world, target, component_id);
         byte type = fetch_component_type(world, target, component_id);
-        text_group_dynamic_array_d_add(labels, (text_group_dynamic) { text = text });
+        text_group_dynamic_array_d_add(labels, (text_group_dynamic) { .text = text });
         entity_array_d_add(entitys, target);
         entity_array_d_add(components, component_id);
         byte_array_d_add(types, type);

@@ -146,7 +146,6 @@ void spawn_vodes_dive(ecs *world,
 
 // Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
 zox_sys2(VodesSpawnSystem) {
-    // byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);

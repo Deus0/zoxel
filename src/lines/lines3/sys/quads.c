@@ -20,7 +20,7 @@ zox_sys2(QuadLineRenderSystem) {
         camera_filtering_check();
         float3 b = (float3) { size->value, size->value, size->value };
         float3 p = position->value;
-        zox_gpu_line_thickness(thickness->value * viewport_scale);
+        zox_gpu_line_thickness(thickness->value * get_viewport_scale());
         // color_rgb lines_color = color_to_color_rgb(colorr->value);
         zox_gpu_color(line3D_color_location, fill->value);
         // get corners of cube

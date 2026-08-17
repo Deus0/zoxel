@@ -190,7 +190,7 @@ zox_sys2(PlayerBeginSystem) {
         play_playlist(world, realm, 1);
         entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
         if (mouse) {
-            zox_set(mouse, MouseLock, { 1 });
+            zox_setv(mouse, MouseLock, 1);
         }
         state->value = zox_player_state_play_trigger;
         dirty->value = zox_dirty_trigger;

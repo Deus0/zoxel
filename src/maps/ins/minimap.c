@@ -1,4 +1,9 @@
-entity spawn_minimap(ecs* world, entity canvas, entity player, entity terrain) {
+entity spawn_minimap(
+    ecs* world,
+    entity canvas,
+    entity player,
+    entity terrain)
+{
     int2 tunk_position = int2_zero;
     entity camera = zox_getv(player, CameraLink);
     if (zox_valid(camera)) {
@@ -11,8 +16,20 @@ entity spawn_minimap(ecs* world, entity canvas, entity player, entity terrain) {
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     const char* header_text = "";
     // Margin from canvas corner
-    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, position, size, position_anchor, header_font_size, header_padding, &on_closed_taskbar_window);
+    entity3 e3 = spawn_window(
+        world,
+        prefab_window,
+        prefab_body,
+        header_text,
+        canvas,
+        position,
+        size,
+        position_anchor,
+        header_font_size,
+        header_padding,
+        &on_closed_taskbar_window);
     entity e = e3.x;
+    zox_set_unique_name(e, "minimap");
     zox_add(e, Map);
     zox_add(e, Minimap);
     zox_set(e, PlayerLink, { player });
@@ -20,7 +37,5 @@ entity spawn_minimap(ecs* world, entity canvas, entity player, entity terrain) {
     zox_set(e, MapPosition, { tunk_position });
     zox_set(e, MapZoom, { minimap_zoom });
     zox_set(e, Alpha, { minimap_alpha });
-    // Hmm
-    // zox_set(e, Scale2, { (float2) { -1, 1 } });
     return e;
 }

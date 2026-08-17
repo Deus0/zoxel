@@ -5,16 +5,32 @@ uint zox_dbg_ui_camera(ecs *world, entity e, char *buffer, uint size, uint index
     if (!zox_valid(e) || !zox_has(e, CameraLink)) {
         return index;
     }
-    entity camera = zox_getv(e, CameraLink);
-    index += snprintf(buffer + index, size - index, "Player [%s] Camera [%s]\n", zox_get_name(e), zox_get_name(camera));
+    index += snprintf(buffer + index, size - index, "Player Cameras [%s]  \n", zox_getn(e));
     if (!zox_valid(e)) {
+        return index;
+    }
+    entity camera = zox_getv(e, CameraLink);
+    index += snprintf(buffer + index, size - index, "   - Camera [%s]\n", zox_getn(camera));
+    if (!zox_valid(camera)) {
         return index;
     }
     float3 camera_position = zox_getv(camera, Position3D);
     float4 camera_rotation = zox_getv(camera, Rotation3D);
     float3 camera_euler = quaternion_to_euler(camera_rotation);
     index += snprintf(buffer + index, size - index, " - Position [%fx%fx%f]\n", camera_position.x, camera_position.y, camera_position.z);
+    index += snprintf(buffer + index, size - index, " - Rotation [%fx%fx%fx%f]\n", camera_rotation.x, camera_rotation.y, camera_rotation.z, camera_rotation.w);
     index += snprintf(buffer + index, size - index, " - Euler [%fx%fx%f]\n", camera_euler.x, camera_euler.y, camera_euler.z);
+    entity skybox = zox_get_child_by_id(world, camera, zox_id(Skybox));
+
+    index += snprintf(buffer + index, size - index, "   -- Skybox [%s]\n", zox_getn(skybox));
+    if (zox_valid(skybox)) {
+        float3 skybox_position = zox_getv(skybox, Position3D);
+        float4 skybox_rotation = zox_getv(skybox, Rotation3D);
+        index += snprintf(buffer + index, size - index, " - Position [%fx%fx%f]\n", skybox_position.x, skybox_position.y, skybox_position.z);
+        index += snprintf(buffer + index, size - index, " - Rotation [%fx%fx%fx%f]\n", skybox_rotation.x, skybox_rotation.y, skybox_rotation.z, skybox_rotation.w);
+        float3 skybox_lposition = zox_getv(skybox, LocalPosition3D);
+        index += snprintf(buffer + index, size - index, " - Local Position [%fx%fx%f]\n", skybox_lposition.x, skybox_lposition.y, skybox_lposition.z);
+    }
     if (!zox_has(camera, Streamer)) {
         index += snprintf(buffer + index, size - index, " - No Streaming\n");
         return index;

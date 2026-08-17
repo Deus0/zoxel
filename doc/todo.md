@@ -1,14 +1,24 @@
 # Todo
-=> GPU Constrained actually, memory barely 
-used - 200-400mb used
 
-- remember to remove the mandatory arguments on ./bsh/android.sh
+- Add ui scale to settings
+- Im getting neighbor updates not triggering at map edges
+- Fall through map - fix unstuck - or make sure collision checks deltas
 
+## Important Refactor
+- Why is player state 'playing' when i exit game..
+- Player State Refactor
+    - Remove just use disables etc
+- Game States
+    - Controller all players centrally from game states
+    - single state machine for games
+    - Remove GameStateTarget
+    - Use a listener event for modules
+-x Quick fix though first
+
+- game state where is thou
+- do 2D uis get restored? missing any 2D vert data?
+- Remove the mandatory arguments on ./bsh/android.sh
 - Make sure to tag docker libs properly as release
--x sdl2 linux broken
-    -x sdl3 window not working anymore
-    + was a libs issue
-
 - When low on damage - add more downscale on the camera
     - make it a camera property too
 

@@ -42,6 +42,33 @@ entity real_position_to_chunk(ecs* world, entity terrain, float3 position) {
     return int3_hashmap_get(chunks->value, chunk_position);
 }
 
+uint zox_dbg_label_chunk_mesh(ecs* world, entity e, char* buffer, uint size, uint index) {
+    // byte disabled = zox_is_disabled(e3);
+    byte active = !zox_has(e, Disabled);
+    byte depth = zox_getv(e, RenderDepth);
+    byte visible = !zox_getv(e, RenderDisabled);
+    byte build = zox_has(e, BuildMesh) && zox_getv(e, BuildMesh);
+    byte build_colors = zox_has(e, MeshColorsGenerate) && zox_getv(e, MeshColorsGenerate);
+    uint indicies_count = zox_get(e, MeshIndicies)->length;
+    uint verts_count = zox_get(e, MeshVertices)->length;
+    uint uvs_count = zox_get(e, MeshUVs)->length;
+    uint colors_count = zox_get(e, MeshColorRGBs)->length;
+    // GPU Links
+    byte mesh_dirty = zox_has(e, MeshDirty) && zox_getv(e, MeshDirty);
+    byte colors_dirty = zox_has(e, MeshColorsDirty) && zox_getv(e, MeshColorsDirty);
+    uint count = zox_getv(e, MeshRenderCount);
+    guint2 mesh = zox_getv(e, MeshGPULink);
+    guint uvs = zox_getv(e, UvsGPULink);
+    guint colors = zox_getv(e, ColorsGPULink);
+    index += snprintf(buffer + index, size - index, "Mesh [%s] Depth [%i]\n", zox_getn(e), depth);
+    index += snprintf(buffer + index, size - index, "   - Visible [%i] Enabled [%i]\n", visible, active);
+    index += snprintf(buffer + index, size - index, "   - Build Mesh [%i] Build Colors [%i]\n", build, build_colors);
+    index += snprintf(buffer + index, size - index, "   - Mesh Dirty [%i] Colors Dirty [%i]\n", mesh_dirty, colors_dirty);
+    index += snprintf(buffer + index, size - index, "   - x[%u] Ind [%i] Verts [%i] UVs [%i] Colors [%i]\n", count, indicies_count, verts_count, uvs_count, colors_count);
+    index += snprintf(buffer + index, size - index, "   - Mesh [%ix%i] UVs [%i] Colors [%i]\n", mesh.x, mesh.y, uvs, colors);
+    return index;
+}
+
 uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint size, uint index) {
     index += snprintf(buffer + index, size - index, "Inside Chunk\n");
     entity game = zox_get_parent(world, player);
@@ -93,27 +120,7 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     index += snprintf(buffer + index, size - index, " - Meshes [%i]\n", meshes_length);
     for (int k = 0; k < meshes_length; k++) {
         entity e3 = meshes[k];
-        // byte disabled = zox_is_disabled(e3);
-        byte active = !zox_has(e3, Disabled);
-        byte depth = zox_getv(e3, RenderDepth);
-        byte visible = !zox_getv(e3, RenderDisabled);
-        byte build = zox_has(e3, BuildMesh) && zox_getv(e3, BuildMesh);
-        byte build_colors = zox_has(e3, MeshColorsGenerate) && zox_getv(e3, MeshColorsGenerate);
-        byte mesh_dirty = zox_has(e3, MeshDirty) && zox_getv(e3, MeshDirty);
-        byte colors_dirty = zox_has(e3, MeshColorsDirty) && zox_getv(e3, MeshColorsDirty);
-        uint count = zox_getv(e3, MeshRenderCount);
-        uint indicies_count = zox_get(e3, MeshIndicies)->length;
-        uint verts_count = zox_get(e3, MeshVertices)->length;
-        uint uvs_count = zox_get(e3, MeshUVs)->length;
-        uint colors_count = zox_get(e3, MeshColorRGBs)->length;
-        guint2 mesh = zox_getv(e3, MeshGPULink);
-        guint uvs = zox_getv(e3, UvsGPULink);
-        guint colors = zox_getv(e3, ColorsGPULink);
-        index += snprintf(buffer + index, size - index, "Mesh [%s] Depth [%i] Visible [%i] Enabled [%i]\n", zox_getn(e3), depth, visible, active);
-        index += snprintf(buffer + index, size - index, "   - Build Mesh [%i] Build Colors [%i]\n", build, build_colors);
-        index += snprintf(buffer + index, size - index, "   - Mesh Dirty [%i] Colors Dirty [%i]\n", mesh_dirty, colors_dirty);
-        index += snprintf(buffer + index, size - index, "   - x[%u] Ind [%i] Verts [%i] UVs [%i] Colors [%i]\n", count, indicies_count, verts_count, uvs_count, colors_count);
-        index += snprintf(buffer + index, size - index, "   - Mesh [%ix%i] UVs [%i] Colors [%i]\n", mesh.x, mesh.y, uvs, colors);
+        index += zox_dbg_label_chunk_mesh(world, e3, buffer, size, index);
     }
     if (!zox_valid(tunk)) {
         return index;
