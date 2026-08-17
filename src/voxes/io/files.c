@@ -1,24 +1,31 @@
 void load_files_voxes(ecs *world) {
+    byte dbg_log = 0 || is_verbose;
     entity prefab = prefab_vox; // prefab_vox_file;
     char* load_directory = concat_file_path(resources_path, directory_voxes);
-    zox_logv("  - Loading Files Voxes [%s]", load_directory);
+    if (dbg_log) {
+        zox_log("Loading Vox Files  [%s]", load_directory);
+    }
     FileList files = get_files(load_directory, 0);
     files_voxes_count = files.count;
     files_voxes = malloc(sizeof(entity) * files_voxes_count);
     files_hashmap_voxes = create_string_hashmap(files_voxes_count);
-    zox_logv("      + Count [%i]", files.count);
+    if (dbg_log) {
+        zox_log("   + Count [%i]", files.count);
+    }
     for (int i = 0; i < files.count; i++) {
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
         files_voxes[i] = 0;
-        zox_logv("   - [%i] [vox] [%s]", i, filepath);
+        if (dbg_log) {
+            zox_log("   - [%i] [vox] [%s]", i, filepath);
+        }
         vox_file data;
         if (read_vox(filepath, &data) == EXIT_FAILURE) {
-            zox_log_error("[%s] failed to load", filepath);
+            zox_logw("[%s] failed to load", filepath);
             continue;
         }
         if (!data.chunks) {
-            zox_log_error("[%s] failed to load properly", filepath);
+            zox_logw("[%s] failed to load properly", filepath);
             continue;
         }
         entity e = spawn_vox_file(world, prefab, &data, filename);
@@ -32,7 +39,7 @@ void load_files_voxes(ecs *world) {
 }
 
 void dispose_files_voxes(ecs* world) {
-    zox_logv(" > disposing [%i] [voxes]", files_hashmap_voxes->size);
+    zox_logv("Disposing [%i] [voxes]", files_hashmap_voxes->size);
     string_hashmap_dispose(files_hashmap_voxes);
     files_hashmap_voxes = NULL;
     free(files_voxes);

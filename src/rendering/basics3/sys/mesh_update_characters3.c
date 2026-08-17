@@ -10,7 +10,6 @@ void opengl_upload_mesh_colors(uint2 mesh_buffer, uint color_buffer, const int *
 }
 
 zox_sys2(MeshUpdateCharacters3DSystem) {
-    zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshVertices);
@@ -20,7 +19,6 @@ zox_sys2(MeshUpdateCharacters3DSystem) {
     zox_sys_out(ColorsGPULink);
     zox_sys_out(MeshRenderCount);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshVertices, verts);
         zox_sys_i(MeshColorRGBs, colors);
@@ -31,24 +29,11 @@ zox_sys2(MeshUpdateCharacters3DSystem) {
         if (dirty->value != mesh_state_upload) {
             continue;
         }
-        /*if (indicies->length == 0) {
-            // clear mesh and colors buffer if zero again
-            zox_gpu_dispose_buffer(gpu_mesh->value.x);
-            zox_gpu_dispose_buffer(gpu_mesh->value.y);
-            zox_gpu_dispose_buffer(gpu_colors->value);
-            gpu_mesh->value.x = 0;
-            gpu_mesh->value.y = 0;
-            gpu_colors->value = 0;
-            count->value = 0;
-            continue;
-        }*/
         // Spawn new GPU Buffers
-#ifdef zox_safety_checks
         if (!gpu_mesh->value.x || !gpu_mesh->value.y || !gpu_colors->value) {
-            zox_loge("Character GPU Links broken [%s]", zox_getn(e));
+            // zox_loge("Character GPU Links broken [%s]", zox_getn(e));
             continue;
         }
-#endif
         // zox_log(" + Uploading mesh [%i : %i]\n", meshVertices->length, colors->length)
         zox_gpu_element_buffer(gpu_mesh->value.x, indicies->length, sizeof(int), indicies->value);
         zox_gpu_array_buffer(gpu_mesh->value.y, verts->length, sizeof(float3), verts->value);

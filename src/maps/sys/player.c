@@ -15,7 +15,7 @@ zox_sys2(PlayerMinimapSystem) {
             continue;
         }
         if (!zox_valid(canvas->value)) {
-            zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
+            // zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
             continue;
         }
         entity minimap = zox_get_child_by_id(world, canvas->value, zox_id(Minimap));

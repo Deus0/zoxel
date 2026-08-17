@@ -1,8 +1,4 @@
-zoxc(BoneIndexGPULink, uint);
-
-ECS_DTOR(BoneIndexGPULink, ptr, {
-    zox_gpu_dispose_buffer(ptr->value);
-})
+zoxc_guint(BoneIndexGPULink);
 
 void on_destroyed_BoneIndexGPULink(iter *it) {
     byte dbg_log = 0;

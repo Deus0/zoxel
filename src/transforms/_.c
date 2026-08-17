@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Transforms                                           |
+ * |                                                                  |
+ * |  Position - Rotation - Scale - Hierarchy - Transform State       |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_transforms) && defined(zoxm_maths)
 #define zoxm_transforms
 

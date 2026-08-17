@@ -1,11 +1,15 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Textures                                             |
+ * |                                                                  |
+ * |  Images - Generation - Materials - IO - Texture State            |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_textures
 #define zoxm_textures
 
 // TODO: Move font texture functions into textures
-#define zox_generate_texture_run 1
-#define zox_generate_texture_uvs 2
-#define zox_generate_texture_end 0
-#define zox_upload_texture 1
 #include "dat/_.c"
 #include "com/_.c"
 #include "gen/_.c"

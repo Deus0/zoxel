@@ -31,7 +31,7 @@ zox_sys2(ItemActivateSystem) {
             zox_loge("invalid block [%s]", zox_get_name(block));
             continue;
         }
-        zox_geter_value(block, BlockIndex, byte, block_index);
+        byte block_index = zox_getv(block, BlockIndex);
         // Place Block
         byte3 positionl = raycast_data->positionl_last;
         entity chunk = raycast_data->chunk_last;

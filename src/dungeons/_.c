@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Dungeons                                             |
+ * |                                                                  |
+ * |  Rooms - Layouts - Encounters - Traps - Growth                   |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_dungeons
 #define zoxm_dungeons
 

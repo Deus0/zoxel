@@ -1,17 +1,23 @@
 /*
- * Zox Projectiles
+ * +------------------------------------------------------------------+
+ * | Zox Module: Projectiles                                          |
+ * |                                                                  |
+ * |  Flight - Collision - Impact - Damage - Projectile State         |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
- *      - Collides with stuff
+ *  TODO:
  *
- * */
+ *      - Vox Model option
+ *      - Collide with Terrain
+ *      - Spawn Sound
+ *      - Destroy Sound
+ *      - Scale Animation Curve
+ *      - Child Particles
+ *
+ */
 #ifndef zoxm_projectiles
 #define zoxm_projectiles
-
-// TODO: Add Vox Model option
-// TODO: Add Collide with Terrain
-// TODO: Add Spawn Sound and Destroy Sound
-// TODO: Add a Scale Curve
-// TODO: Add Particles on it
 
 zox_tag(Projectile);
 #include "pre/_.c"

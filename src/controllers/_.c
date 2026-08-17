@@ -1,8 +1,13 @@
 /*
- *  Zox Controllers
- *      - A player that can control the character
+ * +------------------------------------------------------------------+
+ * | Zox Module: Controllers                                          |
+ * |                                                                  |
+ * |  Movement - Cameras - Input Binding - Behaviors - Control State  |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
- *  Controllers Use
+ *  USES:
+ *
  *      - Characters
  *      - Cameras
  *      - UIs

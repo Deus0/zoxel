@@ -1,8 +1,10 @@
 /*
- *  Zox Chunks
- *
- *      - Using Octrees to create Voxel Meshes
- *
+ * +------------------------------------------------------------------+
+ * | Zox Module: Chunks                                               |
+ * |                                                                  |
+ * |  Generation - Octrees - Meshing - Spatial - Chunk State          |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  * */
 #ifndef zoxm_chunks
 #define zoxm_chunks

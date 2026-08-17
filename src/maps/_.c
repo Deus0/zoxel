@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Maps                                                 |
+ * |                                                                  |
+ * |  Regions - World Map - Markers - Navigation - Map State          |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_maps
 #define zoxm_maps
 

@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Crafting                                             |
+ * |                                                                  |
+ * |  Recipes - Materials - Stations - Crafting - Production          |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_crafting) && defined(zoxm_items)
 #define zoxm_crafting
 

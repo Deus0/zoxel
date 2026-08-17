@@ -4,27 +4,33 @@
 
 // File implementation for Sounds
 void load_files_sounds(ecs *world) {
-    byte dbg_log = 0;
-    if (nosounds) {
+    byte dbg_log = 0 || is_verbose;
+    if (nosounds && dbg_log) {
         zox_logv("Sounds are disabled: No Loading Sounds.");
         return;
     }
-#ifdef zox_sdl
+/*#ifndef zox_sdl
     zox_logv("Sounds are disabled: No Loading Sounds.");
     return;
-#endif
+#endif*/
     char* load_directory = concat_file_path(resources_path, directory_sounds);
-    zox_logv("  - Loading Files Sounds [%s]", load_directory);
+    if (dbg_log) {
+        zox_logv("Loading Files Sounds [%s]", load_directory);
+    }
     FileList files = get_files(load_directory, 0);
     sound_files_count = files.count;
     files_sounds = malloc(sizeof(entity) * files.count);
     files_hashmap_sounds = create_string_hashmap(files.count);
-    zox_logv(" + io loaded [sounds] [%i]", files.count);
+    if (dbg_log) {
+        zox_log(" + io loaded [sounds] [%i]", files.count);
+    }
     for (int i = 0; i < files.count; i++) {
-#if defined(zox_sdl) // zox_sdl_mixer)
+#ifdef zox_sdl
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
-        zox_logv("   - [%i] [sound] [%s]", i, filepath);
+        if (dbg_log) {
+            zox_log("   - [%i] [sound] [%s]", i, filepath);
+        }
         uint samples = 0;
         float length = 0;
         float* values = NULL;
@@ -38,7 +44,12 @@ void load_files_sounds(ecs *world) {
             values,
             samples,
             length);
-        zox_logv("   - [%i] [sound] [%s] - length [%f]", i, filepath, length);
+        if (dbg_log) {
+            zox_log("   - [%i] [sound] [%s] - length [%f]",
+                i,
+                filepath,
+                length);
+        }
         files_sounds[i] = e;
         string_hashmap_add(files_hashmap_sounds, new_string_data_clone(filename), e);
 #else

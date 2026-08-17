@@ -65,7 +65,7 @@ zox_sys2(ElementNavigationBeginSystem) {
         }
         entity canvas = zox_getv(player, CanvasLink);
         if (!zox_valid(canvas)) {
-            zox_logw("Canvas is missing from Player");
+            // zox_logw("Canvas is missing from Player");
             continue;
         }
         entity window = zox_get_child_by_id(world, canvas, zox_id(NavigationWindow));

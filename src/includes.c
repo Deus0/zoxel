@@ -21,7 +21,7 @@
 // and networking - EWOULDBLOCK
 #include <errno.h>
 //! Included Libraries for App
-#ifndef zox_disable_logs
+#ifdef zox_logs
     #include <stdarg.h>
 #endif
 #ifdef flecssource

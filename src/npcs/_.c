@@ -1,4 +1,11 @@
-// TODO: Move this under terrain!
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: NPCs                                                 |
+ * |                                                                  |
+ * |  Characters - Spawning - Placement - Schedules - NPC State       |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_terrain_npcs
 #define zoxm_terrain_npcs
 

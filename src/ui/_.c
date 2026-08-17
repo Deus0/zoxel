@@ -1,7 +1,16 @@
 /*
- *  Module: UI
+ * +------------------------------------------------------------------+
+ * | Zox Module: UI                                                   |
+ * |                                                                  |
+ * |  Panels - Labels - Buttons - Layouts - Interface State           |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
- *      - Extends Layout2 Transforms with Rendering + Interaction
+ * Uses
+ *      - Transforms2
+ *      - Layout2
+ *      - Rendering
+ *      - Interaction
  *
  * */
 #ifndef zoxm_ui

@@ -45,15 +45,20 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
 // TODO: Refactor to Cameras (camera spawning) + UIs (canvas spawning)
 
 // NOTE: Runs on boot
-void spawn_all_players_cameras_canvases(ecs *world, int players_playing, entity app) {
-    if (!app) {
-        zox_logv("No spawning Cameras and Canvases.");
+void spawn_all_players_cameras_canvases(
+    ecs *world,
+    int players_playing,
+    entity app)
+{
+    // Headless has none
+    if (!zox_valid(app) || !zox_has(app, WindowSize)) {
+        zox_logv("No spawning Cameras and Canvases");
         return;
     }
     set_main_cameras((int) players_playing);
     float3 camera_position = main_menu_camera_position;
     float4 camera_rotation = main_menu_camera_rotation;
-    zox_geter_value(app, WindowSize, int2, screen_size);
+    int2 screen_size = zox_getv(app, WindowSize);
     for (int i = 0; i < players_playing; i++) {
         entity player = zox_players[i];
         float4 screen_to_canvas = (float4) { 1 / (float) players_playing, 1, i / (float) players_playing, 0 };

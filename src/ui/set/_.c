@@ -20,11 +20,9 @@ color active_outline = (color) { 100, 222, 150, 155 };
 
 float calculate_ui_scale(int2 size) {
     float area = (float) size.x * (float) size.y;
-    float scale = sqrtf(area / (512.0f * 256.0f));
-
-    if (scale < 1.0f) scale = 1.0f;
-    if (scale > 3.0f) scale = 3.0f;
-
+    float scale = sqrtf(area / (512.0f * 512.0f));
+    if (scale < 0.5f) scale = 0.5f;
+    if (scale > 2.0f) scale = 2.0f;
     return scale;
 }
 

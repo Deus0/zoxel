@@ -1,12 +1,11 @@
 /*
- *  Module: Stats
- *
- *  - Health
- *  - Resources
- *  - Base Stats
- *  - Attributes
- *
- * */
+ * +------------------------------------------------------------------+
+ * | Zox Module: Stats                                                |
+ * |                                                                  |
+ * |  Health - Resources - Base Stats - Attributes                    |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_stats)
 #define zoxm_stats
 

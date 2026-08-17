@@ -1,12 +1,19 @@
 /*
- *  Zox Input
+ * +------------------------------------------------------------------+
+ * | Zox Module: Inputs                                                  |
+ * |                                                                  |
+ * |  Keyboard - Mouse - Touch - Gamepad - Input State                 |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
  *      - defines base types for device handling
  *      - emulates state changes of physical devices
  *
- *  todo:
+ *  TODO:
  *
- *      - refactor keyboard as a list of keys
+ *      - Refactor keyboard as a list of keys
+ *      - If Device Disabled Detect Start/Connect inputs in another system
+ *      - Use that state to connect a new device to a player
  *
  * */
 #ifndef zoxm_inputs
@@ -14,9 +21,6 @@
 
 const float bumper_button_cutoff = 0.98f;
 const float joystick_min_cutoff = 0.08f;
-// TODO: If Device Disabled, just detect Start/Connect inputs in another system
-// - Use that state to connect a new device to a player
-
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"

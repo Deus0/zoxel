@@ -1,7 +1,13 @@
 /*
- * Models are Vox Blueprints
+ * +------------------------------------------------------------------+
+ * | Zox Module: Models                                               |
+ * |                                                                  |
+ * |  Meshes - Parts - Nodes - Generation                             |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
- *      Nodes for Processing Voxes
+ *
+ * Nodes for Processing Voxes
  *
  *      - Fill Shape
  *      - Add Shape
@@ -12,18 +18,20 @@
  *      Used By:
  *          - Terrain, Voxes (Blocks), Characters, Biomes
  *
+ *  TODO:
+ *
+ *      - Refactor old models into nodegraphs
+ *      - Link Nodegraphs to realm - have them deleted after
+ *      - Add Shape Information to fill
+ *      - Create model size, which the octree can just divide higher for
+ *      - Add Shape Type, Shape Size, to our Fill Nodes
+ *      - Refactor: Load Vox Files into ModelLinks
+ *      - Refactor: Vox Generation use Nodes / NodeGraphs
+ *      - Can we Refactor ModelLinks from Rendering to here
+ *
 */
 #ifndef zoxm_models
 #define zoxm_models
-
-// TODO: Refactor old models into nodegraphs
-// TODO: Link Nodegraphs to realm - have them deleted after
-// TODO: Add Shape Information to fill
-// TODO: Create model size, which the octree can just divide higher for
-// TODO: Add Shape Type, Shape Size, to our Fill Nodes
-// TODO: Refactor: Load Vox Files into ModelLinks
-// TODO: Refactor: Vox Generation use Nodes / NodeGraphs
-// TODO: Can we Refactor ModelLinks from Rendering to here
 
 byte is_generate_vox_outlines = 1;
 #define zox_model_node_none 0

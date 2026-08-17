@@ -67,10 +67,6 @@ int main(int argc, char* argv[]) {
         if (zox_init_glew() == EXIT_FAILURE) {
             return EXIT_FAILURE;
         }
-        zox_set_parent(world, game, app);
-        zox_set(app, GameLink, { game });
-        // zox_logv("Setting VSync");
-        // on_set_vsync(vsync);
         zox_logv("Initializing Rendering");
         initialize_rendering(render_backend);
         zox_logv("Setting App Icon [game.png]");
@@ -81,8 +77,16 @@ int main(int argc, char* argv[]) {
         process_shaders(world);
     }
 #else
-    entity app = 0;
+    // TODO: Move this into headless module
+    entity app = zox_new();
+    zox_add(app, App);
+    zox_set_unique_name(app, "headless_app");
+    main_app = app;
 #endif
+    if (app) {
+        zox_set_parent(world, game, app);
+        zox_setv(app, GameLink, game);
+    }
     // Resource Loading
     run_hook_files_load(world);
     // Yet another Hook

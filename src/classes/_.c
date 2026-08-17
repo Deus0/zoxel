@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Classes                                              |
+ * |                                                                  |
+ * |  Roles - Archetypes - Progression - Abilities - Class State      |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_classes)
 #define zoxm_classes
 

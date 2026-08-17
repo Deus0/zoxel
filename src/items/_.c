@@ -1,9 +1,11 @@
 /*
- *  Module: Items
- *
- *      - Useful things!
- *
- * */
+ * +------------------------------------------------------------------+
+ * | Zox Module: Items                                                |
+ * |                                                                  |
+ * |  Inventory - Consumables - Materials - Loot - Item State         |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_items)
 #define zoxm_items
 

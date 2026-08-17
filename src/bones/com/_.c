@@ -52,5 +52,5 @@ void define_components_bones(ecs* world) {
     zoxd_byte(RaiseShoulder);
     zoxd_byte(WalkState);
     zoxd_byte(WalkSpeed);
-    zoxd_dest(BoneIndexGPULink);
+    zoxd_guint_dest(BoneIndexGPULink);
 }

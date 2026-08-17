@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Sounds                                               |
+ * |                                                                  |
+ * |  Effects - Instruments - Voices - Channels                       |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_sounds
 #define zoxm_sounds
 

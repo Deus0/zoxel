@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Achievements                                         |
+ * |                                                                  |
+ * |  Goals - Progress - Unlocks - Rewards - Completion               |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_achievements)
 #define zoxm_achievements
 

@@ -19,7 +19,7 @@
 #ifndef zox_debug
     // Release
     #define zox_disable_names
-    #define zox_disable_logs
+    // #define zox_disable_logs
 #else
     // Debug
     #define zox_debug_settings

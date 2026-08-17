@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Particles                                            |
+ * |                                                                  |
+ * |  Emitters - Effects - Motion - Lifetimes - Particle State        |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zox_particles
 #define zox_particles
 

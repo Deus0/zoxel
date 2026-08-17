@@ -39,3 +39,15 @@ static inline void zox_gpu_enable_blend2() {
 static inline void zox_gpu_disable_blend() {
     glDisable(GL_BLEND);
 }
+
+static inline void zox_gpu_enable_polyoffset() {
+    glEnable(GL_POLYGON_OFFSET_FILL);
+}
+
+static inline void zox_gpu_disable_polyoffset() {
+    glDisable(GL_POLYGON_OFFSET_FILL);
+}
+
+static inline void zox_gpu_polyoffset(float a, float b) {
+    glPolygonOffset(a, b);
+}

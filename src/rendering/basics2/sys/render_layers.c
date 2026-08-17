@@ -82,7 +82,7 @@
         // per mesh data
         // float units = units_per_layer * layer->value;
         // float depth = depth_per_layer * layer->value;
-        // glPolygonOffset(-units, -depth);
+        // zox_gpu_polyoffset(-units, -depth);
         zox_gpu_bind_buffer_element(mesh->value.x);
         zox_gpu_bind_buffer_array(mesh->value.y);
         zox_gpu_enable_attribute_float2(attributes->vertex_position);

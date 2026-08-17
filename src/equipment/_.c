@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Equipment                                            |
+ * |                                                                  |
+ * |  Weapons - Armor - Slots - Stats - Loadouts                      |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_equipment
 #define zoxm_equipment
 
@@ -7,7 +15,7 @@
 #include "sys/_.c"
 
 // Equipment includes Gear and Body parts in one
-zox_begin_module(Equips) {
+zox_begin_module(Equipment) {
     define_components_equipment(world);
     define_systems_equipment(world);
     add_hook_spawn_prefabs(spawn_prefabs_equipment);
@@ -18,6 +26,6 @@ zox_begin_module(Equips) {
         .texture_name = "taskbar_equipment",
         .tooltip_text = "Equipment"
     });
-} zox_end_module(Equips);
+} zox_end_module(Equipment);
 
 #endif

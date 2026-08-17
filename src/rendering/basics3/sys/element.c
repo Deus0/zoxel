@@ -8,7 +8,7 @@ zox_sys2(Element3RenderSystem) {
     float units_per_layer = 0;
     entity material = material_textured3D;
     if (!material) {
-        zox_loge("[material_textured3D] missing in Element3RenderSystem.");
+        // zox_loge("[material_textured3D] missing in Element3RenderSystem.");
         return;
     }
     zox_sys_world();
@@ -35,25 +35,25 @@ zox_sys2(Element3RenderSystem) {
         if (disabled->value) {
             continue;
         }
-#ifdef zox_safety_checks
+// #ifdef zox_safety_checks
         if (!mesh->value.x || !mesh->value.y) {
-            zox_loge("Gpu links [mesh] broken on Element3 [%s]", zox_getn(e));
+            // zox_loge("Gpu links [mesh] broken on Element3 [%s]", zox_getn(e));
             continue;
         }
         if (!uvs->value) {
-            zox_loge("Gpu links [uvs] broken on Element3 [%s]", zox_getn(e));
+            // zox_loge("Gpu links [uvs] broken on Element3 [%s]", zox_getn(e));
             continue;
         }
         if (!colors->value) {
-            zox_loge("Gpu links [colors] broken on Element3 [%s]", zox_getn(e));
+            // zox_loge("Gpu links [colors] broken on Element3 [%s]", zox_getn(e));
             continue;
         }
-#endif
+// #endif
         if (!has_set_material) {
             has_set_material = 1;
             material_link = zox_getv(material, MaterialGPULink);
             attributes = zox_get(material, MaterialTextured3D);
-            glEnable(GL_POLYGON_OFFSET_FILL);
+            zox_gpu_enable_polyoffset();
             zox_gpu_enable_blend();
             zox_gpu_material(material_link);
             zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
@@ -73,7 +73,7 @@ zox_sys2(Element3RenderSystem) {
         // Offset Depth
         float units = units_base + units_per_layer * layer->value;
         float depth = depth_base + depth_per_layer * layer->value;
-        glPolygonOffset(-units, -depth);
+        zox_gpu_polyoffset(-units, -depth);
         zox_gpu_render3(6);
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
@@ -100,6 +100,6 @@ zox_sys2(Element3RenderSystem) {
         zox_gpu_reset_texture();
         zox_gpu_reset_mesh();
         zox_disable_material();
-        glDisable(GL_POLYGON_OFFSET_FILL);
+        zox_gpu_disable_polyoffset();
     }
 } zox_sys_end(Element3RenderSystem);

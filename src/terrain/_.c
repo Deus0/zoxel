@@ -1,8 +1,12 @@
-/**
- *  Zox Terrain
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Terrain                                              |
+ * |                                                                  |
+ * |  Generation - Chunks - Biomes - Heightmaps - Terrain State       |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
  *      - colored vox models
- *
  *      - todo: don't generate mesh until render is enabled!
  *      - todo: use ChunkOriginDistance instead of RenderDepth for camera distance for TerrainChunks
   *      - todo: delay BlockVoxSpawnSystem to main thread pipeline like character spawning, use same trigger? rest on load? make a resetsystem 2 for this - just  make reset defines use the pipeline

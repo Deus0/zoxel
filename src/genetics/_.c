@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Genetics                                             |
+ * |                                                                  |
+ * |  Traits - Inheritance - Breeding - Mutations - Variation         |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zox_genetics
 #define zox_genetics
 

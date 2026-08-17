@@ -3,7 +3,9 @@ byte load_wav_data(const char* filepath, float** values, uint* samples, float* l
     Uint8* wav_data = NULL;
     Uint32 wav_length = 0;
     if (!SDL_LoadWAV(filepath, &spec, &wav_data, &wav_length)) {
-        zox_loge("sound file failed to load [%s] due to [%s]", filepath, SDL_GetError());
+        zox_logw("Sound file failed to load [%s] due to [%s]",
+            filepath,
+            SDL_GetError());
         return 0;
     }
     if (spec.freq <= 0 || spec.channels <= 0) {
@@ -98,7 +100,9 @@ byte load_wav_data(const char* filepath, float** values, uint* samples, float* l
             break;
         }
         default:
-            zox_loge("Unsupported WAV format [%s] format [0x%x]", filepath, spec.format);
+            zox_logw("Unsupported WAV format [%s] format [0x%x]",
+                filepath,
+                spec.format);
             free(*values);
             *values = NULL;
             *samples = 0;
@@ -108,7 +112,11 @@ byte load_wav_data(const char* filepath, float** values, uint* samples, float* l
     }
     if (dbg_log) {
         zox_log("Loaded Wav [%s] Length [%u] Samples [%u] Channels [%i] Frequency [%i]",
-            filepath, wav_length, *samples, spec.channels, spec.freq);
+            filepath,
+            wav_length,
+            *samples,
+            spec.channels,
+            spec.freq);
     }
     SDL_free(wav_data);
     return 1;

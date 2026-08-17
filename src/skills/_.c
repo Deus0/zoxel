@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Skills                                               |
+ * |                                                                  |
+ * |  Abilities - Levels - Effects - Cooldowns - Skill Trees          |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_skills)
 #define zoxm_skills
 

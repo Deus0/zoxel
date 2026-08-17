@@ -1,12 +1,20 @@
 /*
- *  Module: Games
+ * +------------------------------------------------------------------+
+ * | Zox Module: Games                                                   |
+ * |                                                                  |
+ * |  Sessions - Modes - Rules - Worlds - Game State                    |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
  *      - Games sits above Players
  *      - Handles Game Orchestration
  *      - Spawns Terrain and Player Characters
  *
+ *  TODO:
+ *
+ *      - Remove GameStateTarget and just set directly
+ *
  * */
-// TODO: Remove GameStateTarget and just set directly
 #ifndef zoxm_games
 #define zoxm_games
 

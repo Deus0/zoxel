@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Animations                                           |
+ * |                                                                  |
+ * |  Clips - Poses - Frames - Playback - Animation State             |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_animations
 #define zoxm_animations
 

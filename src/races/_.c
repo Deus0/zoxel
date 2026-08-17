@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Races                                                |
+ * |                                                                  |
+ * |  Species - Traits - Attributes - Variants - Race State           |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_races)
 #define zoxm_races
 

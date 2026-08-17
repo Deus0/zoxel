@@ -1,7 +1,14 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Players                                              |
+ * |                                                                  |
+ * |  Profiles - Progress - Identity - Stats - Player State           |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_players)
 #define zoxm_players
 
-// todo: move based functionality into here
 #include "sta/_.c"
 #include "set/_.c"
 #include "com/_.c"

@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Clans                                                |
+ * |                                                                  |
+ * |  Groups - Members - Ranks - Alliances - Clan State               |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_clans)
 #define zoxm_clans
 

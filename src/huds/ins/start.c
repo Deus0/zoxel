@@ -26,8 +26,11 @@ void spawn_all_players_start_ui(ecs *world) {
     zox_logv("Spawning Player Start Menus [%i]", players_playing);
     for (int i = 0; i < players_playing; i++) {
         entity player = zox_players[i];
-        zox_geter_value(player, CanvasLink, entity, canvas);
-        zox_logv(" - player [%s] | canvas [%s]", zox_get_name(player), zox_get_name(canvas));
+        entity canvas = zox_getv(player, CanvasLink);
+        if (!zox_valid(canvas)) {
+            continue;
+        }
+        zox_logv("Player [%s] | canvas [%s]", zox_getn(player), zox_getn(canvas));
         spawn_menu_start(world, player, canvas);
     }
 }

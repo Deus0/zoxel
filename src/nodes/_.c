@@ -1,4 +1,18 @@
-// generic nodes, used by blueprints and neurals and quests etc
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Nodes                                                   |
+ * |                                                                  |
+ * |  Graphs - Links - Trees - Connections - Node State                 |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ *
+ *  Used By:
+ *
+ *      - Quests
+ *      - Models
+ *      - Neurals
+ *
+ */
 #ifndef zoxm_nodes
 #define zoxm_nodes
 

@@ -1,9 +1,15 @@
 /*
- *  Blocks Module
+ * +------------------------------------------------------------------+
+ * | Zox Module: Blocks                                                 |
+ * |                                                                  |
+ * |  Voxels - Materials - Faces - Properties - Block State             |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
- *      - Data for the Cubes
- *      - Used by Chunks
- *      - Some Textured, Some Baked
+ * Used by:
+ *
+ *      - Chunks
+ *      - Baked Vox Textures
  *
  * */
 #ifndef zoxm_blocks

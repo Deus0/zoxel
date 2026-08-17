@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Actions                                              |
+ * |                                                                  |
+ * |  Skills - Items - Actionbar - Activation - Action State          |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_actions) && defined(zoxm_items) && defined(zoxm_skills)
 #define zoxm_actions
 

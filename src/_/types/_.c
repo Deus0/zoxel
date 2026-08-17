@@ -1,5 +1,6 @@
 // NOTE: Add to inspector UI
 // NOTE: create a type file, add to Init and DeInit lists below
+// TODO: Refactor this into a function thats easier to maintain then files since its all repeated
 
 #include "types.c"
 #include "keys.c"
@@ -7,6 +8,7 @@
 #include "byte.c"
 #include "byte2.c"
 #include "byte3.c"
+#include "byte4.c"
 #include "int.c"
 #include "int2.c"
 #include "int3.c"
@@ -50,6 +52,7 @@ void initialize_component_ids() {
     initialize_component_ids_byte();
     initialize_component_ids_byte2();
     initialize_component_ids_byte3();
+    initialize_component_ids_byte4();
     initialize_component_ids_lint();
     initialize_component_ids_double();
     initialize_component_ids_int();
@@ -81,6 +84,7 @@ void dispose_component_ids() {
     dispose_component_ids_byte();
     dispose_component_ids_byte2();
     dispose_component_ids_byte3();
+    dispose_component_ids_byte4();
     dispose_component_ids_lint();
     dispose_component_ids_double();
     dispose_component_ids_int();

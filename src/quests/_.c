@@ -1,15 +1,19 @@
 /*
-*  Quests
-*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Quests                                               |
+ * |                                                                  |
+ * |  Objectives - Progress - Rewards - Quest State - Chains          |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ *
+*  TODO
+*       - Quest Objective: Find NPC named Bob
 *       - Contains nodegraphs for completion
 *       - Finish all targets in chain
-*       - Node can also be a reward, given by system or by the npc on return
-*
+*       - Node can also be a reward, given by system or by the npc
 */
 #if !defined(zoxm_quests)
 #define zoxm_quests
-
-// TODO: Quest Objective: Find NPC named Bob
 
 #include "com/_.c"
 #include "pre/_.c"

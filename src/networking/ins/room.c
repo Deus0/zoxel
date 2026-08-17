@@ -1,7 +1,9 @@
-entity spawn_net_room(ecs *world, entity prefab, const int port) {
-    zox_instance(prefab);
+entity spawn_net_room(
+    ecs *world,
+    int port)
+{
+    zox_instance(prefab_net_room);
     zox_name("net_room");
-    zox_set(e, NetPort, { port });
-    // set_new_socket(world, e, port);
+    zox_setv(e, NetPort, port);
     return e;
 }

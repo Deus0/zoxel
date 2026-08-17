@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Dialogues                                            |
+ * |                                                                  |
+ * |  Conversations - Choices - Responses - Events - Dialogue State   |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_dialogues
 #define zoxm_dialogues
 

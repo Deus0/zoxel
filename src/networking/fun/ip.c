@@ -1,5 +1,5 @@
 //! Converts byte4 and a port to a sockaddr_in struct.
-struct sockaddr_in byte4_to_ip(byte4 input, int port) {
+struct sockaddr_in byte4_to_ip(byte4 input, ushort port) {
     struct sockaddr_in send_addr;
     // memset(&send_addr, 0, sizeof(send_addr));
     send_addr.sin_family = AF_INET;
@@ -9,7 +9,7 @@ struct sockaddr_in byte4_to_ip(byte4 input, int port) {
     return send_addr;
 }
 
-struct sockaddr_in string_to_ip(char *text, int port) {
+struct sockaddr_in string_to_ip(char *text, ushort port) {
     struct sockaddr_in send_addr;
     memset(&send_addr, 0, sizeof(send_addr));
     send_addr.sin_family = AF_INET;
@@ -51,3 +51,22 @@ return ip_str;*/
     uint8_t *p = (uint8_t *)&netshort;
     return (uint16_t)(p[0] << 8 | p[1]);
 }*/
+
+
+static inline byte4 sockaddr_to_byte4(
+    struct sockaddr_in input,
+    ushort *port)
+{
+    uint32_t ip = ntohl(input.sin_addr.s_addr);
+
+    byte4 output = {
+        (ip >> 24) & 0xff,
+        (ip >> 16) & 0xff,
+        (ip >> 8) & 0xff,
+        ip & 0xff
+    };
+
+    *port = ntohs(input.sin_port);
+
+    return output;
+}

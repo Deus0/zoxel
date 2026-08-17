@@ -23,7 +23,7 @@ zox_sys2(PlayerRespawnUISystem) {
             continue;
         }
         if (!zox_valid(canvas->value)) {
-            zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
+            // zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
             continue;
         }
         if (state->value == zox_player_state_respawn_begin) {

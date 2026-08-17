@@ -11,3 +11,6 @@
 #include "shaders.c"
 
 byte test_graphics() { return EXIT_SUCCESS; }
+
+static inline void zox_gpu_reset_fbo() { }
+static inline byte check_opengl_error_unlogged() { return 0; }

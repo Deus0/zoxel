@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: AI                                                   |
+ * |                                                                  |
+ * |  Decisions - Goals - Perception - Behavior - Navigation          |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_ai) && defined(zoxm_characters)
 #define zoxm_ai
 

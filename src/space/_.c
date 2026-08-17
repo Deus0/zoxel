@@ -1,3 +1,11 @@
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Space                                                |
+ * |                                                                  |
+ * |  Worlds - Dimensions - Coordinates - Solars - Space State        |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #ifndef zoxm_space
 #define zoxm_space
 

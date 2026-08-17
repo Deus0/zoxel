@@ -1,17 +1,20 @@
 // atm using 127.0.0.1 for same machine testing
 // later for secure packets, keep sending with udp every x seconds
-#define server_ip (byte4) { 194, 195, 251, 84 }  //  "192.0.2.1"
-#define local_server_ip (byte4) { 127, 0, 0, 1 }  //  "192.0.2.1"
+#define ZOXEL_URL "https://zoxel.duckdns.org"
 #define PORT 12345
 #define SERVER_PORT 12346
 #define BUFFER_SIZE 128 // 1024 // the size of the buffer to use for receiving and sending data
-#define ZOXEL_URL "https://zoxel.duckdns.org"
-byte zox_is_networking = 0;
-byte server_mode = 0;
-#include "packet_types.c"
-
+byte zox_is_networking = 0; // NOTE: Disabled until its all working
+byte zox_log_network_errors = 0;
 // Socket Settings
 byte sockets_enabled = 0;
+#ifdef zox_server
+    byte server_mode = 1;
+#else
+    byte server_mode = 0;
+#endif
+byte4 server_ip = (byte4) { 194, 195, 251, 84 };  //  "192.0.2.1"
+byte4 local_ip = (byte4) { 127, 0, 0, 1 };  //  "192.0.2.1"
 
 #ifndef zox_windows
     #define peek_packet_size 1
@@ -26,16 +29,3 @@ byte sockets_enabled = 0;
     const unsigned long f_getfl = 3; // F_GETFL
     const unsigned long f_setfl = 4; // F_SETFL
 #endif
-
-void process_arguments_networking(ecs *world, char* args[], int count) {
-    (void) world;
-    for (int i = 1; i < count; i++) {
-        if (strcmp(args[i], "-x") == 0 || strcmp(args[i], "--server") == 0) {
-            server_mode = 1;
-        } else if (strcmp(args[i], "--client") == 0) {
-            server_mode = 0;
-        } else if (strcmp(args[i], "-x") == 0 || strcmp(args[i], "--server") == 0) {
-            server_mode = 1;
-        }
-    }
-}

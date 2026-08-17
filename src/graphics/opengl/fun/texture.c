@@ -55,7 +55,31 @@ static inline void zox_gpu_clear_texture_rgba(guint id) {
     // byte clear[4] = { 0, 0, 0, 0 }; // RGBA
     // glClearTexImage(id, 0, GL_RGBA, GL_UNSIGNED_BYTE, clear);
     zox_gpu_bind_texture(id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA,
+        0,
+        0,
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        NULL);
+    zox_gpu_bind_texture(0);
+}
+
+static inline void zox_gpu_clear_texture_rgb(guint id) {
+    zox_gpu_bind_texture(id);
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGB,
+        0,
+        0,
+        0,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        NULL);
     zox_gpu_bind_texture(0);
 }
 

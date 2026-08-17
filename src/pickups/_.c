@@ -1,9 +1,11 @@
 /*
- * Module: Pickups
- *
- *      - Pick up stuff from the ground
- *
- * */
+ * +------------------------------------------------------------------+
+ * | Zox Module: Pickups                                              |
+ * |                                                                  |
+ * |  Loot - Drops - Collection - Spawning - Pickup State             |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #if !defined(zoxm_pickups) && defined(zoxm_cubes)
 #define zoxm_pickups
 

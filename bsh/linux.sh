@@ -28,12 +28,14 @@ sdl_mixer="1"
 # BUILD ARGS #
 game_name="zoxel"
 debug="0"
+logs="0"
 verbose="0"
 package="0"
 is_static="1"
 GLB="opengl"      # headless, opengl or vulkan
 GFX="sdl"         # sdl, glut
 is_sdl3="1"       # sdl2, sdl3
+server="0"
 
 if [[ $# -gt 0 && ${1} != --* ]]; then
     game_name="$1"
@@ -41,11 +43,15 @@ fi
 
 [[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
 [[ " $* " == *" --debug "* ]] && debug="1"
+[[ " $* " == *" --release "* ]] && debug="0"
+[[ " $* " == *" --nologs "* ]] && logs="0"
+[[ " $* " == *" --logs "* ]] && logs="1"
 [[ " $* " == *" --profiler "* ]] && is_profiler="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
 [[ " $* " == *" --package "* ]] && package="1"
 [[ " $* " == *" --system "* ]] && is_static="0"
 [[ " $* " == *" --static "* ]] && is_static="1"
+[[ " $* " == *" --server "* ]] && server="1"
 # Architecture
 [[ " $* " == *" --x64 "* ]] && ARC="x64"
 [[ " $* " == *" --arm "* ]] && ARC="arm"
@@ -61,7 +67,9 @@ fi
 [[ " $* " == *" --vulkan "* ]] && GLB="vulkan"
 
 bin_filename="${game_name}"
-bin_path=bin/${bin_filename}.bin
+output_extension="bin"
+output_folder="bin"
+bin_path="${output_folder}/${bin_filename}.${output_extension}"
 compiler="gcc"
 sources="src/main.c inc/flecs/flecs.c"
 includes="-Iinc/flecs"
@@ -74,14 +82,20 @@ library="lib/${OS}_${ARC}"
 
 echo "Chosen Arc [${ARC}] - Running on [${ONARC}]"
 
+# Special output name for headless
+[[ "${GLB}" == "headless" ]] && bin_filename="${bin_filename}-headless"
+[[ "${debug}" == "1" ]] && bin_filename="${bin_filename}-dev"
+
+bin_path="bin/${bin_filename}.${output_extension}"
+
 # used to reduce instructions to a single CPU
 #  cflags+=" -march=native"
 
 # Our  Libs
-if [[ ${is_static} == "1" ]]; then
+if [[ "${GFX}" == "sdl" && ${is_static} == "1" ]]; then
     lib_args=""
-    [[ ${sdl_mixer} == "1" ]] && lib_args+=" --sdl-mixer"
     [[ ${is_sdl3} == "1" ]] && lib_args+=" --sdl3"
+    [[ ${sdl_mixer} == "1" ]] && lib_args+=" --sdl-mixer"
     bsh/libs-download.sh ${lib_args}
     bsh/libs-compile.sh linux ${ARC} ${lib_args}
     # add library path to our linking
@@ -90,18 +104,12 @@ if [[ ${is_static} == "1" ]]; then
 fi
 
 if [[ ${ARC} == "arm" ]]; then
-#    cflags+=" -march=native"
+    eccho "+ [Arm] Enabled [gles]"
     is_desktop_gl="0"
-#elif [[ ${ONARC} == "x64" && ${ARC} == "x64" ]]; then
-#    cflags+=" -march=native"
-#else
-#    echo "Running on Unsupported platform and target"
-#    exit
 fi
 
 if [[ ${debug} == "1" ]]; then
     echo "+ Added [debug]"
-    bin_path="bin/${bin_filename}-dev.bin"
     # cflags="-O2 -g -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs
@@ -143,6 +151,16 @@ fi
 if [[ ${GLB} == "headless" ]]; then
     echo "+ Added [headless]"
     dflags+=" -Dzox_headless"
+fi
+
+if [[ ${server} == "1" ]]; then
+    echo "+ Added [server]"
+    dflags+=" -Dzox_server"
+fi
+
+if [[ ${logs} == "1" ]]; then
+    echo "+ Added [logs]"
+    dflags+=" -Dzox_logs"
 fi
 
 if [[ ${GFX} == "sdl" ]]; then

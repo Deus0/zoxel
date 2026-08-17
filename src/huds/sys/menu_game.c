@@ -16,7 +16,7 @@ zox_sys2(MenuGameBeginSystem) {
         }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {
-            zox_logw("Canvas is missing from taskbar");
+            // zox_logw("Canvas is missing from taskbar");
             continue;
         }
         entity taskbar = zox_get_child_by_id(world, canvas, zox_id(Taskbar));

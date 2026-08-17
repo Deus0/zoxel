@@ -1,8 +1,14 @@
 /*
- *  Module: Markers
+ * +------------------------------------------------------------------+
+ * | Zox Module: Markers                                                |
+ * |                                                                  |
+ * |  Overheads - Icons - Labels - Targets - Marker State                |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
- *      # Overhead icons for character signal
+ *  TODO:
  *
+ *      - Overhead icons for character signal
  *          - ! - Has Quest
  *          - ? - Hand in Quest
  *          - X - Enemy

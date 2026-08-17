@@ -1,2 +1,26 @@
-#include "settings.c"
-#include "generate_texture_states.c"
+// 0 no outline, 1 full outline, 2 half outline, 3 5/6 outline
+#define zox_generate_texture_run 1
+#define zox_generate_texture_uvs 2
+#define zox_generate_texture_end 0
+#define zox_upload_texture 1
+// textures
+#define zox_texture_none 0
+#define zox_texture_dirt 1
+#define zox_texture_grass 2
+#define zox_texture_sand 3
+#define zox_texture_stone 4
+#define zox_texture_obsidian 5
+#define zox_texture_graybox 220
+// outline mope
+#define zox_outline_type_none 0
+#define zox_outline_type_full 1
+#define zox_outline_type_half 2
+#define zox_outline_type_faded 3
+// special modes
+#define zox_texture_mode_default 0
+#define zox_texture_mode_graybox 1
+// pipelines
+// settings
+byte terrain_texture_outline_type = zox_outline_type_full;
+const double noise_animation_speed = 0.5;
+byte texture_mode = 0;

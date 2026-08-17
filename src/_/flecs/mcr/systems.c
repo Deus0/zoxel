@@ -77,12 +77,6 @@ void zox_system_on_new(ecs* world, entity system) {
 #define zoxd_system2(T)\
     ECS_SYSTEM_DECLARE(T)
 
-#if defined(zox_enable_log_new_system) && !defined(zox_disable_logs)
-    #define zox_log_new_system(msg, ...) zox_log(msg, ##__VA_ARGS__)
-#else
-    #define zox_log_new_system(msg, ...) { }
-#endif
-
 #define zox_system_internal(id_, phase, multi_threaded_, ctx_, ...) { \
     ecs_entity_desc_t edesc = {0}; \
     ecs_id_t add_ids[3] = {\
