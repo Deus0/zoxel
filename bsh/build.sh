@@ -80,7 +80,7 @@ pick_settings() {
   echo ""
   clear
 
-  SDL=$(select_option "Select SDL" sdl3 sdl2)
+  SDL=$(select_option "Select SDL" sdl3 sdl2 headless)
   echo ""
   clear
 }

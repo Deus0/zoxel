@@ -50,6 +50,7 @@ fi
 [[ " $* " == *" --x64 "* ]] && ARC="x64"
 [[ " $* " == *" --arm "* ]] && ARC="arm"
 # GFX
+[[ " $* " == *" --headless "* ]] && GFX="headless"
 [[ " $* " == *" --sdl "* ]] && GFX="sdl"
 [[ " $* " == *" --glut "* ]] && GFX="glut"
 [[ " $* " == *" --sdl2 "* ]] && is_sdl3="0"

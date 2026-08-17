@@ -1,4 +1,6 @@
-#include "wav.c"
+#ifdef zox_sdl
+    #include "wav.c"
+#endif
 
 // File implementation for Sounds
 void load_files_sounds(ecs *world) {
@@ -7,6 +9,10 @@ void load_files_sounds(ecs *world) {
         zox_logv("Sounds are disabled: No Loading Sounds.");
         return;
     }
+#ifdef zox_sdl
+    zox_logv("Sounds are disabled: No Loading Sounds.");
+    return;
+#endif
     char* load_directory = concat_file_path(resources_path, directory_sounds);
     zox_logv("  - Loading Files Sounds [%s]", load_directory);
     FileList files = get_files(load_directory, 0);
@@ -25,31 +31,13 @@ void load_files_sounds(ecs *world) {
         if (!load_wav_data(filepath, &values, &samples, &length, dbg_log)) {
             files_sounds[i] = 0;
         }
-/*#ifdef zox_sdl3
-        MIX_Audio *mix_audio = MIX_LoadAudio(zox_mixer, filepath, true);
-        if (!mix_audio) {
-            zox_loge("sound file failed to load [%s] due to [%s]", filepath, SDL_GetError());
-            files_sounds[i] = 0;
-            continue;
-        }
-        Sint64 frames = MIX_GetAudioDuration(mix_audio);
-        SDL_AudioSpec spec;
-        if (MIX_GetAudioFormat(mix_audio, &spec) && spec.freq > 0) {
-            length = (float) frames / (float) spec.freq;
-        }
-#else
-        Mix_Chunk *mix_chunk = Mix_LoadWAV(filepath);
-        if (!mix_chunk) {
-            zox_loge("sound file failed to load [%s] due to [%s]", filepath, Mix_GetError());
-            files_sounds[i] = 0;
-            continue;
-        }
-        length = get_mix_chunk_sound_length(mix_chunk);
-        values = (float*) mix_chunk->abuf;
-        samples = mix_chunk->alen / sizeof(float);
-#endif*/
         // Spawn our loaded data as sounds
-        entity e = spawn_sound_filepath(world, prefab_sound_filepath, values, samples, length);
+        entity e = spawn_sound_filepath(
+            world,
+            prefab_sound_filepath,
+            values,
+            samples,
+            length);
         zox_logv("   - [%i] [sound] [%s] - length [%f]", i, filepath, length);
         files_sounds[i] = e;
         string_hashmap_add(files_hashmap_sounds, new_string_data_clone(filename), e);
