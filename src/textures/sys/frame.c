@@ -144,7 +144,6 @@ zox_sys2(FrameTextureSystem) {
     zox_sys_in(FrameCorner);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextureSize, size);
@@ -154,7 +153,6 @@ zox_sys2(FrameTextureSystem) {
         zox_sys_i(FrameCorner, edge);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
-        zox_sys_o(TextureDirty, dirty);
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
@@ -166,7 +164,7 @@ zox_sys2(FrameTextureSystem) {
         resize_TextureData(data, length);
         generate_texture_frame2(data->value, size->value, fill->value, outline->value, thickness->value, edge->value, add_noise);
         generate->value = zox_generate_texture_end;
-        dirty->value = zox_upload_texture;
+        zox_add(e, TextureDirty);
         zox_sys_increment();
         if (dbg_log) {
             zox_log("Frame Texture generated [%s] fill [%ix%ix%ix%i] Size [%ix%i]", zox_get_name(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a, size->value.x, size->value.y);

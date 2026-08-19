@@ -179,12 +179,17 @@ zox_sys2(SmoothLightsBuildSystem) {
             continue;
         }
         // If chunk building we wait
-        if (zox_getv(chunk, BuildChunkSides)) {
+        if (zox_has(chunk, BuildChunkSides)) {
             if (dbg_log) {
                 zox_log("Chunk [%s] is still Building Sides", zox_get_name(e));
             }
             continue;
         }
+        /*if (zox_has(chunk, GenerateChunk) ||
+            zox_has(chunk, VoxelNodeDirty)
+        ) {
+            continue;
+        }*/
         const SidesOctree* sides = zox_get(chunk, SidesOctree);
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);

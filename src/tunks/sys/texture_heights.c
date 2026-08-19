@@ -7,14 +7,12 @@
     zox_sys_in(TunkLink);
     zox_sys_out(TextureData);
     zox_sys_out(TextureSize);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, generate);
         zox_sys_i(TunkLink, tunk);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureSize, size);
-        zox_sys_o(TextureDirty, dirty);
         if (generate->value != zox_dirty_active) {
             continue;
         }

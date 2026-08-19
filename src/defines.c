@@ -34,7 +34,7 @@
 #define FLECS_SYSTEM
 #define FLECS_PIPELINE
 // #define FLECS_PROFILER
-#ifdef zox_profiler
+#ifdef flecs_profiler
     #define FLECS_STATS
     #define FLECS_REST
     #define FLECS_HTTP

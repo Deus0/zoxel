@@ -17,7 +17,8 @@ entity spawn_prefab_chunk_invisible(ecs *world) {
     zox_prefab_set(e, RenderDistance, { 0 });
     zox_prefab_set(e, RenderDepth, { 0 });
     zox_prefab_set(e, RenderDisabled, { 0 });
+    // Events
     zox_prefab_set(e, VoxelNodeDirty, { 0 });
-    zox_prefab_set(e, BuildChunkSides, { 0 });
+    // zox_prefab_set(e, BuildChunkSides, { 0 });
     return e;
 }

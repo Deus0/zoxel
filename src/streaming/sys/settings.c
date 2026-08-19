@@ -8,11 +8,11 @@ zox_sys2(StreamingSettingsSystem) {
         if (load->value != zox_load_settings_spawn) {
             continue;
         }
-        spawn_setting_byte(world, e, "No Lods", disable_terrain_lods);
         spawn_setting_byte_slider(world, e, "Near RD", terrain_lod_near, (byte2) { terrain_lod_near_min, terrain_lod_near_max });
         spawn_setting_byte_slider(world, e, "Far RD", terrain_lod_far, (byte2) { terrain_lod_far_min, terrain_lod_far_max });
         spawn_setting_byte_slider(world, e, "Vertical RD", render_distance_y, (byte2) { render_distance_y_min, render_distance_y_max });
 #ifdef zox_debug_settings
+        spawn_setting_byte(world, e, "No Lods", disable_terrain_lods);
         spawn_setting_byte(world, e, "No Frustums", disable_frustum_culling);
 #endif
     }

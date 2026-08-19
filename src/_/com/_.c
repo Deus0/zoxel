@@ -97,6 +97,6 @@ void zox_define_components_core(ecs* world) {
     zoxd_arrayd(DoubleData);
     // Dont Fragment
     // zox_dont_fragment(Initialize);
-    // zox_dont_fragment(Disabled);
+    zox_dont_fragment(Disabled);
     // zox_dont_fragment(DebugEntity);
 }

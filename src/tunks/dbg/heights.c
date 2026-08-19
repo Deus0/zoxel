@@ -10,14 +10,12 @@ zox_sys2(HeightsTextureSystem) {
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     zox_sys_out(TextureSize);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TunkLink, tunk);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureSize, size);
-        zox_sys_o(TextureDirty, dirty);
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
@@ -26,7 +24,7 @@ zox_sys2(HeightsTextureSystem) {
         if (!zox_valid(tunk->value) || !zox_has(tunk->value, GenerateTunk) || !zox_has(tunk->value, HeightMap)) {
             size->value = int2_single(0);
             resize_TextureData(data, size->value.x * size->value.y);
-            dirty->value = zox_dirty_trigger;
+            zox_add(e, TextureDirty);
             continue;
         }
 #endif
@@ -66,6 +64,6 @@ zox_sys2(HeightsTextureSystem) {
             }
         }
         generate->value = 0;
-        dirty->value = zox_upload_texture;
+        zox_add(e, TextureDirty);
     }
 } zox_sys_end(HeightsTextureSystem);

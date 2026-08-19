@@ -1,5 +1,11 @@
 # Optimizations #
 
+## Fix Lag Spikes
+- LightFloodSystem [7ms]
+- ChunkSidesSystem [5ms]
+
+- Remove GenerateTexture too
+
 -> Use the flecs profiler to make sure chunk components are reduced properly
 -> Focus on terrain chunks for now
 
@@ -17,8 +23,8 @@
     - VoxelNodeDirty
     - BuildChunkSides
     - GenerateModel
-    - BuildChunkSides
     - FindNeighbors
+    -x BuildChunkSides
     -x Busy
     -x Ready
     -x RenderDepthDirty

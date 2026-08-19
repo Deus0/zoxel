@@ -9,6 +9,7 @@ zox_sys2(AiSettingsSystem) {
         if (load->value != zox_load_settings_spawn) {
             continue;
         }
+        spawn_setting_byte(world, e, "No Humans", zox_no_humanoids);
 #ifdef zox_debug_settings
         spawn_setting_byte(world, e, "No Npcs", disable_npcs);
 #endif
@@ -35,6 +36,8 @@ zox_sys2(AiSettingsDirtySystem) {
             }
             if (!strcmp(name->value, "No Npcs")) {
                 disable_npcs = value;
+            } else if (!strcmp(name->value, "No Humans")) {
+                zox_no_humanoids = value;
             }
         }
 

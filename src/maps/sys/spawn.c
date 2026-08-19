@@ -60,7 +60,6 @@ zox_sys2(MapInitializeSystem) {
                 entity e2 = spawn_ui(world, prefab_element, body, float2_half, piece_position, piece_size, int2_zero);
                 zox_set_unique_name(e2, "map_piece");
                 zox_set(e2, TunkLink, { tunk });
-                zox_set(e2, TextureDirty, { 0 });
                 zox_set(e2, GenerateTexture, { zox_generate_texture_run });
                 zox_set(e2, MapPiecePosition, { grid_position });
                 if (dbg_log) {

@@ -29,17 +29,17 @@ void set_character_action(ecs *world, entity character, byte index) {
         }
         if (!zox_has(child, ActiveState)) {
             zox_loge("[%i] has no ActiveState", i);
-            zox_loge("  - child [%s]", zox_get_name(child));
-            zox_loge("  - body [%s]", zox_get_name(body));
+            zox_loge("  - child [%s]", zox_getn(child));
+            zox_loge("  - body [%s]", zox_getn(body));
             continue;
         }
-        zox_geter_value(child, ActiveState, byte, state);
+        byte state = zox_getv(child, ActiveState);
         if (index != i && state) {
-            zox_set(child, ActiveState, { 0 });
-            zox_set(child, ActiveStateDirty, { zox_dirty_trigger });
+            zox_setv(child, ActiveState, 0);
+            zox_setv(child, ActiveStateDirty, zox_dirty_trigger);
         } else if (index == i && !state) {
-            zox_set(child, ActiveState, { 1 });
-            zox_set(child, ActiveStateDirty, { zox_dirty_trigger });
+            zox_setv(child, ActiveState, 1);
+            zox_setv(child, ActiveStateDirty, zox_dirty_trigger);
         }
     }
 }

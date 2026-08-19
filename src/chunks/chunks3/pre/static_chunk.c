@@ -11,14 +11,15 @@ entity spawn_prefab_static_chunk(ecs *world) {
     zox_prefab_set(e, NodeDepth, { 0 });
     zox_prefab_set(e, VoxelNode, { 0 });
     zox_prefab_set(e, SidesOctree, { 0 });
-    zox_prefab_set(e, BuildChunkSides, { 0 });
     zox_prefab_set(e, BlockScale, { default_vox_scale });
     // Rendering
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, Brightness, { 1.0f });
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
+    // Events
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, VoxelNodeDirty, { 0 });
+    // zox_prefab_set(e, BuildChunkSides, { 0 });
     return e;
 }

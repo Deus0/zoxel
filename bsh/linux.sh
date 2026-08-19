@@ -46,7 +46,8 @@ fi
 [[ " $* " == *" --release "* ]] && debug="0"
 [[ " $* " == *" --nologs "* ]] && logs="0"
 [[ " $* " == *" --logs "* ]] && logs="1"
-[[ " $* " == *" --profiler "* ]] && is_profiler="1"
+[[ " $* " == *" --timings "* ]] && is_time_systems="1"
+[[ " $* " == *" --profile "* ]] && is_profiler="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
 [[ " $* " == *" --package "* ]] && package="1"
 [[ " $* " == *" --system "* ]] && is_static="0"
@@ -93,14 +94,18 @@ bin_path="bin/${bin_filename}.${output_extension}"
 
 # Our  Libs
 if [[ "${GFX}" == "sdl" && ${is_static} == "1" ]]; then
+    # Make use local lib files during runtime
+    libs+=" -Wl,-rpath,\$ORIGIN"
+    echo ""
+    echo "--------------------------------------------"
     lib_args=""
     [[ ${is_sdl3} == "1" ]] && lib_args+=" --sdl3"
     [[ ${sdl_mixer} == "1" ]] && lib_args+=" --sdl-mixer"
     bsh/libs-download.sh ${lib_args}
+    echo "--------------------------------------------"
     bsh/libs-compile.sh linux ${ARC} ${lib_args}
-    # add library path to our linking
-    # Make use local lib files during runtime
-    libs+=" -Wl,-rpath,\$ORIGIN"
+    echo "--------------------------------------------"
+    echo ""
 fi
 
 if [[ ${ARC} == "arm" ]]; then
@@ -128,19 +133,19 @@ else
     cflags+=" -O3 -flto=auto -DNDEBUG"
 fi
 
-if [[ ${verbose} == "1"  ]]; then
-    echo "+ Added [verbose]"
-    dflags+=" -Dzox_verbose"
-fi
-
 if [[ ${is_profiler} == "1" ]]; then
-    echo "+ Added zox_profiler"
-    dflags+=" -Dzox_profiler"
+    echo "+ Added [flecs_profiler]"
+    dflags+=" -Dflecs_profiler"
 fi
 
 if [[ ${is_safety_checks} == "1" ]]; then
-    echo "+ Added zox_safety_checks"
+    echo "+ Added [zox_safety_checks]"
     dflags+=" -Dzox_safety_checks"
+fi
+
+if [[ ${logs} == "1" ]]; then
+    echo "+ Added [zox_logs]"
+    dflags+=" -Dzox_logs"
 fi
 
 if [[ ${is_time_systems} == "1" ]]; then
@@ -148,23 +153,38 @@ if [[ ${is_time_systems} == "1" ]]; then
     dflags+=" -Dzox_time_systems"
 fi
 
+if [[ ${verbose} == "1"  ]]; then
+    echo "+ Added [zox_verbose]"
+    dflags+=" -Dzox_verbose"
+fi
+
 if [[ ${GLB} == "headless" ]]; then
-    echo "+ Added [headless]"
+    echo "+ Added [zox_headless]"
     dflags+=" -Dzox_headless"
 fi
 
 if [[ ${server} == "1" ]]; then
-    echo "+ Added [server]"
+    echo "+ Added [zox_server]"
     dflags+=" -Dzox_server"
 fi
 
-if [[ ${logs} == "1" ]]; then
-    echo "+ Added [logs]"
-    dflags+=" -Dzox_logs"
+if [[ ${GLB} == "opengl" ]]; then
+    echo "+ Added [zox_opengl]"
+    dflags+=" -Dzox_opengl"
+    if [[ ${sdl_source} == "1" ]]; then
+        echo "Cannot get Cross Compiler working with OpenGL [-lEGL -lGLESv2] yet.."
+        exit
+    else
+        if [[ ${is_desktop_gl} == "1" ]]; then
+            libs+=" -lGL"
+        else
+            libs+=" -lEGL -lGLESv2"
+        fi
+    fi
 fi
 
 if [[ ${GFX} == "sdl" ]]; then
-    echo "+ Added [sdl]"
+    echo "+ Added [zox_sdl]"
     dflags+=" -Dzox_sdl"
     libs+=" -L${library}" # static libs for build
     if [[ ${sdl_images} == "1" ]]; then
@@ -174,7 +194,7 @@ if [[ ${GFX} == "sdl" ]]; then
         dflags+=" -Dzox_sdl_mixer"
     fi
     if [[ ${is_sdl3} == "1" ]]; then
-        echo "+ Added [sdl3]"
+        echo "+ Added [zox_sdl3]"
         dflags+=" -Dzox_sdl3"
         # for local / static
         if [[ ${is_static} == "0" ]]; then
@@ -214,21 +234,6 @@ if [[ ${GFX} == "sdl" ]]; then
                 # libs+=" -lSDL3_mixer"
                 libs+=" ${library}/libSDL2_mixer.so"
             fi
-        fi
-    fi
-fi
-
-if [[ ${GLB} == "opengl" ]]; then
-    echo "+ Added [opengl]"
-    dflags+=" -Dzox_opengl"
-    if [[ ${sdl_source} == "1" ]]; then
-        echo "Cannot get Cross Compiler working with OpenGL [-lEGL -lGLESv2] yet.."
-        exit
-    else
-        if [[ ${is_desktop_gl} == "1" ]]; then
-            libs+=" -lGL"
-        else
-            libs+=" -lEGL -lGLESv2"
         fi
     fi
 fi

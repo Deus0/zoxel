@@ -1,6 +1,7 @@
 zox_tag(Texture);
 zox_tag(Tilemap);
 zox_tag(FixToLayout);   // snap texture to layout size
+zox_tag(TextureDirty);
 // types of textures
 zox_tag(NoiseTexture);
 zox_tag(IconTexture);
@@ -36,6 +37,7 @@ void define_components_textures(ecs* world) {
     zoxd_tag(Texture);    // RGBA
     zoxd_tag(TextureRGB);
     zoxd_tag(Tilemap);
+    zoxd_tag(TextureDirty);
     // Properties
     zoxd_tag(FixToLayout);
     // Generation Types (obsolete)
@@ -65,4 +67,6 @@ void define_components_textures(ecs* world) {
     zoxd_arrayd(TextureData);
     zoxd_arrayd(TilemapUVs);
     zoxd_entities(TextureLinks);
+    // Dont Fragment Entities
+    zox_dont_fragment(TextureDirty);
 }

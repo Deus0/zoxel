@@ -5,7 +5,7 @@ entity spawn_element_texture(ecs* world, entity prefab, entity parent, int2 posi
     entity e = spawn_ui(world, prefab, parent, anchor, position, size, texture_size);
     zox_name("element_texture");
     zox_set_ptr(e, TextureData, *source_data);
-    zox_setv(e, TextureDirty, zox_upload_texture);
+    zox_add(e, TextureDirty);
     zox_setv(e, Layer, layer);
     return e;
 }

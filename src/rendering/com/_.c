@@ -50,7 +50,6 @@ zoxc_arrayd(MeshColorRGBs, color_rgb);
 zoxc_byte(BuildMesh);
 zoxc_byte(MeshDirty);
 zoxc_byte(MeshReady);
-zoxc_byte(TextureDirty);
 zoxc_byte(MeshColorsGenerate);
 zoxc_byte(MeshColorsDirty);
 zoxc_state_remove(RenderDepthDirty);
@@ -114,19 +113,18 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(MeshReady);
     zoxd_byte(MeshColorsGenerate);
     zoxd_byte(MeshColorsDirty);
-    zoxd_byte(TextureDirty);
     zoxd_tag(RenderTextureDirty);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);
     zoxd_tag(MeshBuilt);
     zox_dont_fragment(MeshBuilt);
+    zox_dont_fragment(RenderTextureDirty);
     // Dont fragments
     /*zox_dont_fragment(BuildMesh);
     zox_dont_fragment(MeshDirty);
     zox_dont_fragment(MeshReady);
     zox_dont_fragment(MeshColorsGenerate);
-    zox_dont_fragment(MeshColorsDirty);
-    zox_dont_fragment(TextureDirty);*/
+    zox_dont_fragment(MeshColorsDirty);*/
     // TODO: Remove their state systems
     // zox_dont_fragment(RenderDepthDirty);
     // zox_dont_fragment(RenderDistanceDirty);

@@ -4,15 +4,16 @@ zox_sys2(ChunkMeshTriggerSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNodeDirty);
-    zox_sys_out(BuildChunkSides);
+    // zox_sys_out(BuildChunkSides);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNodeDirty, dirty);
-        zox_sys_o(BuildChunkSides, build);
+        // zox_sys_o(BuildChunkSides, build);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        build->value = 1;
+        // build->value = 1;
+        zox_add(e, BuildChunkSides);
         if (dbg_log) {
             zox_log("Chunk Triggered Build Sides + Mesh [%s]", zox_getn(e));
         }
@@ -42,7 +43,7 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
                 }
                 continue;
             }
-            zox_setv(neighbor, BuildChunkSides, 1);
+            zox_add(neighbor, BuildChunkSides);
         }
     }
 } zox_sys_end(Chunk3NeighborsMeshTriggerSystem);

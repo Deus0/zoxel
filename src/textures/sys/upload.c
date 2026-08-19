@@ -1,19 +1,18 @@
 zox_sys2(TextureRgbaUploadSystem) {
     byte dbg_log = 0;
+    byte max_process = !zox_disable_process_skips ? texture_upload_rate : 0;
     byte dbg_save = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureData);
     zox_sys_in(TextureSize);
     zox_sys_in(TextureGPULink);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextureData, data);
         zox_sys_i(TextureSize, size);
         zox_sys_i(TextureGPULink, gpu_link);
-        zox_sys_o(TextureDirty, dirty);
-        if (dirty->value != zox_upload_texture) {
+        if (max_process && process_count > max_process) {
             continue;
         }
         if (!gpu_link->value) {
@@ -52,26 +51,26 @@ zox_sys2(TextureRgbaUploadSystem) {
                 save_texture_to_bmp(path, data, size->value);
             }
         }
-        dirty->value = 0;
+        zox_remove(e, TextureDirty);
+        zox_sys_increment();
     }
 } zox_sys_end(TextureRgbaUploadSystem);
 
 // TextureRGB's
 zox_sys2(TextureRgbUploadSystem) {
     byte dbg_log = 0;
+    byte max_process = !zox_disable_process_skips ? texture_upload_rate : 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureData);
     zox_sys_in(TextureSize);
     zox_sys_in(TextureGPULink);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextureData, data);
         zox_sys_i(TextureSize, size);
         zox_sys_i(TextureGPULink, gpu_link);
-        zox_sys_o(TextureDirty, dirty);
-        if (dirty->value != zox_upload_texture) {
+        if (max_process && process_count > max_process) {
             continue;
         }
         if (!gpu_link->value) {
@@ -96,6 +95,7 @@ zox_sys2(TextureRgbUploadSystem) {
                 size->value,
                 data->value);
         }
-        dirty->value = 0;
+        zox_remove(e, TextureDirty);
+        zox_sys_increment();
 }
 } zox_sys_end(TextureRgbUploadSystem);

@@ -8,7 +8,6 @@ zox_sys2(IconTextureSystem) {
     zox_sys_in(IconRadius);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextureSize, size);
@@ -17,7 +16,6 @@ zox_sys2(IconTextureSystem) {
         zox_sys_i(OutlineThickness, thickness);
         zox_sys_i(IconRadius, icon_radius);
         zox_sys_o(TextureData, data);
-        zox_sys_o(TextureDirty, dirty);
         zox_sys_o(GenerateTexture, generate);
         if (generate->value != zox_generate_texture_run) {
             continue;
@@ -34,8 +32,8 @@ zox_sys2(IconTextureSystem) {
             radius,
             add_noise
         );
-        dirty->value = zox_upload_texture;
         generate->value = zox_generate_texture_end;
+        zox_add(e, TextureDirty);
         // zox_log(" > [%s] radius [%i] size [%ix%i]\n", zox_get_name(it->entities[i]), radius, textureSize->value.x, textureSize->value.y)
     }
 } zox_sys_end(IconTextureSystem);

@@ -9,7 +9,6 @@ void zox_define_systems_tunks_debug(ecs* world) {
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [out] rendering.TextureSize,
-        [out] rendering.TextureDirty,
         [none] tunks.RegionTexture
     );
     zox_system(
@@ -19,7 +18,6 @@ void zox_define_systems_tunks_debug(ecs* world) {
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [out] rendering.TextureSize,
-        [out] rendering.TextureDirty,
         [none] tunks.HeightsTexture
     );
 }

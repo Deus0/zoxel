@@ -29,15 +29,18 @@ zox_sys2(PlotLineSystem) {
             zox_loge("No DoubleData found on data_entity [%s]", zox_get_name(data_entity));
             continue;
         }
-        zox_geter(data_entity, DoubleData, data);
-        zox_geter_value(parent, PlotMin, double, min);
-        zox_geter_value(parent, PlotMax, double, max);
-        zox_geter_value(parent, LayoutSize, int2, parent_size);
+        const DoubleData* data = zox_get(data_entity, DoubleData);
+        double min = zox_getv(parent, PlotMin);
+        double max = zox_getv(parent, PlotMax);
+        if (max <  zox_delta_time) {
+            max = zox_delta_time;
+        }
+        int2 parent_size = zox_getv(parent, LayoutSize);
         if (index->value >= data->length) {
             zox_loge("index [%i] out of bounds (len: %i)", index->value, data->length);
             continue;
         }
-        double line_max = max;
+        /*double line_max = max;
         if (max - min <= graph_plot_height) {
             // reset max bounds of our ms
             line_max = min + graph_plot_height;
@@ -45,6 +48,22 @@ zox_sys2(PlotLineSystem) {
         double value = data->value[index->value];
         value /= line_max;
         position->end.y = (int) (value * parent_size.y);
-        // dirty->value = zox_dirty_trigger;
+        // dirty->value = zox_dirty_trigger;*/
+
+        double line_max = max;
+        if (max - min <= graph_plot_height) {
+            line_max = min + graph_plot_height;
+        }
+
+        double value = data->value[index->value];
+        double range = line_max - min;
+
+        if (range > 0.0) {
+            value = (value - min) / range;
+        } else {
+            value = 0.0;
+        }
+
+        position->end.y = (int)(value * parent_size.y);
     }
 } zox_sys_end(PlotLineSystem);

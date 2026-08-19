@@ -39,7 +39,7 @@ zox_sys2(ElementbarSystem) {
             }
             continue;
         }
-        if (zox_has(frontbar, TextureDirty) && zox_getv(frontbar, TextureDirty)) {
+        if (zox_has(frontbar, TextureDirty)) {
             if (dbg_log >= 2) {
                 zox_log("Frontbar [%s] busy", zox_getn(e));
             }

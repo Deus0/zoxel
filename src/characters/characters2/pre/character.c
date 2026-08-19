@@ -19,7 +19,6 @@ entity spawn_prefab_character2(ecs *world) {
     /*zox_add(e, Texture)
     zox_prefab_set(e, TextureData, { 0, NULL })
     zox_prefab_set(e, TextureSize, { texture_size })
-    zox_prefab_set(e, TextureDirty, { 0 })
     zox_prefab_set(e, Seed, { 666 })
     zox_prefab_set(e, GenerateTexture, { zox_dirty_trigger })*/
     // add_animated_noise_texture(world, e);

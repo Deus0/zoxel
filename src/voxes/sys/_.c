@@ -89,7 +89,6 @@ void define_systems_voxes(ecs *world) {
         [in] rendering.ModelLink,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
-        [out] rendering.TextureDirty,
         [none] textures.VoxTexture
     );
 }

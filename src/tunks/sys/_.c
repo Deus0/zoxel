@@ -156,7 +156,6 @@ void define_systems_tunks(ecs* world) {
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [out] rendering.TextureSize,
-        [out] rendering.TextureDirty,
         [none] tunks.TunkTexture
     );
     /*zox_system(
@@ -166,7 +165,6 @@ void define_systems_tunks(ecs* world) {
         [in] tunks.TunkLink,
         [out] textures.TextureData,
         [out] rendering.TextureSize,
-        [out] rendering.TextureDirty,
         [none] tunks.HeightsTexture
     );*/
 }

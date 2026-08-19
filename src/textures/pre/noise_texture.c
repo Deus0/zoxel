@@ -13,7 +13,6 @@ entity spawn_prefab_texture_noise(ecs *world, int2 texture_size) {
     zox_add(e, Texture);
     zox_prefab_set(e, TextureData, { 0, NULL });
     zox_prefab_set(e, TextureSize, { texture_size });
-    zox_prefab_set(e, TextureDirty, { 0 });
     zox_prefab_set(e, Seed, { 666 });
     zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     add_noise_texture(world, e);

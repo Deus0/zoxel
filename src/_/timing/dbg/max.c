@@ -10,7 +10,7 @@ zox_sys2(MaxSystemSystem) {
             // zox_logw("System invalid at [%i]", i);
             continue;
         }
-        double delta = zox_getv(system, MaxDoubleData); // SystemDeltaCache);
+        double delta = zox_getv(system, MaxDoubleData);
         if (delta > max_delta) {
             max_delta = delta;
             max_system = system;

@@ -9,6 +9,8 @@
 #ifndef zoxm_textures
 #define zoxm_textures
 
+byte texture_upload_rate = 8;
+
 // TODO: Move font texture functions into textures
 #include "dat/_.c"
 #include "com/_.c"

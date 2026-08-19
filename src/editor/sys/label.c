@@ -1,4 +1,3 @@
-double time_update_debug_label_system_rate = 1;
 uint max_debug_characters = 6 * 1024;
 double time_update_debug_label_system = 0;
 

@@ -19,7 +19,6 @@ void define_systems_textures(ecs *world) {
         [in] textures.OutlineColor,
         [in] textures.OutlineThickness,
         [out] textures.TextureData,
-        [out] rendering.TextureDirty,
         [none] textures.ArrowTexture
     );
     zox_system(
@@ -38,7 +37,6 @@ void define_systems_textures(ecs *world) {
         [in] textures.FillColor,
         [out] textures.TextureData,
         [out] textures.GenerateTexture,
-        [out] rendering.TextureDirty,
         [none] textures.FillTexture
     );
     zox_system(
@@ -51,7 +49,6 @@ void define_systems_textures(ecs *world) {
         [in] textures.FrameCorner,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
-        [out] rendering.TextureDirty,
         [none] textures.FrameTexture
     );
     add_system_process_counter(world, zox_id(FrameTextureSystem));
@@ -65,7 +62,6 @@ void define_systems_textures(ecs *world) {
         [in] textures.IconRadius,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
-        [out] rendering.TextureDirty,
         [none] textures.IconTexture
     );
     zox_system(
@@ -76,7 +72,6 @@ void define_systems_textures(ecs *world) {
         [out] textures.GenerateTexture,
         [out] rendering.TextureSize,
         [out] textures.TextureData,
-        [out] rendering.TextureDirty,
         [none] textures.Tilemap
     );
     zox_system_1(
@@ -85,7 +80,7 @@ void define_systems_textures(ecs *world) {
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
-        [out] rendering.TextureDirty,
+        [none] textures.TextureDirty,
         [none] textures.TextureRGB,
         [none] !core.Initialize,
     );
@@ -95,7 +90,7 @@ void define_systems_textures(ecs *world) {
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
-        [out] rendering.TextureDirty,
+        [none] textures.TextureDirty,
         [none] !textures.TextureRGB,
         [none] !core.Initialize,
     );

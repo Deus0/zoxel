@@ -14,7 +14,8 @@ byte sockets_enabled = 0;
     byte server_mode = 0;
 #endif
 byte4 server_ip = (byte4) { 194, 195, 251, 84 };  //  "192.0.2.1"
-byte4 local_ip = (byte4) { 127, 0, 0, 1 };  //  "192.0.2.1"
+// byte4 local_ip = (byte4) { 127, 0, 0, 1 };
+byte4 local_ip = (byte4) { 192, 0, 0, 2 };
 
 #ifndef zox_windows
     #define peek_packet_size 1

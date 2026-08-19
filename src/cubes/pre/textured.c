@@ -6,7 +6,6 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
     zox_prefab_set(e, RenderDisabled, { 0 });
     zox_prefab_set(e, Brightness, { 1 });
     // zox_prefab_set(e, Color, { color_red });
-    // zox_prefab_set(e, TextureDirty, { 0 });
     // zox_prefab_set(e, Seed, { 666 });
     // zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     // add_noise_texture(world, e);

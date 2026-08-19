@@ -1,11 +1,21 @@
 # NOTE: We just ignore these folders, used for devops
+# obj: Build Files (.o)
+/obj
+# bin: Binary Executables
 /bin
-/lib
-/inc
-/zip
-/pkg
+# ext: External Projects (Sdl | Glut)
 /ext
+# lib: Compiled Libraries (so | dll)
+/lib
+# inc: External Header Files
+/inc
+# zip: Zipped Builds for Publioshing
+/zip
+# pkg: Linux System Packing (arch/deb)
+/pkg
+# and: Android build folder
 /and
+# app settings
 /.build_settings
 /.game
 *.kate-swp

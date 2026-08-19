@@ -20,6 +20,7 @@ entity spawn_profiler(
     byte plots_count = 1;
     double start_value = 32;
     byte header_font_size = 8 * ui_scale;
+    byte label_font_size = 6 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     entity3 e2 = spawn_window(
         world,
@@ -59,7 +60,6 @@ entity spawn_profiler(
     // TODO: Spawn label here to show max system! like to timings module
     {
         byte2 label_margins = (byte2) { 2 * ui_scale, 2 * ui_scale };   // x
-        byte label_font_size = 3 * ui_scale;
         // NOTE: Positions below header
         int2 position = (int2) { 0, - 2 * (14 + 4 * 2) };
         float2 position_anchor = (float2) { 0, 1.0f };

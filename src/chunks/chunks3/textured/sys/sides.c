@@ -218,19 +218,19 @@ zox_sys2(ChunkSidesSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
-    zox_sys_out(BuildChunkSides);
+    // zox_sys_out(BuildChunkSides);
     zox_sys_out(SidesOctree);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, voxels);
-        zox_sys_o(BuildChunkSides, build);
+        // zox_sys_o(BuildChunkSides, build);
         zox_sys_o(SidesOctree, sides);
         // NOTE: Process when Active state
-        if (!build->value) {
+        /*if (!build->value) {
             continue;
-        }
+        }*/
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
             continue;
@@ -280,7 +280,8 @@ zox_sys2(ChunkSidesSystem) {
             neighbor_depths[j] = zox_getv(e, NodeDepth);
         }
         build_sides_dig(solids, voxels, neighbor_voxels, neighbor_depths, voxels, sides, depth->value, 0, byte3_zero, dbg_log);
-        build->value = 0;
+        // build->value = 0;
+        zox_remove(e, BuildChunkSides);
         if (dbg_log) {
             zox_log("Built Sides [%s]", zox_getn(e));
         }

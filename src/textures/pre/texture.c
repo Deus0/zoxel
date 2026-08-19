@@ -4,7 +4,6 @@ entity spawn_prefab_texture(ecs *world, int2 size) {
     zox_add(e, Texture);
     zox_prefab_set(e, TextureData, { 0 });
     zox_prefab_set(e, TextureSize, { size });
-    zox_prefab_set(e, TextureDirty, { 0 });
     return e;
 }
 

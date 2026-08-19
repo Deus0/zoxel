@@ -4,7 +4,7 @@ extern entity get_block_link(ecs*, entity);
 
 // NOTE: Relies on texture size
 zox_sys2(TilemapGenerationSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TilemapSize);
@@ -12,16 +12,14 @@ zox_sys2(TilemapGenerationSystem) {
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureSize);
     zox_sys_out(TextureData);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_i(TilemapSize, tmsize);
         zox_sys_i(TextureLinks, textures);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureSize, size);
         zox_sys_o(TextureData, data);
-        zox_sys_o(TextureDirty, dirty);
-        if (generate->value != zox_generate_texture_run || dirty->value) {
+        if (generate->value != zox_generate_texture_run) {
             continue;
         }
         if (!textures->length || !tmsize->value.x) {
@@ -108,7 +106,7 @@ zox_sys2(TilemapGenerationSystem) {
             }
         }
         generate->value = zox_generate_texture_uvs;
-        dirty->value = zox_upload_texture;
+        zox_add(e, TextureDirty);
         if (dbg_log) {
             zox_log("Tilemap Generated!");
         }

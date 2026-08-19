@@ -107,7 +107,7 @@ uint zox_dbg_label_inside_chunk(ecs *world, entity player, char *buffer, uint si
     byte lod_dirty = zox_has(chunk, ChunkLodDirty) && zox_getv(chunk, ChunkLodDirty);
     byte voxels_dirty = zox_has(chunk, VoxelNodeDirty) &&  zox_getv(chunk, VoxelNodeDirty);
     index += snprintf(buffer + index, size - index, " - Lod Dirty [%i] Voxels Dirty [%i]\n", lod_dirty, voxels_dirty);
-    byte build = zox_getv(chunk, BuildChunkSides);
+    byte build = zox_has(chunk, BuildChunkSides);
     index += snprintf(buffer + index, size - index, " - Build [%i]\n", build);
     if (zox_has(chunk, GenerateChunk)) {
         byte generate = zox_getv(chunk, GenerateChunk);

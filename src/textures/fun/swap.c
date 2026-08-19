@@ -11,6 +11,6 @@ void swap_textures(ecs *world, entity e1, entity e2) {
     const int2 temp_size = texture_size_a->value;
     texture_size_a->value = texture_size_b->value;
     texture_size_b->value = temp_size;
-    zox_set(e1, TextureDirty, { zox_upload_texture });
-    zox_set(e2, TextureDirty, { zox_upload_texture });
+    zox_add(e1, TextureDirty);
+    zox_add(e2, TextureDirty);
 }

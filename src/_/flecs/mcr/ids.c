@@ -45,7 +45,9 @@
     (e && ecs_is_valid(world, e))
 
 #define zox_dont_fragment(T) \
-    zox_add_id(zox_id(T), EcsDontFragment)
+    ;
+// NOTE: Disabled for now
+    //zox_add_id(zox_id(T), EcsDontFragment)
 
 typedef struct {
     float value;

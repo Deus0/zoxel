@@ -1,11 +1,11 @@
 #if !defined(zoxm_cameras3) && defined(zoxm_transforms3)
 #define zoxm_cameras3
 
-float main_menu_vignette = 2.6f;
+float main_menu_vignette = 1.6f;
 float main_menu_blur = 0.4f;
-float game_vignette = 1.2f;
+float game_vignette = 0.8f;
 float game_blur = 0;
-float dialogue_vignette = 3.6f;
+float dialogue_vignette = 3.1f;
 float dialogue_blur = 0.3f;
 float pause_vignette = 2.2f;
 #include "pre/_.c"

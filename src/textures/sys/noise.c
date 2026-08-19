@@ -1,18 +1,17 @@
 zox_sys2(NoiseTextureSystem) {
     zox_change_check();
-    zox_field_world();
-    zox_field_in(TextureSize, textureSizes, 1);
-    zox_field_in(Color, colors, 5);
-    zox_field_out(GenerateTexture, generateTextures, 2);
-    zox_field_out(TextureDirty, textureDirtys, 3);
-    zox_field_out(TextureData, textureDatas, 4);
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(TextureSize);
+    zox_sys_in(Color);
+    zox_sys_out(GenerateTexture);
+    zox_sys_out(TextureData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_field_i(TextureSize, textureSizes, textureSize)
-        zox_field_i(Color, colors, fill_color)
-        zox_field_o(TextureDirty, textureDirtys, dirty)
-        zox_field_o(TextureData, textureDatas, textureData)
-        zox_field_o(GenerateTexture, generateTextures, generate)
+        zox_sys_i(TextureSize, textureSize)
+        zox_sys_i(Color, fill_color)
+        zox_sys_o(TextureData, textureData)
+        zox_sys_o(GenerateTexture, generate)
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
@@ -33,7 +32,7 @@ zox_sys2(NoiseTextureSystem) {
         resize_TextureData(textureData, textureSize->value.x * textureSize->value.y);
         generate_texture_noise(textureData->value, textureSize->value, texture_type, terrain_texture_outline_type, fill_color->value);
         // generateTexture->value = 0;
-        dirty->value = zox_upload_texture; // remember: this only gets uploaded if has GPUTextureLink!
         generate->value = zox_generate_texture_end;
+        zox_add(e, TextureDirty);
     }
 } zox_sys_end(NoiseTextureSystem);

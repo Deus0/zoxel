@@ -10,7 +10,7 @@ void define_systems_chunks3_textured(ecs *world) {
         ChunkMeshTriggerSystem,
         zoxp_update,
         [in] chunks3.VoxelNodeDirty,
-        [out] chunks.BuildChunkSides,
+        // [out] chunks.BuildChunkSides,
         [none] chunks3.ChunkTextured
     );
     zox_system(
@@ -56,9 +56,9 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
-        [out] chunks.BuildChunkSides,
         [out] chunks3.SidesOctree,
-        [none] chunks3.ChunkTextured
+        [none] chunks.BuildChunkSides,
+        [none] chunks3.ChunkTextured,
     );
     zox_system(
         ChunkTexturedBuildSystem,

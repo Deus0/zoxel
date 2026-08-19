@@ -1,8 +1,6 @@
 entity spawn_prefab_chunk(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("chunk");
-    zox_prefab_set(e, Initialize, { 1 }); // load fast!
-    zox_prefab_set(e, BuildChunkSides, { 0 });
     zox_prefab_set(e, BlockScale, { default_vox_scale });
     // Transforms
     zox_prefab_set(e, Position3D, { float3_zero });
@@ -16,6 +14,9 @@ entity spawn_prefab_chunk(ecs *world, entity prefab) {
     zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
+    // Events
+    zox_prefab_set(e, Initialize, { 1 }); // load fast!
+    // zox_prefab_set(e, BuildChunkSides, { 0 });
     return e;
 }
 

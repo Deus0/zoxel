@@ -68,7 +68,6 @@ zox_sys2(ArrowTextureSystem) {
     zox_sys_in(OutlineColor);
     zox_sys_in(OutlineThickness);
     zox_sys_out(TextureData);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Generate, trigger);
@@ -77,13 +76,17 @@ zox_sys2(ArrowTextureSystem) {
         zox_sys_i(OutlineColor, outline);
         zox_sys_i(OutlineThickness, thickness);
         zox_sys_o(TextureData, data);
-        zox_sys_o(TextureDirty, dirty);
         if (trigger->value != zox_dirty_active) {
             continue;
         }
         resize_TextureData(data, size->value.x * size->value.y);
-        generate_texture_arrow(data->value, size->value, fill->value, outline->value, thickness->value);
-        dirty->value = zox_dirty_trigger;
+        generate_texture_arrow(
+            data->value,
+            size->value,
+            fill->value,
+            outline->value,
+            thickness->value);
+        zox_add(e, TextureDirty);
         if (dbg_log) {
             zox_log("Arrow Texture Generated [%s] fill [%ix%ix%ix%i] outline [%ix%ix%ix%i] Size [%ix%i] Thickness [%i]", zox_get_name(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a, outline->value.r, outline->value.g, outline->value.b, outline->value.a, size->value.x, size->value.y, thickness->value);
         }

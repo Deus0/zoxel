@@ -64,6 +64,8 @@ log="0"
 verbose="0"
 gfx="opengl"    # opengl, vulkan, headless
 is_xr="0"
+testsdl="0"
+testxr="0"
 
 # Validation
 if [[ " $* " == *" --debug "* ]] &&
@@ -91,22 +93,46 @@ fi
 [[ " $* " == *" --vulkan "* ]] && gfx="vulkan"
 [[ " $* " == *" --headless "* ]] && gfx="headless"
 [[ " $* " == *" --xr "* ]] && is_xr="1"
+[[ " $* " == *" --testxr "* ]] && testxr="1"
+[[ " $* " == *" --testsdl "* ]] && testsdl="1"
 
 # make our export folder
 mkdir -p "${apk_dir}"
+
+# ============================================================
+# Pathing
+# ============================================================
+
+android_abi="arm64-v8a"
+and_path="${root}/and"
+sdk_path="${and_path}/sdk"
+ndk_path="${and_path}/ndk"
+staging_path="${and_path}/${game_name}"
+jni_path="${staging_path}/app/jni"
+sdl_jni_path="${jni_path}/SDL"
+src_path="${root}/src"
+gam_path="${root}/gam/${game_name}"
+flecs_path="${root}/inc/flecs"
+sdl_path="${root}/ext/sdl3"
+sdl_mixer_path="${root}/ext/sdl3_mixer"
+local_main_file="main.c"
+
+[[  "${testsdl}" == "1" ]] && local_main_file="apps/sdl/tst/app.c"
+[[  "${testxr}" == "1" ]] && local_main_file="xr/tst/cube.c"
+main_file="${src_path}/${local_main_file}" # "${src_path}/main.c"
+
+sources=(
+    "${main_file}"
+    "${flecs_path}/flecs.c"
+)
 
 # ============================================================
 # Android configuration
 # ============================================================
 
 android_api="35"
-android_abi="arm64-v8a"
-and_path="${root}/and"
-sdk_path="${and_path}/sdk"
-ndk_path="${and_path}/ndk"
 gradle_path="${and_path}/gradle"
 gradle_version="8.10.2"
-staging_path="${and_path}/${game_name}"
 strings_path="${staging_path}/app/src/main/res/values/strings.xml"
 
 # ============================================================
@@ -234,17 +260,6 @@ echo "- Gradle ${gradle_bin}"
 
 echo ""
 echo "> Checking Zoxel source"
-
-src_path="${root}/src"
-gam_path="${root}/gam/${game_name}"
-flecs_path="${root}/inc/flecs"
-sdl_path="${root}/ext/sdl3"
-sdl_mixer_path="${root}/ext/sdl3_mixer"
-
-sources=(
-    "${src_path}/main.c"
-    "${flecs_path}/flecs.c"
-)
 
 for source in "${sources[@]}"; do
     if [[ ! -f "${source}" ]]; then
@@ -395,6 +410,7 @@ if [[ "${is_xr}" == "1" ]]; then
     echo "* Added [xr]"
     dflags+=" -Dzox_xr"
     dflags+=" -DXR_USE_PLATFORM_ANDROID"
+    dflags+=" -DXR_USE_GRAPHICS_API_OPENGL_ES"
 fi
 
 # ============================================================
@@ -423,7 +439,7 @@ rm -rf "${staging_path}"
 mkdir -p "${staging_path}"
 
 # ============================================================
-# Copy SDL3 Android project
+# Copy SDL3 Android Project
 # ============================================================
 
 cp -a "${sdl_android}/." "${staging_path}/"
@@ -460,8 +476,6 @@ echo "- App name [${app_name}]"
 echo ""
 echo "> Configuring SDL3 native project"
 
-jni_path="${staging_path}/app/jni"
-sdl_jni_path="${jni_path}/SDL"
 rm -rf "${sdl_jni_path}"
 ln -s "${sdl_path}" "${sdl_jni_path}"
 echo "- SDL3 linked"
@@ -515,6 +529,36 @@ echo "  ${jni_flecs_path}"
 
 
 # ============================================================
+# Verification
+# ============================================================
+
+echo ""
+echo "> Verifying staging paths"
+
+echo "- Main Source:"
+ls -l "${jni_src_path}/${local_main_file}"
+
+echo "- SDL:"
+ls -ld "${sdl_jni_path}"
+ls -ld "${sdl_jni_path}/include"
+
+echo "- Flecs:"
+ls -l "${jni_flecs_path}/flecs.c"
+
+if [[ "${is_xr}" == "1" ]]; then
+    echo "- OpenXR include:"
+    ls -ld "${jni_path}/xr/include"
+
+    echo "- OpenXR loader:"
+    ls -l "${jni_path}/xr/android/${android_abi}/libopenxr_loader.so"
+fi
+
+echo ""
+echo "- Android.mk:"
+sed 's/^/  /' "${jni_src_path}/Android.mk" 2>/dev/null || true
+
+
+# ============================================================
 # Native Android.mk
 # ============================================================
 
@@ -529,7 +573,7 @@ include \$(CLEAR_VARS)
 LOCAL_MODULE := main
 
 LOCAL_SRC_FILES := \\
-main.c \\
+${local_main_file} \\
 ../flecs/flecs.c
 
 LOCAL_C_INCLUDES := \\
@@ -988,13 +1032,13 @@ if [[ "${install}" == "1" ]]; then
 fi
 
 # ============================================================
-# Logcat
+# Running
 # ============================================================
 
-if [[ "${log}" == "1" ]]; then
+if [[ "${is_run}" == "1" ]]; then
     echo ""
     echo "============================================================"
-    echo "> LOGCAT"
+    echo "> Running"
     echo "============================================================"
     echo ""
 
@@ -1023,63 +1067,27 @@ if [[ "${log}" == "1" ]]; then
     echo "- Clearing old logcat"
     adb logcat -c || true
 
+    echo "- Stopping previous application"
+    adb shell am force-stop "${package_name}" || true
+
+    sleep 2
+
     echo "- Starting application"
-    adb shell monkey -p "${package_name}" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1 || true
+    adb shell monkey -p "${package_name}" \
+        -c android.intent.category.LAUNCHER 1
+            sleep 1
 
-    pid=""
-
-    for _ in $(seq 1 60); do
-        pid="$(adb shell pidof "${package_name}" | tr -d '\r' | head -n 1)"
-
-        if [[ -n "${pid}" ]]; then
-            break
+    if [[ "${log}" == "1" ]]; then
+        if [[ "${is_xr}" == "1" ]]; then
+            echo "Delaying for Logcat..."
+            sleep 15
         fi
-
-        sleep 1
-    done
-
-    if [[ -z "${pid}" ]]; then
+        echo "============================================================"
+        echo "> LOGCAT"
+        echo "============================================================"
         echo ""
-        echo "ERROR: Zoxel process not found:"
-        echo "  ${package_name}"
-        exit 1
+        adb logcat -d -v threadtime "Zoxel:I" "*:S"
     fi
-
-    echo "- PID: ${pid}"
-    echo ""
-    echo "Press Ctrl+C to stop logcat."
-    echo ""
-
-    adb logcat --pid="${pid}" -v threadtime "SDL:I" "*:S"
-
-
-elif [[ "${is_run}" == "1" ]]; then
-    echo ""
-    echo "============================================================"
-    echo "> Running"
-    echo "============================================================"
-    echo ""
-
-    aapt_path="${sdk_path}/build-tools/35.0.0/aapt"
-
-    if [[ -z "${aapt_path}" || ! -x "${aapt_path}" ]]; then
-        echo "ERROR: aapt not found."
-        exit 1
-    fi
-
-    package_name="$("${aapt_path}" dump badging "${apk_path}" \
-        | sed -n "s/^package: name='\([^']*\)'.*/\1/p" \
-        | head -n 1)"
-
-    if [[ -z "${package_name}" ]]; then
-        echo "ERROR: Could not determine APK package name."
-        exit 1
-    fi
-
-    echo "- Package: ${package_name}"
-
-    echo "- Starting application"
-    adb shell monkey -p "${package_name}" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1 || true
 fi
 
 # ============================================================

@@ -1,9 +1,16 @@
 /*
- *  Zox Core
+ * +------------------------------------------------------------------+
+ * | Zox Module: Core                         The Lowest of the Lows  |
+ * |                                                                  |
+ * |  Platforms - Flecs - Generics - Maths - Strings                  |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
- *      - Maths, Generics, Etc
+ *  TODO:
  *
- *  The Lowest of the Lows
+ *      - Remove the number of sub folders
+ *      - Compile Modules seperately
+ *
  */
 #ifndef zoxm_core
 #define zoxm_core

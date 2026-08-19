@@ -180,6 +180,55 @@ if [[ ! -d "${staging_path}" ]]; then
     exit 1
 fi
 
+
+
+# ============================================================
+# OpenXR Android manifest
+# ============================================================
+
+manifest_path="${staging_path}/app/src/main/AndroidManifest.xml"
+
+if [[ ! -f "${manifest_path}" ]]; then
+    echo ""
+    echo "ERROR: AndroidManifest.xml not found:"
+    echo "  ${manifest_path}"
+    exit 1
+fi
+
+echo ""
+echo "> Configuring OpenXR manifest"
+
+if ! grep -q 'org.khronos.openxr.intent.category.IMMERSIVE_HMD' "${manifest_path}"; then
+    sed -i \
+        '/<category android:name="android.intent.category.LAUNCHER" \/>/a\
+            <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />' \
+        "${manifest_path}"
+fi
+
+if ! grep -q 'com.oculus.intent.category.VR' "${manifest_path}"; then
+    sed -i \
+        '/<category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" \/>/a\
+            <category android:name="com.oculus.intent.category.VR" />' \
+        "${manifest_path}"
+fi
+
+echo "- OpenXR manifest configured"
+
+# would be good if we can
+# ============================================================
+# OpenXR hand tracking
+# ============================================================
+
+echo ""
+echo "> Configuring OpenXR hand tracking"
+
+
+echo "- OpenXR hand tracking configured"
+
+# ============================================================
+# OpenXR JNI Config
+# ============================================================
+
 jni_path="${staging_path}/app/jni"
 jni_xr_path="${jni_path}/xr"
 

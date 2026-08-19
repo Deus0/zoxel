@@ -46,7 +46,6 @@ zox_sys2(FontTextureSystem) {
     zox_sys_in(FontOutlineThickness);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
-    zox_sys_out(TextureDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ZigelIndex, zindex);
@@ -56,7 +55,6 @@ zox_sys2(FontTextureSystem) {
         zox_sys_i(FontThickness, thickness);
         zox_sys_i(FontOutlineThickness, outline_thickness);
         zox_sys_o(GenerateTexture, generate);
-        zox_sys_o(TextureDirty, upload);
         zox_sys_o(TextureData, data);
         if (generate->value != zox_generate_texture_run) {
             continue;
@@ -84,7 +82,7 @@ zox_sys2(FontTextureSystem) {
         int length = size->value.x * size->value.y;
         if (length <= 0 || !thickness->value || !zox_valid(font)) {
             resize_TextureData(data, 0);
-            upload->value = zox_dirty_active;
+            zox_add(e, TextureDirty);
             continue;
         }
         const FontData* raw_font_data = zox_get(font, FontData);
@@ -101,7 +99,7 @@ zox_sys2(FontTextureSystem) {
         clear_texture(data->value, size->value, clear_color);
         generate_font_texture(data->value, size->value, font_data, raw_font_data->length, outline->value, fill->value, is_use_shapes, thickness->value, outline_thickness->value, point_padding, clear_color);
         generate->value = zox_generate_texture_end;
-        upload->value = zox_upload_texture;
+        zox_add(e, TextureDirty);
         if (dbg_log) {
             uint32_t checksum = 0;
             for (int j = 0; j < data->length; j++) {

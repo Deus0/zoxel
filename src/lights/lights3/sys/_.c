@@ -16,8 +16,6 @@ void set_light_systems(ecs* world, byte is_lights) {
     zox_set_enabled(VoxelLightSystem, is_lights);
     zox_set_enabled(ChunkColorsTriggerSystem, is_lights);
     zox_set_enabled(ChunkNeighborLightTriggerSystem, is_lights);
-    // zox_set_enabled(ChunkMeshColorsTriggerSystem, is_lights);
-    // zox_set_enabled(BasicLightsBuildSystem, is_lights);
     zox_set_enabled(SmoothLightsBuildSystem, is_lights);
 }
 

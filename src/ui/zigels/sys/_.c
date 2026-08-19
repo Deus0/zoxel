@@ -18,7 +18,6 @@ void zox_define_systems_zigels(ecs* world) {
         [in] zigels.FontOutlineThickness,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
-        [out] rendering.TextureDirty,
         [none] FontTexture,
     );
 }

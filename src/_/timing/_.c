@@ -1,12 +1,15 @@
 #ifndef zoxm_time
 #define zoxm_time
 
+// 15 seconds of recording
+#define record_frames_ 15
+#define record_frames_count 60 * record_frames_
+
 byte zox_log_lags = 0;
 entity max_systems_data = 0;
 entity frame_times_samples = 0;
 double zox_delta_time_system = 0;
 uint system_times_display_count = 20;
-#define record_frames_count 120
 #include "set/_.c"
 #include "com/_.c"
 #include "mcr/_.c"

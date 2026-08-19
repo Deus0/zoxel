@@ -3,6 +3,7 @@
 
 DebugLabelEvent local_debug_label;
 byte editor_overlay_layer = 232;
+double time_update_debug_label_system_rate = 10;
 #include "set/_.c"
 #include "com/_.c"
 #include "pre/_.c"
