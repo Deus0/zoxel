@@ -26,6 +26,27 @@ void process_arguments_networking(ecs *world, char* args[], int count) {
     }
 }
 
+#ifdef zox_windows
+void initialize_windows_sockets() {
+    if (sockets_enabled) {
+        return;
+    }
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        int error_code = WSAGetLastError();
+        zox_log("    open_socket: WSAStartup failed with error code %d\n", error_code)
+    } else {
+        sockets_enabled = 1;
+        zox_log(" + enabled windows sockets")
+    }
+}
+
+void dispose_windows_sockets() {
+    if (!sockets_enabled) return;
+    WSACleanup();
+}
+#endif
+
 void on_boot_networking(ecs* world, entity app) {
     if (!zox_is_networking) {
         return;

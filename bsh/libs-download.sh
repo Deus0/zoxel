@@ -110,8 +110,8 @@ if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
     else
         download_and_extract \
             "$sdl_mixer_url" \
-            "ext/sdl_mixer.zip" \
-            "ext/sdl_mixer"
+            "ext/sdl2_mixer.zip" \
+            "ext/sdl2_mixer"
     fi
 fi
 
@@ -120,6 +120,6 @@ fi
 if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
     download_and_extract \
         "$sdl_image_url" \
-        "ext/sdl_image.zip" \
-        "ext/sdl_image"
+        "ext/sdl2_image.zip" \
+        "ext/sdl2_image"
 fi

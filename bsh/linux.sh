@@ -21,7 +21,7 @@ elif [[ ${ONARC} == "x86_64" ]]; then
 fi
 ARC="${ONARC}"         # x64 or arm
 
-sdl_source="0"
+# sdl_source="0"
 sdl_images="0"
 sdl_mixer="1"
 
@@ -215,11 +215,6 @@ if [[ ${GFX} == "sdl" ]]; then
                 libs+=" ${library}/libSDL3_mixer.so"
             fi
         fi
-    #elif [[ ${sdl_source} == "1" ]]; then
-        # libs+=" -Lext/sdl/build -Lext/sdl_image/build -Lext/sdl_mixer/build"
-    #    libs+=" -static bin/libSDL2_x64.a bin/libSDL2_image_x64.a bin/libSDL2_mixer_x64.a"
-    #    includes+=" -Iext/sdl/include -Iext/sdl_image/include -Iext/sdl_mixer/include"
-    #    dflags+=" -Dsdlsource"
     else
         if [[ ${is_static} == "0" ]]; then
             echo "+ Using Systems SDL2"

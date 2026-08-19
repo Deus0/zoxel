@@ -12,24 +12,6 @@
         return 0;
     }
 #else
-    void initialize_windows_sockets() {
-        if (sockets_enabled) {
-            return;
-        }
-        WSADATA wsaData;
-        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-            int error_code = WSAGetLastError();
-            zox_log("    open_socket: WSAStartup failed with error code %d\n", error_code)
-        } else {
-            sockets_enabled = 1;
-            zox_log(" + enabled windows sockets")
-        }
-    }
-
-    void dispose_windows_sockets() {
-        if (!sockets_enabled) return;
-        WSACleanup();
-    }
 
     int set_non_blocking(int sock) {
         // Set the socket to non-blocking mode

@@ -281,8 +281,8 @@ if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
         echo "  - sdl2 [$sdl2_lib]"
         build_if_missing \
             "SDL2_mixer" \
-            "ext/sdl_mixer" \
-            "ext/sdl_mixer/build-$BUILD_SUFFIX" \
+            "ext/sdl2_mixer" \
+            "ext/sdl2_mixer/build-$BUILD_SUFFIX" \
             "$SDL_MIXER_LIB_NAME" \
             "${SDL_MIXER_LIB_NAME%.*}*.${SDL_MIXER_LIB_NAME##*.}" \
             -DCMAKE_DISABLE_FIND_PACKAGE_SDL2=TRUE \

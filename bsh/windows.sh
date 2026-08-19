@@ -98,7 +98,7 @@ if [[ ${GFX} == "sdl" ]]; then
             dflags+=" -Dzox_sdl_mixer"
             libs+=" ${library}/SDL2_mixer.dll"
             # libs+=" -lSDL2_mixer"
-            includes+=" -Iext/sdl_mixer/include"
+            includes+=" -Iext/sdl2_mixer/include"
         fi
         if [[ ${is_sdl_image} == "1" ]]; then
             dflags+=" -Dzox_sdl_images"
