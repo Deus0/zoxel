@@ -27,20 +27,31 @@ void taskbar_button_click_event(ecs *world, ClickEventData event) {
 }
 
 entity spawn_taskbar(ecs* world, entity canvas) {
+    byte2 margins = (byte2) { 8 * ui_scale, 6 * ui_scale };
+    byte2 padding = byte2_single(4 * ui_scale);
     entity prefab_frame = prefab_frame_selectable;
     byte taskbar_count = hook_taskbars->size;
     int frame_size = (default_frame_size / 4) * ui_scale;
     int icon_size = (default_icon_size / 4) * ui_scale;
     int2 fsize = int2_single(frame_size);
     int2 isize = int2_single(icon_size);
-    byte2 padding = byte2_single(2 * ui_scale);
-    byte2 margins = (byte2) { 8 * ui_scale, 2 * ui_scale };
     int2 size = (int2) { padding.x + (frame_size + padding.x) * taskbar_count + margins.x * 2, frame_size + margins.y * 2 };
     int2 position = (int2) { 0, - size.y / 4 };
     float2 anchor = (float2) { 0.5f, 1 };
     byte header_font_size = 8 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
-    entity3 e2 = spawn_window(world, prefab_window, prefab_body, "", canvas, position, size, anchor, header_font_size, header_padding, NULL);
+    entity3 e2 = spawn_window(
+        world,
+        prefab_window,
+        prefab_body,
+        "",
+        canvas,
+        position,
+        size,
+        anchor,
+        header_font_size,
+        header_padding,
+        NULL);
     entity e = e2.x;
     entity body = e2.z;
     zox_set_unique_name(e, "taskbar");
@@ -62,7 +73,16 @@ entity spawn_taskbar(ecs* world, entity canvas) {
         hook_taskbar hook = hook_taskbars->data[hook_index];
         int2 position = (int2) { (int) ((i - (taskbar_count / 2.0f) + 0.5f) * (frame_size + padding.x)), 0 };
         // entity frame = spawn_element(world, spawn_frame_data);
-        entity frame = spawn_uic(world, prefab_frame, body, float2_half, position, fsize, fsize, default_fill_color_frame, default_outline_color_frame);
+        entity frame = spawn_uic(
+            world,
+            prefab_frame,
+            body,
+            float2_half,
+            position,
+            fsize,
+            fsize,
+            default_fill_color_frame,
+            default_outline_color_frame);
         zox_set_parent(world, frame, body);
         zox_set_unique_name(frame, "taskbar_frame");
         // A link to the window ID

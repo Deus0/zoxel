@@ -10,11 +10,16 @@ byte mrpenguin_mode = 0;
 zox_begin_module(ZoxGame) {
     game_name = "zoxel";
     define_systems_zoxel(world);
-    initialize_zoxel_settings(world);
     add_hook_on_boot(spawn_weather);
-    // Debug UIs
     add_hook_key_down(zox_dbg_ui_gizmos);
     add_hook_key_down(zox_dbg_ui_overlays);
+    // Initial Zoxel Settings
+    initialize_zoxel_settings(world);
+    terrain_lod_near = 4;
+    terrain_lod_far = 20;
+    render_distance_y = 4;
+    viewport_downscale = 1;
+    zox_block_outlines = 1;
 } zox_end_module(ZoxGame);
 
 #endif

@@ -34,7 +34,7 @@ zox_sys2(BricksModelGenerationSystem) {
         float color_rr = zox_has(e, VoxColorRange) ? zox_getv(e, VoxColorRange) : default_color_range;
         float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
         byte node_depth = depth->value;
-        // byte colors_count = unique_colors + is_generate_vox_outlines;
+        // byte colors_count = unique_colors + zox_block_outlines;
         resize_ColorRGBs(colors, 0);
         color_rgb color_rgb_2 = color_to_color_rgb(fill->value);
         // colors to pick from
@@ -54,7 +54,7 @@ zox_sys2(BricksModelGenerationSystem) {
         // write_lock_VoxelNode(node);
         build_vox_bricks(node, node_depth, vrange, crack_color);
         // Outlines
-        if (is_generate_vox_outlines) {
+        if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);

@@ -42,7 +42,7 @@ zox_sys2(FlowersModelGenerationSystem) {
             color_rgb_multiply_float(&new_color, m);
             add_to_ColorRGBs(colors, new_color);
         }
-        if (is_generate_vox_outlines) {
+        if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
         }
         // Colors for flowers
@@ -69,7 +69,7 @@ zox_sys2(FlowersModelGenerationSystem) {
         // write_lock_VoxelNode(node);
         build_vox_flowers(node, node_depth, stem_range, petal_range, black_voxel_3);
         // Outlines
-        if (is_generate_vox_outlines) {
+        if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);

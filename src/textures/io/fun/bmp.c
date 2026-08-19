@@ -24,7 +24,11 @@ typedef struct {
 } BMPInfoHeader;
 #pragma pack(pop)
 
-byte load_texture_from_bmp(const char *path, TextureData *data, int2 *size) {
+byte load_texture_from_bmp(
+    const char *path,
+    TextureData *data,
+    int2 *size)
+{
     FILE *f = fopen(path, "rb");
     if (!f) {
         zox_loge("Error: fopen failed: %s", path);
@@ -36,7 +40,6 @@ byte load_texture_from_bmp(const char *path, TextureData *data, int2 *size) {
         fclose(f);
         return 0;
     }
-
     if (file.bfType != 0x4D42) { // 'BM'
         zox_loge("Error: not a BMP file: %s", path);
         fclose(f);
@@ -101,8 +104,14 @@ byte load_texture_from_bmp(const char *path, TextureData *data, int2 *size) {
             byte a = (bytes_per_pixel == 4) ? row[x * bytes_per_pixel + 3] : 255;
 
             // zox_log("RGB [%ix%ix%i]", r, g, b);
-            if (bmp_transparency_hack && bytes_per_pixel == 3 && r == 0 && g == 0 && b == 0) {
-                a = 0;
+            if (bmp_transparency_hack && bytes_per_pixel == 3) {
+                if (r == 0 && g == 0 && b == 0) {
+                    a = 0;
+                } else if (r == 0 && g == 255 && b == 255) {
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                }
             }
 
             // assuming color = 0xAARRGGBB or similar 4-byte layout

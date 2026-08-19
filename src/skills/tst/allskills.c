@@ -10,10 +10,13 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
     if (!zox_valid(player)) {
         return;
     }
-    zox_geter_value(player, CharacterLink, entity, character);
+    entity character = zox_getv(player, CharacterLink);
+    if (!zox_valid(character)) {
+        return;
+    }
     zox_geter_value(player, GameLink, entity, game);
     zox_geter_value(game, RealmLink, entity, realm);
-    if (!zox_valid(character) || !zox_valid(realm)) {
+    if (!zox_valid(realm)) {
         return;
     }
     entity skillbook = zox_get_child_by_id(world, character, zox_id(Skillbook));

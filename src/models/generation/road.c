@@ -466,7 +466,7 @@ zox_sys2(RoadModelGenerationSystem) {
         // write_lock_VoxelNode(node);
         build_vox_stoned(colors, node, depth->value, primary_rgb);
         // Outlines
-        if (is_generate_vox_outlines) {
+        if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);

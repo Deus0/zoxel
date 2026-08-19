@@ -16,8 +16,12 @@ void tst_spawn_character3_particles(ecs *world, ClickEventData data) {
     if (!zox_valid(character)) {
         return;
     }
-    float prate = rand_range(5, 100); // 4
-    color pcolor = (color) { rand_range(0, 255), rand_range(0, 255), rand_range(0, 255), rand_range(0, 255) };
+    float prate = rand_range(1, 64);
+    color pcolor = (color) {
+        rand_range(0, 255),
+        rand_range(0, 255),
+        rand_range(0, 255),
+        rand_range(0, 255) };
     float3 bounds = zox_getv(character, Bounds3D);
     bounds = float3_mulf(bounds, 2.0f);
     zox_log("+ Testing Character Particles [%s]", zox_get_name(character));

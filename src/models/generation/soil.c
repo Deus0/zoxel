@@ -38,7 +38,7 @@ zox_sys2(SoilGenerationSystem) {
         // Generate Colors
         float color_rr = zox_has(e, VoxColorRange) ? zox_getv(e, VoxColorRange) : default_color_range;
         float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
-        byte colors_count = unique_colors + is_generate_vox_outlines;
+        byte colors_count = unique_colors + zox_block_outlines;
         resize_ColorRGBs(colors, colors_count);
         color_rgb color_rgb_2 = color_to_color_rgb(fill->value);
         byte2 vrange = (byte2) { 1, unique_colors - 1 };
@@ -56,7 +56,7 @@ zox_sys2(SoilGenerationSystem) {
         byte vregions = zox_has(e, VRegions) ? zox_getv(e, VRegions) :  16;
         // write_lock_VoxelNode(node);
         build_vox_soil(node, depth->value, vrange, black_voxel_3, vregions);
-        if (is_generate_vox_outlines) {
+        if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);

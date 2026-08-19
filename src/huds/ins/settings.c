@@ -54,7 +54,13 @@ void on_settings_slide(ecs* world, const SlideEventData* data) {
 
 // TODO: Spawn buttons here and just link the setting entity to the buttons
 // Options uses a set size that has elements adjust
-entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 position, float2 anchor) {
+entity spawn_menu_options(
+    ecs *world,
+    entity player,
+    entity canvas,
+    int2 position,
+    float2 anchor)
+{
     byte dbg_log = 0;
     byte window_alignment = zox_huds_window_alignment;
     float2 window_anchor = zox_huds_window_anchor;
@@ -133,7 +139,24 @@ entity spawn_menu_options(ecs *world, entity player, entity canvas, int2 positio
         }
     }
     entity spawned_elements[elements_count];
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_menu_main }, 1, 0, 0, window_alignment, window_anchor, list_padding, spawned_elements, elements, elements_count, visible_count).x;
+    entity e = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        header_label,
+        header_font_size,
+        list_font_size,
+        (ClickEvent) { &button_event_menu_main },
+        1,
+        0,
+        0,
+        window_alignment,
+        window_anchor,
+        list_padding,
+        spawned_elements,
+        elements,
+        elements_count,
+        visible_count).x;
     zox_name("menu_options");
     zox_add(e, MenuOptions);
     zox_add(e, NavigationWindow);

@@ -31,9 +31,9 @@ zox_sys2(BiomesRealmSpawnSystem) {
             entity e2 = spawn_biome(world, prefab_biome, e, "desert", biome_seed);
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
-            zox_set(e2, DirtChance, { 0.6f });
-            zox_set(e2, GrassChance, { 0.66f });
-            zox_set(e2, WeedsChance, { 0.72f });
+            zox_set(e2, DirtChance, { 0.56f });
+            zox_set(e2, GrassChance, { 0.6f });
+            zox_set(e2, WeedsChance, { 0.66f });
             zox_set(e2, FlowerChance, { 0.73f });
             zox_set(e2, TreeChance, { 0.74f });
             zox_set(e2, BiomeHeightFrequency, { 0.07f });

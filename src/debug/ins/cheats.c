@@ -71,6 +71,10 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
         .text = "All Skills",
         .on_click = { &zox_tst_all_skills },
     };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Level Up",
+        .on_click = { &zox_tst_level_up },
+    };
     // Test our uis
     entity spawned[elements_count];
     entity3 e3 = spawn_window_list(world, prefab_window, player, "Cheats", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);

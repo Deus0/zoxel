@@ -5,7 +5,7 @@ const char* pause_label_exit = "Leave";
 
 entity spawn_menu_paused(ecs *world, entity player) {
     byte window_alignment = zox_huds_window_alignment;
-    float2 window_anchor = float2_top_left; // zox_huds_window_anchor;
+    float2 window_anchor = zox_huds_window_anchor;
     byte header_font_size = zox_huds_element_font_size * ui_scale;
     byte list_font_size = zox_huds_element_font_size * ui_scale;
     byte2 list_padding = byte2_single(zox_huds_list_padding * ui_scale);

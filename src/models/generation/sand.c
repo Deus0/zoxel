@@ -88,7 +88,7 @@ zox_sys2(SandModelGenerationSystem) {
         srand(seed->value);
         // write_lock_VoxelNode(node);
         build_vox_sand(colors, node, depth->value, primary_rgb);
-        if (is_generate_vox_outlines) {
+        if (zox_block_outlines) {
             byte black_voxel = colors->length + 1;
             add_to_ColorRGBs(colors, color_rgb_black);
             vox_outlines(node, depth->value, black_voxel);

@@ -35,7 +35,7 @@ zox_sys2(StatsRealmSpawnSystem) {
         // Attributes
         entity strength = spawn_realm_stat(world, e, prefab_stat_attribute, "strength", "strength", color_rgb_white);
         entity vitality = spawn_realm_stat(world, e, prefab_stat_attribute, "vitality", "vitality", color_rgb_white);
-        entity endurance = spawn_realm_stat(world, e, prefab_stat_attribute, "endurance", "magic_defence", color_rgb_white);
+        entity endurance = spawn_realm_stat(world, e, prefab_stat_attribute, "endurance", "endurance", color_rgb_white);
         entity intelligence = spawn_realm_stat(world, e, prefab_stat_attribute, "intelligence", "intelligence", color_rgb_white);
         entity wisdom = spawn_realm_stat(world, e, prefab_stat_attribute, "wisdom", "wisdom", color_rgb_white);
         entity agility = spawn_realm_stat(world, e, prefab_stat_attribute, "agility", "agility", color_rgb_white);

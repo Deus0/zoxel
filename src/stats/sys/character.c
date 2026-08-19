@@ -47,11 +47,10 @@ void spawn_base_stats(ecs* world, entity e, const StatLinks* stats) {
         if (!zox_valid(stat)) {
             continue;
         }
-        if (!zox_has(stat, StatRegen)) {
-            continue;
+        if (zox_has(stat, StatRegen)) {
+            // Spawn a regen
+            spawn_stat_regen(world, e, stat, base_regen);
         }
-        // Spawn a regen
-        spawn_stat_regen(world, e, stat, 10);
     }
 }
 

@@ -19,6 +19,7 @@ uint stats_children_capacity = 64;
 #include "ui/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "dbg/_.c"
 
 zox_begin_module(Stats) {
     define_components_stats(world);

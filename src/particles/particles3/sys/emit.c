@@ -1,24 +1,36 @@
-void emit_particle3Ds_slow(ecs *world, float3 emit_position, float3 bounds, int spawn_count, color colorr) {
+void emit_particle3Ds_slow(
+    ecs *world,
+    float3 emit_position,
+    float3 bounds,
+    int spawn_count,
+    color colorr,
+    uint seed)
+{
     // const float3 spawn_bounds = { 0.4f, 0.8, 0.4f };
     float3 acb = { 0.4f, 0.8, 0.4f };
     for (int i = 0; i < spawn_count; i++) {
         float3 position = emit_position;
         float3 acceleration = float3_zero;
         float3_add_float3_p(&position, (float3) {
-            ((rand() % 101) / 100.0f) * bounds.x - (bounds.x / 2.0f),
-            ((rand() % 101) / 100.0f) * bounds.y - (bounds.y / 2.0f),
-            ((rand() % 101) / 100.0f) * bounds.z - (bounds.z / 2.0f)
+            seed_rangef(++seed, -bounds.x / 2.0f, bounds.x / 2.0f),
+            seed_rangef(++seed, -bounds.y / 2.0f, bounds.y / 2.0f),
+            seed_rangef(++seed, -bounds.z / 2.0f, bounds.z / 2.0f)
         });
         float3_add_float3_p(&acceleration, (float3) {
-            frand_range(-acb.x, acb.x),
-            frand_range(-acb.y, acb.y),
-            frand_range(-acb.z, acb.z)
+            seed_rangef(++seed, -acb.x, acb.x),
+            seed_rangef(++seed, -acb.y, acb.y),
+            seed_rangef(++seed, -acb.z, acb.z)
         });
         float4 particle_color = color_to_float4(colorr);
         // (float4) { (rand() % 100) * 0.01f, (rand() % 100) * 0.01f, (rand() % 100) * 0.01f, 0 };
         // float4_multiply_float_p(&particle_color, 0.3f);
-        particle_color.w += -0.2f + (rand() % 100) * 0.01f * 0.2f;
-        spawn_particle3(world, position, acceleration, float4_to_color(particle_color));
+        // particle_color.w += -0.2f + (rand() % 100) * 0.01f * 0.2f;
+        particle_color.w += seed_rangef(++seed, -0.2f, 0.0f);
+        spawn_particle3(
+            world,
+            position,
+            acceleration,
+            float4_to_color(particle_color));
     }
 }
 
@@ -91,24 +103,33 @@ void emit_particle3Ds(ecs *world, const float3 spawn_position, const int spawn_c
     free(destroyInTimes);
 }
 
-
 zox_sys2(Particle3DEmitSystem) {
+    const uint base_seed = (uint) (zox_current_time * 100);
+    // const uint seed_shift = 8;
     byte is_bulk_spawn = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(ParticleEmitRate);
-    zox_sys_in(Bounds3D)
-    zox_sys_in(Color)
+    zox_sys_in(Bounds3D);
+    zox_sys_in(Color);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Position3D, position);
-        zox_sys_i(ParticleEmitRate, rate);
+        zox_sys_i(ParticleEmitRate, spawn);
         zox_sys_i(Bounds3D, bounds);
         zox_sys_i(Color, colorr);
+        const uint seed = seed_rand(
+            base_seed ^ (uint)i * 0x9E3779B1u);
         if (is_bulk_spawn) {
-            emit_particle3Ds(world, position->value, rate->value);
+            emit_particle3Ds(world, position->value, spawn->value);
         } else {
-            emit_particle3Ds_slow(world, position->value, bounds->value, rate->value, colorr->value);
+            emit_particle3Ds_slow(
+                world,
+                position->value,
+                bounds->value,
+                spawn->value,
+                colorr->value,
+                seed);
         }
     }
 } zox_sys_end(Particle3DEmitSystem);

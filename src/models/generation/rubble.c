@@ -48,7 +48,7 @@ zox_sys2(RubbleModelGenerationSystem) {
         uint count = zox_has(e, RubbleCount) ? zox_getv(e, RubbleCount) : 200;
         build_vox_scatter(node, node_depth, vrange, max_height, count);
         // Outlines
-        if (is_generate_vox_outlines) {
+        if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);

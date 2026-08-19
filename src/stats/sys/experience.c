@@ -3,12 +3,10 @@ zox_sys2(ExperienceSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Dead);
-    // zox_sys_in(StatLinks);
     zox_sys_in(LastDamager);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Dead, dead);
-        // zox_sys_i(StatLinks, stats);
         zox_sys_i(LastDamager, enemy);
         // proces if i die
         if (dead->value != zox_dirty_active) {

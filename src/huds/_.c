@@ -9,8 +9,15 @@
 #ifndef zoxm_huds
 #define zoxm_huds
 
-byte zox_disable_screen_fader = 0;
+const byte zox_huds_header_font_size = 22;
+const byte zox_huds_element_font_size = 10;
+const byte zox_huds_list_padding = 8;
+const byte zox_huds_window_alignment = zox_alignment_centre;
+// const float2 zox_huds_window_anchor = (float2) { 0.1f, 0.9f }; // float2_top_left; // float2_centre;
+// const float2 zox_huds_window_anchor = float2_centre;
+const float2 zox_huds_window_anchor = (float2) { 0.5f, 0.7f };
 
+byte zox_disable_screen_fader = 0;
 // TODO: spawn unique canvas per viewport, viewports per player
 // TODO: use a byte index instead for menu type
 // TODO: find a way to add game modules onto game menu - add stats ui on etc
@@ -23,8 +30,6 @@ byte zox_disable_screen_fader = 0;
 #include "ins/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
-// #define zox_log_camera_spawning
-
 
 zox_begin_module(Huds) {
     zox_module_dispose(dispose_gameui);

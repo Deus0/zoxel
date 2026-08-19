@@ -1,11 +1,28 @@
 # Todo
 
-- Add frame recording in System with filter set as 0 (update system)
+## --------------------
+## TOP PRIORITY
+
+    - Glitchy Ass Terrain
+        - Fix Chunks from mesh updating before their neighbors do
+            - use Ready systems and timers
+        - Fix Chunks Lights flashing when updating
+
+## --------------------
+
+- fix overlay of destruction materials for block destruction
+- Fix taskbar linking
+- fix character particles
+- remove StatLinks
+
+- Refactor ListPositionDirty and ListSizeDirty
+
+- Add frame recording in System with filter set as 0 (update system)    
 - Make lines in plotgraph use a set value of the graph
     - set the graph based on max value in that frame, but use multiple curves
     - display frame time behind, and system time in front
 
-- Test XR with --log - instantiate
+-x Test XR with --log - instantiate
 - Add ui scale to settings
 - Im getting neighbor updates not triggering at map edges
 - Fall through map - fix unstuck - or make sure collision checks deltas

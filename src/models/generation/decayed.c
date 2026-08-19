@@ -57,7 +57,7 @@ zox_sys2(DecayedModelGenerationSystem) {
         vnoise3_spray_side(node, node_depth, 0, penetrations, direction_right);
         vnoise3_spray_side(node, node_depth, 0, penetrations, direction_front);
         vnoise3_spray_side(node, node_depth, 0, penetrations, direction_back);
-        if (is_generate_vox_outlines) {
+        if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
