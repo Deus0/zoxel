@@ -36,6 +36,7 @@ GLB="opengl"      # headless, opengl or vulkan
 GFX="sdl"         # sdl, glut
 is_sdl3="1"       # sdl2, sdl3
 server="0"
+docker="0"
 
 if [[ $# -gt 0 && ${1} != --* ]]; then
     game_name="$1"
@@ -49,10 +50,7 @@ fi
 [[ " $* " == *" --timings "* ]] && is_time_systems="1"
 [[ " $* " == *" --profile "* ]] && is_profiler="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
-[[ " $* " == *" --package "* ]] && package="1"
-[[ " $* " == *" --system "* ]] && is_static="0"
-[[ " $* " == *" --static "* ]] && is_static="1"
-[[ " $* " == *" --server "* ]] && server="1"
+
 # Architecture
 [[ " $* " == *" --x64 "* ]] && ARC="x64"
 [[ " $* " == *" --arm "* ]] && ARC="arm"
@@ -66,6 +64,12 @@ fi
 [[ " $* " == *" --headless "* ]] && GLB="headless"
 [[ " $* " == *" --opengl "* ]] && GLB="opengl"
 [[ " $* " == *" --vulkan "* ]] && GLB="vulkan"
+# Misc
+[[ " $* " == *" --package "* ]] && package="1"
+[[ " $* " == *" --system "* ]] && is_static="0"
+[[ " $* " == *" --static "* ]] && is_static="1"
+[[ " $* " == *" --server "* ]] && server="1"
+[[ " $* " == *" --docker "* ]] && docker="1"
 
 bin_filename="${game_name}"
 output_extension="bin"

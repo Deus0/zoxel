@@ -125,6 +125,11 @@ else
     echo "📦 Reusing Ubuntu 20.04 build container."
 fi
 
+if ! docker container inspect -f '{{.State.Running}}' "$CONTAINER_NAME" 2>/dev/null | grep -q true; then
+    echo "📦 Starting build container..."
+    docker start "$CONTAINER_NAME" >/dev/null
+fi
+
 echo "📦 Updating System [$CONTAINER_NAME]"
 docker exec \
     -e DEBIAN_FRONTEND=noninteractive \
@@ -144,7 +149,7 @@ echo
 
 docker exec \
     "$CONTAINER_NAME" \
-    bash -c 'cd /zoxel && bash bsh/linux.sh --package'
+    bash -c 'cd /zoxel && bash bsh/linux.sh --package --docker'
 
 echo
 echo "✅ Zoxel build complete."
