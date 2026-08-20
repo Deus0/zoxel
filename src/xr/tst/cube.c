@@ -67,13 +67,13 @@ static int session_running;
 // camera
 static byte head_position_set = 0;
 static float3 head_position;
-static float3 eye_position_right;
-static float4 eye_rotation_right;
+static float3 eye_right_position;
+static float4 eye_right_rotation;
 static float4 eye_fov_right;
 GLuint eye_right_fbo;
 GLuint eye_right_rbo;
-static float3 eye_position_left;
-static float4 eye_rotation_left;
+static float3 eye_left_position;
+static float4 eye_left_rotation;
 static float4 eye_fov_left;
 GLuint eye_left_fbo;
 GLuint eye_left_rbo;
@@ -204,6 +204,7 @@ static void render_viewport(
 // Free Roam Camera
 // --------------------------------------------------
 
+
 static void update_camera_rotation(float3 rotation) {
     camera_euler.x += rotation.x * player_turn_speed * delta_time;
     camera_euler.y += rotation.y * player_turn_speed * delta_time;
@@ -211,18 +212,18 @@ static void update_camera_rotation(float3 rotation) {
     camera_rotation = euler_to_quaternion(camera_euler);
 }
 
-static void update_camera_position(float3 movement) {
+static void update_camera_position(float3 movement, float4 rotation) {
     float3 local_movement = movement;
     float3 forward = quaternion_rotate_vector(
-        camera_rotation,
+        rotation,
         (float3){ 0, 0, -1 }
     );
     float3 right = quaternion_rotate_vector(
-        camera_rotation,
+        rotation,
         (float3){ 1, 0, 0 }
     );
     float3 up = quaternion_rotate_vector(
-        camera_rotation,
+        rotation,
         (float3){ 0, 1, 0 }
     );
     float3 world_movement = {
@@ -246,7 +247,7 @@ static void update_camera_position(float3 movement) {
 // --------------------------------------------------
 
 // TODO: Seperate input fetching from player updates for main loop
-static void update_player() {
+static void update_camera() {
     float2 left_stick = xr_get_left_stick();
     float2 right_stick = xr_get_right_stick();
     update_camera_rotation((float3){
@@ -254,11 +255,19 @@ static void update_player() {
         - right_stick.x,
         0
     });
-    update_camera_position((float3){
-        left_stick.x,
-        0,
-        left_stick.y
-    });
+    // NOTE: Now using camera with head rotation to aim movement
+    float4 movement_rotation = quaternion_multiply(
+        camera_rotation,
+        eye_left_rotation
+    );
+    update_camera_position(
+        (float3) {
+            left_stick.x,
+            0,
+            left_stick.y
+        },
+        movement_rotation
+    );
 }
 
 // --------------------------------------------------
@@ -280,14 +289,14 @@ static int xr_get_eyes() {
     }
     xr_get_eye_matrix(
         views[0],
-        &eye_position_left,
-        &eye_rotation_left,
+        &eye_left_position,
+        &eye_left_rotation,
         &eye_fov_left
     );
     xr_get_eye_matrix(
         views[1],
-        &eye_position_right,
-        &eye_rotation_right,
+        &eye_right_position,
+        &eye_right_rotation,
         &eye_fov_right
     );
     return 1;
@@ -361,8 +370,8 @@ static void xr_render() {
     xr_eye_render(
         xr_swapchains[0],
         images[0],
-        eye_position_left,
-        eye_rotation_left,
+        eye_left_position,
+        eye_left_rotation,
         eye_fov_left,
         xr_config_to_image_size(views_cfg[0]),
         eye_left_fbo,
@@ -373,8 +382,8 @@ static void xr_render() {
     xr_eye_render(
         xr_swapchains[1],
         images[1],
-        eye_position_right,
-        eye_rotation_right,
+        eye_right_position,
+        eye_right_rotation,
         eye_fov_right,
         xr_config_to_image_size(views_cfg[1]),
         eye_right_fbo,
@@ -492,15 +501,15 @@ int main(int argc, char **argv) {
         }
         update_time();
         xr_update_input();
-        update_player();
+        update_camera();
         xr_get_eyes();
         xr_render();
         // hmmm
         xr_end_frame(
-            eye_position_left,
-            eye_position_right,
-            eye_rotation_left,
-            eye_rotation_right,
+            eye_left_position,
+            eye_right_position,
+            eye_left_rotation,
+            eye_right_rotation,
             eye_fov_left,
             eye_fov_right);
     }
