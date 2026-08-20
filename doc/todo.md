@@ -8,15 +8,18 @@
             - use Ready systems and timers
         - Fix Chunks Lights flashing when updating
 
+
+    - Calculate the camera transform before uploading to shader
+        - atm it calculates in the vert shader, not good
+    
 ## --------------------
 
-- fix overlay of destruction materials for block destruction
+- Refactor ListPositionDirty and ListSizeDirty into tags
+- remove StatLinks just use children and queries
+
+- Fix overlay of destruction materials for block destruction
 - Fix taskbar linking
-- fix character particles
-- remove StatLinks
-
-- Refactor ListPositionDirty and ListSizeDirty
-
+-x fix character particles
 - Add frame recording in System with filter set as 0 (update system)    
 - Make lines in plotgraph use a set value of the graph
     - set the graph based on max value in that frame, but use multiple curves
