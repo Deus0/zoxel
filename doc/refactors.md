@@ -1,6 +1,20 @@
 # Refactoring
 
+
+## Macro Use
+- Remove zox_sys2 and use regular function names
+- just call zox_sys_begin that will add timings there
+
+## Events
+- Move sound systems to events too
+    - PickupSoundSystem
+    - LandSoundSystem
+- Remove state systems and just use event components with listeners
+
 ## Unsorted
+- Rename Cubes - Geometry
+- Move Bodys and Equipment to Parts with tags
+-x Make Core its own module, and _ will just be helpers, flecs macros, data structs
 - Move Texture tag from rendering to Textures
     - Just wrap gpu stuff in graphics, then do it all in textures before our rendering
 - Rename Rendering: Geometry, used for meshes

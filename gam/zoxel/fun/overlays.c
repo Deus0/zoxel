@@ -1,7 +1,13 @@
 entity dbg_ui_overlays;
 
 // TODO: Include post processing, streaming and any other data
-uint zox_dbg_ui_camera(ecs *world, entity e, char *buffer, uint size, uint index) {
+uint zox_dbg_ui_camera(
+    ecs *world,
+    entity e,
+    char *buffer,
+    uint size,
+    uint index)
+{
     if (!zox_valid(e) || !zox_has(e, CameraLink)) {
         return index;
     }
@@ -23,14 +29,14 @@ uint zox_dbg_ui_camera(ecs *world, entity e, char *buffer, uint size, uint index
     entity skybox = zox_get_child_by_id(world, camera, zox_id(Skybox));
 
     index += snprintf(buffer + index, size - index, "   -- Skybox [%s]\n", zox_getn(skybox));
-    if (zox_valid(skybox)) {
+    /*if (zox_valid(skybox)) {
         float3 skybox_position = zox_getv(skybox, Position3D);
         float4 skybox_rotation = zox_getv(skybox, Rotation3D);
         index += snprintf(buffer + index, size - index, " - Position [%fx%fx%f]\n", skybox_position.x, skybox_position.y, skybox_position.z);
         index += snprintf(buffer + index, size - index, " - Rotation [%fx%fx%fx%f]\n", skybox_rotation.x, skybox_rotation.y, skybox_rotation.z, skybox_rotation.w);
         float3 skybox_lposition = zox_getv(skybox, LocalPosition3D);
         index += snprintf(buffer + index, size - index, " - Local Position [%fx%fx%f]\n", skybox_lposition.x, skybox_lposition.y, skybox_lposition.z);
-    }
+    }*/
     if (!zox_has(camera, Streamer)) {
         index += snprintf(buffer + index, size - index, " - No Streaming\n");
         return index;

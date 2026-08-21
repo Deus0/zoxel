@@ -3,8 +3,9 @@
 #include "spheres_debug.c"
 #include "friction.c"
 #include "collision_debug.c"
+#include "bounds.c"
 
-void define_systems_collisions3(ecs *world) {
+void zox_systems_collisions3(ecs *world) {
     // todo: reset collision on detection - so we can use it anywhere in our cycle
     //      maybe we keep last_collision state? and we response based on it?? idk
     //      idk how the systems might overlap so its hard
@@ -43,4 +44,20 @@ void define_systems_collisions3(ecs *world) {
         [none] SphereCollider
     );
 #endif
+    // NOTE: timing specific, fucks up if changes position
+    zox_system(
+        Bounds3GrowSystem,
+        zoxp_update,
+        [in] chunks3.VoxelNodeDirty,
+        [in] chunks3.ChunkSize,
+        [in] blocks.BlockScale,
+        [out] transforms3.Bounds3D,
+        [out] transforms3.Bounds3Dirty
+    );
+    zox_system(
+        Bounds3EnableSystem,
+        zoxp_update,
+        [in] transforms3.Bounds3Dirty,
+        [none] physics.DisableMovement
+    );
 }

@@ -6,16 +6,14 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  *
- * Uses
+ * Modules Used:
+ *
  *      - Transforms2
  *      - Layout2
  *      - Rendering
  *      - Interaction
  *
- * */
-#ifndef zoxm_ui
-#define zoxm_ui
-
+ **/
 byte is_log_dragging = 0;
 #include "set/_.c"
 #include "com/_.c"
@@ -38,7 +36,8 @@ byte is_log_dragging = 0;
 #include "dbg/_.c"
 #include "tst/_.c"
 
-zox_begin_module(Elements) {
+void import_ui(ecs* world) {
+    zox_module(ui);
     zox_define_components_elements(world);
     zox_define_systems_elements(world);
     add_hook_terminal_command(arguments_ui);
@@ -56,6 +55,4 @@ zox_begin_module(Elements) {
     zox_import_module(RenderTextures);
     zox_import_module(UIContainers);
     add_hook_key_down(zox_dbg_refresh_uis);
-} zox_end_module(Elements);
-
-#endif
+}

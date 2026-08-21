@@ -175,15 +175,10 @@ fi
 if [[ ${GLB} == "opengl" ]]; then
     echo "+ Added [zox_opengl]"
     dflags+=" -Dzox_opengl"
-    if [[ ${sdl_source} == "1" ]]; then
-        echo "Cannot get Cross Compiler working with OpenGL [-lEGL -lGLESv2] yet.."
-        exit
+    if [[ ${is_desktop_gl} == "1" ]]; then
+        libs+=" -lGL"
     else
-        if [[ ${is_desktop_gl} == "1" ]]; then
-            libs+=" -lGL"
-        else
-            libs+=" -lEGL -lGLESv2"
-        fi
+        libs+=" -lEGL -lGLESv2"
     fi
 fi
 

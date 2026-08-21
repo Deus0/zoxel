@@ -1,31 +1,23 @@
-#ifndef zoxm_weathers
-#define zoxm_weathers
-
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Weathers                                             |
+ * |                                                                  |
+ * |  Skybox - Clouds - Rain - Wind - Fog                             |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 byte override_sky = 0;
 color_rgb override_sky_fill = color_rgb_red;
-entity prefab_skybox;
-entity shader_skybox; // shaders global
-entity skybox; // remove this, link to realm/game
 #include "com/_.c"
-#include "shd/skybox.c"
 #include "pre/_.c"
-#include "fun/_.c"
 #include "ins/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 
-void spawn_shaders_weather(ecs *world) {
-    shader_skybox = spawn_shader_skybox(world);
+void import_weathers(ecs* world) {
+    zox_module(weathers);
+    zox_components_weather(world);
+    zox_systems_weather(world);
+    add_hook_spawn_prefabs(zox_prefabs_weather);
+    add_hook_load_shader(&zox_shaders_weather);
 }
-
-zox_begin_module(Weathers) {
-    zox_define_components_weather(world);
-    define_systems_weather(world);
-    // hooks
-    add_hook_load_shader(&spawn_shaders_weather);
-    // add_hook_on_boot(spawn_weather);
-    // add_to_event_game_state((zox_game_event) { &game_state_weather });
-    // prefabs
-    spawn_prefabs_weather(world);
-} zox_end_module(Weathers);
-
-#endif

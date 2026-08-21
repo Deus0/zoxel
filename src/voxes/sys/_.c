@@ -9,22 +9,6 @@
 #include "move_bounds.c"
 
 void define_systems_voxes(ecs *world) {
-    // NOTE: timing specific, fucks up if changes position
-    zox_system(
-        Bounds3GrowSystem,
-        zoxp_update,
-        [in] chunks3.VoxelNodeDirty,
-        [in] chunks3.ChunkSize,
-        [in] blocks.BlockScale,
-        [out] transforms3.Bounds3D,
-        [out] transforms3.Bounds3Dirty
-    );
-    zox_system(
-        Bounds3EnableSystem,
-        zoxp_update,
-        [in] transforms3.Bounds3Dirty,
-        [none] physics.DisableMovement
-    );
     // NOTE: Writes to VoxelNode
     zox_system(
         CloneVoxSystem,

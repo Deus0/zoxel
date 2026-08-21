@@ -293,7 +293,7 @@ static int xr_setup_swapchains(void) {
     return 1;
 }
 
-static int xr_setup(void) {
+static int xr_setup() {
     if (!xr_setup_system()) {
         return 0;
     }

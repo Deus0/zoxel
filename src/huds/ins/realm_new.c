@@ -66,7 +66,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     // more data
     zox_geter_value(player, CanvasLink, entity, canvas);
     const char* header_label = "Where"; // "New Realm";
-    int max_labels = max_settings;
+    int max_labels = huds_max_list_elements;
     // # Window #
     LayoutParentData canvas_data = { .e = canvas };
     entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_label, canvas, int2_zero, size, window_anchor, header_font_size, header_padding, &on_cancelled_new_realm);

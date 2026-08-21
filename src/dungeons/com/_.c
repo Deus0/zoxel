@@ -4,7 +4,7 @@ zox_tag(BlockDungeonCore);
 zox_tag(BlockDungeonBricks);
 zoxc_entity(DungeonWallType);
 
-void define_components_dungeons(ecs* world) {
+void zox_components_dungeons(ecs* world) {
     zoxd_tag(Dungeon);
     zoxd_tag(DungeonCore);
     zoxd_tag(BlockDungeonCore);

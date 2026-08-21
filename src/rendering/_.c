@@ -1,8 +1,12 @@
-#ifndef zoxm_rendering
-#define zoxm_rendering
-
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Rendering                                            |
+ * |                                                                  |
+ * |  Meshes - Materials - Shaders - GPU - Cameras                    |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
+ */
 #define max_layers2D 256
-// const ushort max_layers2D = 256;
 byte zox_new_ui_renderer = 1;
 #include "com/_.c"
 #include "dat/_.c"
@@ -43,7 +47,8 @@ void viewport_clear(ecs *world) {
     zox_gpu_clear_viewport();
 }
 
-zox_begin_module(Rendering) {
+void import_rendering(ecs* world) {
+    zox_module(rendering);
     initialize_render_loop();
     initialize_hook_load_shader();
     initialize_gpu_systems();
@@ -60,6 +65,5 @@ zox_begin_module(Rendering) {
     zox_import_module(Rendering3);
     zox_import_module(RenderingCameras);
     add_to_update_loop(viewport_clear);
-} zox_end_module(Rendering);
+}
 
-#endif

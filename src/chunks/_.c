@@ -6,9 +6,6 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  * */
-#ifndef zoxm_chunks
-#define zoxm_chunks
-
 #define zox_generate_model_run 1
 #define zox_generate_model_bake 2
 #define zox_generate_model_end 0
@@ -18,10 +15,9 @@ double chunk_mesh_deactivate_delay = 0.5;
 #include "chunks2/_.c"
 #include "chunks3/_.c"
 
-zox_begin_module(Chunks) {
+void import_chunks(ecs* world) {
+    zox_module(chunks);
     define_components_chunks(world);
     zox_import_module(Chunks2);
     zox_import_module(Chunks3);
-} zox_end_module(Chunks);
-
-#endif
+}

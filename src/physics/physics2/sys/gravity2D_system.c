@@ -1,14 +1,14 @@
 //! Each entity will impact all other entities.
 zox_sys2(Gravity2DSystem) {
     // NearbyEntities component instead of everything.
-    double delta_time = (double) it->delta_time;
-    Position2 *position2s = ecs_field(it, Position2, 1);
-    Velocity2D *velocity2Ds = ecs_field(it, Velocity2D, 2);
-    for (int i = 0; i < it->count; i++)
-    {
-        const Velocity2D *velocity2D = &velocity2Ds[i];
-        Position2 *position2 = &position2s[i];
-        position2->value.x += velocity2D->value.x * delta_time;
-        position2->value.y += velocity2D->value.y * delta_time;
+    // double delta_time = (double) it->delta_time;
+    zox_sys_begin();
+    zox_sys_out(Position2);
+    zox_sys_in(Velocity2D);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(Position2, position2);
+        zox_sys_i(Velocity2D, velocity2D);
+        position2->value.x += velocity2D->value.x * zox_delta_time;
+        position2->value.y += velocity2D->value.y * zox_delta_time;
     }
 } zox_sys_end(Gravity2DSystem);

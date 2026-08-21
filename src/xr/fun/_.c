@@ -1,4 +1,14 @@
-static XrInstance xr_instance = XR_NULL_HANDLE;
+#include "helpers.c"
+#include "egl.c"
+#include "init.c"
+#include "frames.c"
+#include "swapchains.c"
+#include "eyes.c"
+#include "input.c"
+#include "time.c"
+
+
+/*static XrInstance xr_instance = XR_NULL_HANDLE;
 
 static int xr_check_result(XrResult result, const char* name) {
     if (XR_FAILED(result)) {
@@ -295,4 +305,4 @@ void zox_xr_shutdown(void) {
 
         xr_instance = XR_NULL_HANDLE;
     }
-}
+}*/

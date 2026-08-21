@@ -9,6 +9,7 @@
 #ifndef zoxm_huds
 #define zoxm_huds
 
+const byte huds_max_list_elements = 128;
 const byte zox_huds_header_font_size = 22;
 const byte zox_huds_element_font_size = 10;
 const byte zox_huds_list_padding = 8;

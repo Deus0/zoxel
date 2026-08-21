@@ -8,7 +8,7 @@
 #include "character_player.c"
 realm_clear_system(StatLinks);
 
-void define_systems_stats(ecs *world) {
+void zox_systems_stats(ecs *world) {
     realm_clear_systemd(stats, StatLinks);
     // debuff system here, skills will add debuffs
     zox_system(
@@ -67,6 +67,6 @@ void define_systems_stats(ecs *world) {
         zoxp_mainthread,
         [in] characters.GenerateCharacter,
         [in] core.ZoxName,
-        [out] elements.ElementLinks
+        [out] ui.ElementLinks
     );
 }

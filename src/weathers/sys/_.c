@@ -2,7 +2,7 @@
 #include "skybox_set_time_system.c"
 #include "game.c"
 
-void define_systems_weather(ecs* world) {
+void zox_systems_weather(ecs* world) {
     zox_system(
         WeatherGameStateSystem,
         zoxp_update,

@@ -1,6 +1,9 @@
 # Bugs #
 - Sometimes crashes still
 
+## Rendering
+- Cube mesh doesnt restore on alt tab
+
 ## Lighting
 - corners of light still off (needs check solids)
 - when moving between chunks can throw lights off

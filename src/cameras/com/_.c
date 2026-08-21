@@ -19,11 +19,7 @@ zoxc(ProjectionMatrix, float4x4);
 zoxc(ViewMatrix, float4x4); // todo: rename to ViewProjectionMatrix
 #define zox_camera_planes 6
 zoxc_array(CameraPlanes, plane, zox_camera_planes);
-#ifdef frustumdouble
-    zoxc_array(FrustumCorners, double3, 8);
-#else
-    zoxc_array(FrustumCorners, float3, 8);
-#endif
+zoxc_array(FrustumCorners, double3, 8);
 zoxc_state(AttachDirty);
 // Filters
 zox_tag(CameraFilter);

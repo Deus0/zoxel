@@ -10,7 +10,7 @@ void define_systems_stats_ui(ecs *world) {
         StatbarSystem,
         zoxp_update,
         [in] StatLink,
-        [out] elements.BarLevel,
+        [out] ui.BarLevel,
         [none] Statbar
     );
     zox_system(
@@ -40,7 +40,7 @@ void define_systems_stats_ui(ecs *world) {
         HealthbarSpawnerSystem,
         zoxp_mainthread,
         [in] combat.CombatState,
-        [out] elements.ElementLinks
+        [out] ui.ElementLinks
     );
     zox_system_1(
         PlayerStatspanelSystem,

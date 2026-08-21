@@ -1,5 +1,3 @@
-#if !defined(zoxm_bones) && defined(zoxm_transforms)
-#define zoxm_bones
 
 #include "sha/_.c"
 #include "com/_.c"
@@ -14,5 +12,3 @@ zox_begin_module(Bones) {
     add_hook_spawn_prefabs(spawn_prefabs_bones);
     add_hook_load_shader(&spawn_shaders_bones);
 } zox_end_module(Bones);
-
-#endif

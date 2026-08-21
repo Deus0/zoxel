@@ -1,5 +1,6 @@
 // TODO: Make this use bytes for collision
 zox_sys2(SphereCollideSystem) {
+    byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
@@ -21,13 +22,13 @@ zox_sys2(SphereCollideSystem) {
             zox_sys_in_2(SphereRadius);
             zox_sys_in_2(CollisionDisabled);
             for (int j = 0; j < it2.count; j++) {
+                zox_sys_e_2();
                 zox_sys_i_2(Position3D, position2);
                 zox_sys_i_2(SphereRadius, radius2);
                 zox_sys_i_2(CollisionDisabled, disabled2);
                 if (disabled2->value) {
                     continue;
                 }
-                entity e2 = it2.entities[j];
                 if (e == e2) {
                     continue;
                 }
@@ -40,8 +41,11 @@ zox_sys2(SphereCollideSystem) {
                             (*oevent->value)(world, e, e2);
                         }
                     }
-                    // zox_log(" > e [%lu] overlapping e2 [%lu]\n", e, e2)
-                    // detects when one object overlaps another
+                    if (dbg_log) {
+                        zox_log("Entity [%s] has Overlapped with [%s]",
+                            zox_getn(e),
+                            zox_getn(e2));
+                    }
                     // we should do overlap event here
                     // that would involve caching overlapped entities tho
                 }

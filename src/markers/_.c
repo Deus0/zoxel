@@ -14,14 +14,10 @@
  *          - X - Enemy
  *
  * */
-#if !defined(zoxm_markers) && defined(zoxm_quests)
-#define zoxm_markers
-
 // #include "com/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Markers) {
+void import_markers(ecs* world) {
+    zox_module(markers);
     zox_define_systems_markers(world);
-} zox_end_module(Markers);
-
-#endif
+}

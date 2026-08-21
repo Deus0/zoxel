@@ -44,7 +44,7 @@ void define_systems_elements2(ecs *world) {
         ElementbarSystem,
         zoxp_update,
         [in] layouts.LayoutSize,
-        [in] elements.BarLevel,
+        [in] ui.BarLevel,
         [none] Elementbar
     );
     zox_system(
@@ -73,7 +73,7 @@ void define_systems_elements2(ecs *world) {
         zoxp_update,
         [in] elements2.ToggleState,
         [in] elements2.ToggleStateDirty,
-        [in] elements.ElementOutlineColor,
+        [in] ui.ElementOutlineColor,
         [out] textures.OutlineColor,
         // [out] rendering.Brightness,
         [out] textures.GenerateTexture,

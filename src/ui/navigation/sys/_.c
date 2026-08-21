@@ -15,8 +15,8 @@ void define_systems_navigation(ecs* world) {
         zoxp_update,
         // [in] inputs.DeviceMode,
         [in] inputs.DeviceDisabled,
-        [out] elements.NavigatorState,
-        [out] elements.NavigatorTimer,
+        [out] ui.NavigatorState,
+        [out] ui.NavigatorTimer,
         [out] raycasts.RaycasterTarget,
         [none] inputs.DeviceNavigator
     );

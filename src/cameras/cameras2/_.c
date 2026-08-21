@@ -1,5 +1,3 @@
-#if !defined(zoxm_cameras2) && defined(zoxm_transforms2)
-#define zoxm_cameras2
 
 zox_tag(CameraFollower2);
 #include "pre/camera2.c"
@@ -14,5 +12,3 @@ zox_begin_module(Cameras2)
     define_systems_cameras2(world);
     add_hook_spawn_prefabs(spawn_prefabs_cameras2);
 zox_end_module(Cameras2)
-
-#endif

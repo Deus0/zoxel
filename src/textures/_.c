@@ -6,9 +6,6 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  */
-#ifndef zoxm_textures
-#define zoxm_textures
-
 byte texture_upload_rate = 8;
 
 // TODO: Move font texture functions into textures
@@ -23,11 +20,10 @@ byte texture_upload_rate = 8;
 #include "dbg/_.c"
 
 // todo: rename Textures as TextureLinks, and Textures to Textures again
-zox_begin_module(Textures) {
+void import_textures(ecs* world) {
+    zox_module(textures);
     define_components_textures(world);
     define_systems_textures(world);
     add_hook_spawn_prefabs(spawn_prefabs_textures_core);
     zox_import_module(TexturesFiles);
-} zox_end_module(Textures);
-
-#endif
+}

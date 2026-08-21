@@ -28,8 +28,8 @@ void define_systems_elements3D(ecs *world) {
         Elementbar3DSystem,
         zoxp_update,
         [in] rendering.RenderDisabled,
-        [in] elements.ElementBar,
-        [in] elements.ElementBarSize,
+        [in] ui.ElementBar,
+        [in] ui.ElementBarSize,
         [none] rendering.MeshVertices
     );*/
     /*zox_system_1(
@@ -50,7 +50,7 @@ void define_systems_elements3D(ecs *world) {
     zox_system(
         UITrailSystem,
         zoxp_transforms + 1,
-        [in] elements.UIHolderLink,
+        [in] ui.UIHolderLink,
         [in] UITrail,
         [out] transforms3.Position3D
     );

@@ -5,6 +5,6 @@ void zox_define_systems_markers(ecs *world) {
         MarkerSpawnSystem,
         zoxp_mainthread,
         [in] characters.GenerateCharacter,
-        [out] elements.ElementLinks
+        [out] ui.ElementLinks
     );
 }

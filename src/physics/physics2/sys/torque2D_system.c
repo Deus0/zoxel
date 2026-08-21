@@ -7,6 +7,7 @@ zox_sys2(Torque2DSystem) {
         zox_sys_o(Rotation2, rotation2D);
         zox_sys_i(Torque2D, torque2D);
         rotation2D->value += torque2D->value * delta_time;
-        if (rotation2D->value > 2 * M_PI) rotation2D->value -= 2 * M_PI;
+        if (rotation2D->value > 2 * M_PI)
+            rotation2D->value -= 2 * M_PI;
     }
 } zox_sys_end(Torque2DSystem);

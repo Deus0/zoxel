@@ -4,7 +4,7 @@ extern entity get_block_link(ecs*, entity);
 
 // NOTE: Relies on texture size
 zox_sys2(TilemapGenerationSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TilemapSize);

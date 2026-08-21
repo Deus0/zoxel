@@ -1,4 +1,8 @@
-entity spawn_skybox(ecs *world, entity camera, entity shader) {
+entity spawn_skybox(
+    ecs* world,
+    entity camera,
+    entity shader)
+{
     // TODO: Make dynamic size
     float skybox_size = 666; // 1024;    // camera_far_distance * 0.95 roughly
     zox_instance(prefab_skybox);
@@ -18,19 +22,7 @@ entity spawn_skybox(ecs *world, entity camera, entity shader) {
             zox_set_ptr(e, MaterialBasic3D, attributes);
             set_skybox_material_color(gpu_material, menu_sky_color, menu_sky_bottom_color);
         }
-        /*guint material = spawn_gpu_material(world, e, shader_value);
-        if (!material) {
-            zox_log("[spawn_skybox] Failed");
-            zox_delete(e);
-            return 0;
-        }*/
     }
-    skybox = e;
+    // skybox = e;
     return e;
-}
-
-void spawn_weather(ecs *world, entity app) {
-    entity main_camera = main_cameras[0];
-    prefab_skybox = spawn_skybox(world, main_camera, shader_skybox);
-    set_skybox_colors(world, menu_sky_color, menu_sky_bottom_color);
 }

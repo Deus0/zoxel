@@ -2,7 +2,7 @@
 #include "view_matrix_system.c"
 #include "viewport_resize_system.c"
 #include "frustum_d3.c"
-#include "frustum_f3.c"
+// #include "frustum_f3.c"
 #include "orthographic.c"
 
 void define_systems_cameras(ecs *world) {

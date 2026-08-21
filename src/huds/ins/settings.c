@@ -69,7 +69,7 @@ entity spawn_menu_options(
     byte2 list_padding = byte2_single(zox_huds_list_padding * ui_scale);
     byte visible_count = 6;
     const char* header_label = "Ponder";
-    SpawnListElement elements[max_settings];
+    SpawnListElement elements[huds_max_list_elements];
     int elements_count = 0;
     entity game = zox_get_parent(world, player);
     entity app = zox_get_parent(world, game);

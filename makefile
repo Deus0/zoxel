@@ -124,7 +124,7 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	bash bsh/linux.sh $(GAME) ${build_args} --debug
+	bash bsh/linux.sh $(GAME) ${build_args} --debug --logs --timings
 
 dev: $(TARGET_DEV)
 

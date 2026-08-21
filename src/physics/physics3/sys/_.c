@@ -8,7 +8,7 @@
 #include "disabler.c"
 #include "bounds.c" //  move to transforms
 
-void define_systems_physics3(ecs *world) {
+void zox_systems_physics3(ecs *world) {
     // Force
     zox_system(
         Acceleration3System,

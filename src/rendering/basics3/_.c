@@ -1,5 +1,3 @@
-#ifndef zoxm_rendering_basics3
-#define zoxm_rendering_basics3
 
 #include "dat/_.c"
 #include "mat/_.c"
@@ -13,4 +11,3 @@ zox_begin_module(Rendering3) {
     add_hook_load_shader(&spawn_shaders_basics3D);
 } zox_end_module(Rendering3);
 
-#endif

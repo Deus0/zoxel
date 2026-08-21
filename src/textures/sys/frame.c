@@ -170,9 +170,5 @@ zox_sys2(FrameTextureSystem) {
             zox_log("Frame Texture generated [%s] fill [%ix%ix%ix%i] Size [%ix%i]", zox_get_name(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a, size->value.x, size->value.y);
         }
     }
-#ifdef zox_time_systems
-    if (dbg_log >= 2 && process_count) {
-        zox_log("Frame Textures Generated [%i]:[%f]", process_count, calculate_sys_delta());
-    }
-#endif
+    // zox_log("Frame Textures Generated [%i]:[%f]", process_count, calculate_sys_delta());
 } zox_sys_end(FrameTextureSystem);

@@ -25,7 +25,7 @@ static int xr_get_views(XrView views[2]) {
     );
     if (XR_FAILED(result) || view_count != 2) {
         zox_loge(
-            "[XR] xrLocateViews failed: %d count=%u",
+            "[XR] xrLocatViews failed: %d count=%u",
             result,
             view_count
         );

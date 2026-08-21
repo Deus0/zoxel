@@ -21,7 +21,7 @@ void zox_define_systems_interaction(ecs* world) {
         [in] layouts.LayoutSize,   // use Size2
         [in] layouts.Layer,
         [in] rendering.RenderDisabled,
-        [none] elements.Element,
+        [none] ui.Element,
         [none] interaction.Selectable
     );
     zox_system_ctx(
@@ -56,21 +56,21 @@ void zox_define_systems_interaction(ecs* world) {
         ElementSelectedFillColorSystem,
         zoxp_update,
         [in] interaction.SelectState,
-        [in] elements.ElementFillColor,
+        [in] ui.ElementFillColor,
         [in] interaction.SelectedFillColor,
         [out] textures.FillColor,
         [out] textures.GenerateTexture,
-        [none] elements.Element
+        [none] ui.Element
     );
     zox_system(
         ElementSelectedOutlineColorSystem,
         zoxp_update,
         [in] interaction.SelectState,
-        [in] elements.ElementOutlineColor,
+        [in] ui.ElementOutlineColor,
         [in] interaction.SelectedOutlineColor,
         [out] textures.OutlineColor,
         [out] textures.GenerateTexture,
-        [none] elements.Element
+        [none] ui.Element
     );
     // Active
     zox_system(
@@ -78,18 +78,18 @@ void zox_define_systems_interaction(ecs* world) {
         zoxp_update,
         [in] interaction.ActiveState,
         [in] interaction.ActiveStateDirty,
-        [in] elements.ElementOutlineColor,
+        [in] ui.ElementOutlineColor,
         [in] interaction.ActiveColor,
         [out] textures.OutlineColor,
         [out] textures.GenerateTexture,
-        [none] elements.Element
+        [none] ui.Element
     );
     zox_system(
         ElementSelectedBrighterSystem,
         zoxp_update,
         [in] interaction.SelectState,
         [out] rendering.Brightness,
-        [none] elements.Element,
+        [none] ui.Element,
         [none] interaction.SelectedBrighter,
         // [none] !interaction.SelectedFillColor
     );
@@ -105,7 +105,7 @@ void zox_define_systems_interaction(ecs* world) {
         zoxp_update,
         [in] interaction.ActiveState,
         [in] interaction.ActiveStateDirty,
-        [none] elements.Element
+        [none] ui.Element
     );
     zox_system(
         MouseElementSystem,
@@ -114,7 +114,7 @@ void zox_define_systems_interaction(ecs* world) {
         [in] layouts.Anchor,
         [out] layouts.LayoutPosition,
         [out] layouts.LayoutPositionDirty,
-        [none] elements.MouseElement
+        [none] ui.MouseElement
     );
     zox_system(
         RaycasterResulterSystem,
@@ -136,6 +136,6 @@ void zox_define_systems_interaction(ecs* world) {
         [in] interaction.ClickEvent,
         [in] interaction.ClickState,
         [out] interaction.Clicker,
-        [none] elements.Element
+        [none] ui.Element
     );
 }

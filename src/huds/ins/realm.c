@@ -70,7 +70,7 @@ entity spawn_menu_realm(ecs *world, entity player) {
     const char* header_label = "Come";
     int elements_count = 0;
     byte visible_count = 4;
-    SpawnListElement elements[max_settings + 1];
+    SpawnListElement elements[huds_max_list_elements + 1];
     elements[elements_count++] = (SpawnListElement) {
         .type = list_element_type_label,
         .text = "Seed",

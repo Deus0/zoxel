@@ -44,7 +44,7 @@ entity spawn_menu_load(ecs *world, entity player) {
     byte header_font_size = zox_huds_header_font_size * ui_scale;
     byte list_font_size = zox_huds_element_font_size * ui_scale;
     byte2 padding = byte2_single(zox_huds_list_padding * ui_scale);
-    SpawnListElement elements[max_settings + 1];
+    SpawnListElement elements[huds_max_list_elements + 1];
     int elements_count = 0;
     char **save_dirs;
     byte saves_count;

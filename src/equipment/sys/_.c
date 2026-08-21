@@ -6,7 +6,7 @@ void define_systems_equipment(ecs* world) {
         zoxp_mainthread,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
-        [out] bodys.BodyDirty,
+        [out] parts.BodyDirty,
         [none] players.PlayerLink
     );
 }

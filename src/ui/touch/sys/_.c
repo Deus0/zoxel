@@ -9,7 +9,7 @@ void define_systems_touch(ecs *world) {
         [in] inputs.ZevicePointerPosition,
         [in] inputs.ZevicePointer,
         [in] inputs.VirtualZeviceLink,
-        [out] elements.ElementLink,
+        [out] ui.ElementLink,
         [none] inputs.Zevice
     );
 }

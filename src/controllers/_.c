@@ -13,9 +13,6 @@
  *      - UIs
  *
  * */
-#if !defined(zoxm_controllers) && defined(zoxm_characters) && defined(zoxm_inputs) && defined(zoxm_physics)
-#define zoxm_controllers
-
 #include "dat/settings.c"
 #include "sys/_.c"
 #include "controllers2/_.c"
@@ -23,11 +20,10 @@
 #include "free_roam/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Controllers) {
+void import_controllers(ecs* world) {
+    zox_module(controllers);
     zox_define_systems_controllers(world);
-    zox_import_module(Controllers2);
-    zox_import_module(Controllers3);
-    zox_import_module(FreeRoam);
-} zox_end_module(Controllers);
-
-#endif
+    zox_add_module(controllers2);
+    zox_add_module(controllers3);
+    zox_add_module(freeroam);
+}

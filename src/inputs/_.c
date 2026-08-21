@@ -16,9 +16,6 @@
  *      - Use that state to connect a new device to a player
  *
  * */
-#ifndef zoxm_inputs
-#define zoxm_inputs
-
 const float bumper_button_cutoff = 0.98f;
 const float joystick_min_cutoff = 0.08f;
 #include "set/_.c"
@@ -35,16 +32,11 @@ void module_dispose_inputs(ecs *world, void *ctx) {
     dispose_hook_key_down();
 }
 
-void add_hook_key_down_2(int keycode, void *e) {
-
-}
-
-zox_begin_module(Inputs) {
+void import_inputs(ecs* world) {
+    zox_module(inputs);
     zox_module_dispose(module_dispose_inputs);
     initialize_hook_key_down();
     define_components_inputs(world);
     define_systems_input(world);
     add_hook_spawn_prefabs(spawn_prefabs_inputs);
-} zox_end_module(Inputs);
-
-#endif
+}

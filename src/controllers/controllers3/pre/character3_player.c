@@ -3,31 +3,29 @@ entity spawn_prefab_character3_player(ecs *world, entity prefab) {
     zox_prefab_name("character3_player");
     zox_add(e, PlayerCharacter);
     // Transform
-    zox_prefab_set(e, Euler, { float3_zero });
+    zox_setv(e, Euler, float3_zero);
     // disable until loaded terrain
     // zox_add(e, DisableMovement);
-    zox_prefab_set(e, FlyMode, { 0 });
+    zox_setv(e, FlyMode, 0);
     zox_add(e, BlockSoundTrigger);
     // Controller
-    zox_prefab_set(e, Movement3, { float3_zero });
-    zox_prefab_set(e, CameraLink, { 0 });
-    zox_prefab_set(e, PlayerLink, { 0 });
+    zox_setv(e, Movement3, float3_zero);
+    zox_setv(e, CameraLink, 0);
+    zox_setv(e, PlayerLink, 0);
     // Raycasting
-    zox_prefab_set(e, GizmoLink, { 0 });
+    zox_setv(e, GizmoLink, 0);
     // Input Triggers
-    zox_prefab_set(e, TriggerActionB, { 0 });
-    zox_prefab_set(e, TriggerActionE, { 0 });
+    zox_setv(e, TriggerActionB, 0);
+    zox_setv(e, TriggerActionE, 0);
     // Saves
     zox_add(e, Saver);
-    zox_prefab_set(e, SaveHash, { 0 });
+    zox_setv(e, SaveHash, 0);
     // Pickups
-#ifdef zoxm_pickups
     const float pickup_radius = 1.5f; // 0.16f
     zox_add(e, PickUpperer);
     zox_add(e, SphereCollider);
-    zox_prefab_set(e, SphereRadius, { pickup_radius });
-    zox_prefab_set(e, CollisionDisabled, { 0 });
-#endif
+    zox_setv(e, SphereRadius, pickup_radius);
+    zox_setv(e, CollisionDisabled, 0);
     // Debug
     if (auto_player) {
         zox_add(e, Npc);

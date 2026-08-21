@@ -39,7 +39,7 @@ void define_systems_editor(ecs *world) {
         [in] editor.HierarchyUIDirty,
         [in] core.EntityTarget,
         [in] elements2.ScrollviewLink,
-        [in] elements.ElementFontSize
+        [in] ui.ElementFontSize
     );
     zox_system_1(
         InspectorSpawnSystem,
@@ -47,7 +47,7 @@ void define_systems_editor(ecs *world) {
         [in] editor.InspectorDirty,
         [in] core.EntityTarget,
         [in] elements2.ScrollviewLink,
-        [in] elements.FontSize
+        [in] ui.FontSize
     );
     zox_system_1(
         EditorInputSystem,

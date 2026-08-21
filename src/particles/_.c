@@ -6,21 +6,17 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  */
-#ifndef zox_particles
-#define zox_particles
-
 zox_tag(Particle);
 zoxc_entity(ParticlesEmitterLink);
 zoxc_int(ParticleEmitRate);
 #include "particles2/_.c"
 #include "particles3/_.c"
 
-zox_begin_module(Particles) {
+void import_particles(ecs* world) {
+    zox_module(particles);
     zoxd_tag(Particle);
     zoxd_entity(ParticlesEmitterLink);
     zoxd_int(ParticleEmitRate);
     zox_import_module(Particles2D);
     zox_import_module(Particles3D);
-} zox_end_module(Particles);
-
-#endif
+}

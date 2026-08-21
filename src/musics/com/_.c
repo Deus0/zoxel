@@ -21,7 +21,7 @@ zoxc_entity(PlaylistLink);
 zoxc_byte(PlaylistMode);
 // zoxc_arrayd(MusicData, int);
 
-void define_components_musics(ecs* world) {
+void zox_components_musics(ecs* world) {
     // Notes
     zoxd_tag(Note);
     zoxd_tag(Music);

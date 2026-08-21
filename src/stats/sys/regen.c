@@ -13,7 +13,7 @@ zox_sys2(StatRegenSystem) {
         zox_sys_o(StatValue, value);
         zox_sys_o(StatDirty, dirty);
         entity user = zox_get_parent(world, e);
-        if (!user || !zox_has(user, Dead)) {
+        if (!zox_valid(user) || !zox_has(user, Dead)) {
             continue;
         }
         byte dead = zox_getv(user, Dead);
@@ -23,7 +23,6 @@ zox_sys2(StatRegenSystem) {
         if (value->value >= max->value) {
             continue;
         }
-        // TODO: WAIT REGEN STATS ARNT IMPLEMENTED?
         value->value += delta_time * regen_rate;
         if (value->value > max->value) {
             value->value = max->value;

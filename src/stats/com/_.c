@@ -18,7 +18,7 @@ zoxc_state(StatDirty);
 zox_tag(StatHealth);
 zox_tag(StatSoul);
 
-void define_components_stats(ecs *world) {
+void zox_components_stats(ecs *world) {
     zoxd_tag(Stat);
     zoxd_tag(RealmStat);
     zoxd_entity(StatLink);

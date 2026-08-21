@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
     zox_logv("Initializing Zox Engine");
-    zox_import_module(Zox);
+    zox_add_module(zox);
     zox_logv("Initializing Game");
     zox_import_module(ZoxGame);
     zox_logv("Processing Terminal Commands");

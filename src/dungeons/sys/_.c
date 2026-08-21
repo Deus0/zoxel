@@ -3,7 +3,7 @@
 #include "maps.c"
 #include "place.c"
 
-void define_systems_dungeons(ecs* world) {
+void zox_systems_dungeons(ecs* world) {
     // Spawns new blocks
     zox_system_1(
         DungeonBlockSystem,

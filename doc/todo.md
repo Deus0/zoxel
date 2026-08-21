@@ -14,6 +14,7 @@
     
 ## --------------------
 
+- Seperate character depth from block depth in settings
 - Refactor ListPositionDirty and ListSizeDirty into tags
 - remove StatLinks just use children and queries
 

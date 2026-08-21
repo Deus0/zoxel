@@ -1,5 +1,3 @@
-#ifndef zoxm_rendering_basics2
-#define zoxm_rendering_basics2
 
 #include "set/_.c"
 #include "dat/_.c"
@@ -19,4 +17,3 @@ zox_begin_module(Rendering2) {
     add_hook_load_shader(&spawn_materials_elements);
 } zox_end_module(Rendering2);
 
-#endif

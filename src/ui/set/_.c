@@ -34,7 +34,7 @@ void initialize_settings_elements(ecs* world) {
     int2 screen_size = get_screen_size();
     float new_scale = calculate_ui_scale(screen_size);
     ui_scale = new_scale;
-    zox_log("Screen [%ix%i] - UI Scale set to: %i", screen_size.x, screen_size.y, new_scale);
+    // zox_log("Screen [%ix%i] - UI Scale set to: %i", screen_size.x, screen_size.y, new_scale);
 }
 
 void key_down_toggle_keyboard_navigation(ecs *world, int32_t keycode) {

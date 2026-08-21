@@ -1,6 +1,9 @@
 // more fun / unused for now
+static inline plane plane_from_float4(const float4 v) {
+    return (plane) { { v.x, v.y, v.z }, v.w };
+}
 
-static void normalize_plane(plane *p) {
+/*static void normalize_plane(plane *p) {
     double nx = p->normal.x;
     double ny = p->normal.y;
     double nz = p->normal.z;
@@ -11,4 +14,4 @@ static void normalize_plane(plane *p) {
     p->normal.y = (float)(ny * invLen);
     p->normal.z = (float)(nz * invLen);
     p->distance = (float)(p->distance * invLen);
-}
+}*/
