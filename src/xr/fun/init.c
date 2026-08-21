@@ -110,12 +110,10 @@ static int xr_setup_views(void) {
         zox_loge("[XR] Expected 2 views, got %u", view_count);
         return 0;
     }
-
     for (uint32_t i = 0; i < view_count; i++) {
         views_cfg[i].type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
         views_cfg[i].next = NULL;
     }
-
     result = xrEnumerateViewConfigurationViews(
         xr_instance,
         system_id,
@@ -124,7 +122,6 @@ static int xr_setup_views(void) {
         &view_count,
         views_cfg
     );
-
     return xr_check_result(
         result,
         "xrEnumerateViewConfigurationViews"

@@ -7,7 +7,6 @@
 #include "input.c"
 #include "time.c"
 
-
 /*static XrInstance xr_instance = XR_NULL_HANDLE;
 
 static int xr_check_result(XrResult result, const char* name) {

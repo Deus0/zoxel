@@ -1,4 +1,9 @@
-static inline void zox_log_prefix(const char* color, const char* prefix, const char* format, ...) {
+static inline void zox_log_prefix(
+    const char* color,
+    const char* prefix,
+    const char* format,
+    ...)
+{
     // build timestamp
     char timestamp[32];
     if (is_time_log_prefixes) {

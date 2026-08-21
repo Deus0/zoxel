@@ -12,20 +12,23 @@ void emit_particle3Ds_slow(
         float3 position = emit_position;
         float3 acceleration = float3_zero;
         float3_add_float3_p(&position, (float3) {
-            seed_rangef(++seed, -bounds.x / 2.0f, bounds.x / 2.0f),
-            seed_rangef(++seed, -bounds.y / 2.0f, bounds.y / 2.0f),
-            seed_rangef(++seed, -bounds.z / 2.0f, bounds.z / 2.0f)
+            seed_rangef(seed, -bounds.x / 2.0f, bounds.x / 2.0f),
+            seed_rangef(seed + 1, -bounds.y / 2.0f, bounds.y / 2.0f),
+            seed_rangef(seed + 2, -bounds.z / 2.0f, bounds.z / 2.0f)
         });
+        seed += 3;
         float3_add_float3_p(&acceleration, (float3) {
-            seed_rangef(++seed, -acb.x, acb.x),
-            seed_rangef(++seed, -acb.y, acb.y),
-            seed_rangef(++seed, -acb.z, acb.z)
+            seed_rangef(seed, -acb.x, acb.x),
+            seed_rangef(seed + 1, -acb.y, acb.y),
+            seed_rangef(seed + 2, -acb.z, acb.z)
         });
+        seed += 3;
         float4 particle_color = color_to_float4(colorr);
         // (float4) { (rand() % 100) * 0.01f, (rand() % 100) * 0.01f, (rand() % 100) * 0.01f, 0 };
         // float4_multiply_float_p(&particle_color, 0.3f);
         // particle_color.w += -0.2f + (rand() % 100) * 0.01f * 0.2f;
-        particle_color.w += seed_rangef(++seed, -0.2f, 0.0f);
+        particle_color.w += seed_rangef(seed, -0.2f, 0.0f);
+        seed += 1;
         spawn_particle3(
             world,
             position,

@@ -1,6 +1,5 @@
 # Refactoring
 
-
 ## Macro Use
 - Remove zox_sys2 and use regular function names
 - just call zox_sys_begin that will add timings there
@@ -12,6 +11,9 @@
 - Remove state systems and just use event components with listeners
 
 ## Unsorted
+- SDL should be a module again
+    - it will just add onto the App prefab and events
+    - This makes it easier for Glut to be implemented or others 
 - Rename Cubes - Geometry
 - Move Bodys and Equipment to Parts with tags
 -x Make Core its own module, and _ will just be helpers, flecs macros, data structs

@@ -20,9 +20,10 @@ boot_zox boot_event;
  * Initialize Rendering
 */
 int main(int argc, char* argv[]) {
-    zox_logv("+ Starting Zox Engine +");
+    zox_log("+ Starting Zox Engine +");
 #ifdef zox_android
     __android_log_print(ANDROID_LOG_INFO, "SDL", "Zoxel Android logging TEST");
+    zox_log("Log Test 2");
 #endif
 #ifndef zoxm_game
     zox_loge("[zoxm_game] not defined: game cannot load");
@@ -49,6 +50,7 @@ int main(int argc, char* argv[]) {
     }
     zox_logv("Initializing ECS Settings: FPS [%i]", target_fps);
     initialize_ecs_settings(world, target_fps, cores); // sets ecs threads
+    // TODO We should really hide the library used here
 #ifdef zox_sdl
     if (initialize_sdl(game_name) == EXIT_FAILURE) {
         zox_loge("[initialize_sdl] failed");

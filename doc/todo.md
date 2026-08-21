@@ -14,6 +14,11 @@
     
 ## --------------------
 
+## Next
+- Spawn 2 XR Eye entities that are cameras
+    - XRRender Systems for them
+- Remove SDL window when using XR
+
 - Seperate character depth from block depth in settings
 - Refactor ListPositionDirty and ListSizeDirty into tags
 - remove StatLinks just use children and queries

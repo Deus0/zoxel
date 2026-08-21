@@ -60,7 +60,8 @@ sdl_mixer="1"
 profile="debug"
 signed="0"
 install="0"
-log="0"
+logcat="0"
+logs="0"
 verbose="0"
 gfx="opengl"    # opengl, vulkan, headless
 is_xr="0"
@@ -87,7 +88,8 @@ fi
 [[ " $* " == *" --install "* ]] && install="1"
 [[ " $* " == *" --run "* ]] && is_run="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
-[[ " $* " == *" --log "* ]] && log="1"
+[[ " $* " == *" --logcat "* ]] && logcat="1"
+[[ " $* " == *" --logs "* ]] && logs="1"
 [[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
 [[ " $* " == *" --opengl "* ]] && gfx="opengl"
 [[ " $* " == *" --vulkan "* ]] && gfx="vulkan"
@@ -373,13 +375,19 @@ libs="-llog -landroid -lm -lEGL -lGLESv3"
 includes="-I${flecs_path} -I${sdl_path}/include"
 
 if [[ "${profile}" == "debug" ]]; then
-    echo "+ Added [debug]"
+    echo "+ Added [zox_debug]"
     dflags+=" -Dzox_debug"
     cflags+=" -Wall -ggdb3"
     cflags+=" -O0 -g3"
 else
     echo "+ Added [release]"
     cflags+=" -O3 -DNDEBUG"
+fi
+
+
+if [[ "${logs}" == "1" ]]; then
+    echo "+ Added [zox_logs]"
+    dflags+=" -Dzox_logs"
 fi
 
 if [[ "${verbose}" == "1" ]]; then
@@ -399,7 +407,7 @@ if [[ "${gfx}" == "opengl" ]]; then
 fi
 
 if [[ "${sdl_mixer}" == "1" ]]; then
-    echo "* Added [sdl3_mixer]"
+    echo "* Added [sdl_mixer]"
     dflags+=" -Dzox_sdl_mixer"
     includes+=" -I${sdl_mixer_path}/include"
 else
@@ -983,7 +991,7 @@ echo "  ${apk_path}"
 # Android device
 # ============================================================
 
-if [[ "${install}" == "1" || "${log}" == "1" ]]; then
+if [[ "${install}" == "1" || "${logcat}" == "1" ]]; then
 
 echo ""
 echo "============================================================"
@@ -1077,7 +1085,7 @@ if [[ "${is_run}" == "1" ]]; then
         -c android.intent.category.LAUNCHER 1
             sleep 1
 
-    if [[ "${log}" == "1" ]]; then
+    if [[ "${logcat}" == "1" ]]; then
         if [[ "${is_xr}" == "1" ]]; then
             echo "Delaying for Logcat..."
             sleep 15

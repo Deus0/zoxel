@@ -1,4 +1,5 @@
-// Helper macro to count the number of arguments
+/*
+ * // Helper macro to count the number of arguments
 const char *reset = "\x1b[0m";
 const char *red = "\x1b[31m";
 const char *green = "\x1b[32m";
@@ -39,3 +40,4 @@ void zox_log__(const char* msg) {
     fputs(reset, stderr);
 #endif
 }
+*/

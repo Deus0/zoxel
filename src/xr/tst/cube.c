@@ -116,7 +116,16 @@ static const float cube[] = {
 // Cubes
 // --------------------------------------------------
 
-static void spawn_cubes(void) {
+static void spawn_cubes() {
+    program = make_program();
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        sizeof(cube),
+        cube,
+        GL_STATIC_DRAW
+    );
     srand((unsigned int)time(NULL));
     for (int i = 0; i < CUBE_COUNT; i++) {
         cube_positions[i] = (float3) {
@@ -362,7 +371,7 @@ static void xr_eye_render(
 }
 
 // render all X eyes
-
+// NOTE: Uses XR Frame, Swapchains, Images
 static void xr_render() {
     if (!frame_state.shouldRender) {
         return;
@@ -391,16 +400,69 @@ static void xr_render() {
         program,
         vbo
     );
+    // hmmm
+    xr_end_frame(
+        eye_left_position,
+        eye_right_position,
+        eye_left_rotation,
+        eye_right_rotation,
+        eye_fov_left,
+        eye_fov_right);
 }
 
 // --------------------------------------------------
 // Main
 // --------------------------------------------------
 
+byte xr_can_render() {
+    // XR Events
+    XrEventDataBuffer event_buffer = {
+        .type = XR_TYPE_EVENT_DATA_BUFFER
+    };
+    XrResult result = xrPollEvent(
+        xr_instance,
+        &event_buffer
+    );
+    if (result == XR_SUCCESS) {
+        XrEventDataSessionStateChanged *state =
+            (XrEventDataSessionStateChanged *)&event_buffer;
+        if (state->type ==
+            XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED) {
+            zox_log("[XR] Session state: %d", state->state);
+            if (state->state == XR_SESSION_STATE_READY) {
+                result = xrBeginSession(
+                    session,
+                    &(XrSessionBeginInfo){
+                        .type = XR_TYPE_SESSION_BEGIN_INFO,
+                        .primaryViewConfigurationType =
+                            XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO
+                    }
+                );
+                if (XR_SUCCEEDED(result)) {
+                    session_running = 1;
+                    zox_log("[XR] Session started");
+                } else {
+                    zox_loge("[XR] xrBeginSession failed: %d", result);
+                }
+            }
+            if (state->state == XR_SESSION_STATE_STOPPING) {
+                xrEndSession(session);
+                session_running = 0;
+                zox_log("[XR] Session stopped");
+            }
+            if (state->state == XR_SESSION_STATE_EXITING ||
+                state->state == XR_SESSION_STATE_LOSS_PENDING) {
+                running = 0;
+            }
+        }
+    } else if (result != XR_EVENT_UNAVAILABLE) {
+        zox_loge("[XR] xrPollEvent failed: %d", result);
+    }
+    // NOTE: Our main loop
+    return session_running && xr_begin_frame();
+}
+
 int main(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
-    // Setups
     zox_log("[XR] Starting cube test");
     SDL_SetHint(SDL_HINT_ANDROID_TRAP_BACK_BUTTON, "0");
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -433,87 +495,28 @@ int main(int argc, char **argv) {
         return 1;
     }
     // Iniitalize OpenGL Data
-    program = make_program();
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        sizeof(cube),
-        cube,
-        GL_STATIC_DRAW
-    );
     initialize_camera_buffers(&eye_left_fbo, &eye_left_rbo);
     initialize_camera_buffers(&eye_right_fbo, &eye_right_rbo);
-    // Iniitalize Cube Data
+    // Cubes
     spawn_cubes();
-    zox_log("[XR] Cube renderer ready");
     running = 1;
     while (running) {
-        // XR Events
-        XrEventDataBuffer event_buffer = {
-            .type = XR_TYPE_EVENT_DATA_BUFFER
-        };
-        XrResult result = xrPollEvent(
-            xr_instance,
-            &event_buffer
-        );
-        if (result == XR_SUCCESS) {
-            XrEventDataSessionStateChanged *state =
-                (XrEventDataSessionStateChanged *)&event_buffer;
-            if (state->type ==
-                XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED) {
-                zox_log("[XR] Session state: %d", state->state);
-                if (state->state == XR_SESSION_STATE_READY) {
-                    result = xrBeginSession(
-                        session,
-                        &(XrSessionBeginInfo){
-                            .type = XR_TYPE_SESSION_BEGIN_INFO,
-                            .primaryViewConfigurationType =
-                                XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO
-                        }
-                    );
-                    if (XR_SUCCEEDED(result)) {
-                        session_running = 1;
-                        zox_log("[XR] Session started");
-                    } else {
-                        zox_loge("[XR] xrBeginSession failed: %d", result);
-                    }
-                }
-                if (state->state == XR_SESSION_STATE_STOPPING) {
-                    xrEndSession(session);
-                    session_running = 0;
-                    zox_log("[XR] Session stopped");
-                }
-                if (state->state == XR_SESSION_STATE_EXITING ||
-                    state->state == XR_SESSION_STATE_LOSS_PENDING) {
-                    running = 0;
-                }
-            }
-        } else if (result != XR_EVENT_UNAVAILABLE) {
-            zox_loge("[XR] xrPollEvent failed: %d", result);
-        }
-        // NOTE: Our main loop
-        if (!session_running) {
-            continue;
-        }
-        if (!xr_begin_frame()) {
-            continue;
-        }
         update_time();
-        xr_update_input();
+        if (session_running) {
+            xr_update_input();
+        }
         update_camera();
-        xr_get_eyes();
-        xr_render();
-        // hmmm
-        xr_end_frame(
-            eye_left_position,
-            eye_right_position,
-            eye_left_rotation,
-            eye_right_rotation,
-            eye_fov_left,
-            eye_fov_right);
+        if (xr_can_render()) {
+            xr_get_eyes();
+            xr_render();
+        }
     }
+    zox_log("[XR] Disposing Cubes");
+    glDeleteBuffers(1, &vbo);
+    glDeleteProgram(program);
     zox_log("[XR] Shutting down");
+    dispose_camera_buffers(&eye_left_fbo, &eye_left_rbo);
+    dispose_camera_buffers(&eye_right_fbo, &eye_right_rbo);
     if (session_running) {
         xrEndSession(session);
         session_running = 0;
@@ -534,10 +537,6 @@ int main(int argc, char **argv) {
         xrDestroySession(session);
         session = XR_NULL_HANDLE;
     }
-    dispose_camera_buffers(&eye_left_fbo, &eye_left_rbo);
-    dispose_camera_buffers(&eye_right_fbo, &eye_right_rbo);
-    glDeleteBuffers(1, &vbo);
-    glDeleteProgram(program);
     xr_shutdown();
     egl_shutdown();
     SDL_Quit();

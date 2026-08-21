@@ -6,9 +6,9 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  */
-#if !defined(zoxm_xr) && defined(zox_xr)
-#define zoxm_xr
-
+// TODO Make a render system
+#ifdef zox_xr
+#include "_.h"
 #include "pre/_.c"
 #include "fun/_.c"
 
@@ -25,20 +25,20 @@ void import_xr(ecs* world) {
     if (!egl_setup()) {
         zox_loge("[XR] EGL setup failed");
         SDL_Quit();
-        return 1;
+        return;
     }
     if (!xr_init()) {
         zox_loge("[XR] OpenXR initialization failed");
         egl_shutdown();
         SDL_Quit();
-        return 1;
+        return;
     }
     if (!xr_setup()) {
         zox_loge("[XR] OpenXR setup failed");
         xr_shutdown();
         egl_shutdown();
         SDL_Quit();
-        return 1;
+        return;
     }
     zox_loge("XRXRXRXR SSUCCESSSS!");
     add_hook_spawn_prefabs(zox_spawn_prefabs_xr);

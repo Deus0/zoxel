@@ -52,10 +52,6 @@
 #ifdef zox_web
     #include <emscripten.h>
 #endif
-#ifdef zox_xr
-    #include <openxr/openxr.h>
-    #include <openxr/openxr_platform.h>
-#endif
 // Graphics Libraries
 #ifdef zox_gles2
     #include <GLES2/gl2.h>
