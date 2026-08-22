@@ -4,7 +4,11 @@ entity spawn_skybox(
     entity shader)
 {
     // TODO: Make dynamic size
+#ifdef zox_xr
+    float skybox_size = 80;
+#else
     float skybox_size = 666; // 1024;    // camera_far_distance * 0.95 roughly
+#endif
     zox_instance(prefab_skybox);
     zox_name("skybox");
     zox_set_parent(world, e, camera);

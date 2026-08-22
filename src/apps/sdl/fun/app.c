@@ -66,6 +66,9 @@ void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
     }
     zox_setv(e, WindowFullscreen, fullscreen);
     byte monitor = zox_getv(e, WindowMonitor);
+    if (!zox_has(e, SDLWindow)) {
+        return;
+    }
     const SDLWindow* window = zox_get(e, SDLWindow);
     zox_app_set_fullscreen(window->value, monitor, fullscreen);
 }

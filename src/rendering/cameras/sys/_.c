@@ -6,36 +6,13 @@
 
 void define_systems_rendering_cameras(ecs *world) {
     // restore
-    // rendering
-    zox_system_1(
-        CameraRender3DSystem,
-        zoxp_rendering,
-        [in] cameras.ViewMatrix,
-        [in] transforms3.Position3D,
-        [in] cameras.FieldOfView,
-        [in] cameras.ScreenPosition,
-        [in] screens.ScreenDimensions,
-        [in] colorz.FogColor,
-        [none] !cameras.CameraUI
-    );
-    zox_system_1(
-        CameraRenderUISystem,
-        zoxp_rendering,
-        [in] cameras.ViewMatrix,
-        [in] transforms3.Position3D,
-        [in] cameras.FieldOfView,
-        [in] cameras.ScreenPosition,
-        [in] screens.ScreenDimensions,
-        [in] colorz.FogColor,
-        [none] cameras.CameraUI
-    );
     zox_system_1(
         RenderCameraInitializeSystem,
         zoxp_mainthread,
         [in] core.Initialize,
         [in] screens.ScreenDimensions,
-        [out] rendering.cameras.FrameBufferLink,
-        [out] rendering.cameras.RenderBufferLink,
+        [out] render_cameras.FrameBufferLink,
+        [out] render_cameras.RenderBufferLink,
         [none] cameras.RenderCamera
     );
     // Render Camera
@@ -61,5 +38,28 @@ void define_systems_rendering_cameras(ecs *world) {
     zox_gpu_dispose_system(
         RenderBufferDisposeSystem,
         [out] RenderBufferLink
+    );
+    // rendering
+    zox_system_1(
+        Camera3RenderSystem,
+        zoxp_rendering,
+        [in] cameras.ViewMatrix,
+        [in] transforms3.Position3D,
+        [in] cameras.FieldOfView,
+        [in] cameras.ScreenPosition,
+        [in] screens.ScreenDimensions,
+        [in] colorz.FogColor,
+        [none] !cameras.CameraUI
+    );
+    zox_system_1(
+        CameraRenderUISystem,
+        zoxp_rendering,
+        [in] cameras.ViewMatrix,
+        [in] transforms3.Position3D,
+        [in] cameras.FieldOfView,
+        [in] cameras.ScreenPosition,
+        [in] screens.ScreenDimensions,
+        [in] colorz.FogColor,
+        [none] cameras.CameraUI
     );
 }

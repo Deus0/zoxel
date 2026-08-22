@@ -86,3 +86,59 @@ static void egl_shutdown() {
         egl_display = EGL_NO_DISPLAY;
     }
 }
+
+
+static void xr_debug_gl_state(const char *label) {
+    GLint fbo = 0;
+    GLint viewport[4] = { 0 };
+    GLint scissor[4] = { 0 };
+    GLint draw_fbo = 0;
+    GLint read_fbo = 0;
+    GLboolean color_mask[4] = { 0 };
+    GLboolean depth_mask = 0;
+
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo);
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &draw_fbo);
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &read_fbo);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glGetIntegerv(GL_SCISSOR_BOX, scissor);
+
+    glGetBooleanv(GL_COLOR_WRITEMASK, color_mask);
+    glGetBooleanv(GL_DEPTH_WRITEMASK, &depth_mask);
+
+    zox_log(
+        "[XR GL] %s"
+        " fbo=%i"
+        " draw=%i"
+        " read=%i"
+        " viewport=%i,%i %ix%i"
+        " scissor=%i,%i %ix%i"
+        " scissor_enabled=%i"
+        " color_mask=%i,%i,%i,%i"
+        " depth_mask=%i"
+        " blend=%i"
+        " depth=%i"
+        " cull=%i",
+        label,
+        fbo,
+        draw_fbo,
+        read_fbo,
+        viewport[0],
+        viewport[1],
+        viewport[2],
+        viewport[3],
+        scissor[0],
+        scissor[1],
+        scissor[2],
+        scissor[3],
+        glIsEnabled(GL_SCISSOR_TEST),
+        color_mask[0],
+        color_mask[1],
+        color_mask[2],
+        color_mask[3],
+        depth_mask,
+        glIsEnabled(GL_BLEND),
+        glIsEnabled(GL_DEPTH_TEST),
+        glIsEnabled(GL_CULL_FACE)
+    );
+}

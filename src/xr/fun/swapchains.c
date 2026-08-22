@@ -3,41 +3,38 @@
 // --------------------------------------------------
 
 // Begins the swap chain and binds the cameras fbo/dbos
-static int xr_eye_render_begin(
+// NOTE: Each frame, we bind the cameras buffers to a new texture given by the XR SwapChain
+
+// NOTE: Binds XR Swapchain Texture to FBO
+// NOTE: Needs a xrReleaseSwapchainImage after called
+static inline int xr_eye_render_begin(
     XrSwapchain xr_swapchain,
     XrSwapchainImageOpenGLESKHR* eye_images,
-    float3 position,
-    float4 rotation,
-    float4 fov,
-    int2 image_size,
-    GLuint fbo,
-    GLuint rbo)
+    GLuint fbo)
 {
     uint32_t image_index = 0;
     XrResult result = xrAcquireSwapchainImage(
         xr_swapchain,
-        &(XrSwapchainImageAcquireInfo){ XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO },
+        &(XrSwapchainImageAcquireInfo) {
+            XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO
+        },
         &image_index
     );
-    if (XR_FAILED(result)) {
+    if (!xr_check_result(result, "xrAcquireSwapchainImage")) {
         return 0;
     }
     result = xrWaitSwapchainImage(
         xr_swapchain,
-        &(XrSwapchainImageWaitInfo){
+        &(XrSwapchainImageWaitInfo) {
             XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO,
             NULL,
             XR_INFINITE_DURATION
         }
     );
-    if (XR_FAILED(result)) {
+    if (!xr_check_result(result, "xrWaitSwapchainImage")) {
         return 0;
     }
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    // This doesnt need to be done every frame, just when image is resized
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, image_size.x, image_size.y);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
     glFramebufferTexture2D(
         GL_FRAMEBUFFER,
         GL_COLOR_ATTACHMENT0,
@@ -45,7 +42,6 @@ static int xr_eye_render_begin(
         eye_images[image_index].image,
         0
     );
-    // xr camera end
     return 1;
 }
 

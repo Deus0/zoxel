@@ -1,6 +1,17 @@
 // todo: get position2 to work
-entity spawn_app_sdl_opengl(ecs *world, const char* name, byte fullscreen, byte maximized, byte monitor) {
-    entity e = spawn_app_sdl(world, name, fullscreen, maximized, monitor);
+entity spawn_app_sdl_opengl(
+    ecs *world,
+    const char* name,
+    byte fullscreen,
+    byte maximized,
+    byte monitor)
+{
+    entity e = spawn_app_sdl(
+        world,
+        name,
+        fullscreen,
+        maximized,
+        monitor);
     if (!e) {
         zox_loge("Failed spawning sdl window");
         return 0;
@@ -39,7 +50,6 @@ entity spawn_engine_app(ecs* world, const char* name) {
         zox_logw("Headless should not reach here.");
         return 0;
     }
-    set_sdl_app_settings(name);
     // Window creates and binds OpenGL Context too!
     zox_logv("Spawning SDL Window [%s]", name);
     entity app = spawn_app_sdl_opengl(world, name, fullscreen, maximized, monitor);

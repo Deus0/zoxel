@@ -1,24 +1,9 @@
-// --------------------------------------------------
-// XR Globals
-// --------------------------------------------------
-
-static XrFrameState frame_state;
-static XrTime previous_display_time = 0;
-static XrInstance xr_instance = XR_NULL_HANDLE;
-static XrSystemId system_id;
-static XrSession session;
-static XrSpace space;
-static XrSwapchain xr_swapchains[2];
-static XrViewConfigurationView views_cfg[2];
-static XrSwapchainImageOpenGLESKHR *images[2];
-static uint32_t image_count[2];
-
 static inline int xr_check_result(XrResult result, const char *name) {
     if (XR_FAILED(result)) {
         zox_loge("[XR] %s failed: %d", name, result);
         return 0;
     }
-    zox_log("[XR] %s", name);
+    // zox_log("[XR] %s", name);
     return 1;
 }
 
@@ -90,7 +75,7 @@ static int xr_setup_system(void) {
     return 1;
 }
 
-static int xr_setup_views(void) {
+static int xr_setup_views() {
     uint32_t view_count = 0;
     XrResult result = xrEnumerateViewConfigurationViews(
         xr_instance,
@@ -100,9 +85,7 @@ static int xr_setup_views(void) {
         &view_count,
         NULL
     );
-    if (!xr_check_result(result,
-        "xrEnumerateViewConfigurationViews(count)"
-    )) {
+    if (!xr_check_result(result, "xrEnumerateViewConfigurationViews(count)")) {
         return 0;
     }
     zox_log("[XR] View count: %u", view_count);
@@ -110,9 +93,11 @@ static int xr_setup_views(void) {
         zox_loge("[XR] Expected 2 views, got %u", view_count);
         return 0;
     }
+    XrViewConfigurationView views_cfg[2];
     for (uint32_t i = 0; i < view_count; i++) {
-        views_cfg[i].type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
-        views_cfg[i].next = NULL;
+        xr_eyes[i].config.type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
+        xr_eyes[i].config.next = NULL;
+        views_cfg[i] = xr_eyes[i].config;
     }
     result = xrEnumerateViewConfigurationViews(
         xr_instance,
@@ -122,10 +107,18 @@ static int xr_setup_views(void) {
         &view_count,
         views_cfg
     );
-    return xr_check_result(
+    if (!xr_check_result(
         result,
         "xrEnumerateViewConfigurationViews"
-    );
+    )) {
+        return 0;
+    }
+    // NOTE: Used for swapchains
+    xr_eyes[0].config = views_cfg[0];
+    xr_eyes[1].config = views_cfg[1];
+    xr_eyes[0].image_size = xr_config_to_image_size(views_cfg[0]);
+    xr_eyes[1].image_size = xr_config_to_image_size(views_cfg[1]);
+    return 1;
 }
 
 static int xr_setup_session(void) {
@@ -151,7 +144,7 @@ static int xr_setup_session(void) {
     XrResult result = xrCreateSession(
         xr_instance,
         &session_info,
-        &session
+        &xr_session
     );
     if (!xr_check_result(result, "xrCreateSession")) {
         return 0;
@@ -163,7 +156,7 @@ static int xr_setup_session(void) {
         .poseInReferenceSpace.orientation.w = 1.0f
     };
     result = xrCreateReferenceSpace(
-        session,
+        xr_session,
         &space_info,
         &space
     );
@@ -175,10 +168,10 @@ static int xr_setup_session(void) {
     return 1;
 }
 
-static int xr_setup_swapchains(void) {
+static int xr_setup_swapchains() {
     uint32_t format_count = 0;
     XrResult result = xrEnumerateSwapchainFormats(
-        session,
+        xr_session,
         0,
         &format_count,
         NULL
@@ -203,7 +196,7 @@ static int xr_setup_swapchains(void) {
         return 0;
     }
     result = xrEnumerateSwapchainFormats(
-        session,
+        xr_session,
         format_count,
         &format_count,
         formats
@@ -223,7 +216,7 @@ static int xr_setup_swapchains(void) {
     }
     zox_log("[XR] Swapchain format: %lld", (long long) format);
     free(formats);
-    for (int eye = 0; eye < 2; eye++) {
+    for (int i = 0; i < 2; i++) {
         XrSwapchainCreateInfo info = {
             .type = XR_TYPE_SWAPCHAIN_CREATE_INFO,
             .next = NULL,
@@ -231,19 +224,19 @@ static int xr_setup_swapchains(void) {
             .usageFlags = XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT,
             .format = format,
             .sampleCount =
-                views_cfg[eye].recommendedSwapchainSampleCount,
+                xr_eyes[i].config.recommendedSwapchainSampleCount,
             .width =
-                views_cfg[eye].recommendedImageRectWidth,
+                xr_eyes[i].config.recommendedImageRectWidth,
             .height =
-                views_cfg[eye].recommendedImageRectHeight,
+                xr_eyes[i].config.recommendedImageRectHeight,
             .faceCount = 1,
             .arraySize = 1,
             .mipCount = 1
         };
         result = xrCreateSwapchain(
-            session,
+            xr_session,
             &info,
-            &xr_swapchains[eye]
+            &xr_eyes[i].swapchain
         );
         if (!xr_check_result(result,
             "xrCreateSwapchain"
@@ -251,9 +244,9 @@ static int xr_setup_swapchains(void) {
             return 0;
         }
         result = xrEnumerateSwapchainImages(
-            xr_swapchains[eye],
+            xr_eyes[i].swapchain,
             0,
-            &image_count[eye],
+            &xr_eyes[i].image_count,
             NULL
         );
         if (!xr_check_result(result,
@@ -261,28 +254,25 @@ static int xr_setup_swapchains(void) {
         )) {
             return 0;
         }
-        images[eye] = calloc(
-            image_count[eye],
-            sizeof(*images[eye])
+        xr_eyes[i].images = calloc(
+            xr_eyes[i].image_count,
+            sizeof(*xr_eyes[i].images)
         );
-        if (!images[eye]) {
+        if (!xr_eyes[i].images) {
             zox_loge("[XR] Swapchain image allocation failed");
             return 0;
         }
-        for (uint32_t i = 0; i < image_count[eye]; i++) {
-            images[eye][i].type =
+        for (uint32_t j = 0; j < xr_eyes[i].image_count; j++) {
+            xr_eyes[i].images[j].type =
                 XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_ES_KHR;
         }
         result = xrEnumerateSwapchainImages(
-            xr_swapchains[eye],
-            image_count[eye],
-            &image_count[eye],
-            (XrSwapchainImageBaseHeader *)images[eye]
+            xr_eyes[i].swapchain,
+            xr_eyes[i].image_count,
+            &xr_eyes[i].image_count,
+            (XrSwapchainImageBaseHeader *)xr_eyes[i].images
         );
-        if (!xr_check_result(
-            result,
-            "xrEnumerateSwapchainImages"
-        )) {
+        if (!xr_check_result(result, "xrEnumerateSwapchainImages")) {
             return 0;
         }
     }
@@ -437,10 +427,23 @@ static int xr_init(void) {
     return 1;
 }
 
-static void xr_shutdown(void) {
+static void xr_shutdown() {
     if (xr_instance != XR_NULL_HANDLE) {
         xrDestroyInstance(xr_instance);
         xr_instance = XR_NULL_HANDLE;
         zox_log("[XR] Instance destroyed");
+    }
+}
+
+static void xr_init_cameras() {
+    // Iniitalize Camera OpenGL Data
+    for (int i = 0; i < 2; i++) {
+        initialize_camera_buffers(
+            &xr_eyes[i].fbo,
+            &xr_eyes[i].rbo);
+        set_camera_buffers_size(
+            xr_eyes[i].fbo,
+            xr_eyes[i].rbo,
+            xr_config_to_image_size(xr_eyes[i].config));
     }
 }

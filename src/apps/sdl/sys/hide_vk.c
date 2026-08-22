@@ -16,7 +16,7 @@ zox_sys2(HideVirtualKeyboardSystem) {
 
 zox_sys2(ToggleVirtualKeyboardSystem) {
     zox_sys_world();
-    if (!zox_valid(main_app)) {
+    if (!zox_valid(main_app) || !zox_has(main_app, SDLWindow)) {
         return;
     }
     const SDLWindow* window = zox_get(main_app, SDLWindow);

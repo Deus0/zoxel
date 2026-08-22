@@ -1,6 +1,6 @@
-// NOTE: Rendering Skybox atm
+// NOTE: Rendering Skybox atm and debug cube
 zox_sys2(Basic3RenderSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
@@ -26,7 +26,6 @@ zox_sys2(Basic3RenderSystem) {
             continue;
         }
         camera_filtering_check();
-#ifdef zox_safety_checks
         if (!material->value) {
             zox_loge("(Basic3) Gpu Link [material] broken [%s]", zox_getn(e));
             continue;
@@ -35,7 +34,6 @@ zox_sys2(Basic3RenderSystem) {
             zox_loge("(Basic3) Gpu links [mesh] broken [%s]", zox_getn(e));
             continue;
         }
-#endif
         if (alpha->value < 1) {
             zox_gpu_enable_blend();
         }
@@ -51,7 +49,6 @@ zox_sys2(Basic3RenderSystem) {
         zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
-        // Rendering!
         zox_gpu_render3(indicies->length);
         if (dbg_log) {
             float3 position = matrix_to_position(matrix->value);

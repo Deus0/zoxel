@@ -1,4 +1,5 @@
-void calculate_perspective_projection_matrix2(float4x4 *matrix,
+void calculate_perspective_projection_matrix2(
+    float4x4 *matrix,
     float left,
     float right,
     float bottom,
@@ -29,17 +30,22 @@ void calculate_perspective_projection_matrix2(float4x4 *matrix,
     matrix->w.w = 0.0;
 }
 
-void calculate_perspective_projection_matrix(float4x4 *matrix,
-    const float aspect_ratio,
-    const float camera_near_distance,
-    const float camera_far_distance,
-    const float fov
+void calculate_perspective_projection_matrix(
+    float4x4 *matrix,
+    float aspect_ratio,
+    float camera_near_distance,
+    float camera_far_distance,
+    float fov
 ) {
-    const float znear = camera_near_distance;
-    const float zfar = camera_far_distance;
-    const float ymax = znear * tanf(fov * M_PI / 360.0);
-    const float xmax = ymax * aspect_ratio;
-    calculate_perspective_projection_matrix2(matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
+    float znear = camera_near_distance;
+    float zfar = camera_far_distance;
+    float ymax = znear * tanf(fov * M_PI / 360.0);
+    float xmax = ymax * aspect_ratio;
+    calculate_perspective_projection_matrix2(
+        matrix,
+        -xmax,
+        xmax,
+        -ymax, ymax, znear, zfar);
 }
 
 
@@ -59,6 +65,11 @@ zox_sys2(ProjectionMatrixSystem) {
             continue;
         }
         float aspect_ratio = ((float) screenDimensions->value.x) / ((float) screenDimensions->value.y);
-        calculate_perspective_projection_matrix(&projectionMatrix->value, aspect_ratio, cameraNearDistance->value, camera_far_distance, fieldOfView->value);
+        calculate_perspective_projection_matrix(
+            &projectionMatrix->value,
+            aspect_ratio,
+            cameraNearDistance->value,
+            camera_far_distance,
+            fieldOfView->value);
     }
 } zox_sys_end(ProjectionMatrixSystem);

@@ -15,9 +15,9 @@ entity spawn_menu_start(ecs* world, entity player, entity canvas) {
        zox_set_unique_name(e2, "menu_start_label");
     }
     {
-        entity e2 = spawn_test_vox(world, player);
+        // entity e2 = spawn_test_vox(world, player);
         // zox_set(e2, GenerateModel, { zox_generate_model_run });
-        zox_set_parent(world, e2, e);
+        // zox_set_parent(world, e2, e);
     }
     return e;
 }

@@ -2,27 +2,44 @@ extern entity prefab_vox;
 entity dbg_chunk3;
 extern entity spawn_inspector(ecs*, entity, entity, entity);
 
-entity spawn_test_vox(ecs* world, entity player) {
-    entity camera = zox_getv(player, CameraLink);
-    if (!zox_valid(camera)) {
-        return 0;
-    }
-    float scale = frand_range(0.8f, 1.2f);
+entity spawn_test_vox_at(
+    ecs* world,
+    float3 position,
+    float4 rotation)
+{
     float distance = frand_range(2.6f, 3.4f);
+    float3 spawn_position = move_along_direction(
+        position,
+        rotation,
+        -distance);
+    float scale = frand_range(0.8f, 1.2f);
     float block_scale = 1.0f / 16.0f;
     byte depth = block_vox_depth_limits.y;
     float spin = rand_range(2, 8);
     float3 euler = (float3) { rand() % 100 > 50 ? spin : -spin, rand() % 100 > 50 ? spin : -spin, rand() % 100 > 50 ? spin : -spin };
     int3 size = int3_single(powers_of_two[depth]);
-    float3 position = zox_getv(camera, Position3D);
-    float4 rotation = zox_getv(camera, Rotation3D);
-    float3 spawn_position = move_along_direction(position, rotation, -distance);
     // spawn chunk3s
     entity e = spawn_chunk3(world, prefab_vox, spawn_position, scale, depth, block_scale, size);
     zox_add(e, VoxMesh);
     zox_set(e, GenerateModel, { zox_generate_model_run });
     add_eternal_euler(world, e, euler);
     return e;
+}
+
+
+entity spawn_test_vox(
+    ecs* world,
+    entity player)
+{
+    entity camera = zox_getv(player, CameraLink);
+    if (!zox_valid(camera)) {
+        return 0;
+    }
+    return spawn_test_vox_at(
+        world,
+        zox_getv(camera, Position3D),
+        zox_getv(camera, Rotation3D)
+    );
 }
 
 entity zox_dbg_spawn_chunk3(ecs* world, byte dbg_inspector) {

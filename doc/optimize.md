@@ -40,7 +40,7 @@
     - Lighting
         - ChunkMeshColorsTriggerSystem [9ms]
         - SmoothLightsBuildSystem [8ms]
-- The next system in timing is CameraRender3DSystem [2ms]
+- The next system in timing is Camera3RenderSystem [2ms]
 
 + Chunk3TexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
 - Can we hide behind mountains to improve culling?

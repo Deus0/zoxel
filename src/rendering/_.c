@@ -63,7 +63,7 @@ void import_rendering(ecs* world) {
     zox_import_module(Shaders);
     zox_import_module(Rendering2);
     zox_import_module(Rendering3);
-    zox_import_module(RenderingCameras);
+    zox_add_module(render_cameras);
     add_to_update_loop(viewport_clear);
 }
 

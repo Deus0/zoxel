@@ -1,5 +1,5 @@
 zox_tag(Camera);
-zox_tag(Camera2D);
+zox_tag(Camera2);
 zox_tag(Camera3);
 zox_tag(CameraUI);
 zox_tag(ElementBillboard);
@@ -10,6 +10,7 @@ zoxc_byte(Roaming);
 zoxc_byte(CameraViewing);
 zoxc_float(FieldOfView);
 zoxc_float(CameraNearDistance);
+zoxc_float(CameraFarDistance);
 zoxc_entity(CameraLink);
 zoxc_entity(CameraTarget);
 zoxc_entity(CameraFollowLink);
@@ -35,7 +36,7 @@ zoxc_float(CameraVignette);
 
 void define_components_cameras(ecs *world) {
     zoxd_tag(Camera);
-    zoxd_tag(Camera2D);
+    zoxd_tag(Camera2);
     zoxd_tag(Camera3);
     zoxd_tag(CameraUI);
     zoxd_tag(ViewportCamera);
@@ -47,6 +48,7 @@ void define_components_cameras(ecs *world) {
     zoxd_byte(CameraViewing);
     zoxd_float(FieldOfView);
     zoxd_float(CameraNearDistance);
+    zoxd_float(CameraFarDistance);
     zoxd_int2(ScreenPosition);
     zoxd_entity(CameraLink);
     zoxd_entity(CameraTarget);

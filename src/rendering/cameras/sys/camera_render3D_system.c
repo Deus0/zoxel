@@ -1,5 +1,5 @@
 // NOTE: NO need to time as it runs systems inside it
-zox_sys_untimed(CameraRender3DSystem) {
+zox_sys_untimed(Camera3RenderSystem) {
     byte dbg_log = 0;
     if (!rendering) {
         return;
@@ -62,4 +62,4 @@ zox_sys_untimed(CameraRender3DSystem) {
             zox_gpu_reset_fbo();
         }
     }
-} zox_sys_end_untimed(CameraRender3DSystem);
+} zox_sys_end_untimed(Camera3RenderSystem);

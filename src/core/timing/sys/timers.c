@@ -18,6 +18,9 @@ void timer_system(iter* it) {
             if (timer->value <= 0) {
                 timer->value = 0;
                 state->value = 1;
+                if (dbg_log) {
+                    zox_log("Timer [%s] has Ticked", zox_sys_e_name);
+                }
             }
         }
     }

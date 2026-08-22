@@ -63,24 +63,39 @@ int main(int argc, char* argv[]) {
     zox_logv("Spawning Game");
     entity game = spawn_game(world);
     zox_logv("Spawning App");
-#ifdef zox_sdl
-    entity app = spawn_engine_app(world, game_name);
+    entity app;
+    // app = spawn_app(world, game_name);
+#ifdef zox_xr
+    app = spawn_app(world, game_name);
+    /*SDL_SetHint(SDL_HINT_ANDROID_TRAP_BACK_BUTTON, "0");
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        zox_loge("[XR] SDL_Init failed: %s", SDL_GetError());
+        return EXIT_FAILURE;
+    }*/
+    if (!xr_begin()) {
+        zox_loge("[XR] xr_begin failed");
+        return EXIT_FAILURE;
+    }
+#elif defined(zox_sdl)
+    app = spawn_engine_app(world, game_name);
     if (app) {
         if (zox_init_glew() == EXIT_FAILURE) {
             return EXIT_FAILURE;
         }
-        zox_logv("Initializing Rendering");
-        initialize_rendering(render_backend);
         zox_logv("Setting App Icon [game.png]");
         spawn_window_icon(world, app, "game.bmp");
         // FIX: Actually load shaders -> spawns materials...
-        zox_logv("Loading (Processing) Shaders");
-        load_files_shaders(world);
-        process_shaders(world);
     }
+#endif
+#ifndef zox_headless
+    zox_logv("Initializing Rendering");
+    initialize_rendering(render_backend);
+    zox_logv("Loading (Processing) Shaders");
+    load_files_shaders(world);
+    process_shaders(world);
 #else
     // TODO: Move this into headless module
-    entity app = zox_new();
+    app = zox_new();
     zox_add(app, App);
     zox_set_unique_name(app, "headless_app");
     main_app = app;
@@ -94,6 +109,13 @@ int main(int argc, char* argv[]) {
     // Yet another Hook
     zox_logv("Running our Boot Hook");
     run_hook_on_boot(world, app);
+// #ifdef zox_xr
+    entity e2 = spawn_test_vox_at(world, float3_zero, quaternion_identity);
+    // zox_set(e2, GenerateModel, { zox_generate_model_run });
+    zox_set_parent(world, e2, app);
+    // Test cube
+    // spawn_cube(world, prefab_cube, (float3) { 0, 0, -1 }, 0.25f);
+// #endif
     if (boot_event && boot_event(world, app) == EXIT_FAILURE) {
         zox_log_error("[boot_event] failed");
         dispose_zox(world);
@@ -102,5 +124,8 @@ int main(int argc, char* argv[]) {
     zox_logv("Running Main Loop [%s]", game_name);
     main_loop(world);
     zox_logv("Ended Main Loop [%s]", game_name);
+#ifdef zox_xr
+    SDL_Quit();
+#endif
     return EXIT_SUCCESS;
 }

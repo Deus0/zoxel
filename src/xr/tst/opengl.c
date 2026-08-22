@@ -36,14 +36,3 @@ static GLuint make_program(void) {
     glDeleteShader(f);
     return p;
 }
-
-
-void initialize_camera_buffers(GLuint* fbo, GLuint* rbo) {
-    glGenFramebuffers(1, fbo);
-    glGenRenderbuffers(1, rbo);
-}
-
-void dispose_camera_buffers(GLuint* fbo, GLuint* rbo) {
-    glDeleteRenderbuffers(1, rbo);
-    glDeleteFramebuffers(1, fbo);
-}

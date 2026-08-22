@@ -4,7 +4,10 @@
 zox_sys2(MouseExtractSystem) {
     byte dbg_log = 0;
     zox_sys_world();
-    zox_geter_value(main_app, WindowSize, int2, screen_size);
+    if (!zox_valid(main_app) || !zox_has(main_app, WindowSize)) {
+        return;
+    }
+    int2 screen_size = zox_getv(main_app, WindowSize);
     if (screen_size.x % 2 != 0) {
         screen_size.x--;
     }

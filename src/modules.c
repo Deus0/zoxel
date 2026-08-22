@@ -18,7 +18,6 @@
 #include "apps/_.c"
 #include "names/_.c"
 #include "saves/_.c"
-#include "xr/_.c"
 
 // depth 1: basic world blocks
 #include "assets/_.c"
@@ -107,6 +106,7 @@
 #include "imports/_.c"
 #include "editor/_.c"
 #include "debug/_.c"
+#include "xr/_.c"
 
 // engine imports, besides sub modules, it's core is flecs
 void import_zox(ecs* world) {

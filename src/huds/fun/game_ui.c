@@ -65,10 +65,28 @@ void spawn_all_players_cameras_canvases(
         int2 vp_size = screen_to_canvas_size(screen_size, screen_to_canvas);
         int2 viewport_position = screen_to_canvas_position(screen_size, screen_to_canvas);
         int2 svp_size = scale_viewport(vp_size);
-        entity2 spawned_cameras = spawn_player_cameras(world, app, player, zox_game_camera_mode, camera_position, camera_rotation, screen_to_canvas, viewport_position, svp_size, vp_size);
+        entity2 spawned_cameras = spawn_player_cameras(
+            world,
+            app,
+            player,
+            zox_game_camera_mode,
+            camera_position,
+            camera_rotation,
+            screen_to_canvas,
+            viewport_position,
+            svp_size,
+            vp_size);
         entity game_camera = spawned_cameras.x;
-        set_camera_mode(world, game_camera, zox_game_camera_mode);
-        entity canvas = spawn_game_canvas(world, spawned_cameras.y, vp_size, screen_to_canvas, app);
+        set_camera_mode(
+            world,
+            game_camera,
+            zox_game_camera_mode);
+        entity canvas = spawn_game_canvas(
+            world,
+            spawned_cameras.y,
+            vp_size,
+            screen_to_canvas,
+            app);
         zox_set(player, CanvasLink, { canvas });
         zox_set(canvas, PlayerLink, { player });
         // spawns a render texture ui and links to camera
@@ -102,6 +120,8 @@ void spawn_all_players_cameras_canvases(
 
 void on_boot_game_ui(ecs* world, entity app) {
     // move to game ui??
+#ifndef zox_xr
     spawn_all_players_cameras_canvases(world, players_playing, app);
     spawn_all_players_start_ui(world);
+#endif
 }

@@ -1,6 +1,6 @@
 #include "render3.c"
 #include "render3_instance.c"
-#include "render_characters3.c"
+#include "render_vox.c"
 #include "mesh_update.c"
 #include "mesh_update_characters3.c"
 #include "render_chunks.c"
@@ -29,7 +29,7 @@ void zox_define_systems_basics3(ecs* world) {
     );
     // characters
     zox_render3_system(1,
-        Characters3RenderSystem,
+        VoxRenderSystem,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,
         [in] rendering.ColorsGPULink,

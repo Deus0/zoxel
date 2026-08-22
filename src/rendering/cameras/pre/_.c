@@ -2,8 +2,8 @@ void add_prefab_render_camera(ecs* world, entity e) {
     if (!e) {
         return;
     }
-    zox_prefab_set(e, FrameBufferLink, { 0 });
-    zox_prefab_set(e, RenderBufferLink, { 0 });
+    zox_setv(e, FrameBufferLink, 0);
+    zox_setv(e, RenderBufferLink, 0);
 }
 
 void spawn_prefabs_rendering_cameras(ecs *world) {

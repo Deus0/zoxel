@@ -14,6 +14,11 @@
     
 ## --------------------
 
+-x we should rotate the input by the curretn transform
+-x for now just movee the xr code all into helpers
+-x then jst call same functions in the xr render system
+- test to get a clear sky
+
 ## Next
 - Spawn 2 XR Eye entities that are cameras
     - XRRender Systems for them

@@ -170,7 +170,7 @@ static int xr_input_init(void) {
     // after session i guess
     // For XR Inputs
     result = xrAttachSessionActionSets(
-        session,
+        xr_session,
         &(XrSessionActionSetsAttachInfo){
             .type = XR_TYPE_SESSION_ACTION_SETS_ATTACH_INFO,
             .next = NULL,
@@ -187,13 +187,13 @@ static int xr_input_init(void) {
     return 1;
 }
 
-static int xr_update_input(void) {
+static int xr_update_input() {
     XrActiveActionSet active_action_set = {
         .actionSet = input_action_set,
         .subactionPath = XR_NULL_PATH
     };
     XrResult result = xrSyncActions(
-        session,
+        xr_session,
         &(XrActionsSyncInfo){
             .type = XR_TYPE_ACTIONS_SYNC_INFO,
             .next = NULL,
@@ -201,8 +201,7 @@ static int xr_update_input(void) {
             .activeActionSets = &active_action_set
         }
     );
-    if (XR_FAILED(result)) {
-        zox_loge("[XR] xrSyncActions failed: %d", result);
+    if (!xr_check_result(result, "xrSyncActions")) {
         return 0;
     }
     return 1;
@@ -214,7 +213,7 @@ static float2 xr_get_left_stick() {
         .type = XR_TYPE_ACTION_STATE_VECTOR2F
     };
     XrResult result = xrGetActionStateVector2f(
-        session,
+        xr_session,
         &(XrActionStateGetInfo){
             .type = XR_TYPE_ACTION_STATE_GET_INFO,
             .action = move_action,
@@ -235,7 +234,7 @@ static float2 xr_get_right_stick(void) {
         .type = XR_TYPE_ACTION_STATE_VECTOR2F
     };
     XrResult result = xrGetActionStateVector2f(
-        session,
+        xr_session,
         &(XrActionStateGetInfo){
             .type = XR_TYPE_ACTION_STATE_GET_INFO,
             .action = turn_action,

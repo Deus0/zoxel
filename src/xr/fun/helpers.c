@@ -35,6 +35,32 @@ static inline float4 xr_fov_to_float4(XrFovf v) {
     };
 }
 
+static inline float4x4 xr_view_to_matrix(XrView view) {
+    /*float4 rotation = xr_quaternion_to_float4(
+        view.pose.orientation
+    );
+    rotation.x = -rotation.x;
+    rotation.y = -rotation.y;
+    return inverse_pr_to_matrix(
+        xr_vector_to_float3(view.pose.position),
+        rotation
+    );*/
+    /*return inverse_pr_to_matrix(
+        xr_vector_to_float3(view.pose.position),
+        quaternion_conjugate(
+            xr_quaternion_to_float4(view.pose.orientation)
+        )
+    );*/
+    /*return inverse_pr_to_matrix(
+        xr_vector_to_float3(view.pose.position),
+        xr_quaternion_to_float4(view.pose.orientation)
+    );*/
+    return pr_to_matrix(
+        xr_vector_to_float3(view.pose.position),
+        xr_quaternion_to_float4(view.pose.orientation)
+    );
+}
+
 static inline XrView zox_eye_to_xr_view(
     float3 position,
     float4 rotation,
@@ -51,32 +77,6 @@ static inline XrView zox_eye_to_xr_view(
     return view;
 }
 
-static inline XrCompositionLayerProjectionView zox_eye_to_xr_projection_view(
-    float3 position,
-    float4 rotation,
-    float4 fov,
-    int2 image_size,
-    XrSwapchain swapchain
-) {
-    XrCompositionLayerProjectionView view = {
-        .type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW,
-        .pose = {
-            .orientation = float4_to_xr_quaternion(rotation),
-            .position = float3_to_xr_vector(position)
-        },
-        .fov = float4_to_xr_fov(fov),
-        .subImage = {
-            .swapchain = swapchain,
-            .imageRect = {
-                .offset = { 0, 0 },
-                .extent = int2_to_xr2(image_size)
-            },
-            .imageArrayIndex = 0
-        }
-    };
-    return view;
-}
-
 static float3 xr_get_head_position(XrView views[2]) {
     return (float3){
         (views[0].pose.position.x +
@@ -88,18 +88,13 @@ static float3 xr_get_head_position(XrView views[2]) {
     };
 }
 
-static inline void xr_get_eye_matrix(
+static inline void xr_view_to_eye_data(
     XrView view,
-    float3* position,
-    float4* rotation,
+    float4x4* matrix,
     float4* fov)
 {
-    *position =
-        xr_vector_to_float3(view.pose.position);
-    *rotation =
-        xr_quaternion_to_float4(view.pose.orientation);
-    *fov =
-        xr_fov_to_float4(view.fov);
+    *matrix = xr_view_to_matrix(view);
+    *fov = xr_fov_to_float4(view.fov);
 }
 
 static inline int2 xr_config_to_image_size(XrViewConfigurationView config) {
@@ -109,11 +104,25 @@ static inline int2 xr_config_to_image_size(XrViewConfigurationView config) {
     };
 }
 
+static inline XrPosef float4x4_to_xr_pose(float4x4 matrix) {
+    float3 position;
+    float4 rotation;
+    inverse_matrix_to_pr(
+        matrix,
+        &position,
+        &rotation
+    );
+    return (XrPosef) {
+        .orientation = float4_to_xr_quaternion(rotation),
+        .position = float3_to_xr_vector(position)
+    };
+}
+
 // --------------------------------------------------
 // XR Math
 // --------------------------------------------------
 
-
+// n and z is near and far
 static float4x4 xr_create_projection_matrix(
     float4 fov,
     float n,
