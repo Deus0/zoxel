@@ -44,7 +44,8 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
     int idx = 0;
     it = ecs_query_iter(world, q);
     while (ecs_query_next(&it)) {
-        SystemDeltaCache *deltas = ecs_field(&it, SystemDeltaCache, 0);
+        // SystemDeltaCache *deltas = ecs_field(&it, SystemDeltaCache, 0);
+        MaxDoubleData *deltas = ecs_field(&it, MaxDoubleData, 0);
         for (int i = 0; i < it.count; i++) {
             entries[idx].e = it.entities[i];
             entries[idx].value = deltas[i].value;

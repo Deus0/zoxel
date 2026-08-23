@@ -17,5 +17,6 @@ entity spawn_prefab_terrain(ecs *world) {
 #ifdef zox_is_flatlands
     zox_add(e, FlatTerrain);
 #endif
+    zox_setv(e, TerrainSpawnQueue, 0);
     return e;
 }

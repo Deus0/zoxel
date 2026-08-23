@@ -1,4 +1,4 @@
-zox_sys2(FirstTerrainTunkSystem) {
+/*zox_sys2(FirstTerrainTunkSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -32,3 +32,4 @@ zox_sys2(FirstTerrainTunkSystem) {
         zox_mut_end(terrain->value, TunkLinks);
     }
 } zox_sys_end(FirstTerrainTunkSystem);
+*/

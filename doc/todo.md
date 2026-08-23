@@ -3,16 +3,34 @@
 ## --------------------
 ## TOP PRIORITY
 
-    - Glitchy Ass Terrain
+    - Glitchy Ass Terrain Meshes
         - Fix Chunks from mesh updating before their neighbors do
             - use Ready systems and timers
         - Fix Chunks Lights flashing when updating
 
-
     - Calculate the camera transform before uploading to shader
         - atm it calculates in the vert shader, not good
+
+    - Sometimes flying around we see missing faces now in chunks
+	- probably didnt trigger??
+	
+    - Fix physics clipping - falling through terrain
+    
+    - Voxel Sides
+    	- They arnt being culled between lods, perhaps this is a trigger issue
     
 ## --------------------
+
+- For now give sunlight beam a budget per light set
+	- Make top chunk generate positions instead of beaming them all too
+-x Remove sunlight queue, just pass down entire chunk stack!
+	- this saves us time
+	- we can run this from a Tunk instead of chunk
+
+- Optimize the npc spawning
+- Optimize the different block generation
+	- lags on realm load (for my arm pc)
+- Fix logs in build system, should become alot cleaner
 
 -x we should rotate the input by the curretn transform
 -x for now just movee the xr code all into helpers

@@ -149,7 +149,7 @@ echo
 
 docker exec \
     "$CONTAINER_NAME" \
-    bash -c 'cd /zoxel && bash bsh/linux.sh --package --docker'
+    bash -c 'cd /zoxel && bash bsh/build.sh --package --docker'
 
 echo
 echo "✅ Zoxel build complete."

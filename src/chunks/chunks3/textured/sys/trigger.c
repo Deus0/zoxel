@@ -32,7 +32,8 @@ zox_sys2(Chunk3NeighborsMeshTriggerSystem) {
         zox_sys_e();
         zox_sys_i(VoxelNodeDirty, dirty);
         zox_sys_i(ChunkNeighbors, neighbors);
-        if (dirty->value != zox_dirty_end) {
+        // if (dirty->value != zox_dirty_end) {
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
         for (byte j = 0; j < chunk_neighbors_length; j++) {

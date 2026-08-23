@@ -1,5 +1,8 @@
 // Counts the biomes used in the map, and sets to highest used
 zox_sys2(BiomeMapAvgSystem) {
+    if (zox_disable_biomes) {
+        return;
+    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateTunk);
@@ -8,9 +11,12 @@ zox_sys2(BiomeMapAvgSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateTunk, generate);
-        zox_sys_i(BiomeMap, bmap);
+        zox_sys_i(BiomeMap, biome_map);
         zox_sys_o(BiomeLink, link);
         if (generate->value != zox_generate_tunk_heights) {
+            continue;
+        }
+        if (!biome_map->value || !biome_map->length) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
@@ -32,8 +38,8 @@ zox_sys2(BiomeMapAvgSystem) {
         //   uint counts[biomes->length];
         uint used_0 = 0;
         uint used_1 = 0;
-        for (int j = 0; j < bmap->length; j++) {
-            byte bindex = bmap->value[j];
+        for (int j = 0; j < biome_map->length; j++) {
+            byte bindex = biome_map->value[j];
             if (bindex == 0) {
                 used_0++;
             } else {

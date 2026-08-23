@@ -140,6 +140,7 @@ zox_sys2(SunlightSystem) {
 // Queued side updates for propogation
 zox_sys2(LightBeamSystem) {
     byte dbg_log = 0;
+    const uint max_beams = 256;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);
@@ -191,7 +192,8 @@ zox_sys2(LightBeamSystem) {
         if (dbg_log) {
             zox_log("[%s] Extended Sunbeams l[%i]", zox_get_name(e), sunlight);
         }
-        while (sunlight_queue->count) {
+        uint beams = 0;
+        while (sunlight_queue->count && beams < max_beams) {
             SunlightUpdate update = remove_SunlightQueue(sunlight_queue);
             // NOTE: For bottom chunk we just remove queue for beaming to bottom of earth
             byte3 pos = update.pos;
@@ -203,7 +205,20 @@ zox_sys2(LightBeamSystem) {
             if (dbg_log >= 2) {
                 zox_log(" - Beaming [%ix%ix%i] l[%i] q [%i]", update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count);
             }
-            if (sunbeam(floodlight_queue, chunk_below_sunlight_queue, root_lights, root_vnode, update.depth, update.pos, update.light, n_root_vnodes, n_root_lightss, darklight, light_air_decay, solidity)) {
+            if (sunbeam(
+                floodlight_queue,
+                chunk_below_sunlight_queue,
+                root_lights,
+                root_vnode,
+                update.depth,
+                update.pos,
+                update.light,
+                n_root_vnodes,
+                n_root_lightss,
+                darklight,
+                light_air_decay,
+                solidity))
+            {
                 if (!dirty->value) {
                     if (dbg_log) {
                         zox_log("[%s] ChunkLights Updated at [%ix%ix%i] l[%i] q [%i] Depth [%i]", zox_get_name(e) , update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count, update.depth);
@@ -211,6 +226,7 @@ zox_sys2(LightBeamSystem) {
                 }
                 dirty->value = zox_dirty_trigger;
             }
+            beams++;
         }
     }
 } zox_sys_end(LightBeamSystem);

@@ -74,20 +74,22 @@ zox_sys2(VegetationChunk3System) {
         for (position.x = 0; position.x < length; position.x++) {
             for (position.z = 0; position.z < length; position.z++) {
                 int2 map_position = (int2) { position.x, position.z };
-                int map_index = int2_array_index(map_position, map_size);
+                int index = int2_array_index(map_position, map_size);
 #ifdef zox_safety_checks
-                if (map_index >= biome_map->length) {
-                    zox_loge("Vegetation: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", map_index, biome_map->length, map_position.x, map_position.y, map_size.x, map_size.y);
+                if (!zox_disable_biomes && index >= biome_map->length) {
+                    zox_loge("Vegetation: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", index, biome_map->length, map_position.x, map_position.y, map_size.x, map_size.y);
                     continue;
                 }
 #endif
                 // Ignore fill if too high
-                byte height = height_map->value[map_index];
+                byte height = height_map->value[index];
                 if (height + max_veggie_height < chunk_block_position.y) {
                     continue;
                 }
-                byte biome_id = biome_map->value[map_index];
-                byte veggie = vegetation_map->value[map_index];
+                byte biome_id = !zox_disable_biomes ?
+                    biome_map->value[index] :
+                    0;
+                byte veggie = vegetation_map->value[index];
                 // NOTE: No need for vegetation under the sea
                 //  (maybe some sea weed later)
                 if (veggie == zox_vegetation_dirt) {

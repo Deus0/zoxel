@@ -55,12 +55,13 @@
 
 // depth 4: environment
 #include "weathers/_.c"
-#include "biomes/_.c"
 #include "streaming/_.c"
 #include "regions/_.c"
-#include "tunks/_.c"
 #include "particles/_.c"
+#include "tunks/_.c"
 #include "terrain/_.c"
+#include "biomes/_.c"
+#include "heights/_.c"
 #include "vegetation/_.c"
 #include "mountains/_.c"
 #include "towns/_.c"
@@ -166,11 +167,12 @@ void import_zox(ecs* world) {
     // depth 4: world / environment
     zox_import_module(Models);
     zox_add_module(weathers);
-    zox_import_module(Biomes);
     zox_import_module(Streaming);
     zox_import_module(Regions);
     zox_import_module(Tunks);
     zox_import_module(Terrains);
+    zox_import_module(Biomes);
+    zox_add_module(heights);
     zox_import_module(Vegetation);
     zox_import_module(Mountains);
     zox_import_module(Towns);

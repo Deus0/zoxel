@@ -11,6 +11,7 @@
  *
  * */
 
+byte zox_disable_biomes = 0;
 byte zox_biome_override = 0;    // stick to earthy for now
 #include "com/_.c"
 #include "dat/_.c"

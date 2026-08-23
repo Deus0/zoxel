@@ -88,14 +88,16 @@ zox_sys2(TownWallsSystem) {
         for (position.x = 0; position.x < length; position.x++) {
             for (position.z = 0; position.z < length; position.z++) {
                 int2 map_position = (int2) { position.x, position.z };
-                int map_index = int2_array_index(map_position, map_size);
+                int index = int2_array_index(map_position, map_size);
 #ifdef zox_safety_checks
-                if (map_index >= town_map->length) {
-                    zox_loge("Town: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", map_index, town_map->length, map_position.x, map_position.y, map_size.x, map_size.y);
+                if (index >= town_map->length) {
+                    zox_loge("Town: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", index, town_map->length, map_position.x, map_position.y, map_size.x, map_size.y);
                     continue;
                 }
 #endif
-                byte biome_id = biome_map->value[map_index];
+                byte biome_id = !zox_disable_biomes ?
+                    biome_map->value[index] :
+                    0;
                 // NOTE: Checks if outer bounds to determine if on top of world
 #ifdef zox_safety_checks
                 if (biome_id >= realm_biomes->length) {
@@ -116,8 +118,8 @@ zox_sys2(TownWallsSystem) {
                     entity road = zox_get_child_by_id(world, biome, zox_id(BlockRoad));
                     road_id = zox_valid(road) ? zox_getv(road, BlockIndex) : 0;
                 }
-                byte height = height_map->value[map_index];
-                byte town_value = town_map->value[map_index];
+                byte height = height_map->value[index];
+                byte town_value = town_map->value[index];
                 if (!town_value) {
                     continue;
                 }

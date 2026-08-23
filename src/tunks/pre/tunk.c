@@ -13,10 +13,8 @@ entity spawn_prefab_tunk2(ecs *world, entity prefab) {
     zox_prefab_set(e, Chunk3Stack, { 0 });
     zox_prefab_set(e, Chunk3Stacked, { 0 });
     // Maps
-    zox_prefab_set(e, BiomeMap, { 0 });
     zox_prefab_set(e, HeightMap, { 0 });
     // Misc
-    zox_prefab_set(e, BiomeLink, { 0 });
     zox_prefab_set(e, RegionLink, { 0 });
     return e;
 }

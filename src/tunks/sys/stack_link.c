@@ -1,7 +1,8 @@
 // Signals Terrain Chunks to Generate -> After Tunk (2D maps) finishes generating
 // Terrain Chunk <-> Tunks
 // NOTE: Links Tunks to Chunks
-zox_sys2(TunkLinkSystem) {
+// TODO: Link on spawn
+/*zox_sys2(TunkLinkSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -14,9 +15,6 @@ zox_sys2(TunkLinkSystem) {
         zox_sys_i(TunkPosition, cposition);
         zox_sys_o(Chunk3Stack, stack);
         zox_sys_o(Chunk3Stacked, stacked);
-        /*if (stacked->value) {
-            continue;
-        }*/
         entity terrain = zox_get_parent(world, e);
         if (!zox_valid(terrain)) {
             continue;
@@ -45,4 +43,4 @@ zox_sys2(TunkLinkSystem) {
             stacked->value = 1;
         }
     }
-} zox_sys_end(TunkLinkSystem);
+} zox_sys_end(TunkLinkSystem);*/

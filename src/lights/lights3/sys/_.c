@@ -1,6 +1,7 @@
 #include "editing.c"
 #include "sunlight.c"
 #include "flood.c"
+#include "dark.c"
 #include "reduce.c"
 #include "build.c"
 #include "build_smooth.c"

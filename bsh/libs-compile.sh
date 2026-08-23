@@ -5,6 +5,8 @@ TARGET="${1:-linux}"
 ARCH="${2:-x86_64}"
 library="lib/${TARGET}_${ARCH}"
 
+[[ " $* " == *" --docker "* ]] && library="${library}_docker"
+
 echo "Compiling Libraries [$TARGET]:[$ARCH]"
 echo " To [${library}]"
 
@@ -247,7 +249,8 @@ build_if_missing \
     "$SDL_SRC_DIR" \
     "$SDL_SRC_DIR/build-$BUILD_SUFFIX" \
     "$SDL_LIB_NAME" \
-    "${SDL_LIB_NAME%.*}*.${SDL_LIB_NAME##*.}"
+    "${SDL_LIB_NAME%.*}*.${SDL_LIB_NAME##*.}" \
+    -DSDL_X11_XTEST=OFF
 
 # SDL Mixer
 

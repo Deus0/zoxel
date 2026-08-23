@@ -35,7 +35,7 @@ zox_sys2(TownMapSystem) {
             zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in TownMaps", zox_get_name(e), tunk_position->value.x, tunk_position->value.y, region->value);
             continue;
         }
-        if (!biome_map->length) {
+        if (!zox_disable_biomes && !biome_map->length) {
             zox_loge("[%s]'s TownMap: [BiomeMap] Invalid", zox_get_name(e));
             continue;
         }

@@ -1,5 +1,5 @@
 // NOTE: Links a Tunk to a Region it is in
-zox_sys2(TunkRegionLinkSystem) {
+/*zox_sys2(TunkRegionLinkSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -29,4 +29,4 @@ zox_sys2(TunkRegionLinkSystem) {
             zox_logw("Failure finding Region [%ix%i]", region_position.x, region_position.y);
         }
     }
-} zox_sys_end(TunkRegionLinkSystem);
+} zox_sys_end(TunkRegionLinkSystem);*/

@@ -1,7 +1,7 @@
 zox_sys2(HeightMapSystem) {
     // TODO: use height frequency from biome maps
     byte terrain_height_multiplier = 3;
-    int terrain_octaves = 8; // 12;
+    int terrain_octaves = 4; // 8
     // double height_frequency = 0.1; // terrain_frequency * 10;
     zox_sys_world();
     zox_sys_begin();
@@ -21,7 +21,7 @@ zox_sys2(HeightMapSystem) {
             continue;
         }
 #ifdef zox_safety_checks
-        if (!biome_map->length || !biome_map->value) {
+        if (!zox_disable_biomes && (!biome_map->length || !biome_map->value)) {
             zox_logw("[biome_map] biome map wasn't generated in time");
             continue;
         }
@@ -56,7 +56,7 @@ zox_sys2(HeightMapSystem) {
         byte depth_difference = octree_size(terrain_depth - lod->value);
         byte max_height = int_min(render_distance_y * (terrain_length - 1), 255);
 #ifdef zox_safety_checks
-        if (biome_map->length != length * length) {
+        if (!zox_disable_biomes && biome_map->length != length * length) {
             zox_logw("[biome_map] invalid size");
             continue;
         }
@@ -78,7 +78,9 @@ zox_sys2(HeightMapSystem) {
                     heightmap->value[index] = max_height / 2;
                     continue;
                 }
-                byte biome_id = biome_map->value[index];
+                byte biome_id = !zox_disable_biomes ?
+                    biome_map->value[index] :
+                    0;
 #ifdef zox_safety_checks
                 if (biome_id >= realm_biomes->length) {
                     zox_loge("Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);

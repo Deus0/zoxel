@@ -1,173 +1,381 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-STATE_FILE=".build_settings"
-GAME_DIR="gam"
-extra_args=" --static --package"
-big_timer=0
+# NOTE: Converts the shell flags into flags for our game code
 
-# TODO: Rename the settings to more readable
-#echo "=> Platform [${OS}]"
-#echo "=> Graphics [${GLB}]"
-#echo "=> Windowing [${GFX}]"
-#echo "=> Profile [${PRF}]"
+# settings
+game_name="zoxel"
+os="linux"
+on_arc=$(uname -m)
+if [[ ${on_arc} == "aarch64" ]]; then
+    on_arc="arm"
+elif [[ ${on_arc} == "x86_64" ]]; then
+    on_arc="x64"
+fi
+arc="${on_arc}"         # x64 or arm
+compiler="gcc"
+cflags="-std=gnu99 -fPIC"
+dflags="-Dflecssource"
+debug="0"
+is_safety_checks="1"    # lets stay safe for now
+is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
+is_fast_dev="0"         # -O3
+logs="0"
+verbose="0"
+package="0"
+server="0"
+docker="0"
+is_time_systems="0"
 
-flash_logo() {
-    echo " # ! # ! # "
-    echo "    - -    "
-    echo "    zOx    "
-    echo "    - -    "
-    echo " # ! # ! # "
-    sleep ${big_timer}
-    clear
-}
+# Libs
+libs="-lpthread"            # shared
+is_static="1"
+graphics_lib="opengl"       # headless, opengl or vulkan
+window_lib="sdl"            # sdl, glut
+is_sdl3="1"                 # sdl2, sdl3
+sdl_mixer="1"
+is_glew="0"
+is_desktop_gl="1"           # Use GL libs instead of EGL on desktop
 
-if [[ ! -d "$GAME_DIR" ]]; then
-  echo "Error: $GAME_DIR folder not found."
-  exit 1
+# Paths
+sources="src/main.c inc/flecs/flecs.c"
+includes="-Iinc/flecs"
+output_folder="bin"
+package_path="zip"
+output_extension="bin"
+
+# Parse our Arguments #
+
+if [[ $# -gt 0 && ${1} != --* ]]; then
+    game_name="$1"
 fi
 
-# Loads last used settings
-load_settings() {
-  source "$STATE_FILE"
-  echo "Saved config found:"
-  echo "GAME=$GAME"
-  echo "OS=$OS"
-  echo "GLB=$GLB"
-  echo "GFX=$GFX"
-  echo "ARC=$ARC"
-  echo "PRF=$PRF"
-  echo "SDL=$SDL"
-}
+# Platform
+[[ " $* " == *" --linux "* ]] && os="linux"
+[[ " $* " == *" --windows "* ]] && os="windows"
 
-# User picks new settings
-pick_settings() {
-  # 1) Pick Game
-  echo "Select game:"
-  mapfile -t GAMES < <(find "$GAME_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-  if [[ ${#GAMES[@]} -eq 0 ]]; then
-    echo "Error: No game folders found in $GAME_DIR"
-    exit 1
-  fi
-  for i in "${!GAMES[@]}"; do
-    echo "$((i+1))) ${GAMES[$i]}"
-  done
-  read -rp "Enter number: " GAME_INDEX
-  if ! [[ "$GAME_INDEX" =~ ^[0-9]+$ ]] || (( GAME_INDEX < 1 || GAME_INDEX > ${#GAMES[@]} )); then
-    echo "Invalid selection"
-    exit 1
-  fi
-  GAME="${GAMES[$((GAME_INDEX-1))]}"
-  clear
+# Architecture
+[[ " $* " == *" --x64 "* ]] && arc="x64"
+[[ " $* " == *" --arm "* ]] && arc="arm"
 
-  OS=$(select_option "Select Platform:" linux windows android webgl)
-  echo ""
-  clear
+# Libraries
+[[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
+[[ " $* " == *" --system "* ]] && is_static="0"
+[[ " $* " == *" --package "* ]] && package="1"
+[[ " $* " == *" --static "* ]] && is_static="1"
 
-  GLB=$(select_option "Select Graphics:" opengl vulkan headless)
-  echo ""
-  clear
+# window_lib
+[[ " $* " == *" --headless "* ]] && window_lib="headless"
+[[ " $* " == *" --sdl "* ]] && window_lib="sdl"
+[[ " $* " == *" --glut "* ]] && window_lib="glut"
+[[ " $* " == *" --sdl2 "* ]] && is_sdl3="0"
+[[ " $* " == *" --sdl3 "* ]] && is_sdl3="1"
 
-  GFX=$(select_option "Select Windowing" sdl glut glfw headless)
-  echo ""
-  clear
+# Graphics Library
+[[ " $* " == *" --headless "* ]] && graphics_lib="headless"
+[[ " $* " == *" --opengl "* ]] && graphics_lib="opengl"
+[[ " $* " == *" --vulkan "* ]] && graphics_lib="vulkan"
 
-  ARC=$(select_option "Select Architecture" x64 arm)
-  echo ""
-  clear
+# Misc
+[[ " $* " == *" --debug "* ]] && debug="1"
+[[ " $* " == *" --release "* ]] && debug="0"
+[[ " $* " == *" --nologs "* ]] && logs="0"
+[[ " $* " == *" --logs "* ]] && logs="1"
+[[ " $* " == *" --timings "* ]] && is_time_systems="1"
+[[ " $* " == *" --profile "* ]] && is_profiler="1"
+[[ " $* " == *" --verbose "* ]] && verbose="1"
+[[ " $* " == *" --server "* ]] && server="1"
+[[ " $* " == *" --docker "* ]] && docker="1"
 
-  PRF=$(select_option "Select Profile" release debug)
-  echo ""
-  clear
 
-  SDL=$(select_option "Select SDL" sdl3 sdl2 headless)
-  echo ""
-  clear
-}
+# Change based on Parsed Args #
 
-select_option() {
-    local prompt="$1"
-    shift
-    local options=("$@")
-    local choice
-    printf '%s\n' "$prompt" >&2
-    for i in "${!options[@]}"; do
-        printf '%d) %s\n' "$((i + 1))" "${options[$i]}" >&2
-    done
-    read -rp "Enter number: " choice
-    if ! [[ "$choice" =~ ^[0-9]+$ ]] || (( choice < 1 || choice > ${#options[@]} )); then
-        echo "Invalid selection" >&2
+bin_filename="${game_name}"
+dflags+=" -Dzox_game=${game_name}"
+
+if [[ "${os}" == "linux" ]]; then
+    output_extension="bin"
+elif [[ "${os}" == "windows" ]]; then
+    output_extension="exe"
+fi
+
+[[ "${graphics_lib}" == "headless" ]] && bin_filename="${bin_filename}-headless"
+[[ "${debug}" == "1" ]] && bin_filename="${bin_filename}-dev"
+bin_path="${output_folder}/${bin_filename}.${output_extension}"
+
+
+# Set our compiler variables #
+
+if [[ "${os}" == "linux" ]]; then
+    dflags+=" -Dzox_linux"
+    libs+=" -lm -ldl"
+elif [[ "${os}" == "windows" ]]; then
+    is_glew="1"
+    compiler="x86_64-w64-mingw32-gcc"
+    dflags+=" -Dzox_windows"
+    libs+=" -lws2_32 -ldbghelp"
+    if ! command -v x86_64-w64-mingw32-gcc >/dev/null 2>&1; then
+        echo "ERROR: MinGW x64 toolchain is required for Windows builds."
+        echo "Missing: x86_64-w64-mingw32-gcc"
         exit 1
     fi
-    printf '%s\n' "${options[$((choice - 1))]}"
-}
+    if ! command -v x86_64-w64-mingw32-g++ >/dev/null 2>&1; then
+        echo "ERROR: MinGW x64 toolchain is required for Windows builds."
+        echo "Missing: x86_64-w64-mingw32-g++"
+        echo "Apt: sudo apt install g++-mingw-w64-x86-64"
+        exit 1
+    fi
+    if [[ "${arc}" != "x64" ]]; then
+        echo "ERROR: Windows builds currently support x64 only."
+        exit 1
+    fi
+fi
 
-echo "... welcome traveler"
-sleep ${big_timer}
-clear
 
-flash_logo
+if [[ ${arc} == "arm" ]]; then
+    echo "+ [Arm] Enabled [gles]"
+    is_desktop_gl="0"
+fi
 
-if [[ -f "$STATE_FILE" ]]; then
-  echo "Last Used Settings:"
-  echo ""
-  cat "$STATE_FILE"
-  echo ""
-  read -rp "...Use saved config? (y/n): " USE_SAVED
-  sleep ${big_timer}
-  clear
+if [[ ${debug} == "1" ]]; then
+    echo "+ Added [debug]"
+    # cflags="-O2 -g -Dzox_debug"
+    # cflags="-fPIC -g3 -Dzox_debug" #  -O0
+    # For Regular Runs
+    if [[ ${is_fast_dev} == "1" ]]; then
+        cflags+=" -O3 -g"
+    else
+        dflags+=" -Dzox_debug"
+        cflags+=" -Wall -ggdb3"
+        cflags+=" -O0 -g3"
+    fi
+    # Memory Leaks Full Debug
+    # cflags+=" -fno-omit-frame-pointer""
+    # cflags+=" -fsanitize=address"
 else
-  USE_SAVED="n"
+    # Release Builds
+    cflags+=" -O3 -flto=auto -DNDEBUG"
 fi
 
-# Loads Settings
-if [[ "$USE_SAVED" == "y" ]]; then
-  load_settings
+if [[ ${is_profiler} == "1" ]]; then
+    echo "+ Added [flecs_profiler]"
+    dflags+=" -Dflecs_profiler"
+fi
+
+if [[ ${is_safety_checks} == "1" ]]; then
+    echo "+ Added [zox_safety_checks]"
+    dflags+=" -Dzox_safety_checks"
+fi
+
+if [[ ${logs} == "1" ]]; then
+    echo "+ Added [zox_logs]"
+    dflags+=" -Dzox_logs"
+fi
+
+if [[ ${is_time_systems} == "1" ]]; then
+    echo "+ Added [zox_time_systems]"
+    dflags+=" -Dzox_time_systems"
+fi
+
+if [[ ${verbose} == "1"  ]]; then
+    echo "+ Added [zox_verbose]"
+    dflags+=" -Dzox_verbose"
+fi
+
+if [[ ${graphics_lib} == "headless" ]]; then
+    echo "+ Added [zox_headless]"
+    dflags+=" -Dzox_headless"
+fi
+
+if [[ ${server} == "1" ]]; then
+    echo "+ Added [zox_server]"
+    dflags+=" -Dzox_server"
+fi
+
+if [[ ${graphics_lib} == "opengl" ]]; then
+    echo "+ Added [zox_opengl]"
+    dflags+=" -Dzox_opengl"
+fi
+
+if [[ ${window_lib} == "sdl" ]]; then
+    echo "+ Added [zox_sdl]"
+    dflags+=" -Dzox_sdl"
+fi
+
+# Construct our Librarys
+library="lib/${os}_${arc}"
+sdl_include=""
+sdl_library=""
+sdl_runtime=""
+sdl_mixer_include=""
+sdl_mixer_library=""
+sdl_mixer_runtime=""
+
+[[ "${docker}" == "1" ]] && library="${library}_docker"
+
+if [[ "${is_sdl3}" == "1" ]]; then
+    sdl_include="-Iext/sdl3/include"
+    sdl_mixer_include="-Iext/sdl3_mixer/include"
+    if [[ "${os}" == "windows" ]]; then
+        sdl_library="${library}/SDL3.dll"
+        sdl_runtime="${sdl_library}"
+        sdl_mixer_library="${library}/SDL3_mixer.dll"
+        sdl_mixer_runtime="${sdl_mixer_library}"
+    else
+        sdl_library="${library}/libSDL3.so"
+        sdl_mixer_library="${library}/libSDL3_mixer.so"
+        sdl_runtime="${library}/libSDL3.so.0"
+        sdl_mixer_runtime="${library}/libSDL3_mixer.so.0"
+    fi
 else
-  pick_settings
+    sdl_include="-Iext/sdl2/include"
+    sdl_mixer_include="-Iext/sdl2_mixer/include"
+    if [[ "${os}" == "windows" ]]; then
+        sdl_library="${library}/SDL2.dll"
+        sdl_runtime="${sdl_library}"
+        sdl_mixer_library="${library}/SDL2_mixer.dll"
+        sdl_mixer_runtime="${sdl_mixer_library}"
+    else
+        sdl_library="${library}/libSDL2.so"
+        sdl_runtime="${sdl_library}.0"
+        sdl_mixer_library="${library}/libSDL2_mixer.so"
+        sdl_mixer_runtime="${sdl_mixer_library}.0"
+    fi
 fi
 
-BUILD_SCRIPT="bsh/${OS}.sh"
+# Bind our Libraries
 
-if [[ ! -f "$BUILD_SCRIPT" ]]; then
-  echo "Warning: $BUILD_SCRIPT is not supported or does not exist."
-  exit 1
-fi
-clear
-
-flash_logo
-
-# Saves Settings
-cat > "$STATE_FILE" <<EOF
-GAME="$GAME"
-OS="$OS"
-GLB="$GLB"
-GFX="$GFX"
-ARC="$ARC"
-PRF="$PRF"
-SDL="$SDL"
-EOF
-
-# Build arguments
-if [[ "$OS" == "linux" ]]; then
-    build_args="--${GLB} --${GFX} --${ARC} --${PRF} --${SDL} ${extra_args}"
-    build_command="bash ${BUILD_SCRIPT} ${GAME} ${build_args}"
-else
-    build_args="${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}"
-    build_command="bash ${BUILD_SCRIPT} ${GAME} ${build_args}"
+if [[ ${is_glew} == "1" ]]; then
+    echo "+ Added [glew]"
+    sources+=" ext/glew/src/glew.c"
+    dflags+=" -DGLEW_STATIC"
+    includes+=" -Iext/glew/include"
 fi
 
-echo "Building..."
-echo ""
-cat "$STATE_FILE"
-echo ""
-echo "...[${build_command}]"
-echo ""
+if [[ ${graphics_lib} == "opengl" ]]; then
+    if [[ ${os} == "windows" ]]; then
+        libs+=" -lopengl32"
+    elif [[ ${is_desktop_gl} == "1" ]]; then
+        libs+=" -lGL"
+    else
+        libs+=" -lEGL -lGLESv2"
+    fi
+fi
 
-bash "$BUILD_SCRIPT" "${GAME}" ${build_args}
+if [[ ${window_lib} == "sdl" ]]; then
+    # libs+=" -L${library}" # static libs for build
+    if [[ ${sdl_mixer} == "1" ]]; then
+        dflags+=" -Dzox_sdl_mixer"
+    fi
+    if [[ "${is_sdl3}" == "1" ]]; then
+        echo "+ Added [zox_sdl3]"
+        dflags+=" -Dzox_sdl3"
+    fi
+    if [[ ${is_static} == "1" ]]; then
+        libs+=" ${sdl_library}"
+        includes+=" ${sdl_include}"
+        if [[ "${sdl_mixer}" == "1" ]]; then
+            libs+=" ${sdl_mixer_library}"
+            includes+=" ${sdl_mixer_include}"
+        fi
+    else
+        echo "+ Using Systems SDL"
+        if [[ ${is_sdl3} == "1" ]]; then
+            libs+=" -lSDL3"
+            if [[ ${sdl_mixer} == "1" ]]; then
+                libs+=" -lSDL3_mixer"
+            fi
+        else
+            libs+=" -lSDL2"
+            if [[ ${sdl_mixer} == "1" ]]; then
+                libs+=" -lSDL2_mixer"
+            fi
+        fi
+    fi
+fi
+
+echo "Chosen Arc [${arc}] - Running on [${on_arc}]"
+
+# Ready our Libs
+if [[ ${is_static} == "1" ]]; then
+    # Make use local lib files during runtime
+    if [[ "${os}" == "linux" ]]; then
+        libs+=" -Wl,-rpath,\$ORIGIN"
+    fi
+fi
+
+if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
+    echo ""
+    echo "--------------------------------------------"
+    lib_args=""
+    [[ ${is_sdl3} == "1" ]] && lib_args+=" --sdl3"
+    [[ ${sdl_mixer} == "1" ]] && lib_args+=" --sdl-mixer"
+    [[ ${docker} == "1" ]] && lib_args+=" --docker"
+    bsh/libs-download.sh ${lib_args}
+    echo "--------------------------------------------"
+    bsh/libs-compile.sh ${os} ${arc} ${lib_args}
+    echo "--------------------------------------------"
+    echo ""
+fi
+
+echo ""
+echo "============================================================"
+echo "                         Z O X E L"
+echo "                    Universal Build System"
+echo "------------------------------------------------------------"
+echo "  Platform : ${os}"
+echo "  Arch     : ${arc}"
+echo "  Graphics : ${graphics_lib}"
+echo "  Window   : ${window_lib}"
+echo "  SDL      : $(if [[ ${is_sdl3} == "1" ]]; then echo "SDL3"; else echo "SDL2"; fi)"
+echo "  Build    : $(if [[ ${debug} == "1" ]]; then echo "Debug"; else echo "Release"; fi)"
+echo "  Compiler   : ${compiler}"
+# echo "  CFlags   : ${cflags}"
+# echo "  DFlags   : ${dflags}"
+# echo "  Libs   : ${libs}"
+# echo "  Includes   : ${includes}"
+# echo ""
+echo "============================================================"
+echo ""
 
 # echo ""
-# echo "...[$BUILD_SCRIPT ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}]"
-# echo ""
+# echo "Building [${bin_path}]"
+# echo "  - Compiler [${compiler}]"
+# echo "  - CFlags [${cflags}]"
+# echo "  - DFlags [${dflags}]"
+#echo "  - Libs [${libs}]"
+#echo "  - Includes [${includes}]"
 
-# bash "$BUILD_SCRIPT" ${GAME} ${GLB} ${GFX} ${ARC} --${PRF} --${SDL} ${extra_args}
+mkdir -p ${output_folder}
+${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${libs}
+echo "+ Completed Build [${bin_path}]"
+
+# ---- Packaging ----
+if [[ ${package} == "1" ]]; then
+    mkdir -p ${package_path}
+    date_str=$(date +%Y_%m_%d)
+    zip_name="${package_path}/${game_name}_${os}_${arc}_${graphics_lib}_${window_lib}"
+    [[ ${window_lib} == "headless" ]] && zip_name="${zip_name}_headless"
+    zip_name="${zip_name}_${date_str}.zip"
+
+    echo ""
+    echo "> Packaging"
+    echo "  - Zip [${zip_name}]"
+    echo "  - Lib [${library}]"
+
+    rm -f ${zip_name}
+
+    zip -j "${zip_name}" "${bin_path}"
+    zip -q -r "${zip_name}" res
+
+    if [[ ${window_lib} == "sdl" ]]; then
+        if [[ "${is_static}" == "1" ]]; then
+            zip -j "${zip_name}" "${sdl_runtime}"
+
+            if [[ "${sdl_mixer}" == "1" ]]; then
+                zip -j "${zip_name}" "${sdl_mixer_runtime}"
+            fi
+        fi
+    fi
+    echo "+ Completed Zipping"
+fi

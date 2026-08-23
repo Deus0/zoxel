@@ -1,14 +1,14 @@
 // TODO: Calculate only sides needed
 
 byte zox_sides_only_target_depth = 0;
-
+/*
 #define SIDE_X_NEG      (1 << 1)
 #define SIDE_X_POS      (1 << 2)
 #define SIDE_Y_NEG      (1 << 3)
 #define SIDE_Y_POS      (1 << 4)
 #define SIDE_Z_NEG      (1 << 5)
 #define SIDE_Z_POS      (1 << 6)
-#define SIDE_CALCULATED (1 << 7)
+#define SIDE_CALCULATED (1 << 7)*/
 
 // Sides System will generate our chunk sides before rendering
 // TODO: Let Colored use this too

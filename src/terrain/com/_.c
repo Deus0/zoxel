@@ -16,6 +16,7 @@ zox_tag(BlockObsidian);
 zox_tag(BlockBricks);
 zox_tag(BlockFlower);
 zox_tag(BlockRoad);
+#include "spawn2.c"
 
 entity get_linked_terrain(ecs* world, entity e) {
     return zox_valid(e) && zox_has(e, TerrainLink) ? zox_getv(e, TerrainLink) : 0;
@@ -40,4 +41,6 @@ void define_components_terrain(ecs *world) {
     zoxd_tag(BlockBricks);
     zoxd_tag(BlockFlower);
     zoxd_tag(BlockRoad);
+    // Queue
+    define_terrain_spawn_queue(world);
 }

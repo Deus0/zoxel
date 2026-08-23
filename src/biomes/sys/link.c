@@ -25,34 +25,34 @@ zox_sys2(BiomeLinkSystem) {
         if (!zox_valid(terrain->value)) {
             continue;
         }
-#ifdef zox_safety_checks
+        #ifdef zox_safety_checks
         if (!zox_has(terrain->value, TunkLinks)) {
             zox_loge("Terrain [%s] has no TunkLinks", zox_getn(terrain->value));
             continue;
         }
-#endif
+        #endif
         zox_geter(terrain->value, TunkLinks, tunks);
         entity tunk = int2_hashmap_get(tunks->value, position->value);
         if (!zox_valid(tunk)) {
             continue;
         }
-#ifdef zox_safety_checks
+        #ifdef zox_safety_checks
         if (!zox_has(tunk, BiomeLink)) {
             zox_loge("Tunk [%s] has no [BiomeLink]", zox_getn(tunk));
             continue;
         }
-#endif
+        #endif
         if (tunk != tunk_link->value) {
             entity biome = zox_getv(tunk, BiomeLink);
             if (!zox_valid(biome)) {
                 continue;
             }
-#ifdef zox_safety_checks
+            #ifdef zox_safety_checks
             if (!zox_has(biome, BiomeSkyColor)) {
                 zox_loge("Biome [%s] has no [BiomeSkyColor]", zox_getn(biome));
                 continue;
             }
-#endif
+            #endif
             tunk_link->value = tunk;
             blink->value = biome;
             zox_logv("Inside new Biome [%s]", blink->value ? zox_get_name(blink->value) : "None");

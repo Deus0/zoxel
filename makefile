@@ -92,11 +92,11 @@ endif
 
 $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
-	@ bash bsh/linux.sh $(GAME) ${build_args} --release
+	@ bash bsh/build.sh $(GAME) ${build_args} --release
 
 package: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
-	@ bash bsh/linux.sh $(GAME) ${build_args} --release --package
+	@ bash bsh/build.sh $(GAME) ${build_args} --release --package
 
 package-windows: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
@@ -124,7 +124,7 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	bash bsh/linux.sh $(GAME) ${build_args} --debug --logs --timings
+	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings
 
 dev: $(TARGET_DEV)
 

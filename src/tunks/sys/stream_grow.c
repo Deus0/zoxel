@@ -1,6 +1,6 @@
 // Should I Chunk2Neighbors, Chunk2Position
 // Tunk2 a child of Chunk2 entities
-zox_sys2(TunksSpawnSystem) {
+/*zox_sys2(TunksSpawnSystem) {
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
@@ -92,3 +92,4 @@ zox_sys2(TunksSpawnSystem) {
         }
     }
 } zox_sys_end(TunksSpawnSystem);
+*/

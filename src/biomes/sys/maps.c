@@ -2,7 +2,7 @@
 zox_sys2(BiomeMapSystem) {
     byte dbg_log = 0;
     double biome_frequency = 0.02;
-    byte biome_octaves = 12;
+    byte biome_octaves = 4;         // 12
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);
@@ -18,27 +18,31 @@ zox_sys2(BiomeMapSystem) {
         if (generate->value != zox_generate_tunk_biomes) {
             continue;
         }
+        if (zox_disable_biomes) {
+            generate->value = zox_generate_tunk_heights;
+            continue;
+        }
         entity terrain = zox_get_parent(world, e);
-#ifdef zox_safety_checks
+        #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_loge("Invalid terrain");
             continue;
         }
-#endif
+        #endif
         entity realm = zox_get_parent(world, terrain);
-#ifdef zox_safety_checks
+        #ifdef zox_safety_checks
         if (!zox_valid(realm)) {
             zox_loge("Invalid realm");
             continue;
         }
-#endif
+        #endif
         zox_geter(realm, BiomeLinks, realm_biomes);
-#ifdef zox_safety_checks
+        #ifdef zox_safety_checks
         if (!realm_biomes->length) {
             zox_loge("No Biomes on Realm");
             continue;
         }
-#endif
+        #endif
         byte biomes_count = byte_clamp(realm_biomes->length, 0, 255);
         lint seed = zox_getv(terrain, Seed);
         byte terrain_depth = zox_getv(terrain, NodeDepth);

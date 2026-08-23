@@ -7,7 +7,11 @@ typedef struct {
 } place_chance;
 
 // NOTE: Uses nearest algorithm for the vegetation maps
-static inline byte choose_place(const place_chance *places, byte count, double perlin_value) {
+static inline byte choose_place(
+    const place_chance *places,
+    byte count,
+    double perlin_value)
+{
     byte best = places[0].value;
     double best_dist = fabs(perlin_value - places[0].perlin);
     for (size_t i = 1; i < count; ++i) {
@@ -47,7 +51,7 @@ zox_sys2(VegetationMapSystem) {
             continue;
         }
 #ifdef zox_safety_checks
-        if (!biome_map->length) {
+        if (!zox_disable_biomes && !biome_map->length) {
             zox_logw("[vegetation_map] biome_map map wasn't generated in time");
             continue;
         }
@@ -101,7 +105,9 @@ zox_sys2(VegetationMapSystem) {
             for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
                 int index = int2_array_index(position, map_size);
                 // Get Biome Data
-                byte biome_id = biome_map->value[index];
+                byte biome_id = !zox_disable_biomes ?
+                    biome_map->value[index] :
+                    0;
 #ifdef zox_safety_checks
                 if (biome_id >= realm_biomes->length) {
                     zox_loge("Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
@@ -127,8 +133,16 @@ zox_sys2(VegetationMapSystem) {
                 }
                 double perlin_x = noise_positiver2 + (global_position.x / ((float) terrain_length));
                 double perlin_y = noise_positiver2 + (global_position.y / ((float) terrain_length));
-                double perlin_value = veggie_amplitude * perlin_octaves(perlin_x, perlin_y, veggie_frequency, seed, veggie_octaves);
-                vegetation_map->value[index] = choose_place(places, places_count, perlin_value);
+                double perlin_value = veggie_amplitude * perlin_octaves(
+                    perlin_x,
+                    perlin_y,
+                    veggie_frequency,
+                    seed,
+                    veggie_octaves);
+                vegetation_map->value[index] = choose_place(
+                    places,
+                    places_count,
+                    perlin_value);
                 // zox_log("value veggie: %f", value);
             }
         }

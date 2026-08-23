@@ -8,7 +8,7 @@ zox_sys2(NpcsSettingsSystem) {
         if (load->value != zox_load_settings_spawn) {
             continue;
         }
-        spawn_setting_byte_slider(world, e, "Npc Spawn", character_spawn_rate_max, character_spawn_rate_limits);
+        spawn_setting_byte_slider(world, e, "Npc Spawn", character_spawn_rate_max ? character_spawn_rate_max - 1 : 0, character_spawn_rate_limits);
         spawn_setting_byte_slider(world, e, "Npc Range", character_spawn_distance, character_spawn_distance_limits);
 #ifdef zox_debug_settings
         // spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
@@ -32,7 +32,7 @@ zox_sys2(NpcsSettingsDirtySystem) {
         if (zox_has(e, SettingByte)) {
             byte value = zox_getv(e, SettingByte);
             if (!strcmp(name->value, "Npc Spawn")) {
-                character_spawn_rate_max = value;
+                character_spawn_rate_max = value + 1;
             } else if (!strcmp(name->value, "Npc Range")) {
                 character_spawn_distance = value;
             }

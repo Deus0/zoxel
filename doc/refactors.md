@@ -33,7 +33,7 @@
 
 ## Devops
 - We need docker libraries to be seperated from regular ones
-    - for docker.sh - add docker tag in linux.sh
+    - for docker.sh - add docker tag in build.sh
     - then make libs use seperate folder
 
 ## Tooltips
