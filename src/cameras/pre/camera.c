@@ -13,7 +13,7 @@ entity spawn_prefab_camera(ecs *world) {
     zox_prefab_set(e, CameraState, { 0 });
     zox_prefab_set(e, ProjectionMatrix, { float4x4_identity });
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
-    zox_prefab_set(e, ViewMatrix, { float4x4_identity });
+    zox_prefab_set(e, ViewProjectionMatrix, { float4x4_identity });
     zox_prefab_set(e, ScreenPosition, { int2_zero });
     zox_prefab_set(e, ScreenDimensions, { int2_zero });
     zox_prefab_set(e, FieldOfView, { 0 });

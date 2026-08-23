@@ -2,11 +2,27 @@ extern void spawn_all_players_start_ui(ecs*);
 
 // Spawn our games canvas
 // NOTE: Runs on boot
-entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 screen_to_canvas, entity app) {
-    entity canvas = spawn_canvas(world, prefab_canvas, ui_camera, dimensions, screen_to_canvas, app);
+entity spawn_game_canvas(
+    ecs *world,
+    entity ui_camera,
+    int2 dimensions,
+    float4 screen_to_canvas,
+    entity app)
+{
+    entity canvas = spawn_canvas(
+        world,
+        prefab_canvas,
+        ui_camera,
+        dimensions,
+        screen_to_canvas,
+        app);
     zox_set_unique_name(canvas, "game_canvas");
     if (!zox_disable_screen_fader) {
-        spawn_canvas_overlay(world, prefab_canvas_overlay, canvas, dimensions);
+        spawn_canvas_overlay(
+            world,
+            prefab_canvas_overlay,
+            canvas,
+            dimensions);
     }
     // Tooltip on player
     spawn_tooltip(world, prefab_tooltip, canvas);
@@ -25,7 +41,11 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     zox_set_unique_name(e, "mouse_ui");
     zox_add(e, MouseElement);
     zox_set(e, MeshAlignment, { zox_alignment_top_left });
-    clone_texture_data_scale(world, e, texture_mouse, int2_single(mouse_ui_size));
+    clone_texture_data_scale(
+        world,
+        e,
+        texture_mouse,
+        int2_single(mouse_ui_size));
     zox_set(e, LayoutSize, { int2_single(mouse_ui_size) });
     zox_set(e, LayoutSizeDirty, { zox_dirty_trigger });
     zox_set(e, LayoutPositionDirty, { zox_dirty_trigger });
@@ -34,7 +54,15 @@ entity spawn_game_canvas(ecs *world, entity ui_camera, int2 dimensions, float4 s
     }
     // Mouse Pickup UI
     int icon_size = (default_icon_size / 4) * ui_scale;
-    entity e2 = spawn_mouse_icon(world, prefab_element, canvas, dimensions, max_layers2D - 3, float2_half, icon_size, mouse_pointer);
+    entity e2 = spawn_mouse_icon(
+        world,
+        prefab_element,
+        canvas,
+        dimensions,
+        max_layers2D - 3,
+        float2_half,
+        icon_size,
+        mouse_pointer);
     zox_set_unique_name(e2, "data_mouse");
     zox_add(e2, DataMouse);
     entity empty_texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));
@@ -65,6 +93,8 @@ void spawn_all_players_cameras_canvases(
         int2 vp_size = screen_to_canvas_size(screen_size, screen_to_canvas);
         int2 viewport_position = screen_to_canvas_position(screen_size, screen_to_canvas);
         int2 svp_size = scale_viewport(vp_size);
+        // hmmm
+#ifndef zox_xr
         entity2 spawned_cameras = spawn_player_cameras(
             world,
             app,
@@ -77,18 +107,26 @@ void spawn_all_players_cameras_canvases(
             svp_size,
             vp_size);
         entity game_camera = spawned_cameras.x;
+        entity ui_camera = spawned_cameras.y;
+        // remove these soon
+        main_cameras[i] = game_camera;
+        ui_cameras[i] = spawned_cameras.y;
         set_camera_mode(
             world,
             game_camera,
             zox_game_camera_mode);
+#else
+        entity ui_camera = 0;
+#endif
         entity canvas = spawn_game_canvas(
             world,
-            spawned_cameras.y,
+            ui_camera,
             vp_size,
             screen_to_canvas,
             app);
         zox_set(player, CanvasLink, { canvas });
         zox_set(canvas, PlayerLink, { player });
+#ifndef zox_xr
         // spawns a render texture ui and links to camera
         if (!zox_disable_post_processing) {
             // material_render_texture_rgba
@@ -112,16 +150,16 @@ void spawn_all_players_cameras_canvases(
                 zox_add(texture, TextureRGB);
             }
         }
-        // remove these soon
-        main_cameras[i] = game_camera;
-        ui_cameras[i] = spawned_cameras.y;
+#endif
     }
 }
 
 void on_boot_game_ui(ecs* world, entity app) {
     // move to game ui??
-#ifndef zox_xr
-    spawn_all_players_cameras_canvases(world, players_playing, app);
+    spawn_all_players_cameras_canvases(
+        world,
+        players_playing,
+        app);
     spawn_all_players_start_ui(world);
-#endif
+// #endif
 }

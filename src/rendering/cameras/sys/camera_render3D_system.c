@@ -9,7 +9,7 @@ zox_sys_untimed(Camera3RenderSystem) {
     zox_gpu_disable_blend();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ViewMatrix);
+    zox_sys_in(ViewProjectionMatrix);
     zox_sys_in(Position3D);
     zox_sys_in(FieldOfView);
     zox_sys_in(ScreenPosition);
@@ -17,7 +17,7 @@ zox_sys_untimed(Camera3RenderSystem) {
     zox_sys_in(FogColor);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ViewMatrix, matrix);
+        zox_sys_i(ViewProjectionMatrix, matrix);
         zox_sys_i(Position3D, position);
         zox_sys_i(FieldOfView, fov);
         zox_sys_i(ScreenPosition, screen_position);

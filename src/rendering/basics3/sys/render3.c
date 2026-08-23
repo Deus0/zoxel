@@ -1,6 +1,6 @@
 // NOTE: Rendering Skybox atm and debug cube
 zox_sys2(Basic3RenderSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);

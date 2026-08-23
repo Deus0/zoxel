@@ -49,12 +49,12 @@ zox_sys2(CameraFrustumSystem) {
         return;
     }
     zox_sys_begin();
-    zox_sys_in(ViewMatrix);
+    zox_sys_in(ViewProjectionMatrix);
     zox_sys_out(FrustumCorners);
     zox_sys_out(Position3DBounds);
     zox_sys_out(CameraPlanes);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ViewMatrix, vp_matrix);
+        zox_sys_i(ViewProjectionMatrix, vp_matrix);
         zox_sys_o(CameraPlanes, planes);
         zox_sys_o(FrustumCorners, corners);
         zox_sys_o(Position3DBounds, bounds);

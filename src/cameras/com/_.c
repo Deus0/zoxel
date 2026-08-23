@@ -17,7 +17,7 @@ zoxc_entity(CameraFollowLink);
 zoxc_int2(ScreenPosition);
 zoxc_float4(ScreenToCanvas);
 zoxc(ProjectionMatrix, float4x4);
-zoxc(ViewMatrix, float4x4); // todo: rename to ViewProjectionMatrix
+zoxc(ViewProjectionMatrix, float4x4); // todo: rename to ViewProjectionMatrix
 #define zox_camera_planes 6
 zoxc_array(CameraPlanes, plane, zox_camera_planes);
 zoxc_array(FrustumCorners, double3, 8);
@@ -54,7 +54,7 @@ void define_components_cameras(ecs *world) {
     zoxd_entity(CameraTarget);
     zoxd_entity(CameraFollowLink);
     zoxd(ProjectionMatrix);
-    zoxd(ViewMatrix);
+    zoxd(ViewProjectionMatrix);
     // zoxd(ViewProjectionMatrix)
     zoxd_float4(ScreenToCanvas);
     zox_define_component_array(FrustumCorners);

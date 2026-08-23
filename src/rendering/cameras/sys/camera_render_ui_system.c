@@ -1,4 +1,5 @@
-void camera2_render_update(iter *it) {
+
+zox_sys_untimed(CameraRenderUISystem) {
     byte dbg_log = 0;
     if (!rendering) {
         return;
@@ -8,7 +9,7 @@ void camera2_render_update(iter *it) {
     zox_gpu_disable_blend();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ViewMatrix);
+    zox_sys_in(ViewProjectionMatrix);
     zox_sys_in(Position3D);
     zox_sys_in(FieldOfView);
     zox_sys_in(ScreenPosition);
@@ -16,7 +17,7 @@ void camera2_render_update(iter *it) {
     zox_sys_in(FogColor);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ViewMatrix, matrix);
+        zox_sys_i(ViewProjectionMatrix, matrix);
         zox_sys_i(Position3D, position);
         zox_sys_i(FieldOfView, fov);
         zox_sys_i(ScreenPosition, screen_position);
@@ -39,9 +40,4 @@ void camera2_render_update(iter *it) {
         }
         render_uis(world, zox_ui_render_queue);
     }
-}
-
-
-zox_sys_untimed(CameraRenderUISystem) {
-    camera2_render_update(it);
 } zox_sys_end_untimed(CameraRenderUISystem);

@@ -1,6 +1,6 @@
 // for unique meshes - not atm used
 zox_sys2(VoxRenderSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     if (!zox_valid(material_colored3D)) {
         return;

@@ -43,7 +43,7 @@ void define_systems_rendering_cameras(ecs *world) {
     zox_system_1(
         Camera3RenderSystem,
         zoxp_rendering,
-        [in] cameras.ViewMatrix,
+        [in] cameras.ViewProjectionMatrix,
         [in] transforms3.Position3D,
         [in] cameras.FieldOfView,
         [in] cameras.ScreenPosition,
@@ -54,7 +54,7 @@ void define_systems_rendering_cameras(ecs *world) {
     zox_system_1(
         CameraRenderUISystem,
         zoxp_rendering,
-        [in] cameras.ViewMatrix,
+        [in] cameras.ViewProjectionMatrix,
         [in] transforms3.Position3D,
         [in] cameras.FieldOfView,
         [in] cameras.ScreenPosition,

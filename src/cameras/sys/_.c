@@ -32,16 +32,16 @@ void define_systems_cameras(ecs *world) {
         [none] Orthographic
     );
     zox_system(
-        ViewMatrixSystem,
+        ViewProjectionMatrixSystem,
         zoxp_cameras,
         [in] transforms.TransformMatrix,
         [in] ProjectionMatrix,
-        [out] ViewMatrix
+        [out] ViewProjectionMatrix
     );
     zox_system(
         CameraFrustumSystem,
         zoxp_cameras,
-        [in] ViewMatrix,
+        [in] ViewProjectionMatrix,
         [out] FrustumCorners,
         [out] transforms3.Position3DBounds,
         [out] CameraPlanes,

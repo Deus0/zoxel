@@ -2,7 +2,9 @@
     return float4x4_identity_;
 }*/
 
-static inline float4x4 float4x4_multiply(const float4x4 a, const float4x4 b) {
+// NOTE: This is actually B x A
+// TODO: Change all use with matrix_multiply and change inputs
+static inline float4x4 float4x4_multiply(float4x4 a, float4x4 b) {
     float4x4 c = float4x4_zero;
     float* a2 = (float*) &a;
     float* b2 = (float*) &b;
