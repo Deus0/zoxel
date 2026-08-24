@@ -6,7 +6,7 @@ entity spawn_zigel3(ecs *world, entity prefab, entity parent, uint child_index, 
     zox_set(e, ChildIndex, { child_index });
     zox_set(e, ZigelIndex, { zigel_index });
     zox_set(e, FontThickness, { thickness });
-    zox_set(e, FontOutlineThickness, { outline_thickness });
+    zox_set(e, OutlineThickness, { outline_thickness });
     zox_set(e, RenderDisabled, { render_disabled });
     zox_set(e, TextureSize, { int2_single(resolution) });
     zox_set(e, FillColor, { fill });

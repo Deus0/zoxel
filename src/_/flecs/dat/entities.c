@@ -2,5 +2,5 @@
 typedef struct {
     int length;
     entity* value;
-    // SpinLock lock;
+    // spinlock lock;
 } entities;

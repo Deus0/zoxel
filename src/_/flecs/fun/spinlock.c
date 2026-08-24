@@ -2,19 +2,24 @@ byte locks_enabled = 1;
 
 #ifdef zox_windows
 
-    typedef SRWLOCK SpinLock;
-    #define SPINLOCK_INIT ((SpinLock)SRWLOCK_INIT)
+    typedef SRWLOCK spinlock;
 
-    static inline void spinlock_init(SpinLock *lock) {
-        InitializeSRWLock(lock);
+    static inline void spinlock_init(spinlock* lock) {
+        if (locks_enabled) {
+            InitializeSRWLock(lock);
+        }
     }
 
-    static inline void spin_lock(SpinLock *lock) {
-        AcquireSRWLockExclusive(lock);
+    static inline void spin_lock(spinlock* lock) {
+        if (locks_enabled) {
+            AcquireSRWLockExclusive(lock);
+        }
     }
 
-    static inline void spin_unlock(SpinLock *lock) {
-        ReleaseSRWLockExclusive(lock);
+    static inline void spin_unlock(spinlock* lock) {
+        if (locks_enabled) {
+            ReleaseSRWLockExclusive(lock);
+        }
     }
 
 #else
@@ -23,18 +28,26 @@ byte locks_enabled = 1;
 
     typedef struct {
         atomic_flag flag;
-    } SpinLock;
+    } spinlock;
 
-    #define SPINLOCK_INIT (SpinLock){ .flag = ATOMIC_FLAG_INIT }
-
-    static inline void spin_lock(SpinLock *lock) {
-        while (atomic_flag_test_and_set_explicit(&lock->flag, memory_order_acquire)) {
-            // optionally: sched_yield();
+    static inline void spinlock_init(spinlock* lock) {
+        if (locks_enabled) {
+            atomic_flag_clear(&lock->flag);
         }
     }
 
-    static inline void spin_unlock(SpinLock *lock) {
-        atomic_flag_clear_explicit(&lock->flag, memory_order_release);
+    static inline void spin_lock(spinlock* lock) {
+        if (locks_enabled) {
+            while (atomic_flag_test_and_set_explicit(&lock->flag, memory_order_acquire)) {
+                // optionally: sched_yield();
+            }
+        }
+    }
+
+    static inline void spin_unlock(spinlock* lock) {
+        if (locks_enabled) {
+            atomic_flag_clear_explicit(&lock->flag, memory_order_release);
+        }
     }
 
 #endif

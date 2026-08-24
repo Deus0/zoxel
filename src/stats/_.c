@@ -27,5 +27,5 @@ void import_stats(ecs* world) {
     zox_components_stats(world);
     zox_systems_stats(world);
     add_hook_spawn_prefabs(spawn_prefabs_stats);
-    zox_import_module(StatsUI);
+    zox_add_module(statsui);
 }

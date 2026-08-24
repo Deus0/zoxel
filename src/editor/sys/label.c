@@ -5,7 +5,7 @@ zox_sys2(DebugLabelSystem) {
     byte dbg_log = 0;
     uint size = max_debug_characters;
     // timer function for label updates
-    double update_rate = dbg_log ? 15 : time_update_debug_label_system_rate;
+    double update_rate = time_update_debug_label_system_rate;
     time_update_debug_label_system += zox_delta_time;
     if (time_update_debug_label_system >= update_rate) {
         time_update_debug_label_system = 0;

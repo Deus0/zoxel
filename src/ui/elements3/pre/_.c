@@ -1,7 +1,6 @@
 #include "element3.c"
 #include "frame.c"
 #include "glyph.c"
-#include "text3D.c"
 #include "label3D.c"
 #include "popup3D.c"
 #include "elementbar3D_front.c"
@@ -23,7 +22,10 @@ void spawn_prefabs_elements3D(ecs *world) {
     // Elements
     prefab_frame3 = spawn_prefab_frame3(world, prefab_element3);
     prefab_zigel3 = spawn_prefab_glyph(world, prefab_element3);
-    prefab_text3 = spawn_prefab_text(world, prefab_layout3_child, prefab_zigel3);
+    prefab_text3 = spawn_prefab_text(
+        world,
+        prefab_layout3_child,
+        prefab_zigel3);
     // Making these uis now
     prefab_popup3D = spawn_prefab_popup3(world, prefab_element3);
     prefab_label3D = spawn_prefab_label3D(world, prefab_frame3);

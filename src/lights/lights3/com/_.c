@@ -1,6 +1,7 @@
 zox_tag(SunnyChunk);
 zox_tag(BottomChunk);
 zoxc_octree_basic(LightNode, byte, darklight);
+zoxc(LightNodeLock, spinlock);
 
 create_octree_setters(LightNode);
 create_octree_accessors(LightNode);
@@ -25,6 +26,7 @@ void define_components_lights3(ecs *world) {
     zoxd_tag(SunnyChunk);
     zoxd_tag(BottomChunk);
     zoxd_octree(LightNode); // zoxd_node
+    zoxd(LightNodeLock);
     zoxd_byte(LightNodeDepth);
     zoxd_state(LightNodeDirty);
     zoxd_queue(SunlightQueue);

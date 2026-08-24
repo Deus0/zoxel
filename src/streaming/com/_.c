@@ -7,6 +7,7 @@ zoxc_entity(StreamLink);
 zoxc_state(StreamDirty);
 zoxc_state(StreamDirty2);
 zoxc_function(StreamEndEvent, void, ecs*, const entity);
+#include "queue.c"
 
 void define_components_streaming(ecs *world) {
     zoxd_tag(Streamer);
@@ -18,4 +19,6 @@ void define_components_streaming(ecs *world) {
     zoxd_state(StreamDirty);
     zoxd_state(StreamDirty2);
     zoxd(StreamEndEvent);
+    // Queue
+    define_terrain_spawn_queue(world);
 }

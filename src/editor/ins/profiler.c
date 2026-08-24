@@ -16,17 +16,20 @@ entity spawn_profiler(
         zox_loge("Invalid Canvas");
         return 0;
     }
+    // NOTE: Uses PlotMin and PlotMax
+    entity curve = frame_times_samples;
+    // entity curve = fps_curve; // frame_times_samples;
     ushort lines_count = record_frames_count;
     byte plots_count = 1;
     double start_value = 32;
     byte header_font_size = 8 * ui_scale;
-    byte label_font_size = 6 * ui_scale;
+    byte label_font_size = 4 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     entity3 e2 = spawn_window(
         world,
         prefab_window,
         prefab_body,
-        "Profiler",
+        "Frames",
         canvas,
         position,
         size,
@@ -47,10 +50,17 @@ entity spawn_profiler(
     zox_setv(header, ElementOutlineColor, editor_header_outline);
     zox_setv(e, PlotPaused, 0);
     zox_setv(e, DoubleData, 0);
-    entity data_entity = frame_times_samples;
     int2 plot_size = size;
     for (int i = 0; i < plots_count; i++) {
-        entity e2 = spawn_plot_graph(world, body, prefab_plot_graph, data_entity, plot_size, lines_count, start_value, plot_colors[i]);
+        entity e2 = spawn_plot_graph(
+            world,
+            body,
+            prefab_plot_graph,
+            curve,
+            plot_size,
+            lines_count,
+            start_value,
+            plot_colors[i]);
         if (i == 0) {
             plot_time = e2;
         } else {
@@ -84,5 +94,11 @@ entity spawn_profiler_canvas(ecs* world, entity canvas) {
     int2 position = { 0, 0 }; // - size.x / 2 - size.y / 2 };
     int2 size = { 420, 280 };
     float2 anchor = { 1.0f, 0.0f };
-    return spawn_profiler(world, canvas, "Profiler", position, size, anchor);
+    return spawn_profiler(
+        world,
+        canvas,
+        "Profiler",
+        position,
+        size,
+        anchor);
 }

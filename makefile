@@ -124,7 +124,7 @@ flecs:
 
 $(TARGET_DEV): $(SRCS)
 	@ mkdir -p bin
-	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings
+	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings --profile
 
 dev: $(TARGET_DEV)
 
@@ -155,6 +155,12 @@ run: build
 	@ sleep 1
 	@ echo "-------------------"
 	@ ./$(TARGET)
+
+run-gdb: build
+	@ echo "> Running [$(GAME)]"
+	@ sleep 1
+	@ echo "-------------------"
+	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET)
 
 rund: dev
 	./$(TARGET_DEV)
@@ -188,6 +194,20 @@ valt: dev
 
 gdbp:
 	$(MAKE) pick ACTION=gdb
+
+
+# XR
+
+xr:
+	@ echo "> Building XR [$(GAME)]"
+	@ sleep 1
+	bash bsh/android.sh $(GAME) --xr --debug --logs --unsigned --install --run --log
+
+runxr:
+	@ echo "> Running XR [$(GAME)]"
+	@ sleep 1
+	bash bsh/android_rund.sh $(GAME)
+
 
 # Dep
 

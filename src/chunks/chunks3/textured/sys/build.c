@@ -123,6 +123,7 @@ static inline float get_chunk_scale(byte chunk_depth, byte terrain_depth, float 
 // NOTE: Rebuilds Chunk when BuildChunkMesh is dirty
 zox_sys2(ChunkTexturedBuildSystem) {
     byte dbg_log = 0;
+    byte max_process = !zox_disable_process_skips ? 1 : 0;
     byte* solidity = NULL;
     zox_sys_world();
     zox_sys_begin();
@@ -142,6 +143,10 @@ zox_sys2(ChunkTexturedBuildSystem) {
         zox_sys_o(MeshUVs, uvs);
         if (build->value != zox_build_chunk_mesh_run) {
             continue;
+        }
+        // NOTE: Delay if past limit [max_process]
+        if (max_process && process_count > max_process) {
+            break;
         }
         // Get chunk data
         entity chunk = zox_get_parent(world, e);

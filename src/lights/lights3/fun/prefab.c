@@ -1,12 +1,13 @@
 void prefab_add_lights3(ecs* world, entity e, byte depth) {
-    zox_prefab_set(e, LightNode, { .value = darklight });
-    zox_prefab_set(e, LightNodeDepth, { depth });
+    zox_set(e, LightNode, { .value = darklight });
+    zox_setv(e, LightNodeDepth, depth);
     // Queues
-    zox_prefab_set(e, SunlightQueue, { 0 });
-    zox_prefab_set(e, LightQueue, { 0 });
-    zox_prefab_set(e, DarkQueue, { 0 });
+    zox_setv(e, SunlightQueue, 0);
+    zox_setv(e, LightQueue, 0);
+    zox_setv(e, DarkQueue, 0);
     // Events
-    zox_prefab_set(e, LightNodeDirty, { 0 });
+    zox_setv(e, LightNodeDirty, 0);
+    zox_setv(e, LightNodeLock, 0);
 }
 
 byte is_chunk_lights_busy(ecs* world, entity e) {

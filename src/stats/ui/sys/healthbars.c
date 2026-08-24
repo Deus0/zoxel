@@ -1,15 +1,18 @@
 zox_sys2(HealthbarSpawnerSystem) {
-    float healthbar_trail_offset = 0.22f;
+    float healthbar_trail_offset = 0.28f;
+    float ui_scale = zox_ui_scale3 * 1.8f;
     byte font_size = 16;
     byte2 padding = (byte2) { 10, 8 };
-    int2 bar_size = (int2) { font_size * 14 + padding.x * 2, font_size + padding.y * 2 };
-    // Colors
-    color fill = (color) { 30, 5, 8, 130 };
-    color outline = (color) { 0, 0, 0, 220 };
-    color fill2 = (color) { 35, 150, 45, 210 };
-    color outline2 = (color) { 90, 200, 90, 170 };
-    color font_fill = (color) { 240, 220, 170, 220 };
-    color font_outline = (color) { 0, 0, 0, 240 };
+    int2 bar_size = (int2) {
+        font_size * 14 + padding.x * 2,
+        font_size + padding.y * 2
+    };
+    color fill = (color) { 0, 0, 0, 88 };
+    color outline = (color) { 22, 22, 22, 88 };
+    color fill2 = (color) { 66, 5, 5, 155 };
+    color outline2 = (color) { 33, 33, 33, 155 };
+    color font_fill = (color) { 200, 255, 255, 255 };
+    color font_outline = (color) { 77, 122, 122, 255 };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CombatState);
@@ -39,15 +42,28 @@ zox_sys2(HealthbarSpawnerSystem) {
             continue;
         }
         float3 spawn_position = float3_zero;
-        entity3 spawns = spawn_bar3(world, spawn_position, zox_ui_scale3, bar_size, font_size, fill, outline, fill2, outline2, font_fill, font_outline, e, healthbar_trail_offset);
+        entity3 spawns = spawn_bar3(
+            world,
+            spawn_position,
+            ui_scale,
+            bar_size,
+            font_size,
+            fill,
+            outline,
+            fill2,
+            outline2,
+            font_fill,
+            font_outline,
+            e,
+            healthbar_trail_offset);
         zox_add(spawns.x, Healthbar);
         add_to_ElementLinks(elementLinks, spawns.x);
         // Statbar stuff
         entity bar = spawns.y;
         zox_add(bar, Statbar);
-        zox_set(bar, StatLink, { health });
+        zox_setv(bar, StatLink, health);
         // Text
-        zox_set(spawns.z, StatLink, { health });
+        zox_setv(spawns.z, StatLink, health);
         zox_add(spawns.z, StatsLabel);
     }
 } zox_sys_end(HealthbarSpawnerSystem);

@@ -72,7 +72,7 @@ void define_systems_terrain(ecs *world) {
             zoxp_update,
             streamers,
             [in] tunks.TunkLinks,
-            [out] terrains.TerrainSpawnQueue,
+            [out] streaming.TerrainSpawnQueue,
             [none] terrains.Terrain
         );
         zox_system_1(
@@ -81,7 +81,7 @@ void define_systems_terrain(ecs *world) {
             [in] core.Seed,
             [in] blocks.BlockScale,
             [in] chunks.NodeDepth,
-            [out] terrains.TerrainSpawnQueue,
+            [out] streaming.TerrainSpawnQueue,
             [out] regions.RegionLinks,
             [out] tunks.TunkLinks,
             [out] voxes.ChunkLinks,

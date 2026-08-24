@@ -5,7 +5,6 @@ zox_tag(FontTexture);
 zox_tag(Zigel);
 zox_tag(CentredZigel);
 zoxc_byte(FontThickness);
-zoxc_byte(FontOutlineThickness);
 zoxc_byte(ZigelIndex);
 zoxc_ushort(DataIndex);
 zoxc_color(FontFillColor);
@@ -27,7 +26,6 @@ void zox_define_components_zigels(ecs *world) {
     zoxd_tag(Zigel);
     zoxd_tag(CentredZigel);
     zoxd_byte(FontThickness);
-    zoxd_byte(FontOutlineThickness);
     zoxd_byte(ZigelIndex);
     zoxd_ushort(DataIndex);
     zoxd_color(FontFillColor);

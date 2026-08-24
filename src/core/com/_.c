@@ -31,7 +31,7 @@ zoxc_byte(Height);
 zoxc_float2(Size2);
 zoxc_float3(Size3);
 // Arrays
-zoxc_double(MaxDoubleData);
+zoxc_double(DoubleDataMax);
 zoxc_arrayd(DoubleData, double)
 #define zox_load_none 0
 #define zox_load_begin 1
@@ -74,7 +74,7 @@ void zox_components_core(ecs* world) {
     zoxd_float2(Size2);
     zoxd_float3(Size3);
     // Arrays
-    zoxd_double(MaxDoubleData);
+    zoxd_double(DoubleDataMax);
     zoxd_arrayd(DoubleData);
     // Dont Fragment
     // zox_dont_fragment(Initialize);

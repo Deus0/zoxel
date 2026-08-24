@@ -22,15 +22,16 @@ void define_systems_timing_debug(ecs* world) {
         MaxDataSystem,
         zoxp_update,
         [in] core.DoubleData,
-        [out] core.MaxDoubleData,
+        [out] core.DoubleDataMax,
     );
 #ifdef zox_time_systems
-    // Grabs highest MaxDoubleData from all systems
+    // Grabs highest DoubleDataMax from all systems
     zox_system(
         MaxSystemSystem,
         zoxp_update,
-        [out] core.SystemLink,
-        [none] timing.TrackMaxSystem
+        0
+        // [out] core.SystemLink,
+        // [none] timing.TrackMaxSystem
     );
     // Logs if SystemDeltaCache is too high
     zox_system_1(

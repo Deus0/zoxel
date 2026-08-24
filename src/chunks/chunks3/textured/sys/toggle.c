@@ -1,3 +1,5 @@
+extern byte disable_lights;
+
 // NOTE: Toggles the meshes beased on render depth
 zox_sys2(ChunkMeshToggleSystem) {
     byte dbg_log = 0;
@@ -41,8 +43,9 @@ zox_sys2(ChunkMeshToggleSystem) {
             byte busy =
                 zox_has(new_mesh, BuildMesh) ||
                 zox_has(new_mesh, MeshDirty) ||
+                !zox_has(new_mesh, MeshBuilt) ||
                 zox_has(new_mesh, MeshColorsGenerate) ||
-                !zox_has(new_mesh, MeshBuilt);
+                (!disable_lights && !zox_has(new_mesh, MeshColorsBuilt));
                 // !zox_getv(new_mesh, MeshRenderCount);
             if (busy) {
                 if (dbg_log >= 2) {

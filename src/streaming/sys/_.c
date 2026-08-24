@@ -40,6 +40,7 @@ void define_systems_streaming(ecs* world) {
         zoxp_mainthread,
         [in] core.EventInput,
         [in] voxes.ChunkLinks,
+        [in] streaming.TerrainSpawnQueue,
         [out] saves.Loaded,
         [out] StreamEndEvent
     );

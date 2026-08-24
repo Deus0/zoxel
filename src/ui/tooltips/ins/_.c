@@ -5,7 +5,11 @@ color tooltip_fillo = color_black;
 color tooltip_font_fill = color_black;
 color tooltip_font_fillo = color_white;
 
-entity spawn_tooltip(ecs *world, entity prefab, entity canvas) {
+entity spawn_tooltip(
+    ecs *world,
+    entity prefab,
+    entity canvas)
+{
     // Sizing
     byte font_size = 5 * ui_scale;
     byte2 padding = (byte2) { 3 * ui_scale, 2  * ui_scale };
@@ -15,15 +19,29 @@ entity spawn_tooltip(ecs *world, entity prefab, entity canvas) {
     int layer = max_layers2D - 2;
     byte alignment = zox_alignment_top_right;
     float2 anchor = float2_one;
-    // zox_geter_value(parent, LayoutSize, int2, parent_size);
     // le spawn
-    entity e = spawn_label(world, prefab, parent, position, anchor, padding, "", font_size, alignment, layer, tooltip_fill, tooltip_fillo, tooltip_font_fill,tooltip_font_fillo);
+    entity e = spawn_label(
+        world,
+        prefab,
+        parent,
+        position,
+        anchor,
+        padding,
+        "",
+        font_size,
+        alignment,
+        layer,
+        tooltip_fill,
+        tooltip_fillo,
+        tooltip_font_fill,
+        tooltip_font_fillo);
     zox_name("tooltip");
-    zox_set(e, RenderDisabled, { 1 });
+    zox_setv(e, RenderDisabled, 1);
+    zox_setv(e, OutlineThickness, 0);
     if (local_mouse) {
         entity pointer = zox_get_child_by_id(world, local_mouse, zox_id(ZevicePointer));
         if (zox_valid(pointer)) {
-            zox_set(e, ZeviceLink, { pointer });
+            zox_setv(e, ZeviceLink, pointer);
         } else {
             zox_loge("Mouse has no Pointer child");
         }

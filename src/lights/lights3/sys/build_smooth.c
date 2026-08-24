@@ -144,6 +144,7 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
 // NOTE: Rebuilds Lights only when MeshColorsGenerate is dirty
 zox_sys2(SmoothLightsBuildSystem) {
     byte dbg_log = 0;
+    byte max_process = !zox_disable_process_skips ? 1 : 0;
     if (!zox_smooth_lighting) {
         return;
     }
@@ -151,17 +152,13 @@ zox_sys2(SmoothLightsBuildSystem) {
     zox_sys_begin();
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
-    zox_sys_out(MeshColorsGenerate);
-    // zox_sys_out(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(MeshColorsGenerate, generate);
-        // zox_sys_o(MeshColorsDirty, upload);
-        // Dont build when mesh is building
-        if (!generate->value) {
-            continue;
+        // NOTE: Delay if past limit [max_process]
+        if (max_process && process_count > max_process) {
+            break;
         }
         // Get chunk data
         entity chunk = zox_get_parent(world, e);
@@ -186,7 +183,7 @@ zox_sys2(SmoothLightsBuildSystem) {
             continue;
         }
         /*if (zox_has(chunk, GenerateChunk) ||
-            zox_has(chunk, VoxelNodeDirty)
+            //  zox_has(chunk, VoxelNodeDirty)
         ) {
             continue;
         }*/
@@ -202,10 +199,12 @@ zox_sys2(SmoothLightsBuildSystem) {
         zox_apply_smooth_lights(nearby_lights, voxels, sides, colors, byte3_zero, &ccount, depth->value, 0);
         // generate->value = 0;
         // upload->value = 1;
-        zox_setv(e, MeshColorsDirty, 1);
+        // zox_setv(e, MeshColorsDirty, 1);
+        zox_add(e, MeshColorsDirty);
         zox_remove(e, MeshColorsGenerate);
         /*if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }*/
+        zox_sys_increment();
     }
 } zox_sys_end(SmoothLightsBuildSystem);

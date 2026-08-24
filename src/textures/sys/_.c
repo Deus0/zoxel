@@ -45,7 +45,7 @@ void define_systems_textures(ecs *world) {
         [in] rendering.TextureSize,
         [in] textures.FillColor,
         [in] textures.OutlineColor,
-        [in] OutlineThickness,
+        [in] textures.OutlineThickness,
         [in] textures.FrameCorner,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,

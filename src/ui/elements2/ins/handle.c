@@ -1,7 +1,18 @@
 color handle_outline = color_white;
 color handle_fill = color_black;
 
-entity spawn_handle(ecs* world, entity prefab, entity parent, int2 parent_size, int2 position, int2 size, float2 position_anchor, color fill, color outline, byte direction) {
+entity spawn_handle(
+    ecs* world,
+    entity prefab,
+    entity parent,
+    int2 parent_size,
+    int2 position,
+    int2 size,
+    float2 position_anchor,
+    color fill,
+    color outline,
+    byte direction)
+{
     zox_instance(prefab);
     zox_name("handle");
     zox_set_parent(world, e, parent);

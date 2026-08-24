@@ -1,5 +1,3 @@
-#ifndef zox_stats_ui
-#define zox_stats_ui
 
 byte level_label_show_experience = 0;
 
@@ -9,7 +7,8 @@ byte level_label_show_experience = 0;
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(StatsUI) {
+void import_statsui(ecs* world) {
+    zox_module(statsui);
     zox_define_components_stats_ui(world);
     define_systems_stats_ui(world);
     add_taskbar_button((hook_taskbar) {
@@ -20,6 +19,4 @@ zox_begin_module(StatsUI) {
         .tooltip_text = "Status"
     });
     add_hook_spawn_prefabs(spawn_prefabs_ui_stats);
-} zox_end_module(StatsUI);
-
-#endif
+}

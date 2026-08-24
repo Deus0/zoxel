@@ -10,7 +10,7 @@ zox_sys2(ChunkMeshColorsTriggerSystem) {
         if (build->value == zox_build_chunk_mesh_lights) {
             zox_remove(e, BuildMesh);
             if (!disable_lights) {
-                zox_setv(e, MeshColorsGenerate, 1);
+                zox_add(e, MeshColorsGenerate);
                 // generate->value = zox_dirty_trigger;
             }
             if (dbg_log) {

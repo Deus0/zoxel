@@ -1,5 +1,18 @@
 // NOTE: This just uses DataLink and no Slots
-entity spawn_datagrid(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity prefab_label, byte label_font_size, entity canvas, entity character, entity id, const char* header_label, color fill, color outline) {
+entity spawn_datagrid(
+    ecs* world,
+    entity prefab,
+    entity prefab_frame,
+    entity prefab_icon,
+    entity prefab_label,
+    byte label_font_size,
+    entity canvas,
+    entity character,
+    entity id,
+    const char* header_label,
+    color fill,
+    color outline)
+{
     if (!zox_valid(character)) {
         zox_log_error("invalid character in [spawn_datagrid_slots]");
         return 0;
@@ -36,7 +49,17 @@ entity spawn_datagrid(ecs* world, entity prefab, entity prefab_frame, entity pre
     for (int j = cells_size.y - 1; j >= 0; j--) {
         for (int i = 0; i < cells_size.x; i++) {
             entity dat = datas[array_index];
-            entity3 spawn = spawn_frame(world, prefab_frame, prefab_icon, prefab_label, grid, position, frame_size, icon_size, label_font_size, array_index);
+            entity3 spawn = spawn_frame(
+                world,
+                prefab_frame,
+                prefab_icon,
+                prefab_label,
+                grid,
+                position,
+                frame_size,
+                icon_size,
+                label_font_size,
+                array_index);
             // NOTE: Atm this is what connects user data textures
             zox_set(spawn.y, DataLink, { dat });
             zox_set(spawn.y, DataDirty, { zox_dirty_trigger });

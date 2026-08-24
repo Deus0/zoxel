@@ -1,5 +1,12 @@
 // NOTE: Scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
-void add_voxel_face(mesh_colored_build_data* mesh, float3 position, float3 offset, float scale, const int* face_indicies, const float3* face_verts) {
+void add_voxel_face(
+    mesh_colored_build_data* mesh,
+    float3 position,
+    float3 offset,
+    float scale,
+    const int* face_indicies,
+    const float3* face_verts)
+{
     for (byte i = 0; i < 6; i++) {
         int index = mesh->vertices->size + face_indicies[i];
         int_array_d_add(mesh->indicies, index);
@@ -14,7 +21,15 @@ void add_voxel_face(mesh_colored_build_data* mesh, float3 position, float3 offse
     }
 }
 
-byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **neighbors, const VoxelNode *node, int3 position, byte direction, byte depth) {
+byte is_adjacent_all_solid(
+    const byte* solidity,
+    byte edge,
+    const VoxelNode **neighbors,
+    const VoxelNode *node,
+    int3 position,
+    byte direction,
+    byte depth)
+{
     const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(neighbors, node, position, depth, direction);
     if (!adjacent_node) {
         return edge;
@@ -32,7 +47,17 @@ byte is_adjacent_all_solid(const byte* solidity, byte edge, const VoxelNode **ne
         8); // depth);
 }
 
-void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees, mesh_colored_build_data* mesh, color_rgb voxel_color, float scale, float3 positionf, float3 bounds_offset, byte depth, byte3 position) {
+void build_voxel_faces_colored(
+    const VoxelNode* root,
+    const VoxelNode** noctrees,
+    mesh_colored_build_data* mesh,
+    color_rgb voxel_color,
+    float scale,
+    float3 positionf,
+    float3 bounds_offset,
+    byte depth,
+    byte3 position)
+{
     if (!root) {
         return;
     }
@@ -92,7 +117,19 @@ void build_voxel_faces_colored(const VoxelNode* root, const VoxelNode** noctrees
     }
 }
 
-void build_voxel_mesh_c(const VoxelNode* root, const VoxelNode* voxels, const VoxelNode** noctrees, const byte* nrdepths, const ColorRGBs* vcolors, mesh_colored_build_data* mesh, byte target_depth, byte depth, byte3 position, float3 bounds_offset, float scale, byte is_split) {
+void build_voxel_mesh_c(
+    const VoxelNode* root,
+    const VoxelNode* voxels,
+    const VoxelNode** noctrees,
+    const byte* nrdepths,
+    const ColorRGBs* vcolors,
+    mesh_colored_build_data* mesh,
+    byte target_depth,
+    byte depth,
+    byte3 position,
+    float3 bounds_offset,
+    float scale, byte is_split)
+{
     // If data is null
     if (!voxels) {
         return;
@@ -166,11 +203,11 @@ zox_sys2(ChunkColorsBuildSystem) {
         if (build->value != zox_build_chunk_mesh_run) {
             continue;
         }
-        if (!vcolors->length) {
-            continue;
-        }
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
+            break;
+        }
+        if (!vcolors->length) {
             continue;
         }
         clear_mesh(indicies, vertices, colors);

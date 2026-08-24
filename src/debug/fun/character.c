@@ -48,14 +48,14 @@ uint zox_dbg_label_chunk_mesh(ecs* world, entity e, char* buffer, uint size, uin
     byte depth = zox_getv(e, RenderDepth);
     byte visible = !zox_getv(e, RenderDisabled);
     byte build = zox_has(e, BuildMesh) && zox_getv(e, BuildMesh);
-    byte build_colors = zox_has(e, MeshColorsGenerate) && zox_getv(e, MeshColorsGenerate);
+    byte build_colors = zox_has(e, MeshColorsGenerate);
     uint indicies_count = zox_get(e, MeshIndicies)->length;
     uint verts_count = zox_get(e, MeshVertices)->length;
     uint uvs_count = zox_get(e, MeshUVs)->length;
     uint colors_count = zox_get(e, MeshColorRGBs)->length;
     // GPU Links
     byte mesh_dirty = zox_has(e, MeshDirty) && zox_getv(e, MeshDirty);
-    byte colors_dirty = zox_has(e, MeshColorsDirty) && zox_getv(e, MeshColorsDirty);
+    byte colors_dirty = zox_has(e, MeshColorsDirty);
     uint count = zox_getv(e, MeshRenderCount);
     guint2 mesh = zox_getv(e, MeshGPULink);
     guint uvs = zox_getv(e, UvsGPULink);

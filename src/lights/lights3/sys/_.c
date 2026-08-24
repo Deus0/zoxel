@@ -1,5 +1,6 @@
 #include "editing.c"
 #include "sunlight.c"
+#include "lightbeam.c"
 #include "flood.c"
 #include "dark.c"
 #include "reduce.c"
@@ -40,14 +41,16 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         SunlightSystem,
         zoxp_update,
-        [in] blocks.BlockManagerLink,
+       /* [in] blocks.BlockManagerLink,
         [in] chunks.NodeDepth,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [out] lights3.LightQueue,
         [out] lights3.LightNodeDepth,
         [out] lights3.LightNode,
-        [out] lights3.LightNodeDirty,
+        [out] lights3.LightNodeDirty,*/
+        [in] chunks.NodeDepth,
+        [out] lights3.SunlightQueue,
         [none] lights.GenerateSunlight,
         [none] lights3.SunnyChunk,
         [none] chunks.Chunk,
@@ -58,6 +61,7 @@ void define_systems_lights3(ecs* world) {
         [in] blocks.BlockManagerLink,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
+        [out] lights3.LightNodeLock,
         [out] lights3.SunlightQueue,
         [out] lights3.LightQueue,
         [out] lights3.LightNode,
@@ -71,6 +75,7 @@ void define_systems_lights3(ecs* world) {
         [in] blocks.BlockManagerLink,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
+        [out] lights3.LightNodeLock,
         [out] lights3.LightQueue,
         [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
@@ -83,6 +88,7 @@ void define_systems_lights3(ecs* world) {
         [in] blocks.BlockManagerLink,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
+        [out] lights3.LightNodeLock,
         [out] lights3.LightNodeDepth,
         [out] lights3.LightNode,
         [out] lights3.DarkQueue,
@@ -99,6 +105,7 @@ void define_systems_lights3(ecs* world) {
         [in] chunks3.VoxelNodeQueue,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkNeighbors,
+        [out] lights3.LightNodeLock,
         [out] lights3.SunlightQueue,
         [out] lights3.LightQueue,
         [out] lights3.DarkQueue,
@@ -112,6 +119,7 @@ void define_systems_lights3(ecs* world) {
         LightNodeReduceSystem,
         zoxp_update,
         [in] lights3.LightNodeDirty,
+        [out] lights3.LightNodeLock,
         [out] lights3.LightNode,
         [none] chunks.Chunk
     );
@@ -131,7 +139,6 @@ void define_systems_lights3(ecs* world) {
     /*zox_system(
         BasicLightsBuildSystem,
         zoxp_voxels_lights,
-        [in] rendering.MeshColorsGenerate,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [in] chunks3.SidesOctree,
@@ -139,6 +146,7 @@ void define_systems_lights3(ecs* world) {
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
         [out] rendering.MeshReady,
+        [none] rendering.MeshColorsGenerate,
         [none] chunks.Chunk,
         [none] !rendering.BuildMesh,
         [none] !core.Disabled,
@@ -167,10 +175,10 @@ void define_systems_lights3(ecs* world) {
         zoxp_voxels_lights,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
-        [out] rendering.MeshColorsGenerate,
-        [none] chunks.ChunkMesh,
-        [none] !rendering.BuildMesh,
-        [none] !core.Disabled,
+        [none] rendering.MeshColorsGenerate,
+        // [none] chunks.ChunkMesh,
+        // [none] !rendering.BuildMesh,
+        // [none] !core.Disabled,
     );
 }
 

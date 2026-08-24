@@ -1,5 +1,5 @@
-#ifndef zox_elements2
-#define zox_elements2
+color icon_label_fill = color_white;
+color icon_label_outline = color_gray;
 
 #include "set/_.c"
 #include "com/_.c"
@@ -10,10 +10,9 @@
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Elements2) {
+void import_elements2(ecs* world) {
+    zox_module(elements2);
     define_components_elements2(world);
     define_systems_elements2(world);
     add_hook_spawn_prefabs(spawn_prefabs_elements2);
-} zox_end_module(Elements2);
-
-#endif
+}

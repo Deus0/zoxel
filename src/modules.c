@@ -167,7 +167,7 @@ void import_zox(ecs* world) {
     // depth 4: world / environment
     zox_import_module(Models);
     zox_add_module(weathers);
-    zox_import_module(Streaming);
+    zox_add_module(streaming);
     zox_import_module(Regions);
     zox_import_module(Tunks);
     zox_import_module(Terrains);
@@ -178,7 +178,7 @@ void import_zox(ecs* world) {
     zox_import_module(Towns);
     zox_import_module(Vrays);
     zox_add_module(characters);
-    zox_import_module(Huds);
+    zox_add_module(huds);
     zox_import_module(Space);
 
     // depth 5: character data
@@ -224,7 +224,7 @@ void import_zox(ecs* world) {
 
     // depth 9: top-level integration
     zox_import_module(Imports);
-    zox_import_module(Editor);
+    zox_add_module(editor);
 
     #ifdef zox_xr
     zox_add_module(xr);

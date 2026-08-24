@@ -4,7 +4,7 @@
 typedef struct { \
     int length; \
     type* value; \
-    SpinLock lock; \
+    spinlock lock; \
 } T; \
 \
 zoxc_custom(T); \
@@ -12,7 +12,7 @@ zoxc_custom(T); \
 ECS_CTOR(T, ptr, { \
     ptr->length = 0; \
     ptr->value = NULL; \
-    ptr->lock = SPINLOCK_INIT; \
+    spinlock_init(&ptr->lock); \
 }) \
 \
 ECS_DTOR(T, ptr, { \
@@ -34,7 +34,7 @@ void dispose_##T(T *ptr) { \
 ECS_MOVE(T, dst, src, { \
     dst->value = src->value; \
     dst->length = src->length; \
-    dst->lock = SPINLOCK_INIT; \
+    spinlock_init(&dst->lock); \
     src->value = NULL; \
     src->length = 0; \
 }) \
@@ -45,7 +45,7 @@ void clone_##T(T* dst, const T* src) {\
         dst->value = NULL; \
         dst->length = 0;\
     }\
-    dst->lock = SPINLOCK_INIT; \
+    spinlock_init(&dst->lock); \
     if (src->value) {\
         int memory_length = src->length * sizeof(type);\
         type *value = zox_malloc(memory_length);\

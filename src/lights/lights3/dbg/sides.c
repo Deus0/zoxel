@@ -40,6 +40,7 @@ void zox_apply_debug_colors(const byte* solidity,
     }
 }
 
+// Debug System currently disabled / untested
 zox_sys2(Light3BuildSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -49,8 +50,7 @@ zox_sys2(Light3BuildSystem) {
     zox_sys_in(LightNode);
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
-    zox_sys_out(MeshColorsGenerate);
-    zox_sys_out(MeshColorsDirty);
+    // ox_sys_out(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(VoxLink, vox_link);
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -58,11 +58,10 @@ zox_sys2(Light3BuildSystem) {
         zox_sys_i(LightNode, nodel);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(MeshColorsGenerate, generate);
-        zox_sys_o(MeshColorsDirty, upload);
-        if (generate->value != zox_dirty_active && !upload->value) {
+        // zox_sys_o(MeshColorsDirty, upload);
+        /*if (!upload->value) {
             continue;
-        }
+        }*/
         const LightNode *nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         zox_geter_value(vox_link->value, RealmLink, entity, realm);
@@ -74,6 +73,6 @@ zox_sys2(Light3BuildSystem) {
         }
         int color_index = 0;
         zox_apply_debug_colors(solidity, nodev, colors, &color_index, depth->value, 0);
-        upload->value = 1;
+        // upload->value = 1;
     }
 } zox_sys_end(Light3BuildSystem);

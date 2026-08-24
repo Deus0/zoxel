@@ -41,6 +41,4 @@ void define_components_terrain(ecs *world) {
     zoxd_tag(BlockBricks);
     zoxd_tag(BlockFlower);
     zoxd_tag(BlockRoad);
-    // Queue
-    define_terrain_spawn_queue(world);
 }

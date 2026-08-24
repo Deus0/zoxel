@@ -1,8 +1,27 @@
 // TODO: Just use 2D bar with 3D prefab
-entity3 spawn_bar3(ecs *world, float3 position, float scale, int2 size, byte font_size, color fill, color outline,  color fill2, color outline2, color font_fill, color font_outline, entity owner, float trail_offset) {
+entity3 spawn_bar3(
+    ecs *world,
+    float3 position,
+    float scale,
+    int2 size,
+    byte font_size,
+    color fill,
+    color outline,
+    color fill2,
+    color outline2,
+    color font_fill,
+    color font_outline,
+    entity owner,
+    float trail_offset)
+{
     entity3 output = { 0 };
-    byte2 text_padding = byte2_single(12);
-    entity e = spawn_canvas3(world, prefab_canvas3, position, scale, size);
+    byte2 text_padding = byte2_single(6);
+    entity e = spawn_canvas3(
+        world,
+        prefab_canvas3,
+        position,
+        scale,
+        size);
     zox_set_unique_name(e, "bar3");
     output.x = e;
     {

@@ -65,8 +65,9 @@ void zox_systems_stats(ecs *world) {
     zox_system_1(
         CharacterNameLabelsSystem,
         zoxp_mainthread,
-        [in] characters.GenerateCharacter,
+        // [in] characters.GenerateCharacter,
         [in] core.ZoxName,
-        [out] ui.ElementLinks
+        [out] ui.ElementLinks,
+        [none] SpawnNameLabel
     );
 }

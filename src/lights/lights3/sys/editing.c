@@ -9,6 +9,7 @@ zox_sys2(VoxelLightSystem) {
     zox_sys_in(VoxelNodeQueue);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
+    zox_sys_out(LightNodeLock);
     zox_sys_out(SunlightQueue);
     zox_sys_out(LightQueue);
     zox_sys_out(DarkQueue);
@@ -24,6 +25,7 @@ zox_sys2(VoxelLightSystem) {
         zox_sys_i(VoxelNodeQueue, input_queue);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_o(LightNodeLock, lightlock);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(SunlightQueue, sun_queue);
         zox_sys_o(LightQueue, light_queue);
@@ -133,7 +135,14 @@ zox_sys2(VoxelLightSystem) {
                         });
                 }
                 // set dark light, as it was filled up
+                // TODO: Move this to the light system itself
+                if (locks_enabled) {
+                    spin_lock(&lightlock->value);
+                }
                 set_LightNode(root_lnode, depth->value, update.position, darklight);
+                if (locks_enabled) {
+                    spin_unlock(&lightlock->value);
+                }
                 light_node_dirty->value = zox_dirty_trigger;
             }
         }

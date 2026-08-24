@@ -124,8 +124,8 @@ void spawn_all_players_cameras_canvases(
             vp_size,
             screen_to_canvas,
             app);
-        zox_set(player, CanvasLink, { canvas });
-        zox_set(canvas, PlayerLink, { player });
+        zox_setv(player, CanvasLink, canvas);
+        zox_setv(canvas, PlayerLink, player);
 #ifndef zox_xr
         // spawns a render texture ui and links to camera
         if (!zox_disable_post_processing) {

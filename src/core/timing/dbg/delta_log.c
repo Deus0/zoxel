@@ -16,15 +16,15 @@ static int cmp_system_delta_desc(const void *a, const void *b) {
 
 int system_debug_start = -1;
 
-// NOTE: Now we use MaxDoubleData, the max delta over the time period
+// NOTE: Now we use DoubleDataMax, the max delta over the time period
 uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, uint index) {
     uint display_count = system_times_display_count;
-    // MaxDoubleData vs SystemDeltaCache
+    // DoubleDataMax vs SystemDeltaCache
     // - SystemDeltaCache is per Frame
-    // - MaxDoubleData is per Graph
+    // - DoubleDataMax is per Graph
     ecs_query_t *q = ecs_query(world, {
         .terms = {
-            { .id = zox_id(MaxDoubleData) } // ecs_id(SystemDeltaCache) }
+            { .id = zox_id(DoubleDataMax) } // ecs_id(SystemDeltaCache) }
         }
     });
     int count = 0;
@@ -45,7 +45,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
     it = ecs_query_iter(world, q);
     while (ecs_query_next(&it)) {
         // SystemDeltaCache *deltas = ecs_field(&it, SystemDeltaCache, 0);
-        MaxDoubleData *deltas = ecs_field(&it, MaxDoubleData, 0);
+        DoubleDataMax *deltas = ecs_field(&it, DoubleDataMax, 0);
         for (int i = 0; i < it.count; i++) {
             entries[idx].e = it.entities[i];
             entries[idx].value = deltas[i].value;

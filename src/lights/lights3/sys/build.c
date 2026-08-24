@@ -94,7 +94,7 @@ zox_sys2(BasicLightsBuildSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(MeshColorsGenerate);
+    // zox_sys_in(MeshColorsGenerate);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_in(SidesOctree);
@@ -104,7 +104,7 @@ zox_sys2(BasicLightsBuildSystem) {
     zox_sys_out(MeshReady);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(MeshColorsGenerate, trigger);
+        // zox_sys_i(MeshColorsGenerate, trigger);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, voxel_octree);
         zox_sys_i(SidesOctree, sides_octree);
@@ -112,9 +112,6 @@ zox_sys2(BasicLightsBuildSystem) {
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshReady, ready);
-        if (trigger->value != zox_dirty_active) {
-            continue;
-        }
         /*if (zox_getv(e, BuildMesh)) {
             // if still building, it will update the verts again
             // zox_setv(e, MeshColorsGenerate, 1);

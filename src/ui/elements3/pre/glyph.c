@@ -9,7 +9,7 @@
     zox_prefab_set(e, FillColor, { color_white });
     zox_prefab_set(e, OutlineColor, { color_black });
     zox_prefab_set(e, FontThickness, { 1 });
-    zox_prefab_set(e, FontOutlineThickness, { 2 });
+    zox_prefab_set(e, OutlineThickness, { 2 });
     zox_set(e, TextureSize, { int2_single(2) });
     return e;
 }*/

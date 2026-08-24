@@ -3,10 +3,11 @@
 #define record_frames_count 60 * record_frames_
 
 byte zox_log_lags = 0;
-entity max_systems_data = 0;
 entity frame_times_samples = 0;
 double zox_delta_time_system = 0;
 uint system_times_display_count = 20;
+entity max_systems_data = 0;
+entity fps_curve;
 #include "set/_.c"
 #include "com/_.c"
 #include "mcr/_.c"
@@ -33,10 +34,11 @@ void import_timing(ecs* world) {
     // stats
 #ifdef zox_time_systems
     add_hook_spawn_prefabs(add_system_log_components);
-    {
+    /*{
         max_systems_data = zox_new();
         zox_add(max_systems_data, TrackMaxSystem);
         zox_add(max_systems_data, SystemLink);
-    }
+    }*/
+    fps_curve = spawn_fps_curve(world);
 #endif
 }

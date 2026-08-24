@@ -1,5 +1,5 @@
 // NOTE: Assume Max Depth
-typedef struct {
+/*typedef struct {
     byte level;
     int2 position;
     int distance;
@@ -11,3 +11,4 @@ zoxc_queue_remove(TerrainSpawnQueue, TerrainSpawnUpdate);
 void define_terrain_spawn_queue(ecs* world) {
     zoxd_queue(TerrainSpawnQueue);
 }
+*/

@@ -1,5 +1,23 @@
 // NOTE: Using Slots for linking UIs to Data
-entity spawn_datagrid_slots2(ecs* world, entity prefab, entity prefab_frame, entity prefab_icon, entity prefab_label, byte label_font_size, entity canvas, entity character, byte2 cells_size, const char* header_label, color fill, color outline, float2 position_anchor, int2 position, entity frame_id, entity* slots, uint slots_length) {
+entity spawn_datagrid_slots2(
+    ecs* world,
+    entity prefab,
+    entity prefab_frame,
+    entity prefab_icon,
+    entity prefab_label,
+    byte label_font_size,
+    entity canvas,
+    entity character,
+    byte2 cells_size,
+    const char* header_label,
+    color fill,
+    color outline,
+    float2 position_anchor,
+    int2 position,
+    entity frame_id,
+    entity* slots,
+    uint slots_length)
+{
     if (!zox_valid(character)) {
         zox_log_error("invalid character in [spawn_datagrid_slots]");
         return 0;
@@ -25,7 +43,18 @@ entity spawn_datagrid_slots2(ecs* world, entity prefab, entity prefab_frame, ent
     // Spawns Window here!!
     byte header_font_size = 8 * ui_scale;
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
-    entity3 e2 = spawn_window(world, prefab, prefab_grid, header_label, canvas, position, size, position_anchor, header_font_size, header_padding, on_closed_taskbar_window);
+    entity3 e2 = spawn_window(
+        world,
+        prefab,
+        prefab_grid,
+        header_label,
+        canvas,
+        position,
+        size,
+        position_anchor,
+        header_font_size,
+        header_padding,
+        on_closed_taskbar_window);
     entity e = e2.x;
     entity grid = e2.z;
     zox_set_unique_name(grid, "window_gridg");
@@ -54,7 +83,7 @@ entity spawn_datagrid_slots2(ecs* world, entity prefab, entity prefab_frame, ent
                 continue;
             }
             entity dat = zox_getv(slot, DataLink);
-            entity3 spawn = spawn_frame(world, prefab_frame, prefab_icon, prefab_label, grid, position, frame_size, icon_size, label_font_size, array_index);
+            entity3 spawn = spawn_frame(world, prefab_frame, prefab_icon, prefab_label2, grid, position, frame_size, icon_size, label_font_size, array_index);
             // We can just link icons now
             entity frame = spawn.x;
             if (zox_valid(frame)) {

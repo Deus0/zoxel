@@ -3,7 +3,7 @@ typedef struct { \
     T2* ptr; \
     size_t count; \
     size_t capacity; \
-    SpinLock lock; \
+    spinlock lock; \
 } T; \
 zoxc_custom(T); \
 \
@@ -11,7 +11,7 @@ static void i_##T(T* q) { \
     q->ptr = zox_malloc(sizeof(T2) * (initial_capacity)); \
     q->count = 0; \
     q->capacity = (initial_capacity); \
-    q->lock = SPINLOCK_INIT; \
+    spinlock_init(&q->lock); \
 } \
 \
 static void d_##T(T* q) { \

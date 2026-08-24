@@ -40,6 +40,9 @@ void xr_camera_render_system(iter* it) {
     // glFrontFace(GL_CCW);
     color clear_color = (color) { 33, 38, 38, 255 };
     float4x4 world_camera = float4x4_identity;
+    if (zox_valid(xr_camera)) {
+        world_camera = zox_getv(xr_camera, TransformMatrix);
+    }
     float near_distance = 0.01f;
     float far_distance = 800;
     byte running = 1;

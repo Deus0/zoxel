@@ -4,15 +4,9 @@
  * |                                                                  |
  * |  Panels - Labels - Buttons - Layouts - Interface State           |
  * |                                                                  |
+ * |  Uses: Transforms2 - Layout2 - Rendering - Interaction           |
+ * |                                                                  |
  * +------------------------------------------------------------------+
- *
- * Modules Used:
- *
- *      - Transforms2
- *      - Layout2
- *      - Rendering
- *      - Interaction
- *
  **/
 byte is_log_dragging = 0;
 #include "set/_.c"
@@ -23,7 +17,7 @@ byte is_log_dragging = 0;
 #include "ins/_.c"
 #include "sys/_.c"
 #include "interaction/_.c"
-#include "zigels/_.c"
+#include "glyphs/_.c"
 #include "texts/_.c"
 #include "tooltips/_.c"
 #include "elements2/_.c"
@@ -43,11 +37,11 @@ void import_ui(ecs* world) {
     add_hook_terminal_command(arguments_ui);
     add_hook_spawn_prefabs(initialize_settings_elements);
     add_hook_spawn_prefabs(spawn_prefabs_elements);
-    zox_import_module(Zigels);
-    zox_import_module(Texts);
-    zox_import_module(Interaction);
+    zox_add_module(glyphs);
+    zox_add_module(texts);
+    zox_add_module(interaction);
     zox_import_module(Tooltips);
-    zox_import_module(Elements2);
+    zox_add_module(elements2);
     zox_import_module(Elements3);
     zox_import_module(Windows);
     zox_import_module(Navigation);

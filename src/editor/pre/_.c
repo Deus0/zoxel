@@ -29,5 +29,5 @@ void spawn_prefabs_editor(ecs* world) {
     prefab_hierarchy = spawn_prefab_hierarchy(world, prefab_window_textured);
     prefab_inspector = spawn_prefab_inspector(world, prefab_window_textured);
     prefab_button_hierarchy = spawn_prefab_button_hierarchy(world, prefab_button);
-    prefab_game_debug_label = spawn_prefab_game_debug_label(world, prefab_label_textured);
+    prefab_game_debug_label = spawn_prefab_game_debug_label(world, prefab_label2t);
 }

@@ -34,10 +34,10 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextData,
         [in] texts.ZigelPrefab,
         [in] texts.TextFontSize,
-        [in] zigels.FontOutlineColor,
-        [in] zigels.FontFillColor,
-        [in] zigels.FontThickness,
-        [in] zigels.FontOutlineThickness,
+        [in] glyphs.FontOutlineColor,
+        [in] glyphs.FontFillColor,
+        [in] glyphs.FontThickness,
+        [in] textures.OutlineThickness,
         [in] texts.TextResolution,
         [in] layouts.Layer,
         [out] rendering.RenderDisabled,
@@ -66,18 +66,18 @@ void define_systems_texts(ecs *world) {
         ZigelPositionSystem,
         zoxp_update,
         [in] hierarchys.ChildIndex,
-        [out] zigels.ZigelDirty,
+        [out] glyphs.ZigelDirty,
         [out] layouts.LayoutPosition,
         [out] layouts.LayoutPositionDirty,
-        [none] zigels.Zigel
+        [none] glyphs.Zigel
     );
     zox_system(
         ZigelUpdateSystem,
         zoxp_update,
         [in] hierarchys.ChildIndex,
-        [out] zigels.ZigelDirty,
-        [out] zigels.ZigelIndex,
+        [out] glyphs.ZigelDirty,
+        [out] glyphs.ZigelIndex,
         [out] textures.GenerateTexture,
-        [none] zigels.Zigel
+        [none] glyphs.Zigel
     );*/
 

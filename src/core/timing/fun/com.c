@@ -8,11 +8,25 @@ void add_system_log_components(ecs* world) {
         }
         zox_set(system, SystemDelta, { 0 });
         zox_set(system, SystemDeltaCache, { 0 });
-        zox_set(system, MaxDoubleData, { 0 });
+        zox_set(system, DoubleDataMax, { 0 });
         // zox_set(system, DoubleData, { 0 });
         uint length = sizeof(double) * record_frames_count;
         double* values = malloc(length);
         memset(values, 0, length);
         zox_set(system, DoubleData, { .value = values, .length = record_frames_count });
     }
+}
+
+entity spawn_fps_curve(ecs* world) {
+    entity e = zox_new();
+    zox_set(e, DoubleDataMax, { 0 });
+    // zox_set(system, DoubleData, { 0 });
+    uint length = sizeof(double) * record_frames_count;
+    double* values = malloc(length);
+    memset(values, 0, length);
+    zox_set(e, DoubleData, {
+        .value = values,
+        .length = record_frames_count
+    });
+    return e;
 }

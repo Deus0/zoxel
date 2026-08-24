@@ -8,20 +8,39 @@
             - use Ready systems and timers
         - Fix Chunks Lights flashing when updating
 
-    - Calculate the camera transform before uploading to shader
-        - atm it calculates in the vert shader, not good
-
-    - Sometimes flying around we see missing faces now in chunks
-	- probably didnt trigger??
-	
-    - Fix physics clipping - falling through terrain
+    -x healtbar cannot read it
     
-    - Voxel Sides
-    	- They arnt being culled between lods, perhaps this is a trigger issue
+    - Loading screen now that we've slowed systems down
+        - Add events for game state
+        - Add loading screen spawn/destroy on those
+        
+    -x Remove the lag on the fps display, kinda annoying
     
 ## --------------------
+        
+## RareBugs
+- Placing twice in a row can crash it still
+- Sometimes block item textures dont load for vox items
+    - flowers, grass, etc
+- new game loaded chunks... check that
+    - broke the selections
+- Sometimes flying around we see missing faces now in chunks
+    - probably didnt trigger neighbors..
+- placed block texture stayed in actionbar
+- bug - place block, alt tab at same time
+- Fix physics clipping - falling through terrain
+- Voxel Sides
+	- They arnt being culled between lods, perhaps this is a trigger issue
 
-- For now give sunlight beam a budget per light set
+
+- Profiler should show exact frames
+    - a second graph over top can show max system times
+- Calculate the camera transform before uploading to shader
+    - atm it calculates in the vert shader, not good
+- I really should just link player to a canvas 3D - then i can spawn/remove from that normally
+
+- Why datagrid?? why not simply ui_grid??
+-x For now give sunlight beam a budget per light set
 	- Make top chunk generate positions instead of beaming them all too
 -x Remove sunlight queue, just pass down entire chunk stack!
 	- this saves us time
@@ -31,17 +50,15 @@
 - Optimize the different block generation
 	- lags on realm load (for my arm pc)
 - Fix logs in build system, should become alot cleaner
-
 -x we should rotate the input by the curretn transform
 -x for now just movee the xr code all into helpers
 -x then jst call same functions in the xr render system
-- test to get a clear sky
+-x test to get a clear sky
 
 ## Next
 - Spawn 2 XR Eye entities that are cameras
     - XRRender Systems for them
-- Remove SDL window when using XR
-
+-x Remove SDL window when using XR
 - Seperate character depth from block depth in settings
 - Refactor ListPositionDirty and ListSizeDirty into tags
 - remove StatLinks just use children and queries
@@ -49,11 +66,10 @@
 - Fix overlay of destruction materials for block destruction
 - Fix taskbar linking
 -x fix character particles
-- Add frame recording in System with filter set as 0 (update system)    
+-x Add frame recording in System with filter set as 0 (update system)    
 - Make lines in plotgraph use a set value of the graph
     - set the graph based on max value in that frame, but use multiple curves
     - display frame time behind, and system time in front
-
 -x Test XR with --log - instantiate
 - Add ui scale to settings
 - Im getting neighbor updates not triggering at map edges

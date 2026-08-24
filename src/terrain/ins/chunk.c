@@ -1,4 +1,14 @@
-entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, lint terrain_seed, int3 position, byte terrain_depth, float terrain_scalev, byte render_distance, byte render_depth) {
+entity spawn_terrain_chunk(
+    ecs* world,
+    entity prefab,
+    entity terrain,
+    lint terrain_seed,
+    int3 position,
+    byte terrain_depth,
+    float terrain_scalev,
+    byte render_distance,
+    byte render_depth)
+{
     entity tilemap = zox_getv(terrain, TilemapLink);
     entity realm = zox_getv(terrain, RealmLink);
     lint seed = position_seed(terrain_seed, position);
@@ -35,5 +45,8 @@ entity spawn_terrain_chunk(ecs* world, entity prefab, entity terrain, lint terra
     zox_setv(e, Position3D, positionf);
     zox_setv(e, TransformMatrix, float4x4_position(positionf));
     // zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_start);
+    spinlock lock;
+    spinlock_init(&lock);
+    zox_setv(e, LightNodeLock, lock);
     return e;
 }

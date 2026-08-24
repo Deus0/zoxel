@@ -29,4 +29,9 @@ void zox_systems_timing(ecs* world) {
         [in] core.EventInput,
         [out] core.EventTime
     );
+    zox_system(
+        FpsCurveSystem,
+        zoxp_update,
+        0
+    );
 }

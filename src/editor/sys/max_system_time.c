@@ -2,21 +2,29 @@
 zox_sys2(MaxSystemTimeLabelSystem) {
     // Get the output
     zox_sys_world();
-    entity maxe = max_systems_data;
+    /*entity maxe = max_systems_data;
     if (!zox_valid(maxe)) {
         zox_loge("Timing Module not valid.");
         return;
     }
-    entity max_system = zox_getv(maxe, SystemLink);
+    // entity max_system = zox_getv(maxe, SystemLink);*/
     if (!zox_valid(max_system)) {
         zox_loge("No Max System linked to Timing Module");
         return;
     }
-    uint processes = zox_has(max_system, SystemProcessed) ? zox_getv(max_system, SystemProcessed) : 0;
-    double max_delta = zox_getv(max_system, MaxDoubleData);
+    uint processes = zox_has(max_system, SystemProcessed) ?
+        zox_getv(max_system, SystemProcessed) :
+        0;
+    double max_delta = zox_getv(max_system, DoubleDataMax);
+    double max_delta_per_curve = zox_getv(fps_curve, DoubleDataMax);
     char output[1024];
     output[0] = '\0';
-    sprintf(output, "Frame Time [%0.01fms]\n%s\n[%0.01fms] x%i", (zox_delta_time * 1000), zox_get_name(max_system), max_delta, processes);
+    sprintf(output, "Frame Time [%0.01fms]\nMax Frame Time [%0.01fms]\n%s\n[%0.01fms] x%i",
+        (zox_delta_time * 1000),
+        (max_delta_per_curve * 1000),
+        zox_getn(max_system),
+        max_delta,
+        processes);
     uint text_length = strlen(output);
     zox_sys_begin();
     zox_sys_out(TextData);

@@ -1,7 +1,19 @@
-entity spawn_text(ecs *world, entity prefab, entity parent, int2 position, float2 position_anchor, byte font_size, byte alignment, byte2 padding, const char* text, color fill, color outline) {
+entity spawn_text(
+    ecs *world,
+    entity prefab,
+    entity parent,
+    int2 position,
+    float2 position_anchor,
+    byte font_size,
+    byte alignment,
+    byte2 padding,
+    const char* text,
+    color fill,
+    color outline)
+{
     byte font_resolution = font_size;
-    if (font_resolution < 8) {
-        font_resolution = 8;
+    if (font_resolution < zox_texts_min_resolution) {
+        font_resolution = zox_texts_min_resolution;
     }
     zox_instance(prefab);
     zox_name("text");

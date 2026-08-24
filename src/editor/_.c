@@ -1,9 +1,6 @@
-#ifndef zoxm_editor
-#define zoxm_editor
-
 DebugLabelEvent local_debug_label;
 byte editor_overlay_layer = 232;
-double time_update_debug_label_system_rate = 10;
+double time_update_debug_label_system_rate = 0.5;
 #include "set/_.c"
 #include "com/_.c"
 #include "pre/_.c"
@@ -12,10 +9,9 @@ double time_update_debug_label_system_rate = 10;
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Editor) {
+void import_editor(ecs* world) {
+    zox_module(editor);
     define_components_editor(world);
     define_systems_editor(world);
     add_hook_spawn_prefabs(spawn_prefabs_editor);
-} zox_end_module(Editor);
-
-#endif
+}

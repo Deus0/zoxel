@@ -12,7 +12,7 @@ zox_sys2(ZigelSpawnSystem) {
     zox_sys_in(FontOutlineColor);
     zox_sys_in(FontFillColor);
     zox_sys_in(FontThickness);
-    zox_sys_in(FontOutlineThickness);
+    zox_sys_in(OutlineThickness);
     zox_sys_in(TextResolution);
     zox_sys_in(Layer);
     zox_sys_out(RenderDisabled);
@@ -25,7 +25,7 @@ zox_sys2(ZigelSpawnSystem) {
         zox_sys_i(FontOutlineColor, fontOutlineColor);
         zox_sys_i(FontFillColor, fontFillColor);
         zox_sys_i(FontThickness, fontThickness);
-        zox_sys_i(FontOutlineThickness, fontOutlineThickness);
+        zox_sys_i(OutlineThickness, fontOutlineThickness);
         zox_sys_i(TextResolution, textResolution);
         zox_sys_i(Layer, layer);
         zox_sys_o(RenderDisabled, render_disabled);

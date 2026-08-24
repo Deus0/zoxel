@@ -1,9 +1,7 @@
-#ifndef zoxm_zexts
-#define zoxm_zexts
-
 // TODO: Convert TextData to Ascii!
 
 uint texts_children_capacity = 64;
+byte zox_texts_min_resolution = 32;
 
 // todo: move labels to here as prefab
 #include "dat/_.c"
@@ -14,10 +12,9 @@ uint texts_children_capacity = 64;
 #include "ins/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Texts) {
+void import_texts(ecs* world) {
+    zox_module(texts);
     define_components_texts(world);
     define_systems_texts(world);
     add_hook_spawn_prefabs(spawn_prefabs_texts);
-} zox_end_module(Texts);
-
-#endif
+}

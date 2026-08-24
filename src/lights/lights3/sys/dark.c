@@ -1,5 +1,6 @@
 // Move darkbeam and dark propogation here
 static inline byte dark_flood_light(
+    spinlock* lightlock,
     const VoxelNode* root_vnode,          // (READ)
     LightNode* root_lnode,                // (WRITE)
     const VoxelNode* n_root_vnodes[6],    // (READ-ONLY)
@@ -96,9 +97,16 @@ static inline byte dark_flood_light(
         if (current_light < old_light) {
             zox_logv("     - Light Banished at [%ix%ix%i] l[%i] dist[%i]", pos.x, pos.y, pos.z, old_light, distance);
             // extinguish here and continue removing
+            if (locks_enabled) {
+                spin_lock(lightlock);
+            }
             set_LightNode(root_lnode, depth, pos, min_light);
+            if (locks_enabled) {
+                spin_lock(lightlock);
+            }
             dirty = 1;
             dark_flood_light(
+                lightlock,
                 root_vnode,
                 root_lnode,
                 n_root_vnodes,
@@ -119,7 +127,9 @@ static inline byte dark_flood_light(
             if (light_queue) {
                 byte decayed_light = (current_light > light_air_decay) ? (byte) (current_light - light_air_decay) : darklight;
                 zox_logv("     + Dark Flood Light Source [%ix%ix%i] new [%i] old [%i] decayed [%i]", pos.x, pos.y, pos.z, current_light, old_light, decayed_light);
-                if (locks_enabled) spin_lock(&light_queue->lock);
+                if (locks_enabled) {
+                    spin_lock(&light_queue->lock);
+                }
                 a_LightQueue(light_queue, (LightUpdate) {
                     // .type  = zox_light_type_flood,
                     .light = decayed_light,
@@ -127,7 +137,9 @@ static inline byte dark_flood_light(
                     .pos   = pos,
                     .depth = depth
                 });
-                if (locks_enabled) spin_unlock(&light_queue->lock);
+                if (locks_enabled) {
+                    spin_unlock(&light_queue->lock);
+                }
             }
         }
     }
@@ -136,6 +148,7 @@ static inline byte dark_flood_light(
 
 
 byte dark_sunbeam(
+    spinlock* lightlock,
     DarkQueue* queued,
     const VoxelNode* root_vnode,
     LightNode* root_lnode,
@@ -182,7 +195,13 @@ byte dark_sunbeam(
             break;
         }
         zox_logv("     - Light Banished at [%ix%ix%i] l[%i]", pos.x, pos.y, pos.z, current_light);
+        if (locks_enabled) {
+            spin_lock(lightlock);
+        }
         set_LightNode(root_lnode, depth, pos, min_light);
+        if (locks_enabled) {
+            spin_unlock(lightlock);
+        }
         dirty = 1;
         if (y == 0) {
             flood_end = pos.y;
@@ -196,26 +215,46 @@ byte dark_sunbeam(
     for (byte y = flood_start; y <= flood_end; y++) {
         pos.y = y;
         zox_logv(" - Dark Beam Spreads [%ix%ix%i]", pos.x,  pos.y, pos.z);
-        if (dark_flood_light(root_vnode, root_lnode, n_root_vnodes, n_root_lnodes, n_light_queues, light_queue, n_dark_queues, dark_queue, depth, pos, sunlight - air_decay + 1, darklight_propogation_distance, min_light, air_decay, solidity)) {
+        if (dark_flood_light(
+            lightlock,
+            root_vnode,
+            root_lnode,
+            n_root_vnodes,
+            n_root_lnodes,
+            n_light_queues,
+            light_queue,
+            n_dark_queues,
+            dark_queue,
+            depth,
+            pos,
+            sunlight - air_decay + 1,
+            darklight_propogation_distance,
+            min_light,
+            air_decay,
+            solidity))
+        {
             dirty = 1;
         }
     }
     // pass downward into chunk below since we survived until the end
     if (!beam_stopped && queued) {
         zox_logv(" - Dark Beam Continues [%ix%ix%i]", pos.x, length, pos.z);
-        if (locks_enabled) spin_lock(&queued->lock);
+        if (locks_enabled) {
+            spin_lock(&queued->lock);
+        }
         a_DarkQueue(queued,
-                    (DarkUpdate) {
-                        .type = zox_light_type_beam,
-                    .pos = (byte3) {
-                        pos.x,
+            (DarkUpdate) {
+                .type = zox_light_type_beam,
+                .pos = (byte3) {
+                    pos.x,
                     length,   // y = bottom edge
                     pos.z
-                    },
-                    .depth = depth,
-                    .light = sunlight
-                    });
-        if (locks_enabled) spin_unlock(&queued->lock);
+                },
+                .depth = depth,
+                .light = sunlight  });
+        if (locks_enabled) {
+            spin_unlock(&queued->lock);
+        }
     }
     return dirty;
 }
@@ -228,6 +267,7 @@ zox_sys2(DarkLightSystem) {
     zox_sys_in(BlockManagerLink);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
+    zox_sys_out(LightNodeLock);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(DarkQueue);
@@ -240,6 +280,7 @@ zox_sys2(DarkLightSystem) {
         zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_o(LightNodeLock, lightlock);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(DarkQueue, dark_queue);
@@ -278,15 +319,39 @@ zox_sys2(DarkLightSystem) {
                 zox_logv("[%s] Begin Dark Flooding [%ix%ix%i] l[%i] distance [%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, update.distance, dark_queue->count);
                 byte current_light = getv_LightNode(root_lnode, depthl->value, update.pos);
                 if (current_light > darklight) {
+                    if (locks_enabled) {
+                        spin_lock(&lightlock->value);
+                    }
                     set_LightNode(root_lnode, depthl->value, update.pos, darklight);
+                    if (locks_enabled) {
+                        spin_unlock(&lightlock->value);
+                    }
                     dirty = 1;
                 }
-                if (dark_flood_light(root_vnode, root_lnode, nnodesv, nnodesl, n_light_queues, light_queue, n_dark_queues, dark_queue, depthl->value, update.pos, update.light, update.distance, darklight, light_air_decay, solidity)) {
+                if (dark_flood_light(
+                    &lightlock->value,
+                    root_vnode,
+                    root_lnode,
+                    nnodesv,
+                    nnodesl,
+                    n_light_queues,
+                    light_queue,
+                    n_dark_queues,
+                    dark_queue,
+                    depthl->value,
+                    update.pos,
+                    update.light,
+                    update.distance,
+                    darklight,
+                    light_air_decay,
+                    solidity))
+                {
                     dirty = 1;
                 }
             } else if (update.type == zox_light_type_beam_start || update.type == zox_light_type_beam) {
                 zox_logv("[%s] Begin Darkbeam [%ix%ix%i] l[%i] q [%i]", zox_get_name(it->entities[i]), update.pos.x, update.pos.y, update.pos.z, update.light, dark_queue->count);
                 if (dark_sunbeam(
+                    &lightlock->value,
                     dark_queued,
                     root_vnode,
                     root_lnode,

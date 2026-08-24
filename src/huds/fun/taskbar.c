@@ -26,17 +26,6 @@ void add_taskbar_button(const hook_taskbar data) {
     hook_taskbar_array_d_add(hook_taskbars, data);
 }
 
-// todo: make tooltip function just return a string
-/*byte tooltip_event_taskbar_icon(ecs *world, const TooltipEventData *data) {
-    if (!data->ui || !zox_has(data->ui, TooltipText)) {
-        zox_loge("Invalid Tooltip UI");
-        return 0;
-    }
-    zox_geter(data->ui, TooltipText, tooltip_text);
-    set_tooltip_text(world, data->ui, data->tooltip, tooltip_text->value);
-    return 1;
-}*/
-
 // nested function (GCC extension)
 void on_closed_taskbar_window(ecs *world, ClickEventData data) {
     entity window = zox_get_parent_by_id(world, data.clicked, zox_id(Window));

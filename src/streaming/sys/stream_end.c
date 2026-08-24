@@ -13,12 +13,14 @@ zox_sys2(StreamEndSystem) {
     zox_sys_begin();
     zox_sys_in(EventInput);
     zox_sys_in(ChunkLinks);
+    zox_sys_in(TerrainSpawnQueue);
     zox_sys_out(Loaded);
     zox_sys_out(StreamEndEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkLinks, chunks);
         zox_sys_i(EventInput, input);
+        zox_sys_i(TerrainSpawnQueue, queue);
         zox_sys_o(Loaded, loaded);
         zox_sys_o(StreamEndEvent, event);
         if (loaded->value != zox_load_begin) {
@@ -29,22 +31,52 @@ zox_sys2(StreamEndSystem) {
         }
         uint chunks_loaded = 0;
         uint chunks_loading = 0;
+        uint chunks_generating = 0;
+        uint chunks_busy = 0;
+        uint meshes_loading = 0;
         byte lowest_generate_state = 255;
         byte running = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count && !running; j++) {
+            for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
                 if (!zox_has(e2, Chunk3)) {
                     continue;
                 }
                 if (zox_has(e2, GenerateChunk)) {
-                    //running = 1;
-                    //break;
                     byte state = zox_getv(e2, GenerateChunk);
                     if (state < lowest_generate_state) {
                         lowest_generate_state = state;
                     }
+                    chunks_loading++;
+                    chunks_generating++;
+                    continue;
+                }
+                if (zox_has(e2, BuildChunkSides) ||
+                    // zox_has(e2, VoxelNodeDirty) ||
+                    zox_has(e2, Initialize))
+                {
+                    chunks_loading++;
+                    chunks_busy++;
+                    continue;
+                }
+                byte chunk_mesh_loading = 0;
+                iter it3 = zox_children(world, e2);
+                while (zox_children_next(it3) && !chunk_mesh_loading) {
+                    for (int k = 0; k < it3.count && !chunk_mesh_loading; k++) {
+                        entity e3 = it3.entities[k];
+                        if (!zox_has(e3, ChunkMesh)) {
+                            continue;
+                        }
+                        if (zox_has(e3, BuildMesh) ||
+                            zox_has(e3, MeshDirty))
+                        {
+                            chunk_mesh_loading = 1;
+                        }
+                    }
+                }
+                if (chunk_mesh_loading) {
+                    meshes_loading++;
                     chunks_loading++;
                     continue;
                 }
@@ -53,7 +85,14 @@ zox_sys2(StreamEndSystem) {
         }
         if (chunks_loading > 0) {
             if (dbg_log) {
-                zox_log("Chunks Loading [%i] of [%i] - State [%i]", chunks_loading, chunks_loading + chunks_loaded, lowest_generate_state);
+                zox_log("[Loading Screen]\n - Queued [%i]\n - Loading [%i] of [%i] - State [%i]\n - Generating [%i]\n - Busy [%i]\n - Meshes [%i]",
+                    queue->count,
+                    chunks_loading,
+                    chunks_loading + chunks_loaded,
+                    lowest_generate_state,
+                    chunks_generating,
+                    chunks_busy,
+                    meshes_loading);
             }
             running = 1;
         }

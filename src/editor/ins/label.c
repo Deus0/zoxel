@@ -3,7 +3,7 @@ entity spawn_game_debug_label(ecs* world, entity canvas) {
         zox_loge("[spawn_game_debug_label] error: invalid canvas, or no player found on canvas");
         return 0;
     }
-    entity prefab = prefab_label_textured;
+    entity prefab = prefab_label2t;
     if (!zox_valid(prefab)) {
         zox_loge("prefab invalid in [spawn_game_debug_label]");
         return 0;

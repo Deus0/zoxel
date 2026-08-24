@@ -11,9 +11,9 @@
 #include "list.c"
 #include "overlay.c"
 // Has a child text entity
-entity prefab_label;
+entity prefab_label2;
 // Combines texture with the text entity
-entity prefab_label_textured;
+entity prefab_label2t;
 // Interactive Element with child text
 entity prefab_clickable;
 entity prefab_button;
@@ -32,8 +32,8 @@ entity prefab_canvas_overlay;
 
 void spawn_prefabs_elements2(ecs *world) {
     // elements
-    prefab_label = spawn_prefab_label(world, prefab_text);
-    prefab_label_textured = spawn_prefab_label(world, prefab_text_textured);
+    prefab_label2 = spawn_prefab_label(world, prefab_text);
+    prefab_label2t = spawn_prefab_label(world, prefab_text_textured);
     prefab_clickable = spawn_prefab_button(world, prefab_element_frame);
     prefab_button = spawn_prefab_button(world, prefab_element_frame);
     zox_add(prefab_button, NavigationElement);

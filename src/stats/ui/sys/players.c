@@ -1,4 +1,8 @@
-entity spawn_stats_panel(ecs* world, entity canvas, entity character) {
+entity spawn_stats_panel(
+    ecs* world,
+    entity canvas,
+    entity character)
+{
     if (!zox_valid(canvas)) {
         zox_loge("Invalid canvas in [spawn_game_ui_stats]");
         return 0;
