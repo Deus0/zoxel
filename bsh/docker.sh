@@ -117,6 +117,7 @@ if ! docker container inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
 
     docker run -dit \
         --name "$CONTAINER_NAME" \
+        --user "$(id -u):$(id -g)" \
         -v "$PROJECT_DIR:/zoxel" \
         -w /zoxel \
         ubuntu:20.04 \

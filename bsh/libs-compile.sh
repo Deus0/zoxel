@@ -154,7 +154,14 @@ else
 fi
 
 BUILD_SUFFIX="${TARGET}-${ARCH}"
+
+if [[ " $* " == *" --docker "* ]]; then
+    BUILD_SUFFIX="${BUILD_SUFFIX}-docker"
+fi
+
 sdl_build_directory="$SDL_SRC_DIR/build-$BUILD_SUFFIX"
+
+# mkdir -p ${sdl_build_directory}
 
 echo "Compiler: $CC"
 
