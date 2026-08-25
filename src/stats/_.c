@@ -11,7 +11,6 @@
  *      - Implement Regen Stats (currently just using set rate)
  *
  */
-uint stats_children_capacity = 64;  // TODO: Remove this
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"

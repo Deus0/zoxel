@@ -52,22 +52,33 @@ zox_sys2(MeleeSystem) {
         entity strength = 0;
         zox_geter(user, RaycastVoxelData, raycast);
         // zox_geter(user, StatLinks, stats);
-        entity user_stats[stats_children_capacity];
-        uint user_stats_length = zox_get_children(world, user, user_stats, stats_children_capacity);
-        for (uint j = 0; j < user_stats_length; j++) {
-            entity stat = user_stats[j];
-            entity meta = zox_get_prefab(world, stat);
-            if (rresource->value == meta) {
-                resource = stat;
-            }
-            if (!strength && zox_has(stat, StatAttribute)) {
-                strength = stat;
+        entity boost_stat = 0;
+        iter it2 = zox_children(world, user);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity stat = it2.entities[j];
+                if (!zox_has(stat, Stat)) {
+                    continue;
+                }
+                entity meta = zox_get_prefab(world, stat);
+                if (rresource->value == meta) {
+                    resource = stat;
+                }
+                // Assuming strength is first attribute
+                if (!strength && zox_has(stat, StatAttribute)) {
+                    strength = stat;
+                }
             }
         }
+        // entity user_stats[stats_children_capacity];
+        // uint user_stats_length = zox_get_children(world, user, user_stats, stats_children_capacity);
+        // for (uint j = 0; j < user_stats_length; j++) {
+            // entity stat = user_stats[j];
         // TODO: move cost use into activation system
         // resource cost
         if (!disable_skill_costs) {
-            if (!zox_valid(resource) || !zox_has(resource, StatValue)) {
+            if (!zox_valid(resource) ||
+                !zox_has(resource, StatValue)) {
                 if (dbg_log) {
                     zox_log("User [%s] has Invalid Skill Resource", zox_get_name(user));
                 }

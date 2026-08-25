@@ -21,20 +21,29 @@ zox_sys2(DotsSystem) {
         entity attacker = spawner->value;
         if (zox_valid(attacker) && !zox_getv(attacker, Dead)) {
             // todo: influence stat link for auras -> to determine strengthing stats
-            entity attacker_stats[stats_children_capacity];
-            uint attacker_stats_length = zox_get_children(world, attacker, attacker_stats, stats_children_capacity);
-            // Debuff Stat needs a StatLink here
-            int k = 0; // assuming intelligence is like 4th stat attribute for now
-            for (uint j = 0; j < attacker_stats_length; j++) {
-                entity stat = attacker_stats[j];
-                if (zox_has(stat, StatAttribute)) {
+            // entity attacker_stats[stats_children_capacity];
+            // uint attacker_stats_length = zox_get_children(world, attacker, attacker_stats, stats_children_capacity);
+            // TODO: Link Skills to Stats that boost them
+            entity boost_stat = 0;
+            int k = 0;
+            iter it2 = zox_children(world, attacker);
+            while (zox_children_next(it2)) {
+                for (int j = 0; j < it2.count; j++) {
+                    entity stat = it2.entities[j];
+                    if (!zox_has(stat, StatAttribute)) {
+                        continue;
+                    }
                     k++;
                     if (k == 3) {
-                        float value = zox_getv(stat, StatValue);
-                        apply_damage += value;
+                        boost_stat = stat;
                         break;
                     }
                 }
+            }
+            // Debuff Stat needs a StatLink here
+            // assuming intelligence is like 4th stat attribute for now
+            if (boost_stat) {
+                apply_damage += zox_getv(boost_stat, StatValue);
             }
         }
         // the character being damaged by debuff

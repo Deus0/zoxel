@@ -27,22 +27,28 @@ zox_sys2(LevelUpSystem) {
         // give 1 in all attributes for now
         //  to test them out
         // TODO: Increase StatPoint and SkillPoint instead
-        entity stats[stats_children_capacity];
+        iter it2 = zox_children(world, parent);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity stat = it2.entities[j];
+                if (!zox_has(stat, StatAttribute)) {
+                    continue;
+                }
+                zox_muter(stat, StatValue, attribute);
+                attribute->value++;
+                // TODO: Make tag
+                zox_muter(stat, StatDirty, attribute_dirty);
+                attribute_dirty->value = zox_dirty_trigger;
+            }
+        }
+        /*entity stats[stats_children_capacity];
         uint stats_length = zox_get_children_by_id(world, parent, stats, stats_children_capacity, zox_id(Stat));
         if (!stats_length) {
             zox_logw("[%s] has no stats", zox_get_name(parent));
             continue;
         }
         for (uint j = 0; j < stats_length; j++) {
-            entity stat = stats[j];
-            if (!zox_has(stat, StatAttribute)) {
-                continue;
-            }
-            zox_muter(stat, StatValue, attribute);
-            zox_muter(stat, StatDirty, attribute_dirty);
-            attribute->value++;
-            attribute_dirty->value = zox_dirty_trigger;
-        }
+            entity stat = stats[j];*/
         // level up sound
         spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[32 + rand() % 4], 3.4, 1.4f * get_volume_sfx());
         // spawn particle system
