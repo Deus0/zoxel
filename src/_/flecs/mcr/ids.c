@@ -46,7 +46,7 @@
 
 #define zox_dont_fragment(T) \
     zox_add_id(zox_id(T), EcsDontFragment)
-// #define zox_dont_fragment(T) ;
+// #define zox_dont_fragment(T) { }
 
 typedef struct {
     float value;

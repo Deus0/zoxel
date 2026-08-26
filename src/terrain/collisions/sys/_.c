@@ -19,7 +19,7 @@ void define_systems_terrain_collisions(ecs* world) {
     );
     zox_system_1(
         InsideBlockSoundSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] terrains.TerrainLink,
         [in] blocks.InsideBlockDirty,
         [in] blocks.InsideBlock,
@@ -40,11 +40,20 @@ void define_systems_terrain_collisions(ecs* world) {
     );
     zox_system_1(
         TerrainIntersectDebugSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] terrains.TerrainLink,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
         [in] transforms3.Bounds3D,
+    );
+    zox_system(
+        UnstuckSystem,
+        zoxp_physics + 1,
+        [in] terrains.TerrainLink,
+        [in] transforms3.Bounds3D,
+        [out] physics3.LastUnstuck3,
+        [out] transforms3.Position3D,
+        [none] !physics.NoClip
     );
     /*byte use_old_collisions = 0;
     if (use_old_collisions) {

@@ -1,7 +1,76 @@
 # Todo
 
+## Regression again
+
+- Skeleton mesh doesnt render
+    - Initialize
+- Sometimes chunk meshes dont update
+- Big lagspikes during Streaming
+- Lower FPS, investigate the chunk meshes tables
+    - we can see by debugging pipelines
+
+Target: 230fps at the current position
+- Make MeshDirty + and other bytes tags
+- keep testing against old builds
+
+
+## After
+- add min, max to fps display
+
+
+
+
+
+
+
+
+
+Maybe we just keep refactoring stuff
+-x make Initialize a tag - dontfragment
+- fix prior refactor bugs...!
+    - issue is initialize needs time to process
+    - i tried spawn at start of ppipeline but it breaks
+
+Did
+- VoxelDirty made into tag
+- used links for chunks active mesh instead of children
+- Also lag spikes, huge
+- Now... chunk meshses lag the game
+    - disable meshes - normal fps
+    - enabled meshes - 40 fps... ffujckc
+- Lod Increase - Generation isnt triggering
+    - probably state not detected
+- placing crashes / freezes it
+
+
+
+## Custom Phases
+- Make custom phases
+    - input
+    - state
+    - physics
+        - forces
+        - apply
+        - collision
+    - transforms
+    - cameras
+    - rendering
+- remove pre/post loops and just use systems as functions
+
+
+## Write Tests for Terrain
+
+- Spawn NxM Chunks
+    - Check if generates faces
+    - Check if moving streamer updates the right chunks
+    - etc
+
+
+##
+
 ## --------------------
 ## TOP PRIORITY
+
 
     - Glitchy Ass Terrain Meshes
         - Fix Chunks from mesh updating before their neighbors do
@@ -17,6 +86,11 @@
     -x Remove the lag on the fps display, kinda annoying
     
 ## --------------------
+
+- Link chunk to active mesh
+
+- fix docker build and test onsteamdeck
+    - uses new pathing
         
 ## RareBugs
 - Placing twice in a row can crash it still

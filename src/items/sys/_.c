@@ -17,14 +17,14 @@ void define_systems_items(ecs* world) {
     );
     zox_system_1(
         ItemDropSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] combat.Dead,
         [in] transforms3.Position3D,
         [none] characters.Character
     );
     zox_system_1(
         CharacterItemsSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [none] characters.Character,
@@ -32,7 +32,7 @@ void define_systems_items(ecs* world) {
     );
     zox_system_1(
         CharacterPlayerItemsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] characters.GenerateCharacter,
         [none] characters.Character,
         [none] players.PlayerLink
@@ -40,7 +40,7 @@ void define_systems_items(ecs* world) {
     // NOTE: Timing issues due to Queue Clearing
     zox_system_1(
         ItemActivateSystem,
-        zoxp_mainthread, // zoxp_queue_add,
+        zoxp_spawn, // zoxp_queue_add,
         [in] timers.Activate,
         [in] blocks.BlockLink,
         [out] items.Quantity,

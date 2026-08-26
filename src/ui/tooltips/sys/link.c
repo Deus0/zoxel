@@ -3,13 +3,13 @@ zox_sys2(TooltipeeInitializeSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Initialize);
+    // zox_sys_in(Initialize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Initialize, initialize);
-        if (initialize->value != zox_dirty_active) {
+        // zox_sys_i(Initialize, initialize);
+        /*if (initialize->value != zox_dirty_active) {
             continue;
-        }
+        }*/
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {
             return;

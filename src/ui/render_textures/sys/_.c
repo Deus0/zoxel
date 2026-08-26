@@ -24,7 +24,7 @@ void define_systems_render_textures(ecs* world) {
     );
     zox_system_1(
         RenderTextureInitializeSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.TextureSize,
         [in] cameras.CameraLink,
         [in] rendering.TextureGPULink,
@@ -34,7 +34,7 @@ void define_systems_render_textures(ecs* world) {
     );
     zox_system_1(
         CameraMaterialSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.MaterialLink,
         [in] cameras.CameraBlur,
         [in] cameras.CameraVignette,

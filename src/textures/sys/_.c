@@ -76,7 +76,7 @@ void define_systems_textures(ecs *world) {
     );
     zox_system_1(
         TextureRgbUploadSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
@@ -86,7 +86,7 @@ void define_systems_textures(ecs *world) {
     );
     zox_system_1(
         TextureRgbaUploadSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] textures.TextureData,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,

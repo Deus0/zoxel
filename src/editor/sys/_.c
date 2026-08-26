@@ -35,7 +35,7 @@ void define_systems_editor(ecs *world) {
     );
     zox_system_1(
         HierarchySpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] editor.HierarchyUIDirty,
         [in] core.EntityTarget,
         [in] elements2.ScrollviewLink,
@@ -43,7 +43,7 @@ void define_systems_editor(ecs *world) {
     );
     zox_system_1(
         InspectorSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] editor.InspectorDirty,
         [in] core.EntityTarget,
         [in] elements2.ScrollviewLink,
@@ -51,7 +51,7 @@ void define_systems_editor(ecs *world) {
     );
     zox_system_1(
         EditorInputSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] layouts.CanvasLink,
         [none] players.Player
     );

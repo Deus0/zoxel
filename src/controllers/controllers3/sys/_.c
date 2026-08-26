@@ -49,7 +49,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system_1(
         ActionsShortcutSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerState,
         [none] players.Player
     );
@@ -63,7 +63,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system_1(
         PlayerToggleCameraSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
@@ -72,7 +72,7 @@ void define_systems_controllers3(ecs *world) {
     );
     zox_system_1(
         FreeRoamToggleSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
@@ -96,7 +96,7 @@ void define_systems_controllers3(ecs *world) {
     // Dialogue
     zox_system_1(
         DialogueBeginSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] triggers.TriggerActionB,
         [in] vrays.RaycastVoxelData,
         [in] players.PlayerLink,
@@ -105,7 +105,7 @@ void define_systems_controllers3(ecs *world) {
     // Spawns animation events
     zox_system_1(
         PlayerDialogueSystem,
-        zoxp_mainthread, // zoxp_update,
+        zoxp_spawn, // zoxp_update,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
         [in] layouts.CanvasLink,
@@ -114,7 +114,7 @@ void define_systems_controllers3(ecs *world) {
     // NOTE: Spawns animation events
     zox_system_1(
         CameraPlayerStateSystem,
-        zoxp_mainthread, // zoxp_update,
+        zoxp_spawn, // zoxp_update,
         [in] cameras.CameraLink,
         [in] players.PlayerStateDirty,
         [out] players.PlayerState

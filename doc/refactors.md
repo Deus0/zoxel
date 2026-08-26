@@ -1,14 +1,12 @@
 # Refactoring
 
-## Macro Use
-- Remove zox_sys2 and use regular function names
-- just call zox_sys_begin that will add timings there
-
-## Events
-- Move sound systems to events too
-    - PickupSoundSystem
-    - LandSoundSystem
-- Remove state systems and just use event components with listeners
+## Tags / Events
+- Use a generic Dirty tag, use for stats
+- Refactor LayoutDirty
+- Refactor RenderDepthDirty, RenderDistanceDirty
+- Refactor MeshDirty as tag
+- Refactor BuildMesh - tag - BuildSkeletonMesh after
+- FindNeighbors - make it trigger this on spawning - triggers neighbors if exists
 
 ## Unsorted
 - SDL should be a module again
@@ -30,6 +28,17 @@
 - Remove DeviceLink from Zevice, use parent
 - Spawn finger entity during finger down - instead of just setting
 - We can refactor all the links between enttiies as pairs instead of components
+
+
+## Macro Use
+- Remove zox_sys2 and use regular function names
+- just call zox_sys_begin that will add timings there
+
+## Events
+- Move sound systems to events too
+    - PickupSoundSystem
+    - LandSoundSystem
+- Remove state systems and just use event components with listeners
 
 ## Devops
 - We need docker libraries to be seperated from regular ones

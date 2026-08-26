@@ -38,13 +38,13 @@ void define_systems_stats_ui(ecs *world) {
     );
     zox_system_1(
         HealthbarSpawnerSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] combat.CombatState,
         [out] ui.ElementLinks
     );
     zox_system_1(
         PlayerStatspanelSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] characters.CharacterLink,

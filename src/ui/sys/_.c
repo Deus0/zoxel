@@ -33,11 +33,11 @@ void zox_define_systems_elements(ecs *world) {
     zox_system(
         LayoutMeshBeginSystem,
         zoxp_update,
-        [in] core.Initialize,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
         [out] rendering.MeshDirty,
+        [none] core.Initialize,
     );
     zox_system(
         LayoutMeshUpdateSystem,

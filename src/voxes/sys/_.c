@@ -20,7 +20,6 @@ void define_systems_voxes(ecs *world) {
         [out] blocks.BlockScale,
         [out] chunks3.ChunkSize,
         [out] colorz.ColorRGBs,
-        [out] chunks3.VoxelNodeDirty
     );
     zox_system(
         CombineVoxSystem,
@@ -33,7 +32,6 @@ void define_systems_voxes(ecs *world) {
         [out] rendering.RenderDepth,
         [out] chunks3.VoxelNode,
         [out] colorz.ColorRGBs,
-        [out] chunks3.VoxelNodeDirty
     );
     zox_system(
         BakeVoxSystem,
@@ -46,9 +44,9 @@ void define_systems_voxes(ecs *world) {
         ChunkFindNeighborSystem,
         zoxp_update,
         [in] chunks3.ChunkPosition,
-        [out] chunks.FindNeighbors,
         [out] chunks3.ChunkNeighbors,
-        [none] chunks3.ChunkTextured    // we should just check if parent has chunk links here
+        [none] chunks.FindNeighbors,
+        [none] chunks.ChunkTextured,    // we should just check if parent has chunk links here
     );
     // NOTE: Syncs Terrain Chunk Scales
     zox_system(

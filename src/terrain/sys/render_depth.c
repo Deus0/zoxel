@@ -1,4 +1,5 @@
 // NOTE: When Depth Increases -> Generate our Chunks
+// We can just do this with TunkLod system??
 zox_sys2(ChunkLodSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -15,7 +16,8 @@ zox_sys2(ChunkLodSystem) {
         zox_sys_o(NodeDepth, octree_depth);
         // Delays our lod changes until generation finishes
         if (render_depth_dirty->value == zox_chunk_lod_dirty_generating) {
-            if (!zox_has(e, GenerateChunk) && !zox_getv(e, VoxelNodeDirty)) {
+            if (!zox_has(e, GenerateChunk) &&
+                !zox_has(e, VoxelNodeDirty)) {
                 render_depth_dirty->value = zox_chunk_lod_dirty_spawn;
             }
             continue;

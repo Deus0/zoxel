@@ -6,7 +6,7 @@ void zox_systems_music(ecs* world) {
     realm_clear_systemd(musics, PlaylistLinks);
     zox_system_1(
         MusicGenerateSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] core.Seed,
         [in] sounds.InstrumentType,
         [out] musics.GenerateMusic,
@@ -15,7 +15,7 @@ void zox_systems_music(ecs* world) {
     );
     zox_system_1(
         MusicPlaySystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] musics.MusicEnabled,
         [in] musics.NoteLinks,
         [in] musics.MusicSpeed,

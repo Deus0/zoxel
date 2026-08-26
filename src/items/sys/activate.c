@@ -42,7 +42,8 @@ zox_sys2(ItemActivateSystem) {
         zox_muter(chunk, VoxelNodeQueue, queue);
         a_VoxelNodeQueue(queue, (VoxelNodeUpdate) {
             .value = block_index,
-            .position = positionl });
+            .position = positionl
+        });
         quantity->value--;
         // place block sound
         spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[30 + rand() % 6], 0.6, 1.4f * get_volume_sfx());

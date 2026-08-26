@@ -19,7 +19,7 @@ void zox_systems_weather(ecs* world) {
     );
     zox_system_1(
         SkyboxSetTimeSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.MaterialGPULink,
         [none] Skybox
     );

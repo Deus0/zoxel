@@ -3,7 +3,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_name("character3");
     zox_add(e, Character);
     zox_add(e, Character3);
-    zox_prefab_set(e, Initialize, { zox_dirty_trigger });
+    zox_add(e, Initialize);
     zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
     // generation
     zox_prefab_set(e, Seed, { 0 });
@@ -57,7 +57,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_set(e, RaycastRange, { 1.5f });
     zox_prefab_set(e, TriggerActionA, { 0 });
     // Debug
-    prefab_add_cube_lines(world, e, color_white, 0);
+    // prefab_add_cube_lines(world, e, color_white, 0);
     // Unique Character
     if (type != zox_character_type_instanced) {
         zox_prefab_set(e, ChunkLod, { 255 });

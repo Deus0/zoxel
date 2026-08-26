@@ -1,6 +1,10 @@
-entity spawn_character2(ecs *world, entity prefab, float2 position) {
+entity spawn_character2(
+    ecs *world,
+    entity prefab,
+    float2 position)
+{
     zox_instance(prefab);
-    zox_setv(e, Initialize, 1);
+    zox_add(e, Initialize);
     zox_set(e, Position2, { position });
     zox_set(e, Scale1, { 1 });
     zox_set(e, Brightness, { 0.8f + ((rand() % 101) / 100.0f) * 0.6f });

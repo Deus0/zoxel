@@ -2,18 +2,20 @@
 // NOTE: Now we optimize branch nodes in cleanup system
 // NOTE: This wll use a queue to do batches of octtree updates to voxels
 zox_sys2(VoxelUpdateQueueSystem) {
+    zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeDepth);
     zox_sys_out(VoxelNodeQueue);
     zox_sys_out(VoxelNode);
-    zox_sys_out(VoxelNodeDirty);
+    // zox_sys_out(VoxelNodeDirty);
     zox_sys_out(VoxelNodeEdited);
     // zox_sys_out(VoxelDropQueue);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(VoxelNodeQueue, queue);
         zox_sys_o(VoxelNode, voxels);
-        zox_sys_o(VoxelNodeDirty, dirty);
+        // zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(VoxelNodeEdited, edited);
         // zox_sys_o(VoxelDropQueue, drops);
         byte updated = 0;
@@ -40,7 +42,8 @@ zox_sys2(VoxelUpdateQueueSystem) {
             update->state = zox_voxel_queue_post;
         }
         if (updated) {
-            dirty->value = zox_dirty_trigger;
+            // dirty->value = zox_dirty_trigger;
+            zox_add(e, VoxelNodeDirty);
             edited->value = 1;
         }
     }

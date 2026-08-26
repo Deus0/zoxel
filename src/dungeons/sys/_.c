@@ -7,7 +7,7 @@ void zox_systems_dungeons(ecs* world) {
     // Spawns new blocks
     zox_system_1(
         DungeonBlockSystem,
-        zoxp_mainthread, // zoxp_queue_add,
+        zoxp_spawn, // zoxp_queue_add,
         [in] timing.TimerState,
         [in] chunks3.ChunkLink,
         [in] DungeonWallType,
@@ -16,7 +16,7 @@ void zox_systems_dungeons(ecs* world) {
     // A region has manyy dungeons
     zox_system_1(
         DungeonsSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockPosition2,
         [in] blocks.BlockSize2,

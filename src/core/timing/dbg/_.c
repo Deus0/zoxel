@@ -2,7 +2,7 @@
 #include "delta.c"
 #include "count.c"
 #include "time.c"
-#include "max.c"
+#include "max_system.c"
 #include "max_data.c"
 
 void add_system_process_counter(ecs* world, entity e) {
@@ -25,33 +25,32 @@ void define_systems_timing_debug(ecs* world) {
         [out] core.DoubleDataMax,
     );
 #ifdef zox_time_systems
-    // Grabs highest DoubleDataMax from all systems
-    zox_system(
-        MaxSystemSystem,
-        zoxp_update,
-        0
-        // [out] core.SystemLink,
-        // [none] timing.TrackMaxSystem
-    );
-    // Logs if SystemDeltaCache is too high
-    zox_system_1(
-        SystemDeltaLogSystem,
-        zoxp_mainthread,
-        [in] timing.SystemDeltaCache
-    );
     // Sets our SystemDeltaCache (at end of frame)
     zox_system_1(
         SystemDeltaCacheSystem,
-        zoxp_end,
+        zoxp_dbg_end,
         [out] timing.SystemDelta,
         [out] timing.SystemDeltaCache
     );
     // Adds SystemDeltaCache to Curve
     zox_system_1(
         SystemTimeAddSystem,
-        zoxp_end,
+        zoxp_dbg_begin,
         [in] timing.SystemDeltaCache,
         [out] core.DoubleData
+    );
+    // Logs if SystemDeltaCache is too high
+    zox_system_1(
+        SystemDeltaLogSystem,
+        zoxp_dbg_begin,
+        [in] timing.SystemDeltaCache
+    );
+    // Grabs highest DoubleDataMax from all systems
+    zox_system(
+        MaxSystemSystem,
+        zoxp_update,
+        [in] core.DoubleDataMax,
+        [none] core.ZoxSystem
     );
 #endif
 }

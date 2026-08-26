@@ -6,9 +6,9 @@ void zox_systems_xr(ecs* world) {
     /*zox_system(
         xr_projection_system,
         zoxp_update,
-        [in] core.Initialize,
         [in] xr.XrFov,
         [out] cameras.ProjectionMatrix,
+        [none] core.Initialize,
     );*/
     /*zox_system_1(
         xr_frame_system,

@@ -86,7 +86,7 @@ static inline void zox_apply_basic_lights(const LightNode* root_light_octree, co
     }
 }
 
-// NOTE: Rebuilds Lights only when MeshColorsGenerate is dirty
+// NOTE: Rebuilds Lights only when BuildMeshColors is dirty
 zox_sys2(BasicLightsBuildSystem) {
     // byte dbg_log = 0;
     if (zox_smooth_lighting) {
@@ -94,7 +94,7 @@ zox_sys2(BasicLightsBuildSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
-    // zox_sys_in(MeshColorsGenerate);
+    // zox_sys_in(BuildMeshColors);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_in(SidesOctree);
@@ -104,7 +104,7 @@ zox_sys2(BasicLightsBuildSystem) {
     zox_sys_out(MeshReady);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(MeshColorsGenerate, trigger);
+        // zox_sys_i(BuildMeshColors, trigger);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, voxel_octree);
         zox_sys_i(SidesOctree, sides_octree);
@@ -114,7 +114,7 @@ zox_sys2(BasicLightsBuildSystem) {
         zox_sys_o(MeshReady, ready);
         /*if (zox_getv(e, BuildMesh)) {
             // if still building, it will update the verts again
-            // zox_setv(e, MeshColorsGenerate, 1);
+            // zox_setv(e, BuildMeshColors, 1);
             if (dbg_log) {
                 zox_log("Chunk is still Generating new Mesh, while building Lights [%s]", zox_get_name(e));
             }

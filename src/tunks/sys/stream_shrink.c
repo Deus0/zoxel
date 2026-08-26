@@ -34,11 +34,16 @@ zox_sys2(Tunk2DeathSystem) {
         int k = 0;
         for (int j = -render_distance_y; j <= render_distance_y; j++, k++) {
             entity chunk = stack->value[k];
-            if (zox_valid(chunk)) {
-                int3 position3 = (int3) { position->value.x, j, position->value.y };
-                int3_hashmap_remove(chunks->value, position3);
-                zox_delete(chunk);
+            if (!zox_valid(chunk)) {
+                continue;
             }
+            int3 position3 = (int3) {
+                position->value.x,
+                j,
+                position->value.y
+            };
+            int3_hashmap_remove(chunks->value, position3);
+            zox_delete(chunk);
         }
         // remove from hash - can i do this better?
         zox_muter(terrain, TunkLinks, tunks);

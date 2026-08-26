@@ -13,7 +13,7 @@ void zox_define_systems_auras(ecs* world) {
     );
     zox_system_ctx_1(
         AuraDotSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         characters,
         [in] skills.SkillActive,
         [in] skills.SkillDamage,
@@ -31,7 +31,7 @@ void zox_define_systems_auras(ecs* world) {
     );
     zox_system_1(
         AuraParticlesSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] timers.Activate,
         [in] skills.SkillActive,
         [in] skills.SkillRange,
@@ -41,7 +41,7 @@ void zox_define_systems_auras(ecs* world) {
     );
     zox_system_1(
         AuraSoundSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] timers.Activate,
         [none] auras.Aura
     );

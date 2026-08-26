@@ -127,12 +127,12 @@ void define_systems_npcs(ecs *world) {
     // Sound gen takes longer;
     zox_system_1(
         AiSettingsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] settings.LoadSettings
     );
-    zox_system_1(
+    zox_system(
         AiSettingsDirtySystem,
-        zoxp_mainthread,
+        zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,
         [in] settings.Setting

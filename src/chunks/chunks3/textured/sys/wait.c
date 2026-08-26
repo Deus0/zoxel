@@ -23,7 +23,7 @@ byte is_chunk_busy(ecs* world, entity e) {
         // || zox_getv(e, RenderDepthDirty)
         // || zox_getv(e, SidesOctreeDirty)
         // || zox_getv(e, RenderDistanceDirty)
-        // || zox_getv(e, MeshColorsGenerate)
+        // || zox_getv(e, BuildMeshColors)
         // || zox_getv(e, MeshColorsDirty)
         // || is_chunk_generating_sunlights(world, e);
 }

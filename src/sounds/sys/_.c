@@ -36,7 +36,7 @@ void define_systems_sounds(ecs *world) {
     add_system_process_counter(world, zox_id(SoundGenerateSystem));
     zox_system_1(
         SoundDebugSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] SoundData,
         [in] TriggerSound,
         [none] Sound
@@ -66,7 +66,7 @@ void define_systems_sounds(ecs *world) {
     // Sound gen takes longer;
     zox_system_1(
         SoundsSettingsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] settings.LoadSettings
     );
     zox_system_1(

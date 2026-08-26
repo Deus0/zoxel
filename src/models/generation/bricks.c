@@ -7,7 +7,7 @@ zox_sys2(BricksModelGenerationSystem) {
     zox_sys_in(VoxType);
     zox_sys_out(GenerateModel);
     zox_sys_out(VoxelNode);
-    zox_sys_out(VoxelNodeDirty);
+    // zox_sys_out(VoxelNodeDirty);
     zox_sys_out(NodeDepth);
     zox_sys_out(ColorRGBs);
     for (int i = 0; i < it->count; i++) {
@@ -17,7 +17,7 @@ zox_sys2(BricksModelGenerationSystem) {
         zox_sys_i(VoxType, gentype);
         zox_sys_o(GenerateModel, generate);
         zox_sys_o(VoxelNode, node);
-        zox_sys_o(VoxelNodeDirty, dirty);
+        // zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(ColorRGBs, colors);
         if (generate->value != zox_generate_model_run) {
@@ -61,7 +61,8 @@ zox_sys2(BricksModelGenerationSystem) {
         }
         // write_unlock_VoxelNode(node);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
-        dirty->value = zox_dirty_trigger;
+        // dirty->value = zox_dirty_trigger;
+        zox_add(e, VoxelNodeDirty);
         if (dbg_log) {
             zox_log("Generated Vox [%s] Type [%i] Depth [%i]", zox_get_name(e), gentype->value, depth->value);
         }

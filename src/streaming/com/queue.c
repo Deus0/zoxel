@@ -1,6 +1,6 @@
 // NOTE: Assume Max Depth
 typedef struct {
-    byte level;
+    // byte level;
     int2 position;
     int distance;
 } TerrainSpawnUpdate;

@@ -22,7 +22,13 @@ byte pick_node_depth(int3 size) {
 
 // TODO: we should pick the depth that matches the size of the model
 //      - then we scale the model to fit our world
-void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float bscale) {
+void set_vox_file(
+    ecs *world,
+    entity e,
+    const vox_file* vox,
+    byte reducer,
+    float bscale)
+{
     if (!is_vox_valid(vox)) {
         zox_log_error("error reading voxfile");
         set_as_debug_vox(world, e);
@@ -86,7 +92,7 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
             }
         }
     }
-    zox_set(e, VoxelNodeDirty, { zox_dirty_trigger });
+    zox_add(e, VoxelNodeDirty);
     // Copy our file into our colors
     int clength = vox->palette.values_length;
     zox_muter(e, ColorRGBs, colors);
@@ -96,7 +102,12 @@ void set_vox_file(ecs *world, entity e, const vox_file* vox, byte reducer, float
 
 // TODO: Convert vox_file to VoxNode, and clone to depth to ModelLods
 //      atm we rebuild everytime the same
-entity spawn_vox_file(ecs *world, entity prefab, const vox_file* data, const char* filename) {
+entity spawn_vox_file(
+    ecs *world,
+    entity prefab,
+    const vox_file* data,
+    const char* filename)
+{
     entity model = zox_new();
     {
         char name[128];
@@ -117,7 +128,7 @@ entity spawn_vox_file(ecs *world, entity prefab, const vox_file* data, const cha
             zox_set_unique_name(e2, name);
         }
         set_vox_file(world, e2, data, reducer, bscale);
-        zox_set(e2, BuildMesh, { 1 });
+        zox_add(e2, BuildMesh);
         zox_set(e2, RenderDepth, { rdepth });
         zox_set(e2, MaxRenderDepth, { mdepth });
         model_lods.value[rdepth] = e2;

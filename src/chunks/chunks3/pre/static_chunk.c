@@ -19,7 +19,7 @@ entity spawn_prefab_static_chunk(ecs *world) {
     zox_prefab_set(e, MeshVertices, { 0 });
     // Events
     zox_prefab_set(e, MeshDirty, { 0 });
-    zox_prefab_set(e, VoxelNodeDirty, { 0 });
+    // zox_prefab_set(e, VoxelNodeDirty, { 0 });
     // zox_prefab_set(e, BuildChunkSides, { 0 });
     return e;
 }

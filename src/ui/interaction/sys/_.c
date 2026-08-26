@@ -126,13 +126,13 @@ void zox_define_systems_interaction(ecs* world) {
     );
     zox_system_1(
         ClickSoundSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] interaction.ClickState,
         [none] interaction.ClickMakeSound
     );
     zox_system_1(
         ButtonClickEventSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] interaction.ClickEvent,
         [in] interaction.ClickState,
         [out] interaction.Clicker,

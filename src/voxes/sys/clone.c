@@ -11,15 +11,16 @@ zox_sys2(CloneVoxSystem) {
     zox_sys_out(BlockScale);
     zox_sys_out(ChunkSize);
     zox_sys_out(ColorRGBs);
-    zox_sys_out(VoxelNodeDirty);
+    // zox_sys_out(VoxelNodeDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(CloneVoxLink, source);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(NodeDepth, ndepth);
         zox_sys_o(BlockScale, scale);
         zox_sys_o(ColorRGBs, colors);
         zox_sys_o(ChunkSize, csize);
-        zox_sys_o(VoxelNodeDirty, dirty);
+        // zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(CloneVox, state);
         entity src = source->value;
         if (!state->value || !src) {
@@ -48,7 +49,8 @@ zox_sys2(CloneVoxSystem) {
         memcpy(colors->value, colors_source->value, clength);
         csize->value = source_chunk_size->value;
         state->value = 0;
-        dirty->value = zox_dirty_trigger;
+        // dirty->value = zox_dirty_trigger;
+        zox_add(e, VoxelNodeDirty);
         // zox_log(" [%s] Is cloned from [%s] [%f]", zox_get_name(it->entities[i]), zox_get_name(src), scale->value);
     }
 } zox_sys_end(CloneVoxSystem);

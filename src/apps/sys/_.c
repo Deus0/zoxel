@@ -3,7 +3,7 @@
 void zox_define_systems_apps(ecs *world) {
     zox_system_1(
         AppsSettingsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] settings.LoadSettings
     );
     zox_system_1(

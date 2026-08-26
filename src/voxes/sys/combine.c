@@ -11,8 +11,8 @@ zox_sys2(CombineVoxSystem) {
     zox_sys_out(RenderDepth);
     zox_sys_out(VoxelNode);
     zox_sys_out(ColorRGBs);
-    zox_sys_out(VoxelNodeDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(CombineVox, state);
         zox_sys_i(CombineList, voxes);
         zox_sys_i(CombinePositions, positions);
@@ -21,7 +21,6 @@ zox_sys2(CombineVoxSystem) {
         zox_sys_o(RenderDepth, rdepth);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(ColorRGBs, colors);
-        zox_sys_o(VoxelNodeDirty, dirty);
         if (state->value != zox_dirty_active) {
             continue;
         }
@@ -145,7 +144,7 @@ zox_sys2(CombineVoxSystem) {
         // write_unlock_VoxelNode(voctree);
         csize->value = new_csize;
         rdepth->value = ndepth->value;
-        dirty->value = zox_dirty_trigger;
+        zox_add(e, VoxelNodeDirty);
         /*zox_log(" - colors [%i]", colors->length);
         zox_log(" - vdepth [%i] - grid max [%i]", ndepth->value, powers_of_two_byte[ndepth->value]);
         zox_log(" - csize [%ix%ix%i]", csize->value.x, csize->value.y, csize->value.z);

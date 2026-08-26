@@ -17,7 +17,9 @@ entity spawn_prefab_chunk_mesh(ecs* world) {
     zox_setv(e, ColorsGPULink, 0);
     zox_setv(e, MeshRenderCount, 0);
     // Starting Events
-    zox_setv(e, Initialize, 1);
-    zox_setv(e, BuildMesh, zox_build_chunk_mesh_run);
+    zox_add(e, Initialize);
+    zox_add(e, Disabled);
+    zox_add(e, BuildMesh);
+    // zox_add(e, BuildDisable);
     return e;
 }

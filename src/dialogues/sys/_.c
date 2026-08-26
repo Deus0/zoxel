@@ -41,7 +41,7 @@ void define_systems_dialogues(ecs* world) {
     );
     zox_system_1(
         DialogueSoundSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] ZigelSpawnedDirty,
         [in] AnimateTextEnded,
         [none] dialogues.DialogueLabel

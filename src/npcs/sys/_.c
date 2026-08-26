@@ -26,7 +26,7 @@ void define_systems_characters3_terrain(ecs* world) {
     // NOTE: Writes to VoxelNode
     zox_system_1(
         TerrainCharactersSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] npcs.NpcSpawnZoneDirty,
         [in] npcs.NpcSpawnZone,
         [in] core.Seed,
@@ -44,7 +44,7 @@ void define_systems_characters3_terrain(ecs* world) {
     );
     zox_system_1(
         NpcsSettingsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] settings.LoadSettings
     );
     zox_system_1(

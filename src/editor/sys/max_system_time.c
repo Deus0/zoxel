@@ -15,16 +15,22 @@ zox_sys2(MaxSystemTimeLabelSystem) {
     uint processes = zox_has(max_system, SystemProcessed) ?
         zox_getv(max_system, SystemProcessed) :
         0;
-    double max_delta = zox_getv(max_system, DoubleDataMax);
     double max_delta_per_curve = zox_getv(fps_curve, DoubleDataMax);
+    double max_delta = zox_getv(max_system, DoubleDataMax);
     char output[1024];
     output[0] = '\0';
-    sprintf(output, "Frame Time [%0.01fms]\nMax Frame Time [%0.01fms]\n%s\n[%0.01fms] x%i",
+    sprintf(output, "Delta [%0.01fms] Max [%0.01fms]\n   - [%s]\n    - at [%0.01fms] x%i",
         (zox_delta_time * 1000),
         (max_delta_per_curve * 1000),
         zox_getn(max_system),
         max_delta,
         processes);
+    /*sprintf(output, "Current Delta [%0.01fms]\nMax Frame Delta [%0.01fms]\n   - [%s]\n    - at [%0.01fms] x%i",
+        (zox_delta_time * 1000),
+        (max_delta_per_curve * 1000),
+        zox_getn(max_system),
+        max_delta,
+        processes);*/
     uint text_length = strlen(output);
     zox_sys_begin();
     zox_sys_out(TextData);

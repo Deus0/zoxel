@@ -81,9 +81,13 @@ zox_sys2(MusicGenerateSystem) {
 
                 float note_length = 0.8f + 0.6f * (rand() % 100 * 0.01f);
                 float note_volume = 0.6f + 0.4f * (rand() % 100 * 0.01f);
-
-                entity note = spawn_note(world, prefab_note, music_note, instrument->value, note_length, note_volume);
-
+                entity note = spawn_note(
+                    world,
+                    prefab_note,
+                    music_note,
+                    instrument->value,
+                    note_length,
+                    note_volume);
                 noteLinks->value[sound_index] = note;
                 sound_index++;
 

@@ -3,10 +3,12 @@ typedef ecs_world_t ecs;
 typedef ecs_iter_t iter;
 typedef ecs_query_t query;
 
+// Testing
+byte zox_log_pipelines = 0;     // 1 for big frames, 2 for all
+
 byte zox_disable_threads = 0;
 byte target_fps = 0;
 byte zox_log_system_stats = 0;
-byte zox_log_pipelines = 0;
 byte flecs_log_level = 0;   // 1 for debug_pipelines
 byte profiler = 1;
 byte cores_count = 1;

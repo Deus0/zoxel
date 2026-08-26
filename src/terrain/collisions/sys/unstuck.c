@@ -4,6 +4,7 @@ byte unstuck_log_count = 0;
 #ifdef zox_dbg_lines_unstuck
 extern entity spawn_line3c(ecs*, float3, float3, float, double, color_rgb);
 #endif
+
 // TODO: Dont cache a position, just raycast in direction of gravity
 // TODO: Spawn debug lines when repositioning
 zox_sys2(UnstuckSystem) {

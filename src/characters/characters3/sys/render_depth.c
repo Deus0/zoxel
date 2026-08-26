@@ -6,7 +6,7 @@ zox_sys2(CharacterRenderDepthSystem) {
         zox_sys_e();
         zox_sys_i(RenderDepthDirty, dirty);
         if (dirty->value == zox_dirty_active) {
-            zox_setv(e, BuildMesh, zox_build_chunk_mesh_run);
+            zox_add(e, BuildMesh);
             // build_mesh->value = zox_build_chunk_mesh_run;
             // TODO: set mesh instance link by renderDepth?
         }

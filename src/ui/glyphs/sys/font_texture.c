@@ -1,4 +1,4 @@
-const uint safety_checks_floodfill = 16000;
+const uint safety_checks_floodfill = 2000;
 
 const uint safety_checks_drawline = 1000;
 

@@ -8,12 +8,12 @@ void define_systems_rendering_cameras(ecs *world) {
     // restore
     zox_system_1(
         RenderCameraInitializeSystem,
-        zoxp_mainthread,
-        [in] core.Initialize,
+        zoxp_gpu_upload,
         [in] screens.ScreenDimensions,
         [out] render_cameras.FrameBufferLink,
         [out] render_cameras.RenderBufferLink,
-        [none] cameras.RenderCamera
+        [none] cameras.RenderCamera,
+        [none] core.Initialize,
     );
     // Render Camera
     zox_gpu_restore_system(

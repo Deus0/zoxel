@@ -18,7 +18,7 @@ zox_sys2(ChunkColorsTriggerSystem) {
                 if (zox_has(e2, ChunkMesh)) {
                     continue;
                 }
-                zox_add(e2, MeshColorsGenerate);
+                zox_add(e2, BuildMeshColors);
                 if (dbg_log) {
                     zox_log("Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(e2));
                 }
@@ -53,7 +53,7 @@ zox_sys2(ChunkNeighborLightTriggerSystem) {
                     if (!zox_has(mesh, ChunkMesh)) {
                         continue;
                     }
-                    zox_add(mesh, MeshColorsGenerate);
+                    zox_add(mesh, BuildMeshColors);
                     if (dbg_log) {
                         zox_log("Neighbor Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(neighbor), zox_getn(mesh));
                     }

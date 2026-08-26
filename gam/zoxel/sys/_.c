@@ -18,7 +18,7 @@ void define_systems_zoxel(ecs *world) {
     // TODO: Move this towards end content
     /*zox_system_1(
         ModelsRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [out] rendering.ModelLinks,
         [out] nodes.NodegraphLinks,
@@ -31,20 +31,20 @@ void define_systems_zoxel(ecs *world) {
     }*/
     zox_system_1(
         StatsRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [out] stats.StatLinks,
         [none] realms.Realm
     );
     zox_system_1(
         FoodRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm
     );
     zox_system_1(
         SkillsRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] stats.StatLinks,
         [out] skills.SkillLinks,
@@ -54,7 +54,7 @@ void define_systems_zoxel(ecs *world) {
     // TODO: Spawn Block Items when the Realm BlocksDirty is flagged
     zox_system_1(
         ItemsRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] blocks.BlockLinks,
         [out] items.ItemLinks,
@@ -62,7 +62,7 @@ void define_systems_zoxel(ecs *world) {
     );
     zox_system_1(
         BodysRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
         [out] rendering.ModelLinks,
@@ -72,14 +72,14 @@ void define_systems_zoxel(ecs *world) {
     );
     zox_system_1(
         EquipsRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [out] items.ItemLinks,
         [none] realms.Realm
     );
     zox_system_1(
         QuestsRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] characters.CharacterLinks,
         [out] quests.QuestLinks,
@@ -87,28 +87,28 @@ void define_systems_zoxel(ecs *world) {
     );
     zox_system_1(
         DialogueRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [out] dialogues.DialoguetreeLinks,
         [none] realms.Realm
     );
     zox_system_1(
         MusicRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [out] musics.PlaylistLinks,
         [none] realms.Realm
     );
     zox_system_1(
         AchievementRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm
     );
     // Worlds
     zox_system_1(
         Character3RealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
         [out] characters.CharacterLinks,
@@ -117,7 +117,7 @@ void define_systems_zoxel(ecs *world) {
     );
     zox_system_1(
         BiomesRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
         [out] biomes.BiomeLinks,
@@ -125,7 +125,7 @@ void define_systems_zoxel(ecs *world) {
     );
     zox_system_1(
         BlocksRealmSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
         [out] blocks.BlocksDirty,
@@ -133,7 +133,7 @@ void define_systems_zoxel(ecs *world) {
     );
     zox_system_1(
         BiomeBlocksSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] core.Generate,
         [in] core.Seed,
         [out] biomes.BiomeSkyColor,

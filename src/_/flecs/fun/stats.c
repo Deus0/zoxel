@@ -28,7 +28,6 @@ void log_pipelines(ecs_world_t *world)
 {
     ecs_entity_t pipeline_id = ecs_get_pipeline(world);
     ecs_pipeline_stats_t p = {0};
-
     if (!pipeline_id || !ecs_pipeline_stats_get(world, pipeline_id, &p)) {
         printf("No pipeline stats available.\n");
         return;
@@ -37,12 +36,10 @@ void log_pipelines(ecs_world_t *world)
     int32_t system_count = ecs_vec_count(&p.systems);
     ecs_sync_stats_t *syncs = ecs_vec_first_t(&p.sync_points, ecs_sync_stats_t);
     int32_t sync_count = ecs_vec_count(&p.sync_points);
-
     printf("\n=== Flecs pipeline stats ===\n");
     printf("pipeline: %s\n", ecs_get_name(world, pipeline_id) ? ecs_get_name(world, pipeline_id) : "<unnamed>");
     printf("systems: %d  active: %d  sync_points: %d  rebuilds: %d\n",
             p.system_count, p.active_system_count, sync_count, p.rebuild_count);
-
     if (sync_count && syncs) {
         printf("\n-- sync points --\n");
         for (int32_t i = 0; i < sync_count; i++) {
@@ -54,22 +51,18 @@ void log_pipelines(ecs_world_t *world)
                     syncs[i].immediate ? 1 : 0);
         }
     }
-
     if (system_count && systems) {
         printf("\n-- systems --\n");
         for (int32_t i = 0; i < system_count; i++) {
             ecs_entity_t sys = systems[i];
-
             if (!sys) {
                 printf("---- merge ----\n");
                 continue;
             }
-
             ecs_system_stats_t s = {0};
             if (!ecs_system_stats_get(world, sys, &s)) {
                 continue;
             }
-
             const char *name = ecs_get_name(world, sys);
             printf("%-40s %8.3f ms%s\n",
                     name ? name : "<unnamed>",
@@ -77,7 +70,6 @@ void log_pipelines(ecs_world_t *world)
                     s.task ? "  [task]" : "");
         }
     }
-
     ecs_pipeline_stats_fini(&p);
 }
 

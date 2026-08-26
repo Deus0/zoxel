@@ -81,6 +81,7 @@ fi
 [[ " $* " == *" --release "* ]] && debug="0"
 [[ " $* " == *" --nologs "* ]] && logs="0"
 [[ " $* " == *" --logs "* ]] && logs="1"
+[[ " $* " == *" --untimed "* ]] && is_time_systems="0"
 [[ " $* " == *" --timings "* ]] && is_time_systems="1"
 [[ " $* " == *" --profile "* ]] && is_profiler="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
@@ -138,7 +139,8 @@ if [[ ${arc} == "arm" ]]; then
 fi
 
 if [[ ${debug} == "1" ]]; then
-    echo "+ Added [debug]"
+    echo "+ Added [zox_debug]"
+    dflags+=" -Dzox_debug"
     # cflags="-O2 -g -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs
@@ -146,9 +148,8 @@ if [[ ${debug} == "1" ]]; then
         echo "+ Added [fast_debug]"
         cflags+=" -O3 -g"
     else
-        dflags+=" -Dzox_debug"
-        cflags+=" -Wall -ggdb3"
         cflags+=" -O0 -g3"
+        cflags+=" -Wall -ggdb3"
     fi
     # Memory Leaks Full Debug
     # cflags+=" -fno-omit-frame-pointer""
@@ -319,6 +320,7 @@ if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
     echo ""
 fi
 
+clear
 echo ""
 echo "============================================================"
 echo "                         Z O X E L"
@@ -330,7 +332,11 @@ echo "  Graphics : ${graphics_lib}"
 echo "  Window   : ${window_lib}"
 echo "  SDL      : $(if [[ ${is_sdl3} == "1" ]]; then echo "SDL3"; else echo "SDL2"; fi)"
 echo "  Build    : $(if [[ ${debug} == "1" ]]; then echo "Debug"; else echo "Release"; fi)"
-echo "  Compiler   : ${compiler}"
+echo "  Compiler : ${compiler}"
+[[ ${logs} == "1" ]] && echo "  Logs     : enabled"
+[[ ${is_profiler} == "1" ]] && echo "  Profiler : enabled"
+[[ ${is_time_systems} == "1" ]] && echo "  Timed    : enabled"
+
 # echo "  CFlags   : ${cflags}"
 # echo "  DFlags   : ${dflags}"
 # echo "  Libs   : ${libs}"

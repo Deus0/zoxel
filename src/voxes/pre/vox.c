@@ -38,8 +38,8 @@ entity spawn_prefab_vox(ecs *world, byte depth) {
     zox_prefab_set(e, MeshColorRGBs, { 0 });
     zox_prefab_set(e, ColorsGPULink, { 0 });
     // Events
-    zox_prefab_set(e, Initialize, { 1 });
-    zox_prefab_set(e, VoxelNodeDirty, { 0 });
+    zox_add(e, Initialize);
+    // zox_prefab_set(e, VoxelNodeDirty, { 0 });
     zox_prefab_set(e, MeshDirty, { 0 });
     // zox_prefab_set(e, BuildChunkSides, { 0 });
     return e;

@@ -35,7 +35,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
     );
     zox_system_1(
         PlayerActionbarSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
         [in] layouts.CanvasLink,
@@ -43,7 +43,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
     );
     zox_system_1(
         PlayerCrosshairSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
         [in] layouts.CanvasLink,
@@ -51,7 +51,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
     );
     zox_system_1(
         PlayerTouchUISystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
         [in] layouts.CanvasLink,
@@ -60,7 +60,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
     );
     zox_system_1(
         GameStartStreamerSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] cameras.CameraLink,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,
@@ -68,7 +68,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
     );
     zox_system_1(
         PlayerBeginSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] cameras.CameraLink,
         [out] characters.CharacterLink,
         [out] players.PlayerState,
@@ -77,7 +77,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
     );
     zox_system_1(
         PlayerGame3EndSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,
         [in] cameras.CameraLink,
@@ -86,7 +86,7 @@ void zox_define_systems_controllers3_game(ecs *world) {
     );
     zox_system_1(
         Player3RespawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] cameras.CameraLink,
         [out] players.PlayerStateDirty,
         [out] players.PlayerState,

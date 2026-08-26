@@ -1,18 +1,13 @@
-// doesn't check for edge chunks
+// NOTE: New chunks will find neighbors, and set themselves on  their neighbors
 zox_sys2(ChunkFindNeighborSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
-    zox_sys_out(FindNeighbors);
     zox_sys_out(ChunkNeighbors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkPosition, position);
-        zox_sys_o(FindNeighbors, find);
         zox_sys_o(ChunkNeighbors, neighbors);
-        if (!find->value) {
-            continue;
-        }
         entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
@@ -39,21 +34,21 @@ zox_sys2(ChunkFindNeighborSystem) {
                 continue;
             }
             neighbors->value[j] = neighbor;
-#ifdef zox_safety_checks
+/*#ifdef zox_safety_checks
             if (!zox_has(neighbor, FindNeighbors)) {
                 zox_loge("Chunk Neighbor [%s] has no [FindNeighbors]", zox_getn(neighbor));
                 continue;
             }
-#endif
+#*/
             // No need to set twice
-            if (zox_getv(neighbor, FindNeighbors)) {
+            /*if (zox_has(neighbor, FindNeighbors)) {
                 continue;
-            }
+            }*/
             // we can add ourself to the neighbor here
             byte neighbor_index = neighbor_indexes[j];
             zox_muter(neighbor, ChunkNeighbors, neighbor_neighbors);
             neighbor_neighbors->value[neighbor_index] = e;
         }
-        find->value = 0;
+        zox_remove(e, FindNeighbors);
     }
 } zox_sys_end(ChunkFindNeighborSystem);

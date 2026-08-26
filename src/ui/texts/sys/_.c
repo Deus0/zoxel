@@ -29,7 +29,7 @@ void define_systems_texts(ecs *world) {
     );
     zox_system_1(
         ZigelSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] texts.TextDirty,
         [in] texts.TextData,
         [in] texts.ZigelPrefab,

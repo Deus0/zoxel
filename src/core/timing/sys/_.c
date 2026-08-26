@@ -24,7 +24,7 @@ void zox_systems_timing(ecs* world) {
     );
     zox_system_1(
         TimedEventSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] core.TimedEvent,
         [in] core.EventInput,
         [out] core.EventTime

@@ -1,5 +1,5 @@
 // NOTE: Just spawns chunks from here
-zox_sys2(TerrainStreamSystem) {
+/*zox_sys2(TerrainStreamSystem) {
     // TODO: Queue Position Checks to work over frames
     // TODO: Support for multiple streamers
     // TODO: Cache Streamers (like Billboard System)
@@ -80,9 +80,18 @@ zox_sys2(TerrainStreamSystem) {
                         Chunk3Stack stack = (Chunk3Stack) { 0 };
                         byte stack_i = 0;
                         for (position.y = - size.y; position.y <= size.y; position.y++, stack_i++) {
-                            entity chunk = spawn_terrain_chunk(world, prefab_chunk_terrain, e, seed->value, position, depth->value, block_scale->value, new_distance, new_depth);
+                            entity chunk = spawn_terrain_chunk(
+                                world,
+                                prefab_chunk_terrain,
+                                e,
+                                seed->value,
+                                position,
+                                depth->value,
+                                block_scale->value,
+                                new_distance,
+                                new_depth);
                             int3_hashmap_add(chunks->value, position, chunk);
-                            zox_set(chunk, TunkLink, { tunk });
+                            zox_setv(chunk, TunkLink, tunk);
                             if (position.y == render_distance_y) {
                                 zox_add(chunk, SunnyChunk);
                             } else if (position.y == -render_distance_y) {
@@ -100,7 +109,7 @@ zox_sys2(TerrainStreamSystem) {
         }
         zox_sys_query_end();
     }
-} zox_sys_end(TerrainStreamSystem);
+} zox_sys_end(TerrainStreamSystem);*/
 
 
 

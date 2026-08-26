@@ -2,19 +2,19 @@
 zox_sys2(CanvasBoundsSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Initialize);
+    // zox_sys_in(Initialize);
     zox_sys_in(LayoutSize);
     zox_sys_in(Anchor);
     zox_sys_out(LayoutConstraints);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Initialize, initialize);
+        // zox_sys_i(Initialize, initialize);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(Anchor, anchor);
         zox_sys_o(LayoutConstraints, constraints);
-        if (initialize->value != zox_dirty_active) {
+        /*if (initialize->value != zox_dirty_active) {
             continue;
-        }
+        }*/
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {
             zox_loge("Invalid Canvas for Window %s", zox_get_name(e));

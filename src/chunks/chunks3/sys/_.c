@@ -3,16 +3,15 @@
 #include "queue.c"
 #include "clear.c"
 #include "sides.c"
-// zox_increment_system_with_reset(VoxelNodeDirty, zox_dirty_end + 1);
 
 void define_systems_chunks3(ecs *world) {
-    // zoxd_system_increment(VoxelNodeDirty);
-    // ColoredChunk
+    // ColoredChunk, triggers mesh to update
     zox_system(
         ColoredChunkMeshTriggerSystem,
         zoxp_update,
-        [in] chunks3.VoxelNodeDirty,
-        [none] chunks3.ColorChunk
+        [none] chunks.Chunk,
+        [none] chunks3.ColorChunk,
+        [none] chunks3.VoxelNodePostDirty,
     );
     zox_system(
         VoxelUpdateQueueSystem,
@@ -20,15 +19,20 @@ void define_systems_chunks3(ecs *world) {
         [in] chunks.NodeDepth,
         [out] chunks3.VoxelNodeQueue,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks3.VoxelNodeEdited,
+        [none] chunks3.Chunk3,
+    );
+    // NOTE: Removes Dirty at end of frame
+    zox_system(
+        VoxelOctreeOptimizeSystem,
+        zoxp_destroy, // zoxp_update,
+        [out] chunks3.VoxelNode,
+        [none] chunks3.VoxelNodeDirty,
         [none] chunks3.Chunk3
     );
     zox_system(
-        VoxelOctreeOptimizeSystem,
-        zoxp_update,
-        [in] chunks3.VoxelNodeDirty,
-        [out] chunks3.VoxelNode,
-        [none] chunks3.Chunk3
+        VoxelNodePostDirtySystem,
+        zoxp_destroy,
+        [none] chunks3.VoxelNodePostDirty,
     );
 }

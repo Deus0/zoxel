@@ -37,7 +37,7 @@ void define_systems_streaming(ecs* world) {
     // main thread
     zox_system_1(
         StreamEndSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] core.EventInput,
         [in] voxes.ChunkLinks,
         [in] streaming.TerrainSpawnQueue,
@@ -47,7 +47,7 @@ void define_systems_streaming(ecs* world) {
     // Settings
     zox_system_1(
         StreamingSettingsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] settings.LoadSettings
     );
     zox_system_1(

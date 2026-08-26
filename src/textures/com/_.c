@@ -54,6 +54,9 @@ void define_components_textures(ecs* world) {
     zoxd_tag(VoxTexture);
     zoxd_tag(CenterVoxTexture);
     zoxd_tag(ArrowTexture);
+    // Dont Fragment Entities
+    zox_dont_fragment(TextureDirty);
+    // Data
     zoxd_byte(GenerateTexture);
     zoxd_byte(OutlineThickness);
     zoxd_byte(FrameCorner);
@@ -67,6 +70,4 @@ void define_components_textures(ecs* world) {
     zoxd_arrayd(TextureData);
     zoxd_arrayd(TilemapUVs);
     zoxd_entities(TextureLinks);
-    // Dont Fragment Entities
-    zox_dont_fragment(TextureDirty);
 }

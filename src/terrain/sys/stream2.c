@@ -42,7 +42,7 @@ zox_sys2(TerrainStreamSystem) {
                         if (!zox_valid(tunk)) {
                             byte added = add_TerrainSpawnQueue(queue,
                                 (TerrainSpawnUpdate) {
-                                    .level = level->value,
+                                    // .level = level->value,
                                     .position = tunk_position,
                                     .distance =  int2_distance(stream_position2, tunk_position)
                                 });
@@ -81,6 +81,9 @@ zox_sys2(TerrainQueueSystem) {
         zox_sys_o(RegionLinks, regions);
         zox_sys_o(TunkLinks, tunks);
         zox_sys_o(ChunkLinks, chunks);
+        if (!queue->count) {
+            continue;
+        }
         if (dbg_log) {
             zox_log(
                 "[Stream] Terrain [%i] queue count [%i]",
@@ -88,6 +91,8 @@ zox_sys2(TerrainQueueSystem) {
                 queue->count
             );
         }
+        entity tilemap = zox_getv(e, TilemapLink);
+        entity realm = zox_getv(e, RealmLink);
         uint processed = 0;
         byte chunk_length = octree_size(depth->value);
         while (queue->count && processed < max_process) {
@@ -106,9 +111,9 @@ zox_sys2(TerrainQueueSystem) {
                     zox_log("New Region [%ix%i] Spawned", region_position.x, region_position.y);
                 }
             }
-            if (update.level < 1) {
+            /*if (update.level < 1) {
                 continue;
-            }
+            }*/
             // int new_distance = int2_distance(stream_position2, position);
             entity tunk = int2_hashmap_get(tunks->value, update.position);
             // NOTE: If tunk doesnt exist, spawn new terrain pillar here!
@@ -141,7 +146,9 @@ zox_sys2(TerrainQueueSystem) {
                 entity chunk = spawn_terrain_chunk(
                     world,
                     prefab_chunk_terrain,
+                    realm,
                     e,
+                    tilemap,
                     seed->value,
                     chunk_position,
                     depth->value,
@@ -149,7 +156,7 @@ zox_sys2(TerrainQueueSystem) {
                     update.distance,
                     new_depth);
                 int3_hashmap_add(chunks->value, chunk_position, chunk);
-                zox_set(chunk, TunkLink, { tunk });
+                zox_setv(chunk, TunkLink, tunk);
                 if (y == render_distance_y) {
                     zox_add(chunk, SunnyChunk);
                 } else if (y == -render_distance_y) {

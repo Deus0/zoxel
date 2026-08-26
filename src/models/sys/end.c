@@ -49,7 +49,7 @@ zox_sys2(ModelEndNodeSystem) {
                     sizeof(VoxelNode),
                     offsetof(VoxelNode, value));
                 zox_setv(vox, ChunkSize, byte3_to_int3(size));
-                zox_setv(vox, VoxelNodeDirty, 1);
+                zox_add(vox, VoxelNodeDirty);
             }
         } else {
             zox_logw("Node Process Entity does not have ModelLods");

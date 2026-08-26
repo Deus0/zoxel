@@ -2,19 +2,19 @@ zox_sys2(RenderCameraInitializeSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Initialize);
+    // zox_sys_in(Initialize);
     zox_sys_in(ScreenDimensions);
     zox_sys_out(FrameBufferLink);
     zox_sys_out(RenderBufferLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Initialize, initialize);
+        // zox_sys_i(Initialize, initialize);
         zox_sys_i(ScreenDimensions, size);
         zox_sys_o(FrameBufferLink, fbo);
         zox_sys_o(RenderBufferLink, rbo);
-        if (initialize->value != zox_dirty_active) {
+        /*if (initialize->value != zox_dirty_active) {
             continue;
-        }
+        }*/
         fbo->value = zox_gpu_create_fbo();
         if (!fbo->value) {
             zox_loge("Failed to create FBO on Render Camera [%s]", zox_getn(e));

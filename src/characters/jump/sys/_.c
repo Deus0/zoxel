@@ -30,13 +30,13 @@ void define_systems_jump(ecs* world) {
     );
     zox_system_1(
         JumpSoundSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] jumps.JumpState,
         [none] !jumps.SilentJumper
     );
     zox_system_1(
         LandSoundSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] jumps.LandState,
         [none] !jumps.SilentJumper
     );

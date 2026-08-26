@@ -30,8 +30,10 @@ zox_sys2(Basic3RenderSystem) {
             zox_loge("(Basic3) Gpu Link [material] broken [%s]", zox_getn(e));
             continue;
         }
-        if (!mesh->value.x || !mesh->value.y) {
-            zox_loge("(Basic3) Gpu links [mesh] broken [%s]", zox_getn(e));
+        if (!mesh->value.x ||
+            !mesh->value.y)
+        {
+            // zox_loge("(Basic3) Gpu links [mesh] broken [%s]", zox_getn(e));
             continue;
         }
         if (alpha->value < 1) {

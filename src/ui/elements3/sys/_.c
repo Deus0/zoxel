@@ -8,11 +8,11 @@ void define_systems_elements3D(ecs *world) {
     zox_system(
         Layout3MeshBeginSystem,
         zoxp_update,
-        [in] core.Initialize,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices,
         [out] rendering.MeshDirty,
+        [none] core.Initialize,
     );
     zox_system(
         Layout3MeshUpdateSystem,
@@ -34,7 +34,7 @@ void define_systems_elements3D(ecs *world) {
     );*/
     /*zox_system_1(
         Text3DResizeSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] texts.TextDirty,
         [in] texts.TextData,
         [in] glyphs.FontOutlineColor,

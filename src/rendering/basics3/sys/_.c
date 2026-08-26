@@ -53,7 +53,7 @@ void zox_define_systems_basics3(ecs* world) {
     // upload gpu
     zox_system_1(
         MeshUpdateSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
         [in] rendering.MeshGPULink,
@@ -64,7 +64,7 @@ void zox_define_systems_basics3(ecs* world) {
     );
     zox_system_1(
         MeshUpdateCharacters3DSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
         [in] rendering.MeshColorRGBs,
@@ -95,7 +95,7 @@ void zox_define_systems_basics3(ecs* world) {
     // Uploads Terrain Chunks, Items, Skybox
     zox_system_1(
         TexturedMeshUploadSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,
@@ -110,7 +110,7 @@ void zox_define_systems_basics3(ecs* world) {
     );
     zox_system_1(
         MeshColorsGpuSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshColorRGBs,
         [none] rendering.MeshColorsDirty,

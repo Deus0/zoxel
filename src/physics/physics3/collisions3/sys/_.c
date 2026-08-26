@@ -11,7 +11,7 @@ void zox_systems_collisions3(ecs *world) {
     //      idk how the systems might overlap so its hard
     zox_system_1(
         CollisionDebugSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] collisions3.CollisionDistance,
         [in] transforms3.Position3D,
         [in] collisions3.Collision,
@@ -27,7 +27,7 @@ void zox_systems_collisions3(ecs *world) {
     );
     zox_system_ctx_1(
         SphereCollideSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         sphere_colliders,
         [in] transforms3.Position3D,
         [in] SphereRadius,
@@ -37,7 +37,7 @@ void zox_systems_collisions3(ecs *world) {
 #ifdef zox_gizmos_sphere_colliders
     zox_system_1(
         SphereColliderDrawSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] rendering.RenderDisabled,
         [in] transforms3.Position3D,
         [in] SphereRadius,
@@ -48,11 +48,11 @@ void zox_systems_collisions3(ecs *world) {
     zox_system(
         Bounds3GrowSystem,
         zoxp_update,
-        [in] chunks3.VoxelNodeDirty,
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
         [out] transforms3.Bounds3D,
-        [out] transforms3.Bounds3Dirty
+        [out] transforms3.Bounds3Dirty,
+        [none] chunks3.VoxelNodePostDirty,
     );
     zox_system(
         Bounds3EnableSystem,

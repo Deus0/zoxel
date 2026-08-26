@@ -1,5 +1,13 @@
 // TODO: Add quadtree data and chunk2 tag
-entity spawn_tunk(ecs* world, entity prefab, entity terrain, entity region, int2 position, byte distance, byte lod) {
+entity spawn_tunk(
+    ecs* world,
+    entity prefab,
+    entity terrain,
+    entity region,
+    int2 position,
+    byte distance,
+    byte lod)
+{
     zox_instance(prefab);
     {
         char name[32];

@@ -17,8 +17,8 @@ void define_systems_game_ui(ecs *world) {
     zox_system(
         MenuGameBeginSystem,
         zoxp_update,
-        [in] core.Initialize,
-        [out] huds.TaskbarToggleLink
+        [out] huds.TaskbarToggleLink,
+        [none] core.Initialize,
     );
     zox_system(
         GameStartFaderSystem,
@@ -31,7 +31,7 @@ void define_systems_game_ui(ecs *world) {
      // NOTE: must update before ??
     zox_system_1(
         DeviceModeUISystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] inputs.DeviceModeDirty,
         [in] inputs.LastDeviceMode,
         [in] inputs.DeviceMode,
@@ -40,7 +40,7 @@ void define_systems_game_ui(ecs *world) {
     );
     zox_system_1(
         PlayerUIGame3EndSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] games.GameState,
         [in] games.GameStateDirty,
         [none] games.Game
@@ -48,7 +48,7 @@ void define_systems_game_ui(ecs *world) {
     // Pause UI
     zox_system_1(
         PlayerPauseUISystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] layouts.CanvasLink,
@@ -57,7 +57,7 @@ void define_systems_game_ui(ecs *world) {
     );
     zox_system_1(
         PlayerRespawnUISystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [in] layouts.CanvasLink,
@@ -66,7 +66,7 @@ void define_systems_game_ui(ecs *world) {
     );
     zox_system_1(
         PlayerTerminalSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] layouts.CanvasLink,
         [in] inputs.DeviceMode,
         [none] players.Player

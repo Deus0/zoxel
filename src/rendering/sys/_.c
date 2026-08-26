@@ -10,27 +10,27 @@ void define_systems_rendering(ecs *world) {
     // other
     zox_system_1(
         InitializeMeshSystem,
-        zoxp_mainthread,
-        [in] core.Initialize,
-        [out] rendering.MeshGPULink
+        zoxp_gpu_upload,
+        [out] rendering.MeshGPULink,
+        [none] core.Initialize,
     );
     zox_system_1(
         InitializeMeshUvsSystem,
-        zoxp_mainthread,
-        [in] core.Initialize,
-        [out] rendering.UvsGPULink
+        zoxp_gpu_upload,
+        [out] rendering.UvsGPULink,
+        [none] core.Initialize,
     );
     zox_system_1(
         InitializeMeshColorsSystem,
-        zoxp_mainthread,
-        [in] core.Initialize,
-        [out] rendering.ColorsGPULink
+        zoxp_gpu_upload,
+        [out] rendering.ColorsGPULink,
+        [none] core.Initialize,
     );
     zox_system_1(
         InitializeMeshTextureSystem,
-        zoxp_mainthread,
-        [in] core.Initialize,
-        [out] rendering.TextureGPULink
+        zoxp_gpu_upload,
+        [out] rendering.TextureGPULink,
+        [none] core.Initialize,
     );
     zox_system(
         LodInstanceSystem,
@@ -42,7 +42,7 @@ void define_systems_rendering(ecs *world) {
     );
     zox_system_1(
         RenderingSettingsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] settings.LoadSettings,
     );
     zox_system_1(

@@ -1,6 +1,8 @@
 // NOTE: Core components for entire engine!
 // General
+zox_tag(ZoxSystem);
 zox_tag(Disabled);
+zox_tag(BuildDisabled);
 zox_tag(DebugEntity);
 // zoxc_byte(Active);
 zoxc_double(DeactivateDelay);
@@ -10,7 +12,8 @@ zoxc_byte(Busy);
 zoxc_byte(Ready);
 zoxc_entity(SystemLink);
 zoxc_state(Generate);
-zoxc_byte(Initialize);
+// zoxc_byte(Initialize);
+zox_tag(Initialize);
 // identitys
 zoxc_int(ID);
 zoxc_lint(Seed);
@@ -40,19 +43,25 @@ byte zox_tst_remove_deactivates = 0;
 
 void zox_components_core(ecs* world) {
     // General
+    zoxd_tag(ZoxSystem);
     zoxd_tag(Disabled);
+    zoxd_tag(BuildDisabled);
     zoxd_tag(DebugEntity);
+    zoxd_tag(Initialize);
     // zoxd_byte(Active);
+    // Dont Fragment
+    zox_dont_fragment(Initialize);
+    zox_dont_fragment(ZoxSystem);
+    zox_dont_fragment(Disabled);
+    zox_dont_fragment(BuildDisabled);
+    zox_dont_fragment(DebugEntity);
+    // Data
     zoxd_double(DeactivateDelay);
-    /*if (zox_tst_remove_deactivates) {
-        zox_add_id(zox_id(DeactivateDelay), EcsDontFragment);
-    }*/
     zoxd_byte(GenericEvent);
     zoxd_byte(SpawnChance);
     zoxd_byte(Busy);
     zoxd_byte(Ready);
     zoxd_state(Generate);
-    zoxd_byte(Initialize);
     zoxd_entity(SystemLink);
     // ids
     zoxd_int(ID);
@@ -76,8 +85,4 @@ void zox_components_core(ecs* world) {
     // Arrays
     zoxd_double(DoubleDataMax);
     zoxd_arrayd(DoubleData);
-    // Dont Fragment
-    // zox_dont_fragment(Initialize);
-    zox_dont_fragment(Disabled);
-    // zox_dont_fragment(DebugEntity);
 }

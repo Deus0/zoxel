@@ -15,8 +15,8 @@ void zox_define_systems_tooltips(ecs* world) {
     zox_system(
         TooltipeeInitializeSystem,
         zoxp_update,
-        [in] core.Initialize,
         [none] tooltips.Tooltipper,
+        [none] core.Initialize,
     );
     zox_system(
         TooltipeeDeselectSystem,

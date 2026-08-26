@@ -148,7 +148,7 @@ void spawn_vodes_dive(ecs *world,
 zox_sys2(VodesSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxelNodeDirty);
+    // zox_sys_in(VoxelNodeDirty);
     zox_sys_in(NodeDepth);
     zox_sys_in(RenderDisabled);
     zox_sys_in(RenderDepth);
@@ -158,7 +158,7 @@ zox_sys2(VodesSpawnSystem) {
     zox_sys_out(BlocksSpawned);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxelNodeDirty, voxels_dirty);
+        // zox_sys_i(VoxelNodeDirty, voxels_dirty);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(RenderDisabled, render_disabled);
         zox_sys_i(RenderDepth, render_depth);
@@ -167,7 +167,7 @@ zox_sys2(VodesSpawnSystem) {
         zox_sys_o(VoxelNode, voxel_octree);
         zox_sys_o(BlocksSpawned, spawned);
         // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
-        byte is_dirty = voxels_dirty->value == zox_dirty_active;
+        byte is_dirty = zox_has(e, VoxelNodeDirty); // voxels_dirty->value == zox_dirty_active;
         // byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
         byte is_lod_dirty = zox_has(e, ChunkLodDirty) && zox_getv(e, ChunkLodDirty);
         if (!is_dirty && !is_lod_dirty) { // && !generated) {

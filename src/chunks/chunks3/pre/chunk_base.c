@@ -13,7 +13,5 @@ entity spawn_prefab_chunk_base(ecs *world) {
     // allocations
     zox_setv(e, VoxelNode, 0);
     zox_setv(e, SidesOctree, 0);
-    // Dirty State
-    zox_setv(e, VoxelNodeDirty, 0);
     return e;
 }

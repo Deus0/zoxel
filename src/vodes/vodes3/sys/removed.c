@@ -19,14 +19,16 @@ void remove_vodes(ecs *world, VoxelNode *node) {
 zox_sys2(VodesRemoveSystem) {
     zox_sys_world()
     zox_sys_begin()
-    zox_sys_in(VoxelNodeDirty)
+    // zox_sys_in(VoxelNodeDirty)
     zox_sys_in(BlocksSpawned)
     zox_sys_out(VoxelNode)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxelNodeDirty, voxelNodeDirty)
+        zox_sys_e();
+        // zox_sys_i(VoxelNodeDirty, voxelNodeDirty)
         zox_sys_i(BlocksSpawned, blocksSpawned)
         zox_sys_o(VoxelNode, node)
-        if (voxelNodeDirty->value == zox_dirty_active && blocksSpawned->value) {
+        if (zox_has(e, VoxelNodeDirty) &&
+            blocksSpawned->value) {
             // write_lock_VoxelNode(node);
             remove_vodes(world, node);
             // write_unlock_VoxelNode(node);

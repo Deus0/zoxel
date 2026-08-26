@@ -2,7 +2,7 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     entity e = zox_prefab_from_parent(world, prefab);
     zox_prefab_name("element3");
     zox_add(e, Element3);
-    zox_prefab_set(e, Initialize, { 1 });
+    zox_add(e, Initialize);
     // Add Mesh
     zox_add(e, SingleMaterial);
     zox_add(e, TexturedMesh3);

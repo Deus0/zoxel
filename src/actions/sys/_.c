@@ -31,13 +31,13 @@ void zox_define_systems_actions(ecs* world) {
     );
     zox_system_1(
         CharacterActionsSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] characters.GenerateCharacter,
         [none] characters.Character
     );
     zox_system_1(
         ActiveActionHoldSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] actions.ActiveActionDirty,
         [in] actions.ActiveAction,
         [in] bones.HandBoneLink,

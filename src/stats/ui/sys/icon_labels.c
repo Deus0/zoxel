@@ -1,6 +1,6 @@
 // NOTE: Sets the stat icon labels
 zox_sys2(StatIconLabelSystem) {
-    byte label_text_capacity = 64;
+    byte label_text_capacity = 253;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DataLink);

@@ -26,13 +26,13 @@ void define_systems_neurals(ecs* world) {
 #ifdef zox_render_brain
     zox_system_1(
         NeuronRenderSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] transforms2.Position2,
         [none] Neuron
     );
     zox_system_1(
         ConnectionRenderSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] ConnectionData,
         [in] Weight,
         [in] Signal,

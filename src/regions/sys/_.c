@@ -11,7 +11,7 @@ void zox_define_systems_regions(ecs* world) {
         );
         zox_system_ctx_1(
             RegionSpawnSystem,
-            zoxp_mainthread,
+            zoxp_spawn,
             streamers,
             [in] core.Seed,
             [in] chunks.NodeDepth,

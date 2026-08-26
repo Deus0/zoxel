@@ -1,6 +1,6 @@
 // TODO: Convert TextData to Ascii!
 
-uint texts_children_capacity = 64;
+uint texts_children_capacity = 250;
 byte zox_texts_min_resolution = 32;
 
 // todo: move labels to here as prefab

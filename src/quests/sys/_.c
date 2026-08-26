@@ -12,7 +12,7 @@ void define_systems_quests(ecs* world) {
     );
     zox_system_1(
         CharacterPlayerQuestsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [none] characters.Character,

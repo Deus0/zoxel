@@ -6,7 +6,17 @@ zox_sys2(MaxSystemSystem) {
     zox_sys_world();
     // entity max_system = 0;
     double max_delta = 0;
-    for (int i = 0; i < zox_systems_count; i++) {
+    zox_sys_begin();
+    zox_sys_in(DoubleDataMax);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(DoubleDataMax, max);
+        if (max->value > max_delta) {
+            max_delta = max->value;
+            max_system = e;
+        }
+    }
+    /*for (int i = 0; i < zox_systems_count; i++) {
         entity system = zox_systems[i];
         if (!zox_valid(system)) {
             // zox_logw("System invalid at [%i]", i);
@@ -17,9 +27,11 @@ zox_sys2(MaxSystemSystem) {
             max_delta = delta;
             max_system = system;
         }
-    }
+    }*/
     if (max_system && dbg_log) {
-        zox_log("Biggest System Time [%s]:[%f]", zox_get_name(max_system), max_delta);
+        zox_log("Biggest System Time [%s]:[%f]",
+            zox_getn(max_system),
+            max_delta);
     }
     /*zox_sys_begin();
     zox_sys_out(SystemLink);

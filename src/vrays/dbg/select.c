@@ -30,8 +30,7 @@ void refresh_dbg_chunk(ecs* world) {
     if (!zox_valid(dbg_chunk)) {
         return;
     }
-
-    zox_set(dbg_chunk, VoxelNodeDirty, { zox_dirty_trigger });
+    zox_add(dbg_chunk, VoxelNodeDirty);
         zox_log("Triggered VoxelNodeDirty [%s]", zox_get_name(dbg_chunk));
 }
 
@@ -40,7 +39,7 @@ void refresh_dbg_chunk2(ecs* world) {
     if (!zox_valid(dbg_chunk)) {
         return;
     }
-    zox_set(dbg_chunk, BuildMesh, { zox_dirty_trigger });
+    zox_add(dbg_chunk, BuildMesh);
     zox_log("Triggered BuildMesh [%s]", zox_get_name(dbg_chunk));
 }
 

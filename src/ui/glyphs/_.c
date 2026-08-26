@@ -1,4 +1,4 @@
-byte font_texture_min_size = 32;
+byte font_texture_min_size = 16;
 
 #include "set/_.c"
 #include "com/_.c"

@@ -60,7 +60,7 @@ void define_systems_elements2(ecs *world) {
     // Main Thread needed due to nature of options
     zox_system_1(
         ToggleEventSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] interaction.ClickState,
         [in] interaction.Clicker,
         [in] elements2.ToggleEvent,

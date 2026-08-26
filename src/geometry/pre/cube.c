@@ -11,7 +11,7 @@ entity spawn_prefab_cube(ecs *world) {
     zox_prefab_set(e, Alpha, { 1 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     // Mesh
-    zox_prefab_set(e, Initialize, { 1 });
+    zox_add(e, Initialize);
     zox_prefab_set(e, MeshDirty, { mesh_state_upload });
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });

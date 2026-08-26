@@ -11,14 +11,14 @@ void define_systems_controllers2(ecs *world) {
     );
     zox_system_1(
         PlayerGame2StartSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [none] players.Player2
     );
     zox_system_1(
         PlayerGame2EndSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
         [out] characters.CharacterLink,

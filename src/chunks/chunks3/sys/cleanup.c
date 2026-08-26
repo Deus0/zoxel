@@ -117,23 +117,29 @@ static inline byte optimize_reduce_octree_node(
 }
 
 // TODO: Pass in CanGroup block byte tags, so we dont group some blocks like Grass
+// NOTE: We might need a post optimize tag - for mesh updates etc
 zox_sys2(VoxelOctreeOptimizeSystem) {
+    zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxelNodeDirty);
     zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxelNodeDirty, dirty);
+        zox_sys_e();
         zox_sys_o(VoxelNode, voxels);
-        if (dirty->value == zox_dirty_end) {
-            optimize_reduce_octree_node(
-                voxels,
-                sizeof(VoxelNode),
-                offsetof(VoxelNode, value),
-                offsetof(VoxelNode, type));
-            // write_lock_VoxelNode(voctree);
-            // optimize_VoxelNode(voctree);
-            // reduce_VoxelNode(voctree);
-            // write_unlock_VoxelNode(voctree);
-        }
+        //if (dirty->value == zox_dirty_end)
+        optimize_reduce_octree_node(
+            voxels,
+            sizeof(VoxelNode),
+            offsetof(VoxelNode, value),
+            offsetof(VoxelNode, type));
+        zox_remove(e, VoxelNodeDirty);
+        zox_add(e, VoxelNodePostDirty);
     }
 } zox_sys_end(VoxelOctreeOptimizeSystem);
+
+zox_sys2(VoxelNodePostDirtySystem) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_remove(e, VoxelNodePostDirty);
+    }
+} zox_sys_end(VoxelNodePostDirtySystem);

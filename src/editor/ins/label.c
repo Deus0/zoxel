@@ -15,12 +15,12 @@ entity spawn_game_debug_label(ecs* world, entity canvas) {
     float2 anchor = float2_one; //  { 1.0f, 1.0f };
     int2 position = (int2) { -8, -8 };
     // Style
+    byte font_size = 4 * ui_scale;
+    byte2 padding = byte2_single(3 * ui_scale);
     color fill = button_fill;
     color font_fill = button_font_fill;
     fill.a = 222;
     font_fill.a = 255;
-    byte font_size = 6 * ui_scale;
-    byte2 padding = (byte2) { 6 * ui_scale, 6 * ui_scale };
     entity e = spawn_label(
         world,
         prefab,

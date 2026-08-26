@@ -17,7 +17,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
@@ -29,7 +28,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
@@ -41,7 +39,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
@@ -53,7 +50,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
@@ -65,7 +61,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
@@ -77,7 +72,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
@@ -89,7 +83,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
@@ -101,7 +94,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );
@@ -113,7 +105,6 @@ void define_systems_models_generation(ecs* world) {
         [in] voxes.VoxType,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] chunks.NodeDepth,
         [out] colorz.ColorRGBs
     );

@@ -19,9 +19,9 @@ void define_systems_vodes3(ecs* world) {
     zox_system(
         VodesRemoveSystem,
         zoxp_update,
-        [in] chunks3.VoxelNodeDirty,
+        // [in] chunks3.VoxelNodeDirty,
         [in] chunks3.BlocksSpawned,
-        [out] chunks3.VoxelNode
+        [out] chunks3.VoxelNode,
     );
     zox_system(
         VodesLodSystem,
@@ -40,19 +40,19 @@ void define_systems_vodes3(ecs* world) {
     );
     zox_system_1(
         VodesSpawnSystem,
-        zoxp_mainthread,
-        [in] chunks3.VoxelNodeDirty,
+        zoxp_spawn,
+        // [in] chunks3.VoxelNodeDirty,
         [in] chunks.NodeDepth,
         [in] rendering.RenderDisabled,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDistance,
         [in] transforms3.Position3D,
         [out] chunks3.VoxelNode,
-        [out] chunks3.BlocksSpawned
+        [out] chunks3.BlocksSpawned,
     );
     zox_system_1(
         BlockDamageQueueSystem,
-        zoxp_mainthread, // zoxp_queue_add,
+        zoxp_spawn,
         [in] chunks3.ChunkPosition,
         [in] chunks3.VoxelNode,
         [in] chunks.NodeDepth,

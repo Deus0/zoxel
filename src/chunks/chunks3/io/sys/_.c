@@ -6,19 +6,18 @@ void define_systems_chunksio(ecs* world) {
         Chunk3SaveSystem,
         zoxp_update,
         [in] chunks3.VoxelNodeEdited,
-        [in] chunks3.VoxelNodeDirty,
         [in] chunks3.VoxelNode,
-        [in] chunks3.ChunkPosition
+        [in] chunks3.ChunkPosition,
+        [none] chunks3.VoxelNodePostDirty,
     );
     zox_system(
         Chunk3LoadSystem,
         zoxp_update,
-        [in] core.Initialize,
         [in] chunks3.ChunkPosition,
         [out] chunks.NodeDepth,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeDirty,
         [out] saves.Loaded,
-        [none] chunks3.Chunk3
+        [none] chunks3.Chunk3,
+        [none] core.Initialize,
     );
 }

@@ -3,7 +3,7 @@ entity spawn_prefab_camera(ecs *world) {
     zox_prefab();
     zox_prefab_name("camera");
     zox_add(e, Camera);
-    zox_prefab_set(e, Initialize, { 1 });
+    zox_add(e, Initialize);
     zox_prefab_set(e, Position3D, { float3_zero });
     zox_prefab_set(e, Rotation3D, { float4_identity });
     zox_prefab_set(e, LocalPosition3D, { float3_zero });

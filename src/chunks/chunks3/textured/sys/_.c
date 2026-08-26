@@ -1,52 +1,23 @@
 #include "sides.c"
 #include "build.c"
 #include "wait.c"
-#include "meshes.c"
+#include "spawn.c"
 #include "trigger.c"
-#include "toggle.c"
+#include "transition.c"
 
 void define_systems_chunks3_textured(ecs *world) {
     zox_system(
-        ChunkMeshTriggerSystem,
+        ChunkSidesTriggerSystem,
         zoxp_update,
-        [in] chunks3.VoxelNodeDirty,
-        // [out] chunks.BuildChunkSides,
-        [none] chunks3.ChunkTextured
+        [none] chunks3.VoxelNodePostDirty,
+        [none] chunks.ChunkTextured
     );
     zox_system(
-        Chunk3NeighborsMeshTriggerSystem,
+        ChunkNeighborsSidesTriggerSystem,
         zoxp_update,
-        [in] chunks3.VoxelNodeDirty,
         [in] chunks3.ChunkNeighbors,
-        [none] chunks3.ChunkTextured
-    );
-    zox_system(
-        ChunkMeshToggleSystem,
-        zoxp_update,
-        [in] rendering.RenderDepth,
-        [in] chunks3.ChunkLodDirty,
-        [none] chunks3.ChunkTextured,
-        [none] !chunks.GenerateChunk,
-    );
-    zox_system_1(
-        ChunkMeshSpawnSystem,
-        zoxp_mainthread,
-        [in] transforms.TransformMatrix,
-        [in] rendering.RenderDisabled,
-        [in] rendering.RenderDepth,
-        [in] chunks3.VoxelNode,
-        [in] chunks3.VoxelNodeDirty,
-        [none] chunks3.ChunkTextured
-    );
-    zox_system_1(
-        ChunkMeshSpawn2System,
-        zoxp_mainthread,
-        [in] transforms.TransformMatrix,
-        [in] rendering.RenderDisabled,
-        [in] rendering.RenderDepth,
-        [in] chunks3.VoxelNode,
-        [out] chunks3.ChunkLodDirty,
-        [none] chunks3.ChunkTextured
+        [none] chunks3.VoxelNodePostDirty,
+        [none] chunks.ChunkTextured
     );
     // Builds our Terrain Chunk Mesh
     // NOTE: Requires reading voxel data
@@ -58,18 +29,58 @@ void define_systems_chunks3_textured(ecs *world) {
         [in] chunks3.VoxelNode,
         [out] chunks3.SidesOctree,
         [none] chunks.BuildChunkSides,
-        [none] chunks3.ChunkTextured,
+        [none] chunks.ChunkTextured,
+        [none] !chunks3.VoxelNodeDirty,
+    );
+    zox_system_1(
+        ChunkMeshSpawn2System,
+        zoxp_spawn,
+        [in] transforms.TransformMatrix,
+        [in] rendering.RenderDisabled,
+        [in] rendering.RenderDepth,
+        [in] chunks3.VoxelNode,
+        [out] chunks3.ChunkLodDirty,
+        [out] chunks.ChunkMeshTimer,
+        [none] chunks.ChunkTextured
+    );
+    zox_system_1(
+        ChunkMeshSpawnSystem,
+        zoxp_spawn,
+        [in] transforms.TransformMatrix,
+        [in] rendering.RenderDisabled,
+        [in] rendering.RenderDepth,
+        [in] chunks3.VoxelNode,
+        [out] chunks.ChunkMeshTimer,
+        [none] chunks3.VoxelNodePostDirty,
+        [none] chunks.ChunkTextured
+    );
+    // hmmmm
+    zox_system(
+        ChunkMeshTransitionSystem,
+        zoxp_update,
+        [in] chunks3.ChunkLodDirty,
+        [in] rendering.RenderDepth,
+        [out] chunks.ChunkMeshTimer,
+        [none] chunks.ChunkTextured,
+        [none] !chunks.GenerateChunk,
+        [none] !chunks.BuildChunkSides,
     );
     zox_system(
         ChunkTexturedBuildSystem,
         zoxp_voxels_mesh,
-        [out] rendering.BuildMesh,
         [in] rendering.RenderDepth,
         [out] rendering.MeshIndicies,
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,
         [out] rendering.MeshColorRGBs,
         [none] chunks.ChunkMesh,
-        [none] !core.Disabled
+        [none] rendering.BuildMesh,
+        [none] !core.BuildDisabled,
     );
+    /*zox_system_cached(
+        ChunkTexturedBuildSystem2,
+        zoxp_voxels_mesh,
+        [none] rendering.RenderDepth,
+        [none] chunks.ChunkMesh,
+    );*/
 }

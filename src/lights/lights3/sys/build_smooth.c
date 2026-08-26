@@ -141,7 +141,7 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
     }
 }
 
-// NOTE: Rebuilds Lights only when MeshColorsGenerate is dirty
+// NOTE: Rebuilds Lights only when BuildMeshColors is dirty
 zox_sys2(SmoothLightsBuildSystem) {
     byte dbg_log = 0;
     byte max_process = !zox_disable_process_skips ? 1 : 0;
@@ -201,7 +201,7 @@ zox_sys2(SmoothLightsBuildSystem) {
         // upload->value = 1;
         // zox_setv(e, MeshColorsDirty, 1);
         zox_add(e, MeshColorsDirty);
-        zox_remove(e, MeshColorsGenerate);
+        zox_remove(e, BuildMeshColors);
         /*if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }*/

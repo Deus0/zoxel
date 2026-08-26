@@ -26,7 +26,7 @@ void zox_define_systems_skills(ecs *world) {
     // TODO: split into sound, resource and damage systems
     zox_system_1(
         MeleeSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] skills.SkillResourceLink,
         [in] skills.SkillCost,
         [in] skills.SkillDamage,
@@ -38,7 +38,7 @@ void zox_define_systems_skills(ecs *world) {
     // TODO: Make skill activate use resource
     zox_system_1(
         ShootSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] timers.Activate,
         [in] skills.SkillRange,
         [in] skills.SkillDamage,
@@ -47,7 +47,7 @@ void zox_define_systems_skills(ecs *world) {
     );
     /*zox_system_1(
         CharacterSkillsSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [out] skills.SkillLinks

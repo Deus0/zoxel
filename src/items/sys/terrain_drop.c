@@ -57,7 +57,7 @@ zox_sys2(TerrainItemDropSystem) {
             }
             entity block_item = zox_getv(block, ItemLink);
             if (!zox_valid(block_item)) {
-                zox_log_error("block [%s] has no valid item", zox_get_name(block));
+                zox_loge("block [%s] has no valid item", zox_get_name(block));
             }
             float3 positionf = byte3_to_float3(update.position);
             float3_scale_p(&positionf, scale->value);

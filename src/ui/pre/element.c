@@ -9,7 +9,7 @@ entity spawn_prefab_element(ecs* world, entity prefab) {
     zox_prefab_set(e, Brightness, { 1 });
     zox_prefab_set(e, Alpha, { 1 });
     // Mesh
-    zox_prefab_set(e, Initialize, { 1 });
+    zox_add(e, Initialize);
     zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_set(e, MeshAlignment, { 0 });
     zox_prefab_add(e, MeshIndicies);

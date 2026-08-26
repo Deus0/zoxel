@@ -19,7 +19,7 @@ void define_systems_bodys(ecs* world) {
     );
     zox_system_1(
         CharacterBodySpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [out] parts.BodyDirty,
@@ -27,7 +27,7 @@ void define_systems_bodys(ecs* world) {
     );
     zox_system_1(
         CharacterBoneSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] parts.BodySize,
         [in] blocks.BlockScale,
         [out] parts.BodyDirty,

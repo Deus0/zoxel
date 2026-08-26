@@ -11,7 +11,7 @@ void define_systems_vrays(ecs* world) {
     );
     zox_system_1(
         RaycastGizmoSystem,
-        zoxp_mainthread, // EcsPreStore,
+        zoxp_spawn,
         [in] vrays.RaycastVoxelData,
         [in] vrays.RaycastType,
         [out] vrays.GizmoLink

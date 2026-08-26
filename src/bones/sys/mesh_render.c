@@ -29,12 +29,16 @@ zox_sys2(Skeleton3RenderSystem) {
         if (disabled->value || !indicies->length || !bones->length) {
             continue;
         }
-#ifdef zox_safety_checks
-        if (!mesh->value.x || !mesh->value.y || !colors->value || !bone_indicies->value) {
-            zox_loge("Skeleton Mesh invalid GPU Links [%s]", zox_getn(e));
+//#ifdef zox_safety_checks
+        if (!mesh->value.x ||
+            !mesh->value.y ||
+            !colors->value ||
+            !bone_indicies->value)
+        {
+            // zox_loge("Skeleton Mesh invalid GPU Links [%s]", zox_getn(e));
             continue;
         }
-#endif
+//#endif
         camera_filtering_check();
         if (!has_set_material) {
             has_set_material = 1;

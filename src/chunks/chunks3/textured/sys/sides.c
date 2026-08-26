@@ -1,14 +1,6 @@
 // TODO: Calculate only sides needed
 
 byte zox_sides_only_target_depth = 0;
-/*
-#define SIDE_X_NEG      (1 << 1)
-#define SIDE_X_POS      (1 << 2)
-#define SIDE_Y_NEG      (1 << 3)
-#define SIDE_Y_POS      (1 << 4)
-#define SIDE_Z_NEG      (1 << 5)
-#define SIDE_Z_POS      (1 << 6)
-#define SIDE_CALCULATED (1 << 7)*/
 
 // Sides System will generate our chunk sides before rendering
 // TODO: Let Colored use this too
@@ -193,7 +185,12 @@ static inline byte build_sides_dig(
         }
     }
     if (dbg_log && sides->value) {
-        zox_log("Sides was added at Depth [%i] Pos [%ix%ix%i] -> [%i]", depth, position.x, position.y, position.z, sides->value);
+        zox_log("Sides was added at Depth [%i] Pos [%ix%ix%i] -> [%i]",
+            depth,
+            position.x,
+            position.y,
+            position.z,
+            sides->value);
     }
     return sides->value;
 }
@@ -209,8 +206,8 @@ static inline byte build_sides_dig(
 // NOTE: Keeps updated when voxels octree changes
 // NOTE: Calculates the solid sides of a voxel octree per material
 zox_sys2(ChunkSidesSystem) {
-    init_side_child_indices();
     byte dbg_log = 0;
+    init_side_child_indices();
     byte max_process = !zox_disable_process_skips ? 1 : 0;
     byte* solids = NULL;
     zox_sys_world();
@@ -218,28 +215,15 @@ zox_sys2(ChunkSidesSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
-    // zox_sys_out(BuildChunkSides);
     zox_sys_out(SidesOctree);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, voxels);
-        // zox_sys_o(BuildChunkSides, build);
         zox_sys_o(SidesOctree, sides);
-        // NOTE: Process when Active state
-        /*if (!build->value) {
-            continue;
-        }*/
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
-            continue;
-        }
-        // HMmm
-        if (zox_getv(e, VoxelNodeDirty)) {
-            if (dbg_log) {
-                zox_log("[%s] [%s]: Delayed due to [VoxelNodeDirty]", zox_getn(it->system), zox_getn(e));
-            }
             continue;
         }
         // fetch here instead
@@ -279,11 +263,19 @@ zox_sys2(ChunkSidesSystem) {
             neighbor_voxels[j] = zox_get(e, VoxelNode);
             neighbor_depths[j] = zox_getv(e, NodeDepth);
         }
-        build_sides_dig(solids, voxels, neighbor_voxels, neighbor_depths, voxels, sides, depth->value, 0, byte3_zero, dbg_log);
-        // build->value = 0;
-        zox_remove(e, BuildChunkSides);
+        build_sides_dig(
+            solids,
+            voxels,
+            neighbor_voxels,
+            neighbor_depths,
+            voxels,
+            sides,
+            depth->value,
+            0,
+            byte3_zero,
+            dbg_log);
         if (dbg_log) {
-            zox_log("Built Sides [%s]", zox_getn(e));
+            zox_log("Built Sides [%s]", zox_sys_e_name);
         }
         // Triggers meshes to build now
         iter it2 = zox_children(world, e);
@@ -291,13 +283,14 @@ zox_sys2(ChunkSidesSystem) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
                 if (zox_has(e2, ChunkMesh)) {
-                    zox_setv(e2, BuildMesh, zox_build_chunk_mesh_run);
+                    zox_add(e2, BuildMesh);
                     if (dbg_log) {
                         zox_log("Chunk Triggered Build [%s]:[%s]", zox_getn(e), zox_getn(e2));
                     }
                 }
             }
         }
+        zox_remove(e, BuildChunkSides);
         // Should we set chunks to build here?
         zox_sys_increment();
     }

@@ -33,7 +33,7 @@
 
 // TODO: Make use wrapped flecs children query instead for many
 byte is_warn_capacity = 1;
-uint zox_children_capacity = 64;
+uint zox_children_capacity = 256;
 
 // Returns the direct parent (ChildOf target), or 0 if none
 static inline entity zox_get_parent(ecs *world, entity child) {

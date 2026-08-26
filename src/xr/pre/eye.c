@@ -14,7 +14,7 @@ entity spawn_xr_eye(ecs* world, entity parent) {
     zox_setv(e, LocalPosition3D, float3_zero);
     zox_setv(e, Rotation3D, float4_identity);
     zox_setv(e, LocalRotation3D, quaternion_identity);
-    zox_setv(e, Initialize, 1);
+    zox_add(e, Initialize);
     add_prefab_render_camera(world, e);
     // For our rendering
     zox_set(e, FieldOfView, 90);*/

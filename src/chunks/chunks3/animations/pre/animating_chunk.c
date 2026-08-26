@@ -8,7 +8,6 @@ entity spawn_prefab_animating_chunk(ecs *world, entity p) {
     zox_prefab_set(e, ChunkSize, { chunk_size });
     zox_prefab_set(e, AnimateChunk, { 1.0 });
     zox_prefab_set(e, ChunkDirty, { 0 });
-    // zox_prefab_set(e, BuildMesh, { 0 });
     zox_prefab_set(e, MeshDirty, { 0 });
     // testing: set colors
     ColorRGBs colors = (ColorRGBs) { 0 };

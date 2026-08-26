@@ -6,6 +6,7 @@ void add_system_log_components(ecs* world) {
             zox_log_error("System invalid at [%i]", i);
             continue;
         }
+        zox_add(system, ZoxSystem);
         zox_set(system, SystemDelta, { 0 });
         zox_set(system, SystemDeltaCache, { 0 });
         zox_set(system, DoubleDataMax, { 0 });

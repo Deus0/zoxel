@@ -7,7 +7,7 @@
 void define_systems_basics2D(ecs *world) {
     zox_system_1(
         Mesh2DUpdateSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices2D,
         [in] rendering.MeshGPULink,
@@ -18,7 +18,7 @@ void define_systems_basics2D(ecs *world) {
     );
     zox_system_1(
         MeshUVs2UploadSystem,
-        zoxp_mainthread,
+        zoxp_gpu_upload,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.MeshIndicies,
@@ -42,7 +42,8 @@ void define_systems_basics2D(ecs *world) {
         [none] rendering2.TexturedMesh2,
         [none] !core.Initialize,
     );
-    zox_render3_system(0,
+    zox_render3_system(
+        0,
         RenderMaterial2DSystem,
         [in] transforms2.Position2,
         [in] transforms2.Rotation2,

@@ -4,6 +4,11 @@
 => GPU Constrained actually, memory barely 
 used - 200-400mb used
 
+## Dont Fragment
+- Cannot use on iterator data
+- Only tags, as that isnt added to the tables
+- Stops entites making new tables, good for minor attributes
+
 ## Render Cameras
 - RenderBufferLink is on camera
 - FrameBufferLink is on camera and texture?

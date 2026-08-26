@@ -77,7 +77,7 @@ void define_systems_terrain(ecs *world) {
         );
         zox_system_1(
             TerrainQueueSystem,
-            zoxp_mainthread,
+            zoxp_spawn,
             [in] core.Seed,
             [in] blocks.BlockScale,
             [in] chunks.NodeDepth,
@@ -102,7 +102,7 @@ void define_systems_terrain(ecs *world) {
     }
     zox_system_1(
         TerrainGameStartSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] realms.RealmLink,
         [in] games.GameState,
         [in] games.GameStateDirty,
@@ -112,7 +112,7 @@ void define_systems_terrain(ecs *world) {
     #ifdef zox_debug_chunk_bounds
     zox_system_1(
         ChunkBoundsDrawSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
         [in] rendering.RenderDisabled,

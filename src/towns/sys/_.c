@@ -30,7 +30,7 @@ void zox_define_systems_towns(ecs* world) {
     );
     zox_system_1(
         RegionTownsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockPosition2,
         [in] blocks.BlockSize2,
@@ -39,7 +39,7 @@ void zox_define_systems_towns(ecs* world) {
     );
     zox_system_1(
         HomesSpawnSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockPosition2,
         [in] towns.TownSize,
