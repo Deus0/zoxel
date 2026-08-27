@@ -19,7 +19,7 @@ entity spawn_prefab_chunk_mesh(ecs* world) {
     // Starting Events
     zox_add(e, Initialize);
     zox_add(e, Disabled);
+    // NOTE: This added 20ms to query
     zox_add(e, BuildMesh);
-    // zox_add(e, BuildDisable);
     return e;
 }

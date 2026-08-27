@@ -47,9 +47,9 @@ void define_systems_characters3_terrain(ecs* world) {
         zoxp_spawn,
         [in] settings.LoadSettings
     );
-    zox_system_1(
+    zox_system(
         NpcsSettingsDirtySystem,
-        zoxp_mainthread,
+        zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,
         [in] settings.Setting

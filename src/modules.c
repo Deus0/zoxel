@@ -213,7 +213,7 @@ void import_zox(ecs* world) {
         // depth 7: world placement / AI
         zox_add_module(markers);
         zox_add_module(ai);
-        zox_import_module(Vodes);
+        zox_add_module(vodes);
         zox_add_module(dungeons);
         zox_add_module(npcs);
         zox_add_module(controllers);

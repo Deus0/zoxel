@@ -9,7 +9,7 @@ void define_systems_chunks3(ecs *world) {
     zox_system(
         ColoredChunkMeshTriggerSystem,
         zoxp_update,
-        [none] chunks.Chunk,
+        // [none] chunks.Chunk,
         [none] chunks3.ColorChunk,
         [none] chunks3.VoxelNodePostDirty,
     );
@@ -25,14 +25,14 @@ void define_systems_chunks3(ecs *world) {
     // NOTE: Removes Dirty at end of frame
     zox_system(
         VoxelOctreeOptimizeSystem,
-        zoxp_destroy, // zoxp_update,
+        zoxp_remove,
         [out] chunks3.VoxelNode,
         [none] chunks3.VoxelNodeDirty,
-        [none] chunks3.Chunk3
+        [none] chunks3.Chunk3,
     );
     zox_system(
         VoxelNodePostDirtySystem,
-        zoxp_destroy,
+        zoxp_remove,
         [none] chunks3.VoxelNodePostDirty,
     );
 }

@@ -24,18 +24,18 @@ void define_systems_bones(ecs *world) {
         [in] bones.SkeletonDirty,
         [in] rendering.MeshVertices,
         [in] bones.BoneLinks,
-        [out] rendering.MeshDirty,
+        // [out] rendering.MeshDirty,
         [out] bones.BoneIndexes,
         [none] bones.Skeleton
     );
-    zox_system(
+    /*zox_system(
         BonePaintSystem,
         zoxp_update,
         [in] bones.BoneIndexes,
         [out] rendering.MeshDirty,
         [out] rendering.MeshColorRGBs,
         [none] bones.Skeleton
-    );
+    );*/
     zox_system(
         ArmControlSystem,
         zoxp_update,
@@ -73,9 +73,9 @@ void define_systems_bones(ecs *world) {
         zoxp_spawn,
         [in] settings.LoadSettings,
     );
-    zox_system_1(
+    zox_system(
         BonesSettingsDirtySystem,
-        zoxp_mainthread,
+        zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,
         [in] settings.Setting
@@ -90,8 +90,8 @@ void define_systems_bones(ecs *world) {
         BoneIndexUploadSystem,
         zoxp_gpu_upload,
         [in] bones.BoneIndexes,
-        [out] rendering.MeshDirty,
         [out] bones.BoneIndexGPULink,
+        [none] rendering.SkeletonMeshDirty,
         [none] !core.Initialize,
     );
     zox_system_1(

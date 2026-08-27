@@ -47,7 +47,7 @@ zox_sys2(Layout3MeshUpdateSystem) {
         scale.y *= world_scale.y;
         set_mesh_vertices_scale3(verts, get_aligned_mesh2D(alignment->value), 4, scale);
         // mesh_dirty->value = mesh_state_upload;
-        zox_setv(e, MeshDirty, mesh_state_upload);
+        zox_add(e, MeshDirty); // , mesh_state_upload);
         if (dbg_log) {
             zox_log("Layout3MeshUpdateSystem Mesh 3D Updated [%s] Size [%fx%f]", zox_getn(e), scale.x, scale.y);
         }
@@ -63,13 +63,13 @@ zox_sys2(Layout3MeshBeginSystem) {
     zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshVertices);
-    zox_sys_out(MeshDirty);
+    // zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         // zox_sys_i(Initialize, initialize);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(MeshAlignment, alignment);
-        zox_sys_o(MeshDirty, dirty);
+        //zox_sys_o(MeshDirty, dirty);
         zox_sys_o(MeshVertices, verts);
         /*if (initialize->value != zox_dirty_active) {
             continue;
@@ -92,7 +92,8 @@ zox_sys2(Layout3MeshBeginSystem) {
         scale.x *= world_scale.x;
         scale.y *= world_scale.y;
         set_mesh_vertices_scale3(verts, get_aligned_mesh2D(alignment->value), 4, scale);
-        dirty->value = mesh_state_upload;
+        zox_add(e, MeshDirty);
+        // dirty->value = mesh_state_upload;
         if (dbg_log) {
             zox_log("LayoutMeshBeginSystem Mesh 3D Updated [%s] Size [%fx%f] Canvas Scale [%fx%f]", zox_getn(e), scale.x, scale.y, world_scale.x, world_scale.y);
         }

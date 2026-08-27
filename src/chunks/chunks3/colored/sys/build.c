@@ -184,8 +184,6 @@ zox_sys2(ChunkColorsBuildSystem) {
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshColorRGBs);
-    // zox_sys_out(BuildMesh);
-    zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNode, voxels);
@@ -198,7 +196,6 @@ zox_sys2(ChunkColorsBuildSystem) {
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
         zox_sys_o(MeshColorRGBs, colors);
-        zox_sys_o(MeshDirty, mesh_dirty);
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
             break;
@@ -236,10 +233,11 @@ zox_sys2(ChunkColorsBuildSystem) {
         vertices->value = finalize_arrayd_float3(mesh.vertices);
         colors->value = finalize_arrayd_color_rgb(mesh.colors);
         zox_remove(e, BuildMesh);
-        mesh_dirty->value =
-            zox_has(e, Skeleton) ?
-                mesh_state_skeleton_trigger :
-                mesh_state_trigger;
+        if (zox_has(e, Skeleton)) {
+            zox_add(e, SkeletonMeshDirty);
+        } else {
+            zox_add(e, MeshDirty);
+        }
         if (dbg_log) {
             zox_log("[%s] has built a colored mesh: Tris [%i]", zox_getn(e), indicies->length / 3);
         }

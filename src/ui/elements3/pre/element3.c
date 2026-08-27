@@ -19,7 +19,6 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     zox_prefab_set(e, MeshGPULink, { 0 });
     zox_prefab_set(e, UvsGPULink, { 0 });
     zox_prefab_set(e, ColorsGPULink, { 0 });
-    zox_prefab_set(e, MeshDirty, { mesh_state_upload });
     zox_prefab_set(e, MeshRenderCount, { 6 });
     // Properties
     zox_prefab_set(e, Brightness, { 1 });
@@ -29,5 +28,6 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     zox_add(e, Texture);
     zox_prefab_set(e, TextureData, { 0 });
     zox_prefab_set(e, TextureSize, { 0 });
+    zox_add(e, MeshDirty);
     return e;
 }

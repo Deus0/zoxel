@@ -9,7 +9,6 @@ entity spawn_prefab_chunk(ecs *world, entity prefab) {
     // Rendering
     zox_setv(e, Brightness, 1);
     zox_setv(e, RenderDisabled, 0);
-    zox_setv(e, MeshDirty, 0);
     zox_setv(e, MeshIndicies, 0);
     zox_setv(e, MeshRenderCount, 0);
     zox_setv(e, MeshVertices, 0);

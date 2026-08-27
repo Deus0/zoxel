@@ -7,7 +7,7 @@ zox_sys2(MeshUVs2UploadSystem) {
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshVertices2D);
     zox_sys_in(MeshUVs);
-    zox_sys_out(MeshDirty);
+    //zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(MeshGPULink, mesh_id);
@@ -15,10 +15,10 @@ zox_sys2(MeshUVs2UploadSystem) {
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshVertices2D, verts);
         zox_sys_i(MeshUVs, uvs);
-        zox_sys_o(MeshDirty, upload);
+        /*zox_sys_o(MeshDirty, upload);
         if (upload->value != mesh_state_upload) {
             continue;
-        }
+        }*/
 // #ifdef zox_safety_checks
         if (!mesh_id->value.x || !mesh_id->value.y || !uvs_id->value) {
             // zox_loge("GPU Links Invalid for Textured2D Mesh [%s]", zox_getn(e));
@@ -34,7 +34,7 @@ zox_sys2(MeshUVs2UploadSystem) {
         zox_gpu_set_buffer_array(uvs->value, uvs->length * sizeof(float2));
         zox_gpu_bind_buffer_element(0);
         zox_gpu_bind_buffer_array(0);
-        upload->value = 0;
+        zox_remove(e, MeshDirty);
         if (dbg_log) {
             entity parent = zox_get_parent(world, e);
             zox_log("Uploaded Mesh Textured2 [%s] Tris [%i] Verts [%i] Parent [%s]", zox_getn(e), indicies->length / 3, verts->length, zox_getn(parent));

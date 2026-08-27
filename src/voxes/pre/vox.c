@@ -39,9 +39,7 @@ entity spawn_prefab_vox(ecs *world, byte depth) {
     zox_prefab_set(e, ColorsGPULink, { 0 });
     // Events
     zox_add(e, Initialize);
-    // zox_prefab_set(e, VoxelNodeDirty, { 0 });
-    zox_prefab_set(e, MeshDirty, { 0 });
-    // zox_prefab_set(e, BuildChunkSides, { 0 });
+    // zox_setv(e, MeshDirty, 0);
     return e;
 }
 
@@ -49,11 +47,11 @@ entity spawn_prefab_static_vox(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("vox");
     // vox
-    zox_set(e, BlockScale, { 0 }); // vox_model_scale });
-    zox_set(e, NodeDepth, { 0 }); // depth
+    zox_setv(e, BlockScale, 0); // vox_model_scale });
+    zox_setv(e, NodeDepth, 0); // depth
     zox_add(e, ColorChunk);
-    zox_prefab_set(e, ColorRGBs, { 0 });
-    zox_prefab_set(e, MeshColorRGBs, { 0 });
-    zox_prefab_set(e, ColorsGPULink, { 0 });
+    zox_setv(e, ColorRGBs, 0);
+    zox_setv(e, MeshColorRGBs, 0);
+    zox_setv(e, ColorsGPULink, 0);
     return e;
 }

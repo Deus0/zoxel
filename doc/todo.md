@@ -2,6 +2,9 @@
 
 ## Regression again
 
+- Initialize gets removed in same frame as spawn
+    - Make a pre spawn update where it gets removed
+
 - Skeleton mesh doesnt render
     - Initialize
 - Sometimes chunk meshes dont update
@@ -19,7 +22,9 @@ Target: 230fps at the current position
 
 
 
-
+- We should not have restore/dispose systems
+    - just use query
+    - as systems cache their results per frame
 
 
 

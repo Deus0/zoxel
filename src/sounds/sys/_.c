@@ -69,9 +69,9 @@ void define_systems_sounds(ecs *world) {
         zoxp_spawn,
         [in] settings.LoadSettings
     );
-    zox_system_1(
+    zox_system(
         SoundsSettingsDirtySystem,
-        zoxp_mainthread,
+        zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,
         [in] settings.Setting

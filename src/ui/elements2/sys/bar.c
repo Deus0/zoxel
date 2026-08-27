@@ -27,7 +27,7 @@ zox_sys2(ElementbarSystem) {
         if (zox_has(frontbar, Initialize)) {
             continue;
         }
-        if (zox_has(frontbar, MeshDirty) && zox_getv(frontbar, MeshDirty)) {
+        if (zox_has(frontbar, MeshDirty)) {
             if (dbg_log >= 2) {
                 zox_log("Frontbar [%s] busy", zox_getn(e));
             }

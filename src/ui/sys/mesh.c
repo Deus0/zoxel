@@ -7,14 +7,14 @@ zox_sys2(LayoutMeshUpdateSystem) {
     zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshVertices2D);
-    zox_sys_out(MeshDirty);
+    //zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(MeshAlignment, alignment);
         zox_sys_o(MeshVertices2D, verts);
-        zox_sys_o(MeshDirty, mesh_dirty);
+        // zox_sys_o(MeshDirty, mesh_dirty);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
@@ -29,7 +29,8 @@ zox_sys2(LayoutMeshUpdateSystem) {
             size->value.y / canvas_size.y
         };
         set_mesh_vertices_scale2D(verts, get_aligned_mesh2D(alignment->value), 4, sizef);
-        mesh_dirty->value = mesh_state_upload;
+        // mesh_dirty->value = mesh_state_upload;
+        zox_add(e, MeshDirty);
         if (dbg_log) {
             zox_log("LayoutMeshUpdateSystem [%s] Layout Size Dirty, Updated Mesh", zox_getn(e));
         }
@@ -45,13 +46,13 @@ zox_sys2(LayoutMeshBeginSystem) {
     zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshVertices2D);
-    zox_sys_out(MeshDirty);
+    // zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         // zox_sys_i(Initialize, initialize);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(MeshAlignment, alignment);
-        zox_sys_o(MeshDirty, dirty);
+        // zox_sys_o(MeshDirty, dirty);
         zox_sys_o(MeshVertices2D, verts);
         /*if (initialize->value != zox_dirty_active) {
             continue;
@@ -68,7 +69,8 @@ zox_sys2(LayoutMeshBeginSystem) {
             size->value.y / canvas_size.y
         };
         set_mesh_vertices_scale2D(verts, get_aligned_mesh2D(alignment->value), 4, size2);
-        dirty->value = mesh_state_upload;
+        // dirty->value = mesh_state_upload;
+        zox_add(e, MeshDirty);
         if (dbg_log) {
             zox_log("LayoutMeshBeginSystem Mesh Updated [%s] Size [%fx%f]", zox_getn(e), size2.x, size2.y);
         }

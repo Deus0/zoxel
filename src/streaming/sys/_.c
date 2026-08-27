@@ -50,9 +50,9 @@ void define_systems_streaming(ecs* world) {
         zoxp_spawn,
         [in] settings.LoadSettings
     );
-    zox_system_1(
+    zox_system(
         StreamingSettingsDirtySystem,
-        zoxp_mainthread,
+        zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,
         [in] settings.Setting

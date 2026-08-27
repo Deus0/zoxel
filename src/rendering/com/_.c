@@ -53,7 +53,8 @@ zoxc_arrayd(MeshColorRGBs, color_rgb);
 #include "compute_shader.c"
 // Events
 zox_tag(BuildMesh);
-zoxc_byte(MeshDirty);
+zox_tag(MeshDirty);
+zox_tag(SkeletonMeshDirty);
 zoxc_byte(MeshReady);
 zoxc_state_remove(RenderDepthDirty);
 zoxc_state_remove(RenderDistanceDirty);
@@ -77,9 +78,13 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(BuildMeshColors);
     zoxd_tag(MeshColorsDirty);
     zoxd_tag(RenderTextureDirty);
+    zoxd_tag(MeshDirty);
+    zoxd_tag(SkeletonMeshDirty);
     zoxd_tag(MeshBuilt);
     zoxd_tag(MeshColorsBuilt);
     // Fragmentation
+    zox_dont_fragment(MeshDirty);
+    zox_dont_fragment(SkeletonMeshDirty);
     zox_dont_fragment(BuildMesh);
     zox_dont_fragment(BuildMeshColors);
     zox_dont_fragment(MeshColorsDirty);
@@ -89,7 +94,7 @@ void define_components_rendering(ecs *world) {
     zox_dont_fragment(ActiveMesh);
     zox_dont_fragment(PreparingMesh);
     // Dont fragments
-    /*zox_dont_fragment(MeshDirty);
+    /*
     zox_dont_fragment(MeshReady);
     // zox_dont_fragment(RenderDepthDirty);*/
     // data
@@ -133,7 +138,6 @@ void define_components_rendering(ecs *world) {
     zoxd_guint_dest(UboGPULink);
     zoxd_guint_dest(ShaderGPULink);
     // Events
-    zoxd_byte(MeshDirty);
     zoxd_byte(MeshReady);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);

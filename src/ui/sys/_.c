@@ -36,7 +36,7 @@ void zox_define_systems_elements(ecs *world) {
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
-        [out] rendering.MeshDirty,
+        // [out] rendering.MeshDirty,
         [none] core.Initialize,
     );
     zox_system(
@@ -46,6 +46,6 @@ void zox_define_systems_elements(ecs *world) {
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
-        [out] rendering.MeshDirty
+        // [out] rendering.MeshDirty
     );
 }

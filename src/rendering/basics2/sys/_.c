@@ -11,7 +11,7 @@ void define_systems_basics2D(ecs *world) {
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices2D,
         [in] rendering.MeshGPULink,
-        [out] rendering.MeshDirty,
+        [none] rendering.MeshDirty,
         [none] !rendering.MeshUVs,
         [none] !rendering.MeshColorRGBs,
         [none] !core.Initialize,
@@ -24,7 +24,7 @@ void define_systems_basics2D(ecs *world) {
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices2D,
         [in] rendering.MeshUVs,
-        [out] rendering.MeshDirty,
+        [none] rendering.MeshDirty,
         [none] !core.Initialize,
     );
     // all ui

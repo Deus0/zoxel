@@ -77,10 +77,12 @@ void define_systems_chunks3_textured(ecs *world) {
         [none] rendering.BuildMesh,
         [none] !core.BuildDisabled,
     );
-    /*zox_system_cached(
-        ChunkTexturedBuildSystem2,
+    /*zox_system(
+        ChunkMeshTestSystem,
         zoxp_voxels_mesh,
-        [none] rendering.RenderDepth,
         [none] chunks.ChunkMesh,
+        [none] rendering.RenderDepth,
+        [none] rendering.BuildMesh,
+        [none] !core.BuildDisabled,
     );*/
 }

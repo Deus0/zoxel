@@ -4,7 +4,8 @@ extern byte zox_chunk_mesh_lighting_busy(ecs*, entity);
 // NOTE: Toggles the meshes beased on render depth
 zox_sys2(ChunkMeshTransitionSystem) {
     byte dbg_log = 0;
-    double transition_speed = 1;
+    byte disable_busy = 1;
+    double transition_speed = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkLodDirty);
@@ -52,13 +53,14 @@ zox_sys2(ChunkMeshTransitionSystem) {
                 zox_getn(preparing_mesh),
                 zox_has(preparing_mesh, Disabled));
         }
-        byte busy = // 0;
+        byte busy = disable_busy ? 0 : (
             // NOTE: Checks queues
             zox_chunk_lighting_busy(world, e) ||
             zox_has(preparing_mesh, BuildMesh) ||
             zox_has(preparing_mesh, MeshDirty) ||
             !zox_has(preparing_mesh, MeshBuilt) ||
-            zox_chunk_mesh_lighting_busy(world, preparing_mesh);
+            zox_chunk_mesh_lighting_busy(world, preparing_mesh)
+        );
         if (busy) {
             timer->value = zox_current_time;
             if (dbg_log >= 2) {

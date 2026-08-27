@@ -10,20 +10,21 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_setv(e, LocalRotation3D, float4_identity);
     zox_setv(e, LocalScale1, 1);
     zox_setv(e, TransformMatrix, float4x4_identity);
-    zox_prefab_add(e, MeshIndicies);
-    zox_prefab_add(e, MeshVertices);
+    zox_add(e, Mesh);
+    zox_add(e, MeshIndicies);
+    zox_add(e, MeshVertices);
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
     zox_prefab_set(e, ShaderLink, { 0 });
     zox_prefab_set(e, MaterialGPULink, { 0 });
     zox_prefab_set(e, ShaderLink, { 0 });
     zox_prefab_set(e, Color, { color_white });
     zox_prefab_set(e, ColorRGB, { color_rgb_white });
-    zox_prefab_add(e, SecondaryColorRGB);
+    zox_add(e, SecondaryColorRGB);
     zox_prefab_set(e, Brightness, { 1 });
     zox_prefab_set(e, Alpha, { 1 });
     prefab_set_mesh_indicies(world, e, cube_indicies_inverted, cube_indicies_length);
     prefab_set_mesh_vertices_float(world, e, cube_vertices_inverted, cube_vertices_f_length);
-    zox_prefab_set(e, MeshDirty, { mesh_state_upload });
     zox_add(e, Initialize);
+    zox_add(e, MeshDirty);
     return e;
 }

@@ -4,7 +4,7 @@ typedef ecs_iter_t iter;
 typedef ecs_query_t query;
 
 // Testing
-byte zox_log_pipelines = 0;     // 1 for big frames, 2 for all
+byte zox_log_pipelines = 2;     // 1 for big frames, 2 for all
 
 byte zox_disable_threads = 0;
 byte target_fps = 0;

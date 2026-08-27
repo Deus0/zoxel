@@ -46,7 +46,7 @@ zox_sys2(InitializeMeshColorsSystem) {
 } zox_sys_end(InitializeMeshColorsSystem);
 
 zox_sys2(InitializeMeshTextureSystem) {
-    byte dbg_log = dbg_initialize_mesh || 0;
+    byte dbg_log = 0 || dbg_initialize_mesh;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(TextureGPULink);

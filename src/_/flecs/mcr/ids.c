@@ -44,9 +44,16 @@
 #define zox_valid(e) \
     (e && ecs_is_valid(world, e))
 
+
+// NOTE: Can only be used on TAGS
+// NOTE: Can only be used by TAGS that arn't used in system queries
 #define zox_dont_fragment(T) \
-    zox_add_id(zox_id(T), EcsDontFragment)
-// #define zox_dont_fragment(T) { }
+     zox_add_id(zox_id(T), EcsDontFragment)
+
+//#define zox_dont_fragment(T) { }
+
+#define zox_dont_fragment2(T) \
+     zox_add_id(zox_id(T), EcsDontFragment)
 
 typedef struct {
     float value;

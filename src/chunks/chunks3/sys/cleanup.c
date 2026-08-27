@@ -125,14 +125,13 @@ zox_sys2(VoxelOctreeOptimizeSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(VoxelNode, voxels);
-        //if (dirty->value == zox_dirty_end)
         optimize_reduce_octree_node(
             voxels,
             sizeof(VoxelNode),
             offsetof(VoxelNode, value),
             offsetof(VoxelNode, type));
-        zox_remove(e, VoxelNodeDirty);
         zox_add(e, VoxelNodePostDirty);
+        zox_remove(e, VoxelNodeDirty);
     }
 } zox_sys_end(VoxelOctreeOptimizeSystem);
 

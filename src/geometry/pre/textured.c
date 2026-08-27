@@ -26,6 +26,6 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
     zox_prefab_set(e, UvsGPULink, { 0 });
     // NOTE: Needed for Uploading Mesh Textured
     zox_set(e, MeshRenderCount, { 0 });
-    zox_set(e, MeshDirty, { mesh_state_upload });
+    zox_add(e, MeshDirty);
     return e;
 }

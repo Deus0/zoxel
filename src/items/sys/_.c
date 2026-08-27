@@ -52,7 +52,8 @@ void define_systems_items(ecs* world) {
         TerrainItemDropSystem,
         // zoxp_mainthread,
         // NOTE: as voxels gets added at zoxp_queue_pre_post_clear
-        zoxp_queue_pre_post_clear,
+        // zoxp_queue_pre_post_clear,
+        zoxp_spawn,
         [in] chunks3.VoxelNodeQueue,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,

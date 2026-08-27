@@ -6,7 +6,7 @@ entity spawn_prefab_vox_file(ecs *world, entity prefab) {
     zox_add(e, ColorChunk);
     zox_prefab_set(e, Brightness, { 1.0f });
     zox_prefab_set(e, RenderDisabled, { 1 });
-    zox_prefab_set(e, MeshDirty, { 0 });
+    // zox_prefab_set(e, MeshDirty, { 0 });
     zox_prefab_add(e, ChunkSize);
     zox_prefab_set(e, BlockScale, { vox_model_scale });
     zox_prefab_add(e, VoxelNode);

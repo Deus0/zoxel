@@ -1,4 +1,5 @@
-zox_sys2(BonePaintSystem) {
+// temporarily disable until we work out event flow
+/*zox_sys2(BonePaintSystem) {
     zox_sys_begin();
     zox_sys_in(BoneIndexes);
     zox_sys_out(MeshDirty);
@@ -20,4 +21,4 @@ zox_sys2(BonePaintSystem) {
         }
         dirty->value = mesh_state_skeleton_end;
     }
-} zox_sys_end(BonePaintSystem);
+} zox_sys_end(BonePaintSystem);*/

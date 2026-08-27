@@ -25,7 +25,7 @@ void zoxd_systems_networking(ecs* world) {
     );
     zox_system_1(
         NetConnectSystem,
-        zoxp_mainthread, // zoxp_update,
+        zoxp_spawn, // zoxp_update,
         [in] networking.SocketLink,
         [in] networking.PacketQueue,
         [none] networking.PacketReciever,

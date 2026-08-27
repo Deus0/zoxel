@@ -56,12 +56,12 @@ void define_systems_models(ecs* world) {
     );
     zox_system_1(
         ModelsSettingsSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] settings.LoadSettings,
     );
-    zox_system_1(
+    zox_system(
         ModelsSettingsDirtySystem,
-        zoxp_mainthread,
+        zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,
         [in] settings.Setting

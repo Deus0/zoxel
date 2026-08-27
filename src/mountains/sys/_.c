@@ -4,7 +4,7 @@
 void zox_define_systems_mountains(ecs* world) {
     zox_system_1(
         RegionMountainSystem,
-        zoxp_mainthread,
+        zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockPosition2,
         [in] blocks.BlockSize2,

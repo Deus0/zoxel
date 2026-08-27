@@ -155,7 +155,11 @@ zox_sys2(ChunkTexturedBuildSystem) {
     byte dbg_log = 0;
     byte max_process = !zox_disable_process_skips ? 1 : 0;
     // zox_log("Chunk Texture Builds [%i]", it->count);
+    entity terrain_cache = 0;
     byte solidity[255];
+    entity tilemap_cache = 0;
+    const TilemapUVs* tilemap_uvs = NULL;
+    // NOTE: we  had to do this as there was a array limit on some platforms?
     // byte* solidity = NULL;
     zox_sys_world();
     zox_sys_begin();
@@ -183,13 +187,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
             continue;
         }
 #endif
-        entity terrain = zox_get_parent(world, chunk);
-#ifdef zox_safety_checks
-        if (!zox_valid(terrain)) {
-            zox_loge("Terrain Invalid for [%s]", zox_getn(chunk));
-            continue;
-        }
-#endif
+        // Chunk Validation
         byte chunk_depth = zox_getv(chunk, NodeDepth);
         if (depth->value > chunk_depth) {
             zox_loge("Chunk Mesh Depth > Chunks [%s] [%i] > [%i]",
@@ -198,29 +196,15 @@ zox_sys2(ChunkTexturedBuildSystem) {
                 chunk_depth);
             continue;
         }
-        entity tilemap = zox_getv(chunk, TilemapLink);
+        entity manager = zox_getv(chunk, BlockManagerLink);
+        entity terrain = zox_get_parent(world, chunk);
 #ifdef zox_safety_checks
-        if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapUVs) || !zox_has(tilemap, GenerateTexture)) {
-            zox_sys_e();
-            zox_loge("Tilemap not found on Chunk Terrain [%s]", zox_sys_e_name);
+        if (!zox_valid(terrain) || !zox_valid(manager)) {
+            zox_loge("Terrain Invalid for [%s]", zox_getn(chunk));
             continue;
         }
 #endif
-        if (zox_getv(tilemap, GenerateTexture)) {
-            if (dbg_log) {
-                zox_log("Tilemap Still Generating [%s]: %i", zox_get_name(tilemap), zox_getv(tilemap, GenerateTexture));
-            }
-            continue;
-        }
-        zox_geter(tilemap, TilemapUVs, tilemap_uvs);
-#ifdef zox_safety_checks
-        if (!tilemap_uvs->value || !tilemap_uvs->length) {
-            zox_loge("Tilemap TilemapUVs on Chunk Terrain [%s] has not generated", zox_get_name(e));
-            continue;
-        }
-#endif
-        if (!solidity) {
-            entity manager = zox_getv(chunk, BlockManagerLink);
+        if (manager != terrain_cache) {
 #ifdef zox_safety_checks
             if (!manager) {
                 zox_loge("Failed to find BlockManagerLink on Chunk from ChunkMeshes");
@@ -233,11 +217,7 @@ zox_sys2(ChunkTexturedBuildSystem) {
                 continue; // if failed to find terrain parents
             }
 #endif
-            /*solidity = malloc(blocks->length);
-            if (!solidity) {
-                zox_loge("Malloc Failure in BuildMesh");
-                continue;
-            }*/
+            terrain_cache = manager;
             memset(solidity, 1, blocks->length);
             for (int j = 0; j < blocks->length; j++) {
                 entity block = blocks->value[j];
@@ -248,6 +228,38 @@ zox_sys2(ChunkTexturedBuildSystem) {
                 }
                 solidity[j] = zox_getv(block, BlockModel) == zox_block_solid;
             }
+        }
+        entity tilemap = zox_getv(chunk, TilemapLink);
+        if (!zox_valid(tilemap)) {
+            continue;
+        }
+        if (tilemap_cache != tilemap) {
+#ifdef zox_safety_checks
+            if (!zox_valid(tilemap) ||
+                !zox_has(tilemap, TilemapUVs) ||
+                !zox_has(tilemap, GenerateTexture))
+            {
+                zox_sys_e();
+                zox_loge("Tilemap not found on Chunk Terrain [%s]", zox_sys_e_name);
+                continue;
+            }
+#endif
+            if (zox_getv(tilemap, GenerateTexture)) {
+                if  (dbg_log) {
+                    zox_log("Tilemap Still Generating [%s]: %i",
+                        zox_getn(tilemap),
+                        zox_getv(tilemap, GenerateTexture));
+                }
+                continue;
+            }
+            tilemap_uvs = zox_get(tilemap, TilemapUVs);
+#ifdef zox_safety_checks
+            if (!tilemap_uvs->value || !tilemap_uvs->length) {
+                zox_loge("Tilemap TilemapUVs on Chunk Terrain [%s] has not generated", zox_get_name(e));
+                continue;
+            }
+#endif
+            tilemap_cache = tilemap;
         }
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         float terrain_scale = zox_getv(terrain, BlockScale);
@@ -289,12 +301,11 @@ zox_sys2(ChunkTexturedBuildSystem) {
         colors->value = finalize_arrayd_color_rgb(mesh_data.color_rgbs);
         uvs->value = finalize_arrayd_float2(mesh_data.uvs);
         // dirty
-        // build->value = zox_build_chunk_mesh_lights;
+        zox_remove(e, BuildMesh);
         if (!disable_lights) {
             zox_add(e, BuildMeshColors);
         }
-        zox_setv(e, MeshDirty, mesh_state_trigger);
-        zox_remove(e, BuildMesh);
+        zox_add(e, MeshDirty);
         if (dbg_log) {
             zox_log("Built Mesh [%s]:[%s] Verts [%i] Scale [%f] Depth [%i]",
                 zox_getn(e),
@@ -305,11 +316,20 @@ zox_sys2(ChunkTexturedBuildSystem) {
         }
         zox_sys_increment();
     }
-    /*if (solidity) {
-        free(solidity);
-    }*/
 } zox_sys_end(ChunkTexturedBuildSystem);
 
 
-zox_sys2(ChunkTexturedBuildSystem2) {
-} zox_sys_end(ChunkTexturedBuildSystem2);
+zox_sys2(ChunkMeshTestSystem) {
+    // zox_log("ChunkMeshTestSystem [%i]", it->count);
+    //char *iter_str = ecs_iter_str(it);
+    // char *table_str = ecs_table_str(it->world, it->table);
+    zox_log(
+        "ChunkMeshTestSystem [%d] table=%p",
+        it->count,
+        (void*) it->table
+        //iter_str,
+        // table_str
+    );
+    // ecs_os_free(table_str);
+    //ecs_os_free(iter_str);
+} zox_sys_end(ChunkMeshTestSystem);
