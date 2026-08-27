@@ -1,5 +1,9 @@
 // Only works in Start Menu
-void menu_start_triggered(ecs *world, entity player, entity canvas) {
+void menu_start_triggered(
+    ecs *world,
+    entity player,
+    entity canvas)
+{
     entity start_menu = zox_get_link(world, player, MenuStart);
     if (!zox_valid(start_menu)) {
         zox_loge("Start Menu not found on player");

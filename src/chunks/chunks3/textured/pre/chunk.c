@@ -7,9 +7,11 @@ entity spawn_prefab_chunk_textured(ecs* world, entity prefab) {
     zox_setv(e, BlockDamageQueue, 0);
     // Links
     zox_setv(e, BlockManagerLink, 0);
+    zox_add(e, PreparingMesh);
+    zox_add(e, ActiveMesh);
     zox_setv(e, ChunkMeshTimer, 0);
     // Events
     zox_setv(e, VoxelNodeEdited, 0);
-    zox_add(e, Initialize);
+    zox_add(e, PreInitialize);
     return e;
 }

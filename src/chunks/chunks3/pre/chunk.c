@@ -9,12 +9,13 @@ entity spawn_prefab_chunk(ecs *world, entity prefab) {
     // Rendering
     zox_setv(e, Brightness, 1);
     zox_setv(e, RenderDisabled, 0);
+    zox_add(e, Mesh);
     zox_setv(e, MeshIndicies, 0);
     zox_setv(e, MeshRenderCount, 0);
     zox_setv(e, MeshVertices, 0);
     zox_setv(e, MeshGPULink, 0);
     // Events
-    zox_add(e, Initialize);
+    zox_add(e, PreInitialize);
     return e;
 }
 

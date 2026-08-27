@@ -1,8 +1,9 @@
 void prefab_add_mesh_basic(ecs *world, entity e) {
-    zox_prefab_set(e, MeshIndicies, { 0 });
-    zox_prefab_set(e, MeshRenderCount, { 0 });
-    zox_prefab_set(e, MeshVertices, { 0 });
-    zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
+    zox_add(e, Mesh);
+    zox_add(e, MeshIndicies);
+    zox_add(e, MeshRenderCount);
+    zox_add(e, MeshVertices);
+    zox_add(e, MeshGPULink);
 }
 
 #include "chunk.c"

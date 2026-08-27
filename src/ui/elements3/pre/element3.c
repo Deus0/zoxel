@@ -2,11 +2,11 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     entity e = zox_prefab_from_parent(world, prefab);
     zox_prefab_name("element3");
     zox_add(e, Element3);
-    zox_add(e, Initialize);
     // Add Mesh
     zox_add(e, SingleMaterial);
     zox_add(e, TexturedMesh3);
-    zox_prefab_set(e, MeshAlignment,{ zox_alignment_centre });
+    zox_setv(e, MeshAlignment, zox_alignment_centre);
+    zox_add(e, Mesh);
     zox_prefab_add(e, MeshIndicies);
     zox_prefab_add(e, MeshVertices);
     zox_prefab_add(e, MeshUVs);
@@ -28,6 +28,7 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     zox_add(e, Texture);
     zox_prefab_set(e, TextureData, { 0 });
     zox_prefab_set(e, TextureSize, { 0 });
+    zox_add(e, PreInitialize);
     zox_add(e, MeshDirty);
     return e;
 }

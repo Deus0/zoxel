@@ -1,4 +1,9 @@
-void clone_texture_data_scale(ecs *world, entity e, entity src, int2 new_size) {
+void clone_texture_data_scale(
+    ecs *world,
+    entity e,
+    entity src,
+    int2 new_size)
+{
     if (!src || !zox_has(src, TextureSize) || !zox_has(src, TextureData)) {
         if (!src) {
             zox_loge("[texture not found] [%s]", zox_get_name(e));
@@ -22,7 +27,7 @@ void clone_texture_data_scale(ecs *world, entity e, entity src, int2 new_size) {
     /* allocate destination buffer (element count = width * height) */
     initialize_TextureData(&data, new_size.x * new_size.y);
     if (!data.value) {
-        zox_log_error("texture data malloc failed");
+        zox_loge("texture data malloc failed");
         return;
     }
     /* Nearest-neighbor scale.
@@ -53,5 +58,7 @@ void clone_texture_data_scale(ecs *world, entity e, entity src, int2 new_size) {
     zox_set_ptr(e, TextureData, data);
     zox_setv(e, TextureSize, new_size);
     zox_add(e, TextureDirty);
-    // zox_log("cloned texture data %s => %s", zox_get_name(e), zox_get_name(src));
+    /*zox_log("Cloned texture data %s => %s",
+        zox_getn(e),
+        zox_getn(src));*/
 }

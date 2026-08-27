@@ -126,7 +126,7 @@ void import_zox(ecs* world) {
     zox_add_module(networking);
     zox_import_module(Screens);
     zox_add_module(inputs);
-    zox_import_module(Apps);
+    zox_add_module(apps);
     zox_import_module(Saves);
     zox_import_module(Graphics);
     zox_import_module(Assets);

@@ -3,8 +3,6 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_name("character3");
     zox_add(e, Character);
     zox_add(e, Character3);
-    zox_add(e, Initialize);
-    zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
     // generation
     zox_prefab_set(e, Seed, { 0 });
     // name
@@ -64,5 +62,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
         zox_prefab_set(e, CloneVox, { 0 });
         zox_prefab_set(e, CloneVoxLink, { 0 });
     }
+    zox_add(e, PreInitialize);
+    zox_prefab_set(e, GenerateCharacter, { zox_dirty_trigger });
     return e;
 }

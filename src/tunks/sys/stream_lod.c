@@ -32,7 +32,6 @@ zox_sys2(TunkLodSystem) {
     zox_sys_in(TunkPosition);
     zox_sys_in(Chunk3Stack);
     zox_sys_out(RenderDistance);
-    // zox_sys_out(RenderDistanceDirty);
     zox_sys_out(TunkLod);
     zox_sys_out(GenerateTunk);
     for (int i = 0; i < it->count; i++) {
@@ -111,8 +110,11 @@ zox_sys2(TunkLodSystem) {
             zox_setv(chunk, RenderDepth, tunk_render_depth);
             zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
             // Stop the active building
-            entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
-            if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
+            entity active_mesh = zox_getv(chunk, ActiveMesh);
+            // entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
+            if (zox_valid(active_mesh) &&
+                !zox_has(active_mesh, BuildDisabled))
+            {
                 zox_add(active_mesh, BuildDisabled);
             }
             if (dbg_log) {

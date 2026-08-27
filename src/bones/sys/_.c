@@ -24,9 +24,17 @@ void define_systems_bones(ecs *world) {
         [in] bones.SkeletonDirty,
         [in] rendering.MeshVertices,
         [in] bones.BoneLinks,
-        // [out] rendering.MeshDirty,
         [out] bones.BoneIndexes,
         [none] bones.Skeleton
+    );
+    zox_system(
+        BoneIndexGenerateSystem2,
+        zoxp_update,
+        [in] rendering.MeshVertices,
+        [in] bones.BoneLinks,
+        [out] bones.BoneIndexes,
+        [none] bones.Skeleton,
+        [none] rendering.BuildMeshWeights,
     );
     /*zox_system(
         BonePaintSystem,

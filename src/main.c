@@ -5,8 +5,6 @@
 
 // Why is this here?
 // event used by testers atm
-typedef byte (*boot_zox)(ecs*, entity);
-boot_zox boot_event;
 // Includes our game source
 #include zox_nexus_game
 
@@ -107,8 +105,8 @@ int main(int argc, char* argv[]) {
     // Resource Loading
     run_hook_files_load(world);
     // Yet another Hook
-    zox_logv("Running our Boot Hook");
-    run_hook_on_boot(world, app);
+    // zox_logv("Running our Boot Hook");
+    // run_hook_on_boot(world, app);
 // #ifdef zox_xr
     entity e2 = spawn_test_vox_at(world, float3_zero, quaternion_identity);
     // zox_set(e2, GenerateModel, { zox_generate_model_run });
@@ -116,11 +114,6 @@ int main(int argc, char* argv[]) {
     // Test cube
     // spawn_cube(world, prefab_cube, (float3) { 0, 0, -1 }, 0.25f);
 // #endif
-    if (boot_event && boot_event(world, app) == EXIT_FAILURE) {
-        zox_log_error("[boot_event] failed");
-        dispose_zox(world);
-        return EXIT_FAILURE;
-    }
     zox_logv("Running Main Loop [%s]", game_name);
     main_loop(world);
     zox_logv("Ended Main Loop [%s]", game_name);

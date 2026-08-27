@@ -11,6 +11,7 @@ entity spawn_prefab_vox_file(ecs *world, entity prefab) {
     zox_prefab_set(e, BlockScale, { vox_model_scale });
     zox_prefab_add(e, VoxelNode);
     zox_prefab_set(e, ColorRGBs, { 0 });
+    zox_add(e, Mesh);
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshColorRGBs, { 0 });

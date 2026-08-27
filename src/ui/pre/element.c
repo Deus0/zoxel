@@ -1,8 +1,10 @@
-entity spawn_prefab_element(ecs* world, entity prefab) {
+entity spawn_prefab_element(
+    ecs* world,
+    entity prefab)
+{
     zox_prefab_child(prefab);
     zox_prefab_name("element");
     zox_add(e, Element);
-    zox_add(e, Mesh);
     zox_add(e, TexturedMesh2);  // render system tag
     // Properties
     zox_setv(e, TransformMatrix, float4x4_identity);
@@ -15,8 +17,8 @@ entity spawn_prefab_element(ecs* world, entity prefab) {
     zox_setv(e, TextureSize, int2_zero);
     zox_setv(e, TextureGPULink, 0);
     // Mesh
-    zox_add(e, Initialize);
     zox_setv(e, MeshAlignment, 0);
+    zox_add(e, Mesh);
     zox_add(e, MeshIndicies);
     zox_add(e, MeshVertices2D);
     zox_add(e, MeshUVs);
@@ -26,5 +28,6 @@ entity spawn_prefab_element(ecs* world, entity prefab) {
     prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
     prefab_set_mesh2D_vertices(world, e, square_vertices, 4);
     // prefab_set_mesh2D_vertices(world, e, NULL, 0);
+    zox_add(e, PreInitialize);
     return e;
 }

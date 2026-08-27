@@ -1,4 +1,9 @@
-void prefab_set_mesh_indicies(ecs *world, entity e, const int* indicies_, int length) {
+void prefab_set_mesh_indicies(
+    ecs *world,
+    entity e,
+    const int* indicies_,
+    int length)
+{
     if (!indicies_ || !zox_has(e, MeshIndicies)) {
         return;
     }
@@ -8,7 +13,12 @@ void prefab_set_mesh_indicies(ecs *world, entity e, const int* indicies_, int le
     zox_prefab_set_ptr(e, MeshIndicies, indicies);
 }
 
-void prefab_set_mesh2D_vertices(ecs *world, entity e, const float2* vertices_, int length) {
+void prefab_set_mesh2D_vertices(
+    ecs *world,
+    entity e,
+    const float2* vertices_,
+    int length)
+{
     if (!vertices_ || !zox_has(e, MeshVertices2D)) {
         return;
     }
@@ -18,7 +28,13 @@ void prefab_set_mesh2D_vertices(ecs *world, entity e, const float2* vertices_, i
     zox_prefab_set_ptr(e, MeshVertices2D, vertices);
 }
 
-void prefab_set_mesh3D_vertices(ecs *world, entity e, const float2* vertices, int length, float2 scale) {
+void prefab_set_mesh3D_vertices(
+    ecs *world,
+    entity e,
+    const float2* vertices,
+    int length,
+    float2 scale)
+{
     zox_mut_begin(e, MeshVertices, verts);
     if (verts->value) {
         dispose_MeshVertices(verts);

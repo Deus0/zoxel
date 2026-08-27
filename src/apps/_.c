@@ -1,7 +1,7 @@
-#ifndef zoxm_apps
-#define zoxm_apps
 
 // zoxel apps: handles os windows, using (sdl, glut) libraries
+// TODO: Make a listener event for app booting (Settings)
+
 #include "com/_.c"
 #include "set/_.c"
 #ifdef zox_headless
@@ -18,7 +18,8 @@
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Apps) {
+void import_apps(ecs* world) {
+    zox_module(apps);
     define_components_apps(world);
     zox_define_systems_apps(world);
     add_hook_terminal_command(process_arguments_apps);
@@ -33,6 +34,4 @@ zox_begin_module(Apps) {
 #elif zox_glut
     zox_import_module(Glut);
 #endif
-} zox_end_module(Apps);
-
-#endif
+}

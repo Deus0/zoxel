@@ -25,6 +25,7 @@ entity spawn_prefab_vox(ecs *world, byte depth) {
     // Rendering
     zox_prefab_set(e, Brightness, { 1.0f });
     zox_prefab_set(e, RenderDisabled, { 0 });
+    zox_add(e, Mesh);
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
@@ -38,7 +39,7 @@ entity spawn_prefab_vox(ecs *world, byte depth) {
     zox_prefab_set(e, MeshColorRGBs, { 0 });
     zox_prefab_set(e, ColorsGPULink, { 0 });
     // Events
-    zox_add(e, Initialize);
+    zox_add(e, PreInitialize);
     // zox_setv(e, MeshDirty, 0);
     return e;
 }

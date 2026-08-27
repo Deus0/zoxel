@@ -1,4 +1,7 @@
-entity spawn_prefab_render_texture(ecs *world, entity prefab) {
+entity spawn_prefab_render_texture(
+    ecs *world,
+    entity prefab)
+{
     zox_prefab_child(prefab);    // from element_basic
     zox_add(e, RenderTexture);
     zox_add(e, RenderTextureDirty);

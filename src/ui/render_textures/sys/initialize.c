@@ -11,7 +11,7 @@ zox_sys2(RenderTextureInitializeSystem) {
         zox_sys_i(CameraLink, camera);
         zox_sys_i(TextureGPULink, texture);
         if (!texture->value) {
-            zox_loge("Invalid [TextureGPULink] on [%s]", zox_sys_e_name);
+            zox_loge("[RenderTextureInitializeSystem] Invalid [TextureGPULink] on [%s]", zox_sys_e_name);
             continue;
         }
         if (!zox_valid(camera->value)) {
@@ -19,7 +19,7 @@ zox_sys2(RenderTextureInitializeSystem) {
             continue;
         }
         if (!zox_has(camera->value, FrameBufferLink)) {
-            zox_loge("Render Camera has no FrameBufferLink [%s]", zox_get_name(camera->value));
+            zox_loge("Render Camera has no FrameBufferLink [%s]", zox_getn(camera->value));
             continue;
         }
         // one time only

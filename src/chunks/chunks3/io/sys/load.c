@@ -28,7 +28,12 @@ byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
 }
 
 // returns 1 if loaded
-byte load_chunk(ecs *world, entity savegame, int3 position, VoxelNode* node) {
+byte load_chunk(
+    ecs *world,
+    entity savegame,
+    int3 position,
+    VoxelNode* node)
+{
     char filename[128];
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
@@ -67,21 +72,16 @@ zox_sys2(Chunk3LoadSystem) {
     byte dbg_log = 0;
     zox_sys_world();    // used when closing possible nodes
     zox_sys_begin();
-    // zox_sys_in(Initialize);
     zox_sys_in(ChunkPosition);
     zox_sys_out(NodeDepth);
     zox_sys_out(VoxelNode);
     zox_sys_out(Loaded);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(Initialize, state);
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNode, voxels);
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(Loaded, loaded);
-        /*if (state->value != zox_dirty_active) {
-            continue;
-        }*/
         entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
@@ -98,13 +98,12 @@ zox_sys2(Chunk3LoadSystem) {
 #endif
         if (load_chunk(world, realm, position->value, voxels)) {
             depth->value = terrain_depth;
-            // generate->value = ;
             loaded->value = 1;
             zox_setv(e, GenerateChunk, zox_generate_terrain_sunlight);
-            // voxels_dirty->value = zox_dirty_trigger;
             zox_add(e, VoxelNodeDirty);
             if (dbg_log) {
-                zox_log("Loaded Chunk [%s] with Depth [%i]", zox_get_name(e), depth->value);
+                zox_log("Loaded Chunk [%s] with Depth [%i]",
+                    zox_sys_e_name, depth->value);
             }
         }
     }

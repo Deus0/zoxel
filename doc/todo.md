@@ -1,5 +1,23 @@
 # Todo
 
+- GenerateChunk not running when increasing depths
+-x Mesh didnt transition sometimes
+	-x just stayed disable
+	-x add active/preparing to debug ui
+- Landfill LOD issues
+	- When loading map?
+	- missmatch of tunk / chunk
+-x use entity component instead of links for chunks
+-x Fix Mouse UI
+-x Skeleton Weights didnt upload
+-x Fix Terrain loading at all
+- Add VoxelNodeLock for Octree Safety
+	- Crashed on load...!
+
+- Write test to spawn realm
+- Write test to spawn streamer + terrain
+- Test to spawn query and print the tables
+
 ## Regression again
 
 - Initialize gets removed in same frame as spawn

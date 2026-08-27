@@ -11,8 +11,8 @@ void zox_dbg_refresh_uis(ecs *world, int32_t keycode) {
     for (uint j = 0; j < length; j++) {
         entity e = uis[j];
         zox_log("Refreshing UI [%s]", zox_getn(e));
-        zox_remove(e, Initialize);
-        break;
+        // zox_remove(e, Initialize);
+        // break;
         // zox_setv(ui, Initialize, 1);
         // zox_setv(ui, GenerateTexture, 1);
         // zox_setv(ui, MeshDirty, 1);

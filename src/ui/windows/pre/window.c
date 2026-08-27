@@ -4,7 +4,7 @@ void set_prefab_window(ecs* world, entity e) {
     zox_add(e, BoundToParent);
     zox_setv(e, WindowLayer, 0);
     zox_setv(e, ElementFontSize, default_font_size);
-    zox_add(e, Initialize);
+    zox_add(e, PreInitialize);
 }
 
 entity spawn_prefab_window_textured(ecs *world, entity prefab) {

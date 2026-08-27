@@ -1,5 +1,5 @@
 zox_sys2(BonesInitializeSystem) {
-    byte dbg_log = 1 || dbg_initialize_mesh;
+    byte dbg_log = 0 || dbg_initialize_mesh;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(BoneIndexGPULink);

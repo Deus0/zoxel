@@ -317,19 +317,3 @@ zox_sys2(ChunkTexturedBuildSystem) {
         zox_sys_increment();
     }
 } zox_sys_end(ChunkTexturedBuildSystem);
-
-
-zox_sys2(ChunkMeshTestSystem) {
-    // zox_log("ChunkMeshTestSystem [%i]", it->count);
-    //char *iter_str = ecs_iter_str(it);
-    // char *table_str = ecs_table_str(it->world, it->table);
-    zox_log(
-        "ChunkMeshTestSystem [%d] table=%p",
-        it->count,
-        (void*) it->table
-        //iter_str,
-        // table_str
-    );
-    // ecs_os_free(table_str);
-    //ecs_os_free(iter_str);
-} zox_sys_end(ChunkMeshTestSystem);

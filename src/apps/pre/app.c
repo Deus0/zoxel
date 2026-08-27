@@ -1,4 +1,8 @@
-entity spawn_prefab_app(ecs* world, int2 position, int2 size) {
+entity spawn_prefab_app(
+    ecs* world,
+    int2 position,
+    int2 size)
+{
     zox_prefab();
     zox_prefab_name("app");
     zox_add(e, App);
@@ -10,11 +14,14 @@ entity spawn_prefab_app(ecs* world, int2 position, int2 size) {
     zox_prefab_set(e, WindowSizeRestore, { int2_zero });
     zox_prefab_set(e, WindowPositionRestore, { int2_zero });
     zox_prefab_set(e, WindowMonitor, { 0 });
-    zox_prefab_add(e, WindowSizeDirty);
+    // UI
+    zox_add(e, CanvasLink);
     // Settings
     zox_prefab_set(e, ZoxName, { });
-    zox_add(e, Initialize);
     zox_prefab_set(e, LoadSettings, { zox_load_settings_start });
+    // Events
+    zox_add(e, WindowSizeDirty);
+    zox_add(e, PreInitialize);
     return e;
 }
 

@@ -24,7 +24,10 @@ entity spawn_skybox(
             zox_setv(e, MaterialGPULink, gpu_material);
             MaterialBasic3D attributes = create_MaterialBasic3D(gpu_material);
             zox_set_ptr(e, MaterialBasic3D, attributes);
-            set_skybox_material_color(gpu_material, menu_sky_color, menu_sky_bottom_color);
+            set_skybox_material_color(
+                gpu_material,
+                menu_sky_color,
+                menu_sky_bottom_color);
         }
     }
     // skybox = e;

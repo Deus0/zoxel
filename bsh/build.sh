@@ -20,6 +20,7 @@ debug="0"
 is_safety_checks="1"    # lets stay safe for now
 is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_fast_dev="1"         # -O3
+is_run="0"
 logs="0"
 verbose="0"
 package="0"
@@ -79,6 +80,7 @@ fi
 # Misc
 [[ " $* " == *" --debug "* ]] && debug="1"
 [[ " $* " == *" --release "* ]] && debug="0"
+[[ " $* " == *" --run "* ]] && is_run="1"
 [[ " $* " == *" --nologs "* ]] && logs="0"
 [[ " $* " == *" --logs "* ]] && logs="1"
 [[ " $* " == *" --untimed "* ]] && is_time_systems="0"
@@ -103,7 +105,6 @@ fi
 [[ "${graphics_lib}" == "headless" ]] && bin_filename="${bin_filename}-headless"
 [[ "${debug}" == "1" ]] && bin_filename="${bin_filename}-dev"
 bin_path="${output_folder}/${bin_filename}.${output_extension}"
-
 
 # Set our compiler variables #
 
@@ -333,6 +334,7 @@ echo "  Window   : ${window_lib}"
 echo "  SDL      : $(if [[ ${is_sdl3} == "1" ]]; then echo "SDL3"; else echo "SDL2"; fi)"
 echo "  Build    : $(if [[ ${debug} == "1" ]]; then echo "Debug"; else echo "Release"; fi)"
 echo "  Compiler : ${compiler}"
+[[ ${is_run} == "1" ]] && echo "  Run      : enabled"
 [[ ${logs} == "1" ]] && echo "  Logs     : enabled"
 [[ ${is_profiler} == "1" ]] && echo "  Profiler : enabled"
 [[ ${is_time_systems} == "1" ]] && echo "  Timed    : enabled"
@@ -385,4 +387,10 @@ if [[ ${package} == "1" ]]; then
         fi
     fi
     echo "+ Completed Zipping"
+fi
+
+# Run
+if [[ "${is_run}" == "1" ]]; then
+    echo "Running Game [${bin_path}]"
+    ./"${bin_path}"
 fi

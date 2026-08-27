@@ -171,7 +171,8 @@ zox_sys2(SmoothLightsBuildSystem) {
         byte chunk_depth = zox_getv(chunk, NodeDepth);
         if (depth->value > chunk_depth) {
             if (dbg_log) {
-                zox_log("Chunk Depth is wrong for Light Build [%s]", zox_getn(chunk));
+                zox_log("Chunk Depth is wrong for Light Build [%s]",
+                    zox_getn(chunk));
             }
             continue;
         }

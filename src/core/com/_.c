@@ -13,6 +13,7 @@ zoxc_byte(Ready);
 zoxc_entity(SystemLink);
 zoxc_state(Generate);
 // zoxc_byte(Initialize);
+zox_tag(PreInitialize);
 zox_tag(Initialize);
 // identitys
 zoxc_int(ID);
@@ -48,9 +49,11 @@ void zox_components_core(ecs* world) {
     zoxd_tag(BuildDisabled);
     zoxd_tag(DebugEntity);
     zoxd_tag(Initialize);
+    zoxd_tag(PreInitialize);
     // zoxd_byte(Active);
     // Dont Fragment
     zox_dont_fragment(Initialize);
+    zox_dont_fragment(PreInitialize);
     zox_dont_fragment(ZoxSystem);
     zox_dont_fragment(Disabled);
     zox_dont_fragment(BuildDisabled);

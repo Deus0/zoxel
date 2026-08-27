@@ -22,7 +22,11 @@ entity spawn_texture_filepath(ecs *world, entity prefab, const char *path) {
     return e;
 }
 
-entity spawn_texture_filename(ecs *world, char *filename, int2 size) {
+entity spawn_texture_filename(
+    ecs *world,
+    char *filename,
+    int2 size)
+{
     entity source = string_hashmap_get(files_hashmap_textures, new_string_data(filename));
     zox_instance(prefab_texture);
     zox_name("texture_filename");

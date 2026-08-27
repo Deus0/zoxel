@@ -72,6 +72,13 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
 #endif
+        byte tunk_lod = zox_getv(tunk->value, TunkLod);
+        if (depth->value != tunk_lod) {
+            zox_loge("[Towns] Chunk Depth Invalid [%i] - [%i]",
+                     depth->value,
+                     tunk_lod);
+            continue;
+        }
         zox_geter(tunk->value, BiomeMap, biome_map);
         zox_geter(tunk->value, HeightMap, height_map);
         zox_geter(tunk->value, TownMap, town_map);

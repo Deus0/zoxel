@@ -68,7 +68,9 @@ zox_sys2(LandfillChunkSystem) {
         }
         byte tunk_lod = zox_getv(tunk->value, TunkLod);
         if (depth->value != tunk_lod) {
-            zox_loge("Chunk Depth is not Tunk Lod [%i] != [%i]", depth->value, tunk_lod);
+            zox_loge("[Landfill] Depth Invalid: Chunk [%i] - Tunk [%i]",
+                depth->value,
+                tunk_lod);
             continue;
         }
         // zox_log("Chunk Depth IS Tunk Lod [%i] != [%i]", depth->value, tunk_lod);

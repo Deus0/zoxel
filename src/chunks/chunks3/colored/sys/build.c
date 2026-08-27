@@ -234,7 +234,7 @@ zox_sys2(ChunkColorsBuildSystem) {
         colors->value = finalize_arrayd_color_rgb(mesh.colors);
         zox_remove(e, BuildMesh);
         if (zox_has(e, Skeleton)) {
-            zox_add(e, SkeletonMeshDirty);
+            zox_add(e, BuildMeshWeights);
         } else {
             zox_add(e, MeshDirty);
         }

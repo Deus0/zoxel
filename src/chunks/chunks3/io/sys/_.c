@@ -4,7 +4,7 @@
 void define_systems_chunksio(ecs* world) {
     zox_system(
         Chunk3SaveSystem,
-        zoxp_update,
+        zoxp_save,
         [in] chunks3.VoxelNodeEdited,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkPosition,
@@ -12,7 +12,7 @@ void define_systems_chunksio(ecs* world) {
     );
     zox_system(
         Chunk3LoadSystem,
-        zoxp_update,
+        zoxp_load,
         [in] chunks3.ChunkPosition,
         [out] chunks.NodeDepth,
         [out] chunks3.VoxelNode,

@@ -11,8 +11,7 @@ entity spawn_prefab_cube(ecs *world) {
     zox_prefab_set(e, Alpha, { 1 });
     zox_prefab_set(e, RenderDisabled, { 0 });
     // Mesh
-    zox_add(e, Initialize);
-    zox_add(e, MeshDirty);
+    zox_add(e, Mesh);
     zox_prefab_set(e, MeshIndicies, { 0 });
     zox_prefab_set(e, MeshVertices, { 0 });
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
@@ -22,5 +21,7 @@ entity spawn_prefab_cube(ecs *world) {
     zox_prefab_set(e, ShaderLink, { 0 });
     zox_prefab_set(e, MaterialGPULink, { 0 });
     // zox_prefab_set(e, MeshRenderCount, { 0 });
+    zox_add(e, PreInitialize);
+    zox_add(e, MeshDirty);
     return e;
 }

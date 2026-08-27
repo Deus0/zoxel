@@ -24,7 +24,7 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_prefab_set(e, Alpha, { 1 });
     prefab_set_mesh_indicies(world, e, cube_indicies_inverted, cube_indicies_length);
     prefab_set_mesh_vertices_float(world, e, cube_vertices_inverted, cube_vertices_f_length);
-    zox_add(e, Initialize);
+    zox_add(e, PreInitialize);
     zox_add(e, MeshDirty);
     return e;
 }

@@ -1,3 +1,4 @@
+#include "boot.c"
 #include "settings.c"
 
 void zox_define_systems_apps(ecs *world) {
@@ -12,5 +13,11 @@ void zox_define_systems_apps(ecs *world) {
         [in] settings.SettingDirty,
         [in] core.ZoxName,
         [in] settings.Setting
+    );
+    zox_system_1(
+        app_boot_system,
+        zoxp_spawn,
+        [none] apps.App,
+        [none] core.Initialize,
     );
 }

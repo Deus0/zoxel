@@ -25,6 +25,8 @@
 #define zoxp_post_update EcsOnValidate
 #define zoxp_gpu_upload EcsPreStore     // zoxp_cameras +
 #define zoxp_rendering EcsPreStore      // zoxp_cameras +
+#define zoxp_load EcsOnValidate
+#define zoxp_save EcsOnValidate
 // Core
 #define zoxp_physics EcsOnUpdate
 #define zoxp_physics_apply EcsOnValidate
@@ -47,13 +49,6 @@
 #define zoxp_queue_pre_clear EcsOnValidate
 #define zoxp_queue_pre_post_clear EcsOnValidate
 #define zoxp_queue_clear EcsOnValidate
-
-// Voxels
-/*#define zoxp_voxels_generate EcsOnUpdate    // Write to voxels
-#define zoxp_voxels_sides EcsOnValidate      // Write to mesh from voxels
-#define zoxp_voxels_mesh EcsPostUpdate      // Write to mesh from voxels
-#define zoxp_voxels_lights EcsPostUpdate      // Write to mesh from voxels
-*/
 
 // Voxels
 #define zoxp_voxels_generate zoxp_update    // Write to voxels

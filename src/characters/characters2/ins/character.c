@@ -4,7 +4,7 @@ entity spawn_character2(
     float2 position)
 {
     zox_instance(prefab);
-    zox_add(e, Initialize);
+    zox_add(e, PreInitialize);
     zox_set(e, Position2, { position });
     zox_set(e, Scale1, { 1 });
     zox_set(e, Brightness, { 0.8f + ((rand() % 101) / 100.0f) * 0.6f });

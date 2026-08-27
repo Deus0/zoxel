@@ -61,7 +61,8 @@ zox_sys2(StreamEndSystem) {
                     continue;
                 }
                 // byte chunk_mesh_loading = 0;
-                entity active_mesh = zox_get_link(world, e2, ActiveMesh);
+                entity active_mesh = zox_getv(e2, ActiveMesh);
+                // zox_get_link(world, e2, ActiveMesh);
                 byte chunk_mesh_loading =
                     zox_valid(active_mesh) &&
                         (zox_has(active_mesh, BuildMesh) ||

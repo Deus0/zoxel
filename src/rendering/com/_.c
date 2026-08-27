@@ -11,8 +11,12 @@ zox_tag(MeshColorsDirty);
 zox_tag(RenderTextureDirty);
 zox_tag(MeshBuilt);
 zox_tag(MeshColorsBuilt);
-zox_tag(PreparingMesh);
-zox_tag(ActiveMesh);
+
+zoxc_entity(PreparingMesh);
+zoxc_entity(ActiveMesh);
+// zox_tag(PreparingMesh);
+// zox_tag(ActiveMesh);
+
 // Properties
 zoxc_int2(TextureSize);
 zoxc_float(Brightness);
@@ -53,6 +57,7 @@ zoxc_arrayd(MeshColorRGBs, color_rgb);
 #include "compute_shader.c"
 // Events
 zox_tag(BuildMesh);
+zox_tag(BuildMeshWeights);
 zox_tag(MeshDirty);
 zox_tag(SkeletonMeshDirty);
 zoxc_byte(MeshReady);
@@ -72,10 +77,15 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(VoxMesh);
     zoxd_tag(DisableDepthTest);
     zoxd_tag(MeshClearCache);
-    zoxd_tag(PreparingMesh);
-    zoxd_tag(ActiveMesh);
+
+    //zoxd_tag(PreparingMesh);
+    //zoxd_tag(ActiveMesh);
+    zoxd_entity(PreparingMesh);
+    zoxd_entity(ActiveMesh);
+
     zoxd_tag(BuildMesh);
     zoxd_tag(BuildMeshColors);
+    zoxd_tag(BuildMeshWeights);
     zoxd_tag(MeshColorsDirty);
     zoxd_tag(RenderTextureDirty);
     zoxd_tag(MeshDirty);
@@ -87,12 +97,13 @@ void define_components_rendering(ecs *world) {
     zox_dont_fragment(SkeletonMeshDirty);
     zox_dont_fragment(BuildMesh);
     zox_dont_fragment(BuildMeshColors);
+    zox_dont_fragment(BuildMeshWeights);
     zox_dont_fragment(MeshColorsDirty);
     zox_dont_fragment(RenderTextureDirty);
     zox_dont_fragment(MeshBuilt);
     zox_dont_fragment(MeshColorsBuilt);
-    zox_dont_fragment(ActiveMesh);
-    zox_dont_fragment(PreparingMesh);
+    // zox_dont_fragment(ActiveMesh);
+    // zox_dont_fragment(PreparingMesh);
     // Dont fragments
     /*
     zox_dont_fragment(MeshReady);

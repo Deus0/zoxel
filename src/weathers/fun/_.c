@@ -22,10 +22,10 @@ void spawn_weather(ecs *world, entity app) {
     entity game = zox_get_child_by_id(world, app, zox_id(Game));
     entity main_camera = main_cameras[0];
     entity skybox = spawn_skybox(world, main_camera, shader_skybox);
-    set_skybox_colors(
+    zox_link(world, game, Skybox, skybox);
+    /* set_skybox_colors(
         world,
         skybox,
         menu_sky_color,
-        menu_sky_bottom_color);
-    zox_link(world, game, Skybox, skybox);
+        menu_sky_bottom_color);*/
 }
