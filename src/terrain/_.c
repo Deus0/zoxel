@@ -31,5 +31,6 @@ void import_terrains(ecs* world) {
     define_systems_terrain(world);
     add_hook_terminal_command(process_arguments_terrain);
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
+    add_hook_spawn_prefabs(zox_events_terrain);
     zox_import_module(TerrainsCollisions);
 }

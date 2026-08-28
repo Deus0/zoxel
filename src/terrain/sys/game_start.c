@@ -1,7 +1,25 @@
 extern const double game_spawn_terrain_delay;
 
+void game_state_terrain(ecs* world, entity game, byte state) {
+    if (state != zox_game_state_play_begin) {
+        return;
+    }
+    entity realm = zox_getv(game, RealmLink);
+    lint realm_seed = zox_getv(realm, Seed);
+    // for now just do this
+    lint terrain_seed = realm_seed;
+    if (zox_game_type == zox_game_mode_3D) {
+        entity terrain = spawn_terrain(
+            world,
+            realm,
+            terrain_seed);
+    } else if (zox_game_type == zox_game_mode_2D) {
+        spawn_grid2D(world);
+    }
+}
+
 // NOTE: When starting game, it Spawns the Terrain!
-zox_sys2(TerrainGameStartSystem) {
+/*zox_sys2(TerrainGameStartSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RealmLink);
@@ -30,4 +48,4 @@ zox_sys2(TerrainGameStartSystem) {
             spawn_grid2D(world);
         }
     }
-} zox_sys_end(TerrainGameStartSystem);
+} zox_sys_end(TerrainGameStartSystem);*/

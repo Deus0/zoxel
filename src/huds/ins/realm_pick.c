@@ -7,7 +7,10 @@ void button_event_load_cancel(ecs *world, ClickEventData event) {
     } else {
         zox_delete(menu);
     }
-    spawn_main_menu(world, player, game_name);
+    spawn_main_menu(
+        world,
+        player,
+        game_name);
 }
 
 void delay_spawn_menu_realm(ecs* world, entity player) {
@@ -39,7 +42,11 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
         game,
         realm_save.seed);
     zox_set_ptr(realm, FolderPath, path->value);
-    delay_event(world, &delay_spawn_menu_realm, player, 0.01);
+    delay_event(
+        world,
+        &delay_spawn_menu_realm,
+        player,
+        0.01);
 }
 
 entity spawn_menu_load(ecs *world, entity player) {
@@ -66,7 +73,24 @@ entity spawn_menu_load(ecs *world, entity player) {
         }
         free(save_dirs);
     }
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, (ClickEvent) { &button_event_load_cancel }, 1, 0, 0, zox_alignment_centre, window_anchor, padding, NULL, elements, elements_count, visible_count).x;
+    entity e = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        header_label,
+        header_font_size,
+        list_font_size,
+        (ClickEvent) { &button_event_load_cancel },
+        1,
+        0,
+        0,
+        zox_alignment_centre,
+        window_anchor,
+        padding,
+        NULL,
+        elements,
+        elements_count,
+        visible_count).x;
     zox_name("menu_load");
     zox_add(e, MenuLoad);
     zox_add(e, NavigationWindow);

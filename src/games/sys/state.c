@@ -5,6 +5,7 @@ zox_sys2(GameStateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RealmLink);
+    zox_sys_in(GameStateEvent);
     zox_sys_out(GameState);
     zox_sys_out(GameStateTarget);
     zox_sys_out(LastGameState);
@@ -13,6 +14,7 @@ zox_sys2(GameStateSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RealmLink, realm);
+        zox_sys_i(GameStateEvent, event);
         zox_sys_o(GameState, state);
         zox_sys_o(GameStateTarget, target);
         zox_sys_o(LastGameState, last);
@@ -47,6 +49,9 @@ zox_sys2(GameStateSystem) {
         state->value = new_state;
         dirty->value = zox_dirty_trigger;
         time->value = zox_current_time;
+        for (int j = 0; j < event->count; j++) {
+            (*event->value[j])(world, e, new_state);
+        }
         // trigger_event_game(world, e, old_state, target->value);
         if (dbg_log) {
             zox_log("[%f] Game State [%i] -> [%i]", time->value, old_state, new_state);

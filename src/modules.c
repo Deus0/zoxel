@@ -146,14 +146,14 @@ void import_zox(ecs* world) {
 
     // depth 2: rendering foundations
     // things that build directly on graphics + transforms
-    zox_add_module(animations);
     zox_add_module(cameras);
     zox_add_module(rendering);
     zox_add_module(sounds);
     zox_add_module(textures);
     zox_add_module(geometry);
-    zox_add_module(musics);
     zox_add_module(bones);
+    zox_add_module(animations);
+    zox_add_module(musics);
     zox_add_module(ui);
 
     // More Misc
@@ -183,10 +183,10 @@ void import_zox(ecs* world) {
     zox_add_module(mountains);
     zox_add_module(towns);
     zox_add_module(characters);
+    zox_add_module(vrays);
     zox_add_module(huds);
     zox_add_module(space);
     zox_add_module(projectiles);
-    zox_import_module(Vrays);
 
     // depth 5: character data
     if (!dbg_disable) {

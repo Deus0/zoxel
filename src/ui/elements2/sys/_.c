@@ -63,7 +63,7 @@ void define_systems_elements2(ecs *world) {
         zoxp_spawn,
         [in] interaction.ClickState,
         [in] interaction.Clicker,
-        [in] elements2.ToggleEvent,
+        [in] interaction.ToggleEvent,
         [out] interaction.ActiveState,
         [out] interaction.ActiveStateDirty,
         [none] elements2.Toggle

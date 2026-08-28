@@ -1,5 +1,7 @@
 # Todo
 
+- Refactor ([in] players.PlayerState,) with new PlayerStateEvent listener
+- Remove old UI structs (CanvasData, ParentData, etc)
 - Remove old links
 	- Remove SkillLinks, StatLinks, QuestLinks, DialogueLinks
 	- just use children by tags

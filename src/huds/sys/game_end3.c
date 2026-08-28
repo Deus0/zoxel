@@ -28,9 +28,43 @@ static inline void destroy_canvas_game_uis(ecs* world, entity e, byte dbg_log) {
     }
 }
 
+void game_state_end_huds(ecs* world, entity game, byte state) {
+    const byte dbg_log = 0;
+    const byte delay_end = is_end_game_delays;
+    if (state != zox_game_state_the_end) {
+        return;
+    }
+    entity realm = zox_get_child_by_id(world, game, zox_id(Realm));
+    play_playlist(world, realm, 0);
+    iter it2 = zox_children(world, game);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity player = it2.entities[j];
+            if (!zox_has(player, Player)) {
+                continue;
+            }
+            entity canvas = zox_getv(player, CanvasLink);
+            destroy_canvas_game_uis(world, canvas, dbg_log);
+            // FadeOut
+            if (delay_end) {
+                trigger_canvas_fade_transition(
+                    world,
+                    canvas,
+                    end_game_delay_fade,
+                    0.8);
+            }
+            delay_event(
+                world,
+                &main_menu_event_delay,
+                player,
+                2);
+        }
+    }
+}
+
 // TODO: Realm is missing at this point, need a main menu realm
 // music - attach to game from music module
-zox_sys2(PlayerUIGame3EndSystem) {
+/*zox_sys2(PlayerUIGame3EndSystem) {
     byte dbg_log = 0;
     byte delay_end = is_end_game_delays;
     zox_sys_world();
@@ -67,6 +101,6 @@ zox_sys2(PlayerUIGame3EndSystem) {
                 }
                 delay_event(world, &main_menu_event_delay, e2, 2);
             }
-        };
+        }
     }
-} zox_sys_end(PlayerUIGame3EndSystem);
+} zox_sys_end(PlayerUIGame3EndSystem);*/

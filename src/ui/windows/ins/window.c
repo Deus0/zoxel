@@ -20,7 +20,17 @@ entity3 spawn_window(ecs* world, entity prefab, entity prefab_body, const char* 
         float2 header_anchor = (float2) { 0.5f, 1 };
         int2 header_size = (int2) { body_size.x, header_height };
         int2 header_position = (int2) { 0, -header_height / 2 };
-        entity e2 = spawn_header(world, e, header_position, header_size, header_anchor, header, header_font_size, header_padding, is_close_button, on_closed);
+        entity e2 = spawn_header(
+            world,
+            e,
+            header_position,
+            header_size,
+            header_anchor,
+            header,
+            header_font_size,
+            header_padding,
+            is_close_button,
+            on_closed);
         output.y = e2;
     }
     // NOTE: Body Anchored to Bottom of window
@@ -46,7 +56,9 @@ entity3 spawn_window(ecs* world, entity prefab, entity prefab_body, const char* 
 }
 
 // OBSOLETE REMOVE
-entity2 spawn_window_old(ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnWindow2 window_data, ClickEvent on_click, byte is_close_button, byte type) {
+entity2 spawn_window_old(
+    ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnWindow2 window_data, ClickEvent on_click, byte is_close_button, byte type)
+{
     byte header_height = window_data.header_font_size + window_data.header_padding.y * 2;
     byte header_font_thickness_s = header_font_thickness * ui_scale;
     byte header_fonto_thickness_s = header_font_thickness * ui_scale;
@@ -79,7 +91,14 @@ entity2 spawn_window_old(ecs *world, LayoutParentData canvas_data, LayoutParentD
             .font_outline_color = header_font_outline,
             .margins = window_data.header_padding,
         };
-        header = spawn_header_old(world, canvas_data, e_parent_data, header_element_data, header_text_data, header_data, on_click);
+        header = spawn_header_old(
+            world,
+            canvas_data,
+            e_parent_data,
+            header_element_data,
+            header_text_data,
+            header_data,
+            on_click);
         zox_set_parent(world, header, e);
     }
     return (entity2) { e, header };

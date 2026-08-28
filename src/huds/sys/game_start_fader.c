@@ -2,7 +2,27 @@ const double game_spawn_terrain_delay = 0.1;
 const double game_spawn_terrain_fade_delay = 1.4;
 const double game_load_fade_transition_time = 0.5;
 
-zox_sys2(GameStartFaderSystem) {
+void game_state_fader(ecs* world, entity game, byte state) {
+    if (state != zox_game_load_start &&
+        state != zox_game_state_play_begin
+    ) {
+        return;
+    }
+    const PlayerLinks* players = zox_get(game, PlayerLinks);
+    for (int j = 0; j < players->length; j++) {
+        entity player = players->value[j];
+        entity canvas = zox_getv(player, CanvasLink);
+        if (state == zox_game_load_start) {
+            trigger_canvas_fade_in(
+                world,
+                canvas,
+                0,
+                game_load_fade_transition_time);
+        }
+    }
+}
+
+/*zox_sys2(GameStartFaderSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GameStateDirty);
@@ -26,4 +46,4 @@ zox_sys2(GameStartFaderSystem) {
             }
         }
     }
-} zox_sys_end(GameStartFaderSystem);
+} zox_sys_end(GameStartFaderSystem);*/

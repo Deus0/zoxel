@@ -46,6 +46,5 @@ void define_components_elements2(ecs *world) {
     zoxd_tag(Toggle);
     //zoxd_byte(ToggleState);
     //zoxd_state(ToggleStateDirty);
-    zoxd(ToggleEvent);
     zoxd(OptionLabel);
 }

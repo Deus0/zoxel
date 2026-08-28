@@ -2,14 +2,19 @@
 #include "skybox_set_time_system.c"
 #include "game.c"
 
+void zox_events_weather(ecs *world) {
+    zox_muter(prefab_game, GameStateEvent, game_event);
+    add_to_GameStateEvent(game_event, game_state_weather);
+}
+
 void zox_systems_weather(ecs* world) {
-    zox_system(
+    /*zox_system(
         WeatherGameStateSystem,
         zoxp_update,
         [in] games.GameStateDirty,
         [in] games.GameState,
         [none] games.Game
-    );
+    );*/
     zox_gpu_restore_system(
         SkyboxRestoreSystem,
         [in] rendering.MaterialGPULink,

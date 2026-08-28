@@ -8,14 +8,15 @@ zox_sys2(PlayerStateSystem) {
     double respawn_time = 16;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_out(PlayerStateDirty);
     zox_sys_out(PlayerState);
+    zox_sys_out(PlayerStateDirty);
     zox_sys_out(PlayerStateTimer);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_o(PlayerStateDirty, dirty);
         zox_sys_o(PlayerState, state);
+        zox_sys_o(PlayerStateDirty, dirty);
         zox_sys_o(PlayerStateTimer, timer);
+        byte new_state = state->value;
         if (timer->value) {
             double time_passed = zox_current_time - timer->value;
             if (state->value == zox_player_state_pause_begin) {
@@ -115,3 +116,28 @@ zox_sys2(PlayerStateSystem) {
         }
     }
 } zox_sys_end(PlayerStateSystem);
+
+extern entity get_linked_character(ecs*, entity);
+
+// NOTE: Sets to playing when resuming from pause
+zox_sys2(PlayerStateEventSystem) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(PlayerState);
+    zox_sys_in(PlayerStateDirty);
+    zox_sys_in(PlayerStateEvent);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(PlayerState, state);
+        zox_sys_i(PlayerStateDirty, dirty);
+        zox_sys_i(PlayerStateEvent, event);
+        if (dirty->value != zox_dirty_active) {
+            continue;
+        }
+        for (int j = 0; j < event->count; j++) {
+            (*event->value[j])(world, e, state->value);
+        }
+    }
+} zox_sys_end(PlayerStateEventSystem);
+

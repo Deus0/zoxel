@@ -2,10 +2,11 @@
 
 void zox_define_systems_games(ecs* world) {
     // NOTE: MainThread because triggers event
-    zox_system(
+    zox_system_1(
         GameStateSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_spawn, // zoxp_update,
         [in] realms.RealmLink,
+        [in] games.GameStateEvent,
         [out] games.GameState,
         [out] games.GameStateTarget,
         [out] games.LastGameState,

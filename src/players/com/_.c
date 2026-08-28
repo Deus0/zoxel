@@ -9,6 +9,7 @@ zoxc_double(PlayerRespawn);
 zoxc_entity(PlayerLink);
 zoxc_arrayd(PlayerLinks, entity)
 zoxc_entity(PlayerPauseEvent);
+zoxc_listener(PlayerStateEvent, 16, ecs*, entity, byte);
 
 void zox_define_components_players(ecs* world) {
     zoxd_tag(Player);
@@ -22,4 +23,5 @@ void zox_define_components_players(ecs* world) {
     zoxd_entity(PlayerLink);
     zoxd_arrayd(PlayerLinks);
     zoxd_entity(PlayerPauseEvent);
+    zoxd(PlayerStateEvent);
 }

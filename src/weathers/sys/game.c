@@ -2,14 +2,45 @@ byte last_weather_state;
 
 // NOTE: Used for testing
 void refresh_weather(ecs* world) {
-    /*if (last_weather_state == zox_game_state_play_begin) {
-        set_skybox_colors(world, game_sky_color, game_sky_bottom_color);
+    entity skybox = zox_get_link(world, local_game, Skybox);
+    if (last_weather_state == zox_game_state_play_begin) {
+        set_skybox_colors(
+            world,
+            skybox,
+            game_sky_color,
+            game_sky_bottom_color);
     } else if (last_weather_state == zox_game_start) {
-        set_skybox_colors(world, menu_sky_color, menu_sky_bottom_color);
-    }*/
+        set_skybox_colors(
+            world,
+            skybox,
+            menu_sky_color,
+            menu_sky_bottom_color);
+    }
 }
 
-zox_sys2(WeatherGameStateSystem) {
+void game_state_weather(ecs* world, entity game, byte state) {
+    entity skybox = zox_get_link(world, game, Skybox);
+    if (!zox_valid(skybox)) {
+        zox_loge("Game has no skybox");
+        return;
+    }
+    if (state == zox_game_state_play_begin) {
+        set_skybox_colors(
+            world,
+            skybox,
+            game_sky_color,
+            game_sky_bottom_color);
+    } else if (state == zox_game_start) {
+        set_skybox_colors(
+            world,
+            skybox,
+            menu_sky_color,
+            menu_sky_bottom_color);
+    }
+    last_weather_state = state;
+}
+
+/*zox_sys2(WeatherGameStateSystem) {
     // byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -34,4 +65,4 @@ zox_sys2(WeatherGameStateSystem) {
         }
         last_weather_state = state->value;
     }
-} zox_sys_end(WeatherGameStateSystem);
+} zox_sys_end(WeatherGameStateSystem);*/

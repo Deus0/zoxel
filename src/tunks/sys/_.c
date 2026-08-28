@@ -11,7 +11,6 @@
 // More Maps
 #include "texture.c"
 #include "texture_heights.c"
-extern byte dbg_use_new_streaming;
 
 void define_systems_tunks(ecs* world) {
     zox_system(

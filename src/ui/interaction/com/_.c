@@ -43,10 +43,9 @@ typedef struct {
     byte value;     // new value of toggle
 } ToggleEventData;
 
-zoxc_function(ToggleEvent, void, ecs*, const ToggleEventData*);
-zoxc_function(SlideEvent, void, ecs*, const SlideEventData*);
 zoxc_function(ClickEvent, void, ecs*, ClickEventData);
-
+zoxc_function(SlideEvent, void, ecs*, const SlideEventData*);
+zoxc_function(ToggleEvent, void, ecs*, const ToggleEventData*);
 
 void zox_define_components_interaction(ecs* world) {
     // Selecting
@@ -63,7 +62,6 @@ void zox_define_components_interaction(ecs* world) {
     zoxd_byte(ClickType);
     zoxd_entity(ClickingEntity);
     zoxd_entity(Clicker);
-    zoxd(ClickEvent);
     zoxd_byte(ClickDisabled);
     // Active
     zoxd_byte(ActiveState);
@@ -78,5 +76,7 @@ void zox_define_components_interaction(ecs* world) {
     zoxd_entity(DraggedLink);
     zoxd_byte(DraggableState);
     // Slides
+    zoxd(ClickEvent);
     zoxd(SlideEvent);
+    zoxd(ToggleEvent);
 }

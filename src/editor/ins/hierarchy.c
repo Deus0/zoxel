@@ -12,7 +12,21 @@ entity spawn_window_hierarchy(ecs *world, entity canvas, entity player, entity r
     int header_font_size = 18;
     int font_size = 12;
     byte scrollbar_width = 6;
-    entity4 e4 = spawn_window_list_at(world, prefab_hierarchy, canvas, position, size, zox_alignment_left, float2_half, header_label, header_font_size, font_size, byte2_single(2), scrollbar_width, 1, (ClickEvent) { NULL });
+    entity4 e4 = spawn_window_list_at(
+        world,
+        prefab_hierarchy,
+        canvas,
+        position,
+        size,
+        zox_alignment_left,
+        float2_half,
+        header_label,
+        header_font_size,
+        font_size,
+        byte2_single(2),
+        scrollbar_width,
+        1,
+        (ClickEvent) { NULL });
     entity window = e4.x;
     entity header = e4.y;
     entity body = e4.z;

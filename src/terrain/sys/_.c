@@ -17,8 +17,6 @@
 #include "landfill.c"
 #include "vegetation.c"
 
-byte dbg_use_new_streaming = 1;
-
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void define_systems_terrain(ecs *world) {
     zox_system(
@@ -57,55 +55,33 @@ void define_systems_terrain(ecs *world) {
     );
     // NOTE: Dies when out of range
     // Streaming Terrain Chunks
-    if (dbg_use_new_streaming) {
-        zox_filter(
-            streamers,
-            [in] streaming.StreamDirty,
-            [in] streaming.StreamerLevel,
-            [in] streaming.StreamLink,
-            [in] streaming.StreamPosition,
-            [none] streaming.Streamer
-        );
-        zox_system_ctx(
-            TerrainStreamSystem,
-            zoxp_update,
-            streamers,
-            [in] tunks.TunkLinks,
-            [out] streaming.TerrainSpawnQueue,
-            [none] terrains.Terrain
-        );
-        zox_system_1(
-            TerrainQueueSystem,
-            zoxp_spawn,
-            [in] core.Seed,
-            [in] blocks.BlockScale,
-            [in] chunks.NodeDepth,
-            [out] streaming.TerrainSpawnQueue,
-            [out] regions.RegionLinks,
-            [out] tunks.TunkLinks,
-            [out] voxes.ChunkLinks,
-            [none] terrains.Terrain,
-        );
-        /*zox_system_ctx_1(
-            TerrainStreamSystem,
-            zoxp_mainthread,
-            streamers,
-            [in] core.Seed,
-            [in] blocks.BlockScale,
-            [in] chunks.NodeDepth,
-            [out] regions.RegionLinks,
-            [out] tunks.TunkLinks,
-            [out] voxes.ChunkLinks,
-            [none] terrains.Terrain
-        );*/
-    }
+    zox_filter(
+        streamers,
+        [in] streaming.StreamDirty,
+        [in] streaming.StreamerLevel,
+        [in] streaming.StreamLink,
+        [in] streaming.StreamPosition,
+        [none] streaming.Streamer
+    );
+    zox_system_ctx(
+        TerrainStreamSystem,
+        zoxp_update,
+        streamers,
+        [in] tunks.TunkLinks,
+        [out] streaming.TerrainSpawnQueue,
+        [none] terrains.Terrain
+    );
     zox_system_1(
-        TerrainGameStartSystem,
+        TerrainQueueSystem,
         zoxp_spawn,
-        [in] realms.RealmLink,
-        [in] games.GameState,
-        [in] games.GameStateDirty,
-        [none] games.Game
+        [in] core.Seed,
+        [in] blocks.BlockScale,
+        [in] chunks.NodeDepth,
+        [out] streaming.TerrainSpawnQueue,
+        [out] regions.RegionLinks,
+        [out] tunks.TunkLinks,
+        [out] voxes.ChunkLinks,
+        [none] terrains.Terrain,
     );
     // Debug Terrains
     #ifdef zox_debug_chunk_bounds
@@ -119,3 +95,9 @@ void define_systems_terrain(ecs *world) {
     );
     #endif
 }
+
+void zox_events_terrain(ecs *world) {
+    zox_muter(prefab_game, GameStateEvent, game_event);
+    add_to_GameStateEvent(game_event, game_state_terrain);
+}
+

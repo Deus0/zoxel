@@ -34,3 +34,23 @@
 
 #define zox_debug_component(T)\
     zox_log(" + component [%s] > [%s]\n", #T, zox_get_name(T));
+
+#define zoxc_listener(T, n, ...) \
+\
+typedef struct { \
+    void (*value[n])(__VA_ARGS__); \
+    uint count; \
+} T; \
+\
+byte add_to_##T(T* component, void (*fun)(__VA_ARGS__)) { \
+    if (component->count >= n) {\
+        zox_logw("Listener [%s] OOB [%i]", #T, n); \
+        return 0; \
+    }\
+    component->value[component->count] = fun; \
+    component->count++; \
+    return 1; \
+} \
+\
+zoxc_custom(T)
+

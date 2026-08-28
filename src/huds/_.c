@@ -37,6 +37,8 @@ void import_huds(ecs* world) {
     initialize_hook_taskbar();
     define_components_game_ui(world);
     define_systems_game_ui(world);
+    add_hook_spawn_prefabs(spawn_prefabs_game_ui);
+    add_hook_spawn_prefabs(zox_events_huds);
     add_taskbar_button((hook_taskbar) {
         .index = 0,
         .spawn = &spawn_menu_paused,

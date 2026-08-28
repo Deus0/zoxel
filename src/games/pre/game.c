@@ -9,6 +9,7 @@ entity spawn_prefab_game(ecs* world) {
     // Remove these and just use dirty
     zox_setv(e, GameStateTarget, zox_game_start);
     zox_setv(e, LastGameState, zox_game_start);
+    zox_add(e, GameStateEvent);
     return e;
 }
 
