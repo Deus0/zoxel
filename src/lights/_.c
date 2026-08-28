@@ -7,7 +7,6 @@ zox_tag(GenerateSunlight);
 
 void import_lights(ecs* world) {
     zox_module(lights);
-    zoxd_tag(GenerateSunlight);
-    zox_dont_fragment(GenerateSunlight);
+    zoxd_nf_tag(GenerateSunlight);
     zox_import_module(Lights3);
 }

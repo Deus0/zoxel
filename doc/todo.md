@@ -1,43 +1,45 @@
 # Todo
 
+- Remove old links
+	- Remove SkillLinks, StatLinks, QuestLinks, DialogueLinks
+	- just use children by tags
+	- Remove clear systems
 - Add listener component on Game
     - GameStateEvent
     - Passes in game event with function
 - Add loading screen event
 - Move the key events out of the test functions
     - just add to a KeyListener component
+
+- Refactor Events to tags
+	- GenerateTexture
+	- RenderLodDirty
+- Refactor GenerateChunk to Generate, Generating, etc
+	- GenerateModel
+- Fix destruction material
+- Add quest on npc - 5% chance
+- When remove body part
+	- remove the associated item slots
+	- refresh the body ui
     
 - Add links back for active mesh, fuck the rules
 
 - Streaming gets 20ms spikes atm...
+	- debug with mangohud
 
 - if theres multiple streamers with different levels
     - idk... why this breaks for new game
     - oh i think it uses position for has, we should remove previous position if level is higher then
     - we clear atm which is fine for now
-- Voddes didnt die on chunk deaths
-- Create a nonfragtag macro
 - Remove state components and just use tags + dontfrag
 - Refactor our timings
     - spawn a profile entity (dataset)
--x Move the test uis into Debug
--x Add spawn realm test
--x Add spawn terrain test
-
--x Mesh didnt transition sometimes
-	-x just stayed disable
-	-x add active/preparing to debug ui
 - GenerateChunk not running when increasing depths
 - Landfill LOD issues
 	- When loading map?
 	- missmatch of tunk / chunk
--x use entity component instead of links for chunks
--x Fix Mouse UI
--x Skeleton Weights didnt upload
--x Fix Terrain loading at all
 - Add VoxelNodeLock for Octree Safety
 	- Crashed on load...!
-
 - Write test to spawn realm
 - Write test to spawn streamer + terrain
 - Test to spawn query and print the tables
@@ -46,17 +48,9 @@
 - Lower FPS, investigate the chunk meshes tables
     - we can see by debugging pipelines
 
--x Initialize gets removed in same frame as spawn
-    -x Make a pre spawn update where it gets removed
--x Skeleton mesh doesnt render
-    -x Initialize
--x Sometimes chunk meshes dont update
--x Big lagspikes during Streaming
-
 Target: 230fps at the current position
 - Make MeshDirty + and other bytes tags
 - keep testing against old builds
-
 
 ## After
 - add min, max to fps display
@@ -64,12 +58,7 @@ Target: 230fps at the current position
     - just use query
     - as systems cache their results per frame
 
-
-
-
-
 Maybe we just keep refactoring stuff
--x make Initialize a tag - dontfragment
 - fix prior refactor bugs...!
     - issue is initialize needs time to process
     - i tried spawn at start of ppipeline but it breaks
@@ -85,8 +74,6 @@ Did
     - probably state not detected
 - placing crashes / freezes it
 
-
-
 ## Custom Phases
 - Make custom phases
     - input
@@ -100,38 +87,19 @@ Did
     - rendering
 - remove pre/post loops and just use systems as functions
 
-
-## Write Tests for Terrain
-
-- Spawn NxM Chunks
-    - Check if generates faces
-    - Check if moving streamer updates the right chunks
-    - etc
-
-
-##
-
 ## --------------------
 ## TOP PRIORITY
-
-
     - Glitchy Ass Terrain Meshes
         - Fix Chunks from mesh updating before their neighbors do
             - use Ready systems and timers
         - Fix Chunks Lights flashing when updating
-
-    -x healtbar cannot read it
-    
     - Loading screen now that we've slowed systems down
         - Add events for game state
         - Add loading screen spawn/destroy on those
-        
-    -x Remove the lag on the fps display, kinda annoying
     
 ## --------------------
 
 - Link chunk to active mesh
-
 - fix docker build and test onsteamdeck
     - uses new pathing
         
@@ -155,39 +123,24 @@ Did
 - Calculate the camera transform before uploading to shader
     - atm it calculates in the vert shader, not good
 - I really should just link player to a canvas 3D - then i can spawn/remove from that normally
-
 - Why datagrid?? why not simply ui_grid??
--x For now give sunlight beam a budget per light set
-	- Make top chunk generate positions instead of beaming them all too
--x Remove sunlight queue, just pass down entire chunk stack!
-	- this saves us time
-	- we can run this from a Tunk instead of chunk
-
 - Optimize the npc spawning
 - Optimize the different block generation
 	- lags on realm load (for my arm pc)
 - Fix logs in build system, should become alot cleaner
--x we should rotate the input by the curretn transform
--x for now just movee the xr code all into helpers
--x then jst call same functions in the xr render system
--x test to get a clear sky
 
 ## Next
 - Spawn 2 XR Eye entities that are cameras
     - XRRender Systems for them
--x Remove SDL window when using XR
 - Seperate character depth from block depth in settings
 - Refactor ListPositionDirty and ListSizeDirty into tags
 - remove StatLinks just use children and queries
 
 - Fix overlay of destruction materials for block destruction
 - Fix taskbar linking
--x fix character particles
--x Add frame recording in System with filter set as 0 (update system)    
 - Make lines in plotgraph use a set value of the graph
     - set the graph based on max value in that frame, but use multiple curves
     - display frame time behind, and system time in front
--x Test XR with --log - instantiate
 - Add ui scale to settings
 - Im getting neighbor updates not triggering at map edges
 - Fall through map - fix unstuck - or make sure collision checks deltas
@@ -201,57 +154,43 @@ Did
     - single state machine for games
     - Remove GameStateTarget
     - Use a listener event for modules
--x Quick fix though first
-
 - game state where is thou
 - do 2D uis get restored? missing any 2D vert data?
 - Remove the mandatory arguments on ./bsh/android.sh
 - Make sure to tag docker libs properly as release
 - When low on damage - add more downscale on the camera
     - make it a camera property too
-
 - Vox item textures... broken again... only sometimes
 - just a simple component macro that creates an expanding number ofevents
     - just arrayd for now?
-    
 - Add event listeners that can handle multiple events
     - use this for game state
     - modules can add too prefab_game's state change listener
     - use this for special stuffs
     - use this for options
     - can massively reduce systems
-    
 - Refactor Punch mechanic as just the way damage is added
 - Make a AOE skill that npc can use when its low health
     - adds particles
-
 - Flying in disabled chunk - disabled due to no voxels - causes player to be disabled
 - if npc is being baited, by the player keep running around them
     - they can run away
-
 - Mouse scrollwheel broken for switching items
 - start game with 3 skills, so you can try the combat styles of the skill tree
-
 - When place above chunk - no mesh spawns
-
 - Add particles when you land
 - Add damage and sound if you land strongly
 - Add red screen overlay when you are hit
-
 - Test Dialogue function
     - animate scale for each new character 0->1.2->1 (3 frames)
     - remove the glitchy first letter - probably due to it spawning
-
 - Dialogue Generation
     - Greetings
     - based sentence gen on their personality types
     - give each npc a personality type
-
 - When return to main menu - set camera back to origin
-
 - Spawn load text / ui during fade out / game event
     - just show loading for now
--x Add editor uis over top of canvas layer
 - Add loading screen
     - with cancel button
     - show loading chunks count
@@ -271,11 +210,6 @@ Did
     
 ## Gameplay
 - Each character type - spawn dialogue there
-
-
-- Crashes at start now.. 1 / 6 times?
--x statbar2D isnt changing now too
--x Statsbar isnt shrinking
 
 ## KeyboardMouse
 - We need a target window for player, whichis the last selected one

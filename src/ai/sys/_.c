@@ -103,7 +103,8 @@ void define_systems_npcs(ecs *world) {
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );
-    /*zox_system(StayUprightSystem, EcsOnUpdate,
+    /*zox_system(StayUprightSystem,
+        zoxp_update,
         [in] transforms3.Rotation3D,
         [in] physics3.Omega3D,
         [out] physics3.Alpha3D,

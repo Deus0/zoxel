@@ -44,6 +44,13 @@
 #define zox_valid(e) \
     (e && ecs_is_valid(world, e))
 
+// === TAGS ===
+
+#define zox_tag(T)\
+    ECS_DECLARE(T)
+
+#define zoxd_tag(T)\
+    ECS_TAG_DEFINE(world, T)
 
 // NOTE: Can only be used on TAGS
 // NOTE: Can only be used by TAGS that arn't used in system queries
@@ -52,8 +59,10 @@
 
 //#define zox_dont_fragment(T) { }
 
-#define zox_dont_fragment2(T) \
-     zox_add_id(zox_id(T), EcsDontFragment)
+#define zoxd_nf_tag(T)\
+    zoxd_tag(T); \
+    zox_dont_fragment(T)
+
 
 typedef struct {
     float value;

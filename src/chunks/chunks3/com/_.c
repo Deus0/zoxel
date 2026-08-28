@@ -36,20 +36,13 @@ zoxc_float(RaycastRange);
 //#define zox_build_chunk_mesh_end 0
 
 void define_components_chunks3(ecs* world) {
-    zoxd_tag(Chunk3);
-    zoxd_tag(ColorChunk);
-    zoxd_tag(LinkChunk);
-    zoxd_tag(ChunkDebugger);
-    zoxd_tag(NoiseChunk);
-    zoxd_tag(VoxelNodeDirty);
-    zoxd_tag(VoxelNodePostDirty);
-    // Fragmentatiion
-    zox_dont_fragment(ColorChunk);
-    zox_dont_fragment(LinkChunk);
-    zox_dont_fragment(ChunkDebugger);
-    zox_dont_fragment(NoiseChunk);
-    zox_dont_fragment(VoxelNodeDirty);
-    zox_dont_fragment(VoxelNodePostDirty);
+    zoxd_nf_tag(Chunk3);
+    zoxd_nf_tag(ColorChunk);
+    zoxd_nf_tag(LinkChunk);
+    zoxd_nf_tag(ChunkDebugger);
+    zoxd_nf_tag(NoiseChunk);
+    zoxd_nf_tag(VoxelNodeDirty);
+    zoxd_nf_tag(VoxelNodePostDirty);
     // Data
     zoxd_byte(ChunkLodDirty);
     // zoxd_byte(VoxelNodeEdited); // Marks if Dirty from Users

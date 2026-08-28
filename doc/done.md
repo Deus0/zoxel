@@ -1,5 +1,42 @@
 # Done
-
+        
+-x statbar2D isnt changing now too
+-x Statsbar isnt shrinking
+-x Add editor uis over top of canvas layer
+-x Test XR with --log - instantiate
+-x fix character particles
+-x Add frame recording in System with filter set as 0 (update system)    
+-x Remove SDL window when using XR
+-x we should rotate the input by the curretn transform
+-x for now just movee the xr code all into helpers
+-x then jst call same functions in the xr render system
+-x test to get a clear sky
+-x For now give sunlight beam a budget per light set
+	-x Make top chunk generate positions instead of beaming them all too
+-x Remove sunlight queue, just pass down entire chunk stack!
+	-x this saves us time
+	-x we can run this from a Tunk instead of chunk
+-x Remove the lag on the fps display, kinda annoying
+-x healtbar cannot read it
+-x make Initialize a tag - dontfragment
+-x Initialize gets removed in same frame as spawn
+    -x Make a pre spawn update where it gets removed
+-x Skeleton mesh doesnt render
+    -x Initialize
+-x Sometimes chunk meshes dont update
+-x Big lagspikes during Streaming
+-x use entity component instead of links for chunks
+-x Fix Mouse UI
+-x Skeleton Weights didnt upload
+-x Fix Terrain loading at all
+-x Move the test uis into Debug
+-x Add spawn realm test
+-x Add spawn terrain test
+-x Mesh didnt transition sometimes
+	-x just stayed disable
+	-x add active/preparing to debug ui
+-x Voddes didnt die on chunk deaths
+-x Create a nonfragtag macro
 -x Fix render texture restoring
 -x sdl2 linux broken
     -x sdl3 window not working anymore

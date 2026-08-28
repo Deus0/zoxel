@@ -60,7 +60,6 @@ zox_tag(BuildMesh);
 zox_tag(BuildMeshWeights);
 zox_tag(MeshDirty);
 zox_tag(SkeletonMeshDirty);
-zoxc_byte(MeshReady);
 zoxc_state_remove(RenderDepthDirty);
 zoxc_state_remove(RenderDistanceDirty);
 
@@ -77,37 +76,20 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(VoxMesh);
     zoxd_tag(DisableDepthTest);
     zoxd_tag(MeshClearCache);
-
     //zoxd_tag(PreparingMesh);
     //zoxd_tag(ActiveMesh);
     zoxd_entity(PreparingMesh);
     zoxd_entity(ActiveMesh);
-
-    zoxd_tag(BuildMesh);
-    zoxd_tag(BuildMeshColors);
-    zoxd_tag(BuildMeshWeights);
-    zoxd_tag(MeshColorsDirty);
-    zoxd_tag(RenderTextureDirty);
-    zoxd_tag(MeshDirty);
-    zoxd_tag(SkeletonMeshDirty);
-    zoxd_tag(MeshBuilt);
-    zoxd_tag(MeshColorsBuilt);
-    // Fragmentation
-    zox_dont_fragment(MeshDirty);
-    zox_dont_fragment(SkeletonMeshDirty);
-    zox_dont_fragment(BuildMesh);
-    zox_dont_fragment(BuildMeshColors);
-    zox_dont_fragment(BuildMeshWeights);
-    zox_dont_fragment(MeshColorsDirty);
-    zox_dont_fragment(RenderTextureDirty);
-    zox_dont_fragment(MeshBuilt);
-    zox_dont_fragment(MeshColorsBuilt);
-    // zox_dont_fragment(ActiveMesh);
-    // zox_dont_fragment(PreparingMesh);
-    // Dont fragments
-    /*
-    zox_dont_fragment(MeshReady);
-    // zox_dont_fragment(RenderDepthDirty);*/
+    zoxd_nf_tag(BuildMesh);
+    zoxd_nf_tag(BuildMeshColors);
+    zoxd_nf_tag(BuildMeshWeights);
+    zoxd_nf_tag(MeshColorsDirty);
+    zoxd_nf_tag(RenderTextureDirty);
+    zoxd_nf_tag(MeshDirty);
+    zoxd_nf_tag(SkeletonMeshDirty);
+    zoxd_nf_tag(MeshBuilt);
+    zoxd_nf_tag(MeshColorsBuilt);
+    // zox_dont_fragment(RenderDepthDirty);
     // data
     zoxd_byte(RenderOrder);
     // Properties
@@ -149,7 +131,6 @@ void define_components_rendering(ecs *world) {
     zoxd_guint_dest(UboGPULink);
     zoxd_guint_dest(ShaderGPULink);
     // Events
-    zoxd_byte(MeshReady);
     zoxd_state(RenderDistanceDirty);
     zoxd_state(RenderDepthDirty);
     // zox_dont_fragment(RenderDistanceDirty);

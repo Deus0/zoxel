@@ -16,7 +16,7 @@ zoxc_entity(SpawnerLink);
 zoxc_entity(SkillLink);
 zoxc_entitiesw(SkillLinks);   // Used for realm atm
 
-void zox_define_components_skills(ecs* world) {
+void zox_components_skills(ecs* world) {
     zoxd_tag(Skill);
     zoxd_tag(Dot);
     zoxd_tag(Poison);

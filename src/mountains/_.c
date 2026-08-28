@@ -18,9 +18,6 @@
  *      - Uses Regions, Tunks, Chunks to exist
  *
  * */
-#ifndef zox_mountains
-#define zox_mountains
-
 byte zox_disable_mountains = 0;
 #define zox_mountain_type_hill 0
 #define zox_mountain_type_peak 1
@@ -30,10 +27,9 @@ byte zox_disable_mountains = 0;
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Mountains) {
+void import_mountains(ecs* world) {
+    zox_module(mountains);
     zox_define_components_mountains(world);
     zox_define_systems_mountains(world);
     add_hook_spawn_prefabs(zox_define_prefabs_mountains);
-} zox_end_module(Mountains);
-
-#endif
+}

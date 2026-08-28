@@ -5,13 +5,9 @@
  *      - Debugging tools to visualize them with lines
  *
  * */
-#ifndef zoxm_shapes
-#define zoxm_shapes
-
 #include "shapes3/_.c"
 
-zox_begin_module(Shapes) {
+void import_shapes(ecs* world) {
+    zox_module(shapes);
     zox_import_module(Shapes3);
-} zox_end_module(Shapes);
-
-#endif
+}

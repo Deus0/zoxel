@@ -72,8 +72,6 @@ void define_components_cameras(ecs *world) {
     zoxd_tag(CameraFilter);
     zoxd_entity(CameraRenderer);
     // temp properties
-    zoxd_tag(CanRoam);
-    zox_dont_fragment(CanRoam);
-    zoxd_tag(Roaming);
-    zox_dont_fragment(Roaming);
+    zoxd_nf_tag(CanRoam);
+    zoxd_nf_tag(Roaming);
 }

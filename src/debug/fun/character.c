@@ -87,7 +87,7 @@ uint zox_dbg_label_chunk_mesh(
     guint uvs = zox_getv(e, UvsGPULink);
     guint colors = zox_getv(e, ColorsGPULink);
     index += snprintf(buffer + index, size - index,
-        " + Mesh [%s] Depth [%i] Disabled [%i]\n",
+        " + Mesh [%s]\n",
             zox_getn(e));
     index += snprintf(buffer + index, size - index,
         "   - Depth [%i] Disabled [%i]\n",

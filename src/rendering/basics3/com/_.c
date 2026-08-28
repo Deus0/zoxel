@@ -10,7 +10,4 @@ void zox_define_components_basics3(ecs* world) {
     zoxd(MaterialColored3D);
     zoxd(MaterialVoxInstance);
     zoxd(MaterialBasic3D);
-    zox_dont_fragment(MeshBasic3D);
-    zox_dont_fragment(TexturedMesh3);
-    zox_dont_fragment(SkeletonMesh);
 }

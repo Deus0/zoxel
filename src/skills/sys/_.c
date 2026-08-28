@@ -7,18 +7,18 @@
 realm_clear_system(SkillLinks);
 // TODO: DotLinks just parent them instead
 
-void zox_define_systems_skills(ecs *world) {
+void zox_systems_skills(ecs *world) {
     realm_clear_systemd(skills, SkillLinks);
     zox_system(
         SkillToggleSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] timers.Activate,
         [out] skills.SkillActive,
         [none] skills.SkillToggleable
     );
     zox_system(
         DotsSystem,
-        EcsOnUpdate,
+        zoxp_update,
         [in] skills.SpawnerLink,
         [in] skills.SkillDamage,
         [none] skills.Dot

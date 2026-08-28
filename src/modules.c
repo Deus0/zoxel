@@ -70,7 +70,6 @@
 #include "space/_.c"
 
 // depth 5: user data
-#include "users/_.c"
 #include "combat/_.c"
 #include "projectiles/_.c"
 #include "stats/_.c"
@@ -107,6 +106,15 @@
 #include "debug/_.c"
 #include "xr/_.c"
 
+// TODO: Remove Modules from here
+// - Add to core
+//      - colorz, names, slots, saves, shapes, nodes
+// - Delete these
+//      - vrays, screens
+// - Move plots to ui
+// - Move lights into chunks
+// - Move Combat to Stats
+
 // engine imports, besides sub modules, it's core is flecs
 void import_zox(ecs* world) {
     byte dbg_disable = 0;
@@ -133,36 +141,34 @@ void import_zox(ecs* world) {
     zox_add_module(screens);
     zox_add_module(nodes);
     zox_add_module(saves);
-    zox_import_module(Slots);
+    zox_add_module(slots);
+    zox_add_module(shapes);
 
     // depth 2: rendering foundations
     // things that build directly on graphics + transforms
+    zox_add_module(animations);
     zox_add_module(cameras);
     zox_add_module(rendering);
     zox_add_module(sounds);
     zox_add_module(textures);
     zox_add_module(geometry);
     zox_add_module(musics);
-    zox_add_module(animations);
     zox_add_module(bones);
     zox_add_module(ui);
-    // zox_import_module(Lines2);
 
     // More Misc
     zox_add_module(raycasts);
     zox_add_module(plots);
-    zox_import_module(Shapes);
 
     // depth 3: simulation / world foundations
     zox_add_module(genetics);
     zox_add_module(neurals);
-    // zox_import_module(Blueprints);
     zox_add_module(blocks);
     zox_add_module(chunks);
+    zox_add_module(lights);
     zox_add_module(voxes);
     zox_add_module(physics);
     zox_add_module(particles);
-    zox_add_module(lights);
 
     // depth 4: world / environment
     zox_add_module(models);
@@ -173,20 +179,18 @@ void import_zox(ecs* world) {
     zox_add_module(terrains);
     zox_add_module(biomes);
     zox_add_module(heights);
-    zox_import_module(Vegetation);
-    zox_import_module(Mountains);
-    zox_import_module(Towns);
-    zox_import_module(Vrays);
+    zox_add_module(vegetation);
+    zox_add_module(mountains);
+    zox_add_module(towns);
     zox_add_module(characters);
     zox_add_module(huds);
-    zox_import_module(Space);
+    zox_add_module(space);
+    zox_add_module(projectiles);
+    zox_import_module(Vrays);
 
     // depth 5: character data
     if (!dbg_disable) {
-        zox_import_module(Users);   // Remove users
-        zox_import_module(Users);
-        zox_import_module(Combat);
-        zox_import_module(Projectiles);
+        zox_add_module(combat);
         zox_add_module(stats);
         zox_add_module(skills);
         zox_add_module(items);
@@ -200,14 +204,14 @@ void import_zox(ecs* world) {
         zox_import_module(Races);
         zox_import_module(Clans);
         zox_import_module(Lores);
-        zox_import_module(Achievements);
+        zox_add_module(achievements);
 
         // depth 6: gameplay systems
         zox_add_module(pickups);
         zox_add_module(crafting);
+        zox_add_module(maps);
         zox_import_module(Farming);
         zox_import_module(Turrets);
-        zox_import_module(Maps);
         zox_import_module(Pets);
 
         // depth 7: world placement / AI
@@ -223,10 +227,10 @@ void import_zox(ecs* world) {
     }
 
     // depth 9: top-level integration
-    zox_import_module(Imports);
+    zox_add_module(imports);
     zox_add_module(editor);
 
-    #ifdef zox_xr
+#ifdef zox_xr
     zox_add_module(xr);
-    #endif
+#endif
 }

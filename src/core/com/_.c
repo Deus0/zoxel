@@ -49,20 +49,12 @@ zoxc_state(TriggerActionE);
 
 void zox_components_core(ecs* world) {
     // General
-    zoxd_tag(ZoxSystem);
-    zoxd_tag(Disabled);
-    zoxd_tag(BuildDisabled);
-    zoxd_tag(DebugEntity);
-    zoxd_tag(Initialize);
-    zoxd_tag(PreInitialize);
-    // zoxd_byte(Active);
-    // Dont Fragment
-    zox_dont_fragment(Initialize);
-    zox_dont_fragment(PreInitialize);
-    zox_dont_fragment(ZoxSystem);
-    zox_dont_fragment(Disabled);
-    zox_dont_fragment(BuildDisabled);
-    zox_dont_fragment(DebugEntity);
+    zoxd_nf_tag(ZoxSystem);
+    zoxd_nf_tag(Disabled);
+    zoxd_nf_tag(BuildDisabled);
+    zoxd_nf_tag(DebugEntity);
+    zoxd_nf_tag(Initialize);
+    zoxd_nf_tag(PreInitialize);
     // Data
     zoxd_double(DeactivateDelay);
     zoxd_byte(GenericEvent);

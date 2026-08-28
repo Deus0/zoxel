@@ -106,7 +106,7 @@ void zox_system_on_new(ecs* world, entity system) {
     zox_system_internal(id_, phase, 0, 0, __VA_ARGS__)
 
 #define zox_system_m(id_, multi_threaded_, ...)\
-    zox_system_internal(id_, EcsOnUpdate, multi_threaded_, 0, __VA_ARGS__)
+    zox_system_internal(id_, zoxp_update, multi_threaded_, 0, __VA_ARGS__)
 
 
 

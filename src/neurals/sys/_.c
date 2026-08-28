@@ -5,10 +5,10 @@
 #include "neuron_render_system.c"
 
 void define_systems_neurals(ecs* world) {
-    // zox_system(NeuronInputSystem, EcsOnUpdate, [none] InputNeuron) //  [out] Transfer,
+    // zox_system(NeuronInputSystem, zoxp_update, [none] InputNeuron) //  [out] Transfer,
     zox_system(
         LinkFeedForwardSystem,
-        zoxp_update, // EcsPostUpdate,
+        zoxp_update,
         [in] ConnectionData,
         [out] Weight,
         [out] Signal,

@@ -101,7 +101,7 @@ zox_sys2(BasicLightsBuildSystem) {
     zox_sys_in(LightNode);
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
-    zox_sys_out(MeshReady);
+    //zox_sys_out(MeshReady);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         // zox_sys_i(BuildMeshColors, trigger);
@@ -111,7 +111,7 @@ zox_sys2(BasicLightsBuildSystem) {
         zox_sys_i(LightNode, light_octree);
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(MeshColorRGBs, colors);
-        zox_sys_o(MeshReady, ready);
+        // zox_sys_o(MeshReady, ready);
         /*if (zox_getv(e, BuildMesh)) {
             // if still building, it will update the verts again
             // zox_setv(e, BuildMeshColors, 1);
@@ -138,6 +138,6 @@ zox_sys2(BasicLightsBuildSystem) {
         if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }
-        ready->value = 1;
+        // ready->value = 1;
     }
 } zox_sys_end(BasicLightsBuildSystem);

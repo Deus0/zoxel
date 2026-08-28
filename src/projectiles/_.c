@@ -16,18 +16,14 @@
  *      - Child Particles
  *
  */
-#ifndef zoxm_projectiles
-#define zoxm_projectiles
-
 zox_tag(Projectile);
 #include "pre/_.c"
 #include "ins/_.c"
 // #include "sys/_.c"
 
-zox_begin_module(Projectiles) {
+void import_projectiles(ecs* world) {
+    zox_module(projectiles);
     zoxd_tag(Projectile);
     // zox_define_systems_projectiles(world);
     add_hook_spawn_prefabs(zox_define_prefabs_projectiles);
-} zox_end_module(Projectiles);
-
-#endif
+}

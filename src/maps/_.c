@@ -6,9 +6,6 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  */
-#ifndef zoxm_maps
-#define zoxm_maps
-
 // TODO: Fix updating of maps
     // - black textures appear
     // - need to not regenerate them all, reuse them
@@ -42,7 +39,8 @@ float minimap_alpha = 0.46f;
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Maps) {
+void import_maps(ecs* world) {
+    zox_module(maps);
     define_components_maps(world);
     zox_define_systems_maps(world);
     add_hook_spawn_prefabs(spawn_prefabs_maps);
@@ -53,6 +51,4 @@ zox_begin_module(Maps) {
         .texture_name = "taskbar_map",
         .tooltip_text = "Map"
     });
-} zox_end_module(Maps);
-
-#endif
+}

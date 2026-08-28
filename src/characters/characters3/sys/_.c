@@ -25,7 +25,7 @@ void define_systems_characters3(ecs *world) {
 
 /*zox_system(
     Character3TypeDebugSystem,
-    EcsOnUpdate,
+    zoxp_update,
     [in] lines3.DebugCubeLines,
     [in] characters3.Character3Type,
     [out] colorz.Color,

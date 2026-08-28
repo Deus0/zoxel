@@ -23,8 +23,8 @@ zoxc_queue_remove(LightQueue, LightUpdate);
 zoxc_queue_remove(DarkQueue, DarkUpdate);
 
 void define_components_lights3(ecs *world) {
-    zoxd_tag(SunnyChunk);
-    zoxd_tag(BottomChunk);
+    zoxd_nf_tag(SunnyChunk);
+    zoxd_nf_tag(BottomChunk);
     zoxd_octree(LightNode); // zoxd_node
     zoxd(LightNodeLock);
     zoxd_byte(LightNodeDepth);
@@ -32,7 +32,4 @@ void define_components_lights3(ecs *world) {
     zoxd_queue(SunlightQueue);
     zoxd_queue(LightQueue);
     zoxd_queue(DarkQueue);
-    // zoxd_byte(RefreshLights);
-    zox_dont_fragment(SunnyChunk);
-    zox_dont_fragment(BottomChunk);
 }

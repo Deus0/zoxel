@@ -37,9 +37,25 @@ void define_components_textures(ecs* world) {
     zoxd_tag(Texture);    // RGBA
     zoxd_tag(TextureRGB);
     zoxd_tag(Tilemap);
-    zoxd_tag(TextureDirty);
+    zoxd_tag(VoxTexture);
     // Properties
     zoxd_tag(FixToLayout);
+    // Events
+    zoxd_nf_tag(TextureDirty);
+    zoxd_byte(GenerateTexture);
+    // Data
+    zoxd_byte(OutlineThickness);
+    zoxd_byte(FrameCorner);
+    zoxd_float(IconRadius);
+    zoxd_double(AnimateTexture);
+    zoxd_int2(TilemapSize);
+    zoxd_color(FillColor);
+    zoxd_color(OutlineColor);
+    zoxd_entity(TilemapLink);
+    zoxd_entity(TextureLink);
+    zoxd_arrayd(TextureData);
+    zoxd_arrayd(TilemapUVs);
+    zoxd_entities(TextureLinks);
     // Generation Types (obsolete)
     zoxd_tag(NoiseTexture);
     zoxd_tag(IconTexture);
@@ -51,23 +67,6 @@ void define_components_textures(ecs* world) {
     zoxd_tag(ObsidianTexture);
     zoxd_tag(FillTexture);
     zoxd_tag(TextureAddNoise);
-    zoxd_tag(VoxTexture);
     zoxd_tag(CenterVoxTexture);
     zoxd_tag(ArrowTexture);
-    // Dont Fragment Entities
-    zox_dont_fragment(TextureDirty);
-    // Data
-    zoxd_byte(GenerateTexture);
-    zoxd_byte(OutlineThickness);
-    zoxd_byte(FrameCorner);
-    zoxd_float(IconRadius);
-    zoxd_int2(TilemapSize);
-    zoxd_double(AnimateTexture);
-    zoxd_color(FillColor);
-    zoxd_color(OutlineColor);
-    zoxd_entity(TilemapLink);
-    zoxd_entity(TextureLink);
-    zoxd_arrayd(TextureData);
-    zoxd_arrayd(TilemapUVs);
-    zoxd_entities(TextureLinks);
 }

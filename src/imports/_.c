@@ -7,13 +7,8 @@
  *      - WAVs
  *
 */
-#ifndef zoxm_imports
-#define zoxm_imports
-
 // TODO: Refactor the prior works into here
+void import_imports(ecs* world) {
+    zox_module(imports);
 
-zox_begin_module(Imports)
-
-zox_end_module(Imports)
-
-#endif
+}

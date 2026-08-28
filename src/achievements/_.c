@@ -6,9 +6,6 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  */
-#if !defined(zoxm_achievements)
-#define zoxm_achievements
-
 // Realm Contains all Achievements
 // Save/Load Players progress - per save game
 // Toast UI -> show popup at top right when completed - this will trigger steam achievements at bottom right
@@ -19,9 +16,8 @@
 #include "fun/realm_achievements.c"
 #include "sys/_.c"
 
-zox_begin_module(Achievements) {
+void import_achievements(ecs* world) {
+    zox_module(achievements);
     define_components_achievements(world);
     spawn_systems_achievements(world);
-} zox_end_module(Achievements);
-
-#endif
+}
