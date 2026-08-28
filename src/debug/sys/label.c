@@ -78,7 +78,7 @@ get_label_generic_function(PlayerLinks, player_links)
         const DeviceMode *deviceMode = zox_get(player, DeviceMode)
 #endif
 #ifdef zox_debug_ui_raycaster_target
-        const entity raycaster_target = zox_getv(player, RaycasterTarget)
+        const entity raycaster_target = zox_getv(player, EntityTarget)
 #endif
         int buffer_index = 0;
         char buffer[buffer_size];

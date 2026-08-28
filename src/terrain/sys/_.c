@@ -34,7 +34,6 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         ChunkLodSystem,
         zoxp_update,
-        [in] saves.Loaded,
         [in] rendering.RenderDepth,
         [out] chunks3.ChunkLodDirty,
         [out] chunks.NodeDepth,

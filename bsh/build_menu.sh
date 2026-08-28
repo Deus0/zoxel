@@ -127,7 +127,7 @@ else
   pick_settings
 fi
 
-BUILD_SCRIPT="bsh/${OS}.sh"
+BUILD_SCRIPT="bsh/build.sh" # ${OS}
 
 if [[ ! -f "$BUILD_SCRIPT" ]]; then
   echo "Warning: $BUILD_SCRIPT is not supported or does not exist."

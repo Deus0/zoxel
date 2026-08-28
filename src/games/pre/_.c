@@ -1,4 +1,6 @@
 entity prefab_game;
+entity local_game;
+
 #include "game.c"
 
 void spawn_prefabs_games(ecs *world) {

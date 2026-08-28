@@ -1,7 +1,6 @@
-#ifndef zoxm_game
-#define zoxm_game
 
-zox_begin_module(ZoxGame) {
+void import_zoxgame(ecs* world) {
+    zox_module(zoxgame);
     game_name = "zixel";
     zox_game_type = zox_game_mode_2D;
     zox_game_camera_mode = zox_camera_state_2D;
@@ -12,6 +11,4 @@ zox_begin_module(ZoxGame) {
     // viewport_clear_color = menu_sky_bottom_color;
     // set_prefab_debug_label(world, &get_label_character2_player);
     // add_hook_on_boot(spawn_weather);
-} zox_end_module(ZoxGame);
-
-#endif
+}

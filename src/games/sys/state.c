@@ -58,7 +58,7 @@ zox_sys2(GameStateSystem) {
             target->value = zox_game_load_faded;
         } else if (state->value == zox_game_load_faded) {
             target->value = zox_game_loading_realm;
-            zox_set(realm->value, GenerateRealm, { zox_generate_realm_start });
+            zox_setv(realm->value, GenerateRealm, zox_generate_realm_start);
         } else if (state->value == zox_game_loading_realm) {
             // finished loading realm
             target->value = zox_game_state_play_begin;

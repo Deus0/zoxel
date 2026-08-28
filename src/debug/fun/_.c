@@ -1,3 +1,5 @@
 #include "character.c"
 #include "amd.c"
 #include "system.c"
+#include "gizmos.c"
+#include "overlays.c"

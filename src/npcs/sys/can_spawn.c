@@ -27,7 +27,10 @@ zox_sys2(Characters3SpawnZoneSystem) {
         }
 #endif
         float terrain_depth = zox_getv(terrain, NodeDepth);
-        byte new_active = !zox_has(e, GenerateChunk) && depth->value == terrain_depth && distance->value <= character_spawn_distance;
+        byte new_active =
+            !zox_has(e, GenerateChunk) &&
+            depth->value == terrain_depth &&
+            distance->value <= character_spawn_distance;
         if (active->value != new_active) {
             active->value = new_active;
             dirty->value = zox_dirty_trigger;

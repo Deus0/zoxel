@@ -4,7 +4,12 @@
 /// - near: “near‑field” radius under which LOD 0 applies
 /// - far: your global max view distance
 // NOTE: near is a reserved words on windows..
-static inline byte camera_distance_to_render_depth(byte distance, byte depth, byte nearf, byte farf) {
+static inline byte camera_distance_to_render_depth(
+    byte distance,
+    byte depth,
+    byte nearf,
+    byte farf)
+{
     if (!depth) {
         // zox_loge("Invalid Depth 0 [camera_distance_to_render_depth]");
         return 0;
@@ -54,7 +59,11 @@ static inline byte camera_distance_to_terrain_render_depth(byte distance) {
     if (disable_terrain_lods) {
         return terrain_depth;
     }
-    return camera_distance_to_render_depth(distance, terrain_depth, terrain_lod_near, terrain_lod_far);
+    return camera_distance_to_render_depth(
+        distance,
+        terrain_depth,
+        terrain_lod_near,
+        terrain_lod_far);
 }
 
 static inline byte camera_distance_to_npc_render_depth(byte distance, byte max_depth) {
@@ -65,9 +74,17 @@ static inline byte camera_distance_to_npc_render_depth(byte distance, byte max_d
         byte ddepth = (block_vox_depth_limits.y - block_vox_depth);
         max_depth = max_depth - ddepth < 0 ? 0 : max_depth - ddepth;
     }*/
-    return camera_distance_to_render_depth(distance, max_depth, vox_lod_near, terrain_lod_near);
+    return camera_distance_to_render_depth(
+        distance,
+        max_depth,
+        vox_lod_near,
+        terrain_lod_near);
 }
 
 static inline byte camera_distance_to_block_vox_depth(byte distance) {
-    return camera_distance_to_render_depth(distance, block_vox_depth, vox_lod_near, terrain_lod_near);
+    return camera_distance_to_render_depth(
+        distance,
+        block_vox_depth,
+        vox_lod_near,
+        terrain_lod_near);
 }

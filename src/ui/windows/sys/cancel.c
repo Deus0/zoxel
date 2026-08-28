@@ -19,9 +19,9 @@ zox_sys2(CancelMenuSystem) {
         if (!zox_valid(device)) {
             continue;
         }
-        entity target = zox_has(device, RaycasterTarget) ? zox_getv(device, RaycasterTarget) : 0;
+        entity target = zox_has(device, EntityTarget) ? zox_getv(device, EntityTarget) : 0;
         if (!target) {
-            target = zox_has(e, RaycasterTarget) ? zox_getv(e, RaycasterTarget) : 0;
+            target = zox_has(e, EntityTarget) ? zox_getv(e, EntityTarget) : 0;
         }
         if (!zox_valid(target)) {
             // zox_log("No Raycast Target");
@@ -77,9 +77,9 @@ zox_sys2(KeyboardCancelMenuSystem) {
         }
         entity player = zox_get_parent(world, e);
         entity target = 0;
-        /*entity target = zox_has(player, RaycasterTarget) ? zox_getv(player, RaycasterTarget) : 0;
+        /*entity target = zox_has(player, EntityTarget) ? zox_getv(player, EntityTarget) : 0;
         if (!target) {
-            target = zox_has(e, RaycasterTarget) ? zox_getv(e, RaycasterTarget) : 0;
+            target = zox_has(e, EntityTarget) ? zox_getv(e, EntityTarget) : 0;
         }*/
         // NOTE: Should be on the mouse pointer
         if (!target) {
@@ -93,8 +93,8 @@ zox_sys2(KeyboardCancelMenuSystem) {
                     if (zox_getv(device, DeviceDisabled)) {
                         continue;
                     }
-                    if (zox_has(device, RaycasterTarget)) {
-                        target = zox_getv(e, RaycasterTarget);
+                    if (zox_has(device, EntityTarget)) {
+                        target = zox_getv(e, EntityTarget);
                         if (zox_valid(target)) {
                             break;
                         }
@@ -109,8 +109,8 @@ zox_sys2(KeyboardCancelMenuSystem) {
                             if (zox_getv(zevice, ZeviceDisabled)) {
                                 continue;
                             }
-                            if (zox_has(zevice, RaycasterTarget)) {
-                                target = zox_getv(zevice, RaycasterTarget);
+                            if (zox_has(zevice, EntityTarget)) {
+                                target = zox_getv(zevice, EntityTarget);
                                 if (zox_valid(target)) {
                                     break;
                                 }
@@ -131,7 +131,7 @@ zox_sys2(KeyboardCancelMenuSystem) {
         }
         if (!zox_valid(target)) {
             if (dbg_log) {
-                zox_log("Keyboard found no No RaycasterTarget");
+                zox_log("Keyboard found no No EntityTarget");
             }
             continue;
         }

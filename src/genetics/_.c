@@ -6,11 +6,8 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  */
-#ifndef zox_genetics
-#define zox_genetics
 
-zox_begin_module(Genetics) {
+void import_genetics(ecs* world) {
+    zox_module(genetics);
     // components & systems
-} zox_end_module(Genetics);
-
-#endif
+}

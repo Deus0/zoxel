@@ -1,9 +1,33 @@
 # Todo
 
-- GenerateChunk not running when increasing depths
+- Add listener component on Game
+    - GameStateEvent
+    - Passes in game event with function
+- Add loading screen event
+- Move the key events out of the test functions
+    - just add to a KeyListener component
+    
+- Add links back for active mesh, fuck the rules
+
+- Streaming gets 20ms spikes atm...
+
+- if theres multiple streamers with different levels
+    - idk... why this breaks for new game
+    - oh i think it uses position for has, we should remove previous position if level is higher then
+    - we clear atm which is fine for now
+- Voddes didnt die on chunk deaths
+- Create a nonfragtag macro
+- Remove state components and just use tags + dontfrag
+- Refactor our timings
+    - spawn a profile entity (dataset)
+-x Move the test uis into Debug
+-x Add spawn realm test
+-x Add spawn terrain test
+
 -x Mesh didnt transition sometimes
 	-x just stayed disable
 	-x add active/preparing to debug ui
+- GenerateChunk not running when increasing depths
 - Landfill LOD issues
 	- When loading map?
 	- missmatch of tunk / chunk
@@ -19,16 +43,15 @@
 - Test to spawn query and print the tables
 
 ## Regression again
-
-- Initialize gets removed in same frame as spawn
-    - Make a pre spawn update where it gets removed
-
-- Skeleton mesh doesnt render
-    - Initialize
-- Sometimes chunk meshes dont update
-- Big lagspikes during Streaming
 - Lower FPS, investigate the chunk meshes tables
     - we can see by debugging pipelines
+
+-x Initialize gets removed in same frame as spawn
+    -x Make a pre spawn update where it gets removed
+-x Skeleton mesh doesnt render
+    -x Initialize
+-x Sometimes chunk meshes dont update
+-x Big lagspikes during Streaming
 
 Target: 230fps at the current position
 - Make MeshDirty + and other bytes tags
@@ -37,9 +60,6 @@ Target: 230fps at the current position
 
 ## After
 - add min, max to fps display
-
-
-
 - We should not have restore/dispose systems
     - just use query
     - as systems cache their results per frame

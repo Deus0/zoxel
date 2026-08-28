@@ -9,7 +9,7 @@ void define_systems_rendering_cameras(ecs *world) {
     zox_system_1(
         RenderCameraInitializeSystem,
         zoxp_gpu_upload,
-        [in] screens.ScreenDimensions,
+        [in] core.PixelSize,
         [out] render_cameras.FrameBufferLink,
         [out] render_cameras.RenderBufferLink,
         [none] cameras.RenderCamera,
@@ -18,7 +18,7 @@ void define_systems_rendering_cameras(ecs *world) {
     // Render Camera
     zox_gpu_restore_system(
         RenderBufferRestoreSystem,
-        [in] screens.ScreenDimensions,
+        [in] core.PixelSize,
         [out] FrameBufferLink,
         [out] RenderBufferLink
     );
@@ -47,7 +47,7 @@ void define_systems_rendering_cameras(ecs *world) {
         [in] transforms3.Position3D,
         [in] cameras.FieldOfView,
         [in] cameras.ScreenPosition,
-        [in] screens.ScreenDimensions,
+        [in] core.PixelSize,
         [in] colorz.FogColor,
         [none] !cameras.CameraUI
     );
@@ -58,7 +58,7 @@ void define_systems_rendering_cameras(ecs *world) {
         [in] transforms3.Position3D,
         [in] cameras.FieldOfView,
         [in] cameras.ScreenPosition,
-        [in] screens.ScreenDimensions,
+        [in] core.PixelSize,
         [in] colorz.FogColor,
         [none] cameras.CameraUI
     );

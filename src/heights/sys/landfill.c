@@ -11,6 +11,7 @@ short terrain_stone_height = 18; // 32;
 // NOTE: Fills land with Soils based on biomes
 zox_sys2(LandfillChunkSystem) {
     byte dbg_log = 0;
+    byte dbg_log_errors = 1;
     byte disable_biome_changes = 1;
     uint pcount = 0;
     byte max_process = !zox_disable_process_skips ? terrain_depth : 0;
@@ -67,11 +68,15 @@ zox_sys2(LandfillChunkSystem) {
             continue;
         }
         byte tunk_lod = zox_getv(tunk->value, TunkLod);
+        byte build_depth = depth->value;
         if (depth->value != tunk_lod) {
-            zox_loge("[Landfill] Depth Invalid: Chunk [%i] - Tunk [%i]",
-                depth->value,
-                tunk_lod);
-            continue;
+            build_depth = tunk_lod;
+            if (dbg_log_errors) {
+                zox_loge("[Landfill] Depth Invalid: Chunk [%i] - Tunk [%i]",
+                    depth->value,
+                    tunk_lod);
+            }
+            // continue;
         }
         // zox_log("Chunk Depth IS Tunk Lod [%i] != [%i]", depth->value, tunk_lod);
         zox_geter(tunk->value, BiomeMap, biome_map);
@@ -89,8 +94,8 @@ zox_sys2(LandfillChunkSystem) {
         }
 #endif
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        byte shift = terrain_depth - depth->value;
-        short length = octree_size(depth->value);
+        byte shift = terrain_depth - build_depth;
+        short length = octree_size(build_depth);
         // byte hmultiplier = octree_size(shift);
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth);
         int2 map_size = int2_single(length);
@@ -181,7 +186,7 @@ zox_sys2(LandfillChunkSystem) {
                 if (is_bottom_chunk) {
                     set_clean_VoxelNode(
                         voctree,
-                        depth->value,
+                        build_depth,
                         position,
                         obsidian_id ? obsidian_id : soil_id
                     );
@@ -191,7 +196,7 @@ zox_sys2(LandfillChunkSystem) {
                 for (; position.y <= stone_end; position.y++) {
                     set_clean_VoxelNode(
                         voctree,
-                        depth->value,
+                        build_depth,
                         position,
                         stone_id
                     );
@@ -200,7 +205,7 @@ zox_sys2(LandfillChunkSystem) {
                 for (; position.y <= local_height; position.y++) {
                     set_clean_VoxelNode(
                         voctree,
-                        depth->value,
+                        build_depth,
                         position,
                         top_material
                     );
@@ -235,6 +240,6 @@ zox_sys2(LandfillChunkSystem) {
         // write_unlock_VoxelNode(voctree);
         // Completed
         generate->value = zox_generate_terrain_vegetation;
-        pcount += depth->value;
+        pcount += build_depth;
     }
 } zox_sys_end(LandfillChunkSystem);

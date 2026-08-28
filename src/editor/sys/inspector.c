@@ -1,4 +1,11 @@
-void fetch_entity_components(ecs* world, entity_array_d* entitys, entity_array_d* components, byte_array_d* types, text_group_dynamic_array_d* labels, entity target) {
+void fetch_entity_components(
+    ecs* world,
+    entity_array_d* entitys,
+    entity_array_d* components,
+    byte_array_d* types,
+    text_group_dynamic_array_d* labels,
+    entity target)
+{
     if (!zox_valid(target)) {
         return;
     }
@@ -104,7 +111,13 @@ zox_sys2(InspectorSpawnSystem) {
         entity_array_d* entitys = create_entity_array_d(4);
         entity_array_d* components = create_entity_array_d(4);
         text_group_dynamic_array_d* labels = create_text_group_dynamic_array_d(4);
-        fetch_entity_components(world, entitys, components, types, labels, target->value);
+        fetch_entity_components(
+            world,
+            entitys,
+            components,
+            types,
+            labels,
+            target->value);
         // 3: Initialize Data
         zox_geter_value(list_ui, TextPadding, byte2, text_padding);
         /*ElementSpawnData child_element_data = {
@@ -171,7 +184,21 @@ zox_sys2(InspectorSpawnSystem) {
             }
             // child_element_data.render_disabled = j >= visible;
             // our spawning
-            entity2 e2 = spawn_button(world, prefab_button, list_ui, text, int2_zero, int2_zero, float2_half, zox_alignment_left, font_size->value, text_padding, editor_button_fill, outline, editor_color_font, editor_color_fonto);
+            entity2 e2 = spawn_button(
+                world,
+                prefab_button,
+                list_ui,
+                text,
+                int2_zero,
+                int2_zero,
+                float2_half,
+                zox_alignment_centre, // zox_alignment_left,
+                font_size->value,
+                text_padding,
+                editor_button_fill,
+                outline,
+                editor_color_font,
+                editor_color_fonto);
             // Set tooltips
             char tooltip_text[inspector_component_size_buffer];
             sprintf(tooltip_text, "%s", text);

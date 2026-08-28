@@ -4,13 +4,11 @@ zox_sys2(ChunkLodSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Loaded);
     zox_sys_in(RenderDepth);
     zox_sys_out(ChunkLodDirty);
     zox_sys_out(NodeDepth);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Loaded, loaded);
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_o(ChunkLodDirty, render_depth_dirty);
         zox_sys_o(NodeDepth, octree_depth);
@@ -34,7 +32,7 @@ zox_sys2(ChunkLodSystem) {
                 zox_log("Chunk [%s] Depth Increased -> %i", zox_get_name(e), render_depth->value);
             }
             // Set to Generate as Depth Increased
-            if (!loaded->value) {
+            if (!zox_has(e, Loaded)) {
                 zox_setv(e, GenerateChunk, zox_generate_terrain_start);
             } else {
                 // Skips Generation

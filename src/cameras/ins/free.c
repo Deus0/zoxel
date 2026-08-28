@@ -9,7 +9,7 @@ entity spawn_free_camera(
     zox_name("free_camera");
     zox_setv(e, Position3D, position);
     zox_setv(e, Rotation3D, rotation);
-    zox_setv(e, ScreenDimensions, size);
+    zox_setv(e, PixelSize, size);
     zox_setv(e, ScreenPosition, screen_position);
 #ifndef zox_test_quaternion_camera
     zox_add(e, EulerOverride);

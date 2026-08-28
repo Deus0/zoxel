@@ -77,7 +77,7 @@ zox_sys2(GameStartStreamerSystem) {
         {
             // Attach to our terrain's event
             zox_set(terrain, EventInput, { e });
-            zox_set(terrain, Loaded, { zox_load_begin });
+            zox_add(terrain, Loading);
         }
         {
             int3 terrain_position = real_position_to_chunk_position(position, terrain_chunk_length, terrain_scale);

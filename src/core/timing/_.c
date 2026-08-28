@@ -34,11 +34,6 @@ void import_timing(ecs* world) {
     // stats
 #ifdef zox_time_systems
     add_hook_spawn_prefabs(add_system_log_components);
-    /*{
-        max_systems_data = zox_new();
-        zox_add(max_systems_data, TrackMaxSystem);
-        zox_add(max_systems_data, SystemLink);
-    }*/
     fps_curve = spawn_fps_curve(world);
 #endif
 }

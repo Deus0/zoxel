@@ -1,6 +1,7 @@
 entity local_realm;
-#include "realm.c"
 entity prefab_realm;
+
+#include "realm.c"
 
 entity get_linked_realm(ecs* world, entity e) {
     return zox_valid(e) && zox_has(e, RealmLink) ? zox_getv(e, RealmLink) : 0;

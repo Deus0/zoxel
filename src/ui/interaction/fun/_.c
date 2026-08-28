@@ -21,13 +21,13 @@ void set_raycast_target_children(ecs *world, entity e, entity target) {
     if (!zox_valid(e)) {
         return;
     }
-    if (zox_has(e, RaycasterTarget)) {
-        entity last_target = zox_getv(e, RaycasterTarget);
+    if (zox_has(e, EntityTarget)) {
+        entity last_target = zox_getv(e, EntityTarget);
         if (zox_valid(last_target) && zox_has(last_target, SelectState)) {
             zox_setm(last_target, SelectState, zox_state_deselect_trigger);
             // zox_set(last_target, SelectStateDirty, { zox_dirty_trigger });
         }
-        zox_setm(e, RaycasterTarget, target);
+        zox_setm(e, EntityTarget, target);
         if (zox_valid(target)) {
             zox_setm(target, SelectState, zox_state_select_trigger);
             // zox_set(target, SelectStateDirty, { zox_dirty_trigger });

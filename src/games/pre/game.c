@@ -15,5 +15,6 @@ entity spawn_prefab_game(ecs* world) {
 entity spawn_game(ecs* world) {
     zox_instance(prefab_game);
     zox_name("game");
+    local_game = e;
     return e;
 }

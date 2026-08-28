@@ -6,7 +6,10 @@ void zox_tst_toggle_red_sky(ecs* world, ClickEventData data) {
     refresh_weather(world);
 }
 
-void zox_tst_toggle_low_fps(ecs* world, ClickEventData data) {
+void zox_tst_toggle_low_fps(
+    ecs* world,
+    ClickEventData data)
+{
     if (!target_fps) {
         target_fps = 120;
     } else if (target_fps == 120) {
@@ -30,7 +33,10 @@ void zox_tst_toggle_low_fps(ecs* world, ClickEventData data) {
     zox_log("Set Target FPS to [%i]", target_fps);
 }
 
-void zox_dbg_ui_manual_tests(ecs* world, int32_t keycode) {
+void zox_dbg_ui_manual_tests(
+    ecs* world,
+    int32_t keycode)
+{
     if (keycode != zox_key_b) {
         return;
     }
@@ -80,13 +86,26 @@ void zox_dbg_ui_manual_tests(ecs* world, int32_t keycode) {
         .text = "Refresh Sunlights",
         .on_click = { &zox_dbg_lights3_refresh_sunlight },
     };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Terrain Stream Point",
-        .on_click = { &zox_dbg_spawn_streamer },
-    };
     // Test our uis
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, "Manual Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
+    entity3 e3 = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        "Manual Tests",
+        header_font_size,
+        list_font_size,
+        (ClickEvent) { NULL },
+        can_close,
+        0,
+        0,
+        alignment,
+        float2_top_left,
+        list_padding,
+        spawned,
+        elements,
+        elements_count,
+        visible_count);
     zox_set_unique_name(e3.x, "dbg_ui_tests");
     zox_add(e3.x, NavigationWindow);
     dbg_ui_tests = e3.x;

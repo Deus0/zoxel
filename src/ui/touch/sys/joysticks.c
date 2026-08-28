@@ -84,7 +84,7 @@ zox_sys2(VirtualJoystickSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLink);
-    zox_sys_in(RaycasterTarget);
+    zox_sys_in(EntityTarget);
     zox_sys_in(ZevicePointerPosition);
     zox_sys_in(ZevicePointer);
     zox_sys_in(VirtualZeviceLink);
@@ -92,7 +92,7 @@ zox_sys2(VirtualJoystickSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DeviceLink, device);
-        zox_sys_i(RaycasterTarget, target);
+        zox_sys_i(EntityTarget, target);
         zox_sys_i(ZevicePointerPosition, position);
         zox_sys_i(ZevicePointer, clicked);
         zox_sys_i(VirtualZeviceLink, joystick);

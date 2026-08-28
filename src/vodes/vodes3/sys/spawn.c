@@ -30,6 +30,7 @@ void spawned_block_vox(ecs *world, spawned_block_data* data) {
         return;
     }
     link_node_VoxelNode(data->octree, e2);
+    zox_set_parent(world, e2, data->chunk);
     // spawn_line3(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
 }
 

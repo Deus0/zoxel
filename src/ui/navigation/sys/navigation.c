@@ -1,4 +1,4 @@
-// todo: fix this, RaycasterTarget moved to zevices
+// todo: fix this, EntityTarget moved to zevices
 zox_sys2(ElementNavigationSystem) {
     byte dbg_log = 0;
     init_delta_time();
@@ -7,11 +7,11 @@ zox_sys2(ElementNavigationSystem) {
     zox_sys_in(DeviceDisabled);
     zox_sys_out(NavigatorState);
     zox_sys_out(NavigatorTimer);
-    zox_sys_out(RaycasterTarget);
+    zox_sys_out(EntityTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DeviceDisabled, disabled);
-        zox_sys_o(RaycasterTarget, current);
+        zox_sys_o(EntityTarget, current);
         zox_sys_o(NavigatorState, state);
         zox_sys_o(NavigatorTimer, timer);
         // Navigation needs a current selection

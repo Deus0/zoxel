@@ -1,5 +1,6 @@
 // NOTE: Goes through all Doubles on array and find biggest
 zox_sys2(MaxDataSystem) {
+    // zox_log("MaxDataSystem [%i]", it->count);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DoubleData);

@@ -14,18 +14,13 @@ zox_sys2(StreamEndSystem) {
     zox_sys_in(EventInput);
     zox_sys_in(ChunkLinks);
     zox_sys_in(TerrainSpawnQueue);
-    zox_sys_out(Loaded);
     zox_sys_out(StreamEndEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkLinks, chunks);
         zox_sys_i(EventInput, input);
         zox_sys_i(TerrainSpawnQueue, queue);
-        zox_sys_o(Loaded, loaded);
         zox_sys_o(StreamEndEvent, event);
-        if (loaded->value != zox_load_begin) {
-            continue;
-        }
         if (!chunks->value || !chunks->value->size) {
             continue;
         }
@@ -119,7 +114,8 @@ zox_sys2(StreamEndSystem) {
             event->value = NULL;
         }
         // now loaded
-        loaded->value = zox_load_done;
+        // loaded->value = zox_load_done;
+        zox_remove(e, Loading);
         if (dbg_log) {
             zox_log("Terrain Loaded: chunks: [%i]", chunks_loaded);
         }

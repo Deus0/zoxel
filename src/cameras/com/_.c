@@ -6,7 +6,6 @@ zox_tag(ElementBillboard);
 zox_tag(Perspective);
 zox_tag(Orthographic);
 zoxc_byte(CameraState);
-zoxc_byte(Roaming);
 zoxc_byte(CameraViewing);
 zoxc_float(FieldOfView);
 zoxc_float(CameraNearDistance);
@@ -33,6 +32,9 @@ zoxc_entity(RenderTextureLink);
 zoxc_entity(RenderCameraLink);
 zoxc_float(CameraBlur);
 zoxc_float(CameraVignette);
+// Properties
+zox_tag(CanRoam);
+zox_tag(Roaming);
 
 void define_components_cameras(ecs *world) {
     zoxd_tag(Camera);
@@ -44,7 +46,6 @@ void define_components_cameras(ecs *world) {
     zoxd_tag(Perspective);
     zoxd_tag(Orthographic);
     zoxd_byte(CameraState);
-    zoxd_byte(Roaming);
     zoxd_byte(CameraViewing);
     zoxd_float(FieldOfView);
     zoxd_float(CameraNearDistance);
@@ -70,4 +71,9 @@ void define_components_cameras(ecs *world) {
     // Filters
     zoxd_tag(CameraFilter);
     zoxd_entity(CameraRenderer);
+    // temp properties
+    zoxd_tag(CanRoam);
+    zox_dont_fragment(CanRoam);
+    zoxd_tag(Roaming);
+    zox_dont_fragment(Roaming);
 }

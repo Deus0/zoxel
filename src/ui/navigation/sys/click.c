@@ -5,12 +5,12 @@ zox_sys2(DeviceClickSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceDisabled);
-    zox_sys_in(RaycasterTarget);
+    zox_sys_in(EntityTarget);
     zox_sys_out(ClickingEntity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DeviceDisabled, disabled);
-        zox_sys_i(RaycasterTarget, target);
+        zox_sys_i(EntityTarget, target);
         zox_sys_o(ClickingEntity, clicking);
         if (disabled->value ||
             !zox_valid(target->value) ||

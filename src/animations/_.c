@@ -6,9 +6,6 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  */
-#ifndef zoxm_animations
-#define zoxm_animations
-
 // TODO: Curve data seperate - curves module
 // TODO: Entity for AnimationCurve - Takes Curve, ComponentID, Target Entity, StartTime, EndTime
 // TODO: Animation: A list of curves
@@ -29,9 +26,8 @@
 #include "sys/_.c"
 #include "fun/_.c"
 
-zox_begin_module(Animations) {
+void import_animations(ecs* world) {
+    zox_module(animations);
     define_components_animations(world);
     define_systems_animations(world);
-} zox_end_module(Animations);
-
-#endif
+}

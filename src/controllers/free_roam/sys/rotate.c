@@ -1,4 +1,12 @@
-zox_sys2(FreeCameraToggleSystem) {
+const int max_mouse_delta = 120;
+const float begin_rotate_power = 0.46; // 0.62
+#define camera_quaternion_speed 0.004f // 0.01f
+
+zox_sys2(FreeCameraRotateSystem) {
+    double rotate_power = begin_rotate_power * zox_delta_time * degreesToRadians * 32.0;
+#ifdef zox_web
+    rotate_power *= 10.0;
+#endif
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -7,15 +15,15 @@ zox_sys2(FreeCameraToggleSystem) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(CameraLink, camera);
-        if (state->value != zox_player_state_playing || !zox_valid(camera->value)) {
+        if (!zox_valid(camera->value) ||
+            !zox_has(camera->value, Roaming)
+        ) {
             continue;
         }
-        zox_geter_value(camera->value, CameraState, byte, camera_state);
+        /*zox_geter_value(camera->value, CameraState, byte, camera_state);
         if (camera_state != zox_camera_state_free) {
             continue;
-        }
-        byte is_triggered = 0;
-        entity mouse = 0;
+        }*/
         entity devices[zox_children_capacity];
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
@@ -35,20 +43,16 @@ zox_sys2(FreeCameraToggleSystem) {
                 if (disabled) {
                     continue;
                 }
-                if (zox_has(e3, ZevicePointerRight)) {
-                    zox_geter_value(e3, ZevicePointerRight, byte, click);
-                    if (devices_get_pressed_this_frame(click)) {
-                        is_triggered = 1;
-                        mouse = e2;
+                if (zox_has(e3, ZevicePointerDelta)) {
+                    float2 delta = int2_to_float2(zox_getv(e3, ZevicePointerDelta));
+                    if (int_absf(delta.x) + int_absf(delta.y) >= max_mouse_delta || (delta.x == 0 &&delta.y == 0)) {
+                        continue;
                     }
+                    zox_muter(camera->value, Euler, euler);
+                    float3 eulerAddition = { delta.y * rotate_power, -delta.x * rotate_power, 0 };
+                    euler->value = float3_add(euler->value, eulerAddition);
                 }
             }
         }
-        if (is_triggered && mouse) {
-            zox_geter_value(camera->value, Roaming, byte, roaming);
-            byte new_roaming = !roaming;
-            zox_set(mouse, MouseLock, { new_roaming });
-            zox_set(camera->value, Roaming, { new_roaming });
-        }
     }
-} zox_sys_end(FreeCameraToggleSystem);
+} zox_sys_end(FreeCameraRotateSystem);

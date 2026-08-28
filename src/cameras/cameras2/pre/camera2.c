@@ -16,6 +16,6 @@ entity spawn_camera2D_follower(ecs *world, float3 position, float4 rotation, int
     zox_name("camera2D_follower");
     zox_set(e, Position3D, { position });
     zox_set(e, Rotation3D, { rotation });
-    zox_set(e, ScreenDimensions, { size });
+    zox_set(e, PixelSize, { size });
     return e;
 }

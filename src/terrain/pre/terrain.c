@@ -1,8 +1,9 @@
 entity spawn_prefab_terrain(ecs *world) {
     zox_prefab();
     zox_prefab_name("terrain");
+    zox_add(e, Terrain);
     zox_add(e, TerrainWorld);
-    zox_prefab_set(e, Loaded, { 0 });
+    zox_add(e, Loading);
     zox_prefab_set(e, BlockScale, { default_vox_scale });
     zox_prefab_set(e, NodeDepth, { 0 });
     zox_prefab_set(e, TilemapLink, { 0 });

@@ -9,9 +9,6 @@
  *      - TownMaps
  *
  * */
-#ifndef zoxm_tunks
-#define zoxm_tunks
-
 byte zox_flatlands = 0;
 
 // Tunk States
@@ -45,11 +42,10 @@ byte zox_flatlands = 0;
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Tunks) {
+void import_tunks(ecs* world) {
+    zox_module(tunks);
     define_components_tunks(world);
     define_systems_tunks(world);
     add_hook_spawn_prefabs(spawn_prefabs_tunks);
     zox_define_systems_tunks_debug(world);
-} zox_end_module(Tunks);
-
-#endif
+}

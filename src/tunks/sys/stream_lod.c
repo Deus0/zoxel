@@ -2,6 +2,7 @@
 //  - Update Render Distances
 //  - Update Render Depths
 zox_sys2(TunkLodSystem) {
+    // TODO: Cache stream positions before we get to our iterator
     byte dbg_log = 0;
     if (zox_cameras_disable_streaming) {
         return;
@@ -86,6 +87,12 @@ zox_sys2(TunkLodSystem) {
         if (tunk_render_depth > lod->value) {
             lod->value = tunk_render_depth;
             generate->value = zox_generate_tunk_start;
+            if (dbg_log) {
+                zox_log("Tunk Depth [%s] Dist [%i] Depth [%i]",
+                    zox_sys_e_name,
+                    new_distance,
+                    lod->value);
+            }
         }
         byte stack_i = 0;
         for (short y = - render_distance_y; y <= render_distance_y; y++, stack_i++) {
@@ -117,8 +124,10 @@ zox_sys2(TunkLodSystem) {
             {
                 zox_add(active_mesh, BuildDisabled);
             }
-            if (dbg_log) {
-                zox_log("Chunk Depth Updated [%s]:[%i]", zox_getn(chunk), tunk_render_depth);
+            if (dbg_log >= 2) {
+                zox_log("   + Chunk [%s] Depth[%i]",
+                    zox_getn(chunk),
+                    tunk_render_depth);
             }
             // NOTE: Clears the light if depth is set to increase
             if (disable_lights) {

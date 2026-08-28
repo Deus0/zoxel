@@ -133,9 +133,7 @@ void button_event_new_game(ecs *world, ClickEventData event) {
     }
     entity game = zox_get_parent(world, player);
     // Spawn a new Realm!
-    entity realm = spawn_realm(world, prefab_realm, game);
     lint seed = get_unique_time_seed();
-    set_noise_seed(seed);
-    zox_set(realm, Seed, { seed });
+    entity realm = spawn_realm(world, game, seed);
     delay_event(world, &delay_spawn_menu_new_realm, player, 0.01);
 }

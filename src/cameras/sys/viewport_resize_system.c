@@ -28,7 +28,7 @@ zox_sys2(ViewportResizeSystem) {
                 new_size = scale_viewport(new_size);
             }
             zox_setv(camera, ScreenPosition, position);
-            zox_setv(camera, ScreenDimensions, new_size);
+            zox_setv(camera, PixelSize, new_size);
             if (dbg_log) {
                 zox_log("+ Viewport Resize [%s] size [%ix%i] render camera? %i", zox_get_name(camera), new_size.x, new_size.y, zox_has(camera, RenderCamera));
             }

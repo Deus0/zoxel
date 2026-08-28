@@ -1,5 +1,3 @@
-#ifndef zoxm_colors
-#define zoxm_colors
 
 // globals for now...
 byte grayscale_mode = 0;
@@ -21,7 +19,8 @@ void spawn_prefabs_colors(ecs* world) {
     }
 }
 
-zox_begin_module(Colorz) {
+void import_colorz(ecs* world) {
+    zox_module(colorz);
     zoxd_color(Color);
     zoxd_color(SecondaryColor);
     zoxd_color_rgb(ColorRGB);
@@ -31,6 +30,4 @@ zox_begin_module(Colorz) {
     zoxd_arrayd(Colors);
     define_systems_colors(world);
     add_hook_spawn_prefabs(spawn_prefabs_colors);
-} zox_end_module(Colorz);
-
-#endif
+}

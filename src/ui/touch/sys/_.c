@@ -5,7 +5,7 @@ void define_systems_touch(ecs *world) {
         VirtualJoystickSystem,
         zoxp_spawn,
         [in] inputs.DeviceLink,
-        [in] raycasts.RaycasterTarget,
+        [in] core.EntityTarget,
         [in] inputs.ZevicePointerPosition,
         [in] inputs.ZevicePointer,
         [in] inputs.VirtualZeviceLink,

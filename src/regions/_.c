@@ -10,9 +10,6 @@
  *      - Dungeons
  *
  * */
-#ifndef zox_regions
-#define zox_regions
-
 #define zox_generate_region_start 1
 #define zox_generate_region_mountains 1
 #define zox_generate_region_towns_trigger 2
@@ -34,10 +31,9 @@ byte region_dividor = 32;
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Regions) {
+void import_regions(ecs* world) {
+    zox_module(regions);
     zox_define_components_regions(world);
     zox_define_systems_regions(world);
     add_hook_spawn_prefabs(spawn_prefabs_regions);
-} zox_end_module(Regions);
-
-#endif
+}

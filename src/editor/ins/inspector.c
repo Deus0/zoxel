@@ -1,4 +1,9 @@
-entity spawn_inspector(ecs *world, entity canvas, entity player, entity target) {
+entity spawn_inspector(
+    ecs *world,
+    entity canvas,
+    entity player,
+    entity target)
+{
     int2 canvas_size = zox_getv(canvas, LayoutSize);
     int2 size = (int2) { canvas_size.x / 3, canvas_size.y };
     int2 position = (int2) { canvas_size.x / 2 - size.x / 2, 0 };
@@ -26,14 +31,14 @@ entity spawn_inspector(ecs *world, entity canvas, entity player, entity target) 
     entity body = e4.z;
     zox_set_name_spawned(world, window, "inspector");
     zox_add(window, InspectorUI);
-    zox_set(window, FontSize, { font_size });
-    zox_set(window, EntityTarget, { target });
+    zox_setv(window, FontSize, font_size);
+    zox_setv(window, EntityTarget, target);
     // Add Editor Colors
-    zox_set(body, FillColor, { editor_window_fill });
-    zox_set(body, OutlineColor, { editor_window_outline });
-    zox_set(header, FillColor, { editor_header_fill });
-    zox_set(header, OutlineColor, { editor_header_outline });
-    zox_set(header, ElementFillColor, { editor_header_fill });
-    zox_set(header, ElementOutlineColor, { editor_header_outline });
+    zox_setv(body, FillColor, editor_window_fill);
+    zox_setv(body, OutlineColor, editor_window_outline);
+    zox_setv(header, FillColor, editor_header_fill);
+    zox_setv(header, OutlineColor, editor_header_outline);
+    zox_setv(header, ElementFillColor, editor_header_fill);
+    zox_setv(header, ElementOutlineColor, editor_header_outline);
     return window;
 }

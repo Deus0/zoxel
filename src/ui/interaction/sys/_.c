@@ -30,14 +30,14 @@ void zox_define_systems_interaction(ecs* world) {
         raycast_query,
         [in] inputs.ZeviceDisabled,
         [in] inputs.ZevicePointerPosition,
-        [out] raycasts.RaycasterTarget,
+        [out] core.EntityTarget,
     );
     zox_system(
         ZeviceClickSystem,
         zoxp_update,
         [in] inputs.ZeviceDisabled,
         [in] inputs.DeviceLink,
-        [in] raycasts.RaycasterTarget,
+        [in] core.EntityTarget,
         [out] interaction.ClickingEntity,
         [none] inputs.Zevice
     );
@@ -46,7 +46,7 @@ void zox_define_systems_interaction(ecs* world) {
         zoxp_update,
         [in] inputs.DeviceDisabled,
         [in] players.PlayerLink,
-        [in] raycasts.RaycasterTarget,
+        [in] core.EntityTarget,
         [in] inputs.Keyboard,
         [out] interaction.ClickingEntity,
         [none] inputs.Device
@@ -116,14 +116,14 @@ void zox_define_systems_interaction(ecs* world) {
         [out] layouts.LayoutPositionDirty,
         [none] ui.MouseElement
     );
-    zox_system(
+    /*zox_system(
         RaycasterResulterSystem,
         zoxp_update,
         [in] inputs.DeviceLink,
-        [in] raycasts.RaycasterTarget,
+        [in] core.EntityTarget,
         [out] raycasts.RaycasterResult,
         [none] inputs.Zevice
-    );
+    );*/
     zox_system_1(
         ClickSoundSystem,
         zoxp_spawn,

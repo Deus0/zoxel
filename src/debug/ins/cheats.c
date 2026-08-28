@@ -1,5 +1,38 @@
 entity dbg_ui_cheats;
 
+void zox_dbg_toggle_free_roam(ecs* world, ClickEventData data) {
+    entity player = dbg_player;
+    if (!zox_valid(player)) {
+        return;
+    }
+    entity character = zox_getv(player, CharacterLink);
+    entity camera = zox_getv(player, CameraLink);
+    if (!zox_valid(camera)) {
+        zox_loge("[zox_dbg_toggle_free_roam] No Camera on Player");
+        return;
+    }
+    byte state;
+    byte roaming = zox_has(camera, Roaming);
+    roaming = !roaming;
+    zox_log("[FreeRoam] Camera [%s] State [%i] Roam [%i]",
+        zox_getn(camera),
+        state,
+        roaming);
+    if (!roaming) {
+        state = zox_camera_state_first_person;
+        attach_camera_to_character(
+            world,
+            camera,
+            character);
+    } else {
+        state = zox_camera_state_free;
+        set_camera_free(
+            world,
+            camera);
+    }
+    zox_setv(camera, CameraState, state);
+}
+
 void zox_dbg_toggle_fly_mode(ecs* world, ClickEventData data) {
     entity player = dbg_player;
     if (!zox_valid(player)) {
@@ -31,7 +64,7 @@ void zox_dbg_add_no_clip(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
-    if (keycode != zox_key_k) {
+    if (keycode != zox_key_l) {
         return;
     }
     zox_log("Toggling Debug UI [Cheats]: %s", dbg_ui_cheats ? zox_get_name(dbg_ui_cheats) : "None");
@@ -56,6 +89,10 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
     byte2 list_padding = byte2_single(2 * ui_scale);
     // UI
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Free Roam",
+        .on_click = { &zox_dbg_toggle_free_roam },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Fly Mode",
         .on_click = { &zox_dbg_toggle_fly_mode },
     };
@@ -77,7 +114,25 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
     };
     // Test our uis
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, "Cheats", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
+
+    entity3 e3 = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        "Cheats",
+        header_font_size,
+        list_font_size,
+        (ClickEvent) { NULL },
+        can_close,
+        0,
+        0,
+        alignment,
+        dbg_ui_alignment,
+        list_padding,
+        spawned,
+        elements,
+        elements_count,
+        visible_count);
     zox_set_unique_name(e3.x, "dbg_ui_cheats");
     // zox_add(e3.x, MenuTest);
     zox_add(e3.x, NavigationWindow);

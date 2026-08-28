@@ -34,6 +34,7 @@ zoxc_byte(Radius);
 zoxc_byte(Height);
 zoxc_float2(Size2);
 zoxc_float3(Size3);
+zoxc_int2(PixelSize);
 // Arrays
 zoxc_double(DoubleDataMax);
 zoxc_arrayd(DoubleData, double)
@@ -41,6 +42,10 @@ zoxc_arrayd(DoubleData, double)
 #define zox_load_begin 1
 #define zox_load_done 2
 byte zox_tst_remove_deactivates = 0;
+// Trigers
+zoxc_state(TriggerActionA);
+zoxc_state(TriggerActionB);
+zoxc_state(TriggerActionE);
 
 void zox_components_core(ecs* world) {
     // General
@@ -85,7 +90,12 @@ void zox_components_core(ecs* world) {
     zoxd_byte(Height);
     zoxd_float2(Size2);
     zoxd_float3(Size3);
+    zoxd_int2(PixelSize);
     // Arrays
     zoxd_double(DoubleDataMax);
     zoxd_arrayd(DoubleData);
+    // Triggers
+    zoxd_state(TriggerActionA);
+    zoxd_state(TriggerActionB);
+    zoxd_state(TriggerActionE);
 }

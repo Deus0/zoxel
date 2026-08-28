@@ -4,9 +4,6 @@
  *      - Imports one of the sub modules based on compiler
  *
  * */
-#ifndef zoxm_graphics
-#define zoxm_graphics
-
 byte zox_render_lines = 0;
 
 #ifdef zox_opengl
@@ -17,7 +14,8 @@ byte zox_render_lines = 0;
     #include "headless/_.c"
 #endif
 
-zox_begin_module(Graphics) {
+void import_graphics(ecs* world) {
+    zox_module(graphics);
 #ifdef zox_opengl
     zox_import_module(Opengl);
 #elif zox_vulkan
@@ -25,6 +23,4 @@ zox_begin_module(Graphics) {
 #else
     zox_import_module(Headless);
 #endif
-} zox_end_module(Headless);
-
-#endif
+}

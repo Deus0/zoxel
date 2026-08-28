@@ -20,17 +20,13 @@
  *          - Otherwise we set Generate flag
  *
  */
-#ifndef zox_saves
-#define zox_saves
-
 #include "com/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Saves) {
+void import_saves(ecs* world) {
+    zox_module(saves);
     zox_define_components_saves(world);
     zox_define_systems_saves(world);
-} zox_end_module(Saves);
-
-#endif
+}

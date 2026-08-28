@@ -52,12 +52,12 @@ void calculate_perspective_projection_matrix(
 // This should only update when either ScreenDimensions or FieldOfView changes
 zox_sys2(ProjectionMatrixSystem) {
     zox_sys_begin();
-    zox_sys_in(ScreenDimensions);
+    zox_sys_in(PixelSize);
     zox_sys_in(FieldOfView);
     zox_sys_in(CameraNearDistance);
     zox_sys_out(ProjectionMatrix);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ScreenDimensions, screenDimensions);
+        zox_sys_i(PixelSize, screenDimensions);
         zox_sys_i(FieldOfView, fieldOfView);
         zox_sys_i(CameraNearDistance, cameraNearDistance);
         zox_sys_o(ProjectionMatrix, projectionMatrix);

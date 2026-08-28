@@ -43,25 +43,27 @@ zox_sys2(VegetationChunk3System) {
             continue;
         }
 #endif
+        byte tunk_lod = zox_getv(tunk->value, TunkLod);
+        byte build_depth = depth->value;
+        if (depth->value != tunk_lod) {
+            build_depth = tunk_lod;
+            zox_loge("[Towns] Chunk Depth Invalid [%i] - [%i]",
+                depth->value,
+                tunk_lod);
+            // continue;
+        }
         zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
-        byte is_max_depth = depth->value == terrain_depth;
-        byte length = octree_size(depth->value);
-        int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth); // depth->value);
+        byte is_max_depth = build_depth == terrain_depth;
+        byte length = octree_size(build_depth);
+        int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth);
         int2 map_size = int2_single(length);
-        byte hmultiplier = powers_of_two[terrain_depth - depth->value];
+        byte hmultiplier = powers_of_two[terrain_depth - build_depth];
 #ifdef zox_safety_checks
         if (!zox_valid(tunk->value)) {
             zox_loge("[Vegetation] Invalid [Tunk] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
             continue;
         }
 #endif
-        byte tunk_lod = zox_getv(tunk->value, TunkLod);
-        if (depth->value != tunk_lod) {
-            zox_loge("[Towns] Chunk Depth Invalid [%i] - [%i]",
-                     depth->value,
-                     tunk_lod);
-            continue;
-        }
         zox_geter(tunk->value, BiomeMap, biome_map);
         zox_geter(tunk->value, HeightMap, height_map);
         zox_geter(tunk->value, VegetationMap, vegetation_map);
@@ -140,7 +142,11 @@ zox_sys2(VegetationChunk3System) {
                         position.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (position.y >= 0 && position.y < length) {
                             if (height >= chunk_block_position.y && height < chunk_block_position.y + length) {
-                                set_VoxelNode(voctree, depth->value, position, soil_grass_id);
+                                set_VoxelNode(
+                                    voctree,
+                                    build_depth,
+                                    position,
+                                    soil_grass_id);
                             }
                         }
                     }
@@ -155,8 +161,12 @@ zox_sys2(VegetationChunk3System) {
                         if (global_y >= chunk_block_position.y) {
                             position.y = (global_y - chunk_block_position.y) / hmultiplier;
                             if (position.y >= 0 && position.y < length) {
-                                if (!getv_VoxelNode(voctree, depth->value, position)) {
-                                    set_VoxelNode(voctree, depth->value, position, grass_id);
+                                if (!getv_VoxelNode(voctree, build_depth, position)) {
+                                    set_VoxelNode(
+                                        voctree,
+                                        build_depth,
+                                        position,
+                                        grass_id);
                                 }
                             }
                         }
@@ -171,7 +181,11 @@ zox_sys2(VegetationChunk3System) {
                         }
                         position.y = (global_y - chunk_block_position.y) / hmultiplier;
                         if (position.y >= 0 && position.y < length) {
-                            set_VoxelNode(voctree, depth->value, position, wood_id);
+                            set_VoxelNode(
+                                voctree,
+                                build_depth,
+                                position,
+                                wood_id);
                         }
                     }
                 } else if (veggie == zox_vegetation_flowers) {
@@ -180,8 +194,12 @@ zox_sys2(VegetationChunk3System) {
                         if (global_y >= chunk_block_position.y) {
                             position.y = (global_y - chunk_block_position.y) / hmultiplier;
                             if (position.y >= 0 && position.y < length) {
-                                if (!getv_VoxelNode(voctree, depth->value, position)) {
-                                    set_VoxelNode(voctree, depth->value, position, flower_id);
+                                if (!getv_VoxelNode(voctree, build_depth, position)) {
+                                    set_VoxelNode(
+                                        voctree,
+                                        build_depth,
+                                        position,
+                                        flower_id);
                                 }
                             }
                         }

@@ -20,10 +20,6 @@ byte find_position_in_terrain(
             zox_loge("Chunk Missing at [0x%ix0]", y);
             continue;
         }
-        /*if (!zox_has(chunk, GenerateChunk)) {
-            zox_loge("Chunk Missing GenerateChunk at [0x%ix0]", i);
-            return 0;
-        }*/
         // If generating, we wait until done
         if (zox_has(chunk, GenerateChunk)) {
             return 0;
@@ -192,10 +188,10 @@ zox_sys2(PlayerBeginSystem) {
         }
 #endif
         // Wait for Terrain to load
-        byte loaded = zox_getv(terrain, Loaded);
-        if (loaded != zox_load_done) {
+        if (zox_has(terrain, Loading)) {
             if (dbg_log) {
-                zox_log("Terrain is still Loading [%i]", loaded);
+                zox_log("Terrain is still Loading [%s]",
+                    zox_getn(terrain));
             }
             // Keep active
             dirty->value = zox_dirty_trigger;

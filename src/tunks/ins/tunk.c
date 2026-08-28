@@ -15,9 +15,9 @@ entity spawn_tunk(
         zox_name(name);
     }
     zox_set_parent(world, e, terrain);
-    zox_set(e, RegionLink, { region });
-    zox_set(e, TunkPosition, { position });
-    zox_set(e, RenderDistance, { distance });
-    zox_set(e, TunkLod, { lod });
+    zox_setv(e, RegionLink, region);
+    zox_setv(e, TunkPosition, position);
+    zox_setv(e, RenderDistance, distance);
+    zox_setv(e, TunkLod, lod);
     return e;
 }

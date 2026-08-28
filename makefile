@@ -94,6 +94,10 @@ $(TARGET): $(SRCS)
 	@ echo "> Building [$(GAME)]"
 	@ bash bsh/build.sh $(GAME) ${build_args} --release
 
+prerelease: $(SRCS)
+	@ echo "> Building [$(GAME)]"
+	@ bash bsh/build.sh $(GAME) ${build_args} --logs --timings --release
+
 package: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
 	@ bash bsh/build.sh $(GAME) ${build_args} --release --package
@@ -150,7 +154,13 @@ runwd:
 
 # Run
 
-run: build
+run: flecs prerelease
+	@ echo "> Running [$(GAME)]"
+	@ sleep 1
+	@ echo "-------------------"
+	@ ./$(TARGET)
+
+run-release: flecs $(TARGET)
 	@ echo "> Running [$(GAME)]"
 	@ sleep 1
 	@ echo "-------------------"

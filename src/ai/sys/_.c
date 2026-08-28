@@ -89,7 +89,7 @@ void define_systems_npcs(ecs *world) {
         [in] ai.Behaviour,
         [out] actions.ActiveAction,
         [out] actions.ActiveActionDirty,
-        [out] triggers.TriggerActionA,
+        [out] core.TriggerActionA,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );

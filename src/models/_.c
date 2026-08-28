@@ -30,9 +30,6 @@
  *      - Can we Refactor ModelLinks from Rendering to here
  *
 */
-#ifndef zoxm_models
-#define zoxm_models
-
 byte zox_block_outlines = 1;
 #define zox_model_node_none 0
 #define zox_model_node_colors 1
@@ -50,11 +47,10 @@ byte zox_block_outlines = 1;
 #include "sys/_.c"
 #include "generation/_.c"
 
-zox_begin_module(Models) {
+void import_models(ecs* world) {
+    zox_module(models);
     define_components_models(world);
     define_systems_models(world);
     define_systems_models_generation(world);
     add_hook_spawn_prefabs(spawn_prefabs_models);
-} zox_end_module(Models);
-
-#endif
+}

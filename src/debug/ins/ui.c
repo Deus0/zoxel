@@ -1,5 +1,25 @@
 entity dbg_test_window_uis;
 
+void zox_dbg_toggle_main_menu(ecs* world, ClickEventData data) {
+    entity canvas = zox_getv(dbg_player, CanvasLink);
+    if (!zox_valid(canvas)) {
+        return;
+    }
+    entity main_menu = zox_get_child_by_id(
+        world,
+        canvas,
+        zox_id(MenuMain));
+    if (zox_valid(main_menu)) {
+        close_ui_related_tooltip(world, main_menu);
+        zox_delete(main_menu);
+    } else {
+        spawn_main_menu(
+            world,
+            dbg_player,
+            game_name);
+    }
+}
+
 void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
     if (keycode != zox_key_h) {
         return;
@@ -25,6 +45,10 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
     byte header_font_size = 6 * ui_scale;
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Main Menu",
+        .on_click = { &zox_dbg_toggle_main_menu },
+    };
     // 2D UI
     elements[elements_count++] = (SpawnListElement) {
         .text = "Canvas",
@@ -62,34 +86,27 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
         .text = "Render Character",
         .on_click = { &zox_tst_render_texture_character },
     };
-    // 3D UI
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Element3",
-        .on_click = { &zox_dbg_spawn_element3 },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Elements3 Corners",
-        .on_click = { &zox_dbg_spawn_element3_corners },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Elements3 Tree",
-        .on_click = { &zox_dbg_spawn_element3_tree },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Label3",
-        .on_click = { &zox_dbg_spawn_label3 },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Popup3",
-        .on_click = { &zox_dbg_spawn_popup3 },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Bar3",
-        .on_click = { &zox_dbg_spawn_bar3 },
-    };
     // Test our uis
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, "UI Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
+    entity3 e3 = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        "Spawn UIs",
+        header_font_size,
+        list_font_size,
+        (ClickEvent) { NULL },
+        can_close,
+        0,
+        0,
+        alignment,
+        dbg_ui_alignment, // float2_top_right,
+        list_padding,
+        spawned,
+        elements,
+        elements_count,
+        visible_count);
+    // entity3 e3 = spawn_window_list(world, prefab_window, player, "UI Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
     zox_set_unique_name(e3.x, "dbg_test_window_uis");
     zox_add(e3.x, NavigationWindow);
     dbg_test_window_uis = e3.x;

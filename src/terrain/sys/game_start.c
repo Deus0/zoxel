@@ -20,8 +20,10 @@ zox_sys2(TerrainGameStartSystem) {
         if (zox_game_type == zox_game_mode_3D) {
             // zox_log("Game Spawning Terrain @ [%f]", zox_current_time);
             // delay_event(world, &game_start_terrain3D, game, game_spawn_terrain_delay);
-            entity terrain = spawn_terrain(world, prefab_terrain, realm->value, terrain_seed);
-            local_terrain = terrain;
+            entity terrain = spawn_terrain(
+                world,
+                realm->value,
+                terrain_seed);
         } else if (zox_game_type == zox_game_mode_2D) {
             // delay_event(world, &game_start_terrain2D, game, game_spawn_terrain_delay);
             // spawn_terrain_on_realm(world, realmLink->value);

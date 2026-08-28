@@ -12,17 +12,15 @@ zox_sys2(FreeCameraMoveSystem) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(CameraLink, camera);
-        if (state->value != zox_player_state_playing || !zox_valid(camera->value)) {
+        if (!zox_valid(camera->value) ||
+            !zox_has(camera->value, Roaming)
+        ) {
             continue;
         }
-        zox_geter_value(camera->value, CameraState, byte, camera_state);
+        /*zox_geter_value(camera->value, CameraState, byte, camera_state);
         if (camera_state != zox_camera_state_free) {
             continue;
-        }
-        zox_geter_value(camera->value, Roaming, byte, roaming);
-        if (!roaming) {
-            continue;
-        }
+        }*/
         float3 movement = { 0, 0, 0 };
         entity devices[zox_children_capacity];
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
@@ -50,9 +48,10 @@ zox_sys2(FreeCameraMoveSystem) {
             continue;
         }
         movement = float3_scale(movement, movement_power);
-        const Rotation3D *rotation3D = zox_get(camera->value, Rotation3D);
+        float4 rotation = zox_getv(camera->value, Rotation3D);
         zox_muter(camera->value, Position3D, position);
-        movement = float4_rotate_float3(rotation3D->value, movement);
-        position->value = float3_add(position->value, movement);
+        position->value =
+            float3_add(position->value,
+                float4_rotate_float3(rotation, movement));
     }
 } zox_sys_end(FreeCameraMoveSystem);

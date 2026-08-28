@@ -16,7 +16,7 @@ void zox_define_systems_actions(ecs* world) {
     zox_system(
         ActionActivateSystem,
         zoxp_update,
-        [in] triggers.TriggerActionA,
+        [in] core.TriggerActionA,
         [in] actions.ActiveAction,
         [none] characters.Character,
     );

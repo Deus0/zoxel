@@ -11,7 +11,6 @@ zox_sys2(CameraAttachSystem) {
             continue;
         }
         zox_set(e, CameraState, { zox_camera_state_first_person });
-        zox_set(e, Roaming, { 0 });
         zox_set_parent(world, e, target->value);
     }
 } zox_sys_end(CameraAttachSystem);

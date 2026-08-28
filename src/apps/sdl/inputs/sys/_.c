@@ -30,7 +30,7 @@ void zox_define_systems_sdl_inputs(ecs* world) {
         TouchscreenExtractSystem,
         zoxp_inputs_extract,
         [in] apps.AppLink,
-        [out] screens.ScreenDimensions,
+        [out] core.PixelSize,
         [none] inputs.Touchscreen
     );
     zox_system_1(

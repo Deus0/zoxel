@@ -7,12 +7,12 @@ zox_sys2(ElementRaycastSystem) {
     zox_sys_begin();
     zox_sys_in(ZeviceDisabled);
     zox_sys_in(ZevicePointerPosition);
-    zox_sys_out(RaycasterTarget);
+    zox_sys_out(EntityTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ZeviceDisabled, disabled);
         zox_sys_i(ZevicePointerPosition, ray_position);
-        zox_sys_o(RaycasterTarget, target);
+        zox_sys_o(EntityTarget, target);
         if (disabled->value) {
             raycaster_select_element(world, e, 0);
             if (dbg_log >= 3) {
@@ -54,7 +54,7 @@ zox_sys2(ElementRaycastSystem) {
         float aspect_ratio = canvas_sizef.x / canvas_sizef.y;
         // NOTE: Now it only works for one canvas hmmm
         int2 canvas_position = zox_getv(camera, ScreenPosition);
-        int2 canvas_size = zox_getv(camera, ScreenDimensions);
+        int2 canvas_size = zox_getv(camera, PixelSize);
         int2 position = ray_position->value;
         byte ray_in_viewport =
             position.x >= canvas_position.x &&

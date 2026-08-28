@@ -31,19 +31,14 @@ byte save_voxel_node(FILE* out, const VoxelNode* node) {
 zox_sys2(Chunk3SaveSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxelNodeEdited);
-    // zox_sys_in(VoxelNodeDirty);
+    //zox_sys_in(VoxelNodeEdited);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxelNodeEdited, edited);
-        // zox_sys_i(VoxelNodeDirty, dirty);
+        //zox_sys_i(VoxelNodeEdited, edited);
         zox_sys_i(VoxelNode, node);
         zox_sys_i(ChunkPosition, position);
-        /*if (dirty->value != zox_dirty_active || !edited->value) {
-            continue; // these shouldn't be here
-        }*/
         // later add id/int3 there
         entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks

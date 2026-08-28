@@ -7,8 +7,10 @@ zox_sys2(TilemapRealmSpawnSystem) {
         zox_sys_e();
         zox_sys_o(TilemapLink, tilemap);
         if (!zox_valid(tilemap->value)) {
-            tilemap->value = spawn_tilemap(world, prefab_tilemap);
-            zox_set(tilemap->value, RealmLink, { e });
+            tilemap->value = spawn_tilemap(
+                world,
+                prefab_tilemap,
+                e);
         }
     }
 } zox_sys_end(TilemapRealmSpawnSystem);

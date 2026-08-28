@@ -19,7 +19,6 @@ void define_systems_chunks3(ecs *world) {
         [in] chunks.NodeDepth,
         [out] chunks3.VoxelNodeQueue,
         [out] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeEdited,
         [none] chunks3.Chunk3,
     );
     // NOTE: Removes Dirty at end of frame

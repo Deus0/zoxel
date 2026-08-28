@@ -2,11 +2,11 @@
 zox_sys2(RenderBufferRestoreSystem) {
     byte dbg_log = 0 || is_log_gpu_restore;
     zox_sys_begin();
-    zox_sys_in(ScreenDimensions);
+    zox_sys_in(PixelSize);
     zox_sys_out(FrameBufferLink);
     zox_sys_out(RenderBufferLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ScreenDimensions, size);
+        zox_sys_i(PixelSize, size);
         zox_sys_o(FrameBufferLink, fbo);
         zox_sys_o(RenderBufferLink, rbo);
         fbo->value = zox_gpu_create_fbo();

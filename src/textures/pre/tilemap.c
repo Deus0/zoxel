@@ -17,9 +17,15 @@ entity spawn_prefab_tilemap(ecs *world) {
     return e;
 }
 
-entity spawn_tilemap(ecs *world, entity prefab) {
+entity spawn_tilemap(
+    ecs *world,
+    entity prefab,
+    entity realm)
+{
     zox_instance(prefab);
     zox_name("tilemap");
+    zox_set_parent(world, e, realm);
+    zox_setv(e, RealmLink, realm);
     if (!shader_textured3D) {
         return e;
     }

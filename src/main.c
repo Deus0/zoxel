@@ -23,10 +23,6 @@ int main(int argc, char* argv[]) {
     __android_log_print(ANDROID_LOG_INFO, "SDL", "Zoxel Android logging TEST");
     zox_log("Log Test 2");
 #endif
-#ifndef zoxm_game
-    zox_loge("[zoxm_game] not defined: game cannot load");
-    return EXIT_FAILURE;
-#endif
     byte cores = get_cpu_count();    // gets our cpu core count
     set_cpu_tier2(cores);
     zox_logv("Initializing Flecs");
@@ -38,7 +34,7 @@ int main(int argc, char* argv[]) {
     zox_logv("Initializing Zox Engine");
     zox_add_module(zox);
     zox_logv("Initializing Game");
-    zox_import_module(ZoxGame);
+    zox_add_module(zoxgame);
     zox_logv("Processing Terminal Commands");
     run_hook_terminal_command(world, argv, argc);
     zox_logv("Initialize Pathing");

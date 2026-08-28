@@ -4,13 +4,13 @@ zox_sys2(ZeviceClickSystem) {
     zox_sys_begin();
     zox_sys_in(ZeviceDisabled);
     zox_sys_in(DeviceLink);
-    zox_sys_in(RaycasterTarget);
+    zox_sys_in(EntityTarget);
     zox_sys_out(ClickingEntity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ZeviceDisabled, disabled);
         zox_sys_i(DeviceLink, device);
-        zox_sys_i(RaycasterTarget, target);
+        zox_sys_i(EntityTarget, target);
         zox_sys_o(ClickingEntity, clicked);
         if (disabled->value) {
             continue;

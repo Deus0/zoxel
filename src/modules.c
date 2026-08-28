@@ -11,7 +11,6 @@
 #include "core/_.c"
 #include "transforms/_.c"
 #include "networking/_.c"
-#include "triggers/_.c"
 #include "screens/_.c"
 #include "inputs/_.c"
 #include "graphics/_.c"
@@ -20,7 +19,6 @@
 #include "saves/_.c"
 
 // depth 1: basic world blocks
-#include "assets/_.c"
 #include "realms/_.c"
 #include "games/_.c"
 #include "players/_.c"
@@ -45,7 +43,7 @@
 #include "plots/_.c"
 #include "genetics/_.c"
 #include "neurals/_.c"
-#include "blueprints/_.c"
+// #include "blueprints/_.c"
 #include "blocks/_.c"
 #include "chunks/_.c"
 #include "voxes/_.c"
@@ -117,24 +115,24 @@ void import_zox(ecs* world) {
     // depth 0: foundation
     // core ECS / basic data
     zox_add_module(core);
-    zox_import_module(Colorz);
-    zox_add_module(transforms);
-    zox_import_module(Names);
 
     // depth 1: engine services
     // application / platform / IO / networking
     zox_add_module(networking);
-    zox_import_module(Screens);
     zox_add_module(inputs);
     zox_add_module(apps);
-    zox_import_module(Saves);
-    zox_import_module(Graphics);
-    zox_import_module(Assets);
-    zox_import_module(Realms);
-    zox_import_module(Games);
-    zox_import_module(Players);
-    zox_import_module(Triggers);
-    zox_import_module(Nodes);
+    zox_add_module(graphics);
+    zox_add_module(realms);
+    zox_add_module(games);
+    zox_add_module(players);
+    zox_add_module(transforms);
+
+    // Misc stuff
+    zox_add_module(names);
+    zox_add_module(colorz);
+    zox_add_module(screens);
+    zox_add_module(nodes);
+    zox_add_module(saves);
     zox_import_module(Slots);
 
     // depth 2: rendering foundations
@@ -145,33 +143,35 @@ void import_zox(ecs* world) {
     zox_add_module(textures);
     zox_add_module(geometry);
     zox_add_module(musics);
-    zox_import_module(Animations);
-    zox_import_module(Bones);
-    zox_import_module(Raycasts);
+    zox_add_module(animations);
+    zox_add_module(bones);
     zox_add_module(ui);
     // zox_import_module(Lines2);
-    zox_import_module(Plots);
+
+    // More Misc
+    zox_add_module(raycasts);
+    zox_add_module(plots);
     zox_import_module(Shapes);
 
     // depth 3: simulation / world foundations
-    zox_import_module(Genetics);
-    zox_import_module(Neurals);
-    zox_import_module(Blueprints);
+    zox_add_module(genetics);
+    zox_add_module(neurals);
+    // zox_import_module(Blueprints);
     zox_add_module(blocks);
     zox_add_module(chunks);
     zox_add_module(voxes);
     zox_add_module(physics);
     zox_add_module(particles);
-    zox_import_module(Lights);
+    zox_add_module(lights);
 
     // depth 4: world / environment
-    zox_import_module(Models);
+    zox_add_module(models);
     zox_add_module(weathers);
     zox_add_module(streaming);
-    zox_import_module(Regions);
-    zox_import_module(Tunks);
-    zox_import_module(Terrains);
-    zox_import_module(Biomes);
+    zox_add_module(regions);
+    zox_add_module(tunks);
+    zox_add_module(terrains);
+    zox_add_module(biomes);
     zox_add_module(heights);
     zox_import_module(Vegetation);
     zox_import_module(Mountains);
@@ -219,7 +219,7 @@ void import_zox(ecs* world) {
         zox_add_module(controllers);
 
         // depth 8: tools / development
-        zox_import_module(Debug);
+        zox_add_module(debug);
     }
 
     // depth 9: top-level integration

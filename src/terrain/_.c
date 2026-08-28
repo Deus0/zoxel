@@ -12,9 +12,6 @@
   *      - todo: delay BlockVoxSpawnSystem to main thread pipeline like character spawning, use same trigger? rest on load? make a resetsystem 2 for this - just  make reset defines use the pipeline
  *
  * */
-#if !defined(zoxm_terrain) && defined(zoxm_chunks3)
-#define zoxm_terrain
-
 byte zox_terrain_chunk_lod_system = 0;
 // Initial core
 #include "set/_.c"
@@ -28,12 +25,11 @@ byte zox_terrain_chunk_lod_system = 0;
 #include "sys/_.c"
 #include "collisions/_.c"
 
-zox_begin_module(Terrains) {
+void import_terrains(ecs* world) {
+    zox_module(terrains);
     define_components_terrain(world);
     define_systems_terrain(world);
     add_hook_terminal_command(process_arguments_terrain);
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
     zox_import_module(TerrainsCollisions);
-} zox_end_module(Terrains);
-
-#endif
+}

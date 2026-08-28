@@ -1,7 +1,6 @@
-#include "free_camera_move_system.c"
-#include "free_camera_rotate_system.c"
-#include "free_camera_toggle_system.c"
-#include "free_camera_disable_movement_system.c"
+#include "move.c"
+#include "rotate.c"
+#include "toggle.c"
 
 void define_systems_free_roam(ecs* world) {
     zox_system(

@@ -8,6 +8,14 @@ void zox_dbg_spawn_cube_textured_ui(ecs* world, ClickEventData data) {
     zox_dbg_spawn_cube_textured(world);
 }
 
+void test_spawn_realm2(ecs* world, ClickEventData data) {
+    test_spawn_realm(world);
+}
+
+void test_spawn_terrain2(ecs* world, ClickEventData data) {
+    test_spawn_terrain(world);
+}
+
 void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {
     zox_tst_spawn_tilemap(world);
 }
@@ -46,14 +54,27 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
         .text = "Cube Textured",
         .on_click = { &zox_dbg_spawn_cube_textured_ui },
     };
-    // Particles
+    // World
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Particles3",
-        .on_click = { &zox_dbg_spawn_particle_emitter },
+        .text = "Realm",
+        .on_click = { &test_spawn_realm2 },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Character Particles3",
-        .on_click = { &tst_spawn_character3_particles },
+        .text = "Terrain",
+        .on_click = { &test_spawn_terrain2 },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Terrain Stream Point",
+        .on_click = { &zox_dbg_spawn_streamer },
+    };
+    // Game
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Dialogue",
+        .on_click = { &zox_tst_spawn_dialogue },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Death",
+        .on_click = { &zox_tst_player_character_death },
     };
     // Characters
     elements[elements_count++] = (SpawnListElement) {
@@ -64,14 +85,14 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
         .text = "Skeleton NPC",
         .on_click = { &zox_tst_spawn_character3_npc_skeleton },
     };
-    // Game
+    // Particles
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Dialogue",
-        .on_click = { &zox_tst_spawn_dialogue },
+        .text = "Particles3",
+        .on_click = { &zox_dbg_spawn_particle_emitter },
     };
     elements[elements_count++] = (SpawnListElement) {
-        .text = "Death",
-        .on_click = { &zox_tst_player_character_death },
+        .text = "Character Particles3",
+        .on_click = { &tst_spawn_character3_particles },
     };
     // Chunk Rendering
     elements[elements_count++] = (SpawnListElement) {
@@ -92,7 +113,24 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
     };
     // Test our uis
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, "World Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
+    entity3 e3 = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        "Spawn Worlds",
+        header_font_size,
+        list_font_size,
+        (ClickEvent) { NULL },
+        can_close,
+        0,
+        0,
+        alignment,
+        dbg_ui_alignment,
+        list_padding,
+        spawned,
+        elements,
+        elements_count,
+        visible_count);
     zox_set_unique_name(e3.x, "dbg_test_window_world");
     zox_add(e3.x, NavigationWindow);
     dbg_test_window_world = e3.x;

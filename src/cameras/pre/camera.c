@@ -15,10 +15,9 @@ entity spawn_prefab_camera(ecs *world) {
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, ViewProjectionMatrix, { float4x4_identity });
     zox_prefab_set(e, ScreenPosition, { int2_zero });
-    zox_prefab_set(e, ScreenDimensions, { int2_zero });
+    zox_prefab_set(e, PixelSize, { int2_zero });
     zox_prefab_set(e, FieldOfView, { 0 });
     zox_prefab_set(e, CameraNearDistance, { camera_near_distance });
-    zox_prefab_set(e, Roaming, { 0 });
     zox_prefab_set(e, ScreenToCanvas, { float4_zero });
     zox_prefab_set(e, FogColor, { color_rgb_green });
     // culling

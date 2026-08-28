@@ -1,6 +1,6 @@
 // re upload gpu data
 void zox_dbg_refresh_uis(ecs *world, int32_t keycode) {
-    if (keycode != zox_key_l) {
+    /*if (keycode != zox_key_l) {
         return;
     }
     entity canvas = zox_getv(dbg_player, CanvasLink);
@@ -16,5 +16,5 @@ void zox_dbg_refresh_uis(ecs *world, int32_t keycode) {
         // zox_setv(ui, Initialize, 1);
         // zox_setv(ui, GenerateTexture, 1);
         // zox_setv(ui, MeshDirty, 1);
-    }
+    }*/
 }

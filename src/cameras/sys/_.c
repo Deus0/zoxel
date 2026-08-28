@@ -16,7 +16,7 @@ void define_systems_cameras(ecs *world) {
     zox_system(
         ProjectionMatrixSystem,
         zoxp_update, // zoxp_cameras,
-        [in] screens.ScreenDimensions,
+        [in] core.PixelSize,
         [in] FieldOfView,
         [in] CameraNearDistance,
         [out] ProjectionMatrix,
@@ -25,7 +25,7 @@ void define_systems_cameras(ecs *world) {
     zox_system(
         OrthographicMatrixSystem,
         zoxp_update,
-        [in] screens.ScreenDimensions,
+        [in] core.PixelSize,
         //[in] FieldOfView,
         //[in] CameraNearDistance,
         [out] ProjectionMatrix,

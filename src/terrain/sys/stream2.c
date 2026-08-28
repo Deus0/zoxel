@@ -42,7 +42,7 @@ zox_sys2(TerrainStreamSystem) {
                         if (!zox_valid(tunk)) {
                             byte added = add_TerrainSpawnQueue(queue,
                                 (TerrainSpawnUpdate) {
-                                    // .level = level->value,
+                                    .level = level->value,
                                     .position = tunk_position,
                                     .distance =  int2_distance(stream_position2, tunk_position)
                                 });
@@ -111,9 +111,9 @@ zox_sys2(TerrainQueueSystem) {
                     zox_log("New Region [%ix%i] Spawned", region_position.x, region_position.y);
                 }
             }
-            /*if (update.level < 1) {
+            if (update.level < 1) {
                 continue;
-            }*/
+            }
             // int new_distance = int2_distance(stream_position2, position);
             entity tunk = int2_hashmap_get(tunks->value, update.position);
             // NOTE: If tunk doesnt exist, spawn new terrain pillar here!

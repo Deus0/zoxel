@@ -16,7 +16,7 @@ entity spawn_camera(
     zox_setv(e, CameraState, state);
     zox_setv(e, FieldOfView, fov);
     zox_setv(e, ScreenPosition, screen_position);
-    zox_setv(e, ScreenDimensions, size);
+    zox_setv(e, PixelSize, size);
     zox_setv(e, ScreenToCanvas, screen_to_canvas);
     return e;
 }

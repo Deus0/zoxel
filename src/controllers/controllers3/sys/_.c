@@ -97,7 +97,7 @@ void define_systems_controllers3(ecs *world) {
     zox_system_1(
         DialogueBeginSystem,
         zoxp_spawn,
-        [in] triggers.TriggerActionB,
+        [in] core.TriggerActionB,
         [in] vrays.RaycastVoxelData,
         [in] players.PlayerLink,
         [out] dialogues.DialogueProcessLink
@@ -122,7 +122,7 @@ void define_systems_controllers3(ecs *world) {
     zox_system(
         DialogueExitSystem,
         zoxp_update,
-        [in] triggers.TriggerActionE,
+        [in] core.TriggerActionE,
         [in] players.PlayerLink,
         [out] dialogues.DialogueProcessLink
     );

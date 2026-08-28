@@ -7,17 +7,11 @@ zox_sys2(VoxelUpdateQueueSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_out(VoxelNodeQueue);
     zox_sys_out(VoxelNode);
-    // zox_sys_out(VoxelNodeDirty);
-    zox_sys_out(VoxelNodeEdited);
-    // zox_sys_out(VoxelDropQueue);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(VoxelNodeQueue, queue);
         zox_sys_o(VoxelNode, voxels);
-        // zox_sys_o(VoxelNodeDirty, dirty);
-        zox_sys_o(VoxelNodeEdited, edited);
-        // zox_sys_o(VoxelDropQueue, drops);
         byte updated = 0;
         for (int j = queue->count - 1; j >= 0; j--) {
             VoxelNodeUpdate* update = &queue->ptr[j];
@@ -44,7 +38,9 @@ zox_sys2(VoxelUpdateQueueSystem) {
         if (updated) {
             // dirty->value = zox_dirty_trigger;
             zox_add(e, VoxelNodeDirty);
-            edited->value = 1;
+            if (!zox_has(e, Edited)) {
+                zox_add(e, Edited);
+            }
         }
     }
 } zox_sys_end(VoxelUpdateQueueSystem);

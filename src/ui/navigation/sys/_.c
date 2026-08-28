@@ -7,7 +7,7 @@ void define_systems_navigation(ecs* world) {
         ElementNavigationBeginSystem,
         zoxp_update,
         [in] inputs.DeviceDisabled,
-        [out] raycasts.RaycasterTarget,
+        [out] core.EntityTarget,
         [none] inputs.DeviceNavigator
     );
     zox_system(
@@ -17,7 +17,7 @@ void define_systems_navigation(ecs* world) {
         [in] inputs.DeviceDisabled,
         [out] ui.NavigatorState,
         [out] ui.NavigatorTimer,
-        [out] raycasts.RaycasterTarget,
+        [out] core.EntityTarget,
         [none] inputs.DeviceNavigator
     );
     // NOTE: Has to be after raycasting system
@@ -25,7 +25,7 @@ void define_systems_navigation(ecs* world) {
         DeviceClickSystem,
         zoxp_update,
         [in] inputs.DeviceDisabled,
-        [in] raycasts.RaycasterTarget,
+        [in] core.EntityTarget,
         [out] interaction.ClickingEntity,
         [none] inputs.DeviceNavigator
     );

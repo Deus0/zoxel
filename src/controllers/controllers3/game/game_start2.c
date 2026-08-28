@@ -105,9 +105,12 @@ zox_sys2(PlayerTownFinderSystem) {
         // NOTE: Make sure it updates even if position the same
         state->value = zox_player_state_starting;
         dirty->value = zox_dirty_trigger;
-        zox_set(camera->value, Position3D, { spawn_position });
-        zox_set(camera->value, StreamDirty, { zox_dirty_trigger });
-        zox_set(camera->value, StreamerLevel, { 1 });
+        zox_setv(camera->value, Position3D, spawn_position);
+        zox_setv(camera->value, StreamDirty, zox_dirty_trigger);
+        zox_setv(camera->value, StreamerLevel, 1);
+        // Clear spawn queue
+        zox_muter(terrain, TerrainSpawnQueue, queue);
+        queue->count = 0;
         // zox_set(terrain, Loaded, { zox_load_begin });
         if (dbg_log) {
             byte2 town_size2 = town ? zox_getv(town, TownSize) : byte2_zero;

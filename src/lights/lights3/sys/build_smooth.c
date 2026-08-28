@@ -183,11 +183,6 @@ zox_sys2(SmoothLightsBuildSystem) {
             }
             continue;
         }
-        /*if (zox_has(chunk, GenerateChunk) ||
-            //  zox_has(chunk, VoxelNodeDirty)
-        ) {
-            continue;
-        }*/
         const SidesOctree* sides = zox_get(chunk, SidesOctree);
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);

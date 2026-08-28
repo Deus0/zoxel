@@ -5,6 +5,7 @@ entity spawn_prefab_chunk_terrain(
     zox_prefab_child(prefab);
     zox_prefab_name("chunk_terrain");
     zox_add(e, TerrainChunk);
+    zox_add(e, Saver);
     zox_add(e, StreamedChunk);
     zox_add(e, DisableTransform);
     zox_setv(e, Seed, 0);
@@ -15,7 +16,6 @@ entity spawn_prefab_chunk_terrain(
     zox_setv(e, RenderDistanceDirty, zox_dirty_trigger);
     zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_start);
     zox_setv(e, BlocksSpawned, 0);
-    zox_setv(e, Loaded, 0);
     zox_add(e, FindNeighbors);
     // Debug
 /*#ifdef zox_debug

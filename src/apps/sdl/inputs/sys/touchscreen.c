@@ -153,11 +153,11 @@ zox_sys2(TouchscreenExtractSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(AppLink);
-    zox_sys_out(ScreenDimensions);
+    zox_sys_out(PixelSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(AppLink, app);
-        zox_sys_o(ScreenDimensions, screen_size);
+        zox_sys_o(PixelSize, screen_size);
         screen_size->value = zox_getv(app->value, WindowSize);
         // For all Zevices
         uint children_capacity = zox_children_capacity;

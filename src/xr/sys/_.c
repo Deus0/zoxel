@@ -23,7 +23,7 @@ void zox_systems_xr(ecs* world) {
         [in] transforms3.Position3D,
         [in] cameras.FieldOfView,
         [in] cameras.ScreenPosition,
-        [in] screens.ScreenDimensions,
+        [in] screens.PixelSize,
         [in] colorz.FogColor,
         [in] rendering.FrameBufferLink,
         [none] xr.XrCamera*/

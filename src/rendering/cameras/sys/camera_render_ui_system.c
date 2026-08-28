@@ -13,7 +13,7 @@ zox_sys_untimed(CameraRenderUISystem) {
     zox_sys_in(Position3D);
     zox_sys_in(FieldOfView);
     zox_sys_in(ScreenPosition);
-    zox_sys_in(ScreenDimensions);
+    zox_sys_in(PixelSize);
     zox_sys_in(FogColor);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -21,7 +21,7 @@ zox_sys_untimed(CameraRenderUISystem) {
         zox_sys_i(Position3D, position);
         zox_sys_i(FieldOfView, fov);
         zox_sys_i(ScreenPosition, screen_position);
-        zox_sys_i(ScreenDimensions, screen_size);
+        zox_sys_i(PixelSize, screen_size);
         zox_sys_i(FogColor, fog);
         // pass these data to systems
         renderer_camera = e;

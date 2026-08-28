@@ -35,34 +35,27 @@ zox_sys2(ChunkMeshTest2System) {
         return;
     }
 
-    ecs_query_count_t count = ecs_query_count(query);
-
-    zox_log("ChunkMesh DEBUG:");
-    zox_log(" - results: %d", count.results);
-    zox_log(" - entities: %d", count.entities);
-    zox_log(" - tables: %d", count.tables);
-
     ecs_iter_t it = ecs_query_iter(world, query);
 
-    int table_index = 0;
-    int total_entities = 0;
+    int tables = 0;
+    int entities = 0;
 
     while (ecs_query_next(&it)) {
         zox_log(
-            " - table[%d]=%p entities=%d",
-            table_index,
-            (void *) it.table,
-                it.count
+            "table[%d]=%p entities=%d",
+            tables,
+            (void *)it.table,
+            it.count
         );
 
-        total_entities += it.count;
-        table_index++;
+        tables++;
+        entities += it.count;
     }
 
     zox_log(
         "ChunkMesh DEBUG TOTAL: tables=%d entities=%d",
-        table_index,
-        total_entities
+        tables,
+        entities
     );
 
     ecs_query_fini(query);
@@ -131,10 +124,9 @@ void define_systems_chunks3_textured(ecs *world) {
         [none] !chunks.GenerateChunk,
         [none] !chunks.BuildChunkSides,
     );
-
-    zox_system(
+    zox_system_1(
         ChunkTexturedBuildSystem,
-        zoxp_voxels_mesh,
+        zoxp_update, // zoxp_voxels_mesh zoxp_update
         [in] rendering.RenderDepth,
         [out] rendering.MeshIndicies,
         [out] rendering.MeshVertices,
@@ -144,7 +136,6 @@ void define_systems_chunks3_textured(ecs *world) {
         [none] rendering.BuildMesh,
         [none] !core.BuildDisabled,
     );
-
     /*zox_system(
         ChunkMeshTestSystem,
         zoxp_voxels_mesh,
@@ -153,9 +144,9 @@ void define_systems_chunks3_textured(ecs *world) {
         [none] rendering.BuildMesh,
         [none] !core.BuildDisabled,
     );
-    zox_system(
+    zox_system_1(
         ChunkMeshTest2System,
-        zoxp_voxels_mesh,
+        zoxp_spawn,
         0   // no filter
     );*/
 }

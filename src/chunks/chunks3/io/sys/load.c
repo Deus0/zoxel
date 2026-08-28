@@ -75,30 +75,28 @@ zox_sys2(Chunk3LoadSystem) {
     zox_sys_in(ChunkPosition);
     zox_sys_out(NodeDepth);
     zox_sys_out(VoxelNode);
-    zox_sys_out(Loaded);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNode, voxels);
         zox_sys_o(NodeDepth, depth);
-        zox_sys_o(Loaded, loaded);
         entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
-            zox_loge("[Chunk3SaveSystem] Invalid Terrain");
+            zox_loge("[Chunk3LoadSystem] Invalid Terrain");
             continue;
         }
 #endif
         entity realm = zox_get_parent(world, terrain);
 #ifdef zox_safety_checks
         if (!zox_valid(realm)) {
-            zox_loge("[Chunk3SaveSystem] Invalid Realm");
+            zox_loge("[Chunk3LoadSystem] Invalid Realm");
             continue;
         }
 #endif
         if (load_chunk(world, realm, position->value, voxels)) {
             depth->value = terrain_depth;
-            loaded->value = 1;
+            zox_add(e, Loaded);
             zox_setv(e, GenerateChunk, zox_generate_terrain_sunlight);
             zox_add(e, VoxelNodeDirty);
             if (dbg_log) {
