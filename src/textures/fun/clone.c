@@ -16,7 +16,6 @@ void clone_texture_data(ecs *world, entity e, entity src) {
         zox_log_error("[clone_texture_data] Invalid src TextureData [%s] > source [%s]", zox_get_name(e), zox_get_name(src));
         return;
     }
-
     zox_geter_value(src, TextureSize, int2, size);
     const int bytes_length = sizeof(color) * source_data->length;
 

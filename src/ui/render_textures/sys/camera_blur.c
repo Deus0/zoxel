@@ -11,8 +11,11 @@ zox_sys2(CameraMaterialSystem) {
         zox_sys_i(MaterialLink, material);
         zox_sys_i(CameraBlur, blur);
         zox_sys_i(CameraVignette, vignette);
-        if (!zox_valid(material->value) || !zox_has(material->value, MaterialBlur)) {
-            zox_loge("(CameraBlurSystem) Camera has invalid Material [%s]", zox_getn(e));
+        if (!zox_valid(material->value) ||
+            !zox_has(material->value, MaterialBlur))
+        {
+            zox_logw("(CameraBlurSystem) Camera has invalid Material [%s]",
+                zox_getn(e));
             continue;
         }
         zox_setv(material->value, CameraBlur, blur->value);

@@ -11,6 +11,7 @@ zox_tag(MenuNewRealm);
 zox_tag(Crosshair);
 zox_tag(RespawnUI);
 zox_tag(LoadUI);
+zox_tag(MenuMirror);
 zoxc_byte(HitType);
 // Taskbar
 zox_tag(Taskbar);
@@ -33,6 +34,7 @@ void define_components_game_ui(ecs *world) {
     zoxd_nf_tag(RespawnUI);
     zoxd_nf_tag(LoadUI);
     zoxd_nf_tag(Taskbar);
+    zoxd_nf_tag(MenuMirror);
     // Others
     zoxd_byte(HitType);
     zoxd_entity(IconOverlayLink);

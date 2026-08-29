@@ -74,6 +74,7 @@ void zox_define_systems_basics3(ecs* world) {
         [none] rendering.MeshDirty,
         [none] rendering.MeshColorRGBs,
         [none] !rendering.MeshUVs,
+        [none] !core.PreInitialize,
         [none] !core.Initialize,
     );
     // unique textured meshes - Items

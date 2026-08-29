@@ -65,10 +65,11 @@ entity spawn_render_frame_at(
     float2 anchor,
     int2 position,
     int2 size,
-    entity target)
+    entity target,
+    float3 target_position)
 {
     float4 camera_rotation = float4_identity;
-    float3 target_position = zox_getv(target, Position3D);
+    // float3 target_position = zox_getv(target, Position3D);
     float3 camera_position = float3_add(target_position, quaternion_rotate_vector(camera_rotation, (float3) { 0, 0, 1.5f }));
     return spawn_render_frame(
         world,

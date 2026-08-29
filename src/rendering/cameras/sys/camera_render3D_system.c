@@ -49,7 +49,14 @@ zox_sys_untimed(Camera3RenderSystem) {
         for (byte j = 0; j < max_render_loop_orders; j++) {
             for (size_t k = 0; k < render3D_systems->size; k++) {
                 entity system = render3D_systems->data[k];
-                byte order = zox_has(system, RenderOrder) ? zox_getv(system, RenderOrder) : 0;
+                if (!zox_valid(system)) {
+                    zox_loge("Render3D System Invalid [%i]", k);
+                    continue;
+                }
+                byte order =
+                    zox_has(system, RenderOrder) ?
+                        zox_getv(system, RenderOrder) :
+                        0;
                 if (order == j) {
                     if (dbg_log >= 2) {
                         zox_log(" - %i [%s] (%i)", k, zox_getn(system), j);

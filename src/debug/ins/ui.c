@@ -84,7 +84,7 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Render Character",
-        .on_click = { &zox_tst_render_texture_character },
+        .on_click = { &zox_tst_render_texture_character2 },
     };
     // Test our uis
     entity spawned[elements_count];

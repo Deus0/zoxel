@@ -1,10 +1,10 @@
 /*
- * +----------------------------------------------------------+
- * | Zox Module: Maps                                         |
- * |                                                          |
- * |  Regions - World Map - Markers - Navigation - Map State  |
- * |                                                          |
- * +----------------------------------------------------------+
+ * +--------------------------------------------------+
+ * | Zox Module: Maps                                 |
+ * |                                                  |
+ * |  Regions - World Map - Markers - Navigation      |
+ * |                                                  |
+ * +--------------------------------------------------+
  */
 // TODO: Fix updating of maps
 // - black textures appear
