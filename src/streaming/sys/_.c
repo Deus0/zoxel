@@ -38,11 +38,9 @@ void define_systems_streaming(ecs* world) {
     zox_system_1(
         StreamEndSystem,
         zoxp_spawn,
-        [in] core.EventInput,
-        [in] voxes.ChunkLinks,
+        [in] chunks3.ChunkLinks,
         [in] streaming.TerrainSpawnQueue,
-        [out] StreamEndEvent,
-        // [none] terrains.Terrain,
+        [in] StreamEndEvent,
         [none] saves.Loading,
     );
     // Settings

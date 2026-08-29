@@ -13,23 +13,11 @@ zox_sys2(MeshGPURestoreSystem) {
 
 zox_sys2(MeshDirtyRestoreSystem) {
     zox_sys_world();
-    zox_sys_begin()
-    //zox_sys_out(MeshDirty)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        //zox_sys_o(MeshDirty, dirty)
-        //dirty->value = mesh_state_trigger;
         zox_add(e, MeshDirty);
     }
 } zox_sys_end(MeshDirtyRestoreSystem);
-
-/*zox_sys2(MeshDirtyRestore2System) {
-    zox_sys_world();
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_setv(e, MeshDirty, mesh_state_upload);
-    }
-} zox_sys_end(MeshDirtyRestore2System);*/
 
 zox_sys2(TextureRestoreSystem) {
     zox_sys_begin();

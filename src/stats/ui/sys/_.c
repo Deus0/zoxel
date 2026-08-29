@@ -42,13 +42,9 @@ void define_systems_stats_ui(ecs *world) {
         [in] combat.CombatState,
         [out] ui.ElementLinks
     );
-    zox_system_1(
-        PlayerStatspanelSystem,
-        zoxp_spawn,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [in] characters.CharacterLink,
-        [in] layouts.CanvasLink,
-        [none] players.Player
-    );
+}
+
+void zox_events_stats_ui(ecs* world) {
+    zox_muter(prefab_player, PlayerStateEvent, player_event);
+    add_to_PlayerStateEvent(player_event, player_state_stats_ui);
 }

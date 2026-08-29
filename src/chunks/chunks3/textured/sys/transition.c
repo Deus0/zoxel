@@ -9,14 +9,14 @@ zox_sys2(ChunkMeshTransitionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkLodDirty);
-    zox_sys_in(RenderDepth);
+    // z.ox_sys_in(RenderDepth);
     zox_sys_out(ChunkMeshTimer);
     zox_sys_out(ActiveMesh);
     zox_sys_out(PreparingMesh);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkLodDirty, dirty);
-        zox_sys_i(RenderDepth, depth);
+        // zox_sys_i(RenderDepth, depth);
         zox_sys_o(ChunkMeshTimer, timer);
         zox_sys_o(ActiveMesh, active);
         zox_sys_o(PreparingMesh, preparing);

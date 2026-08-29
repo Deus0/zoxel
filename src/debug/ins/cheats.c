@@ -11,13 +11,9 @@ void zox_dbg_toggle_free_roam(ecs* world, ClickEventData data) {
         zox_loge("[zox_dbg_toggle_free_roam] No Camera on Player");
         return;
     }
-    byte state;
     byte roaming = zox_has(camera, Roaming);
     roaming = !roaming;
-    zox_log("[FreeRoam] Camera [%s] State [%i] Roam [%i]",
-        zox_getn(camera),
-        state,
-        roaming);
+    byte state;
     if (!roaming) {
         state = zox_camera_state_first_person;
         attach_camera_to_character(
@@ -31,6 +27,10 @@ void zox_dbg_toggle_free_roam(ecs* world, ClickEventData data) {
             camera);
     }
     zox_setv(camera, CameraState, state);
+    zox_log("[FreeRoam] Camera [%s] State [%i] Roam [%i]",
+        zox_getn(camera),
+        state,
+        roaming);
 }
 
 void zox_dbg_toggle_fly_mode(ecs* world, ClickEventData data) {

@@ -1,5 +1,43 @@
+
+void player_state_touch_ui(ecs* world, entity player, byte state) {
+    byte dbg_log = 0;
+    byte device_mode = zox_getv(player, DeviceMode);
+    byte is_spawn = state == zox_player_state_play_begin &&
+        (device_mode == zox_device_mode_touchscreen ||
+            zox_dbg_touch_with_mouse);
+    byte is_destroy = state == zox_player_state_respawn_begin;
+    if (!is_destroy && !is_spawn) {
+        return;
+    }
+    entity canvas = zox_getv(player, CanvasLink);
+    if (!zox_valid(canvas)) {
+        return;
+    }
+    entity ui = zox_get_child_by_id(
+        world,
+        canvas,
+        zox_id(MenuPlayTouch));
+    if (is_spawn && !zox_valid(ui)) {
+        spawn_in_game_ui_touch(
+            world,
+            player,
+            canvas);
+        if (dbg_log) {
+            zox_log("Spawned [MenuPlayTouch] for [%s]",
+                zox_getn(player));
+        }
+    } else if (is_destroy && zox_valid(ui)) {
+        if (dbg_log) {
+            zox_log("Destroying [MenuPlayTouch] [%s] for [%s]",
+                zox_getn(ui),
+                zox_getn(player));
+        }
+        zox_delete(ui);
+    }
+}
+
 // Spawn the UIs
-zox_sys2(PlayerTouchUISystem) {
+/*zox_sys2(PlayerTouchUISystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -18,4 +56,4 @@ zox_sys2(PlayerTouchUISystem) {
             }
         }
     }
-} zox_sys_end(PlayerTouchUISystem);
+} zox_sys_end(PlayerTouchUISystem);*/

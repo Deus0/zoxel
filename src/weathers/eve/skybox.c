@@ -1,23 +1,3 @@
-byte last_weather_state;
-
-// NOTE: Used for testing
-void refresh_weather(ecs* world) {
-    entity skybox = zox_get_link(world, local_game, Skybox);
-    if (last_weather_state == zox_game_state_play_begin) {
-        set_skybox_colors(
-            world,
-            skybox,
-            game_sky_color,
-            game_sky_bottom_color);
-    } else if (last_weather_state == zox_game_start) {
-        set_skybox_colors(
-            world,
-            skybox,
-            menu_sky_color,
-            menu_sky_bottom_color);
-    }
-}
-
 void game_state_weather(ecs* world, entity game, byte state) {
     entity skybox = zox_get_link(world, game, Skybox);
     if (!zox_valid(skybox)) {

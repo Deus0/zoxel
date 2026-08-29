@@ -21,6 +21,7 @@ byte zox_terrain_chunk_lod_system = 0;
 #include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
+#include "eve/_.c"
 #include "dbg/_.c"
 #include "sys/_.c"
 #include "collisions/_.c"

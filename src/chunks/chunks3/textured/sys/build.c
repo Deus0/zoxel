@@ -131,22 +131,6 @@ static inline void zox_terrain_building_dig(
     }
 }
 
-// NOTE: Assumes node depth is lower than terrain (max depth)
-static inline float get_chunk_scale(
-    byte chunk_depth,
-    byte terrain_depth,
-    float terrain_scale)
-{
-    if (terrain_depth < chunk_depth) {
-        return terrain_scale;
-    } else {
-        // we multiply by the depth difference power
-        // - if 2 = 2*2 = 4, 0.5 becomes 2 in size
-        byte ddepth = terrain_depth - chunk_depth;
-        return terrain_scale * octree_size(ddepth);
-    }
-}
-
 extern byte disable_lights;
 
 // TODO: Cache Multiple Voxel Managers, not just single
@@ -239,7 +223,6 @@ zox_sys2(ChunkTexturedBuildSystem) {
                 !zox_has(tilemap, TilemapUVs) ||
                 !zox_has(tilemap, GenerateTexture))
             {
-                zox_sys_e();
                 zox_loge("Tilemap not found on Chunk Terrain [%s]", zox_sys_e_name);
                 continue;
             }

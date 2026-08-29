@@ -5,7 +5,7 @@
 void zox_systems_xr(ecs* world) {
     /*zox_system(
         xr_projection_system,
-        zoxp_update,
+        zoxp_initialize,
         [in] xr.XrFov,
         [out] cameras.ProjectionMatrix,
         [none] core.Initialize,

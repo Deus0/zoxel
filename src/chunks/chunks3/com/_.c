@@ -21,6 +21,17 @@ zoxc_float(RaycastRange);
 #include "sides.c"
 #include "queue.c"
 #include "damage.c"
+// Voxes
+zox_tag(Vox);
+zoxc_entity(VoxLink);
+zoxc_byte(ChunkLod);    // we using this??!?!
+zoxc_hashmap(ChunkLinks, int3)
+// operations
+zoxc_byte(CloneVox);
+zoxc_entity(CloneVoxLink);
+zoxc_state(CombineVox);
+zoxc_entitiesw(CombineList);
+zoxc_arrayd(CombinePositions, byte3);
 
 // ChunkLodDirty
 #define zox_chunk_lod_dirty_start 1
@@ -58,4 +69,15 @@ void define_components_chunks3(ecs* world) {
     zoxd_octree(SidesOctree);
     zoxd_entities(ChunkEntities);
     zoxd_queue(VoxelNodeQueue);
+    // Voxes
+    zoxd_tag(Vox);
+    zoxd_entity(VoxLink);
+    zoxd_byte(ChunkLod);
+    zoxd_hashmap(ChunkLinks);
+    // operations
+    zoxd_byte(CloneVox);
+    zoxd_state(CombineVox);
+    zoxd_entity(CloneVoxLink);
+    zoxd_entitiesw(CombineList);
+    zoxd_arrayd(CombinePositions);
 }

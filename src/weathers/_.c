@@ -12,6 +12,7 @@ color_rgb override_sky_fill = color_rgb_red;
 #include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
+#include "eve/_.c"
 #include "sys/_.c"
 
 void import_weathers(ecs* world) {

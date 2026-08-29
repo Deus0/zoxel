@@ -10,5 +10,6 @@
 #include "touch.c"
 #include "pause.c"
 #include "respawn.c"
+#include "load.c"
 // Editor
 #include "terminal.c"

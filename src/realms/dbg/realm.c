@@ -6,6 +6,7 @@ entity test_spawn_realm(ecs* world) {
     if (zox_dbg_realm) {
         zox_delete(zox_dbg_realm);
         zox_dbg_realm = 0;
+        return 0;
     }
     lint seed = 666;
     zox_dbg_realm = spawn_realm(
@@ -13,4 +14,5 @@ entity test_spawn_realm(ecs* world) {
         local_game,
         seed);
     zox_setv(zox_dbg_realm, GenerateRealm, zox_generate_realm_start);
+    return zox_dbg_realm;
 }

@@ -49,7 +49,7 @@ zox_sys2(MeleeSystem) {
         }
         // does have resource
         entity resource = 0;
-        entity strength = 0;
+        // entity strength = 0;
         zox_geter(user, RaycastVoxelData, raycast);
         // zox_geter(user, StatLinks, stats);
         entity boost_stat = 0;
@@ -65,8 +65,8 @@ zox_sys2(MeleeSystem) {
                     resource = stat;
                 }
                 // Assuming strength is first attribute
-                if (!strength && zox_has(stat, StatAttribute)) {
-                    strength = stat;
+                if (!boost_stat && zox_has(stat, StatAttribute)) {
+                    boost_stat = stat;
                 }
             }
         }
@@ -87,9 +87,18 @@ zox_sys2(MeleeSystem) {
             float lresource = zox_getv(resource, StatValue);
             if (lresource < cost->value) {
                 if (dbg_log) {
-                    zox_log("User [%s] needs more [%s] [%f]", zox_get_name(user), zox_get_name(resource), lresource);
+                    zox_log("User [%s] needs more [%s] [%f]",
+                        zox_get_name(user),
+                        zox_get_name(resource),
+                        lresource);
                 }
-                spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[14], 0.6, 0.6f * get_volume_sfx());
+                spawn_sound_generated(
+                    world,
+                    prefab_sound_generated,
+                    instrument_piano,
+                    note_frequencies[14],
+                    0.6,
+                    0.6f * get_volume_sfx());
                 continue;
             }
             // this should be muter -> instant use
@@ -129,8 +138,8 @@ zox_sys2(MeleeSystem) {
         }
         // todo: reduce energy stat value using SkillCost, check if has enough energy
         float skill_damage = randf_range(damage->value, damage_max->value);
-        if (strength) {
-            skill_damage += strength_damage_multiplier * zox_getv(strength, StatValue);
+        if (boost_stat) {
+            skill_damage += strength_damage_multiplier * zox_getv(boost_stat, StatValue);
         }
         if (!zox_has(user, PlayerLink)) {
             skill_damage *= npc_nerf_multiplier; // EASY MODE

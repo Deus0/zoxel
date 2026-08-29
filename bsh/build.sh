@@ -19,7 +19,7 @@ dflags="-Dflecssource"
 debug="0"
 is_safety_checks="1"    # lets stay safe for now
 is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
-is_fast_dev="1"         # -O3
+is_fast_dev="0"         # -O3
 is_run="0"
 logs="0"
 verbose="0"

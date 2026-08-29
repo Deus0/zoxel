@@ -16,7 +16,12 @@ zox_sys2(PlayerGameStateSystem) {
             continue;
         }
         entity players[zox_children_capacity];
-        uint players_length = zox_get_children_by_id(world, e, players, zox_children_capacity, zox_id(Player));
+        uint players_length = zox_get_children_by_id(
+            world,
+            e,
+            players,
+            zox_children_capacity,
+            zox_id(Player));
         for (uint j = 0; j < players_length; j++) {
             entity e2 = players[j];
             if (state->value == zox_game_state_the_end) {
@@ -29,7 +34,7 @@ zox_sys2(PlayerGameStateSystem) {
                 if (zox_valid(character)) {
                     zox_delete(character);
                 }*/
-            } else if (state->value == zox_game_state_play_begin) {
+            } else if (state->value == zox_game_terrain_spawn) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Loading", zox_get_name(e2));
                 }

@@ -80,7 +80,7 @@ void define_systems_terrain(ecs *world) {
         [out] streaming.TerrainSpawnQueue,
         [out] regions.RegionLinks,
         [out] tunks.TunkLinks,
-        [out] voxes.ChunkLinks,
+        [out] chunks3.ChunkLinks,
         [none] terrains.Terrain,
     );
     // Debug Terrains

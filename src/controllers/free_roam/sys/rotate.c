@@ -9,11 +9,9 @@ zox_sys2(FreeCameraRotateSystem) {
 #endif
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerState);
     zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PlayerState, state);
         zox_sys_i(CameraLink, camera);
         if (!zox_valid(camera->value) ||
             !zox_has(camera->value, Roaming)

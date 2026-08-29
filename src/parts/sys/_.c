@@ -9,9 +9,9 @@ void define_systems_bodys(ecs* world) {
         zoxp_update,
         [out] parts.BodyDirty,
         [out] parts.BodySize,
-        [out] voxes.CombineList,
-        [out] voxes.CombinePositions,
-        [out] voxes.CombineVox,
+        [out] chunks3.CombineList,
+        [out] chunks3.CombinePositions,
+        [out] chunks3.CombineVox,
         [out] chunks.NodeDepth,
         [out] blocks.BlockScale,
         [none] bones.Skeleton

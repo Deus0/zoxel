@@ -80,8 +80,45 @@ entity spawn_stats_panel(
     return e;
 }
 
+void player_state_stats_ui(ecs* world, entity player, byte state) {
+    byte dbg_log = 0;
+    byte is_spawn = state == zox_player_state_play_begin;
+    byte is_destroy =
+        state == zox_player_state_pause_begin ||
+        state == zox_player_state_respawn_begin;
+    if (!is_destroy && !is_spawn) {
+        return;
+    }
+    entity canvas = zox_getv(player, CanvasLink);
+    entity character = zox_getv(player, CharacterLink);
+    if (!zox_valid(canvas)) {
+        return;
+    }
+    entity statbars = zox_get_child_by_id(
+        world,
+        canvas,
+        zox_id(StatBars));
+    if (is_spawn && !zox_valid(statbars)) {
+        spawn_stats_panel(
+            world,
+            canvas,
+            character);
+        if (dbg_log) {
+            zox_log("Spawned Stats Panel for Player [%s]",
+                zox_getn(player));
+        }
+    } else if (is_destroy && zox_valid(statbars)) {
+        if (dbg_log) {
+            zox_log("Destroying Stats Panel [%s] for Player [%s]",
+                zox_getn(statbars),
+                zox_getn(player));
+        }
+        zox_delete(statbars);
+    }
+}
+
 // NOTE: When Game Starts or Resumes we spawn the stats panel
-zox_sys2(PlayerStatspanelSystem) {
+/*zox_sys2(PlayerStatspanelSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -121,4 +158,4 @@ zox_sys2(PlayerStatspanelSystem) {
             }
         }
     }
-} zox_sys_end(PlayerStatspanelSystem);
+} zox_sys_end(PlayerStatspanelSystem);*/

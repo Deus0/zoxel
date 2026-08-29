@@ -12,8 +12,6 @@ void zox_define_systems_elements(ecs *world) {
         [in] apps.AppLink,
         [out] layouts.LayoutPosition,
         [out] layouts.LayoutSize,
-        //[out] layouts.LayoutPositionDirty,
-        //[out] layouts.LayoutSizeDirty,
         [none] layouts.Canvas
     );
     zox_system(
@@ -32,11 +30,10 @@ void zox_define_systems_elements(ecs *world) {
     );
     zox_system(
         LayoutMeshBeginSystem,
-        zoxp_update,
+        zoxp_initialize,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
-        // [out] rendering.MeshDirty,
         [none] core.Initialize,
     );
     zox_system(
@@ -46,6 +43,5 @@ void zox_define_systems_elements(ecs *world) {
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
-        // [out] rendering.MeshDirty
     );
 }

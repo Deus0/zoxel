@@ -38,16 +38,23 @@
 #define zoxc_listener(T, n, ...) \
 \
 typedef struct { \
-    void (*value[n])(__VA_ARGS__); \
+    void (*fun)(__VA_ARGS__); \
+} T##Entry; \
+\
+typedef struct { \
+    T##Entry value[n]; \
     uint count; \
 } T; \
 \
 byte add_to_##T(T* component, void (*fun)(__VA_ARGS__)) { \
     if (component->count >= n) {\
-        zox_logw("Listener [%s] OOB [%i]", #T, n); \
+        zox_logw("Listener [%s] OOB [%i] > [%i]",\
+            #T, component->count, n); \
         return 0; \
     }\
-    component->value[component->count] = fun; \
+    /*zox_logw("ADD listener [%s] index [%i] ptr [%p]", \
+        #T, component->count, (void *) fun);*/ \
+    component->value[component->count].fun = fun; \
     component->count++; \
     return 1; \
 } \

@@ -2,7 +2,6 @@
 zox_sys2(ChunkSidesTriggerSystem) {
     byte dbg_log = 0;
     zox_sys_world();
-    zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_add(e, BuildChunkSides);

@@ -44,6 +44,7 @@ void import_maps(ecs* world) {
     define_components_maps(world);
     zox_define_systems_maps(world);
     add_hook_spawn_prefabs(spawn_prefabs_maps);
+    add_hook_spawn_prefabs(zox_events_maps);
     add_taskbar_button((hook_taskbar) {
         .index = 8,
         .spawn = &spawn_player_menu_map,

@@ -37,7 +37,10 @@ zox_sys2(HealthbarSpawnerSystem) {
         if (combat->value != zox_combat_enter_battle) {
             continue;
         }
-        entity health = zox_get_child_by_id(world, e, zox_id(StatHealth));
+        entity health = zox_get_child_by_id(
+            world,
+            e,
+            zox_id(StatHealth));
         if (!zox_valid(health)) {
             continue;
         }

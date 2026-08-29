@@ -27,6 +27,7 @@ byte zox_disable_screen_fader = 0;
 #include "pre/_.c"
 #include "fun/_.c"
 #include "ins/_.c"
+#include "eve/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 

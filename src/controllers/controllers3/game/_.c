@@ -34,31 +34,6 @@ void zox_define_systems_controllers3_game(ecs *world) {
         [none] players.Player
     );
     zox_system_1(
-        PlayerActionbarSystem,
-        zoxp_spawn,
-        [in] players.PlayerState,
-        [in] players.PlayerStateDirty,
-        [in] layouts.CanvasLink,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerCrosshairSystem,
-        zoxp_spawn,
-        [in] players.PlayerState,
-        [in] players.PlayerStateDirty,
-        [in] layouts.CanvasLink,
-        [none] players.Player3
-    );
-    zox_system_1(
-        PlayerTouchUISystem,
-        zoxp_spawn,
-        [in] players.PlayerState,
-        [in] players.PlayerStateDirty,
-        [in] layouts.CanvasLink,
-        [in] inputs.DeviceMode,
-        [none] players.Player
-    );
-    zox_system_1(
         GameStartStreamerSystem,
         zoxp_spawn,
         [in] cameras.CameraLink,
@@ -93,4 +68,38 @@ void zox_define_systems_controllers3_game(ecs *world) {
         [out] characters.CharacterLink,
         [none] players.Player
     );
+    /*zox_system_1(
+        PlayerActionbarSystem,
+        zoxp_spawn,
+        [in] players.PlayerState,
+        [in] players.PlayerStateDirty,
+        [in] layouts.CanvasLink,
+        [none] players.Player3
+    );
+    zox_system_1(
+        PlayerCrosshairSystem,
+        zoxp_spawn,
+        [in] players.PlayerState,
+        [in] players.PlayerStateDirty,
+        [in] layouts.CanvasLink,
+        [none] players.Player3
+    );
+    zox_system_1(
+        PlayerTouchUISystem,
+        zoxp_spawn,
+        [in] players.PlayerState,
+        [in] players.PlayerStateDirty,
+        [in] layouts.CanvasLink,
+        [in] inputs.DeviceMode,
+        [none] players.Player
+    );*/
 }
+
+void zox_events_controllers(ecs* world) {
+    zox_muter(prefab_player, PlayerStateEvent, player_event);
+    add_to_PlayerStateEvent(player_event, player_state_crosshair);
+    add_to_PlayerStateEvent(player_event, player_state_actionbar);
+    add_to_PlayerStateEvent(player_event, player_state_touch_ui);
+}
+
+

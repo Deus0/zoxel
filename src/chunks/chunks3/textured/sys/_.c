@@ -116,7 +116,6 @@ void define_systems_chunks3_textured(ecs *world) {
         ChunkMeshTransitionSystem,
         zoxp_update,
         [in] chunks3.ChunkLodDirty,
-        [in] rendering.RenderDepth,
         [out] chunks.ChunkMeshTimer,
         [out] rendering.ActiveMesh,
         [out] rendering.PreparingMesh,

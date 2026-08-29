@@ -11,16 +11,14 @@ zox_sys2(StreamEndSystem) {
     float required_buffer = 0.95f;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(EventInput);
     zox_sys_in(ChunkLinks);
     zox_sys_in(TerrainSpawnQueue);
-    zox_sys_out(StreamEndEvent);
+    zox_sys_in(StreamEndEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkLinks, chunks);
-        zox_sys_i(EventInput, input);
         zox_sys_i(TerrainSpawnQueue, queue);
-        zox_sys_o(StreamEndEvent, event);
+        zox_sys_i(StreamEndEvent, event);
         if (!chunks->value || !chunks->value->size) {
             continue;
         }
@@ -84,17 +82,17 @@ zox_sys2(StreamEndSystem) {
                 chunks_loaded++;
             }
         }
+        if (dbg_log) {
+            zox_log("[Loading Screen]\n - Queued [%i]\n - Loading [%i] of [%i] - State [%i]\n - Generating [%i]\n - Busy [%i]\n - Meshes [%i]",
+                queue->count,
+                chunks_loading,
+                chunks_loading + chunks_loaded,
+                lowest_generate_state,
+                chunks_generating,
+                chunks_busy,
+                meshes_loading);
+        }
         if (chunks_loading > 0) {
-            if (dbg_log) {
-                zox_log("[Loading Screen]\n - Queued [%i]\n - Loading [%i] of [%i] - State [%i]\n - Generating [%i]\n - Busy [%i]\n - Meshes [%i]",
-                    queue->count,
-                    chunks_loading,
-                    chunks_loading + chunks_loaded,
-                    lowest_generate_state,
-                    chunks_generating,
-                    chunks_busy,
-                    meshes_loading);
-            }
             running = 1;
         }
         if (running && !zox_disable) {
@@ -108,14 +106,11 @@ zox_sys2(StreamEndSystem) {
             }
             continue;
         }
+        zox_remove(e, Loading);
         // we should check if all chunks have finished here
         if (event->value) {
-            (*event->value)(world, input->value);
-            event->value = NULL;
+            (*event->value)(world, e);
         }
-        // now loaded
-        // loaded->value = zox_load_done;
-        zox_remove(e, Loading);
         if (dbg_log) {
             zox_log("Terrain Loaded: chunks: [%i]", chunks_loaded);
         }

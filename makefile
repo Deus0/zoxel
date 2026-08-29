@@ -127,10 +127,13 @@ flecs:
 # Dev
 
 $(TARGET_DEV): $(SRCS)
-	@ mkdir -p bin
-	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings --profile
+	bash bsh/build.sh $(GAME) ${build_args} --debug --logs
+
 
 dev: $(TARGET_DEV)
+
+profile: $(SRCS)
+	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings --profile
 
 #dever: $(SRCS)
 #	@ mkdir -p bin

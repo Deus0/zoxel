@@ -7,11 +7,10 @@
 void define_systems_elements3D(ecs *world) {
     zox_system(
         Layout3MeshBeginSystem,
-        zoxp_update,
+        zoxp_initialize,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices,
-        // [out] rendering.MeshDirty,
         [none] core.Initialize,
     );
     zox_system(
@@ -21,35 +20,11 @@ void define_systems_elements3D(ecs *world) {
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices,
-        // [out] rendering.MeshDirty,
         [none] !core.Initialize,
     );
-    /*zox_system(
-        Elementbar3DSystem,
-        zoxp_update,
-        [in] rendering.RenderDisabled,
-        [in] ui.ElementBar,
-        [in] ui.ElementBarSize,
-        [none] rendering.MeshVertices
-    );*/
-    /*zox_system_1(
-        Text3DResizeSystem,
-        zoxp_spawn,
-        [in] texts.TextDirty,
-        [in] texts.TextData,
-        [in] glyphs.FontOutlineColor,
-        [in] glyphs.FontFillColor,
-        [in] glyphs.FontThickness,
-        [in] textures.OutlineThickness,
-        [in] rendering.RenderDisabled,
-        [in] Text3DScale,
-        [in] texts.TextFontSize,
-        [none] texts.Zext,
-        [none] Text3D
-    );*/
     zox_system(
         UITrailSystem,
-        zoxp_transforms + 1,
+        zoxp_transforms, //  + 1,
         [in] ui.UIHolderLink,
         [in] UITrail,
         [out] transforms3.Position3D
@@ -66,7 +41,7 @@ void define_systems_elements3D(ecs *world) {
     zox_system_ctx(
 #endif
         BillboardSystem,
-        zoxp_transforms + 1,
+        zoxp_transforms,
         billboard_cameras,
         [in] rendering.RenderDisabled,
         [in] transforms3.Position3D,

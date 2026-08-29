@@ -14,7 +14,7 @@ void zox_define_systems_tooltips(ecs* world) {
     // We can use later to clean hierarchys
     zox_system(
         TooltipeeInitializeSystem,
-        zoxp_update,
+        zoxp_initialize,
         [none] tooltips.Tooltipper,
         [none] core.Initialize,
     );

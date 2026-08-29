@@ -1,14 +1,36 @@
 # Todo
 
+- Fix Depth Invalid issues
+
+- Make chunks more self contained
+    - dont use terraindepth, just use maxdepth property
+
+UIs
+- Centralize different uis
+    - atm theyre a bit spread through different state events
+-x Loading UI
+- Fix Taskbar events on close
+- Refactor add_taskbar_button - just spawn as children of taskbar prefab
+- Add mirror ui - player render texture
+- Make tooltip an event instead of systems
+
+Input Refactor
+- Make input actions events instead of systems
+    - Pause key - PlayerPauseSystem
+
+Character Refactors
+- Refactor character mesh out of character - as child
+- Add character CombatState
+
 - Refactor ([in] players.PlayerState,) with new PlayerStateEvent listener
 - Remove old UI structs (CanvasData, ParentData, etc)
 - Remove old links
 	- Remove SkillLinks, StatLinks, QuestLinks, DialogueLinks
 	- just use children by tags
 	- Remove clear systems
-- Add listener component on Game
-    - GameStateEvent
-    - Passes in game event with function
+-x Add listener component on Game
+    -x GameStateEvent
+    -x Passes in game event with function
 - Add loading screen event
 - Move the key events out of the test functions
     - just add to a KeyListener component

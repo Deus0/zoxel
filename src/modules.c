@@ -46,10 +46,10 @@
 // #include "blueprints/_.c"
 #include "blocks/_.c"
 #include "chunks/_.c"
-#include "voxes/_.c"
 #include "physics/_.c"
 #include "lights/_.c"
 #include "models/_.c"
+#include "voxes/_.c"
 
 // depth 4: environment
 #include "weathers/_.c"
@@ -166,7 +166,6 @@ void import_zox(ecs* world) {
     zox_add_module(blocks);
     zox_add_module(chunks);
     zox_add_module(lights);
-    zox_add_module(voxes);
     zox_add_module(physics);
     zox_add_module(particles);
 

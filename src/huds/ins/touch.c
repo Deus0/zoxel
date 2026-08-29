@@ -79,11 +79,18 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
 }
 
 // called from game state changes
-void spawn_in_game_ui_touch(ecs *world, entity player, entity canvas) {
+void spawn_in_game_ui_touch(
+    ecs *world,
+    entity player,
+    entity canvas)
+{
     if (!zox_valid(canvas)) {
         return;
     }
-    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuPlayTouch));
+    entity menu = zox_get_child_by_id(
+        world,
+        canvas,
+        zox_id(MenuPlayTouch));
     if (zox_valid(menu)) {
         zox_log("touch ui already exists");
         return;

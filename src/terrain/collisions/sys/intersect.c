@@ -30,8 +30,11 @@ zox_sys2(TerrainIntersectSystem) {
             continue; // these shouldn't be here
         }
         // find realm first
-        entity realm = zox_getv(terrain->value, RealmLink);
+        entity realm = zox_get_parent(world, terrain->value);
+        // entity realm = zox_getv(terrain->value, RealmLink);
         if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {
+            zox_loge("Blocks Manager missing Terrain [%s]",
+                zox_getn(terrain->value));
             continue;
         }
         const BlockLinks* blocks = zox_get(realm, BlockLinks);

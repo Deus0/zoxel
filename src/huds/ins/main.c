@@ -10,6 +10,9 @@ byte tooltip_event_zoxel_header(ecs* world, const TooltipEventData *data) {
     return 1;
 }*/
 
+// extern from events
+extern void button_event_new_game(ecs*, ClickEventData);
+
 // List Menus adjust to the menu size
 entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     byte window_alignment = zox_huds_window_alignment;

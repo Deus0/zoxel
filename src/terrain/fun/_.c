@@ -6,3 +6,7 @@
 #include "terminal.c"
 #include "set.c"
 #include "game.c"
+
+entity get_terrain_id() {
+    return zox_id(Terrain);
+}

@@ -1,3 +1,12 @@
+// voxes
+#include "vox.c"
+#include "vox_generated.c"
+#include "vox_file.c"
+#include "block.c"
+#include "blocks_solids.c"
+#include "block_meta.c"
+#include "block_instanced.c"
+// models
 #include "node.c"
 #include "process.c"
 #include "model_lods.c"
@@ -6,4 +15,3 @@
 // TODO: Refactor to model_lods + blueprint for grass
 #include "grass.c"
 #include "generated.c"
-#include "blocks_solids.c"

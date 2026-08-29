@@ -6,14 +6,6 @@
 
 void zox_define_systems_maps(ecs* world) {
     zox_system_1(
-        PlayerMinimapSystem,
-        zoxp_spawn,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [in] layouts.CanvasLink,
-        [none] players.Player
-    );
-    zox_system_1(
         MapInitializeSystem,
         zoxp_spawn,
         [in] maps.MapZoom,
@@ -40,4 +32,9 @@ void zox_define_systems_maps(ecs* world) {
         [out] transforms2.LocalRotation2,
         [none] maps.MapArrow
     );
+}
+
+void zox_events_maps(ecs* world) {
+    zox_muter(prefab_player, PlayerStateEvent, player_event);
+    add_to_PlayerStateEvent(player_event, player_state_minimaps);
 }

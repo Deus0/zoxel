@@ -21,6 +21,7 @@
 // regular sync points
 // #define zoxp_start EcsPreUpdate
 #define zoxp_spawn EcsPreUpdate          // EcsPreStore // EcsPostUpdate
+#define zoxp_initialize EcsOnUpdate
 #define zoxp_update EcsOnUpdate
 #define zoxp_post_update EcsOnValidate
 #define zoxp_gpu_upload EcsPreStore     // zoxp_cameras +
