@@ -1,3 +1,9 @@
+typedef struct {
+    int_array_d* indicies;
+    float3_array_d* vertices;
+    color_rgb_array_d* colors;
+} mesh_colored_build_data;
+
 // NOTE: Scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
 void add_voxel_face(
     mesh_colored_build_data* mesh,

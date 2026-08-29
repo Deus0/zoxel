@@ -2,11 +2,11 @@ zox_sys2(StatsRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
-    zox_sys_out(StatLinks);
+    //zox_sys_out(StatLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
-        zox_sys_o(StatLinks, stats);
+        //zox_sys_o(StatLinks, stats);
         if (state->value != zox_generate_realm_stats) {
             continue;
         }
@@ -41,8 +41,14 @@ zox_sys2(StatsRealmSpawnSystem) {
         entity agility = spawn_realm_stat(world, e, prefab_stat_attribute, "agility", "agility", color_rgb_white);
         entity dexterity = spawn_realm_stat(world, e, prefab_stat_attribute, "dexterity", "dexterity", color_rgb_white);
         entity charm = spawn_realm_stat(world, e, prefab_stat_attribute, "charm", "charm", color_rgb_white);
-        entity luck = spawn_realm_stat(world, e, prefab_stat_attribute, "luck", "luck", color_rgb_white);
-        add_to_StatLinks(stats, soul);
+        entity luck = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "luck",
+            "luck",
+            color_rgb_white);
+        /*add_to_StatLinks(stats, soul);
         add_to_StatLinks(stats, health);
         add_to_StatLinks(stats, energy);
         add_to_StatLinks(stats, mana);
@@ -57,10 +63,10 @@ zox_sys2(StatsRealmSpawnSystem) {
         add_to_StatLinks(stats, agility);
         add_to_StatLinks(stats, dexterity);
         add_to_StatLinks(stats, charm);
-        add_to_StatLinks(stats, luck);
+        add_to_StatLinks(stats, luck);*/
         // Jobs
         // create regen stat
         // stats.value[i++] = spawn_stat_level_t(world, "farming", "farming", color_rgb_gray);
-        zox_logv("At [%f] Realm [stats] [%i] spawned.", zox_current_time, stats->length);
+        zox_logv("Realm [stats] spawned");
     }
 } zox_sys_end(StatsRealmSpawnSystem);

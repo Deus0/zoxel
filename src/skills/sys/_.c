@@ -4,11 +4,8 @@
 #include "character.c"
 #include "melee.c"
 #include "shoot.c"
-realm_clear_system(SkillLinks);
-// TODO: DotLinks just parent them instead
 
 void zox_systems_skills(ecs *world) {
-    realm_clear_systemd(skills, SkillLinks);
     zox_system(
         SkillToggleSystem,
         zoxp_update,

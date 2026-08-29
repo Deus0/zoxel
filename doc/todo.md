@@ -1,8 +1,9 @@
 # Todo
 
 - Fix Depth Invalid issues
-
-- Make chunks more self contained
+- Vodes spawning / grass placement broken
+- Also placing block bricked game - infinite loop
+- Make chunk datas more self contained
     - dont use terraindepth, just use maxdepth property
 
 UIs
@@ -25,9 +26,15 @@ Character Refactors
 - Refactor ([in] players.PlayerState,) with new PlayerStateEvent listener
 - Remove old UI structs (CanvasData, ParentData, etc)
 - Remove old links
-	- Remove SkillLinks, StatLinks, QuestLinks, DialogueLinks
-	- just use children by tags
-	- Remove clear systems
+	- CharacterLinks
+	- ModelLinks
+	- DialoguetreeLinks
+	- BlockLinks
+	- BiomeLinks
+	- PlaylistLinks
+	- NodegraphLinks
+	- Remove clear systems realm_clear_system
+	-x just use children by tags
 -x Add listener component on Game
     -x GameStateEvent
     -x Passes in game event with function

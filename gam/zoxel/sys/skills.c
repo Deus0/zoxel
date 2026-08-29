@@ -4,13 +4,9 @@ zox_sys2(SkillsRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
-    zox_sys_in(StatLinks);
-    zox_sys_out(SkillLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
-        zox_sys_i(StatLinks, stats);
-        zox_sys_o(SkillLinks, skills);
         if (state->value != zox_generate_realm_skills) {
             continue;
         }
@@ -20,15 +16,21 @@ zox_sys2(SkillsRealmSpawnSystem) {
         entity health = 0;
         entity energy = 0;
         entity mana = 0;
-        for (int j = 0; j < stats->length; j++) {
-            entity stat = stats->value[j];
-            if (zox_has(stat, StatState)) {
-                if (!health) {
-                    health = stat;
-                } else if (!energy) {
-                    energy = stat;
-                } else if (!mana) {
-                    mana = stat;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity stat = it2.entities[j];
+                if (!zox_has(stat, Stat)) {
+                    continue;
+                }
+                if (zox_has(stat, StatState)) {
+                    if (!health && zox_has(stat, StatHealth)) {
+                        health = stat;
+                    } else if (!energy) {
+                        energy = stat;
+                    } else if (!mana) {
+                        mana = stat;
+                    }
                 }
             }
         }
@@ -37,8 +39,21 @@ zox_sys2(SkillsRealmSpawnSystem) {
             color ecolor = (color) { 155, 155, 155, 255 };
             float range = 1.5f;
             float2 damage = (float2) { 1, 2 };
-            entity e2 = spawn_realm_skill_melee(world, e, prefab_skill_melee, "punch", "punch", ecolor, damage.x, damage.y, range, energy, 1, 0.25f, 0.25f);
-            add_to_SkillLinks(skills, e2);
+            entity e2 = spawn_realm_skill_melee(
+                world,
+                e,
+                prefab_skill_melee,
+                "punch",
+                "punch",
+                ecolor,
+                damage.x,
+                damage.y,
+                range,
+                energy,
+                1,
+                0.25f,
+                0.25f);
+            // add_to_SkillLinks(skills, e2);
             meta_skill_punch = e2;
         }
         // Shoot
@@ -46,16 +61,39 @@ zox_sys2(SkillsRealmSpawnSystem) {
             color ecolor = (color) { 125, 175, 175, 255 };
             float range = 1.5f;
             float2 damage = (float2) { 1, 2 };
-            entity e2 = spawn_realm_skill_shoot(world, e, prefab_skill_shoot, "shoot", "shoot", ecolor, damage.x, damage.y, range, energy, 1, 0.5f, 0.5f);
-            add_to_SkillLinks(skills, e2);
+            entity e2 = spawn_realm_skill_shoot(
+                world,
+                e,
+                prefab_skill_shoot,
+                "shoot",
+                "shoot",
+                ecolor,
+                damage.x,
+                damage.y,
+                range,
+                energy,
+                1,
+                0.5f,
+                0.5f);
+            // add_to_SkillLinks(skills, e2);
         }
         // Aura Skill
         {
             color ecolor = (color) { 5, 5, 5, 122 };
             float damage = -base_death_aura_damage;
             float range = base_death_aura_range;
-            entity e2 = spawn_realm_skill_aura(world, e, prefab_skill_aura, "death aura", "aura_death", ecolor, damage, range, 0.5f, 0.5f);
-            add_to_SkillLinks(skills, e2);
+            entity e2 = spawn_realm_skill_aura(
+                world,
+                e,
+                prefab_skill_aura,
+                "death aura",
+                "aura_death",
+                ecolor,
+                damage,
+                range,
+                0.5f,
+                0.5f);
+            // add_to_SkillLinks(skills, e2);
             meta_skill_aura_death = e2;
         }
 
@@ -95,6 +133,6 @@ zox_sys2(SkillsRealmSpawnSystem) {
             0.5f
         );
         // add_to_SkillLinks(skills, meta_skill_aura_fire);*/
-        zox_logv("At [%f] Realm [skills] [%i] spawned.", zox_current_time, skills->length);
+        zox_logv("Realm [skills] [X] spawned.");
     }
 } zox_sys_end(SkillsRealmSpawnSystem);

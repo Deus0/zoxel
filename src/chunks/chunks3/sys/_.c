@@ -13,6 +13,14 @@
 #include "entities_lod.c"
 #include "move_bounds.c"
 #include "vox_texture.c"
+// textured
+#include "build.c"
+#include "wait.c"
+#include "mesh_spawn.c"
+#include "trigger.c"
+#include "transition.c"
+// colored
+#include "build_colored.c"
 
 void define_systems_chunks3(ecs *world) {
     // ColoredChunk, triggers mesh to update
@@ -111,5 +119,96 @@ void define_systems_chunks3(ecs *world) {
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [none] textures.VoxTexture
+    );
+    // Textured
+
+    zox_system(
+        ChunkSidesTriggerSystem,
+        zoxp_update,
+        [none] chunks3.VoxelNodePostDirty,
+        [none] chunks.ChunkTextured
+    );
+    zox_system(
+        ChunkNeighborsSidesTriggerSystem,
+        zoxp_update,
+        [in] chunks3.ChunkNeighbors,
+        [none] chunks3.VoxelNodePostDirty,
+        [none] chunks.ChunkTextured
+    );
+    // Builds our Terrain Chunk Mesh
+    // NOTE: Requires reading voxel data
+    zox_system(
+        ChunkSidesSystem,
+        zoxp_voxels_sides,
+        [in] chunks.NodeDepth,
+        [in] chunks3.ChunkNeighbors,
+        [in] chunks3.VoxelNode,
+        [out] chunks3.SidesOctree,
+        [none] chunks.BuildChunkSides,
+        [none] chunks.ChunkTextured,
+        [none] !chunks3.VoxelNodeDirty,
+    );
+    zox_system_1(
+        ChunkMeshSpawn2System,
+        zoxp_spawn,
+        [in] transforms.TransformMatrix,
+        [in] rendering.RenderDisabled,
+        [in] rendering.RenderDepth,
+        [in] chunks3.VoxelNode,
+        [out] chunks3.ChunkLodDirty,
+        [out] chunks.ChunkMeshTimer,
+        [none] chunks.ChunkTextured
+    );
+    zox_system_1(
+        ChunkMeshSpawnSystem,
+        zoxp_spawn,
+        [in] transforms.TransformMatrix,
+        [in] rendering.RenderDisabled,
+        [in] rendering.RenderDepth,
+        [in] chunks3.VoxelNode,
+        [out] chunks.ChunkMeshTimer,
+        [none] chunks3.VoxelNodePostDirty,
+        [none] chunks.ChunkTextured
+    );
+    // hmmmm
+    zox_system(
+        ChunkMeshTransitionSystem,
+        zoxp_update,
+        [in] chunks3.ChunkLodDirty,
+        [out] chunks.ChunkMeshTimer,
+        [out] rendering.ActiveMesh,
+        [out] rendering.PreparingMesh,
+        [none] chunks.ChunkTextured,
+        [none] !chunks.GenerateChunk,
+        [none] !chunks.BuildChunkSides,
+    );
+    zox_system_1(
+        ChunkTexturedBuildSystem,
+        zoxp_update, // zoxp_voxels_mesh zoxp_update
+        [in] rendering.RenderDepth,
+        [out] rendering.MeshIndicies,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshUVs,
+        [out] rendering.MeshColorRGBs,
+        [none] chunks.ChunkMesh,
+        [none] rendering.BuildMesh,
+        [none] !core.BuildDisabled,
+    );
+    // Colored
+    zox_system(
+        ChunkColorsBuildSystem,
+        zoxp_voxels_mesh,
+        [in] chunks3.VoxelNode,
+        [in] chunks.NodeDepth,
+        [in] rendering.RenderDepth,
+        [in] chunks3.ChunkNeighbors,
+        [in] colorz.ColorRGBs,
+        [in] chunks3.ChunkSize,
+        [in] blocks.BlockScale,
+        [out] rendering.MeshIndicies,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshColorRGBs,
+        [none] chunks3.ColorChunk,
+        [none] rendering.BuildMesh,
     );
 }

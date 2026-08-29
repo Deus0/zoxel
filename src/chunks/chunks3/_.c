@@ -1,24 +1,17 @@
-/**
- *  Module Chunks3
+/*
+ * +------------------------------------------------------------------+
+ * | Zox Module: Chunks3                                              |
+ * |                                                                  |
+ * |  Generation - Octrees - Meshing - Spatial - Chunk State          |
+ * |                                                                  |
+ * +------------------------------------------------------------------+
  *
  *      - core voxel code
  *      - octree node, goes down n levels
  *      - can be rendered as cubes and optimized triangles
  *
  * */
-#ifndef zoxm_chunks3
-#define zoxm_chunks3
 
-// Chunk States
-#define zox_generate_terrain_start 1
-#define zox_generate_terrain_landfill 1
-#define zox_generate_terrain_vegetation 2
-#define zox_generate_terrain_towns 3
-#define zox_generate_terrain_sunlight 4
-#define zox_generate_terrain_end2 5
-
-byte zox_dbg_disable_chunk_mesh = 0;
-byte zox_dbg_npc_all_max_depth = 0;
 #include "set/_.c"
 #include "mcr/_.c"
 #include "com/_.c"
@@ -28,26 +21,42 @@ byte zox_dbg_npc_all_max_depth = 0;
 #include "sys/_.c"
 #include "dbg/_.c"
 #include "tst/_.c"
-#include "textured/_.c"
-#include "colored/_.c"
 #include "io/_.c"
-#include "structures/_.c"
-#include "animations/_.c"
+// #include "animations/_.c"
 
-zox_begin_module(Chunks3) {
+void import_chunks3(ecs* world) {
+    zox_module(chunks3);
     define_components_chunks3(world);
     define_systems_chunks3(world);
     define_systems_chunksio(world);
     define_systems_chunks3_debug(world);
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
-    zox_module_dispose(module_dispose_chunks3);
-    // initialize_hook_on_destroyed_VoxelNode();
-    // add_hook_on_destroyed_VoxelNode(destroy_node_link_VoxelNode);
     test_chunks3(world);
-    zox_import_module(Chunks3Colored);
-    zox_import_module(Chunks3Textured);
-    zox_import_module(Structures);
-    zox_import_module(VoxelsAnimations);
-} zox_end_module(Chunks3);
+    // zox_import_module(VoxelsAnimations);
+}
 
-#endif
+
+// TODO: f2 + f3 = see sometimes  random quads at bottom of chunks, weird asf - now its just occasional mostly fixed
+// TODO: Check per split quad if voxel exists
+// TODO: Fetch all Block Managers found, not just single
+// TODO: Build up adjacent faces in another system
+
+/*
+ *  Chunks3 Colored
+ *
+ *      - Specifically for our game models
+ *      - Npcs
+ *      - Grass
+ *      - Clouds
+ *      - Even Textured Blocks, they get baked down
+ *
+ * */
+// TODO: Use Sides Data for building
+// TODO: Proper AO using all cube neighbors
+
+// todo: make basic building 12x6x6, spawn randomly in chunks
+// todo: remember dont spawn chunk if surrounding chunk hasn't spawn their structures yet
+//          - since structures will update voxels accross chunks
+// todo: debug system will render bounds of structures around map (based on LODs)
+// todo: spawn tree structures out of grass voxels, the structure bounding boxes exist to limit their growths
+

@@ -33,7 +33,7 @@ void define_systems_zoxel(ecs *world) {
         StatsRealmSpawnSystem,
         zoxp_spawn,
         [in] realms.GenerateRealm,
-        [out] stats.StatLinks,
+        // [out] stats.StatLinks,
         [none] realms.Realm
     );
     zox_system_1(
@@ -46,8 +46,8 @@ void define_systems_zoxel(ecs *world) {
         SkillsRealmSpawnSystem,
         zoxp_spawn,
         [in] realms.GenerateRealm,
-        [in] stats.StatLinks,
-        [out] skills.SkillLinks,
+        // [in] stats.StatLinks,
+        // [out] skills.SkillLinks,
         [none] realms.Realm
     );
     // NOTE: Blocks must be set before items spawn if this is the case!
@@ -57,7 +57,7 @@ void define_systems_zoxel(ecs *world) {
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] blocks.BlockLinks,
-        [out] items.ItemLinks,
+        //[out] items.ItemLinks,
         [none] realms.Realm
     );
     zox_system_1(
@@ -66,7 +66,7 @@ void define_systems_zoxel(ecs *world) {
         [in] realms.GenerateRealm,
         [in] core.Seed,
         [out] rendering.ModelLinks,
-        [out] items.ItemLinks,
+        //[out] items.ItemLinks,
         [out] nodes.NodegraphLinks,
         [none] realms.Realm
     );
@@ -74,7 +74,7 @@ void define_systems_zoxel(ecs *world) {
         EquipsRealmSpawnSystem,
         zoxp_spawn,
         [in] realms.GenerateRealm,
-        [out] items.ItemLinks,
+        //[out] items.ItemLinks,
         [none] realms.Realm
     );
     zox_system_1(
@@ -82,7 +82,6 @@ void define_systems_zoxel(ecs *world) {
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] characters.CharacterLinks,
-        [out] quests.QuestLinks,
         [none] realms.Realm
     );
     zox_system_1(

@@ -41,11 +41,5 @@ void spawn_prefabs_stats(ecs* world) {
         zox_add(e, StatAttribute);
         prefab_stat_attribute = e;
     }
-    // Add onto Realm, Characters
-    if (prefab_realm) {
-        zox_prefab_set(prefab_realm, StatLinks, { 0 });
-    }
     zox_prefab_character_add(SpawnNameLabel);
-    // zox_prefab_character_set(StatLinks, { 0 });
-    // zox_prefab_character_set(DotLinks, { 0 });
 }

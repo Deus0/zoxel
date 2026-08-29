@@ -1,12 +1,11 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: HUDS                                                 |
- * |                                                                  |
- * |  Main Menu - Options - Save Games - Taskbars                     |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +----------------------------------------------------------+
+ * | Zox Module: HUDS                                         |
+ * |                                                          |
+ * |  Main Menu - Options - Save Games - Taskbars             |
+ * |                                                          |
+ * +----------------------------------------------------------+
  */
-
 byte zox_huds3D = 0;
 const byte huds_max_list_elements = 128;
 const byte zox_huds_header_font_size = 22;

@@ -19,27 +19,35 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
     if (!zox_valid(realm)) {
         return;
     }
-    entity skillbook = zox_get_child_by_id(world, character, zox_id(Skillbook));
-    zox_geter(realm, SkillLinks, rskills);
-    zox_log("Giving [%s] [%i] Skills.", zox_get_name(character), rskills->length);
-    for (int j = 0; j < rskills->length; j++) {
-        entity rskill = rskills->value[j];
-        if (!zox_valid(rskill)) {
-            zox_log_error("Skill invalid [%i]", j)
-            continue;
+    entity skillbook = zox_get_child_by_id(
+        world,
+        character,
+        zox_id(Skillbook));
+    // zox_geter(realm, SkillLinks, rskills);
+    zox_log("Giving [%s] [X] Skills.",
+            zox_getn(character)); //,
+            //rskills->length);
+    iter it2 = zox_children(world, realm);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity rskill = it2.entities[j];
+            if (!zox_has(rskill, Skill)) {
+                continue;
+            }
+            entity slot = zox_get_empty_slot(world, skillbook);
+            if (!zox_valid(slot)) {
+                zox_logw("[Skillbook] Out of empty slots.");
+                zox_print_slots(world, skillbook);
+                break;
+            }
+            entity skill = spawn_user_skill(world, character, rskill);
+            zox_muter(slot, DataLink, slot_data);
+            slot_data->value = skill;
+            zox_muter(slot, DataDirty, dirty);
+            dirty->value = zox_dirty_trigger;
+            zox_log("   + [%s]",
+                zox_getn(rskill));
         }
-        entity slot = zox_get_empty_slot(world, skillbook);
-        if (!zox_valid(slot)) {
-            zox_logw("[Skillbook] Out of empty slots.");
-            zox_print_slots(world, skillbook);
-            break;
-        }
-        entity skill = spawn_user_skill(world, character, rskill);
-        zox_muter(slot, DataLink, slot_data);
-        slot_data->value = skill;
-        zox_muter(slot, DataDirty, dirty);
-        dirty->value = zox_dirty_trigger;
-        zox_log("   + [%s]", zox_get_name(rskill));
     }
     tst_all_skills = 1;
 }

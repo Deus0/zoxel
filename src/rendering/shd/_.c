@@ -1,5 +1,3 @@
-#ifndef zoxm_shaders
-#define zoxm_shaders
 
 byte is_log_shaders = 0;
 #define directory_shaders "shaders"
@@ -20,12 +18,11 @@ void dispose_shaders(ecs *world, void *ctx) {
     dispose_files_shaders();
 }
 
-zox_begin_module(Shaders) {
+void import_shaders(ecs* world) {
+    zox_module(shaders);
     zoxd_arrayd(ShaderSource);
     // zoxd_tag(Shader)
     zox_module_dispose(dispose_shaders);
     // add_hook_files_load(load_files_shaders);
     add_hook_spawn_prefabs(spawn_prefabs_shaders);
-} zox_end_module(Shaders);
-
-#endif
+}

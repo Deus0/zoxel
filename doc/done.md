@@ -1,5 +1,6 @@
 # Done
-        
+
+-x Remove SkillLinks, StatLinks, QuestLinks
 -x statbar2D isnt changing now too
 -x Statsbar isnt shrinking
 -x Add editor uis over top of canvas layer

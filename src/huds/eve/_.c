@@ -7,6 +7,7 @@
 #include "load.c"
 // Buttons
 #include "new_game.c"
+#include "realm_load.c"
 
 void zox_events_huds(ecs* world) {
     zox_muter(prefab_game, GameStateEvent, game_event);

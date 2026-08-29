@@ -1,4 +1,4 @@
-#if !defined(zoxm_blueprints) && defined(zoxm_nodes)
+/*#if !defined(zoxm_blueprints) && defined(zoxm_nodes)
 #define zoxm_blueprints
 
 // first we spawn a texture blueprint
@@ -28,3 +28,4 @@ zox_begin_module(Blueprints)
 zox_end_module(Blueprints)
 
 #endif
+*/

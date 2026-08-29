@@ -1,22 +1,35 @@
 // When health goes to 0, kill UserLink->value
 // Set Dead to 1
 
-void spawn_base_stats(ecs* world, entity e, const StatLinks* stats) {
+void spawn_base_stats(
+    ecs* world,
+    entity e,
+    entity realm)
+    // const StatLinks* stats)
+{
     entity realm_soul = 0;
     entity realm_health = 0;
     entity realm_energy = 0;
     entity realm_mana = 0;
-    for (int j = 0; j < stats->length; j++) {
-        entity stat = stats->value[j];
-        if (!realm_soul && zox_has(stat, StatLevel)) {
-            realm_soul = stat;
-        }
-        if (!realm_health && zox_has(stat, StatState)) {
-            realm_health = stat;
-        } else if (!realm_energy && zox_has(stat, StatState)) {
-            realm_energy = stat;
-        } else if (!realm_mana && zox_has(stat, StatState)) {
-            realm_mana = stat;
+    iter it2 = zox_children(world, realm);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity stat = it2.entities[j];
+            if (!zox_has(stat, Stat)) {
+                continue;
+            }
+    //for (int j = 0; j < stats->length; j++) {
+        //entity stat = stats->value[j];
+            if (!realm_soul && zox_has(stat, StatLevel)) {
+                realm_soul = stat;
+            }
+            if (!realm_health && zox_has(stat, StatState)) {
+                realm_health = stat;
+            } else if (!realm_energy && zox_has(stat, StatState)) {
+                realm_energy = stat;
+            } else if (!realm_mana && zox_has(stat, StatState)) {
+                realm_mana = stat;
+            }
         }
     }
     if (!zox_valid(realm_soul)) {
@@ -35,21 +48,37 @@ void spawn_base_stats(ecs* world, entity e, const StatLinks* stats) {
         spawn_stat_level(world, e, realm_soul, soul_value);
     }
     // Health
-    entity healthe = zox_get_child_by_id(world, e, zox_id(StatHealth));
+    entity healthe = zox_get_child_by_id(
+        world,
+        e,
+        zox_id(StatHealth));
     if (!zox_valid(healthe)) {
         spawn_stat_state(world, e, realm_health, health.x, health.y);
     }
-    spawn_stat_state(world, e, realm_energy, energy.x, energy.y);
-    spawn_stat_state(world, e, realm_mana, mana.x, mana.y);
+    spawn_stat_state(
+        world,
+        e,
+        realm_energy,
+        energy.x,
+        energy.y);
+    spawn_stat_state(
+        world,
+        e,
+        realm_mana,
+        mana.x,
+        mana.y);
     // Add Regen Stats
-    for (int j = 0; j < stats->length; j++) {
-        entity stat = stats->value[j];
-        if (!zox_valid(stat)) {
-            continue;
-        }
-        if (zox_has(stat, StatRegen)) {
-            // Spawn a regen
-            spawn_stat_regen(world, e, stat, base_regen);
+    it2 = zox_children(world, realm);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity stat = it2.entities[j];
+            if (!zox_has(stat, Stat)) {
+                continue;
+            }
+            if (zox_has(stat, StatRegen)) {
+                // Spawn a regen
+                spawn_stat_regen(world, e, stat, base_regen);
+            }
         }
     }
 }
@@ -68,7 +97,7 @@ zox_sys2(CharacterStatsSystem) {
             continue;
         }
         // Collect Realm Stats
-        zox_geter(realm->value, StatLinks, stats);
-        spawn_base_stats(world, e, stats);
+        // zox_geter(realm->value, StatLinks, stats);
+        spawn_base_stats(world, e, realm->value);
     }
 } zox_sys_end(CharacterStatsSystem);

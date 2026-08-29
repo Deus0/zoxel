@@ -9,19 +9,39 @@ uint get_label_player_items(
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    zox_geter(player, CharacterLink, characterLink);
-    if (!zox_valid(characterLink->value)) {
-        index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
+    entity character = zox_getv(player, CharacterLink);
+    if (!zox_valid(character)) {
+        index += snprintf(
+            buffer + index,
+            size - index,
+            "[%s] has no character\n",
+            zox_getn(player));
         return index;
     }
-    zox_geter(characterLink->value, ItemLinks, items);
-    index += snprintf(buffer + index, size - index, "[%s] has [%i] items\n", zox_get_name(player), items->length);
-    for (int i = 0; i < items->length; i++) {
+    index += snprintf(
+        buffer + index,
+        size - index,
+        "[%s] has items\n",
+        zox_getn(character));
+    iter it2 = zox_children(world, character);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity item = it2.entities[j];
+            if (!zox_has(item, Item)) {
+                continue;
+            }
+            index += snprintf(
+                buffer + index,
+                size - index,
+                " - [%s]\n",
+                zox_getn(item));
+    // zox_geter(characterLink->value, ItemLinks, items);
+    /*for (int i = 0; i < items->length; i++) {
         const entity action = items->value[i];
         if (!zox_valid(action)) {
             continue;
+        }*/
         }
-        index += snprintf(buffer + index, size - index, " - [%i] %s\n", i, zox_get_name(action));
     }
     return index;
 }

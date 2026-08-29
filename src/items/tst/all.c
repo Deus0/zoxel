@@ -5,32 +5,48 @@ void give_character_all_items(ecs* world, entity e) {
     if (!zox_valid(realm)) {
         return;
     }
-    entity inventory = zox_get_child_by_id(world, e, zox_id(Inventory));
-    zox_geter(realm, ItemLinks, realm_items);
-    zox_log("Giving [%s] [%i] Items.", zox_get_name(e), realm_items->length);
-    for (int j = 0; j < realm_items->length; j++) {
+    entity inventory = zox_get_child_by_id(
+        world,
+        e,
+        zox_id(Inventory));
+    if (!zox_valid(inventory)) {
+        zox_loge("Character has no Inventory");
+        return;
+    }
+    // zox_geter(realm, ItemLinks, realm_items);
+    zox_log("Giving [%s] [X] Items.",
+        zox_getn(e));
+    iter it2 = zox_children(world, realm);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity realm_item = it2.entities[j];
+            if (!zox_has(realm_item, Item)) {
+                continue;
+            }
+    /*for (int j = 0; j < realm_items->length; j++) {
         entity realm_item = realm_items->value[j];
         if (!zox_valid(realm_item)) {
             zox_log_error("Item invalid [%i]", j);
             continue;
+        }*/
+            entity slot = zox_get_empty_slot(world, inventory);
+            if (!zox_valid(slot)) {
+                zox_logw("[Inventory] Out of empty slots.");
+                zox_print_slots(world, inventory);
+                break;
+            }
+            byte quantity = 1;
+            entity e2 = spawn_user_item(world, e, realm_item);
+            if (zox_has(realm_item, Quantity)) {
+                quantity = rand_range(4, 16);
+                zox_set(e2, Quantity, { quantity });
+            }
+            zox_muter(slot, DataLink, slot_data);
+            zox_muter(slot, DataDirty, dirty);
+            slot_data->value = e2;
+            dirty->value = zox_dirty_trigger;
+            zox_log("   + [%s] x%i", zox_get_name(realm_item), quantity);
         }
-        entity slot = zox_get_empty_slot(world, inventory);
-        if (!zox_valid(slot)) {
-            zox_logw("[Inventory] Out of empty slots.");
-            zox_print_slots(world, inventory);
-            break;
-        }
-        byte quantity = 1;
-        entity e2 = spawn_user_item(world, e, realm_item);
-        if (zox_has(realm_item, Quantity)) {
-            quantity = rand_range(4, 16);
-            zox_set(e2, Quantity, { quantity });
-        }
-        zox_muter(slot, DataLink, slot_data);
-        zox_muter(slot, DataDirty, dirty);
-        slot_data->value = e2;
-        dirty->value = zox_dirty_trigger;
-        zox_log("   + [%s] x%i", zox_get_name(realm_item), quantity);
     }
 }
 

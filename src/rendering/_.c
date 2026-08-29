@@ -16,8 +16,8 @@ byte zox_new_ui_renderer = 1;
 #include "sys/_.c"
 #include "shd/_.c"
 #include "dbg/_.c"
-#include "basics2/_.c"
-#include "basics3/_.c"
+#include "rendering2/_.c"
+#include "rendering3/_.c"
 #include "cameras/_.c"
 
 byte initialize_rendering(byte render_backend) {
@@ -60,9 +60,9 @@ void import_rendering(ecs* world) {
     add_hook_terminal_command(process_arguments_rendering);
     zox_module_dispose(on_module_dispose_rendering)
     // prefab spawning
-    zox_import_module(Shaders);
-    zox_import_module(Rendering2);
-    zox_import_module(Rendering3);
+    zox_add_module(shaders);
+    zox_add_module(rendering2);
+    zox_add_module(rendering3);
     zox_add_module(render_cameras);
     add_to_update_loop(viewport_clear);
 }

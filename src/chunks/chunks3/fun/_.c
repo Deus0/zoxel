@@ -3,14 +3,9 @@
 #include "voctree.c"
 #include "positioning.c"
 #include "ground.c"
-
-void module_dispose_chunks3(ecs *world, void *ctx) {
-    // dispose_hook_on_destroyed_VoxelNode();
-}
-
-
-
-
+#include "unlit.c"
+#include "ao6.c"
+#include "ao27.c"
 
 // NOTE: Assumes node depth is lower than terrain (max depth)
 static inline float get_chunk_scale(

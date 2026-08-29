@@ -16,11 +16,21 @@ entity prefab_chunk;
 entity prefab_chunk_invisible;
 entity prefab_chunk_mesh;
 entity prefab_static_chunk;
+entity prefab_chunk_textured;
+entity prefab_chunk_mesh_textured;
 
 void spawn_prefabs_chunks(ecs *world) {
     prefab_chunk_base = spawn_prefab_chunk_base(world);
     prefab_chunk = spawn_prefab_chunk(world, prefab_chunk_base);
     prefab_chunk_invisible = spawn_prefab_chunk_invisible(world);
-    prefab_chunk_mesh = spawn_prefab_chunk_mesh(world);
+    prefab_chunk_mesh = spawn_prefab_chunk_mesh(
+        world,
+        prefab_mesh3);
     prefab_static_chunk = spawn_prefab_static_chunk(world);
+    prefab_chunk_mesh_textured = spawn_prefab_chunk_mesh_textured(
+        world,
+        prefab_chunk_mesh);
+    prefab_chunk_textured = spawn_prefab_chunk_textured(
+        world,
+        prefab_chunk_invisible);
 }

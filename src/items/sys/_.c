@@ -4,10 +4,8 @@
 #include "character.c"
 #include "character_player.c"
 #include "death.c"
-realm_clear_system(ItemLinks);
 
 void define_systems_items(ecs* world) {
-    realm_clear_systemd(items, ItemLinks);
     zox_system(
         ItemQuantityDeathSystem,
         zoxp_update,

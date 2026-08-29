@@ -12,18 +12,26 @@ zox_sys2(PlayerCharacterStatsSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        zox_geter(realm->value, StatLinks, stats);
-        spawn_base_stats(world, e, stats);
+        // zox_geter(realm->value, StatLinks, stats);
+        spawn_base_stats(world, e, realm->value);
         // add all attributes as 0
-        for (int j = 0; j < stats->length; j++) {
+        iter it2 = zox_children(world, realm->value);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity stat = it2.entities[j];
+                if (!zox_has(stat, Stat)) {
+                    continue;
+                }
+                if (!zox_has(stat, StatAttribute)) {
+                    continue;
+                }
+                spawn_stat_attribute(world, e, stat, 0);
+        /*for (int j = 0; j < stats->length; j++) {
             entity rstat = stats->value[j];
             if (!zox_valid(rstat)) {
                 continue;
+            }*/
             }
-            if (!zox_has(rstat, StatAttribute)) {
-                continue;
-            }
-            spawn_stat_attribute(world, e, rstat, 0);
         }
     }
 } zox_sys_end(PlayerCharacterStatsSystem);

@@ -21,20 +21,28 @@ zox_sys2(CharacterBodySpawnSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        zox_geter(realm->value, ItemLinks, ritems);
+        // flatten children items into array
+        entity realm_items[256];
+        uint realm_items_length = zox_get_children_by_id(
+            world,
+            realm->value,
+            realm_items,
+            256,
+            zox_id(Item));
+        // zox_geter(realm->value, ItemLinks, realm_items);
         // pick core
         //bsize->value = byte3_zero;
         // We can add first to the character then set body dirty
-        entity realm_chest = find_slot_type(world, ritems->value, ritems->length, zox_slot_core);
-        entity realm_head = find_slot_type(world, ritems->value, ritems->length, zox_slot_head);
-        entity realm_hips = find_slot_type(world, ritems->value, ritems->length, zox_slot_hips);
-        entity realm_thigh = find_slot_type(world, ritems->value, ritems->length, zox_slot_lthigh);
-        entity realm_calf = find_slot_type(world, ritems->value, ritems->length, zox_slot_lcalf);
-        entity realm_foot = find_slot_type(world, ritems->value, ritems->length, zox_slot_lfoot);
-        entity realm_shoulder = find_slot_type(world, ritems->value, ritems->length, zox_slot_lshoulder);
-        entity realm_bicep = find_slot_type(world, ritems->value, ritems->length, zox_slot_lbicep);
-        entity realm_forearm = find_slot_type(world, ritems->value, ritems->length, zox_slot_lforearm);
-        entity realm_hand = find_slot_type(world, ritems->value, ritems->length, zox_slot_lhand);
+        entity realm_chest = find_slot_type(world, realm_items, realm_items_length, zox_slot_core);
+        entity realm_head = find_slot_type(world, realm_items, realm_items_length, zox_slot_head);
+        entity realm_hips = find_slot_type(world, realm_items, realm_items_length, zox_slot_hips);
+        entity realm_thigh = find_slot_type(world, realm_items, realm_items_length, zox_slot_lthigh);
+        entity realm_calf = find_slot_type(world, realm_items, realm_items_length, zox_slot_lcalf);
+        entity realm_foot = find_slot_type(world, realm_items, realm_items_length, zox_slot_lfoot);
+        entity realm_shoulder = find_slot_type(world, realm_items, realm_items_length, zox_slot_lshoulder);
+        entity realm_bicep = find_slot_type(world, realm_items, realm_items_length, zox_slot_lbicep);
+        entity realm_forearm = find_slot_type(world, realm_items, realm_items_length, zox_slot_lforearm);
+        entity realm_hand = find_slot_type(world, realm_items, realm_items_length, zox_slot_lhand);
         if (!realm_chest) {
             zox_logw("Realm Chest Part not found.");
             continue;

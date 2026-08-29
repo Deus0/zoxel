@@ -1,4 +1,12 @@
-uint add_label_stat_level(ecs *world, entity character, const StatLinks *stats, entity tag, char *buffer, uint size, uint index) {
+/*uint add_label_stat_level(
+    ecs *world,
+    entity character,
+    const StatLinks *stats
+    entity tag,
+    char *buffer,
+    uint size,
+    uint index)
+{
     find_array_element_with_tag_id(stats, tag, stat);
     if (!zox_valid(stat) || !zox_has(stat, StatValue)) {
         index += snprintf(buffer + index, size - index, "[%s] has no stat [%s]\n", zox_get_name(character), zox_get_name(tag));
@@ -10,7 +18,7 @@ uint add_label_stat_level(ecs *world, entity character, const StatLinks *stats, 
     float experience_max = zox_getv(stat, ExperienceMax);
     index += snprintf(buffer + index, size - index, "%s [lvl %i - %i/%i]\n", name->value, (int) level, (int) experience_value, (int) experience_max);
     return index;
-}
+}*/
 
 uint add_label_stat_state(ecs *world, entity character, entity stat, char *buffer, uint size, uint index) {
     if (!zox_valid(stat) || !zox_has(stat, StatValue) || !zox_has(stat, ZoxName)) {
@@ -37,7 +45,13 @@ uint add_label_stat_value(ecs *world, entity character, entity stat, char *buffe
 }
 
 // new label ui
-uint get_label_player_stats(ecs *world, entity player, char* buffer, uint size, uint index) {
+uint get_label_player_stats(
+    ecs *world,
+    entity player,
+    char* buffer,
+    uint size,
+    uint index)
+{
     if (!player) {
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
@@ -47,9 +61,9 @@ uint get_label_player_stats(ecs *world, entity player, char* buffer, uint size, 
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;
     }
-    zox_geter(characterLink->value, StatLinks, stats);
-    index = add_label_stat_level(world, characterLink->value, stats, StatSoul, buffer, size, index);
-    for (int i = 0; i < stats->length; i++) {
+    // zox_geter(characterLink->value, StatLinks, stats);
+    // index = add_label_stat_level(world, characterLink->value, stats, StatSoul, buffer, size, index);
+    /*for (int i = 0; i < stats->length; i++) {
         const entity stat = stats->value[i];
         if (!zox_valid(stat)) {
             continue;
@@ -61,7 +75,8 @@ uint get_label_player_stats(ecs *world, entity player, char* buffer, uint size, 
         } else if (zox_has(stat, StatAttribute)) {
             index = add_label_stat_value(world, characterLink->value, stat, buffer, size, index);
         }
-    }
+    }*/
+
     /*zox_geter(characterLink->value, DotLinks, dots);
     for (int i = 0; i < dots->length; i++) {
         const entity dot = dots->value[i];

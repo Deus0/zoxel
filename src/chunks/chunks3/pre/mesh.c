@@ -1,25 +1,27 @@
 // TODO: Just use base mesh instead
-entity spawn_prefab_chunk_mesh(ecs* world) {
-    zox_prefab();
-    zox_prefab_name("chunk_mesh");
+entity spawn_prefab_chunk_mesh(
+    ecs* world,
+    entity prefab)
+{
+    entity e = zox_prefab_from_parent(world, prefab);
+    zox_set_unique_name(e, "chunk_mesh");
     zox_add(e, ChunkMesh);
-    // Data
-    zox_setv(e, TransformMatrix, float4x4_identity);
     zox_setv(e, RenderDepth, 0);
-    zox_setv(e, RenderDisabled, 0)
-    // Mesh Data
-    zox_add(e, Mesh);
-    zox_add(e, MeshIndicies);
-    zox_add(e, MeshVertices);
-    zox_add(e, MeshColorRGBs);
-    // Gpu Links
-    zox_setv(e, MeshGPULink, 0);
-    zox_setv(e, ColorsGPULink, 0);
-    zox_setv(e, MeshRenderCount, 0);
-    // Starting Events
-    zox_add(e, PreInitialize);
+    // NOTE: Start Building and Disabled
     zox_add(e, Disabled);
-    // NOTE: This added 20ms to query
     zox_add(e, BuildMesh);
+    return e;
+}
+
+entity spawn_prefab_chunk_mesh_textured(
+    ecs* world,
+    entity prefab)
+{
+    entity e = zox_prefab_from_parent(world, prefab);
+    zox_set_unique_name(e, "chunk_mesh_textured");
+    zox_add(e, TexturedMesh3);
+    zox_setv(e, MaterialLink, 0);
+    zox_setv(e, MeshUVs, 0);
+    zox_setv(e, UvsGPULink, 0);
     return e;
 }

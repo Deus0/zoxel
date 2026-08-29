@@ -1,14 +1,14 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Maps                                                 |
- * |                                                                  |
- * |  Regions - World Map - Markers - Navigation - Map State          |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +----------------------------------------------------------+
+ * | Zox Module: Maps                                         |
+ * |                                                          |
+ * |  Regions - World Map - Markers - Navigation - Map State  |
+ * |                                                          |
+ * +----------------------------------------------------------+
  */
 // TODO: Fix updating of maps
-    // - black textures appear
-    // - need to not regenerate them all, reuse them
+// - black textures appear
+// - need to not regenerate them all, reuse them
 
 byte zox_maps_flip_x = 0;
 byte zox_maps_flip_z = 1;

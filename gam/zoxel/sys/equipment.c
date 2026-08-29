@@ -55,28 +55,28 @@ zox_sys2(EquipsRealmSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
     // zox_sys_out(ModelLinks);
-    zox_sys_out(ItemLinks);
+    // zox_sys_out(ItemLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
         // zox_sys_o(ModelLinks, models);
-        zox_sys_o(ItemLinks, items);
+        // zox_sys_o(ItemLinks, items);
         if (state->value != zox_generate_realm_items) {
             continue;
         }
         {
             entity e2 = spawn_realm_model_item_filename(world, e, "Hatty", "hatty", zox_slot_hat);
-            add_to_ItemLinks(items, e2);
+            //add_to_ItemLinks(items, e2);
             // zox_log("model %s", zox_get_name(model));
         }
         {
             entity e2 = spawn_realm_model_item_filename(world, e, "Magician Hat", "cavalier_hat", zox_slot_hat);
-            add_to_ItemLinks(items, e2);
+            //add_to_ItemLinks(items, e2);
             // zox_log("model %s", zox_get_name(model));
         }
         {
             entity e2 = spawn_realm_model_item_filename(world, e, "Top Hat", "top_hat", zox_slot_hat);
-            add_to_ItemLinks(items, e2);
+            //add_to_ItemLinks(items, e2);
             // zox_log("model %s", zox_get_name(model));
         }
         zox_logv("At [%f] Realm [bodys] [%i] spawned.", zox_current_time, items->length);

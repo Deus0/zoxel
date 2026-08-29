@@ -32,11 +32,28 @@ zox_sys2(CharacterPlayerEquipsSystem) {
             continue;
         }
         byte body_updated = 0;
-        zox_geter(realm->value, ItemLinks, realm_items);
-        entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
-        entity hat_slot = get_equip_slot_in_children(world, chest_slot, zox_id(HatSlot));
+        entity realm_items[256];
+        uint realm_items_length = zox_get_children_by_id(
+            world,
+            realm->value,
+            realm_items,
+            256,
+            zox_id(Item));
+        //zox_geter(realm->value, ItemLinks, realm_items);
+        entity chest_slot = zox_get_child_by_id(
+            world,
+            e,
+            zox_id(Body));
+        entity hat_slot = get_equip_slot_in_children(
+            world,
+            chest_slot,
+            zox_id(HatSlot));
         if (zox_valid(hat_slot)) {
-            entity realm_hat = find_slot_type(world, realm_items->value, realm_items->length, zox_slot_hat);
+            entity realm_hat = find_slot_type(
+                world,
+                realm_items,
+                realm_items_length,
+                zox_slot_hat);
             if (zox_valid(realm_hat)) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
                 zox_muter(hat_slot, DataLink, slot_data);
@@ -63,7 +80,12 @@ zox_sys2(CharacterPlayerEquipsSystem) {
         // NOTE: Adds second hat into inventory for fun
         entity inventory_slot = zox_get_empty_slot(world, inventory);
         if (!zox_valid(inventory_slot)) {
-            entity realm_hat = find_slot_type_index(world, realm_items->value, realm_items->length, zox_slot_hat, 1);
+            entity realm_hat = find_slot_type_index(
+                world,
+                realm_items,
+                realm_items_length,
+                zox_slot_hat,
+                1);
             if (zox_valid(realm_hat)) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
                 zox_muter(inventory_slot, DataLink, slot_data);

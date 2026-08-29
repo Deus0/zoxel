@@ -1,4 +1,9 @@
-entity spawn_item_body(ecs *world, entity model, entity texture, const char* name) {
+entity spawn_item_body(
+    ecs *world,
+    entity model,
+    entity texture,
+    const char* name)
+{
     entity e = spawn_realm_item2(world, prefab_item, name);
     zox_add(e, BodyItem);
     zox_set(e, ModelLink, { model });
@@ -13,9 +18,16 @@ void delayed_texture_generate(ecs* world, entity e) {
     }
 }
 
-entity spawn_texture_from_vox(ecs* world, entity vox, byte2 tsize) {
+entity spawn_texture_from_vox(
+    ecs* world,
+    entity vox,
+    byte2 tsize)
+{
     // # # # Spawn Item Texture # # #
-    entity texture = spawn_texture(world, prefab_vox_texture, byte2_to_int2(tsize));
+    entity texture = spawn_texture(
+        world,
+        prefab_vox_texture,
+        byte2_to_int2(tsize));
     {
         char name2[128];
         sprintf(name2, "texture_%s", zox_getn(vox));
@@ -35,7 +47,18 @@ entity spawn_texture_from_vox(ecs* world, entity vox, byte2 tsize) {
     return texture;
 }
 
-entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mdepth, byte3 size, entity blueprint, const char* name, lint seed, byte2 tsize, byte slot_type) {
+entity2 spawn_realm_body_part(
+    ecs* world,
+    entity parent,
+    byte variants,
+    byte mdepth,
+    byte3 size,
+    entity blueprint,
+    const char* name,
+    lint seed,
+    byte2 tsize,
+    byte slot_type)
+{
     // entity e2 = zox_prefab_from_parent(world, prefab_model_group);
     entity e = zox_ins(world, prefab_model_group);
     // zox_make_prefab(e);
@@ -70,12 +93,19 @@ entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mde
     zox_set_ptr(e, ModelLinks, models);
     // NOTE: Uses first model and highest depth one
     entity model = models.value[0];
-    entity texture = spawn_texture_from_vox(world, max_depth_vox, tsize);
+    entity texture = spawn_texture_from_vox(
+        world,
+        max_depth_vox,
+        tsize);
     zox_set_parent(world, texture, parent);
     // NOTE: This has GenerateModel on it atm
     // zox_setv(max_depth_vox, GenerateModel, 0);
     // # # # Spawn Item from model and texture # # #
-    entity e2 = spawn_item_body(world, model, texture, name);
+    entity e2 = spawn_item_body(
+        world,
+        model,
+        texture,
+        name);
     zox_set_parent(world, e2, parent);
     // zox_make_prefab(e2);
     zox_set(e2, SlotType, { slot_type });
@@ -83,12 +113,32 @@ entity2 spawn_realm_body_part(ecs* world, entity parent, byte variants, byte mde
     return (entity2) { e2, e };
 }
 
-entity2 spawn_realm_body_part2(ecs* world, entity realm, lint seed, byte model_depth, const char* name, byte slot_type, entity blueprint, float3 blueprint_scale, byte dbg_log) {
+entity2 spawn_realm_body_part2(
+    ecs* world,
+    entity realm,
+    lint seed,
+    byte model_depth,
+    const char* name,
+    byte slot_type,
+    entity blueprint,
+    float3 blueprint_scale,
+    byte dbg_log)
+{
     // Model Data
     short model_length = octree_size(model_depth);
     byte3 model_size = byte3_scale3f(byte3_single(model_length), blueprint_scale);
     byte2 texture_size = byte2_single(model_length);
-    entity2 e = spawn_realm_body_part(world, realm, 1, model_depth, model_size, blueprint, name, seed, texture_size, slot_type);
+    entity2 e = spawn_realm_body_part(
+        world,
+        realm,
+        1,
+        model_depth,
+        model_size,
+        blueprint,
+        name,
+        seed,
+        texture_size,
+        slot_type);
     // zox_set_parent(world, e.x, realm);
     // zox_set_parent(world, e.y, realm);
     // add_to_ItemLinks(items, spawn.x);
