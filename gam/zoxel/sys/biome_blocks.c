@@ -179,7 +179,7 @@ zox_sys2(BiomeBlocksSystem) {
         {
             color weed_color = color_mix(grass_color, stone_color, 0.8f);
             byte grass_color_mutation = 15;
-            byte mdepth_vode = block_vox_depth_limits.y;
+            byte mdepth_vode = block_depth_limits.y;
             entity model = zox_new();
             zox_set_unique_name(model, "model_group_grass");
             zox_set_parent(world, model, e);
@@ -203,7 +203,7 @@ zox_sys2(BiomeBlocksSystem) {
         }
         // Dirt Piles on ground
         {
-            byte max_depth = block_vox_depth_limits.y;
+            byte max_depth = block_depth_limits.y;
             entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "debris", vox_type_rubble, dirt_color, max_depth, dirt_seed);
             entity model = e2.x;
             entity texture_vox = e2.y;
@@ -212,7 +212,7 @@ zox_sys2(BiomeBlocksSystem) {
         }
         // A noisey block
         {
-            byte max_depth = block_vox_depth_limits.y;
+            byte max_depth = block_depth_limits.y;
             entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "decayed", vox_type_noisey, dirt_color, max_depth, dirt_seed);
             entity model = e2.x;
             entity texture_model = e2.y;
@@ -220,7 +220,7 @@ zox_sys2(BiomeBlocksSystem) {
         }
         // Biome Flora
         {
-            byte max_depth = block_vox_depth_limits.y;
+            byte max_depth = block_depth_limits.y;
             entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "flowers", vox_type_flowers, flowers_color, max_depth, flowers_seed);
             entity model = e2.x;
             entity texture_model = e2.y;

@@ -1,6 +1,6 @@
 // our main realm block spawn function
 entity spawn_realm_block_solid(ecs *world, entity prefab, entity parent, lint seed, const char* name, color primary, entity model, byte dbg_log) {
-    byte depth = block_vox_depth;
+    byte depth = block_depth;
     entity e = zox_ins(world, prefab);
     zox_set_parent(world, e, parent);
     set_ZoxName(world, e, name);

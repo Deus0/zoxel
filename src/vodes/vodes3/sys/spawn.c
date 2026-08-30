@@ -186,7 +186,7 @@ zox_sys2(VodesSpawnSystem) {
         if (!can_spawn_vodes) {
             continue;
         }
-        byte block_depth = camera_distance_to_block_vox_depth(render_distance->value);
+        byte block_depth = camera_distance_to_block_depth(render_distance->value);
         // write_lock_VoxelNode(voxel_octree);
         // TODO: Cache these
         zox_geter(realm, BlockLinks, blocks);

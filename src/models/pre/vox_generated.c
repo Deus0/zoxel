@@ -1,8 +1,8 @@
 entity spawn_prefab_vox_generated(ecs *world, entity prefab) {
-    short length = octree_size(block_vox_depth);
+    short length = octree_size(block_depth);
     zox_prefab_child(prefab);
     zox_add(e, VoxMesh);
-    zox_set(e, NodeDepth, { block_vox_depth });
+    zox_set(e, NodeDepth, { block_depth });
     zox_set(e, ChunkSize, { int3_single(length) });
     zox_prefab_set(e, Color, { color_white });
     zox_prefab_set(e, Seed, { 0 });

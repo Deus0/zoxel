@@ -1,8 +1,8 @@
 // TODO: Spawn the models in other categories, directly in character/block/gear/body if not shared models
 /*zox_sys2(ModelsRealmSpawnSystem) {
     // byte vlength_max = powers_of_two[nodegraph_max_depth];
-    // byte mdepth_vode = block_vox_depth_limits.y;
-    byte mdepth_character = block_vox_depth_limits.y;
+    // byte mdepth_vode = block_depth_limits.y;
+    byte mdepth_character = block_depth_limits.y;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);

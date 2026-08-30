@@ -1,10 +1,10 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Chunks                                               |
- * |                                                                  |
- * |  Generation - Octrees - Meshing - Spatial - Chunk State          |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +----------------------------------------------------------+
+ * | Zox Module: Chunks                                       |
+ * |                                                          |
+ * |  Generation - Octrees - Meshing - Spatial - Chunk State  |
+ * |                                                          |
+ * +----------------------------------------------------------+
  * */
 #define zox_generate_model_run 1
 #define zox_generate_model_bake 2

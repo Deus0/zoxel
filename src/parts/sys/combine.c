@@ -280,7 +280,7 @@ zox_sys2(BodyCombineSystem) {
         // TODO: We should make this same scale as npcs
         ndepth->value = max_depth;
         // NOTE: Keep at consistent scale
-        short length2 = octree_size(block_vox_depth + 2);
+        short length2 = octree_size(block_depth + 2);
         block_scale->value = 1.0f / length2;
         body_dirty->value = zox_generate_body_bones;
         dirty->value = zox_dirty_trigger;

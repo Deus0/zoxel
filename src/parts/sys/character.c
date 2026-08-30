@@ -70,7 +70,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         // Spawn our user body
         // Attach Core Part
         zox_set(chest_slot, DataLink, { spawn_user_item_body(world, e, realm_chest, zox_slot_core) });
-        short chest_width = octree_size(block_vox_depth);
+        short chest_width = octree_size(block_depth);
         byte chest_height = int_floorf(0.56f * chest_width);
         // Trigger early, incase we cannot keep growing body
         // dirty->value = zox_dirty_trigger;

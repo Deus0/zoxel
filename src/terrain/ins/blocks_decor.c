@@ -40,7 +40,7 @@ entity spawn_realm_block_model(ecs *world, entity parent, lint seed, char* name,
     zox_set_parent(world, e, parent);
     // NOTE: Spawns a VoxTexture for the Items!
     {
-        byte length = octree_size(block_vox_depth);
+        byte length = octree_size(block_depth);
         int2 texture_size = int2_single(length);
         entity texture = spawn_texture(world, prefab_vox_texture, texture_size);
         zox_set_unique_name(texture, name);

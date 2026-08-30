@@ -14,7 +14,7 @@ entity spawn_test_vox_at(
         -distance);
     float scale = frand_range(0.8f, 1.2f);
     float block_scale = 1.0f / 16.0f;
-    byte depth = block_vox_depth_limits.y;
+    byte depth = block_depth_limits.y;
     float spin = rand_range(2, 8);
     float3 euler = (float3) { rand() % 100 > 50 ? spin : -spin, rand() % 100 > 50 ? spin : -spin, rand() % 100 > 50 ? spin : -spin };
     int3 size = int3_single(powers_of_two[depth]);

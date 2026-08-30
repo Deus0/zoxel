@@ -24,8 +24,8 @@ entity spawn_realm_model_item_filename(ecs* world, entity realm, const char* nam
         return 0;
     }
     byte model_depth = zox_getv(model_base, MaxRenderDepth);
-    if (block_vox_depth < model_depth) {
-        model_depth = block_vox_depth;
+    if (block_depth < model_depth) {
+        model_depth = block_depth;
     }
     entity vox = get_lodded_model(world, model_base, model_depth);
     if (!zox_valid(vox)) {
@@ -85,8 +85,8 @@ zox_sys2(EquipsRealmSpawnSystem) {
 
             /*entity model = string_hashmap_get(files_hashmap_voxes, new_string_data("hatty"));
             byte model_depth = zox_getv(model, MaxRenderDepth);
-            if (block_vox_depth < model_depth) {
-                model_depth = block_vox_depth;
+            if (block_depth < model_depth) {
+                model_depth = block_depth;
             }
             //entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("hatty"));
             entity vox = get_lodded_model(world, model, model_depth);
@@ -101,8 +101,8 @@ zox_sys2(EquipsRealmSpawnSystem) {
             // entity texture = string_hashmap_get(files_hashmap_textures, new_string_data("top_hat"));
             /*entity model = string_hashmap_get(files_hashmap_voxes, new_string_data("top_hat"));
             byte model_depth = zox_getv(model, MaxRenderDepth);
-            if (block_vox_depth < model_depth) {
-                model_depth = block_vox_depth;
+            if (block_depth < model_depth) {
+                model_depth = block_depth;
             }
             entity vox = get_lodded_model(world, model, model_depth);
             entity texture = spawn_texture_from_vox(world, vox, byte2_single(powers_of_two[model_depth]));

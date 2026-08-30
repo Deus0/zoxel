@@ -70,8 +70,8 @@ static inline byte camera_distance_to_npc_render_depth(byte distance, byte max_d
     if (zox_dbg_npc_all_max_depth) {
         return max_depth;
     }
-    /*if (block_vox_depth < max_depth) {
-        byte ddepth = (block_vox_depth_limits.y - block_vox_depth);
+    /*if (block_depth < max_depth) {
+        byte ddepth = (block_depth_limits.y - block_depth);
         max_depth = max_depth - ddepth < 0 ? 0 : max_depth - ddepth;
     }*/
     return camera_distance_to_render_depth(
@@ -81,10 +81,10 @@ static inline byte camera_distance_to_npc_render_depth(byte distance, byte max_d
         terrain_lod_near);
 }
 
-static inline byte camera_distance_to_block_vox_depth(byte distance) {
+static inline byte camera_distance_to_block_depth(byte distance) {
     return camera_distance_to_render_depth(
         distance,
-        block_vox_depth,
+        block_depth,
         vox_lod_near,
         terrain_lod_near);
 }

@@ -27,7 +27,7 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
         return 0;
     }
     byte mdepth = zox_getv(model, MaxRenderDepth);
-    //byte ddepth = mdepth - block_vox_depth; // block_vox_depth;
+    //byte ddepth = mdepth - block_depth; // block_depth;
     // float scale = 1.0f / (powers_of_two[ddepth]); // data.scale *
     float scale = 1.0f;
     // Spawn part

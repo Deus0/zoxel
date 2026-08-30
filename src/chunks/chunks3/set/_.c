@@ -4,8 +4,8 @@
 #include "lod.c"
 // issue is the character depth is set by blockvox depth atm
 byte character_depth = 5;
-byte block_vox_depth = 5;
-byte2 block_vox_depth_limits = (byte2) { 1, 5 };
+byte block_depth = 4;
+byte2 block_depth_limits = (byte2) { 1, 5 };
 byte terrain_depth = 4;
 byte2 terrain_depth_limits = (byte2) { 2, 5 };
 int fill_octree_random_rate = 50;

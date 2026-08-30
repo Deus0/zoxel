@@ -21,7 +21,7 @@ zox_sys2(BodysRealmSpawnSystem) {
             continue;
         }
         // byte variants = 1;
-        byte max_part_depth = block_vox_depth + 2;
+        byte max_part_depth = block_depth + 2;
         byte blueprint_depth = nodegraph_max_depth;
         short blueprint_length = octree_size(blueprint_depth);
         if (max_part_depth >= model_lods_max_length) {

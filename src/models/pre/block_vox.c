@@ -1,5 +1,5 @@
 entity spawn_prefab_block_vox(ecs *world, entity prefab) {
-    short length = octree_size(block_vox_depth);
+    short length = octree_size(block_depth);
     zox_prefab_child(prefab);
     zox_prefab_name("block_vox");
     zox_add(e, BlockVox);
@@ -17,7 +17,7 @@ entity spawn_prefab_block_vox(ecs *world, entity prefab) {
     zox_prefab_set(e, Bounds3Dirty, { 0 });
     prefab_add_cube_lines(world, e, color_white, 0);
     // Chunk3
-    zox_set(e, NodeDepth, { block_vox_depth });
+    zox_set(e, NodeDepth, { block_depth });
     zox_set(e, ChunkSize, { int3_single(length) });
     // Transforms
     // zox_prefab_set(e, Position3D, { float3_zero });

@@ -1,6 +1,6 @@
 // removed references to block vox
 entity spawn_block(ecs *world, SpawnBlock data) {
-    int2 vox_texture_size = int2_single(powers_of_two[block_vox_depth]);
+    int2 vox_texture_size = int2_single(powers_of_two[block_depth]);
     zox_instance(data.prefab);
     zox_set_unique_name(e, "block");
     set_ZoxName(world, e, data.name);

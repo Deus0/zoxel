@@ -29,7 +29,7 @@ entity prefab_static_vox_instanced;
 
 void spawn_prefabs_models(ecs *world) {
     // Moveable Voxes
-    prefab_vox = spawn_prefab_vox(world, block_vox_depth);
+    prefab_vox = spawn_prefab_vox(world, block_depth);
     // Level 1
     prefab_block_vox_meta = spawn_prefab_block_vox_meta(world, prefab_block);
     prefab_vox_file = spawn_prefab_vox_file(world, prefab_chunk_base);

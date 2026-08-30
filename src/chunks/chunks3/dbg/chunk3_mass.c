@@ -17,7 +17,7 @@ void zox_dbg_spawn_chunk3_mass(ecs* world, ClickEventData data) {
     }
     entity prefab = prefab_vox; // prefab_chunk
     float scale = 1;
-    byte depth = block_vox_depth;
+    byte depth = block_depth;
     float block_scale = 1.0f / 32.0f;
     int3 size = int3_single(powers_of_two[depth]);
     float3 position = zox_getv(camera, Position3D);
