@@ -59,7 +59,10 @@ zox_sys2(LandfillChunkSystem) {
             continue;
         }
         if (!zox_valid(tunk->value)) {
-            zox_loge("[Landfill] ]nvalid [Tunk] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
+            zox_loge("[Landfill] ]nvalid [Tunk] at [%ix%ix%i]",
+                chunk_position->value.x,
+                chunk_position->value.y,
+                chunk_position->value.z);
             continue;
         }
 #endif
@@ -71,8 +74,10 @@ zox_sys2(LandfillChunkSystem) {
         byte build_depth = depth->value;
         if (depth->value != tunk_lod) {
             build_depth = tunk_lod;
+            // NOTE: This fixes it, but we need to find the cause!
+            zox_setm(e, NodeDepth, tunk_lod);
             if (dbg_log_errors) {
-                zox_loge("[Landfill] Depth Invalid: Chunk [%i] - Tunk [%i]",
+                zox_logw("[Landfill] Depth Invalid: Chunk [%i] - Tunk [%i]",
                     depth->value,
                     tunk_lod);
             }

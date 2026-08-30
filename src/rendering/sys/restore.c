@@ -88,7 +88,6 @@ zox_sys2(ColorsGPULinkRestoreSystem) {
     }
 } zox_sys_end(ColorsGPULinkRestoreSystem);
 
-
 void zox_systems_rendering_restore(ecs* world) {
     zox_gpu_restore_system(
         MeshGPURestoreSystem,
@@ -120,8 +119,4 @@ void zox_systems_rendering_restore(ecs* world) {
         MeshDirtyRestoreSystem,
         [none] rendering.Mesh,
     );
-    /*zox_gpu_restore_system(
-        MeshDirtyRestore2System,
-        [none] rendering.Mesh,
-    );*/
 }

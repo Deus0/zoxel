@@ -1,8 +1,7 @@
 zox_sys2(HeightMapSystem) {
     // TODO: use height frequency from biome maps
     byte terrain_height_multiplier = 3;
-    int terrain_octaves = 4; // 8
-    // double height_frequency = 0.1; // terrain_frequency * 10;
+    int terrain_octaves = 8;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);

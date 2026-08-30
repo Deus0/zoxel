@@ -1,7 +1,16 @@
 # Todo
 
+- Dungeon placement also gets stuck in infiinite loop
+	- i think its the placement queue
+- Fix Chunk Generate LOD issues
+	- TunkLod is behind Chunks
+- Fix Dialogue font character flickering
+- Refactor RenderDisabled to DF Tag
+- Refactor Restore/Dispose into Query Functions
+- Refactor Settings to an event - InitializeEvent on App
 - Refactor ([in] players.PlayerState,) with new PlayerStateEvent listener
-- Fix Depth Invalid issues
+- Fix Depth Invalid issues - when i added queue
+	- perhaps its due to lod setting earlier
 -x Vodes spawning / grass placement broken
 - Also placing block bricked game - infinite loop
 - Make chunk datas more self contained
